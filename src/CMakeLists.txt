@@ -107,6 +107,7 @@ set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 #add_subdirectory(otherlibs)
 add_subdirectory(marsyas)
 add_subdirectory(apps)
+add_subdirectory(swig)
 
 if(QT4_FOUND)
         add_subdirectory(marsyasqt)

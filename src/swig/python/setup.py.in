@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+from distutils.core import setup,Extension
+
+import os
+
+cflags = "@CXXFLAGS@ @CPPFLAGS@ -I@top_srcdir@/src".split()
+ldflags = "-L@top_builddir@/lib/release -lmarsyas -lstdc++ @LDFLAGS@ @LIBS@ @Libs@".split()
+
+marsyas_module = Extension(
+		"_marsyas",
+		sources=["marsyas_wrap.cxx"],
+		extra_compile_args = cflags,
+		extra_link_args = ldflags
+		)
+
+setup(
+		name="Marsyas",
+		ext_modules = [marsyas_module],
+		py_modules = ["marsyas"]
+)

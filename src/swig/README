@@ -1,0 +1,92 @@
+These are swig generated bindings for marsyas into several languages.
+
+There are bindings for :
+	- Ruby
+	- Python
+	- Java
+	- Lua
+
+The bindings provide 3 classes from Marsyas to a supported language:
+	- MarSystem
+	- MarSystemManager
+	- MarControlPtr
+
+- EXAMPLES
+
+Every language binding has at least one simple example of how to use them. It is a straight-forward program that uses Marsyas to play a sound file.
+
+- CHANGES
+
+For those familiar with the older bindings a few changes have been made:
+ - New Languages    : Lua and Java
+ - New Class        : MarControlPtr
+ - New Build System : Now integrated into Marsyas build, and using (when possible) language specific methods of building extensions.
+
+The addition of the MarControlPtr class to the binding was both to add functionality, and to support the new languages. The previous languages (Ruby & Python) both had a single type which all values were a subtype of. The old bindings simply converted a value of this type to the most apropriate MarControl type. Unfortunately this made for some ugly code that would have to be replicated for each new language to be added. Also some languages (like Lua and Java) do not have a single all-encompassing base type, so this method is not possible. As a result, functions which take or return MarControlPtr now actually do take and return this type, and no longer automatically do the conversion. Ruby is the only language at the moment which [upd|set]Control have been overloaded to take simple values as well.
+
+Although the Ruby version is the most feature-filled version of the bindings, its only benefit is the overloaded methods. However currently the 'automagic' classes from the previous version are now gone, however since registeredPrototypes() and getControls() exist it is still possible to recreate those features (I just haven't gotten arround to it yet).
+
+- DIFFERENCES FROM C++
+
+In the C++ implementation a function argument of MarControlPtr can take any of the types for which there is a single argument constructor of MarControlPtr for that type. So for example MarSystem.setControl( std::string, MarControlPtr ) can be called as MarSystem.setControl( std::string, 5 ), and due to the existance of the constructor MarControlPtr( mrs_natural ), will work. However, this is not how other languages work, and so to use these functions one must create a MarControlPtr. It is possible to overload these functions with ones that do the right thing when given an apropriate value, but due to the following problem, this only works for Ruby (and possibly Java).
+
+Marsyas in C++ has many types usable in MarControlPtrs, booleans, natural numbers (integers), real numbers, and strings are all valid and discrete types that can be stored in a MarControl. However, other languages do not have as many types. Lua, for example only has one number type (which is normally a double), so therefore it is not possible to create two different overloadings for a function that allow the function to accurately tell the different between a real number and an integer. For example setControl() takes a MarControlPtr as its second argument. If one passes the values true, 5, 3.5, "hello" to it in C++, then 4 different MarControlPtrs are made. In Lua, there is no difference in type between 5 and 3.5, and so both will become MarControlPtrs with mrs_real values. Since Marsyas does no type coercion at all between MarControl Values of different types, it thus becomes impossible in Lua to set values of mrs_natural controls. A similar problem occurs in python between mrs_bool and mrs_natural where boolean values are considered to be integers and thus make it impossible to set mrs_bool values. To get arround this, one must manually create a MarControlPtr. Also since the same problem would occur with an overloaded contructor, there are instead differently named static class methods to call when generating a MarControlPtr. Since ruby can easily tell the difference between all these types, it does have overloaded methods that replicate the C++ behaviour. Java should also do so, but I haven't tried yet.
+
+- LANGUAGE SPECIFIC INFORMATION
+
+-- RUBY
+The ruby bindings have the overloaded [get|upd]Control methods and use the mkmf module to build the extension. It can thus easily find your ruby installation and build and install the module correctly, regardless of your environment.
+
+-- PYTHON
+The python bindings have no extra features over the common implementation, but are built with the distutils python package and thus can also be easily built and installed.
+
+-- LUA
+The lua bindings have no extra features, and no build system exists for lua. However, as long as 'lua.h' can be found by gcc, the makefile should work, and the built module should be easily enough to use.
+
+-- JAVA
+Java has no extra features, but due to the complicated nature of building java extensions (and using them) the java bindings are not built by the build system. If you know how to do it yourself, you should be able to get them to work with little effort. But to do so automatically is currently too hard to be possible at the moment. The Makefile provided works in Gentoo, but I'm not certain about any other environment.
+
+- COMMON IMPLEMENTATION
+
+-- MarSystemManager
+	The MarSystemManager provides access to all MarSystem objects.
+--- MarSystemManager()
+	Constructor.
+--- MarSystemManager.create ( string marsys, string name )
+	Returns a new MarSystem of the given type 'marsys' with the given name.
+--- MarSystemManager.registeredPrototypes ()
+	Returns a list of all MarSystems registered with this MarSystemManager
+
+-- MarSystem
+	The base class for all Marsyas networks. There is no constructor as all MarSystems are created and managed by a MarSystemManager. To create a MarSystem of a given type see MarSystemManager.create().
+--- MarSystem.tick ()
+	Tells MarSystem to process a buffer's worth of data.
+--- MarSystem.get[Type|Name|Prefix] ()
+	Returns a string representation of the requested information.
+--- MarSystem.[set|upd]Control( string ctrl, MarControlPtr val )
+	Sets or updates the named control 'ctrl' of the MarSystem to the value stored in val.
+	Will fail if value is wrong type.
+	upd version will call update() on marsystem after completion (set version does not).
+--- MarSystem.getControl( string ctrl )
+	Returns a pointer (MarControlPtr) to the given named control.
+--- MarSystem.hasControl ( string ctrl )
+	Returns true if given named control 'ctrl' exists in this MarSystem.
+--- MarSystem.linkControl ( string src, string dst )
+	Causes control 'src' to be available under name 'dst'.
+--- MarSystem.getControls ()
+	Returns a mapping of names(string) -> controls(MarControlPtr) for all controls in this marsystem.
+--- MarSystem.addMarSystem( MarSystem marsys )
+	Addes the given MarSystem to this one ( if a composite MarSystem )
+
+-- MarControlPtr
+	A reference to a value within a MarSystem, or an unattached value.
+--- MarControlPtr( [MarControlPtr] )
+	Constructor. Either creates an invalid MarControlPtr (no argument) or copies an existing one. Essentially useless.
+--- MarControlPtr.from_[natural|real|bool|string] ( value ) - static method
+	Creates a MarControlPtr from the given value whose type is determined by the function called.
+--- MarControlPtr.get[Type|Name] ()
+	Returns a string with the approriate information.
+--- MarControlPtr.setValue_[natural|real|bool|string] ( value )
+	Changes the value of the pointed to MarControl.
+--- MarControlPtr.to_[natural|real|bool|string] ()
+	Returns the value stored in the chosen type.

@@ -1,0 +1,15 @@
+require 'mkmf'
+
+$CFLAGS += " " << "@CXXFLAGS@ @CPPFLAGS@ -I@top_srcdir@/src"
+$LIBS += " " << "-L@top_builddir@/lib/release -lmarsyas -lstdc++ @LIBS@ @Libs@"
+
+create_makefile("marsyas")
+
+open("Makefile", "a") do |mf|
+	mf.puts <<EOF
+Makefile : extconf.rb
+	ruby $<
+%_wrap.cxx : %.i
+	swig -c++ -ruby $<
+EOF
+end
