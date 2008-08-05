@@ -52,8 +52,6 @@ void
 RealvecSource::addControls()
 {
   samplesToUse_ = (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES;
-  addctrl("mrs_natural/samplesToUse", (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES);
-  setctrlState("mrs_natural/samplesToUse", true);
   addctrl("mrs_bool/done", false);
   setctrlState("mrs_bool/done", true);
   addctrl("mrs_realvec/data", realvec(), ctrl_data_);
@@ -65,42 +63,50 @@ RealvecSource::addControls()
 void
 RealvecSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
-  MRSDIAG("RealvecSource.cpp - RealvecSource:myUpdate");
-  
-		const realvec& data = ctrl_data_->to<realvec> ();
+	(void)sender;
+	MRSDIAG("RealvecSource.cpp - RealvecSource:myUpdate");
+	
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
+	
+	const realvec& data = ctrl_data_->to<realvec> ();
 
-  setctrl("mrs_natural/onObservations", data.getRows());
-	setctrl("mrs_natural/onSamples", 1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());
-//  samplesToUse_ = getctrl("mrs_natural/samplesToUse")->to<mrs_natural>();
- 
+	setctrl("mrs_natural/onObservations", data.getRows());
+	setctrl("mrs_natural/onSamples", inSamples_);
+	setctrl("mrs_real/osrate", israte_);
 	samplesToUse_ = data.getCols();
- count_ = 0;
+	
+	count_ = 0;
 
-		if( getctrl("mrs_bool/done")->isTrue()){
-    count_ = 0;
-    setctrl("mrs_bool/done", false);
-  }
+	if( getctrl("mrs_bool/done")->isTrue()){
+		count_ = 0;
+		setctrl("mrs_bool/done", false);
+	}
 }
 
 void 
 RealvecSource::myProcess(realvec& in, realvec& out)
-{
-	(void) in;
+{ 
+	(void) in; 
 	//checkFlow(in,out);
 	const realvec& data = ctrl_data_->to<realvec> ();
 
 	if( count_ < samplesToUse_)
 	{
 		for (o=0; o < onObservations_; o++)
-			out(o) = data(o, count_);
-			count_++;
+		{
+			for (t=0; t < onSamples_; t++)
+			{
+				out(o) = data(o, count_);
+				count++;
+			}
+
 		}
+	}
 	else
 		setctrl("mrs_bool/done", true);  
 
 	//out.dump();
-	}
-
+}
 
