@@ -22,6 +22,10 @@ if (MARSYAS_MAD)
 	include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
 
+if (MARSYAS_MATLAB) 
+	include_directories(${MATLAB_INCLUDE_DIR})
+endif (MARSYAS_MATLAB)
+
 
 # I've put the most OS-specific files at the top, to test the
 # library support before compiling the un-problematic files
@@ -362,6 +366,10 @@ add_library(marsyas STATIC ${MarSystem_SOURCES} )
 if (MARSYAS_MAD)
 	TARGET_LINK_LIBRARIES(marsyas ${mad_LIBRARY})
 endif (MARSYAS_MAD)
+
+if (MARSYAS_MATLAB) 
+	TARGET_LINK_LIBRARIES(marsyas ${MATLAB_LIBRARIES})
+endif (MARSYAS_MATLAB)
 
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
 install(TARGETS marsyas LIBRARY DESTINATION lib

@@ -62,8 +62,8 @@ option(WITH_MAD "Link to libmad (mp3 audio decoding)" OFF)
 #option(WITH_VORBIS "Link to libvorbis (ogg audio decoding)" OFF)
 #option(WITH_READLINE "Readline functionality for Marsyas Scripting
 #Language (MSL)" OFF)
-#option(WITH_MATLAB "Activate MATLAB enging interface" OFF)
-#option(WITH_SWIG "Enable SWIG generated bindings" OFF)
+option(WITH_MATLAB "Activate MATLAB enging interface" OFF)
+option(WITH_SWIG "Enable SWIG generated bindings" OFF)
 option(WITH_QT "Build the QT library and applications" OFF)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
 
@@ -75,10 +75,22 @@ if (WITH_QT)
 	include(FindQt4)
 endif (WITH_QT)
 
+if (WITH_SWIG) 
+	include(FindSWIG)
+endif (WITH_SWIG) 
+
+
 if (WITH_MAD)
 	find_package(mad REQUIRED)
 	set (MARSYAS_MAD 1)
 endif (WITH_MAD)
+
+
+
+if (WITH_MATLAB) 
+	include(FindMatlab)
+endif (WITH_MATLAB) 
+
 #### not certain if this is necessary
 #include(FindThreads)
 
@@ -107,10 +119,18 @@ set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 #add_subdirectory(otherlibs)
 add_subdirectory(marsyas)
 add_subdirectory(apps)
-add_subdirectory(swig)
+
+if(SWIG_FOUND) 
+	add_subdirectory(swig)
+endif(SWIG_FOUND)
 
 if(QT4_FOUND)
         add_subdirectory(marsyasqt)
         add_subdirectory(Qt4Apps)
 endif(QT4_FOUND)
 
+
+
+if (MATLAB_FOUND) 
+	set (MARSYAS_MATLAB 1) 
+endif (MATLAB_FOUND)
