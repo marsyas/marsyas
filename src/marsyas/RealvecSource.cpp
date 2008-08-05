@@ -70,8 +70,6 @@ RealvecSource::myUpdate(MarControlPtr sender)
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
 	
-	cout << "inSamples_=" << inSamples_ << endl;
-
 	const realvec& data = ctrl_data_->to<realvec> ();
 
 	setctrl("mrs_natural/onObservations", data.getRows());
@@ -79,8 +77,6 @@ RealvecSource::myUpdate(MarControlPtr sender)
 	setctrl("mrs_real/osrate", israte_);
 	samplesToUse_ = data.getCols();
 
-	cout << "samplesToUse_=" << samplesToUse_ << endl;
-	
 	count_ = 0;
 
 	if( getctrl("mrs_bool/done")->isTrue()){
