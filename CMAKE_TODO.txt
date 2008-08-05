@@ -1,0 +1,16 @@
+1) Figure out the DirectX stuff in Windows for Visual Studio 9, nmake, mingw
+2) Test Qt4 with the three windows configurations
+3) Fix the broken default FindMatlab module (only works on Windows and Linux
+and makes some wrong assumptions)
+4) Convert the testing infrastructure to use CTest
+5) Figure out CPACK for distribution packaging (maybe we really need
+to start distributing binaries)
+6) Add all the apps and Qt4Apps after weeding out dead code
+7) Write detailed documentation for all configurations/operating systems
+8) remove all the qmake/autotools stuff and perform general cleanup
+9) Test on as many different systems with as many different compile
+configurations as we can to make sure everything works
+10) split the marsyas library into a set of smaller libraries
+11) Clean-up redundant CMake code in different directories
+12) Add the CMakeLists.txt files for the Ruby and possibly
+Java, Lua bindings 
