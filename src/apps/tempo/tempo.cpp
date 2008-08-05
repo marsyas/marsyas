@@ -1221,10 +1221,12 @@ tempo_bcFilter(string sfName, string resName)
 	  if (plowwin(0,t) > 0.0) 
 	    {
 	      lowtimes.push_back(samplesPlayed+t);
+	#ifdef MARSYAS_MIDIIO
 	      total->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_NA);
 	      total->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
 	      total->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
 	      total->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
+	#endif MARSYAS_MIDIIO
 	    }
 	}
       for (mrs_natural t=0; t < onSamples; t++) 
@@ -1232,10 +1234,12 @@ tempo_bcFilter(string sfName, string resName)
 	  if (phiwin(0,t) > 0.0)
 	    {
 	      hitimes.push_back(samplesPlayed+t);
+#ifdef MARSYAS_MIDIO
 	      total->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_GE);
 	      total->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
 	      total->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
 	      total->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
+#endif
 	    }
 	}
       samplesPlayed += onSamples;
@@ -1311,10 +1315,12 @@ tempo_bcFilter(string sfName, string resName)
 	    
 	    cout << "IOI = " << lowtimes[lowtindex] - lowtimes[lowtindex-1] << endl;
 	  // Robot Control
+#ifdef MARSYAS_MIDIIO
 	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_GE);
 	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
 	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
 	  playback->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
+#endif 
 	  
 	  // Bass Drum Play back
 	  playback->updctrl("Fanout/mix/SoundFileSource/bdsrc/mrs_string/filename", bdname);
@@ -1326,10 +1332,12 @@ tempo_bcFilter(string sfName, string resName)
 	  hitindex++;
 	  
 	  // Robot Control
+#ifdef MARSYAS_MIDIO
 	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_NA);
 	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
 	  playback->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
 	  playback->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
+#endif
 
 	  // Snare Drum PlayBack
 	  playback->updctrl("Fanout/mix/SoundFileSource/sdsrc/mrs_string/filename", sdname);
