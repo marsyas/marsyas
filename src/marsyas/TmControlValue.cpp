@@ -91,9 +91,10 @@ TmControlValue::toReal()
 {
     if(type_ != tmcv_real)
         MRSWARN("MarControlValue::toReal Incorrect type");
-	else
+    else
 	; 
-	return r;
+
+   return r;
 		
 }
 

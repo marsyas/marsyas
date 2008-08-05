@@ -99,7 +99,7 @@ RealvecSource::myProcess(realvec& in, realvec& out)
 			for (t=0; t < onSamples_; t++)
 			{
 				out(o) = data(o, count_);
-				count++;
+				count_++;
 			}
 
 		}
