@@ -8,10 +8,9 @@
 
 #cmakedefine MARSYAS_BIGENDIAN
 
+
 #cmakedefine MARSYAS_AUDIOIO
 #cmakedefine MARSYAS_MIDIIO
-
-
 
 #cmakedefine MARSYAS_ASSERT
 #cmakedefine MARSYAS_PROFILING
@@ -26,5 +25,8 @@
 
 
 #cmakedefine MARSYAS_MAD
+#cmakedefine MARSYAS_VORBIS
 
+
+#cmakedefine DISTRIBUTED
 #endif

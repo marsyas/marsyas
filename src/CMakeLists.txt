@@ -50,15 +50,14 @@ include (marsyas-global)
 add_subdirectory(marsyas)
 add_subdirectory(apps)
 
-if(SWIG_FOUND) 
+if (SWIG_FOUND) 
 	add_subdirectory(swig)
-endif(SWIG_FOUND)
+endif (SWIG_FOUND)
 
-if(QT4_FOUND)
+if (QT4_FOUND)
 	include (${QT_USE_FILE})
         add_subdirectory(marsyasqt)
         add_subdirectory(Qt4Apps)
-endif(QT4_FOUND)
-
+endif (QT4_FOUND)
 
 
