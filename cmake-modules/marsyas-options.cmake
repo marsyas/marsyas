@@ -1,4 +1,10 @@
-## user options
+#
+# If you add an option, make sure you modify
+#    src/config.h.in
+# as well!
+#
+
+### USER OPTIONS
 option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
 if (MARSYAS_LINUX)
@@ -41,5 +47,31 @@ option(WITH_MATLAB "Activate MATLAB enging interface" OFF)
 option(WITH_SWIG "Enable SWIG generated bindings" OFF)
 option(WITH_QT "Build the QT library and applications" OFF)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
+
+
+
+### DETECT PACKAGES
+
+if (WITH_QT)
+	include(FindQt4)
+endif (WITH_QT)
+
+if (WITH_SWIG) 
+	include(FindSWIG)
+endif (WITH_SWIG) 
+
+if (WITH_MAD)
+	find_package(mad REQUIRED)
+	set (MARSYAS_MAD 1)
+endif (WITH_MAD)
+
+
+if (WITH_MATLAB) 
+	include(FindMatlab)
+endif (WITH_MATLAB) 
+
+if (MATLAB_FOUND) 
+	set (MARSYAS_MATLAB 1) 
+endif (MATLAB_FOUND)
 
 

@@ -1,14 +1,3 @@
-## setup Marsyas includes
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/)
-
-if (MARSYAS_AUDIOIO) 
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
-endif (MARSYAS_AUDIOIO) 
-
-if (MARSYAS_MIDIIO) 
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
-endif (MARSYAS_MIDIIO) 
-
 
 ## setup OS_LIBS
 if (MARSYAS_MACOSX)

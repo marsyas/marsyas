@@ -1,31 +1,3 @@
-if (MARSYAS_WIN32)
-	if (MARSYAS_AUDIOIO)
-	   set(__WINDOWS_DS__ 1)
-	   set(MARSYAS_DS 1)
-	endif (MARSYAS_AUDIOIO)
-endif(MARSYAS_WIN32)
-
-
-
-### temp
-include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
-
-if (MARSYAS_AUDIOIO)
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
-endif (MARSYAS_AUDIOIO)
-
-if (MARSYAS_MIDIIO)
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
-endif (MARSYAS_MIDIIO)
-
-if (MARSYAS_MAD)
-	include_directories(${mad_INCLUDE_DIR})
-endif (MARSYAS_MAD)
-
-if (MARSYAS_MATLAB) 
-	include_directories(${MATLAB_INCLUDE_DIR})
-endif (MARSYAS_MATLAB)
-
 
 # I've put the most OS-specific files at the top, to test the
 # library support before compiling the un-problematic files
@@ -285,9 +257,32 @@ set(Marsyas_HEADERS
   AudioSink.h
 )
 
+
 ## OTHERLIBS
-## (this is a hack, but I can't get it to work otherwise
+### library includes
+include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
 list(APPEND MarSystem_SOURCES ../../otherlibs/libsvm/svm.cpp)
+
+if (MARSYAS_AUDIOIO)
+#	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
+	list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio.cpp)
+	list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio3.cpp)
+endif (MARSYAS_AUDIOIO)
+
+if (MARSYAS_MIDIIO)
+#	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
+	list(APPEND MarSystem_SOURCES ../../otherlibs/RtMidi/RtMidi.cpp)
+endif (MARSYAS_MIDIIO)
+
+
+if (MARSYAS_MAD)
+	include_directories(${mad_INCLUDE_DIR})
+endif (MARSYAS_MAD)
+
+if (MARSYAS_MATLAB) 
+	include_directories(${MATLAB_INCLUDE_DIR})
+endif (MARSYAS_MATLAB)
+
 
 ## OS-specific
 if (MARSYAS_MACOSX)
@@ -340,15 +335,6 @@ if (MARSYAS_WIN32)
 	endif (MARSYAS_MIDIIO)
 endif (MARSYAS_WIN32)
 
-
-if (MARSYAS_AUDIOIO)
-	list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio.cpp)
-	list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio3.cpp)
-endif (MARSYAS_AUDIOIO)
-
-if (MARSYAS_MIDIIO)
-	list(APPEND MarSystem_SOURCES ../../otherlibs/RtMidi/RtMidi.cpp)
-endif (MARSYAS_MIDIIO)
 
 
 ## maybe

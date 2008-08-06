@@ -35,50 +35,14 @@ test_big_endian(MARSYAS_BIGENDIAN)
 include (marsyas-options)
 
 
-## DETECT PACKAGES
-
-if (WITH_QT)
-	include(FindQt4)
-endif (WITH_QT)
-
-if (WITH_SWIG) 
-	include(FindSWIG)
-endif (WITH_SWIG) 
-
-
-if (WITH_MAD)
-	find_package(mad REQUIRED)
-	set (MARSYAS_MAD 1)
-endif (WITH_MAD)
-
-
-
-if (WITH_MATLAB) 
-	include(FindMatlab)
-endif (WITH_MATLAB) 
-
-#### not certain if this is necessary
-#include(FindThreads)
-
-
-
 ## CONFIG.H
-# temp renaming -- will rename stuff in src/maryas/ once we go
-# to cmake only.
-#if (WITH_MAD)
-#  set(MARSYAS_MAD 1)
-#endif (WITH_MAD)
-#if ()
-#endif ()
-
 configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/config.h)
 include_directories(${CMAKE_BINARY_DIR})
 ##### temp -- will be deleted when we get rid of autoconf
 add_definitions(-DCMAKE_CONFIG_H)
 
 
-set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+include (marsyas-global)
 
 ## next level
 ####### can't get this to work on OSX
@@ -97,6 +61,3 @@ endif(QT4_FOUND)
 
 
 
-if (MATLAB_FOUND) 
-	set (MARSYAS_MATLAB 1) 
-endif (MATLAB_FOUND)
