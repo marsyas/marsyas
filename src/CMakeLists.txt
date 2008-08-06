@@ -55,6 +55,7 @@ if(SWIG_FOUND)
 endif(SWIG_FOUND)
 
 if(QT4_FOUND)
+	include (${QT_USE_FILE})
         add_subdirectory(marsyasqt)
         add_subdirectory(Qt4Apps)
 endif(QT4_FOUND)

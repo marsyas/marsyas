@@ -1,6 +1,4 @@
 GENERAL
-- Clean-up redundant CMake code in different directories
-
 - Convert the testing infrastructure to use CTest
 
 - Figure out CPACK for distribution packaging (maybe we really need

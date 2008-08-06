@@ -259,18 +259,16 @@ set(Marsyas_HEADERS
 
 
 ## OTHERLIBS
-### library includes
+## library includes
 include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
 list(APPEND MarSystem_SOURCES ../../otherlibs/libsvm/svm.cpp)
 
 if (MARSYAS_AUDIOIO)
-#	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
 	list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio.cpp)
 	list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio3.cpp)
 endif (MARSYAS_AUDIOIO)
 
 if (MARSYAS_MIDIIO)
-#	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
 	list(APPEND MarSystem_SOURCES ../../otherlibs/RtMidi/RtMidi.cpp)
 endif (MARSYAS_MIDIIO)
 
@@ -349,6 +347,7 @@ endif (WIN32)
 
 add_library(marsyas STATIC ${MarSystem_SOURCES} )
 
+## LINKING
 if (MARSYAS_MAD)
 	TARGET_LINK_LIBRARIES(marsyas ${mad_LIBRARY})
 endif (MARSYAS_MAD)
@@ -357,6 +356,8 @@ if (MARSYAS_MATLAB)
 	TARGET_LINK_LIBRARIES(marsyas ${MATLAB_LIBRARIES})
 endif (MARSYAS_MATLAB)
 
+
+## INSTALLING
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
 install(TARGETS marsyas LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib)

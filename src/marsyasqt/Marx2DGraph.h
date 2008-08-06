@@ -35,7 +35,7 @@ linear and polynomial interpolation.
 
 class Marx2DGraph : public QWidget
 {
-  //Q_OBJECT
+  Q_OBJECT
 
  public: 
 
