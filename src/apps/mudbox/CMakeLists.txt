@@ -1,4 +1,7 @@
-ADD_EXECUTABLE(mudbox mudbox.cpp)
-TARGET_LINK_LIBRARIES(mudbox marsyas ${OS_LIBS})
-install(TARGETS mudbox DESTINATION bin) 
+set(APP mudbox)
+
+# you probably don't need to change anything below this
+add_executable(${APP} ${APP}.cpp)
+target_link_libraries(${APP} marsyas ${OS_LIBS})
+install(TARGETS ${APP} DESTINATION bin)
 

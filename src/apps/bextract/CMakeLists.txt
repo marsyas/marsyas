@@ -1,4 +1,7 @@
-ADD_EXECUTABLE(bextract bextract.cpp)
-TARGET_LINK_LIBRARIES(bextract marsyas ${OS_LIBS})
+set(APP bextract)
 
-install(TARGETS bextract DESTINATION bin)
+# you probably don't need to change anything below this
+add_executable(${APP} ${APP}.cpp)
+target_link_libraries(${APP} marsyas ${OS_LIBS})
+install(TARGETS ${APP} DESTINATION bin)
+

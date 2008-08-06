@@ -1,5 +1,7 @@
-ADD_EXECUTABLE(sfplay sfplay.cpp)
-TARGET_LINK_LIBRARIES(sfplay marsyas ${OS_LIBS})
+set(APP sfplay)
 
-install(TARGETS sfplay DESTINATION bin)
+# you probably don't need to change anything below this
+add_executable(${APP} ${APP}.cpp)
+target_link_libraries(${APP} marsyas ${OS_LIBS})
+install(TARGETS ${APP} DESTINATION bin)
 
