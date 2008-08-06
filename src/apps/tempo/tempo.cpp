@@ -1226,7 +1226,7 @@ tempo_bcFilter(string sfName, string resName)
 	      total->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
 	      total->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
 	      total->updctrl("MidiOutput/devibot/mrs_bool/sendMessage", true);
-	#endif MARSYAS_MIDIIO
+	#endif //MARSYAS_MIDIIO
 	    }
 	}
       for (mrs_natural t=0; t < onSamples; t++) 

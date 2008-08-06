@@ -119,7 +119,7 @@ AudioSink2::myUpdate(MarControlPtr sender)
 	//if (!stopped_ && audio_)
 	if(!getctrl("mrs_bool/stopped")->to<mrs_bool>() && getctrl("mrs_bool/initialized")->to<mrs_bool>())//thread safe!
 		audio_->startStream();
-#endif MARSYAS_AUDIOIO
+#endif //MARSYAS_AUDIOIO
 }
 
 void 
