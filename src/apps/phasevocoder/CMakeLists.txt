@@ -1,7 +1,9 @@
-set(APP phasevocoder)
+set(APP
+	phasevocoder
+)
+set(APP_SOURCES
+	phasevocoder.cpp
+)
 
-# you probably don't need to change anything below this
-add_executable(${APP} ${APP}.cpp)
-target_link_libraries(${APP} marsyas ${OS_LIBS})
-install(TARGETS ${APP} DESTINATION bin)
+marsyas_app(${APP} "${APP_SOURCES}")
 
