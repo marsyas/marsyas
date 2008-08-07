@@ -20,6 +20,7 @@
 record: record a clip using AudioSource
  */
 
+#include "common.h" 
 #include <cstdio>
 #include <cstdlib>
 #include "Collection.h"
@@ -36,6 +37,8 @@ record: record a clip using AudioSource
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+
+
 
 using namespace std;
 using namespace Marsyas;

@@ -51,7 +51,11 @@
 
 // Operating system dependent thread functionality.
 #if defined(__WINDOWS_DS__) || defined(__WINDOWS_ASIO__)
+
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
+
   #include <windows.h>
   #include <process.h>
 

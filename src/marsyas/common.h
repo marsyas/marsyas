@@ -134,7 +134,7 @@ namespace Marsyas
 // #if defined(__WINDOWS_ASIO__) || defined (__WINDOWS_DS__)
 
 // FIXME: do we need to include _CYGWIN and _MINGW as well?
-#if defined(MARSYAS_WIN32)
+#if defined (MARSYAS_WIN32) || defined (MARSYAS_MINGW)
 #include <windows.h> 
 #define SLEEP(milliseconds) Sleep((DWORD) milliseconds) 
 #else 

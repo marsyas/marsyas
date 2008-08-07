@@ -173,12 +173,12 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 			if (mode == "analysis_scaled_phaselock")
 			{
 				// scaled phase-locking 
-				phasediff = phases(t) - lastphase_(regions(t)) - decimation * omega_k;
+			  phasediff = phases(t) - lastphase_((mrs_natural)regions(t)) - decimation * omega_k;
 			}
 			else
-			{
-				// classic, identity, loose phase_propagation 
-				phasediff = phases(t) - lastphase_(t) - decimation * omega_k;
+			  {
+			    // classic, identity, loose phase_propagation 
+			    phasediff = phases(t) - lastphase_(t) - decimation * omega_k;
 			}
 			
 			lastphase_(t) = phases(t);
