@@ -108,6 +108,9 @@ MidiOutput::myUpdate(MarControlPtr sender)
                     error.printMessage();
                     return;
                 }
+                    message.push_back(0);
+                    message.push_back(0);
+                    message.push_back(0);
             }
             else
             {
