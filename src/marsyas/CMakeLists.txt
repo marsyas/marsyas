@@ -323,7 +323,7 @@ if (MARSYAS_MINGW)
 		add_definitions(-D__WINDOWS_MM__)
 	endif (MARSYAS_MIDIIO)
 endif (MARSYAS_MINGW)
-
+ 
 if (MARSYAS_WIN32)
 	if (MARSYAS_AUDIOIO)
 		add_definitions(-D__WINDOWS_DS__)
