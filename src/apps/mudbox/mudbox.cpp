@@ -94,6 +94,8 @@ printHelp(string progName)
 	cerr << "stereoFeatures  : toy_with stereo features " << endl;
 	cerr << "stereoMFCC      : toy_with stereo MFCC " << endl;
 	cerr << "stereoFeaturesMFCC : toy_with stereo features and MFCCs" << endl;
+	cerr << "swipe           : topy_with_swipe (F0 estimator)" << endl;
+	
 	cerr << "stereo2mono     : toy_with stereo to mono conversion " << endl;
 	cerr << "ADRess					 : toy_with stereo ADRess algorithm " << endl;
 	cerr << "tempo	         : toy_with tempo estimation " << endl;
@@ -2708,6 +2710,11 @@ toy_with_ADRess(string fname0, string fname1)
 	*/
 }
 
+
+
+
+
+
 void 
 toy_with_stereo2mono(string fname)
 {
@@ -2730,6 +2737,343 @@ toy_with_stereo2mono(string fname)
 	}
 
 }
+
+
+
+void toy_with_swipe(string sfname) {
+
+  // std::cout << "Hello, World!!!" <<endl;
+
+#ifdef TEST_ERB_CONVERSION
+  double foo = 12345.6;
+  double bar = hertz2erb(foo);
+  std::cout << "Hz->ERB->Hz:" << endl;
+  std::cout << foo << " " << hertz2erb(foo) << " " << erb2hertz(hertz2erb(foo)) << endl;
+#endif
+
+#define VERSUS_MATLAB
+
+#ifdef VERSUS_MATLAB
+  cout << "Starting Matlab..." << endl;
+  MATLAB_EVAL("clear;");
+#endif
+
+  
+  //////////////////////////////////////////////////
+  // Sampling rate
+  mrs_real fs = 44100.0;
+#ifdef VERSUS_MATLAB
+  MATLAB_PUT(fs, "fs");
+#endif
+
+
+  //////////////////////////////////////////////////
+  // Pitch min and max parameters
+  mrs_real f0_min = 30;
+  mrs_real f0_max = 5000;
+#ifdef VERSUS_MATLAB
+  MATLAB_PUT(f0_min, "f0_min");
+  MATLAB_PUT(f0_max, "f0_max");
+  MATLAB_EVAL("plim = [f0_min f0_max];");
+#endif 
+
+
+
+  //////////////////////////////////////////////////  
+  // Find ws, all the window sizes we'll use, and pO, the optimal pitch for each one
+
+#ifdef VERSUS_MATLAB
+  MATLAB_EVAL("K = 2; % Parameter k for Hann window");
+  MATLAB_EVAL("logWs = round( log2( 4*K * fs ./ plim ) );");
+  MATLAB_EVAL("ws = 2.^[ logWs(1): -1: logWs(2) ]; % P2-WSs");
+  MATLAB_EVAL("pO = 4*K * fs ./ ws; % Optimal pitches for P2-WSs");
+#endif
+
+  mrs_natural K = 2;  // "Parameter k for Hann window"
+  mrs_natural logWs_big = ((int) (0.5 + (log2(4*K*fs/f0_min))));
+  mrs_natural logWs_small = ((int) (0.5 + (log2(4*K*fs/f0_max))));
+  mrs_natural num_Ws = 1+logWs_big-logWs_small;
+
+  realvec ws(num_Ws);
+  realvec pO(num_Ws);
+
+  for (int i=0; i<num_Ws; ++i) {
+    ws(i) = exp2(logWs_big-i);
+    pO(i) = 4*K*fs/ws(i);
+  }
+
+
+#ifdef VERSUS_MATLAB
+  MATLAB_PUT(ws, "ws_marsyas");
+  // MATLAB_EVAL("figure(); plot(ws(:) - ws_marsyas(:)); title('ws-ws_marsyas');");
+  MATLAB_PUT(pO, "pO_marsyas");
+  // MATLAB_EVAL("figure(); plot(pO(:) - pO_marsyas(:)); title('pO-pO_marsyas');");
+#endif
+
+
+
+
+  //////////////////////////////////////////////////
+  // Find candidate pitches ("pc") and the (log2 of the) window size for each pitch ("d")
+
+  mrs_real dlog2p = 1./96.;
+#ifdef VERSUS_MATLAB
+  MATLAB_PUT(dlog2p, "dlog2p");
+  MATLAB_EVAL("log2pc = [ log2(plim(1)): dlog2p: log2(plim(end)) ]';");
+  MATLAB_EVAL("pc = 2 .^ log2pc;");
+  MATLAB_EVAL("d = 1 + log2pc - log2( 4*K*fs./ws(1) );");
+#endif
+
+  // cout << "dlog2p: " << dlog2p << endl;
+  double num_pc_d = (log2(f0_max)-log2(f0_min)) / dlog2p;
+  // cout << "num_pc_d: " << num_pc_d << endl;
+
+  int num_pc = 1+ ((int) num_pc_d);
+  // cout << "num_pc: " << num_pc << endl;
+
+  realvec pc(num_pc);
+  realvec d(num_pc);
+
+  mrs_real log2_f0min = log2(f0_min);
+  for (int i=0; i<num_pc; ++i) {
+    mrs_real log2pc_i = log2_f0min + (i*dlog2p);
+    pc(i) = exp2(log2pc_i);
+    d(i) = 1 + log2pc_i -log2(4*K*fs / ws(0));
+  }
+  // cout << "pc: " << pc << endl;
+
+#ifdef VERSUS_MATLAB
+  MATLAB_PUT(pc, "pc_marsyas");
+  MATLAB_PUT(d, "d_marsyas");
+  // MATLAB_EVAL("figure(); plot(pc(:) - pc_marsyas(:)); title('pc-pc_marsyas');");
+  // MATLAB_EVAL("figure(); plot(d(:) - d_marsyas(:)); title('d-d_marsyas');");
+#endif
+
+
+
+  //////////////////////////////////////////////////
+  // Find "ERBs spaced frequencies (in Hertz)" ("fERBs")
+
+  mrs_real dERBs = 0.1;
+  mrs_real min_fERBs = hertz2erb(pc(0)/4);
+  mrs_real max_fERBs = hertz2erb(fs/2);
+  // cout << "max_fERBS: " << max_fERBs << endl;
+
+  int num_fERBs = 1 + ((int) ((max_fERBs-min_fERBs)/dERBs));
+
+  realvec fERBs(num_fERBs);
+  for (int i=0; i<num_fERBs; ++i) {
+    fERBs(i) = erb2hertz(min_fERBs + (i*dERBs));
+  }
+
+  // cout << "fERBs(num_fERBs-1): " << fERBs(num_fERBs-1) << endl;
+
+  
+#ifdef VERSUS_MATLAB
+  MATLAB_PUT(dERBs, "dERBs");
+  MATLAB_PUT(fs, "fs");
+  MATLAB_EVAL("fERBs = erbs2hz([ hz2erbs(pc(1)/4): dERBs: hz2erbs(fs/2) ]');");
+  MATLAB_PUT(fERBs, "fERBs_marsyas");
+  // MATLAB_EVAL("figure(); plot(fERBs(:) - fERBs_marsyas(:)); title('fERBs-fERBs_marsyas')");
+#endif
+
+  
+
+  //////////////////////////////////////////////////
+  // File read, windowing and spectrogram
+
+
+  // For now just use one window size:
+  mrs_natural windowSize = 16384;
+  mrs_natural overlap = 8192;
+  mrs_natural hopSize = windowSize - overlap;
+
+
+#ifdef VERSUS_MATLAB
+    MATLAB_PUT(sfname, "sfname");
+    MATLAB_PUT(windowSize, "windowSize_marsyas");
+    MATLAB_PUT(overlap, "overlap_marsyas");
+    MATLAB_PUT(hopSize, "hop_marsyas");
+    MATLAB_EVAL("audio = wavread_mono(sfname);");
+    // Zero-pad
+    MATLAB_EVAL("audio_zp = [ zeros(windowSize_marsyas/2,1); audio(:); zeros(hop_marsyas+windowSize_marsyas/2,1) ];");
+    MATLAB_EVAL("magspec = abs(specgram(audio_zp, windowSize_marsyas, fs, hanning(windowSize_marsyas), overlap_marsyas))");
+    MATLAB_EVAL("magspec_freqaxis = [0:windowSize_marsyas/2].*(fs/windowSize_marsyas);");
+#endif
+
+
+  MarSystemManager mng;
+
+
+#define COMPARE_WINDOWINGxxx
+#ifdef COMPARE_WINDOWING
+#ifdef VERSUS_MATLAB
+  cout << "Comparing windows..." << endl;
+
+    // See if the window is the same between Marsyas and Matlab
+    MarSystem *winTest = mng.create("Windowing", "win");
+    winTest->updctrl("mrs_string/type", "Hanning");
+    winTest->updctrl("mrs_natural/zeroPadding", 0);
+    winTest->updctrl("mrs_natural/inSamples", windowSize);
+
+    mrs_realvec win_input;
+    win_input.create(1, windowSize);
+    win_input.setval(1);
+
+    mrs_realvec win;
+    win.create(1, windowSize);
+
+    winTest->process(win_input, win);
+
+    MATLAB_PUT(win, "win");
+    // disp doesn't work:
+    // MATLAB_EVAL("disp(['win from marsyas is size ' num2str(length(win))])");
+    // MATLAB_EVAL("disp(['windowSize is ' num2str(windowSize_marsyas)])");
+    // So use this kludge:
+    //    MATLAB_EVAL("figure(); title(['Marsyas size: ' num2str(length(win)) ', windowSize ' num2str(windowSize_marsyas) ]);");
+
+    MATLAB_EVAL("figure(); subplot(211); plot(win, 'b'); hold on; plot(hanning(windowSize_marsyas), 'r'); legend('marsyas hanning', 'matlab hanning'); subplot(212); plot(win' - hanning(windowSize_marsyas)); ylabel('diff');");
+#endif
+#endif
+
+
+
+
+  MarSystem *net = mng.create("Series", "net");
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->addMarSystem(mng.create("ShiftInput", "si"));
+  net->addMarSystem(mng.create("Windowing", "win"));
+  net->addMarSystem(mng.create("Spectrum", "spec"));
+  net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
+  net->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
+  net->updctrl("mrs_natural/inSamples", overlap);
+  net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
+  net->updctrl("Windowing/win/mrs_string/type", "Hanning");
+  net->updctrl("Windowing/win/mrs_natural/zeroPadding", 0);
+  net->updctrl("PowerSpectrum/pspec/mrs_string/spectrumType", "magnitude");
+
+
+  int num_windows = 5;
+
+  cout << "Entering STFT loop..." << endl;
+
+
+  for (int i = 0; i<num_windows; ++i) {
+
+
+    net->tick();
+    mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+#ifdef VERSUS_MATLAB
+    // Compare STFT spectra
+
+    if (i==0) {
+      MATLAB_PUT(v, "first_spec_marsyas");      
+      MATLAB_EVAL("fmarsyas = first_spec_marsyas ./ max(first_spec_marsyas)");
+      //MATLAB_EVAL("figure();  plot(fmarsyas, 'r'); ylabel('Marsyas');");
+      //MATLAB_EVAL("title('First frame from Marsyas');");
+    }
+
+    if (i>=0) {
+      MATLAB_PUT(v, "this_spec_marsyas");
+      mrs_natural fn = i;
+      MATLAB_PUT(fn, "frame_number");
+      char cmd[100];
+      sprintf(cmd, "this_spec = magspec(:,%d);", i+1);
+      MATLAB_EVAL(cmd);
+      MATLAB_EVAL("matlab = this_spec ./ max(this_spec)");
+      MATLAB_EVAL("marsyas = this_spec_marsyas ./ max(this_spec_marsyas)");
+
+      if (i==1 && 0) {
+	MATLAB_EVAL("figure(); subplot(311); plot(db(fmarsyas), 'r'); ylabel('Marsyas #0');");
+	MATLAB_EVAL("subplot(312); plot(db(marsyas), 'r'); ylabel('Marsyas #1');");
+	MATLAB_EVAL("subplot(313); plot(db(marsyas-fmarsyas), 'r'); ylabel('diff');");
+	MATLAB_EVAL("samexaxis();");
+      }
+      
+      MATLAB_EVAL("figure(); subplot(311); plot(magspec_freqaxis,marsyas, 'r'); ylabel('Marsyas');");
+      MATLAB_EVAL("title(['frame ' num2str(frame_number)])");
+      MATLAB_EVAL("subplot(312); plot(magspec_freqaxis,matlab, 'b'); ylabel('Matlab');");
+      MATLAB_EVAL("subplot(313); plot(magspec_freqaxis,matlab-marsyas); ylabel('diff.'); samexaxis();");
+      MATLAB_EVAL("xlabel('Freq (Hz)')");
+    }
+#endif
+
+
+    // Interpolate at equidistant ERBs steps, and
+    // call the square root of magnitude the "loudness" L
+    // NB: swipe uses spline interpolation (matlab's INTERP1 with the 'spline' arg)
+    // but here I'm just doing linear interpolation.  You can see in the Matlab plots 
+    // below that it makes almost no difference.
+
+
+    realvec L(num_fERBs);
+    for (int i=0; i<num_fERBs; i++) {
+      mrs_real freq = fERBs(i);
+      // cout << "fERBs(" << i << "): " << fERBs(i) << endl;
+
+      mrs_real fractional_FFT_bin = (freq/fs) * ((mrs_real) windowSize);
+      mrs_natural lower_FFT_bin = (mrs_natural) fractional_FFT_bin;
+      if (lower_FFT_bin < 0) {
+	cout << "error: lower_FFT_bin is " << lower_FFT_bin << endl;
+      }
+
+      if (lower_FFT_bin+1 >= windowSize/2) {
+	cout << "error: upper_FFT_bin is " << lower_FFT_bin+1 << endl;
+      }
+			 
+      mrs_real distance = fractional_FFT_bin - lower_FFT_bin;
+      mrs_real interp_mag = (1-distance) * v(lower_FFT_bin) +
+	distance * v(lower_FFT_bin+1);
+      L(i) = sqrt(interp_mag);
+    }
+
+#ifdef VERSUS_MATLAB
+    MATLAB_PUT(L, "L_marsyas");
+    MATLAB_EVAL("M_lin = interp1(magspec_freqaxis, this_spec_marsyas, fERBs);");
+    MATLAB_EVAL("M = interp1(magspec_freqaxis, this_spec_marsyas, fERBs, 'spline', 0);");
+    MATLAB_EVAL("L_lin = sqrt(M_lin);");
+    MATLAB_EVAL("L = sqrt(M);");
+
+    MATLAB_EVAL("figure(); subplot(411);");
+    MATLAB_EVAL("plot(fERBs, L, 'g'); hold on; plot(fERBs, L_marsyas, 'r');");
+    MATLAB_EVAL("legend('Matlab spline interp', 'Matt C interp')");
+    MATLAB_EVAL("subplot(412);");
+    MATLAB_EVAL("plot(fERBs, L' - L_marsyas)");
+    MATLAB_EVAL("ylabel('matlab-marsyas')");
+    MATLAB_EVAL("subplot(413);");
+    MATLAB_EVAL("plot(fERBs, L_lin, 'g'); hold on; plot(fERBs, L_marsyas, 'r');");
+    MATLAB_EVAL("legend('Matlab linear interp', 'Matt C interp')");
+    MATLAB_EVAL("subplot(414);");
+    MATLAB_EVAL("plot(fERBs, L_lin' - L_marsyas)");
+    MATLAB_EVAL("ylabel('matlab-marsyas')");
+    MATLAB_EVAL("samexaxis(); ylabel('Freq (Hz, ERB-spaced)');");
+#endif
+
+    // "Select candidates that use this window size"
+    // XXX Kludge
+
+
+  }
+
+ 
+#ifdef VERSUS_MATLAB
+  MATLAB_EVAL("dt = 0.01;");
+  MATLAB_EVAL("t = [ 0: dt: length(audio)/fs ]';");
+#endif
+
+  mrs_real dt = 0.01;
+
+
+#ifdef VERSUS_MATLAB
+  cout << "Press enter to finish (and close Matlab)" << endl;
+  getchar();
+  MATLAB_CLOSE();
+#endif
+}
+
+
+
 
 void 
 toy_with_windowedsource(string fname0) 
@@ -3853,6 +4197,8 @@ main(int argc, const char **argv)
 		toy_with_stereoFeaturesMFCC(fname0, fname1);
 	else if (toy_withName == "stereo2mono")
 		toy_with_stereo2mono(fname0);
+	else if (toy_withName == "swipe")
+		toy_with_swipe(fname0);
 	else if (toy_withName == "spectralSNR")
 		toy_with_spectralSNR(fname0, fname1);
 	else if (toy_withName == "SNR")

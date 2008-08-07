@@ -161,7 +161,7 @@ mrs_real Marsyas::amplitude2dB(mrs_real a)
 
 mrs_real Marsyas::dB2amplitude(mrs_real a)
 {
-	return pow((mrs_real)10.0, (mrs_real)(a/20));
+	return pow(10.0, a/20);
 }
 
 mrs_real
@@ -190,6 +190,17 @@ mrs_real Marsyas::bark2hertz(mrs_real f)
 {
 	return 600*sinh(f/6);
 }
+
+mrs_real Marsyas::hertz2erb(mrs_real hz)
+{
+  return 21.4 * log10(1+ (hz / 229.0));
+}
+
+mrs_real Marsyas::erb2hertz(mrs_real erb)
+{
+  return (pow(10, (erb/21.4)) - 1.0) * 229.0;
+}
+
 
 mrs_real 
 Marsyas::hertz2mel(mrs_real f, bool htk)
