@@ -90,6 +90,16 @@ WekaData::NormMaxMin()
 
 }
 
+mrs_realvec WekaData::GetMinimums() const
+{
+ 	return minimums_;
+}
+ 
+mrs_realvec WekaData::GetMaximums() const
+{
+ 	return maximums_;
+}
+
 
 //randomly shuffle the data in the table
 //Need only to swap the pointers to row data, nice and fast!

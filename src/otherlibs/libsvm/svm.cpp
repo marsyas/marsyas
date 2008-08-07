@@ -6,9 +6,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include "svm.h"
-
-#define _CRT_SECURE_NO_WARNINGS 
-
 typedef float Qfloat;
 typedef signed char schar;
 #ifndef min
@@ -38,7 +35,7 @@ inline double powi(double base, int times)
 #define TAU 1e-12
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
 #if 1
-void info(char *fmt,...)
+void info(const char *fmt,...)
 {
 	va_list ap;
 	va_start(ap,fmt);
@@ -92,7 +89,7 @@ Cache::Cache(int l_,long int size_):l(l_),size(size_)
 	head = (head_t *)calloc(l,sizeof(head_t));	// initialized to 0
 	size /= sizeof(Qfloat);
 	size -= l * sizeof(head_t) / sizeof(Qfloat);
-	size = max(size, (long int) 2*l);	// cache must be large enough for two columns
+	size = max(size, 2 * (long int) l);	// cache must be large enough for two columns
 	lru_head.next = lru_head.prev = &lru_head;
 }
 
@@ -364,7 +361,7 @@ double Kernel::k_function(const svm_node *x, const svm_node *y,
 		case PRECOMPUTED:  //x: test (validation), y: SV
 			return x[(int)(y->value)].value;
 		default:
-			return 0;	/* Unreachable */
+			return 0;  // Unreachable 
 	}
 }
 
@@ -542,7 +539,7 @@ void Solver::Solve(int l, const QMatrix& Q, const double *p_, const schar *y_,
 		{
 			counter = min(l,1000);
 			if(shrinking) do_shrinking();
-			// info("."); info_flush();
+			info("."); info_flush();
 		}
 
 		int i,j;
@@ -552,7 +549,7 @@ void Solver::Solve(int l, const QMatrix& Q, const double *p_, const schar *y_,
 			reconstruct_gradient();
 			// reset active set size and check
 			active_size = l;
-			// info("*"); info_flush();
+			info("*"); info_flush();
 			if(select_working_set(i,j)!=0)
 				break;
 			else
@@ -732,7 +729,7 @@ void Solver::Solve(int l, const QMatrix& Q, const double *p_, const schar *y_,
 	si->upper_bound_p = Cp;
 	si->upper_bound_n = Cn;
 
-	// info("\noptimization finished, #iter = %d\n",iter);
+	info("\noptimization finished, #iter = %d\n",iter);
 
 	delete[] p;
 	delete[] y;
@@ -1457,7 +1454,7 @@ static void solve_c_svc(
 		sum_alpha += alpha[i];
 
 	if (Cp==Cn)
-		// info("nu = %f\n", sum_alpha/(Cp*prob->l));
+		info("nu = %f\n", sum_alpha/(Cp*prob->l));
 
 	for(i=0;i<l;i++)
 		alpha[i] *= y[i];
@@ -1663,7 +1660,7 @@ decision_function svm_train_one(
 			break;
 	}
 
-	// info("obj = %f, rho = %f\n",si.obj,si.rho);
+	info("obj = %f, rho = %f\n",si.obj,si.rho);
 
 	// output SVs
 
@@ -1687,7 +1684,7 @@ decision_function svm_train_one(
 		}
 	}
 
-	// info("nSV = %d, nBSV = %d\n",nSV,nBSV);
+	info("nSV = %d, nBSV = %d\n",nSV,nBSV);
 
 	decision_function f;
 	f.alpha = alpha;
@@ -1697,7 +1694,7 @@ decision_function svm_train_one(
 
 //
 // svm_model
-//
+/*
 struct svm_model
 {
 	svm_parameter param;	// parameter
@@ -1717,7 +1714,7 @@ struct svm_model
 	// XXX
 	int free_sv;		// 1 if svm_model is created by svm_load_model
 				// 0 if svm_model is created by svm_train
-};
+};*/
 
 // Platt's binary SVM Probablistic Output: an improvement from Lin et al.
 void sigmoid_train(
@@ -1733,7 +1730,7 @@ void sigmoid_train(
 	
 	int max_iter=100; 	// Maximal number of iterations
 	double min_step=1e-10;	// Minimal step taken in line search
-	double sigma=1e-3;	// For numerically strict PD of Hessian
+	double sigma=1e-12;	// For numerically strict PD of Hessian
 	double eps=1e-5;
 	double hiTarget=(prior1+1.0)/(prior1+2.0);
 	double loTarget=1/(prior0+2.0);
@@ -2264,7 +2261,7 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 			nz_count[i] = nSV;
 		}
 		
-		// info("Total nSV = %d\n",total_sv);
+		info("Total nSV = %d\n",total_sv);
 
 		model->l = total_sv;
 		model->SV = Malloc(svm_node *,total_sv);
@@ -2527,6 +2524,23 @@ void svm_predict_values(const svm_model *model, const svm_node *x, double* dec_v
 
 double svm_predict(const svm_model *model, const svm_node *x)
 {
+
+/*	info("model->param.svm_type = %d\n", model->param.svm_type);
+	info("model->param.weight_label = %d\n", model->param.weight_label);
+	info("model->param.weight = %f\n", model->param.weight);
+	info("model->param.kernel_type = %d\n", model->param.kernel_type);
+	info("model->param.degree = %d\n", model->param.degree);
+	info("model->param.gamma = %f\n", model->param.gamma);
+	info("model->param.coef0 = %f\n", model->param.coef0);
+	info("model->param.nu = %f\n", model->param.nu);
+	info("model->param.cache_size = %f\n", model->param.cache_size);
+	info("model->param.C = %f\n", model->param.C);
+	info("model->param.eps = %f\n", model->param.eps);
+	info("model->param.p = %f\n", model->param.p);
+	info("model->param.shrinking = %d\n", model->param.shrinking);
+	info("model->param.probability = %d\n", model->param.probability);
+	info("model->param.nr_weight = %d\n", model->param.nr_weight);*/
+
 	if(model->param.svm_type == ONE_CLASS ||
 	   model->param.svm_type == EPSILON_SVR ||
 	   model->param.svm_type == NU_SVR)
@@ -2707,7 +2721,7 @@ int svm_save_model(const char *model_file_name, const svm_model *model)
 
 svm_model *svm_load_model(const char *model_file_name)
 {
-	FILE *fp = fopen(model_file_name,"rb");
+	FILE *fp = fopen(model_file_name,"r");
 	if(fp==NULL) return NULL;
 	
 	// read parameters

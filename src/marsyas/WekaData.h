@@ -55,6 +55,10 @@ public:
 	//debug helper funtion to dump table to an ascii file
 	void Dump(const std::string& filename, const std::vector<std::string>& classNames)const;
 
+ 	//get the minimums_ and maximums_ attribute
+ 	mrs_realvec GetMinimums()const;
+ 	mrs_realvec GetMaximums()const;
+
 private:
 	mrs_natural cols_;
 	mrs_natural rows_;

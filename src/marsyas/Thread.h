@@ -50,7 +50,11 @@
 #if defined(MARSYAS_MINGW)
 
 #define _WINSOCKAPI_
+
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif 
+
   #include <windows.h>
   #include <process.h>
   #define THREAD_TYPE __stdcall

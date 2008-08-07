@@ -34,16 +34,44 @@ namespace Marsyas
 
 class SVMClassifier: public MarSystem
 {
-private:
-	void addControls();
-	void myUpdate(MarControlPtr sender);
-
-	MarControlPtr ctrl_gain_EXAMPLE_;
-	WekaData instances_;
-	struct svm_problem svm_prob_;
-	struct svm_parameter svm_param_;
-	struct svm_model *svm_model_;
-	mrs_string mode_, prev_mode_;
+		private:
+			MarControlPtr ctrl_sv_coef_ ;
+			MarControlPtr ctrl_SV_ ;
+			MarControlPtr ctrl_rho_ ;
+			MarControlPtr ctrl_probA_ ;
+			MarControlPtr ctrl_probB_ ;
+			MarControlPtr ctrl_label_ ;
+			MarControlPtr ctrl_nSV_ ;
+			MarControlPtr ctrl_nr_class_ ;
+			MarControlPtr ctrl_weight_;
+			MarControlPtr ctrl_weight_label_;
+			MarControlPtr ctrl_minimums_;
+			MarControlPtr ctrl_maximums_;
+			MarControlPtr ctrl_mode_;
+			MarControlPtr ctrl_l_;
+			MarControlPtr ctrl_svm_;
+			MarControlPtr ctrl_kernel_;
+			MarControlPtr ctrl_degree_;
+			MarControlPtr ctrl_gamma_;
+			MarControlPtr ctrl_coef0_;
+			MarControlPtr ctrl_nu_;
+			MarControlPtr ctrl_cache_size_;
+			MarControlPtr ctrl_C_;
+			MarControlPtr ctrl_eps_;
+			MarControlPtr ctrl_p_;
+			MarControlPtr ctrl_shrinking_;
+			MarControlPtr ctrl_probability_;
+			MarControlPtr ctrl_nr_weight_;
+		
+			void addControls();
+			void myUpdate(MarControlPtr sender);
+			
+			WekaData instances_;
+			struct svm_problem svm_prob_;
+			struct svm_parameter svm_param_;
+			struct svm_model *svm_model_;
+			mrs_bool trained_, training_, was_training_;
+			mrs_natural kernel_, svm_;
 
 public:
 	SVMClassifier(std::string name);
@@ -57,4 +85,3 @@ public:
 }
 
 #endif
-
