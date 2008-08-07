@@ -69,17 +69,15 @@ if (WITH_VORBIS)
 endif (WITH_VORBIS)
 
 if (WITH_MATLAB) 
-#	include(FindMatlab)
 	find_package(matlab REQUIRED)
 	set (MARSYAS_MATLAB 1) 
 endif (WITH_MATLAB) 
 
 if (WITH_SWIG) 
-#	include(FindSWIG)
 	find_package(swig REQUIRED)
 endif (WITH_SWIG) 
 
 if (WITH_QT)
-	include(FindQt4)
+	find_package(qt4 REQUIRED)
 endif (WITH_QT)
 
