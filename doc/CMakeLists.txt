@@ -5,7 +5,8 @@ project(Document)
 find_program(TEXI2PDF NAMES texi2pdf PATHS $ENV{PATH})
 set(TEXI2PDF ${TEXI2PDF} -b)
 find_program(MAKEINFO NAMES makeinfo PATHS $ENV{PATH})
-set(TEXI2HTML ${MAKEINFO} --html)
+set(TEXI2HTML ${MAKEINFO} --html
+  --css-include=${CMAKE_SOURCE_DIR}/marsyas.css)
 
 file(GLOB PNG_IMAGES ${CMAKE_SOURCE_DIR}/images/*.png)
 

@@ -32,24 +32,19 @@ winzip, etc).
 @subsection Development Version
 
 The latest version can be obtained from the subversion repository
-stored at the sourceforge website.  Although constantly in flux
-the latest version is typically relatively stable and usable and
-if it is not we are quick in fixing it.  In contrast releases
-happen infrequently.  If you are planning on working extensively
-with Marsyas and writing your own source code it is highly
-recommend that you download a subversion working copy.  If you
-only require one of the tools provided in Marsyas and don't plan
-to explore the framework then the regular releases should suffice.
-To check out a working copy do:
+stored at the sourceforge website.  If you are planning on working
+extensively with Marsyas and writing your own source code it is
+highly recommend that you download a subversion working copy.
 
 @example 
 svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk my-marsyas-dir
 @end example
 
 You can replace @file{my-marsyas-dir} with any directory you want.
-The version/release (i.e. version 0.2 release 10) is independently
-assigned from subversion revisions and the latest can be found by
-checking the sourceforge website. 
+
+For Windows users, we recommend
+@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
+
 
 
 @node Main Install
@@ -60,6 +55,7 @@ This section discusses how to install Marsyas.
 @menu
 * Prerequisites::               
 * Configuring with CMake::      
+* Marsyas options::             
 * Compiling::                   
 @end menu
 
@@ -72,6 +68,53 @@ higher.  CMake is available in source and binary forms from:
 @quotation
 @uref{http://www.cmake.org/HTML/Download.html}
 @end quotation
+
+Your compiler must be set up correctly -- any additional headers,
+libraries, and environment variables must be installed and
+configured.
+
+@menu
+* Unix compiler configuration::  
+* Windows compiler configuration::  
+@end menu
+
+@node Unix compiler configuration
+@subsubsection Unix compiler configuration
+
+If you install software via a package manager such as @code{apt}
+(on Debian) or @uref{http://macports.com,macports} (on MacOS X),
+then everything should be set up already.
+
+
+@node Windows compiler configuration
+@subsubsection Windows compiler configuration
+
+@enumerate
+@item
+Download and install either the free Visual Studio Express or the
+full payed Visual Studio (these instructions were used succesfully
+with the 2008 version but probably apply to other version also). 
+
+@item (optional)
+Using the Visual Studio 2008 Command Prompt provided under Visual
+C++ 9.0 Express Edition\Visual Studio Tools check that the
+command-line compiling works: 
+
+@example
+c:\nmake 
+@end example
+
+You will see some version number and it should complain that no
+MAKEFILE was found and no target specified.
+
+@item (optional, for audio input/output)
+Download and install the DirectX sdk (I used
+@code{dxsdk_november2007.exe} from the microsoft website).  Add a
+new environment variable called DXSDK_DIR with value the directory
+direct X is installed.  If you use the MSVC IDE then you do not
+need to set up this environemnt variable.
+
+@end enumerate
 
 
 @node Configuring with CMake
@@ -124,6 +167,13 @@ ccmake ../src/
 @code{[c]} to configure the project again.
 
 @end enumerate
+
+
+@node Marsyas options
+@subsection Marsyas options
+
+TODO: details about cmake options
+
 
 
 @node Compiling
