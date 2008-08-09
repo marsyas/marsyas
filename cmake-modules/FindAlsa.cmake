@@ -1,0 +1,48 @@
+# shamelessly copied from:
+# http://code.google.com/p/fqterm/source/browse/trunk/cmake/FindALSA.cmake?r=606
+#
+# Find ALSA for linux platforms
+# by etnlegent@newsmth
+
+IF ( ALSA_INCLUDE_DIR )
+  SET ( ALSA_FIND_QUIETLY TRUE )
+ENDIF ( ALSA_INCLUDE_DIR )
+
+SET ( ALSA_HDR_NAME "alsa/asoundlib.h" )
+
+FIND_PATH ( ALSA_INCLUDE_DIR "${ALSA_HDR_NAME}"
+  "/usr/local/include" "/usr/include"
+)
+
+SET ( ALSA_LIB_NAME "asound" )
+
+FIND_LIBRARY ( ALSA_LIBRARY
+  NAMES "${ALSA_LIB_NAME}"
+  PATHS "/usr/local/lib" "/usr/lib"
+)
+
+IF ( ALSA_INCLUDE_DIR AND ALSA_LIBRARY )
+  SET ( ALSA_FOUND TRUE )
+  SET ( ALSA_LIBRARIES "${ALSA_LIBRARY}" )
+ELSE ( ALSA_INCLUDE_DIR AND ALSA_LIBRARY )
+  SET ( ALSA_FOUND FALSE )
+  SET ( ALSA_LIBRARIES )
+ENDIF ( ALSA_INCLUDE_DIR AND ALSA_LIBRARY )
+
+IF ( ALSA_FOUND )
+  IF ( NOT ALSA_FIND_QUIETLY )
+    MESSAGE ( STATUS "Found ALSA: ${ALSA_LIBRARY}
+${ALSA_INCLUDE_DIR}/${ALSA_HDR_NAME}" )
+  ENDIF ( NOT ALSA_FIND_QUIETLY )
+ELSE ( ALSA_FOUND )
+  IF ( ALSA_FIND_REQUIRED )
+    MESSAGE ( FATAL_ERROR "FAILED to found ALSA - REQUIRED" )
+  ELSE ( ALSA_FIND_REQUIRED )
+    MESSAGE ( STATUS "Disabled ALSA" )
+  ENDIF ( ALSA_FIND_REQUIRED )
+ENDIF ( ALSA_FOUND )
+
+MARK_AS_ADVANCED (
+  ALSA_LIBRARY
+  ALSA_INCLUDE_DIR
+)
