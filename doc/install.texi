@@ -4,17 +4,116 @@
 This chapter shows the steps to get a working version of Marsyas.
 
 @menu
+* Prerequisites::               
 * Download::                    
-* Main Install::                
+* Configuring with CMake::      
+* Marsyas options::             
+* Compiling::                   
 * Old Install::                 
 * Optional Installs::           
 * Structure of distribution::   
 @end menu
 
+@node Prerequisites
+@section Prerequisites
+
+Some additional software must be installed before compiling
+Marsyas.
+
+@menu
+* CMake installation::          
+* Compiler configuration::      
+@end menu
+
+
+@node CMake installation
+@subsection CMake installation
+
+Before compiling Marsyas, you @strong{must} install CMake 2.6 or
+higher.  CMake is available in source and binary forms from:
+
+@quotation
+@uref{http://www.cmake.org/HTML/Download.html}
+@end quotation
+
+
+@node Compiler configuration
+@subsection Compiler configuration
+
+
+@unnumberedsubsubsec Linux compiler configuration
+
+@itemize
+
+@item Standard development environment (gcc, g++, etc): probably already
+installed.
+
+@item @uref{http://www.alsa-project.org/,ALSA} headers.  On most
+distributions, this is a package called @code{alsa-devel} or
+@code{libalsa-devel}.
+
+@end itemize
+
+If you install additional software via a package manager such as
+@code{apt} or @code{rpm}, then the relevant environment variables
+will be configured automatically.
+
+
+@unnumberedsubsubsec MacOS X compiler configuration
+
+@itemize
+@item @uref{http://developer.apple.com/tools/xcode/, Xcode}: standard
+development platform on OSX.  Please install from your OSX installation
+CD/DVD, or download.
+
+@end itemize
+
+If you install additional software via a package manager such as
+@uref{http://www.finkproject.org/, fink} or
+@uref{http://macports.com, macports}, then the relevant
+environment variables will be configured automatically.
+
+
+@unnumberedsubsubsec Windows compiler configuration
+
+@itemize
+
+@item Download and install either the free Visual Studio Express
+or the full commercial Visual Studio.
+
+@item @uref{http://msdn2.microsoft.com/en-us/xna/aa937788.aspx,
+Microsoft DirectX SDK}: (optional) required for audio
+input/output.
+
+@end itemize
+
+If you install additional softare, you might need to modify
+environment variables manually.
+
+
+@subsubheading Windows command-line compiler configuration
+
+If you would like to use the Command prompt version, check that
+the command-line compiling works:
+
+@example
+c:\nmake 
+@end example
+
+You will see some version number and it should complain that no
+MAKEFILE was found and no target specified.
+
+If you want to use DirectX SDK on the command-line verison, you
+may need to add an environment variable called @env{DXSDK_DIR}
+and/or modify your the @env{INCLUDES} and @env{LIBRARY}
+environment variables.
+
+
+
 @node Download
 @section Download
 
-@subsection Stable(-ish) Version
+@unnumberedsubsec Stable(-ish) Version
 
 Marsyas is hosted at SourceForge:
 
@@ -29,7 +128,7 @@ Marsyas is open source software and is distributed as a tarball
 file using whatever uncompression program you prefer (@code{tar},
 winzip, etc).
 
-@subsection Development Version
+@unnumberedsubsec Development Version
 
 The latest version can be obtained from the subversion repository
 stored at the sourceforge website.  If you are planning on working
@@ -47,84 +146,14 @@ For Windows users, we recommend
 
 
 
-@node Main Install
-@section Main Install
-
-This section discusses how to install Marsyas.
-
-@menu
-* Prerequisites::               
-* Configuring with CMake::      
-* Marsyas options::             
-* Compiling::                   
-@end menu
-
-@node Prerequisites
-@subsection Prerequisites
-
-Before compiling Marsyas, you @strong{must} install CMake 2.6 or
-higher.  CMake is available in source and binary forms from:
-
-@quotation
-@uref{http://www.cmake.org/HTML/Download.html}
-@end quotation
-
-Your compiler must be set up correctly -- any additional headers,
-libraries, and environment variables must be installed and
-configured.
-
-@menu
-* Unix compiler configuration::  
-* Windows compiler configuration::  
-@end menu
-
-@node Unix compiler configuration
-@subsubsection Unix compiler configuration
-
-If you install software via a package manager such as @code{apt}
-(on Debian) or @uref{http://macports.com,macports} (on MacOS X),
-then everything should be set up already.
-
-
-@node Windows compiler configuration
-@subsubsection Windows compiler configuration
-
-@enumerate
-@item
-Download and install either the free Visual Studio Express or the
-full payed Visual Studio (these instructions were used succesfully
-with the 2008 version but probably apply to other version also). 
-
-@item (optional)
-Using the Visual Studio 2008 Command Prompt provided under Visual
-C++ 9.0 Express Edition\Visual Studio Tools check that the
-command-line compiling works: 
-
-@example
-c:\nmake 
-@end example
-
-You will see some version number and it should complain that no
-MAKEFILE was found and no target specified.
-
-@item (optional, for audio input/output)
-Download and install the DirectX sdk (I used
-@code{dxsdk_november2007.exe} from the microsoft website).  Add a
-new environment variable called DXSDK_DIR with value the directory
-direct X is installed.  If you use the MSVC IDE then you do not
-need to set up this environemnt variable.
-
-@end enumerate
-
-
 @node Configuring with CMake
-@subsection Configuring with CMake
+@section Configuring with CMake
 
 CMake produces build systems as desired -- Makefiles on Linux /
 MacOS X / Cygwin, XCode projects on MacOS X, and MSVC projects on
 Windows.  It can also create Eclipse and KDevelop3 projects.
 
-@subsubsection Windows
+@subsection Windows
 
 FIXME: insert screenshot
 
@@ -145,7 +174,7 @@ you change any options, run @emph{Configure...} again.
 @end enumerate
 
 
-@subsubsection Unix (including MacOS X)
+@subsection Unix (including MacOS X)
 
 @image{images/ccmake-unix}
 
@@ -170,14 +199,14 @@ ccmake ../src/
 
 
 @node Marsyas options
-@subsection Marsyas options
+@section Marsyas options
 
 TODO: details about cmake options
 
 
 
 @node Compiling
-@subsection Compiling
+@section Compiling
 
 Once the build system has been created, simply compile Marsyas
 using whatever tools you normally use -- @code{make} on Unix, MSVC
