@@ -1,3 +1,5 @@
+include (marsyas-osincludes)
+
 set(APP
 	mudbox
 )
