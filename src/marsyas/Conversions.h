@@ -65,5 +65,3 @@ void string2parameters(std::string s, realvec &v, char d);
 }//namespace Marsyas
 
 #endif
-
-	
