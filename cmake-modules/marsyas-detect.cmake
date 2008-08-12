@@ -49,9 +49,9 @@ endif (WITH_VORBIS)
 if (WITH_MATLAB) 
 	find_package(matlab REQUIRED)
 	# workaround for broken FindMatlab.cmake
-	if (not MATLAB_FOUND)
+	if (NOT MATLAB_FOUND)
 		message(FATAL_ERROR "FAILED to found Matlab")
-	endif (not MATLAB_FOUND)
+	endif (NOT MATLAB_FOUND)
 	set (MARSYAS_MATLAB 1) 
 endif (WITH_MATLAB) 
 
