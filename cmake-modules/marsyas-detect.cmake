@@ -56,10 +56,10 @@ if (WITH_MATLAB)
 endif (WITH_MATLAB) 
 
 if (WITH_SWIG) 
-	find_package(swig REQUIRED)
+	find_package(SWIG REQUIRED)
 endif (WITH_SWIG) 
 
 if (WITH_QT)
-	find_package(qt4 REQUIRED)
+	find_package(Qt4 REQUIRED)
 endif (WITH_QT)
 
