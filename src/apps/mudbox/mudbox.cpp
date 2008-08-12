@@ -571,10 +571,10 @@ toy_with_onsets(string sfName)
 	mrs_real thres = 1.75;
 
 	mrs_real textureWinMinLen = 0.050; //secs
-	mrs_natural minTimes = textureWinMinLen*fs/hopSize; //12;//onsetWinSize+1;//15;
+	mrs_natural minTimes = (mrs_natural) textureWinMinLen*fs/hopSize; //12;//onsetWinSize+1;//15;
 	// cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
 	mrs_real textureWinMaxLen = 3.000; //secs
-	mrs_natural maxTimes = textureWinMaxLen*fs/hopSize;//1000; //whatever... just a big number for now...
+	mrs_natural maxTimes = (mrs_natural) textureWinMaxLen*fs/hopSize;//1000; //whatever... just a big number for now...
 	// cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
 
 	//best result till now are using dB power Spectrum!
@@ -2887,6 +2887,7 @@ void toy_with_swipe(string sfname) {
   mrs_natural windowSize = 16384;
   mrs_natural overlap = 8192;
   mrs_natural hopSize = windowSize - overlap;
+  (void) hopSize;
 
 
 #ifdef VERSUS_MATLAB
@@ -2977,6 +2978,7 @@ void toy_with_swipe(string sfname) {
     if (i>=0) {
       MATLAB_PUT(v, "this_spec_marsyas");
       mrs_natural fn = i;
+      (void) fn;
       MATLAB_PUT(fn, "frame_number");
       char cmd[100];
       sprintf(cmd, "this_spec = magspec(:,%d);", i+1);
@@ -3063,6 +3065,7 @@ void toy_with_swipe(string sfname) {
 #endif
 
   mrs_real dt = 0.01;
+  (void) dt;
 
 
 #ifdef VERSUS_MATLAB
