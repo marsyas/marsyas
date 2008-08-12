@@ -29,8 +29,7 @@ endif (MARSYAS_LINUX)
 
 if (MARSYAS_CYGWIN OR MARSYAS_MINGW OR MARSYAS_WIN32)
 	if (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
-# temporarily comment these out until I can test them.
-#		find_package(DirectX REQUIRED)
+		find_package(DirectX REQUIRED)
 	endif (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
 endif (MARSYAS_CYGWIN OR MARSYAS_MINGW OR MARSYAS_WIN32)
  

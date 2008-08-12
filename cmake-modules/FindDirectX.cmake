@@ -1,6 +1,8 @@
 # shamelessly copied from:
 # http://www.orxonox.net/browser/trunk/cmake/FindDirectX.cmake?rev=1505
 
+## with modifications, below
+
 
 IF(WIN32)
   # - Test for DirectX
@@ -31,8 +33,18 @@ IF(WIN32)
   else (DirectX_FOUND)
     if (DirectX_FIND_REQUIRED)
       message(FATAL_ERROR "Could not find DirectX")
-    else (DirectX_FOUNC)
+    else (DirectX_FOUND)
       message(STATUS "Could not find DirectX")
     endif (DirectX_FIND_REQUIRED)
   endif (DirectX_FOUND)
+
+
+## my modifications:
+  find_library(DSOUND_LIBRARY dsound)
+  mark_as_advanced(DSOUND_LIBRARY)
+
+  if (NOT DSOUND_LIBRARY)
+    message(FATAL_ERROR "Could not find the DSound library")
+  endif (NOT DSOUND_LIBRARY)
+
 ENDIF(WIN32)
