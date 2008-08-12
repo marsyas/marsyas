@@ -47,6 +47,15 @@ option(WITH_QT "Build the QT library and applications" OFF)
 #Language (MSL)" OFF)
 
 
+## SWIG sub-options
+if (WITH_SWIG)
+	option(WITH_SWIG_PYTHON "Enable the SWIG bindings for Python" ON)
+	option(WITH_SWIG_JAVA "Enable the SWIG bindings for Java" OFF)
+	option(WITH_SWIG_LUA "Enable the SWIG bindings for Lua" OFF)
+	option(WITH_SWIG_RUBY "Enable the SWIG bindings for Ruby" OFF)
+endif (WITH_SWIG)
+
+
 ## other
 if (MARSYAS_LINUX OR MARSYAS_MACOSX)
 	option(DISTRIBUTED "[EXPERIMENTAL] compile code for distributed

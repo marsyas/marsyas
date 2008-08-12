@@ -57,6 +57,19 @@ endif (WITH_MATLAB)
 
 if (WITH_SWIG) 
 	find_package(SWIG REQUIRED)
+	if (WITH_SWIG_PYTHON)
+		find_package(PythonInterp REQUIRED)
+		find_package(PythonLibs REQUIRED)
+	endif (WITH_SWIG_PYTHON)
+	if (WITH_SWIG_JAVA)
+		# TODO
+	endif (WITH_SWIG_JAVA)
+	if (WITH_SWIG_LUA)
+		# TODO
+	endif (WITH_SWIG_LUA)
+	if (WITH_SWIG_RUBY)
+		# TODO
+	endif (WITH_SWIG_RUBY)
 endif (WITH_SWIG) 
 
 if (WITH_QT)
