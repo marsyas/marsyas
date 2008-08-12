@@ -58,7 +58,7 @@ namespace Marsyas
 
 		~MarControlAccessor()
 		{
-			#if MARSYAS_DEBUG
+			#ifdef MARSYAS_DEBUG
 			ctrl_->value_->setDebugValue();
 			#endif
 
