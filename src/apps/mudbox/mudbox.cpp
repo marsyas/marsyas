@@ -2741,7 +2741,7 @@ toy_with_stereo2mono(string fname)
 
 
 void toy_with_swipe(string sfname) {
-
+/*
   // std::cout << "Hello, World!!!" <<endl;
 
 #ifdef TEST_ERB_CONVERSION
@@ -3073,6 +3073,7 @@ void toy_with_swipe(string sfname) {
   getchar();
   MATLAB_CLOSE();
 #endif
+*/
 }
 
 
