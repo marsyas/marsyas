@@ -1,6 +1,6 @@
 ## global setup
-cmake_minimum_required(VERSION 2.6)
-project(Marsyas)
+cmake_minimum_required (VERSION 2.6)
+project (Marsyas)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake-modules")
 
 ## basic CMAKE vars
@@ -28,12 +28,12 @@ elseif(MSVC)
 endif(UNIX)
 
 # for testing
-MESSAGE( STATUS "CMAKE_SYSTEM: " ${CMAKE_SYSTEM} )
-MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: LINUX " ${MARSYAS_LINUX})
-MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: OSX " ${MARSYAS_MACOSX})
-MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: WIN32 " ${MARSYAS_WIN32})
-MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: MINGW " ${MARSYAS_MINGW})
-MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: CYGWIN " ${MARSYAS_CYGWIN})
+#MESSAGE( STATUS "CMAKE_SYSTEM: " ${CMAKE_SYSTEM} )
+#MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: LINUX " ${MARSYAS_LINUX})
+#MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: OSX " ${MARSYAS_MACOSX})
+#MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: WIN32 " ${MARSYAS_WIN32})
+#MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: MINGW " ${MARSYAS_MINGW})
+#MESSAGE( STATUS "MARSYAS_OPERATION_SYSTEM: CYGWIN " ${MARSYAS_CYGWIN})
 
 include (TestBigEndian)
 test_big_endian(MARSYAS_BIGENDIAN)
@@ -41,6 +41,9 @@ test_big_endian(MARSYAS_BIGENDIAN)
 
 ## user options
 include (marsyas-options)
+
+## detect packages
+include (marsyas-detect)
 
 
 ## CONFIG.H
@@ -50,11 +53,11 @@ include_directories(${CMAKE_BINARY_DIR})
 add_definitions(-DCMAKE_CONFIG_H)
 
 
+## global defines
 include (marsyas-global)
 
+
 ## next level
-####### can't get this to work on OSX
-#add_subdirectory(otherlibs)
 add_subdirectory(marsyas)
 add_subdirectory(apps)
 
