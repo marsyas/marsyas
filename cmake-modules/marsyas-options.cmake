@@ -58,14 +58,19 @@ endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
 
 ### DETECT MAIN PACKAGES
 if (MARSYAS_MACOSX)
+	find_library (COREFOUNDATION_LIBRARY CoreFoundation)
+#	mark_as_advanced (COREFOUNDATION_LIBRARY)
 	if (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
+		find_library (COREAUDIO_LIBRARY CoreAudio)
+#		mark_as_advanced (COREAUDIO_LIBRARY)
+		find_library (COREMIDI_LIBRARY CoreMidi)
+#		mark_as_advanced (COREMIDI_LIBRARY)
 	endif (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
 endif (MARSYAS_MACOSX)
 
 if (MARSYAS_LINUX)
 	if (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
     		if (OSS)
-# temporarily comment these out until I can test them.
 			find_package(OSS REQUIRED)
 		else (OSS)
 			find_package(ALSA REQUIRED)
@@ -75,6 +80,7 @@ endif (MARSYAS_LINUX)
 
 if (MARSYAS_CYGWIN OR MARSYAS_MINGW OR MARSYAS_WIN32)
 	if (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
+# temporarily comment these out until I can test them.
 #		find_package(DirectX REQUIRED)
 	endif (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
 endif (MARSYAS_CYGWIN OR MARSYAS_MINGW OR MARSYAS_WIN32)
