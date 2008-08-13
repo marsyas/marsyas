@@ -26,7 +26,7 @@
 
 #cmakedefine MARSYAS_MAD
 #cmakedefine MARSYAS_VORBIS
-
+#cmakedefine MARSYAS_GSTREAMER
 
 #cmakedefine DISTRIBUTED
 #endif

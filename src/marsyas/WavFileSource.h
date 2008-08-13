@@ -43,7 +43,7 @@ private:
   short *sdata_;
   unsigned char *cdata_;
   
-	FILE *sfp_;
+  FILE *sfp_;
   long sfp_begin_;
   
   mrs_natural sampleSize_; //in bytes
@@ -53,9 +53,8 @@ private:
   unsigned short bits_;
   MarControlPtr ctrl_pos_;
   
-
   void addControls();
-	void myUpdate(MarControlPtr sender);
+  void myUpdate(MarControlPtr sender);
   unsigned long ByteSwapLong(unsigned long nLongNumber);
   unsigned short ByteSwapShort (unsigned short nValue);
   
@@ -88,5 +87,3 @@ public:
 
 
 #endif     /* !MARSYAS_WAVFILESOURCE_H */ 
-
-	

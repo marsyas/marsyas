@@ -33,6 +33,10 @@
 #include "OggFileSource.h"
 #endif
 
+#ifdef MARSYAS_GSTREAMER
+#include "GStreamerSource.h"
+#endif
+
 #include "CollectionFileSource.h"
 
 #include <cstdio>

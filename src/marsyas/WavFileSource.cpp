@@ -409,11 +409,3 @@ WavFileSource::myProcess(realvec& in, realvec& out)
     }
   }
 }
-
-
-
-
-  
-  
-
-

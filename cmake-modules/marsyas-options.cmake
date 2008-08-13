@@ -42,6 +42,7 @@ option(WITH_VORBIS "Link to libvorbis (ogg audio decoding)" OFF)
 option(WITH_MATLAB "Activate MATLAB enging interface" OFF)
 option(WITH_SWIG "Enable SWIG generated bindings" OFF)
 option(WITH_QT "Build the QT library and applications" OFF)
+option(WITH_GSTREAMER "Enable use of GStreamer as audio source" OFF)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
 #option(WITH_READLINE "Readline functionality for Marsyas Scripting
 #Language (MSL)" OFF)
@@ -61,6 +62,3 @@ if (MARSYAS_LINUX OR MARSYAS_MACOSX)
 	option(DISTRIBUTED "[EXPERIMENTAL] compile code for distributed
 		audio processing" OFF)
 endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
-
-
-

@@ -233,6 +233,11 @@ set( MarSystem_SOURCES
 
 )
 
+if(GSTREAMER_FOUND)
+  set(MarSystem_SOURCES GStreamerSource.cpp gst-decode.cpp ${MarSystem_SOURCES})
+  include_directories(${GSTREAMER_INCLUDE_DIRS})
+endif(GSTREAMER_FOUND)
+
 set(Marsyas_HEADERS
   MarSystemManager.h
   MarSystem.h
@@ -287,6 +292,9 @@ if (MARSYAS_MATLAB)
 	TARGET_LINK_LIBRARIES(marsyas ${MATLAB_LIBRARIES})
 endif (MARSYAS_MATLAB)
 
+if (GSTREAMER_FOUND)
+	TARGET_LINK_LIBRARIES(marsyas ${GSTREAMER_LIBRARIES})
+endif (GSTREAMER_FOUND)
 
 ## INSTALLING
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)

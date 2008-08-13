@@ -273,6 +273,14 @@ SoundFileSource::checkType()
 	}
 #endif 
 	else 
+#ifdef MARSYAS_GSTREAMER
+    // use GStreamer as a fallback
+	{
+        MRSDIAG("SoundFileSource is falling back to GStreamerSource\n");
+		delete src_;
+		src_ = new GStreamerSource(getName());
+	}
+#else
 	{
 		if (filename != "defaultfile")
 		{
@@ -286,6 +294,7 @@ SoundFileSource::checkType()
 		else 
 			return false;
 	}
+#endif
 	return true;
 }
 
