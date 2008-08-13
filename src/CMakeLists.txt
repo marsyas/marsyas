@@ -71,4 +71,5 @@ if (QT4_FOUND)
         add_subdirectory(Qt4Apps)
 endif (QT4_FOUND)
 
+include (marsyas-tests)
 
