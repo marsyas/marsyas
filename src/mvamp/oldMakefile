@@ -1,0 +1,41 @@
+all: mvamp.so
+LIBS = -lpthread -lasound -lmad -lvorbisfile
+FLAGS = -O3 -Wall -fPIC -g
+
+clean:
+	rm -f *.o
+	rm -f mvamp.so
+
+mvamp.so: ZeroCrossing.o MarsyasBExtractZeroCrossings.o MarsyasBExtractCentroid.o MarsyasBExtractLPCC.o MarsyasBExtractLSP.o MarsyasBExtractMFCC.o MarsyasBExtractRolloff.o MarsyasBExtractSCF.o MarsyasBExtractSFM.o plugins.o
+	g++  -static-libgcc -shared -Wl,-Bsymbolic -Wl,--version-script=vamp-plugin.map -o mvamp.so ZeroCrossing.o MarsyasBExtractZeroCrossings.o MarsyasBExtractCentroid.o MarsyasBExtractLPCC.o MarsyasBExtractLSP.o MarsyasBExtractMFCC.o MarsyasBExtractRolloff.o MarsyasBExtractSCF.o MarsyasBExtractSFM.o plugins.o /usr/sness/lib/libvamp-sdk.a /usr/lib/gcc/i386-redhat-linux/4.1.2/libstdc++.a ${LIBS} /usr/sness/marsyas/lib/libmarsyas.a ${FLAGS}
+
+plugins.o: plugins.cpp ZeroCrossing.o MarsyasBExtractZeroCrossings.o MarsyasBExtractCentroid.o MarsyasBExtractLPCC.o MarsyasBExtractLSP.o MarsyasBExtractMFCC.o MarsyasBExtractRolloff.o MarsyasBExtractSCF.o MarsyasBExtractSFM.o
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o plugins.o plugins.cpp
+
+ZeroCrossing.o: ZeroCrossing.h ZeroCrossing.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o ZeroCrossing.o ZeroCrossing.cpp
+
+MarsyasBExtractZeroCrossings.o: MarsyasBExtractZeroCrossings.h MarsyasBExtractZeroCrossings.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o MarsyasBExtractZeroCrossings.o MarsyasBExtractZeroCrossings.cpp
+
+MarsyasBExtractCentroid.o: MarsyasBExtractCentroid.h MarsyasBExtractCentroid.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o MarsyasBExtractCentroid.o MarsyasBExtractCentroid.cpp
+
+MarsyasBExtractLPCC.o: MarsyasBExtractLPCC.h MarsyasBExtractLPCC.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o MarsyasBExtractLPCC.o MarsyasBExtractLPCC.cpp
+
+MarsyasBExtractLSP.o: MarsyasBExtractLSP.h MarsyasBExtractLSP.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o MarsyasBExtractLSP.o MarsyasBExtractLSP.cpp
+
+MarsyasBExtractMFCC.o: MarsyasBExtractMFCC.h MarsyasBExtractMFCC.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o MarsyasBExtractMFCC.o MarsyasBExtractMFCC.cpp
+
+MarsyasBExtractRolloff.o: MarsyasBExtractRolloff.h MarsyasBExtractRolloff.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o MarsyasBExtractRolloff.o MarsyasBExtractRolloff.cpp
+
+MarsyasBExtractSCF.o: MarsyasBExtractSCF.h MarsyasBExtractSCF.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o MarsyasBExtractSCF.o MarsyasBExtractSCF.cpp
+
+MarsyasBExtractSFM.o: MarsyasBExtractSFM.h MarsyasBExtractSFM.cpp
+	g++  -O2 -Wall -I. -fPIC -I/usr/sness/marsyas/include/marsyas ${FLAGS} -c -o MarsyasBExtractSFM.o MarsyasBExtractSFM.cpp
+
