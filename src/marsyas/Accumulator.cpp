@@ -166,7 +166,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 			timesCount++;
 		}
 
-		#if MARSYAS_LOG_DIAGNOSTICS
+		#ifdef MARSYAS_LOG_DIAGNOSTICS
 		if(!ctrl_flush_->to<mrs_bool>())
 			MRSDIAG("Accumulator::myProcess() - Onset not detected... max length of segment reached!");
 		#endif
