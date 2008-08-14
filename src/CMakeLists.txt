@@ -71,5 +71,9 @@ if (QT4_FOUND)
         add_subdirectory(Qt4Apps)
 endif (QT4_FOUND)
 
+if (VAMP_FOUND)
+	add_subdirectory(mvamp)
+endif (VAMP_FOUND)
+
 include (marsyas-tests)
 
