@@ -18,9 +18,3 @@ add_test(sfplay2
 	${TEST_ANSWER}/right-sfplay.au
 )
 
-
-add_test(NormMinMax
-	${CMAKE_BINARY_DIR}/test/unit_test/runner
-)
-
-

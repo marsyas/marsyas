@@ -77,6 +77,6 @@ endif (VAMP_FOUND)
 
 
 ## tests, for verification
+enable_testing()
 add_subdirectory (tests)
-include (marsyas-tests)
 

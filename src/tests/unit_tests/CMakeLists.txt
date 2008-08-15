@@ -1,28 +1,18 @@
+## BASIC SETUP
 include(marsyas-oslibs)
-set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_DIR})
-
+set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/otherlibs/)
 
 
+## BUILD MACRO
+macro (marsyas_unit_test UNIT_TEST UNIT_TEST_SOURCES)
+add_executable(${UNIT_TEST} ${UNIT_TEST_SOURCES})
+target_link_libraries(${UNIT_TEST} marsyas ${OS_LIBS})
+add_test(${UNIT_TEST} ${UNIT_TEST})
+endmacro (marsyas_unit_test)
 
-set(UNIT_TEST
-	TestNormMaxMin
-)
 
-#add_custom_command(
-#	OUTPUT ${CMAKE_BINARY_DIR}/${UNIT_TEST}.cpp
-#	COMMAND ${CMAKE_SOURCE_DIR}/otherlibs/cxxtest/cxxtestgen.py
-#	ARGS ${UNIT_TEST}.h
-#)
-
-#add_custom_target(ALL
-#add_custom_command
-#	DEPENDS ${CMAKE_BINARY_DIR}/${UNIT_TEST}.cpp
-#)
-
-#add_executable(${UNIT_TEST} ${CMAKE_BINARY_DIR}/${UNIT_TEST}.cpp)
-add_executable(runner NormMaxMin_runner.cpp)
-
-target_link_libraries(runner marsyas ${OS_LIBS})
+## ACTUAL UNIT TESTS
+marsyas_unit_test(NormMaxMin NormMaxMin_runner.cpp)
 
 
