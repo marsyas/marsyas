@@ -76,7 +76,7 @@ if (WITH_QT)
 endif (WITH_QT)
 
 if (WITH_VAMP)
-	find_package(Vamp REQUIRED)
+	find_package(vamp REQUIRED)
 endif (WITH_VAMP)
 
 if (WITH_GSTREAMER)
