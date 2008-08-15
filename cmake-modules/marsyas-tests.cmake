@@ -19,3 +19,8 @@ add_test(sfplay2
 )
 
 
+add_test(NormMinMax
+	${CMAKE_BINARY_DIR}/test/unit_test/runner
+)
+
+

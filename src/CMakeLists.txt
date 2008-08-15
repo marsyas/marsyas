@@ -75,5 +75,7 @@ if (VAMP_FOUND)
 	add_subdirectory(mvamp)
 endif (VAMP_FOUND)
 
+# directory possibly to be changed
+add_subdirectory (test/unit_test)
 include (marsyas-tests)
 
