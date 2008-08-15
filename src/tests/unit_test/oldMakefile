@@ -1,0 +1,18 @@
+RUNNERS=NormMaxMin_runner
+
+FLAGS=-O3 -Wall -fPIC -g
+INCLUDES=../../marsyas
+MARSYAS_STATIC_LIB=../../../lib/release/libmarsyas.a
+LIBS=-lpng -lfreetype -lpthread -lasound -lmad -lvorbisfile
+
+all: ${RUNNERS} run_runners
+
+run_runners:
+	./NormMaxMin_runner
+
+NormMaxMin_runner: TestNormMaxMin.h ../../../lib/release/libmarsyas.a
+	./cxxtestgen.pl --error-printer -o NormMaxMin_runner.cpp TestNormMaxMin.h
+	g++ ${FLAGS} -I${INCLUDES} -I. -o NormMaxMin_runner NormMaxMin_runner.cpp  ${MARSYAS_STATIC_LIB} ${LIBS}
+
+clean:
+	rm runner
