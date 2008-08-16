@@ -1,6 +1,4 @@
 GENERAL
-- Convert the testing infrastructure to use CTest
-
 - Figure out CPACK for distribution packaging (maybe we really need
 to start distributing binaries)
 
@@ -8,6 +6,8 @@ to start distributing binaries)
 
 - Add the CMakeLists.txt files for the Ruby and possibly
 Java, Lua bindings 
+
+- fix the linking for the vamp plugins.  (sness is doing this)
 
 
 OS-SPECIFIC
@@ -21,7 +21,7 @@ and makes some wrong assumptions)
 
 
 DOCS / USABILITY
-- Write detailed documentation for all configurations/operating systems
+- write developer docs for extending CMake
 
 
 OTHER
