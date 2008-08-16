@@ -87,7 +87,7 @@ input/output.
 
 @end itemize
 
-If you install additional softare, you might need to modify
+If you install additional software, you might need to modify
 environment variables manually.
 
 
@@ -181,19 +181,25 @@ you change any options, run @emph{Configure...} again.
 @enumerate
 
 @item Open the terminal, create a directory for the build, and run
-@code{cmake}.
+@code{ccmake}:
 
-@verbatim
+@example
 cd MY-MARSYAS-DIR
 mkdir build
 cd build
-cmake ../src/
 ccmake ../src/
-@end verbatim
+@end example 
 
-@item Modify any variables in the interactive editor
-@code{ccmake}.  Once you have finished changing options, press
-@code{[c]} to configure the project again.
+@item Press @code{[c]} to begin the configuration.  Once you have
+finished changing options, press @code{[c]} to configure the
+project again.  Enabling certain options may add new options to
+configure.  Repeat until you are satisfied with the selected
+options.
+
+@item To see @emph{advanced} options, press @code{[t]}.
+
+@item After changing the final options, press @code{[g]} to
+generate the build system.
 
 @end enumerate
 
@@ -201,7 +207,95 @@ ccmake ../src/
 @node Marsyas options
 @section Marsyas options
 
-TODO: details about cmake options
+@subsection Input/Output
+
+@table @code
+
+@item MARSYAS_AUDIOIO
+This enables audio input/output.  Requires DirectX on Windows and
+either ALSA or OSS on Linux.  MacOS X audio support is built-in
+with the basic developer tools.
+
+@item MARSYAS_MIDIIO
+This enables midi input/output.  Requires DirectX on Windows and
+either ALSA or OSS on Linux.  MacOS X audio support is built-in
+with the basic developer tools.
+
+@end table
+
+
+@subsection Code messages and optional portions
+
+@table @code
+
+@item MARSYAS_ASSERT
+Turns on assertions.
+
+@item MARSYAS_PROFILING
+Turns on profiling.
+
+@item MARSYAS_DEBUG
+Turns on debugging info (large performance penalty).
+
+@item DISTRIBUTED
+(@emph{advanced} option) experimental code for distributed
+systems.
+
+@end table
+
+
+@subsection Logging options
+
+These are @emph{advanced} options.
+
+@table @code
+
+@item MARSYAS_LOG_WARNINGS
+
+@item MARSYAS_LOG_DEBUGS
+
+@item MARSYAS_LOG_DIAGNOSTICS
+
+@item MARSYAS_LOG2FILE
+
+@item MARSYAS_LOG2STDOUT
+
+@item MARSYAS_LOG2GUI
+
+@end table
+
+
+@subsection Optional software (WITH_*)
+
+All of these options require additional software to be
+@strong{installed and properly configured}.
+
+@table @code
+
+@item WITH_MAD
+mp3 audio decoding with libmad.
+
+@item WITH_VORBIS
+ogg vorbis audio decoding with libvorbis.
+
+@item WITH_MATLAB
+Biulds the MATLAB engine interface.
+
+@item WITH_SWIG
+Builds SWIG bindings.  This option enables the following
+sub-options: WITH_SWIG_PYTHON, WITH_SWIG_JAVA, WITH_SWIG_LUA, and
+WITH_SWIG_RUBY.
+
+@item WITH_QT
+Builds the marsyasqt library and Qt applications.
+
+@item WITH_VAMP
+Build plugins for Vamp.
+
+@item WITH_GSTREAMER
+Use GStreamer as an audio source
+
+@end table
 
 
 
@@ -217,6 +311,13 @@ functionality to install Marsyas outside of the source tree on
 Windows.
 
 @c FIXME: check about lack of install on Windows.
+
+@subsection Testing
+
+Marsyas contains some unit tests and regression tests.  They do
+not test a great deal of Marsyas, but running them is still
+recommended.  On Unix, simply run @code{make test}.  On MSVC on
+Windows, build the @code{RUN-TESTS} project.
 
 
 @node Old Install
