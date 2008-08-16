@@ -12,13 +12,19 @@ if (MARSYAS_LINUX)
 endif (MARSYAS_LINUX)
 
 
-## code message stuff
+## code messages and optional portions
 option(MARSYAS_ASSERT "Build with assertions" OFF)
 #mark_as_advanced (MARSYAS_ASSERT)
 option(MARSYAS_PROFILING "Build with profiling" OFF)
 #mark_as_advanced (MARSYAS_PROFILING)
 option(MARSYAS_DEBUG "Build with debugging info (large performance penalty)" OFF)
 #mark_as_advanced (MARSYAS_DEBUG)
+if (MARSYAS_LINUX OR MARSYAS_MACOSX)
+	option(DISTRIBUTED "[EXPERIMENTAL] compile code for distributed
+		audio processing" OFF)
+	mark_as_advanced(DISTRIBUTED)
+endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
+
 
 
 ## logging stuff
@@ -58,8 +64,4 @@ if (WITH_SWIG)
 endif (WITH_SWIG)
 
 
-## other
-if (MARSYAS_LINUX OR MARSYAS_MACOSX)
-	option(DISTRIBUTED "[EXPERIMENTAL] compile code for distributed
-		audio processing" OFF)
-endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
+
