@@ -2741,6 +2741,8 @@ toy_with_stereo2mono(string fname)
 
 
 void toy_with_swipe(string sfname) {
+// commented out because log2() and exp2() aren't part of the 
+// C++ standard and don't exist on win32.   -gp, 15 Aug 2008.
 /*
   // std::cout << "Hello, World!!!" <<endl;
 
