@@ -21,4 +21,5 @@ add_subdirectory(sfplugin)
 add_subdirectory(tempo) 
 add_subdirectory(virtualsensor)
 add_subdirectory(audioCompare)
-
+add_subdirectory(mkcollection)
+add_subdirectory(peakClustering)
