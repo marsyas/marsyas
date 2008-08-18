@@ -115,6 +115,8 @@ void SVMClassifier::addControls() {
 
 void SVMClassifier::myUpdate(MarControlPtr sender) {
 	(void) sender;MRSDIAG("SVMClassifier.cpp - SVMClassifier:myUpdate");
+
+	
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue((mrs_natural)2, NOUPDATE);
 	if (ctrl_mode_->to<mrs_string>() == "train")
@@ -156,6 +158,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 }
 
 void SVMClassifier::myProcess(realvec& in, realvec& out) {
+	
 	if (training_) {
 		if (!was_training_) {
 			instances_.Create(inObservations_);
@@ -163,6 +166,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out) {
 		instances_.Append(in);
 		out(0, 0) = in(inObservations_-1, 0);
 		out(1,0) = in(inObservations_-1, 0);
+		
 	} else {
 		if (!trained_)
 			if (was_training_) {

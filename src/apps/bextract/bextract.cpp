@@ -48,7 +48,7 @@ mrs_natural memSize = 1;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
 mrs_real samplingRate_ = 22050.0;
-mrs_natural accSize_ = 1298;
+mrs_natural accSize_ = 200;
 mrs_real start = 0.0;
 mrs_real length = -1.0;
 mrs_real gain = 1.0;
@@ -1933,7 +1933,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	if (pluginName != EMPTYSTRING)
 	{
 		MarSystem* dest = mng.create("AudioSink", "dest");      
+
 		dest->updctrl("mrs_bool/mute", true);
+		// dest->updctrl("mrs_bool/mute", false);
+		// dest->updctrl("mrs_bool/initAudio", true);
+		
 		featureNetwork->addMarSystem(dest);
 	}
 
@@ -1959,6 +1963,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// Use accumulator if computing single vector / file 
 	if (single_vector)
 	{
+		cout << "accSize_ = " << accSize_ << endl;
+		
 		MarSystem* acc = mng.create("Accumulator", "acc");
 		acc->updctrl("mrs_natural/nTimes", accSize_);
 		acc->addMarSystem(featureNetwork);
@@ -2144,18 +2150,23 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	{
 		bextractNetwork->tick();
 		if (single_vector)
+		{
 			bextractNetwork->updctrl("mrs_bool/advance", true);
+		}
+		
 
 		currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 		if (currentlyPlaying != previouslyPlaying)
 			cout << "Processed: " << currentlyPlaying << endl;
 		previouslyPlaying = currentlyPlaying;
+
+		
 	}
+
 	cout << "Finished feature extraction" << endl;
 
 	// prepare network for real-time playback/prediction
 	bextractNetwork->updctrl("Classifier/cl/mrs_string/mode","predict"); 
-	bextractNetwork->tick();		
 	cout << "Finished classifier training" << endl;
 
 	// have the plugin play audio 
@@ -2524,7 +2535,7 @@ initOptions()
 	cmd_options.addStringOption("extractor", "e", "REFACTORED");
 	cmd_options.addNaturalOption("memory", "m", 40);
 	cmd_options.addNaturalOption("winsamples", "ws", 512);
-	cmd_options.addNaturalOption("accSize", "as", 1298);
+	cmd_options.addNaturalOption("accSize", "as", 200);
 	cmd_options.addNaturalOption("hopsamples", "hp", 512);
 	cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
 	cmd_options.addBoolOption("tline", "t", false);
@@ -2666,7 +2677,7 @@ void bextract(vector<string> soundfiles, mrs_natural label,
 
 	// Label each class
 	spectralShape->addMarSystem(mng.create("Annotator", "anno"));
-	spectralShape->addMarSystem(mng.create("WekaSink", "wsink"));
+	spectralShape->addMarSystem(mng.create("WekaSingk", "wsink"));
 	spectralShape->addMarSystem(mng.create("GaussianClassifier", "gsc"));
 	spectralShape->addMarSystem(mng.create("Confidence", "conf"));
 

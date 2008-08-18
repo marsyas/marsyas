@@ -171,6 +171,8 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 	isrc_->updctrl("mrs_natural/cindex", cindex_);
 
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();  
+
+
 }
 
 void
@@ -179,14 +181,6 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	if (advance_) 
 	{
 		cindex_ = cindex_ + 1;
-		if (cindex_ > col_.size() -1)  
-		{
-			setctrl("mrs_bool/notEmpty", false);
-			notEmpty_ = false;      
-			advance_ = false;
-			return;
-		}
-
 		setctrl("mrs_natural/cindex", cindex_);
 
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
@@ -197,19 +191,39 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_real/israte", myIsrate_);
 		setctrl("mrs_real/osrate", myIsrate_);
 		setctrl("mrs_natural/onObservations", onObservations_);
-
+		setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
+		ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+		setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
+		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
+		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
+		
 		update();   
 
 		isrc_->process(in,out);
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+
+		if (cindex_ > col_.size()-2)  
+		{
+			setctrl("mrs_bool/notEmpty", false);
+			notEmpty_ = false;      
+			advance_ = false;
+			return;
+			
+		}
+
+
+
 		return;
 	}
 	else
 	{
 		//finished current file. Advance to next one in collection (if any)
-		if (!getctrl("mrs_bool/notEmpty")->isTrue())
+		if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
 		{
+
+			
 			//check if there a following file ion the collection
 			if (cindex_ < col_.size() -1)
 			{

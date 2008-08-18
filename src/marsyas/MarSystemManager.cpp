@@ -745,7 +745,8 @@ MarSystemManager::MarSystemManager()
 	// Direct way with creating control 
 	classifierpr->addctrl("mrs_natural/nClasses", 1);
 	classifierpr->addctrl("mrs_string/mode", "train");
-
+	classifierpr->setctrlState("mrs_string/mode", "true");
+	
 	classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
 		"mrs_natural/nClasses");
 	classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_natural/nClasses", 

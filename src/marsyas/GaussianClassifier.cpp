@@ -66,6 +66,7 @@ GaussianClassifier::addControls()
 void
 GaussianClassifier::myUpdate(MarControlPtr sender)
 {
+	
 	(void) sender;
 	MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
@@ -83,6 +84,9 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 
 
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+
+	
+	
 	if ((mode == "predict")&&(prev_mode_ == "predict"))
 	{
 		means_ = getctrl("mrs_realvec/means")->to<mrs_realvec>();
@@ -107,6 +111,32 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 		covars_.create(nlabels, inObservations);
 	}
 
+
+	
+	
+
+	if ((prev_mode_ == "train") && (mode == "predict"))
+	{
+		
+		for (int l=0; l < nlabels; l++)
+			for (o=0; o < inObservations_; o++)
+			{
+				means_(l,o) = means_(l,o) / labelSizes_(l);
+				covars_(l,o) = covars_(l,o) / labelSizes_(l);
+				covars_(l, o) = covars_(l,o) - 
+					(means_(l,o) * means_(l,o));
+				if (covars_(l,o) != 0.0)
+				{
+					covars_(l,o) = (mrs_real)(1.0 / covars_(l,o));
+				}
+			}
+
+			ctrl_means_->setValue(means_);
+			ctrl_covars_->setValue(covars_);
+	}
+
+
+
 }
 
 void 
@@ -115,6 +145,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
 	mrs_real v;
 	string mode = ctrl_mode_->to<string>();
+	
 	mrs_natural nlabels = ctrl_nClasses_->to<mrs_natural>();
 
 	mrs_natural l;
@@ -123,6 +154,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
 	mrs_real diff;
 	mrs_real sq_sum=0.0;
+
 
 	// reset 
 	if ((prev_mode_ == "predict") && (mode == "train"))
@@ -133,6 +165,9 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		ctrl_means_->setValue(means_);
 		ctrl_covars_->setValue(covars_);
 	}
+	
+
+
 
 	if (mode == "train")  
 	{
@@ -155,24 +190,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	if ((prev_mode_ == "train") && (mode == "predict"))
-	{
-		for (l=0; l < nlabels; l++)
-			for (o=0; o < inObservations_; o++)
-			{
-				means_(l,o) = means_(l,o) / labelSizes_(l);
-				covars_(l,o) = covars_(l,o) / labelSizes_(l);
-				covars_(l, o) = covars_(l,o) - 
-					(means_(l,o) * means_(l,o));
-				if (covars_(l,o) != 0.0)
-				{
-					covars_(l,o) = (mrs_real)(1.0 / covars_(l,o));
-				}
-			}
-
-			ctrl_means_->setValue(means_);
-			ctrl_covars_->setValue(covars_);
-	}
 
 	if (mode == "predict")
 	{
