@@ -100,7 +100,7 @@ namespace Marsyas
 #define MRSDEBUG(x)
 #endif 
 
-#if MARSYAS_ASSERTS
+#ifdef MARSYAS_ASSERTS
 #define MRSASSERT(f) \
         if (f)       \
              {}      \

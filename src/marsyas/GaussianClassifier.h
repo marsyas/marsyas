@@ -55,8 +55,8 @@ private:
 
 
        
-  realvec means_;
-  realvec covars_;
+		// realvec means_;
+		// realvec covars_;
   realvec labelSizes_;
   MarControlPtr ctrl_mode_;
   MarControlPtr ctrl_nClasses_;

@@ -13,8 +13,7 @@ endif (MARSYAS_LINUX)
 
 
 ## code messages and optional portions
-option(MARSYAS_ASSERT "Build with assertions" OFF)
-#mark_as_advanced (MARSYAS_ASSERT)
+option(MARSYAS_ASSERTS "Build with assertions" OFF)
 option(MARSYAS_PROFILING "Build with profiling" OFF)
 #mark_as_advanced (MARSYAS_PROFILING)
 option(MARSYAS_DEBUG "Build with debugging info (large performance penalty)" OFF)

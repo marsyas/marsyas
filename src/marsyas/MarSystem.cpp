@@ -1565,7 +1565,7 @@ Marsyas::operator>> (istream& is, MarSystem& msys)
 		{
 			realvec vcvalue;
 			is >> skipstr >> vcvalue;
-
+			
 			if (iter == msys.controls_.end())
 				msys.addControl(cname, vcvalue);
 			else

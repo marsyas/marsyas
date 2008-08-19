@@ -256,6 +256,8 @@ train()
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->tick();
       net->updctrl("Classifier/cl/mrs_string/mode", mode);
+	  cout << "kea mode = " << mode << endl;
+	  
       i++;
     }
 

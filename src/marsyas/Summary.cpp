@@ -73,6 +73,7 @@ void Summary::myUpdate(MarControlPtr sender)
 
 void Summary::myProcess(realvec& in, realvec& out)
 {
+	
   string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   
   //modified this code to check the done flag-dale
@@ -82,28 +83,32 @@ void Summary::myProcess(realvec& in, realvec& out)
   if (strcmp(mode.c_str(), "train") == 0 && !done)
     {
       for (t=0; t < inSamples_; t++)
-	{
-	  mrs_real label = in(inObservations_-1, t);
-	  out(0,t) = label;
-	  out(1,t) = label;
-	}//for t
+	  {
+		  mrs_real label = in(inObservations_-1, t);
+		  out(0,t) = label;
+		  out(1,t) = label;
+	  }//for t
     }//if train
   else if (strcmp(mode.c_str(), "predict") == 0 && !done)
-    {
+  {
       for (t=0; t < inSamples_; t++)
-	{    
-	  //swapped the x and y values-dale
-	  mrs_natural prediction = (mrs_natural)in(0, t);	//prediction  
-	  mrs_natural actual = (mrs_natural)in(1, t);	//actual
-	  
-	  confusionMatrix(actual,prediction)++;	  
-	  //cout << "(y,x) (" << y << ","<< x << ")"<< endl;
-	  
-	  out(0,t) = prediction;
-	  out(1,t) = actual;
-	}
+	  {    
+		  //swapped the x and y values-dale
+		  mrs_natural prediction = (mrs_natural)in(0, t);	//prediction  
+		  mrs_natural actual = (mrs_natural)in(1, t);	//actual
+		  
+		  cout << "actual = " << actual << endl;
+		  cout << "prediction = " << prediction << endl;
+		  
 
+		  confusionMatrix(actual,prediction)++;	  
+		  //cout << "(y,x) (" << y << ","<< x << ")"<< endl;
+		  
+		  out(0,t) = prediction;
+		  out(1,t) = actual;
+	  }
 
+	  
 
       
     }//if
