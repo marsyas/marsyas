@@ -48,7 +48,7 @@ mrs_natural memSize = 1;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
 mrs_real samplingRate_ = 22050.0;
-mrs_natural accSize_ = 200;
+mrs_natural accSize_ = 1000;
 mrs_real start = 0.0;
 mrs_real length = -1.0;
 mrs_real gain = 1.0;
@@ -2197,20 +2197,55 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// predict optional test collection 
 	if (testCollection != EMPTYSTRING) 
 	{
-		cout << "bextract_train_refactored: predicting test collection: " << testCollection << endl;
-		bextractNetwork->updctrl("mrs_string/filename", testCollection);
-
-		while (ctrl_notEmpty->to<mrs_bool>())
+		if (single_vector)
 		{
-			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
-			if (currentlyPlaying != previouslyPlaying) 
-				cout << "Processing : " << currentlyPlaying << endl;
+			
+			Collection m;
+			m.read(testCollection);
 
-			bextractNetwork->tick();
-			previouslyPlaying = currentlyPlaying;
+			Collection l;
+			l.read("bextract_single.mf");
+			
+			bextractNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);			
+
+			if (wekafname != EMPTYSTRING) 
+				bextractNetwork->updctrl("WekaSink/wsink/mrs_string/filename", "predict.arff");
+			bextractNetwork->updctrl("Classifier/cl/mrs_string/mode", "predict");
+			
+			ofstream prout;
+			prout.open(predictCollection.c_str());
+			
+			for (int i=0; i < m.size(); i++)//iterate over collection files
+			{
+				bextractNetwork->updctrl("mrs_string/filename", m.entry(i));
+				bextractNetwork->tick();
+				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
+				cout << "Predicting " << m.entry(i) << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				prout << m.entry(i) << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
+			}
+			
+		}
+		
+		else 
+		{
+			
+			cout << "bextract_train_refactored: predicting test collection: " << testCollection << endl;
+			bextractNetwork->updctrl("mrs_string/filename", testCollection);
+			
+			while (ctrl_notEmpty->to<mrs_bool>())
+			{
+				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+				if (currentlyPlaying != previouslyPlaying) 
+					cout << "Processing : " << currentlyPlaying << endl;
+				
+				bextractNetwork->tick();
+				previouslyPlaying = currentlyPlaying;
+			}
 		}
 	}
 }
+
+
 
 // train with multiple feature vectors/file 
 void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label, 
@@ -2537,7 +2572,7 @@ initOptions()
 	cmd_options.addStringOption("extractor", "e", "REFACTORED");
 	cmd_options.addNaturalOption("memory", "m", 40);
 	cmd_options.addNaturalOption("winsamples", "ws", 512);
-	cmd_options.addNaturalOption("accSize", "as", 200);
+	cmd_options.addNaturalOption("accSize", "as", 1000);
 	cmd_options.addNaturalOption("hopsamples", "hp", 512);
 	cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
 	cmd_options.addBoolOption("tline", "t", false);

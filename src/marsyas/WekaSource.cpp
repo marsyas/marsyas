@@ -411,6 +411,8 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
     {
 		out(ii, 0) = row->at(ii);
     }//for ii
+	cout << out << endl;
+	
 }
 
 void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
