@@ -186,34 +186,29 @@ void WekaData::Sort(mrs_natural attr)
 //add rows of data to the table
 void WekaData::Append(const realvec& in)
 {
-  MRSASSERT(in.getRows()==cols_);
-
-	mrs_natural count=0;
-	//count number of labeled instances 
-	for(mrs_natural i=0; i < in.getRows(); ++i)
+	MRSASSERT(in.getRows()==cols_);
+	vector<mrs_real> *data = new vector<mrs_real>(cols_);
+	// skip feature vectors labeled with negative labels
+	if (in(in.getRows()-1, 0) >=0)
 	{
-		if(in(i, in.getRows()-1)>=0)
-			count++;
+		for(mrs_natural ii=0; ii<in.getRows(); ii++)
+		{
+			data->at(ii) = in(ii, 0);
+		}
+		Append(data);
 	}
-  vector<mrs_real> *data = new vector<mrs_real>(count);
-	count = 0;
-  for(mrs_natural ii=0; ii<in.getRows(); ii++)
-    {
-      //only store labeled instances
-			if(in(ii, in.getRows()-1)>=0)
-			{
-				data->at(count++) = in(ii, 0);
-			}
-    }
-  Append(data);
-}//Append
+	
+}
+
+
+
 
 //add rows of data to the table
 void WekaData::Append(vector<mrs_real> *data)
 {
+  MRSASSERT(data!=NULL&&data->size()==cols_);
   rows_++;
-	MRSASSERT(data!=NULL&&data->size()==cols_);
-	this->push_back(data);
+  this->push_back(data);
 }//Append
 
 //get the class attribute for a row and convert to a int

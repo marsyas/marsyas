@@ -97,10 +97,6 @@ void Summary::myProcess(realvec& in, realvec& out)
 		  mrs_natural prediction = (mrs_natural)in(0, t);	//prediction  
 		  mrs_natural actual = (mrs_natural)in(1, t);	//actual
 		  
-		  cout << "actual = " << actual << endl;
-		  cout << "prediction = " << prediction << endl;
-		  
-
 		  confusionMatrix(actual,prediction)++;	  
 		  //cout << "(y,x) (" << y << ","<< x << ")"<< endl;
 		  

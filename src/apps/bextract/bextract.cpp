@@ -73,7 +73,7 @@ mrs_bool zcrs_ = false;
 mrs_bool timbralFeatures_ = false;
 
 #define DEFAULT_EXTRACTOR "STFT" 
-#define DEFAULT_CLASSIFIER  "GS"
+#define DEFAULT_CLASSIFIER  "SVM"
 
 string workspaceDir = EMPTYSTRING;
 string pluginName = EMPTYSTRING;
@@ -2167,7 +2167,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	// prepare network for real-time playback/prediction
 	bextractNetwork->updctrl("Classifier/cl/mrs_string/mode","predict"); 
+	
 	cout << "Finished classifier training" << endl;
+	
 
 	// have the plugin play audio 
 	if (pluginName != EMPTYSTRING && !pluginMute) 

@@ -256,8 +256,6 @@ train()
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->tick();
       net->updctrl("Classifier/cl/mrs_string/mode", mode);
-	  cout << "kea mode = " << mode << endl;
-	  
       i++;
     }
 
@@ -277,7 +275,7 @@ initOptions()
   cmd_options_.addStringOption("inputdir", "id", "./");
   cmd_options_.addStringOption("outputdir", "od", "./");
   cmd_options_.addStringOption("distancematrix", "dm", "dm.txt");
-  cmd_options_.addStringOption("classifier", "cl", "GS");
+  cmd_options_.addStringOption("classifier", "cl", "SVM");
 }
 
 

@@ -114,19 +114,27 @@ void SVMClassifier::addControls() {
 }
 
 void SVMClassifier::myUpdate(MarControlPtr sender) {
-	(void) sender;MRSDIAG("SVMClassifier.cpp - SVMClassifier:myUpdate");
+	(void) sender;
+	MRSDIAG("SVMClassifier.cpp - SVMClassifier:myUpdate");
 
-	
+
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue((mrs_natural)2, NOUPDATE);
 	if (ctrl_mode_->to<mrs_string>() == "train")
 		training_ = true;
 	else if (ctrl_mode_->to<mrs_string>() == "predict")
+	{
+		
 		training_ = false;
+	}
+	
 	else {
 		cerr << "SVMClassifier.cpp, mode not supported";
 		exit(1);
 	}
+
+	
+	
 
 	if (ctrl_svm_->to<mrs_string>() == "C_SVC")
 		svm_ = C_SVC;
@@ -155,242 +163,182 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 		cerr << "SVMClassifier.cpp, kernel not supported";
 		exit(1);
 	}
+
+	
+	if (!training_)
+		if (!trained_)
+			if (was_training_) {
+			
+			svm_param_.svm_type = svm_;
+			svm_param_.kernel_type = kernel_;
+			svm_param_.degree = ctrl_degree_->to<mrs_natural>();
+			svm_param_.gamma = ctrl_gamma_->to<mrs_natural>();
+			svm_param_.coef0 = ctrl_coef0_->to<mrs_natural>();
+			svm_param_.nu = ctrl_nu_->to<mrs_real>();
+			svm_param_.cache_size = ctrl_cache_size_->to<mrs_natural>();
+			svm_param_.C = ctrl_C_->to<mrs_real>();
+			svm_param_.eps = ctrl_eps_->to<mrs_real>();
+			svm_param_.p = ctrl_p_->to<mrs_real>();
+			svm_param_.shrinking = ctrl_shrinking_->to<mrs_bool>();
+			svm_param_.probability = ctrl_probability_->to<mrs_bool>();
+			
+			svm_param_.nr_weight = ctrl_nr_weight_->to<mrs_natural>();
+			
+			if (svm_param_.nr_weight) {
+				svm_param_.weight_label = Malloc(int,svm_param_.nr_weight);
+				svm_param_.weight = Malloc(double,svm_param_.nr_weight);
+				for (int i=0; i < svm_param_.nr_weight-1; i++) {
+					svm_param_.weight_label[i]
+						= (int)ctrl_weight_label_->to<realvec>()(i);
+					svm_param_.weight[i]
+						= (double)ctrl_weight_->to<realvec>()(i);
+				}
+			} else {
+				svm_param_.weight_label = NULL;
+				svm_param_.weight = NULL;
+			}
+			
+			instances_.NormMaxMin();
+			
+			mrs_natural nInstances = instances_.getRows();
+			svm_prob_.l = nInstances;
+			svm_prob_.y = new double[svm_prob_.l];
+			svm_prob_.x = new svm_node*[nInstances];
+			for (int i=0; i < nInstances; i++)
+				svm_prob_.y[i] = instances_.GetClass(i);
+			
+			for (int i=0; i < nInstances; i++) {
+				svm_prob_.x[i] = new svm_node[inObservations_];
+				for (int j=0; j < inObservations_; j++) {
+					if (j < inObservations_ -1) {
+						svm_prob_.x[i][j].index = j+1;
+						svm_prob_.x[i][j].value = instances_.at(i)->at(j);
+					} else {
+						svm_prob_.x[i][j].index = -1;
+						svm_prob_.x[i][j].value = 0.0;
+					}
+				}
+			}
+			
+			const char *error_msg;
+			error_msg = svm_check_parameter(&svm_prob_, &svm_param_);
+			if (error_msg) {
+				cerr << "SVMClassifier.cpp libsvm error: " << error_msg
+					 << endl;
+				exit(1);
+			}
+			
+			
+			svm_model_ = svm_train(&svm_prob_, &svm_param_);
+			
+			trained_ = true;
+			MRSDEBUG ("... done");
+			int n;
+			
+			MRSDEBUG ("svm_model_->nr_class = " << svm_model_->nr_class);
+			MRSDEBUG ("svm_model_->l = " << svm_model_->l);
+			MRSDEBUG ("svm_model_->free_sv = " << svm_model_->free_sv);
+			MRSDEBUG ("svm_model_->SV = ");
+			n = svm_model_->l;
+			
+			
+			ctrl_minimums_->setValue(instances_.GetMinimums(), NOUPDATE);
+			ctrl_maximums_->setValue(instances_.GetMaximums(), NOUPDATE);
+			
+			MarControlAccessor acc_sv_coef(ctrl_sv_coef_, NOUPDATE);
+			realvec& sv_coef = acc_sv_coef.to<mrs_realvec>();
+			MarControlAccessor acc_SV(ctrl_SV_, NOUPDATE);
+			realvec& SV = acc_SV.to<mrs_realvec>();
+			n = svm_model_->l;
+			sv_coef.stretch(n);
+			SV.stretch(n, (inObservations_-1));
+			
+			for (int i=0; i<n; i++) {
+				for (int j=0; j<svm_model_->nr_class-1; j++)
+					sv_coef(j, i)=svm_model_->sv_coef[j][i];
+				const svm_node *p = svm_model_->SV[i];
+				int ind = 0;
+				while (p->index != -1) {
+					SV(i, ind)=p->value;
+					p++;
+					ind++;
+				}
+			}
+			
+			{
+				MarControlAccessor acc_rho(ctrl_rho_, NOUPDATE);
+				realvec& rho = acc_rho.to<mrs_realvec>();
+				n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
+				rho.stretch(n);
+				for (int i=0; i<n; i++)
+					rho(i)=svm_model_->rho[i];
+			}
+			
+			if (svm_model_->probA) {
+				MarControlAccessor acc_probA(ctrl_probA_, NOUPDATE);
+				realvec& probA = acc_probA.to<mrs_realvec>();
+				n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
+				probA.stretch(n);
+				for (int i=0; i<n; i++)
+					probA(i)=svm_model_->probA[i];
+			}
+			
+			if (svm_model_->probB) {
+				MarControlAccessor acc_probB(ctrl_probB_, NOUPDATE);
+				realvec& probB = acc_probB.to<mrs_realvec>();
+				n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
+				probB.stretch(n+1);
+				for (int i=0; i<n; i++)
+					probB(i)=svm_model_->probB[i];
+			}
+			
+			if (svm_model_->label) {
+				MarControlAccessor acc_label(ctrl_label_, NOUPDATE);
+				realvec& label = acc_label.to<mrs_realvec>();
+				n = svm_model_->nr_class;
+				label.stretch(n);
+				for (int i=0; i<n; i++)
+					label(i)=svm_model_->label[i];
+			}
+			
+			if (svm_model_->nSV) {
+				MarControlAccessor acc_nSV(ctrl_nSV_, NOUPDATE);
+				realvec& nSV = acc_nSV.to<mrs_realvec>();
+				n = svm_model_->nr_class;
+				nSV.stretch(n);
+				for (int i=0; i<n; i++)
+					nSV(i)=svm_model_->nSV[i];
+			}
+			
+			ctrl_nr_class_->setValue(svm_model_->nr_class, NOUPDATE);
+			ctrl_l_->setValue(svm_model_->l, NOUPDATE);
+		}
+
+	
+	
+	
+
 }
 
-void SVMClassifier::myProcess(realvec& in, realvec& out) {
+void SVMClassifier::myProcess(realvec& in, realvec& out) 
+{
 	
 	if (training_) {
+
 		if (!was_training_) {
 			instances_.Create(inObservations_);
 		}
+		
 		instances_.Append(in);
 		out(0, 0) = in(inObservations_-1, 0);
 		out(1,0) = in(inObservations_-1, 0);
 		
+		
 	} else {
+		
 		if (!trained_)
 			if (was_training_) {
-				svm_param_.svm_type = svm_;
-				svm_param_.kernel_type = kernel_;
-				svm_param_.degree = ctrl_degree_->to<mrs_natural>();
-				svm_param_.gamma = ctrl_gamma_->to<mrs_natural>();
-				svm_param_.coef0 = ctrl_coef0_->to<mrs_natural>();
-				svm_param_.nu = ctrl_nu_->to<mrs_real>();
-				svm_param_.cache_size = ctrl_cache_size_->to<mrs_natural>();
-				svm_param_.C = ctrl_C_->to<mrs_real>();
-				svm_param_.eps = ctrl_eps_->to<mrs_real>();
-				svm_param_.p = ctrl_p_->to<mrs_real>();
-				svm_param_.shrinking = ctrl_shrinking_->to<mrs_bool>();
-				svm_param_.probability = ctrl_probability_->to<mrs_bool>();
-
-				svm_param_.nr_weight = ctrl_nr_weight_->to<mrs_natural>();
-
-				if (svm_param_.nr_weight) {
-					svm_param_.weight_label = Malloc(int,svm_param_.nr_weight);
-					svm_param_.weight = Malloc(double,svm_param_.nr_weight);
-					for (int i=0; i < svm_param_.nr_weight-1; i++) {
-						svm_param_.weight_label[i]
-								= (int)ctrl_weight_label_->to<realvec>()(i);
-						svm_param_.weight[i]
-								= (double)ctrl_weight_->to<realvec>()(i);
-					}
-				} else {
-					svm_param_.weight_label = NULL;
-					svm_param_.weight = NULL;
-				}
-
-				instances_.NormMaxMin();
-
-				mrs_natural nInstances = instances_.getRows();
-				svm_prob_.l = nInstances;
-				svm_prob_.y = new double[svm_prob_.l];
-				svm_prob_.x = new svm_node*[nInstances];
-				for (int i=0; i < nInstances; i++)
-					svm_prob_.y[i] = instances_.GetClass(i);
-
-				for (int i=0; i < nInstances; i++) {
-					svm_prob_.x[i] = new svm_node[inObservations_];
-					for (int j=0; j < inObservations_; j++) {
-						if (j < inObservations_ -1) {
-							svm_prob_.x[i][j].index = j+1;
-							svm_prob_.x[i][j].value = instances_.at(i)->at(j);
-						} else {
-							svm_prob_.x[i][j].index = -1;
-							svm_prob_.x[i][j].value = 0.0;
-						}
-					}
-				}
-
-				const char *error_msg;
-				error_msg = svm_check_parameter(&svm_prob_, &svm_param_);
-				if (error_msg) {
-					cerr << "SVMClassifier.cpp libsvm error: " << error_msg
-							<< endl;
-					exit(1);
-				}
-
-				MRSDEBUG ("svm_param_.svm_type = " << svm_param_.svm_type);
-				MRSDEBUG ("svm_param_.kernel_type = " << svm_param_.kernel_type);
-				MRSDEBUG ("svm_param_.degree = " << svm_param_.degree);
-				MRSDEBUG ("svm_param_.gamma = " << svm_param_.gamma);
-				MRSDEBUG ("svm_param_.coef0 = " << svm_param_.coef0);
-				MRSDEBUG ("svm_param_.nu = " << svm_param_.nu);
-				MRSDEBUG ("svm_param_.cache_size = " << svm_param_.cache_size);
-				MRSDEBUG ("svm_param_.C = " << svm_param_.C);
-				MRSDEBUG ("svm_param_.eps = " << svm_param_.eps);
-				MRSDEBUG ("svm_param_.p = " << svm_param_.p);
-				MRSDEBUG ("svm_param_.shrinking = " << svm_param_.shrinking);
-				MRSDEBUG ("svm_param_.probability = " << svm_param_.probability);
-				MRSDEBUG ("svm_param_.nr_weight = " << svm_param_.nr_weight);
-				MRSDEBUG ("svm_param_.weight_label = " << svm_param_.weight_label);
-				MRSDEBUG ("svm_param_.weight = " << svm_param_.weight);
-
-				MRSDEBUG ("libsvm train ...");
-
-				svm_model_ = svm_train(&svm_prob_, &svm_param_);
-				trained_ = true;
-				MRSDEBUG ("... done");
-				int n;
-
-				MRSDEBUG ("svm_model_->nr_class = " << svm_model_->nr_class);
-				MRSDEBUG ("svm_model_->l = " << svm_model_->l);
-				MRSDEBUG ("svm_model_->free_sv = " << svm_model_->free_sv);
-				MRSDEBUG ("svm_model_->SV = ");
-				n = svm_model_->l;
-
-#ifdef MARSYAS_LOG_DEBUGS
-
-				{
-					for (int i=0; i<n; i++) {
-						for (int j=0; j<svm_model_->nr_class-1; j++)
-							if (svm_model_->sv_coef)
-								cout << (mrs_real)svm_model_->sv_coef[j][i]
-										<< " ";
-						if (svm_model_->SV) {
-							const svm_node *p = svm_model_->SV[i];
-							mrs_natural ind = 0;
-							while (p->index != -1) {
-								cout << (mrs_natural)p->index << ":";
-								cout << (mrs_real)p->value << " ";
-								p++;
-								ind = ind + 2;
-							}
-						}
-						cout << endl;
-					}
-				}
-
-				if (svm_model_->rho) {
-					MRSDEBUG("svm_model_->rho =");
-					n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
-					for (int i=0; i<n; i++)
-						cout << " "<< svm_model_->rho[i];
-					cout << endl;;
-				}
-
-				if (svm_model_->probA) {
-					MRSDEBUG("svm_model_->probA =");
-					n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
-					for (int i=0; i<n; i++)
-						cout << " " << svm_model_->probA[i];
-					cout << endl;;
-				}
-
-				if (svm_model_->probB) {
-					MRSDEBUG("svm_model_->probB =");
-					n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
-					for (int i=0; i<n; i++)
-						cout <<" " << svm_model_->probB[i];
-					cout << endl;;
-				}
-
-				if (svm_model_->label) {
-					MRSDEBUG("svm_model_->label =");
-					n = svm_model_->nr_class;
-					for (int i=0; i<n; i++)
-						cout << " " << svm_model_->label[i];
-					cout << endl;;
-				}
-
-				if (svm_model_->nSV) {
-					MRSDEBUG("svm_model_->nSV =");
-					n = svm_model_->nr_class;
-					for (int i=0; i<n; i++)
-						cout << " " << svm_model_->nSV[i];
-					cout << endl;;
-				}
-#endif
-
-				ctrl_minimums_->setValue(instances_.GetMinimums(), NOUPDATE);
-				ctrl_maximums_->setValue(instances_.GetMaximums(), NOUPDATE);
-
-				MarControlAccessor acc_sv_coef(ctrl_sv_coef_, NOUPDATE);
-				realvec& sv_coef = acc_sv_coef.to<mrs_realvec>();
-				MarControlAccessor acc_SV(ctrl_SV_, NOUPDATE);
-				realvec& SV = acc_SV.to<mrs_realvec>();
-				n = svm_model_->l;
-				sv_coef.stretch(n);
-				SV.stretch(n, (inObservations_-1));
-
-				for (int i=0; i<n; i++) {
-					for (int j=0; j<svm_model_->nr_class-1; j++)
-						sv_coef(j, i)=svm_model_->sv_coef[j][i];
-					const svm_node *p = svm_model_->SV[i];
-					int ind = 0;
-					while (p->index != -1) {
-						SV(i, ind)=p->value;
-						p++;
-						ind++;
-					}
-				}
-
-				{
-					MarControlAccessor acc_rho(ctrl_rho_, NOUPDATE);
-					realvec& rho = acc_rho.to<mrs_realvec>();
-					n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
-					rho.stretch(n);
-					for (int i=0; i<n; i++)
-						rho(i)=svm_model_->rho[i];
-				}
-
-				if (svm_model_->probA) {
-					MarControlAccessor acc_probA(ctrl_probA_, NOUPDATE);
-					realvec& probA = acc_probA.to<mrs_realvec>();
-					n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
-					probA.stretch(n);
-					for (int i=0; i<n; i++)
-						probA(i)=svm_model_->probA[i];
-				}
-
-				if (svm_model_->probB) {
-					MarControlAccessor acc_probB(ctrl_probB_, NOUPDATE);
-					realvec& probB = acc_probB.to<mrs_realvec>();
-					n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
-					probB.stretch(n+1);
-					for (int i=0; i<n; i++)
-						probB(i)=svm_model_->probB[i];
-				}
-
-				if (svm_model_->label) {
-					MarControlAccessor acc_label(ctrl_label_, NOUPDATE);
-					realvec& label = acc_label.to<mrs_realvec>();
-					n = svm_model_->nr_class;
-					label.stretch(n);
-					for (int i=0; i<n; i++)
-						label(i)=svm_model_->label[i];
-				}
-
-				if (svm_model_->nSV) {
-					MarControlAccessor acc_nSV(ctrl_nSV_, NOUPDATE);
-					realvec& nSV = acc_nSV.to<mrs_realvec>();
-					n = svm_model_->nr_class;
-					nSV.stretch(n);
-					for (int i=0; i<n; i++)
-						nSV(i)=svm_model_->nSV[i];
-				}
-
-				ctrl_nr_class_->setValue(svm_model_->nr_class, NOUPDATE);
-				ctrl_l_->setValue(svm_model_->l, NOUPDATE);
+				;
 			} else {
 				svm_model_->param.svm_type = svm_;
 				svm_model_->param.weight_label = NULL;
