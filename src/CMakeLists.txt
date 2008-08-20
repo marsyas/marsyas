@@ -59,7 +59,9 @@ include (marsyas-global)
 
 ## next level
 add_subdirectory(marsyas)
-add_subdirectory(apps)
+if (BUILD_APPS)
+  add_subdirectory(apps)
+endif (BUILD_APPS)
 
 if (SWIG_FOUND) 
 	add_subdirectory(swig)

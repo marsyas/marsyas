@@ -52,7 +52,7 @@ option(WITH_GSTREAMER "Enable use of GStreamer as audio source" OFF)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
 #option(WITH_READLINE "Readline functionality for Marsyas Scripting
 #Language (MSL)" OFF)
-
+option(BUILD_APPS "Build the applications" ON)
 
 ## SWIG sub-options
 if (WITH_SWIG)
@@ -61,6 +61,4 @@ if (WITH_SWIG)
 	option(WITH_SWIG_LUA "Enable the SWIG bindings for Lua" OFF)
 	option(WITH_SWIG_RUBY "Enable the SWIG bindings for Ruby" OFF)
 endif (WITH_SWIG)
-
-
 
