@@ -83,9 +83,9 @@ MidiOutput::myUpdate(MarControlPtr sender)
 #ifdef MARSYAS_MIDIIO
 
     initMidi = getctrl("mrs_bool/initMidi")->to<mrs_bool>();
-    initMidi = !initMidi;
+    virtualPort = getctrl("mrs_bool/virtualPort")->to<mrs_bool>();
     
-    if (!initMidi)
+    if (initMidi)
       {
         if (midiout == NULL) 
         {
@@ -137,7 +137,7 @@ MidiOutput::myUpdate(MarControlPtr sender)
 	  message[2] = (unsigned char)ctrl_byte3_->to<mrs_natural>();
 	  
 	  midiout->sendMessage( &message );
-	  updctrl(ctrl_sendMessage_, false);
+	  setctrl(ctrl_sendMessage_, false);
         }
       }
 #endif
