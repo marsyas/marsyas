@@ -12,18 +12,25 @@ if (MARSYAS_LINUX)
 endif (MARSYAS_LINUX)
 
 
-## code messages and optional portions
+## OPTIONAL CODE
+option(BUILD_APPS "Build the applications" ON)
+mark_as_advanced (BUILD_APPS)
+if (MARSYAS_LINUX OR MARSYAS_MACOSX)
+	option(BUILD_DISTRIBUTED "[EXPERIMENTAL] compile code for
+		distributed audio processing" OFF)
+	mark_as_advanced(BUILD_DISTRIBUTED)
+	if (BUILD_DISTRIBUTED)
+		set(DISTRIBUTED 1)
+	endif (BUILD_DISTRIBUTED)
+endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
+
+
+## CODE MESSAGES
 option(MARSYAS_ASSERTS "Build with assertions" OFF)
 option(MARSYAS_PROFILING "Build with profiling" OFF)
 #mark_as_advanced (MARSYAS_PROFILING)
 option(MARSYAS_DEBUG "Build with debugging info (large performance penalty)" OFF)
 #mark_as_advanced (MARSYAS_DEBUG)
-if (MARSYAS_LINUX OR MARSYAS_MACOSX)
-	option(DISTRIBUTED "[EXPERIMENTAL] compile code for distributed
-		audio processing" OFF)
-	mark_as_advanced(DISTRIBUTED)
-endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
-
 
 
 ## logging stuff
@@ -52,13 +59,15 @@ option(WITH_GSTREAMER "Enable use of GStreamer as audio source" OFF)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
 #option(WITH_READLINE "Readline functionality for Marsyas Scripting
 #Language (MSL)" OFF)
-option(BUILD_APPS "Build the applications" ON)
 
 ## SWIG sub-options
 if (WITH_SWIG)
 	option(WITH_SWIG_PYTHON "Enable the SWIG bindings for Python" ON)
-	option(WITH_SWIG_JAVA "Enable the SWIG bindings for Java" OFF)
-	option(WITH_SWIG_LUA "Enable the SWIG bindings for Lua" OFF)
-	option(WITH_SWIG_RUBY "Enable the SWIG bindings for Ruby" OFF)
+	option(WITH_SWIG_JAVA "Enable the SWIG bindings for Java
+NOTWORKING" OFF)
+	option(WITH_SWIG_LUA "Enable the SWIG bindings for Lua
+NOTWORKING" OFF)
+	option(WITH_SWIG_RUBY "Enable the SWIG bindings for Ruby
+NOTWORKING" OFF)
 endif (WITH_SWIG)
 
