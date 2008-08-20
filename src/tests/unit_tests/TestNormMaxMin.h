@@ -18,7 +18,7 @@
 // (c) 2008 - sness@sness.net - GPL
 //
 
-#include <cxxtest/TestSuite.h>
+#include <../../otherlibs/cxxtest/TestSuite.h>
 
 #include <cstdio>
 #include "Collection.h"
@@ -30,7 +30,6 @@
 
 using namespace std;
 using namespace Marsyas;
-
 
 class NormMaxMin_runner : public CxxTest::TestSuite
 {
@@ -66,13 +65,10 @@ public:
 	}
   }
 
-
   //
   // Observations mode
   //
-
-  void 
-  test_two_pass_observations_should_normalize_across_each_observation(void) 
+  void test_two_pass_observations_should_normalize_across_each_observation(void) 
   {
 
  	norm->updctrl("mrs_string/mode", "twopass");
@@ -87,8 +83,7 @@ public:
   	TS_ASSERT_EQUALS(out(0,4), 1.00);
   }
 
-  void
-  test_train_on_observations_only_should_not_change_input_data(void) 
+  void test_train_on_observations_only_should_not_change_input_data(void) 
   {
  	norm->updctrl("mrs_string/mode", "train");
  	norm->updctrl("mrs_string/domain", "observations");
@@ -102,8 +97,7 @@ public:
 
   }
 
-  void
-  test_should_be_able_to_train_observations_and_then_predict(void)
+  void test_should_be_able_to_train_observations_and_then_predict(void)
   {
  	norm->updctrl("mrs_string/domain", "observations");
 
@@ -128,8 +122,7 @@ public:
   	TS_ASSERT_DELTA(out(1,1), 1.001e-06, 0.001e-07);
   }
 
-  void
-  test_observations_maximums_control_should_be_set_properly_after_train_and_then_predict(void)
+  void test_observations_maximums_control_should_be_set_properly_after_train_and_then_predict(void)
   {
  	norm->updctrl("mrs_string/domain", "observations");
 
@@ -144,8 +137,7 @@ public:
 
   }
 
-  void
-  test_observations_minimums_control_should_be_set_properly_after_train_and_then_predict(void)
+  void test_observations_minimums_control_should_be_set_properly_after_train_and_then_predict(void)
   {
  	norm->updctrl("mrs_string/domain", "observations");
 
@@ -165,8 +157,7 @@ public:
   // Samples mode
   //
 
-  void 
-  test_two_pass_samples_should_normalize_down_each_sample(void) 
+  void test_two_pass_samples_should_normalize_down_each_sample(void) 
   {
 
  	norm->updctrl("mrs_string/mode", "twopass");
@@ -181,8 +172,7 @@ public:
    	TS_ASSERT_EQUALS(out(4,0), 1.00);
   }
 
-  void
-  test_train_on_samples_only_should_not_change_input_data(void) 
+  void test_train_on_samples_only_should_not_change_input_data(void) 
   {
   	norm->updctrl("mrs_string/mode", "train");
   	norm->updctrl("mrs_string/domain", "samples");
@@ -196,8 +186,7 @@ public:
 
   }
 
-  void
-  test_should_be_able_to_train_samples_and_then_predict(void)
+  void test_should_be_able_to_train_samples_and_then_predict(void)
   {
    	norm->updctrl("mrs_string/domain", "samples");
 
@@ -222,8 +211,7 @@ public:
   	TS_ASSERT_DELTA(out(4,1), 0.004, 0.0001);
   }
 
-  void
-  test_samples_maximums_control_should_be_set_properly_after_train_and_then_predict(void)
+  void test_samples_maximums_control_should_be_set_properly_after_train_and_then_predict(void)
   {
   	norm->updctrl("mrs_string/domain", "samples");
 
@@ -238,8 +226,7 @@ public:
 
   }
 
-  void
-  test_samples_minimums_control_should_be_set_properly_after_train_and_then_predict(void)
+  void test_samples_minimums_control_should_be_set_properly_after_train_and_then_predict(void)
   {
   	norm->updctrl("mrs_string/domain", "samples");
 
@@ -258,8 +245,7 @@ public:
   // Slices mode
   //
 
-  void 
-  test_two_pass_slices_should_normalize_over_entire_slice(void) 
+  void test_two_pass_slices_should_normalize_over_entire_slice(void) 
   {
 
   	norm->updctrl("mrs_string/mode", "twopass");
@@ -273,8 +259,7 @@ public:
 	TS_ASSERT_EQUALS(out(4,4), 1.00);
   }
 
-  void
-  test_train_on_slices_only_should_not_change_input_data(void) 
+  void test_train_on_slices_only_should_not_change_input_data(void) 
   {
    	norm->updctrl("mrs_string/mode", "train");
    	norm->updctrl("mrs_string/domain", "slices");
@@ -288,8 +273,7 @@ public:
 
   }
 
-  void
-  test_should_be_able_to_train_slices_and_then_predict(void)
+  void test_should_be_able_to_train_slices_and_then_predict(void)
   {
 	norm->updctrl("mrs_string/domain", "slices");
 
@@ -313,8 +297,7 @@ public:
 	TS_ASSERT_DELTA(out(2,2), 0.002002, 0.0000001);
   }
 
-  void
-  test_slices_maximums_control_should_be_set_properly_after_train_and_then_predict(void)
+  void test_slices_maximums_control_should_be_set_properly_after_train_and_then_predict(void)
   {
    	norm->updctrl("mrs_string/domain", "slices");
 
@@ -329,8 +312,7 @@ public:
 
   }
 
-  void
-  test_slices_minimums_control_should_be_set_properly_after_train_and_then_predict(void)
+  void test_slices_minimums_control_should_be_set_properly_after_train_and_then_predict(void)
   {
    	norm->updctrl("mrs_string/domain", "slices");
 
