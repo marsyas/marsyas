@@ -314,9 +314,19 @@ mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
 inline 
 mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 {
+	if ((r >= rows_) || (c >= cols_))
+	{
+		printf("rows_ = %d\n", rows_);
+		printf("r = %d\n", r);
+		printf("c = %d\n", c);
+		printf("cols = %d\n", cols_);
+	}
+	
 
 	MRSASSERT(r < rows_);
 	MRSASSERT(c < cols_);
+
+
 	return data_[c * rows_ + r];  
 }
 

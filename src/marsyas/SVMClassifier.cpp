@@ -168,7 +168,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 	if (!training_)
 		if (!trained_)
 			if (was_training_) {
-			
+
 			svm_param_.svm_type = svm_;
 			svm_param_.kernel_type = kernel_;
 			svm_param_.degree = ctrl_degree_->to<mrs_natural>();
@@ -200,6 +200,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			
 			instances_.NormMaxMin();
 			
+			
 			mrs_natural nInstances = instances_.getRows();
 			svm_prob_.l = nInstances;
 			svm_prob_.y = new double[svm_prob_.l];
@@ -228,8 +229,11 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				exit(1);
 			}
 			
+			cout << "Starting training" << endl;
 			
 			svm_model_ = svm_train(&svm_prob_, &svm_param_);
+			cout << "Done training" << endl;
+			
 			
 			trained_ = true;
 			MRSDEBUG ("... done");
@@ -250,9 +254,9 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			MarControlAccessor acc_SV(ctrl_SV_, NOUPDATE);
 			realvec& SV = acc_SV.to<mrs_realvec>();
 			n = svm_model_->l;
-			sv_coef.stretch(n);
+			sv_coef.stretch(svm_model_->nr_class-1,n);
 			SV.stretch(n, (inObservations_-1));
-			
+
 			for (int i=0; i<n; i++) {
 				for (int j=0; j<svm_model_->nr_class-1; j++)
 					sv_coef(j, i)=svm_model_->sv_coef[j][i];
@@ -264,7 +268,8 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 					ind++;
 				}
 			}
-			
+
+
 			{
 				MarControlAccessor acc_rho(ctrl_rho_, NOUPDATE);
 				realvec& rho = acc_rho.to<mrs_realvec>();
