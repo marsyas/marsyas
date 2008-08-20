@@ -1,0 +1,9 @@
+% Created by Marsyas
+@relation out.full.arff
+@attribute Mean_Acc1298_Mean_Mem40_Centroid_Power_FFT512_WinHamming_HopSize512_WinSize512_AudioCh0 real
+@attribute output {blues,classical}
+
+
+@data
+0.070480,classical
+0.055629,blues
