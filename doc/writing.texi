@@ -69,9 +69,9 @@ on.
 
 Here are sample Makefiles to get you started:
 
-@examplefilenewpage{Makefile.linux}
-@examplefilenewpage{Makefile.osx}
-@examplefilenewpage{Makefile.win32}
+@c @examplefilenewpage{Makefile.linux}
+@c @examplefilenewpage{Makefile.osx}
+@c @examplefilenewpage{Makefile.win32}
 
 
 @WANTED{ fix makefile for win32}
@@ -285,7 +285,7 @@ refer to source documentation in @ref{Library reference}.
 
 To get started, look at the Qt4 tutorial files:
 
-@examplefilenewpage{tutorial.pro}
+@c @examplefilenewpage{tutorial.pro}
 @examplefilenewpage{main.cpp}
 @examplefilenewpage{mainwindow.h}
 @examplefilenewpage{mainwindow.cpp}
