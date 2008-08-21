@@ -1,4 +1,5 @@
 ## setup OS_LIBS
+include(marsyas-osincludes)
 include(marsyas-oslibs)
 
 

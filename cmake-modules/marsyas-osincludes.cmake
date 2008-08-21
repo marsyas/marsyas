@@ -1,14 +1,14 @@
 ## library includes
 include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
-list(APPEND MarSystem_SOURCES ../../otherlibs/libsvm/svm.cpp)
+list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
 
 if (MARSYAS_AUDIOIO)
-	list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio.cpp)
-	list(APPEND MarSystem_SOURCES ../../otherlibs/RtAudio/RtAudio3.cpp)
+	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.cpp)
+	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.cpp)
 endif (MARSYAS_AUDIOIO)
 
 if (MARSYAS_MIDIIO)
-	list(APPEND MarSystem_SOURCES ../../otherlibs/RtMidi/RtMidi.cpp)
+	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.cpp)
 endif (MARSYAS_MIDIIO)
 
 
