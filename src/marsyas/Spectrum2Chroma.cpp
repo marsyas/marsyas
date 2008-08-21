@@ -148,7 +148,8 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 			fftfreqbins(o) = nbins * hertz2octs(o * 1.0 / N * srate, ctrl_middleAfreq_->to<mrs_real>());
 			
 		}
-		fftfreqbins(0) = fftfreqbins(1)-1.5*nbins;
+		if (N2 > 1)
+		  fftfreqbins(0) = fftfreqbins(1)-1.5*nbins;
 
 		//calculate the bin widths
 		realvec binwidthbins(N2);
