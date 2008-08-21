@@ -34,7 +34,7 @@ inline double powi(double base, int times)
 #define INF HUGE_VAL
 #define TAU 1e-12
 #define Malloc(type,n) (type *)malloc((n)*sizeof(type))
-#if 1
+#if 0
 void info(const char *fmt,...)
 {
 	va_list ap;

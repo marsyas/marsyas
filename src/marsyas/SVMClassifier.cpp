@@ -229,10 +229,8 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				exit(1);
 			}
 			
-			cout << "Starting training" << endl;
 			
 			svm_model_ = svm_train(&svm_prob_, &svm_param_);
-			cout << "Done training" << endl;
 			
 			
 			trained_ = true;
