@@ -126,6 +126,7 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 		pweightCenterFreq_ != ctrl_weightCenterFreq_->to<mrs_real>() ||
 		pweightStdDev_ != ctrl_weightStdDev_->to<mrs_real>() )
 	{
+
 		pmiddleAfreq_ = ctrl_middleAfreq_->to<mrs_real>();
 		pweightCenterFreq_ = ctrl_weightCenterFreq_->to<mrs_real>();
 		pweightStdDev_ = ctrl_weightStdDev_->to<mrs_real>();
@@ -144,7 +145,8 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 		realvec fftfreqbins(N2);
 		for(o=1; o < N2; ++o)
 		{
-			fftfreqbins(o) = nbins * hertz2octs(o / N * srate, ctrl_middleAfreq_->to<mrs_real>());
+			fftfreqbins(o) = nbins * hertz2octs(o * 1.0 / N * srate, ctrl_middleAfreq_->to<mrs_real>());
+			
 		}
 		fftfreqbins(0) = fftfreqbins(1)-1.5*nbins;
 
@@ -219,6 +221,7 @@ Spectrum2Chroma::myProcess(realvec& in, realvec& out)
 	//input must contain spectral magnitude/power/density/etc
 	//(e.g. output of PowerSpectrum MarSystem)
 
+	
 	out.setval(0.0);
 	for(t=0; t< inSamples_; ++t)
 	{
@@ -227,9 +230,12 @@ Spectrum2Chroma::myProcess(realvec& in, realvec& out)
 			for(mrs_natural i=0; i< inObservations_; ++i)
 			{
 				out(o,t)+= in(i,t)*chromaMap_(o,i);
+
+				
 			}
 		}
 	}
+
 	MATLAB_PUT(in, "spectrum");
 	MATLAB_PUT(out,"marChromaVec");
 	MATLAB_EVAL("chromaVec = CM*spectrum;");

@@ -57,6 +57,7 @@ mrs_bool playback = false;
 mrs_bool stereo_ = false;
 mrs_bool spsf_ = false;
 mrs_bool mfcc_ = false;
+mrs_bool chroma_ = false;
 mrs_bool sfm_ = false;
 mrs_bool scf_ = false;
 
@@ -1869,6 +1870,8 @@ selectClassifier(MarSystem *msys,string classifierName )
 void 
 selectFeatureSet(MarSystem *featExtractor)
 {
+	if (chroma_)
+		featExtractor->updctrl("mrs_string/enableSPChild", "Spectrum2Chroma/chroma");
 	if (mfcc_) 
 		featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
 	if (sfm_) 
@@ -1900,6 +1903,8 @@ selectFeatureSet(MarSystem *featExtractor)
 		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
+		featExtractor->updctrl("mrs_string/enableSPChild", "Spectrum2Chroma/chroma");
+		
 	}
 }
 
@@ -2115,7 +2120,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	// load the collection which is automatically created by bextract 
 	// based on the command-line arguments 
-	bextractNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
+	
+	if (workspaceDir != EMPTYSTRING)
+		bextractNetwork->updctrl("mrs_string/filename", workspaceDir + "bextract_single.mf");		
+	else
+		bextractNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
 
 	// play sound if playback is enabled 
 	if (pluginName != EMPTYSTRING && playback) 
@@ -2138,6 +2147,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	if (wekafname != EMPTYSTRING)
 	{
 		bextractNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+
+		if (workspaceDir != EMPTYSTRING) 
+		{
+			wekafname = workspaceDir + wekafname;
+		}
 		bextractNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  		    
 	}
 
@@ -2204,8 +2218,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			m.read(testCollection);
 
 			Collection l;
-			l.read("bextract_single.mf");
-			
+			if (workspaceDir != EMPTYSTRING)
+				l.read(workspaceDir + "bextract_single.mf");				
+			else 
+				l.read("bextract_single.mf");				
 			bextractNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);			
 
 			if (wekafname != EMPTYSTRING) 
@@ -2586,6 +2602,7 @@ initOptions()
 	// feature selection options
 	cmd_options.addBoolOption("StereoPanningSpectrumFeatures", "spsf", false);
 	cmd_options.addBoolOption("MelFrequencyCepstralCoefficients","mfcc", false);
+	cmd_options.addBoolOption("Chroma", "chroma", false);
 	cmd_options.addBoolOption("SpectralFlatnessMeasure","sfm", false);
 	cmd_options.addBoolOption("SpectralCrestFactor","scf", false);
 	cmd_options.addBoolOption("SpectralCentroid","ctd", false);
@@ -2629,6 +2646,7 @@ loadOptions()
 	// feature selection options 
 	spsf_ = cmd_options.getBoolOption("StereoPanningSpectrumFeatures");
 	mfcc_ = cmd_options.getBoolOption("MelFrequencyCepstralCoefficients");
+	chroma_ = cmd_options.getBoolOption("Chroma");
 	sfm_ = cmd_options.getBoolOption("SpectralFlatnessMeasure");
 	scf_ = cmd_options.getBoolOption("SpectralCrestFactor");
 	ctd_ = cmd_options.getBoolOption("SpectralCentroid");
@@ -2654,7 +2672,8 @@ loadOptions()
 		(zcrs_ == false) &&
 		(timbralFeatures_ == false) &&
 		(lsp_ == false) &&
-		(lpcc_ == false))
+		(lpcc_ == false) &&
+		(chroma_ ==false))
 	{
 		timbralFeatures_ = true;
 	}
@@ -2959,7 +2978,8 @@ main(int argc, const char **argv)
 
 	Collection single;
 	single.concatenate(cls);
-	single.write("bextract_single.mf");
+	if (workspaceDir != EMPTYSTRING) 
+		single.write(workspaceDir + "bextract_single.mf");
 
 	string extractorStr = extractorName;
 
