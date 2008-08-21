@@ -1903,7 +1903,6 @@ selectFeatureSet(MarSystem *featExtractor)
 		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
-		featExtractor->updctrl("mrs_string/enableSPChild", "Spectrum2Chroma/chroma");
 		
 	}
 }
@@ -2980,6 +2979,9 @@ main(int argc, const char **argv)
 	single.concatenate(cls);
 	if (workspaceDir != EMPTYSTRING) 
 		single.write(workspaceDir + "bextract_single.mf");
+	else 
+		single.write("bextract_single.mf");
+	
 
 	string extractorStr = extractorName;
 
