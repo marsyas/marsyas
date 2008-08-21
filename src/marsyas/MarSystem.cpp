@@ -435,7 +435,9 @@ MarSystem::getChildMarSystem(std::string childPath)
 				//a matching child was found!
 				if(childPath.length() == prefix.length())
 					return (*msysIter);
-				else
+				//The prefix may be the same, but we still need to check that the next char is a /
+            			// Otherwise in the case of system Sys1, and Sys10, it will appear that Sys10 is the child Sys1
+            			else if (childPath.length() > prefix.length() && childPath.substr(prefix.length() , 1) == "/")
 				{
 					//remove parent prefix from childPath, and continue searching recursively in children
 					childPath = childPath.substr(prefix.length()+1,childPath.length());
