@@ -253,6 +253,11 @@ SoundFileSource::checkType()
 		delete src_;
 		src_ = new RawFileSource(getName());
 	}	
+	else if (ext == ".txt") 
+	{
+		delete src_;
+		src_ = new CollectionFileSource(getName());
+	}
 	else if (ext == ".mf") 
 	{
 		delete src_;
