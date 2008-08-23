@@ -655,6 +655,107 @@ toy_with_onsets(string sfName)
 	}
 }
 
+
+void 
+toy_with_train_predict(string trainFileName, string testFileName)
+{
+	cout << "Toying with train: " << trainFileName
+		 << " and predict: " << testFileName << endl;
+
+
+	MarSystemManager mng;
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The network that we will use to train and predict
+  //
+  MarSystem* net = mng.create("Series", "series");
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The WekaSource we read the train and test .arf files into
+  //
+  net->addMarSystem(mng.create("WekaSource", "wsrc"));
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The classifier
+  //
+  MarSystem* classifier = mng.create("Classifier", "cl");
+  net->addMarSystem(classifier);
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Which classifier function to use
+  //
+  string classifier_ = "SVM";
+  if (classifier_ == "GS")
+	net->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+  if (classifier_ == "ZEROR") 
+	net->updctrl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
+  if (classifier_ == "SVM")   
+    net->updctrl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The training file we are feeding into the WekaSource
+  //
+  net->updctrl("WekaSource/wsrc/mrs_string/filename", trainFileName);
+  net->updctrl("mrs_natural/inSamples", 1);
+
+  ////////////////////////////////////////////////////////////
+  
+
+ ////////////////////////////////////////////////////////////
+  //
+  // Set the classes of the Summary and Classifier to be
+  // the same as the WekaSource
+  //
+  net->updctrl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->linkctrl("Classifier/cl/mrs_string/mode", "train");  
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Tick over the training WekaSource until all lines in the
+  // training file have been read.
+  //
+  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+	string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
+  	net->tick();
+	net->updctrl("Classifier/cl/mrs_string/mode", mode);
+  }
+
+
+ ////////////////////////////////////////////////////////////
+  //
+  // Predict the classes of the test data
+  //
+  net->updctrl("WekaSource/wsrc/mrs_string/filename", testFileName);
+  net->updctrl("Classifier/cl/mrs_string/mode", "predict");  
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Tick over the test WekaSource until all lines in the
+  // test file have been read.
+  //
+  realvec data;
+  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+   	net->tick();
+   	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+//  	cout << classNames[(int)data(0,0)] << endl;
+	cout << data(0,0) << endl;
+  }
+
+  // sness - hmm, I really should be able to delete net, but I get a 
+  // coredump when I do.  Maybe I need to destroy something else first?
+  delete net;
+	
+
+}
+
+
+
+
 void
 toy_with_simpleSFPlay(string sfName)
 {
@@ -4247,6 +4348,8 @@ main(int argc, const char **argv)
 		toy_with_power(fname0);
 	else if (toy_withName == "phisem")
 		toy_phisem();
+	else if (toy_withName == "train_predict")
+		toy_with_train_predict(fname0, fname1);
 	else if (toy_withName == "windowedsource")
 		toy_with_windowedsource(fname0);
 	else if (toy_withName == "radiodrum")

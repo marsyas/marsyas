@@ -118,7 +118,10 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	// create the phasevocoder network
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 	pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
-	pvseries->addMarSystem(mng.create("PhaseVocoder", "pvoc"));
+	if (oscbank_) 
+		pvseries->addMarSystem(mng.create("PhaseVocoderOscBank", "pvoc"));		
+	else 
+		pvseries->addMarSystem(mng.create("PhaseVocoder", "pvoc"));
 	pvseries->addMarSystem(mng.create("SoundFileSink", "dest"));
 	
 						   

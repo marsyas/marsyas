@@ -101,7 +101,6 @@ PvOscBank::myUpdate(MarControlPtr sender)
 void 
 PvOscBank::myProcess(realvec& in, realvec& out)
 {
-	cout << "OSCBANK " << endl;
 	
 	//checkFlow(in,out);
 	temp_.setval(0.0);
@@ -113,19 +112,26 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		NP_ = N_;
 
 	Iinv_ = (mrs_real)(1.0 / I_);
-	Pinc_ = P_ * L_ / R_;
-  
-
-	// FIXME This variable is defined but (possibly) unused.
-	// bool flag = false;
-
-
-	Nw_ = getctrl("mrs_natural/winSize")->to<mrs_natural>();
+	Pinc_ = P_ * L_ / TWOPI;
+	// Pinc_ = P_ * L_ / R_;
 	
-  
+
+	
+	Nw_ = getctrl("mrs_natural/winSize")->to<mrs_natural>();
+
+	mrs_real omega_k;
+	
+     
 	for (t=0; t < NP_; t++)
 	{
+
+		omega_k = (TWOPI * t) / ((NP_-1)*2) ;
+
+
+		in(2*t+1,0) += omega_k;
 		in(2*t+1,0) *= Pinc_;
+
+		
 		
 		f_ = lastfreq_(t);
 		finc_ = (in(2*t+1,0) - f_)*Iinv_;
@@ -158,8 +164,9 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		}
 		
 		index_(t) = address_;	  
-		lastamp_(t) = in(2*t,0);
+		lastamp_(t) = in(2*t,0) ;
 		lastfreq_(t) = in(2*t+1, 0);
+		
 	}
 
 	

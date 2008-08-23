@@ -596,6 +596,34 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhaseVocoder", pvocpr);
 
 
+	
+	MarSystem* pvocpr1 = new Series("pvocpr1");
+	pvocpr1->addMarSystem(new ShiftInput("si"));
+	pvocpr1->addMarSystem(new PvFold("fo"));
+	pvocpr1->addMarSystem(new Spectrum("spk"));
+	pvocpr1->addMarSystem(new PvConvert("conv"));
+	pvocpr1->addMarSystem(new PvOscBank("pob"));
+	pvocpr1->addMarSystem(new ShiftOutput("so")); 
+		
+	pvocpr1->linkctrl("ShiftInput/si/mrs_natural/winSize", 
+					   "mrs_natural/winSize");
+	pvocpr1->linkctrl("PvFold/fo/mrs_natural/Decimation", 
+					  "mrs_natural/Decimation");
+	pvocpr1->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
+					  "mrs_natural/Decimation");
+	pvocpr1->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 
+					  "mrs_natural/Interpolation");
+	pvocpr1->linkctrl("PvFold/fo/mrs_natural/FFTSize", 
+					  "mrs_natural/FFTSize");
+	pvocpr1->linkctrl("PvConvert/conv/mrs_natural/Sinusoids",
+					  "mrs_natural/Sinusoids");
+	pvocpr1->linkctrl("PvConvert/conv/mrs_string/mode", 
+					  "mrs_string/convertMode");
+
+
+	registerPrototype("PhaseVocoderOscBank", pvocpr1);
+
+
 	//--------------------------------------------------------------------------------
 	// prototype for pitch Extraction using SACF
 	//--------------------------------------------------------------------------------

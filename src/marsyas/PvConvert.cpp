@@ -217,14 +217,21 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 {
 
 
+	
+
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
+
+	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
+	mrs_real one_over_decimation = 1.0 / decimation;
 
 
 	mrs_natural N2 = inObservations_/2;
 	mrs_real a;
 	mrs_real b;
 	mrs_real phasediff;
+
+	mrs_real omega_k;
 
 	// handle amplitudes
 	for (t=0; t <= N2; t++)
@@ -275,9 +282,11 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		out(2*t,0) = 0.0;
 		out(2*t+1,0) = t * fundamental_;
 
-		phasediff = phases(t) - lastphase_(t);
-		lastphase_(t) = phases(t);	
+		omega_k = (TWOPI * t) / (N2*2) ;
 
+		phasediff = phases(t) - lastphase_(t) - decimation * omega_k;
+		lastphase_(t) = phases(t);	
+		
 		// phase unwrapping 
 		while (phasediff > PI) 
 			phasediff -= TWOPI;
@@ -292,11 +301,13 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 			{
 				out(2*t,0) = val;
 			}
-			out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
+			out(2*t+1, 0) = omega_k + one_over_decimation * phasediff;
+			// out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
 		}
 		else 
 		{
-			out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
+			out(2*t+1, 0) = omega_k + one_over_decimation * phasediff;
+			// out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
 		}
 	}
 }
