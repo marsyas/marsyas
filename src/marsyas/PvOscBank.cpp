@@ -60,6 +60,7 @@ PvOscBank::addControls()
 void
 PvOscBank::myUpdate(MarControlPtr sender)
 {
+	
 	(void) sender;
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/winSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -67,9 +68,9 @@ PvOscBank::myUpdate(MarControlPtr sender)
 
 	//defaultUpdate();
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	
 	size_ = inObservations_/2;
-
 	temp_.create(getctrl("mrs_natural/winSize")->to<mrs_natural>());
 	
 
@@ -105,6 +106,10 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	//checkFlow(in,out);
 	temp_.setval(0.0);
 
+
+
+
+	
   
 	if (P_ > 1.0)
 		NP_ = (mrs_natural)(N_/P_);
@@ -126,9 +131,6 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	{
 
 		omega_k = (TWOPI * t) / ((NP_-1)*2) ;
-
-
-		in(2*t+1,0) += omega_k;
 		in(2*t+1,0) *= Pinc_;
 
 		
@@ -177,7 +179,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		temp_(t) = temp_(t+I_);
 	for (t=Nw_-I_; t<Nw_; t++) 
 		temp_(t) = 0.0;
-	
+	 
 	
 
 }

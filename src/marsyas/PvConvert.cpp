@@ -218,7 +218,7 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 
 
 	
-
+	
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
 
@@ -265,6 +265,7 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 	bool found;
 	mrs_real val;
 
+
 	for (t=0; t <= N2; t++)
 	{
 		found = false;
@@ -283,8 +284,9 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		out(2*t+1,0) = t * fundamental_;
 
 		omega_k = (TWOPI * t) / (N2*2) ;
-
+		
 		phasediff = phases(t) - lastphase_(t) - decimation * omega_k;
+		// phasediff = phases(t) - lastphase_(t);
 		lastphase_(t) = phases(t);	
 		
 		// phase unwrapping 

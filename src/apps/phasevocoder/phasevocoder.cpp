@@ -119,24 +119,43 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	MarSystem* pvseries = mng.create("Series", "pvseries");
 	pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
 	if (oscbank_) 
+	{
 		pvseries->addMarSystem(mng.create("PhaseVocoderOscBank", "pvoc"));		
+		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/winSize", Nw);
+		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/FFTSize", N);
+		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/Decimation", D);
+		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/Sinusoids", 
+						  (mrs_natural)sopt);
+		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_string/convertMode", convertmode_);
+		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_string/unconvertMode",
+						  unconvertmode_);
+
+		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_real/PitchShift", P);
+	}
+	
 	else 
+	{
 		pvseries->addMarSystem(mng.create("PhaseVocoder", "pvoc"));
+		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/winSize", Nw);
+		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/FFTSize", N);
+		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation", I);
+		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Decimation", D);
+		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Sinusoids", 
+						  (mrs_natural)sopt);
+		pvseries->updctrl("PhaseVocoder/pvoc/mrs_string/convertMode", convertmode_);
+		pvseries->updctrl("PhaseVocoder/pvoc/mrs_string/unconvertMode",
+						  unconvertmode_);
+	}
+	
+
+
 	pvseries->addMarSystem(mng.create("SoundFileSink", "dest"));
 	
 						   
 	pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	pvseries->updctrl("mrs_natural/inSamples", D);
 	
-	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/winSize", Nw);
-	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/FFTSize", N);
-	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation", I);
-	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Decimation", D);
-	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Sinusoids", 
-					  (mrs_natural)sopt);
-	pvseries->updctrl("PhaseVocoder/pvoc/mrs_string/convertMode", convertmode_);
-	pvseries->updctrl("PhaseVocoder/pvoc/mrs_string/unconvertMode",
-					  unconvertmode_);
 	
 	pvseries->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
 

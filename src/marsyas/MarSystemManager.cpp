@@ -554,6 +554,7 @@ MarSystemManager::MarSystemManager()
 					   "mrs_natural/winSize");
 		pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/winSize", 
 					   "mrs_natural/winSize");
+
 		pvocpr->linkctrl("PvFold/fo/mrs_natural/Decimation", 
 					   "mrs_natural/Decimation");
 		pvocpr->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
@@ -607,6 +608,10 @@ MarSystemManager::MarSystemManager()
 		
 	pvocpr1->linkctrl("ShiftInput/si/mrs_natural/winSize", 
 					   "mrs_natural/winSize");
+
+	pvocpr->linkctrl("PvOscBank/pob/mrs_natural/winSize", 
+					 "mrs_natural/winSize");
+
 	pvocpr1->linkctrl("PvFold/fo/mrs_natural/Decimation", 
 					  "mrs_natural/Decimation");
 	pvocpr1->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
@@ -619,7 +624,12 @@ MarSystemManager::MarSystemManager()
 					  "mrs_natural/Sinusoids");
 	pvocpr1->linkctrl("PvConvert/conv/mrs_string/mode", 
 					  "mrs_string/convertMode");
+	pvocpr1->linkctrl("PvOscBank/pob/mrs_natural/Interpolation", 
+					  "mrs_natural/Interpolation");
 
+
+	pvocpr1->linkctrl("PvOscBank/pob/mrs_real/PitchShift", 
+					  "mrs_real/PitchShift");
 
 	registerPrototype("PhaseVocoderOscBank", pvocpr1);
 
