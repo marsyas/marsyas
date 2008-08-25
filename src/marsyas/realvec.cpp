@@ -42,9 +42,6 @@ realvec::realvec()
 
 realvec::~realvec()
 {
-	if (size_ == 0)
-		data_ = NULL;
-
 	delete [] data_;
 	data_ = NULL;
 }
@@ -87,8 +84,10 @@ realvec::operator=(const realvec& a)
 {
 	if (this != &a)
 	{
+		
+		
 		//check if we need to allocate more memory
-		if (allocatedSize_ < a.size_)
+		if ((allocatedSize_ < a.size_)||(a.size_ == 0))
 		{
 			//if data_ is not NULL, delete it
 			delete [] data_;
@@ -112,7 +111,7 @@ realvec::operator=(const realvec& a)
 		
 		//update internal parameters
 		size_ = a.size_;
-		//allocatedSize_ = a.allocatedSize_; //!!
+		allocatedSize_ = a.size_;
 		rows_ = a.rows_;
 		cols_ = a.cols_;
 	}

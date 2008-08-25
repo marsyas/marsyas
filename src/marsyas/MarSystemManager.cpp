@@ -339,6 +339,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Gain", new Gain("gp"));
 	// Please leave Gain at the end; it makes scripts happy.
 
+
+
+	
 	//***************************************************************************************
 	//				Composite MarSystem prototypes
 	//***************************************************************************************
