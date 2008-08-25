@@ -1,8 +1,3 @@
-## setup OS_LIBS
-include(marsyas-osincludes)
-include(marsyas-oslibs)
-
-
 ## BUILD MACRO
 macro (marsyas_app APP APP_SOURCES)
 add_executable(${APP} ${APP_SOURCES})

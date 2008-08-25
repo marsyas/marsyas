@@ -1,7 +1,3 @@
-## setup OS_LIBS
-include(marsyas-oslibs)
-
-
 ## global includes
 include_directories(${CMAKE_SOURCE_DIR}/marsyasqt/)
 

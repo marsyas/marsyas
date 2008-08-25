@@ -1,26 +1,3 @@
-## library includes
-include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
-list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
-
-if (MARSYAS_AUDIOIO)
-	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.cpp)
-	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.cpp)
-endif (MARSYAS_AUDIOIO)
-
-if (MARSYAS_MIDIIO)
-	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.cpp)
-endif (MARSYAS_MIDIIO)
-
-
-if (MARSYAS_MAD)
-	include_directories(${mad_INCLUDE_DIR})
-endif (MARSYAS_MAD)
-
-if (MARSYAS_MATLAB) 
-	include_directories(${MATLAB_INCLUDE_DIR})
-endif (MARSYAS_MATLAB)
-
-
 ## OS-specific
 if (MARSYAS_MACOSX)
 	if (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
@@ -73,5 +50,24 @@ if (MARSYAS_WIN32)
 endif (MARSYAS_WIN32)
 
 
+## setup Marsyas includes
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/)
+
+if (MARSYAS_AUDIOIO) 
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
+endif (MARSYAS_AUDIOIO) 
+
+if (MARSYAS_MIDIIO) 
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
+endif (MARSYAS_MIDIIO) 
+
+
+## from user options
+if (MARSYAS_MATLAB) 
+	include_directories(${MATLAB_INCLUDE_DIR})
+endif (MARSYAS_MATLAB)
+
+## basic library includes
+include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
 
 

@@ -9,13 +9,7 @@
 /************************************************************************/
 /*      common includes			                                            */
 /************************************************************************/
-#if HAVE_CONFIG_H 
-#include <marsyas/config.h>
-#endif 
-
-#if CMAKE_CONFIG_H
 #include "config.h"
-#endif
 
 #include <cstdio> 
 #include <sys/types.h> 

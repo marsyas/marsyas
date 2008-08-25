@@ -233,11 +233,6 @@ set( MarSystem_SOURCES
 
 )
 
-if(GSTREAMER_FOUND)
-  set(MarSystem_SOURCES GStreamerSource.cpp gst-decode.cpp ${MarSystem_SOURCES})
-  include_directories(${GSTREAMER_INCLUDE_DIRS})
-endif(GSTREAMER_FOUND)
-
 set(Marsyas_HEADERS
   MarSystemManager.h
   MarSystem.h
@@ -262,10 +257,6 @@ set(Marsyas_HEADERS
   AudioSink.h
 )
 
-
-## OTHERLIBS
-include (marsyas-osincludes)
-
 ## maybe -- necessary to make the .h files show up in MSVC
 ## I don't think it's worth listing them all.  -gp
 if (WIN32)
@@ -275,8 +266,34 @@ if (WIN32)
 endif (WIN32)
 
 
-## ACTUAL BUILD
+## OTHERLIBS
+if (MARSYAS_MAD)
+	include_directories(${mad_INCLUDE_DIR})
+endif (MARSYAS_MAD)
 
+if (GSTREAMER_FOUND)
+  include_directories(${GSTREAMER_INCLUDE_DIRS})
+endif (GSTREAMER_FOUND)
+
+
+
+list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
+
+if (MARSYAS_AUDIOIO)
+	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.cpp)
+	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.cpp)
+endif (MARSYAS_AUDIOIO)
+
+if (MARSYAS_MIDIIO)
+	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.cpp)
+endif (MARSYAS_MIDIIO)
+
+if (GSTREAMER_FOUND)
+	list(APPEND MarSystem_SOURCES GStreamerSource.cpp gst-decode.cpp)
+endif (GSTREAMER_FOUND)
+
+
+## ACTUAL BUILD
 add_library(marsyas STATIC ${MarSystem_SOURCES} )
 
 ## LINKING
@@ -295,6 +312,7 @@ endif (MARSYAS_MATLAB)
 if (GSTREAMER_FOUND)
 	TARGET_LINK_LIBRARIES(marsyas ${GSTREAMER_LIBRARIES})
 endif (GSTREAMER_FOUND)
+
 
 ## INSTALLING
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)

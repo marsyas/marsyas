@@ -27,7 +27,7 @@ regression_audio( sfplay right.wav right-sfplay.au sfplay "${NEXT_COMMAND}")
 
 # current broken  :(
 set( NEXT_COMMAND
-	-q -p 1.5 -s 50 -g 0.9 -f phasevocoder.au
+	-q -p 1.5 -s 50 -g 0.9 -ob -f phasevocoder.au
 )
 regression_audio (phasevocoder right.wav right-phasevocoder.au
 	phasevocoder "${NEXT_COMMAND}")

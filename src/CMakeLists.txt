@@ -11,6 +11,15 @@ if (APPLE)
 	mark_as_advanced (CMAKE_OSX_SYSROOT)
 endif (APPLE)
 
+set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
+set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Release CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
 
 ## find OS
 if(UNIX)
@@ -45,16 +54,15 @@ include (marsyas-options)
 ## detect packages
 include (marsyas-detect)
 
-
 ## CONFIG.H
 configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/config.h)
 include_directories(${CMAKE_BINARY_DIR})
-##### temp -- will be deleted when we get rid of autoconf
-add_definitions(-DCMAKE_CONFIG_H)
 
+## setup includes
+include (marsyas-includes)
 
-## global defines
-include (marsyas-global)
+## setup oslibs
+include (marsyas-oslibs)
 
 
 ## next level
@@ -81,4 +89,5 @@ endif (VAMP_FOUND)
 ## tests, for verification
 enable_testing()
 add_subdirectory (tests)
+
 
