@@ -1,5 +1,0 @@
-# two columns: command	<TAB>	answer file
-# comments are #, obviously.
-#     %CD = coffee_dir
-
-

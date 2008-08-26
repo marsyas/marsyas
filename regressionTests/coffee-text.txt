@@ -1,8 +1,0 @@
-# two columns: command	<TAB>	answer file
-# comments are #, obviously.
-#     %CD = coffee_dir
-regressionChecks -t transcriber %CD/transcription/studentscale.wav > out.txt	../answers/transcriber-studentscale.txt
-### comment out potential bextract tests
-#bextract -e STFTMFCC %CD/classification/music-speech/music-speech.mf -p %CD/classification/music-speech/classify.mpl 
-#sfplugin -p %CD/classification/music-speech/classify.mpl %CD/classification/music-speech/classify-audio/debussy.au
-

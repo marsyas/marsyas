@@ -28,9 +28,14 @@ endif (MARSYAS_LINUX)
 
 if (MARSYAS_WIN32)
 	if (MARSYAS_AUDIOIO)
-		list (APPEND OS_LIBS ${DSOUND_LIBRARY})
+		if (ASIO)
+			# FIXME: insert ASIO library here!
+		else (ASIO)
+			list (APPEND OS_LIBS ${DSOUND_LIBRARY})
+		endif (ASIO)
 	endif (MARSYAS_AUDIOIO)
 	if (MARSYAS_MIDIIO)
+		# FIXME: insert windows MIDI library here!
 	endif (MARSYAS_MIDIIO)
 endif (MARSYAS_WIN32)
 

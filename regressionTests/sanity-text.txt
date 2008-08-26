@@ -1,6 +1,0 @@
-# two columns: command	<TAB>	answer file
-# comments are #, obviously.
-#sfinfo right.wav > out.txt	right-sfinfo.txt
-#pitchextract right.wav > out.txt	right-pitchextract.txt
-regressionChecks -t pitch sine1000-5.wav > out.txt	../answers/sine-pitch.txt
-
