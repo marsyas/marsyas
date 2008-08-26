@@ -11,6 +11,10 @@ if (MARSYAS_LINUX)
 	option(OSS "[LINUX ONLY] Use OSS instead of ALSA" OFF)
 endif (MARSYAS_LINUX)
 
+if (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
+	option(ASIO "[WINDOWS ONLY] Use ASIO instead of DirectSound" OFF)
+endif (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
+
 
 ## OPTIONAL CODE
 option(BUILD_APPS "Build the applications" ON)
