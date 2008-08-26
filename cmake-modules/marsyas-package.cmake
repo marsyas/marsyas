@@ -1,4 +1,5 @@
 set( CPACK_GENERATOR TBZ2)
+set( CPACK_SOURCE_GENERATOR TBZ2)
 
 include(CPack)
 
