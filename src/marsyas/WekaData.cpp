@@ -17,6 +17,7 @@ WekaData::WekaData():cols_(0),rows_(0)
 
 WekaData::~WekaData()
 {
+ 	Clear();
 }
 
 //create the table. Will clear contents first and fix the number of columns.
@@ -187,16 +188,16 @@ void WekaData::Sort(mrs_natural attr)
 void WekaData::Append(const realvec& in)
 {
 	MRSASSERT(in.getRows()==cols_);
-	vector<mrs_real> *data = new vector<mrs_real>(cols_);
+	data_ = new vector<mrs_real>(cols_);
 	// skip feature vectors labeled with negative labels
 	
 	if (in(in.getRows()-1, 0) >=0)
 	{
 		for(mrs_natural ii=0; ii<in.getRows(); ii++)
 		{
-			data->at(ii) = in(ii, 0);
+			data_->at(ii) = in(ii, 0);
 		}
-		Append(data);
+		Append(data_);
 	}
 	
 }

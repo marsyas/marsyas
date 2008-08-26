@@ -64,6 +64,7 @@ private:
 	mrs_natural rows_;
 	realvec minimums_;
 	realvec maximums_;
+	std::vector<mrs_real> *data_;
 	//some sorting private functions
 	void quickSort(mrs_natural attIndex, mrs_natural left, mrs_natural right);
 	void swapRows(mrs_natural l, mrs_natural r);

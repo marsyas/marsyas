@@ -90,7 +90,16 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 }
 
 SVMClassifier::~SVMClassifier() {
-
+	if (svm_model_ != NULL) 
+	{ 
+	   free(svm_model_->rho);
+	   free(svm_model_->probA);
+	   free(svm_model_->probB);
+	   free(svm_model_->label);
+	   free(svm_model_->nSV);
+	   free(svm_model_->SV);
+	   free(svm_model_->sv_coef);
+	} 
 	free(svm_model_);
 
 }

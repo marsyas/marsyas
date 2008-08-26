@@ -2225,6 +2225,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	{
 		if (single_vector)
 		{
+		 	featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", true);
 			
 			Collection m;
 			m.read(testCollection);
