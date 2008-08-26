@@ -91,3 +91,7 @@ enable_testing()
 add_subdirectory (tests)
 
 
+## packaging
+include(marsyas-package)
+
+
