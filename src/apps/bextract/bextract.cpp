@@ -1916,8 +1916,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	cout << "BEXTRACT REFACTORED" << endl;
 	MarSystemManager mng;
 
+
 	// Overall extraction and classification network 
 	MarSystem* bextractNetwork = mng.create("Series", "bextractNetwork");
+
 
 	// Build the overall feature calculation network 
 	MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
@@ -1925,6 +1927,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// Add a sound file source (which can also read collections)
 	MarSystem *src = mng.create("SoundFileSource", "src");
 	featureNetwork->addMarSystem(src);
+
 
 	// Add a TimelineLabeler, if necessary
 	if(tline)
@@ -1964,6 +1967,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
 	featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
 
+
+
 	// Use accumulator if computing single vector / file 
 	if (single_vector)
 	{
@@ -1977,6 +1982,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		song_statistics->addMarSystem(mng.create("Mean", "mn"));
 		song_statistics->addMarSystem(mng.create("StandardDeviation", "std"));
 		bextractNetwork->addMarSystem(song_statistics);
+
+
+
+
 		bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename",
 			"mrs_string/filename");
 		bextractNetwork->linkctrl("mrs_bool/notEmpty", 
@@ -2076,6 +2085,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->addMarSystem(mng.create("Classifier", "cl"));
 	bextractNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
+
+
 	// link confidence and annotation with SoundFileSource that plays the collection 
 	bextractNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
 		"mrs_string/filename");
@@ -2158,6 +2169,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	MarControlPtr ctrl_notEmpty = bextractNetwork->getctrl("mrs_bool/notEmpty");
 	MarControlPtr ctrl_currentlyPlaying = bextractNetwork->getctrl("mrs_string/currentlyPlaying");
 	mrs_string previouslyPlaying, currentlyPlaying;
+
+
 
 	while (ctrl_notEmpty->to<mrs_bool>())
 	{
@@ -2258,6 +2271,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			}
 		}
 	}
+
+
+
+	delete bextractNetwork;
+	return;
 }
 
 
