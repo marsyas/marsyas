@@ -24,6 +24,21 @@ using namespace Marsyas;
 
 SVMClassifier::SVMClassifier(string name) :
 	MarSystem("SVMClassifier", name) {
+	training_ = true;
+	was_training_ = false;
+	trained_ = false;
+	kernel_ = LINEAR;
+	svm_ = C_SVC;
+	// svm_model_ = Malloc(svm_model,1);
+	svm_model_ = NULL;
+/* 	svm_model_->rho = NULL;
+	svm_model_->probA = NULL;
+	svm_model_->probB = NULL;
+	svm_model_->label = NULL;
+	svm_model_->nSV = NULL;
+	svm_model_->SV = NULL;
+	svm_model_->sv_coef = NULL;
+*/ 
 	addControls();
 }
 
@@ -34,15 +49,16 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 	trained_ = false;
 	kernel_ = LINEAR;
 	svm_ = C_SVC;
-	svm_model_ = Malloc(svm_model,1);
-	svm_param_ = svm_model_->param;
-	svm_model_->rho = NULL;
+	// svm_model_ = Malloc(svm_model,1);
+	svm_model_ = NULL;
+/* 	svm_model_->rho = NULL;
 	svm_model_->probA = NULL;
 	svm_model_->probB = NULL;
 	svm_model_->label = NULL;
 	svm_model_->nSV = NULL;
 	svm_model_->SV = NULL;
 	svm_model_->sv_coef = NULL;
+*/ 
 
 	ctrl_sv_coef_ = getctrl("mrs_realvec/sv_coef");
 	ctrl_SV_ = getctrl("mrs_realvec/SV");
@@ -74,6 +90,9 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 }
 
 SVMClassifier::~SVMClassifier() {
+
+	free(svm_model_);
+
 }
 
 MarSystem* SVMClassifier::clone() const {
