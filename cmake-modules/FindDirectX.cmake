@@ -12,10 +12,9 @@ if (WIN32)
 #	find_library(dsound_LIBRARY NAMES dsound
 	find_library(dsound_LIBRARY dsound
 		PATHS	
-			"$ENV{DXSDK_DIR}/Lib"
+			"$ENV{DXSDK_DIR}/Lib/x86"
 			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK/Lib"
 		DOC "The directory where dsound.h resides"
-
 	)
 	mark_as_advanced(dsound_LIBRARY)
 
