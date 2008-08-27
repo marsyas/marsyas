@@ -46,7 +46,7 @@ if (WITH_VORBIS)
 endif (WITH_VORBIS)
 
 if (WITH_MATLAB) 
-	find_package(matlab REQUIRED)
+	find_package(Matlab REQUIRED)
 	# workaround for broken FindMatlab.cmake
 	if (NOT MATLAB_FOUND)
 		message(FATAL_ERROR "FAILED to found Matlab")
