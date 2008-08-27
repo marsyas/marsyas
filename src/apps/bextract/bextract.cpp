@@ -2250,7 +2250,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				bextractNetwork->tick();
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
 				cout << "Predicting " << m.entry(i) << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
-				prout << m.entry(i) << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				// prout << m.entry(i) << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
 			}
 			
 		}

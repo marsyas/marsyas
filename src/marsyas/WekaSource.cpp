@@ -201,6 +201,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 				for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ii++)
 				{
 					WekaFoldData data;
+					data.setFold(true);
 					data.SetupkFoldSections(data_, foldCount_, ii);
 					foldClassData_[ii] = data;
 				}

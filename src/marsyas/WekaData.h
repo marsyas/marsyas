@@ -59,7 +59,13 @@ public:
  	mrs_realvec GetMinimums()const;
  	mrs_realvec GetMaximums()const;
 
+		void setFold(bool);				// data is used for a fold 
+		                                // don't Clear 
+		
+
 private:
+		mrs_bool isFold_;
+		
 	mrs_natural cols_;
 	mrs_natural rows_;
 	realvec minimums_;
@@ -69,6 +75,7 @@ private:
 	void quickSort(mrs_natural attIndex, mrs_natural left, mrs_natural right);
 	void swapRows(mrs_natural l, mrs_natural r);
 	mrs_natural partition(mrs_natural attIndex, mrs_natural l, mrs_natural r);
+		
 };//class WekaData
 }
 #endif

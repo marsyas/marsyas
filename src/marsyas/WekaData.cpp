@@ -11,14 +11,28 @@ using namespace Marsyas;
 //It is also assumed that the last column of each row is the class attribute.
 //All data items are mrs_real, including the class attribute, however the class
 //attribute should be interpreted as an mrs_natural.
-WekaData::WekaData():cols_(0),rows_(0)
+WekaData::WekaData():cols_(0),rows_(0), isFold_(false)
 {
 }
 
 WekaData::~WekaData()
 {
- 	Clear();
+
+	// if it is a fold then the pointers refers 
+	// to rows in the original data so the data 
+	// they point to doesn't need to be deallocated 
+	// The "original" WekaData for which the folds 
+	// where computed takes care of it 
+	if (!isFold_) 						
+		Clear();
 }
+
+void 
+WekaData::setFold(bool isFold) 
+{
+	isFold_ = isFold;
+}
+
 
 //create the table. Will clear contents first and fix the number of columns.
 void WekaData::Create(mrs_natural cols)
