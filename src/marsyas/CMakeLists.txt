@@ -272,11 +272,12 @@ if (MARSYAS_MAD)
 endif (MARSYAS_MAD)
 
 if (MARSYAS_VORBIS)
+	message(STATUS ${VORBIS_INCLUDE_DIR})
 	include_directories(${VORBIS_INCLUDE_DIR})
 endif (MARSYAS_VORBIS)
 
 if (GSTREAMER_FOUND)
-  include_directories(${GSTREAMER_INCLUDE_DIRS})
+	include_directories(${GSTREAMER_INCLUDE_DIRS})
 endif (GSTREAMER_FOUND)
 
 
