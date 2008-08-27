@@ -7,9 +7,8 @@ to start distributing binaries)
 
 CMAKE BROKENNESS
 
-- fix FindDirectX.cmake (if necessary) and update docs.
-
-- fix FindMatlab
+- fix FindDirectX.cmake (if necessary) and update docs with
+  DXSDK_DIR stuffs.
 
 - Add the CMakeLists.txt files for the Ruby and possibly
 Java, Lua bindings  (maybe post-0.3)
@@ -30,9 +29,6 @@ OTHER
 
 // what does this mean?
 - Test Qt4 with MSVC, mingw, cygwin
-
-- modify addMarSystem, etc. scripts to work with CMake instead
-of autotools/qmake.
 
 - Test on as many different systems with as many different compile
 configurations as we can to make sure everything works
