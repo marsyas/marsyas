@@ -8,16 +8,13 @@ if (WIN32)
 	)
 	mark_as_advanced(DSOUND_INCLUDE_DIR)
 
-# maybe?
-#	find_library(dsound_LIBRARY NAMES dsound
 	find_library(DSOUND_LIBRARY dsound
 		PATHS	
 			"$ENV{DXSDK_DIR}/Lib/x86"
 			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK/Lib/x86"
-		DOC "The directory where dsound.h resides"
+		DOC "The directory where the dsound library resides"
 	)
 	mark_as_advanced(DSOUND_LIBRARY)
-
 
 
 	if (DSOUND_INCLUDE_DIR AND DSOUND_LIBRARY)
