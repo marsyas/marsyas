@@ -29,7 +29,8 @@
 #endif
 
 #ifdef MARSYAS_VORBIS
-#include <vorbis/vorbisfile.h>
+#include <vorbisfile.h>
+// #include <vorbis/vorbisfile.h>
 #endif
 
 
