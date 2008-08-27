@@ -230,8 +230,7 @@ set( MarSystem_SOURCES
   TimelineLabeler.cpp
   RadioDrumInput.cpp
   Gain.cpp
-
-)#end-SOURCES
+)#modifySources
 
 set(Marsyas_HEADERS
   MarSystemManager.h

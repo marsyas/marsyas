@@ -29,7 +29,7 @@ DOCS / USABILITY
 OTHER
 
 // what does this mean?
-- Test Qt4 with the three windows configurations
+- Test Qt4 with MSVC, mingw, cygwin
 
 - modify addMarSystem, etc. scripts to work with CMake instead
 of autotools/qmake.

@@ -26,12 +26,12 @@ def modify_manager(filename,action):
 	newfile = open( fileToEdit, 'w')
 	for line in filelines:
 		if (action==1):
-			if (line[0:17] == '#include \"Gain.h\"'):
+			if (line[0:14] == '//modifyHeader'):
 				insertLine = '#include \"' + filename + '.h\"'
 				print "Adding line 1 of 2 to " + fileToEdit
 				newfile.write(insertLine + '\n')
-			if (line[0:26] == '  registerPrototype(\"Gain\"'):
-				insertLine = '  registerPrototype(\"' + filename + '", new ' + filename +'(\"'+filename.lower()+'pr\"));'
+			if (line[0:17] == '\t//modifyRegister'):
+				insertLine = '\tregisterPrototype(\"' + filename + '", new ' + filename +'(\"'+filename.lower()+'pr\"));'
 				print "Adding line 2 of 2 to " + fileToEdit
 				newfile.write(insertLine + '\n')
 			newfile.write(line)
@@ -40,63 +40,25 @@ def modify_manager(filename,action):
 				if (line[0:8] == '#include'):
 					print "Removed line 1 of 2 from " + fileToEdit
 					continue
-				if (line[0:19] == '  registerPrototype'):
+				if (line[0:18] == '\tregisterPrototype'):
 					print "Removed line 2 of 2 from " + fileToEdit
 					continue
 			newfile.write(line)
 	newfile.close()
 
-def modify_h_file (source_file, build_file, action):
-	fileToEdit = build_file
+def modify_CMakelists(source_file,action):
+	fileToEdit = os.path.join(marsyasBaseDir, 'src', 'marsyas', 'CMakeLists.txt')
 	filelines = open( fileToEdit ).readlines()
 	newfile = open( fileToEdit, 'w')
 	for line in filelines:
 		if (action==1):
-			if (line[0:7] == '\tGain.h'):
-				insertLine = '\t'+source_file + '.h \\'
-				print "Adding line 1 of 1 (for .h) to " + fileToEdit
-				newfile.write(insertLine + '\n')
-			newfile.write(line)
-		if (action==2):
-			if (line.find(source_file)>=0):
-				if (line.find('.h')>=0):
-					print "Removed line 1 of 1 (for .h) from " + fileToEdit
-					continue
-			newfile.write(line)
-	newfile.close()
-
-def modify_cpp_file (source_file, build_file, action):
-	fileToEdit = build_file
-	filelines = open( fileToEdit ).readlines()
-	newfile = open( fileToEdit, 'w')
-	for line in filelines:
-		if (action==1):
-			if (line[0:9] == '\tGain.cpp'):
-				insertLine = '\t'+source_file + '.cpp \\'
-				print "Adding line 1 of 1 (for .cpp) to " + fileToEdit
-				newfile.write(insertLine + '\n')
-			newfile.write(line)
-		if (action==2):
-			if (line.find(source_file)>=0):
-				if (line.find('.cpp')>=0):
-					print "Removed line 1 of 1 (for .cpp) from " + fileToEdit
-					continue
-			newfile.write(line)
-	newfile.close()
-
-def modify_lib_release_makefile(source_file,action):
-	fileToEdit = os.path.join(marsyasBaseDir, 'lib', 'release', 'Makefile.am')
-	filelines = open( fileToEdit ).readlines()
-	newfile = open( fileToEdit, 'w')
-	for line in filelines:
-		if (action==1):
-			if (line[29:37] == 'Gain.cpp'):
-				insertLine = '\t$(top_srcdir)/src/marsyas/'+source_file+'.cpp \\'
+			if (line[0:15] == ')#modifySources'):
+				insertLine = '\t'+source_file+'.cpp'
 				print "Adding line 1 of 1 to " + fileToEdit
 				newfile.write(insertLine+'\n')
 			newfile.write(line)
 		if (action==2):
-			if (line[27:].find(source_file)>=0):
+			if (line[1:].find(source_file)>=0):
 				print "Removed line 1 of 1 from " + fileToEdit
 				continue
 			newfile.write(line)
@@ -108,19 +70,11 @@ def process(source_filename, marsystem, action):
 	if (marsystem):
 		modify_manager(source_filename,action)
 
-	modify_lib_release_makefile(source_filename,action)
+	modify_CMakelists(source_filename,action)
 
-	buildfile = os.path.join(marsyasBaseDir, 'src/marsyas', 'Makefile.am')
-	modify_h_file(source_filename, buildfile, action)
-
-	buildfile = os.path.join(marsyasBaseDir, 'src/marsyas', 'marsyas.pro')
-	modify_h_file(source_filename, buildfile, action)
-
-	buildfile = os.path.join(marsyasBaseDir, 'src/marsyas', 'marsyas.pro')
-	modify_cpp_file(source_filename, buildfile, action)
-
-	print "All done; please renerate autools with:"
-	print "aclocal && automake"
+	if (action==1):
+		print "    Don't forget to add your source files to the",
+		print "Marsyas SVN tree!"
 
 	if (action==2):
 		print "    Don't forget to remove your source files from the",
