@@ -28,7 +28,7 @@
 #include <fcntl.h>
 #endif
 
-#if defined(MARSYAS_VORBIS)
+#ifdef MARSYAS_VORBIS
 #include <vorbis/vorbisfile.h>
 #endif
 
