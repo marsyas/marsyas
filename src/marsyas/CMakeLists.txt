@@ -272,7 +272,7 @@ if (MARSYAS_MAD)
 endif (MARSYAS_MAD)
 
 if (MARSYAS_VORBIS)
-	include_directories(${OGGVORBIS_INCLUDE_DIR})
+	include_directories(${VORBIS_INCLUDE_DIR})
 endif (MARSYAS_VORBIS)
 
 if (GSTREAMER_FOUND)
