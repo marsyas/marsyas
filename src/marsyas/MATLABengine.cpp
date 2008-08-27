@@ -30,10 +30,10 @@ http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.htm
 Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 */
 
-#ifdef MARSYAS_MATLAB
 
 #include "MATLABengine.h"
 
+#ifdef MARSYAS_MATLAB
 using namespace std;
 using namespace Marsyas;
 

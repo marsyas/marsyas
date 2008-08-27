@@ -278,6 +278,9 @@ if (GSTREAMER_FOUND)
 	include_directories(${GSTREAMER_INCLUDE_DIRS})
 endif (GSTREAMER_FOUND)
 
+if (MARSYAS_MATLAB) 
+   include_directories(${MATLAB_INCLUDE_DIR})
+endif (MARSYAS_MATLAB)  
 
 
 list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
@@ -294,6 +297,14 @@ endif (MARSYAS_MIDIIO)
 if (GSTREAMER_FOUND)
 	list(APPEND MarSystem_SOURCES GStreamerSource.cpp gst-decode.cpp)
 endif (GSTREAMER_FOUND)
+
+
+if (MARSYAS_MATLAB)
+	list(APPEND MarSystem_SOURCES MATLABengine.cpp)
+endif (MARSYAS_MATLAB)
+
+
+
 
 
 ## ACTUAL BUILD

@@ -77,6 +77,7 @@ endif (MARSYAS_MIDIIO)
 ## from user options
 if (MARSYAS_MATLAB) 
 	include_directories(${MATLAB_INCLUDE_DIR})
+	include_directories(${CMAKE_SOURCE_DIR}/marsyas/MATLAB)
 endif (MARSYAS_MATLAB)
 
 ## basic library includes

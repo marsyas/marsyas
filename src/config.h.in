@@ -25,6 +25,7 @@
 
 
 #cmakedefine MARSYAS_MAD
+#cmakedefine MARSYAS_MATLAB
 #cmakedefine MARSYAS_VORBIS
 #cmakedefine MARSYAS_GSTREAMER
 
