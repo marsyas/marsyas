@@ -231,7 +231,7 @@ set( MarSystem_SOURCES
   RadioDrumInput.cpp
   Gain.cpp
 
-)
+)#end-SOURCES
 
 set(Marsyas_HEADERS
   MarSystemManager.h
@@ -259,17 +259,21 @@ set(Marsyas_HEADERS
 
 ## maybe -- necessary to make the .h files show up in MSVC
 ## I don't think it's worth listing them all.  -gp
-if (WIN32)
-  list (APPEND MarSystem_SOURCES
-    common.h
-  )
-endif (WIN32)
+#if (WIN32)
+#  list (APPEND MarSystem_SOURCES
+#    common.h
+#  )
+#endif (WIN32)
 
 
 ## OTHERLIBS
 if (MARSYAS_MAD)
 	include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
+
+if (MARSYAS_VORBIS)
+	include_directories(${OGGVORBIS_INCLUDE_DIR})
+endif (MARSYAS_VORBIS)
 
 if (GSTREAMER_FOUND)
   include_directories(${GSTREAMER_INCLUDE_DIRS})
