@@ -4,29 +4,32 @@ to start distributing binaries)
 
 - Add all the apps and Qt4Apps after weeding out dead code
 
+
+CMAKE BROKENNESS
+
+- fix FindDirectX.cmake (if necessary) and update docs.
+
+- fix FindMatlab
+
 - Add the CMakeLists.txt files for the Ruby and possibly
-Java, Lua bindings 
+Java, Lua bindings  (maybe post-0.3)
 
 - fix the linking for the vamp plugins.  (sness is doing this)
 
-
-OS-SPECIFIC
-- Figure out the DirectX stuff in Windows for Visual Studio 9, nmake, mingw
-
-- Fix the broken default FindMatlab module (only works on Windows and Linux
-and makes some wrong assumptions)
-
-// what does this mean?
-- Test Qt4 with the three windows configurations
 
 
 DOCS / USABILITY
 - write developer docs for extending CMake
 
+- revamp user chapters 3-5.
+
+- begin docs on interactive python use.
+
 
 OTHER
 
-- remove all the qmake/autotools stuff and perform general cleanup
+// what does this mean?
+- Test Qt4 with the three windows configurations
 
 - modify addMarSystem, etc. scripts to work with CMake instead
 of autotools/qmake.
@@ -35,4 +38,10 @@ of autotools/qmake.
 configurations as we can to make sure everything works
 
 - split the marsyas library into a set of smaller libraries
+  (definitely post-0.3)
+
+
+RENAMINGS
+- notEmpty -> hasInput
+- done -> !hasOutput
 
