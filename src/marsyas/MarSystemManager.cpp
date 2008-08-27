@@ -176,7 +176,7 @@
 #include "RadioDrumInput.h"
 #include "NoiseGate.h"
 #include "Gain.h"
-// please leave Gain at the end; it makes scripts happy.
+//modifyHeader
 
 using namespace std;
 using namespace Marsyas;
@@ -337,7 +337,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AbsMax", new AbsMax("absmaxpr"));
 	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
 	registerPrototype("Gain", new Gain("gp"));
-	// Please leave Gain at the end; it makes scripts happy.
+	//modifyRegister
 
 
 
