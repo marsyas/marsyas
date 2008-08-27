@@ -272,7 +272,6 @@ if (MARSYAS_MAD)
 endif (MARSYAS_MAD)
 
 if (MARSYAS_VORBIS)
-	message(STATUS ${VORBIS_INCLUDE_DIR})
 	include_directories(${VORBIS_INCLUDE_DIR})
 endif (MARSYAS_VORBIS)
 
