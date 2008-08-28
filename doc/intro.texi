@@ -231,7 +231,7 @@ standalone program.
 @end itemize
 
 
-@subsection Marsystem source documentation
+@subsection MarSystem source documentation
 
 Many MarSystems have been documented; see @ref{Library reference}
 for more information.

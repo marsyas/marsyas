@@ -83,7 +83,9 @@ or the full commercial Visual Studio.
 
 @item @uref{http://msdn2.microsoft.com/en-us/xna/aa937788.aspx,
 Microsoft DirectX SDK}: (optional) required for audio
-input/output.
+input/output.  To use DirectX, set the environment variable
+@env{DXSDK_DIR} to point to the location to which you installed
+DirectX.
 
 @end itemize
 
@@ -337,7 +339,15 @@ configure additional software for use with Marsyas.
 @node Linux additional software
 @subsection Linux additional software
 
-This is all handled by your package manager.
+In general, this is all handled by your package manager.  If cmake
+is not version 2.6, please download the @strong{binaries} as
+discussed in @ref{CMake installation}.
+
+@subsubheading Ubuntu
+
+By default, Ubuntu does not contain the necessary development
+environment.  Please install these additional packages:
+build-essential, ... ?
 
 
 @node MacOS X additional software
@@ -1083,28 +1093,18 @@ data set used for large regression tests in Marsyas.
 @node Structure of distribution
 @section Structure of distribution 
 
-@c file structure
+Marsyas is primarily targeted to researchers and software
+developers who want to build new systems and applications using
+existing building blocks.  Therefore familiarity with the
+directory structure of the Marsyas distribution is important for
+any serious work with the framework. 
 
-Marsyas is primarily targeted to researchers and software developers who
-want to build new systems and applications using existing building
-blocks.  Therefore familiarity with the directory structure of the
-Marsyas distribution is important for any serious work with the
-framework. 
-
-The main marsyas directory consists of the following important files: 
+The main marsyas directory consists of the following files: 
 
 @itemize
-@item @b{NEWS:} important changes in each release.
-
-@item @b{AUTHORS:} who we are, what we do.
-
-@item @b{marsyasConfig.pri:} edit this file to select your configure
-options when using qmake.
-
-@item @b{INSTALL, COPYING, README, Changelog:} standard text files for
-GNU projects, but not relevant to ours.  We use @code{svn log} messages
-instead of the Changelog, and the documentation is covered in this
-manual.
+@item @b{AUTHORS, COPYING, README, TODO:} these files are
+self-explanatory.  Changes are recorded in @code{svn log} messages
+instead of a @file{Changelog} file.
 
 @end itemize 
 
@@ -1113,38 +1113,33 @@ manual.
 In addition there are the following subdirectories: 
 
 @itemize 
-@item @b{src:} all the C++ source files.
+@item @b{src/} all the C++ source files.
 
-@item @b{src/marsyas:} the main directory containing all the important
-source code of Marsyas.  The source files in this subdirectory are
-compiled into a static library that other programs can use to access
-Marsyas functionality. 
+@item @b{src/marsyas/} the main directory containing all the
+important source code of Marsyas.  The source files in this
+subdirectory are compiled into a static library that other
+programs can use to access Marsyas functionality. 
 
-@item @b{src/apps:} the source code for executables.
+@item @b{src/apps/} the source code for executables.
 
-@item @b{src/examples:} easy-to-read source code for simple executables.
+@item @b{src/marsyasqt/} source for the static library MarsyasQt,
+which allows the use of Marsyas in Qt applications.
 
-@item @b{src/marsyasqt_wrapper:} source for the static library
-MarsyasQt, which allows the use of Marsyas in Qt applications.
+@item @b{src/Qt4Apps/} provides GUI interfaces using Qt4. These
+will not work with earlier versions of Qt. You must have Qt4
+installed in order to use or compile these applications. A README
+file is supplied with each one that has instructions on how to
+compile and run it.
 
-@item @b{src/Qt4Apps:} provides GUI interfaces using Qt4. These will not
-work with earlier versions of Qt. You must have Qt4 installed in order
-to use or compile these applications. A README file is supplied with
-each one that has instructions on how to compile and run it.
+@item @b{src/regressionTests/} data files for our automatic tests.
 
-@item @b{bin:} executable files are compiled in @file{bin/release} or
-@file{bin/debug}.
-
-@item @b{doc:} contains the user manual (which you are currently
+@item @b{doc/} contains the user manual (which you are currently
 reading).
 
-@item @b{config:} configuration files used by autotools.
+@item @b{scripts/} useful scripts to help programming with
+Marsyas.
 
-@item @b{scripts:} useful scripts to help programming with Marsyas.
-
-@item @b{scripts/MATLAB:} MATLAB scripts.
-
-@item @b{regressionTests:} data files for our automatic tests.
+@item @b{scripts/MATLAB/} MATLAB scripts.
 
 @end itemize 
 

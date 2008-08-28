@@ -8,15 +8,26 @@ endmacro (marsyas_app)
 
 
 ## build apps
+####### in docs -gp
+add_subdirectory(mkcollection)
 add_subdirectory(sfplay)
-add_subdirectory(bextract)
 add_subdirectory(sfinfo)
+add_subdirectory(audioCompare)
+#add_subdirectory(record)
+#add_subdirectory(orcarecord)
+#add_subdirectory(pitchextract)
+add_subdirectory(bextract)
 add_subdirectory(phasevocoder)
-add_subdirectory(mudbox)
+add_subdirectory(kea)
+#add_subdirectory(peakSynth)
+add_subdirectory(peakClustering)
 add_subdirectory(sfplugin)
+#add_subdirectory(msl)
+###### anything to do with the scheduler
+add_subdirectory(mudbox)
+
+
+####### not in docs; must edit tools.texi   -gp
 add_subdirectory(tempo) 
 add_subdirectory(virtualsensor)
-add_subdirectory(audioCompare)
-add_subdirectory(mkcollection)
-add_subdirectory(peakClustering)
-add_subdirectory(kea)
+
