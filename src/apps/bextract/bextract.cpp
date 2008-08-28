@@ -2243,16 +2243,26 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			
 			ofstream prout;
 			prout.open(predictCollection.c_str());
+
+			int correct_instances = 0;
+
+			bextractNetwork->updctrl("mrs_string/filename", testCollection);
 			
-			for (int i=0; i < m.size(); i++)//iterate over collection files
+			while (ctrl_notEmpty->to<mrs_bool>())
 			{
-				bextractNetwork->updctrl("mrs_string/filename", m.entry(i));
 				bextractNetwork->tick();
+				if (single_vector)
+				{
+					bextractNetwork->updctrl("mrs_bool/advance", true);
+				}
+				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-				cout << "Predicting " << m.entry(i) << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
-				// prout << m.entry(i) << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				cout << "Predicting " << currentlyPlaying << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				if ((mrs_natural)pr(0,0) == (mrs_natural)(pr(1,0)))
+					correct_instances++;
+				prout << currentlyPlaying << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
 			}
-			
+			cout << "Correct instances = " << correct_instances << endl;
 		}
 		
 		else 

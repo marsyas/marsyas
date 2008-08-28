@@ -9,7 +9,7 @@
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-** GNU General Public License for more details.
+** GNU General Public License for more details. 
 **
 ** You should have received a copy of the GNU General Public License
 ** along with this program; if not, write to the Free Software
@@ -211,8 +211,10 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 				}
 			}
 		}
-		MATLAB_PUT(chromaMap_, "marCM");
-		MATLAB_EVAL("CM = fft2chromamx("<<N<<","<<nbins<<","<<srate<<","<<pmiddleAfreq_<<","<<pweightCenterFreq_<<","<<pweightStdDev_<<");");
+#ifdef MARSYAS_MATLAB
+// 		MATLAB_PUT(chromaMap_, "marCM");
+// 		MATLAB_EVAL("CM = fft2chromamx("<<N<<","<<nbins<<","<<srate<<","<<pmiddleAfreq_<<","<<pweightCenterFreq_<<","<<pweightStdDev_<<");");
+#endif MARSYAS_MATLAB
 	}
 }
 
@@ -236,10 +238,11 @@ Spectrum2Chroma::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-
-	MATLAB_PUT(in, "spectrum");
-	MATLAB_PUT(out,"marChromaVec");
-	MATLAB_EVAL("chromaVec = CM*spectrum;");
+#ifdef MARSYAS_MATLAB
+// 	MATLAB_PUT(in, "spectrum");
+// 	MATLAB_PUT(out,"marChromaVec");
+// 	MATLAB_EVAL("chromaVec = CM*spectrum;");
+#endif MARSYAS_MATLAB
 }
 
 

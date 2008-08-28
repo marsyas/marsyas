@@ -739,12 +739,19 @@ toy_with_train_predict(string trainFileName, string testFileName)
   // test file have been read.
   //
   realvec data;
+
+  int correct_instances;
+   
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-//  	cout << classNames[(int)data(0,0)] << endl;
-	cout << data(0,0) << endl;
+ 	cout << (int)data(0,0) << "-" << (int)data(1,0) << endl;
+	if ((int)data(0,0) == (int)data(1,0))
+		correct_instances++;
   }
+
+  cout << "Correct instancs = " << correct_instances << endl;
+  
 
   // sness - hmm, I really should be able to delete net, but I get a 
   // coredump when I do.  Maybe I need to destroy something else first?

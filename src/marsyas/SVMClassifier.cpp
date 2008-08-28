@@ -101,10 +101,8 @@ SVMClassifier::~SVMClassifier() {
 	   for (int i=0; i < svm_model_->nr_class-1; i++) 
 		free(svm_model_->sv_coef[i]);
 	   free(svm_model_->sv_coef);
+
 	   mrs_natural nInstances = instances_.getRows();
-
-
-
 	   for (int i=0; i < nInstances; i++) 
 		free(svm_prob_.x[i]);
 
