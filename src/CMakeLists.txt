@@ -3,6 +3,12 @@ cmake_minimum_required (VERSION 2.6)
 project (Marsyas)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake-modules")
 
+## version
+set (MARSYAS_VERSION_MAJOR "0")
+set (MARSYAS_VERSION_MINOR "2")
+set (MARSYAS_VERSION_PATCH "17")
+
+
 ## basic CMAKE vars
 mark_as_advanced (EXECUTABLE_OUTPUT_PATH)
 mark_as_advanced (LIBRARY_OUTPUT_PATH)
