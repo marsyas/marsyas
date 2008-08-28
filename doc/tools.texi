@@ -23,7 +23,6 @@ in @file{src/apps/@{DIR@}/}.
 * Machine Learning::            
 * Auditory Scene Analysis::     
 * Marsystem Interaction::       
-* Tests::                       
 * All of the above::            
 @end menu
 
@@ -564,8 +563,12 @@ in that direction).
 @subsection @code{scheduler}
 
 
-@node Tests
-@section Tests
+
+@c keeping this in case Steven wants to resurrect anything from
+@c the coffee tests.
+@ignore
+@n ode Tests
+@s ection Tests
 
 Marsyas contains a suite of tests which attempt@footnote{Somewhat
 unsuccessfully, unfortunately.} to make sure that new functionality (or
@@ -588,8 +591,8 @@ information in @develref{Regression tests (devel)}.
 @end menu
 
 
-@node Sanity tests
-@subsection Sanity tests
+@n ode Sanity tests
+@s ubsection Sanity tests
 
 These are short, quick tests; on modern hardware they will take less
 than 10 seconds to run.
@@ -609,8 +612,8 @@ Since they @emph{are} so quick and easy to run, please run these tests
 often.
 
 
-@node Coffee tests
-@subsection Coffee tests
+@n ode Coffee tests
+@s ubsection Coffee tests
 
 These are a longer set of tests; they may take up to 5 minutes to
 run.  They also require files that are not part of the Marsyas svn
@@ -626,11 +629,7 @@ Results will be printed on the command line, with more information in
 the file @file{tests/results.log}.
 
 These tests are a useful excuse for taking a coffee break.
-
-
-@node midiTest
-@subsection @code{midiTest}
-
+@end ignore
 
 
 @node All of the above

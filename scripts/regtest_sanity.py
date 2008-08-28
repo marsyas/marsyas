@@ -3,6 +3,9 @@ import sys
 import os
 import filecmp
 
+print "This is no longer used.  File only exists for archival interest"
+sys.exit(1)
+
 LOG_FILE = 'results.log'
 
 # chdir to test directory

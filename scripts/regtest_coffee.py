@@ -3,6 +3,10 @@ import sys
 import os
 import filecmp
 
+print "This is no longer used.  File only exists for archival interest"
+sys.exit(1)
+
+
 MIN_VERSION = 0.1 # since marsyas-coffee-data is sold seperately
 LOG_FILE = 'results.log'
 
