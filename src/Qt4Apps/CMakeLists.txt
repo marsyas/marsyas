@@ -22,4 +22,4 @@ endmacro (marsyas_qt4app)
 ## build apps
 add_subdirectory(MarPlayer)
 add_subdirectory(MarPhasevocoder)
-
+add_subdirectory(MarLpc)

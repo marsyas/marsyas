@@ -67,6 +67,7 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
 	gridLayout->addWidget(posSlider_, 5, 1);
 
 	gridLayout->addWidget(posControl_, 6, 0);
+	
 
 	connect(timeSlider, SIGNAL(valueChanged(int)), this, SLOT(timeChanged(int)));
 	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
@@ -227,7 +228,7 @@ MarPhasevocoderWindow::open()
 
 	mwr_->trackctrl(freqPtr_); 
 	mwr_->trackctrl(posPtr_);
-
+	
 	mwr_->updctrl(fnamePtr_, fileName.toStdString());
 	mwr_->updctrl(initPtr_, true);
 

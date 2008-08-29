@@ -46,6 +46,9 @@ private:
   MarControlPtr fnamePtr_;
   MarControlGUI* freqControl_;
   MarControlGUI* posControl_;
+  MarControlGUI* sinesControl_;
+		
+		
   
   QSlider* freqSlider_;
   QSlider* posSlider_;

@@ -1,20 +1,20 @@
-#N canvas 80 265 769 690 12;
+#N canvas 80 265 773 694 12;
 #X obj 965 17 OSC;
 #X msg 44 119 disconnect;
 #X text 8 143 ========================================;
 #X msg 93 183 send /mrs_natural/formantOrder \$1;
 #X obj 518 10 vsl 15 128 2 20 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 5100 1;
+-1 -1 0 1;
 #X text 543 9 order of the formant lpc (1->20);
 #X obj 558 56 vsl 15 128 1 100 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 0 1;
+-1 -1 2300 1;
 #X obj 592 109 vsl 15 128 1 100 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 0 1;
+-1 -1 500 1;
 #X obj 632 154 vsl 15 128 1 100 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 0 1;
+-1 -1 10100 1;
 #X obj 25 606 sendOSC;
 #X obj 680 207 vsl 15 128 1 100 0 0 empty empty empty 0 -8 0 8 -262144
--1 -1 0 1;
+-1 -1 11500 1;
 #X text 584 54 frequency of the Pole;
 #X text 618 107 amplitude of the Pole;
 #X text 660 155 tilt;
@@ -31,7 +31,6 @@ with the OscMapper.;
 #X obj 718 363 tgl 15 0 empty empty empty 0 -6 0 8 -262144 -1 -1 0
 1;
 #X text 739 361 mute;
-#X msg 26 93 connect localhost 1;
 #X obj 26 50 print rcvOSC;
 #X text 201 94 connect to the OscMapper server side.;
 #X text 653 474 comment;
@@ -45,6 +44,7 @@ with the OscMapper.;
 ;
 #X msg 254 544 send /FanOutIn/fanoutin/Series/aSeries/Filter/resonance/mrs_realvec/dcoeffs
 \$1 \$2 \$3;
+#X msg 26 93 connect localhost 7000 1;
 #X connect 1 0 9 0;
 #X connect 3 0 9 0;
 #X connect 4 0 3 0;
@@ -58,11 +58,11 @@ with the OscMapper.;
 #X connect 18 0 9 0;
 #X connect 20 0 9 0;
 #X connect 21 0 20 0;
-#X connect 23 0 9 0;
-#X connect 27 0 30 0;
-#X connect 28 0 30 1;
-#X connect 29 0 30 2;
-#X connect 30 0 34 0;
-#X connect 32 0 24 0;
+#X connect 26 0 29 0;
+#X connect 27 0 29 1;
+#X connect 28 0 29 2;
+#X connect 29 0 33 0;
+#X connect 31 0 23 0;
+#X connect 33 0 9 0;
+#X connect 33 0 30 0;
 #X connect 34 0 9 0;
-#X connect 34 0 31 0;

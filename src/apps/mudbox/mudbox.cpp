@@ -213,6 +213,55 @@ toy_with_audiodevices()
 
 }
 
+
+
+void 
+toy_with_matlab(string sfName) 
+{
+	MarSystemManager mng;
+	MarSystem* net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("Gain", "gain"));
+	net->addMarSystem(mng.create("AudioSink", "dest"));
+	
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	net->updctrl("Gain/gain/mrs_real/gain", 8.0);
+	net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	net->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
+	mrs_natural inSamples = net->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	mrs_real tstep = inSamples / srate;
+	mrs_real time = 0.0;
+	
+	mrs_realvec src_data;
+	mrs_realvec filter_data;
+
+	src_data = net->getctrl("SoundFileSource/src/mrs_realvec/processedData")->to<mrs_realvec>();	
+	MATLAB_PUT(src_data, "src_data");
+	MATLAB_EVAL("a = 20 * log10(abs(fft(src_data)));");
+	MATLAB_EVAL("plot(a(1:200))");;
+	mrs_real maxp, maxl;
+	
+	for (int i=0; i < 500; i++)
+	{
+		net->tick();
+		src_data = net->getctrl("SoundFileSource/src/mrs_realvec/processedData")->to<mrs_realvec>();	
+		if (i % 10 == 0) 
+		{
+			MATLAB_PUT(src_data, "src_data");
+			MATLAB_EVAL("a = 20 * log10(abs(fft(src_data)));");
+			MATLAB_EVAL("plot(a(1:200))");
+			MATLAB_EVAL("[maxp,maxl] = max(a(1:200))");
+			MATLAB_GET("maxp", maxp);
+			MATLAB_GET("maxl", maxl);
+			cout << maxl << "-" << maxp << endl;
+		}
+		time += tstep;
+	}
+	MATLAB_CLOSE();	
+}
+
+
 void 
 toy_with_cascade()
 {
@@ -493,6 +542,9 @@ void drumClassify( string drumFile) {
 
 	}
 }
+
+
+
 
 void 
 toy_with_onsets(string sfName) 
@@ -4257,6 +4309,8 @@ main(int argc, const char **argv)
 
 	if (toy_withName == "audiodevices")
 		toy_with_audiodevices(); 
+	else if (toy_withName == "matlab") 
+		toy_with_matlab(fname0);
 	else if (toy_withName == "cascade") 
 		toy_with_cascade();
 	else if (toy_withName == "collection")
