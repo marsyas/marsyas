@@ -4,6 +4,8 @@ to start distributing binaries)
 
 - Add all the apps and Qt4Apps after weeding out dead code
 
+- find the Makefiles and .pro for doc/examples/
+
 
 CMAKE BROKENNESS
 
@@ -18,6 +20,8 @@ Java, Lua bindings  (maybe post-0.3)
 
 
 DOCS / USABILITY
+- check command for source-highlight
+
 - write developer docs for extending CMake
 
 - revamp user chapters 3-5.

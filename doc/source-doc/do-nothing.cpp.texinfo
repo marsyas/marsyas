@@ -1,0 +1,17 @@
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@b{#include} @t{"MarSystemManager.h"}
+@b{using} @b{namespace} Marsyas;
+
+int @b{main}(int argc, @b{const} char **argv)
+@{
+       MarSystemManager mng;
+
+@i{//       MarSystem* nothingnet = mng.create("Series", "nothingnet");}
+
+@i{//       delete nothingnet;}
+@i{//       exit(0);}
+@}
+
+
+@end example
