@@ -7,6 +7,7 @@
 * Writing Qt4 applications::    
 * Other programming issues::    
 * Interoperability::            
+* Using and Extending the Scheduler::
 @end menu
 
 
@@ -648,4 +649,1361 @@ get("SoundFileSource/src/mrs_string/currentlyPlaying");
 To combine Marsyas and OCaml, see the MarsyasOCaml documentation at
 @uref{http://www.cs.uvic.ca/~inb/work/marsyasOCaml/}
 
+@node Using and Extending the Scheduler
+@section Using and Extending the Scheduler
+
+Writing applications using the scheduler may require writing additional timer
+and event types. This section will try to explain how to customize the
+scheduler for your own applications.
+
+@menu
+* Using the Scheduler::
+* Writing a new Timer::
+* Writing a new Event::
+* Marsyas Expression Syntax::
+@end menu
+
+@node Using the Scheduler
+@subsection Using the Scheduler
+
+In the example below an event is created and posted to the network to set the
+gain control to 0 (silence) two seconds after the network starts processing.
+This is accomplished by creating a new EvValUpd event which performs a
+@code{setctrl} call when dispatched.
+
+The EvValUpd event requires a MarSystem pointer to
+act on - we use the topmost @code{series} object because we have a pointer to
+it. The event also requires a control path referenced to the supplied MarSystem
+pointer. Finally, it requires a MarControlValue to set the control value to on
+dispatch. This value should have the same type as the one specified in the
+control path otherwise the Marsyas system will report an error at dispatch
+time.
+
+To post the event to a timer the MarSystem @code{updctrl} call is used. The
+first parameter to @code{updctrl} is the dispatch time. This indicates a
+scheduled event call to the MarSystem and it is passed on to the scheduler.
+In this case the @code{TmTime} class is supplied the name of the timer that the
+event is to be posted on along with the time of event dispatch. The default
+timer for every MarSystem is a @code{TmSampleCount} timer, which counts the
+number of samples processed, with the name Virtual. The TmSampleCount timer
+understands the units @code{us, ms, s, m, h} corresponding to microseconds,
+milliseconds, seconds, minutes, hours, respectively. The supplied time is
+converted to samples by calling the static method 
+@code{mrs_natural Marsyas::time2samples(string time, mrs_real srate)}
+in the @file{Conversions.cpp}.
+
+@float Figure,fig:sch1
+@verbatim
+  MarSystemManager mng;
+
+  MarSystem* series = mng.create("Series", "series");
+  series->addMarSystem(mng.create("SineSource", "src"));
+  series->addMarSystem(mng.create("Gain", "g"));
+  series->addMarSystem(mng.create("AudioSink", "snk"));
+
+  series->updctrl("AudioSink/snk/mrs_bool/initAudio", true);
+  series->updctrl("SineSource/src/mrs_real/frequency",440.0);
+  series->updctrl("Gain/g/mrs_real/gain",1.0);
+
+  EvValUpd* ev = new EvValUpd(series,"Gain/g/mrs_real/gain",0.0);
+  series->updctrl(TmTime("TmSampleCount/Virtual","2s"),ev);
+
+  while(true) series->tick();
+@end verbatim
+@caption{Program using the scheduler to set gain to 0 after two seconds.}
+@end float
+
+@subsubsection Repeating Events
+We can repeat events using the event @code{set_repeat} method of the event. This
+method takes a @code{Repeat} value which is essentially a (rate,count) tuple. In
+the example below, two events are posted. One sets the volume to 0, the other to
+1. By staggering their dispatch we can achieve a gating effect. Here we repeat
+the events forever by specifying the repeat rate only as in @code{Repeat("1s")}.
+To specify a finite repeat count we could set the repeat count to five as in
+@code{Repeat("1s",5)}. Gaze wonderously at the example.
+
+@float Figure,fig:sch2
+@verbatim
+  MarSystemManager mng;
+
+  MarSystem* series = mng.create("Series", "series");
+  series->addMarSystem(mng.create("SineSource", "src"));
+  series->addMarSystem(mng.create("Gain", "g"));
+  series->addMarSystem(mng.create("AudioSink", "snk"));
+
+  series->updctrl("AudioSink/snk/mrs_bool/initAudio", true);
+  series->updctrl("SineSource/src/mrs_real/frequency",440.0);
+  series->updctrl("Gain/g/mrs_real/gain",1.0);
+
+  EvValUpd* ev_off = new EvValUpd(series,"Gain/g/mrs_real/gain",0.0);
+  ev_off->set_repeat(Repeat("1s")); // repeat forever
+  //ev_off->set_repeat(Repeat("1s",4)); // repeat four times
+
+  EvValUpd* ev_on = new EvValUpd(series,"Gain/g/mrs_real/gain",1.0);
+  ev_on->set_repeat(Repeat("1s"));
+
+  // stagger the dispatch of the events, off by 1 second
+  series->updctrl(TmTime("TmSampleCount/Virtual","1s"),ev_off);
+  series->updctrl(TmTime("TmSampleCount/Virtual","2s"),ev_on);
+
+  while(true) series->tick();
+@end verbatim
+@caption{Program using two events that toggle the gain between 0 and 1 every second.}
+@end float
+
+But how does this work under the hood, uhh, so to speak, you ask. For a pending
+event (whose time is now), the scheduler will remove it from the queue, call its
+dispatch method, check whether it should be repeated by calling its @code{repeat}
+method. If it is to be repeated, the rate will be read by calling the
+@code{repeat_interval()} method which reads the rate from the @code{Repeat}
+value originally supplied through the @code{set_repeat} method. A calculation of
+the next dispatch time is made and the event is reposted to the queue. See the
+@code{void TmTimer::dispatch()} method of @file{TmTimer.cpp} for the exact
+method.
+
+@node Writing a new Timer
+@subsection Writing a new Timer
+
+Timers control the scheduling of events with respect to some control rate. When
+writing new timers we don't want to have to worry about this scheduling
+activity. Instead we wish to define new control rates. No problem. All we have
+to do is inherit from the TmTimer class. For lack of a more creative idea this
+section will explain a slightly modified TmSampleCount timer.
+
+When creating new timers we first create a class that inherits from TmTimer.
+This class is placed in the src/marsyas directory and added to the build
+system. Our example, requires a constructor that takes a MarSystem to read the
+time from. Our timer will read the "mrs_natural/onSamples" control to find out
+how long the interval of time is, in samples, between successive ticks. This
+will be used to advance our timer. On construction we call setReadCtrl which
+gets the control as a MarControlPtr for faster access than calling getctrl on
+each tick.
+
+Whenever the scheduler is ticked, it will tick each of the timers it controls.
+These timers will call their @code{readTimerSrc()} method to advance their
+clocks. Our @code{readTimerSrc} method will read the onSamples control and
+return this value (elapsed time since last tick). Our timer is now operational.
+
+Timers may also require the definition of special time units. In the case of
+real time we may want to define what milliseconds or seconds mean with respect
+to sample count. To do this we must override the
+@code{mrs_natural intervalsize(string interval)} method. For our timer, we will
+simply call the static method @code{time2samples(string)} defined in
+@file{Conversions} and pass it the string and the current sample rate. Now our
+timer supports time defined in samples, microseconds, milliseconds, seconds,
+minutes, and hours.
+
+@float Figure,fig:sch3
+@example
+@b{#ifndef} MARSYAS_TM_SAMPLE_COUNT_H
+@b{#define} MARSYAS_TM_SAMPLE_COUNT_H
+
+@b{#include} @t{"TmTimer.h"}
+@b{#include} @t{"MarControlValue.h"}
+@b{#include} @t{"MarSystem.h"} 
+
+@b{namespace} Marsyas
+@{
+  @i{// forward declaration of MarSystem allows Scheduler.getctrl("insamples")}
+  @i{// for scheduler count}
+  @b{class} MarSystem; @i{// forward declaration}
+
+  @b{class} TmSampleCount : @b{public} TmTimer @{
+  @b{protected}:
+    MarSystem* read_src_;
+    MarControlPtr read_ctrl_;
+
+  @b{public}:
+    @i{// Constructors }
+    @b{TmSampleCount}(MarSystem*);
+    @b{TmSampleCount}(@b{const} TmSampleCount& s);
+    @b{virtual} ~@b{TmSampleCount}();
+    TmTimer* @b{clone}();
+
+    void @b{setReadCtrl}(MarSystem* ms);
+    mrs_natural @b{readTimeSrc}();
+    mrs_natural @b{intervalsize}(std::string interval);
+
+    @b{virtual} void @b{updtimer}(std::string cname, TmControlValue value);
+@};
+
+@}@i{//namespace Marsyas}
+
+@b{#endif}
+
+@end example
+@caption{TmSampleCount header file example.}
+@end float
+
+@float Figure,fig:sch4
+@example
+@b{#include} @t{"TmSampleCount.h"}
+@b{#include} @t{"MarSystem.h"}
+@b{#include} @t{"Scheduler.h"}
+
+@b{using} @b{namespace} std;
+@b{using} @b{namespace} Marsyas;
+
+TmSampleCount::@b{TmSampleCount}(MarSystem* ms) : @b{TmTimer}(@t{"TmSampleCount"},@t{"Virtual"})
+@{
+    @b{setReadCtrl}(ms);
+@}
+TmSampleCount::@b{TmSampleCount}(@b{const} TmSampleCount& s) : @b{TmTimer}(s)
+@{
+    @b{setReadCtrl}(s.read_src_);
+@}
+TmSampleCount::~@b{TmSampleCount}()@{ @}
+
+TmTimer* TmSampleCount::@b{clone}()
+@{ 
+  @b{return} @b{new} @b{TmSampleCount}(*@b{this}); 
+@}
+void TmSampleCount::@b{setReadCtrl}(MarSystem* ms)
+@{
+    read_src_=ms;
+    @b{if} (read_src_!=NULL) read_ctrl_=read_src_->@b{getctrl}(@t{"mrs_natural/onSamples"});
+@}
+
+mrs_natural TmSampleCount::@b{readTimeSrc}()
+@{
+    @b{if} (read_src_==NULL) @{
+        @b{MRSWARN}(@t{"TmSampleCount::readTimeSrc()  time source is NULL"});
+        @b{return} 0;
+    @}
+    mrs_natural m = read_ctrl_->to<mrs_natural>();
+    @b{return} m;
+@}
+mrs_natural TmSampleCount::@b{intervalsize}(string interval)
+@{
+    @b{return} (read_src_==NULL) ? 0 : @b{time2samples}(interval,read_src_->@b{getctrl}(@t{"mrs_real/israte"})->to<mrs_real>());
+@}
+void
+TmSampleCount::@b{updtimer}(std::string cname, TmControlValue value)
+@{
+    bool type_error=@b{false};
+    @b{if} (cname==@t{"MarSystem/source"}) @{
+        @b{if} (value.@b{getType}()==tmcv_marsystem) @{ @b{setReadCtrl}(value.@b{toMarSystem}()); @}
+        @b{else} type_error=@b{true};
+    @}
+    @b{else}
+        @b{MRSWARN}(@t{"TmSampleCount::updtimer(string,TmControlValue)  unsupported control"});
+    @b{if} (type_error)
+        @b{MRSWARN}(@t{"TmSampleCount::updtimer(string,TmControlValue)  wrong type to "}+cname);
+@}
+@end example
+@caption{TmSampleCount C++ source file example.}
+@end float
+
+@subsubsection Updating timers at run-time
+The TmTimer class also supports communication through the updtimer method. An
+example of this is shown in the TmSampleCount timer above. This
+is not necessary for the operation of our timer but we might want to support the
+changing of timer parameters at run-time through the updtimer interface. To do
+this we simply override the
+@code{void updtimer(std::string cname, TmControlValue value)} method. We can
+now parse the supplied timer control path and set the appropriate value.
+
+Timer control paths have the same format as MarSystem controls. For example, our
+timer could be accessed through:
+@float Figure,fig:sch5
+@example
+marsys->@b{updtimer}(@t{"TmSampleCount/Virtual/MarSystem/source"},marsys);
+@end example
+@caption{Setting timer parameters using the updtimer call.}
+@end float
+
+The TmControlValue defines the allowable values that may be passed to timers.
+These values are limited to:
+@code{float, double, int, long, std::string, const char*, bool, MarSystem*}.
+However, one could always modify the TmControlValue class to add additional
+types. Be careful of values clashing such as NULL pointers and the integer
+value 0.
+
+@subsubsection Timer Factory
+@anchor{archtmrfac} 
+New timers can be added to the Timer Factory by modifying
+@file{TmTimerFactory}. Doing so allows the use of the addTimer method in
+@file{MarSystem} by simply specifying the type/name of the timer as
+opposed to creating a new timer.
+
+@float Figure,fig:sch6
+@example
+net->@b{addTimer}(@t{"TmSampleCount"},@t{"counter"});
+@end example
+@caption{Adding a new timer to MarSystem net using the timer factory.}
+@end float
+
+The instructions for adding new timers to the factory are contained in
+@file{TmTimerFactory} and repeated here. Basically, a map is created
+from "TimerName"=>TimerConstructorObject. This makes it possible to use
+a map for fast access to specific timers and it prevents having to
+instantiate each Timer type at startup. The constructor object simply
+wraps the new operator so that it constructs objects only when
+requested.
+
+@itemize
+@item Add the timer's header file to the top of @file{TmTimerFactory.cpp} as an #include.
+@item Underneath the includes, wrap the timer name in the macro @code{TimerCreateWrapper}.
+@item In the addTimers function wrap the timer name in the macro @code{registerTimer}.
+@end itemize
+
+@node Writing a new Event
+@subsection Writing a new Event
+
+Suppose we want to fade the volume down to silence using a Gain MarSystem. We
+could accomplish this using the scheduler and several EvValUpd events. Assuming
+the gain control is at 1.0 to begin we just issue 10 EvValUpd events each with
+a progressively lower volume amount: 0.9, 0.8, 0.7, ... and each at a time that
+is a little bit later than the previous. This is messy and repetitive. Why not
+make a new event, called EvRampCtrl, that encapsulates this behaviour.
+
+We start by defining a new EvRampCtrl class that inherits from the MarEvent
+class. We define a constructor that takes a MarSystem to act upon, a control
+to modify, a starting value, an ending value, and a step amount. The implicit
+assumption is that this event will only work on values of type @code{mrs_real}
+so that values we supply must all be of the correct type. The header and cpp
+files are supplied below.
+
+We will need an additional variable to save the current adjustment value. Also,
+the event will need to repeat so we will maintain a repeat flag that is true
+until we pass the end value. We override the @code{repeat()} method of
+@file{MarEvent} to return the current value of the repeat flag. The required
+variables are shown in the header file below.
+
+@float Figure,fig:sch7
+@verbatim
+#ifndef MARSYAS_EV_RAMPCTRL_H
+#define MARSYAS_EV_RAMPCTRL_H
+
+#include <string>
+
+#include "MarControl.h"
+#include "MarEvent.h"
+#include "TmControlValue.h"
+
+namespace Marsyas
+{
+  class MarSystem; // forward declaration
+
+  class EvRampCtrl : public MarEvent {
+  protected:
+    MarSystem* target_;
+    std::string cname_;
+    double start_, end_, value_, rate_;
+    bool repeat_flag_;
+
+  public:
+    // Constructors
+    EvRampCtrl(MarSystem* m, std::string cname, double start, double end, double rate);
+    EvRampCtrl(EvRampCtrl& e);
+    virtual ~EvRampCtrl();
+
+    virtual EvRampCtrl* clone();
+
+    // Set/Get methods
+    void set(MarSystem* ms, std::string cname, double s, double e, double r);
+
+    bool repeat() { return repeat_flag_; };
+
+    // Event dispatch
+    void dispatch();
+
+  };
+
+}//namespace Marsyas
+
+#endif
+@end verbatim
+@caption{EvRampCtrl event header file example.}
+@end float
+
+@float Figure,fig:sch77
+@example
+@b{#ifndef} MARSYAS_EV_RAMPCTRL_H
+@b{#define} MARSYAS_EV_RAMPCTRL_H
+
+@b{#include} @t{<string>}
+
+@b{#include} @t{"MarControl.h"}
+@b{#include} @t{"MarEvent.h"}
+@b{#include} @t{"TmControlValue.h"}
+
+@b{namespace} Marsyas
+@{
+  @b{class} MarSystem; @i{// forward declaration}
+
+  @b{class} EvRampCtrl : @b{public} MarEvent @{
+  @b{protected}:
+    MarSystem* target_;
+    std::string cname_;
+    double start_, end_, value_, rate_;
+    bool repeat_flag_;
+
+  @b{public}:
+    @i{// Constructors}
+    @b{EvRampCtrl}(MarSystem* m, std::string cname, double start, double end, double rate);
+    @b{EvRampCtrl}(EvRampCtrl& e);
+    @b{virtual} ~@b{EvRampCtrl}();
+
+    @b{virtual} EvRampCtrl* @b{clone}();
+
+    @i{// Set/Get methods}
+    void @b{set}(MarSystem* ms, std::string cname, double s, double e, double r);
+
+    bool @b{repeat}() @{ @b{return} repeat_flag_; @};
+
+    @i{// Event dispatch}
+    void @b{dispatch}();
+
+  @};
+
+@}@i{//namespace Marsyas}
+
+@b{#endif}
+@end example
+@caption{EvRampCtrl event header file example.}
+@end float
+
+@c @end example
+
+
+
+The main logic for our event is contained in the dispatch method. Basically, we
+check to see if we have passed the end value during ramping and if so set the
+repeat flag to false. The next time that the scheduler checks to see if the
+event repeats the scheduler will read the false value and delete the event. If
+we have not passed the end value then we set the specified control to the
+current ramp value and decrement the current value by the ramp amount. The
+scheduler will see that the event is to be repeated, it will read the repeat
+rate amount, and repost the event to the queue.
+
+@float Figure,fig:sch8
+@verbatim
+#include "EvRampCtrl.h"
+#include "MarSystem.h"
+
+using namespace std;
+using namespace Marsyas;
+
+EvRampCtrl::EvRampCtrl(MarSystem* m, std::string cname, double start, double end, double rate) : MarEvent("EvRampCtrl","rc")
+{
+    set(m,cname,start,end,rate);
+}
+EvRampCtrl::EvRampCtrl(EvRampCtrl& e) : MarEvent("EvRampCtrl","rc")
+{
+    set(e.target_,e.cname_,e.start_,e.end_,e.rate_);
+}
+
+EvRampCtrl::~EvRampCtrl() { }
+
+EvRampCtrl*
+EvRampCtrl::clone() { return new EvRampCtrl(*this); }
+
+void
+EvRampCtrl::set(MarSystem* ms, string cname, double start, double end, double rate)
+{
+    target_=ms; cname_=cname;
+    start_=start; end_=end; rate_=rate;
+    value_=start_; repeat_flag_=true;
+}
+
+void
+EvRampCtrl::dispatch()
+{
+    if (target_ !=NULL) {
+      cout << "target_->updctrl(" << cname_ << ", " << value_ << ")\n";
+      if(value_<end_) repeat_flag_=false;
+      else {
+        target_->updctrl(cname_,value_);
+        value_ = value_ - rate_;
+      }
+    }
+}
+@end verbatim
+@caption{EvRampCtrl event C++ source file example.}
+@end float
+
+The @code{fade1} method shows our EvRampCtrl event in action. We set the repeat
+rate of the event to 0.2 seconds.
+
+@c @float Figure,fig:sch9
+@c @verbatim
+@float Figure, fig:sch9
+@verbatim
+void fade1() {
+  MarSystemManager mng;
+
+  MarSystem* series = mng.create("Series", "series");
+  series->addMarSystem(mng.create("SineSource", "src"));
+  MarSystem* gain = mng.create("Gain", "g");
+  series->addMarSystem(gain);
+  series->addMarSystem(mng.create("AudioSink", "snk"));
+  series->updctrl("AudioSink/snk/mrs_bool/initAudio", true);
+  series->updctrl("SineSource/src/mrs_real/frequency",440.0);
+  series->updctrl("Gain/g/mrs_real/gain",1.0);
+
+  EvRampCtrl* ev = new EvRampCtrl(gain,"mrs_real/gain",1.0,0.0,0.05);
+  ev->set_repeat(Repeat("0.2s"));
+  
+  series->updctrl(TmTime("TmSampleCount/Virtual","2s"),ev);
+
+  while(true) {
+    series->tick();
+  }
+}
+@end verbatim
+@caption{Program using the EvRampCtrl example event.}
+@end float
+@c @caption{Program using the EvRampCtrl example event.}
+@c @end float
+
+@subsubsection Expression Events
+For a large number of events there is commonality. The Expression syntax
+was developed to allow the creation of events without having to code
+new custom event classes. In order to accomplish this there is a built
+in compiler for the syntax that is invoked when supplying the expression
+as a string to the @file{Ex} class.
+
+@float Figure, figsch10
+@verbatim
+#include <stdio.h>
+#include "MarSystemManager.h"
+#include "EvExpr.h"
+
+using namespace std;
+using namespace Marsyas;
+
+void sched1() {
+  MarSystemManager mng;
+
+  MarSystem* fanin = mng.create("Fanin", "fanin");
+  fanin->addMarSystem(mng.create("SineSource", "src1"));
+  fanin->addMarSystem(mng.create("SineSource", "src2"));
+  fanin->updctrl("SineSource/src1/mrs_real/frequency",3000.0);
+  fanin->updctrl("SineSource/src2/mrs_real/frequency",1000.0);
+
+  MarSystem* series = mng.create("Series", "series");
+  series->addMarSystem(fanin);
+
+  series->addMarSystem(mng.create("AudioSink", "dest"));
+  series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+#if 0
+  // using aliases makes this a little more readable, see the next bit
+  EvExpr* e = new EvExpr(series,
+    Ex("Fanin/fanin/SineSource/src1/mrs_real/frequency << 120. + 3000. * R.rand(), \
+        Fanin/fanin/SineSource/src2/mrs_real/frequency << 120. + 800. * R.rand(),"
+       "'src1='+Fanin/fanin/SineSource/src1/mrs_real/frequency+ \
+        ' src2='+Fanin/fanin/SineSource/src2/mrs_real/frequency+'\n'>>Stream.op"),
+    Rp("true"));
+
+#else
+  EvExpr* e = new EvExpr(series,
+        // First line to Ex will be the init expression, run once, when event is posted
+    Ex("Fanin/fanin/SineSource/src1/mrs_real/frequency >> @freq1, \
+        Fanin/fanin/SineSource/src2/mrs_real/frequency >> @freq2 ",
+       // Second line to Ex is the expression, repeated each time the event is posted
+       "freq1 << 120. + 3000. * R.rand(),\
+        freq2 << 120. + 800. * R.rand(),\
+        'src1=' + freq1 + ' src2=' + freq2 + '\n' >> Stream.op"),
+    Rp("true"));
+#endif
+
+  // set event to repeat every 1/4 second
+  e->set_repeat(Repeat("0.25s"));
+  // post the event
+  series->updctrl(TmTime("TmSampleCount/Virtual","0s"), e);
+
+  while(true) series->tick();
+
+  delete series;
+}
+@end verbatim
+@caption{Random sine waves using the Expression syntax.}
+@end float
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@node Marsyas Expression Syntax
+@subsection Marsyas Expression Syntax
+Expressing instantaneous change in Marsyas.
+
+@menu
+* Type System::
+* Operators::
+* Variables::
+* Assignment::
+* Links::
+* Conditional Statements::
+* Multiple Expressions::
+* Properties::
+* Sequences::
+* Function Libraries::
+* Using::
+* Extending::
+* Marsyas Expression Examples::
+@end menu
+@c * Operators::
+@c * Variables
+@c * Assignment::
+@c * Links::
+@c * Conditional Statements::
+@c * Multiple Expressions::
+@c * Properties::
+@c * Lists::
+@c * Function Libraries::
+@c * Using::
+@c * Extending::
+
+Still in development, but what software project isn't..
+
+The motivation for an expression syntax within the scheduler is purely
+one of convenience. While the Marsyas scheduler is highly configurable,
+allowing the programmer to add their own classes for their own event
+requirements, eyes tend to glaze over when C++ programming is mentioned.
+This expression syntax allows a programmer to define an expression that
+can be fed to an event and evaluated once or any number of times within
+the scheduler. While many functions are available, more can be added
+with a little ... C++ programming. Read on fearless marsyasian.
+
+@node Type System
+@subsubsection Type System
+
+@itemize
+@item Basic Types
+  @itemize
+  @item Bool - can be true and false or shorthand $t and $f.
+  @item Natural - a number without a decimal point.
+  @item Real - floating point number (equivalent of a C double) can be written with leading or trailing decimal point - .123, 123., and 123.456.
+  @item String - a string of characters delimeted by single quotes - 'hello' - which may contain newline \n or tab \t characters - '1\t2\t3\n'. Strings are also sequence types and can be modified using the sequence iterators.
+  @end itemize
+
+@item Type coercion
+
+There are a few instances where type coercion may take place. Binary operators such as + require two values of the same type. Natural numbers are therefore promoted to reals in such a situation (1 + 1.0 := ((real)1) + 1.0). Real numbers are not converted to naturals in any case. For string concatenation using the + operator, any type concatenated to a string is converted to a string type (1+'2' := '12').
+
+Type coercion also affects function parameters. For instance, the function Real.cos(real) when used as Real.cos(1) would result in a type error as 1 is interpreted to be a natural value. Instead the function call is converted to Real.cos((real)1).
+
+Note that there is a performance penalty for coercion as slight as it may be.
+
+@item Type terms used in this document
+  @itemize
+  @item bool
+  @item natural
+  @item real
+  @item string
+  @item num_t := natural | real
+  @item basic_t := natural | real | string | bool
+  @end itemize
+@end itemize
+
+@node Operators
+@subsubsection Operators
+
+@itemize
+@item String
+  @itemize
+  @item Binary ( + )
+    @itemize
+    @item Concatenation (+).
+      @itemize
+      @item string + basic_t := string ~ 'go ' + 2 := 'go 2'
+      @item basic_t + string := string ~ 2 + ' much' := '2 much'
+      @item string + string := string ~ 'too' + ' much' := 'too much'
+      @end itemize
+    @end itemize
+  @end itemize
+@item Numbers
+  @itemize
+  @item Unary ( - )
+    @itemize
+    @item Negation (-) - overloaded for Real, Natural.
+      @itemize
+      @item - natural := natural ~ - 2 := -4
+      @item - real := real ~ - 2.1 := -2.1
+      @end itemize
+    @end itemize
+  @item Binary ( + - * / % )@*
+    Operations involving both a Real and Natural type will result in a Real type.
+    @itemize
+    @item Addition (+) - overloaded for Real, Natural, and String types.
+      @itemize
+      @item natural + natural := natural ~ 2 + 2 := 4
+      @item num_t + real := real ~ 2 + 2.3 := 4.3
+      @item real + num_t := real ~ 2.3 + 2 := 4.3
+      @item string + basic_t := string ~ 'go ' + 2 := 'go 2'
+      @item basic_t + string := string ~ 2 + ' much' := '2 much'
+      @end itemize
+    @item Subtraction (-) - overloaded for Real and Natural types.
+      @itemize
+      @item natural - natural := natural ~ 2 - 2 := 0
+      @item num_t - real := real ~ 2 - 2.3 := 0.3
+      @item real - num_t := real ~ 2.3 - 2 := 0.3
+      @end itemize
+    @item Multiplication (*) - overloaded for Real and Natural types.
+      @itemize
+      @item natural * natural := natural ~ 2 * 2 := 4
+      @item num_t * real := real ~ 2 * 2.3 := 4.6
+      @item real * num_t := real ~ 2.3 * 2 := 4.6
+      @end itemize
+    @item Division (/) - overloaded for Real and Natural types.@*
+      The division operator is also used to delimit control name paths
+      so this a/b or will be interpreted as a path and a /b will be
+      interpreted as variable a followed by path /b. Division involving
+      variables must be written with the division separated by spaces as
+      in: a / b or even a/ b.
+      @itemize
+      @item natural / natural := natural ~ 2 / 2 := 1
+      @item num_t / real := real ~ 2 / 2.3 := 0.8695
+      @item real / num_t := real ~ 2.3 / 2 := 1.15
+      @end itemize
+    @item Remainder (%) - overloaded for Real and Natural types.
+      @itemize
+      @item natural % natural := natural ~ 3 % 2 := 1
+      @item num_t % real := real ~ 4 % 1.5 := 1.0
+      @item real % num_t := real ~ 4.5 % 2 := 0.5
+      @end itemize
+    @end itemize
+  @end itemize
+@item Boolean
+  @itemize
+  @item Negation ( ! )
+    @itemize
+    @item ! bool := bool ~ ! $t := $f
+    @end itemize
+  @item Relational ( & | )
+    @itemize
+    @item And (&) - comparison of bool types.
+      @itemize
+      @item bool & bool := bool ~ $t & $f := $t
+      @end itemize
+    @item Or (|) - comparison of bool types.
+      @itemize
+      @item bool | bool := bool ~ $t | $f := $t
+      @end itemize
+    @end itemize
+  @item Comparison ( = != > >= < <= )@*
+  Comparisons may only be made between the same types.
+    @itemize
+    @item Equal (=) - comparison of types.
+      @itemize
+      @item basic_t = basic_t := bool ~ 3 = 2.1 := $f
+      @end itemize
+    @item Not Equal (!=) - comparison of types.
+      @itemize
+      @item basic_t != basic_t := bool ~ 3 != 2.1 := $t
+      @end itemize
+    @item Greater Than (>) - comparison of types.
+      @itemize
+      @item basic_t > basic_t := bool ~ 3 > 2.1 := $t
+      @end itemize
+    @item Greater Equal (>=) - comparison of types.
+      @itemize
+      @item basic_t >= basic_t := bool ~ 3 >= 2.1 := $t
+      @end itemize
+    @item Less Than (<) - comparison of types.
+      @itemize
+      @item basic_t < basic_t := bool ~ 3 < 2.1 := $f
+      @end itemize
+    @item Less Equal (<=) - comparison of types.
+      @itemize
+      @item basic_t <= basic_t := bool ~ 3 <= 2.1 := $f
+      @end itemize
+    @end itemize
+  @end itemize
+@end itemize
+
+
+@node Variables
+@subsubsection Variables
+
+Variable names must start with a letter but may be followed by letters
+or numbers. hello and hi8 are valid names wheras 2much is not. The type
+of a variable is defined through assignment. 12 >> x defines variable x
+of type natural. Once a variable type is defined it cannot be changed,
+12 >> x, 'hello' >> x results in a type mismatch error. There is no
+notion of scope except that all variables are in the same scope so that
+variables defined within a conditional statement will exist outside the
+conditional and after it has been evaluated.
+
+@strong{Control Names ( /absolute/path or relative/path )}
+
+Control names are written using the path notation,
+/Gain/gain/mrs_real/gain.
+
+@strong{Aliases ( @@name )}
+
+Control names can be rather long. Aliases can be used to shorten
+expressions containing control names. Making an alias is done through
+assignment to a name preceded by the @ symbol: /Gain/gain/mrs_real/gain
+>> @@gain. After assignment, the alias can be used as any other variable
+name: gain << 0.5.
+
+@node Assignment
+@subsubsection Assignment ( << >> )
+
+Assignment is performed using the assignment operators. Left assignment
+x << 5 and right assignment 5 >> x. These operators are equivalent.
+Assignment of a value to a variable defines the variable type. Once a
+variable is 'typed' it cannot be assigned another type. Note there is no
+scope, all variables are at the 'top level.'
+
+@strong{Assignment Sugar ( <<+ +>> etc... )}
+
+Note: left and right assignment do not necessarily yield the same
+results.
+
+@itemize
+@item Add Assign ( <<+, +>> ) - left assignment is x <<+ 5 is x << x + 5 whereas right assignment is 5 +>> x is 5 + x >> x.
+@item Subtract Assign ( <<-, ->> ) - left assignment is x <<- 5 is x << x - 5 whereas right assignment is 5 ->> x is 5 - x >> x. Left and right assignment are not the same here.
+@item Multiply Assign ( <<*, *>> ) - left assignment is x <<* 5 is x << x * 5 whereas right assignment is 5 *>> x is 5 * x >> x.
+@item Divide Assign ( <</, />> ) - left assignment is x <</ 5 is x << x / 5 whereas right assignment is 5 />> x is 5 / x >> x. Left and right assignment are not the same here.
+@item Remainder Assign ( <<%, %>> ) - left assignment is x <<% 5 is x << x % 5 whereas right assignment is 5 %>> x is 5 % x >> x. Left and right assignment are not the same here.
+@end itemize
+
+@node Links
+@subsubsection Links ( -> <- )
+
+Controls may be linked using the link operators. Left and right
+operators perform the same actions. There is no bidirectional link since
+this would require defining a link order. This order is left to the user
+who will have to explicity define the order by making two links.
+
+@node Conditional Statements
+@subsubsection Conditional Statements ( @{? cond_expr : exprs1 : exprs2 @} )
+
+The conditional statement is used for making decisions. The cond term is
+the decision and must result in a boolean. If cond is true then the
+then_expr is executed otherwise the else_expr is executed. Each of these
+expressions may be a list of expressions, even the cond_expr so long as
+cond_expr results in a bool type and both expr1 and expr2 result in the
+same type. Example: @{? 5<3 : 1 : 2@}.
+
+@node Multiple Expressions
+@subsubsection Multiple Expressions ( exprs := expr1 , expr2 , expr3 )
+
+Multiple expressions may be executed by separating them with commas as
+in t << 5, t << t - 2.
+
+@node Properties
+@subsubsection Properties ( ie Real.pi or 'hello'.2 etc. )
+
+Properties are simply a way of associating methods or values with types.
+As an example, the String module supports a number of methods that can
+accessed using the property notation. The expression String.len('hello')
+results in the natural value of 5. This expression could also be written
+as 'hello'.len() since the value 'hello' is known to be a string. This
+is just sugar for String.len('hello'). Here the first parameter to
+String.len is filled with the value. This can be used for variables of
+the right type as in s << 'hello', s.len() is similar to the previous
+except that variable s is defined.
+
+All basic types or things that evaluate to basic types can respond to
+property calls. For example the conditional operator
+@{?cond:expr1:expr2@} evaluates to a single type so can take on a
+property as in @{?true:'123':'12'@}.len. To take this further a function
+call resulting in a basic type can take on properties as well and so on:
+'123'.len.max(4).
+
+@node Sequences
+@subsubsection Sequences (Lists)
+
+Sequence types are those data types that have a sequence of elements.
+Falling into this category are lists and strings not natural or real
+numbers.
+
+Lists are denoted using the square brackets as in [ 1, 2, 3 ]. Lists can
+contain other lists as in [ [1,2], [3,4] ]. However, all elements of a
+list must be of the same type. This [ 1, '2'] and this [ 1, [ 2, 3 ] ]
+are not valid lists.
+
+@strong{Iterators}
+
+There are four different iterators for working with sequence types:
+map, iter, for, rfor. There are subtle differences.
+
+@itemize
+@item map @{map x in xs: <expr>@}@*
+The map iterator works in a similar fashion to the functional map. Map
+iterates from left to right across each element and replaces each
+element with a new one of the same or different type. Map returns a new
+list without modifying the original. An example: xs<<[1,2,3],
+b<<@{map x in xs: x+1@}.
+
+@item iter @{iter x in xs: <expr>@}@*
+
+The iter iterator works like map except that it modifies the original
+list in place. Iter returns unit. An example: xs<<[1,2,3],
+@{iter x in xs: x+1@}.
+
+@item for @{for x in xs: <expr>@}@*
+
+The for iterator iterates across the list but does not modify the
+original list and does not create a new list. for returns unit. An
+example: xs<<[1,2,3], sum<<0, @{for x in xs: sum <<+ x@}.
+
+@item rfor @{rfor x in xs: <expr>@}@*
+
+The rfor iterator works in the same way as for but from right to left.
+An example: xs<<[1,2,3], b<<@{rfor x in xs: Stream.opn << x@}.
+@end itemize
+
+@strong{Element Access}@*
+
+Elements of sequences may be accessed using the standard array notation
+as in a<<[1,2,3], one<<a[0], three<<a[2]. Note that the first element is
+position 0. Don't let me catch you using an index that's too big.
+
+@strong{Slices}@*
+
+Slices are portions of sequences. A range takes two positions in the
+list - start position (included) and end position (not included)
+separated by a colon [start:end]. If the start position is left out then
+the first element is assumed. If the last element is left out then the
+end is assumed. The start and end positions may be adjusted to avoid
+errors, ie negative start becomes the beginning of the list.
+
+We can take the head and tail of a list using slices: a<<[1,2,3],
+hd<<a[0], tl<<a[1:].
+
+@strong{Concatenation, Joining}@*
+
+Sequences may be joined using the concatentation operator otherwise
+known as +. [1,2,3]+[4] joins the two lists into [1,2,3,4].
+
+@node Function Libraries
+@subsubsection Function Libraries
+
+In most cases library names can be shortened to reduce typing. For
+example the Real module can be reduced to R as in R.cos(1.57).
+
+@itemize
+@item Real (R)
+  @itemize
+  @item @b{mrs_real} @i{Real}.e @* e = ~2.718281828
+  @item @b{mrs_real} @i{Real}.pi @* pi = ~3.141592654
+  @item @b{mrs_real} @i{Real}.pi2 @* pi/2 = ~1.570796327
+  @item @b{mrs_real} @i{Real}.pi4 @* pi/4 = ~0.785398163
+  @item @b{mrs_real} @i{Real}.rpd @* Radians per Degree = ~0.017453292
+  @item @b{mrs_real} @i{Real}.dpr @* Degrees per Radian = ~57.29577951
+  @item @b{mrs_real} @i{Real}.sqrt2 @* Square Root of 2 = ~1.414213562
+  @item @b{mrs_real} @i{Real}.cos(@b{mrs_real}) @* Trigonometric cosine in radians.
+  @item @b{mrs_real} @i{Real}.acos(@b{mrs_real}) @* Trigonometric arc cosine in radians.
+  @item @b{mrs_real} @i{Real}.cosh(@b{mrs_real}) @* Hyperbolic cosine in radians.
+  @item @b{mrs_real} @i{Real}.sin(@b{mrs_real}) @* Trigonometric sine in radians.
+  @item @b{mrs_real} @i{Real}.asin(@b{mrs_real}) @* Trigonometric arc sine in radians.
+  @item @b{mrs_real} @i{Real}.sinh(@b{mrs_real}) @* Hyperbolic cosine in radians.
+  @item @b{mrs_real} @i{Real}.tan(@b{mrs_real}) @* Trigonometric tangent in radians.
+  @item @b{mrs_real} @i{Real}.atan(@b{mrs_real}) @* Trigonometric arc tangent in radians.
+  @item @b{mrs_real} @i{Real}.ln(@b{mrs_real}), @b{mrs_real} @i{Real}.log(@b{mrs_real}) @* Natural logarithm, base e.
+  @item @b{mrs_real} @i{Real}.log2(@b{mrs_real}) @* Logarithm base 2.
+  @item @b{mrs_real} @i{Real}.log10(@b{mrs_real}) @* Logarithm base 10.
+  @item @b{mrs_real} @i{Real}.sqrt(@b{mrs_real}) @* Square root.
+  @end itemize
+@item Natural (N)
+  @itemize
+  @item @b{mrs_natural} @i{Natural}.randmax @* Constant for the maximum random number.
+  @item @b{mrs_natural} @i{Natural}.abs(@b{mrs_natural}) @* Absolute value.
+  @item @b{mrs_natural} @i{Natural}.rand() @* Generate a random number.
+  @item @b{mrs_natural} @i{Natural}.srand(@b{mrs_natural}) @* Generate a random number using the given seed.
+  @item @b{mrs_natural} @i{Natural}.min(@b{mrs_natural}, @b{mrs_natural}) @* Return the minimum of two numbers.
+  @item @b{mrs_natural} @i{Natural}.max(@b{mrs_natural}, @b{mrs_natural}) @* Return the maximum of two numbers.
+  @end itemize
+@item String (S)
+  @itemize
+  @item @b{mrs_natural} @i{String}.len(@b{mrs_string}) @* String length.
+  @end itemize
+@item Stream
+  @itemize
+  @item @b{outstream} op @* Stream.op and Stream.opn support assignment. Data can be written to stdout by assigning to this object as in 3.1415 >> Stream.op or 'hello' >> Stream.op.
+  @item @b{outstream} @i{Stream}.op(@b{mrs_real}) @* write a mrs_real number to stdout.
+  @item @b{outstream} @i{Stream}.op(@b{mrs_natural}) @* write a mrs_natural number to stdout.
+  @item @b{outstream} @i{Stream}.op(@b{mrs_bool}) @* write a mrs_bool number to stdout.
+  @item @b{outstream} @i{Stream}.op(@b{mrs_string}) @* write a mrs_string number to stdout.
+  @item @b{outstream} @i{Stream}.opn(@b{mrs_real}) @* write a mrs_real number to stdout followed by a newline.
+  @item @b{outstream} @i{Stream}.opn(@b{mrs_natural}) @* write a mrs_natural number to stdout followed by a newline.
+  @item @b{outstream} @i{Stream}.opn(@b{mrs_bool}) @* write a mrs_bool number to stdout followed by a newline.
+  @item @b{outstream} @i{Stream}.opn(@b{mrs_string}) @* write a mrs_string number to stdout followed by a newline.
+  @end itemize
+@item Timer (Tmr)
+  @itemize
+  @item @b{mrs_timer} @i{Timer}.cur @* the current timer that the event expression is posted on.
+  @item @b{mrs_string} @i{Timer}.name(@b{mrs_timer}) @* the name of the timer
+  @item @b{mrs_string} @i{Timer}.type(@b{mrs_timer}) @* the type of the timer
+  @item @b{mrs_string} @i{Timer}.prefix(@b{mrs_timer}) @* the prefix of the timer which is type/name
+  @item @b{mrs_natural} @i{Timer}.time(@b{mrs_timer}) @* returns the current time of the timer as a count. This is not in the form of the specific representation for the particular timer.
+  @item @b{mrs_bool} @i{Timer}.upd(@b{mrs_timer}, @b{mrs_string}, @b{mrs_bool}) @* updates a timer control value where the second parameter is the string path and the third parameter is the value
+  @item @b{mrs_bool} @i{Timer}.upd(@b{mrs_timer}, @b{mrs_string}, @b{mrs_real}) @* updates a timer control value where the second parameter is the string path and the third parameter is the value
+  @item @b{mrs_bool} @i{Timer}.upd(@b{mrs_timer}, @b{mrs_string}, @b{mrs_natural}) @* updates a timer control value where the second parameter is the string path and the third parameter is the value
+  @item @b{mrs_bool} @i{Timer}.upd(@b{mrs_timer}, @b{mrs_string}, @b{mrs_string}) @* updates a timer control value where the second parameter is the string path and the third parameter is the value
+  @item @b{mrs_natural} @i{Timer}.ival(@b{mrs_timer}, @b{mrs_string}) @* returns a natural value corresponding to the string representation of a time value in the specific format for the timer. ie "1s" may represent 1 second for a timer.
+  @end itemize
+@end itemize
+
+@node Using
+@subsubsection Using
+
+Two examples show simple usage. These examples are in src/scheduler.cpp.
+
+There are a few ways to specify an expression to be parsed.
+@itemize
+@item @b{new} EvExpr(marsym, Ex(@i{"x << 3"},@i{"'hello' + x >> Stream.opn"}),Rp(@i{"false"}));@*
+      specifies a primary expression within the Ex constructor that is
+      to be executed on every repetition of the event. Values to be used
+      in the expression may be initialised in the first string, then
+      used in the second string. The first string is evaluated as soon
+      as the expression event is posted on some timer. The second string
+      is executed on each repetition. The init string is optional within
+      the Ex constructor (in fact the Rp exprsession may also have an
+      init expression though it can be combined with the ExInit
+      expression). However the expression inside the Rp Constructor
+      specifies a repeat expression that determines if the event is to
+      be repeated. This expression must have a type boolean.
+@item @b{new} EvExpr(marsym, ExFile(@i{"filename.expr"}));@*
+      the expressions for Ex and Rp can be read in from a file. This
+      eliminates the need to recompile each time an expression needs to
+      be adjusted. The file format is text where the lines expected by
+      Ex and Rp are separated by titles:
+  @itemize
+  @item #ExInit: - specify an init variables expression.
+  @item #ExExpr: - specify the expression to be repeated.
+  @item #RpInit: - specify an init variables expression for the repeated expression. The repeat expression may share variables with the primary Ex expression so anything specified here can be specified in #ExInit:
+  @item #RpExpr: - specify a boolean expression that determines if the expression event is to be repeated after each repetition. This expression is evaluated after the primary expression.
+  @item #RpRate: - (Not implemented yet, pending) specify an expression that evalutes to a mrs_string that determines how far into the future the event is to be posted after it is evaluated. The result must have meaning in the current timer timebase.
+  @end itemize
+@end itemize
+
+@node Extending
+@subsubsection Extending
+
+There are two ways to extend the libraries with your own functions. The
+hard way is to hand code the function as a class in C++ then modify a
+corresponding loadlib function in ExNode.cpp. The other way is to use
+the code generation script in tools/scheduler.
+
+@strong{Useful conversion functions}
+
+There are a few built in functions for converting to and from the
+std::string type. These functions can be used in your new functions.
+@itemize
+@item ltos(v) - converts v from a mrs_natural value to a std::string
+@item dtos(v) - converts v from a mrs_real value to a std::string
+@item btos(v) - converts v from a mrs_bool value to a std::string
+@item stol(v) - converts v from a std::string value to a mrs_natural
+@end itemize
+
+@strong{Adding new libraries or library functions (C++ way)}
+
+Library functions are added by creating a new ExFun class. The first
+step is creating a new ExFun class for the new function. The second step
+is adding it to the loadlib functions in ExNode.cpp.
+
+@strong{Creating a new ExNode}
+
+The ExFun class derives from the ExNode which is an expression tree
+node. The example here is a function for extracting a substring from a
+given string.
+
+Functions taken a set number of parameters. The function class is
+supplied information on the number of parameters and their types through
+the setSignature function when the function class is instantiated in the
+symbol table. For now we assume this set of parameters
+(mrs_string,mrs_natural,mrs_natural) for the original string, the start
+index, and the end index.
+
+Creating an Exfun class requires the definition of the constructor, a
+calc() method that returns the result of the function call, and a copy
+method that returns a copy of the function without its parameters. The
+example shows the
+
+@float Figure, fig:mesy1
+@verbatim
+class ExFun_StrSub : public ExFun { public:
+    ExFun_StrSub() : ExFun("mrs_string","String.sub(mrs_string,mrs_natural,mrs_natural",true) { }
+    virtual ExVal calc() {
+        std::string str = params[0]->eval().toString();
+        int s = params[1]->eval().toNatural();
+        int e = params[2]->eval().toNatural();
+        int l = str.length();
+        if (s<0) { s=0; } else if (s>l) { s=l; }
+        if (e<s) { e=s; } else if (e>l-s) { e=l-s; }
+        return str.substr(s,e);
+    }
+    ExFun* copy() { return new ExFun_StrSub(); }
+};
+@end verbatim
+@caption{String Substring ExFun class.}
+@end float
+
+Note that the constructor takes two parameters where t is the type that
+the function evaluates to and n is the signature of the function. These
+parameters are simply passed on to the ExFun parent constructor along
+with a third boolean parameter for the pureness of the function.
+Pureness is a flag that determines whether the function is free of
+side-effects or not. If the parameters to the function can be determined
+to be constant then a pure function can be evaluated at parse time to a
+constant value.
+
+The calc() method uses the three parameters from the params[] array.
+These parameters are set at parse time and placed in the params[] array.
+Each param[] is an expression so they are of type ExNode*. Therefore,
+you need to evaluate each expression prior to using it. To evaluate,
+call the eval() method of the ExNode not the calc() method. eval() will
+make sure that each expression in a list of expressions will be
+evaluated whereas calc() only calculates the current node.
+
+@strong{Adding the function to the library}
+
+The function can be added to the library by adding a line to the
+loadlib_String method in ExNode.cpp. The addReserved call made to the
+symbol table adds a reserved word. There is some flexibility in how the
+name appears in the symbol table which in turn defines how it may be
+used in an expression. The path to a function is separated by the '.'
+symbol. Multiple names for a segment of the path can be defined by
+separating them with the '|' symbol where the first among several is the
+'true' name. For example String|Str|S.sub defines three different
+leading names where the true name is String.sub but S.sub will get the
+same thing. The same is possible for parameter tuples but not the
+individual parameters. For example Real|R.cos(mrs_real)|(mrs_natural)
+allows the call Real.cos(0.5) as well as Real.cos(1) as 1 is a natural
+and not a real. This type information is used to type check function
+calls in the parser.
+
+@float Figure, fig:mesy2
+@verbatim
+st->addReserved("String|S.sub(mrs_string,mrs_natural,mrs_natural)",
+                new ExFun_StrSub("mrs_string",
+                                 "String.sub(mrs_string,mrs_natural,mrs_natural)"));
+@end verbatim
+@caption{Adding a function to the library.}
+@end float
+
+The second parameter to the addReserved call is a new instantiation of
+the function object. Here the return type is the first parameter to the
+constructor and the 'correct' or 'true' full function call is the second
+parameter. This information is used for type checking parameters. While
+type errors are not possible if the first parameter to the addReserved
+call is correct, the type information in the second parameter to the
+constructor is actually used for type coercion - promoting naturals to
+reals, etc.
+
+@strong{Adding new libraries or library functions (Code Gen way)}
+
+In the tools/scheduler directory is a python script for generating
+library functions from a simplified source code. The easiest way to
+explain the process is through an example:
+
+@float Figure, fig:mesy3
+@example
+ 1: @b{lib} Foo|F.Bar|B
+ 2:
+ 3: @b{pure} mrs_string @b{fun}|@b{alt}(mrs_real a, mrs_natural b)
+ 4:     mrs_string s="hello";
+ 5:     mrs_bool x;
+ 6: @{
+ 7:     mrs_natural z=a+b;
+ 8:     @b{if} (x) @{ s=s+" "+ltos(z); @}
+ 9:     x = z < 0;
+10:     @b{return} s;
+11: @}
+@end example
+@caption{Adding a function to the library.}
+@end float
+
+Though not a useful function it does demonstrate the full extent of the
+code generation syntax.
+
+@b{Line 1}. library definition starts with keyword 'lib' the names following
+denote a path to the library. The true path is Foo.Bar, all functions
+defined after this statement until a new lib definition will be in this
+library. This means that the function fun is called by 'Foo.Bar.fun'.
+Alternate names or aliases for portions of the path can be defined using
+the | symbol. In the above example F is an alias for Foo so the path to
+fun could also be written as 'Foo.B.fun' or 'F.B.fun' etc.
+
+@b{Line 3}. the function definition may start with 'pure' where pure implies
+that if the parameters to the function are constants then the function
+can be evaluated at parse time to a constant, ie no side-effects. If
+pure isn't specified then the function is not pure. the return type must
+be a type supported by the ExVal class (names starting with 'mrs_'). The
+function name can also have aliases divided by the | symbol where the
+first name is the true name. Parameters must be defined using the 'mrs_'
+names.
+
+@b{Line 4}. Normally functions do not have state but as a bonus variables
+whose values persist may defined after the parameters definition and
+prior to the opening function body brace. These types can be the 'mrs_'
+types or valid C++ types.
+
+@b{Line 6}. The function body begins with a opening brace @{.
+
+@b{Line 7-10}. The function body contains valid C++ code and will likely use
+the parameter values defined on line 3.
+
+@b{Line 11}. The function body ends with a closing brace @}.
+
+@node Marsyas Expression Examples
+@subsubsection Marsyas Expression Examples
+
+
+@float Figure, fig:wschev1
+@example
+@b{#include} @t{<stdio.h>}
+@b{#include} @t{"MarSystemManager.h"}
+@b{#include} @t{"EvExpr.h"}
+
+@b{using} @b{namespace} std;
+@b{using} @b{namespace} Marsyas;
+
+void @b{sched1}()
+@{
+  MarSystemManager mng;
+
+  MarSystem* fanin = mng.@b{create}(@t{"Fanin"}, @t{"fanin"});
+  fanin->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src1"}));
+  fanin->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src2"}));
+  fanin->@b{updctrl}(@t{"SineSource/src1/mrs_real/frequency"},3000.0);
+  fanin->@b{updctrl}(@t{"SineSource/src2/mrs_real/frequency"},1000.0);
+
+  MarSystem* series = mng.@b{create}(@t{"Series"}, @t{"series"});
+  series->@b{addMarSystem}(fanin);
+
+  series->@b{addMarSystem}(mng.@b{create}(@t{"AudioSink"}, @t{"dest"}));
+  series->@b{updctrl}(@t{"AudioSink/dest/mrs_bool/initAudio"}, @b{true});
+
+
+@b{#if} 0
+  @i{// using aliases makes this a little more readable, see the next bit}
+  EvExpr* e = @b{new} @b{EvExpr}(series,
+    @b{Ex}(@t{"Fanin/fanin/SineSource/src1/mrs_real/frequency << 120. + 3000. * R.rand(), \}
+@t{        Fanin/fanin/SineSource/src2/mrs_real/frequency << 120. + 800. * R.rand(),"}
+       @t{"'src1='+Fanin/fanin/SineSource/src1/mrs_real/frequency+ \}
+@t{        ' src2='+Fanin/fanin/SineSource/src2/mrs_real/frequency+'}@t{\n}@t{'>>Stream.op"}),
+    @b{Rp}(@t{"true"}));
+
+@b{#else}
+  EvExpr* e = @b{new} @b{EvExpr}(series,
+        @i{// First line to Ex will be the init expression, run once, when event is posted}
+    @b{Ex}(@t{"Fanin/fanin/SineSource/src1/mrs_real/frequency >> @@freq1, \}
+@t{        Fanin/fanin/SineSource/src2/mrs_real/frequency >> @@freq2 "},
+       @i{// Second line to Ex is the expression, repeated each time the event is posted}
+       @t{"freq1 << 120. + 3000. * R.rand(),\}
+@t{        freq2 << 120. + 800. * R.rand(),\}
+@t{        'src1=' + freq1 + ' src2=' + freq2 + '}@t{\n}@t{' >> Stream.op"}),
+    @b{Rp}(@t{"true"}));
+
+@b{#endif}
+
+  e->@b{set_repeat}(@b{Repeat}(@t{"0.25s"}));
+
+  series->@b{updctrl}(@b{TmTime}(@t{"TmSampleCount/Virtual"},@t{"0s"}), e);
+
+  @b{for} (int i=1;i<100;i++) series->@b{tick}();
+
+  @b{delete} series;
+@}
+@end example
+@caption{How to generate random sine waves}
+@end float
+
+@float Figure, fig:wschev2
+@example
+void @b{sched2}()
+@{
+  MarSystemManager mng;
+
+  MarSystem* fanin = mng.@b{create}(@t{"Fanin"}, @t{"fanin"});
+  fanin->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src1"}));
+  fanin->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src2"}));
+  fanin->@b{updctrl}(@t{"SineSource/src1/mrs_real/frequency"},400.0);  @i{// A}
+
+  fanin->@b{updctrl}(@t{"SineSource/src2/mrs_real/frequency"},554.37); @i{// C#}
+  fanin->@b{updctrl}(@t{"SineSource/src3/mrs_real/frequency"},659.26); @i{// E}
+
+  MarSystem* series = mng.@b{create}(@t{"Series"}, @t{"series"});
+  series->@b{addMarSystem}(fanin);
+
+  series->@b{addMarSystem}(mng.@b{create}(@t{"AudioSink"}, @t{"dest"}));
+  series->@b{updctrl}(@t{"AudioSink/dest/mrs_bool/initAudio"}, @b{true});
+
+  EvExpr* e =
+    @b{new} @b{EvExpr}(series,
+      @b{Ex}(@t{"tmr<<Timer.cur"},@t{"tmr.prefix + ' ' + tmr.time + '}@t{\n}@t{' >> Stream.op"}),
+      @b{Rp}(@t{"true"}));
+
+  e->@b{set_repeat}(@b{Repeat}(@t{"0.25s"}));
+
+  series->@b{updctrl}(@b{TmTime}(@t{"TmSampleCount/Virtual"},@t{"0s"}), e);
+
+  @b{for} (int i=1;i<100;i++) series->@b{tick}();
+
+  @b{delete} series;
+@}
+@end example
+@caption{Printing the time of the current timer}
+@end float
 

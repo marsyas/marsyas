@@ -1,5 +1,21 @@
 @c -*- coding: latin-1; mode: texinfo; -*-
 
+@c Different figure types
+
+@macro imgfigure{REF,CAPTION,IMG}
+@float Figure,\REF\
+@image{\IMG\}
+@caption{\CAPTION\}
+@end float
+@end macro
+
+@macro examplefilefigure{REF,CAPTION,FILENAME}
+@float Figure,\REF\
+@examplefile{\FILENAME\}
+@caption{\CAPTION\}
+@end float
+@end macro
+
 @macro examplefile{FILENAME}
 @ifhtml
 @html
