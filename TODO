@@ -1,6 +1,9 @@
 
 AT some point I must cleanup this
 
+- split the marsyas library into a set of smaller libraries
+  (definitely post-0.3)
+
 
 
 ---- info that used to be in doc/unsorted.texi (ie really old documentation)
