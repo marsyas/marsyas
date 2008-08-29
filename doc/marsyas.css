@@ -12,7 +12,7 @@ h5 { color: darkgreen; }
 hr { border: 0; color: green; background-color: green; }
 strong { color: red; }
 table.cartouche { color: red; }
-
+strong.float-caption {color:black;font-size:small;margin-top:0px;}
 h3.fn,span.fn
 {
   margin-left: 1cm;
