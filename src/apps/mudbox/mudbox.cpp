@@ -4122,7 +4122,8 @@ toy_with_scheduler(string sfName)
 	string ipName=sfName;
 	string opName="scheduled.wav";
 
-	cout << "Input: " << ipName << "\nOutput: " << opName << endl;
+	cout    << "Input: " << ipName
+                << "\nOutput: " << opName << endl;
 
 	MarSystemManager mng;
 
@@ -4140,8 +4141,9 @@ toy_with_scheduler(string sfName)
 
 	// post events to the scheduler using updctrl(..)
 	series1->updctrl("Gain/gain/mrs_real/gain", 1.0);
-	series1->updctrl("1s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 0.0));
-	series1->updctrl("2s", Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 1.0));
+	series1->updctrl(TmTime("TmSampleCount/Virtual","1s"), Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 0.0));
+	series1->updctrl(TmTime("TmSampleCount/Virtual","2s"), Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 1.0));
+
 	for (int i=0; i<10000; i++) {
 		series1->tick();
 	}

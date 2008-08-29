@@ -58,9 +58,8 @@ MarSystem::MarSystem(string type, string name)
 	addControls();
 
 	scheduler_.removeAll();
-	TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
+	TmTimer* t = new TmSampleCount(this, "mrs_natural/inSamples");
 	scheduler_.addTimer(t);
-	delete t;
 }
 
 // copy constructor 
@@ -177,10 +176,10 @@ MarSystem::MarSystem(const MarSystem& a)
 // 	}
 
 	//recreate schedule objects  => mutexes [?]
+
 	scheduler_.removeAll();
-	TmTimer* t = new TmSampleCount(NULL, this, "mrs_natural/inSamples");
+	TmTimer* t = new TmSampleCount(this, "mrs_natural/inSamples");
 	scheduler_.addTimer(t);
-	delete t;
 }
 
 void
@@ -1262,47 +1261,6 @@ MarSystem::updctrl(MarEvent* me)
 	}
 }
 
-/* this method clashes with updctrl(string cname, MarControlValue val)
-when val=0, which can be interpreted as ev=NULL
-void MarSystem::updctrl(string  time, MarEvent* ev) {
-scheduler_.post(time, Repeat("",0), ev);
-}
-*/
-
-void 
-MarSystem::updctrl(string  time, Repeat rep, MarEvent* ev) 
-{
-	scheduler_.post(time, rep, ev);
-}
-
-/*
-void
-MarSystem::updctrl(Repeat rep, MarEvent* ev)
-{
-scheduler_.post("0", rep, ev);
-}
-*/
-
-void
-MarSystem::updctrl(string time, string cname, MarControlPtr control)
-{
-	scheduler_.post(time, Repeat(), new EvValUpd(this,cname,control));
-}
-
-void
-MarSystem::updctrl(string time, Repeat rep, string cname, MarControlPtr control)
-{
-	scheduler_.post(time, rep, new EvValUpd(this,cname,control));
-}
-
-/*
-void
-MarSystem::updctrl(Repeat rep, string cname, MarControlPtr control)
-{
-scheduler_.post("0", rep, new EvValUpd(this,cname,control));
-}
-*/
-
 void
 MarSystem::updctrl(TmTime t, MarEvent* ev)
 {
@@ -1325,12 +1283,6 @@ void
 MarSystem::updctrl(TmTime t, Repeat r, string cname, MarControlPtr control)
 {
 	scheduler_.post(t,r,new EvValUpd(this,cname,control));
-}
-
-void
-MarSystem::addTimer(TmTimer* t)
-{
-	scheduler_.addTimer(t);
 }
 
 void

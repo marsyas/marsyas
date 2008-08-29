@@ -21,7 +21,7 @@
 #include "ExSymTbl.h"
 #include "ExNode.h"
 #include "MarSystem.h"
-#include "VScheduler.h"
+#include "Scheduler.h"
 #include "TmTimer.h"
 
 #include <fstream>
@@ -37,13 +37,13 @@ void Ex::parse(Expr* e, ExNode*& init, ExNode*& expr)
     // parse init expression
     if (init_!="") {
         s.setString(init_.c_str());
-        p.Parse(e->vsched_,e->marsym_,e->symbol_table_);
+        p.Parse(e->sched_,e->marsym_,e->symbol_table_);
         init=p.getTree();
     } else init=NULL;
 
     if (expr_!="") {
         s.setString(expr_.c_str());
-        p.Parse(e->vsched_,e->marsym_,e->symbol_table_);
+        p.Parse(e->sched_,e->marsym_,e->symbol_table_);
         expr=p.getTree();
     } else expr=NULL;
 }
@@ -53,7 +53,7 @@ Expr::Expr()
     init_expr_=NULL; expr_=NULL;
     rept_=NULL; rate_=NULL;
     marsym_=NULL;
-    vsched_=NULL;
+    sched_=NULL;
     timer_=NULL;
     initialized_=false;
 }
@@ -61,7 +61,7 @@ Expr::Expr(MarSystem* msym, Ex e)
 {
     marsym_=msym;
     timer_=NULL;
-    vsched_=NULL;
+    sched_=NULL;
     symbol_table_=new ExRecord();
     symbol_table_->inc_ref();
     e.parse(this,init_expr_,expr_);
@@ -83,7 +83,7 @@ void Expr::set(MarSystem* m, Ex& e, Rp& r)
 {
     marsym_=m;
     timer_=NULL;
-    vsched_=NULL;
+    sched_=NULL;
     symbol_table_=new ExRecord();
     symbol_table_->inc_ref();
     e.parse(this,init_expr_,expr_);
@@ -120,9 +120,9 @@ std::string Expr::repeat_interval()
     if (rate_) return (rate_->eval()).toString();
     return "__NULL";
 }
-void Expr::setVScheduler(VScheduler* v)
+void Expr::setScheduler(Scheduler* v)
 {
-    vsched_=v;
+    sched_=v;
 }
 void Expr::setTimer(TmTimer* t)
 {

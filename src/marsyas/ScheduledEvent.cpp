@@ -19,6 +19,8 @@
 #include "ScheduledEvent.h"
 #include "MarSystem.h"
 #include "EvExpr.h"
+#include "TmTimer.h"
+
 using namespace std;
 using namespace Marsyas;
 
@@ -44,13 +46,17 @@ ScheduledEvent::~ScheduledEvent()
 
 void ScheduledEvent::setEvent(mrs_natural time, MarEvent* event)
 {
-    setEvent(time,Repeat(),event);
+    time_=time;
+    event_=event;
+    repetition=Repeat();
+    
 }
 void ScheduledEvent::setEvent(mrs_natural time, Repeat rep, MarEvent* event)
 {
     time_=time;
     event_=event;
     repetition=rep;
+    event->set_repeat(rep);
 }
 void ScheduledEvent::setTimer(TmTimer* t)
 {

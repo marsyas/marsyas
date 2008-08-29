@@ -21,7 +21,7 @@
 
 using namespace std;
 using namespace Marsyas;
-
+/*
 TmTimer::TmTimer()
 {
     init();
@@ -31,45 +31,42 @@ TmTimer::TmTimer(string name)
     init();
     name_=name;
 }
-TmTimer::TmTimer(string type, string name)
+*/
+TmTimer::TmTimer(std::string type, std::string name)
 {
-    init();
     type_=type;
     name_=name;
+    init();
 }
 TmTimer::TmTimer(const TmTimer& t)
 {
     name_=t.name_;
-    granularity_=t.granularity_;
+//    granularity_=t.granularity_;
     type_=t.type_;		// Type of MarSystem
     name_=t.name_;		// Name of instance
     next_trigger_=t.next_trigger_;
     cur_time_=t.cur_time_;
-    scheduler=t.scheduler;
+//    scheduler=t.scheduler;
 }
 
 TmTimer::~TmTimer() { }
 
 void
-TmTimer::init() { cur_time_=0; granularity_=0; next_trigger_=0; scheduler=NULL; }
+TmTimer::init()
+{
+    cur_time_=0;
+//    granularity_=0;
+    next_trigger_=0;
+}
 
 string
 TmTimer::getName() { return name_; }
-
-void
-TmTimer::setName(string name) { name_=name; }
 
 string
 TmTimer::getType() { return type_; }
 
 string
 TmTimer::getPrefix() { return type_ + "/" + name_; }
-
-void
-TmTimer::setGranularity(mrs_natural g) { granularity_=g; }
-
-void
-TmTimer::setScheduler(Scheduler* s) { scheduler=s; }
 
 mrs_natural 
 TmTimer::getTime() { return cur_time_; }
@@ -86,10 +83,15 @@ void TmTimer::tick()
     cur_time_ += adj_time;
 
     if (next_trigger_<1) {
-        if (granularity_>0) { next_trigger_=granularity_; }
+//        if (granularity_>0) { next_trigger_=granularity_; }
         trigger();
     } else { next_trigger_ -= adj_time; }
 }
+void TmTimer::trigger()
+{
+    dispatch();
+}
+
 void
 TmTimer::updtimer(std::string cname, TmControlValue value)
 {
@@ -97,6 +99,68 @@ TmTimer::updtimer(std::string cname, TmControlValue value)
 	(void)value;
     MRSWARN("TmTimer::updtimer(string,TmControlValue)  updtimer not supported for this timer");
 }
+
+void
+TmTimer::post(string event_time, Repeat rep, MarEvent* me)
+{
+    rep.count--;
+    // should probably check if rep.count==0
+    mrs_natural stime = getTime() + intervalsize(event_time);
+    post(new ScheduledEvent(stime,rep,me));
+}
+void
+TmTimer::post(string event_time, MarEvent* me)
+{
+    mrs_natural stime = getTime() + intervalsize(event_time);
+    post(new ScheduledEvent(stime,Repeat("", 0),me));
+}
+void
+TmTimer::post(ScheduledEvent* e)
+{
+    e->setTimer(this); // for EvEpr type events that want to read the timer
+    // add pointer to map
+    MarEvent* m = e->getEvent();
+    events_[m->getPrefix()] = e;
+    // add to heap
+    pq.push(e);
+}
+
+bool
+TmTimer::eventPending()
+{
+    return (!pq.empty() && pq.top()->getTime()<getTime());
+}
+
+void
+TmTimer::dispatch()
+{
+    while (eventPending()) {
+// This is the old way when using the STL priority_queue
+//        ScheduledEvent* se = pq.top();
+//        pq.pop(); // remove the first element
+//        se.getEvent()->dispatch();
+//        if (se.repeat()) {
+//           se.doRepeat();
+//            post(se);
+//        }
+
+        ScheduledEvent* se = pq.pop();
+        se->getEvent()->dispatch();
+
+        if (se->repeat()) {
+            se->doRepeat();
+            post(se);
+        } else {
+            // delete handle to event
+            MarEvent* m = se->getEvent();
+            events_iter_ = events_.find(m->getPrefix());
+            if (events_iter_ != events_.end()) { events_.erase(events_iter_); }
+            // delete event
+            delete(se);
+        }
+    }
+}
+
 
 /*
 ostream&

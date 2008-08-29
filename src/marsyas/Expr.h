@@ -92,7 +92,7 @@ public:
 */
 class ExRecord;
 class MarSystem;
-class VScheduler;
+class Scheduler;
 class TmTimer;
 class Expr {
     friend class Ex;
@@ -101,7 +101,7 @@ class Expr {
     ExNode* init_expr_; ExNode* expr_;
     ExNode* rept_; ExNode* rate_;
 
-    MarSystem* marsym_;  VScheduler* vsched_;  TmTimer* timer_;
+    MarSystem* marsym_;  Scheduler* sched_;  TmTimer* timer_;
 
     void set(MarSystem* m, Ex& e, Rp& r);
 
@@ -118,7 +118,7 @@ public:
     std::string repeat_interval();
     bool has_rate() { return rate_!=NULL; }
 
-    void setVScheduler(VScheduler* v);
+    void setScheduler(Scheduler* v);
     void setTimer(TmTimer* t);
     void post();
 };

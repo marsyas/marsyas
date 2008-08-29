@@ -52,7 +52,7 @@ void ExVal::set(float x)     { clear(); type_="mrs_real";      real_=x; }
 void ExVal::set(mrs_natural x)  { clear(); type_="mrs_natural";   natural_=x; }
 void ExVal::set(mrs_bool x)     { clear(); type_="mrs_bool";      bool_=x; }
 void ExVal::set(TmTimer** t)    { clear(); type_="mrs_timer";     timer_=t; }
-void ExVal::set(VScheduler** t) { clear(); type_="mrs_scheduler"; scheduler_=t; }
+void ExVal::set(Scheduler** t) { clear(); type_="mrs_scheduler"; scheduler_=t; }
 void ExVal::set(mrs_natural len, ExNode** xs, std::string t)
 {
     clear();
@@ -109,7 +109,7 @@ ExVal ExVal::defaultExValue(std::string type)//{{{
     if (type=="mrs_natural") return (long)0;
     if (type=="mrs_real") return (double)0.0;
     if (type=="mrs_timer") { ExVal v((TmTimer**)NULL); return v; }
-    if (type=="mrs_scheduler") { ExVal v((VScheduler**)NULL); return v; }
+    if (type=="mrs_scheduler") { ExVal v((Scheduler**)NULL); return v; }
     return ExVal();
 }//}}}
 std::string ExVal::getBaseType() const

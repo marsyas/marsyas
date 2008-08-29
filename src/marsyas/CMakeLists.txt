@@ -159,7 +159,6 @@ set( MarSystem_SOURCES
   TmSampleCount.cpp
   TmTime.cpp
   TmTimer.cpp
-  VScheduler.cpp
   ViconFileSource.cpp
   WavFileSink.cpp
   WavFileSource.cpp
@@ -239,7 +238,6 @@ set(Marsyas_HEADERS
   Conversions.h
   MarEvent.h
   TmTime.h
-  VScheduler.h
   TmControlValue.h
   MrsLog.h
   MarControl.h

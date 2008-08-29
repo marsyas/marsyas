@@ -36,11 +36,13 @@ TmSampleCount::TmSampleCount(MarSystem* ms, string cname) : TmTimer("TmSampleCou
 {
     setReadCtrl(ms,cname);
 }
+/*
 TmSampleCount::TmSampleCount(Scheduler* s, MarSystem* ms, string cname) : TmTimer("TmSampleCount","Virtual")
 {
     setScheduler(s);
     setReadCtrl(ms,cname);
 }
+*/
 TmSampleCount::TmSampleCount(const TmSampleCount& s) : TmTimer(s)
 {
 //    setScheduler(s.scheduler);
@@ -75,7 +77,7 @@ mrs_natural TmSampleCount::readTimeSrc()
 }
 void TmSampleCount::trigger()
 {
-    scheduler->dispatch();
+    dispatch();
 }
 mrs_natural TmSampleCount::intervalsize(string interval)
 {

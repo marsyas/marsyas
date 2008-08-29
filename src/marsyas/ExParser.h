@@ -12,7 +12,7 @@
 #include "common.h"
 
 
-#include "VScheduler.h"
+#include "Scheduler.h"
 #include "MarSystem.h"
 #include "ExScanner.h"
 
@@ -99,7 +99,7 @@ ExNode* tree;
     ExSymTbl symbol_table;
 
     MarSystem* marsystem_;
-    VScheduler* vscheduler_;
+    Scheduler* scheduler_;
     TmTimer** timer_;
 
     bool IsLAsgn()//{{{
@@ -813,7 +813,7 @@ ExNode* tree;
 	void Neil();
 
 	void Parse();
-    void Parse(VScheduler* v, MarSystem* m, ExRecord* est);
+    void Parse(Scheduler* v, MarSystem* m, ExRecord* est);
 
 }; // end ExParser
 

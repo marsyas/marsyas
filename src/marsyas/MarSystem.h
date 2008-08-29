@@ -27,7 +27,7 @@
 #include "TmSampleCount.h" 
 #include "MarEvent.h"
 #include "TmTime.h"
-#include "VScheduler.h"
+#include "Scheduler.h"
 #include "TmControlValue.h"
 
 #include <vector>
@@ -170,7 +170,7 @@ protected:
   realvec inTick_;
   realvec outTick_;
 
-  VScheduler scheduler_;
+  Scheduler scheduler_;
 	mrs_natural count_; // scheduling purposes
 
 	bool active_;
@@ -332,15 +332,15 @@ public:
 	mrs_natural getTime(std::string timer_name);
 	void updtimer(std::string cname, TmControlValue value);
 	void addTimer(std::string class_name, std::string identifier);
-	void addTimer(TmTimer* t);
+	//void addTimer(TmTimer* t);
 	void removeTimer(std::string name);
 
 	void updctrl(MarEvent* me);
 	//void updctrl(std::string time, MarEvent* ev); //clashes with void upctrl(std::string cname, 0);
-	void updctrl(std::string time, Repeat rep, MarEvent* ev);
+	//void updctrl(std::string time, Repeat rep, MarEvent* ev);
 	//void updctrl(Repeat rep, MarEvent* ev);
-	void updctrl(std::string time, std::string cname, MarControlPtr control);
-	void updctrl(std::string time, Repeat rep, std::string cname, MarControlPtr control);
+	//void updctrl(std::string time, std::string cname, MarControlPtr control);
+	//void updctrl(std::string time, Repeat rep, std::string cname, MarControlPtr control);
 	//void updctrl(Repeat rep, std::string cname, MarControlPtr control);
 	void updctrl(TmTime t, MarEvent* ev);
 	void updctrl(TmTime t, Repeat rep, MarEvent* ev);

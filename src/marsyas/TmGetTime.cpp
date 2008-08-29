@@ -24,14 +24,29 @@
 using namespace std;
 using namespace Marsyas;
 
-TmGetTime::TmGetTime() { name_="System"; init(); last_usecs=readTimeSrc(); }
-TmGetTime::TmGetTime(string name) { name_=name; init(); last_usecs=readTimeSrc(); }
-TmGetTime::TmGetTime(Scheduler* s) { name_="System"; setScheduler(s); init(); last_usecs=readTimeSrc(); }
-TmGetTime::TmGetTime(const TmGetTime& t) : TmTimer(t) {  ; name_=t.name_; scheduler=t.scheduler; }
+TmGetTime::TmGetTime() : TmTimer("TmGetTime","System")
+{
+    last_usecs=readTimeSrc();
+}
+TmGetTime::TmGetTime(string name) : TmTimer("TmGetTime",name)
+{
+    last_usecs=readTimeSrc();
+}
+/*
+TmGetTime::TmGetTime(Scheduler* s) : TmTimer("TmGetTime","System")
+{
+    setScheduler(s);
+    last_usecs=readTimeSrc();
+}
+*/
+TmGetTime::TmGetTime(const TmGetTime& t) : TmTimer(t)
+{
+    name_=t.name_;
+}
 TmGetTime::~TmGetTime(){ }
 TmTimer* TmGetTime::clone() { return new TmGetTime(*this); }
 
-void TmGetTime::setScheduler(Scheduler* s) { scheduler=s; }
+//void TmGetTime::setScheduler(Scheduler* s) { scheduler=s; }
 
 mrs_natural TmGetTime::readTimeSrc() {
 /*  struct timeval {
@@ -50,9 +65,12 @@ mrs_natural TmGetTime::readTimeSrc() {
 #endif 
     return u;
 }
-void TmGetTime::trigger() { scheduler->dispatch(); }
-
-mrs_natural TmGetTime::intervalsize(string interval) {
-    return time2usecs(interval);
+void TmGetTime::trigger()
+{
+    dispatch();
 }
 
+mrs_natural TmGetTime::intervalsize(string interval)
+{
+    return time2usecs(interval);
+}

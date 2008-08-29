@@ -691,9 +691,9 @@ void ExParser::Parse() {
         Expect(0);
     delete dummyToken;
 }
-void ExParser::Parse(VScheduler* v, MarSystem* m, ExRecord* est)
+void ExParser::Parse(Scheduler* v, MarSystem* m, ExRecord* est)
 {
-    vscheduler_=v;
+    scheduler_=v;
     marsystem_=m;
     symbol_table.addTable(est);
     Parse();

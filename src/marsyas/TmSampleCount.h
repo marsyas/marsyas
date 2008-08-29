@@ -42,12 +42,13 @@ protected:
     MarSystem* read_src_;
     MarControlPtr read_ctrl_;
     std::string read_cname_;
+
 public:
     // Constructors 
     TmSampleCount();
     TmSampleCount(std::string name);
     TmSampleCount(MarSystem*, std::string cname);
-    TmSampleCount(Scheduler*, MarSystem*, std::string cname);
+//    TmSampleCount(Scheduler*, MarSystem*, std::string cname);
     TmSampleCount(const TmSampleCount& s);
     virtual ~TmSampleCount();
     TmTimer* clone();

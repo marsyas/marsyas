@@ -23,67 +23,64 @@
 #include "realvec.h"
 #include "common.h"
 */
-#include "ScheduledEvent.h"
-#include "MarEvent.h"
 #include "TmTimer.h"
+#include "ScheduledEvent.h"
+#include "TmTime.h"
 #include "TmControlValue.h"
 #include <string>
-//#include <queue>
-//#include <functional> // for priority queue comparator
-#include <iostream>
-
-
-#include "Heap.h"
-#include <map> 
 
 namespace Marsyas
 {
 /**
-	\class Scheduler
-	\ingroup Scheduler
-	\brief Scheduler schedules things
-
+   \class Scheduler
+	\ingroup none
+   \brief Scheduler schedules things
+   \author inb@cs.uvic.ca
 */
 
 
 class Scheduler {
 protected:
-    std::string type_;		// Type of MarSystem
-    std::string name_;		// Name of instance
 
-//    priority_queue<ScheduledEvent, vector<ScheduledEvent>, greater<ScheduledEvent> > pq; // this is supposed to be equivalent to ^^^
-    Heap<ScheduledEvent, ScheduledEventComparator> pq;
-    TmTimer* timer;
-    // map for events to allow modifying events while in the heap
-    std::map<std::string, ScheduledEvent*> events_;
-    std::map<std::string, ScheduledEvent*>::iterator events_iter_;
+    TmTimer** timers;
+    int timers_count;
+//    map<std::string,vector<VScheduler> > schedulers;
 
 public:
+//  map<std::string,vector<std::string> > synonyms_;
+
     // Constructors 
     Scheduler();
-    Scheduler(std::string class_name, std::string identifier);
-    Scheduler(TmTimer* t);
-    Scheduler(const Scheduler& s);
     virtual ~Scheduler();
-    Scheduler clone() const;
-    void copy(const Scheduler& s);
-    void dispatch();
 
     // Naming methods 
+    void setName(std::string name);
     std::string getType();
     std::string getName();
     std::string getPrefix();
 
-    void setTimer(TmTimer* c);
-    void updtimer(std::string cname, TmControlValue value);
     void tick();
-    void addScheduler(std::string name);
     bool eventPending();
-    mrs_natural getTime();
 
+    void addTimer(TmTimer* t);
+    void addTimer(std::string class_name, std::string identifier);
+    void updtimer(std::string cname, TmControlValue value);
+    static void split_cname(std::string cname, std::string* head, std::string* tail);
+    bool removeTimer(std::string name);
+    void removeAll();
+private:
+    void appendTimer(TmTimer* s);
+    TmTimer* findTimer(std::string name);
+public:
+    // post to default timer
     void post(std::string event_time, Repeat rep, MarEvent* me);
     void post(std::string event_time, MarEvent* me);
-    void post(ScheduledEvent* e);
+
+    // post to user defined timer
+    void post(TmTime t, Repeat r, MarEvent* me);
+    void post(std::string time, std::string timer_name, Repeat r, MarEvent* me);
+
+    mrs_natural getTime(std::string timer);
 
     // the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);

@@ -41,19 +41,19 @@ class Scheduler; // forward declaration
 
 class TmGetTime : public TmTimer {
 protected:
-    Scheduler* scheduler;
+//    Scheduler* scheduler;
     int last_usecs;
 
 public:
     // Constructors 
     TmGetTime();
     TmGetTime(std::string name);
-    TmGetTime(Scheduler* s);
+//    TmGetTime(Scheduler* s);
     TmGetTime(const TmGetTime& t);
     ~TmGetTime();
     TmTimer* clone();
 
-    void setScheduler(Scheduler* s);
+//    void setScheduler(Scheduler* s);
     mrs_natural readTimeSrc();
     void trigger();
     mrs_natural intervalsize(std::string interval);

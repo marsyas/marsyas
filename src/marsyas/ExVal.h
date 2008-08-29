@@ -24,7 +24,7 @@
 #include <cmath>
 #include "common.h"
 #include "TmTimer.h"
-#include "VScheduler.h"
+#include "Scheduler.h"
 
 namespace Marsyas
 {
@@ -53,7 +53,7 @@ private:
 
     ExFun* fun_;
     TmTimer** timer_;
-    VScheduler** scheduler_;
+    Scheduler** scheduler_;
     ExNode** list_; // use natural_ as length
 protected:
     void clear();
@@ -69,7 +69,7 @@ public:
     ExVal(mrs_bool x)                     {list_=NULL;fun_=NULL;set(x);};
     ExVal(ExFun* x)                       {list_=NULL;fun_=NULL;set((ExFun*)x);};
     ExVal(TmTimer** x)                    {list_=NULL;fun_=NULL;set((TmTimer**)x);};
-    ExVal(VScheduler** x)                 {list_=NULL;fun_=NULL;set((VScheduler**)x);};
+    ExVal(Scheduler** x)                 {list_=NULL;fun_=NULL;set((Scheduler**)x);};
     ExVal(mrs_natural len, ExNode** xs, std::string t="")   {list_=NULL;fun_=NULL;set(len,(ExNode**)xs,t);}; // list
     ExVal(mrs_natural len, std::string t) {list_=NULL;fun_=NULL;set(len,(std::string)t);}; // empty list
     ExVal(const ExVal& x)                 {list_=NULL;fun_=NULL;set((ExVal&)x);};
@@ -87,7 +87,7 @@ public:
     ExFun* toFun() const {return fun_;}
     std::string toString() const;
     TmTimer** toTimer() const {return timer_;}
-    VScheduler** toVScheduler() const {return scheduler_;}
+    Scheduler** toScheduler() const {return scheduler_;}
 
     ExVal getSeqRange(int lidx, int ridx);
     ExVal getSeqElem(int idx);
@@ -102,7 +102,7 @@ public:
     void set(mrs_bool x);
     void set(const ExVal& v);
     void set(TmTimer** t);
-    void set(VScheduler** t);
+    void set(Scheduler** t);
     void set(mrs_natural len, ExNode** xs, std::string t="");
     void set(mrs_natural len, std::string t); // empty list
     static ExVal defaultExValue(std::string type);

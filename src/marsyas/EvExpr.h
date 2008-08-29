@@ -40,11 +40,11 @@ namespace Marsyas
 */
 
 class MarSystem; // forward declaration
-class VScheduler;
+class Scheduler;
 
 class EvExpr : public MarEvent {
 protected:
-    VScheduler* vsched_;
+    Scheduler* sched_;
     MarSystem* target_;
     Expr* expr_;
 

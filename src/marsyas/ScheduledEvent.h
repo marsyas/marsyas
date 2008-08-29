@@ -26,7 +26,6 @@
 #include "MarControlValue.h"
 #include "MarEvent.h"
 #include "Repeat.h"
-#include "TmTimer.h"
 
 namespace Marsyas
 {
@@ -40,6 +39,7 @@ namespace Marsyas
           the name and value should be issued at.
 
 */
+class TmTimer;
 
 
 class ScheduledEvent {

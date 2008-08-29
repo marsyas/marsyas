@@ -19,12 +19,14 @@
 #ifndef MARSYAS_TM_TIMER_H
 #define MARSYAS_TM_TIMER_H
 
-//#include "MarControlValue.h"
 #include "common.h"
 #include "TmControlValue.h"
+#include "ScheduledEvent.h"
+#include "Heap.h"
 
+#include <map>
 #include <iostream>
-#include <string> 
+#include <string>
 
 namespace Marsyas
 {
@@ -35,46 +37,56 @@ namespace Marsyas
    \author inb@cs.uvic.ca
 */
 
-
-class Scheduler;
-
 class TmTimer {
+private:
+    Heap<ScheduledEvent, ScheduledEventComparator> pq;
+    // map for events to allow modifying events while in the heap
+    std::map<std::string, ScheduledEvent*> events_;
+    std::map<std::string, ScheduledEvent*>::iterator events_iter_;
+
 protected:
-    std::string type_;		// Type of MarSystem
+    std::string type_;		// Type of Timer
     std::string name_;		// Name of instance
 
     unsigned long cur_time_;
 
-    mrs_natural granularity_;
+//    mrs_natural granularity_;
     mrs_natural next_trigger_;
 
-    Scheduler* scheduler;
 protected:
     void init();
 
 public:
-    // Constructors 
-    TmTimer();
-    TmTimer(std::string name);
+    // Constructors
+//    TmTimer();
+//    TmTimer(std::string name);
     TmTimer(std::string type, std::string name);
     TmTimer(const TmTimer&);
     virtual ~TmTimer();
 
-    virtual void setName(std::string name);
-    virtual std::string getName();
-    virtual std::string getType();
-    virtual std::string getPrefix();
+    // Naming methods 
+    std::string getType();
+    std::string getName();
+    std::string getPrefix();
+
     virtual TmTimer* clone()=0;
 
-    virtual void setScheduler(Scheduler* s);
-    void setGranularity(mrs_natural g);
     mrs_natural getTime();
     void tick();
 
+    // timer methods
     virtual mrs_natural readTimeSrc()=0;
-    virtual void trigger()=0;
+    virtual void trigger();
     virtual mrs_natural intervalsize(std::string interval)=0;
     virtual void updtimer(std::string cname, TmControlValue value);
+
+    // scheduling methods
+    void post(std::string event_time, Repeat rep, MarEvent* me);
+    void post(std::string event_time, MarEvent* me);
+    void post(ScheduledEvent* e);
+
+    bool eventPending();
+    void dispatch();
 
     // the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);

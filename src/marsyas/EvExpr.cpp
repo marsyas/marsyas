@@ -18,7 +18,7 @@
 
 #include "EvExpr.h"
 #include "MarSystem.h"
-#include "VScheduler.h"
+#include "Scheduler.h"
 
 using namespace std;
 using namespace Marsyas;
