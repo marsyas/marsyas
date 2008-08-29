@@ -13,7 +13,7 @@ The executable files may be found in the @file{bin/} subdirectory
 of the build directory, while the source code for those files is
 in @file{src/apps/@{DIR@}/}.
 
-@WANTED{descriptions of all programs; I think we cover about 30% of them}
+@WANTED{descriptions of all these programs}
 
 @menu
 * Collections and input files::  
@@ -635,7 +635,12 @@ These tests are a useful excuse for taking a coffee break.
 @node All of the above
 @section All of the above
 
-@subsection Mudbox
+@menu
+* mudbox::                      
+@end menu
+
+@node mudbox
+@subsection @code{mudbox}
 
 @WANTED{funny description of mudbox -- I'm look at you, George}
 

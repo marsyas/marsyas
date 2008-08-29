@@ -1131,10 +1131,12 @@ installed in order to use or compile these applications. A README
 file is supplied with each one that has instructions on how to
 compile and run it.
 
-@item @b{src/regressionTests/} data files for our automatic tests.
+@item @b{src/tests/unit_tests/} tests for individual MarSystems.
 
-@item @b{doc/} contains the user manual (which you are currently
-reading).
+@item @b{src/tests/regressions/} tests for apps.
+
+@item @b{doc/} contains the source for the user manual (which you
+are currently reading) and developer manual.
 
 @item @b{scripts/} useful scripts to help programming with
 Marsyas.

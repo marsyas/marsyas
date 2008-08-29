@@ -80,8 +80,8 @@ marsyas and Qt.
 @include tools.texi
 @include qttools.texi
 @include architecture.texi
-@include scripting.texi
 @include system.texi
+@include scripting.texi
 @include writing.texi
 @include programming.texi
 

@@ -13,6 +13,7 @@ others may use it.
 * Contributing system code::    
 * Sending a patch::             
 * Building documentation::      
+* Build system details::        
 @end menu
 
 
@@ -191,30 +192,20 @@ statements.  (see @qq{huge mess}, above)
 @node Contributing applications
 @section Contributing applications
 
-The source code for applications is in the @file{apps/} directory.  The
-easiest way to get started is probably to copy everything from an
-existing directory, then modify the files accordingly.
+The source code for applications is in the @file{apps/} directory.
+The easiest way to get started is probably to copy everything from
+an existing directory, then modify the files accordingly.
 
 You should update all these files:
 
-@subsubheading Build system: autotools
-
 @itemize
-@item @file{apps/MYDIR/Makefile.am}
-@item @file{apps/Makefile.am}
-@item @file{bin/release/Makefile.am}
+@item @file{src/apps/MYDIR/CMakeLists.txt}
+@item @file{src/apps/CMakeLists.txt}
 @end itemize
 
-@subsubheading Build system: qmake
-
-@itemize
-@item @file{apps/MYDIR/MYNAME.pro}
-@item @file{apps/apps.pro}
-@end itemize
-
-By convention, your program should return @code{exit(0)} upon successful
-completion.  If any problems arise, the program should return a number
-greater than 0.
+By convention, your program should return @code{exit(0)} upon
+successful completion.  If any problems arise, the program should
+return a number greater than 0.
 
 
 @node Contributing system code
@@ -235,111 +226,73 @@ greater than 0.
 To add files to the Marsyas build system, use
 
 @example
-addMarsystem foo
-addClass foo
+addMarsystem MyMarSystemName
+addClass MyClassName
 @end example
+
+@warning{Remember to do @code{svn add}!  Adding files to the build
+system does not add them to svn.}
 
 To remove files from the build system, use
 
 @example
-removeMarsystem foo
-removeClass foo
+removeMarsystem MyMarSystemName
+removeClass MyClassName
 @end example
 
-Not that removing files from the build system does not actually remove
-the files themselves.
+@warning{Remember to do @code{svn rm}!  Removing files from the
+build system does not remove them from svn.}
 
 
 @node Contributing non-MarSystem system code
 @subsection Contributing non-MarSystem system code
 
-If you have created a useful library or set of functions which you want
-to share with others, you may add it to the Marsyas source code.  The
-new files should be placed in the @file{marsyas/} directory, and added
-to the build process.
+If you have created a useful library or set of functions which you
+want to share with others, you may add it to the Marsyas source
+code.  The new files should be placed in the @file{src/marsyas/}
+directory, and added to the build process.
 
 @subheading Automatically
 
 There is a Python script which automates this process; please see
-@ref{Adding/removing to/from the build system}.  If you are a masochist
-and wish to do this manually, see below.
+@ref{Adding/removing to/from the build system}.  If you are a
+masochist and wish to do this manually, see below.
 
 @subheading Manually
 
-The easiest way is to look for any appearances of
-@code{realvec} in the below files, and duplicate these entries using
-your @file{myfile}.
-
-You must add your file to @emph{both} build systems, even if you
-personally only use one.
-
-@subsubheading Build system: autotools
+The easiest way is to look for any appearances of @code{realvec}
+in the below files, and duplicate these entries using your
+@file{myfile}.
 
 @itemize
-@item @file{marsyas/Makefile.am}
-@item @file{lib/release/Makefile.am}
+@item @file{src/marsyas/CMakeLists.txt}
 @end itemize
 
-Now execute @code{automake} and @code{./configure} before recompiling
-with @code{make}.
-
-@subsubheading Build system: qmake
-
-@itemize
-@item @file{marsyas/marsyas.pro}
-@end itemize
-
-Now execute @code{qmake} before recompiling with whichever compiler you
-use.
 
 @node Contributing MarSystems
 @subsection Contributing MarSystems
 
-If you have created a useful MarSystem which you want to share with
-others, you may add it to the Marsyas source code.  @strong{THIS IS NOT
-REQUIRED FOR BUILDING YOUR OWN APPLICATONS!!!}  See @userref{Compiling and
-using a new MarSystem}.
+If you have created a useful MarSystem which you want to share
+with others, you may add it to the Marsyas source code.
+@strong{THIS IS NOT REQUIRED FOR BUILDING YOUR OWN APPLICATONS!!!}
+See @userref{Compiling and using a new MarSystem}.
 
 @subheading Automatically
 
 There is a Python script which automates this process; please see
-@ref{Adding/removing to/from the build system}.  If you are a masochist
-and wish to do this manually, see below.
+@ref{Adding/removing to/from the build system}.  If you are a
+masochist and wish to do this manually, see below.
 
 @subheading Manually
 
-The new MarSystem should be placed in the @file{marsyas/} directory, and
-must be added to @file{MarSystemManager.cpp} and the build process.
-The easiest way is to look for @code{Gain} and do the same thing
-with your new MarSystem.
-
-You must add your file to @emph{both} build systems, even if you
-personally only use one.
-
-@subsubheading MarSystemManager
+The new MarSystem should be placed in the @file{src/marsyas/}
+directory, and must be added to @file{MarSystemManager.cpp} and
+the build process.  The easiest way is to look for @code{Gain} and
+do the same thing with your new MarSystem.
 
 @itemize
-@item @file{marsyas/MarSystemManager.cpp}
+@item @file{src/marsyas/CMakeLists.txt}
 @end itemize
-
-@subsubheading Build system: autotools
-
-@itemize
-@item @file{marsyas/Makefile.am}
-@item @file{lib/release/Makefile.am}
-@end itemize
-
-Now execute @code{automake} and @code{./configure} before recompiling
-with @code{make}.
-
-@subsubheading Build system: qmake
-
-@itemize
-@item @file{marsyas/marsyas.pro}
-@end itemize
-
-Now execute @code{qmake} before recompiling with whichever compiler you
-use.
 
 
 @node Sending a patch
@@ -349,10 +302,9 @@ use.
 
 @itemize
 @item Does Marsyas still compile?
-@item Do the @userref{Regression tests} still pass successfully?
-@item Did you add @ref{Contributing source documentation} (if applicable)?
-@item Did you add your file(s) to the @code{autotools} and @code{qmake}
-build precess?
+@item Does Marsyas still pass @code{make test}?
+@item Did you follow @ref{Contributing source documentation} (if applicable)?
+@item Did you add your file(s) to the build process?
 @end itemize
 
 If the answer to all these questions is @emph{yes}, then proceed.
@@ -389,14 +341,8 @@ created with doxygen.  These software packages may be installed from
 @item @uref{http://www.graphviz.org/, graphviz}
 @end itemize
 
-The latest version of the manual is in the SVN tree , and can be built
-by running these commands from the @file{doc/} directory:
-
-@example
-make html
-make pdf
-make doxy
-@end example
+The latest version of the manual is in the SVN tree; create a new
+directory @code{doc-build}, run cmake, and make.
 
 Source-highlighted examples are stored in the @file{doc/source-doc/}
 directory.  These may be built with this additional program and the
@@ -407,8 +353,14 @@ following command:
 @end itemize
 
 @example
-make sources
+scripts/generate-source-docs.sh
 @end example
 
+
+@node Build system details
+@section Build system details
+
+The main file is src/CMakeLists.txt.  Additional modules are in
+cmake-modules/.
 
 
