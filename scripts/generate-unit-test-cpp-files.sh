@@ -17,6 +17,9 @@
 # whole bunch of tests do it smarter.
 #
 
+#### FIXME: this assumes that the user is in the topdir.
+####        use argv[0] or something to figure this out instead,
+####        so that this script can be run from anywhere.
 # Change directory into the unit_tests directory so that cxxtestgen.py inserts
 # the proper paths into the generated .ccp files
 cd src/tests/unit_tests/
