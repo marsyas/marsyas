@@ -41,6 +41,7 @@ add_custom_target(marsyas-user ALL
 	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-devel/index.html
 )
 
+# FIXME: do this without an install.
 install(FILES ${PNG_IMAGES}
 	DESTINATION ${CMAKE_BINARY_DIR}/marsyas-user/images/
 )

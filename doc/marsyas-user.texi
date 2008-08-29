@@ -66,6 +66,7 @@ components.
 marsyas and Qt.
 * Architecture concepts::       Important concepts about Marsyas.
 * System details::              Details about Marsyas.
+* Scripting::                   Working with MarSystems without C++.
 * Writing applications::        Writing programs that use Marsyas.
 * Programming MarSystems::      Writing new MarSystem blocks.
 * Missing Docs::                FIXME
@@ -79,6 +80,7 @@ marsyas and Qt.
 @include tools.texi
 @include qttools.texi
 @include architecture.texi
+@include scripting.texi
 @include system.texi
 @include writing.texi
 @include programming.texi

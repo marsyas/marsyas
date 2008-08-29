@@ -1,0 +1,19 @@
+@node Scripting
+@chapter Scripting
+
+MarSystems may be used without programing in C++; the bindings for
+Python, Lua, Ruby, and Java allow the use of other languages.
+
+@menu
+* Interactive python::          
+@end menu
+
+@node Interactive python
+@section Interactive python
+
+The @code{WITH_SWIG} and @code{WITH_SWIG_PYTHON} options in the
+CMake build system must have been set @var{ON}.
+
+
+
+

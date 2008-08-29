@@ -178,7 +178,7 @@ you change any options, run @emph{Configure...} again.
 
 @subsection Unix (including MacOS X)
 
-@image{images/ccmake-unix}
+@image{images/ccmake-unix,,10cm}
 
 @enumerate
 
