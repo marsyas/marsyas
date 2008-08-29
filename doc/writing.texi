@@ -629,23 +629,23 @@ converted to samples by calling the static method
 in the @file{Conversions.cpp}.
 
 @float Figure,fig:sch1
-@verbatim
+@example
   MarSystemManager mng;
 
-  MarSystem* series = mng.create("Series", "series");
-  series->addMarSystem(mng.create("SineSource", "src"));
-  series->addMarSystem(mng.create("Gain", "g"));
-  series->addMarSystem(mng.create("AudioSink", "snk"));
+  MarSystem* series = mng.@b{create}(@t{"Series"}, @t{"series"});
+  series->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src"}));
+  series->@b{addMarSystem}(mng.@b{create}(@t{"Gain"}, @t{"g"}));
+  series->@b{addMarSystem}(mng.@b{create}(@t{"AudioSink"}, @t{"snk"}));
 
-  series->updctrl("AudioSink/snk/mrs_bool/initAudio", true);
-  series->updctrl("SineSource/src/mrs_real/frequency",440.0);
-  series->updctrl("Gain/g/mrs_real/gain",1.0);
+  series->@b{updctrl}(@t{"AudioSink/snk/mrs_bool/initAudio"}, @b{true});
+  series->@b{updctrl}(@t{"SineSource/src/mrs_real/frequency"},440.0);
+  series->@b{updctrl}(@t{"Gain/g/mrs_real/gain"},1.0);
 
-  EvValUpd* ev = new EvValUpd(series,"Gain/g/mrs_real/gain",0.0);
-  series->updctrl(TmTime("TmSampleCount/Virtual","2s"),ev);
+  EvValUpd* ev = @b{new} @b{EvValUpd}(series,@t{"Gain/g/mrs_real/gain"},0.0);
+  series->@b{updctrl}(@b{TmTime}(@t{"TmSampleCount/Virtual"},@t{"2s"}),ev);
 
-  while(true) series->tick();
-@end verbatim
+  @b{while}(@b{true}) series->@b{tick}();
+@end example
 @caption{Program using the scheduler to set gain to 0 after two seconds.}
 @end float
 
@@ -659,31 +659,31 @@ To specify a finite repeat count we could set the repeat count to five as in
 @code{Repeat("1s",5)}. Gaze wonderously at the example.
 
 @float Figure,fig:sch2
-@verbatim
+@example
   MarSystemManager mng;
 
-  MarSystem* series = mng.create("Series", "series");
-  series->addMarSystem(mng.create("SineSource", "src"));
-  series->addMarSystem(mng.create("Gain", "g"));
-  series->addMarSystem(mng.create("AudioSink", "snk"));
+  MarSystem* series = mng.@b{create}(@t{"Series"}, @t{"series"});
+  series->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src"}));
+  series->@b{addMarSystem}(mng.@b{create}(@t{"Gain"}, @t{"g"}));
+  series->@b{addMarSystem}(mng.@b{create}(@t{"AudioSink"}, @t{"snk"}));
 
-  series->updctrl("AudioSink/snk/mrs_bool/initAudio", true);
-  series->updctrl("SineSource/src/mrs_real/frequency",440.0);
-  series->updctrl("Gain/g/mrs_real/gain",1.0);
+  series->@b{updctrl}(@t{"AudioSink/snk/mrs_bool/initAudio"}, @b{true});
+  series->@b{updctrl}(@t{"SineSource/src/mrs_real/frequency"},440.0);
+  series->@b{updctrl}(@t{"Gain/g/mrs_real/gain"},1.0);
 
-  EvValUpd* ev_off = new EvValUpd(series,"Gain/g/mrs_real/gain",0.0);
-  ev_off->set_repeat(Repeat("1s")); // repeat forever
-  //ev_off->set_repeat(Repeat("1s",4)); // repeat four times
+  EvValUpd* ev_off = @b{new} @b{EvValUpd}(series,@t{"Gain/g/mrs_real/gain"},0.0);
+  ev_off->@b{set_repeat}(@b{Repeat}(@t{"1s"})); @i{// repeat forever}
+  @i{//ev_off->set_repeat(Repeat("1s",4)); // repeat four times}
 
-  EvValUpd* ev_on = new EvValUpd(series,"Gain/g/mrs_real/gain",1.0);
-  ev_on->set_repeat(Repeat("1s"));
+  EvValUpd* ev_on = @b{new} @b{EvValUpd}(series,@t{"Gain/g/mrs_real/gain"},1.0);
+  ev_on->@b{set_repeat}(@b{Repeat}(@t{"1s"}));
 
-  // stagger the dispatch of the events, off by 1 second
-  series->updctrl(TmTime("TmSampleCount/Virtual","1s"),ev_off);
-  series->updctrl(TmTime("TmSampleCount/Virtual","2s"),ev_on);
+  @i{// stagger the dispatch of the events, off by 1 second}
+  series->@b{updctrl}(@b{TmTime}(@t{"TmSampleCount/Virtual"},@t{"1s"}),ev_off);
+  series->@b{updctrl}(@b{TmTime}(@t{"TmSampleCount/Virtual"},@t{"2s"}),ev_on);
 
-  while(true) series->tick();
-@end verbatim
+  @b{while}(@b{true}) series->@b{tick}();
+@end example
 @caption{Program using two events that toggle the gain between 0 and 1 every second.}
 @end float
 
@@ -907,49 +907,50 @@ until we pass the end value. We override the @code{repeat()} method of
 variables are shown in the header file below.
 
 @float Figure,fig:sch7
-@verbatim
-#ifndef MARSYAS_EV_RAMPCTRL_H
-#define MARSYAS_EV_RAMPCTRL_H
+@example
+@b{#ifndef} MARSYAS_EV_RAMPCTRL_H
+@b{#define} MARSYAS_EV_RAMPCTRL_H
 
-#include <string>
+@b{#include} @t{<string>}
 
-#include "MarControl.h"
-#include "MarEvent.h"
-#include "TmControlValue.h"
+@b{#include} @t{"MarControl.h"}
+@b{#include} @t{"MarEvent.h"}
+@b{#include} @t{"TmControlValue.h"}
 
-namespace Marsyas
-{
-  class MarSystem; // forward declaration
+@b{namespace} Marsyas
+@{
+  @b{class} MarSystem; @i{// forward declaration}
 
-  class EvRampCtrl : public MarEvent {
-  protected:
+  @b{class} EvRampCtrl : @b{public} MarEvent @{
+  @b{protected}:
     MarSystem* target_;
     std::string cname_;
     double start_, end_, value_, rate_;
     bool repeat_flag_;
 
-  public:
-    // Constructors
-    EvRampCtrl(MarSystem* m, std::string cname, double start, double end, double rate);
-    EvRampCtrl(EvRampCtrl& e);
-    virtual ~EvRampCtrl();
+  @b{public}:
+    @i{// Constructors}
+    @b{EvRampCtrl}(MarSystem* m, std::string cname, double start, double end, double rate);
+    @b{EvRampCtrl}(EvRampCtrl& e);
+    @b{virtual} ~@b{EvRampCtrl}();
 
-    virtual EvRampCtrl* clone();
+    @b{virtual} EvRampCtrl* @b{clone}();
 
-    // Set/Get methods
-    void set(MarSystem* ms, std::string cname, double s, double e, double r);
+    @i{// Set/Get methods}
+    void @b{set}(MarSystem* ms, std::string cname, double s, double e, double r);
 
-    bool repeat() { return repeat_flag_; };
+    bool @b{repeat}() @{ @b{return} repeat_flag_; @};
 
-    // Event dispatch
-    void dispatch();
+    @i{// Event dispatch}
+    void @b{dispatch}();
 
-  };
+  @};
 
-}//namespace Marsyas
+@}@i{//namespace Marsyas}
 
-#endif
-@end verbatim
+@b{#endif}
+
+@end example
 @caption{EvRampCtrl event header file example.}
 @end float
 
@@ -1014,48 +1015,51 @@ scheduler will see that the event is to be repeated, it will read the repeat
 rate amount, and repost the event to the queue.
 
 @float Figure,fig:sch8
-@verbatim
-#include "EvRampCtrl.h"
-#include "MarSystem.h"
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@b{#include} @t{"EvRampCtrl.h"}
+@b{#include} @t{"MarSystem.h"}
 
-using namespace std;
-using namespace Marsyas;
+@b{using} @b{namespace} std;
+@b{using} @b{namespace} Marsyas;
 
-EvRampCtrl::EvRampCtrl(MarSystem* m, std::string cname, double start, double end, double rate) : MarEvent("EvRampCtrl","rc")
-{
-    set(m,cname,start,end,rate);
-}
-EvRampCtrl::EvRampCtrl(EvRampCtrl& e) : MarEvent("EvRampCtrl","rc")
-{
-    set(e.target_,e.cname_,e.start_,e.end_,e.rate_);
-}
+EvRampCtrl::@b{EvRampCtrl}(MarSystem* m, std::string cname, double start, double end, double rate) : @b{MarEvent}(@t{"EvRampCtrl"},@t{"rc"})
+@{
+    @b{set}(m,cname,start,end,rate);
+@}
+EvRampCtrl::@b{EvRampCtrl}(EvRampCtrl& e) : @b{MarEvent}(@t{"EvRampCtrl"},@t{"rc"})
+@{
+    @b{set}(e.target_,e.cname_,e.start_,e.end_,e.rate_);
+@}
 
-EvRampCtrl::~EvRampCtrl() { }
+EvRampCtrl::~@b{EvRampCtrl}() @{ @}
 
 EvRampCtrl*
-EvRampCtrl::clone() { return new EvRampCtrl(*this); }
+EvRampCtrl::@b{clone}() @{ @b{return} @b{new} @b{EvRampCtrl}(*@b{this}); @}
 
 void
-EvRampCtrl::set(MarSystem* ms, string cname, double start, double end, double rate)
-{
+EvRampCtrl::@b{set}(MarSystem* ms, string cname, double start, double end, double rate)
+@{
     target_=ms; cname_=cname;
     start_=start; end_=end; rate_=rate;
-    value_=start_; repeat_flag_=true;
-}
+    value_=start_; repeat_flag_=@b{true};
+@}
 
 void
-EvRampCtrl::dispatch()
-{
-    if (target_ !=NULL) {
-      cout << "target_->updctrl(" << cname_ << ", " << value_ << ")\n";
-      if(value_<end_) repeat_flag_=false;
-      else {
-        target_->updctrl(cname_,value_);
+EvRampCtrl::@b{dispatch}()
+@{
+    @b{if} (target_ !=NULL) @{
+      cout << @t{"target_->updctrl("} << cname_ << @t{", "} << value_ << @t{")}@t{\n}@t{"};
+      @b{if}(value_<end_) repeat_flag_=@b{false};
+      @b{else} @{
+        target_->@b{updctrl}(cname_,value_);
         value_ = value_ - rate_;
-      }
-    }
-}
-@end verbatim
+      @}
+    @}
+@}
+
+
+@end example
 @caption{EvRampCtrl event C++ source file example.}
 @end float
 
@@ -1065,29 +1069,30 @@ rate of the event to 0.2 seconds.
 @c @float Figure,fig:sch9
 @c @verbatim
 @float Figure, fig:sch9
-@verbatim
-void fade1() {
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+void @b{fade1}() @{
   MarSystemManager mng;
 
-  MarSystem* series = mng.create("Series", "series");
-  series->addMarSystem(mng.create("SineSource", "src"));
-  MarSystem* gain = mng.create("Gain", "g");
-  series->addMarSystem(gain);
-  series->addMarSystem(mng.create("AudioSink", "snk"));
-  series->updctrl("AudioSink/snk/mrs_bool/initAudio", true);
-  series->updctrl("SineSource/src/mrs_real/frequency",440.0);
-  series->updctrl("Gain/g/mrs_real/gain",1.0);
+  MarSystem* series = mng.@b{create}(@t{"Series"}, @t{"series"});
+  series->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src"}));
+  MarSystem* gain = mng.@b{create}(@t{"Gain"}, @t{"g"});
+  series->@b{addMarSystem}(gain);
+  series->@b{addMarSystem}(mng.@b{create}(@t{"AudioSink"}, @t{"snk"}));
+  series->@b{updctrl}(@t{"AudioSink/snk/mrs_bool/initAudio"}, @b{true});
+  series->@b{updctrl}(@t{"SineSource/src/mrs_real/frequency"},440.0);
+  series->@b{updctrl}(@t{"Gain/g/mrs_real/gain"},1.0);
 
-  EvRampCtrl* ev = new EvRampCtrl(gain,"mrs_real/gain",1.0,0.0,0.05);
-  ev->set_repeat(Repeat("0.2s"));
+  EvRampCtrl* ev = @b{new} @b{EvRampCtrl}(gain,@t{"mrs_real/gain"},1.0,0.0,0.05);
+  ev->@b{set_repeat}(@b{Repeat}(@t{"0.2s"}));
   
-  series->updctrl(TmTime("TmSampleCount/Virtual","2s"),ev);
+  series->@b{updctrl}(@b{TmTime}(@t{"TmSampleCount/Virtual"},@t{"2s"}),ev);
 
-  while(true) {
-    series->tick();
-  }
-}
-@end verbatim
+  @b{while}(@b{true}) @{
+    series->@b{tick}();
+  @}
+@}
+@end example
 @caption{Program using the EvRampCtrl example event.}
 @end float
 @c @caption{Program using the EvRampCtrl example event.}
@@ -1101,60 +1106,61 @@ in compiler for the syntax that is invoked when supplying the expression
 as a string to the @file{Ex} class.
 
 @float Figure, figsch10
-@verbatim
-#include <stdio.h>
-#include "MarSystemManager.h"
-#include "EvExpr.h"
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@b{#include} @t{<stdio.h>}
+@b{#include} @t{"MarSystemManager.h"}
+@b{#include} @t{"EvExpr.h"}
 
-using namespace std;
-using namespace Marsyas;
+@b{using} @b{namespace} std;
+@b{using} @b{namespace} Marsyas;
 
-void sched1() {
+void @b{sched1}() @{
   MarSystemManager mng;
 
-  MarSystem* fanin = mng.create("Fanin", "fanin");
-  fanin->addMarSystem(mng.create("SineSource", "src1"));
-  fanin->addMarSystem(mng.create("SineSource", "src2"));
-  fanin->updctrl("SineSource/src1/mrs_real/frequency",3000.0);
-  fanin->updctrl("SineSource/src2/mrs_real/frequency",1000.0);
+  MarSystem* fanin = mng.@b{create}(@t{"Fanin"}, @t{"fanin"});
+  fanin->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src1"}));
+  fanin->@b{addMarSystem}(mng.@b{create}(@t{"SineSource"}, @t{"src2"}));
+  fanin->@b{updctrl}(@t{"SineSource/src1/mrs_real/frequency"},3000.0);
+  fanin->@b{updctrl}(@t{"SineSource/src2/mrs_real/frequency"},1000.0);
 
-  MarSystem* series = mng.create("Series", "series");
-  series->addMarSystem(fanin);
+  MarSystem* series = mng.@b{create}(@t{"Series"}, @t{"series"});
+  series->@b{addMarSystem}(fanin);
 
-  series->addMarSystem(mng.create("AudioSink", "dest"));
-  series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  series->@b{addMarSystem}(mng.@b{create}(@t{"AudioSink"}, @t{"dest"}));
+  series->@b{updctrl}(@t{"AudioSink/dest/mrs_bool/initAudio"}, @b{true});
 
-#if 0
-  // using aliases makes this a little more readable, see the next bit
-  EvExpr* e = new EvExpr(series,
-    Ex("Fanin/fanin/SineSource/src1/mrs_real/frequency << 120. + 3000. * R.rand(), \
-        Fanin/fanin/SineSource/src2/mrs_real/frequency << 120. + 800. * R.rand(),"
-       "'src1='+Fanin/fanin/SineSource/src1/mrs_real/frequency+ \
-        ' src2='+Fanin/fanin/SineSource/src2/mrs_real/frequency+'\n'>>Stream.op"),
-    Rp("true"));
+@b{#if} 0
+  @i{// using aliases makes this a little more readable, see the next bit}
+  EvExpr* e = @b{new} @b{EvExpr}(series,
+    @b{Ex}(@t{"Fanin/fanin/SineSource/src1/mrs_real/frequency << 120. + 3000. * R.rand(), \}
+@t{        Fanin/fanin/SineSource/src2/mrs_real/frequency << 120. + 800. * R.rand(),"}
+       @t{"'src1='+Fanin/fanin/SineSource/src1/mrs_real/frequency+ \}
+@t{        ' src2='+Fanin/fanin/SineSource/src2/mrs_real/frequency+'}@t{\n}@t{'>>Stream.op"}),
+    @b{Rp}(@t{"true"}));
 
-#else
-  EvExpr* e = new EvExpr(series,
-        // First line to Ex will be the init expression, run once, when event is posted
-    Ex("Fanin/fanin/SineSource/src1/mrs_real/frequency >> @freq1, \
-        Fanin/fanin/SineSource/src2/mrs_real/frequency >> @freq2 ",
-       // Second line to Ex is the expression, repeated each time the event is posted
-       "freq1 << 120. + 3000. * R.rand(),\
-        freq2 << 120. + 800. * R.rand(),\
-        'src1=' + freq1 + ' src2=' + freq2 + '\n' >> Stream.op"),
-    Rp("true"));
-#endif
+@b{#else}
+  EvExpr* e = @b{new} @b{EvExpr}(series,
+        @i{// First line to Ex will be the init expression, run once, when event is posted}
+    @b{Ex}(@t{"Fanin/fanin/SineSource/src1/mrs_real/frequency >> @@freq1, \}
+@t{        Fanin/fanin/SineSource/src2/mrs_real/frequency >> @@freq2 "},
+       @i{// Second line to Ex is the expression, repeated each time the event is posted}
+       @t{"freq1 << 120. + 3000. * R.rand(),\}
+@t{        freq2 << 120. + 800. * R.rand(),\}
+@t{        'src1=' + freq1 + ' src2=' + freq2 + '}@t{\n}@t{' >> Stream.op"}),
+    @b{Rp}(@t{"true"}));
+@b{#endif}
 
-  // set event to repeat every 1/4 second
-  e->set_repeat(Repeat("0.25s"));
-  // post the event
-  series->updctrl(TmTime("TmSampleCount/Virtual","0s"), e);
+  @i{// set event to repeat every 1/4 second}
+  e->@b{set_repeat}(@b{Repeat}(@t{"0.25s"}));
+  @i{// post the event}
+  series->@b{updctrl}(@b{TmTime}(@t{"TmSampleCount/Virtual"},@t{"0s"}), e);
 
-  while(true) series->tick();
+  @b{while}(@b{true}) series->@b{tick}();
 
-  delete series;
-}
-@end verbatim
+  @b{delete} series;
+@}
+@end example
 @caption{Random sine waves using the Expression syntax.}
 @end float
 
@@ -1717,21 +1723,21 @@ method that returns a copy of the function without its parameters. The
 example shows the
 
 @float Figure, fig:mesy1
-@verbatim
-class ExFun_StrSub : public ExFun { public:
-    ExFun_StrSub() : ExFun("mrs_string","String.sub(mrs_string,mrs_natural,mrs_natural",true) { }
-    virtual ExVal calc() {
-        std::string str = params[0]->eval().toString();
-        int s = params[1]->eval().toNatural();
-        int e = params[2]->eval().toNatural();
-        int l = str.length();
-        if (s<0) { s=0; } else if (s>l) { s=l; }
-        if (e<s) { e=s; } else if (e>l-s) { e=l-s; }
-        return str.substr(s,e);
-    }
-    ExFun* copy() { return new ExFun_StrSub(); }
-};
-@end verbatim
+@example
+@b{class} ExFun_StrSub : @b{public} ExFun @{ @b{public}:
+    @b{ExFun_StrSub}() : @b{ExFun}(@t{"mrs_string"},@t{"String.sub(mrs_string,mrs_natural,mrs_natural"},@b{true}) @{ @}
+    @b{virtual} ExVal @b{calc}() @{
+        std::string str = params[0]->@b{eval}().@b{toString}();
+        int s = params[1]->@b{eval}().@b{toNatural}();
+        int e = params[2]->@b{eval}().@b{toNatural}();
+        int l = str.@b{length}();
+        @b{if} (s<0) @{ s=0; @} @b{else} @b{if} (s>l) @{ s=l; @}
+        @b{if} (e<s) @{ e=s; @} @b{else} @b{if} (e>l-s) @{ e=l-s; @}
+        @b{return} str.@b{substr}(s,e);
+    @}
+    ExFun* @b{copy}() @{ @b{return} @b{new} @b{ExFun_StrSub}(); @}
+@};
+@end example
 @caption{String Substring ExFun class.}
 @end float
 
@@ -1770,11 +1776,11 @@ and not a real. This type information is used to type check function
 calls in the parser.
 
 @float Figure, fig:mesy2
-@verbatim
-st->addReserved("String|S.sub(mrs_string,mrs_natural,mrs_natural)",
-                new ExFun_StrSub("mrs_string",
-                                 "String.sub(mrs_string,mrs_natural,mrs_natural)"));
-@end verbatim
+@example
+st->@b{addReserved}(@t{"String|S.sub(mrs_string,mrs_natural,mrs_natural)"},
+                @b{new} @b{ExFun_StrSub}(@t{"mrs_string"},
+                                 @t{"String.sub(mrs_string,mrs_natural,mrs_natural)"}));
+@end example
 @caption{Adding a function to the library.}
 @end float
 

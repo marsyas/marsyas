@@ -308,7 +308,11 @@ the scheduler along with their relationships is shown in
 @c @caption{Scheduler class diagram.}
 @c @end float
 
-@imgfigure{fig:asch1,Scheduler class diagram.,images/scheduler-class}
+@c @imgfigure{fig:asch1,Scheduler class diagram.,images/scheduler-class}
+@float Figure, fig:asch1
+@image{images/scheduler-class}
+@caption{Scheduler class diagram.}
+@end float
 
 @subsubsection MarSystem
 Each MarSystem object has its own scheduler. This makes it possbile to
@@ -322,25 +326,25 @@ Posting events on the scheduler is done through a number of
 @code{updctrl} methods. Each one takes a @code{TmTime} class as its
 first parameter.
 
-@verbatim
-void updctrl(MarEvent* me);
-void updctrl(TmTime t, MarEvent* ev);
-void updctrl(TmTime t, Repeat rep, MarEvent* ev);
-void updctrl(TmTime t, std::string cname, MarControlPtr control);
-void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
-@end verbatim
+@example
+void @b{updctrl}(MarEvent* me);
+void @b{updctrl}(TmTime t, MarEvent* ev);
+void @b{updctrl}(TmTime t, Repeat rep, MarEvent* ev);
+void @b{updctrl}(TmTime t, std::string cname, MarControlPtr control);
+void @b{updctrl}(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
+@end example
 
 Additional methods for adding and removing timers and discovering the
 current time on a timer are available. The @code{updtimer} method is
 provided to modify timer parameters at run-time.
 
-@verbatim
-mrs_natural getTime(std::string timer_name);
-void updtimer(std::string cname, TmControlValue value);
-void addTimer(std::string class_name, std::string identifier);
-void addTimer(TmTimer* t);
-void removeTimer(std::string name);
-@end verbatim
+@example
+mrs_natural @b{getTime}(std::string timer_name);
+void @b{updtimer}(std::string cname, TmControlValue value);
+void @b{addTimer}(std::string class_name, std::string identifier);
+void @b{addTimer}(TmTimer* t);
+void @b{removeTimer}(std::string name);
+@end example
 
 @subsubsection Scheduler
 It is the schedulers job to see that events are passed to the correct
