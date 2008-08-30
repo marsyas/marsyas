@@ -89,6 +89,7 @@ straightforward to figure out how to recode your algorithms in version
 0.2. Also if you have code in 0.1 that you would like help porting in
 0.2 I would be more than happy to help - just drop me an email.
 
+George Tzanetakis (gtzan at cs dot uvic dot ca)
 
 
 @node Context and Related Work

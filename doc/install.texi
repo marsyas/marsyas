@@ -1,7 +1,15 @@
 @node Source installation
 @chapter Source installation
 
-This chapter shows the steps to get a working version of Marsyas.
+This chapter shows the steps to get a working version of
+Marsyas. Compiling and installing a large piece of software 
+like Marsyas is not trivial. In the summer 2008 we switched 
+our build system from a combination of autotools and qmake 
+to using CMake. We believe that this change has greatly simplified 
+the building process across all supported platforms and configurations. 
+Starting with the Belfast release 0.2.17 CMake is the only 
+supported way to build Marsyas. 
+
 
 @menu
 * Prerequisites::               
@@ -9,7 +17,7 @@ This chapter shows the steps to get a working version of Marsyas.
 * Configuring with CMake::      
 * Marsyas options::             
 * Compiling::                   
-* Extra software installation and configuration::  
+* Specific installation examples::  
 * Post-install setup::          
 * Structure of distribution::   
 @end menu
@@ -83,9 +91,7 @@ or the full commercial Visual Studio.
 
 @item @uref{http://msdn2.microsoft.com/en-us/xna/aa937788.aspx,
 Microsoft DirectX SDK}: (optional) required for audio
-input/output.  To use DirectX, set the environment variable
-@env{DXSDK_DIR} to point to the location to which you installed
-DirectX.
+input/output. 
 
 @end itemize
 
@@ -107,8 +113,9 @@ MAKEFILE was found and no target specified.
 
 If you want to use DirectX SDK on the command-line verison, you
 may need to add an environment variable called @env{DXSDK_DIR}
-and/or modify your the @env{INCLUDES} and @env{LIBRARY}
-environment variables.
+and modify your the @env{INCLUDES} and @env{LIBRARY}
+environment variables to include the corresponding directories 
+in the DirectX SDK installation. 
 
 
 
@@ -157,7 +164,7 @@ Windows.  It can also create Eclipse and KDevelop3 projects.
 
 @subsection Windows
 
-FIXME: insert screenshot
+@c FIXME: insert screenshot
 
 @enumerate
 @item Run the CMake GUI.
@@ -282,7 +289,7 @@ mp3 audio decoding with
 ogg vorbis audio decoding with libvorbis.
 
 @item WITH_MATLAB
-Biulds the MATLAB engine interface.
+Builds the MATLAB engine interface.
 
 @item WITH_SWIG
 Builds SWIG bindings.  This option enables the following
@@ -307,8 +314,18 @@ Use GStreamer as an audio source
 @section Compiling
 
 Once the build system has been created, simply compile Marsyas
-using whatever tools you normally use -- @code{make} on Unix, MSVC
-on Windows, etc.
+using whatever tools was specified as the generator with cmake. 
+IN Unix/OS X that is typically make. There are other possibilities 
+for example to use XCode in OS X do: 
+
+@example
+cmake -G Xcode ../src/
+@end example 
+
+On Windows there different options such as generate a project file 
+for Visual Studio, compiling from commandline using nmake or using 
+the MinGW toolchain. More specific instructions for some 
+configurations can be found in @ref{Specific installation examples}. 
 
 On Unix, use @code{make install} to install Marsyas.  There is no
 functionality to install Marsyas outside of the source tree on
@@ -324,33 +341,56 @@ recommended.  On Unix, simply run @code{make test}.  On MSVC on
 Windows, build the @code{RUN-TESTS} project.
 
 
-@node Extra software installation and configuration
-@section Extra software installation and configuration
+@node Specific installation examples
+@section Specific installation examples
 
-This section contains tips on how to properly install and
-configure additional software for use with Marsyas.
+This section contains tips on how to properly install and configure
+Marsyas and additional supporting software for different operating
+systems and compiler configurations. The instructions are more specific
+and detailed. There many possible ways to install supporting software
+and install and compile Marsyas depending on your setup and it would be
+impossible to cover them all. Therefore only a few representative case
+studies are provided. Ideally the basic installation instructions have
+worked for you.  If not some of these specific examples might help you 
+and you can always ask for help in the mailing lists. Please send us
+your own examples and case studies to help cover more configurations. 
+
 
 @menu
-* Linux additional software::   
-* MacOS X additional software::  
-* Windows additional software::  
+* Compiling on Ubuntu::  
+* MacOS X additional notes::    
+* Compiling with Visual Studio Express 2008 on Windows XP::  
 @end menu
 
-@node Linux additional software
-@subsection Linux additional software
+@node Compiling on Ubuntu
+@subsection Compiling on Ubuntu
 
-In general, this is all handled by your package manager.  If cmake
-is not version 2.6, please download the @strong{binaries} as
-discussed in @ref{CMake installation}.
-
-@subsubheading Ubuntu
-
-By default, Ubuntu does not contain the necessary development
-environment.  Please install these additional packages:
-build-essential, ... ?
+These steps were used to install Marsyas from a fresh 
+install of Ubuntu @cindex Ubuntu (kubuntu-8.04.1-desktop-i386) 
+on August 25, 2008. 
 
 
-@node MacOS X additional software
+
+@enumerate
+@item Open a terminal and type the following commands: 
+
+@item sudo apt-get install build-essential 
+
+@item sudo apt-get install subversion 
+
+@item sudo apt-get install libasound2-dev
+
+@item Either download the Linux binary distribution of cmake 2.6 or
+compile and install the source code from @uref{http://www.cmake.org} 
+
+@item Test that you can run cmake and svn from the command-line 
+
+@item Follow the basic installation instructions @ref{Compiling}. 
+
+@end enumerate
+
+
+@node MacOS X additional notes
 @subsection MacOS X additional software
 
 @subsubheading Qt
@@ -413,640 +453,57 @@ icon in your /Applications/util/ folder.
 @end enumerate
 
 
-@node Windows additional software
-@subsection Windows additional software
+@node Compiling with Visual Studio Express 2008 on Windows XP
+@subsection Compiling with Visual Studio Express 2008 on Windows XP
+
+
+These instructions were used to compile Marsyas using the Microsoft
+Visual Studio 2008 Express IDE in Windows XP 
+@cindex Windows XP 
+@cindex Visual Studio 
+
+
+@enumerate 
+
+@item Download and install Microsoft Visual C++ Studio Express 2008 
+from @uref{http://www.microsoft.com/express/vc}. (you might need 
+to install Microsoft Silverlight to view the webpage).
+
+@item Download and install Microsoft Direct X SDK 
+from @uref{http://msdn.microsoft.com/en-us/directx/aa937788.aspx}. 
+These instructions worked with installing Direct X August 2008 
+(DXSDK_Aug08.exe). 
+
+@item Download and install the CMake 2.6 binary using the Win32
+installer from @uref{http://www.cmake.org}. 
+
+@item Downlaod and install the Tortoise SVN GUI client from 
+@uref{http://tortoisesvn.tigris.org/}. 
+
+@item The Tortoise client is integrated with Windows so 
+right clik on your desktop and checkout Marsyas as described 
+in the basic installation instructions @ref{Compiling}. 
+
+@item Launch cmake and specify the source and build directory you want 
+to use for Marsyas for example c:\marsyas\src and c:\marsyas\build. 
+Press configure until all the options are grey and then click ok
+
+@item Go to the c:\marsyas\build directory where you will 
+find a Visual Studio project file named marsyas that you can 
+open with the Visual Studio 9 Express IDE to compile Marsyas. 
+
+
+@item The binaries are created in build\bin\Release or build\bin\Debug. 
+@end enumerate 
+
+
+
 
 @uref{http://python.org, Python}: Installed by default on Linux
 and MacOS X machines; Windows users may install it from this site.
 Marsyas contains some very useful scripts which are written in
 Python.
 
-FIXME: somebody needs to clean this up.
-
-
-Windows XP/Vista with Visual Studio 2005 command-line and qmake
-
-@enumerate
-@item
-Download and install either the free Visual Studio Express or 
-the full payed Visual Studio (these instructions 
-were used succesfully with the 2008 version but probably apply to other 
-version also). 
-
-@item
-Using the Visual Studio 2008 Command Prompt provided 
-under Visual C++ 9.0 Express Edition\Visual Studio Tools 
-check that the command-line compiling works: 
-
-@example
-c:\nmake 
-@end example
-
-You will see some version number and it should complain 
-that no MAKEFILE was found and no target specified 
-
-@item
-Download and install the DirectX sdk
-(I used dxsdk_november2007.exe from the microsoft website)
-Add a new environment variable called DXSDK_DIR with value 
-the directory direct X is installed. 
-
-@item
-Download the Qt open source edition for C++ developers: Windows
-Download from:
-
-@example
-http://trolltech.com/downloads/opensource
-@end example
-
-Make sure you download the source code not the mingw.exe 
-installer.   The filename should look like
-@file{qt-win-opensource-src-4.3.3.zip}
-
-@item
-Unzip the file into a directory (for example 
-@file{c:\qt-win-opensource-4.3.3}
-and then using the VIsual Studio 2008 Command Prompt 
-go to that directory and do: 
-
-@example
-set QMAKESPEC=win32-msvc
-configure 
-nmake 
-@end example
-
-@item
-Have a snack as compiling Qt takes a while. 
-When it is completed you need to add 
-@file{c:\qt-win-opensource-4.3.3}
-(or whatever directory name you used) 
-to your PATH environment variable. 
-(One way to do is Under the System tab of the Control Panel click
-on Advanced
-and Environment Variables and then at the end of the PATH
-environment
-variable type:
-
-@example
-;c:\Qt\4.3.3\bin;c:\MinGW\bin )
-@end example
-
-
-@item
-Download an SVN client.  We recommend
-@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
-
-@item
-Right-click on your desktop and
-do a svn checkout for marsyas
-URL of repository: 
-
-@example
-https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
-@end example
-
-Checkout directory: where you want to install marsyas
-For example @file{c:\marsyas-0.2.14}
-
-@item
-You are finally ready to compile Marsyas. Using 
-the Visual Studio 2008 Command Prompt go to 
-@file{c:\marsyas-0.2.14} and do (it's a good idea to double check 
-that the PATH contains the correct Qt installed directory 
-and the DXSDK_DIR is set correctly as follows): 
-
-@example
-set PATH
-set DXSDK_DIR
-@end example
-
-If things look ok your ready to go: 
-
-@example
-qmake 
-nmake release 
-@end example
-
-(When you run qmake you should see a message 
-saying that the win32-msvc configuration is used). 
-
-The executables will be placed in the bin\release 
-subdirectory. Try for example to play a soundfile 
-using sfplay or MarPlayer. 
-
-IMPORTANT NOTE: It is necessary to have the correct Qt 
-version compiled using Visual Studio in your PATH. If you 
-have installed Qt with MinGW support you need to make 
-sure that it is not in your PATH if you want to compile 
-Marsyas using Visual Studio. 
-@end enumerate
-
-
-Windows XP/Vista with Visual Studio 2005 IDE and qmake
-
-Requirements:
-
-@itemize
-@item Latest version of
-@uref{http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en,
-Microsoft Platform SDK}
-
-@item @uref{http://msdn2.microsoft.com/en-us/xna/aa937781.aspx,
-Microsoft DirectX SDK}
-
-@item @uref{http://msdn.microsoft.com/vstudio/express/, Microsoft Visual
-Studio 2005 Express} (similar instructions will work for MSVC 2005
-Professional) (previous versions of MSVC will probably work, but have
-not been tested)
-
-Only Visual C++ and .Net 2.0 libraries included with MSVS install
-packages are needed for Marsyas building.
-
-@item @uref{http://www.trolltech.com/products/qt,Qt/Trolltech}
-development platform, version 4.2.3 or above.  For use with MSVS2005,
-download the qt-win-opensource-src-4.3.0.zip file  (i.e.  without the
-MinGW compiler) from Trolltech's website.
-
-@item (OPTIONAL) WEVE (Windows Environement Variable Editor -
-@uref{http://www.silvermace.com/weve/}): allows easy editing of Windows
-environment variables.  Highly recommended.
-
-@end itemize
-
-@subsubheading Installation
-
-@example
-a) Install Microsoft Platform SDK into your system
-
-b) Install Microsoft DirectX SDK into your system
-
-c) Install MSVS2005 into your system (you can get a free version of
-MSVS2005, known as MSVS2005 Express).  Only Visual C++ and .Net 2.0
-libraries included with MSVS install packages are needed for Marsyas
-building.
-
-d) After installing the SDKs and MSVS2005 as instructed, make sure that
-your following Windows User and System Variables at least include
-similar entries as presented bellow (paths may be slightly different
-depending on where you installed your applications and SDKs as well as
-depending on the versions of the SDKs installed - see WEVE for a nice
-tool to easily set and verify Windows env. Vars):
-@end example
-
-@subsubheading System Environment Variables
-
-@example
-Path
-C:\Program Files\Microsoft DirectX SDK (June 2007)\Utilities\Bin\x86
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003
-R2\Bin\WinNT\.
-C:\Program Files\Microsoft Visual Studio 8\Common7\Tools
-C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\bin
-C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-C:\Program Files\Microsoft Visual Studio 8\VC\VCPackages
-C:\Program Files\Microsoft Visual Studio 8\Common7\IDE
-C:\Program Files\Microsoft Visual Studio 8\VC\BIN
-
-VS80COMNTOOLS
-C:\Program Files\Microsoft Visual Studio 8\Common7\Tools\
-
-Basemake
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 
-R2\Include\BKOffice.Mak
-
-Bkoffice
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
-
-INCLUDE
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003
-R2\Include\.
-C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE
-
-INETSDK
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
-
-LIB
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
-C:\Program Files\Microsoft Visual Studio 8\VC\LIB
-C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib
-
-MSSdk
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
-
-Mstools
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
-
-LIBPATH
-C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727
-
-VSINSTALLDIR
-C:\Program Files\Microsoft Visual Studio 8
-
-VCINSTALLDIR
-C:\Program Files\Microsoft Visual Studio 8\VC
-
-FrameworkDir
-C:\WINDOWS\Microsoft.NET\Framework
-
-FrameworkVersion=v2.0.50727
-
-FrameworkSDKDir
-C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0
-
-DXSDK_DIR
-C:\Program Files\Microsoft DirectX SDK (June 2007)\
-@end example
-
-@subsubheading System Environment Variables
-
-@example
-Basemake
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 
-R2\Include\BKOffice.Mak
-
-Bkoffice
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
-
-INCLUDE
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003
-R2\Include\.
-C:\Program Files\Microsoft Visual Studio 8\VC\INCLUDE
-
-INETSDK
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
-
-LIB
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
-C:\Program Files\Microsoft Visual Studio 8\VC\LIB;
-C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\lib
-%DXSDK_DIR%\Lib\x86
-
-MSSdk
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
-
-Mstools
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\.
-
-PATH
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Bin\.
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003
-R2\Bin\WinNT\.
-@end example
-
-@subsubheading More installation instructions
-
-@example
-e) Download Trolltech's Qt4 opensource library and uncompress the
-downloaded .zip file (e.g.  qt-win-opensource-src-4.3.0.zip) into the
-folder in your disk where you want Qt to be installed (a good suggestion
-is to use a path containing no spaces, such as c:\Qt\4.3.0-msvc2005 or
-something similar).
-
-f) For using the Qt4 opensource with MSVS2005, Qt4 source code must be
-patched (Trolltech only provides official support for the MinGW compiler
-on Qt4 opensource - see corresponding section on this documentation on
-how to build Marsyas with Qt4 using the MinGW compiler). If you are
-using a commercial license of Qt4 for Windows, MSVS2005 support is
-already included and you should skip this step! Point your web browser
-to http://qtnode.net/wiki?title=Qt4_with_Visual_Studio and carefully
-follow the instructions presented there (some of them include some of
-the steps already presented above). After succesfully patching and
-building Qt4 (this step will take quite some time to complete - go grab
-a coffee and/or keep reading this documentation ;-)), be sure that your
-user env. vars in Windows include the following info:
-
------------------
-USER ENV. VARS:
------------------
-QTDIR
-C:\Qt\4.3.0-msvc2005
-
-Path
-%QTDIR%\bin;
-
-INCLUDE
-%QTDIR%\include
-
-QMAKESPEC
-win32-msvc2005
-
-g) In order to be able to build Marsyas Projects in MSVS2005, go to the
-MSVS2005 menu Tools->Options...->Projects and Solutions->VC++
-Directories and make sure that the following lines are listed in the
-"include files" and "library files" directories path lists (yes, this
-should be taken care by the SDKs installs, but strangely it some times
-doesn't happen):
-
-INCLUDE FILES DIRECTORIES:
---------------------------
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003
-R2\Include\.
-
-LIB FILES DIRECTORIES:
------------------------
-C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\Lib\.
-
-
-h) If you followed these instructions carefully, you should now be ready
-to get Marsyas (from a tar ball in sourceforge or from sourceforge SVN -
-see http://marsyas.sf.net) and build it using Trolltech's qmake utility
-to build Marsyas (installed during steps 2.e and 2.f above) . Go to the
-directory where you extracted the Marsyas tarball (or where you checked
-out Marsyas from the sourceforge SVN server to - btw, have a look at
-this very nice SVN client utility for windows:
-http://tortoisesvn.tigris.org/) and open a cmd window there and type the
-following cmd lines for building Marsyas and some of the included apps
-and examples in release:
-
-C:\MyMarsyasDir > qmake
-C:\MyMarsyasDir > nmake release
-
-This should build the Marsyas library (i.e. marsyas.lib, which you can
-find in c:\MyMarsyasDir\lib\release) and some of the applications and
-examples (that you can find and execute in c:\MyMarsyasDir\bin\release).
-
-i) You can generate MSVS2005 project files (.vcproj) for both the
-Marsyas lib and all the apps and examples using qmake and the .pro
-project files included in Marsyas (both release and debug solution
-configurations will be created in MSVS2005). This will allow you to open
-Marsyas projects in MSVS2005 and use its nice IDE for code
-writing/editing, building and most importantly debugging. For creating a
-MSVS2005 project for the Marsyas (static) library, open a cmd window on
-the marsyas directory in your Marsyas folder and run the following qmake
-command:
-
-C:\MyMarsyasDir\marsyas > qmake -t vclib
-
-This will generate a marsyas.vcproj file that you can open in MSVS2005
-to edit and build.
-
-For creating a MSVS2005 project for a Marsyas application (e.g. sfplay),
-go to its folder and execute:
-
-C:\MyMarsyasDir\apps\sfplay > qmake -t vcapp
-
-You will get a sfplay.vcproj that you can once again open in MSVS2005.
-If you need to debug your application using MSVS2005, it's a nice idea
-to create a MSVS2005 Solution that includes the marsyas.vcproj and your
-application .vcproj. If you then define a dependency of your application
-to the marsyas.vcproj (check MSVS2005 documentation), MSVS2005 will then
-always check if it needs to also build the Marsyas lib before linking it
-to your application. Furthermore, having set up this Solution allows you
-to debug into Marsyas library code (e.g. put breakpoints in your
-application code as well as in Marsyas lib code, watches, memory views,
-call stacks, etc). Check qmake and MSVS2005 documentation for more
-details.
-
-j) Read carefully the remaining of this fine documentation (RTFM ;-))
-and in case of questions, problems or suggestions, do not hesitate to
-post an email to Marsyas User and Developers Mailing lists:
-
-marsyas-users@@lists.sourceforge.net
-marsyas-developers@@lists.sourceforge.net
-@end example
-
-
-
-
-Windows XP/Vista with Visual Studio 2008 command-line and qmake
-
-@enumerate
-@item
-Download and install either the free Visual Studio Express or
-the full payed Visual Studio (these instructions
-were used succesfully with the 2008 version but probably apply to
-other
-version also).
-
-@item
-Using the Visual Studio 2008 Command Prompt provided
-under Visual C++ 9.0 Express Edition\Visual Studio Tools
-check that the command-line compiling works:
-
-@example
-c:\nmake
-@end example
-
-You will see some version number and it should complain
-that no MAKEFILE was found and no target specified
-
-
-@item
-Download and install the DirectX sdk
-(I used dxsdk_november2007.exe from the microsoft website)
-Add a new environment variable called DXSDK_DIR with value
-the directory direct X is installed.
-
-
-@item
-Download the Qt open source edition for C++ developers: Windows
-Download
-from:
-
-@example
-http://trolltech.com/downloads/opensource
-@end example
-
-Make sure you download the source code not the mingw.exe
-installer.
-@file{qt-win-opensource-src-4.3.3.zip}
-
-
-@item
-Unzip the file into a directory (for example
-@file{c:\qt-win-opensource-4.3.3}
-and then using the VIsual Studio 2008 Command Prompt
-go to that directory and do:
-
-@example
-set QMAKESPEC=win32-msvc
-configure
-nmake
-@end example
-
-
-@item
-Have a snack as compiling Qt takes a while.
-When it is completed you need to add
-@file{c:\qt-win-opensource-4.3.3} (or whatever directory name you used)
-to your PATH environment variable.
-(One way to do is Under the System tab of the Control Panel click
-on
-Advanced
-and Environment Variables and then at the end of the PATH
-environment
-variable type:
-
-@example
-;c:\Qt\4.3.3\bin;c:\MinGW\bin
-@end example
-
-
-@item
-Download an SVN client.  We recommend
-@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
-
-@item
-Right-click on your desktop and
-do a svn checkout for marsyas
-URL of repository:
-
-@example
-https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk
-@end example
-
-Checkout directory: where you want to install marsyas
-For example @file{c:\marsyas-0.2.14}
-
-@item
-You are finally ready to compile Marsyas. Using
-the Visual Studio 2008 Command Prompt go to
-@file{c:\marsyas-0.2.14} and do (it's a good idea to double check
-that the PATH contains the correct Qt installed directory
-and the DXSDK_DIR is set correctly as follows):
-
-@example
-set PATH
-set DXSDK_DIR
-@end example
-
-If things look ok your ready to go:
-
-@example
-qmake
-nmake release
-@end example
-
-(When you run qmake you should see a message
-saying that the win32-msvc configuration is used).
-
-The executables will be placed in the bin\release
-subdirectory. Try for example to play a soundfile
-using sfplay or MarPlayer.
-
-IMPORTANT NOTE: It is necessary to have the correct Qt
-version compiled using Visual Studio in your PATH. If you
-have installed Qt with MinGW support you need to make
-sure that it is not in your PATH if you want to compile
-Marsyas using Visual Studio.
-
-@end enumerate
-
-
-Windows XP/Vista with MinGW and qmake
-
-@enumerate
-
-@item
-Download the Qt open source edition for C++ developers:
-@uref{http://trolltech.com/developer/downloads/qt/windows,
-Windows download}.  The file should be called something like
-@file{qt-win-opensource-4.3.3-mingw.exe}
-
-@item
-Run the downloaded executable and then just follow the
-installation instructions.  If you don't have MinGW installed,
-click on the corresponding check box to have it installed.
-
-@item
-Add these two items to your @env{PATH} environment variable:
-@file{c:\Qt\4.3.3\bin} and @file{c:\MinGW\bin}
-
-One way to do this is Under the System tab of the Control Panel
-click on Advanced and Environment Variables and then at the end of
-the @env{PATH} environment variable type:
-@code{;c:\Qt\4.3.3\bin;c:\MinGW\bin}
-
-Alternatively the Qt install creates a Qt 4.3.3 Command Prompt
-that you can use instead of cmd.exe and has the environment
-variables already set up.
-
-@item
-Download and install the DirectX sdk (I used
-dxsdk_november2007.exe from the microsoft website).  Add a new
-environment variable called @env{DXSDK_DIR} with value of the
-directory direct X is installed. 
-
-@item
-Download an SVN client.  We recommend
-@uref{http://toroisesvn.net/downloads, TortoiseSVN}.
-
-@item
-Right-click on your desktop and do a svn checkout for marsyas.
-The URL of the repository is
-@code{https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk}.
-
-Checkout directory: where you want to install marsyas.   For
-example @file{c:\marsyas-0.2.14}
-
-@item
-Run a command shell (either cmd.exe if you have set the
-environment variables correct or the Qt 4.3.3 command prompt)
-
-@example
-cd c:\marsyas-0.2.14
-qmake
-mingw32-make.exe release
-@end example
-
-@end enumerate
-
-
-
-Windows XP/Vista with Cygwin and autotools
-
-@enumerate
-@item
-Download and install the basic cygwin environment
-from @uref{http://www.cygwin.com}
-
-@item
-You will also need to install gcc (the compiler), the gnu make
-utility, automake and a subversion client which are not included
-in the basic install. Once cygwin is installed click on Setup
-again and under the development category select the corresponding
-entries.  For example select gcc-g++ by clicking on the Skip
-column (a version number will replace Skip). Similarly for the
-other packages.
-
-@item
-Download the marsyas trunk from subversion.  From the cygwin
-terminal, type:
-
-@example
-svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk marsyas-0.2.14
-@end example
-
-@noindent
-(replace marsyas-0.2.14 with the directory you want marsyas to be
-installed)
-
-@item
-Open the cygwin terminal and go to the cygwin directory.
-
-@example
-./configure
-make
-@end example
-
-This builds marsyas.lib, all (at least most of them) command line apps
-(sfplay, bextract, etc).
-@end enumerate
-
-To generate a MSVC .vcproj for a project just cd into the app dir (e.g.
-apps/Qt4Apps/MarPhasevocoder) and do:
-
-@example
-qmake -t vcapp 
-@end example
-
-In case you also want to create a .vcproj for the marsyas lib, cd into
-marsyas dir and do:
-
-@example
-qmake -t vclib
-@end example
 
 
 
