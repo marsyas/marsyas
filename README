@@ -27,16 +27,8 @@ is more than welcome.
 MARSYAS is free software. Please see the file COPYING for details.
 For documentation, we recommend reading the online verison,
 
-	http://marsyas.sourceforge.net
+	http://marsyas.sness.net
 
 
-
-The docs may be built locally by doing
-
-	cd doc
-	make html
-	make pdf
-
-This requires texinfo.
 
 

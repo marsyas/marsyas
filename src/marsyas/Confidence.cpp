@@ -106,6 +106,7 @@ Confidence::myUpdate(MarControlPtr sender)
 		labelNames_.push_back(labelName);
 	}  
 
+
 	if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
 	{
 		if(getctrl("mrs_string/fileName")->to<mrs_string>().compare(oriName_))
@@ -133,12 +134,19 @@ Confidence::myUpdate(MarControlPtr sender)
 void 
 Confidence::myProcess(realvec& in, realvec& out)
 {
+
+	
+
 	bool mute = ctrl_mute_->to<mrs_bool>();
 	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
 	mrs_natural nLabels = ctrl_nLabels_->to<mrs_natural>();
 
 	mrs_natural label;
 	mrs_natural l;
+
+	
+
+	
 
 	if (mute == false) 
 	{
@@ -169,6 +177,8 @@ Confidence::myProcess(realvec& in, realvec& out)
 				}
 				if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
 				{
+					cout << "fileOutput" << endl;
+					
 					if (write_)
 					{ 
 						outputFileSyn_ << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
@@ -188,8 +198,9 @@ Confidence::myProcess(realvec& in, realvec& out)
 					{
 						cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
 						cout << fixed << setprecision(0) << labelNames_[max_l] << "\t" <<
-							((confidences_(max_l) / count_)) * 100.0 << endl;
+ 							((confidences_(max_l) / count_)) * 100.0 << setprecision(4) << endl;
 					}
+					
 				}
 				if (cond || forcePrint_)
 				{

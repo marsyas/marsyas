@@ -6,20 +6,6 @@ AT some point I must cleanup this
 
 
 
----- info that used to be in doc/unsorted.texi (ie really old documentation)
-@node Future Work
-@chapter Future Work
-
-As is the case with most software projects, there is a lot of future
-work that I would like to do and I welcome any assistance, feedback,
-requests for features you might have. Most of my plans can be found in
-the TODO file of the distribution. However it is not clearly written
-and intended for my own personal use.
-
-Some of the more long-term and ambitious plans for the future will be
-described in this section. If you would like to contribute some code
-to the project and you don't know where to start this section might
-give you some ideas.
 
 python bindings msl interpreter with vertical syntax msl interpreter
 with chuck-like syntax SDIFF IO Open Sound Control (OSC)
@@ -52,7 +38,7 @@ Luis Gustavo Martins
 Stephaan Lippens 
 Tao Li 
 Karin Koshina ??? (spelling) 
-Chris West  ??? (spelling) 
+Kris  ??? (spelling) 
 George Tourtellot 
 Corrie Elder 
 Kris West
@@ -90,9 +76,6 @@ Port marsyasTests to Windows
 
 
 
-DONE 
-Hook Marx2DGraph to Marsyas
-Rename RandSource to NoiseSource 
 
 
 

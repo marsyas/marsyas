@@ -62,7 +62,7 @@ translation approved by the Free Software Foundation.
 * Source installation::         Installation instructions for different operating systems.
 * Available tools::             Various sample tools built using marsyas
 components.
-* Available graphical tools::   Various sample tools built using
+* Graphical User Interfaces using Qt4::   Various sample tools built using
 marsyas and Qt.
 * Architecture concepts::       Important concepts about Marsyas.
 * System details::              Details about Marsyas.

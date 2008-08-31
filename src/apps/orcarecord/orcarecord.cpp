@@ -59,7 +59,7 @@ void printHelp(string progName)
     MRSDIAG("record.cpp - printHelp");
     cerr << "record, MARSYAS, Copyright George Tzanetakis " << endl;
     cerr << "--------------------------------------------" << endl;
-    cerr << "Prints information about the sound files provided as arguments " << endl;
+    cerr << "prints information about the sound files provided as arguments " << endl;
     cerr << endl;
     cerr << "Usage : " << progName << "soundfile1 soundfile2 soundfile3" << endl;
     cerr << endl;
@@ -320,7 +320,6 @@ void record_orcas_dat(mrs_real length, mrs_natural year, string id1)
 main(int argc, const char **argv)
 {
     MRSDIAG("record.cpp - main");
-    cout << "orcarecord - marsyas " << PACKAGE_VERSION << endl;
 
     string progName = argv[0];  
     if (argc == 1)

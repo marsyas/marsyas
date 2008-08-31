@@ -1,5 +1,15 @@
-@node Available graphical tools
-@chapter Available graphical tools
+@node Graphical User Interfaces using Qt4
+@chapter Graphical User Interfaces using Qt4
+
+Marsyas provides integration support for the Qt4 user 
+interface toolkit. By using the MarSystemQtWrapper 
+any processing network can be wrapped into a proper 
+QObject with signals and slots enabling direct integration 
+with Qt objects and widgets. The wrapper hides issues 
+of threading, buffering, etc. Another supported functionality 
+that uses the Qt signal/slot system is the ability 
+to send and process Open Sound Control 
+@cindex Open Sound Control (OSC) messages through OscMapper. 
 
 
 @menu
@@ -14,18 +24,51 @@
 @node MarPlayer
 @section MarPlayer
 
+MarPlayer is a simple graphical user interface for playback 
+of soundfiles supported in Marsyas. It has shuttle controls 
+and allows for arbitrary seeking and looping. From a developer 
+perspective it provides an example of how the Qt Designer 
+interface toolkit for desinging and layout and graphical 
+appearance of the user interface. 
+
 
 @node MarPhaseVocoder
 @section MarPhaseVocoder
+
+MarPhaseVocoder is a front-end to the marsyas phasevocoder. 
+It is an example of how all the interface code can be 
+directly written in C++. It uses a common architecture 
+with three layers for separating the handling of graphical 
+user interface action, their mapping, and their connection 
+to the wrapper. 
 
 
 @node MarGrid
 @section MarGrid
 
+MarGrid is a music collection visualization interface. It utilizes 
+feature extraction and a self-organized map to map each song in a
+collection to a square in a grid of cells. Once the self-organized 
+map has been trained it can be used to predict grid positions for 
+new songs. 
+
+
 @node MarMonitors
 @section MarMonitors
 
+MarMonitors is a proof-of-concept interface that allows 
+the inspection of realvec controls of any MarSystem. 
+It's a step towards generic interface for designing, debugging 
+processing network that are not tied to a specific application. 
+
 @node MarLPC
 @section MarLPC
+
+MarLPC is a user interface to a system for adding breathiness 
+to the singing voice using Adaptive Pre-Emphsis 
+Linear Prediction (Nordstrom, Tzanetakis, Driessen 2008). 
+It also serves as an example of how Open Sound Control (OSC) 
+can be used to change controls through Qt. The patch 
+scripts/PureData/MarLpc.pd can be usd to demontrate this communication. 
 
 

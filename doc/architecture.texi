@@ -19,12 +19,12 @@ in @ref{Programming MarSystems}.
 * Architecture overview::       
 * Implicit patching::           
 * MarSystem composites::        
-* Scheduling::
+* Scheduling::                  
 @end menu
 
 
 
-@node Architecture overview
+@node Architecture overview, Implicit patching, Architecture concepts, Architecture concepts
 @section Architecture overview
 
 @menu
@@ -33,7 +33,7 @@ in @ref{Programming MarSystems}.
 @end menu
 
 
-@node Building MarSystems
+@node Building MarSystems, Dataflow model, Architecture overview, Architecture overview
 @subsection Building MarSystems
 
 The basic idea behind the design of Marsyas is that any audio
@@ -59,7 +59,7 @@ does the whole thing. A figure showing a block diagram-like
 presentation of this network is shown in the next section.
 
 
-@node Dataflow model
+@node Dataflow model,  , Building MarSystems, Architecture overview
 @subsection Dataflow model
 
 Marsyas follows a dataflow model of audio computation.
@@ -73,7 +73,7 @@ slices to be semantically correct.
 
 
 
-@node Implicit patching
+@node Implicit patching, MarSystem composites, Architecture overview, Architecture concepts
 @section Implicit patching
 
 @menu
@@ -83,7 +83,7 @@ slices to be semantically correct.
 @end menu
 
 
-@node Implicit patching vs. explicit patching
+@node Implicit patching vs. explicit patching, Implicit patching advantages, Implicit patching, Implicit patching
 @subsection Implicit patching vs. explicit patching
 
 Many audio analysis programs require the user to explicitly (manually)
@@ -116,7 +116,7 @@ Series(source, Fanout, destination);
 @image{images/implicit-patching,,5cm}
 
 
-@node Implicit patching advantages
+@node Implicit patching advantages, Patching example of Feature extraction, Implicit patching vs. explicit patching, Implicit patching
 @subsection Implicit patching advantages 
 
 Creating a neural network with explicit patching soon becomes
@@ -145,7 +145,7 @@ the number of bands in a filter bank without changing any code.
 
 
 
-@node Patching example of Feature extraction
+@node Patching example of Feature extraction,  , Implicit patching advantages, Implicit patching
 @subsection Patching example of Feature extraction
 
 Suppose we wish to create a typical feature extraction program:
@@ -177,7 +177,7 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 
 
 
-@node MarSystem composites
+@node MarSystem composites, Scheduling, Implicit patching, Architecture concepts
 @section MarSystem composites
 
 @WANTED{ descriptions of composites, add the other composites }
@@ -191,39 +191,39 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 @end menu
 
 
-@node Series
+@node Series, Parallel, MarSystem composites, MarSystem composites
 @subsection Series
 
 @image{images/composite-series}
 
 
-@node Parallel
+@node Parallel, Fanout, Series, MarSystem composites
 @subsection Parallel
 
 @image{images/composite-parallel}
 
 
-@node Fanout
+@node Fanout, Accumulator, Parallel, MarSystem composites
 @subsection Fanout
 
 @image{images/composite-fanout}
 
 
-@node Accumulator
+@node Accumulator,  , Fanout, MarSystem composites
 @subsection Accumulator
 
 @image{images/composite-accumulator}
 
 
-@node Scheduling
+@node Scheduling,  , MarSystem composites, Architecture concepts
 @section Scheduling
 
 @menu
-* Scheduling in Marsyas::
-* Components of the Marsyas Scheduler::
+* Scheduling in Marsyas::       
+* Components of the Marsyas Scheduler::  
 @end menu
 
-@node Scheduling in Marsyas
+@node Scheduling in Marsyas, Components of the Marsyas Scheduler, Scheduling, Scheduling
 @subsection Scheduling in Marsyas
 
 Scheduling is the art of delaying actions (events) until later periods in time.
@@ -295,7 +295,7 @@ it. Marsyas is not threaded and neither is the scheduler so the scheduler will
 wait for the event to complete its action before resuming. Be careful not to
 do excessive processing during the dispatch of an event.
 
-@node Components of the Marsyas Scheduler
+@node Components of the Marsyas Scheduler,  , Scheduling in Marsyas, Scheduling
 @subsection Components of the Marsyas Scheduler
 
 The scheduler is made up of a collection of files from those used by

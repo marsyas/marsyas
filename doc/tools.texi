@@ -27,7 +27,7 @@ in @file{src/apps/@{DIR@}/}.
 @end menu
 
 
-@node Collections and input files
+@node Collections and input files, Soundfile Interaction, Available tools, Available tools
 @section Collections and input files
 
 Many Marsyas tools can operate on individual soundfiles or
@@ -40,7 +40,7 @@ file which contain lists of soundfiles.
 @end menu
 
 
-@node Creating collections manually
+@node Creating collections manually, mkcollection, Collections and input files, Collections and input files
 @subsection Creating collections manually
 
 A simple way to create a collection is the unix ls command. 
@@ -84,7 +84,7 @@ cat music.mf speech.mf > all.mf
 @end example
 
 
-@node mkcollection
+@node mkcollection,  , Creating collections manually, Collections and input files
 @subsection @code{mkcollection}
 @cindex mkcollection     
  
@@ -106,7 +106,7 @@ collection files should contain soundfiles with the same sampling rate
 as Marsyas does not perform automatic sampling conversion on collections. 
 
 
-@node Soundfile Interaction
+@node Soundfile Interaction, Feature Extraction, Collections and input files, Available tools
 @section Soundfile Interaction
 
 @menu
@@ -118,7 +118,7 @@ as Marsyas does not perform automatic sampling conversion on collections.
 @end menu
 
 
-@node sfplay
+@node sfplay, sfinfo, Soundfile Interaction, Soundfile Interaction
 @subsection @code{sfplay}
 @cindex sfplay 
 
@@ -151,26 +151,54 @@ sfplugin -p playback.mpl bar.wav
 @end example
 
 
-@node sfinfo
+@node sfinfo, audioCompare, sfplay, Soundfile Interaction
 @subsection @code{sfinfo}
 
+sfinfo displays information (number of channels, sampling rate,
+durations) about a support soundfile (.wav and .au by default 
+.mp3 .ogg if the appropriate extensions are installed) 
+
+@example 
+sfinfo foo.wav 
+@end example 
 
 
-@node audioCompare
+@node audioCompare, record, sfinfo, Soundfile Interaction
 @subsection @code{audioCompare}
 
+Compares two audio files for similarity with some small tolerance 
+for sample differences. It returns 0 if the files are the same and 1 
+if they are they are not. It is used for internal testing. 
 
 
-@node record
+
+@node record, orcarecord, audioCompare, Soundfile Interaction
 @subsection @code{record}
 
+Records to a sound-file using the default audio input device. 
+For example the second command records 5 seconds of stereo (-c 2) 
+audio at a sampling rate of 22050. The results are written to foo.wav. 
 
-@node orcarecord
+
+@example 
+record -l 3 foo.wav 
+record -l 5 -c 2 -s 22050 bar.wav 
+@end example 
+
+
+
+
+@node orcarecord,  , record, Soundfile Interaction
 @subsection @code{orcarecord}
 
+Similar to record but with specic change to record 4 stereo channels in
+parallel using a TASCAP audio interface. Created for the digitization of
+tapes for the Orchive project. 
 
 
-@node Feature Extraction
+
+
+@node Feature Extraction, Synthesis, Soundfile Interaction, Available tools
 @section Feature Extraction
 
 @menu
@@ -179,7 +207,7 @@ sfplugin -p playback.mpl bar.wav
 @end menu
 
 
-@node pitchextract
+@node pitchextract, bextract, Feature Extraction, Feature Extraction
 @subsection @code{pitchextract}
 @cindex pitchextract
 
@@ -188,18 +216,19 @@ contour from monophonic audio signals. A simple sinusoidal
 playback is provided for playback of the resulting contour. 
 
 
-@node bextract
+@node bextract,  , pitchextract, Feature Extraction
 @subsection @code{bextract}
 @cindex bextract
 
-@code{bextract} is one of the most powerful executables provided by
-Marsyas. It can be used for complete feature extraction and
-classification experiments with multiple files. It serves as a
-canonical example of how audio analysis algorithms can be expressed in
-the framework. This documentation refers to the latest refactored 
-version of bextract. The old-style @code{bextract} using the -e command-line 
-option to specify the feature extractor is still supported but 
-use of it discouraged. 
+@code{bextract} @cindex bextract 
+is one of the most powerful
+executables provided by Marsyas. It can be used for complete feature
+extraction and classification experiments with multiple files. It serves
+as a canonical example of how audio analysis algorithms can be expressed
+in the framework. This documentation refers to the latest refactored
+version of bextract. The old-style @code{bextract} using the -e
+command-line option to specify the feature extractor is still supported
+but use of it discouraged.
 
 Suppose that you want to build a real-time music/speech descriminator
 based on a collection of music files named music.mf and a collection
@@ -210,12 +239,12 @@ commandline will extract means and variances of timbral features
 Mel-Frequency Cepstral Coefficients (MFCC) over a texture window of 1 sec.  
 
 @example 
-bextract music.mf speech.mf -w ms.arff -p ms.mpl 
+bextract music.mf speech.mf -w ms.arff -p ms.mpl -cl GS
 bextract ms.mf -w ms.arff -p ms.mpl 
 bextract -mfcc classical.mf jazz.mf rock.mf -w genre.arff
 @end example 
 
-Both of these commands are equivalent assuming that 
+The first two commands are equivalent assuming that 
 ms.mf is a labeled collection with the same files 
 as music.mf and speech.mf. The third-command specifies 
 that only the MFCC features should be extracted and is 
@@ -234,15 +263,15 @@ prefixed by the filename as a comment in the .arff file. It is a text
 file that is straighforward to parse. Viewing it in a text editor will
 make this clearer.
 
-In addition to Weka, the native Marsyas kea tool can be used to perform 
-evaluations (cross-validation, accuracies, confusion matrices) 
-similar to Weka although with more limited functionality. 
+In addition to Weka, the native Marsyas kea tool @ref{kea} can be used
+to perform evaluations (cross-validation, accuracies, confusion
+matrices) similar to Weka although with more limited functionality.
 
-At the same time that the features are extracted, a classifier (by
-default a simple Naive Bayes classifier) is trained and when feature
-extraction is completed the whole network of feature extraction and
-classification is stored and can be used for real-time audio
-classification directly as a Marsyas plugin stored in ms.mpl.
+At the same time that the features are extracted, a classifier (in the
+example above a simple Naive Bayes classifier (or Gaussian)) is trained
+and when feature extraction is completed the whole network of feature
+extraction and classification is stored and can be used for real-time
+audio classification directly as a Marsyas plugin stored in ms.mpl.
 
 The resulting plugin makes a classification decision every 20ms but
 aggregates the results by majority voting (using the Confidence
@@ -275,7 +304,9 @@ vector per file.
 @end example 
 
 The resulting genres.arff file has only one feature vector line 
-for each soundfile in the collections. 
+for each soundfile in the collections. In this case where 
+no -cl command-line argument is specified a linear 
+Support Vector Machine (SVM) classifier is used instead. 
 
 
 Feature sets refer to collections of features that can 
@@ -305,6 +336,7 @@ and Mel-Frequency Cepstral Coefficients (MFCC). Equivalent to
 @item -mfcc --MelFrequencyCepstralCoefficients
       Mel-Frequency Cepstral Coefficients.
 
+@item -chroma --Chroma 
 @item -ctd --SpectralCentroid
 @item -rlf -- SpectralCentroid
 @item -flx --SpectralFlux
@@ -330,7 +362,7 @@ concatenated to form a feature vector.
 and right channels.  
 @end table
 
-For example the first command calculate MFCC for both 
+For example the first command below calculates MFCC for both 
 left and right channels.  The second command calculates 
 the Stereo Panning Spectrum Features which require both 
 channels and also the Spectral Centroid for both left 
@@ -372,8 +404,16 @@ for each texture window (default 40 - approximately 1 second)
 @item -w --wekafile 
       filename of generated .arff file (for Weka or kea)  
 @item -tc --test 
-      filename of collection or soundfile used for real-time prediction 
+      filename of collection or soundfile used for prediction 
+after a model is trained (can be used to conduct MIREX style
+experimetns) 
+@item -pr --predict 
+      filename of a collection or soundfile used for prediction 
 after a model is trained 
+@item -wd --workdir 
+      Directory where all generated files will be written by 
+defautl the current directory is used
+
 @end table
 
 
@@ -382,14 +422,14 @@ after a model is trained
 
 
 
-@node Synthesis
+@node Synthesis, Machine Learning, Feature Extraction, Available tools
 @section Synthesis
 
 @menu
 * phasevocoder::                
 @end menu
 
-@node phasevocoder
+@node phasevocoder,  , Synthesis, Synthesis
 @subsection @code{phasevocoder}
 @cindex phasevocoder
 
@@ -397,22 +437,80 @@ phasevocoder is probably the most powerful and canonical example of
 sound synthesis provided currently by Marsyas. It is based on the
 phasevocoder implementation described by F.R.Moore in his book
 @qq{Elements of Computer Music}. It is broken into individual
-MarSystems in a modular way and can be used for real-time
-pitch-shifting and time-scaling.
+MarSystems in a modular way and can be used for sound-file and real-time
+input pitch-shifting and/or time-scaling. Several variations of the
+algorithm proposed in the literature have been implemented and 
+can be configured through several command-line options. Familiarity 
+with phasevocoder terminology will help understanding their effect on
+the transformed sound file. Some representative examples are: 
  
 @example
-phasevocoder -p 1.4 -s 100
+phasevocoder foo.wav -f foo_identity.wav 
+phasevocoder foo.wav -f foo_stretched.wav -n 2048 -w 2048 -d 256 -i 512 
+phasevocoder foo.wav -ob -cm sorted -s 10 -p 1.5 -f foo_pitch_shifted.wav  
+phasevocoder foo.wav -f foo_stretched.wav -n 4096 -w 4096 -d 768 -i 1024
+-cm full -ucm identity_phaselock
+phasevocoder foo.wav -f foo_stretched.wav -n 4096 -w 4096 -d 768 -i 1024
+-cm analysis_scaled_phaselock -ucm scaled_phaselock
 @end example
 
+In the first example the input file foo.wav is passed through the classic
+phasevocoder (overlap-add, FFT-frontend and FFT-backend) without any 
+time or pitch modifications. The second example show how time stretching 
+can be achieved by making the analysis hop size (-d) and the synthesis 
+hop size (-i) different. The -n option specified the FFT size 
+and the -w option specifies the window size. In the third example 
+a bank of sinusoidal oscillators (-ob) is used instead of the
+FFT-backend and the input is pitch shifted by 1.5. The fourth example 
+uses identity phaselocking (-ucm) and the fifth example uses scaled
+phaselocking (-cm and -ucm) as described by Laroche and Dobson. 
 
-@node Machine Learning
+@table @samp 
+@item -n --fftsize
+      size of the fft
+@item -w --winsize
+      size of the window 
+@item -d --decimation 
+      analysis hop size (decimation)
+@item -i --interpolation
+      synthesis hop size (interpolation)
+@item -p --pitchshift 
+      pitch shift factor (for example 2.0 is an octave) 
+@item -ob --oscbank 
+      use bank of oscillators back-end 
+@item -s --sinusoids 
+      number of sinusoids to use if convert mode is sorted 
+@item -cm --convertmode 
+      analysis front-end mode: full: use all FFT bins, sorted: sort FFT
+      bins by magnitude and only use s sinusoids,
+      analysis_scaled_phaselock: compute extra analysis info for scaled
+      phaselocking
+@item -ucm --unconvertmode 
+      synthesis back-end mode: classic: propagate phases for all bins,
+      loose_phaselock: described by Puckette, identity_phaselock: pick
+      peaks, propagate phases for peaks and lock regions of influence
+      around them, scaled_phaselock: refinement that takes into account 
+      information from the previous frame 
+@item -on --onsets filename_with_onsets
+      takes as input a simple text file with locations of onsets that 
+      are used to re-initialize phases and not time stretch transient
+      frames that contain the onsets. 
+@end table
+
+
+
+
+
+
+
+@node Machine Learning, Auditory Scene Analysis, Synthesis, Available tools
 @section Machine Learning
 
 @menu
 * kea::                         
 @end menu
 
-@node kea
+@node kea,  , Machine Learning, Machine Learning
 @subsection @code{kea}
 @cindex kea
 
@@ -474,14 +572,14 @@ features are simply written to stdout.
 
 @example
 kea -w iris.arff 
-kea -m train -w iris.arff 
+kea -m train -w iris.arff -cl SVM 
 kea -m distance_matrix -dm dmatrix.txt -w iris.arff
 kea -m pca -w iris.arff
 @end example
 
 
 
-@node Auditory Scene Analysis
+@node Auditory Scene Analysis, Marsystem Interaction, Machine Learning, Available tools
 @section Auditory Scene Analysis
 
 
@@ -490,23 +588,100 @@ kea -m pca -w iris.arff
 * peakClustering::              
 @end menu
 
-@node peakSynth
+@node peakSynth, peakClustering, Auditory Scene Analysis, Auditory Scene Analysis
 @subsection @code{peakSynth}
 
-@node peakClustering
+@node peakClustering,  , peakSynth, Auditory Scene Analysis
 @subsection @code{peakClustering}
+@cindex peakClustering 
+
+peakClustering performs sinusoidal analysis 
+@cindex sinusoidal analysis 
+followed by a spectral
+clustering 
+@cindex spectral clustering 
+for grouping spectral peaks that operates across time and 
+frequency over ``texture'' windows. It can be used for predominant 
+melody separation on polyphonic audio signals. More technical 
+information can be found in the paper ``Normalized Cuts for Predominant 
+Melodic Source Separation'' published in the IEEE Transactions on Audio,
+Speech and Language processing. Examples of usage: 
+
+@example 
+peakClustering foo.wav 
+@end example 
+
+This will result in a file named fooSep.wav that contains the separated 
+predominant melody source such as a singing voice in a rock song or a
+saxophone line in a jazz tune. 
 
 
-@node Marsystem Interaction
+@table @samp 
+@item -n --fftsize         
+      size of fft 
+@item -w --winsize
+      size of window 
+@item -s --sinusoids       
+      number of sinusoids per frame
+@item -b --buffersize      
+      audio buffer size
+@item -o --outputdirectoryname   
+     output directory path
+@item -N --noisename 
+      name of degrading audio file 
+@item -p --panning 
+      panning informations <foreground level (0..1)>-<foreground pan (-1..1)>-<background level>-<background pan> 
+@item -t --typeSimilarity 
+      similarity information a (amplitude) f (frequency) h (harmonicity)  
+@item -q -quitAnalyse 
+   quit processing after specified number f seconds
+@item -T --textureSize
+       number of frames in a texture window
+@item -c -clustering 
+    number of clusters in a texture window
+@item -k -keep 
+      keep the specified number of clusters in the texture window 
+@item -S --synthetise 
+   synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)
+@item -r --residual 
+      output the residual sound (if the synthesis stage is selected)
+@item -i --intervalFrequency 
+   <minFrequency>_<maxFrequency> select peaks in this interval (default 250-2500 Hz)
+@item -f --fileInfo 
+      provide clustering parameters in the output name (s20t10i250_2500c2k1uTabfbho means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames, no precise parameter estimation and using a combination of similarities abfbho)
+@item -npp --noPeakPicking 
+      do not perform peak picking in the spectrum
+@item -u --unprecise 
+   do not perform precise estimation of sinusoidal parameters
+@item -if --ignoreFrequency
+       ignore frequency similarity between peaks
+@item -ia --ignoreAmplitude 
+    ignore amplitude similarity between peaks
+@item -ih --ignoreHWPS
+       ignore harmonicity (HWPS) similarity between peaks
+@item -ip --ignorePan
+      ignore panning similarity between peaks
+@item -uo --useOnsets
+       use onset detector for dynamically adjusting the length of texture windows
+
+
+@end table 
+
+
+
+
+
+
+
+@node Marsystem Interaction, All of the above, Auditory Scene Analysis, Available tools
 @section Marsystem Interaction
 
 @menu
 * sfplugin::                    
 * msl::                         
-* Scheduler::                   
 @end menu
 
-@node sfplugin
+@node sfplugin, msl, Marsystem Interaction, Marsystem Interaction
 @subsection @code{sfplugin}
 @cindex sfplugin
 
@@ -522,7 +697,7 @@ sfplugin -p musp_classify.mpl foo.wav
 @end example 
 
 
-@node msl
+@node msl,  , sfplugin, Marsystem Interaction
 @subsection @code{msl}
 @cindex msl
 
@@ -534,6 +709,9 @@ and run sound through the network. It's used as a backend for
 user interfaces therefore it has limited (or more accurately
 non-existent) editing functionality. The current syntax 
 is being revised so currently it's more a proof-of-concept. 
+Msl has been inactive for a while as the SWIG bindings to 
+scripting language seem to be the way to go. 
+
 Here is an example of creating a simple network in msl and 
 playing a sound file: 
 
@@ -552,16 +730,9 @@ msl
 
 The important thing to notice is that both the creation of MarSystems 
 and their assembly into networks can be done at run-time without 
-having to recompile any code. If anyone would like to pick 
-a project to do for Marsyas it would be to use the GNU readline 
-utility for it's commandline editing capabilities and try 
-to come up with some alternative syntax (I have some ideas 
-in that direction). 
-
-
-@node Scheduler
-@subsection @code{scheduler}
-
+having to recompile any code. It also possible to use the GNU 
+readline utility to provide more friendly user editing and 
+command completion in Msl. 
 
 
 @c keeping this in case Steven wants to resurrect anything from
@@ -591,25 +762,6 @@ information in @develref{Regression tests (devel)}.
 @end menu
 
 
-@n ode Sanity tests
-@s ubsection Sanity tests
-
-These are short, quick tests; on modern hardware they will take less
-than 10 seconds to run.
-
-To test, simply run
-
-@example
-scripts/regtests_sanity.py
-@end example
-
-Results will be printed on the command line, with more information in
-the file @file{tests/results.log}.
-
-These tests are not complete by any means, nor are they intended to be.
-They are simply a quick test to see if anything fundamental is broken.
-Since they @emph{are} so quick and easy to run, please run these tests
-often.
 
 
 @n ode Coffee tests
@@ -632,19 +784,47 @@ These tests are a useful excuse for taking a coffee break.
 @end ignore
 
 
-@node All of the above
+@node All of the above,  , Marsystem Interaction, Available tools
 @section All of the above
 
 @menu
 * mudbox::                      
 @end menu
 
-@node mudbox
+@node mudbox,  , All of the above, All of the above
 @subsection @code{mudbox}
+@cindex mudbox 
 
-@WANTED{funny description of mudbox -- I'm look at you, George}
+In computer science the term sandbox is frequently used to refer a
+technique where a piece of software is isolated from the surrounding
+operating system environment to reduce security risks. Unlike these
+clean sandboxes in Marsyas the mudbox is a playground for
+experimentation and messing around. This is all the more appropriate
+given that several of the main Marsyas developers have lived in British
+Columbia where sandbox turn into mudboxes most of the year. It was
+motivated by the frequent need to experiment with various MarSystems
+under construction without having to create a new application for each
+case and potentially have to modify the build system. Typically code for
+a MarSystem gets tested in mudbox, then is gradually expanded to a tool
+and eventually becomes it's own application or gets integrated to one of
+the existing ones. More information can be found @develref{Playing in
+the mudbox}. The examples in mudbox are short and can provide quick
+templates for various types of tasks. The specific example to be
+executed is specified by the --toy-with, -t command-line argument:
 
-Developers interested in contributing to this mess should read
-@develref{Playing in the mudbox}.
+@example 
+mudbox -t onsets foo.wav 
+mudbox --toy-with vibrato foo.wav 
+mudbox -h 
+@end example 
 
+The first command will generate a stero file foo.wav_onsets.wav 
+with one channel containing the detected onsets. The second 
+command will apply a vibrato type of effect using a delay line 
+to foo.wav. The third command will display many (but not necessarily) 
+all of the available ``toys'' in mudbox. In general, mudbox is supposed
+to be experimental so don't expect careful error checking or proper 
+output messages. In most cases you will need to read the corresponding 
+source code in mudbox.cpp to figure out what's happening. This is a
+feature of mudbox not a bug :-). 
 

@@ -21,4 +21,4 @@ int main(int argc, char *argv[])
   monitors->show();
 
   return app.exec();
-}
+

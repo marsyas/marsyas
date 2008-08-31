@@ -82,7 +82,7 @@ if (SWIG_FOUND)
 endif (SWIG_FOUND)
 
 if (QT4_FOUND)
-        SET(QT_USE_NETWORK TRUE)
+        SET(QT_USE_QTNETWORK ON)
 	include (${QT_USE_FILE})
         add_subdirectory(marsyasqt)
         add_subdirectory(Qt4Apps)

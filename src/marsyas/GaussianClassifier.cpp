@@ -180,8 +180,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
 	if (mode == "predict")
 	{
-
-		cout << means << endl;
 		
 		mrs_real min = MAXREAL;
 		for (t = 0; t < inSamples_; t++)  
