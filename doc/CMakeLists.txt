@@ -16,10 +16,12 @@ set(DOXY ${DOXYGEN}
 
 
 ## prep
-configure_file(index.html.in ${CMAKE_BINARY_DIR}/index.html COPYONLY)
+make_directory(${CMAKE_BINARY_DIR}/out-www/)
+set(OUT-WWW ${CMAKE_BINARY_DIR}/out-www/)
+configure_file(index.html.in ${OUT-WWW}/index.html COPYONLY)
 
-make_directory(manual/)
-set(MANUAL_DIR ${CMAKE_BINARY_DIR}/manual/)
+make_directory(${OUT-WWW}/manual/)
+set(MANUAL_DIR ${OUT-WWW}/manual/)
 # ugly, but works
 make_directory(${MANUAL_DIR}/marsyas-user/)
 make_directory(${MANUAL_DIR}/marsyas-devel/)
@@ -64,12 +66,12 @@ add_custom_command(
 )
 
 add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/sourceDoc/index.html
+	OUTPUT ${OUT-WWW}/sourceDoc/index.html
 	COMMAND ${DOXY}
 )
 
 add_custom_target(doxy
-	DEPENDS ${CMAKE_BINARY_DIR}/sourceDoc/index.html
+	DEPENDS ${OUT-WWW}/sourceDoc/index.html
 )
 
 add_custom_target(docs ALL
@@ -77,12 +79,12 @@ add_custom_target(docs ALL
 	DEPENDS ${MANUAL_DIR}/marsyas-user/index.html
 	DEPENDS ${MANUAL_DIR}/marsyas-devel.pdf
 	DEPENDS ${MANUAL_DIR}/marsyas-devel/index.html
-	DEPENDS ${CMAKE_BINARY_DIR}/sourceDoc/index.html
+	DEPENDS ${OUT-WWW}/sourceDoc/index.html
 )
 
 # FIXME: do this without an install.
 install(FILES ${PNG_IMAGES}
-	DESTINATION ${CMAKE_BINARY_DIR}/marsyas-user/images/
+	DESTINATION ${OUT-WWW}/marsyas-user/images/
 )
 
 
