@@ -2,12 +2,19 @@
 cmake_minimum_required(VERSION 2.6)
 project(Document)
 
+## program setup
 find_program(TEXI2PDF NAMES texi2pdf PATHS $ENV{PATH})
 set(TEXI2PDF ${TEXI2PDF} -b)
+
 find_program(MAKEINFO NAMES makeinfo PATHS $ENV{PATH})
 set(TEXI2HTML ${MAKEINFO} --html
   --css-include=${CMAKE_SOURCE_DIR}/marsyas.css)
 
+find_program(DOXYGEN NAMES doxygen PATHS $ENV{PATH})
+set(DOXY ${DOXYGEN}
+  ${CMAKE_SOURCE_DIR}/../src/marsyas/Doxyfile)
+
+## build docs
 file(GLOB PNG_IMAGES ${CMAKE_SOURCE_DIR}/images/*.png)
 
 add_custom_command(
@@ -34,11 +41,21 @@ add_custom_command(
 	ARGS ${CMAKE_SOURCE_DIR}/marsyas-devel.texi
 )
 
-add_custom_target(marsyas-user ALL
+add_custom_command(
+	OUTPUT ${CMAKE_BINARY_DIR}/doxy/index.html
+	COMMAND ${DOXY}
+)
+
+add_custom_target(doxy
+	DEPENDS ${CMAKE_BINARY_DIR}/doxy/index.html
+)
+
+add_custom_target(docs ALL
 	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-user.pdf
 	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-user/index.html
 	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-devel.pdf
 	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-devel/index.html
+	DEPENDS ${CMAKE_BINARY_DIR}/doxy/index.html
 )
 
 # FIXME: do this without an install.

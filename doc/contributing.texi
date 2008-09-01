@@ -337,7 +337,7 @@ created with doxygen.  These software packages may be installed from
 
 @itemize
 @item @uref{http://www.gnu.org/software/texinfo/, texinfo}
-@item @uref{http://www.doxygen.org/, dozygen}
+@item @uref{http://www.doxygen.org/, doxygen}
 @item @uref{http://www.graphviz.org/, graphviz}
 @end itemize
 

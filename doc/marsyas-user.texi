@@ -69,7 +69,7 @@ marsyas and Qt.
 * Scripting::                   Working with MarSystems without C++.
 * Writing applications::        Writing programs that use Marsyas.
 * Programming MarSystems::      Writing new MarSystem blocks.
-* Missing Docs::                FIXME
+* Missing Docs::                Your assistance requested!
 * The Index::                   The Index.
 @end menu
 

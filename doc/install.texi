@@ -434,7 +434,7 @@ The marsaysMATLABrelease configuration must be enabled
 (uncommented in marsyasConfig.pri, or do something for autotools)
 
 @item
-Compile Marsyas using qmake, make
+FIXME: THIS IS WRONG!  Compile Marsyas using qmake, make
 
 @item
 try out marsyasTests -t MATLABengine. MATLAB
