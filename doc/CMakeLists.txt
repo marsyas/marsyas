@@ -14,48 +14,70 @@ find_program(DOXYGEN NAMES doxygen PATHS $ENV{PATH})
 set(DOXY ${DOXYGEN}
   ${CMAKE_SOURCE_DIR}/../src/marsyas/Doxyfile)
 
-## build docs
+
+## prep
+configure_file(index.html.in ${CMAKE_BINARY_DIR}/index.html COPYONLY)
+
+make_directory(manual/)
+set(MANUAL_DIR ${CMAKE_BINARY_DIR}/manual/)
+# ugly, but works
+make_directory(${MANUAL_DIR}/marsyas-user/)
+make_directory(${MANUAL_DIR}/marsyas-devel/)
+make_directory(${MANUAL_DIR}/marsyas-user/images/)
+make_directory(${MANUAL_DIR}/marsyas-devel/images/)
+
 file(GLOB PNG_IMAGES ${CMAKE_SOURCE_DIR}/images/*.png)
+foreach(PNG_FILE ${PNG_IMAGES})
+# ugly, but works
+	configure_file(${PNG_FILE} ${MANUAL_DIR}/marsyas-user/images/ COPYONLY)
+	configure_file(${PNG_FILE} ${MANUAL_DIR}/marsyas-devel/images/ COPYONLY)
+endforeach(PNG_FILE)
 
+
+## build docs
 add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/marsyas-user.pdf
+	OUTPUT ${MANUAL_DIR}/marsyas-user.pdf
 	COMMAND ${TEXI2PDF}
 	ARGS ${CMAKE_SOURCE_DIR}/marsyas-user.texi
+	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/marsyas-user/index.html
+	OUTPUT ${MANUAL_DIR}/marsyas-user/index.html
 	COMMAND ${TEXI2HTML}
 	ARGS ${CMAKE_SOURCE_DIR}/marsyas-user.texi
+	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/marsyas-devel.pdf
+	OUTPUT ${MANUAL_DIR}/marsyas-devel.pdf
 	COMMAND ${TEXI2PDF}
 	ARGS ${CMAKE_SOURCE_DIR}/marsyas-devel.texi
+	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/marsyas-devel/index.html
+	OUTPUT ${MANUAL_DIR}/marsyas-devel/index.html
 	COMMAND ${TEXI2HTML}
 	ARGS ${CMAKE_SOURCE_DIR}/marsyas-devel.texi
+	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
-	OUTPUT ${CMAKE_BINARY_DIR}/doxy/index.html
+	OUTPUT ${CMAKE_BINARY_DIR}/sourceDoc/index.html
 	COMMAND ${DOXY}
 )
 
 add_custom_target(doxy
-	DEPENDS ${CMAKE_BINARY_DIR}/doxy/index.html
+	DEPENDS ${CMAKE_BINARY_DIR}/sourceDoc/index.html
 )
 
 add_custom_target(docs ALL
-	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-user.pdf
-	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-user/index.html
-	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-devel.pdf
-	DEPENDS ${CMAKE_BINARY_DIR}/marsyas-devel/index.html
-	DEPENDS ${CMAKE_BINARY_DIR}/doxy/index.html
+	DEPENDS ${MANUAL_DIR}/marsyas-user.pdf
+	DEPENDS ${MANUAL_DIR}/marsyas-user/index.html
+	DEPENDS ${MANUAL_DIR}/marsyas-devel.pdf
+	DEPENDS ${MANUAL_DIR}/marsyas-devel/index.html
+	DEPENDS ${CMAKE_BINARY_DIR}/sourceDoc/index.html
 )
 
 # FIXME: do this without an install.

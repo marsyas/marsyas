@@ -48,7 +48,7 @@
             (using marsyas as a user and programmer)</li>
 
             <li><a class="title" href=
-            "sourceDoc/index.html">Library reference</a><br>
+            "sourceDoc/html/index.html">Library reference</a><br>
             (details for programmers)</li>
           </ul>
         </td>
@@ -61,31 +61,16 @@
             "manual/marsyas-devel.pdf">PDF</a> ~ 0.5 Mb)<br>
             (for developers working on marsyas)</li>
 
-            <li><a class="title" href="NEWS.txt">NEWS</a><br>
-            (major changes since last release)</li>
           </ul>
-        </td>
-      </tr>
-
-      <tr>
-        <td class="left-column">
-          <ul>
+        <ul>
             <li><a class="title" href=
             "http://marsyas.sourceforge.net/">marsyas.sourceforge.net</a><br>
 
             (the website)</li>
           </ul>
-        </td>
-
-        <td class="right-column">
-          <ul>
-            <li><a class="title" href=
-            "marsyas-docs.tar.gz">Documentation tarball</a> (~ 2
-            Mb)<br>
-            (for offline browsing)</li>
-          </ul>
-        </td>
+</td>
       </tr>
+
     </tbody>
   </table>
 </body>
