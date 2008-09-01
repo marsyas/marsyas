@@ -17,9 +17,10 @@
 */
 
 /**
-   \class Heap
-   \brief Heap  template for a heap
-
+	\class Heap
+	\ingroup Notmar
+	\brief Heap used by the scheduler for sorting scheduled event objects.
+	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
 
@@ -60,126 +61,130 @@ namespace Marsyas
 template <typename Type, typename Comparator>
 class Heap {
 private:
-    class Node {
-    public:
-        Node* parent; Node* lchild; Node* rchild; // tree pointers
-        Node* prev; Node* next; // vector list pointers
-        unsigned int id; // node id, for determining child type
-        Type* data;
-        Node(unsigned int node_id, Type* d) {
-            parent=NULL; lchild=NULL; rchild=NULL;
-            prev=NULL; next=NULL;
-            data=d; id=node_id;
-        }
-        ~Node() { }
-        friend std::ostream& operator<<(std::ostream& o, Node* s) {
-            o << "<" << s->id << "," << s->data << ",(";
-            if (s->parent==NULL) { o<<"0"; } else { o<<s->parent->id; } o << ",";
-            if (s->lchild==NULL) { o<<"x"; } else { o<<s->lchild->id; } o << ",";
-            if (s->rchild==NULL) { o<<"x"; } else { o<<s->rchild->id; } o << ")>";
-            return o;
-        };
-    };
+	class Node {
+	public:
+		Node* parent; Node* lchild; Node* rchild; // tree pointers
+		Node* prev; Node* next; // vector list pointers
+		unsigned int id; // node id, for determining child type
+		Type* data;
+		Node(unsigned int node_id, Type* d) {
+			parent=NULL; lchild=NULL; rchild=NULL;
+			prev=NULL; next=NULL;
+			data=d; id=node_id;
+		}
+		~Node() { }
+		friend std::ostream& operator<<(std::ostream& o, Node* s) {
+			o << "<" << s->id << "," << s->data << ",(";
+			if (s->parent==NULL) { o<<"0"; } else { o<<s->parent->id; } o << ",";
+			if (s->lchild==NULL) { o<<"x"; } else { o<<s->lchild->id; } o << ",";
+			if (s->rchild==NULL) { o<<"x"; } else { o<<s->rchild->id; } o << ")>";
+			return o;
+		};
+	};
 
-    public:
-    
-    Node* first; Node* last; // first and last pointers in heap
-    // assigned to a node to identify root, l/r child.
-    // An empty tree has a count of 0, while the root node is always 1.
-    unsigned int node_count;
-    // name declaration for required Comparator object
-    Comparator cmp;
+public:
 
-    Heap() { first=NULL; last=NULL; node_count=0; }
-    virtual ~Heap() {
-        while(first!=NULL) {
-            last=first->next;
-            // use the supplied Destructor object to delete the data
-            delete(first->data); delete(first);
-            first=last;
-        }
-    }
+	Node* first; Node* last; // first and last pointers in heap
+	// assigned to a node to identify root, l/r child.
+	// An empty tree has a count of 0, while the root node is always 1.
+	unsigned int node_count;
+	// name declaration for required Comparator object
+	Comparator cmp;
 
-    bool empty() { return (node_count==0); };
+	Heap() { first=NULL; last=NULL; node_count=0; }
+	virtual ~Heap() {
+		while(first!=NULL) {
+			last=first->next;
+			// use the supplied Destructor object to delete the data
+			delete(first->data); delete(first);
+			first=last;
+		}
+	}
 
-    Type* top() throw(const char*) {
-    // on empty heap throw a const char* exception, specified in the contract
-        if (first==NULL) { throw "Heap::top()  empty heap exception."; }
-        else { return first->data; }
-    };
-    Type* pop() throw(const char*) {
-    // on empty heap throw a const char* exception, specified in the contract
-        if (first==NULL) { throw "Heap::pop()  empty heap exception."; }
-        // save top data
-        Type* data = first->data;
-        // if it's the root then clear the heap
-        if (is_root(last)) {
-            delete(last); first=NULL; last=NULL; node_count=0;
-        } else {
-            // swap last element data into top position
-            first->data = last->data;
-            // extricate the node from its parent
-            if (is_lchild(last)) { last->parent->lchild=NULL; }
-            else { last->parent->rchild=NULL; }
-            // remove the last node and update the pointer to the new last
-            last=last->prev; delete(last->next); last->next=NULL;
-            // bubble down
-            Node* f = first;
-            while (1) {
-                Node* c = f->lchild;
-                // if lchild of c==NULL then c cannot be bubbled down further
-                if (c==NULL) { break; }
-                // make f point to the smallest of c's children
-                if (f->rchild!=NULL && (cmp(f->rchild->data,c->data))) { c=f->rchild; }
-                // use the template required Comparator to compare if the
-                // smallest child of c is less, if not leave
-                if (cmp(f->data,c->data)) { break; }
-                // swap data
-                Type* sw=c->data; c->data=f->data; f->data=sw;
-                // track the bubbling node
-                f=c;
-            }
-            // update node_count ensuring it never goes below 0
-            node_count = (node_count>0) ? node_count-1 : 0;
-        }
-        return data;
-    };
-    // push
-    void push(Type* data) {
-        // could throw an exception here...hmm
-        if (data==NULL) { return; }
-        node_count++;
+	bool empty() { return (node_count==0); };
 
-        Node* n = new Node(node_count,data);
-        if (first==NULL) {
-            first=n; last=n;
-        } else {
-            // add node to end of list
-            last->next=n; n->prev=last;
-            // insert node into tree and update parent and parent_children
-            if (is_root(last)) {
-                n->parent=last;
-                last->lchild = n;
-            } else if (is_lchild(last)) {
-                n->parent=last->parent;
-                last->parent->rchild=n;
-            } else {
-                n->parent=last->parent->next;
-                last->parent->next->lchild=n;
-            }
-            last=n;
-            // bubble up if needed
-            while (!is_root(n) && cmp(n->data,n->parent->data)) {
-                Type* sw=n->data; n->data=n->parent->data; n->parent->data=sw;
-                n = n->parent;
-            }
-        }
-    };
-    friend std::ostream& operator<<(std::ostream& o, Heap& s) {
-        Node* c = s.first;
-        while (c!=NULL) { o << c; c = c->next; } o << "\n";
-        return o;
-    };
+	Type* top() throw(const char*) {
+	// on empty heap throw a const char* exception, specified in the contract
+		if (first==NULL) { throw "Heap::top()  empty heap exception."; }
+		else { return first->data; }
+	};
+	Type* pop() throw(const char*) {
+	// on empty heap throw a const char* exception, specified in the contract
+		if (first==NULL) { throw "Heap::pop()  empty heap exception."; }
+		// save top data
+		Type* data = first->data;
+		// if it's the root then clear the heap
+		if (is_root(last)) {
+			delete(last); first=NULL; last=NULL; node_count=0;
+		}
+		else {
+			// swap last element data into top position
+			first->data = last->data;
+			// extricate the node from its parent
+			if (is_lchild(last)) { last->parent->lchild=NULL; }
+			else { last->parent->rchild=NULL; }
+			// remove the last node and update the pointer to the new last
+			last=last->prev; delete(last->next); last->next=NULL;
+			// bubble down
+			Node* f = first;
+			while (1) {
+				Node* c = f->lchild;
+				// if lchild of c==NULL then c cannot be bubbled down further
+				if (c==NULL) { break; }
+				// make f point to the smallest of c's children
+				if (f->rchild!=NULL && (cmp(f->rchild->data,c->data))) { c=f->rchild; }
+				// use the template required Comparator to compare if the
+				// smallest child of c is less, if not leave
+				if (cmp(f->data,c->data)) { break; }
+				// swap data
+				Type* sw=c->data; c->data=f->data; f->data=sw;
+				// track the bubbling node
+				f=c;
+			}
+			// update node_count ensuring it never goes below 0
+			node_count = (node_count>0) ? node_count-1 : 0;
+		}
+		return data;
+	};
+	// push
+	void push(Type* data) {
+		// could throw an exception here...hmm
+		if (data==NULL) { return; }
+		node_count++;
+
+		Node* n = new Node(node_count,data);
+		if (first==NULL) {
+			first=n; last=n;
+		}
+		else {
+			// add node to end of list
+			last->next=n; n->prev=last;
+			// insert node into tree and update parent and parent_children
+			if (is_root(last)) {
+				n->parent=last;
+				last->lchild = n;
+			}
+			else if (is_lchild(last)) {
+				n->parent=last->parent;
+				last->parent->rchild=n;
+			}
+			else {
+				n->parent=last->parent->next;
+				last->parent->next->lchild=n;
+			}
+			last=n;
+			// bubble up if needed
+			while (!is_root(n) && cmp(n->data,n->parent->data)) {
+				Type* sw=n->data; n->data=n->parent->data; n->parent->data=sw;
+				n = n->parent;
+			}
+		}
+	};
+	friend std::ostream& operator<<(std::ostream& o, Heap& s) {
+		Node* c = s.first;
+		while (c!=NULL) { o << c; c = c->next; } o << "\n";
+		return o;
+	};
 };
 
 }//namespace Marsyas

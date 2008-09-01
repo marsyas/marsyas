@@ -15,8 +15,8 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-#ifndef __EX_COMMON_H__
-#define __EX_COMMON_H__
+#ifndef MARSYAS_EX_COMMON_H
+#define MARSYAS_EX_COMMON_H
 
 #include <string>
 #include <iostream>
@@ -25,11 +25,12 @@
 namespace Marsyas
 {
 /**
-   \class ExNode
-   \brief ExNode is the base class for an expression tree node.
-   \author Neil Burroughs  inb@cs.uvic.ca
-   \version 1.0
-   \date    Jan 04, 2007
+	\class ExCommon
+	\ingroup Scheduler
+	\brief ExCommon provides common information for Ex the expression compiler
+	\author Neil Burroughs  inb@cs.uvic.ca
+	\version 1.0
+	\date    Jan 04, 2007
 */
     
 enum {
@@ -77,17 +78,51 @@ enum {
 #define ExT_mrs_timer 32
 #define ExT_mrs_scheduler 64
 
+
+/** \brief convert a marsyas type name to Ex type number
+* \param tp a marsyas type string, ie "mrs_string"
+* \return integer corresponding to the type as defined in the file ExCommon.h
+*/
 unsigned int ex_string_to_typeid(std::string tp);
+/** \brief convert an ex type id to a marsyas type string
+* \param tp ex type id, see file ExCommon.h
+* \return marsyas type name corresponding to the input parameter
+*/
 std::string ex_typeid_to_string(unsigned int tp);
 
+/** \brief convert a double to a string
+* \param d a double value to convert
+* \return string representing the supplied parameter
+*/
 std::string dtos(double d);
+
+/** \brief convert a float to a string
+* \param d a float value to convert
+* \return string representing the supplied parameter
+*/
 std::string dtos(float d);
+
+/** \brief convert a long to a string
+* \param d a long value to convert
+* \return string representing the supplied parameter
+*/
 std::string ltos(long l);
+
+/** \brief convert a boolean to a string
+* \param b a boolean value to convert
+* \return string representing the supplied parameter, "true" or "false"
+*/
 std::string btos(bool b);
+
+/** \brief convert a string to a long (integer)
+* \param n a string representing an integer
+* \return a long value corresponding to the input string
+*/
 long stol(std::string n);
 
 /**
    \class ExRefCount
+	 \ingroup Scheduler
    \brief convenient parent class for reference counted objects.
    \author Neil Burroughs  inb@cs.uvic.ca
    \version 1.0

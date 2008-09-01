@@ -30,80 +30,140 @@
 namespace Marsyas
 {
 /**
-   \class Scheduler
+	\class Scheduler
 	\ingroup Scheduler
-   \brief Scheduler schedules things
+	\brief Scheduler schedules things
 
-   Scheduled event contains a control name, and a
-          MarControlValue along with a sample time that
-          the name and value should be issued at.
+	Scheduled event contains a control name, and a MarControlValue along
+	with a sample time that the name and value should be issued at.
 
+	\author Neil Burroughs  inb@cs.uvic.ca
 */
-class TmTimer;
 
+class TmTimer;
 
 class ScheduledEvent {
 protected:
-    mrs_natural time_;
-    MarEvent* event_;
-    Repeat repetition;
-    TmTimer* timer_;
+	/** \brief the event dispatch time */
+	mrs_natural time_;
+	/** \brief the event to be dispatched */
+	MarEvent* event_;
+	/** \brief the repetition information for the event */
+	Repeat repetition_;
+	/** \brief the timer on which the event is to be dispatched */
+	TmTimer* timer_;
 
 public:
-    // Constructors
-    ScheduledEvent();
-    ScheduledEvent(mrs_natural time, MarEvent* event);
-    ScheduledEvent(mrs_natural time, Repeat rep, MarEvent* event);
-    ScheduledEvent(const ScheduledEvent& s);
-    virtual ~ScheduledEvent();
+	/** \brief an empty scheduled event */
+	ScheduledEvent();
+	/** \brief a scheduled event that does not repeat
+	* \param time the time of the event dispatch
+	* \param event the event to be dispatched
+	*/
+	ScheduledEvent(mrs_natural time, MarEvent* event);
+	/** \brief a scheduled event with repetition information
+	* \param time the time of the event dispatch
+	* \param rep the repetition information for the event
+	* \param event the event to be dispatched
+	*/
+	ScheduledEvent(mrs_natural time, Repeat rep, MarEvent* event);
+	/** \brief copy constructor
+	* \param s the scheduled event to copy
+	*/
+	ScheduledEvent(const ScheduledEvent& s);
+	/** \brief destructor */
+	virtual ~ScheduledEvent();
 
-    void setEvent(mrs_natural time, MarEvent* event);
-    void setEvent(mrs_natural time, Repeat rep, MarEvent* event);
-    void setTimer(TmTimer* t);
+	/** \brief set the event information without repetition.
+	*
+	* This method is called by the corresponding constructor. It can be
+	* used after the empty constructor.
+	* \param time the time of the event dispatch
+	* \param event the event to be dispatched
+	*/
+	void setEvent(mrs_natural time, MarEvent* event);
+	/** \brief set the event information with repetition.
+	*
+	* This method is called by the corresponding constructor. It can be
+	* used after the empty constructor.
+	* \param time the time of the event dispatch
+	* \param event the event to be dispatched
+	*/
+	void setEvent(mrs_natural time, Repeat rep, MarEvent* event);
+	/** \brief set the timer on which this event is scheduled. This method
+	* is called by the timer's post method when the scheduled event is
+	* posted on the timer.
+	* \param t the timer on which this event is posted.
+	*/
+	void setTimer(TmTimer* t);
 
-    friend class ScheduledEventOrdering;
-    // Naming methods
-    mrs_natural    getTime() const;
-    void setTime(mrs_natural t) { time_=t; }
+	/** \brief get the time that this event is to be dispatched
+	* \return the dispatch time count for this event
+	*/
+	mrs_natural getTime() const { return time_; }
+	/** \brief set the time at which this event is to be dispatched
+	* \param t the dispatch time for this event
+	*/
+	void setTime(mrs_natural t) { time_=t; }
 
-    MarEvent* getEvent();
-    mrs_natural getRepetitionCount();
-    std::string getRepetitionInterval();
-    Repeat getRepetition();
+	/** \brief get the actual event that this scheduled event contains
+	*/
+	MarEvent* getEvent() { return event_; }
+	/** \brief get the repetition count for this event
+	* \return a pointer to the event object
+	*/
+	mrs_natural getRepetitionCount();
+	/** \brief get the repetition time interval for this event.
+	*
+	* If this event does not repeat then the returned time interval is
+	* undefined (may be an empty string). It is best to check to see if
+	* there is repeat information prior to reading the interval.
+	* \return string representation of the time interval
+	*/
+	std::string getRepetitionInterval();
+	/** \brief get the repetition information for this event
+	* \return the repetition information for this event
+	*/
+	Repeat getRepetition();
 
-    bool repeat();
-    void doRepeat();
+	/** \brief answer whether this event repeats or not
+	* \return true if this event repeats, false if not.
+	*/
+	bool repeat();
+	/** \brief force the event to update its dispatch time and decrement
+	* its repeat count based on the repetition information. If the event
+	* does not repeat then this method is meaningless and doesn't do
+	* anything. This method is used by the dispatch() method of the timer.
+	*/
+	void doRepeat();
+
+	friend class ScheduledEventOrdering;
 
 //    int operator=(ScheduledEvent& a);
-    ScheduledEvent& operator=(ScheduledEvent& a);
-    bool operator<(const ScheduledEvent&) const;
-    bool operator>(const ScheduledEvent&) const;
+	ScheduledEvent& operator=(ScheduledEvent& a);
+	bool operator<(const ScheduledEvent&) const;
+	bool operator>(const ScheduledEvent&) const;
 
-    // the usual stream IO 
-    friend std::ostream& operator<<(std::ostream&, ScheduledEvent&);
-    friend std::istream& operator>>(std::istream&, ScheduledEvent&);
+	// the usual stream IO 
+	friend std::ostream& operator<<(std::ostream&, ScheduledEvent&);
+	friend std::istream& operator>>(std::istream&, ScheduledEvent&);
 };
+
+/**
+	\class ScheduledEventComparator
+	\ingroup Scheduler
+	\brief class for comparing scheduled events by their event times
+
+	The comparator is required for insertion into the Heap.
+
+	\author Neil Burroughs  inb@cs.uvic.ca
+*/
 class ScheduledEventComparator {
 public:
-    bool operator()(ScheduledEvent* a, ScheduledEvent* b) {
-        return (a->getTime()) < (b->getTime());
-    }
+	bool operator()(ScheduledEvent* a, ScheduledEvent* b) {
+		return (a->getTime()) < (b->getTime());
+	}
 };
-/*
-class ScheduledEventDestructor {
-public:
-    void operator()(ScheduledEvent* a) { delete(a); }
-};
-*/
-/*
-// comparison class for the priority queue
-class ScheduledEventOrdering {
-public:
-    int operator()(ScheduledEvent& x, ScheduledEvent& y) {
-        return x.getTime() > y.getTime();
-    }
-};
-*/
 
 }//namespace Marsyas
 

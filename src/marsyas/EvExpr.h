@@ -30,13 +30,12 @@
 namespace Marsyas
 {
 /**
-   \class EvExpr
+	\class EvExpr
 	\ingroup Scheduler
-   \brief Expression Event evaluates the supplied expression when prompted
-          by the scheduler.
-   \author Neil Burroughs  inb@cs.uvic.ca
-   \version 1.0
-   \date    Jan 5, 2007
+	\brief Expression Event evaluates the supplied expression when prompted by the scheduler.
+	\author Neil Burroughs  inb@cs.uvic.ca
+	\version 1.0
+	\date    Jan 5, 2007
 */
 
 class MarSystem; // forward declaration
@@ -44,30 +43,30 @@ class Scheduler;
 
 class EvExpr : public MarEvent {
 protected:
-    Scheduler* sched_;
-    MarSystem* target_;
-    Expr* expr_;
+	Scheduler* sched_;
+	MarSystem* target_;
+	Expr* expr_;
 
 public:
-    EvExpr(MarSystem* target, std::string e, std::string nm="Expr");
-    EvExpr(MarSystem* target, Ex e, Rp r, std::string nm="Expr");
-    EvExpr(MarSystem* target, ExFile ef, std::string nm="Expr");
-    virtual ~EvExpr();
+	EvExpr(MarSystem* target, std::string e, std::string nm="Expr");
+	EvExpr(MarSystem* target, Ex e, Rp r, std::string nm="Expr");
+	EvExpr(MarSystem* target, ExFile ef, std::string nm="Expr");
+	virtual ~EvExpr();
 
-    // Event dispatch
-    void dispatch();
-    void updctrl(std::string cname, TmControlValue value);
+	// Event dispatch
+	void dispatch();
+	void updctrl(std::string cname, TmControlValue value);
 
-    virtual EvExpr* clone();
-    Expr* getExpression() { return expr_; }
+	virtual EvExpr* clone();
+	Expr* getExpression() { return expr_; }
 
-    virtual bool repeat();
-    virtual std::string repeat_interval();
-    virtual void set_repeat(Repeat r) { repeat_=r; }
+	virtual bool repeat();
+	virtual std::string repeat_interval();
+	virtual void set_repeat(Repeat r) { repeat_=r; }
 
-    // the usual stream IO
-    friend std::ostream& operator<<(std::ostream&, MarEvent&);
-    friend std::istream& operator>>(std::istream&, MarEvent&);
+	// the usual stream IO
+	friend std::ostream& operator<<(std::ostream&, MarEvent&);
+	friend std::istream& operator>>(std::istream&, MarEvent&);
 };
 
 }//namespace Marsyas

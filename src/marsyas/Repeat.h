@@ -27,32 +27,64 @@
 namespace Marsyas
 {
 /**
-   \class Repeat
-	\ingroup none
-   \brief 
+	\class Repeat
+	\ingroup Scheduler
+	\brief encapsulates repetition information for scheduled events
+	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
 class Repeat {
-public:
-    bool infinite;
-    std::string interval;
-    mrs_natural count;
+private:
+	bool infinite_;
+	std::string interval_;
+	mrs_natural count_;
 
 public:
-    Repeat(); // no repetition
-    Repeat(std::string time_interval); // infinite
-    Repeat(std::string time_interval, mrs_natural rep_count);
-    virtual ~Repeat();
+	/** \brief specify no repetition */
+	Repeat();
+	/** \brief specify infinite repetition
+	* \param time_interval the interval of time between repetitions
+	*/
+	Repeat(std::string time_interval);
+	/** \brief specify finite repetition
+	* \param time_interval the interval of time between repetitions
+	* \param rep_count the number of times to repeat
+	*/
+	Repeat(std::string time_interval, mrs_natural rep_count);
 
-    void set(bool inf, std::string time_interval, mrs_natural rep_count);
-    mrs_natural interval2samples(mrs_real srate);
-    virtual bool repeat();
+	virtual ~Repeat();
 
-    void operator++() { ++count; }
-    void operator++(int) { count++; };
-    void operator--() { --count; }
-    void operator--(int) { count--; };
-    // the usual stream IO 
+	/** \brief specify finite repetition
+	* \param time_interval the interval of time between repetitions
+	* \param rep_count the number of times to repeat
+	*/
+	void set(bool inf, std::string time_interval, mrs_natural rep_count);
+
+	/** \brief convert the repeat interval to a sample count based on
+	* the given sample rate
+	* \param srate the sample rate to be used in the conversion
+	* \return the count of samples
+	*/
+	mrs_natural interval2samples(mrs_real srate);
+
+	/** \brief report whether this Repeat specifies another repeat
+	* \return true if repeat is warranted
+	*/
+	virtual bool repeat();
+
+	bool isInfinite() {return infinite_;}
+	mrs_natural getCount() {return count_;}
+	std::string getInterval() {return interval_;}
+
+	void setInfinite(bool inf) {infinite_=inf;}
+	void setCount(mrs_natural count) {count_=count;}
+	void setInterval(std::string interval) {interval_=interval;}
+
+	void operator++() {++count_;}
+	void operator++(int) {count_++;};
+	void operator--() {if(count_>0){--count_;}}
+	void operator--(int) {if(count_>0){count_--;}};
+	// the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);
 //    friend istream& operator>>(istream&, Scheduler&);
 };

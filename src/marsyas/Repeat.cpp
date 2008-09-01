@@ -22,18 +22,39 @@
 using namespace std;
 using namespace Marsyas;
 
-Repeat::Repeat() { set(false,"",0); }
-Repeat::Repeat(string time_interval) { set(true,time_interval,0); }
-Repeat::Repeat(string time_interval, mrs_natural rep_count) {
-    set(false,time_interval,rep_count);
+Repeat::Repeat()
+{
+	set(false,"",0);
 }
-bool Repeat::repeat() { return infinite || count>0; }
+
+Repeat::Repeat(string time_interval)
+{
+	set(true,time_interval,0);
+}
+
+Repeat::Repeat(string time_interval, mrs_natural rep_count)
+{
+	set(false,time_interval,rep_count);
+}
+
+bool
+Repeat::repeat()
+{
+	return infinite_ || count_>0;
+}
+
 Repeat::~Repeat() { }
-void Repeat::set(bool inf, string time_interval, mrs_natural rep_count) {
-    infinite=inf;
-    interval=time_interval;
-    count=rep_count;
+
+void
+Repeat::set(bool inf, string time_interval, mrs_natural rep_count)
+{
+	infinite_=inf;
+	interval_=time_interval;
+	count_=rep_count;
 }
-mrs_natural Repeat::interval2samples(mrs_real srate) {
-    return time2samples(interval,srate);
+
+mrs_natural
+Repeat::interval2samples(mrs_real srate)
+{
+	return time2samples(interval_,srate);
 }

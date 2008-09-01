@@ -21,17 +21,16 @@
 using namespace std;
 using namespace Marsyas;
 
-MarEvent::MarEvent()
-{
-}
+MarEvent::MarEvent() { }
+
 MarEvent::MarEvent(std::string t, std::string n)
 {
     name_=n;
     type_=t;
 }
-MarEvent::~MarEvent()
-{
-}
+
+MarEvent::~MarEvent() { }
+
 void
 MarEvent::updctrl(std::string cname, TmControlValue value)
 {

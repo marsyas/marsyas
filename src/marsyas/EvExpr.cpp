@@ -25,41 +25,53 @@ using namespace Marsyas;
 
 EvExpr::EvExpr(MarSystem* target, std::string e, std::string nm) : MarEvent("EvExpr",nm)
 {
-    expr_=new Expr(target,Ex(e));
-}
-EvExpr::EvExpr(MarSystem* target, Ex e, Rp r, std::string nm) : MarEvent("EvExpr",nm)
-{
-    expr_=new Expr(target,e,r);
-}
-EvExpr::EvExpr(MarSystem* target, ExFile ef, std::string nm) : MarEvent("EvExpr",nm)
-{
-    expr_=new Expr(target,ef);
-}
-EvExpr::~EvExpr()
-{
-    delete expr_;
-}
-void EvExpr::dispatch()
-{
-     expr_->eval();
-}
-EvExpr* EvExpr::clone()
-{
-    return new EvExpr(*this);
-}
-bool EvExpr::repeat()
-{
-    return expr_->repeat();
-}
-std::string EvExpr::repeat_interval()
-{
-    if (expr_->has_rate()) return expr_->repeat_interval();
-    return repeat_.interval;
+	expr_=new Expr(target,Ex(e));
 }
 
-void EvExpr::updctrl(std::string cname, TmControlValue value)
+EvExpr::EvExpr(MarSystem* target, Ex e, Rp r, std::string nm) : MarEvent("EvExpr",nm)
+{
+	expr_=new Expr(target,e,r);
+}
+
+EvExpr::EvExpr(MarSystem* target, ExFile ef, std::string nm) : MarEvent("EvExpr",nm)
+{
+	expr_=new Expr(target,ef);
+}
+
+EvExpr::~EvExpr()
+{
+	delete expr_;
+}
+
+void
+EvExpr::dispatch()
+{
+	expr_->eval();
+}
+
+EvExpr*
+EvExpr::clone()
+{
+	return new EvExpr(*this);
+}
+
+bool
+EvExpr::repeat()
+{
+	return expr_->repeat();
+}
+
+std::string
+EvExpr::repeat_interval()
+{
+	if (expr_->has_rate()) return expr_->repeat_interval();
+	return repeat_.getInterval();
+}
+
+void
+EvExpr::updctrl(std::string cname, TmControlValue value)
 {
 	(void) cname; (void) value; // FIXME These values are unused
-    MRSWARN("EvExpr:updctrl(string,TmControlValue)  updctrl not supported");
+	MRSWARN("EvExpr:updctrl(string,TmControlValue)  updctrl not supported");
 }
 

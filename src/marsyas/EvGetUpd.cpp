@@ -22,17 +22,41 @@
 using namespace std;
 using namespace Marsyas;
 
-EvGetUpd::EvGetUpd(MarSystem* src, string scname,
-                   MarSystem* tgt, string tcname) : MarEvent("EvGetUpd","GetUpd")
+EvGetUpd::EvGetUpd(MarSystem* src, string scname, MarSystem* tgt, string tcname) : MarEvent("EvGetUpd","GetUpd")
 {
-    setEvent(src,scname,tgt,tcname);
+	setEvent(src,scname,tgt,tcname);
 }
+
 EvGetUpd::EvGetUpd(EvGetUpd& e) : MarEvent("EvGetUpd","GetUpd")
 {
-    setEvent(e.source_,e.src_cname_,e.target_,e.tgt_cname_);
+	setEvent(e.source_,e.src_cname_,e.target_,e.tgt_cname_);
 }
 EvGetUpd::~EvGetUpd() { }
 
+void
+EvGetUpd::setEvent(MarSystem* src, string scname, MarSystem* tgt, string tcname)
+{
+	src_cname_=scname;
+	tgt_cname_=tcname;
+	source_=src;
+	target_=tgt;
+}
+
+void
+EvGetUpd::dispatch()
+{
+	if (target_!=NULL && source_!=NULL) {
+		target_->updctrl(tgt_cname_,source_->getctrl(src_cname_));
+	}
+}
+
+EvGetUpd*
+EvGetUpd::clone()
+{
+	return new EvGetUpd(*this);
+}
+
+/* these have been moved to the header file
 string EvGetUpd::getSrcCName() const { return tgt_cname_; }
 string EvGetUpd::getTgtCName() const { return src_cname_; }
 MarSystem* EvGetUpd::getSource() const { return source_; }
@@ -42,24 +66,7 @@ void EvGetUpd::setSrcCName(string cname) { src_cname_=cname; }
 void EvGetUpd::setTgtCName(string cname) { tgt_cname_=cname; }
 void EvGetUpd::setSource(MarSystem* ms) { source_=ms; }
 void EvGetUpd::setTarget(MarSystem* ms) { target_=ms; }
-void EvGetUpd::setEvent(MarSystem* src, string scname,
-                        MarSystem* tgt, string tcname)
-{
-    src_cname_=scname;
-    tgt_cname_=tcname;
-    source_=src;
-    target_=tgt;
-}
-
-void EvGetUpd::dispatch()
-{
-    if (target_!=NULL && source_!=NULL) {
-        target_->updctrl(tgt_cname_,source_->getctrl(src_cname_));
-    }
-}
-
-EvGetUpd* EvGetUpd::clone() { return new EvGetUpd(*this); }
-
+*/
 
 /*
 ostream& Marsyas::operator<< (ostream& o, EvValUpd& e) {

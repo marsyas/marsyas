@@ -38,40 +38,37 @@
 
 #include <string>
 #include <map>
-#include "TmGetTime.h"
-#include "TmSampleCount.h"
-//#include "TmKbdTap.h"
-//#include "TmMIDITap.h"
-//#include "TmPeakTap.h"
+#include <vector>
+#include "TmParam.h"
 
 using namespace std;
 
 namespace Marsyas
 {
 /**
-   \class TimerFactory
-	\ingroup none
-   \brief TimerFactory
-   \author inb@cs.uvic.ca
+	\class TimerFactory
+	\ingroup Scheduler
+	\brief TimerFactory
+	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
-
 struct MakeTimer {
-    MakeTimer() {}
-    virtual ~MakeTimer(){}
-    virtual TmTimer* make(std::string)=0;
+	MakeTimer() {}
+	virtual ~MakeTimer(){}
+	virtual TmTimer* make(std::string)=0;
 };
 
 class TimerFactory {
-    std::map<std::string, MakeTimer*> registry;
-    static TimerFactory* _instance;
-    TimerFactory();
-    void addTimers();
+	std::map<std::string, MakeTimer*> registry_;
+	static TimerFactory* instance_;
+	TimerFactory();
+	void addTimers();
 
 public:
-    static TimerFactory* getInstance();
-    virtual ~TimerFactory();
-    TmTimer* make(std::string class_name, std::string identifier);
+	static TimerFactory* getInstance();
+	virtual ~TimerFactory();
+	TmTimer* make(std::string class_name, std::string identifier);
+	TmTimer* make(std::string class_name, std::string identifier, std::vector<TmParam> params);
 };
 // make sure the TimerFactory instance is NULL so the singleton can be created
 }

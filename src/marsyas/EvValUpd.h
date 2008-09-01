@@ -30,10 +30,10 @@
 namespace Marsyas
 {
 /**
-   \class MarEvent
-   \ingroup Scheduler
-   \brief MarEvent 
-
+	\class EvValUpd
+	\ingroup Scheduler
+	\brief update a MarSystem control value
+	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
 
@@ -41,36 +41,36 @@ class MarSystem; // forward declaration
 
 class EvValUpd : public MarEvent {
 protected:
-    MarSystem* target_;
-    std::string cname_;
-    MarControlPtr value_;
+	MarSystem* target_;
+	std::string cname_;
+	MarControlPtr value_;
 
 public:
-    // Constructors
-    EvValUpd(std::string cname, MarControlPtr);
-    EvValUpd(MarSystem*, std::string cname, MarControlPtr);
-    EvValUpd(EvValUpd& e);
-    virtual ~EvValUpd();
+	// Constructors
+	EvValUpd(std::string cname, MarControlPtr);
+	EvValUpd(MarSystem*, std::string cname, MarControlPtr);
+	EvValUpd(EvValUpd& e);
+	virtual ~EvValUpd();
 
-    // Set/Get methods
-    std::string getCName() const;
-    MarControlPtr getValue() const;
-    MarSystem* getTarget() const;
+	// Set/Get methods
+	std::string getCName() const {return cname_;};
+	MarControlPtr getValue() const {return value_;};
+	MarSystem* getTarget() const {return target_;};
 
-    void setCName(std::string cname);
-    void setValue(MarControlPtr value);
-    void setTarget(MarSystem* ms);
-    void set(MarSystem* ms, std::string cname, MarControlPtr);
-    void updctrl(std::string cname, TmControlValue value);
+	void setCName(std::string cname) {cname_=cname;};
+	void setValue(MarControlPtr value) {value_=value;};
+	void setTarget(MarSystem* ms) {target_=ms;};
+	void set(MarSystem* ms, std::string cname, MarControlPtr);
+	void updctrl(std::string cname, TmControlValue value);
 
-    // Event dispatch
-    void dispatch();
+	// Event dispatch
+	void dispatch();
 
-    virtual EvValUpd* clone();
+	virtual EvValUpd* clone();
 
-    // the usual stream IO 
-    friend std::ostream& operator<<(std::ostream&, MarEvent&);
-    friend std::istream& operator>>(std::istream&, MarEvent&);
+	// the usual stream IO 
+	friend std::ostream& operator<<(std::ostream&, MarEvent&);
+	friend std::istream& operator>>(std::istream&, MarEvent&);
 };
 
 }//namespace Marsyas

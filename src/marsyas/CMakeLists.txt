@@ -131,7 +131,6 @@ set( MarSystem_SOURCES
 	SOM.cpp
 	ScheduledEvent.cpp
 	Scheduler.cpp
-	SchedulerManager.cpp
 	SeneffEar.cpp
 	Series.cpp
 	ShiftInput.cpp
@@ -156,6 +155,7 @@ set( MarSystem_SOURCES
 	TimerFactory.cpp
 	TmControlValue.cpp
 	TmGetTime.cpp
+	TmParam.cpp
 	TmSampleCount.cpp
 	TmTime.cpp
 	TmTimer.cpp
