@@ -44,6 +44,8 @@ def build_network():
 
 
 
+     pnet.updControl("mrs_real/israte",
+		marsyas.MarControlPtr.from_real(44100.0))
      pnet.updControl("AudioSink/dest/mrs_bool/initAudio",
                      marsyas.MarControlPtr.from_bool(True))
      return pnet
