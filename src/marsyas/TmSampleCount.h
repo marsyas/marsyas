@@ -26,40 +26,38 @@
 namespace Marsyas
 {
 /**
-   \class TmSampleCount
+	\class TmSampleCount
 	\ingroup Scheduler
-   \brief TmSampleCount reads the insamples information to advance the timer
-   \author inb@cs.uvic.ca
+	\brief TmSampleCount reads the insamples information to advance the timer
+	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
 // forward declaration of MarSystem allows Scheduler.getctrl("insamples")
 // for scheduler count
 class MarSystem; // forward declaration
-class Scheduler; // forward declaration
 
 class TmSampleCount : public TmTimer {
 protected:
-    MarSystem* read_src_;
-    MarControlPtr read_ctrl_;
-    std::string read_cname_;
+	MarSystem* read_src_;
+	MarControlPtr read_ctrl_;
+	std::string read_cname_;
 
 public:
-    // Constructors 
-    TmSampleCount();
-    TmSampleCount(std::string name);
-    TmSampleCount(MarSystem*, std::string cname);
+	// Constructors 
+	TmSampleCount();
+	TmSampleCount(std::string name);
+	TmSampleCount(MarSystem*, std::string cname);
 //    TmSampleCount(Scheduler*, MarSystem*, std::string cname);
-    TmSampleCount(const TmSampleCount& s);
-    virtual ~TmSampleCount();
-    TmTimer* clone();
+	TmSampleCount(const TmSampleCount& s);
+	virtual ~TmSampleCount();
+//    TmTimer* clone();
 
-    void setReadCtrl(MarSystem* ms, std::string cname); // where to read time info
-    void setSource(MarSystem* ms);
-    void setSourceCtrl(std::string cname);
-    mrs_natural readTimeSrc();
-    void trigger();
-    mrs_natural intervalsize(std::string interval);
-    virtual void updtimer(std::string cname, TmControlValue value);
+	void setReadCtrl(MarSystem* ms, std::string cname); // where to read time info
+	void setSource(MarSystem* ms);
+	void setSourceCtrl(std::string cname);
+	mrs_natural readTimeSrc();
+	mrs_natural intervalsize(std::string interval);
+	virtual void updtimer(std::string cname, TmControlValue value);
 };
 
 }//namespace Marsyas

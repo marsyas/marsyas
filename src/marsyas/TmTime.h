@@ -25,28 +25,51 @@
 namespace Marsyas
 {
 /**
-   \class TmTime
+	\class TmTime
 	\ingroup Scheduler
-   \brief TmTime
-   \author inb@cs.uvic.ca
-*/
+	\brief TmTime
 
+	Associates a string representation of a time interval with a timer
+	name on which the interval makes sense.
+	\author Neil Burroughs  inb@cs.uvic.ca
+*/
 
 class TmTime {
 protected:
-    std::string time_;
-    std::string timer_name_;
+	/** \brief a string representation of time meaningful on a particular timer */
+	std::string time_;
+	/** \brief the timer on which the specified time is meaningful */
+	std::string timer_name_;
 
 public:
-    // Constructors 
-    TmTime(std::string timer_name, std::string time);
-    virtual ~TmTime();
+	/** \brief constructor
+	* \param timer_name the timer on which the specified time is meaningful
+	* \param time a string representing a point in time on a given timer
+	*/
+	TmTime(std::string timer_name, std::string time);
+	virtual ~TmTime();
 
-    virtual std::string getTime();
-    virtual std::string getTimeName();
-    virtual void setTime(std::string t);
-    virtual void setTimeName(std::string t);
-    virtual void set(std::string timer_name, std::string time);
+	/** \brief get the time that this object represents
+	* \return a string representation of the time
+	*/
+	virtual std::string getTime() {return time_;};
+	/** \brief get the name of the timer on which this time is specified.
+	* \return the name of the timer
+	*/
+	virtual std::string getTimeName() {return timer_name_;};
+	/** \brief set the time
+	* \param t string representing the time
+	*/
+	virtual void setTime(std::string t) {time_=t;};
+	/** \brief set the timer name
+	* \param t string representing the time
+	*/
+	virtual void setTimeName(std::string t) {timer_name_=t;};
+	/** \brief set everything
+	* \param timer_name name of the timer
+	* \param timer string representing the time
+	*/
+	virtual void set(std::string timer_name, std::string time);
 
     // the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);

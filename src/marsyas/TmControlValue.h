@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef __TMCONTROLVALUE__
-#define __TMCONTROLVALUE__
+#ifndef MARSYAS_TM_CONTROLVALUE_H
+#define MARSYAS_TM_CONTROLVALUE_H
 
 #include <string> 
 #include <iostream>
@@ -26,21 +26,26 @@
 namespace Marsyas
 {
 /** 
-    \class TmControlValue
+	\class TmControlValue
 	\ingroup Scheduler
-    \brief TmControlValue is a simple parameter passing mechanism for updtimer
+	\brief TmControlValue is a simple parameter passing mechanism for updtimer
+	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
 class MarSystem;
 
+/** \enum timer control value types
+* \ingroup Scheduler
+* \brief type enumerations for individual timer control value types.
+*/
 enum {
-    tmcv_null=0,
-    tmcv_real,
-    tmcv_natural,
-    tmcv_string,
-    tmcv_bool,
-    tmcv_vec,
-    tmcv_marsystem
+	tmcv_null=0, /** null type */
+	tmcv_real, /** real type */
+	tmcv_natural, /** natural type */
+	tmcv_string, /** string type */
+	tmcv_bool, /** bool type */
+	tmcv_vec, /** realvec type */
+	tmcv_marsystem /** marsystem type */
 };
 
 // define an enum for marsystem type that doesn't class with the mar_* types
@@ -51,11 +56,11 @@ class TmControlValue
 protected:
   int type_;
 
-  mrs_real r;
-  mrs_natural n;
-  bool b;
-  std::string s;
-  MarSystem* ms;
+  mrs_real r_;
+  mrs_natural n_;
+  bool b_;
+  std::string s_;
+  MarSystem* ms_;
 
 public:
   TmControlValue();

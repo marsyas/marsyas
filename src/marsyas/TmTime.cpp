@@ -16,18 +16,22 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 #include "TmTime.h"
 
 using namespace std;
 using namespace Marsyas;
 
-TmTime::TmTime(string timer_name, string time) { set(timer_name,time); }
+TmTime::TmTime(string timer_name, string time)
+{
+	set(timer_name,time);
+}
+
 TmTime::~TmTime() {}
 
-string TmTime::getTime() { return time_; }
-string TmTime::getTimeName() { return timer_name_; }
-void TmTime::setTime(string t) { time_=t; }
-void TmTime::setTimeName(string t) { timer_name_=t; }
-void TmTime::set(string tname, string time) { time_=time; timer_name_=tname; }
+void
+TmTime::set(string tname, string time)
+{
+	time_=time;
+	timer_name_=tname;
+}
 

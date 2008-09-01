@@ -16,40 +16,28 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_TM_GETTIME_H
-#define MARSYAS_TM_GETTIME_H
+#include "TmParam.h"
 
-#include "MarControlValue.h"
-#include "TmTimer.h"
+using namespace std;
+using namespace Marsyas;
 
-#ifndef WIN32
-#include <sys/time.h>
-#include <unistd.h>
-#endif 
-
-namespace Marsyas
+TmParam::TmParam(std::string name, TmControlValue valu)
 {
-/**
-	\class TmGetTime
-	\ingroup Scheduler
-	\brief TmGetTime reads the getlocaltime() function, system clock to get the current number of microseconds
-	\author Neil Burroughs  inb@cs.uvic.ca
-*/
+	name_=name_;
+	valu_=valu_;
+}
 
-class TmGetTime : public TmTimer {
-protected:
-	int last_usecs_;
+TmParam::TmParam(const TmParam& val)
+{
+	name_=val.name_;
+	valu_=val.valu_;
+}
 
-public:
-	TmGetTime();
-	TmGetTime(std::string name);
-	TmGetTime(const TmGetTime& t);
-	~TmGetTime();
+ostream&
+Marsyas::operator<<(ostream& o, const TmParam& m)
+{
+	o << "TmP(" << m.name_ << "," << m.valu_ <<")";
+	return o;
+}
 
-	mrs_natural readTimeSrc();
-	mrs_natural intervalsize(std::string interval);
-};
-
-}//namespace Marsyas
-
-#endif
+ 

@@ -27,60 +27,66 @@
 #include "ScheduledEvent.h"
 #include "TmTime.h"
 #include "TmControlValue.h"
+#include "TmParam.h"
 #include <string>
+#include <vector>
 
 namespace Marsyas
 {
 /**
-   \class Scheduler
-	\ingroup none
-   \brief Scheduler schedules things
-   \author inb@cs.uvic.ca
+	\class Scheduler
+	\ingroup Scheduler
+	\brief Scheduler schedules things
+	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
 
 class Scheduler {
 protected:
 
-    TmTimer** timers;
-    int timers_count;
+	TmTimer** timers_;
+	int timers_count_;
 //    map<std::string,vector<VScheduler> > schedulers;
 
 public:
 //  map<std::string,vector<std::string> > synonyms_;
 
-    // Constructors 
-    Scheduler();
-    virtual ~Scheduler();
+	// Constructors 
+	Scheduler();
+	virtual ~Scheduler();
 
-    // Naming methods 
-    void setName(std::string name);
-    std::string getType();
-    std::string getName();
-    std::string getPrefix();
+	// Naming methods 
+	void setName(std::string name);
+	std::string getType();
+	std::string getName();
+	std::string getPrefix();
 
-    void tick();
-    bool eventPending();
+	void tick();
+	bool eventPending();
 
-    void addTimer(TmTimer* t);
-    void addTimer(std::string class_name, std::string identifier);
-    void updtimer(std::string cname, TmControlValue value);
-    static void split_cname(std::string cname, std::string* head, std::string* tail);
-    bool removeTimer(std::string name);
-    void removeAll();
+	void addTimer(TmTimer* t);
+	void addTimer(std::string class_name, std::string identifier);
+	void addTimer(std::string class_name, std::string identifier, std::vector<TmParam> params);
+
+	void updtimer(std::string tmr_id, TmControlValue value);
+	void updtimer(std::string tmr_id, std::vector<TmParam> params);
+
+	static void split_cname(std::string cname, std::string* head, std::string* tail);
+	bool removeTimer(std::string name);
+	void removeAll();
 private:
-    void appendTimer(TmTimer* s);
-    TmTimer* findTimer(std::string name);
+	void appendTimer(TmTimer* s);
+	TmTimer* findTimer(std::string name);
 public:
-    // post to default timer
-    void post(std::string event_time, Repeat rep, MarEvent* me);
-    void post(std::string event_time, MarEvent* me);
+	// post to default timer
+	void post(std::string event_time, Repeat rep, MarEvent* me);
+	void post(std::string event_time, MarEvent* me);
 
-    // post to user defined timer
-    void post(TmTime t, Repeat r, MarEvent* me);
-    void post(std::string time, std::string timer_name, Repeat r, MarEvent* me);
+	// post to user defined timer
+	void post(TmTime t, Repeat r, MarEvent* me);
+	void post(std::string time, std::string timer_name, Repeat r, MarEvent* me);
 
-    mrs_natural getTime(std::string timer);
+	mrs_natural getTime(std::string timer);
 
     // the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);

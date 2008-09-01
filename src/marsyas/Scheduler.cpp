@@ -28,161 +28,214 @@ namespace Marsyas //lmartins: hack: should work without this [?][!]
 
 Scheduler::Scheduler()
 {
-    timers=NULL;
-    timers_count=0;
-}
-Scheduler::~Scheduler() { removeAll(); }
-void Scheduler::tick()
-{
-    for (int i=0;i<timers_count;i++) { timers[i]->tick(); }
-}
-bool Scheduler::eventPending()
-{
-    for (int i=0;i<timers_count;i++) {
-        if (timers[i]->eventPending()) { return true; }
-    }
-    return false;
+	timers_=NULL;
+	timers_count_=0;
 }
 
-void Scheduler::addTimer(TmTimer* t) {
-    if (t == NULL) return;
+Scheduler::~Scheduler()
+{
+	removeAll();
+}
+
+void
+Scheduler::tick()
+{
+	for (int i=0;i<timers_count_;i++) { timers_[i]->tick(); }
+}
+
+bool
+Scheduler::eventPending()
+{
+	for (int i=0;i<timers_count_;i++) {
+		if (timers_[i]->eventPending()) { return true; }
+	}
+	return false;
+}
+
+void
+Scheduler::addTimer(TmTimer* t)
+{
+	if (t == NULL) return;
     // look for schedulers with same name to ensure only one of each name
 	if (findTimer(t->getPrefix())!=NULL){
-        MRSWARN("Scheduler::addTimer(TmTimer)  refusing to add timer with name already in use");
+		MRSWARN("Scheduler::addTimer(TmTimer)  refusing to add timer with name already in use");
 	}
-    else
-        appendTimer(t);
+	else
+		appendTimer(t);
 }
+
 void
-Scheduler::addTimer(string class_name, string given_name)
+Scheduler::addTimer(string class_name, string identifier)
 {
     // look for schedulers with same name to ensure only one of each name
-	if (findTimer(class_name+"/"+given_name)!=NULL){
-            MRSWARN("Scheduler::addTimer(string,string)  refusing to add timer with name already in use");
+	if (findTimer(class_name+"/"+identifier)!=NULL){
+		MRSWARN("Scheduler::addTimer(\""+class_name+"\",\""+identifier+"\")  refusing to add timer with name already in use");
 	}
-        else {
-            addTimer(TimerFactory::getInstance()->make(class_name,given_name));
-        }
-//    appendTimer(new Scheduler(class_name,given_name));
-    
+	else {
+		addTimer(TimerFactory::getInstance()->make(class_name,identifier));
+	}
+}
+
+void
+Scheduler::addTimer(std::string class_name, std::string identifier, std::vector<TmParam> params)
+{
+	// look for schedulers with same name to ensure only one of each name
+	if (findTimer(class_name+"/"+identifier)!=NULL){
+		MRSWARN("Scheduler::addTimer(\""+class_name+"\",\""+identifier+"\",TmParams)  refusing to add timer with name already in use");
+	}
+	else {
+		addTimer(TimerFactory::getInstance()->make(class_name,identifier,params));
+	}
 }
 
 void
 Scheduler::split_cname(std::string cname, std::string* head, std::string* tail)
 {
-    bool second=false;
-    for (unsigned int i=0;i<cname.length();i++) {
-        if (cname[i]=='/') {
-            if (!second) {
+	bool second=false;
+	for (unsigned int i=0;i<cname.length();i++) {
+		if (cname[i]=='/') {
+			if (!second) {
 //                scheduler_type = cname.substr(0,i);
-                second=true;
-            } else {
-                *head = cname.substr(0,i);
-                *tail = cname.substr(i+1,cname.length());
-                break;
-            }
-        }
-    }
+				second=true;
+			}
+			else {
+				*head = cname.substr(0,i);
+				*tail = cname.substr(i+1,cname.length());
+				break;
+			}
+		}
+	}
 }
 
 void
-Scheduler::updtimer(std::string cname, TmControlValue value)
+Scheduler::updtimer(std::string tmr_id, TmControlValue value)
 {
-    string timer_ident="";
-    string timer_control="";
-    split_cname(cname,&timer_ident,&timer_control);
-    TmTimer* s = findTimer(timer_ident);
-    if (s==NULL) {
-        MRSWARN("Scheduler::updtimer(std::string,TmControlValue)  no timer: "+timer_ident);
-    } else {
-        s->updtimer(timer_control,value);
-    }
+	string timer_ident="";
+	string timer_control="";
+	split_cname(tmr_id,&timer_ident,&timer_control);
+	TmTimer* s = findTimer(timer_ident);
+	if (s==NULL) {
+		MRSWARN("Scheduler::updtimer(std::string,TmControlValue)  no timer: "+timer_ident);
+	}
+	else {
+		s->updtimer(timer_control,value);
+	}
+}
+void
+Scheduler::updtimer(std::string tmr_id, std::vector<TmParam> params)
+{
+	string timer_ident="";
+	string timer_control="";
+	split_cname(tmr_id,&timer_ident,&timer_control);
+	TmTimer* s = findTimer(timer_ident);
+	if (s==NULL) {
+		MRSWARN("Scheduler::updtimer(std::string,TmControlValue)  no timer: "+timer_ident);
+	}
+	else {
+		s->updtimer(params);
+	}
 }
 
 void
 Scheduler::appendTimer(TmTimer* s)
 {
-    timers = (TmTimer**)realloc(timers,sizeof(TmTimer*)*(timers_count+1));
-    timers[timers_count] = s;
-    timers_count = timers_count + 1;
+	timers_ = (TmTimer**)realloc(timers_,sizeof(TmTimer*)*(timers_count_+1));
+	timers_[timers_count_] = s;
+	timers_count_ = timers_count_ + 1;
 }
 
 TmTimer*
 Scheduler::findTimer(std::string name)
 {
-    for (int i=0;i<timers_count;i++) {
-        TmTimer* s = timers[i];
-        if (s->getPrefix()==name) {
-            return s;
-        }
-    }
-    return NULL;
+	for (int i=0;i<timers_count_;i++) {
+		TmTimer* s = timers_[i];
+		if (s->getPrefix()==name) {
+			return s;
+		}
+	}
+	return NULL;
 }
 
-bool Scheduler::removeTimer(string name)
+bool
+Scheduler::removeTimer(string name)
 {
-    for (int i=0; i<timers_count;i++) {
-        if (timers[i]->getPrefix()==name) {
-            delete(timers[i]);
-            for (int j=i+1;j<timers_count;j++) {
-                timers[j-1]=timers[j];
-                timers[j]=NULL;
-            }
-            timers=(TmTimer**)realloc(timers,sizeof(TmTimer*)*timers_count);
-            return true;
-        }
-    }
-    return false;
+	for (int i=0; i<timers_count_;i++) {
+		if (timers_[i]->getPrefix()==name) {
+			delete(timers_[i]);
+			for (int j=i+1;j<timers_count_;j++) {
+				timers_[j-1]=timers_[j];
+				timers_[j]=NULL;
+			}
+			timers_=(TmTimer**)realloc(timers_,sizeof(TmTimer*)*timers_count_);
+			return true;
+		}
+	}
+	return false;
 }
-void Scheduler::removeAll()
+
+void
+Scheduler::removeAll()
 {
-    if (timers_count>0) {
-        for (int i=0;i<timers_count;i++) { delete timers[i]; }
-        free(timers);
-        timers=NULL;
-        timers_count=0;
-    }
+	if (timers_count_>0) {
+		for (int i=0;i<timers_count_;i++) {
+			delete timers_[i];
+		}
+		free(timers_);
+		timers_=NULL;
+		timers_count_=0;
+	}
 }
+
 void
 Scheduler::post(string time, string tmname, Repeat r, MarEvent* me)
 {
-    TmTimer* s = findTimer(tmname);
-    if (s!=NULL) {
-        if (me!=NULL) {
-            // EvExpr supports querying of the scheduler environment in expressions
-            EvExpr* e=dynamic_cast<EvExpr*>(me);
-            if (e!=NULL) {
-                MRSWARN("Scheduler::post(string time, string tmname, Repeat r, MarEvent* me) : setScheduler is not working yet");
-                e->getExpression()->setScheduler(this);
-            }
-            s->post(time,r,me);
-        }
-        else MRSWARN("Scheduler::post(string,string,Repeat,MarEvent*)  NULL event");
-    }
-    else { MRSWARN("Scheduler::post(string,string,Repeat,MarEvent*)  unknown timer name: "+tmname); }
+	TmTimer* s = findTimer(tmname);
+	if (s!=NULL) {
+		if (me!=NULL) {
+			// EvExpr supports querying of the scheduler environment in expressions
+			EvExpr* e=dynamic_cast<EvExpr*>(me);
+			if (e!=NULL) {
+				MRSWARN("Scheduler::post(string time, string tmname, Repeat r, MarEvent* me) : setScheduler is not working yet");
+				e->getExpression()->setScheduler(this);
+			}
+			s->post(time,r,me);
+		}
+		else MRSWARN("Scheduler::post(string,string,Repeat,MarEvent*)  NULL event");
+	}
+	else { MRSWARN("Scheduler::post(string,string,Repeat,MarEvent*)  unknown timer name: "+tmname); }
 }
+
 void
 Scheduler::post(TmTime t, Repeat r, MarEvent* me)
 {
-    // pass the buck
-    post(t.getTime(),t.getTimeName(),r,me);
+	// pass the buck
+	post(t.getTime(),t.getTimeName(),r,me);
 }
 
-void Scheduler::post(string event_time, Repeat rep, MarEvent* me) {
-    if (timers[0]!=NULL) {
-        post(event_time,timers[0]->getPrefix(),rep,me);
-    }
+void
+Scheduler::post(string event_time, Repeat rep, MarEvent* me)
+{
+	if (timers_[0]!=NULL) {
+		post(event_time,timers_[0]->getPrefix(),rep,me);
+	}
 }
-void Scheduler::post(string event_time, MarEvent* me) {
-    if (timers[0]!=NULL) {
-        post(event_time,Repeat(),me);
-    }
+
+void
+Scheduler::post(string event_time, MarEvent* me)
+{
+	if (timers_[0]!=NULL) {
+		post(event_time,Repeat(),me);
+	}
 }
-mrs_natural Scheduler::getTime(std::string timer) {
-    TmTimer* s = findTimer(timer);
-    if (s!=NULL) return s->getTime();
-    MRSWARN("Scheduler::getTime(string)  unknown timer '"+timer+"'");
-    return 0;
+
+mrs_natural
+Scheduler::getTime(std::string timer)
+{
+	TmTimer* s = findTimer(timer);
+	if (s!=NULL)
+		return s->getTime();
+	MRSWARN("Scheduler::getTime(string)  unknown timer '"+timer+"'");
+	return 0;
 }
 
 //ostream&

@@ -26,51 +26,44 @@ using namespace Marsyas;
 
 TmGetTime::TmGetTime() : TmTimer("TmGetTime","System")
 {
-    last_usecs=readTimeSrc();
+	last_usecs_=readTimeSrc();
 }
+
 TmGetTime::TmGetTime(string name) : TmTimer("TmGetTime",name)
 {
-    last_usecs=readTimeSrc();
+	last_usecs_=readTimeSrc();
 }
-/*
-TmGetTime::TmGetTime(Scheduler* s) : TmTimer("TmGetTime","System")
-{
-    setScheduler(s);
-    last_usecs=readTimeSrc();
-}
-*/
+
 TmGetTime::TmGetTime(const TmGetTime& t) : TmTimer(t)
 {
-    name_=t.name_;
+	name_=t.name_;
 }
+
 TmGetTime::~TmGetTime(){ }
-TmTimer* TmGetTime::clone() { return new TmGetTime(*this); }
 
-//void TmGetTime::setScheduler(Scheduler* s) { scheduler=s; }
-
-mrs_natural TmGetTime::readTimeSrc() {
+mrs_natural
+TmGetTime::readTimeSrc()
+{
 /*  struct timeval {
      int tv_sec; //seconds
      int tv_usec; //microseconds
     }; */
 #ifndef WIN32
-    struct timeval tv; struct timezone tz;
-    gettimeofday(&tv, &tz);
-    int read_usecs = tv.tv_usec;
-    int u = read_usecs - last_usecs;
-    if (u<0) { u = 1000000 + u; }
-    last_usecs = read_usecs;
+	struct timeval tv;
+	struct timezone tz;
+	gettimeofday(&tv, &tz);
+	int read_usecs = tv.tv_usec;
+	int u = read_usecs - last_usecs_;
+	if (u<0) { u = 1000000 + u; }
+	last_usecs_ = read_usecs;
 #else 
-    int u = 0;
+	int u = 0;
 #endif 
-    return u;
-}
-void TmGetTime::trigger()
-{
-    dispatch();
+	return u;
 }
 
-mrs_natural TmGetTime::intervalsize(string interval)
+mrs_natural
+TmGetTime::intervalsize(string interval)
 {
-    return time2usecs(interval);
+	return time2usecs(interval);
 }

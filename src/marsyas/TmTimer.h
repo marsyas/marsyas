@@ -20,6 +20,7 @@
 #define MARSYAS_TM_TIMER_H
 
 #include "common.h"
+#include "TmParam.h"
 #include "TmControlValue.h"
 #include "ScheduledEvent.h"
 #include "Heap.h"
@@ -27,68 +28,151 @@
 #include <map>
 #include <iostream>
 #include <string>
+#include <vector>
 
 namespace Marsyas
 {
 /**
-   \class TmTimer
+	\class TmTimer
 	\ingroup Scheduler
-   \brief Abstract TmTimer
-   \author inb@cs.uvic.ca
+	\brief Base timer class must be overriden to create new concrete timers.
+	\author inb@cs.uvic.ca
 */
 
-class TmTimer {
+class TmTimer
+{
 private:
-    Heap<ScheduledEvent, ScheduledEventComparator> pq;
-    // map for events to allow modifying events while in the heap
-    std::map<std::string, ScheduledEvent*> events_;
-    std::map<std::string, ScheduledEvent*>::iterator events_iter_;
+	/** \brief heap containing the scheduled events */
+	Heap<ScheduledEvent, ScheduledEventComparator> pq_;
+	/** \brief map for events to allow modifying events while in the heap */
+	std::map<std::string, ScheduledEvent*> events_;
+	std::map<std::string, ScheduledEvent*>::iterator events_iter_;
 
 protected:
-    std::string type_;		// Type of Timer
-    std::string name_;		// Name of instance
+	/** \brief type of the timer or class name */
+	std::string type_;
 
-    unsigned long cur_time_;
+	/** \brief given name identifier of the timer */
+	std::string name_;
+
+	/** \brief the current time count */
+	unsigned long cur_time_;
 
 //    mrs_natural granularity_;
-    mrs_natural next_trigger_;
+//    mrs_natural next_trigger_;
 
 protected:
-    void init();
+	/** \brief post constructor initialization
+	*
+	* this method is called after the constructor in TmTimer is called.
+	* This method is empty and may be overriden without a super.init() call.
+	*/
+	void init();
 
 public:
-    // Constructors
-//    TmTimer();
-//    TmTimer(std::string name);
-    TmTimer(std::string type, std::string name);
-    TmTimer(const TmTimer&);
-    virtual ~TmTimer();
+	// Constructors
+	/** \brief the constructor requires the type and name
+	*/
+	TmTimer(std::string type, std::string name);
+	TmTimer(const TmTimer&);
+	virtual ~TmTimer();
 
-    // Naming methods 
-    std::string getType();
-    std::string getName();
-    std::string getPrefix();
+	/** \brief get the timer type name, ie "TmSampleCount"
+	*
+	* \return the type name
+	*/
+	std::string getType();
+	/** \brief get the timer identifier, ie "foo"
+	*
+	* \return the type name
+	*/
+	std::string getName();
+	/** \brief get the timer prefix, the combination "type/name"
+	*
+	* \return the prefix name
+	*/
+	std::string getPrefix();
 
-    virtual TmTimer* clone()=0;
+//    virtual TmTimer* clone()=0;
 
-    mrs_natural getTime();
-    void tick();
+	/** \brief the current count of this timer
+	* 
+	* \return the current timer count
+	*/
+	mrs_natural getTime();
 
-    // timer methods
-    virtual mrs_natural readTimeSrc()=0;
-    virtual void trigger();
-    virtual mrs_natural intervalsize(std::string interval)=0;
-    virtual void updtimer(std::string cname, TmControlValue value);
+	/** \brief called on each buffer passing through the network
+	*
+	* Tick calls readTimeSrc to adjust the current timer count. It then
+	* calls the trigger method.
+	*/
+	void tick();
 
-    // scheduling methods
-    void post(std::string event_time, Repeat rep, MarEvent* me);
-    void post(std::string event_time, MarEvent* me);
-    void post(ScheduledEvent* e);
+	// timer methods
+	/** \brief calculate the time that has passed since last being read.
+	*
+	* This method is overriden by concrete timers to calculate the
+	* amount of time that has passed between timer ticks, or buffers of
+	* data.
+	* \return unit count of time passed since last being read.
+	*/
+	virtual mrs_natural readTimeSrc()=0;
+	/** \brief trigger the timer action.
+	*
+	* Can be overriden to define a custom action of the timer. Normally
+	* trigger simply calls the dispatch method, although overriding
+	* trigger may be helpful to define pre or post actions around
+	* calling the dispatch method.
+	*/
+	virtual void trigger();
+	/** \brief calculate the size of the given time interval.
+	*
+	* A concrete timer may wish to support units for the time reference
+	* it defines. This method will define these units by recognizing
+	* them in the string and calculating the interval width
+	* appropriately.
+	* \param interval a string representation of the interval.
+	* \return a count relating to the interval width.
+	*/
+	virtual mrs_natural intervalsize(std::string interval)=0;
 
-    bool eventPending();
-    void dispatch();
+	/** \brief set a particular parameter value in the timer.
+	* 
+	*/
+	virtual void updtimer(std::string cname, TmControlValue value);
 
-    // the usual stream IO 
+	/** \brief set a particular parameter value in the timer.
+	* 
+	*/
+	void updtimer(TmParam& param);
+
+	/** \brief set a number of parameter values in the timer.
+	* 
+	*/
+	void updtimer(std::vector<TmParam> params);
+
+	// scheduling methods
+	void post(std::string event_time, Repeat rep, MarEvent* me);
+	void post(std::string event_time, MarEvent* me);
+	void post(ScheduledEvent* e);
+
+	/** \brief determine if an event has become due for dispatch
+	* 
+	* \return true if an event is due
+	*/
+	bool eventPending();
+
+	/** \brief dispatch any events that have become due
+	*
+	* Events are due for dispatch if their dispatch time is less than or
+	* equal to the current time. For each event this method will call
+	* the event's dispatch method, check to see if it is to be repeated
+	* and, if so, will ensure the necessary bookeeping and repost the
+	* event.
+	*/
+	void dispatch();
+
+	// the usual stream IO 
 //    friend ostream& operator<<(ostream&, Scheduler&);
 //    friend istream& operator>>(istream&, Scheduler&);
 };
