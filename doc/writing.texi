@@ -70,12 +70,8 @@ go ahead. read on.
 
 Here are sample Makefiles to get you started:
 
-@c FIXME
-@c @examplefilenewpage{Makefile.linux}
-@c @examplefilenewpage{Makefile.osx}
-@c @examplefilenewpage{Makefile.win32}
-
-@WANTED{ fix makefile for win32}
+@examplefilenewpage{Makefile.linux}
+@examplefilenewpage{Makefile.osx}
 
 
 @subsection ... on Windows Visual Studio
@@ -287,7 +283,7 @@ refer to source documentation in @ref{Library reference}.
 
 To get started, look at the Qt4 tutorial files:
 
-@c @examplefilenewpage{tutorial.pro}
+@examplefilenewpage{tutorial.pro}
 @examplefilenewpage{main.cpp}
 @examplefilenewpage{mainwindow.h}
 @examplefilenewpage{mainwindow.cpp}

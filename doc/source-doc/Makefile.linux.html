@@ -1,0 +1,17 @@
+<!-- Generator: GNU source-highlight 2.4
+by Lorenzo Bettini
+http://www.lorenzobettini.it
+http://www.gnu.org/software/src-highlite -->
+<pre><tt>SOURCE <font color="#990000">=</font> helloworld<font color="#990000">.</font>cpp
+TARGET <font color="#990000">=</font> helloworld
+<i><font color="#9A1900">#MARSYAS_INSTALL = /usr/local/</font></i>
+MARSYAS_INSTALL <font color="#990000">=</font> $<font color="#FF0000">{</font>HOME<font color="#FF0000">}</font><font color="#FF0000">/usr/</font>
+
+all<font color="#990000">:</font>
+	rm <font color="#990000">-</font>f <font color="#990000">*.</font>o
+	<b><font color="#0000FF">g</font></b><font color="#990000">++</font> <font color="#990000">-</font>Wall <font color="#990000">-</font>O2 <font color="#990000">-</font>I<font color="#990000">.</font><font color="#FF0000">/ -I${MARSYAS_INSTALL}/include/marsyas</font> <font color="#990000">-</font>c <font color="#990000">\</font>
+		<font color="#990000">-</font>o $<font color="#FF0000">{</font>TARGET<font color="#FF0000">}</font><font color="#990000">.</font>o $<font color="#FF0000">{</font>SOURCE<font color="#FF0000">}</font>
+	<b><font color="#0000FF">g</font></b><font color="#990000">++</font> <font color="#990000">-</font>L$<font color="#FF0000">{</font>MARSYAS_INSTALL<font color="#FF0000">}</font><font color="#990000">/</font>lib <font color="#990000">-</font>o $<font color="#FF0000">{</font>TARGET<font color="#FF0000">}</font> $<font color="#FF0000">{</font>TARGET<font color="#FF0000">}</font><font color="#990000">.</font>o <font color="#990000">-</font>lmarsyas <font color="#990000">\</font>
+		<font color="#990000">-</font>lasound
+
+</tt></pre>

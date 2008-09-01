@@ -4,8 +4,6 @@ to start distributing binaries)
 
 - Add all the apps and Qt4Apps after weeding out dead code
 
-- find the Makefiles and .pro for doc/examples/
-
 
 CMAKE BROKENNESS
 
@@ -15,16 +13,15 @@ Java, Lua bindings  (maybe post-0.3)
 
 - fix the linking for the vamp plugins.  (sness is doing this)
 
-- add documentation about time-line based classification in bextract 
-(sness)
 
 DOCS / USABILITY
 
 - begin docs on interactive python use.
 
-- get doxygen into cmake.
-
 - rewrite devel-2, testing.
+
+- add documentation about time-line based classification in bextract 
+(sness)
 
 
 OTHER
@@ -33,7 +30,6 @@ OTHER
 
 - Test on as many different systems with as many different compile
 configurations as we can to make sure everything works
-
 
 -- ask Gustavo about speakerSeg
 

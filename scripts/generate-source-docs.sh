@@ -10,12 +10,26 @@
 ####        so that this script can be run from anywhere.
 cd doc/examples/
 
-source-highlight --output-dir=../source-doc/ -f html *.cpp
-source-highlight --output-dir=../source-doc/ -f texinfo *.cpp
+for f in *.cpp
+do
+	source-highlight --output-dir=../source-doc/ -f html $f
+	source-highlight --output-dir=../source-doc/ -f texinfo $f
+done
+for f in Makefile.osx Makefile.linux
+do
+	source-highlight --output-dir=../source-doc/ -s perl -f html $f
+	source-highlight --output-dir=../source-doc/ -s perl -f texinfo $f
+done
+
 
 cd Qt4-tutorial/
-source-highlight --output-dir=../../source-doc/ -f html *.cpp
-source-highlight --output-dir=../../source-doc/ -f texinfo *.cpp
-source-highlight --output-dir=../../source-doc/ -f html *.h
-source-highlight --output-dir=../../source-doc/ -f texinfo *.h
+
+for f in *.cpp *.h
+do
+	source-highlight --output-dir=../../source-doc/ -f html $f
+	source-highlight --output-dir=../../source-doc/ -f texinfo $f
+done
+source-highlight --output-dir=../../source-doc/ -s perl -f html tutorial.pro
+source-highlight --output-dir=../../source-doc/ -s perl -f texinfo tutorial.pro
+
 

@@ -1,0 +1,32 @@
+@c Generator: GNU source-highlight, by Lorenzo Bettini, http://www.gnu.org/software/src-highlite
+@example
+@i{###  your files}
+SOURCES = main.cpp
+HEADERS = mainwindow.h
+SOURCES += mainwindow.cpp
+HEADERS += backend.h
+SOURCES += backend.cpp
+
+
+@i{### if running inside the source tree}
+MARSYAS_INSTALL_DIR = ..@t{/../../}
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR@t{/src/marsyasqt/}
+INCLUDEPATH += $$MARSYAS_INSTALL_DIR@t{/src/marsyas/}
+LIBPATH += $$MARSYAS_INSTALL_DIR@t{/lib/release/}
+
+
+@i{### if installed elsewhere}
+@i{#MARSYAS_INSTALL_DIR = /usr/local}
+@i{#MARSYAS_INSTALL_DIR = $@{HOME@}/usr/}
+@i{#INCLUDEPATH += $$MARSYAS_INSTALL_DIR/marsyas/}
+@i{#LIBPATH += $$MARSYAS_INSTALL_DIR/lib/}
+
+
+@i{### basic OS stuff; do not change!}
+win32-msvc2005:LIBS += marsyas.lib marsyasqt.lib
+unix:LIBS += -lmarsyas -lmarsyasqt -L$$MARSYAS_INSTALL_DIR/lib
+!macx:LIBS += -lasound
+macx:LIBS += -framework CoreAudio -framework CoreMidi -framework CoreFoundation
+
+
+@end example
