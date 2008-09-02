@@ -75,9 +75,9 @@ fi
 
 ### setup clean dir
 mkdir -p $matDir
-#rm -rf $buildDir
+rm -rf $buildDir
 cd $baseDir
-#svn export . $buildDir
+svn export . $buildDir
 mkdir -p $cmakeDir
 
 
