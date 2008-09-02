@@ -31,25 +31,26 @@ ex_typeid_to_string(unsigned int tp)
 std::string
 Marsyas::dtos(double d)
 {
-	char nn[256];
-	snprintf(nn,256,"%f",d);
-	return std::string(nn);
+	std::ostringstream oss;
+	oss << d;
+	return oss.str();
+
 }
 
 std::string
 Marsyas::dtos(float d)
 {
-	char nn[256];
-	snprintf(nn,256,"%f",d);
-	return std::string(nn);
+	std::ostringstream oss;
+	oss << d;
+	return oss.str();
 }
 
 std::string
 Marsyas::ltos(mrs_natural l)
 {
-	char nn[256];
-	snprintf(nn,256,"%ld",l);
-	return std::string(nn);
+	std::ostringstream oss;
+	oss << l;
+	return oss.str();
 }
 
 std::string

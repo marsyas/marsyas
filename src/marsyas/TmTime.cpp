@@ -35,3 +35,28 @@ TmTime::set(std::string tname, std::string time)
 	timer_name_=tname;
 }
 
+std::string 
+TmTime::getTime()
+{
+	return time_;
+}
+  
+
+std::string 
+TmTime::getTimeName()
+{
+	return timer_name_;
+}
+
+void 
+TmTime::setTime(std::string t)
+{
+	time_ = t;
+}
+
+void 
+TmTime::setTimeName(std::string t)
+{
+	timer_name_ = t;
+}
+

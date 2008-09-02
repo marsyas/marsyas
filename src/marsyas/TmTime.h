@@ -52,19 +52,20 @@ public:
 	/** \brief get the time that this object represents
 	* \return a string representation of the time
 	*/
-	virtual std::string getTime() {return time_;};
+	virtual std::string getTime();
+
 	/** \brief get the name of the timer on which this time is specified.
 	* \return the name of the timer
 	*/
-	virtual std::string getTimeName() {return timer_name_;};
+		virtual std::string getTimeName();
 	/** \brief set the time
 	* \param t string representing the time
 	*/
-	virtual void setTime(std::string t) {time_=t;};
+		virtual void setTime(std::string t);
 	/** \brief set the timer name
 	* \param t string representing the time
 	*/
-	virtual void setTimeName(std::string t) {timer_name_=t;};
+		virtual void setTimeName(std::string t);
 	/** \brief set everything
 	* \param timer_name name of the timer
 	* \param time string representing the time
