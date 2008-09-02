@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-TmTime::TmTime(string timer_name, string time)
+TmTime::TmTime(std::string timer_name, std::string time)
 {
 	set(timer_name,time);
 }
@@ -29,7 +29,7 @@ TmTime::TmTime(string timer_name, string time)
 TmTime::~TmTime() {}
 
 void
-TmTime::set(string tname, string time)
+TmTime::set(std::string tname, std::string time)
 {
 	time_=time;
 	timer_name_=tname;

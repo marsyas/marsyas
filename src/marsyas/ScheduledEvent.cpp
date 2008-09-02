@@ -92,7 +92,7 @@ ScheduledEvent::getRepetitionCount()
 	return repetition_.getCount();
 }
 
-string
+std::string
 ScheduledEvent::getRepetitionInterval()
 {
 	return repetition_.getInterval();

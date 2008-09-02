@@ -74,21 +74,21 @@ public:
 	/** \brief the constructor requires the type and name
 	*/
 	TmTimer(std::string type, std::string name);
-	TmTimer(const TmTimer&);
+	/** \brief copy constructor
+	* \param t timer to copy
+	*/
+	TmTimer(const TmTimer& t);
 	virtual ~TmTimer();
 
 	/** \brief get the timer type name, ie "TmSampleCount"
-	*
 	* \return the type name
 	*/
 	std::string getType();
 	/** \brief get the timer identifier, ie "foo"
-	*
 	* \return the type name
 	*/
 	std::string getName();
 	/** \brief get the timer prefix, the combination "type/name"
-	*
 	* \return the prefix name
 	*/
 	std::string getPrefix();
@@ -96,7 +96,6 @@ public:
 //    virtual TmTimer* clone()=0;
 
 	/** \brief the current count of this timer
-	* 
 	* \return the current timer count
 	*/
 	mrs_natural getTime();
@@ -137,27 +136,38 @@ public:
 	virtual mrs_natural intervalsize(std::string interval)=0;
 
 	/** \brief set a particular parameter value in the timer.
-	* 
+	* \param cname the control path to set
+	* \param value the value to set cname with
 	*/
 	virtual void updtimer(std::string cname, TmControlValue value);
 
 	/** \brief set a particular parameter value in the timer.
-	* 
+	* \param param a parameter to update this timer with
 	*/
 	void updtimer(TmParam& param);
 
 	/** \brief set a number of parameter values in the timer.
-	* 
+	* \param params a vector containing parameters to update the timer with.
 	*/
 	void updtimer(std::vector<TmParam> params);
 
-	// scheduling methods
+	/** \brief post an event to be scheduled by the timer
+	* \param event_time event dispatch time. Must be meaningful to the concrete timer.
+	* \param rep repetition information
+	* \param me the event
+	*/
 	void post(std::string event_time, Repeat rep, MarEvent* me);
+	/** \brief post an event to be scheduled by the timer with no repetition
+	* \param event_time event dispatch time. Must be meaningful to the concrete timer.
+	* \param me the event
+	*/
 	void post(std::string event_time, MarEvent* me);
+	/** \brief post an event to be scheduled by the timer
+	* \param e an event with scheduling information
+	*/
 	void post(ScheduledEvent* e);
 
 	/** \brief determine if an event has become due for dispatch
-	* 
 	* \return true if an event is due
 	*/
 	bool eventPending();

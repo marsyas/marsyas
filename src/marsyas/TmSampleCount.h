@@ -48,14 +48,16 @@ protected:
 public:
 	/** \brief empty constructor. The read source MarSystem and control are zero
 	* values and must be updated using setReadCtrl(...)
+	* Given the default name: Virtual as in "TmSampleTime/Virtual"
 	*/
 	TmSampleCount();
 	/** \brief named constructor. The read source MarSystem and control are zero
 	* values and must be updated using setReadCtrl(...).
+	* Given the default name: "TmSampleTime/name"
 	* \param name a unique name to call this timer
 	*/
 	TmSampleCount(std::string name);
-	/** \brief main constructor.
+	/** \brief main constructor. Has identifier "TmSampleCount/Virtual"
 	* \param ms the MarSystem that contains the control to read
 	* \param cname the control name to read
 	*/
@@ -76,8 +78,24 @@ public:
 	* \param ms the MarSystem that owns the control
 	* \param cname the control name to read
 	*/
-	void setReadCtrl(MarSystem* ms, std::string cname); // where to read time info
+	void setReadCtrl(MarSystem* ms, std::string cname);
+	/** \brief set the MarSystem that contains the read control.
+	*
+	* This method sets the read source to the parameter without checking.
+	* It then attempts to get the MarControlPtr for the control unless the
+	* read source is NULL or the read ctrl path is "". No warnings are
+	* produced.
+	* \param ms read source MarSystem
+	*/
 	void setSource(MarSystem* ms);
+	/** \brief set the control path
+	*
+	* This method sets the read control path to the parameter. It then
+	* attempts to get the MarControlPtr for the control unless the
+	* read source is NULL or the read ctrl path is "". No warnings are
+	* produced.
+	* \param cname the control path to read from
+	*/
 	void setSourceCtrl(std::string cname);
 	/** \brief get the difference between the current source control value and its
 	* value since it was last read.

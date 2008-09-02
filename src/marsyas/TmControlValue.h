@@ -34,9 +34,9 @@ namespace Marsyas
 
 class MarSystem;
 
-/** \enum timer control value types
-* \ingroup Scheduler
-* \brief type enumerations for individual timer control value types.
+/**
+	\enum TmControlValue::tmcv
+	\brief type enumerations for individual timer control value types.
 */
 enum {
 	tmcv_null=0, /** null type */
@@ -54,8 +54,10 @@ enum {
 class TmControlValue
 {
 protected:
+	/** \brief value type identifier */
   int type_;
 
+	/** \brief supported value type */
   mrs_real r_;
   mrs_natural n_;
   bool b_;
@@ -63,26 +65,85 @@ protected:
   MarSystem* ms_;
 
 public:
+	/** \brief null value type (tmcv_null) */
   TmControlValue();
-  TmControlValue(const TmControlValue&);
+	/** \brief copy constructor
+	* \param v TmControlValue to copy
+	*/
+  TmControlValue(const TmControlValue& v);
+
 //  MarControlValue& operator=(const MarControlValue& a);
+
+	/** \brief real value type (tmcv_real)
+	* \param re float value to assign as real
+	*/
   TmControlValue(float re);
+	/** \brief real value type (tmcv_real)
+	* \param re double value to assign as real
+	*/
   TmControlValue(double re);
+	/** \brief natural value type (tmcv_natural)
+	* \param ne int value to assign as natural
+	*/
   TmControlValue(int ne);
+	/** \brief natural value type (tmcv_natural)
+	* \param ne long int value to assign as natural
+	*/
   TmControlValue(long int ne);
+	/** \brief string value type (tmcv_string)
+	* \param st string value to assign
+	*/
   TmControlValue(std::string st);
-  TmControlValue(const char *);
+	/** \brief string value type (tmcv_string)
+	* \param cc const char* value to assign as string
+	*/
+  TmControlValue(const char * cc);
+	/** \brief bool value type (tmcv_bool)
+	* \param be bool value to assign
+	*/
   TmControlValue(bool be);
+	/** \brief MarSystem value type (tmcv_marsystem)
+	* \param m MarSystem pointer value to assign
+	*/
   TmControlValue(MarSystem* m);
 
+	/** \brief get value as real. If not a real value then a warning is
+	* reported and 0.0 returned.
+	* \return the real value or 0.0 if this is not a real.
+	*/
   mrs_real toReal();
+	/** \brief get value as natural. If not a natural value then a warning
+	* is reported and 0 returned.
+	* \return the natural value or 0 if this is not a natural.
+	*/
   mrs_natural toNatural();
+	/** \brief get value as bool. If not a bool value then a warning
+	* is reported and false returned.
+	* \return the bool value or false if this is not a bool.
+	*/
   bool toBool();
+	/** \brief get value as string. If not a string value then a warning
+	* is reported and "" returned.
+	* \return the string value or "" if this is not a string.
+	*/
   std::string toString();
+	/** \brief get value as MarSystem. If not a MarSystem value then a
+	* warning is reported and NULL returned.
+	* \return the MarSystem value or NULL if this is not a MarSystem.
+	*/
   MarSystem* toMarSystem();
 
+	/** \brief get the type enumeration for this value type. The value is
+	* one of the tmcv values defined in TmControlValue.h
+	* \return the timer control value type enumeration.
+	*/
   int getType();
+	/** \brief get the name of this value type.
+	* \return the name of the type
+	*/
   std::string getSType();
+	/** \brief send this object out the outstream.
+	*/
   friend std::ostream& operator<<(std::ostream&, const TmControlValue&);
 };
 

@@ -65,7 +65,7 @@ Scheduler::addTimer(TmTimer* t)
 }
 
 void
-Scheduler::addTimer(string class_name, string identifier)
+Scheduler::addTimer(std::string class_name, std::string identifier)
 {
     // look for schedulers with same name to ensure only one of each name
 	if (findTimer(class_name+"/"+identifier)!=NULL){
@@ -157,7 +157,7 @@ Scheduler::findTimer(std::string name)
 }
 
 bool
-Scheduler::removeTimer(string name)
+Scheduler::removeTimer(std::string name)
 {
 	for (int i=0; i<timers_count_;i++) {
 		if (timers_[i]->getPrefix()==name) {
@@ -187,7 +187,7 @@ Scheduler::removeAll()
 }
 
 void
-Scheduler::post(string time, string tmname, Repeat r, MarEvent* me)
+Scheduler::post(std::string time, std::string tmname, Repeat r, MarEvent* me)
 {
 	TmTimer* s = findTimer(tmname);
 	if (s!=NULL) {
@@ -213,7 +213,7 @@ Scheduler::post(TmTime t, Repeat r, MarEvent* me)
 }
 
 void
-Scheduler::post(string event_time, Repeat rep, MarEvent* me)
+Scheduler::post(std::string event_time, Repeat rep, MarEvent* me)
 {
 	if (timers_[0]!=NULL) {
 		post(event_time,timers_[0]->getPrefix(),rep,me);
@@ -221,7 +221,7 @@ Scheduler::post(string event_time, Repeat rep, MarEvent* me)
 }
 
 void
-Scheduler::post(string event_time, MarEvent* me)
+Scheduler::post(std::string event_time, MarEvent* me)
 {
 	if (timers_[0]!=NULL) {
 		post(event_time,Repeat(),me);

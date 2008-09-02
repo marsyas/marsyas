@@ -67,7 +67,7 @@ public:
 	virtual void setTimeName(std::string t) {timer_name_=t;};
 	/** \brief set everything
 	* \param timer_name name of the timer
-	* \param timer string representing the time
+	* \param time string representing the time
 	*/
 	virtual void set(std::string timer_name, std::string time);
 

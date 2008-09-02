@@ -61,7 +61,7 @@ TmControlValue::TmControlValue(long int ne)
 	type_ = tmcv_natural;
 }
 
-TmControlValue::TmControlValue(string st)
+TmControlValue::TmControlValue(std::string st)
 {
 	s_ = st;
 	type_ = tmcv_string;
@@ -88,51 +88,56 @@ TmControlValue::TmControlValue(MarSystem* me)
 mrs_real
 TmControlValue::toReal()
 {
-	if(type_ != tmcv_real)
+	if(type_ != tmcv_real) {
 		MRSWARN("MarControlValue::toReal Incorrect type");
+		return 0.0;
+	}
 	else
-		;
-	return r_;
+		return r_;
 }
 
 bool
 TmControlValue::toBool()
 {
-	if(type_ != tmcv_bool)
+	if(type_ != tmcv_bool) {
 		MRSWARN("MarControlValue::toBool Incorrect type");
+		return false;
+	}
 	else
-		;
-	return b_;
+		return b_;
 }
 
 mrs_natural
 TmControlValue::toNatural()
 {
-	if(type_ != tmcv_natural)
+	if(type_ != tmcv_natural) {
 		MRSWARN("MarControlValue::toNatural Incorrect type");
+		return 0;
+	}
 	else
-		;
-	return n_;
+		return n_;
 }
 
-string
+std::string
 TmControlValue::toString()
 {
-	if(type_ != tmcv_string)
+	if(type_ != tmcv_string) {
 		MRSWARN("MarControlValue::toString Incorrect type");
+		return "";
+	}
 	else
-		;
-	return s_;
+		return s_;
 }
 
 MarSystem*
 TmControlValue::toMarSystem()
 {
-	if(type_ != tmcv_marsystem)
+	if(type_ != tmcv_marsystem) {
 		MRSWARN("MarControlValue::toMarSystem Incorrect type");
+		return NULL;
+	}
 	else
-		;
-	return ms_;
+		return ms_;
 }
 
 int
@@ -162,6 +167,8 @@ Marsyas::operator<<(ostream& o, const TmControlValue& m)
 	if(m.type_ == tmcv_real) o << m.r_;
 	if(m.type_ == tmcv_natural) o << m.n_;
 	if(m.type_ == tmcv_bool) o << m.b_;
+	if(m.type_ == tmcv_marsystem) o << "MarSystem";
+	if(m.type_ == tmcv_vec) o << "realvec";
 	return o;
 }
 

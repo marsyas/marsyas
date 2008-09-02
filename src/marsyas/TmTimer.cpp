@@ -134,7 +134,7 @@ TmTimer::updtimer(std::vector<TmParam> params)
 }
 
 void
-TmTimer::post(string event_time, Repeat rep, MarEvent* me)
+TmTimer::post(std::string event_time, Repeat rep, MarEvent* me)
 {
 	rep--;
 	// should probably check if rep.count==0
@@ -143,7 +143,7 @@ TmTimer::post(string event_time, Repeat rep, MarEvent* me)
 }
 
 void
-TmTimer::post(string event_time, MarEvent* me)
+TmTimer::post(std::string event_time, MarEvent* me)
 {
 	mrs_natural stime = getTime() + intervalsize(event_time);
 	post(new ScheduledEvent(stime,Repeat("", 0),me));

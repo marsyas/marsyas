@@ -25,7 +25,7 @@
 #ifndef WIN32
 #include <sys/time.h>
 #include <unistd.h>
-#endif 
+#endif
 
 namespace Marsyas
 {
@@ -38,15 +38,35 @@ namespace Marsyas
 
 class TmGetTime : public TmTimer {
 protected:
+	/** \brief last read count of microseconds. */
 	int last_usecs_;
 
 public:
+	/** \brief empty constructor. Given the default name: System as in "TmGetTime/System"
+	*/
 	TmGetTime();
+	/** \brief named constructor. Given the identifier "TmGetTime/name"
+	* \param name a unique name to call this timer
+	*/
 	TmGetTime(std::string name);
+	/** \brief copy constructor
+	* \param t timer to copy
+	*/
 	TmGetTime(const TmGetTime& t);
 	~TmGetTime();
 
+	/** \brief get the difference between the current source control value
+	* and its value since it was last read. Does not currently work for
+	* Windows TODO! architecture as it relies on the Unix function gettimeofday().
+	* \return the count since last read
+	*/
 	mrs_natural readTimeSrc();
+	/** \brief convert the given interval into a number of micro seconds.
+	*
+	* The interval must be defined in real time units: us, ms, s, m, h, d.
+	* \param interval the interval to calculate
+	* \return the number of micro seconds contained in the interval
+	*/
 	mrs_natural intervalsize(std::string interval);
 };
 

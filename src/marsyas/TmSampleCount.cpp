@@ -29,12 +29,12 @@ TmSampleCount::TmSampleCount() : TmTimer("TmSampleCount","Virtual")
     setReadCtrl(NULL,"mrs_natural/inSamples");
 }
 
-TmSampleCount::TmSampleCount(string name) : TmTimer("TmSampleCount",name)
+TmSampleCount::TmSampleCount(std::string name) : TmTimer("TmSampleCount",name)
 {
     setReadCtrl(NULL,"mrs_natural/inSamples");
 }
 
-TmSampleCount::TmSampleCount(MarSystem* ms, string cname) : TmTimer("TmSampleCount","Virtual")
+TmSampleCount::TmSampleCount(MarSystem* ms, std::string cname) : TmTimer("TmSampleCount","Virtual")
 {
     setReadCtrl(ms,cname);
 }
@@ -47,7 +47,7 @@ TmSampleCount::TmSampleCount(const TmSampleCount& s) : TmTimer(s)
 TmSampleCount::~TmSampleCount(){ }
 
 void
-TmSampleCount::setReadCtrl(MarSystem* ms, string cname)
+TmSampleCount::setReadCtrl(MarSystem* ms, std::string cname)
 {
 	read_src_=ms;
 	read_cname_=cname;
@@ -58,13 +58,19 @@ TmSampleCount::setReadCtrl(MarSystem* ms, string cname)
 void
 TmSampleCount::setSource(MarSystem* ms)
 {
-	setReadCtrl(ms,read_cname_);
+	read_src_=ms;
+	if(read_src_!=NULL && read_cname_!="")
+		read_ctrl_=read_src_->getctrl(read_cname_);
+//	setReadCtrl(ms,read_cname_);
 }
 
 void
-TmSampleCount::setSourceCtrl(string cname)
+TmSampleCount::setSourceCtrl(std::string cname)
 {
-	setReadCtrl(read_src_,cname);
+	read_cname_=cname;
+	if(read_src_!=NULL)
+		read_ctrl_=read_src_->getctrl(read_cname_);
+//	setReadCtrl(read_src_,cname);
 }
 
 mrs_natural
@@ -79,7 +85,7 @@ TmSampleCount::readTimeSrc()
 //    return (read_src_->getctrl(read_cname_)).toNatural() + getTime();
 }
 
-mrs_natural TmSampleCount::intervalsize(string interval)
+mrs_natural TmSampleCount::intervalsize(std::string interval)
 {
 	return (read_src_==NULL) ? 0 :
 		time2samples(interval,read_src_->getctrl("mrs_real/israte")->to<mrs_real>());

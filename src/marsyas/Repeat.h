@@ -55,6 +55,7 @@ public:
 	virtual ~Repeat();
 
 	/** \brief specify finite repetition
+	* \param inf true if repeat is to be infinite which negates rep_count
 	* \param time_interval the interval of time between repetitions
 	* \param rep_count the number of times to repeat
 	*/

@@ -29,7 +29,7 @@ TmGetTime::TmGetTime() : TmTimer("TmGetTime","System")
 	last_usecs_=readTimeSrc();
 }
 
-TmGetTime::TmGetTime(string name) : TmTimer("TmGetTime",name)
+TmGetTime::TmGetTime(std::string name) : TmTimer("TmGetTime",name)
 {
 	last_usecs_=readTimeSrc();
 }
@@ -63,7 +63,7 @@ TmGetTime::readTimeSrc()
 }
 
 mrs_natural
-TmGetTime::intervalsize(string interval)
+TmGetTime::intervalsize(std::string interval)
 {
 	return time2usecs(interval);
 }
