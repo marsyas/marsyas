@@ -77,8 +77,8 @@ public:
 	* \param cname the control name to read
 	*/
 	void setReadCtrl(MarSystem* ms, std::string cname); // where to read time info
-//	void setSource(MarSystem* ms);
-//	void setSourceCtrl(std::string cname);
+	void setSource(MarSystem* ms);
+	void setSourceCtrl(std::string cname);
 	/** \brief get the difference between the current source control value and its
 	* value since it was last read.
 	* \return the count since last read
