@@ -1,14 +1,13 @@
 #!/bin/bash
 ######### update as necessary
-#baseDir=~/marsyas-svn
-baseDir=~/usr/src/marsyas/
+baseDir=~/marsyas-svn
 matDir=~/marsyas-autotest
 #coffeeDir=~/marsyas-coffee
 
 
 ### get latest SVN
 cd $baseDir
-#svn update
+svn update
 
 ######### non-changing definitions
 version=`svn info | grep Revision | cut -c 11-`
@@ -40,7 +39,7 @@ sendreport() {
 	if [ `which mail` ]
 	then
 		mail -s "$subject" gperciva@uvic.ca < $report
-#		mail -s "$subject" gtzan@cs.uvic.ca < $report
+		mail -s "$subject" gtzan@cs.uvic.ca < $report
 #		mail -s "$subject" lgmartins@users.sourceforge.net < $report
 	fi
 }
