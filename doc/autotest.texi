@@ -1,24 +1,43 @@
 @node Automatic testing
 @chapter Automatic testing
 
-In an attempt to reduce the number of times we break working code, we
-have added some testing mechanisms to Marsyas.
+In an attempt to reduce the number of times we break working code,
+we have added some testing mechanisms to Marsyas.
 
 @menu
-* Regression tests (devel)::    
+* Unit tests::                  
+* Regression tests::            
 * Daily Auto-tester::           
 @end menu
 
 
-@node Regression tests (devel)
-@section Regression tests (devel)
+@node Unit tests
+@section Unit tests
+
+These tests are highly focused on specific portions of code.
+
+@menu
+* Unit test infrastructure::    
+@end menu
+
+@node Unit test infrastructure
+@subsection Unit test infrastructure
+
+We use the unit test infrastucture provided by @code{cxxtest}.
+These takes a @code{TestFoo.h} file and produces a
+@code{Foo_runner.cpp} file which performs the actual test.
+
+@WANTED{More description about this from sness}
+
+
+@node Regression tests
+@section Regression tests
 
 These tests are deliberately simple and easy to understand.
 
 @menu
 * What does regression mean?::  
 * How do the tests work?::      
-* Where are functions defined in regressionChecks?::  
 * When a test fails...::        
 * Why should I care?::          
 @end menu
@@ -28,10 +47,10 @@ These tests are deliberately simple and easy to understand.
 
 @unnumberedsubsubsec Definition
 
-The term @qq{regression testing} seems to mean something different to
-each project, website, and software engineering academic.  So I shall
-define what we mean by @qq{regression testing} in the context of Marsyas
-@qq{regression testing}:
+The term @qq{regression testing} seems to mean something different
+to each project, website, and software engineering academic.  So I
+shall define what we mean by @qq{regression testing} in the
+context of Marsyas @qq{regression testing}:
 
 @quotation
 Does it work the way it used to?
@@ -60,10 +79,10 @@ Goto step 3.
 
 @end enumerate
 
-In other words, these tests do not check for @emph{correctness}; they
-simply check for @emph{consistency}.  Fixing a bug could result in a
-test @qq{failing}.  However, this is not a problem: see @ref{When a test
-fails...}
+In other words, these tests do not check for @emph{correctness};
+they simply check for @emph{consistency}.  Fixing a bug could
+result in a test @qq{failing}.  However, this is not a problem:
+see @ref{When a test fails...}
 
 
 @node How do the tests work?
@@ -71,66 +90,9 @@ fails...}
 
 @unnumberedsubsubsec List of tests
 
-Tests are stored in the files
-
-@example
-regressionTests/sanity-audio.txt
-regressionTests/sanity-text.txt
-regressionTests/coffee-audio.txt
-regressionTests/coffee-text.txt
-@end example
-
-@noindent
-The general format of these files is
-
-@example
-<command> <tab> <saved output file>
-@end example
-
-
-@unnumberedsubsubsec Normal app tests
-
-Let's examine the first line in @file{sanity-audio.txt}:
-
-@example
-sfplay -s 0.25 -l 0.1 -g 0.7 right.wav -f out.au <tab> ../answers/right-sfplay.au
-@end example
-
-@noindent
-(the @code{<tab>} was added to make the line more legible in this
-manual)
-
-The test system runs this command (prefixing it with
-@code{@emph{/path/to}/bin/release/}).  The input file is
-@file{right.wav}, and the output will be stored in @file{out.au}.  This
-output is compared with the previously-stored output file,
-@file{../answers/right-sfplay.au}.  In this case, we are looking for an
-exact match.
-
-
-@unnumberedsubsubsec regressionCheck tests
-
-Let's examine the first line in @file{sanity-text.txt}:
-
-@example
-regressionChecks -t pitch sine1000-5.wav > out.txt <tab> ../answers/sine-pitch.txt
-@end example
-
-@noindent
-(again, @code{<tab>} was added for legibility)
-
-This test uses a special program, @code{regressionChecks}.  The source
-for this program is in @file{src/apps/regressionChecks}.  Special care
-was taken to make the source code as legible as possible, so don't be
-scared of looking at the source.  For information about the organization
-of the source for this program, see @ref{Where are functions defined in
-regressionChecks?}.
-
-In this case, @code{regressionChecks} will extract pitch information
-from @file{sine1000-5.wav} (a file containing 5 sine waves at 1000 Hz).
-The pitch (hopefully something close to 1000!) is stored in the file
-@file{out.txt}.  This file is compared to the previously-stored output
-file, @file{../answers/sine-pitch.txt}.
+Tests are defined in @file{src/tests/regression/CMakeLists.txt}.
+Each test is split into two steps: creating an audio file, and
+comparing that audio file to the previous (working) audio file.
 
 
 @unnumberedsubsubsec Approximate matching (no rounding errors)
@@ -138,63 +100,14 @@ file, @file{../answers/sine-pitch.txt}.
 When an audio file is specified as an @qq{answer} file,
 
 @example
-regressionChecks -t delay sine1000-5.wav -o out.au -a ../answers/sine-delay.au
+audioCompare phasevoder.au ../output/right-phasevocoder.au
 @end example
 
 @noindent
 we attempt to match the files approximately, to avoid rounding
-mismatches on different operating systems.  Each sample must be very
-close to the corresponding sample in the answer file, but they need not
-be exact.
-
-
-@node Where are functions defined in regressionChecks?
-@subsection Where are functions defined in regressionChecks?
-
-@unnumberedsubsubsec General organization
-
-The program source is divided into files:
-
-@itemize
-@item
-@code{regressionChecks.cpp}: the main executable.  This file handles the
-command-line options and running the correct test functions, but no
-actual sound processing.
-
-@item
-@code{common-reg.h}: common definitions and includes for the source
-files.
-
-@item
-@code{coreChecks.cpp}: test fundamental things.  Particularly
-interesting tests are core_null() and core_isClose(...).
-
-@item
-@code{basicChecks.cpp}: tests basic audio processing, such as windowing.
-
-@item
-@code{analysisChecks.cpp}: tests gathering info from audio, such as
-pitch extraction.
-
-@end itemize
-
-@unnumberedsubsubsec @code{addSource(...)} and @code{addDest(...)}
-
-These useful functions are defined in @file{common-reg.h}.  Since
-virtually every regression test needs to read and write sound files, we
-wrote these files to handle the operation.  This is useful, because
-
-@itemize
-@item it eliminates duplication of code (avoids typos and other basic
-mistakes), and
-
-@item it makes each test easier to read (addSource, the actual test,
-addDest)
-
-@end itemize
-
-In addition to setting up the file input, @code{addSource(...)} returns
-the sample rate of the input file as a @code{mrs_real}.
+mismatches on different operating systems.  Each sample must be
+very close to the corresponding sample in the answer file, but
+they need not be exact.
 
 
 @node When a test fails...
@@ -224,17 +137,18 @@ you should update the answer file.  This is simply a matter of copying
 your new output file over the old answer file.
 
 Please commit the changed
-@file{regressionTests/answers/@emph{<FILE.au>}} in a separate svn
-commit, and make sure the log message explains that your new output is
-superior to the old one.
+@file{src/tests/regressions/output/@emph{<FILE.au>}} in a separate
+svn commit, and make sure the log message explains that your new
+output is superior to the old one.
 
 @unnumberedsubsubsec Temporarily disabling a test
 
-If you are planning on doing a lot of work on part of Marsyas (which
-would result in tests failing, but having no working output yet), tests
-may be commented out in the @file{regressionTests/<TEST-TYPE>.txt} file.
-Again, please commit this change in a separate svn commit with a log
-message that explains this.
+If you are planning on doing a lot of work on part of Marsyas
+(which would result in tests failing, but having no working output
+yet), tests may be commented out in the
+@file{src/tests/regressions/CMakeLists.txt} file.  Again, please
+commit this change in a separate svn commit with a log message
+that explains this.
 
 
 @node Why should I care?
@@ -242,44 +156,41 @@ message that explains this.
 
 @unnumberedsubsubsec Developers
 
-Think of these tests as a mutual assistance pact: you should care about
-not breaking other people's code, because other people will care about
-not breaking @emph{your} code.
+Think of these tests as a mutual assistance pact: you should care
+about not breaking other people's code, because other people will
+care about not breaking @emph{your} code.
 
-Of course, this requires that you create regression tests for your own
-code.  Due to practicality, we can't check every single case of every
-single program.  So instead, create one or two tests which investigate
-as many things as possible.  For example, instead of simply testing if
-sfplay can output a sound file, we test changing the gain, starting at a
-specific time, and only playing for a specific length.
+Of course, this requires that you create regression tests for your
+own code.  Due to practicality, we can't check every single case
+of every single program.  So instead, create one or two tests
+which investigate as many things as possible.  For example,
+instead of simply testing if sfplay can output a sound file, we
+test changing the gain, starting at a specific time, and only
+playing for a specific length.
 
-We recommend discussing potential regression tests on the developer
-mailist.
+We recommend discussing potential regression tests on the
+developer mailist.
 
 @unnumberedsubsubsec New users
 
-These tests are also very useful if you start investigating a new aspect
-of Marsyas.  Currently there are many unmaintained MarSystems,
-applications, and projects in Marsyas.  New users can easily waste hours
-trying to use part of the codebase which has been broken for months.
+These tests are also very useful if you start investigating a new
+aspect of Marsyas.  Currently there are many unmaintained
+MarSystems, applications, and projects in Marsyas.  New users can
+easily waste hours trying to use part of the codebase which has
+been broken for months.
 
 Having a testing mechanism means that users know that the code is
-working -- at least, working for the exact command and input that the
-test uses.  If (when?) a user has problems getting something to work in
-Marsyas, he can turn to the regtests: if a regtest passes but his own
-code doesn't work, he can compare his code against the regtest code.
+working -- at least, working for the exact command and input that
+the test uses.  If (when?) a user has problems getting something
+to work in Marsyas, he can turn to the regtests: if a regtest
+passes but his own code doesn't work, he can compare his code
+against the regtest code.
 
-Trust me, by now I've probably spent 20 hours trying to make broken code
-to work -- sometimes when the developers already knew it was broken!
-Quite apart from the waste of time, it's incredibly demoralizing.  It
-was this problem that inspired me to create these tests.
-
-
-@c  I'll resurrect this section if people raise any bogus complaints
-@c  that aren't covered above.  -gp
-@c @n ode They won't work!
-@c @s ubsection They won't work!
-
+Trust me, by now I've probably spent 20 hours trying to make
+broken code to work -- sometimes when the developers already knew
+it was broken!  Quite apart from the waste of time, it's
+incredibly demoralizing.  It was this problem that inspired me to
+create these tests.
 
 
 
@@ -300,27 +211,18 @@ every day.  This script performs a few tasks:
 Exports a clean copy of the source tree from svn.
 
 @item
-Builds the tree using autotools.
+Builds Marsyas.
 
 @item
-Runs the sanity tests.
-
-@item
-Runs the coffee tests.
+Runs the tests.
 
 @item
 Builds the documentation.
 
-@item
-Builds the Doxygen source documentation.
-
-@item
-Performs @code{make distcheck}.
-
 @end enumerate
 
-An email is sent to some developers with the results of these tests.
-If you would like to receive these daily emails, please enquire on the
-developer mailist.
+An email is sent to some developers with the results of these
+tests.  If you would like to receive these daily emails, please
+enquire on the developer mailist.
 
 

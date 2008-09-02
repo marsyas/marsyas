@@ -18,8 +18,6 @@ DOCS / USABILITY
 
 - begin docs on interactive python use.
 
-- rewrite devel-2, testing.
-
 - add documentation about time-line based classification in bextract 
 (sness)
 

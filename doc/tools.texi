@@ -753,7 +753,7 @@ installed by default on Linux and MacOS X machines; Windows users
 may install it from @uref{http://python.org}.}
 
 Developers interested in the inner workings of these tests may find the
-information in @develref{Regression tests (devel)}.
+information in @develref{Regression tests}.
 
 @menu
 * Sanity tests::                
