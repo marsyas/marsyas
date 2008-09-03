@@ -327,9 +327,9 @@ Posting events on the scheduler is done through a number of
 first parameter.
 
 @example
-void @b{updctrl}(MarEvent* me);
-void @b{updctrl}(TmTime t, MarEvent* ev);
-void @b{updctrl}(TmTime t, Repeat rep, MarEvent* ev);
+void @b{updctrl}(EvEvent* me);
+void @b{updctrl}(TmTime t, EvEvent* ev);
+void @b{updctrl}(TmTime t, Repeat rep, EvEvent* ev);
 void @b{updctrl}(TmTime t, std::string cname, MarControlPtr control);
 void @b{updctrl}(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
 @end example
@@ -363,36 +363,32 @@ a custom timer.
 
 @subsubsection Events
 Events are the actions that happen at specified points in time. In
-Marsyas events are split up between @file{MarEvent}, which encapsulates
-the event action, and @file{ScheduledEvent} which associates a time with
-the event. Custom events are constructed by inheriting from
-@file{MarEvent} and overriding the @code{dispatch} and @code{clone}
-methods.
+Marsyas events inherit from the @file{EvEvent}. Custom events are
+constructed by inheriting from @file{EvEvent} and overriding the
+@code{dispatch} and @code{clone} methods.
 
-The overridden @code{MarEvent::dispatch} method is where the custom
+The overridden @code{EvEvent::dispatch} method is where the custom
 event action is defined. Since Marsyas is not threaded the network will
 block during dispatch. This could result in breaks in audio for
 real-time audio if the action takes too much time.
 
-The @code{clone} method is used by @file{ScheduledEvent} to
-copy the event. This is primarily to avoid confusion about who has
-control over the event, the user or the scheduler, and who must delete
-the event for proper memory management. A user who creates an event
-using the keyword new and posts it must then delete it. The event will
-have been copied by the @file{ScheduledEvent} object who will delete the
-copy when appropriate. Without the @code{clone} method, if the user
-deleted the event too early then a memory error may occur when the
-deleted event is dispatched.
+The @code{clone} method is intended to be used by the @file{TmTimer} to
+copy the event when it's posted. This would force the user to take care
+of its deletion and avoid confusion about who must do this. At this time
+clone is not used for this task so that once an @file{EvEvent} is posted
+it is under the control of the @file{TmTimer} it was posted on. It
+should not be reposted or deleted by the user. The search is on for a
+better solution.
 
-The @file{MarEvent} supports repetition without having to create new
-events. The @code{set_repeat(Repeat r)} method takes a @file{Repeat}
+@file{EvEvent} supports repetition without having to create new
+events. The @code{setRepeat(Repeat r)} method takes a @file{Repeat}
 object that defines how to repeat the event. The default behaviour is
 no repetition. A true value from the @code{repeat()} method tells the
 scheduler to repeat the event. This method queries the supplied
-@file{Repeat} object. The @code{repeat_interval()} returns the repeat
+@file{Repeat} object. The @code{getRepeatInterval()} returns the repeat
 rate. The @code{repeat_interval(string interval)} may be used to convert
 the supplied interval to a count. It is used in the
-@code{ScheduledEvent::doRepeat()} method.
+@code{EvEvent::doRepeat()} method.
 
 @subsubsection Repeat
 Repetition of events is defined using the @file{Repeat} class. This

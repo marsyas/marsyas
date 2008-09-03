@@ -38,6 +38,7 @@ set( MarSystem_SOURCES
 	ERB.cpp
 	Envelope.cpp
 	Esitar.cpp
+	EvEvent.cpp
 	EvExpr.cpp
 	EvGetUpd.cpp
 	EvValUpd.cpp
@@ -71,7 +72,6 @@ set( MarSystem_SOURCES
 	MarControl.cpp
 	MarControlManager.cpp
 	MarControlValue.cpp
-	MarEvent.cpp
 	MarFileSink.cpp
 	MarSystem.cpp
 	MarSystemManager.cpp
@@ -129,7 +129,6 @@ set( MarSystem_SOURCES
 	SFM.cpp
 	SMO.cpp
 	SOM.cpp
-	ScheduledEvent.cpp
 	Scheduler.cpp
 	SeneffEar.cpp
 	Series.cpp
@@ -236,7 +235,7 @@ set(Marsyas_HEADERS
 	MarSystem.h
 	common.h
 	Conversions.h
-	MarEvent.h
+	EvEvent.h
 	TmTime.h
 	TmControlValue.h
 	MrsLog.h
@@ -247,7 +246,6 @@ set(Marsyas_HEADERS
 	Communicator.h
 	TmTimer.h
 	Repeat.h
-	ScheduledEvent.h
 	Scheduler.h
 	MarControlAccessor.h
 	Heap.h

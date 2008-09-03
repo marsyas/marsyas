@@ -1252,7 +1252,7 @@ MarSystem::addControl(string cname, MarControlPtr v)
 }
 
 void 
-MarSystem::updctrl(MarEvent* me) 
+MarSystem::updctrl(EvEvent* me) 
 {
 	if (me != NULL) 
 	{
@@ -1262,13 +1262,13 @@ MarSystem::updctrl(MarEvent* me)
 }
 
 void
-MarSystem::updctrl(TmTime t, MarEvent* ev)
+MarSystem::updctrl(TmTime t, EvEvent* ev)
 {
 	scheduler_.post(t,Repeat(),ev);
 }
 
 void
-MarSystem::updctrl(TmTime t, Repeat r, MarEvent* ev)
+MarSystem::updctrl(TmTime t, Repeat r, EvEvent* ev)
 {
 	scheduler_.post(t,r,ev);
 }

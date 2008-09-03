@@ -22,7 +22,7 @@
 #include "common.h"
 #include "TmParam.h"
 #include "TmControlValue.h"
-#include "ScheduledEvent.h"
+#include "EvEvent.h"
 #include "Heap.h"
 
 #include <map>
@@ -43,10 +43,10 @@ class TmTimer
 {
 private:
 	/** \brief heap containing the scheduled events */
-	Heap<ScheduledEvent, ScheduledEventComparator> pq_;
+	Heap<EvEvent, EvEventDispatchComparator> pq_;
 	/** \brief map for events to allow modifying events while in the heap */
-	std::map<std::string, ScheduledEvent*> events_;
-	std::map<std::string, ScheduledEvent*>::iterator events_iter_;
+	std::map<std::string, EvEvent*> events_;
+	std::map<std::string, EvEvent*>::iterator events_iter_;
 
 protected:
 	/** \brief type of the timer or class name */
@@ -156,16 +156,18 @@ public:
 	* \param rep repetition information
 	* \param me the event
 	*/
-	void post(std::string event_time, Repeat rep, MarEvent* me);
+	void post(std::string event_time, Repeat rep, EvEvent* me);
 	/** \brief post an event to be scheduled by the timer with no repetition
 	* \param event_time event dispatch time. Must be meaningful to the concrete timer.
 	* \param me the event
 	*/
-	void post(std::string event_time, MarEvent* me);
-	/** \brief post an event to be scheduled by the timer
+	void post(std::string event_time, EvEvent* me);
+	/** \brief post an event to be scheduled by the timer. The event
+	* should have correct time information otherwise dispatch is
+	* unpredictable but probably immediate.
 	* \param e an event with scheduling information
 	*/
-	void post(ScheduledEvent* e);
+	void post(EvEvent* e);
 
 	/** \brief determine if an event has become due for dispatch
 	* \return true if an event is due

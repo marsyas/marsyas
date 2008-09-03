@@ -22,12 +22,12 @@
 using namespace std;
 using namespace Marsyas;
 
-EvGetUpd::EvGetUpd(MarSystem* src, string scname, MarSystem* tgt, string tcname) : MarEvent("EvGetUpd","GetUpd")
+EvGetUpd::EvGetUpd(MarSystem* src, string scname, MarSystem* tgt, string tcname) : EvEvent("EvGetUpd","GetUpd")
 {
 	setEvent(src,scname,tgt,tcname);
 }
 
-EvGetUpd::EvGetUpd(EvGetUpd& e) : MarEvent("EvGetUpd","GetUpd")
+EvGetUpd::EvGetUpd(EvGetUpd& e) : EvEvent("EvGetUpd","GetUpd")
 {
 	setEvent(e.source_,e.src_cname_,e.target_,e.tgt_cname_);
 }

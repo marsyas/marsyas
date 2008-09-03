@@ -25,7 +25,7 @@
 #include "Conversions.h"
 
 #include "TmSampleCount.h" 
-#include "MarEvent.h"
+#include "EvEvent.h"
 #include "TmTime.h"
 #include "Scheduler.h"
 #include "TmControlValue.h"
@@ -327,7 +327,7 @@ public:
 	std::string getMATLABscript();
 
 	//////////////////////////////////////////////////////////////////////////
-	// MarEvent methods
+	// EvEvent methods
 	//////////////////////////////////////////////////////////////////////////
 	mrs_natural getTime(std::string timer_name);
 	void updtimer(std::string cname, TmControlValue value);
@@ -335,15 +335,15 @@ public:
 	//void addTimer(TmTimer* t);
 	void removeTimer(std::string name);
 
-	void updctrl(MarEvent* me);
-	//void updctrl(std::string time, MarEvent* ev); //clashes with void upctrl(std::string cname, 0);
-	//void updctrl(std::string time, Repeat rep, MarEvent* ev);
-	//void updctrl(Repeat rep, MarEvent* ev);
+	void updctrl(EvEvent* me);
+	//void updctrl(std::string time, EvEvent* ev); //clashes with void upctrl(std::string cname, 0);
+	//void updctrl(std::string time, Repeat rep, EvEvent* ev);
+	//void updctrl(Repeat rep, EvEvent* ev);
 	//void updctrl(std::string time, std::string cname, MarControlPtr control);
 	//void updctrl(std::string time, Repeat rep, std::string cname, MarControlPtr control);
 	//void updctrl(Repeat rep, std::string cname, MarControlPtr control);
-	void updctrl(TmTime t, MarEvent* ev);
-	void updctrl(TmTime t, Repeat rep, MarEvent* ev);
+	void updctrl(TmTime t, EvEvent* ev);
+	void updctrl(TmTime t, Repeat rep, EvEvent* ev);
 	void updctrl(TmTime t, std::string cname, MarControlPtr control);
 	void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
 	//////////////////////////////////////////////////////////////////////////

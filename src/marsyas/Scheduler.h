@@ -24,7 +24,6 @@
 #include "common.h"
 */
 #include "TmTimer.h"
-#include "ScheduledEvent.h"
 #include "TmTime.h"
 #include "TmControlValue.h"
 #include "TmParam.h"
@@ -79,12 +78,12 @@ private:
 	TmTimer* findTimer(std::string name);
 public:
 	// post to default timer
-	void post(std::string event_time, Repeat rep, MarEvent* me);
-	void post(std::string event_time, MarEvent* me);
+	void post(std::string event_time, Repeat rep, EvEvent* me);
+	void post(std::string event_time, EvEvent* me);
 
 	// post to user defined timer
-	void post(TmTime t, Repeat r, MarEvent* me);
-	void post(std::string time, std::string timer_name, Repeat r, MarEvent* me);
+	void post(TmTime t, Repeat r, EvEvent* me);
+	void post(std::string time, std::string timer_name, Repeat r, EvEvent* me);
 
 	mrs_natural getTime(std::string timer);
 

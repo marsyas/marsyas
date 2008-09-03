@@ -24,7 +24,7 @@
 #include <iostream>
 
 #include "MarControl.h"
-#include "MarEvent.h"
+#include "EvEvent.h"
 #include "TmControlValue.h"
 
 namespace Marsyas
@@ -39,7 +39,7 @@ namespace Marsyas
 
 class MarSystem; // forward declaration
 
-class EvValUpd : public MarEvent {
+class EvValUpd : public EvEvent {
 protected:
 	MarSystem* target_;
 	std::string cname_;
@@ -69,8 +69,8 @@ public:
 	virtual EvValUpd* clone();
 
 	// the usual stream IO 
-	friend std::ostream& operator<<(std::ostream&, MarEvent&);
-	friend std::istream& operator>>(std::istream&, MarEvent&);
+	friend std::ostream& operator<<(std::ostream&, EvEvent&);
+	friend std::istream& operator>>(std::istream&, EvEvent&);
 };
 
 }//namespace Marsyas

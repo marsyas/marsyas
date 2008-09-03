@@ -134,30 +134,33 @@ TmTimer::updtimer(std::vector<TmParam> params)
 }
 
 void
-TmTimer::post(std::string event_time, Repeat rep, MarEvent* me)
+TmTimer::post(std::string event_time, Repeat rep, EvEvent* ev)
 {
 	rep--;
 	// should probably check if rep.count==0
 	mrs_natural stime = getTime() + intervalsize(event_time);
-	post(new ScheduledEvent(stime,rep,me));
+	ev->setTime(stime);
+	ev->setRepeat(rep);
+	post(ev);
 }
 
 void
-TmTimer::post(std::string event_time, MarEvent* me)
+TmTimer::post(std::string event_time, EvEvent* ev)
 {
 	mrs_natural stime = getTime() + intervalsize(event_time);
-	post(new ScheduledEvent(stime,Repeat("", 0),me));
+	ev->setTime(stime);
+	ev->setRepeat(Repeat());
+	post(ev);
 }
 
 void
-TmTimer::post(ScheduledEvent* e)
+TmTimer::post(EvEvent* ev)
 {
-	e->setTimer(this); // for EvEpr type events that want to read the timer
+	ev->setTimer(this); // for EvEpr type events that want to read the timer
 	// add pointer to map
-	MarEvent* m = e->getEvent();
-	events_[m->getPrefix()] = e;
+	events_[ev->getPrefix()] = ev;
 	// add to heap
-	pq_.push(e);
+	pq_.push(ev);
 }
 
 bool
@@ -170,30 +173,21 @@ void
 TmTimer::dispatch()
 {
 	while (eventPending()) {
-// This is the old way when using the STL priority_queue
-//        ScheduledEvent* se = pq_.top();
-//        pq_.pop(); // remove the first element
-//        se.getEvent()->dispatch();
-//        if (se.repeat()) {
-//           se.doRepeat();
-//            post(se);
-//        }
-
-		ScheduledEvent* se = pq_.pop();
-		se->getEvent()->dispatch();
-
-		if (se->repeat()) {
-			se->doRepeat();
-			post(se);
+		// dispatch
+		EvEvent* ev = pq_.pop();
+		ev->dispatch();
+		// handle repetition
+		if (ev->repeat()) {
+			ev->doRepeat();
+			post(ev);
 		}
 		else {
 			// delete handle to event
-			MarEvent* m = se->getEvent();
-			events_iter_ = events_.find(m->getPrefix());
+			events_iter_ = events_.find(ev->getPrefix());
 			if (events_iter_ != events_.end()) {
 				events_.erase(events_iter_);
 			}
-			delete(se);
+			delete(ev);
 		}
 	}
 }

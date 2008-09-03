@@ -889,7 +889,7 @@ a progressively lower volume amount: 0.9, 0.8, 0.7, ... and each at a time that
 is a little bit later than the previous. This is messy and repetitive. Why not
 make a new event, called EvRampCtrl, that encapsulates this behaviour.
 
-We start by defining a new EvRampCtrl class that inherits from the MarEvent
+We start by defining a new EvRampCtrl class that inherits from the @file{EvEvent}
 class. We define a constructor that takes a MarSystem to act upon, a control
 to modify, a starting value, an ending value, and a step amount. The implicit
 assumption is that this event will only work on values of type @code{mrs_real}
@@ -899,7 +899,7 @@ files are supplied below.
 We will need an additional variable to save the current adjustment value. Also,
 the event will need to repeat so we will maintain a repeat flag that is true
 until we pass the end value. We override the @code{repeat()} method of
-@file{MarEvent} to return the current value of the repeat flag. The required
+@file{EvEvent} to return the current value of the repeat flag. The required
 variables are shown in the header file below.
 
 @float Figure,fig:sch7
@@ -910,14 +910,14 @@ variables are shown in the header file below.
 @b{#include} @t{<string>}
 
 @b{#include} @t{"MarControl.h"}
-@b{#include} @t{"MarEvent.h"}
+@b{#include} @t{"EvEvent.h"}
 @b{#include} @t{"TmControlValue.h"}
 
 @b{namespace} Marsyas
 @{
   @b{class} MarSystem; @i{// forward declaration}
 
-  @b{class} EvRampCtrl : @b{public} MarEvent @{
+  @b{class} EvRampCtrl : @b{public} EvEvent @{
   @b{protected}:
     MarSystem* target_;
     std::string cname_;
@@ -958,14 +958,14 @@ variables are shown in the header file below.
 @b{#include} @t{<string>}
 
 @b{#include} @t{"MarControl.h"}
-@b{#include} @t{"MarEvent.h"}
+@b{#include} @t{"EvEvent.h"}
 @b{#include} @t{"TmControlValue.h"}
 
 @b{namespace} Marsyas
 @{
   @b{class} MarSystem; @i{// forward declaration}
 
-  @b{class} EvRampCtrl : @b{public} MarEvent @{
+  @b{class} EvRampCtrl : @b{public} EvEvent @{
   @b{protected}:
     MarSystem* target_;
     std::string cname_;
@@ -1019,11 +1019,11 @@ rate amount, and repost the event to the queue.
 @b{using} @b{namespace} std;
 @b{using} @b{namespace} Marsyas;
 
-EvRampCtrl::@b{EvRampCtrl}(MarSystem* m, std::string cname, double start, double end, double rate) : @b{MarEvent}(@t{"EvRampCtrl"},@t{"rc"})
+EvRampCtrl::@b{EvRampCtrl}(MarSystem* m, std::string cname, double start, double end, double rate) : @b{EvEvent}(@t{"EvRampCtrl"},@t{"rc"})
 @{
     @b{set}(m,cname,start,end,rate);
 @}
-EvRampCtrl::@b{EvRampCtrl}(EvRampCtrl& e) : @b{MarEvent}(@t{"EvRampCtrl"},@t{"rc"})
+EvRampCtrl::@b{EvRampCtrl}(EvRampCtrl& e) : @b{EvEvent}(@t{"EvRampCtrl"},@t{"rc"})
 @{
     @b{set}(e.target_,e.cname_,e.start_,e.end_,e.rate_);
 @}

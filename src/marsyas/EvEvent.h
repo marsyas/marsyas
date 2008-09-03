@@ -17,46 +17,62 @@
 */
 
 
-#ifndef MARSYAS_MAREVENT_H
-#define MARSYAS_MAREVENT_H
+#ifndef MARSYAS_EV_EVENT_H
+#define MARSYAS_EV_EVENT_H
 
 #include "Repeat.h"
+//#include "TmTimer.h"
 #include "TmControlValue.h"
 #include <iostream>
 
 namespace Marsyas
 {
 /**
-	\class MarEvent
+	\class EvEvent
 	\ingroup Scheduler
-	\brief MarEvent
+	\brief EvEvent
 	\author Neil Burroughs  inb@cs.uvic.ca
 */
+class TmTimer;
 
-class MarEvent {
+class EvEvent {
 protected:
-	/** \brief the type of the event */
+	/** \brief the type of the event, probably the class name */
 	std::string type_;
 	/** \brief a unique identifier for the event. There is no checking for
 	* uniqueness. If a search is made for a unique name the first hit will
 	* be taken. */
 	std::string name_;
+
+	/** \brief the event dispatch time */
+	mrs_natural time_;
 	/** \brief repeat info for this event */
 	Repeat repeat_;
+	/** \brief the timer on which the event is to be dispatched */
+	TmTimer* timer_;
 
 public:
-	MarEvent();
-	MarEvent(std::string t, std::string n);
+	EvEvent();
+	EvEvent(std::string t, std::string n);
 
-	virtual ~MarEvent();
+	virtual ~EvEvent();
 
-	std::string getType() const { return type_; }
-	std::string getName() const { return name_; }
+	/** \brief get the type of the event which is usually the class name
+	* \return the type name
+	*/
+	std::string getType() const;
+	/** \brief get the name of the event, hopefully a unique identifier
+	* \return the event identifier
+	*/
+	std::string getName() const;
 	/** \brief the prefix is a concatenation of type and name as "type/name"
 	* \return string representation of the prefix
 	*/
-	std::string getPrefix() const { return type_ + "/" + name_; }
-	void setName(std::string n) { name_=n; }
+	std::string getPrefix() const;
+	/** \brief set the name of the event, should be a unique identifier
+	* \param n a unique identifier
+	*/
+	void setName(std::string n);
 	
 	/** \brief the action to be performed by the event. This method is
 	* called when the event is due. Since Marsyas is not threaded, this
@@ -68,28 +84,65 @@ public:
 	* be implemented so that scheduled events may be copied.
 	* \return a pointer to a copy of this event
 	*/
-	virtual MarEvent* clone()=0;
+	virtual EvEvent* clone()=0;
+
+	/** \brief set the timer on which this event is scheduled. This method
+	* is called by the timer's post method when the scheduled event is
+	* posted on the timer.
+	* \param t the timer on which this event is posted.
+	*/
+	virtual void setTimer(TmTimer* t);
+	/** \brief get the time that this event is to be dispatched
+	* \return the dispatch time count for this event
+	*/
+	mrs_natural getTime() const;
+	/** \brief set the time at which this event is to be dispatched
+	* \param t the dispatch time for this event
+	*/
+	void setTime(mrs_natural t);
+
 
 	/** \brief report if the event is to be repeated
 	* \return true if event should repeat
 	*/
-	virtual bool repeat() { return repeat_.repeat(); };
+	virtual bool repeat();
 	/** \brief set the repeat state of this event
 	* \param r new repetition information for this event
 	*/
-	virtual void set_repeat(Repeat r) { repeat_=r; }
-	/** \brief the reason for this method escaped me. It simply returns
+	virtual void setRepeat(Repeat r);
+	/** \brief get the repetition count for this event
+	* \return a pointer to the event object
+	*/
+	virtual mrs_natural getRepeatCount();
+	/** \brief get the repetition time interval for this event.
+	*
+	* If this event does not repeat then the returned time interval is
+	* undefined (may be an empty string). It is best to check to see if
+	* there is repeat information prior to reading the interval.
+	* \return string representation of the time interval
+	*/
+	virtual std::string getRepeatInterval();
+	/** \brief get the repetition information for this event
+	* \return the repetition information for this event
+	*/
+	Repeat getRepeat();
+
+	/** \brief the reason for this method escapes me. It simply returns
 	* parameter supplied but obviously could be overridden for whatever
 	* reason. Although this method is never actually called by anyone
 	* right now.
 	* \param interval an interval of time
 	* \return the same as what was supplied
 	*/
-	virtual std::string repeat_interval(std::string interval) { return interval; };
-	/** \brief get the repeat interval for this event
-	* \return the repeat interval as promised
+	virtual std::string repeat_interval(std::string interval);
+
+	/** \brief force the event to update its dispatch time and decrement
+	* its repeat count based on the repetition information. If the event
+	* does not repeat then this method is meaningless and doesn't do
+	* anything. This method is used by the dispatch() method of the timer.
 	*/
-	virtual std::string repeat_interval() { return repeat_.getInterval(); };
+	void doRepeat();
+
 
 	/** \brief update event parameters dynamically. Parameters of the
 	* event may be updated while the event is on the heap. The support for
@@ -120,9 +173,24 @@ public:
 	*/
 	bool checkupd(std::string c1, std::string c2, TmControlValue v, mrs_natural t);
 
+	friend class EvEventDispatchComparator;
+
 	// the usual stream IO 
-	friend std::ostream& operator<<(std::ostream&, MarEvent&);
-	friend std::istream& operator>>(std::istream&, MarEvent&);
+	friend std::ostream& operator<<(std::ostream&, EvEvent&);
+	friend std::istream& operator>>(std::istream&, EvEvent&);
+};
+
+/**
+	\class EvEventDispatchComparator
+	\ingroup Scheduler
+	\brief class for comparing dispatch times of events. required for insertion into the Heap.
+	\author Neil Burroughs  inb@cs.uvic.ca
+*/
+class EvEventDispatchComparator {
+public:
+	bool operator()(EvEvent* a, EvEvent* b) {
+		return (a->getTime()) < (b->getTime());
+	}
 };
 
 }//namespace Marsyas

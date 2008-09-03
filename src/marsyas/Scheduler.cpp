@@ -187,7 +187,7 @@ Scheduler::removeAll()
 }
 
 void
-Scheduler::post(std::string time, std::string tmname, Repeat r, MarEvent* me)
+Scheduler::post(std::string time, std::string tmname, Repeat r, EvEvent* me)
 {
 	TmTimer* s = findTimer(tmname);
 	if (s!=NULL) {
@@ -195,25 +195,25 @@ Scheduler::post(std::string time, std::string tmname, Repeat r, MarEvent* me)
 			// EvExpr supports querying of the scheduler environment in expressions
 			EvExpr* e=dynamic_cast<EvExpr*>(me);
 			if (e!=NULL) {
-				MRSWARN("Scheduler::post(string time, string tmname, Repeat r, MarEvent* me) : setScheduler is not working yet");
+				MRSWARN("Scheduler::post(string time, string tmname, Repeat r, EvEvent* me) : setScheduler is not working yet");
 				e->getExpression()->setScheduler(this);
 			}
 			s->post(time,r,me);
 		}
-		else MRSWARN("Scheduler::post(string,string,Repeat,MarEvent*)  NULL event");
+		else MRSWARN("Scheduler::post(string,string,Repeat,EvEvent*)  NULL event");
 	}
-	else { MRSWARN("Scheduler::post(string,string,Repeat,MarEvent*)  unknown timer name: "+tmname); }
+	else { MRSWARN("Scheduler::post(string,string,Repeat,EvEvent*)  unknown timer name: "+tmname); }
 }
 
 void
-Scheduler::post(TmTime t, Repeat r, MarEvent* me)
+Scheduler::post(TmTime t, Repeat r, EvEvent* me)
 {
 	// pass the buck
 	post(t.getTime(),t.getTimeName(),r,me);
 }
 
 void
-Scheduler::post(std::string event_time, Repeat rep, MarEvent* me)
+Scheduler::post(std::string event_time, Repeat rep, EvEvent* me)
 {
 	if (timers_[0]!=NULL) {
 		post(event_time,timers_[0]->getPrefix(),rep,me);
@@ -221,7 +221,7 @@ Scheduler::post(std::string event_time, Repeat rep, MarEvent* me)
 }
 
 void
-Scheduler::post(std::string event_time, MarEvent* me)
+Scheduler::post(std::string event_time, EvEvent* me)
 {
 	if (timers_[0]!=NULL) {
 		post(event_time,Repeat(),me);

@@ -23,7 +23,7 @@
 #include <iostream>
 
 #include "MarControl.h"
-#include "MarEvent.h"
+#include "EvEvent.h"
 #include "TmControlValue.h"
 #include "Expr.h"
 
@@ -41,7 +41,7 @@ namespace Marsyas
 class MarSystem; // forward declaration
 class Scheduler;
 
-class EvExpr : public MarEvent {
+class EvExpr : public EvEvent {
 protected:
 	Scheduler* sched_;
 	MarSystem* target_;
@@ -52,6 +52,8 @@ public:
 	EvExpr(MarSystem* target, Ex e, Rp r, std::string nm="Expr");
 	EvExpr(MarSystem* target, ExFile ef, std::string nm="Expr");
 	virtual ~EvExpr();
+
+	void setTimer(TmTimer* t);
 
 	// Event dispatch
 	void dispatch();
@@ -65,8 +67,8 @@ public:
 	virtual void set_repeat(Repeat r) { repeat_=r; }
 
 	// the usual stream IO
-	friend std::ostream& operator<<(std::ostream&, MarEvent&);
-	friend std::istream& operator>>(std::istream&, MarEvent&);
+	friend std::ostream& operator<<(std::ostream&, EvEvent&);
+	friend std::istream& operator>>(std::istream&, EvEvent&);
 };
 
 }//namespace Marsyas

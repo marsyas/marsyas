@@ -22,17 +22,17 @@
 using namespace std;
 using namespace Marsyas;
 
-EvValUpd::EvValUpd(string cname, MarControlPtr val) : MarEvent("EvValUpd","vu")
+EvValUpd::EvValUpd(string cname, MarControlPtr val) : EvEvent("EvValUpd","vu")
 {
 	set(NULL,cname,val);
 }
 
-EvValUpd::EvValUpd(MarSystem* ms, string cname, MarControlPtr val) : MarEvent("EvValUpd","vu")
+EvValUpd::EvValUpd(MarSystem* ms, string cname, MarControlPtr val) : EvEvent("EvValUpd","vu")
 {
 	set(ms,cname,val);
 }
 
-EvValUpd::EvValUpd(EvValUpd& e) : MarEvent("EvValUpd","vu")
+EvValUpd::EvValUpd(EvValUpd& e) : EvEvent("EvValUpd","vu")
 {
 	set(e.target_,e.cname_,e.value_);
 }

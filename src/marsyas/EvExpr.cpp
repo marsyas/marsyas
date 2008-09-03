@@ -23,17 +23,17 @@
 using namespace std;
 using namespace Marsyas;
 
-EvExpr::EvExpr(MarSystem* target, std::string e, std::string nm) : MarEvent("EvExpr",nm)
+EvExpr::EvExpr(MarSystem* target, std::string e, std::string nm) : EvEvent("EvExpr",nm)
 {
 	expr_=new Expr(target,Ex(e));
 }
 
-EvExpr::EvExpr(MarSystem* target, Ex e, Rp r, std::string nm) : MarEvent("EvExpr",nm)
+EvExpr::EvExpr(MarSystem* target, Ex e, Rp r, std::string nm) : EvEvent("EvExpr",nm)
 {
 	expr_=new Expr(target,e,r);
 }
 
-EvExpr::EvExpr(MarSystem* target, ExFile ef, std::string nm) : MarEvent("EvExpr",nm)
+EvExpr::EvExpr(MarSystem* target, ExFile ef, std::string nm) : EvEvent("EvExpr",nm)
 {
 	expr_=new Expr(target,ef);
 }
@@ -41,6 +41,22 @@ EvExpr::EvExpr(MarSystem* target, ExFile ef, std::string nm) : MarEvent("EvExpr"
 EvExpr::~EvExpr()
 {
 	delete expr_;
+}
+
+void
+EvExpr::setTimer(TmTimer* t)
+{
+	EvEvent::setTimer(t);
+//	if (getType()=="EvExpr") {
+//		EvExpr* e = dynamic_cast<EvExpr*>(event_);
+//		if (e!=NULL) {
+//			Expr* x=e->getExpression();
+		if (expr_!=NULL) {
+			expr_->setTimer(timer_);
+			expr_->post(); // evaluate init expressions
+		}
+//		}
+//	}
 }
 
 void
