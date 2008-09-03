@@ -1,267 +1,11 @@
-
-# I've put the most OS-specific files at the top, to test the
-# library support before compiling the un-problematic files
-set( MarSystem_SOURCES
-	Thread.cpp
-	vmblock.cpp
-	SVMClassifier.cpp
-	PhiSEMSource.cpp
-	AudioSink.cpp
-	AudioSource.cpp
-	ADSR.cpp
-	AMDF.cpp
-	ANN_node.cpp
-	AbsSoundFileSink.cpp
-	AbsSoundFileSource.cpp
-	Accumulator.cpp
-	Annotator.cpp
-	AuFileSink.cpp
-	AuFileSource.cpp
-	AutoCorrelation.cpp
-	BaseAudioSink.cpp
-	BeatHistoFeatures.cpp
-	Cascade.cpp
-	Centroid.cpp
-	ClassOutputSink.cpp
-	ClipAudioRange.cpp
-	Collection.cpp
-	CollectionFileSource.cpp
-	Color.cpp
-	CommandLineOptions.cpp
-	Communicator.cpp
-	CompExp.cpp
-	Confidence.cpp
-	Conversions.cpp
-	Daub4.cpp
-	Delay.cpp
-	DownSampler.cpp
-	ERB.cpp
-	Envelope.cpp
-	Esitar.cpp
-	EvEvent.cpp
-	EvExpr.cpp
-	EvGetUpd.cpp
-	EvValUpd.cpp
-	ExCommon.cpp
-	ExNode.cpp
-	ExParser.cpp
-	ExScanner.cpp
-	ExSymTbl.cpp
-	ExVal.cpp
-	Expr.cpp
-	FM.cpp
-	Fanin.cpp
-	Fanout.cpp
-	FileName.cpp
-	Filter.cpp
-	Flux.cpp
-	FullWaveRectifier.cpp
-	GaussianClassifier.cpp
-	HalfWaveRectifier.cpp
-	HarmonicEnhancer.cpp
-	Histogram.cpp
-	InvSpectrum.cpp
-	KNNClassifier.cpp
-	Kurtosis.cpp
-	LPC.cpp
-	LPCC.cpp
-	LSP.cpp
-	Limiter.cpp
-	MFCC.cpp
-	MP3FileSource.cpp
-	MarControl.cpp
-	MarControlManager.cpp
-	MarControlValue.cpp
-	MarFileSink.cpp
-	MarSystem.cpp
-	MarSystemManager.cpp
-	MarSystemTemplateAdvanced.cpp
-	MarSystemTemplateBasic.cpp
-	MaxArgMax.cpp
-	Mean.cpp
-	MeddisHairCell.cpp
-	Memory.cpp
-	MemorySource.cpp
-	MidiInput.cpp
-	MidiOutput.cpp
-	MinArgMin.cpp
-	Mono2Stereo.cpp
-	MrsLog.cpp
-	MslModel.cpp
-	Negative.cpp
-	NoiseGate.cpp
-	NoiseSource.cpp
-	Norm.cpp
-	NormCut.cpp
-	NormMaxMin.cpp
-	Normalize.cpp
-	NumericLib.cpp
-	OggFileSource.cpp
-	OnePole.cpp
-	OverlapAdd.cpp
-	Parallel.cpp
-	PeakConvert.cpp
-	PeakResidual.cpp
-	PeUtilities.cpp
-	Peak2Rms.cpp
-	PeakPeriods2BPM.cpp
-	Peaker.cpp
-	PeakerAdaptive.cpp
-	PlotSink.cpp
-	Plucked.cpp
-	Power.cpp
-	PowerSpectrum.cpp
-	Product.cpp
-	PvConvert.cpp
-	PvConvolve.cpp
-	PvFold.cpp
-	PvOscBank.cpp
-	PvOverlapadd.cpp
-	PvUnconvert.cpp
-	RawFileSource.cpp
-	RealvecSink.cpp
-	RealvecSource.cpp
-	Reassign.cpp
-	Repeat.cpp
-	Rms.cpp
-	Rolloff.cpp
-	SCF.cpp
-	SFM.cpp
-	SMO.cpp
-	SOM.cpp
-	Scheduler.cpp
-	SeneffEar.cpp
-	Series.cpp
-	ShiftInput.cpp
-	ShiftOutput.cpp
-	Shifter.cpp
-	Shredder.cpp
-	SilenceRemove.cpp
-	SineSource.cpp
-	Skewness.cpp
-	SoundFileSink.cpp
-	SoundFileSource.cpp
-	Spectrum.cpp
-	StandardDeviation.cpp
-	StereoSpectrum.cpp
-	StereoSpectrumFeatures.cpp
-	Stk.cpp
-	Sum.cpp
-	Summary.cpp
-	Talk.cpp
-	TimeLine.cpp
-	TimeStretch.cpp
-	TmTimerManager.cpp
-	TmControlValue.cpp
-	TmRealTime.cpp
-	TmParam.cpp
-	TmSampleCount.cpp
-	TmTime.cpp
-	TmTimer.cpp
-	ViconFileSource.cpp
-	WavFileSink.cpp
-	WavFileSource.cpp
-	WaveletBands.cpp
-	WaveletPyramid.cpp
-	WaveletStep.cpp
-	WekaSink.cpp
-	WekaSource.cpp
-	Windowing.cpp
-	ZeroCrossings.cpp
-	ZeroRClassifier.cpp
-	basis.cpp
-	fft.cpp
-	lu.cpp
-	realvec.cpp
-	PeakSynthOsc.cpp
-	Cartesian2Polar.cpp
-	PeakSynthFFT.cpp
-	Polar2Cartesian.cpp
-	FlowCutSource.cpp
-	AbsSoundFileSource2.cpp
-	AudioSink2.cpp
-	AudioSource2.cpp
-	SoundFileSource2.cpp
-	WavFileSource2.cpp
-	BICchangeDetector.cpp
-	QGMMModel.cpp
-	PeakSynthOscBank.cpp
-	SpectralSNR.cpp
-	Vibrato.cpp
-	Panorama.cpp
-	Biquad.cpp
-	FlowThru.cpp
-	MarSystemTemplateMedium.cpp
-	PeakFeatureSelect.cpp
-	SimilarityMatrix.cpp
-	Metric.cpp
-	HWPS.cpp
-	RBF.cpp
-	NormMatrix.cpp
-	WHaSp.cpp
-	FanOutIn.cpp
-	PeakLabeler.cpp
-	PeakClusterSelect.cpp
-	peakView.cpp
-	PeakViewSink.cpp
-	PeakViewSource.cpp
-	OneRClassifier.cpp
-	WekaData.cpp
-	TranscriberExtract.cpp
-	Transcriber.cpp
-	PhiSEMFilter.cpp
-	Classifier.cpp
-	Spectrum2Chroma.cpp
-	Spectrum2Mel.cpp
-	ADRess.cpp
-	ADRessSpectrum.cpp
-	ADRessStereoSpectrum.cpp
-	EnhADRess.cpp
-	StereoSpectrumSources.cpp
-	EnhADRessStereoSpectrum.cpp
-	McAulayQuatieri.cpp
-	PeakerOnset.cpp
-	Reverse.cpp
-	SNR.cpp
-	PCA.cpp
-	AbsMax.cpp
-	TimelineLabeler.cpp
-	RadioDrumInput.cpp
-	Gain.cpp
-)#modifySources
-
-set(Marsyas_HEADERS
-	MarSystemManager.h
-	MarSystem.h
-	common.h
-	Conversions.h
-	EvEvent.h
-	TmTime.h
-	TmControlValue.h
-	MrsLog.h
-	MarControl.h
-	realvec.h
-	TmSampleCount.h
-	MarControlValue.h
-	Communicator.h
-	TmTimer.h
-	Repeat.h
-	Scheduler.h
-	MarControlAccessor.h
-	Heap.h
-	AudioSink.h
-)
-
-## maybe -- necessary to make the .h files show up in MSVC
-## I don't think it's worth listing them all.  -gp
-#if (WIN32)
-#  list (APPEND MarSystem_SOURCES
-#    common.h
-#  )
-#endif (WIN32)
-
+file(GLOB MarSystem_SOURCES RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.cpp)
+file(GLOB MarSystem_HEADERS RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.h)
 
 ## OTHERLIBS
+
+list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
+list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.h)
+
 if (MARSYAS_MAD)
 	include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
@@ -271,40 +15,34 @@ if (MARSYAS_VORBIS)
 endif (MARSYAS_VORBIS)
 
 if (GSTREAMER_FOUND)
+#	list(APPEND MarSystem_SOURCES GStreamerSource.cpp gst-decode.cpp)
 	include_directories(${GSTREAMER_INCLUDE_DIRS})
 endif (GSTREAMER_FOUND)
 
-if (MARSYAS_MATLAB) 
-   include_directories(${MATLAB_INCLUDE_DIR})
+if (MARSYAS_MATLAB)
+#	list(APPEND MarSystem_SOURCES MATLABengine.cpp)
+	include_directories(${MATLAB_INCLUDE_DIR})
 endif (MARSYAS_MATLAB)  
-
-
-list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
 
 if (MARSYAS_AUDIOIO)
 	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.cpp)
+	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.h)
+	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtError.h)
 	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.cpp)
+	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.h)
+	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtError3.h)
 endif (MARSYAS_AUDIOIO)
 
 if (MARSYAS_MIDIIO)
 	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.cpp)
+	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.h)
+	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtError.h)
+	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtError3.h)
 endif (MARSYAS_MIDIIO)
-
-if (GSTREAMER_FOUND)
-	list(APPEND MarSystem_SOURCES GStreamerSource.cpp gst-decode.cpp)
-endif (GSTREAMER_FOUND)
-
-
-if (MARSYAS_MATLAB)
-	list(APPEND MarSystem_SOURCES MATLABengine.cpp)
-endif (MARSYAS_MATLAB)
-
-
 
 
 ## ACTUAL BUILD
-add_library(marsyas STATIC ${MarSystem_SOURCES} )
-
+add_library(marsyas STATIC ${MarSystem_SOURCES} ${MarSystem_HEADERS})
 
 ## LINKING
 if (MARSYAS_MAD)
