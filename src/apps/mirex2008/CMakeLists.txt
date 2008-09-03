@@ -1,0 +1,3 @@
+marsyas_app(mirex_extract mirex_extract.cpp)
+marsyas_app(mirex_train_and_predict mirex_train_and_predict.cpp)
+
