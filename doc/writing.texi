@@ -854,7 +854,7 @@ value 0.
 @subsubsection Timer Factory
 @anchor{archtmrfac} 
 New timers can be added to the Timer Factory by modifying
-@file{TmTimerFactory}. Doing so allows the use of the addTimer method in
+@file{TmTimerManager}. Doing so allows the use of the addTimer method in
 @file{MarSystem} by simply specifying the type/name of the timer as
 opposed to creating a new timer.
 
@@ -866,7 +866,7 @@ net->@b{addTimer}(@t{"TmSampleCount"},@t{"counter"});
 @end float
 
 The instructions for adding new timers to the factory are contained in
-@file{TmTimerFactory} and repeated here. Basically, a map is created
+@file{TmTimerManager} and repeated here. Basically, a map is created
 from "TimerName"=>TimerConstructorObject. This makes it possible to use
 a map for fast access to specific timers and it prevents having to
 instantiate each Timer type at startup. The constructor object simply
@@ -874,7 +874,7 @@ wraps the new operator so that it constructs objects only when
 requested.
 
 @itemize
-@item Add the timer's header file to the top of @file{TmTimerFactory.cpp} as an #include.
+@item Add the timer's header file to the top of @file{TmTimerManager.cpp} as an #include.
 @item Underneath the includes, wrap the timer name in the macro @code{TimerCreateWrapper}.
 @item In the addTimers function wrap the timer name in the macro @code{registerTimer}.
 @end itemize

@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_TM_GETTIME_H
-#define MARSYAS_TM_GETTIME_H
+#ifndef MARSYAS_TM_REAL_TIME_H
+#define MARSYAS_TM_REAL_TIME_H
 
 #include "MarControlValue.h"
 #include "TmTimer.h"
@@ -30,30 +30,31 @@
 namespace Marsyas
 {
 /**
-	\class TmGetTime
+	\class TmRealTime
 	\ingroup Scheduler
-	\brief TmGetTime reads the getlocaltime() function, system clock to get the current number of microseconds
+	\brief TmRealTime reads the getlocaltime() function, system clock to
+		get the current number of microseconds
 	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
-class TmGetTime : public TmTimer {
+class TmRealTime : public TmTimer {
 protected:
 	/** \brief last read count of microseconds. */
 	int last_usecs_;
 
 public:
-	/** \brief empty constructor. Given the default name: System as in "TmGetTime/System"
+	/** \brief empty constructor. Given the default name: System as in "TmRealTime/System"
 	*/
-	TmGetTime();
-	/** \brief named constructor. Given the identifier "TmGetTime/name"
+	TmRealTime();
+	/** \brief named constructor. Given the identifier "TmRealTime/name"
 	* \param name a unique name to call this timer
 	*/
-	TmGetTime(std::string name);
+	TmRealTime(std::string name);
 	/** \brief copy constructor
 	* \param t timer to copy
 	*/
-	TmGetTime(const TmGetTime& t);
-	~TmGetTime();
+	TmRealTime(const TmRealTime& t);
+	~TmRealTime();
 
 	/** \brief get the difference between the current source control value
 	* and its value since it was last read. Does not currently work for

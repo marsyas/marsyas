@@ -152,9 +152,9 @@ set( MarSystem_SOURCES
 	Talk.cpp
 	TimeLine.cpp
 	TimeStretch.cpp
-	TimerFactory.cpp
+	TmTimerManager.cpp
 	TmControlValue.cpp
-	TmGetTime.cpp
+	TmRealTime.cpp
 	TmParam.cpp
 	TmSampleCount.cpp
 	TmTime.cpp

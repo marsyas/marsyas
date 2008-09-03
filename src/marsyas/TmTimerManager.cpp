@@ -17,7 +17,7 @@
 */
 
 
-#include "TimerFactory.h"
+#include "TmTimerManager.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -32,7 +32,7 @@ using namespace Marsyas;
  2. Wrap the object using the macro:
     TimerCreateWrapper(TmSomeTimerName);
  3. Register the timer in the map:
-    in function TimerFactory::addTimers() add the line
+    in function TmTimerManager::addTimers() add the line
     registerTimer(TmSomeTimerName);
 */
 
@@ -43,54 +43,54 @@ using namespace Marsyas;
 	}
 #define registerTimer(_NAME) registry_[#_NAME] = new Make##_NAME();
 
-#include "TmGetTime.h"
+#include "TmRealTime.h"
 #include "TmSampleCount.h"
 
-TimerCreateWrapper(TmGetTime);
+TimerCreateWrapper(TmRealTime);
 TimerCreateWrapper(TmSampleCount);
 
-TimerFactory* TimerFactory::instance_ = NULL;
+TmTimerManager* TmTimerManager::instance_ = NULL;
 
-TimerFactory::TimerFactory()
+TmTimerManager::TmTimerManager()
 {
 	addTimers();
 }
 
-TimerFactory::~TimerFactory()
+TmTimerManager::~TmTimerManager()
 {
 	delete instance_;
 	instance_=NULL;
 }
 
-void TimerFactory::addTimers()
+void TmTimerManager::addTimers()
 {
 	// register your timers here!
-	registerTimer(TmGetTime);
+	registerTimer(TmRealTime);
 	registerTimer(TmSampleCount);
 }
 
-TimerFactory*
-TimerFactory::getInstance()
+TmTimerManager*
+TmTimerManager::getInstance()
 {
 	if (instance_==NULL) {
-		instance_=new TimerFactory();
+		instance_=new TmTimerManager();
 	}
 	return instance_;
 }
 
 TmTimer*
-TimerFactory::make(std::string class_name, std::string identifier)
+TmTimerManager::make(std::string class_name, std::string identifier)
 {
 	MakeTimer* m = registry_[class_name];
 	if (m==NULL) { // does the map always return NULL when key is not in the map??
-		MRSWARN("TimerFactory::make(string,string)  name '"+class_name+"' does not name a timer");
+		MRSWARN("TmTimerManager::make(string,string)  name '"+class_name+"' does not name a timer");
 		return NULL;
 	}
 	return m->make(identifier);
 }
 
 TmTimer*
-TimerFactory::make(std::string class_name, std::string identifier, std::vector<TmParam> params)
+TmTimerManager::make(std::string class_name, std::string identifier, std::vector<TmParam> params)
 {
 	TmTimer* tmr = make(class_name,identifier);
 	if(tmr!=NULL) {

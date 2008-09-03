@@ -17,32 +17,32 @@
 */
 
 
-#include "TmGetTime.h"
+#include "TmRealTime.h"
 #include "Scheduler.h"
 #include "Conversions.h" // time2usecs
 
 using namespace std;
 using namespace Marsyas;
 
-TmGetTime::TmGetTime() : TmTimer("TmGetTime","System")
+TmRealTime::TmRealTime() : TmTimer("TmRealTime","System")
 {
 	last_usecs_=readTimeSrc();
 }
 
-TmGetTime::TmGetTime(std::string name) : TmTimer("TmGetTime",name)
+TmRealTime::TmRealTime(std::string name) : TmTimer("TmRealTime",name)
 {
 	last_usecs_=readTimeSrc();
 }
 
-TmGetTime::TmGetTime(const TmGetTime& t) : TmTimer(t)
+TmRealTime::TmRealTime(const TmRealTime& t) : TmTimer(t)
 {
 	name_=t.name_;
 }
 
-TmGetTime::~TmGetTime(){ }
+TmRealTime::~TmRealTime(){ }
 
 mrs_natural
-TmGetTime::readTimeSrc()
+TmRealTime::readTimeSrc()
 {
 /*  struct timeval {
      int tv_sec; //seconds
@@ -63,7 +63,7 @@ TmGetTime::readTimeSrc()
 }
 
 mrs_natural
-TmGetTime::intervalsize(std::string interval)
+TmRealTime::intervalsize(std::string interval)
 {
 	return time2usecs(interval);
 }

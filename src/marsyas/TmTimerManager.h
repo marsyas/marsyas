@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_TIMER_FACTORY_H
-#define MARSYAS_TIMER_FACTORY_H
+#ifndef MARSYAS_TM_TIMER_MANAGER_H
+#define MARSYAS_TM_TIMER_MANAGER_H
 
 /** Adding new Timers:
  New timers are added by first making them...
@@ -29,7 +29,7 @@
  2. Wrap the object using the macro:
     TimerCreateWrapper(TmSomeTimerName);
  3. Register the timer in the map:
-    in function TimerFactory::addTimers() add the line
+    in function TmTimerManager::addTimers() add the line
     registerTimer(TmSomeTimerName);
 */
 
@@ -46,9 +46,9 @@ using namespace std;
 namespace Marsyas
 {
 /**
-	\class TimerFactory
+	\class TmTimerManager
 	\ingroup Scheduler
-	\brief TimerFactory
+	\brief TmTimerManager
 	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
@@ -58,19 +58,19 @@ struct MakeTimer {
 	virtual TmTimer* make(std::string)=0;
 };
 
-class TimerFactory {
+class TmTimerManager {
 	std::map<std::string, MakeTimer*> registry_;
-	static TimerFactory* instance_;
-	TimerFactory();
+	static TmTimerManager* instance_;
+	TmTimerManager();
 	void addTimers();
 
 public:
-	static TimerFactory* getInstance();
-	virtual ~TimerFactory();
+	static TmTimerManager* getInstance();
+	virtual ~TmTimerManager();
 	TmTimer* make(std::string class_name, std::string identifier);
 	TmTimer* make(std::string class_name, std::string identifier, std::vector<TmParam> params);
 };
-// make sure the TimerFactory instance is NULL so the singleton can be created
+// make sure the TmTimerManager instance is NULL so the singleton can be created
 }
 
 #endif

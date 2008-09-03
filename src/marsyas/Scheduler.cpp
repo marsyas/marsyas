@@ -18,7 +18,7 @@
 
 #include "Scheduler.h"
 #include "EvExpr.h"
-#include "TimerFactory.h"
+#include "TmTimerManager.h"
 
 using namespace std;
 //using namespace Marsyas;
@@ -72,7 +72,7 @@ Scheduler::addTimer(std::string class_name, std::string identifier)
 		MRSWARN("Scheduler::addTimer(\""+class_name+"\",\""+identifier+"\")  refusing to add timer with name already in use");
 	}
 	else {
-		addTimer(TimerFactory::getInstance()->make(class_name,identifier));
+		addTimer(TmTimerManager::getInstance()->make(class_name,identifier));
 	}
 }
 
@@ -84,7 +84,7 @@ Scheduler::addTimer(std::string class_name, std::string identifier, std::vector<
 		MRSWARN("Scheduler::addTimer(\""+class_name+"\",\""+identifier+"\",TmParams)  refusing to add timer with name already in use");
 	}
 	else {
-		addTimer(TimerFactory::getInstance()->make(class_name,identifier,params));
+		addTimer(TmTimerManager::getInstance()->make(class_name,identifier,params));
 	}
 }
 

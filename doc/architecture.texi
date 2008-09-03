@@ -232,7 +232,7 @@ allows for a wide range of user specified control rates and actions.
 
 @subsubsection Time
 Time is simply a counter. What it counts is up to the writer of a new timer
-class. The two supplied timers, TmSampleCount and TmGetTime, count audio samples
+class. The two supplied timers, TmSampleCount and TmRealTime, count audio samples
 and system micro-seconds respectively.
 
 There are a number of issues surrounding control rates in Marsyas and most other
@@ -401,7 +401,11 @@ count. There are three ways to define repetition. @code{Repeat()}
 defines no repetition. @code{Repeat(string interval)} defines an
 infinite repetition at a rate specified by the supplied interval.
 @code{Repeat(string interval, mrs_natural count)} defines a finite
-repetition of count repeats with the specified interval.
+repetition of count repeats to occur every interval.
+
+Time is specified as a single string without a timer name. It is assumed
+that the specified interval time will be meaningful on the timer that
+the event is posted in.
 
 @subsubsection TmTime
 Time is specified using the @file{TmTime} class as
@@ -411,7 +415,7 @@ example, @code{TmTime("TmSampleCount/Virtual","5s")} specifies 5 seconds
 from the point of time it is used on the TmSampleCount timer called
 Virtual.
 
-@subsubsection TmTimerFactory
+@subsubsection TmTimerManager
 Rather than instantiating timers and adding them to the scheduler using
 the @code{MarSystem::addtimer(TmTimer* tmr)} method, timers may be
 specified and added by name using the
@@ -419,7 +423,7 @@ specified and added by name using the
 is the timer name, ie TmSampleCount, and ident is the unique identifier,
 ie Virtual. Of course, if the timer name is not known then this method
 will fail. New timers can be added to the factory using the method
-laid out in @file{TimerFactory.cpp}. @xref{archtmrfac,,Timer Factory}.
+laid out in @file{TmTimerManager.cpp}. @xref{archtmrfac,,Timer Factory}.
 @c @ref{Writing a new Timer,Timer Factory}.
 
 
