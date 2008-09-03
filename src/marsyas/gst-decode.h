@@ -19,6 +19,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "config.h"
+
+#ifdef MARSYAS_GSTREAMER
+
 #ifndef GST_DECODE_H
 #define GST_DECODE_H
 
@@ -46,3 +50,5 @@ void gstreamer_cleanup(GstElement*);
 audioVector gst_decode_file(const gchar*);
 
 #endif
+
+#endif //MARSYAS_GSTREAMER

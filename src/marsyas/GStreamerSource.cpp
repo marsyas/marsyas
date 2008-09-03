@@ -18,8 +18,10 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 #include "GStreamerSource.h"
+
+#ifdef MARSYAS_GSTREAMER
+
 #include "gst-decode.h"
 
 using namespace std;
@@ -117,3 +119,5 @@ void GStreamerSource::myProcess(realvec& in,realvec &out)
         }
     }
 }
+
+#endif //MARSYAS_GSTREAMER
