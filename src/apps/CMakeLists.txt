@@ -22,7 +22,7 @@ add_subdirectory(kea)
 add_subdirectory(peakSynth)
 add_subdirectory(peakClustering)
 add_subdirectory(sfplugin)
-add_subdirectory(msl)
+#add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 add_subdirectory(mirex2008)
 ###### anything to do with the scheduler
 add_subdirectory(mudbox)
