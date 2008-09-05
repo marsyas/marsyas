@@ -23,3 +23,6 @@ endmacro (marsyas_qt4app)
 add_subdirectory(MarPlayer)
 add_subdirectory(MarPhasevocoder)
 add_subdirectory(MarLpc)
+add_subdirectory(MarGrid)
+#add_subdirectory(MarGrid2)
+
