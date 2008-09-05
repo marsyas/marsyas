@@ -72,6 +72,7 @@ PvConvert::addControls()
 void
 PvConvert::myUpdate(MarControlPtr sender)
 {
+	
 	(void) sender;
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>() + 2);
@@ -218,6 +219,9 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 
 
 	
+
+
+	
 	
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
@@ -312,6 +316,8 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 			// out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
 		}
 	}
+
+
 }
 
 void 

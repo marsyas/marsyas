@@ -117,7 +117,15 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	
 	// create the phasevocoder network
 	MarSystem* pvseries = mng.create("Series", "pvseries");
-	pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	
+	if (microphone_)
+		pvseries->addMarSystem(mng.create("AudioSource", "src"));
+	else 
+		pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
+
+
+
 	if (oscbank_) 
 	{
 		pvseries->addMarSystem(mng.create("PhaseVocoderOscBank", "pvoc"));		
@@ -149,16 +157,38 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	}
 	
 
-
-	pvseries->addMarSystem(mng.create("SoundFileSink", "dest"));
+	if (outsfname == EMPTYSTRING) 
+	{
+		pvseries->addMarSystem(mng.create("AudioSink", "dest"));
+		pvseries->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
+	}
+	else 
+	{
+		pvseries->addMarSystem(mng.create("SoundFileSink", "dest"));
+	}
 	
-						   
-	pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	
+	if (microphone_) 
+	{
+		pvseries->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
+		pvseries->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+	}
+	else 
+	{
+		pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	}
+	
 	pvseries->updctrl("mrs_natural/inSamples", D);
 	
 	
 	pvseries->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
-
+	
+	if (outsfname == EMPTYSTRING) 
+	{
+		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	}
+	
+		
 	
 	if (!quietopt_)
 		cout << *pvseries << endl;

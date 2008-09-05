@@ -176,6 +176,7 @@
 #include "RadioDrumInput.h"
 #include "NoiseGate.h"
 #include "Gain.h"
+#include "StretchLinear.h"
 //modifyHeader
 
 using namespace std;
@@ -337,6 +338,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AbsMax", new AbsMax("absmaxpr"));
 	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
 	registerPrototype("Gain", new Gain("gp"));
+	registerPrototype("StretchLinear", new StretchLinear("stretchlinearpr"));
 	//modifyRegister
 
 
@@ -557,6 +559,7 @@ MarSystemManager::MarSystemManager()
 					   "mrs_natural/winSize");
 		pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/winSize", 
 					   "mrs_natural/winSize");
+		
 
 		pvocpr->linkctrl("PvFold/fo/mrs_natural/Decimation", 
 					   "mrs_natural/Decimation");
@@ -612,7 +615,7 @@ MarSystemManager::MarSystemManager()
 	pvocpr1->linkctrl("ShiftInput/si/mrs_natural/winSize", 
 					   "mrs_natural/winSize");
 
-	pvocpr->linkctrl("PvOscBank/pob/mrs_natural/winSize", 
+	pvocpr1->linkctrl("PvOscBank/pob/mrs_natural/winSize", 
 					 "mrs_natural/winSize");
 
 	pvocpr1->linkctrl("PvFold/fo/mrs_natural/Decimation", 

@@ -308,6 +308,8 @@ public:
   void process(realvec& in, realvec& out);   
 	void tick();
 
+		
+		std::string toString();
   // derived class such as Composite can override put 
   // essentially overriding operator<< 
   virtual std::ostream& put(std::ostream& o);

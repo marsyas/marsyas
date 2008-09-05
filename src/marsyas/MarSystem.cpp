@@ -1340,6 +1340,15 @@ const MarSystem::recvControls()
 	return NULL;
 }
 
+string
+MarSystem::toString()
+{
+	ostringstream oss;
+	put(oss);
+	return oss.str();
+}
+
+
 // write *this to s 
 ostream&
 MarSystem::put(ostream &o) 

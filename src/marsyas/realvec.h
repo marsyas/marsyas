@@ -314,6 +314,7 @@ mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
 inline 
 mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 {
+	#ifdef MARSYAS_DEBUG
 	if ((r >= rows_) || (c >= cols_))
 	{
 		printf("rows_ = %d\n", rows_);
@@ -321,6 +322,7 @@ mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 		printf("c = %d\n", c);
 		printf("cols = %d\n", cols_);
 	}
+	#endif
 	
 
 	MRSASSERT(r < rows_);
@@ -340,10 +342,17 @@ mrs_real realvec::operator()(const mrs_natural i) const
 inline 
 mrs_real& realvec::operator()(const mrs_natural i)
 {
+#ifdef MARSYAS_DEBUG
+	if (i >= size_)
+	{
+		printf("i= %d\n", i);
+		printf("size = %d\n", size_);
+	}
+#endif
   
-  MRSASSERT(i < size_);
+	MRSASSERT(i < size_);
   
-  return data_[i];
+	return data_[i];
 }
 
 }//namespace Marsyas

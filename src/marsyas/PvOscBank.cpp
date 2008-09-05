@@ -77,6 +77,7 @@ PvOscBank::myUpdate(MarControlPtr sender)
   
 	if (size_ != psize_) 
 	{
+
 		lastamp_.stretch(size_);
 		lastfreq_.stretch(size_);
 		index_.stretch(size_);
@@ -103,13 +104,9 @@ void
 PvOscBank::myProcess(realvec& in, realvec& out)
 {
 	
-	//checkFlow(in,out);
+	
 	temp_.setval(0.0);
 
-
-
-
-	
   
 	if (P_ > 1.0)
 		NP_ = (mrs_natural)(N_/P_);
@@ -181,5 +178,4 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		temp_(t) = 0.0;
 	 
 	
-
 }
