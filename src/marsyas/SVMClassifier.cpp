@@ -104,10 +104,10 @@ SVMClassifier::~SVMClassifier() {
 
 	   mrs_natural nInstances = instances_.getRows();
 	   for (int i=0; i < nInstances; i++) 
-		free(svm_prob_.x[i]);
+	       free(svm_prob_.x[i]);
 
-	   free(svm_prob_.x); 
-	   free(svm_prob_.y);
+	         free(svm_prob_.x); 
+	         free(svm_prob_.y);
 	} 
 
 	free(svm_model_);
@@ -381,6 +381,9 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 			if (was_training_) {
 				;
 			} else {
+				svm_prob_.y = NULL;
+				svm_prob_.x = NULL;
+				svm_model_ = Malloc(svm_model,1);
 				svm_model_->param.svm_type = svm_;
 				svm_model_->param.weight_label = NULL;
 				svm_model_->param.weight = NULL;
@@ -430,6 +433,8 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 					for (int i=0; i<m; i++)
 						svm_model_->rho[i]= ctrl_rho_->to<realvec>()(i);
 				}
+				else
+					svm_model_->rho = NULL;
 
 				if (ctrl_probA_->to<realvec>().getSize()) //probA
 				{
@@ -437,6 +442,8 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 					for (int i=0; i<m; i++)
 						svm_model_->probA[i] = ctrl_probA_->to<realvec>()(i);
 				}
+				else 
+					svm_model_->probA = NULL;
 
 				if (ctrl_probB_->to<realvec>().getSize()) //probB
 				{
@@ -444,6 +451,8 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 					for (int i=0; i<m; i++)
 						svm_model_->probB[i]=ctrl_probB_->to<realvec>()(i);
 				}
+				else 
+					svm_model_->probB = NULL;
 
 				if (ctrl_label_->to<realvec>().getSize()) //label
 				{
@@ -452,6 +461,8 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 						svm_model_->label[i]
 								= (int)ctrl_label_->to<realvec>()(i);
 				}
+				else 
+					svm_model_->label = NULL;
 
 				if (ctrl_nSV_->to<realvec>().getSize()) //nr_sv 
 				{
@@ -459,6 +470,8 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 					for (int i=0; i<n; i++)
 						svm_model_->nSV[i]=(int)ctrl_nSV_->to<realvec>()(i);
 				}
+				else 
+					svm_model_->label = NULL;
 
 #ifdef MARSYAS_LOG_DEBUGS
 

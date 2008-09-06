@@ -240,6 +240,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				out(o,t) = in(o,t);
 			}
 		}
+		if (audio_ != NULL) 
 		for (t=0; t < rsize_; t++) 
 		{
 			data_[2*t] = 0.0;
