@@ -191,6 +191,8 @@ protected:
 
 	MarSystem& operator=(const MarSystem&) { assert(0); return *this;} // copy assignment (should never be called!) [!]
 
+  virtual std::ostream& put_html_worker(std::ostream& o);
+
 public:
 	MarSystem(std::string type, std::string name);
   MarSystem(const MarSystem& a);	// copy constructor
@@ -313,6 +315,9 @@ public:
   // derived class such as Composite can override put 
   // essentially overriding operator<< 
   virtual std::ostream& put(std::ostream& o);
+
+//   // Output the MarSystem as an HTML document with nested lists
+    virtual std::ostream& put_html(std::ostream& o);
 
   // the usual stream IO 
   friend std::ostream& operator<<(std::ostream&, MarSystem&);

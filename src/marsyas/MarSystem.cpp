@@ -1421,6 +1421,125 @@ MarSystem::put(ostream &o)
 	return o;	
 }
 
+//
+// Output the MarSystem to stdout as a HTML document, with
+// collapsible elements provided by a Javascript function
+//
+ostream&
+MarSystem::put_html(ostream &o) 
+{
+   //
+   // Output the HTML header
+   //
+   // sness - Add proper DOCTYPE later
+    o << "<script type=\"text/javascript\" src=\"http://assets.sness.net/simpletreemenu.js\">" << endl;
+    o << "</script>" << endl;
+    o << "<link rel=\"stylesheet\" type=\"text/css\" href=\"http://assets.sness.net/simpletree.css\" />" << endl;
+    o << "<a href=\"javascript:ddtreemenu.flatten(\'treemenu1\', \'expand\')\">Expand All</a>" << endl;
+    o << "<a href=\"javascript:ddtreemenu.flatten(\'treemenu1\', \'contact\')\">Contact All</a>" << endl;
+    o << "<ul id=\"treemenu1\" class=\"treeview\">" << endl;
+
+    put_html_worker(o);
+
+    //
+    // Output the HTML footer
+    //
+    o << "<script type=\"text/javascript\">" << endl;
+    o << "ddtreemenu.createTree(\"treemenu1\", true)" << endl;
+    o << "</script>" << endl;
+
+   return o;
+}
+
+//
+// Output a single MarSystem to &o, without HTML headers and footers
+//
+ostream&
+MarSystem::put_html_worker(ostream &o) 
+{
+
+ 	if(isComposite_)
+ 	{
+ 		o << "<li>MarSystemComposite" << endl;
+ 	}
+ 	else
+ 	{
+ 		o << "<li>MarSystem" << endl;
+ 	}
+ 	o << "Type = " << type_ << endl;
+ 	o << "Name = " << name_ << endl;
+
+ 	o << endl;
+ 	o << "<li>MarControls" << controls_.size() << endl;
+ 	o << "<ul>" << endl;
+ 	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+ 	{
+ 	  ostringstream toss;
+ 	  toss << ctrlIter_->second;
+ 	  if (toss.str() != "") 
+ 	    o << "<li>" << ctrlIter_->first << " = " << ctrlIter_->second << "</li>" << endl;
+ 	  else 
+ 	    o << "<li>" << ctrlIter_->first << " = " << "MARSYAS_EMPTYSTRING" << "</li>" << endl;	    
+
+ 	  //serialize links
+ 	  ostringstream oss;
+ 	  std::vector<std::pair<MarControlPtr, MarControlPtr> > links = ctrlIter_->second->getLinks();
+ 	  mrs_natural numLinks = 0;
+	  
+ 	  //
+ 	  // Links To:
+ 	  //
+ 	  for (size_t i=0; i<links.size(); i++)
+ 		{
+ 		  //check where to this control is linking, but avoid outputting root link info 
+ 		  if(ctrlIter_->second() == links[i].first() && links[i].first() != links[i].second())
+ 			{
+ 			  oss << "<li>" << links[i].second->getMarSystem()->getAbsPath() << links[i].second->getName() << "</li>" << endl;
+ 			  numLinks++;
+ 			}
+ 		}
+	  if (numLinks > 0)
+		o << "<li>LinksTo = " << numLinks << endl << "<ul>" << oss.str() << "</ul></li>";
+
+ 	  // 
+ 	  // Linked From:
+ 	  //
+ 	  numLinks = 0;
+ 	  oss.str(""); //clear the stringstream
+ 	  for (size_t i=0; i<links.size(); i++)
+ 		{
+ 		  //check who is linking to this control, but avoid outputting root link info 
+ 		  if(ctrlIter_->second() == links[i].second() && links[i].first() != links[i].second())
+ 			{
+ 			  oss << "<li>" << links[i].first->getMarSystem()->getAbsPath() << links[i].first->getName() << "</li>" << endl;
+ 			  numLinks++;
+ 			}
+ 		}
+	  if (numLinks > 0)
+		o << "<li>LinkedFrom = " << numLinks << endl << "<ul>" << oss.str() << "</ul></li>";
+ 	}
+ 	o << "</ul>" << endl;
+ 	o << "</li>" << endl;
+
+ 	if(isComposite_)
+ 	{
+ 		o << endl;
+ 		o << "<li>Components = " << marsystemsSize_ << endl;
+ 		o << "<ul>" << endl;
+
+ 		for (mrs_natural i=0; i < marsystemsSize_; i++)
+ 		  (marsystems_[i])->put_html_worker(o);
+		
+ 		o << "</ul>" << endl;
+ 		o << "</li>" << endl;
+ 	}
+
+ 	o << "</li>" << endl;
+
+
+ 	return o;	
+ }
+
 ostream& 
 Marsyas::operator<< (ostream& o, MarSystem& sys)
 {
