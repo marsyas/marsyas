@@ -170,7 +170,7 @@ TmTimer::eventPending()
 
 void
 TmTimer::dispatch()
-{
+{	//if (getPrefix()=="TmVirtualTime/neil") cout << getTime() << endl;
 	while (eventPending()) {
 		// dispatch
 		EvEvent* ev = pq_.pop();

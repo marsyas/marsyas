@@ -122,6 +122,18 @@ Scheduler::updtimer(std::string tmr_id, TmControlValue value)
 	}
 }
 void
+Scheduler::updtimer(std::string tmr_id, TmParam& param)
+{
+	TmTimer* s = findTimer(tmr_id);
+	if (s==NULL) {
+		MRSWARN("Scheduler::updtimer(std::string,TmControlValue)  no timer: "+timer_ident);
+	}
+	else {
+		s->updtimer(param);
+	}
+}
+
+void
 Scheduler::updtimer(std::string tmr_id, std::vector<TmParam> params)
 {
 	string timer_ident="";

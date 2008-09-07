@@ -1293,17 +1293,38 @@ MarSystem::removeTimer(string name)
 }
 
 void
-MarSystem::addTimer(std::string class_name, std::string identifier)
+MarSystem::addTimer(std::string tmr_class, std::string tmr_ident)
 {
-	scheduler_.addTimer(class_name,identifier);
+	scheduler_.addTimer(tmr_class,tmr_ident);
 }
 void
-MarSystem::updtimer(std::string cname, TmControlValue value)
+MarSystem::addTimer(std::string tmr_class, std::string tmr_ident, std::vector<TmParam> params)
 {
-	scheduler_.updtimer(cname,value);
+	scheduler_.addTimer(tmr_class,tmr_ident,params);
 }
+
+void
+MarSystem::updtimer(std::string tmr_ctrl_path, TmControlValue value)
+{
+	scheduler_.updtimer(tmr_ctrl_path,value);
+}
+void
+MarSystem::updtimer(std::string tmr_path, TmParam param)
+{
+	scheduler_.updtimer(tmr_path,param);
+}
+void
+MarSystem::updtimer(std::string tmr_path, std::vector<TmParam> params)
+{
+	scheduler_.updtimer(tmr_path,params);
+}
+
+void
+MarSystem::updtimer(std::string tmr_path, std::vector<TmParam> params);
+
 mrs_natural
-MarSystem::getTime(string timer_name) {
+MarSystem::getTime(string timer_name)
+{
 	return scheduler_.getTime(timer_name);
 }
 

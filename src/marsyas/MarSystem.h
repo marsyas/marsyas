@@ -336,8 +336,11 @@ public:
 	// EvEvent methods
 	//////////////////////////////////////////////////////////////////////////
 	mrs_natural getTime(std::string timer_name);
-	void updtimer(std::string cname, TmControlValue value);
-	void addTimer(std::string class_name, std::string identifier);
+	void updtimer(std::string tmr_ctrl_path, TmControlValue value);
+	void updtimer(std::string tmr_path, TmParam param);
+	void updtimer(std::string tmr_path, std::vector<TmParam> params);
+	void addTimer(std::string tmr_class, std::string tmr_ident);
+	void addTimer(std::string tmr_class, std::string tmr_ident, std::vector<TmParam> params);
 	//void addTimer(TmTimer* t);
 	void removeTimer(std::string name);
 

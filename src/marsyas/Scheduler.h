@@ -68,6 +68,7 @@ public:
 	void addTimer(std::string class_name, std::string identifier, std::vector<TmParam> params);
 
 	void updtimer(std::string tmr_id, TmControlValue value);
+	void updtimer(std::string tmr_id, TmParam& param);
 	void updtimer(std::string tmr_id, std::vector<TmParam> params);
 
 	static void split_cname(std::string cname, std::string* head, std::string* tail);
