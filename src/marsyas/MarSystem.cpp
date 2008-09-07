@@ -19,6 +19,7 @@
 #include "MarSystem.h"
 #include "MarControlManager.h"
 #include "EvValUpd.h"
+#include "TmVirtualTime.h"
 
 #ifdef MARSYAS_QT
 #include "MarGUIManager.h"
@@ -58,7 +59,7 @@ MarSystem::MarSystem(string type, string name)
 	addControls();
 
 	scheduler_.removeAll();
-	TmTimer* t = new TmSampleCount(this, "mrs_natural/inSamples");
+	TmTimer* t = new TmVirtualTime("Virtual",this);
 	scheduler_.addTimer(t);
 }
 
@@ -178,7 +179,7 @@ MarSystem::MarSystem(const MarSystem& a)
 	//recreate schedule objects  => mutexes [?]
 
 	scheduler_.removeAll();
-	TmTimer* t = new TmSampleCount(this, "mrs_natural/inSamples");
+	TmTimer* t = new TmVirtualTime("Virtual",this);
 	scheduler_.addTimer(t);
 }
 

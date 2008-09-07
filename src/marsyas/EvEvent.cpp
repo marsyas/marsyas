@@ -116,7 +116,7 @@ EvEvent::doRepeat()
 		repeat_--;
 		if (timer_ != NULL) {
 			std::string t = getRepeatInterval();
-			time_ = timer_->getTime() + timer_->intervalsize(t);
+			time_ = getTime() + timer_->intervalsize(t);
 //            printf("time=%ld  interval=%ld\n",time_,timer_->intervalsize(repetition.interval));
 //            time_ = time_ + timer_->intervalsize(repetition.interval);
 		}

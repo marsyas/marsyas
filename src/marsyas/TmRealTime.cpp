@@ -26,11 +26,13 @@ using namespace Marsyas;
 
 TmRealTime::TmRealTime() : TmTimer("TmRealTime","System")
 {
+	last_usecs_=0;
 	last_usecs_=readTimeSrc();
 }
 
 TmRealTime::TmRealTime(std::string name) : TmTimer("TmRealTime",name)
 {
+	last_usecs_=0;
 	last_usecs_=readTimeSrc();
 }
 
@@ -42,7 +44,7 @@ TmRealTime::TmRealTime(const TmRealTime& t) : TmTimer(t)
 TmRealTime::~TmRealTime(){ }
 
 mrs_natural
-TmRealTime::readTimeSrc()
+TmRealTime::getMicroSeconds()
 {
 /*  struct timeval {
      int tv_sec; //seconds
@@ -52,14 +54,27 @@ TmRealTime::readTimeSrc()
 	struct timeval tv;
 	struct timezone tz;
 	gettimeofday(&tv, &tz);
-	int read_usecs = tv.tv_usec;
+	int u = tv.tv_usec;
+#else
+	int u = 0;
+#endif
+	return u;
+}
+
+mrs_natural
+TmRealTime::readTimeSrc()
+{
+	int read_usecs = getMicroSeconds();
 	int u = read_usecs - last_usecs_;
 	if (u<0) { u = 1000000 + u; }
 	last_usecs_ = read_usecs;
-#else 
-	int u = 0;
-#endif 
 	return u;
+}
+
+void
+TmRealTime::updtime()
+{
+	cur_time_ = getMicroSeconds();
 }
 
 mrs_natural

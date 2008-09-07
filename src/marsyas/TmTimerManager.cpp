@@ -43,11 +43,11 @@ using namespace Marsyas;
 	}
 #define registerTimer(_NAME) registry_[#_NAME] = new Make##_NAME();
 
-#include "TmRealTime.h"
-#include "TmSampleCount.h"
+# include "TmRealTime.h"
+# include "TmVirtualTime.h"
 
 TimerCreateWrapper(TmRealTime);
-TimerCreateWrapper(TmSampleCount);
+TimerCreateWrapper(TmVirtualTime);
 
 TmTimerManager* TmTimerManager::instance_ = NULL;
 
@@ -66,7 +66,7 @@ void TmTimerManager::addTimers()
 {
 	// register your timers here!
 	registerTimer(TmRealTime);
-	registerTimer(TmSampleCount);
+	registerTimer(TmVirtualTime);
 }
 
 TmTimerManager*

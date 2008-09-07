@@ -106,6 +106,10 @@ public:
 	* calls the trigger method.
 	*/
 	void tick();
+	/** \brief called by tick() prior to events being triggered. This
+	* method calls readTimeSrc() and adds the difference since the last
+	* tick. */
+	virtual void updtime();
 
 	// timer methods
 	/** \brief calculate the time that has passed since last being read.
@@ -116,6 +120,7 @@ public:
 	* \return unit count of time passed since last being read.
 	*/
 	virtual mrs_natural readTimeSrc()=0;
+	// virtual mrs_natural getElapsedTimeSinceLastTick()=0;
 	/** \brief trigger the timer action.
 	*
 	* Can be overriden to define a custom action of the timer. Normally

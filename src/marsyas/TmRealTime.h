@@ -56,6 +56,15 @@ public:
 	TmRealTime(const TmRealTime& t);
 	~TmRealTime();
 
+	/** \brief get the system microseconds count
+	* \return the microseconds count
+	*/
+	mrs_natural getMicroSeconds();
+	/** \brief updtime from TmTimer is overridden to directly set the
+	* cur_time_ with the system time rather than an offset since last read.
+	* This should avoid possible accumulation of error. */
+	void updtime();
+
 	/** \brief get the difference between the current source control value
 	* and its value since it was last read. Does not currently work for
 	* Windows TODO! architecture as it relies on the Unix function gettimeofday().

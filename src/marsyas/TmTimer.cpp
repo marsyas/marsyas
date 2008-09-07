@@ -84,22 +84,21 @@ TmTimer::getTime()
 	return cur_time_;
 }
 
-/* this is a very simple implementation of granularity. What if we want it to
-   be every 1 second of real time. Could be done by reading a control for
-   a specific value. What if the size of the sample buffer changes during
-   processing. Might have to have a size relative to certain parameters like
-   sample buffer size. So many questions. */
 void
 TmTimer::tick()
 {
+	updtime();
+	trigger();
+}
+
+void
+TmTimer::updtime()
+{
+	// now update the time for the end of this time slot
 	mrs_natural adj_time = readTimeSrc();
 	if (adj_time<1)
 		return;
 	cur_time_ += adj_time;
-//    if (next_trigger_<1) {
-//        if (granularity_>0) { next_trigger_=granularity_; }
-	trigger();
-//    } else { next_trigger_ -= adj_time; }
 }
 
 void TmTimer::trigger()
