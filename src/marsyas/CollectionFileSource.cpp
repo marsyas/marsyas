@@ -181,6 +181,8 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	if (advance_) 
 	{
 		cindex_ = cindex_ + 1;
+		if (cindex_ == col_.size())
+			cindex_ = 0;
 		setctrl("mrs_natural/cindex", cindex_);
 
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   

@@ -213,15 +213,17 @@ MarGrid::extract()
       total_->updctrl("mrs_natural/label", index);
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
-      total_->updctrl("mrs_bool/advance", true);      
       string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
       cout << current  << " - ";
       
       cout << "Processed " << index << " files " << endl;	  
       total_->process(som_in,som_res);
-
+	  
       for (int o=0; o < total_onObservations; o++) 
-	som_fmatrix(o, index) = som_res(o, 0);
+		  som_fmatrix(o, index) = som_res(o, 0);
+
+      total_->updctrl("mrs_bool/advance", true);      
+	  
     }
 
   ofstream oss;
@@ -359,15 +361,15 @@ MarGrid::predict()
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
       string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-      total_->updctrl("mrs_bool/advance", true);            
+
       total_->process(som_in, som_res);
       norm_->process(som_res, norm_som_res);
       som_->process(norm_som_res, predict_res);
       grid_x = predict_res(0);
       grid_y = predict_res(1);
       addFile(grid_x,grid_y, current);      
-      
       repaint();
+      total_->updctrl("mrs_bool/advance", true);            
     }
 
   cout << "end_prediction" << endl;
