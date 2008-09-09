@@ -60,6 +60,7 @@ mrs_bool mfcc_ = false;
 mrs_bool chroma_ = false;
 mrs_bool sfm_ = false;
 mrs_bool scf_ = false;
+mrs_natural downSample = 1;
 
 mrs_bool ctd_ = false;
 mrs_bool rlf_ = false;
@@ -2156,7 +2157,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// written to file
 	if (wekafname != EMPTYSTRING)
 	{
-		bextractNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+		bextractNetwork->updctrl("WekaSink/wsink/mrs_natural/downsample", downSample);
+
+		cout << "Downsampling factor = " << downSample << endl;
 
 		if (workspaceDir != EMPTYSTRING) 
 		{
@@ -2240,7 +2243,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			if (wekafname != EMPTYSTRING) 
 				bextractNetwork->updctrl("WekaSink/wsink/mrs_string/filename", "predict.arff");
 			bextractNetwork->updctrl("Classifier/cl/mrs_string/mode", "predict");
-			
+
 			ofstream prout;
 			prout.open(predictCollection.c_str());
 
@@ -2626,6 +2629,7 @@ initOptions()
 	cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
 	cmd_options.addStringOption("test", "tc", EMPTYSTRING);
 	cmd_options.addBoolOption("stereo", "st", false);
+	cmd_options.addNaturalOption("downsample", "ds", 1);
 
 	// feature selection options
 	cmd_options.addBoolOption("StereoPanningSpectrumFeatures", "spsf", false);
@@ -2668,6 +2672,7 @@ loadOptions()
 	workspaceDir = cmd_options.getStringOption("workdir");
 	predictCollection = cmd_options.getStringOption("predict");
 	testCollection = cmd_options.getStringOption("test");
+	downSample = cmd_options.getNaturalOption("downsample");
 
 	stereo_ = cmd_options.getBoolOption("stereo");
 
