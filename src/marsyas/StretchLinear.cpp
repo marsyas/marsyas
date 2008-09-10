@@ -73,7 +73,13 @@ StretchLinear::myProcess(realvec& in, realvec& out)
 			tp = t / alpha;
 			tl= (mrs_natural)tp;
 			tr = tl + 1;
-			out(o,t) = (tp - tl) * in(0,tr) + (tr-tp) * in(0,tl);
+			if ((tr < inSamples_) && (tl<inSamples_) && 
+				(tr >= 0) && (tl >= 0))
+			{
+				out(o,t) = (tp - tl) * in(o,tr) + (tr-tp) * in(o,tl);
+			}
+			else 
+				out(o,t) = 0.0;
 		}
 	}
 }

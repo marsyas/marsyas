@@ -83,7 +83,7 @@ PvOscBank::myUpdate(MarControlPtr sender)
 		index_.stretch(size_);
 		N_ = size_;
 		L_ = 8192;
-		table_.stretch(L_);
+		table_.stretch(L_+2); 			// leave some head-room for numerical errors 
     
 		for (t=0; t < L_; t++)
 		{

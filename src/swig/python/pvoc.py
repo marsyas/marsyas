@@ -33,15 +33,15 @@ def oscbank(infile):
 	[name, ext] = os.path.splitext(os.path.basename(infile))
 	outsfname = name + "_oscbank" + ext
 
-	winSize.setValue_natural(4096);
-	fftSize.setValue_natural(4096);
-	synthesisHop.setValue_natural(1024);
-	analysisHop.setValue_natural(768);
-	sinusoids.setValue_natural(40);
-	pitchShift.setValue_real(1.5);
+	winSize.setValue_natural(2048);
+	fftSize.setValue_natural(2048);
+	synthesisHop.setValue_natural(512);
+	analysisHop.setValue_natural(512);
+	sinusoids.setValue_natural(120);
+	pitchShift.setValue_real(1.3);
 	
 	convertMode.setValue_string("sorted");
-	inSamples.setValue_natural(768);
+	inSamples.setValue_natural(512);
 	filename.setValue_string(infile);
 	
 
@@ -177,6 +177,7 @@ def scaled(infile):
 	pvseries = mng.create("Series", "pvseries")
 	pvseries.addMarSystem(mng.create("SoundFileSource", "src"))
 	pvseries.addMarSystem(mng.create("PhaseVocoder", "pvoc"))
+	pvseries.addMarSystem(mng.create("StretchLinear", "sl"))
 	pvseries.addMarSystem(mng.create("SoundFileSink", "dest"))
 	
 	filename = pvseries.getControl("SoundFileSource/src/mrs_string/filename")
@@ -193,6 +194,7 @@ def scaled(infile):
 	magHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/magnitudes"); 
 	peakHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/peaks");
 	pos = pvseries.getControl("SoundFileSource/src/mrs_natural/pos");
+	sfactor = pvseries.getControl("StretchLinear/sl/mrs_real/stretch");
 	
 	
 	[name, ext] = os.path.splitext(os.path.basename(infile))
@@ -201,13 +203,14 @@ def scaled(infile):
     #scaled phaselocking 
 
 	filename.setValue_string(infile);
-	inSamples.setValue_natural(512);
-	analysisHop.setValue_natural(512);
-	synthesisHop.setValue_natural(1024);
-	winSize.setValue_natural(4096);
-	fftSize.setValue_natural(4096);
+	inSamples.setValue_natural(256);
+	analysisHop.setValue_natural(256);
+	synthesisHop.setValue_natural(384);
+	winSize.setValue_natural(2048);
+	fftSize.setValue_natural(2048);
 	convertMode.setValue_string("analysis_scaled_phaselock");
 	unconvertMode.setValue_string("scaled_phaselock");
+	sfactor.setValue_real(0.66);
 	outfname.setValue_string(outsfname);
 	
 	i = 0 
@@ -302,11 +305,43 @@ filelist = ["/Users/gtzan/data/sound/ivl_orig/dj_1_mono.wav",
 
 filelist = ["/Users/gtzan/data/sound/ivl_orig/transientorig.wav"]
 
-filelist = ["/Users/gtzan/data/sound/ivl_orig/laura_mono.wav"]
+laura = ["/Users/gtzan/data/sound/ivl_orig/laura_mono.wav"]
 
-for i in filelist:
+filelist = [ 
+"/Volumes/My Passport/ivl/Sept Clean Clips/A chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/Ab chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/B chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/B-Bent Riff.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/B-bended.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/Bb chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/C chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/ChordPattern1.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/ChordPattern2.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/ChordPattern3.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/ChunckaChunka.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/D chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/E chord plus.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/E chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/F chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/G chord.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/HammerOnPulloff.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/HammerPull.wav", 
+"/Volumes/My Passport/ivl/Sept Clean Clips/Power Chords2.wav", 
+"/Volumes/My Passport/ivl/Sept Clean Clips/RiffChordCombo.wav", 
+"/Volumes/My Passport/ivl/Sept Clean Clips/Staccato Riff.wav", 
+"/Volumes/My Passport/ivl/Sept Clean Clips/TeleChords.wav", 
+"/Volumes/My Passport/ivl/Sept Clean Clips/Whammied.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/metal country bender lick.wav",
+"/Volumes/My Passport/ivl/Sept Clean Clips/whammy chords.wav", 
+]
+
+filelist = ["/Users/gtzan/data/sound/rollers_examples/ComingThrough.wav"]
+
+
+
+for i in laura:
 	# identity(i)
-	# scaled(i)
+	scaled(i)
 	#classic(i)
 	# transient(i)
 	oscbank(i)
