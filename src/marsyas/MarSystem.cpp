@@ -1319,8 +1319,7 @@ MarSystem::updtimer(std::string tmr_path, std::vector<TmParam> params)
 	scheduler_.updtimer(tmr_path,params);
 }
 
-void
-MarSystem::updtimer(std::string tmr_path, std::vector<TmParam> params);
+
 
 mrs_natural
 MarSystem::getTime(string timer_name)
