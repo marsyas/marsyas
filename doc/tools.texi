@@ -417,6 +417,93 @@ defautl the current directory is used
 @end table
 
 
+@subsubheading TimeLines
+
+@verbatim
+bextract now supports a mode, called the Timeline mode, that lets
+you classify different sections of a song.  For example, you might
+have a number of audio files of Orca recordings with sections of
+voiceover, background noise, and orca calls.  You could train a
+classifier to recognize each of these types of signal.
+
+To run bextract in Timeline mode, there are two steps:
+
+1) Train the classifier
+
+   bextract -t songs.mf -p out.mpl -pm
+
+Where:
+
+-t songs.mf - A collection file with a song name and its
+corresponding .mtl (Marsyas Timeline) file on each line
+
+-p out.mpl  - The Marsyas Plugin to be generated
+
+-pm         - Mute the output plugin
+
+2) Predict new songs
+
+   sfplugin -p out.mpl songmono.wav
+
+Where:
+
+-p out.mpl   - The plugin output by bextract in step #1
+
+
+The songs.mf file is Marsyas collection file with the path to song
+(usually .wav) files and their corresponding Marsyas Timeline
+(.mtl) files on each lines.  Here is an example song.mf file:
+
+  /path/to/song1.wav[TAB]/path/to/song1.mtl
+  /path/to/song2.wav[TAB]/path/to/song2.mtl
+  /path/to/song3.wav[TAB]/path/to/song3.mtl
+
+Please note that the separator character must be a tab, it cannot
+be any other kind of whitespace.
+
+The .mtl format has three header lines, followed by blocks of 4
+lines for each annotated section.  The format is:
+  HEADER:
+  -------
+
+  number of regions
+  line size (=1)
+  total size (samples)
+
+  FOR EACH SAMPLE:
+  ----------------
+  start (samples)
+  classId (mrs_natural)
+  end (samples)
+  name (mrs_string)
+
+
+  For example:
+
+  3
+  1
+  2758127
+  0
+  0
+  800000
+  voiceover
+  800001
+  1
+  1277761
+  orca
+  1277762
+  2
+  2758127
+  background
+
+
+Because the .mtl file is kind of obtuse, we have written a small
+Ruby program to convert Audacity label files to .mtl format.  This
+script can be found at marsyas/scripts/generate-mtl.rb.  The
+script is currently hardcoded to recognize the chord changes from
+songs from the annotated Beatles archive, but you can easily
+change this by modifying the "chords_array" variable.
+@end verbatim
 
 
 

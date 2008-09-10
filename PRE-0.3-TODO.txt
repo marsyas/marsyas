@@ -18,9 +18,6 @@ DOCS / USABILITY
 
 - begin docs on interactive python use.
 
-- add documentation about time-line based classification in bextract 
-(sness)
-
 
 OTHER
 
