@@ -4279,6 +4279,72 @@ void toy_phisem()
 }
 
 
+void
+toy_with_multichannel_merge(string sfName) 
+{
+
+  string in1AudioFileName = "in1.wav";
+  string in2AudioFileName = "in2.wav";
+  string in3AudioFileName = "in3.wav";
+  string in4AudioFileName = "in4.wav";
+  string in5AudioFileName = "in5.wav";
+  string in6AudioFileName = "in6.wav";
+  string outAudioFileName = "out.wav";
+
+    MarSystemManager mng;
+
+  //////////////////////////////////////////////////
+  // 
+  // A network to contain everything
+  //
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+
+  //////////////////////////////////////////////////
+  // 
+  // A Fanout that contains all our 6 sound sources
+  //
+  MarSystem* fanout = mng.create("Fanout", "fanout");
+  fanout->addMarSystem(mng.create("SoundFileSource", "src1"));
+  fanout->addMarSystem(mng.create("SoundFileSource", "src2"));
+  fanout->addMarSystem(mng.create("SoundFileSource", "src3"));
+  fanout->addMarSystem(mng.create("SoundFileSource", "src4"));
+  fanout->addMarSystem(mng.create("SoundFileSource", "src5"));
+  fanout->addMarSystem(mng.create("SoundFileSource", "src6"));
+
+  //////////////////////////////////////////////////
+  // 
+  // Set the filenames on all the SoundFileSources
+  //
+  fanout->updctrl("SoundFileSource/src1/mrs_string/filename",in1AudioFileName);
+  fanout->updctrl("SoundFileSource/src2/mrs_string/filename",in2AudioFileName);
+  fanout->updctrl("SoundFileSource/src3/mrs_string/filename",in3AudioFileName);
+  fanout->updctrl("SoundFileSource/src4/mrs_string/filename",in4AudioFileName);
+  fanout->updctrl("SoundFileSource/src5/mrs_string/filename",in5AudioFileName);
+  fanout->updctrl("SoundFileSource/src6/mrs_string/filename",in6AudioFileName);
+
+  //////////////////////////////////////////////////
+  // 
+  // Add the fanout to the main network
+  //
+  playbacknet->addMarSystem(fanout);
+
+  //////////////////////////////////////////////////
+  // 
+  // The output file which is a SoundFileSink
+  //
+  playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename",outAudioFileName);
+
+  //////////////////////////////////////////////////
+  // 
+  // Tick the network until the first sound file 
+  // doesn't have any more data.
+  //
+   while (playbacknet->getctrl("Fanout/fanout/SoundFileSource/src1/mrs_bool/notEmpty")->isTrue())	{
+  	playbacknet->tick();
+  }
+
+}
 
 int
 main(int argc, const char **argv)
