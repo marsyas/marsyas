@@ -360,6 +360,7 @@ your own examples and case studies to help cover more configurations.
 * Compiling on Ubuntu::  
 * MacOS X additional notes::    
 * Compiling with Visual Studio Express 2008 on Windows XP::  
+* Compiling with MinGW on Windows XP::
 @end menu
 
 @node Compiling on Ubuntu
@@ -504,6 +505,45 @@ and MacOS X machines; Windows users may install it from this site.
 Marsyas contains some very useful scripts which are written in
 Python.
 
+
+@node Compiling with MinGW on Windows XP
+@subsection Compiling with MinGW on Windows XP
+
+@enumerate 
+
+@item Download and install MinGW from @uref(http://www.mingw.org/old/download.shtml)
+
+@item Download and install Microsoft Direct X SDK 
+from @uref{http://msdn.microsoft.com/en-us/directx/aa937788.aspx}. 
+These instructions worked with installing Direct X August 2008 
+(DXSDK_Aug08.exe). 
+
+@item Download and install the CMake 2.6 binary using the Win32
+installer from @uref{http://www.cmake.org}. 
+
+@item Downlaod and install the Tortoise SVN GUI client from 
+@uref{http://tortoisesvn.tigris.org/}. 
+
+@item The Tortoise client is integrated with Windows so 
+right click on your desktop and checkout Marsyas as described 
+in the basic installation instructions @ref{Compiling}. 
+
+@item Launch cmake and choose the install type to be ``MinGW Makefiles''
+
+@item Specify the source and build directory you want 
+CMake to use for Marsyas for example c:\marsyas\src and c:\marsyas\build. 
+
+@item Press configure until all the options are grey and then click ok
+
+@item Go to the c:\marsyas\build directory and type ``mingw32-make''
+
+@item The binaries are created in build\bin\release or build\bin\debug. 
+@end enumerate 
+
+@uref{http://python.org, Python}: Installed by default on Linux and
+MacOS X machines; Windows users may install it from
+@uref{http://python.org, this site}.  Marsyas contains some very
+useful scripts which are written in Python.
 
 
 
