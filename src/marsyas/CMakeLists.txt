@@ -1,10 +1,10 @@
-file(GLOB MarSystem_SOURCES RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.cpp)
-file(GLOB MarSystem_HEADERS RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.h)
+file(GLOB Marsyas_SOURCES RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.cpp)
+file(GLOB Marsyas_HEADERS RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.h)
 
 ## OTHERLIBS
 
-list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
-list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.h)
+list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.h)
 
 if (MARSYAS_MAD)
 	include_directories(${mad_INCLUDE_DIR})
@@ -15,34 +15,34 @@ if (MARSYAS_VORBIS)
 endif (MARSYAS_VORBIS)
 
 if (GSTREAMER_FOUND)
-#	list(APPEND MarSystem_SOURCES GStreamerSource.cpp gst-decode.cpp)
+#	list(APPEND Marsyas_SOURCES GStreamerSource.cpp gst-decode.cpp)
 	include_directories(${GSTREAMER_INCLUDE_DIRS})
 endif (GSTREAMER_FOUND)
 
 if (MARSYAS_MATLAB)
-#	list(APPEND MarSystem_SOURCES MATLABengine.cpp)
+#	list(APPEND Marsyas_SOURCES MATLABengine.cpp)
 	include_directories(${MATLAB_INCLUDE_DIR})
 endif (MARSYAS_MATLAB)  
 
 if (MARSYAS_AUDIOIO)
-	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.cpp)
-	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.h)
-	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtError.h)
-	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.cpp)
-	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.h)
-	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtError3.h)
+	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.cpp)
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio.h)
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtError.h)
+	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.cpp)
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtAudio3.h)
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/RtError3.h)
 endif (MARSYAS_AUDIOIO)
 
 if (MARSYAS_MIDIIO)
-	list(APPEND MarSystem_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.cpp)
-	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.h)
-	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtError.h)
-	list(APPEND MarSystem_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtError3.h)
+	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.cpp)
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtMidi.h)
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtError.h)
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/RtError3.h)
 endif (MARSYAS_MIDIIO)
 
 
 ## ACTUAL BUILD
-add_library(marsyas STATIC ${MarSystem_SOURCES} ${MarSystem_HEADERS})
+add_library(marsyas STATIC ${Marsyas_SOURCES} ${Marsyas_HEADERS})
 
 ## LINKING
 if (MARSYAS_MAD)
