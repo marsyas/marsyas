@@ -511,7 +511,8 @@ Python.
 
 @enumerate 
 
-@item Download and install MinGW from @uref(http://www.mingw.org/old/download.shtml)
+@item Download and install MinGW from
+@uref{http://www.mingw.org/old/download.shtml}
 
 @item Download and install Microsoft Direct X SDK 
 from @uref{http://msdn.microsoft.com/en-us/directx/aa937788.aspx}. 
