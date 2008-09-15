@@ -494,8 +494,44 @@ find a Visual Studio project file named marsyas that you can
 open with the Visual Studio 9 Express IDE to compile Marsyas. 
 
 
-@item The binaries are created in build\bin\Release or build\bin\Debug. 
+@item The binaries are created in build\bin\Release or build\bin\Debug 
+depending on which build configuration is used. 
 @end enumerate 
+
+
+The following optional steps can be used to compile graphical 
+user interface tools for Marsyas using the Qt toolkit:
+
+@enumerate
+@item Down the Qt for Windows open source edition from 
+@uref{http://tortoisesvn.tigris.org/}. Make sure you download 
+the source code rather the .exe installer which only works 
+for the MinGW compiler rather than Visual Studio. 
+
+@item Extract the files to a directory (make sure the directory name 
+does not contain spaces as the Qt configuration gets confused if 
+that's the ccase). I used c:\qt\4.4.1. 
+
+@item Start the Visual Studio 2008 Command Prompt and 
+go to the directory where you installed Qt and then run 
+configure.exe. This will take a few minutes. Once configuration 
+is complete you can compile Qt using nmake which take a while 
+(about 1 hour on my slow virtual machine) 
+@example 
+cd c:\qt\4.4.1
+configure.exe  
+nmake 
+@end example 
+
+With Qt 4.4.1 there is a glitch so compilation 
+will stop with an error about MathExtras.h. You will 
+need to comment out the line #include<xmath.h> 
+from c:\qt\4.4.0\src\3rdparty\webkit\JavaScriptCore\wtf\MathExtras.h. 
+This is a known error and that seems to be the proposed solution. 
+
+
+@end enumerate 
+
 
 
 
