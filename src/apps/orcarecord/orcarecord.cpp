@@ -67,8 +67,10 @@ void printHelp(string progName)
     cerr << "Help Options:" << endl;
     cerr << "-u --usage      : display short usage info" << endl;
     cerr << "-h --help       : display this information " << endl;
+    cerr << "-v --verbose    : verbose output" << endl;
     cerr << "-l --length     : record length in seconds " << endl;
     cerr << "-s --srate      : samping rate " << endl;
+    cerr << "-y --year       : record to year" << endl;
     cerr << "-c --channels   : number of channels to record " << endl;
     cerr << "-d --dat        : Record dat from the TASCAM FW-1804 " << endl;
     cerr << endl;

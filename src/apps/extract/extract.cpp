@@ -79,6 +79,13 @@ printHelp(string progName)
   cerr << "Help Options:" << endl;
   cerr << "-u --usage      : display short usage info" << endl;
   cerr << "-h --help       : display this information " << endl;
+  cerr << "-v --verbose    : verbose output" << endl;
+  cerr << "-n --normalize  : enable normalization" << endl;
+  cerr << "-s --start      : playback start offset in second" << endl;
+  cerr << "-l --length     : playback length in seconds" << endl;
+  cerr << "-p --plugin     : output plugin name" << endl;
+  cerr << "-e --extractor  : extractor" << endl;
+  cerr << "-m --memory     : memory size" << endl;
   cerr << endl;
   exit(1);
 }

@@ -133,6 +133,12 @@ printHelp(string progName)
 	cerr << "-p --panning : panning informations <foreground level (0..1)>-<foreground pan (-1..1)>-<background level>-<background pan> " << endl;
 	cerr << "-t --typeSimilarity : similarity information a (amplitude) f (frequency) h (harmonicity)  " << endl;
 	cerr << "-q -quitAnalyse : quit processing after specified number f seconds" << endl;
+	cerr << "-v  --voices: number of voices" << endl;
+	cerr << "-F --clusterFiltering : cluster filtering" << endl;
+	cerr << "-A --attributes : set attributes" << endl;
+	cerr << "-g --ground : set ground" << endl;
+	cerr << "-SC --clusterSynthetize : cluster synthetize" << endl;
+	cerr << "-P --peakStore : set peak store" << endl;
 	cerr << "-T --textureSize: number of frames in a texture window" << endl;
 	cerr << "-c -clustering : number of clusters in a texture window" << endl;
 	cerr << "-k -keep : keep the specified number of clusters in the texture window " << endl;
@@ -152,6 +158,7 @@ printHelp(string progName)
 
 	cerr << "" << endl;
 	cerr << "-h --help            : display this information " << endl;
+	cerr << "-us --usage : print usage" << endl;
 
 	exit(1);
 }

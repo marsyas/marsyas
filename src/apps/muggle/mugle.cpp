@@ -50,6 +50,8 @@ printHelp(string progName)
   cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
   cerr << "Help Options:" << endl;
   cerr << "-u --usage      : display short usage info" << endl;
+  cerr << "-v --verbose    : verbose output" << endl;
+  cerr << "-q --query      : query name" << endl;
   cerr << "-h --help       : display this information " << endl;
   exit(1);
 }

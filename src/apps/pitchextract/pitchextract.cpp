@@ -57,6 +57,7 @@ printHelp(string progName)
 	cerr << "Help Options:" << endl;
 	cerr << "-u --usage      : display short usage info" << endl;
 	cerr << "-h --help       : display this information " << endl;
+	cerr << "-v --verbose    : verbose output " << endl;
 	cerr << "-c --collection : Marsyas collection of sound files " << endl;
 	cerr << "-w --windowSize : windowSize " << endl;
 	cerr << "-p --hopSize    : hopSize " << endl;

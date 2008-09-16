@@ -57,6 +57,12 @@ printHelp(string progName)
   cerr << "Help Options:" << endl;
   cerr << "-u --usage      : display short usage info" << endl;
   cerr << "-h --help       : display this information " << endl;
+  cerr << "-v --verbose    : verbose output " << endl;
+
+  cerr << "-f --filename   : output filename " << endl;
+  cerr << "-p --plugin     : output plugin name " << endl;
+  cerr << "-r --repetitions: number of repetitions" << endl;
+
   cerr << "-g --gain       : linear volume gain " << endl;
   cerr << "-o --offset     : playback start offset in samples " << endl;
   cerr << "-d --duration   : playback duration in samples     " << endl;

@@ -81,7 +81,9 @@ void printHelp(string progName)
     cerr << "Help Options:" << endl;
     cerr << "-u --usage      : display short usage info" << endl;
     cerr << "-h --help       : display this information " << endl;
+    cerr << "-v --verbose    : verbose output " << endl;
     cerr << "-l --length     : record length in seconds " << endl;
+    cerr << "-t --trainopt   : train" << endl;
     cerr << "-s --srate      : samping rate " << endl;
     cerr << "-c --channels   : number of channels to record " << endl;
     cerr << "-i --instrument : 0: drum or 1: Read Sitar 2: Record Sitar Sensors 3: Read Fret to Pitch 4: read collection of files for READ " << endl;

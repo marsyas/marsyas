@@ -73,8 +73,18 @@ printHelp(string progName)
 	cerr << "Help Options:" << endl;
 	cerr << "-u --usage      : display short usage info" << endl;
 	cerr << "-h --help       : display this information " << endl;
+	cerr << "-v --verbose    : verbose " << endl;
 	cerr << "-e --extractor  : extractor " << endl;
 	cerr << "-o --offset     : playback start offset in samples " << endl;
+	cerr << "-n --normalize  : enable normalization" << endl;
+	cerr << "-w --weka       : weka .arff filename " << endl;
+
+	/* TODO: Add short description
+
+	cerr << " -f --filefeature : " << endl;
+
+	*/
+
 	cerr << "-p --plugin     : output plugin name " << endl;
 	cerr << "-d --duration   : playback duration in samples     " << endl;
 	cerr << "-s --start      : playback start offest in seconds " << endl;

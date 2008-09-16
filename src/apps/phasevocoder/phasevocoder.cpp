@@ -71,8 +71,17 @@ printHelp(string progName)
 	cerr << "-p --pitchshift      : pitch shift" << endl;
 	cerr << "-s --sinusoids       : number of sinusoids" << endl;
 	cerr << "-v --voices          : number of voices" << endl;
-	cerr << "-m --midiport        : midi input port number" << endl;
-	cerr << "-b --buffersize      : audio buffer size" << endl;
+
+	/* TODO: Add short description
+
+	cerr << "-a --auto            : " << endl;
+	cerr << "-ucm --unconvertmode : " << endl;
+
+	*/
+
+	cerr << "-e --epochHeterophonics : heterophonics epoch" << endl;
+	cerr << "-m --midi            : midi input port number" << endl;
+	cerr << "-b --bufferSize      : audio buffer size" << endl;
 	cerr << "-g --gain            : gain (0.0-1.0) " << endl;
 	cerr << "-f --filename        : output filename" << endl;
 	cerr << "-q --quit            : don't display console output" << endl;

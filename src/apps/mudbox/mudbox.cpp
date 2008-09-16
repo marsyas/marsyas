@@ -64,32 +64,45 @@ printHelp(string progName)
 	cerr << "Usage : " << progName << "-t toy_withName file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "Supported toy_withs:" << endl;
-	cerr << "audiodevices     : enumerate audio devices " << endl;
-	cerr << "cascade          : check cascade composite " << endl;
-	cerr << "collection       : using collection file1 as a SoundFileSource " << endl;
-	cerr << "drumclassify     : drumclassify (mplfile argument)" << endl;
-	cerr << "duplex           : duplex audio input/output" << endl;
+	cerr << "audiodevices    : enumerate audio devices " << endl;
+	cerr << "cascade         : check cascade composite " << endl;
+	cerr << "collection      : using collection file1 as a SoundFileSource " << endl;
+	cerr << "confidence      : toy_with confidence calculation" << endl;
+	cerr << "drumclassify    : drumclassify (mplfile argument)" << endl;
+	cerr << "duplex          : duplex audio input/output" << endl;
 
 	cerr << "fanoutswitch    : toy_with disabling fanout branches " << endl;
 	cerr << "filter          : toy_with filter MarSystem " << endl;
 	cerr << "fft             : toy_with fft analysis/resynthesis " << endl;
-	cerr << "inSamples  : changing inSamples at runtime " << endl;
+	cerr << "inSamples       : changing inSamples at runtime " << endl;
 	cerr << "knn             : toy_with K-NearestNeighbor classifier " << endl;
+	cerr << "LPC_LSP         : toy_with LPC and LSP routines" << endl;
+	cerr << "MarControls     : toy_with MarControl API" << endl;
 	cerr << "marsystemIO     : toy_with marsystem IO " << endl;
+	cerr << "matlab          : toy_with matlab" << endl;
+	cerr << "MATLABengine    : toy_with MATLABengine" << endl;
 	cerr << "mixer           : toy_with fanout for mixing " << endl;
 	cerr << "mp3convert      : toy_with convertion of a collection of .mp3 files to .wav files" << endl;
+	cerr << "multichannel_merge : toy with multichannel merge" << endl;
 	cerr << "normMaxMin      : toy_with of normalize marsSystem " << endl;
-	cerr << "panorama     : toy_with Panorama amplitude panning " << endl;
+	cerr << "onsets          : toy_with onsets" << endl;
+	cerr << "panorama        : toy_with Panorama amplitude panning " << endl;
 	cerr << "parallel        : toy_with Parallel composite " << endl;
+	cerr << "stereoFeaturesVisualization : toy_with stereo features visualization" << endl;
+	cerr << "phisem          : toy_with physem" << endl;
+	cerr << "pitch           : toy_with pitch" << endl;
+	cerr << "power           : toy_with power" << endl;
 	cerr << "probe           : toy_with Probe functionality " << endl;
-	cerr << "radiodrum  	   : toy_with radiodrum" << endl;
+	cerr << "radiodrum       : toy_with radiodrum" << endl;
 	cerr << "realvec         : toy_with realvec functions " << endl;
+	cerr << "realvecCtrl     : toy_with realvecCtrl" << endl;
 	cerr << "reverb          : toy_with reverb " << endl;
-	cerr << "rmsilence  	   : toy_with removing silences " << endl;
+	cerr << "rmsilence       : toy_with removing silences " << endl;
 	cerr << "scheduler       : toy_with scheduler " << endl;
 	cerr << "schedulerExpr   : toy_with scheduler with expressions " << endl;
-	cerr << "SNR : toy_with Siganl-to-Noise Ratio" << endl;
-	cerr << "SOM		         : toy_with support vector machine " << endl;
+	cerr << "shredder        : toy_with shredder" << endl;
+	cerr << "SNR             : toy_with Siganl-to-Noise Ratio" << endl;
+	cerr << "SOM             : toy_with support vector machine " << endl;
 	cerr << "spectralSNR     : toy_with spectral SNR " << endl;
 	cerr << "stereoFeatures  : toy_with stereo features " << endl;
 	cerr << "stereoMFCC      : toy_with stereo MFCC " << endl;
@@ -97,10 +110,12 @@ printHelp(string progName)
 	cerr << "swipe           : topy_with_swipe (F0 estimator)" << endl;
 	
 	cerr << "stereo2mono     : toy_with stereo to mono conversion " << endl;
-	cerr << "ADRess					 : toy_with stereo ADRess algorithm " << endl;
-	cerr << "tempo	         : toy_with tempo estimation " << endl;
-	cerr << "vibrato       : toy_with vibrato using time-varying delay line" << endl;
+	cerr << "ADRess          : toy_with stereo ADRess algorithm " << endl;
+	cerr << "tempo           : toy_with tempo estimation " << endl;
+	cerr << "train_predict   : toy_with train and predict" << endl;
+	cerr << "vibrato         : toy_with vibrato using time-varying delay line" << endl;
 	cerr << "vicon           : toy_with processing of vicon motion capture data" << endl;
+	cerr << "windowedsource  : toy_with windowed source" << endl;
 	cerr << "Windowing       : toy_with different window functions of Windowing marsystem" << endl;
 	cerr << "weka            : toy_with weka source and sink functionality" << endl;
 	cerr << "updctrl         : toy_with updating control with pointers " << endl;
@@ -613,8 +628,9 @@ toy_with_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
 	///////////////////////////////////////////////////////////////////////////////////////
+	FileName outputFile(sfName);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
-	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", sfName + "_onsets.wav");
+	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 
 	mrs_natural winSize = 2048;//2048;
@@ -4373,116 +4389,118 @@ main(int argc, const char **argv)
 	cout << "fname1 = " << fname1 << endl;
 
 
-	if (toy_withName == "audiodevices")
+	if (toy_withName == "ADRess")
+		toy_with_ADRess(fname0, fname1);
+	else if (toy_withName == "LPC_LSP")
+		toy_with_LPC_LSP(fname0);
+	else if (toy_withName == "MATLABengine")
+		toy_with_MATLABengine();
+	else if (toy_withName == "MarControls")
+		toy_with_MarControls(fname0);
+	else if (toy_withName == "SFPlay")
+		toy_with_SFPlay(fname0);
+	else if (toy_withName == "SNR")
+	  toy_with_SNR(fname0, fname1);
+	else if (toy_withName == "SOM")
+		toy_with_SOM("music.mf");
+	else if (toy_withName == "Windowing")
+		toy_with_Windowing();
+
+
+	else if (toy_withName == "audiodevices")
 		toy_with_audiodevices(); 
-	else if (toy_withName == "matlab") 
-		toy_with_matlab(fname0);
-	else if (toy_withName == "cascade") 
+	else if (toy_withName == "cascade")
 		toy_with_cascade();
 	else if (toy_withName == "collection")
 		toy_with_CollectionFileSource(fname0);
+	else if (toy_withName == "confidence")
+		toy_with_confidence(fname0);
 	else if (toy_withName == "drumclassify")
 		drumClassify(fname0); 
-	else if (toy_withName == "duplex") 
+	else if (toy_withName == "duplex")
 		toy_with_duplex();
 	else if (toy_withName == "fanoutswitch")
 		toy_with_fanoutswitch();
-	else if (toy_withName == "filter") 
-		toy_with_filter();
-	else if (toy_withName == "fft") 
+	else if (toy_withName == "fft")
 		toy_with_fft(fname0);
+	else if (toy_withName == "filter")
+		toy_with_filter();
+	else if (toy_withName == "getControls")
+		toy_with_getControls(fname0);
 	else if (toy_withName == "inSamples")
 	  toy_with_inSamples(fname0);
 	else if (toy_withName == "knn")
 		toy_with_knn();
 	else if (toy_withName == "marsystemIO")
 		toy_with_marsystemIO();
+	else if (toy_withName == "matlab")
+		toy_with_matlab(fname0);
 	else if (toy_withName == "mixer")
 		toy_with_mixer(fname0, fname1);
-	else if (toy_withName == "mp3convert")
-		toy_with_mp3convert(fname0);
-	else if (toy_withName == "normMaxMin") 
-		toy_with_normMaxMin();
-	else if (toy_withName == "parallel") 
-		toy_with_parallel();
-	else if (toy_withName == "probe")
-		toy_with_probe();
-	else if (toy_withName == "vicon") 
-		toy_with_vicon(fname0);   
-	else if (toy_withName == "vibrato")
-		toy_with_vibrato(fname0);
-	else if (toy_withName == "reverb") 
-		toy_with_reverb(fname0);
-	else if (toy_withName == "panorama")
-		toy_with_panorama(fname0);
-	else if (toy_withName == "realvec")
-		toy_with_realvec();
-	else if (toy_withName == "rmsilence") 
-		toy_with_rmsilence(fname0);
-	else if (toy_withName == "scheduler") 
-		toy_with_scheduler(fname0);
-	else if (toy_withName == "stereoFeatures")
-		toy_with_stereoFeatures(fname0, fname1);
-	else if (toy_withName == "ADRess")
-		toy_with_ADRess(fname0, fname1);
-	else if (toy_withName == "stereoFeaturesVisualization")
-		toy_with_stereoFeaturesVisualization(fname0);
-	else if (toy_withName == "stereoMFCC") 
-		toy_with_stereoMFCC(fname0, fname1);
-	else if (toy_withName =="stereoFeaturesMFCC") 
-		toy_with_stereoFeaturesMFCC(fname0, fname1);
-	else if (toy_withName == "stereo2mono")
-		toy_with_stereo2mono(fname0);
-	else if (toy_withName == "swipe")
-		toy_with_swipe(fname0);
-	else if (toy_withName == "spectralSNR")
-		toy_with_spectralSNR(fname0, fname1);
-	else if (toy_withName == "SNR")
-	  toy_with_SNR(fname0, fname1);
-	else if (toy_withName == "SOM") 
-		toy_with_SOM("music.mf");
-	else if (toy_withName == "tempo") 
-		toy_with_tempo(fname0, 120, 1);
-	else if (toy_withName == "MATLABengine")
-		toy_with_MATLABengine();
-	else if (toy_withName == "LPC_LSP")
-		toy_with_LPC_LSP(fname0);
-	else if (toy_withName == "MarControls")
-		toy_with_MarControls(fname0);
-	else if (toy_withName == "Windowing")
-		toy_with_Windowing();
-	else if (toy_withName == "updctrl") 
-		toy_with_updctrl(fname0);
-	else if (toy_withName == "weka")
-		toy_with_weka(fname0);
-	else if (toy_withName == "simpleSFPlay") 
-		toy_with_simpleSFPlay(fname0);
-	else if (toy_withName == "SFPlay") 
-		toy_with_SFPlay(fname0);
-	else if (toy_withName == "getControls") 
-		toy_with_getControls(fname0);
 	else if (toy_withName == "mono2stereo")
 		toy_with_mono2stereo(fname0);
-	else if (toy_withName == "onsets") 
+	else if (toy_withName == "mp3convert")
+		toy_with_mp3convert(fname0);
+	else if (toy_withName == "normMaxMin")
+		toy_with_normMaxMin();
+	else if (toy_withName == "onsets")
 		toy_with_onsets(fname0);
-	else if (toy_withName == "pitch")
-		toy_with_pitch(fname0);
-	else if (toy_withName == "confidence")
-		toy_with_confidence(fname0);
-	else if (toy_withName == "shredder")
-		toy_with_shredder(fname0);
-	else if (toy_withName == "realvecCtrl")
-		toy_with_realvecCtrl(fname0);
-	else if (toy_withName == "power")
-		toy_with_power(fname0);
+	else if (toy_withName == "panorama")
+		toy_with_panorama(fname0);
+	else if (toy_withName == "parallel")
+		toy_with_parallel();
 	else if (toy_withName == "phisem")
 		toy_phisem();
-	else if (toy_withName == "train_predict")
-		toy_with_train_predict(fname0, fname1);
-	else if (toy_withName == "windowedsource")
-		toy_with_windowedsource(fname0);
+	else if (toy_withName == "pitch")
+		toy_with_pitch(fname0);
+	else if (toy_withName == "power")
+		toy_with_power(fname0);
+	else if (toy_withName == "probe")
+		toy_with_probe();
 	else if (toy_withName == "radiodrum")
 		toy_with_RadioDrumInput();
+	else if (toy_withName == "realvec")
+		toy_with_realvec();
+	else if (toy_withName == "realvecCtrl")
+		toy_with_realvecCtrl(fname0);
+	else if (toy_withName == "reverb")
+		toy_with_reverb(fname0);
+	else if (toy_withName == "rmsilence")
+		toy_with_rmsilence(fname0);
+	else if (toy_withName == "scheduler")
+		toy_with_scheduler(fname0);
+	else if (toy_withName == "shredder")
+		toy_with_shredder(fname0);
+	else if (toy_withName == "simpleSFPlay")
+		toy_with_simpleSFPlay(fname0);
+	else if (toy_withName == "spectralSNR")
+		toy_with_spectralSNR(fname0, fname1);
+	else if (toy_withName == "stereo2mono")
+		toy_with_stereo2mono(fname0);
+	else if (toy_withName == "stereoFeatures")
+		toy_with_stereoFeatures(fname0, fname1);
+	else if (toy_withName == "stereoFeaturesVisualization")
+		toy_with_stereoFeaturesVisualization(fname0);
+	else if (toy_withName == "stereoMFCC")
+		toy_with_stereoMFCC(fname0, fname1);
+	else if (toy_withName == "swipe")
+		toy_with_swipe(fname0);
+	else if (toy_withName == "tempo")
+		toy_with_tempo(fname0, 120, 1);
+	else if (toy_withName == "train_predict")
+		toy_with_train_predict(fname0, fname1);
+	else if (toy_withName == "updctrl")
+		toy_with_updctrl(fname0);
+	else if (toy_withName == "vibrato")
+		toy_with_vibrato(fname0);
+	else if (toy_withName == "vicon")
+		toy_with_vicon(fname0);   
+	else if (toy_withName == "weka")
+		toy_with_weka(fname0);
+	else if (toy_withName == "windowedsource")
+		toy_with_windowedsource(fname0);
+	else if (toy_withName =="stereoFeaturesMFCC")
+		toy_with_stereoFeaturesMFCC(fname0, fname1);
 
 
 	else 

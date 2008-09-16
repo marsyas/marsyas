@@ -48,6 +48,7 @@ printHelp(string progName)
   cerr << "Help Options:" << endl;
   cerr << "-u --usage      : display short usage info" << endl;
   cerr << "-h --help       : display this information " << endl;
+  cerr << "-v --verbose    : verbose output " << endl;
   cerr << "-f --file       : output to file " << endl;
   cerr << "-g --gain       : linear volume gain " << endl;
   cerr << "-s --start      : playback start offest in seconds " << endl;

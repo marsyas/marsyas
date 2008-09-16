@@ -89,6 +89,13 @@ printHelp(string progName)
 	cerr << "-w --winsize         : size of window " << endl;
 	cerr << "-s --sinusoids       : number of sinusoids per frame" << endl;
 	cerr << "-b --buffersize      : audio buffer size" << endl;
+	cerr << "-i --intervalFrequency: select peaks in this interval" << endl;
+	cerr << "-v --voices          : number of voices" << endl;
+	cerr << "-f --filename        : output to file " << endl;
+	cerr << "-A --analyse         : peak analyse" << endl;
+        cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
+        cerr << "-P --PeakStore : set peak store" << endl;
+	cerr << "-I --inputdirectoryname   : input directory path" << endl;
 	cerr << "-o --outputdirectoryname   : output directory path" << endl;
 	cerr << "-p --panning : panning informations <foreground level (0..1)>-<foreground pan (-1..1)>-<background level>-<background pan> " << endl;
 	cerr << "-S --synthesize : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;

@@ -67,6 +67,9 @@ void printHelp(string progName)
     cerr << "Help Options:" << endl;
     cerr << "-u --usage      : display short usage info" << endl;
     cerr << "-h --help       : display this information " << endl;
+    cerr << "-v --verbose    : verbose output " << endl;
+    cerr << "-g --gain       : linear volume gain " << endl;
+    cerr << "-y --year       : record to year " << endl;
     cerr << "-l --length     : record length in seconds " << endl;
     cerr << "-s --srate      : samping rate " << endl;
     cerr << "-c --channels   : number of channels to record " << endl;
