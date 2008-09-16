@@ -175,8 +175,10 @@
 #include "TimelineLabeler.h"
 #include "RadioDrumInput.h"
 #include "NoiseGate.h"
-#include "Gain.h"
 #include "StretchLinear.h"
+#include "MidiFileSynthSource.h"
+#include "Gain.h"
+
 //modifyHeader
 
 using namespace std;
@@ -337,8 +339,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PCA", new PCA("pcapr"));
 	registerPrototype("AbsMax", new AbsMax("absmaxpr"));
 	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
-	registerPrototype("Gain", new Gain("gp"));
 	registerPrototype("StretchLinear", new StretchLinear("stretchlinearpr"));
+	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
+	registerPrototype("Gain", new Gain("gp"));
 	//modifyRegister
 
 
