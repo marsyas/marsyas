@@ -50,6 +50,9 @@ public:
   void registerPrototype(std::string type, MarSystem *);
   MarSystem* getPrototype(std::string type);
   MarSystem* create(std::string type, std::string name);
+  MarSystem* create(std::string marsystemname);
+		
+
   MarSystem* getMarSystem(std::istream& is, MarSystem *parent=NULL);
 
   std::map<std::string, MarSystem*> getWorkingSet(std::istream& is);

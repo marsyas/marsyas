@@ -875,6 +875,23 @@ MarSystemManager::create(string type, string name)
 	}
 }
 
+MarSystem*
+MarSystemManager::create(std::string marsystemname) 
+{
+    size_t loc = marsystemname.rfind("/", marsystemname.length()-1);
+	if(loc != string::npos)
+        return create(marsystemname.substr(0,loc), 
+					  marsystemname.substr(loc +1));
+    else
+        create(marsystemname, marsystemname + "_unknown");
+}
+
+
+
+
+
+
+
 MarSystem* 
 MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 {
