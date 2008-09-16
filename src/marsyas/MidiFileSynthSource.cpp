@@ -86,7 +86,7 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 	{
 		filename_ = ctrl_filename_->to<mrs_string>();
 		MATLAB_PUT(filename_, "filename");
-		MATLAB_PUT(ctrl_israte_->to<mrs_natural>(), "fs");
+		MATLAB_PUT(ctrl_israte_->to<mrs_real>(), "fs");
 		MATLAB_PUT(ctrl_inSamples_->to<mrs_natural>(), "frameSize");
 		MATLAB_PUT(ctrl_start_->to<mrs_real>(), "startSeg");
 		MATLAB_PUT(ctrl_end_->to<mrs_real>(), "endSeg");

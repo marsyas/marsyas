@@ -1,4 +1,4 @@
-clear
+%clear
 
 % filename = 'RM-C002.mid';
 % fs = 44100;
@@ -11,6 +11,7 @@ clear
 %% compute MIDI
 
 nmat = readmidi(filename);
+%nmat = midi2nmat(filename);
 
 if endSeg ~= 0
 	nmat = onsetwindow(nmat, startSeg, endSeg, 'sec');
