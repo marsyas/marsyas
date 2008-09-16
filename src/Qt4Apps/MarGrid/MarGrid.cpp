@@ -24,6 +24,7 @@
 #include <QtGui>
 
 #include "MarGrid.h"
+#include <sstream>
 
 using namespace std;
 using namespace Marsyas;
@@ -37,7 +38,7 @@ MarGrid::MarGrid(QWidget *parent)
   int winWidth, winHeight;
   
   cell_size = 50;
-  som_width = 12;;
+  som_width = 12;
   som_height = 12;
   initAudio_ = false;
   continuous_ = false;
@@ -57,7 +58,6 @@ MarGrid::MarGrid(QWidget *parent)
 	labels.push_back(0);
       }
   
-  
   // Create playback network
   pnet_ = mng.create("Series", "pnet_");
   pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -67,13 +67,10 @@ MarGrid::MarGrid(QWidget *parent)
   pnet_->linkctrl("mrs_bool/notEmpty","SoundFileSource/src/mrs_bool/notEmpty");
 
 
-
   mwr_ = new MarSystemQtWrapper(pnet_);
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
-
   mwr_->start();
-  
   setupTrain("music.mf");
 }
 
@@ -216,12 +213,12 @@ MarGrid::extract()
       string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
       cout << current  << " - ";
       
-      cout << "Processed " << index << " files " << endl;	  
+      cout << "Processed " << index << " files " << endl; 
+
       total_->process(som_in,som_res);
 	  
       for (int o=0; o < total_onObservations; o++) 
 		  som_fmatrix(o, index) = som_res(o, 0);
-
       total_->updctrl("mrs_bool/advance", true);      
 	  
     }
@@ -248,11 +245,13 @@ MarGrid::train()
   norm_ = mng.create("NormMaxMin", "norm");
   norm_->updctrl("mrs_natural/inSamples", train_som_fmatrix.getCols());
   norm_->updctrl("mrs_natural/inObservations", 
-		total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+  total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
   norm_->updctrl("mrs_string/mode", "train");
   norm_->process(train_som_fmatrix, norm_som_fmatrix);
   norm_->updctrl("mrs_string/mode", "predict");  
   norm_->process(train_som_fmatrix, norm_som_fmatrix);
+
+
 
   // Create netork for training the self-organizing map 
   som_ = mng.create("SOM", "som");  
@@ -267,14 +266,14 @@ MarGrid::train()
 			som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
   cout << "Starting training" << endl;
-  
+
   for (int i=0; i < 2000; i ++) 
     {
       cout << "Training iteration" << i << endl;
       norm_som_fmatrix.shuffle();
       som_->process(norm_som_fmatrix, som_fmatrixres);
     }
-  
+
   cout << "Training done" << endl;
   som_->updctrl("mrs_bool/done", true);
   som_->tick();
@@ -285,12 +284,11 @@ MarGrid::train()
   oss << *som_ << endl;
   delete som_;
 
-
   ofstream noss;
   noss.open("norm.mpl");
   noss << *norm_ << endl;
   delete norm_;
-  
+
 }
 
 
@@ -322,11 +320,10 @@ MarGrid::predict()
   l1.read(predictFname.toStdString());
   cout << "Read collection" << endl;
 
+  total_->updctrl("mrs_natural/pos", 0);
 
+  total_->updctrl("mrs_string/filename", predictFname.toStdString()); 
 
-  total_->updctrl("mrs_natural/pos", 0);  
-  total_->updctrl("mrs_string/filename", predictFname.toStdString());    
-  
   som_->updctrl("mrs_natural/inSamples", 1);
 
   realvec predict_res(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
@@ -334,27 +331,20 @@ MarGrid::predict()
   norm_->updctrl("mrs_natural/inSamples", 1);
 
 
-
-
-  
   realvec som_in;
   realvec som_res;
   realvec norm_som_res;
-  
-  
-  som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-  
-  som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		 total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
+  som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+		total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>()); 
+ 
+ som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+		 total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+ 
   norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 		      total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 
-
-
-  
   for (int index = 0; index < l1.size(); index++)
     {
       total_->updctrl("mrs_natural/label", index);
@@ -364,13 +354,15 @@ MarGrid::predict()
 
       total_->process(som_in, som_res);
       norm_->process(som_res, norm_som_res);
-      som_->process(norm_som_res, predict_res);
+      som_->process(norm_som_res, predict_res); 
       grid_x = predict_res(0);
       grid_y = predict_res(1);
       addFile(grid_x,grid_y, current);      
       repaint();
       total_->updctrl("mrs_bool/advance", true);            
     }
+
+
 
   cout << "end_prediction" << endl;
 
@@ -379,7 +371,8 @@ MarGrid::predict()
 
 
 
-void MarGrid::clear()
+void 
+MarGrid::clear()
 {
     pieceLocations.clear();
     piecePixmaps.clear();
@@ -419,7 +412,8 @@ MarGrid::addFile(int grid_x, int grid_y, string filename)
   counterSizes[k]++;
 }
 
-void MarGrid::mousePressEvent(QMouseEvent *event)
+void 
+MarGrid::mousePressEvent(QMouseEvent *event)
 {
   
 
@@ -513,7 +507,68 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
   
 }
 
+void
+MarGrid::openPredictionGrid(QString fname)
+{
+	fstream file_ip((fname.toStdString()).c_str(), ios::in);
+	if (!file_ip) {
+        cerr << "Can't open input file " << endl;
+		return;
+    }
 
+	resetPredict();
+
+	int vecSize = 0;
+	int index = 0;
+	int splitIndex = 0;
+	string numLines = "";
+	string line = "";
+	string listFname = "";
+	string vecIndex = "";
+
+	cout << "doing file stuff" << endl;
+	
+	// get the stored size of the vector
+	getline(file_ip,numLines);
+	istringstream intBuffer(numLines);
+	intBuffer >> vecSize;
+	
+	while(!file_ip.eof())
+	{
+		getline(file_ip,line);
+		splitIndex = line.find_first_of(',');
+		vecIndex = line.substr(0,splitIndex);
+		listFname = line.substr(splitIndex + 1);
+		
+		istringstream buffer(vecIndex);	
+		buffer >> index;
+		files[index] += listFname;
+	}
+}
+
+void
+MarGrid::savePredictionGrid(QString fname)
+{
+	fstream file_op((fname.toStdString()).c_str(), ios::out);
+
+	//first line is the size of files
+	file_op << files.size() << endl;
+
+	for (int i = 0; i < files.size(); i++)
+	{
+		// output the vector index and filename
+		QList<std::string> temp = files[i];
+		for(int j = 0; j < files[i].size(); j++ )
+		{
+				file_op << i;
+				file_op << "," + temp.takeFirst() << endl;
+
+		}
+	}
+	file_op.close();
+
+
+}
 
 
 void 

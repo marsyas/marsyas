@@ -36,7 +36,9 @@ class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
 #include "MarSystemManager.h"
-#include "MarSystemQtWrapper.h" 
+#include "MarSystemQtWrapper.h"
+
+
 using namespace MarsyasQt;
 
 class MarGrid : public QWidget
@@ -51,6 +53,8 @@ public slots:
 		void setupTrain(QString fname);
 		void setupPredict(QString fname);
 		void setPlaybackMode(bool continuous);
+		void openPredictionGrid(QString fname);
+		void savePredictionGrid(QString fname);
 		
 		void extract();
 		void predict();

@@ -30,6 +30,7 @@
 
 MarGridWindow::MarGridWindow()
 {
+
   QWidget *w = new QWidget;
   setCentralWidget(w);
 
@@ -45,20 +46,32 @@ MarGridWindow::MarGridWindow()
   playLabel = new QLabel("Hello");
   trainLabel = new QLabel("Train File: \t ./music.mf");
   predictLabel = new QLabel("Predict File: \t ./test.mf");
+  gridSizeLabel = new QLabel("Grid Size: ");
+/* Commented out for George so the Gui doesn't change  
+  gridWidthHeightSeperator = new QLabel("X");
+  gridWidth = new QLineEdit(this);
+  gridWidth->setInputMask("99");
+  gridHeight = new QLineEdit(this);
+  gridHeight->setInputMask("99");*/
 
   QWidget *margrid = new MarGrid();
-
   connect(this, SIGNAL(trainFile(QString)), margrid, SLOT(setupTrain(QString)));
   connect(this, SIGNAL(predictFile(QString)), margrid, SLOT(setupPredict(QString)));
   connect(this, SIGNAL(playbackMode(bool)), margrid, SLOT(setPlaybackMode(bool)));
+  connect(this, SIGNAL(openPredictGridFile(QString)), margrid, SLOT(openPredictionGrid(QString)));
+  connect(this, SIGNAL(savePredictGridFile(QString)), margrid, SLOT(savePredictionGrid(QString)));
   
-
   QGridLayout *gridLayout = new QGridLayout;
   gridLayout->addWidget(trainLabel, 0,0,1,3);
   gridLayout->addWidget(predictLabel, 1, 0,1,3);
   gridLayout->addWidget(extract, 2, 0);
   gridLayout->addWidget(train, 2, 1);
   gridLayout->addWidget(predict, 2, 2);
+ /* Commented out for George so the Gui doesn't change 
+  gridLayout->addWidget(gridSizeLabel, 2,3);
+  gridLayout->addWidget(gridWidth,2,4);
+  gridLayout->addWidget(gridWidthHeightSeperator,2,5);
+  gridLayout->addWidget(gridHeight,2,6);*/
   gridLayout->addWidget(playLabel, 3, 0, 1, 3);
   gridLayout->addWidget(margrid, 4, 0, 1, 3);
 
@@ -66,7 +79,6 @@ MarGridWindow::MarGridWindow()
   connect(train, SIGNAL(clicked()), margrid, SLOT(train()));
   connect(predict, SIGNAL(clicked()), margrid, SLOT(predict()));
   connect(margrid, SIGNAL(playingFile(QString)), this, SLOT(playingFile(QString))); 
-
 
   w->setLayout(gridLayout);
 
@@ -83,9 +95,13 @@ void
 MarGridWindow::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
+  fileMenu->addAction(openPredictAct); 
   fileMenu->addAction(openTrainAct);
-  fileMenu->addAction(openPredictAct);
   fileMenu->addAction(playbackAct);
+  fileMenu->addSeparator();
+  fileMenu->addAction(openPredictGridAct);
+  fileMenu->addAction(savePerdictGridAct);
+
   
   menuBar()->addSeparator();
   helpMenu = menuBar()->addMenu(tr("&Help"));
@@ -113,6 +129,22 @@ MarGridWindow::openPredictFile()
   emit predictFile(fileName);
 }
 
+void
+MarGridWindow::openPredictionGrid()
+{
+  QString fileName = QFileDialog::getOpenFileName(this);
+  cout << "Emit" << endl;
+  emit openPredictGridFile(fileName);
+}
+
+void
+MarGridWindow::savePredictionGrid()
+{
+	QString fileName = QFileDialog::getSaveFileName(this);
+	cout << "Save" << endl;
+	emit savePredictGridFile(fileName);
+}
+
 
 
 
@@ -133,7 +165,13 @@ MarGridWindow::createActions()
   aboutAct->setStatusTip(tr("Show the application's About box"));
   connect(aboutAct, SIGNAL(triggered(bool)), this, SLOT(about()));
 
+  openPredictGridAct = new QAction(tr("&Open Saved Prediction Grid"), this);
+  openPredictGridAct->setStatusTip(tr("Open Saved Prediction Grid"));
+  connect(openPredictGridAct, SIGNAL(triggered(bool)), this, SLOT(openPredictionGrid()));
 
+  savePerdictGridAct = new QAction(tr("&Save Prediction Grid"),this);
+  savePerdictGridAct->setStatusTip(tr("Save Prediction Grid"));
+  connect(savePerdictGridAct, SIGNAL(triggered(bool)), this, SLOT(savePredictionGrid()));
 
   playbackAct = new QAction(tr("&Continuous Playback mode"), this);
   playbackAct->setStatusTip(tr("Continuous Playback mode"));

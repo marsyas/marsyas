@@ -31,6 +31,7 @@
 #include <QPushButton>
 #include <QMainWindow>
 #include <QLabel>
+#include <QLineEdit>
 
 #include <iostream> 
 using namespace std;
@@ -48,10 +49,14 @@ public slots:
    void playingFile(QString);
   void openTrainFile();
   void openPredictFile();
+  void openPredictionGrid();
+  void savePredictionGrid();
 		
  signals: 
 		void trainFile(QString);
 		void predictFile(QString);
+		void openPredictGridFile(QString);
+		void savePredictGridFile(QString);
 		void playbackMode(bool);
 		
 private:
@@ -65,10 +70,17 @@ private:
 		QAction* openPredictAct;
 		QAction* aboutAct;
 		QAction* playbackAct;
+		QAction* openPredictGridAct;
+		QAction* savePerdictGridAct;
 		
 		QLabel*  playLabel;  
 		QLabel* trainLabel;
 		QLabel* predictLabel;
+		QLabel* gridSizeLabel;
+		QLabel* gridWidthHeightSeperator;
+
+		QLineEdit* gridWidth;
+		QLineEdit* gridHeight;
   
 };
 
