@@ -317,17 +317,15 @@ mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 	#ifdef MARSYAS_DEBUG
 	if ((r >= rows_) || (c >= cols_))
 	{
-		printf("rows_ = %d\n", rows_);
-		printf("r = %d\n", r);
-		printf("c = %d\n", c);
-		printf("cols = %d\n", cols_);
+		MRSERR("rows_ = " << rows_);
+		MRSERR("r = " << r);
+		MRSERR("c = " << c);
+		MRSERR("cols = " << cols_);
 	}
 	#endif
 	
-
 	MRSASSERT(r < rows_);
 	MRSASSERT(c < cols_);
-
 
 	return data_[c * rows_ + r];  
 }
@@ -345,8 +343,8 @@ mrs_real& realvec::operator()(const mrs_natural i)
 #ifdef MARSYAS_DEBUG
 	if (i >= size_)
 	{
-		printf("i= %d\n", i);
-		printf("size = %d\n", size_);
+		MRSERR("i= " << i);
+		MRSERR("size = " << size_);
 	}
 #endif
   
