@@ -1,11 +1,11 @@
 %clear
 
-% filename = 'RM-C002.mid';
-% fs = 44100;
-% frameSize = 2048; % size in samples
+%filename = 'z:\MIDI\test.mid' %'RM-C002.mid';
+%fs = 44100;
+%frameSize = 2048; % size in samples
 % 
-% startSeg = 0;
-% endSeg = 10;
+%startSeg = 0;
+%endSeg = 10;
 
 
 %% compute MIDI
@@ -53,7 +53,7 @@ dur = min(durations);%in samples
 AUDIOout=zeros(nChannels+1,dur);
 for i=1:nChannels
 	%add to mix channel
-	AUDIOout(1,:) = AUDIOout(1,:)+(AUDIOtracks{i}(1,1:dur)/nChannels);
+	AUDIOout(1,:) = AUDIOout(1,:)+(AUDIOtracks{i}(1,1:dur));%/nChannels);
 	%separate channel
 	AUDIOout(i+1,:) = AUDIOtracks{i}(1,1:dur);
 end

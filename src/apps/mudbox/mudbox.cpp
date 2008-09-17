@@ -1708,6 +1708,40 @@ toy_with_vicon(string vfName)
 }
 
 void
+toy_with_MidiFileSynthSource(string sfName)
+{
+	cout << "Playing " << sfName << endl; 
+	
+	MarSystemManager mng;
+	
+	// Create a series Composite 
+	MarSystem* series = mng.create("Series", "series");
+	series->addMarSystem(mng.create("MidiFileSynthSource", "src"));
+	series->addMarSystem(mng.create("AudioSink", "dest"));
+	
+	// only update controls from Composite level 
+	series->updctrl("mrs_natural/inSamples", 512);
+	series->updctrl("mrs_real/israte", 44100.0);
+	series->updctrl("MidiFileSynthSource/src/mrs_real/start", 0.0);//in seconds
+	series->updctrl("MidiFileSynthSource/src/mrs_real/end", 10.0);//MIDIToolbox prompts\
+	for user confirmation if the MIDI file is too long [!] Must find a way to avoid it otherwise it \
+	breaks C++ execution!
+	series->updctrl("MidiFileSynthSource/src/mrs_string/filename", sfName);
+
+	series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	
+	while(series->getctrl("MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	{
+		series->tick();
+		cout << "Number of playing notes: " << series->getctrl("MidiFileSynthSource/src/mrs_natural/nActiveNotes")->to<mrs_natural>() << endl;
+		//cout << "Pos: " << series->getctrl("MidiFileSynthSource/src/mrs_natural/pos")->to<mrs_natural>() << endl;
+	}
+	
+	delete series;
+	
+}
+
+void
 toy_with_MATLABengine()
 {
 	//In order to toy_with the MATLABengine class
@@ -1942,7 +1976,7 @@ toy_with_MATLABengine()
 	else
 		cout << "Error getting value back from MATLAB!" << endl;
 	getchar();
-
+	
 #else
 	cout << endl << "MATLAB Engine not configured! Not possible to run toy_with..." << endl;
 	cout << "To build this toy_with with MATLAB engine support, check:" << endl << endl;
@@ -4487,9 +4521,11 @@ main(int argc, const char **argv)
 		toy_with_swipe(fname0);
 	else if (toy_withName == "tempo")
 		toy_with_tempo(fname0, 120, 1);
-	else if (toy_withName == "train_predict")
+else if (toy_withName == "train_predict")
 		toy_with_train_predict(fname0, fname1);
-	else if (toy_withName == "updctrl")
+	else if (toy_withName == "MidiFileSynthSource")
+		toy_with_MidiFileSynthSource(fname0);
+	else if (toy_withName == "updctrl") 
 		toy_with_updctrl(fname0);
 	else if (toy_withName == "vibrato")
 		toy_with_vibrato(fname0);

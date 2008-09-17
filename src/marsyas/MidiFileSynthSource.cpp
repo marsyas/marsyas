@@ -68,7 +68,6 @@ MidiFileSynthSource::addControls()
 	addctrl("mrs_natural/nChannels", 0, ctrl_nChannels_);
 	
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
-	setctrlState("mrs_natural/pos", true);
 	
 	addctrl("mrs_bool/notEmpty", true, ctrl_notEmpty_); 
 	
@@ -81,7 +80,7 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
 	MRSDIAG("MidiFileSynthSource::myUpdate");
-	
+
 	if(filename_ != ctrl_filename_->to<mrs_string>())
 	{
 		filename_ = ctrl_filename_->to<mrs_string>();
@@ -119,7 +118,7 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ostringstream oss;
 	oss << "AudioMIDImix" << ",";
-	for (mrs_natural ch = 0; nChannels_; ch++) 
+	for (mrs_natural ch = 0; ch < nChannels_; ch++) 
 	{
 		oss << "AudioMIDIch" << ch << ",";
 	}
@@ -150,10 +149,17 @@ MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 				
 		}
 	}
-	
+
+// 		for(mrs_natural i = 0; i < onSamples_; ++i)
+// 		{
+// 			if((pos + i) < size_)
+// 				out(0,i) = audio_(0, pos+i);
+// 			else
+// 				out(0,i) = 0.0; //no more audio data... fill with silence
+// 		}
+
 	ctrl_pos_->setValue(pos+onSamples_);
-			
-	ctrl_nActiveNotes_->setValue(activeNotes_(frameCount_++));
+	ctrl_nActiveNotes_->setValue(mrs_natural(activeNotes_(frameCount_++)));
 }
 
 
