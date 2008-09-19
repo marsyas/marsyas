@@ -107,7 +107,8 @@ printHelp(string progName)
 	cerr << "stereoFeatures  : toy_with stereo features " << endl;
 	cerr << "stereoMFCC      : toy_with stereo MFCC " << endl;
 	cerr << "stereoFeaturesMFCC : toy_with stereo features and MFCCs" << endl;
-	cerr << "swipe           : topy_with_swipe (F0 estimator)" << endl;
+	cerr << "swipe           : toy_with_swipe (F0 estimator)" << endl;
+	cerr << "stretchLinear   : toy_with_stretchLinear time stretching with linear interpolation" << endl;
 	
 	cerr << "stereo2mono     : toy_with stereo to mono conversion " << endl;
 	cerr << "ADRess          : toy_with stereo ADRess algorithm " << endl;
@@ -4025,6 +4026,32 @@ toy_with_tempo(string fname, mrs_natural tempo, mrs_natural rank)
 
 
 
+void 
+toy_with_stretchLinear(string sfName) 
+{
+	MarSystemManager mng;
+	MarSystem* net = mng.create("Series", "pnet");
+	
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("StretchLinear", "sl"));
+	net->addMarSystem(mng.create("SoundFileSink", "dest"));
+	
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	net->updctrl("StretchLinear/sl/mrs_real/stretch", 1.5);
+	net->updctrl("SoundFileSink/dest/mrs_string/filename", "foo.wav");
+	mrs_natural size = net->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+	cout << "size = " << size << endl;
+	
+	net->updctrl("mrs_natural/inSamples", size);
+
+
+	
+	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())				{
+		net->tick();
+	}
+}
+
+
 
 
 void
@@ -4556,6 +4583,8 @@ main(int argc, const char **argv)
 		toy_with_stereoMFCC(fname0, fname1);
 	else if (toy_withName == "swipe")
 		toy_with_swipe(fname0);
+	else if (toy_withName == "stretchLinear")
+		toy_with_stretchLinear(fname0);
 	else if (toy_withName == "tempo")
 		toy_with_tempo(fname0, 120, 1);
 else if (toy_withName == "train_predict")

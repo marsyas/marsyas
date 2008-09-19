@@ -44,5 +44,7 @@ while get("SoundFileSource/src/mrs_bool/notEmpty").to_bool():
 	currentlyPlaying = get("SoundFileSource/src/mrs_string/currentlyPlaying").to_string()
 	if (currentlyPlaying != previouslyPlaying):
 		print "Processing: " +  get("SoundFileSource/src/mrs_string/currentlyPlaying").to_string()
+		
 	fnet.tick()
+	
 	previouslyPlaying = currentlyPlaying

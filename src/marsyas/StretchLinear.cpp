@@ -66,6 +66,7 @@ StretchLinear::myProcess(realvec& in, realvec& out)
 	mrs_natural tl, tr;
 	mrs_real alpha = ctrl_stretch_->to<mrs_real>();
 	
+	
 	for (o=0; o < onObservations_; o++) 
 	{
 		for (t = 0; t < onSamples_; t++)
@@ -73,13 +74,14 @@ StretchLinear::myProcess(realvec& in, realvec& out)
 			tp = t / alpha;
 			tl= (mrs_natural)tp;
 			tr = tl + 1;
-			if ((tr < inSamples_) && (tl<inSamples_) && 
-				(tr >= 0) && (tl >= 0))
+			if (tl<inSamples_)
 			{
-				out(o,t) = (tp - tl) * in(o,tr) + (tr-tp) * in(o,tl);
+				out(o,t) = (tr-tp) * in(o,tl) + (tp-tl) * in(o,tr);
 			}
-			else 
-				out(o,t) = 0.0;
+			else // reflect on boundary
+			{
+				out(o,t) = in(o,inSamples_);
+			}
 		}
 	}
 }

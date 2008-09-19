@@ -38,7 +38,7 @@ def oscbank(infile):
 	synthesisHop.setValue_natural(512);
 	analysisHop.setValue_natural(512);
 	sinusoids.setValue_natural(120);
-	pitchShift.setValue_real(1.3);
+	pitchShift.setValue_real(0.66);
 	
 	convertMode.setValue_string("sorted");
 	inSamples.setValue_natural(512);
@@ -173,7 +173,6 @@ def scaled(infile):
 
 	# Build the processing network
 	mng = MarSystemManager()
-	a = ("Series", "pvseries")
 	pvseries = mng.create("Series", "pvseries")
 	pvseries.addMarSystem(mng.create("SoundFileSource", "src"))
 	pvseries.addMarSystem(mng.create("PhaseVocoder", "pvoc"))
@@ -194,23 +193,24 @@ def scaled(infile):
 	magHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/magnitudes"); 
 	peakHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/peaks");
 	pos = pvseries.getControl("SoundFileSource/src/mrs_natural/pos");
+
 	sfactor = pvseries.getControl("StretchLinear/sl/mrs_real/stretch");
 	
 	
 	[name, ext] = os.path.splitext(os.path.basename(infile))
-	outsfname = name + "_scaled" + ext
+	outsfname = "temp.wav"
 	
     #scaled phaselocking 
 
 	filename.setValue_string(infile);
-	inSamples.setValue_natural(256);
-	analysisHop.setValue_natural(256);
-	synthesisHop.setValue_natural(384);
+	inSamples.setValue_natural(512);
+	analysisHop.setValue_natural(512);
+	synthesisHop.setValue_natural(341);
 	winSize.setValue_natural(2048);
 	fftSize.setValue_natural(2048);
 	convertMode.setValue_string("analysis_scaled_phaselock");
 	unconvertMode.setValue_string("scaled_phaselock");
-	sfactor.setValue_real(0.66);
+	sfactor.setValue_real(1.0);
 	outfname.setValue_string(outsfname);
 	
 	i = 0 
@@ -220,9 +220,32 @@ def scaled(infile):
 			
 		i = i + 1
 		pvseries.tick()
+
+
+	[name, ext] = os.path.splitext(os.path.basename(infile))
+	outsfname = name + "_scaled" + ext
+
+	pnet = mng.create("Series", "pnet")
+	pnet.addMarSystem(mng.create("SoundFileSource", "src"))
+	pnet.addMarSystem(mng.create("StretchLinear", "sl"))
+	pnet.addMarSystem(mng.create("SoundFileSink", "dest"))
+
+	filename = pnet.getControl("SoundFileSource/src/mrs_string/filename")
+	notempty = pnet.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	sfactor = pnet.getControl("StretchLinear/sl/mrs_real/stretch")
+	outfname = pnet.getControl("SoundFileSink/dest/mrs_string/filename")
+	inSamples = pnet.getControl("mrs_natural/inSamples")
+	
+	sfactor.setValue_real(1.5);
+	filename.setValue_string("temp.wav");
+	outfname.setValue_string(outsfname);
+	size = pnet.getControl("SoundFileSource/src/mrs_natural/size");
+	inSamples.setValue_natural(size.to_natural())
+	
+	while notempty.to_bool():
+		pnet.tick()
+
 	print "Scaled-phaselocking phasevocoding done. Output in "  + outsfname 
-
-
 
 def identity(infile):
 	print "Identity-phaselocking phasevocoding " + infile 
@@ -335,7 +358,8 @@ filelist = [
 "/Volumes/My Passport/ivl/Sept Clean Clips/whammy chords.wav", 
 ]
 
-filelist = ["/Users/gtzan/data/sound/rollers_examples/ComingThrough.wav"]
+# filelist = ["/Users/gtzan/data/sound/rollers_examples/ComingThrough.wav"]
+# filelist = [ "/Volumes/My Passport/ivl/Sept Clean Clips/A chord.wav"]
 
 
 
