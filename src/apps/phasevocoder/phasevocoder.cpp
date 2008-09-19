@@ -71,11 +71,11 @@ printHelp(string progName)
 	cerr << "-p --pitchshift      : pitch shift" << endl;
 	cerr << "-s --sinusoids       : number of sinusoids" << endl;
 	cerr << "-v --voices          : number of voices" << endl;
+	cerr << "-ucm --unconvertmode : synthesis back-end mode" << endl;
 
 	/* TODO: Add short description
 
 	cerr << "-a --auto            : " << endl;
-	cerr << "-ucm --unconvertmode : " << endl;
 
 	*/
 

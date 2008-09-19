@@ -129,17 +129,18 @@ show two extremes of using of sfplay: simple playback of foo.wav and
 playing 3.2 seconds (-l) clips starting at 10.0 seconds (-s) into the
 file and repeating the clips for 2.5 times (-r) writing the output to
 output.wav (-f) at half volume (-g) playing each file in the
-collection reggae.mf. The last command stores the MarSystem dataflow
-network used in sfplay as a plugin in playback.mpl. The plugin is
-essentially a textual description of the created network.  Because
-MarSystems can be created at run-time the network can be loaded in a
-sfplugin which is a generic executable that flows audio data through
-any particular network.  Running sfplugin -p playback.mpl bar.wav will
-play using the created plugin the file bar.wav. It is important to
-note that although both sfplay and sfplugin have the same behavior in
-this case they achieve it very different.  The main difference is that
-in sfplay the network is created at compile time wheras in sfplugin
-the network is created at run time.
+collection reggae.mf. Using the (--ws) option, you may manually set
+the window size in samples. The last command stores the MarSystem
+dataflow network used in sfplay as a plugin in playback.mpl. The
+plugin is essentially a textual description of the created network.
+Because MarSystems can be created at run-time the network can be
+loaded in a sfplugin which is a generic executable that flows audio
+data through any particular network.  Running sfplugin -p playback.mpl
+bar.wav will play using the created plugin the file bar.wav. It is
+important to note that although both sfplay and sfplugin have the same
+behavior in this case they achieve it very different.  The main
+difference is that in sfplay the network is created at compile time
+wheras in sfplugin the network is created at run time.
 
 
 @example
@@ -175,14 +176,15 @@ if they are they are not. It is used for internal testing.
 @node record, orcarecord, audioCompare, Soundfile Interaction
 @subsection @code{record}
 
-Records to a sound-file using the default audio input device. 
-For example the second command records 5 seconds of stereo (-c 2) 
-audio at a sampling rate of 22050. The results are written to foo.wav. 
+Records to a sound-file using the default audio input device.  For
+example the second command records 5 seconds of stereo (-c 2) audio at
+a sampling rate of 22050 at 80 percent volume (-g 0.8). The results
+are written to foo.wav.
 
 
 @example 
 record -l 3 foo.wav 
-record -l 5 -c 2 -s 22050 bar.wav 
+record -l 5 -c 2 -s 22050 -g 0.8 bar.wav 
 @end example 
 
 
@@ -191,10 +193,16 @@ record -l 5 -c 2 -s 22050 bar.wav
 @node orcarecord,  , record, Soundfile Interaction
 @subsection @code{orcarecord}
 
-Similar to record but with specic change to record 4 stereo channels in
-parallel using a TASCAP audio interface. Created for the digitization of
-tapes for the Orchive project. 
+Similar to record but with specic change to record 4 stereo channels
+in parallel using a TASCAP audio interface. Created for the
+digitization of tapes for the Orchive project. As in the previous
+example, this following commmand records 8 seconds (-l 8) of audio
+input at 30 percent volume (-g 0.3).
 
+
+@example 
+orcarecord -l 8 -g 0.3 foo.wav 
+@end example 
 
 
 
@@ -211,9 +219,18 @@ tapes for the Orchive project.
 @subsection @code{pitchextract}
 @cindex pitchextract
 
-@code{pitchextract} is used to extract the fundamental frequency 
-contour from monophonic audio signals. A simple sinusoidal 
-playback is provided for playback of the resulting contour. 
+@code{pitchextract} is used to extract the fundamental frequency
+contour from monophonic audio signals. A simple sinusoidal playback is
+provided for playback of the resulting contour. In the following
+example, the pich is extracted from soundfile, using a windowsize of
+1024 (-w 1024), a lower pitch of 36 (-l 36) and an upper pitch of 128
+(-u 128).
+
+
+@example 
+pitchextract -w 1024 -l 36 -u 128 soundfile
+@end example 
+
 
 
 @node bextract,  , pitchextract, Feature Extraction
@@ -381,10 +398,18 @@ various aspects of the feature extraction process
 
 
 @table @samp 
+@item -c --collection
+      the collection of files to be used
 @item -s --start
       starting offset (in seconds) into each soundifle from which features will be extracted
 @item -l --length
       length (in seconds) of each soundfile from which features will be extracted. A length of -1.0 indicates that the entire duration of the file should be used (the default behavior) 
+@item -n --normalization
+      apply normalization to audio signal
+@item -st --stereo
+      use stereo feature extraction
+@item -ds --downsample
+      downsample factor (default 1)
 @item -ws --winsamples
       size in samples of the analysis window (default 512) 
 @item -hp --hopsamples 
@@ -557,6 +582,16 @@ phaselocking (-cm and -ucm) as described by Laroche and Dobson.
       size of the fft
 @item -w --winsize
       size of the window 
+@item -v --voices
+      number of voices
+@item -g --gain
+      linear volume gain
+@item -b --bufferSize
+      audio buffer size
+@item -m --midi
+      midi input port number
+@item -e --epochHeterophonics
+      heterophonics epoch
 @item -d --decimation 
       analysis hop size (decimation)
 @item -i --interpolation
@@ -632,6 +667,10 @@ default mode is train.
  Available classifiers are GS, ZEROR, SVM 
 @item -w --wekefile 
       the name of the weka file 
+@item -id --inputdir
+      input directory
+@item -od --outputdir
+      output directory
 @item -dm --distance_matrix 
       filename for the distance matrix output if mode is distance_matrix 
 @end table
@@ -726,6 +765,18 @@ saxophone line in a jazz tune.
        number of frames in a texture window
 @item -c -clustering 
     number of clusters in a texture window
+@item -v --voices
+    number of voices
+@item -F --clusterFiltering
+    cluster filtering
+@item -A --attributes
+    set attributes
+@item -g --ground
+    set ground
+@item -SC --clusterSynthetize
+    cluster synthetize
+@item -P --peakStore
+    set peak store
 @item -k -keep 
       keep the specified number of clusters in the texture window 
 @item -S --synthetise 

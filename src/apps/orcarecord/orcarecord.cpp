@@ -49,7 +49,7 @@ CommandLineOptions cmd_options;
 void printUsage(string progName)
 {
     MRSDIAG("record.cpp - printUsage");
-    cerr << "Usage : " << progName << " [-l length(seconds)] [-h help] [-u usage] soundfile1 soundfile2 soundfile3" << endl;
+    cerr << "Usage : " << progName << " [-l length(seconds)] [-s samplerate] [-c channels] [-d dat] [-g gain] soundfile" << endl;
     cerr << endl;
     exit(1);
 }
@@ -59,11 +59,10 @@ void printHelp(string progName)
     MRSDIAG("record.cpp - printHelp");
     cerr << "record, MARSYAS, Copyright George Tzanetakis " << endl;
     cerr << "--------------------------------------------" << endl;
-    cerr << "prints information about the sound files provided as arguments " << endl;
+    cerr << "Records 4 stereo channels in parallel using a TASCAP audio device to a sound file " << endl;
     cerr << endl;
-    cerr << "Usage : " << progName << "soundfile1 soundfile2 soundfile3" << endl;
+    cerr << "Usage : " << progName << " [-l length(seconds)] [-s samplerate] [-c channels] [-d dat] [-g gain] soundfile" << endl;
     cerr << endl;
-    cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
     cerr << "Help Options:" << endl;
     cerr << "-u --usage      : display short usage info" << endl;
     cerr << "-h --help       : display this information " << endl;

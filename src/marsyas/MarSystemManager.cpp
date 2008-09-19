@@ -883,7 +883,7 @@ MarSystemManager::create(std::string marsystemname)
         return create(marsystemname.substr(0,loc), 
 					  marsystemname.substr(loc +1));
     else
-        create(marsystemname, marsystemname + "_unknown");
+        return create(marsystemname, marsystemname + "_unknown");
 }
 
 
