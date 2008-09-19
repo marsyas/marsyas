@@ -195,7 +195,7 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 	for (t = 0; t < inSamples_; t++)
 	{
 		curClusterLabel = (mrs_natural)in(0,t);
-		out(0,t) = curClusterLabel;
+		out(0,t) = 0; //curClusterLabel; //signals clusters to be synthesized 
 
 		for( i=0 ; i < (curNumClusters - numClustersToKeep) ; i++ )
 		{

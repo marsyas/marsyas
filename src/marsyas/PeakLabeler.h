@@ -26,7 +26,8 @@ namespace Marsyas
 /** 
 	\class PeakLabeler
 	\ingroup MarSystem
-	\brief Assigns clustering labels to the "pkGroup" feature of the input peak realvec, based on the information received at the mrs_realvec/labels control.
+	\brief Assigns clustering labels to the "pkGroup" feature of the input peak realvec, 
+	based on the information received at the mrs_realvec/labels control.
 
 	Controls:
 	- \b mrs_realvec/labels [w] : cluster labels to be assigned to each peak received at the input. 

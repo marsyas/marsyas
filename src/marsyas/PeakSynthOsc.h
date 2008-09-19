@@ -39,8 +39,16 @@ according to current input time (t)
 	private:
 		mrs_real factor_;
 		mrs_natural delay_;
+		mrs_real mulF_;
+		mrs_real mulA_;
+		mrs_natural pkGrp2Synth_;
+		mrs_natural Nb_;
+		mrs_natural nbH_;
+		mrs_bool silence_;
 
   	MarControlPtr ctrl_samplingFreq_;
+		MarControlPtr ctrl_peakGroup2Synth_;
+		MarControlPtr ctrl_isSilence_;
 		MarControlPtr ctrl_synSize_;
 		MarControlPtr ctrl_delay_;
 		MarControlPtr ctrl_harmonize_;
