@@ -47,16 +47,7 @@ MarGrid::MarGrid(QWidget *parent)
   winHeight = cell_size * som_height;
 
   setMinimumSize(winWidth, winHeight);
-
-  for (int i=0; i < som_width; i++)
-    for (int j=0; j < som_height; j++) 
-      {
-	QList<string> empty;
-	files.push_back(empty);
-	counters.push_back(0);
-	counterSizes.push_back(0);
-	labels.push_back(0);
-      }
+  resetFilesVec(som_height, som_width);
   
   // Create playback network
   pnet_ = mng.create("Series", "pnet_");
@@ -398,6 +389,24 @@ MarGrid::resetPredict()
   
 }
 
+void
+MarGrid::resetFilesVec(int height, int width)
+{
+	for (int i=0; i < width; i++)
+	{
+	   for (int j=0; j < height; j++) 
+	   {
+		   QList<string> empty;
+		   files.push_back(empty);
+		   counters.push_back(0);
+		   counterSizes.push_back(0);
+		   labels.push_back(0);
+	   }
+	}
+	repaint();
+
+}
+
 
 void 
 MarGrid::addFile(int grid_x, int grid_y, string filename)
@@ -416,7 +425,10 @@ void
 MarGrid::mousePressEvent(QMouseEvent *event)
 {
   
-
+  if ((event->pos().x() >= som_width * cell_size)|| (event->pos().y() >= som_height * cell_size))
+    {
+      return;
+    }
   cout << "mouse Press Event" << endl;
   
   grid_x = event->pos().x() / cell_size;
@@ -464,7 +476,7 @@ void
 MarGrid::mouseMoveEvent(QMouseEvent* event)
 {
   
-  if ((event->pos().x() >= 600)|| (event->pos().y() >= 600))
+  if ((event->pos().x() >= som_width * cell_size)|| (event->pos().y() >= som_height * cell_size))
     {
       return;
     }
@@ -505,6 +517,22 @@ MarGrid::mouseMoveEvent(QMouseEvent* event)
   
   repaint();
   
+}
+
+void
+MarGrid::setXGridSize(QString size)
+{
+	som_width = size.toInt();
+	resetFilesVec(som_height, som_width);
+	clear();
+}
+
+void
+MarGrid::setYGridSize(QString size)
+{
+	som_height = size.toInt();
+    resetFilesVec(som_height, som_width);
+	clear();
 }
 
 void

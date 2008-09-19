@@ -55,12 +55,15 @@ public slots:
 		void setPlaybackMode(bool continuous);
 		void openPredictionGrid(QString fname);
 		void savePredictionGrid(QString fname);
-		
+	    void setXGridSize(QString size);
+	    void setYGridSize(QString size);
+
 		void extract();
 		void predict();
 		void train();
 signals: 
   void playingFile(QString str);
+  void newGridSize(int height, int width);
   
   
 protected:
@@ -70,6 +73,7 @@ protected:
   void paintEvent(QPaintEvent *event);
   void addFile(int grid_x, int grid_y, std::string filename);
   void resetPredict();
+  void resetFilesVec(int height, int width);
   
   
 private:
@@ -110,7 +114,7 @@ private:
   Marsyas::MarSystem* total_;
   Marsyas::MarSystem* norm_;
   
- 
+  
   
 };
 

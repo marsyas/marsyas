@@ -46,13 +46,18 @@ MarGridWindow::MarGridWindow()
   playLabel = new QLabel("Hello");
   trainLabel = new QLabel("Train File: \t ./music.mf");
   predictLabel = new QLabel("Predict File: \t ./test.mf");
-  gridSizeLabel = new QLabel("Grid Size: ");
-/* Commented out for George so the Gui doesn't change  
-  gridWidthHeightSeperator = new QLabel("X");
+  gridHeightLabel = new QLabel("Grid Height: ");
+  gridWidthLabel = new QLabel("Grid Width: ");
   gridWidth = new QLineEdit(this);
+  gridWidth->setMinimumWidth(30);
+  gridWidth->setMaximumWidth(30);
   gridWidth->setInputMask("99");
+  gridWidth->setText("12");
   gridHeight = new QLineEdit(this);
-  gridHeight->setInputMask("99");*/
+  gridHeight->setInputMask("99");
+  gridHeight->setMinimumWidth(30);
+  gridHeight->setMaximumWidth(30);
+  gridHeight->setText("12");
 
   QWidget *margrid = new MarGrid();
   connect(this, SIGNAL(trainFile(QString)), margrid, SLOT(setupTrain(QString)));
@@ -62,23 +67,36 @@ MarGridWindow::MarGridWindow()
   connect(this, SIGNAL(savePredictGridFile(QString)), margrid, SLOT(savePredictionGrid(QString)));
   
   QGridLayout *gridLayout = new QGridLayout;
-  gridLayout->addWidget(trainLabel, 0,0,1,3);
-  gridLayout->addWidget(predictLabel, 1, 0,1,3);
+  gridLayout->addWidget(trainLabel, 0, 0, 1, 3);
+  gridLayout->addWidget(predictLabel, 1, 0, 1, 3);
   gridLayout->addWidget(extract, 2, 0);
   gridLayout->addWidget(train, 2, 1);
   gridLayout->addWidget(predict, 2, 2);
- /* Commented out for George so the Gui doesn't change 
-  gridLayout->addWidget(gridSizeLabel, 2,3);
-  gridLayout->addWidget(gridWidth,2,4);
-  gridLayout->addWidget(gridWidthHeightSeperator,2,5);
-  gridLayout->addWidget(gridHeight,2,6);*/
+  
+  QWidget *gridWidthWidget = new QWidget();
+  QHBoxLayout *gridWidthLayout = new  QHBoxLayout;
+  gridWidthLayout->addWidget(gridWidthLabel);
+  gridWidthLayout->addWidget(gridWidth);
+  gridWidthWidget->setLayout(gridWidthLayout);
+
+  QWidget *gridHeightWidget = new QWidget();
+  QHBoxLayout *gridHeightLayout = new  QHBoxLayout;
+  gridHeightLayout->addWidget(gridHeightLabel);
+  gridHeightLayout->addWidget(gridHeight);
+  gridHeightWidget->setLayout(gridHeightLayout);
+
+  gridLayout->addWidget(gridHeightWidget,1,2,1,2);
+  gridLayout->addWidget(gridWidthWidget,0,2,1,2);
   gridLayout->addWidget(playLabel, 3, 0, 1, 3);
   gridLayout->addWidget(margrid, 4, 0, 1, 3);
 
   connect(extract, SIGNAL(clicked()), margrid, SLOT(extract()));
   connect(train, SIGNAL(clicked()), margrid, SLOT(train()));
   connect(predict, SIGNAL(clicked()), margrid, SLOT(predict()));
+  connect(gridWidth, SIGNAL(textChanged(QString)), margrid, SLOT(setXGridSize(QString)));
+  connect(gridHeight, SIGNAL(textChanged(QString)), margrid, SLOT(setYGridSize(QString)));
   connect(margrid, SIGNAL(playingFile(QString)), this, SLOT(playingFile(QString))); 
+  connect(margrid, SIGNAL(newGridSize(int, int)), this, SLOT(resizeGrid(int, int)));
 
   w->setLayout(gridLayout);
 
@@ -145,6 +163,14 @@ MarGridWindow::savePredictionGrid()
 	emit savePredictGridFile(fileName);
 }
 
+void 
+MarGridWindow::resizeGrid(int height, int width)
+{
+	gridHeight->setText("" + height);
+	gridWidth->setText("" + width);
+}
+	
+
 
 
 
@@ -178,9 +204,6 @@ MarGridWindow::createActions()
   playbackAct->setCheckable(true);
   connect(playbackAct, SIGNAL(toggled(bool)), this, SIGNAL(playbackMode(bool)));
 }
-
-
-	
 
 
 void 

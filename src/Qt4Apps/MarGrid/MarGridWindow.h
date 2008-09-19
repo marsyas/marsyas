@@ -28,10 +28,12 @@
 #include <QApplication>
 #include <QFont>
 #include <QGridLayout>
+#include <QHBoxLayout>
 #include <QPushButton>
 #include <QMainWindow>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSizePolicy>
 
 #include <iostream> 
 using namespace std;
@@ -51,6 +53,7 @@ public slots:
   void openPredictFile();
   void openPredictionGrid();
   void savePredictionGrid();
+  void resizeGrid(int,int);
 		
  signals: 
 		void trainFile(QString);
@@ -58,6 +61,7 @@ public slots:
 		void openPredictGridFile(QString);
 		void savePredictGridFile(QString);
 		void playbackMode(bool);
+		void gridSize(bool, int);
 		
 private:
 		void createMenus();
@@ -76,8 +80,8 @@ private:
 		QLabel*  playLabel;  
 		QLabel* trainLabel;
 		QLabel* predictLabel;
-		QLabel* gridSizeLabel;
-		QLabel* gridWidthHeightSeperator;
+		QLabel* gridHeightLabel;
+		QLabel* gridWidthLabel;
 
 		QLineEdit* gridWidth;
 		QLineEdit* gridHeight;
