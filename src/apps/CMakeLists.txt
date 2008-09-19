@@ -6,9 +6,8 @@ target_link_libraries(${APP} marsyas ${GSTREAMER_LIBRARIES} ${OS_LIBS})
 install(TARGETS ${APP} DESTINATION bin)
 endmacro (marsyas_app)
 
-
 ## build apps
-####### in docs -gp
+## in docs -gp
 add_subdirectory(mkcollection)
 add_subdirectory(sfplay)
 add_subdirectory(sfinfo)
@@ -22,13 +21,14 @@ add_subdirectory(kea)
 add_subdirectory(peakSynth)
 add_subdirectory(peakClustering)
 add_subdirectory(sfplugin)
-#add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
-add_subdirectory(mirex2008)
-###### anything to do with the scheduler
 add_subdirectory(mudbox)
+#add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
+## EVALUATION PROJECTS
+add_subdirectory(mirex2008)
+add_subdirectory(peakClusteringEval)
 
-####### not in docs; must edit tools.texi   -gp
+## not in docs; must edit tools.texi   -gp
 add_subdirectory(tempo) 
 add_subdirectory(virtualsensor)
 
