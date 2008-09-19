@@ -1369,6 +1369,72 @@ MarSystem::toString()
 	return oss.str();
 }
 
+marostring&
+MarSystem::toString(marostring& m) {
+	m.begin_marsystem(isComposite_, getType(), getName());
+
+	m.begin_controls(controls_.size());
+	for(ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_) {
+		MarControlPtr c = ctrlIter_->second;
+		std::ostringstream cv;
+		cv << c;
+		std::string ct = c->getType();
+		std::string cn = c->getName();
+		// get the trailing bit after / Don't know why name is now type/name
+		int lp = (int)cn.find_last_of('/');
+		if (lp>=0 && (lp+1)<cn.size()) {
+			cn = cn.substr(lp+1);
+		}
+
+		bool cs = c->hasState();
+		m.begin_control(ct, cn, cv.str(), cs);
+
+		std::vector<std::pair<MarControlPtr, MarControlPtr> > links = c->getLinks();
+		int j=0;
+		for (size_t i=0; i<links.size(); i++) {
+			//check who is linking to this control, but avoid outputting root link info 
+			if(c == links[i].second() && links[i].first() != c) {
+				j++;
+			}
+		}
+		m.begin_control_links_in(j);
+		for (size_t i=0; i<links.size(); i++) {
+			// check who is linking to this control, but avoid outputting root link info 
+			if(c == links[i].second() && links[i].first() != c) {
+				m.put_control_link_in(links[i].first->getMarSystem()->getAbsPath(),links[i].first->getType(),links[i].first->getName());
+			}
+    	}
+    	m.end_control_links_in(j);
+
+		for (size_t i=0; i<links.size(); i++) {
+			//check where to this control is linking, but avoid outputting root link info 
+			if(c == links[i].first() && c != links[i].second()) {
+				j++;
+			}
+		}
+		m.begin_control_links_out(j);
+		for (size_t i=0; i<links.size(); i++) {
+			//check where to this control is linking, but avoid outputting root link info 
+			if(c == links[i].first() && c != links[i].second()) {
+				m.put_control_link_out(links[i].second->getMarSystem()->getAbsPath(),links[i].second->getType(),links[i].second->getName());
+			}
+		}
+		m.end_control_links_out(j);
+		m.end_control(ct, cn, cv.str(), cs);
+	}
+	m.end_controls(controls_.size());
+
+	int sz=marsystems_.size();
+	if (sz>0) {
+		m.begin_children(sz);
+		for (int i=0; i<sz; i++) {
+			marsystems_[i]->toString(m);
+		}
+		m.end_children(sz);
+	}
+	m.end_marsystem(isComposite_, getType(), getName());
+	return m;
+}
 
 // write *this to s 
 ostream&

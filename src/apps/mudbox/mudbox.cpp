@@ -124,6 +124,8 @@ printHelp(string progName)
 	cerr << "SFPlay          : plays only labelled regions in an audio file" << endl;
 	cerr << "getControls     : toy_with getControls functionality " << endl;
 	cerr << "mono2stereo     : toy_with mono2stereo MarSystem " << endl;
+
+	cerr << "marostring      : toy_with marostring [xml|svg|html] " << endl;
 	exit(1);
 }
 
@@ -4396,6 +4398,41 @@ toy_with_multichannel_merge(string sfName)
 
 }
 
+#include "maroxml.h"
+#include "marosvg.h"
+#include "marohtml.h"
+
+void toy_with_marostring(std::string format)
+{
+	MarSystemManager mng;
+	MarSystem* ser = mng.create("Series","ser");
+	ser->addMarSystem(mng.create("SoundFileSource","src"));
+	MarSystem* fan = mng.create("Fanout","fan");
+	fan->addMarSystem(mng.create("Gain","g1"));
+	fan->addMarSystem(mng.create("Gain","g2"));
+	fan->addMarSystem(mng.create("Gain","g3"));
+	ser->addMarSystem(fan);
+	ser->addMarSystem(mng.create("Gain","g4"));
+	ser->addMarSystem(mng.create("AudioSink","snk"));
+
+	if(format=="html") {
+		marohtml m;
+		ser->toString(m);
+		cout << m.str();
+	}
+	else if (format=="svg") {
+		marosvg m;
+		m.style("fanout","fill","green");
+		ser->toString(m);
+		cout << m.str();
+	}
+	else if (format=="xml") {
+		maroxml m;
+		ser->toString(m);
+		cout << m.str();
+	}
+}
+
 int
 main(int argc, const char **argv)
 {
@@ -4537,6 +4574,8 @@ else if (toy_withName == "train_predict")
 		toy_with_windowedsource(fname0);
 	else if (toy_withName =="stereoFeaturesMFCC")
 		toy_with_stereoFeaturesMFCC(fname0, fname1);
+	else if (toy_withName == "marostring")
+		toy_with_marostring(fname0);
 
 
 	else 

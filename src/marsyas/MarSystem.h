@@ -28,6 +28,7 @@
 #include "TmTime.h"
 #include "Scheduler.h"
 #include "TmControlValue.h"
+#include "marostring.h"
 
 #include <vector>
 #include <iostream>
@@ -309,8 +310,9 @@ public:
   void process(realvec& in, realvec& out);   
 	void tick();
 
-		
-		std::string toString();
+	std::string toString();
+	virtual marostring& toString(marostring& m);
+
   // derived class such as Composite can override put 
   // essentially overriding operator<< 
   virtual std::ostream& put(std::ostream& o);
