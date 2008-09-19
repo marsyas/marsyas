@@ -501,8 +501,11 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	postNet->addMarSystem(synthBank);
 	
 	//add a MATLAB sink
-	postNet->addMarSystem(mng.create("MatlabSink", "synthSender"));
-	postNet->updctrl("MatlabSink/synthSender/mrs_string/evaluate",
+	postNet->addMarSystem(mng.create("PlotSink", "clustersAudio"));
+	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/sequence", false);
+	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/messages", false);
+	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/matlab", true);
+	postNet->updctrl("PlotSink/send2MATLAB/mrs_string/matlabCommand",
 		"concatAudioFrame; computeFrameSDR;");
 
 	// SHREDDER /////////////////////////////////////////////////

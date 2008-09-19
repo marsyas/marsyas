@@ -32,14 +32,22 @@ to Marsyas messages (default = stdout), and as a MATLAB plot
 if MATLAB engine is being used.
 
 Controls:
-- \b mrs_bool/sequence	: when true, this control
+- \b mrs_bool/sequence [w]	: when true, this control
 activates the writing of sequence numbered files containing the
 input data at each tick.
-- \b mrs_string/filename	: base filename used for the output 
+- \b mrs_string/filename [w]	: base filename used for the output 
 sequence numbered files.
-- \b mrs_string/separator	: separator character/string used when
+
+- \b mrs_bool/messages [w] : when true, activates the writing of the
+input data using Marsyas messages (i.e. MRSMSG() - - by default messages are sent to the stdout)
+- \b mrs_string/separator	[w] : separator character/string used when
 outputting input data using Marsyas messages (i.e. MRSMSG() - by default
 messages are sent to the stdout).
+
+- \b mrs_bool/matlab [w]: when true, input data is sent to MATLAB using
+MATLAB engine calls (if enabled), to a MATLAB variable of the form "type_name_indata".
+- \b mrs_string/matlabCommand [w] : MATLAB command to be evaluated at each process
+tick (after sending input data to MATLAB). By default it is set to "plot(type_name_indata);".
 */
 
 
@@ -48,9 +56,12 @@ messages are sent to the stdout).
 	private:
 		mrs_natural counter_;
 
+		MarControlPtr ctrl_messages_;
 		MarControlPtr ctrl_separator_;
 		MarControlPtr ctrl_sequence_;
 		MarControlPtr ctrl_filename_;
+		MarControlPtr ctrl_matlab_;
+		MarControlPtr ctrl_matlabCommand_;
 
 		void addControls();
 
