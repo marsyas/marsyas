@@ -76,6 +76,8 @@ namespace Marsyas
 			if (foldCount_ > this->size()) 
 			{
 				cout << "Folds exceed number of instances" << endl;
+				cout << "foldCount_ = " << foldCount_ << endl;
+				cout << "size = " << this->size() << endl;;
 				exit(1);
 			}
 			

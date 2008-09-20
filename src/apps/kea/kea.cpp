@@ -272,8 +272,8 @@ initOptions()
   cmd_options_.addBoolOption("usage", "u", false);
   cmd_options_.addStringOption("wekafname", "w", EMPTYSTRING);
   cmd_options_.addStringOption("mode", "m", "train");
-  cmd_options_.addStringOption("inputdir", "id", "./");
-  cmd_options_.addStringOption("outputdir", "od", "./");
+  cmd_options_.addStringOption("inputdir", "id", "");
+  cmd_options_.addStringOption("outputdir", "od", "");
   cmd_options_.addStringOption("distancematrix", "dm", "dm.txt");
   cmd_options_.addStringOption("classifier", "cl", "SVM");
 }

@@ -76,8 +76,9 @@ after each sound file:
 /home/gtzan/data/sound/reggae/bar.wav \t speech
 @end example
 
-This allows you to create a @qq{master} collection which includes
-different kinds of labelled sound files:
+The \t represents an actual tab character.  This allows you to create a
+@qq{master} collection which includes different kinds of labelled sound
+files:
 
 @example
 cat music.mf speech.mf > all.mf
@@ -194,7 +195,7 @@ record -l 5 -c 2 -s 22050 -g 0.8 bar.wav
 @subsection @code{orcarecord}
 
 Similar to record but with specic change to record 4 stereo channels
-in parallel using a TASCAP audio interface. Created for the
+in parallel using a TASCAM audio interface. Created for the
 digitization of tapes for the Orchive project. As in the previous
 example, this following commmand records 8 seconds (-l 8) of audio
 input at 30 percent volume (-g 0.3).
@@ -444,18 +445,18 @@ defautl the current directory is used
 
 @subsubheading TimeLines
 
-@verbatim
-bextract now supports a mode, called the Timeline mode, that lets
-you classify different sections of a song.  For example, you might
-have a number of audio files of Orca recordings with sections of
-voiceover, background noise, and orca calls.  You could train a
-classifier to recognize each of these types of signal.
+bextract also supports a mode, called the Timeline mode that allows
+labeling of different sections of an audio recording with different
+labels. For example, you might have a number of audio files of Orca
+recordings with sections of voiceover, background noise, and orca calls.
+You could train a classifier to recognize each of these types of signal.
+Instead of a label associated with each file in the collection 
+there is an associate Marsyas timeline file (the format is described
+below). To run bextract in Timeline mode, there are two steps:
+training and classifier:
 
-To run bextract in Timeline mode, there are two steps:
-
-1) Train the classifier
-
-   bextract -t songs.mf -p out.mpl -pm
+@example
+bextract -t songs.mf -p out.mpl -pm
 
 Where:
 
@@ -465,29 +466,37 @@ corresponding .mtl (Marsyas Timeline) file on each line
 -p out.mpl  - The Marsyas Plugin to be generated
 
 -pm         - Mute the output plugin
+@end example
 
-2) Predict new songs
 
+and predicting labels for a new audio recording
+
+@example
    sfplugin -p out.mpl songmono.wav
 
 Where:
 
 -p out.mpl   - The plugin output by bextract in step #1
+@end example
 
 
 The songs.mf file is Marsyas collection file with the path to song
 (usually .wav) files and their corresponding Marsyas Timeline
 (.mtl) files on each lines.  Here is an example song.mf file:
 
-  /path/to/song1.wav[TAB]/path/to/song1.mtl
-  /path/to/song2.wav[TAB]/path/to/song2.mtl
-  /path/to/song3.wav[TAB]/path/to/song3.mtl
+@example
+  /path/to/song1.wav \t /path/to/song1.mtl
+  /path/to/song2.wav \t /path/to/song2.mtl
+  /path/to/song3.wav \t /path/to/song3.mtl
+@end example
 
-Please note that the separator character must be a tab, it cannot
-be any other kind of whitespace.
+Please note that the separator character \t must be an actual tab, it
+cannot be any other kind of whitespace.
 
 The .mtl format has three header lines, followed by blocks of 4
 lines for each annotated section.  The format is:
+
+@example
   HEADER:
   -------
 
@@ -501,10 +510,10 @@ lines for each annotated section.  The format is:
   classId (mrs_natural)
   end (samples)
   name (mrs_string)
-
+@end example
 
   For example:
-
+@verbatim
   3
   1
   2758127
@@ -520,7 +529,7 @@ lines for each annotated section.  The format is:
   2
   2758127
   background
-
+@end verbatim
 
 Because the .mtl file is kind of obtuse, we have written a small
 Ruby program to convert Audacity label files to .mtl format.  This
@@ -528,7 +537,7 @@ script can be found at marsyas/scripts/generate-mtl.rb.  The
 script is currently hardcoded to recognize the chord changes from
 songs from the annotated Beatles archive, but you can easily
 change this by modifying the "chords_array" variable.
-@end verbatim
+
 
 
 

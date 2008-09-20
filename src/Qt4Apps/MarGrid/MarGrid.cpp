@@ -604,14 +604,8 @@ MarGrid::paintEvent(QPaintEvent *event)
 {
   QPainter painter;
   painter.begin(this);
+  cell_size = this->width() / som_width-2;
   
-  
-  QRegExp qrp("classical+");
-  QRegExp qrp1("metal+");
-  QRegExp qrp2("hiphop+");
-  QRegExp qrp3("blues+");
-  QRegExp qrp4("jazz+");
-
   int maxDensity = 0;
   int minDensity = 10000;
   for (int i=0; i < files.size(); i++) {
@@ -625,109 +619,53 @@ MarGrid::paintEvent(QPaintEvent *event)
     }
   }  
 
+  for (int i=0; i <= som_width; i++) 
+  {
+	  QLine vertical(i*cell_size, 0, i * cell_size, som_height * cell_size);
+	  painter.setPen(Qt::red);
+	  painter.drawLine(vertical);
+  }
+
+
+  for (int j=0; j <= som_width; j++) 
+  {
+	  QLine vertical(0, j*cell_size, som_width * cell_size, j * cell_size);
+	  painter.setPen(Qt::red);
+	  painter.drawLine(vertical);
+  }
+  
+
+
   for (int i=0; i < som_width; i++) 
     for (int j=0; j < som_height; j++) 
-      {
-	
-	int k = i * som_height + j;
-	
-	QRect   myr(i*cell_size,j*cell_size,cell_size,cell_size);	
-	QLine   myl1(i*cell_size,j*cell_size, i*cell_size, j*cell_size + cell_size);
-	QLine   myl2(i*cell_size,j*cell_size, i*cell_size+cell_size, j*cell_size );
-	
-
-	QList<string> posFiles = files[k];
-
-	QVector<int> labelvotes;
-	labelvotes << 0 << 0 << 0 << 0 << 0;
+	{
+		int k = i * som_height + j;
+		
+		QRect   myr(i*cell_size,j*cell_size,cell_size,cell_size);	
+		QList<string> posFiles = files[k];
 
 
+		// For grey scale colouring
+		if ( posFiles.size() > 0 ) {
+			int color = 255 - int(posFiles.size() / float(maxDensity) * 255);
+			painter.setBrush( QColor(color, color, color) );
+		} 
+		else 
+		{
+			painter.setBrush(QColor("#ffffff"));	  
+		}
 	
-	for (int i = 0; i < posFiles.size(); ++i) 
-	  {
-	    QString curFile(posFiles.at(i).c_str());
-	    
-	    if (qrp.indexIn(curFile) >=  0)
-	      {
-		labelvotes[0]++;
-	      }
-	    if (qrp1.indexIn(curFile) >= 0) 
-	      {
-		labelvotes[1]++;
-	      }
+		QRect fillRect(i*cell_size+1, j*cell_size+1, cell_size-1,cell_size-1);	
 
-	    if (qrp2.indexIn(curFile) >= 0) 
-	      {
-		labelvotes[2]++;
-	      }
-
-
-	    if (qrp3.indexIn(curFile) >= 0) 
-	      {
-		labelvotes[3]++;
-	      }
-
-	    if (qrp4.indexIn(curFile) >= 0) 
-	      {
-		labelvotes[4]++;
-	      }
-	    
-	    
-	  }
-
-	int majority_label = 0;
-	int max =0;
+		painter.setPen(Qt::NoPen);
+		painter.drawRect(fillRect);
 	
-	for (int l=0; l < 5; l++) 
-	  {
-	    if (labelvotes[l] > max) 
-	      {
-		max = labelvotes[l];
-		majority_label = l;
-	      }
-	  }
-	
-	if (max > 0) 
-	  labels[k] = majority_label +1;
-	
-	
-	/* if (labels[k] == 0) 
-	  painter.setBrush(QColor("#ffffff"));
-	else if (labels[k] == 1) 
-	  painter.setBrush(QColor("#ffcccc"));
-	else if (labels[k] == 2) 
-	  painter.setBrush(QColor("#1111ff"));	  
-	else if (labels[k] == 3) 
-	  painter.setBrush(QColor("#cccccc"));
-	else if (labels[k] == 4) 
-	  painter.setBrush(QColor("#ccaacc"));	  
-	else  
-	  painter.setBrush(QColor("#fcaaac"));	  
-	*/ 
-
-	// For grey scale colouring
-	if ( posFiles.size() > 0 ) {
-          int color = 255 - int(posFiles.size() / float(maxDensity) * 255);
-          painter.setBrush( QColor(color, color, color) );
-	} else {
-	  painter.setBrush(QColor("#ffffff"));	  
-        }
-	
-	painter.setPen(Qt::NoPen);
-	painter.drawRect(myr);
-	
-	painter.setPen(Qt::red);
-	painter.drawLine(myl1);
-	painter.drawLine(myl2);
-	
-	painter.setBrush(Qt::red);
-	QRect newr(grid_x*cell_size+cell_size/4,grid_y*cell_size+cell_size/4,cell_size-cell_size/2,cell_size-cell_size/2);	
-	painter.drawRect(newr);
-	
-	
-
-	
-      }
+		
+		painter.setBrush(Qt::red);
+		QRect selectRect(grid_x*cell_size+cell_size/4,grid_y*cell_size+cell_size/4,
+						 cell_size-cell_size/2,cell_size-cell_size/2);	
+		painter.drawRect(selectRect);
+	}
   
   painter.end();
 }

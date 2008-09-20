@@ -439,6 +439,8 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
 
 	ifstream *mis = new ifstream;
   
+	cout << "filename = " << filename << endl;
+	
 	mis->open(filename.c_str());
 	MRSASSERT( mis->is_open() );
   
@@ -459,13 +461,19 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	while (mis.peek() == '%') 
     {
 		mis.getline(str, 1023);
+		cout << str << endl;
+		
     }
   
 	string token1,token2,token3;
   
 	mis >> token1;
+	cout << "---" << token1 << "----" << endl;
+	
 	if ((token1 != "@relation")&&(token1 != "@RELATION"))
-    {
+    { 
+		cout << "token1 " << token1 << endl;
+		
 		MRSERR("Not proper weka .arff file");
 		return;
     }

@@ -36,9 +36,6 @@ MarGridWindow::MarGridWindow()
 
   createActions();
   createMenus();  
-
-  
-
   
   QPushButton *extract  = new QPushButton(tr("Extract"));
   QPushButton *train = new QPushButton(tr("Train"));
@@ -65,14 +62,7 @@ MarGridWindow::MarGridWindow()
   connect(this, SIGNAL(playbackMode(bool)), margrid, SLOT(setPlaybackMode(bool)));
   connect(this, SIGNAL(openPredictGridFile(QString)), margrid, SLOT(openPredictionGrid(QString)));
   connect(this, SIGNAL(savePredictGridFile(QString)), margrid, SLOT(savePredictionGrid(QString)));
-  
-  QGridLayout *gridLayout = new QGridLayout;
-  gridLayout->addWidget(trainLabel, 0, 0, 1, 3);
-  gridLayout->addWidget(predictLabel, 1, 0, 1, 3);
-  gridLayout->addWidget(extract, 2, 0);
-  gridLayout->addWidget(train, 2, 1);
-  gridLayout->addWidget(predict, 2, 2);
-  
+
   QWidget *gridWidthWidget = new QWidget();
   QHBoxLayout *gridWidthLayout = new  QHBoxLayout;
   gridWidthLayout->addWidget(gridWidthLabel);
@@ -85,10 +75,21 @@ MarGridWindow::MarGridWindow()
   gridHeightLayout->addWidget(gridHeight);
   gridHeightWidget->setLayout(gridHeightLayout);
 
-  gridLayout->addWidget(gridHeightWidget,1,2,1,2);
-  gridLayout->addWidget(gridWidthWidget,0,2,1,2);
-  gridLayout->addWidget(playLabel, 3, 0, 1, 3);
-  gridLayout->addWidget(margrid, 4, 0, 1, 3);
+
+  QGridLayout *gridLayout = new QGridLayout;
+  gridLayout->addWidget(trainLabel, 0, 0);
+  gridLayout->addWidget(gridHeightWidget, 0, 1, 1, 2);
+  gridLayout->addWidget(predictLabel, 1, 0);
+  gridLayout->addWidget(gridWidthWidget, 1, 1, 1,2 );
+  gridLayout->addWidget(extract, 2, 0);
+  gridLayout->addWidget(train, 2, 1);
+  gridLayout->addWidget(predict, 2, 2);
+  
+
+  // gridLayout->addWidget(gridHeightWidget,3,0, 1, 3);
+  // gridLayout->addWidget(gridWidthWidget,4,0);
+  gridLayout->addWidget(playLabel, 5, 0, 1, 3);
+  gridLayout->addWidget(margrid, 6, 0, 1, 3);
 
   connect(extract, SIGNAL(clicked()), margrid, SLOT(extract()));
   connect(train, SIGNAL(clicked()), margrid, SLOT(train()));
