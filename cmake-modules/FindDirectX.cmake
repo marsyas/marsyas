@@ -4,6 +4,7 @@ if (WIN32)
 		PATHS	
 			"$ENV{DXSDK_DIR}/Include"
 			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK/Include"
+			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK (August 2008)/Include"
 		DOC "The directory where dsound.h resides"
 	)
 	mark_as_advanced(DSOUND_INCLUDE_DIR)
@@ -12,6 +13,7 @@ if (WIN32)
 		PATHS	
 			"$ENV{DXSDK_DIR}/Lib/x86"
 			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK/Lib/x86"
+			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK (August 2008)/Lib/x86"
 		DOC "The directory where the dsound library resides"
 	)
 	mark_as_advanced(DSOUND_LIBRARY)
