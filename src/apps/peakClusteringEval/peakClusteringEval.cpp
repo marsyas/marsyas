@@ -139,8 +139,8 @@ printHelp(string progName)
 	cerr << "-g --ground : set ground" << endl;
 	cerr << "-SC --clusterSynthetize : cluster synthetize" << endl;
 	cerr << "-P --peakStore : set peak store" << endl;
-	cerr << "-T --textureSize: number of frames in a texture window" << endl;
-	cerr << "-c -clustering : number of clusters in a texture window" << endl;
+	cerr << "-T --textureSize: number of frames in a texture window (T=0 uses GT)" << endl;
+	cerr << "-c -clustering : number of clusters in a texture window (use c=0 for GT, c=-1 for automatically estimated)" << endl;
 	cerr << "-k -keep : keep the specified number of clusters in the texture window " << endl;
 	cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
 	cerr << "-r --residual : output the residual sound (if the synthesis stage is selected)" << endl;
@@ -304,6 +304,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	//add PeakConvert to main SERIES for processing texture windows
 	//***************************************************************
 	mainNet->addMarSystem(mng.create("PeakConvert", "conv"));
+	mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_natural/winSize",
+		"Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/ShiftInput/si/mrs_natural/winSize");
 
 	//***************************************************************
 	//create a FlowThru for the Clustering Network and add to main net
@@ -577,7 +579,23 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 
 	//mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); [!]
 	//mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);//[!]
-	mainNet->updctrl("FlowThru/clustNet/NormCut/NCut/mrs_natural/numClusters", C); //[!]
+	//
+	if(C > 0) //use fixed and manually set number of clusters
+	{
+		cout << ">> Using fixed number of clusters: " << C << " clusters." << endl;
+		mainNet->updctrl("FlowThru/clustNet/NormCut/NCut/mrs_natural/numClusters", C); //[!]
+	}
+	else if(C==0) //use GT number of clusters
+	{
+		cout << ">> Using GT number of clusters." << endl;
+		mainNet->linkControl("FlowThru/clustNet/NormCut/NCut/mrs_natural/numClusters",
+			"Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/nActiveNotes");
+	}
+	else if(C==-1) //automatically estimate number of clusters
+	{
+		cout << "Automatic Estimation of number of clusters: NOT YET IMPLEMENTED! Exiting...";
+		exit(0);
+	}
 
 	// 	//[TODO]
 	// 	mainNet->setctrl("PeClust/peClust/mrs_natural/selectedClusters", nbSelectedClusters_); 
@@ -714,15 +732,40 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		cout << "Accumulator/textWinNet MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" <<endl;
 		textWinNet->updctrl("mrs_string/mode", "explicitFlush");
 		textWinNet->updctrl("mrs_natural/timesToKeep", winds);
-		textWinNet->updctrl("mrs_string/mode","explicitFlush");
+		//textWinNet->updctrl("mrs_string/mode","explicitFlush");
 		textWinNet->updctrl("mrs_natural/maxTimes", maxTimes); 
 		textWinNet->updctrl("mrs_natural/minTimes", minTimes);
+
+		//set MidiFileSynthSource to receive a signal for each texture window
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", false);
+		mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/newTextWin",
+			"Accumulator/textWinNet/mrs_bool/flush");
 	}
 	else
 	{
-		cout << "** Onset detector disabled -> using fixed length texture windows" << endl;
-		cout << "Accumulator/textWinNet nTimes = " << accSize << " (i.e. " << accSize*hopSize_/samplingFrequency_ << " secs)" << endl;
-		mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
+		cout << "** Onset detector disabled ->";
+		if(accSize_>0)//manually set texture window length
+		{
+			cout << " using fixed length texture windows" << endl;
+			cout << "Accumulator/textWinNet nTimes = " << accSize << " (i.e. " << accSize*hopSize_/samplingFrequency_ << " secs)" << endl;
+			mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
+			
+			//set MidiFileSynthSource to receive a signal for each texture window
+			mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", false);
+			mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/newTextWin",
+				"Accumulator/textWinNet/mrs_bool/flush");
+
+		}
+		else //use GT for texture window length
+		{
+			cout << " using GT length texture windows" << endl;
+			mainNet->updctrl("Accumulator/textWinNet/mrs_string/mode", "explicitFlush");
+
+			//set MidiFileSynthSource to send a signal for each texture window
+			mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", true);
+			mainNet->linkControl("Accumulator/textWinNet/mrs_bool/flush",
+				"Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/newTextWin");
+		}
 	}
 
 	mrs_natural delay = -D;

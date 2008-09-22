@@ -56,6 +56,11 @@ MidiFileSynthSource::MidiFileSynthSource(const MidiFileSynthSource& a):MarSystem
 	
 	ctrl_start_ = getctrl("mrs_real/start");
 	ctrl_end_ = getctrl("mrs_real/end");
+
+	ctrl_winSize_ = getctrl("mrs_natural/winSize");
+
+	ctrl_sigNewTextWin_ = getctrl("mrs_bool/sigNewTextWin");
+	ctrl_newTextWin_ = getctrl("mrs_bool/newTextWin");
 }
 
 void
@@ -73,6 +78,14 @@ MidiFileSynthSource::addControls()
 	
 	addctrl("mrs_real/start", 0.0, ctrl_start_);
 	addctrl("mrs_real/end", 0.0, ctrl_end_);
+
+	addctrl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_winSize_);
+	ctrl_winSize_->setState(true);
+
+	addctrl("mrs_bool/sigNewTextWin", true, ctrl_sigNewTextWin_);
+	ctrl_sigNewTextWin_->setState(true);
+
+	addctrl("mrs_bool/newTextWin", false, ctrl_newTextWin_);
 }
 
 void
@@ -123,6 +136,21 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 		oss << "AudioMIDIch" << ch << ",";
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+
+	mrs_bool sigNewTextWin = ctrl_sigNewTextWin_->to<mrs_bool>();
+	MATLAB_PUT(sigNewTextWin, "sigNewTextWin");
+
+	//in case texture windows are set from the outside...
+	if(!sigNewTextWin)
+	{
+		if(ctrl_newTextWin_->isTrue())
+		{
+			mrs_natural
+			MATLAB_GET
+		}
+
+	}
+		
 }
 
 

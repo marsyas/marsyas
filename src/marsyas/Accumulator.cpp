@@ -184,8 +184,8 @@ Accumulator::myProcess(realvec& in, realvec& out)
 
 		//store samples to keep into the beginning of the temp buffer
 		//for next call to process()
-		for(o=0; o < onObservations_; ++o)
-			for(t = 0; t < keptOnSamples_; ++t)
+		for(t = 0; t < keptOnSamples_; ++t)
+			for(o=0; o < onObservations_; ++o)
 				tout_(o,t) = tout_(o, t + ctrl_onSamples_->to<mrs_natural>());
 
 		//reset flush flag
@@ -194,6 +194,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 	else if(ctrl_mode_->to<mrs_string>() == "countTicks")
 	{
 	  //nTimes_ = ctrl_nTimes_->to<mrs_natural>();
+		ctrl_flush_->setValue(false);
 		for (c = 0; c < nTimes_; c++) 
 		{
 			marsystems_[0]->recvControls(); // HACK STU [!]
@@ -204,6 +205,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 					out(o, t + c * childOnSamples_) = childOut_(o,t);
 				}
 		}
+		ctrl_flush_->setValue(true);
 	}
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
