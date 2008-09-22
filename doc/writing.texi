@@ -349,17 +349,8 @@ QString qs = QString( mrs_s.c_str() );
 @section Other programming issues
 
 @menu
-* Scheduler issues::            
 * Visualizing data with gnuplot::  
 @end menu
-
-
-@node Scheduler issues
-@subsection Scheduler issues
-
-To schedule events using the new scheduler code, see the
-Marsyas Expression Syntax documentation at
-@uref{http://www.cs.uvic.ca/~inb/work/expr.html}
 
 
 @node Visualizing data with gnuplot
