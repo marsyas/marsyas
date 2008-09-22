@@ -49,6 +49,7 @@ if (MARSYAS_MINGW)
 endif (MARSYAS_MINGW)
  
 if (MARSYAS_WIN32)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 	if (MARSYAS_AUDIOIO)
 		if (ASIO)
 			add_definitions(-D__WINDOWS_ASIO__)

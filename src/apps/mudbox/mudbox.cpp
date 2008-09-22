@@ -258,7 +258,7 @@ toy_with_matlab(string sfName)
 	MATLAB_PUT(src_data, "src_data");
 	MATLAB_EVAL("a = 20 * log10(abs(fft(src_data)));");
 	MATLAB_EVAL("plot(a(1:200))");;
-	mrs_real maxp, maxl;
+	mrs_real maxp = 0.0, maxl = 0.0;
 	
 	for (int i=0; i < 500; i++)
 	{
@@ -811,7 +811,7 @@ toy_with_train_predict(string trainFileName, string testFileName)
   //
   realvec data;
 
-  int correct_instances;
+  int correct_instances = 0;
    
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
@@ -1726,9 +1726,10 @@ toy_with_MidiFileSynthSource(string sfName)
 	series->updctrl("mrs_natural/inSamples", 512);
 	series->updctrl("mrs_real/israte", 44100.0);
 	series->updctrl("MidiFileSynthSource/src/mrs_real/start", 0.0);//in seconds
-	series->updctrl("MidiFileSynthSource/src/mrs_real/end", 10.0);//MIDIToolbox prompts\
-	for user confirmation if the MIDI file is too long [!] Must find a way to avoid it otherwise it \
-	breaks C++ execution!
+	// MIDIToolbox prompts for user confirmation if the MIDI file is too long [!] 
+	// Must find a way to avoid it otherwise it	breaks C++ execution!
+	series->updctrl("MidiFileSynthSource/src/mrs_real/end", 10.0);
+
 	series->updctrl("MidiFileSynthSource/src/mrs_string/filename", sfName);
 
 	series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);

@@ -54,7 +54,7 @@ marosvg::SVGObj_::sizeAdj()
 			int max_height=0;
 			int w=0;
 
-			for(int i=0; i<children_.size(); ++i) {
+			for(int i=0; i < (int)children_.size(); ++i) {
 				SVGObj_* s=children_[i];
 				s->sizeAdj();
 			
@@ -69,7 +69,7 @@ marosvg::SVGObj_::sizeAdj()
 			int max_width=0;
 			int h=0;
 
-			for(int i=0; i<children_.size(); ++i) {
+			for(int i=0; i < (int)children_.size(); ++i) {
 				SVGObj_* s=children_[i];
 				s->sizeAdj();
 			
@@ -95,7 +95,7 @@ marosvg::SVGObj_::posAdj(int x, int y)
 	x+=20;
 	if (children_.size()>0) {
 		if (t_=="Series") {
-			for(int i=0; i<children_.size(); ++i) {
+			for(int i=0; i < (int)children_.size(); ++i) {
 				SVGObj_* s=children_[i];
 				int sy = midY - (s->h_ >> 1);
 				s->posAdj(x,sy);
@@ -104,7 +104,7 @@ marosvg::SVGObj_::posAdj(int x, int y)
 		}
 		else if (t_=="Fanout" || t_=="Parallel") {
 			y += 20;
-			for(int i=0; i<children_.size(); ++i) {
+			for(int i=0; i < (int)children_.size(); ++i) {
 				SVGObj_* s=children_[i];
 				s->posAdj(x,y);
 				y = y + s->h_ + 20;
@@ -141,7 +141,7 @@ marosvg::SVGObj_::str()
 		<< "\" />\n";
 	}
 
-	for(int i=0; i<children_.size(); ++i) {
+	for(int i=0; i < (int)children_.size(); ++i) {
 		SVGObj_* c = children_[i];
 		int cmy = c->y_ + (c->h_ >> 1);
 		if(fanout) {

@@ -23,9 +23,6 @@
 #ifndef BASIS_H_INCLUDED
 #define BASIS_H_INCLUDED
 
-#define _CRT_SECURE_NO_WARNINGS
-
-
 /***********************************************************************
 * Include a few other declarations file here.                          *
 * We include the standard declarations files here mainly so that only  *

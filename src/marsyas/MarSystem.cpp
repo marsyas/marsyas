@@ -1382,9 +1382,8 @@ MarSystem::toString(marostring& m) {
 		std::string cn = c->getName();
 		// get the trailing bit after / Don't know why name is now type/name
 		int lp = (int)cn.find_last_of('/');
-		if (lp>=0 && (lp+1)<cn.size()) {
+		if (lp >= 0 && (lp+1) < (int)cn.size())
 			cn = cn.substr(lp+1);
-		}
 
 		bool cs = c->hasState();
 		m.begin_control(ct, cn, cv.str(), cs);

@@ -6508,9 +6508,8 @@ void RtApiDs :: setStreamCallback(RtAudio3Callback callback, void *userData)
   info->usingCallback = true;
   info->object = (void *) this;
 
-  unsigned thread_id;
-
   // Changed by gtzan 
+  // unsigned thread_id;
   // info->thread = _beginthreadex(NULL, 0, &callbackHandler,
   // &stream_.callbackInfo, 0, &thread_id);
 

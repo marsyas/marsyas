@@ -42,8 +42,6 @@
 #ifndef __RTAUDIO_H
 #define __RTAUDIO_H
 
-#define _CRT_SECURE_NO_WARNINGS 
-
 #include "RtError3.h"
 #include <string>
 #include <vector>
