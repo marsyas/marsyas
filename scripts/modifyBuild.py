@@ -70,7 +70,7 @@ def process(source_filename, marsystem, action):
 	if (marsystem):
 		modify_manager(source_filename,action)
 
-	modify_CMakelists(source_filename,action)
+ #	modify_CMakelists(source_filename,action)
 
 	if (action==1):
 		print "    Don't forget to add your source files to the",
