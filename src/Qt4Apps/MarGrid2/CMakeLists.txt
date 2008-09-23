@@ -1,7 +1,7 @@
 set(APP
 	MarGrid2
 )
-set( QT_USE_QTXML TRUE )
+
 set(APP_SOURCES 
 	MainWindow.cpp
 	Colormaps/GreyScaleColormap
@@ -16,8 +16,8 @@ set(APP_SOURCES
 	Music/MusicCollection.cpp
 	Music/MusicLink.cpp
 	Music/MusicTrack.cpp
-	Parser/iTunesXmlHandler.cpp
-	Parser/iTunesXmlWriter.cpp
+	Parsers/iTunesXmlHandler.cpp
+	Parsers/iTunesXmlWriter.cpp
 	Widgets/Grid.cpp
 	Widgets/Keypad.cpp
 	Widgets/Playbox.cpp
@@ -48,8 +48,8 @@ set(APP_HEADERS
 	Music/MusicCollection.h
 	Music/MusicLink.h
 	Music/MusicTrack.h
-	Parser/iTunesXmlHandler.h
-	Parser/iTunesXmlWriter.h
+	Parsers/iTunesXmlHandler.h
+	Parsers/iTunesXmlWriter.h
 	Widgets/Grid.h
 	Widgets/Keypad.h
 	Widgets/Playbox.h
@@ -64,6 +64,8 @@ set(APP_RESOURCES
 	MarGrid2.qrc
 )
 
+set(QT_USE_QTXML ON)
+include (${QT_USE_FILE}) 
 
 marsyas_qt4app(${APP} "${APP_SOURCES}" "${APP_HEADERS}"
   "${APP_UI}" "${APP_RESOURCES}")
