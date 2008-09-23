@@ -508,7 +508,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/messages", false);
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/matlab", true);
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_string/matlabCommand",
-		"concatAudioFrame; computeFrameSDR;");
+		"computeSDR;");
 
 	// SHREDDER /////////////////////////////////////////////////
 	MarSystem* synthNet = mng.create("Shredder", "synthNet");

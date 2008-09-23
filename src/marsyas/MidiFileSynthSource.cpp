@@ -27,7 +27,6 @@ MidiFileSynthSource::MidiFileSynthSource(string name):MarSystem("MidiFileSynthSo
 	filename_ = "defaultfile";
 	nChannels_ = 0;
 	size_ = 0;
-	frameCount_ = 0;
 }
 
 MidiFileSynthSource::~MidiFileSynthSource()
@@ -46,7 +45,6 @@ MidiFileSynthSource::MidiFileSynthSource(const MidiFileSynthSource& a):MarSystem
 	filename_ = a.filename_;
 	nChannels_ = a.nChannels_;
 	size_ = a.size_;
-	frameCount_ = a.frameCount_;
 	
 	ctrl_filename_ = getctrl("mrs_string/filename");
 	ctrl_numActiveNotes_ = getctrl("mrs_natural/numActiveNotes");
@@ -87,6 +85,7 @@ MidiFileSynthSource::addControls()
 	ctrl_sigNewTextWin_->setState(true);
 
 	addctrl("mrs_bool/newTextWin", false, ctrl_newTextWin_);
+	ctrl_newTextWin_->setState(true);
 }
 
 void
@@ -98,14 +97,22 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 	MATLAB_PUT(ctrl_winSize_->to<mrs_natural>(), "winSize");
 	MATLAB_PUT(inSamples_, "hopSize");
 
-	mrs_natural sigNewTextWin = (mrs_natural)ctrl_sigNewTextWin_->to<mrs_bool>();
-	MATLAB_PUT(sigNewTextWin, "sigNewTextWin");
+	mrs_bool sigNewTextWin = ctrl_sigNewTextWin_->to<mrs_bool>();
+	MATLAB_PUT((mrs_natural)sigNewTextWin, "sigNewTextWin");
 	//in case texture windows are set from the outside...
 	if(!sigNewTextWin)
 	{
 		if(ctrl_newTextWin_->isTrue())
 		{
-			MATLAB_EVAL("newTextWin;");
+			//get number of playing notes in texture window
+			mrs_natural numActiveNotes;
+			MATLAB_GET("numActiveNotes", numActiveNotes);
+			ctrl_numActiveNotes_->setValue(numActiveNotes);
+
+			//reset MATLAB
+			//MATLAB_EVAL("numActiveNotes = 0;");
+
+			//reset control
 			ctrl_newTextWin_->setValue(false, NOUPDATE);
 		}
 	}
@@ -123,18 +130,14 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 		
 		MATLAB_GET("nChannels", nChannels_);
 		ctrl_nChannels_->setValue(nChannels_, NOUPDATE);
-
-		MATLAB_GET("AUDIOout", audio_);
 				
-		size_ = audio_.getCols(); //length of audio in samples
+		MATLAB_GET("audioLength", size_); //in samples
 		
 		ctrl_pos_->setValue(0, NOUPDATE);
 		if(size_>0)
 			ctrl_notEmpty_->setValue(true, NOUPDATE);
 		else
 			ctrl_notEmpty_->setValue(false, NOUPDATE);
-		
-		//frameCount_ = 0;
 	}
 	
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -154,14 +157,9 @@ MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 		return;
 	}
 		
-	MATLAB_PUT(pos, "pos");
+	MATLAB_PUT(pos+1, "pos");//MATLAB uses indexes in the range [1,...]
 	MATLAB_EVAL("computeAudioFrame;");
 	MATLAB_GET("audioFrame", out);
-
-	mrs_natural numActiveNotes;
-	MATLAB_EVAL("computeNumActiveNotes;");
-	MATLAB_GET("numActiveNotes", numActiveNotes);
-	ctrl_numActiveNotes_->setValue(numActiveNotes);
 
 	ctrl_pos_->setValue(pos+onSamples_);
 
@@ -171,9 +169,15 @@ MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 	{
 		mrs_natural newTextWin;
 		MATLAB_GET("newTextWin", newTextWin);
-		ctrl_newTextWin_->setValue(newTextWin!=0);
+		if(newTextWin!=0)//if true...
+		{
+			mrs_natural numActiveNotes;
+			MATLAB_GET("numActiveNotes", numActiveNotes);
+			ctrl_numActiveNotes_->setValue(numActiveNotes);
+			//MATLAB_EVAL("numActiveNotes = 0;"); //reset
+		}
+		ctrl_newTextWin_->setValue(newTextWin!=0, NOUPDATE);
 	}
-
 }
 
 

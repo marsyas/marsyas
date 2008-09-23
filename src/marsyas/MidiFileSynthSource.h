@@ -74,10 +74,7 @@ namespace Marsyas
 			std::string filename_;
 			mrs_natural nChannels_;
 			realvec activeNotes_;
-			realvec audio_;
-			mrs_natural size_; //length of audio_ in samples
-			mrs_natural frameCount_;
-			
+			mrs_natural size_;		
 			
 			MarControlPtr ctrl_filename_;
 			MarControlPtr ctrl_numActiveNotes_;
