@@ -1,5 +1,5 @@
 #ifndef PLAYLISTMODEL_H
-#ifndef PLAYLISTMODEL_H
+#define PLAYLISTMODEL_H
 
 #include <QWidget>
 #include <QAbstractItemModel>

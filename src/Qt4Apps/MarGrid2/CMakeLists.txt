@@ -23,7 +23,6 @@ set(APP_SOURCES
 	Widgets/Playbox.cpp
 	Widgets/Playlist.cpp
 	Widgets/PlaylistItem.cpp
-	Widgets/PlaylistModel.cpp
 	Widgets/Tracklist.cpp
 	main.cpp
 )
@@ -55,7 +54,6 @@ set(APP_HEADERS
 	Widgets/Playbox.h
 	Widgets/Playlist.h
 	Widgets/PlaylistItem.h
-	Widgets/PlaylistModel.h
 	Widgets/Tracklist.h
 	MainWindow.h
 )
@@ -64,8 +62,6 @@ set(APP_RESOURCES
 	MarGrid2.qrc
 )
 
-set(QT_USE_QTXML ON)
-include (${QT_USE_FILE}) 
 
 marsyas_qt4app(${APP} "${APP_SOURCES}" "${APP_HEADERS}"
   "${APP_UI}" "${APP_RESOURCES}")
