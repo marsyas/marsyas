@@ -42,7 +42,7 @@ namespace Marsyas
 	 
    Controls:
    - \b mrs_string/filename [w] : name of the MIDI file to read and synthesize
-	 - \b mrs_natural/nActiveNotes [r] : number of playing notes at the current
+	 - \b mrs_natural/numActiveNotes [r] : number of playing notes at the current
 	 audio frame sent to the output.
 	 - \b mrs_natural/nChannels [r] : number of MIDI tracks in the MIDI file 
 	 (also corresponds to the number of individual audio tracks output togheter
@@ -53,6 +53,18 @@ namespace Marsyas
 	 to be synthesized (in seconds).
 	 - \b mrs_real/end [w] : sets the end of the segment of the MIDI file
 	 to be synthesized (in seconds).
+	 - \b mrs_natural/winSize [w]: when using overlapping analysis windows (which usually
+	 make use of a ShiftInput MarSystem somewhere further down in the processing network)
+	 this control allows to specify the final analysis window size (since inSamples will
+	 correspond to the hop size). This is important to get a correct estimation of the 
+	 number of active notes in each analysis window (although only outputting the corresponding
+	 hopsize number of audio samples).
+	 - \b mrs_bool/sigNewTextWin [w]: sets mode of operation: if true, this MarSystem
+	 will use MIDI note onsets to signal texture windows, setting the newTextWin control
+	 to true. If set to false, it will accept signals for new texture windows from an outside
+	 source (e.g. an onset detector, etc).
+	 - \b mrs_bool/newTextWin [rw]: depending on the specified mode (see above), this control
+	 will signal a new texture window.
 	 */
 	
 	
@@ -68,7 +80,7 @@ namespace Marsyas
 			
 			
 			MarControlPtr ctrl_filename_;
-			MarControlPtr ctrl_nActiveNotes_;
+			MarControlPtr ctrl_numActiveNotes_;
 			MarControlPtr ctrl_nChannels_;
 			MarControlPtr ctrl_start_;
 			MarControlPtr ctrl_end_;

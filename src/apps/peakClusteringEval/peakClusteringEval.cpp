@@ -589,7 +589,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	{
 		cout << ">> Using GT number of clusters." << endl;
 		mainNet->linkControl("FlowThru/clustNet/NormCut/NCut/mrs_natural/numClusters",
-			"Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/nActiveNotes");
+			"Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/numActiveNotes");
 	}
 	else if(C==-1) //automatically estimate number of clusters
 	{

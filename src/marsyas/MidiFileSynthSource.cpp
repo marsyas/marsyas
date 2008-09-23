@@ -49,7 +49,7 @@ MidiFileSynthSource::MidiFileSynthSource(const MidiFileSynthSource& a):MarSystem
 	frameCount_ = a.frameCount_;
 	
 	ctrl_filename_ = getctrl("mrs_string/filename");
-	ctrl_nActiveNotes_ = getctrl("mrs_natural/nActiveNotes");
+	ctrl_numActiveNotes_ = getctrl("mrs_natural/numActiveNotes");
 	ctrl_nChannels_ = getctrl("mrs_natural/nChannels");
 	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty");
@@ -69,7 +69,8 @@ MidiFileSynthSource::addControls()
 	addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
 	setctrlState("mrs_string/filename", true);
 	
-	addctrl("mrs_natural/nActiveNotes", 0, ctrl_nActiveNotes_);
+	addctrl("mrs_natural/numActiveNotes", 0, ctrl_numActiveNotes_);
+	
 	addctrl("mrs_natural/nChannels", 0, ctrl_nChannels_);
 	
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
@@ -94,28 +95,38 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 	(void) sender;
 	MRSDIAG("MidiFileSynthSource::myUpdate");
 
+	MATLAB_PUT(ctrl_winSize_->to<mrs_natural>(), "winSize");
+	MATLAB_PUT(inSamples_, "hopSize");
+
+	mrs_natural sigNewTextWin = (mrs_natural)ctrl_sigNewTextWin_->to<mrs_bool>();
+	MATLAB_PUT(sigNewTextWin, "sigNewTextWin");
+	//in case texture windows are set from the outside...
+	if(!sigNewTextWin)
+	{
+		if(ctrl_newTextWin_->isTrue())
+		{
+			MATLAB_EVAL("newTextWin;");
+			ctrl_newTextWin_->setValue(false, NOUPDATE);
+		}
+	}
+
 	if(filename_ != ctrl_filename_->to<mrs_string>())
 	{
 		filename_ = ctrl_filename_->to<mrs_string>();
 		MATLAB_PUT(filename_, "filename");
-		MATLAB_PUT(ctrl_israte_->to<mrs_real>(), "fs");
-		MATLAB_PUT(ctrl_inSamples_->to<mrs_natural>(), "frameSize");
+		MATLAB_PUT(israte_, "fs");
 		MATLAB_PUT(ctrl_start_->to<mrs_real>(), "startSeg");
 		MATLAB_PUT(ctrl_end_->to<mrs_real>(), "endSeg");
 		
 		//Synthesize MIDI file to audio
-		MATLAB_EVAL("MIDIsynth;");
+		MATLAB_EVAL("synthetizeMIDI;");
 		
-		//get stuff from MATLAB
 		MATLAB_GET("nChannels", nChannels_);
 		ctrl_nChannels_->setValue(nChannels_, NOUPDATE);
-		MATLAB_GET("activeNotes", activeNotes_);
+
 		MATLAB_GET("AUDIOout", audio_);
 				
-		//clear MATLAB objects (not needed anymore --> save some memory)
-		MATLAB_EVAL("clear;");
-		
-		size_ = audio_.getCols();
+		size_ = audio_.getCols(); //length of audio in samples
 		
 		ctrl_pos_->setValue(0, NOUPDATE);
 		if(size_>0)
@@ -123,71 +134,46 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 		else
 			ctrl_notEmpty_->setValue(false, NOUPDATE);
 		
-		frameCount_ = 0;
+		//frameCount_ = 0;
 	}
 	
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-	ctrl_onObservations_->setValue(nChannels_+1, NOUPDATE);
+	ctrl_onObservations_->setValue(1, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	ostringstream oss;
-	oss << "AudioMIDImix" << ",";
-	for (mrs_natural ch = 0; ch < nChannels_; ch++) 
-	{
-		oss << "AudioMIDIch" << ch << ",";
-	}
-	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
-
-	mrs_bool sigNewTextWin = ctrl_sigNewTextWin_->to<mrs_bool>();
-	MATLAB_PUT(sigNewTextWin, "sigNewTextWin");
-
-	//in case texture windows are set from the outside...
-	if(!sigNewTextWin)
-	{
-		if(ctrl_newTextWin_->isTrue())
-		{
-			mrs_natural
-			MATLAB_GET
-		}
-
-	}
-		
+	ctrl_onObsNames_->setValue("MIDIaudio", NOUPDATE);
 }
-
 
 void
 MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 {
 	mrs_natural pos = ctrl_pos_->to<mrs_natural>();
 	
-	if(frameCount_ >= activeNotes_.getCols() ||
-		pos > size_)
+	if(pos > size_)
 	{
 		ctrl_notEmpty_->setValue(false);
 		return;
 	}
-			
-	for(mrs_natural c=0; c < onObservations_; ++c)
-	{
-		for(mrs_natural i = 0; i < onSamples_; ++i)
-		{
-			if((pos + i) < size_)
-				out(c,i) = audio_(c, pos+i);
-			else
-				out(c,i) = 0.0; //no more audio data... fill with silence
-				
-		}
-	}
+		
+	MATLAB_PUT(pos, "pos");
+	MATLAB_EVAL("computeAudioFrame;");
+	MATLAB_GET("audioFrame", out);
 
-// 		for(mrs_natural i = 0; i < onSamples_; ++i)
-// 		{
-// 			if((pos + i) < size_)
-// 				out(0,i) = audio_(0, pos+i);
-// 			else
-// 				out(0,i) = 0.0; //no more audio data... fill with silence
-// 		}
+	mrs_natural numActiveNotes;
+	MATLAB_EVAL("computeNumActiveNotes;");
+	MATLAB_GET("numActiveNotes", numActiveNotes);
+	ctrl_numActiveNotes_->setValue(numActiveNotes);
 
 	ctrl_pos_->setValue(pos+onSamples_);
-	ctrl_nActiveNotes_->setValue(mrs_natural(activeNotes_(frameCount_++)));
+
+	//check if this audio frame is the last one in the current texture window:
+	//if it is, then signal a new texture window
+	if(ctrl_sigNewTextWin_->isTrue())
+	{
+		mrs_natural newTextWin;
+		MATLAB_GET("newTextWin", newTextWin);
+		ctrl_newTextWin_->setValue(newTextWin!=0);
+	}
+
 }
 
 
