@@ -193,14 +193,10 @@ Windowing::myUpdate(MarControlPtr sender)
 void 
 Windowing::myProcess(realvec& in, realvec& out)
 {
-  
-
   out.setval(0);
-	
 	
 	for (o=0; o < inObservations_; o++)
 	{
-
 		//shift windowed data in case zeroPhasing is selected
 		if(ctrl_zeroPhasing_->isTrue())
 		{
@@ -219,6 +215,5 @@ Windowing::myProcess(realvec& in, realvec& out)
 		  for(t=0; t< inSamples_; ++t)
 		    out(o,t) = in(o,t) * envelope_(t);
 		}
-
 	}
 }

@@ -173,6 +173,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 							 mrs_natural D, mrs_natural S, mrs_natural C,
 							 mrs_natural accSize, mrs_natural synthetize, mrs_real *snr0)
 {
+	//FIXME: D is the same as hopSize_ -> fix to avoid confusion!
+
 	MarSystemManager mng;
 
 	cout << "Extracting Peaks and Computing Clusters..." << endl;
@@ -473,6 +475,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	MarSystem* peakSynth = mng.create("Series", "peakSynth");
 	peakSynth->addMarSystem(mng.create("PeakSynthOsc", "pso"));
 	peakSynth->addMarSystem(mng.create("Windowing", "wiSyn"));
+	peakSynth->addMarSystem(mng.create("OverlapAdd", "ov"));
 	peakSynth->addMarSystem(mng.create("Gain", "outGain"));
 // 		MarSystem *dest;
 // 		dest = new SoundFileSink("dest");
@@ -489,7 +492,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		ostringstream oss;
 		oss << "synthCluster_" << s;
 		synthBank->addMarSystem(mng.create("PeakSynth", oss.str()));
-		//link controls
+		//link controls between branches
 		synthBank->linkControl("PeakSynth/"+oss.str()+"/PeakSynthOsc/pso/mrs_real/samplingFreq",
 			"PeakSynth/synthCluster_0/PeakSynthOsc/pso/mrs_real/samplingFreq");
 		synthBank->linkControl("PeakSynth/"+oss.str()+"/PeakSynthOsc/pso/mrs_natural/delay",
@@ -508,7 +511,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/messages", false);
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/matlab", true);
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_string/matlabCommand",
-		"computeSDR;");
+		"evaluateTextWin;");
 
 	// SHREDDER /////////////////////////////////////////////////
 	MarSystem* synthNet = mng.create("Shredder", "synthNet");

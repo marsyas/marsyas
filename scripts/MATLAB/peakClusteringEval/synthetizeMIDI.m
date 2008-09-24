@@ -62,16 +62,30 @@ clear AUDIOtracks;
 
 %% get list of onsets from all MIDI channels
 if(sigNewTextWin > 0)
-    onsets = nmat(:,6); %in seconds
-    onsets = onsets*fs; %in samples
+    allOnsets = nmat(:,6); %in seconds
     
     %filter onsets that are too close...
-    % XXX
+    minLen = 0.050; %50ms is the minimum length for a texture window
+    prevOnset = 0;
+    for i=1:length(allOnsets)
+        if allOnsets(i)-prevOnset > minLen
+            onsets = [onsets, allOnsets(i)];
+            prevOnset = allOnsets(i);
+        end
+    end
+    
+    onsets = onsets*fs; %in samples
 end
 
 %% init some vars
 numActiveNotes = 0;
 onsetIndex = 1;
+
+resynthAudio = [];
+
+refFramesCount = 0;
+resynthFramesCount = 0;
+
 textWinStart = 1;
 textWinEnd = 0;
     
