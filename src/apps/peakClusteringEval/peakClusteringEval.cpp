@@ -762,7 +762,17 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		else //use GT for texture window length
 		{
 			cout << " using GT length texture windows" << endl;
+
+			//set texture window
 			mainNet->updctrl("Accumulator/textWinNet/mrs_string/mode", "explicitFlush");
+			mrs_real textureWinMinLen = 0.0; //secs - let GT take care of this...
+			mrs_real textureWinMaxLen = 100.0; //secs - just a majorant...
+			mrs_natural minTimes = textureWinMinLen*samplingFrequency_/hopSize_; 
+			mrs_natural maxTimes = textureWinMaxLen*samplingFrequency_/hopSize_; 
+			//cout << "Accumulator/textWinNet MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
+			//cout << "Accumulator/textWinNet MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" <<endl;
+			mainNet->updctrl("Accumulator/textWinNet/mrs_natural/maxTimes", maxTimes); 
+			mainNet->updctrl("Accumulator/textWinNet/mrs_natural/minTimes", minTimes);
 
 			//set MidiFileSynthSource to send a signal for each texture window
 			mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", true);
