@@ -19,14 +19,14 @@ add_subdirectory(bextract)
 add_subdirectory(phasevocoder)
 add_subdirectory(kea)
 add_subdirectory(peakSynth)
-#add_subdirectory(peakClustering)
+add_subdirectory(peakClustering)
 add_subdirectory(sfplugin)
 add_subdirectory(mudbox)
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
 add_subdirectory(mirex2008)
-#add_subdirectory(peakClusteringEval)
+add_subdirectory(peakClusteringEval)
 
 ## not in docs; must edit tools.texi   -gp
 add_subdirectory(tempo) 
