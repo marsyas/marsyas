@@ -128,7 +128,7 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 		//Synthesize MIDI file to audio
 		MATLAB_EVAL("synthetizeMIDI;");
 		
-		MATLAB_GET("nChannels", nChannels_);
+		MATLAB_GET("numChannels", nChannels_);
 		ctrl_nChannels_->setValue(nChannels_, NOUPDATE);
 				
 		MATLAB_GET("audioLength", size_); //in samples

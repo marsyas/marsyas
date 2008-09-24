@@ -73,7 +73,7 @@ mrs_real noiseGain_=.8;//[TODO]
 mrs_real noiseDuration_=0;//[TODO]
 
 // sampling frequency
-mrs_real samplingFrequency_=1;
+mrs_real samplingFrequency_=44100.0;
 //
 mrs_real timeElapsed;
 //
@@ -306,7 +306,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	//add PeakConvert to main SERIES for processing texture windows
 	//***************************************************************
 	mainNet->addMarSystem(mng.create("PeakConvert", "conv"));
-	mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_natural/winSize",
+	mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/winSize",
 		"Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/ShiftInput/si/mrs_natural/winSize");
 
 	//***************************************************************
@@ -506,7 +506,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	postNet->addMarSystem(synthBank);
 	
 	//add a MATLAB sink
-	postNet->addMarSystem(mng.create("PlotSink", "clustersAudio"));
+	postNet->addMarSystem(mng.create("PlotSink", "send2MATLAB"));
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/sequence", false);
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/messages", false);
 	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/matlab", true);
@@ -537,10 +537,13 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	}
 	else
 	{
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
 		mainNet->updctrl("mrs_natural/inSamples", D);
-		mainNet->updctrl("mrs_natural/inObservations", 1);
-		samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+		mainNet->updctrl("mrs_real/israte", samplingFrequency_);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/start", 0.0);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/end", 10.0);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_string/filename", sfName);
+		//mainNet->updctrl("mrs_natural/inObservations", 1);
+		//samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/osrate")->to<mrs_real>();
 	}
 
 	if(noiseName != EMPTYSTRING)
@@ -775,9 +778,9 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 			mainNet->updctrl("Accumulator/textWinNet/mrs_natural/minTimes", minTimes);
 
 			//set MidiFileSynthSource to send a signal for each texture window
-			mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", true);
+			mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", true);
 			mainNet->linkControl("Accumulator/textWinNet/mrs_bool/flush",
-				"Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/newTextWin");
+				"Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/newTextWin");
 		}
 	}
 

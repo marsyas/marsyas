@@ -67,6 +67,7 @@ if(sigNewTextWin > 0)
     %filter onsets that are too close...
     minLen = 0.050; %50ms is the minimum length for a texture window
     prevOnset = 0;
+    onsets = [];
     for i=1:length(allOnsets)
         if allOnsets(i)-prevOnset > minLen
             onsets = [onsets, allOnsets(i)];
@@ -74,7 +75,7 @@ if(sigNewTextWin > 0)
         end
     end
     
-    onsets = onsets*fs; %in samples
+    onsets = round(onsets*fs); %in samples
 end
 
 %% init some vars
