@@ -43,16 +43,39 @@ class MarSystemManager
 protected:
   std::map<std::string, MarSystem*> registry_;
   std::map<std::string, MarSystem*> workingSet_; 
-  
+  std::map<std::string, int       > compositesMap_;
+
+  enum compositePrototypes_ {
+      STUB,
+      DEVIBOT,
+      STEREO2MONO,
+      TEXTURESTATS,
+      LPCNET,
+      POWERSPECTRUMNET,
+      POWERSPECTRUMNET1,
+      STFT_FEATURES,
+      TIMBREFEATURES,
+      STEREOPANNINGSPECTRUMFEATURES,
+      STEREOFEATURES,
+      PHASEVOCODER,
+      PHASEVOCODEROSCBANK,
+      PITCHSACF,
+      PITCHPRAAT,
+      PEAKANALYSE,
+      WHASPNET,
+      STEREOFEATURES2,
+      CLASSIFIER
+  };
+
+  void registerComposite(std::string);
+
 public:
   MarSystemManager();
   ~MarSystemManager();
   void registerPrototype(std::string type, MarSystem *);
   MarSystem* getPrototype(std::string type);
   MarSystem* create(std::string type, std::string name);
-  MarSystem* create(std::string marsystemname);
-		
-
+  MarSystem* create(std::string fullname);
   MarSystem* getMarSystem(std::istream& is, MarSystem *parent=NULL);
 
   std::map<std::string, MarSystem*> getWorkingSet(std::istream& is);
