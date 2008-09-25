@@ -45,7 +45,8 @@ protected:
   std::map<std::string, MarSystem*> workingSet_; 
   std::map<std::string, int       > compositesMap_;
 
-  enum compositePrototypes_ {
+  enum compositePrototypes_ 
+	{
       STUB,
       DEVIBOT,
       STEREO2MONO,
