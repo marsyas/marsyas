@@ -180,19 +180,20 @@ WavFileSource::getHeader(string filename)
 			// setctrl("mrs_natural/nChannels", (mrs_natural)channels);
 			setctrl("mrs_natural/onObservations", (mrs_natural)channels);
 
-			unsigned short srate;
-			fread(&srate, 2,1,sfp_);
+			unsigned int srate;
+			fread(&srate, 4,1,sfp_);
 		  
 			#if defined(MARSYAS_BIGENDIAN)	      
-			srate = ByteSwapShort(srate);
+			srate = ByteSwapLong(srate);
 			#else	      
 			srate = srate; //[?]
 			#endif 
 
+
 			setctrl("mrs_real/israte", (mrs_real)srate);
 			setctrl("mrs_real/osrate", (mrs_real)srate);
 		  
-			fseek(sfp_,8,SEEK_CUR);
+			fseek(sfp_,6,SEEK_CUR);
 			fread(&bits_, 2, 1, sfp_);
 
 			#if defined(MARSYAS_BIGENDIAN)	      
