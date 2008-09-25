@@ -1,12 +1,13 @@
 function testComputeSDR()
 
-nbRefs=2;
-nbSyn=1;
+nbRefs=3;
+% nbSyn should be below nbRefs (only in this test)
+nbSyn=3;
 frameLength = 1024;
 
 ref = rand(nbRefs, 1024);
 noise = rand(nbSyn, 1024)*0.000001;
-syn = ref(nbSyn, :)+noise;
+syn = ref((1:nbSyn), :)+noise;
 
 % permute syn vectors
 nbSyn = size(syn, 1);
