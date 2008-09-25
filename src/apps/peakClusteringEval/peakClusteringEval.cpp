@@ -175,6 +175,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 {
 	//FIXME: D is the same as hopSize_ -> fix to avoid confusion!
 
+	MATLAB_EVAL("clear");
+
 	MarSystemManager mng;
 
 	cout << "Extracting Peaks and Computing Clusters..." << endl;
@@ -537,6 +539,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	}
 	else
 	{
+		cout << ">> Loading MIDI file and synthetizing audio data..." << endl;
 		mainNet->updctrl("mrs_natural/inSamples", D);
 		mainNet->updctrl("mrs_real/israte", samplingFrequency_);
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/start", 0.0);
@@ -800,6 +803,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	//***************************************************************************************************************
 	//									MAIN TICKING LOOP
 	//***************************************************************************************************************
+	cout <<">> Start processing..." << endl;
 	//ofstream cfile("density.txt", ios::app); //[WTF] [TODO]
 	mrs_real globalSnr = 0;
 	mrs_natural frameCount = 0;
@@ -811,14 +815,14 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 
 		if (!microphone_)
 		{
-			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
-			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
-			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
 
-			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
+			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 			mrs_real timeLeft;
 			if(!stopAnalyse_)
-				timeLeft =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
+				timeLeft =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
 			else
 				timeLeft = stopAnalyse_;
 			// string fname = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename")->to<mrs_string>();
@@ -851,6 +855,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		mainNet->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
 		mainNet->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
 	}
+
+	cout << ">> End of processing. Bye!" << endl;
 
 	//cfile.close(); [TODO]
 }

@@ -75,7 +75,7 @@ if(sigNewTextWin > 0)
         end
     end
     
-    onsets = round(onsets*fs); %in samples
+    %onsets = [0.1, onsets];
 end
 
 %% init some vars

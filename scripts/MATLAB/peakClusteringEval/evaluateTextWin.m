@@ -1,8 +1,9 @@
 
-resynthFramesCount = resynthFramesCount + 1;
+resynthFramesCount = resynthFramesCount + 1
 
 %check if we already resynthesized a complete texture window
 if resynthFramesCount == refFramesCount
+    beep
     %get reference audio for current texture window
     %(ignore mix track)
     refAudio = audio(2:end,textWinStart:textWinEnd);

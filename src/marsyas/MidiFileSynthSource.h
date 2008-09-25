@@ -86,6 +86,7 @@ namespace Marsyas
 			MarControlPtr ctrl_winSize_;
 			MarControlPtr ctrl_sigNewTextWin_;
 			MarControlPtr ctrl_newTextWin_;
+			MarControlPtr ctrl_size_;
 			
 			void addControls();
 			void myUpdate(MarControlPtr sender);

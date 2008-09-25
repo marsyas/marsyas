@@ -15,8 +15,8 @@ end
 refFramesCount = refFramesCount+1;
 
 %% determine corresponding analysis window (due to overlapping)
-winStart = (endPos-winSize+1)/fs; %in secods
-winEnd = endPos/fs; %in seconds
+frameStart = (endPos-winSize+1)/fs; %in secods
+frameEnd = endPos/fs; %in seconds
 
 %% compute number of active notes in current analysis window
 % for all the MIDI notes, count the ones 
@@ -25,7 +25,7 @@ count  = 0;
 for n=1:size(nmat,1)
     noteStart = nmat(n,6); %in seconds
     noteEnd = noteStart + nmat(n,7); % in seconds
-    if (noteStart <= winEnd) && (noteEnd >= winStart)
+    if (noteStart <= frameEnd) && (noteEnd >= frameStart)
         count = count+1;
         %we could also store their f0s...
     end
@@ -41,10 +41,11 @@ if(sigNewTextWin > 0)
         textWinStart = textWinEnd+1; %in samples
         textWinEnd = endPos2; %in samples
     elseif onsetIndex < length(onsets)
-        %if next frame is after the next onset, it
-        %means the current frame is the last one in the current texture
-        %window
-        if (winEnd-winStart)/2+hopSize/fs > onsets(onsetIndex)
+        %if next frame is after the next onset (i.e at least half of it is 
+        %after the onset it means the current frame is the last one in the 
+        %current texture window
+        nextFrameStart = frameStart + hopSize/fs;
+        if nextFrameStart + (winSize/2)/fs > onsets(onsetIndex)
             onsetIndex = onsetIndex+1;
             newTextWin = 1; %i.e. set it to true
             textWinStart = textWinEnd+1; %in samples

@@ -59,6 +59,8 @@ MidiFileSynthSource::MidiFileSynthSource(const MidiFileSynthSource& a):MarSystem
 
 	ctrl_sigNewTextWin_ = getctrl("mrs_bool/sigNewTextWin");
 	ctrl_newTextWin_ = getctrl("mrs_bool/newTextWin");
+
+	ctrl_size_ = getctrl("mrs_natural/size");
 }
 
 void
@@ -86,6 +88,8 @@ MidiFileSynthSource::addControls()
 
 	addctrl("mrs_bool/newTextWin", false, ctrl_newTextWin_);
 	ctrl_newTextWin_->setState(true);
+
+	addctrl("mrs_natural/size", 0, ctrl_size_);
 }
 
 void
@@ -132,6 +136,7 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 		ctrl_nChannels_->setValue(nChannels_, NOUPDATE);
 				
 		MATLAB_GET("audioLength", size_); //in samples
+		ctrl_size_->setValue(size_, NOUPDATE);
 		
 		ctrl_pos_->setValue(0, NOUPDATE);
 		if(size_>0)
