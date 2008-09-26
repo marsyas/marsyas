@@ -1,11 +1,13 @@
 
-resynthFramesCount = resynthFramesCount + 1
+resynthFramesCount = resynthFramesCount + 1;
 
 %check if we already resynthesized a complete texture window
 if resynthFramesCount == refFramesCount
-    beep
+    %get the last audio frame
+    resynthAudio = [resynthAudio, PlotSink_send2MATLAB_indata];
+    
     %get reference audio for current texture window
-    %(ignore mix track)
+    %(ignore mix track, i.e. 1st row)
     refAudio = audio(2:end,textWinStart:textWinEnd);
     
     %make sure both audio vectors have the same length (PHASE PROBLEMS?!?! ASK MAT...)
@@ -15,14 +17,18 @@ if resynthFramesCount == refFramesCount
     resynthAudio = resynthAudio(1:numActiveNotes,1:audioLen);
         
     %compute SDR for current texture window
-    SDRresults = computeSDR(refAudio, resynthAudio); %TODO!!!!!!
+    %SDRresults = computeSDR(refAudio, resynthAudio); %%%%%%%%%%%%%%%%%%%%%%
+    
+    %store results for entire file
+    refAudioTextWinds = [refAudioTextWinds, refAudio];
+    resynthAudioTextWinds = [resynthAudioTextWinds, resynthAudio];
+    %SDRTextWinds = [SDRTextWinds, SDRresults]; %%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
     % init vars for next texture window
     numActiveNotes = 0;
     refFramesCount = 0;
     resynthFramesCount = 0;
-    resynthAudio = [];
-    resynthAudio = [resynthAudio, PlotSink_send2MATLAB_indata];   
+    resynthAudio = [];   
 else 
     %keep accumulating resynthesized audio frame from PlotSink MarSystem.
     %each row has the audio from each cluster 

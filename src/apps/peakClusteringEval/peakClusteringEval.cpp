@@ -543,7 +543,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		mainNet->updctrl("mrs_natural/inSamples", D);
 		mainNet->updctrl("mrs_real/israte", samplingFrequency_);
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/start", 0.0);
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/end", 10.0);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/end", 9.0);
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_string/filename", sfName);
 		//mainNet->updctrl("mrs_natural/inObservations", 1);
 		//samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/osrate")->to<mrs_real>();

@@ -61,8 +61,9 @@ clear AUDIOtracks;
 
 
 %% get list of onsets from all MIDI channels
+MIDI2audioDelay = 0.017; %hardcoded delay that MIDI Toolbox puts when synthesizing the MIDI audio...
 if(sigNewTextWin > 0)
-    allOnsets = nmat(:,6); %in seconds
+    allOnsets = nmat(:,6) - MIDI2audioDelay; %in seconds
     
     %filter onsets that are too close...
     minLen = 0.050; %50ms is the minimum length for a texture window
@@ -89,6 +90,11 @@ resynthFramesCount = 0;
 
 textWinStart = 1;
 textWinEnd = 0;
+
+refAudioTextWinds = cell(1,0);
+resynthAudioTextWinds = cell(1,0);
+SDRTextWinds = [];
+
     
 
 
