@@ -11,6 +11,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <iomanip> 
 
 #include "common.h"
 #include "MarSystemManager.h"
@@ -1168,7 +1169,7 @@ toy_with_inSamples(string sfName)
 void 
 toy_with_fft(string sfName) 
 {
-	cout << "toy_with_fft: sfName = " << sfName << endl;
+	cout << "Ultrasound rat vocalization detector " << sfName << endl;
 
 	MarSystemManager mng;
 
@@ -1177,7 +1178,8 @@ toy_with_fft(string sfName)
 	series->addMarSystem(mng.create("Spectrum", "spk"));
 	series->addMarSystem(mng.create("InvSpectrum", "ispk"));
 	MarSystem* dest = mng.create("SoundFileSink", "dest");
-
+	MarSystem* dest1 = mng.create("SoundFileSink", "dest1");
+	
 	mrs_natural i =0;
 
 	series->updctrl("SoundFileSource/src/mrs_string/filename", 
@@ -1197,14 +1199,33 @@ toy_with_fft(string sfName)
 
 	mrs_realvec output(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 					   series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+
+	mrs_realvec zero(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+					 series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+	zero.setval(0.0);
+	
+
 	dest->updctrl("mrs_natural/inSamples", 8192);
 	dest->updctrl("mrs_real/israte", 192000.0);
-	dest->updctrl("mrs_string/filename",  "sftransformOutput.wav");	
+	dest->updctrl("mrs_string/filename",  "detected_rats.wav");	
+
+	dest1->updctrl("mrs_natural/inSamples", 8192);
+	dest1->updctrl("mrs_real/israte", 192000.0);
+	dest1->updctrl("mrs_string/filename",  "only_rats.wav");	
 	
-	
+	int sample_count =0;
+
+	ofstream oss;
+	oss.open("rat_log.txt");
+
 	while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		series->process(input, output);
+
+		mrs_realvec v = 
+			series->getctrl("SoundFileSource/src/mrs_realvec/processedData")->to<mrs_realvec>();
 		mrs_real rms = 0.0;
 		int count = 0;
 		
@@ -1215,12 +1236,28 @@ toy_with_fft(string sfName)
 		}
 		rms /= count;
 		rms = sqrt(rms);
-		cout << "rms = " << rms << endl;
 		if (rms > 0.001)
-			dest->process(output, output);
+		{
+			oss << fixed << setprecision(2) << (sample_count / 192000.0) << "\trats" << endl;
+			dest->process(v, output);
+			dest1->process(v,output);
+		}
+		
+		else 
+		{
+			oss << fixed << setprecision(2) << (sample_count / 192000.0) << "\tbackground" << endl;
+			dest->process(zero, zero);
+		}
+		
 		
 		i++; 
-	}
+		sample_count += 8192;
+	}  
+
+	cout << "File with silenced background : " << "detected_rats.wav" << endl;
+	cout << "File with background removed  : " << "only_rats.wav" << endl;
+	cout << "Log file with rat/background times in seconds : " << "rat_log.txt" << endl;
+	
 
 	delete series;
 }
@@ -4795,7 +4832,7 @@ main(int argc, const char **argv)
 	cout << "Marsyas toy_with name = " << toy_withName << endl;
 	cout << "fname0 = " << fname0 << endl;
 	cout << "fname1 = " << fname1 << endl;
-
+	
 
 	if (toy_withName == "ADRess")
 		toy_with_ADRess(fname0, fname1);

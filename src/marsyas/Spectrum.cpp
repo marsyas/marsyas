@@ -120,7 +120,6 @@ Spectrum::myProcess(realvec& in, realvec& out)
 
 	if (lowcutoff_ != 0.0)
 	{
-		cout << "ls = " << (mrs_natural)((lowcutoff_ * inSamples_) /2) << endl;
 		for (t=0; t < (mrs_natural)((lowcutoff_ * inSamples_) /2); t++)
 		{
 			out(2*t,0) = 0;
