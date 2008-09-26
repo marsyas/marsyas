@@ -1,4 +1,6 @@
-function maxSdr = computeSDR(ref, syn, frameLength)
+function maxSdr = computeSDR(ref, syn)
+
+frameLength = size(ref,2);
 
 if size(ref, 2) ~= frameLength
     error('The reference should be a matrix of line vectors, each of size frameLength');

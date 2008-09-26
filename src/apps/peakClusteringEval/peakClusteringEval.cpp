@@ -28,6 +28,9 @@ string noiseName = EMPTYSTRING;
 string fileResName = EMPTYSTRING;
 string mixName = EMPTYSTRING;
 string filePeakName = EMPTYSTRING;
+
+string fileMatName = EMPTYSTRING;
+
 string fileClustName = EMPTYSTRING;
 string fileVoicingName = EMPTYSTRING;
 string fileF0Name = EMPTYSTRING;
@@ -596,7 +599,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	}
 	else if(C==0) //use GT number of clusters
 	{
-		cout << ">> Using GT number of clusters." << endl;
+		cout << "** Using GT number of clusters." << endl;
 		mainNet->linkControl("FlowThru/clustNet/NormCut/NCut/mrs_natural/numClusters",
 			"Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/numActiveNotes");
 	}
@@ -850,13 +853,16 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 
 	if(peakStore_)
 	{
-		mainNet->updctrl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
-		mainNet->updctrl("PeakViewSink/peSink/mrs_natural/frameSize", D);
-		mainNet->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
-		mainNet->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
+// 		mainNet->updctrl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
+// 		mainNet->updctrl("PeakViewSink/peSink/mrs_natural/frameSize", D);
+// 		mainNet->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
+// 		mainNet->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
 	}
 
-	cout << ">> End of processing. Bye!" << endl;
+	cout << ">> Saving .mat file with results so they can be opened in MATLAB in: " << fileMatName << endl;
+	MATLAB_EVAL("save " + fileMatName);
+
+	cout << endl << ">> End of processing. Bye!" << endl;
 
 	//cfile.close(); [TODO]
 }
@@ -868,7 +874,7 @@ initOptions()
 	cmd_options.addBoolOption("usage", "us", false);
 	cmd_options.addNaturalOption("voices", "v", 1);
 	cmd_options.addStringOption("noisename", "N", EMPTYSTRING);
-	cmd_options.addStringOption("outputdirectoryname", "o", ".");
+	cmd_options.addStringOption("outputdirectoryname", "o", EMPTYSTRING);//".");
 	cmd_options.addStringOption("intervalFrequency", "i", intervalFrequency);
 	cmd_options.addStringOption("panning", "p", EMPTYSTRING);
 	cmd_options.addStringOption("typeSimilarity", "t", defaultSimilarityType_);
@@ -1003,6 +1009,9 @@ main(int argc, const char **argv)
 			fileResName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Res"+ "." + Sfname.ext() ;
 			mixName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Mix" + "."+ Sfname.ext() ;
 			filePeakName = path + "/" + Sfname.nameNoExt() + outputInfo+".peak" ;
+
+			fileMatName = path + Sfname.nameNoExt() + outputInfo+".mat";
+			
 			fileClustName = path + "/" + Sfname.nameNoExt()+outputInfo+ "Clust" +".txt" ;
 			fileVoicingName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Voicing" +".txt" ;
 			fileF0Name = path + "/" + Sfname.nameNoExt() +outputInfo+  "F0.txt" ;

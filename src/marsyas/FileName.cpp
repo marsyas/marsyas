@@ -18,6 +18,7 @@
 
 
 #include "FileName.h"
+#include "config.h"
 
 using namespace std;
 using namespace Marsyas;
