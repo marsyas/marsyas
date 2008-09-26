@@ -156,9 +156,25 @@ MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 {
 	mrs_natural pos = ctrl_pos_->to<mrs_natural>();
 	
+	//detect end of file
 	if(pos > size_)
 	{
+		out.setval(0.0);//fill with silence
+
+		if(!ctrl_notEmpty_->isTrue())
+			return;
+
 		ctrl_notEmpty_->setValue(false);
+
+		//flush last texture window
+		if(ctrl_sigNewTextWin_->isTrue())
+		{
+			mrs_natural numActiveNotes;
+			MATLAB_GET("numActiveNotes", numActiveNotes);
+			ctrl_numActiveNotes_->setValue(numActiveNotes);
+			ctrl_newTextWin_->setValue(true, NOUPDATE);
+		}
+
 		return;
 	}
 		
