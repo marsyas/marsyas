@@ -1474,10 +1474,10 @@ loadOptions()
 {
   helpopt = cmd_options.getBoolOption("help");
   usageopt = cmd_options.getBoolOption("usage");
-  start = cmd_options.getRealOption("start");
-  length = cmd_options.getRealOption("length");
-  repetitions = cmd_options.getRealOption("repetitions");
-  gain = cmd_options.getRealOption("gain");
+  start = (float)cmd_options.getRealOption("start");
+  length = (float)cmd_options.getRealOption("length");
+  repetitions = (float)cmd_options.getRealOption("repetitions");
+  gain = (float)cmd_options.getRealOption("gain");
   pluginName = cmd_options.getStringOption("plu1gin");
   fileName   = cmd_options.getStringOption("filename");
   methodopt = cmd_options.getStringOption("method");

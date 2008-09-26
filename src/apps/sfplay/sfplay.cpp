@@ -174,11 +174,11 @@ loadOptions()
 {
   helpopt = cmd_options.getBoolOption("help");
   usageopt = cmd_options.getBoolOption("usage");
-  start = cmd_options.getRealOption("start");
-  length = cmd_options.getRealOption("length");
-  repetitions = cmd_options.getRealOption("repetitions");
+  start = (float)cmd_options.getRealOption("start");
+  length = (float)cmd_options.getRealOption("length");
+  repetitions = (float)cmd_options.getRealOption("repetitions");
   verboseopt = cmd_options.getBoolOption("verbose");
-  gain = cmd_options.getRealOption("gain");
+  gain = (float)cmd_options.getRealOption("gain");
   pluginName = cmd_options.getStringOption("plugin");
   fileName   = cmd_options.getStringOption("filename");
   windowsize = cmd_options.getNaturalOption("windowsize");

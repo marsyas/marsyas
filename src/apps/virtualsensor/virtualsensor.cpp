@@ -742,7 +742,7 @@ void readSitarSensors(mrs_real length)
     // Thumb Onset Detection Variables
     int deriv;
     int pderiv;
-    int prevthumb = thumb(0);
+    int prevthumb = (int)thumb(0);
     int flag = 0;
     int upThresh = 18;
     int downThresh = 15;
@@ -754,7 +754,7 @@ void readSitarSensors(mrs_real length)
       //      cout << thumb(t) << "---";
       
       // Thumb Onset Detection
-      deriv = thumb(t) - prevthumb; 
+      deriv = (int)thumb(t) - prevthumb; 
       pderiv = deriv*(-2) + deriv;
       
       if ((deriv > 0) && (deriv > downThresh) && (flag == 0))
@@ -785,7 +785,7 @@ void readSitarSensors(mrs_real length)
 	}
 
       // set prev Thumb
-      prevthumb = thumb(t);
+      prevthumb = (int)thumb(t);
       pnet->tick();
       realvec out = pnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
       // cout << out(0,0) << endl;

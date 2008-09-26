@@ -264,7 +264,6 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
   
   
 	mrs_real pitch;
-	mrs_natural t;
 	mrs_natural counter = 0;      
 	mrs_natural pos = 0;
   
@@ -344,7 +343,7 @@ loadOptions()
 	lpopt = cmd_options.getNaturalOption("lowerPitch");
 	upopt = cmd_options.getNaturalOption("upperPitch");
 	plopt = cmd_options.getBoolOption("playback");
-	topt  = cmd_options.getRealOption("threshold");
+	topt  = (float)cmd_options.getRealOption("threshold");
 }
 
 
@@ -387,7 +386,7 @@ main(int argc, const char **argv)
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
 		string sfname = *sfi;
-		pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt);
+		pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0);
 		i++;
     }
 	exit(0);

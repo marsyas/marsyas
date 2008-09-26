@@ -215,7 +215,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 					//ctrl_harmonize_->setValue(1, 1.0);
 					//ctrl_harmonize_->setValue(2, 0.1);
 					if (harmonizeData_.getRows() > nbFrames_)
-					 ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i));
+					 ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i) != 0);
 				else 
 				{
 	      	ctrl_harmonize_->setValue(i, 0);

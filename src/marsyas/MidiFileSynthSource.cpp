@@ -172,7 +172,7 @@ MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 	//if it is, then signal a new texture window
 	if(ctrl_sigNewTextWin_->isTrue())
 	{
-		mrs_natural newTextWin;
+		mrs_natural newTextWin = 0;
 		MATLAB_GET("newTextWin", newTextWin);
 		if(newTextWin!=0)//if true...
 		{
