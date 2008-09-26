@@ -113,17 +113,18 @@ Spectrum::myProcess(realvec& in, realvec& out)
 	{
 		for (t= (mrs_natural)((cutoff_ * inSamples_) / 2); t < inSamples_/2; t++)
 		{
-			out(2*t) = 0;
-			out(2*t+1) = 0;
+			out(2*t,0) = 0;
+			out(2*t+1,0) = 0;
 		}
 	}
 
 	if (lowcutoff_ != 0.0)
 	{
+		cout << "ls = " << (mrs_natural)((lowcutoff_ * inSamples_) /2) << endl;
 		for (t=0; t < (mrs_natural)((lowcutoff_ * inSamples_) /2); t++)
 		{
-			out(2*t) = 0;
-			out(2*t+1) = 0;	
+			out(2*t,0) = 0;
+			out(2*t+1,0) = 0;	
 		}
 	}
 

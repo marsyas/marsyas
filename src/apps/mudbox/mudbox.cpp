@@ -1176,20 +1176,51 @@ toy_with_fft(string sfName)
 	series->addMarSystem(mng.create("SoundFileSource","src"));
 	series->addMarSystem(mng.create("Spectrum", "spk"));
 	series->addMarSystem(mng.create("InvSpectrum", "ispk"));
-	series->addMarSystem(mng.create("SoundFileSink", "dest"));
-
-	series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	series->updctrl("SoundFileSink/dest/mrs_string/filename",  "sftransformOutput.au");
+	MarSystem* dest = mng.create("SoundFileSink", "dest");
 
 	mrs_natural i =0;
 
+	series->updctrl("SoundFileSource/src/mrs_string/filename", 
+					sfName);
+
+
+
+	
+	series->updctrl("mrs_natural/inSamples", 8192);
+
+	series->updctrl("Spectrum/spk/mrs_real/cutoff", 0.55);
+	series->updctrl("Spectrum/spk/mrs_real/lowcutoff", 0.45);
+
+	mrs_realvec input(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+					  series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+
+
+	mrs_realvec output(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+					   series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	dest->updctrl("mrs_natural/inSamples", 8192);
+	dest->updctrl("mrs_real/israte", 192000.0);
+	dest->updctrl("mrs_string/filename",  "sftransformOutput.wav");	
+	
+	
 	while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
-		series->tick();
+		series->process(input, output);
+		mrs_real rms = 0.0;
+		int count = 0;
+		
+		for (int t = 0; t < 8192; t++)
+		{
+			rms += (output(0,t) * output(0,t));
+			count++;
+		}
+		rms /= count;
+		rms = sqrt(rms);
+		cout << "rms = " << rms << endl;
+		if (rms > 0.001)
+			dest->process(output, output);
+		
 		i++; 
 	}
-
-	cout << (*series) << endl;
 
 	delete series;
 }
@@ -4618,6 +4649,7 @@ toy_with_margrid(string sfName)
       total_->process(som_in, som_res);
       norm_->process(som_res, norm_som_res);
       som_->process(norm_som_res, predict_res); 
+
       cout << predict_res(0) << endl;
       cout << predict_res(1) << endl;
 	  
