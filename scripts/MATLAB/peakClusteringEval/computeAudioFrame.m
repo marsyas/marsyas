@@ -18,9 +18,9 @@ refFramesCount = refFramesCount+1;
 frameStart = (endPos-winSize+1)/fs; %in secods
 frameEnd = endPos/fs; %in seconds
 
-%% compute number of active notes in current analysis window
+%% compute number of active notes in current audio frame
 % for all the MIDI notes, count the ones 
-% active in the current analysis window
+% active in the current audio frame
 count  = 0;
 for n=1:size(nmat,1)
     noteStart = nmat(n,6); %in seconds
@@ -33,14 +33,14 @@ end
 %get maximum number of active notes in current texture window so far
 numActiveNotes = max(numActiveNotes, count);
 
-%% check if this is the last analysis window of current texture window
+%% check if this is the last frame of current texture window
 newTextWin = 0;
 if(sigNewTextWin > 0)
     if lastFrame
         newTextWin = 1;%i.e. set it to true
         textWinStart = textWinEnd+1; %in samples
         textWinEnd = endPos2; %in samples
-    elseif onsetIndex < length(onsets)
+    elseif onsetIndex <= length(onsets)
         %if next frame is after the next onset (i.e at least half of it is 
         %after the onset it means the current frame is the last one in the 
         %current texture window
