@@ -4623,8 +4623,8 @@ toy_with_margrid(string sfName)
     }
 
   cout << "Training done" << endl;
-  som_->updctrl("mrs_bool/done", true);
-  som_->tick();
+  // som_->updctrl("mrs_bool/done", true);
+  // som_->tick();
 
   // write the trained som network and the feature normalization networks 
   ofstream oss1;
@@ -4686,7 +4686,8 @@ toy_with_margrid(string sfName)
       total_->process(som_in, som_res);
       norm_->process(som_res, norm_som_res);
       som_->process(norm_som_res, predict_res); 
-
+	  cout << "Predicting  " << current << endl;
+	  
       cout << predict_res(0) << endl;
       cout << predict_res(1) << endl;
 	  

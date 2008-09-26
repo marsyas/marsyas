@@ -38,9 +38,9 @@ class SOM: public MarSystem
 private: 
   void addControls();
 	void myUpdate(MarControlPtr sender);
-
-  realvec grid_map_;
-  realvec grid_pos_;
+	
+  MarControlPtr ctrl_gridmap_;	   
+		realvec grid_pos_;
   mrs_natural grid_width_;
   mrs_natural grid_height_;
   realvec adjustments_;

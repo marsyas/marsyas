@@ -32,8 +32,6 @@ SOM::SOM(string name):MarSystem("SOM",name)
 	//type_ = "SOM";
 	//name_ = name;
   
-	srand(0);
-
 	addControls();
 }
 
@@ -59,8 +57,8 @@ SOM::addControls()
 	setctrlState("mrs_natural/grid_width", true);
 	addctrl("mrs_natural/grid_height", 10);
 	setctrlState("mrs_natural/grid_height", true);
-	grid_map_.create(1);
-	addctrl("mrs_realvec/grid_map", grid_map_);
+
+	addctrl("mrs_realvec/grid_map", realvec(), ctrl_gridmap_);
 
 	addctrl("mrs_bool/done", false);
 	setctrlState("mrs_bool/done", true);
@@ -76,12 +74,14 @@ SOM::addControls()
 void 
 SOM::init_grid_map() 
 {
-	
+	MarControlAccessor acc_grid(ctrl_gridmap_);
+	realvec& grid_map = acc_grid.to<mrs_realvec>();
+	srand(0);
 	for (int x=0; x < grid_width_; x++) 
 		for (int y=0; y < grid_height_; y++)
 			for (int o=0; o < inObservations_ -1; o++)
 			{
-				grid_map_(x * grid_height_ + y, o) = randD(1.0);
+				grid_map(x * grid_height_ + y, o) = randD(1.0);
 			}
 	
 	alpha_ = getctrl("mrs_real/alpha")->to<mrs_real>();
@@ -131,40 +131,23 @@ SOM::myUpdate(MarControlPtr sender)
 	mrs_natural mrows = (getctrl("mrs_realvec/grid_map")->to<mrs_realvec>()).getRows();
 	mrs_natural mcols = (getctrl("mrs_realvec/grid_map")->to<mrs_realvec>()).getCols();
 
-	mrs_natural nrows = grid_map_.getRows();
-	mrs_natural ncols = grid_map_.getCols();
-
 	if ((grid_size != mrows) || 
 		(inObservations_-1 != mcols))
 	{
 		if (inObservations_ != 1) 
 		{
-			grid_map_.create(grid_size, inObservations_-1);
+			MarControlAccessor acc_grid(ctrl_gridmap_);
+			realvec& grid_map = acc_grid.to<mrs_realvec>();
+			grid_map.create(grid_size, inObservations_-1);
 			adjustments_.create(inObservations_-1);      
 			init_grid_map();
-			updctrl("mrs_realvec/grid_map", grid_map_);//[!] 	  
 		}
     
 	}
 
-	if ((grid_size != nrows) || 
-		(inObservations_-1 != ncols))
-	{
-		if (inObservations_ != 1) 
-		{
-			grid_map_.create(grid_size, inObservations_-1);
-			adjustments_.create(inObservations_-1);
-			init_grid_map();
-			updctrl("mrs_realvec/grid_map", grid_map_);	//[!] 
-		}
-	}
-  
+	
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   
-	if (mode == "predict")
-    {
-		grid_map_ = getctrl("mrs_realvec/grid_map")->to<mrs_realvec>();
-    }  
 }
 
 void
@@ -175,8 +158,9 @@ SOM::find_grid_location(realvec& in, int t)
 	mrs_real pval;				// prototype value 
 	mrs_real minDist = MAXREAL;
  
-  
-
+	MarControlAccessor acc_grid(ctrl_gridmap_);
+	realvec& grid_map = acc_grid.to<mrs_realvec>();
+	
 	for (int x=0; x < grid_width_; x++) 
 		for (int y=0; y < grid_height_; y++) 
 		{
@@ -190,7 +174,7 @@ SOM::find_grid_location(realvec& in, int t)
 			for (o=0; o < inObservations_-1; o++)
 			{
 				ival = in(o,t);
-				pval = grid_map_(x * grid_height_ + y, o);
+				pval = grid_map(x * grid_height_ + y, o);
 				dist += (ival - pval) * (ival - pval);
 			}
 
@@ -221,71 +205,60 @@ SOM::myProcess(realvec& in, realvec& out)
   
 	int px;
 	int py;
-  
+
+	MarControlAccessor acc_grid(ctrl_gridmap_);
+	realvec& grid_map = acc_grid.to<mrs_realvec>();  
 
 
-	if (getctrl("mrs_bool/done")->to<mrs_bool>())
-    {
-		updctrl("mrs_realvec/grid_map", grid_map_);
-		setctrl("mrs_bool/done", false);
-    }
-	else 
-    {
-		if (mode == "train")  
+	if (mode == "train")  
+	{
+		mrs_real dx;
+		mrs_real dy;
+		mrs_real adj;
+		for (t=0; t < inSamples_; t++) 
 		{
-			mrs_real dx;
-			mrs_real dy;
-			mrs_real adj;
-			for (t=0; t < inSamples_; t++) 
-			{
-				find_grid_location(in, t);
-				px = (int) grid_pos_(0);
-				py = (int) grid_pos_(1);
-				out(0,t) = px;
-				out(1,t) = py;
-				out(2,t) = in(inObservations_-1,t);	  
-	      
-				for (int x=0; x < grid_width_; x++) 
-					for (int y=0; y < grid_height_; y++)
+			find_grid_location(in, t);
+			px = (int) grid_pos_(0);
+			py = (int) grid_pos_(1);
+			out(0,t) = px;
+			out(1,t) = py;
+			out(2,t) = in(inObservations_-1,t);	  
+			
+			for (int x=0; x < grid_width_; x++) 
+				for (int y=0; y < grid_height_; y++)
+				{
+					dx = px-x;
+					dy = py-y;
+					geom_dist = sqrt((double)(dx*dx + dy*dy));
+					geom_dist_gauss = gaussian( geom_dist, 0.0, neigh_std_, false);
+					
+					// subtract map vector from training data vector 
+					adj = alpha_ * geom_dist_gauss;
+					for (o=0; o < inObservations_-1; o++) 
 					{
-						dx = px-x;
-						dy = py-y;
-						geom_dist = sqrt((double)(dx*dx + dy*dy));
-						geom_dist_gauss = gaussian( geom_dist, 0.0, neigh_std_, false);
-		    
-						// subtract map vector from training data vector 
-						adj = alpha_ * geom_dist_gauss;
-						for (o=0; o < inObservations_-1; o++) 
-						{
-							adjustments_(o) = in(o,t) - grid_map_(x * grid_height_ + y);
-							adjustments_(o) *= adj;
-							grid_map_(x * grid_height_ + y, o) += adjustments_(o);
-						}
+						adjustments_(o) = in(o,t) - grid_map(x * grid_height_ + y);
+						adjustments_(o) *= adj;
+						grid_map(x * grid_height_ + y, o) += adjustments_(o);
 					}
-			}
-
-	  
-			alpha_ *= ALPHA_DEGRADE;
-			neigh_std_ *= NEIGHBOURHOOD_DEGRADE;	  
+				}
 		}
-		if (mode == "predict")
+		
+		alpha_ *= ALPHA_DEGRADE;
+		neigh_std_ *= NEIGHBOURHOOD_DEGRADE;	  
+	}
+	if (mode == "predict")
+	{
+		for (t=0; t < inSamples_; t++) 
 		{
-			for (t=0; t < inSamples_; t++) 
-			{
-				find_grid_location(in, t);
-				px = (int) grid_pos_(0);
-				py = (int) grid_pos_(1);
-				out(0,t) = px;
-				out(1,t) = py;
-				out(2,t) = in(inObservations_-1,t);	  
-			}
+			find_grid_location(in, t);
+			px = (int) grid_pos_(0);
+			py = (int) grid_pos_(1);
+			out(0,t) = px;
+			out(1,t) = py;
+			out(2,t) = in(inObservations_-1,t);	  
 		}
-    }
-  
-
-
-  
-
+	}
+	
 	
 
   
