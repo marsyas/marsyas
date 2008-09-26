@@ -35,7 +35,7 @@ if (MARSYAS_WIN32)
 		endif (ASIO)
 	endif (MARSYAS_AUDIOIO)
 	if (MARSYAS_MIDIIO)
-		# FIXME: insert windows MIDI library here!
+		list (APPEND OS_LIBS WinMM.lib)
 	endif (MARSYAS_MIDIIO)
 endif (MARSYAS_WIN32)
 
