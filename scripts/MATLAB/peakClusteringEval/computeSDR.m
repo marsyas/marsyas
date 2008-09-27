@@ -24,23 +24,20 @@ nbRefs = size(ref, 1);
 nbSyn = size(syn, 1);
 
 permRefs = perms((1:nbRefs));
-permSyn = perms((1:nbSyn));
+refPower = abs(sum(ref, 2));
 
 maxSdr = -80;
 for i=1:size(permRefs, 1)
-    for j=1:size(permSyn, 1)
-        sdr=0;
-        for k=1:nbRefs
-            sdr = sdr + computeVectorSDR(ref(permRefs(i, k), :), syn(permSyn(j, k), :));
-        end
-        sdr = sdr/nbRefs;
-        if sdr > maxSdr
-            maxSdr = sdr;
-        end
+    permRefMat = ref(permRefs(i, :), :);
+    permDiffMat = permRefMat-syn;
+
+    permDiffVec = abs(sum(permDiffMat, 2));
+    permRefVec = refPower(permRefs(i, :));
+
+    sdr = mean(20*log10((permRefVec./permDiffVec)+eps));
+
+    if sdr > maxSdr
+        maxSdr = sdr;
     end
 end
 
-function sdr = computeVectorSDR(ref, syn)
-% Signal to Noise Ratio computation between 2 vectors
-
-sdr = 20*log10((sum(abs(ref))/sum(abs(ref-syn)))+eps);
