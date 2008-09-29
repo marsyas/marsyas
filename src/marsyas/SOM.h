@@ -49,6 +49,8 @@ private:
  
 public:
   SOM(std::string name);
+		SOM::SOM(const SOM& a);
+		
   ~SOM();
   MarSystem* clone() const;  
   

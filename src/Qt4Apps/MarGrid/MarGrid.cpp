@@ -266,9 +266,7 @@ MarGrid::train()
     }
 
   cout << "Training done" << endl;
-  som_->updctrl("mrs_bool/done", true);
-  som_->tick();
-
+  
   // write the trained som network and the feature normalization networks 
   ofstream oss;
   oss.open("som.mpl");

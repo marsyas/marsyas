@@ -41,6 +41,13 @@ SOM::~SOM()
 }
 
 
+
+SOM::SOM(const SOM& a) : MarSystem(a)
+{
+	ctrl_gridmap_ = getctrl("mrs_realvec/grid_map");
+}
+
+
 MarSystem* 
 SOM::clone() const 
 {
@@ -77,6 +84,7 @@ SOM::init_grid_map()
 	MarControlAccessor acc_grid(ctrl_gridmap_);
 	realvec& grid_map = acc_grid.to<mrs_realvec>();
 	srand(0);
+	
 	for (int x=0; x < grid_width_; x++) 
 		for (int y=0; y < grid_height_; y++)
 			for (int o=0; o < inObservations_ -1; o++)
@@ -140,6 +148,7 @@ SOM::myUpdate(MarControlPtr sender)
 			realvec& grid_map = acc_grid.to<mrs_realvec>();
 			grid_map.create(grid_size, inObservations_-1);
 			adjustments_.create(inObservations_-1);      
+			
 			init_grid_map();
 		}
     

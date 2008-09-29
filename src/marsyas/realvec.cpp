@@ -790,15 +790,21 @@ realvec::shuffle()
 
 	for (int c=0;  c < cols_; c++)
 	{
-		rind = (unsigned int)(((mrs_real)rand() / (mrs_real)(RAND_MAX))*size);
-		for (int r=0; r < rows_; r++) 
+		rind = (unsigned int)(size * (double)rand() / ((double)(RAND_MAX)+(double)(1.0)));
+		if (rind < cols_) 
 		{
-			temp = data_[c * rows_ + r];
-			data_[c * rows_ + r] = data_[rind * rows_ + r];
-			data_[rind * rows_ + r] = temp;
+			for (int r=0; r < rows_; r++) 
+			{
+				temp = data_[c * rows_ + r];
+				data_[c * rows_ + r] = data_[rind * rows_ + r];
+				data_[rind * rows_ + r] = temp;
+			}
 		}
-	}  
+		else 
+			MRSERR("realvec::shuffle rind out of bounds");
+	}
 }
+	
 
 bool 
 realvec::write(string filename) const

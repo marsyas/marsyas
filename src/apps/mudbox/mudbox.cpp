@@ -4609,6 +4609,8 @@ toy_with_margrid(string sfName)
   som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
   som_->updctrl("mrs_string/mode", "train");
 
+  
+
   realvec som_fmatrixres;
   som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 			som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
@@ -4623,8 +4625,6 @@ toy_with_margrid(string sfName)
     }
 
   cout << "Training done" << endl;
-  // som_->updctrl("mrs_bool/done", true);
-  // som_->tick();
 
   // write the trained som network and the feature normalization networks 
   ofstream oss1;
