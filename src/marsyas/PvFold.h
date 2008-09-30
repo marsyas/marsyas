@@ -40,7 +40,7 @@ private:
 		realvec awin_;
 		void addControls();
 		void myUpdate(MarControlPtr sender);
-		mrs_natural N_, Nw_, D_, PNw_, PN_;
+		mrs_natural N_, Nw_, PNw_, PN_;
 		int n_;
   
   

@@ -629,8 +629,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/winSize", 
 				"mrs_natural/winSize");
 
-			pvocpr->linkctrl("PvFold/fo/mrs_natural/Decimation", 
-				"mrs_natural/Decimation");
+
 			pvocpr->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
 				"mrs_natural/Decimation");
 			pvocpr->linkctrl("PvUnconvert/uconv/mrs_natural/Decimation", 
@@ -685,8 +684,6 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pvocpr1->linkctrl("PvOscBank/pob/mrs_natural/winSize", 
 				"mrs_natural/winSize");
 
-			pvocpr1->linkctrl("PvFold/fo/mrs_natural/Decimation", 
-				"mrs_natural/Decimation");
 			pvocpr1->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
 				"mrs_natural/Decimation");
 			pvocpr1->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 

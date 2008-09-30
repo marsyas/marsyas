@@ -186,8 +186,15 @@ Windowing::myUpdate(MarControlPtr sender)
 			}
 		}
 	}
-	// not currently used
-	//norm_ = envelope_.mean();
+
+	mrs_real sum = 0.0;
+	
+	for (t =0; t < inSamples_; t++) 
+	{
+		sum += envelope_(t);
+	}
+	mrs_real afac = (mrs_real)(2.0 /sum);
+	envelope_ *= afac;
 }
 
 void 

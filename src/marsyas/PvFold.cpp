@@ -29,7 +29,6 @@ PvFold::PvFold(string name):MarSystem("PvFold",name)
 	N_ = 0;
   Nw_ = 0;
   PNw_ = 0;
-  D_ = 0;
 
 	addControls();
 }
@@ -51,8 +50,7 @@ PvFold::addControls()
 {
   addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/FFTSize", true);
-  addctrl("mrs_natural/Decimation", MRS_DEFAULT_SLICE_NSAMPLES/2);
-  setctrlState("mrs_natural/Decimation", true);
+
   n_ = 0;
 }
 
@@ -69,7 +67,6 @@ PvFold::myUpdate(MarControlPtr sender)
   N_ = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   
   Nw_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
 
   // create analysis window if necessary
   if ((Nw_ != PNw_)||(N_ != PN_))
@@ -136,32 +133,6 @@ PvFold::myProcess(realvec& in, realvec& out)
 		out(0,t+half_Nw_) = tmp;
 	}
 	
-	/* cout << "PvFold n_" << n_ << endl;
-  //checkFlow(in,out);
-	cout << "PvFold D_ = " << D_ << endl;
-
-	n_ += D_;
-	
-	for (t=0; t < N_; t++)
-    {
-		out(0,t) = 0.0;
-    }
-	
-	
-	mrs_natural n;
-	n = n_;
-	
-	while (n < 0)
-		n += N_;
-	n %= N_;
-	for (t=0; t < Nw_; t++)
-    {
-		out(0,n) = in(0,t)*awin_(t);
-		if (++n == N_)
-			n = 0;
-    }
-	*/ 
-
 
   
 }
