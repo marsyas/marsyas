@@ -1,11 +1,9 @@
-%clear
-
-%filename = 'z:\MIDI\test.mid' %'RM-C002.mid';
-%fs = 44100;
-%frameSize = 2048; % size in samples
-% 
-%startSeg = 0;
-%endSeg = 10;
+% clear
+% filename = 'z:\MIDI\simpleTest2.mid' 
+% fs = 44100;
+% startSeg = 0;
+% endSeg = 10;
+% sigNewTextWin = 1;
 
 
 %% read MIDI file and pre-process MIDI info
@@ -16,7 +14,7 @@ if endSeg ~= 0
 end
 
 %Removal of leading silence (trim)
-nmat = trim(nmat);
+%nmat = trim(nmat);
 
 %get playing MIDI channels
 channels = mchannels(nmat);
@@ -31,8 +29,7 @@ for i=1:numChannels
 	end
 end
 
-%% synthesize MIDI audio tracks
-%synthesize audio of each MIDI track
+%% synthesize audio tracks for each MIDI channel
 AUDIOtracks = cell(numChannels,1);
 trackLengths = zeros(numChannels,1);
 for i=1:numChannels
@@ -41,30 +38,33 @@ for i=1:numChannels
 	trackLengths(i) = length(AUDIOtracks{i});
 end
 
-%get shorted track length, which will be the overall audio length (in samples)
-audioLength = min(trackLengths);%in samples
+% Pad shorter tracks with trailing zeros
+audioLength = max(trackLengths);%in samples
+for i=1:numChannels
+    l = length(AUDIOtracks{i});
+	AUDIOtracks{i} = [AUDIOtracks{i}, zeros(1,audioLength-l)];
+end
 
-%trim MIDI info to shortest track duration
-nmat = onsetwindow(nmat, 0, audioLength/fs, 'sec');
-
-%convert audio into a matrix
+%% convert audio into a matrix
 audio=zeros(numChannels+1,audioLength);
 for i=1:numChannels
 	%All MIDI channels mixed
-	audio(1,:) = audio(1,:)+(AUDIOtracks{i}(1,1:audioLength));%/numChannels);
+	audio(1,:) = audio(1,:)+(AUDIOtracks{i}(1,:));
 	%separate audio for each MIDI channel
-	audio(i+1,:) = AUDIOtracks{i}(1,1:audioLength);
+	audio(i+1,:) = AUDIOtracks{i}(1,:);
 end
+%audio(1,:) = audio(1,:)/numChannels;
 
 %save some memory by getting rid of unnecessary audio data
 clear AUDIOtracks;
 
+%% componsate MIDI2audio delay (coming from MIDI Toolbox...)
+MIDI2audioDelay = 0.017; %in secods - hardcoded delay that MIDI Toolbox puts when synthesizing the MIDI audio...
+nmat(:,6) = nmat(:,6) - MIDI2audioDelay;
 
 %% get list of onsets from all MIDI channels
-MIDI2audioDelay = 0.017; %hardcoded delay that MIDI Toolbox puts when synthesizing the MIDI audio...
 if(sigNewTextWin > 0)
-    allOnsets = nmat(:,6) - MIDI2audioDelay; %in seconds
-    
+    allOnsets = nmat(:,6);    
     %filter onsets that are too close...
     minLen = 0.050; %50ms is the minimum length for a texture window
     prevOnset = 0;
@@ -75,8 +75,6 @@ if(sigNewTextWin > 0)
             prevOnset = allOnsets(i);
         end
     end
-    
-    %onsets = [0.1, onsets];
 end
 
 %% init some vars
@@ -94,6 +92,8 @@ textWinEnd = 0;
 refAudioTextWinds = cell(1,0);
 resynthAudioTextWinds = cell(1,0);
 SDRTextWinds = [];
+
+numActiveNotesTextWinds = [];
 
     
 

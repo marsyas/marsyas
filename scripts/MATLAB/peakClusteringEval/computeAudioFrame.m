@@ -25,7 +25,7 @@ count  = 0;
 for n=1:size(nmat,1)
     noteStart = nmat(n,6); %in seconds
     noteEnd = noteStart + nmat(n,7); % in seconds
-    if (noteStart <= frameEnd) && (noteEnd >= frameStart)
+    if ((noteStart <= frameStart) && (noteEnd >= frameEnd)) || ((noteStart >= frameStart) && (noteEnd <= frameEnd))
         count = count+1;
         %we could also store their f0s...
     end

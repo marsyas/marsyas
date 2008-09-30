@@ -546,7 +546,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		mainNet->updctrl("mrs_natural/inSamples", D);
 		mainNet->updctrl("mrs_real/israte", samplingFrequency_);
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/start", 0.0);
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/end", 9.0);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/end", 10.0);
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_string/filename", sfName);
 		//mainNet->updctrl("mrs_natural/inObservations", 1);
 		//samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/osrate")->to<mrs_real>();
@@ -812,9 +812,11 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	mrs_natural frameCount = 0;
 	//	mrs_real time=0;
 
+	mrs_natural numTextWinds = 0;
 	while(1)
 	{	
 		mainNet->tick();
+		numTextWinds++;
 
 		if (!microphone_)
 		{
@@ -830,7 +832,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 				timeLeft = stopAnalyse_;
 			// string fname = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename")->to<mrs_string>();
 
-			printf("  %.2f / %.2f \r", timeRead, timeLeft);
+			printf("Processed texture window %d : %.2f / %.2f \r", numTextWinds, timeRead, timeLeft);
 			fflush(stdout);
 
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
