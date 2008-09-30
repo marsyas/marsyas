@@ -288,16 +288,21 @@ MATLABengine::getVariable(std::string MATLABname, mrs_natural& value)
 {
   mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
   
-  if (mxVector == NULL) {
-    MRSERR("MATLABengine::getVariable(std::string, mrs_natural&) error: Get Array Failed");
+  if (mxVector == NULL) 
+	{
+		MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_natural&) error: failed getting MATLAB var!");
     return -1;
   }
   else {		
     if (mxGetNumberOfElements(mxVector) > 1)
-      MRSWARN("MATLABengine::getVariable(std::string, mrs_natural&): MATLAB array => getting first element only!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_natural&): MATLAB array => getting first element only!");
+		}
     
     if(mxIsComplex(mxVector))
-      MRSWARN("MATLABengine::getVariable(std::string, mrs_natural&): MATLAB complex number => getting real part only!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_natural&): MATLAB complex number => getting real part only!");
+		}
     
     value = (mrs_natural)mxGetScalar(mxVector);
     mxDestroyArray(mxVector);
@@ -310,16 +315,21 @@ MATLABengine::getVariable(std::string MATLABname, mrs_real& value)
 {
   mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
   
-  if (mxVector == NULL) {
-    MRSERR("MATLABengine::getVariable(std::string, mrs_real&) error: Get Array Failed");
+  if (mxVector == NULL) 
+	{
+    MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_real&) error: failed getting MATLAB var!");
     return -1;
   }
   else {
     if (mxGetNumberOfElements(mxVector) > 1)
-      MRSWARN("MATLABengine::getVariable(std::string, mrs_real&): MATLAB array => getting first element only!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_real&): MATLAB array => getting first element only!");
+		}
     
     if(mxIsComplex(mxVector))
-      MRSWARN("MATLABengine::getVariable(std::string, mrs_real&): MATLAB complex number => getting real part only!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_real&): MATLAB complex number => getting real part only!");
+		}
     
     value = (mrs_real)mxGetScalar(mxVector);
     mxDestroyArray(mxVector);
@@ -332,21 +342,25 @@ MATLABengine::getVariable(std::string MATLABname, mrs_complex& value)
 {
   mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
   
-  if (mxVector == NULL) {
-    MRSERR("MATLABengine::getVariable(std::string, mrs_complex&) error: Get Array Failed");
+  if (mxVector == NULL) 
+	{
+    MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_complex&) error: failed getting MATLAB var!");
     return -1;
   }
-  else {
+  else 
+	{
     if (mxGetNumberOfElements(mxVector) > 1)
-      MRSWARN("MATLABengine::getVariable(std::string, mrs_real&): MATLAB array => getting first element only!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_real&): MATLAB array => getting first element only!");
+		}
     
     if(mxIsComplex(mxVector))
       value = mrs_complex((mrs_real)(*mxGetPr(mxVector)),(mrs_real)(*mxGetPi(mxVector)));
     else
-      {
-	value = mrs_complex((mrs_real)(*mxGetPr(mxVector)),0);
-	MRSWARN("MATLABengine::getVariable(std::string, mrs_complex&): MATLAB real number => setting imaginary part to zero!");
-      }
+    {
+			value = mrs_complex((mrs_real)(*mxGetPr(mxVector)),0);
+			MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", mrs_complex&): MATLAB real number => setting imaginary part to zero!");
+    }
     
     mxDestroyArray(mxVector);
     return 0;
@@ -358,29 +372,32 @@ MATLABengine::getVariable(std::string MATLABname, realvec& value)
 {
   mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
   
-  if (mxVector == NULL) {
-    MRSERR("MATLABengine::getVariable(std::string, realvec&) error: variable name does not exist in MATLAB...");
+  if (mxVector == NULL) 
+	{
+    MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", realvec&) error: variable does not exist in MATLAB!");
     return -1;
   }
   else {
     if (mxGetNumberOfDimensions(mxVector) > 2)
-      {
-	MRSERR("MATLABengine::getVariable(std::string, realvecl&): MATLAB array with more than 2 dimensions!");
-	return -1;
-      }
+    {
+			MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", realvecl&): MATLAB array with more than 2 dimensions!");
+			return -1;
+    }
     
     if(mxIsComplex(mxVector))
-      MRSWARN("MATLABengine::getVariable(std::string, realvec&): MATLAB complex array => getting real part only!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", realvec&): MATLAB complex array => getting real part only!");
+		}
     
     //number of rows and cols for the 2D MATLAB array
     //resize realvec accordingly
     value.create(mxGetDimensions(mxVector)[0],mxGetDimensions(mxVector)[1]);
     for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); i++)
-      {
-	//both Marsyas realvec and MATLAB arrays are column-wise,
-	//so they can be copied as linear vectors
-	value(i) = (mrs_real)(*(mxGetPr(mxVector)+i));
-      }
+		{
+			//both Marsyas realvec and MATLAB arrays are column-wise,
+			//so they can be copied as linear vectors
+			value(i) = (mrs_real)(*(mxGetPr(mxVector)+i));
+		}
     
     mxDestroyArray(mxVector);
     return 0;
@@ -393,30 +410,35 @@ MATLABengine::getVariable(std::string MATLABname, vector<mrs_natural>& value)
   mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
   
   if (mxVector == NULL) {
-    MRSERR("MATLABengine::getVariable(std::string, vector<mrs_natural>&) error: Get Array Failed");
+    MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_natural>&) error: Get Array Failed!");
     return -1;
   }
-  else {
+  else 
+	{
     if (mxGetNumberOfDimensions(mxVector) > 2)
-      {
-	MRSERR("MATLABengine::getVariable(std::string, vector<mrs_natural>&): MATLAB array with more than 2 dimensions!");
-	return -1;
-      }
+    {
+			MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_natural>&): MATLAB array with more than 2 dimensions!");
+			return -1;
+    }
     
     if(mxIsComplex(mxVector))
-      MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_natural>&): MATLAB complex data => getting real part only!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_natural>&): MATLAB complex data => getting real part only!");
+		}
     
     if(mxGetM(mxVector) > 1 && mxGetN(mxVector) > 1)
-      MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_natural>&): MATLAB array => will be got as a column-wise vector!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_natural>&): MATLAB array => will be got as a column-wise vector!");
+		}
     
     value.clear();
     value.reserve(mxGetNumberOfElements(mxVector));
     
     for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); i++)
-      {
-	//if MATLAB variable is an array, it will be got as a column-wise vector
-	value.push_back((mrs_natural)(*(mxGetPr(mxVector)+i)));
-      }
+    {
+			//if MATLAB variable is an array, it will be got as a column-wise vector
+			value.push_back((mrs_natural)(*(mxGetPr(mxVector)+i)));
+    }
     
     mxDestroyArray(mxVector);
     return 0;
@@ -429,30 +451,35 @@ MATLABengine::getVariable(std::string MATLABname, vector<mrs_real>& value)
   mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
   
   if (mxVector == NULL) {
-    MRSERR("MATLABengine::getVariable(std::string, vector<mrs_real>&) error: Get Array Failed");
+    MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_real>&) error: Get Array Failed");
     return -1;
   }
-  else {
+  else 
+	{
     if (mxGetNumberOfDimensions(mxVector) > 2)
-      {
-	MRSERR("MATLABengine::getVariable(std::string, vector<mrs_real>&): MATLAB array with more than 2 dimensions!");
-	return -1;
-      }
+    {
+			MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_real>&): MATLAB array with more than 2 dimensions!");
+			return -1;
+    }
     
     if(mxIsComplex(mxVector))
-      MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_real>&): MATLAB complex data => getting real part only!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_real>&): MATLAB complex data => getting real part only!");
+		}
     
     if(mxGetM(mxVector) > 1 && mxGetN(mxVector) > 1)
-      MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_real>&): MATLAB array => will be got as a column-wise vector!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_real>&): MATLAB array => will be got as a column-wise vector!");
+		}
     
     value.clear();
     value.reserve(mxGetNumberOfElements(mxVector));
     
     for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); i++)
-      {
-	//if MATLAB variable is an array, it will be got as a column-wise vector
-	value.push_back((mrs_real)(*(mxGetPr(mxVector)+i)));
-      }
+    {
+			//if MATLAB variable is an array, it will be got as a column-wise vector
+			value.push_back((mrs_real)(*(mxGetPr(mxVector)+i)));
+    }
     
     mxDestroyArray(mxVector);
     return 0;
@@ -465,33 +492,36 @@ MATLABengine::getVariable(std::string MATLABname, vector<mrs_complex>& value)
   mxArray* mxVector = engGetVariable(engine_, MATLABname.c_str());
   
   if (mxVector == NULL) {
-    MRSERR("MATLABengine::getVariable(std::string, vector<mrs_complex>&) error: Get Array Failed");
+    MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_complex>&) error: Get Array Failed");
     return -1;
   }
-  else {
+  else 
+	{
     if (mxGetNumberOfDimensions(mxVector) > 2)
-      {
-	MRSERR("MATLABengine::getVariable(std::string, vector<mrs_complex>&): MATLAB array with more than 2 dimensions!");
-	return -1;
-      }
+    {
+			MRSERR("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_complex>&): MATLAB array with more than 2 dimensions!");
+			return -1;
+    }
     
     if(mxGetM(mxVector) > 1 && mxGetN(mxVector) > 1)
-      MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_complex>&): MATLAB array => will be got as a column-wise vector!");
+		{
+      MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_complex>&): MATLAB array => will be got as a column-wise vector!");
+		}
     
     value.clear();
     value.reserve(mxGetNumberOfElements(mxVector));
     
     for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); i++)
-      {
-	//if MATLAB variable is an array, it will be got as a column-wise vector
-	if(mxIsComplex(mxVector))
-	  value.push_back( mrs_complex( (mrs_real)(*(mxGetPr(mxVector)+i)), (mrs_real)(*(mxGetPi(mxVector)+i)) ));
-	else
-	  {
-	    value.push_back(mrs_complex( (mrs_real)(*(mxGetPr(mxVector)+i)), 0 ));
-	    MRSWARN("MATLABengine::getVariable(std::string, vector<mrs_complex>&): MATLAB real numbers => setting imaginary parts to zero!");
-	  }
-      }
+    {
+			//if MATLAB variable is an array, it will be got as a column-wise vector
+			if(mxIsComplex(mxVector))
+				value.push_back( mrs_complex( (mrs_real)(*(mxGetPr(mxVector)+i)), (mrs_real)(*(mxGetPi(mxVector)+i)) ));
+			else
+				{
+					value.push_back(mrs_complex( (mrs_real)(*(mxGetPr(mxVector)+i)), 0 ));
+					MRSWARN("MATLABengine::getVariable(\"" << MATLABname << "\", vector<mrs_complex>&): MATLAB real numbers => setting imaginary parts to zero!");
+				}
+    }
     
     mxDestroyArray(mxVector);
     return 0;
