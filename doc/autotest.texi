@@ -136,6 +136,15 @@ If you are certain that your patch (and new output file) are good, then
 you should update the answer file.  This is simply a matter of copying
 your new output file over the old answer file.
 
+The new output file is found in
+@file{BUILD_DIR/tests/regressions/}.  You may also create the file
+manually yourself; the exact command-line arguments used for each
+test can be seen with:
+
+@example
+make test ARGS="-V"
+@end example
+
 Please commit the changed
 @file{src/tests/regressions/output/@emph{<FILE.au>}} in a separate
 svn commit, and make sure the log message explains that your new
