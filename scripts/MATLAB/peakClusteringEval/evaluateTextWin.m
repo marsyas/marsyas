@@ -26,8 +26,8 @@ if resynthFramesCount == refFramesCount
     resynthAudio = resynthAudio(1:numActiveNotes,1:audioLen);
         
     %compute SDR for current texture window
-    %SDRresults = computeSDR(refAudio, resynthAudio); %%%%%%%%%%%%%%%%%%%%%%
-    %SDRTextWinds = [SDRTextWinds, SDRresults];
+    SDRresults = computeSDR(refAudio, resynthAudio); %%%%%%%%%%%%%%%%%%%%%%
+    SDRTextWinds = [SDRTextWinds, SDRresults];
     
     %store results for entire file
     refAudioTextWinds = [refAudioTextWinds, refAudio];
