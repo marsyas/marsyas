@@ -9,12 +9,16 @@ if resynthFramesCount == refFramesCount
     %get reference audio for current texture window
     %(ignore mix track, i.e. 1st row, and "silent" 
     %audio channels in this texture window)
-    refAudio = [];
-    for k=1:numChannels
-        if sum(audio(k+1,textWinStart:textWinEnd).^2) > eps*1e12
-            refAudio = [refAudio; audio(k+1,textWinStart:textWinEnd)];
-        end
-    end
+%     refAudio = [];
+%     for k=1:numChannels
+%         if sum(audio(k+1,textWinStart:textWinEnd).^2) > eps*1e12
+%             refAudio = [refAudio; audio(k+1,textWinStart:textWinEnd)];
+%         end
+%     end
+    %optimized version
+    channelSel = sum(audio(2:end,textWinStart:textWinEnd).^2, 2) > eps*1e12;
+    channelSel = [false; channelSel]; %also ignore mix channel
+    refAudio = audio(channelSel,textWinStart:textWinEnd); 
         
     %make sure both audio vectors have the same length (PHASE PROBLEMS?!?!)
     audioLen = min(size(refAudio,2), size(resynthAudio,2));
