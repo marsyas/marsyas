@@ -7,24 +7,29 @@ if resynthFramesCount == refFramesCount
     resynthAudio = [resynthAudio, PlotSink_send2MATLAB_indata];
     
     %get reference audio for current texture window
-    %(ignore mix track, i.e. 1st row)
-    refAudio = audio(2:end,textWinStart:textWinEnd);
-    
-    %make sure both audio vectors have the same length (PHASE PROBLEMS?!?! ASK MAT...)
+    %(ignore mix track, i.e. 1st row, and "silent" 
+    %audio channels in this texture window)
+    refAudio = [];
+    for k=1:numChannels
+        if sum(audio(k+1,textWinStart:textWinEnd).^2) > eps*1e12
+            refAudio = [refAudio; audio(k+1,textWinStart:textWinEnd)];
+        end
+    end
+        
+    %make sure both audio vectors have the same length (PHASE PROBLEMS?!?!)
     audioLen = min(size(refAudio,2), size(resynthAudio,2));
     refAudio = refAudio(:,1:audioLen);
-    %only take the first numActiveNotes columns 
     resynthAudio = resynthAudio(1:numActiveNotes,1:audioLen);
         
     %compute SDR for current texture window
     %SDRresults = computeSDR(refAudio, resynthAudio); %%%%%%%%%%%%%%%%%%%%%%
+    %SDRTextWinds = [SDRTextWinds, SDRresults];
     
     %store results for entire file
     refAudioTextWinds = [refAudioTextWinds, refAudio];
     resynthAudioTextWinds = [resynthAudioTextWinds, resynthAudio];
-    %SDRTextWinds = [SDRTextWinds, SDRresults];
-        
     numActiveNotesTextWinds = [numActiveNotesTextWinds, numActiveNotes];
+ 
     % init vars for next texture window
     numActiveNotes = 0;
     refFramesCount = 0;

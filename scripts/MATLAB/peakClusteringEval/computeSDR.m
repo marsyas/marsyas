@@ -10,7 +10,7 @@ if size(syn, 2) ~= frameLength
     error('The synthesis should be a matrix of line vectors, each of size frameLength');
 end
 
-nbRefs = size(ref, 1);
+nbRefs = size(ref, 1)
 nbSyn = size(syn, 1);
 
 % handle different numbers by padding zeros

@@ -294,10 +294,10 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 			minIndex = j;
 		}
 	}
-	if(!minIndex)
-	{
-		cout << "pb while looking for minimal bin intervals" << endl; //[WTF]
-	}
+// 	if(!minIndex)
+// 	{
+// 		cout << "pb while looking for minimal bin intervals" << endl; //[WTF]
+// 	}
 	interval(0) = minIndex;
 
 	for(mrs_natural i=start ; i<nbP-1 ; i++, k++)
@@ -314,10 +314,10 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 			}
 		}
 
-		if(!minIndex)
-		{
-			cout << "pb while looking for bin intervals" << endl; //[WTF]
-		}
+// 		if(!minIndex)
+// 		{
+// 			cout << "pb while looking for bin intervals" << endl; //[WTF]
+// 		}
 		interval(2*k+1) = minIndex-1;
 		interval(2*(k+1)) = minIndex;
 	}
@@ -336,10 +336,10 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 		if(minVal<mag(j+1))
 			break;
 	}
-	if(!minIndex)
-	{
-		cout << "pb while looking for maximal bin intervals" << endl; //[WTF]
-	}
+// 	if(!minIndex)
+// 	{
+// 		cout << "pb while looking for maximal bin intervals" << endl; //[WTF]
+// 	}
 	interval(2*(k)+1) = minIndex;
 }
 
