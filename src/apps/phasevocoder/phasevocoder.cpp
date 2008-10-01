@@ -125,6 +125,7 @@ phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw,
 					  "mrs_natural/Interpolation");
 	pvseries->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 
 					  "mrs_natural/Interpolation");
+
 	pvseries->linkctrl("PvConvert/conv/mrs_natural/Sinusoids",
 				"mrs_natural/Sinusoids");
 	pvseries->linkctrl("PvConvert/conv/mrs_string/mode", 
@@ -1844,8 +1845,8 @@ main(int argc, const char **argv)
 		if (vopt_ == 1) 
 		{
 			// phasevocSeriesOld(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
-			// phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
-			phasevocoderMultiResolution(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+			phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+			// phasevocoderMultiResolution(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
 		}
 		else
 		{
