@@ -113,6 +113,8 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 			MATLAB_GET("numActiveNotes", numActiveNotes);
 			ctrl_numActiveNotes_->setValue(numActiveNotes);
 
+			MATLAB_EVAL("textWinStart = textWinEnd+1;textWinEnd = endPos2;");
+
 			//reset MATLAB
 			//MATLAB_EVAL("numActiveNotes = 0;");
 

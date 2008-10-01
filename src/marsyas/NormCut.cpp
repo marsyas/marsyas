@@ -101,22 +101,21 @@ NormCut::myUpdate(MarControlPtr sender)
 void 
 NormCut::myProcess(realvec& in, realvec& out)
 {
-	out.setval(0);
+	//check if there is any data at the input, otherwise do nothing
+	if(in.getSize() == 0 || numClusters_ == 0)
+	{
+		//MRSWARN("NormCut::myProcess - empty input!");
+		out.setval(-1.0);
+		return;
+	}
+
+	out.setval(0); //should it be -1.0 instead? [!] FIXME
 
 	//ncut( n, W, nbcluster, NcutEigenvectors, NcutEigenvalues, params );      
 	//discretisation( n, nbcluster, NcutEigenvectors, NcutDiscrete, params );
 
-	//check if there is any data at the input, otherwise do nothing
-	if(in.getSize() == 0)
-	{
-		//MRSWARN("NormCut::myProcess - empty input!");
-		return;
-	}
-
 	ncut(inObservations_, in, numClusters_, nCutEigVectors_, nCutDiscrete_ );
 	discretisation(inObservations_, numClusters_, nCutEigVectors_, nCutDiscrete_ );
-
-	
 
 	for( o=0 ; o<inObservations_ ; o++ )
 	{      
@@ -125,6 +124,7 @@ NormCut::myProcess(realvec& in, realvec& out)
 			// Initialize NcutDiscrete as we go
 			if( nCutDiscrete_(o*(numClusters_)+t) == 1.0 )
 				out(0,o) = t;
+			//cout << "Peak " << o << " -> cluster = " << out(0,o) << endl;
 		}
 	}
 

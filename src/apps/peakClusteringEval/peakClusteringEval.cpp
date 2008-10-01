@@ -749,8 +749,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		textWinNet->updctrl("mrs_natural/minTimes", minTimes);
 
 		//set MidiFileSynthSource to receive a signal for each texture window
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", false);
-		mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/newTextWin",
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", false);
+		mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/newTextWin",
 			"Accumulator/textWinNet/mrs_bool/flush");
 	}
 	else
@@ -763,8 +763,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 			mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
 			
 			//set MidiFileSynthSource to receive a signal for each texture window
-			mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", false);
-			mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/orinet/MidiFileSynthSource/src/mrs_bool/newTextWin",
+			mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/sigNewTextWin", false);
+			mainNet->linkControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/newTextWin",
 				"Accumulator/textWinNet/mrs_bool/flush");
 
 		}
