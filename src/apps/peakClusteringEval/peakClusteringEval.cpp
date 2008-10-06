@@ -775,11 +775,11 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 			//set texture window
 			mainNet->updctrl("Accumulator/textWinNet/mrs_string/mode", "explicitFlush");
 			mrs_real textureWinMinLen = 0.0; //secs - let GT take care of this...
-			mrs_real textureWinMaxLen = 100.0; //secs - just a majorant...
+			mrs_real textureWinMaxLen = 15.0; //secs - just a majorant...
 			mrs_natural minTimes = (mrs_natural)(textureWinMinLen*samplingFrequency_/hopSize_); 
 			mrs_natural maxTimes = (mrs_natural)(textureWinMaxLen*samplingFrequency_/hopSize_); 
-			//cout << "Accumulator/textWinNet MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
-			//cout << "Accumulator/textWinNet MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" <<endl;
+			cout << "Accumulator/textWinNet MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
+			cout << "Accumulator/textWinNet MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" <<endl;
 			mainNet->updctrl("Accumulator/textWinNet/mrs_natural/maxTimes", maxTimes); 
 			mainNet->updctrl("Accumulator/textWinNet/mrs_natural/minTimes", minTimes);
 

@@ -1,4 +1,4 @@
-function maxSdr = computeSDR(ref, syn)
+function [maxSdr, correspondence] = computeSDR(ref, syn)
 
 frameLength = size(ref,2);
 
@@ -24,20 +24,21 @@ nbRefs = size(ref, 1);
 nbSyn = size(syn, 1);
 
 permRefs = perms((1:nbRefs));
-refPower = abs(sum(ref, 2));
+refPower = sum(abs(ref),2);%abs(sum(ref, 2)); ????
 
 maxSdr = -80;
 for i=1:size(permRefs, 1)
     permRefMat = ref(permRefs(i, :), :);
     permDiffMat = permRefMat-syn;
 
-    permDiffVec = abs(sum(permDiffMat, 2));
+    permDiffVec = sum(abs(permDiffMat),2);%abs(sum(permDiffMat, 2)); ????
     permRefVec = refPower(permRefs(i, :));
 
     sdr = mean(20*log10((permRefVec./permDiffVec)+eps));
 
     if sdr > maxSdr
         maxSdr = sdr;
+        correspondence = permRefs(i, :);
     end
 end
 

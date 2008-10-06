@@ -25,8 +25,9 @@ count  = 0;
 for n=1:size(nmat,1)
     noteStart = nmat(n,6); %in seconds
     noteEnd = noteStart + nmat(n,7); % in seconds
-    if ((noteStart <= frameStart) && (noteEnd >= frameEnd)) || ((noteStart >= frameStart) && (noteEnd <= frameEnd))
+    if ((noteStart < frameStart) && (noteEnd > frameEnd))% || ((noteStart >= frameStart) && (noteEnd <= frameEnd))
         count = count+1;
+        activeChannels(nmat(n,3)) = true; %this channel is playing a note in this frame (and texturew window)!
         %we could also store their f0s...
     end
 end

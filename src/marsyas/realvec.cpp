@@ -308,7 +308,7 @@ realvec::stretch(mrs_natural size)
 void 
 realvec::stretch(mrs_natural rows, mrs_natural cols) 
 {
-	int size = rows * cols;
+	mrs_natural size = rows * cols;
 
 	if ((rows == rows_)&&(cols == cols_))
 		return;

@@ -1,5 +1,5 @@
 % clear
-% filename = 'z:\MIDI\simpleTest2.mid' 
+% filename = 'z:\MIDI\test.mid' 
 % fs = 44100;
 % startSeg = 0;
 % endSeg = 10;
@@ -14,7 +14,7 @@ if endSeg ~= 0
 end
 
 %Removal of leading silence (trim)
-%nmat = trim(nmat);
+nmat = trim(nmat);
 
 %get playing MIDI channels
 channels = mchannels(nmat);
@@ -24,10 +24,28 @@ numChannels = length(channels);
 MIDItracks = cell(numChannels, 1);
 for i=1:numChannels
 	MIDItracks{i} = getmidich(nmat,channels(i));
-	if ~ismonophonic(MIDItracks{i})
-		MIDItracks{i} = extreme(MIDItracks{i}); %make it monophonic!
-	end
+	%if ~ismonophonic(MIDItracks{i})
+        MIDItracks{i} = extreme(MIDItracks{i}); %make it monophonic!
+	%end
+    
+    %avoid intersections and reassign MIDI channels between 1:numChannels
+    for n = 1:size(MIDItracks{i},1)-1
+        nEnd = MIDItracks{i}(n,6) +  MIDItracks{i}(n,7);
+        if nEnd >= MIDItracks{i}(n+1,6)
+            MIDItracks{i}(n,7) = MIDItracks{i}(n,7)*0.9; %reduce in 10% the length of the note
+        end 
+        MIDItracks{i}(n,3) = i;
+    end
+    MIDItracks{i}(end,3) = i;
+    
+    %drop short notes (i.e. < 100ms)
+    MIDItracks{i} = dropshortnotes(MIDItracks{i}, 'sec', 0.100);
+    %pianoroll(MIDItracks{i});
+    %pause;
 end
+
+nmat = vertcat(MIDItracks{:});
+%pianoroll(nmat);
 
 %% synthesize audio tracks for each MIDI channel
 AUDIOtracks = cell(numChannels,1);
@@ -64,7 +82,9 @@ nmat(:,6) = nmat(:,6) - MIDI2audioDelay;
 
 %% get list of onsets from all MIDI channels
 if(sigNewTextWin > 0)
-    allOnsets = nmat(:,6);    
+    allOnsets = nmat(:,6);
+    allOnsets = sort(allOnsets);
+    allOnsets = allOnsets(allOnsets > 0);
     %filter onsets that are too close...
     minLen = 0.050; %50ms is the minimum length for a texture window
     prevOnset = 0;
@@ -90,10 +110,17 @@ textWinStart = 1;
 textWinEnd = 0;
 
 refAudioTextWinds = cell(1,0);
-resynthAudioTextWinds = cell(1,0);
+%resynthAudioTextWinds = cell(1,0);
+segregatedAudioTextWinds = cell(1,0);
 SDRTextWinds = [];
 
 numActiveNotesTextWinds = [];
+
+activeChannels = false(numChannels,1);
+
+AAA = [];
+BBB = [];
+CCC = [];
 
     
 
