@@ -215,23 +215,13 @@ void MusicCollection::displayPlaylists() {
 	}
 }
 
-int MusicCollection::generateTrainingList(std::ostream& out) {
-	int count = 0;
-	MusicTrackIterator iter = getTracks();
-	while( iter.hasNext() ) {
-		MusicTrack *track = iter.next();
-		out << track->getLocation().toStdString() << std::endl;
-		count++;
-	}
-	return count;
-}
 
 int MusicCollection::generateTrackList(std::ostream& out) {
 	int count = 0;
 	MusicTrackIterator iter = getTracks();
 	while( iter.hasNext() ) {
 		MusicTrack *track = iter.next();
-		out << track->getLocation().toStdString() << std::endl;
+		out << track->getLocation().toStdString().c_str() << std::endl;
 		count++;
 	}
 	return count;

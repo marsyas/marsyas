@@ -46,27 +46,31 @@ void Tracklist::listTracks(MusicTrackIterator *it) {
         }
 }
 
+
 void Tracklist::mousePressEvent(QMouseEvent *event) {
 	QListWidget::mousePressEvent(event);
 
 	if ( event->button() == Qt::LeftButton ) {
 		QListWidgetItem *item = currentItem();
 
-		QDrag *drag = new QDrag(this);
-		QMimeData *mimeData = new QMimeData();
+		if (item != 0)
+		{
+			QDrag *drag = new QDrag(this);
+			QMimeData *mimeData = new QMimeData();
 
-		//Track Id, convoluted? indeed
-		QByteArray trackIdba;
-		trackIdba.setNum(item->data(Qt::UserRole).toInt());
+			//Track Id, convoluted? indeed
+			QByteArray trackIdba;
+			trackIdba.setNum(item->data(Qt::UserRole).toInt());
 
-		mimeData->setText(item->text());
-		mimeData->setData("application/track-id", trackIdba);
-		drag->setMimeData(mimeData);
+			mimeData->setText(item->text());
+			mimeData->setData("application/track-id", trackIdba);
+			drag->setMimeData(mimeData);
 
-		qDebug() << "Start Track Drag: " << mimeData->text() 
-			 << " " << mimeData->data("application/track-id").toInt();
+			qDebug() << "Start Track Drag: " << mimeData->text() 
+				<< " " << mimeData->data("application/track-id").toInt();
 
-		Qt::DropAction dropAction = drag->start(Qt::CopyAction);
+			Qt::DropAction dropAction = drag->start(Qt::CopyAction);
+		}
 	}
 }
 

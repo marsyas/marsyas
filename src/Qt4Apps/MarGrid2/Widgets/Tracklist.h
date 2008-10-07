@@ -14,7 +14,6 @@ public:
 
 	void listTracks(MusicPlaylist *playlist);
 	void listTracks(MusicTrackIterator *tracks);
-
 protected:
 	void mousePressEvent(QMouseEvent *event);
 

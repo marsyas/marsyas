@@ -61,9 +61,23 @@ void MainWindow::openMarCsvLibrary() {
 
 }
 
+void MainWindow::openSavedGrid()
+{
+  QString fileName = QFileDialog::getOpenFileName(this);
+  cout << "Emit" << endl;
+  emit openPredictGridFile(fileName);
+}
+
+void MainWindow::saveCurrentGrid()
+{
+	QString fileName = QFileDialog::getSaveFileName(this);
+	cout << "Save" << endl;
+	emit savePredictGridFile(fileName);
+}
+
 void MainWindow::updateCurrentlyPlaying(MusicTrack *track) {
 	qDebug() << "Update play box";
-	_playBox->updateCurrentlyPlaying(track);
+	//_playBox->updateCurrentlyPlaying(track);
 }
 
 void MainWindow::openPreferences() {
@@ -118,22 +132,10 @@ void MainWindow::saveiTunesLibrary() {
  * ---------------------------------------------------------
  */
 void MainWindow::createWindow() {
-	//setWindowTitle(tr("Music Collection"));
-	//resize(480, 320);
+
 
 	QWidget *w = new QWidget;
 	setCentralWidget(w);
-
-	/*
-	QPushButton *extract	= new QPushButton(tr("Extract"));
-	QPushButton *train = new QPushButton(tr("Train"));
-	QPushButton *predict = new QPushButton(tr("Predict"));
-	_playLabel = new QLabel("Hello");
-	gridLayout->addWidget(extract, 0, 0);
-	gridLayout->addWidget(train, 0, 1);
-	gridLayout->addWidget(predict, 0, 2);
-	gridLayout->addWidget(playLabel, 1, 0, 1, 3);
-	*/
 
 	_playBox = new PlayBox(this);	
 
@@ -141,32 +143,23 @@ void MainWindow::createWindow() {
 	_playlist = new Playlist(_tracklist, this);
 
 	_display = new Grid(600, _tracklist, this);
-	//_display = new Keypad(600, _tracklist, this);
 
 	QGridLayout *gridLayout = new QGridLayout;
 				//fromRow, fromCol, rowSpan, colSpan
 	gridLayout->addWidget(	_display,			0, 0, 4, 1);
-        gridLayout->addWidget(new QLabel(tr("Playlists")),	0, 1, 1, 1);
+    gridLayout->addWidget(new QLabel(tr("Playlists")),	0, 1, 1, 1);
 	gridLayout->addWidget(	_playlist,			1, 1, 1, 1);
-        gridLayout->addWidget(new QLabel(tr("Track list")), 	2, 1, 1, 1);
+    gridLayout->addWidget(new QLabel(tr("Track list")), 	2, 1, 1, 1);
 	gridLayout->addWidget(	_tracklist,			3, 1, 1, 1);
 	gridLayout->addWidget(	_playBox,			4, 0, 1, 2);
 
-	//connect(extract, SIGNAL(clicked()), margrid, SLOT(extract()));
-	//connect(train, SIGNAL(clicked()), margrid, SLOT(train()));
-	//connect(predict, SIGNAL(clicked()), margrid, SLOT(predict()));
-	//connect(margrid, SIGNAL(playingFile(QString)), this, SLOT(playingFile(MusicTrack*))); 
-
 	connect(_display, SIGNAL(playingTrack(MusicTrack*)), 
 		 this, SLOT(updateCurrentlyPlaying(MusicTrack*)));
-	/* connect(_midi, SIGNAL(kaossXYEvent(unsigned char, unsigned char)),
-                 _display, SLOT(midiXYEvent(unsigned char, unsigned char)));
-        connect(_midi, SIGNAL(kaossMuteEvent(bool)),
-                 _display, SLOT(midiPlaylistEvent(bool)));
-*/ 
 
 	connect(this, SIGNAL(libraryUpdated()), _playlist, SLOT(updatePlaylist()));
 	connect(this, SIGNAL(libraryUpdated()), _display, SLOT(reload()));
+	connect(this, SIGNAL(openPredictGridFile(QString)), _display, SLOT(openPredictionGrid(QString)));
+	connect(this, SIGNAL(savePredictGridFile(QString)), _display, SLOT(savePredictionGrid(QString)));
 
 	w->setLayout(gridLayout);
 	statusBar()->showMessage(tr("Ready"));
@@ -226,6 +219,12 @@ void MainWindow::createActions() {
 	_saveAction = new QAction(tr("&Save"), this);
 	_coutAction->setShortcut(tr("Ctrl+S"));
 	connect(_saveAction, SIGNAL(triggered()), this, SLOT(saveiTunesLibrary()));
+
+	_saveGridAction = new QAction(tr("&Save Grid"), this);
+	connect(_saveGridAction, SIGNAL(triggered()), this, SLOT(saveCurrentGrid()) );
+
+	_loadGridAction = new QAction(tr("&Load Saved Grid"),this);
+	connect(_loadGridAction, SIGNAL(triggered()), this, SLOT(openSavedGrid()));
 }
 
 void MainWindow::createMenus() {
@@ -235,12 +234,14 @@ void MainWindow::createMenus() {
 	_openMenu->addAction(_openiTunesAction);
 	_openMenu->addAction(_openXmlAction);
 	_openMenu->addAction(_openCsvAction);
+	_openMenu->addAction(_loadGridAction);
 
 
 	QAction *openAction = _fileMenu->addAction(tr("&Open..."));
 	openAction->setMenu(_openMenu);	
 	
 	_fileMenu->addAction(_saveAction);
+	_fileMenu->addAction(_saveGridAction);
 	_fileMenu->addAction(_exitAction);
 	
 	_debugMenu = menuBar()->addMenu(tr("&Debug"));

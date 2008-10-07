@@ -36,7 +36,7 @@ void Playlist::updatePlaylist() {
 void Playlist::mousePressEvent(QMouseEvent *event) {
 	QListWidget::mousePressEvent(event);
 
-	if ( event->button() == Qt::LeftButton ) {
+	if ( event->button() == Qt::LeftButton && _library->getNumTracks() != 0 ) {
 		QListWidgetItem *item = currentItem();
 
 		QDrag *drag = new QDrag(this);

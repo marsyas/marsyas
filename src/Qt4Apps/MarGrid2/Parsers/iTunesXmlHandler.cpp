@@ -197,7 +197,7 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 	} else if ( "Location" == key ) {
 		QString s = text;
 		s.replace(QRegExp("%20"), " ");
-		s.replace(QRegExp("file://localhost"), "");
+		s.replace(QRegExp("file://localhost/"), "");
 		_currentTrack->setLocation(s);
 	} else if ( "Track Type" == key ) {
 		_currentTrack->setType(text);

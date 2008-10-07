@@ -24,6 +24,7 @@ public:
 	friend std::ostream &operator<<(std::ostream &out, const MusicTrack &track);
 
 	MusicTrack();
+	MusicTrack(QString);
 
 	void setTrackId(int id);
 	void setSize(int size);

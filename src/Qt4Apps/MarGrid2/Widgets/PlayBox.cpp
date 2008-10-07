@@ -62,6 +62,7 @@ PlayBox::PlayBox(QWidget *parent)
 }
 
 void PlayBox::updateCurrentlyPlaying(MusicTrack *track) {
+	
 	_title->setText(track->getTitle());
 	_artist->setText(track->getArtist());
 	_album->setText(track->getAlbum());

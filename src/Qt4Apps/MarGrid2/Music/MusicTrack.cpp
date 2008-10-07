@@ -5,6 +5,10 @@ MusicTrack::MusicTrack() {
 	_y = -1;
 	_persistentId = "";
 }
+MusicTrack::MusicTrack(QString location)
+{
+	_location = location;
+}
 
 void MusicTrack::setTrackId(int id) {
 	_trackId = id;

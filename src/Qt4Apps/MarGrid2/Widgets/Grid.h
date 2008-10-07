@@ -1,3 +1,4 @@
+
 #ifndef GRID_H
 #define GRID_H
 
@@ -18,6 +19,9 @@
 #include "../Interface/MyDisplay.h"
 #include "../Interface/Classifier.h"
 #include "../Interface/Extractor.h"
+#include "MarSystemManager.h"
+#include "MarSystemQtWrapper.h"
+#include "Collection.h"
 
 #include "../Music/MusicCollection.h"
 //#include "../Marsyas/MarsyasECP.h"
@@ -38,6 +42,9 @@ class Extractor;
 class MarsyasECP;
 class GridSquare;
 
+
+using namespace MarsyasQt;
+
 class Grid : public MyDisplay 
 {
 	Q_OBJECT
@@ -55,20 +62,22 @@ public:
 	Classifier* getClassifier() const; 
 	*/
 
-	int getHeight() const { return _width; }
-	int getWidth() const { return _width; }
+	int getHeight() const { return gridWidth_; }
+	int getWidth() const { return gridHeight_; }
 
-public slots: 
-	void extract();
-	void predict();
-	void train();
-	void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
-	void midiPlaylistEvent(bool next);
-	void reload();
+	public slots: 
+		void extract();
+		void predict();
+		void train();
+		void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
+		void midiPlaylistEvent(bool next);
+		void reload();
+		void openPredictionGrid(QString fname);
+		void savePredictionGrid(QString fname);
 
 signals: 
-	void playingTrack(MusicTrack *track);
- 
+		void playingTrack(MusicTrack *track);
+
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dragMoveEvent(QDragMoveEvent *event);
@@ -77,12 +86,12 @@ protected:
 
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
- 
+
 	void updateXYPosition(int x, int y); 
 	void paintEvent(QPaintEvent *event);
 	void playNextTrack();
 
-	void addTrack(int x, int y, MusicTrack* track);
+	void addTrack(int x, int y, std::string track);
 	void resetGrid();
 
 	void setGridX(int x);  
@@ -90,54 +99,53 @@ protected:
 	GridSquare *getCurrentSquare();
 
 	void setup();
+	void setupNetworks();
+	int getCurrentIndex();
 
 private:
 	int _winSize;
 	int _cellSize;
 	int _gridX;
 	int _gridY;
-	int _width;
+	int gridHeight_;
+	int gridWidth_;
+	int som_height;
+	int som_width;
+	int grid_x;
+	int grid_y;
+	bool initAudio_;
+	bool continuous_;
 
 	QVector<GridSquare*> _squares;
+	QVector<QList <std::string> > files_;
 
-	//MarsyasECP *_marsyas;
-	//Classifier *_classifier;
-	//Extractor *_extractor;
+	MusicCollection *_collection;
 
-	MusicCollection *_collection; 
+	MarControlPtr filePtr_;
+
+	Marsyas::MarSystemManager mng;  
+	QVector<int> counters;
+	QVector<int> counterSizes;
+	QVector<int> labels;
+
+	QList<QPixmap> piecePixmaps;
+	QList<QRect> pieceRects;
+	QList<QPoint> pieceLocations;
+
+	QRect highlightedRect;
+	QRect metalRec;
+	QRect classicalRec;
+	int inPlace;
+
+	MarSystemQtWrapper*  mwr_;
+    Marsyas::MarSystem* pnet_;
+
+	Marsyas::realvec _normSomFmatrix;
+	Marsyas::MarSystem* som_;
+	Marsyas::MarSystem* total_;
+	Marsyas::MarSystem* norm_;
+
 };
-/*
-  MarControlPtr filePtr_;
-  
-  Marsyas::MarSystemManager mng;  
-  QVector<QList <std::string> > files;
-  QVector<int> counters;
-  QVector<int> counterSizes;
-  QVector<int> labels;
-  
-  
-  QList<QPixmap> piecePixmaps;
-  QList<QRect> pieceRects;
-  QList<QPoint> pieceLocations;
-
-  QRect highlightedRect;
-  QRect metalRec;
-  QRect classicalRec;
-  int inPlace;
-
-  MarSystemWrapper*  _mwr;
-  Marsyas::MarSystem* _pnet;
-
-  int _somHeight;
-  int _somWidth;
-  
-
-  Marsyas::realvec _normSomFmatrix;
-  Marsyas::MarSystem* _som;
-  Marsyas::MarSystem* _total;
-  Marsyas::MarSystem* _norm;
-*/ 
-
 class GridSquare
 {
 public:

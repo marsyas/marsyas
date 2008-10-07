@@ -49,7 +49,7 @@ void Logger::fatal(char *msg, ...) {
 
 void Logger::log(const int level, char *msg, va_list args) {
 	char **result = NULL;
-	vasprintf(result, msg, args);
+	//vasprintf(result, msg, args);
 	if ( result ) {
 		std::cout << LOGGING_HEADER;
 		switch( level ) {

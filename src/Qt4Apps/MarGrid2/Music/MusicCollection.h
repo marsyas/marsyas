@@ -47,9 +47,9 @@ public:
 	void displayGenres();
 	void displayTracks();
 	void displayPlaylists();
-	void empty();	
+	void empty();
 
-	int generateTrainingList(std::ostream& out);
+	// Collection output
 	int generateTrackList(std::ostream& out);
 
 private:

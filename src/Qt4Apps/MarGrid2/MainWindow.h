@@ -32,6 +32,8 @@ public:
 
 signals:
 	void libraryUpdated();
+	void openPredictGridFile(QString);
+	void savePredictGridFile(QString);
 
 private slots:
 	void openiTunesLibrary();
@@ -42,6 +44,8 @@ private slots:
 	void display();
 	void openPreferences();
 	void saveiTunesLibrary();
+	void openSavedGrid();
+	void saveCurrentGrid();
 
 private:
 	void createActions();
@@ -76,6 +80,8 @@ private:
 	QAction *_trainingAction;
 	QAction *_openPreferencesAction;
 	QAction *_saveAction;
+	QAction *_saveGridAction;
+	QAction *_loadGridAction;
 
 	MusicCollection *_library;
 	// MidiListener *_midi;
