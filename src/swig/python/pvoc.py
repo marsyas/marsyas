@@ -111,6 +111,7 @@ def multires(infile):
 	
 	x = zeros(2048, float)
 	xLong = zeros(2048, float)
+	xcorr = zeros(2048, float)
 	mpx = zeros(2048, float)
 	correlations = zeros(13525, float)
 	times=zeros(13525, float)
@@ -128,11 +129,11 @@ def multires(infile):
 			for i in range(0, len(plotdata)):
 				x[i] = plotdata[i]
 				xLong[i] = plotdataLong[i]
-
+				xcorr[i] = x[i] * xLong[i] 
 
 			mx = abs(x)
 			mxLong = abs(xLong)
-			correlations[iterations] = mean(correlate(mx,mxLong,'full'))
+			correlations[iterations] = mean(xcorr)
 			times[iterations] = time_in_seconds
 			df = mx - mpx;
 			df2 = mx - mxLong;

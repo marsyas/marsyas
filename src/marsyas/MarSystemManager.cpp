@@ -177,6 +177,7 @@
 #include "NoiseGate.h"
 #include "StretchLinear.h"
 #include "MidiFileSynthSource.h"
+#include "PvMultiResolution.h" 
 #include "Gain.h"
 //modifyHeader
 
@@ -340,6 +341,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
 	registerPrototype("StretchLinear", new StretchLinear("stretchlinearpr"));
 	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
+	registerPrototype("PvMultiResolution", new PvMultiResolution("PvMultiResolution"));
+
 	registerPrototype("Gain", new Gain("gp"));
 	//modifyRegister
 

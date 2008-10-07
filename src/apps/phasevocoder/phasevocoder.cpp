@@ -106,139 +106,138 @@ phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw,
 	MarSystemManager mng;
 	
 	
-	MarSystem* pvseries = mng.create("Series", "pvseries");
+	MarSystem* pvmultires = mng.create("Series", "pvmultires");
 	if (microphone_)
-		pvseries->addMarSystem(mng.create("AudioSource", "src"));
+		pvmultires->addMarSystem(mng.create("AudioSource", "src"));
 	else 
-		pvseries->addMarSystem(mng.create("SoundFileSource", "src"));
+		pvmultires->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	MarSystem* pvfanout = mng.create("Fanout", "pvfanout");
+	
+	MarSystem* pvseries = mng.create("Series", "pvseries");
 	pvseries->addMarSystem(mng.create("ShiftInput", "si"));
 	pvseries->addMarSystem(mng.create("Windowing", "fo"));
 	pvseries->addMarSystem(mng.create("Spectrum", "spk"));
 	pvseries->addMarSystem(mng.create("PvConvert", "conv"));
-	pvseries->addMarSystem(mng.create("PvOscBank", "pob"));
-	pvseries->addMarSystem(mng.create("ShiftOutput", "so"));
-	
-
-	pvseries->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
-					  "mrs_natural/Decimation");
-	pvseries->linkctrl("PvOscBank/pob/mrs_natural/Interpolation", 
-					  "mrs_natural/Interpolation");
-	pvseries->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 
-					  "mrs_natural/Interpolation");
-
-	pvseries->linkctrl("PvConvert/conv/mrs_natural/Sinusoids",
-				"mrs_natural/Sinusoids");
-	pvseries->linkctrl("PvConvert/conv/mrs_string/mode", 
-					  "mrs_string/convertMode");
-	pvseries->linkctrl("PvOscBank/pob/mrs_real/PitchShift", 
-					  "mrs_real/PitchShift");
-	
-
-	pvseries->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
-	pvseries->updctrl("PvOscBank/pob/mrs_natural/winSize", 4 * Nw);
-	pvseries->updctrl("Windowing/fo/mrs_bool/zeroPhasing", true);
-	pvseries->updctrl("Windowing/fo/mrs_string/type", "Hanning");
-	pvseries->updctrl("Windowing/fo/mrs_natural/zeroPadding", 3 * Nw);
-	pvseries->updctrl("mrs_natural/Interpolation", I);
-	pvseries->updctrl("mrs_natural/Decimation", D);
-	pvseries->updctrl("mrs_natural/Sinusoids", 
-					  (mrs_natural)sopt);
-	pvseries->updctrl("mrs_string/convertMode", convertmode_);
-	pvseries->updctrl("mrs_real/PitchShift", P);
-
-
 
 	MarSystem* pvseriesLong = mng.create("Series", "pvseriesLong");
-	if (microphone_)
-		pvseriesLong->addMarSystem(mng.create("AudioSource", "src"));
-	else 
-		pvseriesLong->addMarSystem(mng.create("SoundFileSource", "src"));
 	pvseriesLong->addMarSystem(mng.create("ShiftInput", "si"));
 	pvseriesLong->addMarSystem(mng.create("Windowing", "fo"));
 	pvseriesLong->addMarSystem(mng.create("Spectrum", "spk"));
 	pvseriesLong->addMarSystem(mng.create("PvConvert", "conv"));
-	pvseriesLong->addMarSystem(mng.create("PvOscBank", "pob"));
-	pvseriesLong->addMarSystem(mng.create("ShiftOutput", "so"));
+	
+	pvfanout->addMarSystem(pvseries);
+	pvfanout->addMarSystem(pvseriesLong);
+	pvmultires->addMarSystem(pvfanout);
+
+	pvmultires->addMarSystem(mng.create("PvMultiResolution/pvmres"));
+	// pvmultires->addMarSystem(mng.create("PvConvert/conv"));
+	pvmultires->addMarSystem(mng.create("PvOscBank/pob"));
+	pvmultires->addMarSystem(mng.create("ShiftOutput/so"));
 	
 
-	pvseriesLong->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
+	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseries/PvConvert/conv/mrs_natural/Decimation", 
 					  "mrs_natural/Decimation");
-	pvseriesLong->linkctrl("PvOscBank/pob/mrs_natural/Interpolation", 
+	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseriesLong/PvConvert/conv/mrs_natural/Decimation", 
+					  "mrs_natural/Decimation");
+
+	/* pvmultires->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
+						 "mrs_natural/Decimation");
+	*/ 
+
+	pvmultires->linkctrl("PvOscBank/pob/mrs_natural/Interpolation", 
 					  "mrs_natural/Interpolation");
-	pvseriesLong->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 
+	pvmultires->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 
 					  "mrs_natural/Interpolation");
-	pvseriesLong->linkctrl("PvConvert/conv/mrs_natural/Sinusoids",
-				"mrs_natural/Sinusoids");
-	pvseriesLong->linkctrl("PvConvert/conv/mrs_string/mode", 
+
+	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseries/PvConvert/conv/mrs_natural/Sinusoids",
+ 				"mrs_natural/Sinusoids");
+	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseriesLong/PvConvert/conv/mrs_natural/Sinusoids",
+ 				"mrs_natural/Sinusoids");
+	
+	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseries/PvConvert/conv/mrs_string/mode", 
 					  "mrs_string/convertMode");
-	pvseriesLong->linkctrl("PvOscBank/pob/mrs_real/PitchShift", 
+ 	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseriesLong/PvConvert/conv/mrs_string/mode", 
+ 					  "mrs_string/convertMode");
+
+	/* pvmultires->linkctrl("PvConvert/conv/mrs_natural/Sinusoids",
+ 				"mrs_natural/Sinusoids");
+	pvmultires->linkctrl("PvConvert/conv/mrs_string/mode", 
+ 					  "mrs_string/convertMode");
+	*/ 
+
+
+
+	pvmultires->linkctrl("PvOscBank/pob/mrs_real/PitchShift", 
 					  "mrs_real/PitchShift");
 	
 
-	pvseriesLong->updctrl("ShiftInput/si/mrs_natural/winSize", 4 * Nw);
-	pvseriesLong->updctrl("PvOscBank/pob/mrs_natural/winSize", 4 * Nw);
-	pvseriesLong->updctrl("Windowing/fo/mrs_bool/zeroPhasing", true);
-	pvseriesLong->updctrl("Windowing/fo/mrs_string/type", "Hanning");
-	pvseriesLong->updctrl("mrs_natural/Interpolation", I);
-	pvseriesLong->updctrl("mrs_natural/Decimation", D);
-	pvseriesLong->updctrl("mrs_natural/Sinusoids", 
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/ShiftInput/si/mrs_natural/winSize", Nw);
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/Windowing/fo/mrs_bool/zeroPhasing", true);
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/Windowing/fo/mrs_string/type", "Hanning");
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/Windowing/fo/mrs_natural/zeroPadding", 3 * Nw);
+
+
+	
+
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/ShiftInput/si/mrs_natural/winSize", 4 * Nw);
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_bool/zeroPhasing", true);
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_string/type", "Hanning");
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_natural/size", 4 * Nw);
+
+	pvmultires->updctrl("PvOscBank/pob/mrs_natural/winSize", 4 * Nw);
+	pvmultires->updctrl("mrs_natural/Interpolation", I);
+	pvmultires->updctrl("mrs_natural/Decimation", D);
+	pvmultires->updctrl("mrs_natural/Sinusoids", 
 					  (mrs_natural)sopt);
-	pvseriesLong->updctrl("mrs_string/convertMode", convertmode_);
-	pvseriesLong->updctrl("mrs_real/PitchShift", P);
-
-
+	pvmultires->updctrl("mrs_string/convertMode", convertmode_);
+	pvmultires->updctrl("mrs_real/PitchShift", P);
 
 	
 
 	if (outsfname == EMPTYSTRING) 
 	{
-		pvseries->addMarSystem(mng.create("AudioSink", "dest"));
-		pvseries->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
+		pvmultires->addMarSystem(mng.create("AudioSink", "dest"));
+		pvmultires->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
 	}
 	else 
 	{
-		pvseries->addMarSystem(mng.create("SoundFileSink", "dest"));
-		pvseriesLong->addMarSystem(mng.create("SoundFileSink", "dest"));
+		pvmultires->addMarSystem(mng.create("SoundFileSink", "dest"));
 	}
 	
 	
 	if (microphone_) 
 	{
-		pvseries->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
-		pvseries->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+		pvmultires->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
+		pvmultires->updctrl("AudioSource/src/mrs_bool/initAudio", true);
 	}
 	else 
 	{
-		pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-		pvseriesLong->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+		pvmultires->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	}
+
+
 	
-	pvseries->updctrl("mrs_natural/inSamples", D);
-	pvseriesLong->updctrl("mrs_natural/inSamples", D);
-	pvseries->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
-	pvseriesLong->updctrl("SoundFileSink/dest/mrs_string/filename", "long_" + outsfname);
+	
+	pvmultires->updctrl("mrs_natural/inSamples", D);
+	pvmultires->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
 	
 	if (outsfname == EMPTYSTRING) 
 	{
-		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		pvmultires->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	}
 	
 		
 	
 	if (!quietopt_)
-		cout << *pvseries << endl;
+		cout << *pvmultires << endl;
 
 	
 	int numticks = 0;
 	
-	while(pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while(pvmultires->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
-		// initialize synthesis phases to analysis phases
-		if (numticks == 0)
-			pvseries->updctrl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
-		
-		pvseries->tick();
-		pvseriesLong->tick();
+		pvmultires->tick();
 		numticks++;
 	}
 }
@@ -1845,8 +1844,8 @@ main(int argc, const char **argv)
 		if (vopt_ == 1) 
 		{
 			// phasevocSeriesOld(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
-			phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
-			// phasevocoderMultiResolution(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+			// phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+			phasevocoderMultiResolution(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
 		}
 		else
 		{
