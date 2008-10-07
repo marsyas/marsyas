@@ -2,10 +2,7 @@
 resynthFramesCount = resynthFramesCount + 1;
 
 %check if we already resynthesized a complete texture window
-if resynthFramesCount == refFramesCount
-
-    AAA = [AAA, 1];
-                        
+if resynthFramesCount == refFramesCount                      
     %get the last audio frame
     resynthAudio = [resynthAudio, PlotSink_send2MATLAB_indata];
    
@@ -34,23 +31,23 @@ if resynthFramesCount == refFramesCount
     correspondence = [];
     [SDRresults, correspondence] = computeSDR(refAudio, resynthAudio);
     SDRTextWinds = [SDRTextWinds, SDRresults];
-
+    
     %place clustered audio into the corresponding audio channel
     temp = channelSelIdx(channelSel);
-    temp = temp(correspondence);
-                                        
-    BBB = [BBB, 1];
-                                        
+    temp = temp(correspondence);                                        
     segregatedAudio = zeros(size(audio, 1), size(resynthAudio,2));
     segregatedAudio(temp, :) = resynthAudio;
     
-%%%%%%%%%%%%%
-    
     %store results for entire file
-    refAudioTextWinds = [refAudioTextWinds, refAudio];
-    %resynthAudioTextWinds = [resynthAudioTextWinds, resynthAudio];
-    segregatedAudioTextWinds = [segregatedAudioTextWinds, segregatedAudio];
     numActiveNotesTextWinds = [numActiveNotesTextWinds, numActiveNotes];
+    %
+    refAudioTextWinds = [refAudioTextWinds, audio(:,textWinStart:textWinStart+audioLen-1)]; %, refAudio];
+    %
+    segregatedAudioTextWinds = [segregatedAudioTextWinds, segregatedAudio];
+        
+    resynthAudioTextWinds = [resynthAudioTextWinds, resynthAudio];
+    
+    %plotClusteredAudio
  
     % init vars for next texture window
     numActiveNotes = 0;
@@ -58,8 +55,6 @@ if resynthFramesCount == refFramesCount
     resynthFramesCount = 0;
     resynthAudio = [];
     activeChannels = false(numChannels,1);
-    
-    CCC = [CCC, 1];
 else 
     %keep accumulating resynthesized audio frame from PlotSink MarSystem.
     %each row has the audio from each cluster 

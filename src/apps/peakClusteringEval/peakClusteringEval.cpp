@@ -492,6 +492,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	MarSystem* synthBank = mng.create("Fanout","synthBank");
 	mrs_natural numSynths = 10; // HARDCODED FOR NOW [!]
 	synthBank->addMarSystem(mng.create("PeakSynth", "synthCluster_0"));
+	synthBank->updctrl("PeakSynth/SynthCluster_0/PeakSynthOsc/pso/mrs_natural/peakGroup2Synth", 0);
 	for(mrs_natural s=1; s < numSynths; ++s)
 	{
 		ostringstream oss;
@@ -506,6 +507,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 			"PeakSynth/synthCluster_0/PeakSynthOsc/pso/mrs_natural/synSize");
 		synthBank->linkControl("PeakSynth/"+oss.str()+"/Windowing/wiSyn/mrs_string/type",
 			"PeakSynth/synthCluster_0/Windowing/wiSyn/mrs_string/type");
+
+		synthBank->updctrl("PeakSynth/"+oss.str()+"/PeakSynthOsc/pso/mrs_natural/peakGroup2Synth", s);
 	}
 
 	postNet->addMarSystem(synthBank);

@@ -248,10 +248,10 @@ PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag
 				break;
 			}
 		}
-		if(!minIndex) //arght!!! I hate using logic with integers!!! Makes code so difficult to read!!! [!]
-		{
-			cout << "pb while looking for bin intervals" << endl; //[?]
-		}
+// 		if(!minIndex) //arght!!! I hate using logic with integers!!! Makes code so difficult to read!!! [!]
+// 		{
+// 			cout << "pb while looking for bin intervals" << endl; //[?]
+// 		}
 
 		interval(2*k+1) = minIndex;
 
@@ -264,10 +264,10 @@ PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag
 				break;
 			}
 		}
-		if(!minIndex) //arght!!! I hate using logic with integers!!! Makes code so difficult to read!!! [!]
-		{
-			cout << "pb while looking for bin intervals" << endl; //[?]
-		}
+// 		if(!minIndex) //arght!!! I hate using logic with integers!!! Makes code so difficult to read!!! [!]
+// 		{
+// 			cout << "pb while looking for bin intervals" << endl; //[?]
+// 		}
 		interval(2*k) = minIndex;
 	}
 }

@@ -110,17 +110,15 @@ textWinStart = 1;
 textWinEnd = 0;
 
 refAudioTextWinds = cell(1,0);
-%resynthAudioTextWinds = cell(1,0);
 segregatedAudioTextWinds = cell(1,0);
+
 SDRTextWinds = [];
-
 numActiveNotesTextWinds = [];
-
 activeChannels = false(numChannels,1);
 
-AAA = [];
-BBB = [];
-CCC = [];
+resynthAudioTextWinds = cell(1,0);
+
+
 
     
 
