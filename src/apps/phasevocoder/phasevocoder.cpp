@@ -1844,8 +1844,8 @@ main(int argc, const char **argv)
 		if (vopt_ == 1) 
 		{
 			// phasevocSeriesOld(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
-			// phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
-			phasevocoderMultiResolution(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+			phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+			// phasevocoderMultiResolution(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
 		}
 		else
 		{
