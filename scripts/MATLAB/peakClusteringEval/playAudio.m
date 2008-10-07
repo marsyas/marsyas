@@ -1,3 +1,20 @@
+%% PLAY AND PLOT ENTIRE FILE
+ref = horzcat(refAudioTextWinds{:});
+seg = horzcat(segregatedAudioTextWinds{:});
+
+sound(ref(1,:), fs);
+for i=2:size(ref,1)
+    subplot(2,1,1)
+    plot(ref(i,:), 'g');
+    subplot(2,1,2)
+    plot(seg(i,:), 'r');
+    pause     
+    sound(ref(i,:), fs);  
+    sound(seg(i,:), fs);
+    %sound(vertcat(ref(i,:),seg(i,:))', fs); % to listen as stereo
+    pause
+end
+
 %% PLAY AND PLOT TEXTURE WINDOWS
 % for i=1:length(refAudioTextWinds)
 %     display('>>>>>>>>>>>>>>>>>>>>>>>>>');
@@ -16,6 +33,14 @@
 %     end
 % end
 
+%% PLOT ALL SEGREGATED CHANNELS
+% ref = horzcat(refAudioTextWinds{:});
+% seg = horzcat(segregatedAudioTextWinds{:});
+% for c=1:numChannels
+%     subplot(numChannels, 1, c);
+%     plot(seg(c+1,:));
+% end
+
 %% Plot clustered audio tracks for each texture window
 % for i=1:length(resynthAudioTextWinds)
 %     nch = size(resynthAudioTextWinds{i},1);
@@ -28,28 +53,3 @@
 %     end
 %     pause
 % end
-
-%% PLOT ALL SEGREGATED CHANNELS
-% ref = horzcat(refAudioTextWinds{:});
-% seg = horzcat(segregatedAudioTextWinds{:});
-% for c=1:numChannels
-%     subplot(numChannels, 1, c);
-%     plot(seg(c+1,:));
-% end
-
-%% PLAY AND PLOT ENTIRE FILE
-ref = horzcat(refAudioTextWinds{:});
-seg = horzcat(segregatedAudioTextWinds{:});
-
-sound(ref(1,:), fs);
-for i=2:size(ref,1)
-    subplot(2,1,1)
-    plot(ref(i,:), 'g');
-    subplot(2,1,2)
-    plot(seg(i,:), 'r');
-    pause     
-    sound(ref(i,:), fs);  
-    sound(seg(i,:), fs);
-    %sound(vertcat(ref(i,:),seg(i,:))', fs); % to listen as stereo
-    pause
-end

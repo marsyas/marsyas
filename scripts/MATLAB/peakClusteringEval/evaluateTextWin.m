@@ -40,12 +40,9 @@ if resynthFramesCount == refFramesCount
     
     %store results for entire file
     numActiveNotesTextWinds = [numActiveNotesTextWinds, numActiveNotes];
-    %
     refAudioTextWinds = [refAudioTextWinds, audio(:,textWinStart:textWinStart+audioLen-1)]; %, refAudio];
-    %
     segregatedAudioTextWinds = [segregatedAudioTextWinds, segregatedAudio];
-        
-    resynthAudioTextWinds = [resynthAudioTextWinds, resynthAudio];
+    %resynthAudioTextWinds = [resynthAudioTextWinds, resynthAudio];
     
     %plotClusteredAudio
  
