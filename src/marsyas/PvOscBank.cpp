@@ -33,6 +33,14 @@ PvOscBank::PvOscBank(string name):MarSystem("PvOscBank",name)
 }
 
 
+PvOscBank::PvOscBank(const PvOscBank& a):MarSystem(a) 
+{
+	ctrl_analysisphases_ = getctrl("mrs_realvec/analysisphases");
+	ctrl_phases_ = getctrl("mrs_realvec/phases");
+	ctrl_phaselock_ = getctrl("mrs_bool/phaselock");
+}
+
+
 PvOscBank::~PvOscBank()
 {
 }
@@ -54,7 +62,11 @@ PvOscBank::addControls()
 	setctrlState("mrs_real/SynthesisThreshold", true);
 	addctrl("mrs_natural/winSize", MRS_DEFAULT_SLICE_NSAMPLES);
 	setctrlState("mrs_natural/winSize", true);
+
 	
+	addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
+	addctrl("mrs_realvec/phases", realvec(), ctrl_phases_);
+	addctrl("mrs_bool/phaselock", false, ctrl_phaselock_);
 }
 
 void
@@ -77,6 +89,22 @@ PvOscBank::myUpdate(MarControlPtr sender)
   
 	if (size_ != psize_) 
 	{
+		{
+			MarControlAccessor acc(ctrl_analysisphases_);
+			mrs_realvec& analysisphases = acc.to<mrs_realvec>();
+			analysisphases.create(size_);
+		}
+
+		{
+			MarControlAccessor acc(ctrl_phases_);
+			mrs_realvec& phases = acc.to<mrs_realvec>();
+			phases.create(size_);
+			cout << "Created phases with size = " << size_ << endl;
+			
+		}
+
+		
+
 
 		lastamp_.stretch(size_);
 		lastfreq_.stretch(size_);
@@ -123,17 +151,38 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
 	mrs_real omega_k;
 	
+	
+	MarControlAccessor acc(ctrl_phases_);
+	mrs_realvec& phases = acc.to<mrs_realvec>();
+
+	MarControlAccessor  acc1(ctrl_analysisphases_);
+	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
+
      
+	
+	if (ctrl_phaselock_->to<mrs_bool>())
+	{
+		
+		phases = analysisphases;
+		ctrl_phaselock_->setValue(false);
+	}
+	else 
+		for (t=0; t < NP_; t++)
+		{
+			phases(t) = in(2*t+1,0);
+		}
+	
+	
+	
 	for (t=0; t < NP_; t++)
 	{
-
 		omega_k = (TWOPI * t) / ((NP_-1)*2) ;
-		in(2*t+1,0) *= Pinc_;
-
+		
+		phases(t) *= Pinc_;
 		
 		
 		f_ = lastfreq_(t);
-		finc_ = (in(2*t+1,0) - f_)*Iinv_;
+		finc_ = (phases(t) - f_)*Iinv_;
 		
 		
 		a_ = lastamp_(t);
@@ -164,9 +213,10 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		
 		index_(t) = address_;	  
 		lastamp_(t) = in(2*t,0) ;
-		lastfreq_(t) = in(2*t+1, 0);
+		lastfreq_(t) = phases(t);
 		
 	}
+ 
 
 	
 	for (t=0; t < Nw_; t++) 

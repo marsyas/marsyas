@@ -57,13 +57,20 @@ private:
   mrs_real address_,paddress_, ppaddress_,f_, finc_, a_, ainc_;
   mrs_natural naddress_;
   mrs_real tableval_;
+		
+  MarControlPtr ctrl_phases_;
+  MarControlPtr ctrl_analysisphases_;
+  MarControlPtr ctrl_phaselock_;
+		
+
 
   void addControls();
 	void myUpdate(MarControlPtr sender);
   
 public:
   PvOscBank(std::string name);
-  
+		PvOscBank(const PvOscBank&);
+		
   ~PvOscBank();
   MarSystem* clone() const;    
   
