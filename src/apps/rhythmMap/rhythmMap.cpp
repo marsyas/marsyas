@@ -95,6 +95,10 @@ void recognize(string sfName, string tpName)
   dataTpl = Tpl->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
   maxsize = sizes.maxval();
 
+
+  
+
+
   /*** calculate the feature vector of template ***/
 
   featuresTpl.create(BIN*(templates.size()+1),dataTpl.getCols());
@@ -125,6 +129,8 @@ void recognize(string sfName, string tpName)
       }
     }
   }   
+
+
 
   /*** set controls to input series ***/
 
@@ -157,6 +163,8 @@ void recognize(string sfName, string tpName)
     }
   }
 
+
+
   /*** calculate input spectrogram ***/
 
   netInp->updctrl("SoundFileSource/inpsrc/mrs_string/filename",sfName);
@@ -166,6 +174,8 @@ void recognize(string sfName, string tpName)
   Inp->tick();
   dataInp = Inp->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
   
+
+
   /*** calculate input feature vector of input ***/
 
   featuresInp.create(BIN,dataInp.getCols());
@@ -192,7 +202,8 @@ void recognize(string sfName, string tpName)
       featuresInp(j,i) = log(100000*featuresInp(j,i)+1);
     }
   }
-  
+
+
   /*** calculate input of SimilarityMatrix ***/
 
   simInput.create(featuresInp.getRows()+featuresTpl.getRows(),dataInp.getCols());
@@ -207,6 +218,7 @@ void recognize(string sfName, string tpName)
     }
   }
   
+
   /*** update control of rhythm map ***/
 
   sizes(0) = featuresInp.getCols();
@@ -214,14 +226,17 @@ void recognize(string sfName, string tpName)
   sim->updctrl("mrs_natural/inSamples",simInput.getCols());
   sim->updctrl("mrs_natural/inObservations",simInput.getRows());
   simOutput.create(outsize,sizes(0));
+  dtw->updctrl("mrs_realvec/sizes",sizes);
   dtw->updctrl("mrs_natural/inSamples",simOutput.getCols());
   dtw->updctrl("mrs_natural/inObservations",simOutput.getRows());
-  dtw->updctrl("mrs_realvec/sizes",sizes);
+
   algOutput.create(3*sizes(0),2);
   ap->updctrl("mrs_realvec/sizes",sizes);
   ap->updctrl("mrs_natural/inSamples",simInput.getCols());
   ap->updctrl("mrs_natural/inObservations",simInput.getRows());
   
+
+
   /*** iterative learning ***/
 
   for(l=0; l<NITERATION; l++){
