@@ -70,7 +70,7 @@ distance_matrix()
   accum->updctrl("mrs_natural/nTimes", nInstances);
 
   
-  MarSystem* dmatrix = mng.create("SimilarityMatrix", "dmatrix");
+  MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
   dmatrix->addMarSystem(mng.create("Metric", "dmetric"));
   dmatrix->updctrl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
   dmatrix->updctrl("mrs_string/normalize", "MinMax");

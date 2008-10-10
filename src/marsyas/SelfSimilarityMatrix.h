@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_SIMILARITYMATRIX_H
-#define MARSYAS_SIMILARITYMATRIX_H
+#ifndef MARSYAS_SELFSIMILARITYMATRIX_H
+#define MARSYAS_SELFSIMILARITYMATRIX_H
 
 #include "MarSystem.h"
 #include "Metric.h"
@@ -25,7 +25,7 @@
 namespace Marsyas
 {
 /** 
-	\class SimilarityMatrix
+	\class SelfSimilarityMatrix
 	\ingroup MarSystem
 	\brief Calculate Similarity Matrix of a set of feature vectors at input
 
@@ -35,7 +35,7 @@ namespace Marsyas
 	- \b mrs_string/normalize			[w] : sets the type of input data normalization to be used: none, MinMax or MinStd. 
 */
 
-  class SimilarityMatrix: public MarSystem
+  class SelfSimilarityMatrix: public MarSystem
   {
   private:
 		realvec i_featVec_;
@@ -62,9 +62,9 @@ namespace Marsyas
 			fullCovMatrix = 3
 		};
     
-		SimilarityMatrix(std::string name);
-		SimilarityMatrix(const SimilarityMatrix& a);
-    ~SimilarityMatrix();
+		SelfSimilarityMatrix(std::string name);
+		SelfSimilarityMatrix(const SelfSimilarityMatrix& a);
+    ~SelfSimilarityMatrix();
 
     MarSystem* clone() const; 
 

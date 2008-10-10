@@ -19,7 +19,7 @@
 #include "WHaSp.h"
 #include "peakView.h"
 #include "PeakFeatureSelect.h"
-#include "SimilarityMatrix.h"
+#include "SelfSimilarityMatrix.h"
 #include "HWPS.h"
 
 using namespace std;
@@ -76,7 +76,7 @@ WHaSp::createSimMatrixNet()
 	HWPSnet_->addMarSystem(peFeatSelect);
 
 	//create a similarityMatrix MarSystem that uses the HPWS metric
-	SimilarityMatrix* simMat = new SimilarityMatrix("simMat");
+	SelfSimilarityMatrix* simMat = new SelfSimilarityMatrix("simMat");
 	simMat->addMarSystem(new HWPS("hwps"));
 
 	HWPSnet_->addMarSystem(simMat);
@@ -90,15 +90,15 @@ WHaSp::createSimMatrixNet()
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
 	//link histSize control to HWPS metric
-	HWPSnet_->getctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize")->linkTo(ctrl_histSize_, NOUPDATE);
+	HWPSnet_->getctrl("SelfSimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize")->linkTo(ctrl_histSize_, NOUPDATE);
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 	
-	HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 20);
+	HWPSnet_->setctrl("SelfSimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 20);
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
-  HWPSnet_->updctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
+  HWPSnet_->updctrl("SelfSimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
 
-	//HWPSnet_->setctrl("SimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
+	//HWPSnet_->setctrl("SelfSimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
 }

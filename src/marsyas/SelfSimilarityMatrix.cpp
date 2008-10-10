@@ -16,18 +16,18 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "SimilarityMatrix.h"
+#include "SelfSimilarityMatrix.h"
 
 using namespace std;
 using namespace Marsyas;
 
-SimilarityMatrix::SimilarityMatrix(string name):MarSystem("SimilarityMatrix", name)
+SelfSimilarityMatrix::SelfSimilarityMatrix(string name):MarSystem("SelfSimilarityMatrix", name)
 {
 	isComposite_ = true;
 	addControls();
 }
 
-SimilarityMatrix::SimilarityMatrix(const SimilarityMatrix& a) : MarSystem(a)
+SelfSimilarityMatrix::SelfSimilarityMatrix(const SelfSimilarityMatrix& a) : MarSystem(a)
 {
 	ctrl_covMatrix_ = getctrl("mrs_realvec/covMatrix");
 	ctrl_calcCovMatrix_ = getctrl("mrs_natural/calcCovMatrix");
@@ -35,27 +35,27 @@ SimilarityMatrix::SimilarityMatrix(const SimilarityMatrix& a) : MarSystem(a)
 	ctrl_stdDev_ = getctrl("mrs_real/stdDev");
 }
 
-SimilarityMatrix::~SimilarityMatrix()
+SelfSimilarityMatrix::~SelfSimilarityMatrix()
 {
 }
 
 MarSystem* 
-SimilarityMatrix::clone() const 
+SelfSimilarityMatrix::clone() const 
 {
-	return new SimilarityMatrix(*this);
+	return new SelfSimilarityMatrix(*this);
 }
 
 void 
-SimilarityMatrix::addControls()
+SelfSimilarityMatrix::addControls()
 {
 	addControl("mrs_realvec/covMatrix", realvec(), ctrl_covMatrix_);
-	addControl("mrs_natural/calcCovMatrix", SimilarityMatrix::noCovMatrix, ctrl_calcCovMatrix_);
+	addControl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::noCovMatrix, ctrl_calcCovMatrix_);
 	addControl("mrs_string/normalize", "none", ctrl_normalize_);
 	addControl("mrs_real/stdDev", 1.0, ctrl_stdDev_);
 }
 
 void
-SimilarityMatrix::myUpdate(MarControlPtr sender)
+SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
 	// The output similarity matrix is a squared matrix with
@@ -68,7 +68,7 @@ SimilarityMatrix::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_osrate_, NOUPDATE); //[?]
 	ostringstream oss;
 	for(o=0; o < ctrl_onObservations_->to<mrs_natural>(); ++o)
-		oss << "SimilarityMatrix_" << o << ",";
+		oss << "SelfSimilarityMatrix_" << o << ",";
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
 	//if the metric MarSystem exists and at least there is an element
@@ -104,7 +104,7 @@ SimilarityMatrix::myUpdate(MarControlPtr sender)
 		if(marsystems_[0]->getctrl("mrs_natural/onObservations") != 1 ||
 			marsystems_[0]->getctrl("mrs_natural/onSamples") != 1)
 		{
-			 MRSWARN("SimilarityMatrix::myUpdate - invalid Child Metric MarSystem (does not output a real value)!");
+			 MRSWARN("SelfSimilarityMatrix::myUpdate - invalid Child Metric MarSystem (does not output a real value)!");
 		}
 	}
 	else if(marsystemsSize_ > 1)
@@ -114,7 +114,7 @@ SimilarityMatrix::myUpdate(MarControlPtr sender)
 }
 
 void 
-SimilarityMatrix::myProcess(realvec& in, realvec& out)
+SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
 {
 	//check if there are any elements to process at the input
 	//(in some cases, they may not exist!) - otherwise, do nothing
@@ -132,7 +132,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 				in.normObs(); // (x - mean)/std
 
 			//calculate the Covariance Matrix from the input, if defined
-			if(ctrl_calcCovMatrix_->to<mrs_natural>() & SimilarityMatrix::fixedStdDev)
+			if(ctrl_calcCovMatrix_->to<mrs_natural>() & SelfSimilarityMatrix::fixedStdDev)
 			{
 				//fill covMatrix diagonal with fixed value (remaining values are zero)
 				MarControlAccessor acc(ctrl_covMatrix_);
@@ -145,7 +145,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 					covMatrix(i,i) = var;
 				}
 			}
-			else if(ctrl_calcCovMatrix_->to<mrs_natural>() & SimilarityMatrix::diagCovMatrix)
+			else if(ctrl_calcCovMatrix_->to<mrs_natural>() & SelfSimilarityMatrix::diagCovMatrix)
 			{
 				in.varObs(vars_); //FASTER -> only get the vars for each feature
 				mrs_natural dim = vars_.getSize();
@@ -158,13 +158,13 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 					covMatrix(i,i) = vars_(i);
 				}
 			}
-			else if(ctrl_calcCovMatrix_->to<mrs_natural>() & SimilarityMatrix::fullCovMatrix)
+			else if(ctrl_calcCovMatrix_->to<mrs_natural>() & SelfSimilarityMatrix::fullCovMatrix)
 			{
 				MarControlAccessor acc(ctrl_covMatrix_);
 				realvec& covMatrix = acc.to<mrs_realvec>(); 
 				in.covariance(covMatrix); //SLOWER -> estimate the full cov matrix
 			}
-			else if(ctrl_calcCovMatrix_->to<mrs_natural>() == SimilarityMatrix::noCovMatrix)
+			else if(ctrl_calcCovMatrix_->to<mrs_natural>() == SelfSimilarityMatrix::noCovMatrix)
 			{
 				ctrl_covMatrix_->setValue(realvec());
 			}
@@ -196,11 +196,11 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 			out.setval(0.0);
 			if(marsystemsSize_ == 0)
 			{
-				MRSWARN("SimilarityMatrix::myProcess - no Child Metric MarSystem added - outputting zero similarity matrix!");
+				MRSWARN("SelfSimilarityMatrix::myProcess - no Child Metric MarSystem added - outputting zero similarity matrix!");
 			}
 			else
 			{
-				MRSWARN("SimilarityMatrix::myProcess - more than one Child MarSystem exists (i.e. invalid metric) - outputting zero similarity matrix!");
+				MRSWARN("SelfSimilarityMatrix::myProcess - more than one Child MarSystem exists (i.e. invalid metric) - outputting zero similarity matrix!");
 			}
 		}
 	}

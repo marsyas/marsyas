@@ -12,7 +12,7 @@
 #include "Conversions.h"
 #include "CommandLineOptions.h"
 #include "PeakFeatureSelect.h"
-#include "SimilarityMatrix.h"
+#include "SelfSimilarityMatrix.h"
 
 //[TODO]
 //#include "PeUtilities.h"
@@ -334,10 +334,10 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	freqSim->updctrl("PeakFeatureSelect/FREQfeatSelect/mrs_natural/selectedFeatures",
 		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq);
 	//--------
-	MarSystem* fsimMat = mng.create("SimilarityMatrix","FREQsimMat");
+	MarSystem* fsimMat = mng.create("SelfSimilarityMatrix","FREQsimMat");
 	fsimMat->addMarSystem(mng.create("Metric","FreqL2Norm"));
 	fsimMat->updctrl("Metric/FreqL2Norm/mrs_string/metric","euclideanDistance");
-	fsimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
+	fsimMat->updctrl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
 	//fsimMat->updctrl("mrs_string/normalize", "MinMax");
 	//fsimMat->linkctrl("mrs_realvec/covMatrix", "Metric/FreqL2Norm/mrs_realvec/covMatrix");
 	freqSim->addMarSystem(fsimMat);	
@@ -356,10 +356,10 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	ampSim->updctrl("PeakFeatureSelect/AMPfeatSelect/mrs_natural/selectedFeatures",
 		PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp);
 	//--------
-	MarSystem* asimMat = mng.create("SimilarityMatrix","AMPsimMat");
+	MarSystem* asimMat = mng.create("SelfSimilarityMatrix","AMPsimMat");
 	asimMat->addMarSystem(mng.create("Metric","AmpL2Norm"));
 	asimMat->updctrl("Metric/AmpL2Norm/mrs_string/metric","euclideanDistance");
-	asimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
+	asimMat->updctrl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
 	//asimMat->updctrl("mrs_string/normalize", "MinMax");
 	//asimMat->linkctrl("mrs_realvec/covMatrix", "Metric/AmpL2Norm/mrs_realvec/covMatrix");
 	ampSim->addMarSystem(asimMat);	
@@ -378,7 +378,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	HWPSim->updctrl("PeakFeatureSelect/HWPSfeatSelect/mrs_natural/selectedFeatures",
 		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes);
 	//--------
-	MarSystem* HWPSsimMat = mng.create("SimilarityMatrix","HWPSsimMat");
+	MarSystem* HWPSsimMat = mng.create("SelfSimilarityMatrix","HWPSsimMat");
 	HWPSsimMat->addMarSystem(mng.create("HWPS","hwps"));
 	HWPSsimMat->updctrl("HWPS/hwps/mrs_bool/calcDistance", true);
 	HWPSim->addMarSystem(HWPSsimMat);	
@@ -397,10 +397,10 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	panSim->updctrl("PeakFeatureSelect/PANfeatSelect/mrs_natural/selectedFeatures",
 		PeakFeatureSelect::pkPan);
 	//--------
-	MarSystem* psimMat = mng.create("SimilarityMatrix","PANsimMat");
+	MarSystem* psimMat = mng.create("SelfSimilarityMatrix","PANsimMat");
 	psimMat->addMarSystem(mng.create("Metric","PanL2Norm"));
 	psimMat->updctrl("Metric/PanL2Norm/mrs_string/metric","euclideanDistance");
-	psimMat->updctrl("mrs_natural/calcCovMatrix", SimilarityMatrix::diagCovMatrix);
+	psimMat->updctrl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
 	//psimMat->updctrl("mrs_string/normalize", "MinMax");
 	//psimMat->linkctrl("mrs_realvec/covMatrix", "Metric/PanL2Norm/mrs_realvec/covMatrix");
 	panSim->addMarSystem(psimMat);	
