@@ -22,6 +22,7 @@ add_subdirectory(peakSynth)
 add_subdirectory(peakClustering)
 add_subdirectory(sfplugin)
 add_subdirectory(mudbox)
+add_subdirectory(rhythMap)
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
