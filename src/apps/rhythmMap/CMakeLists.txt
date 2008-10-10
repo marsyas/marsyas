@@ -2,7 +2,7 @@ set(APP
 	rhythmMap
 )
 set(APP_SOURCES
-	rhtyhmMap.cpp
+	rhythmMap.cpp
 )
 
 marsyas_app(${APP} "${APP_SOURCES}")

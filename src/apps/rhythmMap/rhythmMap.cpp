@@ -1,5 +1,5 @@
 #include "MarSystemManager.h"
-#include "SimilarityMatrix2.h"
+#include "SimilarityMatrix.h"
 #include "Metric2.h"
 #include "DTW.h"
 #include "AveragingPattern.h"
@@ -31,7 +31,7 @@ void recognize(string sfName, string tpName)
   MarSystem* plTpl = mng.create("Parallel","plTpl");
   MarSystem* Inp = mng.create("Series","Inp");
   MarSystem* Tpl = mng.create("Series","Tpl");
-  MarSystem* sim = new SimilarityMatrix2("sim");
+  MarSystem* sim = new SimilarityMatrix("sim");
   MarSystem* met = new Metric2("met");
   MarSystem* dtw = new DTW("dtw");
   MarSystem* ap = new AveragingPattern("ap");
