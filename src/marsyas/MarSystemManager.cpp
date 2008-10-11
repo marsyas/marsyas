@@ -999,43 +999,49 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	is >> mname;
 
 	MarSystem* msys = getPrototype(mtype);
-
+	
 	if (msys == 0)
 	{
-		MRSWARN("MarSystem::getMarSystem - MarSystem not supported");
-		return 0;
-	}
-	else
-	{
-		msys->setName(mname);
-		msys->setParent(parent);
-
-		//delete all children MarSystems in a (prototype) Composite 
-		//and read and link (as possible) local controls
-		is >> *msys; 
-
-		msys->update();
-
-		workingSet_[msys->getName()] = msys; // add to workingSet
-
-		//recreate the Composite destroyed above, relinking all
-		//linked controls in its way
-		if (isComposite == true)
+		if(compositesMap_.find(mtype) == compositesMap_.end())
 		{
-			is >> skipstr >> skipstr >> skipstr;
-			mrs_natural nComponents;
-			is >> nComponents;
-			for (i=0; i < nComponents; i++)
-			{
-				MarSystem* cmsys = getMarSystem(is, msys);
-				if (cmsys == 0)
-					return 0;
-				msys->addMarSystem(cmsys);
-			}
-			msys->update();
+			MRSWARN("MarSystem::getMarSystem - MarSystem not supported");
+			return 0;
+		}
+		else
+		{
+			// lazy composite registration 
+			registerComposite(mtype);
+			msys = getPrototype(mtype);
 		}
 	}
 
+	msys->setName(mname);
+	msys->setParent(parent);
+	
+	//delete all children MarSystems in a (prototype) Composite 
+	//and read and link (as possible) local controls
+	is >> *msys; 
+	
+	msys->update();
+	
+	workingSet_[msys->getName()] = msys; // add to workingSet
+	
+	//recreate the Composite destroyed above, relinking all
+	//linked controls in its way
+	if (isComposite == true)
+	{
+		is >> skipstr >> skipstr >> skipstr;
+		mrs_natural nComponents;
+		is >> nComponents;
+		for (i=0; i < nComponents; i++)
+		{
+			MarSystem* cmsys = getMarSystem(is, msys);
+			if (cmsys == 0)
+				return 0;
+			msys->addMarSystem(cmsys);
+		}
+		msys->update();
+	}
 	return msys;
 }
 
