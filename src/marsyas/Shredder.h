@@ -36,14 +36,19 @@ namespace Marsyas
 	Controls:
 - \b mrs_natural/nTimes [rw] : the multiplier of ticks() for the internal
   MarSystems.
+- \b mrs_bool/accumulate [w] : when true, the outputs of the child MarSystem are accumulated to the output.s
 */
 
 class Shredder: public MarSystem
 {
 private: 
 	mrs_natural nTimes_;
+	realvec childIn_;
+	realvec childOut_;
+	mrs_natural childOnSamples_;
+
 	MarControlPtr ctrl_nTimes_;
-	realvec tin_;
+	MarControlPtr ctrl_accumulate_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

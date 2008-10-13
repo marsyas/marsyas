@@ -27,11 +27,14 @@ Shredder::Shredder(string name):MarSystem("Shredder", name)
 {
 	isComposite_ = true;
 	addControls();
+	nTimes_ = 5;
 }
 
 Shredder::Shredder(const Shredder& a) : MarSystem(a)
 {
 	ctrl_nTimes_ = getctrl("mrs_natural/nTimes");
+	ctrl_accumulate_ = getctrl("mrs_bool/accumulate");
+	nTimes_ = a.nTimes_;
 }
 
 Shredder::~Shredder()
@@ -49,7 +52,9 @@ Shredder::addControls()
 {
 	addctrl("mrs_natural/nTimes", 5, ctrl_nTimes_);
 	setctrlState("mrs_natural/nTimes", true);
-	nTimes_ = 5;
+
+	addctrl("mrs_bool/accumulate", false, ctrl_accumulate_);
+	ctrl_accumulate_->setState(true);
 }
 
 void
@@ -67,11 +72,19 @@ Shredder::myUpdate(MarControlPtr sender)
 		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_ / nTimes_);
 		marsystems_[0]->setctrl("mrs_real/israte", israte_);
 		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
-		marsystems_[0]->update(); 
+		marsystems_[0]->update();
+
+		childOnSamples_ = marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 
 		// forward flow propagation
-		setctrl("mrs_natural/onSamples", 
-			marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+		if(ctrl_accumulate_->isTrue())
+		{
+			setctrl("mrs_natural/onSamples", childOnSamples_*nTimes_);
+		}
+		else
+		{
+			setctrl("mrs_natural/onSamples", childOnSamples_);
+		}
 		setctrl("mrs_natural/onObservations", 
 			marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 		setctrl("mrs_real/osrate", 
@@ -79,8 +92,14 @@ Shredder::myUpdate(MarControlPtr sender)
 		setctrl("mrs_string/onObsNames", 
 			marsystems_[0]->getctrl("mrs_string/onObsNames"));
 
-		tin_.create(marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+		childIn_.create(marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
 			marsystems_[0]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+
+		if(ctrl_accumulate_->isTrue())
+			childOut_.create(marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+				childOnSamples_);
+		else
+			childOut_.create(0,0); //just to save memory...
 	}
 	else //if composite is empty...
 		MarSystem::myUpdate(sender);
@@ -93,13 +112,29 @@ Shredder::myProcess(realvec& in, realvec& out)
 	{
 		for (c = 0; c < nTimes_; c++) 
 		{
+			//shred input
 			for (o=0; o < inObservations_; o++)
 				for (t = 0; t < inSamples_/nTimes_; t++)
 				{
-					tin_(o,t) = in(o, t + c * (inSamples_/nTimes_)) ;
+					childIn_(o,t) = in(o, t + c * (inSamples_/nTimes_)) ;
 				}
-				marsystems_[0]->recvControls(); // HACK STU
-				marsystems_[0]->process(tin_, out);
+			
+			marsystems_[0]->recvControls(); // HACK STU
+
+			if(ctrl_accumulate_->isTrue()) //accumulate child output
+			{
+				marsystems_[0]->process(childIn_, childOut_);
+
+				for (o=0; o < onObservations_; o++)
+					for (t = 0; t < childOnSamples_; t++)
+					{
+						out(o, t + c * childOnSamples_) = childOut_(o,t);
+					}
+			}
+			else //no child output accumulation
+			{
+				marsystems_[0]->process(childIn_, out);
+			}
 		}
 	}
 	else //composite has no children!
