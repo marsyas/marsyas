@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2008 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -24,41 +24,43 @@
 namespace Marsyas
 {
 /** 
-\class Windowing
-\ingroup Processing Basic
-\brief window the input signal
+	\class Windowing
+	\ingroup Processing Basic
+	\brief window the input signal
 
 */
 
 
 	class Windowing: public MarSystem
 	{
-	private: 
-		realvec envelope_;
-		realvec tmp_;
-		//mrs_real norm_;
-		mrs_natural delta_;
+		private: 
+			realvec envelope_;
+			realvec tmp_;
+			//mrs_real norm_;
+			mrs_natural delta_;
 
-		mrs_natural zeroPadding_;
-		mrs_natural size_;
+			mrs_natural zeroPadding_;
+			mrs_natural size_;
 
-		MarControlPtr ctrl_type_;
-		MarControlPtr ctrl_zeroPhasing_;
-		MarControlPtr ctrl_zeroPadding_;
-		MarControlPtr ctrl_size_;
-		MarControlPtr ctrl_variance_;
+			MarControlPtr ctrl_type_;
+			MarControlPtr ctrl_zeroPhasing_;
+			MarControlPtr ctrl_zeroPadding_;
+			MarControlPtr ctrl_size_;
+			MarControlPtr ctrl_variance_;
+			MarControlPtr ctrl_normalize_;
+			
 
-		void addcontrols();
-		void myUpdate(MarControlPtr sender);
+			void addcontrols();
+			void myUpdate(MarControlPtr sender);
 
-	public:
-		Windowing(std::string name);
-		Windowing(const Windowing& a);
-		~Windowing();
+		public:
+			Windowing(std::string name);
+			Windowing(const Windowing& a);
+			~Windowing();
 
-		MarSystem* clone() const;
+			MarSystem* clone() const;
 
-		void myProcess(realvec& in, realvec& out);
+			void myProcess(realvec& in, realvec& out);
 
 	};
 

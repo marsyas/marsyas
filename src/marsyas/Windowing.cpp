@@ -35,6 +35,8 @@ Windowing::Windowing(const Windowing& a):MarSystem(a)
 	ctrl_zeroPadding_ = getctrl("mrs_natural/zeroPadding");
 	ctrl_size_ = getctrl("mrs_natural/size");
 	ctrl_variance_ = getctrl("mrs_real/variance");
+	ctrl_normalize_ = getctrl("mrs_bool/normalize");
+	
 }
 
 Windowing::~Windowing()
@@ -55,12 +57,14 @@ Windowing::addcontrols()
 	addctrl("mrs_natural/zeroPadding", 0, ctrl_zeroPadding_);
 	addctrl("mrs_natural/size", 0, ctrl_size_);
 	addctrl("mrs_real/variance", 0.4, ctrl_variance_);// used for the gaussian window
-
+	addctrl("mrs_bool/normalize", false, ctrl_normalize_);
+	
 	setctrlState("mrs_string/type", true);
 	setctrlState("mrs_bool/zeroPhasing", true);
 	setctrlState("mrs_natural/zeroPadding", true);
 	setctrlState("mrs_natural/size", true);
 	setctrlState("mrs_real/variance", true);
+	setctrlState("mrs_bool/normalize", true);
 }
 
 void
@@ -185,16 +189,21 @@ Windowing::myUpdate(MarControlPtr sender)
 				envelope_(t) = 0.35875 - 0.48829*cos(2.0*temp) + 0.14128*cos(4.0*temp) - 0.01168*cos(6.0*temp);
 			}
 		}
+
 	}
 
-	mrs_real sum = 0.0;
-	
-	for (t =0; t < inSamples_; t++) 
+	if(ctrl_normalize_->to<mrs_bool>() == true)
 	{
-		sum += envelope_(t);
+		mrs_real sum = 0.0;
+		
+		for (t =0; t < inSamples_; t++) 
+		{
+			sum += envelope_(t);
+		}
+		mrs_real afac = (mrs_real)(2.0 /sum);
+		envelope_ *= afac;
 	}
-	mrs_real afac = (mrs_real)(2.0 /sum);
-	envelope_ *= afac;
+	
 }
 
 void 

@@ -174,6 +174,7 @@ phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw,
 
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/ShiftInput/si/mrs_natural/winSize", Nw);
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/Windowing/fo/mrs_bool/zeroPhasing", true);
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/Windowing/fo/mrs_bool/normalize", true);
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/Windowing/fo/mrs_string/type", "Hanning");
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseries/Windowing/fo/mrs_natural/zeroPadding", 3 * Nw);
 
@@ -182,6 +183,7 @@ phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw,
 
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/ShiftInput/si/mrs_natural/winSize", 4 * Nw);
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_bool/zeroPhasing", true);
+	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_bool/normalize", true);
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_string/type", "Hanning");
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_natural/size", 4 * Nw);
 
