@@ -41,6 +41,8 @@ bool microphone_ = false;
 mrs_string convertmode_ = "sorted";
 mrs_string onsetsfile_ = "";
 mrs_string unconvertmode_ = "classic";
+mrs_bool multires_ = false;
+mrs_string multiresMode_ = "transient_switch";
 
 
 CommandLineOptions cmd_options;
@@ -98,7 +100,7 @@ printHelp(string progName)
 void 
 phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw, 
 			 mrs_natural D, mrs_natural I, mrs_real P, 
-			 string outsfname)
+							string outsfname, string multiresMode)
 {
 	if (!quietopt_)
 		cout << "Marsyas MultiResolution Phasevocoder" << endl;
@@ -186,6 +188,9 @@ phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw,
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_bool/normalize", true);
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_string/type", "Hanning");
 	pvmultires->updctrl("Fanout/pvfanout/Series/pvseriesLong/Windowing/fo/mrs_natural/size", 4 * Nw);
+	
+
+
 
 	pvmultires->updctrl("PvOscBank/pob/mrs_natural/winSize", 4 * Nw);
 	pvmultires->updctrl("mrs_natural/Interpolation", I);
@@ -195,6 +200,14 @@ phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw,
 	pvmultires->updctrl("mrs_string/convertMode", convertmode_);
 	pvmultires->updctrl("mrs_real/PitchShift", P);
 
+	pvmultires->linkctrl("PvMultiResolution/pvmres/mrs_bool/transient", 
+						 "PvOscBank/pob/mrs_bool/phaselock");
+	
+	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseries/PvConvert/conv/mrs_realvec/phases",
+						 "PvOscBank/pob/mrs_realvec/analysisphases");
+	
+
+	pvmultires->updctrl("PvMultiResolution/pvmres/mrs_string/mode", multiresMode);
 	
 
 	if (outsfname == EMPTYSTRING) 
@@ -1763,6 +1776,8 @@ initOptions()
 	cmd_options.addStringOption("convertmode", "cm", convertmode_);
 	cmd_options.addStringOption("onsets", "on", onsetsfile_);
 	cmd_options.addStringOption("unconvertmode", "ucm", unconvertmode_);
+	cmd_options.addBoolOption("multires", "mr", multires_);
+	cmd_options.addStringOption("multiresMode", "mrm", multiresMode_);
 	
 }
 
@@ -1790,6 +1805,8 @@ loadOptions()
 	convertmode_ = cmd_options.getStringOption("convertmode");
 	unconvertmode_ = cmd_options.getStringOption("unconvertmode");	
 	onsetsfile_ = cmd_options.getStringOption("onsets");
+	multires_ = cmd_options.getBoolOption("multires");
+	multiresMode_ = cmd_options.getStringOption("multiresMode");
 }
 
 int
@@ -1846,8 +1863,13 @@ main(int argc, const char **argv)
 		if (vopt_ == 1) 
 		{
 			// phasevocSeriesOld(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
-			phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
-			// phasevocoderMultiResolution(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+			if (multires_) 
+			{
+				phasevocoderMultiResolution(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName, multiresMode_);			
+			}
+			else 
+				phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+
 		}
 		else
 		{

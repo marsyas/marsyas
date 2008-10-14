@@ -78,7 +78,6 @@ PvOscBank::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 
-	//defaultUpdate();
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	
@@ -99,8 +98,6 @@ PvOscBank::myUpdate(MarControlPtr sender)
 			MarControlAccessor acc(ctrl_phases_);
 			mrs_realvec& phases = acc.to<mrs_realvec>();
 			phases.create(size_);
-			cout << "Created phases with size = " << size_ << endl;
-			
 		}
 
 		
@@ -133,23 +130,6 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 {
 	
 	
-	temp_.setval(0.0);
-
-  
-	if (P_ > 1.0)
-		NP_ = (mrs_natural)(N_/P_);
-	else
-		NP_ = N_;
-
-	Iinv_ = (mrs_real)(1.0 / I_);
-	Pinc_ = P_ * L_ / TWOPI;
-	// Pinc_ = P_ * L_ / R_;
-	
-
-	
-	Nw_ = getctrl("mrs_natural/winSize")->to<mrs_natural>();
-
-	mrs_real omega_k;
 	
 	
 	MarControlAccessor acc(ctrl_phases_);
@@ -160,17 +140,50 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
      
 	
-	if (ctrl_phaselock_->to<mrs_bool>())
+	/* if (ctrl_phaselock_->to<mrs_bool>())
 	{
-		
-		phases = analysisphases;
 		ctrl_phaselock_->setValue(false);
-	}
-	else 
 		for (t=0; t < NP_; t++)
 		{
 			phases(t) = in(2*t+1,0);
 		}
+		// phases = analysisphases;
+		// PS_ = 1.0;
+	}
+	else
+	{
+		
+
+		PS_ = P_;
+	}
+	*/ 
+
+	PS_ = P_;
+	for (t=0; t < NP_; t++)
+	{
+		phases(t) = in(2*t+1,0);
+	}
+	
+
+	temp_.setval(0.0);
+
+	
+	if (PS_ > 1.0)
+		NP_ = (mrs_natural)(N_/PS_);
+	else
+		NP_ = N_;
+	
+	Iinv_ = (mrs_real)(1.0 / I_);
+	Pinc_ = PS_ * L_ / TWOPI;
+	// Pinc_ = P_ * L_ / R_;
+	
+
+	
+	Nw_ = getctrl("mrs_natural/winSize")->to<mrs_natural>();
+
+	mrs_real omega_k;
+
+	
 	
 	
 	

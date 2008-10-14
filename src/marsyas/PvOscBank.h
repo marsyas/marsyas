@@ -48,6 +48,8 @@ private:
   mrs_natural Nw_;
   mrs_natural NP_;
   mrs_real P_;
+		mrs_real PS_;
+		
   mrs_real Iinv_;
   mrs_real Pinc_;
   mrs_real R_;

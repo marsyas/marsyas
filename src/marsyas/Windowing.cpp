@@ -26,6 +26,7 @@ Windowing::Windowing(string name):MarSystem("Windowing",name)
 	zeroPadding_ = 0;
 	size_ = 0;
 	addcontrols();
+	pinSamples_ = 0;
 }
 
 Windowing::Windowing(const Windowing& a):MarSystem(a)
@@ -36,7 +37,9 @@ Windowing::Windowing(const Windowing& a):MarSystem(a)
 	ctrl_size_ = getctrl("mrs_natural/size");
 	ctrl_variance_ = getctrl("mrs_real/variance");
 	ctrl_normalize_ = getctrl("mrs_bool/normalize");
-	
+	pinSamples_ = 0;
+	zeroPadding_ = 0;
+	size_ = 0;
 }
 
 Windowing::~Windowing()
@@ -117,80 +120,93 @@ Windowing::myUpdate(MarControlPtr sender)
 		delta_=0;
 
 	
-	tmp_.create(inSamples_);
-	envelope_.create(inSamples_);
-	mrs_real temp = 0.0;
 
-	if (type == "Hamming")
-	{   
-		mrs_real A = (mrs_real)0.54;
-		mrs_real B = (mrs_real)0.46;
 
-		for (t=0; t < inSamples_; t++)
-		{
-			temp = 2*PI*t / (inSamples_-1);
-			envelope_(t) = A - B * cos(temp);
-		}
-	}
-	else
+	
+	if (pinSamples_ != inSamples_) 
 	{
-		if (type == "Hanning")
-		{
-			mrs_real A = (mrs_real)0.5;
-			mrs_real B = (mrs_real)0.5;
-
+		
+		tmp_.create(inSamples_);
+		envelope_.create(inSamples_);
+		mrs_real temp = 0.0;
+		
+		
+		if (type == "Hamming")
+		{   
+			mrs_real A = (mrs_real)0.54;
+			mrs_real B = (mrs_real)0.46;
+			
 			for (t=0; t < inSamples_; t++)
 			{
 				temp = 2*PI*t / (inSamples_-1);
 				envelope_(t) = A - B * cos(temp);
 			}
 		}
-		if (type == "Triangle")
+		else
 		{
-			for (t=0; t < inSamples_;t++)
+			if (type == "Hanning")
 			{
-				temp = abs(t - (inSamples_-1.0)/2.0);
-				temp = inSamples_ /2.0 - temp;
-				envelope_(t) = 2.0/inSamples_ * temp;
+				mrs_real A = (mrs_real)0.5;
+				mrs_real B = (mrs_real)0.5;
+				
+				for (t=0; t < inSamples_; t++)
+				{
+					temp = 2*PI*t / (inSamples_-1);
+					envelope_(t) = A - B * cos(temp);
+				}
 			}
-		}
-		// zero padded triangle function
-		if (type == "Bartlett") //this seems too similar to the triangle above -> check! [?]
-		{
-			for (t=0;t<inSamples_;t++)
+			if (type == "Triangle")
 			{
-				temp = abs(t -(inSamples_-1.0)/2.0);
-				temp = (inSamples_-1.0 )/2.0 - temp;
-				envelope_(t) = 2.0 /(inSamples_-1.0) * temp;
+				for (t=0; t < inSamples_;t++)
+				{
+					temp = abs(t - (inSamples_-1.0)/2.0);
+					temp = inSamples_ /2.0 - temp;
+					envelope_(t) = 2.0/inSamples_ * temp;
+				}
 			}
-		}
-		if (type == "Gaussian")
-		{
-			for (t=0;t< inSamples_; t++)
+			// zero padded triangle function
+			if (type == "Bartlett") //this seems too similar to the triangle above -> check! [?]
 			{
-				temp = (t-(inSamples_-1.0)/2.0 )/(ctrl_variance_->to<mrs_real>()*(inSamples_-1.0)/2.0);
-				temp = temp * temp;
-				envelope_(t) = exp(-0.5*temp);
+				for (t=0;t<inSamples_;t++)
+				{
+					temp = abs(t -(inSamples_-1.0)/2.0);
+					temp = (inSamples_-1.0 )/2.0 - temp;
+					envelope_(t) = 2.0 /(inSamples_-1.0) * temp;
+				}
 			}
-		}
-		if (type == "Blackman") //NOT WORKING! [?]
-		{
-			for (t=0;t<inSamples_;t++)
+			if (type == "Gaussian")
 			{
-				temp = (PI * t)/(mrs_real)inSamples_-1.0 ;
-				envelope_(t) = 0.42-0.5*cos(2.0*temp) + 0.08*cos(4.0*temp);
+				for (t=0;t< inSamples_; t++)
+				{
+					temp = (t-(inSamples_-1.0)/2.0 )/(ctrl_variance_->to<mrs_real>()*(inSamples_-1.0)/2.0);
+					temp = temp * temp;
+					envelope_(t) = exp(-0.5*temp);
+				}
 			}
-		}
-		if (type == "Blackman-Harris") //NOT WORKING! [?]
-		{
-			for (t=0;t<inSamples_;t++)
+			if (type == "Blackman") //NOT WORKING! [?]
 			{
-				temp = (PI * t)/(mrs_real)inSamples_-1.0;
-				envelope_(t) = 0.35875 - 0.48829*cos(2.0*temp) + 0.14128*cos(4.0*temp) - 0.01168*cos(6.0*temp);
+				for (t=0;t<inSamples_;t++)
+				{
+					temp = (PI * t)/(mrs_real)inSamples_-1.0 ;
+					envelope_(t) = 0.42-0.5*cos(2.0*temp) + 0.08*cos(4.0*temp);
+				}
 			}
+			if (type == "Blackman-Harris") //NOT WORKING! [?]
+			{
+				for (t=0;t<inSamples_;t++)
+				{
+					temp = (PI * t)/(mrs_real)inSamples_-1.0;
+					envelope_(t) = 0.35875 - 0.48829*cos(2.0*temp) + 0.14128*cos(4.0*temp) - 0.01168*cos(6.0*temp);
+				}
+			}
+			
 		}
+		
+
 
 	}
+
+
 
 	if(ctrl_normalize_->to<mrs_bool>() == true)
 	{
@@ -202,7 +218,14 @@ Windowing::myUpdate(MarControlPtr sender)
 		}
 		mrs_real afac = (mrs_real)(2.0 /sum);
 		envelope_ *= afac;
+		ctrl_normalize_->setValue(false, NOUPDATE);
 	}
+
+
+
+
+
+	pinSamples_ = inSamples_;
 	
 }
 

@@ -270,6 +270,15 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 	mrs_real val;
 
 
+	mrs_real sum = 0;
+	mrs_real sorted_sum = 0;
+	
+	for (t=0; t <= N2; t++) 
+		sum += mag_(t);
+	
+
+
+
 	for (t=0; t <= N2; t++)
 	{
 		found = false;
@@ -279,6 +288,7 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		{
 			if (val == sortedmags_(c))
 			{
+				sorted_sum += val;
 				found = true;
 				break;
 			}
@@ -316,6 +326,15 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 			// out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
 		}
 	}
+
+
+	mrs_real ratio = sorted_sum /sum;
+	
+	for (t=0; t <= N2; t++)
+	{
+		out(2*t,0) *= ratio;
+	}
+	
 
 
 }

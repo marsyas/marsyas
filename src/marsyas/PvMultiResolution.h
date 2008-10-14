@@ -20,6 +20,7 @@
 #define MARSYAS_PVMULTIRESOLUTION_H
 
 #include "MarSystem.h"
+#include "Flux.h" 
 
 namespace Marsyas
 {
@@ -40,10 +41,20 @@ private:
 	void myUpdate(MarControlPtr sender);
 
 		MarControlPtr ctrl_mode_;
+		MarControlPtr ctrl_transient_;
+		
 		mrs_realvec median_buffer_;
 		mrs_natural mbindex_;
+		mrs_realvec powerSpectrum_;
+		mrs_realvec whiteSpectrum_;
+		mrs_real r_;
+		mrs_real m_;
 		
+		mrs_realvec fluxval_;
 		
+		MarSystem* flux_;
+		
+
 public:
 	PvMultiResolution(std::string name);
 	PvMultiResolution(const PvMultiResolution& a);

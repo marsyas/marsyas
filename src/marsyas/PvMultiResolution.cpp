@@ -23,17 +23,26 @@ using namespace Marsyas;
 
 PvMultiResolution::PvMultiResolution(string name):MarSystem("PvMultiResolution", name)
 {
+	flux_ = new Flux("flux");
+	r_ = 1.0e-13;
+	m_ = 0.98;
+	
 	addControls();
 }
 
 PvMultiResolution::PvMultiResolution(const PvMultiResolution& a) : MarSystem(a)
 {
 	ctrl_mode_ = getctrl("mrs_string/mode");
+	ctrl_transient_ = getctrl("mrs_bool/transient");
+	r_ = 1.0e-13;
+	m_ = 0.9;
+	flux_ = new Flux("flux");
 }
 
 
 PvMultiResolution::~PvMultiResolution()
 {
+	delete flux_;
 }
 
 MarSystem*
@@ -47,6 +56,7 @@ PvMultiResolution::addControls()
 {
 
 	addctrl("mrs_string/mode", "long", ctrl_mode_);
+	addctrl("mrs_bool/transient", false, ctrl_transient_);
 }
 
 void
@@ -61,6 +71,16 @@ PvMultiResolution::myUpdate(MarControlPtr sender)
 	
 	median_buffer_.create(20);
 	mbindex_ = 0;
+
+
+	powerSpectrum_.create(onObservations_/2);
+	whiteSpectrum_.create(onObservations_/2);
+	
+	flux_->updctrl("mrs_natural/inSamples", 1);
+	flux_->updctrl("mrs_natural/inObservations", onObservations_/2);
+	flux_->updctrl("mrs_real/israte", 44100);
+	flux_->updctrl("mrs_string/mode", "DixonDAFX06");
+	fluxval_.create(1,1);
 	
 }
 
@@ -68,52 +88,110 @@ void
 PvMultiResolution::myProcess(realvec& in, realvec& out)
 {
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
+	
+
 
 	mrs_real max = DBL_MIN;
 	mrs_real maxLong = DBL_MIN;
-	mrs_real power = 0.0;
+	mrs_real powerShort = 0.0;
+	mrs_real powerLong = 0.0;
 	
+
+
 	
-	// short window 
-	for (o=0; o < inObservations_/2; o++)
-		for (t = 0; t < inSamples_; t++)
-		{
-			out(o,t) = in(o, t);		
-		}
-	
-	/* calculate power and use median for dynamic thresholding */ 
-	for (o=0; o < onObservations_/2; o++) 
-		for (t = 0; t < inSamples_; t++)
-		{
-			power += (out(2*o,t) * out(2*o,t));
-		}
-	power *= 1000000;
-	
-	median_buffer_(mbindex_) = power;
-	mbindex_++;
-	if (mbindex_ == 20)
+	if (mode == "short")
 	{
-		mbindex_ = 0;
+		// short window 
+		for (o=0; o < inObservations_/2; o++)
+			for (t = 0; t < inSamples_; t++)
+			{
+				out(o,t) = in(o, t);		
+			}
 	}
-	
-	if (power - median_buffer_.median() <= 0.02) 
+	else if (mode == "long") 
+	{
+
+		// long window 
+		for (o=inObservations_/2; o < inObservations_; o++)
+			for (t = 0; t < inSamples_; t++)
+			{
+				out(o-inObservations_/2,t) = in(o,t);
+			}
+		
+		for (o=0; o < onObservations_/2; o++) 
+			for (t = 0; t < inSamples_; t++)
+			{
+				out(2*o, t) = 2 * out(2*o,t);
+			}
+	}
+	else if (mode == "transient_switch")
+	{
+
+		// short window 
+		for (o=0; o < inObservations_/2; o++)
+			for (t = 0; t < inSamples_; t++)
+			{
+				out(o,t) = in(o, t);		
+			}
+
+		
+		/* calculate power and use median for dynamic thresholding */ 
+		for (o=0; o < onObservations_/2; o++) 
+			for (t = 0; t < inSamples_; t++)
+			{
+				powerSpectrum_(o) = out(2*o,t) * out(2*o,t);
+			}
+
+
+		// adaptive pre-whitening 
+		for (o=0; o < onObservations_/2; o++) 
 		{
-			cout << 0 << endl;
+			if (powerSpectrum_(o) < r_) 
+				whiteSpectrum_(o) = r_;
+			else 
+			{
+				if (m_ * whiteSpectrum_(o) > powerSpectrum_(o))
+					whiteSpectrum_(o) = m_ * whiteSpectrum_(o);
+				else
+					whiteSpectrum_(o) = powerSpectrum_(o);
+			}
+			powerSpectrum_(o) = powerSpectrum_(o) / whiteSpectrum_(o);
+		}
+		
+		
+		flux_->process(powerSpectrum_, fluxval_);
+
+		
+		
+		median_buffer_(mbindex_) = fluxval_(0,0);
+		mbindex_++;
+		if (mbindex_ == 20)
+		{
+			mbindex_ = 0;
+		}
+
+
+
+		
+		if (fluxval_(0,0) - median_buffer_.median() <= 30.0)    // steady state use long window 
+		{
 			for (o=inObservations_/2; o < inObservations_; o++)
 				for (t = 0; t < inSamples_; t++)
 				{
 					out(o-inObservations_/2,t) = in(o,t);
 				}
 			
-			for (o=0; o < onObservations_/2; o++) 
-				for (t = 0; t < inSamples_; t++)
-				{
-					out(2*o, t) = 2 * out(2*o,t);
-				}
+			// cout << 0 << endl;
+			
+			ctrl_transient_->setValue(false, NOUPDATE);
 		}
-	else 
-		cout << power-median_buffer_.median() << endl;
-
+		else // transient use short window 
+		{
+			ctrl_transient_->setValue(true, NOUPDATE);
+			// cout << fluxval_(0,0)-median_buffer_.median() << endl;		
+		}
+	}
+	
 	
 	
 }

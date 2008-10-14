@@ -41,6 +41,8 @@ namespace Marsyas
 
 			mrs_natural zeroPadding_;
 			mrs_natural size_;
+			mrs_natural pinSamples_;
+			
 
 			MarControlPtr ctrl_type_;
 			MarControlPtr ctrl_zeroPhasing_;
