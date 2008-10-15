@@ -12,6 +12,9 @@
 #include <QWidget>
 #include <QMessageBox>
 #include <QDebug>
+#include <QThread>
+#include <QWaitCondition>
+#include <QMutex>
 
 #include <ctime>
 #include <cstdlib>
@@ -24,7 +27,6 @@
 #include "Collection.h"
 
 #include "../Music/MusicCollection.h"
-//#include "../Marsyas/MarsyasECP.h"
 #include "../Colormaps/Colormap.h"
 
 #include "../Widgets/Tracklist.h"
@@ -40,38 +42,48 @@ class QPainter;
 class Classifier;
 class Extractor;
 class MarsyasECP;
-class GridSquare;
 
 
 using namespace MarsyasQt;
 
-class Grid : public MyDisplay 
+class Grid : public QThread
 {
 	Q_OBJECT
 
 public:
-	Grid(int winSize, Tracklist *tracklist, QWidget *parent = 0);
+	Grid();
 	~Grid();
 	void clear();
+	void run();
+	void addTrack(int x, int y, std::string track);
+	void setGridCounter(int index, int value);
+	void playTrack(int counter);
+	QList<std::string> getFilesAt(int index);
+	QList<std::string> getCurrentFiles();
+	QWaitCondition buttonPressed;
+	
+	void setXPos(int value);
+	void setYPos(int value);
+	void setContinuous(bool value);
+	bool isContinuous() const {return continuous_; }
+	int getGridCounterSizes(int index);
+	int getGridCounter(int index);
+	int getCurrentIndex();
+	int getHeight() const { return som_width; }
+	int getWidth() const { return som_height; }
+	int getXPos() const { return _gridX; }
+	int getYPos() const { return _gridY; }
+	int getCellSize() const { return _cellSize; }
+	QVector< QList<std::string> > getFiles() const { return files_; }
 
-	/*
-	void setExtractor(Extractor *extractor);
-	Extractor* getExtractor() const; 
-
-	void setClassifier(Classifier *classifier);
-	Classifier* getClassifier() const; 
-	*/
-
-	int getHeight() const { return gridWidth_; }
-	int getWidth() const { return gridHeight_; }
-
-	public slots: 
-		void extract();
-		void predict();
-		void train();
-		void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
-		void midiPlaylistEvent(bool next);
-		void reload();
+public slots: 
+		void setExtractMode();
+		void setTrainMode();
+		void setPredictMode();
+		void clearMode();
+		//void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
+		//void midiPlaylistEvent(bool next);
+		//void reload();
 		void openPredictionGrid(QString fname);
 		void savePredictionGrid(QString fname);
 
@@ -79,45 +91,34 @@ signals:
 		void playingTrack(MusicTrack *track);
 
 protected:
-	void dragEnterEvent(QDragEnterEvent *event);
-	void dragMoveEvent(QDragMoveEvent *event);
-	void dropEvent(QDropEvent *event);
-	void startDrag(Qt::DropActions supportedActions);
-
-	void mousePressEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
-
-	void updateXYPosition(int x, int y); 
-	void paintEvent(QPaintEvent *event);
-	void playNextTrack();
-
-	void addTrack(int x, int y, std::string track);
 	void resetGrid();
 
 	void setGridX(int x);  
 	void setGridY(int y); 
-	GridSquare *getCurrentSquare();
 
 	void setup();
 	void setupNetworks();
-	int getCurrentIndex();
+	void extract();
+	void predict();
+	void train();
+
 
 private:
 	int _winSize;
 	int _cellSize;
 	int _gridX;
 	int _gridY;
-	int gridHeight_;
-	int gridWidth_;
 	int som_height;
 	int som_width;
 	int grid_x;
 	int grid_y;
+	int state_; // 0 for none, 1 for extract, 2 for train, 3 for predict
 	bool initAudio_;
 	bool continuous_;
 
-	QVector<GridSquare*> _squares;
+
 	QVector<QList <std::string> > files_;
+	QMutex mutex;
 
 	MusicCollection *_collection;
 
@@ -128,15 +129,6 @@ private:
 	QVector<int> counterSizes;
 	QVector<int> labels;
 
-	QList<QPixmap> piecePixmaps;
-	QList<QRect> pieceRects;
-	QList<QPoint> pieceLocations;
-
-	QRect highlightedRect;
-	QRect metalRec;
-	QRect classicalRec;
-	int inPlace;
-
 	MarSystemQtWrapper*  mwr_;
     Marsyas::MarSystem* pnet_;
 
@@ -145,32 +137,6 @@ private:
 	Marsyas::MarSystem* total_;
 	Marsyas::MarSystem* norm_;
 
-};
-class GridSquare
-{
-public:
-	GridSquare(int x, int y);
-
-	bool isEmpty() const;
-
-	void addTrack(MusicTrack* track);
-
-	void nextTrack();
-	MusicTrack* getCurrent();
-	MusicTrackIterator getTracks();
-
-	int getCount() const;
-	int getX() const;
-	int getY() const;
-
-	void clear();
-	void refresh();
-
-private:
-	MusicTrackVector _list;
-	int _current;
-	int _x;
-	int _y;
 };
 
 #endif

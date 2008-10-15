@@ -21,19 +21,21 @@
 #include "Widgets/Keypad.h"
 #include "Widgets/PlayBox.h"
 #include "Widgets/Playlist.h"
+#include "Widgets/GridDisplay.h"
 
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 
 public:
-	MainWindow();
+	MainWindow(Grid* grid_);
 	~MainWindow();
 
 signals:
 	void libraryUpdated();
 	void openPredictGridFile(QString);
 	void savePredictGridFile(QString);
+	void playModeChanged();
 
 private slots:
 	void openiTunesLibrary();
@@ -46,6 +48,7 @@ private slots:
 	void saveiTunesLibrary();
 	void openSavedGrid();
 	void saveCurrentGrid();
+	void changedPlayMode();
 
 private:
 	void createActions();
@@ -55,6 +58,7 @@ private:
 
 	//Widgets
 	MyDisplay *_display;
+	Grid *_dataGrid;
 	PlayBox *_playBox;
 	Playlist *_playlist;
 	Tracklist *_tracklist;
@@ -82,6 +86,7 @@ private:
 	QAction *_saveAction;
 	QAction *_saveGridAction;
 	QAction *_loadGridAction;
+	QAction *_playModeAction;
 
 	MusicCollection *_library;
 	// MidiListener *_midi;

@@ -24,6 +24,7 @@ set(APP_SOURCES
 	Widgets/Playlist.cpp
 	Widgets/PlaylistItem.cpp
 	Widgets/Tracklist.cpp
+	Widgets/GridDisplay.cpp
 	main.cpp
 )
 
@@ -55,6 +56,7 @@ set(APP_HEADERS
 	Widgets/Playlist.h
 	Widgets/PlaylistItem.h
 	Widgets/Tracklist.h
+	Widgets/GridDisplay.h
 	MainWindow.h
 )
 

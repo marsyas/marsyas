@@ -1,7 +1,8 @@
 #include "MainWindow.h"
 
-MainWindow::MainWindow() {
+MainWindow::MainWindow(Grid* grid_) {
 	_library = MusicCollection::getInstance();
+	_dataGrid = grid_;
 
 	createWindow();
 	createActions();
@@ -124,6 +125,10 @@ void MainWindow::saveiTunesLibrary() {
 	statusBar()->showMessage(tr("File Saved"), 2000);
 	qDebug() << "Library save";
 }
+void MainWindow::changedPlayMode()
+{
+	emit playModeChanged();
+}
 
 
 /*
@@ -142,7 +147,7 @@ void MainWindow::createWindow() {
 	_tracklist = new Tracklist(this);
 	_playlist = new Playlist(_tracklist, this);
 
-	_display = new Grid(600, _tracklist, this);
+	_display = new GridDisplay(600, _tracklist, _dataGrid, this);
 
 	QGridLayout *gridLayout = new QGridLayout;
 				//fromRow, fromCol, rowSpan, colSpan
@@ -160,6 +165,7 @@ void MainWindow::createWindow() {
 	connect(this, SIGNAL(libraryUpdated()), _display, SLOT(reload()));
 	connect(this, SIGNAL(openPredictGridFile(QString)), _display, SLOT(openPredictionGrid(QString)));
 	connect(this, SIGNAL(savePredictGridFile(QString)), _display, SLOT(savePredictionGrid(QString)));
+	connect(this, SIGNAL(playModeChanged()), _display, SLOT(playModeChanged()));
 
 	w->setLayout(gridLayout);
 	statusBar()->showMessage(tr("Ready"));
@@ -225,6 +231,8 @@ void MainWindow::createActions() {
 
 	_loadGridAction = new QAction(tr("&Load Saved Grid"),this);
 	connect(_loadGridAction, SIGNAL(triggered()), this, SLOT(openSavedGrid()));
+	_playModeAction = new QAction(tr("&Continuous"), this);
+	connect(_playModeAction, SIGNAL(triggered()), this, SLOT(changedPlayMode()));
 }
 
 void MainWindow::createMenus() {
@@ -242,6 +250,7 @@ void MainWindow::createMenus() {
 	
 	_fileMenu->addAction(_saveAction);
 	_fileMenu->addAction(_saveGridAction);
+	_fileMenu->addAction(_playModeAction);
 	_fileMenu->addAction(_exitAction);
 	
 	_debugMenu = menuBar()->addMenu(tr("&Debug"));
