@@ -345,7 +345,7 @@ printHelp(string progName)
 	cerr << endl;
 	cerr << "NOTE:" << endl;
 	cerr << "All extractors calculate means and variances over a memory size window" << endl;
-	cerr << "SV can be appended in front of any extractor to extract a single vector (mean, variances) over a 30-second clip (for example SVSTF) " << endl;
+	cerr << "SV can be appended in front of any extractor to extract a single vector (mean, variances) over a 30-second clip (for example SVSTFT) " << endl;
 
 	exit(0);
 }
