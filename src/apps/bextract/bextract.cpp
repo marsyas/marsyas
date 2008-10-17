@@ -321,11 +321,11 @@ printHelp(string progName)
 	cerr << "-st --stereo       : use stereo feature extraction" << endl;
 	cerr << "-ds --downsample   : downsampling factor" << endl;
 	cerr << "-h  --help         : display this information " << endl;
-	cerr << "-e  --extractor    : exactor " << endl;
+	cerr << "-e  --extractor    : extractor " << endl;
 	cerr << "-p  --plugin       : output plugin name " << endl;
 	cerr << "-pm --pluginmute   : mute the plugin " << endl;
 	cerr << "-pb --playback     : playback during feature extraction " << endl;
-	cerr << "-s  --start        : playback start offest in seconds " << endl;
+	cerr << "-s  --start        : playback start offset in seconds " << endl;
 	cerr << "-l  --length       : playback length in seconds " << endl;
 	cerr << "-m  --memory       : memory size " << endl;
 	cerr << "-w  --weka         : weka .arff filename " << endl;
