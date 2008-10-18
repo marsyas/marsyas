@@ -59,7 +59,7 @@ printHelp(string progName)
 	cerr << "-g --gain       : linear volume gain " << endl;
 	// cerr << "-o --offset     : playback start offset in samples " << endl;
 	// cerr << "-d --duration   : playback duration in samples     " << endl;
-	cerr << "-s --start      : playback start offest in seconds " << endl;
+	cerr << "-s --start      : playback start offset in seconds " << endl;
 	cerr << "-l --length     : playback length in seconds " << endl;
 	cerr << "-p --plugin     : plugin file " << endl;
 	cerr << "-f --filename     : output file " << endl;
@@ -99,7 +99,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
 	{
-		// udpate source filename 
+		// update source filename 
 		sfName = *sfi;
 
 		msys->updctrl("mrs_string/filename", sfName);
