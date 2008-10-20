@@ -146,6 +146,9 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 		  countvector_(i) = 0;
 		}
 	    }
+	  for(i=0; i<counts_.getSize(); i++){
+	    counts_(i) = 0;
+	  }
 	  // initialize according to countVector
 	  if(ctrl_setCountVector_->to<mrs_bool>())
 	    {
