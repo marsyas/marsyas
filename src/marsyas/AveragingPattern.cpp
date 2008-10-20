@@ -147,18 +147,31 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 		}
 	    }
 	  // initialize according to countVector
-	  for(k=1; k<numVec; k++)
+	  if(ctrl_setCountVector_->to<mrs_bool>())
 	    {
-	      for(i=0; i<sizes_(k); i++)
+	      for(k=0; k<numVec-1; k++)
+		{
+		  for(i=0; i<sizes_(k+1); i++)
+		    {
+		      for(j=0; j<dimVec; j++)
+			{
+			  average_(j,i+tmpNatural) = countvector_(i+tmpNatural)*out(j+dimVec*k,i);
+			}
+		    }
+		  tmpNatural += sizes_(k+1);
+		}
+	      tmpNatural = 0;
+	    }
+	  else 
+	    {
+	      for(i=0; i<average_.getCols(); i++)
 		{
 		  for(j=0; j<dimVec; j++)
 		    {
-		      average_(j,i+tmpNatural) = countvector_(i+tmpNatural)*in(j+dimVec*k,i);
+		      average_(j,i) = 0;
 		    }
 		}
-	      tmpNatural += sizes_(k);
 	    }
-	  tmpNatural = 0;
   
 	  mrs_bool b_begin = false;
 
