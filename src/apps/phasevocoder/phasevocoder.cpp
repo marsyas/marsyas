@@ -153,9 +153,9 @@ phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw,
 					  "mrs_natural/Interpolation");
 
 	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseries/PvConvert/conv/mrs_natural/Sinusoids",
- 				"mrs_natural/Sinusoids");
+ 				"mrs_natural/Sinusoids1");
 	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseriesLong/PvConvert/conv/mrs_natural/Sinusoids",
- 				"mrs_natural/Sinusoids");
+ 				"mrs_natural/Sinusoids2");
 	
 	pvmultires->linkctrl("Fanout/pvfanout/Series/pvseries/PvConvert/conv/mrs_string/mode", 
 					  "mrs_string/convertMode");
@@ -195,8 +195,16 @@ phasevocoderMultiResolution(string sfName, mrs_natural N, mrs_natural Nw,
 	pvmultires->updctrl("PvOscBank/pob/mrs_natural/winSize", 4 * Nw);
 	pvmultires->updctrl("mrs_natural/Interpolation", I);
 	pvmultires->updctrl("mrs_natural/Decimation", D);
-	pvmultires->updctrl("mrs_natural/Sinusoids", 
+	
+	pvmultires->updctrl("mrs_natural/Sinusoids1", 
+						(mrs_natural)sopt/4);
+
+	pvmultires->updctrl("mrs_natural/Sinusoids2", 
 					  (mrs_natural)sopt);
+
+
+
+
 	pvmultires->updctrl("mrs_string/convertMode", convertmode_);
 	pvmultires->updctrl("mrs_real/PitchShift", P);
 

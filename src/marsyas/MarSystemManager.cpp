@@ -667,6 +667,11 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pvocpr->linkctrl("PvUnconvert/uconv/mrs_bool/phaselock", 
 				"mrs_bool/phaselock");
 
+
+			pvocpr->linkctrl("PvFold/fo/mrs_real/rmsIn", 
+							 "PvOverlapadd/pover/mrs_real/rmsIn");
+			
+
 			registerPrototype("PhaseVocoder", pvocpr);
 		}
 			break;
@@ -686,6 +691,9 @@ void MarSystemManager::registerComposite(std::string prototype)
 
 			pvocpr1->linkctrl("PvOscBank/pob/mrs_natural/winSize", 
 				"mrs_natural/winSize");
+
+			pvocpr1->linkctrl("PvFold/fo/mrs_real/rmsIn", 
+							 "PvOscBank/pob/mrs_real/rmsIn");
 
 			pvocpr1->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
 				"mrs_natural/Decimation");

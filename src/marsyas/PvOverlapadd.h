@@ -45,12 +45,15 @@ private:
 		
 		mrs_natural I_, D_;
 		mrs_natural n_;
+		MarControlPtr ctrl_rmsIn_;
 		
   void addControls();
 	void myUpdate(MarControlPtr sender);
  
 public:
-  PvOverlapadd(std::string name);
+		PvOverlapadd(std::string name);
+		PvOverlapadd(const PvOverlapadd& a);
+		
   ~PvOverlapadd();
   MarSystem* clone() const;    
 

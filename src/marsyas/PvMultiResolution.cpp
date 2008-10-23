@@ -107,6 +107,14 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 			{
 				out(o,t) = in(o, t);		
 			}
+		for (o=0; o < onObservations_/2; o++) 
+			for (t = 0; t < inSamples_; t++)
+			{
+				
+				out(2*o, t) = out(2*o,t);
+			}
+
+
 	}
 	else if (mode == "long") 
 	{
@@ -121,9 +129,34 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 		for (o=0; o < onObservations_/2; o++) 
 			for (t = 0; t < inSamples_; t++)
 			{
+				out(2*o, t) = out(2*o,t);
+			}
+	}
+	else if (mode == "shortlong_mixture") 
+	{
+
+		
+		for (o=0; o < inObservations_/2; o++)
+			for (t = 0; t < inSamples_; t++)
+			{
+				out(o,t) = in(o, t);		
+			}
+		
+		/* use long window for frequencies lower than approx. 2000 Hz 
+		 and short window for higher frequencies */ 
+		for (o=inObservations_/2; o < inObservations_/2 + 200; o++)
+			for (t = 0; t < inSamples_; t++)
+			{
+				out(o-inObservations_/2,t) = in(o,t);
+			}
+		
+		for (o=0; o < 200; o++) 
+			for (t = 0; t < inSamples_; t++)
+			{
 				out(2*o, t) = 2 * out(2*o,t);
 			}
 	}
+	
 	else if (mode == "transient_switch")
 	{
 
@@ -173,7 +206,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 
 
 		
-		if (fluxval_(0,0) - median_buffer_.median() <= 30.0)    // steady state use long window 
+		if (fluxval_(0,0) - median_buffer_.median() <= 35.0)    // steady state use long window 
 		{
 			for (o=inObservations_/2; o < inObservations_; o++)
 				for (t = 0; t < inSamples_; t++)
@@ -181,13 +214,30 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 					out(o-inObservations_/2,t) = in(o,t);
 				}
 			
-			// cout << 0 << endl;
-			
+			for (o=0; o < onObservations_/2; o++) 
+				for (t = 0; t < inSamples_; t++)
+				{
+					out(2*o, t) = 1.25 * out(2*o,t);
+				}
 			ctrl_transient_->setValue(false, NOUPDATE);
 		}
-		else // transient use short window 
+		else // transient 
 		{
-			ctrl_transient_->setValue(true, NOUPDATE);
+			
+			// use short 
+			for (o=0; o < inObservations_/2; o++)
+				for (t = 0; t < inSamples_; t++)
+				{
+					out(o,t) = in(o, t);		
+				}
+
+			for (o=0; o < onObservations_/2; o++) 
+				for (t = 0; t < inSamples_; t++)
+				{
+					out(2*o, t) = 0.5 * out(2*o,t);
+				}
+
+			ctrl_transient_->setValue(true, NOUPDATE);			
 			// cout << fluxval_(0,0)-median_buffer_.median() << endl;		
 		}
 	}

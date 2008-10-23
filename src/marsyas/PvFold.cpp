@@ -33,6 +33,12 @@ PvFold::PvFold(string name):MarSystem("PvFold",name)
 	addControls();
 }
 
+PvFold::PvFold(const PvFold& a):MarSystem(a) 
+{
+	ctrl_rmsIn_ = getctrl("mrs_real/rmsIn");
+}
+
+
 
 PvFold::~PvFold()
 {
@@ -50,7 +56,7 @@ PvFold::addControls()
 {
   addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
   setctrlState("mrs_natural/FFTSize", true);
-
+  addctrl("mrs_real/rmsIn", 0.0, ctrl_rmsIn_);
   n_ = 0;
 }
 
@@ -85,7 +91,7 @@ PvFold::myUpdate(MarControlPtr sender)
        * FFT length) aways from the center of the analysis
        * window 
        */ 
-      if (Nw_ > N_) 
+      /* if (Nw_ > N_) 
 	  {
 		  
 		  mrs_real x;
@@ -96,17 +102,24 @@ PvFold::myUpdate(MarControlPtr sender)
 				  awin_(t) *= N_ * sin (PI * x/N_) / (PI *x);
 		  }
 	  }
+	  */ 
       /* normalize window for unit gain */ 
-      mrs_real sum = 0.0;
-      
-      for (t =0; t < Nw_; t++)
+	  
+	  mrs_real sum = 0.0;
+	  for (t =0; t < Nw_; t++)
 	  {
 		  sum += awin_(t);
 	  }
-      
-      mrs_real afac = (mrs_real)(2.0/ sum);
-      awin_ *= afac;
+	  
+	  mrs_real afac = (mrs_real)(2.0/ sum);
+	  
+	  awin_ *= afac;
   }
+
+  
+  
+
+
   
   PNw_ = Nw_;
   PN_ = N_;
@@ -117,12 +130,18 @@ void
 PvFold::myProcess(realvec& in, realvec& out)
 {
 
+	mrs_real rmsIn = 0.0;
 	
 	for (t=0; t < Nw_; t++)
     {
 		out(0,t) = in(0,t)*awin_(t);
+		rmsIn += in(0,t) * in(0,t);
 	}
-
+	rmsIn /= Nw_;
+	rmsIn = sqrt(rmsIn);
+	
+	ctrl_rmsIn_->setValue(rmsIn );
+	
 	// circular shift 
 	int half_Nw_ = Nw_/2;
 	mrs_real tmp;

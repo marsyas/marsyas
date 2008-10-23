@@ -42,11 +42,14 @@ private:
 		void myUpdate(MarControlPtr sender);
 		mrs_natural N_, Nw_, PNw_, PN_;
 		int n_;
-  
+		MarControlPtr ctrl_rmsIn_;
+		
   
 public:
-  PvFold(std::string name);
-  ~PvFold();
+		PvFold(std::string name);
+		PvFold(const PvFold& a);
+		
+		~PvFold();
   MarSystem* clone() const;  
   
   void myProcess(realvec& in, realvec& out);

@@ -39,6 +39,10 @@ class PvOscBank: public MarSystem
 private:
   realvec lastamp_;
   realvec lastfreq_;
+		realvec magnitudes_;
+		realvec regions_;
+		
+		
   realvec index_;
   realvec table_;
 		realvec temp_;
@@ -63,9 +67,12 @@ private:
   MarControlPtr ctrl_phases_;
   MarControlPtr ctrl_analysisphases_;
   MarControlPtr ctrl_phaselock_;
+		MarControlPtr ctrl_onsetsAudible_;
+		MarControlPtr ctrl_rmsIn_;
 		
-
-
+		int subband(int bin);
+		bool isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp);
+		
   void addControls();
 	void myUpdate(MarControlPtr sender);
   

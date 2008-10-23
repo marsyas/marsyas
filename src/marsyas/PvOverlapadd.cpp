@@ -31,6 +31,12 @@ PvOverlapadd::PvOverlapadd(string name):MarSystem("PvOverlapadd",name)
 }
 
 
+PvOverlapadd::PvOverlapadd(const PvOverlapadd& a):MarSystem(a) 
+{
+	ctrl_rmsIn_ = getctrl("mrs_real/rmsIn");
+}
+
+
 PvOverlapadd::~PvOverlapadd()
 {
 }
@@ -51,84 +57,85 @@ PvOverlapadd::addControls()
   addctrl("mrs_natural/FFTSize", MRS_DEFAULT_SLICE_NSAMPLES);
   addctrl("mrs_natural/Interpolation", MRS_DEFAULT_SLICE_NSAMPLES /4);
   addctrl("mrs_natural/Decimation", MRS_DEFAULT_SLICE_NSAMPLES /4);
+  addctrl("mrs_real/rmsIn", 0.0, ctrl_rmsIn_);
 }
 
 void
 PvOverlapadd::myUpdate(MarControlPtr sender)
 {
+	
 	(void) sender;
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/winSize"));
-  setctrl("mrs_natural/onObservations", (mrs_natural)1);
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));    
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/winSize"));
+	setctrl("mrs_natural/onObservations", (mrs_natural)1);
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));    
+	
+	mrs_natural N,Nw;
+	N = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	Nw = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+	I_ = getctrl("mrs_natural/Interpolation")->to<mrs_natural>();
+	D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
+	
+	n_ = - (Nw * I_) / D_;
+	
+	
+	// create synthesis window 
+	swin_.create(Nw);
+	awin_.create(Nw);
+	temp_.stretch(N);
+	tin_.create(N);
+	
 
-  mrs_natural N,Nw;
-  N = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  Nw = getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-  I_ = getctrl("mrs_natural/Interpolation")->to<mrs_natural>();
-  D_ = getctrl("mrs_natural/Decimation")->to<mrs_natural>();
-  
-  n_ = - (Nw * I_) / D_;
-  
-
-  // create synthesis window 
-  swin_.create(Nw);
-  awin_.create(Nw);
-  temp_.stretch(N);
-  tin_.create(N);
-  
-  
-  for (t=0; t < Nw; t++)
+	
+	for (t=0; t < Nw; t++)
     {
 		awin_(t) = (mrs_real)(0.5 * (1  - cos(TWOPI * t/(Nw-1))));
 		swin_(t) = (mrs_real)(0.5 * (1  - cos(TWOPI * t/(Nw-1))));
     }
-  /* when Nw > N also apply interpolating (sinc) windows 
-   * to ensure that window are 0 at increments of N (the 
-   * FFT length) aways from the center of the analysis
-   * window 
-   */ 
-  /* if (Nw > N) 
-    {
-		mrs_real x;
-      x = (mrs_real)(-(Nw -1) / 2.0);
-      for (t=0; t < Nw; t++, x += 1.0)
-	  {
-		  if (x != 0.0) 
-		  {
-			  awin_(t) *= N * sin (PI * x/N) / (PI *x);
-			  swin_(t) *= I_ * sin (PI * x/I_) / (PI *x);
-		  }
-	  }
-    }
-  */ 
+	/* when Nw > N also apply interpolating (sinc) windows 
+	 * to ensure that window are 0 at increments of N (the 
+	 * FFT length) aways from the center of the analysis
+	 * window 
+	 */ 
+	/* if (Nw > N) 
+	   {
+	   mrs_real x;
+	   x = (mrs_real)(-(Nw -1) / 2.0);
+	   for (t=0; t < Nw; t++, x += 1.0)
+	   {
+	   if (x != 0.0) 
+	   {
+	   awin_(t) *= N * sin (PI * x/N) / (PI *x);
+	   swin_(t) *= I_ * sin (PI * x/I_) / (PI *x);
+	   }
+	   }
+	   }
+	*/ 
   
-  /* normalize window for unit gain */ 
-  mrs_real sum = (mrs_real)0.0;
-  
-  for (t =0; t < Nw; t++)
-  {
+	/* normalize window for unit gain */ 
+	mrs_real sum = (mrs_real)0.0;
+	
+	for (t =0; t < Nw; t++)
+	{
 		sum += awin_(t);
     }
-  
-  mrs_real afac = (mrs_real)(2.0/ sum);
-  mrs_real sfac = Nw > N ? (mrs_real)1.0 /afac : (mrs_real)afac;
-  awin_ *= afac;
-  swin_ *= sfac;
-  
-  if (Nw <= N)
-    {
-      sum = (mrs_real)0.0;
-      
-      for (t = 0; t < Nw; t+= I_)
-	  {
-		  sum += swin_(t) * swin_(t);
-	  }
-      for (sum = (mrs_real)1.0/sum, t =0; t < Nw; t++)
-		  swin_(t) *= sum;
-    }
-
-	//lmartins: This was missing the defaultUpdate() call which could be havoc!! [!]
-	//with the MarSystem refactoring the chances for such a issue are greatly reduced now!
+	
+	mrs_real afac = (mrs_real)(2.0/ sum);
+	mrs_real sfac = Nw > N ? (mrs_real)1.0 /afac : (mrs_real)afac;
+	awin_ *= afac;
+	swin_ *= sfac;
+	
+	
+	if (Nw <= N)
+	{
+		sum = (mrs_real)0.0;
+		
+		for (t = 0; t < Nw; t+= I_)
+		{
+			sum += swin_(t) * swin_(t);
+		}
+		for (sum = (mrs_real)1.0/sum, t =0; t < Nw; t++)
+			swin_(t) *= sum;
+	}
 }
 
 
@@ -166,19 +173,30 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
 	  tin_(t) = tin_(t+half_Nw_);
 	  tin_(t+half_Nw_) = tmp;
   }
-  
 
-
+  mrs_real rmsOut = 0.0;    
   for (t=0; t < Nw; t++)
   {
 	  temp_(t) += (tin_(t) * swin_(t));
   }
-  
-	  
-  
+
+
   for (t=0; t < N; t++) 
+  {
 	  out(0,t) = temp_(t);
+	  rmsOut += out(0,t) * out(0,t);
+  }
   
+  rmsOut /= Nw;
+  rmsOut = sqrt(rmsOut);
+  
+
+  mrs_real rmsIn = ctrl_rmsIn_->to<mrs_real>();
+  
+  
+  out *= 0.75 * (rmsIn / rmsOut);
+
+
   for  (t=0; t < N-I_; t++)
 	  temp_(t) = temp_(t+I_);
   for (t=N-I_; t<N; t++) 
