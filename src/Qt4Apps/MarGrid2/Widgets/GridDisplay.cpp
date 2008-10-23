@@ -11,6 +11,8 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
     connect(this, SIGNAL(extractMode()), grid_, SLOT(setExtractMode()));
 	connect(this, SIGNAL(trainMode()), grid_, SLOT(setTrainMode()));
 	connect(this, SIGNAL(predictMode()), grid_, SLOT(setPredictMode()));
+	connect(this, SIGNAL(savePredictionGridSignal(QString)), grid_, SLOT(savePredictionGrid(QString)));
+	connect(this, SIGNAL(openPredictionGridSignal(QString)), grid_, SLOT(openPredictionGrid(QString)));
 }
 
 GridDisplay::~GridDisplay()
@@ -45,11 +47,11 @@ void GridDisplay::predict()
 }
 void GridDisplay::savePredictionGrid(QString fname)
 {
-	//TODO: connect save to grid
+	emit savePredictionGridSignal(fname);
 }
 void GridDisplay::openPredictionGrid(QString fname)
 {
-	//TODO: connect open to grid
+	emit openPredictionGridSignal(fname);
 }
 void GridDisplay::playModeChanged()
 {
