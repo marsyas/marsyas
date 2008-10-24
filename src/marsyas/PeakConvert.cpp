@@ -531,7 +531,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 				//pkViewOut(i, peakView::pkDeltaFrequency, f) = 0;
 				//pkViewOut(i, peakView::pkDeltaAmplitude, f) = 0;
 				pkViewOut(i, peakView::pkFrame, f) = frame_; 
-				//pkViewOut(i, peakView::pkGroup, f) = 0;
+				//pkViewOut(i, peakView::pkGroup, f) = -1;
 				//pkViewOut(i, peakView::pkVolume, f) = 0;
 				//pkViewOut(i, peakView::pkPan, f) = 0;
 				//pkViewOut(i, peakView::pkBinLow, f) = 0;

@@ -59,7 +59,7 @@ PeakSynthOsc::addControls()
 	addctrl("mrs_natural/synSize", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_synSize_);
 	ctrl_synSize_->setState(true);
 
-	addctrl("mrs_natural/delay", MRS_DEFAULT_SLICE_NSAMPLES /2, ctrl_delay_);
+	addctrl("mrs_natural/delay", 0, ctrl_delay_);
 	ctrl_delay_->setState(true);
 
 	addctrl("mrs_realvec/harmonize", realvec(), ctrl_harmonize_);
