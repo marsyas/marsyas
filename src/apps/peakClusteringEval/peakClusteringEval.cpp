@@ -492,7 +492,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	MarSystem* synthBank = mng.create("Fanout","synthBank");
 	mrs_natural numSynths = 10; // HARDCODED FOR NOW [!]
 	synthBank->addMarSystem(mng.create("PeakSynth", "synthCluster_0"));
-	synthBank->updctrl("PeakSynth/SynthCluster_0/PeakSynthOsc/pso/mrs_natural/peakGroup2Synth", 0);
+	synthBank->updctrl("PeakSynth/synthCluster_0/PeakSynthOsc/pso/mrs_natural/peakGroup2Synth", 0);
 	for(mrs_natural s=1; s < numSynths; ++s)
 	{
 		ostringstream oss;
@@ -513,23 +513,22 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 
 	postNet->addMarSystem(synthBank);
 	
-	//add a MATLAB sink
-	postNet->addMarSystem(mng.create("PlotSink", "send2MATLAB"));
-	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/sequence", false);
-	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/messages", false);
-	postNet->updctrl("PlotSink/send2MATLAB/mrs_bool/matlab", true);
-	postNet->updctrl("PlotSink/send2MATLAB/mrs_string/matlabCommand",
-		"evaluateTextWin;");
-
 	// SHREDDER /////////////////////////////////////////////////
 	MarSystem* synthNet = mng.create("Shredder", "synthNet");
 	synthNet->addMarSystem(postNet);
-	
+	synthNet->updctrl("mrs_bool/accumulate", true); //accumulate output
 	mainNet->addMarSystem(synthNet);
-
 	//link Shredder nTimes to Accumulator nTimes
 	mainNet->linkctrl("Shredder/synthNet/mrs_natural/nTimes",
 		"Accumulator/textWinNet/mrs_natural/nTimes");
+
+	// add a MATLAB sink at the very end of the network!
+	mainNet->addMarSystem(mng.create("PlotSink", "send2MATLAB"));
+	mainNet->updctrl("PlotSink/send2MATLAB/mrs_bool/sequence", false);
+	mainNet->updctrl("PlotSink/send2MATLAB/mrs_bool/messages", false);
+	mainNet->updctrl("PlotSink/send2MATLAB/mrs_bool/matlab", true);
+	mainNet->updctrl("PlotSink/send2MATLAB/mrs_string/matlabCommand",
+		"evaluateTextWin;");
 	
 	//****************************************************************
 	
@@ -590,7 +589,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	
 	mainNet->updctrl("PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
 	mainNet->updctrl("PeakConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
-	//mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+	mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
 
 	//mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); [!]
 	//mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);//[!]
@@ -793,10 +792,10 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		}
 	}
 
-	mrs_natural delay = -D;
+	mrs_natural delay = -(winSize_/2 - hopSize_); 
 	mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/synthBank/PeakSynth/synthCluster_0/PeakSynthOsc/pso/mrs_real/samplingFreq", samplingFrequency_);
 	mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/synthBank/PeakSynth/synthCluster_0/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
-	mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/synthBank/PeakSynth/synthCluster_0/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
+	mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/synthBank/PeakSynth/synthCluster_0/PeakSynthOsc/pso/mrs_natural/synSize", hopSize_*2);
 	mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/synthBank/PeakSynth/synthCluster_0/Windowing/wiSyn/mrs_string/type", "Hanning");
 		
 	//[!]

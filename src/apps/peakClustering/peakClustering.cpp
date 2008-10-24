@@ -176,6 +176,11 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystemManager mng;
 
 	cout << "Extracting Peaks and Computing Clusters..." << endl;
+	cout << "Nw = " << Nw << endl;
+	cout << "N = " << N << endl;
+	cout << "winSize_ = " << winSize_ << endl;
+	cout << "D = " << D << endl;
+	cout << "hopSize_ = " << hopSize_ << endl;
 	
 	//**************************************************
 	// create the peakClustering network
@@ -613,7 +618,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	
 	mainNet->updctrl("PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
 	mainNet->updctrl("PeakConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
-	//mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+	mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
 
 	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
 	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
@@ -766,14 +771,15 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	if(synthetize>-1)
 	{
-		mrs_natural delay = -D;
+		mrs_natural delay = -(winSize_/2 - hopSize_); 
+		cout << "Delay = " << delay << endl;
 		if (synthetize < 3)
 		{
 			if(synthetize==0)
 			{
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_real/samplingFreq", samplingFrequency_);
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", hopSize_*2);//D*2);
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
 			}
 			else 
@@ -805,8 +811,8 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				// setting the synthesis starting time (default 0)
 			}
 		}
-		else
-			mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D);
+		//else
+		//	mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D); //this control exists?!? [WTF]
 
 		//mainNet->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
 
