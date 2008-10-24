@@ -142,6 +142,7 @@ PvFold::myProcess(realvec& in, realvec& out)
 	
 	ctrl_rmsIn_->setValue(rmsIn );
 	
+	
 	// circular shift 
 	int half_Nw_ = Nw_/2;
 	mrs_real tmp;

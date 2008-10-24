@@ -181,7 +181,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
 	
 	
-	if (ctrl_phaselock_->to<mrs_bool>())
+	if (ctrl_phaselock_->to<bool>() == true)
 	{
 		
 		ctrl_phaselock_->setValue(false);
@@ -191,7 +191,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		}
 		if (ctrl_onsetsAudible_->to<mrs_bool>() == true) 
 		{
-			phases = analysisphases;
+			phases(t) = in(2*t+1,0);
 		}
 	}
 	else
@@ -216,9 +216,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	
 	Iinv_ = (mrs_real)(1.0 / I_);
 	Pinc_ = PS_ * L_ / TWOPI;
-	// Pinc_ = P_ * L_ / R_;
 	
-
 	
 	Nw_ = getctrl("mrs_natural/winSize")->to<mrs_natural>();
 
@@ -274,28 +272,15 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	
 	for (t=0; t < NP_; t++)
 	{
-		omega_k = (TWOPI * t) / ((NP_-1)*2) ;
 		phases(t) *= Pinc_;
+
 		
-
-		if (isPeak(t,magnitudes_, maxAmp))
-		{
-			f_ = lastfreq_(t);
-			finc_ = (phases(t) - f_)*Iinv_;
-		}
-		else 
-		{
-			f_ = lastfreq_(t);
-			finc_ = (phases(t) - f_)*Iinv_;			
-		}
+		f_ = lastfreq_(t);			
+		// finc_ = analysisphases(t) * Iinv_;
+		finc_ = (phases(t) - f_) * Iinv_;
 		
-			
-
-
-
+		
 		a_ = lastamp_(t);
-		
-		
 		ainc_ = (magnitudes_(t) - a_)*Iinv_;
 		address_ = index_(t);
 		
@@ -326,18 +311,20 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		index_(t) = address_;	  
 		lastamp_(t) = magnitudes_(t);
 		lastfreq_(t) = phases(t);
-
-		
 	}
-	
- 
 
-	/* mrs_real rmsOut = 0.0;
+	mrs_real rmsOut = 0.0;
 	for (t=0; t < Nw_; t++) 
 	{
 		out(0,t) = temp_(t);
 		rmsOut += (out(0,t) * out(0,t));
 	}
+	
+ 
+
+
+	/* 
+
 	rmsOut /= Nw_;
 	rmsOut = sqrt(rmsOut);
 

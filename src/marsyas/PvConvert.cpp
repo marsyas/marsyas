@@ -117,7 +117,7 @@ PvConvert::myUpdate(MarControlPtr sender)
 void 
 PvConvert::myProcessFull(realvec& in, realvec& out)
 {
-	
+
 	mrs_natural N2 = inObservations_/2;
 	
 	mrs_real a;
@@ -163,8 +163,7 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 
 		// computer magnitude value 
 		out(2*t,0) = sqrt(a*a + b*b);
-		
-		
+
 		if (out(2*t,0) == 0.0)
 			phasediff = 0.0;
 		else 
@@ -261,6 +260,7 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		sortedmags_(t) = mag_(t);
 		// compute phase
 		phases(t) = -atan2(b,a);
+		
 	}
 
 	mrs_real* data = sortedmags_.getData();
@@ -317,30 +317,15 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 				out(2*t,0) = val;
 			}
 			out(2*t+1, 0) = omega_k + one_over_decimation * phasediff;
-			// out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
 		}
 		else 
 		{
 			out(2*t+1, 0) = omega_k + one_over_decimation * phasediff;
-			// out(2*t+1, 0) = phasediff * factor_ + t * fundamental_;      
 		}
 	}
 	
 
 	
-
-	/* 
-	mrs_real ratio; 
-	if (sorted_sum!= 0.0)
-		ratio = sum / sorted_sum;
-	else 
-		ratio = 1.0;
-	
-	for (t=0; t <= N2; t++)
-	{
-		out(2*t,0) *=  ratio;
-	}
-	*/ 
 
 
 }

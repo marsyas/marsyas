@@ -314,7 +314,7 @@ mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
 inline 
 mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 {
-	#ifdef MARSYAS_DEBUG
+#ifdef MARSYAS_DEBUG
 	if ((r >= rows_) || (c >= cols_))
 	{
 		MRSERR("rows_ = " << rows_);
@@ -322,7 +322,7 @@ mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 		MRSERR("c = " << c);
 		MRSERR("cols = " << cols_);
 	}
-	#endif
+#endif
 	
 	MRSASSERT(r < rows_);
 	MRSASSERT(c < cols_);

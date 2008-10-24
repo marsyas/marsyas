@@ -398,6 +398,7 @@ PvUnconvert::myProcess(realvec& in, realvec& out)
 				re = 1;
 			}
 			phase_(t) = lastphases(t) + interpolation * in(freq,0);
+
 			if (ctrl_phaselock_->to<mrs_bool>())
 			{
 				phase_(t) = analysisphases(t);

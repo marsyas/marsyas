@@ -90,6 +90,7 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
     {
 		awin_(t) = (mrs_real)(0.5 * (1  - cos(TWOPI * t/(Nw-1))));
 		swin_(t) = (mrs_real)(0.5 * (1  - cos(TWOPI * t/(Nw-1))));
+		
     }
 	/* when Nw > N also apply interpolating (sinc) windows 
 	 * to ensure that window are 0 at increments of N (the 
@@ -161,7 +162,11 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
 
 
   for (t=0; t < Nw; t++)
+  {
 	  tin_(t) = in(0, t);
+  }
+  
+
   
 
   // undo circular shift 
@@ -175,6 +180,7 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
   }
 
   mrs_real rmsOut = 0.0;    
+
   for (t=0; t < Nw; t++)
   {
 	  temp_(t) += (tin_(t) * swin_(t));
@@ -192,9 +198,11 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
   
 
   mrs_real rmsIn = ctrl_rmsIn_->to<mrs_real>();
+
   
   
-  out *= 0.75 * (rmsIn / rmsOut);
+  
+  /* out *= 0.75 * (rmsIn / rmsOut); */ 
 
 
   for  (t=0; t < N-I_; t++)
@@ -206,6 +214,7 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
   
   
 }
+
 
 
 
