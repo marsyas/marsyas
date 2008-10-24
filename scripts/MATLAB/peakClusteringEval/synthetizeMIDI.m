@@ -1,5 +1,5 @@
 % clear
-% filename = 'z:\MIDI\test.mid' 
+% filename = 'z:\MIDI\syncTest.mid' 
 % fs = 44100;
 % startSeg = 0;
 % endSeg = 10;
@@ -101,22 +101,22 @@ end
 numActiveNotes = 0;
 onsetIndex = 1;
 
-resynthAudio = [];
-
-refFramesCount = 0;
-resynthFramesCount = 0;
-
 textWinStart = 1;
 textWinEnd = 0;
 
+refAudio = [];
+
 refAudioTextWinds = cell(1,0);
-segregatedAudioTextWinds = cell(1,0);
+resAudioTextWinds = cell(1,0);
+segAudioTextWinds = cell(1,0);
 
 SDRTextWinds = [];
 numActiveNotesTextWinds = [];
-activeChannels = false(numChannels,1);
 
-resynthAudioTextWinds = cell(1,0);
+activeChannels = [];
+activeChannelsTextWinds = cell(1,0);
+
+
 
 
 

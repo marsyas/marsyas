@@ -1,13 +1,17 @@
 %% PLAY AND PLOT ENTIRE FILE
 ref = horzcat(refAudioTextWinds{:});
-seg = horzcat(segregatedAudioTextWinds{:});
+seg = horzcat(segAudioTextWinds{:});
 
+disp('Playing entire ref audio...')
 sound(ref(1,:), fs);
+pause
+
+disp('Playing each channel at a time...') 
 for i=2:size(ref,1)
     subplot(2,1,1)
     plot(ref(i,:), 'g');
     subplot(2,1,2)
-    plot(seg(i,:), 'r');
+    plot(seg(i,:), 'r'); 
     pause     
     sound(ref(i,:), fs);  
     sound(seg(i,:), fs);
@@ -26,16 +30,16 @@ end
 %         subplot(2,1,1)
 %         plot(refAudioTextWinds{i}(c,:), 'g')
 %         subplot(2,1,2)
-%         plot(segregatedAudioTextWinds{i}(c,:), 'r')
+%         plot(segAudioTextWinds{i}(c,:), 'r')
 %         sound(refAudioTextWinds{i}(c,:), fs);
-%         sound(segregatedAudioTextWinds{i}(c,:), fs);
+%         sound(segAudioTextWinds{i}(c,:), fs);
 %         pause
 %     end
 % end
 
 %% PLOT ALL SEGREGATED CHANNELS
 % ref = horzcat(refAudioTextWinds{:});
-% seg = horzcat(segregatedAudioTextWinds{:});
+% seg = horzcat(segAudioTextWinds{:});
 % for c=1:numChannels
 %     subplot(numChannels, 1, c);
 %     plot(seg(c+1,:));
@@ -49,7 +53,19 @@ end
 %     display(['Num. active notes = ' num2str(numActiveNotesTextWinds(i))]);
 %     for c=1:nch
 %         subplot(nch,1,c)
-%         plot(resynthAudioTextWinds{i}(c,:))
+%         plot(resAudioTextWinds{i}(c,:))
 %     end
 %     pause
 % end
+
+
+
+
+%% SYNC evals
+%PLOT ENTIRE TEXT WIND
+% plot(audio(2,textWinStart:textWinEnd), 'g');
+% hold on
+% plot(PlotSink_send2MATLAB_indata(1,:), 'r');
+% hold off
+
+

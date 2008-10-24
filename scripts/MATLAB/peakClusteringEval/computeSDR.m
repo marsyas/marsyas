@@ -10,7 +10,7 @@ if size(syn, 2) ~= frameLength
     error('The synthesis should be a matrix of line vectors, each of size frameLength');
 end
 
-nbRefs = size(ref, 1)
+nbRefs = size(ref, 1);
 nbSyn = size(syn, 1);
 
 % handle different numbers by padding zeros
@@ -22,6 +22,8 @@ end
 
 nbRefs = size(ref, 1);
 nbSyn = size(syn, 1);
+
+correspondence = [];%[1:nbSyn]; %[!]
 
 permRefs = perms((1:nbRefs));
 refPower = sum(abs(ref),2);%abs(sum(ref, 2)); ????
