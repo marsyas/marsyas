@@ -1,4 +1,3 @@
-
 #include "common.h"
 
 #include <cstdio>
@@ -16,9 +15,6 @@ using namespace std;
 using namespace Marsyas;
 
 CommandLineOptions cmd_options;
-
-
-
 int helpopt;
 int usageopt;
 int wopt = 2 * MRS_DEFAULT_SLICE_NSAMPLES;
@@ -27,10 +23,6 @@ int lpopt = 36;
 int upopt = 128;
 int plopt = 0;
 float topt = 0.2f;
-
-
-
-
 
 
 
@@ -65,8 +57,6 @@ printHelp(string progName)
 	cerr << "-u --upperPitch : upperPitch " << endl;
 	exit(1);
 }
-
-
 
 
 void 
@@ -115,49 +105,47 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	mrs_realvec confidences(len);
 	mrs_realvec pitchres;
 	mrs_realvec peak_in;
-	mrs_realvec peak_out;
-	int i;
-	for (i=0; i < contourSize; i++) 
-	  {
+	for (int i=0; i < contourSize; i++) 
+	{
 	    pitchExtractor->tick();
 	    pitchres = pitchExtractor->getctrl("mrs_realvec/processedData")->to<mrs_realvec>(); 
 	    confidences(i) = pitchres(0);
 	    pitches(i) = pitchres(1);
+        
+        /*
 	    peak_in = pitchExtractor->getctrl("PitchPraat/pitchPraat/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
 	    mrs_natural pos = pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
-	    /* MATLAB_PUT(peak_in, "peak_in");
+	    MATLAB_PUT(peak_in, "peak_in");
 	    MATLAB_PUT(pos, "pos");
 	    MATLAB_EVAL("plot(peak_in); title(num2str(pos));");
 	    getchar();
 	    */ 
-
-	  }
-	
-
-	
+    }
 
 	// Normalize confidence to 0-1 range
 	confidences.normMaxMin();
 
-	// Optionally plot the pitches 
-	
+	// Optionally plot the pitches 	
+#ifdef MARSYAS_MATLAB
 	mrs_realvec foo(len);
 	MATLAB_PUT(confidences, "confidences");
 	MATLAB_PUT(pitches, "pitches");
 	MATLAB_EVAL("plot(confidences)");
+    cerr << "Enter any character to continue" << endl;
 	getchar();
 	MATLAB_EVAL("a = pitches .* pitches;");
 	MATLAB_GET("a", foo);
 	MATLAB_EVAL("plot(a)");
 	getchar();
 	MATLAB_EVAL("plot(pitches)");
+    cerr << "Enter any character to continue" << endl;
 	getchar();	
 	MATLAB_CLOSE();
-	
+#endif 
+
 	// Playback the pitches
 	if (playPitches) 
 	{
-		
 		MarSystem* playback = mng.create("Series", "playback");
 		playback->addMarSystem(mng.create("SineSource", "ss"));
 		playback->addMarSystem(mng.create("Gain", "g"));
@@ -165,8 +153,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		playback->updctrl("mrs_natural/inSamples", 512);
 		playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updctrl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
-		
-		
+				
 		for (int i=0; i < len; i++) 
 		{
 			playback->updctrl("SineSource/ss/mrs_real/frequency", pitches(i));
@@ -175,9 +162,6 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		}
 	}
 }
-
-
-
 
 
 void 
@@ -195,8 +179,6 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 
 	pitchExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
 	pitchExtractor->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  
-
  
 
 	pitchExtractor->addMarSystem(mng.create("AutoCorrelation", "acr"));
@@ -215,8 +197,6 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
   
 	pitchExtractor->addMarSystem(fanin);
 	pitchExtractor->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
-
-
 
 	pitchExtractor->addMarSystem(mng.create("PlotSink", "psink0"));
 	pitchExtractor->addMarSystem(mng.create("Peaker", "pkr"));
@@ -251,8 +231,6 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakEnd", highSamples);
 	pitchExtractor->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
    
-   
-   
 	cout << (*pitchExtractor) << endl;
    
 	realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), pitchExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
@@ -261,12 +239,7 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	realvec win(pitchExtractor->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
 				pitchExtractor->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   
-  
-  
-	mrs_real pitch;
-	mrs_natural counter = 0;      
-	mrs_natural pos = 0;
-  
+  	
 	/// playback network 
 	MarSystem* playback = mng.create("Series", "playback");
 	playback->addMarSystem(mng.create("SineSource", "ss"));
@@ -275,12 +248,8 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	//playback->updctrl("mrs_bool/initAudio", true);
 
   
-	counter = 0;
-  
-	// Main processing loop 
-	// while (1)
-
-	while (pitchExtractor->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    mrs_real pitch;
+    while (pitchExtractor->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		if (plopt) 
 			playback->tick();
@@ -288,34 +257,16 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		pitchExtractor->process(win, pitchres);
       
 		// pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("AudioSource/src/mrs_real/osrate")->to<mrs_real>());
-
 		pitch = samples2hertz((mrs_natural)pitchres(1), pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
       
-
 		cout << "conf" << "---" << pitchres(0) << endl;
 		cout << "midi" << "---" << hertz2pitch(pitch) << endl ;
 		cout << "hz " << "---" << pitch << endl;
+
 		if (pitchres(0) > 0.05) 
 			playback->updctrl("SineSource/ss/mrs_real/frequency", pitch);
-      
-      
-      
-      
-      
-		counter++;
     }
-  
-  
-  
-  
 }
-
-
-
-
-  
-
-
 
 
 void 
@@ -350,49 +301,39 @@ loadOptions()
 int
 main(int argc, const char **argv)
 {
-	int i = 0;
-
 	MRSDIAG("pitchextract.cpp - main");
-
-
 
 	string progName = argv[0];  
 	progName = progName.erase(0,3);
-
 
 	initOptions();
 	cmd_options.readOptions(argc, argv);
 	loadOptions();
 
 	vector<string> soundfiles = cmd_options.getRemaining();
-	vector<string>::iterator sfi;
-
-  
   
 	if (helpopt) 
 		printHelp(progName);
   
 	if (usageopt)
 		printUsage(progName);
+
 	cout << "PitchExtract windowSize = " << wopt << endl;
 	cout << "PitchExtract hopSize = " << hopt << endl;
 	cout << "PitchExtract lowerPitch = " << lpopt << endl;
 	cout << "PitchExtract upperPitch = " << upopt << endl;
 	cout << "PitchExtract threshold  = " << topt << endl;
 	cout << "PitchExtract playback   = " << plopt << endl;
-
-
   
+    vector<string>::iterator sfi;
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
 		string sfname = *sfi;
 		pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0);
-		i++;
+
     }
-	exit(0);
-  
 
-
+    exit(0);
 }
 
 	
