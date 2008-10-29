@@ -4,24 +4,41 @@
 resAudio = PlotSink_send2MATLAB_indata;
     
 % some inits
+frameSize = hopSize;
 numFrames = size(activeChannels, 2); % = size(resAudio,2)/hopSize = size(refAudio,2)/hopSize
-SDR = zeros(1,numFrames);
 segAudio = zeros(size(audio, 1), size(resAudio,2));
+
+%check for any onsets in texture window
+%(this is used for fixed size texture windows)
+margin = 0.000; %margin in seconds
+tws = textWinStart + margin*fs; %in samples
+twe = textWinEnd  - margin*fs; %in samples
+onsetsSamples = onsets*fs; % convert to samples
+os = onsetsSamples > tws & onsetsSamples < twe;
+onsetsSamples = onsetsSamples(os); %in samples
+
+%convert onsets to frame boundaries
+onsetsFrames = ceil(onsetsSamples/frameSize);%in frames
+onsetsFrames = onsetsFrames - ceil(tws/frameSize)+1;%in frames, and relative to current text wind
+
+onsetsFrames = [1 onsetsFrames numFrames+1]; 
+
+numRegions = length(onsetsFrames)-1;
+SDR = zeros(1,numRegions);
                       
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% compute SDR in a frame-by-frame basis
-for f=1:numFrames        
-    channelSel = activeChannels(:,f);
+% compute SDR for inter-onset region in the current texture window
+for r=1:numRegions
+    sf = onsetsFrames(r);
+    ef = onsetsFrames(r+1)-1;
+    s = (sf-1)*frameSize+1;
+    e = ef*frameSize;
+    
+    %Channel Selection for this region
+    channelSel = logical(sum(activeChannels(:,sf:ef),2));
     channelSel = [false; channelSel]; %also ignore mix channel
     channelSelIdx = [1:1:size(channelSel,1)]; 
-
-    %get a frame of audio
-    fsize = hopSize;    
-    s = (f-1)*fsize+1;
-    e = s + fsize-1;
-    %if e > size(resAudio,2)
-    %    e = size(resAudio,2);
-    %end
+    
     refAudioFrame = refAudio(channelSel, s:e); 
     resAudioFrame = resAudio(1:numActiveNotes,s:e);
 
@@ -33,7 +50,7 @@ for f=1:numFrames
     %compute SDR for current frame
     %correspondence = [];
     [SDRresults, correspondence] = computeSDR(refAudioFrame, resAudioFrame);
-    SDR(f) = SDRresults;
+    SDR(r) = SDRresults;
 
     %% CORRESPONDENCE !!!!
     %place clustered audio into the corresponding audio channel
