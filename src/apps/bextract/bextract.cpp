@@ -3030,17 +3030,8 @@ main(int argc, const char **argv)
 	//SINGLE-VALUE Extractor
 	if (extractorStr.substr(0,2) == "SV") 
 	{
-		bool withBeatFeatures = false;
-		string extrName;
-
-		//BEAT Extractor
-		if (extractorName.substr(extractorName.length()-4, extractorName.length()) == "BEAT")
-		{
-			withBeatFeatures = true;
-			extrName = extractorName.substr(2, extractorName.length()-6);
-		}
-		else 
-			extrName = extractorName.substr(2, extractorName.length());
+		bool withBeatFeatures = extractorName.substr(extractorName.length()-4, extractorName.length()) == "BEAT";
+		string extrName = extractorName.substr(2, extractorName.length());
 
 		cout << "extrName = " << extrName << endl;
 
@@ -3056,8 +3047,7 @@ main(int argc, const char **argv)
 	//REMOVE_SILENCE Extractor
 	else if (extractorStr.substr(0,2) == "RS")
 	{
-		string extrName;
-		extrName = extractorName.substr(2, extractorName.length());	
+		string extrName = extractorName.substr(2, extractorName.length());	
 		if(featExtractors.find(extrName)== featExtractors.end())
 		{
 			cout << extractorStr << ": Unsupported extractor!" << endl;
