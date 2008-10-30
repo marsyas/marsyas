@@ -41,7 +41,7 @@ float repetitions = 1;
 void 
 printUsage(string progName)
 {
-  MRSDIAG("waveletplay.cpp - printUsage");
+  MRSDIAG("tempo.cpp - printUsage");
   cerr << "Usage : " << progName << " [-m method] [-g gain] [-o offset(samples)] [-d duration(samples)] [-s start(seconds)] [-l length(seconds)] [-f outputfile] [-p pluginName] [-r repetitions] file1 file2 file3" << endl;
   cerr << endl;
   cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format or collections " << endl;
@@ -51,8 +51,8 @@ printUsage(string progName)
 void 
 printHelp(string progName)
 {
-  MRSDIAG("waveletplay.cpp - printHelp");
-  cerr << "waveletplay, MARSYAS, Copyright George Tzanetakis " << endl;
+  MRSDIAG("tempo.cpp - printHelp");
+  cerr << "tempo, MARSYAS, Copyright George Tzanetakis " << endl;
   cerr << "--------------------------------------------" << endl;
   cerr << "Prints information about the sound files provided as arguments " << endl;
   cerr << endl;
@@ -69,17 +69,17 @@ printHelp(string progName)
   cerr << "-g --gain       : linear volume gain " << endl;
   cerr << "-o --offset     : playback start offset in samples " << endl;
   cerr << "-d --duration   : playback duration in samples     " << endl;
-  cerr << "-s --start      : playback start offest in seconds " << endl;
+  cerr << "-s --start      : playback start offset in seconds " << endl;
   cerr << "-l --length     : playback length in seconds " << endl;
   cerr << "-p --plugin     : output plugin name " << endl;
   cerr << "-r --repetitions: number of repetitions " << endl;
-
-
   cerr << "Available methods: " << endl;
   cerr << "MEDIAN_SUMBANDS" << endl;
   cerr << "MEDIAN_MULTIBANDS" << endl;
   cerr << "HISTO_SUMBANDS" << endl;
-  
+  cerr << "BOOMCHICK_WAVELET" << endl;
+  cerr << "BOOMCHICK_FILTER" << endl;
+
   exit(1);
 }
 
@@ -112,15 +112,8 @@ void tempo_medianMultiBands(string sfName, string resName)
   total->addMarSystem(mng.create("MaxArgMax", "mxr"));
   total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
 
-
-
-  
-
-
-  
   
   // update the controls 
-
   mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 
   // input filename with hopSize/winSize 
@@ -132,7 +125,7 @@ void tempo_medianMultiBands(string sfName, string resName)
   total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
 
 
-  // wavelt filterbank envelope extraction controls 
+  // wavelet filterbank envelope extraction controls 
   total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
   mrs_natural factor = 32;
@@ -235,18 +228,9 @@ tempo_new(string sfName, string resName)
   
   // prepare network 
   MarSystem *total = mng.create("Series", "src");
-
-
-
-  
   total->addMarSystem(mng.create("SoundFileSource", "src"));
   total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   total->addMarSystem(mng.create("ShiftInput", "si"));
-
-
-
-  
-  
   total->addMarSystem(mng.create("DownSampler", "initds"));
   total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
   // implicit fanout 
@@ -257,8 +241,6 @@ tempo_new(string sfName, string resName)
 
   // implicit fanin 
   total->addMarSystem(mng.create("Sum", "sum"));
-
-
   total->addMarSystem(mng.create("DownSampler", "ds"));
   total->addMarSystem(mng.create("AutoCorrelation", "acr"));
   // total->addMarSystem(mng.create("PlotSink", "psink1"));
@@ -278,31 +260,22 @@ tempo_new(string sfName, string resName)
   // total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
 
 
-
-  mrs_natural ifactor = 8;;
-  total->updctrl("DownSampler/initds/mrs_natural/factor", ifactor);  
-  
+  mrs_natural ifactor = 8;
+  total->updctrl("DownSampler/initds/mrs_natural/factor", ifactor);    
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-
-
-  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   // srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();
   // cout << "srate = " << srate << endl;
-
-
-
   
   // update the controls 
   // input filename with hopSize/winSize 
   mrs_natural winSize = (mrs_natural)((srate / 22050.0) * 2 * 65536);
   mrs_natural hopSize = winSize / 16;
-
   // cout << "winSize = " << winSize << endl;
   // cout << "hopSize = " << hopSize << endl;
   
-
   offset = (mrs_natural) (start * srate); 
-duration = (mrs_natural) (length * srate);
+  duration = (mrs_natural) (length * srate);
   
   // total->updctrl("PlotSink/psink1/mrs_string/filename", "acr");
   // total->updctrl("PlotSink/psink2/mrs_string/filename", "peaks");
@@ -320,7 +293,7 @@ duration = (mrs_natural) (length * srate);
 
 
 
-  // wavelt filterbank envelope extraction controls 
+  // wavelet filterbank envelope extraction controls 
   total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
   total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
   mrs_natural factor = 32;
@@ -1361,21 +1334,12 @@ tempo_bcFilter(string sfName, string resName)
 
 // Play a collection l of soundfiles
 void tempo(string inFname, string outFname, string method)
-{
-  
+{  
   MRSDIAG("tempo.cpp - tempo");
 
-  
-
-    
-
-  string resName;
-  string sfName;
-  
-
   // For each file in collection estimate tempo
-  sfName = inFname;
-  resName = outFname;
+  string sfName = inFname;
+  string resName = outFname;
   
   /* resName = sfName.substr(0,sfName.rfind(".", sfName.length()));
   resName += "Marsyas";
@@ -1500,56 +1464,55 @@ main(int argc, const char **argv)
       printUsage(progName);
       exit(1);
     }
-  
-
-    
-
-
-  
 
   initOptions();
   cmd_options.readOptions(argc,argv);
   loadOptions();
-  
 
-  vector<string> soundfiles = cmd_options.getRemaining();
-  vector<string>::iterator sfi;
-
-  
   if (helpopt) 
     printHelp(progName);
-  
+
   if (usageopt)
     printUsage(progName);
 
-   
-  string method;
-  
+  string method;  
   if (methodopt == EMPTYSTRING) 
     method = "NEW";
   else 
     method = methodopt;
 
+  vector<string> soundfiles = cmd_options.getRemaining();
+
 
   // collection code for batch processing 
-  /* Collection l;
-
-  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
+  bool haveCollections = false; // TODO: set this based on input files
+  if (haveCollections)
+  {
+    Collection l;
+    vector<string>::iterator sfi;
+    for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
     {
       string sfname = *sfi;
-      
-      readCollection(l,sfname);
+      readCollection(l, sfname);
     }
-  */ 
-  
-  // for (int i=0; i < l.size(); i++)
-  // {
-  // tempo(l.entry(i), "default.txt", method);
-  // }
-  
-  
-  
-  tempo(soundfiles[0], soundfiles[1], method);
+
+    for (int i=0; i < l.size(); i++)
+    {
+      tempo(l.entry(i), "default.txt", method);
+    }
+  }
+  else
+  {
+    for (vector<string>::iterator sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
+    {
+      string sfname = *sfi;
+      tempo(*sfi, "default.txt", method);
+    }
+  }
+
+  // This will crash unless the user knows to specify an outfile.
+  //tempo(soundfiles[0], soundfiles[1], method);
+
   exit(0);
 }
 
