@@ -263,7 +263,7 @@ tempo_new(string sfName, string resName)
   mrs_natural ifactor = 8;
   total->updctrl("DownSampler/initds/mrs_natural/factor", ifactor);    
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   // srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();
   // cout << "srate = " << srate << endl;
   
