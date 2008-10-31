@@ -849,7 +849,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 				break;
 		}
 	}
-	if(synthetize_ > -1 && residual_)
+	if(synthetize_ > -1 && residual_ && frameCount != 0)
 	{
 		cout << "Global SNR : " << globalSnr/frameCount << endl;
 		*snr0 = globalSnr/frameCount;
