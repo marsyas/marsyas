@@ -130,17 +130,16 @@ void
 PvFold::myProcess(realvec& in, realvec& out)
 {
 
-	mrs_real rmsIn = 0.0;
+	// mrs_real rmsIn = 0.0;
 	
 	for (t=0; t < Nw_; t++)
     {
 		out(0,t) = in(0,t)*awin_(t);
-		rmsIn += in(0,t) * in(0,t);
+		// rmsIn += in(0,t) * in(0,t);
 	}
-	rmsIn /= Nw_;
-	rmsIn = sqrt(rmsIn);
-	
-	ctrl_rmsIn_->setValue(rmsIn );
+	// rmsIn /= Nw_;
+	// rmsIn = sqrt(rmsIn);
+	// ctrl_rmsIn_->setValue(rmsIn );
 	
 	
 	// circular shift 

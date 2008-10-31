@@ -198,7 +198,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	{
 		for (t=0; t < NP_; t++)
 		{
-			phases(t) = in(2*t+1,0);
+			phases(t) =  in(2*t+1,0);
 		}
 		PS_ = P_;		
 	}
@@ -224,14 +224,18 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
 	mrs_real maxAmp =0.0;
 	
+	
 	for (t=0; t < NP_; t++)
 	{
-		magnitudes_(t) = in(2*t,0);
+		magnitudes_(t) =  1.5 * in(2*t,0);
+		if (t==0) 
+			magnitudes_(t) = 0.0;
 		if (t==size_)
 			magnitudes_(t) = 0.0;
-		if (magnitudes_(t) > maxAmp) 
-			maxAmp = magnitudes_(t);		
 	}
+
+	
+
 
 	// calculate regions of influence 
 	for (t=0; t < NP_; t++)
@@ -265,16 +269,32 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		}
 	}
 		
+	/* static int count = 0;
+	if (count == 0) 
+	{
+		for (t=0; t < NP_; t++)
+		{
 
-
-
+			lastfreq_(t) = phases(t);
+		}
+		
+	}
+	count++;
+	*/ 
+	
 	
 	
 	for (t=0; t < NP_; t++)
 	{
 		phases(t) *= Pinc_;
-
 		
+		
+		while (analysisphases(t) > PI) 
+			analysisphases(t) -= TWOPI;
+		while (analysisphases(t) < -PI) 
+			analysisphases(t) += TWOPI;      		
+
+
 		f_ = lastfreq_(t);			
 		// finc_ = analysisphases(t) * Iinv_;
 		finc_ = (phases(t) - f_) * Iinv_;
@@ -311,6 +331,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		index_(t) = address_;	  
 		lastamp_(t) = magnitudes_(t);
 		lastfreq_(t) = phases(t);
+
 	}
 
 	mrs_real rmsOut = 0.0;

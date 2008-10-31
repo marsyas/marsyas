@@ -284,7 +284,7 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 
 		for (c=0; c < kmax_; c++)
 		{
-			if (val == sortedmags_(c))
+			if ((val == sortedmags_(c))&&(val > 0.005 * sortedmags_(0)))
 			{
 				sorted_sum += val;
 				found = true;
