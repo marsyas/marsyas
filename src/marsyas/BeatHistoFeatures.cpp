@@ -91,7 +91,7 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
     
   // setctrl("mrs_string/onObsNames", "BH_Sum, BH_MaxAmp1divSum, BH_MaxAmp2divSum, BH_MaxAmp3divSum, BH_MaxPos1, BH_MAXPos2, BH_MAXPos3, BH_MaAmp2divMaxAmp2");
   
-  setctrl("mrs_string/onObsNames", "BH_LowPeakAmp, BH_LowPeakBPM, BH_HighPeakAmp, BH_HighPeakBPM, BH_HighLowRatio, BHSUM1, BHSUM2, BHSUM3");
+  setctrl("mrs_string/onObsNames", "BH_LowPeakAmp,BH_LowPeakBPM,BH_HighPeakAmp,BH_HighPeakBPM,BH_HighLowRatio,BHSUM1,BHSUM2,BHSUM3");
 }
 
 mrs_real 
