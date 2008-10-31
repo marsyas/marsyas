@@ -47,9 +47,12 @@ private:
 			    mrs_real& s2, mrs_natural& t2, 
 			    mrs_natural tmx,
 			    mrs_natural size, 
-					realvec& in);
+				const realvec& in);
 
-	//void addControls();
+  // helper function used by harm_prob
+  mrs_real sum_nearby(mrs_natural index, mrs_natural radius, 
+                      mrs_natural size, const realvec& in);
+
 	void myUpdate(MarControlPtr sender);
   
 public:
