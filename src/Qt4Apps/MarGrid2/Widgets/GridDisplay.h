@@ -50,7 +50,7 @@ public:
 		void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
 		void midiPlaylistEvent(bool next);
 		void reload();
-				void extract();
+		void extract();
 		void predict();
 		void train();
 		void openPredictionGrid(QString fname);
@@ -63,6 +63,8 @@ signals:
 		void trainMode();
 		void predictMode();
 		void clearMode();
+		void savePredictionGridSignal(QString);
+		void openPredictionGridSignal(QString);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);
