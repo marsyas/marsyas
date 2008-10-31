@@ -142,7 +142,7 @@ void recognize(string sfName, string tpName)
   accInp->updctrl("mrs_natural/nTimes",ACC_INPUT);
   Inp->addMarSystem(accInp);
   
-  /*** set conttols to rhythm map ***/
+  /*** set controls to rhythm map ***/
 
   sim->updctrl("mrs_natural/calcCovMatrix",2);
   sim->updctrl("mrs_string/normalize", "MeanStd");
@@ -248,7 +248,7 @@ void recognize(string sfName, string tpName)
     cout << "ITR#" << l << " " << acs.to<mrs_real>() << endl;
   }
   
-  /*** calucurate the segment information ***/
+  /*** calculate the segment information ***/
 
   beginPos.create(sizes.getSize()-1);
   endPos.create(sizes.getSize()-1);
@@ -319,7 +319,7 @@ void recognize(string sfName, string tpName)
   segments(k,1) = (mrs_real)algOutput(algOutput.getRows()-1,0)*msecondsPerFrame;
   oss.str(""); oss << sfName << "_segments.txt";
   segments.write(oss.str());
-  cout << "Now writting a segmentation file: " << oss.str() << "." << endl;
+  cout << "Now writing a segmentation file: " << oss.str() << "." << endl;
   
   /*** create WAV file of template patterns ***/
 
@@ -375,7 +375,7 @@ void recognize(string sfName, string tpName)
     wavnetOut[i]->updctrl(oss2.str(),oss.str());
     wavnetOut[i]->updctrl("mrs_natural/inObservations",inpspec.getRows());
     wavnetOut[i]->updctrl("mrs_natural/inSamples",1);
-    cout << "Now writting WAV file: " << oss.str() << "." << endl;
+    cout << "Now writing WAV file: " << oss.str() << "." << endl;
   }
   wavsrdOut->addMarSystem(wavplOut);
   wavsrdOut->updctrl("mrs_natural/nTimes",maxsize);
