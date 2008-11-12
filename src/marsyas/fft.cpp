@@ -158,6 +158,7 @@ fft::cfft(mrs_real x[], int NC, int forward )
   /*
    * scale output
    */
+  
   scale = forward ? (mrs_real)1.0/ND : (mrs_real)2.0 ;
   { register mrs_real *xi=x, *xe=x+ND ;
   while ( xi < xe )

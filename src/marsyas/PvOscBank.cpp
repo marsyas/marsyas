@@ -174,24 +174,29 @@ PvOscBank::isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp)
 void 
 PvOscBank::myProcess(realvec& in, realvec& out)
 {
+	
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
 	
 	MarControlAccessor  acc1(ctrl_analysisphases_);
 	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
-	
-	
+
 	if (ctrl_phaselock_->to<bool>() == true)
 	{
 		
 		ctrl_phaselock_->setValue(false);
 		for (t=0; t < NP_; t++)
 		{
-			phases(t) = in(2*t+1,0);
-		}
-		if (ctrl_onsetsAudible_->to<mrs_bool>() == true) 
-		{
-			phases(t) = in(2*t+1,0);
+			if (ctrl_onsetsAudible_->to<mrs_bool>() == true) 
+			{
+				phases(t) = in(2*t+1,0);
+				// phases(t) = analysisphases(t);
+			}
+			else 
+			{
+				phases(t) = in(2*t+1,0);
+			}
+			
 		}
 	}
 	else
@@ -203,10 +208,6 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		PS_ = P_;		
 	}
 	
-
-	
-
-	temp_.setval(0.0);
 
 	
 	if (PS_ > 1.0)
@@ -224,89 +225,37 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
 	mrs_real maxAmp =0.0;
 	
-	
 	for (t=0; t < NP_; t++)
 	{
-		magnitudes_(t) =  1.5 * in(2*t,0);
+		magnitudes_(t) =  in(2*t,0);
+		if (magnitudes_(t) > maxAmp) 
+			maxAmp = magnitudes_(t);
 		if (t==0) 
 			magnitudes_(t) = 0.0;
 		if (t==size_)
 			magnitudes_(t) = 0.0;
 	}
 
-	
 
-
-	// calculate regions of influence 
-	for (t=0; t < NP_; t++)
-	{
-		int previous_peak=0;
-		int peak = 0;
-		int peakCount = 0;
-		
-
-		if (isPeak(t, magnitudes_, maxAmp))
-		{
-			// calculate significant peaks and corresponding 
-			// non-overlapping intervals 
-			peak = t;
-			
-			if (peak-previous_peak == 1)
-				regions_(peak) = peak;
-			else 
-			{
-				for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
-				{
-					regions_(j) = previous_peak;
-				}
-				
-				for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
-				{
-					regions_(j) = peak;					
-				}
-			}
-			previous_peak = peak;
-		}
-	}
-		
-	/* static int count = 0;
-	if (count == 0) 
-	{
-		for (t=0; t < NP_; t++)
-		{
-
-			lastfreq_(t) = phases(t);
-		}
-		
-	}
-	count++;
-	*/ 
-	
-	
 	
 	for (t=0; t < NP_; t++)
 	{
 		phases(t) *= Pinc_;
 		
-		
-		while (analysisphases(t) > PI) 
-			analysisphases(t) -= TWOPI;
-		while (analysisphases(t) < -PI) 
-			analysisphases(t) += TWOPI;      		
-
-
 		f_ = lastfreq_(t);			
-		// finc_ = analysisphases(t) * Iinv_;
+		// f_ = phases(t);
+		//finc_ = analysisphases(t) * Iinv_;
 		finc_ = (phases(t) - f_) * Iinv_;
 		
+
+		if ((magnitudes_(t) < 1.0e-06)||(magnitudes_(t) < 0.01 * maxAmp))
+			magnitudes_(t) = 0.0;
 		
 		a_ = lastamp_(t);
 		ainc_ = (magnitudes_(t) - a_)*Iinv_;
 		address_ = index_(t);
+
 		
-
-
-
 		if (ainc_ != 0.0 || a_ != 0.0)
 		{
 			// accumulate I samples from each oscillator 
@@ -314,7 +263,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 			for (c=0; c < I_; c++)
 			{
 				naddress_ = (mrs_natural)address_;
-				temp_(c) += a_ * table_(naddress_);
+				temp_(c) += a_ * 1.5 * table_(naddress_);
 				address_ += f_;
 				
 				while (address_ >= L_)
@@ -334,25 +283,11 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
 	}
 
-	mrs_real rmsOut = 0.0;
-	for (t=0; t < Nw_; t++) 
-	{
+
+	for (t=0; t < Nw_; t++)
 		out(0,t) = temp_(t);
-		rmsOut += (out(0,t) * out(0,t));
-	}
 	
- 
 
-
-	/* 
-
-	rmsOut /= Nw_;
-	rmsOut = sqrt(rmsOut);
-
-	mrs_real rmsIn = ctrl_rmsIn_->to<mrs_real>();
-	out *= 1.25;
-	out *= (rmsIn / rmsOut); 
-	*/ 
 
 	
 	for  (t=0; t < Nw_-I_; t++)

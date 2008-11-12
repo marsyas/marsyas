@@ -24,8 +24,8 @@ using namespace Marsyas;
 PvMultiResolution::PvMultiResolution(string name):MarSystem("PvMultiResolution", name)
 {
 	flux_ = new Flux("flux");
-	r_ = 1.0e-13;
-	m_ = 0.98;
+	r_ = 0.1;
+	m_ = 0.999;
 	
 	addControls();
 }
@@ -73,8 +73,8 @@ PvMultiResolution::myUpdate(MarControlPtr sender)
 	mbindex_ = 0;
 
 
-	powerSpectrum_.create(onObservations_/2);
-	whiteSpectrum_.create(onObservations_/2);
+	powerSpectrum_.create(onObservations_/2,1);
+	whiteSpectrum_.create(onObservations_/2,1);
 	
 	flux_->updctrl("mrs_natural/inSamples", 1);
 	flux_->updctrl("mrs_natural/inObservations", onObservations_/2);
@@ -111,7 +111,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 			for (t = 0; t < inSamples_; t++)
 			{
 				
-				out(2*o, t) = out(2*o,t);
+				out(2*o, t) = 0.75 * out(2*o,t);
 			}
 
 
@@ -172,29 +172,30 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 		for (o=0; o < onObservations_/2; o++) 
 			for (t = 0; t < inSamples_; t++)
 			{
-				powerSpectrum_(o) = out(2*o,t) * out(2*o,t);
+				powerSpectrum_(o,0) = out(2*o,t) * out(2*o,t);
 			}
 
 
 		// adaptive pre-whitening 
 		for (o=0; o < onObservations_/2; o++) 
 		{
-			if (powerSpectrum_(o) < r_) 
-				whiteSpectrum_(o) = r_;
+			
+			if (powerSpectrum_(o,0) < r_) 
+				whiteSpectrum_(o,0) = r_;
 			else 
 			{
-				if (m_ * whiteSpectrum_(o) > powerSpectrum_(o))
-					whiteSpectrum_(o) = m_ * whiteSpectrum_(o);
+				if (m_ * whiteSpectrum_(o,0) > powerSpectrum_(o,0))
+					whiteSpectrum_(o,0) = m_ * whiteSpectrum_(o,0);
 				else
-					whiteSpectrum_(o) = powerSpectrum_(o);
+					whiteSpectrum_(o,0) = powerSpectrum_(o,0);
 			}
-			powerSpectrum_(o) = powerSpectrum_(o) / whiteSpectrum_(o);
+			powerSpectrum_(o,0) = powerSpectrum_(o,0) / whiteSpectrum_(o,0);
 		}
 		
-		
-		flux_->process(powerSpectrum_, fluxval_);
 
 		
+		flux_->process(powerSpectrum_, fluxval_); 
+				
 		
 		median_buffer_(mbindex_) = fluxval_(0,0);
 		mbindex_++;
@@ -206,7 +207,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 
 
 		
-		if (fluxval_(0,0) - median_buffer_.median() <= 35.0)    // steady state use long window 
+		if (fluxval_(0,0) - median_buffer_.median() <= 55.0)    // steady state use long window 
 		{
 			for (o=inObservations_/2; o < inObservations_; o++)
 				for (t = 0; t < inSamples_; t++)
@@ -217,12 +218,13 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 			for (o=0; o < onObservations_/2; o++) 
 				for (t = 0; t < inSamples_; t++)
 				{
-					out(2*o, t) = 1.25 * out(2*o,t);
+					out(2*o, t) = 1.20 * out(2*o,t);
 				}
 			ctrl_transient_->setValue(false, NOUPDATE);
 		}
 		else // transient 
 		{
+			cout << "TRANSIENT " << endl;
 			
 			// use short 
 			for (o=0; o < inObservations_/2; o++)
@@ -234,11 +236,11 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 			for (o=0; o < onObservations_/2; o++) 
 				for (t = 0; t < inSamples_; t++)
 				{
-					out(2*o, t) = 0.5 * out(2*o,t);
+					out(2*o, t) = 0.6 * out(2*o,t);
 				}
 
 			ctrl_transient_->setValue(true, NOUPDATE);			
-			// cout << fluxval_(0,0)-median_buffer_.median() << endl;		
+			// cout<< fluxval_(0,0)-median_buffer_.median() << endl;		
 		}
 	}
 	

@@ -277,21 +277,27 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		sum += mag_(t);
 	
 
+	int k = 0;
+
 	for (t=0; t <= N2; t++)
 	{
 		found = false;
-		val = mag_(t);
+ 		val = mag_(t);
 
+		
 		for (c=0; c < kmax_; c++)
 		{
-			if ((val == sortedmags_(c))&&(val > 0.005 * sortedmags_(0)))
+			
+			if (val == sortedmags_(c))
 			{
 				sorted_sum += val;
 				found = true;
-
+				k++;
 				break;
 			}
 		}
+
+		
 
 		out(2*t,0) = 0.0;
 		out(2*t+1,0) = t * fundamental_;
@@ -324,7 +330,6 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 		}
 	}
 	
-
 	
 
 

@@ -593,6 +593,7 @@ MarSystem::checkFlow(realvec& in, realvec& out)
 		MRSWARN("Output Slice Cols = " << ocols_ );      
 	}
 
+	
 	MRSASSERT(irows_ == inObservations_);
 	MRSASSERT(icols_ == inSamples_);
 	MRSASSERT(orows_ == onObservations_);

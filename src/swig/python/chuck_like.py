@@ -19,12 +19,12 @@ def build_network():
      # Assemble the network
      mng = marsyas.MarSystemManager() 
      pnet = mng.create("Series", "pnet")
-
      voices = mng.create("Fanout", "voices");
      voices.addMarSystem(mng.create("SineSource", "src1"));
      filt_noise = mng.create("Series", "filt_noise");
      filt_noise.addMarSystem(mng.create("NoiseSource", "src2"));
      filt_noise.addMarSystem(mng.create("Biquad", "biquad"));
+     
      filt_noise.updControl("Biquad/biquad/mrs_real/frequency", marsyas.MarControlPtr.from_real(400.0));
      voices.addMarSystem(filt_noise);
 
@@ -70,8 +70,8 @@ times2 = [x * 0.0025 for x in range(1, 100)]
 
 time = 0;     # time in seconds 
 while(time < 3.5):
-    dispatch(time, times1, set_freq, f1, frequencies[random.randint(1,len(frequencies)-1)])	
-    dispatch(time, times2,  set_freq, f2, mtof(math.fabs(math.sin(time) * 110)))
+    dispatch(time, times1, set_freq, f2, frequencies[random.randint(1,len(frequencies)-1)])	
+    dispatch(time, times2,  set_freq, f1, mtof(math.fabs(math.sin(time) * 110)))
     
     pnet.tick()
     time = time + tstep 

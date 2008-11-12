@@ -97,13 +97,18 @@ Flux::myProcess(realvec& in, realvec& out)
 		}
 		else if(mode=="DixonDAFX06")
 		{
+
+			
 			flux_ = 0.0;
 			//diff_ = 0.0;
 			//max_ = 0.0;
-			for(o = 1; o < inObservations_; ++o)
+			
+			for(o = 1; o < inObservations_; o++)
 			{
+				
 				//Simon's version
 				mrs_real tmp = in(o,t)  - prevWindow_(o,t);
+				
 				diff_ = (tmp+abs(tmp))/2;
 
 				//lmartins version
@@ -133,6 +138,7 @@ Flux::myProcess(realvec& in, realvec& out)
 			// 			flux_ = 0.0;
 			// 
 			out(0,t) = flux_;
+			
 		}
 	}
 

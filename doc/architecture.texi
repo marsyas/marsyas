@@ -197,10 +197,33 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 @image{images/composite-series}
 
 
+The Series composite is the most basic structure for connecting
+MarSystems into dataflow networks through implicit patching. It is
+similar to Unix pipes or the chuck operator in the Chuck programming
+language. The output of the first object in the Series connection
+becomes the input to the second object, the output of the second object
+becomes the input to the third object etc. A MarSystem can potentially
+have different size and characteristics for the input and output
+slices. In Series connections these characteristics are constrained to
+ensure that the output slice of each MarSystem is the same as the input
+slice of the MarSystem that is downstream from it. The figure shows how
+a Series composite can be used to express a complex spectrum computation
+from a windowed segment of audio. The Hanning MarSystem windows the
+incoming segment and the FFT MarSystem converts the audio to a complex
+spectrum. Notice how the dimensions of the slices can change at the
+different stages of processing. 
+ 
+
+
+
+
 @node Parallel, Fanout, Series, MarSystem composites
 @subsection Parallel
 
 @image{images/composite-parallel}
+
+
+
 
 
 @node Fanout, Accumulator, Parallel, MarSystem composites

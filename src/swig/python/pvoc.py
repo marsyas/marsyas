@@ -109,7 +109,7 @@ def multires(infile):
 	filenameLong.setValue_string(infile);
 	outfnameLong.setValue_string(outsfnameLong);
 	
-	x = zeros(2048, float)
+	l
 	xLong = zeros(2048, float)
 	xcorr = zeros(2048, float)
 	mpx = zeros(2048, float)

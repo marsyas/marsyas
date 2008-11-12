@@ -347,7 +347,8 @@ mrs_real& realvec::operator()(const mrs_natural i)
 		MRSERR("size = " << size_);
 	}
 #endif
-  
+
+
 	MRSASSERT(i < size_);
   
 	return data_[i];
