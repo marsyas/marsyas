@@ -156,6 +156,9 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 void
 MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 {
+	if(size_ == 0)
+		return;
+
 	mrs_natural pos = ctrl_pos_->to<mrs_natural>();
 	
 	//detect end of file

@@ -52,15 +52,11 @@ for r=1:numRegions
     [SDRresults, correspondence] = computeSDR(refAudioFrame, resAudioFrame);
     SDR(r) = SDRresults;
 
-    %% CORRESPONDENCE !!!!
+    %% CORRESPONDENCE:
     %place clustered audio into the corresponding audio channel
-    temp = channelSelIdx(channelSel);
-    temp = temp(correspondence);  
-    if isempty(temp)
-        segAudio(1:size(resAudioFrame,1), s:e) = resAudioFrame; % [!]
-    else
-        segAudio(temp, s:e) = resAudioFrame; 
-    end
+    temp1 = channelSelIdx(channelSel);
+    temp2 = correspondence(1:length(temp1));
+    segAudio(temp1,s:e) = resAudioFrame(temp2,:);
 end
         
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -76,6 +72,7 @@ SDRTextWinds = [SDRTextWinds, mean(SDR(:))];
 % init vars for next texture window
 numActiveNotes = 0;
 activeChannels = [];
+MIDInotes = cell(numChannels,1);
 refAudio = [];
     
 

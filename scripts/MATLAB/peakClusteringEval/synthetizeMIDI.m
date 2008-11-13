@@ -1,16 +1,23 @@
 % clear
-% filename = 'z:\MIDI\syncTest.mid' 
+% filename = 'z:\MIDI\RWC_MIDI\JazzMusic\RWC-MDB-J-2001.SMF\RWC-MDB-J-2001\RM-J002.MID';%'z:\MIDI\syncTest.mid' 
 % fs = 44100;
 % startSeg = 0;
 % endSeg = 10;
 % sigNewTextWin = 1;
 
+%% INITS
+numChannels = 0;
+audioLength = 0;
 
 %% read MIDI file and pre-process MIDI info
 nmat = readmidi(filename);
 
 if endSeg ~= 0
 	nmat = onsetwindow(nmat, startSeg, endSeg, 'sec');
+end
+
+if isempty(nmat)
+    return;
 end
 
 %Removal of leading silence (trim)
@@ -115,6 +122,8 @@ numActiveNotesTextWinds = [];
 
 activeChannels = [];
 activeChannelsTextWinds = cell(1,0);
+
+MIDInotes = cell(numChannels,1);
 
 
 

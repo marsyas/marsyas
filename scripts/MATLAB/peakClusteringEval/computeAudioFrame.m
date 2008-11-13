@@ -28,18 +28,34 @@ activeChWin = false(numChannels,1);
 for n=1:size(nmat,1)
     noteStart = nmat(n,6); %in seconds
     noteEnd = noteStart + nmat(n,7); % in seconds
+    noteChannel = nmat(n,3);
+    noteMIDIpitch = nmat(n,4);
+    
     if ((noteStart <= winStart) && (noteEnd >= winEnd)) || ...
             ((noteStart <= (winEnd-winStart)/2+winStart) && (noteEnd >= winEnd)) || ...
             ((noteStart <= winStart) && (noteEnd >= (winEnd-winStart)/2+winStart ))
+        
         count = count+1;
-        activeChWin(nmat(n,3)) = true; %this channel is playing a note in this frame
-        %we could also store their f0s...[TODO]
+        activeChWin(noteChannel) = true; %this channel is playing a note in this frame
+        
+        pitches = MIDInotes{noteChannel,1};
+        if isempty(pitches)
+            pitches = [pitches noteMIDIpitch];
+        elseif pitches(end) ~= noteMIDIpitch
+            pitches = [pitches noteMIDIpitch];
+        end
+        MIDInotes{noteChannel,1} = pitches; 
     end
 end
 
 activeChannels = logical([activeChannels activeChWin]);
-%get maximum number of active notes in current texture window so far
-numActiveNotes = max(numActiveNotes, count);
+
+%get number of active notes in current texture window so far
+numActiveNotes = 0;
+for c=1:numChannels
+    numActiveNotes = numActiveNotes + length(MIDInotes{c,1});
+end
+
 
 %% check if this is the last frame of current texture window
 newTextWin = 0;
