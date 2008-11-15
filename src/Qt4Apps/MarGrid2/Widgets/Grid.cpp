@@ -8,9 +8,14 @@ Grid::Grid()
 	som_width = 12;
 	_gridX = 0;
 	_gridY = 0;
-	 initAudio_ = false;
-	 continuous_ = false;
-	 state_ = 0;
+	initAudio_ = false;
+	continuous_ = false;
+	cancel_ = false;
+	state_ = 0;
+	init_ = false;
+	featureHash = new multimap<string, realvec>();
+	normFeatureHash = new multimap<string, realvec>();
+	numFeatures = 0;
 
 	setup();
 }
@@ -44,6 +49,10 @@ void Grid::run()
 				predict();
 				clearMode();
 				break;
+			case 4:
+				init();
+				clearMode();
+				break;
 			case 0:
 				break;
 		}
@@ -59,9 +68,9 @@ void Grid::setup() {
 		for(int j=0; j < som_width; j++) {
 			ql = new QList<std::string>();
 			files_.push_back(*ql);
-		    counters.push_back(0);
-		    counterSizes.push_back(0);
-		    labels.push_back(0);
+			counters.push_back(0);
+			counterSizes.push_back(0);
+			labels.push_back(0);
 		}
 	}
 	setupNetworks();
@@ -69,87 +78,87 @@ void Grid::setup() {
 void Grid::setupNetworks() {
 
 
-    MarSystem* extractNet = mng.create("Series", "extractNet");
+	MarSystem* extractNet = mng.create("Series", "extractNet");
 	extractNet->addMarSystem(mng.create("SoundFileSource", "src"));
 	extractNet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	MarSystem* spectralNet = mng.create("Series", "spectralNet");
 	spectralNet->addMarSystem(mng.create("Windowing", "ham"));
 	spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
 	spectralNet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-	
+
 	MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
 	featureFanout->addMarSystem(mng.create("Centroid", "centroid"));
 	featureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
 	featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
-	
+
 	spectralNet->addMarSystem(featureFanout);
 	extractNet->addMarSystem(spectralNet);
 	extractNet->addMarSystem(mng.create("Memory", "mem"));
-	
+
 	MarSystem* stats = mng.create("Fanout", "stats");
 	stats->addMarSystem(mng.create("Mean", "mn1"));
 	stats->addMarSystem(mng.create("StandardDeviation", "std1"));
 	extractNet->addMarSystem(stats);
-	
+
 	MarSystem* acc = mng.create("Accumulator", "acc");
 	acc->updctrl("mrs_natural/nTimes", 1200);
 	acc->addMarSystem(extractNet);
-	
+
 	total_ = mng.create("Series", "total");
 	total_->addMarSystem(acc);
 	MarSystem* stats2 = mng.create("Fanout", "stats2");
 	stats2->addMarSystem(mng.create("Mean", "mn2"));
 	stats2->addMarSystem(mng.create("StandardDeviation", "std2"));
-	
+
 	total_->addMarSystem(stats2);
 	total_->addMarSystem(mng.create("Annotator", "ann"));
-	
-	
-	
+
+
+
 	total_->linkctrl("mrs_string/filename",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
-	
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
+
+
 	total_->linkctrl("mrs_string/currentlyPlaying",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/currentlyPlaying");  
-	
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/currentlyPlaying");  
+
+
 	total_->linkctrl("mrs_bool/shuffle",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/shuffle");  
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/shuffle");  
+
 	total_->linkctrl("mrs_natural/pos",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/pos");  
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/pos");  
+
 	total_->linkctrl("mrs_real/repetitions",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_real/repetitions");  
-	
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_real/repetitions");  
+
+
 	total_->linkctrl("mrs_natural/cindex",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/cindex");  
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/cindex");  
+
 	total_->linkctrl("mrs_natural/numFiles",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
+
 	total_->linkctrl("mrs_string/allfilenames",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
+
 	total_->linkctrl("mrs_natural/numFiles",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
-	
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
+
+
 	total_->linkctrl("mrs_bool/notEmpty",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
 	total_->linkctrl("mrs_bool/advance",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
-	
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
+
 	total_->linkctrl("mrs_bool/memReset",
-					 "Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
-	
+		"Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
+
 	total_->linkctrl("mrs_natural/label",
-					 "Annotator/ann/mrs_natural/label");
-	
-	
-	
+		"Annotator/ann/mrs_natural/label");
+
+
+
 	total_->updctrl("mrs_natural/inSamples", 512);
 	total_->updctrl("mrs_real/repetitions", 1.0);
 
@@ -170,89 +179,310 @@ void Grid::setupNetworks() {
 }
 
 /*
- * ---------------------------------------------------
- * Slots
- * ---------------------------------------------------
- */
+* ---------------------------------------------------
+* Slots
+* ---------------------------------------------------
+*/
 void Grid::extract() {
 	if ( _collection->getNumTracks() > 0 ) {
 
 
 		int index = 0;
-		
-		ofstream featureFile;
+
+		/*ofstream featureFile;
 		featureFile.open("music.mf");
 		_collection->generateTrackList(featureFile);
-		featureFile.close();
+		featureFile.close();*/
+		extractAction("music.mf");
+	}	
+	else 
+	{
+		QMessageBox::information(0, tr("MarGrid"),
+			tr("Need to load a collection of audio files first!"));
+	}
+}
+void Grid::extractAction(std::string filename)
+{
+	total_->updctrl("mrs_string/filename", filename);
 
-		total_->updctrl("mrs_string/filename", "music.mf");
+	int numFiles = total_->getctrl("mrs_natural/numFiles")->to<mrs_natural>();
+	realvec som_in;
+	realvec som_res;
+	realvec som_fmatrix;
 
-		int numFiles = total_->getctrl("mrs_natural/numFiles")->to<mrs_natural>();
-		realvec som_in;
-		realvec som_res;
-		realvec som_fmatrix;
 
-		mrs_natural total_onObservations = 
-			total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+	mrs_natural total_onObservations = 
+		total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
-		som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-			total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+	som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+		total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
-		som_res.create(total_onObservations, 
-			total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	som_res.create(total_onObservations, 
+		total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
-		som_fmatrix.create(total_onObservations, 
-			numFiles);
+	som_fmatrix.create(total_onObservations, 
+		numFiles);
 
-		// calculate features 
-		cout << "Calculating features" << endl;
-		for (index=0; index < numFiles; index++)
+	// calculate features 
+	cout << "Calculating features" << endl;
+	for (int index=0; index < numFiles; index++)
+	{
+		if(cancel_)
 		{
-			total_->updctrl("mrs_natural/label", index);
-			total_->updctrl("mrs_bool/memReset", true);
-			total_->updctrl("mrs_natural/cindex", index);
-			string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-			cout << current  << " - ";
+			cancel_ = false;
+			break;
+		}
+		total_->updctrl("mrs_natural/label", index);
+		total_->updctrl("mrs_bool/memReset", true);
+		total_->updctrl("mrs_natural/cindex", index);
+		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
 
-			cout << "Processed " << index << " files " << endl; 
+		cout << current  << " - ";
 
-			total_->process(som_in,som_res);
+		cout << "Processed " << index << " files " << endl; 
 
-			for (int o=0; o < total_onObservations; o++) 
-				som_fmatrix(o, index) = som_res(o, 0);
-			total_->updctrl("mrs_bool/advance", true);      
+		total_->process(som_in,som_res);
 
+		// hash the resulting feature on file name
+		featureHash->insert(pair<string,realvec>(current,som_res));
+
+		for (int o=0; o < total_onObservations; o++) 
+			som_fmatrix(o, index) = som_res(o, 0);
+		total_->updctrl("mrs_bool/advance", true);      
+
+	}
+
+	ofstream oss;
+	oss.open("som_fmatrix.txt");
+	oss << som_fmatrix << endl;	
+	oss.close();
+
+	// normalize and create hashmap of normalized feature vectors on their file name
+	
+	MarSystem*  norm_;
+	realvec norm_som_fmatrix;
+
+	// Normalize the feature matrix so that all features are between 0 and 1
+	norm_som_fmatrix.create(som_fmatrix.getRows(),
+		som_fmatrix.getCols());
+	norm_ = mng.create("NormMaxMin", "norm");
+	norm_->updctrl("mrs_natural/inSamples", som_fmatrix.getCols());
+	norm_->updctrl("mrs_natural/inObservations", 
+		total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+
+	norm_->updctrl("mrs_string/mode", "train");
+	norm_->process(som_fmatrix, norm_som_fmatrix);
+	norm_->updctrl("mrs_string/mode", "predict");  
+	norm_->process(som_fmatrix, norm_som_fmatrix);
+
+	//cout << norm_->getctrl("mrs_realvec/maximums") << endl;
+	//cout << norm_->getctrl("mrs_realvec/minimums") << endl;
+
+	numFeatures = norm_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+
+	// make the hashmap of filename and normalized feature vector
+	ifstream inFeatureName;
+	std::string featureName = "";
+	int counter = 0;
+	realvec* normFeature = new realvec();
+
+	inFeatureName.open(filename.c_str());
+	getline(inFeatureName, featureName);
+	while(inFeatureName)
+	{
+		norm_som_fmatrix.getCol(counter, *normFeature);
+		normFeatureHash->insert(pair<string,realvec>(featureName, *normFeature));
+		getline(inFeatureName, featureName);
+		counter++;
+	}
+ 
+	
+	oss.open("norm_som_fmatrix.txt");
+	oss << norm_som_fmatrix << endl;	
+	oss.close();
+
+	ofstream noss;
+	noss.open("norm.mpl");
+	noss << *norm_ << endl;
+	noss.close();
+	delete norm_;
+	
+	/*
+	Save the feature hash
+	Each realvec is a separate file as it is the only way they can be loaded
+	each file is named in the following pattern "normFeatureVec" where X is an integer
+	The file keys.txt holds space separated pairs of the hash key
+	and the filename of the corresponding realvec
+
+	NOTE: QT is used for platform independence.
+	*/
+
+	QDir dir;
+	QFile *keys;
+	QString keysFile;
+	QString realvecFile;
+	multimap<std::string,realvec>::iterator it;
+
+	if(dir.exists("extractFiles"))
+	{
+		dir.setCurrent("extractFiles");
+		keysFile = dir.filePath("keys.txt");
+		keys = new QFile(keysFile);
+		if(keys->open(QFile::ReadWrite))
+		{
+			QTextStream txtStr(keys);
+			int counter = 0;
+			for ( it=normFeatureHash->begin() ; it != normFeatureHash->end(); it++ )
+			{
+				// make the key entry
+				txtStr << it->first.c_str();
+				txtStr << " ";
+				txtStr << counter << endl;
+
+				// open the realvec file and write the value
+				std::stringstream stringStream;
+				stringStream << "normFeatureVec" << counter << ".hsh";
+				realvecFile = stringStream.str().c_str();
+				realvecFile = dir.filePath( realvecFile );
+				it->second.write( realvecFile.toStdString() );
+
+				counter++;
+			}
+			keys->close();
+			delete keys;
+		}
+		else
+		{
+			cerr << "Hash key file could not be written" << endl;
+		}
+	}
+	else
+	{
+		dir.mkdir("extractFiles");
+	}
+
+
+	/*;
+	ofstream nhash;
+	nhash.open("normHash.hs");
+
+	for ( it=normFeatureHash->begin() ; it != normFeatureHash->end(); it++ )
+		nhash << (*it).first << "," << (*it).second << endl;
+	
+	nhash.close(); */
+}
+/*
+** Overloaded training function to provide backwards compatability
+*/
+void Grid::train() {
+	train(false);
+}
+
+void Grid::train(bool skipTraining) {
+	if ( _collection->getNumTracks() > 0 ) {
+
+		// Read the feature matrix from file som_fmatrix.txt 
+		realvec norm_som_fmatrix;
+		ifstream iss;
+		iss.open("norm_som_fmatrix.txt");
+		iss >> norm_som_fmatrix;
+
+
+		MarSystem*  som_;
+
+		// Skip the SOM manipulation.
+		if(!skipTraining)
+		{
+			if(init_) 
+			{
+				ifstream iss1;
+				iss1.open("som.mpl");
+				som_ = mng.getMarSystem(iss1);
+				iss1.close();
+			}
+			else
+			{
+				// Create netork for training the self-organizing map 
+				som_ = mng.create("SOM", "som");  
+				som_->updctrl("mrs_natural/grid_width", som_width);
+				som_->updctrl("mrs_natural/grid_height", som_height);
+			}
+
+			som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
+			som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
+			som_->updctrl("mrs_string/mode", "train");
+
+			realvec som_fmatrixres;
+			som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+				som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+			cout << "Starting training" << endl;
+
+			bool done_ = false;
+			for (int i=0; i < 500; i ++) 
+			{
+				if(cancel_)
+				{
+					cancel_ = false;
+					done_ = false;
+					break;
+				}
+				cout << "Training iteration" << i << endl;
+				norm_som_fmatrix.shuffle();
+				som_->process(norm_som_fmatrix, som_fmatrixres);
+				done_ = true;
+			}
+
+			ofstream oss1;
+			oss1.open("som2.mpl");
+			oss1 << *som_ << endl;
+			oss1.close();
+
+			som_->updctrl("mrs_bool/done", done_);
+			som_->tick();
+			cout << "Training done" << endl;
+
+			// write the trained som network and the feature normalization networks 
+			oss1.open("som.mpl");
+			oss1 << *som_ << endl;
+			delete som_;
 		}
 
-		ofstream oss;
-		oss.open("som_fmatrix.txt");
-		oss << som_fmatrix << endl;	 
+
+
+
 	} else {
 		QMessageBox::information(0, tr("MarGrid"),
 			tr("Need to load a collection of audio files first!"));
 	}
 }
-
 void Grid::predict() {
 	if ( _collection->getNumTracks() > 0 ) {
-		
+
 		resetGrid();
 		realvec som_in;
 		realvec som_res;
 		realvec som_fmatrix;
 		ifstream iss1;
+
 		iss1.open("som.mpl");
 		som_ = mng.getMarSystem(iss1);
+
 
 		ifstream niss1;
 		niss1.open("norm.mpl");
 		norm_ = mng.getMarSystem(niss1);
 
+
+
 		cout << "Starting prediction" << endl;
 		som_->updctrl("mrs_string/mode", "predict");  
 
+
+
 		Collection l1;
 		l1.read("music.mf");
+
 		cout << "Read collection" << endl;
 
 		total_->updctrl("mrs_natural/pos", 0);
@@ -261,9 +491,11 @@ void Grid::predict() {
 
 		som_->updctrl("mrs_natural/inSamples", 1);
 
+
 		realvec predict_res(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 			som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		norm_->updctrl("mrs_natural/inSamples", 1);
+
 
 
 		realvec norm_som_res;
@@ -277,18 +509,52 @@ void Grid::predict() {
 		norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 			total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
+			ofstream oss1;
+			oss1.open("som3.mpl");
+			oss1 << *som_ << endl;
+			oss1.close();
+
+
+		realvec norm_som_fmatrix;
+		ifstream iss;
+		iss.open("norm_som_fmatrix.txt");
+		iss >> norm_som_fmatrix;
+
 		QString tempString;
-		int TEMP_loc = 0;
 		for (int index = 0; index < l1.size(); index++)
 		{
+			if(cancel_)
+			{
+				cancel_ = false;
+				break;
+			}
+
 			total_->updctrl("mrs_natural/label", index);
 			total_->updctrl("mrs_bool/memReset", true);
 			total_->updctrl("mrs_natural/cindex", index);
 			string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
 
 			total_->process(som_in, som_res);
+
+			//cout << som_res << endl;
+
 			norm_->process(som_res, norm_som_res);
-			som_->process(norm_som_res, predict_res); 
+
+			//cout << norm_som_res << endl;
+		    //cout << norm_->getctrl("mrs_realvec/maximums") << endl;
+	        //cout << norm_->getctrl("mrs_realvec/minimums") << endl;
+
+			realvec foobar;
+			foobar.create(som_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), som_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+
+			norm_som_fmatrix.getCol(index, foobar);
+			foobar.stretch(foobar.getRows() + 2, foobar.getCols() );
+			cout << "foobar rows: "  << foobar.getRows() << " cols: " << foobar.getCols() << endl;
+			cout << "predict_res rows: " << predict_res.getRows() << " cols:  " << predict_res.getCols() << endl;
+			cout << "inObs: " <<  som_->getctrl("mrs_natural/inObservations")->to<mrs_natural>() << endl;
+
+			som_->process(foobar, predict_res); 
+			cout << "moobar" << endl;
 
 			grid_x = predict_res(0);
 			grid_y = predict_res(1);
@@ -296,11 +562,12 @@ void Grid::predict() {
 			cout << ",";
 			cout << grid_y  << endl;
 			addTrack(grid_x, grid_y, current);
+			cout << "track: ";
+			cout << current << endl;
 
-
-			total_->updctrl("mrs_bool/advance", true);            
+	
+			total_->updctrl("mrs_bool/advance", true);  
 		}
-
 
 
 		cout << "end_prediction" << endl;
@@ -310,85 +577,102 @@ void Grid::predict() {
 	}
 }
 
-void Grid::train() {
-	cout << "yo" << endl;
-	if ( _collection->getNumTracks() > 0 ) {
+
+/* 
+Init works by extracting the dropped files, then trains the grid with them.
+The other files are then extracted and prediction is started.
+*/
+void Grid::init()
+{
+	cout << "starting init" << endl;
+	if (initFileLocations.size() != 0)
+	{
+
+		realvec* init_train_fmatrix = new realvec();
 		
-		// Read the feature matrix from file som_fmatrix.txt 
-		realvec train_som_fmatrix;
-		ifstream iss;
-		iss.open("som_fmatrix.txt");
-		iss >> train_som_fmatrix;
+		cout << "1" << endl;
 
-		MarSystem*  norm_;
-		MarSystem*  som_;
-		realvec norm_som_fmatrix;
+		// make music.mf file of dropped files
+		for(int i = 0; i < initFileLocations.size(); i++)
+		{
+			cout << "1.1" << endl;
+			realvec temp;
+			cout << initFileLocations[i] << endl;
+			multimap<std::string, realvec>::iterator temp2 = normFeatureHash->find( initFileLocations[i]->getFileName() );
+			cout << "1.12" << endl;
+		    temp = temp2->second;
+			cout << "1.15" << endl;
+			init_train_fmatrix->stretch( temp.getRows() + 2, init_train_fmatrix->getCols() + temp.getCols() );
+			cout << "1.2" << endl;
+
+			for(int j = 0; j < temp.getRows(); j++)
+			{
+				(*init_train_fmatrix)(j, init_train_fmatrix->getCols() -1  ) = temp(j,0);
+			}
+
+			cout << "1.3" << endl;
+			// add X and Y position info to the last two rows of the vector
+			(*init_train_fmatrix)(temp.getRows(), init_train_fmatrix->getCols() -1 ) = initFileLocations[i]->getX();
+			(*init_train_fmatrix)(temp.getRows() + 1, init_train_fmatrix->getCols() -1 ) = initFileLocations[i]->getY();
 
 
+		}
+		cout << "2" << endl;
 
-		// Normalize the feature matrix so that all features are between 0 and 1
-		norm_som_fmatrix.create(train_som_fmatrix.getRows(),
-			train_som_fmatrix.getCols());
-		norm_ = mng.create("NormMaxMin", "norm");
-		norm_->updctrl("mrs_natural/inSamples", train_som_fmatrix.getCols());
-		norm_->updctrl("mrs_natural/inObservations", 
-			total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-		norm_->updctrl("mrs_string/mode", "train");
-		norm_->process(train_som_fmatrix, norm_som_fmatrix);
-		norm_->updctrl("mrs_string/mode", "predict");  
-		norm_->process(train_som_fmatrix, norm_som_fmatrix);
+		ofstream oss1;
+		oss1.open("init_train_fmatrix.mpl");
+		oss1 << *init_train_fmatrix << endl;
+		oss1.close();
 
+		init_ = true;
 
-
-		// Create netork for training the self-organizing map 
-		som_ = mng.create("SOM", "som");  
+		som_ = mng.create("SOM", "som"); 
 		som_->updctrl("mrs_natural/grid_width", som_width);
 		som_->updctrl("mrs_natural/grid_height", som_height);
-		som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
-		som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
-		som_->updctrl("mrs_string/mode", "train");
+		som_->updctrl("mrs_natural/inSamples", init_train_fmatrix->getCols());
+
+	//	cout << init_train_fmatrix->getCols() << endl;
+
+		som_->updctrl("mrs_natural/inObservations", init_train_fmatrix->getRows());  
+		som_->updctrl("mrs_string/mode", "init");
+
+		//cout << som_->getctrl("mrs_natural/grid_height")->to<mrs_natural>() << endl;
+
+
+		cout << "3" << endl;
 
 		realvec som_fmatrixres;
+
 		som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 			som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
-		cout << "Starting training" << endl;
-
-		for (int i=0; i < 2000; i ++) 
-		{
-			cout << "Training iteration" << i << endl;
-			norm_som_fmatrix.shuffle();
-			som_->process(norm_som_fmatrix, som_fmatrixres);
-		}
-
-		cout << "Training done" << endl;
+		// loop this for more init runs
+		cout << "i1" << endl;
+		som_->process(*init_train_fmatrix, som_fmatrixres);
+		cout << "i2" <<endl;
+		//som_->tick();
 		som_->updctrl("mrs_bool/done", true);
-		som_->tick();
 
 		// write the trained som network and the feature normalization networks 
-		ofstream oss1;
 		oss1.open("som.mpl");
 		oss1 << *som_ << endl;
 		delete som_;
 
-		ofstream noss;
-		noss.open("norm.mpl");
-		noss << *norm_ << endl;
-		delete norm_;
-		
+		cout << "end of init" << endl;
 	} else {
 		QMessageBox::information(0, tr("MarGrid"),
-			tr("Need to load a collection of audio files first!"));
+			tr("Need to drop files for initilization!"));
 	}
 }
+
 void
 Grid::openPredictionGrid(QString fname)
 {
 	fstream file_ip((fname.toStdString()).c_str(), ios::in);
 	if (!file_ip) {
-        cerr << "Can't open input file " << endl;
+		cerr << "Can't open input file " << endl;
 		return;
-    }
+	}
 
 	int x_size = 0;
 	int y_size = 0;
@@ -401,12 +685,12 @@ Grid::openPredictionGrid(QString fname)
 	string vecIndex = "";
 
 	cout << "doing file stuff" << endl;
-	
+
 	// get the stored size of the vector
 	getline(file_ip,intBufferStr);
 	istringstream intBuffer(intBufferStr);
 	intBuffer >> x_size;
-	
+
 	getline(file_ip, intBufferStr);
 	istringstream intBufferTwo(intBufferStr);
 	intBufferTwo >> y_size;
@@ -422,7 +706,7 @@ Grid::openPredictionGrid(QString fname)
 		qFname =  listFname.c_str();
 		istringstream buffer(vecIndex);	
 		buffer >> index;
-		
+
 		cout << index;
 		cout << ",";
 		cout << listFname << endl; 
@@ -448,40 +732,83 @@ Grid::savePredictionGrid(QString fname)
 		QList<std::string> temp = files_[i];
 		for(int j = 0; j < files_[i].size(); j++ )
 		{
-				file_op << i;
-				file_op << "," + temp.takeFirst() << endl;
-
+			file_op << i;
+			file_op << "," + temp.takeFirst() << endl;
+			emit repaintSignal(); // tell the GUI to redraw itself
 		}
 	}
 	file_op.close();
+
 }
+
+void Grid::openNormHash()
+{
+	// if dir exists
+	QDir dir;
+	QFile *keysFile;
+	QString currentHashKey("");
+	realvec currentFeature;
+	int currentHashFileNumber = 0;
+
+	if(dir.exists("extractFiles") )
+	{
+		// open keys
+		dir.setCurrent("extractFiles");
+		keysFile = new QFile(dir.filePath("keys.txt"));
+		if(keysFile->open(QFile::ReadWrite))
+		{
+			QTextStream keysInput(keysFile);
+			while(!keysInput.atEnd())
+			{
+				keysInput >> currentHashKey;
+				keysInput >> currentHashFileNumber;
+				if(!currentHashKey.isNull() )
+				{
+					std::stringstream stringStream;
+					stringStream << "normFeatureVec" << currentHashFileNumber << ".hsh";
+					currentFeature.read(dir.filePath(stringStream.str().c_str()).toStdString());
+					normFeatureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
+
+				}
+				//TODO:: Clean up pointers
+			}
+
+		}
+	}
+
+}
+
 void Grid::setExtractMode()
 {
 	cout << "grid extract" << endl;
 	state_ = 1;
-	//extract();
 }
 void Grid::setTrainMode()
 {
 	state_ = 2;
-	//train();
 }
 void Grid::setPredictMode()
 {
 	state_ = 3;
-	//predict();
+}
+void Grid::setInitMode()
+{
+	state_ = 4;
 }
 void Grid::clearMode()
 {
 	state_ = 0;
 }
-
+void Grid::cancelPressed()
+{
+	cancel_ = true;
+}
 
 /*
- * ---------------------------------------------------
- * Functions
- * ---------------------------------------------------
- */
+* ---------------------------------------------------
+* Functions
+* ---------------------------------------------------
+*/
 void Grid::resetGrid()
 {
 	//TODO:: RESET!
@@ -504,27 +831,56 @@ void Grid::setGridY(int y) {
 	}
 }
 
- 
 void Grid::addTrack(int x, int y, std::string track) {
 
 	int index = x * som_height + y;
 	files_[index].push_back(track);
 	counterSizes[index]++;
 }
+
 void Grid::playTrack(int index)
 {
 	QList<std::string> playlist = getCurrentFiles();
-
 	mwr_->updctrl( filePtr_, playlist[index].c_str() );
-	mwr_->play();
-
 	if (initAudio_ == false) 
 	{
 		mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		mwr_->play();
 		initAudio_ = true;
-	} else {
-		mwr_->pause();
+		oldPlayingIndex = index;
+	} 
+	else 
+	{ /*
+		if(counterSizes[index] > 1 && index == oldPlayingIndex)
+		{
+			mwr_->play();
+		}
+		else
+		{
+			stopPlaying();
+			if(index != oldPlayingIndex)
+			{
+				playTrack(index);
+			}
+		} */
 	}
+}
+
+void Grid::stopPlaying()
+{
+	mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", false);
+	mwr_->pause();
+	initAudio_ = false;
+
+}
+
+void Grid::addInitFile(QString fileName, int x, int y)
+{
+	cout << "test  ";
+	cout << fileName.toStdString() << endl;
+	init_ = true;
+	GridTriplet* gt = new GridTriplet(fileName.toStdString(), x,y);
+	initFileLocations.push_back(gt);
 }
 QList<std::string> Grid::getCurrentFiles()
 {
@@ -558,4 +914,34 @@ void Grid::setContinuous(bool value)
 {
 	continuous_ = value;
 
+}
+GridTriplet::GridTriplet()
+{
+	x = 0;
+	y = 0;
+	fileName = "";
+}
+GridTriplet::GridTriplet(std::string fileName, int x, int y)
+{
+	this->x = x;
+	this->y = y;
+	this->fileName = fileName;
+}
+GridTriplet::GridTriplet(int x, int y)
+{
+	this->x = x;
+	this->y = y;
+	fileName = "";
+}
+void GridTriplet::setX(int value)
+{
+	x = value;
+}
+void GridTriplet::setY(int value)
+{
+	y = value;
+}
+void GridTriplet::setFileName(std::string value)
+{
+	fileName = value;
 }

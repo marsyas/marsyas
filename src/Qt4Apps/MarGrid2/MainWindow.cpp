@@ -12,6 +12,9 @@ MainWindow::MainWindow(Grid* grid_) {
 	_preferencesDialog = NULL;
 
 	// _midi = new MidiListener();
+	//openDefaultiTunes();
+	isFullScreenMouse = false;
+	
 }
 
 MainWindow::~MainWindow() {
@@ -53,13 +56,43 @@ void MainWindow::openiTunesLibrary() {
 		emit libraryUpdated();
 	}
 }
+/*
+** TODO: Remove me, otherwise pain and suffering are abound.
+*/
 
+void MainWindow::openDefaultiTunes()
+{
+	QString fileName = "C:\\Documents and Settings\\NJL\\My Documents\\My Music\\iTunes\\iTunes Music Library.xml";
+	QFile file(fileName);
+	if (!file.open(QFile::ReadOnly | QFile::Text)) {
+		QMessageBox::warning(this, tr("Music Collection"),
+					 tr("Cannot read file %1:\n%2.")
+						 .arg(fileName)
+						 .arg(file.errorString()));
+		return;
+	}
+
+	statusBar()->showMessage(tr("Parsing iTunes Library......"));
+
+	//if ( Parser::parse( Parser::ParserTypes.ITUNES, file, _library ) ) {
+	_library->empty();
+	if ( Parser::parse( file, _library ) ) {
+		statusBar()->showMessage(tr("File loaded"), 2000);
+		qDebug() << "Library updated";
+		emit libraryUpdated();
+	}
+
+}
 void MainWindow::openMarXmlLibrary() {
 
 }
 
 void MainWindow::openMarCsvLibrary() {
 
+}
+
+void MainWindow::cancelButton() {
+	emit cancelButtonSignal();
 }
 
 void MainWindow::openSavedGrid()
@@ -130,6 +163,29 @@ void MainWindow::changedPlayMode()
 	emit playModeChanged();
 }
 
+void MainWindow::fullScreenMode(bool mode)
+{
+	isFullScreenMouse = mode;
+	if(mode) 
+	{
+		showMaximized();
+		_toolbar->hide();
+		menuBar()->hide();
+		setWindowFlags(Qt::FramelessWindowHint);
+		grabKeyboard();
+
+	}
+	else
+	{
+		showNormal();
+		_toolbar->show();
+		menuBar()->show();
+		setWindowFlags((Qt::WindowFlags)(~Qt::FramelessWindowHint));
+		releaseKeyboard();
+	}
+	show();
+}
+
 
 /*
  * ---------------------------------------------------------
@@ -146,6 +202,7 @@ void MainWindow::createWindow() {
 
 	_tracklist = new Tracklist(this);
 	_playlist = new Playlist(_tracklist, this);
+	
 
 	_display = new GridDisplay(600, _tracklist, _dataGrid, this);
 
@@ -166,6 +223,9 @@ void MainWindow::createWindow() {
 	connect(this, SIGNAL(openPredictGridFile(QString)), _display, SLOT(openPredictionGrid(QString)));
 	connect(this, SIGNAL(savePredictGridFile(QString)), _display, SLOT(savePredictionGrid(QString)));
 	connect(this, SIGNAL(playModeChanged()), _display, SLOT(playModeChanged()));
+	connect(this, SIGNAL(cancelButtonSignal()), _display, SLOT(cancelButton()));
+	connect(_display, SIGNAL(fullScreenMode(bool)), this, SLOT(fullScreenMode(bool)));
+	connect(this, SIGNAL(fullScreenModeOff()), _display, SLOT(fullScreenMouse()));
 
 	w->setLayout(gridLayout);
 	statusBar()->showMessage(tr("Ready"));
@@ -223,7 +283,7 @@ void MainWindow::createActions() {
 	connect(_aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
 	_saveAction = new QAction(tr("&Save"), this);
-	_coutAction->setShortcut(tr("Ctrl+S"));
+	_saveAction->setShortcut(tr("Ctrl+S"));
 	connect(_saveAction, SIGNAL(triggered()), this, SLOT(saveiTunesLibrary()));
 
 	_saveGridAction = new QAction(tr("&Save Grid"), this);
@@ -233,6 +293,18 @@ void MainWindow::createActions() {
 	connect(_loadGridAction, SIGNAL(triggered()), this, SLOT(openSavedGrid()));
 	_playModeAction = new QAction(tr("&Continuous"), this);
 	connect(_playModeAction, SIGNAL(triggered()), this, SLOT(changedPlayMode()));
+
+	_cancelAction = new QAction(tr("&Cancel Action"), this);
+	connect(_cancelAction, SIGNAL(triggered()), this, SLOT(cancelButton()));
+
+	_initAction = new QAction(tr("&Initlize Grid"), this);
+	connect(_initAction, SIGNAL(triggered()), _display, SLOT(init()));
+	
+	_normHashAction = new QAction(tr("Open Saved Hash"), this);
+	connect(_normHashAction, SIGNAL(triggered()), _display, SLOT(normHashLoad()));
+
+	_fullScreenAction = new QAction (tr("&Full Screen Mouse Mode"), this);
+	connect(_fullScreenAction, SIGNAL(triggered()), _display, SLOT(fullScreenMouse()));
 }
 
 void MainWindow::createMenus() {
@@ -243,6 +315,7 @@ void MainWindow::createMenus() {
 	_openMenu->addAction(_openXmlAction);
 	_openMenu->addAction(_openCsvAction);
 	_openMenu->addAction(_loadGridAction);
+	_openMenu->addAction(_normHashAction);
 
 
 	QAction *openAction = _fileMenu->addAction(tr("&Open..."));
@@ -271,4 +344,20 @@ void MainWindow::createToolbars() {
 	_toolbar->addAction(_extractAction);
 	_toolbar->addAction(_trainingAction);
 	_toolbar->addAction(_predictAction);
+	_toolbar->addSeparator();
+	_toolbar->addAction(_cancelAction);
+	_toolbar->addSeparator();
+	_toolbar->addAction(_initAction);
+	_toolbar->addSeparator();
+	_toolbar->addAction(_fullScreenAction);
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
+{
+	if(isFullScreenMouse) 
+	{
+		cout << "in" << endl;
+	emit fullScreenModeOff();
+	fullScreenMode(false);
+	}
 }

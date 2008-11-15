@@ -217,6 +217,7 @@ MarGrid::extract()
   ofstream oss;
   oss.open("som_fmatrix.txt");
   oss << som_fmatrix << endl;
+  oss.close();
 }
 
 

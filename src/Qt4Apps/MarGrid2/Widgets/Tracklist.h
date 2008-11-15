@@ -1,6 +1,10 @@
 #ifndef TRACKLIST_H
 #define TRACKLIST_H
 
+#ifndef TRACK_LOCATION
+#define TRACK_LOCATION (Qt::UserRole + 1)
+#endif
+
 #include <QDebug>
 #include <QListWidget>
 

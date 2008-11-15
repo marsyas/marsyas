@@ -81,6 +81,7 @@ SOM::addControls()
 void 
 SOM::init_grid_map() 
 {
+	cout << "randomizing" << endl;
 	MarControlAccessor acc_grid(ctrl_gridmap_);
 	realvec& grid_map = acc_grid.to<mrs_realvec>();
 	srand(0);
@@ -185,6 +186,7 @@ SOM::find_grid_location(realvec& in, int t)
 				ival = in(o,t);
 				pval = grid_map(x * grid_height_ + y, o);
 				dist += (ival - pval) * (ival - pval);
+				//cout << "dist:" << dist << " ival: " << ival << " pval " << pval <<  " x: " << x << " y: " << y << endl;
 			}
 
 			if (dist < minDist) 
@@ -255,10 +257,74 @@ SOM::myProcess(realvec& in, realvec& out)
 		alpha_ *= ALPHA_DEGRADE;
 		neigh_std_ *= NEIGHBOURHOOD_DEGRADE;	  
 	}
+	if (mode == "init")
+	{
+		mrs_real dx;
+		mrs_real dy;
+		mrs_real adj;
+		cout << "inSamp: " << inSamples_ << endl;
+
+		for (t=0; t < inSamples_; t++) 
+		{
+			// no need to find grid locations, just read from the file
+			px = (int) in( in.getRows() - 2, t);
+			py = (int) in( in.getRows() - 1, t);
+			cout << "px: " << px << endl << "py: " << py << endl;
+			cout << "1.1" << endl;
+			for(int i =0; i < inObservations_ - 3; i++)
+			{
+				grid_map(px * grid_height_ + py, i) = in(i);
+		}	
+/*
+			for (int x=0; x < grid_width_; x++) 
+				for (int y=0; y < grid_height_; y++)
+				{
+					dx = px-x;
+					dy = py-y;
+					geom_dist = sqrt((double)(dx*dx + dy*dy));
+					geom_dist_gauss = gaussian( geom_dist, 0.0, neigh_std_, false);
+
+					// subtract map vector from training data vector 
+					adj = alpha_ * geom_dist_gauss;
+					for (o=0; o < inObservations_-3; o++) 
+					{
+						adjustments_(o) = in(o,t) - grid_map(x * grid_height_ + y);
+						adjustments_(o) *= adj;
+						grid_map(x * grid_height_ + y, o) += adjustments_(o);
+					}
+					
+				}*/
+				
+		
+		}
+		//WARNING: UGLY HACK
+		// Last two rows of init features are x,y locations 
+		// so we want to set all the coresponding rows in the SOM to 0
+		// to prevent randomness from creaping in.
+		cout << "1.2" << endl;
+		cout << "inObvs= " << inObservations_ << endl;
+		cout << "gridCols= " << grid_map.getCols() << endl;
+		for (int x=0; x < grid_width_; x++) 
+		{
+			for (int y=0; y < grid_height_; y++)
+			{
+				cout << "one: " << y << endl;
+					grid_map(x * grid_height_ + y, grid_map.getCols() - 2) = 0;
+									cout << "two: " << y << endl;
+					grid_map(x * grid_height_ + y, grid_map.getCols() - 1) = 0;
+									cout << "three: " << y << endl;
+					cout << "x: " << x << " y: " << y << endl;
+			}
+		}
+		alpha_ *= ALPHA_DEGRADE;
+		neigh_std_ *= NEIGHBOURHOOD_DEGRADE;
+
+	}
 	if (mode == "predict")
 	{
 		for (t=0; t < inSamples_; t++) 
 		{
+			cout << in(t) << endl;
 			find_grid_location(in, t);
 			px = (int) grid_pos_(0);
 			py = (int) grid_pos_(1);

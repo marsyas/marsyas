@@ -1,6 +1,7 @@
 #ifndef GRIDDISPLAY_H
 #define GRIDDISPLAY_H
 
+
 #include <ostream>
 
 #include <QList>
@@ -12,6 +13,10 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QWaitCondition>
+#include <QTimer>
+#include <QCursor>
+#include <QDesktopWidget>
+#include <QApplication>
 
 #include "MarSystemManager.h"
 #include "MarSystemQtWrapper.h"
@@ -53,18 +58,28 @@ public:
 		void extract();
 		void predict();
 		void train();
+		void init();
 		void openPredictionGrid(QString fname);
 		void savePredictionGrid(QString fname);
 		void playModeChanged();
+		void cancelButton();
+		void repaintSlot();
+		void normHashLoad();
+		void fullScreenMouse();
+		void fullScreenMouseMove();
 
 signals: 
 		void playingTrack(MusicTrack *track);
 		void extractMode();
 		void trainMode();
 		void predictMode();
+		void initMode();
 		void clearMode();
-		void savePredictionGridSignal(QString);
-		void openPredictionGridSignal(QString);
+        void openPredictionGridSignal(QString fname);
+		void savePredictionGridSignal(QString fname);
+		void cancelButtonPressed();
+		void normHashLoadPressed();
+		void fullScreenMode(bool modeOn);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);
@@ -85,7 +100,10 @@ private:
 	QList<QPixmap> piecePixmaps;
 	QList<QRect> pieceRects;
 	QList<QPoint> pieceLocations;
+	QVector<bool> squareHasInitialized;
 	QWaitCondition buttonPressed;
+	QTimer *fullScreenTimer;
+	QCursor *mouseCursor;
 
 
 	QRect highlightedRect;
@@ -94,6 +112,9 @@ private:
 	int inPlace;
     int _winSize;
 	int _cellSize;
+	int oldXPos;
+	int oldYPos;
+	bool fullScreenMouseOn;
 
 };
 

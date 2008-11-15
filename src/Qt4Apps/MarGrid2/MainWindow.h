@@ -36,6 +36,8 @@ signals:
 	void openPredictGridFile(QString);
 	void savePredictGridFile(QString);
 	void playModeChanged();
+	void cancelButtonSignal();
+	void fullScreenModeOff();
 
 private slots:
 	void openiTunesLibrary();
@@ -49,6 +51,10 @@ private slots:
 	void openSavedGrid();
 	void saveCurrentGrid();
 	void changedPlayMode();
+	void cancelButton();
+	void openDefaultiTunes(); //REMOVE ME FOR REAL RELEASE, ASSUMES LOCATION OF iTUNES XML
+	void fullScreenMode(bool mode);
+	void keyReleaseEvent(QKeyEvent *);
 
 private:
 	void createActions();
@@ -87,8 +93,13 @@ private:
 	QAction *_saveGridAction;
 	QAction *_loadGridAction;
 	QAction *_playModeAction;
+	QAction *_cancelAction;
+	QAction *_initAction;
+	QAction *_normHashAction;
+	QAction *_fullScreenAction;
 
 	MusicCollection *_library;
+	bool isFullScreenMouse;
 	// MidiListener *_midi;
 };
 

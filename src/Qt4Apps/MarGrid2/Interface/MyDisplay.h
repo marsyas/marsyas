@@ -24,13 +24,6 @@ public:
 	virtual ~MyDisplay() {};
 	virtual void clear() = 0;
 
-	/*
-	virtual void setExtractor(Extractor *extractor);
-	virtual Extractor* getExtractor() const; 
-
-	virtual void setClassifier(Classifier *classifier);
-	virtual Classifier* getClassifier() const; 
-	*/
 
 public slots: 
 	virtual void extract() = 0;

@@ -15,9 +15,13 @@
 #include <QThread>
 #include <QWaitCondition>
 #include <QMutex>
+#include <QFile>
+#include <QDir>
+#include <QTextStream>
 
 #include <ctime>
 #include <cstdlib>
+#include <map>
 
 #include "../Interface/MyDisplay.h"
 #include "../Interface/Classifier.h"
@@ -42,6 +46,7 @@ class QPainter;
 class Classifier;
 class Extractor;
 class MarsyasECP;
+class GridTriplet;
 
 
 using namespace MarsyasQt;
@@ -58,12 +63,14 @@ public:
 	void addTrack(int x, int y, std::string track);
 	void setGridCounter(int index, int value);
 	void playTrack(int counter);
+	void stopPlaying();
 	QList<std::string> getFilesAt(int index);
 	QList<std::string> getCurrentFiles();
 	QWaitCondition buttonPressed;
 	
 	void setXPos(int value);
 	void setYPos(int value);
+	void addInitFile(QString fileName, int x, int y);
 	void setContinuous(bool value);
 	bool isContinuous() const {return continuous_; }
 	int getGridCounterSizes(int index);
@@ -80,15 +87,16 @@ public slots:
 		void setExtractMode();
 		void setTrainMode();
 		void setPredictMode();
+		void setInitMode();
 		void clearMode();
-		//void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
-		//void midiPlaylistEvent(bool next);
-		//void reload();
 		void openPredictionGrid(QString fname);
 		void savePredictionGrid(QString fname);
+		void cancelPressed();
+		void openNormHash();
 
 signals: 
 		void playingTrack(MusicTrack *track);
+		void repaintSignal();
 
 protected:
 	void resetGrid();
@@ -101,6 +109,9 @@ protected:
 	void extract();
 	void predict();
 	void train();
+	void train(bool skipTraining);
+	void init();
+	void extractAction(std::string filename);
 
 
 private:
@@ -113,13 +124,21 @@ private:
 	int grid_x;
 	int grid_y;
 	int state_; // 0 for none, 1 for extract, 2 for train, 3 for predict
+	int oldPlayingIndex;
+	int numFeatures;
 	bool initAudio_;
 	bool continuous_;
+	bool cancel_;
+	bool init_;
+
 
 
 	QVector<QList <std::string> > files_;
+	QVector<GridTriplet*> initFileLocations;
 	QMutex mutex;
 
+	multimap<string, realvec>* featureHash;
+	multimap<string, realvec>* normFeatureHash;
 	MusicCollection *_collection;
 
 	MarControlPtr filePtr_;
@@ -137,6 +156,31 @@ private:
 	Marsyas::MarSystem* total_;
 	Marsyas::MarSystem* norm_;
 
+};
+
+/*
+Used to store info about files being used to initialize including the x,y location on the grid
+as well as column of the feature matrix
+*/
+class GridTriplet
+{
+public:
+	GridTriplet();
+	GridTriplet(int, int);
+	GridTriplet(std::string, int,int);
+	int getX() const {return x;}
+	int getY() const {return y;}
+	std::string getFileName() const {return fileName;}
+
+	void setX(int);
+	void setY(int);
+	void setFileName(std::string);
+
+	
+private:
+	int x;
+    int y;
+	std::string fileName;
 };
 
 #endif

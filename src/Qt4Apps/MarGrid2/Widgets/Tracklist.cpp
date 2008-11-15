@@ -7,7 +7,7 @@ Tracklist::Tracklist(QWidget *parent)
         setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         setDragEnabled(true);
-	//setMouseTracking(true);
+	    //setMouseTracking(true);
 }
 
 Tracklist::~Tracklist() {
@@ -22,6 +22,7 @@ void Tracklist::listTracks(MusicPlaylist *playlist) {
                 MusicTrack *track = it.next();
                 item = new QListWidgetItem(track->getTitle());
                 item->setData( Qt::UserRole, QVariant(track->getTrackId()));
+				item->setData( TRACK_LOCATION, QVariant(track->getLocation()));
 
 		qDebug() << "adding track: " << track->getTitle() 
 			 << " " << track->getTrackId();
@@ -38,6 +39,7 @@ void Tracklist::listTracks(MusicTrackIterator *it) {
                 MusicTrack *track = it->next();
                 item = new QListWidgetItem(track->getTitle());
                 item->setData( Qt::UserRole, QVariant(track->getTrackId()));
+				item->setData(TRACK_LOCATION, QVariant(track->getLocation()));
 
 		qDebug() << "adding track: " << track->getTitle() 
 			 << " " << track->getTrackId();
@@ -60,10 +62,13 @@ void Tracklist::mousePressEvent(QMouseEvent *event) {
 
 			//Track Id, convoluted? indeed
 			QByteArray trackIdba;
-			trackIdba.setNum(item->data(Qt::UserRole).toInt());
+			QByteArray trackLocation;
+			trackLocation = (item->data(TRACK_LOCATION)).toString().toStdString().c_str()  ;
 
+			trackIdba.setNum(item->data(Qt::UserRole).toInt());
 			mimeData->setText(item->text());
 			mimeData->setData("application/track-id", trackIdba);
+			mimeData->setData("application/track-location", trackLocation);
 			drag->setMimeData(mimeData);
 
 			qDebug() << "Start Track Drag: " << mimeData->text() 

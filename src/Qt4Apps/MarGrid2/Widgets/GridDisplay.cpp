@@ -1,18 +1,31 @@
 #include "../Widgets/GridDisplay.h"
 
 GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget *parent)
-	: MyDisplay(tracklist, parent), _winSize(winSize)
+: MyDisplay(tracklist, parent), _winSize(winSize)
 {
 	this->grid_ = grid_;
 	_cellSize = grid_->getCellSize();
 	setMinimumSize(winSize, winSize);
 	setMouseTracking(true);
+	setAcceptDrops(true);
+	squareHasInitialized.resize(144);
+	oldXPos = -1;
+	oldYPos = -1;
+	fullScreenMouseOn = false;
+	fullScreenTimer = new QTimer(this);
+	fullScreenTimer->setInterval(150);
+
 	connect(this, SIGNAL(clearMode()), grid_, SLOT(clearMode()));
-    connect(this, SIGNAL(extractMode()), grid_, SLOT(setExtractMode()));
+	connect(this, SIGNAL(extractMode()), grid_, SLOT(setExtractMode()));
 	connect(this, SIGNAL(trainMode()), grid_, SLOT(setTrainMode()));
 	connect(this, SIGNAL(predictMode()), grid_, SLOT(setPredictMode()));
+	connect(this, SIGNAL(initMode()), grid_, SLOT(setInitMode()));
 	connect(this, SIGNAL(savePredictionGridSignal(QString)), grid_, SLOT(savePredictionGrid(QString)));
 	connect(this, SIGNAL(openPredictionGridSignal(QString)), grid_, SLOT(openPredictionGrid(QString)));
+	connect(grid_, SIGNAL(repaintSignal()), this, SLOT(repaintSlot()));
+	connect(this, SIGNAL(cancelButtonPressed()), grid_, SLOT(cancelPressed()));
+	connect(this, SIGNAL(normHashLoadPressed()), grid_, SLOT(openNormHash()));
+	connect(fullScreenTimer, SIGNAL(timeout()), this, SLOT(fullScreenMouseMove()));
 }
 
 GridDisplay::~GridDisplay()
@@ -45,6 +58,11 @@ void GridDisplay::predict()
 	emit predictMode();
 	grid_->buttonPressed.wakeAll();
 }
+void GridDisplay::init()
+{
+	emit initMode();
+	grid_->buttonPressed.wakeAll();
+}
 void GridDisplay::savePredictionGrid(QString fname)
 {
 	emit savePredictionGridSignal(fname);
@@ -57,13 +75,60 @@ void GridDisplay::playModeChanged()
 {
 	grid_->setContinuous( !grid_->isContinuous() );
 }
+void GridDisplay::repaintSlot()
+{
+	repaint( );
+}
+void GridDisplay::cancelButton()
+{
+	emit cancelButtonPressed();
+}
 
+void GridDisplay::normHashLoad()
+{
+	emit normHashLoadPressed();
+}
+
+void GridDisplay::fullScreenMouse()
+{
+	if( fullScreenMouseOn = !fullScreenMouseOn )
+	{
+		fullScreenTimer->start();
+		grabMouse();
+	}
+	else
+	{
+		fullScreenTimer->stop();
+		releaseMouse();
+	}
+	emit fullScreenMode(fullScreenMouseOn);
+	setMouseTracking(!fullScreenMouseOn);
+	
+}
+void GridDisplay::fullScreenMouseMove()
+{
+	QRect screenSize = (QApplication::desktop())->screenGeometry();
+	
+	// map mouse position on screen to a grid location
+	int gridX = mouseCursor->pos().x() / (screenSize.width() / (grid_->getWidth() - 1));
+	int gridY = mouseCursor->pos().y() / (screenSize.height() / (grid_->getHeight() - 1));
+	
+	updateXYPosition(gridX, gridY);
+	if(grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos()  ) 
+	{
+		playNextTrack();
+		oldXPos = grid_->getXPos();
+	    oldYPos = grid_->getYPos();
+		repaint();
+	}
+}
 
 
 // ******************************************************************
 //
 // FUNCTIONS
-void GridDisplay::midiXYEvent(unsigned char xaxis, unsigned char yaxis) {
+void GridDisplay::midiXYEvent(unsigned char xaxis, unsigned char yaxis) 
+{
 	int x = (int)(xaxis / 128.0 * grid_->getWidth());
 	int y = grid_->getHeight() - 1 - (int)(yaxis / 128.0 * grid_->getHeight());
 
@@ -77,27 +142,30 @@ void GridDisplay::updateXYPosition(int x, int y)
 	grid_->setYPos(y);
 }
 
-void GridDisplay::midiPlaylistEvent(bool next) {
+void GridDisplay::midiPlaylistEvent(bool next) 
+{
 	if ( next ) {
 		std::cout << "midi playlist event\n";
-		//getCurrentSquare()->nextTrack();
 		playNextTrack();	
 	}
 }
 
-void GridDisplay::reload() {
+void GridDisplay::reload() 
+{
 
 	//TODO:  Figure out if reload is needed
 }
 
 
-void GridDisplay::playNextTrack() {
+void GridDisplay::playNextTrack() 
+{
+
 	if( !grid_->getCurrentFiles().isEmpty() ) 
 	{
-  
 
-        int counterSize = grid_->getGridCounterSizes(grid_->getCurrentIndex());
-        if (counterSize > 0) 
+
+		int counterSize = grid_->getGridCounterSizes(grid_->getCurrentIndex());
+		if (counterSize > 0) 
 			grid_->setGridCounter( grid_->getCurrentIndex() , (grid_->getGridCounter(grid_->getCurrentIndex()) + 1) % counterSize );  
 		int counter = grid_->getGridCounter(grid_->getCurrentIndex());
 
@@ -105,111 +173,118 @@ void GridDisplay::playNextTrack() {
 		cout << "Currently Playing: " + playlist[counter] << endl;
 		cout << "Playlist: " << endl;
 		for(int i = 0; i < counterSize; i++ ) {
-			cout << playlist[i] << endl;
+		cout << playlist[i] << endl;
 		}
 		grid_->playTrack(counter);
-
-		//TODO: REMOVE OR KEEP?
-		/*mwr_->updctrl( filePtr_, playlist[counter].c_str() );
-		mwr_->play();
-				  
-		  if (initAudio_ == false) 
-		  {
-			  mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-			  initAudio_ = true;
-		  } else {
-			  mwr_->pause();
-		  }*/
+	} else
+	{
+		grid_->stopPlaying();
 	}
 }
 
 
 /*
- * -----------------------------------------------------------------------------
- * Mouse Events
- * -----------------------------------------------------------------------------
- */
-void GridDisplay::mousePressEvent(QMouseEvent *event) {
+* -----------------------------------------------------------------------------
+* Mouse Events
+* -----------------------------------------------------------------------------
+*/
+void GridDisplay::mousePressEvent(QMouseEvent *event) 
+{
 	std::cout << "mouse Press Event" << std::endl;
 
-	updateXYPosition(event->pos().x() / _cellSize, event->pos().y() / _cellSize);
+	if(fullScreenMouseOn)
+	{
+		QRect screenSize = (QApplication::desktop())->screenGeometry();
+		int gridX = mouseCursor->pos().x() / (screenSize.width() / (grid_->getWidth() - 1));
+		int gridY = mouseCursor->pos().y() / (screenSize.height() / (grid_->getHeight() - 1));
 
+		updateXYPosition(gridX, gridY);
+		if(grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos()  ) 
+		{
+			oldXPos = grid_->getXPos();
+			oldYPos = grid_->getYPos();
+		}
+	}
+	else
+	{
+		updateXYPosition(event->pos().x() / _cellSize, event->pos().y() / _cellSize);
+	}
 	//TODO: REMOVE OR KEEP?
 	//getCurrentSquare()->nextTrack();
 	//_tracklist->listTracks(&getCurrentSquare()->getTracks());
 	playNextTrack();
+	repaint();
 }
 
-void GridDisplay::mouseMoveEvent(QMouseEvent *event) {
+void GridDisplay::mouseMoveEvent(QMouseEvent *event) 
+{
 	if ( (event->pos().x() >= _winSize) || (event->pos().y() >= _winSize) ) {
 		return;
 	}
-	if(grid_->isContinuous()) 
-	{
 	updateXYPosition(event->pos().x() / _cellSize, event->pos().y() / _cellSize);
-	playNextTrack();
+
+	if(grid_->isContinuous() && (grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos() ) ) 
+	{
+		playNextTrack();
+		oldXPos = grid_->getXPos();
+	    oldYPos = grid_->getYPos();
 	}
+	repaint();
 }
 
 /*
- * -----------------------------------------------------------------------------
- * Mouse Events
- * -----------------------------------------------------------------------------
- */
-void GridDisplay::dragMoveEvent(QDragMoveEvent* /* event */) {
-	
+* -----------------------------------------------------------------------------
+* Mouse Events
+* -----------------------------------------------------------------------------
+*/
+void GridDisplay::dragMoveEvent(QDragMoveEvent* event ) 
+{
+
 
 	//TODO: NEED TO ADD IN FOR INIT
 
 	//qDebug() << "Drag Move";
 }
 
-void GridDisplay::dragEnterEvent(QDragEnterEvent* event) {
+void GridDisplay::dragEnterEvent(QDragEnterEvent* event)
+{
 	if ( event->proposedAction() == Qt::CopyAction ) {
 		event->acceptProposedAction();
 	}
 }
 
-void GridDisplay::dropEvent(QDropEvent *event) {
-		//TODO: NEED TO ADD IN FOR INIT
-/*
-	if ( event->proposedAction() == Qt::CopyAction ) {
+void GridDisplay::dropEvent(QDropEvent *event) 
+{
+
+	qDebug() << "drop!!" ;
+	if ( event->proposedAction() == Qt::CopyAction ) 
+	{
 		//Position of drop event
 		int x = event->pos().x() / _cellSize;
 		int y = event->pos().y() / _cellSize;
+		int k = y * grid_->getHeight() + x;
+		squareHasInitialized[k] = true; 
 
-		bool ok = false;
-		const QMimeData *data = event->mimeData();
-		
+
+		const QMimeData* data = event->mimeData();
+
 		QString trackName = data->text();
 
-		if ( data->hasFormat("application/track-id") ) {
-			int trackId = data->data("application/track-id").toInt(&ok);
-		
-			qDebug() << "Track Drop Recv: " << trackName << " " << trackId;
-			if ( ok ) {
-				MusicTrack *track = _collection->getTrackById(trackId);
-				if ( track ) {
-					addTrack(x, y, track->getLocation().toStdString());
-				}
-			}
-		} else if ( data->hasFormat("application/playlist-id") ) {
-			QString playlistId = data->data("application/playlist-id").data();
+		QByteArray trackLocation = data->data("application/track-location");
+		QString foobar = trackLocation;
 
-			MusicPlaylist *playlist = _collection->getPlaylistByName(playlistId);
-			if ( playlist ) {
-				MusicTrackIterator ip = playlist->getTracks();
-				while ( ip.hasNext() ) {
-					MusicTrack *track = ip.next();
-					addTrack(x, y, track->getLocation().toStdString());
-				}
-			}
+		if ( data->hasFormat("application/track-id") ) {
+			cout << "Track" << endl;
+			grid_->addInitFile(trackLocation, x, y);
+		} else if ( data->hasFormat("application/playlist-id") ) {
+			cout << "Play List" << endl;
 		}	
 	}
-	*/
+	repaint();
 }
 
-void GridDisplay::paintEvent(QPaintEvent* /* event */) {
+void GridDisplay::paintEvent(QPaintEvent* /* event */) 
+{
 
 	QPainter painter;
 	painter.begin(this);
@@ -261,6 +336,27 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */) {
 			painter.drawRect(newr);
 		}
 	}
+	// Draw an 'i' in all initilized squares
+	for(int i = 0; i < squareHasInitialized.size(); i++)
+	{
+		if(squareHasInitialized[i])
+		{
+			int y = i / grid_->getHeight();
+			int x = i % grid_->getHeight();
+			int cellSize = grid_->getCellSize();
+			/*cout << "y";
+			cout << y << endl;
+			cout << "x";
+			cout << x << endl;*/
+			painter.setBrush(Qt::green);
+			QFont *font = new QFont();
+			font->setPointSize(16);
+			font->setStyleHint(QFont::OldEnglish);
+			painter.setFont(*font);
+			painter.drawText(x * cellSize, y * cellSize, cellSize, cellSize, Qt::AlignCenter, "i");
+		}
+	}
+
 	delete map;
 	painter.end();
 }

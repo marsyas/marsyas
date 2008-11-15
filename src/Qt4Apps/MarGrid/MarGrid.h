@@ -63,7 +63,6 @@ public slots:
 		void train();
 signals: 
   void playingFile(QString str);
-  void newGridSize(int height, int width);
   
   
 protected:
