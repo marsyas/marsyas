@@ -323,6 +323,8 @@ void Grid::extractAction(std::string filename)
 	QString realvecFile;
 	multimap<std::string,realvec>::iterator it;
 
+	cout << dir.currentPath() << endl;
+
 	if(dir.exists("extractFiles"))
 	{
 		dir.setCurrent("extractFiles");
@@ -362,14 +364,6 @@ void Grid::extractAction(std::string filename)
 	}
 
 
-	/*;
-	ofstream nhash;
-	nhash.open("normHash.hs");
-
-	for ( it=normFeatureHash->begin() ; it != normFeatureHash->end(); it++ )
-		nhash << (*it).first << "," << (*it).second << endl;
-	
-	nhash.close(); */
 }
 /*
 ** Overloaded training function to provide backwards compatability
@@ -597,9 +591,10 @@ void Grid::init()
 		{
 			cout << "1.1" << endl;
 			realvec temp;
-			cout << initFileLocations[i] << endl;
+			cout << initFileLocations[i]->getFileName() << endl;
 			multimap<std::string, realvec>::iterator temp2 = normFeatureHash->find( initFileLocations[i]->getFileName() );
 			cout << "1.12" << endl;
+			cout << temp2->first << endl;
 		    temp = temp2->second;
 			cout << "1.15" << endl;
 			init_train_fmatrix->stretch( temp.getRows() + 2, init_train_fmatrix->getCols() + temp.getCols() );
@@ -743,6 +738,7 @@ Grid::savePredictionGrid(QString fname)
 
 void Grid::openNormHash()
 {
+	cout << "Opening hash" << endl;
 	// if dir exists
 	QDir dir;
 	QFile *keysFile;
@@ -767,6 +763,7 @@ void Grid::openNormHash()
 					std::stringstream stringStream;
 					stringStream << "normFeatureVec" << currentHashFileNumber << ".hsh";
 					currentFeature.read(dir.filePath(stringStream.str().c_str()).toStdString());
+					cout << "current Key: " << currentHashKey.toStdString() << endl; 
 					normFeatureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
 
 				}
