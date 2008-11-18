@@ -172,9 +172,9 @@ void MainWindow::fullScreenMode(bool mode)
 		_toolbar->hide();
 		menuBar()->hide();
 		setWindowFlags(Qt::FramelessWindowHint);
-		#ifdef Q_WS_MACX
-			HideMenuBar();
-		#endif
+		//#ifdef Q_WS_MACX
+		//	HideMenuBar();
+		//#endif
 		grabKeyboard();
 
 	}
@@ -184,9 +184,9 @@ void MainWindow::fullScreenMode(bool mode)
 		_toolbar->show();
 		menuBar()->show();
 		setWindowFlags((Qt::WindowFlags)(~Qt::FramelessWindowHint));
-		#ifdef Q_WS_MACX
-			ShowMenuBar();
-		#endif
+	//	#ifdef Q_WS_MACX
+	//		ShowMenuBar();
+	//	#endif
 		releaseKeyboard();
 	}
 	show();

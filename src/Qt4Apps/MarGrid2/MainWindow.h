@@ -22,9 +22,9 @@
 #include "Widgets/PlayBox.h"
 #include "Widgets/Playlist.h"
 #include "Widgets/GridDisplay.h"
-#ifdef Q_WS_MACX
-#include <Carbon/Carbon.h>
-#endif
+//#ifdef Q_WS_MACX
+//#include <Carbon/Carbon.h>
+//#endif
 
 class MainWindow : public QMainWindow
 {
