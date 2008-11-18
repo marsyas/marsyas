@@ -547,8 +547,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		cout << ">> Loading MIDI file and synthetizing audio data..." << endl;
 		mainNet->updctrl("mrs_natural/inSamples", D);
 		mainNet->updctrl("mrs_real/israte", samplingFrequency_);
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/start", 0.0);
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/end", 10.0);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/start", 10.0);
+		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/end", 20.0);
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_string/filename", sfName);
 		//mainNet->updctrl("mrs_natural/inObservations", 1);
 		//samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_real/osrate")->to<mrs_real>();
@@ -815,23 +815,29 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	//	mrs_real time=0;
 
 	mrs_natural numTextWinds = 0;
-	while(1)
+	while(analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>())//(1)
 	{	
 		mainNet->tick();
 		numTextWinds++;
 
+		//if(numTextWinds == 63)
+		//{
+		//	cout << "!!!!" << endl;
+		//}
+
 		if (!microphone_)
 		{
-			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
-			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
-			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			//bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			//bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			//bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
 
 			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 			mrs_real timeLeft;
-			if(!stopAnalyse_)
+			//if(!stopAnalyse_)
 				timeLeft =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
-			else
-				timeLeft = stopAnalyse_;
+			//else
+			//	timeLeft = stopAnalyse_;
+			
 			// string fname = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename")->to<mrs_string>();
 
 			printf("Processed texture window %d : %.2f / %.2f \r", numTextWinds, timeRead, timeLeft);
@@ -845,8 +851,8 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 			// 			cfile << density << " " << oriGain << endl;
 			// 			//cout << oriGain << endl;
 
-			if (temp2 == false || (stopAnalyse_ !=0 && stopAnalyse_<timeRead))
-				break;
+			//if (temp2 == false || (stopAnalyse_ !=0 && stopAnalyse_<timeRead))
+			//	break;
 		}
 	}
 	if(synthetize_ > -1 && residual_ && frameCount != 0)
@@ -863,8 +869,11 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 // 		mainNet->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
 	}
 
-	cout << ">> Saving .mat file with results so they can be opened in MATLAB in: " << fileMatName << endl;
-	MATLAB_EVAL("save " + fileMatName);
+	//cout << ">> Saving .mat file with results so they can be opened in MATLAB in: " << fileMatName << endl;
+	//MATLAB_EVAL("save " + fileMatName);
+
+	if(numTextWinds > 0)
+		MATLAB_EVAL("saveSDRresults");
 
 	cout << endl << ">> End of processing. Bye!" << endl;
 

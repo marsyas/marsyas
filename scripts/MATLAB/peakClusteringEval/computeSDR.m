@@ -14,14 +14,14 @@ nbRefs = size(ref, 1);
 nbSyn = size(syn, 1);
 
 % handle different numbers by padding zeros
-if nbRefs < nbSyn %this situation is not expected to happen... [!]
-    ref = [ref; zeros(nbSyn-nbRefs, frameLength)];
-elseif nbRefs > nbSyn
-    syn = [syn; zeros(nbRefs-nbSyn, frameLength)];
-end
+%if nbRefs < nbSyn %this situation is not expected to happen... [!]
+%    ref = [ref; zeros(nbSyn-nbRefs, frameLength)];
+%elseif nbRefs > nbSyn
+%    syn = [syn; zeros(nbRefs-nbSyn, frameLength)];
+%end
 
-nbRefs = size(ref, 1);
-nbSyn = size(syn, 1);
+%nbRefs = size(ref, 1);
+%nbSyn = size(syn, 1);
 
 correspondence = [1:nbSyn]; %by default...
 
@@ -31,13 +31,14 @@ permSyns = perms((1:nbSyn));
 refPower = sum(abs(ref),2);%abs(sum(ref, 2)); ????
 
 maxSdr = -80;
-for i=1:size(permSyns,1)%(permRefs, 1)
+for i=1:size(permSyns,1)%:size(permRefs, 1)
     %permRefMat = ref(permRefs(i, :), :);
     permSynMat = syn(permSyns(i, :), :);
     
     %silence extra resynthesis tracks, so they do no hurt SDR
     if nbRefs < nbSyn
-        permSynMat(nbRefs+1:end,:) = permSynMat(nbRefs+1:end,:)*0; 
+        %permSynMat(nbRefs+1:end,:) = permSynMat(nbRefs+1:end,:)*0;
+        permSynMat = permSynMat(1:nbRefs,:);
     end
     
     %permDiffMat = permRefMat-syn;

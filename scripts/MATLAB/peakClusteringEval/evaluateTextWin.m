@@ -49,7 +49,8 @@ for r=1:numRegions
 
     %compute SDR for current frame
     %correspondence = [];
-    [SDRresults, correspondence] = computeSDR(refAudioFrame, resAudioFrame);
+    %[SDRresults, correspondence] = computeSDR(refAudioFrame, resAudioFrame);
+    [SDRresults, correspondence] = computeSpectralSDR(refAudioFrame, resAudioFrame);
     SDR(r) = SDRresults;
 
     %% CORRESPONDENCE:

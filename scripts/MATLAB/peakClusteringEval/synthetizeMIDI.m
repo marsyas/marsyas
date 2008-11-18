@@ -27,6 +27,11 @@ nmat = trim(nmat);
 channels = mchannels(nmat);
 numChannels = length(channels);
 
+% limit number of MIDI channels
+if numChannels > 5
+    numChannels = 5;
+end
+
 %get individual MIDI tracks, and make them monophonic if necessary
 MIDItracks = cell(numChannels, 1);
 for i=1:numChannels
