@@ -199,7 +199,7 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 		s.replace(QRegExp("%20"), " ");
 		s.replace(QRegExp("file://localhost/"), "");
 
-		/* Marsays does everything with '\' as the path delmiter like a good app 
+		/* Marsyas does everything with '\' as the path delmiter like a good app 
 		   while Apple has decided that iTunes gets to ignore windows convetions and use '/'
 		*/
 		#if defined(Q_WS_WIN)
