@@ -207,7 +207,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 
 
 		
-		if (fluxval_(0,0) - median_buffer_.median() <= 55.0)    // steady state use long window 
+		if (fluxval_(0,0) - median_buffer_.median() <= 35.0)    // steady state use long window 
 		{
 			for (o=inObservations_/2; o < inObservations_; o++)
 				for (t = 0; t < inSamples_; t++)
@@ -218,7 +218,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 			for (o=0; o < onObservations_/2; o++) 
 				for (t = 0; t < inSamples_; t++)
 				{
-					out(2*o, t) = 1.20 * out(2*o,t);
+					out(2*o, t) = 1.0 * out(2*o,t);
 				}
 			ctrl_transient_->setValue(false, NOUPDATE);
 		}
@@ -236,7 +236,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 			for (o=0; o < onObservations_/2; o++) 
 				for (t = 0; t < inSamples_; t++)
 				{
-					out(2*o, t) = 0.6 * out(2*o,t);
+					out(2*o, t) = 1.0 * out(2*o,t);
 				}
 
 			ctrl_transient_->setValue(true, NOUPDATE);			

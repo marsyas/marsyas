@@ -215,17 +215,12 @@ PvConvert::myProcess(realvec& in, realvec& out)
 void 
 PvConvert::myProcessSorted(realvec& in, realvec& out)
 {
-
-
-	
-
-
-	
 	
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
 
 	mrs_real decimation = getctrl("mrs_natural/Decimation")->to<mrs_natural>() * 1.0;
+	
 	mrs_real one_over_decimation = 1.0 / decimation;
 
 
@@ -338,7 +333,8 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 void 
 PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 {
-
+	cout << "Sorted " << endl;
+	
 
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();

@@ -112,6 +112,9 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	    confidences(i) = pitchres(0);
 	    pitches(i) = pitchres(1);
         
+		cout << confidences(i) << endl;
+		cout << pitches(i) << endl;
+		
         /*
 	    peak_in = pitchExtractor->getctrl("PitchPraat/pitchPraat/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
 	    mrs_natural pos = pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
