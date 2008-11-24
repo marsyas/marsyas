@@ -11,7 +11,7 @@ if (mad_FOUND)
 	endif (NOT mad_FIND_QUIETLY)
 else (mad_FOUND)
 	if (mad_FIND_REQUIRED)
-		message (FATAL_ERROR "Could find: mad")
+		message (FATAL_ERROR "Could not find: mad")
 	endif (mad_FIND_REQUIRED)
 endif (mad_FOUND)
 

@@ -2,7 +2,7 @@ set( CPACK_GENERATOR TBZ2)
 set( CPACK_SOURCE_GENERATOR TBZ2)
 
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Music Analysis Retrieval
-and Syntehsis for Audio Signals")
+and Synthesis for Audio Signals")
 SET(CPACK_PACKAGE_VENDOR "Marsyas Development Team")
 #SET(CPACK_PACKAGE_DESCRIPTION_FILE
 #"${CMAKE_CURRENT_SOURCE_DIR}/ReadMe.txt")
