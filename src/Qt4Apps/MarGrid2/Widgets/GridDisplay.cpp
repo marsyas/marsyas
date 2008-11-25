@@ -8,10 +8,13 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
 	setMinimumSize(winSize, winSize);
 	setMouseTracking(true);
 	setAcceptDrops(true);
-	squareHasInitialized.resize(144);
+	squareHasInitialized.resize(grid_->getHeight() * grid_->getWidth());
+	for(int i = 0; i < grid_->getHeight() * grid_->getWidth(); i++)
+		squareHasInitialized[i] = false;
 	oldXPos = -1;
 	oldYPos = -1;
 	fullScreenMouseOn = false;
+	initDone = false;
 	fullScreenTimer = new QTimer(this);
 	fullScreenTimer->setInterval(150);
 
@@ -32,9 +35,11 @@ GridDisplay::~GridDisplay()
 {
 	// TODO: DELETE STUFF
 }
-// ******************************************************************
-//
-// SLOTS
+/* 
+*
+* SLOTS
+*
+*/
 
 void GridDisplay::clear()
 {
@@ -62,6 +67,7 @@ void GridDisplay::init()
 {
 	emit initMode();
 	grid_->buttonPressed.wakeAll();
+	initDone = true;
 }
 void GridDisplay::savePredictionGrid(QString fname)
 {
@@ -159,16 +165,12 @@ void GridDisplay::reload()
 
 void GridDisplay::playNextTrack() 
 {
-
 	if( !grid_->getCurrentFiles().isEmpty() ) 
 	{
-
-
 		int counterSize = grid_->getGridCounterSizes(grid_->getCurrentIndex());
 		if (counterSize > 0) 
 			grid_->setGridCounter( grid_->getCurrentIndex() , (grid_->getGridCounter(grid_->getCurrentIndex()) + 1) % counterSize );  
 		int counter = grid_->getGridCounter(grid_->getCurrentIndex());
-
 		QList<std::string> playlist = grid_->getCurrentFiles();
 		cout << "Currently Playing: " + playlist[counter] << endl;
 		cout << "Playlist: " << endl;
@@ -185,9 +187,29 @@ void GridDisplay::playNextTrack()
 
 /*
 * -----------------------------------------------------------------------------
-* Mouse Events
+* Event Handlers
 * -----------------------------------------------------------------------------
 */
+
+bool GridDisplay::event(QEvent *event)
+{
+	if (event->type() == QEvent::ToolTip) 
+	{
+		QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
+		int k = grid_->getYPos() * grid_->getHeight() + grid_->getXPos();
+		cout << k << endl;
+		if(squareHasInitialized[k])
+		{
+			QToolTip::showText(helpEvent->globalPos(), grid_->getInitFiles().c_str());
+		}
+		else
+		{
+			QToolTip::hideText();
+		}
+	}
+	return QWidget::event(event);
+}
+
 void GridDisplay::mousePressEvent(QMouseEvent *event) 
 {
 	std::cout << "mouse Press Event" << std::endl;
@@ -208,35 +230,40 @@ void GridDisplay::mousePressEvent(QMouseEvent *event)
 	else
 	{
 		updateXYPosition(event->pos().x() / _cellSize, event->pos().y() / _cellSize);
+		if(!initDone)
+		{
+			int k = grid_->getYPos() * grid_->getHeight() + grid_->getXPos();
+			if(squareHasInitialized[k])
+			{
+			  squareHasInitialized[k] = false;
+			  grid_->removeInitFile();
+			}			
+		}
 	}
-	//TODO: REMOVE OR KEEP?
-	//getCurrentSquare()->nextTrack();
-	//_tracklist->listTracks(&getCurrentSquare()->getTracks());
 	playNextTrack();
 	repaint();
 }
 
 void GridDisplay::mouseMoveEvent(QMouseEvent *event) 
 {
+
 	if ( (event->pos().x() >= _winSize) || (event->pos().y() >= _winSize) ) {
 		return;
 	}
+	QToolTip::hideText();
 	updateXYPosition(event->pos().x() / _cellSize, event->pos().y() / _cellSize);
 
 	if(grid_->isContinuous() && (grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos() ) ) 
 	{
+		cout << "11" << endl;
 		playNextTrack();
+		cout << "22" << endl;
 		oldXPos = grid_->getXPos();
 	    oldYPos = grid_->getYPos();
 	}
 	repaint();
 }
 
-/*
-* -----------------------------------------------------------------------------
-* Mouse Events
-* -----------------------------------------------------------------------------
-*/
 void GridDisplay::dragMoveEvent(QDragMoveEvent* event ) 
 {
 

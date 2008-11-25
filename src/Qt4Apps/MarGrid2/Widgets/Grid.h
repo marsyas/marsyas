@@ -64,6 +64,9 @@ public:
 	void setGridCounter(int index, int value);
 	void playTrack(int counter);
 	void stopPlaying();
+	void removeInitFile();
+
+	QVector< QList<std::string> > getFiles() const { return files_; }
 	QList<std::string> getFilesAt(int index);
 	QList<std::string> getCurrentFiles();
 	QWaitCondition buttonPressed;
@@ -76,12 +79,12 @@ public:
 	int getGridCounterSizes(int index);
 	int getGridCounter(int index);
 	int getCurrentIndex();
+	std::string getInitFiles();
 	int getHeight() const { return som_width; }
 	int getWidth() const { return som_height; }
 	int getXPos() const { return _gridX; }
 	int getYPos() const { return _gridY; }
 	int getCellSize() const { return _cellSize; }
-	QVector< QList<std::string> > getFiles() const { return files_; }
 
 public slots: 
 		void setExtractMode();

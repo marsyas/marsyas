@@ -17,6 +17,7 @@
 #include <QCursor>
 #include <QDesktopWidget>
 #include <QApplication>
+#include <QToolTip>
 
 #include "MarSystemManager.h"
 #include "MarSystemQtWrapper.h"
@@ -89,6 +90,7 @@ protected:
 
 	void mousePressEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
+	bool event(QEvent *event);
 
 	void updateXYPosition(int x, int y); 
 	void paintEvent(QPaintEvent *event);
@@ -115,6 +117,7 @@ private:
 	int oldXPos;
 	int oldYPos;
 	bool fullScreenMouseOn;
+	bool initDone;
 
 };
 
