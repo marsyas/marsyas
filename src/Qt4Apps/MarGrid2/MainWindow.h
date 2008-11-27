@@ -26,6 +26,7 @@
 //#include <Carbon/Carbon.h>
 //#endif
 
+
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -42,7 +43,7 @@ signals:
 	void cancelButtonSignal();
 	void fullScreenModeOff();
 
-private slots:
+private slots:  
 	void openiTunesLibrary();
 	void openMarXmlLibrary();
 	void openMarCsvLibrary();

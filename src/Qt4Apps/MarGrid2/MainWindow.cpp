@@ -12,7 +12,7 @@ MainWindow::MainWindow(Grid* grid_) {
 	_preferencesDialog = NULL;
 
 	// _midi = new MidiListener();
-	openDefaultiTunes();
+	//openDefaultiTunes();
 	isFullScreenMouse = false;
 	
 }
