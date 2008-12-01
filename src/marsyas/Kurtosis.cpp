@@ -65,34 +65,72 @@ Kurtosis::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
 
-  for (t = 0; t < inSamples_; t++)
+	// old code for Kurtosis calculation 
+	
+/* 	for (t = 0; t < inSamples_; t++)
     {
-      
-      for (o=0; o < inObservations_; o++)
+		
+		for (o=0; o < inObservations_; o++)
 		{
-		  obsrow_(o) = in(o,t);
+			obsrow_(o) = in(o,t);
 		}
-      z_ = 0.0;
-      mrs_real mean = obsrow_.mean();
-      for (o=0; o < inObservations_; o++)
+		z_ = 0.0;
+		mrs_real mean = obsrow_.mean();
+		for (o=0; o < inObservations_; o++)
 		{
-		  b_ =  obsrow_(o) - mean ;
-		  
-		  // take x - u to the fourth power into the sum
-		  z_ += (b_ * b_ * b_ * b_); 
+			b_ =  obsrow_(o) - mean ;
+			
+			// take x - u to the fourth power into the sum
+			z_ += (b_ * b_ * b_ * b_); 
 		}
-      
-      // standard deviation to the fourth power
-      q_ = obsrow_.var() * obsrow_.var();
-
-
-      if ((z_ < 1.0e-45)||(q_ < 1.0e-45))
-		out(0,t) = 0.5;
-      else 
+		
+		// standard deviation to the fourth power
+		q_ = obsrow_.var() * obsrow_.var();
+		
+		
+		if ((z_ < 1.0e-45)||(q_ < 1.0e-45))
+			out(0,t) = 0.5;
+		else 
 		{
-		  // out(0,t) = (mrs_real)((z_ /  q_ * inObservations_) - 3.0);
-		  out(0,t) = (mrs_real)((z_ /  q_ ) - 3.0);
+		// out(0,t) = (mrs_real)((z_ /  q_ * inObservations_) - 3.0);
+			out(0,t) = (mrs_real)((z_ /  q_ ) - 3.0);
 		}
     }   
+	
+
+	cout << "k1 = " << out(0,0) << endl;
+*/ 	
+	
+	
+	for (t = 0; t < inSamples_; t++)
+    {
+		
+		for (o=0; o < inObservations_; o++)
+		{
+			obsrow_(o) = in(o,t);
+		}
+		z_ = 0.0;
+		mrs_real mean = obsrow_.mean();
+		for (o=0; o < inObservations_; o++)
+		{
+			obsrow_(o) =  obsrow_(o) - mean ;
+			b_ = obsrow_(o);
+			
+			z_ += (b_ * b_ * b_ * b_); 
+			q_  += (b_ * b_);
+		}
+		q_ = q_ * q_;
+		q_ = q_ / inObservations_;
+		
+		if ((z_ < 1.0e-45)||(q_ < 1.0e-45))
+			out(0,t) = 0.5;
+		else 
+		{
+			out(0,t) = (mrs_real)((z_ /  q_ ) - 3.0);
+		}
+    }   
+
+
+// 	cout << "k2 = " << out(0,0) << endl;
 }
 

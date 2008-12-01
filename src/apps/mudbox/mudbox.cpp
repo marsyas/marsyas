@@ -868,6 +868,35 @@ toy_with_simpleSFPlay(string sfName)
 	delete playbacknet;
 }
 
+
+void 
+toy_with_sine() 
+{
+	MarSystemManager mng;
+	
+	MarSystem* snet = mng.create("Series/snet");
+	MarSystem* smix = mng.create("Fanout/smix");
+	smix->addMarSystem(mng.create("SineSource/src1"));
+	smix->addMarSystem(mng.create("SineSource/src2"));
+	snet->addMarSystem(smix);
+	snet->addMarSystem(mng.create("AudioSink/dest"));
+
+	snet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+	for (int i=0; i < 500; i++) 
+	{
+		snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", 440.0);
+		snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", 445.0);
+		snet->tick();
+	}
+	
+	
+
+}
+
+
+
+
 void
 toy_with_SFPlay(string sfName)
 {
@@ -4181,6 +4210,37 @@ toy_with_pitch(string sfName)
 	delete pnet;
 }
 
+void 
+toy_with_centroid(string sfName1)
+{
+	cout << "Test centroid " << sfName1 << endl;
+	MarSystemManager mng;
+	
+	MarSystem* net = mng.create("Series/net");
+	net->addMarSystem(mng.create("SoundFileSource/src"));
+	net->addMarSystem(mng.create("Windowing/ham"));
+	net->addMarSystem(mng.create("Spectrum/spk"));
+	net->addMarSystem(mng.create("PowerSpectrum/pspk"));
+	net->addMarSystem(mng.create("Centroid/cntrd"));
+	net->addMarSystem(mng.create("Memory/mem"));
+	net->addMarSystem(mng.create("Mean/mean"));
+
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName1);
+
+	mrs_real val = 0.0;
+	
+	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	{
+		net->tick();
+		const mrs_realvec& src_data = 
+			net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();			
+		val = src_data(0,0);
+		cout << val << endl;
+	}
+}
+
+
+
 void
 toy_with_confidence(string sfName) 
 {
@@ -4859,6 +4919,8 @@ main(int argc, const char **argv)
 		toy_with_cascade();
 	else if (toy_withName == "collection")
 		toy_with_CollectionFileSource(fname0);
+	else if (toy_withName == "centroid")
+		toy_with_centroid(fname0);
 	else if (toy_withName == "confidence")
 		toy_with_confidence(fname0);
 	else if (toy_withName == "drumclassify")
@@ -4921,6 +4983,8 @@ main(int argc, const char **argv)
 		toy_with_shredder(fname0);
 	else if (toy_withName == "simpleSFPlay")
 		toy_with_simpleSFPlay(fname0);
+	else if (toy_withName == "sine") 
+		toy_with_sine();
 	else if (toy_withName == "spectralSNR")
 		toy_with_spectralSNR(fname0, fname1);
 	else if (toy_withName == "stereo2mono")
