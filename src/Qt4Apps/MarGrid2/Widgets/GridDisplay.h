@@ -29,6 +29,12 @@
 #include "../Widgets/Tracklist.h"
 #include "../Widgets/Grid.h"
 
+// Color definitions
+#define PURPLE 160,32,240
+#define BROWN 139,69,16
+#define PINK 255,105,180
+#define ORANGE 255,127,0
+
 class QDragEnterEvent;
 class QDropEvent;
 class QMouseEvent;
@@ -68,6 +74,8 @@ public:
 		void normHashLoad();
 		void fullScreenMouse();
 		void fullScreenMouseMove();
+		void colourMapMode();
+		void playlistSelected(QString playlist);
 
 signals: 
 		void playingTrack(MusicTrack *track);
@@ -118,6 +126,7 @@ private:
 	int oldYPos;
 	bool fullScreenMouseOn;
 	bool initDone;
+	bool colourMapMode_;
 
 };
 

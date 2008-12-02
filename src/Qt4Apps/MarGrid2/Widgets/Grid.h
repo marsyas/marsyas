@@ -37,6 +37,7 @@
 
 #define GRID_TRAINING_FILE	"training.mf"
 #define GRID_PREDICTION_FILE	"predict.mf"
+#define NUM_GENRES 10
 
 class QDragEnterEvent;
 class QDropEvent;
@@ -60,7 +61,7 @@ public:
 	~Grid();
 	void clear();
 	void run();
-	void addTrack(int x, int y, std::string track);
+	void addTrack(int x, int y, QString track);
 	void setGridCounter(int index, int value);
 	void playTrack(int counter);
 	void stopPlaying();
@@ -73,13 +74,15 @@ public:
 	
 	void setXPos(int value);
 	void setYPos(int value);
+	void setPlaylist(std::string playlist);
 	void addInitFile(QString fileName, int x, int y);
 	void setContinuous(bool value);
 	bool isContinuous() const {return continuous_; }
 	int getGridCounterSizes(int index);
 	int getGridCounter(int index);
 	int getCurrentIndex();
-	std::string getInitFiles();
+	QList<std::string> getInitFiles();
+	int * getDensity(int index);
 	int getHeight() const { return som_width; }
 	int getWidth() const { return som_height; }
 	int getXPos() const { return _gridX; }
@@ -129,15 +132,18 @@ private:
 	int state_; // 0 for none, 1 for extract, 2 for train, 3 for predict
 	int oldPlayingIndex;
 	int numFeatures;
+	int **genreDensity;
 	bool initAudio_;
 	bool continuous_;
 	bool cancel_;
 	bool init_;
+	std::string playlist_;
 
 
 
+	// Indexed with index = (y * som_hight + x)
 	QVector<QList <std::string> > files_;
-	QVector<GridTriplet*> initFileLocations;
+	QVector<QList <GridTriplet*> > initFileLocations;
 	QMutex mutex;
 
 	multimap<string, realvec>* featureHash;
@@ -163,7 +169,7 @@ private:
 
 /*
 Used to store info about files being used to initialize including the x,y location on the grid
-as well as column of the feature matrix
+and the file's absolute file path
 */
 class GridTriplet
 {

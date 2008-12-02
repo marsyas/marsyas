@@ -20,6 +20,7 @@ void Playlist::playlistClicked(int /* currentRow */) {
 	qDebug() << current << " Playlist Clicked";
 	MusicPlaylist *playlist = _library->getPlaylistByName(current);
 	_tracklist->listTracks(playlist);
+	emit SelectedPlaylist(current);
 }
 
 void Playlist::updatePlaylist() {

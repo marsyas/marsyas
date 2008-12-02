@@ -15,6 +15,9 @@ public:
 	Playlist(Tracklist *tracklist, QWidget *parent=0);
 	~Playlist();
 
+signals:
+	void SelectedPlaylist(QString);
+
 public slots:
 	void playlistClicked(int currentRow);
 	void updatePlaylist();

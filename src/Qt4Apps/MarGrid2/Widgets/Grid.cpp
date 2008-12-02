@@ -17,6 +17,31 @@ Grid::Grid()
 	normFeatureHash = new multimap<string, realvec>();
 	numFeatures = 0;
 	initFileLocations.resize(som_height * som_width);
+	playlist_ = "Library"; // by default select the full iTunes library
+
+	/* For use with genres only
+	* The 1st dimension is the normal grid square array layout 
+	* The 2nd dimension of density uses the following values
+	* 0 - blues
+	* 1 - classical
+	* 2 - country
+	* 3 - disco
+	* 4 - hiphop
+	* 5 - jazz
+	* 6 - metal
+	* 7 - reggae
+	* 8 - rock
+	* 9 - pop
+	*/
+	genreDensity = (int **)malloc(som_height * som_width * sizeof(int *));
+	for (int i = 0; i < som_height * som_width; i++) 
+	{
+		genreDensity[i] = (int *)malloc(10 * sizeof(int));
+		for(int j = 0; j < 10; j++)
+		{
+			genreDensity[i][j] = 0;
+		}
+	}
 
 	setup();
 }
@@ -24,6 +49,9 @@ Grid::Grid()
 Grid::~Grid() {
 
 	//TODO: DROP files_ POINTER
+	for(int i =0; i < som_height * som_width; i++)
+		 free(genreDensity[i]);
+	free(genreDensity);
 }
 
 void Grid::clear() {
@@ -190,13 +218,16 @@ void Grid::extract() {
 
 		int index = 0;
 
-		// !!! use itunes to generate the collection file rather then 
+		// !!! use itunes to generate the collection file rather then using a file
 
 		/*ofstream featureFile;
 		featureFile.open("music.mf");
 		_collection->generateTrackList(featureFile);
 		featureFile.close();*/
-		extractAction("music.mf");
+		ofstream featureFile;
+		featureFile.open("google.mf");
+		_collection->generatePlayList(featureFile, playlist_.c_str());
+		extractAction("google.mf");
 	}	
 	else 
 	{
@@ -278,8 +309,6 @@ void Grid::extractAction(std::string filename)
 	norm_->updctrl("mrs_string/mode", "predict");  
 	norm_->process(som_fmatrix, norm_som_fmatrix);
 
-	//cout << norm_->getctrl("mrs_realvec/maximums") << endl;
-	//cout << norm_->getctrl("mrs_realvec/minimums") << endl;
 
 	numFeatures = norm_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
@@ -363,11 +392,6 @@ void Grid::extractAction(std::string filename)
 	{
 		cerr << "Could not open keys.txt for writing";
 	}
-
-
-
-
-
 
 }
 /*
@@ -537,7 +561,7 @@ void Grid::predict() {
 			total_->updctrl("mrs_natural/label", index);
 			total_->updctrl("mrs_bool/memReset", true);
 			total_->updctrl("mrs_natural/cindex", index);
-			string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+			QString current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>().c_str();
 
 			total_->process(som_in, som_res);
 
@@ -595,21 +619,24 @@ void Grid::init()
 		// make music.mf file of dropped files
 		for(int i = 0; i < initFileLocations.size(); i++)
 		{
-			realvec temp;
-			cout << initFileLocations[i]->getFileName() << endl;
-			multimap<std::string, realvec>::iterator temp2 = normFeatureHash->find( initFileLocations[i]->getFileName() );
-			cout << temp2->first << endl;
-		    temp = temp2->second;
-			init_train_fmatrix->stretch( temp.getRows() + 2, init_train_fmatrix->getCols() + temp.getCols() );
-
-			for(int j = 0; j < temp.getRows(); j++)
+			for (int l = 0; l < initFileLocations[i].size(); l++)
 			{
-				(*init_train_fmatrix)(j, init_train_fmatrix->getCols() -1  ) = temp(j,0);
-			}
+				realvec temp;
+				cout << (initFileLocations[i].at(l))->getFileName() << endl;
+				multimap<std::string, realvec>::iterator temp2 = normFeatureHash->find( initFileLocations[i].at(l)->getFileName() );
+				cout << temp2->first << endl;
+				temp = temp2->second;
+				init_train_fmatrix->stretch( temp.getRows() + 2, init_train_fmatrix->getCols() + temp.getCols() );
 
-			// add X and Y position info to the last two rows of the vector
-			(*init_train_fmatrix)(temp.getRows(), init_train_fmatrix->getCols() -1 ) = initFileLocations[i]->getX();
-			(*init_train_fmatrix)(temp.getRows() + 1, init_train_fmatrix->getCols() -1 ) = initFileLocations[i]->getY();
+				for(int j = 0; j < temp.getRows(); j++)
+				{
+					(*init_train_fmatrix)(j, init_train_fmatrix->getCols() -1  ) = temp(j,0);
+				}
+
+				// add X and Y position info to the last two rows of the vector
+				(*init_train_fmatrix)(temp.getRows(), init_train_fmatrix->getCols() -1 ) = initFileLocations[i].at(l)->getX();
+				(*init_train_fmatrix)(temp.getRows() + 1, init_train_fmatrix->getCols() -1 ) = initFileLocations[i].at(l)->getY();
+			}
 
 
 		}
@@ -702,8 +729,7 @@ Grid::openPredictionGrid(QString fname)
 		cout << index;
 		cout << ",";
 		cout << listFname << endl; 
-		files_[index].push_back(qFname.toStdString());
-		counterSizes[index]++;
+		addTrack(index % som_height, index / som_height, qFname);
 	}
 }
 
@@ -778,17 +804,16 @@ void Grid::openNormHash()
 */
 void Grid::removeInitFile()
 {
-	for(int i = 0; i < initFileLocations.size(); i++)
-	{
-		if(initFileLocations[i]->getX() == _gridX && initFileLocations[i]->getY() == _gridY)
-			initFileLocations.remove(i);
-	}
+	int k = getCurrentIndex();
+	while(initFileLocations[k].size() > 0)
+		initFileLocations[k].removeFirst();
 }
 
-/**
- **  MODE SETTERS
-**/
-
+/*
+* ---------------------------------------------------
+*  Mode Setters
+* ---------------------------------------------------
+*/
 void Grid::setExtractMode()
 {
 	cout << "grid extract" << endl;
@@ -842,40 +867,94 @@ void Grid::setGridY(int y) {
 	}
 }
 
-void Grid::addTrack(int x, int y, std::string track) {
+void Grid::setPlaylist(std::string playlist)
+{
+	playlist_ = playlist;
+}
+
+void Grid::addTrack(int x, int y, QString track) {
 
 	int index = y * som_height + x;
-	files_[index].push_back(track);
+	/* For use with "genres" only
+	* The 2nd dimenstion of density uses the following values
+	* 0 - blues
+	* 1 - classical
+	* 2 - country
+	* 3 - disco
+	* 4 - hiphop
+	* 5 - jazz
+	* 6 - metal
+	* 7 - reggae
+	* 8 - rock
+	* 9 - pop
+	*/
+	if(track.contains("blues", Qt::CaseInsensitive))
+	{
+		genreDensity[index][0]++;
+	}
+	else if(track.contains("classical", Qt::CaseInsensitive))
+	{
+		genreDensity[index][1]++;
+	}
+	else if(track.contains("country", Qt::CaseInsensitive))
+	{
+		genreDensity[index][2]++;
+	}
+	else if(track.contains("disco", Qt::CaseInsensitive))
+	{
+		genreDensity[index][3]++;
+	}
+	else if(track.contains("hiphop", Qt::CaseInsensitive))
+	{
+		genreDensity[index][4]++;
+	}
+	else if(track.contains("jazz", Qt::CaseInsensitive))
+	{
+		genreDensity[index][5]++;
+	}
+	else if(track.contains("metal", Qt::CaseInsensitive))
+	{
+		genreDensity[index][6]++;
+	}
+	else if(track.contains("reggae", Qt::CaseInsensitive))
+	{
+		genreDensity[index][7]++;
+	}
+	else if(track.contains("rock", Qt::CaseInsensitive))
+	{
+		genreDensity[index][8]++;
+	}
+	else if(track.contains("pop", Qt::CaseInsensitive))
+	{
+		genreDensity[index][9]++;
+	}
+
+	files_[index].push_back(track.toStdString());
 	counterSizes[index]++;
+}
+
+int * Grid::getDensity(int index)
+{
+	return genreDensity[index];
 }
 
 void Grid::playTrack(int index)
 {
-	cout << "x: " << _gridX  << ",y: " << _gridY << endl;
-	cout << "13" << endl;
 	QList<std::string> playlist = getCurrentFiles();
-	cout << "13.5" << endl;
-	
 	// Super safety abort
 	if(playlist.size() <= index)
 	{
 		cout << "ABORT" << endl;
 		return;
 	}
-	cout << "playlist size: " << playlist.size() << ", index: " << index << ", fname: " << playlist[index].c_str() << endl;
 	mwr_->updctrl( filePtr_, playlist[index].c_str() );
-	cout << "14" << endl;
 	if (initAudio_ == false) 
 	{
 		mwr_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-		cout << "15" << endl;
 		initAudio_ = true;
 		oldPlayingIndex = index;
-		cout << "15.5" << endl;
 		mwr_->play();
-		cout << "16" << endl;
 	}
-	cout << "17" << endl;
 }
 
 void Grid::stopPlaying()
@@ -886,17 +965,19 @@ void Grid::stopPlaying()
 
 }
 
-std::string Grid::getInitFiles()
+QList<std::string> Grid::getInitFiles()
 {
-	return initFileLocations[getCurrentIndex()]->getFileName();
+	QList<GridTriplet *> triplets =  initFileLocations[getCurrentIndex()];
+	QList<std::string> fileLocations;
+	for(int i = 0; i < triplets.size(); i++ )
+		fileLocations.append(triplets.at(i)->getFileName());
+	return fileLocations;
 }
 void Grid::addInitFile(QString fileName, int x, int y)
 {
-	cout << "test  ";
-	cout << fileName.toStdString() << endl;
 	init_ = true;
 	GridTriplet* gt = new GridTriplet(fileName.toStdString(), x,y);
-	initFileLocations[y * som_height + x] = gt;
+	initFileLocations[y * som_height + x].append(gt);
 }
 QList<std::string> Grid::getCurrentFiles()
 {

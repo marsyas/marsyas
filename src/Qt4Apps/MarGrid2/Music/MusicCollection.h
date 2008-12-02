@@ -51,6 +51,7 @@ public:
 
 	// Collection output
 	int generateTrackList(std::ostream& out);
+	int generatePlayList(std::ostream& out, QString playlist);
 
 private:
 	void linkGenre(MusicTrack *genre);

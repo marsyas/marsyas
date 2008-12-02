@@ -101,6 +101,7 @@ private:
 	QAction *_initAction;
 	QAction *_normHashAction;
 	QAction *_fullScreenAction;
+	QAction *_colourMapMode;
 
 	MusicCollection *_library;
 	bool isFullScreenMouse;

@@ -232,6 +232,7 @@ void MainWindow::createWindow() {
 	connect(this, SIGNAL(cancelButtonSignal()), _display, SLOT(cancelButton()));
 	connect(_display, SIGNAL(fullScreenMode(bool)), this, SLOT(fullScreenMode(bool)));
 	connect(this, SIGNAL(fullScreenModeOff()), _display, SLOT(fullScreenMouse()));
+	connect(_playlist, SIGNAL(SelectedPlaylist(QString)), _display, SLOT(playlistSelected(QString)));
 
 	w->setLayout(gridLayout);
 	statusBar()->showMessage(tr("Ready"));
@@ -311,6 +312,9 @@ void MainWindow::createActions() {
 
 	_fullScreenAction = new QAction (tr("&Full Screen Mouse Mode"), this);
 	connect(_fullScreenAction, SIGNAL(triggered()), _display, SLOT(fullScreenMouse()));
+
+	_colourMapMode = new QAction (tr("&Colour Mapping Mode"),this);
+	connect(_colourMapMode, SIGNAL(triggered()), _display, SLOT(colourMapMode()));
 }
 
 void MainWindow::createMenus() {
@@ -356,6 +360,8 @@ void MainWindow::createToolbars() {
 	_toolbar->addAction(_initAction);
 	_toolbar->addSeparator();
 	_toolbar->addAction(_fullScreenAction);
+	_toolbar->addSeparator();
+	_toolbar->addAction(_colourMapMode);
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)

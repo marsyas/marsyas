@@ -17,6 +17,8 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
 	initDone = false;
 	fullScreenTimer = new QTimer(this);
 	fullScreenTimer->setInterval(150);
+	colourMapMode_ = true;
+
 
 	connect(this, SIGNAL(clearMode()), grid_, SLOT(clearMode()));
 	connect(this, SIGNAL(extractMode()), grid_, SLOT(setExtractMode()));
@@ -83,7 +85,7 @@ void GridDisplay::playModeChanged()
 }
 void GridDisplay::repaintSlot()
 {
-	repaint( );
+	repaint();
 }
 void GridDisplay::cancelButton()
 {
@@ -129,6 +131,16 @@ void GridDisplay::fullScreenMouseMove()
 	}
 }
 
+void GridDisplay::colourMapMode()
+{
+	colourMapMode_ = !colourMapMode_;
+	repaint();
+}
+
+void GridDisplay::playlistSelected(QString playlist)
+{
+	grid_->setPlaylist(playlist.toStdString());
+}
 
 // ******************************************************************
 //
@@ -197,10 +209,17 @@ bool GridDisplay::event(QEvent *event)
 	{
 		QHelpEvent *helpEvent = static_cast<QHelpEvent *>(event);
 		int k = grid_->getYPos() * grid_->getHeight() + grid_->getXPos();
-		cout << k << endl;
 		if(squareHasInitialized[k])
 		{
-			QToolTip::showText(helpEvent->globalPos(), grid_->getInitFiles().c_str());
+			QList<std::string> initFiles = grid_->getInitFiles();
+			QString initFileStr = "";
+			for(int i = 0; i < initFiles.size(); i++)
+			{
+				std::string temp = initFiles.at(i);
+				initFileStr += temp.c_str();
+				initFileStr += "\n";
+			}
+			QToolTip::showText(helpEvent->globalPos(), initFileStr);
 		}
 		else
 		{
@@ -255,9 +274,7 @@ void GridDisplay::mouseMoveEvent(QMouseEvent *event)
 
 	if(grid_->isContinuous() && (grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos() ) ) 
 	{
-		cout << "11" << endl;
 		playNextTrack();
-		cout << "22" << endl;
 		oldXPos = grid_->getXPos();
 	    oldYPos = grid_->getYPos();
 	}
@@ -335,23 +352,109 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 		for (int j=0; j < grid_->getWidth(); j++) {
 			int k = i * grid_->getHeight() + j;
 
-			QRect	 myr(i*_cellSize,j*_cellSize,_cellSize,_cellSize);
-			QLine	 myl1(i*_cellSize,j*_cellSize, i*_cellSize, j*_cellSize + _cellSize);
-			QLine	 myl2(i*_cellSize,j*_cellSize, i*_cellSize+_cellSize, j*_cellSize );
+			QRect	 myr(j*_cellSize,i*_cellSize,_cellSize,_cellSize);
+			QLine	 myl1(j*_cellSize,i*_cellSize, j*_cellSize, i*_cellSize + _cellSize);
+			QLine	 myl2(j*_cellSize,i*_cellSize, j*_cellSize+_cellSize, i*_cellSize );
 
+			
 			if ( grid_->getFilesAt(k).size() == 0 ) {
-				QColor color(map->getRed(125), map->getGreen(0), map->getBlue(0));
+				QColor color;
+				if(colourMapMode_)
+				{
+					color.setRgb(map->getRed(0), map->getGreen(0), map->getBlue(0));
+				}
+				else
+				{
+					color.setRgb(map->getRed(128), map->getGreen(0), map->getBlue(0));
+				}
 				painter.setBrush(color);
-			} else {
-				int c = int(grid_->getFilesAt(k).size() / float(maxDensity) * (map->getDepth()-1));
-				QColor color(map->getRed(c), map->getGreen(c), map->getBlue(c));
-				painter.setBrush(color);
-			}
+			} 
+			else 
+			{
+				if(colourMapMode_)
+				{
+					/*
+					* index - genre - color
+					* 0 - blues - Qt::blue
+					* 1 - classical - Qt::darkRed
+					* 2 - country - Qt::green
+					* 3 - disco - PURPLE
+					* 4 - hiphop - Qt::yellow
+					* 5 - jazz - Qt::darkGreen
+					* 6 - metal - BROWN
+					* 7 - reggae - PINK
+					* 8 - rock - ORANGE
+					* 9 - pop - Qt::grey
+					*/
+					int numSongs = -1;
+					int maxIndex = -1;
+					int * genreDensity = grid_->getDensity(k);
+					for(int m = 0; m < 10; m++)
+					{
+						if( genreDensity[m] > numSongs)
+						{
+							maxIndex = m;
+							numSongs = genreDensity[m];
+						}
+					}
+					QColor * color;
+					switch(maxIndex)
+					{
+					case 0:
+						color = new QColor(Qt::blue);
+						break;
+					case 1:
+						color = new QColor(Qt::darkRed);
+						break;
+					case 2:
+						color = new QColor(Qt::green);
+						break;
+					case 3:
+						color = new QColor(PURPLE);
+						break;
+					case 4:
+						color = new QColor(Qt::yellow);
+						break;
+					case 5:
+						color = new QColor(Qt::darkGreen);
+						break;
+					case 6:
+						color = new QColor(BROWN);
+						break;
+					case 7:
+						color = new QColor(PINK);
+						break;
+					case 8:
+						color = new QColor(ORANGE);
+						break;
+					case 9:
+						color = new QColor(Qt::gray);
+						break;
+					default:
+						cerr << "Problem with colour select" << endl;
+					}
+					painter.setBrush(*color);
 
+
+				}
+				else
+				{
+					int c = int(grid_->getFilesAt(k).size() / float(maxDensity) * (map->getDepth()-1));
+					QColor color(map->getRed(c), map->getGreen(c), map->getBlue(c));
+					painter.setBrush(color);
+				}
+			}
 			painter.setPen(Qt::NoPen);
 			painter.drawRect(myr);
 
-			painter.setPen(Qt::black);
+			if(colourMapMode_)
+			{
+				painter.setPen(Qt::red);
+			}
+			else
+			{
+				painter.setPen(Qt::black);
+			}
 			painter.drawLine(myl1);
 			painter.drawLine(myl2);
 
@@ -371,10 +474,6 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 			int y = i / grid_->getHeight();
 			int x = i % grid_->getHeight();
 			int cellSize = grid_->getCellSize();
-			/*cout << "y";
-			cout << y << endl;
-			cout << "x";
-			cout << x << endl;*/
 			painter.setBrush(Qt::green);
 			QFont *font = new QFont();
 			font->setPointSize(16);

@@ -219,12 +219,32 @@ void MusicCollection::displayPlaylists() {
 int MusicCollection::generateTrackList(std::ostream& out) {
 	int count = 0;
 	MusicTrackIterator iter = getTracks();
-	while( iter.hasNext() ) {
+	while( iter.hasNext() ) 
+	{
 		MusicTrack *track = iter.next();
 		out << track->getLocation().toStdString().c_str() << std::endl;
 		count++;
 	}
 	return count;
+}
+int MusicCollection::generatePlayList(std::ostream& out, QString playList)
+{
+	int count = 0;
+	MusicPlaylist *pl;
+	MusicPlaylistMap::iterator rs = _playlists->find(playList);
+	if ( rs != _playlists->end() ) 
+	{
+		pl = *rs;
+	}
+	MusicTrackIterator mti = pl->getTracks();
+	while(mti.hasNext())
+	{
+		MusicTrack *track = mti.next();
+		out << track->getLocation().replace(" ", "\\ ") << std::endl;
+		count++;
+	}
+	return count;
+
 }
 
 MusicArtistIterator MusicCollection::getArtists() const {
