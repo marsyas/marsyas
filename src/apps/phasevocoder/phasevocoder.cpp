@@ -151,9 +151,6 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/Sinusoids", 
 						  (mrs_natural)sopt);
 		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_string/convertMode", convertmode_);
-		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_string/unconvertMode",
-						  unconvertmode_);
-
 		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_real/PitchShift", P);
 	}
 	
@@ -211,7 +208,6 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	
 	int numticks = 0;
 	int onset_counter = 5;
-	pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation",I);
 	
 	while(pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
