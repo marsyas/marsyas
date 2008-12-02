@@ -73,7 +73,6 @@ printHelp(string progName)
 	cerr << "-u --usage      : display short usage info" << endl;
 	cerr << "-h --help       : display this information " << endl;
 	cerr << "-l --label      : label for the collection " << endl;
-	cerr << "-e --escape	 : escape all special characters" << endl;
 	cerr << "-c --collectionName : the name of the collection (including the .mf extension) " << endl;
 	exit(1);
 }
@@ -83,7 +82,6 @@ initOptions()
 {
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
-	cmd_options.addBoolOption("escape", "e", false);
 	cmd_options.addStringOption("label", "l", EMPTYSTRING);
 	cmd_options.addStringOption("collectionName", "c", "music.mf");
 }
@@ -95,7 +93,6 @@ loadOptions()
 	helpopt = cmd_options.getBoolOption("help");
 	usageopt = cmd_options.getBoolOption("usage");
 	collectionName = cmd_options.getStringOption("collectionName");
-	escapeOpt = cmd_options.getStringOption("escape");
 	labelopt = cmd_options.getStringOption("label");
 }
 
