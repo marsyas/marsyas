@@ -17,6 +17,8 @@
 */
 
 #include "SoundFileSource.h"
+#include <string> 
+#include <cctype>
 #include <algorithm>
 
 using namespace std;
@@ -239,7 +241,7 @@ SoundFileSource::checkType()
 	{
 		ext = filename.substr(pos, filename.length());
 		// need this to be lowercase for the checks below.
-		transform(ext.begin(), ext.end(), ext.begin(), tolower);
+		std::transform(ext.begin(), ext.end(), ext.begin(), (int(*)(int))tolower);
 	}
 
 	if (ext == ".au")

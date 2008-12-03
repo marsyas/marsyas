@@ -64,7 +64,7 @@ private:
   mrs_natural naddress_;
   mrs_real tableval_;
 		
-  MarControlPtr ctrl_phases_;
+  MarControlPtr ctrl_frequencies_;
   MarControlPtr ctrl_analysisphases_;
   MarControlPtr ctrl_phaselock_;
 		MarControlPtr ctrl_onsetsAudible_;

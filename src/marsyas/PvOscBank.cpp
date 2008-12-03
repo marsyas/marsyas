@@ -36,7 +36,7 @@ PvOscBank::PvOscBank(string name):MarSystem("PvOscBank",name)
 PvOscBank::PvOscBank(const PvOscBank& a):MarSystem(a) 
 {
 	ctrl_analysisphases_ = getctrl("mrs_realvec/analysisphases");
-	ctrl_phases_ = getctrl("mrs_realvec/phases");
+	ctrl_frequencies_ = getctrl("mrs_realvec/frequencies");
 	ctrl_phaselock_ = getctrl("mrs_bool/phaselock");
 	ctrl_onsetsAudible_ = getctrl("mrs_bool/onsetsAudible");
 	ctrl_rmsIn_ = getctrl("mrs_real/rmsIn");
@@ -67,7 +67,7 @@ PvOscBank::addControls()
 
 	
 	addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
-	addctrl("mrs_realvec/phases", realvec(), ctrl_phases_);
+	addctrl("mrs_realvec/frequencies", realvec(), ctrl_frequencies_);
 	addctrl("mrs_bool/phaselock", false, ctrl_phaselock_);
 	addctrl("mrs_bool/onsetsAudible", true, ctrl_onsetsAudible_);
 	addctrl("mrs_real/rmsIn", 0.0, ctrl_rmsIn_);
@@ -99,9 +99,9 @@ PvOscBank::myUpdate(MarControlPtr sender)
 		}
 
 		{
-			MarControlAccessor acc(ctrl_phases_);
-			mrs_realvec& phases = acc.to<mrs_realvec>();
-			phases.create(size_);
+			MarControlAccessor acc(ctrl_frequencies_);
+			mrs_realvec& frequencies = acc.to<mrs_realvec>();
+			frequencies.create(size_);
 		}
 
 		
@@ -111,6 +111,9 @@ PvOscBank::myUpdate(MarControlPtr sender)
 		magnitudes_.stretch(size_);
 		regions_.stretch(size_);
 		
+		
+
+
 		lastfreq_.stretch(size_);
 		index_.stretch(size_);
 		N_ = size_;
@@ -137,7 +140,7 @@ PvOscBank::myUpdate(MarControlPtr sender)
 int
 PvOscBank::subband(int bin)
 {
-	int si;
+	int si = 0;
 	
 	if (bin  < 16) 
 		si = 0;
@@ -164,9 +167,10 @@ PvOscBank::isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp)
 			if (magnitudes(bin) < magnitudes(i))
 				res = false;
 		}
-	
 	if (magnitudes(bin) < 0.005 * maxAmp) 
 		res = false;
+	if (bin == 0) 
+		res = true;
 	return res;
 }
 
@@ -175,8 +179,8 @@ void
 PvOscBank::myProcess(realvec& in, realvec& out)
 {
 	
-	MarControlAccessor acc(ctrl_phases_);
-	mrs_realvec& phases = acc.to<mrs_realvec>();
+	MarControlAccessor acc(ctrl_frequencies_);
+	mrs_realvec& frequencies = acc.to<mrs_realvec>();
 	
 	MarControlAccessor  acc1(ctrl_analysisphases_);
 	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
@@ -184,12 +188,10 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	
 	for (t=0; t < NP_; t++)
 	{
-		phases(t) =  in(2*t+1,0);
+		frequencies(t) =  in(2*t+1,0);
 	}
 	PS_ = P_;		
 	
-	
-
 	
 	if (PS_ > 1.0)
 		NP_ = (mrs_natural)(N_/PS_);
@@ -225,6 +227,11 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	}
 
 
+	for (int i=0; i < size_; i++) 
+	{
+		regions_(i) = i;
+	}
+	
 
 	// calculate regions of influence 
 	int previous_peak=0;
@@ -233,6 +240,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	{
 		if (isPeak(t, magnitudes_, maxAmp))
 		{
+			
 			// calculate significant peaks and corresponding 
 			// non-overlapping intervals 
 			peak = t;
@@ -265,9 +273,9 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	mrs_real factor = 1;
 	for (t=0; t < NP_; t++)
 	{
-		phases(t) *= Pinc_;
+		frequencies(t) *= Pinc_;
 		f_ = lastfreq_(t);			
-		finc_ = (phases(t) - f_) * Iinv_;
+		finc_ = (frequencies(t) - f_) * Iinv_;
 		
 		if ((magnitudes_(t) < 1.0e-06)||(magnitudes_(t) < 0.01 * maxAmp))
 		{
@@ -290,24 +298,25 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		{
 			index_(t) = analysisphases(t) * Pinc_;
 			factor = 2.25;
+			factor = 1.5;
+			
 		}
-
-
 		
 		
-		mrs_real diff = analysisphases(t) - analysisphases((mrs_natural)regions_(t));
+		mrs_real diff = analysisphases(t) - 
+			analysisphases((mrs_natural)regions_(t));
 		diff *= Pinc_;
 		
 		if (t == regions_(t))
 		{
-			address_ = index_(t);
-			factor = 1.5;
+			address_ = index_(regions_(t));
 		}
 		else 
 		{
-			address_ = index_(t);
-			factor = 1.5;
+			address_ = index_(regions_(t))  + diff;
+			// address_ = index_(t);
 		}
+		
 		
 		while (address_ >= L_)
 			address_ -= L_;
@@ -339,11 +348,14 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		
 		index_(t) = address_;	  
 		lastamp_(t) = magnitudes_(t);
-		lastfreq_(t) = phases(t);
+		lastfreq_(t) = frequencies(t);
 
 	}
-	ctrl_phaselock_->setValue(false);
+
+	
+	// ctrl_phaselock_->setValue(false);
 			
+
 
 	for (t=0; t < Nw_; t++)
 		out(0,t) = temp_(t);

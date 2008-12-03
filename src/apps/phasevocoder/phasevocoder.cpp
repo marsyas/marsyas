@@ -215,6 +215,16 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 		if ((numticks == 0)&&(oscbank_ == false)) 
 			pvseries->updctrl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
 		
+		if ((numticks == 0)&&(oscbank_ == true)) 
+		{
+			cout << "PvOscBank phaselock" << endl;
+			pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_bool/phaselock", 
+							  true);
+		}
+		
+		
+
+		
 		pvseries->tick();
 		
 		numticks++;
@@ -314,7 +324,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 	
 	pvseries->addMarSystem(mng.create("ShiftInput", "si"));
 	pvseries->addMarSystem(mng.create("PvFold", "fo"));
-  
+	
 	pvseries->addMarSystem(mng.create("Spectrum", "spk"));
 	pvseries->addMarSystem(mng.create("PvConvert", "conv"));
 	if (oscbank_)	  
@@ -487,6 +497,15 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 		{
 
 			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
+			if (oscbank_)
+			{
+				cout << "Oscbank phaselock" << endl;
+				
+				pvseries->updctrl("PvOscBank/ob/mrs_bool/phaselock", true);		
+			}
+			
+			else 
+				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
 		}
 		
 		

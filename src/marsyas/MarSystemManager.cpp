@@ -710,10 +710,14 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pvocpr1->linkctrl("PvOscBank/pob/mrs_real/PitchShift", 
 				"mrs_real/PitchShift");
 
+			pvocpr1->linkctrl("PvOscBank/pob/mrs_bool/phaselock", 
+							  "mrs_bool/phaselock");
+
 			pvocpr1->linkctrl("PvConvert/conv/mrs_realvec/phases", 
 				"PvOscBank/pob/mrs_realvec/analysisphases");
 
 
+			
 
 			registerPrototype("PhaseVocoderOscBank", pvocpr1);
 		}
