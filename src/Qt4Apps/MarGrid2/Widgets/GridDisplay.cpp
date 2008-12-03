@@ -4,7 +4,7 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
 : MyDisplay(tracklist, parent), _winSize(winSize)
 {
 	this->grid_ = grid_;
-	_cellSize = grid_->getCellSize();
+	_cellSize = grid_->getCellSize(_winSize);
 	setMinimumSize(winSize, winSize);
 	setMouseTracking(true);
 	setAcceptDrops(true);
@@ -140,6 +140,23 @@ void GridDisplay::colourMapMode()
 void GridDisplay::playlistSelected(QString playlist)
 {
 	grid_->setPlaylist(playlist.toStdString());
+}
+
+void GridDisplay::setXGridSize(QString size)
+{
+	grid_->setXGridSize(size);
+	squareHasInitialized.clear();
+	squareHasInitialized.resize(grid_->getHeight() * grid_->getWidth());
+	for(int i = 0; i < grid_->getHeight() * grid_->getWidth(); i++)
+		squareHasInitialized[i] = false;
+}
+void GridDisplay::setYGridSize(QString size)
+{
+	grid_->setYGridSize(size);
+	squareHasInitialized.clear();
+	squareHasInitialized.resize(grid_->getHeight() * grid_->getWidth());
+	for(int i = 0; i < grid_->getHeight() * grid_->getWidth(); i++)
+		squareHasInitialized[i] = false;
 }
 
 // ******************************************************************
@@ -332,6 +349,7 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 
 	QPainter painter;
 	painter.begin(this);
+	_cellSize = grid_->getCellSize(_winSize);
 
 	//Find density
 	int maxDensity = 0;
@@ -346,16 +364,15 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 			minDensity = grid_->getFilesAt(i).size();
 		}
 	}
-
 	Colormap *map = Colormap::factory(Colormap::GreyScale);
 	for (int i=0; i < grid_->getHeight(); i++) {
 		for (int j=0; j < grid_->getWidth(); j++) {
-			int k = i * grid_->getHeight() + j;
 
-			QRect	 myr(j*_cellSize,i*_cellSize,_cellSize,_cellSize);
-			QLine	 myl1(j*_cellSize,i*_cellSize, j*_cellSize, i*_cellSize + _cellSize);
-			QLine	 myl2(j*_cellSize,i*_cellSize, j*_cellSize+_cellSize, i*_cellSize );
+			int k = j * grid_->getHeight() + i;
 
+			QRect	 myr(i*_cellSize,j*_cellSize,_cellSize,_cellSize);
+			QLine	 myl1(i*_cellSize,j*_cellSize, i*_cellSize, j*_cellSize + _cellSize);
+			QLine	 myl2(i*_cellSize,j*_cellSize, i*_cellSize+_cellSize, j*_cellSize );
 			
 			if ( grid_->getFilesAt(k).size() == 0 ) {
 				QColor color;
@@ -368,7 +385,7 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 					color.setRgb(map->getRed(128), map->getGreen(0), map->getBlue(0));
 				}
 				painter.setBrush(color);
-			} 
+			}
 			else 
 			{
 				if(colourMapMode_)
@@ -466,6 +483,7 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 			painter.drawRect(newr);
 		}
 	}
+
 	// Draw an 'i' in all initilized squares
 	for(int i = 0; i < squareHasInitialized.size(); i++)
 	{
@@ -473,13 +491,12 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 		{
 			int y = i / grid_->getHeight();
 			int x = i % grid_->getHeight();
-			int cellSize = grid_->getCellSize();
 			painter.setBrush(Qt::green);
 			QFont *font = new QFont();
 			font->setPointSize(16);
 			font->setStyleHint(QFont::OldEnglish);
 			painter.setFont(*font);
-			painter.drawText(x * cellSize, y * cellSize, cellSize, cellSize, Qt::AlignCenter, "i");
+			painter.drawText(x * _cellSize, y * _cellSize, _cellSize, _cellSize, Qt::AlignCenter, "i");
 		}
 	}
 

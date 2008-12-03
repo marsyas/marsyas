@@ -6,6 +6,8 @@ Grid::Grid()
 
 	som_height = 12;
 	som_width = 12;
+	oldWidth_ = som_width;
+	oldHeight_ = som_height;
 	_gridX = 0;
 	_gridY = 0;
 	initAudio_ = false;
@@ -350,8 +352,6 @@ void Grid::extractAction(std::string filename)
 	QString realvecFile;
 	multimap<std::string,realvec>::iterator it;
 
-	cout << dir.currentPath() << endl;
-
 	if(!dir.exists("extractFiles"))
 	{
 		dir.mkdir("extractFiles");
@@ -482,7 +482,6 @@ void Grid::predict() {
 		realvec som_res;
 		realvec som_fmatrix;
 		QDir dir;
-		cout << dir.currentPath() << endl;
 
 		ifstream iss1;
 
@@ -546,7 +545,6 @@ void Grid::predict() {
 		QString tempString;
 		for (int index = 0; index < l1.size(); index++)
 		{
-			cout << "foo" << endl;
 			if(cancel_)
 			{
 				cancel_ = false;
@@ -566,23 +564,13 @@ void Grid::predict() {
 			foobar.create(som_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), som_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
 			norm_som_fmatrix.getCol(index, foobar);
-			//if(init_)
-			//	foobar.stretch(foobar.getRows() + 2, foobar.getCols() );
-			cout << "foobar rows: "  << foobar.getRows() << " cols: " << foobar.getCols() << endl;
-			cout << "predict_res rows: " << predict_res.getRows() << " cols:  " << predict_res.getCols() << endl;
-			cout << "inObs: " <<  som_->getctrl("mrs_natural/inObservations")->to<mrs_natural>() << endl;
 
 			som_->process(foobar, predict_res); 
-			cout << "moobar" << endl;
 
 			grid_x = predict_res(0);
 			grid_y = predict_res(1);
-			cout << grid_x;
-			cout << ",";
-			cout << grid_y  << endl;
 			addTrack(grid_x, grid_y, current);
-			cout << "track: ";
-			cout << current << endl;
+			emit repaintSignal();
 
 	
 			total_->updctrl("mrs_bool/advance", true);  
@@ -609,7 +597,6 @@ void Grid::init()
 
 		realvec* init_train_fmatrix = new realvec();
 		
-		cout << "1" << endl;
 
 		// make music.mf file of dropped files
 		for(int i = 0; i < initFileLocations.size(); i++)
@@ -617,9 +604,7 @@ void Grid::init()
 			for (int l = 0; l < initFileLocations[i].size(); l++)
 			{
 				realvec temp;
-				cout << (initFileLocations[i].at(l))->getFileName() << endl;
 				multimap<std::string, realvec>::iterator temp2 = normFeatureHash->find( initFileLocations[i].at(l)->getFileName() );
-				cout << temp2->first << endl;
 				temp = temp2->second;
 				init_train_fmatrix->stretch( temp.getRows() + 2, init_train_fmatrix->getCols() + temp.getCols() );
 
@@ -648,12 +633,9 @@ void Grid::init()
 		som_->updctrl("mrs_natural/grid_height", som_height);
 		som_->updctrl("mrs_natural/inSamples", init_train_fmatrix->getCols());
 
-	//	cout << init_train_fmatrix->getCols() << endl;
 
 		som_->updctrl("mrs_natural/inObservations", init_train_fmatrix->getRows());  
 		som_->updctrl("mrs_string/mode", "init");
-
-		//cout << som_->getctrl("mrs_natural/grid_height")->to<mrs_natural>() << endl;
 
 
 
@@ -720,10 +702,6 @@ Grid::openPredictionGrid(QString fname)
 		qFname =  listFname.c_str();
 		istringstream buffer(vecIndex);	
 		buffer >> index;
-
-		cout << index;
-		cout << ",";
-		cout << listFname << endl; 
 		addTrack(index % som_height, index / som_height, qFname);
 	}
 }
@@ -780,8 +758,7 @@ void Grid::openNormHash()
 				{
 					std::stringstream stringStream;
 					stringStream << "normFeatureVec" << currentHashFileNumber << ".hsh";
-					currentFeature.read(dir.filePath(stringStream.str().c_str()).toStdString());
-					cout << "current Key: " << currentHashKey.toStdString() << endl; 
+					currentFeature.read(dir.filePath(stringStream.str().c_str()).toStdString()); 
 					normFeatureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
 
 				}
@@ -807,13 +784,21 @@ void Grid::removeInitFile()
 void
 Grid::setXGridSize(QString size)
 {
+	cerr << "0" << endl;
+	oldWidth_ = som_width;
 	som_width = size.toInt();
+	cerr << "0.1" << endl;
+	resetGrid();
+	emit repaintSignal();
 }
 
 void
 Grid::setYGridSize(QString size)
 {
+	oldHeight_ = som_height;
 	som_height = size.toInt();
+	resetGrid();
+	emit repaintSignal();
 }
 
 /*
@@ -855,6 +840,38 @@ void Grid::cancelPressed()
 void Grid::resetGrid()
 {
 	//TODO:: RESET!
+	for(int i = 0; i < oldHeight_ * oldWidth_; i++)
+		free(genreDensity[i]);
+	free(genreDensity);
+
+	delete featureHash;
+	delete normFeatureHash;
+
+	genreDensity = (int **)malloc(som_height * som_width * sizeof(int *));
+	for (int i = 0; i < som_height * som_width; i++) 
+	{
+		genreDensity[i] = (int *)malloc(10 * sizeof(int));
+		for(int j = 0; j < 10; j++)
+		{
+			genreDensity[i][j] = 0;
+		}
+	}
+
+	initFileLocations.clear();
+	initFileLocations.resize(som_height * som_width);
+	files_.clear();
+	files_.resize(som_height * som_width);
+	_gridX = 0;
+	_gridY = 0;
+	initAudio_ = false;
+	continuous_ = false;
+	cancel_ = false;
+	state_ = 0;
+	init_ = false;
+	featureHash = new multimap<string, realvec>();
+	normFeatureHash = new multimap<string, realvec>();
+	numFeatures = 0;
+
 }
 
 int Grid::getCurrentIndex()
@@ -945,6 +962,11 @@ int * Grid::getDensity(int index)
 	return genreDensity[index];
 }
 
+int Grid::getCellSize(int winSize)
+{
+	return winSize / std::max(som_height, som_width);
+}
+
 void Grid::playTrack(int index)
 {
 	QList<std::string> playlist = getCurrentFiles();
@@ -992,7 +1014,11 @@ QList<std::string> Grid::getCurrentFiles()
 }
 QList<std::string> Grid::getFilesAt(int index)
 {
-	return files_[index];
+	if(index >= files_.size())
+	{
+		cout << "out of range" << endl;
+	}
+		return files_[index];
 }
 int Grid::getGridCounterSizes(int index)
 {

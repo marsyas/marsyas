@@ -395,8 +395,8 @@ void MainWindow::createToolbars() {
 	_toolbar->addWidget(gridWidthWidget);
 
 	//TODO: CLEANUP
-	connect(gridWidth, SIGNAL(textChanged(QString)), _dataGrid, SLOT(setXGridSize(QString)));
-    connect(gridHeight, SIGNAL(textChanged(QString)), _dataGrid, SLOT(setYGridSize(QString)));
+	connect(gridWidth, SIGNAL(textChanged(QString)), _display, SLOT(setXGridSize(QString)));
+    connect(gridHeight, SIGNAL(textChanged(QString)), _display, SLOT(setYGridSize(QString)));
 
 }
 
@@ -404,7 +404,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
 {
 	if(isFullScreenMouse) 
 	{
-		cout << "in" << endl;
+	cout << "in" << endl;
 	emit fullScreenModeOff();
 	fullScreenMode(false);
 	}

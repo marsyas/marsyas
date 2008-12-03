@@ -74,6 +74,8 @@ public:
 	
 	void setXPos(int value);
 	void setYPos(int value);
+	void setXGridSize(QString);
+	void setYGridSize(QString);
 	void setPlaylist(std::string playlist);
 	void addInitFile(QString fileName, int x, int y);
 	void setContinuous(bool value);
@@ -83,11 +85,11 @@ public:
 	int getCurrentIndex();
 	QList<std::string> getInitFiles();
 	int * getDensity(int index);
-	int getHeight() const { return som_width; }
-	int getWidth() const { return som_height; }
+	int getHeight() const { return som_height; }
+	int getWidth() const { return som_width; }
 	int getXPos() const { return _gridX; }
 	int getYPos() const { return _gridY; }
-	int getCellSize() const { return _cellSize; }
+	int getCellSize(int winSize);
 
 public slots: 
 		void setExtractMode();
@@ -99,8 +101,6 @@ public slots:
 		void savePredictionGrid(QString fname);
 		void cancelPressed();
 		void openNormHash();
-		void setXGridSize(QString);
-		void setYGridSize(QString);
 
 signals: 
 		void playingTrack(MusicTrack *track);
@@ -129,6 +129,8 @@ private:
 	int _gridY;
 	int som_height;
 	int som_width;
+	int oldWidth_;
+	int oldHeight_;
 	int grid_x;
 	int grid_y;
 	int state_; // 0 for none, 1 for extract, 2 for train, 3 for predict

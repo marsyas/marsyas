@@ -4,9 +4,9 @@ set(APP
 
 set(APP_SOURCES 
 	MainWindow.cpp
-	Colormaps/GreyScaleColormap
-	Colormaps/SpectraColormap
-	Colormaps/ColorMap
+	Colormaps/GreyScaleColormap.cpp
+	Colormaps/SpectraColormap.cpp
+	Colormaps/ColorMap.cpp
 	Dialogs/iTunesPage.cpp
 	Dialogs/PreferencesDialog.cpp
 	Interface/Parser.cpp
@@ -25,6 +25,7 @@ set(APP_SOURCES
 	Widgets/PlaylistItem.cpp
 	Widgets/Tracklist.cpp
 	Widgets/GridDisplay.cpp
+	#Widgets/ColourMap.cpp
 	main.cpp
 )
 
@@ -57,6 +58,7 @@ set(APP_HEADERS
 	Widgets/PlaylistItem.h
 	Widgets/Tracklist.h
 	Widgets/GridDisplay.h
+	#Widgets/ColourMap.h
 	MainWindow.h
 )
 

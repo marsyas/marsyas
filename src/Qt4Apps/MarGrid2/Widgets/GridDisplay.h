@@ -78,6 +78,8 @@ public:
 		void fullScreenMouseMove();
 		void colourMapMode();
 		void playlistSelected(QString playlist);
+		void setXGridSize(QString);
+		void setYGridSize(QString);
 
 signals: 
 		void playingTrack(MusicTrack *track);
