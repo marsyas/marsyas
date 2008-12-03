@@ -30,10 +30,12 @@
 #include "../Widgets/Grid.h"
 
 // Color definitions
+#ifndef GRID_COLOURS
 #define PURPLE 160,32,240
 #define BROWN 139,69,16
 #define PINK 255,105,180
 #define ORANGE 255,127,0
+#endif /* GRID_COLOURS */
 
 class QDragEnterEvent;
 class QDropEvent;

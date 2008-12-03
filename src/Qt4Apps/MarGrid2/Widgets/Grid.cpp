@@ -219,15 +219,10 @@ void Grid::extract() {
 		int index = 0;
 
 		// !!! use itunes to generate the collection file rather then using a file
-
-		/*ofstream featureFile;
-		featureFile.open("music.mf");
-		_collection->generateTrackList(featureFile);
-		featureFile.close();*/
 		ofstream featureFile;
-		featureFile.open("google.mf");
+		featureFile.open("music.mf");
 		_collection->generatePlayList(featureFile, playlist_.c_str());
-		extractAction("google.mf");
+		extractAction("music.mf");
 	}	
 	else 
 	{
