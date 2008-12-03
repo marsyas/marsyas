@@ -1,22 +1,23 @@
 /*
 ** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
 #include "SoundFileSource.h"
+#include <algorithm>
 
 using namespace std;
 using namespace Marsyas;
@@ -24,7 +25,7 @@ using namespace Marsyas;
 SoundFileSource::SoundFileSource(string name):MarSystem("SoundFileSource",name)
 {
 	src_ = NULL;
-    updateCurrDuration = false;
+	updateCurrDuration = false;
 	addControls();
 }
 
@@ -33,7 +34,7 @@ SoundFileSource::~SoundFileSource()
 	delete src_;
 }
 
-MarSystem* 
+MarSystem*
 SoundFileSource::clone() const
 {
 	return new SoundFileSource(*this);
@@ -48,7 +49,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 	ctrl_loop_ = getctrl("mrs_natural/loopPos");
 	ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty");
 	ctrl_mute_ = getctrl("mrs_bool/mute");
-	ctrl_advance_ = getctrl("mrs_bool/advance"); 
+	ctrl_advance_ = getctrl("mrs_bool/advance");
 	ctrl_filename_ = getctrl("mrs_string/filename");
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
@@ -59,7 +60,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 void
 SoundFileSource::addControls()
 {
-	addctrl("mrs_bool/notEmpty", true, ctrl_notEmpty_);  
+	addctrl("mrs_bool/notEmpty", true, ctrl_notEmpty_);
 
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
 	setctrlState("mrs_natural/pos", true);
@@ -84,16 +85,16 @@ SoundFileSource::addControls()
 	setctrlState("mrs_bool/noteon", true);
 
 	addctrl("mrs_real/repetitions", 1.0);
-	setctrlState("mrs_real/repetitions", true);  
+	setctrlState("mrs_real/repetitions", true);
 
 	addctrl("mrs_real/duration", -1.0);
-	setctrlState("mrs_real/duration", true);  
+	setctrlState("mrs_real/duration", true);
 
 	addctrl("mrs_bool/advance", false, ctrl_advance_);
-	setctrlState("mrs_bool/advance", true);  
+	setctrlState("mrs_bool/advance", true);
 
 	addctrl("mrs_bool/shuffle", false);
-	setctrlState("mrs_bool/shuffle", true);  
+	setctrlState("mrs_bool/shuffle", true);
 
 	addctrl("mrs_natural/cindex", 0);
 	setctrlState("mrs_natural/cindex", true);
@@ -104,8 +105,8 @@ SoundFileSource::addControls()
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 	ctrl_mute_ = getctrl("mrs_bool/mute");
 
-  addctrl("mrs_real/fullDuration", 0.);
-  setctrlState("mrs_real/fullDuration", true);
+	addctrl("mrs_real/fullDuration", 0.);
+	setctrlState("mrs_real/fullDuration", true);
 
 }
 
@@ -123,14 +124,14 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		{
 			getHeader();
 			filename_ = ctrl_filename_->to<mrs_string>();
-			ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));		
+			ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
 			ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
 			ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
 			ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
 			ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
 
 			ostringstream oss;
-			for (int ch = 0; ch < ctrl_onObservations_->to<mrs_natural>(); ch++) 
+			for (int ch = 0; ch < ctrl_onObservations_->to<mrs_natural>(); ch++)
 			{
 				oss << "AudioCh" << ch << ",";
 			}
@@ -152,9 +153,9 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			src_ = NULL;
 		}
 	}
-	if (src_ != NULL) 
+	if (src_ != NULL)
 	{
-		//pass configuration to audio source object and update it 
+		//pass configuration to audio source object and update it
 		src_->ctrl_inSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 		src_->ctrl_inObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 		src_->setctrl("mrs_real/repetitions", getctrl("mrs_real/repetitions"));
@@ -169,7 +170,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		src_->rewindpos_ = getctrl("mrs_natural/loopPos")->to<mrs_natural>();//[!]
 		src_->update();
 
-		//sync local controls with the controls from the audio source object 
+		//sync local controls with the controls from the audio source object
 		ctrl_onSamples_->setValue(src_->ctrl_onSamples_, NOUPDATE);
 		ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
 		ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
@@ -206,10 +207,10 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			//setctrl("mrs_real/fullDuration", src_->durFull_);
 		}
 
-	}  
+	}
 }
 
-bool 
+bool
 SoundFileSource::checkType()
 {
 	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
@@ -217,7 +218,7 @@ SoundFileSource::checkType()
 	if (filename != "defaultfile")
 	{
 		FILE * sfp = fopen(filename.c_str(), "r");
-		if (sfp == NULL) 
+		if (sfp == NULL)
 		{
 			string wrn = "SoundFileSource::Problem opening file ";
 			wrn += filename;
@@ -228,16 +229,19 @@ SoundFileSource::checkType()
 		}
 		fclose(sfp);
 	}
-	else 
+	else
 		filename_ = "defaultfile";
 
-	// try to open file with appropriate format 
+	// try to open file with appropriate format
 	string::size_type pos = filename.rfind(".", filename.length());
 	string ext;
+	if (pos != string::npos)
+	{
+		ext = filename.substr(pos, filename.length());
+		// need this to be lowercase for the checks below.
+		transform(ext.begin(), ext.end(), ext.begin(), tolower);
+	}
 
-	if (pos == string::npos) ext = "";
-	else 
-		ext = filename.substr(pos, filename.length());  
 	if (ext == ".au")
 	{
 		delete src_;
@@ -248,17 +252,17 @@ SoundFileSource::checkType()
 		delete src_;
 		src_ = new WavFileSource(getName());
 	}
-	else if (ext == ".raw") 
+	else if (ext == ".raw")
 	{
 		delete src_;
 		src_ = new RawFileSource(getName());
-	}	
-	else if (ext == ".txt") 
+	}
+	else if (ext == ".txt")
 	{
 		delete src_;
 		src_ = new CollectionFileSource(getName());
 	}
-	else if (ext == ".mf") 
+	else if (ext == ".mf")
 	{
 		delete src_;
 		src_ = new CollectionFileSource(getName());
@@ -269,19 +273,19 @@ SoundFileSource::checkType()
 		delete src_;
 		src_ = new MP3FileSource(getName());
 	}
-#endif 
+#endif
 #ifdef MARSYAS_VORBIS
 	else if (ext == ".ogg")
 	{
 		delete src_;
 		src_ = new OggFileSource(getName());
 	}
-#endif 
-	else 
+#endif
+	else
 #ifdef MARSYAS_GSTREAMER
-    // use GStreamer as a fallback
+		// use GStreamer as a fallback
 	{
-        MRSDIAG("SoundFileSource is falling back to GStreamerSource\n");
+		MRSDIAG("SoundFileSource is falling back to GStreamerSource\n");
 		delete src_;
 		src_ = new GStreamerSource(getName());
 	}
@@ -294,10 +298,9 @@ SoundFileSource::checkType()
 			MRSWARN(wrn);
 			filename_ = "defaultfile";
 			setctrl("mrs_string/filename", "defaultfile");
-			return false;
 		}
-		else 
-			return false;
+
+		return false;
 	}
 #endif
 	return true;
@@ -320,14 +323,14 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 	{
 		src_->process(in,out);
 
-		if(ctrl_mute_->isTrue())
-			out.setval(0.0);      
+		if (ctrl_mute_->isTrue())
+			out.setval(0.0);
 
 		/* setctrl("mrs_natural/pos", src_->pos_); //[!]
 		setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
 		setctrl("mrs_bool/notEmpty", src_->notEmpty_);//[!]
-		*/ 
-		// replaced by gtzan 
+		*/
+		// replaced by gtzan
 		ctrl_pos_->setValue(src_->getctrl("mrs_natural/pos")->to<mrs_natural>(), NOUPDATE);
 		ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
 		ctrl_notEmpty_->setValue(src_->notEmpty_, NOUPDATE);
