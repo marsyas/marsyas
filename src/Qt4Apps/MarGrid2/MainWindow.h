@@ -5,6 +5,11 @@
 #include <QIcon>
 #include <QMainWindow>
 #include <QDebug>
+#include <QLineEdit>
+#include <QSizePolicy>
+#include <QLabel>
+#include <QWidget>
+
 #include "Interface/MyDisplay.h"
 #include "Interface/Parser.h"
 
@@ -42,6 +47,7 @@ signals:
 	void playModeChanged();
 	void cancelButtonSignal();
 	void fullScreenModeOff();
+	//void gridSize(bool, int);
 
 private slots:  
 	void openiTunesLibrary();
@@ -59,6 +65,7 @@ private slots:
 	void openDefaultiTunes(); //REMOVE ME FOR REAL RELEASE, ASSUMES LOCATION OF iTUNES XML
 	void fullScreenMode(bool mode);
 	void keyReleaseEvent(QKeyEvent *);
+	// void resizeGrid(int,int);
 
 private:
 	void createActions();
@@ -102,6 +109,12 @@ private:
 	QAction *_normHashAction;
 	QAction *_fullScreenAction;
 	QAction *_colourMapMode;
+
+		QLabel* gridHeightLabel;
+		QLabel* gridWidthLabel;
+
+		QLineEdit* gridWidth;
+		QLineEdit* gridHeight;
 
 	MusicCollection *_library;
 	bool isFullScreenMouse;

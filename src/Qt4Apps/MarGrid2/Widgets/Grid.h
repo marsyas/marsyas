@@ -99,6 +99,8 @@ public slots:
 		void savePredictionGrid(QString fname);
 		void cancelPressed();
 		void openNormHash();
+		void setXGridSize(QString);
+		void setYGridSize(QString);
 
 signals: 
 		void playingTrack(MusicTrack *track);

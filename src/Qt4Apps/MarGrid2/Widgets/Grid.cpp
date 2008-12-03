@@ -804,6 +804,18 @@ void Grid::removeInitFile()
 		initFileLocations[k].removeFirst();
 }
 
+void
+Grid::setXGridSize(QString size)
+{
+	som_width = size.toInt();
+}
+
+void
+Grid::setYGridSize(QString size)
+{
+	som_height = size.toInt();
+}
+
 /*
 * ---------------------------------------------------
 *  Mode Setters

@@ -318,6 +318,20 @@ void MainWindow::createActions() {
 }
 
 void MainWindow::createMenus() {
+
+	gridHeightLabel = new QLabel("Grid Height: ");
+	gridWidthLabel = new QLabel("Grid Width: ");
+	gridWidth = new QLineEdit(this);
+	gridWidth->setMinimumWidth(30);
+	gridWidth->setMaximumWidth(30);
+	gridWidth->setInputMask("99");
+	gridWidth->setText("12");
+	gridHeight = new QLineEdit(this);
+	gridHeight->setInputMask("99");
+	gridHeight->setMinimumWidth(30);
+	gridHeight->setMaximumWidth(30);
+	gridHeight->setText("12");
+
 	_fileMenu = menuBar()->addMenu(tr("&File"));
 
 	_openMenu = new QMenu(tr("Open..."));
@@ -346,6 +360,20 @@ void MainWindow::createMenus() {
 }
 
 void MainWindow::createToolbars() {
+
+	QWidget *gridWidthWidget = new QWidget();
+  QHBoxLayout *gridWidthLayout = new  QHBoxLayout;
+  gridWidthLayout->addWidget(gridWidthLabel);
+  gridWidthLayout->addWidget(gridWidth);
+  gridWidthWidget->setLayout(gridWidthLayout);
+
+  QWidget *gridHeightWidget = new QWidget();
+  QHBoxLayout *gridHeightLayout = new  QHBoxLayout;
+  gridHeightLayout->addWidget(gridHeightLabel);
+  gridHeightLayout->addWidget(gridHeight);
+  gridHeightWidget->setLayout(gridHeightLayout);
+
+
 	_toolbar = addToolBar(tr("Tools"));
 	_toolbar->addAction(_openiTunesAction);
 	_toolbar->addSeparator();
@@ -362,6 +390,14 @@ void MainWindow::createToolbars() {
 	_toolbar->addAction(_fullScreenAction);
 	_toolbar->addSeparator();
 	_toolbar->addAction(_colourMapMode);
+	_toolbar->addSeparator();
+	_toolbar->addWidget(gridHeightWidget);
+	_toolbar->addWidget(gridWidthWidget);
+
+	//TODO: CLEANUP
+	connect(gridWidth, SIGNAL(textChanged(QString)), _dataGrid, SLOT(setXGridSize(QString)));
+    connect(gridHeight, SIGNAL(textChanged(QString)), _dataGrid, SLOT(setYGridSize(QString)));
+
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
