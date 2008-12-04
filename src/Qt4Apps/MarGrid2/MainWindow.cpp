@@ -12,7 +12,7 @@ MainWindow::MainWindow(Grid* grid_) {
 	_preferencesDialog = NULL;
 
 	// _midi = new MidiListener();
-	//openDefaultiTunes();
+	openDefaultiTunes();
 	isFullScreenMouse = false;
 	
 }
@@ -29,6 +29,8 @@ MainWindow::~MainWindow() {
  * ---------------------------------------------------------
  */
 void MainWindow::openiTunesLibrary() {
+	
+	
 	QString fileName =
 		QFileDialog::getOpenFileName(this, tr("Open iTunes Library File"),
 					 QDir::currentPath(),
@@ -48,21 +50,38 @@ void MainWindow::openiTunesLibrary() {
 
 	statusBar()->showMessage(tr("Parsing iTunes Library......"));
 
-	//if ( Parser::parse( Parser::ParserTypes.ITUNES, file, _library ) ) {
 	_library->empty();
 	if ( Parser::parse( file, _library ) ) {
 		statusBar()->showMessage(tr("File loaded"), 2000);
 		qDebug() << "Library updated";
+
+		//output the iTunes library location for easy loading later
+		QFile nameFile("libraryName.mln");
+		nameFile.open(QFile::ReadWrite | QFile::Truncate);
+		nameFile.write(fileName.toStdString().c_str());
+
 		emit libraryUpdated();
 	}
 }
 /*
-** TODO: Remove me, otherwise pain and suffering are abound.
+** Load the default iTunes library if it exists
 */
 
 void MainWindow::openDefaultiTunes()
 {
-	QString fileName = "C:\\Documents and Settings\\NJL\\My Documents\\My Music\\iTunes\\iTunes Music Library.xml";
+	QString fileName;
+	QFile nameFile("libraryName.mln");
+	if(nameFile.open(QFile::ReadOnly | QFile::Text))
+	{
+		fileName = nameFile.readLine();
+		nameFile.close();
+	}
+	else
+	{
+		nameFile.close();
+		return;
+	}
+
 	QFile file(fileName);
 	if (!file.open(QFile::ReadOnly | QFile::Text)) {
 		QMessageBox::warning(this, tr("Music Collection"),

@@ -359,7 +359,7 @@ void Grid::extractAction(std::string filename)
 	dir.setCurrent("extractFiles");
 	keysFile = dir.filePath("keys.txt");
 	keys = new QFile(keysFile);
-	if(keys->open(QFile::ReadWrite))
+	if(keys->open(QIODevice::Truncate | QIODevice::ReadWrite ))
 	{
 		QTextStream txtStr(keys);
 		int counter = 0;
