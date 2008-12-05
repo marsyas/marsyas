@@ -17,6 +17,7 @@
 //
 
 #include <cstdio>
+#include <cstring>
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
