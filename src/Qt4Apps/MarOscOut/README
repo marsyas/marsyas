@@ -1,0 +1,38 @@
+MarOscOut
+--------
+
+* Overview
+
+  MarOscOut is a tiny little Marsyas Qt based application that sends
+  out OSC messages to port 9001 based on the current position of the
+  QSlider gainSlider.  The messages are of the form:
+
+  ['/mrs_real/gain', ',f', 0.0]
+
+
+* How it works
+
+  1) First of all start the small Python program that receives the
+  messages:
+
+    ./receive-from-MarOscOut.py
+	
+  2) You can test this program with the other supplied Python sending
+  program:
+
+    ./test-send-osc.py
+
+	 - This program will send out a message every 1 second to
+       port 9001.  The contents of the message will alternate between
+       "0" and "100".
+	 - Once you're statisfied that the ./receive-from-MarOscOut.py
+       program is receiving messages correctly, terminate the
+       ./test-send-osc.py program.  
+
+  3) In another window, start MarOscOut like this;
+
+	 ./MarOscOut file.wav
+
+  MarOscOut will send out OSC messages to port 9001, the contents of
+  this message will be the current value of the gainSlider.
+	 
