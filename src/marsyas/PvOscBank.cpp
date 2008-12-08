@@ -37,6 +37,9 @@ PvOscBank::PvOscBank(const PvOscBank& a):MarSystem(a)
 {
 	ctrl_analysisphases_ = getctrl("mrs_realvec/analysisphases");
 	ctrl_frequencies_ = getctrl("mrs_realvec/frequencies");
+	ctrl_regions_ = getctrl("mrs_realvec/regions");
+	ctrl_peaks_ = getctrl("mrs_realvec/peaks");
+	
 	ctrl_phaselock_ = getctrl("mrs_bool/phaselock");
 	ctrl_onsetsAudible_ = getctrl("mrs_bool/onsetsAudible");
 	ctrl_rmsIn_ = getctrl("mrs_real/rmsIn");
@@ -68,6 +71,8 @@ PvOscBank::addControls()
 	
 	addctrl("mrs_realvec/analysisphases", realvec(), ctrl_analysisphases_);
 	addctrl("mrs_realvec/frequencies", realvec(), ctrl_frequencies_);
+	addctrl("mrs_realvec/regions", realvec(), ctrl_regions_);
+	addctrl("mrs_realvec/peaks", realvec(), ctrl_peaks_);
 	addctrl("mrs_bool/phaselock", false, ctrl_phaselock_);
 	addctrl("mrs_bool/onsetsAudible", true, ctrl_onsetsAudible_);
 	addctrl("mrs_real/rmsIn", 0.0, ctrl_rmsIn_);
@@ -104,13 +109,23 @@ PvOscBank::myUpdate(MarControlPtr sender)
 			frequencies.create(size_);
 		}
 
+		{
+			MarControlAccessor acc(ctrl_regions_);
+			mrs_realvec& regions = acc.to<mrs_realvec>();
+			regions.create(size_);
+		}
+
+		{
+			MarControlAccessor acc(ctrl_peaks_);
+			mrs_realvec& peaks = acc.to<mrs_realvec>();
+			peaks.create(size_);
+		}
+
 		
 
 
 		lastamp_.stretch(size_);
 		magnitudes_.stretch(size_);
-		regions_.stretch(size_);
-		
 		
 
 
@@ -185,6 +200,17 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	MarControlAccessor  acc1(ctrl_analysisphases_);
 	mrs_realvec& analysisphases = acc1.to<mrs_realvec>();
 
+
+	MarControlAccessor  acc2(ctrl_regions_);
+	mrs_realvec& regions = acc2.to<mrs_realvec>();
+
+
+	MarControlAccessor  acc3(ctrl_peaks_);
+	mrs_realvec& peaks = acc3.to<mrs_realvec>();
+
+
+	peaks.setval(0.0);
+	
 	
 	for (t=0; t < NP_; t++)
 	{
@@ -229,7 +255,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
 	for (int i=0; i < size_; i++) 
 	{
-		regions_(i) = i;
+		regions(i) = i;
 	}
 	
 
@@ -246,17 +272,17 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 			peak = t;
 			
 			if (peak-previous_peak == 1)
-				regions_(peak) = peak;
+				regions(peak) = peak;
 			else 
 			{
 				for (int j=previous_peak; j< previous_peak + (int)((peak-previous_peak)/2.0); j++) 
 				{
-					regions_(j) = previous_peak;
+					regions(j) = previous_peak;
 				}
 				
 				for (int j= previous_peak + (int)((peak-previous_peak)/2.0); j < peak; j++) 
 				{
-					regions_(j) = peak;					
+					regions(j) = peak;					
 				}
 			}
 			previous_peak = peak;
@@ -264,16 +290,33 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		
 	}
 	
-
-
-
-
-
-
 	mrs_real factor = 1;
 	for (t=0; t < NP_; t++)
 	{
+		
+		while (analysisphases(t) > PI) 
+			analysisphases(t) -= TWOPI;
+		while (analysisphases(t) < -PI) 
+			analysisphases(t) += TWOPI;
+		
+		if (ctrl_phaselock_->to<bool>() == true)
+		{
+			if (t == 0) 
+				cout << "PHASELOCKED" << endl;
+			
+			// index_(t) = analysisphases(t);
+			// factor = 2.25;
+			// factor = 1.5;
+		}
+	}
+	
+	factor = 1.5;
+	
+	
+	for (t=0; t < NP_; t++)
+	{
 		frequencies(t) *= Pinc_;
+
 		f_ = lastfreq_(t);			
 		finc_ = (frequencies(t) - f_) * Iinv_;
 		
@@ -289,32 +332,14 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 			ainc_ = (magnitudes_(t) - a_)*Iinv_;
 		}
 		
-		while (analysisphases(t) > PI) 
-			analysisphases(t) -= TWOPI;
-		while (analysisphases(t) < -PI) 
-			analysisphases(t) += TWOPI;
-		
-		if (ctrl_phaselock_->to<bool>() == true)
+		mrs_real diff = (analysisphases(t) - analysisphases(regions(t))) * Pinc_;
+		if (t == regions(t))
 		{
-			index_(t) = analysisphases(t) * Pinc_;
-			factor = 2.25;
-			factor = 1.5;
-			
-		}
-		
-		
-		mrs_real diff = analysisphases(t) - 
-			analysisphases((mrs_natural)regions_(t));
-		diff *= Pinc_;
-		
-		if (t == regions_(t))
-		{
-			address_ = index_(regions_(t));
+			address_ = index_(regions(t));
 		}
 		else 
 		{
-			address_ = index_(regions_(t))  + diff;
-			// address_ = index_(t);
+			address_ = index_(t);
 		}
 		
 		
@@ -323,10 +348,12 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		while (address_ < 0)
 			address_ += L_;
 		
-	
+		
 		
 		if (ainc_ != 0.0 || a_ != 0.0)
 		{
+			peaks(t) = magnitudes_(t);
+			
 			// accumulate I samples from each oscillator 
 			// into output slice 
 			for (c=0; c < I_; c++)
@@ -334,7 +361,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 				naddress_ = (mrs_natural)address_;
 				temp_(c) += a_  * factor * table_(naddress_);
 				address_ += f_;
-
+				
 				while (address_ >= L_)
 					address_ -= L_;
 				while (address_ < 0)
@@ -351,22 +378,18 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		lastfreq_(t) = frequencies(t);
 
 	}
-
 	
-	// ctrl_phaselock_->setValue(false);
+	ctrl_phaselock_->setValue(false);
 			
 
 
 	for (t=0; t < Nw_; t++)
 		out(0,t) = temp_(t);
-	
-
-
-	
 	for  (t=0; t < Nw_-I_; t++)
 		temp_(t) = temp_(t+I_);
 	for (t=Nw_-I_; t<Nw_; t++) 
 		temp_(t) = 0.0;
-	 
+
+	
 	
 }

@@ -64,6 +64,9 @@ private:
   mrs_natural naddress_;
   mrs_real tableval_;
 		
+		MarControlPtr ctrl_regions_;
+		MarControlPtr ctrl_peaks_;
+		
   MarControlPtr ctrl_frequencies_;
   MarControlPtr ctrl_analysisphases_;
   MarControlPtr ctrl_phaselock_;

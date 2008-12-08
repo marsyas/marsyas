@@ -504,7 +504,8 @@ user interface tools for Marsyas using the Qt toolkit:
 
 @enumerate
 @item Down the Qt for Windows open source edition from 
-@uref{http://tortoisesvn.tigris.org/}. Make sure you download 
+@uref{http://trolltech.com/downloads/}. The commercial edition 
+should also work provided you have a license. Make sure you download 
 the source code rather the .exe installer which only works 
 for the MinGW compiler rather than Visual Studio. 
 
@@ -568,7 +569,9 @@ in the basic installation instructions @ref{Compiling}.
 @item Launch cmake and choose the install type to be ``MinGW Makefiles''
 
 @item Specify the source and build directory you want 
-CMake to use for Marsyas for example c:\marsyas\src and c:\marsyas\build. 
+CMake to use for Marsyas for example if marsyas has been 
+installed in c:\marsyas these would be c:\marsyas\src and c:\marsyas\build. 
+
 
 @item Press configure until all the options are grey and then click ok
 

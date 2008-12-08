@@ -34,6 +34,9 @@ PvMultiResolution::PvMultiResolution(const PvMultiResolution& a) : MarSystem(a)
 {
 	ctrl_mode_ = getctrl("mrs_string/mode");
 	ctrl_transient_ = getctrl("mrs_bool/transient");
+	ctrl_shortmag_ = getctrl("mrs_realvec/shortmag");
+	ctrl_longmag_ = getctrl("mrs_realvec/longmag");
+	
 	r_ = 1.0e-13;
 	m_ = 0.9;
 	flux_ = new Flux("flux");
@@ -57,6 +60,9 @@ PvMultiResolution::addControls()
 
 	addctrl("mrs_string/mode", "long", ctrl_mode_);
 	addctrl("mrs_bool/transient", false, ctrl_transient_);
+	addctrl("mrs_realvec/shortmag", realvec(), ctrl_shortmag_);
+	addctrl("mrs_realvec/longmag", realvec(), ctrl_longmag_);
+	addctrl("mrs_real/flux", 0.0);
 }
 
 void
@@ -69,13 +75,26 @@ PvMultiResolution::myUpdate(MarControlPtr sender)
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>() / 2, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	
-	median_buffer_.create(20);
+	median_buffer_.create(10);
 	mbindex_ = 0;
 
 
 	powerSpectrum_.create(onObservations_/2,1);
 	whiteSpectrum_.create(onObservations_/2,1);
 	
+	{
+		MarControlAccessor acc(ctrl_shortmag_);
+		mrs_realvec& shortmag = acc.to<mrs_realvec>();
+		shortmag.create(onObservations_/2);	
+	}
+
+	{
+		MarControlAccessor acc(ctrl_longmag_);
+		mrs_realvec& longmag = acc.to<mrs_realvec>();
+		longmag.create(onObservations_/2);	
+	}
+	
+
 	flux_->updctrl("mrs_natural/inSamples", 1);
 	flux_->updctrl("mrs_natural/inObservations", onObservations_/2);
 	flux_->updctrl("mrs_real/israte", 44100);
@@ -88,6 +107,14 @@ void
 PvMultiResolution::myProcess(realvec& in, realvec& out)
 {
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
+
+
+	MarControlAccessor acc1(ctrl_shortmag_);
+	mrs_realvec& shortmag = acc1.to<mrs_realvec>();
+	
+	MarControlAccessor acc2(ctrl_longmag_);
+	mrs_realvec& longmag = acc2.to<mrs_realvec>();
+	
 	
 
 
@@ -195,54 +222,95 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 
 		
 		flux_->process(powerSpectrum_, fluxval_); 
-				
 		
 		median_buffer_(mbindex_) = fluxval_(0,0);
 		mbindex_++;
-		if (mbindex_ == 20)
+		if (mbindex_ == 10)
 		{
 			mbindex_ = 0;
 		}
 
+		
+		updctrl("mrs_real/flux", fluxval_(0,0) - median_buffer_.median());
+		
+		mrs_real longSum = 0.0;
+		mrs_real shortSum = 0.0;
+		
+		mrs_real ratio1;
+		mrs_real ratio2;
 
+
+
+		for (o=0; o < onObservations_/2; o++)
+			for (t = 0; t < inSamples_; t++)
+			{
+				shortmag(o) = in(2*o,t);
+				longmag(o) = in(2*o + inObservations_/2, t);
+				shortSum += shortmag(o);
+				longSum += longmag(o);
+			}
+
+
+		ratio1 = longSum / shortSum;
+		ratio2 = shortSum / longSum;
+		
+		
+		for (o=0; o < onObservations_/2; o++)
+			for (t = 0; t < inSamples_; t++)
+			{
+				shortmag(o) = ratio1 * shortmag(o);
+			}
+		
 
 		
-		if (fluxval_(0,0) - median_buffer_.median() <= 35.0)    // steady state use long window 
+		
+		
+		
+		if (fluxval_(0,0) - median_buffer_.median() <= 30.0)    // steady state use long window 
 		{
+
+			// use long
 			for (o=inObservations_/2; o < inObservations_; o++)
 				for (t = 0; t < inSamples_; t++)
 				{
 					out(o-inObservations_/2,t) = in(o,t);
 				}
 			
-			for (o=0; o < onObservations_/2; o++) 
-				for (t = 0; t < inSamples_; t++)
-				{
-					out(2*o, t) = 1.0 * out(2*o,t);
+ 			for (o=0; o < onObservations_/2; o++) 
+ 				for (t = 0; t < inSamples_; t++)
+ 				{
+ 					out(2*o, t) = out(2*o,t);
 				}
+			
 			ctrl_transient_->setValue(false, NOUPDATE);
 		}
 		else // transient 
 		{
 			cout << "TRANSIENT " << endl;
-			
+
 			// use short 
 			for (o=0; o < inObservations_/2; o++)
-				for (t = 0; t < inSamples_; t++)
-				{
-					out(o,t) = in(o, t);		
-				}
+ 				for (t = 0; t < inSamples_; t++)
+ 				{
+ 					out(o,t) = in(o, t);		
+ 				}
+			
+ 			for (o=0; o < onObservations_/2; o++) 
+ 				for (t = 0; t < inSamples_; t++)
+ 				{
+ 					out(2*o, t) = ratio1 * out(2*o,t);
+ 				}
 
-			for (o=0; o < onObservations_/2; o++) 
-				for (t = 0; t < inSamples_; t++)
-				{
-					out(2*o, t) = 1.0 * out(2*o,t);
-				}
-
+			
+			
 			ctrl_transient_->setValue(true, NOUPDATE);			
 			// cout<< fluxval_(0,0)-median_buffer_.median() << endl;		
 		}
+		// cout << "RATIO = " << ratio << endl;
 	}
+	
+
+	
 	
 	
 	

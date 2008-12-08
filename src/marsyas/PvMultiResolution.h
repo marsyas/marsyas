@@ -42,6 +42,8 @@ private:
 
 		MarControlPtr ctrl_mode_;
 		MarControlPtr ctrl_transient_;
+		MarControlPtr ctrl_longmag_;
+		MarControlPtr ctrl_shortmag_;
 		
 		mrs_realvec median_buffer_;
 		mrs_natural mbindex_;
