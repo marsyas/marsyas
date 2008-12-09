@@ -299,15 +299,15 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		while (analysisphases(t) < -PI) 
 			analysisphases(t) += TWOPI;
 		
-		if (ctrl_phaselock_->to<bool>() == true)
-		{
-			if (t == 0) 
-				cout << "PHASELOCKED" << endl;
+		// if (ctrl_phaselock_->to<bool>() == true)
+		// {
+			// if (t == 0) 
+				// cout << "PHASELOCKED" << endl;
 			
 			// index_(t) = analysisphases(t);
 			// factor = 2.25;
 			// factor = 1.5;
-		}
+		// }
 	}
 	
 	factor = 1.5;

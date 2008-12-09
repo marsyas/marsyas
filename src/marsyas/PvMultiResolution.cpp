@@ -286,8 +286,6 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 		}
 		else // transient 
 		{
-			cout << "TRANSIENT " << endl;
-
 			// use short 
 			for (o=0; o < inObservations_/2; o++)
  				for (t = 0; t < inSamples_; t++)
