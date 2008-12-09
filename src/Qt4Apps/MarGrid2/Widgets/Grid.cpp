@@ -477,7 +477,6 @@ void Grid::train(bool skipTraining) {
 void Grid::predict() {
 	if ( _collection->getNumTracks() > 0 ) {
 
-		resetGrid();
 		realvec som_in;
 		realvec som_res;
 		realvec som_fmatrix;
@@ -487,11 +486,13 @@ void Grid::predict() {
 
 		iss1.open("som.mpl");
 		som_ = mng.getMarSystem(iss1);
+		iss1.close();
 
 
 		ifstream niss1;
 		niss1.open("norm.mpl");
 		norm_ = mng.getMarSystem(niss1);
+		niss1.close();
 
 
 
@@ -843,11 +844,13 @@ void Grid::resetGrid()
 	for(int i = 0; i < oldHeight_ * oldWidth_; i++)
 		free(genreDensity[i]);
 	free(genreDensity);
+	oldHeight_ = som_height;
+	oldWidth_ = som_width;
 
 	delete featureHash;
 	delete normFeatureHash;
 
-	genreDensity = (int **)malloc(som_height * som_width * sizeof(int *));
+	genreDensity = (int **)malloc(som_height * som_width * sizeof(int *));	
 	for (int i = 0; i < som_height * som_width; i++) 
 	{
 		genreDensity[i] = (int *)malloc(10 * sizeof(int));
@@ -856,7 +859,6 @@ void Grid::resetGrid()
 			genreDensity[i][j] = 0;
 		}
 	}
-
 	initFileLocations.clear();
 	initFileLocations.resize(som_height * som_width);
 	files_.clear();
@@ -871,7 +873,6 @@ void Grid::resetGrid()
 	featureHash = new multimap<string, realvec>();
 	normFeatureHash = new multimap<string, realvec>();
 	numFeatures = 0;
-
 }
 
 int Grid::getCurrentIndex()
