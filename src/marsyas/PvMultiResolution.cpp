@@ -25,7 +25,7 @@ PvMultiResolution::PvMultiResolution(string name):MarSystem("PvMultiResolution",
 {
 	flux_ = new Flux("flux");
 	r_ = 0.1;
-	m_ = 0.999;
+	m_ = 0.75;
 	
 	addControls();
 }
@@ -37,8 +37,8 @@ PvMultiResolution::PvMultiResolution(const PvMultiResolution& a) : MarSystem(a)
 	ctrl_shortmag_ = getctrl("mrs_realvec/shortmag");
 	ctrl_longmag_ = getctrl("mrs_realvec/longmag");
 	
-	r_ = 1.0e-13;
-	m_ = 0.9;
+	r_ = 0.1;
+	m_ = 0.75;
 	flux_ = new Flux("flux");
 }
 
@@ -266,7 +266,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 		
 		
 		
-		if (fluxval_(0,0) - median_buffer_.median() <= 30.0)    // steady state use long window 
+		if (fluxval_(0,0) - median_buffer_.median() <= 0.0000010)    // steady state use long window 
 		{
 
 			// use long
