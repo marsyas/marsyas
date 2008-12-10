@@ -247,7 +247,7 @@ SOM::myProcess(realvec& in, realvec& out)
 					adj = alpha_ * geom_dist_gauss;
 					for (o=0; o < inObservations_-1; o++) 
 					{
-						adjustments_(o) = in(o,t) - grid_map(x * grid_height_ + y);
+						adjustments_(o) = in(o,t) - grid_map(x * grid_height_ + y, o);
 						adjustments_(o) *= adj;
 						grid_map(x * grid_height_ + y, o) += adjustments_(o);
 					}
@@ -262,7 +262,6 @@ SOM::myProcess(realvec& in, realvec& out)
 		mrs_real dx;
 		mrs_real dy;
 		mrs_real adj;
-		cout << "inSamp: " << inSamples_ << endl;
 
 		for (t=0; t < inSamples_; t++) 
 		{
@@ -270,7 +269,6 @@ SOM::myProcess(realvec& in, realvec& out)
 			px = (int) in( in.getRows() - 2, t);
 			py = (int) in( in.getRows() - 1, t);
 			cout << "px: " << px << endl << "py: " << py << endl;
-			cout << "1.1" << endl;
 			for(int i =0; i < inObservations_ - 3; i++)
 			{
 				grid_map(px * grid_height_ + py, i) = in(i);
@@ -301,18 +299,12 @@ SOM::myProcess(realvec& in, realvec& out)
 		// Last two rows of init features are x,y locations 
 		// so we want to set all the coresponding rows in the SOM to 0
 		// to prevent randomness from creaping in.
-		cout << "1.2" << endl;
-		cout << "inObvs= " << inObservations_ << endl;
-		cout << "gridCols= " << grid_map.getCols() << endl;
 		for (int x=0; x < grid_width_; x++) 
 		{
 			for (int y=0; y < grid_height_; y++)
 			{
-				cout << "one: " << y << endl;
 					grid_map(x * grid_height_ + y, grid_map.getCols() - 2) = 0;
-									cout << "two: " << y << endl;
 					grid_map(x * grid_height_ + y, grid_map.getCols() - 1) = 0;
-									cout << "three: " << y << endl;
 					cout << "x: " << x << " y: " << y << endl;
 			}
 		}
@@ -324,7 +316,6 @@ SOM::myProcess(realvec& in, realvec& out)
 	{
 		for (t=0; t < inSamples_; t++) 
 		{
-			cout << in(t) << endl;
 			find_grid_location(in, t);
 			px = (int) grid_pos_(0);
 			py = (int) grid_pos_(1);
