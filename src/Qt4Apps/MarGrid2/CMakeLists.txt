@@ -6,7 +6,7 @@ set(APP_SOURCES
 	MainWindow.cpp
 	Colormaps/GreyScaleColormap.cpp
 	Colormaps/SpectraColormap.cpp
-	Colormaps/ColorMap.cpp
+	Colormaps/Colormap.cpp
 	Dialogs/iTunesPage.cpp
 	Dialogs/PreferencesDialog.cpp
 	Interface/Parser.cpp
@@ -20,7 +20,7 @@ set(APP_SOURCES
 	Parsers/iTunesXmlWriter.cpp
 	Widgets/Grid.cpp
 	Widgets/Keypad.cpp
-	Widgets/Playbox.cpp
+	Widgets/PlayBox.cpp
 	Widgets/Playlist.cpp
 	Widgets/PlaylistItem.cpp
 	Widgets/Tracklist.cpp
@@ -36,7 +36,7 @@ set(APP_HEADERS
 	Dialogs/PreferencesDialog.h
 	Colormaps/GreyScaleColormap.h
 	Colormaps/SpectraColormap.h
-	Colormaps/ColorMap.h
+	Colormaps/Colormap.h
 	Interface/Classifier.h
 	Interface/Extractor.h
 	Interface/Playback.h
