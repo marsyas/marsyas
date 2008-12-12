@@ -31,6 +31,7 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
 	connect(this, SIGNAL(cancelButtonPressed()), grid_, SLOT(cancelPressed()));
 	connect(this, SIGNAL(normHashLoadPressed()), grid_, SLOT(openNormHash()));
 	connect(fullScreenTimer, SIGNAL(timeout()), this, SLOT(fullScreenMouseMove()));
+	connect(grid_, SIGNAL(errorBox(QString)), this, SLOT(showErrorMessage(QString)));
 }
 
 GridDisplay::~GridDisplay()
@@ -157,6 +158,11 @@ void GridDisplay::setYGridSize(QString size)
 	squareHasInitialized.resize(grid_->getHeight() * grid_->getWidth());
 	for(int i = 0; i < grid_->getHeight() * grid_->getWidth(); i++)
 		squareHasInitialized[i] = false;
+}
+
+void GridDisplay::showErrorMessage(QString msg)
+{
+	QMessageBox::information(0, tr("MarGrid"), tr(msg.toStdString().c_str()));
 }
 
 // ******************************************************************

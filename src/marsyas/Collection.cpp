@@ -31,8 +31,8 @@ namespace Marsyas
 string join(const vector<string>& v, const string delim)
 {    
     ostringstream os;
-    copy(v.begin(), v.end (), ostream_iterator<string>(os, delim.c_str()));
-
+    copy(v.begin(), v.end(), ostream_iterator<string>(os, delim.c_str()));
+	
     return os.str();
 }
 

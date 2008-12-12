@@ -80,6 +80,7 @@ public:
 		void playlistSelected(QString playlist);
 		void setXGridSize(QString);
 		void setYGridSize(QString);
+		void showErrorMessage(QString);
 
 signals: 
 		void playingTrack(MusicTrack *track);

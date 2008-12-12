@@ -105,6 +105,7 @@ public slots:
 signals: 
 		void playingTrack(MusicTrack *track);
 		void repaintSignal();
+		void errorBox(QString msg);
 
 protected:
 	void resetGrid();

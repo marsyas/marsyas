@@ -140,6 +140,8 @@ SOM::myUpdate(MarControlPtr sender)
 	mrs_natural mrows = (getctrl("mrs_realvec/grid_map")->to<mrs_realvec>()).getRows();
 	mrs_natural mcols = (getctrl("mrs_realvec/grid_map")->to<mrs_realvec>()).getCols();
 
+	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+
 	if ((grid_size != mrows) || 
 		(inObservations_-1 != mcols))
 	{
@@ -153,11 +155,7 @@ SOM::myUpdate(MarControlPtr sender)
 			init_grid_map();
 		}
     
-	}
-
-	
-	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
-  
+	}  
 }
 
 void
@@ -273,7 +271,7 @@ SOM::myProcess(realvec& in, realvec& out)
 			{
 				grid_map(px * grid_height_ + py, i) = in(i);
 		}	
-/*
+
 			for (int x=0; x < grid_width_; x++) 
 				for (int y=0; y < grid_height_; y++)
 				{
@@ -286,12 +284,12 @@ SOM::myProcess(realvec& in, realvec& out)
 					adj = alpha_ * geom_dist_gauss;
 					for (o=0; o < inObservations_-3; o++) 
 					{
-						adjustments_(o) = in(o,t) - grid_map(x * grid_height_ + y);
+						adjustments_(o) = in(o,t) - grid_map(x * grid_height_ + y, o);
 						adjustments_(o) *= adj;
 						grid_map(x * grid_height_ + y, o) += adjustments_(o);
 					}
 					
-				}*/
+				}
 				
 		
 		}
@@ -308,8 +306,8 @@ SOM::myProcess(realvec& in, realvec& out)
 					cout << "x: " << x << " y: " << y << endl;
 			}
 		}
-		alpha_ *= ALPHA_DEGRADE;
-		neigh_std_ *= NEIGHBOURHOOD_DEGRADE;
+		alpha_ *=  ALPHA_DEGRADE;
+		neigh_std_ *= NEIGHBOURHOOD_DEGRADE;	
 
 	}
 	if (mode == "predict")

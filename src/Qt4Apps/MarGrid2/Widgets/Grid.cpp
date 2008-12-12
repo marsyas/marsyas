@@ -228,13 +228,13 @@ void Grid::extract() {
 	}	
 	else 
 	{
-		QMessageBox::information(0, tr("MarGrid"),
-			tr("Need to load a collection of audio files first!"));
+		emit errorBox("Need to load a collection of audio files first!");
 	}
 }
 void Grid::extractAction(std::string filename)
 {
 	total_->updctrl("mrs_string/filename", filename);
+
 
 	int numFiles = total_->getctrl("mrs_natural/numFiles")->to<mrs_natural>();
 	realvec som_in;
@@ -266,6 +266,7 @@ void Grid::extractAction(std::string filename)
 		total_->updctrl("mrs_natural/label", index);
 		total_->updctrl("mrs_bool/memReset", true);
 		total_->updctrl("mrs_natural/cindex", index);
+		total_->updctrl("mrs_bool/advance", true);
 		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
 
 		cout << current  << " - ";
@@ -279,7 +280,7 @@ void Grid::extractAction(std::string filename)
 
 		for (int o=0; o < total_onObservations; o++) 
 			som_fmatrix(o, index) = som_res(o, 0);
-		total_->updctrl("mrs_bool/advance", true);      
+		//total_->updctrl("mrs_bool/advance", true);      
 
 	}
 
@@ -417,22 +418,31 @@ void Grid::train(bool skipTraining) {
 				iss1.open("som.mpl");
 				som_ = mng.getMarSystem(iss1);
 				iss1.close();
+				som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
 			}
 			else
 			{
+				cout << "not init" << endl;
 				// Create netork for training the self-organizing map 
 				som_ = mng.create("SOM", "som");  
 				som_->updctrl("mrs_natural/grid_width", som_width);
 				som_->updctrl("mrs_natural/grid_height", som_height);
+				som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
+				som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
 			}
 
-			som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
-			som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
 			som_->updctrl("mrs_string/mode", "train");
+
 
 			realvec som_fmatrixres;
 			som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 				som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+				ofstream oss1;
+				oss1.open("som2.mpl");
+				oss1 << *som_;
+				oss1.close();
+
 
 			cout << "Starting training" << endl;
 
@@ -451,8 +461,7 @@ void Grid::train(bool skipTraining) {
 				done_ = true;
 			}
 
-			ofstream oss1;
-			oss1.open("som2.mpl");
+			oss1.open("som3.mpl");
 			oss1 << *som_ << endl;
 			oss1.close();
 
@@ -470,8 +479,7 @@ void Grid::train(bool skipTraining) {
 
 
 	} else {
-		QMessageBox::information(0, tr("MarGrid"),
-			tr("Need to load a collection of audio files first!"));
+		emit errorBox("Need to load a collection of audio files first!");
 	}
 }
 void Grid::predict() {
@@ -487,7 +495,6 @@ void Grid::predict() {
 		iss1.open("som.mpl");
 		som_ = mng.getMarSystem(iss1);
 		iss1.close();
-
 
 		ifstream niss1;
 		niss1.open("norm.mpl");
@@ -506,9 +513,9 @@ void Grid::predict() {
 
 		cout << "Read collection" << endl;
 
-		total_->updctrl("mrs_natural/pos", 0);
-
 		total_->updctrl("mrs_string/filename", "music.mf"); 
+
+		total_->updctrl("mrs_natural/pos", 0);
 
 		som_->updctrl("mrs_natural/inSamples", 1);
 
@@ -531,7 +538,7 @@ void Grid::predict() {
 			total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 			ofstream oss1;
-			oss1.open("som3.mpl");
+			oss1.open("som4.mpl");
 			oss1 << *som_ << endl;
 			oss1.close();
 
@@ -540,6 +547,7 @@ void Grid::predict() {
 		ifstream iss;
 		iss.open("norm_som_fmatrix.txt");
 		iss >> norm_som_fmatrix;
+
 
 		cout << l1.size() <<endl;
 
@@ -556,6 +564,8 @@ void Grid::predict() {
 			total_->updctrl("mrs_bool/memReset", true);
 			total_->updctrl("mrs_natural/cindex", index);
 			QString current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>().c_str();
+
+			cout << "file: " << current << endl;
 
 			total_->process(som_in, som_res);
 
@@ -580,8 +590,7 @@ void Grid::predict() {
 
 		cout << "end_prediction" << endl;
 	} else {
-		QMessageBox::information(0, tr("MarGrid"),
-			tr("Need to load a collection of audio files first!"));
+		emit errorBox("Need to load a collection of audio files first!");
 	}
 }
 
@@ -606,6 +615,13 @@ void Grid::init()
 			{
 				realvec temp;
 				multimap<std::string, realvec>::iterator temp2 = normFeatureHash->find( initFileLocations[i].at(l)->getFileName() );
+
+				//check that temp has something, if it doesn't display error and abort
+				if(temp2 ==  normFeatureHash->end())
+				{
+					emit errorBox("One of the dropped files was not extracted, please run Extract again");
+					return;
+				}
 				temp = temp2->second;
 				init_train_fmatrix->stretch( temp.getRows() + 2, init_train_fmatrix->getCols() + temp.getCols() );
 
@@ -646,19 +662,26 @@ void Grid::init()
 			som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 		// loop this for more init runs
-		som_->process(*init_train_fmatrix, som_fmatrixres);
+
+		for (int i = 0; i < 10; i++)
+		{
+			init_train_fmatrix->shuffle();
+			som_->process(*init_train_fmatrix, som_fmatrixres);
+		}
 		//som_->tick();
 		som_->updctrl("mrs_bool/done", true);
 
 		// write the trained som network and the feature normalization networks 
 		oss1.open("som.mpl");
-		oss1 << *som_ << endl;
-		delete som_;
+		oss1 << *som_;
+		oss1.close();
+		oss1.open("som1.mpl");
+		oss1 << *som_;
+		oss1.close();
 
 		cout << "end of init" << endl;
 	} else {
-		QMessageBox::information(0, tr("MarGrid"),
-			tr("Need to drop files for initilization!"));
+		emit errorBox("Need to drop files for initilization!");
 	}
 }
 
@@ -769,6 +792,7 @@ void Grid::openNormHash()
 		}
 	}
 	dir.setCurrent("..");
+	cout << "Hash opened" << endl;
 
 }
 
@@ -850,7 +874,8 @@ void Grid::resetGrid()
 	delete featureHash;
 	delete normFeatureHash;
 
-	genreDensity = (int **)malloc(som_height * som_width * sizeof(int *));	
+	genreDensity = (int **)malloc(som_height * som_width * sizeof(int *));
+	
 	for (int i = 0; i < som_height * som_width; i++) 
 	{
 		genreDensity[i] = (int *)malloc(10 * sizeof(int));
