@@ -498,49 +498,64 @@ open with the Visual Studio 9 Express IDE to compile Marsyas.
 depending on which build configuration is used. 
 @end enumerate 
 
-
-The following optional steps can be used to compile graphical 
-user interface tools for Marsyas using the Qt toolkit:
+The following optional steps can be used to setup the Marsyas python 
+bindings using SWIG and setup the NumPy,SciPy,Matlplotlib environment in
+Windows. It is a great free substitute for MATLAB and integrates very
+nicely with Marsyas all in a Python environment. 
 
 @enumerate
-@item Down the Qt for Windows open source edition from 
-@uref{http://trolltech.com/downloads/}. The commercial edition 
-should also work provided you have a license. Make sure you download 
-the source code rather the .exe installer which only works 
-for the MinGW compiler rather than Visual Studio. 
+@item Download and install Python 2.5 (IMPORTANT: NumPy and SciPy don't
+yet work with the more recent 2.6) @uref{from
+http://www.python.org/download/}. The easiest way is to just use the
+.msi installer. 
 
-@item Extract the files to a directory (make sure the directory name 
-does not contain spaces as the Qt configuration gets confused if 
-that's the ccase). I used c:\qt\4.4.1. 
+@item Download and install numpy superpack for python 2.5 from the sourceforge webpage of numpy
+@uref{http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=175103}. 
+@item Download and install SciPy 2.5. Follow the dowload link at 
+@uref{http://www.scipy.org}. 
 
-@item Start the Visual Studio 2008 Command Prompt and 
-go to the directory where you installed Qt and then run 
-configure.exe. This will take a few minutes. Once configuration 
-is complete you can compile Qt using nmake which take a while 
-(about 1 hour on my slow virtual machine) 
-@example 
-cd c:\qt\4.4.1
-configure.exe  
-nmake 
-@end example 
+@item Download and install ipython from
+@uref{http://ipython.scipy.org/dist/} which is an enhanced interactive
+python interpreter that can add MATLAB like plot capabilities to
+Python. 
 
-With Qt 4.4.1 there is a glitch so compilation 
-will stop with an error about MathExtras.h. You will 
-need to comment out the line #include<xmath.h> 
-from c:\qt\4.4.0\src\3rdparty\webkit\JavaScriptCore\wtf\MathExtras.h. 
-This is a known error and that seems to be the proposed solution. 
+@item Download and install matplotlib from 
+@uref{http://matplotlib.sourceforge.net/}. This adds plot capabilities. 
+
+@item If everything has worked so far you should be able to run the
+examples shown in the matplotlib webpage in your python or ipython 
+environment. 
 
 
+@item Now you it is time to install the SWIG python bindings. First you
+will need to download and install SWIG from
+@uref{http://www.swig.org/}. The easiest method is to just unzip
+SWIG-1.3.36.zip somewhere in your hard drive. I chooce c:\swig. 
+Inside this new directory there is a bin directory with the swig
+executable. This directory needs to be added to your system PATH
+environment variable so that CMake can find the SWIG installation. 
+
+@item We are almost there. Start CMake and enable WITH_SWIG 
+and reconfigure Marsyas. If swig is found correctly the corresponding 
+build files are updated. To install the marsyas python module 
+you will need to run the INSTALL target of the Marsyas solution inside
+Visual Studio. 
+
+@item There is one final little step. For some reason I have not figured
+out the marsyas module is compiled as _marsyas.dll and gets copies to
+the default location for installed Python modules. You will need to
+rename this to _marsyas.pyc for things to work. 
+
+
+@item You should now be ready to run Marsyas inside Python. 
+Try launching a Python interactive interpreter and trying: 
+@example
+import marsyas 
+@end example
+
+If it works you have succeeded and can try the various python Marsyas
+scripts in src/swig/python. 
 @end enumerate 
-
-
-
-
-
-@uref{http://python.org, Python}: Installed by default on Linux
-and MacOS X machines; Windows users may install it from this site.
-Marsyas contains some very useful scripts which are written in
-Python.
 
 
 @node Compiling with MinGW on Windows XP
