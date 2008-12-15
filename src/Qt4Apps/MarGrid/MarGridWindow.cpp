@@ -97,7 +97,7 @@ MarGridWindow::MarGridWindow()
   connect(gridWidth, SIGNAL(textChanged(QString)), margrid, SLOT(setXGridSize(QString)));
   connect(gridHeight, SIGNAL(textChanged(QString)), margrid, SLOT(setYGridSize(QString)));
   connect(margrid, SIGNAL(playingFile(QString)), this, SLOT(playingFile(QString))); 
-  connect(margrid, SIGNAL(newGridSize(int, int)), this, SLOT(resizeGrid(int, int)));
+//   connect(margrid, SIGNAL(newGridSize(int, int)), this, SLOT(resizeGrid(int, int)));
 
   w->setLayout(gridLayout);
 

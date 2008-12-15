@@ -111,7 +111,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	    pitchres = pitchExtractor->getctrl("mrs_realvec/processedData")->to<mrs_realvec>(); 
 	    confidences(i) = pitchres(0);
 	    pitches(i) = pitchres(1);
-        
+		
 		cout << confidences(i) << endl;
 		cout << pitches(i) << endl;
 		

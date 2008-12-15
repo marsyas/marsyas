@@ -80,6 +80,8 @@ MarGrid::setupTrain(QString fname)
   MarSystem* extractNet = mng.create("Series", "extractNet");
   extractNet->addMarSystem(mng.create("SoundFileSource", "src"));
   extractNet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  // extractNet->addMarSystem(mng.create("AudioSink", "dest"));
+  
   MarSystem* spectralNet = mng.create("Series", "spectralNet");
   spectralNet->addMarSystem(mng.create("Windowing", "ham"));
   spectralNet->addMarSystem(mng.create("Spectrum", "spk"));
@@ -112,7 +114,8 @@ MarGrid::setupTrain(QString fname)
   total_->addMarSystem(stats2);
   total_->addMarSystem(mng.create("Annotator", "ann"));
   
-
+  // total_->updctrl("Accumulator/acc/Series/extractNet/AudioSink/dest/mrs_bool/initAudio", true);
+  
 
   total_->linkctrl("mrs_string/filename",
 		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
@@ -196,17 +199,21 @@ MarGrid::extract()
 
   // calculate features 
   cout << "Calculating features" << endl;
+  
+
   for (index=0; index < numFiles; index++)
     {
       total_->updctrl("mrs_natural/label", index);
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
-      string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-      cout << current  << " - ";
-      
-      cout << "Processed " << index << " files " << endl; 
+
+
 
       total_->process(som_in,som_res);
+      string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+
+      cout << current  << " - ";
+      cout << "Processed " << index << " files " << endl; 
 	  
       for (int o=0; o < total_onObservations; o++) 
 		  som_fmatrix(o, index) = som_res(o, 0);
@@ -336,17 +343,20 @@ MarGrid::predict()
   norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 		      total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
-
   for (int index = 0; index < l1.size(); index++)
     {
       total_->updctrl("mrs_natural/label", index);
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
-      string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
 
       total_->process(som_in, som_res);
+      string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+
       norm_->process(som_res, norm_som_res);
       som_->process(norm_som_res, predict_res); 
+
+
+
       grid_x = predict_res(0);
       grid_y = predict_res(1);
       addFile(grid_x,grid_y, current);      

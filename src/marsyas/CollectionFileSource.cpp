@@ -178,8 +178,11 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 void
 CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
+	
 	if (advance_) 
 	{
+
+		
 		cindex_ = cindex_ + 1;
 		if (cindex_ == col_.size())
 			cindex_ = 0;
@@ -195,6 +198,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_natural/onObservations", onObservations_);
 		setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
 		ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+		
 		setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
 		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
