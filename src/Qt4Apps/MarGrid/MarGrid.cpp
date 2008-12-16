@@ -320,7 +320,7 @@ MarGrid::predict()
   cout << "Read collection" << endl;
 
   total_->updctrl("mrs_natural/pos", 0);
-
+  total_->updctrl("mrs_bool/advance", false);            
   total_->updctrl("mrs_string/filename", predictFname.toStdString()); 
 
   som_->updctrl("mrs_natural/inSamples", 1);
@@ -349,8 +349,13 @@ MarGrid::predict()
       total_->updctrl("mrs_bool/memReset", true);
       total_->updctrl("mrs_natural/cindex", index);
 
+
       total_->process(som_in, som_res);
       string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+	  
+
+	  cout << "CURRENT = " << current << endl;
+	  
 
       norm_->process(som_res, norm_som_res);
       som_->process(norm_som_res, predict_res); 

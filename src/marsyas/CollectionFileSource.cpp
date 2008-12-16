@@ -178,6 +178,9 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 void
 CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
+	// cout << "cindex = " << cindex_ << endl;
+	// for (int i=0; i < col_.size(); i++) 
+	// cout << "--" << col_.entry(i) << endl;
 	
 	if (advance_) 
 	{
