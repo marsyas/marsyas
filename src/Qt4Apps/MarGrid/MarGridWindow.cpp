@@ -40,7 +40,7 @@ MarGridWindow::MarGridWindow()
   QPushButton *extract  = new QPushButton(tr("Extract"));
   QPushButton *train = new QPushButton(tr("Train"));
   QPushButton *predict = new QPushButton(tr("Predict"));
-  playLabel = new QLabel("Hello");
+  // playLabel = new QLabel("Hello");
   trainLabel = new QLabel("Train File: \t ./music.mf");
   predictLabel = new QLabel("Predict File: \t ./test.mf");
   gridHeightLabel = new QLabel("Grid Height: ");
@@ -88,7 +88,7 @@ MarGridWindow::MarGridWindow()
 
   // gridLayout->addWidget(gridHeightWidget,3,0, 1, 3);
   // gridLayout->addWidget(gridWidthWidget,4,0);
-  gridLayout->addWidget(playLabel, 5, 0, 1, 3);
+  // gridLayout->addWidget(playLabel, 5, 0, 1, 3);
   gridLayout->addWidget(margrid, 6, 0, 1, 3);
 
   connect(extract, SIGNAL(clicked()), margrid, SLOT(extract()));
@@ -107,7 +107,7 @@ MarGridWindow::MarGridWindow()
 void
 MarGridWindow::playingFile(QString s) 
 {
-  playLabel->setText(s);
+	// playLabel->setText(s);
 }
 
 void

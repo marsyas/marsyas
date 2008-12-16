@@ -555,7 +555,7 @@ import marsyas
 
 If it works you have succeeded and can try the various python Marsyas
 scripts in src/swig/python. 
-@end enumerate a
+@end enumerate 
 
 
 @node Compiling with MinGW on Windows XP
