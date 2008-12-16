@@ -240,7 +240,7 @@ int MusicCollection::generatePlayList(std::ostream& out, QString playList)
 	while(mti.hasNext())
 	{
 		MusicTrack *track = mti.next();
-		out << track->getLocation().replace(" ", "\\ ") << std::endl;
+		out << track->getLocation() << std::endl;
 		count++;
 	}
 	return count;

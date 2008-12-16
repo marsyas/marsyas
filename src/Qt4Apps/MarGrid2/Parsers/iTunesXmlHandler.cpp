@@ -197,7 +197,15 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 	} else if ( "Location" == key ) {
 		QString s = text;
 		s.replace(QRegExp("%20"), " ");
-		s.replace(QRegExp("file://localhost/"), "");
+
+		// Watch out for trimming the leading '/' out of the file path
+		#if defined MARSYAS_MACOSX 
+			s.replace(QRegExp("file://localhost"), "");
+		#elif defined MARSYAS_LINUX
+			s.replace(QRegExp("file://localhost"), "");
+		#else // windows file paths
+			s.replace(QRegExp("file://localhost/"), "");
+		#endif
 
 		/* Marsyas does everything with '\' as the path delmiter like a good app 
 		   while Apple has decided that iTunes gets to ignore windows convetions and use '/'

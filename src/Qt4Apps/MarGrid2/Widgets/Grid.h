@@ -17,6 +17,7 @@
 #include <QMutex>
 #include <QFile>
 #include <QDir>
+#include <QString>
 #include <QTextStream>
 
 #include <ctime>

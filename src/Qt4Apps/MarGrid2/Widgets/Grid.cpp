@@ -144,6 +144,8 @@ void Grid::setupNetworks() {
 	total_->addMarSystem(stats2);
 	total_->addMarSystem(mng.create("Annotator", "ann"));
 
+		
+
 
 
 	total_->linkctrl("mrs_string/filename",
@@ -563,11 +565,10 @@ void Grid::predict() {
 			total_->updctrl("mrs_natural/label", index);
 			total_->updctrl("mrs_bool/memReset", true);
 			total_->updctrl("mrs_natural/cindex", index);
-			QString current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>().c_str();
 
-			cout << "file: " << current << endl;
 
 			total_->process(som_in, som_res);
+			QString current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>().c_str();
 
 			norm_->process(som_res, norm_som_res);
 
