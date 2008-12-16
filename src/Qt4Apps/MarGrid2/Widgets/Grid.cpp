@@ -268,12 +268,12 @@ void Grid::extractAction(std::string filename)
 		total_->updctrl("mrs_natural/label", index);
 		total_->updctrl("mrs_bool/memReset", true);
 		total_->updctrl("mrs_natural/cindex", index);
-		total_->updctrl("mrs_bool/advance", true);
-		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+
 
 		cout << current  << " - ";
 
 		cout << "Processed " << index << " files " << endl; 
+		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
 
 		total_->process(som_in,som_res);
 
@@ -282,7 +282,7 @@ void Grid::extractAction(std::string filename)
 
 		for (int o=0; o < total_onObservations; o++) 
 			som_fmatrix(o, index) = som_res(o, 0);
-		//total_->updctrl("mrs_bool/advance", true);      
+		total_->updctrl("mrs_bool/advance", true);     
 
 	}
 
