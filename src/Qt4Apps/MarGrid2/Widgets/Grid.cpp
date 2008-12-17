@@ -270,11 +270,11 @@ void Grid::extractAction(std::string filename)
 		total_->updctrl("mrs_natural/cindex", index);
 
 
-		cout << current  << " - ";
 
-		cout << "Processed " << index << " files " << endl; 
 		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
 
+		cout << "Processed " << index << " files " << endl; 
+		cout << current  << " - ";
 		total_->process(som_in,som_res);
 
 		// hash the resulting feature on file name
