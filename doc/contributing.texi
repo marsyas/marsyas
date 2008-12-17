@@ -233,6 +233,18 @@ addClass MyClassName
 @warning{Remember to do @code{svn add}!  Adding files to the build
 system does not add them to svn.}
 
+For text files (including source code @code{.h} and @code{.cpp}),
+please set
+
+@example
+svn propset svn:eol-style native FILE
+    for example
+svn propset svn:eol-style native *.h *.cpp
+@end example
+
+It would be nice if svn did this automatically, but unfortunately
+it does not.  :(
+
 To remove files from the build system, use
 
 @example
