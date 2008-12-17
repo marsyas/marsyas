@@ -26,4 +26,5 @@ add_subdirectory(MarPhasevocoder)
 add_subdirectory(MarLpc)
 add_subdirectory(MarGrid)
 add_subdirectory(MarGrid2)
+add_subdirectory(MarNetworkWidget)
 
