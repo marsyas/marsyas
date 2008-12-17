@@ -95,7 +95,10 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 			for (ki=0; ki < k; ki++)
 			{
 				mrs_real ix =  out(o,2*ki+1), iy =  out(o,2*ki);
-				quadraticInterpolation(&ix, &iy, in);
+
+				
+				if ((ix != 0.0) &&  (iy != 0.0))
+					quadraticInterpolation(&ix, &iy, in);
 				out(o,2*ki) = iy;
 				out(o,2*ki+1) = ix;
 			}
