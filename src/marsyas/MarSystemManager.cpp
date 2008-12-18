@@ -96,6 +96,7 @@
 #include "Norm.h"
 #include "Sum.h"
 #include "Product.h"
+#include "Reciprocal.h"
 #include "DownSampler.h"
 #include "PeakPeriods2BPM.h"
 #include "Histogram.h"
@@ -261,6 +262,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Norm", new Norm("norm"));
 	registerPrototype("Sum", new Sum("sum"));
 	registerPrototype("Product", new Product("product"));
+	registerPrototype("Reciprocal", new Reciprocal("reciprocal"));
 	registerPrototype("DownSampler", new DownSampler("ds"));
 	registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));
 	registerPrototype("Histogram", new Histogram("histop"));
