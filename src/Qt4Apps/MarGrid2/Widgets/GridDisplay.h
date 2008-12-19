@@ -73,7 +73,7 @@ public:
 		void playModeChanged();
 		void cancelButton();
 		void repaintSlot();
-		void normHashLoad();
+		void hashLoad();
 		void fullScreenMouse();
 		void fullScreenMouseMove();
 		void colourMapMode();
@@ -92,8 +92,9 @@ signals:
         void openPredictionGridSignal(QString fname);
 		void savePredictionGridSignal(QString fname);
 		void cancelButtonPressed();
-		void normHashLoadPressed();
+		void hashLoadPressed();
 		void fullScreenMode(bool modeOn);
+		void updateColourMap(int *, int);
 
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);

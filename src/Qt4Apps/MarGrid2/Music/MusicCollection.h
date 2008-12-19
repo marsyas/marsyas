@@ -6,6 +6,7 @@
 #include <QHash>
 #include <QHashIterator>
 #include <QString>
+#include <QStringList>
 #include <iostream>
 
 //#include "logger.h"
@@ -52,6 +53,7 @@ public:
 	// Collection output
 	int generateTrackList(std::ostream& out);
 	int generatePlayList(std::ostream& out, QString playlist);
+	QStringList stringPlayList(QString playlist);
 
 private:
 	void linkGenre(MusicTrack *genre);

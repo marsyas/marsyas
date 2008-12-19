@@ -25,7 +25,8 @@ set(APP_SOURCES
 	Widgets/PlaylistItem.cpp
 	Widgets/Tracklist.cpp
 	Widgets/GridDisplay.cpp
-	#Widgets/ColourMap.cpp
+	Widgets/ColourMapDisplay.cpp
+	Widgets/SquareRenderArea.cpp
 	main.cpp
 )
 
@@ -58,7 +59,8 @@ set(APP_HEADERS
 	Widgets/PlaylistItem.h
 	Widgets/Tracklist.h
 	Widgets/GridDisplay.h
-	#Widgets/ColourMap.h
+	Widgets/ColourMapDisplay.h
+	Widgets/SquareRenderArea.h
 	MainWindow.h
 )
 

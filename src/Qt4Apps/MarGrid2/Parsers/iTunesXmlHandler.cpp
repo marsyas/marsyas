@@ -196,7 +196,20 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 		_currentTrack->setYear(text);
 	} else if ( "Location" == key ) {
 		QString s = text;
+
+		// get rid of XML encoding
+		// if it's not in this list chances are it's unsupported
 		s.replace(QRegExp("%20"), " ");
+		s.replace(QRegExp("%5B"), "[");
+		s.replace(QRegExp("%5D"), "]");
+		s.replace(QRegExp("&#38"), "&");
+		s.replace(QRegExp("%3B"), ";");
+		s.replace(QRegExp("%7B"), "{");
+		s.replace(QRegExp("%7D"), "}");
+		s.replace(QRegExp("%5E"), "^");
+		s.replace(QRegExp("%60"), "`");
+		s.replace(QRegExp("%25"), "%");
+
 
 		// Watch out for trimming the leading '/' out of the file path
 		#if (defined(Q_OS_DARWIN) || defined(Q_OS_LINUX))

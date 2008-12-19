@@ -242,6 +242,7 @@ void Grid::extractAction(std::string filename)
 	realvec som_in;
 	realvec som_res;
 	realvec som_fmatrix;
+	multimap<std::string, realvec>::iterator it;
 
 
 	mrs_natural total_onObservations = 
@@ -269,16 +270,29 @@ void Grid::extractAction(std::string filename)
 		total_->updctrl("mrs_bool/memReset", true);
 		total_->updctrl("mrs_natural/cindex", index);
 
-
-
 		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+				cout << current  << " - ";
+
+
 
 		cout << "Processed " << index << " files " << endl; 
 		cout << current  << " - ";
 		total_->process(som_in,som_res);
+		
+		// if current file isn't in out master hash, extract the file and load it into the has
+		it = featureHash->find(current);
 
-		// hash the resulting feature on file name
-		featureHash->insert(pair<string,realvec>(current,som_res));
+		if(it == featureHash->end() )
+		{
+			// hash the resulting feature on file name
+			featureHash->insert(pair<string,realvec>(current,som_res));
+
+		}
+		else
+		{
+			cout << "found!" << endl;
+			som_res = featureHash->find(current)->second;
+		}
 
 		for (int o=0; o < total_onObservations; o++) 
 			som_fmatrix(o, index) = som_res(o, 0);
@@ -342,7 +356,7 @@ void Grid::extractAction(std::string filename)
 	/*
 	Save the feature hash
 	Each realvec is a separate file as it is the only way they can be loaded
-	each file is named in the following pattern "normFeatureVec" where X is an integer
+	each file is named in the following pattern "featureVec" where X is an integer
 	The file keys.txt holds space separated pairs of the hash key
 	and the filename of the corresponding realvec
 
@@ -353,7 +367,6 @@ void Grid::extractAction(std::string filename)
 	QFile *keys;
 	QString keysFile;
 	QString realvecFile;
-	multimap<std::string,realvec>::iterator it;
 
 	if(!dir.exists("extractFiles"))
 	{
@@ -366,7 +379,7 @@ void Grid::extractAction(std::string filename)
 	{
 		QTextStream txtStr(keys);
 		int counter = 0;
-		for ( it=normFeatureHash->begin() ; it != normFeatureHash->end(); it++ )
+		for ( it=featureHash->begin() ; it != featureHash->end(); it++ )
 		{
 			// make the key entry
 			txtStr << it->first.c_str();
@@ -375,7 +388,7 @@ void Grid::extractAction(std::string filename)
 
 			// open the realvec file and write the value
 			std::stringstream stringStream;
-			stringStream << "normFeatureVec" << counter << ".hsh";
+			stringStream << "featureVec" << counter << ".hsh";
 			realvecFile = stringStream.str().c_str();
 			realvecFile = dir.filePath( realvecFile );
 			it->second.write( realvecFile.toStdString() );
@@ -757,7 +770,7 @@ Grid::savePredictionGrid(QString fname)
 
 }
 
-void Grid::openNormHash()
+void Grid::openHash()
 {
 	cout << "Opening hash" << endl;
 	// if dir exists
@@ -783,8 +796,9 @@ void Grid::openNormHash()
 				{
 					std::stringstream stringStream;
 					stringStream << "normFeatureVec" << currentHashFileNumber << ".hsh";
+					cout << dir.filePath(stringStream.str().c_str()).toStdString() << endl;
 					currentFeature.read(dir.filePath(stringStream.str().c_str()).toStdString()); 
-					normFeatureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
+					featureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
 
 				}
 				//TODO:: Clean up pointers
@@ -887,8 +901,6 @@ void Grid::resetGrid()
 	}
 	initFileLocations.clear();
 	initFileLocations.resize(som_height * som_width);
-	files_.clear();
-	files_.resize(som_height * som_width);
 	_gridX = 0;
 	_gridY = 0;
 	initAudio_ = false;
@@ -899,6 +911,24 @@ void Grid::resetGrid()
 	featureHash = new multimap<string, realvec>();
 	normFeatureHash = new multimap<string, realvec>();
 	numFeatures = 0;
+	playlist_ = "Library";
+	_collection->empty();
+	counters.clear();
+	counterSizes.clear();
+	labels.clear();
+	files_.clear();
+	_collection = MusicCollection::getInstance();
+	delete mwr_;
+	delete pnet_;
+	delete som_;
+	delete total_;
+	delete norm_;
+	
+	setup();
+
+
+	
+
 }
 
 int Grid::getCurrentIndex()

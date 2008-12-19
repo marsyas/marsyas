@@ -227,6 +227,7 @@ void MainWindow::createWindow() {
 
 	_tracklist = new Tracklist(this);
 	_playlist = new Playlist(_tracklist, this);
+	_colourMapDisplay = new ColourMapDisplay(this);
 	
 
 	_display = new GridDisplay(600, _tracklist, _dataGrid, this);
@@ -234,11 +235,21 @@ void MainWindow::createWindow() {
 	QGridLayout *gridLayout = new QGridLayout;
 				//fromRow, fromCol, rowSpan, colSpan
 	gridLayout->addWidget(	_display,			0, 0, 4, 1);
-    gridLayout->addWidget(new QLabel(tr("Playlists")),	0, 1, 1, 1);
-	gridLayout->addWidget(	_playlist,			1, 1, 1, 1);
-    gridLayout->addWidget(new QLabel(tr("Track list")), 	2, 1, 1, 1);
-	gridLayout->addWidget(	_tracklist,			3, 1, 1, 1);
-	gridLayout->addWidget(	_playBox,			4, 0, 1, 2);
+
+	QVBoxLayout *vbox = new QVBoxLayout;
+	vbox->addWidget(new QLabel(tr("Playlists")));
+	vbox->addWidget(_playlist);
+	vbox->addWidget(new QLabel(tr("Track list")));
+	vbox->addWidget(_tracklist);
+	vbox->addWidget(_colourMapDisplay);
+	gridLayout->addLayout(vbox,1,1,1,1);
+
+    //gridLayout->addWidget(new QLabel(tr("Playlists")),	0, 1, 1, 1);
+	//gridLayout->addWidget(	_playlist,			1, 1, 1, 1);
+    //gridLayout->addWidget(new QLabel(tr("Track list")), 	2, 1, 1, 1);
+	//gridLayout->addWidget(	_tracklist,			3, 1, 1, 1);
+	//gridLayout->addWidget(	_playBox,			4, 0, 1, 2);
+	//gridLayout->addWidget( _colourMapDisplay,   4, 1, 1, 1);
 
 	connect(_display, SIGNAL(playingTrack(MusicTrack*)), 
 		 this, SLOT(updateCurrentlyPlaying(MusicTrack*)));
@@ -252,6 +263,7 @@ void MainWindow::createWindow() {
 	connect(_display, SIGNAL(fullScreenMode(bool)), this, SLOT(fullScreenMode(bool)));
 	connect(this, SIGNAL(fullScreenModeOff()), _display, SLOT(fullScreenMouse()));
 	connect(_playlist, SIGNAL(SelectedPlaylist(QString)), _display, SLOT(playlistSelected(QString)));
+	connect(_display, SIGNAL(updateColourMap(int *, int)), _colourMapDisplay, SLOT(updateSquare(int *, int)));
 
 	w->setLayout(gridLayout);
 	statusBar()->showMessage(tr("Ready"));
@@ -327,7 +339,7 @@ void MainWindow::createActions() {
 	connect(_initAction, SIGNAL(triggered()), _display, SLOT(init()));
 	
 	_normHashAction = new QAction(tr("Open Saved Hash"), this);
-	connect(_normHashAction, SIGNAL(triggered()), _display, SLOT(normHashLoad()));
+	connect(_normHashAction, SIGNAL(triggered()), _display, SLOT(hashLoad()));
 
 	_fullScreenAction = new QAction (tr("&Full Screen Mouse Mode"), this);
 	connect(_fullScreenAction, SIGNAL(triggered()), _display, SLOT(fullScreenMouse()));
@@ -343,10 +355,10 @@ void MainWindow::createMenus() {
 	gridWidth = new QLineEdit(this);
 	gridWidth->setMinimumWidth(30);
 	gridWidth->setMaximumWidth(30);
-	gridWidth->setInputMask("99");
+	gridWidth->setInputMask("999");
 	gridWidth->setText("12");
 	gridHeight = new QLineEdit(this);
-	gridHeight->setInputMask("99");
+	gridHeight->setInputMask("999");
 	gridHeight->setMinimumWidth(30);
 	gridHeight->setMaximumWidth(30);
 	gridHeight->setText("12");

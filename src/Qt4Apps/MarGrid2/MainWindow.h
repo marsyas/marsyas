@@ -13,8 +13,6 @@
 #include "Interface/MyDisplay.h"
 #include "Interface/Parser.h"
 
-// #include "Midi/MidiListener.h"
-
 #include "Music/MusicCollection.h"
 #include "Parsers/iTunesXmlHandler.h"
 #include "Parsers/iTunesXmlWriter.h"
@@ -27,10 +25,7 @@
 #include "Widgets/PlayBox.h"
 #include "Widgets/Playlist.h"
 #include "Widgets/GridDisplay.h"
-//#ifdef Q_WS_MACX
-//#include <Carbon/Carbon.h>
-//#endif
-
+#include "Widgets/ColourMapDisplay.h"
 
 class MainWindow : public QMainWindow
 {
@@ -47,7 +42,6 @@ signals:
 	void playModeChanged();
 	void cancelButtonSignal();
 	void fullScreenModeOff();
-	//void gridSize(bool, int);
 
 private slots:  
 	void openiTunesLibrary();
@@ -65,7 +59,6 @@ private slots:
 	void openDefaultiTunes(); //REMOVE ME FOR REAL RELEASE, ASSUMES LOCATION OF iTUNES XML
 	void fullScreenMode(bool mode);
 	void keyReleaseEvent(QKeyEvent *);
-	// void resizeGrid(int,int);
 
 private:
 	void createActions();
@@ -79,6 +72,7 @@ private:
 	PlayBox *_playBox;
 	Playlist *_playlist;
 	Tracklist *_tracklist;
+	ColourMapDisplay *_colourMapDisplay;
 
 	//Dialogs
 	PreferencesDialog *_preferencesDialog;

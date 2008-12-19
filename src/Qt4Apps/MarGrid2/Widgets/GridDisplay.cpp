@@ -17,7 +17,7 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
 	initDone = false;
 	fullScreenTimer = new QTimer(this);
 	fullScreenTimer->setInterval(150);
-	colourMapMode_ = true;
+	colourMapMode_ = false;
 
 
 	connect(this, SIGNAL(clearMode()), grid_, SLOT(clearMode()));
@@ -29,14 +29,15 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
 	connect(this, SIGNAL(openPredictionGridSignal(QString)), grid_, SLOT(openPredictionGrid(QString)));
 	connect(grid_, SIGNAL(repaintSignal()), this, SLOT(repaintSlot()));
 	connect(this, SIGNAL(cancelButtonPressed()), grid_, SLOT(cancelPressed()));
-	connect(this, SIGNAL(normHashLoadPressed()), grid_, SLOT(openNormHash()));
+	connect(this, SIGNAL(hashLoadPressed()), grid_, SLOT(openHash()));
 	connect(fullScreenTimer, SIGNAL(timeout()), this, SLOT(fullScreenMouseMove()));
 	connect(grid_, SIGNAL(errorBox(QString)), this, SLOT(showErrorMessage(QString)));
 }
 
 GridDisplay::~GridDisplay()
 {
-	// TODO: DELETE STUFF
+	delete fullScreenTimer;
+
 }
 /* 
 *
@@ -93,9 +94,9 @@ void GridDisplay::cancelButton()
 	emit cancelButtonPressed();
 }
 
-void GridDisplay::normHashLoad()
+void GridDisplay::hashLoad()
 {
-	emit normHashLoadPressed();
+	emit hashLoadPressed();
 }
 
 void GridDisplay::fullScreenMouse()
@@ -301,6 +302,7 @@ void GridDisplay::mouseMoveEvent(QMouseEvent *event)
 		oldXPos = grid_->getXPos();
 	    oldYPos = grid_->getYPos();
 	}
+	emit updateColourMap(grid_->getDensity(grid_->getCurrentIndex()), 10);
 	repaint();
 }
 

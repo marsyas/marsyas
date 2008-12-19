@@ -19,6 +19,7 @@
 #include <QDir>
 #include <QString>
 #include <QTextStream>
+#include <QStringList>
 
 #include <ctime>
 #include <cstdlib>
@@ -72,7 +73,7 @@ public:
 	QList<std::string> getFilesAt(int index);
 	QList<std::string> getCurrentFiles();
 	QWaitCondition buttonPressed;
-	
+
 	void setXPos(int value);
 	void setYPos(int value);
 	void setXGridSize(QString);
@@ -92,7 +93,7 @@ public:
 	int getYPos() const { return _gridY; }
 	int getCellSize(int winSize);
 
-public slots: 
+	public slots: 
 		void setExtractMode();
 		void setTrainMode();
 		void setPredictMode();
@@ -101,7 +102,7 @@ public slots:
 		void openPredictionGrid(QString fname);
 		void savePredictionGrid(QString fname);
 		void cancelPressed();
-		void openNormHash();
+		void openHash();
 
 signals: 
 		void playingTrack(MusicTrack *track);
@@ -164,7 +165,7 @@ private:
 	QVector<int> labels;
 
 	MarSystemQtWrapper*  mwr_;
-    Marsyas::MarSystem* pnet_;
+	Marsyas::MarSystem* pnet_;
 
 	Marsyas::realvec _normSomFmatrix;
 	Marsyas::MarSystem* som_;
@@ -191,10 +192,10 @@ public:
 	void setY(int);
 	void setFileName(std::string);
 
-	
+
 private:
 	int x;
-    int y;
+	int y;
 	std::string fileName;
 };
 
