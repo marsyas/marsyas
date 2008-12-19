@@ -264,7 +264,7 @@ void Grid::extractAction(std::string filename)
 		if(cancel_)
 		{
 			cancel_ = false;
-			break;
+			return;
 		}
 		total_->updctrl("mrs_natural/label", index);
 		total_->updctrl("mrs_bool/memReset", true);
@@ -276,7 +276,8 @@ void Grid::extractAction(std::string filename)
 		total_->process(som_in,som_res);
 
 		// hash the resulting feature on file name
-		featureHash->insert(pair<string,realvec>(current,som_res));
+		if(featureHash->find(current) == featureHash->end())
+			featureHash->insert(pair<string,realvec>(current,som_res));
 
 
 		for (int o=0; o < total_onObservations; o++) 
@@ -322,7 +323,8 @@ void Grid::extractAction(std::string filename)
 	while(inFeatureName)
 	{
 		norm_som_fmatrix.getCol(counter, *normFeature);
-		normFeatureHash->insert(pair<string,realvec>(featureName, *normFeature));
+		if(normFeatureHash->find(featureName) == normFeatureHash->end())
+			normFeatureHash->insert(pair<string,realvec>(featureName, *normFeature));
 		getline(inFeatureName, featureName);
 		counter++;
 	}
@@ -785,7 +787,10 @@ void Grid::openHash()
 					stringStream << "featureVec" << currentHashFileNumber << ".hsh";
 					cout << dir.filePath(stringStream.str().c_str()).toStdString() << endl;
 					currentFeature.read(dir.cleanPath(stringStream.str().c_str()).toStdString()); 
-					normFeatureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
+					if(normFeatureHash->find(currentHashKey.toStdString()) == normFeatureHash->end())
+					{
+						normFeatureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
+					}
 
 				}
 				//TODO:: Clean up pointers
@@ -899,6 +904,8 @@ void Grid::resetGrid()
 	cancel_ = false;
 	state_ = 0;
 	init_ = false;
+	delete featureHash;
+	delete normFeatureHash;
 	featureHash = new multimap<string, realvec>();
 	normFeatureHash = new multimap<string, realvec>();
 	numFeatures = 0;
