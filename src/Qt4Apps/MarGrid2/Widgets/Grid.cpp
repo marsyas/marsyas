@@ -791,9 +791,9 @@ void Grid::openHash()
 				if(!currentHashKey.isNull() )
 				{
 					std::stringstream stringStream;
-					stringStream << "normFeatureVec" << currentHashFileNumber << ".hsh";
+					stringStream << "featureVec" << currentHashFileNumber << ".hsh";
 					cout << dir.filePath(stringStream.str().c_str()).toStdString() << endl;
-					currentFeature.read(dir.filePath(stringStream.str().c_str()).toStdString()); 
+					currentFeature.read(dir.cleanPath(stringStream.str().c_str()).toStdString()); 
 					featureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
 
 				}
@@ -880,7 +880,6 @@ void Grid::cancelPressed()
 */
 void Grid::resetGrid()
 {
-	//TODO:: RESET!
 	for(int i = 0; i < oldHeight_ * oldWidth_; i++)
 		free(genreDensity[i]);
 	free(genreDensity);

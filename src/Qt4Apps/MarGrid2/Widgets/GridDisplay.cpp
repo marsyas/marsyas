@@ -102,6 +102,9 @@ void GridDisplay::hashLoad()
 
 void GridDisplay::resetGrid()
 {
+	initDone = false;
+	for(int i = 0; i < squareHasInitialized.size(); i++)
+		squareHasInitialized[i] = false;
 	emit resetGridAction();
 }
 
