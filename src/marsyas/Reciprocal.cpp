@@ -17,7 +17,6 @@
 */
 
 #include "Reciprocal.h"
-#include <values.h>
 
 using namespace std;
 using namespace Marsyas;
@@ -57,6 +56,6 @@ Reciprocal::myProcess(realvec& in, realvec& out)
   		if (in(o,t) != 0.0)
   		  out(o,t) = 1/in(o,t);
   		else
-  		  out(o,t) = MAXFLOAT;
+  		  out(o,t) = MAXREAL;
       }
 }
