@@ -274,21 +274,10 @@ void Grid::extractAction(std::string filename)
 		cout << "Processed " << index << " files " << endl; 
 		cout << current  << " - ";
 		total_->process(som_in,som_res);
-		
-		// if current file isn't in out master hash, extract the file and load it into the hash
-		it = featureHash->find(current);
 
-		if(it == featureHash->end() )
-		{
-			// hash the resulting feature on file name
-			featureHash->insert(pair<string,realvec>(current,som_res));
+		// hash the resulting feature on file name
+		featureHash->insert(pair<string,realvec>(current,som_res));
 
-		}
-		else
-		{
-			cout << "found!" << endl;
-			som_res = featureHash->find(current)->second;
-		}
 
 		for (int o=0; o < total_onObservations; o++) 
 			som_fmatrix(o, index) = som_res(o, 0);
@@ -375,7 +364,7 @@ void Grid::extractAction(std::string filename)
 	{
 		QTextStream txtStr(keys);
 		int counter = 0;
-		for ( it=featureHash->begin() ; it != featureHash->end(); it++ )
+		for ( it=normFeatureHash->begin() ; it != normFeatureHash->end(); it++ )
 		{
 			// make the key entry
 			txtStr << it->first.c_str();
@@ -629,7 +618,9 @@ void Grid::init()
 				//check that temp has something, if it doesn't display error and abort
 				if(temp2 ==  normFeatureHash->end())
 				{
-					emit errorBox("One of the dropped files was not extracted, please run Extract again");
+					std::stringstream strStm;
+					strStm << initFileLocations[i].at(l)->getFileName() << " was not extracted, please run Extract again";
+					emit errorBox(strStm.str().c_str());
 					return;
 				}
 				temp = temp2->second;
@@ -794,7 +785,7 @@ void Grid::openHash()
 					stringStream << "featureVec" << currentHashFileNumber << ".hsh";
 					cout << dir.filePath(stringStream.str().c_str()).toStdString() << endl;
 					currentFeature.read(dir.cleanPath(stringStream.str().c_str()).toStdString()); 
-					featureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
+					normFeatureHash->insert( pair<std::string, realvec>(currentHashKey.toStdString(), currentFeature) );
 
 				}
 				//TODO:: Clean up pointers
