@@ -17,6 +17,7 @@
 */
 
 #include "Reciprocal.h"
+#include <values.h>
 
 using namespace std;
 using namespace Marsyas;
@@ -41,9 +42,9 @@ Reciprocal::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural,inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 }
 
 
@@ -53,6 +54,9 @@ Reciprocal::myProcess(realvec& in, realvec& out)
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
-		out(o,t) = 1/in(o,t);
+  		if (in(o,t) != 0.0)
+  		  out(o,t) = 1/in(o,t);
+  		else
+  		  out(o,t) = MAXFLOAT;
       }
 }
