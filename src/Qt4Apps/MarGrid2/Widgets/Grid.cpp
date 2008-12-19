@@ -882,9 +882,6 @@ void Grid::resetGrid()
 	oldHeight_ = som_height;
 	oldWidth_ = som_width;
 
-	delete featureHash;
-	delete normFeatureHash;
-
 	genreDensity = (int **)malloc(som_height * som_width * sizeof(int *));
 	
 	for (int i = 0; i < som_height * som_width; i++) 
