@@ -40,15 +40,12 @@ void SquareRenderArea::paintEvent(QPaintEvent*  event)
 	painter.drawLine(bottom);
 	painter.drawLine(lSide);
 	painter.drawLine(rSide);
-	std::cout << "****" << std::endl;
 
 	//find the % of the square each genre gets
 	for(int i = 0; i < squareSize; i++)
 	{
 		squarePaintSize[i] = squareDensity[i] /  (1.0 * totalFiles );
-		std::cout << squarePaintSize[i] << std::endl;
 	}
-	std::cout << "****" << std::endl << std::endl;
 	int startHeight = 0;
 
 	/*

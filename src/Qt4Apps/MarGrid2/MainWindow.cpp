@@ -264,6 +264,7 @@ void MainWindow::createWindow() {
 	connect(this, SIGNAL(fullScreenModeOff()), _display, SLOT(fullScreenMouse()));
 	connect(_playlist, SIGNAL(SelectedPlaylist(QString)), _display, SLOT(playlistSelected(QString)));
 	connect(_display, SIGNAL(updateColourMap(int *, int)), _colourMapDisplay, SLOT(updateSquare(int *, int)));
+	connect(this, SIGNAL(resetGrid()), _display, SLOT(resetGrid()));
 
 	w->setLayout(gridLayout);
 	statusBar()->showMessage(tr("Ready"));
@@ -346,6 +347,9 @@ void MainWindow::createActions() {
 
 	_colourMapMode = new QAction (tr("&Colour Mapping Mode"),this);
 	connect(_colourMapMode, SIGNAL(triggered()), _display, SLOT(colourMapMode()));
+
+	_resetButtonAction = new QAction (tr("&Reset"), this);
+	connect (_resetButtonAction, SIGNAL(triggered()), this, SLOT(resetButtonPressed()));
 }
 
 void MainWindow::createMenus() {
@@ -424,6 +428,8 @@ void MainWindow::createToolbars() {
 	_toolbar->addSeparator();
 	_toolbar->addWidget(gridHeightWidget);
 	_toolbar->addWidget(gridWidthWidget);
+	_toolbar->addSeparator();
+	_toolbar->addAction(_resetButtonAction);
 
 	//TODO: CLEANUP
 	connect(gridWidth, SIGNAL(textChanged(QString)), _display, SLOT(setXGridSize(QString)));
@@ -439,4 +445,19 @@ void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
 	emit fullScreenModeOff();
 	fullScreenMode(false);
 	}
+}
+
+void MainWindow::resetButtonPressed()
+{
+ QMessageBox msgBox;
+ msgBox.setText("Are you sure you want to reset the grid?");
+ msgBox.setInformativeText("You will need to extract and train your collection again.");
+ msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+ msgBox.setDefaultButton(QMessageBox::No);
+ int ret = msgBox.exec();
+
+ if(ret == QMessageBox::Yes)
+ {
+	 emit resetGrid();
+ }
 }

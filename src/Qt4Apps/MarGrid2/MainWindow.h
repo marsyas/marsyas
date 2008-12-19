@@ -9,6 +9,7 @@
 #include <QSizePolicy>
 #include <QLabel>
 #include <QWidget>
+#include <QMessageBox>
 
 #include "Interface/MyDisplay.h"
 #include "Interface/Parser.h"
@@ -42,6 +43,7 @@ signals:
 	void playModeChanged();
 	void cancelButtonSignal();
 	void fullScreenModeOff();
+	void resetGrid();
 
 private slots:  
 	void openiTunesLibrary();
@@ -59,6 +61,7 @@ private slots:
 	void openDefaultiTunes(); //REMOVE ME FOR REAL RELEASE, ASSUMES LOCATION OF iTUNES XML
 	void fullScreenMode(bool mode);
 	void keyReleaseEvent(QKeyEvent *);
+	void resetButtonPressed();
 
 private:
 	void createActions();
@@ -103,6 +106,7 @@ private:
 	QAction *_normHashAction;
 	QAction *_fullScreenAction;
 	QAction *_colourMapMode;
+	QAction *_resetButtonAction;
 
 		QLabel* gridHeightLabel;
 		QLabel* gridWidthLabel;

@@ -32,6 +32,7 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
 	connect(this, SIGNAL(hashLoadPressed()), grid_, SLOT(openHash()));
 	connect(fullScreenTimer, SIGNAL(timeout()), this, SLOT(fullScreenMouseMove()));
 	connect(grid_, SIGNAL(errorBox(QString)), this, SLOT(showErrorMessage(QString)));
+	connect(this, SIGNAL(resetGridAction()), grid_, SLOT(resetGridSlot()));
 }
 
 GridDisplay::~GridDisplay()
@@ -97,6 +98,11 @@ void GridDisplay::cancelButton()
 void GridDisplay::hashLoad()
 {
 	emit hashLoadPressed();
+}
+
+void GridDisplay::resetGrid()
+{
+	emit resetGridAction();
 }
 
 void GridDisplay::fullScreenMouse()

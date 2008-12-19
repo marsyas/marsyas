@@ -103,6 +103,7 @@ public:
 		void savePredictionGrid(QString fname);
 		void cancelPressed();
 		void openHash();
+		void resetGridSlot();
 
 signals: 
 		void playingTrack(MusicTrack *track);

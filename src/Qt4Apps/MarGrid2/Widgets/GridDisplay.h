@@ -81,6 +81,7 @@ public:
 		void setXGridSize(QString);
 		void setYGridSize(QString);
 		void showErrorMessage(QString);
+		void resetGrid();
 
 signals: 
 		void playingTrack(MusicTrack *track);
@@ -95,6 +96,7 @@ signals:
 		void hashLoadPressed();
 		void fullScreenMode(bool modeOn);
 		void updateColourMap(int *, int);
+		void resetGridAction();
 
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);

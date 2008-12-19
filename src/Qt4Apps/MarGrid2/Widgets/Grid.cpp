@@ -271,15 +271,11 @@ void Grid::extractAction(std::string filename)
 		total_->updctrl("mrs_natural/cindex", index);
 
 		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-				cout << current  << " - ";
-
-
-
 		cout << "Processed " << index << " files " << endl; 
 		cout << current  << " - ";
 		total_->process(som_in,som_res);
 		
-		// if current file isn't in out master hash, extract the file and load it into the has
+		// if current file isn't in out master hash, extract the file and load it into the hash
 		it = featureHash->find(current);
 
 		if(it == featureHash->end() )
@@ -840,6 +836,11 @@ Grid::setYGridSize(QString size)
 	resetGrid();
 	emit repaintSignal();
 }
+void
+Grid::resetGridSlot()
+{
+	resetGrid();
+}
 
 /*
 * ---------------------------------------------------
@@ -911,13 +912,10 @@ void Grid::resetGrid()
 	featureHash = new multimap<string, realvec>();
 	normFeatureHash = new multimap<string, realvec>();
 	numFeatures = 0;
-	playlist_ = "Library";
-	_collection->empty();
 	counters.clear();
 	counterSizes.clear();
 	labels.clear();
 	files_.clear();
-	_collection = MusicCollection::getInstance();
 	delete mwr_;
 	delete pnet_;
 	delete som_;
