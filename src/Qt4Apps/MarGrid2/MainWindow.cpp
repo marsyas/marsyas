@@ -9,7 +9,6 @@ MainWindow::MainWindow(Grid* grid_) {
 	createMenus();
 	createToolbars();
 
-	_preferencesDialog = NULL;
 
 	// _midi = new MidiListener();
 	openDefaultiTunes();
@@ -20,7 +19,6 @@ MainWindow::MainWindow(Grid* grid_) {
 MainWindow::~MainWindow() {
 	_library->empty();
 	delete _library;
-	// delete _midi;
 }
 
 /*
@@ -93,20 +91,12 @@ void MainWindow::openDefaultiTunes()
 
 	statusBar()->showMessage(tr("Parsing iTunes Library......"));
 
-	//if ( Parser::parse( Parser::ParserTypes.ITUNES, file, _library ) ) {
 	_library->empty();
 	if ( Parser::parse( file, _library ) ) {
 		statusBar()->showMessage(tr("File loaded"), 2000);
 		qDebug() << "Library updated";
 		emit libraryUpdated();
 	}
-
-}
-void MainWindow::openMarXmlLibrary() {
-
-}
-
-void MainWindow::openMarCsvLibrary() {
 
 }
 
@@ -133,50 +123,15 @@ void MainWindow::updateCurrentlyPlaying(MusicTrack *track) {
 	//_playBox->updateCurrentlyPlaying(track);
 }
 
-void MainWindow::openPreferences() {
-	if ( !_preferencesDialog ) {
-		_preferencesDialog = new PreferencesDialog(this);
-		//connect(prefDialog, SIGNAL(prefAction), this, SLOT(preferences);
-		_preferencesDialog->addPage(new iTunesPage);
-	}
-	_preferencesDialog->show();
-	_preferencesDialog->activateWindow();
-}
-
 void MainWindow::display() {
 	_library->display();
 }
 
 void MainWindow::about() {
-	QMessageBox::about(this, tr("About Music Collection"),
-		tr("The <b>Music Collection</b> parses and displaysiTunes Xml Library files."));
+	QMessageBox::about(this, tr("MarGrid2"),
+		tr(" A music player based on a self organized map."));
 }
 
-void MainWindow::saveiTunesLibrary() {
-	QString fileName =
-		QFileDialog::getSaveFileName(this, tr("Save iTunes Library File"),
-					 QDir::currentPath(),
-					 tr("iTunes XML Library File(*.xml)"));
-	if (fileName.isEmpty())
-		return;
-
-
-	QFile file(fileName);
-	if (!file.open(QFile::WriteOnly | QFile::Text)) {
-		QMessageBox::warning(this, tr("Music Collection"),
-					 tr("Cannot write to file %1:\n%2.")
-						 .arg(fileName)
-						 .arg(file.errorString()));
-		return;
-	}
-
-	statusBar()->showMessage(tr("Saving iTunes Library......"));
-
-	iTunesXmlWriter writer(file);
-	writer << _library;
-	statusBar()->showMessage(tr("File Saved"), 2000);
-	qDebug() << "Library save";
-}
 void MainWindow::changedPlayMode()
 {
 	emit playModeChanged();
@@ -191,9 +146,6 @@ void MainWindow::fullScreenMode(bool mode)
 		_toolbar->hide();
 		menuBar()->hide();
 		setWindowFlags(Qt::FramelessWindowHint);
-		//#ifdef Q_WS_MACX
-		//	HideMenuBar();
-		//#endif
 		grabKeyboard();
 
 	}
@@ -203,14 +155,15 @@ void MainWindow::fullScreenMode(bool mode)
 		_toolbar->show();
 		menuBar()->show();
 		setWindowFlags((Qt::WindowFlags)(~Qt::FramelessWindowHint));
-	//	#ifdef Q_WS_MACX
-	//		ShowMenuBar();
-	//	#endif
 		releaseKeyboard();
 	}
 	show();
 }
 
+void MainWindow::optionsDialogTriggered()
+{
+	OptionsDialog *dialog = new OptionsDialog(_dataGrid);
+}
 
 /*
  * ---------------------------------------------------------
@@ -244,13 +197,6 @@ void MainWindow::createWindow() {
 	vbox->addWidget(_colourMapDisplay);
 	gridLayout->addLayout(vbox,1,1,1,1);
 
-    //gridLayout->addWidget(new QLabel(tr("Playlists")),	0, 1, 1, 1);
-	//gridLayout->addWidget(	_playlist,			1, 1, 1, 1);
-    //gridLayout->addWidget(new QLabel(tr("Track list")), 	2, 1, 1, 1);
-	//gridLayout->addWidget(	_tracklist,			3, 1, 1, 1);
-	//gridLayout->addWidget(	_playBox,			4, 0, 1, 2);
-	//gridLayout->addWidget( _colourMapDisplay,   4, 1, 1, 1);
-
 	connect(_display, SIGNAL(playingTrack(MusicTrack*)), 
 		 this, SLOT(updateCurrentlyPlaying(MusicTrack*)));
 
@@ -278,20 +224,6 @@ void MainWindow::createActions() {
 	_openiTunesAction->setStatusTip(tr("Open iTunes Library file"));
 	connect(_openiTunesAction, SIGNAL(triggered()), this, SLOT(openiTunesLibrary()));
 
-	_openPreferencesAction = new QAction(QIcon(":/images/Preferences.png"),
-					tr("&Preferences..."), this);
-	_openPreferencesAction->setShortcut(tr("Ctrl+P"));
-	_openPreferencesAction->setStatusTip(tr("Open Preferences"));
-	connect(_openPreferencesAction, SIGNAL(triggered()), this, SLOT(openPreferences()));
-
-	_openXmlAction = new QAction(tr("Open Mar&Xml Library..."), this);
-	_openXmlAction->setShortcut(tr("Ctrl+X"));
-	connect(_openXmlAction, SIGNAL(triggered()), this, SLOT(openMarXmlLibrary()));
-	
-	_openCsvAction = new QAction(tr("&Open MarC&sv Library..."), this);
-	_openCsvAction->setShortcut(tr("Ctrl+s"));
-	connect(_openCsvAction, SIGNAL(triggered()), this, SLOT(openMarCsvLibrary()));
-
 	_exitAction = new QAction(tr("E&xit"), this);
 	_exitAction->setShortcut(tr("Ctrl+Q"));
 	connect(_exitAction, SIGNAL(triggered()), this, SLOT(close()));
@@ -318,12 +250,11 @@ void MainWindow::createActions() {
 	_trainingAction->setStatusTip(tr("Train the grid using the defined training tracks"));
 	connect(_trainingAction, SIGNAL(triggered()), _display, SLOT(train()));
 
+	_initAction = new QAction(QIcon(":/images/init.png"), tr("&Initlize"), this);
+	connect(_initAction, SIGNAL(triggered()), _display, SLOT(init()));
+
 	_aboutAction = new QAction(tr("&About"), this);
 	connect(_aboutAction, SIGNAL(triggered()), this, SLOT(about()));
-
-	_saveAction = new QAction(tr("&Save"), this);
-	_saveAction->setShortcut(tr("Ctrl+S"));
-	connect(_saveAction, SIGNAL(triggered()), this, SLOT(saveiTunesLibrary()));
 
 	_saveGridAction = new QAction(tr("&Save Grid"), this);
 	connect(_saveGridAction, SIGNAL(triggered()), this, SLOT(saveCurrentGrid()) );
@@ -335,9 +266,6 @@ void MainWindow::createActions() {
 
 	_cancelAction = new QAction(tr("&Cancel Action"), this);
 	connect(_cancelAction, SIGNAL(triggered()), this, SLOT(cancelButton()));
-
-	_initAction = new QAction(tr("&Initlize Grid"), this);
-	connect(_initAction, SIGNAL(triggered()), _display, SLOT(init()));
 	
 	_normHashAction = new QAction(tr("Open Saved Hash"), this);
 	connect(_normHashAction, SIGNAL(triggered()), _display, SLOT(hashLoad()));
@@ -350,6 +278,9 @@ void MainWindow::createActions() {
 
 	_resetButtonAction = new QAction (tr("&Reset"), this);
 	connect (_resetButtonAction, SIGNAL(triggered()), this, SLOT(resetButtonPressed()));
+	
+	_optionsDialogAction = new QAction(tr("&Options"), this); 
+	connect(_optionsDialogAction, SIGNAL(triggered()), this, SLOT(optionsDialogTriggered()));
 }
 
 void MainWindow::createMenus() {
@@ -371,8 +302,6 @@ void MainWindow::createMenus() {
 
 	_openMenu = new QMenu(tr("Open..."));
 	_openMenu->addAction(_openiTunesAction);
-	_openMenu->addAction(_openXmlAction);
-	_openMenu->addAction(_openCsvAction);
 	_openMenu->addAction(_loadGridAction);
 	_openMenu->addAction(_normHashAction);
 
@@ -380,10 +309,14 @@ void MainWindow::createMenus() {
 	QAction *openAction = _fileMenu->addAction(tr("&Open..."));
 	openAction->setMenu(_openMenu);	
 	
-	_fileMenu->addAction(_saveAction);
 	_fileMenu->addAction(_saveGridAction);
-	_fileMenu->addAction(_playModeAction);
+	_fileMenu->addSeparator();
 	_fileMenu->addAction(_exitAction);
+
+	_viewMenu = menuBar()->addMenu(tr("&View"));
+	_viewMenu->addAction(_playModeAction);
+	_viewMenu->addAction(_fullScreenAction);
+	_viewMenu->addAction(_colourMapMode);
 	
 	_debugMenu = menuBar()->addMenu(tr("&Debug"));
 	_debugMenu->addAction(_coutAction);
@@ -412,24 +345,20 @@ void MainWindow::createToolbars() {
 	_toolbar = addToolBar(tr("Tools"));
 	_toolbar->addAction(_openiTunesAction);
 	_toolbar->addSeparator();
-	_toolbar->addAction(_openPreferencesAction);
-	_toolbar->addSeparator();
 	_toolbar->addAction(_extractAction);
 	_toolbar->addAction(_trainingAction);
 	_toolbar->addAction(_predictAction);
-	_toolbar->addSeparator();
-	_toolbar->addAction(_cancelAction);
-	_toolbar->addSeparator();
 	_toolbar->addAction(_initAction);
 	_toolbar->addSeparator();
-	_toolbar->addAction(_fullScreenAction);
+	_toolbar->addAction(_resetButtonAction);
 	_toolbar->addSeparator();
-	_toolbar->addAction(_colourMapMode);
+	_toolbar->addAction(_cancelAction);
 	_toolbar->addSeparator();
 	_toolbar->addWidget(gridHeightWidget);
 	_toolbar->addWidget(gridWidthWidget);
 	_toolbar->addSeparator();
-	_toolbar->addAction(_resetButtonAction);
+	_toolbar->addAction(_optionsDialogAction);
+
 
 	//TODO: CLEANUP
 	connect(gridWidth, SIGNAL(textChanged(QString)), _display, SLOT(setXGridSize(QString)));

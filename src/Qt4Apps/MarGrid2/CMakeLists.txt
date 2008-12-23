@@ -27,6 +27,7 @@ set(APP_SOURCES
 	Widgets/GridDisplay.cpp
 	Widgets/ColourMapDisplay.cpp
 	Widgets/SquareRenderArea.cpp
+	Widgets/OptionsDialog.cpp
 	main.cpp
 )
 
@@ -61,6 +62,7 @@ set(APP_HEADERS
 	Widgets/GridDisplay.h
 	Widgets/ColourMapDisplay.h
 	Widgets/SquareRenderArea.h
+	Widgets/OptionsDialog.h
 	MainWindow.h
 )
 

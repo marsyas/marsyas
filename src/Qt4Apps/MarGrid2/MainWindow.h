@@ -4,12 +4,14 @@
 #include <QtGui>
 #include <QIcon>
 #include <QMainWindow>
+#include <QInputDialog>
 #include <QDebug>
 #include <QLineEdit>
 #include <QSizePolicy>
 #include <QLabel>
 #include <QWidget>
 #include <QMessageBox>
+
 
 #include "Interface/MyDisplay.h"
 #include "Interface/Parser.h"
@@ -27,6 +29,7 @@
 #include "Widgets/Playlist.h"
 #include "Widgets/GridDisplay.h"
 #include "Widgets/ColourMapDisplay.h"
+#include "Widgets/OptionsDialog.h"
 
 class MainWindow : public QMainWindow
 {
@@ -44,24 +47,22 @@ signals:
 	void cancelButtonSignal();
 	void fullScreenModeOff();
 	void resetGrid();
+	void alphaDecayChanged();
 
-private slots:  
-	void openiTunesLibrary();
-	void openMarXmlLibrary();
-	void openMarCsvLibrary();
-	void updateCurrentlyPlaying(MusicTrack *);
-	void about();
-	void display();
-	void openPreferences();
-	void saveiTunesLibrary();
-	void openSavedGrid();
-	void saveCurrentGrid();
-	void changedPlayMode();
-	void cancelButton();
-	void openDefaultiTunes(); //REMOVE ME FOR REAL RELEASE, ASSUMES LOCATION OF iTUNES XML
-	void fullScreenMode(bool mode);
-	void keyReleaseEvent(QKeyEvent *);
-	void resetButtonPressed();
+	private slots:  
+		void openiTunesLibrary();
+		void updateCurrentlyPlaying(MusicTrack *);
+		void about();
+		void display();
+		void openSavedGrid();
+		void saveCurrentGrid();
+		void changedPlayMode();
+		void cancelButton();
+		void openDefaultiTunes();
+		void fullScreenMode(bool mode);
+		void keyReleaseEvent(QKeyEvent *);
+		void resetButtonPressed();
+		void optionsDialogTriggered();
 
 private:
 	void createActions();
@@ -78,18 +79,16 @@ private:
 	ColourMapDisplay *_colourMapDisplay;
 
 	//Dialogs
-	PreferencesDialog *_preferencesDialog;
 
 	QMenu *_fileMenu;
 	QMenu *_openMenu;
 	QMenu *_debugMenu;
+	QMenu *_viewMenu;
 	QMenu *_helpMenu;
 
 	QToolBar *_toolbar;
 
 	QAction *_openiTunesAction;
-	QAction *_openXmlAction;
-	QAction *_openCsvAction;
 	QAction *_coutAction;
 	QAction *_exitAction;
 	QAction *_aboutAction;
@@ -97,7 +96,6 @@ private:
 	QAction *_predictAction;
 	QAction *_trainingAction;
 	QAction *_openPreferencesAction;
-	QAction *_saveAction;
 	QAction *_saveGridAction;
 	QAction *_loadGridAction;
 	QAction *_playModeAction;
@@ -107,12 +105,13 @@ private:
 	QAction *_fullScreenAction;
 	QAction *_colourMapMode;
 	QAction *_resetButtonAction;
+	QAction *_optionsDialogAction;
 
-		QLabel* gridHeightLabel;
-		QLabel* gridWidthLabel;
+	QLabel* gridHeightLabel;
+	QLabel* gridWidthLabel;
 
-		QLineEdit* gridWidth;
-		QLineEdit* gridHeight;
+	QLineEdit* gridWidth;
+	QLineEdit* gridHeight;
 
 	MusicCollection *_library;
 	bool isFullScreenMouse;

@@ -81,17 +81,35 @@ public:
 	void setPlaylist(std::string playlist);
 	void addInitFile(QString fileName, int x, int y);
 	void setContinuous(bool value);
-	bool isContinuous() const {return continuous_; }
+	bool isContinuous()  {return continuous_; }
 	int getGridCounterSizes(int index);
 	int getGridCounter(int index);
 	int getCurrentIndex();
 	QList<std::string> getInitFiles();
 	int * getDensity(int index);
-	int getHeight() const { return som_height; }
-	int getWidth() const { return som_width; }
-	int getXPos() const { return _gridX; }
-	int getYPos() const { return _gridY; }
+	int getHeight()  { return som_height; }
+	int getWidth()  { return som_width; }
+	int getXPos()  { return _gridX; }
+	int getYPos()  { return _gridY; }
 	int getCellSize(int winSize);
+
+	void set_init_alpha(double input) { init_alpha_ = input; }
+	void set_init_neighbourhood(double input){init_neighbourhood_ = input;}
+	void set_init_std_factor(double input){init_std_factor_ = input;}
+	void set_init_iterations(int input){init_iterations_ = input;}
+	void set_train_alpha(double input){train_alpha_ = input;}
+	void set_train_neighbourhood(double input){train_neighbourhood_ = input;}
+	void set_train_std_factor(double input){train_std_factor_ = input;}
+	void set_train_iterations(int input){train_iterations_ = input;}
+
+	double get_init_alpha()  {return init_alpha_;}
+	double get_init_neighbourhood()  { return init_neighbourhood_;}
+	double get_init_std_factor()  { return init_std_factor_;}
+	int get_init_iterations()  { return init_iterations_;}
+	double get_train_alpha()  { return train_alpha_;}
+	double get_train_neighbourhood()  { return train_neighbourhood_;}
+	double get_train_std_factor()  { return train_std_factor_;}
+	int get_train_iterations()  { return train_iterations_;}
 
 	public slots: 
 		void setExtractMode();
@@ -141,6 +159,17 @@ private:
 	int oldPlayingIndex;
 	int numFeatures;
 	int **genreDensity;
+
+	double init_alpha_;
+	double init_neighbourhood_;
+    double init_std_factor_;
+	int init_iterations_;
+
+    double train_alpha_;
+	double train_neighbourhood_;
+	double train_std_factor_;
+    int train_iterations_;
+
 	bool initAudio_;
 	bool continuous_;
 	bool cancel_;

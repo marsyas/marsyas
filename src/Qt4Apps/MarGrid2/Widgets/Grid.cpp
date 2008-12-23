@@ -10,6 +10,17 @@ Grid::Grid()
 	oldHeight_ = som_height;
 	_gridX = 0;
 	_gridY = 0;
+
+	init_alpha_ = 0.98;
+	init_neighbourhood_ = 0.97;
+    init_std_factor_ = 0.17;
+	init_iterations_ = 10;
+
+    train_alpha_ = 0.98;
+    train_neighbourhood_ = 0.97;
+	train_std_factor_ = 0.17;
+    train_iterations_ = 100;
+
 	initAudio_ = false;
 	continuous_ = false;
 	cancel_ = false;
@@ -189,8 +200,6 @@ void Grid::setupNetworks() {
 
 	total_->linkctrl("mrs_natural/label",
 		"Annotator/ann/mrs_natural/label");
-
-
 
 	total_->updctrl("mrs_natural/inSamples", 512);
 	total_->updctrl("mrs_real/repetitions", 1.0);
@@ -424,7 +433,6 @@ void Grid::train(bool skipTraining) {
 			}
 			else
 			{
-				cout << "not init" << endl;
 				// Create netork for training the self-organizing map 
 				som_ = mng.create("SOM", "som");  
 				som_->updctrl("mrs_natural/grid_width", som_width);
@@ -433,6 +441,9 @@ void Grid::train(bool skipTraining) {
 				som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
 			}
 
+			som_->updctrl("mrs_real/alpha_decay_train", train_alpha_);
+			som_->updctrl("mrs_real/neighbourhood_decay_train", train_neighbourhood_);
+			som_->updctrl("mrs_real/std_factor_train", train_std_factor_);
 			som_->updctrl("mrs_string/mode", "train");
 
 
@@ -449,7 +460,7 @@ void Grid::train(bool skipTraining) {
 			cout << "Starting training" << endl;
 
 			bool done_ = false;
-			for (int i=0; i < 500; i ++) 
+			for (int i=0; i < train_iterations_; i ++) 
 			{
 				if(cancel_)
 				{
@@ -506,9 +517,7 @@ void Grid::predict() {
 
 
 		cout << "Starting prediction" << endl;
-		som_->updctrl("mrs_string/mode", "predict");  
-
-
+		som_->updctrl("mrs_string/mode", "predict"); 
 
 		Collection l1;
 		l1.read("music.mf");
@@ -653,9 +662,11 @@ void Grid::init()
 		som_->updctrl("mrs_natural/grid_height", som_height);
 		som_->updctrl("mrs_natural/inSamples", init_train_fmatrix->getCols());
 
-
 		som_->updctrl("mrs_natural/inObservations", init_train_fmatrix->getRows());  
 		som_->updctrl("mrs_string/mode", "init");
+		som_->updctrl("mrs_real/alpha_decay_init", init_alpha_);
+		som_->updctrl("mrs_real/neighbourhood_decay_init", init_neighbourhood_);
+		som_->updctrl("mrs_real/std_factor_init", init_std_factor_);
 
 
 
@@ -666,7 +677,7 @@ void Grid::init()
 
 		// loop this for more init runs
 
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < init_iterations_; i++)
 		{
 			init_train_fmatrix->shuffle();
 			som_->process(*init_train_fmatrix, som_fmatrixres);
@@ -812,6 +823,7 @@ void Grid::removeInitFile()
 	while(initFileLocations[k].size() > 0)
 		initFileLocations[k].removeFirst();
 }
+
 
 void
 Grid::setXGridSize(QString size)

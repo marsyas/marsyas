@@ -9,7 +9,7 @@
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-** GNU General Public License for more details.
+3** GNU General Public License for more details.
 ** 
 ** You should have received a copy of the GNU General Public License
 ** along with this program; if not, write to the Free Software 
@@ -75,6 +75,24 @@ SOM::addControls()
   
 	addctrl("mrs_real/neigh_std", 1.0);
 	setctrlState("mrs_real/neigh_std", true);  
+
+	addctrl("mrs_real/alpha_decay_init", ALPHA_DEGRADE);
+	setctrlState("mrs_real/alpha_decay_init", true); 
+
+	addctrl("mrs_real/alpha_decay_train", ALPHA_DEGRADE);
+	setctrlState("mrs_real/alpha_decay_train", true); 
+
+	addctrl("mrs_real/neighbourhood_decay_init", NEIGHBOURHOOD_DEGRADE);
+	setctrlState("mrs_real/neighbourhood_decay_inity", true);  
+
+	addctrl("mrs_real/neighbourhood_decay_train", NEIGHBOURHOOD_DEGRADE);
+	setctrlState("mrs_real/neighbourhood_decay_train", true);  
+
+	addctrl("mrs_real/std_factor_train", 0.17);
+	setctrlState("mrs_real/std_factor_train", true);
+	
+	addctrl("mrs_real/std_factor_init", 0.17);
+	setctrlState("mrs_real/std_factor_init", true);
 }
 
  
@@ -94,7 +112,8 @@ SOM::init_grid_map()
 			}
 	
 	alpha_ = getctrl("mrs_real/alpha")->to<mrs_real>();
-	neigh_std_ = ((0.5*(grid_width_+grid_height_)) /  4.0);
+	mrs_real std_ = getctrl("mrs_real/std_factor_train")->to<mrs_real>();
+	neigh_std_ = ((0.5*(grid_width_+grid_height_)) * std_);
 	
 }
 
@@ -224,6 +243,9 @@ SOM::myProcess(realvec& in, realvec& out)
 		mrs_real dx;
 		mrs_real dy;
 		mrs_real adj;
+		mrs_real std_ = getctrl("mrs_real/std_factor_train")->to<mrs_real>();
+		neigh_std_ = ((0.5*(grid_width_+grid_height_)) * std_);
+
 		for (t=0; t < inSamples_; t++) 
 		{
 			find_grid_location(in, t);
@@ -252,14 +274,17 @@ SOM::myProcess(realvec& in, realvec& out)
 				}
 		}
 		
-		alpha_ *= ALPHA_DEGRADE;
-		neigh_std_ *= NEIGHBOURHOOD_DEGRADE;	  
+		alpha_ *= getctrl("mrs_real/alpha_decay_train")->to<mrs_real>();
+		neigh_std_ *= getctrl("mrs_real/neighbourhood_decay_train")->to<mrs_real>();	  
 	}
 	if (mode == "init")
 	{
 		mrs_real dx;
 		mrs_real dy;
 		mrs_real adj;
+
+		mrs_real std_ = getctrl("mrs_real/std_factor_init")->to<mrs_real>();
+		neigh_std_ = ((0.5*(grid_width_+grid_height_)) * std_);
 
 		for (t=0; t < inSamples_; t++) 
 		{
@@ -306,8 +331,8 @@ SOM::myProcess(realvec& in, realvec& out)
 					cout << "x: " << x << " y: " << y << endl;
 			}
 		}
-		alpha_ *=  ALPHA_DEGRADE;
-		neigh_std_ *= NEIGHBOURHOOD_DEGRADE;	
+		alpha_ *= getctrl("mrs_real/alpha_decay_init")->to<mrs_real>();
+		neigh_std_ *= getctrl("mrs_real/neighbourhood_decay_init")->to<mrs_real>();	  	
 
 	}
 	if (mode == "predict")
