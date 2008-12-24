@@ -1,0 +1,19 @@
+Major Ideas:
+
+MVC-ish design with Grid as the Model, GridDisplay as the Controller and MainWindow as the View. In reality the view portion is split between GridDisplay and MainWindow.
+Grid runs on its own thread to leave the GUI free to recieve commands.
+
+Four main links to Marsyas, the extraction network, the normalization network, the playback network and the Self Organized Map(SOM).
+
+Note we throw away a lot of the information we bring in from iTunes, this was done to get the code up quickly but all the hooks were left in
+to allow for easy access to the data at a later date.
+
+After extracting features from a playlist we normalize them then save the results to the disk. This allows the files to be loaded quickly by skipping extraction.
+This presents a problem however as files cannot be added after loading as they could (and probably do) fall outside the previsously established min and max of the
+normalization network.
+
+Most of the junk code left over from the orgins of the project has been removed from the GUI; however, this code is left in SVN as some of it looks at least
+slightly useful for extra freatures.
+
+The program itself is fairly verbose about what it's doing, but this info all goes to the console. If you need to speed an aspect of the program up, try turing off some of the couts.
+Loading the iTunes library benifits greatly from this.

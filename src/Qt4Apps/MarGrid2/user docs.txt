@@ -1,0 +1,38 @@
+Requirements: iTunes installed + Marsyas, QT and assorted others(madlib for mp3, etc)
+
+Instructions for Use:
+
+See MarGrid2-figure1.png
+
+1)Open your iTunes library
+
+2)Set up Self Organized Map parameters and grid size (!!! ADVANCED !!!)
+
+3) Choose a playlist
+
+4) Press Extract
+
+5) Drop tracks to set up files for initilization  (--- OPTIONAL ---) See MarGrid2-figure2.png
+	5.1) Press Init
+	
+6) Press Train
+
+7) Press Predict
+
+You have now mapped the selected playlist to the grid. You can save the grid state to be loaded later (skipping the earlier steps) from the file menu.
+
+There are 3 playback modes:
+
+1 - Normal (Default): Mouse over a square, then click to start playing music from that square. Empty squares will stop playback and clicking multiple times in the same square will 
+	cycle through that square's songs.
+	
+2 - Continuous: Moving over a sqaure will begin playback. Clicking on a square will cycle through that square's songs.
+
+3 - Full Screen: Behaves like continious only the mouse is mapped to the grid no matter where it is on the screen.
+
+There are also 2 view modes:
+
+1 - Density (Default): A square is shaded in greyscale (from black to white) depending on the number of songs in the square as compared to the rest of the grid. Empty squares are red
+
+2 - Colour Map: A square is subdivided into smaller squares based on the # of songs from each genre (listed in the lower right with their associated colour). Empty squares are black.
+

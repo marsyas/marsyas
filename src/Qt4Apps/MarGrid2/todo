@@ -1,0 +1,11 @@
+In no perticular order:
+
+Crash proofing - some done, some actions still unstable
+Add more on screen instructions - options menu, status bar updates, tool tips
+Progress bar
+Fixed size for the grid resize widget
+Match to style guidelines - code didn't before so I continued the style of each file for easier reading on a file to file basis
+Check cross compatibilty with OSX and X11
+Find a better way to cache the features between extractions so that a file is only extracted once
+Have the four main functions (extract, train, init, predict) be able to be started from saved data (ie the saved feature hash curently)
+Support for colouring other then the genres set. - iTunes data is a good start
