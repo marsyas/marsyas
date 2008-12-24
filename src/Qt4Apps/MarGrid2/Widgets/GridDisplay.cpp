@@ -122,22 +122,22 @@ void GridDisplay::fullScreenMouse()
 	}
 	emit fullScreenMode(fullScreenMouseOn);
 	setMouseTracking(!fullScreenMouseOn);
-	
+
 }
 void GridDisplay::fullScreenMouseMove()
 {
 	QRect screenSize = (QApplication::desktop())->screenGeometry();
-	
+
 	// map mouse position on screen to a grid location
 	int gridX = mouseCursor->pos().x() / (screenSize.width() / (grid_->getWidth() - 1));
 	int gridY = mouseCursor->pos().y() / (screenSize.height() / (grid_->getHeight() - 1));
-	
+
 	updateXYPosition(gridX, gridY);
 	if(grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos()  ) 
 	{
 		playNextTrack();
 		oldXPos = grid_->getXPos();
-	    oldYPos = grid_->getYPos();
+		oldYPos = grid_->getYPos();
 		repaint();
 	}
 }
@@ -220,7 +220,7 @@ void GridDisplay::playNextTrack()
 		cout << "Currently Playing: " + playlist[counter] << endl;
 		cout << "Playlist: " << endl;
 		for(int i = 0; i < counterSize; i++ ) {
-		cout << playlist[i] << endl;
+			cout << playlist[i] << endl;
 		}
 		grid_->playTrack(counter);
 	} else
@@ -287,8 +287,8 @@ void GridDisplay::mousePressEvent(QMouseEvent *event)
 			int k = grid_->getYPos() * grid_->getHeight() + grid_->getXPos();
 			if(squareHasInitialized[k])
 			{
-			  squareHasInitialized[k] = false;
-			  grid_->removeInitFile();
+				squareHasInitialized[k] = false;
+				grid_->removeInitFile();
 			}			
 		}
 	}
@@ -309,7 +309,7 @@ void GridDisplay::mouseMoveEvent(QMouseEvent *event)
 	{
 		playNextTrack();
 		oldXPos = grid_->getXPos();
-	    oldYPos = grid_->getYPos();
+		oldYPos = grid_->getYPos();
 	}
 	emit updateColourMap(grid_->getDensity(grid_->getCurrentIndex()), 10);
 	repaint();
@@ -390,8 +390,9 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 			QRect	 myr(i*_cellSize,j*_cellSize,_cellSize,_cellSize);
 			QLine	 myl1(i*_cellSize,j*_cellSize, i*_cellSize, j*_cellSize + _cellSize);
 			QLine	 myl2(i*_cellSize,j*_cellSize, i*_cellSize+_cellSize, j*_cellSize );
-			
-			if ( grid_->getFilesAt(k).size() == 0 ) {
+
+			if ( grid_->getFilesAt(k).size() == 0 ) 
+			{
 				QColor color;
 				if(colourMapMode_)
 				{
@@ -420,55 +421,61 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 					* 8 - rock - ORANGE
 					* 9 - pop - Qt::grey
 					*/
-					int numSongs = -1;
-					int maxIndex = -1;
 					int * genreDensity = grid_->getDensity(k);
+					double *squarePaintSize = new double[10];
+					int startHeight = j*_cellSize;
+
 					for(int m = 0; m < 10; m++)
 					{
-						if( genreDensity[m] > numSongs)
+						squarePaintSize[m] = genreDensity[m] /  (1.0 * grid_->getFilesAt(k).size() );
+					}
+
+					// 10 is the number of genres
+					for(int l = 0; l < 10; l++)
+					{
+						QColor * color;
+						switch(l)
 						{
-							maxIndex = m;
-							numSongs = genreDensity[m];
+						case 0:
+							color = new QColor(Qt::blue);
+							break;
+						case 1:
+							color = new QColor(Qt::darkRed);
+							break;
+						case 2:
+							color = new QColor(Qt::green);
+							break;
+						case 3:
+							color = new QColor(PURPLE);
+							break;
+						case 4:
+							color = new QColor(Qt::yellow);
+							break;
+						case 5:
+							color = new QColor(Qt::darkGreen);
+							break;
+						case 6:
+							color = new QColor(BROWN);
+							break;
+						case 7:
+							color = new QColor(PINK);
+							break;
+						case 8:
+							color = new QColor(ORANGE);
+							break;
+						case 9:
+							color = new QColor(Qt::gray);
+							break;
+						}
+						if(grid_->getFilesAt(k).size() > 0)
+						{
+							painter.setBrush(*color);
+							painter.setPen(Qt::NoPen);
+							QRect rect(i*_cellSize, startHeight, _cellSize, squarePaintSize[l] * _cellSize);
+							painter.drawRect(rect);
+							startHeight += squarePaintSize[l] *  _cellSize;
 						}
 					}
-					QColor * color;
-					switch(maxIndex)
-					{
-					case 0:
-						color = new QColor(Qt::blue);
-						break;
-					case 1:
-						color = new QColor(Qt::darkRed);
-						break;
-					case 2:
-						color = new QColor(Qt::green);
-						break;
-					case 3:
-						color = new QColor(PURPLE);
-						break;
-					case 4:
-						color = new QColor(Qt::yellow);
-						break;
-					case 5:
-						color = new QColor(Qt::darkGreen);
-						break;
-					case 6:
-						color = new QColor(BROWN);
-						break;
-					case 7:
-						color = new QColor(PINK);
-						break;
-					case 8:
-						color = new QColor(ORANGE);
-						break;
-					case 9:
-						color = new QColor(Qt::gray);
-						break;
-					default:
-						cerr << "Problem with colour select" << endl;
-					}
-					painter.setBrush(*color);
-
 
 				}
 				else
@@ -478,15 +485,17 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 					painter.setBrush(color);
 				}
 			}
-			painter.setPen(Qt::NoPen);
-			painter.drawRect(myr);
 
 			if(colourMapMode_)
 			{
-				painter.setPen(Qt::red);
+				painter.setPen(Qt::white);
+				if(grid_->getFilesAt(k).size() == 0)
+				painter.drawRect(myr);
 			}
 			else
 			{
+				painter.setPen(Qt::NoPen);
+				painter.drawRect(myr);
 				painter.setPen(Qt::black);
 			}
 			painter.drawLine(myl1);
