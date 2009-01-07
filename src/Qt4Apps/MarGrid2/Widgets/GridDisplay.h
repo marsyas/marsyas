@@ -60,6 +60,9 @@ public:
 	int getHeight() const { return grid_->getHeight(); }
 	int getWidth() const { return grid_->getWidth(); }
 
+    void keyMove(QKeyEvent *keyEvent);
+										 
+
 	public slots: 
 		void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
 		void midiPlaylistEvent(bool next);

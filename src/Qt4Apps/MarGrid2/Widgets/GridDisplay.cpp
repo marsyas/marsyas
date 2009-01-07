@@ -142,6 +142,89 @@ void GridDisplay::fullScreenMouseMove()
 	}
 }
 
+void GridDisplay::keyMove(QKeyEvent *keyEvent)
+{
+
+  int gridX = grid_->getXPos();
+  int gridY = grid_->getYPos();
+
+  cout << "key=" << keyEvent->key() << endl;
+
+  // Up key pressed
+  if (keyEvent->key() == Qt::Key_Up) {
+	gridY -= 1;
+	if (gridY < 0) {
+	  gridY = grid_->getHeight() - 1;
+	}
+  }
+
+  // Down key pressed
+  if (keyEvent->key() == Qt::Key_Down) {
+	gridY += 1;
+	if (gridY > grid_->getHeight() - 1) {
+	  gridY = 0;
+	}
+  }
+
+  // Left key pressed
+  if (keyEvent->key() == Qt::Key_Left) {
+    gridX -= 1;
+    if (gridX < 0) {
+      gridX = grid_->getHeight() - 1;
+    }
+  }
+
+  // Right key pressed
+  if (keyEvent->key() == Qt::Key_Right) {
+    gridX += 1;                         
+    if (gridX > grid_->getHeight() - 1) {
+      gridX = 0;
+	}
+  }
+
+  // "q" key pressed - Go to the top left grid point
+  if (keyEvent->key() == 81) {
+	gridX = 0;
+	gridY = 0;
+  }
+
+  // "w" key pressed - Go to the top right grid point
+  if (keyEvent->key() == 87) {
+	gridX = grid_->getWidth() - 1;
+	gridY = 0;
+  }
+
+  // "a" key pressed - Go to the bottom left grid point
+  if (keyEvent->key() == 65) {
+	gridX = 0;
+	gridY = grid_->getHeight() - 1;
+  }
+
+  // "s" key pressed - Go to the bottom right grid point
+  if (keyEvent->key() == 83) {
+	gridX = grid_->getWidth() - 1;;
+	gridY = grid_->getHeight() - 1;
+  }
+
+  // "x" key pressed - Go to the center grid point
+  if (keyEvent->key() == 88) {
+	gridX = (grid_->getWidth() - 1) / 2;
+	gridY = (grid_->getHeight() - 1) / 2;
+  }
+
+
+
+  updateXYPosition(gridX, gridY);
+
+  playNextTrack();
+  oldXPos = grid_->getXPos();
+  oldYPos = grid_->getYPos();
+  repaint();
+  
+
+
+}
+
 void GridDisplay::colourMapMode()
 {
 	colourMapMode_ = !colourMapMode_;

@@ -9,7 +9,6 @@ MainWindow::MainWindow(Grid* grid_) {
 	createMenus();
 	createToolbars();
 
-
 	// _midi = new MidiListener();
 	openDefaultiTunes();
 	isFullScreenMouse = false;
@@ -366,14 +365,27 @@ void MainWindow::createToolbars() {
 
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
+{
+
+  _display->keyMove(keyEvent);
+
+  if (keyEvent->key() == Qt::Key_Return) {
+ 	if(isFullScreenMouse) {
+	  cout << "Turning off fullscreen mode" << endl;
+	  emit fullScreenMode(false);
+	  fullScreenMode(false);
+	} else {
+	  cout << "Turning on fullscreen mode" << endl;
+	  emit fullScreenMode(true);
+	  fullScreenMode(true);
+	}
+  }
+
+}
+
 void MainWindow::keyReleaseEvent(QKeyEvent *keyEvent)
 {
-	if(isFullScreenMouse) 
-	{
-	cout << "in" << endl;
-	emit fullScreenModeOff();
-	fullScreenMode(false);
-	}
 }
 
 void MainWindow::resetButtonPressed()

@@ -60,6 +60,7 @@ signals:
 		void cancelButton();
 		void openDefaultiTunes();
 		void fullScreenMode(bool mode);
+		void keyPressEvent(QKeyEvent *);
 		void keyReleaseEvent(QKeyEvent *);
 		void resetButtonPressed();
 		void optionsDialogTriggered();
@@ -71,7 +72,7 @@ private:
 	void createMenus();
 
 	//Widgets
-	MyDisplay *_display;
+	GridDisplay *_display;
 	Grid *_dataGrid;
 	PlayBox *_playBox;
 	Playlist *_playlist;
