@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 //#define LOGGING_HEADER __func__ << "(" << __FILE__ << ":" << __LINE__ << ") "
 #define LOGGING_HEADER ""
@@ -36,4 +37,4 @@ private:
 	static int _level;
 };
 
-#endif LOGGER_H
+#endif /* LOGGER_H */

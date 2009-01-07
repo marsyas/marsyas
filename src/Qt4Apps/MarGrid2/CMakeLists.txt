@@ -55,7 +55,7 @@ set(APP_HEADERS
 	Parsers/iTunesXmlWriter.h
 	Widgets/Grid.h
 	Widgets/Keypad.h
-	Widgets/Playbox.h
+	Widgets/PlayBox.h
 	Widgets/Playlist.h
 	Widgets/PlaylistItem.h
 	Widgets/Tracklist.h
