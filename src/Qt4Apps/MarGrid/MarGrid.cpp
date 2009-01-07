@@ -42,6 +42,7 @@ MarGrid::MarGrid(QWidget *parent)
   som_height = 12;
   initAudio_ = false;
   continuous_ = false;
+  blackwhite_ = false;
   
   winWidth = cell_size * som_width;
   winHeight = cell_size * som_height;
@@ -70,6 +71,13 @@ void
 MarGrid::setPlaybackMode(bool continuous)
 {
 	continuous_ = continuous;
+}
+
+void 
+MarGrid::setBlackWhiteMode(bool blackwhite)
+{
+  blackwhite_ = blackwhite;
+  repaint();
 }
 
 
@@ -664,8 +672,12 @@ MarGrid::paintEvent(QPaintEvent *event)
 
 		// For grey scale colouring
 		if ( posFiles.size() > 0 ) {
+		  if (blackwhite_) {
+			painter.setBrush(QColor("#000000"));	  
+		  } else {
 			int color = 255 - int(posFiles.size() / float(maxDensity) * 255);
 			painter.setBrush( QColor(color, color, color) );
+		  }
 		} 
 		else 
 		{

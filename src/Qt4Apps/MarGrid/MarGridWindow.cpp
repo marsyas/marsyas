@@ -60,6 +60,7 @@ MarGridWindow::MarGridWindow()
   connect(this, SIGNAL(trainFile(QString)), margrid, SLOT(setupTrain(QString)));
   connect(this, SIGNAL(predictFile(QString)), margrid, SLOT(setupPredict(QString)));
   connect(this, SIGNAL(playbackMode(bool)), margrid, SLOT(setPlaybackMode(bool)));
+  connect(this, SIGNAL(blackwhiteMode(bool)), margrid, SLOT(setBlackWhiteMode(bool)));
   connect(this, SIGNAL(openPredictGridFile(QString)), margrid, SLOT(openPredictionGrid(QString)));
   connect(this, SIGNAL(savePredictGridFile(QString)), margrid, SLOT(savePredictionGrid(QString)));
 
@@ -117,6 +118,7 @@ MarGridWindow::createMenus()
   fileMenu->addAction(openPredictAct); 
   fileMenu->addAction(openTrainAct);
   fileMenu->addAction(playbackAct);
+  fileMenu->addAction(blackwhiteAct);
   fileMenu->addSeparator();
   fileMenu->addAction(openPredictGridAct);
   fileMenu->addAction(savePerdictGridAct);
@@ -204,6 +206,11 @@ MarGridWindow::createActions()
   playbackAct->setStatusTip(tr("Continuous Playback mode"));
   playbackAct->setCheckable(true);
   connect(playbackAct, SIGNAL(toggled(bool)), this, SIGNAL(playbackMode(bool)));
+
+  blackwhiteAct = new QAction(tr("&Display as Black and White only"), this);
+  blackwhiteAct->setStatusTip(tr("Display as Black and White only"));
+  blackwhiteAct->setCheckable(true);
+  connect(blackwhiteAct, SIGNAL(toggled(bool)), this, SIGNAL(blackwhiteMode(bool)));
 }
 
 

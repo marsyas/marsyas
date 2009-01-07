@@ -61,7 +61,9 @@ public slots:
 		void openPredictGridFile(QString);
 		void savePredictGridFile(QString);
 		void playbackMode(bool);
+		void blackwhiteMode(bool);
 		void gridSize(bool, int);
+
 		
 private:
 		void createMenus();
@@ -74,6 +76,7 @@ private:
 		QAction* openPredictAct;
 		QAction* aboutAct;
 		QAction* playbackAct;
+		QAction* blackwhiteAct;
 		QAction* openPredictGridAct;
 		QAction* savePerdictGridAct;
 		

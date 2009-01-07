@@ -53,6 +53,7 @@ public slots:
 		void setupTrain(QString fname);
 		void setupPredict(QString fname);
 		void setPlaybackMode(bool continuous);
+		void setBlackWhiteMode(bool continuous);
 		void openPredictionGrid(QString fname);
 		void savePredictionGrid(QString fname);
 	    void setXGridSize(QString size);
@@ -106,6 +107,7 @@ private:
   int grid_x;
   int grid_y;
   bool continuous_;
+  bool blackwhite_;
 		
 
   Marsyas::realvec norm_som_fmatrix;
