@@ -350,7 +350,7 @@ MP3FileSource::getHeader(string filename)
   // update some controls 
   setctrl("mrs_real/duration", duration_);
   setctrl("mrs_real/israte", sampleRate); 
-  setctrl("mrs_natural/size", size_ / 2);
+  setctrl("mrs_natural/size", size_ );
   setctrl("mrs_natural/bitRate", bitRate);
 
   update();
