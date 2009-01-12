@@ -1,6 +1,0 @@
-# lmartins@inescporto.pt
-# BASEDIR points to the directory where the marsyas distribution is,
-# allowing to use absolute paths in .pro and .pri files in the distro.
-
-win32:BASEDIR = $$system(cd)
-!win32:BASEDIR = $$system(pwd)

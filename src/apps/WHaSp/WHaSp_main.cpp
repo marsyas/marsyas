@@ -5,7 +5,7 @@
 #include "SoundFileSink.h"
 #include "SoundFileSource.h"
 #include "Gain.h"
-#include "Messager.h"
+//#include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
 #include "peakView.h"
@@ -61,7 +61,7 @@ mrs_real samplingFrequency_=1;
 
 bool microphone_ = false;
 bool analyse_ = false;
-mrs_natural synthetize_ = -1;
+mrs_natural synthetize_ = 0;//-1;
 
 CommandLineOptions cmd_options;
 
