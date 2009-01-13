@@ -50,7 +50,7 @@ messages to a log file or std output (i.e. screen).
 		static void mrsWarning(const std::ostringstream& oss);
 		static void mrsDiagnostic(const std::ostringstream& oss);
 		static void mrsDebug(const std::ostringstream& oss);
-		static void mrsAssert(char *strFile, unsigned uLine);
+		static void mrsAssert(const char *strFile, unsigned uLine);
 	};
 } //namespec Marsyas
 

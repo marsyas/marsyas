@@ -128,7 +128,7 @@ MrsLog::mrsDebug(const ostringstream& oss)
 }
 
 void 
-MrsLog::mrsAssert(char *strFile, unsigned uLine) 
+MrsLog::mrsAssert(const char *strFile, unsigned uLine) 
 {
 	fflush(NULL);
 	fprintf(stderr, "\nMARSYAS Assertion failed: %s, line %u\n", 
