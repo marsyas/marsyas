@@ -783,7 +783,8 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pitchPraat->addMarSystem(create("AutoCorrelation", "acr"));
 			pitchPraat->updctrl("AutoCorrelation/acr/mrs_natural/normalize", 1);
 			pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/octaveCost", 0.01); // 0.01
-			pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/voicingThreshold", 0.3);
+  			pitchPraat->updctrl("AutoCorrelation/acr/mrs_real/voicingThreshold", 0.3);
+			pitchPraat->linkctrl("mrs_real/voicingThreshold", "AutoCorrelation/acr/mrs_real/voicingThreshold");
 			pitchPraat->addMarSystem(create("Peaker", "pkr"));
 			pitchPraat->addMarSystem(create("MaxArgMax", "mxr"));
 			// should be adapted to the sampling frequency !!
