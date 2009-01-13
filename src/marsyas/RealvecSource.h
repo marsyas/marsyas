@@ -25,7 +25,22 @@ namespace Marsyas
 {
 /** 
     \class RealvecSource
-	\ingroup none
+	\ingroup IO
+
+	A RealvecSource takes a realvec and uses it as a source for your
+	MarSystem network.  It is similar to a SoundFileSource except that
+	as taking a sound file as the input, it takes a realvec that you
+	create as input.
+
+	It is very useful for getting numbers from external sources into
+	your Marsystems, for example when reading external files of data.
+
+	It is also very useful when writing tests for your Marsystems.
+	You can load up a realvec with data, and then run it through a
+	Marsystem to test it.
+
+	When you feed in a realvec, the rows turn into observations and
+	the columns turn into samples.
 
 */
 
