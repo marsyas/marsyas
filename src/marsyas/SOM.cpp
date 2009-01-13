@@ -83,7 +83,7 @@ SOM::addControls()
 	setctrlState("mrs_real/alpha_decay_train", true); 
 
 	addctrl("mrs_real/neighbourhood_decay_init", NEIGHBOURHOOD_DEGRADE);
-	setctrlState("mrs_real/neighbourhood_decay_inity", true);  
+	setctrlState("mrs_real/neighbourhood_decay_init", true);  
 
 	addctrl("mrs_real/neighbourhood_decay_train", NEIGHBOURHOOD_DEGRADE);
 	setctrlState("mrs_real/neighbourhood_decay_train", true);  
