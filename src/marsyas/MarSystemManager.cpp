@@ -141,6 +141,7 @@
 #include "CompExp.h"
 #include "MarSystemTemplateMedium.h"
 #include "PeakFeatureSelect.h"
+#include "SimilarityMatrix.h"
 #include "SelfSimilarityMatrix.h"
 #include "Metric.h"
 #include "HWPS.h"
@@ -312,7 +313,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("CompExp", new CompExp("compexppr"));
 	registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
 	registerPrototype("PeakFeatureSelect", new PeakFeatureSelect("pefeatselectpr"));
-	registerPrototype("SelfSimilarityMatrix", new SelfSimilarityMatrix("similaritymatrixpr"));
+	registerPrototype("SimilarityMatrix", new SimilarityMatrix("similaritymatrixpr"));
+	registerPrototype("SelfSimilarityMatrix", new SelfSimilarityMatrix("selfsimilaritymatrixpr"));
 	registerPrototype("Metric", new Metric("metricpr"));
 	registerPrototype("HWPS", new HWPS("hwpspr"));
 	registerPrototype("RBF", new RBF("rbfpr"));
