@@ -98,14 +98,12 @@ RealvecSource::myProcess(realvec& in, realvec& out)
 		{
 			for (t=0; t < onSamples_; t++)
 			{
-			  out(o,t) = data(o, count_);
-				count_++;
+ 			  out(o,t) = data(o,t);
 			}
-
 		}
 	}
 	else
-		setctrl("mrs_bool/done", true);  
+	  setctrl("mrs_bool/done", true);  
 
 	//out.dump();
 }
