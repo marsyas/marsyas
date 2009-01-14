@@ -181,7 +181,6 @@
 #include "MidiFileSynthSource.h"
 #include "PvMultiResolution.h" 
 #include "Gain.h"
-#include "Median.h"
 #include "Selector.h"
 //modifyHeader
 
@@ -350,7 +349,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PvMultiResolution", new PvMultiResolution("PvMultiResolution"));
 
 	registerPrototype("Gain", new Gain("gp"));
-	registerPrototype("Median", new Median("medianpr"));
 	registerPrototype("Selector", new Selector("selectorpr"));
 	//modifyRegister
 
