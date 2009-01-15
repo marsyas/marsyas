@@ -388,7 +388,10 @@ main(int argc, const char **argv)
 			else
 				path =Sfname.path();
 
-			fileName = path + "/" + Sfname.nameNoExt() + "_WHaSp_Syn.wav" ;
+			if (fileName == "MARSYAS_EMPTY") 
+			{
+				fileName = path + "/" + Sfname.nameNoExt() + "_WHaSp_Syn.wav" ;
+			}
 			filePeakName = path + "/" + Sfname.nameNoExt() + ".peak" ;
 			cout << "WHaSp " << Sfname.name() << endl; 
 
