@@ -85,7 +85,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
       obs += sizes_(i);
     }
   ctrl_onObservations_->setValue(obs, NOUPDATE);
-  ctrl_onSamples_->setValue(sizes_(0), NOUPDATE);
+  ctrl_onSamples_->setValue((mrs_natural)sizes_(0), NOUPDATE);
   ctrl_osrate_->setValue(ctrl_osrate_, NOUPDATE);
   ostringstream oss;
   for(o=0; o<ctrl_onObservations_->to<mrs_natural>(); o++)
