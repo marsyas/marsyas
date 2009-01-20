@@ -233,7 +233,8 @@ void Grid::extract() {
 
 		// !!! use itunes to generate the collection file rather then using a file
 		ofstream featureFile;
-		featureFile.open("music.mf");
+		featureFile.open("music.mf", std::ios::out | std::ios::binary);
+		//featureFile.open("music.mf");
 		_collection->generatePlayList(featureFile, playlist_.c_str());
 		extractAction("music.mf");
 	}	
@@ -280,7 +281,7 @@ void Grid::extractAction(std::string filename)
 		total_->updctrl("mrs_natural/cindex", index);
 
 		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-		cout << "Processed " << index << " files " << endl; 
+		cout << "Processed " << index + 1 << " files " << endl; 
 		cout << current  << " - ";
 		total_->process(som_in,som_res);
 
@@ -409,6 +410,7 @@ void Grid::train() {
 }
 
 void Grid::train(bool skipTraining) {
+	cout<<"********Grid::train init_: "<<init_<<endl;
 	if ( _collection->getNumTracks() > 0 ) {
 
 		// Read the feature matrix from file som_fmatrix.txt 
@@ -425,15 +427,18 @@ void Grid::train(bool skipTraining) {
 		{
 			if(init_) 
 			{
+			
 				ifstream iss1;
-				iss1.open("som.mpl");
+				iss1.open("som.mpl");		
 				som_ = mng.getMarSystem(iss1);
-				iss1.close();
+				iss1.close();		
 				som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
+				
 			}
 			else
 			{
 				// Create netork for training the self-organizing map 
+				
 				som_ = mng.create("SOM", "som");  
 				som_->updctrl("mrs_natural/grid_width", som_width);
 				som_->updctrl("mrs_natural/grid_height", som_height);
@@ -456,8 +461,8 @@ void Grid::train(bool skipTraining) {
 				oss1 << *som_;
 				oss1.close();
 
-
-			cout << "Starting training" << endl;
+		cout << "Starting training" << endl;
+			
 
 			bool done_ = false;
 			for (int i=0; i < train_iterations_; i ++) 
@@ -471,6 +476,7 @@ void Grid::train(bool skipTraining) {
 				cout << "Training iteration" << i << endl;
 				norm_som_fmatrix.shuffle();
 				som_->process(norm_som_fmatrix, som_fmatrixres);
+				cout<<"x:"<<som_fmatrixres(0,0)<<"y:"<<som_fmatrixres(1,0)<<endl;
 				done_ = true;
 			}
 
@@ -635,10 +641,12 @@ void Grid::init()
 					return;
 				}
 				temp = temp2->second;
+				//62 rows and cols equal to number of files...
 				init_train_fmatrix->stretch( temp.getRows() + 2, init_train_fmatrix->getCols() + temp.getCols() );
 
 				for(int j = 0; j < temp.getRows(); j++)
 				{
+					//copy features over from temp into init_train_matrix cell by cell
 					(*init_train_fmatrix)(j, init_train_fmatrix->getCols() -1  ) = temp(j,0);
 				}
 
@@ -660,9 +668,9 @@ void Grid::init()
 		som_ = mng.create("SOM", "som"); 
 		som_->updctrl("mrs_natural/grid_width", som_width);
 		som_->updctrl("mrs_natural/grid_height", som_height);
-		som_->updctrl("mrs_natural/inSamples", init_train_fmatrix->getCols());
+		som_->updctrl("mrs_natural/inSamples", init_train_fmatrix->getCols());//number of files
 
-		som_->updctrl("mrs_natural/inObservations", init_train_fmatrix->getRows());  
+		som_->updctrl("mrs_natural/inObservations", init_train_fmatrix->getRows()); //calls update() in SOM.cpp
 		som_->updctrl("mrs_string/mode", "init");
 		som_->updctrl("mrs_real/alpha_decay_init", init_alpha_);
 		som_->updctrl("mrs_real/neighbourhood_decay_init", init_neighbourhood_);

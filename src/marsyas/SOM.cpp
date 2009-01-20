@@ -99,7 +99,7 @@ SOM::addControls()
 void 
 SOM::init_grid_map() 
 {
-	cout << "randomizing" << endl;
+	//cout << "randomizing***********" << endl;
 	MarControlAccessor acc_grid(ctrl_gridmap_);
 	realvec& grid_map = acc_grid.to<mrs_realvec>();
 	srand(0);
@@ -114,6 +114,8 @@ SOM::init_grid_map()
 	alpha_ = getctrl("mrs_real/alpha")->to<mrs_real>();
 	mrs_real std_ = getctrl("mrs_real/std_factor_train")->to<mrs_real>();
 	neigh_std_ = ((0.5*(grid_width_+grid_height_)) * std_);
+
+	
 	
 }
 
@@ -136,6 +138,7 @@ SOM::randD(double max)
 void
 SOM::myUpdate(MarControlPtr sender)
 {
+	//cout<<"SOM myUpdate*************"<<endl;
 	(void) sender;
 	MRSDIAG("SOM.cpp - SOM:myUpdate");
 
@@ -239,11 +242,13 @@ SOM::myProcess(realvec& in, realvec& out)
 
 	if (mode == "train")  
 	{
+		
 		mrs_real dx;
 		mrs_real dy;
 		mrs_real adj;
 		mrs_real std_ = getctrl("mrs_real/std_factor_train")->to<mrs_real>();
-		neigh_std_ = ((0.5*(grid_width_+grid_height_)) * std_);
+		
+	
 
 		for (t=0; t < inSamples_; t++) 
 		{
@@ -275,6 +280,9 @@ SOM::myProcess(realvec& in, realvec& out)
 		
 		alpha_ *= getctrl("mrs_real/alpha_decay_train")->to<mrs_real>();
 		neigh_std_ *= getctrl("mrs_real/neighbourhood_decay_train")->to<mrs_real>();	  
+
+		
+
 	}
 	if (mode == "init")
 	{

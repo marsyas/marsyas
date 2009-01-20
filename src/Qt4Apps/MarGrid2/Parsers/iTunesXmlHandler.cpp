@@ -1,4 +1,5 @@
 #include "iTunesXmlHandler.h"
+#include <iostream>
 
 iTunesXmlHandler::iTunesXmlHandler(MusicCollection *collection) 
 	: _collection(collection)
@@ -104,7 +105,7 @@ bool iTunesXmlHandler::endElement(const QString & /* namespaceURI */,
 					//Add track to collection
 					_inTrack = false;	//Track DICT tag
 					_collection->addTrack(_currentTrack);
-					std::cout << "Adding Track:\n" << _currentTrack->getTitle() << std::endl;
+				//	std::cout << "Adding Track:\n" << _currentTrack->getTitle() << std::endl;
 					_currentTrack = NULL;		
 				}
 	
@@ -196,8 +197,15 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 	} else if ( "Year" == key ) {
 		_currentTrack->setYear(text);
 	} else if ( "Location" == key ) {
-		QString s = text;
+		QString s = QString::fromUtf8(text.toStdString().c_str());
+		
+	//qDebug() <<s;
+		//std::cout<<"read in filenames:"<<s.toStdString()<<"\n";
+	
+		//QString s = "Ü";
+		//std::cout<<s.toStdString()<<"\n";
 
+/*
 		// get rid of XML specific encoding
 		s.replace(QRegExp("%20"), " ");
 		s.replace(QRegExp("%5B"), "[");
@@ -210,6 +218,7 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 		s.replace(QRegExp("%60"), "`");
 		s.replace(QRegExp("%25"), "%");
 		s.replace(QRegExp("%23"), "#");
+		*/
 
 		// Watch out for trimming the leading '/' out of the file path
 		#if (defined(Q_OS_DARWIN) || defined(Q_OS_LINUX))
@@ -225,6 +234,7 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 		#if defined(Q_OS_WIN32)
 			s.replace(QRegExp("/"), "\\");
 		#endif
+		
 		_currentTrack->setLocation(s);
 	} else if ( "Track Type" == key ) {
 		_currentTrack->setType(text);
