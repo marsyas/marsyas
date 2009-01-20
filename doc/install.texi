@@ -539,12 +539,14 @@ environment variable so that CMake can find the SWIG installation.
 and reconfigure Marsyas. If swig is found correctly the corresponding 
 build files are updated. To install the marsyas python module 
 you will need to run the INSTALL target of the Marsyas solution inside
-Visual Studio. 
+Visual Studio. This target can be found on the left side of the Visual Studio 
+IDE. There is a tree list list of different kinds of things you can compile. 
+One of them is the INSTALL target. This will build and install all of Marysas including the Python bindings into your system. 
 
 @item There is one final little step. For some reason I have not figured
 out the marsyas module is compiled as _marsyas.dll and gets copies to
 the default location for installed Python modules. You will need to
-rename this to _marsyas.pyc for things to work. 
+rename this to _marsyas.pyc for things to work for some versions of Python. . 
 
 
 @item You should now be ready to run Marsyas inside Python. 

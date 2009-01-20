@@ -224,7 +224,6 @@ SOM::find_grid_location(realvec& in, int t)
 void 
 SOM::myProcess(realvec& in, realvec& out)
 {
-	//checkFlow(in,out);
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
 

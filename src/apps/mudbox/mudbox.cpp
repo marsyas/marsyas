@@ -3621,9 +3621,9 @@ void toy_with_SOM(string collectionName)
 	realvec train_data(trainSize);
 
 	realvec input;
-	input.create(2);
+	input.create(2,1);
 	realvec output;
-	output.create(3);
+	output.create(3,1);
 
 
 	// init train data 
