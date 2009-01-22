@@ -4868,6 +4868,75 @@ void toy_with_marostring(std::string format)
 	}
 }
 
+
+float find_max_rms(string inFileName)
+{
+
+  MarSystemManager mng;
+
+  MarSystem* net = mng.create("Series", "net");
+
+  MarSystem* sr = mng.create("SilenceRemove", "sr");
+  // Threshold for silence removal
+  sr->updctrl("mrs_real/threshold",0.00001);
+
+  sr->addMarSystem(mng.create("SoundFileSource", "src"));
+  sr->updctrl("SoundFileSource/src/mrs_string/filename",inFileName);
+
+  net->addMarSystem(sr);
+
+  MarSystem* rms = mng.create("Rms", "rms");
+  net->addMarSystem(rms);
+
+  net->addMarSystem(mng.create("Gain", "gain"));
+
+  float max_rms = MINREAL;
+  float r;
+  while (sr->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	{
+  	net->tick();
+	r = rms->getctrl("mrs_realvec/processedData")->to<mrs_realvec>()(0);
+	if (r > max_rms) {
+	  max_rms = r;
+	}
+  }
+
+  return max_rms;
+
+}
+  
+void 
+toy_with_volume_normalize(string inFileName, string outFileName)
+{
+
+  float max_rms = find_max_rms(inFileName);
+  float gain = 0.8 / max_rms;
+
+  MarSystemManager mng;
+
+  MarSystem* net = mng.create("Series", "net");
+
+  MarSystem* sr = mng.create("SilenceRemove", "sr");
+  // Threshold for silence removal
+  sr->updctrl("mrs_real/threshold",0.00001);
+
+  sr->addMarSystem(mng.create("SoundFileSource", "src"));
+  sr->updctrl("SoundFileSource/src/mrs_string/filename",inFileName);
+
+  net->addMarSystem(sr);
+
+  net->addMarSystem(mng.create("Gain", "gain"));
+  net->updctrl("Gain/gain/mrs_real/gain",gain);
+
+  net->addMarSystem(mng.create("SoundFileSink", "dest"));
+  net->updctrl("mrs_real/israte", 44100.0);
+  net->updctrl("SoundFileSink/dest/mrs_string/filename",outFileName);
+
+  while (sr->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	{
+  	net->tick();
+  }
+
+}
+
 int
 main(int argc, const char **argv)
 {
@@ -5019,6 +5088,8 @@ else if (toy_withName == "train_predict")
 		toy_with_stereoFeaturesMFCC(fname0, fname1);
 	else if (toy_withName == "marostring")
 		toy_with_marostring(fname0);
+	else if (toy_withName == "volume_normalize")
+	  toy_with_volume_normalize(fname0,fname1);
 
 
 	else 
