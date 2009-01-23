@@ -125,6 +125,7 @@ private:
 	QWaitCondition buttonPressed;
 	QTimer *fullScreenTimer;
 	QCursor *mouseCursor;
+	QPoint lastMousePoint;
 
 
 	QRect highlightedRect;
@@ -135,6 +136,7 @@ private:
 	int _cellSize;
 	int oldXPos;
 	int oldYPos;
+	int lastIndex;
 	bool fullScreenMouseOn;
 	bool initDone;
 	bool colourMapMode_;

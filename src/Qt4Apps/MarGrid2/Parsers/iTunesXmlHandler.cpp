@@ -205,7 +205,7 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 		//QString s = "Ü";
 		//std::cout<<s.toStdString()<<"\n";
 
-/*
+
 		// get rid of XML specific encoding
 		s.replace(QRegExp("%20"), " ");
 		s.replace(QRegExp("%5B"), "[");
@@ -218,7 +218,7 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 		s.replace(QRegExp("%60"), "`");
 		s.replace(QRegExp("%25"), "%");
 		s.replace(QRegExp("%23"), "#");
-		*/
+		
 
 		// Watch out for trimming the leading '/' out of the file path
 		#if (defined(Q_OS_DARWIN) || defined(Q_OS_LINUX))

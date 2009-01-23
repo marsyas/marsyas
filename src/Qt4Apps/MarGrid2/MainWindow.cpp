@@ -141,19 +141,22 @@ void MainWindow::fullScreenMode(bool mode)
 	isFullScreenMouse = mode;
 	if(mode) 
 	{
-		showMaximized();
+		
 		_toolbar->hide();
 		menuBar()->hide();
-		setWindowFlags(Qt::FramelessWindowHint);
+		//setWindowFlags(Qt::FramelessWindowHint);
+		//showMaximized();
+		showFullScreen();
 		grabKeyboard();
 
 	}
 	else
 	{
-		showNormal();
+		
 		_toolbar->show();
 		menuBar()->show();
-		setWindowFlags((Qt::WindowFlags)(~Qt::FramelessWindowHint));
+	//	setWindowFlags((Qt::WindowFlags)(~Qt::FramelessWindowHint));
+		showNormal();
 		releaseKeyboard();
 	}
 	show();
@@ -368,19 +371,12 @@ void MainWindow::createToolbars() {
 void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
 {
 
-  _display->keyMove(keyEvent);
-
   if (keyEvent->key() == Qt::Key_Return) {
- 	if(isFullScreenMouse) {
-	  cout << "Turning off fullscreen mode" << endl;
-	  emit fullScreenMode(false);
-	  fullScreenMode(false);
-	} else {
-	  cout << "Turning on fullscreen mode" << endl;
-	  emit fullScreenMode(true);
-	  fullScreenMode(true);
-	}
-  }
+	  _display->fullScreenMouse();
+	 
+  }else if (keyEvent->key() == Qt::Key_Shift) {
+	  _dataGrid->stopPlaying();
+  }else _display->keyMove(keyEvent);
 
 }
 

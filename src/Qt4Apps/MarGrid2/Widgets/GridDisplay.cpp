@@ -110,15 +110,17 @@ void GridDisplay::resetGrid()
 
 void GridDisplay::fullScreenMouse()
 {
-	if( fullScreenMouseOn = !fullScreenMouseOn )
+	if(!fullScreenMouseOn)
 	{
 		fullScreenTimer->start();
 		grabMouse();
+		fullScreenMouseOn = true;
 	}
 	else
 	{
 		fullScreenTimer->stop();
 		releaseMouse();
+		fullScreenMouseOn = false;
 	}
 	emit fullScreenMode(fullScreenMouseOn);
 	setMouseTracking(!fullScreenMouseOn);
@@ -129,12 +131,15 @@ void GridDisplay::fullScreenMouseMove()
 	QRect screenSize = (QApplication::desktop())->screenGeometry();
 
 	// map mouse position on screen to a grid location
-	int gridX = mouseCursor->pos().x() / (screenSize.width() / (grid_->getWidth() - 1));
-	int gridY = mouseCursor->pos().y() / (screenSize.height() / (grid_->getHeight() - 1));
+	int gridX = qRound(mouseCursor->pos().x() / (screenSize.width() / ((float)grid_->getWidth() - 0.5)));
+	int gridY = qRound(mouseCursor->pos().y() / (screenSize.height() / ((float)grid_->getHeight() - 0.5)));
 
-	updateXYPosition(gridX, gridY);
+	if(lastMousePoint != mouseCursor->pos())updateXYPosition(gridX, gridY);
+	lastMousePoint = mouseCursor->pos();
+	
 	if(grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos()  ) 
 	{
+		
 		playNextTrack();
 		oldXPos = grid_->getXPos();
 		oldYPos = grid_->getYPos();
@@ -147,79 +152,102 @@ void GridDisplay::keyMove(QKeyEvent *keyEvent)
 
   int gridX = grid_->getXPos();
   int gridY = grid_->getYPos();
+  bool reachedEdge;
 
-  cout << "key=" << keyEvent->key() << endl;
+ // cout << "key=" << keyEvent->key() << endl;
+  cout<<"GridDisplay::keyMove grid x, y: "<<gridX<<", "<<gridY<<endl;
 
   // Up key pressed
   if (keyEvent->key() == Qt::Key_Up) {
 	gridY -= 1;
 	if (gridY < 0) {
-	  gridY = grid_->getHeight() - 1;
-	}
+		reachedEdge = true;
+		QApplication::beep();
+	  //gridY = grid_->getHeight() - 1;
+		
+	  gridY = 0;
+	}else reachedEdge = false;
   }
 
   // Down key pressed
   if (keyEvent->key() == Qt::Key_Down) {
 	gridY += 1;
 	if (gridY > grid_->getHeight() - 1) {
-	  gridY = 0;
-	}
+		reachedEdge = true;
+		QApplication::beep();
+	 // gridY = 0;
+	  gridY = getHeight() - 1;
+	}else reachedEdge = false;
   }
 
   // Left key pressed
   if (keyEvent->key() == Qt::Key_Left) {
     gridX -= 1;
     if (gridX < 0) {
-      gridX = grid_->getHeight() - 1;
-    }
+		reachedEdge = true;
+		QApplication::beep();
+      //gridX = grid_->getHeight() - 1;
+	  gridX = 0;
+    }else reachedEdge = false;
   }
 
   // Right key pressed
   if (keyEvent->key() == Qt::Key_Right) {
     gridX += 1;                         
-    if (gridX > grid_->getHeight() - 1) {
-      gridX = 0;
-	}
+    if (gridX > grid_->getWidth() - 1) {
+		reachedEdge = true;
+		QApplication::beep();
+      //gridX = 0;
+	  gridX = grid_->getWidth()-1;
+	}else reachedEdge = false;
   }
 
   // "q" key pressed - Go to the top left grid point
   if (keyEvent->key() == 81) {
+	  reachedEdge = false;
 	gridX = 0;
 	gridY = 0;
   }
 
   // "w" key pressed - Go to the top right grid point
   if (keyEvent->key() == 87) {
+	  reachedEdge = false;
 	gridX = grid_->getWidth() - 1;
 	gridY = 0;
   }
 
   // "a" key pressed - Go to the bottom left grid point
   if (keyEvent->key() == 65) {
+	  reachedEdge = false;
 	gridX = 0;
 	gridY = grid_->getHeight() - 1;
   }
 
   // "s" key pressed - Go to the bottom right grid point
   if (keyEvent->key() == 83) {
+	  reachedEdge = false;
 	gridX = grid_->getWidth() - 1;;
 	gridY = grid_->getHeight() - 1;
   }
 
   // "x" key pressed - Go to the center grid point
   if (keyEvent->key() == 88) {
+	  reachedEdge = false;
 	gridX = (grid_->getWidth() - 1) / 2;
 	gridY = (grid_->getHeight() - 1) / 2;
   }
 
 
 
-  updateXYPosition(gridX, gridY);
+  if(!reachedEdge)
+  {
+	updateXYPosition(gridX, gridY);
 
   playNextTrack();
   oldXPos = grid_->getXPos();
   oldYPos = grid_->getYPos();
   repaint();
+  }
   
 
 
@@ -274,6 +302,7 @@ void GridDisplay::updateXYPosition(int x, int y)
 {
 	grid_->setXPos(x);
 	grid_->setYPos(y);
+	
 }
 
 void GridDisplay::midiPlaylistEvent(bool next) 
@@ -295,9 +324,16 @@ void GridDisplay::playNextTrack()
 {
 	if( !grid_->getCurrentFiles().isEmpty() ) 
 	{
+		//get number of tracks in current grid square
 		int counterSize = grid_->getGridCounterSizes(grid_->getCurrentIndex());
-		if (counterSize > 0) 
-			grid_->setGridCounter( grid_->getCurrentIndex() , (grid_->getGridCounter(grid_->getCurrentIndex()) + 1) % counterSize );  
+		if (counterSize > 0 && lastIndex == grid_->getCurrentIndex()) {
+			//set the next song to play in current grid square reset to first song
+			grid_->setGridCounter( grid_->getCurrentIndex() , (grid_->getGridCounter(grid_->getCurrentIndex()) + 1) % counterSize ); 
+		}else if(lastIndex != grid_->getCurrentIndex()){//we changed squares
+			grid_->setGridCounter( grid_->getCurrentIndex() , 0);
+		}
+		lastIndex = grid_->getCurrentIndex();
+
 		int counter = grid_->getGridCounter(grid_->getCurrentIndex());
 		QList<std::string> playlist = grid_->getCurrentFiles();
 		cout << "Currently Playing: " + playlist[counter] << endl;
@@ -305,6 +341,7 @@ void GridDisplay::playNextTrack()
 		for(int i = 0; i < counterSize; i++ ) {
 			cout << playlist[i] << endl;
 		}
+
 		grid_->playTrack(counter);
 	} else
 	{
@@ -355,7 +392,9 @@ void GridDisplay::mousePressEvent(QMouseEvent *event)
 		int gridX = mouseCursor->pos().x() / (screenSize.width() / (grid_->getWidth() - 1));
 		int gridY = mouseCursor->pos().y() / (screenSize.height() / (grid_->getHeight() - 1));
 
-		updateXYPosition(gridX, gridY);
+		if(lastMousePoint != mouseCursor->pos())updateXYPosition(gridX, gridY);
+		lastMousePoint = mouseCursor->pos();
+
 		if(grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos()  ) 
 		{
 			oldXPos = grid_->getXPos();
@@ -364,7 +403,10 @@ void GridDisplay::mousePressEvent(QMouseEvent *event)
 	}
 	else
 	{
+		if(lastMousePoint != mouseCursor->pos()){
 		updateXYPosition(event->pos().x() / _cellSize, event->pos().y() / _cellSize);
+		}
+		lastMousePoint = mouseCursor->pos();
 		if(!initDone)
 		{
 			int k = grid_->getYPos() * grid_->getHeight() + grid_->getXPos();
@@ -387,6 +429,8 @@ void GridDisplay::mouseMoveEvent(QMouseEvent *event)
 	}
 	QToolTip::hideText();
 	updateXYPosition(event->pos().x() / _cellSize, event->pos().y() / _cellSize);
+	lastMousePoint = mouseCursor->pos();
+
 
 	if(grid_->isContinuous() && (grid_->getXPos() != oldXPos || oldYPos != grid_->getYPos() ) ) 
 	{
