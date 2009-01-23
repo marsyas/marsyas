@@ -51,7 +51,7 @@ MaxArgMax::myUpdate(MarControlPtr sender)
 	(void) sender;
 
 	mrs_natural k = getctrl("mrs_natural/nMaximums")->to<mrs_natural>();
-
+	
 	setctrl("mrs_natural/onSamples",  2 * k);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
@@ -78,9 +78,12 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 		{
 			mrs_real newmax = in(o,t);
 			mrs_real newmax_i = t;
+			// cout << "nmx = " << newmax << endl;
+			// cout << "nmx_i = " << newmax_i << endl;
+			
 			for (ki=0; ki < k; ki++)
 			{
-				if (newmax > out(o, 2*ki))
+				if (newmax >= out(o, 2*ki))
 				{
 					mrs_real oldmax = out(o, 2*ki);
 					mrs_real oldmax_i = out(o,2*ki+1);

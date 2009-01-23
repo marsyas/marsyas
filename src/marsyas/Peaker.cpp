@@ -52,6 +52,8 @@ Peaker::addControls()
 void 
 Peaker::myProcess(realvec& in, realvec& out)
 {
+
+
 	mrs_real peakSpacing;
 	mrs_real peakStrength;
 	mrs_real peakGain;

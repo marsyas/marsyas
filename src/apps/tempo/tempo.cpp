@@ -104,7 +104,7 @@ void tempo_medianMultiBands(string sfName, string resName)
   total->addMarSystem(mng.create("OnePole", "lpf"));
   total->addMarSystem(mng.create("Norm", "norm"));
 
-  total->addMarSystem(mng.create("Sum", "sum"));
+  // total->addMarSystem(mng.create("Sum", "sum"));
 
   total->addMarSystem(mng.create("DownSampler", "ds"));
   total->addMarSystem(mng.create("AutoCorrelation", "acr"));
@@ -112,14 +112,15 @@ void tempo_medianMultiBands(string sfName, string resName)
   total->addMarSystem(mng.create("MaxArgMax", "mxr"));
   total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
 
-  
+
+  total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);  
   // update the controls 
   mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 
   // input filename with hopSize/winSize 
   mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
   mrs_natural hopSize = winSize / 16;
-  total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
   total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
   total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
@@ -145,8 +146,6 @@ void tempo_medianMultiBands(string sfName, string resName)
   total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
 
 
-  total->updctrl("PeakPeriods2BPM/p2bpm/mrs_natural/factor", factor);
-  
   
   // prepare vectors for processing 
   realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
@@ -163,41 +162,40 @@ void tempo_medianMultiBands(string sfName, string resName)
   vector<int> bpms;
   
   onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
 
   // playback offset & duration
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
-  
+
+
   while (repetitions * duration > samplesPlayed)
-    {
+  {
       total->process(iwin, estimate);
 
-      
-      
       // convert highest peak to BPMs and add to vector 
-      for (int b=0; b < 5; b++)
-	{
-	  // pitch = srate * 60.0 / (estimate(b,1) * factor);
-	  // bin = (mrs_natural) (pitch);
-	  bin = (mrs_natural)(estimate(b,1));
-	  cout << "max bpm(" << b << ") = " << bin << endl;
-	  bpms.push_back(bin);
-	}
+      for (int b=0; b < 4; b++)
+	  {
+		  // pitch = srate * 60.0 / (estimate(b,1) * factor);
+		  // bin = (mrs_natural) (pitch);
+		  bin = (mrs_natural)(estimate(b,1));
+		  cout << "max bpm(" << b << ") = " << bin << endl;
+		  bpms.push_back(bin);
+	  }
       numPlayed++;
       if (samplesPlayed > repeatId * duration)
-	{
-	  total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);   
-	  repeatId++;
-	}
+	  {
+		  total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);   
+		  repeatId++;
+	  }
       wc ++;
       samplesPlayed += onSamples;
       // no duration specified so use all of source input 
       if (!(total->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) && (repeatId == 1))
-	{ 
-	  duration = samplesPlayed-onSamples;
-	}
-    }
+	  { 
+		  duration = samplesPlayed-onSamples;
+	  }
+  }
   
   // sort bpm estimates for median filtering 
   sort(bpms.begin(), bpms.end());
@@ -526,7 +524,8 @@ tempo_histoSumBands(string sfName, string resName)
   MarSystemManager mng;
   mrs_natural nChannels;
   mrs_real srate = 0.0;
-  
+
+
   // prepare network 
   MarSystem *total = mng.create("Series", "src");
   total->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -552,20 +551,22 @@ tempo_histoSumBands(string sfName, string resName)
   total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
   
   total->addMarSystem(mng.create("Histogram", "histo"));
-  total->addMarSystem(mng.create("MaxArgMax", "mxr"));
-  
+  total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
+
   // update the controls 
   // input filename with hopSize/winSize 
-  mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
-  mrs_natural hopSize = winSize / 8;
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
   srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 
   offset = (mrs_natural) (start * srate * nChannels);
   duration = (mrs_natural) (length * srate * nChannels);
+
+  mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
+  mrs_natural hopSize = winSize / 8;
   
+
 
   total->updctrl("mrs_natural/inSamples", hopSize);
   total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);      
@@ -578,23 +579,32 @@ tempo_histoSumBands(string sfName, string resName)
   mrs_natural factor = 32;
   total->updctrl("DownSampler/ds/mrs_natural/factor", factor);  
   
+
   // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM 
   mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
+  
+  
   mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) - 
 		      (mrs_natural)(srate * 60.0 / (factor*64.0))) / pkinS;
+
+  
   mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
   mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 50.0));
+
+
+  
+
   total->updctrl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
   total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.75);
   total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
   total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
   total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
 
-  total->updctrl("PeakPeriods2BPM/p2bpm/mrs_natural/factor", factor);
 
   total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
   total->updctrl("Histogram/histo/mrs_natural/endBin", 180);
   
+
   // prepare vectors for processing 
   realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
 	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
@@ -613,9 +623,14 @@ tempo_histoSumBands(string sfName, string resName)
   vector<int> bpms;
   onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
+  
+
   while (repetitions * duration > samplesPlayed)
     {
       total->process(iwin, estimate);
+
+	  // cout << estimate << endl;
+	  
 
       bin = (mrs_natural) estimate(1);
       cout << "max bpm = " << bin << endl;
@@ -679,7 +694,7 @@ tempo_medianSumBands(string sfName, string resName)
 
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
   srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 
   mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
@@ -710,8 +725,6 @@ tempo_medianSumBands(string sfName, string resName)
   total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
   total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
   total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
-
-  total->updctrl("PeakPeriods2BPM/p2bpm/mrs_natural/factor", factor);
 
   
   // prepare vectors for processing 
