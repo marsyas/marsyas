@@ -154,8 +154,8 @@ void GridDisplay::keyMove(QKeyEvent *keyEvent)
   int gridY = grid_->getYPos();
   bool reachedEdge;
 
- // cout << "key=" << keyEvent->key() << endl;
-  cout<<"GridDisplay::keyMove grid x, y: "<<gridX<<", "<<gridY<<endl;
+  cout << "key=" << keyEvent->key() << endl;
+ // cout<<"GridDisplay::keyMove grid x, y: "<<gridX<<", "<<gridY<<endl;
 
   // Up key pressed
   if (keyEvent->key() == Qt::Key_Up) {
@@ -238,8 +238,7 @@ void GridDisplay::keyMove(QKeyEvent *keyEvent)
   }
 
 
-
-  if(!reachedEdge)
+  if(!reachedEdge && keyEvent->key() != Qt::Key_Shift)
   {
 	updateXYPosition(gridX, gridY);
 
@@ -247,8 +246,9 @@ void GridDisplay::keyMove(QKeyEvent *keyEvent)
   oldXPos = grid_->getXPos();
   oldYPos = grid_->getYPos();
   repaint();
+  }else if(keyEvent->key() == Qt::Key_Shift){
+	  playNextTrack();
   }
-  
 
 
 }

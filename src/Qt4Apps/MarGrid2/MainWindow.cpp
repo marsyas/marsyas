@@ -374,8 +374,9 @@ void MainWindow::keyPressEvent(QKeyEvent *keyEvent)
   if (keyEvent->key() == Qt::Key_Return) {
 	  _display->fullScreenMouse();
 	 
-  }else if (keyEvent->key() == Qt::Key_Shift) {
+  }else if (keyEvent->key() == Qt::Key_Control) {
 	  _dataGrid->stopPlaying();
+  
   }else _display->keyMove(keyEvent);
 
 }
