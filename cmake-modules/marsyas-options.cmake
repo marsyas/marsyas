@@ -38,12 +38,9 @@ option(MARSYAS_DEBUG "Build with debugging info (large performance penalty)" OFF
 
 
 ## logging stuff
-option(MARSYAS_LOG_WARNINGS "Build with warnings" OFF)
-mark_as_advanced (MARSYAS_LOG_WARNINGS)
+option(MARSYAS_LOG_WARNINGS "Build with warnings" ON))
 option(MARSYAS_LOG_DEBUGS "Log debugs" OFF)
-mark_as_advanced (MARSYAS_LOG_DEBUGS)
 option(MARSYAS_LOG_DIAGNOSTICS "Log debugs" OFF)
-mark_as_advanced (MARSYAS_LOG_DIAGNOSTICS)
 option(MARSYAS_LOG2FILE "Log messages to a file" OFF)
 option(MARSYAS_LOG2STDOUT "Log messages to a standard out" ON)
 option(MARSYAS_LOG2GUI "Log messages to GUI" OFF)

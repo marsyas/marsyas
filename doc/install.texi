@@ -498,6 +498,26 @@ open with the Visual Studio 9 Express IDE to compile Marsyas.
 depending on which build configuration is used. 
 @end enumerate 
 
+The following optional steps can be used to setup Marsyas to be able to
+read MP3 files through libMAD an external MPEG audio decoder. 
+
+@enumerate 
+@item Download the libMAD library source code 
+from @uref{http://www.underbit.com/products/mad/}. 
+@item In the msvc++ folder of the libMAD package there is a 
+Visual Studio project file. Double-click on that and build the library. 
+This should generate a debug (or release) folder depending on your
+configuration in msvc++ which contains a libmad.lib file. 
+@item Using cmake, set WITH_MAD to ON and click configure. 
+The CMake configuration of Marsyas needs to determine the location 
+of the libmad.lib library file and the location of the mad.h include
+file. You can either add the corresponding directory to your PATH 
+or you can manually point the mad_INCLUDE_DIR to the msvc++ folder
+directory and mad_LIBRARY to the libmad.lib file generated
+earlier. Finally click configure and okay. 
+@end enumerate 
+
+
 The following optional steps can be used to setup the Marsyas python 
 bindings using SWIG and setup the NumPy,SciPy,Matlplotlib environment in
 Windows. It is a great free substitute for MATLAB and integrates very
@@ -505,9 +525,9 @@ nicely with Marsyas all in a Python environment.
 
 @enumerate
 @item Download and install Python 2.5 (IMPORTANT: NumPy and SciPy don't
-yet work with the more recent 2.6) @uref{from
-http://www.python.org/download/}. The easiest way is to just use the
-.msi installer. 
+yet work with the more recent 2.6) from
+@uref{http://www.python.org/download/}. The easiest way is to just use
+the .msi installer. 
 
 @item Download and install numpy superpack for python 2.5 from the sourceforge webpage of numpy
 @uref{http://sourceforge.net/project/showfiles.php?group_id=1369&package_id=175103}. 
