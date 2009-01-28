@@ -1,4 +1,5 @@
 #include "iTunesXmlHandler.h"
+#include <QUrl>
 #include <iostream>
 
 iTunesXmlHandler::iTunesXmlHandler(MusicCollection *collection) 
@@ -197,15 +198,37 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 	} else if ( "Year" == key ) {
 		_currentTrack->setYear(text);
 	} else if ( "Location" == key ) {
-		QString s = QString::fromUtf8(text.toStdString().c_str());
+		//QString s = QString::fromUtf8(text.toStdString().c_str());
+		//QString s = text;
+	//	QByteArray encodedString =text.toUtf8();
+			
+		//QByteArray encodedString = "file://localhost/C:/Documents%20and%20Settings/Manj/Desktop/ManjFall2007/Music/iTunes/iTunes%20Music/%C3%9Cmanz/Nu%20Main/01%20Ma%20Luciole.mp3";
+		//QUrl *url = new QUrl();
+		//url->setEncodedUrl(encodedString);
+		QByteArray encodedString = text.toUtf8();
+		QString s = QUrl::fromPercentEncoding(encodedString);
 		
-	//qDebug() <<s;
+		/*
+		// QByteArray encodedString = "%C3%9Cmanz";
+		QByteArray decodedString = QByteArray::fromPercentEncoding(encodedString);	
+		const char * decodedStringChar = decodedString.data();
+		QString decodedFromPercent = QString::fromUtf8(decodedStringChar);
+		// QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+        // QString string = codec->toUnicode(encodedString); 
+		QString s = decodedFromPercent;
+		*/
+		
+
+
+		//qDebug() <<string;
+		//std::cout<<decodedStringChar<<"\n";
+		//std::cout<<s<<"\n";
 		//std::cout<<"read in filenames:"<<s.toStdString()<<"\n";
 	
 		//QString s = "Ü";
 		//std::cout<<s.toStdString()<<"\n";
 
-
+/*
 		// get rid of XML specific encoding
 		s.replace(QRegExp("%20"), " ");
 		s.replace(QRegExp("%5B"), "[");
@@ -218,7 +241,7 @@ void iTunesXmlHandler::addStringAttribute(const QString &key, const QString &tex
 		s.replace(QRegExp("%60"), "`");
 		s.replace(QRegExp("%25"), "%");
 		s.replace(QRegExp("%23"), "#");
-		
+		*/
 
 		// Watch out for trimming the leading '/' out of the file path
 		#if (defined(Q_OS_DARWIN) || defined(Q_OS_LINUX))

@@ -271,6 +271,7 @@ void Grid::extractAction(std::string filename)
 	cout << "Calculating features" << endl;
 	for (int index=0; index < numFiles; index++)
 	{
+		cout<<"extract 1"<<"\n";
 		if(cancel_)
 		{
 			cancel_ = false;
@@ -280,20 +281,24 @@ void Grid::extractAction(std::string filename)
 		total_->updctrl("mrs_bool/memReset", true);
 		total_->updctrl("mrs_natural/cindex", index);
 
-		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-		cout << "Processed " << index + 1 << " files " << endl; 
-		cout << current  << " - ";
+		cout<<"extract 2"<<"\n";
 		total_->process(som_in,som_res);
-
+		cout<<"extract 3"<<"\n";
+		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+		cout << "Processed " << index + 1 << " file of "<<numFiles<<" files" << endl; 
+		cout << current  << "\n";
+		cout<<"extract 4"<<"\n";
 		// hash the resulting feature on file name
-		if(featureHash->find(current) == featureHash->end())
+		if(featureHash->find(current) == featureHash->end()){
+			cout<<"extract 4.1"<<"\n";
 			featureHash->insert(pair<string,realvec>(current,som_res));
-
+		}
+		cout<<"extract 5"<<"\n";
 
 		for (int o=0; o < total_onObservations; o++) 
 			som_fmatrix(o, index) = som_res(o, 0);
 		total_->updctrl("mrs_bool/advance", true);     
-
+		cout<<"extract 6"<<"\n";
 	}
 
 	ofstream oss;
