@@ -13,6 +13,8 @@ GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget
 		squareHasInitialized[i] = false;
 	oldXPos = -1;
 	oldYPos = -1;
+	oldX1Pos = -1;
+	oldY1Pos = -1;
 	fullScreenMouseOn = false;
 	initDone = false;
 	fullScreenTimer = new QTimer(this);
@@ -302,6 +304,13 @@ void GridDisplay::updateXYPosition(int x, int y)
 {
 	grid_->setXPos(x);
 	grid_->setYPos(y);
+	
+}
+
+void GridDisplay::updateXY1Position(int x, int y)
+{
+	grid_->setX1Pos(x);
+	grid_->setY1Pos(y);
 	
 }
 
@@ -634,6 +643,13 @@ void GridDisplay::paintEvent(QPaintEvent* /* event */)
 				_cellSize - _cellSize / 2,
 				_cellSize-_cellSize / 2);
 			painter.drawRect(newr);
+
+			painter.setBrush(Qt::white);
+			QRect newr1( grid_->getX1Pos() * _cellSize + _cellSize / 4,
+				grid_->getY1Pos() * _cellSize + _cellSize / 4,
+				_cellSize - _cellSize / 2,
+				_cellSize-_cellSize / 2);
+			painter.drawRect(newr1);
 		}
 	}
 

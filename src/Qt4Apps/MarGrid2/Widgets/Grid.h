@@ -78,8 +78,12 @@ public:
 
 	void setXPos(int value);
 	void setYPos(int value);
+	void setX1Pos(int value);
+	void setY1Pos(int value);
+
 	void setXGridSize(QString);
 	void setYGridSize(QString);
+
 	void setPlaylist(std::string playlist);
 	void addInitFile(QString fileName, int x, int y);
 	void setContinuous(bool value);
@@ -91,8 +95,12 @@ public:
 	int * getDensity(int index);
 	int getHeight()  { return som_height; }
 	int getWidth()  { return som_width; }
+
 	int getXPos()  { return _gridX; }
 	int getYPos()  { return _gridY; }
+	int getX1Pos()  { return _gridX1; }
+	int getY1Pos()  { return _gridY1; }
+
 	int getCellSize(int winSize);
 
 	void set_init_alpha(double input) { init_alpha_ = input; }
@@ -148,6 +156,8 @@ protected:
 
 	void setGridX(int x);  
 	void setGridY(int y); 
+	void setGridX1(int x);  
+	void setGridY1(int y); 
 
 	void setup();
 	void setupNetworks();
@@ -164,6 +174,8 @@ private:
 	int _cellSize;
 	int _gridX;
 	int _gridY;
+	int _gridX1;
+	int _gridY1;
 	int som_height;
 	int som_width;
 	int oldWidth_;

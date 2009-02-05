@@ -112,6 +112,7 @@ protected:
 	bool event(QEvent *event);
 
 	void updateXYPosition(int x, int y); 
+	void updateXY1Position(int x, int y); 
 	void paintEvent(QPaintEvent *event);
 	void playNextTrack();
 
@@ -136,6 +137,8 @@ private:
 	int _cellSize;
 	int oldXPos;
 	int oldYPos;
+	int oldX1Pos;
+	int oldY1Pos;
 	int lastIndex;
 	bool fullScreenMouseOn;
 	bool initDone;

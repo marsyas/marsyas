@@ -10,6 +10,8 @@ Grid::Grid()
 	oldHeight_ = som_height;
 	_gridX = 0;
 	_gridY = 0;
+	_gridX1 = -1;
+	_gridY1 = -1;
 
 	init_alpha_ = 0.98;
 	init_neighbourhood_ = 0.97;
@@ -985,6 +987,18 @@ void Grid::setGridY(int y) {
 	}
 }
 
+void Grid::setGridX1(int x) {
+	if ( 0 <= x && x <= som_width ) {
+		_gridX1 = x;
+	}
+}
+
+void Grid::setGridY1(int y) {
+	if ( 0 <= y && y <= som_height ) {
+		_gridY1 = y;
+	}
+}
+
 void Grid::setPlaylist(std::string playlist)
 {
 	playlist_ = playlist;
@@ -1126,14 +1140,27 @@ void Grid::setGridCounter(int index, int value)
 {
 	counters[index] = value;
 }
+
 void Grid::setXPos(int value)
 {
 	_gridX = value;
 }
+
 void Grid::setYPos(int value)
 {
 	_gridY = value;
 }
+
+void Grid::setX1Pos(int value)
+{
+	_gridX1 = value;
+}
+
+void Grid::setY1Pos(int value)
+{
+	_gridY1 = value;
+}
+
 void Grid::setContinuous(bool value)
 {
 	continuous_ = value;
@@ -1190,6 +1217,9 @@ Grid::setValue(int i)
 
   _gridX = x0_->value;
   _gridY = y0_->value;
+
+  _gridX1 = x1_->value;
+  _gridY1 = y1_->value;
 
   emit repaintSignal();
   
