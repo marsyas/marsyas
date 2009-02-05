@@ -154,7 +154,6 @@ void GridDisplay::keyMove(QKeyEvent *keyEvent)
   int gridY = grid_->getYPos();
   bool reachedEdge;
 
-  cout << "key=" << keyEvent->key() << endl;
  // cout<<"GridDisplay::keyMove grid x, y: "<<gridX<<", "<<gridY<<endl;
 
   // Up key pressed
@@ -298,6 +297,7 @@ void GridDisplay::midiXYEvent(unsigned char xaxis, unsigned char yaxis)
 	updateXYPosition(x, y);
 	playNextTrack();
 }
+
 void GridDisplay::updateXYPosition(int x, int y)
 {
 	grid_->setXPos(x);

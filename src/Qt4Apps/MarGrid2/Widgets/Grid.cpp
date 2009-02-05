@@ -32,6 +32,15 @@ Grid::Grid()
 	initFileLocations.resize(som_height * som_width);
 	playlist_ = "Library"; // by default select the full iTunes library
 
+	// sness
+	trainFile_ = "";
+	// Some objects to receive OSC messages
+	x0_ = new OSCReceiver();
+	y0_ = new OSCReceiver();
+	x1_ = new OSCReceiver();
+	y1_ = new OSCReceiver();
+
+
 	/* For use with genres only
 	* The 1st dimension is the normal grid square array layout 
 	* The 2nd dimension of density uses the following values
@@ -226,8 +235,8 @@ void Grid::setupNetworks() {
 * ---------------------------------------------------
 */
 void Grid::extract() {
+  // sness
 	if ( _collection->getNumTracks() > 0 ) {
-
 
 		int index = 0;
 
@@ -237,8 +246,11 @@ void Grid::extract() {
 		//featureFile.open("music.mf");
 		_collection->generatePlayList(featureFile, playlist_.c_str());
 		extractAction("music.mf");
-	}	
-	else 
+	} else if (trainFile_.length() > 0) {
+	  cout << "Grid::extract() :: trainFile_.length() > 0" << endl;
+	  cout << "trainFile_=" << trainFile_ << endl;
+	  extractAction(trainFile_);
+	} else 
 	{
 		emit errorBox("Need to load a collection of audio files first!");
 	}
@@ -416,7 +428,10 @@ void Grid::train() {
 
 void Grid::train(bool skipTraining) {
 	cout<<"********Grid::train init_: "<<init_<<endl;
-	if ( _collection->getNumTracks() > 0 ) {
+	if ( _collection->getNumTracks() == 0 && trainFile_.length() == 0) {
+		emit errorBox("Need to load a collection of audio files first!");
+		return;
+	}
 
 		// Read the feature matrix from file som_fmatrix.txt 
 		realvec norm_som_fmatrix;
@@ -502,12 +517,20 @@ void Grid::train(bool skipTraining) {
 
 
 
-	} else {
-		emit errorBox("Need to load a collection of audio files first!");
-	}
 }
 void Grid::predict() {
-	if ( _collection->getNumTracks() > 0 ) {
+  int ready = 0;
+ std:string fileName;
+
+  if ( _collection->getNumTracks() > 0 ) {
+	ready = 1;
+	fileName = "music.mf";
+  } else if (trainFile_.length() > 0) {
+	fileName = trainFile_; 
+  } else {
+	emit errorBox("Need to load a collection of audio files first!");
+	return;
+  }
 
 		realvec som_in;
 		realvec som_res;
@@ -531,11 +554,11 @@ void Grid::predict() {
 		som_->updctrl("mrs_string/mode", "predict"); 
 
 		Collection l1;
-		l1.read("music.mf");
+		l1.read(fileName);
 
 		cout << "Read collection" << endl;
 
-		total_->updctrl("mrs_string/filename", "music.mf"); 
+		total_->updctrl("mrs_string/filename", fileName); 
 
 		total_->updctrl("mrs_natural/pos", 0);
 
@@ -610,9 +633,6 @@ void Grid::predict() {
 
 
 		cout << "end_prediction" << endl;
-	} else {
-		emit errorBox("Need to load a collection of audio files first!");
-	}
 }
 
 
@@ -1148,4 +1168,29 @@ void GridTriplet::setY(int value)
 void GridTriplet::setFileName(std::string value)
 {
 	fileName = value;
+}
+
+
+void
+Grid::setTrainFile(QString fname)
+{
+  trainFile_ = fname.toStdString();
+  cout << "Grid::openPredictionGrid trainFile=" << trainFile_ << endl;
+}
+
+
+// This is called when we receive an OSC message to the "/update"
+// address.  It means that we need to get the values of all of our
+// x1_,y1_,x2_, etc. members and update the grid
+void
+Grid::setValue(int i)
+{
+  cout << "i=" << i << "x0_=" << x0_->value << " y0_=" << y0_->value;
+  cout << " x1_=" << x1_->value << " y1_=" << y1_->value << endl;
+
+  _gridX = x0_->value;
+  _gridY = y0_->value;
+
+  emit repaintSignal();
+  
 }

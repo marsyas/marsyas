@@ -4,6 +4,7 @@
      <file>images/predict.png</file>
      <file>images/train.png</file>
      <file>images/iTunes.png</file>
+     <file>images/openCollection.png</file>
 	 <file>images/init.png</file>
  </qresource>
 </RCC>

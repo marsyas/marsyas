@@ -60,6 +60,22 @@ void MainWindow::openiTunesLibrary() {
 		emit libraryUpdated();
 	}
 }
+
+//
+// Open a Marsyas .mf collection file
+//
+void MainWindow::openCollectionFile() {
+
+  QString fileName =
+	QFileDialog::getOpenFileName(this, tr("Open Collection File"),
+								 QDir::currentPath(),
+								 tr("Marsyas Collection File(*.mf)"));
+	if (fileName.isEmpty())
+		return;
+
+	_dataGrid->setTrainFile(fileName);
+}
+
 /*
 ** Load the default iTunes library if it exists
 */
@@ -226,6 +242,12 @@ void MainWindow::createActions() {
 	_openiTunesAction->setStatusTip(tr("Open iTunes Library file"));
 	connect(_openiTunesAction, SIGNAL(triggered()), this, SLOT(openiTunesLibrary()));
 
+	_openCollectionAction = new QAction(QIcon(":/images/openCollection.png"),
+					tr("Open Collection File"), this);
+	_openCollectionAction->setShortcut(tr("Ctrl+T"));
+	_openCollectionAction->setStatusTip(tr("Open Collection file"));
+	connect(_openCollectionAction, SIGNAL(triggered()), this, SLOT(openCollectionFile()));
+
 	_exitAction = new QAction(tr("E&xit"), this);
 	_exitAction->setShortcut(tr("Ctrl+Q"));
 	connect(_exitAction, SIGNAL(triggered()), this, SLOT(close()));
@@ -304,6 +326,7 @@ void MainWindow::createMenus() {
 
 	_openMenu = new QMenu(tr("Open..."));
 	_openMenu->addAction(_openiTunesAction);
+	_openMenu->addAction(_openCollectionAction);
 	_openMenu->addAction(_loadGridAction);
 	_openMenu->addAction(_normHashAction);
 
@@ -346,6 +369,7 @@ void MainWindow::createToolbars() {
 
 	_toolbar = addToolBar(tr("Tools"));
 	_toolbar->addAction(_openiTunesAction);
+	_toolbar->addAction(_openCollectionAction);
 	_toolbar->addSeparator();
 	_toolbar->addAction(_extractAction);
 	_toolbar->addAction(_trainingAction);

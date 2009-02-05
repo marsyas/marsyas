@@ -39,6 +39,10 @@ public:
 	MainWindow(Grid* grid_);
 	~MainWindow();
 
+  // sness - I should move this to a getter function, really.  and do
+  // it with signals and slots.  Please fix me.
+	GridDisplay *_display;
+
 signals:
 	void libraryUpdated();
 	void openPredictGridFile(QString);
@@ -51,6 +55,7 @@ signals:
 
 	private slots:  
 		void openiTunesLibrary();
+		void openCollectionFile();
 		void updateCurrentlyPlaying(MusicTrack *);
 		void about();
 		void display();
@@ -72,7 +77,6 @@ private:
 	void createMenus();
 
 	//Widgets
-	GridDisplay *_display;
 	Grid *_dataGrid;
 	PlayBox *_playBox;
 	Playlist *_playlist;
@@ -91,6 +95,7 @@ private:
 
 	QAction *_openiTunesAction;
 	QAction *_coutAction;
+	QAction *_openCollectionAction;
 	QAction *_exitAction;
 	QAction *_aboutAction;
 	QAction *_extractAction;;

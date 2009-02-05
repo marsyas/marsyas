@@ -19,6 +19,7 @@ set(APP_SOURCES
 	Parsers/iTunesXmlHandler.cpp
 	Parsers/iTunesXmlWriter.cpp
 	Widgets/Grid.cpp
+	Widgets/OSCReceiver.cpp
 	Widgets/Keypad.cpp
 	Widgets/PlayBox.cpp
 	Widgets/Playlist.cpp
@@ -54,6 +55,7 @@ set(APP_HEADERS
 	Parsers/iTunesXmlHandler.h
 	Parsers/iTunesXmlWriter.h
 	Widgets/Grid.h
+	Widgets/OSCReceiver.h
 	Widgets/Keypad.h
 	Widgets/PlayBox.h
 	Widgets/Playlist.h

@@ -37,6 +37,8 @@
 
 #include "../Widgets/Tracklist.h"
 
+#include "OSCReceiver.h"
+
 #define GRID_TRAINING_FILE	"training.mf"
 #define GRID_PREDICTION_FILE	"predict.mf"
 #define NUM_GENRES 10
@@ -111,6 +113,15 @@ public:
 	double get_train_std_factor()  { return train_std_factor_;}
 	int get_train_iterations()  { return train_iterations_;}
 
+  OSCReceiver *x0_;
+  OSCReceiver *y0_;
+  OSCReceiver *x1_;
+  OSCReceiver *y1_;
+
+  // sness
+  MarSystemQtWrapper* getMarSystemQtWrapper(){return mwr_;};
+
+ 
 	public slots: 
 		void setExtractMode();
 		void setTrainMode();
@@ -122,6 +133,10 @@ public:
 		void cancelPressed();
 		void openHash();
 		void resetGridSlot();
+
+  // sness
+  void setTrainFile(QString fname);
+  void setValue(int);
 
 signals: 
 		void playingTrack(MusicTrack *track);
@@ -176,7 +191,8 @@ private:
 	bool init_;
 	std::string playlist_;
 
-
+  // sness
+  std::string trainFile_;
 
 	// Indexed with index = (y * som_hight + x)
 	QVector<QList <std::string> > files_;
@@ -221,7 +237,6 @@ public:
 	void setX(int);
 	void setY(int);
 	void setFileName(std::string);
-
 
 private:
 	int x;
