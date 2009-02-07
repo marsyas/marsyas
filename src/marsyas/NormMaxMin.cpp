@@ -95,8 +95,8 @@ NormMaxMin::myUpdate(MarControlPtr sender)
       maximums_.stretch(inObservations_);
       minimums_.stretch(inObservations_);
       
-      maximums_.setval(DBL_MIN);
-      minimums_.setval(DBL_MAX);
+      maximums_.setval(-MAXREAL);
+      minimums_.setval(MAXREAL);
       maximumsPtr_->setValue(maximums_, NOUPDATE);
       minimumsPtr_->setValue(minimums_, NOUPDATE);  
     }
@@ -158,6 +158,9 @@ NormMaxMin::do_observations(realvec& in, realvec& out) {
 
   if (mode_ == "twopass") 
     {
+
+
+
       // first pass calculate min/max limits
       for (o=0; o < inObservations_; o++)
 		for (t = 0; t < inSamples_; t++)
@@ -167,7 +170,12 @@ NormMaxMin::do_observations(realvec& in, realvec& out) {
 			if (in(o,t) < minimums_(o))	
 			  minimums_(o) = in(o,t);
 			out(o,t) = in(o,t);
+
+
 		  }
+
+
+
       // second pass for normalization 
       for (o=0; o < inObservations_; o++)
 		for (t = 0; t < inSamples_; t++)
@@ -175,8 +183,14 @@ NormMaxMin::do_observations(realvec& in, realvec& out) {
 	    
 			if (ignoreLast) 
 			  {
-				if (o < inObservations_-1)
-				  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
+				  if (o < inObservations_-1)
+				  {
+					  
+					  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
+
+					  
+				  }
+				  
 				else 
 				  out(o,t) = in(o,t);
 			  }
@@ -189,8 +203,8 @@ NormMaxMin::do_observations(realvec& in, realvec& out) {
   
   if ((prev_mode_ == "predict") && (mode_ == "train"))
     {
-      maximums_.setval(DBL_MIN);
-      minimums_.setval(DBL_MAX);
+      maximums_.setval(-MAXREAL);
+      minimums_.setval(MAXREAL);
       maximumsPtr_->setValue(maximums_, NOUPDATE);
       minimumsPtr_->setValue(minimums_, NOUPDATE);  
     }
@@ -293,8 +307,8 @@ NormMaxMin::do_samples(realvec& in, realvec& out) {
 
   if ((prev_mode_ == "predict") && (mode_ == "train"))
     {
-      maximums_.setval(DBL_MIN);
-      minimums_.setval(DBL_MAX);
+      maximums_.setval(-MAXREAL);
+      minimums_.setval(MAXREAL);
       maximumsPtr_->setValue(maximums_, NOUPDATE);
       minimumsPtr_->setValue(minimums_, NOUPDATE);  
     }
@@ -398,8 +412,8 @@ NormMaxMin::do_slices(realvec& in, realvec& out) {
 
   if ((prev_mode_ == "predict") && (mode_ == "train"))
     {
-      maximums_.setval(DBL_MIN);
-      minimums_.setval(DBL_MAX);
+      maximums_.setval(-MAXREAL);
+      minimums_.setval(MAXREAL);
       maximumsPtr_->setValue(maximums_, NOUPDATE);
       minimumsPtr_->setValue(minimums_, NOUPDATE);  
     }
@@ -440,7 +454,11 @@ NormMaxMin::do_slices(realvec& in, realvec& out) {
 			if (ignoreLast) 
 			  {
 				if (o < inObservations_-1)
+				{
+					
 				  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(0)) / (maximums_(0) - minimums_(0)));
+				}
+				
 				else 
 				  out(o,t) = in(o,t);
 			  }

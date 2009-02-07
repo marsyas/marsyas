@@ -154,18 +154,18 @@ pca()
   mrs_natural nInstances = 
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   cout << "nInstances = " << nInstances << endl;
-  accum->updctrl("mrs_natural/nTimes", nInstances-1);
+  accum->updctrl("mrs_natural/nTimes", nInstances);
 
   net->addMarSystem(accum);
   net->addMarSystem(mng.create("PCA", "pca"));
   net->addMarSystem(mng.create("NormMaxMin", "norm"));
   net->addMarSystem(mng.create("WekaSink", "wsink"));
 
-  net->updctrl("PCA/pca/mrs_natural/npc", 3);
+  net->updctrl("PCA/pca/mrs_natural/npc", 2);
   net->updctrl("NormMaxMin/norm/mrs_bool/ignoreLast", true);
   net->updctrl("NormMaxMin/norm/mrs_string/mode", "twopass");
   net->updctrl("NormMaxMin/norm/mrs_real/lower", 0.0);
-  net->updctrl("NormMaxMin/norm/mrs_real/upper", 512.0);
+  net->updctrl("NormMaxMin/norm/mrs_real/upper", 11.0);
   
   net->updctrl("WekaSink/wsink/mrs_natural/nLabels", 
 	       net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses"));
@@ -173,22 +173,44 @@ pca()
   net->updctrl("WekaSink/wsink/mrs_string/filename", "pca_out.arff");
 
   net->tick();
-  
-  cout << "Done with ticking" << endl;
-  
 
   // the output of the PCA 
  const mrs_realvec& pca_transformed_data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
- cout << "Output first transformed feature using PCA" << endl;
+ cout << "Output transformed features using PCA" << endl;
+
+ string classNames = net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>(); 
+ vector<string> labelNames;
+ 
+ labelNames.clear();
+ 
+ for (int i = 0; i < net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>(); i++)
+ {
+	 string labelName;
+	 string temp;
+	 
+	 labelName = classNames.substr(0, classNames.find(","));
+	 temp = classNames.substr(classNames.find(",")+1, classNames.length());
+	 classNames = temp;
+	 labelNames.push_back(labelName);
+ }
+ 
+ 
+ cout << "12" << endl;
+ cout << "12" << endl;
  
  for (int t=0; t < pca_transformed_data.getCols(); t++) 
    {
-     cout << pca_transformed_data(0,t) << "\t";
-     cout << pca_transformed_data(1,t) << "\t";
-     cout << pca_transformed_data(2,t) << "\t";
-     cout << pca_transformed_data(3,t) << "\t";
-     cout << endl;
+
+	   cout << (int)pca_transformed_data(0,t) * 12 + (int)pca_transformed_data(1,t) << ",";
+	   cout << labelNames[(int)pca_transformed_data(2,t)];
+	   cout << endl;
+	   
+	   // cout << (int)pca_transformed_data(0,t) << "\t";
+	   // cout << (int)pca_transformed_data(1,t) << "\t";
+	   // cout << (int)pca_transformed_data(2,t) << "\t";
+     // cout << pca_transformed_data(3,t) << "\t";
+	   // cout << endl;
    }
 
   
