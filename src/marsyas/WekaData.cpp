@@ -224,6 +224,7 @@ void WekaData::Append(vector<mrs_real> *data)
 {
   MRSASSERT(data!=NULL&&data->size()==cols_);
   rows_++;
+  
   this->push_back(data);
 }//Append
 

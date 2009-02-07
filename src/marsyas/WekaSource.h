@@ -46,6 +46,8 @@ namespace Marsyas
 	public:
 		void SetupkFoldSections(const WekaData& data, mrs_natural foldCount, mrs_natural classAttr=-1)
 		{
+
+			
 			MRSASSERT(foldCount>0);
 			foldCount_ = foldCount;
 
@@ -70,6 +72,8 @@ namespace Marsyas
 		//setup the fold sections for this dataset.
 		void Reset()
 		{
+
+			
 			this->Shuffle();
 
 			rstep_ = (mrs_real)this->size() / (mrs_real)foldCount_;

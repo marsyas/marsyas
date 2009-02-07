@@ -302,7 +302,7 @@ SOM::myProcess(realvec& in, realvec& out)
 			for(int i =0; i < inObservations_ - 3; i++)
 			{
 				grid_map(px * grid_height_ + py, i) = in(i);
-		}	
+			}	
 
 			for (int x=0; x < grid_width_; x++) 
 				for (int y=0; y < grid_height_; y++)

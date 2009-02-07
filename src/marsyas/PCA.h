@@ -60,6 +60,7 @@ private:
 
 public:
   PCA(std::string name);
+  PCA(const PCA& a);
   ~PCA();
   MarSystem* clone() const;  
 

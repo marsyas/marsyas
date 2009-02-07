@@ -175,7 +175,6 @@ WekaSource::myUpdate(MarControlPtr sender)
 				validationModeEnum_ = kFoldStratified;
 			else
 			{
-				cout << "cp = " << cp << endl;
 				MRSASSERT(0);
 				(void)42;
 			}
@@ -274,7 +273,9 @@ void WekaSource::myProcess(realvec& in,realvec &out)
 			break;
       
 		default:
+			
 			handleDefault(trainMode, out);
+			
     }//switch
 
   
@@ -439,7 +440,6 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
 
 	ifstream *mis = new ifstream;
   
-	cout << "filename = " << filename << endl;
 	
 	mis->open(filename.c_str());
 	MRSASSERT( mis->is_open() );
@@ -461,18 +461,14 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	while (mis.peek() == '%') 
     {
 		mis.getline(str, 1023);
-		cout << str << endl;
-		
     }
   
 	string token1,token2,token3;
   
 	mis >> token1;
-	cout << "---" << token1 << "----" << endl;
 	
 	if ((token1 != "@relation")&&(token1 != "@RELATION"))
     { 
-		cout << "token1 " << token1 << endl;
 		
 		MRSERR("Not proper weka .arff file");
 		return;
@@ -506,7 +502,6 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 			cp = strtok(cp, ",");
 			while(cp)
 			{
-
 				classesFound_.push_back(cp);
 				cp = strtok(NULL, ",");
 			}//while
@@ -527,7 +522,6 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	
 	for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++)
     {
-
     }
 	
 	
@@ -581,7 +575,6 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 				if(attributesIncluded_[ii])
 				{
 					lineBuffer->at(index++) = ::atof( cp );
-
 				}
 				cp = strtok(NULL, ",");
 			}//for index
@@ -593,9 +586,10 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 
 			MRSASSERT(classIndex>=0);
 			lineBuffer->at(index) = (mrs_real)classIndex;
-	  
+			
 			data.Append(lineBuffer);
 			lineCount++;
+			
 		}
 		else // skip comment line 
 		{
@@ -603,6 +597,9 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 		}
 		mis >> token;
     }//while
+
+
+	
 }
 
 //Given a string, check if it is an class found in the arff file header.

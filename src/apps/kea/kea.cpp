@@ -153,7 +153,8 @@ pca()
   accum->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   mrs_natural nInstances = 
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
-  accum->updctrl("mrs_natural/nTimes", nInstances);
+  cout << "nInstances = " << nInstances << endl;
+  accum->updctrl("mrs_natural/nTimes", nInstances-1);
 
   net->addMarSystem(accum);
   net->addMarSystem(mng.create("PCA", "pca"));
@@ -172,7 +173,9 @@ pca()
   net->updctrl("WekaSink/wsink/mrs_string/filename", "pca_out.arff");
 
   net->tick();
-
+  
+  cout << "Done with ticking" << endl;
+  
 
   // the output of the PCA 
  const mrs_realvec& pca_transformed_data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();

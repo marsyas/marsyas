@@ -274,7 +274,7 @@ MarGrid::train()
   
   cout << "Starting training" << endl;
 
-  for (int i=0; i < 2000; i ++) 
+  for (int i=0; i < 100; i ++) 
     {
       cout << "Training iteration" << i << endl;
       norm_som_fmatrix.shuffle();

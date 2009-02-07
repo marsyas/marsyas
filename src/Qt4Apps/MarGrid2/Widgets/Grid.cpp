@@ -3,7 +3,10 @@
 Grid::Grid()
 {
 	_collection = MusicCollection::getInstance();
-
+	
+	som_ = NULL;
+	norm_ = NULL;
+	
 	som_height = 12;
 	som_width = 12;
 	oldWidth_ = som_width;
@@ -114,7 +117,9 @@ void Grid::run()
 }
 
 void Grid::setup() {
-	_cellSize = 50;	//size of Classifier
+	cout << "Setup " << endl;
+	
+	_cellSize = 50;	//size of cell in pixes
 
 	QList<std::string> *ql;
 	for(int i=0; i < som_height; i++) {
@@ -128,6 +133,9 @@ void Grid::setup() {
 	}
 	setupNetworks();
 }
+
+
+
 void Grid::setupNetworks() {
 
 
@@ -165,7 +173,8 @@ void Grid::setupNetworks() {
 
 	total_->addMarSystem(stats2);
 	total_->addMarSystem(mng.create("Annotator", "ann"));
-
+	total_->addMarSystem(mng.create("WekaSink", "wsink"));
+	
 		
 
 
@@ -212,6 +221,14 @@ void Grid::setupNetworks() {
 	total_->linkctrl("mrs_natural/label",
 		"Annotator/ann/mrs_natural/label");
 
+	total_->linkctrl("WekaSink/wsink/mrs_natural/nLabels", 
+					"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
+	total_->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+
+
+	total_->linkctrl("WekaSink/wsink/mrs_string/labelNames",
+					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
+	
 	total_->updctrl("mrs_natural/inSamples", 512);
 	total_->updctrl("mrs_real/repetitions", 1.0);
 
@@ -260,7 +277,7 @@ void Grid::extract() {
 void Grid::extractAction(std::string filename)
 {
 	total_->updctrl("mrs_string/filename", filename);
-
+	total_->updctrl("WekaSink/wsink/mrs_string/filename", "margrid2.arff");
 
 	int numFiles = total_->getctrl("mrs_natural/numFiles")->to<mrs_natural>();
 	realvec som_in;
@@ -285,7 +302,6 @@ void Grid::extractAction(std::string filename)
 	cout << "Calculating features" << endl;
 	for (int index=0; index < numFiles; index++)
 	{
-		cout<<"extract 1"<<"\n";
 		if(cancel_)
 		{
 			cancel_ = false;
@@ -295,24 +311,18 @@ void Grid::extractAction(std::string filename)
 		total_->updctrl("mrs_bool/memReset", true);
 		total_->updctrl("mrs_natural/cindex", index);
 
-		cout<<"extract 2"<<"\n";
 		total_->process(som_in,som_res);
-		cout<<"extract 3"<<"\n";
 		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
 		cout << "Processed " << index + 1 << " file of "<<numFiles<<" files" << endl; 
 		cout << current  << "\n";
-		cout<<"extract 4"<<"\n";
 		// hash the resulting feature on file name
 		if(featureHash->find(current) == featureHash->end()){
-			cout<<"extract 4.1"<<"\n";
 			featureHash->insert(pair<string,realvec>(current,som_res));
 		}
-		cout<<"extract 5"<<"\n";
 
 		for (int o=0; o < total_onObservations; o++) 
 			som_fmatrix(o, index) = som_res(o, 0);
 		total_->updctrl("mrs_bool/advance", true);     
-		cout<<"extract 6"<<"\n";
 	}
 
 	ofstream oss;
@@ -322,7 +332,6 @@ void Grid::extractAction(std::string filename)
 
 	// normalize and create hashmap of normalized feature vectors on their file name
 	
-	MarSystem*  norm_;
 	realvec norm_som_fmatrix;
 
 	// Normalize the feature matrix so that all features are between 0 and 1
@@ -440,9 +449,6 @@ void Grid::train(bool skipTraining) {
 		ifstream iss;
 		iss.open("norm_som_fmatrix.txt");
 		iss >> norm_som_fmatrix;
-
-
-		MarSystem*  som_;
 
 		// Skip the SOM manipulation.
 		if(!skipTraining)
@@ -764,17 +770,28 @@ Grid::openPredictionGrid(QString fname)
 	istringstream intBufferTwo(intBufferStr);
 	intBufferTwo >> y_size;
 
+	cout << "x_size = " << x_size << endl;
+	cout << "y_size = " << y_size << endl;
+	
+	cout << "Before reset grid" << endl;
 	resetGrid();
+	cout << "After reset grid" << endl;
+	
 	int i = 1;
 	while(!file_ip.eof())
 	{
 		getline(file_ip,line);
+		cout << "Line is " << line << endl;
+		
 		splitIndex = line.find_first_of(',');
 		vecIndex = line.substr(0,splitIndex);
 		listFname = line.substr(splitIndex + 1);
 		qFname =  listFname.c_str();
 		istringstream buffer(vecIndex);	
 		buffer >> index;
+		cout << "index = " << index << endl;
+		cout << "filename = " << qFname << endl;
+		
 		addTrack(index % som_height, index / som_height, qFname);
 	}
 }
@@ -923,15 +940,18 @@ void Grid::cancelPressed()
 */
 void Grid::resetGrid()
 {
+
+	
 	for(int i = 0; i < oldHeight_ * oldWidth_; i++)
 		free(genreDensity[i]);
 	free(genreDensity);
 	oldHeight_ = som_height;
 	oldWidth_ = som_width;
 
+
 	genreDensity = (int **)malloc(som_height * som_width * sizeof(int *));
 	
-	for (int i = 0; i < som_height * som_width; i++) 
+	for (int i = 0; i < som_height*som_width; i++) 
 	{
 		genreDensity[i] = (int *)malloc(10 * sizeof(int));
 		for(int j = 0; j < 10; j++)
@@ -939,6 +959,8 @@ void Grid::resetGrid()
 			genreDensity[i][j] = 0;
 		}
 	}
+
+
 	initFileLocations.clear();
 	initFileLocations.resize(som_height * som_width);
 	_gridX = 0;
@@ -948,6 +970,9 @@ void Grid::resetGrid()
 	cancel_ = false;
 	state_ = 0;
 	init_ = false;
+
+
+
 	delete featureHash;
 	delete normFeatureHash;
 	featureHash = new multimap<string, realvec>();
@@ -957,6 +982,8 @@ void Grid::resetGrid()
 	counterSizes.clear();
 	labels.clear();
 	files_.clear();
+
+
 	delete mwr_;
 	delete pnet_;
 	delete som_;
@@ -964,10 +991,6 @@ void Grid::resetGrid()
 	delete norm_;
 	
 	setup();
-
-
-	
-
 }
 
 int Grid::getCurrentIndex()

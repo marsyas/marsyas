@@ -32,6 +32,14 @@ PCA::PCA(string name):MarSystem("PCA",name)
 	addControls();
 }
 
+
+PCA::PCA(const PCA& a): MarSystem(a)
+{
+	evals_ = NULL;
+	interm_ = NULL;
+}
+
+
 PCA::~PCA()
 {
   delete [] evals_;
@@ -106,14 +114,13 @@ PCA::myProcess(realvec& in, realvec& out)
   mrs_natural o1,o2;
    
 
-
-
   for (o=0; o < inObservations_-1; o++)
     for (t = 0; t < inSamples_; t++)
       {
-	temp_matrix_(o, t) = in(o,t);
+		  temp_matrix_(o, t) = in(o,t);
       }
 
+  
   
   //in.meanSample(means_);//original code
   //in.stdSample(means_,stds_); //original code
@@ -121,6 +128,11 @@ PCA::myProcess(realvec& in, realvec& out)
   //stds_.create(in.getRows());//not needed anymore if using new realvec::operator=() ;-)
   temp_matrix_.meanObs(means_); 
   temp_matrix_.stdObs(stds_); 
+
+
+  
+  
+
 
   // Adjust data : ( X - means(X) ) / ( sqrt(n) * stds(X) )
   for (o=0; o < inObservations_-1; o++)
@@ -142,10 +154,16 @@ PCA::myProcess(realvec& in, realvec& out)
   }
   corr_matrix_(inObservations_-2, inObservations_-2) = 1.0;
   
+  
+
+
   // Triangular decomposition
   tred2(corr_matrix_, inObservations_-1, evals_, interm_);
+
+
   // Reduction of symmetric tridiagonal matrix
   tqli( evals_, interm_, inObservations_-1, corr_matrix_);
+  
 
   /* 
   mrs_real percent_eig = 0.0;
@@ -183,11 +201,11 @@ PCA::myProcess(realvec& in, realvec& out)
      }
   }    
 
+
   // copy the labels
   for( t=0 ; t<inSamples_ ; t++ )
     out(onObservations_-1, t) = in(inObservations_-1, t);
   setctrl("mrs_realvec/pcs",npcs_);
-
 
 }
 
@@ -294,7 +312,7 @@ PCA::tqli(mrs_real d[], mrs_real e[], mrs_natural m, realvec &z)
    
    for (i = 1; i < m; i++)
       e[i-1] = e[i];
-   e[m] = 0.0;
+   e[m-1] = 0.0;
    for (l = 0; l < m; l++)
    {
       iter = 0;
