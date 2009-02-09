@@ -51,10 +51,6 @@ void
 Annotator::addControls()
 {
   addctrl("mrs_natural/label", 0, ctrl_label_);
-  // addctrl("mrs_string/labels","");
-  // setctrlState("mrs_string/labels",true);
-  labels_str_ = "";
-  labels_index_ = 0; 
 }
 
 
@@ -69,22 +65,6 @@ Annotator::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);  
 
-
-  /* if( labels_str_.compare( getctrl("mrs_string/labels")->to<mrs_string>() ) != 0 )
-  {     
-  labels_str_ = getctrl("mrs_string/labels")->to<mrs_string>();
-  labels_.clear();
-	  
-	  while( labels_str_.length() != 0 )
-	  {
-	  mrs_natural i = labels_str_.find(",");
-	  labels_.push_back( strtol( labels_str_.substr(0, i).c_str() , NULL , 10 ) );
-	  labels_str_ = labels_str_.substr( i+1 , labels_str_.length()-i-1 );
-	  }
-	  
-	  labels_index_ = 0;
-  }
-   */ 
 }
 
 
@@ -102,15 +82,7 @@ Annotator::myProcess(realvec& in, realvec& out)
 	
   for (t=0; t < inSamples_; t++) 
   {
-	// if( labels_.size() == 0 )
-	// {
-		out(onObservations_-1, t) = (mrs_real)label;
-	// }
-	// else
-	// {
-	//	out(onObservations_-1, t) = (mrs_real)labels_[labels_index_];
-	// 	labels_index_ = (labels_index_+1) % labels_.size();
-	//}
+	  out(onObservations_-1, t) = (mrs_real)label;
   } 
 }
 

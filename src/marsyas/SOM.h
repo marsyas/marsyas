@@ -30,6 +30,9 @@ namespace Marsyas
 	\ingroup MachineLearning
     \brief Self-organizing map
 
+	The input should consist of the following observatations: feature values followed 
+by file index followed by the x, y coordinates for initialization. By default the x,y coordinates 
+are set to -1.0, 1.0 and are ignored. 
 */
 
 

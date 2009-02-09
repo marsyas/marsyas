@@ -65,7 +65,7 @@ NormMaxMin::addControls()
   addctrl("mrs_string/mode", "train");
   addctrl("mrs_string/domain", "observations");
 	
-  addctrl("mrs_bool/ignoreLast", false);
+  addctrl("mrs_natural/ignoreLast", 0);
   addctrl("mrs_bool/init", false, initPtr_);
   setctrlState("mrs_bool/init", true);
 }
@@ -149,7 +149,7 @@ NormMaxMin::do_observations(realvec& in, realvec& out) {
   upper_ = upperPtr_->to<mrs_real>();
   
   mode_ = getctrl("mrs_string/mode")->to<mrs_string>();
-  mrs_bool ignoreLast = getctrl("mrs_bool/ignoreLast")->to<mrs_bool>();
+  mrs_natural ignoreLast = getctrl("mrs_natural/ignoreLast")->to<mrs_natural>();
 
   // sness
   domain_ = getctrl("mrs_string/domain")->to<mrs_string>();
@@ -177,86 +177,57 @@ NormMaxMin::do_observations(realvec& in, realvec& out) {
 
 
       // second pass for normalization 
-      for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
-		  {
-	    
-			if (ignoreLast) 
-			  {
-				  if (o < inObservations_-1)
-				  {
-					  
-					  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
-
-					  
-				  }
-				  
-				else 
-				  out(o,t) = in(o,t);
-			  }
-			else
-			  {
-				out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
-			  }
-		  }
-    }
+      for (o=0; o < inObservations_-ignoreLast; o++)
+		  for (t = 0; t < inSamples_; t++)
+			  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
+	  
+	}
+  
   
   if ((prev_mode_ == "predict") && (mode_ == "train"))
-    {
-      maximums_.setval(-MAXREAL);
-      minimums_.setval(MAXREAL);
-      maximumsPtr_->setValue(maximums_, NOUPDATE);
-      minimumsPtr_->setValue(minimums_, NOUPDATE);  
-    }
+  {
+	  maximums_.setval(-MAXREAL);
+	  minimums_.setval(MAXREAL);
+	  maximumsPtr_->setValue(maximums_, NOUPDATE);
+	  minimumsPtr_->setValue(minimums_, NOUPDATE);  
+  }
   
   if (mode_ == "train")
-    {
-      // first pass calculate min/max limits
-      for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
+  {
+	  // first pass calculate min/max limits
+	  for (o=0; o < inObservations_; o++)
+		  for (t = 0; t < inSamples_; t++)
 		  {
-			if (in(o,t) > maximums_(o))
-			  maximums_(o) = in(o,t);
-			if (in(o,t) < minimums_(o))	
-			  minimums_(o) = in(o,t);
-			out(o,t) = in(o,t);
-	    
+			  if (in(o,t) > maximums_(o))
+				  maximums_(o) = in(o,t);
+			  if (in(o,t) < minimums_(o))	
+				  minimums_(o) = in(o,t);
+			  out(o,t) = in(o,t);
 		  }
-      
-      setctrl(maximumsPtr_, maximums_);
-      setctrl(minimumsPtr_, minimums_);  
-    }
+	  
+	  setctrl(maximumsPtr_, maximums_);
+	  setctrl(minimumsPtr_, minimums_);  
 
-
-  if ((prev_mode_ == "train")&&(mode_ == "predict"))	
-    {
-      maximums_ = maximumsPtr_->to<mrs_realvec>();
-      minimums_ = minimumsPtr_->to<mrs_realvec>();
-    }
+  }
   
-
+  
+  if ((prev_mode_ == "train")&&(mode_ == "predict"))	
+  {
+	  maximums_ = maximumsPtr_->to<mrs_realvec>();
+	  minimums_ = minimumsPtr_->to<mrs_realvec>();
+  }
+  
+  
   if (mode_ == "predict")
-    {
-      // second pass for normalization 
-      for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
-		  {
-	    
-			if (ignoreLast) 
-			  {
-				if (o < inObservations_-1)
-				  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
-				else 
-				  out(o,t) = in(o,t);
-			  }
-			else
-			  {
-				out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
-			  }
-		  }
-    }
+  {
+	  // second pass for normalization 
+	  for (o=0; o < inObservations_-ignoreLast; o++)
+		  for (t = 0; t < inSamples_; t++)
+			  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(o)) / (maximums_(o) - minimums_(o)));
+  }
   
 }
+
 
 void 
 NormMaxMin::do_samples(realvec& in, realvec& out) {
@@ -268,7 +239,7 @@ NormMaxMin::do_samples(realvec& in, realvec& out) {
   upper_ = upperPtr_->to<mrs_real>();
   
   mode_ = getctrl("mrs_string/mode")->to<mrs_string>();
-  mrs_bool ignoreLast = getctrl("mrs_bool/ignoreLast")->to<mrs_bool>();
+  mrs_natural ignoreLast = getctrl("mrs_natural/ignoreLast")->to<mrs_natural>();
 
   domain_ = getctrl("mrs_string/domain")->to<mrs_string>();
   
@@ -287,21 +258,10 @@ NormMaxMin::do_samples(realvec& in, realvec& out) {
 			out(o,t) = in(o,t);
 		  }
       // second pass for normalization 
-      for (t=0; t < inSamples_; t++)
-		for (o = 0; o < inObservations_; o++)
+      for (t=0; t < inSamples_-ignoreLast; t++)
+		  for (o = 0; o < inObservations_; o++)
 		  {
-	    
-			if (ignoreLast) 
-			  {
-				if (t < inSamples_-1)
-				  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(t)) / (maximums_(t) - minimums_(t)));
-				else 
-				  out(o,t) = in(o,t);
-			  }
-			else
-			  {
-				out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(t)) / (maximums_(t) - minimums_(t)));
-			  }
+			  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(t)) / (maximums_(t) - minimums_(t)));
 		  }
     }
 
@@ -342,21 +302,10 @@ NormMaxMin::do_samples(realvec& in, realvec& out) {
   if (mode_ == "predict")
     {
       // second pass for normalization 
-	  for (t = 0; t < inSamples_; t++)
+	  for (t = 0; t < inSamples_-ignoreLast; t++)
 		for (o=0; o < inObservations_; o++)
 		  {
-	    
-			if (ignoreLast) 
-			  {
-				if (t < inSamples_-1)
-				  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(t)) / (maximums_(t) - minimums_(t)));
-				else 
-				  out(o,t) = in(o,t);
-			  }
-			else
-			  {
-				out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(t)) / (maximums_(t) - minimums_(t)));
-			  }
+			  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(t)) / (maximums_(t) - minimums_(t)));
 		  }
     }
 
@@ -375,7 +324,7 @@ NormMaxMin::do_slices(realvec& in, realvec& out) {
   upper_ = upperPtr_->to<mrs_real>();
   
   mode_ = getctrl("mrs_string/mode")->to<mrs_string>();
-  mrs_bool ignoreLast = getctrl("mrs_bool/ignoreLast")->to<mrs_bool>();
+  mrs_natural ignoreLast = getctrl("mrs_natural/ignoreLast")->to<mrs_natural>();
 
   domain_ = getctrl("mrs_string/domain")->to<mrs_string>();
   
@@ -393,20 +342,10 @@ NormMaxMin::do_slices(realvec& in, realvec& out) {
 		  out(o,t) = in(o,t);
 		}
 	// second pass for normalization 
-	for (o=0; o < inObservations_; o++) 
+	for (o=0; o < inObservations_-ignoreLast; o++) 
 	  for (t = 0; t < inSamples_; t++) 
 		{
-		  if (ignoreLast) 
-			{
-			  if (o < inObservations_-1)
-				out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(0)) / (maximums_(0) - minimums_(0)));
-			  else 
-				out(o,t) = in(o,t);
-			} 
-		  else 
-			{
-			  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(0)) / (maximums_(0) - minimums_(0)));
-			}
+			out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(0)) / (maximums_(0) - minimums_(0)));
 		}
   }
 
@@ -447,25 +386,10 @@ NormMaxMin::do_slices(realvec& in, realvec& out) {
   if (mode_ == "predict")
     {
       // second pass for normalization 
-      for (o=0; o < inObservations_; o++)
+      for (o=0; o < inObservations_-ignoreLast; o++)
 		for (t = 0; t < inSamples_; t++)
 		  {
-	    
-			if (ignoreLast) 
-			  {
-				if (o < inObservations_-1)
-				{
-					
-				  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(0)) / (maximums_(0) - minimums_(0)));
-				}
-				
-				else 
-				  out(o,t) = in(o,t);
-			  }
-			else
-			  {
-				out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(0)) / (maximums_(0) - minimums_(0)));
-			  }
+			  out(o,t) = lower_ + range_ * ((in(o,t) - minimums_(0)) / (maximums_(0) - minimums_(0)));
 		  }
     }
 

@@ -150,6 +150,7 @@ void Grid::setupNetworks() {
 	MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
 	featureFanout->addMarSystem(mng.create("Centroid", "centroid"));
 	featureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
+	featureFanout->addMarSystem(mng.create("Flux", "flux"));
 	featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
 
 	spectralNet->addMarSystem(featureFanout);
@@ -295,7 +296,7 @@ void Grid::extractAction(std::string filename)
 	som_res.create(total_onObservations, 
 		total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
-	som_fmatrix.create(total_onObservations, 
+	som_fmatrix.create(total_onObservations+2, 
 		numFiles);
 
 	// calculate features 
@@ -322,6 +323,12 @@ void Grid::extractAction(std::string filename)
 
 		for (int o=0; o < total_onObservations; o++) 
 			som_fmatrix(o, index) = som_res(o, 0);
+
+		for (int o=total_onObservations; o< total_onObservations+2; o++)
+		{
+			som_fmatrix(o, index) = -1.0;			  
+		}
+		
 		total_->updctrl("mrs_bool/advance", true);     
 	}
 
@@ -339,12 +346,12 @@ void Grid::extractAction(std::string filename)
 		som_fmatrix.getCols());
 	norm_ = mng.create("NormMaxMin", "norm");
 	norm_->updctrl("mrs_natural/inSamples", som_fmatrix.getCols());
-	norm_->updctrl("mrs_natural/inObservations", 
-		total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-
+	norm_->updctrl("mrs_natural/inObservations",  som_fmatrix.getRows());
+	norm_->updctrl("mrs_natural/ignoreLast", 3);
 	norm_->updctrl("mrs_string/mode", "train");
 	norm_->process(som_fmatrix, norm_som_fmatrix);
 	norm_->updctrl("mrs_string/mode", "predict");  
+
 	norm_->process(som_fmatrix, norm_som_fmatrix);
 
 

@@ -106,7 +106,7 @@ SOM::init_grid_map()
 	
 	for (int x=0; x < grid_width_; x++) 
 		for (int y=0; y < grid_height_; y++)
-			for (int o=0; o < inObservations_ -1; o++)
+			for (int o=0; o < inObservations_ - 3; o++)
 			{
 				grid_map(x * grid_height_ + y, o) = randD(1.0);
 			}
@@ -165,14 +165,14 @@ SOM::myUpdate(MarControlPtr sender)
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
 	if ((grid_size != mrows) || 
-		(inObservations_-1 != mcols))
+		(inObservations_-3 != mcols))
 	{
 		if (inObservations_ != 1) 
 		{
 			MarControlAccessor acc_grid(ctrl_gridmap_);
 			realvec& grid_map = acc_grid.to<mrs_realvec>();
-			grid_map.create(grid_size, inObservations_-1);
-			adjustments_.create(inObservations_-1);      
+			grid_map.create(grid_size, inObservations_-3);
+			adjustments_.create(inObservations_-3);      
 			
 			init_grid_map();
 		}
@@ -201,7 +201,7 @@ SOM::find_grid_location(realvec& in, int t)
 	
 			mrs_real dist = 0.0;
 
-			for (o=0; o < inObservations_-1; o++)
+			for (o=0; o < inObservations_-3; o++)
 			{
 				ival = in(o,t);
 				pval = grid_map(x * grid_height_ + y, o);
@@ -252,12 +252,22 @@ SOM::myProcess(realvec& in, realvec& out)
 
 		for (t=0; t < inSamples_; t++) 
 		{
-			find_grid_location(in, t);
-			px = (int) grid_pos_(0);
-			py = (int) grid_pos_(1);
+
+			
+			px = (int) in(inObservations_-2, t);
+			py = (int) in(inObservations_-1, t);
+
+
+			
+			if ((px == -1.0)&&(px == -1.0))
+			{
+				find_grid_location(in, t);
+				px = (int) grid_pos_(0);
+				py = (int) grid_pos_(1);				
+			}
 			out(0,t) = px;
 			out(1,t) = py;
-			out(2,t) = in(inObservations_-1,t);	  
+			out(2,t) = in(inObservations_-3,t);	  
 			
 			for (int x=0; x < grid_width_; x++) 
 				for (int y=0; y < grid_height_; y++)
@@ -269,7 +279,7 @@ SOM::myProcess(realvec& in, realvec& out)
 					
 					// subtract map vector from training data vector 
 					adj = alpha_ * geom_dist_gauss;
-					for (o=0; o < inObservations_-1; o++) 
+					for (o=0; o < inObservations_-3; o++) 
 					{
 						adjustments_(o) = in(o,t) - grid_map(x * grid_height_ + y, o);
 						adjustments_(o) *= adj;
@@ -298,7 +308,6 @@ SOM::myProcess(realvec& in, realvec& out)
 			// no need to find grid locations, just read from the file
 			px = (int) in( in.getRows() - 2, t);
 			py = (int) in( in.getRows() - 1, t);
-			cout << "px: " << px << endl << "py: " << py << endl;
 			for(int i =0; i < inObservations_ - 3; i++)
 			{
 				grid_map(px * grid_height_ + py, i) = in(i);
@@ -349,9 +358,12 @@ SOM::myProcess(realvec& in, realvec& out)
 			find_grid_location(in, t);
 			px = (int) grid_pos_(0);
 			py = (int) grid_pos_(1);
+
+			
+
 			out(0,t) = px;
 			out(1,t) = py;
-			out(2,t) = in(inObservations_-1,t);	  
+			out(2,t) = in(inObservations_-3,t);	  
 		}
 	}
 	

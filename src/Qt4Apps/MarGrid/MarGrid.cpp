@@ -98,6 +98,7 @@ MarGrid::setupTrain(QString fname)
   MarSystem* featureFanout = mng.create("Fanout", "featureFanout");
   featureFanout->addMarSystem(mng.create("Centroid", "centroid"));
   featureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
+  featureFanout->addMarSystem(mng.create("Flux", "flux"));
   featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
   
   spectralNet->addMarSystem(featureFanout);
@@ -202,13 +203,14 @@ MarGrid::extract()
   som_res.create(total_onObservations, 
 		 total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
-  som_fmatrix.create(total_onObservations, 
+  som_fmatrix.create(total_onObservations+2, 
 		     numFiles);
 
   // calculate features 
   cout << "Calculating features" << endl;
   
-
+  
+  
   for (index=0; index < numFiles; index++)
     {
       total_->updctrl("mrs_natural/label", index);
@@ -225,8 +227,18 @@ MarGrid::extract()
 	  
       for (int o=0; o < total_onObservations; o++) 
 		  som_fmatrix(o, index) = som_res(o, 0);
-      total_->updctrl("mrs_bool/advance", true);      
 	  
+	  // this is where the initialization locations should be provided 
+	  for (int o=total_onObservations; o< total_onObservations+2; o++)
+	  {
+		  /* if ((index > 120)&&(index <140)) 
+			  som_fmatrix(o, index) = 0.0;
+		  else 
+		  */ 
+		  som_fmatrix(o, index) = -1.0;			  
+	  }
+	  
+      total_->updctrl("mrs_bool/advance", true);      
     }
 
   ofstream oss;
@@ -251,8 +263,8 @@ MarGrid::train()
 			  train_som_fmatrix.getCols());
   norm_ = mng.create("NormMaxMin", "norm");
   norm_->updctrl("mrs_natural/inSamples", train_som_fmatrix.getCols());
-  norm_->updctrl("mrs_natural/inObservations", 
-  total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+  norm_->updctrl("mrs_natural/inObservations", train_som_fmatrix.getRows());
+  norm_->updctrl("mrs_natural/ignoreLast", 3);
   norm_->updctrl("mrs_string/mode", "train");
   norm_->process(train_som_fmatrix, norm_som_fmatrix);
   norm_->updctrl("mrs_string/mode", "predict");  
