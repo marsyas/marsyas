@@ -162,7 +162,7 @@ pca()
   net->addMarSystem(mng.create("WekaSink", "wsink"));
 
   net->updctrl("PCA/pca/mrs_natural/npc", 2);
-  net->updctrl("NormMaxMin/norm/mrs_bool/ignoreLast", true);
+  net->updctrl("NormMaxMin/norm/mrs_natural/ignoreLast", 1);
   net->updctrl("NormMaxMin/norm/mrs_string/mode", "twopass");
   net->updctrl("NormMaxMin/norm/mrs_real/lower", 0.0);
   net->updctrl("NormMaxMin/norm/mrs_real/upper", 11.0);
