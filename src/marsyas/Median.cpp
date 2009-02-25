@@ -28,7 +28,6 @@ Median::Median(string name):MarSystem("Median", name)
 
 Median::Median(const Median& a) : MarSystem(a)
 {
-	ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");
 }
 
 
@@ -45,30 +44,48 @@ Median::clone() const
 void
 Median::addControls()
 {
-
-	addctrl("mrs_bool/dummyEXAMPLE", false);
-	setctrlState("mrs_bool/dummyEXAMPLE", true);
-
-	addctrl("mrs_real/gain", 1.0, ctrl_gain_EXAMPLE_);
-
 }
 
 void
 Median::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("Median.cpp - Median:myUpdate");
+  (void) sender;
+  MRSDIAG("Median.cpp - Median:myUpdate");
 
-	MarSystem::myUpdate(sender);
+  ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+
+  obsrow_.create(ctrl_inSamples_->to<mrs_natural>());
+
+  //defaultUpdate(); [!]
+  inObservations_ = ctrl_inObservations_->to<mrs_natural>();
+
+  ostringstream oss;
+  string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+  for (int i = 0; i < inObservations_; i++)
+	{
+	  string inObsName;
+	  string temp;
+	  inObsName = inObsNames.substr(0, inObsNames.find(","));
+	  temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+	  inObsNames = temp;
+	  oss << "Median" << "_" << inObsName << ",";
+	}
+  ctrl_onObsNames_->setValue(oss.str(),NOUPDATE);
 }
 
 void
 Median::myProcess(realvec& in, realvec& out)
 {
-	const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
+	out.setval(0.0);
+	for (o=0; o < inObservations_; o++) {
+	  for (t = 0; t < inSamples_; t++) {
+		obsrow_(t) = in(o,t);
+	  }
+	  out(o,0) = obsrow_.median();
+	}
 
-	for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
-			out(o,t) = gainValueEXAMPLE * in(o,t);
 }
 
 

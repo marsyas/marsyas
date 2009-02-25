@@ -37,7 +37,7 @@ private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
 
-	MarControlPtr ctrl_gain_EXAMPLE_;
+  realvec obsrow_;
 
 public:
 	Median(std::string name);
