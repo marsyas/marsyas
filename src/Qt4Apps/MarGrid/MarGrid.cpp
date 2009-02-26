@@ -37,9 +37,9 @@ MarGrid::MarGrid(QWidget *parent)
 
   int winWidth, winHeight;
   
-  cell_size = 50;
-  som_width = 12;
-  som_height = 12;
+  cell_size = 30;
+  som_width = 20;
+  som_height = 20;
   initAudio_ = false;
   continuous_ = false;
   blackwhite_ = false;
@@ -286,7 +286,7 @@ MarGrid::train()
   
   cout << "Starting training" << endl;
 
-  for (int i=0; i < 100; i ++) 
+  for (int i=0; i < 200; i ++) 
     {
       cout << "Training iteration" << i << endl;
       norm_som_fmatrix.shuffle();

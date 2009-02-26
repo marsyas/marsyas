@@ -57,14 +57,14 @@ void
 PeakPeriods2BPM::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
-      
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_/2; t++)
-      {
-	out(o,2*t) = in(o,2*t);
-	out(o,2*t+1) = (mrs_real)(srate_ * 60.0 / in(o, 2*t+1));
-      }
-  
+
+	for (o=0; o < inObservations_; o++)
+		for (t = 0; t < inSamples_/2; t++)
+		{
+			out(o,2*t) = in(o,2*t);
+			out(o,2*t+1) = (mrs_real)(srate_ * 60.0 / in(o, 2*t+1));
+		}
+	
 }
 
 

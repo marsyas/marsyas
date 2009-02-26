@@ -113,6 +113,8 @@ void tempo_medianMultiBands(string sfName, string resName)
   total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
 
 
+  
+
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);  
   // update the controls 
   mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
@@ -695,8 +697,10 @@ tempo_medianSumBands(string sfName, string resName)
   total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
   nChannels = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
-  srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
+  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
+
+  
   mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
   mrs_natural hopSize = winSize / 8;
 
@@ -725,6 +729,7 @@ tempo_medianSumBands(string sfName, string resName)
   total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
   total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
   total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
+
 
   
   // prepare vectors for processing 
