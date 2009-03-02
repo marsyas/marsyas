@@ -184,6 +184,7 @@
 #include "PvMultiResolution.h" 
 #include "Gain.h"
 #include "Selector.h"
+#include "PhaseRandomize.h"
 //modifyHeader
 
 using namespace std;
@@ -354,6 +355,7 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("Gain", new Gain("gp"));
 	registerPrototype("Selector", new Selector("selectorpr"));
+	registerPrototype("PhaseRandomize", new PhaseRandomize("phaserandomizepr"));
 	//modifyRegister
 
 	//***************************************************************************************

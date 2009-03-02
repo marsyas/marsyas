@@ -1194,9 +1194,40 @@ toy_with_inSamples(string sfName)
   
 }
 
-
 void 
 toy_with_fft(string sfName) 
+{
+	cout << "Toyping with fft" << endl;
+	MarSystemManager mng;
+	
+	MarSystem* series = mng.create("Series","network");
+	series->addMarSystem(mng.create("SoundFileSource","src"));
+	series->addMarSystem(mng.create("Spectrum", "spk"));
+	series->addMarSystem(mng.create("PhaseRandomize", "prandom"));
+	series->addMarSystem(mng.create("InvSpectrum", "ispk"));
+	series->addMarSystem(mng.create("SoundFileSink", "dest"));
+	
+	// the name of the input file 
+	series->updctrl("SoundFileSource/src/mrs_string/filename", 
+					sfName);
+
+	// the name of the output file
+	series->updctrl("SoundFileSink/dest/mrs_string/filename", 
+					"processed.wav");
+	
+	// number of samples to process each tick 
+	series->updctrl("mrs_natural/inSamples", 16 * 512);
+
+	while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	{
+		series->tick();
+	}
+
+}
+
+
+void 
+toy_with_rats(string sfName) 
 {
 	cout << "Ultrasound rat vocalization detector " << sfName << endl;
 
@@ -1240,7 +1271,7 @@ toy_with_fft(string sfName)
 	dest->updctrl("mrs_real/israte", 192000.0);
 	dest->updctrl("mrs_string/filename",  "detected_rats.wav");	
 
-	dest1->updctrl("mrs_natural/inSamples", 8192);
+ 	dest1->updctrl("mrs_natural/inSamples", 8192);
 	dest1->updctrl("mrs_real/israte", 192000.0);
 	dest1->updctrl("mrs_string/filename",  "only_rats.wav");	
 	
@@ -5038,6 +5069,8 @@ main(int argc, const char **argv)
 		toy_with_probe();
 	else if (toy_withName == "radiodrum")
 		toy_with_RadioDrumInput();
+	else if (toy_withName == "rats") 
+		toy_with_rats(fname0);
 	else if (toy_withName == "realvec")
 		toy_with_realvec();
 	else if (toy_withName == "realvecCtrl")
