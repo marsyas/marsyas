@@ -37,7 +37,7 @@ namespace Marsyas
 
 	10 * log10(\frac{\sum A^2}{\sum A-B})
 
-	observation 1 is the Gain Normalized SNR in dB
+	observation 1 is the SNR with optimized gain factor
 
 	10 * log10(\frac{1}{1 - (\frac{sum A B}{\sqrt{\sum A^2 \sum B^2}})})
 
