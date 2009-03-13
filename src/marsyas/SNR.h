@@ -29,7 +29,17 @@ namespace Marsyas
 	\brief Compute SNR and variations
 
 	Computes the SNR between two mono audio signals. 
-One signal is observation 0 and the other is observation 1. 
+	One signal is observation 0 and the other is observation 1. 
+
+    The output is:
+
+	observation 0 is the Signal/Noise ratio in dB
+
+	10 * log10(\frac{\sum A^2}{\sum A-B})
+
+	observation 1 is the Gain Normalized SNR in dB
+
+	10 * log10(\frac{1}{1 - (\frac{sum A B}{\sqrt{\sum A^2 \sum B^2}})})
 
 	Controls:
 	- \b mrs_string/mode [rw] : sets the gain multiplier.
