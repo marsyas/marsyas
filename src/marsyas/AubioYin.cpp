@@ -65,15 +65,15 @@ AubioYin::myUpdate(MarControlPtr sender)
 
 }
 
-float AubioYin::aubio_quadfrac(float s0, float s1, float s2, float pf) {
-  float tmp = s0 + (pf/2.) * (pf * ( s0 - 2.*s1 + s2 ) - 3.*s0 + 4.*s1 - s2);
+double AubioYin::aubio_quadfrac(double s0, double s1, double s2, double pf) {
+  double tmp = s0 + (pf/2.) * (pf * ( s0 - 2.*s1 + s2 ) - 3.*s0 + 4.*s1 - s2);
   return tmp;
 }
 
-float AubioYin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span) {
-  float step = 1./200.;
+double AubioYin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span) {
+  double step = 1./200.;
   /* init resold to - something (in case x[pos+-span]<0)) */
-  float res, frac, s0, s1, s2, exactpos = (float)pos, resold = 100000.;
+  double res, frac, s0, s1, s2, exactpos = (double)pos, resold = 100000.;
   if ((pos > span) && (pos < x->getSize()-span)) {
     s0 = (*x)(0,pos-span);
     s1 = (*x)(0,pos);
@@ -97,7 +97,7 @@ unsigned int AubioYin::vec_min_elem(realvec *s)
   unsigned int i = 0;
   unsigned int j = 0;
   unsigned int pos=0;
-  float tmp = (*s)(0,0);
+  double tmp = (*s)(0,0);
 //   for (i=0; i < s->channels; i++)
   for (j=0; j < s->getSize(); j++) {
 	pos = (tmp < (*s)(i,j))? pos : j;
@@ -112,21 +112,26 @@ AubioYin::myProcess(realvec& in, realvec& out)
 {
 
   // Make a temporary realvec to build up the yin function in
+  // sness - This is very inefficient - Move to update function
   realvec yin;
   yin.create(0.0,1,inSamples_/2.0);
 
   // The tolerance for the yin algorithm
   mrs_real tol = ctrl_tolerance_->to<mrs_real>();
 
-  float pitch = 0;
+  double pitch = -1.0;
+
+//   cout << "yin.getSize()=" << yin.getSize() << endl;
+//   cout << "tol=" << tol << endl;
 
   // Calculate the pitch with the Yin method
   unsigned int c=0,j,tau = 0;
   int period;
-  float tmp = 0., tmp2 = 0.;
+  double tmp = 0., tmp2 = 0.;
   yin(c,0) = 1.;
   for (tau=1;tau<yin.getSize();tau++)
 	{
+// 	  cout << "tau=" << tau << endl;	  
 	  yin(c,tau) = 0.;
 	  for (j=0;j<yin.getSize();j++)
 		{
@@ -139,9 +144,10 @@ AubioYin::myProcess(realvec& in, realvec& out)
 	  if(tau > 4 && (yin(c,period) < tol) && 
 		 (yin(c,period) < yin(c,period+1))) {
 		pitch = vec_quadint_min(&yin,period,1);
+		break;
 	  }
 	}
-  if (pitch != 0) {
+  if (pitch < 0) {
 	pitch = vec_quadint_min(&yin,vec_min_elem(&yin),1);
   }
 

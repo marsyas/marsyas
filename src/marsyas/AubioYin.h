@@ -50,8 +50,8 @@ private:
 
 	MarControlPtr ctrl_tolerance_;
 
-  float aubio_quadfrac(float s0, float s1, float s2, float pf);
-  float vec_quadint_min(realvec * x,unsigned int pos, unsigned int span);
+  double aubio_quadfrac(double s0, double s1, double s2, double pf);
+  double vec_quadint_min(realvec * x,unsigned int pos, unsigned int span);
   unsigned int vec_min_elem(realvec *s);
 
 public:
