@@ -347,7 +347,7 @@ WavFileSource::getLinear16(realvec& slice)
   samplesToRead_ = inSamples_ * nChannels_;
   
   samplesRead_ = (mrs_natural)fread(sdata_, sizeof(short), samplesToRead_, sfp_);
-  
+
   if (samplesRead_ != samplesToRead_)
     {
       for (c=0; c < nChannels_; c++)
@@ -367,13 +367,13 @@ WavFileSource::getLinear16(realvec& slice)
       for (c=0; c < nChannels_; c++)
 			{
 				sval_ = ByteSwapShort(sdata_[nChannels_*t + c]);
-				slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
+				slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT + 1);
 			}
       #else
       for (c=0; c < nChannels_; c++)
 			{
 				sval_ = sdata_[nChannels_ *t + c];
-				slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT));
+				slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT + 1));
 			}
 			#endif  
     }
