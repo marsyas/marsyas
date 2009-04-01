@@ -123,8 +123,8 @@ StereoSpectrum::myProcess(realvec& in, realvec& out)
 			out(t,0) = 0.0;
 	}
 
-	MATLAB_PUT(out, "stereoSpectrum");
-	MATLAB_EVAL("plot(stereoSpectrum)");
+	//MATLAB_PUT(out, "stereoSpectrum");
+	//MATLAB_EVAL("plot(stereoSpectrum)");
 }
 
 

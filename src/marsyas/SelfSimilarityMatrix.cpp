@@ -206,8 +206,9 @@ SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
 	}
 	//MATLAB_PUT(out, "simMatrix");
 	//MATLAB_EVAL("figure(1);imagesc(simMatrix);");
-	MATLAB_PUT(out, "simMat");
-	MATLAB_EVAL(name_+"=["+name_+",simMat(:)'];");
+	
+	//MATLAB_PUT(out, "simMat");
+	//MATLAB_EVAL(name_+"=["+name_+",simMat(:)'];");
 }
 
 
