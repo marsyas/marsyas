@@ -52,7 +52,7 @@ AutoCorrelation::addControls()
 	addctrl("mrs_natural/normalize", 0, ctrl_normalize_);
 	addctrl("mrs_real/octaveCost", 0.0, ctrl_octaveCost_);
 	addctrl("mrs_real/voicingThreshold", 0.1, ctrl_voicingThreshold_);
-	addctrl("mrs_bool/aliasedOutput", true, ctrl_aliasedOutput_);
+	addctrl("mrs_bool/aliasedOutput", false, ctrl_aliasedOutput_);
 	
 	ctrl_normalize_->setState(true);
 	ctrl_octaveCost_->setState(true);
