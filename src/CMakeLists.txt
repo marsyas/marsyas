@@ -95,8 +95,10 @@ endif (VAMP_FOUND)
 
 
 ## tests, for verification
-enable_testing()
-add_subdirectory (tests)
+if (BUILD_TESTS)
+  enable_testing()
+  add_subdirectory (tests)
+endif (BUILD_TESTS)
 
 
 ## packaging
