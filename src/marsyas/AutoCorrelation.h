@@ -32,8 +32,17 @@ namespace Marsyas
     Computes the generalized autocorrelation 
 (with optional magnitude compression) using the 
 Fast Fourier Transform (FFT). 
-*/
 
+	Controls:
+	- \b mrs_bool/aliasedOutput [w] : by default, this control is set to true and
+	the output of AutoCorrelation
+	will be an alised time domain signal (as used by the original Marsyas0.1 code
+	implemented by George Tzanetakis - MUST CHECK IF THIS MAKES SENSE!). 
+	Setting this control to false, the FFTs will be computed using the next power of 2
+	of the inSamples*2+1, which avoids alising in the iFFT step. In this mode, only the 
+	first inSamples of the autocorrleation function will be output (since the remaining
+	ones are mirrored versions or zero valued).
+*/
 
 class AutoCorrelation: public MarSystem
 {
@@ -45,6 +54,15 @@ private:
 	mrs_real octaveCost_;
 	mrs_real octaveMax_;
 	mrs_real voicing_;
+	mrs_natural fftSize_;
+	mrs_real re_,im_,am_, k_;
+
+	MarControlPtr ctrl_magcompress_;
+	MarControlPtr	ctrl_normalize_;
+	MarControlPtr	ctrl_octaveCost_;
+	MarControlPtr ctrl_voicingThreshold_;
+	MarControlPtr ctrl_aliasedOutput_;
+
   virtual void addControls();
 	void myUpdate(MarControlPtr sender);
   
