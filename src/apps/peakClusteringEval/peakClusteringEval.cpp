@@ -825,6 +825,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 		//	cout << "!!!!" << endl;
 		//}
 
+
 		if (!microphone_)
 		{
 			//bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
@@ -873,7 +874,10 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 	//MATLAB_EVAL("save " + fileMatName);
 
 	if(numTextWinds > 0)
+	{
+		cout << ">> Saving SDR results to SDR.mat" << endl;
 		MATLAB_EVAL("saveSDRresults");
+	}
 
 	cout << endl << ">> End of processing. Bye!" << endl;
 

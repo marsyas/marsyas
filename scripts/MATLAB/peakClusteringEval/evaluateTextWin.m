@@ -34,6 +34,8 @@ for r=1:numRegions
     s = (sf-1)*frameSize+1;
     e = ef*frameSize;
     
+    e = min(e, size(refAudio, 2));
+    
     %Channel Selection for this region
     channelSel = logical(sum(activeChannels(:,sf:ef),2));
     channelSel = [false; channelSel]; %also ignore mix channel
@@ -50,8 +52,13 @@ for r=1:numRegions
     %compute SDR for current frame
     %correspondence = [];
     %[SDRresults, correspondence] = computeSDR(refAudioFrame, resAudioFrame);
-    [SDRresults, correspondence] = computeSpectralSDR(refAudioFrame, resAudioFrame);
-    SDR(r) = SDRresults;
+    if numActiveNotes > 0 && size(refAudioFrame,1) > 0
+        [SDRresults, correspondence] = computeSpectralSDR(refAudioFrame, resAudioFrame);
+        SDR(r) = SDRresults;
+    else
+        SDR(r) = 0;
+        correspondence = [1:size(resAudioFrame,1)];
+    end
 
     %% CORRESPONDENCE:
     %place clustered audio into the corresponding audio channel
