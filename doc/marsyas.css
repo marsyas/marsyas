@@ -1,6 +1,9 @@
+
 body {
 	font-family: Helvetica, sans-serif; font-weight: normal;
  background-color: #fff;
+ margin: 10px;
+ line-height: 1.1em;
 }
 /* begin custom Marsyas css file.  Please leave "body" above this line,
  * because otherwise this comment won't show up.  (?) */
