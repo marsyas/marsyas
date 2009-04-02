@@ -1,8 +1,6 @@
-body
-{
-  background-color: lightgray;
-  background: lightgray;
-  color: black
+body {
+	font-family: Helvetica, sans-serif; font-weight: normal;
+ background-color: #fff;
 }
 /* begin custom Marsyas css file.  Please leave "body" above this line,
  * because otherwise this comment won't show up.  (?) */
