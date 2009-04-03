@@ -17,17 +17,139 @@ we have added some testing mechanisms to Marsyas.
 These tests are highly focused on specific portions of code.
 
 @menu
-* Unit test infrastructure::    
+* What are unit tests?::
+* What testing framework does Marsyas use?::
+* How do I add a new test?::
+* How do I run the tests?::
 @end menu
 
-@node Unit test infrastructure
-@subsection Unit test infrastructure
 
-We use the unit test infrastucture provided by @code{cxxtest}.
-These takes a @code{TestFoo.h} file and produces a
-@code{Foo_runner.cpp} file which performs the actual test.
+@node What are unit tests?
+@subsection What are unit tests?
 
-@WANTED{More description about this from sness}
+Unit tests are simple, short tests that test the functionality of
+individual modules in your source code.  A module can be a method of a
+class, or can be smaller or larger parts of your code.  Unit tests are
+usually developed at the same time code is written, independently
+testing each small component of your algorithm is on it's own.
+
+The main goal of unit testing is to isolate each part of your code and
+ensure that each part is correct.  This allows you to refactor your
+code at a later time with the confidence that your refactoring gives
+the same behaviour as the original code.  This allows you to quickly
+write code that works, and then later come and refactor your code to
+make it run faster.
+
+Unit testing also allows you to check whether a particular piece of
+code still works properly.  This is useful in a large software project
+such as Marsyas which has currently over 180,000 lines of code and
+many developers on different continents.
+
+Unit tests can also provide a sort of living documentation for the
+system.  Well written unit tests have example code in them that can
+help new developers understand how to use different MarSystems.
+Written documentation added to the unit tests also helps in this
+regard, and often the best place for verbose documentation is in the
+unit tests rather than in the main functions themselves, where they
+can occasionally hide the beautiful logic therein.
+
+Test-Driven Development (TDD) is a technique where you first write
+your tests, and then write the actual that will make the tests pass.
+In TDD you have short iterative development cycles on pre-written test
+cases that define desired improvements or new functionality.  On each
+iteration of the cycle, you write just the code that you need to make
+the tests pass.  With TDD you write just the code that you need, not
+the code you think you might need at some point in the future.
+
+Cxxtest unit testing framework that is built into Marsyas lets you
+write your tests either before, as in standard unit testing, or after,
+as in TDD.
+
+
+@node What testing framework does Marsyas use?
+@subsection What testing framework does Marsyas use?
+
+Marsyas uses the GPLed Cxxtest (http://cxxtest.sourceforge.net/)
+testing framework.  Cxxtest is a JUnit/CppUnit/xUnit-like framework
+for C++.  We chose Cxxtest because it is lightweight, easy-to-use,
+is very portable and is distributed under the GPL licence.  It is
+easier to use than other C++ testing frameworks and features a very
+rich set of assertions.
+
+An example 
+marsyas/src/tests/unit_tests/TestSelector.h 
+
+@example
+#include "Selector.h"
+using namespace Marsyas;
+
+class Selector_runner : public CxxTest::TestSuite
+@{
+public:
+  void
+  setUp()
+  @{
+	// ... setup the "in" realvec ...
+  @}
+
+  void test_all_input_copied_to_output_by_default(void) 
+  @{
+ 	selector->myProcess(in,out);
+  	TS_ASSERT_EQUALS(out(0,0), 0.1);
+  @}
+@}
+@end example
+
+In this example, we setup the input realvec ``in'' in the function
+``setup()''.  We then add a test by creating a new method that begins
+with the word ``test_''.
+
+
+@node How do I add a new test?
+@subsection How do I add a new test?
+
+
+The easiest way to add a new test is to copy the file
+marsyas/src/tests/unit_tests/TestSample.h to a new file of your
+choice, for example, to ``TestAutoCorrelation.h''.  ``TestSample.h''
+has sample code in it that will help you get started, and contains
+copious documentation.
+
+Add new tests for all the parts of your class that you want to test.
+Remember to start all the new function names with the string ``test_''
+so that CxxTest knows that this function is one that you wish to test.
+
+You then need to add a line to
+``marsyas/src/tests/unit_tests/CMakeLists.txt'' to tell CMake to
+compile this new file:
+
+@example
+marsyas_unit_test(AubioYin AubioYin_runner.cpp)
+@end example
+
+
+@node How do I run the tests?
+@subsection How do I run the tests?
+
+To run the tests, you first need to enable testing in your build
+directory.  To do this, do something like:
+
+@example
+cd marsyas
+mkdir build-with-tests
+cd build-with-tests
+ccmake ../src
+@end example
+
+Then type ``t'' to see the advanced options and turn on the
+``BUILD_TESTS'' option.
+
+The tests will then be automatically built if you then compile Marsyas:
+
+@example
+make -j3
+@end example
+
 
 
 @node Regression tests
