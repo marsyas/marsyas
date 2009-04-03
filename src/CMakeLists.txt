@@ -95,11 +95,8 @@ endif (VAMP_FOUND)
 
 
 ## tests, for verification
-if (BUILD_TESTS)
-  enable_testing()
-  add_subdirectory (tests)
-endif (BUILD_TESTS)
-
+enable_testing()
+add_subdirectory (tests)
 
 ## packaging
 include(marsyas-package)
