@@ -88,7 +88,7 @@ echo >> $report
 
 ### Do tests
 cd $cmakeDir
-cmake ../src/ &> $configLog
+cmake ../src/ -DMARSYAS_TESTS=ON &> $configLog
 
 testthing make $buildLog "Build"
 
