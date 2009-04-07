@@ -20,17 +20,19 @@ SET_SOURCE_FILES_PROPERTIES(marsyas.i PROPERTIES SWIG_FLAGS "-includeall")
 SWIG_ADD_MODULE(marsyas python  marsyas.i)
 SWIG_LINK_LIBRARIES(marsyas marsyas ${PYTHON_LIBRARIES} ${OS_LIBS})
 
+# The installation directory for the Python modules.
+# Get the default directory from distutils.
+execute_process(
+  COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print sysconfig.get_python_lib(1, 0)"
+  OUTPUT_VARIABLE PYTHON_INSTDIR_DEFAULT
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+# User can override the default through the CMake UI.
 set(
-  PYTHON_ARG_STRING
-  "-c \"from distutils import sysconfig\;"
-  "print sysconfig.get_python_lib(1,0)\""
-  )
-  exec_program(
-  ${PYTHON_EXECUTABLE}
-  ARGS ${PYTHON_ARG_STRING}
-  OUTPUT_VARIABLE PYTHON_INSTDIR
-  )
-
+  PYTHON_INSTDIR
+  ${PYTHON_INSTDIR_DEFAULT}
+  CACHE STRING "The installation directory for the Python modules."
+)
 
 install(TARGETS _marsyas LIBRARY DESTINATION ${PYTHON_INSTDIR})
 
