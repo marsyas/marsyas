@@ -78,6 +78,10 @@ void Biquad::myUpdate(MarControlPtr sender)
     q_ = getctrl("mrs_real/resonance")->to<mrs_real>();
 	
     fs_ = getctrl("mrs_real/israte")->to<mrs_real>();
+    
+    setctrl("mrs_real/osrate", fs_);
+    setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+    
     w0_ = 2 * PI * freq_ / fs_;
 
     if (type == "lowpass")
@@ -87,12 +91,28 @@ void Biquad::myUpdate(MarControlPtr sender)
         b(0) = (1 - cos(w0_))/2;
         b(1) =  1 - cos(w0_);
         b(2) = (1 - cos(w0_))/2;
-
+        
         a(0) = 1 + alpha_;
-        a(1) = 2 * cos(w0_);
+        a(1) = -2 * cos(w0_); // Arian: was positive
         a(2) = 1 - alpha_;
+        
+        filter->updctrl("mrs_realvec/ncoeffs", b);
+        filter->updctrl("mrs_realvec/dcoeffs", a);
 
-
+    }
+    else if (type == "allpass")
+    {
+    		alpha_ = sin(w0_)/(2*q_);
+        
+        b(0) = 1 - alpha_;
+        b(1) = -2 * cos(w0_);
+        b(2) = 1 + alpha_;
+        
+        a(0) = 1 + alpha_;
+        a(1) = -2 * cos(w0_);
+        a(2) = 1 - alpha_;
+        
+        
         filter->updctrl("mrs_realvec/ncoeffs", b);
         filter->updctrl("mrs_realvec/dcoeffs", a);
 
@@ -113,7 +133,11 @@ void Biquad::myUpdate(MarControlPtr sender)
 
 void Biquad::myProcess(realvec& in, realvec& out)
 {
-
-    filter->process(in,out);	
-
+	filter->process(in,out);	
+/*
+  for (o=0; o < inObservations_; o++)
+    for (t = 0; t < inSamples_; t++)
+    	out(o,t) *= 10000;
+    	cout << "Biquad:" << in(o,t) << "\t-->\t" << out(o,t) << endl;
+*/
 }
