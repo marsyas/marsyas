@@ -398,6 +398,13 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 						pos_ = rewindpos_;
 				}
 			samplesOut_ += onSamples_;
+
+			if (repetitions_ != 1) 
+				notEmpty_ = (samplesOut_ < repetitions_ * csize_);
+			else 
+				notEmpty_ = pos_ < csize_;
+
+
 			notEmpty_ = samplesOut_ < repetitions_ * csize_;
 			if (repetitions_ == -1) 
 				notEmpty_ = true;

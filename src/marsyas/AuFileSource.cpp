@@ -334,11 +334,16 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 	    
 	    if (pos_ >= rewindpos_ + csize_) 
 	      {
-		if (repetitions_ != 1)
-		  pos_ = rewindpos_;
+			  if (repetitions_ != 1)
+				  pos_ = rewindpos_;
 	      }
 	    samplesOut_ += onSamples_;
-	    notEmpty_ = samplesOut_ < repetitions_ * csize_;
+		
+		if (repetitions_ != 1) 
+			notEmpty_ = (samplesOut_ < repetitions_ * csize_);
+		else 
+			notEmpty_ = pos_ < csize_;
+		
 	    if (repetitions_ == -1) 
 	      notEmpty_ = true;
 	    break;

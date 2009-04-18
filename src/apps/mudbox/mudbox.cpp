@@ -33,9 +33,9 @@
 #include "RtAudio3.h"
 #endif 
 
-
+#ifdef MARSYAS_PNG
 #include "pngwriter.h" 
-
+#endif MARSYAS_PNG 
 
 
 using namespace std;
@@ -1416,8 +1416,12 @@ void toy_with_pngwriter(string fname)
   
 
   pngwriter png(length,height,0, "waveform.png");
-  series->updctrl("SoundFileSource/src/mrs_string/filename", "foo.wav");
-  series->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+  
+  series->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
+  series->tick();
+  
+  // series->updctrl("SoundFileSource/src/mrs_string/filename", "foo.wav");
+  // series->updctrl("SoundFileSource/src/mrs_string/filename", fname);
   
   double normalizedData;
 
@@ -1430,7 +1434,6 @@ void toy_with_pngwriter(string fname)
   double x = 0;
   double y = 0;
   while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
-
 	  
 	series->tick();
 	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
