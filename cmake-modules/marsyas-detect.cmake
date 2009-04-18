@@ -79,6 +79,11 @@ if (WITH_VAMP)
 	find_package(vamp REQUIRED)
 endif (WITH_VAMP)
 
+if (WITH_PNG) 
+	find_package(png REQUIRED) 
+	set (MARSYAS_PNG 1)
+endif (WITH_PNG)
+
 if (WITH_GSTREAMER)
 	find_package(GStreamer REQUIRED)
 	set (MARSYAS_GSTREAMER 1) 

@@ -6,6 +6,12 @@ file(GLOB Marsyas_HEADERS RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.h)
 list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
 list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.h)
 
+if (MARSYAS_PNG)
+	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/pngwriter.cc) 
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/pngwrite.h)
+endif (MARSYAS_PNG)
+
+
 if (MARSYAS_MAD)
 	include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
@@ -48,6 +54,10 @@ add_library(marsyas STATIC ${Marsyas_SOURCES} ${Marsyas_HEADERS})
 if (MARSYAS_MAD)
 	TARGET_LINK_LIBRARIES(marsyas ${mad_LIBRARY})
 endif (MARSYAS_MAD)
+
+if (MARSYAS_PNG) 
+	TARGET_LINK_LIBRARIES(marsyas z png) 
+endif (MARSYAS_PNG)
 
 if (MARSYAS_VORBIS)
 	TARGET_LINK_LIBRARIES(marsyas ${OGGVORBIS_LIBRARIES})

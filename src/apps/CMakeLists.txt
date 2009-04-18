@@ -1,7 +1,7 @@
 ## BUILD MACRO
 macro (marsyas_app APP APP_SOURCES)
 add_executable(${APP} ${APP_SOURCES})
-include_directories(${GSTREAMER_INCLUDE_DIRS})
+include_directories(${GSTREAMER_INCLUDE_DIRS} ${PNGWRITER_INCLUDE_DIR})
 target_link_libraries(${APP} marsyas ${GSTREAMER_LIBRARIES} ${OS_LIBS})
 install(TARGETS ${APP} DESTINATION bin)
 endmacro (marsyas_app)

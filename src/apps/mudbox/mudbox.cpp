@@ -34,6 +34,8 @@
 #endif 
 
 
+#include "pngwriter.h" 
+
 
 
 using namespace std;
@@ -89,6 +91,7 @@ printHelp(string progName)
 	cerr << "onsets          : toy_with onsets" << endl;
 	cerr << "panorama        : toy_with Panorama amplitude panning " << endl;
 	cerr << "parallel        : toy_with Parallel composite " << endl;
+	cerr << "pngwrite        : toy_with png writer " << endl;
 	cerr << "stereoFeaturesVisualization : toy_with stereo features visualization" << endl;
 	cerr << "phisem          : toy_with physem" << endl;
 	cerr << "pitch           : toy_with pitch" << endl;
@@ -853,7 +856,6 @@ toy_with_simpleSFPlay(string sfName)
 	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
 	mrs_bool isEmpty;
-	//cout << *playbacknet << endl;
 	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
 	{
 		//cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
@@ -861,8 +863,8 @@ toy_with_simpleSFPlay(string sfName)
 		playbacknet->tick();
 
 		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
-		//if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
-		//	playbacknet->updctrl("mrs_natural/pos", 0);
+		// if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+		// playbacknet->updctrl("mrs_natural/pos", 0);
 	}
 	cout << "tick " << isEmpty << endl;
 	delete playbacknet;
@@ -1361,6 +1363,106 @@ toy_with_parallel()
 	cout << out << endl;
 
 	delete parallel;
+}
+
+void toy_with_pngwriter(string fname) 
+{
+   cout << "Toying with png writer" << endl;
+   cout << "Will only work if Marsyas is successfully compiled with PNG support" << endl;
+
+   
+     
+#ifdef MARSYAS_PNG
+   cout << "starting PNG processing " << endl;
+   
+   MarSystemManager mng;
+  
+  // A series to contain everything
+  MarSystem* series = mng.create("Series", "series");
+  
+  // The sound file
+  series->addMarSystem(mng.create("SoundFileSource", "src"));
+  series->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+  
+  // Compute the AbsMax of this window
+  series->addMarSystem(mng.create("AbsMax","absmax"));
+
+
+  realvec processedData;
+  double normalizedItem;
+
+  int length = 0;
+  double min = 99999999999.9;
+  double max = -99999999999.9;
+
+
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+	series->tick();
+	length++;
+
+	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	if (processedData(0) < min)
+	  min = processedData(0);
+	if (processedData(0) > max)
+	  max = processedData(0);
+  }
+  
+  int height = 128;
+  int middle = height/2;
+
+  cout << "min = " << min << endl;
+  cout << "max = " << max << endl;
+  cout << "length = " << length << endl;
+  
+
+  pngwriter png(length,height,0, "waveform.png");
+  series->updctrl("SoundFileSource/src/mrs_string/filename", "foo.wav");
+  series->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+  
+  double normalizedData;
+
+  // Give it a white background
+  png.invert();
+
+  // A line across the middle of the plot
+  png.line(0,middle,length,middle,0.5,0.5,1.0);
+  
+  double x = 0;
+  double y = 0;
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+
+	  
+	series->tick();
+	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	normalizedData = (processedData(0) - min) / (max - min);
+
+//  	cout << "p=" << processedData(0) << " n=" << normalizedData << endl;
+
+	y = processedData(0) / 2.0 * height;
+	// Dark blue full
+	png.line(x,middle,x,middle+y,0.0,0.0,1.0);
+	png.line(x,middle,x,middle-y,0.0,0.0,1.0);
+
+	// Light blue 50%
+	png.line(x,middle,x,middle+y*0.5,0.5,0.5,1.0);
+	png.line(x,middle,x,middle-y*0.5,0.5,0.5,1.0);
+
+	x++;
+
+  }
+
+  png.close();
+
+#endif 
+
+
+
+
+   
+
+
+
+
 }
 
 void 
@@ -5059,6 +5161,8 @@ main(int argc, const char **argv)
 		toy_with_panorama(fname0);
 	else if (toy_withName == "parallel")
 		toy_with_parallel();
+	else if (toy_withName == "pngwriter")
+		toy_with_pngwriter(fname0);
 	else if (toy_withName == "phisem")
 		toy_phisem();
 	else if (toy_withName == "pitch")

@@ -1,5 +1,5 @@
 ############ PARTIAL MAKEFILE FOR PNGWRITER ######################################
-#
+
 #       Website: Main:             http://pngwriter.sourceforge.net/
 #       Author:                    Paul Blackburn
 #       Email:                     individual61@users.sourceforge.net

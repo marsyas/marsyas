@@ -46,6 +46,7 @@
 #cmakedefine MARSYAS_MATLAB
 #cmakedefine MARSYAS_VORBIS
 #cmakedefine MARSYAS_GSTREAMER
+#cmakedefine MARSYAS_PNG
 
 #cmakedefine DISTRIBUTED
 #endif
