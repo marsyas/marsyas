@@ -39,10 +39,9 @@ for i in range(1,2):  # Show first five windows of the time domain waveform
 	plotdata2 = outData2.to_realvec()
 	figure()
 	plot(plotdata1)
-#	axis('tight')
-#	xticks ( arange(0,513,64), arange(512 * (i-1), (512 *(i)+1), 64)  )
+	axis('tight')
+	xticks ( arange(0,513,64), arange(512 * (i-1), (512 *(i)+1), 64)  )
 	figure()
 	plot(plotdata2)
-#	axis('tight')
-#	xticks ( arange(0,513,64), arange(512 * (i-1), (512 *(i)+1), 64)  )
+
 	show()

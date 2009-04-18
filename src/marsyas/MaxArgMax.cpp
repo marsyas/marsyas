@@ -83,7 +83,7 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 			
 			for (ki=0; ki < k; ki++)
 			{
-				if (newmax >= out(o, 2*ki))
+				if (newmax > out(o, 2*ki))
 				{
 					mrs_real oldmax = out(o, 2*ki);
 					mrs_real oldmax_i = out(o,2*ki+1);
