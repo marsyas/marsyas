@@ -77,6 +77,10 @@ if (BUILD_APPS)
   add_subdirectory(apps)
 endif (BUILD_APPS)
 
+if (MARSYAS_PNG)  
+   add_subdirectory(otherlibs)
+endif (MARSYAS_PNG)
+
 if (SWIG_FOUND) 
 	add_subdirectory(swig)
 endif (SWIG_FOUND)

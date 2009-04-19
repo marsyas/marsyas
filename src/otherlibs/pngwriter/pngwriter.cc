@@ -952,7 +952,15 @@ void pngwriter::close()
 
    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
    info_ptr = png_create_info_struct(png_ptr);
-   png_init_io(png_ptr, fp);
+
+#ifdef PNG_NO_STDIO
+     png_ptr->io_ptr = (png_voidp)fp;
+#else /* not PNG_NO_STDIO */
+      png_init_io(png_ptr, fp);
+#endif /* PNG_NO_STDIO */
+
+
+
    if(compressionlevel_ != -2)
      {
 	png_set_compression_level(png_ptr, compressionlevel_);

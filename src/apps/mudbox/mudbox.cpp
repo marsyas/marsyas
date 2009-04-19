@@ -845,28 +845,43 @@ toy_with_simpleSFPlay(string sfName)
 
 
 	MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	
+	/// playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+	playbacknet->addMarSystem(mng.create("NoiseSource", "src"));	
+	MarSystem* mix = mng.create("Fanout/mix");
+	mix->addMarSystem(mng.create("Biquad", "f1"));
+	mix->addMarSystem(mng.create("Biquad", "f2"));
 
-	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+	playbacknet->addMarSystem(mix);
+	// playbacknet->addMarSystem(mng.create("Reverse", "rev"));	
 	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
-	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+	
+
+	playbacknet->linkControl("mrs_bool/notEmpty", 
+							 "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_natural/pos", 
+							 "SoundFileSource/src/mrs_natural/pos");
 
 	mrs_bool isEmpty;
-	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	mrs_real frequency = 40.0;
+	// mrs_natural win = 1;
+
+	// while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	for (int i=0; i < 1000; i++)
 	{
-		//cout << "pos " << playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
-
+		playbacknet->updctrl("Fanout/mix/Biquad/f1/mrs_real/frequency", fabs(2000.0 - frequency)+10.0);
+		playbacknet->updctrl("Fanout/mix/Biquad/f2/mrs_real/frequency", frequency);
+		
+		// playbacknet->updctrl("mrs_natural/inSamples", win);
+		frequency += 10.0;
+		// win += 12;
+		// cout << win << endl;
 		playbacknet->tick();
-
-		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
-		// if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
-		// playbacknet->updctrl("mrs_natural/pos", 0);
 	}
-	cout << "tick " << isEmpty << endl;
 	delete playbacknet;
 }
 
@@ -4364,14 +4379,30 @@ toy_with_centroid(string sfName1)
 	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName1);
 
 	mrs_real val = 0.0;
-	
+
+
+	MarSystem* snet = mng.create("Series/snet");
+	MarSystem* smix = mng.create("Fanout/smix");
+	smix->addMarSystem(mng.create("SineSource/src1"));
+	smix->addMarSystem(mng.create("SineSource/src2"));
+	snet->addMarSystem(smix);
+	snet->addMarSystem(mng.create("AudioSink/dest"));
+
+	snet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
 	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		net->tick();
+		snet->tick();
+
 		const mrs_realvec& src_data = 
 			net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();			
 		val = src_data(0,0);
 		cout << val << endl;
+		snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", val * 11025.0);
+		snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", val * 11025.0);
+
+
 	}
 }
 

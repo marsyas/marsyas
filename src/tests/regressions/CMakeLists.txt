@@ -14,20 +14,19 @@ separate_arguments(REG_ARGS)
 add_test( ${REG_NAME}-creation ${EXECUTABLE_OUTPUT_PATH}/${REG_COMMAND}
 	${REG_ARGS} ${TEST_INPUT}/${REG_INPUT} )
 add_test( ${REG_NAME}-verification ${EXECUTABLE_OUTPUT_PATH}/audioCompare
-	${TEST_OUTPUT}/${REG_OUTPUT} ${REG_NAME}.au )
+	${TEST_OUTPUT}/${REG_OUTPUT} ${REG_OUTPUT} )
 endmacro(regression_audio)
 
 
 ## actual tests
 set( NEXT_COMMAND
-	-ws 100 -s 0.25 -l 0.1 -g 0.7 -f sfplay.au
+	-ws 100 -s 0.25 -l 0.1 -g 0.7 -f right-sfplay.au
 )
 regression_audio( sfplay right.wav right-sfplay.au sfplay "${NEXT_COMMAND}")
 
 
-# current broken  :(
 set( NEXT_COMMAND
-	-q -p 1.5 -s 50 -g 0.9 -ob -f phasevocoder.au
+	-q -p 1.5 -s 50 -g 0.9 -ob -f right-phasevocoder.au
 )
 regression_audio (phasevocoder right.wav right-phasevocoder.au
 	phasevocoder "${NEXT_COMMAND}")

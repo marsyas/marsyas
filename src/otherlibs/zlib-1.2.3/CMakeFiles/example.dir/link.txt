@@ -1,0 +1,1 @@
+/usr/bin/gcc   -Wl,-search_paths_first -headerpad_max_install_names -fPIC CMakeFiles/example.dir/example.c.o  -o example  libzlib.a 

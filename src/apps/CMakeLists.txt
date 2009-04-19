@@ -2,7 +2,12 @@
 macro (marsyas_app APP APP_SOURCES)
 add_executable(${APP} ${APP_SOURCES})
 include_directories(${GSTREAMER_INCLUDE_DIRS} ${PNGWRITER_INCLUDE_DIR})
-target_link_libraries(${APP} marsyas ${GSTREAMER_LIBRARIES} ${OS_LIBS})
+if (MARSYAS_PNG) 
+	target_link_libraries(${APP} marsyas png12_static zlib ${OS_LIBS})
+else (MARSYAS_PNG)
+	target_link_libraries(${APP} marsyas ${OS_LIBS})
+endif (MARSYAS_PNG)
+
 install(TARGETS ${APP} DESTINATION bin)
 endmacro (marsyas_app)
 

@@ -80,7 +80,7 @@ if (WITH_VAMP)
 endif (WITH_VAMP)
 
 if (WITH_PNG) 
-	find_package(png REQUIRED) 
+	# find_package(png REQUIRED) 
 	set (MARSYAS_PNG 1)
 endif (WITH_PNG)
 
