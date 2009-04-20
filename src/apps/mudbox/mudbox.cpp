@@ -131,6 +131,8 @@ printHelp(string progName)
 	cerr << "mono2stereo     : toy_with mono2stereo MarSystem " << endl;
 
 	cerr << "marostring      : toy_with marostring [xml|svg|html] " << endl;
+	
+	cerr << "accent_filter_bank	: toy_with AccentFilterBank " << endl;
 	exit(1);
 }
 
@@ -5104,6 +5106,39 @@ toy_with_volume_normalize(string inFileName, string outFileName)
 
 }
 
+void toy_with_accent_filter_bank(string inFileName, string outFileName)
+{
+	MarSystemManager mng;
+
+  MarSystem* net = mng.create("Series", "net");
+  
+  net->updctrl("mrs_natural/inSamples", 4096);
+
+	net->updctrl("mrs_real/israte", 44100.0);
+  	
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+	
+	net->addMarSystem(mng.create("Pipe_Block", "pipe"));
+	net->updctrl("Pipe_Block/pipe/mrs_natural/factor", 12);
+	
+	
+
+	net->addMarSystem(mng.create("Gain", "g"));
+	net->updctrl("Gain/g/mrs_real/gain", 9);
+
+	net->addMarSystem(mng.create("SoundFileSink", "dest"));
+  net->updctrl("SoundFileSink/dest/mrs_string/filename",outFileName);
+	
+  cout << *net << endl;
+  	
+	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	{
+  	net->tick();
+  }
+ 
+}
+
+
 int
 main(int argc, const char **argv)
 {
@@ -5261,6 +5296,8 @@ else if (toy_withName == "train_predict")
 		toy_with_marostring(fname0);
 	else if (toy_withName == "volume_normalize")
 	  toy_with_volume_normalize(fname0,fname1);
+  else if (toy_withName == "accent_filter_bank")
+		toy_with_accent_filter_bank(fname0,fname1);
 
 
 	else 
