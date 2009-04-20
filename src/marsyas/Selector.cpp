@@ -111,6 +111,7 @@ Selector::myUpdate(MarControlPtr sender)
   
   ctrl_onObservations_->setValue(total_enabled, NOUPDATE);
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
 }
 
