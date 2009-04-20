@@ -65,7 +65,12 @@ protected:
       PEAKANALYSE,
       WHASPNET,
       STEREOFEATURES2,
-      CLASSIFIER
+      CLASSIFIER,
+      PIPE_BLOCK,
+      AFB_BLOCK_A,
+      AFB_BLOCK_B,
+      AFB_BLOCK_C,
+      DECIMATING_QMF
   };
 
   void registerComposite(std::string);

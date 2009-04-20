@@ -97,6 +97,11 @@
 #include "Sum.h"
 #include "Product.h"
 #include "Reciprocal.h"
+#include "AccentFilterBank.h"
+#include "Compressor.h"
+#include "Differentiator.h"
+#include "Square.h"
+#include "Subtract.h"
 #include "Median.h"
 #include "AubioYin.h"
 #include "Yin.h"
@@ -269,6 +274,11 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Sum", new Sum("sum"));
 	registerPrototype("Product", new Product("product"));
 	registerPrototype("Reciprocal", new Reciprocal("reciprocal"));
+	registerPrototype("AccentFilterBank", new AccentFilterBank("afb"));
+	registerPrototype("Compressor", new Compressor("compressor"));
+	registerPrototype("Differentiator", new Differentiator("differentiator"));
+	registerPrototype("Square", new Square("square"));
+	registerPrototype("Subtract", new Subtract("subtract"));	
 	registerPrototype("Median", new Median("median"));
 	registerPrototype("AubioYin", new AubioYin("aubioyin"));
 	registerPrototype("Yin", new Yin("yin"));
@@ -382,6 +392,11 @@ MarSystemManager::MarSystemManager()
 	compositesMap_["WHaSpnet"                     ] = WHASPNET;
 	compositesMap_["StereoFeatures2"              ] = STEREOFEATURES2;
 	compositesMap_["Classifier"                   ] = CLASSIFIER;
+	compositesMap_["Pipe_Block"                   ] = PIPE_BLOCK;
+	compositesMap_["AFB_Block_A"                  ] = AFB_BLOCK_A;
+	compositesMap_["AFB_Block_B"                  ] = AFB_BLOCK_B;
+	compositesMap_["AFB_Block_C"                  ] = AFB_BLOCK_C;
+	compositesMap_["Decimating_QMF"               ] = DECIMATING_QMF;
 }
 
 void MarSystemManager::registerComposite(std::string prototype) 
@@ -827,6 +842,152 @@ void MarSystemManager::registerComposite(std::string prototype)
 			registerPrototype("PitchPraat", pitchPraat);
 		}
 			break;
+		
+		case PIPE_BLOCK:
+		{
+			MarSystem* pipeBlock = new Series("Pipe_Block");
+			
+			pipeBlock->addMarSystem(create("AFB_Block_A", "blockA"));
+
+			pipeBlock->addMarSystem(create("AFB_Block_B", "blockB"));
+			pipeBlock->linkctrl("mrs_natural/factor", "AFB_Block_B/blockB/mrs_natural/factor");
+	
+			pipeBlock->addMarSystem(create("AFB_Block_C", "blockC"));
+			
+			registerPrototype("Pipe_Block", pipeBlock);
+		}
+			break;
+			
+		case AFB_BLOCK_A:
+		{
+			MarSystem* afbBlockA = new Series("AFB_Block_A");
+			
+			afbBlockA->addMarSystem(create("Decimating_QMF", "qmf1"));
+			
+			MarSystem* parallel = create("Parallel", "parallel");
+			
+			parallel->addMarSystem(create("DownSampler", "ds"));
+			parallel->updctrl("DownSampler/ds/mrs_natural/factor", 2);
+			
+			MarSystem* ser = new Series("ser");
+			
+			ser->addMarSystem(create("Decimating_QMF", "qmf2"));
+			
+			ser->addMarSystem(create("Selector", "selector"));
+			
+			parallel->addMarSystem(ser);
+			
+			afbBlockA->addMarSystem(parallel);
+
+			afbBlockA->updctrl("Parallel/parallel/Series/ser/Selector/selector/mrs_natural/enable", 0); // Arian: this one is to be fed to the next pipeline
+			afbBlockA->updctrl("Parallel/parallel/Series/ser/Selector/selector/mrs_natural/disable", 1);
+			
+			afbBlockA->addMarSystem(create("Sum", "sum"));
+
+			
+			registerPrototype("AFB_Block_A", afbBlockA);
+		}
+			break;
+			
+		case AFB_BLOCK_B:
+		{
+			MarSystem* afbBlockB = new Series("AFB_Block_B");
+			
+			afbBlockB->addMarSystem(create("Square", "sq"));
+			afbBlockB->addMarSystem(create("Biquad", "bq"));
+
+			afbBlockB->updctrl("Biquad/bq/mrs_string/type", "lowpass");
+			afbBlockB->updctrl("Biquad/bq/mrs_real/resonance", 1.0);
+			afbBlockB->updctrl("Biquad/bq/mrs_real/frequency", 10.0);
+
+			afbBlockB->addMarSystem(create("DownSampler", "ds"));
+			
+			afbBlockB->linkctrl("mrs_natural/factor", "DownSampler/ds/mrs_natural/factor");
+			
+			registerPrototype("AFB_Block_B", afbBlockB);
+		}
+			break;
+		
+		case AFB_BLOCK_C:
+		{
+			MarSystem* afbBlockC = new Series("AFB_Block_C");
+			
+			MarSystem* fanout = create("Fanout", "fanout");
+			
+			
+			MarSystem* ser = create("Series", "ser");
+			
+			ser->addMarSystem(create("Compressor", "comp"));
+			ser->addMarSystem(create("Differentiator", "diff"));
+			ser->addMarSystem(create("HalfWaveRectifier", "rect"));
+			ser->addMarSystem(create("Gain", "g2"));
+			
+			fanout->addMarSystem(create("Gain", "g1"));
+			fanout->addMarSystem(ser);
+			
+			afbBlockC->addMarSystem(fanout);
+			
+			afbBlockC->updctrl("Fanout/fanout/Series/ser/Gain/g2/mrs_real/gain", 0.8);
+			afbBlockC->updctrl("Fanout/fanout/Gain/g1/mrs_real/gain", 0.2);
+			
+			afbBlockC->addMarSystem(create("Sum", "sum"));			
+			
+			afbBlockC->updctrl("Sum/sum/mrs_real/weight", 1.0);
+			
+			registerPrototype("AFB_Block_C", afbBlockC);
+		}
+			break;
+		
+		case DECIMATING_QMF:
+		{
+			MarSystem* decimating_QMF = new Series("Decimating_QMF");
+			
+			decimating_QMF->addMarSystem(create("Gain", "g"));
+			
+			decimating_QMF->updctrl("Gain/g/mrs_real/gain", 0.5);
+			
+			MarSystem* fanout0 = create("Fanout", "fanout0");
+			
+			MarSystem* ser0 = create("Series", "ser0");
+			MarSystem* ser1 = create("Series", "ser1");
+			
+			ser0->addMarSystem(create("DownSampler", "ds0"));
+			ser0->updctrl("DownSampler/ds0/mrs_natural/factor", 2);
+
+			ser0->addMarSystem(create("Biquad", "a0"));
+			ser0->updctrl("Biquad/a0/mrs_string/type", "allpass");
+			ser0->updctrl("Biquad/a0/mrs_real/frequency", 3000.0);
+			ser0->updctrl("Biquad/a0/mrs_real/resonance", 1.0);
+
+			ser1->addMarSystem(create("Delay", "d"));
+			ser1->updctrl("Delay/d/mrs_natural/delaySamples", 1);
+			ser1->updctrl("Delay/d/mrs_real/feedback", 0.0); // not implemented though
+			ser1->updctrl("Delay/d/mrs_real/gain", 1.0); // not implemented though
+
+			ser1->addMarSystem(create("DownSampler", "ds1"));
+			ser1->updctrl("DownSampler/ds1/mrs_natural/factor", 2);
+
+			ser1->addMarSystem(create("Biquad", "a1"));
+			ser1->updctrl("Biquad/a1/mrs_string/type", "allpass");
+			ser1->updctrl("Biquad/a1/mrs_real/frequency", 500.0);
+			ser1->updctrl("Biquad/a1/mrs_real/resonance", 1.0);
+
+			fanout0->addMarSystem(ser0);
+			fanout0->addMarSystem(ser1);
+			
+			decimating_QMF->addMarSystem(fanout0);
+			
+			MarSystem* fanout1 = create("Fanout", "fanout1");
+			
+			fanout1->addMarSystem(create("Sum", "sum"));
+			fanout1->addMarSystem(create("Subtract", "sub"));
+			
+			decimating_QMF->addMarSystem(fanout1);
+			
+			registerPrototype("Decimating_QMF", decimating_QMF);
+		}
+			break;
+		
 		
 		case PEAKANALYSE:
 		{
