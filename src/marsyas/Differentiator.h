@@ -25,26 +25,23 @@ namespace Marsyas
 {
 /**
 	\class Differentiator
-	\ingroup Special
-	\brief Basic example on how to use controls efficiently in MarSystems
+	\ingroup Processing Basic
+	\brief Calculate the difference of successive input samples.
 
-	This example is the same as Gain; it scales the output by
-multiplying each sample with a real number.
+	Simple MarSystem that calculates the differences of successive input samples
+	in the given slices. For the first sample of a slice, the last sample of
+	the previous slice is used.
 
-	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	This MarSystem has no extra controls.
 */
 
 class Differentiator: public MarSystem
 {
 private:
-	void addControls();
 	void myUpdate(MarControlPtr sender);
-	
-	realvec buffer_;
 
-	MarControlPtr ctrl_gain_EXAMPLE_;
+	/// Buffer for storing the last column of samples in a slice.
+	realvec buffer_;
 
 public:
 	Differentiator(std::string name);
