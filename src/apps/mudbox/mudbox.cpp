@@ -5122,16 +5122,9 @@ void toy_with_accent_filter_bank(string inFileName, string outFileName)
 	net->addMarSystem(mng.create("Pipe_Block", "pipe"));
 	net->updctrl("Pipe_Block/pipe/mrs_natural/factor", 12);
 	
-	
-
-	net->addMarSystem(mng.create("Gain", "g"));
-	net->updctrl("Gain/g/mrs_real/gain", 9);
-
 	net->addMarSystem(mng.create("SoundFileSink", "dest"));
-  net->updctrl("SoundFileSink/dest/mrs_string/filename",outFileName);
-	
-  cout << *net << endl;
-  	
+ 	net->updctrl("SoundFileSink/dest/mrs_string/filename",outFileName);
+ 	
 	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	{
   	net->tick();
   }
