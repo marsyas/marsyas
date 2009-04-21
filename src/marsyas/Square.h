@@ -25,24 +25,18 @@ namespace Marsyas
 {
 /**
 	\class Square
-	\ingroup Special
-	\brief Basic example on how to use controls efficiently in MarSystems
+	\ingroup Processing Basic
+	\brief Square the input samples.
 
-	This example is the same as Gain; it scales the output by
-multiplying each sample with a real number.
+	Simple MarSystem that squares the input samples.
 
-	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	This MarSystem has no extra controls.
 */
 
 class Square: public MarSystem
 {
 private:
-	void addControls();
 	void myUpdate(MarControlPtr sender);
-
-	MarControlPtr ctrl_gain_EXAMPLE_;
 
 public:
 	Square(std::string name);

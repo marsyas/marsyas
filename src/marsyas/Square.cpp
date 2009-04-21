@@ -23,12 +23,10 @@ using namespace Marsyas;
 
 Square::Square(string name):MarSystem("Square", name)
 {
-	addControls();
 }
 
 Square::Square(const Square& a) : MarSystem(a)
 {
-
 }
 
 
@@ -43,16 +41,11 @@ Square::clone() const
 }
 
 void
-Square::addControls()
-{
-	
-}
-
-void
 Square::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("Square.cpp - Square:myUpdate");
 
+	// Use the default matching of the output slice format with the input slice format.
 	MarSystem::myUpdate(sender);
 }
 
@@ -60,8 +53,12 @@ void
 Square::myProcess(realvec& in, realvec& out)
 {
 	for (o=0; o < inObservations_; o++)
+	{
 		for (t = 0; t < inSamples_; t++)
-			out(o,t) = in(o,t) * in(o,t);
+		{
+			out(o, t) = in(o, t) * in(o, t);
+		}
+	}
 }
 
 
