@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -23,9 +23,9 @@
 #include "Series.h"
 #include "Cascade.h"
 #include "Parallel.h"
-#include "Fanin.h" 
-#include "Fanout.h" 
-#include "TimeStretch.h" 
+#include "Fanin.h"
+#include "Fanout.h"
+#include "TimeStretch.h"
 #include "Peaker.h"
 #include "PeakerAdaptive.h"
 #include "MaxArgMax.h"
@@ -35,17 +35,17 @@
 #include "InvSpectrum.h"
 #include "Negative.h"
 #include "PvConvert.h"
-#include "PvFold.h" 
-#include "PvOscBank.h" 
-#include "ShiftInput.h" 
+#include "PvFold.h"
+#include "PvOscBank.h"
+#include "ShiftInput.h"
 #include "ShiftOutput.h"
 #include "Shifter.h"
 #include "PvUnconvert.h"
 #include "PvOverlapadd.h"
 #include "PvConvolve.h"
-#include "AuFileSource.h" 
+#include "AuFileSource.h"
 #include "WavFileSource.h"
-#include "WavFileSource2.h" 
+#include "WavFileSource2.h"
 #include "SineSource.h"
 #include "NoiseSource.h"
 #include "AudioSink.h"
@@ -68,21 +68,21 @@
 #include "WavFileSink.h"
 #include "PowerSpectrum.h"
 #include "Centroid.h"
-#include "Rolloff.h" 
-#include "Flux.h" 
+#include "Rolloff.h"
+#include "Flux.h"
 #include "ZeroCrossings.h"
 #include "Memory.h"
-#include "Mean.h" 
+#include "Mean.h"
 #include "StandardDeviation.h"
 #include "PlotSink.h"
 #include "GaussianClassifier.h"
 #include "SoundFileSource.h"
 #include "SoundFileSource2.h"
-#include "SoundFileSink.h" 
+#include "SoundFileSink.h"
 #include "Confidence.h"
 #include "Rms.h"
 #include "Peak2Rms.h"
-#include "WekaSink.h" 
+#include "WekaSink.h"
 #include "WekaSource.h"
 #include "MFCC.h"
 #include "SCF.h"
@@ -110,7 +110,7 @@
 #include "Histogram.h"
 #include "BeatHistoFeatures.h"
 #include "FM.h"
-#include "Annotator.h" 
+#include "Annotator.h"
 #include "ZeroRClassifier.h"
 #include "KNNClassifier.h"
 #include "Kurtosis.h"
@@ -119,17 +119,17 @@
 #include "AudioSource.h"
 #include "AudioSource2.h"
 #include "ClassOutputSink.h"
-#include "Filter.h" 
+#include "Filter.h"
 #include "Biquad.h"
 #include "ERB.h"
 #include "ClipAudioRange.h"
 #include "HarmonicEnhancer.h"
 #include "Reassign.h"
 #include "SilenceRemove.h"
-#include "NormMaxMin.h" 
+#include "NormMaxMin.h"
 #include "Normalize.h"
 #include "SMO.h"
-#include "Plucked.h" 
+#include "Plucked.h"
 #include "Delay.h"
 #include "LPC.h"
 #include "LPCC.h"
@@ -140,7 +140,7 @@
 #include "MidiOutput.h"
 #include "BICchangeDetector.h"
 #include "SpectralSNR.h"
-#include "StereoSpectrum.h" 
+#include "StereoSpectrum.h"
 #include "StereoSpectrumFeatures.h"
 #include "Vibrato.h"
 #include "Panorama.h"
@@ -187,10 +187,11 @@
 #include "NoiseGate.h"
 #include "StretchLinear.h"
 #include "MidiFileSynthSource.h"
-#include "PvMultiResolution.h" 
+#include "PvMultiResolution.h"
 #include "Gain.h"
 #include "Selector.h"
 #include "PhaseRandomize.h"
+#include "RunningStatistics.h"
 //modifyHeader
 
 using namespace std;
@@ -278,7 +279,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Compressor", new Compressor("compressor"));
 	registerPrototype("Differentiator", new Differentiator("differentiator"));
 	registerPrototype("Square", new Square("square"));
-	registerPrototype("Subtract", new Subtract("subtract"));	
+	registerPrototype("Subtract", new Subtract("subtract"));
 	registerPrototype("Median", new Median("median"));
 	registerPrototype("AubioYin", new AubioYin("aubioyin"));
 	registerPrototype("Yin", new Yin("yin"));
@@ -368,6 +369,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Gain", new Gain("gp"));
 	registerPrototype("Selector", new Selector("selectorpr"));
 	registerPrototype("PhaseRandomize", new PhaseRandomize("phaserandomizepr"));
+	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
 	//modifyRegister
 
 	//***************************************************************************************
@@ -399,20 +401,20 @@ MarSystemManager::MarSystemManager()
 	compositesMap_["Decimating_QMF"               ] = DECIMATING_QMF;
 }
 
-void MarSystemManager::registerComposite(std::string prototype) 
+void MarSystemManager::registerComposite(std::string prototype)
 {
 	if(compositesMap_.find(prototype) == compositesMap_.end())
 		return;
 
-	switch(compositesMap_[prototype]) 
+	switch(compositesMap_[prototype])
 	{
 		case STUB:
 			break;
-		
+
 		case DEVIBOT:
 		{
 			//--------------------------------------------------------------------------------
-			// Making a prototype for a specific MidiOutput device 
+			// Making a prototype for a specific MidiOutput device
 			//--------------------------------------------------------------------------------
 			MarSystem* devibotpr = new MidiOutput("devibotpr");
 			devibotpr->linkctrl("mrs_natural/byte2", "mrs_natural/arm");
@@ -422,18 +424,18 @@ void MarSystemManager::registerComposite(std::string prototype)
 			registerPrototype("DeviBot", devibotpr);
 		}
 			break;
-		
+
 		case STEREO2MONO:
 		{
 			//--------------------------------------------------------------------------------
-			// Stereo2Mono MarSystem 
+			// Stereo2Mono MarSystem
 			//--------------------------------------------------------------------------------
 			MarSystem* stereo2monopr = new Sum("stereo2monopr");
 			stereo2monopr->updctrl("mrs_real/weight", 0.5);
 			registerPrototype("Stereo2Mono", stereo2monopr);
 		}
 			break;
-		
+
 		case TEXTURESTATS:
 		{
 			//--------------------------------------------------------------------------------
@@ -452,7 +454,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			registerPrototype("TextureStats", textureStatspr);
 		}
 			break;
-		
+
 		case POWERSPECTRUMNET:
 		{
 			//--------------------------------------------------------------------------------
@@ -466,11 +468,11 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pspectpr->addMarSystem(create("PowerSpectrum", "pspk"));
 			pspectpr->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType","power");
 			pspectpr->linkctrl("Spectrum/spk/mrs_real/cutoff", "mrs_real/cutoff");
-			pspectpr->linkctrl("ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");  
+			pspectpr->linkctrl("ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");
 			registerPrototype("PowerSpectrumNet", pspectpr);
 		}
 			break;
-		
+
 		case POWERSPECTRUMNET1:
 		{
 			MarSystem* pspectpr1 = create("Series", "pspectpr1");
@@ -482,22 +484,22 @@ void MarSystemManager::registerComposite(std::string prototype)
 			registerPrototype("PowerSpectrumNet1", pspectpr1);
 		}
 			break;
-		
+
 		case STFT_FEATURES:
 		{
-			// STFT_features prototype 
+			// STFT_features prototype
 			MarSystem* stft_features_pr = create("Fanout", "stft_features_pr");
 			stft_features_pr->addMarSystem(create("Centroid", "cntrd"));
 			stft_features_pr->addMarSystem(create("Rolloff", "rlf"));
 			stft_features_pr->addMarSystem(create("Flux", "flux"));
-			stft_features_pr->addMarSystem(create("MFCC", "mfcc"));	
+			stft_features_pr->addMarSystem(create("MFCC", "mfcc"));
 			stft_features_pr->addMarSystem(create("Spectrum2Chroma", "chroma"));
 			stft_features_pr->addMarSystem(create("SCF", "scf"));
 			stft_features_pr->addMarSystem(create("SFM", "sfm"));
 			registerPrototype("STFT_features", stft_features_pr);
 		}
 			break;
-		
+
 		// Variables are shared, so instantiate together
 		case LPCNET:
 		case TIMBREFEATURES:
@@ -527,17 +529,17 @@ void MarSystemManager::registerComposite(std::string prototype)
 			registerPrototype("LPCnet", LPCnetpr);
 
 			////////////////////////////////////////////////////////////////////
-			// timbre_features prototype 
+			// timbre_features prototype
 			////////////////////////////////////////////////////////////////////
 			MarSystem* timbre_features_pr = new Fanout("timbre_features_pr");
-			// time domain branch 
+			// time domain branch
 			MarSystem* timeDomainFeatures = create("Series", "timeDomain");
 			timeDomainFeatures->addMarSystem(create("ShiftInput", "si"));
 			MarSystem* tdf = create("Fanout", "tdf");
 			tdf->addMarSystem(create("ZeroCrossings", "zcrs"));
 			timeDomainFeatures->addMarSystem(tdf);
 			timbre_features_pr->addMarSystem(timeDomainFeatures);
-			// FFT branch 
+			// FFT branch
 			MarSystem* spectralShape = create("Series", "spectralShape");
 			spectralShape->addMarSystem(create("ShiftInput", "si"));
 			spectralShape->addMarSystem(create("Windowing", "hamming"));
@@ -545,7 +547,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			MarSystem* spectrumFeatures = create("STFT_features", "spectrumFeatures");
 			spectralShape->addMarSystem(spectrumFeatures);
 			timbre_features_pr->addMarSystem(spectralShape);
-			// LPC branch 
+			// LPC branch
 			MarSystem* lpcFeatures = create("Series", "lpcFeatures");
 			lpcFeatures->addMarSystem(create("Filter", "preEmph"));
 			lpcFeatures->updctrl("Filter/preEmph/mrs_realvec/ncoeffs", ncoeffs);
@@ -571,7 +573,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			timbre_features_pr->linkctrl("Series/lpcFeatures/ShiftInput/si/mrs_natural/winSize", "mrs_natural/winSize");
 
 			timbre_features_pr->linkctrl("Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/enableChild", "mrs_string/enableSPChild");
-			timbre_features_pr->linkctrl("Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild","mrs_string/disableSPChild"); 
+			timbre_features_pr->linkctrl("Series/spectralShape/STFT_features/spectrumFeatures/mrs_string/disableChild","mrs_string/disableSPChild");
 
 			timbre_features_pr->linkctrl("Series/timeDomain/Fanout/tdf/mrs_string/enableChild", "mrs_string/enableTDChild");
 			timbre_features_pr->linkctrl("Series/timeDomain/Fanout/tdf/mrs_string/disableChild", "mrs_string/disableTDChild");
@@ -586,11 +588,11 @@ void MarSystemManager::registerComposite(std::string prototype)
 			registerPrototype("TimbreFeatures", timbre_features_pr);
 		}
 			break;
-		
+
 		case STEREOPANNINGSPECTRUMFEATURES:
 		{
 			///////////////////////////////////////////////////////////////////
-			// StereoPanningSpectrumFeatures 
+			// StereoPanningSpectrumFeatures
 			///////////////////////////////////////////////////////////////////
 			MarSystem *stereoFeatNet = create("Series", "stereoFeatNet");
 			MarSystem* stereobranches = create("Parallel", "stereobranches");
@@ -612,7 +614,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			registerPrototype("StereoPanningSpectrumFeatures", stereoFeatNet);
 		}
 			break;
-		
+
 		case STEREOFEATURES:
 		{
 			/////////////////////////////////////////////////////////////////
@@ -628,19 +630,19 @@ void MarSystemManager::registerComposite(std::string prototype)
 			stereoFeatures->addMarSystem(create("StereoPanningSpectrumFeatures", "SPSFeatures"));
 
 			//link winSize controls
-			stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", "mrs_natural/winSize"); 
+			stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_natural/winSize", "mrs_natural/winSize");
 			stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_natural/winSize", "mrs_natural/winSize");
 			stereoFeatures->linkctrl("StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/left/ShiftInput/sileft/mrs_natural/winSize", "mrs_natural/winSize");
 			stereoFeatures->linkctrl("StereoPanningSpectrumFeatures/SPSFeatures/Parallel/stereobranches/Series/right/ShiftInput/siright/mrs_natural/winSize", "mrs_natural/winSize");
 
-			//link enable controls 
+			//link enable controls
 			stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "mrs_string/enableSPChild");
 			stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "mrs_string/enableSPChild");
 
 			registerPrototype("StereoFeatures", stereoFeatures);
 		}
 			break;
-		
+
 		case PHASEVOCODER:
 		{
 			//--------------------------------------------------------------------------------
@@ -654,34 +656,34 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pvocpr->addMarSystem(new PvUnconvert("uconv"));
 			pvocpr->addMarSystem(new InvSpectrum("ispectrum"));
 			pvocpr->addMarSystem(new PvOverlapadd("pover"));
-			pvocpr->addMarSystem(new ShiftOutput("so")); 
+			pvocpr->addMarSystem(new ShiftOutput("so"));
 
-			pvocpr->linkctrl("ShiftInput/si/mrs_natural/winSize", 
+			pvocpr->linkctrl("ShiftInput/si/mrs_natural/winSize",
 				"mrs_natural/winSize");
-			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/winSize", 
+			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/winSize",
 				"mrs_natural/winSize");
 
 
-			pvocpr->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
+			pvocpr->linkctrl("PvConvert/conv/mrs_natural/Decimation",
 				"mrs_natural/Decimation");
-			pvocpr->linkctrl("PvUnconvert/uconv/mrs_natural/Decimation", 
+			pvocpr->linkctrl("PvUnconvert/uconv/mrs_natural/Decimation",
 				"mrs_natural/Decimation");
-			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/Decimation", 
+			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/Decimation",
 				"mrs_natural/Decimation");
 
-			pvocpr->linkctrl("PvUnconvert/uconv/mrs_natural/Interpolation", 
+			pvocpr->linkctrl("PvUnconvert/uconv/mrs_natural/Interpolation",
 				"mrs_natural/Interpolation");
-			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/Interpolation", 
+			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/Interpolation",
 				"mrs_natural/Interpolation");
-			pvocpr->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 
+			pvocpr->linkctrl("ShiftOutput/so/mrs_natural/Interpolation",
 				"mrs_natural/Interpolation");
 
-			pvocpr->linkctrl("PvFold/fo/mrs_natural/FFTSize", 
+			pvocpr->linkctrl("PvFold/fo/mrs_natural/FFTSize",
 				"mrs_natural/FFTSize");
-			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/FFTSize", 
+			pvocpr->linkctrl("PvOverlapadd/pover/mrs_natural/FFTSize",
 				"mrs_natural/FFTSize");
 
-			pvocpr->linkctrl("PvConvert/conv/mrs_realvec/phases", 
+			pvocpr->linkctrl("PvConvert/conv/mrs_realvec/phases",
 				"PvUnconvert/uconv/mrs_realvec/analysisphases");
 
 			pvocpr->linkctrl("PvUnconvert/uconv/mrs_realvec/regions",
@@ -689,22 +691,22 @@ void MarSystemManager::registerComposite(std::string prototype)
 
 			pvocpr->linkctrl("PvConvert/conv/mrs_natural/Sinusoids",
 				"mrs_natural/Sinusoids");
-			pvocpr->linkctrl("PvConvert/conv/mrs_string/mode", 
+			pvocpr->linkctrl("PvConvert/conv/mrs_string/mode",
 				"mrs_string/convertMode");
-			pvocpr->linkctrl("PvUnconvert/uconv/mrs_string/mode", 
+			pvocpr->linkctrl("PvUnconvert/uconv/mrs_string/mode",
 				"mrs_string/unconvertMode");
-			pvocpr->linkctrl("PvUnconvert/uconv/mrs_bool/phaselock", 
+			pvocpr->linkctrl("PvUnconvert/uconv/mrs_bool/phaselock",
 				"mrs_bool/phaselock");
 
 
-			pvocpr->linkctrl("PvFold/fo/mrs_real/rmsIn", 
+			pvocpr->linkctrl("PvFold/fo/mrs_real/rmsIn",
 							 "PvOverlapadd/pover/mrs_real/rmsIn");
-			
+
 
 			registerPrototype("PhaseVocoder", pvocpr);
 		}
 			break;
-		
+
 		case PHASEVOCODEROSCBANK:
 		{
 			MarSystem* pvocpr1 = new Series("pvocpr1");
@@ -713,45 +715,45 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pvocpr1->addMarSystem(new Spectrum("spk"));
 			pvocpr1->addMarSystem(new PvConvert("conv"));
 			pvocpr1->addMarSystem(new PvOscBank("pob"));
-			pvocpr1->addMarSystem(new ShiftOutput("so")); 
+			pvocpr1->addMarSystem(new ShiftOutput("so"));
 
-			pvocpr1->linkctrl("ShiftInput/si/mrs_natural/winSize", 
+			pvocpr1->linkctrl("ShiftInput/si/mrs_natural/winSize",
 				"mrs_natural/winSize");
 
-			pvocpr1->linkctrl("PvOscBank/pob/mrs_natural/winSize", 
+			pvocpr1->linkctrl("PvOscBank/pob/mrs_natural/winSize",
 				"mrs_natural/winSize");
 
-			pvocpr1->linkctrl("PvFold/fo/mrs_real/rmsIn", 
+			pvocpr1->linkctrl("PvFold/fo/mrs_real/rmsIn",
 							 "PvOscBank/pob/mrs_real/rmsIn");
 
-			pvocpr1->linkctrl("PvConvert/conv/mrs_natural/Decimation", 
+			pvocpr1->linkctrl("PvConvert/conv/mrs_natural/Decimation",
 				"mrs_natural/Decimation");
-			pvocpr1->linkctrl("ShiftOutput/so/mrs_natural/Interpolation", 
+			pvocpr1->linkctrl("ShiftOutput/so/mrs_natural/Interpolation",
 				"mrs_natural/Interpolation");
-			pvocpr1->linkctrl("PvFold/fo/mrs_natural/FFTSize", 
+			pvocpr1->linkctrl("PvFold/fo/mrs_natural/FFTSize",
 				"mrs_natural/FFTSize");
 			pvocpr1->linkctrl("PvConvert/conv/mrs_natural/Sinusoids",
 				"mrs_natural/Sinusoids");
-			pvocpr1->linkctrl("PvConvert/conv/mrs_string/mode", 
+			pvocpr1->linkctrl("PvConvert/conv/mrs_string/mode",
 				"mrs_string/convertMode");
-			pvocpr1->linkctrl("PvOscBank/pob/mrs_natural/Interpolation", 
+			pvocpr1->linkctrl("PvOscBank/pob/mrs_natural/Interpolation",
 				"mrs_natural/Interpolation");
-			pvocpr1->linkctrl("PvOscBank/pob/mrs_real/PitchShift", 
+			pvocpr1->linkctrl("PvOscBank/pob/mrs_real/PitchShift",
 				"mrs_real/PitchShift");
 
-			pvocpr1->linkctrl("PvOscBank/pob/mrs_bool/phaselock", 
+			pvocpr1->linkctrl("PvOscBank/pob/mrs_bool/phaselock",
 							  "mrs_bool/phaselock");
 
-			pvocpr1->linkctrl("PvConvert/conv/mrs_realvec/phases", 
+			pvocpr1->linkctrl("PvConvert/conv/mrs_realvec/phases",
 				"PvOscBank/pob/mrs_realvec/analysisphases");
 
 
-			
+
 
 			registerPrototype("PhaseVocoderOscBank", pvocpr1);
 		}
 			break;
-		
+
 		// Variables are shared, so instantiate together
 		case PITCHSACF:
 		case PITCHPRAAT:
@@ -778,7 +780,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pitchSACF->addMarSystem(create("MaxArgMax", "mxr"));
 			// should be adapted to the sampling frequency !!
 			pitchSACF->updctrl("mrs_natural/inSamples", 512);
-			pitchSACF->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
+			pitchSACF->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);
 			// pitchSACF->updctrl("Windowing/wi/mrs_string/type", "Hanning");
 			pitchSACF->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
 			// pitchSACF->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
@@ -792,9 +794,9 @@ void MarSystemManager::registerComposite(std::string prototype)
 			mrs_real highPitch = 79;
 			mrs_real lowFreq = pitch2hertz(lowPitch);
 			mrs_real highFreq = pitch2hertz(highPitch);
-			mrs_natural lowSamples = 
+			mrs_natural lowSamples =
 				hertz2samples(highFreq, pitchSACF->getctrl("mrs_real/osrate")->to<mrs_real>());
-			mrs_natural highSamples = 
+			mrs_natural highSamples =
 				hertz2samples(lowFreq, pitchSACF->getctrl("mrs_real/osrate")->to<mrs_real>());
 			pitchSACF->updctrl("mrs_natural/lowSamples", lowSamples);
 			pitchSACF->updctrl("mrs_natural/highSamples", highSamples);
@@ -816,7 +818,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pitchPraat->addMarSystem(create("MaxArgMax", "mxr"));
 			// should be adapted to the sampling frequency !!
 			// The window should be just long
-			//  enough to contain three periods (for pitch detection) 
+			//  enough to contain three periods (for pitch detection)
 			//  of MinimumPitch. E.g. if MinimumPitch is 75 Hz, the window length
 			//  is 40 ms  and padded with zeros to reach a power of two.
 			pitchPraat->updctrl("mrs_natural/inSamples", 1024);
@@ -833,66 +835,66 @@ void MarSystemManager::registerComposite(std::string prototype)
 			highPitch = 79;
 			lowFreq = pitch2hertz(lowPitch);
 			highFreq = pitch2hertz(highPitch);
-			lowSamples = 
+			lowSamples =
 				hertz2samples(highFreq, pitchPraat->getctrl("mrs_real/osrate")->to<mrs_real>());
-			highSamples = 
+			highSamples =
 				hertz2samples(lowFreq, pitchPraat->getctrl("mrs_real/osrate")->to<mrs_real>());
 			pitchPraat->updctrl("mrs_natural/lowSamples", lowSamples);
 			pitchPraat->updctrl("mrs_natural/highSamples", highSamples);
 			registerPrototype("PitchPraat", pitchPraat);
 		}
 			break;
-		
+
 		case PIPE_BLOCK:
 		{
 			MarSystem* pipeBlock = new Series("Pipe_Block");
-			
+
 			pipeBlock->addMarSystem(create("AFB_Block_A", "blockA"));
 
 			pipeBlock->addMarSystem(create("AFB_Block_B", "blockB"));
 			pipeBlock->linkctrl("mrs_natural/factor", "AFB_Block_B/blockB/mrs_natural/factor");
-	
+
 			pipeBlock->addMarSystem(create("AFB_Block_C", "blockC"));
-			
+
 			registerPrototype("Pipe_Block", pipeBlock);
 		}
 			break;
-			
+
 		case AFB_BLOCK_A:
 		{
 			MarSystem* afbBlockA = new Series("AFB_Block_A");
-			
+
 			afbBlockA->addMarSystem(create("Decimating_QMF", "qmf1"));
-			
+
 			MarSystem* parallel = create("Parallel", "parallel");
-			
+
 			parallel->addMarSystem(create("DownSampler", "ds"));
 			parallel->updctrl("DownSampler/ds/mrs_natural/factor", 2);
-			
+
 			MarSystem* ser = new Series("ser");
-			
+
 			ser->addMarSystem(create("Decimating_QMF", "qmf2"));
-			
+
 			ser->addMarSystem(create("Selector", "selector"));
-			
+
 			parallel->addMarSystem(ser);
-			
+
 			afbBlockA->addMarSystem(parallel);
 
 			afbBlockA->updctrl("Parallel/parallel/Series/ser/Selector/selector/mrs_natural/enable", 0); // Arian: this one is to be fed to the next pipeline
 			afbBlockA->updctrl("Parallel/parallel/Series/ser/Selector/selector/mrs_natural/disable", 1);
-			
+
 			afbBlockA->addMarSystem(create("Sum", "sum"));
 
-			
+
 			registerPrototype("AFB_Block_A", afbBlockA);
 		}
 			break;
-			
+
 		case AFB_BLOCK_B:
 		{
 			MarSystem* afbBlockB = new Series("AFB_Block_B");
-			
+
 			afbBlockB->addMarSystem(create("Square", "sq"));
 			afbBlockB->addMarSystem(create("Biquad", "bq"));
 
@@ -901,56 +903,56 @@ void MarSystemManager::registerComposite(std::string prototype)
 			afbBlockB->updctrl("Biquad/bq/mrs_real/frequency", 10.0);
 
 			afbBlockB->addMarSystem(create("DownSampler", "ds"));
-			
+
 			afbBlockB->linkctrl("mrs_natural/factor", "DownSampler/ds/mrs_natural/factor");
-			
+
 			registerPrototype("AFB_Block_B", afbBlockB);
 		}
 			break;
-		
+
 		case AFB_BLOCK_C:
 		{
 			MarSystem* afbBlockC = new Series("AFB_Block_C");
-			
+
 			MarSystem* fanout = create("Fanout", "fanout");
-			
-			
+
+
 			MarSystem* ser = create("Series", "ser");
-			
+
 			ser->addMarSystem(create("Compressor", "comp"));
 			ser->addMarSystem(create("Differentiator", "diff"));
 			ser->addMarSystem(create("HalfWaveRectifier", "rect"));
 			ser->addMarSystem(create("Gain", "g2"));
-			
+
 			fanout->addMarSystem(create("Gain", "g1"));
 			fanout->addMarSystem(ser);
-			
+
 			afbBlockC->addMarSystem(fanout);
-			
+
 			afbBlockC->updctrl("Fanout/fanout/Series/ser/Gain/g2/mrs_real/gain", 0.8);
 			afbBlockC->updctrl("Fanout/fanout/Gain/g1/mrs_real/gain", 0.2);
-			
-			afbBlockC->addMarSystem(create("Sum", "sum"));			
-			
+
+			afbBlockC->addMarSystem(create("Sum", "sum"));
+
 			afbBlockC->updctrl("Sum/sum/mrs_real/weight", 1.0);
-			
+
 			registerPrototype("AFB_Block_C", afbBlockC);
 		}
 			break;
-		
+
 		case DECIMATING_QMF:
 		{
 			MarSystem* decimating_QMF = new Series("Decimating_QMF");
-			
+
 			decimating_QMF->addMarSystem(create("Gain", "g"));
-			
+
 			decimating_QMF->updctrl("Gain/g/mrs_real/gain", 0.5);
-			
+
 			MarSystem* fanout0 = create("Fanout", "fanout0");
-			
+
 			MarSystem* ser0 = create("Series", "ser0");
 			MarSystem* ser1 = create("Series", "ser1");
-			
+
 			ser0->addMarSystem(create("DownSampler", "ds0"));
 			ser0->updctrl("DownSampler/ds0/mrs_natural/factor", 2);
 
@@ -974,21 +976,21 @@ void MarSystemManager::registerComposite(std::string prototype)
 
 			fanout0->addMarSystem(ser0);
 			fanout0->addMarSystem(ser1);
-			
+
 			decimating_QMF->addMarSystem(fanout0);
-			
+
 			MarSystem* fanout1 = create("Fanout", "fanout1");
-			
+
 			fanout1->addMarSystem(create("Sum", "sum"));
 			fanout1->addMarSystem(create("Subtract", "sub"));
-			
+
 			decimating_QMF->addMarSystem(fanout1);
-			
+
 			registerPrototype("Decimating_QMF", decimating_QMF);
 		}
 			break;
-		
-		
+
+
 		case PEAKANALYSE:
 		{
 			//--------------------------------------------------------------------------------
@@ -1003,23 +1005,23 @@ void MarSystemManager::registerComposite(std::string prototype)
 			parallel->addMarSystem(create("Spectrum", "spk2"));
 			peAnalysePr->addMarSystem(parallel);
 			peAnalysePr->addMarSystem(create("PeakConvert", "conv"));
-			peAnalysePr->linkctrl("mrs_natural/winSize", 
+			peAnalysePr->linkctrl("mrs_natural/winSize",
 				"ShiftInput/si/mrs_natural/winSize");
-			peAnalysePr->linkctrl("mrs_natural/FFTSize", 
+			peAnalysePr->linkctrl("mrs_natural/FFTSize",
 				"Windowing/wi/mrs_natural/size");
-			peAnalysePr->linkctrl("mrs_string/WindowType", 
+			peAnalysePr->linkctrl("mrs_string/WindowType",
 				"Windowing/wi/mrs_string/type");
-			peAnalysePr->linkctrl("mrs_bool/zeroPhasing", 
+			peAnalysePr->linkctrl("mrs_bool/zeroPhasing",
 				"Windowing/wi/mrs_bool/zeroPhasing");
-			peAnalysePr->linkctrl("mrs_natural/frameMaxNumPeaks", 
+			peAnalysePr->linkctrl("mrs_natural/frameMaxNumPeaks",
 				"PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
-			//peAnalysePr->linkctrl("mrs_natural/Decimation", 
+			//peAnalysePr->linkctrl("mrs_natural/Decimation",
 			//	"PeakConvert/conv/mrs_natural/Decimation");
 			peAnalysePr->updctrl("Shifter/sh/mrs_natural/shift", 1);
 			registerPrototype("PeakAnalyse", peAnalysePr);
 		}
 			break;
-		
+
 		case WHASPNET:
 		{
 			//--------------------------------------------------------------------------------
@@ -1034,14 +1036,14 @@ void MarSystemManager::registerComposite(std::string prototype)
 			WHaSpnetpr->linkctrl("WHaSp/whasp/mrs_natural/frameMaxNumPeaks",
 				"PeakAnalyse/analyse/PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
 			//
-			WHaSpnetpr->linkctrl("mrs_natural/frameMaxNumPeaks", 
+			WHaSpnetpr->linkctrl("mrs_natural/frameMaxNumPeaks",
 				"PeakAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
 			WHaSpnetpr->updctrl("mrs_natural/frameMaxNumPeaks", 20);
 			//
 			registerPrototype("WHaSpnet", WHaSpnetpr);
 		}
 			break;
-		
+
 		case STEREOFEATURES2:
 		{
 			//--------------------------------------------------------------------------------
@@ -1053,47 +1055,47 @@ void MarSystemManager::registerComposite(std::string prototype)
 			registerPrototype("StereoFeatures2", stereoFeats2);
 		}
 			break;
-		
+
 		case CLASSIFIER:
 		{
 			//--------------------------------------------------------------------------------
-			// prototype for Classifier 
+			// prototype for Classifier
 			//--------------------------------------------------------------------------------
 			MarSystem* classifierpr = create("Fanout", "Classifierpr");
 			classifierpr->addMarSystem(create("ZeroRClassifier", "zerorcl"));
 			classifierpr->addMarSystem(create("GaussianClassifier", "gaussiancl"));
 			classifierpr->addMarSystem(create("SVMClassifier", "svmcl"));
 
-			// Direct way with creating control 
+			// Direct way with creating control
 			classifierpr->addctrl("mrs_natural/nClasses", 1);
 			classifierpr->addctrl("mrs_string/mode", "train");
 			classifierpr->setctrlState("mrs_string/mode", "true");
 
-			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
+			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses",
 				"mrs_natural/nClasses");
-			classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_natural/nClasses", 
+			classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_natural/nClasses",
 				"mrs_natural/nClasses");
-			classifierpr->linkctrl("SVMClassifier/svmcl/mrs_natural/nClasses", 
+			classifierpr->linkctrl("SVMClassifier/svmcl/mrs_natural/nClasses",
 				"mrs_natural/nClasses");
 
-			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode", 
+			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode",
 				"mrs_string/mode");
-			classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_string/mode", 
+			classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_string/mode",
 				"mrs_string/mode");
-			classifierpr->linkctrl("SVMClassifier/svmcl/mrs_string/mode", 
+			classifierpr->linkctrl("SVMClassifier/svmcl/mrs_string/mode",
 				"mrs_string/mode");
 
 			classifierpr->updctrl("mrs_string/disableChild", "all");
-			// Indirect way 
-			/* classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses", 
+			// Indirect way
+			/* classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses",
 			"GaussianClassifier/gaussiancl/mrs_natural/nClasses");
-			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode", 
+			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode",
 			"GaussianClassifier/gaussiancl/mrs_string/mode");
-			classifierpr->linkctrl("mrs_natural/nClasses", 
+			classifierpr->linkctrl("mrs_natural/nClasses",
 			"GaussianClassifier/gaussiancl/mrs_natural/nClasses");
-			classifierpr->linkctrl("mrs_string/mode", 
+			classifierpr->linkctrl("mrs_string/mode",
 			"GaussianClassifier/gaussiancl/mrs_string/mode");
-			*/ 
+			*/
 
 			registerPrototype("Classifier", classifierpr);
 		}
@@ -1114,7 +1116,7 @@ MarSystemManager::~MarSystemManager()
 	registry_.clear();
 }
 
-void 
+void
 MarSystemManager::registerPrototype(string type, MarSystem *marsystem)
 {
 	//change type_ of composite to the user specified one
@@ -1123,20 +1125,20 @@ MarSystemManager::registerPrototype(string type, MarSystem *marsystem)
 	registry_[type] = marsystem;
 }
 
-MarSystem* 
-MarSystemManager::getPrototype(string type) 
+MarSystem*
+MarSystemManager::getPrototype(string type)
 {
 	if (registry_.find(type) != registry_.end())
 		return (MarSystem *)(registry_[type])->clone();
-	else 
+	else
 	{
 		MRSWARN("MarSystemManager::getPrototype: No prototype found for " + type);
 		return NULL;
 	}
 }
 
-MarSystem* 
-MarSystemManager::create(string type, string name) 
+MarSystem*
+MarSystemManager::create(string type, string name)
 {
 	registerComposite(type);
 
@@ -1146,7 +1148,7 @@ MarSystemManager::create(string type, string name)
 		m->setName(name);
 		return m;
 	}
-	else 
+	else
 	{
 		MRSWARN("MarSystemManager::create: No prototype found for " + type);
 		return NULL;
@@ -1154,17 +1156,17 @@ MarSystemManager::create(string type, string name)
 }
 
 MarSystem*
-MarSystemManager::create(std::string marsystemname) 
+MarSystemManager::create(std::string marsystemname)
 {
 	size_t loc = marsystemname.rfind("/", marsystemname.length()-1);
 	if(loc != string::npos)
-		return create(marsystemname.substr(0,loc), 
+		return create(marsystemname.substr(0,loc),
 		marsystemname.substr(loc +1));
 	else
 		return create(marsystemname, marsystemname + "_unknown");
 }
 
-MarSystem* 
+MarSystem*
 MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 {
 	string skipstr;
@@ -1192,7 +1194,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	is >> mname;
 
 	MarSystem* msys = getPrototype(mtype);
-	
+
 	if (msys == 0)
 	{
 		if(compositesMap_.find(mtype) == compositesMap_.end())
@@ -1202,7 +1204,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 		}
 		else
 		{
-			// lazy composite registration 
+			// lazy composite registration
 			registerComposite(mtype);
 			msys = getPrototype(mtype);
 		}
@@ -1210,15 +1212,15 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 
 	msys->setName(mname);
 	msys->setParent(parent);
-	
-	//delete all children MarSystems in a (prototype) Composite 
+
+	//delete all children MarSystems in a (prototype) Composite
 	//and read and link (as possible) local controls
-	is >> *msys; 
-	
+	is >> *msys;
+
 	msys->update();
-	
+
 	workingSet_[msys->getName()] = msys; // add to workingSet
-	
+
 	//recreate the Composite destroyed above, relinking all
 	//linked controls in its way
 	if (isComposite == true)
@@ -1255,10 +1257,10 @@ vector <string> MarSystemManager::registeredPrototypes()
 	}
 
 	return retVal;
-} 
+}
 
 // Added by Stuart Bray Dec 2004. invoked by MslModel
-map<string, MarSystem*> MarSystemManager::getWorkingSet(istream& is) 
+map<string, MarSystem*> MarSystemManager::getWorkingSet(istream& is)
 {
 	getMarSystem(is);
 	return workingSet_;
