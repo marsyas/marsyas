@@ -73,9 +73,9 @@ include (marsyas-oslibs)
 
 ## next level
 add_subdirectory(marsyas)
-if (BUILD_APPS)
+if (MARSYAS_BUILD_APPS)
   add_subdirectory(apps)
-endif (BUILD_APPS)
+endif (MARSYAS_BUILD_APPS)
 
 if (MARSYAS_PNG)  
    add_subdirectory(otherlibs)

@@ -17,16 +17,16 @@ endif (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
 
 
 ## OPTIONAL CODE
-option(BUILD_APPS "Build the applications" ON)
-mark_as_advanced (BUILD_APPS)
+option(MARSYAS_BUILD_APPS "Build the applications" ON)
+mark_as_advanced (MARSYAS_BUILD_APPS)
 option(MARSYAS_TESTS "Build the tests" OFF)
 if (MARSYAS_LINUX OR MARSYAS_MACOSX)
-	option(BUILD_DISTRIBUTED "[EXPERIMENTAL] compile code for
+	option(MARSYAS_BUILD_DISTRIBUTED "[EXPERIMENTAL] compile code for
 		distributed audio processing" OFF)
-	mark_as_advanced(BUILD_DISTRIBUTED)
-	if (BUILD_DISTRIBUTED)
-		set(DISTRIBUTED 1)
-	endif (BUILD_DISTRIBUTED)
+	mark_as_advanced(MARSYAS_BUILD_DISTRIBUTED)
+	if (MARSYAS_BUILD_DISTRIBUTED)
+		set(MARSYAS_DISTRIBUTED 1)
+	endif (MARSYAS_BUILD_DISTRIBUTED)
 endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
 
 
