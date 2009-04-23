@@ -71,6 +71,8 @@ mrs_bool single_vector_ = false;
 mrs_bool spectralFeatures_ = false;
 mrs_bool zcrs_ = false;
 mrs_bool timbralFeatures_ = false;
+mrs_bool shuffle_;
+
 
 #define DEFAULT_EXTRACTOR "STFT" 
 #define DEFAULT_CLASSIFIER  "SVM"
@@ -324,6 +326,8 @@ printHelp(string progName)
 	cerr << "-pm --pluginmute   : mute the plugin " << endl;
 	cerr << "-pb --playback     : playback during feature extraction " << endl;
 	cerr << "-s  --start        : playback start offset in seconds " << endl;
+	cerr << "-sh --shuffle      : shuffle collection file before processing" << endl;
+	
 	cerr << "-l  --length       : playback length in seconds " << endl;
 	cerr << "-m  --memory       : memory size " << endl;
 	cerr << "-w  --weka         : weka .arff filename " << endl;
@@ -1917,7 +1921,8 @@ selectFeatureSet(MarSystem *featExtractor)
 
 void 
 bextract_train_refactored(string pluginName,  string wekafname,  
-													mrs_natural memSize, string classifierName, mrs_bool single_vector)
+						  mrs_natural memSize, string classifierName, 
+						  mrs_bool single_vector)
 {
 	MRSDIAG("bextract.cpp - bextract_train_refactored");
 	cout << "BEXTRACT REFACTORED" << endl;
@@ -2142,7 +2147,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		bextractNetwork->updctrl("mrs_string/filename", workspaceDir + "bextract_single.mf");		
 	else
 		bextractNetwork->updctrl("mrs_string/filename", "bextract_single.mf");
-
+	
 	// play sound if playback is enabled 
 	if (pluginName != EMPTYSTRING && playback) 
 	{
@@ -2636,6 +2641,8 @@ initOptions()
 	cmd_options.addStringOption("test", "tc", EMPTYSTRING);
 	cmd_options.addBoolOption("stereo", "st", false);
 	cmd_options.addNaturalOption("downsample", "ds", 1);
+	cmd_options.addBoolOption("shuffle", "sh", false);
+	
 
 	// feature selection options
 	cmd_options.addBoolOption("StereoPanningSpectrumFeatures", "spsf", false);
@@ -2679,7 +2686,7 @@ loadOptions()
 	predictCollection = cmd_options.getStringOption("predict");
 	testCollection = cmd_options.getStringOption("test");
 	downSample = cmd_options.getNaturalOption("downsample");
-
+	shuffle_ = cmd_options.getBoolOption("shuffle");
 	stereo_ = cmd_options.getBoolOption("stereo");
 
 	// feature selection options 
@@ -3017,6 +3024,15 @@ main(int argc, const char **argv)
 
 	Collection single;
 	single.concatenate(cls);
+	if (single.getSize() == 0) 
+	{
+		MRSERR("Collection has no files  - exiting");
+		exit(1);
+	}
+	
+	if (shuffle_) 
+		single.shuffle();
+	
 	if (workspaceDir != EMPTYSTRING) 
 		single.write(workspaceDir + "bextract_single.mf");
 	else 
