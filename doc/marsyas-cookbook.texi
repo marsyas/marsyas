@@ -1,0 +1,137 @@
+\input texinfo   @c -*-texinfo-*-
+@comment %**start of header
+@setfilename marsyas-cookbook.info
+@settitle Marsyas Cookbook
+@comment %**end of header
+     
+
+@dircategory Audio 
+@direntry 
+* Marsyas: (marsyas). Marsyas Analysis Retrieval and Synthesis for
+Audio Signals 
+@end direntry
+
+@copying 
+Copyright 1998-2006 George Tzanetakis 
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the sections
+entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.
+@end copying 
+     
+@titlepage
+@title Marsyas Cookbook
+@subtitle For version 0.2 
+@subtitle @b{M}usic @b{A}nalysis @b{R}etrieval and @b{SY}nthesis for @b{A}udio @b{S}ignals 
+@author Steven Ness and George Tzanetakis
+     
+@c  The following two commands
+@c  start the copyright page.
+@page
+@vskip 0pt plus 1filll
+
+
+@end titlepage
+@contents
+     
+@c So the toc is printed in the right place.
+      
+@ifnottex
+@node Top
+@top Marsyas Cookbook
+@end ifnottex
+
+
+@menu
+* Playing a sound file:: Playing a sound file
+* The Index::                   The Index.
+@end menu
+
+
+@node Playing a sound file
+@chapter Playing a sound file
+
+@subheading Problem:    
+
+You want to play an audio file using Marsyas
+
+@subheading Solution
+
+Put a SoundFileSoure and a AudioSink inside of a Series object.
+
+@subheading Discussion
+
+To do this, you just need to put a SoundFileSoure and a AudioSink
+inside of a Series object.
+
+You then will set the filename of the SoundFileSource with:
+
+@example
+   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+@end example
+
+And initialize the audio:
+
+@example
+   playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+@end example
+
+You then just tick the network until all the frames have finished
+playing:
+
+@example
+while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	@{
+  playbacknet->tick();
+@}
+@end example
+
+The network will look like:
+
+@example
+- Series
+   - SoundFileSource
+   - AudioSink
+@end example
+
+The code will look like:
+
+@example
+MarSystem* playbacknet = mng.create("Series", "playbacknet");
+playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+playbacknet->addMarSystem(mng.create("Gain", "gt"));
+playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+
+// Set the SoundFileName
+playbacknet->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+
+// Turn on the audio output
+playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	@{
+   playbacknet->tick();
+@}
+@end example
+
+@node The Index
+@unnumbered The Index 
+
+@printindex cp 
+
+
+
+@bye

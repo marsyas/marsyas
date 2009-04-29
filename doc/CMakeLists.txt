@@ -25,14 +25,17 @@ set(MANUAL_DIR ${OUT-WWW}/manual/)
 # ugly, but works
 make_directory(${MANUAL_DIR}/marsyas-user/)
 make_directory(${MANUAL_DIR}/marsyas-devel/)
+make_directory(${MANUAL_DIR}/marsyas-cookbook/)
 make_directory(${MANUAL_DIR}/marsyas-user/images/)
 make_directory(${MANUAL_DIR}/marsyas-devel/images/)
+make_directory(${MANUAL_DIR}/marsyas-cookbook/images/)
 
 file(GLOB PNG_IMAGES ${CMAKE_SOURCE_DIR}/images/*.png)
 foreach(PNG_FILE ${PNG_IMAGES})
 # ugly, but works
 	configure_file(${PNG_FILE} ${MANUAL_DIR}/marsyas-user/images/ COPYONLY)
 	configure_file(${PNG_FILE} ${MANUAL_DIR}/marsyas-devel/images/ COPYONLY)
+	configure_file(${PNG_FILE} ${MANUAL_DIR}/marsyas-cookbook/images/ COPYONLY)
 endforeach(PNG_FILE)
 
 
@@ -66,6 +69,20 @@ add_custom_command(
 )
 
 add_custom_command(
+	OUTPUT ${MANUAL_DIR}/marsyas-cookbook.pdf
+	COMMAND ${TEXI2PDF}
+	ARGS ${CMAKE_SOURCE_DIR}/marsyas-cookbook.texi
+	WORKING_DIRECTORY ${MANUAL_DIR}
+)
+
+add_custom_command(
+	OUTPUT ${MANUAL_DIR}/marsyas-cookbook/index.html
+	COMMAND ${TEXI2HTML}
+	ARGS ${CMAKE_SOURCE_DIR}/marsyas-cookbook.texi
+	WORKING_DIRECTORY ${MANUAL_DIR}
+)
+
+add_custom_command(
 	OUTPUT ${OUT-WWW}/sourceDoc/index.html
 	COMMAND ${DOXY}
 )
@@ -79,6 +96,8 @@ add_custom_target(docs ALL
 	DEPENDS ${MANUAL_DIR}/marsyas-user/index.html
 	DEPENDS ${MANUAL_DIR}/marsyas-devel.pdf
 	DEPENDS ${MANUAL_DIR}/marsyas-devel/index.html
+	DEPENDS ${MANUAL_DIR}/marsyas-cookbook.pdf
+	DEPENDS ${MANUAL_DIR}/marsyas-cookbook/index.html
 	DEPENDS ${OUT-WWW}/sourceDoc/index.html
 )
 
