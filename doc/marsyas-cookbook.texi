@@ -59,7 +59,9 @@ translation approved by the Free Software Foundation.
 
 @menu
 * Playing a sound file:: Playing a sound file
-* Playing multiple sound files at once: Playing multiple sound files at once
+* Read in and write out a soundfile:: Read in and write out a soundfile
+* Playing multiple sound files at once:: Playing multiple sound files at once
+* Look at your network:: Look at your network
 * The Index::                   The Index.
 @end menu
 
@@ -127,6 +129,44 @@ while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	
    playbacknet->tick();
 @}
 @end example
+
+@node Read in and write out a soundfile
+@chapter Read in and write out a soundfile
+
+@subheading Problem
+
+You want to read in a sound file and write out the same sound file.
+
+@subheading Solution
+
+Use a SoundFileSource to read in the audio file, and put it into a 
+Series, then add a SoundFileSink to the Series.
+
+@subheading Discussion
+
+This recipe is similar to the one given above, where you want to read 
+in an audiofile and play it on your speakers, but in this case you want to output
+it to another audio file.  This is the basic building block of a number
+of different audio processing applications, you would just put your
+processing code in between the SoundFileSource and SoundFileSink:
+
+@example
+  MarSystemManager mng;
+
+  // create playback network with source-gain-dest
+  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+  playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+
+  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename",outAudioFileName);
+
+  while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue()) @{
+  	playbacknet->tick();
+  @}
+@end example
+
+
 
 @node Playing multiple sound files at once
 @chapter Playing multiple sound files at once
@@ -196,6 +236,45 @@ while (!done) @{
   playbacknet->tick();
 @}
 @end example
+
+
+@node Look at your network
+@chapter Look at your network
+
+@subheading Problem
+
+You are having trouble figuring out what is going wrong in your network
+and you want to look at your network to find out what is going wrong
+
+@subheading Solution
+
+Use the stream redirection operator with cout
+
+@subheading Discussion
+
+It's really simple to output your whole network, you just go:
+
+@example
+MarSystemManager mng;
+MarSystem* net = mng.create("Series", "net");
+
+cout << *net;
+@end example
+
+All of the components of the network, and the state of all their controls
+will be written to the standard output.  
+
+If the format is too hard to understand, try using put_html:
+
+@example
+net->put_html(cout);
+@end example
+
+Which has some nifty javascript to hide and show different parts of your
+network.
+
+
+
 
 
 
