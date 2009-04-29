@@ -59,6 +59,7 @@ translation approved by the Free Software Foundation.
 
 @menu
 * Playing a sound file:: Playing a sound file
+* Playing multiple sound files at once: Playing multiple sound files at once
 * The Index::                   The Index.
 @end menu
 
@@ -126,6 +127,80 @@ while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	
    playbacknet->tick();
 @}
 @end example
+
+@node Playing multiple sound files at once
+@chapter Playing multiple sound files at once
+
+@subheading Problem
+
+You want to output multiple sound files to the audio device on your
+system all at the same time.
+
+@subheading Solution
+
+Make a network with SoundFileSources and put all these
+SoundFileSources inside a Fanout.
+
+@subheading Discussion
+
+   To do this, you need a network with SoundFileSources for each of
+   the input sources.  You then put all these SoundFileSources inside
+   a Fanout, this will play all the sound files simultaneously.
+
+   The output of the Fanout is a stacked array of all the data from
+   the audio files, you need to combine these together using a Sum
+   object.
+
+   Finally, you output all of them to an AudioSink
+
+   The network will look like:
+
+@example
+- Series
+  - Fanout
+    - SoundFileSource
+    - SoundFileSource
+    - SoundFileSource
+  - Sum
+  - AudioSink
+@end example
+
+   The code will look like:
+
+@example
+MarSystemManager mng;
+MarSystem* playbacknet = mng.create("Series", "playbacknet");
+MarSystem* fanout = mng.create("Fanout", "fanout");
+
+// Create the SoundFileSources
+fanout->addMarSystem(mng.create("SoundFileSource", "src1"));
+fanout->addMarSystem(mng.create("SoundFileSource", "src2"));
+fanout->addMarSystem(mng.create("SoundFileSource", "src3"));
+
+// Assign filenames to the SoundFileSources
+fanout->updctrl("SoundFileSource/src1/mrs_string/filename",file1);
+fanout->updctrl("SoundFileSource/src2/mrs_string/filename",file2);
+fanout->updctrl("SoundFileSource/src3/mrs_string/filename",file3);
+
+// Add the fanout to the main network
+playbacknet->addMarSystem(fanout);
+
+// Sum up all of the fanouts
+playbacknet->addMarSystem(mng.create("Sum", "sum"));
+
+// Create the output file which is a SoundFileSink
+playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+while (!done) @{
+  playbacknet->tick();
+@}
+@end example
+
+
+
+
+
 
 @node The Index
 @unnumbered The Index 
