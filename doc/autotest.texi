@@ -76,7 +76,7 @@ is very portable and is distributed under the GPL licence.  It is
 easier to use than other C++ testing frameworks and features a very
 rich set of assertions.
 
-An example 
+An example can be found in
 marsyas/src/tests/unit_tests/TestSelector.h 
 
 @example
@@ -126,7 +126,6 @@ compile this new file:
 @example
 marsyas_unit_test(AubioYin AubioYin_runner.cpp)
 @end example
-
 
 @node How do I run the tests?
 @subsection How do I run the tests?

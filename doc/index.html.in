@@ -48,9 +48,17 @@
             (using marsyas as a user and programmer)</li>
 
             <li><a class="title" href=
+            "manual/marsyas-cookbook/index.html">Marsyas Cookbook</a> (also
+            in <a href="manual/marsyas-cookbook.pdf">PDF</a> ~ 1.5
+            Mb)<br>
+            (Simple recipes for how to use Marsyas)</li>
+
+            <li><a class="title" href=
             "sourceDoc/html/index.html">Library reference</a><br>
             (details for programmers)</li>
           </ul>
+
+
         </td>
 
         <td class="right-column">
