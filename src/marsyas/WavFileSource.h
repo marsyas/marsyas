@@ -37,51 +37,53 @@ namespace Marsyas
 */
 
 
-class WavFileSource: public AbsSoundFileSource
-{
-private:
-  short *sdata_;
-  unsigned char *cdata_;
+	class WavFileSource: public AbsSoundFileSource
+	{
+		private:
+			short *sdata_;
+			unsigned char *cdata_;
   
-  FILE *sfp_;
-  long sfp_begin_;
+			FILE *sfp_;
+			long sfp_begin_;
   
-  mrs_natural sampleSize_; //in bytes
-  mrs_natural csize_;
-  mrs_natural size_;  
-  short sval_;
-  unsigned short bits_;
-  MarControlPtr ctrl_pos_;
+			mrs_natural sampleSize_; //in bytes
+			mrs_natural csize_;
+			mrs_natural size_;  
+			short sval_;
+			unsigned short bits_;
+			MarControlPtr ctrl_pos_;
   
-  void addControls();
-  void myUpdate(MarControlPtr sender);
-  unsigned long ByteSwapLong(unsigned long nLongNumber);
-  unsigned short ByteSwapShort (unsigned short nValue);
+			void addControls();
+			void myUpdate(MarControlPtr sender);
+			unsigned long ByteSwapLong(unsigned long nLongNumber);
+			unsigned short ByteSwapShort (unsigned short nValue);
   
-  mrs_natural nChannels_;
-  mrs_natural inSamples_;
-  mrs_natural samplesToRead_;
-  mrs_natural samplesRead_;
-  mrs_natural samplesToWrite_;
+			mrs_natural nChannels_;
+			mrs_natural inSamples_;
+			mrs_natural samplesToRead_;
+			mrs_natural samplesRead_;
+			mrs_natural samplesToWrite_;
 
-  mrs_natural samplesOut_;
+			mrs_natural samplesOut_;
   
-  mrs_real repetitions_;
-  mrs_real duration_;
+			mrs_real repetitions_;
+			mrs_real duration_;
   
-public:
-  WavFileSource(std::string name);
-  WavFileSource(const WavFileSource& a);
-  
-  ~WavFileSource();
-  MarSystem* clone() const;  
+			mrs_natural getLinear16(realvec& win); 
+			mrs_natural getLinear8(realvec& win); 
 
-  mrs_natural getLinear16(realvec& win); //private [?]
-  mrs_natural getLinear8(mrs_natural c, realvec& win); //private [?]
 
-  void getHeader(std::string filename);
-  void myProcess(realvec& in, realvec &out);
-};
+		public:
+			WavFileSource(std::string name);
+			WavFileSource(const WavFileSource& a);
+  
+			~WavFileSource();
+			MarSystem* clone() const;  
+
+
+			void getHeader(std::string filename);
+			void myProcess(realvec& in, realvec &out);
+	};
 
 }//namespace Marsyas
 
