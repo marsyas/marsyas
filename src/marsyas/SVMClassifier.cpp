@@ -87,6 +87,7 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 	ctrl_shrinking_ = getctrl("mrs_bool/shrinking");
 	ctrl_probability_ = getctrl("mrs_bool/probability");
 	ctrl_nr_weight_ = getctrl("mrs_natural/nr_weight");
+	ctrl_classProbabilities_ = getctrl("mrs_realvec/classProbabilities");
 }
 
 SVMClassifier::~SVMClassifier() {
@@ -147,8 +148,9 @@ void SVMClassifier::addControls() {
 	addctrl("mrs_real/eps", (mrs_real)0.001, ctrl_eps_);
 	addctrl("mrs_real/p", (mrs_real)0.1, ctrl_p_);
 	addctrl("mrs_bool/shrinking", true, ctrl_shrinking_);
-	addctrl("mrs_bool/probability", false, ctrl_probability_);
+	addctrl("mrs_bool/probability", true, ctrl_probability_);
 	addctrl("mrs_natural/nr_weight", (mrs_natural)0, ctrl_nr_weight_);
+	addctrl("mrs_realvec/classProbabilities", realvec(), ctrl_classProbabilities_);
 }
 
 void SVMClassifier::myUpdate(MarControlPtr sender) {
@@ -274,7 +276,13 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			trained_ = true;
 			MRSDEBUG ("... done");
 			int n;
+			{
+				MarControlAccessor acc_classProbs(ctrl_classProbabilities_);
+				realvec& classProbs = acc_classProbs.to<mrs_realvec>();
+				classProbs.create(svm_model_->nr_class);
+			}
 			
+
 			MRSDEBUG ("svm_model_->nr_class = " << svm_model_->nr_class);
 			MRSDEBUG ("svm_model_->l = " << svm_model_->l);
 			MRSDEBUG ("svm_model_->free_sv = " << svm_model_->free_sv);
@@ -583,7 +591,8 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 			}
 
 		struct svm_node* xv = new svm_node[inObservations_];
-
+		double* probs = new double[svm_model_->nr_class];
+		
 		realvec mini = ctrl_minimums_->to<mrs_realvec>();
 		realvec maxi = ctrl_maximums_->to<mrs_realvec>();
 
@@ -600,8 +609,28 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 			}
 		}
 
-		double prediction = svm_predict(svm_model_, xv);
+		double prediction = 0;
+		if (ctrl_probability_->to<mrs_bool>())
+			prediction = svm_predict_probability(svm_model_, xv, probs);
+		else 
+			prediction = svm_predict(svm_model_, xv);
+		
+		{
+			MarControlAccessor acc_classProbs(ctrl_classProbabilities_);			
+			realvec& classProbs = acc_classProbs.to<mrs_realvec>();
+			for (int i=0; i < svm_model_->nr_class; i++) 
+				classProbs(i) = probs[i];
+		}
+		
+
+
+
+
 		delete [] xv;
+		delete [] probs;
+		
+		
+
 		out(0, 0) = (mrs_real)prediction;
 		out(1,0) = in(inObservations_-1,0);
 	}

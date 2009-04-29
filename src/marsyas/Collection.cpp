@@ -132,6 +132,8 @@ Collection::add(string entry, string label)
     hasLabels_ = true;
     if (find(labelNames_.begin(), labelNames_.end(), label) == labelNames_.end())
         labelNames_.push_back(label);
+
+	sort(labelNames_.begin(), labelNames_.end());
 }
 
 

@@ -2227,7 +2227,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	// output trained classifier models
 	if (pluginName == EMPTYSTRING) // output to stdout 
-		cout << (*bextractNetwork) << endl;      
+		;
+	
+		// cout << (*bextractNetwork) << endl;      
 	else // save to .mpl file
 	{
 		ofstream oss(pluginName.c_str());
@@ -2237,9 +2239,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// predict optional test collection 
 	if (testCollection != EMPTYSTRING) 
 	{
+		bextractNetwork->updctrl("mrs_bool/advance", false);
 		if (single_vector)
 		{
-		 	featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", true);
+			if (pluginName != EMPTYSTRING && !pluginMute) 
+				featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", true);
 			
 			Collection m;
 			m.read(testCollection);
@@ -2262,6 +2266,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 			bextractNetwork->updctrl("mrs_string/filename", testCollection);
 			
+			cout << "testCollection = " << testCollection << endl;
+			
 			while (ctrl_notEmpty->to<mrs_bool>())
 			{
 				bextractNetwork->tick();
@@ -2271,7 +2277,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				}
 				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-				cout << "Predicting " << currentlyPlaying << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				mrs_realvec probs = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/classProbabilities")->to<mrs_realvec>();
+				cout << "Predicting " << currentlyPlaying << "\t" << "GT:" << l.labelName((mrs_natural)pr(1,0)) << "\t" << "PR:" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				
+				cout << probs << endl;
+				
 				if ((mrs_natural)pr(0,0) == (mrs_natural)(pr(1,0)))
 					correct_instances++;
 				prout << currentlyPlaying << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;

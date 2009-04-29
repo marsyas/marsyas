@@ -26,14 +26,14 @@
 namespace Marsyas
 {
 /**
-	\class SVMClassifier
-	\ingroup MachineLearning
-	\brief SVM classifier based on libsvm
+   \class SVMClassifier
+   \ingroup MachineLearning
+   \brief SVM classifier based on libsvm
 
 */
 
-class SVMClassifier: public MarSystem
-{
+	class SVMClassifier: public MarSystem
+	{
 		private:
 			MarControlPtr ctrl_sv_coef_ ;
 			MarControlPtr ctrl_SV_ ;
@@ -62,7 +62,10 @@ class SVMClassifier: public MarSystem
 			MarControlPtr ctrl_shrinking_;
 			MarControlPtr ctrl_probability_;
 			MarControlPtr ctrl_nr_weight_;
+			MarControlPtr ctrl_classProbabilities_;
 		
+		
+
 			void addControls();
 			void myUpdate(MarControlPtr sender);
 			
@@ -73,14 +76,14 @@ class SVMClassifier: public MarSystem
 			mrs_bool trained_, training_, was_training_;
 			mrs_natural kernel_, svm_;
 
-public:
-	SVMClassifier(std::string name);
-	SVMClassifier(const SVMClassifier& a);
-	~SVMClassifier();
-	MarSystem* clone() const;
+		public:
+			SVMClassifier(std::string name);
+			SVMClassifier(const SVMClassifier& a);
+			~SVMClassifier();
+			MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
-};
+			void myProcess(realvec& in, realvec& out);
+	};
 
 }
 

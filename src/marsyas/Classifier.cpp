@@ -54,6 +54,8 @@ Classifier::addControls()
   setctrlState("mrs_string/mode", true); 
   addctrl("mrs_natural/nClasses", 1);
   setctrlState("mrs_natural/nClasses", true);
+  addctrl("mrs_realvec/classProbabilities", realvec());
+  setctrlState("mrs_realvec/classProbabilities", true);
 }
 
 void
@@ -93,7 +95,6 @@ Classifier::myUpdate(MarControlPtr sender)
       classifierSwitch_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
       classifierSwitch_->updctrl("mrs_natural/disable", 0);      
       mode_ = getctrl("mrs_string/mode")->to<mrs_string>(); 
-      cout << "mode_ = " << mode_ << endl;
       mrs_natural nClasses = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
       classifierSwitch_->updctrl("mrs_string/mode", mode_);
       classifierSwitch_->updctrl("mrs_natural/nClasses", nClasses);

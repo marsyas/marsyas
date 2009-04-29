@@ -1069,8 +1069,10 @@ void MarSystemManager::registerComposite(std::string prototype)
 			// Direct way with creating control
 			classifierpr->addctrl("mrs_natural/nClasses", 1);
 			classifierpr->addctrl("mrs_string/mode", "train");
-			classifierpr->setctrlState("mrs_string/mode", "true");
-
+			classifierpr->setctrlState("mrs_string/mode", true);
+			classifierpr->addctrl("mrs_realvec/classProbabilities", realvec());
+			classifierpr->setctrlState("mrs_realvec/classProbabilities",true);
+			
 			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses",
 				"mrs_natural/nClasses");
 			classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_natural/nClasses",
@@ -1085,18 +1087,14 @@ void MarSystemManager::registerComposite(std::string prototype)
 			classifierpr->linkctrl("SVMClassifier/svmcl/mrs_string/mode",
 				"mrs_string/mode");
 
+			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_realvec/classProbabilities",
+				"mrs_realvec/classProbabilities");
+			classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_realvec/classProbabilities",
+				"mrs_realvec/classProbabilities");
+			classifierpr->linkctrl("SVMClassifier/svmcl/mrs_realvec/classProbabilities",
+				"mrs_realvec/classProbabilities");
+			
 			classifierpr->updctrl("mrs_string/disableChild", "all");
-			// Indirect way
-			/* classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses",
-			"GaussianClassifier/gaussiancl/mrs_natural/nClasses");
-			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_string/mode",
-			"GaussianClassifier/gaussiancl/mrs_string/mode");
-			classifierpr->linkctrl("mrs_natural/nClasses",
-			"GaussianClassifier/gaussiancl/mrs_natural/nClasses");
-			classifierpr->linkctrl("mrs_string/mode",
-			"GaussianClassifier/gaussiancl/mrs_string/mode");
-			*/
-
 			registerPrototype("Classifier", classifierpr);
 		}
 			break;

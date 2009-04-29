@@ -185,7 +185,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		for (t = 0; t < inSamples_; t++)  
 		{
 			label = in(inObservations_-1, t);
-
+			
 			for (l=0; l < nlabels; l++)
 			{
 				sq_sum = 0.0;
