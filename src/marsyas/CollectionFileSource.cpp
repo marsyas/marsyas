@@ -144,6 +144,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 	if (cindex_ < col_.size()) 
 	{
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));
+		isrc_->updctrl("mrs_natural/pos", 0);
 		ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
 		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
@@ -189,7 +190,9 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			cindex_ = 0;
 		setctrl("mrs_natural/cindex", cindex_);
 
+
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
+		isrc_->updctrl("mrs_natural/pos", 0);
 		updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
 		myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
 		onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
@@ -220,7 +223,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			
 		}
 
-
+ 
 
 		return;
 	}
@@ -236,6 +239,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			{
 				cindex_ = cindex_ + 1;
 				setctrl("mrs_natural/cindex", cindex_);
+				
 				isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
 				isrc_->updctrl("mrs_natural/pos", 0);     
 				pos_ = 0;

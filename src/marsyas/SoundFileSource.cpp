@@ -147,6 +147,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			if (src_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
 				src_->notEmpty_ = true; //[!]
 		}
+		
 		else
 		{
 			ctrl_onObservations_->setValue(1, NOUPDATE);
@@ -155,8 +156,11 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			src_ = NULL;
 		}
 	}
+	
+	
 	if (src_ != NULL)
 	{
+		
 		//pass configuration to audio source object and update it
 		src_->ctrl_inSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 		src_->ctrl_inObservations_->setValue(ctrl_inObservations_, NOUPDATE);
