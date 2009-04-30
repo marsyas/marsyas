@@ -80,7 +80,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 	MRS_WARNINGS_ON;
 	if (msys == 0) 
 	{
-		cout << "Manager does not support system " << endl;
+		cout << "Manager could not load MarSystem from plugin file" << endl;
 		exit(1);
 	}
 	mrs_real srate;

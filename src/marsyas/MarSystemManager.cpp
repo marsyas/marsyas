@@ -1181,8 +1181,11 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	else if (mcomposite == marSystemComposite)
 		isComposite = true;
 	else
+	{
+		MRSERR("Unknown MarSystemType" << mcomposite);
 		return 0;
-
+	}
+	
 	is >> skipstr >> skipstr >> skipstr;
 	string mtype;
 	is >> mtype;
@@ -1197,7 +1200,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	{
 		if(compositesMap_.find(mtype) == compositesMap_.end())
 		{
-			MRSWARN("MarSystem::getMarSystem - MarSystem not supported");
+			MRSERR("MarSystem::getMarSystem - MarSystem " << mtype << " is not yet part of Marsyas");
 			return 0;
 		}
 		else
