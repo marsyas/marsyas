@@ -2263,7 +2263,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			prout.open(predictCollection.c_str());
 
 			int correct_instances = 0;
-
+			int num_instances = 0;
+			
 			bextractNetwork->updctrl("mrs_string/filename", testCollection);
 			
 			cout << "testCollection = " << testCollection << endl;
@@ -2284,9 +2285,22 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				
 				if ((mrs_natural)pr(0,0) == (mrs_natural)(pr(1,0)))
 					correct_instances++;
-				prout << currentlyPlaying << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				num_instances++;
+				
+				for (int i=0; i < probs.getSize(); i++) 
+					if (probs(i) > 0.05)
+					{
+						cout << probs(i) << ",";
+						prout << currentlyPlaying << "\t" << l.labelName((mrs_natural)i) << endl;
+					}
+				
+				cout << endl;
+				
+							
+
+
 			}
-			cout << "Correct instances = " << correct_instances << endl;
+			cout << "Correct instances = " << correct_instances << "/" << num_instances << endl;
 		}
 		
 		else 
