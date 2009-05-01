@@ -407,6 +407,8 @@ various aspects of the feature extraction process
       length (in seconds) of each soundfile from which features will be extracted. A length of -1.0 indicates that the entire duration of the file should be used (the default behavior) 
 @item -n --normalization
       apply normalization to audio signal
+@item -fe --featExtract 
+      only extract features without training the classifier 
 @item -st --stereo
       use stereo feature extraction
 @item -ds --downsample

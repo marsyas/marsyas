@@ -53,6 +53,8 @@ mrs_real gain = 1.0;
 mrs_bool pluginMute = 0.0;
 mrs_bool playback = false;
 mrs_bool stereo_ = false;
+mrs_bool featExtract_ = false;
+
 mrs_bool spsf_ = false;
 mrs_bool mfcc_ = false;
 mrs_bool chroma_ = false;
@@ -317,6 +319,7 @@ printHelp(string progName)
 	cerr << "-as --accSize      : accumulator size" << endl;
 	cerr << "-cl --classifier   : classifier name" << endl;
 	cerr << "-pr --predict      : predict class for files in collection" << endl;
+	cerr << "-fe --featExtract  : only extract features" << endl;
 	cerr << "-tc --test         : test collection" << endl;
 	cerr << "-st --stereo       : use stereo feature extraction" << endl;
 	cerr << "-ds --downsample   : downsampling factor" << endl;
@@ -2094,24 +2097,29 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->addMarSystem(mng.create("Annotator", "annotator"));
 	if (wekafname != EMPTYSTRING)
 		bextractNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
-	bextractNetwork->addMarSystem(mng.create("Classifier", "cl"));
-	bextractNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
 
+	if (!featExtract_)
+	{
+		bextractNetwork->addMarSystem(mng.create("Classifier", "cl"));
+		bextractNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
-	// link confidence and annotation with SoundFileSource that plays the collection 
-	bextractNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
-		"mrs_string/filename");
+		// link confidence and annotation with SoundFileSource that plays the collection 
+		bextractNetwork->linkctrl("Confidence/confidence/mrs_string/fileName", 
+								  "mrs_string/filename");
+	}
+	
 	bextractNetwork->linkctrl("Annotator/annotator/mrs_natural/label",
-		"mrs_natural/currentLabel");
+								  "mrs_natural/currentLabel");
 
 	// links with WekaSink
 	if (wekafname != EMPTYSTRING)
 	{
 		bextractNetwork->linkctrl("WekaSink/wsink/mrs_string/currentlyPlaying", 
 			"mrs_string/currentlyPlaying");
+		
 		bextractNetwork->linkctrl("WekaSink/wsink/mrs_string/labelNames",
-			"Confidence/confidence/mrs_string/labelNames");
+			"mrs_string/labelNames");
 		bextractNetwork->linkctrl("WekaSink/wsink/mrs_natural/nLabels", "mrs_natural/nLabels"); 
 	}
 
@@ -2131,14 +2139,18 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->updctrl("mrs_real/duration", length);
 
 	// confidence is silent during training
-	bextractNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
-	bextractNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
+	if (!featExtract_)
+	{
+		bextractNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
+		bextractNetwork->updctrl("Confidence/confidence/mrs_bool/print",true);
+		if (single_vector) 
+			bextractNetwork->updctrl("Confidence/confidence/mrs_natural/memSize", 1);
+		
+		// select classifier to be used 
+		selectClassifier(bextractNetwork, classifierName);
+	}
+	
 
-	if (single_vector) 
-		bextractNetwork->updctrl("Confidence/confidence/mrs_natural/memSize", 1);
-
-	// select classifier to be used 
-	selectClassifier(bextractNetwork, classifierName);
 
 	// load the collection which is automatically created by bextract 
 	// based on the command-line arguments 
@@ -2157,13 +2169,17 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	// don't use linkctrl so that only value is copied once and linking doesn't 
 	// remain for the plugin 
-	bextractNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
-		bextractNetwork->getctrl("mrs_string/labelNames"));
-	bextractNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
-		bextractNetwork->getctrl("mrs_natural/nLabels"));
-	bextractNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", 
-		bextractNetwork->getctrl("mrs_natural/nLabels"));
-
+	if (!featExtract_)
+	{
+		bextractNetwork->updctrl("Confidence/confidence/mrs_string/labelNames", 
+								 bextractNetwork->getctrl("mrs_string/labelNames"));
+		bextractNetwork->updctrl("Classifier/cl/mrs_natural/nClasses", 
+								 bextractNetwork->getctrl("mrs_natural/nLabels"));
+		bextractNetwork->updctrl("Confidence/confidence/mrs_natural/nLabels", 
+								 bextractNetwork->getctrl("mrs_natural/nLabels"));
+	}
+	
+		
 	// setup WekaSink - has to be done after all updates so that changes are correctly 
 	// written to file
 	if (wekafname != EMPTYSTRING)
@@ -2208,6 +2224,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	}
 
 	cout << "Finished feature extraction" << endl;
+	if (featExtract_) 
+		return;
+	
 
 	// prepare network for real-time playback/prediction
 	bextractNetwork->updctrl("Classifier/cl/mrs_string/mode","predict"); 
@@ -2688,6 +2707,7 @@ initOptions()
 
 	cmd_options.addBoolOption("TimbralFeatures", "timbral", false);
 	cmd_options.addBoolOption("SingleVector", "sv", false);
+	cmd_options.addBoolOption("featExtract", "fe", false);
 }
 
 void 
@@ -2716,7 +2736,8 @@ loadOptions()
 	downSample = cmd_options.getNaturalOption("downsample");
 	shuffle_ = cmd_options.getBoolOption("shuffle");
 	stereo_ = cmd_options.getBoolOption("stereo");
-
+	featExtract_ = cmd_options.getBoolOption("featExtract");
+	
 	// feature selection options 
 	spsf_ = cmd_options.getBoolOption("StereoPanningSpectrumFeatures");
 	mfcc_ = cmd_options.getBoolOption("MelFrequencyCepstralCoefficients");
