@@ -618,7 +618,12 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
   samplesOut_ += onSamples_;
   
   if (notEmpty_) {
-  	notEmpty_ = (samplesOut_ < repetitions_ * csize_);
+
+	  if (repetitions_ != 1)
+		  notEmpty_ = (samplesOut_ < repetitions_ * csize_);
+	  else 
+		  notEmpty_ = pos_ < csize_;
+	  
   } else{
 	  // if notEmpty_ was false already it got set in fillStream
     // MRSWARN("MP3FileSource: track ended.");

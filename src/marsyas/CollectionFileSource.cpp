@@ -183,16 +183,17 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	
 	if (advance_) 
 	{
-
 		
 		cindex_ = cindex_ + 1;
 		if (cindex_ == col_.size())
 			cindex_ = 0;
 		setctrl("mrs_natural/cindex", cindex_);
+		
 
-
+		
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
 		isrc_->updctrl("mrs_natural/pos", 0);
+
 		updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
 		myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
 		onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
@@ -220,11 +221,12 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			notEmpty_ = false;      
 			advance_ = false;
 			return;
-			
 		}
 
- 
-
+		
+		setctrl("mrs_bool/advance", false);
+		advance_ = false;
+		
 		return;
 	}
 	else
@@ -232,7 +234,8 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		//finished current file. Advance to next one in collection (if any)
 		if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
 		{
-
+			
+			
 			
 			//check if there a following file ion the collection
 			if (cindex_ < col_.size() -1)
@@ -267,6 +270,9 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
 	} 
+
+
+	
 }  
 
 

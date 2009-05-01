@@ -1963,6 +1963,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		featureNetwork->addMarSystem(dest);
 	}
 
+
+
 	// Select whether stereo or mono feature extraction is to be used
 	if (stereo_ == true) 
 	{
@@ -2195,13 +2197,15 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		bextractNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  		    
 	}
 
+
 	// main processing loop for training
 	MarControlPtr ctrl_notEmpty = bextractNetwork->getctrl("mrs_bool/notEmpty");
 	MarControlPtr ctrl_currentlyPlaying = bextractNetwork->getctrl("mrs_string/currentlyPlaying");
 	mrs_string previouslyPlaying, currentlyPlaying;
 
 
-
+	int n = 0;
+	 
 	while (ctrl_notEmpty->to<mrs_bool>())
 	{
 		bextractNetwork->tick();
@@ -2209,13 +2213,19 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		{
 			bextractNetwork->updctrl("mrs_bool/advance", true);
 			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
-			cout << "Processed: " << currentlyPlaying << endl;			
+			cout << "Processed: " << n << " - " << currentlyPlaying << endl;
+			n++;
 		}
 		else 
 		{
 			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 			if (currentlyPlaying != previouslyPlaying)
-				cout << "Processed: " << currentlyPlaying << endl;
+			{
+				cout << "Processed: " << n << " - " << currentlyPlaying << endl;
+				n++;
+				
+			}
+			
 			previouslyPlaying = currentlyPlaying;
 		}
 		
