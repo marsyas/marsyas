@@ -77,6 +77,12 @@ WekaSource::addControls()
 
 	addctrl("mrs_natural/nInstances", 0);
 
+	// The current filename that we are processing
+	// We get this from looking for comment strings that begin with "%
+	// filename"
+	addctrl("mrs_string/currentFilename", "");
+
+
 }
 
 void 
@@ -290,6 +296,7 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
 	(void) trainMode;
 
 	vector<mrs_real> *row = NULL;
+	string fname = data_.GetFilename(currentIndex_);
 	row = data_.at(currentIndex_++);
 	if(currentIndex_ >= (mrs_natural)data_.size())
     {
@@ -298,6 +305,7 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
 	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
     {
 		out(ii, 0) = row->at(ii);
+		this->updctrl("mrs_string/currentFilename", fname);
     }
 }
 
@@ -535,8 +543,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 {
 	// FIXME Unused parameter
 	(void) filename;
-
-
+	string currentFname;
 
 	MRSASSERT(!mis.eof());
   
@@ -547,20 +554,14 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
     {
 		mis.getline(str, 1023);
     }
-
-
-
-
-  
   
 	string token;
 	mis >> token;
 
-
-
 	mrs_natural lineCount = 0;
 	while(!mis.eof())
     {
+
 		char *cp = (char *)token.c_str();
 		if (cp[0] != '%')
 		{
@@ -588,12 +589,19 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 			lineBuffer->at(index) = (mrs_real)classIndex;
 			
 			data.Append(lineBuffer);
+			data.AppendFilename(currentFname);
 			lineCount++;
 			
 		}
 		else // skip comment line 
 		{
-			mis.getline(str, 1023);
+		    mis.getline(str, 1023);
+
+		  // If the line starts with "% filename" set the current_filename
+  		  if (strncmp(str," filename",9) == 0) {
+			currentFname = str+10;
+		  }
+
 		}
 		mis >> token;
     }//while

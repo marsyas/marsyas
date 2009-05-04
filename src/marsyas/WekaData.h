@@ -45,12 +45,18 @@ public:
 	void Append(const realvec& in);
 	void Append(std::vector<mrs_real> *);
 
+    // Add a filename to the table
+	void AppendFilename(mrs_string);
+
 	//return the number of columns(including the class attribute)
 	inline mrs_natural getCols()const{return cols_;}
 	inline mrs_natural getRows()const{return rows_;}
 
 	//get the class attribute for a row and convert to a int
 	mrs_natural GetClass(mrs_natural row)const;
+
+    // get the filename for a row
+	mrs_string GetFilename(mrs_natural row)const;
 
 	//debug helper funtion to dump table to an ascii file
 	void Dump(const std::string& filename, const std::vector<std::string>& classNames)const;
@@ -71,6 +77,7 @@ private:
 	realvec minimums_;
 	realvec maximums_;
 	std::vector<mrs_real> *data_;
+	std::vector<mrs_string> filenames_;
 	//some sorting private functions
 	void quickSort(mrs_natural attIndex, mrs_natural left, mrs_natural right);
 	void swapRows(mrs_natural l, mrs_natural r);

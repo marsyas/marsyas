@@ -228,6 +228,18 @@ void WekaData::Append(vector<mrs_real> *data)
   this->push_back(data);
 }//Append
 
+
+//add rows of data to the table
+void WekaData::AppendFilename(mrs_string fname)
+{
+  filenames_.push_back(fname);
+}//AppendFilename
+
+mrs_string WekaData::GetFilename(mrs_natural row) const
+{
+  return (mrs_string)filenames_.at(row);
+}
+
 //get the class attribute for a row and convert to a int
 //class attribute is last column of row
 mrs_natural WekaData::GetClass(mrs_natural row) const
