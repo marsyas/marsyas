@@ -1983,6 +1983,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// texture statistics 
 	featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
 	featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+	MarControlPtr memResetPtr = featureNetwork->getctrl("TextureStats/tStats/mrs_bool/reset");
 
 
 
@@ -2212,6 +2213,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		if (single_vector)
 		{
 			bextractNetwork->updctrl("mrs_bool/advance", true);
+			featureNetwork->setctrl(memResetPtr, true);
 			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 			cout << "Processed: " << n << " - " << currentlyPlaying << endl;
 			n++;
@@ -2481,6 +2483,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
 	featureNetwork->addMarSystem(features);
 	featureNetwork->addMarSystem(mng.create("Memory", "memory"));
+
 	featureNetwork->addMarSystem(statistics);  
 	if (classifierName == "SMO")
 		featureNetwork->addMarSystem(mng.create("NormMaxMin", "norm"));
