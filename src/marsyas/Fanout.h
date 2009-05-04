@@ -36,10 +36,11 @@ namespace Marsyas
 	MarSystem to disable.
 	- \b mrs_natural/enable	[w] : pass in the number of the child MarSystem to
 	enable.  (by default all children are enabled)
-	- \b mrs_natural/enableChild	[w] : pass in the type/name of the child MarSystem to
+	- \b mrs_string/enableChild	[w] : pass in the type/name of the child MarSystem to
 	enable.  (by default all children are enabled)
-	- \b mrs_natural/disableChild	[w] : pass in the type/name of the child MarSystem to
+	- \b mrs_string/disableChild	[w] : pass in the type/name of the child MarSystem to
 	disable.
+  -\b mrs_realvec/enabled [r] : vector with the list of enabled (i.e. 1.0 valued) children
 */
 
 
