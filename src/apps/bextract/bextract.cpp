@@ -1983,7 +1983,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// texture statistics 
 	featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
 	featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
-	MarControlPtr memResetPtr = featureNetwork->getctrl("TextureStats/tStats/mrs_bool/reset");
+	featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", true);
+
 
 
 
@@ -2209,17 +2210,20 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	 
 	while (ctrl_notEmpty->to<mrs_bool>())
 	{
-		bextractNetwork->tick();
+
+
 		if (single_vector)
 		{
+			bextractNetwork->updctrl("Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset", true);
+			bextractNetwork->tick();
 			bextractNetwork->updctrl("mrs_bool/advance", true);
-			featureNetwork->setctrl(memResetPtr, true);
 			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 			cout << "Processed: " << n << " - " << currentlyPlaying << endl;
 			n++;
 		}
 		else 
 		{
+			bextractNetwork->tick();
 			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 			if (currentlyPlaying != previouslyPlaying)
 			{

@@ -103,6 +103,7 @@ Memory::myProcess(realvec& in, realvec& out)
 
 	if (reset_) 
 	{
+		
 		out.setval(0.0);
 		reset_ = false;
 		ctrl_reset_->setValue(false, NOUPDATE);
