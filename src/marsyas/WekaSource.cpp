@@ -454,6 +454,8 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
   
   
 	parseHeader(*mis, filename, attributesToExtract);
+	cout << "Parse Header done" << endl;
+	
 	parseData(*mis, filename, data);
 	mis->close();
 	delete mis;
@@ -496,8 +498,13 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	while( mis >> token1 && (token1 == "@attribute" || (token1 == "@ATTRIBUTE")))
     {
 		mis >> token2;
-		mis >> token3;
-	  
+		getline(mis, token3);
+		
+		// skip leading spaces of token3
+		size_t startpos = token3.find_first_not_of(" \t");
+		if (string::npos != startpos) 
+			token3 = token3.substr(startpos);
+		
 		if ((token3 == "real") || (token3 == "REAL"))
 		{
 			attributesFound_.push_back(token2);
@@ -505,14 +512,14 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 		}
 		else if (token3[0] == '{')
 		{
-			string token = token3.substr( 1, token3.length()-2 );	// Remove curly braces
-			char *cp = (char *)token.c_str();
-			cp = strtok(cp, ",");
-			while(cp)
+			string token = token3.substr( 1, token3.length()-2 );	// Remove curly braces			
+			
+			std::stringstream  tokenStream(token); 
+			std::string        cell;
+			while(std::getline(tokenStream,cell,','))
 			{
-				classesFound_.push_back(cp);
-				cp = strtok(NULL, ",");
-			}//while
+				classesFound_.push_back(cell);
+			}
 		}
 		else
 		{
@@ -550,18 +557,22 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 	data.Create(attributesIncludedList_.size()+1);
 
 	char str[1024];  
-	while (mis.peek() == '%') 
+	
+	while (mis.peek() == '%') 			// skip comment lines
     {
 		mis.getline(str, 1023);
-    }
-  
-	string token;
-	mis >> token;
+	}
+	
 
+	string token;
+	// mis >> token;
+	
+	while (token == "") 
+		getline(mis, token);
+	
 	mrs_natural lineCount = 0;
 	while(!mis.eof())
     {
-
 		char *cp = (char *)token.c_str();
 		if (cp[0] != '%')
 		{
@@ -583,6 +594,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 	  
 			//now extract the class name for this record
 			MRSASSERT( cp!=NULL );
+			
 			mrs_natural classIndex = findClass(cp);
 
 			MRSASSERT(classIndex>=0);
@@ -595,15 +607,15 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 		}
 		else // skip comment line 
 		{
-		    mis.getline(str, 1023);
+//		    mis.getline(str, 1023);
 
 		  // If the line starts with "% filename" set the current_filename
-  		  if (strncmp(str," filename",9) == 0) {
-			currentFname = str+10;
+			if (strncmp(token.c_str(),"% filename",10) == 0) {
+			currentFname = str+11;
 		  }
 
 		}
-		mis >> token;
+		getline(mis,token);
     }//while
 
 
