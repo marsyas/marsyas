@@ -608,12 +608,10 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 		else // skip comment line 
 		{
 //		    mis.getline(str, 1023);
-
 		  // If the line starts with "% filename" set the current_filename
 			if (strncmp(token.c_str(),"% filename",10) == 0) {
-			currentFname = str+11;
-		  }
-
+			  currentFname = token.substr(11);
+			} 
 		}
 		getline(mis,token);
     }//while
