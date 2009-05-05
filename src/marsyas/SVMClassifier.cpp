@@ -88,6 +88,7 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 	ctrl_probability_ = getctrl("mrs_bool/probability");
 	ctrl_nr_weight_ = getctrl("mrs_natural/nr_weight");
 	ctrl_classProbabilities_ = getctrl("mrs_realvec/classProbabilities");
+	
 }
 
 SVMClassifier::~SVMClassifier() {
@@ -157,6 +158,9 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 	(void) sender;
 	MRSDIAG("SVMClassifier.cpp - SVMClassifier:myUpdate");
 
+
+
+	
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue((mrs_natural)2, NOUPDATE);
@@ -245,8 +249,24 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			svm_prob_.l = nInstances;
 			svm_prob_.y = new double[svm_prob_.l];
 			svm_prob_.x = new svm_node*[nInstances];
+			int l;
+			mrs_bool seen;
+			
 			for (int i=0; i < nInstances; i++)
-				svm_prob_.y[i] = instances_.GetClass(i);
+			{
+				l = instances_.GetClass(i);
+				
+				svm_prob_.y[i] = l;
+				seen = false;
+				for (int j=0; j < classPerms_.size(); j++) 
+				{
+					if (l == classPerms_[j])
+						seen = true;
+				}
+				if (!seen) 
+					classPerms_.push_back(l);
+			}
+			
 			
 			for (int i=0; i < nInstances; i++) {
 				svm_prob_.x[i] = new svm_node[inObservations_];
@@ -280,6 +300,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				MarControlAccessor acc_classProbs(ctrl_classProbabilities_);
 				realvec& classProbs = acc_classProbs.to<mrs_realvec>();
 				classProbs.create(svm_model_->nr_class);
+
 			}
 			
 
@@ -619,7 +640,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 			MarControlAccessor acc_classProbs(ctrl_classProbabilities_);			
 			realvec& classProbs = acc_classProbs.to<mrs_realvec>();
 			for (int i=0; i < svm_model_->nr_class; i++) 
-				classProbs(i) = probs[i];
+				classProbs(classPerms_[i]) = probs[i];
 		}
 		
 

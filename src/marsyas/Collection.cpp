@@ -127,13 +127,14 @@ void
 Collection::add(string entry, string label)
 {
     collectionList_.push_back(entry);
-    labelList_.push_back(label);
-    
     hasLabels_ = true;
+    labelList_.push_back(label);
+	
     if (find(labelNames_.begin(), labelNames_.end(), label) == labelNames_.end())
         labelNames_.push_back(label);
 
 	sort(labelNames_.begin(), labelNames_.end());
+
 }
 
 
@@ -201,7 +202,13 @@ Collection::labelNum(mrs_string label)
     if (it == labelNames_.end())
         return 0; // why not -1?
 
-    return distance(labelNames_.begin(), it);
+	mrs_natural l = distance(labelNames_.begin(), it);
+	
+
+	
+	
+    return l ;
+	
 }
 
 string 

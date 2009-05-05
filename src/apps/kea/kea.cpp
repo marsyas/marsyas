@@ -359,10 +359,10 @@ void tags() {
 	net->updctrl("Classifier/cl/mrs_string/mode", mode);
   }
 
-//     cout << "------------------------------" << endl;
-//     cout << "Class names" << endl;
-//     cout << net->getctrl("WekaSource/wsrc/mrs_string/classNames") << endl;
-//     cout << "------------------------------\n" << endl;
+     cout << "------------------------------" << endl;
+     cout << "Class names" << endl;
+     cout << net->getctrl("WekaSource/wsrc/mrs_string/classNames") << endl;
+     cout << "------------------------------\n" << endl;
 
 
    vector<string> classNames;
@@ -397,11 +397,13 @@ void tags() {
   mrs_string currentlyPlaying;
   vector<string> previouslySeenFilenames;
   bool seen;
+  realvec wdata;
 
+  
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-
+	
 	currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
 
 	seen = false;

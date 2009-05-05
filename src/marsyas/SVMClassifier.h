@@ -64,7 +64,8 @@ namespace Marsyas
 			MarControlPtr ctrl_nr_weight_;
 			MarControlPtr ctrl_classProbabilities_;
 		
-		
+			std::vector<int> classPerms_;
+			
 
 			void addControls();
 			void myUpdate(MarControlPtr sender);

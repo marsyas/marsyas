@@ -454,7 +454,6 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
   
   
 	parseHeader(*mis, filename, attributesToExtract);
-	cout << "Parse Header done" << endl;
 	
 	parseData(*mis, filename, data);
 	mis->close();
