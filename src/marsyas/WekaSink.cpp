@@ -192,7 +192,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	{
 		if (ctrl_currentlyPlaying_->to<mrs_string>() != prev_playing_) 
 		{
-			(*mos_) << "% " << ctrl_currentlyPlaying_->to<mrs_string>() << endl;
+			(*mos_) << "% filename " << ctrl_currentlyPlaying_->to<mrs_string>() << endl;
 			prev_playing_ = ctrl_currentlyPlaying_->to<mrs_string>();
 		}
 		
