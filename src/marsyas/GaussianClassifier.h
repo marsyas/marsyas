@@ -40,7 +40,14 @@ namespace Marsyas
     When the mode control is set to "predict" then the output 
     of the classifier is the predicted labels using the trained 
     parameter vector theta. 
-
+ 
+		Basically there are four states based on control transitions
+		(previous value of mode (PVM); current value of mode(CVM)):
+			1. PVM: predict;	CVM: train		==> reset the classifier
+			2. PVM: train;		CVM: train		==> train or accumulate samples for batch classifiers
+			3. PVM: train;		CVM: predict	==> finalize things like calculating means and variances to prepare for prediction
+			4. PVM: predict;	CVM: predict	==> just predict
+ 
     This MarSystems serves as a prototypical classification/regression 
     MarSystem. 
 
