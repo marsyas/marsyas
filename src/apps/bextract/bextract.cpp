@@ -2027,8 +2027,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
 			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
-			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_bool/advance",
-				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_bool/advance");
+			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/advance",
+				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance");
 			
 			bextractNetwork->linkctrl("mrs_natural/currentLabel", 
 				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
@@ -2047,8 +2047,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
 		}
 
-		bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_bool/advance",
-			"mrs_bool/advance");
+		bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/advance",
+			"mrs_natural/advance");
 	}
 	else // running feature extraction
 	{
@@ -2076,8 +2076,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				"Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
 			bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
 				"Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
-			bextractNetwork->linkctrl("Series/featureNetwork/SoundFileSource/src/mrs_bool/advance",
-				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_bool/advance");
+			bextractNetwork->linkctrl("Series/featureNetwork/SoundFileSource/src/mrs_natural/advance",
+				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance");
 						
 			bextractNetwork->linkctrl("mrs_natural/currentLabel", 
 				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
@@ -2207,19 +2207,66 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 	int n = 0;
-	 
+	int advance = 1;
+	
+	vector<string> processedFiles;
+	map<string, realvec> processedFeatures;
+	
+	bool seen;
+	realvec fvec;
+	int label;
+	
 	while (ctrl_notEmpty->to<mrs_bool>())
 	{
 
-
+		
 		if (single_vector)
 		{
-			bextractNetwork->updctrl("Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset", true);
-			bextractNetwork->tick();
-			bextractNetwork->updctrl("mrs_bool/advance", true);
-			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
-			cout << "Processed: " << n << " - " << currentlyPlaying << endl;
+			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();	
+			label = bextractNetwork->getctrl("mrs_natural/currentLabel")->to<mrs_natural>();
+			seen = false;
+
+			
+			for (int j=0; j<processedFiles.size(); j++)
+			{
+				if (processedFiles[j] == currentlyPlaying)
+					seen = true;
+			}
+
+			
+			if (seen) 
+			{
+				advance++;
+				bextractNetwork->updctrl("mrs_natural/advance", advance); 
+				bextractNetwork->updctrl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
+				fvec = processedFeatures[currentlyPlaying];
+				fvec(fvec.getSize()-1) = label;
+				
+				bextractNetwork->updctrl("WekaSink/wsink/mrs_realvec/injectVector", fvec);
+				
+				bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/inject", true);
+				
+
+
+				
+			}
+			else 
+			{
+				bextractNetwork->updctrl("Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset", true);
+				bextractNetwork->tick();
+				
+				fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
+
+				bextractNetwork->updctrl("mrs_natural/advance", advance); 
+				processedFiles.push_back(currentlyPlaying);
+				processedFeatures[currentlyPlaying] = fvec;
+				cout << "Processed: " << n << " - " << currentlyPlaying << endl;
+				advance = 1;
+				bextractNetwork->updctrl("mrs_natural/advance", 1); 
+
+			}
 			n++;
+			
 		}
 		else 
 		{
@@ -2278,7 +2325,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// predict optional test collection 
 	if (testCollection != EMPTYSTRING) 
 	{
-		bextractNetwork->updctrl("mrs_bool/advance", false);
+		bextractNetwork->updctrl("mrs_natural/advance", 0);
 		if (single_vector)
 		{
 			if (pluginName != EMPTYSTRING && !pluginMute) 
@@ -2313,7 +2360,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				bextractNetwork->tick();
 				if (single_vector)
 				{
-					bextractNetwork->updctrl("mrs_bool/advance", true);
+					bextractNetwork->updctrl("mrs_natural/advance", 1);
 				}
 				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();

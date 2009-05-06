@@ -112,8 +112,8 @@ AuFileSource::addControls()
   addctrl("mrs_real/duration", -1.0);
   setctrlState("mrs_real/duration", true);
 
-  addctrl("mrs_bool/advance", false);
-  setctrlState("mrs_bool/advance", true);
+  addctrl("mrs_natural/advance", 0);
+  setctrlState("mrs_natural/advance", true);
 
   addctrl("mrs_bool/shuffle", false);
   setctrlState("mrs_bool/shuffle", true);
@@ -283,7 +283,7 @@ AuFileSource::myUpdate(MarControlPtr sender)
   repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
 
   duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
-  advance_ = getctrl("mrs_bool/advance")->to<mrs_bool>();
+  advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
   cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
  
   if (duration_ != -1.0)

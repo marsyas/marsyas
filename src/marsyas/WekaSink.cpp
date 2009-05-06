@@ -46,6 +46,11 @@ WekaSink::WekaSink(const WekaSink& a):MarSystem(a)
 	ctrl_downsample_ = getControl("mrs_natural/downsample");
 	ctrl_filename_ = getControl("mrs_string/filename"); 
 	ctrl_currentlyPlaying_ = getControl("mrs_string/currentlyPlaying");
+	ctrl_inject_ = getControl("mrs_bool/inject");
+	ctrl_injectComment_ = getControl("mrs_string/injectComment");
+	ctrl_injectVector_ = getControl("mrs_realvec/injectVector");
+	
+	
 }
 
 MarSystem* 
@@ -72,6 +77,12 @@ WekaSink::addControls()
 	addctrl("mrs_string/currentlyPlaying", "", ctrl_currentlyPlaying_);
 	addctrl("mrs_bool/putHeader", false, ctrl_putHeader_);
 	setctrlState(ctrl_putHeader_, true);
+	addctrl("mrs_bool/inject", false, ctrl_inject_);
+	setctrlState(ctrl_inject_, true);
+	addctrl("mrs_string/injectComment", "", ctrl_injectComment_);
+	setctrlState(ctrl_injectComment_, true);
+	addctrl("mrs_realvec/injectVector", realvec(), ctrl_injectVector_);
+	setctrlState(ctrl_injectVector_, true);
 }
 
 void 
@@ -163,7 +174,33 @@ WekaSink::myUpdate(MarControlPtr sender)
 
 	//if(!(getctrl("mrs_bool/mute")->to<mrs_bool>()))
 	if(!ctrl_mute_->isTrue())
+	{
 		putHeader(onObsNames);
+
+	}
+
+	int label;
+	
+	if(!ctrl_mute_->isTrue())
+		if (ctrl_inject_->isTrue())
+		{
+			(* mos_) << ctrl_injectComment_->to<mrs_string>() << endl;
+			ctrl_inject_->setValue(false, NOUPDATE);
+			MarControlAccessor acc_injectVector(ctrl_injectVector_);			
+			realvec& injectVector = acc_injectVector.to<mrs_realvec>();
+			
+			for (int j=0; j < injectVector.getSize()-1; j++)
+			{
+				(*mos_) << fixed << setprecision(precision_) << injectVector(j) << ",";
+			}
+			label = (int)injectVector(injectVector.getSize()-1);
+			ostringstream oss;
+			oss << labelNames_[label];
+			(*mos_) << oss.str();
+			(*mos_) << endl;
+		}
+
+	
 
 	precision_ = ctrl_precision_->to<mrs_natural>();
 	downsample_ = ctrl_downsample_->to<mrs_natural>();

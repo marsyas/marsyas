@@ -73,8 +73,8 @@ CollectionFileSource::addControls()
 	addctrl("mrs_real/duration", -1.0);
 	setctrlState("mrs_real/duration", true);
 
-	addctrl("mrs_bool/advance", false);
-	setctrlState("mrs_bool/advance", true);
+	addctrl("mrs_natural/advance", 0);
+	setctrlState("mrs_natural/advance", true);
 
 	addctrl("mrs_bool/shuffle", false);
 	setctrlState("mrs_bool/shuffle", true);
@@ -132,7 +132,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 
 	repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
 	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
-	advance_ = getctrl("mrs_bool/advance")->to<mrs_bool>();
+	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
 
 	if (getctrl("mrs_bool/shuffle")->isTrue())
@@ -168,10 +168,29 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 	isrc_->updctrl("mrs_real/repetitions", repetitions_);
 	isrc_->updctrl("mrs_natural/pos", pos_);
 	isrc_->updctrl("mrs_real/duration", duration_);
-	isrc_->updctrl("mrs_bool/advance", advance_);
+	isrc_->updctrl("mrs_natural/advance", advance_);
 	isrc_->updctrl("mrs_natural/cindex", cindex_);
 
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();  
+
+
+	
+	if (advance_)
+	{
+		
+		setctrl("mrs_string/currentlyPlaying", col_.entry((cindex_+advance_) % col_.size()));
+		setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())));
+		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);		
+
+		if (cindex_ + advance_ >= col_.size())
+		{
+			setctrl("mrs_bool/notEmpty", false);
+			notEmpty_ = false;      
+			advance_ = 0;
+			cindex_ = 0;
+		}
+	}
+	
 
 
 }
@@ -179,18 +198,11 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 void
 CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
-	
-	
 	if (advance_) 
 	{
+		cindex_ = (cindex_ + advance_) % col_.size();
 		
-		cindex_ = cindex_ + 1;
-		if (cindex_ == col_.size())
-			cindex_ = 0;
 		setctrl("mrs_natural/cindex", cindex_);
-		
-
-		
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
 		isrc_->updctrl("mrs_natural/pos", 0);
 
@@ -215,17 +227,17 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
 
-		if (cindex_ > col_.size()-2)  
-		{
+ 		if (cindex_ > col_.size()-2)  
+ 		{
 			setctrl("mrs_bool/notEmpty", false);
 			notEmpty_ = false;      
-			advance_ = false;
-			return;
-		}
+			advance_ = 0;
+ 			return;
+ 		}
 
 		
-		setctrl("mrs_bool/advance", false);
-		advance_ = false;
+		setctrl("mrs_natural/advance", 0);
+		advance_ = 0;
 		
 		return;
 	}
@@ -234,6 +246,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		//finished current file. Advance to next one in collection (if any)
 		if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
 		{
+			cout << "FINISHED FILE" << endl;
 			
 			
 			

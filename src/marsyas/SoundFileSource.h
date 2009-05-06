@@ -66,7 +66,7 @@ namespace Marsyas
      noteon.
    - \b mrs_real/repetitions [rw] : number of times to repeat the sound file
    - \b mrs_real/duration [r] : number of seconds in the current sound file
-   - \b mrs_bool/advance [w] : go to the next sound file (collection
+   - \b mrs_natural/advance [w] : go to the next sound file (collection
      only)
    - \b mrs_bool/shuffle [w] : randomize the order of reading multiple sound files
    - \b mrs_natural/cindex [rw] : number of the current sound file in the
@@ -101,7 +101,7 @@ private:
   
   AbsSoundFileSource* src_;
 
-	bool advance_;
+		mrs_natural advance_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

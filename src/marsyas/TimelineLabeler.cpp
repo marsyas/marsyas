@@ -41,7 +41,7 @@ TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_selectLabel_ = getctrl("mrs_string/selectLabel");
-	ctrl_advance_ = getctrl("mrs_bool/advance");
+	ctrl_advance_ = getctrl("mrs_natural/advance");
 	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_playRegionsOnly_ = getctrl("mrs_bool/playRegionsOnly");
 
@@ -74,7 +74,7 @@ TimelineLabeler::addControls()
 	addctrl("mrs_string/selectLabel", "", ctrl_selectLabel_);
 	ctrl_selectLabel_->setState(true);
 
-	addctrl("mrs_bool/advance", false, ctrl_advance_);
+	addctrl("mrs_natural/advance", 0, ctrl_advance_);
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
 
 	addctrl("mrs_bool/playRegionsOnly", true, ctrl_playRegionsOnly_);
@@ -303,7 +303,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 				//out.setval(0.0); //[?] should we play this frame as is or just output silence?!
 
 				//fast forward to next region (at next tick)
-				ctrl_advance_->setValue(true);
+				ctrl_advance_->setValue(1);
 			}
 			ctrl_currentLabel_->setValue(-1); //i.e. no region/label defined for this audio frame
 		}

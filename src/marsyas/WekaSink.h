@@ -28,61 +28,68 @@
 namespace Marsyas
 {
 /**
-	\class WekaSink
-	\ingroup IO
-	\brief Output sink (text) in Weka format
+   \class WekaSink
+   \ingroup IO
+   \brief Output sink (text) in Weka format
 
-	Controls:
-	- \b mrs_natural/precision [w] : precision of numbers to output.
-	- \b mrs_string/filename [w] : name of output file.
-	- \b mrs_natural/nLabels [rw] : number of labels.
-	- \b mrs_natural/downsample [rw] : divides number of samples.
-	- \b mrs_string/labelNames [rw] : names of labels.
-	- \b mrs_bool/regresssion [rw] : classification or regression?
-	- \b mrs_bool/putHeader [rw] : add extra information to the .arff
-	  file.
+   Controls:
+   - \b mrs_natural/precision [w] : precision of numbers to output.
+   - \b mrs_string/filename [w] : name of output file.
+   - \b mrs_natural/nLabels [rw] : number of labels.
+   - \b mrs_natural/downsample [rw] : divides number of samples.
+   - \b mrs_string/labelNames [rw] : names of labels.
+   - \b mrs_bool/regresssion [rw] : classification or regression?
+   - \b mrs_bool/putHeader [rw] : add extra information to the .arff
+   - \b mrs_bool/inject    [w]  : trigger injection of  data to .arff output out of dataflow 
+   - \b mrs_string/comment [w]  : inject string to .arff output of of dataflow triggered by inject control
+   file.
 */
 
 
-class WekaSink: public MarSystem
-{
-private:
-  void addControls();
-  void myUpdate(MarControlPtr sender);
+	class WekaSink: public MarSystem
+	{
+		private:
+			void addControls();
+			void myUpdate(MarControlPtr sender);
   
-  std::string filename_;
-  std::ofstream* mos_;
+			std::string filename_;
+			std::ofstream* mos_;
 
-  std::vector<std::string> labelNames_;
-  mrs_natural precision_;
-  mrs_natural downsample_;
+			std::vector<std::string> labelNames_;
+			mrs_natural precision_;
+			mrs_natural downsample_;
   
-  MarControlPtr ctrl_regression_;
-  MarControlPtr ctrl_putHeader_;
-  MarControlPtr ctrl_precision_;
-  MarControlPtr ctrl_downsample_;
-  MarControlPtr ctrl_nLabels_;
-  MarControlPtr ctrl_labelNames_;
-  MarControlPtr ctrl_filename_;
-  MarControlPtr ctrl_currentlyPlaying_;
+			MarControlPtr ctrl_regression_;
+			MarControlPtr ctrl_inject_;
+			MarControlPtr ctrl_injectComment_;
+			MarControlPtr ctrl_injectVector_;
+			
+		
+			MarControlPtr ctrl_putHeader_;
+			MarControlPtr ctrl_precision_;
+			MarControlPtr ctrl_downsample_;
+			MarControlPtr ctrl_nLabels_;
+			MarControlPtr ctrl_labelNames_;
+			MarControlPtr ctrl_filename_;
+			MarControlPtr ctrl_currentlyPlaying_;
 
 
-  mrs_string prev_playing_;
-public:
-  WekaSink(std::string name);
-  WekaSink(const WekaSink& a);
+			mrs_string prev_playing_;
+		public:
+			WekaSink(std::string name);
+			WekaSink(const WekaSink& a);
   
-  ~WekaSink();
+			~WekaSink();
  
-  MarSystem* clone() const;  
-  void putHeader(std::string inObsNames);
+			MarSystem* clone() const;  
+			void putHeader(std::string inObsNames);
  
-  void myProcess(realvec& in, realvec& out);
+			void myProcess(realvec& in, realvec& out);
 
-  // Jen's hack for MIREX 05 to annotate produced weka file
-  std::ofstream* getOfstream(){ return mos_; }
+			// Jen's hack for MIREX 05 to annotate produced weka file
+			std::ofstream* getOfstream(){ return mos_; }
      
-};
+	};
 
 }//namespace Marsyas
 

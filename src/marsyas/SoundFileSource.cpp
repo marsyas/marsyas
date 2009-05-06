@@ -51,7 +51,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 	ctrl_loop_ = getctrl("mrs_natural/loopPos");
 	ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty");
 	ctrl_mute_ = getctrl("mrs_bool/mute");
-	ctrl_advance_ = getctrl("mrs_bool/advance");
+	ctrl_advance_ = getctrl("mrs_natural/advance");
 	ctrl_filename_ = getctrl("mrs_string/filename");
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
@@ -92,8 +92,8 @@ SoundFileSource::addControls()
 	addctrl("mrs_real/duration", -1.0);
 	setctrlState("mrs_real/duration", true);
 
-	addctrl("mrs_bool/advance", false, ctrl_advance_);
-	setctrlState("mrs_bool/advance", true);
+	addctrl("mrs_natural/advance", 0, ctrl_advance_);
+	setctrlState("mrs_natural/advance", true);
 
 	addctrl("mrs_bool/shuffle", false);
 	setctrlState("mrs_bool/shuffle", true);
@@ -166,7 +166,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		src_->ctrl_inObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 		src_->setctrl("mrs_real/repetitions", getctrl("mrs_real/repetitions"));
 		src_->setctrl("mrs_real/duration", getctrl("mrs_real/duration"));
-		src_->setctrl("mrs_bool/advance", getctrl("mrs_bool/advance"));
+		src_->setctrl("mrs_natural/advance", getctrl("mrs_natural/advance"));
 		// src_->setctrl("mrs_natural/cindex", getctrl("mrs_natural/cindex"));
 		src_->setctrl("mrs_bool/shuffle", getctrl("mrs_bool/shuffle"));
 		src_->setctrl("mrs_bool/notEmpty", getctrl("mrs_bool/notEmpty"));
@@ -188,8 +188,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		setctrl("mrs_real/repetitions", src_->getctrl("mrs_real/repetitions"));
 		setctrl("mrs_real/duration", src_->getctrl("mrs_real/duration"));
 
-		advance_ = ctrl_advance_->to<mrs_bool>();//?!?!!? [!][?]
-		setctrl("mrs_bool/advance", src_->getctrl("mrs_bool/advance"));
+		advance_ = ctrl_advance_->to<mrs_natural>();//?!?!!? [!][?]
+		setctrl("mrs_natural/advance", src_->getctrl("mrs_natural/advance"));
 
 		setctrl("mrs_bool/shuffle", src_->getctrl("mrs_bool/shuffle"));
 		setctrl("mrs_natural/cindex", src_->getctrl("mrs_natural/cindex"));
@@ -354,7 +354,7 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 
 	if (advance_) //[!] shouldn't this be done in ::myUpdate()?!?
 	{
-		ctrl_advance_->setValue(false);
+		ctrl_advance_->setValue(0);
 	}
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)

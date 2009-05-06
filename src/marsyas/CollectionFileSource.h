@@ -56,7 +56,7 @@ private:
   mrs_real repetitions_;
   mrs_real duration_;
 
-  bool advance_;
+  mrs_natural advance_;
 
   realvec temp_;
   realvec tempi_;

@@ -82,8 +82,8 @@ WavFileSource::addControls()
 	addctrl("mrs_real/duration", -1.0);
 	setctrlState("mrs_real/duration", true);
 
-	addctrl("mrs_bool/advance", false);
-	setctrlState("mrs_bool/advance", true);
+	addctrl("mrs_natural/advance", 0);
+	setctrlState("mrs_natural/advance", true);
 
 	addctrl("mrs_bool/shuffle", false);
 	setctrlState("mrs_bool/shuffle", true);
