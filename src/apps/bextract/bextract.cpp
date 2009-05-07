@@ -2239,13 +2239,19 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			{
 				advance++;
 				bextractNetwork->updctrl("mrs_natural/advance", advance); 
-				bextractNetwork->updctrl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
+
+				if (wekafname != EMPTYSTRING)				
+					bextractNetwork->updctrl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
+				
 				fvec = processedFeatures[currentlyPlaying];
 				fvec(fvec.getSize()-1) = label;
 				
-				bextractNetwork->updctrl("WekaSink/wsink/mrs_realvec/injectVector", fvec);
-				
-				bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/inject", true);
+				if (wekafname != EMPTYSTRING)
+				{
+					bextractNetwork->updctrl("WekaSink/wsink/mrs_realvec/injectVector", fvec);
+					
+					bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/inject", true);
+				}
 				
 
 
