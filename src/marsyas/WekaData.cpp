@@ -53,6 +53,8 @@ void WekaData::Clear()
 		delete (*iter);
 	}
 	this->clear();
+	filenames_.clear();
+	
 }//Clear
 
 
