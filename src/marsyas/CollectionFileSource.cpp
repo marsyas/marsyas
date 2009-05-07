@@ -246,10 +246,6 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		//finished current file. Advance to next one in collection (if any)
 		if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
 		{
-			cout << "FINISHED FILE" << endl;
-			
-			
-			
 			//check if there a following file ion the collection
 			if (cindex_ < col_.size() -1)
 			{

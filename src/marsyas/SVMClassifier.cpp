@@ -639,8 +639,12 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 		{
 			MarControlAccessor acc_classProbs(ctrl_classProbabilities_);			
 			realvec& classProbs = acc_classProbs.to<mrs_realvec>();
+			
 			for (int i=0; i < svm_model_->nr_class; i++) 
+			{
 				classProbs(classPerms_[i]) = probs[i];
+			}
+			
 		}
 		
 

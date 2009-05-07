@@ -1943,7 +1943,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	MarSystem *src = mng.create("SoundFileSource", "src");
 	featureNetwork->addMarSystem(src);
 
-
+	
 	// Add a TimelineLabeler, if necessary
 	if(tline)
 	{
@@ -2198,6 +2198,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		}
 		bextractNetwork->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);  		    
 	}
+
 
 
 	// main processing loop for training
