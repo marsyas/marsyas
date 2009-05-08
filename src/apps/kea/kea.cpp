@@ -384,6 +384,7 @@ void tags() {
   net->updctrl("WekaSource/wsrc/mrs_string/filename", testcollectionfname_);
   net->updctrl("Classifier/cl/mrs_string/mode", "predict");  
 
+
   // The output prediction file
   ofstream prout;
   prout.open(predictcollectionfname_.c_str());
@@ -397,17 +398,46 @@ void tags() {
   mrs_string currentlyPlaying;
   vector<string> previouslySeenFilenames;
   bool seen;
-  realvec wdata;
+  realvec wsourcedata;
 
+
+  
+
+
+  mrs_natural nLabels = net->getctrl("WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>();
+  mrs_string labelNames = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
+  
+  cout << "nLabels = " << nLabels << endl;
+  cout << "labelNames = " << labelNames << endl;
+  
+  MarSystem* wsink = mng.create("WekaSink/wsink");
+  
+  wsink->updctrl("mrs_natural/inSamples", 1);
+  wsink->updctrl("mrs_natural/inObservations", nLabels+1);  
+  wsink->updctrl("mrs_natural/nLabels", nLabels);
+  wsink->updctrl("mrs_string/labelNames", labelNames);  
+  wsink->updctrl("mrs_string/inObsNames", labelNames);
+  wsink->updctrl("mrs_string/filename", "stacked.arff");
+  
+  cout << "Starting prediction" << endl;
+
+  mrs_realvec wsinkout;
+  mrs_natural label;
+  mrs_realvec probs;
+  
+  wsinkout.create(nLabels+1,1);
   
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
+	wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
+	label = wsourcedata(wsourcedata.getSize()-1,0);
+	
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	
 	currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
 
 	seen = false;
-
+	
 	for (int i=0; i<previouslySeenFilenames.size(); i++) {
 	  if (currentlyPlaying == previouslySeenFilenames[i]) {
 		seen = true;
@@ -416,14 +446,23 @@ void tags() {
 	}
 
 	if (seen == false) {
-	  mrs_realvec probs = net->getctrl("Classifier/cl/mrs_realvec/classProbabilities")->to<mrs_realvec>();
+		probs = net->getctrl("Classifier/cl/mrs_realvec/classProbabilities")->to<mrs_realvec>();
+		cout << "probs.size = " << probs.getSize() << endl;
+		for (int j=0; j < probs.getSize(); j++) 
+			wsinkout(j,0) = probs(j);
 
-	  for (int i=0; i < probs.getSize(); i++) {
-		cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(i) << endl;
-		prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(i) << endl;
-	  }
-	  previouslySeenFilenames.push_back(currentlyPlaying);
+
+		for (int i=0; i < probs.getSize(); i++) {
+			cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(i) << endl;
+			prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(i) << endl;
+		}
+		previouslySeenFilenames.push_back(currentlyPlaying);
 	} 
+
+	wsinkout(probs.getSize(),0) = label;
+	wsink->updctrl("mrs_string/currentlyPlaying", currentlyPlaying);
+	wsink->process(wsinkout,wsinkout);
+
 	
   }
 
