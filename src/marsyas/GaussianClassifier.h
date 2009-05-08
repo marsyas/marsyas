@@ -41,41 +41,34 @@ namespace Marsyas
     of the classifier is the predicted labels using the trained 
     parameter vector theta. 
  
-	Basically there are four states based on control transitions
-	(previous value of mode (PVM); current value of mode(CVM)):
-	1. PVM: predict;	CVM: train		==> reset the classifier
-	2. PVM: train;		CVM: train		==> train or accumulate samples for batch classifiers
-	3. PVM: train;		CVM: predict	==> finalize things like calculating means and variances to prepare for prediction
-	4. PVM: predict;	CVM: predict	==> just predict
+		Basically there are four states based on control transitions
+		(previous value of mode (PVM); current value of mode(CVM)):
+		1. PVM: predict;	CVM: train		==> reset the classifier
+		2. PVM: train;		CVM: train		==> train or accumulate samples for batch classifiers
+		3. PVM: train;		CVM: predict	==> finalize things like calculating means and variances to prepare for prediction
+		4. PVM: predict;	CVM: predict	==> just predict
  
     This MarSystems serves as a prototypical classification/regression 
     MarSystem. 
 
 */
 
-
 	class GaussianClassifier: public MarSystem
 	{
 		private: 
 			void addControls();
 			void myUpdate(MarControlPtr sender);
-
-
-       
-			// realvec means_;
-			// realvec covars_;
+					
+			mrs_string prev_mode_;	
 			realvec labelSizes_;
+		
 			MarControlPtr ctrl_mode_;
 			MarControlPtr ctrl_nClasses_;
-			MarControlPtr ctrl_done_;
+
 			MarControlPtr ctrl_means_;
 			MarControlPtr ctrl_covars_;
 			MarControlPtr ctrl_classProbabilities_;
 		
-			mrs_string prev_mode_;
-
-		
-
 		public:
 			GaussianClassifier(std::string name);
 			GaussianClassifier(const GaussianClassifier& a);

@@ -102,7 +102,7 @@ public:
 	/// set all entries to val 
   void setval(mrs_real val);
 	/// appends values from the newValues realvec.  Resizes the original
-	/// realvec to make space for the new values.
+	/// realvec to make space for the new values. One-dimensional realvecs only.
   void appendRealvec(const realvec newValues);
 	//@}
   

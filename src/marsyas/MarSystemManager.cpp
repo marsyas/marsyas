@@ -76,6 +76,7 @@
 #include "StandardDeviation.h"
 #include "PlotSink.h"
 #include "GaussianClassifier.h"
+#include "GMMClassifier.h"
 #include "SoundFileSource.h"
 #include "SoundFileSource2.h"
 #include "SoundFileSink.h"
@@ -166,7 +167,6 @@
 #include "PhiSEMSource.h"
 #include "PhiSEMFilter.h"
 #include "SVMClassifier.h"
-#include "Classifier.h"
 #include "Spectrum2Chroma.h"
 #include "Spectrum2Mel.h"
 #include "ADRess.h"
@@ -257,6 +257,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("StandardDeviation", new StandardDeviation("stdp"));
 	registerPrototype("PlotSink", new PlotSink("plotsp"));
 	registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
+	registerPrototype("GMMClassifier", new GMMClassifier("gmmsp"));
 	registerPrototype("Confidence", new Confidence("confp"));
 	registerPrototype("Rms", new Rms("rms"));
 	registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
