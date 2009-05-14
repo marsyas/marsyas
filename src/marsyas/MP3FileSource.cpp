@@ -40,6 +40,25 @@ MP3FileSource::MP3FileSource(string name):AbsSoundFileSource("MP3FileSource", na
   size_ = 0;
   currentPos_ = 0;
   
+
+  bufferSize_ = 2048;	// must be initialized, otherwise it may be a very big value and 
+  						// may further cause segment fault when allocating space for input buffer
+  frameSamples_ = 0;
+  totalFrames_ = 0;
+  frameCount_ = 0;
+  
+  // variables for buffer balancing
+  reservoirSize_ = 0;
+
+  advance_ = 0;
+  cindex_ = 0;
+  
+  duration_ = 0;
+  csize_ = 0;
+  samplesOut_ = 0;
+  repetitions_ = 0;
+
+
   
   addControls();
 }

@@ -97,11 +97,15 @@ WekaData::NormMaxMin()
       vector<mrs_real> *row = (*citer);
       int ii;
       for(ii=0; ii<(int)row->size()-1; ii++)
-	{
-	  row->at(ii) =  ((row->at(ii) - minimums_(ii)) / (maximums_(ii) - minimums_(ii)));
-	}
+	  {
+		  // don't divide by zero 
+		  if (maximums_(ii) - minimums_(ii) == 0)
+			  row->at(ii) = 0;
+		  else 
+			  row->at(ii) =  ((row->at(ii) - minimums_(ii)) / (maximums_(ii) - minimums_(ii)));
+	  }
     }
-
+  
 
 
 
