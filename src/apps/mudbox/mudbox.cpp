@@ -24,6 +24,8 @@
 #include "Collection.h"
 #include "NumericLib.h"
 
+#include "Spectrum2ACMChroma.h"
+#include "time.h"
 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"
@@ -133,6 +135,7 @@ printHelp(string progName)
 	cerr << "marostring      : toy_with marostring [xml|svg|html] " << endl;
 	
 	cerr << "accent_filter_bank	: toy_with AccentFilterBank " << endl;
+	cerr << "ExtractChroma   : toy_with chroma (file1 = in wav file, file 2 = out text file)" << endl;
 	exit(1);
 }
 
@@ -5131,6 +5134,133 @@ void toy_with_accent_filter_bank(string inFileName, string outFileName)
  
 }
 
+void toy_with_chroma(string inSoundFileName, string inTextFileName)
+{
+	MarSystemManager theManager;
+
+	// ------------------------ DEFINE MARSYSTEM ------------------------
+	MarSystem *theExtractorNet, *theNewSystem;
+	theExtractorNet = theManager.create("Series", "SER1");
+
+	// Add new MarSystems
+	MarSystem* theDummy;
+	theDummy = new Spectrum2ACMChroma("Anything");
+	theManager.registerPrototype("Spectrum2ACMChroma",theDummy);
+
+	// 1. Read sound file
+	theNewSystem = theManager.create("SoundFileSource","Source");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// 2. Convert stereo to mono
+	theNewSystem = theManager.create("Stereo2Mono","ToMono");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// (!!) Compensate for x0.5 in Stereo2Mono in case of mono file
+	theNewSystem = theManager.create("Gain","Gain1");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// 3. Downsample to ~8kHz
+	theNewSystem = theManager.create("DownSampler","Resample");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// 4. Store "windowsize" samples in buffer
+	theNewSystem = theManager.create("ShiftInput","Buffer");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// 5. Perform windowing on buffer values
+	/* This function includes a 'x 2/Sum(w(n))' normalization
+	with 2/Sum(w(n)) = 2 x 1/FS x FS/Sum(w(n)) with
+	- 2 = energy in positive spectrum = energy in full spectrum
+	- 1/FS = spectrum normalization (?)
+	- FS/Sum(w(n)) = compensate for window shape */
+	theNewSystem = theManager.create("Windowing","Windowing");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// 6. Transform to frequency domain
+	theNewSystem = theManager.create("Spectrum","CompSpectrum");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// (!!) Compensate for normalization in fft
+	theNewSystem = theManager.create("Gain","Gain2");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// 7. Compute amplitude spectrum
+	theNewSystem = theManager.create("PowerSpectrum","AmpSpectrum");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// 8. Compute chroma profile
+	theNewSystem = theManager.create("Spectrum2ACMChroma","Spectrum2Chroma");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// 11. Text file output
+	theNewSystem = theManager.create("RealvecSink","TextFileOutput");
+	theExtractorNet->addMarSystem(theNewSystem);
+
+	// ------------------------ SET PARAMETERS ------------------------
+	mrs_real theHopSize = 0.02f;
+	mrs_real theFrameSize = 0.08f;			// 0.150
+	mrs_real theTargetSampleRate = 8000.f;
+	mrs_natural theFFTSize = 8192;
+
+	// First!! declare source, because (most) parameters rely on sample rate
+	mrs_string theControlString = "SoundFileSource/Source/mrs_string/filename";
+	theExtractorNet->updctrl(theControlString,inSoundFileName);
+
+	theControlString = "SoundFileSource/Source/mrs_real/osrate";
+	MarControlPtr theControlPtr = theExtractorNet->getctrl(theControlString);
+	mrs_real theInSampleRate = theControlPtr->to<mrs_real>();
+
+	mrs_natural theHopNrOfSamples = (mrs_natural)floor(theHopSize*theInSampleRate+0.5);
+	theControlString = "mrs_natural/inSamples";		// Why not "SoundFileSource/../inSamples" ?
+	theExtractorNet->updctrl(theControlString,theHopNrOfSamples);
+
+	theControlString = "Gain/Gain1/mrs_real/gain";
+	theExtractorNet->updctrl(theControlString,2.);
+
+	mrs_natural theFactor = (mrs_natural)floor(theInSampleRate/theTargetSampleRate);
+	theControlString = "DownSampler/Resample/mrs_natural/factor";
+	theExtractorNet->updctrl(theControlString,theFactor);
+
+	mrs_natural theFrameNrOfSamples = (mrs_natural)floor(theFrameSize*theInSampleRate+0.5);
+	theControlString = "ShiftInput/Buffer/mrs_natural/winSize";
+	theExtractorNet->updctrl(theControlString,theFrameNrOfSamples);
+
+	theControlString = "Windowing/Windowing/mrs_natural/zeroPadding";
+	theExtractorNet->updctrl(theControlString,theFFTSize-theFrameNrOfSamples);
+	// Default: Hamming window
+
+	theControlString = "Windowing/Windowing/mrs_bool/normalize";
+	theExtractorNet->updctrl(theControlString,true);
+
+	theControlString = "Gain/Gain2/mrs_real/gain";
+	theExtractorNet->updctrl(theControlString,(mrs_real)theFFTSize);
+
+	theControlString = "PowerSpectrum/AmpSpectrum/mrs_string/spectrumType";
+	theExtractorNet->updctrl(theControlString,"magnitude");
+
+	theControlString = "RealvecSink/TextFileOutput/mrs_string/fileName";
+	theExtractorNet->updctrl(theControlString,inTextFileName);
+
+	// ------------------------ COMPUTE CHROMA PROFILES ------------------------
+	clock_t start = clock();
+	theControlString = "SoundFileSource/Source/mrs_bool/notEmpty";
+	while (theExtractorNet->getctrl(theControlString)->to<mrs_bool>())
+		theExtractorNet->tick();
+
+	clock_t finish = clock();
+	cout << "Duration: " << (double)(finish-start)/CLOCKS_PER_SEC << endl;
+
+	// For debugging
+	//vector<string> theSupportedMarSystems = theManager.registeredPrototypes();
+	//map<string,MarControlPtr> theMap = theExtractorNet->getControls();
+
+	//theExtractorNet->tick();
+	//theExtractorNet->tick();
+	//theExtractorNet->tick();
+	//theExtractorNet->tick();
+
+	delete theExtractorNet;
+}
 
 int
 main(int argc, const char **argv)
@@ -5291,7 +5421,8 @@ else if (toy_withName == "train_predict")
 	  toy_with_volume_normalize(fname0,fname1);
   else if (toy_withName == "accent_filter_bank")
 		toy_with_accent_filter_bank(fname0,fname1);
-
+	else if (toy_withName == "ExtractChroma")
+		toy_with_chroma(fname0,fname1);
 
 	else 
 	{
