@@ -46,8 +46,8 @@ void MedianFilter::myProcess(realvec& inVec, realvec& outVec)
 	// Define moving window: once inserted,
 	// the elements in the moving window are automatically sorted
 	mrs_natural N = WindowSize_;
-	multimap<mrs_real,mrs_natural,less<mrs_real>> theWindow;
-	typedef multimap<mrs_real,mrs_natural,less<mrs_real>>::iterator iter;
+	multimap<mrs_real,mrs_natural,less<mrs_real> > theWindow;
+	typedef multimap<mrs_real,mrs_natural,less<mrs_real> >::iterator iter;
 	typedef pair<mrs_real,mrs_natural> element;
 
 	// M = floor(N/2)

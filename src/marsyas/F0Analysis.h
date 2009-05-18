@@ -74,9 +74,9 @@ namespace Marsyas
 			mrs_real ChordEvidence_;	// Evidence that last input spectrum includes chord
 
 			// Help functions
-			typedef std::map<double,double,std::less<double>> FreqMap;		// freq -> float
-			typedef std::map<double,double,std::greater<float>> HarmMap;	// harm sum -> freq
-			typedef std::map<double,std::vector<double>,std::less<double>> F2Fs;
+			typedef std::map<double,double,std::less<double> > FreqMap;		// freq -> float
+			typedef std::map<double,double,std::greater<float> > HarmMap;	// harm sum -> freq
+			typedef std::map<double,std::vector<double>,std::less<double> > F2Fs;
 
 			bool FindCandidateF0s(const realvec& inPeaks, 
 				HarmMap& outHarmSums, F2Fs& outF0ToFks) const;
