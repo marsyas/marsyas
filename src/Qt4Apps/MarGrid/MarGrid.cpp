@@ -159,8 +159,8 @@ MarGrid::setupTrain(QString fname)
   
   total_->linkctrl("mrs_bool/notEmpty",
 		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
-  total_->linkctrl("mrs_bool/advance",
-		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
+  total_->linkctrl("mrs_natural/advance",
+		  "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/advance");  
   
   total_->linkctrl("mrs_bool/memReset",
 		  "Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
@@ -238,7 +238,7 @@ MarGrid::extract()
 		  som_fmatrix(o, index) = -1.0;			  
 	  }
 	  
-      total_->updctrl("mrs_bool/advance", true);      
+      total_->updctrl("mrs_natural/advance", 1);      
     }
 
   ofstream oss;
@@ -340,7 +340,7 @@ MarGrid::predict()
   cout << "Read collection" << endl;
 
   total_->updctrl("mrs_natural/pos", 0);
-  total_->updctrl("mrs_bool/advance", false);            
+  total_->updctrl("mrs_natural/advance", 0);            
   total_->updctrl("mrs_string/filename", predictFname.toStdString()); 
 
   som_->updctrl("mrs_natural/inSamples", 1);
@@ -386,7 +386,7 @@ MarGrid::predict()
       grid_y = predict_res(1);
       addFile(grid_x,grid_y, current);      
       repaint();
-      total_->updctrl("mrs_bool/advance", true);            
+      total_->updctrl("mrs_natural/advance", 1);            
     }
 
 
