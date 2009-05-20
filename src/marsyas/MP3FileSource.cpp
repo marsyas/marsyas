@@ -79,6 +79,25 @@ MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
   pos_ = 0;
   size_ = 0;
   currentPos_ = 0;
+
+// must be initialized, otherwise it may be a very big value and
+  bufferSize_ = 2048;
+// may further cause segment fault when allocating space for input buffer
+  frameSamples_ = 0;
+  totalFrames_ = 0;
+  frameCount_ = 0;
+
+// variables for buffer balancing
+  reservoirSize_ = 0;
+
+  advance_ = 0;
+  cindex_ = 0;
+
+  duration_ = 0;
+  csize_ = 0;
+  samplesOut_ = 0;
+  repetitions_ = 0;
+
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
   ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
   ctrl_labelNames_ = getctrl("mrs_string/labelNames");
