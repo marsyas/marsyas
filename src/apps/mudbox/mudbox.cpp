@@ -1041,7 +1041,7 @@ toy_with_fanoutswitch()
 
 	MarSystem* pnet = mng.create("Series", "src");
 	MarSystem* src = mng.create("SoundFileSource", "src");
-	src->updctrl("mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au");
+	src->updctrl("mrs_string/filename", "/AudioDataBase/Music/musica1.wav");//"/Users/gtzan/data/sound/music_speech/music/gravity.au");
 
 	pnet->addMarSystem(src);
 	pnet->addMarSystem(mng.create("PlotSink", "psink1"));  
@@ -1066,18 +1066,33 @@ toy_with_fanoutswitch()
 	pnet->addMarSystem(mix);
 	pnet->addMarSystem(mng.create("PlotSink", "psink2"));
 	pnet->updctrl("PlotSink/psink2/mrs_string/filename", "out");
+	
+	//sedn to stdout
+	pnet->updctrl("PlotSink/psink2/mrs_bool/messages", true);
+	
+	//just a sample for easier visual inspection
+	pnet->updctrl("mrs_natural/inSamples", 1);
+	
+	// test mute
+	realvec mute;
+	mute.create(4);
+	mute.setval(0.0);
+	mute(2) = 1.0; //mute 3rd child
+	cout << mute << endl;
+	pnet->updctrl("Fanout/mix/mrs_realvec/muted", mute);
 
-	// Disable subset of Fanout branches 
-	pnet->updctrl("Fanout/mix/mrs_natural/disable", 0);
-	pnet->updctrl("Fanout/mix/mrs_natural/disable", 1);
-	pnet->updctrl("Fanout/mix/mrs_natural/disable", 2);
-	pnet->updctrl("Fanout/mix/mrs_natural/disable", 3);
+	// test disabling/enabling a subset of Fanout branches
+	// 
+	//pnet->updctrl("Fanout/mix/mrs_natural/disable", 0);
+	//pnet->updctrl("Fanout/mix/mrs_natural/disable", 1);
+	//pnet->updctrl("Fanout/mix/mrs_natural/disable", 2);
+	//pnet->updctrl("Fanout/mix/mrs_natural/disable", 3);
 
-	pnet->updctrl("Fanout/mix/mrs_string/enableChild", "Gain/g2");  
-	pnet->updctrl("Fanout/mix/mrs_string/enableChild", "Gain/g4");
-
-
-
+	//pnet->updctrl("Fanout/mix/mrs_string/enableChild", "Gain/g2");  
+	//pnet->updctrl("Fanout/mix/mrs_string/enableChild", "Gain/g4");
+	
+	//pnet->updctrl("Fanout/mix/mrs_realvec/enabled", tmp); //writting to this control makes nothing!
+	
 	// tick to check the result 
 	// PlotSinks are used for output 
 	pnet->tick();

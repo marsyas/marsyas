@@ -30,6 +30,7 @@ Fanout::Fanout(string name):MarSystem("Fanout", name)
 Fanout::Fanout(const Fanout& a): MarSystem(a)
 {
 	ctrl_enabled_ = getctrl("mrs_realvec/enabled");
+	ctrl_muted_ = getctrl("mrs_realvec/muted");
 }
 
 Fanout::~Fanout()
@@ -68,7 +69,7 @@ Fanout::addControls()
 	setctrlState("mrs_string/disableChild", true);
 
 	addctrl("mrs_realvec/enabled", realvec(), ctrl_enabled_);
-
+	addctrl("mrs_realvec/muted", realvec(), ctrl_muted_);
 }
 
 void
@@ -76,12 +77,20 @@ Fanout::myUpdate(MarControlPtr sender)
 {
 	MarControlAccessor acc(ctrl_enabled_);
 	mrs_realvec& enabled = acc.to<mrs_realvec>();
-
 	if (enabled.getSize() < marsystemsSize_)
 	{
 		enabled.create(marsystemsSize_);
-		enabled.setval(1.0);
+		enabled.setval(1.0); //all children enabled by default
 	}
+	
+	MarControlAccessor accMuted(ctrl_muted_);
+	mrs_realvec& muted = accMuted.to<mrs_realvec>();
+	if (muted.getSize() < marsystemsSize_)
+	{
+		muted.create(marsystemsSize_);
+		muted.setval(0.0); //all children unmuted by default
+	}
+	
 	if (marsystemsSize_ != 0)
 	{
 		localIndices_.create(marsystemsSize_);
@@ -232,20 +241,26 @@ Fanout::myProcess(realvec& in, realvec& out)
 	if (marsystemsSize_>0)
 	{
 		mrs_natural outIndex = 0;
-		MarControlAccessor acc(ctrl_enabled_);
-		mrs_realvec& enabled = acc.to<mrs_realvec>();
-
-
+		
+		//MarControlAccessor acc(ctrl_enabled_);
+		//mrs_realvec& enabled = acc.to<mrs_realvec>();
+		
+		MarControlAccessor accMuted(ctrl_muted_);
+		mrs_realvec& muted = accMuted.to<mrs_realvec>();
+		
 		for (mrs_natural i = 0; i < marsystemsSize_; i++)
 		{
-			if (enabled(i))
+			if (localIndices_(i))//enabled child have a non-zero localIndex
 			{
-				marsystems_[i]->process(in, *(slices_[i]));
-
-				for (o=0; o < localIndices_(i); o++)
-					for (t=0; t < onSamples_; t++)
-						out(outIndex + o,t) = (*(slices_[i]))(o,t);
-
+				//check if the child is unmuted, otherwise just use the previous output
+				if(!muted(i))
+				{
+					marsystems_[i]->process(in, *(slices_[i]));
+					
+					for (o=0; o < localIndices_(i); o++)
+						for (t=0; t < onSamples_; t++)
+							out(outIndex + o,t) = (*(slices_[i]))(o,t);
+				}
 				outIndex += (mrs_natural)localIndices_(i);
 			}
 		}

@@ -41,6 +41,9 @@ namespace Marsyas
 	- \b mrs_string/disableChild	[w] : pass in the type/name of the child MarSystem to
 	disable.
   -\b mrs_realvec/enabled [r] : vector with the list of enabled (i.e. 1.0 valued) children
+ (no point writing to this control - just use it for reading the current enable/disable status of children)
+ -\b mrs_realvec/muted [rw] : vector with the list of muted (i.e. 1.0 valued) children. This control can be used
+ to bypass processing of some children (which when muted just keep outputing the last computed result).
 */
 
 
@@ -60,8 +63,8 @@ private:
 	mrs_string enableChild_;
 	mrs_string disableChild_;
 
-
 	MarControlPtr ctrl_enabled_;
+	MarControlPtr ctrl_muted_;
 
 public:
 	Fanout(std::string name);
