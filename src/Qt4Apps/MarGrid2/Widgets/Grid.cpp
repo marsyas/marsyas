@@ -213,8 +213,8 @@ void Grid::setupNetworks() {
 
 	total_->linkctrl("mrs_bool/notEmpty",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
-	total_->linkctrl("mrs_bool/advance",
-		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
+	total_->linkctrl("mrs_natural/advance",
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/advance");  
 
 	total_->linkctrl("mrs_bool/memReset",
 		"Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
@@ -329,7 +329,7 @@ void Grid::extractAction(std::string filename)
 			som_fmatrix(o, index) = -1.0;			  
 		}
 		
-		total_->updctrl("mrs_bool/advance", true);     
+		total_->updctrl("mrs_natural/advance", 1);     
 	}
 
 	ofstream oss;
@@ -643,7 +643,7 @@ void Grid::predict() {
 			emit repaintSignal();
 
 	
-			total_->updctrl("mrs_bool/advance", true);  
+			total_->updctrl("mrs_natural/advance", 1);  
 		}
 
 
