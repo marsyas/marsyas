@@ -91,13 +91,32 @@ PlotSink::myProcess(realvec& in, realvec& out)
 	if(ctrl_messages_->isTrue())
 	{
 		string sep =ctrl_separator_->to<mrs_string>();
-		ostringstream oss;
+		//ostringstream oss; 
 		//output input content as a Marsyas Message (stdout by default)
-		for (t = 0; t < inSamples_; t++)
+//		for (t = 0; t < inSamples_; t++)
+//		{
+//			for (o=0; o < inObservations_; o++)
+//			{
+//				if (o < inObservations_ - 1)
+//				{
+//					oss << out(o,t) << sep; 
+//				}
+//				else
+//				{
+//					oss << out(o,t);
+//				}
+//			}
+//			string s = oss.str(); 
+//			MRSMSG(s << endl);
+//		}//FIXME: confirm that code below is correct and remove commented code above
+		
+		
+		for (o=0; o < inObservations_; o++)
 		{
-			for (o=0; o < inObservations_; o++)
+			ostringstream oss;
+			for (t = 0; t < inSamples_; t++)
 			{
-				if (o < inObservations_ - 1)
+				if (t < inSamples_ - 1)
 				{
 					oss << out(o,t) << sep; 
 				}
