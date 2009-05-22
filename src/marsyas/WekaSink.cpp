@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WekaSink::WekaSink(string name):MarSystem("WekaSink",name)
+WekaSink::WekaSink(string name) : MarSystem("WekaSink",name)
 {
 	mos_ = NULL;
 	addControls();
@@ -29,12 +29,15 @@ WekaSink::WekaSink(string name):MarSystem("WekaSink",name)
 
 WekaSink::~WekaSink()
 {
-	if (mos_ != NULL) 
+	// Close the output stream if required.
+	if (mos_ != NULL)
+	{
 		mos_->close();
-	delete mos_;
+		delete mos_;
+	}
 }
 
-WekaSink::WekaSink(const WekaSink& a):MarSystem(a)
+WekaSink::WekaSink(const WekaSink& a) : MarSystem(a)
 {
 	mos_ = NULL;
 
@@ -44,17 +47,16 @@ WekaSink::WekaSink(const WekaSink& a):MarSystem(a)
 	ctrl_nLabels_ = getControl("mrs_natural/nLabels");
 	ctrl_precision_ = getControl("mrs_natural/precision");
 	ctrl_downsample_ = getControl("mrs_natural/downsample");
-	ctrl_filename_ = getControl("mrs_string/filename"); 
+	ctrl_filename_ = getControl("mrs_string/filename");
 	ctrl_currentlyPlaying_ = getControl("mrs_string/currentlyPlaying");
 	ctrl_inject_ = getControl("mrs_bool/inject");
 	ctrl_injectComment_ = getControl("mrs_string/injectComment");
 	ctrl_injectVector_ = getControl("mrs_realvec/injectVector");
-	
-	
+
 }
 
-MarSystem* 
-WekaSink::clone() const 
+MarSystem*
+WekaSink::clone() const
 {
 	return new WekaSink(*this);
 }
@@ -85,64 +87,93 @@ WekaSink::addControls()
 	setctrlState(ctrl_injectVector_, true);
 }
 
-void 
+void
 WekaSink::putHeader(string inObsNames)
 {
 	//updctrl(ctrl_putHeader_, false);
 	ctrl_putHeader_->setValue(true);
 
+	// Only write the header when we are dealing with a new file, i.e. when
+	// the filename setting differs from the filename we were (previously)
+	// writing to.
 	if ((filename_ != ctrl_filename_->to<mrs_string>()))
 	{
-		if (mos_ != NULL) 
+		// Close the previously used output file if needed and cleanup.
+		if (mos_ != NULL)
 		{
 			mos_->close();
 			delete mos_;
+			// TODO: do something about this ugly hack.
 			if (filename_ == "weka.arff")
+			{
 				remove(filename_.c_str());
+			}
 		}
+
+		// Set the current filename to the new value.
 		filename_ = ctrl_filename_->to<mrs_string>();
 
+		// Open a new output stream.
 		mos_ = new ofstream;
 		mos_->open(filename_.c_str());
 
+		// General header stuff.
 		(*mos_) << "% Created by Marsyas" << endl;
 		(*mos_) << "@relation " << filename_ << endl;
-		mrs_natural nAttributes = ctrl_inObservations_->to<mrs_natural>()-1;
+
+		// The number of attributes is one less than the number of input
+		// observations because we assume the last observation is for the label?
+		// TODO: why this assumption? What if a use case requires two labels per
+		// feature vector or no labels?
+		// There is no such assumption is the WEKA ARFF format anyway.
+		mrs_natural nAttributes = ctrl_inObservations_->to<mrs_natural>() - 1;
 		mrs_natural nLabels = ctrl_nLabels_->to<mrs_natural>();
 
+		// Print the attribute names.
+		// TODO: this is could be done way more elegant
+		// (e.g. using a 'split()' or 'explode()' function).
 		mrs_natural i;
 		for (i =0; i < nAttributes; i++)
 		{
 			string inObsName;
 			string temp;
 			inObsName = inObsNames.substr(0, inObsNames.find(","));
-			temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
+			temp = inObsNames.substr(inObsNames.find(",") + 1, inObsNames.length());
 			inObsNames = temp;
+			// TODO: what's the point of using an extra ostringstream here?
 			ostringstream oss;
-			// oss << "attribute" << i; 
+			// oss << "attribute" << i;
 			oss << inObsName;
 			(*mos_) << "@attribute " << oss.str() << " real" << endl;
 		}
 
-		if (!ctrl_regression_->isTrue()) 
+		// The attribute for the label.
+		if (!ctrl_regression_->isTrue())
 		{
 			(*mos_) << "@attribute output {";
-			for (i=0; i < nLabels; i++) 
+			// TODO: this could be done way more elegant
+			// (e.g. with a 'join()' or 'implode()' function).
+			for (i=0; i < nLabels; i++)
 			{
+				// TODO: what's the point of using an extra ostringstream here?
 				ostringstream oss;
 				// oss << "label" << i;
 				oss << labelNames_[i];
 				(*mos_) << oss.str();
-				if (i < nLabels-1)
+				if (i < nLabels - 1)
+				{
 					(*mos_) << ",";
+				}
 				// (*mos_) << "@attribute output {music,speech}" << endl;
 			}
 			(*mos_) << "}" << endl;
 		}
-		else 
+		else
 		{
 			(*mos_) << "@attribute output real" << endl;
 		}
+
+		// End of header, now we are ready for outputting the data.
 		(*mos_) << "\n\n@data" << endl;
 	}
 }
@@ -154,106 +185,116 @@ WekaSink::myUpdate(MarControlPtr sender)
 
 	MarSystem::myUpdate(sender);
 
-
+	// (Re)build the list of label names.
 	string labelNames = ctrl_labelNames_->to<mrs_string>();
 
 	labelNames_.clear();
-
+	// TODO: this could be done way more elegant
+	// (e.g. by using a split() or explode() function).
 	for (int i = 0; i < ctrl_nLabels_->to<mrs_natural>(); i++)
 	{
 		string labelName;
 		string temp;
-
 		labelName = labelNames.substr(0, labelNames.find(","));
-		temp = labelNames.substr(labelNames.find(",")+1, labelNames.length());
+		temp = labelNames.substr(labelNames.find(",") + 1, labelNames.length());
 		labelNames = temp;
 		labelNames_.push_back(labelName);
 	}
 
-	string onObsNames = ctrl_onObsNames_->to<mrs_string>();
-
-	//if(!(getctrl("mrs_bool/mute")->to<mrs_bool>()))
-	if(!ctrl_mute_->isTrue())
+	// If not muted: write the header with the observation names.
+	if (!ctrl_mute_->isTrue())
 	{
+		string onObsNames = ctrl_onObsNames_->to<mrs_string>();
 		putHeader(onObsNames);
-
 	}
 
-	int label;
-	
-	if(!ctrl_mute_->isTrue())
+	// Optional injecting of additional data.
+	// TODO: this should be refactored together with the printing
+	// from WekaSink::myProcess().
+	if (!ctrl_mute_->isTrue())
+	{
 		if (ctrl_inject_->isTrue())
 		{
 			(* mos_) << ctrl_injectComment_->to<mrs_string>() << endl;
 			ctrl_inject_->setValue(false, NOUPDATE);
-			MarControlAccessor acc_injectVector(ctrl_injectVector_);			
+			MarControlAccessor acc_injectVector(ctrl_injectVector_);
 			realvec& injectVector = acc_injectVector.to<mrs_realvec>();
-			
-			for (int j=0; j < injectVector.getSize()-1; j++)
+
+			for (int j=0; j < injectVector.getSize() - 1; j++)
 			{
 				(*mos_) << fixed << setprecision(precision_) << injectVector(j) << ",";
 			}
-			label = (int)injectVector(injectVector.getSize()-1);
+			// TODO: the following assumes that the last item is a label, which is
+			// not always true, see ctrl_regression.
+			int label = (int)injectVector(injectVector.getSize() - 1);
+			// TODO: what's the point of all those ostringstreams?
 			ostringstream oss;
 			oss << labelNames_[label];
 			(*mos_) << oss.str();
 			(*mos_) << endl;
 		}
-
-	
-
+	}
 	precision_ = ctrl_precision_->to<mrs_natural>();
 	downsample_ = ctrl_downsample_->to<mrs_natural>();
 }
 
-void 
+void
 WekaSink::myProcess(realvec& in, realvec& out)
 {
-	//if (mute_) copy input to output
-	//if(getctrl("mrs_bool/mute")->to<mrs_bool>())
-	if(ctrl_mute_->isTrue())
+	// If muted: just copy input to output.
+	if (ctrl_mute_->isTrue())
 	{
 		for (o=0; o < inObservations_; o++)
+		{
 			for (t = 0; t < inSamples_; t++)
 			{
 				out(o,t) =  in(o,t);
 			}
-			return;
+		}
+		return;
 	}
 
+	// Counter for handling the decimation (see ctrl_downsample).
+	// TODO: why is count a static and not a class attribute?
 	static int count = 0;
-	mrs_natural label = 0;
 
+	mrs_natural label = 0;
 
 	for (t = 0; t < inSamples_; t++)
 	{
-		if (ctrl_currentlyPlaying_->to<mrs_string>() != prev_playing_) 
+		// Add a comment about the current input file.
+		if (ctrl_currentlyPlaying_->to<mrs_string>() != prev_playing_)
 		{
 			(*mos_) << "% filename " << ctrl_currentlyPlaying_->to<mrs_string>() << endl;
 			prev_playing_ = ctrl_currentlyPlaying_->to<mrs_string>();
 		}
-		
-		label = (mrs_natural)in(inObservations_-1, t);
 
-		if(label<0) //ignore unlabeled data (i.e. label = -1)
-				continue;
+		label = (mrs_natural)in(inObservations_ - 1, t);
 
+		// Ignore unlabeled data (i.e. label = -1)
+		if (label < 0)
+		{
+			continue;
+		}
+
+		// Output all but last feature values.
+		// TODO: this should be refactored together with the injection stuff from
+		// WekaSink::myUpdate().
 		for (o=0; o < inObservations_; o++)
 		{
 			out(o,t) = in(o,t);
-			if (o < inObservations_-1)
+			if (o < inObservations_ - 1)
 			{
 				if ((count % downsample_) == 0)
 				{
-					if( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
+					if ( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
 					{
 						// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
-						// DO NOT OUTPUT FEATUERS 
+						// DO NOT OUTPUT FEATURES
 						// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
 						//notPrint = true;
 						(*mos_) << "?" << ",";
 					}
-
 					else
 					{
 						(*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
@@ -263,31 +304,34 @@ WekaSink::myProcess(realvec& in, realvec& out)
 			}
 		}
 
+		// Output last value (e.g. as label).
 		ostringstream oss;
 		if ((count % downsample_) == 0)
 		{
-			if(!ctrl_regression_->isTrue())
+			if (!ctrl_regression_->isTrue())
 			{
-				//  if (!notPrint) 
+				//  if (!notPrint)
 				//{
 				if (label >= labelNames_.size())
-				{ 
-					MRSWARN("WekSink: label number is too big");
+				{
+					MRSWARN("WekaSink: label number is too big");
 					oss << "non-label";
 				}
-				else 
+				else
+				{
 					oss << labelNames_[label];
+				}
 				(*mos_) << oss.str();
 				(*mos_) << endl;
 			}
-			//  else 
+			//  else
 			//{
 			//  cout << "skipping instance" << endl;
 			//}
 			//}
 			else
 			{
-				(*mos_) << in(inObservations_-1, t);
+				(*mos_) << in(inObservations_ - 1, t);
 				(*mos_) << endl;
 			}
 		}
