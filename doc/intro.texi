@@ -34,21 +34,20 @@ holy grail is to provide maximum automatic support for the tasks that
 can be automated while retaining expressiveness and the ability to
 program complex systems for the particular domain of interest.
 
-This framework has been created mainly to support George Tzanetakis's
-research mainly in the emerging area of Music Information Retrieval
+This framework has been created mainly to support the research of the
+developers in the emerging area of Music Information Retrieval
 (MIR). Anyone who finds the framework useful is welcome to use it and
-contribute to it. 
+contribGeorge Tzanetakis'sute to it.
 
 There is a lot of work behind the development of Marsyas. Although
 Marsyas is and will remain free software, any form of financial or
-hardware support is more than welcome.  The sourceforge page contains
-a link for people to donate money to the project and any contribution
-is welcome and will help further improve the framework. Also implementation
+hardware support is more than welcome.  The sourceforge page contains a
+link for people to donate money to the project and any contribution is
+welcome and will help further improve the framework. Also implementation
 of specific features can be motivated by donation. Finally for companies
 desiring to incorporate Marsyas into closed source software products a
 commercial license is also available (this dual licensing scheme is
-similar to the one used by Trolltech the company behind the Qt
-toolkit). 
+similar to the one used by Trolltech the company behind the Qt toolkit).
 
 
 @menu
@@ -93,7 +92,16 @@ straightforward to figure out how to recode your algorithms in version
 0.2. Also if you have code in 0.1 that you would like help porting in
 0.2 I would be more than happy to help - just drop me an email.
 
+The community of Marsyas developers has grown over the years with
+currently (Spring 2009) approximately 4-5 developers committing
+regularly code and close to 30 developers having committed code over the
+past few years. We are very proud that Marsyas is used for a variety of
+projects in both academia and industry and looking forward to continue
+growing and expanding the framework with your help.
+
+
 have fun, 
+
 George Tzanetakis (gtzan at cs dot uvic dot ca)
 
 

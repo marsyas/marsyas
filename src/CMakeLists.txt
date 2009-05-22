@@ -1,7 +1,15 @@
 ## global setup
 cmake_minimum_required (VERSION 2.6)
-project (Marsyas)
+project (marsyas)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake-modules")
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Marsyas: Music Analysis, Retrieval and Synthesis for Audio Signals")
+SET(CPACK_PACKAGE_VERSION_MAJOR "0")
+SET(CPACK_PACKAGE_VERSION_MINOR "3") 
+SET(CPACK_PACKAGE_VERSION_PATCH "0") 
+SET(CPACK_GENERATOR "TGZ")
+SET(CPACK_SOURCE_GENERATOR "TGZ")
+INCLUDE(CPack)
+
 
 ## version
 set (MARSYAS_VERSION_MAJOR "0")
