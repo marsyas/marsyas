@@ -192,6 +192,7 @@
 #include "Selector.h"
 #include "PhaseRandomize.h"
 #include "RunningStatistics.h"
+#include "SliceDelta.h"
 //modifyHeader
 
 using namespace std;
@@ -371,6 +372,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Selector", new Selector("selectorpr"));
 	registerPrototype("PhaseRandomize", new PhaseRandomize("phaserandomizepr"));
 	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
+	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
 	//modifyRegister
 
 	//***************************************************************************************
@@ -1073,7 +1075,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			classifierpr->setctrlState("mrs_string/mode", true);
 			classifierpr->addctrl("mrs_realvec/classProbabilities", realvec());
 			classifierpr->setctrlState("mrs_realvec/classProbabilities",true);
-			
+
 			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses",
 				"mrs_natural/nClasses");
 			classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_natural/nClasses",
@@ -1094,7 +1096,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 				"mrs_realvec/classProbabilities");
 			classifierpr->linkctrl("SVMClassifier/svmcl/mrs_realvec/classProbabilities",
 				"mrs_realvec/classProbabilities");
-			
+
 			classifierpr->updctrl("mrs_string/disableChild", "all");
 			registerPrototype("Classifier", classifierpr);
 		}
@@ -1186,7 +1188,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 		MRSERR("Unknown MarSystemType" << mcomposite);
 		return 0;
 	}
-	
+
 	is >> skipstr >> skipstr >> skipstr;
 	string mtype;
 	is >> mtype;

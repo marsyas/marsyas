@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 2009 Stefaan Lippens
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,45 +16,52 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_DIFFERENTIATOR_H
-#define MARSYAS_DIFFERENTIATOR_H
+#ifndef MARSYAS_SLICEDELTA_H
+#define MARSYAS_SLICEDELTA_H
 
 #include "MarSystem.h"
 
 namespace Marsyas
 {
 /**
-	\class Differentiator
-	\ingroup Processing Basic
-	\brief Calculate the difference of successive input samples.
+	\class SliceDelta
+	\ingroup Processing
+	\brief Takes the difference (delta) between successive input slices.
 
-	Simple MarSystem that calculates the differences of successive input samples
-	in the given slices. For the first sample of a slice, the last sample of
-	the previous slice is used.
+	Simple MarSystem that outputs the difference of the current input slice
+	with the previous input slice. Unlike the Differentiator MarSystem, which
+	takes differences at sample level, the difference is taken at slice level.
 
 	This MarSystem has no extra controls.
 
-	\see SliceDelta
+	\see Differentiator
 */
 
-class Differentiator: public MarSystem
+class SliceDelta: public MarSystem
 {
 private:
 	void myUpdate(MarControlPtr sender);
 
-	/// Buffer for storing the last column of samples in a slice.
-	realvec buffer_;
+	/// Internal memory for the previous observed slice.
+	realvec previousInputSlice_;
 
 public:
-	Differentiator(std::string name);
-	Differentiator(const Differentiator& a);
-	~Differentiator();
+	/// SliceDelta constructor.
+	SliceDelta(std::string name) : MarSystem("SliceDelta", name) {};
+
+	/// SliceDelta copy constructor.
+	SliceDelta(const SliceDelta& a) : MarSystem(a) {};
+
+	/// SliceDelta destructor.
+	~SliceDelta() {};
+
+	/// Implementation of MarSystem::clone() method.
 	MarSystem* clone() const;
 
+	/// Implementation of MarSystem::myProcess.
 	void myProcess(realvec& in, realvec& out);
 };
 
 }
 
 #endif
-
