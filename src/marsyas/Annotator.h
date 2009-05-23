@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -25,35 +25,54 @@
 
 namespace Marsyas
 {
-/** 
-    \class Annotator
+/**
+	\class Annotator
 	\ingroup MachineLearning
-    \brief Annotate feature stream with additional row of labels.
-    
+	\brief Annotate a feature vector/slice with a label.
+
+	The Annotator adds an observation row for labeling the feature stream.
+	The label can be set through the mrs_natural/label control.
+	Note that this label control expects a natural number representation of
+	the label.
+	Also note that only one label can be given at each processing step and this
+	given label is applied to all samples of the time slice.
+
+	Controls:
+   - \b mrs_natural/label [w]: natural number representation of the label.
+
 */
 
 
 class Annotator: public MarSystem
 {
-private: 
-  void addControls();
+private:
+
+	/// Implementation of the MarSystem::addControls() method.
+	void addControls();
+
+	/// Implementation of the MarSystem::myUpdate() method.
 	void myUpdate(MarControlPtr sender);
-  std::vector<mrs_natural> labels_;
-  std::string labels_str_;
-  mrs_natural labels_index_;
-  
-  MarControlPtr ctrl_label_;
+
+	/// MarControl for setting the annotation label.
+	MarControlPtr ctrl_label_;
 
 public:
-  Annotator(std::string name);
-  Annotator(const Annotator& a);
-  ~Annotator();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
+
+	/// Annotator constructor.
+	Annotator(std::string name);
+
+	/// Annotator copy constructor.
+	Annotator(const Annotator& a);
+
+	/// Annotator destructor.
+	~Annotator();
+
+	MarSystem* clone() const;
+
+	/// Implementation of the MarSystem::myProcess() method.
+	void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas
 
 #endif
-	
