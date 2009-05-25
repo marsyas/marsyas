@@ -17,7 +17,9 @@ SET(CMAKE_SWIG_FLAGS "")
 
 SET_SOURCE_FILES_PROPERTIES(marsyas.i PROPERTIES CPLUSPLUS ON)
 SET_SOURCE_FILES_PROPERTIES(marsyas.i PROPERTIES SWIG_FLAGS "-includeall")
-SWIG_ADD_MODULE(marsyas python  marsyas.i)
+SET_SOURCE_FILES_PROPERTIES(../realvec.i PROPERTIES CPLUSPLUS ON)
+SWIG_ADD_MODULE(marsyas python marsyas.i ../realvec.i)
+
 SWIG_LINK_LIBRARIES(marsyas marsyas ${PYTHON_LIBRARIES} ${OS_LIBS})
 
 # The installation directory for the Python modules.
@@ -38,6 +40,6 @@ install(TARGETS _marsyas LIBRARY DESTINATION ${PYTHON_INSTDIR})
 
 
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/marsyas.py 
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/marsyas.py
   DESTINATION ${PYTHON_INSTDIR}
   )
