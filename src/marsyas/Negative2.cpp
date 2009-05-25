@@ -8,7 +8,7 @@ Negative2::Negative2(string inName)
 
 Negative2::~Negative2(){}
 
-MarSystem* Negative2::clone() const 
+MarSystem* Negative2::clone() const
 {
   return new Negative2(*this);
 }

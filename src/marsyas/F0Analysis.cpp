@@ -50,7 +50,7 @@ void F0Analysis::addControls()
 	addctrl("mrs_real/LowestF0",100.,ctrl_LowestF0_);
 	addctrl("mrs_real/Compression",0.5,ctrl_Compression_);
 	addctrl("mrs_real/ChordEvidence",0.);
-	
+
 	ctrl_SampleRate_->setState(true);
 	ctrl_NrOfHarmonics_->setState(true);
 	ctrl_F0Weight_->setState(true);
@@ -90,8 +90,8 @@ void F0Analysis::myProcess(realvec& inVec, realvec& outVec)
 	updctrl("mrs_real/ChordEvidence",ChordEvidence_);
 }
 
-bool F0Analysis::FindCandidateF0s(const realvec& inPeaks, 
-	HarmMap& outHarmSums, F2Fs& outF0ToFks) const 
+bool F0Analysis::FindCandidateF0s(const realvec& inPeaks,
+	HarmMap& outHarmSums, F2Fs& outF0ToFks) const
 {
 	/* For each F0 > FLower, search for harmonically related freqs Fks
 	1. Compute harmonic sum (S) and store (S,F0) in the map outHarmSums
@@ -117,7 +117,7 @@ bool F0Analysis::FindCandidateF0s(const realvec& inPeaks,
 					1. Compute k, the closest integer to Fk/F0
 					2. Check whether |Fk/k-F0| <= tolerance x F0 */
 					int k = ROUND((mrs_real)j/(mrs_real)i);
-					if (k > 1 && k <= NrOfHarmonics_ && 
+					if (k > 1 && k <= NrOfHarmonics_ &&
 						abs(theFk/(mrs_real)k-theF0) <= Tolerance_*theF0){
 
 							theAssignedFks.push_back(theFk);
@@ -139,7 +139,7 @@ bool F0Analysis::FindCandidateF0s(const realvec& inPeaks,
 	return true;
 }
 
-bool F0Analysis::SelectUnrelatedF0s(const realvec& inPeaks, 
+bool F0Analysis::SelectUnrelatedF0s(const realvec& inPeaks,
 	const HarmMap inHarmSums, const F2Fs& inF0ToFks, realvec& outNoteEvidence)
 {
 	outNoteEvidence.setval(0);
@@ -164,7 +164,7 @@ bool F0Analysis::SelectUnrelatedF0s(const realvec& inPeaks,
 		// Add first candidate
 		Cand = inHarmSums.begin();
 		double F0c = Cand->second;
-		outNoteEvidence(ROUND(F0c/theFreqStep)) = 
+		outNoteEvidence(ROUND(F0c/theFreqStep)) =
 			ComputePowerOfF0(thePeaks, inF0ToFks, F0c);
 		theNrOfPitches++;
 		Cand++;
@@ -187,11 +187,11 @@ bool F0Analysis::SelectUnrelatedF0s(const realvec& inPeaks,
 					int l = ROUND(F0/F0c);
 
 					// theRelFlag = true if Sel and Cand are harmonically related
-					theRelFlag = (k > 0 && k <= NrOfHarmonics_ && 
+					theRelFlag = (k > 0 && k <= NrOfHarmonics_ &&
 						abs(F0c/(double)k-F0) <= Tolerance_*F0) ||
-						(l > 0 && l <= NrOfHarmonics_ && 
+						(l > 0 && l <= NrOfHarmonics_ &&
 						abs((double)l*F0c-F0) <= Tolerance_*F0);
-					
+
 					if (theRelFlag)
 						break;
 				}
@@ -241,10 +241,10 @@ mrs_real F0Analysis::ComputePowerOfInput(const FreqMap inPeaks) const{
 	return thePower;
 }
 
-mrs_real F0Analysis::ComputePowerOfHyp(const FreqMap inPeaks, 
+mrs_real F0Analysis::ComputePowerOfHyp(const FreqMap inPeaks,
 	const F2Fs& inF0ToFks, realvec& inNoteEvidence) const
 {
-	/* For each selected candidate F0, search the assigned higher 
+	/* For each selected candidate F0, search the assigned higher
 	harmonics and store them in the vector Tmp*/
 	vector<double> Tmp;
 	mrs_real theFreqStep = SampleRate_/(2*inNoteEvidence.getSize());
@@ -252,7 +252,7 @@ mrs_real F0Analysis::ComputePowerOfHyp(const FreqMap inPeaks,
 	{
 		if (inNoteEvidence(i) > 0)
 		{
-			F2Fs::const_iterator iter2 = 
+			F2Fs::const_iterator iter2 =
 				inF0ToFks.find((mrs_real)i*theFreqStep);
 			vector<double> theHarm = iter2->second;
 			for (unsigned long i=0; i<theHarm.size(); i++)

@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -24,7 +24,7 @@
 
 namespace Marsyas
 {
-	/** 
+	/**
 	\ingroup	Processing Analysis
 	\brief		Transform an (amplitude) spectrum to a chroma profile
 	\author		Matthias Varewyck
@@ -40,8 +40,8 @@ namespace Marsyas
 	"a novel chroma representation of polyphonic music based on multiple pitch tracking techniques"
 	which was presented at the 16th ACM International Conference on Multimedia.
 
-	The method computes the set of pitches that best explains the salient frequencies present in the 
-	(amplitude) spectrum.  The method results in (1) a chroma profile and (2) a chord evidence.  
+	The method computes the set of pitches that best explains the salient frequencies present in the
+	(amplitude) spectrum.  The method results in (1) a chroma profile and (2) a chord evidence.
 	(1) The chroma profile represents the normalized pitches after they were folded to one octave
 	(2) The chord evidence represents the probability that a chord occurs in the examined frame.
 	For an example, see the function "toy_with_chroma" in the mudbox.
@@ -58,7 +58,7 @@ namespace Marsyas
 		public:
 			Spectrum2ACMChroma(mrs_string inName);
 			Spectrum2ACMChroma(const Spectrum2ACMChroma& inToCopy);
-			
+
 			~Spectrum2ACMChroma();
 
 			MarSystem* clone() const;
@@ -66,7 +66,7 @@ namespace Marsyas
 			void addControls();
 			void myUpdate(MarControlPtr inSender);
 			void myProcess(realvec& inSpectrum, realvec& outChroma);
-		
+
 		private:
 			MarSystem* Spectrum2ACMChromaNet_;
 
@@ -83,9 +83,9 @@ namespace Marsyas
 			// Static member variables
 			static const mrs_natural MedianLength_ = 80;	// Length of median filter (in bins)
 			static const mrs_natural NotesPerOctave_ = 12;	// Number of notes per octave
-			
-			static const mrs_real RaiseFactor_;				// Factor to raise background spectrum with 
-			static const mrs_real Hysteresis_;				// Hysteresis in peak detection function 
+
+			static const mrs_real RaiseFactor_;				// Factor to raise background spectrum with
+			static const mrs_real Hysteresis_;				// Hysteresis in peak detection function
 			static const mrs_real Tolerance_;				// Relative tolerance for harmonic analysis
 			static const mrs_real Attenuation_;				// Attenuation of higher order harmonics
 			static const mrs_real PowerOfAmplitude_;		// Power of amplitude (0.5 for loudness)

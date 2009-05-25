@@ -14,7 +14,7 @@ Signum::Signum(const Signum& inToCopy)
 
 Signum::~Signum(){}
 
-MarSystem* Signum::clone() const 
+MarSystem* Signum::clone() const
 {
   return new Signum(*this);
 }

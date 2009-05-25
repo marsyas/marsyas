@@ -99,7 +99,7 @@ Spectrum2ACMChroma::Spectrum2ACMChroma(mrs_string inName)
 	Spectrum2ACMChromaNet_->addMarSystem(theNewSystem);
 
 	// ------------------------ DEFINE FIXED PARAMETERS ------------------
-	mrs_string theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/" 
+	mrs_string theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
 		"Series/SER3/Gain/Gain/mrs_real/gain";
 	Spectrum2ACMChromaNet_->updctrl(theControlString,2.);
 
@@ -173,7 +173,7 @@ void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
 	updctrl(Spectrum2ACMChromaNet_->ctrl_inSamples_, ctrl_inSamples_);
 	updctrl(Spectrum2ACMChromaNet_->ctrl_inObservations_, ctrl_inObservations_);
 	updctrl(Spectrum2ACMChromaNet_->ctrl_israte_, ctrl_israte_);
-	
+
 	// Copy output specs of Spectrum2ACMChromaNet to THIS output specs
 	updctrl(ctrl_onSamples_, Spectrum2ACMChromaNet_->ctrl_onSamples_);
 	updctrl(ctrl_onObservations_, Spectrum2ACMChromaNet_->ctrl_onObservations_);
@@ -188,13 +188,13 @@ void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
 	mrs_real theFrameSize = 0.08;	//!! should depend on input framesize !!
 
 	// israte_ = FFTSize/Fs = width of bins in input spectrum
-	mrs_natural theWindowSize = 
+	mrs_natural theWindowSize =
 		(mrs_natural)floor((mrs_real)80/israte_+0.5);
 	string theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
 		"Series/SER3/MedianFilter/MedianFilter/mrs_natural/WindowSize";
 	Spectrum2ACMChromaNet_->updctrl(theControlString,theWindowSize);
 
-	mrs_natural theHystLength = 
+	mrs_natural theHystLength =
 		(mrs_natural)floor(2./(theFrameSize*israte_)+0.5);
 	theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
 		"PeakInObservation/FindPeaks/mrs_natural/HystLength";
@@ -203,7 +203,7 @@ void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
 	// All notes are referred to the diapason:
 	// 1. search for the pitch of the lowest note >= the lowest pitch
 	//    The lowest pitch is defined by the user
-	// 2. search for the pitch of the highest note <= the highest pitch 
+	// 2. search for the pitch of the highest note <= the highest pitch
 	//    The highest pitch is defined by the algorithm and equals Fs/4
 
 	// 1.1 compute the note index of the diapason referred to the min. pitch
