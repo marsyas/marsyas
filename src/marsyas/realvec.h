@@ -171,6 +171,10 @@ public:
 	void dump();
 	bool write(std::string filename) const;
 	bool read(std::string filename);
+
+	/// Dump the realvec data (without header) to an output stream.
+	void dumpDataOnly(std::ostream& o=std::cout, std::string columnSep=" ", std::string rowSep="\n") const;
+
 	friend std::ostream& operator<<(std::ostream&, const realvec&);
 	friend std::istream& operator>>(std::istream&, realvec&);
 	/// input function for line-separated text files

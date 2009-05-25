@@ -879,6 +879,30 @@ realvec::writeText(string filename)
 	}
 }
 
+/**
+ * Dump the realvec data (only the data, no header info ) to an outputstream.
+ * Use the given column and row separators between columns and rows respectively.
+ */
+void
+realvec::dumpDataOnly(std::ostream& o, std::string columnSep, std::string rowSep) const
+{
+	for (mrs_natural r = 0; r < this->rows_; r++)
+	{
+		for (mrs_natural c = 0; c < this->cols_; c++)
+		{
+			o << this->data_[c * this->rows_ + r];
+			if (c < this->cols_ - 1)
+			{
+				o << columnSep ;
+			}
+		}
+		if (r < this->rows_ - 1)
+		{
+			o << rowSep;
+		}
+	}
+}
+
 ostream&
 operator<< (ostream& o, const realvec& vec)
 {
@@ -890,12 +914,8 @@ operator<< (ostream& o, const realvec& vec)
 	o << "# rows: " << vec.rows_ << endl;
 	o << "# columns: " << vec.cols_ << endl;
 
-	for (mrs_natural r=0; r < vec.rows_; r++)
-	{
-		for (mrs_natural c=0; c < vec.cols_; c++)
-			o << vec.data_[c * vec.rows_ + r] << " " ;
-		o << endl;
-	}
+	vec.dumpDataOnly(o, " ", "\n");
+	o << endl;
 
 	// for (mrs_natural i=0; i<vec.size_; i++)
 	// o << vec.data_[i] << endl;
