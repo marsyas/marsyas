@@ -38,7 +38,7 @@ namespace Marsyas
    - \b mrs_natural/nLabels [rw] : number of labels.
    - \b mrs_natural/downsample [rw] : divides number of samples.
    - \b mrs_string/labelNames [rw] : names of labels.
-   - \b mrs_bool/regresssion [rw] : classification or regression?
+   - \b mrs_bool/regression [rw] : classification or regression?
    - \b mrs_bool/putHeader [rw] : add extra information to the .arff
    - \b mrs_bool/inject    [w]  : trigger injection of  data to .arff output out of dataflow
    - \b mrs_string/comment [w]  : inject string to .arff output of of dataflow triggered by inject control
