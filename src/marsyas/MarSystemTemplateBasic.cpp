@@ -21,26 +21,23 @@
 using namespace std;
 using namespace Marsyas;
 
-MarSystemTemplateBasic::MarSystemTemplateBasic(string name):MarSystem("MarSystemTemplateBasic", name)
+MarSystemTemplateBasic::MarSystemTemplateBasic(string name) : MarSystem("MarSystemTemplateBasic", name)
 {
-	// Add any specific controls needed by this MarSystem
-	// (default controls all MarSystems should have were
-	// already added by MarSystem::addControl(), called by
-	// :MarSystem(name) constructor).
-	// If no specific controls are needed by a MarSystem
-	// there is no need to implement and call this
-	// addControl() method (see for e.g. Rms.cpp)
+	/// Add any specific controls needed by this MarSystem.
+	// Default controls that all MarSystems should have (like "inSamples"
+	// and "onObservations"), are already added by MarSystem::addControl(),
+	// which is already called by the constructor MarSystem::MarSystem(name).
+	// If no specific controls are needed by a MarSystem there is no need to
+	// implement and call this addControl() method (see for e.g. Rms.cpp)
 	addControls();
 }
 
 MarSystemTemplateBasic::MarSystemTemplateBasic(const MarSystemTemplateBasic& a) : MarSystem(a)
 {
 	// IMPORTANT!
-	// All member pointers to controls have to be explicitly
-	// reassigned here, at the copy constructor.
-	// Otherwise these member pointers would be invalid,
-	// which will result in trying to de-allocate them
-	// twice!
+	/// All member MarControlPtr have to be explicitly reassigned in
+	/// the copy constructor.
+	// Otherwise this would result in trying to deallocate them twice!
 	ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");
 }
 
@@ -52,27 +49,27 @@ MarSystemTemplateBasic::~MarSystemTemplateBasic()
 MarSystem*
 MarSystemTemplateBasic::clone() const
 {
-	// every MarSystem should do this
+	// Every MarSystem should do this.
 	return new MarSystemTemplateBasic(*this);
 }
 
 void
 MarSystemTemplateBasic::addControls()
 {
-	// Add any specific controls needed by this MarSystem.
+	/// Add any specific controls needed by this MarSystem.
 
 	// Let's start by adding a dummy control (for which we
 	// will not use a pointer, just to illustrate the
 	// "traditional", yet not so efficient way of using
 	// controls)
 	addctrl("mrs_bool/dummyEXAMPLE", false);
-	// in this case this control should have state, since
+	// In this case this control should have state, since
 	// other controls will depend on it.  (i.e. any change
 	// to it will call MarSystem::update() which then calls
 	// myUpdate(MarControlPtr sender))
 	setctrlState("mrs_bool/dummyEXAMPLE", true);
 
-	// if a pointer to a control is to be used (for
+	// If a pointer to a control is to be used (for
 	// efficiency purposes - see myProcess() bellow), it
 	// should be passed as the last argument to addctrl()
 	addctrl("mrs_real/gain", 1.0, ctrl_gain_EXAMPLE_);
@@ -80,7 +77,7 @@ MarSystemTemplateBasic::addControls()
 	// IMPORTANT NOTE:
 	// in the above case, since the control value is
 	// supposed to be a mrs_real, the default value also has
-	// to be a mrs_real!  if not (e.g. initialiting with "1"
+	// to be a mrs_real!  if not (e.g. initializing with "1"
 	// instead of "1.0"), the control will in fact have a
 	// mrs_natural value despite of the "mrs_real/..." name.
 }
@@ -90,8 +87,7 @@ MarSystemTemplateBasic::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("MarSystemTemplateBasic.cpp - MarSystemTemplateBasic:myUpdate");
 
-	// this initializes the output (samples, observations,
-	// sample rate, etc)
+	/// Use the default MarSystem setup with equal input/output stream format.
 	MarSystem::myUpdate(sender);
 }
 
@@ -99,7 +95,7 @@ void
 MarSystemTemplateBasic::myProcess(realvec& in, realvec& out)
 {
 	const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
-	// this is equivalent (although slightly more efficient) than:
+	// This is equivalent (although slightly more efficient) than:
 	//
 	// mrs_real& gainValue = ctrl_gain_EXAMPLE_->to<mrs_real>();
 	//   // ::toReal() calls ::to<mrs_real>()
@@ -111,9 +107,14 @@ MarSystemTemplateBasic::myProcess(realvec& in, realvec& out)
 	// different thread), it's always in sync with the
 	// actual control value.
 
-	for (o=0; o < inObservations_; o++)
+	/// Iterate over the observations and samples and do the processing.
+	for (o = 0; o < inObservations_; o++)
+	{
 		for (t = 0; t < inSamples_; t++)
-			out(o,t) = gainValueEXAMPLE * in(o,t);
+		{
+			out(o, t) = gainValueEXAMPLE * in(o, t);
+		}
+	}
 }
 
 

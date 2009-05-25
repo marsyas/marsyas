@@ -25,11 +25,11 @@ namespace Marsyas
 {
 /**
 	\class MarSystemTemplateBasic
-	\ingroup Special
+	\ingroup Processing
 	\brief Basic example on how to use controls efficiently in MarSystems
 
 	This example is the same as Gain; it scales the output by
-multiplying each sample with a real number.
+	multiplying each sample with a real number.
 
 	Controls:
 	- \b mrs_real/gain [w] : sets the gain multiplier.
@@ -39,23 +39,35 @@ multiplying each sample with a real number.
 class MarSystemTemplateBasic: public MarSystem
 {
 private:
-	// Add specific controls needed by this MarSystem.
+
+	/// Add specific controls needed by this MarSystem.
 	void addControls();
-	// Reads changed controls and sets up variables if necessary.
+
+	/// Reads changed controls and sets up variables if necessary.
 	void myUpdate(MarControlPtr sender);
 
 	// Pointers to controls allow efficient access to their
 	// values.  For clarity, we use the ctrl_ prefix so these
-	// pointers can be easly identified throughout the code...
+	// pointers can be easily identified throughout the code...
 	// but this is not mandatory, just recommended)
+
+	/// MarControlPtr for the gain control
 	MarControlPtr ctrl_gain_EXAMPLE_;
 
 public:
+	/// MarSystemTemplateBasic constructor.
 	MarSystemTemplateBasic(std::string name);
+
+	/// MarSystemTemplateBasic copy constructor.
 	MarSystemTemplateBasic(const MarSystemTemplateBasic& a);
+
+	/// MarSystemTemplateBasic destructor.
 	~MarSystemTemplateBasic();
+
+	/// Implementation of the MarSystem::clone() method.
 	MarSystem* clone() const;
 
+	/// Implementation of the MarSystem::myProcess method.
 	void myProcess(realvec& in, realvec& out);
 };
 
