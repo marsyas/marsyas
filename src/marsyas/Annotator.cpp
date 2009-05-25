@@ -31,6 +31,7 @@ Annotator::Annotator(const Annotator& a):MarSystem(a)
 {
 	ctrl_label_ = getControl("mrs_natural/label");
 	ctrl_labelInFront_ = getControl("mrs_bool/labelInFront");
+	ctrl_annotationName_ = getControl("mrs_string/annotationName");
 }
 
 Annotator::~Annotator()
@@ -48,6 +49,7 @@ Annotator::addControls()
 {
 	addControl("mrs_natural/label", 0, ctrl_label_);
 	addControl("mrs_bool/labelInFront", false, ctrl_labelInFront_);
+	addControl("mrs_string/annotationName", "annotation", ctrl_annotationName_);
 }
 
 void
@@ -61,6 +63,22 @@ Annotator::myUpdate(MarControlPtr sender)
 	// ... but add one to the number of output observations.
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>() + 1, NOUPDATE);
 
+	// Should the label go in front or at the back of the observations?
+	labelInFront_ = ctrl_labelInFront_->to<mrs_bool>();
+
+	// Add the annotation name to onObsNames.
+	string annotationName = ctrl_annotationName_->to<mrs_string>();
+	string onObsNames = ctrl_inObsNames_->to<mrs_string>();
+	if (labelInFront_)
+	{
+		onObsNames = annotationName + string(",") + onObsNames;
+	}
+	else
+	{
+		onObsNames = onObsNames + string(",") + annotationName;
+	}
+	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
+
 }
 
 void
@@ -69,16 +87,14 @@ Annotator::myProcess(realvec& in, realvec& out)
 	// Get the label to annotate the feature stream with.
 	const mrs_natural& label = ctrl_label_->to<mrs_natural>();
 
-	// Should the label go in front or at the back of the observations?
-	mrs_bool labelInFront = ctrl_labelInFront_->to<mrs_bool>();
 
 	// Copy the input observations to the output and add the label.
 	for (t = 0; t < inSamples_; t++)
 	{
 		for (o = 0; o < inObservations_; o++)
 		{
-			out((int)(labelInFront) + o, t) =  in(o, t);
+			out((int)(labelInFront_) + o, t) =  in(o, t);
 		}
-		out(labelInFront ? 0 : onObservations_ - 1, t) = (mrs_real) label;
+		out(labelInFront_ ? 0 : onObservations_ - 1, t) = (mrs_real) label;
 	}
 }

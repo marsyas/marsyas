@@ -41,6 +41,7 @@ namespace Marsyas
    - \b mrs_natural/label [w]: natural number representation of the label.
    - \b mrs_bool/labelInFront [w]: toggle to put the label in front instead of
 		at the end of the observations (which is the default).
+   - \b mrs_string/annotationName [w]: the name to use for the annotation.
 
 */
 
@@ -60,6 +61,12 @@ private:
 
 	/// MarControl toggle for putting the annotation label in front of the observations.
 	MarControlPtr ctrl_labelInFront_;
+
+	/// Cache for storing the value of the labelInFront control.
+	mrs_bool labelInFront_;
+
+	/// MarControl for setting the annotation name.
+	MarControlPtr ctrl_annotationName_;
 
 public:
 
