@@ -193,6 +193,7 @@
 #include "PhaseRandomize.h"
 #include "RunningStatistics.h"
 #include "SliceDelta.h"
+#include "ArffFileSink.h"
 //modifyHeader
 
 using namespace std;
@@ -373,6 +374,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhaseRandomize", new PhaseRandomize("phaserandomizepr"));
 	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
 	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
+	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
 	//modifyRegister
 
 	//***************************************************************************************
