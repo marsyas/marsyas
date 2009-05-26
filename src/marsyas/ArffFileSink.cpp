@@ -109,6 +109,14 @@ ArffFileSink::prepareOutput()
 		filename_ = ctrl_filename_->to<mrs_string>();
 		os_ = new ofstream;
 		os_->open(filename_.c_str());
+		if (os_->fail()) {
+			// \todo make this cleaner, e.g. by creating and using a dedicated
+			// exception for IO/file errors.
+			ostringstream oss;
+			oss << "[Error in " << __FILE__ << ":" << __LINE__ << "] "
+				<< "could not open file '" << filename_ << "' for writing.";
+			throw ios_base::failure(oss.str());
+		}
 		// Write ARFF header.
 		writeArffHeader();
 	}
