@@ -26,18 +26,34 @@ namespace Marsyas
 /**
 	\class OnePole
 	\ingroup Processing
-	\brief Simple one-pole filter.
+	\brief Simple one-pole digital filter.
 
-	OnePole Filter.
-	Output is normalized by setting the gain to (1.0-a).
+	OnePole implements the digital filter described by equation
+		y(t) = (1-alpha) * x(t) + alpha * y(t - 1)
+	This filter has one pole at z = alpha. If alpha > 0, it has a low pass
+	characteristic, the closer to 1 the smaller the pass band. If alpha < 0, it
+	has a high pass characteristic, the closer to -1, the smaller the pass band.
+
+	Note that the coefficient of x(t) is set to (1-alpha) to have unity gain
+	for the DC component (both in the low pass and high pass case).
+
+	Controls:
+	- \b mrs_real/alpha [w] : the alpha parameter in the filter equation.
 */
 
 
 class OnePole: public MarSystem
 {
 private:
+
+	/// Cache for the alpha value.
 	mrs_real alpha_;
+
+	/// Cache for the gain value.
 	mrs_real gain_;
+
+	/// Internal memory for the last samples of the previous observed slice.
+	realvec previousOutputSamples_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

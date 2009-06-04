@@ -42,20 +42,25 @@ OnePole::clone() const
 void
 OnePole::addControls()
 {
-	addctrl("mrs_real/alpha", 0.9);
+	addControl("mrs_real/alpha", 0.9);
+	setControlState("mrs_real/alpha", true);
 }
 
 
 void
 OnePole::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("OnePole.cpp - OnePole:myUpdate");
-
 	// Use the default MarSystem setup with equal input/output stream format.
 	MarSystem::myUpdate(sender);
 
-	alpha_ = getctrl("mrs_real/alpha")->to<mrs_real>();
-	gain_ = (mrs_real)(1.0 - alpha_);
+	// Cache the alpha and gain value.
+	alpha_ = getControl("mrs_real/alpha")->to<mrs_real>();
+	gain_ = 1.0 - alpha_;
+
+	// Allocate and initialize the buffer for previous output samples.
+	mrs_natural rows = ctrl_inObservations_->to<mrs_natural>();
+	previousOutputSamples_.stretch(rows, 1);
+	previousOutputSamples_.setval(0.0);
 }
 
 void
@@ -63,18 +68,18 @@ OnePole::myProcess(realvec& in, realvec& out)
 {
 	for (o = 0; o < inObservations_; o++)
 	{
+		// Use the last sample from the previous slice for the first sample of
+		// this slice.
+		t = 0;
+		out(o, t) = gain_ * in(o, t) + alpha_ * previousOutputSamples_(o, 0);
+
+		// Do the remaining samples.
 		for (t = 1; t < inSamples_; t++)
 		{
-			out(o, t) = gain_ * in(o, t) + alpha_ * out(o, t-1);
+			out(o, t) = gain_ * in(o, t) + alpha_ * out(o, t - 1);
 		}
+
+		// Store the last sample for usage in next process() call.
+		previousOutputSamples_(o, 0) = out(o, inSamples_ - 1);
 	}
 }
-
-
-
-
-
-
-
-
-
