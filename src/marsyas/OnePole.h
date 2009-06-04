@@ -29,16 +29,21 @@ namespace Marsyas
 	\brief Simple one-pole digital filter.
 
 	OnePole implements the digital filter described by equation
-		y(t) = (1-alpha) * x(t) + alpha * y(t - 1)
-	This filter has one pole at z = alpha. If alpha > 0, it has a low pass
-	characteristic, the closer to 1 the smaller the pass band. If alpha < 0, it
-	has a high pass characteristic, the closer to -1, the smaller the pass band.
+		\f[ y(t) = (1 - \alpha) x(t) + \alpha  y(t - 1) \f]
+	This filter has one pole at \f$ z = \alpha \f$.
+	If \f$ \alpha > 0 \f$, the filter has a low-pass characteristic,
+	the closer to 1 the smaller the pass band.
+	If \f$ \alpha < 0 \f$, it has a high-pass characteristic,
+	the closer to -1, the smaller the pass band.
 
-	Note that the coefficient of x(t) is set to (1-alpha) to have unity gain
-	for the DC component (both in the low pass and high pass case).
+	Note that the coefficient of \f$ x(t) \f$ is set to \f$ (1-\alpha) \f$
+	to have unity gain for the DC component (both in the low pass and high
+	pass case) as a sort of normalization.
 
 	Controls:
-	- \b mrs_real/alpha [w] : the alpha parameter in the filter equation.
+	- \b mrs_real/alpha [w]: the \f$ \alpha \f$ parameter in the filter equation.
+
+	\see Filter
 */
 
 
