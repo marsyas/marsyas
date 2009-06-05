@@ -24,6 +24,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 #include "common.h"
 #include "MrsLog.h"
@@ -150,6 +151,13 @@ public:
 	mrs_real operator()(const mrs_natural i) const;
 	mrs_real& operator()(const mrs_natural r, const mrs_natural c);
 	mrs_real operator()(const mrs_natural r, const mrs_natural c) const;
+
+	mrs_real getValueFenced(const mrs_natural i) const;
+	mrs_real getValueFenced(const mrs_natural r, const mrs_natural c) const;
+	mrs_real& getValueFenced(const mrs_natural i);
+	mrs_real& getValueFenced(const mrs_natural r, const mrs_natural c);
+
+
 	//@}
 
 
@@ -310,7 +318,6 @@ mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
 	MRSASSERT(r < rows_);
 	MRSASSERT(c < cols_);
 
-
 	return data_[c * rows_ + r];
 	// return data_[r * cols_ + c];
 }
@@ -357,6 +364,81 @@ mrs_real& realvec::operator()(const mrs_natural i)
 
 	return data_[i];
 }
+
+/**
+ * \brief Get the value at index i or raise Exception when out of bounds.
+ *
+ * \param i the index to get the value at.
+ * \return the value at the requested index.
+ * \exception std::out_of_range is thrown when the index is out of bounds.
+ */
+inline
+mrs_real realvec::getValueFenced(const mrs_natural i) const
+{
+	if (i < 0 || i >= size_) {
+		// TODO: use a Marsyas branded exception here?
+		throw std::out_of_range("realvec indexing out of bounds.");
+	}
+	return data_[i];
+}
+
+/**
+ * \brief Get the value at position (r, c) or raise Exception when out of bounds.
+ *
+ * \param r the row index of the position to get the value from.
+ * \param c the column index of the position to get the value from.
+ * \return the value at the requested position.
+ * \exception std::out_of_range is thrown when the row or column index are out of bounds.
+ */
+inline
+mrs_real realvec::getValueFenced(const mrs_natural r, const mrs_natural c) const
+{
+	if (r < 0 || r >= rows_ || c < 0 || c >= cols_) {
+		// TODO: use a Marsyas branded exception here?
+		throw std::out_of_range("realvec indexing out of bounds.");
+	}
+	return data_[c * rows_ + r];
+}
+
+/**
+ * \brief Get reference to value at index i or raise Exception when out of bounds.
+ *
+ * Returned reference can be used as left hand side value (lvalue).
+ *
+ * \param i the index to get the value at.
+ * \return the value at the requested index.
+ * \exception std::out_of_range is thrown when the index is out of bounds.
+ */
+inline
+mrs_real& realvec::getValueFenced(const mrs_natural i)
+{
+	if (i < 0 || i >= size_) {
+		// TODO: use a Marsyas branded exception here?
+		throw std::out_of_range("realvec indexing out of bounds.");
+	}
+	return data_[i];
+}
+
+/**
+ * \brief Get reference to value at position (r, c) or raise Exception when out of bounds.
+ *
+ * Returned reference can be used as left hand side value (lvalue).
+ *
+ * \param r the row index of the position to get the value from.
+ * \param c the column index of the position to get the value from.
+ * \return the value at the requested position.
+ * \exception std::out_of_range is thrown when the row or column index are out of bounds.
+ */
+inline
+mrs_real& realvec::getValueFenced(const mrs_natural r, const mrs_natural c)
+{
+	if (r < 0 || r >= rows_ || c < 0 || c >= cols_) {
+		// TODO: use a Marsyas branded exception here?
+		throw std::out_of_range("realvec indexing out of bounds.");
+	}
+	return data_[c * rows_ + r];
+}
+
 
 }//namespace Marsyas
 

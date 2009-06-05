@@ -9,6 +9,7 @@ using namespace Marsyas;
 
 %include "types.i"
 
+
 /* Class description for realvecs */
 class realvec {
 	public: /* Constructors */
@@ -63,30 +64,4 @@ class realvec {
 
 
 };
-
-
-%extend realvec {
-
-    std::string __str__() {
-        std::ostringstream oss;
-        $self->dumpDataOnly(oss);
-        return oss.str();
-    }
-    void print_() {
-        std::cout << *$self;
-    }
-
-    mrs_natural __len__() {
-        return $self->getSize();
-    }
-
-    /* this is probably very inefficient, but can't seem to bind the () operator.
-       It also doesn't check to make sure the array index is within bounds. */
-    mrs_real __getitem__(mrs_natural i) { return $self->getData()[i]; }
-    void __setitem__(mrs_natural i, mrs_real x) { $self->stretchWrite(i, x); }
-
-    /* it's be nice to bind all the overloaded operators, but %rename doesn't seem to work.
-       Also, python's "for x in list" iterator doesn't work either. */
-};
-
 

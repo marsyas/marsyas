@@ -3,11 +3,9 @@ INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/swig/)
-configure_file(marsyas.py ${CMAKE_CURRENT_BINARY_DIR}/marsyas.py COPYONLY)
 configure_file(pvoc.py ${CMAKE_CURRENT_BINARY_DIR}/pvoc.py COPYONLY)
 configure_file(test.py ${CMAKE_CURRENT_BINARY_DIR}/test.py COPYONLY)
-configure_file(testPylab.py ${CMAKE_CURRENT_BINARY_DIR}/testPylab.py
-COPYONLY)
+configure_file(testPylab.py ${CMAKE_CURRENT_BINARY_DIR}/testPylab.py COPYONLY)
 configure_file(chuck_like.py ${CMAKE_CURRENT_BINARY_DIR}/chuck_like.py COPYONLY)
 configure_file(bextract.py ${CMAKE_CURRENT_BINARY_DIR}/bextract.py COPYONLY)
 
