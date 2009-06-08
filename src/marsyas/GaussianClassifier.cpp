@@ -34,7 +34,7 @@ GaussianClassifier::GaussianClassifier(const GaussianClassifier& a):MarSystem(a)
 	ctrl_nClasses_ = getctrl("mrs_natural/nClasses");
 	ctrl_means_ = getctrl("mrs_realvec/means");
 	ctrl_covars_ = getctrl("mrs_realvec/covars");
-	// ctrl_classProbabilities_ = getctrl("mrs_realvec/classProbabilities");
+	ctrl_classProbabilities_ = getctrl("mrs_realvec/classProbabilities");
 	prev_mode_ = "predict";
 }
 
@@ -60,7 +60,7 @@ GaussianClassifier::addControls()
 	setctrlState("mrs_natural/nClasses", true);
 	addctrl("mrs_realvec/means", realvec(), ctrl_means_);
 	addctrl("mrs_realvec/covars", realvec(), ctrl_covars_);
-	//addctrl("mrs_realvec/classProbabilities", realvec(), ctrl_classProbabilities_);
+	addctrl("mrs_realvec/classProbabilities", realvec(), ctrl_classProbabilities_);
 }
 
 
@@ -97,10 +97,10 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 		means.create(nlabels, inObservations);
 		covars.create(nlabels, inObservations);
 		labelSizes_.create(nlabels);  
-		/* MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
+		MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
 		realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
 		class_probs.create(nlabels);
-		*/ 
+		 
 	}
 
 
@@ -188,7 +188,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		
 		mrs_real min = MAXREAL;
 		// MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
-		// realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
+ 		// realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
 		for (t = 0; t < inSamples_; t++)  
 		{
 			label = in(inObservations_-1, t);
