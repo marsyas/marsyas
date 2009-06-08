@@ -768,7 +768,7 @@ toy_with_train_predict(string trainFileName, string testFileName)
   //
   // Which classifier function to use
   //
-  string classifier_ = "SVM";
+  string classifier_ = "GS";
   if (classifier_ == "GS")
 	net->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
   if (classifier_ == "ZEROR") 
@@ -792,7 +792,7 @@ toy_with_train_predict(string trainFileName, string testFileName)
   // the same as the WekaSource
   //
   net->updctrl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkctrl("Classifier/cl/mrs_string/mode", "train");  
+  net->updctrl("Classifier/cl/mrs_string/mode", "train");  
 
   ////////////////////////////////////////////////////////////
   //
@@ -821,16 +821,18 @@ toy_with_train_predict(string trainFileName, string testFileName)
   realvec data;
 
   int correct_instances = 0;
-   
+  int total_instances = 0;
+  
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
  	cout << (int)data(0,0) << "-" << (int)data(1,0) << endl;
 	if ((int)data(0,0) == (int)data(1,0))
 		correct_instances++;
+	total_instances++;
   }
 
-  cout << "Correct instancs = " << correct_instances << endl;
+  cout << "Correct instancs = " << correct_instances << " out of a total of " << total_instances << endl;
   
 
   // sness - hmm, I really should be able to delete net, but I get a 

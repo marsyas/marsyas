@@ -136,6 +136,7 @@ Confidence::myProcess(realvec& in, realvec& out)
 {
 
 	
+	
 
 	bool mute = ctrl_mute_->to<mrs_bool>();
 	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
@@ -157,6 +158,7 @@ Confidence::myProcess(realvec& in, realvec& out)
 				if (o==0) 
 				{
 					label = (mrs_natural)in(o,t);
+					
 					confidences_(label) = confidences_(label) + 1;
 				} 
 			}

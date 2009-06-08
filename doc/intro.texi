@@ -95,9 +95,14 @@ straightforward to figure out how to recode your algorithms in version
 The community of Marsyas developers has grown over the years with
 currently (Spring 2009) approximately 4-5 developers committing
 regularly code and close to 30 developers having committed code over the
-past few years. We are very proud that Marsyas is used for a variety of
+past few years. 
+
+
+We are very proud that Marsyas is used for a variety of
 projects in both academia and industry and looking forward to continue
 growing and expanding the framework with your help.
+
+
 
 
 have fun, 
