@@ -60,6 +60,7 @@ translation approved by the Free Software Foundation.
 @menu
 * General information::         Introduction, history, related work, and goals.
 * Source installation::         Installation instructions for different operating systems.
+* Tour::			A tour of Marsyas functionality 
 * Available tools::             Various sample tools built using marsyas
 components.
 * Graphical User Interfaces using Qt4::   Various sample tools built using
@@ -77,6 +78,7 @@ marsyas and Qt.
 @include macros.itexi 
 @include intro.texi
 @include install.texi
+@include tour.texi
 @include tools.texi
 @include qttools.texi
 @include architecture.texi

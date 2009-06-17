@@ -83,16 +83,17 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 		// Don't bother resetting anything if this system is inactive.
 		// This allows us to load an entire .mpl file without incorrectly
 		// resetting the means and covars a bunch of times.
-		MarControlAccessor acc_means(ctrl_means_);
-		MarControlAccessor acc_covars(ctrl_covars_);
-		MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
-
-		realvec& means = acc_means.to<mrs_realvec>();
-		realvec& covars = acc_covars.to<mrs_realvec>();
-		realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
 
 		if ((nClasses != mrows) || (inObservations_ != mcols))
 		{
+			MarControlAccessor acc_means(ctrl_means_);
+			MarControlAccessor acc_covars(ctrl_covars_);
+			MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
+			
+			realvec& means = acc_means.to<mrs_realvec>();
+			realvec& covars = acc_covars.to<mrs_realvec>();
+			realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
+
 			means.create(nClasses, inObservations_);
 			covars.create(nClasses, inObservations_);
 			class_probs.create(nClasses);
@@ -101,6 +102,15 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 
 		if ((prev_mode_ == "train") && (mode == "predict"))
 		{
+			MarControlAccessor acc_means(ctrl_means_);
+			MarControlAccessor acc_covars(ctrl_covars_);
+			MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
+			
+			realvec& means = acc_means.to<mrs_realvec>();
+			realvec& covars = acc_covars.to<mrs_realvec>();
+			realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
+
+
 			for (int l=0; l < nClasses; l++)
 			{
 				for (o=0; o < inObservations_; o++)
