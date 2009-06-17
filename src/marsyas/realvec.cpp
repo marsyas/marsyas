@@ -961,6 +961,9 @@ operator>>(istream& is, realvec& vec)
 	if ((str0 != "#") || (str1 != "Size") || (str2 != "="))
 	{
 		MRSERR("realvec::operator>>: Problem2 reading realvec object from istream");
+		MRSERR("-str0 = " << str0 << endl);
+		MRSERR("-str1 = " << str1 << endl);
+		MRSERR("-str2 = " << str2 << endl);
 		return is;
 	}
 	is >> size;
@@ -986,9 +989,15 @@ operator>>(istream& is, realvec& vec)
 	if ((str0 != "#") || (str1 != "Size") || (str2 != "="))
 	{
 		MRSERR("realvec::operator>>: Problem3 reading realvec object from istream");
+		MRSERR("-str0 = " << str0 << endl);
+		MRSERR("-str1 = " << str1 << endl);
+		MRSERR("-str2 = " << str2 << endl);
 		is >> str0;
 		is >> str1;
 		is >> str2;
+		MRSERR("-str0 = " << str0 << endl);
+		MRSERR("-str1 = " << str1 << endl);
+		MRSERR("-str2 = " << str2 << endl);
 		return is;
 	}
 	is >> size;
@@ -998,7 +1007,10 @@ operator>>(istream& is, realvec& vec)
 
 	if ((str0 != "#") || (str1 != "MARSYAS") || (str2 != "mrs_realvec"))
 	{
-		MRSERR("realvec::operator>>: Problem reading realvec object from istream");
+		MRSERR("realvec::operator>>: Problem4 reading realvec object from istream");
+		MRSERR("-str0 = " << str0 << endl);
+		MRSERR("-str1 = " << str1 << endl);
+		MRSERR("-str2 = " << str2 << endl);
 		return is;
 	}
 	return is;
