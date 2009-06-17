@@ -159,26 +159,18 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 	MRSDIAG("SVMClassifier.cpp - SVMClassifier:myUpdate");
 
 
-
-	
-
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue((mrs_natural)2, NOUPDATE);
-	if (ctrl_mode_->to<mrs_string>() == "train")
+
+	if (ctrl_mode_->to<mrs_string>() == "train") {
 		training_ = true;
-	else if (ctrl_mode_->to<mrs_string>() == "predict")
-	{
-		
+	} else if (ctrl_mode_->to<mrs_string>() == "predict") {
 		training_ = false;
-	}
-	
-	else {
+	} else {
 		cerr << "SVMClassifier.cpp, mode not supported";
 		exit(1);
 	}
 
-	
-	
 
 	if (ctrl_svm_->to<mrs_string>() == "C_SVC")
 		svm_ = C_SVC;
@@ -188,7 +180,8 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 		svm_ = EPSILON_SVR;
 	else if (ctrl_svm_->to<mrs_string>() == "NU_SVR")
 		svm_ = NU_SVR;
-	else {
+	else
+	{
 		cerr << "SVMClassifier.cpp, SVM not supported";
 		exit(1);
 	}
@@ -290,25 +283,22 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			
 			
 			svm_model_ = svm_train(&svm_prob_, &svm_param_);
-			
-			
 			trained_ = true;
+
 			MRSDEBUG ("... done");
-			int n;
 			{
 				MarControlAccessor acc_classProbs(ctrl_classProbabilities_);
 				realvec& classProbs = acc_classProbs.to<mrs_realvec>();
 				classProbs.create(svm_model_->nr_class);
-
 			}
-			
 
 			MRSDEBUG ("svm_model_->nr_class = " << svm_model_->nr_class);
 			MRSDEBUG ("svm_model_->l = " << svm_model_->l);
 			MRSDEBUG ("svm_model_->free_sv = " << svm_model_->free_sv);
-			MRSDEBUG ("svm_model_->SV = ");
+			MRSDEBUG ("svm_model_->SV = " << svm_model_->SV);
+
+			int n;
 			n = svm_model_->l;
-			
 			
 			ctrl_minimums_->setValue(instances_.GetMinimums(), NOUPDATE);
 			ctrl_maximums_->setValue(instances_.GetMaximums(), NOUPDATE);
@@ -448,6 +438,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 
 				svm_model_->nr_class = n;
 				svm_model_->l = l;
+
 				MRSDEBUG ("svm_model_->nr_class = " << svm_model_->nr_class);
 				MRSDEBUG ("svm_model_->l = " << svm_model_->l);
 
@@ -495,10 +486,9 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 						svm_model_->nSV[i]=(int)ctrl_nSV_->to<realvec>()(i);
 				}
 				else 
-					svm_model_->label = NULL;
+					svm_model_->nSV = NULL;
 
 #ifdef MARSYAS_LOG_DEBUGS
-
 				if (svm_model_->rho) {
 					MRSDEBUG("svm_model_->rho =");
 					for (int i=0; i<m; i++)
@@ -603,7 +593,6 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 								<< i << ")" << maxi(i) << endl;
 				}
 #endif				
-
 			}
 		}
 		struct svm_node* xv = new svm_node[inObservations_];
