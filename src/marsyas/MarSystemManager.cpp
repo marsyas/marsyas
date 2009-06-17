@@ -1172,15 +1172,21 @@ MarSystemManager::create(std::string marsystemname)
 MarSystem*
 MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 {
+	/* Create a MarSystem object from an input stream in .mpl format
+	 * ( this is the format created by MarSystem::put(ostream& o) )
+	 */
 	string skipstr;
-	mrs_natural i;
-	is >> skipstr;
 	string mcomposite;
-	bool   isComposite;
-
-	is >> mcomposite;
+	mrs_natural i;
+	bool isComposite;
 	string marSystem = "MarSystem";
 	string marSystemComposite = "MarSystemComposite";
+
+	/* first line looks like:
+	 * # marSystem(Composite)
+	 */
+	is >> skipstr;
+	is >> mcomposite;
 	if (mcomposite == marSystem)
 		isComposite = false;
 	else if (mcomposite == marSystemComposite)
@@ -1191,10 +1197,16 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 		return 0;
 	}
 
+	/* next line looks like:
+	 * # Type = MarSystemSubclass
+	 */
 	is >> skipstr >> skipstr >> skipstr;
 	string mtype;
 	is >> mtype;
 
+	/* next line looks like:
+	 * # Name = mname
+	 */
 	is >> skipstr >> skipstr >> skipstr;
 	string mname;
 	is >> mname;
@@ -1229,8 +1241,15 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 
 	//recreate the Composite destroyed above, relinking all
 	//linked controls in its way
-	if (isComposite == true)
+	if (isComposite)
 	{
+		/* If this is a composite system, we may have subcomponents
+		 * the number of subcomponents will be listed like this:
+		 * (blank line)
+		 * # nComponents = 3
+		 * (blank line)
+		 * Here, we read in the nComponents, then instantiate each component
+		 */
 		is >> skipstr >> skipstr >> skipstr;
 		mrs_natural nComponents;
 		is >> nComponents;
