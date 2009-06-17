@@ -460,22 +460,8 @@ MarSystem::setParent(const MarSystem* parent) // => mutexes [?]
 {
 	parent_ = const_cast<MarSystem*>(parent);
 
-	if (parent)
-	{
-		//if absPath_ was "/Gain/g/" it will become
-		//"/Series/s" + "/Gain/g/" = "/Series/s/Gain/g/"
-		absPath_ = parent_->absPath_.substr(0, parent_->absPath_.length()-1) + prefix_;
-
-		if (isComposite_)
-		{
-			//...and re-set parent and propagate the new path
-			// to all children
-			for (mrs_natural i=0; i< marsystemsSize_; i++)
-			{
-				marsystems_[i]->setParent(this);
-			}
-		}
-	}
+	// Update our path, and propogate changes to children (if applicable)
+	updatePath();
 }
 
 void
@@ -928,7 +914,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 			}
 			else
 			{
-				MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname2 + "is an invalid path");
+				MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname2 + " is an invalid path");
 				return false;
 			}
 		}
@@ -936,7 +922,7 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 		//it is not possible to add the new link control...
 		else
 		{
-			MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname2 + "is an invalid path");
+			MRSWARN("MarSystem::linkControl - Error creating new link control: " + cname2 + " is an invalid path");
 			return false;
 		}
 	}
