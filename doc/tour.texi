@@ -1,0 +1,152 @@
+@node Tour
+@chapter Tour
+
+This chapter assumes that you have succesfully compiled and installed
+Marsyas as described in @ref{Source installation}. The compiling
+configuration should be Release otherwise there are noticeable artifacts
+in the audio playback. The goal of this chapter is to provide a quick
+tour of various tools included with the Marsyas distribution that can be
+used to showcase the capabilities of the framework rather than a
+complete exposition which is provided in chapter @ref{Available tools}.
+
+In order to execute the examples described in this
+section you will need collections of music tracks in an audio format 
+supported by Marsyas. The chapter assumes that the collections provided 
+in @uref{http://marsyas.sness.net/download/data_sets} have been
+downloaded and placed in a subdirectory named @code{audio} of the 
+Marsyas distribution. Here is a possible sequence of commands 
+to obtain the datasets in a unix like system (Linux, OSX or Cygwin). 
+
+@example 
+cd MY-MARSYAS-DIR 
+mkdir audio 
+cd audio 
+wget http://opihi.cs.uvic.ca/sound/genres.tar.gz
+wget http://opihi.cs.uvic.ca/sound/music_speech.tar.gz
+tar -zxvf genres.tar.gz 
+tar -zxvf music_speech.tar.gz
+@end example 
+
+This should create directories containing the audio files of 
+the collections for example on my OS X laptop for a particular release 
+of Marsyas the following audio track is available: 
+@file{/Users/gtzan/src/cxx/marsyas-0.2.20/audio/music_speech/music_wav/nearhou.wav} 
+
+
+
+@menu
+* Command-line tools::  
+* User interfaces::       
+* Web information::
+@end menu
+
+@node Command-line tools , User interfaces, Tour, Tour
+@subsection Command-line tools
+
+In this section a few examples of how Marsyas can be used for 
+various audio processing tasks are provided. Detailed documentation 
+about the various command-line tools is provided in Chapter
+@ref{Available tools}. 
+
+First we will explore audio playback, plugins, and 
+real-time running audio classification in music/speech. 
+
+The following commands can be used to create two collections music.mf
+and speech.mf each one with 60 30-second audio clips of music and speech
+respectively (small modifications like changing the directory separator
+character are required for Windows).
+
+@example 
+cd MY_MARSYAS_DIR/build/bin 
+mkcollection -c music.mf ../../music_speech/music_wav
+mkcollection -c speech.mf ../../music_speech/speech_wav
+@end example
+
+The following commands can be used to have a quick preview 
+of the two collections (the -l 1 arguments plays 1 second 
+of audio from each 30-second clip). You can ctrl-c anytime 
+to exit sfplay. 
+
+@example 
+sfplay -l 1 music.mf 
+sfplay -l 1 speech.mf 
+@end example 
+
+Now we are ready to train a classifier that can be used 
+for real-time music/speech discrimination. The following 
+command extracts audio features, train a classifier and 
+writes a text file @file{ms.mpl} describing the entire audio processing 
+network that includes the trained classifier. The sfplugin 
+executable loads this textual description and then processes 
+any audio file classifying approximately every second of it into 
+either music or speech. 
+
+@example 
+bextract music.mf speech.mf -cl GS -p ms.mpl 
+sfplugin -p ms.mpl ../../audio/music_speech/music_wav/winds.wav 
+sfplugin -p ms.mpl ../../audio/music_speech/speech_wav/allison.wav 
+sfplugin -p ms.mpl ../../audio/music_speech/music_wav/gravity.wav 
+@end example 
+
+The next example shows how automatic genre classification with one
+feature-vector per file can be performed using Marsyas. Similarly we
+can create a labeled collection for the genres dataset.
+
+@example 
+mkcollection -c cl.mf -l cl ../../audio/genres/classical
+mkcollection -c co.mf -l co ../../audio/genres/country
+mkcollection -c di.mf -l di ../../audio/genres/disco
+mkcollection -c hi.mf -l hi ../../audio/genres/hiphop
+mkcollection -c ja.mf -l ja ../../audio/genres/jazz
+mkcollection -c ro.mf -l ro ../../audio/genres/rock 
+mkcollection -c bl.mf -l bl ../../audio/genres/blues 
+mkcollection -c re.mf -l re ../../audio/genres/reggae
+mkcollection -c po.mf -l po ../../audio/genres/pop 
+mkcollection -c me.mf -l me ../../audio/genres/metal 
+cat cl.mf co.mf di.mf hi.mf ja.mf ro.mf bl.mf re.mf po.mf me.mf > genres10.mf 
+@end example
+
+Extracting the features and getting statistics about the classification 
+performance (accuracy, confusion matrix etc) can be done as follows
+(make sure the terminal size is wide enough to show the confusion matrix
+correctly): 
+
+@example 
+bextract -sv genres10.mf -w genres10.arff 
+kea -w genres10.arff
+@end example
+
+Alternatively the generated .ARFF file can also be opened by the
+well-known Weka machine learning tool. 
+
+In addition to classic audio feature extraction and classification
+Marsyas can be used for a variety of other audio tasks. 
+
+@example 
+sfplay ../../audio/music_speech/music_wav/deedee.wav 
+phasevocoder -q -ob -p 0.8 ../../audio/music_speech/music_wav/deedee.wav 
+@end example 
+
+The first command simply plays the file. The second one pitch shifts 
+the audio by a factor of 0.8 without changing the duration using a
+phasevocoder. A more interactive exploration of phasevocoding is
+described in section @ref{User interfaces}. 
+
+Finally efficient dominant melodic sound source extraction based on
+spectral clustering of sinusoidal components can be demonstrated as follows: 
+
+@example 
+sfplay ../../audio/music_speech/music_wav/nearhou.wav 
+peakClustering ../../audio/music_speech/music_wav/nearhou.wav
+sfplay nearhouSep.wav
+@end example 
+
+
+
+
+@node User interfaces, Web information, Command-line tools , Tour
+@subsection User interfaces 
+ 
+@node Web information,  , User interfaces, Tour
+@subsection Web information
+
