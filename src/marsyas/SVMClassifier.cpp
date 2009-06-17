@@ -203,15 +203,14 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 		kernel_ = SIGMOID;
 	else if (ctrl_kernel_->to<mrs_string>() == "PRECOMPUTED")
 		kernel_ = PRECOMPUTED;
-	else {
+	else
+	{
 		cerr << "SVMClassifier.cpp, kernel not supported";
 		exit(1);
 	}
 
-	
-	if (!training_)
-		if (!trained_)
-			if (was_training_) {
+	if (!training_) {
+		if (!trained_ && was_training_) {
 
 			svm_param_.svm_type = svm_;
 			svm_param_.kernel_type = kernel_;
@@ -383,11 +382,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			ctrl_nr_class_->setValue(svm_model_->nr_class, NOUPDATE);
 			ctrl_l_->setValue(svm_model_->l, NOUPDATE);
 		}
-
-	
-	
-	
-
+	}
 }
 
 void SVMClassifier::myProcess(realvec& in, realvec& out) 
@@ -406,7 +401,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 		
 	} else {
 		
-		if (!trained_)
+		if (!trained_) {
 			if (was_training_) {
 				;
 			} else {
@@ -610,7 +605,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 #endif				
 
 			}
-
+		}
 		struct svm_node* xv = new svm_node[inObservations_];
 		double* probs = new double[svm_model_->nr_class];
 		
