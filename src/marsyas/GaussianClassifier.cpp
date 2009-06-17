@@ -82,55 +82,53 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 	// mrs_natural nrows = means_.getRows();
 	// mrs_natural ncols = means_.getCols();
 
-
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
-	
-	if ((nlabels != mrows) || 
-		(inObservations != mcols))
-	{
-		MarControlAccessor acc_means(ctrl_means_);
-		MarControlAccessor acc_covars(ctrl_covars_);
-		realvec& means = acc_means.to<mrs_realvec>();
-		realvec& covars = acc_covars.to<mrs_realvec>();
+	if (active_) {
+		// Don't bother resetting anything if this system is inactive.
+		// This allows us to load an entire .mpl file without incorrectly
+		// resetting the means and covars a bunch of times.
+		if ((nlabels != mrows) || (inObservations != mcols))
+		{
+			MarControlAccessor acc_means(ctrl_means_);
+			MarControlAccessor acc_covars(ctrl_covars_);
+			MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
 
-		means.create(nlabels, inObservations);
-		covars.create(nlabels, inObservations);
-		labelSizes_.create(nlabels);  
-		MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
-		realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
-		class_probs.create(nlabels);
-		 
-	}
+			realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
+			realvec& means = acc_means.to<mrs_realvec>();
+			realvec& covars = acc_covars.to<mrs_realvec>();
 
+			means.create(nlabels, inObservations);
+			covars.create(nlabels, inObservations);
+			class_probs.create(nlabels);
+			labelSizes_.create(nlabels);
+		}
 
+		if ((prev_mode_ == "train") && (mode == "predict"))
+		{
+			MarControlAccessor acc_means(ctrl_means_);
+			MarControlAccessor acc_covars(ctrl_covars_);
+			realvec& means = acc_means.to<mrs_realvec>();
+			realvec& covars = acc_covars.to<mrs_realvec>();
 
-
-	if ((prev_mode_ == "train") && (mode == "predict"))
-	{
-		MarControlAccessor acc_means(ctrl_means_);
-		MarControlAccessor acc_covars(ctrl_covars_);
-		realvec& means = acc_means.to<mrs_realvec>();
-		realvec& covars = acc_covars.to<mrs_realvec>();
-
-		for (int l=0; l < nlabels; l++)
-			for (o=0; o < inObservations_; o++)
+			for (int l=0; l < nlabels; l++)
 			{
-				means(l,o) = means(l,o) / labelSizes_(l);
-				covars(l,o) = covars(l,o) / labelSizes_(l);
-				covars(l, o) = covars(l,o) - 
-					(means(l,o) * means(l,o));
-				if (covars(l,o) != 0.0)
+				for (o=0; o < inObservations_; o++)
 				{
-					covars(l,o) = (mrs_real)(1.0 / covars(l,o));
+					means(l,o) = means(l,o) / labelSizes_(l);
+					covars(l,o) = covars(l,o) / labelSizes_(l);
+					covars(l, o) = covars(l,o) - 
+						(means(l,o) * means(l,o));
+					if (covars(l,o) != 0.0)
+					{
+						covars(l,o) = (mrs_real)(1.0 / covars(l,o));
+					}
 				}
 			}
 
-		prev_mode_ = mode;
+			prev_mode_ = mode;
+		}
 	}
-
-
-	
 }
 
 void 
@@ -192,17 +190,18 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		for (t = 0; t < inSamples_; t++)
 		{
 			label = in(inObservations_-1, t);
-			
+
 			for (l=0; l < nlabels; l++)
 			{
 				sq_sum = 0.0;
-				
+
 				for (o=0; o < inObservations_-1; o++)
 				{
 					v = in(o,t);
 					diff = (v - means(l,o));
 					sq_sum += (diff * covars(l,o) * diff);
 				}
+
 				if (sq_sum < min)
 				{
 					min = sq_sum;
@@ -210,7 +209,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 				}
 
 				// class_probs(l) = sq_sum;
-				
 			}
 			
 			out(0,t) = (mrs_real)prediction;
