@@ -50,7 +50,6 @@
 
 };
 
-
 // Some Python specific extensions for MarSystem objects.
 %extend MarSystem {
 
@@ -71,3 +70,4 @@
         $self->updControl(s, MarControlPtr(x));
     }
 }
+

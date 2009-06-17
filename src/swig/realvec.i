@@ -13,30 +13,25 @@ using namespace Marsyas;
 /* Class description for realvecs */
 class realvec {
 	public: /* Constructors */
-	    realvec();
-	    realvec( const realvec &a );
+		realvec();
+		realvec( const realvec &a );
+		realvec(mrs_natural rows, mrs_natural cols);
 		realvec(mrs_natural size);
-        realvec(mrs_natural rows, mrs_natural cols);
-	    ~realvec();
+		~realvec();
 
-
-        /** \name Getting information */
-        mrs_natural getSize() const;
-        mrs_natural getCols() const;
-        mrs_natural getRows() const;
-
-
-        mrs_real *getData() const;
-
-
-	    /* Vector/Matrix Algebra and Statistics */
-	    mrs_real maxval();
+		/* Vector/Matrix Algebra and Statistics */
+		mrs_real maxval();
 		mrs_real minval();
 		mrs_real mean();
 		mrs_real median();
 		mrs_real sum();
 		mrs_real std();
 		mrs_real var();
+		mrs_natural getRows();
+		mrs_natural getCols();
+		mrs_natural getSize();
+		mrs_real *getData() const;
+		void transpose();
 		void sort();
 		void abs();
 		void sqr();
@@ -61,7 +56,5 @@ class realvec {
 		void covariance2(realvec& res) const;//Marsyas0.1 covariance calculation (assumes standardized data, and uses biased estimation)
 
 		mrs_natural search(mrs_real val);
-
-
 };
 

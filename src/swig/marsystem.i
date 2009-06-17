@@ -22,13 +22,20 @@ class MarSystem {
                 void process(realvec& in, realvec& out);
                 void update (); // Update system w.r.t controls
 
-                void addMarSystem (MarSystem *msys); // attach a dependant MarSystem
+                /* attach a dependant MarSystem */
+                void addMarSystem (MarSystem *msys);
+
+                /* set the parent MarSystem */
+                void setParent(const MarSystem* parent);
+
+                /* fetch a dependant MarSystem, stripping the parent's prefixes */
+                MarSystem* getChildMarSystem(std::string childPath);
 
                 /* Querying methods */
                 std::string getType ();
                 std::string getName ();
                 std::string getPrefix ();
-				std::string toString ();
+                std::string toString ();
 
                 /* Methods for dealing with controls */
                 void            setControl(std::string, MarControlPtr);
