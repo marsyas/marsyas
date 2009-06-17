@@ -23,9 +23,6 @@ using namespace Marsyas;
 
 RealvecSource::RealvecSource(string name):MarSystem("RealvecSource",name)
 {
-  //type_ = "RealvecSource";
-  //name_ = name;
-  
 	count_= 0;
 
 	addControls();
@@ -33,7 +30,7 @@ RealvecSource::RealvecSource(string name):MarSystem("RealvecSource",name)
 
 RealvecSource::RealvecSource(const RealvecSource& a):MarSystem(a)
 {
-ctrl_data_ = getctrl("mrs_realvec/data");
+	ctrl_data_ = getctrl("mrs_realvec/data");
 }
 
 
@@ -69,18 +66,18 @@ RealvecSource::myUpdate(MarControlPtr sender)
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
+	ctrl_data_ = getctrl("mrs_realvec/data");
 	
 	const realvec& data = ctrl_data_->to<realvec> ();
 
 	setctrl("mrs_natural/onObservations", data.getRows());
 	setctrl("mrs_natural/onSamples", inSamples_);
 	setctrl("mrs_real/osrate", israte_);
-	samplesToUse_ = data.getCols();
 
+	samplesToUse_ = data.getCols();
 	count_ = 0;
 
 	if( getctrl("mrs_bool/done")->isTrue()){
-		count_ = 0;
 		setctrl("mrs_bool/done", false);
 	}
 }
@@ -98,12 +95,16 @@ RealvecSource::myProcess(realvec& in, realvec& out)
 		{
 			for (t=0; t < onSamples_; t++)
 			{
- 			  out(o,t) = data(o,t);
+				out(o, 0) = data(o, count_ + t);
 			}
 		}
+		count_++;
 	}
-	else
-	  setctrl("mrs_bool/done", true);  
+
+	if (count_ >= samplesToUse_)
+	{
+		setctrl("mrs_bool/done", true);
+	}
 
 	//out.dump();
 }
