@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -21,10 +21,8 @@
 using namespace std;
 using namespace Marsyas;
 
-HalfWaveRectifier::HalfWaveRectifier(string name):MarSystem("HalfWaveRectifier",name)
+HalfWaveRectifier::HalfWaveRectifier(string name): MarSystem("HalfWaveRectifier",name)
 {
-  //type_ = "HalfWaveRectifier";
-  //name_ = name;
 }
 
 
@@ -32,42 +30,28 @@ HalfWaveRectifier::~HalfWaveRectifier()
 {
 }
 
-MarSystem*  
-HalfWaveRectifier::clone() const 
+MarSystem*
+HalfWaveRectifier::clone() const
 {
-  return new HalfWaveRectifier(*this);
+	return new HalfWaveRectifier(*this);
 }
 
-void 
+void
 HalfWaveRectifier::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	/// Use the default MarSystem setup with equal input/output stream format.
+	MarSystem::myUpdate(sender);
 }
 
-void 
+void
 HalfWaveRectifier::myProcess(realvec& in, realvec& out)
 {
-  
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  
-  
-  for (t=0; t < inSamples; t++)
-    {
-      if (in(0,t) < 0.0)
-		out(0,t) = 0.0;
-      else
-		out(0,t) = in(0,t);
-    }
+	// Positive values are kept, negative values are trimmed to zero.
+	for (t = 0; t < inSamples_; t++)
+	{
+		for (o = 0; o < inObservations_; o++)
+		{
+			out(o, t) = (in(o, t) > 0) ? in(o, t) : 0;
+		}
+	}
 }
-
-
-
-
-
-
-	
-
-	
