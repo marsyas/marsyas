@@ -316,9 +316,11 @@ public:
   // derived class such as Composite can override put 
   // essentially overriding operator<< 
   virtual std::ostream& put(std::ostream& o);
+  // The opposite of toString() and put() above, read in the parameters for a system.
+  virtual std::istream& put(std::istream& is);
 
-//   // Output the MarSystem as an HTML document with nested lists
-    virtual std::ostream& put_html(std::ostream& o);
+  // Output the MarSystem as an HTML document with nested lists
+  virtual std::ostream& put_html(std::ostream& o);
 
   // the usual stream IO 
   friend std::ostream& operator<<(std::ostream&, MarSystem&);
