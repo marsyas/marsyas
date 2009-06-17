@@ -33,19 +33,37 @@
 namespace Marsyas
 {
 /**
-    \class realvec
+	\class realvec
 	\ingroup NotmarCore
-    \brief Vector of mrs_real values
+	\brief Vector of mrs_real values
 
-    Array (vector in the numerical sense) of mrs_real values. Basic
-arithmetic operations and statistics are supported.
+	Array (vector in the numerical sense) of mrs_real values.
+	Basic arithmetic operations and statistics are supported.
+
+	The values of the realvec are stored in "column-major" order,
+	which means that the data is stored per column, which are in turn
+	stored in sequence.
+	This has practical consequences for the optimal accessing
+	order for the realvec values.
+	Accessing array elements that are contiguous in	memory is usually faster
+	than accessing elements which are not, due to caching.
+	If the intended processing allows this, it is for example better
+	to access the values with the column and row loops embedded like
+	\code
+	for (int c = 0; c < cols_; ++c) {
+		for (int r = 0; r < rows_ ; ++r) {
+			// do stuff with realvec(r, c);
+		}
+	}
+	\endcode
+	than with the column and row loop swapped.
 
 
-\todo Crash-proof certain functions in realvec (like calling median() on
-an empty realvec)
+	\todo Crash-proof certain functions in realvec (like calling median() on
+	an empty realvec)
 
-\todo document realvec functions.  In detail.  Using all the doxygen
-tricks.  For something as basic as this, it's worth it.
+	\todo document realvec functions.  In detail.
+	Using all the doxygen tricks.  For something as basic as this, it's worth it.
 */
 
 
