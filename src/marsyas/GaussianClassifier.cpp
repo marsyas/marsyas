@@ -71,7 +71,7 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 	MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-	setctrl("mrs_natural/onObservations", (mrs_natural)2);
+	setctrl("mrs_natural/onObservations", (mrs_natural)3);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 	mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
@@ -174,9 +174,9 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 					v = in(o,t);
 					means((mrs_natural)label,o) = means((mrs_natural)label,o) + v;
 					covars((mrs_natural)label,o) = covars((mrs_natural)label,o) + v*v;
-					out(0,t) = (mrs_real)label;	      
+					out(0,t) = (mrs_real)label;
 					out(1,t) = (mrs_real)label;
-
+					out(2,t) = (mrs_real)0;
 				}
 				labelSizes_((mrs_natural)label) = labelSizes_((mrs_natural)label) + 1;
 			}
@@ -188,8 +188,8 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 		
 		mrs_real min = MAXREAL;
 		// MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
- 		// realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
-		for (t = 0; t < inSamples_; t++)  
+		// realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
+		for (t = 0; t < inSamples_; t++)
 		{
 			label = in(inObservations_-1, t);
 			
@@ -213,11 +213,9 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 				
 			}
 			
-			
 			out(0,t) = (mrs_real)prediction;
 			out(1,t) = (mrs_real)label;
-
-			
+			out(2,t) = (mrs_real)min;
 		}
 	}
 
