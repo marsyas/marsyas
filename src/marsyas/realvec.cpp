@@ -976,11 +976,16 @@ operator>>(istream& is, realvec& vec)
 	is >> str0 >> str1 >> vec.rows_;
 	is >> str0 >> str1 >> vec.cols_;
 
-
 	for (mrs_natural r = 0; r < vec.rows_; r++)
 		for (mrs_natural c = 0; c < vec.cols_; c++)
 		{
-			is >> vec.data_[c * vec.rows_ + r];
+			is >> str0;
+			if (str0 == "nan") {
+				vec.data_[c*vec.rows_ + r] = std::numeric_limits<double>::quiet_NaN();
+			} else {
+				std::stringstream s(str0);
+				s >> vec.data_[c * vec.rows_ + r];
+			}
 		}
 
 	is >> str0;
