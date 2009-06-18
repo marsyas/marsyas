@@ -81,12 +81,16 @@ if (MARSYAS_MATLAB)
 	include_directories(${CMAKE_SOURCE_DIR}/marsyas/MATLAB)
 endif (MARSYAS_MATLAB)
 
-
 if (MARSYAS_PNG)
 	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/)
 endif (MARSYAS_PNG)
 
+if (MARSYAS_OPENGL)
+	include_directories(${OPENGL_INCLUDE_DIR})
+endif (MARSYAS_OPENGL)
+
 ## basic library includes
 include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
+
 
 
