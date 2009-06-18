@@ -146,7 +146,92 @@ sfplay nearhouSep.wav
 
 @node User interfaces, Web information, Command-line tools , Tour
 @subsection User interfaces 
+
+A variety of graphical user interfaces are provided with the Marsyas
+source distribution. Although it is possible to write a user interface 
+that communicates with Marsyas in any language there is specific support 
+for interfacing with the Qt toolkit by Trolltech 
+@uref{http://www.qtsoftware.com/products/}. In order to compile the
+graphical user interfaces you will need to have Qt4 installed and 
+enable the WITH_QT using CMake. More information can be found at 
+the chapter @ref{Source installation}. 
+
+MarPlayer is a simple audio player that provides a seekable playback 
+progress indicator while playing audio and showcases multi-threading 
+using Qt4 and Marsyas. 
+
+@example 
+cd MY_MARSYAS_DIR/build/bin
+MarPlayer
+@end example 
+
+This will launch the MarPlayer GUI. Click on File and open one of the
+audio files in the collections (or any file in a Marsyas supported
+format). Clicking on the playback slider will seek to the corresponding 
+location in the audio file. 
+
+@example 
+cd MY_MARSYAS_DIR/build/bin 
+MarPhasevocoder 
+@end example 
+
+Open a file and experiment with the sliders. The Frequency and Time
+sliders can be used to pitch shift the recording without changing the 
+duration or speed up or slow down the recording without changing the
+pitch respectively. The Sinusoids slider can be used to control 
+the number of sinusoids (sorted by amplitude) that are used to
+approximate the audio signal at each frame. This example showcases 
+user interaction with a relatively performance intensive audio synthesis 
+technique like the phasevocoder which frequently does not have real-time 
+implementations. 
+
+The last example of a user interface is a content-based music browsing 
+interface for large audio collections based on self-organizing
+maps. First you will need to create the genres10.mf collection file 
+as described in Section @ref{Command-line tools}. 
+
+@example 
+cd MY_MARSYAS_DIR 
+MarGrid2
+@end example 
+
+Click on File-Open-Open Collection File and select the genres10.mf
+collection. Then click on the E button (Extract) which performs 
+feature extraction for all the 1000 files in the collection. This will 
+take a few minutes and you can view the progress in the terminal output. 
+When the feature extraction is complete click on the T button (Train)
+which trains a self-organizing map that maps the high-dimenstional
+continuous audio features representing each song to 2D coordinates 
+on a grid. This takes a few seconds. Now click on the P (Predict) button 
+to place each song on the grid. Feature extraction is performed again 
+therefore this takes about the same time as the Train stage. Click 
+on View-Colour-Mapping mode to see a visualization of the genre 
+distributions over the self-organizing map. Note that the genre
+information is only used for display purposes but not during the
+calculation of the mapping. If either the audio features or 
+the self-organizing map did not work the colors would essentially 
+appear randomly distributed. Each square contains one more more 
+tracks that are similar to each other based on the audio feautures. 
+Clicking on a squares allows the user to cycle through the songs. 
+Another interesting feature can be activated by selecting 
+View-Continuous which switches songs continuously as the user 
+hovers over the space without requiring explicit clicking. This 
+mode is particularly effective when using touch surface interaction. 
+Once a mapping is calculated it is possible to save the grid and 
+load it without requiring the time consuming stages of feature 
+extraction and training. 
  
 @node Web information,  , User interfaces, Tour
 @subsection Web information
+
+Marsyas has been used for a variety of projects in both academia and
+industry. In addition there are several web-interfaces that use 
+Marsyas as a backend for audio analysis and processing. The Marsyas 
+website contains information about projects, publications, screenshots 
+and web-demos based on Marsyas. 
+
+@uref{http://marsyas.sness.net/about/projects} 
+@uref{http://marsyas.sness.net/about/videos} 
+@uref{http://marsyas.sness.net/about/publications} 
+@uref{http://marsyas.sness.net/about/webdemos} 
 
