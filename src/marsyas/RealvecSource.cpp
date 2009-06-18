@@ -24,12 +24,12 @@ using namespace Marsyas;
 RealvecSource::RealvecSource(string name):MarSystem("RealvecSource",name)
 {
 	count_= 0;
-
 	addControls();
 }
 
 RealvecSource::RealvecSource(const RealvecSource& a):MarSystem(a)
 {
+	count_ = 0;
 	ctrl_data_ = getctrl("mrs_realvec/data");
 }
 
@@ -48,12 +48,12 @@ RealvecSource::clone() const
 void 
 RealvecSource::addControls()
 {
-  samplesToUse_ = (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES;
-  addctrl("mrs_bool/done", false);
-  setctrlState("mrs_bool/done", true);
-  addctrl("mrs_realvec/data", realvec(), ctrl_data_);
-  setctrlState("mrs_realvec/data", true);
-	 setctrlState("mrs_real/israte", true);
+	samplesToUse_ = (mrs_natural)MRS_DEFAULT_SLICE_NSAMPLES;
+	addctrl("mrs_bool/done", false);
+	setctrlState("mrs_bool/done", true);
+	addctrl("mrs_realvec/data", realvec(), ctrl_data_);
+	setctrlState("mrs_realvec/data", true);
+	setctrlState("mrs_real/israte", true);
 }
 
 
@@ -66,18 +66,17 @@ RealvecSource::myUpdate(MarControlPtr sender)
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
-	ctrl_data_ = getctrl("mrs_realvec/data");
 	
 	const realvec& data = ctrl_data_->to<realvec> ();
 
 	setctrl("mrs_natural/onObservations", data.getRows());
 	setctrl("mrs_natural/onSamples", inSamples_);
 	setctrl("mrs_real/osrate", israte_);
-
 	samplesToUse_ = data.getCols();
-	count_ = 0;
 
+	
 	if( getctrl("mrs_bool/done")->isTrue()){
+		count_ = 0;
 		setctrl("mrs_bool/done", false);
 	}
 }
@@ -88,18 +87,21 @@ RealvecSource::myProcess(realvec& in, realvec& out)
 	(void) in; 
 	//checkFlow(in,out);
 	const realvec& data = ctrl_data_->to<realvec> ();
-
+	cout << "count_ = " << count_ << endl;
+	
 	if( count_ < samplesToUse_)
 	{
 		for (o=0; o < onObservations_; o++)
 		{
 			for (t=0; t < onSamples_; t++)
 			{
-				out(o, 0) = data(o, count_ + t);
+				out(o,t) = data(o,count_ + t);
 			}
 		}
 		count_++;
 	}
+	else
+	  setctrl("mrs_bool/done", true);  
 
 	if (count_ >= samplesToUse_)
 	{
