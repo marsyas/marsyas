@@ -73,10 +73,10 @@ RealvecSource::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onSamples", inSamples_);
 	setctrl("mrs_real/osrate", israte_);
 	samplesToUse_ = data.getCols();
-
+	
+	count_ = 0;
 	
 	if( getctrl("mrs_bool/done")->isTrue()){
-		count_ = 0;
 		setctrl("mrs_bool/done", false);
 	}
 }
@@ -87,7 +87,6 @@ RealvecSource::myProcess(realvec& in, realvec& out)
 	(void) in; 
 	//checkFlow(in,out);
 	const realvec& data = ctrl_data_->to<realvec> ();
-	cout << "count_ = " << count_ << endl;
 	
 	if( count_ < samplesToUse_)
 	{
