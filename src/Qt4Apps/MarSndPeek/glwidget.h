@@ -1,8 +1,8 @@
 #ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include "GL/freeglut_std.h"
 #include <QGLWidget>
+#include <QTimer> 
 
 // Marsyas
 #include "MarSystemManager.h"
@@ -14,9 +14,6 @@ using namespace Marsyas;
 #define MAX_SPECTRUM_LINES 50
 #define SPECTRUM_SIZE 128
 
-QT_BEGIN_NAMESPACE
-class QTimer;
-QT_END_NAMESPACE
 
 #define TIMER_COUNT_STEPS 100.0
 
