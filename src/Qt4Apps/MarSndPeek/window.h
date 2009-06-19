@@ -6,6 +6,8 @@
 #include <QLCDNumber>
 #include <QSlider>
 #include <QPushButton>
+#include <QLabel>
+#include <QComboBox>
 using namespace std;
 
 class GLWidget;
@@ -50,6 +52,8 @@ private:
   void createMenus();
   void createActions();
 
+  QLabel *powerSpectrumModeLabel;
+  QComboBox *powerSpectrumModeCombo;
 };
 
 #endif

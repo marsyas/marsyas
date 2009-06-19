@@ -72,11 +72,14 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   net->addMarSystem(spectrumFeatures);
 
   // Set the controls of this MarSystem
-  net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  
   net->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
 
   //net->updctrl("mrs_real/israte", 44100.0);
-  net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  if (inAudioFileName != "") {
+	net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+	net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  }
 
   // Create and start playing the MarSystemQtWrapper that wraps
   // Marsyas in a Qt thread

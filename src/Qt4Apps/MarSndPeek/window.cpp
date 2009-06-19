@@ -9,7 +9,6 @@ Window::Window(string inAudioFileName)
 
   mainWidget = new QWidget();
 
-
   setCentralWidget(mainWidget);
 
   glWidget = new GLWidget(inAudioFileName);
@@ -30,6 +29,17 @@ Window::Window(string inAudioFileName)
 
   // A play/pause button
   playpause_button  = new QPushButton(tr("Play/Pause"));
+
+  powerSpectrumModeCombo = new QComboBox;
+  powerSpectrumModeCombo->addItem(tr("Power"));
+  powerSpectrumModeCombo->addItem(tr("Magnitude"));
+  powerSpectrumModeCombo->addItem(tr("Decibels"));
+  powerSpectrumModeCombo->addItem(tr("Power Density"));
+
+  
+  powerSpectrumModeLabel = new QLabel(tr("&PowerSpectrum mode:"));
+  powerSpectrumModeLabel->setBuddy(powerSpectrumModeCombo);
+
 
 // 	// Connect a click signal on the go button to a slot to start the rotation time
   connect(playpause_button, SIGNAL(clicked()), glWidget, SLOT(playPause()));
@@ -85,6 +95,8 @@ Window::Window(string inAudioFileName)
 
  	// Controls for the animation
      QVBoxLayout *buttons_layout = new QVBoxLayout;
+ 	buttons_layout->addWidget(powerSpectrumModeLabel);
+ 	buttons_layout->addWidget(powerSpectrumModeCombo);
  	buttons_layout->addWidget(playpause_button);
  	controls_layout->addLayout(buttons_layout);
 

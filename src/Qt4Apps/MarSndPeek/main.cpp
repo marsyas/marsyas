@@ -30,15 +30,12 @@ void usage()
 
 int main(int argc, char *argv[])
 {
-  if (argc < 2) {
-	usage();
-	exit(0);
+  QApplication app(argc, argv);
+  string inAudioFileName = "";
+  if (argc > 1) {
+	inAudioFileName = argv[1];	  
   }
-
-    QApplication app(argc, argv);
-	string inAudioFileName;
-	inAudioFileName = argv[1];
-    Window window(inAudioFileName);
-    window.show();
-    return app.exec();
+  Window window(inAudioFileName);
+  window.show();
+  return app.exec();
 }

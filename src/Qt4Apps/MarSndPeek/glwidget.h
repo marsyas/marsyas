@@ -143,12 +143,9 @@ private:
 
   void setAudioStats();
 
-
   MarControlPtr posPtr_;
   MarControlPtr initPtr_;
   MarControlPtr fnamePtr_;
-
-
 };
 
 #endif
