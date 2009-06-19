@@ -67,6 +67,7 @@ signals:
 private slots:
 //   void startTimerRotate();                // Start the animation timer
 //   void doTimerRotate();                   // Do one time step of the animation timer
+  void playPause(); // Play or pause the playback of the song
 
 protected:
   void initializeGL();                    // Initialize the GL window
@@ -108,7 +109,7 @@ private:
 
   void drawCubeFace(int,int,int,int);
 
-  void redrawObject();
+  void redrawScene();
   void addDataToRingBuffer();
   
   // Marsyas
@@ -128,6 +129,18 @@ private:
   double test_y;
   double test_z;
 
+  // Windowed waveform for display
+  mrs_realvec waveform_data;
+  void setWaveformData();
+
+  bool play_state;
+
+  float stats_centroid;
+  float stats_rolloff;
+  float stats_flux;
+  float stats_rms;
+
+  void setAudioStats();
 
 
 };

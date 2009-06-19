@@ -48,8 +48,7 @@ private:
 //   // The current time
 //   QLCDNumber *currentTimeLCD;
 
-//   // Start the animation timer
-//   QPushButton *go_button;
+   QPushButton *playpause_button;
 };
 
 #endif

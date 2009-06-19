@@ -31,10 +31,10 @@ Window::Window(string inAudioFileName)
 //     speedSlider = createTimerSlider();
 
 // 	// Create a button to start the animation
-// 	go_button  = new QPushButton(tr("Go!"));
+  playpause_button  = new QPushButton(tr("Play/Pause"));
 
 // 	// Connect a click signal on the go button to a slot to start the rotation time
-//     connect(go_button, SIGNAL(clicked()), glWidget, SLOT(startTimerRotate()));
+  connect(playpause_button, SIGNAL(clicked()), glWidget, SLOT(playPause()));
 
 // 	// The current time index of the animation
 // 	currentTimeLCD = new QLCDNumber(3);
@@ -126,13 +126,13 @@ Window::Window(string inAudioFileName)
 // 	controls_layout->addLayout(end_layout);
 
 // 	// Controls for the animation
-//     QVBoxLayout *buttons_layout = new QVBoxLayout;
+     QVBoxLayout *buttons_layout = new QVBoxLayout;
 // 	QLabel *speed_label = new QLabel(("Animation Speed"));
 // 	buttons_layout->addWidget(speed_label);
 // 	buttons_layout->addWidget(speedSlider);
-// 	buttons_layout->addWidget(go_button);
+ 	buttons_layout->addWidget(playpause_button);
 // 	buttons_layout->addWidget(currentTimeLCD);
-// 	controls_layout->addLayout(buttons_layout);
+ 	controls_layout->addLayout(buttons_layout);
 
 	// Set the layout for this widget to the layout we just created
     setLayout(layout);
