@@ -68,6 +68,7 @@ private slots:
 //   void startTimerRotate();                // Start the animation timer
 //   void doTimerRotate();                   // Do one time step of the animation timer
   void playPause(); // Play or pause the playback of the song
+  void open(); // Open a new audio file
 
 protected:
   void initializeGL();                    // Initialize the GL window
@@ -141,6 +142,11 @@ private:
   float stats_rms;
 
   void setAudioStats();
+
+
+  MarControlPtr posPtr_;
+  MarControlPtr initPtr_;
+  MarControlPtr fnamePtr_;
 
 
 };

@@ -1,6 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include <QMainWindow>
 #include <QWidget>
 #include <QLCDNumber>
 #include <QSlider>
@@ -9,17 +10,25 @@ using namespace std;
 
 class GLWidget;
 
-class Window : public QWidget
+class Window : public QMainWindow
 {
 Q_OBJECT
 
+public slots: 
+   void about();
+
 public:
   Window(string inAudioFileName);
+
+  QSize minimumSizeHint() const;
+  QSize sizeHint() const;
 
 private:
   QSlider *createSlider(int,int,int,int,int);
    QSlider *createRotationSlider();
 //   QSlider *createTimerSlider();
+
+  QWidget *mainWidget;
 
   // The OpenGL widget
   GLWidget *glWidget;
@@ -49,6 +58,15 @@ private:
 //   QLCDNumber *currentTimeLCD;
 
    QPushButton *playpause_button;
+
+  QMenu*   fileMenu;  
+  QMenu*   helpMenu;
+  QAction* openAct;
+  QAction* aboutAct;
+  
+  void createMenus();
+  void createActions();
+
 };
 
 #endif

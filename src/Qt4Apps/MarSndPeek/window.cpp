@@ -7,7 +7,18 @@
 Window::Window(string inAudioFileName)
 {
 
+  mainWidget = new QWidget();
+
+
+  setCentralWidget(mainWidget);
+
   glWidget = new GLWidget(inAudioFileName);
+
+  glWidget->setMinimumSize(500,500);
+  glWidget->setMaximumSize(500,500);
+
+  createActions();
+  createMenus();  
 
   // Create the x,y,z sliders
   xSlider = createRotationSlider();
@@ -17,29 +28,11 @@ Window::Window(string inAudioFileName)
   // The y-scale slider
   yScaleSlider = createSlider(0,1000,10,100,50);
 
-  // Create the x,y,z sliders for the testing rotation angles for the animation
-  test_xSlider = createSlider(0,100,1,10,10);
-  test_ySlider = createSlider(0,100,1,10,10);
-  test_zSlider = createSlider(0,100,1,10,10);
-
-// 	// Create the x,y,z sliders for the endinging rotation angles for the animation
-//     end_xSlider = createSlider();
-//     end_ySlider = createSlider();
-//     end_zSlider = createSlider();
-
-// 	// Create a slider to control the speed of the animation
-//     speedSlider = createTimerSlider();
-
-// 	// Create a button to start the animation
+  // A play/pause button
   playpause_button  = new QPushButton(tr("Play/Pause"));
 
 // 	// Connect a click signal on the go button to a slot to start the rotation time
   connect(playpause_button, SIGNAL(clicked()), glWidget, SLOT(playPause()));
-
-// 	// The current time index of the animation
-// 	currentTimeLCD = new QLCDNumber(3);
-//     currentTimeLCD->setSegmentStyle(QLCDNumber::Filled);
-// 	connect(glWidget, SIGNAL(timerChanged(int)), currentTimeLCD, SLOT(display(int)));
 
  	// Connect up the x,y,z sliders with slots to set the rotation values
      connect(xSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXRotation(int)));
@@ -51,23 +44,6 @@ Window::Window(string inAudioFileName)
 
 	 // Scale sliders
      connect(yScaleSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYScale(int)));
-
-	 // Connect up the test x,y,z rotation sliders
-     connect(test_xSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setTestX(int)));
-     connect(test_ySlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setTestY(int)));
-     connect(test_zSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setTestZ(int)));
-
-// 	// Connect up the end x,y,z rotation sliders
-//     connect(end_xSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setEndXRotation(int)));
-//     connect(glWidget, SIGNAL(end_xRotationChanged(int)), end_xSlider, SLOT(setValue(int)));
-//     connect(end_ySlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setEndYRotation(int)));
-//     connect(glWidget, SIGNAL(end_yRotationChanged(int)), end_ySlider, SLOT(setValue(int)));
-//     connect(end_zSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setEndZRotation(int)));
-//     connect(glWidget, SIGNAL(end_zRotationChanged(int)), end_zSlider, SLOT(setValue(int)));
-
-// 	// Connect up the animation speed slider
-//     connect(speedSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setRotationSpeed(int)));
-//     connect(glWidget, SIGNAL(rotationSpeedChanged(int)), speedSlider, SLOT(setValue(int)));
 
 	// A main layout to hold everything
     QHBoxLayout *layout = new QHBoxLayout;
@@ -107,35 +83,13 @@ Window::Window(string inAudioFileName)
  	scale_layout->addWidget(yScaleSlider);
  	controls_layout->addLayout(scale_layout);
 
- 	// The test coordinates for the animation
-	QVBoxLayout *test_layout = new QVBoxLayout;
- 	QLabel *test_label = new QLabel(("Test"));
- 	test_layout->addWidget(test_label);
- 	test_layout->addWidget(test_xSlider);
- 	test_layout->addWidget(test_ySlider);
- 	test_layout->addWidget(test_zSlider);
- 	controls_layout->addLayout(test_layout);
-
-// 	// The end coordinates for the animation
-//     QVBoxLayout *end_layout = new QVBoxLayout;
-// 	QLabel *end_label = new QLabel(("End"));
-// 	end_layout->addWidget(end_label);
-// 	end_layout->addWidget(end_xSlider);
-// 	end_layout->addWidget(end_ySlider);
-// 	end_layout->addWidget(end_zSlider);
-// 	controls_layout->addLayout(end_layout);
-
-// 	// Controls for the animation
+ 	// Controls for the animation
      QVBoxLayout *buttons_layout = new QVBoxLayout;
-// 	QLabel *speed_label = new QLabel(("Animation Speed"));
-// 	buttons_layout->addWidget(speed_label);
-// 	buttons_layout->addWidget(speedSlider);
  	buttons_layout->addWidget(playpause_button);
-// 	buttons_layout->addWidget(currentTimeLCD);
  	controls_layout->addLayout(buttons_layout);
 
 	// Set the layout for this widget to the layout we just created
-    setLayout(layout);
+    mainWidget->setLayout(layout);
 
  	// Set some nice defaults for all the sliders
 	xSlider->setValue(0 * 16);
@@ -144,19 +98,7 @@ Window::Window(string inAudioFileName)
 
     yScaleSlider->setValue(350);
 	
-     test_xSlider->setValue(0);
-     test_ySlider->setValue(50);
-     test_zSlider->setValue(0);
-
-//     end_xSlider->setValue(100 * 16);
-//     end_ySlider->setValue(200 * 16);
-//     end_zSlider->setValue(300 * 16);
-
-// 	speedSlider->setValue(10);
-
     setWindowTitle(tr("MarSndPeek"));
-
-
 }
 
 //
@@ -197,3 +139,43 @@ QSlider *Window::createSlider(int range_start, int range_end, int single_step, i
 //     slider->setTickPosition(QSlider::TicksRight);
 //     return slider;
 // }
+
+void Window::createMenus()
+{
+  fileMenu = menuBar()->addMenu(tr("&File"));
+  fileMenu->addAction(openAct);
+  menuBar()->addSeparator();
+  helpMenu = menuBar()->addMenu(tr("&Help"));
+  helpMenu->addAction(aboutAct);
+}
+ 
+void Window::createActions()
+{
+  openAct = new QAction(tr("&Open..."), this);
+  openAct->setShortcut(tr("Ctrl+O"));
+  openAct->setStatusTip(tr("Open an existing file"));
+  connect(openAct, SIGNAL(triggered()), glWidget, SLOT(open()));
+  aboutAct = new QAction(tr("&About"), this);
+  aboutAct->setStatusTip(tr("Show the application's About box"));
+  connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+}
+
+void 
+Window::about()
+{
+  QMessageBox::about(this, tr("Marsyas MarSndPeek"),  
+					 tr("Marsyas MarSndPeek : A graphical user interface for real-time viewing of audio data, \n including waterfall spectrograms, waveform, and statistics. \n by sness (c) 2009 GPL - sness@sness.net"));
+
+}
+
+// The minimum size of the widget
+QSize Window::minimumSizeHint() const
+{
+  return QSize(600, 600);
+}
+
+// The maximum size of the widget
+QSize Window::sizeHint() const
+{
+  return QSize(800, 800);
+}

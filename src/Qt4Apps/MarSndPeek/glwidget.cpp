@@ -81,6 +81,11 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   mwr_ = new MarSystemQtWrapper(net);
   mwr_->start();
   play_state = false;
+  
+  // Create some handy pointers to access the MarSystem
+  posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
+  initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
+  fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
   //
   // Create the animation timer that periodically redraws the screen
@@ -355,7 +360,6 @@ void GLWidget::setTestZ(int val)
 }
 
 
-// Do one click of the animation timer
 void GLWidget::playPause() 
 {
   play_state = !play_state;
@@ -365,4 +369,17 @@ void GLWidget::playPause()
   } else {
 	mwr_->pause();
   }
+}
+
+
+void GLWidget::open() 
+{
+   QString fileName = QFileDialog::getOpenFileName(this);
+
+   mwr_->updctrl(fnamePtr_, fileName.toStdString());
+   mwr_->updctrl(initPtr_, true);
+
+   mwr_->play();
+   play_state = true;
+
 }
