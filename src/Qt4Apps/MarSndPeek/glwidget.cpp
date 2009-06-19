@@ -56,6 +56,8 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   MarSystem* net = mng.create("Series", "net");
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   net->addMarSystem(mng.create("AudioSink", "dest"));
+
+  net->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
 	
   net->addMarSystem(mng.create("Windowing", "ham"));
   net->addMarSystem(mng.create("Spectrum", "spk"));
