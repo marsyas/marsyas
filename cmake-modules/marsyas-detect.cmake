@@ -91,7 +91,6 @@ endif (WITH_GSTREAMER)
 
 if (WITH_OPENGL)
 	find_package(OpenGL REQUIRED)
-	find_package(GLUT REQUIRED)
 	set (MARSYAS_OPENGL 1) 
 	SET(QT_USE_QTOPENGL TRUE)
 endif (WITH_OPENGL)

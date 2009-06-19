@@ -15,47 +15,20 @@ using namespace MarsyasQt;
 
 #include "glwidget.h"
 
-// The colors for the faces of the cube
-GLfloat colors[][3] = {
-   { 0.0,  0.0,  0.0}, 
-   { 0.0,  0.0,  1.0}, 
-   { 0.0,  1.0,  0.0}, 
-   { 0.0,  1.0,  1.0}, 
-   { 1.0,  0.0,  0.0}, 
-   { 1.0,  0.0,  1.0}};
-
 GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   : QGLWidget(parent)
 {
   // Initialize member variables
-  object = 0;
   xRot = 30;
   yRot = 0;
   zRot = 0;
-
-  start_xRot = 0;
-  start_yRot = 0;
-  start_zRot = 0;
-
-  end_xRot = 0;
-  end_yRot = 0;
-  end_zRot = 0;
-
-  // Setup a timer
-  timer = new QTimer(this);
-  timerCount = 0;
-
   test_x = 0;
   test_y = 0;
   test_z = 0;
 
-//   // Connect the timeout signal of the timer to a slot to do the timer rotation
-//   connect(timer, SIGNAL(timeout()), this, SLOT(doTimerRotate()));
-
   // Defaults
   rotation_speed = 10;
   y_scale = 350;
-
 
   // Create space for the vertices we will display
   spectrum_ring_buffer = new double*[MAX_SPECTRUM_LINES];
@@ -70,7 +43,6 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   //
   // Create the MarSystem
   // 
-
   MarSystemManager mng;
 
   MarSystem* net = mng.create("Series", "net");
@@ -101,7 +73,7 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
   net->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
 
-//   net->updctrl("mrs_real/israte", 44100.0);
+  //net->updctrl("mrs_real/israte", 44100.0);
   net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
   mwr_ = new MarSystemQtWrapper(net);
@@ -292,17 +264,6 @@ void GLWidget::addDataToRingBuffer() {
 
 void GLWidget::redrawObject() {
 
-  glColor3f(1,1,1);
-  // sness - These positions were determined empirically by moving
-  // text around on the screen.  It would be nice to figure out how to
-  // do this more automatically. The corners are: top=2.85 bottom=0
-  // left=-1.5 right=1.5
-  glRasterPos3f(-1.5,2.85,49);
-  string str = "test123";
-  for(int i = 0; i < 7; i++) {
- 	glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, str.at(i));
-  }
-
   for (int i = 0; i < MAX_SPECTRUM_LINES; i++) {
 	glColor3f((i / (float)MAX_SPECTRUM_LINES),1,0);
  	//glColor3fv(colors[i % 6]);
@@ -381,14 +342,14 @@ GLuint GLWidget::makeObject()
 //   glColor3fv(colors[5]);
 //   draw_cube_face(5,4,0,1);
 
-  glColor3fv(colors[0]);
-  glBegin(GL_TRIANGLES);
-  for (int i = 0; i < 8; i++) {
- 	glVertex3f(vertices[i][0]+0.0,vertices[i][1]+0.0,vertices[i][2]+0.0);
-	glVertex3f(vertices[i][0]+0.05,vertices[i][1]+0.05,vertices[i][2]+0.0);
-	glVertex3f(vertices[i][0]+0.05,vertices[i][1]-0.05,vertices[i][2]+0.0);
-  }
-  glEnd();
+//   glColor3fv(colors[0]);
+//   glBegin(GL_TRIANGLES);
+//   for (int i = 0; i < 8; i++) {
+//  	glVertex3f(vertices[i][0]+0.0,vertices[i][1]+0.0,vertices[i][2]+0.0);
+// 	glVertex3f(vertices[i][0]+0.05,vertices[i][1]+0.05,vertices[i][2]+0.0);
+// 	glVertex3f(vertices[i][0]+0.05,vertices[i][1]-0.05,vertices[i][2]+0.0);
+//   }
+//   glEnd();
 
   
 

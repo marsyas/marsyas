@@ -17,7 +17,6 @@
 
 int main(int argc, char *argv[])
 {
-  glutInit(&argc,argv);
     QApplication app(argc, argv);
 	string inAudioFileName;
 	inAudioFileName = argv[1];
