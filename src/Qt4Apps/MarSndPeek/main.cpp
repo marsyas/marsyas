@@ -11,11 +11,30 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include <QApplication>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+using namespace std;
 
 #include "window.h"
 
+void usage() 
+{
+  cout << "MarSndPeek : Display a realtime spectrum waterfall and waveform of an audio file" << endl;
+  cout << endl;
+  cout << "usage:" << endl;
+  cout << "MarSndPeek infile.wav" << endl;
+  cout << endl;
+  cout << endl;
+}
+
 int main(int argc, char *argv[])
 {
+  if (argc < 2) {
+	usage();
+	exit(0);
+  }
+
     QApplication app(argc, argv);
 	string inAudioFileName;
 	inAudioFileName = argv[1];

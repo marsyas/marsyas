@@ -15,7 +15,7 @@ class Window : public QMainWindow
 Q_OBJECT
 
 public slots: 
-   void about();
+  void about();
 
 public:
   Window(string inAudioFileName);
@@ -25,8 +25,7 @@ public:
 
 private:
   QSlider *createSlider(int,int,int,int,int);
-   QSlider *createRotationSlider();
-//   QSlider *createTimerSlider();
+  QSlider *createRotationSlider();
 
   QWidget *mainWidget;
 
@@ -41,23 +40,7 @@ private:
   // Scale sliders
   QSlider *yScaleSlider;
 
-  // Some sliders to test with
-  QSlider *test_xSlider;
-  QSlider *test_ySlider;
-  QSlider *test_zSlider;
-
-//   // The end position of the object for the animation
-//   QSlider *end_xSlider;
-//   QSlider *end_ySlider;
-//   QSlider *end_zSlider;
-
-//   // The speed of the animation
-//   QSlider *speedSlider;
-
-//   // The current time
-//   QLCDNumber *currentTimeLCD;
-
-   QPushButton *playpause_button;
+  QPushButton *playpause_button;
 
   QMenu*   fileMenu;  
   QMenu*   helpMenu;

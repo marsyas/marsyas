@@ -126,20 +126,6 @@ QSlider *Window::createSlider(int range_start, int range_end, int single_step, i
     return slider;
 }
 
-// //
-// // Another handy function to create a slider for the animation speed slider
-// //
-// QSlider *Window::createTimerSlider()
-// {
-//     QSlider *slider = new QSlider(Qt::Horizontal);
-//     slider->setRange(0, 100);
-//     slider->setSingleStep(1);
-//     slider->setPageStep(10);
-//     slider->setTickInterval(10);
-//     slider->setTickPosition(QSlider::TicksRight);
-//     return slider;
-// }
-
 void Window::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
