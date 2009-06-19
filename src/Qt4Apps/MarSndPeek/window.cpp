@@ -55,6 +55,8 @@ Window::Window(string inAudioFileName)
 	 // Scale sliders
      connect(yScaleSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYScale(int)));
 
+    connect(powerSpectrumModeCombo, SIGNAL(currentIndexChanged(int)), glWidget, SLOT(powerSpectrumModeChanged(int)));
+
 	// A main layout to hold everything
     QHBoxLayout *layout = new QHBoxLayout;
 

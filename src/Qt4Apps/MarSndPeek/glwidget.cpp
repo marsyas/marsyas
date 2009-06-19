@@ -341,29 +341,22 @@ void GLWidget::setZRotation(int angle)
   }
 }
 
-
-// Set the test x rotation value
-void GLWidget::setTestX(int val)
+void GLWidget::powerSpectrumModeChanged(int val) 
 {
-  //   test_x = 5 - (val / 10);
-  test_x = 5.0 - (val / 20.0);
-  cout << "x :: val=" << val << " x=" << test_x << endl;
-}
+  string sval;
+  if (val == 0) {
+	sval = "power";
+  } else if (val == 1) {
+	sval = "magnitude";
+  } else if (val == 2) {
+	sval = "decibels";
+  } else if (val == 3) {
+	sval = "powerdensity";
+  }
+  
+  mwr_->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType",sval);
 
-// Set the test y rotation value
-void GLWidget::setTestY(int val)
-{
-  test_y = 5.0 - (val / 20.0);
-  cout << "y :: val=" << val << " y=" << test_y << endl;
 }
-
-// Set the test z rotation value
-void GLWidget::setTestZ(int val)
-{
-  test_z = val;
-  cout << "z :: val=" << val << " z=" << test_z << endl;
-}
-
 
 void GLWidget::playPause() 
 {

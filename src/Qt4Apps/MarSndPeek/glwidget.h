@@ -35,17 +35,10 @@ public slots:
 
   void setYScale(int scale);
 
-  void setTestX(int val);
-  void setTestY(int val);
-  void setTestZ(int val);
-
-//   void setEndXRotation(int angle);
-//   void setEndYRotation(int angle);
-//   void setEndZRotation(int angle);
-
-//   void setRotationSpeed(int angle);
-
+  void powerSpectrumModeChanged(int val);
+  
   void animate();
+
 
 signals:
   void xRotationChanged(int angle);
