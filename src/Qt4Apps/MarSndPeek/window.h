@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QComboBox>
+#include <QCheckBox>
 using namespace std;
 
 class GLWidget;
@@ -54,6 +55,11 @@ private:
 
   QLabel *powerSpectrumModeLabel;
   QComboBox *powerSpectrumModeCombo;
+
+  QLabel *fftBinsModeLabel;
+  QComboBox *fftBinsModeCombo;
+
+  QCheckBox *waterfallCheckBox;
 };
 
 #endif

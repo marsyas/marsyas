@@ -36,6 +36,8 @@ public slots:
   void setYScale(int scale);
 
   void powerSpectrumModeChanged(int val);
+
+  void setWaterfallVisible(bool val);
   
   void animate();
 

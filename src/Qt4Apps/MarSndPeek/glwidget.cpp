@@ -36,8 +36,6 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   rotation_speed = 10;
   y_scale = 350;
 
-  
-
   // Allocate space for the ring buffer used to draw the spectrum
   spectrum_ring_buffer = new double*[MAX_SPECTRUM_LINES];
   for (int i = 0; i < MAX_SPECTRUM_LINES; i++) {
@@ -53,10 +51,32 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   // 
   MarSystemManager mng;
 
+  // A series to contain everything
   MarSystem* net = mng.create("Series", "net");
-  net->addMarSystem(mng.create("SoundFileSource", "src"));
-  net->addMarSystem(mng.create("AudioSink", "dest"));
 
+  // A Fanout to let us read audio from either a SoundFileSource or an
+  // AudioSource
+  MarSystem* inputfanout = mng.create("Fanout", "inputfanout");
+  net->addMarSystem(inputfanout);
+
+  inputfanout->addMarSystem(mng.create("SoundFileSource", "src"));
+  inputfanout->addMarSystem(mng.create("AudioSource", "src"));
+
+  net->addMarSystem(mng.create("Selector", "inputselector"));
+
+  if (inAudioFileName == "") {
+ 	net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
+ 	net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
+ 	cout << "input from AudioSource" << endl;
+  } else {
+ 	net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
+ 	net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
+ 	cout << "input from SoundFileSource" << endl;
+  }
+
+  // Add the AudioSink right after we've selected the input and
+  // before we've calculated any features.  Nice trick.
+  net->addMarSystem(mng.create("AudioSink", "dest"));
   net->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
 	
   net->addMarSystem(mng.create("Windowing", "ham"));
@@ -73,24 +93,32 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
 
   // Set the controls of this MarSystem
   
-  net->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
+  net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_real/repetitions",-1.0);
 
-  //net->updctrl("mrs_real/israte", 44100.0);
-  if (inAudioFileName != "") {
-	net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
-	net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  if (inAudioFileName == "") {
+	net->updctrl("mrs_real/israte", 44100.0);
+	inputfanout->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+  } else {
+ 	net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename",inAudioFileName);
+ 	net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
   }
 
   // Create and start playing the MarSystemQtWrapper that wraps
   // Marsyas in a Qt thread
   mwr_ = new MarSystemQtWrapper(net);
   mwr_->start();
-  play_state = false;
-  
+
+  if (inAudioFileName == "") {
+	mwr_->play();
+	play_state = true;
+  } else {
+	play_state = false;
+  }
+		    
   // Create some handy pointers to access the MarSystem
-  posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
+  posPtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-  fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
+  fnamePtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename");
 
   //
   // Create the animation timer that periodically redraws the screen
@@ -244,15 +272,15 @@ void GLWidget::redrawScene() {
   //
   // Draw the waveform
   //
-   glColor3f(1,1,1);
-   glBegin(GL_LINE_STRIP);
-   for (int i = 0; i < 512; i++) {
-	 float x = ((i - 256 / 2.0) / 200.0) - 0.7;
+  glColor3f(1,1,1);
+  glBegin(GL_LINE_STRIP);
+  for (int i = 0; i < 512; i++) {
+	float x = ((i - 256 / 2.0) / 200.0) - 0.7;
   	float y = (waveform_data(0,i)) + 2.5;
  	float z = 49;
  	glVertex3f(x,y,z);
-   }
-   glEnd();
+  }
+  glEnd();
 
   //
   // Draw the waterfall spectrum
@@ -358,6 +386,11 @@ void GLWidget::powerSpectrumModeChanged(int val)
 
 }
 
+void GLWidget::setWaterfallVisible(bool val)
+{
+  cout << "GLWidget::setWaterfallVisible val=" << val << endl;
+}
+
 void GLWidget::playPause() 
 {
   play_state = !play_state;
@@ -372,12 +405,12 @@ void GLWidget::playPause()
 
 void GLWidget::open() 
 {
-   QString fileName = QFileDialog::getOpenFileName(this);
+  QString fileName = QFileDialog::getOpenFileName(this);
 
-   mwr_->updctrl(fnamePtr_, fileName.toStdString());
-   mwr_->updctrl(initPtr_, true);
+  mwr_->updctrl(fnamePtr_, fileName.toStdString());
+  mwr_->updctrl(initPtr_, true);
 
-   mwr_->play();
-   play_state = true;
+  mwr_->play();
+  play_state = true;
 
 }
