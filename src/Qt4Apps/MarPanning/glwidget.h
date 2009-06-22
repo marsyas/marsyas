@@ -11,7 +11,7 @@ using namespace MarsyasQt;
 using namespace Marsyas;
 
 // sness
-#define MAX_SPECTRUM_LINES 50
+#define MAX_SPECTRUM_LINES 200
 #define SPECTRUM_BINS 128
 
 #define TIMER_COUNT_STEPS 100.0

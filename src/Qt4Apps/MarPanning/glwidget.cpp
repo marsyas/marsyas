@@ -168,6 +168,8 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
   net->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
 
+//   net->updctrl("mrs_natural/inSamples",2048);
+
   //   net->updctrl("mrs_real/israte", 44100.0);
   net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
@@ -185,7 +187,7 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   //
   QTimer *timer = new QTimer( this ); 
   connect( timer, SIGNAL(timeout()), this, SLOT(animate()) ); 
-  timer->start(10); // Redraw the screen every 10ms
+  timer->start(20); // Redraw the screen every 10ms
   
 }
 
@@ -225,9 +227,9 @@ void GLWidget::initializeGL()
   glFogi(GL_FOG_MODE, GL_EXP2);       // Set the fog mode
   glFogf(GL_FOG_DENSITY, 0.02f);      // How dense will the fog be
   glHint(GL_FOG_HINT, GL_NICEST);     // Fog hint value : GL_DONT_CARE, GL_NICEST
-  glFogf(GL_FOG_START, 10.0f);          // Fog Start Depth
-  glFogf(GL_FOG_END, 50.0f);            // Fog End Depth
-   glEnable(GL_FOG);                   // Enable fog
+  glFogf(GL_FOG_START, -0.0f);          // Fog Start Depth
+  glFogf(GL_FOG_END, -100.0f);            // Fog End Depth
+//      glEnable(GL_FOG);                   // Enable fog
 
   // Antialias lines
   glEnable(GL_LINE_SMOOTH);
@@ -246,7 +248,7 @@ void GLWidget::paintGL()
   // Translate the model to 0,0,-10
 //   glTranslated(0.0, 0.5, -115.0);
   glTranslated(xTrans, yTrans, zTrans);
-//   cout << "xTrans=" << xTrans << "  yTrans=" << yTrans << " zTrans=" << zTrans << " xRot=" << xRot << " yRot=" << yRot << " zRot=" << zRot << endl;
+//    cout << "xTrans=" << xTrans << "  yTrans=" << yTrans << " zTrans=" << zTrans << " xRot=" << xRot << " yRot=" << yRot << " zRot=" << zRot << endl;
 
   // Rotate the object around the x,y,z axis
   glRotated(xRot / 16.0, 1.0, 0.0, 0.0);
@@ -315,28 +317,30 @@ void GLWidget::redrawScene() {
 
   for (int i = 0; i < MAX_SPECTRUM_LINES; i++) {
  	for (int j = 0; j < SPECTRUM_BINS; j++) {
-	  float x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j]) * 5.0;
+	  float x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j]) * 7.0;
 // 	  float y = j/15.0;
- 	  float y = j/7.0;
+  	  float y = j/3.0;
 	  float z = i;
 
 	  float size = ((left_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j]) + 
-					(right_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j])) / 2.0 * 500; 
+					(right_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j])) / 2.0 * 2000; 
 		
- 	  if (size > 0.2) {
- 		size = 0.2;
+ 	  if (size > 0.5) {
+ 		size = 0.5;
  	  }
 
 //   	  size = 0.2;
 
- 	  if (i > 48) {
-// 		cout << "i==0" << endl;
- 		glColor3f(1,1,1);
-		size *= 2;
- 	  } else {
-		glColor3f((size*5),1,0);
-		//  		glColor3f(0,0,0);
- 	  }
+//  	  if (i > 197) {
+// // 		cout << "i==0" << endl;
+//  		glColor3f(1,1,1);
+// 		size *= 3;
+//  	  } else {
+// 		glColor3f((size*5),1,0);
+// 		//  		glColor3f(0,0,0);
+//  	  }
+
+	  glColor3f((size*5),1,0);
 
 	  glBegin(GL_TRIANGLES);
 	  glVertex3f(x,y,z);
@@ -345,6 +349,7 @@ void GLWidget::redrawScene() {
 	  glEnd();
 
  	}
+
 	  
   }
 
@@ -448,7 +453,7 @@ void GLWidget::setYTranslation(int v)
 void GLWidget::setZTranslation(int v)
 {
 //   normalizeVal(&val);
-  double val = v * -1;
+  double val = v * -2;
   if (val != zTrans) {
 	zTrans = val;
 	emit zTranslationChanged(val);

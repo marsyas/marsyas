@@ -158,13 +158,13 @@ Window::Window(string inAudioFileName)
   mainWidget->setLayout(layout);
 
   // Set some nice defaults for all the sliders
-  xRotSlider->setValue(100);
+  xRotSlider->setValue(0);
   yRotSlider->setValue(0 * 16);
   zRotSlider->setValue(0 * 16);
 
   xTransSlider->setValue(0);
-  yTransSlider->setValue(20);
-  zTransSlider->setValue(40);
+  yTransSlider->setValue(24);
+  zTransSlider->setValue(61);
 
 //   yScaleSlider->setValue(350);
 	
