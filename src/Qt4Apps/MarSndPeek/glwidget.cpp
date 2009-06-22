@@ -76,8 +76,8 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
 
   // Add the AudioSink right after we've selected the input and
   // before we've calculated any features.  Nice trick.
-  net->addMarSystem(mng.create("AudioSink", "dest"));
   net->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+  net->addMarSystem(mng.create("AudioSink", "dest"));
 	
   net->addMarSystem(mng.create("Windowing", "ham"));
   net->addMarSystem(mng.create("Spectrum", "spk"));
