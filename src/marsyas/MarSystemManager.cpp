@@ -194,6 +194,7 @@
 #include "RunningStatistics.h"
 #include "SliceDelta.h"
 #include "ArffFileSink.h"
+#include "MixToMono.h"
 //modifyHeader
 
 using namespace std;
@@ -375,6 +376,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
 	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
 	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
+	registerPrototype("MixToMono", new MixToMono("mixtomono"));
 	//modifyRegister
 
 	//***************************************************************************************

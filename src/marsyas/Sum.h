@@ -34,6 +34,16 @@ namespace Marsyas
 	Controls:
 	- \b mrs_real/weight [w] : scales input to avoid clipping.
 
+	\deprecated This MarSystem has a poorly chosen name "Sum", which is too
+	general and does not clearly communicates what kind of summation
+	is implemented: summation of rows, columns, the complete slice, with
+	or without inter-slice memory maybe?
+	For the most obvious use case: averaging observations channels into
+	one mono channel, use MixToMono instead.
+
+
+	\see MixToMono
+
 	\todo Sum mrs_real/weight should be implemented as a meta-composite in
 	marsystemmanager.  (?   -- lmartins said this)
 
