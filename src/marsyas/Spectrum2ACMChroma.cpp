@@ -4,7 +4,7 @@
 
 #include "MedianFilter.h"
 #include "PeakInObservation.h"
-#include "Negative2.h"
+#include "Negative.h"
 #include "Signum.h"
 #include "F0Analysis.h"
 #include "Pitch2Chroma.h"
@@ -34,8 +34,8 @@ Spectrum2ACMChroma::Spectrum2ACMChroma(mrs_string inName)
 	theManager.registerPrototype("MedianFilter",theDummy);
 	theDummy = new PeakInObservation("Anything");
 	theManager.registerPrototype("PeakInObservation",theDummy);
-	theDummy = new Negative2("Anything");
-	theManager.registerPrototype("Negative2",theDummy);
+	theDummy = new Negative("Anything");
+	theManager.registerPrototype("Negative",theDummy);
 	theDummy = new Signum("Anything");
 	theManager.registerPrototype("Signum",theDummy);
 	theDummy = new F0Analysis("Anything");
@@ -61,7 +61,7 @@ Spectrum2ACMChroma::Spectrum2ACMChroma(mrs_string inName)
 	theSeries3->addMarSystem(theNewSystem);
 
 	// --------- 8.1.1c Reverse sign of background spectrum (for subtraction)
-	theNewSystem = theManager.create("Negative2","Negative");
+	theNewSystem = theManager.create("Negative","Negative");
 	theSeries3->addMarSystem(theNewSystem);
 
 	// ------ 8.1.2 Compute peaks in spectrum
