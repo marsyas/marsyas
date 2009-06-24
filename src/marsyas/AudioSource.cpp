@@ -130,7 +130,7 @@ AudioSource::initRtAudio()
   
 //marsyas represents audio data as float numbers
 #ifdef MARSYAS_AUDIOIO
-  RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+  RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO3_FLOAT64 : RTAUDIO3_FLOAT32;
 #endif 
 
 

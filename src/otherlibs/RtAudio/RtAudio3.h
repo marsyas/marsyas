@@ -39,8 +39,8 @@
 
 // RtAudio3: Version 3.0.2 (14 October 2005)
 
-#ifndef __RTAUDIO_H
-#define __RTAUDIO_H
+#ifndef __RTAUDIO3_H
+#define __RTAUDIO3_H
 
 #include "RtError3.h"
 #include <string>
@@ -72,7 +72,7 @@
 // This global structure type is used to pass callback information
 // between the private RtAudio3 stream structure and global callback
 // handling functions.
-struct CallbackInfo {
+struct CallbackInfo3 {
   void *object;    // Used as a "this" pointer.
   ThreadHandle thread;
   bool usingCallback;
@@ -81,7 +81,7 @@ struct CallbackInfo {
   void *apiInfo;   // void pointer for API specific callback information
 
   // Default constructor.
-  CallbackInfo()
+  CallbackInfo3()
     :object(0), usingCallback(false), callback(0),
      userData(0), apiInfo(0) {}
 };
@@ -93,12 +93,12 @@ struct CallbackInfo {
 // soundcard.  Thus, endian-ness is not a concern in the following
 // format definitions.
 typedef unsigned long RtAudio3Format;
-static const RtAudio3Format RTAUDIO_SINT8 = 0x1;    /*!< 8-bit signed integer. */ 
-static const RtAudio3Format RTAUDIO_SINT16 = 0x2;   /*!< 16-bit signed integer. */
-static const RtAudio3Format RTAUDIO_SINT24 = 0x4;   /*!< Upper 3 bytes of 32-bit signed integer. */
-static const RtAudio3Format RTAUDIO_SINT32 = 0x8;   /*!< 32-bit signed integer. */
-static const RtAudio3Format RTAUDIO_FLOAT32 = 0x10; /*!< Normalized between plus/minus 1.0. */
-static const RtAudio3Format RTAUDIO_FLOAT64 = 0x20; /*!< Normalized between plus/minus 1.0. */
+static const RtAudio3Format RTAUDIO3_SINT8 = 0x1;    /*!< 8-bit signed integer. */ 
+static const RtAudio3Format RTAUDIO3_SINT16 = 0x2;   /*!< 16-bit signed integer. */
+static const RtAudio3Format RTAUDIO3_SINT24 = 0x4;   /*!< Upper 3 bytes of 32-bit signed integer. */
+static const RtAudio3Format RTAUDIO3_SINT32 = 0x8;   /*!< 32-bit signed integer. */
+static const RtAudio3Format RTAUDIO3_FLOAT32 = 0x10; /*!< Normalized between plus/minus 1.0. */
+static const RtAudio3Format RTAUDIO3_FLOAT64 = 0x20; /*!< Normalized between plus/minus 1.0. */
 
 typedef int (*RtAudio3Callback)(char *buffer, int bufferSize, void *userData);
 
@@ -125,12 +125,12 @@ struct RtAudio3DeviceInfo {
 //
 // Note that RtApi is an abstract base class and cannot be
 // explicitly instantiated.  The class RtAudio3 will create an
-// instance of an RtApi subclass (RtApiOss, RtApiAlsa,
-// RtApiJack, RtApiCore, RtApiAl, RtApiDs, or RtApiAsio).
+// instance of an RtApi3 subclass (RtApi3Oss, RtApi3Alsa,
+// RtApi3Jack, RtApi3Core, RtApi3Al, RtApi3Ds, or RtApi3Asio).
 //
 // **************************************************************** //
 
-class RtApi
+class RtApi3
 {
 public:
 
@@ -139,8 +139,8 @@ public:
     STREAM_RUNNING
   };
 
-  RtApi();
-  virtual ~RtApi();
+  RtApi3();
+  virtual ~RtApi3();
   void openStream( int outputDevice, int outputChannels,
                    int inputDevice, int inputChannels,
                    RtAudio3Format format, int sampleRate,
@@ -154,7 +154,7 @@ public:
   int getDeviceCount(void);
   RtAudio3DeviceInfo getDeviceInfo( int device );
   char * const getStreamBuffer();
-  RtApi::StreamState getStreamState() const;
+  RtApi3::StreamState getStreamState() const;
   virtual void tickStream() = 0;
   virtual void closeStream();
   virtual void startStream() = 0;
@@ -185,7 +185,7 @@ protected:
   };
 
   // A protected structure for audio streams.
-  struct RtApiStream {
+  struct RtApi3Stream {
     int device[2];          // Playback and record, respectively.
     void *apiHandle;        // void pointer for API specific stream handle information
     StreamMode mode;         // OUTPUT, INPUT, or DUPLEX.
@@ -203,15 +203,15 @@ protected:
     RtAudio3Format userFormat;
     RtAudio3Format deviceFormat[2]; // Playback and record, respectively.
     StreamMutex mutex;
-    CallbackInfo callbackInfo;
+    CallbackInfo3 callbackInfo;
     ConvertInfo convertInfo[2];
 
-    RtApiStream()
+    RtApi3Stream()
       :apiHandle(0), userBuffer(0), deviceBuffer(0) {}
   };
 
   // A protected device structure for audio devices.
-  struct RtApiDevice {
+  struct RtApi3Device {
     std::string name;      /*!< Character string device identifier. */
     bool probed;           /*!< true if the device capabilities were successfully probed. */
     void *apiDeviceId;     // void pointer for API specific device information
@@ -227,7 +227,7 @@ protected:
     RtAudio3Format nativeFormats;  /*!< Bit mask of supported data formats. */
 
     // Default constructor.
-    RtApiDevice()
+    RtApi3Device()
       :probed(false), apiDeviceId(0), maxOutputChannels(0), maxInputChannels(0),
        maxDuplexChannels(0), minOutputChannels(0), minInputChannels(0),
        minDuplexChannels(0), isDefault(false), nativeFormats(0) {}
@@ -240,8 +240,8 @@ protected:
 
   char message_[1024];
   int nDevices_;
-  std::vector<RtApiDevice> devices_;
-  RtApiStream stream_;
+  std::vector<RtApi3Device> devices_;
+  RtApi3Stream stream_;
 
   /*!
     Protected, api-specific method to count and identify the system
@@ -257,7 +257,7 @@ protected:
     "probed" remains false (no exception is thrown).  A successful
     probe is indicated by probed = true.
   */
-  virtual void probeDeviceInfo( RtApiDevice *info );
+  virtual void probeDeviceInfo( RtApi3Device *info );
 
   /*!
     Protected, api-specific method which attempts to open a device
@@ -283,10 +283,10 @@ protected:
   */
   virtual int getDefaultOutputDevice(void);
 
-  //! Protected common method to clear an RtApiDevice structure.
-  void clearDeviceInfo( RtApiDevice *info );
+  //! Protected common method to clear an RtApi3Device structure.
+  void clearDeviceInfo( RtApi3Device *info );
 
-  //! Protected common method to clear an RtApiStream structure.
+  //! Protected common method to clear an RtApi3Stream structure.
   void clearStreamInfo();
 
   //! Protected common error method to allow global control over error handling.
@@ -533,20 +533,20 @@ public:
 
   void initialize( RtAudio3Api api );
 
-  RtApi *rtapi_;
+  RtApi3 *rtapi_;
 };
 
 
-// RtApi Subclass prototypes.
+// RtApi3 Subclass prototypes.
 
 #if defined(__LINUX_ALSA__)
 
-class RtApiAlsa: public RtApi
+class RtApi3Alsa: public RtApi3
 {
 public:
 
-  RtApiAlsa();
-  ~RtApiAlsa();
+  RtApi3Alsa();
+  ~RtApi3Alsa();
   void tickStream();
   void closeStream();
   void startStream();
@@ -559,7 +559,7 @@ public:
   private:
 
   void initialize(void);
-  void probeDeviceInfo( RtApiDevice *info );
+  void probeDeviceInfo( RtApi3Device *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
                         int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
@@ -569,12 +569,12 @@ public:
 
 #if defined(__LINUX_JACK__)
 
-class RtApiJack: public RtApi
+class RtApi3Jack: public RtApi3
 {
 public:
 
-  RtApiJack();
-  ~RtApiJack();
+  RtApi3Jack();
+  ~RtApi3Jack();
   void tickStream();
   void closeStream();
   void startStream();
@@ -591,7 +591,7 @@ public:
   private:
 
   void initialize(void);
-  void probeDeviceInfo( RtApiDevice *info );
+  void probeDeviceInfo( RtApi3Device *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
                         int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
@@ -601,12 +601,12 @@ public:
 
 #if defined(__LINUX_OSS__)
 
-class RtApiOss: public RtApi
+class RtApi3Oss: public RtApi3
 {
 public:
 
-  RtApiOss();
-  ~RtApiOss();
+  RtApi3Oss();
+  ~RtApi3Oss();
   void tickStream();
   void closeStream();
   void startStream();
@@ -619,7 +619,7 @@ public:
   private:
 
   void initialize(void);
-  void probeDeviceInfo( RtApiDevice *info );
+  void probeDeviceInfo( RtApi3Device *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
                         int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
@@ -631,12 +631,12 @@ public:
 
 #include <CoreAudio/AudioHardware.h>
 
-class RtApiCore: public RtApi
+class RtApi3Core: public RtApi3
 {
 public:
 
-  RtApiCore();
-  ~RtApiCore();
+  RtApi3Core();
+  ~RtApi3Core();
   int getDefaultOutputDevice(void);
   int getDefaultInputDevice(void);
   void tickStream();
@@ -656,7 +656,7 @@ public:
   private:
 
   void initialize(void);
-  void probeDeviceInfo( RtApiDevice *info );
+  void probeDeviceInfo( RtApi3Device *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
                         int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
@@ -666,12 +666,12 @@ public:
 
 #if defined(__WINDOWS_DS__)
 
-class RtApiDs: public RtApi
+class RtApi3Ds: public RtApi3
 {
 public:
 
-  RtApiDs();
-  ~RtApiDs();
+  RtApi3Ds();
+  ~RtApi3Ds();
   int getDefaultOutputDevice(void);
   int getDefaultInputDevice(void);
   void tickStream();
@@ -733,7 +733,7 @@ public:
   private:
 
   void initialize(void);
-  void probeDeviceInfo( RtApiDevice *info );
+  void probeDeviceInfo( RtApi3Device *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
                         int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
@@ -749,12 +749,12 @@ public:
 
 #if defined(__WINDOWS_ASIO__)
 
-class RtApiAsio: public RtApi
+class RtApi3Asio: public RtApi3
 {
 public:
 
-  RtApiAsio();
-  ~RtApiAsio();
+  RtApi3Asio();
+  ~RtApi3Asio();
   void tickStream();
   void closeStream();
   void startStream();
@@ -772,7 +772,7 @@ public:
   private:
 
   void initialize(void);
-  void probeDeviceInfo( RtApiDevice *info );
+  void probeDeviceInfo( RtApi3Device *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
                         int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );
@@ -785,12 +785,12 @@ public:
 
 #if defined(__IRIX_AL__)
 
-class RtApiAl: public RtApi
+class RtApi3Al: public RtApi3
 {
 public:
 
-  RtApiAl();
-  ~RtApiAl();
+  RtApi3Al();
+  ~RtApi3Al();
   int getDefaultOutputDevice(void);
   int getDefaultInputDevice(void);
   void tickStream();
@@ -805,7 +805,7 @@ public:
   private:
 
   void initialize(void);
-  void probeDeviceInfo( RtApiDevice *info );
+  void probeDeviceInfo( RtApi3Device *info );
   bool probeDeviceOpen( int device, StreamMode mode, int channels, 
                         int sampleRate, RtAudio3Format format,
                         int *bufferSize, int numberOfBuffers );

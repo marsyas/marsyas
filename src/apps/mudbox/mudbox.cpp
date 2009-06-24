@@ -127,7 +127,7 @@ printHelp(string progName)
 	cerr << "weka            : toy_with weka source and sink functionality" << endl;
 	cerr << "updctrl         : toy_with updating control with pointers " << endl;
 
-	cerr << "simpleSFPlay    : plays a sound file" << endl;
+	cerr << "sfplay          : plays a sound file" << endl;
 	cerr << "SFPlay          : plays only labelled regions in an audio file" << endl;
 	cerr << "getControls     : toy_with getControls functionality " << endl;
 	cerr << "mono2stereo     : toy_with mono2stereo MarSystem " << endl;
@@ -208,17 +208,17 @@ toy_with_audiodevices()
 			else
 			{
 				std::cout << "Natively supported data formats:\n";
-				if ( info.nativeFormats & RTAUDIO_SINT8 )
+				if ( info.nativeFormats & RTAUDIO3_SINT8 )
 					std::cout << "  8-bit int\n";
-				if ( info.nativeFormats & RTAUDIO_SINT16 )
+				if ( info.nativeFormats & RTAUDIO3_SINT16 )
 					std::cout << "  16-bit int\n";
-				if ( info.nativeFormats & RTAUDIO_SINT24 )
+				if ( info.nativeFormats & RTAUDIO3_SINT24 )
 					std::cout << "  24-bit int\n";
-				if ( info.nativeFormats & RTAUDIO_SINT32 )
+				if ( info.nativeFormats & RTAUDIO3_SINT32 )
 					std::cout << "  32-bit int\n";
-				if ( info.nativeFormats & RTAUDIO_FLOAT32 )
+				if ( info.nativeFormats & RTAUDIO3_FLOAT32 )
 					std::cout << "  32-bit float\n";
-				if ( info.nativeFormats & RTAUDIO_FLOAT64 )
+				if ( info.nativeFormats & RTAUDIO3_FLOAT64 )
 					std::cout << "  64-bit float\n";
 			}
 			if ( info.sampleRates.size() < 1 )
@@ -846,25 +846,27 @@ toy_with_train_predict(string trainFileName, string testFileName)
 
 
 void
-toy_with_simpleSFPlay(string sfName)
+toy_with_sfplay(string sfName)
 {
+	cout << "Toy_with: sfplay" << endl;
+	
 	MarSystemManager mng;
 
 
 	MarSystem* playbacknet = mng.create("Series", "playbacknet");
 	
-	/// playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-	playbacknet->addMarSystem(mng.create("NoiseSource", "src"));	
-	MarSystem* mix = mng.create("Fanout/mix");
-	mix->addMarSystem(mng.create("Biquad", "f1"));
-	mix->addMarSystem(mng.create("Biquad", "f2"));
+	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+	// playbacknet->addMarSystem(mng.create("NoiseSource", "src"));	
+	// MarSystem* mix = mng.create("Fanout/mix");
+	// mix->addMarSystem(mng.create("Biquad", "f1"));
+	// mix->addMarSystem(mng.create("Biquad", "f2"));
 
-	playbacknet->addMarSystem(mix);
+	// playbacknet->addMarSystem(mix);
 	// playbacknet->addMarSystem(mng.create("Reverse", "rev"));	
-	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+	playbacknet->addMarSystem(mng.create("AudioSinkCallback", "dest"));
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	playbacknet->updctrl("AudioSinkCallback/dest/mrs_bool/initAudio", true);
 
 	
 
@@ -880,11 +882,11 @@ toy_with_simpleSFPlay(string sfName)
 	// while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
 	for (int i=0; i < 1000; i++)
 	{
-		playbacknet->updctrl("Fanout/mix/Biquad/f1/mrs_real/frequency", fabs(2000.0 - frequency)+10.0);
-		playbacknet->updctrl("Fanout/mix/Biquad/f2/mrs_real/frequency", frequency);
+		// playbacknet->updctrl("Fanout/mix/Biquad/f1/mrs_real/frequency", fabs(2000.0 - frequency)+10.0);
+		// playbacknet->updctrl("Fanout/mix/Biquad/f2/mrs_real/frequency", frequency);
 		
 		// playbacknet->updctrl("mrs_natural/inSamples", win);
-		frequency += 10.0;
+		// frequency += 10.0;
 		// win += 12;
 		// cout << win << endl;
 		playbacknet->tick();
@@ -922,7 +924,7 @@ toy_with_sine()
 
 
 void
-toy_with_SFPlay(string sfName)
+toy_with_labelsfplay(string sfName)
 {
 	MarSystemManager mng;
 
@@ -5314,8 +5316,8 @@ main(int argc, const char **argv)
 		toy_with_MATLABengine();
 	else if (toy_withName == "MarControls")
 		toy_with_MarControls(fname0);
-	else if (toy_withName == "SFPlay")
-		toy_with_SFPlay(fname0);
+	else if (toy_withName == "labelsfplay")
+		toy_with_labelsfplay(fname0);
 	else if (toy_withName == "SNR")
 	  toy_with_SNR(fname0, fname1);
 	else if (toy_withName == "SOM")
@@ -5396,8 +5398,8 @@ main(int argc, const char **argv)
 		toy_with_scheduler(fname0);
 	else if (toy_withName == "shredder")
 		toy_with_shredder(fname0);
-	else if (toy_withName == "simpleSFPlay")
-		toy_with_simpleSFPlay(fname0);
+	else if (toy_withName == "sfplay")
+		toy_with_sfplay(fname0);
 	else if (toy_withName == "sine") 
 		toy_with_sine();
 	else if (toy_withName == "spectralSNR")

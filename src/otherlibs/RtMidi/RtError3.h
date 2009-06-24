@@ -9,8 +9,8 @@
 */
 /************************************************************************/
 
-#ifndef RTERROR_H
-#define RTERROR_H
+#ifndef RTERROR3_H
+#define RTERROR3_H
 
 #include <iostream>
 #include <string>

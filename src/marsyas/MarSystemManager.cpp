@@ -48,6 +48,7 @@
 #include "WavFileSource2.h"
 #include "SineSource.h"
 #include "NoiseSource.h"
+#include "AudioSinkCallback.h"
 #include "AudioSink.h"
 #include "AudioSink2.h"
 #include "Mono2Stereo.h"
@@ -369,6 +370,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("StretchLinear", new StretchLinear("stretchlinearpr"));
 	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
 	registerPrototype("PvMultiResolution", new PvMultiResolution("PvMultiResolution"));
+	registerPrototype("AudioSinkCallback", new AudioSinkCallback("AudioSinkCallback"));
+	
 
 	registerPrototype("Gain", new Gain("gp"));
 	registerPrototype("Selector", new Selector("selectorpr"));

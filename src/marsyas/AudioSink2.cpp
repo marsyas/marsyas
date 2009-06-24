@@ -127,7 +127,7 @@ AudioSink2::initRtAudio()
 {
 #ifdef MARSYAS_AUDIOIO
 	//marsyas represents audio data as float numbers
-	RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+	RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO3_FLOAT64 : RTAUDIO3_FLOAT32;
 
 	// hardwire channels to stereo playback even for mono
 	int rtChannels = 2;
