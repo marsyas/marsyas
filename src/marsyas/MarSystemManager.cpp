@@ -50,7 +50,6 @@
 #include "NoiseSource.h"
 #include "AudioSinkCallback.h"
 #include "AudioSink.h"
-#include "AudioSink2.h"
 #include "Mono2Stereo.h"
 #include "PeakConvert.h"
 #include "OverlapAdd.h"
@@ -119,7 +118,6 @@
 #include "Skewness.h"
 #include "ViconFileSource.h"
 #include "AudioSource.h"
-#include "AudioSource2.h"
 #include "ClassOutputSink.h"
 #include "Filter.h"
 #include "Biquad.h"
@@ -246,7 +244,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("WavFileSource2", new WavFileSource2("wavf2p"));
 	registerPrototype("SoundFileSink", new SoundFileSink("sfsp"));
 	registerPrototype("AudioSink", new AudioSink("audiosinkp"));
-	registerPrototype("AudioSink2", new AudioSink2("audiosink2p"));
 	registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
 	registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
 	registerPrototype("Mono2Stereo", new Mono2Stereo("mono2stereop"));
@@ -305,7 +302,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Skewness", new Skewness("Skewnessp"));
 	registerPrototype("ViconFileSource", new ViconFileSource("viconfilesourcep"));
 	registerPrototype("AudioSource", new AudioSource("audiosourcep"));
-	registerPrototype("AudioSource2", new AudioSource2("audiosource2p"));
 	registerPrototype("ClassOutputSink", new ClassOutputSink("classoutputsinkp"));
 	registerPrototype("Filter", new Filter("filterp"));
 	registerPrototype("Biquad", new Biquad("biquadp"));
