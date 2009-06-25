@@ -97,7 +97,7 @@ RealvecSource::myProcess(realvec& in, realvec& out)
 				out(o,t) = data(o,count_ + t);
 			}
 		}
-		count_++;
+		count_ += onSamples_;
 	}
 	else
 	  setctrl("mrs_bool/done", true);  
