@@ -37,7 +37,7 @@
 
 #ifdef MARSYAS_PNG
 #include "pngwriter.h" 
-#endif MARSYAS_PNG 
+#endif 
 
 
 using namespace std;
@@ -5281,6 +5281,116 @@ void toy_with_chroma(string inSoundFileName, string inTextFileName)
 	delete theExtractorNet;
 }
 
+void toy_with_orca_record(string inFileName, string outFileName)
+{
+    MarSystemManager mng;
+
+// 	mrs_natural copt = 1;
+	mrs_real sropt = 44100.0;
+ 	int bufferSize = 614;
+	mrs_real length = 100;
+
+	// To test the Tascam FW-1804 for orcarecord
+	//     copt = 8;
+	//     sropt = 44100.0;
+	//     int bufferSize = 614;
+
+    MarSystem* recordNet = mng.create("Series", "recordNet");
+    MarSystem* asrc = mng.create("AudioSource", "asrc");
+    MarSystem* dest = mng.create("SoundFileSink", "dest");
+
+    recordNet->addMarSystem(asrc);
+    recordNet->addMarSystem(dest);
+
+	recordNet->updctrl("mrs_real/israte", sropt);
+
+    asrc->setctrl("mrs_natural/nChannels", 2);
+    asrc->setctrl("mrs_natural/inSamples", bufferSize);
+    asrc->setctrl("mrs_natural/bufferSize", bufferSize);
+    asrc->setctrl("mrs_real/israte", sropt);
+
+    dest->updctrl("mrs_natural/inObservations", 2);
+    dest->updctrl("mrs_natural/inSamples", bufferSize);
+    dest->updctrl("mrs_real/israte", sropt);
+
+    // Ready to initialize audio device 
+    recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
+	recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", outFileName);
+
+    mrs_real srate = recordNet->getctrl("mrs_real/israte")->to<mrs_real>();
+    mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels")->to<mrs_natural>();
+    cout << "AudioSource srate =  " << srate << endl; 
+    cout << "AudioSource nChannels = " << nChannels << endl;
+    mrs_natural inSamples = recordNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+
+
+    mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
+
+    cout << "Iterations = " << iterations << endl;
+
+
+    for (mrs_natural t = 0; t < iterations; t++) 
+    {
+        recordNet->tick();
+    }
+  
+}
+
+void toy_with_realvec_record(string inFileName, string outFileName)
+{
+    MarSystemManager mng;
+
+// 	mrs_natural copt = 1;
+	mrs_real sropt = 44100.0;
+ 	int bufferSize = 614;
+	mrs_real length = 100;
+
+	// To test the Tascam FW-1804 for orcarecord
+	//     copt = 8;
+	//     sropt = 44100.0;
+	//     int bufferSize = 614;
+
+    MarSystem* recordNet = mng.create("Series", "recordNet");
+    MarSystem* asrc = mng.create("AudioSource", "asrc");
+    MarSystem* dest = mng.create("SoundFileSink", "dest");
+
+    recordNet->addMarSystem(asrc);
+    recordNet->addMarSystem(dest);
+
+	recordNet->updctrl("mrs_real/israte", sropt);
+
+    asrc->setctrl("mrs_natural/nChannels", 2);
+    asrc->setctrl("mrs_natural/inSamples", bufferSize);
+    asrc->setctrl("mrs_natural/bufferSize", bufferSize);
+    asrc->setctrl("mrs_real/israte", sropt);
+
+    dest->updctrl("mrs_natural/inObservations", 2);
+    dest->updctrl("mrs_natural/inSamples", bufferSize);
+    dest->updctrl("mrs_real/israte", sropt);
+
+    // Ready to initialize audio device 
+    recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
+	recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", outFileName);
+
+    mrs_real srate = recordNet->getctrl("mrs_real/israte")->to<mrs_real>();
+    mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels")->to<mrs_natural>();
+    cout << "AudioSource srate =  " << srate << endl; 
+    cout << "AudioSource nChannels = " << nChannels << endl;
+    mrs_natural inSamples = recordNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+
+
+    mrs_natural iterations = (mrs_natural)((srate * length) / inSamples);
+
+    cout << "Iterations = " << iterations << endl;
+
+
+    for (mrs_natural t = 0; t < iterations; t++) 
+    {
+        recordNet->tick();
+    }
+  
+}
+
 int
 main(int argc, const char **argv)
 {
@@ -5442,6 +5552,10 @@ else if (toy_withName == "train_predict")
 		toy_with_accent_filter_bank(fname0,fname1);
 	else if (toy_withName == "ExtractChroma")
 		toy_with_chroma(fname0,fname1);
+	else if (toy_withName == "orca_record")
+		toy_with_orca_record(fname0,fname1);
+	else if (toy_withName == "realvec_record")
+		toy_with_realvec_record(fname0,fname1);
 
 	else 
 	{
