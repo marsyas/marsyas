@@ -3391,7 +3391,7 @@ struct AlsaHandle {
     :synchronized(false), tempBuffer(0) {}
 };
 
-extern "C" void *alsaCallbackHandler(void * ptr);
+extern "C" void *alsaCallbackHandler3(void * ptr);
 
 RtApi3Alsa :: RtApi3Alsa()
 {
@@ -4566,7 +4566,7 @@ void RtApi3Alsa :: setStreamCallback(RtAudio3Callback callback, void *userData)
   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
   pthread_attr_setschedpolicy(&attr, SCHED_RR);
 
-  int err = pthread_create(&info->thread, &attr, alsaCallbackHandler, &stream_.callbackInfo);
+  int err = pthread_create(&info->thread, &attr, alsaCallbackHandler3, &stream_.callbackInfo);
   pthread_attr_destroy(&attr);
   if (err) {
     info->usingCallback = false;
@@ -4596,7 +4596,7 @@ void RtApi3Alsa :: cancelStreamCallback()
   }
 }
 
-extern "C" void *alsaCallbackHandler(void *ptr)
+extern "C" void *alsaCallbackHandler3(void *ptr)
 {										// 
   CallbackInfo3 *info = (CallbackInfo3 *) ptr;
   RtApi3Alsa *object = (RtApi3Alsa *) info->object;
