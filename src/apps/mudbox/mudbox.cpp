@@ -5281,14 +5281,15 @@ void toy_with_chroma(string inSoundFileName, string inTextFileName)
 	delete theExtractorNet;
 }
 
-void toy_with_orca_record(string inFileName, string outFileName)
+void toy_with_orca_record(string outFileName)
 {
     MarSystemManager mng;
 
-// 	mrs_natural copt = 1;
+ 	mrs_natural copt = 1;
 	mrs_real sropt = 44100.0;
- 	int bufferSize = 614;
-	mrs_real length = 100;
+  	int bufferSize = 512;
+//  	int bufferSize = 614;
+	mrs_real length = 5;
 
 	// To test the Tascam FW-1804 for orcarecord
 	//     copt = 8;
@@ -5304,12 +5305,12 @@ void toy_with_orca_record(string inFileName, string outFileName)
 
 	recordNet->updctrl("mrs_real/israte", sropt);
 
-    asrc->setctrl("mrs_natural/nChannels", 2);
+    asrc->setctrl("mrs_natural/nChannels", copt);
     asrc->setctrl("mrs_natural/inSamples", bufferSize);
     asrc->setctrl("mrs_natural/bufferSize", bufferSize);
     asrc->setctrl("mrs_real/israte", sropt);
 
-    dest->updctrl("mrs_natural/inObservations", 2);
+    dest->updctrl("mrs_natural/inObservations", copt);
     dest->updctrl("mrs_natural/inSamples", bufferSize);
     dest->updctrl("mrs_real/israte", sropt);
 
@@ -5336,46 +5337,41 @@ void toy_with_orca_record(string inFileName, string outFileName)
   
 }
 
-void toy_with_realvec_record(string inFileName, string outFileName)
+void toy_with_realvec_record(string outFileName)
 {
     MarSystemManager mng;
 
-// 	mrs_natural copt = 1;
+ 	mrs_natural copt = 1;
 	mrs_real sropt = 44100.0;
- 	int bufferSize = 614;
+  	int bufferSize = 8 * 512;
+//  	int bufferSize = 614;
 	mrs_real length = 100;
 
-	// To test the Tascam FW-1804 for orcarecord
-	//     copt = 8;
-	//     sropt = 44100.0;
-	//     int bufferSize = 614;
-
     MarSystem* recordNet = mng.create("Series", "recordNet");
-    MarSystem* asrc = mng.create("AudioSource", "asrc");
-    MarSystem* dest = mng.create("SoundFileSink", "dest");
+//     MarSystem* asrc = mng.create("SoundFileSource", "asrc");
+	MarSystem* asrc = mng.create("AudioSource", "asrc");
+    MarSystem* dest = mng.create("RealvecSink", "dest");
 
     recordNet->addMarSystem(asrc);
     recordNet->addMarSystem(dest);
 
 	recordNet->updctrl("mrs_real/israte", sropt);
 
-    asrc->setctrl("mrs_natural/nChannels", 2);
-    asrc->setctrl("mrs_natural/inSamples", bufferSize);
-    asrc->setctrl("mrs_natural/bufferSize", bufferSize);
-    asrc->setctrl("mrs_real/israte", sropt);
+ 	recordNet->updctrl("AudioSource/asrc/mrs_natural/nChannels", copt);
+ 	recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize", bufferSize);
+    recordNet->updctrl("mrs_natural/inSamples", bufferSize);
+    recordNet->updctrl("mrs_real/israte", sropt);
 
-    dest->updctrl("mrs_natural/inObservations", 2);
-    dest->updctrl("mrs_natural/inSamples", bufferSize);
-    dest->updctrl("mrs_real/israte", sropt);
+// 	recordNet->updctrl("SoundFileSource/asrc/mrs_string/filename", "small_click.wav");
+//  	recordNet->updctrl("SoundFileSource/asrc/mrs_string/filename", "click_track.wav");
 
     // Ready to initialize audio device 
-    recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
-	recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", outFileName);
+	recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
 
     mrs_real srate = recordNet->getctrl("mrs_real/israte")->to<mrs_real>();
     mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels")->to<mrs_natural>();
     cout << "AudioSource srate =  " << srate << endl; 
-    cout << "AudioSource nChannels = " << nChannels << endl;
+	cout << "AudioSource nChannels = " << nChannels << endl;
     mrs_natural inSamples = recordNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
 
@@ -5383,12 +5379,44 @@ void toy_with_realvec_record(string inFileName, string outFileName)
 
     cout << "Iterations = " << iterations << endl;
 
-
+	cout << "Reading data into the RealvecSink" << endl;
     for (mrs_natural t = 0; t < iterations; t++) 
     {
-        recordNet->tick();
+	  recordNet->tick();
     }
-  
+	
+	// The data in the RealvecSink
+// 	cout << "########## INPUT ##########" << endl;
+// 	cout << dest->getctrl("mrs_realvec/data")->to<mrs_realvec>() << endl;
+
+	//
+	// Output the data to an audio file
+	//
+	cout << "Outputting data to SoundFileSink" << endl;
+
+    MarSystem* playbackNet = mng.create("Series", "playbackNet");
+    MarSystem* rsrc = mng.create("RealvecSource", "rsrc");
+    MarSystem* sdest = mng.create("SoundFileSink", "dest");
+
+    playbackNet->addMarSystem(rsrc);
+    playbackNet->addMarSystem(sdest);
+
+    playbackNet->updctrl("mrs_natural/inObservations", copt);
+    playbackNet->updctrl("mrs_natural/inSamples", bufferSize);
+    playbackNet->updctrl("mrs_real/israte", sropt);
+
+	playbackNet->updctrl("RealvecSource/rsrc/mrs_realvec/data", dest->getctrl("mrs_realvec/data")->to<mrs_realvec>());
+	playbackNet->updctrl("SoundFileSink/dest/mrs_string/filename", outFileName);
+	
+// 	cout << "########## OUTPUT ##########" << endl;
+//  	cout << rsrc->getctrl("mrs_realvec/data") << endl;
+
+    for (mrs_natural t = 0; t < iterations; t++) 
+	  {
+// 		cout << "tick" << endl;
+	  playbackNet->tick();
+    }
+
 }
 
 int
@@ -5553,9 +5581,9 @@ else if (toy_withName == "train_predict")
 	else if (toy_withName == "ExtractChroma")
 		toy_with_chroma(fname0,fname1);
 	else if (toy_withName == "orca_record")
-		toy_with_orca_record(fname0,fname1);
+		toy_with_orca_record(fname0);
 	else if (toy_withName == "realvec_record")
-		toy_with_realvec_record(fname0,fname1);
+		toy_with_realvec_record(fname0);
 
 	else 
 	{
