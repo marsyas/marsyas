@@ -4016,6 +4016,7 @@ bool RtApi3Alsa :: probeDeviceOpen( int device, StreamMode mode, int channels,
     stream_.apiHandle = (void *) apiInfo;
     apiInfo->handles[0] = 0;
     apiInfo->handles[1] = 0;
+	apiInfo->tempBuffer = 0;
   }
   else {
     apiInfo = (AlsaHandle *) stream_.apiHandle;
