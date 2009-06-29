@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 
+'''
+Script to generate skeleton files for a new MarSystem.
+
+Usage:
+    createMarSystem.py NameOfNewMarSystem
+
+This will create the files NameOfNewMarSystem.h and NameOfNewMarSystem.cpp
+if the current directory.
+'''
+
 import os
 import sys
 
