@@ -54,6 +54,10 @@ namespace Marsyas
 		overlapping windows) to zero.
 
 	\see SoundFileSource
+
+	\see SoundFileSourceHopper for generating an audio slices from
+	a SoundFileSource in a sliding/hopping window fashion.
+
 */
 
 
