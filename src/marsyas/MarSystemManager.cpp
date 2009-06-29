@@ -194,6 +194,7 @@
 #include "SliceDelta.h"
 #include "ArffFileSink.h"
 #include "MixToMono.h"
+#include "SoundFileSourceHopper.h"
 //modifyHeader
 
 using namespace std;
@@ -376,6 +377,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
 	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
 	registerPrototype("MixToMono", new MixToMono("mixtomono"));
+	registerPrototype("SoundFileSourceHopper", new SoundFileSourceHopper("soundfilesourcehopper"));
 	//modifyRegister
 
 	//***************************************************************************************
@@ -1104,6 +1106,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 		registerPrototype("Classifier", classifierpr);
 	}
 	break;
+
 	}
 	// Future calls should not re-instantiate the prototype
 	compositesMap_[prototype] = STUB;
