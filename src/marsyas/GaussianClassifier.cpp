@@ -67,9 +67,6 @@ GaussianClassifier::addControls()
 void
 GaussianClassifier::myUpdate(MarControlPtr sender)
 {
-	cout << "myUpdate called" << endl;
-	
-
 	(void) sender;
 	MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
