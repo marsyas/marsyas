@@ -116,7 +116,7 @@ void record(mrs_real length, mrs_real gain, string filename)
     recordNet->addMarSystem(asrc);
     recordNet->addMarSystem(dest);
 
-    recordNet->updctrl("mrs_natural/inSamples", 100);
+    recordNet->updctrl("mrs_natural/inSamples", 4096);
     recordNet->updctrl("mrs_real/israte", sropt);
     recordNet->updctrl("AudioSource/asrc/mrs_natural/nChannels", copt);
     recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);

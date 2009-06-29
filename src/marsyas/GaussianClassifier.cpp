@@ -67,6 +67,9 @@ GaussianClassifier::addControls()
 void
 GaussianClassifier::myUpdate(MarControlPtr sender)
 {
+	cout << "myUpdate called" << endl;
+	
+
 	(void) sender;
 	MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
@@ -149,6 +152,9 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 	realvec& means = acc_means.to<mrs_realvec>();
 	realvec& covars = acc_covars.to<mrs_realvec>();
 
+	MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
+	realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
+
 
 	// reset 
 	if ((prev_mode_ == "predict") && (mode == "train"))
@@ -183,8 +189,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 	{
 		
 		mrs_real min = MAXREAL;
-		// MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
-		// realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
+
 		for (t = 0; t < inSamples_; t++)
 		{
 			label = in(inObservations_-1, t);

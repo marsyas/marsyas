@@ -5345,7 +5345,7 @@ void toy_with_realvec_record(string outFileName)
 	mrs_real sropt = 44100.0;
   	int bufferSize = 8 * 512;
 //  	int bufferSize = 614;
-	mrs_real length = 100;
+	mrs_real length = 60;
 
     MarSystem* recordNet = mng.create("Series", "recordNet");
 //     MarSystem* asrc = mng.create("SoundFileSource", "asrc");

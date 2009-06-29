@@ -1077,7 +1077,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			classifierpr->addctrl("mrs_string/mode", "train");
 			classifierpr->setctrlState("mrs_string/mode", true);
 			classifierpr->addctrl("mrs_realvec/classProbabilities", realvec());
-			classifierpr->setctrlState("mrs_realvec/classProbabilities",true);
+			// classifierpr->setctrlState("mrs_realvec/classProbabilities",true);
 
 			classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses",
 				"mrs_natural/nClasses");
