@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Accumulator::Accumulator(string name):MarSystem("Accumulator", name)
+Accumulator::Accumulator(string name): MarSystem("Accumulator", name)
 {
 	isComposite_ = true;
 	addControls();
@@ -29,7 +29,7 @@ Accumulator::Accumulator(string name):MarSystem("Accumulator", name)
 	keptOnSamples_ = 0;
 }
 
-Accumulator::Accumulator(const Accumulator& a) : MarSystem(a)
+Accumulator::Accumulator(const Accumulator& a): MarSystem(a)
 {
 	ctrl_nTimes_ = getctrl("mrs_natural/nTimes");
 	ctrl_maxTimes_ = getctrl("mrs_natural/maxTimes");
@@ -44,13 +44,13 @@ Accumulator::~Accumulator()
 {
 }
 
-MarSystem* 
-Accumulator::clone() const 
+MarSystem*
+Accumulator::clone() const
 {
 	return new Accumulator(*this);
 }
 
-void 
+void
 Accumulator::addControls()
 {
 	addctrl("mrs_string/mode", "countTicks", ctrl_mode_);
@@ -75,7 +75,7 @@ void
 Accumulator::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("Accumulator.cpp - Accumulator:myUpdate");
-	
+
 	string onObsNames;
 
 	childOnSamples_ = 0;
@@ -93,12 +93,12 @@ Accumulator::myUpdate(MarControlPtr sender)
 		childOnSamples_ = marsystems_[0]->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 		//nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 
-		// forward flow propagation 
-		setctrl(ctrl_onSamples_, nTimes_ * childOnSamples_); //dynamic resizing of onSamples! 
-		setctrl(ctrl_onObservations_, 
-			marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-		setctrl(ctrl_osrate_, 
-			marsystems_[0]->getctrl("mrs_real/osrate"));
+		// forward flow propagation
+		setctrl(ctrl_onSamples_, nTimes_ * childOnSamples_); //dynamic resizing of onSamples!
+		setctrl(ctrl_onObservations_,
+		        marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+		setctrl(ctrl_osrate_,
+		        marsystems_[0]->getctrl("mrs_real/osrate"));
 
 		onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames")->to<mrs_string>();
 	}
@@ -108,7 +108,7 @@ Accumulator::myUpdate(MarControlPtr sender)
 	}
 
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
-	
+
 	//set onObsNames
 	ostringstream oss;
 	for (int i = 0; i < onObservations_; i++)
@@ -126,84 +126,102 @@ Accumulator::myUpdate(MarControlPtr sender)
 
 	//create temporary buffer for child output
 	childOut_.stretch(onObservations_, childOnSamples_);
-	
+
 	//create internal buffer for accumulating data to send to output
 	//(set it to the specified maximum + any kept old)
-	if(ctrl_mode_->to<mrs_string>() == "explicitFlush")
-		tout_.stretch(onObservations_, 
-			(ctrl_timesToKeep_->to<mrs_natural>() + ctrl_maxTimes_->to<mrs_natural>()) * childOnSamples_);
+	if (ctrl_mode_->to<mrs_string>() == "explicitFlush")
+	{
+		tout_.stretch(onObservations_,
+		              (ctrl_timesToKeep_->to<mrs_natural>() + ctrl_maxTimes_->to<mrs_natural>()) * childOnSamples_);
+	}
 	else
+	{
 		tout_.create(0,0); //no memory is needed in this mode
+	}
 }
 
-void 
+void
 Accumulator::myProcess(realvec& in, realvec& out)
 {
-	if(marsystemsSize_ == 0)
+	if (marsystemsSize_ == 0)
 	{
 		out = in;
 		return;
 	}
 
-	if(ctrl_mode_->to<mrs_string>() == "explicitFlush")
+	if (ctrl_mode_->to<mrs_string>() == "explicitFlush")
 	{
 		mrs_natural timesCount = keptOnSamples_/childOnSamples_;
-		while((!ctrl_flush_->to<mrs_bool>() && timesCount < ctrl_maxTimes_->to<mrs_natural>()) 
-			|| timesCount < ctrl_minTimes_->to<mrs_natural>()
-			|| timesCount <= ctrl_timesToKeep_->to<mrs_natural>())
+		while ((!ctrl_flush_->to<mrs_bool>() && timesCount < ctrl_maxTimes_->to<mrs_natural>())
+		        || timesCount < ctrl_minTimes_->to<mrs_natural>()
+		        || timesCount <= ctrl_timesToKeep_->to<mrs_natural>())
 		{
 			// child MarSystem should have a control linked to the Accumulator flush control
 			// so it can signal the end of this loop (e.g. when an onset is detected or something similar)
 			marsystems_[0]->recvControls(); // HACK STU [!]
 			marsystems_[0]->process(in, childOut_);
 
-			//accumulate output from child process()into temp buffer 
+			//accumulate output from child process()into temp buffer
 			for (o=0; o < onObservations_; o++)
+			{
 				for (t = 0; t < childOnSamples_; t++)
 				{
 					tout_(o, t + timesCount * childOnSamples_) = childOut_(o,t);
 				}
+			}
 			timesCount++;
 		}
 
-		#ifdef MARSYAS_LOG_DIAGNOSTICS
-		if(!ctrl_flush_->to<mrs_bool>())
+#ifdef MARSYAS_LOG_DIAGNOSTICS
+		if (!ctrl_flush_->to<mrs_bool>())
+		{
 			MRSDIAG("Accumulator::myProcess() - Onset not detected... max length of segment reached!");
-		#endif
+		}
+#endif
 
 		//adjust output number of samples dynamically (this calls update()!!)
 		//to the number of accumulated samples (minus the ones to keep for next time)
-		ctrl_nTimes_->setValue(timesCount - ctrl_timesToKeep_->to<mrs_natural>()); 
-		
+		ctrl_nTimes_->setValue(timesCount - ctrl_timesToKeep_->to<mrs_natural>());
+
 		keptOnSamples_ = ctrl_timesToKeep_->to<mrs_natural>() * childOnSamples_;
-		
+
 		//copy data in tmp buffer to the output
-		for(o=0; o < onObservations_; ++o)
-			for(t = 0; t < ctrl_onSamples_->to<mrs_natural>(); ++t)
+		for (o=0; o < onObservations_; ++o)
+		{
+			for (t = 0; t < ctrl_onSamples_->to<mrs_natural>(); ++t)
+			{
 				out(o,t) = tout_(o,t);
+			}
+		}
 
 		//store samples to keep into the beginning of the temp buffer
 		//for next call to process()
-		for(t = 0; t < keptOnSamples_; ++t)
-			for(o=0; o < onObservations_; ++o)
+		for (t = 0; t < keptOnSamples_; ++t)
+		{
+			for (o=0; o < onObservations_; ++o)
+			{
 				tout_(o,t) = tout_(o, t + ctrl_onSamples_->to<mrs_natural>());
+			}
+		}
 
 		//reset flush flag
-		ctrl_flush_->setValue(false); 
-	}
-	else if(ctrl_mode_->to<mrs_string>() == "countTicks")
-	{
-	  //nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 		ctrl_flush_->setValue(false);
-		for (c = 0; c < nTimes_; c++) 
+	}
+	else if (ctrl_mode_->to<mrs_string>() == "countTicks")
+	{
+		//nTimes_ = ctrl_nTimes_->to<mrs_natural>();
+		ctrl_flush_->setValue(false);
+		for (c = 0; c < nTimes_; c++)
 		{
 			marsystems_[0]->recvControls(); // HACK STU [!]
 			marsystems_[0]->process(in, childOut_);
 			for (o=0; o < onObservations_; o++)
+			{
 				for (t = 0; t < childOnSamples_; t++)
 				{
 					out(o, t + c * childOnSamples_) = childOut_(o,t);
 				}
+			}
 		}
 		ctrl_flush_->setValue(true);
 	}
