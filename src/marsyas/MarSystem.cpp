@@ -1733,7 +1733,7 @@ MarSystem::put(istream& is)
 		{
 			is >> scvalue;
 			if (scvalue == "MARSYAS_EMPTYSTRING")
-			  scvalue = "";
+				scvalue = "";
 			if (iter == controls_.end())
 				addControl(cname, scvalue);
 			else
@@ -1812,7 +1812,7 @@ MarSystem::put(istream& is)
 		 * # /Series/net/Classifier/cl/ZeroRClassifier/zerorcl/mrs_natural/nClasses
 		 * ie. hash sign, followed by a path
 		 */
-		for(mrs_natural link=0; link < nLinks; ++link)
+		for (mrs_natural link=0; link < nLinks; ++link)
 		{
 			//read link absolute path
 			is >> skipstr;
