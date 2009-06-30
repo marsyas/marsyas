@@ -83,12 +83,10 @@ ShiftInput::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
 	// Update the onObsNames string.
-	// TODO: this does not work when there are multiple observations channels,
-	// define and use helper function for this. See for example the function
-	// prependObservationNames() in RunningStatistics.cpp.
-	ostringstream oss;
-	oss << "HopSize" << hopSize_ << "_WinSize" << winSize_ << "_" << ctrl_inObsNames_;
-	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+	ostringstream prefix_oss;
+	prefix_oss << "HopSize" << hopSize_ << "_WinSize" << winSize_ << "_";
+	mrs_string onObsNames = obsNamesAddPrefix(ctrl_inObsNames_->to<mrs_string>(), prefix_oss.str());
+	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
 }
 
 void
