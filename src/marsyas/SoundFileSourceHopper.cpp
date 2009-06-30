@@ -73,7 +73,7 @@ SoundFileSourceHopper::addControls()
 	addControl("mrs_natural/hopSize", (mrs_natural)(MRS_DEFAULT_SLICE_NSAMPLES/2), ctrl_hopSize_);
 	setControlState("mrs_natural/hopSize", true);
 
-	addControl("mrs_bool/mixToMono", true, ctrl_mixToMono_);
+	addControl("mrs_bool/mixToMono", false, ctrl_mixToMono_);
 	setControlState("mrs_bool/mixToMono", true);
 
 }
