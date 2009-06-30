@@ -120,4 +120,7 @@
  */
 
 
-
+/** @defgroup String String manipulation
+ *
+ * \brief Classes and functions for various string manipulation.
+ */

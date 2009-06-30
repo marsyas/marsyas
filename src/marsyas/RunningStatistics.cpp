@@ -53,26 +53,6 @@ RunningStatistics::addControls()
 	// No controls (so far).
 }
 
-/**
- * Helper function for prepending the observation names with a prefix.
- * \par observationNames string of observation names (comma separated)
- * \par prefix the prefix the prepend to all the observation names.
- * \return new comma separated observation name string
- * \todo Put this in a more general file, and use it, search for example for occurrences of 'find(",")'
- */
-mrs_string prependObservationNames(mrs_string observationNames, mrs_string prefix) {
-	ostringstream oss;
-	size_t startPos = 0, endPos=0;
-	while ((endPos = observationNames.find(",", startPos)) != string::npos) {
-		// Extract the observation name.
-		mrs_string name = observationNames.substr(startPos, endPos-startPos);
-		oss << prefix << name << ",";
-		// Update the start position for the next name.
-		startPos = endPos + 1;
-	}
-	return oss.str();
-}
-
 void
 RunningStatistics::myUpdate(MarControlPtr sender)
 {
@@ -88,8 +68,8 @@ RunningStatistics::myUpdate(MarControlPtr sender)
 	// Update the observation names.
 	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	mrs_string onObsNames("");
-	onObsNames += prependObservationNames(inObsNames, "RunningMean_");
-	onObsNames += prependObservationNames(inObsNames, "RunningStddev_");
+	onObsNames += obsNamesAddPrefix(inObsNames, "RunningMean_");
+	onObsNames += obsNamesAddPrefix(inObsNames, "RunningStddev_");
 	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
 
 	// Allocate and initialize the buffers and counters.

@@ -1732,7 +1732,7 @@ MarSystem::put(istream& is)
 		else if (ctype == sstr)
 		{
 			is >> scvalue;
-			if (scvalue == "MARSYAS_EMPTYSTRING") 
+			if (scvalue == "MARSYAS_EMPTYSTRING")
 			  scvalue = "";
 			if (iter == controls_.end())
 				addControl(cname, scvalue);
@@ -1833,14 +1833,14 @@ MarSystem::put(istream& is)
 	return is;
 }
 
-ostream& 
+ostream&
 Marsyas::operator<< (ostream& o, MarSystem& sys)
 {
 	sys.put(o);
 	return o;
 }
 
-istream& 
+istream&
 Marsyas::operator>> (istream& is, MarSystem& sys)
 {
 	sys.put(is);
@@ -1860,6 +1860,75 @@ Marsyas::operator<< (ostream& o, const map<string,MarControlPtr>& c)
 	return o;
 }
 
+
+
+/**
+ * \brief Helper function for adding a prefix to each of the observation names.
+ *
+ * \ingroup String
+ *
+ * \param observationNames string of observation names (comma separated)
+ * \param prefix the prefix the prepend to all the observation names.
+ * \return new comma separated observation name string
+ *
+ * \note Comma separated observation names in Marsyas use/expect a
+ * trailing comma after the last item, this function follows this
+ * convention.
+ *
+ * \todo Use this function in more places (e.g. search for occurrences of 'find(",")').
+ */
+mrs_string obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix)
+{
+	ostringstream oss;
+	size_t startPos = 0, endPos=0;
+	while ((endPos = observationNames.find(",", startPos)) != string::npos)
+	{
+		// Extract the observation name.
+		mrs_string name = observationNames.substr(startPos, endPos-startPos);
+		oss << prefix << name << ",";
+		// Update the start position for the next name.
+		startPos = endPos + 1;
+	}
+	return oss.str();
+}
+
+
+/**
+ * \brief Helper function for splitting a string.
+ *
+ * \ingroup String
+ *
+ * \param input the string to split.
+ * \param delimiter the string to split on.
+ * \return a vector of strings.
+ *
+ * \note Comma separated observation names in Marsyas use/expect a
+ * trailing comma after the last item. However, this function
+ * follows the more traditional convention where the delimiter
+ * is only between items. So when using this function for splitting
+ * an observation names string, there will be an empty string
+ * at the end of the returned list.
+ *
+ * \todo Use this function in more places (e.g. search for occurrences of 'find(",")').
+ */
+vector<mrs_string> stringSplit(mrs_string input, mrs_string delimiter)
+{
+	vector<mrs_string> itemList;
+	size_t startPos = 0, endPos=0;
+	// Keep searching for the delimiter.
+	while ((endPos = input.find(delimiter, startPos)) != string::npos)
+	{
+		// Get the current item.
+		mrs_string item = input.substr(startPos, endPos - startPos);
+		// Store it
+		itemList.push_back(item);
+		// Update the start position for the next name.
+		startPos = endPos + delimiter.size();
+	}
+	// And the last item
+	itemList.push_back(input.substr(startPos, input.size() - startPos));
+	return itemList;
+}
 
 //**************************************************************************
 //	MARSYAS_QT only methods

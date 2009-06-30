@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -137,7 +137,7 @@ protected:
 	std::vector<MarSystem*> marsystems_;
 	std::vector<realvec*> slices_;
 	std::vector<MarControlPtr> slPtrs_;
-	//Controls 
+	//Controls
 	mutable std::map<std::string, MarControlPtr> controls_;
 	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
 
@@ -186,7 +186,7 @@ protected:
 	virtual void myUpdate(MarControlPtr sender);
 
 	virtual void localActivate(bool state);
-	
+
 	virtual void myProcess(realvec& in, realvec& out) = 0;
 
 	MarSystem& operator=(const MarSystem&) { assert(0); return *this;} // copy assignment (should never be called!) [!]
@@ -199,9 +199,9 @@ public:
   virtual ~MarSystem();
 
 	virtual MarSystem* clone() const = 0;
-	void relinkControls(const MarSystem& a); 
-	
-  // Naming methods 
+	void relinkControls(const MarSystem& a);
+
+  // Naming methods
   virtual void setName(std::string name);
 	virtual void setType(std::string type);
   std::string getType() const;
@@ -213,7 +213,7 @@ public:
 	// link controls
 	bool linkControl(std::string cname1, std::string cname2, bool update = true);
 	bool linkctrl(std::string cname1, std::string cname2, bool update = true) {return linkControl(cname1, cname2, update);}
-  
+
 	// update controls
   bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
 	bool updControl(char* cname, MarControlPtr newcontrol, bool upd = true)
@@ -237,7 +237,7 @@ public:
 		return updControl(control, newcontrol, upd);
 	}
 	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true) {return updControl(control, newcontrol, upd);}
-  bool updctrl(const char *cname, MarControlPtr newcontrol, bool upd = true) 
+  bool updctrl(const char *cname, MarControlPtr newcontrol, bool upd = true)
   {
     MarControlPtr control = getControl(cname);
 		if(control.isInvalid())
@@ -247,7 +247,7 @@ public:
 		}
     return updControl(control, newcontrol, upd);
   }
-  bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true) 
+  bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true)
   {
     MarControlPtr control = getControl(cname);
 		if(control.isInvalid())
@@ -295,26 +295,26 @@ public:
 	bool hasctrlState(std::string cname) {return hasControlState(cname);}
 	bool hasctrlState(char* cname) {return hasControlState(std::string(cname));}
 	bool hasctrlState(MarControlPtr control) {return control->hasState();}
-  
+
 	// Composite interface
   virtual bool addMarSystem(MarSystem *marsystem);
 	virtual MarSystem* getChildMarSystem(std::string childPath);
 	virtual void setParent(const MarSystem* parent);
 	MarSystem* getParent() const {return parent_;}
 	virtual std::vector<MarSystem*> getChildren();
-  
-  // Processing and update methods 
+
+  // Processing and update methods
 	bool isUpdating();
   void checkFlow(realvec&in, realvec& out);
 	void update(MarControlPtr sender = MarControlPtr());
-  void process(realvec& in, realvec& out);   
+  void process(realvec& in, realvec& out);
 	void tick();
 
 	std::string toString();
 	virtual marostring& toString(marostring& m);
 
-  // derived class such as Composite can override put 
-  // essentially overriding operator<< 
+  // derived class such as Composite can override put
+  // essentially overriding operator<<
   virtual std::ostream& put(std::ostream& o);
   // The opposite of toString() and put() above, read in the parameters for a system.
   virtual std::istream& put(std::istream& is);
@@ -322,12 +322,12 @@ public:
   // Output the MarSystem as an HTML document with nested lists
   virtual std::ostream& put_html(std::ostream& o);
 
-  // the usual stream IO 
+  // the usual stream IO
   friend std::ostream& operator<<(std::ostream&, MarSystem&);
 
 	// controls serialization methods
   friend std::istream& operator>>(std::istream&, MarSystem&); //[!]
-	friend std::ostream& operator<<(std::ostream&, const std::map<std::string,MarControlPtr>&); 
+	friend std::ostream& operator<<(std::ostream&, const std::map<std::string,MarControlPtr>&);
 
 	// method to receive controls from a network connection
 	virtual mrs_real* const recvControls();
@@ -360,26 +360,26 @@ public:
 	void updctrl(TmTime t, std::string cname, MarControlPtr control);
 	void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
 	//////////////////////////////////////////////////////////////////////////
-	
+
 	//control pointers [!] should these be public?
 	MarControlPtr ctrl_inSamples_;
-	MarControlPtr ctrl_inObservations_; 
+	MarControlPtr ctrl_inObservations_;
 	MarControlPtr ctrl_israte_;
 	MarControlPtr ctrl_inObsNames_;
 	MarControlPtr ctrl_onSamples_;
 	MarControlPtr ctrl_onObservations_;
 	MarControlPtr ctrl_osrate_;
 	MarControlPtr ctrl_onObsNames_;
-	MarControlPtr ctrl_debug_; 
+	MarControlPtr ctrl_debug_;
 	MarControlPtr ctrl_mute_;
 	MarControlPtr ctrl_active_;
  	MarControlPtr ctrl_processedData_;
-	
+
 #ifdef MARSYAS_QT
 
 protected slots:
 	void GUIdestroyed(QObject* obj);
-	
+
 public slots:
 	virtual QMainWindow* getMarSystemNetworkGUI(QWidget* parent = 0, Qt::WFlags f = 0);
 	virtual QMainWindow* getControlsGUI(QWidget* parent = 0, Qt::WFlags f = 0);
@@ -393,6 +393,12 @@ signals:
 #endif //MARSYAS_QT
 
 };
+
+/// Helper function for adding a prefix to each of the observation names.
+mrs_string obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix);
+
+/// Helper function for splitting a string.
+std::vector<mrs_string> stringSplit(mrs_string input, mrs_string delimiter);
 
 }//namespace Marsyas
 
