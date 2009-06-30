@@ -123,33 +123,6 @@ ArffFileSink::prepareOutput()
 }
 
 
-/**
- * Helper function for splitting a string.
- * \par input the string to split.
- * \par delimiter the string to split on.
- * \return a vector of strings.
- * \todo Put this in a more general file, and use it more, search for example for occurrences of 'find(",")'
- */
-static vector<mrs_string> stringSplit(mrs_string input, mrs_string delimiter)
-{
-	vector<mrs_string> itemList;
-	size_t startPos = 0, endPos=0;
-	// Keep searching for the delimiter.
-	while ((endPos = input.find(delimiter, startPos)) != string::npos)
-	{
-		// Get the current item.
-		mrs_string item = input.substr(startPos, endPos - startPos);
-		// Store it
-		itemList.push_back(item);
-		// Update the start position for the next name.
-		startPos = endPos + delimiter.size();
-	}
-	// And the last item
-	itemList.push_back(input.substr(startPos, input.size() - startPos));
-	return itemList;
-}
-
-
 void
 ArffFileSink::writeArffHeader()
 {
