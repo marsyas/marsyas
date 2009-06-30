@@ -1877,7 +1877,8 @@ Marsyas::operator<< (ostream& o, const map<string,MarControlPtr>& c)
  *
  * \todo Use this function in more places (e.g. search for occurrences of 'find(",")').
  */
-mrs_string obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix)
+mrs_string
+Marsyas::obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix)
 {
 	ostringstream oss;
 	size_t startPos = 0, endPos=0;
@@ -1911,7 +1912,8 @@ mrs_string obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix)
  *
  * \todo Use this function in more places (e.g. search for occurrences of 'find(",")').
  */
-vector<mrs_string> stringSplit(mrs_string input, mrs_string delimiter)
+vector<mrs_string>
+Marsyas::stringSplit(mrs_string input, mrs_string delimiter)
 {
 	vector<mrs_string> itemList;
 	size_t startPos = 0, endPos=0;
