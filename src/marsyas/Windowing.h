@@ -27,6 +27,16 @@ namespace Marsyas
 	\class Windowing
 	\ingroup Processing Basic
 	\brief Apply a windowing function (envelope) to the input signal.
+
+	Extra controls:
+	- \b mrs_string/type : the window function type, supported values:
+		"Hamming", "Hanning", "Triangle", "Bartlett", "Blackman",
+		"Blackman-Harris", "Cosine"
+	- \b mrs_bool/zeroPhasing: TODO DOCME
+	- \b mrs_natural/zeroPadding: TODO DOCME
+	- \b mrs_natural/size: TODO DOCME
+	- \b mrs_real/variance: variance to use for the Gaussian window
+	- \b mrs_bool/normalize: TODO DOCME
 */
 
 
@@ -40,8 +50,6 @@ private:
 
 	mrs_natural zeroPadding_;
 	mrs_natural size_;
-	mrs_natural pinSamples_;
-
 
 	MarControlPtr ctrl_type_;
 	MarControlPtr ctrl_zeroPhasing_;
@@ -64,6 +72,59 @@ public:
 	void myProcess(realvec& in, realvec& out);
 
 };
+
+/// \brief Helper function for generating a raised cosine window function.
+void
+windowingFillRaisedCosine(realvec& envelope, mrs_real alpha, mrs_real beta);
+
+/**
+ * \brief Hamming window function.
+ *
+ * \ingroup Basic
+ * \f[ w(n) = 0.54 - 0.46 \cos \left ( \frac{2\pi n}{N-1} \right) \f]
+ * \see windowingFillRaisedCosine()
+ * \see Windowing
+ */
+inline
+void
+windowingFillHamming(realvec& envelope)
+{
+	windowingFillRaisedCosine(envelope, 0.54, 0.46);
+}
+
+/**
+ * \brief Hanning window function.
+ *
+ * \ingroup Basic
+ * \f[ w(n) = 0.5 - 0.5 \cos \left ( \frac{2\pi n}{N-1} \right) \f]
+ * \see windowingFillRaisedCosine()
+ * \see Windowing
+ */
+inline
+void
+windowingFillHanning(realvec& envelope)
+{
+	windowingFillRaisedCosine(envelope, 0.5, 0.5);
+}
+
+/// \brief Triangle window function (non zero endpoints).
+void windowingFillTriangle(realvec& envelope);
+
+/// \brief Bartlett window function (triangle window with zero endpoints).
+void windowingFillBartlett(realvec& envelope);
+
+/// \brief Gaussian window function.
+void windowingFillGaussian(realvec& envelope, mrs_real sigma);
+
+/// \brief Blackman window function.
+void windowingFillBlackman(realvec& envelope, mrs_real alpha=0.16);
+
+/// \brief Blackman-Harris window function.
+void windowingFillBlackmanHarris(realvec& envelope);
+
+/// \brief Cosine (aka sine) window function.
+void windowingFillCosine(realvec& envelope);
+
 
 }//namespace Marsyas
 
