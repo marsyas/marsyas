@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -46,8 +46,8 @@ Windowing::~Windowing()
 {
 }
 
-MarSystem* 
-Windowing::clone() const 
+MarSystem*
+Windowing::clone() const
 {
 	return new Windowing(*this);
 }
@@ -61,7 +61,7 @@ Windowing::addcontrols()
 	addctrl("mrs_natural/size", 0, ctrl_size_);
 	addctrl("mrs_real/variance", 0.4, ctrl_variance_);// used for the gaussian window
 	addctrl("mrs_bool/normalize", false, ctrl_normalize_);
-	
+
 	setctrlState("mrs_string/type", true);
 	setctrlState("mrs_bool/zeroPhasing", true);
 	setctrlState("mrs_natural/zeroPadding", true);
@@ -74,8 +74,8 @@ void
 Windowing::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-	string type = ctrl_type_->to<mrs_string>();
-	
+	mrs_string type = ctrl_type_->to<mrs_string>();
+
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ostringstream oss;
@@ -91,51 +91,56 @@ Windowing::myUpdate(MarControlPtr sender)
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
-	//if zeroPadding control changed...	
-	if(ctrl_zeroPadding_->to<mrs_natural>() != onSamples_- inSamples_)
+
+	//if zeroPadding control changed...
+	if (ctrl_zeroPadding_->to<mrs_natural>() != onSamples_- inSamples_)
 	{
 		//zero padding should always be a positive or zero value
-		if(ctrl_zeroPadding_->to<mrs_natural>() < 0)
+		if (ctrl_zeroPadding_->to<mrs_natural>() < 0)
+		{
 			ctrl_zeroPadding_->setValue(0, NOUPDATE);
-		ctrl_size_->setValue(ctrl_inSamples_->to<mrs_natural>() + 
-													ctrl_zeroPadding_->to<mrs_natural>(), NOUPDATE);
+		}
+		ctrl_size_->setValue(ctrl_inSamples_->to<mrs_natural>() +
+		                     ctrl_zeroPadding_->to<mrs_natural>(), NOUPDATE);
 		onSamples_ = ctrl_size_->to<mrs_natural>();
 	}
 	//if size control changed...
-	if(ctrl_size_->to<mrs_natural>() != onSamples_)
+	if (ctrl_size_->to<mrs_natural>() != onSamples_)
 	{
 		//size should never be smaller than inSamples
-		if(ctrl_size_->to<mrs_natural>() < inSamples_)
+		if (ctrl_size_->to<mrs_natural>() < inSamples_)
+		{
 			ctrl_size_->setValue(inSamples_, NOUPDATE);
-		ctrl_zeroPadding_->setValue(ctrl_size_->to<mrs_natural>() - 
-																ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
+		}
+		ctrl_zeroPadding_->setValue(ctrl_size_->to<mrs_natural>() -
+		                            ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
 	}
-	
+
 	ctrl_onSamples_->setValue(ctrl_size_, NOUPDATE);
-	
+
 	//check if zero phasing should be performed
-	if(ctrl_zeroPhasing_->isTrue())
-		delta_ = inSamples_/2+1;
-	else
-		delta_=0;
-
-	
-
-
-	
-	if (pinSamples_ != inSamples_) 
+	if (ctrl_zeroPhasing_->isTrue())
 	{
-		
+		delta_ = inSamples_/2+1;
+	}
+	else
+	{
+		delta_=0;
+	}
+
+	if (pinSamples_ != inSamples_)
+	{
+
+
 		tmp_.create(inSamples_);
 		envelope_.create(inSamples_);
 		mrs_real temp = 0.0;
-		
-		
+
 		if (type == "Hamming")
-		{   
+		{
 			mrs_real A = (mrs_real)0.54;
 			mrs_real B = (mrs_real)0.46;
-			
+
 			for (t=0; t < inSamples_; t++)
 			{
 				temp = 2*PI*t / (inSamples_-1);
@@ -148,7 +153,7 @@ Windowing::myUpdate(MarControlPtr sender)
 			{
 				mrs_real A = (mrs_real)0.5;
 				mrs_real B = (mrs_real)0.5;
-				
+
 				for (t=0; t < inSamples_; t++)
 				{
 					temp = 2*PI*t / (inSamples_-1);
@@ -199,20 +204,20 @@ Windowing::myUpdate(MarControlPtr sender)
 					envelope_(t) = 0.35875 - 0.48829*cos(2.0*temp) + 0.14128*cos(4.0*temp) - 0.01168*cos(6.0*temp);
 				}
 			}
-			
+
 		}
-		
+
 
 
 	}
 
 
 
-	if(ctrl_normalize_->to<mrs_bool>() == true)
+	if (ctrl_normalize_->to<mrs_bool>() == true)
 	{
 		mrs_real sum = 0.0;
-		
-		for (t =0; t < inSamples_; t++) 
+
+		for (t =0; t < inSamples_; t++)
 		{
 			sum += envelope_(t);
 		}
@@ -226,33 +231,39 @@ Windowing::myUpdate(MarControlPtr sender)
 
 
 	pinSamples_ = inSamples_;
-	
+
 }
 
-void 
+void
 Windowing::myProcess(realvec& in, realvec& out)
 {
-  out.setval(0);
-	
+	out.setval(0);
+
 	for (o=0; o < inObservations_; o++)
 	{
 		//shift windowed data in case zeroPhasing is selected
-		if(ctrl_zeroPhasing_->isTrue())
+		if (ctrl_zeroPhasing_->isTrue())
 		{
-		  //apply the window to the input data
-		  for (t = 0; t < inSamples_; t++)
-		    {
-		      tmp_(t) =  in(o,t)*envelope_(t); // /(norm_);     
-		    }
-		  for (t = 0; t < inSamples_/2; t++)
-		    out(o,t)=tmp_((t+delta_)%inSamples_);
-		  for (t = inSamples_/2; t < inSamples_; t++)
-		    out(o,t+(onSamples_-inSamples_))=tmp_((t+delta_)%inSamples_);
+			//apply the window to the input data
+			for (t = 0; t < inSamples_; t++)
+			{
+				tmp_(t) =  in(o,t)*envelope_(t); // /(norm_);
+			}
+			for (t = 0; t < inSamples_/2; t++)
+			{
+				out(o,t)=tmp_((t+delta_)%inSamples_);
+			}
+			for (t = inSamples_/2; t < inSamples_; t++)
+			{
+				out(o,t+(onSamples_-inSamples_))=tmp_((t+delta_)%inSamples_);
+			}
 		}
 		else
 		{
-		  for(t=0; t< inSamples_; ++t)
-		    out(o,t) = in(o,t) * envelope_(t);
+			for (t=0; t< inSamples_; ++t)
+			{
+				out(o,t) = in(o,t) * envelope_(t);
+			}
 		}
 	}
 }
