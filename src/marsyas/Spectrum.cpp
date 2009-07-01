@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -52,13 +52,13 @@ Spectrum::addControls()
 	setctrlState("mrs_real/lowcutoff", true);
 }
 
-MarSystem* 
-Spectrum::clone() const 
+MarSystem*
+Spectrum::clone() const
 {
 	return new Spectrum(*this);
 }
 
-void 
+void
 Spectrum::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
@@ -73,16 +73,16 @@ Spectrum::myUpdate(MarControlPtr sender)
 
 	if (ponObservations_ != onObservations_)
 	{
-	  /* ostringstream oss;
-		oss << "rbin_0" << ","; //DC bin (only has real part)
-		oss << "rbin_" << onObservations_/2 << ","; //Nyquist bin (only has real part)
-		for (mrs_natural n=2; n < onObservations_/2; n++)
-		{
-			oss << "rbin_" << n-1 << ",";
-			oss << "ibin_" << n-1 << ",";
-		}
-		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
-	  */ 
+		/* ostringstream oss;
+		  oss << "rbin_0" << ","; //DC bin (only has real part)
+		  oss << "rbin_" << onObservations_/2 << ","; //Nyquist bin (only has real part)
+		  for (mrs_natural n=2; n < onObservations_/2; n++)
+		  {
+		  	oss << "rbin_" << n-1 << ",";
+		  	oss << "ibin_" << n-1 << ",";
+		  }
+		  ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+		*/
 	}
 
 
@@ -91,12 +91,13 @@ Spectrum::myUpdate(MarControlPtr sender)
 	// based on the first item of inObsNames_, because we ignore the
 	// other observation channels.
 	mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
-	ostringstream oss; 
-	for (mrs_natural i = 0; i < inSamples_; i++) {
+	ostringstream oss;
+	for (mrs_natural i = 0; i < inSamples_; i++)
+	{
 		oss << "FFT" << inSamples_
-			// \todo: shouldn't there be some sort of index included in the obsName? like
-			// << "i" << i
-			<< "_" << inObsName << ",";
+		// \todo: shouldn't there be some sort of index included in the obsName? like
+		// << "i" << i
+		<< "_" << inObsName << ",";
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
@@ -104,21 +105,21 @@ Spectrum::myUpdate(MarControlPtr sender)
 	ponObservations_ = onObservations_;
 }
 
-void 
+void
 Spectrum::myProcess(realvec& in, realvec& out)
 {
-	// copy to output to perform inplace fft 
-	// notice transposition of matrix 
-	// from row to column 
+	// copy to output to perform inplace fft
+	// notice transposition of matrix
+	// from row to column
 	for (t=0; t < inSamples_; t++)
 	{
-		out(t,0) = in(0,t);	
+		out(t,0) = in(0,t);
 	}
 
 	mrs_real *tmp = out.getData();
 	myfft_.rfft(tmp, inSamples_/2, FFT_FORWARD);
 
-	if (cutoff_ != 1.0) 
+	if (cutoff_ != 1.0)
 	{
 		for (t= (mrs_natural)((cutoff_ * inSamples_) / 2); t < inSamples_/2; t++)
 		{
@@ -132,11 +133,11 @@ Spectrum::myProcess(realvec& in, realvec& out)
 		for (t=0; t < (mrs_natural)((lowcutoff_ * inSamples_) /2); t++)
 		{
 			out(2*t,0) = 0;
-			out(2*t+1,0) = 0;	
+			out(2*t+1,0) = 0;
 		}
 	}
 
-	//compare with matlab fft   
+	//compare with matlab fft
 	//	 MATLAB_PUT(in, "vec");
 	//	 MATLAB_EVAL("out=fft(vec);");
 	//   MATLAB_GET("vec", out);

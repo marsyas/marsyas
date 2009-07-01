@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -24,7 +24,7 @@ using namespace Marsyas;
 #define PSD_POWER 1
 #define PSD_MAG 2
 #define PSD_DB  3
-#define PSD_PD  4 
+#define PSD_PD  4
 
 PowerSpectrum::PowerSpectrum(string name):MarSystem("PowerSpectrum",name)
 {
@@ -55,20 +55,20 @@ PowerSpectrum::addControls()
 	setctrlState("mrs_string/spectrumType", true);
 }
 
-MarSystem* 
-PowerSpectrum::clone() const 
+MarSystem*
+PowerSpectrum::clone() const
 {
 	return new PowerSpectrum(*this);
 }
 
-void 
+void
 PowerSpectrum::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
 
 	//Spectrum outputs N values, corresponding to N/2+1
 	//complex and unique spectrum points - see Spectrum.h documentation
-	N2_ = ctrl_inObservations_->to<mrs_natural>()/2 + 1; 
+	N2_ = ctrl_inObservations_->to<mrs_natural>()/2 + 1;
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(N2_, NOUPDATE); //outputs N/2+1 real values
@@ -77,7 +77,7 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 	stype_ = ctrl_spectrumType_->to<mrs_string>();
 	if (stype_ == "power")
 		ntype_ = PSD_POWER;
-	else if (stype_ == "magnitude") 
+	else if (stype_ == "magnitude")
 		ntype_ = PSD_MAG;
 	else if (stype_ == "decibels")
 		ntype_ = PSD_DB;
@@ -89,10 +89,10 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Power" + stype_ + "_"), NOUPDATE);
 }
 
-void 
+void
 PowerSpectrum::myProcess(realvec& in, realvec& out)
 {
-	for(t=0; t < inSamples_; ++t)
+	for (t=0; t < inSamples_; ++t)
 	{
 		for (o=0; o < N2_; o++)
 		{
@@ -112,10 +112,10 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 				im_ = in(2*o+1, t);
 			}
 
-			switch(ntype_)
+			switch (ntype_)
 			{
 			case PSD_POWER:
-				out(o, t) = re_*re_ + im_*im_;	  
+				out(o, t) = re_*re_ + im_*im_;
 				break;
 			case PSD_MAG:
 				out(o,t) = sqrt(re_ * re_ + im_ * im_);
@@ -123,14 +123,14 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 			case PSD_DB:
 				dB_ = (mrs_real)(20*log10(re_ * re_ + im_ * im_ + 0.000000001)); //FIXME[!] This should be 10*log10(...)! But it ruins toy_with_onsets() performance
 				if (dB_ < -100)	dB_ = -100;
-				out(o,t) = dB_;	  
+				out(o,t) = dB_;
 				break;
 			case PSD_PD:
-				pwr_ = re_ * re_ + im_ * im_;	  
-				out(o,t) = (mrs_real)(2.0 * pwr_) / N2_;	  
+				pwr_ = re_ * re_ + im_ * im_;
+				out(o,t) = (mrs_real)(2.0 * pwr_) / N2_;
 				break;
 			}
-		} 
+		}
 	}
 
 	//MATLAB_PUT(out, "PowerSpectrum");
