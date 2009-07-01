@@ -35,6 +35,8 @@ namespace Marsyas
 
 		Controls:
 		- \b mrs_string/spectrumType [w] : choose between "power", "magnitude", "decibels" and "powerdensity" computations
+
+		\see Spectrum
 */
 
 

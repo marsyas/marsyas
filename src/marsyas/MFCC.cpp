@@ -65,10 +65,13 @@ MFCC::myUpdate(MarControlPtr sender)
 	
 	samplingRate_ = (mrs_natural) (ctrl_israte_->to<mrs_real>() * fftSize_);
 
+	// Set the observation names: use the first item of the
+	// input observation names and prefix it with "MFCCxx"
+	mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
 	ostringstream oss;
-	mrs_string in_names = ctrl_inObsNames_->to<mrs_string>();
-	for (i=0; i < cepstralCoefs_; i++)
-	  oss << "MFCC" << i << "_" << in_names;
+	for (i=0; i < cepstralCoefs_; i++) {
+	  oss << "MFCC" << i << "_" << inObsName << ",";
+	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	 
 	if ((pfftSize_ != fftSize_) || (psamplingRate_ != samplingRate_))

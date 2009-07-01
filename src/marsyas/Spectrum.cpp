@@ -86,10 +86,19 @@ Spectrum::myUpdate(MarControlPtr sender)
 	}
 
 
-	ostringstream oss; 
-	oss << onObservations_;	  
-	ctrl_onObsNames_->setValue("FFT" + oss.str() + "_" + ctrl_inObsNames_->to<mrs_string>(), NOUPDATE);
 
+	// Set the observation names by prefixing it with FFTxxx,
+	// based on the first item of inObsNames_, because we ignore the
+	// other observation channels.
+	mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
+	ostringstream oss; 
+	for (mrs_natural i = 0; i < inSamples_; i++) {
+		oss << "FFT" << inSamples_
+			// \todo: shouldn't there be some sort of index included in the obsName? like
+			// << "i" << i
+			<< "_" << inObsName << ",";
+	}
+	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
 
 	ponObservations_ = onObservations_;

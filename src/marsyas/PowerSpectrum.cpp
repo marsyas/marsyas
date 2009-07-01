@@ -84,12 +84,9 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 	else if (stype_ == "powerdensity")
 		ntype_ = PSD_PD;
 
-	/* ostringstream oss;
-	for (mrs_natural n=0; n < N2_; n++)
-		oss << stype_ << "_bin_" << n << ",";
-	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
-	*/ 
-	ctrl_onObsNames_->setValue("Power_" + ctrl_inObsNames_->to<mrs_string>(), NOUPDATE);
+	// Add prefix to the observation names.
+	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Power" + stype_ + "_"), NOUPDATE);
 }
 
 void 

@@ -31,7 +31,9 @@ namespace Marsyas
 
     Mel-Frequency cepstral coefficients are features frequently 
 used in Speech Recognition. The code is based on the corresponding 
-function in the Auditory Toolbox by Malcolm Slaney. 
+function in the Auditory Toolbox by Malcolm Slaney.
+
+	\see Spectrum, PowerSpectrum
 */
 
 

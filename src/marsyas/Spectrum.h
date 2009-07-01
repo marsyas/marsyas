@@ -39,7 +39,12 @@ namespace Marsyas
 		Note that the DC and Nyquist frequencies only have real part,
 		and are output as the two first coefficients in the vector. 
 		Overall, the output spectrum has N/2+1 unique points, corresponding
-		to the positive half of the complex spectrum. 
+		to the positive half of the complex spectrum.
+
+	\note Only the first observation input channel is processed,
+	the rest (if any) is ignored.
+
+	\see PowerSpectrum, fft
 */
 
 class Spectrum: public MarSystem
