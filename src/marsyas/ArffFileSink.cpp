@@ -167,21 +167,23 @@ ArffFileSink::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	// Write data to file.
-	for (t = 0; t < inSamples_; t++)
-	{
-		if (decimationCounter % decimationFactor_ == 0)
+	if (!ctrl_mute_->isTrue()) {
+		// Write data to file.
+		for (t = 0; t < inSamples_; t++)
 		{
-			for (o = 0; o < inObservations_; o++)
+			if (decimationCounter % decimationFactor_ == 0)
 			{
-				(*os_) << fixed << setprecision(floatPrecision_) << out(o, t);
-				if (o < inObservations_ - 1)
+				for (o = 0; o < inObservations_; o++)
 				{
-					(*os_) << ",";
+					(*os_) << fixed << setprecision(floatPrecision_) << out(o, t);
+					if (o < inObservations_ - 1)
+					{
+						(*os_) << ",";
+					}
 				}
+				(*os_) << endl;
 			}
-			(*os_) << endl;
+			decimationCounter ++;
 		}
-		decimationCounter ++;
 	}
 }
