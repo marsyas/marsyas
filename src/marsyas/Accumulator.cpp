@@ -110,10 +110,9 @@ Accumulator::myUpdate(MarControlPtr sender)
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 
 	// Add prefix to the observation names.
-	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	ostringstream prefix_oss;
 	prefix_oss << "Acc" << nTimes_ << "_";
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, prefix_oss.str()), NOUPDATE);
+	ctrl_onObsNames_->setValue(obsNamesAddPrefix(onObsNames, prefix_oss.str()), NOUPDATE);
 
 
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
