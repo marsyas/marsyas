@@ -49,6 +49,10 @@ private:
   // Scale sliders
   QSlider *yScaleSlider;
 
+  // Fog slider
+  QSlider *fogStartSlider;
+  QSlider *fogEndSlider;
+
   QPushButton *playpause_button;
 
   QMenu*   fileMenu;  

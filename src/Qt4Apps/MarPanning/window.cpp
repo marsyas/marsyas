@@ -29,6 +29,10 @@ Window::Window(string inAudioFileName)
   yTransSlider = createTranslationSlider();
   zTransSlider = createTranslationSlider();
 
+  // Fog sliders
+  fogStartSlider = createTranslationSlider();
+  fogEndSlider = createTranslationSlider();
+
 //   // The y-scale slider
 //   yScaleSlider = createSlider(0,1000,10,100,50);
 
@@ -83,6 +87,9 @@ Window::Window(string inAudioFileName)
   connect(zTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZTranslation(int)));
 //   connect(glWidget, SIGNAL(zTranslationChanged(int)), zTransSlider, SLOT(setValue(int)));
 
+  connect(fogStartSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setFogStart(int)));
+  connect(fogEndSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setFogEnd(int)));
+
 
 //   // Scale sliders
 //   connect(yScaleSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYScale(int)));
@@ -133,6 +140,19 @@ Window::Window(string inAudioFileName)
   z_trans_slider_layout->addWidget(z_trans_slider_label);
   z_trans_slider_layout->addWidget(zTransSlider);
   gl_layout->addLayout(z_trans_slider_layout);
+
+  QHBoxLayout *fog_start_slider_layout = new QHBoxLayout;
+  QLabel *fog_start_slider_label = new QLabel(("Fog Start"));
+  fog_start_slider_layout->addWidget(fog_start_slider_label);
+  fog_start_slider_layout->addWidget(fogStartSlider);
+  gl_layout->addLayout(fog_start_slider_layout);
+
+  QHBoxLayout *fog_end_slider_layout = new QHBoxLayout;
+  QLabel *fog_end_slider_label = new QLabel(("Fog End"));
+  fog_end_slider_layout->addWidget(fog_end_slider_label);
+  fog_end_slider_layout->addWidget(fogEndSlider);
+  gl_layout->addLayout(fog_end_slider_layout);
+
 
   layout->addLayout(gl_layout);
 

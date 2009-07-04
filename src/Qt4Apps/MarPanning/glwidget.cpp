@@ -176,7 +176,8 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   mwr_ = new MarSystemQtWrapper(net);
   mwr_->start();
   mwr_->play();
-		    
+  play_state = true;
+
   // Create some handy pointers to access the MarSystem
   posPtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
@@ -224,16 +225,68 @@ void GLWidget::initializeGL()
   GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
   glClearColor(0.0f,0.0f,0.0f,1.0f);  // Fog colour of black (0,0,0)
   glFogfv(GL_FOG_COLOR, fogColor);    // Set fog color
-  glFogi(GL_FOG_MODE, GL_EXP2);       // Set the fog mode
-  glFogf(GL_FOG_DENSITY, 0.02f);      // How dense will the fog be
+  glFogi(GL_FOG_MODE, GL_LINEAR);       // Set the fog mode
+  glFogf(GL_FOG_DENSITY, 0.5f);      // How dense will the fog be
   glHint(GL_FOG_HINT, GL_NICEST);     // Fog hint value : GL_DONT_CARE, GL_NICEST
-  glFogf(GL_FOG_START, -0.0f);          // Fog Start Depth
-  glFogf(GL_FOG_END, -100.0f);            // Fog End Depth
-//      glEnable(GL_FOG);                   // Enable fog
+  glFogf(GL_FOG_START, 0.0f);          // Fog Start Depth
+  glFogf(GL_FOG_END, 50.0f);            // Fog End Depth
+        glEnable(GL_FOG);                   // Enable fog
 
   // Antialias lines
   glEnable(GL_LINE_SMOOTH);
   glHint (GL_LINE_SMOOTH_HINT,GL_NICEST);
+
+  //
+  // Disks
+  //
+  
+    // Setup for creating the disk
+  int max_disks = 5;
+     startList = glGenLists(max_disks);
+     qobj = gluNewQuadric();
+     gluQuadricCallback(qobj, GLU_ERROR, NULL);
+
+     // Create the disk
+     gluQuadricDrawStyle(qobj, GLU_FILL); /* all polygons wireframe */
+     gluQuadricNormals(qobj, GLU_FLAT);
+
+	 glNewList(startList+0, GL_COMPILE);
+	 gluDisk(qobj, 0, 0.07, 10, 1);
+	 glEndList();
+
+	 glNewList(startList+1, GL_COMPILE);
+	 gluDisk(qobj, 0, 0.09, 10, 1);
+	 glEndList();
+
+	 glNewList(startList+2, GL_COMPILE);
+	 gluDisk(qobj, 0, 0.10, 10, 1);
+	 glEndList();
+
+	 glNewList(startList+3, GL_COMPILE);
+	 gluDisk(qobj, 0, 0.11, 10, 1);
+	 glEndList();
+
+	 glNewList(startList+4, GL_COMPILE);
+	 gluDisk(qobj, 0, 0.12, 10, 1);
+	 glEndList();
+
+   GLfloat mat_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
+   GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+   GLfloat mat_shininess[] = { 50.0 };
+   GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+   GLfloat model_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
+
+   glClearColor(0.0, 0.0, 0.0, 0.0);
+
+   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, model_ambient);
+
+   glEnable(GL_LIGHTING);
+   glEnable(GL_LIGHT0);
+   glEnable(GL_DEPTH_TEST);
 }
 
 // Paint the GL widget
@@ -342,11 +395,37 @@ void GLWidget::redrawScene() {
 
 	  glColor3f((size*5),1,0);
 
-	  glBegin(GL_TRIANGLES);
-	  glVertex3f(x,y,z);
-	  glVertex3f(x+size,y,z);
-	  glVertex3f(x+size,y+size,z);
-	  glEnd();
+//    	  glBegin(GL_TRIANGLES);
+//    	  glVertex3f(x,y,z);
+//    	  glVertex3f(x+size,y,z);
+//    	  glVertex3f(x+size,y+size,z);
+//    	  glEnd();
+
+	  // A disk
+//     glEnable(GL_LIGHTING);
+//     glColor3f(1.0, 1.0, 1.0);
+	  if (size > 0.005) {
+
+ 		float mcolor[] = { (size*5), 1.0f, 0.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
+
+		glTranslatef(x,y,z);
+		
+ 		if (size > 0.3) {
+		  glCallList(startList+4);
+ 		} else if (size > 0.2) {
+ 		  glCallList(startList+3);
+ 		} else if (size > 0.1) {
+ 		  glCallList(startList+2);
+ 		} else if (size > 0.05) {
+ 		  glCallList(startList+1);
+ 		} else {
+ 		  glCallList(startList);
+ 		}
+
+		glTranslatef(-x,-y,-z);
+	  }
+
 
  	}
 
@@ -461,6 +540,31 @@ void GLWidget::setZTranslation(int v)
   }
 }
 
+
+void GLWidget::setFogStart(int v)
+{
+  double val = v * -2;
+  if (val != fogStart) {
+	fogStart = val;
+	cout << "fogStart=" << fogStart << endl;
+	emit fogStartChanged(val);
+	glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
+	updateGL();
+  }
+}
+
+void GLWidget::setFogEnd(int v)
+{
+  double val = v * -2;
+  if (val != fogEnd) {
+	fogEnd = val;
+	cout << "fogEnd=" << fogEnd << endl;
+	emit fogEndChanged(val);
+	glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
+	updateGL();
+  }
+}
+
 // void GLWidget::powerSpectrumModeChanged(int val) 
 // {
 //   string sval;
@@ -506,3 +610,4 @@ void GLWidget::open()
   play_state = true;
 
 }
+

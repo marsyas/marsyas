@@ -36,6 +36,9 @@ public slots:
   void setYTranslation(int val);
   void setZTranslation(int val);
 
+  void setFogStart(int val);
+  void setFogEnd(int val);
+
 //   void setYScale(int scale);
 
 //   void powerSpectrumModeChanged(int val);
@@ -53,6 +56,9 @@ signals:
   void xTranslationChanged(int angle);
   void yTranslationChanged(int angle);
   void zTranslationChanged(int angle);
+
+  void fogStartChanged(int angle);
+  void fogEndChanged(int angle);
 
 //   void start_xRotationChanged(int angle);
 //   void start_yRotationChanged(int angle);
@@ -91,6 +97,10 @@ private:
   double xTrans;
   double yTrans;
   double zTrans;
+
+  double fogStart;
+  double fogEnd;
+
 
 //   // The start x,y,z rotation angles for the animation
 //   int start_xRot;
@@ -154,6 +164,13 @@ private:
   MarControlPtr posPtr_;
   MarControlPtr initPtr_;
   MarControlPtr fnamePtr_;
+  
+  // The disk object
+   GLUquadricObj *qobj;
+  GLuint startList;
+
+  void errorCallback(GLenum errorCode);
+
 
 };
 
