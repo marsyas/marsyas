@@ -64,6 +64,7 @@ ShiftOutput::myUpdate(MarControlPtr sender)
 void 
 ShiftOutput::myProcess(realvec& in, realvec& out)
 {
+	
 	if(interp_ > inSamples_)
 		out.setval(0.0);
 

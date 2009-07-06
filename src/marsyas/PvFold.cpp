@@ -130,6 +130,7 @@ void
 PvFold::myProcess(realvec& in, realvec& out)
 {
 
+	
 	// mrs_real rmsIn = 0.0;
 	
 	for (t=0; t < Nw_; t++)

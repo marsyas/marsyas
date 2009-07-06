@@ -92,6 +92,7 @@ ShiftInput::myUpdate(MarControlPtr sender)
 void
 ShiftInput::myProcess(realvec& in, realvec& out)
 {
+	
 	for (o = 0; o<inObservations_; ++o)
 	{
 		if (hopSize_ < winSize_)

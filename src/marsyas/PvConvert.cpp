@@ -199,6 +199,8 @@ PvConvert::myProcessFull(realvec& in, realvec& out)
 void 
 PvConvert::myProcess(realvec& in, realvec& out)
 {
+	
+
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
 	if ((mode == "full")||(mode == "analysis_scaled_phaselock"))
 		myProcessFull(in,out);
@@ -333,7 +335,6 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
 void 
 PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 {
-	cout << "Sorted " << endl;
 	
 
 	MarControlAccessor acc(ctrl_phases_);

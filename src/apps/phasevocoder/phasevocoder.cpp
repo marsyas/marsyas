@@ -223,8 +223,6 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 		}
 		
 		
-
-		
 		pvseries->tick();
 		
 		numticks++;

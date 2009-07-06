@@ -193,6 +193,8 @@ PvOscBank::isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp)
 void 
 PvOscBank::myProcess(realvec& in, realvec& out)
 {
+
+	
 	
 	MarControlAccessor acc(ctrl_frequencies_);
 	mrs_realvec& frequencies = acc.to<mrs_realvec>();
@@ -208,6 +210,12 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	MarControlAccessor  acc3(ctrl_peaks_);
 	mrs_realvec& peaks = acc3.to<mrs_realvec>();
 
+	if (PS_ > 1.0)
+		NP_ = (mrs_natural)(N_/PS_);
+	else
+		NP_ = N_;
+
+
 
 	peaks.setval(0.0);
 	
@@ -217,12 +225,10 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		frequencies(t) =  in(2*t+1,0);
 	}
 	PS_ = P_;		
+
 	
 	
-	if (PS_ > 1.0)
-		NP_ = (mrs_natural)(N_/PS_);
-	else
-		NP_ = N_;
+
 	
 	Iinv_ = (mrs_real)(1.0 / I_);
 	Pinc_ = PS_ * L_ / TWOPI;
@@ -234,6 +240,8 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 
 	mrs_real maxAmp =0.0;
 	
+
+
 	for (t=0; t < NP_; t++)
 	{
 		magnitudes_(t) =  in(2*t,0);
@@ -253,11 +261,14 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	}
 
 
+
+
 	for (int i=0; i < size_; i++) 
 	{
 		regions(i) = i;
 	}
 	
+
 
 	// calculate regions of influence 
 	int previous_peak=0;
@@ -290,6 +301,8 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		
 	}
 	
+
+
 	mrs_real factor = 1;
 	for (t=0; t < NP_; t++)
 	{
@@ -311,7 +324,6 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 	}
 	
 	factor = 1.5;
-	
 	
 	for (t=0; t < NP_; t++)
 	{
@@ -392,5 +404,6 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		temp_(t) = 0.0;
 
 	
+
 	
 }

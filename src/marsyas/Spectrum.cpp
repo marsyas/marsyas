@@ -108,6 +108,8 @@ Spectrum::myUpdate(MarControlPtr sender)
 void
 Spectrum::myProcess(realvec& in, realvec& out)
 {
+
+	
 	// copy to output to perform inplace fft
 	// notice transposition of matrix
 	// from row to column
