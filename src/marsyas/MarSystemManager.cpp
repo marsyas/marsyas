@@ -181,6 +181,7 @@
 #include "SNR.h"
 #include "PCA.h"
 #include "AbsMax.h"
+#include "MaxMin.h"
 #include "TimelineLabeler.h"
 #include "RadioDrumInput.h"
 #include "NoiseGate.h"
@@ -363,6 +364,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SNR", new SNR("snrpr"));
 	registerPrototype("PCA", new PCA("pcapr"));
 	registerPrototype("AbsMax", new AbsMax("absmaxpr"));
+	registerPrototype("MaxMin", new MaxMin("maxminpr"));
 	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
 	registerPrototype("StretchLinear", new StretchLinear("stretchlinearpr"));
 	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
