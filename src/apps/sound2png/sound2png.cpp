@@ -27,8 +27,9 @@ int usageopt;
 int verboseopt;
 int windowSize;
 int hopSize;
-int gain;
+mrs_real gain;
 int maxFreq;
+bool waveform;
 CommandLineOptions cmd_options;
 
 void 
@@ -62,7 +63,8 @@ printHelp(string progName)
   cerr << "Help Options:" << endl;
   cerr << "-u --usage        : display short usage info" << endl;
   cerr << "-h --help         : display this information " << endl;
-  cerr << "-v --verbose      : verbose output " << endl;
+  cerr << "-v --verbose      : verbose output" << endl;
+  cerr << "-w --waveform     : draw a waveform instead of a spectrogram" << endl;
   cerr << "--ws --windowsize : windows size in samples " << endl;
   cerr << "--hs --hopsize    : hop size in samples " << endl;
   cerr << "-g --gain         : gain for spectrogram" << endl;
@@ -78,6 +80,7 @@ initOptions()
   cmd_options.addBoolOption("help", "h", false);
   cmd_options.addBoolOption("usage", "u", false);
   cmd_options.addBoolOption("verbose", "v", false);
+  cmd_options.addBoolOption("waveform", "w", false);
   cmd_options.addNaturalOption("windowsize", "ws", 512);
   cmd_options.addNaturalOption("hopsize", "hs", 256);
   cmd_options.addRealOption("gain", "g", 1.5);
@@ -91,12 +94,173 @@ loadOptions()
   helpopt = cmd_options.getBoolOption("help");
   usageopt = cmd_options.getBoolOption("usage");
   verboseopt = cmd_options.getBoolOption("verbose");
+  waveform = cmd_options.getBoolOption("waveform");
   windowSize = cmd_options.getNaturalOption("windowsize");
   hopSize = cmd_options.getNaturalOption("hopsize");
   gain = cmd_options.getRealOption("gain");
   maxFreq = cmd_options.getNaturalOption("maxfreq");
 }
 
+
+int getFileLengthForWaveform(string inFileName, int windowSize, double& min, double& max) {
+
+  MarSystemManager mng;
+
+  // A series to contain everything
+  MarSystem* series = mng.create("Series", "series");
+	
+  // The sound file
+  series->addMarSystem(mng.create("SoundFileSource", "src"));
+  series->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  series->setctrl("mrs_natural/inSamples", windowSize);
+
+  // Compute the AbsMax of this window
+  series->addMarSystem(mng.create("AbsMax","absmax"));
+
+  realvec processedData;
+
+  int length = 0;
+
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+	series->tick();
+	length++;
+
+	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	if (processedData(0) < min)
+	  min = processedData(0);
+	if (processedData(0) > max)
+	  max = processedData(0);
+  }
+
+
+  delete series;
+
+  if (verboseopt) {
+    cout << "length=" << length << endl;
+    cout << "max=" << max << endl;
+    cout << "min=" << min << endl;
+  }
+
+  return length;
+}
+
+void outputWaveformPNG(string inFileName, string outFileName)
+{
+  int length;
+  int height = 128;
+  int middle_right = (height/4);
+  int middle_left = (height/2)+(height/4);
+
+  double min = 99999999999.9;
+  double max = -99999999999.9;
+
+  length = getFileLengthForWaveform(inFileName,windowSize,min,max);
+
+  pngwriter png(length,height,0,outFileName.c_str());
+
+  MarSystemManager mng;
+
+  // A series to contain everything
+  MarSystem* series = mng.create("Series", "series");
+	
+  // The sound file
+  series->addMarSystem(mng.create("SoundFileSource", "src"));
+  series->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  series->setctrl("mrs_natural/inSamples", windowSize);
+
+//    series->addMarSystem(mng.create("Gain","gain"));
+   series->addMarSystem(mng.create("MaxMin","maxmin"));
+
+  realvec processedData;
+
+  // Give it a white background
+  png.invert();
+
+  // A line across the middle of the plot
+  png.line(0,middle_right,length,middle_right,0,0,0);
+  png.line(0,middle_left,length,middle_left,0,0,0);
+  
+  double x = 0;
+
+  double y_max_right = 0;
+  double y_min_right = 0;
+  double y_max_right_prev = 0;
+  double y_min_right_prev = 0;
+
+  double y_max_left = 0;
+  double y_min_left = 0;
+  double y_max_left_prev = 0;
+  double y_min_left_prev = 0;
+
+  double draw_color;
+
+  // If we are just displaying individual samples, make the line dark blue.
+  if (windowSize == 1) {
+	draw_color = 0.0;
+  } else {
+	draw_color = 0.2;
+  }
+
+  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+	series->tick();
+	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+  	y_max_right = processedData(1,0) / 2.0 * height;
+  	y_min_right = processedData(1,1) / 2.0 * height;
+
+   	y_max_left = processedData(0,0) / 2.0 * height;
+   	y_min_left = processedData(0,1) / 2.0 * height;
+
+	//
+	// Draw the right waveform
+	//
+
+	// Draw a line from the maximum to the minimum value
+  	png.line(x,middle_right+y_min_right,x,middle_right+y_max_right,0.0,0.0,1.0);
+
+	// Shade the middle part of the line lighter blue
+	double right_height = (y_max_right - y_min_right) / 4.0;
+  	png.line(x,(middle_right+y_min_right)+right_height,x,(middle_right+y_max_right)-right_height,0.5,0.5,1.0);
+	
+	// Fill in any missing segments with light blue
+	if (y_min_right_prev > y_max_right) {
+	  png.line(x,middle_right+y_min_right_prev,x,middle_right+y_max_right,draw_color,draw_color,1.0);
+	} else if (y_max_right_prev < y_min_right) {
+	  png.line(x,middle_right+y_max_right_prev,x,middle_right+y_min_right,draw_color,draw_color,1.0);
+	}
+
+	//
+	// Draw the left waveform
+	//
+
+	// Draw a line from the maximum to the minimum value
+  	png.line(x,middle_left+y_min_left,x,middle_left+y_max_left,0.0,0.0,1.0);
+
+	// Shade the middle part of the line lighter blue
+	double left_height = (y_max_left - y_min_left) / 4.0;
+  	png.line(x,(middle_left+y_min_left)+left_height,x,(middle_left+y_max_left)-left_height,0.5,0.5,1.0);
+	
+	// Fill in any missing segments with light blue
+	if (y_min_left_prev > y_max_left) {
+	  png.line(x,middle_left+y_min_left_prev,x,middle_left+y_max_left,draw_color,draw_color,1.0);
+	} else if (y_max_left_prev < y_min_left) {
+	  png.line(x,middle_left+y_max_left_prev,x,middle_left+y_min_left,draw_color,draw_color,1.0);
+	}
+
+	y_max_right_prev = y_max_right;
+	y_min_right_prev = y_min_right;
+	y_max_left_prev = y_max_left;
+	y_min_left_prev = y_min_left;
+
+  	x++;
+
+  }
+
+  png.close();
+
+
+  delete series;
+}
 
 
 int getFileLengthForSpectrogram(string inFileName, double& min, double& max, double& average) {
@@ -139,11 +303,13 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 
   average = dataTotal / dataLength;
 
-//     cout << "length=" << length << endl;
-//     cout << "max=" << max << endl;
-//     cout << "min=" << min << endl;
-//     cout << "average=" << average << endl;
-	
+  if (verboseopt) {
+	cout << "length=" << length << endl;
+	cout << "max=" << max << endl;
+	cout << "min=" << min << endl;
+	cout << "average=" << average << endl;
+  }
+
   return length;
 }
 
@@ -269,7 +435,11 @@ main(int argc, const char **argv)
     printUsage(progName);
 
   // play the soundfiles/collections 
-  outputSpectrogramPNG(files[0],files[1]);
+  if (waveform) {
+	outputWaveformPNG(files[0],files[1]);
+  } else {
+	outputSpectrogramPNG(files[0],files[1]);
+  }
   
   exit(0);
 
