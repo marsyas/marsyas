@@ -29,6 +29,7 @@ add_subdirectory(WHaSp)
 add_subdirectory(sfplugin)
 add_subdirectory(mudbox)
 add_subdirectory(rhythmMap)
+add_subdirectory(sound2png)
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
