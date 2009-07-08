@@ -116,6 +116,7 @@ as Marsyas does not perform automatic sampling conversion on collections.
 * audioCompare::                
 * record::                      
 * orcarecord::                  
+* sound2png::                  
 @end menu
 
 
@@ -191,7 +192,7 @@ record -l 5 -c 2 -s 22050 -g 0.8 bar.wav
 
 
 
-@node orcarecord,  , record, Soundfile Interaction
+@node orcarecord, sound2png , record, Soundfile Interaction
 @subsection @code{orcarecord}
 
 Similar to record but with specic change to record 4 stereo channels
@@ -205,6 +206,59 @@ input at 30 percent volume (-g 0.3).
 orcarecord -l 8 -g 0.3 foo.wav 
 @end example 
 
+
+@node sound2png,  , orcarecord, Soundfile Interaction
+@subsection @code{sound2png}
+
+A program that uses Marsyas to generate a PNG of an input audio file.
+The PNG can be either the waveform or the spectrogram of the audio
+file.
+
+When generating a spectrogram, you can set both the window size and
+hop size that are used in calculating the FFT.  The window size that
+you give is then used as the amount of data that the FFT is given,
+which means that the number of bins for the FFT will be half of the
+window size.  Each bin of the FFT will be drawn in one pixel
+vertically, so if you use a window size of 512, the resulting PNG will
+be 256 pixels high.
+
+The hop size for the spectrogram tells the program how much to overlap
+each FFT by.  The width of the output PNG will thus depend on the
+length of the audio file and the hop size, with smaller hop sizes
+giving longer PNG images.
+
+Below is shown an example of using sound2png to generate a spectrogram
+of an orca call.  We use a window size of 1024 and a hop size of 1024.
+The maximum frequency is set to 8000Hz.  A gain of 1.5 is used to make
+the spectrogram darker:
+
+@example 
+sound2png A30.wav -ws 1024 -hs 1024 -mf 8000 -g 1.5 out.png
+@end example 
+
+@image{images/sound2png_spectrogram,,5cm}
+
+You can also you sound2png to generate pictures of the waveform of an
+audio file.  For this, you use the -w option.  An example of this is
+shown below:
+
+@example 
+sound2png tiny.wav -ws 1 -w out.png
+@end example 
+
+@image{images/sound2png_waveform,,5cm}
+
+When generating pictures of waveforms, you can specify a window size.
+sound2png takes a chunk of data that is window size samples in length
+and calculates the maximum and minimum of this window.  It then draws
+a bar from the minimum to the maximum value for each window.  An
+example of this is shown below:
+
+@example 
+sound2png small.wav -ws 100 -w out.png
+@end example 
+
+@image{images/sound2png_waveform2,,5cm}
 
 
 @node Feature Extraction, Synthesis, Soundfile Interaction, Available tools
