@@ -220,7 +220,56 @@ different stages of processing.
 @node Parallel, Fanout, Series, MarSystem composites
 @subsection Parallel
 
+A Parallel composite is used when you have an input with multiple
+observations (i.e. channels) and you want to run calculations in
+parallel on each of the observations.  This is shown in graphical form
+below:
+
 @image{images/composite-parallel}
+
+In the above diagram, the Parallel MarSystem is fed a realvec with 3
+observations (and a large number of samples).  The MarSystem F1
+receives the first observation, coloured in green.  The second
+MarSystem in the Parallel, F2, gets the second observation, coloured
+in blue, and the third MarSystem, F3, receives the third observation,
+coloured in yellow.
+
+To build this system you would write code that would look something
+like:
+
+@example
+MarSystem* parallel = mng.create("Parallel", "parallel");
+parallel->addMarSystem(mng.create("Gain", "F1"));
+parallel->addMarSystem(mng.create("Gain", "F2"));
+parallel->addMarSystem(mng.create("Gain", "F3"));
+@end example
+
+One real-life use of Parallels is if you have a stereo sound source
+and you want to run an analysis on the left and right channels
+seperately.  An example of generating a spectrum for the right and
+left channels of a sound source would look something like:
+
+@example
+	MarSystem* net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+	MarSystem* left = mng.create("Series", "left");
+	MarSystem* right = mng.create("Series", "right");
+
+	left->addMarSystem(mng.create("Windowing", "hamleft"));
+	left->addMarSystem(mng.create("Spectrum", "spkleft"));
+	left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
+
+	right->addMarSystem(mng.create("Windowing", "hamright"));
+	right->addMarSystem(mng.create("Spectrum", "spkright"));
+	right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
+
+	stereobranches->addMarSystem(left);
+	stereobranches->addMarSystem(right);
+
+	net->addMarSystem(stereobranches);
+@end example
 
 
 
