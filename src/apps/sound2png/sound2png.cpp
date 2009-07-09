@@ -32,6 +32,8 @@ int hopSize;
 mrs_real gain;
 int maxFreq;
 bool waveform;
+int position;
+int ticks;
 CommandLineOptions cmd_options;
 
 void 
@@ -71,6 +73,8 @@ printHelp(string progName)
   cerr << "--hs --hopsize    : hop size in samples (for spectrogram)" << endl;
   cerr << "-g --gain         : gain for spectrogram (for spectrogram)" << endl;
   cerr << "--mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
+  cerr << "-p --position     : position to start at in the audio file" << endl;
+  cerr << "-t --ticks        : how many times to tick the network" << endl;
    
   exit(1);
 }
@@ -86,6 +90,8 @@ initOptions()
   cmd_options.addNaturalOption("hopsize", "hs", 256);
   cmd_options.addRealOption("gain", "g", 1.5);
   cmd_options.addNaturalOption("maxfreq", "mf", 8000);
+  cmd_options.addNaturalOption("ticks", "t", -1);
+  cmd_options.addNaturalOption("position", "p", 0);
 }
 
 
@@ -100,6 +106,8 @@ loadOptions()
   hopSize = cmd_options.getNaturalOption("hopsize");
   gain = cmd_options.getRealOption("gain");
   maxFreq = cmd_options.getNaturalOption("maxfreq");
+  position = cmd_options.getNaturalOption("position");
+  ticks = cmd_options.getNaturalOption("ticks");
 }
 
 
@@ -108,25 +116,27 @@ int getFileLengthForWaveform(string inFileName, int windowSize, double& min, dou
   MarSystemManager mng;
 
   // A series to contain everything
-  MarSystem* series = mng.create("Series", "series");
+  MarSystem* net = mng.create("Series", "net");
 	
   // The sound file
-  series->addMarSystem(mng.create("SoundFileSource", "src"));
-  series->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
-  series->setctrl("mrs_natural/inSamples", windowSize);
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
+  net->setctrl("mrs_natural/inSamples", windowSize);
 
   // Compute the AbsMax of this window
-  series->addMarSystem(mng.create("AbsMax","absmax"));
+  net->addMarSystem(mng.create("AbsMax","absmax"));
 
   realvec processedData;
 
   int length = 0;
 
-  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
-	series->tick();
+  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() 
+		 && (ticks == -1 || length < ticks))  {
+	net->tick();
 	length++;
 
-	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	if (processedData(0) < min)
 	  min = processedData(0);
 	if (processedData(0) > max)
@@ -134,7 +144,7 @@ int getFileLengthForWaveform(string inFileName, int windowSize, double& min, dou
   }
 
 
-  delete series;
+  delete net;
 
   if (verboseopt) {
     cout << "length=" << length << endl;
@@ -167,6 +177,7 @@ void outputWaveformPNG(string inFileName, string outFileName)
   // The sound file
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
   net->setctrl("mrs_natural/inSamples", windowSize);
   net->addMarSystem(mng.create("MaxMin","maxmin"));
 
@@ -214,8 +225,9 @@ void outputWaveformPNG(string inFileName, string outFileName)
   } else {
 	draw_color = 0.2;
   }
-
-  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+  
+  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()
+		 && (ticks == -1 || x < ticks))  {
 	net->tick();
 	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
@@ -295,12 +307,14 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
   net->addMarSystem(mng.create("PowerSpectrum","pspk"));
   net->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
   net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
   net->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
   net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
   net->updctrl("mrs_natural/inSamples", int(hopSize));
 
   int length = 0;
-  while ( net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() ) {
+  while ( net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() 
+		  && (ticks == -1 || length < ticks)) {
 	net->tick();
 	length++;
 
@@ -351,6 +365,7 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
   net->addMarSystem(mng.create("PowerSpectrum","pspk"));
   net->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
   net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
   net->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
   net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
   net->updctrl("mrs_natural/inSamples", int(hopSize));
@@ -369,7 +384,8 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
   double x = 0;
   double y = 0;
   double colour = 0;
-  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()
+		 && (ticks == -1 || x < ticks))  {
 	net->tick();
 	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
@@ -378,7 +394,14 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 
  	  double data = processedData(int(data_y),0);
 
-	  normalizedData = ((data - min) / (max - min)) * gain;
+ 	  normalizedData = ((data - min) / (max - min)) * gain;
+ 	  // sness - The following are all attempts to scale the data in
+	  // the spectrogram to make it look like what we get out of
+	  // audacity.  They didn't work.
+	  //
+	  //  	  normalizedData = ((data - min) / (max - min));
+	  // 	  normalizedData = (log(normalizedData*gain+0.1)+2.3)/3.0;
+	  // 	  normalizedData = (log(normalizedData*gain+0.01)+5)/7;
 
 	  //   	  double cutoff = 0.95;
 	  //  	  if (data < average) {
@@ -387,7 +410,8 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	  //  		normalizedData = ((data - average) / (max - average)) / ((1.0 / 1.0 - cutoff)) + cutoff;
 	  //  	  }
 
-	  y = i;
+	  // Make the spectrogram black on white instead of white on black
+	  // TODO - Add the ability to generate different color maps, like Sonic Visualiser
  	  colour = 1.0 - normalizedData;
 	  if (colour > 1.0) {
 		colour = 1.0;
@@ -396,11 +420,10 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 		colour = 0.0;
 	  }
 
-	  // 	  cout << "y=" << y << " data=" << data << " normalizedData=" << normalizedData << endl;
+	  y = i;
 	  png.plot(int(x),int(y),colour,colour,colour);
 	}
 	x++;
-	//  	cout << "x=" << x << endl;
 
   }
 
@@ -414,28 +437,6 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 int
 main(int argc, const char **argv)
 {
-  //   string inFileName;
-  //   int windowSize;
-  //   int hopSize;
-  //   float gain;
-  //   int maxFreq;
-  //   string outFileName;
-
-  //   if (argc < 4) {
-  // 	usage();
-  // 	exit(1);
-  //   } else {
-  // 	inFileName = argv[1];
-  // 	windowSize = atoi(argv[2]);
-  // 	hopSize = atoi(argv[3]);
-  // 	gain = atof(argv[4]);
-  // 	maxFreq = atoi(argv[5]);
-  // 	outFileName = argv[6];
-  //   }
-
-  //   outputSpectrogramPNG(inFileName,windowSize,hopSize,gain,maxFreq,outFileName);
-  //   exit(0);
-
   MRSDIAG("sfplay.cpp - main");
 
   string progName = argv[0];  
