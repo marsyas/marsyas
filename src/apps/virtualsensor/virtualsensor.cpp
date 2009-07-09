@@ -1118,6 +1118,24 @@ void recordSitarSensors(mrs_real length)
 }
 
 
+
+void readSitarDataMattAjay() 
+{
+	cout << "Read Sitar Data from Matt,Ajay" << endl;
+	cout << "Audio, Thumb and Fret are all audio files " << endl;
+	
+    vector<string> soundfiles = cmd_options.getRemaining();
+
+	cout << "Audio File " << soundfiles[0] << endl;
+	/* 
+	cout << "Thumb File " << soundfiles[1] << endl;
+	cout << "Fret File  " << soundfiles[2] << endl;
+	*/ 
+	
+
+}
+
+
 int main(int argc, const char **argv)
 {
     MRSDIAG("VirtualSensor.cpp - main");
@@ -1188,7 +1206,9 @@ int main(int argc, const char **argv)
         drumExtract3();
     else if (instrumentopt == 8)    
         testrmspreprocess();
-
+	else if (instrumentopt == 9) 
+		readSitarDataMattAjay();
+	
     exit(0);
 }
 

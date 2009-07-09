@@ -12,7 +12,9 @@
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
+#ifdef MARSYAS_PNG
 #include "pngwriter.h"
+#endif MARSYAS_PNG 
 
 #include <vector> 
 
@@ -145,6 +147,7 @@ int getFileLengthForWaveform(string inFileName, int windowSize, double& min, dou
 
 void outputWaveformPNG(string inFileName, string outFileName)
 {
+#ifdef MARSYAS_PNG
   int length;
   int height = 128;
   int middle_right;
@@ -154,7 +157,6 @@ void outputWaveformPNG(string inFileName, string outFileName)
   double max = -99999999999.9;
 
   length = getFileLengthForWaveform(inFileName,windowSize,min,max);
-
   pngwriter png(length,height,0,outFileName.c_str());
 
   MarSystemManager mng;
@@ -275,6 +277,7 @@ void outputWaveformPNG(string inFileName, string outFileName)
 
 
   delete net;
+#endif
 }
 
 
@@ -330,6 +333,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 
 void outputSpectrogramPNG(string inFileName, string outFileName)
 {
+#ifdef MARSYAS_PNG
   double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
 
   double min = 99999999999.9;
@@ -403,6 +407,7 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
   png.close();
 
   delete net;
+#endif 
 }
 
 
@@ -454,6 +459,7 @@ main(int argc, const char **argv)
   if (usageopt)
     printUsage(progName);
 
+#ifdef MARSYAS_PNG 
   // play the soundfiles/collections 
   if (waveform) {
 	outputWaveformPNG(files[0],files[1]);
@@ -462,6 +468,10 @@ main(int argc, const char **argv)
   }
   
   exit(0);
+#elseif 
+  cout << "sound2png requires Marsyas to be compiled with the WITH_PNG option" <<< endl; 
+  exit(0);
+#endif MARSYAS_PNG
 
 }
 
