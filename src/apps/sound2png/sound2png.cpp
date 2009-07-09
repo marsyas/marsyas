@@ -468,8 +468,8 @@ main(int argc, const char **argv)
   }
   
   exit(0);
-#elseif 
-  cout << "sound2png requires Marsyas to be compiled with the WITH_PNG option" <<< endl; 
+#else 
+  cout << "sound2png requires Marsyas to be compiled with the WITH_PNG option" << endl; 
   exit(0);
 #endif MARSYAS_PNG
 
