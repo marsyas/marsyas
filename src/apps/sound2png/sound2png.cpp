@@ -66,10 +66,9 @@ printHelp(string progName)
   cerr << "-v --verbose      : verbose output" << endl;
   cerr << "-w --waveform     : draw a waveform instead of a spectrogram" << endl;
   cerr << "--ws --windowsize : windows size in samples " << endl;
-  cerr << "--hs --hopsize    : hop size in samples " << endl;
-  cerr << "-g --gain         : gain for spectrogram" << endl;
-  cerr << "--mf --maxfreq    : maximum frequency for spectrogram " << endl;
-
+  cerr << "--hs --hopsize    : hop size in samples (for spectrogram)" << endl;
+  cerr << "-g --gain         : gain for spectrogram (for spectrogram)" << endl;
+  cerr << "--mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
    
   exit(1);
 }
@@ -148,8 +147,8 @@ void outputWaveformPNG(string inFileName, string outFileName)
 {
   int length;
   int height = 128;
-  int middle_right = (height/4);
-  int middle_left = (height/2)+(height/4);
+  int middle_right;
+  int middle_left;
 
   double min = 99999999999.9;
   double max = -99999999999.9;
@@ -161,15 +160,26 @@ void outputWaveformPNG(string inFileName, string outFileName)
   MarSystemManager mng;
 
   // A series to contain everything
-  MarSystem* series = mng.create("Series", "series");
+  MarSystem* net = mng.create("Series", "net");
 	
   // The sound file
-  series->addMarSystem(mng.create("SoundFileSource", "src"));
-  series->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
-  series->setctrl("mrs_natural/inSamples", windowSize);
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->setctrl("mrs_natural/inSamples", windowSize);
+  net->addMarSystem(mng.create("MaxMin","maxmin"));
 
-//    series->addMarSystem(mng.create("Gain","gain"));
-   series->addMarSystem(mng.create("MaxMin","maxmin"));
+  mrs_natural channels = net->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+
+  if (verboseopt) {
+	cout << "channels=" << channels << endl;
+  }
+
+  if (channels == 2) {
+	middle_right = (height/4);
+	middle_left = (height/2)+(height/4);
+  } else {
+	middle_left = (height/2);
+  }
 
   realvec processedData;
 
@@ -177,8 +187,10 @@ void outputWaveformPNG(string inFileName, string outFileName)
   png.invert();
 
   // A line across the middle of the plot
-  png.line(0,middle_right,length,middle_right,0,0,0);
   png.line(0,middle_left,length,middle_left,0,0,0);
+  if (channels == 2) {
+	png.line(0,middle_right,length,middle_right,0,0,0);
+  }
   
   double x = 0;
 
@@ -201,12 +213,14 @@ void outputWaveformPNG(string inFileName, string outFileName)
 	draw_color = 0.2;
   }
 
-  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
-	series->tick();
-	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+	net->tick();
+	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-  	y_max_right = processedData(1,0) / 2.0 * height;
-  	y_min_right = processedData(1,1) / 2.0 * height;
+	if (channels == 2) {
+	  y_max_right = processedData(1,0) / 2.0 * height;
+	  y_min_right = processedData(1,1) / 2.0 * height;
+	}
 
    	y_max_left = processedData(0,0) / 2.0 * height;
    	y_min_left = processedData(0,1) / 2.0 * height;
@@ -214,31 +228,31 @@ void outputWaveformPNG(string inFileName, string outFileName)
 	//
 	// Draw the right waveform
 	//
-
-	// Draw a line from the maximum to the minimum value
-  	png.line(x,middle_right+y_min_right,x,middle_right+y_max_right,0.0,0.0,1.0);
-
-	// Shade the middle part of the line lighter blue
-	double right_height = (y_max_right - y_min_right) / 4.0;
-  	png.line(x,(middle_right+y_min_right)+right_height,x,(middle_right+y_max_right)-right_height,0.5,0.5,1.0);
+	if (channels == 2) {
+	  // Draw a line from the maximum to the minimum value
+	  png.line(x,middle_right+y_min_right,x,middle_right+y_max_right,0.0,0.0,1.0);
 	
-	// Fill in any missing segments with light blue
-	if (y_min_right_prev > y_max_right) {
-	  png.line(x,middle_right+y_min_right_prev,x,middle_right+y_max_right,draw_color,draw_color,1.0);
-	} else if (y_max_right_prev < y_min_right) {
-	  png.line(x,middle_right+y_max_right_prev,x,middle_right+y_min_right,draw_color,draw_color,1.0);
+	  // Shade the middle part of the line lighter blue
+	  double right_height = (y_max_right - y_min_right) / 4.0;
+	  png.line(x,(middle_right+y_min_right)+right_height,x,(middle_right+y_max_right)-right_height,0.5,0.5,1.0);
+	
+	  // Fill in any missing segments with light blue
+	  if (y_min_right_prev > y_max_right) {
+		png.line(x,middle_right+y_min_right_prev,x,middle_right+y_max_right,draw_color,draw_color,1.0);
+	  } else if (y_max_right_prev < y_min_right) {
+		png.line(x,middle_right+y_max_right_prev,x,middle_right+y_min_right,draw_color,draw_color,1.0);
+	  }
 	}
 
 	//
 	// Draw the left waveform
 	//
-
 	// Draw a line from the maximum to the minimum value
-  	png.line(x,middle_left+y_min_left,x,middle_left+y_max_left,0.0,0.0,1.0);
+	png.line(x,middle_left+y_min_left,x,middle_left+y_max_left,0.0,0.0,1.0);
 
 	// Shade the middle part of the line lighter blue
 	double left_height = (y_max_left - y_min_left) / 4.0;
-  	png.line(x,(middle_left+y_min_left)+left_height,x,(middle_left+y_max_left)-left_height,0.5,0.5,1.0);
+	png.line(x,(middle_left+y_min_left)+left_height,x,(middle_left+y_max_left)-left_height,0.5,0.5,1.0);
 	
 	// Fill in any missing segments with light blue
 	if (y_min_left_prev > y_max_left) {
@@ -246,6 +260,7 @@ void outputWaveformPNG(string inFileName, string outFileName)
 	} else if (y_max_left_prev < y_min_left) {
 	  png.line(x,middle_left+y_max_left_prev,x,middle_left+y_min_left,draw_color,draw_color,1.0);
 	}
+	
 
 	y_max_right_prev = y_max_right;
 	y_min_right_prev = y_min_right;
@@ -259,7 +274,7 @@ void outputWaveformPNG(string inFileName, string outFileName)
   png.close();
 
 
-  delete series;
+  delete net;
 }
 
 
@@ -270,7 +285,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
   double dataTotal = 0.0;
 
   MarSystemManager mng;
-  MarSystem* net = mng.create("Series", "series");
+  MarSystem* net = mng.create("Series", "net");
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   net->addMarSystem(mng.create("ShiftInput", "si"));
   net->addMarSystem(mng.create("Spectrum","spk"));
@@ -324,7 +339,7 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
   int length = getFileLengthForSpectrogram(inFileName,min,max,average);
 
   MarSystemManager mng;
-  MarSystem* net = mng.create("Series", "series");
+  MarSystem* net = mng.create("Series", "net");
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   net->addMarSystem(mng.create("ShiftInput", "si"));
@@ -361,12 +376,12 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 
 	  normalizedData = ((data - min) / (max - min)) * gain;
 
-//   	  double cutoff = 0.95;
-//  	  if (data < average) {
-//  		normalizedData = ((data - min) / (average - min)) / (1.0 / cutoff);
-//  	  } else {
-//  		normalizedData = ((data - average) / (max - average)) / ((1.0 / 1.0 - cutoff)) + cutoff;
-//  	  }
+	  //   	  double cutoff = 0.95;
+	  //  	  if (data < average) {
+	  //  		normalizedData = ((data - min) / (average - min)) / (1.0 / cutoff);
+	  //  	  } else {
+	  //  		normalizedData = ((data - average) / (max - average)) / ((1.0 / 1.0 - cutoff)) + cutoff;
+	  //  	  }
 
 	  y = i;
  	  colour = 1.0 - normalizedData;
@@ -377,11 +392,11 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 		colour = 0.0;
 	  }
 
-// 	  cout << "y=" << y << " data=" << data << " normalizedData=" << normalizedData << endl;
+	  // 	  cout << "y=" << y << " data=" << data << " normalizedData=" << normalizedData << endl;
 	  png.plot(int(x),int(y),colour,colour,colour);
-	  }
+	}
 	x++;
-//  	cout << "x=" << x << endl;
+	//  	cout << "x=" << x << endl;
 
   }
 
@@ -394,27 +409,27 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 int
 main(int argc, const char **argv)
 {
-//   string inFileName;
-//   int windowSize;
-//   int hopSize;
-//   float gain;
-//   int maxFreq;
-//   string outFileName;
+  //   string inFileName;
+  //   int windowSize;
+  //   int hopSize;
+  //   float gain;
+  //   int maxFreq;
+  //   string outFileName;
 
-//   if (argc < 4) {
-// 	usage();
-// 	exit(1);
-//   } else {
-// 	inFileName = argv[1];
-// 	windowSize = atoi(argv[2]);
-// 	hopSize = atoi(argv[3]);
-// 	gain = atof(argv[4]);
-// 	maxFreq = atoi(argv[5]);
-// 	outFileName = argv[6];
-//   }
+  //   if (argc < 4) {
+  // 	usage();
+  // 	exit(1);
+  //   } else {
+  // 	inFileName = argv[1];
+  // 	windowSize = atoi(argv[2]);
+  // 	hopSize = atoi(argv[3]);
+  // 	gain = atof(argv[4]);
+  // 	maxFreq = atoi(argv[5]);
+  // 	outFileName = argv[6];
+  //   }
 
-//   outputSpectrogramPNG(inFileName,windowSize,hopSize,gain,maxFreq,outFileName);
-//   exit(0);
+  //   outputSpectrogramPNG(inFileName,windowSize,hopSize,gain,maxFreq,outFileName);
+  //   exit(0);
 
   MRSDIAG("sfplay.cpp - main");
 
@@ -428,6 +443,11 @@ main(int argc, const char **argv)
   loadOptions();
   
   vector<string> files = cmd_options.getRemaining();
+  if (files.size() != 2) {
+	cerr << "You must specify two files on the command line." << endl;
+	cerr << "One for the input audio file and one for the output PNG file" << endl;
+    printUsage(progName); 
+  }
   if (helpopt) 
     printHelp(progName);
   
