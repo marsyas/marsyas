@@ -24,7 +24,8 @@ using namespace Marsyas;
 #define PSD_POWER 1
 #define PSD_MAG 2
 #define PSD_DB  3
-#define PSD_PD  4
+#define PSD_WDB  4
+#define PSD_PD  5
 
 PowerSpectrum::PowerSpectrum(string name):MarSystem("PowerSpectrum",name)
 {
