@@ -718,7 +718,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 			"Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
 
 		//update onset detector controls
-		onsetdetector->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+		onsetdetector->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "wrongdBonsets");
 		onsetdetector->updctrl("Flux/flux/mrs_string/mode", "DixonDAFX06");
 		realvec bcoeffs(1,3);//configure zero-phase Butterworth filter of Flux time series -> butter(2, 0.28)
 		bcoeffs(0) = 0.1174;

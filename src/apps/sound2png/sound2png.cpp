@@ -34,6 +34,7 @@ int maxFreq;
 bool waveform;
 int position;
 int ticks;
+bool histogram;
 CommandLineOptions cmd_options;
 
 void 
@@ -75,6 +76,7 @@ printHelp(string progName)
   cerr << "--mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
   cerr << "-p --position     : position to start at in the audio file" << endl;
   cerr << "-t --ticks        : how many times to tick the network" << endl;
+  cerr << "-hi --histogram   : output a histogram of the values for the spectrogram" << endl;
    
   exit(1);
 }
@@ -92,6 +94,7 @@ initOptions()
   cmd_options.addNaturalOption("maxfreq", "mf", 8000);
   cmd_options.addNaturalOption("ticks", "t", -1);
   cmd_options.addNaturalOption("position", "p", 0);
+  cmd_options.addBoolOption("histogram", "hi", false);
 }
 
 
@@ -108,6 +111,7 @@ loadOptions()
   maxFreq = cmd_options.getNaturalOption("maxfreq");
   position = cmd_options.getNaturalOption("position");
   ticks = cmd_options.getNaturalOption("ticks");
+  histogram = cmd_options.getBoolOption("histogram");
 }
 
 
@@ -395,20 +399,6 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
  	  double data = processedData(int(data_y),0);
 
  	  normalizedData = ((data - min) / (max - min)) * gain;
- 	  // sness - The following are all attempts to scale the data in
-	  // the spectrogram to make it look like what we get out of
-	  // audacity.  They didn't work.
-	  //
-	  //  	  normalizedData = ((data - min) / (max - min));
-	  // 	  normalizedData = (log(normalizedData*gain+0.1)+2.3)/3.0;
-	  // 	  normalizedData = (log(normalizedData*gain+0.01)+5)/7;
-
-	  //   	  double cutoff = 0.95;
-	  //  	  if (data < average) {
-	  //  		normalizedData = ((data - min) / (average - min)) / (1.0 / cutoff);
-	  //  	  } else {
-	  //  		normalizedData = ((data - average) / (max - average)) / ((1.0 / 1.0 - cutoff)) + cutoff;
-	  //  	  }
 
 	  // Make the spectrogram black on white instead of white on black
 	  // TODO - Add the ability to generate different color maps, like Sonic Visualiser
@@ -433,6 +423,54 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 #endif 
 }
 
+void fftHistogram(string inFileName)
+{
+  double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+
+  MarSystemManager mng;
+  MarSystem* net = mng.create("Series", "net");
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  net->addMarSystem(mng.create("ShiftInput", "si"));
+  net->addMarSystem(mng.create("Spectrum","spk"));
+  net->addMarSystem(mng.create("PowerSpectrum","pspk"));
+  net->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+  net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
+  net->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
+  net->updctrl("mrs_natural/inSamples", int(hopSize));
+
+  mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+
+  realvec processedData;
+  double normalizedData;
+
+  // Iterate over the whole input file by ticking, outputting columns
+  // of data to the .png file with each tick
+  double x = 0;
+  double y = 0;
+  double colour = 0;
+  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()
+		 && (ticks == -1 || x < ticks))  {
+	net->tick();
+	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+ 	for (int i = 0; i < pngHeight; i++) {
+  	  double data_y = i;
+
+ 	  double data = processedData(int(data_y),0);
+
+	  cout << "data=" << data << endl;
+	}
+	x++;
+
+  }
+
+  delete net;
+}
+
 
 int
 main(int argc, const char **argv)
@@ -449,16 +487,22 @@ main(int argc, const char **argv)
   loadOptions();
   
   vector<string> files = cmd_options.getRemaining();
-  if (files.size() != 2) {
-	cerr << "You must specify two files on the command line." << endl;
-	cerr << "One for the input audio file and one for the output PNG file" << endl;
-    printUsage(progName); 
-  }
   if (helpopt) 
     printHelp(progName);
   
   if (usageopt)
     printUsage(progName);
+
+  if (histogram) {
+	fftHistogram(files[0]);
+	exit(0);
+  }
+
+  if (files.size() != 2) {
+	cerr << "You must specify two files on the command line." << endl;
+	cerr << "One for the input audio file and one for the output PNG file" << endl;
+    printUsage(progName); 
+  }
 
 #ifdef MARSYAS_PNG 
   // play the soundfiles/collections 

@@ -81,6 +81,8 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 		ntype_ = PSD_MAG;
 	else if (stype_ == "decibels")
 		ntype_ = PSD_DB;
+	else if (stype_ == "wrongdBonsets")
+		ntype_ = PSD_WDB;
 	else if (stype_ == "powerdensity")
 		ntype_ = PSD_PD;
 
@@ -124,7 +126,12 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 				out(o,t) = sqrt(re_ * re_ + im_ * im_);
 				break;
 			case PSD_DB:
-				dB_ = (mrs_real)(20*log10(re_ * re_ + im_ * im_ + 0.000000001)); //FIXME[!] This should be 10*log10(...)! But it ruins toy_with_onsets() performance
+				dB_ = (mrs_real)(10*log10(re_ * re_ + im_ * im_ + 0.000000001));
+				out(o,t) = dB_;
+				break;
+			case PSD_WDB:
+			  // 20*log10() seems to work better for toy_with_onsets
+				dB_ = (mrs_real)(20*log10(re_ * re_ + im_ * im_ + 0.000000001)); 
 				if (dB_ < -100)	dB_ = -100;
 				out(o,t) = dB_;
 				break;
