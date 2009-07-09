@@ -17,7 +17,7 @@
 */
 
 #include "SoundFileSource.h"
-#include <string> 
+#include <string>
 #include <cctype>
 #include <algorithm>
 
@@ -70,7 +70,7 @@ SoundFileSource::addControls()
 	addctrl("mrs_natural/loopPos", 0, ctrl_loop_);
 	setctrlState("mrs_natural/loopPos", true);
 
-	addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
+	addctrl("mrs_string/filename", SOUNDFILESOURCE_UNDEFINEDFILENAME, ctrl_filename_);
 	setctrlState("mrs_string/filename", true);
 
 	addctrl("mrs_string/allfilenames", ",");
@@ -115,6 +115,7 @@ SoundFileSource::addControls()
 void
 SoundFileSource::myUpdate(MarControlPtr sender)
 {
+
 	(void) sender;
 	MRSDIAG("SoundFileSource::myUpdate");
 
@@ -147,7 +148,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			if (src_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
 				src_->notEmpty_ = true; //[!]
 		}
-		
+
 		else
 		{
 			ctrl_onObservations_->setValue(1, NOUPDATE);
@@ -156,11 +157,11 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			src_ = NULL;
 		}
 	}
-	
-	
+
+
 	if (src_ != NULL)
 	{
-		
+
 		//pass configuration to audio source object and update it
 		src_->ctrl_inSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 		src_->ctrl_inObservations_->setValue(ctrl_inObservations_, NOUPDATE);
@@ -220,8 +221,9 @@ bool
 SoundFileSource::checkType()
 {
 	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+
 	// check if file exists
-	if (filename != "defaultfile")
+	if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
 	{
 		FILE * sfp = fopen(filename.c_str(), "r");
 		if (sfp == NULL)
@@ -229,14 +231,15 @@ SoundFileSource::checkType()
 			string wrn = "SoundFileSource::Problem opening file ";
 			wrn += filename;
 			MRSWARN(wrn);
-			filename_ = "defaultfile";
-			setctrl("mrs_string/filename", "defaultfile");
+			filename_ = SOUNDFILESOURCE_UNDEFINEDFILENAME;
+			setctrl("mrs_string/filename", SOUNDFILESOURCE_UNDEFINEDFILENAME);
 			return false;
 		}
 		fclose(sfp);
 	}
-	else
-		filename_ = "defaultfile";
+	else {
+		filename_ = SOUNDFILESOURCE_UNDEFINEDFILENAME;
+	}
 
 	// try to open file with appropriate format
 	string::size_type pos = filename.rfind(".", filename.length());
@@ -291,24 +294,32 @@ SoundFileSource::checkType()
 #ifdef MARSYAS_GSTREAMER
 		// use GStreamer as a fallback
 	{
-		MRSDIAG("SoundFileSource is falling back to GStreamerSource\n");
-		delete src_;
-		src_ = new GStreamerSource(getName());
+		if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
+		{
+
+			MRSDIAG("SoundFileSource is falling back to GStreamerSource\n");
+			delete src_;
+			src_ = new GStreamerSource(getName());
+		}
+		else {
+			return false;
+		}
 	}
 #else
 	{
-		if (filename != "defaultfile")
+		if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
 		{
 			string wrn = "Unsupported format for file ";
 			wrn += filename;
 			MRSWARN(wrn);
-			filename_ = "defaultfile";
-			setctrl("mrs_string/filename", "defaultfile");
+			filename_ = SOUNDFILESOURCE_UNDEFINEDFILENAME;
+			setctrl("mrs_string/filename", SOUNDFILESOURCE_UNDEFINEDFILENAME);
 		}
 
 		return false;
 	}
 #endif
+
 	return true;
 }
 
@@ -316,7 +327,6 @@ void
 SoundFileSource::getHeader()
 {
 	string filename = ctrl_filename_->to<mrs_string>();
-
 	src_->getHeader(filename);
 	ctrl_pos_->setValue(0, NOUPDATE);
 	ctrl_loop_->setValue(0, NOUPDATE);

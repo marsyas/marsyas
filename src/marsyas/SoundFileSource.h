@@ -112,6 +112,7 @@ private:
 	bool updateCurrDuration;
 
 public:
+
 	SoundFileSource(std::string name);
 	SoundFileSource(const SoundFileSource& a);
 
@@ -123,6 +124,10 @@ public:
 	virtual void getHeader();
 
 };
+
+/// File name value to use for undefined files.
+const mrs_string SOUNDFILESOURCE_UNDEFINEDFILENAME("defaultfile");
+
 
 }//namespace Marsyas
 
