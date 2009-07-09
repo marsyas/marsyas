@@ -1133,9 +1133,8 @@ void readSitarDataMattAjay()
 	
 	cout << cl.entry(0) << endl;
 
-	// setup the network
+	// setup the networks
 	MarSystemManager mng;
-	
     MarSystem* pnet = mng.create("Series/pnet");
 	pnet->addMarSystem(mng.create("SoundFileSource/src"));
     pnet->addMarSystem(mng.create("Windowing/ham"));
@@ -1150,18 +1149,39 @@ void readSitarDataMattAjay()
     pnet->addMarSystem(mng.create("Annotator/ann"));
     pnet->addMarSystem(mng.create("WekaSink/wsink"));
 
+
+	MarSystem* snet = mng.create("Series/snet");
+	snet->addMarSystem(mng.create("SoundFileSource/src"));
+	snet->addMarSystem(mng.create("MaxMin/mxmn"));
+	
+
 	// initialize controls 
 	pnet->updctrl("SoundFileSource/src/mrs_string/filename", cl.entry(0));
+	snet->updctrl("SoundFileSource/src/mrs_string/filename", cl.entry(1));
     pnet->updctrl("WekaSink/wsink/mrs_bool/regression", true);
     pnet->updctrl("WekaSink/wsink/mrs_bool/putHeader", true);    
+	pnet->updctrl("Annotator/ann/mrs_string/mode", "real_label");
     pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
 
-	cout << "pnet = " << *pnet << endl;
+	cout << "Audio  File = " << cl.entry(0) << endl;
+	cout << "Sensor File = " << cl.entry(1) << endl;
+	cout << *pnet << endl;
+	
 	
 
 	while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
+		snet->tick();
+		const mrs_realvec& data = snet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		cout << "data = " << data << endl;
+		cout << "regression = " << data(0) << endl;
+		
+		pnet->updctrl("Annotator/ann/mrs_real/rlabel", data(0));	
 		pnet->tick();
+
+
+
+
 	}
 	
 
