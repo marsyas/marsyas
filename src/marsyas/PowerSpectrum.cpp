@@ -86,7 +86,10 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 
 	// Add prefix to the observation names.
 	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Power" + stype_ + "_"), NOUPDATE);
+	ctrl_onObsNames_->setValue("Power_" + stype_ + ctrl_inObsNames_->to<mrs_string>(), NOUPDATE);
+
+	// gtzan: removed cluttered output 
+	// ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Power" + stype_ + "_"), NOUPDATE);
 }
 
 void

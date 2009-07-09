@@ -1125,12 +1125,49 @@ void readSitarDataMattAjay()
 	cout << "Audio, Thumb and Fret are all audio files " << endl;
 	
     vector<string> soundfiles = cmd_options.getRemaining();
+	
+	Collection cl;
+	
+	cl.read(soundfiles[0]);
+	cout << "Read collection" << endl;
+	
+	cout << cl.entry(0) << endl;
 
-	cout << "Audio File " << soundfiles[0] << endl;
-	/* 
-	cout << "Thumb File " << soundfiles[1] << endl;
-	cout << "Fret File  " << soundfiles[2] << endl;
-	*/ 
+	// setup the network
+	MarSystemManager mng;
+	
+    MarSystem* pnet = mng.create("Series/pnet");
+	pnet->addMarSystem(mng.create("SoundFileSource/src"));
+    pnet->addMarSystem(mng.create("Windowing/ham"));
+    pnet->addMarSystem(mng.create("Spectrum/spk"));
+    pnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
+    MarSystem* features = mng.create("Fanout/features");
+    features->addMarSystem(mng.create("Rolloff/rolloff"));
+
+    features->addMarSystem(mng.create("Centroid/cntrd"));
+    features->addMarSystem(mng.create("MFCC/mfcc"));
+    pnet->addMarSystem(features);
+    pnet->addMarSystem(mng.create("Annotator/ann"));
+    pnet->addMarSystem(mng.create("WekaSink/wsink"));
+
+	// initialize controls 
+	pnet->updctrl("SoundFileSource/src/mrs_string/filename", cl.entry(0));
+    pnet->updctrl("WekaSink/wsink/mrs_bool/regression", true);
+    pnet->updctrl("WekaSink/wsink/mrs_bool/putHeader", true);    
+    pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
+
+	cout << "pnet = " << *pnet << endl;
+	
+
+	while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	{
+		pnet->tick();
+	}
+	
+
+	
+	
+
 	
 
 }
