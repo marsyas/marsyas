@@ -131,7 +131,10 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 				out(o,t) = dB_;
 				break;
 			case PSD_WDB:
+			  // NOTE : FIXME!!! 
 			  // 20*log10() seems to work better for toy_with_onsets
+			  // This is not good, and should be fixed inside the code that
+			  // looks for onsets.
 				dB_ = (mrs_real)(20*log10(re_ * re_ + im_ * im_ + 0.000000001)); 
 				if (dB_ < -100)	dB_ = -100;
 				out(o,t) = dB_;
