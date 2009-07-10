@@ -1145,7 +1145,15 @@ void readSitarDataMattAjay()
 
     features->addMarSystem(mng.create("Centroid/cntrd"));
     features->addMarSystem(mng.create("MFCC/mfcc"));
+
+	
+	MarSystem* texture_stats = mng.create("Fanout/texture_stats");
+	texture_stats->addMarSystem(mng.create("Mean/mean"));
+	texture_stats->addMarSystem(mng.create("StandardDeviation/std"));
+	
     pnet->addMarSystem(features);
+	pnet->addMarSystem(mng.create("Memory/mem"));
+	pnet->addMarSystem(texture_stats);
     pnet->addMarSystem(mng.create("Annotator/ann"));
     pnet->addMarSystem(mng.create("WekaSink/wsink"));
 
@@ -1162,7 +1170,8 @@ void readSitarDataMattAjay()
     pnet->updctrl("WekaSink/wsink/mrs_bool/putHeader", true);    
 	pnet->updctrl("Annotator/ann/mrs_string/mode", "real_label");
     pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
-
+	pnet->updctrl("Memory/mem/mrs_natural/memSize", 40);
+	
 	cout << "Audio  File = " << cl.entry(0) << endl;
 	cout << "Sensor File = " << cl.entry(1) << endl;
 	cout << *pnet << endl;

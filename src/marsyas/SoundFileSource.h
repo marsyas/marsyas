@@ -126,8 +126,12 @@ public:
 };
 
 /// File name value to use for undefined files.
-const mrs_string SOUNDFILESOURCE_UNDEFINEDFILENAME("defaultfile");
 
+// On OS X this does not get initialized and causes core dumps in the 
+// unit tests. Not sure why. 
+
+// const mrs_string SOUNDFILESOURCE_UNDEFINEDFILENAME("defaultfile");
+#define SOUNDFILESOURCE_UNDEFINEDFILENAME "defaultfile"
 
 }//namespace Marsyas
 
