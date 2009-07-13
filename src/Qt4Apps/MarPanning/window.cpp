@@ -186,6 +186,9 @@ Window::Window(string inAudioFileName)
   yTransSlider->setValue(24);
   zTransSlider->setValue(61);
 
+   fogStartSlider->setValue(-24);
+   fogEndSlider->setValue(-49);
+
 //   yScaleSlider->setValue(350);
 	
   setWindowTitle(tr("MarPanning"));
