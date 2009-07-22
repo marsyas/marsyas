@@ -24,8 +24,8 @@
 */
 
 
-#define is_root(_ND) (_ND->id==1)
-#define odd_id(_ND) (_ND->id & 1)
+#define is_root(_ND) (_ND->m_id==1)
+#define odd_id(_ND) (_ND->m_id & 1)
 #define is_lchild(_ND) ((_ND!=NULL)&&!(is_root(_ND))&&(!odd_id(_ND)))
 #define is_rchild(_ND) ((_ND!=NULL)&&!(is_root(_ND))&&( odd_id(_ND)))
 
@@ -47,7 +47,7 @@
 
     class Comp {
     public:
-        bool operator()(Object* a, Object* b) { return (a->id()) < (b->id()); }
+        bool operator()(Object* a, Object* b) { return (a->m_id()) < (b->m_id()); }
     };
     class Destr {
     public:
@@ -65,19 +65,19 @@ private:
 	public:
 		Node* parent; Node* lchild; Node* rchild; // tree pointers
 		Node* prev; Node* next; // vector list pointers
-		unsigned int id; // node id, for determining child type
+		unsigned int m_id; // node id, for determining child type
 		Type* data;
 		Node(unsigned int node_id, Type* d) {
 			parent=NULL; lchild=NULL; rchild=NULL;
 			prev=NULL; next=NULL;
-			data=d; id=node_id;
+			data=d; m_id=node_id;
 		}
 		~Node() { }
 		friend std::ostream& operator<<(std::ostream& o, Node* s) {
-			o << "<" << s->id << "," << s->data << ",(";
-			if (s->parent==NULL) { o<<"0"; } else { o<<s->parent->id; } o << ",";
-			if (s->lchild==NULL) { o<<"x"; } else { o<<s->lchild->id; } o << ",";
-			if (s->rchild==NULL) { o<<"x"; } else { o<<s->rchild->id; } o << ")>";
+			o << "<" << s->m_id << "," << s->data << ",(";
+			if (s->parent==NULL) { o<<"0"; } else { o<<s->parent->m_id; } o << ",";
+			if (s->lchild==NULL) { o<<"x"; } else { o<<s->lchild->m_id; } o << ",";
+			if (s->rchild==NULL) { o<<"x"; } else { o<<s->rchild->m_id; } o << ")>";
 			return o;
 		};
 	};
