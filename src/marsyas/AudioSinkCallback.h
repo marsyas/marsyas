@@ -93,8 +93,9 @@ class AudioSinkCallback:public MarSystem
 		unsigned int getSamplesAvailable();
 		void localActivate(bool state);
 		
+#ifdef MARSYAS_AUDIOIO
 		static int playCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void *userData);
-		
+#endif
 		
 	public:
 		AudioSinkCallback(std::string name);

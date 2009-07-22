@@ -192,7 +192,7 @@ AudioSinkCallback::start()
 
 
 
-
+#ifdef MARSYAS_AUDIOIO
 
 int 
 AudioSinkCallback::playCallback(void *outputBuffer, void *inputBuffer, 
@@ -242,7 +242,7 @@ AudioSinkCallback::playCallback(void *outputBuffer, void *inputBuffer,
 	return 0;
 }
 
-
+#endif
 
 
 void 
