@@ -91,7 +91,7 @@ initOptions()
   cmd_options.addNaturalOption("windowsize", "ws", 512);
   cmd_options.addNaturalOption("hopsize", "hs", 256);
   cmd_options.addRealOption("gain", "g", 1.5);
-  cmd_options.addNaturalOption("maxfreq", "mf", 8000);
+  cmd_options.addNaturalOption("maxfreq", "mf", 22050);
   cmd_options.addNaturalOption("ticks", "t", -1);
   cmd_options.addNaturalOption("position", "p", 0);
   cmd_options.addBoolOption("histogram", "hi", false);
@@ -163,7 +163,7 @@ void outputWaveformPNG(string inFileName, string outFileName)
 {
 #ifdef MARSYAS_PNG
   int length;
-  int height = 128;
+  int height = 150;
   int middle_right;
   int middle_left;
 
@@ -177,7 +177,7 @@ void outputWaveformPNG(string inFileName, string outFileName)
 
   // A series to contain everything
   MarSystem* net = mng.create("Series", "net");
-	
+
   // The sound file
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
@@ -359,6 +359,8 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
   double average;
 
   int length = getFileLengthForSpectrogram(inFileName,min,max,average);
+
+  cout << "position=" << position << endl;
 
   MarSystemManager mng;
   MarSystem* net = mng.create("Series", "net");
