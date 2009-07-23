@@ -308,7 +308,7 @@ void GLWidget::setAudioStats() {
 
 void GLWidget::addDataToRingBuffer() {
   mrs_realvec left_data = mwr_->getctrl("Parallel/stereobranches/Series/left/PowerSpectrum/leftpspk/mrs_realvec/processedData")->to<mrs_realvec>();
-  mrs_realvec right_data = mwr_->getctrl("Parallel/stereobranches/Series/left/PowerSpectrum/leftpspk/mrs_realvec/processedData")->to<mrs_realvec>();
+  mrs_realvec right_data = mwr_->getctrl("Parallel/stereobranches/Series/right/PowerSpectrum/rightpspk/mrs_realvec/processedData")->to<mrs_realvec>();
   mrs_realvec panning_data = mwr_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
   int leftright_rows = left_data.getRows();
@@ -370,12 +370,17 @@ void GLWidget::redrawScene() {
 
   //   float min_x = 1024;
   //   float max_x = -1024;
-  //   float min_y = 1024;
-  //   float max_y = -1024;
+//    min_y = 1024;
+//    max_y = -1024;
+
+   double x;
+   double y;
+   double z;
+   double size;
 
   for (int i = 0; i < MAX_Z; i++) {
  	for (int j = 0; j < stereo_spectrum_bins; j++) {
-	  float x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 7.0;
+	  x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 7.0;
 	  //   	  float y = j/3.0;
 	  // Scale the y-range to between 0 and 42
 	  //    	  float y = (j / (float)spectrum_bins) * 21.0;
@@ -383,7 +388,11 @@ void GLWidget::redrawScene() {
 	  
 	  // Convert to log frequency
 	  //float y = log10(((22050.0 / float(stereo_spectrum_bins)) * x) + (0.5 * (22050.0 / float(stereo_spectrum_bins)))) * 5.0;
-	  float y = log10(((22050.0 / float(stereo_spectrum_bins)) * j) + (0.5 * (22050.0 / float(stereo_spectrum_bins)))) * 5.0;
+// 	  float y = log10(((22050.0 / float(stereo_spectrum_bins)) * j) + (0.5 * (22050.0 / float(stereo_spectrum_bins)))) * 5.0;
+
+//  	  float y = log10(((22050.0 / float(spectrum_bins)) * j) + (0.5 * (22050.0 / float(spectrum_bins)))) * 5.0;
+ 	  y = (log10(((22050.0 / double(spectrum_bins)) * j) + (0.5 * (22050.0 / double(spectrum_bins))))) * 5.0;
+
 
 	  // 	  if (i == 0 && j == 0) {
 	  // 		cout << "x=" << x << " y=" << y << endl;
@@ -394,12 +403,12 @@ void GLWidget::redrawScene() {
 	  // 	  if (x > max_x) {
 	  // 		max_x = x;
 	  // 	  }
-	  // 	  if (y < min_y) {
-	  // 		min_y = y;
-	  // 	  }
-	  // 	  if (y > max_y) {
-	  // 		max_y = y;
-	  // 	  }
+//  	  if (y < min_y) {
+//  		min_y = y;
+//  	  }
+//  	  if (y > max_y) {
+//  		max_y = y;
+//  	  }
 	  // sness - This was to figure out why the spectrum would move down
 	  //  	  if (i == 0 && j == 0) {
 	  //  		cout << "miny=" << y;
@@ -408,9 +417,10 @@ void GLWidget::redrawScene() {
 	  //  		cout << " maxy=" << y << endl;
 	  //  	  }
 // 	  float z = i * display_speed + (display_speed * MAX_Z);
- 	  float z = i;
+ 	  z = i;
 
-	  float size = (
+	  // sness - FIXME - probably something wrong in here
+	  size = (
 					(left_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2]) + 
 					(right_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2])
 					) / 2.0 * 2000; 
@@ -445,7 +455,7 @@ void GLWidget::redrawScene() {
 	  //     glColor3f(1.0, 1.0, 1.0);
 	  if (size > magnitude_cutoff) {
 
-		glTranslatef(x,y,z);
+		glTranslated(x,y,z);
 
 		// 		  // sness - FIXME
 		// 		if (num_vertices == 1) {
@@ -460,7 +470,24 @@ void GLWidget::redrawScene() {
 
 		// 		} else {
 
-		float mcolor[] = { (size*5), 1.0f, 0.0f, 1.0f };
+		float mcolor[3];
+
+		// Red dots if big magnitude
+		if (size > 0.4) {
+		  mcolor[0] = 1.0f;
+		  mcolor[1] = 0.0f;
+		  mcolor[2] = 0.0f;
+		  mcolor[3] = 1.0f;
+		} else {
+		  mcolor[0] = (size*5);
+		  mcolor[1] = 1.0f;
+		  mcolor[2] = 0.0f;
+		  mcolor[3] = 1.0f;
+// 		  float mcolor[] = { (size*5), 1.0f, 0.0f, 1.0f };
+		}
+
+		  
+
 		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
 
 		if (size > 0.3) {
@@ -477,7 +504,7 @@ void GLWidget::redrawScene() {
 		  
 		// 		}
 
-		glTranslatef(-x,-y,-z);
+		glTranslated(-x,-y,-z);
 
 	  }
 
@@ -487,7 +514,8 @@ void GLWidget::redrawScene() {
 	  
   }
 
-  //   cout << "min_x=" << min_x << " max_x=" << max_x << " min_y=" << min_y << " max_y=" << max_y << endl;
+//      cout << "min_x=" << min_x << " max_x=" << max_x << " min_y=" << min_y << " max_y=" << max_y << endl;
+//   cout << "min_y=" << min_y << " max_y=" << max_y << " sb=" << spectrum_bins << endl;
 
 }
 
@@ -607,7 +635,7 @@ void GLWidget::setFogStart(int v)
   double val = v * -2;
   if (val != fogStart) {
 	fogStart = val;
-// 	cout << "v=" << v << " fogStart=" << fogStart << endl;
+//  	cout << "v=" << v << " fogStart=" << fogStart << endl;
 	emit fogStartChanged(val);
 	glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
 	updateGL();
@@ -619,7 +647,7 @@ void GLWidget::setFogEnd(int v)
   double val = v * -2;
   if (val != fogEnd) {
 	fogEnd = val;
-// 	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
+//  	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
 	emit fogEndChanged(val);
 	glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
 	updateGL();
@@ -743,8 +771,20 @@ void GLWidget::setInSamples(int v) {
   //   mwr_->pause();
 
   net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+
+  //
+  // sness - FIXME - Ask George about this
+  //
+  //
+  // sness - This *just* about works, but occassionally coredumps
+  //  net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+  //
+  // sness - This coredumps more often
+  //   net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+  //   net_->updctrl("mrs_natural/inSamples",insamples);
+
+
   //     net_->updctrl("Gain/gain/mrs_natural/inSamples",insamples);
-  //     net_->updctrl("mrs_natural/inSamples",insamples);
   //    net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
   //    mwr_->play();

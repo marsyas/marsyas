@@ -30,8 +30,10 @@ Window::Window(string inAudioFileName)
 //   zTransSlider = createTranslationSlider();
 
   // Fog sliders
-  fogStartSlider = createTranslationSlider();
-  fogEndSlider = createTranslationSlider();
+//   fogStartSlider = createTranslationSlider();
+//   fogEndSlider = createTranslationSlider();
+  fogStartSlider = createSlider(-100,-30,1,10,10);
+  fogEndSlider = createSlider(-100,-30,1,10,10);
 
   // Data display sliders
   magnitudeCutoffSlider = createSlider(0,100,1,10,10);
