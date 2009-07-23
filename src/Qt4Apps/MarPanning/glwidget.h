@@ -11,7 +11,7 @@ using namespace MarsyasQt;
 using namespace Marsyas;
 
 // sness
-#define MAX_Z 200
+#define MAX_Z 50
 #define MAX_SPECTRUM_BINS 16384
 #define MAX_STEREO_SPECTRUM_BINS 8192
 
