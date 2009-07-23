@@ -107,7 +107,7 @@ Window::Window(string inAudioFileName)
 
   // Current playback position
 //   connect(posSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setSongPosition(int)));
-//    connect(positionSlider, SIGNAL(sliderReleased()), this, SLOT(seekPos()));
+  connect(posSlider, SIGNAL(sliderReleased()), this, SLOT(seekPos()));
   connect(glWidget, SIGNAL(posChanged(int)), this, SLOT(positionSlider(int)));
 
 
