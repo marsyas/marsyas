@@ -40,8 +40,8 @@ Window::Window(string inAudioFileName)
   // Song position
   posSlider = createSlider(0,100,1,10,10);
 
-  // How fast the display moves
-  displaySpeedSlider = createSlider(0,100,1,10,10);
+//   // How fast the display moves
+//   displaySpeedSlider = createSlider(0,100,1,10,10);
 
 //   // The y-scale slider
 //   yScaleSlider = createSlider(0,1000,10,100,50);
@@ -100,7 +100,7 @@ Window::Window(string inAudioFileName)
 
   connect(magnitudeCutoffSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setMagnitudeCutoff(int)));
   connect(numVerticesSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setNumVertices(int)));
-  connect(displaySpeedSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setDisplaySpeed(int)));
+//   connect(displaySpeedSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setDisplaySpeed(int)));
 
   // Connect up the FFT bins slider
   connect(fftBinsCombo, SIGNAL(currentIndexChanged(int)), glWidget, SLOT(setFFTBins(int)));
@@ -214,11 +214,11 @@ Window::Window(string inAudioFileName)
   num_vertices_slider_layout->addWidget(numVerticesSlider);
   controls_layout->addLayout(num_vertices_slider_layout);
 
-  QHBoxLayout *display_speed_slider_layout = new QHBoxLayout;
-  QLabel *display_speed_label = new QLabel(("Display Speed"));
-  display_speed_slider_layout->addWidget(display_speed_label);
-  display_speed_slider_layout->addWidget(displaySpeedSlider);
-  controls_layout->addLayout(display_speed_slider_layout);
+//   QHBoxLayout *display_speed_slider_layout = new QHBoxLayout;
+//   QLabel *display_speed_label = new QLabel(("Display Speed"));
+//   display_speed_slider_layout->addWidget(display_speed_label);
+//   display_speed_slider_layout->addWidget(displaySpeedSlider);
+//   controls_layout->addLayout(display_speed_slider_layout);
 
   QHBoxLayout *playpause_button_layout = new QHBoxLayout;
   playpause_button_layout->addWidget(playpause_button);
@@ -243,7 +243,7 @@ Window::Window(string inAudioFileName)
 
    magnitudeCutoffSlider->setValue(50);
    numVerticesSlider->setValue(10);
-   displaySpeedSlider->setValue(50);
+//    displaySpeedSlider->setValue(50);
 
     fftBinsCombo->setCurrentIndex(4);
 

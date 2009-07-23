@@ -25,8 +25,13 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   zRot = 0;
 
   xTrans = 0;
-  yTrans = -5.5;
-  zTrans = -127;
+  // For 200
+  //   zTrans = -127;
+  //   yTrans = -5.5;
+
+  // For 50
+  zTrans = -52;
+  yTrans = -6.7;
 
   test_x = 0;
   test_y = 0;
@@ -175,7 +180,7 @@ void GLWidget::initializeGL()
   glHint(GL_FOG_HINT, GL_NICEST);     // Fog hint value : GL_DONT_CARE, GL_NICEST
   //   glFogf(GL_FOG_START, 82.0f);          // Fog Start Depth
   //   glFogf(GL_FOG_END, 138.0f);            // Fog End Depth
-   glEnable(GL_FOG);                   // Enable fog
+      glEnable(GL_FOG);                   // Enable fog
 
   setFogStart(-31);
   setFogEnd(-72);
@@ -526,7 +531,7 @@ void GLWidget::normalizeAngle(int *angle)
 // Set the x rotation angle
 void GLWidget::setXRotation(int angle)
 {
-  cout << "angle=" << angle << endl;
+//   cout << "angle=" << angle << endl;
   //   normalizeAngle(&angle);
   if (angle != xRot) {
 	xRot = angle;
@@ -538,7 +543,7 @@ void GLWidget::setXRotation(int angle)
 // Set the y rotation angle
 void GLWidget::setYRotation(int angle)
 {
-  cout << "angle=" << angle << endl;
+//   cout << "angle=" << angle << endl;
   //   normalizeAngle(&angle);
   if (angle != yRot) {
 	yRot = angle;
@@ -551,7 +556,7 @@ void GLWidget::setYRotation(int angle)
 void GLWidget::setZRotation(int angle)
 {
   //   normalizeAngle(&angle);
-  cout << "angle=" << angle << endl;
+//   cout << "angle=" << angle << endl;
   if (angle != zRot) {
 	zRot = angle;
 	emit zRotationChanged(angle);
@@ -578,7 +583,7 @@ void GLWidget::setYTranslation(int v)
   double val = v * -0.1;
   if (val != yTrans) {
 	yTrans = val;
-	cout << "v=" << v << " yTrans=" << yTrans << endl;
+// 	cout << "v=" << v << " yTrans=" << yTrans << endl;
 	emit yTranslationChanged(val);
 	updateGL();
   }
@@ -602,7 +607,7 @@ void GLWidget::setFogStart(int v)
   double val = v * -2;
   if (val != fogStart) {
 	fogStart = val;
-	cout << "v=" << v << " fogStart=" << fogStart << endl;
+// 	cout << "v=" << v << " fogStart=" << fogStart << endl;
 	emit fogStartChanged(val);
 	glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
 	updateGL();
@@ -614,7 +619,7 @@ void GLWidget::setFogEnd(int v)
   double val = v * -2;
   if (val != fogEnd) {
 	fogEnd = val;
-	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
+// 	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
 	emit fogEndChanged(val);
 	glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
 	updateGL();
@@ -649,7 +654,7 @@ void GLWidget::setFFTBins(int val) {
 }
 
 void GLWidget::set_fft_size(int val) {
-  cout << "setting fft size to " << val << endl;
+//   cout << "setting fft size to " << val << endl;
 
   setInSamples(val);
   //   net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",val);
@@ -675,7 +680,7 @@ void GLWidget::setMagnitudeCutoff(int v) {
 }
 
 void GLWidget::setNumVertices(int v) {
-  cout << "setNumVertices(" << v << ")" << endl;
+//   cout << "setNumVertices(" << v << ")" << endl;
 
   num_vertices = v;
 
@@ -688,7 +693,7 @@ void GLWidget::setNumVertices(int v) {
 }
 
 void GLWidget::setSongPosition(int v) {
-  cout << "setSongPosition(" << v << ")" << endl;
+   cout << "setSongPosition(" << v << ")" << endl;
   setPos(v);
 
 }
@@ -696,7 +701,7 @@ void GLWidget::setSongPosition(int v) {
 
 
 void GLWidget::setDisplaySpeed(int v) {
-  cout << "setDisplaySpeed(" << v << ")" << endl;
+//   cout << "setDisplaySpeed(" << v << ")" << endl;
   
   display_speed = v / 50.0;
 }
