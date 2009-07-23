@@ -11,8 +11,9 @@ using namespace MarsyasQt;
 using namespace Marsyas;
 
 // sness
-#define MAX_SPECTRUM_LINES 200
-#define SPECTRUM_BINS 128
+#define MAX_Z 200
+#define MAX_SPECTRUM_BINS 16384
+#define MAX_STEREO_SPECTRUM_BINS 8192
 
 #define TIMER_COUNT_STEPS 100.0
 
@@ -39,6 +40,16 @@ public slots:
   void setFogStart(int val);
   void setFogEnd(int val);
 
+  void setFFTBins(int val);
+
+  void setMagnitudeCutoff(int v);
+  void setNumVertices(int v);
+  void setSongPosition(int v);
+  void setDisplaySpeed(int v);
+
+  void setPos(int value);
+  void setPos(); 
+
 //   void setYScale(int scale);
 
 //   void powerSpectrumModeChanged(int val);
@@ -60,6 +71,8 @@ signals:
   void fogStartChanged(int angle);
   void fogEndChanged(int angle);
 
+  void posChanged(int val);
+
 //   void start_xRotationChanged(int angle);
 //   void start_yRotationChanged(int angle);
 //   void start_zRotationChanged(int angle);
@@ -71,6 +84,7 @@ signals:
 //   void rotationSpeedChanged(int angle);
 
   void timerChanged(int value);
+
 
 private slots:
 //   void startTimerRotate();                // Start the animation timer
@@ -132,7 +146,7 @@ private:
   // Marsyas
   MarSystemManager mng;  
   MarSystemQtWrapper*  mwr_;
-  MarSystem* pnet_;
+  MarSystem* net_;
 
   // A ring buffer that holds our data
   double **left_spectrum_ring_buffer;
@@ -162,6 +176,8 @@ private:
   void setAudioStats();
 
   MarControlPtr posPtr_;
+  MarControlPtr sizePtr_;
+  MarControlPtr osratePtr_;
   MarControlPtr initPtr_;
   MarControlPtr fnamePtr_;
   
@@ -171,6 +187,26 @@ private:
 
   void errorCallback(GLenum errorCode);
 
+  int stereo_spectrum_bins;
+  int spectrum_bins;
+
+  void set_fft_size(int);
+
+//   int num_triangles;
+
+  void clearRingBuffers();
+
+  int insamples;
+
+  void setInSamples(int);
+
+  float magnitude_cutoff;
+
+  float num_vertices;
+  
+  void buildDiskLists();
+
+  float display_speed;
 
 };
 

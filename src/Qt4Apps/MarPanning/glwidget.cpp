@@ -23,126 +23,55 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   xRot = 30;
   yRot = 0;
   zRot = 0;
+
+  xTrans = 0;
+  yTrans = -5.5;
+  zTrans = -127;
+
   test_x = 0;
   test_y = 0;
   test_z = 0;
   
-  // sness - Just creating this as 256 elements wide for simplicity,
-  // but it should dynamically readjust to be the size of the window
-  // from Marsyas.
-  waveform_data.create(1,512);
+  //   // sness - Just creating this as 256 elements wide for simplicity,
+  //   // but it should dynamically readjust to be the size of the window
+  //   // from Marsyas.
+  //   waveform_data.create(1,512);
+  
+  insamples = 512;
+  //    insamples = 32;
+  spectrum_bins = insamples / 2.0;
+  stereo_spectrum_bins = insamples / 4.0;
 
+  // The number of vertices used to make the disk
+  num_vertices = 10;
+  
   // Defaults
-//   rotation_speed = 10;
+  //   rotation_speed = 10;
   y_scale = 350;
 
   // Create space for the vertices we will display
-  left_spectrum_ring_buffer = new double*[MAX_SPECTRUM_LINES];
-  right_spectrum_ring_buffer = new double*[MAX_SPECTRUM_LINES];
-  panning_spectrum_ring_buffer = new double*[MAX_SPECTRUM_LINES];
+  left_spectrum_ring_buffer = new double*[MAX_Z];
+  right_spectrum_ring_buffer = new double*[MAX_Z];
+  panning_spectrum_ring_buffer = new double*[MAX_Z];
 
-  for (int i = 0; i < MAX_SPECTRUM_LINES; i++) {
-	left_spectrum_ring_buffer[i] = new double[SPECTRUM_BINS];
-	right_spectrum_ring_buffer[i] = new double[SPECTRUM_BINS];
-	panning_spectrum_ring_buffer[i] = new double[SPECTRUM_BINS];
-
-	for (int j = 0; j < SPECTRUM_BINS; j++) {
-	  left_spectrum_ring_buffer[i][j] = 0.0;
-	  right_spectrum_ring_buffer[i][j] = 0.0;
-	  panning_spectrum_ring_buffer[i][j] = 0.0;
-	}
+  for (int i = 0; i < MAX_Z; i++) {
+	left_spectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
+	right_spectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
+	panning_spectrum_ring_buffer[i] = new double[MAX_STEREO_SPECTRUM_BINS];
   }
+  clearRingBuffers();
   ring_buffer_pos = 0;
-
-
-//   // Allocate space for the ring buffer used to draw the spectrum
-//   spectrum_ring_buffer = new double*[MAX_SPECTRUM_LINES];
-//   for (int i = 0; i < MAX_SPECTRUM_LINES; i++) {
-// 	spectrum_ring_buffer[i] = new double[SPECTRUM_SIZE];
-// 	for (int j = 0; j < SPECTRUM_SIZE; j++) {
-// 	  spectrum_ring_buffer[i][j] = 0.0;
-// 	}
-//   }
-//   ring_buffer_pos = 0;
-  
-//   //
-//   // Create the MarSystem to play and analyze the data
-//   // 
-//   MarSystemManager mng;
-
-//   // A series to contain everything
-//   MarSystem* net = mng.create("Series", "net");
-
-//   // A Fanout to let us read audio from either a SoundFileSource or an
-//   // AudioSource
-//   MarSystem* inputfanout = mng.create("Fanout", "inputfanout");
-//   net->addMarSystem(inputfanout);
-
-//   inputfanout->addMarSystem(mng.create("SoundFileSource", "src"));
-//   inputfanout->addMarSystem(mng.create("AudioSource", "src"));
-
-//   net->addMarSystem(mng.create("Selector", "inputselector"));
-
-//   if (inAudioFileName == "") {
-//  	net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
-//  	net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
-//  	cout << "input from AudioSource" << endl;
-//   } else {
-//  	net->updctrl("Selector/inputselector/mrs_natural/enable", 1);
-//  	net->updctrl("Selector/inputselector/mrs_natural/enable", 0);
-//  	cout << "input from SoundFileSource" << endl;
-//   }
-
-//   // Add the AudioSink right after we've selected the input and
-//   // before we've calculated any features.  Nice trick.
-//   net->addMarSystem(mng.create("AudioSink", "dest"));
-//   net->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
-	
-//   net->addMarSystem(mng.create("Windowing", "ham"));
-//   net->addMarSystem(mng.create("Spectrum", "spk"));
-//   net->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-//   net->addMarSystem(mng.create("Gain", "gain"));
-
-//   MarSystem* spectrumFeatures = mng.create("Fanout", "spectrumFeatures");
-//   spectrumFeatures->addMarSystem(mng.create("Centroid", "cntrd"));
-//   spectrumFeatures->addMarSystem(mng.create("Rolloff", "rlf"));      
-//   spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
-//   spectrumFeatures->addMarSystem(mng.create("Rms", "rms"));
-//   net->addMarSystem(spectrumFeatures);
-
-//   // Set the controls of this MarSystem
-  
-//   net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_real/repetitions",-1.0);
-
-//   if (inAudioFileName == "") {
-// 	net->updctrl("mrs_real/israte", 44100.0);
-// 	inputfanout->updctrl("AudioSource/src/mrs_bool/initAudio", true);
-//   } else {
-//  	net->updctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename",inAudioFileName);
-//  	net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-//   }
-
-//   // Create and start playing the MarSystemQtWrapper that wraps
-//   // Marsyas in a Qt thread
-//   mwr_ = new MarSystemQtWrapper(net);
-//   mwr_->start();
-
-//   if (inAudioFileName == "") {
-// 	mwr_->play();
-// 	play_state = true;
-//   } else {
-// 	play_state = false;
-//   }
 
   //
   // Create the MarSystem
   // 
   MarSystemManager mng;
 
-  MarSystem* net = mng.create("Series", "net");
-  net->addMarSystem(mng.create("SoundFileSource", "src"));
-  net->addMarSystem(mng.create("AudioSink", "dest"));
-	
+  net_ = mng.create("Series", "net");
+  net_->addMarSystem(mng.create("SoundFileSource", "src"));
+  net_->addMarSystem(mng.create("AudioSink", "dest"));
+  //   net_->addMarSystem(mng.create("Gain", "gain"));
+
   MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
@@ -160,28 +89,43 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   stereobranches->addMarSystem(left);
   stereobranches->addMarSystem(right);
 
-  net->addMarSystem(stereobranches);
+  net_->addMarSystem(stereobranches);
 
-  net->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+  net_->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+
+  //   net_->addMarSystem(mng.create("Gain", "gain2"));
+  //   net_->addMarSystem(mng.create("Gain", "gain3"));
+
+  net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+  net_->updctrl("mrs_natural/inSamples",insamples);
 
   //   string inAudioFileName = "./pink_l_to_r.wav";
-  net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
-  net->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
+  net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  net_->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
 
-//   net->updctrl("mrs_natural/inSamples",2048);
+  //   net_->updctrl("mrs_natural/inSamples",2048);
+  net_->updctrl("mrs_natural/inSamples",insamples);
 
-  //   net->updctrl("mrs_real/israte", 44100.0);
-  net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  //   net_->updctrl("mrs_real/israte", 44100.0);
+  net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-  mwr_ = new MarSystemQtWrapper(net);
+  // sness - Set as the biggest possible value so that it doesn't die later.
+
+  mwr_ = new MarSystemQtWrapper(net_);
   mwr_->start();
   mwr_->play();
   play_state = true;
 
   // Create some handy pointers to access the MarSystem
-  posPtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_natural/pos");
+  posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
+  sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");
+  osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
   fnamePtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename");
+
+  //   cout << "inSamples=" << mwr_->getctrl("mrs_natural/inSamples")->to<mrs_real>() << endl;
+
+  //     cout << *net_ << endl;
 
   //
   // Create the animation timer that periodically redraws the screen
@@ -189,7 +133,8 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   QTimer *timer = new QTimer( this ); 
   connect( timer, SIGNAL(timeout()), this, SLOT(animate()) ); 
   timer->start(20); // Redraw the screen every 10ms
-  
+
+  setPos(0);
 }
 
 GLWidget::~GLWidget()
@@ -228,9 +173,12 @@ void GLWidget::initializeGL()
   glFogi(GL_FOG_MODE, GL_LINEAR);       // Set the fog mode
   glFogf(GL_FOG_DENSITY, 0.5f);      // How dense will the fog be
   glHint(GL_FOG_HINT, GL_NICEST);     // Fog hint value : GL_DONT_CARE, GL_NICEST
-  glFogf(GL_FOG_START, 0.0f);          // Fog Start Depth
-  glFogf(GL_FOG_END, 50.0f);            // Fog End Depth
-        glEnable(GL_FOG);                   // Enable fog
+  //   glFogf(GL_FOG_START, 82.0f);          // Fog Start Depth
+  //   glFogf(GL_FOG_END, 138.0f);            // Fog End Depth
+   glEnable(GL_FOG);                   // Enable fog
+
+  setFogStart(-31);
+  setFogEnd(-72);
 
   // Antialias lines
   glEnable(GL_LINE_SMOOTH);
@@ -240,53 +188,25 @@ void GLWidget::initializeGL()
   // Disks
   //
   
-    // Setup for creating the disk
-  int max_disks = 5;
-     startList = glGenLists(max_disks);
-     qobj = gluNewQuadric();
-     gluQuadricCallback(qobj, GLU_ERROR, NULL);
+  buildDiskLists();
 
-     // Create the disk
-     gluQuadricDrawStyle(qobj, GLU_FILL); /* all polygons wireframe */
-     gluQuadricNormals(qobj, GLU_FLAT);
+  GLfloat mat_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
+  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+  GLfloat mat_shininess[] = { 50.0 };
+  GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
+  GLfloat model_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
 
-	 glNewList(startList+0, GL_COMPILE);
-	 gluDisk(qobj, 0, 0.07, 10, 1);
-	 glEndList();
+  glClearColor(0.0, 0.0, 0.0, 0.0);
 
-	 glNewList(startList+1, GL_COMPILE);
-	 gluDisk(qobj, 0, 0.09, 10, 1);
-	 glEndList();
+  glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, model_ambient);
 
-	 glNewList(startList+2, GL_COMPILE);
-	 gluDisk(qobj, 0, 0.10, 10, 1);
-	 glEndList();
-
-	 glNewList(startList+3, GL_COMPILE);
-	 gluDisk(qobj, 0, 0.11, 10, 1);
-	 glEndList();
-
-	 glNewList(startList+4, GL_COMPILE);
-	 gluDisk(qobj, 0, 0.12, 10, 1);
-	 glEndList();
-
-   GLfloat mat_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
-   GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-   GLfloat mat_shininess[] = { 50.0 };
-   GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-   GLfloat model_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
-
-   glClearColor(0.0, 0.0, 0.0, 0.0);
-
-   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
-   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-   glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-   glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, model_ambient);
-
-   glEnable(GL_LIGHTING);
-   glEnable(GL_LIGHT0);
-   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_DEPTH_TEST);
 }
 
 // Paint the GL widget
@@ -299,9 +219,9 @@ void GLWidget::paintGL()
   glLoadIdentity();
 
   // Translate the model to 0,0,-10
-//   glTranslated(0.0, 0.5, -115.0);
+  //   glTranslated(0.0, 0.5, -115.0);
   glTranslated(xTrans, yTrans, zTrans);
-//    cout << "xTrans=" << xTrans << "  yTrans=" << yTrans << " zTrans=" << zTrans << " xRot=" << xRot << " yRot=" << yRot << " zRot=" << zRot << endl;
+  //    cout << "xTrans=" << xTrans << "  yTrans=" << yTrans << " zTrans=" << zTrans << " xRot=" << xRot << " yRot=" << yRot << " zRot=" << zRot << endl;
 
   // Rotate the object around the x,y,z axis
   glRotated(xRot / 16.0, 1.0, 0.0, 0.0);
@@ -310,9 +230,9 @@ void GLWidget::paintGL()
 
   glTranslated(xTrans, yTrans, zTrans);
 
-//   glTranslated(xTrans, yTrans, zTrans);
+  //   glTranslated(xTrans, yTrans, zTrans);
 
-//   glTranslated(0.0, 0.5, -115.0);
+  //   glTranslated(0.0, 0.5, -115.0);
 
   // Draw the object
   redrawScene();
@@ -329,9 +249,42 @@ void GLWidget::animate() {
   emit updateGL();
   if (play_state) {
 	addDataToRingBuffer();
-// 	setWaveformData();
-// 	setAudioStats();
+	// 	setWaveformData();
+	// 	setAudioStats();
   }
+
+  setPos();
+}
+
+// "automatic" advancement of position
+void GLWidget::setPos() 
+{
+  mrs_natural pos = posPtr_->to<mrs_natural>();
+  mrs_natural size = sizePtr_->to<mrs_natural>();
+  mrs_real srate = osratePtr_->to<mrs_real>();
+  
+  mrs_real duration = (pos / srate);
+//   emit timeChanged(duration);
+
+ 
+  float rpos = pos * 1.0 / size;
+  int sliderPos = rpos * 100.0;
+  emit posChanged(sliderPos);
+}
+
+
+// "manual" advancement of position
+void GLWidget::setPos(int val)
+{
+  float fval = val / 100.0f;
+  
+  float fsize = 
+    sizePtr_->to<mrs_natural>();
+  fsize *= fval;
+  
+  int size = (int) fsize;
+  mwr_->updctrl(posPtr_, size);
+  
 }
 
 void GLWidget::setAudioStats() {
@@ -343,24 +296,31 @@ void GLWidget::setAudioStats() {
   stats_rms = data(3,0);
 }
 
-// Read in the waveform data from the waveformnet MarSystem
-void GLWidget::setWaveformData() {
-  waveform_data = mwr_->getctrl("Windowing/ham/mrs_realvec/processedData")->to<mrs_realvec>();
-}
+// // Read in the waveform data from the waveformnet MarSystem
+// void GLWidget::setWaveformData() {
+//   waveform_data = mwr_->getctrl("Windowing/ham/mrs_realvec/processedData")->to<mrs_realvec>();
+// }
 
 void GLWidget::addDataToRingBuffer() {
   mrs_realvec left_data = mwr_->getctrl("Parallel/stereobranches/Series/left/PowerSpectrum/leftpspk/mrs_realvec/processedData")->to<mrs_realvec>();
   mrs_realvec right_data = mwr_->getctrl("Parallel/stereobranches/Series/left/PowerSpectrum/leftpspk/mrs_realvec/processedData")->to<mrs_realvec>();
   mrs_realvec panning_data = mwr_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-  for (int i = 0; i < SPECTRUM_BINS; i++) {
+  int leftright_rows = left_data.getRows();
+  int panning_rows = panning_data.getRows();
+
+  for (int i = 0; i < leftright_rows; i++) {
 	left_spectrum_ring_buffer[ring_buffer_pos][i] = left_data(i,0);
 	right_spectrum_ring_buffer[ring_buffer_pos][i] = right_data(i,0);
+  }
+
+  for (int i = 0; i < panning_rows; i++) {
 	panning_spectrum_ring_buffer[ring_buffer_pos][i] = panning_data(i,0);
   }
+
   
   ring_buffer_pos += 1;
-  if (ring_buffer_pos >= MAX_SPECTRUM_LINES) {
+  if (ring_buffer_pos >= MAX_Z) {
 	ring_buffer_pos = 0;
   }
 }
@@ -368,62 +328,152 @@ void GLWidget::addDataToRingBuffer() {
 
 void GLWidget::redrawScene() {
 
-  for (int i = 0; i < MAX_SPECTRUM_LINES; i++) {
- 	for (int j = 0; j < SPECTRUM_BINS; j++) {
-	  float x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j]) * 7.0;
-// 	  float y = j/15.0;
-  	  float y = j/3.0;
-	  float z = i;
+  //
+  // Draw guidelines
+  //
+  // 	  glEnable(GL_LIGHTING);
+  float guideline_size = 0.01;
 
-	  float size = ((left_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j]) + 
-					(right_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_SPECTRUM_LINES][j])) / 2.0 * 2000; 
+  float mcolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
+
+  float min_x = -7;
+  float max_x = 7;
+  float min_y = 5;
+  float max_y = 22;
+
+  glBegin(GL_LINES);
+  glVertex3f(min_x,min_y,0);
+  glVertex3f(min_x,min_y,MAX_Z);
+  glEnd();
+
+  glBegin(GL_LINES);
+  glVertex3f(min_x,max_y,0);
+  glVertex3f(min_x,max_y,MAX_Z);
+  glEnd();
+
+  glBegin(GL_LINES);
+  glVertex3f(max_x,min_y,0);
+  glVertex3f(max_x,min_y,MAX_Z);
+  glEnd();
+
+  glBegin(GL_LINES);
+  glVertex3f(max_x,max_y,0);
+  glVertex3f(max_x,max_y,MAX_Z);
+  glEnd();
+
+
+  //   float min_x = 1024;
+  //   float max_x = -1024;
+  //   float min_y = 1024;
+  //   float max_y = -1024;
+
+  for (int i = 0; i < MAX_Z; i++) {
+ 	for (int j = 0; j < stereo_spectrum_bins; j++) {
+	  float x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 7.0;
+	  //   	  float y = j/3.0;
+	  // Scale the y-range to between 0 and 42
+	  //    	  float y = (j / (float)spectrum_bins) * 21.0;
+	  //    	  float y = 50.0-((-1.0 * log10(j / (float)stereo_spectrum_bins)) * 25.0);
+	  
+	  // Convert to log frequency
+	  //float y = log10(((22050.0 / float(stereo_spectrum_bins)) * x) + (0.5 * (22050.0 / float(stereo_spectrum_bins)))) * 5.0;
+	  float y = log10(((22050.0 / float(stereo_spectrum_bins)) * j) + (0.5 * (22050.0 / float(stereo_spectrum_bins)))) * 5.0;
+
+	  // 	  if (i == 0 && j == 0) {
+	  // 		cout << "x=" << x << " y=" << y << endl;
+	  // 	  }
+	  // 	  if (x < min_x) {
+	  // 		min_x = x;
+	  // 	  }
+	  // 	  if (x > max_x) {
+	  // 		max_x = x;
+	  // 	  }
+	  // 	  if (y < min_y) {
+	  // 		min_y = y;
+	  // 	  }
+	  // 	  if (y > max_y) {
+	  // 		max_y = y;
+	  // 	  }
+	  // sness - This was to figure out why the spectrum would move down
+	  //  	  if (i == 0 && j == 0) {
+	  //  		cout << "miny=" << y;
+	  //  	  }
+	  //  	  if (i == 0 && j == stereo_spectrum_bins - 1) {
+	  //  		cout << " maxy=" << y << endl;
+	  //  	  }
+// 	  float z = i * display_speed + (display_speed * MAX_Z);
+ 	  float z = i;
+
+	  float size = (
+					(left_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2]) + 
+					(right_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2])
+					) / 2.0 * 2000; 
 		
  	  if (size > 0.5) {
  		size = 0.5;
  	  }
 
-//   	  size = 0.2;
+	  //   	  size = 0.2;
 
-//  	  if (i > 197) {
-// // 		cout << "i==0" << endl;
-//  		glColor3f(1,1,1);
-// 		size *= 3;
-//  	  } else {
-// 		glColor3f((size*5),1,0);
-// 		//  		glColor3f(0,0,0);
-//  	  }
+	  //  	  if (i > 197) {
+	  // // 		cout << "i==0" << endl;
+	  //  		glColor3f(1,1,1);
+	  // 		size *= 3;
+	  //  	  } else {
+	  // 		glColor3f((size*5),1,0);
+	  // 		//  		glColor3f(0,0,0);
+	  //  	  }
 
-	  glColor3f((size*5),1,0);
+	  // 	  glColor3f((size*5),1,0);
+	  
 
-//    	  glBegin(GL_TRIANGLES);
-//    	  glVertex3f(x,y,z);
-//    	  glVertex3f(x+size,y,z);
-//    	  glVertex3f(x+size,y+size,z);
-//    	  glEnd();
+
+	  //    	  glBegin(GL_TRIANGLES);
+	  //    	  glVertex3f(x,y,z);
+	  //    	  glVertex3f(x+size,y,z);
+	  //    	  glVertex3f(x+size,y+size,z);
+	  //    	  glEnd();
 
 	  // A disk
-//     glEnable(GL_LIGHTING);
-//     glColor3f(1.0, 1.0, 1.0);
-	  if (size > 0.005) {
-
- 		float mcolor[] = { (size*5), 1.0f, 0.0f, 1.0f };
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
+	  //     glEnable(GL_LIGHTING);
+	  //     glColor3f(1.0, 1.0, 1.0);
+	  if (size > magnitude_cutoff) {
 
 		glTranslatef(x,y,z);
-		
- 		if (size > 0.3) {
+
+		// 		  // sness - FIXME
+		// 		if (num_vertices == 1) {
+
+		// 		  glColor3f((size*5),1,0);
+
+		// 		  glBegin(GL_TRIANGLES);
+		// 		  glVertex3f(x,y,z);
+		// 		  glVertex3f(x+size,y,z);
+		// 		  glVertex3f(x+size,y+size,z);
+		// 		  glEnd();
+
+		// 		} else {
+
+		float mcolor[] = { (size*5), 1.0f, 0.0f, 1.0f };
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
+
+		if (size > 0.3) {
 		  glCallList(startList+4);
- 		} else if (size > 0.2) {
- 		  glCallList(startList+3);
- 		} else if (size > 0.1) {
- 		  glCallList(startList+2);
- 		} else if (size > 0.05) {
- 		  glCallList(startList+1);
- 		} else {
- 		  glCallList(startList);
- 		}
+		} else if (size > 0.2) {
+		  glCallList(startList+3);
+		} else if (size > 0.1) {
+		  glCallList(startList+2);
+		} else if (size > 0.05) {
+		  glCallList(startList+1);
+		} else {
+		  glCallList(startList);
+		}
+		  
+		// 		}
 
 		glTranslatef(-x,-y,-z);
+
 	  }
 
 
@@ -431,6 +481,8 @@ void GLWidget::redrawScene() {
 
 	  
   }
+
+  //   cout << "min_x=" << min_x << " max_x=" << max_x << " min_y=" << min_y << " max_y=" << max_y << endl;
 
 }
 
@@ -474,7 +526,8 @@ void GLWidget::normalizeAngle(int *angle)
 // Set the x rotation angle
 void GLWidget::setXRotation(int angle)
 {
-  normalizeAngle(&angle);
+  cout << "angle=" << angle << endl;
+  //   normalizeAngle(&angle);
   if (angle != xRot) {
 	xRot = angle;
 	emit xRotationChanged(angle);
@@ -485,7 +538,8 @@ void GLWidget::setXRotation(int angle)
 // Set the y rotation angle
 void GLWidget::setYRotation(int angle)
 {
-  normalizeAngle(&angle);
+  cout << "angle=" << angle << endl;
+  //   normalizeAngle(&angle);
   if (angle != yRot) {
 	yRot = angle;
 	emit yRotationChanged(angle);
@@ -496,7 +550,8 @@ void GLWidget::setYRotation(int angle)
 // Set the z rotation angle
 void GLWidget::setZRotation(int angle)
 {
-  normalizeAngle(&angle);
+  //   normalizeAngle(&angle);
+  cout << "angle=" << angle << endl;
   if (angle != zRot) {
 	zRot = angle;
 	emit zRotationChanged(angle);
@@ -507,7 +562,7 @@ void GLWidget::setZRotation(int angle)
 // Set the x translation val
 void GLWidget::setXTranslation(int v)
 {
-//   normalizeVal(&val);
+  //   normalizeVal(&val);
   double val = v * -0.1;
   if (val != xTrans) {
 	xTrans = val;
@@ -519,10 +574,11 @@ void GLWidget::setXTranslation(int v)
 // Set the y translation val
 void GLWidget::setYTranslation(int v)
 {
-//   normalizeVal(&val);
+  //   normalizeVal(&val);
   double val = v * -0.1;
   if (val != yTrans) {
 	yTrans = val;
+	cout << "v=" << v << " yTrans=" << yTrans << endl;
 	emit yTranslationChanged(val);
 	updateGL();
   }
@@ -531,7 +587,7 @@ void GLWidget::setYTranslation(int v)
 // Set the z translation val
 void GLWidget::setZTranslation(int v)
 {
-//   normalizeVal(&val);
+  //   normalizeVal(&val);
   double val = v * -2;
   if (val != zTrans) {
 	zTrans = val;
@@ -565,27 +621,43 @@ void GLWidget::setFogEnd(int v)
   }
 }
 
-// void GLWidget::powerSpectrumModeChanged(int val) 
-// {
-//   string sval;
-//   if (val == 0) {
-// 	sval = "power";
-//   } else if (val == 1) {
-// 	sval = "magnitude";
-//   } else if (val == 2) {
-// 	sval = "decibels";
-//   } else if (val == 3) {
-// 	sval = "powerdensity";
-//   }
+void GLWidget::setFFTBins(int val) {
+
+  if (val == 0) {
+	set_fft_size(32);
+  } else if (val == 1) {
+	set_fft_size(64);
+  } else if (val == 2) {
+	set_fft_size(128);
+  } else if (val == 3) {
+	set_fft_size(256);
+  } else if (val == 4) {
+	set_fft_size(512);
+  } else if (val == 5) {
+	set_fft_size(1024);
+  } else if (val == 6) {
+	set_fft_size(2048);
+  } else if (val == 7) {
+	set_fft_size(4096);
+  } else if (val == 8) {
+	set_fft_size(8192);
+  } else if (val == 9) {
+	set_fft_size(16384);
+  } else if (val == 10) {
+	set_fft_size(32768);
+  }
+}
+
+void GLWidget::set_fft_size(int val) {
+  cout << "setting fft size to " << val << endl;
+
+  setInSamples(val);
+  //   net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",val);
   
-//   mwr_->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType",sval);
-
-// }
-
-// void GLWidget::setWaterfallVisible(bool val)
-// {
-//   cout << "GLWidget::setWaterfallVisible val=" << val << endl;
-// }
+  //   // sness - Not sure why if you give inSamples of 512, the
+  //   // StereoSpectrum only outputs 128 values.  Shouldn't it output 256
+  //   // values, one for each bin?
+}
 
 void GLWidget::playPause() 
 {
@@ -598,6 +670,39 @@ void GLWidget::playPause()
   }
 }
 
+void GLWidget::setMagnitudeCutoff(int v) {
+  magnitude_cutoff = ((v*v*v) * 0.0001) / 10000;
+}
+
+void GLWidget::setNumVertices(int v) {
+  cout << "setNumVertices(" << v << ")" << endl;
+
+  num_vertices = v;
+
+//   if (startList) {
+	glDeleteLists(startList,5);
+//   }
+
+
+  buildDiskLists();
+}
+
+void GLWidget::setSongPosition(int v) {
+  cout << "setSongPosition(" << v << ")" << endl;
+  setPos(v);
+
+}
+
+
+
+void GLWidget::setDisplaySpeed(int v) {
+  cout << "setDisplaySpeed(" << v << ")" << endl;
+  
+  display_speed = v / 50.0;
+}
+
+
+
 
 void GLWidget::open() 
 {
@@ -608,6 +713,73 @@ void GLWidget::open()
 
   mwr_->play();
   play_state = true;
+
+}
+
+void GLWidget::clearRingBuffers() {
+  for (int i = 0; i < MAX_Z; i++) {
+	for (int j = 0; j < spectrum_bins; j++) {
+	  left_spectrum_ring_buffer[i][j] = 0.0;
+	  right_spectrum_ring_buffer[i][j] = 0.0;
+	}
+	for (int j = 0; j < stereo_spectrum_bins; j++) {
+	  panning_spectrum_ring_buffer[i][j] = 0.0;
+	}
+
+  }
+
+}
+
+void GLWidget::setInSamples(int v) {
+  insamples = v;
+  spectrum_bins = insamples / 2.0;
+  stereo_spectrum_bins = insamples / 4.0;
+
+  //   mwr_->pause();
+
+  net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+  //     net_->updctrl("Gain/gain/mrs_natural/inSamples",insamples);
+  //     net_->updctrl("mrs_natural/inSamples",insamples);
+  //    net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  //    mwr_->play();
+
+  clearRingBuffers();
+
+}
+
+
+void GLWidget::buildDiskLists() {
+
+  // Setup for creating the disk
+  int max_disks = 5;
+  startList = glGenLists(max_disks);
+  qobj = gluNewQuadric();
+  gluQuadricCallback(qobj, GLU_ERROR, NULL);
+
+  // Create the disk
+  gluQuadricDrawStyle(qobj, GLU_FILL); /* all polygons wireframe */
+  gluQuadricNormals(qobj, GLU_FLAT);
+
+  glNewList(startList+0, GL_COMPILE);
+  gluDisk(qobj, 0, 0.07, num_vertices, 1);
+  glEndList();
+
+  glNewList(startList+1, GL_COMPILE);
+  gluDisk(qobj, 0, 0.09, num_vertices, 1);
+  glEndList();
+
+  glNewList(startList+2, GL_COMPILE);
+  gluDisk(qobj, 0, 0.10, num_vertices, 1);
+  glEndList();
+
+  glNewList(startList+3, GL_COMPILE);
+  gluDisk(qobj, 0, 0.11, num_vertices, 1);
+  glEndList();
+
+  glNewList(startList+4, GL_COMPILE);
+  gluDisk(qobj, 0, 0.12, num_vertices, 1);
+  glEndList();
 
 }
 

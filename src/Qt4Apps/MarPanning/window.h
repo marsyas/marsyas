@@ -19,6 +19,10 @@ Q_OBJECT
 
 public slots: 
   void about();
+  void seekPos();
+
+private slots:
+  void positionSlider(int);
 
 public:
   Window(string inAudioFileName);
@@ -28,7 +32,7 @@ public:
 
 private:
   QSlider *createSlider(int,int,int,int,int);
-  QSlider *createRotationSlider();
+  QSlider *createRotationSlider(int min, int max);
   QSlider *createTranslationSlider();
 
   QWidget *mainWidget;
@@ -39,12 +43,12 @@ private:
   // Sliders to rotate the object on its axes
   QSlider *xRotSlider;
   QSlider *yRotSlider;
-  QSlider *zRotSlider;
+//   QSlider *zRotSlider;
 
-  // Sliders to translate the object
-  QSlider *xTransSlider;
-  QSlider *yTransSlider;
-  QSlider *zTransSlider;
+//   // Sliders to translate the object
+//   QSlider *xTransSlider;
+//   QSlider *yTransSlider;
+//   QSlider *zTransSlider;
 
   // Scale sliders
   QSlider *yScaleSlider;
@@ -52,6 +56,17 @@ private:
   // Fog slider
   QSlider *fogStartSlider;
   QSlider *fogEndSlider;
+
+  // Data display sliders
+  QSlider *magnitudeCutoffSlider;
+  QSlider *numVerticesSlider;
+
+  // Song position
+  QSlider *posSlider;
+
+  // How fast the display moves
+  QSlider *displaySpeedSlider;
+
 
   QPushButton *playpause_button;
 
@@ -63,11 +78,8 @@ private:
   void createMenus();
   void createActions();
 
-  QLabel *powerSpectrumModeLabel;
-  QComboBox *powerSpectrumModeCombo;
-
-  QLabel *fftBinsModeLabel;
-  QComboBox *fftBinsModeCombo;
+  QLabel *fftBinsLabel;
+  QComboBox *fftBinsCombo;
 
   QCheckBox *waterfallCheckBox;
 };

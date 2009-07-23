@@ -13,25 +13,35 @@ Window::Window(string inAudioFileName)
 
   glWidget = new GLWidget(inAudioFileName);
 
-  glWidget->setMinimumSize(700,700);
-  glWidget->setMaximumSize(700,700);
+  glWidget->setMinimumSize(500,500);
+  glWidget->setMaximumSize(500,500);
 
   createActions();
   createMenus();  
 
   // Create the x,y,z rotation sliders
-  xRotSlider = createRotationSlider();
-  yRotSlider = createRotationSlider();
-  zRotSlider = createRotationSlider();
+  xRotSlider = createRotationSlider(-180,180);
+  yRotSlider = createRotationSlider(-255,255);
+//   zRotSlider = createRotationSlider();
 
-  // Create the x,y,z translation sliders
-  xTransSlider = createTranslationSlider();
-  yTransSlider = createTranslationSlider();
-  zTransSlider = createTranslationSlider();
+//   // Create the x,y,z translation sliders
+//   xTransSlider = createTranslationSlider();
+//   yTransSlider = createTranslationSlider();
+//   zTransSlider = createTranslationSlider();
 
   // Fog sliders
   fogStartSlider = createTranslationSlider();
   fogEndSlider = createTranslationSlider();
+
+  // Data display sliders
+  magnitudeCutoffSlider = createSlider(0,100,1,10,10);
+  numVerticesSlider = createSlider(3,20,1,10,10);
+
+  // Song position
+  posSlider = createSlider(0,100,1,10,10);
+
+  // How fast the display moves
+  displaySpeedSlider = createSlider(0,100,1,10,10);
 
 //   // The y-scale slider
 //   yScaleSlider = createSlider(0,1000,10,100,50);
@@ -49,21 +59,21 @@ Window::Window(string inAudioFileName)
 //   powerSpectrumModeLabel = new QLabel(tr("&PowerSpectrum mode:"));
 //   powerSpectrumModeLabel->setBuddy(powerSpectrumModeCombo);
 
-  //   // A combo box for choosing the fft bin size
-  //   fftBinsModeCombo = new QComboBox;
-  //   fftBinsModeCombo->addItem(tr("32"));
-  //   fftBinsModeCombo->addItem(tr("64"));
-  //   fftBinsModeCombo->addItem(tr("128"));
-  //   fftBinsModeCombo->addItem(tr("256"));
-  //   fftBinsModeCombo->addItem(tr("1024"));
-  //   fftBinsModeCombo->addItem(tr("2048"));
-  //   fftBinsModeCombo->addItem(tr("4096"));
-  //   fftBinsModeCombo->addItem(tr("8192"));
-  //   fftBinsModeCombo->addItem(tr("16384"));
-  //   fftBinsModeCombo->addItem(tr("32768"));
+  // A combo box for choosing the fft bin size
+  fftBinsCombo = new QComboBox;
+  fftBinsCombo->addItem(tr("32"));
+  fftBinsCombo->addItem(tr("64"));
+  fftBinsCombo->addItem(tr("128"));
+  fftBinsCombo->addItem(tr("256"));
+  fftBinsCombo->addItem(tr("512"));
+  fftBinsCombo->addItem(tr("1024"));
+  fftBinsCombo->addItem(tr("2048"));
+  fftBinsCombo->addItem(tr("4096"));
+  fftBinsCombo->addItem(tr("8192"));
+  fftBinsCombo->addItem(tr("16384"));
+  fftBinsCombo->addItem(tr("32768"));
 
-  //   fftBinsModeLabel = new QLabel(tr("&Number of FFT Bins:"));
-  //   fftBinsModeLabel->setBuddy(fftBinsModeCombo);
+
 
 //     waterfallCheckBox = new QCheckBox(tr("&Waterfall"));
 //     waterfallCheckBox->setChecked(true);
@@ -76,19 +86,29 @@ Window::Window(string inAudioFileName)
   connect(glWidget, SIGNAL(xRotationChanged(int)), xRotSlider, SLOT(setValue(int)));
   connect(yRotSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYRotation(int)));
   connect(glWidget, SIGNAL(yRotationChanged(int)), yRotSlider, SLOT(setValue(int)));
-  connect(zRotSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZRotation(int)));
-  connect(glWidget, SIGNAL(zRotationChanged(int)), zRotSlider, SLOT(setValue(int)));
+//   connect(zRotSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZRotation(int)));
+//   connect(glWidget, SIGNAL(zRotationChanged(int)), zRotSlider, SLOT(setValue(int)));
 
-  // Connect up the x,y,z rotation sliders with slots to set the rotation values
-  connect(xTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXTranslation(int)));
-//   connect(glWidget, SIGNAL(xTranslationChanged(int)), xTransSlider, SLOT(setValue(int)));
-  connect(yTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYTranslation(int)));
-//   connect(glWidget, SIGNAL(yTranslationChanged(int)), yTransSlider, SLOT(setValue(int)));
-  connect(zTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZTranslation(int)));
-//   connect(glWidget, SIGNAL(zTranslationChanged(int)), zTransSlider, SLOT(setValue(int)));
+//   // Connect up the x,y,z rotation sliders with slots to set the rotation values
+//   connect(xTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXTranslation(int)));
+//   connect(yTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYTranslation(int)));
+//   connect(zTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZTranslation(int)));
 
+  // Connect up the other sliders
   connect(fogStartSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setFogStart(int)));
   connect(fogEndSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setFogEnd(int)));
+
+  connect(magnitudeCutoffSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setMagnitudeCutoff(int)));
+  connect(numVerticesSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setNumVertices(int)));
+  connect(displaySpeedSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setDisplaySpeed(int)));
+
+  // Connect up the FFT bins slider
+  connect(fftBinsCombo, SIGNAL(currentIndexChanged(int)), glWidget, SLOT(setFFTBins(int)));
+
+  // Current playback position
+//   connect(posSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setSongPosition(int)));
+//    connect(positionSlider, SIGNAL(sliderReleased()), this, SLOT(seekPos()));
+  connect(glWidget, SIGNAL(posChanged(int)), this, SLOT(positionSlider(int)));
 
 
 //   // Scale sliders
@@ -105,53 +125,30 @@ Window::Window(string inAudioFileName)
   QVBoxLayout *gl_layout = new QVBoxLayout;
   gl_layout->addWidget(glWidget);
 
-  QHBoxLayout *x_rot_slider_layout = new QHBoxLayout;
-  QLabel *x_rot_slider_label = new QLabel(("X Rot"));
-  x_rot_slider_layout->addWidget(x_rot_slider_label);
-  x_rot_slider_layout->addWidget(xRotSlider);
-  gl_layout->addLayout(x_rot_slider_layout);
+
+//   QHBoxLayout *z_rot_slider_layout = new QHBoxLayout;
+//   QLabel *z_rot_slider_label = new QLabel(("Z Rot"));
+//   z_rot_slider_layout->addWidget(z_rot_slider_label);
+//   z_rot_slider_layout->addWidget(zRotSlider);
+//   gl_layout->addLayout(z_rot_slider_layout);
+
+//   QHBoxLayout *x_trans_slider_layout = new QHBoxLayout;
+//   QLabel *x_trans_slider_label = new QLabel(("X Trans"));
+//   x_trans_slider_layout->addWidget(x_trans_slider_label);
+//   x_trans_slider_layout->addWidget(xTransSlider);
+//   gl_layout->addLayout(x_trans_slider_layout);
 	
-  QHBoxLayout *y_rot_slider_layout = new QHBoxLayout;
-  QLabel *y_rot_slider_label = new QLabel(("Y Rot"));
-  y_rot_slider_layout->addWidget(y_rot_slider_label);
-  y_rot_slider_layout->addWidget(yRotSlider);
-  gl_layout->addLayout(y_rot_slider_layout);
+//   QHBoxLayout *y_trans_slider_layout = new QHBoxLayout;
+//   QLabel *y_trans_slider_label = new QLabel(("Y Trans"));
+//   y_trans_slider_layout->addWidget(y_trans_slider_label);
+//   y_trans_slider_layout->addWidget(yTransSlider);
+//   gl_layout->addLayout(y_trans_slider_layout);
 
-  QHBoxLayout *z_rot_slider_layout = new QHBoxLayout;
-  QLabel *z_rot_slider_label = new QLabel(("Z Rot"));
-  z_rot_slider_layout->addWidget(z_rot_slider_label);
-  z_rot_slider_layout->addWidget(zRotSlider);
-  gl_layout->addLayout(z_rot_slider_layout);
-
-  QHBoxLayout *x_trans_slider_layout = new QHBoxLayout;
-  QLabel *x_trans_slider_label = new QLabel(("X Trans"));
-  x_trans_slider_layout->addWidget(x_trans_slider_label);
-  x_trans_slider_layout->addWidget(xTransSlider);
-  gl_layout->addLayout(x_trans_slider_layout);
-	
-  QHBoxLayout *y_trans_slider_layout = new QHBoxLayout;
-  QLabel *y_trans_slider_label = new QLabel(("Y Trans"));
-  y_trans_slider_layout->addWidget(y_trans_slider_label);
-  y_trans_slider_layout->addWidget(yTransSlider);
-  gl_layout->addLayout(y_trans_slider_layout);
-
-  QHBoxLayout *z_trans_slider_layout = new QHBoxLayout;
-  QLabel *z_trans_slider_label = new QLabel(("Z Trans"));
-  z_trans_slider_layout->addWidget(z_trans_slider_label);
-  z_trans_slider_layout->addWidget(zTransSlider);
-  gl_layout->addLayout(z_trans_slider_layout);
-
-  QHBoxLayout *fog_start_slider_layout = new QHBoxLayout;
-  QLabel *fog_start_slider_label = new QLabel(("Fog Start"));
-  fog_start_slider_layout->addWidget(fog_start_slider_label);
-  fog_start_slider_layout->addWidget(fogStartSlider);
-  gl_layout->addLayout(fog_start_slider_layout);
-
-  QHBoxLayout *fog_end_slider_layout = new QHBoxLayout;
-  QLabel *fog_end_slider_label = new QLabel(("Fog End"));
-  fog_end_slider_layout->addWidget(fog_end_slider_label);
-  fog_end_slider_layout->addWidget(fogEndSlider);
-  gl_layout->addLayout(fog_end_slider_layout);
+//   QHBoxLayout *z_trans_slider_layout = new QHBoxLayout;
+//   QLabel *z_trans_slider_label = new QLabel(("Z Trans"));
+//   z_trans_slider_layout->addWidget(z_trans_slider_label);
+//   z_trans_slider_layout->addWidget(zTransSlider);
+//   gl_layout->addLayout(z_trans_slider_layout);
 
 
   layout->addLayout(gl_layout);
@@ -159,6 +156,36 @@ Window::Window(string inAudioFileName)
   // All the controls on the right side of the window
   QVBoxLayout *controls_layout = new QVBoxLayout;
   layout->addLayout(controls_layout);
+
+  QHBoxLayout *song_position_slider_layout = new QHBoxLayout;
+  QLabel *song_position_label = new QLabel(("Song Position"));
+  song_position_slider_layout->addWidget(song_position_label);
+  song_position_slider_layout->addWidget(posSlider);
+  controls_layout->addLayout(song_position_slider_layout);
+
+  QHBoxLayout *x_rot_slider_layout = new QHBoxLayout;
+  QLabel *x_rot_slider_label = new QLabel(("X Rot"));
+  x_rot_slider_layout->addWidget(x_rot_slider_label);
+  x_rot_slider_layout->addWidget(xRotSlider);
+  controls_layout->addLayout(x_rot_slider_layout);
+	
+  QHBoxLayout *y_rot_slider_layout = new QHBoxLayout;
+  QLabel *y_rot_slider_label = new QLabel(("Y Rot"));
+  y_rot_slider_layout->addWidget(y_rot_slider_label);
+  y_rot_slider_layout->addWidget(yRotSlider);
+  controls_layout->addLayout(y_rot_slider_layout);
+
+  QHBoxLayout *fog_start_slider_layout = new QHBoxLayout;
+  QLabel *fog_start_slider_label = new QLabel(("Fog Start"));
+  fog_start_slider_layout->addWidget(fog_start_slider_label);
+  fog_start_slider_layout->addWidget(fogStartSlider);
+  controls_layout->addLayout(fog_start_slider_layout);
+
+  QHBoxLayout *fog_end_slider_layout = new QHBoxLayout;
+  QLabel *fog_end_slider_label = new QLabel(("Fog End"));
+  fog_end_slider_layout->addWidget(fog_end_slider_label);
+  fog_end_slider_layout->addWidget(fogEndSlider);
+  controls_layout->addLayout(fog_end_slider_layout);
 
 //   // The scaling sliders
 //   QVBoxLayout *scale_layout = new QVBoxLayout;
@@ -168,26 +195,57 @@ Window::Window(string inAudioFileName)
 //   controls_layout->addLayout(scale_layout);
 
   // Controls for the animation
-  QVBoxLayout *buttons_layout = new QVBoxLayout;
-//   buttons_layout->addWidget(powerSpectrumModeLabel);
-//   buttons_layout->addWidget(powerSpectrumModeCombo);
-  buttons_layout->addWidget(playpause_button);
-  controls_layout->addLayout(buttons_layout);
+  QHBoxLayout *fft_bins_layout = new QHBoxLayout;
+  fftBinsLabel = new QLabel(tr("Number of FFT Bins:"));
+//   fftBinsLabel->setBuddy(fftBinsCombo);
+  fft_bins_layout->addWidget(fftBinsLabel);
+  fft_bins_layout->addWidget(fftBinsCombo);
+  controls_layout->addLayout(fft_bins_layout);
+
+  QHBoxLayout *magnitude_cutoff_slider_layout = new QHBoxLayout;
+  QLabel *magnitude_cutoff_label = new QLabel(("Magnitude Cutoff"));
+  magnitude_cutoff_slider_layout->addWidget(magnitude_cutoff_label);
+  magnitude_cutoff_slider_layout->addWidget(magnitudeCutoffSlider);
+  controls_layout->addLayout(magnitude_cutoff_slider_layout);
+
+  QHBoxLayout *num_vertices_slider_layout = new QHBoxLayout;
+  QLabel *num_vertices_label = new QLabel(("Dot quality"));
+  num_vertices_slider_layout->addWidget(num_vertices_label);
+  num_vertices_slider_layout->addWidget(numVerticesSlider);
+  controls_layout->addLayout(num_vertices_slider_layout);
+
+  QHBoxLayout *display_speed_slider_layout = new QHBoxLayout;
+  QLabel *display_speed_label = new QLabel(("Display Speed"));
+  display_speed_slider_layout->addWidget(display_speed_label);
+  display_speed_slider_layout->addWidget(displaySpeedSlider);
+  controls_layout->addLayout(display_speed_slider_layout);
+
+  QHBoxLayout *playpause_button_layout = new QHBoxLayout;
+  playpause_button_layout->addWidget(playpause_button);
+  controls_layout->addLayout(playpause_button_layout);
 
   // Set the layout for this widget to the layout we just created
   mainWidget->setLayout(layout);
 
   // Set some nice defaults for all the sliders
   xRotSlider->setValue(0);
-  yRotSlider->setValue(0 * 16);
-  zRotSlider->setValue(0 * 16);
+  yRotSlider->setValue(0);
+//   zRotSlider->setValue(0);
 
-  xTransSlider->setValue(0);
-  yTransSlider->setValue(24);
-  zTransSlider->setValue(61);
+//   xTransSlider->setValue(0);
+//   yTransSlider->setValue(55);
+//   zTransSlider->setValue(61);
 
    fogStartSlider->setValue(-24);
    fogEndSlider->setValue(-49);
+
+   posSlider->setValue(0);
+
+   magnitudeCutoffSlider->setValue(50);
+   numVerticesSlider->setValue(10);
+   displaySpeedSlider->setValue(50);
+
+    fftBinsCombo->setCurrentIndex(4);
 
 //   yScaleSlider->setValue(350);
 	
@@ -197,13 +255,13 @@ Window::Window(string inAudioFileName)
 //
 // A handy function to create a generic slider for the x,y,z positions
 //
-QSlider *Window::createRotationSlider()
+QSlider *Window::createRotationSlider(int min, int max)
 {
   QSlider *slider = new QSlider(Qt::Horizontal);
-  slider->setRange(0, 360 * 16);
-  slider->setSingleStep(16);
-  slider->setPageStep(15 * 16);
-  slider->setTickInterval(15 * 16);
+  slider->setRange(min,max);
+  slider->setSingleStep(1);
+  slider->setPageStep(10);
+  slider->setTickInterval(10);
   slider->setTickPosition(QSlider::TicksRight);
   return slider;
 }
@@ -261,11 +319,22 @@ Window::about()
 // The minimum size of the widget
 QSize Window::minimumSizeHint() const
 {
-  return QSize(600, 600);
+  return QSize(826, 544);
 }
 
 // The maximum size of the widget
 QSize Window::sizeHint() const
 {
-  return QSize(800, 800);
+  return QSize(826, 544);
+}
+
+void 
+Window::positionSlider(int val)
+{
+  if (posSlider->isSliderDown() == false)
+    posSlider->setValue(val);
+}
+
+void Window::seekPos() {
+  glWidget->setPos(posSlider->sliderPosition());
 }
