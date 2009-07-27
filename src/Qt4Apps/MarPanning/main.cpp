@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
   string inAudioFileName = "";
-  if (argc > 1) {
+  if (argc > 2) {
 	inAudioFileName = argv[1];	  
   }
   Window window(inAudioFileName);

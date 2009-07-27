@@ -101,32 +101,43 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   //   net_->addMarSystem(mng.create("Gain", "gain2"));
   //   net_->addMarSystem(mng.create("Gain", "gain3"));
 
+  net_->updctrl("mrs_real/israte", 44100.0);
+  net_->updctrl("SoundFileSource/src/mrs_real/israte", 44100.0);
+  net_->updctrl("SoundFileSource/src/mrs_real/osrate", 44100.0);
+  net_->updctrl("AudioSink/dest/mrs_real/israte", 44100.0);
   net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
   net_->updctrl("mrs_natural/inSamples",insamples);
 
   //   string inAudioFileName = "./pink_l_to_r.wav";
-  net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  if (inAudioFileName != "") {
+	net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  }
   net_->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
 
   //   net_->updctrl("mrs_natural/inSamples",2048);
   net_->updctrl("mrs_natural/inSamples",insamples);
 
-  //   net_->updctrl("mrs_real/israte", 44100.0);
-  net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  net_->updctrl("mrs_real/israte", 44100.0);
+//   if (inAudioFileName != "") {
+//   cout << *net_ << endl;
+	net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+//   }
 
   // sness - Set as the biggest possible value so that it doesn't die later.
 
   mwr_ = new MarSystemQtWrapper(net_);
   mwr_->start();
-  mwr_->play();
-  play_state = true;
+  if (inAudioFileName != "") {
+	mwr_->play();
+	play_state = true;
+  }
 
   // Create some handy pointers to access the MarSystem
   posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
   sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");
   osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-  fnamePtr_ = mwr_->getctrl("Fanout/inputfanout/SoundFileSource/src/mrs_string/filename");
+  fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
   //   cout << "inSamples=" << mwr_->getctrl("mrs_natural/inSamples")->to<mrs_real>() << endl;
 
@@ -163,7 +174,8 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 {
   // Set the background color to white
-  qglClearColor(Qt::black);
+//   qglClearColor(Qt::black);
+  qglClearColor(Qt::white);
 
   // Set the shading model
   glShadeModel(GL_SMOOTH);
@@ -172,8 +184,12 @@ void GLWidget::initializeGL()
   glEnable(GL_DEPTH_TEST);
 
   // Enable fog for depth cueing
-  GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
-  glClearColor(0.0f,0.0f,0.0f,1.0f);  // Fog colour of black (0,0,0)
+//   GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
+  GLfloat fogColor[4]= {1.0f, 1.0f, 1.0f, 1.0f};
+
+//   glClearColor(0.0f,0.0f,0.0f,1.0f);  // Fog colour of black (0,0,0)
+  glClearColor(1.0f,1.0f,1.0f,1.0f);  // Fog colour of black (0,0,0)
+
   glFogfv(GL_FOG_COLOR, fogColor);    // Set fog color
   glFogi(GL_FOG_MODE, GL_LINEAR);       // Set the fog mode
   glFogf(GL_FOG_DENSITY, 0.5f);      // How dense will the fog be
@@ -201,7 +217,8 @@ void GLWidget::initializeGL()
   GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
   GLfloat model_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
 
-  glClearColor(0.0, 0.0, 0.0, 0.0);
+//   glClearColor(0.0, 0.0, 0.0, 0.0);
+  glClearColor(1.0, 1.0, 1.0, 1.0);
 
   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -741,6 +758,7 @@ void GLWidget::open()
 {
   QString fileName = QFileDialog::getOpenFileName(this);
 
+//   net_->updctrl("mrs_real/israte", 44100.0);
   mwr_->updctrl(fnamePtr_, fileName.toStdString());
   mwr_->updctrl(initPtr_, true);
 
