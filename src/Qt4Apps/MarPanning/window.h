@@ -46,8 +46,8 @@ private:
 //   QSlider *zRotSlider;
 
 //   // Sliders to translate the object
-//   QSlider *xTransSlider;
-//   QSlider *yTransSlider;
+   QSlider *xTransSlider;
+   QSlider *yTransSlider;
 //   QSlider *zTransSlider;
 
   // Scale sliders

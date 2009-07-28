@@ -25,8 +25,8 @@ Window::Window(string inAudioFileName)
 //   zRotSlider = createRotationSlider();
 
 //   // Create the x,y,z translation sliders
-//   xTransSlider = createTranslationSlider();
-//   yTransSlider = createTranslationSlider();
+   xTransSlider = createTranslationSlider();
+   yTransSlider = createTranslationSlider();
 //   zTransSlider = createTranslationSlider();
 
   // Fog sliders
@@ -101,8 +101,8 @@ Window::Window(string inAudioFileName)
 //   connect(glWidget, SIGNAL(zRotationChanged(int)), zRotSlider, SLOT(setValue(int)));
 
 //   // Connect up the x,y,z rotation sliders with slots to set the rotation values
-//   connect(xTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXTranslation(int)));
-//   connect(yTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYTranslation(int)));
+   connect(xTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXTranslation(int)));
+   connect(yTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYTranslation(int)));
 //   connect(zTransSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZTranslation(int)));
 
   // Connect up the other sliders
@@ -146,17 +146,7 @@ Window::Window(string inAudioFileName)
 //   z_rot_slider_layout->addWidget(zRotSlider);
 //   gl_layout->addLayout(z_rot_slider_layout);
 
-//   QHBoxLayout *x_trans_slider_layout = new QHBoxLayout;
-//   QLabel *x_trans_slider_label = new QLabel(("X Trans"));
-//   x_trans_slider_layout->addWidget(x_trans_slider_label);
-//   x_trans_slider_layout->addWidget(xTransSlider);
-//   gl_layout->addLayout(x_trans_slider_layout);
 	
-//   QHBoxLayout *y_trans_slider_layout = new QHBoxLayout;
-//   QLabel *y_trans_slider_label = new QLabel(("Y Trans"));
-//   y_trans_slider_layout->addWidget(y_trans_slider_label);
-//   y_trans_slider_layout->addWidget(yTransSlider);
-//   gl_layout->addLayout(y_trans_slider_layout);
 
 //   QHBoxLayout *z_trans_slider_layout = new QHBoxLayout;
 //   QLabel *z_trans_slider_label = new QLabel(("Z Trans"));
@@ -188,6 +178,18 @@ Window::Window(string inAudioFileName)
   y_rot_slider_layout->addWidget(y_rot_slider_label);
   y_rot_slider_layout->addWidget(yRotSlider);
   controls_layout->addLayout(y_rot_slider_layout);
+
+   QHBoxLayout *x_trans_slider_layout = new QHBoxLayout;
+   QLabel *x_trans_slider_label = new QLabel(("X Trans"));
+   x_trans_slider_layout->addWidget(x_trans_slider_label);
+   x_trans_slider_layout->addWidget(xTransSlider);
+   controls_layout->addLayout(x_trans_slider_layout);
+
+   QHBoxLayout *y_trans_slider_layout = new QHBoxLayout;
+   QLabel *y_trans_slider_label = new QLabel(("Y Trans"));
+   y_trans_slider_layout->addWidget(y_trans_slider_label);
+   y_trans_slider_layout->addWidget(yTransSlider);
+   controls_layout->addLayout(y_trans_slider_layout);
 
   QHBoxLayout *fog_start_slider_layout = new QHBoxLayout;
   QLabel *fog_start_slider_label = new QLabel(("Fog Start"));
@@ -246,15 +248,15 @@ Window::Window(string inAudioFileName)
   yRotSlider->setValue(0);
 //   zRotSlider->setValue(0);
 
-//   xTransSlider->setValue(0);
-//   yTransSlider->setValue(55);
+   xTransSlider->setValue(0);
+   yTransSlider->setValue(67);
 //   zTransSlider->setValue(61);
 
 //    fogStartSlider->setValue(-24);
 //    fogEndSlider->setValue(-49);
 
-   fogStartSlider->setValue(60);
-   fogEndSlider->setValue(100);
+   fogStartSlider->setValue(-60);
+   fogEndSlider->setValue(-100);
 
    posSlider->setValue(0);
 

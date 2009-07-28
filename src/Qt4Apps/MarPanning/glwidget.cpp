@@ -366,25 +366,27 @@ void GLWidget::redrawScene() {
   float max_x = 7;
   float min_y = 5;
   float max_y = 22;
+   float max_z = MAX_Z;
+//   float max_z = MAX_Z * 10;
 
   glBegin(GL_LINES);
   glVertex3f(min_x,min_y,0);
-  glVertex3f(min_x,min_y,MAX_Z);
+  glVertex3f(min_x,min_y,max_z);
   glEnd();
 
   glBegin(GL_LINES);
   glVertex3f(min_x,max_y,0);
-  glVertex3f(min_x,max_y,MAX_Z);
+  glVertex3f(min_x,max_y,max_z);
   glEnd();
 
   glBegin(GL_LINES);
   glVertex3f(max_x,min_y,0);
-  glVertex3f(max_x,min_y,MAX_Z);
+  glVertex3f(max_x,min_y,max_z);
   glEnd();
 
   glBegin(GL_LINES);
   glVertex3f(max_x,max_y,0);
-  glVertex3f(max_x,max_y,MAX_Z);
+  glVertex3f(max_x,max_y,max_z);
   glEnd();
 
 
@@ -657,7 +659,7 @@ void GLWidget::setFogStart(int v)
   double val = v * -1;
   if (val != fogStart) {
 	fogStart = val;
-  	cout << "v=" << v << " fogStart=" << fogStart << endl;
+//   	cout << "v=" << v << " fogStart=" << fogStart << endl;
 	emit fogStartChanged(val);
 	glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
 	updateGL();
@@ -669,7 +671,7 @@ void GLWidget::setFogEnd(int v)
   double val = v * -1;
   if (val != fogEnd) {
 	fogEnd = val;
-  	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
+//   	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
 	emit fogEndChanged(val);
 	glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
 	updateGL();
@@ -794,7 +796,7 @@ void GLWidget::setInSamples(int v) {
   spectrum_bins = insamples / 2.0;
   stereo_spectrum_bins = insamples / 4.0;
 
-  //   mwr_->pause();
+  mwr_->pause();
 
   net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
 
@@ -813,9 +815,10 @@ void GLWidget::setInSamples(int v) {
   //     net_->updctrl("Gain/gain/mrs_natural/inSamples",insamples);
   //    net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-  //    mwr_->play();
 
   clearRingBuffers();
+
+  mwr_->play();
 
 }
 
