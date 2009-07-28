@@ -81,6 +81,9 @@ private:
   QLabel *fftBinsLabel;
   QComboBox *fftBinsCombo;
 
+  QLabel *backgroundLabel;
+  QComboBox *backgroundCombo;
+
   QCheckBox *waterfallCheckBox;
 };
 

@@ -184,11 +184,11 @@ void GLWidget::initializeGL()
   glEnable(GL_DEPTH_TEST);
 
   // Enable fog for depth cueing
-//   GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
-  GLfloat fogColor[4]= {1.0f, 1.0f, 1.0f, 1.0f};
+   GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
+//   GLfloat fogColor[4]= {1.0f, 1.0f, 1.0f, 1.0f};
 
-//   glClearColor(0.0f,0.0f,0.0f,1.0f);  // Fog colour of black (0,0,0)
-  glClearColor(1.0f,1.0f,1.0f,1.0f);  // Fog colour of black (0,0,0)
+   glClearColor(0.0f,0.0f,0.0f,1.0f);  // Fog colour of black (0,0,0)
+//   glClearColor(1.0f,1.0f,1.0f,1.0f);  // Fog colour of black (0,0,0)
 
   glFogfv(GL_FOG_COLOR, fogColor);    // Set fog color
   glFogi(GL_FOG_MODE, GL_LINEAR);       // Set the fog mode
@@ -198,8 +198,11 @@ void GLWidget::initializeGL()
   //   glFogf(GL_FOG_END, 138.0f);            // Fog End Depth
       glEnable(GL_FOG);                   // Enable fog
 
-  setFogStart(-31);
-  setFogEnd(-72);
+//   setFogStart(-31);
+//   setFogEnd(-72);
+
+  setFogStart(-60);
+  setFogEnd(-100);
 
   // Antialias lines
   glEnable(GL_LINE_SMOOTH);
@@ -217,8 +220,8 @@ void GLWidget::initializeGL()
   GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
   GLfloat model_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
 
-//   glClearColor(0.0, 0.0, 0.0, 0.0);
-  glClearColor(1.0, 1.0, 1.0, 1.0);
+   glClearColor(0.0, 0.0, 0.0, 0.0);
+//   glClearColor(1.0, 1.0, 1.0, 1.0);
 
   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -387,8 +390,8 @@ void GLWidget::redrawScene() {
 
   //   float min_x = 1024;
   //   float max_x = -1024;
-//    min_y = 1024;
-//    max_y = -1024;
+//     min_y = 1024;
+//     max_y = -1024;
 
    double x;
    double y;
@@ -420,12 +423,12 @@ void GLWidget::redrawScene() {
 	  // 	  if (x > max_x) {
 	  // 		max_x = x;
 	  // 	  }
-//  	  if (y < min_y) {
-//  		min_y = y;
-//  	  }
-//  	  if (y > max_y) {
-//  		max_y = y;
-//  	  }
+//   	  if (y < min_y) {
+//   		min_y = y;
+//   	  }
+//   	  if (y > max_y) {
+//   		max_y = y;
+//   	  }
 	  // sness - This was to figure out why the spectrum would move down
 	  //  	  if (i == 0 && j == 0) {
 	  //  		cout << "miny=" << y;
@@ -445,6 +448,10 @@ void GLWidget::redrawScene() {
  	  if (size > 0.5) {
  		size = 0.5;
  	  }
+	  
+// 	  if (size < 0) {
+// 		cout << "size=" << size << endl;
+// 	  }
 
 	  //   	  size = 0.2;
 
@@ -503,8 +510,6 @@ void GLWidget::redrawScene() {
 // 		  float mcolor[] = { (size*5), 1.0f, 0.0f, 1.0f };
 		}
 
-		  
-
 		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
 
 		if (size > 0.3) {
@@ -521,7 +526,7 @@ void GLWidget::redrawScene() {
 		  
 		// 		}
 
-		glTranslated(-x,-y,-z);
+		glTranslated(-1.0 * x,-1.0 * y,-1.0 * z);
 
 	  }
 
@@ -532,7 +537,7 @@ void GLWidget::redrawScene() {
   }
 
 //      cout << "min_x=" << min_x << " max_x=" << max_x << " min_y=" << min_y << " max_y=" << max_y << endl;
-//   cout << "min_y=" << min_y << " max_y=" << max_y << " sb=" << spectrum_bins << endl;
+//    cout << "min_y=" << min_y << " max_y=" << max_y << " sb=" << spectrum_bins << endl;
 
 }
 
@@ -649,10 +654,10 @@ void GLWidget::setZTranslation(int v)
 
 void GLWidget::setFogStart(int v)
 {
-  double val = v * -2;
+  double val = v * -1;
   if (val != fogStart) {
 	fogStart = val;
-//  	cout << "v=" << v << " fogStart=" << fogStart << endl;
+  	cout << "v=" << v << " fogStart=" << fogStart << endl;
 	emit fogStartChanged(val);
 	glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
 	updateGL();
@@ -661,10 +666,10 @@ void GLWidget::setFogStart(int v)
 
 void GLWidget::setFogEnd(int v)
 {
-  double val = v * -2;
+  double val = v * -1;
   if (val != fogEnd) {
 	fogEnd = val;
-//  	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
+  	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
 	emit fogEndChanged(val);
 	glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
 	updateGL();
@@ -707,6 +712,8 @@ void GLWidget::set_fft_size(int val) {
   //   // sness - Not sure why if you give inSamples of 512, the
   //   // StereoSpectrum only outputs 128 values.  Shouldn't it output 256
   //   // values, one for each bin?
+
+
 }
 
 void GLWidget::playPause() 
@@ -722,6 +729,7 @@ void GLWidget::playPause()
 
 void GLWidget::setMagnitudeCutoff(int v) {
   magnitude_cutoff = ((v*v*v) * 0.0001) / 10000;
+//   cout << "v=" << v << " mc=" << magnitude_cutoff << endl;
 }
 
 void GLWidget::setNumVertices(int v) {

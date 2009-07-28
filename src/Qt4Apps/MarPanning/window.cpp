@@ -32,8 +32,12 @@ Window::Window(string inAudioFileName)
   // Fog sliders
 //   fogStartSlider = createTranslationSlider();
 //   fogEndSlider = createTranslationSlider();
-  fogStartSlider = createSlider(-100,-30,1,10,10);
-  fogEndSlider = createSlider(-100,-30,1,10,10);
+
+//   fogStartSlider = createSlider(-100,-30,1,10,10);
+//   fogEndSlider = createSlider(-100,-30,1,10,10);
+
+  fogStartSlider = createSlider(-100,-60,1,10,10);
+  fogEndSlider = createSlider(-100,-60,1,10,10);
 
   // Data display sliders
   magnitudeCutoffSlider = createSlider(0,100,1,10,10);
@@ -75,7 +79,12 @@ Window::Window(string inAudioFileName)
   fftBinsCombo->addItem(tr("16384"));
   fftBinsCombo->addItem(tr("32768"));
 
-
+  // A combo box for choosing the background color
+  backgroundCombo = new QComboBox;
+  backgroundCombo->addItem(tr("Black"));
+  backgroundCombo->addItem(tr("Black"));
+  backgroundCombo->addItem(tr("Dark Blue"));
+  backgroundCombo->addItem(tr("Light Blue"));
 
 //     waterfallCheckBox = new QCheckBox(tr("&Waterfall"));
 //     waterfallCheckBox->setChecked(true);
@@ -105,6 +114,9 @@ Window::Window(string inAudioFileName)
 //   connect(displaySpeedSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setDisplaySpeed(int)));
 
   // Connect up the FFT bins slider
+  connect(fftBinsCombo, SIGNAL(currentIndexChanged(int)), glWidget, SLOT(setFFTBins(int)));
+
+  // Connect up the background color combo
   connect(fftBinsCombo, SIGNAL(currentIndexChanged(int)), glWidget, SLOT(setFFTBins(int)));
 
   // Current playback position
@@ -238,8 +250,11 @@ Window::Window(string inAudioFileName)
 //   yTransSlider->setValue(55);
 //   zTransSlider->setValue(61);
 
-   fogStartSlider->setValue(-24);
-   fogEndSlider->setValue(-49);
+//    fogStartSlider->setValue(-24);
+//    fogEndSlider->setValue(-49);
+
+   fogStartSlider->setValue(60);
+   fogEndSlider->setValue(100);
 
    posSlider->setValue(0);
 
