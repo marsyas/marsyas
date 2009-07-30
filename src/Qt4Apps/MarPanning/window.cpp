@@ -13,8 +13,8 @@ Window::Window(string inAudioFileName)
 
   glWidget = new GLWidget(inAudioFileName);
 
-  glWidget->setMinimumSize(500,500);
-  glWidget->setMaximumSize(500,500);
+  glWidget->setMinimumSize(800,400);
+  glWidget->setMaximumSize(800,400);
 
   createActions();
   createMenus();  

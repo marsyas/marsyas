@@ -30,7 +30,8 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   //   yTrans = -5.5;
 
   // For 50
-  zTrans = -52;
+//   zTrans = -52;
+  zTrans = -70;
   yTrans = -6.7;
 
   test_x = 0;
@@ -170,13 +171,13 @@ GLWidget::~GLWidget()
 // The minimum size of the widget
 QSize GLWidget::minimumSizeHint() const
 {
-  return QSize(400, 400);
+  return QSize(800, 400);
 }
 
 // The maximum size of the widget
 QSize GLWidget::sizeHint() const
 {
-  return QSize(600, 600);
+  return QSize(800, 400);
 }
 
 // Initialize the GL widget
@@ -184,7 +185,7 @@ void GLWidget::initializeGL()
 {
   // Set the background color to white
 //   qglClearColor(Qt::black);
-  qglClearColor(Qt::white);
+  qglClearColor(Qt::black);
 
   // Set the shading model
   glShadeModel(GL_SMOOTH);
@@ -375,10 +376,10 @@ void GLWidget::redrawScene() {
   float mcolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
 
-  float min_x = -7;
-  float max_x = 7;
-  float min_y = 5;
-  float max_y = 22;
+  float min_x = -23;
+  float max_x = 23;
+  float min_y = 2;
+  float max_y = 24;
    float max_z = MAX_Z;
 //   float max_z = MAX_Z * 10;
 
@@ -415,7 +416,7 @@ void GLWidget::redrawScene() {
 
   for (int i = 0; i < MAX_Z; i++) {
  	for (int j = 0; j < stereo_spectrum_bins; j++) {
-	  x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 7.0;
+	  x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 30.0;
 	  //   	  float y = j/3.0;
 	  // Scale the y-range to between 0 and 42
 	  //    	  float y = (j / (float)spectrum_bins) * 21.0;
@@ -426,7 +427,7 @@ void GLWidget::redrawScene() {
 // 	  float y = log10(((22050.0 / float(stereo_spectrum_bins)) * j) + (0.5 * (22050.0 / float(stereo_spectrum_bins)))) * 5.0;
 
 //  	  float y = log10(((22050.0 / float(spectrum_bins)) * j) + (0.5 * (22050.0 / float(spectrum_bins)))) * 5.0;
- 	  y = (log10(((22050.0 / double(spectrum_bins)) * j) + (0.5 * (22050.0 / double(spectrum_bins))))) * 5.0;
+ 	  y = (log10(((22050.0 / double(spectrum_bins)) * j) + (0.5 * (22050.0 / double(spectrum_bins))))) * 7.0;
 
 
 	  // 	  if (i == 0 && j == 0) {
@@ -459,7 +460,7 @@ void GLWidget::redrawScene() {
 // 					(left_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2]) + 
 // 					(right_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2])
 // 					) / 2.0 * 2000; 
-	  size = (powerspectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2]) * 2000;
+	  size = (powerspectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 2000;
 		
  	  if (size > 0.5) {
  		size = 0.5;
@@ -493,8 +494,7 @@ void GLWidget::redrawScene() {
 	  // A disk
 	  //     glEnable(GL_LIGHTING);
 	  //     glColor3f(1.0, 1.0, 1.0);
-	  if (size > magnitude_cutoff) {
-
+ 	  if (size > magnitude_cutoff) {
 		glTranslated(x,y,z);
 
 		// 		  // sness - FIXME
@@ -565,7 +565,8 @@ void GLWidget::resizeGL(int width, int height)
   int side = qMin(width, height);
 
   // Setup the glViewport
-  glViewport((width - side) / 2, (height - side) / 2, side, side);
+//   glViewport((width - side) / 2, (height - side) / 2, side, side);
+  glViewport(0, 0, width, height);
 
   // Switch to GL_PROJECTION matrix mode
   glMatrixMode(GL_PROJECTION);
@@ -574,7 +575,7 @@ void GLWidget::resizeGL(int width, int height)
   glLoadIdentity();
 
   // Setup a perspective viewing system
-  gluPerspective(20,1,0.1,1000);
+  gluPerspective(20,2.0,0.1,1000);
 
   // Switch back to GL_MODELVIEW mode
   glMatrixMode(GL_MODELVIEW);
@@ -810,12 +811,12 @@ void GLWidget::clearRingBuffers() {
 void GLWidget::setInSamples(int v) {
   insamples = v;
   spectrum_bins = insamples / 2.0;
-  stereo_spectrum_bins = insamples / 4.0;
+  stereo_spectrum_bins = insamples / 2.0;
 
   mwr_->pause();
 
-  mwr_->updctrl("mrs_natural/inSamples",insamples);
-//   net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+//    mwr_->updctrl("mrs_natural/inSamples",insamples);
+   mwr_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
 
   //
   // sness - FIXME - Ask George about this
@@ -853,23 +854,28 @@ void GLWidget::buildDiskLists() {
   gluQuadricNormals(qobj, GLU_FLAT);
 
   glNewList(startList+0, GL_COMPILE);
-  gluDisk(qobj, 0, 0.07, num_vertices, 1);
+//   gluDisk(qobj, 0, 0.07, num_vertices, 1);
+  gluDisk(qobj, 0, 0.1, num_vertices, 1);
   glEndList();
 
   glNewList(startList+1, GL_COMPILE);
-  gluDisk(qobj, 0, 0.09, num_vertices, 1);
+//   gluDisk(qobj, 0, 0.09, num_vertices, 1);
+  gluDisk(qobj, 0, 0.2, num_vertices, 1);
   glEndList();
 
   glNewList(startList+2, GL_COMPILE);
-  gluDisk(qobj, 0, 0.10, num_vertices, 1);
+//   gluDisk(qobj, 0, 0.10, num_vertices, 1);
+  gluDisk(qobj, 0, 0.3, num_vertices, 1);
   glEndList();
 
   glNewList(startList+3, GL_COMPILE);
-  gluDisk(qobj, 0, 0.11, num_vertices, 1);
+//   gluDisk(qobj, 0, 0.11, num_vertices, 1);
+  gluDisk(qobj, 0, 0.35, num_vertices, 1);
   glEndList();
 
   glNewList(startList+4, GL_COMPILE);
-  gluDisk(qobj, 0, 0.12, num_vertices, 1);
+//   gluDisk(qobj, 0, 0.12, num_vertices, 1);
+  gluDisk(qobj, 0, 0.4, num_vertices, 1);
   glEndList();
 
 }
