@@ -607,7 +607,7 @@ void GLWidget::setInSamples(int v) {
   spectrum_bins = insamples / 2.0;
   stereo_spectrum_bins = insamples / 2.0;
 
-  mwr_->pause();
+  // mwr_->pause();
 
   mwr_->updctrl("mrs_bool/debug", true);
   
@@ -615,9 +615,8 @@ void GLWidget::setInSamples(int v) {
   // This is wrong, but coredumps less often
   // mwr_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
 
-  clearRingBuffers();
-
-  mwr_->play();
+  // clearRingBuffers();
+  // mwr_->play();
 
 }
 

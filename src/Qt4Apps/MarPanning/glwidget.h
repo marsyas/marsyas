@@ -12,8 +12,8 @@ using namespace Marsyas;
 
 // sness
 #define MAX_Z 50
-#define MAX_SPECTRUM_BINS 16384
-#define MAX_STEREO_SPECTRUM_BINS 8192
+#define MAX_SPECTRUM_BINS 65536
+#define MAX_STEREO_SPECTRUM_BINS 65536
 
 #define TIMER_COUNT_STEPS 100.0
 
