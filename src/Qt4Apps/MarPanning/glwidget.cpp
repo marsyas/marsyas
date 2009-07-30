@@ -493,7 +493,7 @@ void GLWidget::setFogStart (int v)
   double val = v * -1;
   if (val != fogStart) {
 	fogStart = val;
-   	cout << "v=" << v << " fogStart=" << fogStart << endl;
+//    	cout << "v=" << v << " fogStart=" << fogStart << endl;
 
 	emit fogStartChanged(val);
 	glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
@@ -506,7 +506,7 @@ void GLWidget::setFogEnd(int v)
   double val = v * -1;
   if (val != fogEnd) {
 	fogEnd = val;
-	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
+// 	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
 	emit fogEndChanged(val);
 	glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
 	updateGL();
