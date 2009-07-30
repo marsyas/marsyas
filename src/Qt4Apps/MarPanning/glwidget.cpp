@@ -31,8 +31,9 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
 
   // For 50
 //   zTrans = -52;
-  z_start = 70;
-  zTrans = -1 * z_start;
+   z_start = 70;
+//   zTrans = -1 * z_start;
+   zTrans = -70;
   yTrans = -6.7;
 
   test_x = 0;
@@ -186,8 +187,8 @@ void GLWidget::initializeGL()
   glHint(GL_FOG_HINT, GL_NICEST);     // Fog hint value : GL_DONT_CARE, GL_NICEST
   glEnable(GL_FOG);                   // Enable fog
 
-  setFogStart(-70);
-  setFogEnd(-100);
+  setFogStart(-94);
+  setFogEnd(-117);
 
   // Antialias lines
   glEnable(GL_LINE_SMOOTH);
@@ -240,13 +241,13 @@ void GLWidget::paintGL()
 }
 
 void GLWidget::animate() {
-  //    cout << "animate" << endl;
-  emit updateGL();
-  if (play_state) {
-	addDataToRingBuffer();
-  }
+//   //    cout << "animate" << endl;
+   emit updateGL();
+   if (play_state) {
+	 addDataToRingBuffer();
+   }
 
-  setPos();
+   setPos();
 }
 
 // "automatic" advancement of position
@@ -342,8 +343,6 @@ void GLWidget::redrawScene() {
  	for (int j = 0; j < stereo_spectrum_bins; j++) {
 	  x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 30.0;
  	  y = (log10(((22050.0 / double(spectrum_bins)) * j) + (0.5 * (22050.0 / double(spectrum_bins))))) * 7.0;
-
-
  	  z = i;
 
 	  size = (powerspectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 2000;
@@ -489,11 +488,13 @@ void GLWidget::setZTranslation(int v)
 }
 
 
-void GLWidget::setFogStart(int v)
+void GLWidget::setFogStart (int v)
 {
   double val = v * -1;
   if (val != fogStart) {
 	fogStart = val;
+   	cout << "v=" << v << " fogStart=" << fogStart << endl;
+
 	emit fogStartChanged(val);
 	glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
 	updateGL();
@@ -505,6 +506,7 @@ void GLWidget::setFogEnd(int v)
   double val = v * -1;
   if (val != fogEnd) {
 	fogEnd = val;
+	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
 	emit fogEndChanged(val);
 	glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
 	updateGL();
@@ -607,17 +609,8 @@ void GLWidget::setInSamples(int v) {
   spectrum_bins = insamples / 2.0;
   stereo_spectrum_bins = insamples / 2.0;
 
-  // mwr_->pause();
-
-  mwr_->updctrl("mrs_bool/debug", true);
-  
   mwr_->updctrl("mrs_natural/inSamples",insamples);
-  // This is wrong, but coredumps less often
-  // mwr_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
-
-  // clearRingBuffers();
-  // mwr_->play();
-
+    clearRingBuffers();
 }
 
 

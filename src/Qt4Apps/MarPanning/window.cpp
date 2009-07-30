@@ -36,8 +36,8 @@ Window::Window(string inAudioFileName)
 //   fogStartSlider = createSlider(-100,-30,1,10,10);
 //   fogEndSlider = createSlider(-100,-30,1,10,10);
 
-  fogStartSlider = createSlider(-100,-60,1,10,10);
-  fogEndSlider = createSlider(-100,-60,1,10,10);
+  fogStartSlider = createSlider(-130,-80,1,10,10);
+  fogEndSlider = createSlider(-130,-80,1,10,10);
 
   // Data display sliders
   magnitudeCutoffSlider = createSlider(0,100,1,10,10);
@@ -263,8 +263,8 @@ Window::Window(string inAudioFileName)
 //    fogStartSlider->setValue(-24);
 //    fogEndSlider->setValue(-49);
 
-   fogStartSlider->setValue(-60);
-   fogEndSlider->setValue(-100);
+   fogStartSlider->setValue(-94);
+   fogEndSlider->setValue(-117);
 
    posSlider->setValue(0);
 
