@@ -44,6 +44,7 @@ public slots:
 
   void setMagnitudeCutoff(int v);
   void setNumVertices(int v);
+  void setDotSize(int v);
   void setSongPosition(int v);
   void setDisplaySpeed(int v);
 
@@ -155,6 +156,13 @@ private:
 
   // Scale
   double y_scale;
+
+  // Where should the z start? (Used for drawing guidelines)
+  double z_start;
+
+  // How big the dots should be
+  double dot_size_multiplier;
+  
   
   // Test variables
   double test_x;

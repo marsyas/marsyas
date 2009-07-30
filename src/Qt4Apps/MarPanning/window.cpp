@@ -42,6 +42,7 @@ Window::Window(string inAudioFileName)
   // Data display sliders
   magnitudeCutoffSlider = createSlider(0,100,1,10,10);
   numVerticesSlider = createSlider(3,20,1,10,10);
+  dotSizeSlider = createSlider(1,100,1,10,10);
 
   // Song position
   posSlider = createSlider(0,100,1,10,10);
@@ -111,6 +112,7 @@ Window::Window(string inAudioFileName)
 
   connect(magnitudeCutoffSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setMagnitudeCutoff(int)));
   connect(numVerticesSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setNumVertices(int)));
+  connect(dotSizeSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setDotSize(int)));
 //   connect(displaySpeedSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setDisplaySpeed(int)));
 
   // Connect up the FFT bins slider
@@ -230,6 +232,12 @@ Window::Window(string inAudioFileName)
   num_vertices_slider_layout->addWidget(numVerticesSlider);
   controls_layout->addLayout(num_vertices_slider_layout);
 
+  QHBoxLayout *dot_size_slider_layout = new QHBoxLayout;
+  QLabel *dot_size_label = new QLabel(("Dot Size"));
+  dot_size_slider_layout->addWidget(dot_size_label);
+  dot_size_slider_layout->addWidget(dotSizeSlider);
+  controls_layout->addLayout(dot_size_slider_layout);
+
 //   QHBoxLayout *display_speed_slider_layout = new QHBoxLayout;
 //   QLabel *display_speed_label = new QLabel(("Display Speed"));
 //   display_speed_slider_layout->addWidget(display_speed_label);
@@ -262,6 +270,7 @@ Window::Window(string inAudioFileName)
 
    magnitudeCutoffSlider->setValue(50);
    numVerticesSlider->setValue(10);
+   dotSizeSlider->setValue(50);
 //    displaySpeedSlider->setValue(50);
 
     fftBinsCombo->setCurrentIndex(4);

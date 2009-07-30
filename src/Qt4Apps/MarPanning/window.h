@@ -60,6 +60,7 @@ private:
   // Data display sliders
   QSlider *magnitudeCutoffSlider;
   QSlider *numVerticesSlider;
+  QSlider *dotSizeSlider;
 
   // Song position
   QSlider *posSlider;
