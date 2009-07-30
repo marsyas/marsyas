@@ -149,8 +149,7 @@ private:
   MarSystem* net_;
 
   // A ring buffer that holds our data
-  double **left_spectrum_ring_buffer;
-  double **right_spectrum_ring_buffer;
+  double **powerspectrum_ring_buffer;
   double **panning_spectrum_ring_buffer;
   int ring_buffer_pos; // The current head position in the ring buffer
 
@@ -173,7 +172,7 @@ private:
   float stats_flux;
   float stats_rms;
 
-  void setAudioStats();
+//   void setAudioStats();
 
   MarControlPtr posPtr_;
   MarControlPtr sizePtr_;

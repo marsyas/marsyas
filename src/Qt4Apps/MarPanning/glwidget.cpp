@@ -55,13 +55,11 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   y_scale = 350;
 
   // Create space for the vertices we will display
-  left_spectrum_ring_buffer = new double*[MAX_Z];
-  right_spectrum_ring_buffer = new double*[MAX_Z];
+  powerspectrum_ring_buffer = new double*[MAX_Z];
   panning_spectrum_ring_buffer = new double*[MAX_Z];
 
   for (int i = 0; i < MAX_Z; i++) {
-	left_spectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
-	right_spectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
+	powerspectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
 	panning_spectrum_ring_buffer[i] = new double[MAX_STEREO_SPECTRUM_BINS];
   }
   clearRingBuffers();
@@ -77,29 +75,40 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   net_->addMarSystem(mng.create("AudioSink", "dest"));
   //   net_->addMarSystem(mng.create("Gain", "gain"));
 
-  MarSystem* stereobranches = mng.create("Parallel", "stereobranches");
+   MarSystem* fanout = mng.create("Fanout", "fanout");
+
+    MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
+    powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+    powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
+    powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
+    powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+     powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
+
+  MarSystem* stereobranches_series = mng.create("Series", "stereobranches_series");
+  MarSystem* stereobranches_parallel = mng.create("Parallel", "stereobranches_parallel");
   MarSystem* left = mng.create("Series", "left");
   MarSystem* right = mng.create("Series", "right");
 
   left->addMarSystem(mng.create("Windowing", "hamleft"));
   left->addMarSystem(mng.create("Spectrum", "spkleft"));
-  left->addMarSystem(mng.create("PowerSpectrum", "leftpspk"));
-  left->addMarSystem(mng.create("Gain", "leftgain"));
+//   left->addMarSystem(mng.create("Gain", "leftgain"));
 
   right->addMarSystem(mng.create("Windowing", "hamright"));
   right->addMarSystem(mng.create("Spectrum", "spkright"));
-  right->addMarSystem(mng.create("PowerSpectrum", "rightpspk"));
-  right->addMarSystem(mng.create("Gain", "rightgain"));
+//   right->addMarSystem(mng.create("Gain", "rightgain"));
 
-  stereobranches->addMarSystem(left);
-  stereobranches->addMarSystem(right);
+  stereobranches_parallel->addMarSystem(left);
+  stereobranches_parallel->addMarSystem(right);
+  stereobranches_series->addMarSystem(stereobranches_parallel);
+  stereobranches_series->addMarSystem(mng.create("StereoSpectrum", "sspk"));
 
-  net_->addMarSystem(stereobranches);
+  stereobranches_series->addMarSystem(mng.create("Gain", "gain"));
 
-  net_->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+   fanout->addMarSystem(powerspectrum_series);
+  fanout->addMarSystem(stereobranches_series);
 
-  //   net_->addMarSystem(mng.create("Gain", "gain2"));
-  //   net_->addMarSystem(mng.create("Gain", "gain3"));
+  net_->addMarSystem(fanout);
+  net_->addMarSystem(mng.create("Gain", "gain"));
 
   net_->updctrl("mrs_real/israte", 44100.0);
   net_->updctrl("SoundFileSource/src/mrs_real/israte", 44100.0);
@@ -312,14 +321,14 @@ void GLWidget::setPos(int val)
   
 }
 
-void GLWidget::setAudioStats() {
-  mrs_realvec data = mwr_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+// void GLWidget::setAudioStats() {
+//   mrs_realvec data = mwr_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-  stats_centroid = data(0,0);
-  stats_rolloff = data(1,0);
-  stats_flux = data(2,0);
-  stats_rms = data(3,0);
-}
+//   stats_centroid = data(0,0);
+//   stats_rolloff = data(1,0);
+//   stats_flux = data(2,0);
+//   stats_rms = data(3,0);
+// }
 
 // // Read in the waveform data from the waveformnet MarSystem
 // void GLWidget::setWaveformData() {
@@ -327,22 +336,26 @@ void GLWidget::setAudioStats() {
 // }
 
 void GLWidget::addDataToRingBuffer() {
-  mrs_realvec left_data = mwr_->getctrl("Parallel/stereobranches/Series/left/PowerSpectrum/leftpspk/mrs_realvec/processedData")->to<mrs_realvec>();
-  mrs_realvec right_data = mwr_->getctrl("Parallel/stereobranches/Series/right/PowerSpectrum/rightpspk/mrs_realvec/processedData")->to<mrs_realvec>();
-  mrs_realvec panning_data = mwr_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+  mrs_realvec powerspectrum_data = mwr_->getctrl("Fanout/fanout/Series/powerspectrum_series/PowerSpectrum/pspk/mrs_realvec/processedData")->to<mrs_realvec>();
+  mrs_realvec panning_data = mwr_->getctrl("Fanout/fanout/Series/stereobranches_series/StereoSpectrum/sspk/mrs_realvec/processedData")->to<mrs_realvec>();
 
-  int leftright_rows = left_data.getRows();
+//   cout << "before getting" << endl;
+//   mrs_realvec data = mwr_->getctrl("Fanout/fanout/Series/stereobranches_series/StereoSpectrum/sspk/mrs_realvec/processedData")->to<mrs_realvec>();
+//   cout << "after getting" << endl;
+
+//   cout << "l=" << data << endl;
+
+  int powerspectrum_rows = powerspectrum_data.getRows();
   int panning_rows = panning_data.getRows();
 
-  for (int i = 0; i < leftright_rows; i++) {
-	left_spectrum_ring_buffer[ring_buffer_pos][i] = left_data(i,0);
-	right_spectrum_ring_buffer[ring_buffer_pos][i] = right_data(i,0);
+  for (int i = 0; i < powerspectrum_rows; i++) {
+	powerspectrum_ring_buffer[ring_buffer_pos][i] = powerspectrum_data(i,0);
   }
 
   for (int i = 0; i < panning_rows; i++) {
+// 	cout << "i=" << i << " p=" << panning_data(i,0) << endl;
 	panning_spectrum_ring_buffer[ring_buffer_pos][i] = panning_data(i,0);
   }
-
   
   ring_buffer_pos += 1;
   if (ring_buffer_pos >= MAX_Z) {
@@ -390,8 +403,8 @@ void GLWidget::redrawScene() {
   glEnd();
 
 
-  //   float min_x = 1024;
-  //   float max_x = -1024;
+//      min_x = 1024;
+//      max_x = -1024;
 //     min_y = 1024;
 //     max_y = -1024;
 
@@ -419,12 +432,12 @@ void GLWidget::redrawScene() {
 	  // 	  if (i == 0 && j == 0) {
 	  // 		cout << "x=" << x << " y=" << y << endl;
 	  // 	  }
-	  // 	  if (x < min_x) {
-	  // 		min_x = x;
-	  // 	  }
-	  // 	  if (x > max_x) {
-	  // 		max_x = x;
-	  // 	  }
+//  	  if (x < min_x) {
+//  		min_x = x;
+//  	  }
+//  	  if (x > max_x) {
+//  		max_x = x;
+//  	  }
 //   	  if (y < min_y) {
 //   		min_y = y;
 //   	  }
@@ -442,10 +455,11 @@ void GLWidget::redrawScene() {
  	  z = i;
 
 	  // sness - FIXME - probably something wrong in here
-	  size = (
-					(left_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2]) + 
-					(right_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2])
-					) / 2.0 * 2000; 
+// 	  size = (
+// 					(left_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2]) + 
+// 					(right_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2])
+// 					) / 2.0 * 2000; 
+	  size = (powerspectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j*2]) * 2000;
 		
  	  if (size > 0.5) {
  		size = 0.5;
@@ -540,6 +554,7 @@ void GLWidget::redrawScene() {
 
 //      cout << "min_x=" << min_x << " max_x=" << max_x << " min_y=" << min_y << " max_y=" << max_y << endl;
 //    cout << "min_y=" << min_y << " max_y=" << max_y << " sb=" << spectrum_bins << endl;
+//     cout << "min_x=" << min_x << " max_x=" << max_x << " sb=" << spectrum_bins << endl;
 
 }
 
@@ -782,8 +797,7 @@ void GLWidget::open()
 void GLWidget::clearRingBuffers() {
   for (int i = 0; i < MAX_Z; i++) {
 	for (int j = 0; j < spectrum_bins; j++) {
-	  left_spectrum_ring_buffer[i][j] = 0.0;
-	  right_spectrum_ring_buffer[i][j] = 0.0;
+	  powerspectrum_ring_buffer[i][j] = 0.0;
 	}
 	for (int j = 0; j < stereo_spectrum_bins; j++) {
 	  panning_spectrum_ring_buffer[i][j] = 0.0;
