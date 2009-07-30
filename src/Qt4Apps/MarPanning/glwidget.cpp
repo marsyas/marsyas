@@ -609,9 +609,11 @@ void GLWidget::setInSamples(int v) {
 
   mwr_->pause();
 
-//    mwr_->updctrl("mrs_natural/inSamples",insamples);
+  mwr_->updctrl("mrs_bool/debug", true);
+  
+  mwr_->updctrl("mrs_natural/inSamples",insamples);
   // This is wrong, but coredumps less often
-   mwr_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+  // mwr_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
 
   clearRingBuffers();
 
