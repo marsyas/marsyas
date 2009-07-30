@@ -114,7 +114,9 @@ AudioSink::myUpdate(MarControlPtr sender)
     {
       //cout << "NCHANNELS = " << nChannels_ << endl;
       reservoir_.stretch(nChannels_, reservoirSize_);
-    }
+    } else {
+	  reservoirSize_ = preservoirSize_;
+	}
 	
 	preservoirSize_ = reservoirSize_;
 	pnChannels_ = nChannels_;
@@ -230,6 +232,7 @@ void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
 
+//   cout << "AudioSink::myProcess start" << endl;
 	//check MUTE
 	if(ctrl_mute_->isTrue())
     {
@@ -253,7 +256,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		return;
     }
   
-  
 	// copy to output and into reservoir
 
 
@@ -270,11 +272,12 @@ AudioSink::myProcess(realvec& in, realvec& out)
 			end_ = 0;
     }
 
+
        
 	//check if RtAudio is initialized
-	if (!isInitialized_)
+	if (!isInitialized_) {
 		return;
-  
+	}
   
   
 	//assure that RtAudio thread is running
@@ -284,6 +287,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
     {
 		start();
     }
+
   
 	//update reservoir pointers 
 	rsize_ = bufferSize_;
@@ -301,9 +305,10 @@ AudioSink::myProcess(realvec& in, realvec& out)
   
 	//send audio data in reservoir to RtAudio
 
+// 	cout << "diff_=" << diff_ << " rsize_=" << rsize_ << " reservoirSize_=" << reservoirSize_ << " start_=" << start_ << " end_=" << end_ << endl;
 	while (diff_ >= rsize_)  
 	{
-	  
+// 	  cout << "diff_=" << diff_ << endl;
 		for (t =0; t < rsize_; t++) 
 		{
 			int rt = (start_ + t);
@@ -367,15 +372,15 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		}
       
 #ifdef MARSYAS_AUDIOIO
-		//tick RtAudio
-		try 
-		{
-			audio_->tickStream();
-		}
-		catch (RtError3 &error) 
-		{
-			error.printMessage();
-		}
+ 		//tick RtAudio
+ 		try 
+ 		{
+ 			audio_->tickStream();
+ 		}
+ 		catch (RtError3 &error) 
+ 		{
+ 			error.printMessage();
+ 		}
       
       
 		//update reservoir pointers
@@ -387,6 +392,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
 
 #endif
     }
+//   cout << "AudioSink::myProcess end" << endl;
+
 }
 
  
