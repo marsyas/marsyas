@@ -126,8 +126,8 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   // sness - Set as the biggest possible value so that it doesn't die later.
 
   mwr_ = new MarSystemQtWrapper(net_);
-  mwr_->start();
   if (inAudioFileName != "") {
+	mwr_->start();
 	mwr_->play();
 	play_state = true;
   }
@@ -769,9 +769,11 @@ void GLWidget::open()
   QString fileName = QFileDialog::getOpenFileName(this);
 
 //   net_->updctrl("mrs_real/israte", 44100.0);
+
   mwr_->updctrl(fnamePtr_, fileName.toStdString());
   mwr_->updctrl(initPtr_, true);
 
+  mwr_->start();
   mwr_->play();
   play_state = true;
 
@@ -798,7 +800,8 @@ void GLWidget::setInSamples(int v) {
 
   mwr_->pause();
 
-  net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+  mwr_->updctrl("mrs_natural/inSamples",insamples);
+//   net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
 
   //
   // sness - FIXME - Ask George about this
