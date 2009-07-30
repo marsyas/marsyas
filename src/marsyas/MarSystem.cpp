@@ -569,7 +569,7 @@ MarSystem::checkFlow(realvec& in, realvec& out)
 		MRSWARN("Debug CheckFlow Information");
 		MRSWARN("MarSystem Type    = " << type_);
 		MRSWARN("MarSystem Name    = " << name_);
-		MRSWARN("inObservations_ = " << inObservations_);
+		MRSWARN("inObservAtions_ = " << inObservations_);
 		MRSWARN("inSamples_ = " << inSamples_);
 		MRSWARN("onObservations_ = " << onObservations_);
 		MRSWARN("onSamples_ = " << onSamples_);

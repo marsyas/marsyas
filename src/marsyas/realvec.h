@@ -364,6 +364,15 @@ mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 #endif
 
 
+	if ((r >= rows_) || (c >= cols_))
+	{
+		MRSERR("rows_ = " << rows_);
+		MRSERR("r = " << r);
+		MRSERR("c = " << c);
+		MRSERR("cols = " << cols_);
+	}
+
+
 
 	MRSASSERT(r < rows_);
 	MRSASSERT(c < cols_);
