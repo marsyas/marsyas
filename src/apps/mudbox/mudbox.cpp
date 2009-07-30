@@ -5419,6 +5419,95 @@ void toy_with_realvec_record(string outFileName)
 
 }
 
+void toy_with_stereospectrum_bin_change(string inAudioFileName)
+{
+  MarSystem* net_;
+
+  MarSystemManager mng;
+
+  net_ = mng.create("Series", "net");
+  net_->addMarSystem(mng.create("SoundFileSource", "src"));
+  net_->addMarSystem(mng.create("AudioSink", "dest"));
+
+  MarSystem* fanout = mng.create("Fanout", "fanout");
+
+  MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
+  powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+  powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
+  powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
+  powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
+
+  MarSystem* stereobranches_series = mng.create("Series", "stereobranches_series");
+  MarSystem* stereobranches_parallel = mng.create("Parallel", "stereobranches_parallel");
+  MarSystem* left = mng.create("Series", "left");
+  MarSystem* right = mng.create("Series", "right");
+
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
+  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+
+  right->addMarSystem(mng.create("Windowing", "hamright"));
+  right->addMarSystem(mng.create("Spectrum", "spkright"));
+
+  stereobranches_parallel->addMarSystem(left);
+  stereobranches_parallel->addMarSystem(right);
+  stereobranches_series->addMarSystem(stereobranches_parallel);
+  stereobranches_series->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+
+  stereobranches_series->addMarSystem(mng.create("Gain", "gain"));
+
+  fanout->addMarSystem(powerspectrum_series);
+  fanout->addMarSystem(stereobranches_series);
+
+  net_->addMarSystem(fanout);
+  net_->addMarSystem(mng.create("Gain", "gain"));
+
+  net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  int i = 0;
+  while (net_->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  { 
+	  net_->tick();
+
+	  cout << "i=" << i << endl;
+ 	  if (i == 100) {
+ 		cout << "32" << endl;
+ 		net_->updctrl("mrs_natural/inSamples",32);
+ 	  }
+	  if (i == 120) {
+		cout << "32768" << endl;
+		net_->updctrl("mrs_natural/inSamples",32768);
+	  }
+	  if (i == 140) {
+		cout << "256" << endl;
+		net_->updctrl("mrs_natural/inSamples",256);
+	  }
+	  if (i == 160) {
+		cout << "32" << endl;
+		net_->updctrl("mrs_natural/inSamples",256);
+	  }
+	  if (i == 180) {
+		cout << "32768" << endl;
+		net_->updctrl("mrs_natural/inSamples",32768);
+	  }
+	  if (i == 240) {
+		cout << "256" << endl;
+		net_->updctrl("mrs_natural/inSamples",256);
+	  }
+	  if (i == 260) {
+		cout << "32" << endl;
+		net_->updctrl("mrs_natural/inSamples",256);
+	  }
+	  if (i == 280) {
+		cout << "32768" << endl;
+		net_->updctrl("mrs_natural/inSamples",32768);
+	  }
+	  
+	  i++;
+  }
+
+}
+
 int
 main(int argc, const char **argv)
 {
@@ -5584,6 +5673,8 @@ else if (toy_withName == "train_predict")
 		toy_with_orca_record(fname0);
 	else if (toy_withName == "realvec_record")
 		toy_with_realvec_record(fname0);
+	else if (toy_withName == "stereospectrum_bin_change")
+		toy_with_stereospectrum_bin_change(fname0);
 
 	else 
 	{
