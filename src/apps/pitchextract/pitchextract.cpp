@@ -156,6 +156,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		playback->addMarSystem(mng.create("Gain", "g"));
 		playback->addMarSystem(mng.create("AudioSink", "dest"));
 		playback->updctrl("mrs_natural/inSamples", 512);
+		playback->updctrl("mrs_real/israte", 44100.0);
 		playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updctrl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
 				
@@ -276,7 +277,7 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 //
 // Use the YIN algorithm (de Chevigne) for doing pitch extraction
 //
-void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size)
+void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, mrs_bool playPitches)
 {
   // Fill up the realvec with a sine wave
   MarSystemManager mng;
@@ -284,16 +285,16 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size)
   // A series to contain everything
   MarSystem* net = mng.create("Series", "series");
 
-  // Process the input data with AubioYin
+  // Process the input data with Yin
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   net->addMarSystem(mng.create("ShiftInput", "si"));
-  net->addMarSystem(mng.create("AubioYin", "yin"));
+  net->addMarSystem(mng.create("Yin", "yin"));
 
   net->updctrl("mrs_natural/inSamples",overlap_size);
   net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
   net->updctrl("ShiftInput/si/mrs_natural/winSize", buffer_size*4);
-  net->updctrl("AubioYin/yin/mrs_natural/inSamples",buffer_size*4);
-  net->updctrl("AubioYin/yin/mrs_real/tolerance",0.7);
+  net->updctrl("Yin/yin/mrs_natural/inSamples",buffer_size*4);
+  net->updctrl("Yin/yin/mrs_real/tolerance",0.7);
 
   realvec r;
   realvec r1;
@@ -303,6 +304,13 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size)
   mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
   mrs_natural inSamples = net->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
+  // Using explicit loop 
+  mrs_natural fileSize = net->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+  mrs_natural len = fileSize / overlap_size;
+  mrs_realvec pitches(len);
+  mrs_realvec confidences(len);
+
+  int i = 0;
   while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) {
 	net->tick();
 	r = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
@@ -311,8 +319,39 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size)
 	pitch = r(0,0);
 	printf("%12.12f\t%12.12f\n",time,pitch);
 
+	pitches.stretchWrite(i,pitch);
+	// sness - Just give it all a confidence of 1 for now.  You can
+	// get the confidence out of the YIN algorithm, but I haven't
+	// implemented it yet.
+	confidences.stretchWrite(i,1);
+
 	count += inSamples;
+	i++;
   }
+
+  len = i;
+
+	// Playback the pitches
+	if (playPitches) 
+	{
+	  cout << "Playing pitches" << endl;
+
+		MarSystem* playback = mng.create("Series", "playback");
+		playback->addMarSystem(mng.create("SineSource", "ss"));
+		playback->addMarSystem(mng.create("Gain", "g"));
+		playback->addMarSystem(mng.create("AudioSink", "dest"));
+		playback->updctrl("mrs_natural/inSamples", 512);
+		playback->updctrl("mrs_real/israte", 44100.0);
+		playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		playback->updctrl("mrs_real/israte", net->getctrl("mrs_real/osrate"));
+				
+		for (int i=0; i < len; i++) 
+		{
+			playback->updctrl("SineSource/ss/mrs_real/frequency", pitches(i));
+			playback->updctrl("Gain/g/mrs_real/gain", confidences(i));
+			playback->tick();
+		}
+	}
 
 }
 
@@ -383,7 +422,7 @@ main(int argc, const char **argv)
 		if (yinopt == 0) {
 		  pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0);
 		} else {
-		  yinpitchextract(sfname, wopt, hopt);
+		  yinpitchextract(sfname, wopt, hopt, plopt != 0);
 		}
 
     }
