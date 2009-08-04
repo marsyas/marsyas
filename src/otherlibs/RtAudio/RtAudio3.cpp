@@ -6510,11 +6510,11 @@ void RtApi3Ds :: setStreamCallback(RtAudio3Callback callback, void *userData)
   info->object = (void *) this;
 
   // Changed by gtzan 
-  // unsigned thread_id;
-  // info->thread = _beginthreadex(NULL, 0, &callbackHandler3,
-  // &stream_.callbackInfo, 0, &thread_id);
+  unsigned thread_id;
+  info->thread = _beginthreadex(NULL, 0, &callbackHandler3,
+  &stream_.callbackInfo, 0, &thread_id);
 
-  info->thread = CreateThread(NULL,(DWORD)0, (LPTHREAD_START_ROUTINE)&callbackHandler3, (LPVOID)&stream_.callbackInfo,  (DWORD)0, NULL);  
+//   info->thread = CreateThread(NULL,(DWORD)0, (LPTHREAD_START_ROUTINE)&callbackHandler3, (LPVOID)&stream_.callbackInfo,  (DWORD)0, NULL);  
 
   if (info->thread == 0) {
     info->usingCallback = false;

@@ -58,7 +58,7 @@
   #include <process.h>
 
 // changed by gtzan from long int to HANDLE
-  typedef HANDLE ThreadHandle;
+  typedef unsigned long ThreadHandle;
   typedef CRITICAL_SECTION StreamMutex;
 
 #else // Various unix flavors with pthread support.
