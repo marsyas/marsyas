@@ -284,21 +284,35 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 
   // A series to contain everything
   MarSystem* net = mng.create("Series", "series");
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+
+  MarSystem* fanout = mng.create("Fanout", "fanout");
 
   // Process the input data with Yin
-  net->addMarSystem(mng.create("SoundFileSource", "src"));
-  net->addMarSystem(mng.create("ShiftInput", "si"));
-  net->addMarSystem(mng.create("Yin", "yin"));
+  MarSystem* yin_series = mng.create("Series", "yin_series");
+  yin_series->addMarSystem(mng.create("ShiftInput", "si"));
+  yin_series->addMarSystem(mng.create("Yin", "yin"));
+  yin_series->addMarSystem(mng.create("Gain", "gain"));
+  fanout->addMarSystem(yin_series);
+
+  MarSystem* rms_series = mng.create("Series", "rms_series");
+  rms_series->addMarSystem(mng.create("Rms", "rms"));
+  rms_series->addMarSystem(mng.create("Gain", "gain"));
+  fanout->addMarSystem(rms_series);
+
+  net->addMarSystem(fanout);
 
   net->updctrl("mrs_natural/inSamples",overlap_size);
+
   net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
-  net->updctrl("ShiftInput/si/mrs_natural/winSize", buffer_size*4);
-  net->updctrl("Yin/yin/mrs_natural/inSamples",buffer_size*4);
-  net->updctrl("Yin/yin/mrs_real/tolerance",0.7);
+  yin_series->updctrl("ShiftInput/si/mrs_natural/winSize", buffer_size*4);
+  yin_series->updctrl("Yin/yin/mrs_natural/inSamples",buffer_size*4);
+  yin_series->updctrl("Yin/yin/mrs_real/tolerance",0.7);
 
   realvec r;
   realvec r1;
   double pitch;
+  double rms;
   double time;
   int count = 0;
   mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
@@ -313,17 +327,19 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
   int i = 0;
   while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) {
 	net->tick();
-	r = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	r = net->getctrl("Fanout/fanout/Series/yin_series/Yin/yin/mrs_realvec/processedData")->to<mrs_realvec>();
+	r1 = net->getctrl("Fanout/fanout/Series/rms_series/Rms/rms/mrs_realvec/processedData")->to<mrs_realvec>();
 
 	time = count / srate;
 	pitch = r(0,0);
-	printf("%12.12f\t%12.12f\n",time,pitch);
+	rms = r1(0,0);
+	printf("%12.12f\t%12.12f\t%12.12f\n",time,pitch,rms);
 
 	pitches.stretchWrite(i,pitch);
 	// sness - Just give it all a confidence of 1 for now.  You can
 	// get the confidence out of the YIN algorithm, but I haven't
 	// implemented it yet.
-	confidences.stretchWrite(i,1);
+	confidences.stretchWrite(i,rms);
 
 	count += inSamples;
 	i++;
