@@ -23,8 +23,7 @@ int lpopt = 36;
 int upopt = 128;
 int plopt = 0;
 float topt = 0.2f;
-
-
+int yinopt = 0;
 
 void 
 printUsage(string progName)
@@ -32,6 +31,9 @@ printUsage(string progName)
 	MRSDIAG("pitchextract.cpp - printUsage");
 	cerr << "Usage : " << progName << "[-c collection] [-w windowSize] [-s hopSize] [-l lowerPitch] [-u upperPitch] [-t threshold] -p file1 file2 file3" << endl;
 	cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format" << endl;
+	cerr << endl; 
+	cerr << "Options:" << endl;
+	cerr << " -y - Use the YIN algorithm to determine pitches" << endl;
 	exit(1);
 }
 
@@ -271,6 +273,49 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
     }
 }
 
+//
+// Use the YIN algorithm (de Chevigne) for doing pitch extraction
+//
+void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size)
+{
+  // Fill up the realvec with a sine wave
+  MarSystemManager mng;
+
+  // A series to contain everything
+  MarSystem* net = mng.create("Series", "series");
+
+  // Process the input data with AubioYin
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->addMarSystem(mng.create("ShiftInput", "si"));
+  net->addMarSystem(mng.create("AubioYin", "yin"));
+
+  net->updctrl("mrs_natural/inSamples",overlap_size);
+  net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  net->updctrl("ShiftInput/si/mrs_natural/winSize", buffer_size*4);
+  net->updctrl("AubioYin/yin/mrs_natural/inSamples",buffer_size*4);
+  net->updctrl("AubioYin/yin/mrs_real/tolerance",0.7);
+
+  realvec r;
+  realvec r1;
+  double pitch;
+  double time;
+  int count = 0;
+  mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
+  mrs_natural inSamples = net->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+
+  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) {
+	net->tick();
+	r = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+	time = count / srate;
+	pitch = r(0,0);
+	printf("%12.12f\t%12.12f\n",time,pitch);
+
+	count += inSamples;
+  }
+
+}
+
 
 void 
 initOptions()
@@ -284,6 +329,8 @@ initOptions()
 	cmd_options.addNaturalOption("upperPitch", "u", 79);
 	cmd_options.addBoolOption("playback", "p", false);
 	cmd_options.addRealOption("threshold", "t", 0.2);
+	cmd_options.addBoolOption("yin", "y", false);
+
 }
 
 
@@ -298,6 +345,7 @@ loadOptions()
 	upopt = cmd_options.getNaturalOption("upperPitch");
 	plopt = cmd_options.getBoolOption("playback");
 	topt  = (float)cmd_options.getRealOption("threshold");
+	yinopt = cmd_options.getBoolOption("yin");
 }
 
 
@@ -332,7 +380,11 @@ main(int argc, const char **argv)
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
 		string sfname = *sfi;
-		pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0);
+		if (yinopt == 0) {
+		  pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0);
+		} else {
+		  yinpitchextract(sfname, wopt, hopt);
+		}
 
     }
 
