@@ -5571,7 +5571,7 @@ void
 toy_with_robot_peak_onset(string sfName, string portNum) 
 {
   int port;
-  if (portNum == "") {
+  if (portNum == "MARSYAS_EMPTY") {
 	port = 1; 
   } else {
 	port = atoi(portNum.c_str());
@@ -5755,7 +5755,6 @@ void toy_with_midiout() {
 	playback->updctrl("MidiOutput/midiout/mrs_bool/sendMessage", true);
 #endif
 
-	sleep(1);
   }
 
 }
