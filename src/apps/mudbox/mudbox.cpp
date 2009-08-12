@@ -5578,9 +5578,7 @@ toy_with_robot_peak_onset(string sfName)
 		MarSystem* onsetaccum = mng.create("Accumulator", "onsetaccum");
 			MarSystem* onsetseries= mng.create("Series","onsetseries");
 				onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
-				onsetseries->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
-				//onsetseries->addMarSystem(mng.create("ShiftInput", "si"));
-				//onsetseries->addMarSystem(mng.create("Windowing", "win"));
+				onsetseries->addMarSystem(mng.create("Stereo2Mono", "src"));
 				MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
 					onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
 					onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
@@ -5597,7 +5595,6 @@ toy_with_robot_peak_onset(string sfName)
 				onsetseries->addMarSystem(onsetdetector);
 			onsetaccum->addMarSystem(onsetseries);
 		onsetnet->addMarSystem(onsetaccum);
-	//onsetnet->addMarSystem(mng.create("ShiftOutput","so"));
 	MarSystem* onsetmix = mng.create("Fanout","onsetmix");
 		onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
 			MarSystem* onsetsynth = mng.create("Series","onsetsynth");
@@ -5646,10 +5643,8 @@ toy_with_robot_peak_onset(string sfName)
 
 	mrs_real textureWinMinLen = 0.050; //secs
 	mrs_natural minTimes = (mrs_natural) (textureWinMinLen*fs/hopSize); //12;//onsetWinSize+1;//15;
-	// cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
 	mrs_real textureWinMaxLen = 3.000; //secs
 	mrs_natural maxTimes = (mrs_natural) (textureWinMaxLen*fs/hopSize);//1000; //whatever... just a big number for now...
-	// cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
 
 	//best result till now are using dB power Spectrum!
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
@@ -5682,7 +5677,6 @@ toy_with_robot_peak_onset(string sfName)
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
 	
 	mrs_natural winds = 1+lookAheadSamples+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
-	// cout << "timesToKeep = " << winds << endl;
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", winds);
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", maxTimes); 
@@ -5698,28 +5692,15 @@ toy_with_robot_peak_onset(string sfName)
 	
 	onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	
-	//MATLAB Engine inits
-	//used for toy_with_onsets.m
-	MATLAB_EVAL("clear;");
-	MATLAB_PUT(winSize, "winSize");
-	MATLAB_PUT(hopSize, "hopSize");
-	MATLAB_PUT(lookAheadSamples, "lookAheadSamples");
-	MATLAB_EVAL("srcAudio = [];");
-	MATLAB_EVAL("onsetAudio = [];");
-	MATLAB_EVAL("FluxTS = [];");
-	MATLAB_EVAL("segmentData = [];");
-	MATLAB_EVAL("onsetTS = [];");
-
 	///////////////////////////////////////////////////////////////////////////////////////
-	//process input file (till EOF)
+	// Process input file (till EOF)
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural timestamps_samples = 0;
 	mrs_real sampling_rate;
 	sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
-	// cout << "Sampling rate = " << sampling_rate << endl;
-
+	
+	// MIDI output device
    char* device =  "/dev/midi1" ;
-/*    unsigned char data[3] = {0x99, 74, 127}; */
 
    // step 1: open the OSS device for writing
    int fd = open(device, O_WRONLY, 0);
@@ -5733,8 +5714,12 @@ toy_with_robot_peak_onset(string sfName)
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 		onsetnet->tick();
 		timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-		// cout << timestamps_samples / sampling_rate << endl;
-// 		cout << timestamps_samples << endl;;
+
+		// Output a MIDI note
+		//
+		// First number (0x99) means "note on, channel 10"
+		// Second number is note number (bass drum)
+		// Third number is velocity
 		unsigned char data[3] = {0x99, 60, 127};
 		// step 2: write the MIDI information to the OSS device
 		write(fd, data, sizeof(data));
