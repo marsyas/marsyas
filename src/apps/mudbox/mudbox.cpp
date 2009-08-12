@@ -8,10 +8,18 @@
 // adding your own application and having to change 
 // the build process.  
 
+#include <linux/soundcard.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <iomanip> 
+#include <unistd.h>
 
 #include "common.h"
 #include "MarSystemManager.h"
@@ -5508,6 +5516,261 @@ void toy_with_stereospectrum_bin_change(string inAudioFileName)
 
 }
 
+void toy_with_peaker(string inAudioFileName)
+{
+  MarSystem* net_;
+
+  MarSystemManager mng;
+
+  net_ = mng.create("Series", "net");
+  net_->addMarSystem(mng.create("SoundFileSource", "src"));
+  net_->addMarSystem(mng.create("AudioSink", "dest"));
+  net_->addMarSystem(mng.create("Peaker", "peaker"));
+   net_->addMarSystem(mng.create("Gain", "gain"));
+
+  net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+//     mrs_natural winsize = 8820;
+
+      mrs_natural winsize = 512;
+ 	 net_->updctrl("mrs_natural/inSamples",winsize);
+
+//   net_->updctrl("Peaker/peaker/mrs_real/peakStrength",100000.0);
+    net_->updctrl("Peaker/peaker/mrs_real/peakSpacing",10.0);
+
+  realvec r;
+  while (net_->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  { 
+	  net_->tick();
+
+//  	  r = net_->getctrl("SoundFileSource/src/mrs_realvec/processedData")->to<mrs_realvec>();
+// 	  cout << "****************************** SoundFileSource ******************************" << endl;
+//  	  cout << r << endl;
+
+//    	  r = net_->getctrl("Peaker/peaker/mrs_realvec/processedData")->to<mrs_realvec>();
+//  	  cout << "****************************** Peaker ******************************" << endl;
+//   	  cout << r << endl;
+
+
+   	  r = net_->getctrl("Peaker/peaker/mrs_realvec/processedData")->to<mrs_realvec>();
+	  int peakfound = 0;
+ 	  for (int i = 0; i < winsize; i++) {
+ 		if (r(0,i) > 0.7) {
+//  		  cout << "r(0," << i << ")=" << r(0,i) << " peak" << endl;
+		  peakfound = 1;
+ 		}
+ 	  }
+	  if (peakfound) {
+		cout << "peak" << endl;
+	  }
+  }
+
+}
+
+void 
+toy_with_robot_peak_onset(string sfName) 
+{
+   cout << "toying with robot_peak_onset" << endl;
+	MarSystemManager mng;
+
+	// assemble the processing network 
+	MarSystem* onsetnet = mng.create("Series", "onsetnet");
+		MarSystem* onsetaccum = mng.create("Accumulator", "onsetaccum");
+			MarSystem* onsetseries= mng.create("Series","onsetseries");
+				onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
+				onsetseries->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
+				//onsetseries->addMarSystem(mng.create("ShiftInput", "si"));
+				//onsetseries->addMarSystem(mng.create("Windowing", "win"));
+				MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
+					onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
+					onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
+					onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
+					onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+					onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
+					//onsetdetector->addMarSystem(mng.create("Memory","mem"));
+					onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
+					onsetdetector->addMarSystem(mng.create("Filter","filt1"));
+					onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
+					onsetdetector->addMarSystem(mng.create("Filter","filt2"));
+					onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
+					onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
+				onsetseries->addMarSystem(onsetdetector);
+			onsetaccum->addMarSystem(onsetseries);
+		onsetnet->addMarSystem(onsetaccum);
+	//onsetnet->addMarSystem(mng.create("ShiftOutput","so"));
+	MarSystem* onsetmix = mng.create("Fanout","onsetmix");
+		onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
+			MarSystem* onsetsynth = mng.create("Series","onsetsynth");
+				onsetsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
+				onsetsynth->addMarSystem(mng.create("ADSR","env"));
+				onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
+			onsetmix->addMarSystem(onsetsynth);
+	onsetnet->addMarSystem(onsetmix);
+	
+	onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
+	// onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
+
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	//link controls
+	///////////////////////////////////////////////////////////////////////////////////////
+	onsetnet->linkctrl("mrs_bool/notEmpty", 
+		"Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/notEmpty");
+	//onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
+	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
+		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
+	//onsetnet->linkctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
+	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
+	
+	//onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_bool/reset",
+	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
+
+	//link FILTERS coeffs
+	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/ncoeffs",
+		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
+	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/dcoeffs",
+		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	// update controls
+	///////////////////////////////////////////////////////////////////////////////////////
+	FileName outputFile(sfName);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
+	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
+	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
+
+	mrs_natural winSize = 2048;//2048;
+	mrs_natural hopSize = 512;//411;
+	mrs_natural lookAheadSamples = 6;
+	mrs_real thres = 1.75;
+
+	mrs_real textureWinMinLen = 0.050; //secs
+	mrs_natural minTimes = (mrs_natural) (textureWinMinLen*fs/hopSize); //12;//onsetWinSize+1;//15;
+	// cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
+	mrs_real textureWinMaxLen = 3.000; //secs
+	mrs_natural maxTimes = (mrs_natural) (textureWinMaxLen*fs/hopSize);//1000; //whatever... just a big number for now...
+	// cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
+
+	//best result till now are using dB power Spectrum!
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
+		"wrongdBonsets");
+
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Flux/flux/mrs_string/mode",
+		"DixonDAFX06");
+	
+	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
+	// Coefficients taken from MATLAB butter(2, 0.28)
+	realvec bcoeffs(1,3);
+	bcoeffs(0) = 0.1174;
+	bcoeffs(1) = 0.2347;
+	bcoeffs(2) = 0.1174;
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs",
+		bcoeffs);
+	realvec acoeffs(1,3);
+	acoeffs(0) = 1.0;
+	acoeffs(1) = -0.8252;
+	acoeffs(2) = 0.2946;
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs",
+		acoeffs);
+
+	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
+
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/lookAheadSamples", lookAheadSamples);
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", thres); //!!!
+	
+	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
+	
+	mrs_natural winds = 1+lookAheadSamples+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
+	// cout << "timesToKeep = " << winds << endl;
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", winds);
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", maxTimes); 
+	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", minTimes);
+
+	//set audio/onset resynth balance and ADSR params for onset sound
+	onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio/mrs_real/gain", 1.0);
+	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain", 0.8);
+	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTarget", 1.0);
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTime", winSize/80/fs); //!!!
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
+ 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); //!!!
+	
+	onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	
+	//MATLAB Engine inits
+	//used for toy_with_onsets.m
+	MATLAB_EVAL("clear;");
+	MATLAB_PUT(winSize, "winSize");
+	MATLAB_PUT(hopSize, "hopSize");
+	MATLAB_PUT(lookAheadSamples, "lookAheadSamples");
+	MATLAB_EVAL("srcAudio = [];");
+	MATLAB_EVAL("onsetAudio = [];");
+	MATLAB_EVAL("FluxTS = [];");
+	MATLAB_EVAL("segmentData = [];");
+	MATLAB_EVAL("onsetTS = [];");
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	//process input file (till EOF)
+	///////////////////////////////////////////////////////////////////////////////////////
+	mrs_natural timestamps_samples = 0;
+	mrs_real sampling_rate;
+	sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
+	// cout << "Sampling rate = " << sampling_rate << endl;
+
+   char* device =  "/dev/midi1" ;
+/*    unsigned char data[3] = {0x99, 74, 127}; */
+
+   // step 1: open the OSS device for writing
+   int fd = open(device, O_WRONLY, 0);
+   if (fd < 0) {
+      printf("Error: cannot open %s\n", device);
+      exit(1);
+   }
+	
+	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+	{
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
+		onsetnet->tick();
+		timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+		// cout << timestamps_samples / sampling_rate << endl;
+// 		cout << timestamps_samples << endl;;
+		unsigned char data[3] = {0x99, 60, 127};
+		// step 2: write the MIDI information to the OSS device
+		write(fd, data, sizeof(data));
+
+		cout << "peak!!!" << endl;
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
+	}
+
+   // step 3: (optional) close the OSS device
+   close(fd);
+
+}
+
+void toy_with_midiout() {
+  cout << "toy with midiout" << endl;
+
+  MarSystemManager mng;
+
+  MarSystem* playback = mng.create("Series", "playback");
+  playback->addMarSystem(mng.create("MidiOutput", "midiout"));
+
+  for (int i = 0; i < 100; i++) {
+	cout << "Sending note" << endl;
+#ifdef MARSYAS_MIDIIO
+	playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 128);
+	playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 1);
+	playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 50);
+	playback->updctrl("MidiOutput/midiout/mrs_bool/sendMessage", true);
+#endif
+
+	sleep(1);
+  }
+
+}
+
+
 int
 main(int argc, const char **argv)
 {
@@ -5675,6 +5938,12 @@ else if (toy_withName == "train_predict")
 		toy_with_realvec_record(fname0);
 	else if (toy_withName == "stereospectrum_bin_change")
 		toy_with_stereospectrum_bin_change(fname0);
+	else if (toy_withName == "peaker")
+		toy_with_peaker(fname0);
+	else if (toy_withName == "robot_peak_onset")
+		toy_with_robot_peak_onset(fname0);
+	else if (toy_withName == "midiout")
+		toy_with_midiout();
 
 	else 
 	{
