@@ -24,6 +24,8 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   yRot = 0;
   zRot = 0;
 
+  init = 0;
+
   xTrans = 0;
   // For 200
   //   zTrans = -127;
@@ -214,6 +216,12 @@ void GLWidget::initializeGL()
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
   glEnable(GL_DEPTH_TEST);
+
+//    setFogStart(-94);
+//    setFogEnd(-117);
+
+   glFogf(GL_FOG_START, 94);          // Fog Start Depth
+   glFogf(GL_FOG_END, 117);          // Fog End Depth
 }
 
 // Paint the GL widget
@@ -302,16 +310,27 @@ void GLWidget::addDataToRingBuffer() {
 
 void GLWidget::redrawScene() {
 
+  if (init == 0) {
+   setFogStart(-94);
+   setFogEnd(-117);
+   init = 1;
+  }
   // Draw guidelines
   float guideline_size = 0.01;
 
   float mcolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
 
-  float min_x = -23;
-  float max_x = 23;
-  float min_y = 2;
-  float max_y = 24;
+//   float min_x = -24.6;
+//   float max_x = 24.6;
+//   float min_y = 3.7;
+//   float max_y = 28.3;
+
+  float min_x = -24.6;
+  float max_x = 24.6;
+  float min_y = 7.1;
+  float max_y = 31.6;
+
   float max_z = z_start;
 
   glBegin(GL_LINES);
@@ -429,6 +448,7 @@ void GLWidget::setXRotation(int angle)
 {
   if (angle != xRot) {
 	xRot = angle;
+// 	cout << "angle=" << angle << " xRot=" << xRot << endl;
 	emit xRotationChanged(angle);
 	updateGL();
   }
@@ -471,6 +491,7 @@ void GLWidget::setYTranslation(int v)
   double val = v * -0.1;
   if (val != yTrans) {
 	yTrans = val;
+//  	cout << "val=" << val << " yTrans=" << yTrans << endl;
 	emit yTranslationChanged(val);
 	updateGL();
   }
@@ -567,6 +588,8 @@ void GLWidget::setNumVertices(int v) {
 
 void GLWidget::setDotSize(int v) {
   dot_size_multiplier = v / 50.0;
+  
+//   cout << "v=" << v << " dsm=" << dot_size_multiplier << endl;
 
   glDeleteLists(startList,5);
   buildDiskLists();

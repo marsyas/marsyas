@@ -252,12 +252,12 @@ Window::Window(string inAudioFileName)
   mainWidget->setLayout(layout);
 
   // Set some nice defaults for all the sliders
-  xRotSlider->setValue(0);
+  xRotSlider->setValue(100);
   yRotSlider->setValue(0);
 //   zRotSlider->setValue(0);
 
    xTransSlider->setValue(0);
-   yTransSlider->setValue(67);
+   yTransSlider->setValue(97);
 //   zTransSlider->setValue(61);
 
 //    fogStartSlider->setValue(-24);
@@ -270,7 +270,7 @@ Window::Window(string inAudioFileName)
 
    magnitudeCutoffSlider->setValue(50);
    numVerticesSlider->setValue(10);
-   dotSizeSlider->setValue(50);
+   dotSizeSlider->setValue(32);
 //    displaySpeedSlider->setValue(50);
 
     fftBinsCombo->setCurrentIndex(4);
@@ -297,7 +297,7 @@ QSlider *Window::createRotationSlider(int min, int max)
 QSlider *Window::createTranslationSlider()
 {
   QSlider *slider = new QSlider(Qt::Horizontal);
-  slider->setRange(-100, 100);
+  slider->setRange(-150, 150);
   slider->setSingleStep(16);
   slider->setPageStep(15 * 16);
   slider->setTickInterval(15 * 16);

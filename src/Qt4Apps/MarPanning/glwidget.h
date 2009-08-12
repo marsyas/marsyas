@@ -215,6 +215,8 @@ private:
 
   float display_speed;
 
+  int init;
+  
 };
 
 #endif
