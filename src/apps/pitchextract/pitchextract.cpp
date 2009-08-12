@@ -356,7 +356,7 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		playback->addMarSystem(mng.create("SineSource", "ss"));
 		playback->addMarSystem(mng.create("Gain", "g"));
 		playback->addMarSystem(mng.create("AudioSink", "dest"));
-		playback->updctrl("mrs_natural/inSamples", 512);
+		playback->updctrl("mrs_natural/inSamples", buffer_size);
 		playback->updctrl("mrs_real/israte", 44100.0);
 		playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updctrl("mrs_real/israte", net->getctrl("mrs_real/osrate"));

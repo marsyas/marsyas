@@ -5633,7 +5633,7 @@ toy_with_robot_peak_onset(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	FileName outputFile(sfName);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
-	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
+// 	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 
 	mrs_natural winSize = 2048;//2048;
@@ -5699,37 +5699,29 @@ toy_with_robot_peak_onset(string sfName)
 	mrs_real sampling_rate;
 	sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	
-	// MIDI output device
-   char* device =  "/dev/midi1" ;
+	MarSystem* playback = mng.create("Series", "playback");
+	playback->addMarSystem(mng.create("MidiOutput", "midiout"));
 
-   // step 1: open the OSS device for writing
-   int fd = open(device, O_WRONLY, 0);
-   if (fd < 0) {
-      printf("Error: cannot open %s\n", device);
-      exit(1);
-   }
+	playback->updctrl("MidiOutput/midiout/mrs_natural/port", 1);
+	playback->updctrl("MidiOutput/midiout/mrs_bool/initMidi", true);
 	
 	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 		onsetnet->tick();
 		timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-
-		// Output a MIDI note
-		//
-		// First number (0x99) means "note on, channel 10"
-		// Second number is note number (bass drum)
-		// Third number is velocity
-		unsigned char data[3] = {0x99, 60, 127};
-		// step 2: write the MIDI information to the OSS device
-		write(fd, data, sizeof(data));
-
+		
+#ifdef MARSYAS_MIDIIO
+		playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 0x99);
+		playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 60);
+		playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 127);
+		playback->updctrl("MidiOutput/midiout/mrs_bool/sendMessage", true);
+#endif
+		
 		cout << "peak!!!" << endl;
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
 	}
 
-   // step 3: (optional) close the OSS device
-   close(fd);
 
 }
 
@@ -5741,12 +5733,15 @@ void toy_with_midiout() {
   MarSystem* playback = mng.create("Series", "playback");
   playback->addMarSystem(mng.create("MidiOutput", "midiout"));
 
+  playback->updctrl("MidiOutput/midiout/mrs_natural/port", 1);
+  playback->updctrl("MidiOutput/midiout/mrs_bool/initMidi", true);
+
   for (int i = 0; i < 100; i++) {
 	cout << "Sending note" << endl;
 #ifdef MARSYAS_MIDIIO
-	playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 128);
-	playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 1);
-	playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 50);
+	playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 0x99);
+	playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 60);
+	playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 127);
 	playback->updctrl("MidiOutput/midiout/mrs_bool/sendMessage", true);
 #endif
 
