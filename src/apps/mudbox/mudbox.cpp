@@ -5568,9 +5568,19 @@ void toy_with_peaker(string inAudioFileName)
 }
 
 void 
-toy_with_robot_peak_onset(string sfName) 
+toy_with_robot_peak_onset(string sfName, string portNum) 
 {
+  int port;
+  if (portNum == "") {
+	port = 1; 
+  } else {
+	port = atoi(portNum.c_str());
+  }
    cout << "toying with robot_peak_onset" << endl;
+   cout << endl;
+   cout << "To use another midi port, enter it as the second argument:" << endl;
+   cout << "  mudbox -t robot_peak_onset in.wav 2" << endl;
+   cout << endl;
 	MarSystemManager mng;
 
 	// assemble the processing network 
@@ -5702,7 +5712,7 @@ toy_with_robot_peak_onset(string sfName)
 	MarSystem* playback = mng.create("Series", "playback");
 	playback->addMarSystem(mng.create("MidiOutput", "midiout"));
 
-	playback->updctrl("MidiOutput/midiout/mrs_natural/port", 1);
+	playback->updctrl("MidiOutput/midiout/mrs_natural/port", port);
 	playback->updctrl("MidiOutput/midiout/mrs_bool/initMidi", true);
 	
 	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
@@ -5714,7 +5724,7 @@ toy_with_robot_peak_onset(string sfName)
 #ifdef MARSYAS_MIDIIO
 		playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 0x99);
 		playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 60);
-		playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 127);
+		playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 64);
 		playback->updctrl("MidiOutput/midiout/mrs_bool/sendMessage", true);
 #endif
 		
@@ -5921,7 +5931,7 @@ else if (toy_withName == "train_predict")
 	else if (toy_withName == "peaker")
 		toy_with_peaker(fname0);
 	else if (toy_withName == "robot_peak_onset")
-		toy_with_robot_peak_onset(fname0);
+	  toy_with_robot_peak_onset(fname0,fname1);
 	else if (toy_withName == "midiout")
 		toy_with_midiout();
 
