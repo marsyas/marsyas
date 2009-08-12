@@ -8,18 +8,18 @@
 // adding your own application and having to change 
 // the build process.  
 
-#include <linux/soundcard.h>
-#include <unistd.h>
+// #include <linux/soundcard.h>
+// #include <unistd.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+// #include <unistd.h>
 
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <iomanip> 
-#include <unistd.h>
+// #include <unistd.h>
 
 #include "common.h"
 #include "MarSystemManager.h"
