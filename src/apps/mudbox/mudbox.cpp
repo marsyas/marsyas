@@ -5723,8 +5723,9 @@ toy_with_robot_peak_onset(string sfName, string portNum)
 		
 #ifdef MARSYAS_MIDIIO
 		playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 0x99);
-		playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 60);
-		playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 64);
+// 		playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 60);
+ 		playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 82);
+		playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 127);
 		playback->updctrl("MidiOutput/midiout/mrs_bool/sendMessage", true);
 #endif
 		
