@@ -447,7 +447,7 @@ void GridDisplay::mouseMoveEvent(QMouseEvent *event)
 		oldXPos = grid_->getXPos();
 		oldYPos = grid_->getYPos();
 	}
-// 	emit updateColourMap(grid_->getDensity(grid_->getCurrentIndex()), 10);
+ 	emit updateColourMap(grid_->getDensity(grid_->getCurrentIndex()), 10);
 	repaint();
 }
 

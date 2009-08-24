@@ -99,8 +99,6 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 		bool peakFound = false;
 
-// 		cout << "rms_=" << rms_ << endl;
-
 		for (t=peakStart+1; t < peakEnd-1; t++)
 		{
 			// peak has to be larger than neighbors 
