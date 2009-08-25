@@ -18,6 +18,10 @@ if (MARSYAS_MAD)
 	include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
 
+if (MARSYAS_LAME)
+	include_directories(${lame_INCLUDE_DIR})
+endif (MARSYAS_LAME)
+
 if (MARSYAS_VORBIS)
 	include_directories(${VORBIS_INCLUDE_DIR})
 endif (MARSYAS_VORBIS)
@@ -56,6 +60,11 @@ add_library(marsyas STATIC ${Marsyas_SOURCES} ${Marsyas_HEADERS})
 if (MARSYAS_MAD)
 	TARGET_LINK_LIBRARIES(marsyas ${mad_LIBRARY})
 endif (MARSYAS_MAD)
+
+
+if (MARSYAS_LAME)
+	TARGET_LINK_LIBRARIES(marsyas ${lame_LIBRARY})
+endif (MARSYAS_LAME)
 
 
 if (MARSYAS_VORBIS)

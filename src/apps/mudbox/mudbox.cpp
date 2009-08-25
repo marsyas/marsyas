@@ -2903,8 +2903,18 @@ toy_with_mp3convert(string fname0)
 	for (int i=0; i < l.size(); i++)
 	{
 		convertNet->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
+		string::size_type pos = l.entry(i).rfind(".", l.entry(i).length());
+		string ext;
+		if (pos == string::npos) ext = "";
+		else 
+			ext = l.entry(i).substr(pos, l.entry(i).length());  
+		string extension;
+		if (ext == ".mp3")
+			extension = ".wav";
+		else
+			extension = ".mp3";
 		ostringstream oss;
-		oss << "ojazz" << i << ".wav";
+		oss << "ojazz" << i << extension;
 		cout << "Converting " << l.entry(i) << " to " << oss.str() << endl;
 		convertNet->updctrl("SoundFileSink/dest/mrs_string/filename", oss.str());
 

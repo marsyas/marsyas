@@ -42,6 +42,7 @@
 	#endif
 #endif
 
+#cmakedefine MARSYAS_LAME
 #cmakedefine MARSYAS_MAD
 #cmakedefine MARSYAS_MATLAB
 #cmakedefine MARSYAS_VORBIS

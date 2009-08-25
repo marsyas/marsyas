@@ -80,6 +80,15 @@ AuFileSink::addControls()
 {
   addctrl("mrs_string/filename", "daufile");
   setctrlState("mrs_string/filename", true);
+	
+	// lossy encoding specific controls
+	addctrl("mrs_natural/bitrate", 128);
+	setctrlState("mrs_natural/bitrate", true);
+	addctrl("mrs_natural/encodingQuality", 2);
+	setctrlState("mrs_natural/encodingQuality", true);
+	addctrl("mrs_string/id3tags", "noTitle|noArtist|noAlbum|1978|noComment|1|0");  // 1: track one O Blues genreopen
+setctrlState("mrs_string/id3tags", true);
+
 }
 
 bool 

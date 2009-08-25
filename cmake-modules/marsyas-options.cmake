@@ -50,6 +50,7 @@ mark_as_advanced (MARSYAS_LOG2GUI)
 
 ## using other software
 option(WITH_MAD "Link to libmad (mp3 audio decoding)" OFF)
+option(WITH_LAME "Link to liblame (mp3 audio encoding)" OFF)
 option(WITH_VORBIS "Link to libvorbis (ogg audio decoding)" OFF)
 option(WITH_MATLAB "Activate MATLAB enging interface" OFF)
 option(WITH_SWIG "Enable SWIG generated bindings" OFF)

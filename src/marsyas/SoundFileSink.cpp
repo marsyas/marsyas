@@ -65,7 +65,13 @@ SoundFileSink::addControls()
 {
   addctrl("mrs_string/filename", "defaultfile");
   setctrlState("mrs_string/filename", true);
-}
+	// lossy encoding specific controls
+	addctrl("mrs_natural/bitrate", 128);
+	setctrlState("mrs_natural/bitrate", true);
+	addctrl("mrs_natural/encodingQuality", 2);
+	setctrlState("mrs_natural/encodingQuality", true);
+	addctrl("mrs_string/id3tags", "noTitle|noArtist|noAlbum|1978|noComment|1|0");  // 1: track one O Blues genreopen
+    setctrlState("mrs_string/id3tags", true);}
 
 
 void
@@ -82,21 +88,21 @@ SoundFileSink::checkType()
 {
   string filename = getctrl("mrs_string/filename")->to<mrs_string>();
   // check if file exists
-  if (filename != "defaultfile")
+	if (filename != "defaultfile")
     {
-      sfp_ = fopen(filename.c_str(), "wb");
-      if (sfp_ == NULL) 
-	{
-		string wrn = "SoundFileSink::checkType: Problem opening file ";
-	  wrn += filename;
-	  MRSWARN(wrn);
-	  filename = "defaultfile";
-	  return false;
-	}
-      fclose(sfp_);
+		sfp_ = fopen(filename.c_str(), "wb");
+		if (sfp_ == NULL) 
+		{
+			string wrn = "SoundFileSink::checkType: Problem opening file ";
+			wrn += filename;
+			MRSWARN(wrn);
+			filename = "defaultfile";
+			return false;
+		}
+		fclose(sfp_);
     }
-
-  // try to open file with appropriate format 
+	
+	// try to open file with appropriate format 
   string::size_type pos = filename.rfind(".", filename.length());
   string ext;
   if (pos == string::npos) ext = "";
@@ -112,6 +118,11 @@ SoundFileSink::checkType()
     {
       delete dest_;
 			dest_ = new WavFileSink(getName());
+    }
+  else if (ext == ".mp3")
+    {
+      delete dest_;
+			dest_ = new MP3FileSink(getName());
     }
   else 
     {
@@ -159,8 +170,13 @@ SoundFileSink::myUpdate(MarControlPtr sender)
     {
       dest_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
       dest_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-      dest_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
-      dest_->update();
+	  dest_->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+      // [ML] the filename is now propagated to the child 
+		dest_->setctrl("mrs_string/filename", getctrl("mrs_string/filename"));
+		dest_->setctrl("mrs_natural/bitrate", getctrl("mrs_natural/bitrate"));
+		dest_->setctrl("mrs_natural/encodingQuality", getctrl("mrs_natural/encodingQuality"));
+	 	dest_->setctrl("mrs_string/id3tags", getctrl("mrs_string/id3tags"));
+		dest_->update();
       
       setctrl("mrs_natural/onSamples", dest_->getctrl("mrs_natural/onSamples"));
       setctrl("mrs_natural/onObservations", dest_->getctrl("mrs_natural/onObservations"));

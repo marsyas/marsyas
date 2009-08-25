@@ -22,6 +22,7 @@
 #include "realvec.h"
 #include "AuFileSink.h" 
 #include "WavFileSink.h"
+#include "MP3FileSink.h"
 
 namespace Marsyas
 {

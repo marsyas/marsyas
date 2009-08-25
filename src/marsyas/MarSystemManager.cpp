@@ -80,6 +80,7 @@
 #include "SoundFileSource.h"
 #include "SoundFileSource2.h"
 #include "SoundFileSink.h"
+#include "MP3FileSink.h"
 #include "Confidence.h"
 #include "Rms.h"
 #include "Peak2Rms.h"
@@ -245,6 +246,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("WavFileSource", new WavFileSource("wavfp"));
 	registerPrototype("WavFileSource2", new WavFileSource2("wavf2p"));
 	registerPrototype("SoundFileSink", new SoundFileSink("sfsp"));
+	registerPrototype("MP3FileSink", new MP3FileSink("sfsp"));
 	registerPrototype("AudioSink", new AudioSink("audiosinkp"));
 	registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
 	registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
