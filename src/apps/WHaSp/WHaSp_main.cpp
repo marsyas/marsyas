@@ -1,14 +1,11 @@
 #include <cstdio>
 
 #include "MarSystemManager.h"
-#include "AudioSink.h"
-#include "SoundFileSink.h"
-#include "SoundFileSource.h"
-#include "Gain.h"
 //#include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
 #include "peakView.h"
+#include "FileName.h"
 
 #include "PeUtilities.h" //TO DEPRECATE IN NEAR FUTURE!!! [TODO]
 

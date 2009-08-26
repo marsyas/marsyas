@@ -286,7 +286,7 @@ mp3 audio decoding with
 @uref{http://sourceforge.net/projects/mad/, LibMAD}
 
 @item WITH_VORBIS
-ogg vorbis audio decoding with libvorbis.
+ogg vorbis audio decoding with libvorbis - it requires 
 
 @item WITH_MATLAB
 Builds the MATLAB engine interface.
@@ -566,8 +566,8 @@ One of them is the INSTALL target. This will build and install all of Marysas in
 @item There is one final little step. For some reason I have not figured
 out the marsyas module is compiled as _marsyas.dll and gets copies to
 the default location for installed Python modules. You will need to
-rename this to _marsyas.pyc for things to work for some versions of Python. . 
-
+rename this to _marsyas.pyc for things to work for some versions of Python.  
+It seems that for more recent versions of Python it needs to be called _marsyas.pyd. 
 
 @item You should now be ready to run Marsyas inside Python. 
 Try launching a Python interactive interpreter and trying: 

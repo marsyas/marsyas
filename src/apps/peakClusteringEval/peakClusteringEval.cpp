@@ -6,10 +6,8 @@
 #include <string>
 
 #include "MarSystemManager.h"
-#include "AudioSink.h"
-#include "SoundFileSink.h"
-//#include "SoundFileSource.h"
 #include "Conversions.h"
+#include "FileName.h"
 #include "CommandLineOptions.h"
 #include "PeakFeatureSelect.h"
 #include "SelfSimilarityMatrix.h"
