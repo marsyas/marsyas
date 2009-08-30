@@ -229,7 +229,10 @@ void recognize(string sfName, string tpName)
   dtw->updctrl("mrs_realvec/sizes",sizes);
   dtw->updctrl("mrs_natural/inSamples",simOutput.getCols());
   dtw->updctrl("mrs_natural/inObservations",simOutput.getRows());
-
+//<<<<<<< .mine
+//=======
+//
+//>>>>>>> .r3676
   algOutput.create(3*sizes(0),2);
   ap->updctrl("mrs_realvec/sizes",sizes);
   ap->updctrl("mrs_natural/inSamples",simInput.getCols());

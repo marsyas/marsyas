@@ -35,6 +35,7 @@ add_subdirectory(sound2png)
 ## EVALUATION PROJECTS
 add_subdirectory(mirex2008)
 add_subdirectory(peakClusteringEval)
+add_subdirectory(mirex2009_tsunoo)
 
 ## not in docs; must edit tools.texi   -gp
 add_subdirectory(tempo) 
