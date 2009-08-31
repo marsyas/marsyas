@@ -1,9 +1,4 @@
-set(APP
-	extractRhythmFeatures
-)
-set(APP_SOURCES
-	extractRhythmFeatures.cpp
-)
 
-marsyas_app(${APP} "${APP_SOURCES}")
+marsyas_app(extractRhythmFeatures extractRhythmFeatures.cpp)
+marsyas_app(extractBassFeatures extractBassFeatures.cpp)
 

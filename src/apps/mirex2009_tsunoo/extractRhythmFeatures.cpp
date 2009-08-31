@@ -22,9 +22,9 @@ using namespace Marsyas;
 void recognize(string sfName, string hName, string tpName, string cnName, string szName, string outName)
 {
   mrs_natural i, j, k, l, m;
-  mrs_natural wsize, sfrq, obs/*, totalCount*/;
+  mrs_natural wsize, sfrq, obs, totalCount;
   mrs_natural inputsize, maxind, outsize/*, prevNum*/;
-  //mrs_real msecondsPerFrame;
+  mrs_real msecondsPerFrame;
   //mrs_natural startX, startY, endX, endY;
   MarSystemManager mng;
   MarSystem* netInp = mng.create("Series","netInp");
@@ -60,7 +60,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   realvec dataInp, dataTpl, beginPos, endPos, tmpFeatures, tmpbegin, tmpend;
   realvec featuresInp, featuresTpl, /*outFeatures,*/ outFeatures2, /*outFeatures3, outFeatures4, tmpvec,*/ tmpvec2/*, tmpvec3, tmpvec4*/;
   realvec simInput, simOutput, algOutput, segments, tmpsimin, tmpsimout, tmpalgout;
-  //mrs_bool b_begin;
+  mrs_bool b_begin;
   vector<string> strVec;
 
   inputs.read(sfName);
@@ -346,8 +346,8 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     /*** out the counts features vector ***/
     tmpFeatures.stretch(ap->getctrl("mrs_realvec/counts")->to<mrs_realvec>()(0)-1);
     counts = ap->getctrl("mrs_realvec/counts")->to<mrs_realvec>();
-    oss.str(""); oss << inputs.entry(l) << "_counts.dat";
-    counts.write(oss.str());
+    //oss.str(""); oss << inputs.entry(l) << "_counts.dat";
+    //counts.write(oss.str());
     for(i=1; i<counts.getSize(); i++){
       counts(i) = counts(i)/counts(0);
     }
@@ -421,7 +421,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     //oss.str(""); oss << sfName << "_alignment.txt";
     //algOutput.write(oss.str());
 
-    /*** out segment data ***//*
+    /*** out segment data ***/
     tmpbegin.stretch(sizes.getSize()-1);
     tmpend.stretch(sizes.getSize()-1);
     tmpbegin(0) = 0;
@@ -438,6 +438,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
       }
       i++ ;
     }
+
     totalCount = 1;
     for(i=0; i<tmpbegin.getSize(); i++){
       if(tmpbegin(i) <= algOutput(m,1) && algOutput(m,1) < tmpend(i)){
@@ -460,6 +461,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 	}
       }
     }
+
     segments.stretch(totalCount,3);
     msecondsPerFrame = (mrs_real)wsize/(mrs_real)sfrq*1000.0;
     segments(0,0) = 0.0; segments(0,2) = k+1;
@@ -470,11 +472,11 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 	if(algOutput(i,1) == tmpbegin(j)){
 	  if(!b_begin){
 	    b_begin = true;
-	    //segments(k,1) = (mrs_real)algOutput(i,0)*msecondsPerFrame;
-	    segments(k,1) = algOutput(i,0);
+	    segments(k,1) = (mrs_real)algOutput(i,0)*msecondsPerFrame;
+	    //segments(k,1) = algOutput(i,0);
 	    k++;
-	    //segments(k,0) = (mrs_real)algOutput(i,0)*msecondsPerFrame;
-	    segments(k,0) = algOutput(i,0);
+	    segments(k,0) = (mrs_real)algOutput(i,0)*msecondsPerFrame;
+	    //segments(k,0) = algOutput(i,0);
 	    segments(k,2) = genres(j)+1;
 	  }
 	  break;
@@ -484,10 +486,12 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 	}
       }
     }
-    //segments(k,1) = (mrs_real)algOutput(algOutput.getRows()-1,0)*msecondsPerFrame;
-    segments(k,1) = algOutput(algOutput.getRows()-1,0);
+    segments(k,1) = (mrs_real)algOutput(algOutput.getRows()-1,0)*msecondsPerFrame;
+    //segments(k,1) = algOutput(algOutput.getRows()-1,0);
     //oss.str(""); oss << sfName << "_genres.txt";
-    //segments.write(oss.str());
+    oss.str(""); oss << inputs.entry(l) << "_segments.txt";
+    segments.write(oss.str());
+    /*
     for(j=0; j<outFeatures4.getRows(); j++){
       outFeatures4(j,0) = 0.0;
     }
