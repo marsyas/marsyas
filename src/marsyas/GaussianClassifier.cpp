@@ -75,6 +75,9 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 	mrs_natural nClasses = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
+
+	setctrl("mrs_natural/onObservations", (mrs_natural)2 + nClasses);
+
 	mrs_natural mrows = (getctrl("mrs_realvec/means")->to<mrs_realvec>()).getRows();
 	mrs_natural mcols = (getctrl("mrs_realvec/means")->to<mrs_realvec>()).getCols();
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
@@ -175,7 +178,12 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 					covars((mrs_natural)label,o) = covars((mrs_natural)label,o) + v*v;
 					out(0,t) = (mrs_real)label;
 					out(1,t) = (mrs_real)label;
-					out(2,t) = (mrs_real)0;
+					for (int j=0; j < nClasses; j++)
+					{
+						out(j,t) = (mrs_real)0;
+						if (j == label) 
+							out(j,t) = (mrs_real)1;
+					}
 				}
 				labelSizes_((mrs_natural)label) = labelSizes_((mrs_natural)label) + 1;
 			}
@@ -209,11 +217,11 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 				}
 
 				// class_probs(l) = sq_sum;
+				out (2+l, t) = sq_sum;
 			}
 			
 			out(0,t) = (mrs_real)prediction;
 			out(1,t) = (mrs_real)label;
-			out(2,t) = (mrs_real)min;
 		}
 	}
 
