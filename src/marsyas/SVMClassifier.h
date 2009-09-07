@@ -48,6 +48,7 @@ namespace Marsyas
 			MarControlPtr ctrl_minimums_;
 			MarControlPtr ctrl_maximums_;
 			MarControlPtr ctrl_mode_;
+			MarControlPtr ctrl_nClasses_;
 			MarControlPtr ctrl_l_;
 			MarControlPtr ctrl_svm_;
 			MarControlPtr ctrl_kernel_;
@@ -63,6 +64,7 @@ namespace Marsyas
 			MarControlPtr ctrl_probability_;
 			MarControlPtr ctrl_nr_weight_;
 			MarControlPtr ctrl_classProbabilities_;
+			MarControlPtr ctrl_classPerms_;
 		
 			std::vector<int> classPerms_;
 			
