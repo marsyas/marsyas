@@ -149,7 +149,7 @@ void SVMClassifier::addControls() {
 	addctrl("mrs_real/eps", (mrs_real)0.001, ctrl_eps_);
 	addctrl("mrs_real/p", (mrs_real)0.1, ctrl_p_);
 	addctrl("mrs_bool/shrinking", true, ctrl_shrinking_);
-	addctrl("mrs_bool/probability", true, ctrl_probability_);
+	addctrl("mrs_bool/probability", false, ctrl_probability_);
 	addctrl("mrs_natural/nr_weight", (mrs_natural)0, ctrl_nr_weight_);
 	addctrl("mrs_realvec/classProbabilities", realvec(), ctrl_classProbabilities_);
 }
@@ -161,6 +161,8 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue((mrs_natural)2, NOUPDATE);
+
+
 
 	if (ctrl_mode_->to<mrs_string>() == "train") {
 		training_ = true;
@@ -286,6 +288,9 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			trained_ = true;
 
 			MRSDEBUG ("... done");
+
+			ctrl_onObservations_->setValue((mrs_natural)2 + svm_model_->nr_class, NOUPDATE);
+
 			{
 				MarControlAccessor acc_classProbs(ctrl_classProbabilities_);
 				realvec& classProbs = acc_classProbs.to<mrs_realvec>();
@@ -618,19 +623,20 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 		if (ctrl_probability_->to<mrs_bool>())
 			prediction = svm_predict_probability(svm_model_, xv, probs);
 		else 
-			prediction = svm_predict(svm_model_, xv);
-		
-		{
-			MarControlAccessor acc_classProbs(ctrl_classProbabilities_);			
-			realvec& classProbs = acc_classProbs.to<mrs_realvec>();
-			
-			for (int i=0; i < svm_model_->nr_class; i++) 
+		  {
+		    prediction = svm_predict(svm_model_, xv);
+		    
+		    {
+		      MarControlAccessor acc_classProbs(ctrl_classProbabilities_);			
+		      realvec& classProbs = acc_classProbs.to<mrs_realvec>();
+		      
+		      for (int i=0; i < svm_model_->nr_class; i++) 
 			{
-				classProbs(classPerms_[i]) = probs[i];
+			  classProbs(classPerms_[i]) = probs[i];
 			}
-			
-		}
-		
+		      
+		    }
+		  }
 
 
 

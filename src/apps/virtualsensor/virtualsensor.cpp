@@ -1225,7 +1225,6 @@ int main(int argc, const char **argv)
 
         Collection l;
         readCollection(l,sfname);
-        l.write("patata.mf");
 
         classNames += (l.name()+',');
         cls.push_back(l);

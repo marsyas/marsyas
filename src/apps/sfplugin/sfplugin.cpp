@@ -134,24 +134,24 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		}
 		else 
 		{
-			while (1) 
+		  while (1) 
+		    {
+		      msys->tick();
+		      wc++;
+		      samplesPlayed += onSamples;
+		      
+		      // rewind 
+		      if (msys->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() == false)
 			{
-				msys->tick();	      
-				wc++;
-				samplesPlayed += onSamples;
-
-				// rewind 
-				if (msys->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() == false)
-				{
-					if (loop) 
-						msys->updctrl("mrs_natural/pos", 0);
-					else 
-						break;
-				}
+			  if (loop) 
+			    msys->updctrl("mrs_natural/pos", 0);
+			  else 
+			    break;
 			}
+		    }
 		}
 	}
-
+	
 	delete msys;
 }
 
