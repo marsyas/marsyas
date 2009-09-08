@@ -318,6 +318,7 @@ void tags() {
   //
   MarSystem* classifier = mng.create("Classifier", "cl");
   net->addMarSystem(classifier);
+  net->addMarSystem(mng.create("Gain/gain"));
 
   ////////////////////////////////////////////////////////////
   //
@@ -425,11 +426,12 @@ void tags() {
   
   wsinkout.create(nLabels+1,1);
   
+  cout << *net << endl;
+  cout << *wsink << endl;
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
 	wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
 	label = wsourcedata(wsourcedata.getSize()-1,0);
-	
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	
 	currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
@@ -444,20 +446,20 @@ void tags() {
 	}
 
 	if (seen == false) {
-		probs = net->getctrl("Classifier/cl/mrs_realvec/classProbabilities")->to<mrs_realvec>();
-		cout << "probs.size = " << probs.getSize() << endl;
-		for (int j=0; j < probs.getSize(); j++) 
-			wsinkout(j,0) = probs(j);
+		probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
+		cout << "probs.getSize() = " << probs.getSize() << endl;
+		for (int j=0; j < probs.getSize()-2; j++) 
+		  wsinkout(j,0) = probs(2+j);
 
 
-		for (int i=0; i < probs.getSize(); i++) {
-			cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(i) << endl;
-			prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(i) << endl;
+		for (int i=0; i < probs.getSize()-2; i++) {
+			cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
+			prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
 		}
 		previouslySeenFilenames.push_back(currentlyPlaying);
 	} 
 
-	wsinkout(probs.getSize(),0) = label;
+	wsinkout(probs.getSize()-2,0) = label;
 	wsink->updctrl("mrs_string/currentlyPlaying", currentlyPlaying);
 	wsink->process(wsinkout,wsinkout);
 
