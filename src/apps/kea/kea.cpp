@@ -376,6 +376,8 @@ void tags() {
  	  classNames.push_back(pch);
    }
 
+  mrs_natural nLabels = net->getctrl("WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>();
+  mrs_string labelNames = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
   ////////////////////////////////////////////////////////////
   //
   // Predict the classes of the test data
@@ -403,11 +405,6 @@ void tags() {
   
 
 
-  mrs_natural nLabels = net->getctrl("WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>();
-  mrs_string labelNames = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
-  
-  cout << "nLabels = " << nLabels << endl;
-  cout << "labelNames = " << labelNames << endl;
   
   MarSystem* wsink = mng.create("WekaSink/wsink");
   
@@ -416,7 +413,7 @@ void tags() {
   wsink->updctrl("mrs_natural/nLabels", nLabels);
   wsink->updctrl("mrs_string/labelNames", labelNames);  
   wsink->updctrl("mrs_string/inObsNames", labelNames);
-  wsink->updctrl("mrs_string/filename", "stacked.arff");
+  wsink->updctrl("mrs_string/filename", "stacked_test.arff");
   
   cout << "Starting prediction" << endl;
 
@@ -426,12 +423,9 @@ void tags() {
   
   wsinkout.create(nLabels+1,1);
   
-  cout << *net << endl;
-  cout << *wsink << endl;
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
 	wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
-	label = wsourcedata(wsourcedata.getSize()-1,0);
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	
 	currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
@@ -447,7 +441,6 @@ void tags() {
 
 	if (seen == false) {
 		probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-		cout << "probs.getSize() = " << probs.getSize() << endl;
 		for (int j=0; j < probs.getSize()-2; j++) 
 		  wsinkout(j,0) = probs(2+j);
 
@@ -459,11 +452,73 @@ void tags() {
 		previouslySeenFilenames.push_back(currentlyPlaying);
 	} 
 
-	wsinkout(probs.getSize()-2,0) = label;
+	wsinkout(probs.getSize()-2,0) = probs(0);
 	wsink->updctrl("mrs_string/currentlyPlaying", currentlyPlaying);
 	wsink->process(wsinkout,wsinkout);
 
 	
+  }
+  ////////////////////////////////////////////////////////////
+  //
+  // Tick over the test WekaSource until all lines in the
+  // test file have been read.
+  //
+  realvec data2;
+  mrs_string currentlyPlaying2;
+  vector<string> previouslySeenFilenames2;
+  bool seen2;
+  realvec wsourcedata2;
+
+
+  
+
+
+  MarSystem* wsink2 = mng.create("WekaSink/wsink2");
+  
+  wsink2->updctrl("mrs_natural/inSamples", 1);
+  wsink2->updctrl("mrs_natural/inObservations", nLabels+1);  
+  wsink2->updctrl("mrs_natural/nLabels", nLabels);
+  wsink2->updctrl("mrs_string/labelNames", labelNames);  
+  wsink2->updctrl("mrs_string/inObsNames", labelNames);
+  wsink2->updctrl("mrs_string/filename", "stacked_train.arff");
+  
+  cout << "Starting prediction" << endl;
+
+  mrs_realvec wsinkout2;
+  mrs_realvec probs2;
+  
+  wsinkout2.create(nLabels+1,1);
+
+  net->updctrl("WekaSource/wsrc/mrs_string/filename",wekafname_); 
+  
+  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+   	net->tick();
+	currentlyPlaying2 = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
+
+	seen = false;
+	
+	for (int i=0; i<previouslySeenFilenames2.size(); i++) {
+	  if (currentlyPlaying2 == previouslySeenFilenames2[i]) {
+		seen = true;
+		break;
+	  }
+	}
+
+	if (seen == false) {
+		probs2 = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
+		for (int j=0; j < probs2.getSize()-2; j++) 
+		  wsinkout2(j,0) = probs2(2+j);
+
+
+		for (int i=0; i < probs2.getSize()-2; i++) {
+			cout << currentlyPlaying2 << "\t" << classNames[i] << "\t" << probs2(2+i) << endl;
+		}
+		previouslySeenFilenames2.push_back(currentlyPlaying2);
+	} 
+
+	wsinkout2(probs2.getSize()-2,0) = probs2(1);
+	wsink2->updctrl("mrs_string/currentlyPlaying", currentlyPlaying);
+	wsink2->process(wsinkout,wsinkout);
   }
 
   cout << "DONE" << endl;
