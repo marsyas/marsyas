@@ -678,7 +678,6 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 		delete [] probs;
 		
 		
-
 		out(0, 0) = (mrs_real)prediction;
 		out(1,0) = in(inObservations_-1,0);
 	}

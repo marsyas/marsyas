@@ -358,26 +358,27 @@ void tags() {
 	net->updctrl("Classifier/cl/mrs_string/mode", mode);
   }
 
-     cout << "------------------------------" << endl;
-     cout << "Class names" << endl;
-     cout << net->getctrl("WekaSource/wsrc/mrs_string/classNames") << endl;
-     cout << "------------------------------\n" << endl;
-
-
-   vector<string> classNames;
-   string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
-   char *str = (char *)s.c_str();
-   char * pch;
-   pch = strtok (str,",");
-   classNames.push_back(pch);
-   while (pch != NULL) {
- 	pch = strtok (NULL, ",");
- 	if (pch != NULL)
- 	  classNames.push_back(pch);
-   }
-
+  
   mrs_natural nLabels = net->getctrl("WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>();
   mrs_string labelNames = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
+
+  vector<string> classNames;
+  string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
+
+  
+  for (int i=0; i < nLabels; i++) 
+    {
+      string className;
+      string temp;
+      className = s.substr(0, s.find(","));
+      temp = s.substr(s.find(",") + 1, s.length());
+      s = temp;
+      classNames.push_back(className);
+    }
+
+
+
+
   ////////////////////////////////////////////////////////////
   //
   // Predict the classes of the test data
@@ -413,8 +414,11 @@ void tags() {
   wsink->updctrl("mrs_natural/nLabels", nLabels);
   wsink->updctrl("mrs_string/labelNames", labelNames);  
   wsink->updctrl("mrs_string/inObsNames", labelNames);
-  wsink->updctrl("mrs_string/filename", "stacked_test.arff");
-  
+  wsink->updctrl("mrs_string/filename", "stacked_" + testcollectionfname_);
+
+
+
+
   cout << "Starting prediction" << endl;
 
   mrs_realvec wsinkout;
@@ -422,42 +426,51 @@ void tags() {
   mrs_realvec probs;
   
   wsinkout.create(nLabels+1,1);
+
+  cout << "Starting Prediction for Testing Collection" << endl;
   
-  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
-   	net->tick();
-	wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
-   	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	
-	currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
-
-	seen = false;
-	
-	for (int i=0; i<previouslySeenFilenames.size(); i++) {
-	  if (currentlyPlaying == previouslySeenFilenames[i]) {
-		seen = true;
-		break;
-	  }
+  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) 
+    {
+      net->tick();
+      wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
+      data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+      
+      currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
+      
+      seen = false;
+      
+      for (int i=0; i<previouslySeenFilenames.size(); i++) {
+	if (currentlyPlaying == previouslySeenFilenames[i]) {
+	  seen = true;
+	  break;
 	}
+      }
+      
+      if (seen == false) {
+	probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
+	for (int j=0; j < probs.getSize()-2; j++) 
+	  wsinkout(j,0) = probs(2+j);
+	
+	
+	for (int i=0; i < probs.getSize()-2; i++) {
+	  cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
+	  prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
 
-	if (seen == false) {
-		probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-		for (int j=0; j < probs.getSize()-2; j++) 
-		  wsinkout(j,0) = probs(2+j);
-
-
-		for (int i=0; i < probs.getSize()-2; i++) {
-			cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
-			prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
-		}
-		previouslySeenFilenames.push_back(currentlyPlaying);
-	} 
+	  
+	}
 
 	wsinkout(probs.getSize()-2,0) = probs(0);
 	wsink->updctrl("mrs_string/currentlyPlaying", currentlyPlaying);
-	wsink->process(wsinkout,wsinkout);
-
+	wsink->process(wsinkout,wsinkout);	  
 	
-  }
+	previouslySeenFilenames.push_back(currentlyPlaying);
+      } 
+      
+
+      
+      
+    }
+
   ////////////////////////////////////////////////////////////
   //
   // Tick over the test WekaSource until all lines in the
@@ -480,47 +493,47 @@ void tags() {
   wsink2->updctrl("mrs_natural/nLabels", nLabels);
   wsink2->updctrl("mrs_string/labelNames", labelNames);  
   wsink2->updctrl("mrs_string/inObsNames", labelNames);
-  wsink2->updctrl("mrs_string/filename", "stacked_train.arff");
+  wsink2->updctrl("mrs_string/filename", "stacked_" + wekafname_);
   
-  cout << "Starting prediction" << endl;
+
+  cout << "Starting prediction for training collection (for stacked generalization)" << endl;
 
   mrs_realvec wsinkout2;
   mrs_realvec probs2;
-  
   wsinkout2.create(nLabels+1,1);
 
   net->updctrl("WekaSource/wsrc/mrs_string/filename",wekafname_); 
   
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
-   	net->tick();
-	currentlyPlaying2 = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
-
-	seen = false;
-	
-	for (int i=0; i<previouslySeenFilenames2.size(); i++) {
-	  if (currentlyPlaying2 == previouslySeenFilenames2[i]) {
-		seen = true;
-		break;
-	  }
-	}
-
-	if (seen == false) {
-		probs2 = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-		for (int j=0; j < probs2.getSize()-2; j++) 
-		  wsinkout2(j,0) = probs2(2+j);
-
-
-		for (int i=0; i < probs2.getSize()-2; i++) {
-			cout << currentlyPlaying2 << "\t" << classNames[i] << "\t" << probs2(2+i) << endl;
-		}
-		previouslySeenFilenames2.push_back(currentlyPlaying2);
-	} 
-
-	wsinkout2(probs2.getSize()-2,0) = probs2(1);
-	wsink2->updctrl("mrs_string/currentlyPlaying", currentlyPlaying);
-	wsink2->process(wsinkout,wsinkout);
+    net->tick();
+    currentlyPlaying2 = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
+    wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
+    label = wsourcedata(wsourcedata.getSize()-1,0);
+    seen = false;
+    
+    for (int i=0; i<previouslySeenFilenames2.size(); i++) {
+      if (currentlyPlaying2 == previouslySeenFilenames2[i]) {
+	seen = true;
+	break;
+      }
+    }
+    
+    probs2 = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();    
+    if (seen == false) {
+      for (int j=0; j < probs2.getSize()-2; j++) 
+	wsinkout2(j,0) = probs2(2+j);
+      
+      for (int i=0; i < probs2.getSize()-2; i++) {
+	cout << currentlyPlaying2 << "\t" << classNames[i] << "\t" << probs2(2+i) << endl;
+      }
+      previouslySeenFilenames2.push_back(currentlyPlaying2);
+    } 
+    
+    wsinkout2(probs2.getSize()-2,0) = label;    
+    wsink2->updctrl("mrs_string/currentlyPlaying", currentlyPlaying2);
+    wsink2->process(wsinkout2,wsinkout2);
   }
-
+  
   cout << "DONE" << endl;
 
 }
