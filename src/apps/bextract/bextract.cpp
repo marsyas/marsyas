@@ -2378,27 +2378,15 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				}
 				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-				mrs_realvec probs = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/classProbabilities")->to<mrs_realvec>();
 				cout << "Predicting " << currentlyPlaying << "\t" << "GT:" << l.labelName((mrs_natural)pr(1,0)) << "\t" << "PR:" << l.labelName((mrs_natural)pr(0,0)) << endl;
 
-				cout << probs << endl;
-
 				if ((mrs_natural)pr(0,0) == (mrs_natural)(pr(1,0)))
-					correct_instances++;
+				  correct_instances++;
 				num_instances++;
 
-				for (int i=0; i < probs.getSize(); i++)
-					if (probs(i) > 0.05)
-					{
-						cout << probs(i) << ",";
-						prout << currentlyPlaying << "\t" << l.labelName((mrs_natural)i) << endl;
-					}
-
+				prout << currentlyPlaying << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				
 				cout << endl;
-
-
-
-
 			}
 			cout << "Correct instances = " << correct_instances << "/" << num_instances << endl;
 		}
