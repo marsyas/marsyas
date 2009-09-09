@@ -32,13 +32,13 @@ Marsyas executables reside.
 "Improving Automatic Music Tag Annotation Using Stacked Generalization Of Probabilistic SVM 
 Outputs" 
 ) 
-(use REVISION_NUMBER 3690) 
+(use REVISION_NUMBER 3691) 
 Assumes train.txt is a training list file (files and tags) and 
 test.txt is a testing list file (just files) 
 
 Step 1) Extract features for both lists 
 > bextract -ws 1024 -as 400 -sv -fe train.txt -w train.arff -od /path/to/workdir 
-> bextract -ws 1024 -as 400 -sv -fe test.txt -w test.txt -od /path/to/workdir 
+> bextract -ws 1024 -as 400 -sv -fe test.txt -w test.arff -od /path/to/workdir 
 
 These two commands will generate two files in Weka .arff format 
 that will be placed in the working_directory specified. 
@@ -48,7 +48,7 @@ Step 2) First stage automatic tag annotation
 The kea command can take up to 30-50 minutes to compute and does not show any progress output 
 until the full model is trained. 
 
-> kea -m tags -id /path/to_working_dir -od /path/to/workdir -w train.txt -tc test.txt -pr stage1_affinities.txt 
+> kea -m tags -id /path/to_working_dir -od /path/to/workdir -w train.arff -tc test.arff -pr stage1_affinities.txt 
 > ../../scripts/Ruby/threshold_binarization.rb train.txt stage1_affinities.txt > stage1_predictions.txt
 
 
@@ -69,7 +69,7 @@ Step3) Second stage (stacked generalization) for automatic tag annotation
 
 
 ---------------  MIREX 2009 Audio Similarity --------------------------
-(use REVISION_NUMBER 3690) 
+(use REVISION_NUMBER 3691) 
 
 
 
@@ -88,7 +88,7 @@ to all songs of filelist.txt
 
 
 ------------- MIREX 2009 Audio Classification Tasks ---------------------
-(use REVISION_NUMBER: not ready yet) 
+(use REVISION_NUMBER: 3691) 
 
 Extract features, train classifier and predict for 1 fold: 
 ./bextract -sv train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w features.arff 

@@ -34,7 +34,6 @@ GaussianClassifier::GaussianClassifier(const GaussianClassifier& a):MarSystem(a)
 	ctrl_nClasses_ = getctrl("mrs_natural/nClasses");
 	ctrl_means_ = getctrl("mrs_realvec/means");
 	ctrl_covars_ = getctrl("mrs_realvec/covars");
-	ctrl_classProbabilities_ = getctrl("mrs_realvec/classProbabilities");
 	prev_mode_ = "predict";
 }
 
@@ -60,7 +59,6 @@ GaussianClassifier::addControls()
 	setctrlState("mrs_natural/nClasses", true);
 	addctrl("mrs_realvec/means", realvec(), ctrl_means_);
 	addctrl("mrs_realvec/covars", realvec(), ctrl_covars_);
-	addctrl("mrs_realvec/classProbabilities", realvec(), ctrl_classProbabilities_);
 }
 
 
@@ -91,15 +89,12 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 		{
 			MarControlAccessor acc_means(ctrl_means_);
 			MarControlAccessor acc_covars(ctrl_covars_);
-			MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
 			
 			realvec& means = acc_means.to<mrs_realvec>();
 			realvec& covars = acc_covars.to<mrs_realvec>();
-			realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
 
 			means.create(nClasses, inObservations_);
 			covars.create(nClasses, inObservations_);
-			class_probs.create(nClasses);
 			labelSizes_.create(nClasses);
 		}
 
@@ -107,11 +102,9 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 		{
 			MarControlAccessor acc_means(ctrl_means_);
 			MarControlAccessor acc_covars(ctrl_covars_);
-			MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
 			
 			realvec& means = acc_means.to<mrs_realvec>();
 			realvec& covars = acc_covars.to<mrs_realvec>();
-			realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
 
 
 			for (int l=0; l < nClasses; l++)
@@ -152,8 +145,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 	realvec& means = acc_means.to<mrs_realvec>();
 	realvec& covars = acc_covars.to<mrs_realvec>();
 
-	MarControlAccessor acc_ctrl_probs(ctrl_classProbabilities_);
-	realvec& class_probs = acc_ctrl_probs.to<mrs_realvec>();
 
 
 	// reset 
@@ -216,7 +207,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 					prediction = l;
 				}
 
-				// class_probs(l) = sq_sum;
 				out (2+l, t) = sq_sum;
 			}
 			

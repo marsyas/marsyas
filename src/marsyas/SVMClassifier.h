@@ -63,7 +63,6 @@ namespace Marsyas
 			MarControlPtr ctrl_shrinking_;
 			MarControlPtr ctrl_probability_;
 			MarControlPtr ctrl_nr_weight_;
-			MarControlPtr ctrl_classProbabilities_;
 			MarControlPtr ctrl_classPerms_;
 		
 			std::vector<int> classPerms_;

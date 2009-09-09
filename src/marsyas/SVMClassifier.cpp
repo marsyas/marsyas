@@ -89,7 +89,6 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 	ctrl_shrinking_ = getctrl("mrs_bool/shrinking");
 	ctrl_probability_ = getctrl("mrs_bool/probability");
 	ctrl_nr_weight_ = getctrl("mrs_natural/nr_weight");
-	ctrl_classProbabilities_ = getctrl("mrs_realvec/classProbabilities");
 	ctrl_classPerms_ = getctrl("mrs_realvec/classPerms");
 	
 }
@@ -158,7 +157,6 @@ void SVMClassifier::addControls() {
 	addctrl("mrs_bool/shrinking", true, ctrl_shrinking_);
 	addctrl("mrs_bool/probability", true, ctrl_probability_);
 	addctrl("mrs_natural/nr_weight", (mrs_natural)0, ctrl_nr_weight_);
-	addctrl("mrs_realvec/classProbabilities", realvec(), ctrl_classProbabilities_);
 	addctrl("mrs_realvec/classPerms", realvec(), ctrl_classPerms_);
 }
 
@@ -308,11 +306,6 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			MRSDEBUG ("SVMCLassifier train ... done");
 
 			
-			{
-			  // MarControlAccessor acc_classProbs(ctrl_classProbabilities_);
-			  // realvec& classProbs = acc_classProbs.to<mrs_realvec>();
-			  // classProbs.create(svm_model_->nr_class);
-			}
 
 			MRSDEBUG ("svm_model_->nr_class = " << svm_model_->nr_class);
 			MRSDEBUG ("svm_model_->l = " << svm_model_->l);
@@ -676,7 +669,6 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 
 		delete [] xv;
 		delete [] probs;
-		
 		
 		out(0, 0) = (mrs_real)prediction;
 		out(1,0) = in(inObservations_-1,0);

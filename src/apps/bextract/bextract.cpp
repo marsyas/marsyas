@@ -1962,11 +1962,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	if (pluginName != EMPTYSTRING)
 	{
 		MarSystem* dest = mng.create("AudioSink", "dest");
-
 		dest->updctrl("mrs_bool/mute", true);
-		// dest->updctrl("mrs_bool/mute", false);
-		// dest->updctrl("mrs_bool/initAudio", true);
-
 		featureNetwork->addMarSystem(dest);
 	}
 
@@ -2224,7 +2220,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	realvec fvec;
 	int label;
 
-	while (ctrl_notEmpty->to<mrs_bool>())
+	 while (ctrl_notEmpty->to<mrs_bool>())
 	{
 
 
@@ -2244,40 +2240,34 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 			if (seen)
 			{
-				advance++;
-				bextractNetwork->updctrl("mrs_natural/advance", advance);
-
-				if (wekafname != EMPTYSTRING)
-					bextractNetwork->updctrl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
-
-				fvec = processedFeatures[currentlyPlaying];
-				fvec(fvec.getSize()-1) = label;
-
-				if (wekafname != EMPTYSTRING)
-				{
-					bextractNetwork->updctrl("WekaSink/wsink/mrs_realvec/injectVector", fvec);
-
-					bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/inject", true);
-				}
-
-
-
-
+			  advance++;
+			  bextractNetwork->updctrl("mrs_natural/advance", advance);
+			  
+			  if (wekafname != EMPTYSTRING)
+			    bextractNetwork->updctrl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
+			  
+			  fvec = processedFeatures[currentlyPlaying];
+			  fvec(fvec.getSize()-1) = label;
+			  
+			  if (wekafname != EMPTYSTRING)
+			    {
+			      bextractNetwork->updctrl("WekaSink/wsink/mrs_realvec/injectVector", fvec);
+			      
+			      bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/inject", true);
+			    }
 			}
 			else
 			{
-				bextractNetwork->updctrl("Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset", true);
-				bextractNetwork->tick();
-
-				fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
-
-				bextractNetwork->updctrl("mrs_natural/advance", advance);
-				processedFiles.push_back(currentlyPlaying);
-				processedFeatures[currentlyPlaying] = fvec;
-				cout << "Processed: " << n << " - " << currentlyPlaying << endl;
-				advance = 1;
-				bextractNetwork->updctrl("mrs_natural/advance", 1);
-
+			  bextractNetwork->tick();
+			  
+			  fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
+			  
+			  bextractNetwork->updctrl("mrs_natural/advance", advance);
+			  processedFiles.push_back(currentlyPlaying);
+			  processedFeatures[currentlyPlaying] = fvec;
+			  cout << "Processed: " << n << " - " << currentlyPlaying << endl;
+			  advance = 1;
+			  bextractNetwork->updctrl("mrs_natural/advance", 1);
 			}
 			n++;
 
@@ -2300,6 +2290,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	}
 
+
+
 	cout << "Finished feature extraction" << endl;
 	if (featExtract_)
 		return;
@@ -2320,7 +2312,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	// don't output to WekaSink
 	if (wekafname != EMPTYSTRING)
-		bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", true);
+		bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", false);
 
 	// enable confidence
 	bextractNetwork->updctrl("Confidence/confidence/mrs_bool/mute", false);
@@ -2377,6 +2369,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 					bextractNetwork->updctrl("mrs_natural/advance", 1);
 				}
 				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
 				cout << "Predicting " << currentlyPlaying << "\t" << "GT:" << l.labelName((mrs_natural)pr(1,0)) << "\t" << "PR:" << l.labelName((mrs_natural)pr(0,0)) << endl;
 
@@ -2385,8 +2378,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				num_instances++;
 
 				prout << currentlyPlaying << "\t" << l.labelName((mrs_natural)pr(0,0)) << endl;
-				
-				cout << endl;
 			}
 			cout << "Correct instances = " << correct_instances << "/" << num_instances << endl;
 		}

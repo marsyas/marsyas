@@ -70,7 +70,6 @@ namespace Marsyas
 			MarControlPtr ctrl_done_;
 			MarControlPtr ctrl_means_;
 			MarControlPtr ctrl_covars_;
-			MarControlPtr ctrl_classProbabilities_;
 		
 			mrs_string prev_mode_;
 

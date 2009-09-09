@@ -1082,8 +1082,6 @@ void MarSystemManager::registerComposite(std::string prototype)
 		classifierpr->addctrl("mrs_natural/nClasses", 1);
 		classifierpr->addctrl("mrs_string/mode", "train");
 		classifierpr->setctrlState("mrs_string/mode", true);
-		classifierpr->addctrl("mrs_realvec/classProbabilities", realvec());
-		// classifierpr->setctrlState("mrs_realvec/classProbabilities",true);
 
 		classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses",
 		                       "mrs_natural/nClasses");
@@ -1099,12 +1097,6 @@ void MarSystemManager::registerComposite(std::string prototype)
 		classifierpr->linkctrl("SVMClassifier/svmcl/mrs_string/mode",
 		                       "mrs_string/mode");
 
-		classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_realvec/classProbabilities",
-		                       "mrs_realvec/classProbabilities");
-		classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_realvec/classProbabilities",
-		                       "mrs_realvec/classProbabilities");
-		classifierpr->linkctrl("SVMClassifier/svmcl/mrs_realvec/classProbabilities",
-		                       "mrs_realvec/classProbabilities");
 
 		classifierpr->updctrl("mrs_string/disableChild", "all");
 		registerPrototype("Classifier", classifierpr);
