@@ -336,7 +336,8 @@ void tags() {
   //
   // The training file we are feeding into the WekaSource
   //
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  
+  net->updctrl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_);
   net->updctrl("mrs_natural/inSamples", 1);
 
   ////////////////////////////////////////////////////////////
@@ -383,7 +384,7 @@ void tags() {
   //
   // Predict the classes of the test data
   //
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", testcollectionfname_);
+  net->updctrl("WekaSource/wsrc/mrs_string/filename", inputdir_ + testcollectionfname_);
   net->updctrl("Classifier/cl/mrs_string/mode", "predict");  
 
 
@@ -414,7 +415,7 @@ void tags() {
   wsink->updctrl("mrs_natural/nLabels", nLabels);
   wsink->updctrl("mrs_string/labelNames", labelNames);  
   wsink->updctrl("mrs_string/inObsNames", labelNames);
-  wsink->updctrl("mrs_string/filename", "stacked_" + testcollectionfname_);
+  wsink->updctrl("mrs_string/filename", outputdir_ + "stacked_" + testcollectionfname_);
 
 
 
@@ -493,7 +494,7 @@ void tags() {
   wsink2->updctrl("mrs_natural/nLabels", nLabels);
   wsink2->updctrl("mrs_string/labelNames", labelNames);  
   wsink2->updctrl("mrs_string/inObsNames", labelNames);
-  wsink2->updctrl("mrs_string/filename", "stacked_" + wekafname_);
+  wsink2->updctrl("mrs_string/filename", outputdir_ + "stacked_" + wekafname_);
   
 
   cout << "Starting prediction for training collection (for stacked generalization)" << endl;
@@ -502,7 +503,7 @@ void tags() {
   mrs_realvec probs2;
   wsinkout2.create(nLabels+1,1);
 
-  net->updctrl("WekaSource/wsrc/mrs_string/filename",wekafname_); 
+  net->updctrl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_); 
   
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
     net->tick();

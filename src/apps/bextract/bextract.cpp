@@ -341,7 +341,7 @@ printHelp(string progName)
 	cerr << "-l  --length       : playback length in seconds " << endl;
 	cerr << "-m  --memory       : memory size " << endl;
 	cerr << "-w  --weka         : weka .arff filename " << endl;
-	cerr << "-wd --workdir      : working directory for input/output of files" << endl;
+	cerr << "-od --outputdir    : output directory for output of files" << endl;
 	cerr << "-ws --winsamples   : analysis window size in samples " << endl;
 	cerr << "-hp --hopsamples   : analysis hop size in samples " << endl;
 	cerr << "-t  --timeline     : flag 2nd input collection as timelines for the 1st collection";
@@ -2761,7 +2761,7 @@ initOptions()
 	cmd_options.addBoolOption("tline", "t", false);
 	cmd_options.addBoolOption("pluginmute", "pm", false);
 	cmd_options.addBoolOption("playback", "pb", false);
-	cmd_options.addStringOption("workdir", "wd", EMPTYSTRING);
+	cmd_options.addStringOption("outputdir", "od", EMPTYSTRING);
 	cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
 	cmd_options.addStringOption("test", "tc", EMPTYSTRING);
 	cmd_options.addBoolOption("stereo", "st", false);
@@ -2808,7 +2808,7 @@ loadOptions()
 	tline = cmd_options.getBoolOption("tline");
 	pluginMute  = cmd_options.getBoolOption("pluginmute");
 	playback = cmd_options.getBoolOption("playback");
-	workspaceDir = cmd_options.getStringOption("workdir");
+	workspaceDir = cmd_options.getStringOption("outputdir");
 	predictCollection = cmd_options.getStringOption("predict");
 	testCollection = cmd_options.getStringOption("test");
 	downSample = cmd_options.getNaturalOption("downsample");
