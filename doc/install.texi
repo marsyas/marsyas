@@ -438,7 +438,7 @@ The marsaysMATLABrelease configuration must be enabled
 FIXME: THIS IS WRONG!  Compile Marsyas using qmake, make
 
 @item
-try out marsyasTests -t MATLABengine. MATLAB
+try out mudbox -t MATLABengine. MATLAB
 should open and various benchmarks and communication
 between Marsyas and MATLAB should happen. If not
 email the mailing lists for some help.
