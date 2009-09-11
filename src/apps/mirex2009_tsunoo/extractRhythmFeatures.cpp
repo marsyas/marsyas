@@ -22,9 +22,9 @@ using namespace Marsyas;
 void recognize(string sfName, string hName, string tpName, string cnName, string szName, string outName)
 {
   mrs_natural i, j, k, l, m;
-  mrs_natural wsize, sfrq, obs, totalCount;
+  mrs_natural wsize, obs, totalCount;
   mrs_natural inputsize, maxind, outsize/*, prevNum*/;
-  mrs_real msecondsPerFrame;
+  mrs_real msecondsPerFrame, sfrq;
   //mrs_natural startX, startY, endX, endY;
   MarSystemManager mng;
   MarSystem* netInp = mng.create("Series","netInp");
@@ -252,7 +252,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     /*** calculate input spectrogram ***/
 
     netInp->updctrl("SoundFileSource/inpsrc/mrs_string/filename",inputs.entry(l));
-    netInp->updctrl("SoundFileSource/inpsrc2/mrs_string/filename",hfiles.entry(l));
+    netInp2->updctrl("SoundFileSource/inpsrc2/mrs_string/filename",hfiles.entry(l));
     inputsize = netInp->getctrl("SoundFileSource/inpsrc/mrs_natural/size")->to<mrs_natural>();
     wsize = netInp->getctrl("Windowing/ham/mrs_natural/size")->to<mrs_natural>();
     inputsize /= wsize;
@@ -329,7 +329,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     simOutput.stretch(outsize,sizes(0));
     dtw->updctrl("mrs_realvec/sizes",sizes);
     dtw->setctrl("mrs_realvec/delta", delta);
-    dtw->setctrl("mrs_realvec/deltaWeight", 10.0);
+    dtw->setctrl("mrs_real/deltaWeight", 10.0);
     dtw->updctrl("mrs_natural/inSamples",simOutput.getCols());
     dtw->updctrl("mrs_natural/inObservations",simOutput.getRows());
     algOutput.stretch(3*sizes(0),2);
