@@ -45,6 +45,7 @@ MARK_AS_ADVANCED( ZLIB_LIBRARY ZLIB_INCLUDE_DIR )
 	  /sw/include
 	  /usr/local/include
 	  /usr/include
+	  /opt/local/include
 	  )
 	
 	  SET(PNG_NAMES ${PNG_NAMES} png libpng)

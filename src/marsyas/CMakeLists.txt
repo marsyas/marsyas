@@ -8,6 +8,7 @@ list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.h)
 
 if (MARSYAS_PNG)
 	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/pngwriter.cc) 
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libpng-1.2.35/png.h)
 	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/pngwriter.h)
 endif (MARSYAS_PNG)
 

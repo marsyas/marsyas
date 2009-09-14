@@ -82,6 +82,7 @@ if (MARSYAS_MATLAB)
 endif (MARSYAS_MATLAB)
 
 if (MARSYAS_PNG)
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libpng-1.2.35)
 	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/)
 endif (MARSYAS_PNG)
 

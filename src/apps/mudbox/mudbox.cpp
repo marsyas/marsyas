@@ -3988,6 +3988,62 @@ toy_with_updctrl(string fname)
 	cout << *pnet_ << endl;  
 }
 
+
+void 
+toy_with_dtw(string fname1, string fname2)
+{
+  MarSystemManager mng; 
+  
+  MarSystem* rmsnet = mng.create("Series", "rmsnet");
+  rmsnet->addMarSystem(mng.create("SoundFileSource/src"));
+  rmsnet->addMarSystem(mng.create("MixToMono", "mix2mono"));
+  rmsnet->addMarSystem(mng.create("AudioSink/dest"));
+  rmsnet->addMarSystem(mng.create("Rms/rms"));
+  rmsnet->addMarSystem(mng.create("RealvecSink/rdest"));
+		       
+  rmsnet->updctrl("SoundFileSource/src/mrs_string/filename", fname1);
+  rmsnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  rmsnet->updctrl("AudioSink/dest/mrs_bool/mute", true);
+  rmsnet->updctrl("mrs_natural/inSamples", 44100);
+
+  mrs_real val;
+  while (rmsnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    {
+      rmsnet->tick();
+      const mrs_realvec& rms_val = rmsnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+      val = rms_val(0,0);
+    }
+  cout << "Done processing file" << fname1 << endl;
+  
+  const mrs_realvec& rms_data1 = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
+  cout << rms_data1 << endl;
+  
+  rmsnet->updctrl("SoundFileSource/src/mrs_string/filename", fname2);
+
+
+  while (rmsnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    {
+      rmsnet->tick();
+      const mrs_realvec& rms_val = rmsnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+      val = rms_val(0,0);
+    }
+  cout << "Done processing file" << fname2 << endl;
+
+  const mrs_realvec& rms_data2 = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
+  cout << rms_data2 << endl;
+
+
+  #ifdef MARSYAS_PNG 
+  pngwriter png1(128, rms_data1.getSize(), 0, "rms1.png"); 
+  
+
+  png1.close();
+  #endif 
+
+
+
+}
+
 void 
 toy_with_duplex()
 {
@@ -4432,6 +4488,7 @@ toy_with_centroid(string sfName1)
 
 	snet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
+
 	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		net->tick();
@@ -4443,9 +4500,11 @@ toy_with_centroid(string sfName1)
 		cout << val << endl;
 		snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", val * 11025.0);
 		snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", val * 11025.0);
-
-
 	}
+
+	
+	
+
 }
 
 
@@ -5828,6 +5887,8 @@ main(int argc, const char **argv)
 		toy_with_confidence(fname0);
 	else if (toy_withName == "drumclassify")
 		drumClassify(fname0); 
+	else if (toy_withName == "dtw") 
+	  toy_with_dtw(fname0, fname1);
 	else if (toy_withName == "duplex")
 		toy_with_duplex();
 	else if (toy_withName == "fanoutswitch")
