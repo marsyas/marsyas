@@ -40,4 +40,5 @@ add_subdirectory(mirex2009_tsunoo)
 ## not in docs; must edit tools.texi   -gp
 add_subdirectory(tempo) 
 add_subdirectory(virtualsensor)
+add_subdirectory(onsets)
 
