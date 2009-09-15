@@ -3993,53 +3993,80 @@ void
 toy_with_dtw(string fname1, string fname2)
 {
   MarSystemManager mng; 
+
+  MarSystem* rmsnet = mng.create("Series/rmsnet");
+  MarSystem *rmsfan = mng.create("Fanout/rmsfan");
   
-  MarSystem* rmsnet = mng.create("Series", "rmsnet");
-  rmsnet->addMarSystem(mng.create("SoundFileSource/src"));
-  rmsnet->addMarSystem(mng.create("MixToMono", "mix2mono"));
-  rmsnet->addMarSystem(mng.create("AudioSink/dest"));
-  rmsnet->addMarSystem(mng.create("Rms/rms"));
+  MarSystem* branch1 = mng.create("Series/branch1");
+  branch1->addMarSystem(mng.create("SoundFileSource/src"));
+  branch1->addMarSystem(mng.create("MixToMono/mix2mono"));
+  branch1->addMarSystem(mng.create("Rms/rms"));
+  
+  MarSystem* branch2 = mng.create("Series/branch2");
+  branch2->addMarSystem(mng.create("SoundFileSource/src"));
+  branch2->addMarSystem(mng.create("MixToMono/mix2mono"));
+  branch2->addMarSystem(mng.create("Rms/rms"));
+  
+  rmsfan->addMarSystem(branch1);
+  rmsfan->addMarSystem(branch2);
+  rmsnet->addMarSystem(rmsfan);
   rmsnet->addMarSystem(mng.create("RealvecSink/rdest"));
-		       
-  rmsnet->updctrl("SoundFileSource/src/mrs_string/filename", fname1);
-  rmsnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-  rmsnet->updctrl("AudioSink/dest/mrs_bool/mute", true);
+  
+  rmsnet->updctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_string/filename", fname1);
+  rmsnet->updctrl("Fanout/rmsfan/Series/branch2/SoundFileSource/src/mrs_string/filename", fname2);
   rmsnet->updctrl("mrs_natural/inSamples", 44100);
 
   mrs_real val;
-  while (rmsnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+  while (rmsnet->getctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
     {
       rmsnet->tick();
-      const mrs_realvec& rms_val = rmsnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-      val = rms_val(0,0);
     }
-  cout << "Done processing file" << fname1 << endl;
+  cout << "Done processing files" << fname1 << " and " << fname2 << endl;
   
-  const mrs_realvec& rms_data1 = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
-  cout << rms_data1 << endl;
+  mrs_realvec rms_data = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
+  cout << rms_data << endl;
   
-  rmsnet->updctrl("SoundFileSource/src/mrs_string/filename", fname2);
+#ifdef MARSYAS_PNG 
+  pngwriter png1(rms_data.getCols(),128, 0, "rms1.png"); 
+  pngwriter png2(rms_data.getCols(),128, 0, "rms2.png");
+  png1.invert();
+  png2.invert();
 
-
-  while (rmsnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+  rms_data.normMaxMin();
+  
+  for (int i=0; i < rms_data.getCols(); i++)
     {
-      rmsnet->tick();
-      const mrs_realvec& rms_val = rmsnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-      val = rms_val(0,0);
+      png1.line(i, 0, i, rms_data(0,i) * 128, 0.0, 0.0, 1.0);
     }
-  cout << "Done processing file" << fname2 << endl;
-
-  const mrs_realvec& rms_data2 = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
-  cout << rms_data2 << endl;
 
 
-  #ifdef MARSYAS_PNG 
-  pngwriter png1(128, rms_data1.getSize(), 0, "rms1.png"); 
+  for (int i=0; i < rms_data.getCols(); i++)
+    {
+      png2.line(i, 0, i, rms_data(1,i) * 128, 0.0, 0.0, 1.0);
+    }
   
-
   png1.close();
+  png2.close();
   #endif 
-
+  
+  
+  /* 
+  mrs_realvec sizes;
+  sizes.create(2);
+  sizes(0) = rms_data1.getSize();
+  sizes(1) = rms_data2.getSize();
+  
+  
+  MarSystem* sim = mng.create("SimilarityMatrix/sim");
+  sim->updctrl("mrs_string/normalize","MinMax");
+  sim->updctrl("mrs_realvec/sizes", sizes);
+  
+  MarSystem* metric = mng.create("Metric2/met");
+  metric->updctrl("mrs_string/metric", "euclideanDistance");
+  sim->addMarSystem(met);
+  
+  
+  */ 
 
 
 }
