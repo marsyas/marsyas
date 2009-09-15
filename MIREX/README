@@ -103,7 +103,7 @@ advantage of multiple cores without a problem as long as there
 are different scratch directories for each fold. 
 
 ------------- MIREX 2009 Audio Onset Detection Tasks ---------------------
-(use REVISION_NUMBER: 3699)
+(use REVISION_NUMBER: 3700)
 
 ./onsets soundExample.wav
 
