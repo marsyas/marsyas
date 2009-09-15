@@ -102,7 +102,11 @@ The executables can be launched in parallel for each fold to take
 advantage of multiple cores without a problem as long as there 
 are different scratch directories for each fold. 
 
+------------- MIREX 2009 Audio Onset Detection Tasks ---------------------
+(use REVISION_NUMBER: 3699)
 
+./onsets soundExample.wav
 
+Resulting soundExample.output will be saved in the same directory of the onsets executable.
 
 
