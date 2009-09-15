@@ -52,18 +52,19 @@ using namespace std;
 using namespace Marsyas;
 
 CommandLineOptions cmd_options;
-string toy_withName;
 int helpopt;
 int usageopt;
 int verboseopt;
+int audiosynthopt;
 
 void 
 printUsage(string progName)
 {
 	MRSDIAG("onsets.cpp - printUsage");
-	cerr << "Usage : " << progName << " fileName" << endl;
+	cerr << "Usage : " << progName << "[-as] fileName" << endl;
+	cerr << "where fileName is a sound file in a MARSYAS supported format" << endl;
 	cerr << endl;
-	exit(1);
+	exit(1); 
 }
 
 void 
@@ -71,11 +72,17 @@ printHelp(string progName)
 {
 	MRSDIAG("onsets.cpp - printHelp");
 	cerr << "onsets, MARSYAS, Copyright George Tzanetakis " << endl;
-	cerr << "--------------------------------------------" << endl;
+	cerr << "--------------------------------------------------------" << endl;
+	cerr << "Detect the onsets in the sound file provided as argument" << endl;
 	cerr << endl;
 	cerr << "Usage : " << progName << "fileName" << endl;
 	cerr << endl;
-	
+  cerr << "where file is a sound file in a Marsyas supported format" << endl;
+  cerr << "Help Options:" << endl;
+  cerr << "-u --usage      : display short usage info" << endl;
+  cerr << "-h --help       : display this information " << endl;
+  cerr << "-v --verbose    : verbose output " << endl;
+	cerr << "-as --audiosynth: synthesize onsets and mix with original sound" << endl;
 	exit(1);
 }
 
@@ -85,6 +92,7 @@ initOptions()
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addBoolOption("verbose", "v", false);
+	cmd_options.addBoolOption("audiosynth", "as", false);
 }
 
 void 
@@ -93,6 +101,7 @@ loadOptions()
 	helpopt = cmd_options.getBoolOption("help");
 	usageopt = cmd_options.getBoolOption("usage");
 	verboseopt = cmd_options.getBoolOption("verbose");
+	audiosynthopt = cmd_options.getBoolOption("audiosynth");
 }
 
 void 
@@ -126,17 +135,22 @@ detect_onsets(string sfName)
 			onsetaccum->addMarSystem(onsetseries);
 		onsetnet->addMarSystem(onsetaccum);
 	//onsetnet->addMarSystem(mng.create("ShiftOutput","so"));
-	MarSystem* onsetmix = mng.create("Fanout","onsetmix");
-		onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
-			MarSystem* onsetsynth = mng.create("Series","onsetsynth");
-				onsetsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
-				onsetsynth->addMarSystem(mng.create("ADSR","env"));
-				onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
-			onsetmix->addMarSystem(onsetsynth);
-	onsetnet->addMarSystem(onsetmix);
 	
-	//onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
-	onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
+	if(audiosynthopt)
+	{
+		//Audio synthesis
+		MarSystem* onsetmix = mng.create("Fanout","onsetmix");
+		onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
+		MarSystem* onsetsynth = mng.create("Series","onsetsynth");
+		onsetsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
+		onsetsynth->addMarSystem(mng.create("ADSR","env"));
+		onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
+		onsetmix->addMarSystem(onsetsynth);
+		onsetnet->addMarSystem(onsetmix);
+		
+		//onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
+		onsetnet->addMarSystem(mng.create("SoundFileSink", "fdest"));
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -164,7 +178,10 @@ detect_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	FileName outputFile(sfName);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
-	onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
+	
+	if(audiosynthopt)
+		onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
+	
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 
 	mrs_natural winSize = 2048;//2048;
@@ -179,7 +196,8 @@ detect_onsets(string sfName)
 	mrs_natural maxTimes = (mrs_natural) (textureWinMaxLen*fs/hopSize);//1000; //whatever... just a big number for now...
 	// cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
 
-	//best result till now are using dB power Spectrum!
+	// best result till now are using dB power Spectrum!
+	// FIXME: should fix PowerSpectrum (remove that ugly wrongdBonsets control) and use a Gain with factor of two instead. 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
 		"wrongdBonsets");
 
@@ -216,15 +234,19 @@ detect_onsets(string sfName)
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", maxTimes); 
 	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", minTimes);
 
-	//set audio/onset resynth balance and ADSR params for onset sound
-	onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio/mrs_real/gain", 1.0);
-	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain", 0.8);
-	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTarget", 1.0);
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTime", winSize/80/fs); //!!!
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
- 	onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); //!!!
-	
-	//onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	if(audiosynthopt)
+	{
+		//set audio/onset resynth balance and ADSR params for onset sound
+		onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio/mrs_real/gain", 1.0);
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain", 0.8);
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTarget", 1.0);
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTime", winSize/80/fs); //!!!
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
+		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); //!!!
+		
+		//onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	}
+
 	
 	//MATLAB Engine inits
 	//used for toy_with_onsets.m
@@ -242,19 +264,36 @@ detect_onsets(string sfName)
 	//process input file (till EOF)
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural timestamps_samples = 0;
-	mrs_real sampling_rate;
-	sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
-	// cout << "Sampling rate = " << sampling_rate << endl;
+	cout << "Sampling rate = " << fs << endl;
 	
-	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+	if(audiosynthopt)
 	{
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
-		onsetnet->tick();
-		timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-		// cout << timestamps_samples / sampling_rate << endl;
-		cout << timestamps_samples << endl;;
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
+		while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+		{
+			onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
+			onsetnet->tick();
+			timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+			cout << timestamps_samples / fs << endl; //in seconds
+			//cout << timestamps_samples << endl; //in samples
+			onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
+		}
 	}
+	else {
+		ofstream outFile;
+		string outFileName = outputFile.nameNoExt() + ".output";
+		outFile.open(outFileName.c_str(), ios::out);
+		
+		while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+		{
+			onsetnet->tick();
+			timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+			cout << timestamps_samples / fs << endl; //in seconds
+			outFile << timestamps_samples / fs << endl;
+		}
+		
+		cout << "Done writing " << outFileName << endl;
+		outFile.close();
+	}	
 }
 
 int
