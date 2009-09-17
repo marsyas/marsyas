@@ -11,7 +11,7 @@ SimilarityMatrix::SimilarityMatrix(string name):MarSystem("SimilarityMatrix", na
 
 SimilarityMatrix::SimilarityMatrix(const SimilarityMatrix& a):MarSystem(a)
 {
-	ctrl_covMatrix_ = getctrl("mrs_natural/covMatrix");
+	ctrl_covMatrix_ = getctrl("mrs_realvec/covMatrix");
 	ctrl_calcCovMatrix_ = getctrl("mrs_natural/calcCovMatrix");
 	ctrl_normalize_ = getctrl("mrs_string/normalize");
 	ctrl_stdDev_ = getctrl("mrs_real/stdDev");
@@ -42,6 +42,7 @@ SimilarityMatrix::addControls()
 
 void SimilarityMatrix::myUpdate(MarControlPtr sender)
 {
+
 	(void) sender;
 	MarControlAccessor acc(ctrl_sizes_);
 	realvec& tmpvec = acc.to<mrs_realvec>();
@@ -99,6 +100,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 		invecs_[k].create(obs, sizes_(k));
 	}
 
+	
 	if(marsystemsSize_ == 1 && inSamples_ > 0)
 	{
 		// allocate realvec for the pair of stacked feature vectors
@@ -120,7 +122,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 		// link covMatrix control
 		MarControlPtr ctrl_childCovMat = marsystems_[0]->getctrl("mrs_realvec/covMatrix");
 		if(!ctrl_childCovMat.isInvalid())
-			ctrl_childCovMat->linkTo(ctrl_covMatrix_);
+		  ctrl_childCovMat->linkTo(ctrl_covMatrix_);
 		metricResult_.create(1,1);
 		if(marsystems_[0]->getctrl("mrs_natural/onObservations") != 1 || 
 			marsystems_[0]->getctrl("mrs_natural/onSamples") != 1)

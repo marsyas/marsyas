@@ -153,6 +153,8 @@
 #include "SimilarityMatrix.h"
 #include "SelfSimilarityMatrix.h"
 #include "Metric.h"
+#include "Metric2.h"
+#include "DTW.h"
 #include "HWPS.h"
 #include "RBF.h"
 #include "NormMatrix.h"
@@ -204,12 +206,12 @@ using namespace Marsyas;
 
 MarSystemManager::MarSystemManager()
 {
-	registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
-	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
+ 	registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
+ 	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
 	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
 	registerPrototype("AutoCorrelation", new AutoCorrelation("acrp"));
-	registerPrototype("Series", new Series("srp"));
-	registerPrototype("Fanin", new Fanin("finp"));
+ 	registerPrototype("Series", new Series("srp"));
+ 	registerPrototype("Fanin", new Fanin("finp"));
 	registerPrototype("Fanout", new Fanout("fonp"));
 	registerPrototype("Parallel", new Parallel("parallelp"));
 	registerPrototype("Cascade", new Cascade("cascadep"));
@@ -236,8 +238,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("OverlapAdd", new OverlapAdd("oa"));
 	registerPrototype("PeakSynthOsc", new PeakSynthOsc("pso"));
 	registerPrototype("PeakResidual", new PeakResidual("peres"));
-	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
-	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
+ 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
+ 	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
 	registerPrototype("Power", new Power("pow"));
 	registerPrototype("Cartesian2Polar", new Cartesian2Polar("c2p"));
 	registerPrototype("Polar2Cartesian", new Polar2Cartesian("p2c"));
@@ -264,7 +266,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
 	registerPrototype("GMMClassifier", new GMMClassifier("gmmsp"));
 	registerPrototype("Confidence", new Confidence("confp"));
-	registerPrototype("Rms", new Rms("rms"));
+ 	registerPrototype("Rms", new Rms("rms"));
 	registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
 	registerPrototype("WekaSink", new WekaSink("wsink"));
 	registerPrototype("WekaSource", new WekaSource("wsource"));
@@ -337,7 +339,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PeakFeatureSelect", new PeakFeatureSelect("pefeatselectpr"));
 	registerPrototype("SimilarityMatrix", new SimilarityMatrix("similaritymatrixpr"));
 	registerPrototype("SelfSimilarityMatrix", new SelfSimilarityMatrix("selfsimilaritymatrixpr"));
-	registerPrototype("Metric", new Metric("metricpr"));
+ 	registerPrototype("Metric", new Metric("metricpr"));
+	registerPrototype("Metric2", new Metric2("metric2pr"));
+	registerPrototype("DTW", new DTW("dtw"));
 	registerPrototype("HWPS", new HWPS("hwpspr"));
 	registerPrototype("RBF", new RBF("rbfpr"));
 	registerPrototype("NormMatrix", new NormMatrix("normmatrixpr"));
@@ -380,7 +384,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
 	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
 	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
-	registerPrototype("MixToMono", new MixToMono("mixtomono"));
+ 	registerPrototype("MixToMono", new MixToMono("mixtomono"));
 	registerPrototype("SoundFileSourceHopper", new SoundFileSourceHopper("soundfilesourcehopper"));
 	//modifyRegister
 

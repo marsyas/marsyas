@@ -4024,8 +4024,7 @@ toy_with_dtw(string fname1, string fname2)
   cout << "Done processing files" << fname1 << " and " << fname2 << endl;
   
   mrs_realvec rms_data = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
-  cout << rms_data << endl;
-  
+
 #ifdef MARSYAS_PNG 
   pngwriter png1(rms_data.getCols(),128, 0, "rms1.png"); 
   pngwriter png2(rms_data.getCols(),128, 0, "rms2.png");
@@ -4047,27 +4046,87 @@ toy_with_dtw(string fname1, string fname2)
   
   png1.close();
   png2.close();
-  #endif 
+#endif 
   
   
-  /* 
+  
+  cout << "Starting similarity matrix computation" << endl;
+
   mrs_realvec sizes;
   sizes.create(2);
-  sizes(0) = rms_data1.getSize();
-  sizes(1) = rms_data2.getSize();
+  sizes(0) = rms_data.getCols();
+  sizes(1) = rms_data.getCols();
   
+  MarSystem* net = mng.create("Series", "series");
+  net->updctrl("mrs_natural/inSamples", rms_data.getCols());
+  net->updctrl("mrs_natural/inObservations", 2);
+  net->addMarSystem(mng.create("RealvecSource", "src"));
+  net->updctrl("RealvecSource/src/mrs_realvec/data", rms_data);
   
   MarSystem* sim = mng.create("SimilarityMatrix/sim");
   sim->updctrl("mrs_string/normalize","MinMax");
   sim->updctrl("mrs_realvec/sizes", sizes);
   
-  MarSystem* metric = mng.create("Metric2/met");
-  metric->updctrl("mrs_string/metric", "euclideanDistance");
+  
+  MarSystem* met = mng.create("Metric/met");
+  met->updctrl("mrs_string/metric", "euclideanDistance");
   sim->addMarSystem(met);
+  net->addMarSystem(sim);
   
+  MarSystem* dtw = mng.create("DTW/dtw");
+  dtw->updctrl("mrs_string/lastPos","end");
+  dtw->updctrl("mrs_string/startPos","zero");
+  //    dtw->updctrl("mrs_string/localPath","diagonal");
+  dtw->updctrl("mrs_bool/weight",false);
+  dtw->updctrl("mrs_string/mode","normal");
+  net->addMarSystem(dtw);
   
-  */ 
+  net->tick();
+ 
+#ifdef MARSYAS_PNG 
+  pngwriter png_rms(rms_data.getCols(), rms_data.getCols(), 0, "simMatrix.png");
+  
+  mrs_realvec similarity_output = net->getctrl("SimilarityMatrix/sim/mrs_realvec/processedData")->to<mrs_realvec>();
+  mrs_realvec dtw_output = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
+  
+  // Find max and min
+  double max = MINREAL;
+  double min = MAXREAL;
+  for (int r=0; r < similarity_output.getRows(); r++) {
+    for (int c=0; c < similarity_output.getCols(); c++) {
+      if (similarity_output(r,c) < min)
+	min = similarity_output(r,c);
+      if (similarity_output(r,c) > max)
+	max = similarity_output(r,c);
+    }
+  }
+  
+  double colour;
+  
+  // Make a png of the similarity matrix
+  for (int r=0; r < similarity_output.getRows(); r++) {
+    for (int c=0; c < similarity_output.getCols(); c++) {
+      colour = 1.0 - ((similarity_output(r,c) - min) / (max - min));
+      //       cout << "r=" << r << " c=" << c << " colour=" << colour << endl;
+      png_rms.plot(c,r,colour,colour,colour);
+    }
+  }
+  
+
+// Overlay the DTW data
+  for (int r=0; r < dtw_output.getRows(); r++) {
+    int x = dtw_output(r,0);
+    int y = dtw_output(r,1);
+    png_rms.plot(x,y,0.0,0.0,0.0);
+  }
+  
+
+  
+  
+  png_rms.close();
+  
+#endif 
 
 }
 
