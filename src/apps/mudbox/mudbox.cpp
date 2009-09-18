@@ -3992,16 +3992,22 @@ toy_with_updctrl(string fname)
 void 
 toy_with_dtw(string fname1, string fname2)
 {
-  MarSystemManager mng; 
+  mrs_natural size1;
+  mrs_natural size2;
+  mrs_natural max_size;
 
+  MarSystemManager mng; 
+  
   MarSystem* rmsnet = mng.create("Series/rmsnet");
   MarSystem *rmsfan = mng.create("Fanout/rmsfan");
   
+  // Network to compute RMS for file 1 
   MarSystem* branch1 = mng.create("Series/branch1");
   branch1->addMarSystem(mng.create("SoundFileSource/src"));
   branch1->addMarSystem(mng.create("MixToMono/mix2mono"));
   branch1->addMarSystem(mng.create("Rms/rms"));
   
+  // Network to compute RMS for file 2 
   MarSystem* branch2 = mng.create("Series/branch2");
   branch2->addMarSystem(mng.create("SoundFileSource/src"));
   branch2->addMarSystem(mng.create("MixToMono/mix2mono"));
@@ -4010,21 +4016,30 @@ toy_with_dtw(string fname1, string fname2)
   rmsfan->addMarSystem(branch1);
   rmsfan->addMarSystem(branch2);
   rmsnet->addMarSystem(rmsfan);
+
+  // Collect the RMS contours 
   rmsnet->addMarSystem(mng.create("RealvecSink/rdest"));
   
   rmsnet->updctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_string/filename", fname1);
   rmsnet->updctrl("Fanout/rmsfan/Series/branch2/SoundFileSource/src/mrs_string/filename", fname2);
   rmsnet->updctrl("mrs_natural/inSamples", 44100);
 
-  mrs_real val;
-  while (rmsnet->getctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
-    {
-      rmsnet->tick();
-    }
+  size1 = (int)(rmsnet->getctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>() /44100.0);
+  size2 = (int)(rmsnet->getctrl("Fanout/rmsfan/Series/branch2/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>() / 44100.0);
+
+  if (size1 <= size2)
+    max_size =size2;
+  else 
+    max_size = size1;
+  
+  // RMS contour are calculated below 
+  for (int i = 0; i < max_size; i++) 
+    rmsnet->tick();
   cout << "Done processing files" << fname1 << " and " << fname2 << endl;
   
   mrs_realvec rms_data = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
 
+  // make pictures of contours 
 #ifdef MARSYAS_PNG 
   pngwriter png1(rms_data.getCols(),128, 0, "rms1.png"); 
   pngwriter png2(rms_data.getCols(),128, 0, "rms2.png");
@@ -4036,11 +4051,6 @@ toy_with_dtw(string fname1, string fname2)
   for (int i=0; i < rms_data.getCols(); i++)
     {
       png1.line(i, 0, i, rms_data(0,i) * 128, 0.0, 0.0, 1.0);
-    }
-
-
-  for (int i=0; i < rms_data.getCols(); i++)
-    {
       png2.line(i, 0, i, rms_data(1,i) * 128, 0.0, 0.0, 1.0);
     }
   
@@ -4048,14 +4058,13 @@ toy_with_dtw(string fname1, string fname2)
   png2.close();
 #endif 
   
+  // Prepare network to compute similarity Matrix and the use 
+  // DTW to find alignment 
   
-  
-  cout << "Starting similarity matrix computation" << endl;
-
   mrs_realvec sizes;
   sizes.create(2);
-  sizes(0) = rms_data.getCols();
-  sizes(1) = rms_data.getCols();
+  sizes(0) = size1;
+  sizes(1) = size2;
   
   MarSystem* net = mng.create("Series", "series");
   net->updctrl("mrs_natural/inSamples", rms_data.getCols());
@@ -4067,7 +4076,7 @@ toy_with_dtw(string fname1, string fname2)
   sim->updctrl("mrs_string/normalize","MinMax");
   sim->updctrl("mrs_realvec/sizes", sizes);
   
-  
+  // Distance/similarity metric used 
   MarSystem* met = mng.create("Metric/met");
   met->updctrl("mrs_string/metric", "euclideanDistance");
   sim->addMarSystem(met);
@@ -4076,19 +4085,22 @@ toy_with_dtw(string fname1, string fname2)
   MarSystem* dtw = mng.create("DTW/dtw");
   dtw->updctrl("mrs_string/lastPos","end");
   dtw->updctrl("mrs_string/startPos","zero");
-  //    dtw->updctrl("mrs_string/localPath","diagonal");
   dtw->updctrl("mrs_bool/weight",false);
   dtw->updctrl("mrs_string/mode","normal");
   net->addMarSystem(dtw);
-  
+ 
+  // Compute the similarity matrix and DTW alignment path 
   net->tick();
  
+  mrs_realvec similarity_output = 
+    net->getctrl("SimilarityMatrix/sim/mrs_realvec/processedData")->to<mrs_realvec>();
+  mrs_realvec dtw_output = 
+    net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+
+  // Make picture for the resulting Matrix 
 #ifdef MARSYAS_PNG 
   pngwriter png_rms(rms_data.getCols(), rms_data.getCols(), 0, "simMatrix.png");
-  
-  mrs_realvec similarity_output = net->getctrl("SimilarityMatrix/sim/mrs_realvec/processedData")->to<mrs_realvec>();
-  mrs_realvec dtw_output = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-
   
   // Find max and min
   double max = MINREAL;
@@ -4103,16 +4115,13 @@ toy_with_dtw(string fname1, string fname2)
   }
   
   double colour;
-  
   // Make a png of the similarity matrix
   for (int r=0; r < similarity_output.getRows(); r++) {
     for (int c=0; c < similarity_output.getCols(); c++) {
       colour = 1.0 - ((similarity_output(r,c) - min) / (max - min));
-      //       cout << "r=" << r << " c=" << c << " colour=" << colour << endl;
       png_rms.plot(c,r,colour,colour,colour);
     }
   }
-  
 
 // Overlay the DTW data
   for (int r=0; r < dtw_output.getRows(); r++) {
@@ -4120,8 +4129,6 @@ toy_with_dtw(string fname1, string fname2)
     int y = dtw_output(r,1);
     png_rms.plot(x,y,0.0,0.0,0.0);
   }
-  
-
   
   
   png_rms.close();
