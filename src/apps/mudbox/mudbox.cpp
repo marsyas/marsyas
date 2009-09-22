@@ -910,21 +910,127 @@ toy_with_sine()
 	
 	MarSystem* snet = mng.create("Series/snet");
 	MarSystem* smix = mng.create("Fanout/smix");
-	smix->addMarSystem(mng.create("SineSource/src1"));
-	smix->addMarSystem(mng.create("SineSource/src2"));
+	
+	MarSystem* branch1 = mng.create("Series/branch1");
+	MarSystem* branch2 = mng.create("Series/branch2");
+	branch1->addMarSystem(mng.create("SineSource/src"));
+	branch1->addMarSystem(mng.create("Gain/gain"));
+	branch2->addMarSystem(mng.create("SineSource/src"));
+	branch2->addMarSystem(mng.create("Gain/gain"));
+	
+	smix->addMarSystem(branch1);
+	smix->addMarSystem(branch2);
 	snet->addMarSystem(smix);
+	snet->addMarSystem(mng.create("MixToMono/m2m"));
+	
 	snet->addMarSystem(mng.create("AudioSink/dest"));
 
 	snet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	for (int i=0; i < 500; i++) 
+	MarControlPtr f1, f2;
+	MarControlPtr g1, g2;
+	
+	f1 = snet->getctrl("Fanout/smix/Series/branch1/SineSource/src/mrs_real/frequency");
+	f2 = snet->getctrl("Fanout/smix/Series/branch2/SineSource/src/mrs_real/frequency");
+	g1 = snet->getctrl("Fanout/smix/Series/branch1/Gain/gain/mrs_real/gain");
+	g2 = snet->getctrl("Fanout/smix/Series/branch2/Gain/gain/mrs_real/gain");
+	
+//  	cout << "Beating" << endl;
+	
+//  	for (int i=0; i < 200; i++) 
+//  	{
+//  		f1->setValue(440.0);
+//  		f2->setValue(442.0);
+// 		snet->tick();
+// 	}
+	
+
+// 	// play with ratios
+// 	vector<mrs_real> ratios;
+// 	ratios.push_back(2.0);
+// 	ratios.push_back(3.0/2.0);
+// 	ratios.push_back(4.0/3.0);
+// 	ratios.push_back(5.0/4.0);
+// 	ratios.push_back(6.0/5.0);
+	
+// 	cout << "Ratios as chords" << endl;
+	
+// 	for (int i=0; i<5; i++)
+// 	{
+// 		f1->setValue(440.0);
+// 		f2->setValue(ratios[i] * 440.0);		
+// 		for (int j=0; j<100; j++)
+// 			snet->tick();
+// 	}
+
+
+// 	cout << "Ratios as intervals" << endl;
+// 	g2->setValue(0.0);
+// 	for (int i=0; i<5; i++)
+// 	{
+// 		f1->setValue(440.0);
+// 		for (int j=0; j<50; j++)
+// 			snet->tick();
+// 		f1->setValue(ratios[i] * 440.0);		
+// 		for (int j=0; j<50; j++)
+// 			snet->tick();		
+// 	}
+		
+	cout << "Dividing the octave" << endl;
+	mrs_natural divisions;
+
+	g1->setValue(0.0);
+	g2->setValue(0.0);
+	
+	cin >> divisions;
+
+	g1->setValue(1.0);
+	g2->setValue(1.0);
+	
+	
+	mrs_real c = pow(2, 1.0/divisions);
+	cout << "c = " << c << endl;
+	
+	for (int i=0; i < divisions+1; i++)
 	{
-		snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", 440.0);
-		snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", 445.0);
-		snet->tick();
+		f1->setValue(440.0 * pow(c, i));
+		cout << 440.0 * pow(c,i) << " - " << pow(c,i) << endl;
+		
+ 		for (int j=0; j<30; j++)
+ 			snet->tick();		
 	}
 	
+	g1->setValue(0.0);
+	g2->setValue(0.0);
+
+	for (int j=0; j<10; j++)
+		snet->tick();
+
+
+
+
 	
+	cout << "Dividing the 3.0 (Bohlen-Pierce" << endl;
+	cin >> divisions;
+
+	g1->setValue(1.0);
+	g2->setValue(1.0);
+	
+	
+	c = pow(3.0, 1.0/divisions);
+	cout << "c = " << c << endl;
+	
+	for (int i=0; i < divisions+1; i++)
+	{
+		f1->setValue(440.0 * pow(c, i));
+		cout << 440.0 * pow(c,i) << " - " << pow(c,i) << endl;
+		
+ 		for (int j=0; j<30; j++)
+ 			snet->tick();		
+	}
+
+
+
 
 }
 
@@ -4062,7 +4168,7 @@ toy_with_dtw(string fname1, string fname2)
   // DTW to find alignment 
   
   mrs_realvec sizes;
-  sizes.create(2);
+  sizes.create(2); 
   sizes(0) = size1;
   sizes(1) = size2;
   
