@@ -111,7 +111,7 @@ Resulting soundExample.output will be saved in the same directory of the onsets 
 
 
 ------------- MIREX 2009 Audio Beat Tracking Tasks ---------------------
-(use REVISION_NUMBER: 3707)
+(use REVISION_NUMBER: 3708)
 
 This implementation contains two distinct versions, differentiated by its functional heuristics.
 The application outputs two text files, in the same directory as this executable: one with the tempo measure (median IBI, 
