@@ -153,8 +153,6 @@
 #include "SimilarityMatrix.h"
 #include "SelfSimilarityMatrix.h"
 #include "Metric.h"
-#include "Metric2.h"
-#include "DTW.h"
 #include "HWPS.h"
 #include "RBF.h"
 #include "NormMatrix.h"
@@ -199,6 +197,14 @@
 #include "ArffFileSink.h"
 #include "MixToMono.h"
 #include "SoundFileSourceHopper.h"
+
+#include "TempoHypotheses.h"
+#include "OnsetTimes.h"
+#include "BeatAgent.h"
+#include "BeatReferee.h"
+#include "BeatRefereeAvg.h"
+#include "PhaseLock.h"
+#include "BeatTimesSink.h"
 //modifyHeader
 
 using namespace std;
@@ -206,12 +212,12 @@ using namespace Marsyas;
 
 MarSystemManager::MarSystemManager()
 {
- 	registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
- 	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
+	registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
+	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
 	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
 	registerPrototype("AutoCorrelation", new AutoCorrelation("acrp"));
- 	registerPrototype("Series", new Series("srp"));
- 	registerPrototype("Fanin", new Fanin("finp"));
+	registerPrototype("Series", new Series("srp"));
+	registerPrototype("Fanin", new Fanin("finp"));
 	registerPrototype("Fanout", new Fanout("fonp"));
 	registerPrototype("Parallel", new Parallel("parallelp"));
 	registerPrototype("Cascade", new Cascade("cascadep"));
@@ -238,8 +244,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("OverlapAdd", new OverlapAdd("oa"));
 	registerPrototype("PeakSynthOsc", new PeakSynthOsc("pso"));
 	registerPrototype("PeakResidual", new PeakResidual("peres"));
- 	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
- 	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
+	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
+	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
 	registerPrototype("Power", new Power("pow"));
 	registerPrototype("Cartesian2Polar", new Cartesian2Polar("c2p"));
 	registerPrototype("Polar2Cartesian", new Polar2Cartesian("p2c"));
@@ -266,7 +272,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
 	registerPrototype("GMMClassifier", new GMMClassifier("gmmsp"));
 	registerPrototype("Confidence", new Confidence("confp"));
- 	registerPrototype("Rms", new Rms("rms"));
+	registerPrototype("Rms", new Rms("rms"));
 	registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
 	registerPrototype("WekaSink", new WekaSink("wsink"));
 	registerPrototype("WekaSource", new WekaSource("wsource"));
@@ -339,9 +345,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PeakFeatureSelect", new PeakFeatureSelect("pefeatselectpr"));
 	registerPrototype("SimilarityMatrix", new SimilarityMatrix("similaritymatrixpr"));
 	registerPrototype("SelfSimilarityMatrix", new SelfSimilarityMatrix("selfsimilaritymatrixpr"));
- 	registerPrototype("Metric", new Metric("metricpr"));
-	registerPrototype("Metric2", new Metric2("metric2pr"));
-	registerPrototype("DTW", new DTW("dtw"));
+	registerPrototype("Metric", new Metric("metricpr"));
 	registerPrototype("HWPS", new HWPS("hwpspr"));
 	registerPrototype("RBF", new RBF("rbfpr"));
 	registerPrototype("NormMatrix", new NormMatrix("normmatrixpr"));
@@ -384,8 +388,16 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
 	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
 	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
- 	registerPrototype("MixToMono", new MixToMono("mixtomono"));
+	registerPrototype("MixToMono", new MixToMono("mixtomono"));
 	registerPrototype("SoundFileSourceHopper", new SoundFileSourceHopper("soundfilesourcehopper"));
+	
+	registerPrototype("TempoHypotheses", new TempoHypotheses("tempohyp"));
+	registerPrototype("OnsetTimes", new OnsetTimes("OnsetTimes"));
+	registerPrototype("BeatAgent", new BeatAgent("beatagent"));
+	registerPrototype("BeatReferee", new BeatReferee("beatreferee"));
+	registerPrototype("BeatRefereeAvg", new BeatRefereeAvg("beatrefavg"));
+	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
+	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
 	//modifyRegister
 
 	//***************************************************************************************
@@ -1086,6 +1098,8 @@ void MarSystemManager::registerComposite(std::string prototype)
 		classifierpr->addctrl("mrs_natural/nClasses", 1);
 		classifierpr->addctrl("mrs_string/mode", "train");
 		classifierpr->setctrlState("mrs_string/mode", true);
+		classifierpr->addctrl("mrs_realvec/classProbabilities", realvec());
+		// classifierpr->setctrlState("mrs_realvec/classProbabilities",true);
 
 		classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_natural/nClasses",
 		                       "mrs_natural/nClasses");
@@ -1101,6 +1115,12 @@ void MarSystemManager::registerComposite(std::string prototype)
 		classifierpr->linkctrl("SVMClassifier/svmcl/mrs_string/mode",
 		                       "mrs_string/mode");
 
+		classifierpr->linkctrl("ZeroRClassifier/zerorcl/mrs_realvec/classProbabilities",
+		                       "mrs_realvec/classProbabilities");
+		classifierpr->linkctrl("GaussianClassifier/gaussiancl/mrs_realvec/classProbabilities",
+		                       "mrs_realvec/classProbabilities");
+		classifierpr->linkctrl("SVMClassifier/svmcl/mrs_realvec/classProbabilities",
+		                       "mrs_realvec/classProbabilities");
 
 		classifierpr->updctrl("mrs_string/disableChild", "all");
 		registerPrototype("Classifier", classifierpr);

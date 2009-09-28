@@ -81,7 +81,7 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 	else if (stype_ == "magnitude")
 		ntype_ = PSD_MAG;
 	else if (stype_ == "decibels")
-		ntype_ = PSD_DB;
+		ntype_ = PSD_DB; //PUT DB!! (DB->NEW)
 	else if (stype_ == "wrongdBonsets")
 		ntype_ = PSD_WDB;
 	else if (stype_ == "powerdensity")

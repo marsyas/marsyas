@@ -211,9 +211,15 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 				out.setval(0);
 		}
 	}
-
-	//MATLAB_PUT(out, "corr");
-	//MATLAB_EVAL("plot(corr)");
+	/*
+	MATLAB_PUT(in, "corr_in");
+	MATLAB_PUT(out, "corr");
+	
+	MATLAB_EVAL("subplot(211)");
+	MATLAB_EVAL("plot(corr_in)");
+	MATLAB_EVAL("subplot(212)");
+	MATLAB_EVAL("plot(corr)");
+	*/
 }
 
 

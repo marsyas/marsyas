@@ -41,6 +41,10 @@ MaxArgMax::addControls()
 {
 	addctrl("mrs_natural/nMaximums", (mrs_natural)1);
 	setctrlState("mrs_natural/nMaximums", true);
+	
+	//Added to avoid Fanout Crash!
+	addctrl("mrs_natural/nPhases", 1);
+	setctrlState("mrs_natural/nPhases", true);
 
 	addctrl("mrs_natural/interpolation", (mrs_natural)0);
 }
@@ -51,8 +55,11 @@ MaxArgMax::myUpdate(MarControlPtr sender)
 	(void) sender;
 
 	mrs_natural k = getctrl("mrs_natural/nMaximums")->to<mrs_natural>();
+	mrs_natural nPhases_ = getctrl("mrs_natural/nPhases")->to<mrs_natural>();
 	
-	setctrl("mrs_natural/onSamples",  2 * k);
+	//Added to avoid Fanout Crash!
+	mrs_natural size = 2 * max(k, nPhases_);
+	setctrl("mrs_natural/onSamples",  size);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
 }
@@ -81,6 +88,8 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 			// cout << "nmx = " << newmax << endl;
 			// cout << "nmx_i = " << newmax_i << endl;
 			
+			//pair indexes = peak amplitude
+			//odd indexes = peak argument
 			for (ki=0; ki < k; ki++)
 			{
 				if (newmax > out(o, 2*ki))
@@ -106,6 +115,9 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 				out(o,2*ki+1) = ix;
 			}
 	}
+
+	//MATLAB_PUT(in, "Peaker_output");
+	//MATLAB_PUT(out, "MaxPeaks");
 }
 
 

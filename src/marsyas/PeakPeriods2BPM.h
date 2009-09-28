@@ -24,23 +24,38 @@
 namespace Marsyas
 {
 /** 
-    \class PeakPeriods2BPM
+	\class PeakPeriods2BPM
 	\ingroup none
-    \brief PeakPeriods2BPM: convert peaks to beats per minute 
+	\brief PeakPeriods2BPM: convert peaks to beats per minute.
+	This block should have as input a vector with the peak amplitudes in its 
+	pair indexes and the peak arguments (in frames) in its odd indexes.
+	It was created to convert the input given by "MaxArgMax" which outputs the chosen
+	number of peaks in the referred form.
 
+	Controls:
+	- \b mrs_real/srcFs [w] : Input sampling rate of the sound file source 
+	(given by "SoundFileSource/src/mrs_real/israte") -> by default = 1.0Hz.
+	
+	- \b mrs_natural/hopSize [w] : hopsize of the analysis -> by default = 1.
 */
 
 
 class PeakPeriods2BPM: public MarSystem
 {
 private: 
-  mrs_real srate_;
+void addControls();
   mrs_real factor_;
+  MarControlPtr ctrl_srcFs_;
+  MarControlPtr ctrl_hopsize_;
+
+  mrs_real srcFs_;
+  mrs_natural hopsize_;
 
 	void myUpdate(MarControlPtr sender);
 
 public:
   PeakPeriods2BPM(std::string name);
+  PeakPeriods2BPM(const PeakPeriods2BPM& a);
   ~PeakPeriods2BPM();
   MarSystem* clone() const;  
   
