@@ -747,7 +747,7 @@ ibt_average(mrs_string sfName, mrs_string mode)
 	}
 }
 
-void
+int
 main(int argc, const char **argv)
 {
 	
@@ -795,4 +795,6 @@ main(int argc, const char **argv)
 	}
 	else
 		ibt_regular(sfName);
+
+	return 0;
 }
