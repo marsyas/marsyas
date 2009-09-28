@@ -110,3 +110,13 @@ are different scratch directories for each fold.
 Resulting soundExample.output will be saved in the same directory of the onsets executable.
 
 
+------------- MIREX 2009 Audio Beat Tracking Tasks ---------------------
+(use REVISION_NUMBER: 3707)
+
+This implementation contains two distinct versions, differentiated by its functional heuristics.
+The application outputs two text files, in the same directory as this executable: one with the tempo measure (median IBI, 
+in BPMs) - input_medianTempo.txt; and other with the beat times, in seconds - input.txt.
+For running each of them just use the following commands:
+
+1-> ./ibt -s "correlation" input.wav
+2-> ./ibt -s "regular" input.wav
