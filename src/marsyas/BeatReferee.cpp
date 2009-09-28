@@ -326,8 +326,8 @@ BeatReferee::createChildren(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_n
 
 	mrs_realvec newHypotheses = calcChildrenHypothesis(oldPeriod, prevBeat, error);
 	
-	createNewAgent((mrs_natural) newHypotheses(0), (mrs_natural) newHypotheses(1), newScore, beatCount);
-	createNewAgent((mrs_natural) newHypotheses(2), (mrs_natural) newHypotheses(3), newScore, beatCount);
+	//createNewAgent((mrs_natural) newHypotheses(0), (mrs_natural) newHypotheses(1), newScore, beatCount);
+	//createNewAgent((mrs_natural) newHypotheses(2), (mrs_natural) newHypotheses(3), newScore, beatCount);
 	createNewAgent((mrs_natural) newHypotheses(4), (mrs_natural) newHypotheses(5),  newScore, beatCount);
 
 	//Display Created BeatAgent:

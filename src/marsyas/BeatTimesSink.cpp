@@ -133,32 +133,36 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				{
 					oss << ctrl_destFileName_->to<mrs_string>() << ".txt";
 					
-					cout << "Output: " << oss.str().c_str() << endl;
+					cout << "Beat Times Output: " << oss.str().c_str() << endl;
 
 					outStream.open(oss.str().c_str(), ios::out|ios::trunc);
+					outStream << beatTime_ << endl;
+					outStream.close();
 					initialOut_ = false;
 				}
+
 				//output is appended in the end of the file
-				if(beatCount_ > inc_+1)
+				else 
 				{
 					oss << ctrl_destFileName_->to<mrs_string>() << ".txt";
 					outStream.open(oss.str().c_str(), ios::out|ios::app);
+					
+					outStream << beatTime_ << endl;
+					outStream.close();
 				}
-
-				//outStream << beatTime_ << " " << ibiBPM_ << endl;
-				outStream << beatTime_ << endl;
-				outStream.close();
 			}
 
 			if((strcmp(mode_.c_str(), "meanTempo") == 0))
 			{
-				ostringstream oss;
+				ostringstream oss2;
 				ibiBPMSum_ += ibiBPM_;
 
 				if(initialOut2_)
 				{
-					oss << ctrl_destFileName_->to<mrs_string>() << "_meanTempo.txt";
-					outStream2.open(oss.str().c_str(), ios::out|ios::trunc);
+					oss2 << ctrl_destFileName_->to<mrs_string>() << "_meanTempo.txt";
+					cout << "Mean Tempo Output: " << oss2.str().c_str() << endl;
+					
+					outStream2.open(oss2.str().c_str(), ios::out|ios::trunc);
 					outStream2.close();
 					initialOut2_ = false;
 				}
@@ -167,9 +171,9 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				{
 					mrs_natural output = (mrs_natural) ibiBPMSum_ / (beatCount_-inc_);
 					
-					oss << ctrl_destFileName_->to<mrs_string>() << "_meanTempo.txt";
+					oss2 << ctrl_destFileName_->to<mrs_string>() << "_meanTempo.txt";
 					//outStream.open(destFile_.c_str(), ios::out|ios::app);
-					outStream2.open(oss.str().c_str());
+					outStream2.open(oss2.str().c_str());
 					outStream2 << output << endl;
 					outStream2.close();
 				}
@@ -177,12 +181,13 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 
 			if((strcmp(mode_.c_str(), "medianTempo") == 0) || (strcmp(mode_.c_str(), "all") == 0))
 			{
-				ostringstream oss;
+				ostringstream oss3;
 				if(initialOut3_)
 				{
-					oss << ctrl_destFileName_->to<mrs_string>() << "_medianTempo.txt";
+					oss3 << ctrl_destFileName_->to<mrs_string>() << "_medianTempo.txt";
+					cout << "Median Tempo Output: " << oss3.str().c_str() << endl;
 
-					outStream3.open(oss.str().c_str(), ios::out|ios::trunc);
+					outStream3.open(oss3.str().c_str(), ios::out|ios::trunc);
 					outStream3.close();
 					initialOut3_ = false;
 				}
@@ -219,16 +224,16 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 					}
 					//MATLAB_PUT(ibiBPMVec_, "IBIVector");
 					
-					oss << ctrl_destFileName_->to<mrs_string>() << "_medianTempo.txt";
-					outStream3.open(oss.str().c_str());
+					oss3 << ctrl_destFileName_->to<mrs_string>() << "_medianTempo.txt";
+					outStream3.open(oss3.str().c_str());
 					outStream3 << output << endl;
 					outStream3.close();
 				}
 
 				else if(beatCount_ == 1) //if only two beats => equal to ibi
 				{
-					oss << ctrl_destFileName_->to<mrs_string>() << ".txt";
-					outStream.open(oss.str().c_str());
+					oss3 << ctrl_destFileName_->to<mrs_string>() << "_medianTempo.txt";
+					outStream.open(oss3.str().c_str());
 					outStream << (mrs_natural) ibiBPM_ << endl;
 					outStream.close();
 				}

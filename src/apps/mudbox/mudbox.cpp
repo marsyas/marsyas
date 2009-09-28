@@ -6028,29 +6028,7 @@ void toy_with_midiout() {
   }
 }
 
-inline vector<string>
-split( const string& s, const string& f ) 
-{
-    vector<string> temp;
-    if ( f.empty() ) {
-        temp.push_back( s );
-        return temp;
-    }
-    typedef string::const_iterator iter;
-    const iter::difference_type f_size( distance( f.begin(), f.end() ) );
-    iter i( s.begin() );
-    for ( iter pos; ( pos = search( i , s.end(), f.begin(), f.end() ) ) != s.end(); ) 
-	{
-        temp.push_back( string( i, pos ) );
-        advance( pos, f_size );
-        i = pos;
-	}
-    temp.push_back( string( i, s.end() ) );
-    
-	return temp;
-}
-
-void toy_with_beats(mrs_string score_function, mrs_string sfName) 
+void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string progName) 
 {
 	mrs_natural induction_time = 5; //Time (in seconds) of induction before tracking. Has to be > 60/MIN_BPM (5)
 	mrs_natural bpm_hypotheses = 6; //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
@@ -6071,7 +6049,7 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName)
 	mrs_natural hopSize = 512; //512
 
 	mrs_natural audio = 0;
-	mrs_natural audio_file = 0;
+	mrs_natural audio_file = 1;
 
 	MarSystemManager mng;
 
@@ -6319,9 +6297,14 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName)
 
 	FileName outputFile(sfName);
 	ostringstream path;
-	
-	const vector<string> fullPath( split(outputFile.fullname(), ".wav") );
-	path << fullPath.at(0);
+
+	#ifdef MARSYAS_WIN32
+		progName = progName.substr(0, progName.rfind('\\'));
+		path << progName << "\\" << outputFile.nameNoExt();
+	#else
+		progName = progName.substr(0, progName.rfind('/'));
+		path << progName << "/" << outputFile.nameNoExt();
+	#endif
 	
 	beattracker->updctrl("BeatTimesSink/sink/mrs_string/destFileName", path.str());
 	//beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "medianTempo");
@@ -6570,7 +6553,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "midiout")
 		toy_with_midiout();
 	else if (toy_withName == "beats")
-		toy_with_beats(fname0,fname1);
+		toy_with_beats(fname0, fname1, progName);
 
 	else 
 	{

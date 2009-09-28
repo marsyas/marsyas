@@ -111,12 +111,15 @@ Resulting soundExample.output will be saved in the same directory of the onsets 
 
 
 ------------- MIREX 2009 Audio Beat Tracking Tasks ---------------------
-(use REVISION_NUMBER: 3708)
+(use REVISION_NUMBER: 3711)
 
 This implementation contains two distinct versions, differentiated by its functional heuristics.
-The application outputs two text files, in the same directory as this executable: one with the tempo measure (median IBI, 
-in BPMs) - input_medianTempo.txt; and other with the beat times, in seconds - input.txt.
+The application outputs two text files: one with the tempo measure (median IBI, 
+in BPMs) - XXX_medianTempo.txt; and other with the beat times, in seconds - XXX.txt.
 For running each of them just use the following commands:
 
-1-> ./ibt -s "correlation" input.wav
-2-> ./ibt -s "regular" input.wav
+1-> ./ibt -s "correlation" input.wav outputDir/output.txt
+2-> ./ibt -s "regular" input.wav outputDir/output.txt
+
+NOTE: If no ouput directory is assigned, the executable dir and the audio filename will be assumed.
+If only the output directory is assigned, the audio filename will be assumed.

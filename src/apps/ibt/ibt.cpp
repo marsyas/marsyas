@@ -47,16 +47,16 @@ using namespace Marsyas;
 #define WINSIZE 2048 //2048
 #define HOPSIZE 512 //512
 
-#define AUDIO 0
-#define AUDIO_FILE 1
-
 CommandLineOptions cmd_options;
 
 mrs_string score_function;
 mrs_real induction_time;
+mrs_string execPath;
 mrs_natural helpopt;
 mrs_natural usageopt;
 mrs_natural verboseopt;
+mrs_natural audioopt;
+mrs_natural audiofileopt;
 
 void 
 initOptions()
@@ -64,6 +64,8 @@ initOptions()
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addBoolOption("verbose", "v", false);
+	cmd_options.addBoolOption("audio", "a", false);
+	cmd_options.addBoolOption("audiofile", "f", false);
 	cmd_options.addStringOption("score_function", "s", "regular");
 }
 
@@ -73,30 +75,13 @@ loadOptions()
 	helpopt = cmd_options.getBoolOption("help");
 	usageopt = cmd_options.getBoolOption("usage");
 	verboseopt = cmd_options.getBoolOption("verbose");
+	audioopt = cmd_options.getBoolOption("audio");
+	audiofileopt = cmd_options.getBoolOption("audiofile");
 	score_function = cmd_options.getStringOption("score_function");
 }
 
-inline vector<string> split( const string& s, const string& f ) {
-    vector<string> temp;
-    if ( f.empty() ) {
-        temp.push_back( s );
-        return temp;
-    }
-    typedef string::const_iterator iter;
-    const iter::difference_type f_size( distance( f.begin(), f.end() ) );
-    iter i( s.begin() );
-    for ( iter pos; ( pos = search( i , s.end(), f.begin(), f.end() ) ) != s.end(); ) {
-        temp.push_back( string( i, pos ) );
-        advance( pos, f_size );
-        i = pos;
-    }
-    temp.push_back( string( i, s.end() ) );
-    return temp;
-}
-
-
 void 
-ibt_regular(mrs_string sfName)
+ibt_regular(mrs_string sfName, mrs_string outputTxt)
 {
 	MarSystemManager mng;
 
@@ -173,7 +158,7 @@ ibt_regular(mrs_string sfName)
 	MarSystem* IBTsystem = mng.create("Series", "IBTsystem");
 		IBTsystem->addMarSystem(beatmix);
 		IBTsystem->addMarSystem(mng.create("AudioSink", "output"));
-		if(AUDIO_FILE)
+		if(audiofileopt)
 			IBTsystem->addMarSystem(mng.create("SoundFileSink", "fdest"));
 
 
@@ -345,9 +330,30 @@ ibt_regular(mrs_string sfName)
 
 	FileName outputFile(sfName);
 	ostringstream path;
-	
-	const vector<string> fullPath( split(outputFile.fullname(), ".wav") );
-	path << fullPath.at(0);
+
+	#ifdef MARSYAS_WIN32
+		path << execPath << "\\";
+	#else
+		path << execPath << "/";
+	#endif
+
+	//if no outputTxt dir defined -> exec dir is assumed:
+	if(strcmp(outputTxt.c_str(), "") == 0)
+		path << outputFile.nameNoExt();
+	else 
+	{
+		path.str("");
+		mrs_natural loc;
+		loc = outputTxt.rfind(".txt", outputTxt.length()-1);
+		
+		if(loc == -1) //if only output dir defined -> append filename:
+			path << outputTxt << outputFile.nameNoExt();
+		else
+		{
+			outputTxt = outputTxt.substr(0, loc);
+			path << outputTxt;
+		}
+	}
 
 	beattracker->updctrl("BeatTimesSink/sink/mrs_string/destFileName", path.str());
 	//beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "medianTempo");
@@ -368,9 +374,12 @@ ibt_regular(mrs_string sfName)
  	IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/dTime", WINSIZE/4/fsSrc);
 
 	//for saving file with audio+clicks (on beats):
-	if(AUDIO_FILE)
+	if(audiofileopt)
+	{
 		IBTsystem->updctrl("SoundFileSink/fdest/mrs_string/filename", path.str() + "_beats.wav");
-	
+		cout << "Audio File with Beats Saved: " << path.str() << "_beats.wav" << endl;
+	}
+
 	//MATLAB Engine inits
 	//used for autocorrelation.m
 	mrs_natural winSize = WINSIZE;
@@ -401,6 +410,7 @@ ibt_regular(mrs_string sfName)
 	inputSize = (inputSize / HOPSIZE) + inductionTickCount; //inputSize in ticks
 	
 	//while(IBTsystem->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+	cout << "Induction........";
 	while(frameCount <= inputSize)
 	{	
 		IBTsystem->tick();
@@ -412,18 +422,24 @@ ibt_regular(mrs_string sfName)
 			//Restart reading audio file
 			audioflow->updctrl("SoundFileSource/src/mrs_natural/pos", HOPSIZE);
 			//for playing audio (with clicks on beats):
-			if(AUDIO)
-				IBTsystem->updctrl("AudioSink/output/mrs_bool/initAudio", true);
+			cout << "done" << endl;
+			cout << "Beat Tracking........" << endl;
 
-			//cout << "Finnished Induction!" << endl;
+			if(audioopt)
+			{
+				IBTsystem->updctrl("AudioSink/output/mrs_bool/initAudio", true);
+				cout << "Playing Audio with beat taps........" << endl;
+			}
 		}
 		//Display percentage of processing complete...
 		//cout << (mrs_natural) frameCount*100/inputSize << "%" << endl;
 	}
+
+	cout << "Finnish!" << endl;
 }
 
 void
-ibt_average(mrs_string sfName, mrs_string mode)
+ibt_average(mrs_string sfName, mrs_string mode, mrs_string outputTxt)
 {
 	MarSystemManager mng;
 
@@ -500,7 +516,7 @@ ibt_average(mrs_string sfName, mrs_string mode)
 	MarSystem* IBTsystem = mng.create("Series", "IBTsystem");
 		IBTsystem->addMarSystem(beatmix);
 		IBTsystem->addMarSystem(mng.create("AudioSink", "output"));
-		if(AUDIO_FILE)
+		if(audiofileopt)
 			IBTsystem->addMarSystem(mng.create("SoundFileSink", "fdest"));
 
 
@@ -672,12 +688,34 @@ ibt_average(mrs_string sfName, mrs_string mode)
 	
 	FileName outputFile(sfName);
 	ostringstream path;
-	
-	const vector<string> fullPath( split(outputFile.fullname(), ".wav") );
-	path << fullPath.at(0);
+
+	#ifdef MARSYAS_WIN32
+		path << execPath << "\\";
+	#else
+		path << execPath << "/";
+	#endif
+
+	//if no outputTxt dir defined -> exec dir is assumed:
+	if(strcmp(outputTxt.c_str(), "") == 0)
+		path << outputFile.nameNoExt();
+	else 
+	{
+		path.str("");
+		mrs_natural loc;
+		loc = outputTxt.rfind(".txt", outputTxt.length()-1);
+		
+		if(loc == -1) //if only output dir defined -> append filename:
+			path << outputTxt << outputFile.nameNoExt();
+		else
+		{
+			outputTxt = outputTxt.substr(0, loc);
+			path << outputTxt;
+		}
+	}
 
 	beattracker->updctrl("BeatTimesSink/sink/mrs_string/destFileName", path.str());
 	//beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "medianTempo");
+	//beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "beatTimes");
 	beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "all");
 
 	/*
@@ -695,8 +733,11 @@ ibt_average(mrs_string sfName, mrs_string mode)
  	IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/dTime", WINSIZE/4/fsSrc);
 
 	//for saving file with audio+clicks (on beats):
-	if(AUDIO_FILE)
+	if(audiofileopt)
+	{
 		IBTsystem->updctrl("SoundFileSink/fdest/mrs_string/filename", path.str() + "_beats.wav");
+		cout << "Audio File with Beats Saved: " << path.str() << "_beats.wav" << endl;
+	}
 
 	//MATLAB Engine inits
 	//used for autocorrelation.m
@@ -726,7 +767,7 @@ ibt_average(mrs_string sfName, mrs_string mode)
 	mrs_natural frameCount = 0;
 	inputSize = (inputSize / HOPSIZE) + inductionTickCount; //inputSize in ticks
 	
-	//while(IBTsystem->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+	cout << "Induction........";
 	while(frameCount <= inputSize)
 	{	
 		IBTsystem->tick();
@@ -738,63 +779,81 @@ ibt_average(mrs_string sfName, mrs_string mode)
 			//Restart reading audio file
 			audioflow->updctrl("SoundFileSource/src/mrs_natural/pos", HOPSIZE);
 			//for playing audio (with clicks on beats):
-			if(AUDIO)
+			cout << "done" << endl;
+			cout << "Beat Tracking........" << endl;
+
+			if(audioopt)
+			{
 				IBTsystem->updctrl("AudioSink/output/mrs_bool/initAudio", true);
-			//cout << "Finnished Induction!" << endl;
+				cout << "Playing Audio with beat taps........" << endl;
+			}
 		}
 		//Display percentage of processing complete...
 		//cout << (mrs_natural) frameCount*100/inputSize << "%" << endl;
 	}
+
+	cout << "Finnish!" << endl;
 }
 
 int
 main(int argc, const char **argv)
 {
-	
-  MRSDIAG("SF+ACF.cpp - Main");
+	MRSDIAG("SF+ACF.cpp - Main");
 
-  if (argc == 1)
-    {
-//      printUsage(progName);
-      exit(1);
-    }
+	if (argc == 1)
+	{
+	//      printUsage(progName);
+	  exit(1);
+	}
 
-  initOptions(); //initialize app options
-  cmd_options.readOptions(argc,argv);
-  loadOptions(); //load app options from command line
+	initOptions(); //initialize app options
+	cmd_options.readOptions(argc,argv);
+	loadOptions(); //load app options from command line
 
-  /* // print help or usage
-  if (helpopt) 
-    printHelp(progName);
+	/* // print help or usage
+	if (helpopt) 
+	printHelp(progName);
 
-  if (usageopt)
-    printUsage(progName);
-*/
+	if (usageopt)
+	printUsage(progName);
+	*/
+	execPath = string(argv[0]);
+	#ifdef MARSYAS_WIN32
+		execPath = execPath.substr(0, execPath.rfind('\\'));
+	#else 
+		execPath = execPath.substr(0, execPath.rfind('/'));
+	#endif
 
 	vector<string> soundfiles = cmd_options.getRemaining();
-	mrs_string sfName = soundfiles[0];
+	mrs_string sfName = "";
+	mrs_string outputTxt = "";
+
+	if (soundfiles.size() > 0)
+	  sfName = soundfiles[0];
+	if (soundfiles.size() > 1)  
+	  outputTxt = soundfiles[1];
 
 	induction_time = INDUCTION_TIME;
 	cout << "SoundFile: " << sfName << "\nInductionTime: " << induction_time << "s\nScoreFunction: " << 
-		score_function << endl;
+	  score_function << endl;
 
 	if(strcmp(score_function.c_str(), "avgCorr") == 0)
 	{
-		score_function = "correlation";
-		ibt_average(sfName, "avgCorr");
+	  score_function = "correlation";
+	  ibt_average(sfName, "avgCorr", outputTxt);
 	}
 	else if(strcmp(score_function.c_str(), "avgRegular") == 0)
 	{
-		score_function = "regular";
-		ibt_average(sfName, "avgRegular");
+	  score_function = "regular";
+	  ibt_average(sfName, "avgRegular", outputTxt);
 	}
 	else if(strcmp(score_function.c_str(), "avgSquareCorr") == 0)
 	{
-		score_function = "squareCorr";
-		ibt_average(sfName, "avgSquareCorr");
+	  score_function = "squareCorr";
+	  ibt_average(sfName, "avgSquareCorr", outputTxt);
 	}
 	else
-		ibt_regular(sfName);
+	  ibt_regular(sfName, outputTxt);
 
 	return 0;
 }

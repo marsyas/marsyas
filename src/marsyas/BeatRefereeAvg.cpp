@@ -28,8 +28,6 @@ using namespace Marsyas;
 #define INNER 3.0
 #define OUTTER 4.0
 
-#define AVG_FACTOR 1 //(1)
-
 BeatRefereeAvg::BeatRefereeAvg(string name):MarSystem("BeatRefereeAvg", name)
 {
 	addControls();
@@ -59,6 +57,7 @@ BeatRefereeAvg::BeatRefereeAvg(const BeatRefereeAvg& a) : MarSystem(a)
 	statsPhases_ = a.statsPhases_;
 	statsAgentsLifeCycle_ = a.statsAgentsLifeCycle_;
 	inductionFinnished_ = a.inductionFinnished_;
+	initPeriod_ = a.initPeriod_;
 
 	ctrl_mutedAgents_ = getctrl("mrs_realvec/mutedAgents");
 	ctrl_inductionEnabler_ = getctrl("mrs_realvec/inductionEnabler");
@@ -72,8 +71,8 @@ BeatRefereeAvg::BeatRefereeAvg(const BeatRefereeAvg& a) : MarSystem(a)
 	ctrl_agentControl_ = getctrl("mrs_realvec/agentControl");
 	ctrl_beatDetected_ = getctrl("mrs_real/beatDetected");
 	ctrl_tickCount_ = getctrl("mrs_natural/tickCount");
-	ctrl_obsoleteFactor_ = getctrl("mrs_natural/obsoleteFactor");
-	ctrl_childFactor_ = getctrl("mrs_natural/childFactor");
+	ctrl_obsoleteFactor_ = getctrl("mrs_real/obsoleteFactor");
+	ctrl_childFactor_ = getctrl("mrs_real/childFactor");
 	ctrl_bestFactor_ = getctrl("mrs_real/bestFactor");
 	ctrl_eqPhase_ = getctrl("mrs_natural/eqPhase");
 	ctrl_eqPeriod_ = getctrl("mrs_natural/eqPeriod");
@@ -102,17 +101,17 @@ BeatRefereeAvg::addControls()
 	setctrlState("mrs_natural/hopSize", true);
 	addctrl("mrs_real/srcFs", 1.0, ctrl_srcFs_);
 	setctrlState("mrs_real/srcFs", true);
-	addctrl("mrs_natural/maxTempo", 1, ctrl_maxTempo_);
+	addctrl("mrs_natural/maxTempo", 250, ctrl_maxTempo_);
 	setctrlState("mrs_natural/maxTempo", true);
-	addctrl("mrs_natural/minTempo", 1, ctrl_minTempo_);
+	addctrl("mrs_natural/minTempo", 50, ctrl_minTempo_);
 	setctrlState("mrs_natural/minTempo", true);
 	addctrl("mrs_realvec/agentControl", realvec(), ctrl_agentControl_);
 	addctrl("mrs_real/beatDetected", 0.0, ctrl_beatDetected_);
 	addctrl("mrs_natural/tickCount", 0, ctrl_tickCount_);
-	addctrl("mrs_natural/obsoleteFactor", 10, ctrl_obsoleteFactor_);
-	setctrlState("mrs_natural/obsoleteFactor", true);
-	addctrl("mrs_natural/childFactor", 2, ctrl_childFactor_);
-	setctrlState("mrs_natural/childFactor", true);
+	addctrl("mrs_real/obsoleteFactor", 1.5, ctrl_obsoleteFactor_);
+	setctrlState("mrs_real/obsoleteFactor", true);
+	addctrl("mrs_real/childFactor", 0.05, ctrl_childFactor_);
+	setctrlState("mrs_real/childFactor", true);
 	addctrl("mrs_real/bestFactor", 1.0, ctrl_bestFactor_);
 	setctrlState("mrs_real/bestFactor", true);
 	addctrl("mrs_natural/eqPhase", 2, ctrl_eqPhase_);
@@ -130,8 +129,8 @@ BeatRefereeAvg::myUpdate(MarControlPtr sender)
 	ctrl_onObservations_->setValue(1, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
-	obsoleteFactor_ = ctrl_obsoleteFactor_->to<mrs_natural>();
-	childFactor_ = ctrl_childFactor_->to<mrs_natural>();
+	obsoleteFactor_ = ctrl_obsoleteFactor_->to<mrs_real>();
+	childFactor_ = ctrl_childFactor_->to<mrs_real>();
 	bestFactor_ = ctrl_bestFactor_->to<mrs_real>();
 	eqPhase_ = ctrl_eqPhase_->to<mrs_natural>();
 	eqPeriod_ = ctrl_eqPeriod_->to<mrs_natural>();
@@ -149,7 +148,8 @@ BeatRefereeAvg::myUpdate(MarControlPtr sender)
 	lastPeriods_.create(nrAgents_); //1index for each agent
 	lastPhases_.create(nrAgents_); //1index for each agent
 	mutedAgents_.create(1,nrAgents_);//1index for each agent
-	beatCounter_.create(nrAgents_);
+	beatCounter_.create(nrAgents_);//1index for each agent
+	initPeriod_.create(nrAgents_);//1index for each agent
 
 	//Agent control indexed matrix
 	//Each line(observation) accounts for an agent
@@ -165,6 +165,7 @@ BeatRefereeAvg::myUpdate(MarControlPtr sender)
 		lastPhases_(i) = 0.0;
 		mutedAgents_(0, i) = 1.0;
 		beatCounter_(i) = 1.0;
+		initPeriod_(i) = 0.0;
 	}
 
 	inductionEnabler_ = ctrl_inductionEnabler_->to<mrs_realvec>();
@@ -178,24 +179,6 @@ BeatRefereeAvg::myUpdate(MarControlPtr sender)
 	minPeriod_ = (mrs_natural) floor((mrs_real) 60 / (maxTempo * hopSize) * srcFs);
 	maxPeriod_ = (mrs_natural) ceil((mrs_real) 60 / (minTempo * hopSize) * srcFs);
 }
-/*
-//Routine for calculating the first beat time of the first created agents (after induction):
-mrs_natural
-BeatRefereeAvg::calculateFirstBeat(mrs_natural initPeriod, mrs_natural initPhase)
-{
-	mrs_natural count = (mrs_natural) ceil((inductionTime_ - initPhase) /  (mrs_real)initPeriod);
-	mrs_natural firstBeat = (initPhase + initPeriod * count);
-	
-	//Due to the compensation bellow we must grant that nextBeat is bigger than inductionTime_
-	//If it is equal than we must postpone the nextBeat to a period after
-	if(firstBeat == inductionTime_)
-	{
-		firstBeat += initPeriod;
-	}
-
-	return firstBeat;
-}
-*/
 
 mrs_natural
 BeatRefereeAvg::calculateFirstBeat(mrs_natural initPeriod, mrs_natural initPhase)
@@ -229,24 +212,10 @@ BeatRefereeAvg::getWorstAgent()
 	
 	for(mrs_natural a = firstAlive; a < nrAgents_; a++)
 	{
-		/*
-		if(score_(a) / beatCounter_(a) < lowestScore)
+		if((bestScore_ >= 0 && score_(a) / beatCounter_(a) >= bestFactor_ * bestScore_) || 
+			(bestScore_ < 0 && score_(a) / beatCounter_(a) >= bestScore_ / bestFactor_))
 		{
 			lowestScore = score_(a) / beatCounter_(a);
-			lowestIndex = a;
-		}
-		*/
-
-		if(score_(a) >= 0 && (score_(a)*AVG_FACTOR) / beatCounter_(a) < lowestScore)
-		{
-			lowestScore = (score_(a)*AVG_FACTOR) / beatCounter_(a);
-			lowestIndex = a;
-		}	
-		else if (score_(a) < 0 && (score_(a)/AVG_FACTOR) * beatCounter_(a) < lowestScore)			
-		//if((bestScore_ >= 0 && score_(o) / beatCounter_(o) >= bestFactor_ * bestScore_) || 
-		//	(bestScore_ < 0 && score_(o) / beatCounter_(o) >= bestScore_ / bestFactor_))
-		{
-			lowestScore = (score_(a)/AVG_FACTOR) * beatCounter_(a);
 			lowestIndex = a;
 		}
 	}
@@ -256,20 +225,45 @@ BeatRefereeAvg::getWorstAgent()
 }
 
 mrs_realvec 
-BeatRefereeAvg::calculateNewHypothesis(mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error)
+BeatRefereeAvg::calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error)
 {
 	mrs_natural nextBeat;
-	mrs_natural newPeriod = (mrs_natural) (oldPeriod + (oldPeriod + error)) / 2;
+	mrs_real correctionMax = 8.0; //2*innerWindow
+	mrs_real correctionMin = 1.0;
+	mrs_real correction = 4.0;
+	
+	if(historyCount_(agentIndex) < correctionMax && historyCount_(agentIndex) > correctionMin)
+		correction = historyCount_(agentIndex);
+	else 
+	{
+		if(historyCount_(agentIndex) > correctionMax)
+			correction = correctionMax;
 		
-	//To avoid too small or big periods:
-	if(newPeriod > minPeriod_ && newPeriod < maxPeriod_)
-		nextBeat = prevBeat + newPeriod + error;
+		if(historyCount_(agentIndex) < correctionMin)
+			correction = correctionMin;
+	}
 
+	//cout << "Agent " << agentIndex << " Correction: " << correction << endl;
+	//cout << "Agent " << agentIndex << " Correction: " << correction << endl;
+
+	mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/correction)+0.5));
+
+	//To avoid too small or big periods:
+	if(newPeriod > minPeriod_ && newPeriod < maxPeriod_ && 
+		abs(initPeriod_(agentIndex) - newPeriod) < 0.1*initPeriod_(agentIndex))
+	{
+		nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/correction)+0.5));
+			//((error/2.0 > 0.5) ? ceil(error/2.0) : floor(error/2.0));
+	}
 	else 
 	{
 		nextBeat = prevBeat + oldPeriod;
 		newPeriod = oldPeriod;
 	}
+
+	//cout << "Agent " << agentIndex << "; oldPeriod: " << oldPeriod << "; NewPeriod: " << newPeriod <<
+	//	"; Error: " << error << "; Correction: " << correction << endl;
+	//cout << "Agent " << agentIndex << " History: " << historyCount_(agentIndex) << endl;
 
 	mrs_realvec newHypothesis(2);
 	newHypothesis(0) = newPeriod;
@@ -278,13 +272,64 @@ BeatRefereeAvg::calculateNewHypothesis(mrs_natural oldPeriod, mrs_natural prevBe
 	return newHypothesis;
 }
 
-//Routine for creating new agent from existent one
-void
-BeatRefereeAvg::createChild(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error, 
-						mrs_real newScore, mrs_real beatCount)
+mrs_natural
+BeatRefereeAvg::calcNewPeriod(mrs_natural oldPeriod, mrs_natural error, mrs_real beta)
 {
-	mrs_realvec newHypothesis = calculateNewHypothesis(oldPeriod, prevBeat, error);
-	createNewAgent((mrs_natural) newHypothesis(0), (mrs_natural) newHypothesis(1), newScore, beatCount);
+	//cout << "error: " << error << "; beta: " << beta << endl;
+	mrs_natural newPeriod = oldPeriod +  (mrs_natural) ((error * beta)+0.5);
+	if(newPeriod < minPeriod_ || newPeriod > maxPeriod_)
+		newPeriod = oldPeriod;
+
+	//cout << "oldPeriod: " << oldPeriod << "; newPeriod: " << newPeriod << "; Error: " << error << 
+	//	"; Beta: " << beta << endl;
+
+	return newPeriod;
+}
+
+mrs_realvec 
+BeatRefereeAvg::calcChildrenHypothesis(mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error)
+{
+	mrs_natural nextBeat;
+	mrs_natural newPeriod;
+	mrs_realvec newHypotheses(6); //for 3 children
+	mrs_real beta;
+
+	newPeriod = oldPeriod;
+	nextBeat = prevBeat + newPeriod + error;	
+	newHypotheses(0) = newPeriod;
+	newHypotheses(1) = nextBeat;
+	
+	beta = 0.5;
+	newPeriod = calcNewPeriod(oldPeriod, error, beta);
+	nextBeat = prevBeat + newPeriod + error;
+	newHypotheses(2) = newPeriod;
+	newHypotheses(3) = nextBeat;
+
+	//cout << "oldPeriod: " << oldPeriod << "; newPeriod: " << newPeriod << "; Error: " << error << 
+	//	"; prevBeat: " << prevBeat << "; nextBeat: " << nextBeat << endl;
+
+	beta = 0.125; //0.125
+	newPeriod = calcNewPeriod(oldPeriod, error, beta);
+	nextBeat = prevBeat + newPeriod + error;
+	newHypotheses(4) = newPeriod;
+	newHypotheses(5) = nextBeat;
+
+	return newHypotheses;
+}
+
+//Routine for creating new agents from existent one
+void
+BeatRefereeAvg::createChildren(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error, 
+						mrs_real agentScore, mrs_real beatCount)
+{
+	mrs_real deltaS = abs(childFactor_ * agentScore);
+	mrs_real newScore = agentScore - deltaS;
+
+	mrs_realvec newHypotheses = calcChildrenHypothesis(oldPeriod, prevBeat, error);
+	
+	//createNewAgent((mrs_natural) newHypotheses(0), (mrs_natural) newHypotheses(1), newScore, beatCount);
+	//createNewAgent((mrs_natural) newHypotheses(2), (mrs_natural) newHypotheses(3), newScore, beatCount);
+	createNewAgent((mrs_natural) newHypotheses(4), (mrs_natural) newHypotheses(5),  newScore, beatCount);
 
 	//Display Created BeatAgent:
 /*	cout << "NEW AGENT(" << t_ <<") (reqBy:" << agentIndex << ") -> PrevBeat: " << prevBeat << " Period: " 
@@ -299,7 +344,7 @@ void
 BeatRefereeAvg::updateAgentHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, 
 								   mrs_natural prevBeat, mrs_natural error)
 {
-	mrs_realvec newHypothesis = calculateNewHypothesis(oldPeriod, prevBeat, error);
+	mrs_realvec newHypothesis = calculateNewHypothesis(agentIndex, oldPeriod, prevBeat, error);
 	setNewHypothesis(agentIndex, (mrs_natural) newHypothesis(0), (mrs_natural) newHypothesis(1));
 
 	//Display Updated BeatAgent:
@@ -339,7 +384,7 @@ BeatRefereeAvg::grantPoolSpace()
 	if(!isAvailable)
 	{
 		mrs_natural agentInd2Kill = getWorstAgent();
-		killAgent(agentInd2Kill);
+		killAgent(agentInd2Kill, "Pool");
 	}
 }
 
@@ -368,6 +413,7 @@ BeatRefereeAvg::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, mrs
 			//Update score:
 			score_(a) =  newScore;
 			beatCounter_(a) = beatCount;
+			initPeriod_(a) = newPeriod; //save agent's initial IBI
 
 			//Update Agents' Periods and Phases (for equality checking)
 			lastPeriods_(a) = newPeriod; //(Periods in frames)
@@ -386,18 +432,18 @@ BeatRefereeAvg::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, mrs
 
 //Generic routine for killing agents:
 void
-BeatRefereeAvg::killAgent(mrs_natural agentIndex)
+BeatRefereeAvg::killAgent(mrs_natural agentIndex, mrs_string motif)
 {	
 	//Never kill a best agent (for increasing inertia) -> a best agent must live until being replaced by a better one
 	if(agentIndex != bestAgentIndex_)
 	{
+		//Diplay killed BeatAgent:
+		//cout << "KILLED AGENT " << agentIndex << " (" << motif << ") With Score: " << score_(agentIndex) << " / " << bestScore_ << endl;
+
 		mutedAgents_(agentIndex) = 1.0;
 		updctrl(ctrl_mutedAgents_, mutedAgents_);
 		score_(agentIndex) = 0.0;
 		beatCounter_(agentIndex) = 0.0;
-
-		//Diplay killed BeatAgent:
-		//cout << "KILLED AGENT " << agentIndex << endl;
 
 		statsAgentsLifeCycle_(agentIndex, t_) = -1;
 		lastPeriods_(agentIndex) = 0; //(Periods in frames)
@@ -412,18 +458,11 @@ BeatRefereeAvg::calcAbsoluteBestScore()
 		{
 			//Only consider alive agents:
 			if(!mutedAgents_(o))
-			{
-				//if (score_(o) / beatCounter_(o) >= bestScore_)
-				if(score_(o) >= 0 && (score_(o)*AVG_FACTOR) / beatCounter_(o) > bestScore_)
+			{		
+				if((bestScore_ >= 0 && score_(o) / beatCounter_(o) >= bestFactor_ * bestScore_) || 
+					(bestScore_ < 0 && score_(o) / beatCounter_(o) >= bestScore_ / bestFactor_))
 				{
-					bestScore_ = (score_(o)*AVG_FACTOR) / beatCounter_(o);
-					bestAgentIndex_ = o;
-				}	
-				else if (score_(o) < 0 && (score_(o)/AVG_FACTOR) * beatCounter_(o) > bestScore_)			
-				//if((bestScore_ >= 0 && score_(o) / beatCounter_(o) >= bestFactor_ * bestScore_) || 
-				//	(bestScore_ < 0 && score_(o) / beatCounter_(o) >= bestScore_ / bestFactor_))
-				{
-					bestScore_ = (score_(o)/AVG_FACTOR) * beatCounter_(o);
+					bestScore_ = score_(o) / beatCounter_(o);
 					bestAgentIndex_ = o;
 				}
 			}
@@ -557,45 +596,30 @@ BeatRefereeAvg::myProcess(realvec& in, realvec& out)
 				//Update Agents' Score
 				score_(o) += agentDScore;
 
-				//If the bestAgent drops or increases its score the BestScore has to drop correspondingly
-				if(score_(bestAgentIndex_) >= 0 && (score_(bestAgentIndex_)*AVG_FACTOR) / beatCounter_(bestAgentIndex_) != bestScore_)					
-				//if((score_(bestAgentIndex_) / beatCounter_(bestAgentIndex_) < bestScore_) || 
-				//	(score_(bestAgentIndex_) / beatCounter_(bestAgentIndex_) > bestScore_))
+				//If the bestAgent drops or increases its score the BestScore has to drop correspondingly	
+				if((score_(bestAgentIndex_) / beatCounter_(bestAgentIndex_) < bestScore_) || 
+					(score_(bestAgentIndex_) / beatCounter_(bestAgentIndex_) > bestScore_))
 				{
-					bestScore_ = (score_(bestAgentIndex_)*AVG_FACTOR) / beatCounter_(bestAgentIndex_);
+					bestScore_ = score_(bestAgentIndex_) / beatCounter_(bestAgentIndex_);
 					calcAbsoluteBestScore();
 				}
-				else if(score_(bestAgentIndex_) < 0 && (score_(bestAgentIndex_)/AVG_FACTOR) * beatCounter_(bestAgentIndex_) != bestScore_)
+			
+				//Updating bestScore:		
+				if((bestScore_ >= 0 && score_(o) / beatCounter_(o) >= bestScore_ * bestFactor_) || 
+					(bestScore_ < 0 && score_(o) / beatCounter_(o) >= bestScore_ / bestFactor_))
 				{
-					bestScore_ = (score_(bestAgentIndex_)/AVG_FACTOR) * beatCounter_(bestAgentIndex_);
-					calcAbsoluteBestScore();
-				}
-
-				//Updating bestScore:
-				if(score_(o) >= 0 && (score_(o)*AVG_FACTOR) / beatCounter_(o) > bestScore_)
-				{
-					bestScore_ = (score_(o)*AVG_FACTOR) / beatCounter_(o);
-					bestAgentIndex_ = o;
-				}	
-				else if (score_(o) < 0 && (score_(o)/AVG_FACTOR) * beatCounter_(o) > bestScore_)			
-				//if((bestScore_ >= 0 && score_(o) / beatCounter_(o) >= bestFactor_ * bestScore_) || 
-				//	(bestScore_ < 0 && score_(o) / beatCounter_(o) >= bestScore_ / bestFactor_))
-				{
-					bestScore_ = (score_(o)/AVG_FACTOR) * beatCounter_(o);
+					bestScore_ = score_(o) / beatCounter_(o);
 					bestAgentIndex_ = o;
 				}
 
 				//Kill Agent if its score is bellow minimum
-				//(minimumScore = bestScore_/10) [! -> might change-not so relevant to performance!]
-				if ((score_(o) >= 0 && (score_(o)*AVG_FACTOR) / beatCounter_(o) < bestScore_ && 
-					abs(bestScore_ - (score_(o)*AVG_FACTOR) / beatCounter_(o)) > abs(bestScore_ * obsoleteFactor_)) ||
-					(score_(o) < 0 && (score_(o)/AVG_FACTOR) * beatCounter_(o) < bestScore_ && 
-					abs(bestScore_ - (score_(o)/AVG_FACTOR) * beatCounter_(o)) > abs(bestScore_ * obsoleteFactor_)))
+				if (score_(o) / beatCounter_(o) < bestScore_ && abs(bestScore_ - (score_(o) / beatCounter_(o))) > 
+					max(abs(bestScore_ * obsoleteFactor_), 10000.0))
 				{
-					killAgent(o);
+					killAgent(o, "Obsolete");
 				}
 				
-				//statsAgentsScore_(o, t_) = score_(o) / beatCounter_(o);
+				statsAgentsScore_(o, t_) = score_(o) / beatCounter_(o);
 
 				//Display Scores from BeatAgents:
 			/*	cout << "SCORES(" << t_ << ") (reqBy:" << o << "): " << endl;
@@ -641,8 +665,7 @@ BeatRefereeAvg::myProcess(realvec& in, realvec& out)
 					//New agent must look for a new beat on the next (updated) period
 					//newPeriod = (oldPeriod + (oldPeriod +/- erro))/2
 					//newPhase = prevBeat + newPeriod +/- error
-					mrs_real deltaS = abs(agentDScore) / childFactor_;
-					createChild(o, agentPeriod, agentPrevBeat, agentError, (score_(o)-deltaS), beatCounter_(o));
+					createChildren(o, agentPeriod, agentPrevBeat, agentError, score_(o), beatCounter_(o));
 
 					statsAgentsLifeCycle_(o, t_) = 2;
 				}
@@ -657,19 +680,17 @@ BeatRefereeAvg::myProcess(realvec& in, realvec& out)
 						if((abs(agentPeriod - lastPeriods_(oo)) < eqPeriod_) && (abs(agentPrevBeat - lastPhases_(oo) < eqPhase_)))
 						{
 							//From the two equal agents kill the one with lower score (if it isn't the current best agent)
-							//if(score_(o) / beatCounter_(o) >= score_(oo) / beatCounter_(oo))
-							if((score_(o) >= 0 && (score_(o)*AVG_FACTOR) / beatCounter_(o) >= (score_(oo)*AVG_FACTOR) / beatCounter_(oo)) ||
-								(score_(o) < 0 && (score_(o)/AVG_FACTOR) * beatCounter_(o) >= (score_(oo)/AVG_FACTOR) * beatCounter_(oo)))
+							if(score_(o) / beatCounter_(o) >= score_(oo) / beatCounter_(oo))
 							{
 								if(oo != bestAgentIndex_) 
 								{
 									//cout << "1-KILL Agent " << oo << " (" << score_(oo) << ") EQUAL TO Agent " << o << " (" << score_(o) << ")" << endl;
-									killAgent(oo);
+									killAgent(oo, "Equal");
 								}
 								else 
 								{
 									//cout << "2-KILL Agent " << o << " (" << score_(o) << ") EQUAL TO Agent " << oo << " (" << score_(oo) << ")" << endl;
-									killAgent(o);
+									killAgent(o, "Equal");
 									break; //in this case breaks because considered agent no longer exists.
 								}
 							}
@@ -678,12 +699,12 @@ BeatRefereeAvg::myProcess(realvec& in, realvec& out)
 								if(o != bestAgentIndex_) 
 								{
 									//cout << "3-KILL Agent " << o << " (" << score_(o) << ") EQUAL TO Agent " << oo << " (" << score_(oo) << ")" << endl;
-									killAgent(o);
+									killAgent(o, "Equal");
 									break; //in this case breaks because considered agent no longer exists.
 								}
 								else 
 								{
-									killAgent(oo);
+									killAgent(oo, "Equal");
 									//cout << "1-KILL Agent " << oo << " (" << score_(oo) << ") EQUAL TO Agent " << o << " (" << score_(o) << ")" << endl;
 								}
 							}
@@ -693,23 +714,22 @@ BeatRefereeAvg::myProcess(realvec& in, realvec& out)
 			}
 			
 			if(!mutedAgents_(o) && agentFlag == BEAT)
-			{
+			{		
 				//Increment beat counter of each agent
 				beatCounter_(o)++;
-
-				//Display Beats from BeatAgents:
-				//cout << "Agent " << o << "(" << t_ << ") -> AgentScore: " << score_(o) << " BestAgent: " 
-				//	<< bestAgentIndex_ << " BestScore: " << bestScore_ << " BeatCount: " << beatCounter_(o) << endl;
 				
 				//if best agent sends beat => outputs best beat
 				if(o == bestAgentIndex_)
-				{
-					//Display Outputted Beat:
-					//cout << "OUTPUT(" << t_ << ") -> Beat from Agent " << bestAgentIndex_ << endl;
-					
+				{		
 					//to avoid beats given by different agents distanced less then minPeriod frames
-					if(t_ - lastBeatTime_ >= minPeriod_)
+					if(t_ - lastBeatTime_ >= (minPeriod_-3))
 					{
+
+						//Display Beats from BeatAgents:
+						//cout << "OUTPUT(" << t_ << ")->Beat from Agent " << bestAgentIndex_ << 
+						//	" BestScore: " << bestScore_ << " (" << score_(bestAgentIndex_) / beatCounter_(bestAgentIndex_) << ")->" << 
+						//	(60.0 / (t_ - lastBeatTime_)) * (ctrl_srcFs_->to<mrs_real>() / ctrl_hopSize_->to<mrs_natural>()) << endl;
+						//cout << "BEST_AgentPeriod: " << lastPeriods_(bestAgentIndex_) << "(" << (t_ - lastBeatTime_) << ")" << endl
 						out.setval(1.0);
 						ctrl_beatDetected_->setValue(1.0);
 
@@ -718,8 +738,9 @@ BeatRefereeAvg::myProcess(realvec& in, realvec& out)
 						historyCount_(o)++;
 						historyBeatTimes_(o, outputCount_) = t_;
 						outputCount_ ++;
+
+						lastBeatTime_ = t_;
 					}
-					lastBeatTime_ = t_;
 				}
 			}
 		}

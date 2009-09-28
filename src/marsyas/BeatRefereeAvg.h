@@ -84,11 +84,12 @@ private:
 	mrs_natural bestAgentIndex_;
 	mrs_natural t_;
 	mrs_natural outputCount_;
-	mrs_natural obsoleteFactor_;
-	mrs_natural childFactor_;
+	mrs_real obsoleteFactor_;
+	mrs_real childFactor_;
 	mrs_real bestFactor_;
 	mrs_natural eqPhase_;
 	mrs_natural eqPeriod_;
+	mrs_realvec initPeriod_;
 
 	void myUpdate(MarControlPtr sender);
 
@@ -101,19 +102,19 @@ public:
   void myProcess(realvec& in, realvec& out);
   void updateAgentHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, 
 								   mrs_natural prevBeat, mrs_natural error);
-  void createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, 
-	  mrs_real newScore, mrs_real beatCount);
+  void createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, mrs_real newScore, mrs_real beatCount);
   void grantPoolSpace();
   mrs_natural getWorstAgent();
   void setNewHypothesis(mrs_natural agentIndex, mrs_natural newPeriod, mrs_natural nextBeat);
   mrs_natural calculateFirstBeat(mrs_natural initPeriod, mrs_natural initPhase);
-  void killAgent(mrs_natural agentIndex);
-  void createChild(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error, 
+  void killAgent(mrs_natural agentIndex, mrs_string motif);
+  void createChildren(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error, 
 						mrs_real newScore, mrs_real beatCount);
-  mrs_realvec calculateNewHypothesis(mrs_natural oldPeriod, 
-	  mrs_natural prevBeat, mrs_natural error);
+  mrs_realvec calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error);
   mrs_natural getFirstAliveAgent();
   void calcAbsoluteBestScore();
+  mrs_realvec calcChildrenHypothesis(mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error);
+  mrs_natural calcNewPeriod(mrs_natural oldPeriod, mrs_natural error, mrs_real beta);
 };
 
 }//namespace Marsyas
