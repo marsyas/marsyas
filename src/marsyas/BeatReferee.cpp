@@ -139,16 +139,16 @@ BeatReferee::myUpdate(MarControlPtr sender)
 	nrAgents_ = inObservations_;
 		
 	historyCount_.create(nrAgents_); //1index for each agent
-	historyBeatTimes_.create(nrAgents_,1000); //1index for each agent
-	statsPeriods_.create(nrAgents_,10000); //1index for each agent
-	statsPhases_.create(nrAgents_,10000); //1index for each agent
-	statsAgentsLifeCycle_.create(nrAgents_,10000);
-	statsAgentsScore_.create(nrAgents_,10000);
-	statsMuted_.create(nrAgents_, 10000);
+	//historyBeatTimes_.create(nrAgents_,1000); //1index for each agent
+	//statsPeriods_.create(nrAgents_,10000); //1index for each agent
+	//statsPhases_.create(nrAgents_,10000); //1index for each agent
+	//statsAgentsLifeCycle_.create(nrAgents_,10000);
+	//statsAgentsScore_.create(nrAgents_,10000);
+	//statsMuted_.create(nrAgents_, 10000);
 	score_.create(nrAgents_); //1index for each agent
 	lastPeriods_.create(nrAgents_); //1index for each agent
 	lastPhases_.create(nrAgents_); //1index for each agent
-	mutedAgents_.create(1,nrAgents_);//1index for each agent
+	mutedAgents_.create(nrAgents_);//1index for each agent
 	beatCounter_.create(nrAgents_);//1index for each agent
 	initPeriod_.create(nrAgents_);//1index for each agent
 
@@ -244,15 +244,15 @@ BeatReferee::calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPerio
 			correction = correctionMin;
 	}
 
-	//mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/correction)+0.5));
-	mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/2)+0.5));
+	mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/correction)+0.5));
+	//mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/8.0)+0.5));
 	
 	//To avoid too small or big periods, or too distanced from agent's initial period:
 	if(newPeriod > minPeriod_ && newPeriod < maxPeriod_ && 
 		abs(initPeriod_(agentIndex) - newPeriod) < 0.1*initPeriod_(agentIndex))
 	{
-		//nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/correction)+0.5));
-		nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/2)+0.5));
+		nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/correction)+0.5));
+		//nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/8.0)+0.5));
 	}
 	else 
 	{
@@ -326,8 +326,8 @@ BeatReferee::createChildren(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_n
 
 	mrs_realvec newHypotheses = calcChildrenHypothesis(oldPeriod, prevBeat, error);
 	
-	//createNewAgent((mrs_natural) newHypotheses(0), (mrs_natural) newHypotheses(1), newScore, beatCount);
-	//createNewAgent((mrs_natural) newHypotheses(2), (mrs_natural) newHypotheses(3), newScore, beatCount);
+	createNewAgent((mrs_natural) newHypotheses(0), (mrs_natural) newHypotheses(1), newScore, beatCount);
+	createNewAgent((mrs_natural) newHypotheses(2), (mrs_natural) newHypotheses(3), newScore, beatCount);
 	createNewAgent((mrs_natural) newHypotheses(4), (mrs_natural) newHypotheses(5),  newScore, beatCount);
 
 	//Display Created BeatAgent:
@@ -419,10 +419,10 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, mrs_re
 			
 			initPeriod_(a) = newPeriod; //save agent's initial IBI
 
-			statsPeriods_(a, t_) = newPeriod; 
-			statsPhases_(a, t_) = firstBeat;
+			//statsPeriods_(a, t_) = newPeriod; 
+			//statsPhases_(a, t_) = firstBeat;
 
-			statsAgentsLifeCycle_(a, t_) = 1.0;
+			//statsAgentsLifeCycle_(a, t_) = 1.0;
 			
 			break;
 		}
@@ -445,7 +445,7 @@ BeatReferee::killAgent(mrs_natural agentIndex, mrs_string motif)
 		beatCounter_(agentIndex) = 0.0;
 		historyCount_(agentIndex) = 1.0;
 
-		statsAgentsLifeCycle_(agentIndex, t_) = -1;
+		//statsAgentsLifeCycle_(agentIndex, t_) = -1;
 		lastPeriods_(agentIndex) = 0; //(Periods in frames)
 		lastPhases_(agentIndex) = 0; //(Phases in frames)
 	}
@@ -579,10 +579,10 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		{
 			agentFlag = in(o, 0);
 
-			statsPeriods_(o, t_) = lastPeriods_(o); 
-			statsPhases_(o, t_) = lastPhases_(o); 
-			statsAgentsScore_(o, t_) = score_(o);
-			statsMuted_(o, t_) = mutedAgents_(o);
+			//statsPeriods_(o, t_) = lastPeriods_(o); 
+			//statsPhases_(o, t_) = lastPhases_(o); 
+			//statsAgentsScore_(o, t_) = score_(o);
+			//statsMuted_(o, t_) = mutedAgents_(o);
 
 			//Only consider alive agents that send new evaluation:
 			//(Remind that each ouputed beat by the agents is only
@@ -597,8 +597,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				lastPeriods_(o) = agentPeriod; //(Periods in frames)
 				lastPhases_(o) = agentPrevBeat; //(Phases in frames)
 
-				statsPeriods_(o, t_) = agentPeriod; 
-				statsPhases_(o, t_) = agentPrevBeat; 
+				//statsPeriods_(o, t_) = agentPeriod; 
+				//statsPhases_(o, t_) = agentPrevBeat; 
 
 				//Update Agents' Score
 				score_(o) += agentDScore;
@@ -628,7 +628,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					killAgent(o, "Obsolete");
 				}
 				
-				statsAgentsScore_(o, t_) = score_(o);
+				//statsAgentsScore_(o, t_) = score_(o);
 
 			//Display Scores from BeatAgents:
 			/*	cout << "SCORES(" << t_ << ") (reqBy:" << o << "): " << endl;
@@ -671,7 +671,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					//(the agent that generates a new one keeps its original hypothesis);
 					//New agent must look for a new beat on the next (updated) period
 					createChildren(o, agentPeriod, agentPrevBeat, agentError, score_(o), beatCounter_(o));
-					statsAgentsLifeCycle_(o, t_) = 2;
+					//statsAgentsLifeCycle_(o, t_) = 2;
 				}
 				
 				//Checks if there are 2 equal agents
@@ -750,7 +750,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 						//Updates agent history, which accounts for the total number
 						//of the detected best (considered) beats of each agent:
 						historyCount_(o)++;
-						historyBeatTimes_(o, outputCount_) = t_;
+						//historyBeatTimes_(o, outputCount_) = t_;
 						outputCount_ ++;
 						lastBeatTime_ = t_;
 					}				

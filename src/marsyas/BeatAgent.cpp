@@ -100,7 +100,7 @@ BeatAgent::myUpdate(MarControlPtr sender)
 	ctrl_onObservations_->setValue(1, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 		
-	history_.create(1000,2);
+	//history_.create(1000,2);
 	lastBeatPoint_ = inSamples_-1;
 
 	myIndex_ = getChildIndex();
@@ -123,24 +123,24 @@ BeatAgent::calcDScoreCorrSquare(realvec& in)
 	for(mrs_natural t = lastBeatPoint_ - outterWinLft_; t < lastBeatPoint_ - innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += -1 * pow((fraction_),2) * period_ * in(t);
+		dScore += -1 * pow((fraction_),2) * in(t);
 	}
 
 	//innerTolerance:
 	for(mrs_natural t = lastBeatPoint_ - innerWin_; t <= lastBeatPoint_ + innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += pow((1 - fraction_),2) * period_ * in(t);
+		dScore += pow((1 - fraction_),2) * in(t);
 	}
 
 	//outterRight Tolerance:
 	for(mrs_natural t = (lastBeatPoint_ + innerWin_)+1; t <= lastBeatPoint_ - outterWinRgt_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += -1 * pow((fraction_),2) * period_ * in(t);
+		dScore += -1 * pow((fraction_),2) * in(t);
 	}
 
-	return dScore;
+	return dScore * period_;
 }
 
 mrs_real
@@ -152,24 +152,24 @@ BeatAgent::calcDScore(realvec& in)
 	for(mrs_natural t = lastBeatPoint_ - outterWinLft_; t < lastBeatPoint_ - innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += (-1 * fraction_) * period_ * in(t);
+		dScore += (-1 * fraction_) * in(t);
 	}
 
 	//innerTolerance:
 	for(mrs_natural t = lastBeatPoint_ - innerWin_; t <= lastBeatPoint_ + innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += (1 - fraction_) * period_ * in(t);
+		dScore += (1 - fraction_) * in(t);
 	}
 
 	//outterRight Tolerance:
 	for(mrs_natural t = (lastBeatPoint_ + innerWin_)+1; t <= lastBeatPoint_ - outterWinRgt_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += (-1 * fraction_) * period_ * in(t);
+		dScore += (-1 * fraction_) * in(t);
 	}
 
-	return dScore;
+	return dScore * period_ ;
 }
 
 mrs_natural
@@ -250,8 +250,8 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 
 		curBeatPointValue_ = in(curBeatPoint);
 
-		history_(beatCount_,0) = t_;
-		history_(beatCount_,1) = curBeatPointValue_;	
+		//history_(beatCount_,0) = t_;
+		//history_(beatCount_,1) = curBeatPointValue_;	
 
 		lastBeatPoint_ = curBeatPoint - outterWinRgt_;
 
