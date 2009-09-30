@@ -1,0 +1,29 @@
+MarOscIn
+--------
+
+* Overview
+
+  MarOscIn is a tiny little Marsyas Qt based application that reads in
+  OSC messages that are sent to port 9000 to the OSC address
+  "/gainSlider" and changes the value of the QSlider "gainSlider"
+  based on the value in the contents of the OSC message.
+
+* How it works
+
+  1) First of all start the little Python program
+     "send-out-to-gain.py":
+
+	 ./send-out-to-gain.py
+	 
+	 - This program will send out a message every 1 second to
+       port 9000.  The contents of the message will alternate between
+       "0" and "100".
+
+  2) In another window, start MarOscIn like this;
+
+	 ./MarOscIn file.wav
+
+
+  MarOscIn will listen to port 9000 and any messages that are sent to
+  the /gainSlider address will change the gainSlider.
+	 
