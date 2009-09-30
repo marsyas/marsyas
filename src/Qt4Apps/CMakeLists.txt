@@ -29,4 +29,6 @@ add_subdirectory(MarGrid2)
 add_subdirectory(MarNetworkWidget)
 add_subdirectory(MarSndPeek)
 add_subdirectory(MarPanning)
+add_subdirectory(MarOscIn)
+add_subdirectory(MarOscMultiGain)
 
