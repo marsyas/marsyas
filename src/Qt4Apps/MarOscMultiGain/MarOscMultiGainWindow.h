@@ -28,14 +28,14 @@ public:
   QSlider* gain2Slider_;
   QSlider* gain3Slider_;
 
-  MarOscMultiGainWindow(string);
+  MarOscMultiGainWindow(string,string,string);
   MarSystemQtWrapper* getMarSystemQtWrapper(){return mwr_;};
 
 public slots: 
   void gain1Changed(int value);
   void gain2Changed(int value);
   void gain3Changed(int value);
-  void play(string fileName);
+  void play(string,string,string);
   void ctrlChanged(MarControlPtr cname);
 
 private:
@@ -44,7 +44,7 @@ private:
   mrs_real gain2_;
   mrs_real gain3_;
 
-  void createNetwork(string);
+  void createNetwork(string,string,string);
   void startNetwork();
 
   MarSystem* net_;
@@ -55,7 +55,10 @@ private:
   MarControlPtr gain3Ptr_;
 
   MarControlPtr initPtr_;
-  MarControlPtr fnamePtr_;
+
+  MarControlPtr fname1Ptr_;
+  MarControlPtr fname2Ptr_;
+  MarControlPtr fname3Ptr_;
 
 };
 

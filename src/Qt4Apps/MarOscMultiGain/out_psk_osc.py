@@ -43,6 +43,9 @@ def myTest():
                 if row == 0 and col == 6:
                     address = "/key3"
 
+                if pressure < 20:
+                    pressure = 0
+
                 print "**** address=" + address + " row=" + str(row) + " col=" + str(col) + " pressure=" + str(pressure) + " ****"
 
                 osc.sendMsg(address, [pressure], "127.0.0.1", 9000)

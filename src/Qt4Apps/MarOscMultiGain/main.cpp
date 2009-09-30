@@ -10,7 +10,7 @@
 #include "OscMapper.h"
 
 void usage() {
-  cout << "MarOscMultiGain test.wav" << endl;
+  cout << "MarOscMultiGain test1.wav test2.wav test3.wav" << endl;
   cout << endl;
   cout << "MarOscMultiGain is a tiny little Marsyas Qt based application that reads in" << endl;
   cout << "OSC messages that are sent to port 9000 to the OSC address" << endl;
@@ -25,7 +25,7 @@ void usage() {
 int main(int argc, char **argv)
 {
 
-  if (argc < 2) {
+  if (argc < 4) {
 	usage();
 	exit(0);
   }
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
   // Create the main application window and pass it argv[1] as the
   // file to play to AudioSink.
   //
-  MarOscMultiGainWindow* win = new MarOscMultiGainWindow(argv[1]);
+  MarOscMultiGainWindow* win = new MarOscMultiGainWindow(argv[1],argv[2],argv[3]);
 
   win->show();
 

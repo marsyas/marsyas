@@ -4,24 +4,24 @@
 #include "MarOscMultiGainWindow.h"
 
 
-MarOscMultiGainWindow::MarOscMultiGainWindow(string fileName)
+MarOscMultiGainWindow::MarOscMultiGainWindow(string fileName1, string fileName2, string fileName3)
 {
 	QWidget *w = new QWidget;
 	setCentralWidget(w);
 
 	QLabel  *gain1Label  = new QLabel("gain");
 	gain1Slider_ = new QSlider(Qt::Horizontal);
-	gain1Slider_->setValue(100);
+	gain1Slider_->setValue(0);
 
 	QLabel  *gain2Label  = new QLabel("gain");
 	gain2Slider_ = new QSlider(Qt::Horizontal);
-	gain2Slider_->setValue(100);
+	gain2Slider_->setValue(0);
 
 	QLabel  *gain3Label  = new QLabel("gain");
 	gain3Slider_ = new QSlider(Qt::Horizontal);
-	gain3Slider_->setValue(100);
+	gain3Slider_->setValue(0);
 
-	createNetwork(fileName);
+	createNetwork(fileName1,fileName2,fileName3);
 
 	QGridLayout *gridLayout = new QGridLayout;
 
@@ -40,10 +40,10 @@ MarOscMultiGainWindow::MarOscMultiGainWindow(string fileName)
 
 	w->setLayout(gridLayout);
 
-	startNetwork();
+// 	startNetwork();
 
- 	cout << "Playing file=(" << fileName << ")" << endl;
-//   	play(fileName);
+ 	cout << "Playing files=(" << fileName1 << ")" << "(" << fileName2 << ")" << "(" << fileName3 << ")" << endl;
+	play(fileName1,fileName2,fileName3);
 
 }
 
@@ -52,7 +52,7 @@ MarOscMultiGainWindow::gain1Changed(int value)
 {
   mrs_real amp = value / 100.0;
   cout << "gain1 amp=" << amp << endl;
-  mwr_->updctrl("Gain/gain1/mrs_real/gain",amp);
+  mwr_->updctrl("Fanout/fanout/Series/series1/Gain/gain/mrs_real/gain",amp);
 }
 
 void 
@@ -60,7 +60,7 @@ MarOscMultiGainWindow::gain2Changed(int value)
 {
   mrs_real amp = value / 100.0;
   cout << "gain2 amp=" << amp << endl;
-  mwr_->updctrl("Gain/gain2/mrs_real/gain",amp);
+  mwr_->updctrl("Fanout/fanout/Series/series2/Gain/gain/mrs_real/gain",amp);
 }
 
 void 
@@ -68,7 +68,7 @@ MarOscMultiGainWindow::gain3Changed(int value)
 {
   mrs_real amp = value / 100.0;
   cout << "gain3 amp=" << amp << endl;
-  mwr_->updctrl("Gain/gain3/mrs_real/gain",amp);
+  mwr_->updctrl("Fanout/fanout/Series/series3/Gain/gain/mrs_real/gain",amp);
 }
 
 
@@ -79,46 +79,72 @@ MarOscMultiGainWindow::ctrlChanged(MarControlPtr cname)
 }
 
 void 
-MarOscMultiGainWindow::createNetwork(string fileName)
+MarOscMultiGainWindow::createNetwork(string fileName1,string fileName2,string fileName3)
 {
 	MarSystemManager mng;
 
 	// create the overall network
 	net_ = mng.create("Series", "net");
-	net_->addMarSystem(mng.create("SoundFileSource", "src"));
-	net_->addMarSystem(mng.create("Gain", "gain1"));
-	net_->addMarSystem(mng.create("Gain", "gain2"));
-	net_->addMarSystem(mng.create("Gain", "gain3"));
+
+	MarSystem* fanout = mng.create("Fanout", "fanout");
+	net_->addMarSystem(fanout);
+
+	MarSystem* series1 = mng.create("Series", "series1");
+	MarSystem* series2 = mng.create("Series", "series2");
+	MarSystem* series3 = mng.create("Series", "series3");
+
+	series1->addMarSystem(mng.create("SoundFileSource", "src"));
+	series1->addMarSystem(mng.create("Gain", "gain"));
+
+	series2->addMarSystem(mng.create("SoundFileSource", "src"));
+	series2->addMarSystem(mng.create("Gain", "gain"));
+
+	series3->addMarSystem(mng.create("SoundFileSource", "src"));
+	series3->addMarSystem(mng.create("Gain", "gain"));
+
+	fanout->addMarSystem(series1);
+	fanout->addMarSystem(series2);
+	fanout->addMarSystem(series3);
 
 	MarSystem* dest = mng.create("AudioSink", "dest");
 	net_->addMarSystem(dest);
 	mwr_ = new MarSystemQtWrapper(net_, true);
 
 	initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-	fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
-	gain1Ptr_ = mwr_->getctrl("Gain/gain1/mrs_real/gain");
-	gain2Ptr_ = mwr_->getctrl("Gain/gain2/mrs_real/gain");
-	gain3Ptr_ = mwr_->getctrl("Gain/gain3/mrs_real/gain");
+	fname1Ptr_ = mwr_->getctrl("Fanout/fanout/Series/series1/SoundFileSource/src/mrs_string/filename");
+	fname2Ptr_ = mwr_->getctrl("Fanout/fanout/Series/series2/SoundFileSource/src/mrs_string/filename");
+	fname3Ptr_ = mwr_->getctrl("Fanout/fanout/Series/series3/SoundFileSource/src/mrs_string/filename");
 
-	mwr_->updctrl("Gain/gain1/mrs_real/gain",1.0);
-	mwr_->updctrl("Gain/gain2/mrs_real/gain",1.0);
-	mwr_->updctrl("Gain/gain3/mrs_real/gain",1.0);
+	gain1Ptr_ = mwr_->getctrl("Fanout/fanout/Series/series1/Gain/gain/mrs_real/gain");
+	gain2Ptr_ = mwr_->getctrl("Fanout/fanout/Series/series2/Gain/gain/mrs_real/gain");
+	gain3Ptr_ = mwr_->getctrl("Fanout/fanout/Series/series3/Gain/gain/mrs_real/gain");
+
+	mwr_->updctrl("Fanout/fanout/Series/series1/Gain/gain/mrs_real/gain",0.0);
+	mwr_->updctrl("Fanout/fanout/Series/series2/Gain/gain/mrs_real/gain",0.0);
+	mwr_->updctrl("Fanout/fanout/Series/series3/Gain/gain/mrs_real/gain",0.0);
+
+	mwr_->updctrl("Fanout/fanout/Series/series1/SoundFileSource/src/mrs_real/repetitions",-1.0);
+	mwr_->updctrl("Fanout/fanout/Series/series2/SoundFileSource/src/mrs_real/repetitions",-1.0);
+	mwr_->updctrl("Fanout/fanout/Series/series3/SoundFileSource/src/mrs_real/repetitions",-1.0);
 }
 
 void 
 MarOscMultiGainWindow::startNetwork()
 {
- 	mwr_->tickForever();
+//  	mwr_->tickForever();
 }
 
 void 
-MarOscMultiGainWindow::play(string fileName)
+MarOscMultiGainWindow::play(string fileName1,string fileName2,string fileName3)
 {
 	mwr_->trackctrl(gain1Ptr_); 
 	mwr_->trackctrl(gain2Ptr_); 
 	mwr_->trackctrl(gain3Ptr_); 
-	mwr_->updctrl(fnamePtr_, fileName);
+	mwr_->updctrl(fname1Ptr_, fileName1);
+	mwr_->updctrl(fname2Ptr_, fileName2);
+	mwr_->updctrl(fname3Ptr_, fileName3);
 	mwr_->updctrl(initPtr_, true);
+	mwr_->start();
 	mwr_->play();
 }
