@@ -17,6 +17,7 @@
 */
 
 #include "BeatAgent.h"
+#include <string.h>
 
 using namespace std;
 using namespace Marsyas;

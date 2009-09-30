@@ -82,7 +82,7 @@ private:
 
 	void fillOutput(realvec& out, mrs_real flag, mrs_real tempo, mrs_real phase, 
 					mrs_real tolerance, mrs_real error, mrs_real score);
-	mrs_natural BeatAgent::getChildIndex();
+	mrs_natural getChildIndex();
 	void myUpdate(MarControlPtr sender);
 	mrs_real calcDScore(realvec& in);
 	mrs_real calcDScoreCorrSquare(realvec& in);

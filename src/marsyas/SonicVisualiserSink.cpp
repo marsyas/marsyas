@@ -18,6 +18,7 @@
 
 #include "SonicVisualiserSink.h"
 #include <fstream>
+#include <string.h>
 
 using namespace std;
 using namespace Marsyas;

@@ -13,7 +13,7 @@
 #include "EvValUpd.h"
 #include "Collection.h"
 #include "NumericLib.h"
-
+#include <string.h>
 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"
