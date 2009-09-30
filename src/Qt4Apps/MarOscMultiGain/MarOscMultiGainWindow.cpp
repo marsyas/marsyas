@@ -9,15 +9,15 @@ MarOscMultiGainWindow::MarOscMultiGainWindow(string fileName1, string fileName2,
 	QWidget *w = new QWidget;
 	setCentralWidget(w);
 
-	QLabel  *gain1Label  = new QLabel("gain");
+	QLabel  *gain1Label  = new QLabel(QString(fileName1.c_str()));
 	gain1Slider_ = new QSlider(Qt::Horizontal);
 	gain1Slider_->setValue(0);
 
-	QLabel  *gain2Label  = new QLabel("gain");
+	QLabel  *gain2Label  = new QLabel(QString(fileName2.c_str()));
 	gain2Slider_ = new QSlider(Qt::Horizontal);
 	gain2Slider_->setValue(0);
 
-	QLabel  *gain3Label  = new QLabel("gain");
+	QLabel  *gain3Label  = new QLabel(QString(fileName3.c_str()));
 	gain3Slider_ = new QSlider(Qt::Horizontal);
 	gain3Slider_->setValue(0);
 
@@ -105,6 +105,8 @@ MarOscMultiGainWindow::createNetwork(string fileName1,string fileName2,string fi
 	fanout->addMarSystem(series1);
 	fanout->addMarSystem(series2);
 	fanout->addMarSystem(series3);
+
+	net_->addMarSystem(mng.create("Sum", "sum"));
 
 	MarSystem* dest = mng.create("AudioSink", "dest");
 	net_->addMarSystem(dest);
