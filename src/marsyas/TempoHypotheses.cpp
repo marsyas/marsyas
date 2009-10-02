@@ -79,7 +79,7 @@ TempoHypotheses::myUpdate(MarControlPtr sender)
 	hopSize_ = ctrl_hopSize_->to<mrs_natural>();
 
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	setctrl("mrs_natural/onSamples", 2);
+	setctrl("mrs_natural/onSamples", 3);
 	setctrl("mrs_natural/onObservations", nPhases_ * nPeriods_);
 }
 
@@ -95,16 +95,27 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 
 	if(t_ == inductionTime_)
 	{
+		//retrieve Max Period Peak
+		mrs_real maxPeriodPeak = 0.0;
+		for (int i=0; i < nPeriods_; i++)
+		{
+			if(in(0, 2*i) > maxPeriodPeak)
+				maxPeriodPeak = in(0, 2*i);
+		}
+
 		for (int i=0; i < nPeriods_; i++)
 		{
 			int z = 0;
 			for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
 			{
-				out(j, 0) = in(0, 2*i+1); //Periods
-				out(j, 1) = in(1, 2*z+1); //Phases
+				if(in(0, 2*i+1) > 0 && in(1, 2*z+1) > 0)
+				{
+					out(j, 0) = in(0, 2*i+1); //Periods
+					out(j, 1) = in(1, 2*z+1); //Phases
+					out(j, 2) = in(0, 2*i) / maxPeriodPeak; //Normalized period peak magnitudes
+					noBPMs_ = false;
+				}
 				z++;
-
-				if(in(0, 2*i+1) != 0.0) noBPMs_ = false;
 			}
 		}
 		
@@ -113,7 +124,7 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 		{
 			for (int i=0; i < nPeriods_; i++)
 			{
-				if(i == 10) break; //(to a maximum of 10 disconsidered)
+				if(i == 10) break; //(to a maximum of 10 unconsidered)
 				
 				int z = 0;
 				for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)

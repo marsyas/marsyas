@@ -40,7 +40,7 @@ using namespace Marsyas;
 #define INNER_MARGIN 4.0 //Inner tolerance window margin size (in ticks) (4.0)
 #define OBSOLETE_FACTOR 1.5 //An agent is killed if, at any time, the difference between its score and the bestScore is below OBSOLETE_FACTOR * bestScore (1.5)
 #define CHILD_FACTOR 0.05 //(Inertia1) Each created agent imports its father score decremented by the current dScore divided by this factor (0.05)
-#define BEST_FACTOR 1.15 //(Inertia2) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.15)
+#define BEST_FACTOR 1.0 //(Inertia2) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.15)
 #define EQ_PERIOD 0 //Period threshold which identifies two agents as predicting the same period (IBI, in ticks) (1)
 #define EQ_PHASE 0 //Period threshold which identifies two agents as predicting the same phase (beat time, in ticks) (2)
 
@@ -435,7 +435,7 @@ ibt_regular(mrs_string sfName, mrs_string outputTxt)
 		//cout << (mrs_natural) frameCount*100/inputSize << "%" << endl;
 	}
 
-	cout << "Finnish!" << endl;
+	cout << "Finish!" << endl;
 }
 
 void
@@ -792,7 +792,7 @@ ibt_average(mrs_string sfName, mrs_string mode, mrs_string outputTxt)
 		//cout << (mrs_natural) frameCount*100/inputSize << "%" << endl;
 	}
 
-	cout << "Finnish!" << endl;
+	cout << "Finish!" << endl;
 }
 
 int

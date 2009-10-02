@@ -148,43 +148,58 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 			}while (frameCount < inductionTime_);
 
 			//Calculate Sum of every (period, phase) pair multiplied by the
-			//accumulated flux signal -> The highest sum will correspond
+			//accumulated flux signal (with a tolerance = 5)-> The highest sum will correspond
 			//to the best hypotheses
 			for(int i = 0; i < inductionTime_; i++)
 			{
-				sum_(h) += hypSignals_(h, i) * in(i);
+				if(hypSignals_(h, i) == 1.0)
+				{	
+					for (int j = i-4; j <= i+4; j++)
+					{
+						if(j >= 0 && j < inductionTime_)
+							sum_(h) += in(j);
+					}
+				}
+				//if(hypSignals_(h, i) == 1.0)
+				//	cout << "Period: " << beatHypotheses_(h, 0) << "; Phase: " << i << "; FLUX: " << in(i) << endl;
 			}
 		}
 
 		//Retrieve best M (nrPeriodHyps_) {period, phase} pairs, by Period:
 		for(int i = 0; i < nrPeriodHyps_; i++)
 		{
-			mrs_real maxSum = 0.0;
-			mrs_natural maxSumInd = 0;
-			for(int j = i*nrPhasesPerPeriod_; j < (i*nrPhasesPerPeriod_)+nrPhasesPerPeriod_; j++)
-			//for(int j = i; j < sum_.getSize(); j+=nrPhasesPerPeriod_)
+			if(beatHypotheses_(i*nrPhasesPerPeriod_, 0) > 0)
 			{
-				if(sum_(j) > maxSum)
+				mrs_real maxSum = 0.0;
+				mrs_natural maxSumInd = 0;
+				for(int j = i*nrPhasesPerPeriod_; j < (i*nrPhasesPerPeriod_)+nrPhasesPerPeriod_; j++)
+				//for(int j = i; j < sum_.getSize(); j+=nrPhasesPerPeriod_)
 				{
-					maxSum = sum_(j);
-					maxSumInd = j;
+					if(sum_(j) > maxSum)
+					{
+						maxSum = sum_(j);
+						maxSumInd = j;
+					}
 				}
-			}
 
-			//Period:
-			out(i, 0) = beatHypotheses_(maxSumInd, 0);
-			//Phase:
-			out(i, 1) = beatHypotheses_(maxSumInd, 1);
-			
-			//Initial Score = Average Score of each hypotheses by summing every beat salience:
-			mrs_real sc = maxSum / beatCount(maxSumInd);
-			out(i, 2) = maxSum / beatCount(maxSumInd);
+				//Period:
+				out(i, 0) = beatHypotheses_(maxSumInd, 0);
+				//Phase:
+				out(i, 1) = beatHypotheses_(maxSumInd, 1);
+				
+				//Initial Score = Average Score of each hypotheses by summing every beat salience:
+				//mrs_real sc = maxSum / beatCount(maxSumInd);
+				
+				//cout << "MaxInd: " << maxSumInd << "; Period: " << out(i, 0) << "; PEAK: " << beatHypotheses_(maxSumInd, 2) << endl;
+				out(i, 2) = maxSum * beatHypotheses_(maxSumInd, 2);
+			}
 		}
 
+		//MATLAB_PUT(in, "Flux_FlowThrued");
+		//MATLAB_PUT(beatHypotheses_, "BeatHypotheses");
 		//MATLAB_PUT(out, "FinalHypotheses");
 	}
 
-	//MATLAB_PUT(in, "Flux_FlowThrued");
 	//MATLAB_PUT(out, "PhaseLockOut");
 	//MATLAB_EVAL("hold on;");
 	//MATLAB_EVAL("plot(Flux_FlowThrued), g");

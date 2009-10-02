@@ -351,7 +351,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 				{
 					fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
 					score_ = -1 * fraction_ * period_ * max;
-					//score_ = -1 * fraction_ * max;
+					//score_ = -1 * fraction_ * max;d
 				}
 			}
 			/*

@@ -96,8 +96,7 @@ OnsetTimes::myProcess(realvec& in, realvec& out)
 		{
 			//cout << "Out Last Arg: " << out(0, 2*(count_-inc)+1) << " Current Arg: " << t_ - lookAhead_ << endl;
 			out(0, 2*(count_-inc)) = 1.0;
-			out(0, 2*(count_-inc)+1) = t_ - lookAhead_;
-			
+			out(0, 2*(count_-inc)+1) = t_ - lookAhead_-1;
 		}
 		count_++;
 	}

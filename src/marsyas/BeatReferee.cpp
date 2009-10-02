@@ -244,15 +244,16 @@ BeatReferee::calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPerio
 			correction = correctionMin;
 	}
 
-	mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/correction)+0.5));
-	//mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/8.0)+0.5));
+	//mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/correction)+0.5));
+	mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/2.0)+0.5));
 	
 	//To avoid too small or big periods, or too distanced from agent's initial period:
 	if(newPeriod > minPeriod_ && newPeriod < maxPeriod_ && 
 		abs(initPeriod_(agentIndex) - newPeriod) < 0.1*initPeriod_(agentIndex))
 	{
-		nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/correction)+0.5));
-		//nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/8.0)+0.5));
+		//nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/correction)+0.5));
+		nextBeat = prevBeat + newPeriod + error;
+		nextBeat = prevBeat + newPeriod;
 	}
 	else 
 	{
@@ -524,31 +525,34 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		//(nr of initial agents equals nr of bpm hypotheses)
 		for(mrs_natural i = 0; i < firstHypotheses_.getRows(); i++)
 		{
-			//firstHypotheses_ -> matrix with i generated beat hypotheses + score, in the induction stage
-			//[ BPMi | Beati | Score i ]
-			newAgentPeriod = (mrs_natural) firstHypotheses_(i,0);
-			newAgentPhase = (mrs_natural) firstHypotheses_(i,1);
-			newAgentScore = firstHypotheses_(i,2);
-
-			if((bestScore_ >= 0 && newAgentScore >= bestFactor_ * bestScore_) || 
-				(bestScore_ < 0 && newAgentScore >= bestScore_ / bestFactor_))
+			if((mrs_natural) firstHypotheses_(i,0) > 0) //only consider valid hypothesis:
 			{
-				bestScore_ = newAgentScore;
-				bestAgentIndex_ = i;
-			}
+				//firstHypotheses_ -> matrix with i generated beat hypotheses + score, in the induction stage
+				//[ BPMi | Beati | Score i ]
+				newAgentPeriod = (mrs_natural) firstHypotheses_(i,0);
+				newAgentPhase = (mrs_natural) firstHypotheses_(i,1);
+				newAgentScore = firstHypotheses_(i,2);
 
-			createNewAgent(newAgentPeriod, calculateFirstBeat(newAgentPeriod, newAgentPhase), newAgentScore, 0);
+				if((bestScore_ >= 0 && newAgentScore >= bestFactor_ * bestScore_) || 
+					(bestScore_ < 0 && newAgentScore >= bestScore_ / bestFactor_))
+				{
+					bestScore_ = newAgentScore;
+					bestAgentIndex_ = i;
+				}
 
-			if(i == nrAgents_-1)
-			{
-				MRSWARN("Last hypotheses discarted because the nr. of hypotheses surpasses the nr. of BeatAgents");
-				break;
-			}
+				createNewAgent(newAgentPeriod, calculateFirstBeat(newAgentPeriod, newAgentPhase), newAgentScore, 0);
 
-			if(newAgentPeriod == 0)
-			{
-				MRSWARN("Last hypotheses discarted because no more periods considered");
-				break;
+				if(i == nrAgents_-1)
+				{
+					MRSWARN("Last hypotheses discarted because the nr. of hypotheses surpasses the nr. of BeatAgents");
+					break;
+				}
+
+				if(newAgentPeriod == 0)
+				{
+					MRSWARN("Last hypotheses discarted because no more periods considered");
+					break;
+				}
 			}
 		}
 
