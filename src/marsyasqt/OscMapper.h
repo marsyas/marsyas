@@ -9,6 +9,7 @@
 
 using namespace std;
 using namespace Marsyas;
+
 namespace MarsyasQt
 {
 /**

@@ -13,7 +13,7 @@ def myTest():
     import time
     
     # Setup the keyboard
-    ser = serial.Serial(port='/dev/ttyUSB0',baudrate= 115200,bytesize=8,parity='N',stopbits=1)
+    ser = serial.Serial(port='/dev/tty.usbserial-A6007kFY',baudrate= 115200,bytesize=8,parity='N',stopbits=1)
     ser.open()
     print ser.portstr
     ser.write("q") #initiate continuous ASCII mode (active keys only)

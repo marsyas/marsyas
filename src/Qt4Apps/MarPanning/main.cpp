@@ -16,6 +16,8 @@
 using namespace std;
 
 #include "window.h"
+#include "OscMapper.h" 
+using namespace MarsyasQt;
 
 void usage() 
 {
@@ -30,12 +32,30 @@ void usage()
 
 int main(int argc, char *argv[])
 {
-  QApplication app(argc, argv);
+  QApplication* app = new QApplication(argc, argv);
   string inAudioFileName = "";
   if (argc > 1) {
 	inAudioFileName = argv[1];	  
   }
   Window window(inAudioFileName);
   window.show();
-  return app.exec();
+
+  //
+  // Setup the input and output OSC host addresses and ports
+  //
+  QHostAddress inputOscHostAddress_ = QHostAddress::LocalHost;
+  QHostAddress outputOscHostAddress_ = QHostAddress::LocalHost;
+  mrs_natural inputOscPort_ = 9000;
+  mrs_natural outputOscPort_ = 9001;
+  
+  // 
+  // Create an OscMapper that maps messages to the app through a
+  // MarSystemQtWrapper.
+  //
+  OscMapper* oscMapper = new OscMapper(inputOscHostAddress_, inputOscPort_, 
+				       outputOscHostAddress_, outputOscPort_, 
+				       app, window.getMarSystemQtWrapper ());
+
+  oscMapper->registerInputQtSlot(window.xTransSlider, "/key1", QVariant::Int);
+  return app->exec();
 }

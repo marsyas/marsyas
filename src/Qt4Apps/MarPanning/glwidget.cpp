@@ -477,6 +477,7 @@ void GLWidget::setZRotation(int angle)
 // Set the x translation val
 void GLWidget::setXTranslation(int v)
 {
+  cout << v << endl;
   double val = v * -0.1;
   if (val != xTrans) {
 	xTrans = val;

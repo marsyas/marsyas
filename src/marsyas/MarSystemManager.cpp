@@ -1146,11 +1146,18 @@ MarSystemManager::~MarSystemManager()
 void
 MarSystemManager::registerPrototype(string type, MarSystem *marsystem)
 {
-	//change type_ of composite to the user specified one
-	marsystem->setType(type);
-	//and register it
-	registry_[type] = marsystem;
+  //change type_ of composite to the user specified one
+  marsystem->setType(type);
+  // check and dispose old prototype
+  std::map<std::string,MarSystem*>::iterator iter = registry_.find(type);
+  if(iter != registry_.end()){
+    MarSystem* m = iter->second;
+    delete m;
+  }
+  //and register it
+  registry_[type] = marsystem;
 }
+
 
 MarSystem*
 MarSystemManager::getPrototype(string type)
