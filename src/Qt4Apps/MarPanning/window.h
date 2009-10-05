@@ -34,6 +34,14 @@ public:
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
    QSlider *xTransSlider;
+  QSlider *xRotSlider;
+  QSlider *yRotSlider;
+  QSlider *magnitudeCutoffSlider;
+  QSlider *numVerticesSlider;
+  QSlider *dotSizeSlider;
+
+
+
 private:
   QSlider *createSlider(int,int,int,int,int);
   QSlider *createRotationSlider(int min, int max);
@@ -45,8 +53,6 @@ private:
   GLWidget *glWidget;
 
   // Sliders to rotate the object on its axes
-  QSlider *xRotSlider;
-  QSlider *yRotSlider;
 //   QSlider *zRotSlider;
 
 //   // Sliders to translate the object
@@ -62,9 +68,7 @@ private:
   QSlider *fogEndSlider;
 
   // Data display sliders
-  QSlider *magnitudeCutoffSlider;
-  QSlider *numVerticesSlider;
-  QSlider *dotSizeSlider;
+
 
   // Song position
   QSlider *posSlider;

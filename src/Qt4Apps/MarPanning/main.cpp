@@ -56,10 +56,18 @@ int main(int argc, char *argv[])
 				       outputOscHostAddress_, outputOscPort_, 
 				       app, window.getMarSystemQtWrapper ());
 
-  oscMapper->registerInputQtSlot(window.xTransSlider, "/key1", QVariant::Int);
+  /* oscMapper->registerInputQtSlot(window.xTransSlider, "/key1", QVariant::Int);
   oscMapper->registerInputQtSlot(window.xTransSlider, "/key2", QVariant::Int);
   oscMapper->registerInputQtSlot(window.xTransSlider, "/key3", QVariant::Int);
-  
+  */ 
+
+  oscMapper->registerInputQtSlot(window.magnitudeCutoffSlider, "/keym", QVariant::Int);
+  oscMapper->registerInputQtSlot(window.numVerticesSlider, "/keys", QVariant::Int);
+  oscMapper->registerInputQtSlot(window.dotSizeSlider, "/keyd", QVariant::Int);
+  oscMapper->registerInputQtSlot(window.yRotSlider, "/keyleft", QVariant::Int);
+  oscMapper->registerInputQtSlot(window.yRotSlider, "/keyright", QVariant::Int);
+  oscMapper->registerInputQtSlot(window.xRotSlider, "/keyup", QVariant::Int);
+  oscMapper->registerInputQtSlot(window.xRotSlider, "/keydown", QVariant::Int);
   
   return app->exec();
 }

@@ -78,6 +78,7 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   MarSystem* mixsrc = mng.create("Fanout/mixsrc");
   MarSystem* branch1 = mng.create("Series/branch1");
   MarSystem* branch2 = mng.create("Series/branch2");
+  MarSystem* branch3 = mng.create("Series/branch3");
 
   branch1->addMarSystem(mng.create("SoundFileSource/src"));
   branch1->addMarSystem(mng.create("Gain/gain"));
@@ -86,13 +87,19 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   branch2->addMarSystem(mng.create("SoundFileSource/src"));
   branch2->addMarSystem(mng.create("Gain/gain"));
   branch2->addMarSystem(mng.create("Panorama/pan"));
+
+
+  branch3->addMarSystem(mng.create("SoundFileSource/src"));
+  branch3->addMarSystem(mng.create("Gain/gain"));
+  branch3->addMarSystem(mng.create("Panorama/pan"));
   
   branch1->updctrl("Panorama/pan/mrs_real/angle", 0.0);
-  branch2->updctrl("Panorama/pan/mrs_real/angle", PI/4.0);
+  branch2->updctrl("Panorama/pan/mrs_real/angle", 0.0);
+  branch3->updctrl("Panorama/pan/mrs_real/angle", 0.0);
 
   mixsrc->addMarSystem(branch1);
   mixsrc->addMarSystem(branch2);
-  
+  mixsrc->addMarSystem(branch3);
   
   net_->addMarSystem(mixsrc);
   net_->addMarSystem(mng.create("Sum/sum"));
@@ -146,13 +153,15 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
     // net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
   }
   
-  net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_string/filename", "one.au");
-  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_string/filename", "two.au");
+  net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_string/filename", "one.wav");
+  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_string/filename", "two.wav");
+  net_->updctrl("Fanout/mixsrc/Series/branch3/SoundFileSource/src/mrs_string/filename", "three.wav");
 
 
   
   net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_real/repetitions",-1.0);
   net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_real/repetitions",-1.0);
+  net_->updctrl("Fanout/mixsrc/Series/branch3/SoundFileSource/src/mrs_real/repetitions",-1.0);
 
   net_->updctrl("mrs_natural/inSamples",insamples);
 
