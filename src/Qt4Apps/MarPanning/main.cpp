@@ -57,5 +57,9 @@ int main(int argc, char *argv[])
 				       app, window.getMarSystemQtWrapper ());
 
   oscMapper->registerInputQtSlot(window.xTransSlider, "/key1", QVariant::Int);
+  oscMapper->registerInputQtSlot(window.xTransSlider, "/key2", QVariant::Int);
+  oscMapper->registerInputQtSlot(window.xTransSlider, "/key3", QVariant::Int);
+  
+  
   return app->exec();
 }

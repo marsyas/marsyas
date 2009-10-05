@@ -36,15 +36,47 @@ def myTest():
                 pressure = int(r.group(3)) / 10
                 address = "/generickey"
 
+	
+
+
                 if (row == 1) and (col == 9):
                     address = "/key1"
                 if row == 5 and col == 8:
                     address = "/key2"
                 if row == 0 and col == 6:
                     address = "/key3"
+		if row == 5 and col == 9: 
+		    address = "/key4" 
+		if row == 4 and col == 8: 
+		    address = "/key5" 
+		if row == 1 and col == 6: 
+		    address = "/key6"
+		if row == 4 and col == 9: 
+		    address = "/key7"
+		if row == 3 and col == 8: 
+		    address = "/key8" 
+		if row == 4 and col == 6: 
+		    address = "/key9" 
+		if row == 1 and col == 11: 
+		    address = "/keym" 
+		if row == 5 and col == 3: 
+		    address = "/keyd" 
+		if row == 5 and col == 2: 
+		    address = "/keys"
+		
 
                 if pressure < 20:
                     pressure = 0
+
+		pressure /= 85.0;
+
+		if address == "/key1": 
+		   address == "/Fanout/mixsrc/Series/branch1/Panorama/pan/mrs_real/angle" 
+		   pressure *= 0.785
+		if address == "/key2": 
+		   pressure = 0
+		if address == "/key3": 
+		   pressure *= 150;
 
                 print "**** address=" + address + " row=" + str(row) + " col=" + str(col) + " pressure=" + str(pressure) + " ****"
 

@@ -29,6 +29,7 @@ Sum::Sum(string name):MarSystem("Sum",name)
 Sum::Sum(const Sum& a): MarSystem(a)
 {
 	ctrl_weight_ = getctrl("mrs_real/weight");
+	ctrl_stereo_ = getctrl("mrs_bool/stereo");
 }
 
 
@@ -41,7 +42,7 @@ void
 Sum::addControls()
 {
 	addctrl("mrs_real/weight", 1.0, ctrl_weight_);
-
+	addctrl("mrs_bool/stereo", false, ctrl_stereo_);
 }
 
 MarSystem*
@@ -58,7 +59,11 @@ Sum::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
 
 	/// ... but set the number of output observations to one.
-	ctrl_onObservations_->setValue(1, NOUPDATE);
+	mrs_bool stereo = ctrl_stereo_->to<mrs_bool>();
+	if (!stereo)
+	  ctrl_onObservations_->setValue(1, NOUPDATE);
+	else
+ 	  ctrl_onObservations_->setValue(2, NOUPDATE);
 }
 
 
@@ -66,15 +71,32 @@ void
 Sum::myProcess(realvec& in, realvec& out)
 {
 	mrs_real weightValue = ctrl_weight_->to<mrs_real>();
-
+	mrs_bool stereo = ctrl_stereo_->to<mrs_bool>();
+	
 	// Sum the observation channels per sample.
-	for (t = 0; t < inSamples_; t++)
-	{
+	if (!stereo) 
+	  {
+	    for (t = 0; t < inSamples_; t++)
+	      {
 		out(0, t) = 0;
 		for (o = 0; o < inObservations_; o++)
+		  {
+		    out(0, t) += (weightValue * in(o, t));
+		  }
+	      }
+	  }
+	else 			// stereo 
+	  {
+	    for (t = 0; t < inSamples_; t++)
+	      for (c=0; c < 2; c++) 
 		{
-			out(0, t) += (weightValue * in(o, t));
+		  out(c, t) = 0;
+		  for (o = c; o < inObservations_; o+=2)
+		    {
+		      out(c, t) += (weightValue * in(o, t));
+		    }
 		}
-	}
+	  }
+	  
 }
 

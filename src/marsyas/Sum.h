@@ -55,6 +55,7 @@ class Sum: public MarSystem
 private:
 	void myUpdate(MarControlPtr sender);
 	MarControlPtr ctrl_weight_;
+	MarControlPtr ctrl_stereo_;
 	void addControls();
 public:
 	Sum(std::string name);
