@@ -1,14 +1,24 @@
 ## BUILD MACRO
-macro (marsyas_app APP APP_SOURCES)
-add_executable(${APP} ${APP_SOURCES})
-include_directories(${GSTREAMER_INCLUDE_DIRS} ${PNGWRITER_INCLUDE_DIR})
-if (MARSYAS_PNG) 
-	target_link_libraries(${APP} marsyas png12_static zlib ${OS_LIBS})
-else (MARSYAS_PNG)
-	target_link_libraries(${APP} marsyas ${OS_LIBS})
-endif (MARSYAS_PNG)
 
-install(TARGETS ${APP} DESTINATION bin)
+
+
+macro (marsyas_static_app APP APP_SOURCES)
+   	 add_executable(${APP} ${APP_SOURCES})
+	 include_directories(${GSTREAMER_INCLUDE_DIRS} ${PNGWRITER_INCLUDE_DIR})
+	 target_link_libraries(${APP} marsyas_static)
+	 install(TARGETS ${APP} DESTINATION bin)
+endmacro (marsyas_static_app)
+
+macro (marsyas_app APP APP_SOURCES)
+   	 add_executable(${APP} ${APP_SOURCES})
+	 include_directories(${GSTREAMER_INCLUDE_DIRS}
+   	 ${PNGWRITER_INCLUDE_DIR})
+	 if (MARSYAS_STATIC)
+	 	 target_link_libraries(${APP} marsyas_static)
+	 else (MARSYAS_STATIC)
+	  	 target_link_libraries(${APP} marsyas)
+	  endif (MARSYAS_STATIC)	      
+	 install(TARGETS ${APP} DESTINATION bin)
 endmacro (marsyas_app)
 
 ## build apps

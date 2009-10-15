@@ -192,7 +192,7 @@ detect_onsets(string sfName)
 	mrs_real textureWinMinLen = 0.050; //secs
 	mrs_natural minTimes = (mrs_natural) (textureWinMinLen*fs/hopSize); //12;//onsetWinSize+1;//15;
 	// cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
-	mrs_real textureWinMaxLen = 3.000; //secs
+	mrs_real textureWinMaxLen = 20.000; //secs
 	mrs_natural maxTimes = (mrs_natural) (textureWinMaxLen*fs/hopSize);//1000; //whatever... just a big number for now...
 	// cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
 

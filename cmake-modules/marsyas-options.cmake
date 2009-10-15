@@ -35,7 +35,9 @@ option(MARSYAS_ASSERTS "Build with assertions" OFF)
 option(MARSYAS_PROFILING "Build with profiling" OFF)
 #mark_as_advanced (MARSYAS_PROFILING)
 option(MARSYAS_DEBUG "Build with debugging info (large performance penalty)" OFF)
-#mark_as_advanced (MARSYAS_DEBUG)
+mark_as_advanced (MARSYAS_DEBUG)
+option(MARSYAS_STATIC "Build as a static library" OFF) 
+
 
 
 ## logging stuff
