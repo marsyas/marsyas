@@ -91,6 +91,8 @@ private:
 	mrs_natural eqPhase_;
 	mrs_natural eqPeriod_;
 	mrs_realvec initPeriod_;
+	mrs_natural hopSize_;
+	mrs_real srcFs_;
 
 	void myUpdate(MarControlPtr sender);
 

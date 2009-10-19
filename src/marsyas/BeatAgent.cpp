@@ -88,7 +88,7 @@ BeatAgent::addControls()
 	setctrlState("mrs_real/lftOutterMargin", true);
 	addctrl("mrs_real/rgtOutterMargin", 0.4, ctrl_rgtOutterMargin_);
 	setctrlState("mrs_real/rgtOutterMargin", true);
-	addctrl("mrs_real/innerMargin", 2.0, ctrl_innerMargin_);
+	addctrl("mrs_real/innerMargin", 4.0, ctrl_innerMargin_);
 	setctrlState("mrs_real/innerMargin", true);
 }
 
@@ -124,6 +124,8 @@ BeatAgent::calcDScoreCorrSquare(realvec& in)
 	for(mrs_natural t = lastBeatPoint_ - outterWinLft_; t < lastBeatPoint_ - innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinLft_;
+		//dScore += -1 * pow((fraction_)* in(t),2) ;
 		dScore += -1 * pow((fraction_),2) * in(t);
 	}
 
@@ -131,13 +133,17 @@ BeatAgent::calcDScoreCorrSquare(realvec& in)
 	for(mrs_natural t = lastBeatPoint_ - innerWin_; t <= lastBeatPoint_ + innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / (((outterWinRgt_+outterWinLft_)/2)+0.5);
 		dScore += pow((1 - fraction_),2) * in(t);
+		//dScore += pow((1 - fraction_) * in(t),2);
 	}
 
 	//outterRight Tolerance:
 	for(mrs_natural t = (lastBeatPoint_ + innerWin_)+1; t <= lastBeatPoint_ - outterWinRgt_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinRgt_;
+		//dScore += -1 * pow((fraction_)* in(t),2) ;
 		dScore += -1 * pow((fraction_),2) * in(t);
 	}
 
@@ -145,7 +151,7 @@ BeatAgent::calcDScoreCorrSquare(realvec& in)
 }
 
 mrs_real
-BeatAgent::calcDScore(realvec& in)
+BeatAgent::calcDScoreCorr(realvec& in, mrs_natural maxInd)
 {
 	mrs_real dScore = 0.0;
 
@@ -153,21 +159,24 @@ BeatAgent::calcDScore(realvec& in)
 	for(mrs_natural t = lastBeatPoint_ - outterWinLft_; t < lastBeatPoint_ - innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += (-1 * fraction_) * in(t);
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinRgt_;
+		dScore += (-1 * fraction_) * in(t);//pow(in(t),2);
 	}
 
 	//innerTolerance:
 	for(mrs_natural t = lastBeatPoint_ - innerWin_; t <= lastBeatPoint_ + innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += (1 - fraction_) * in(t);
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinRgt_;
+		dScore += (1 - fraction_) * in(t);//pow(in(t),2);
 	}
 
 	//outterRight Tolerance:
 	for(mrs_natural t = (lastBeatPoint_ + innerWin_)+1; t <= lastBeatPoint_ - outterWinRgt_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		dScore += (-1 * fraction_) * in(t);
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinRgt_;
+		dScore += (-1 * fraction_) * in(t);//pow(in(t),2);
 	}
 
 	return dScore * period_ ;
@@ -285,8 +294,8 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		if(strcmp(scoreFunc_.c_str(), "squareCorr") == 0)
 			score_ = calcDScoreCorrSquare(in); 
 
-		if(strcmp(scoreFunc_.c_str(), "correlation") == 0)
-			score_ = calcDScore(in); 
+		else if(strcmp(scoreFunc_.c_str(), "correlation") == 0)
+			score_ = calcDScoreCorr(in, max_i); 
 
 		//mrs_real phase;
 		//1st Condition: is beat  inside innerWindow?
@@ -294,78 +303,68 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		{
 			if(strcmp(scoreFunc_.c_str(), "regular") == 0)
 			{
-				fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-				score_ = (1 - fraction_) * period_ * max;
+				fraction_ = (mrs_real) abs(error_) / outterWinLft_;
+				score_ = (1 - fraction_) * period_ * max;//pow(max,2);
 				//score_ = (1 - fraction_) * max;
 			}
 			
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside innerWindow!");
+			//cout << identity_ << "(" << t_ <<") -> Beat (" << curBeat_ << ") Inside innerWindow! with error: ";
 
 			//Evaluation info:
-			//phase = actualBeatPoint = lastBeatPoint_
+			//phase = actualBeatPoint = max_i
 			fillOutput(out, EVAL, period_, curBeat_, INNER, error_, score_);
 		}
 		else if(max_i > lastBeatPoint_ && max_i <= lastBeatPoint_ + innerWin_)
 		{
-			//[SCORE REGULAR]:
 			if(strcmp(scoreFunc_.c_str(), "regular") == 0)
 			{
 				fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-				score_ = (1 - fraction_) * period_ * max;
+				score_ = (1 - fraction_) * period_ * max;//pow(max,2);
 				//score_ = (1 - fraction_) * max;
 			}
-
-			/*
-			cout << identity_ << "(" << t_ <<") -> Beat (" << curBeat_ << ") Inside innerWindow! with error: " 
-				<< error_ << " (pred: " << lastBeatPoint_ << " act: " << max_i << ") -> " 
-				<< " dS: " << score_ << " NextBeat(ifNotChanged): " << curBeat_+period_ << endl;
-			*/
+			
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside innerWindow!");
+			//cout << identity_ << "(" << t_ <<") -> Beat (" << curBeat_ << ") Inside innerWindow! with error: ";
 
 			//Evaluation info:
-			//phase = actualBeatPoint = lastBeatPoint_
+			//phase = actualBeatPoint = max_i
 			fillOutput(out, EVAL, period_, curBeat_, INNER, error_, score_);
 		}
 
-		//2nd Condition: is beat inside outterWindow but outside innerWindow?
+		//2nd Condition: is beat insdie outterWindow but outside innerWindow?
 		else 
 		{
 			if((max_i >= lastBeatPoint_ - outterWinLft_) && (max_i < lastBeatPoint_ - innerWin_))
 			{	
-				//[SCORE REGULAR]:
-				//not the predicted amplitude but the actual one -> so the negative score depends on
-				//the actual beat and not on the prediction
 				if(strcmp(scoreFunc_.c_str(), "regular") == 0)
 				{
-					fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-					score_ = -1 * fraction_ * period_ * max;
-					//score_ = -1 * fraction_ * max;
+					fraction_ = (mrs_real) abs(error_) / outterWinLft_;
+					score_ = -1 * fraction_ * period_ * max;//pow(max,2);
+					//score_ = (1 - fraction_) * max;
 				}
 			}
 			if((max_i > lastBeatPoint_ + innerWin_) && (max_i <= lastBeatPoint_ + outterWinRgt_))
 			{	
-				//[SCORE REGULAR]:
-				//not the predicted amplitude but the actual one -> so the negative score depends on
-				//the actual beat and not on the prediction
 				if(strcmp(scoreFunc_.c_str(), "regular") == 0)
 				{
 					fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-					score_ = -1 * fraction_ * period_ * max;
-					//score_ = -1 * fraction_ * max;d
+					score_ = -1 * fraction_ * period_ * max;//pow(max,2);
+					//score_ = (1 - fraction_) * max;
 				}
 			}
-			/*
-			cout << identity_ << "(" << t_ <<") -> Beat (" << curBeat_ << ") Outside innerWindow! with error: " 
-				<< error_ << " (pred: " << lastBeatPoint_ << " act: " << max_i << ") -> " 
-				<< " dS: " << score_ << " NextBeat(ifNotChanged): " << curBeat_+period_ << endl;
-			*/
-			MRSDIAG("BeatAgent::myProcess() - Beat Inside OutterWindow but outside innerWindow!");
-			
+
 			//Evaluation info:
 			//phase = actualBeatPoint = max_i
+			//cout << identity_ << "(" << t_ <<") -> Beat (" << curBeat_ << ") Outside innerWindow! with error: ";
+			MRSDIAG("BeatAgent::myProcess() - Beat Inside OutterWindow but outside innerWindow!");
+
 			fillOutput(out, EVAL, period_, curBeat_, OUTTER, error_, score_);
 		}
-		
+			
+		//cout << error_ << " (pred: " << curBeat_ << "-" << in(lastBeatPoint_) << " act: " << curBeat_+error_ << 
+		//"-" << max << ") -> " << " dS: " << score_ << " NextBeat(ifNotChanged): " << curBeat_+period_ << endl;
+
 		/*
 		for(mrs_natural i = 0; i < beatCount_; i++)
 		{

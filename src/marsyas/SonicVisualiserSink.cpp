@@ -114,8 +114,12 @@ SonicVisualiserSink::myProcess(realvec& in, realvec& out)
 
 	//initially a new output file is created
 	//(If the file exists, its content is deleted and it is treated as a new file)
-	if(t_ == 1)
+	if(t_ == 430)
+	{
 		outStream.open(ctrl_destFileName_->to<mrs_string>().c_str(), ios::out|ios::trunc);
+		cout << "PATH: " << ctrl_destFileName_->to<mrs_string>().c_str() << endl;
+	}
+
 	//else -> output is appended in the end of the file
 	else
 		outStream.open(ctrl_destFileName_->to<mrs_string>().c_str(), ios::out|ios::app);

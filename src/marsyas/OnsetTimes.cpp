@@ -89,14 +89,14 @@ OnsetTimes::myProcess(realvec& in, realvec& out)
 	
 	t_++;
 	
-	mrs_natural inc = 1; //nr. of first ignored onsets
+	mrs_natural inc = 0; //nr. of first ignored onsets
 	if(in(0,0) == 1.0){
 		//if task isn't still done && (first peak || peak distance at least 5 frames from last peak)
 		if(count_ == inc || (count_ > inc && count_ < n_ + inc && t_ > out(0, 2*(count_-inc)-1) + 5))
 		{
 			//cout << "Out Last Arg: " << out(0, 2*(count_-inc)+1) << " Current Arg: " << t_ - lookAhead_ << endl;
-			out(0, 2*(count_-inc)) = 1.0;
-			out(0, 2*(count_-inc)+1) = t_ - lookAhead_-1;
+			out(0, 2*(count_-inc)) = in(0,0);
+			out(0, 2*(count_-inc)+1) = t_ - lookAhead_+1;
 		}
 		count_++;
 	}

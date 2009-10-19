@@ -6036,12 +6036,12 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	mrs_natural min_bpm = 50; //minimum tempo considered, in BPMs (50)
 	mrs_natural max_bpm = 250; //maximum tempo considered, in BPMs (250)
 	mrs_natural nr_agents = 50; //Nr. of agents in the pool (50)
-	mrs_real lft_outter_margin = 0.30; //The size of the outer half-window (in % of IBI) before the predicted beat time (0.30)
-	mrs_real rgt_outter_margin = 0.30; //The size of the outer half-window (in % of IBI) after the predicted beat time (0.30)
+	mrs_real lft_outter_margin = 0.20; //The size of the outer half-window (in % of IBI) before the predicted beat time (0.30)
+	mrs_real rgt_outter_margin = 0.40; //The size of the outer half-window (in % of IBI) after the predicted beat time (0.30)
 	mrs_real inner_margin = 4.0; //Inner tolerance window margin size (in ticks) (4.0)
 	mrs_real obsolete_factor = 1.5; //An agent is killed if, at any time, the difference between its score and the bestScore is below OBSOLETE_FACTOR * bestScore (1.5)
-	mrs_real child_factor = 0.05; //(Inertia1) Each created agent imports its father score decremented by the current dScore divided by this factor (0.05)
-	mrs_real best_factor = 1.15; //(Inertia2) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.15)
+	mrs_real child_factor = 0.01; //(Inertia1) Each created agent imports its father score decremented by the current dScore divided by this factor (0.05)
+	mrs_real best_factor = 1.01; //(Inertia2) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.15)
 	mrs_natural eq_period = 0; //Period threshold which identifies two agents as predicting the same period (IBI, in ticks) (1)
 	mrs_natural eq_phase = 0; //Period threshold which identifies two agents as predicting the same phase (beat time, in ticks) (2)
 
@@ -6229,7 +6229,7 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	audioflow->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	//best result till now are using dB power Spectrum!
-	beattracker->updctrl("Series/onsetdetectionfunction/PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+	beattracker->updctrl("Series/onsetdetectionfunction/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 
 	beattracker->updctrl("Series/onsetdetectionfunction/Flux/flux/mrs_string/mode", "DixonDAFX06");
 

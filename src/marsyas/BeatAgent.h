@@ -84,7 +84,7 @@ private:
 					mrs_real tolerance, mrs_real error, mrs_real score);
 	mrs_natural getChildIndex();
 	void myUpdate(MarControlPtr sender);
-	mrs_real calcDScore(realvec& in);
+	mrs_real calcDScoreCorr(realvec& in, mrs_natural maxInd);
 	mrs_real calcDScoreCorrSquare(realvec& in);
 
 public:

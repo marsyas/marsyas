@@ -154,7 +154,7 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 			{
 				if(hypSignals_(h, i) == 1.0)
 				{	
-					for (int j = i-4; j <= i+4; j++)
+					for (int j = i-5; j <= i+5; j++)
 					{
 						if(j >= 0 && j < inductionTime_)
 							sum_(h) += in(j);
@@ -191,7 +191,7 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 				//mrs_real sc = maxSum / beatCount(maxSumInd);
 				
 				//cout << "MaxInd: " << maxSumInd << "; Period: " << out(i, 0) << "; PEAK: " << beatHypotheses_(maxSumInd, 2) << endl;
-				out(i, 2) = maxSum * beatHypotheses_(maxSumInd, 2);
+				out(i, 2) = maxSum * beatHypotheses_(maxSumInd, 2) * beatHypotheses_(maxSumInd, 0);
 			}
 		}
 

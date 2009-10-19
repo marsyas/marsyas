@@ -197,7 +197,6 @@
 #include "ArffFileSink.h"
 #include "MixToMono.h"
 #include "SoundFileSourceHopper.h"
-
 #include "TempoHypotheses.h"
 #include "OnsetTimes.h"
 #include "BeatAgent.h"
@@ -205,6 +204,7 @@
 #include "BeatRefereeAvg.h"
 #include "PhaseLock.h"
 #include "BeatTimesSink.h"
+#include "SonicVisualiserSink.h"
 //modifyHeader
 
 using namespace std;
@@ -390,7 +390,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
 	registerPrototype("MixToMono", new MixToMono("mixtomono"));
 	registerPrototype("SoundFileSourceHopper", new SoundFileSourceHopper("soundfilesourcehopper"));
-	
 	registerPrototype("TempoHypotheses", new TempoHypotheses("tempohyp"));
 	registerPrototype("OnsetTimes", new OnsetTimes("OnsetTimes"));
 	registerPrototype("BeatAgent", new BeatAgent("beatagent"));
@@ -398,6 +397,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("BeatRefereeAvg", new BeatRefereeAvg("beatrefavg"));
 	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
+	registerPrototype("SonicVisualiserSink", new SonicVisualiserSink("sonicsink"));
 	//modifyRegister
 
 	//***************************************************************************************

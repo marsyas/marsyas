@@ -35,12 +35,12 @@ using namespace Marsyas;
 #define MIN_BPM 50 //minimum tempo considered, in BPMs (50)
 #define MAX_BPM 250 //maximum tempo considered, in BPMs (250)
 #define NR_AGENTS 50 //Nr. of agents in the pool (50)
-#define LFT_OUTTER_MARGIN 0.30 //The size of the outer half-window (in % of IBI) before the predicted beat time (0.20)
-#define RGT_OUTTER_MARGIN 0.30 //The size of the outer half-window (in % of IBI) after the predicted beat time (0.40)
+#define LFT_OUTTER_MARGIN 0.20 //The size of the outer half-window (in % of IBI) before the predicted beat time (0.20)
+#define RGT_OUTTER_MARGIN 0.40 //The size of the outer half-window (in % of IBI) after the predicted beat time (0.40)
 #define INNER_MARGIN 4.0 //Inner tolerance window margin size (in ticks) (4.0)
 #define OBSOLETE_FACTOR 1.5 //An agent is killed if, at any time, the difference between its score and the bestScore is below OBSOLETE_FACTOR * bestScore (1.5)
-#define CHILD_FACTOR 0.05 //(Inertia1) Each created agent imports its father score decremented by the current dScore divided by this factor (0.05)
-#define BEST_FACTOR 1.0 //(Inertia2) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.15)
+#define CHILD_FACTOR 0.01 //(Inertia1) Each created agent imports its father score decremented by the current dScore divided by this factor (0.05)
+#define BEST_FACTOR 1.01 //(Inertia2) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.15)
 #define EQ_PERIOD 0 //Period threshold which identifies two agents as predicting the same period (IBI, in ticks) (1)
 #define EQ_PHASE 0 //Period threshold which identifies two agents as predicting the same phase (beat time, in ticks) (2)
 
@@ -261,7 +261,7 @@ ibt_regular(mrs_string sfName, mrs_string outputTxt)
 	audioflow->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	//best result till now are using dB power Spectrum!
-	beattracker->updctrl("Series/onsetdetectionfunction/PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+	beattracker->updctrl("Series/onsetdetectionfunction/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 
 	beattracker->updctrl("Series/onsetdetectionfunction/Flux/flux/mrs_string/mode", "DixonDAFX06");
 
@@ -360,10 +360,9 @@ ibt_regular(mrs_string sfName, mrs_string outputTxt)
 	//beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "beatTimes");
 	beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "all");
 
-	/*
-	beattracker->updctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_string/mode", "seconds");
-	beattracker->updctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_string/destFileName", + path.str() + "_onsetFunction.txt");
-	*/
+	
+	//beattracker->updctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_string/mode", "frames");
+	//beattracker->updctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_string/destFileName", path.str() + "_onsetFunction.txt");
 
 	//set audio/onset resynth balance and ADSR params for onset sound
 	IBTsystem->updctrl("Fanout/beatmix/Series/audioflow/Gain/gainaudio/mrs_real/gain", 0.6);
@@ -385,16 +384,16 @@ ibt_regular(mrs_string sfName, mrs_string outputTxt)
 	mrs_natural winSize = WINSIZE;
 	mrs_natural hopSize = HOPSIZE;
 
+	//MATLAB_EVAL("clear;");
 	//MATLAB_EVAL("FluxTS = [];");
+	//MATLAB_EVAL("srcAudio = [];");
 	//MATLAB_EVAL("FinalBeats=[];");
 	/*
-	MATLAB_EVAL("clear;");
 	MATLAB_PUT(induction_time, "timmbing");
 	MATLAB_PUT(fsSrc, "SrcFs");
 	MATLAB_PUT(inductionTickCount, "inductionTickCount");
 	MATLAB_PUT(winSize, "winSize");
 	MATLAB_PUT(hopSize, "hopSize");
-	MATLAB_EVAL("srcAudio = [];");
 	MATLAB_EVAL("FluxTS = [];");
 	MATLAB_EVAL("FinalTS = [];");
 	MATLAB_EVAL("BeatAgentTS=[];");
@@ -420,7 +419,7 @@ ibt_regular(mrs_string sfName, mrs_string outputTxt)
 		if(frameCount == inductionTickCount)
 		{
 			//Restart reading audio file
-			audioflow->updctrl("SoundFileSource/src/mrs_natural/pos", HOPSIZE);
+			audioflow->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
 			//for playing audio (with clicks on beats):
 			cout << "done" << endl;
 			cout << "Beat Tracking........" << endl;
@@ -619,7 +618,7 @@ ibt_average(mrs_string sfName, mrs_string mode, mrs_string outputTxt)
 	audioflow->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	//best result till now are using dB power Spectrum!
-	beattracker->updctrl("Series/onsetdetectionfunction/PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+	beattracker->updctrl("Series/onsetdetectionfunction/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 
 	beattracker->updctrl("Series/onsetdetectionfunction/Flux/flux/mrs_string/mode", "DixonDAFX06");
 

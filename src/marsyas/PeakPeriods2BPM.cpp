@@ -78,8 +78,8 @@ PeakPeriods2BPM::myProcess(realvec& in, realvec& out)
 			out(o,2*t+1) = (mrs_natural) ((60.0 / (in(o, 2*t+1) * hopsize_)) * srcFs_);
 		}
 
-	MATLAB_PUT(in, "Peaker_out");
-	MATLAB_PUT(out, "MaxPeaksBPM");
+	//MATLAB_PUT(in, "Peaker_out");
+	//MATLAB_PUT(out, "MaxPeaksBPM");
 }
 
 

@@ -172,13 +172,13 @@ BeatReferee::myUpdate(MarControlPtr sender)
 	inductionEnabler_ = ctrl_inductionEnabler_->to<mrs_realvec>();
 
 	//Calculate minimumPeriod (eq. considered possible maximumTempo)
-	mrs_natural hopSize = ctrl_hopSize_->to<mrs_natural>();
-	mrs_real srcFs = ctrl_srcFs_->to<mrs_real>();
+	hopSize_ = ctrl_hopSize_->to<mrs_natural>();
+	srcFs_ = ctrl_srcFs_->to<mrs_real>();
 
 	mrs_natural maxTempo = ctrl_maxTempo_->to<mrs_natural>();
 	mrs_natural minTempo = ctrl_minTempo_->to<mrs_natural>();
-	minPeriod_ = (mrs_natural) floor((mrs_real) 60 / (maxTempo * hopSize) * srcFs);
-	maxPeriod_ = (mrs_natural) ceil((mrs_real) 60 / (minTempo * hopSize) * srcFs);
+	minPeriod_ = (mrs_natural) floor(60.0 / (maxTempo * hopSize_) * srcFs_);
+	maxPeriod_ = (mrs_natural) ceil(60.0 / (minTempo * hopSize_) * srcFs_);
 }
 
 //used like this because signal restarted:
@@ -229,6 +229,7 @@ mrs_realvec
 BeatReferee::calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error)
 {
 	mrs_natural nextBeat;
+	mrs_natural newPeriod;
 	mrs_real correctionMax = 8.0; //2*innerWindow
 	mrs_real correctionMin = 1.0;
 	mrs_real correction = 4.0;
@@ -245,16 +246,24 @@ BeatReferee::calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPerio
 	}
 
 	//mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/correction)+0.5));
-	mrs_natural newPeriod =  oldPeriod + ((mrs_natural) ((error/2.0)+0.5));
+	//if(error <= 4)
+		newPeriod =  oldPeriod + ((mrs_natural) ((error/2.0) + ((error/abs(error)) * 0.5)));
+		//newPeriod =  oldPeriod + error;
+	//else
+	//	newPeriod =  oldPeriod + ((mrs_natural) ((error/12.0) + ((error/abs(error)) * 0.5)));
 	
 	//To avoid too small or big periods, or too distanced from agent's initial period:
 	if(newPeriod > minPeriod_ && newPeriod < maxPeriod_ && 
-		abs(initPeriod_(agentIndex) - newPeriod) < 0.1*initPeriod_(agentIndex))
+		fabs(initPeriod_(agentIndex) - newPeriod) < 0.1*initPeriod_(agentIndex))
 	{
 		//nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/correction)+0.5));
-		nextBeat = prevBeat + newPeriod + error;
-		nextBeat = prevBeat + newPeriod;
+		//if(error <= 4)
+			//nextBeat = prevBeat + newPeriod;// + error;
+			nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/2.0) + ((error/abs(error))) * 0.5));
+		//else
+		//	nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/12.0) + ((error/abs(error))) * 0.5));
 	}
+
 	else 
 	{
 		nextBeat = prevBeat + oldPeriod;
@@ -262,7 +271,7 @@ BeatReferee::calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPerio
 	}
 
 	//cout << "Agent " << agentIndex << "; oldPeriod: " << oldPeriod << "; NewPeriod: " << newPeriod <<
-	//	"; Error: " << error << "; Correction: " << correction << endl;
+	//	"; NextBeat: "  << nextBeat << "; Error: " << error << "; Correction: " << correction << endl;
 	//cout << "Agent " << agentIndex << " History: " << historyCount_(agentIndex) << endl;
 
 	mrs_realvec newHypothesis(2);
@@ -276,7 +285,7 @@ mrs_natural
 BeatReferee::calcNewPeriod(mrs_natural oldPeriod, mrs_natural error, mrs_real beta)
 {
 	//cout << "error: " << error << "; beta: " << beta << endl;
-	mrs_natural newPeriod = oldPeriod +  (mrs_natural) ((error * beta)+0.5);
+	mrs_natural newPeriod = oldPeriod + ((mrs_natural) ((error * beta) + (error/abs(error)) * 0.5));
 	if(newPeriod < minPeriod_ || newPeriod > maxPeriod_)
 		newPeriod = oldPeriod;
 
@@ -301,14 +310,14 @@ BeatReferee::calcChildrenHypothesis(mrs_natural oldPeriod, mrs_natural prevBeat,
 	
 	beta = 0.5;
 	newPeriod = calcNewPeriod(oldPeriod, error, beta);
-	nextBeat = prevBeat + newPeriod + error;
+	nextBeat = prevBeat + newPeriod + ((mrs_natural) ((error/2.0) + ((error/abs(error))) * 0.5));
 	newHypotheses(2) = newPeriod;
 	newHypotheses(3) = nextBeat;
 
 	//cout << "oldPeriod: " << oldPeriod << "; newPeriod: " << newPeriod << "; Error: " << error << 
 	//	"; prevBeat: " << prevBeat << "; nextBeat: " << nextBeat << endl;
 
-	beta = 0.125; //0.125
+	beta = 1.0; //0.125
 	newPeriod = calcNewPeriod(oldPeriod, error, beta);
 	nextBeat = prevBeat + newPeriod + error;
 	newHypotheses(4) = newPeriod;
@@ -322,20 +331,25 @@ void
 BeatReferee::createChildren(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error, 
 						mrs_real agentScore, mrs_real beatCount)
 {
-	mrs_real deltaS = abs(childFactor_ * agentScore);
+	mrs_real deltaS = fabs(childFactor_ * agentScore);
 	mrs_real newScore = agentScore - deltaS;
 
 	mrs_realvec newHypotheses = calcChildrenHypothesis(oldPeriod, prevBeat, error);
-	
+
+	mrs_realvec newHypothesis = calculateNewHypothesis(agentIndex, oldPeriod, prevBeat, error);
+	setNewHypothesis(agentIndex, (mrs_natural) newHypothesis(0), (mrs_natural) newHypothesis(1));
+
 	createNewAgent((mrs_natural) newHypotheses(0), (mrs_natural) newHypotheses(1), newScore, beatCount);
 	createNewAgent((mrs_natural) newHypotheses(2), (mrs_natural) newHypotheses(3), newScore, beatCount);
 	createNewAgent((mrs_natural) newHypotheses(4), (mrs_natural) newHypotheses(5),  newScore, beatCount);
 
 	//Display Created BeatAgent:
-/*	cout << "NEW AGENT(" << t_ <<") (reqBy:" << agentIndex << ") -> PrevBeat: " << prevBeat << " Period: " 
-		<< oldPeriod << " NextBeat: " << newHypothesis(1) << " NewPeriod: " << newHypothesis(0) << 
-		" Error: " << error << " Score: " << newScore;				
-*/
+	//cout << "NEW AGENT(" << t_ << "-" << ((t_ * hopSize_) - (hopSize_/2)) / srcFs_ << ") (reqBy:" << agentIndex << 
+	//") -> PrevBeat:" << prevBeat << " Period:" << oldPeriod << " NextBeat1:" << newHypotheses(1) << " NewPeriod1:" << 
+	//	newHypotheses(0) << " NextBeat2:" << newHypotheses(3) << " NewPeriod2:" << newHypotheses(2) << 
+	//	" NextBeat3:" << newHypotheses(5) << " NewPeriod3:" << newHypotheses(4) << 
+	//	" Error:" << error << " Score:" << newScore << endl;					
+
 }
 
 //Routine for updating existent agent hypothesis
@@ -348,10 +362,10 @@ BeatReferee::updateAgentHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod
 	setNewHypothesis(agentIndex, (mrs_natural) newHypothesis(0), (mrs_natural) newHypothesis(1));
 
 	//Display Updated BeatAgent:
-/*	cout << "UPDATING AGENT" << agentIndex <<" (" << t_ << ")" << " -> oldPeriod: " << oldPeriod << 
-		" newPeriod: " << newHypothesis(0) << " prevBeat: " << prevBeat << " nextBeat: " << newHypothesis(1) <<  
-		" Error: " << error << endl;
-*/
+	//cout << "UPDATING AGENT" << agentIndex <<" (" << t_ << ")" << " -> oldPeriod: " << oldPeriod << 
+	//	" newPeriod: " << newHypothesis(0) << " prevBeat: " << prevBeat << " nextBeat: " << newHypothesis(1) <<  
+	//	" Error: " << error << endl;
+
 }
 
 //Define new Hypothesis in indexed AgentControl Matrix:
@@ -563,7 +577,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		updctrl(ctrl_inductionEnabler_, inductionEnabler_);
 		
 		//restart tick counter
-		t_ = 1;
+		t_ = 0;
 		inductionFinnished_ = true;
 	}
 	
@@ -626,7 +640,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 
 				//Kill Agent if its score is bellow minimum
 				
-				if (score_(o) < bestScore_ && abs(bestScore_ - score_(o)) > max(abs(bestScore_ * obsoleteFactor_), 10000.0))
+				if (score_(o) < bestScore_ && fabs(bestScore_ - score_(o)) > max(fabs(bestScore_ * obsoleteFactor_), 10000.0))
 				{
 					//cout << "Agent " << o << " Killed: Score below minimum (" << score_(o) << "\\" << bestScore_ << ")" << endl;
 					killAgent(o, "Obsolete");
@@ -744,7 +758,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					if(t_ - lastBeatTime_ >= (minPeriod_-3))
 					{
 						//Display Outputted Beat:
-						//cout << "OUTPUT(" << t_ << ")->Beat from Agent " << bestAgentIndex_ << 
+						//cout << "OUTPUT(" << t_ << "-" << ((t_ * hopSize_) - (hopSize_/2)) / srcFs_ << ")->Beat from Agent " << bestAgentIndex_ << 
 						//	" BestScore: " << bestScore_ << " (" << score_(bestAgentIndex_) << ")->" << 
 						//	(60.0 / (t_ - lastBeatTime_)) * (ctrl_srcFs_->to<mrs_real>() / ctrl_hopSize_->to<mrs_natural>()) << endl;
 						//cout << "BEST_AgentPeriod: " << lastPeriods_(bestAgentIndex_) << "(" << (t_ - lastBeatTime_) << ")" << endl;
