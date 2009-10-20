@@ -71,41 +71,7 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   MarSystemManager mng;
 
   net_ = mng.create("Series", "net");
-
-  
-  // net_->addMarSystem(mng.create("SoundFileSource", "src"));
-  
-  MarSystem* mixsrc = mng.create("Fanout/mixsrc");
-  MarSystem* branch1 = mng.create("Series/branch1");
-  MarSystem* branch2 = mng.create("Series/branch2");
-  MarSystem* branch3 = mng.create("Series/branch3");
-
-  branch1->addMarSystem(mng.create("SoundFileSource/src"));
-  branch1->addMarSystem(mng.create("Gain/gain"));
-  branch1->addMarSystem(mng.create("Panorama/pan"));
-
-  branch2->addMarSystem(mng.create("SoundFileSource/src"));
-  branch2->addMarSystem(mng.create("Gain/gain"));
-  branch2->addMarSystem(mng.create("Panorama/pan"));
-
-
-  branch3->addMarSystem(mng.create("SoundFileSource/src"));
-  branch3->addMarSystem(mng.create("Gain/gain"));
-  branch3->addMarSystem(mng.create("Panorama/pan"));
-  
-  branch1->updctrl("Panorama/pan/mrs_real/angle", 0.0);
-  branch2->updctrl("Panorama/pan/mrs_real/angle", 0.0);
-  branch3->updctrl("Panorama/pan/mrs_real/angle", 0.0);
-
-  mixsrc->addMarSystem(branch1);
-  mixsrc->addMarSystem(branch2);
-  mixsrc->addMarSystem(branch3);
-  
-  net_->addMarSystem(mixsrc);
-  net_->addMarSystem(mng.create("Sum/sum"));
-  net_->updctrl("Sum/sum/mrs_bool/stereo", true);
-  
-  
+  net_->addMarSystem(mng.create("SoundFileSource", "src"));
   net_->addMarSystem(mng.create("AudioSink", "dest"));
   //   net_->addMarSystem(mng.create("Gain", "gain"));
 
@@ -143,32 +109,21 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   net_->addMarSystem(mng.create("Gain", "gain"));
 
   net_->updctrl("mrs_real/israte", 44100.0);
-  net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_real/israte", 44100.0);
-  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_real/osrate", 44100.0);
+  net_->updctrl("SoundFileSource/src/mrs_real/israte", 44100.0);
+  net_->updctrl("SoundFileSource/src/mrs_real/osrate", 44100.0);
   net_->updctrl("AudioSink/dest/mrs_real/israte", 44100.0);
-  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_natural/inSamples",insamples);
+  net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
   net_->updctrl("mrs_natural/inSamples",insamples);
 
   if (inAudioFileName != "") {
-    // net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+	net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
   }
-  
-  net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_string/filename", "one.wav");
-  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_string/filename", "two.wav");
-  net_->updctrl("Fanout/mixsrc/Series/branch3/SoundFileSource/src/mrs_string/filename", "three.wav");
-
-
-  
-  net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_real/repetitions",-1.0);
-  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_real/repetitions",-1.0);
-  net_->updctrl("Fanout/mixsrc/Series/branch3/SoundFileSource/src/mrs_real/repetitions",-1.0);
+  net_->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
 
   net_->updctrl("mrs_natural/inSamples",insamples);
 
   net_->updctrl("mrs_real/israte", 44100.0);
   net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
-  cout << *net_ << endl;
 
   mwr_ = new MarSystemQtWrapper(net_);
   if (inAudioFileName != "") {
@@ -178,11 +133,11 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   }
 
   // Create some handy pointers to access the MarSystem
-  posPtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_natural/pos");
-  sizePtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_natural/size");
-  osratePtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_real/osrate");
+  posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
+  sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");
+  osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");
   initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-  fnamePtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_string/filename");
+  fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
   // Create the animation timer that periodically redraws the screen
   QTimer *timer = new QTimer( this ); 
@@ -522,7 +477,6 @@ void GLWidget::setZRotation(int angle)
 // Set the x translation val
 void GLWidget::setXTranslation(int v)
 {
-  cout << v << endl;
   double val = v * -0.1;
   if (val != xTrans) {
 	xTrans = val;
@@ -655,7 +609,6 @@ void GLWidget::open()
 
   mwr_->updctrl(fnamePtr_, fileName.toStdString());
   mwr_->updctrl(initPtr_, true);
-
 
   mwr_->start();
   mwr_->play();

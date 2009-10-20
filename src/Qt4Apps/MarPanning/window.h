@@ -11,10 +11,6 @@
 #include <QCheckBox>
 using namespace std;
 
-#include "MarSystemQtWrapper.h" 
-using namespace MarsyasQt;
-
-
 class GLWidget;
 
 class Window : public QMainWindow
@@ -30,17 +26,9 @@ private slots:
 
 public:
   Window(string inAudioFileName);
-  MarSystemQtWrapper* getMarSystemQtWrapper(); 
+
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
-   QSlider *xTransSlider;
-  QSlider *xRotSlider;
-  QSlider *yRotSlider;
-  QSlider *magnitudeCutoffSlider;
-  QSlider *numVerticesSlider;
-  QSlider *dotSizeSlider;
-
-
 
 private:
   QSlider *createSlider(int,int,int,int,int);
@@ -53,10 +41,12 @@ private:
   GLWidget *glWidget;
 
   // Sliders to rotate the object on its axes
+  QSlider *xRotSlider;
+  QSlider *yRotSlider;
 //   QSlider *zRotSlider;
 
 //   // Sliders to translate the object
-
+   QSlider *xTransSlider;
    QSlider *yTransSlider;
 //   QSlider *zTransSlider;
 
@@ -68,7 +58,9 @@ private:
   QSlider *fogEndSlider;
 
   // Data display sliders
-
+  QSlider *magnitudeCutoffSlider;
+  QSlider *numVerticesSlider;
+  QSlider *dotSizeSlider;
 
   // Song position
   QSlider *posSlider;
