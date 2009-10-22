@@ -627,7 +627,8 @@ void Grid::predict() {
 
 			total_->process(som_in, som_res);
 			QString current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>().c_str();
-
+			cout << total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
+			
 			norm_->process(som_res, norm_som_res);
 
 			realvec foobar;

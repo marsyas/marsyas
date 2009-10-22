@@ -19,7 +19,7 @@ class MarPhasevocoderWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MarPhasevocoderWindow();
+    MarPhasevocoderWindow(string inAudioFileName);
 
 public slots: 
    void about();
@@ -34,7 +34,7 @@ public slots:
 private:
   void createMenus();
   void createActions();
-  void createNetwork();
+  void createNetwork(string inAudioFileName);
   void startNetwork();
    
   MarSystem* pvoc_;

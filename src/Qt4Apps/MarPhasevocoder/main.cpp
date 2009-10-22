@@ -12,8 +12,14 @@ int main(int argc, char *argv[])
 
   QApplication app(argc, argv);
 
+  string inAudioFileName = "";
+  if (argc > 1) {
+	inAudioFileName = argv[1];	  
+  }
+  cout << inAudioFileName << endl;
+  
 
-  MarPhasevocoderWindow* win = new MarPhasevocoderWindow();
+  MarPhasevocoderWindow* win = new MarPhasevocoderWindow(inAudioFileName);
   win->show();
 
   OscMapper* oscMapper;

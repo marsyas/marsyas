@@ -41,8 +41,8 @@ MarGridWindow::MarGridWindow()
   QPushButton *train = new QPushButton(tr("Train"));
   QPushButton *predict = new QPushButton(tr("Predict"));
   // playLabel = new QLabel("Hello");
-  trainLabel = new QLabel("Train File: \t ./music.mf");
-  predictLabel = new QLabel("Predict File: \t ./test.mf");
+  trainLabel = new QLabel("Train File: \t ./margrid_train.mf");
+  predictLabel = new QLabel("Predict File: \t ./margrid_test.mf");
   gridHeightLabel = new QLabel("Grid Height: ");
   gridWidthLabel = new QLabel("Grid Width: ");
   gridWidth = new QLineEdit(this);

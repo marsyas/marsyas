@@ -13,7 +13,7 @@ mrs_natural eopt_ = 0;
 
 mrs_real popt = 1.0;
 
-MarPhasevocoderWindow::MarPhasevocoderWindow()
+MarPhasevocoderWindow::MarPhasevocoderWindow(string inAudioFileName)
 {
 	QWidget *w = new QWidget;
 	setCentralWidget(w);
@@ -44,7 +44,7 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
 	timeSlider->setValue(50);
 	sinusoidsSlider->setValue(10);
 
-	createNetwork();
+	createNetwork(inAudioFileName);
 
 	QGridLayout *gridLayout = new QGridLayout;
 
@@ -80,6 +80,18 @@ MarPhasevocoderWindow::MarPhasevocoderWindow()
 	w->setLayout(gridLayout);
 
 	startNetwork();
+	if (inAudioFileName != "")
+	{
+		
+		mwr_->trackctrl(freqPtr_); 
+		mwr_->trackctrl(posPtr_);
+		
+		mwr_->updctrl(fnamePtr_, inAudioFileName);
+		mwr_->updctrl(initPtr_, true);
+		
+		mwr_->play();
+	}
+	
 }
 
 void 
@@ -145,7 +157,7 @@ MarPhasevocoderWindow::freqChanged(int value)
 }
 
 void 
-MarPhasevocoderWindow::createNetwork()
+MarPhasevocoderWindow::createNetwork(string inAudioFileName)
 {
 	mrs_natural N = 512;
 	mrs_natural Nw = 512;
@@ -186,6 +198,9 @@ MarPhasevocoderWindow::createNetwork()
 	posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
 	initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
 	fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
+	if (inAudioFileName != "")
+		mwr_->updctrl("SoundFileSource/src/mrs_string/filename", inAudioFileName);
+	
 	freqControl_ = new MarControlGUI(freqPtr_, mwr_, this);
 	posControl_ = new MarControlGUI(posPtr_, mwr_, this);
 }

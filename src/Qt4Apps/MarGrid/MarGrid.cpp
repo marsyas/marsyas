@@ -37,9 +37,9 @@ MarGrid::MarGrid(QWidget *parent)
 
   int winWidth, winHeight;
   
-  cell_size = 30;
-  som_width = 20;
-  som_height = 20;
+  cell_size = 50;
+  som_width = 12;
+  som_height = 12;
   initAudio_ = false;
   continuous_ = false;
   blackwhite_ = false;
@@ -63,7 +63,7 @@ MarGrid::MarGrid(QWidget *parent)
   filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
 
   mwr_->start();
-  setupTrain("music.mf");
+  setupTrain("margrid_train.mf");
 }
 
 
@@ -174,7 +174,7 @@ MarGrid::setupTrain(QString fname)
 
   
   trainFname = fname;
-  predictFname = "test.mf";
+  predictFname = "margrid_train.mf";
   total_->updctrl("mrs_string/filename", trainFname.toStdString());
   total_->updctrl("mrs_real/repetitions", 1.0);
   
@@ -198,7 +198,7 @@ MarGrid::extract()
     total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   
   som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			   total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   
   som_res.create(total_onObservations, 
 		 total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
@@ -352,16 +352,22 @@ MarGrid::predict()
 
   realvec som_in;
   realvec som_res;
+  realvec som_res1;
+  
   realvec norm_som_res;
 
-  som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>()); 
- 
- som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		 total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
- 
-  norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		      total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+  mrs_natural inObs = total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  mrs_natural inSms = total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>(); 
+
+  mrs_natural onObs = total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+  mrs_natural onSms = total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>(); 
+  
+  som_in.create(inObs, inSms);
+  som_res.create(onObs, onSms);
+  
+  som_res1.create(onObs+2, onSms);
+  
+  norm_som_res.create(onObs+2, onSms);
 
   for (int index = 0; index < l1.size(); index++)
     {
@@ -372,12 +378,14 @@ MarGrid::predict()
 
       total_->process(som_in, som_res);
       string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-	  
+
 
 	  cout << "CURRENT = " << current << endl;
 	  
-
-      norm_->process(som_res, norm_som_res);
+      for (int o=0; o < onObs; o++) 
+		  som_res1(o, 0) = som_res(o, 0);
+	  
+      norm_->process(som_res1, norm_som_res);
       som_->process(norm_som_res, predict_res); 
 
 
