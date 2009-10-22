@@ -294,6 +294,13 @@ QSlider *Window::createRotationSlider(int min, int max)
   return slider;
 }
 
+MarSystemQtWrapper* Window::getMarSystemQtWrapper()
+{
+  return glWidget->getMarSystemQtWrapper();
+}
+
+
+
 QSlider *Window::createTranslationSlider()
 {
   QSlider *slider = new QSlider(Qt::Horizontal);

@@ -23,7 +23,11 @@ Q_OBJECT
 
 public:
   GLWidget(string inAudioFileName,QWidget *parent = 0);
+  void GLWidget_other_constructor(string inAudioFileName,QWidget *parent = 0);
   ~GLWidget();
+
+
+  MarSystemQtWrapper* getMarSystemQtWrapper(){return mwr_;};
 
   QSize minimumSizeHint() const;
   QSize sizeHint() const;

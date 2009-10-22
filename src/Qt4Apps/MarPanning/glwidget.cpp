@@ -147,6 +147,187 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   setPos(0);
 }
 
+//
+// Code written by gtzan to support using the Microsoft Pressure
+// Sensitive keyboard to control panning of three different input
+// sources.  Not hooked up right now.
+//
+void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *parent)
+//   : QGLWidget(parent)
+{
+  // Initialize member variables
+  xRot = 30;
+  yRot = 0;
+  zRot = 0;
+
+  init = 0;
+
+  xTrans = 0;
+  // For 200
+  //   zTrans = -127;
+  //   yTrans = -5.5;
+
+  // For 50
+//   zTrans = -52;
+   z_start = 70;
+//   zTrans = -1 * z_start;
+   zTrans = -70;
+  yTrans = -6.7;
+
+  test_x = 0;
+  test_y = 0;
+  test_z = 0;
+  
+  insamples = 512;
+  spectrum_bins = insamples / 2.0;
+  stereo_spectrum_bins = insamples / 2.0;
+
+  dot_size_multiplier = 1.0;
+
+  // The number of vertices used to make the disk
+  num_vertices = 10;
+  
+  // Defaults
+  y_scale = 350;
+
+  // Create space for the vertices we will display
+  powerspectrum_ring_buffer = new double*[MAX_Z];
+  panning_spectrum_ring_buffer = new double*[MAX_Z];
+
+  for (int i = 0; i < MAX_Z; i++) {
+	powerspectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
+	panning_spectrum_ring_buffer[i] = new double[MAX_STEREO_SPECTRUM_BINS];
+  }
+  clearRingBuffers();
+  ring_buffer_pos = 0;
+
+  //
+  // Create the MarSystem
+  // 
+  MarSystemManager mng;
+
+  net_ = mng.create("Series", "net");
+
+  
+  // net_->addMarSystem(mng.create("SoundFileSource", "src"));
+  
+  MarSystem* mixsrc = mng.create("Fanout/mixsrc");
+  MarSystem* branch1 = mng.create("Series/branch1");
+  MarSystem* branch2 = mng.create("Series/branch2");
+  MarSystem* branch3 = mng.create("Series/branch3");
+
+  branch1->addMarSystem(mng.create("SoundFileSource/src"));
+  branch1->addMarSystem(mng.create("Gain/gain"));
+  branch1->addMarSystem(mng.create("Panorama/pan"));
+
+  branch2->addMarSystem(mng.create("SoundFileSource/src"));
+  branch2->addMarSystem(mng.create("Gain/gain"));
+  branch2->addMarSystem(mng.create("Panorama/pan"));
+
+
+  branch3->addMarSystem(mng.create("SoundFileSource/src"));
+  branch3->addMarSystem(mng.create("Gain/gain"));
+  branch3->addMarSystem(mng.create("Panorama/pan"));
+  
+  branch1->updctrl("Panorama/pan/mrs_real/angle", 0.0);
+  branch2->updctrl("Panorama/pan/mrs_real/angle", 0.0);
+  branch3->updctrl("Panorama/pan/mrs_real/angle", 0.0);
+
+  mixsrc->addMarSystem(branch1);
+  mixsrc->addMarSystem(branch2);
+  mixsrc->addMarSystem(branch3);
+  
+  net_->addMarSystem(mixsrc);
+  net_->addMarSystem(mng.create("Sum/sum"));
+  net_->updctrl("Sum/sum/mrs_bool/stereo", true);
+  
+  
+  net_->addMarSystem(mng.create("AudioSink", "dest"));
+  //   net_->addMarSystem(mng.create("Gain", "gain"));
+
+   MarSystem* fanout = mng.create("Fanout", "fanout");
+
+    MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
+    powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+    powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
+    powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
+    powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+     powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
+
+  MarSystem* stereobranches_series = mng.create("Series", "stereobranches_series");
+  MarSystem* stereobranches_parallel = mng.create("Parallel", "stereobranches_parallel");
+  MarSystem* left = mng.create("Series", "left");
+  MarSystem* right = mng.create("Series", "right");
+
+  left->addMarSystem(mng.create("Windowing", "hamleft"));
+  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+
+  right->addMarSystem(mng.create("Windowing", "hamright"));
+  right->addMarSystem(mng.create("Spectrum", "spkright"));
+
+  stereobranches_parallel->addMarSystem(left);
+  stereobranches_parallel->addMarSystem(right);
+  stereobranches_series->addMarSystem(stereobranches_parallel);
+  stereobranches_series->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+
+  stereobranches_series->addMarSystem(mng.create("Gain", "gain"));
+
+   fanout->addMarSystem(powerspectrum_series);
+  fanout->addMarSystem(stereobranches_series);
+
+  net_->addMarSystem(fanout);
+  net_->addMarSystem(mng.create("Gain", "gain"));
+
+  net_->updctrl("mrs_real/israte", 44100.0);
+  net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_real/israte", 44100.0);
+  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_real/osrate", 44100.0);
+  net_->updctrl("AudioSink/dest/mrs_real/israte", 44100.0);
+  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_natural/inSamples",insamples);
+  net_->updctrl("mrs_natural/inSamples",insamples);
+
+  if (inAudioFileName != "") {
+    // net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  }
+  
+  net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_string/filename", "one.wav");
+  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_string/filename", "two.wav");
+  net_->updctrl("Fanout/mixsrc/Series/branch3/SoundFileSource/src/mrs_string/filename", "three.wav");
+
+
+  
+  net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_real/repetitions",-1.0);
+  net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_real/repetitions",-1.0);
+  net_->updctrl("Fanout/mixsrc/Series/branch3/SoundFileSource/src/mrs_real/repetitions",-1.0);
+
+  net_->updctrl("mrs_natural/inSamples",insamples);
+
+  net_->updctrl("mrs_real/israte", 44100.0);
+  net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  cout << *net_ << endl;
+
+  mwr_ = new MarSystemQtWrapper(net_);
+  if (inAudioFileName != "") {
+	mwr_->start();
+	mwr_->play();
+	play_state = true;
+  }
+
+  // Create some handy pointers to access the MarSystem
+  posPtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_natural/pos");
+  sizePtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_natural/size");
+  osratePtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_real/osrate");
+  initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
+  fnamePtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_string/filename");
+
+  // Create the animation timer that periodically redraws the screen
+  QTimer *timer = new QTimer( this ); 
+  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) ); 
+  timer->start(20); // Redraw the screen every 10ms
+
+  setPos(0);
+}
+
 GLWidget::~GLWidget()
 {
   makeCurrent();
