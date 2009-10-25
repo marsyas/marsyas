@@ -1920,11 +1920,11 @@ selectFeatureSet(MarSystem *featExtractor)
 	if (timbralFeatures_)
 	{
 		featExtractor->updctrl("mrs_string/enableTDChild", "ZeroCrossings/zcrs");
+		
 		featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
-
 	}
 }
 

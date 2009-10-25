@@ -434,6 +434,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 	if (compositesMap_.find(prototype) == compositesMap_.end())
 		return;
 
+	
 	switch (compositesMap_[prototype])
 	{
 	case STUB:
@@ -560,7 +561,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 		// timbre_features prototype
 		////////////////////////////////////////////////////////////////////
 		MarSystem* timbre_features_pr = new Fanout("timbre_features_pr");
-		// time domain branch
+		// TD branch
 		MarSystem* timeDomainFeatures = create("Series", "timeDomain");
 		timeDomainFeatures->addMarSystem(create("ShiftInput", "si"));
 		MarSystem* tdf = create("Fanout", "tdf");
@@ -645,6 +646,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 
 	case STEREOFEATURES:
 	{
+		
 		/////////////////////////////////////////////////////////////////
 		// combined stereo features
 		/////////////////////////////////////////////////////////////////
@@ -666,7 +668,11 @@ void MarSystemManager::registerComposite(std::string prototype)
 		//link enable controls
 		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "mrs_string/enableSPChild");
 		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "mrs_string/enableSPChild");
-
+		
+ 		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableTDChild", "mrs_string/enableTDChild");
+ 		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableTDChild", "mrs_string/enableTDChild");
+		
+		
 		registerPrototype("StereoFeatures", stereoFeatures);
 	}
 	break;
@@ -1174,6 +1180,7 @@ MarSystemManager::getPrototype(string type)
 MarSystem*
 MarSystemManager::create(string type, string name)
 {
+	
 	registerComposite(type);
 
 	if (registry_.find(type) != registry_.end())

@@ -262,10 +262,10 @@ void Grid::extract() {
 
 		// !!! use itunes to generate the collection file rather then using a file
 		ofstream featureFile;
-		featureFile.open("music.mf", std::ios::out | std::ios::binary);
+		featureFile.open("margrid_train.mf", std::ios::out | std::ios::binary);
 		//featureFile.open("music.mf");
 		_collection->generatePlayList(featureFile, playlist_.c_str());
-		extractAction("music.mf");
+		extractAction("margrid_train.mf");
 	} else if (trainFile_.length() > 0) {
 	  cout << "Grid::extract() :: trainFile_.length() > 0" << endl;
 	  cout << "trainFile_=" << trainFile_ << endl;
@@ -539,7 +539,7 @@ void Grid::predict() {
 
   if ( _collection->getNumTracks() > 0 ) {
 	ready = 1;
-	fileName = "music.mf";
+	fileName = "margrid_train.mf";
   } else if (trainFile_.length() > 0) {
 	fileName = trainFile_; 
   } else {
@@ -549,6 +549,8 @@ void Grid::predict() {
 
 		realvec som_in;
 		realvec som_res;
+		realvec som_res1;
+		
 		realvec som_fmatrix;
 		QDir dir;
 
@@ -588,14 +590,19 @@ void Grid::predict() {
 
 		realvec norm_som_res;
 
-		som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-			total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>()); 
+		
+		mrs_natural inObs = total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+		mrs_natural inSms = total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>(); 
+		
+		mrs_natural onObs = total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+		mrs_natural onSms = total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>(); 
 
-		som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-			total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+		som_in.create(inObs, inSms);
+		som_res.create(onObs, onSms);
+		som_res1.create(onObs+2, onSms);
+		norm_som_res.create(onObs+2, onSms);
+		
 
-		norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-			total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 			ofstream oss1;
 			oss1.open("som4.mpl");
@@ -626,14 +633,16 @@ void Grid::predict() {
 
 
 			total_->process(som_in, som_res);
+			for (int o=0; o < onObs; o++) 
+				som_res1(o, 0) = som_res(o, 0);
 			QString current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>().c_str();
 			cout << total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
 			
-			norm_->process(som_res, norm_som_res);
+			norm_->process(som_res1, norm_som_res);
 
 			realvec foobar;
 			foobar.create(som_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), som_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-
+			
 			norm_som_fmatrix.getCol(index, foobar);
 
 			som_->process(foobar, predict_res); 
