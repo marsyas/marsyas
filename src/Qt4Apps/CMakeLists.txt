@@ -27,8 +27,11 @@ add_subdirectory(MarLpc)
 add_subdirectory(MarGrid)
 add_subdirectory(MarGrid2)
 add_subdirectory(MarNetworkWidget)
-add_subdirectory(MarSndPeek)
-add_subdirectory(MarPanning)
 add_subdirectory(MarOscIn)
 add_subdirectory(MarOscMultiGain)
+
+if (MARSYAS_OPENGL)
+	add_subdirectory(MarSndPeek)
+	add_subdirectory(MarPanning)
+endif (MARSYAS_OPENGL)
 
