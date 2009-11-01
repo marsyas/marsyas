@@ -76,7 +76,7 @@ Spectrum2Chroma::addControls()
 	addctrl("mrs_real/middleAfreq", 440.0, ctrl_middleAfreq_);
 	mrs_real A0freq = 440.0/pow(2.0, 4.0);
 	addctrl("mrs_real/weightCenterFreq", log(1000.0/A0freq)/log(2.0), ctrl_weightCenterFreq_);
-	addctrl("mrs_real/weightStdDev", 1.0, ctrl_weightStdDev_);
+	addctrl("mrs_real/weightStdDev", 0.0, ctrl_weightStdDev_);
 
 	ctrl_nbins_->setState(true);
 	ctrl_middleAfreq_->setState(true);
@@ -145,11 +145,14 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 		realvec fftfreqbins(N2);
 		for(o=1; o < N2; ++o)
 		{
-			fftfreqbins(o) = nbins * hertz2octs(o * 1.0 / N * srate, ctrl_middleAfreq_->to<mrs_real>());
+			fftfreqbins(o) = nbins * hertz2octs(o * 1.0 / N2 * srate, ctrl_middleAfreq_->to<mrs_real>());
 			
 		}
 		if (N2 > 1)
-		  fftfreqbins(0) = fftfreqbins(1)-1.5*nbins;
+			fftfreqbins(0) = fftfreqbins(1)-1.5*nbins;
+
+		
+		
 
 		//calculate the bin widths
 		realvec binwidthbins(N2);
@@ -160,6 +163,8 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 				binwidthbins(o) = 1.0;
 		}
 		binwidthbins(N2-1) = 1.0;
+
+		
 
 		//calculate chroma mapping
 		chromaMap_.create(nbins, N2); //=wts in Dan Ellis MATLAB code
@@ -179,6 +184,9 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 				chromaMap_(o,t) = exp(-0.5 * pow(2.0*D(o,t)/binwidthbins(t), 2.0) );
 			}
 		}
+
+
+
 		//normalize each column by its RMS value
 		mrs_real colRMS;
 		for(t = 0; t < N2; ++t) //iterate over columns
@@ -187,20 +195,23 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 			//get RMS value for column t
 			for(o = 0; o < nbins; ++o) //iterate over rows
 			{
-				colRMS += sqrt(chromaMap_(o,t)*chromaMap_(o,t));
+				colRMS += (chromaMap_(o,t)*chromaMap_(o,t));
 			}
 			//normalize column t
 			if(colRMS != 0.0)
 			{
 				for(o = 0; o < nbins; ++o) //row
 				{
-					chromaMap_(o,t) = chromaMap_(o,t)/colRMS;
+					chromaMap_(o,t) = chromaMap_(o,t)/sqrt(colRMS);
 				}
 			}
 		}
+
+		
 		//Maybe apply scaling for fft bins
 		mrs_real ctroct = ctrl_weightCenterFreq_->to<mrs_real>();
 		mrs_real octwidth = ctrl_weightStdDev_->to<mrs_real>();
+		
 		if(octwidth > 0.0)
 		{
 			for(o = 0; o < nbins; ++o)
@@ -226,18 +237,20 @@ Spectrum2Chroma::myProcess(realvec& in, realvec& out)
 
 	
 	out.setval(0.0);
+	
+
 	for(t=0; t< inSamples_; ++t)
 	{
 		for(o=0; o< onObservations_; ++o)
 		{
 			for(mrs_natural i=0; i< inObservations_; ++i)
 			{
-				out(o,t)+= in(i,t)*chromaMap_(o,i);
-
 				
+				out(o,t) += in(i,t)*chromaMap_(o,i);
 			}
 		}
 	}
+
 #ifdef MARSYAS_MATLAB
 // 	MATLAB_PUT(in, "spectrum");
 // 	MATLAB_PUT(out,"marChromaVec");

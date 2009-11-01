@@ -167,6 +167,7 @@
 #include "PhiSEMSource.h"
 #include "PhiSEMFilter.h"
 #include "SVMClassifier.h"
+#include "Chroma.h"
 #include "Spectrum2Chroma.h"
 #include "Spectrum2Mel.h"
 #include "ADRess.h"
@@ -360,7 +361,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhiSEMSource", new PhiSEMSource("phisemsourcepr"));
 	registerPrototype("PhiSEMFilter", new PhiSEMFilter("phisemfilterpr"));
 	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
+	registerPrototype("Chroma", new Chroma("chromapr"));
 	registerPrototype("Spectrum2Chroma", new Spectrum2Chroma("spectrum2chromapr"));
+	
 	registerPrototype("Spectrum2Mel", new Spectrum2Mel("spectrum2melpr"));
 	registerPrototype("ADRess", new ADRess("adresspr"));
 	registerPrototype("ADRessSpectrum", new ADRessSpectrum("adressspectrumpr"));

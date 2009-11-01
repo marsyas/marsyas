@@ -42,6 +42,7 @@ for i in range(1,2):  # Show first five windows of the time domain waveform
 	axis('tight')
 	xticks ( arange(0,513,64), arange(512 * (i-1), (512 *(i)+1), 64)  )
 	figure()
+	raw_input("Press enter to continue")
 	plot(plotdata2)
 
 	show()

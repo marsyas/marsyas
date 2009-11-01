@@ -121,7 +121,7 @@ Chroma::myUpdate(MarControlPtr sender)
   }
   
 }
-
+ 
 void 
 Chroma::myProcess(realvec& in, realvec& out)
 {
