@@ -904,8 +904,36 @@ toy_with_sfplay(string sfName)
 }
 
 
+
 void 
 toy_with_sine() 
+{
+  cout << "Toying with sine" << endl;
+  MarSystemManager mng;
+  
+  MarSystem* snet = mng.create("Series/snet");
+  MarSystem* smix = mng.create("Fanout/smix");
+  smix->addMarSystem(mng.create("SineSource/src1"));
+  smix->addMarSystem(mng.create("SineSource/src2"));
+  snet->addMarSystem(smix);
+  snet->addMarSystem(mng.create("AudioSink/dest"));
+  
+  snet->updctrl("mrs_natural/inSamples", 2048);
+  snet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  
+ 
+
+  for (int i=0; i < 500; i++) 
+    {
+      snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", 440.0);
+      snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", 445.0);
+      snet->tick();
+    }
+
+}
+
+void 
+toy_with_scales() 
 {
 	MarSystemManager mng;
 	
@@ -4662,7 +4690,7 @@ toy_with_pitch(string sfName)
 void 
 toy_with_centroid(string sfName1)
 {
-	cout << "Test centroid " << sfName1 << endl;
+	cout << "Toy with centroid " << sfName1 << endl;
 	MarSystemManager mng;
 	
 	MarSystem* net = mng.create("Series/net");
@@ -4678,33 +4706,14 @@ toy_with_centroid(string sfName1)
 
 	mrs_real val = 0.0;
 
-
-	MarSystem* snet = mng.create("Series/snet");
-	MarSystem* smix = mng.create("Fanout/smix");
-	smix->addMarSystem(mng.create("SineSource/src1"));
-	smix->addMarSystem(mng.create("SineSource/src2"));
-	snet->addMarSystem(smix);
-	snet->addMarSystem(mng.create("AudioSink/dest"));
-
-	snet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-
-
 	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
 	{
 		net->tick();
-		snet->tick();
-
 		const mrs_realvec& src_data = 
 			net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();			
 		val = src_data(0,0);
 		cout << val << endl;
-		snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", val * 11025.0);
-		snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", val * 11025.0);
 	}
-
-	
-	
-
 }
 
 
@@ -6500,6 +6509,8 @@ main(int argc, const char **argv)
 		toy_with_sfplay(fname0);
 	else if (toy_withName == "sine") 
 		toy_with_sine();
+	else if (toy_withName == "scales") 
+	  toy_with_scales();
 	else if (toy_withName == "spectralSNR")
 		toy_with_spectralSNR(fname0, fname1);
 	else if (toy_withName == "stereo2mono")
