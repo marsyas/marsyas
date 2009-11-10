@@ -42,9 +42,9 @@ MaxArgMax::addControls()
 	addctrl("mrs_natural/nMaximums", (mrs_natural)1);
 	setctrlState("mrs_natural/nMaximums", true);
 	
-	//Added to avoid Fanout Crash!
-	addctrl("mrs_natural/nPhases", 1);
-	setctrlState("mrs_natural/nPhases", true);
+	//Added to avoid Fanout Crash (if used within Fanout) - requires equal number of columns in each line!
+	addctrl("mrs_natural/fanoutLength", (mrs_natural)1);
+	setctrlState("mrs_natural/fanoutLength", true);
 
 	addctrl("mrs_natural/interpolation", (mrs_natural)0);
 }
@@ -55,10 +55,10 @@ MaxArgMax::myUpdate(MarControlPtr sender)
 	(void) sender;
 
 	mrs_natural k = getctrl("mrs_natural/nMaximums")->to<mrs_natural>();
-	mrs_natural nPhases_ = getctrl("mrs_natural/nPhases")->to<mrs_natural>();
+	mrs_natural fanoutLength_ = getctrl("mrs_natural/fanoutLength")->to<mrs_natural>();
 	
-	//Added to avoid Fanout Crash!
-	mrs_natural size = 2 * max(k, nPhases_);
+	//Added to avoid Fanout Crash (if used within Fanout) - requires equal number of columns in each line!
+	mrs_natural size = 2 * max(k, fanoutLength_);
 	setctrl("mrs_natural/onSamples",  size);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  

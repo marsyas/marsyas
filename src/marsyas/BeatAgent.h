@@ -26,16 +26,23 @@ namespace Marsyas
 /** 
     \class BeatAgent
 	\ingroup Processing Basic
-    \brief Tests Beat Phase + Tempo hypothesis in comparison to
-	the actual onsetdetection function.
+    \brief Entity representing a given {period, phase} hypothesis regarding a train of beat positions paced by the following tempo.
+	A set of initial agents are feeded by the initial hypothesis given by an initial tempo induction stage.
+	Each BeatAgent is recursively evaluated in real-time, by a given score function (heuristics), around each predicted beat.
+	According to the goodness-of-fit between each agent's prediction and the correspondent local maxima in the observed data 
+	(given by the onset detection function calculated by the Spectral Flux) the agent's current score is incremented or decremented,
+	calling for the creation of new agents (children) when large discrepancies are observed.
+	
+	Input: Onset detection fucntion (uses Spectral Flux).
 	Output Format: [Beat/Eval/None|Tempo|PrevBeat|Inner/Outter|Error|Score]
 
-	- \b mrs_natural/phase = Given beat phase hypothesis (in frames);
-	- \b mrs_natural/tempobpm_ = Given tempo hypothesis (in BPM);
-	- \b mrs_real/srcFs [w] : Input sampling rate of the sound file source 
-	(given by "SoundFileSource/src/mrs_real/israte") -> by default = 1.0Hz.
-	- \b mrs_natural/hopSize [w] : hopsize of the analysis -> by default = 1.
-
+	Controls:
+	- \b mrs_string/identity [r] : agent's identity according to its BeatAgent pool (Fanout) index.
+	- \b mrs_realvec/agentControl [r] : feedback matrix, retrieved from BeatReferee, containing each BeatAgent's (updated) {period, phase} hypotheses, their lifecycle and timming situation.
+	- \b mrs_string/scoreFunc [r] : heuristics which conducts the beat tracking, by causally evaluating the goodness-of-fit between each agent's prediction and the correspondent local maxima in the onset detection function.
+	- \b mrs_real/lftOutterMargin [r] : the size of the outer half-window (in % of the IBI) before the predicted beat time.
+	- \b mrs_real/rgtOutterMargin [r] : the size of the outer half-window (in % of the IBI) after the predicted beat time.
+	- \b mrs_real/innerMargin [r] : inner tolerance window margin size (= half inner window size -> in ticks).
 */
 
 
@@ -44,11 +51,8 @@ class BeatAgent: public MarSystem
 private: 
   //Add specific controls needed by this MarSystem.
 	void addControls();
-	MarControlPtr ctrl_period_;
-	MarControlPtr ctrl_phase_;
 	MarControlPtr ctrl_identity_;
 	MarControlPtr ctrl_timming_;
-	MarControlPtr ctrl_isNewOrUpdated_;
 	MarControlPtr ctrl_agentControl_;
 	MarControlPtr ctrl_scoreFunc_;
 	MarControlPtr ctrl_lftOutterMargin_;
@@ -71,7 +75,6 @@ private:
 	mrs_natural prevBeat_;
 	mrs_natural beatCount_;
 	mrs_natural period_;
-	mrs_natural ibi_;
 	mrs_natural phase_;
 	mrs_natural t_;
 	mrs_natural lastBeatPoint_;

@@ -87,11 +87,7 @@ TempoHypotheses::myUpdate(MarControlPtr sender)
 void 
 TempoHypotheses::myProcess(realvec& in, realvec& out)
 {
-
 	t_++;
-
-	//Manual assorted values for filling BPM hypotheses vector when none are generated
-	int forceBPM_[] = {120, 60, 240, 100, 160, 200, 80, 140, 180, 220};
 
 	if(t_ == inductionTime_)
 	{
@@ -105,6 +101,9 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 
 		for (int i=0; i < nPeriods_; i++)
 		{
+			//Manual assorted values for filling BPM hypotheses vector when none are generated
+			int forceBPM_[] = {120, 60, 240, 100, 160, 200, 80, 140, 180, 220};
+			
 			int z = 0;
 			for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
 			{
@@ -112,7 +111,7 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 				{
 					out(j, 0) = in(0, 2*i+1); //Periods
 					out(j, 1) = in(1, 2*z+1); //Phases
-					out(j, 2) = in(0, 2*i) / maxPeriodPeak; //Normalized period peak magnitudes
+					out(j, 2) = in(0, 2*i);// / maxPeriodPeak; //Normalized period peak magnitudes
 					noBPMs_ = false;
 				}
 				z++;
@@ -130,6 +129,8 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 				for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
 				{
 					out(j, 0) = (mrs_natural) (((mrs_real) 60 / (forceBPM_[i] * 512)) * (srcFs_)); //Periods
+					out(j, 1) = in(1, 2*z+1); //Phases
+					out(j, 2) = 1.0; //equal (max) peak sizes to all manual periods
 					z++;
 				}
 			}

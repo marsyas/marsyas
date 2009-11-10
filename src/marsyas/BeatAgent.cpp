@@ -44,11 +44,8 @@ BeatAgent::BeatAgent(const BeatAgent& a) : MarSystem(a)
   // For any MarControlPtr in a MarSystem 
   // it is necessary to perform this getctrl 
   // in the copy constructor in order for cloning to work 
-	ctrl_period_ = getctrl("mrs_natural/period");
-	ctrl_phase_ = getctrl("mrs_natural/phase");
 	ctrl_identity_ = getctrl("mrs_string/identity");
 	ctrl_timming_ = getctrl("mrs_natural/timming");
-	ctrl_isNewOrUpdated_ = getctrl("mrs_bool/isNewOrUpdated");
 	ctrl_agentControl_ = getctrl("mrs_realvec/agentControl");
 	ctrl_scoreFunc_ = getctrl("mrs_string/scoreFunc");
 	ctrl_lftOutterMargin_ = getctrl("mrs_real/lftOutterMargin");
@@ -76,19 +73,16 @@ void
 BeatAgent::addControls()
 {
   //Add specific controls needed by this MarSystem.
-	addctrl("mrs_natural/period", -1, ctrl_period_);
-	addctrl("mrs_natural/phase", -1, ctrl_phase_);
 	addctrl("mrs_string/identity", "AgentX", ctrl_identity_);
-	addctrl("mrs_natural/timming", 1, ctrl_timming_);
-	addctrl("mrs_bool/isNewOrUpdated", true, ctrl_isNewOrUpdated_);
+	addctrl("mrs_natural/timming", 0, ctrl_timming_);
 	addctrl("mrs_realvec/agentControl", realvec(), ctrl_agentControl_);
-	addctrl("mrs_string/scoreFunc", "correlation", ctrl_scoreFunc_);
+	addctrl("mrs_string/scoreFunc", "regular", ctrl_scoreFunc_);
 	setctrlState("mrs_string/scoreFunc", true);
 	addctrl("mrs_real/lftOutterMargin", 0.2, ctrl_lftOutterMargin_);
 	setctrlState("mrs_real/lftOutterMargin", true);
-	addctrl("mrs_real/rgtOutterMargin", 0.4, ctrl_rgtOutterMargin_);
+	addctrl("mrs_real/rgtOutterMargin", 0.3, ctrl_rgtOutterMargin_);
 	setctrlState("mrs_real/rgtOutterMargin", true);
-	addctrl("mrs_real/innerMargin", 4.0, ctrl_innerMargin_);
+	addctrl("mrs_real/innerMargin", 3.0, ctrl_innerMargin_);
 	setctrlState("mrs_real/innerMargin", true);
 }
 
@@ -115,6 +109,8 @@ BeatAgent::myUpdate(MarControlPtr sender)
 	innerMargin_ = ctrl_innerMargin_->to<mrs_real>();
 }
 
+
+
 mrs_real
 BeatAgent::calcDScoreCorrSquare(realvec& in)
 {
@@ -124,7 +120,7 @@ BeatAgent::calcDScoreCorrSquare(realvec& in)
 	for(mrs_natural t = lastBeatPoint_ - outterWinLft_; t < lastBeatPoint_ - innerWin_; t++)
 	{
 		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinLft_;
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / (((outterWinRgt_+outterWinLft_)/2)+0.5);
 		//dScore += -1 * pow((fraction_)* in(t),2) ;
 		dScore += -1 * pow((fraction_),2) * in(t);
 	}
@@ -132,22 +128,29 @@ BeatAgent::calcDScoreCorrSquare(realvec& in)
 	//innerTolerance:
 	for(mrs_natural t = lastBeatPoint_ - innerWin_; t <= lastBeatPoint_ + innerWin_; t++)
 	{
-		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
+		fraction_ = (mrs_real) abs(error_) / (((outterWinRgt_+outterWinLft_)/2)+0.5);
 		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / (((outterWinRgt_+outterWinLft_)/2)+0.5);
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinRgt_;
 		dScore += pow((1 - fraction_),2) * in(t);
 		//dScore += pow((1 - fraction_) * in(t),2);
 	}
 
 	//outterRight Tolerance:
-	for(mrs_natural t = (lastBeatPoint_ + innerWin_)+1; t <= lastBeatPoint_ - outterWinRgt_; t++)
+	for(mrs_natural t = (lastBeatPoint_ + innerWin_)+1; t <= lastBeatPoint_ + outterWinRgt_; t++)
 	{
-		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
+		fraction_ = (mrs_real) abs(error_) / outterWinLft_;
 		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinRgt_;
 		//dScore += -1 * pow((fraction_)* in(t),2) ;
 		dScore += -1 * pow((fraction_),2) * in(t);
 	}
 
-	return dScore * period_;
+	//if(strcmp(identity_.c_str(), "Agent0") == 0);
+	//	cout << "MAX: " << max << "; ERRROR: " << error_ << "; dSCORE: " << dScore << endl;
+
+	//dScore /= (outterWinLft_+outterWinRgt_); //normalized by the full window size
+	//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
+	//return dScore * sqrt((mrs_real)period_) / (outterWinLft_+outterWinRgt_);
+	return dScore;
 }
 
 mrs_real
@@ -166,20 +169,23 @@ BeatAgent::calcDScoreCorr(realvec& in, mrs_natural maxInd)
 	//innerTolerance:
 	for(mrs_natural t = lastBeatPoint_ - innerWin_; t <= lastBeatPoint_ + innerWin_; t++)
 	{
-		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinRgt_;
+		fraction_ = (mrs_real) abs(error_) / (((outterWinRgt_+outterWinLft_)/2)+0.5);
+		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / (((outterWinRgt_+outterWinLft_)/2)+0.5);
 		dScore += (1 - fraction_) * in(t);//pow(in(t),2);
 	}
 
 	//outterRight Tolerance:
-	for(mrs_natural t = (lastBeatPoint_ + innerWin_)+1; t <= lastBeatPoint_ - outterWinRgt_; t++)
+	for(mrs_natural t = (lastBeatPoint_ + innerWin_)+1; t <= lastBeatPoint_ + outterWinRgt_; t++)
 	{
-		fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
+		fraction_ = (mrs_real) abs(error_) / outterWinLft_;
 		//fraction_ = (mrs_real) abs(lastBeatPoint_-t) / outterWinRgt_;
 		dScore += (-1 * fraction_) * in(t);//pow(in(t),2);
 	}
-
-	return dScore * period_ ;
+	
+	//dScore /= (outterWinLft_+outterWinRgt_); //normalized by the full window size
+	//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
+	//return dScore * sqrt((mrs_real)period_) / (outterWinLft_+outterWinRgt_);
+	return dScore;
 }
 
 mrs_natural
@@ -234,11 +240,11 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 	period_ = (mrs_natural) agentControl_(myIndex_, 1);
 	phase_ = (mrs_natural) agentControl_(myIndex_, 2);
 	
-	outterWinLft_ = (mrs_natural) floor(period_ * lftOutterMargin_); //20% of IBI
-	outterWinRgt_ = (mrs_natural) ceil(period_ * rgtOutterMargin_); //40% of IBI
-	innerWin_ = (mrs_natural) innerMargin_; //2 frames
-	//innerWin_ = (mrs_natural) max(5.0, ceil(period_ * innerMargin_));
-
+	outterWinLft_ = (mrs_natural) ceil(period_ * lftOutterMargin_); //(% of IBI)
+	outterWinRgt_ = (mrs_natural) ceil(period_ * rgtOutterMargin_); //(% of IBI)
+	innerWin_ = (mrs_natural) innerMargin_;
+	//innerWin_ = (mrs_natural) min(4.0, ceil(period_ * innerMargin_));
+	
 	mrs_natural curBeatPoint = inSamples_-1;
 	mrs_real max = 0;
 	mrs_natural max_i = 0;
@@ -286,6 +292,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		}
 
 		error_ = max_i - lastBeatPoint_;
+
 		//cout << identity_ << " -> MAX -> pred: " << in(lastBeatPoint_) << " ; act: " << max << endl;
 
 		//Classification of last beat based on above evaluation:
@@ -304,8 +311,11 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 			if(strcmp(scoreFunc_.c_str(), "regular") == 0)
 			{
 				fraction_ = (mrs_real) abs(error_) / outterWinLft_;
-				score_ = (1 - fraction_) * period_ * max;//pow(max,2);
-				//score_ = (1 - fraction_) * max;
+				//score_ = (1 - fraction_);
+				score_ = (1 - fraction_) * max;
+
+				//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
+				//score*= sqrt((mrs_real)period_);
 			}
 			
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside innerWindow!");
@@ -320,8 +330,11 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 			if(strcmp(scoreFunc_.c_str(), "regular") == 0)
 			{
 				fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-				score_ = (1 - fraction_) * period_ * max;//pow(max,2);
-				//score_ = (1 - fraction_) * max;
+				score_ = (1 - fraction_) * max;
+				//score_ = (1 - fraction_);
+
+				//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
+				//score*= sqrt((mrs_real)period_);
 			}
 			
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside innerWindow!");
@@ -340,8 +353,11 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 				if(strcmp(scoreFunc_.c_str(), "regular") == 0)
 				{
 					fraction_ = (mrs_real) abs(error_) / outterWinLft_;
-					score_ = -1 * fraction_ * period_ * max;//pow(max,2);
+					score_ = -1 * fraction_ * max;
 					//score_ = (1 - fraction_) * max;
+
+					//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
+					//score*= sqrt((mrs_real)period_);
 				}
 			}
 			if((max_i > lastBeatPoint_ + innerWin_) && (max_i <= lastBeatPoint_ + outterWinRgt_))
@@ -349,8 +365,11 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 				if(strcmp(scoreFunc_.c_str(), "regular") == 0)
 				{
 					fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
-					score_ = -1 * fraction_ * period_ * max;//pow(max,2);
+					score_ = -1 * fraction_ * max;
 					//score_ = (1 - fraction_) * max;
+
+					//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
+					//score*= sqrt((mrs_real)period_);
 				}
 			}
 

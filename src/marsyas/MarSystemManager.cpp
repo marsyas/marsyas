@@ -202,10 +202,8 @@
 #include "OnsetTimes.h"
 #include "BeatAgent.h"
 #include "BeatReferee.h"
-#include "BeatRefereeAvg.h"
 #include "PhaseLock.h"
 #include "BeatTimesSink.h"
-#include "SonicVisualiserSink.h"
 //modifyHeader
 
 using namespace std;
@@ -397,10 +395,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("OnsetTimes", new OnsetTimes("OnsetTimes"));
 	registerPrototype("BeatAgent", new BeatAgent("beatagent"));
 	registerPrototype("BeatReferee", new BeatReferee("beatreferee"));
-	registerPrototype("BeatRefereeAvg", new BeatRefereeAvg("beatrefavg"));
 	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
-	registerPrototype("SonicVisualiserSink", new SonicVisualiserSink("sonicsink"));
 	//modifyRegister
 
 	//***************************************************************************************

@@ -26,14 +26,50 @@ namespace Marsyas
 /** 
     \class BeatReferee
 	\ingroup Processing Basic
-    \brief Based on the agents' score and beat detection
-	Outputs most accurate beat and kills or creates new beat agents.
-	Must have as input a pool (FanOut) of BeatAgents.
+    \brief Central agency responsible for causally evaluating a pool of active BeatAgents around each beat prediction, 
+	and selecting the best one at each time ("frame" - tick), based on a given heuristics (score function) which affers the 
+	goodness-of-fit between each agent prediction and local maxima in the observed data 
+	(given by the onset detection function calculated by the Spectral Flux).
+	
+	Given such, this entity is responsible for:
+	- determine the best agent at each time, whose beats are validated;
+	- adjust each agent's current beat rate (period) and phase hypotheses, in order to compensate eventual rhythmic deviations;
+	- create new agents to follow alternative metrical paths (at most three children are created at each request);
+	- terminate an agent operation if:
+		* it has become obsolete (if its score insignificant in comparison to the best agent’s);
+		* it is found to be duplicating the work of another agent.
 
-	Input Format (from each agent): [Beat/Eval/None|Tempo|PrevBeat|Inner/Outter|Error|Score]
-	Output: [B/~B]
+	Input: Matrix with the beat\evaluation information from each BeatAgent of the pool (restricted to a defined maximum of M agents): 
+	
+		[Beati/Evali/Nonei|Periodi|PrevBeatTimei|Inneri/Outteri|Errori|dScorei]
+		[       ...       |  ...  |     ...     |      ...     |  ... |  ...  ]
+		[BeatM/EvalM/NoneM|PeriodM|PrevBeatTimeM|InnerM/OutterM|ErrorM|dScoreM]
+	
+	Output: [BEAT/~BEAT]
 
-	- \b mrs_natural/muted = enable flags of each BeatAgent of the pool.
+	Controls:
+	- \b mrs_realvec/mutedAgents [rw] : BeatAgents' pool (Fanout) enable/disable flags vector.
+	- \b mrs_realvec/inductionEnabler [rw] : Induction stage (Fanout) enable/disable flag vector.
+	- \b mrs_realvec/firstHypotheses [r] : vector with the first N {period, phase} hypotheses retrieved from the beat induction stage
+	- \b mrs_natural/inductionTime [r] : time (in tick counts) dispended in the initial induction stage.
+	- \b mrs_natural/hopSize [r] : hop size of the analysis.
+	- \b mrs_real/srcFs [r] : input sampling rate.
+	- \b mrs_natural/maxTempo [r] : maximum tempo considered (in BPMs)
+	- \b mrs_natural/minTempo [r] : minimum tempo considered (in BPMs)
+	- \b mrs_realvec/agentControl [w] : feedback matrix for controlling each BeatAgent's {period, phase} hypotheses, their lifecycle and timming situation.
+	- \b mrs_real/beatDetected [w] : flag for triggering beats to the noise (clicks) synthesizer.
+	- \b mrs_natural/tickCount [w] : control for sharing the current considered time (tick count) with the annotation output block (BeatTimesSink).
+	- \b mrs_real/obsoleteFactor [r] : an agent is killed if, at any time (after the initial 5secs), the difference between its score and the current bestScore is below obsoleteFactor * bestScore.
+	- \b mrs_real/childrenScoreFactor [r] : (inertia1) each created agent imports its father score decremented by the current father's score multiplied by this factor.
+	- \b mrs_real/bestFactor [r] : (inertia2) mutiple of the current bestScore an agent's score must have for replacing the current best agent.
+	- \b mrs_natural/eqPhase [r] : phase (in ticks) threshold which identifies two agents as predicting the same phase (the worst duplicated agent is killed).
+	- \b mrs_natural/eqPeriod [r] : period (IBI, in ticks) threshold which identifies two agents as predicting the same period (the worst duplicated agent is killed).
+	- \b mrs_real/corFactor [r] : correction factor for compensating each agents' own {phase, period} hypothesis errors.
+	- \b mrs_real/child1Factor [r] : correction factor (error proportion) of child1 for compensating its father's {phase, period} hypothesis - when error outside innerWindow tolerance.
+	- \b mrs_real/child2Factor [r] : correction factor (error proportion) of child2 for compensating its father's {phase, period} hypothesis - when error outside innerWindow tolerance.
+	- \b mrs_real/child3Factor [r] : correction factor (error proportion) of child3 for compensating its father's {phase, period} hypothesis - when error outside innerWindow tolerance.
+	- \b mrs_natural/metricalChangeTime [r] : initial time (in ticks) allowed for eventual metrical changes within tracking.
+	- \b mrs_bool/backtrace [r] : flag for backtracing the analysis to the beginning, after the induction stage.
 */
 
 
@@ -45,7 +81,6 @@ private:
 	MarControlPtr ctrl_mutedAgents_; //control with the enable flags of the overall BeatAgent pool.
 	MarControlPtr ctrl_firstHypotheses_;
 	MarControlPtr ctrl_inductionTime_;
-	MarControlPtr ctrl_agentTimming_;
 	MarControlPtr ctrl_inductionEnabler_;
 	MarControlPtr ctrl_hopSize_;
 	MarControlPtr ctrl_srcFs_;
@@ -55,12 +90,19 @@ private:
 	MarControlPtr ctrl_beatDetected_;
 	MarControlPtr ctrl_tickCount_;
 	MarControlPtr ctrl_obsoleteFactor_;
-	MarControlPtr ctrl_childFactor_;
+	MarControlPtr ctrl_childrenScoreFactor_;
 	MarControlPtr ctrl_bestFactor_;
 	MarControlPtr ctrl_eqPhase_;
 	MarControlPtr ctrl_eqPeriod_;
+	MarControlPtr ctrl_corFactor_;
+	MarControlPtr ctrl_child1Factor_;
+	MarControlPtr ctrl_child2Factor_;
+	MarControlPtr ctrl_child3Factor_;
+	MarControlPtr ctrl_metricalChangeTime_;
+	MarControlPtr ctrl_backtrace_;
 
 	mrs_bool inductionFinnished_;
+	mrs_bool backtrace_;
 	mrs_natural nrAgents_;
 	mrs_natural lastBeatTime_;
 	mrs_natural minPeriod_;
@@ -86,13 +128,20 @@ private:
 	mrs_natural t_;
 	mrs_natural outputCount_;
 	mrs_real obsoleteFactor_;
-	mrs_real childFactor_;
+	mrs_real childrenScoreFactor_;
 	mrs_real bestFactor_;
 	mrs_natural eqPhase_;
 	mrs_natural eqPeriod_;
 	mrs_realvec initPeriod_;
 	mrs_natural hopSize_;
 	mrs_real srcFs_;
+	mrs_real corFactor_;
+	mrs_real child1Factor_;
+	mrs_real child2Factor_;
+	mrs_real child3Factor_;
+	mrs_real metricalChangeTime_;
+	mrs_real maxPeriodChange_;
+	mrs_real timeBeforeKilling_;
 
 	void myUpdate(MarControlPtr sender);
 
@@ -119,8 +168,7 @@ public:
   mrs_realvec calcChildrenHypothesis(mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error);
   mrs_natural getFirstAliveAgent();
   void calcAbsoluteBestScore();
-  mrs_natural
-calcNewPeriod(mrs_natural oldPeriod, mrs_natural error, mrs_real beta);
+  mrs_natural calcNewPeriod(mrs_natural oldPeriod, mrs_natural error, mrs_real beta);
 };
 
 }//namespace Marsyas

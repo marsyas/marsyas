@@ -68,11 +68,14 @@ BeatTimesSink::addControls()
 {
   //Add specific controls needed by this MarSystem.
   addctrl("mrs_natural/tickCount", 0, ctrl_tickCount_);
-  addctrl("mrs_natural/hopSize", 1, ctrl_hopSize_);
-  addctrl("mrs_natural/winSize", 1, ctrl_winSize_);
-  addctrl("mrs_real/srcFs", 1.0, ctrl_srcFs_);
+  addctrl("mrs_natural/hopSize", -1, ctrl_hopSize_);
+  setctrlState("mrs_natural/hopSize", true);
+  addctrl("mrs_natural/winSize", -1, ctrl_winSize_);
+  setctrlState("mrs_natural/winSize", true);
+  addctrl("mrs_real/srcFs", -1.0, ctrl_srcFs_);
+  setctrlState("mrs_real/srcFs", true);
   addctrl("mrs_string/destFileName", "output", ctrl_destFileName_);
-  addctrl("mrs_string/mode", "all", ctrl_destFileName_);
+  addctrl("mrs_string/mode", "beats+tempo", ctrl_destFileName_);
   setctrlState("mrs_string/mode", true);
 }
 
@@ -84,6 +87,7 @@ BeatTimesSink::myUpdate(MarControlPtr sender)
 
   hopSize_ = ctrl_hopSize_->to<mrs_natural>();
   winSize_ = ctrl_winSize_->to<mrs_natural>();
+  srcFs_ = ctrl_srcFs_->to<mrs_real>();
 
   //adjustment_ = (winSize_ - hopSize_) + floor((mrs_real) winSize_/2);
   adjustment_ = hopSize_/2;
@@ -124,7 +128,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 			fstream outStream2;
 			fstream outStream3;
 
-			if((strcmp(mode_.c_str(), "beatTimes") == 0) || (strcmp(mode_.c_str(), "all") == 0))
+			if((strcmp(mode_.c_str(), "beatTimes") == 0) || (strcmp(mode_.c_str(), "beats+tempo") == 0))
 			{
 				ostringstream oss;
 
@@ -133,9 +137,6 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				if(initialOut_)
 				{
 					oss << ctrl_destFileName_->to<mrs_string>() << ".txt";
-					
-					cout << "Beat Times Output: " << oss.str().c_str() << endl;
-
 					outStream.open(oss.str().c_str(), ios::out|ios::trunc);
 					outStream << beatTime_ << endl;
 					outStream.close();
@@ -148,7 +149,8 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 					oss << ctrl_destFileName_->to<mrs_string>() << ".txt";
 					outStream.open(oss.str().c_str(), ios::out|ios::app);
 					
-					outStream << beatTime_ << endl;
+					outStream << beatTime_ << " " << ibiBPM_ << endl;
+					//outStream << beatTime_ << endl;
 					outStream.close();
 				}
 			}
@@ -161,7 +163,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				if(initialOut2_)
 				{
 					oss2 << ctrl_destFileName_->to<mrs_string>() << "_meanTempo.txt";
-					cout << "Mean Tempo Output: " << oss2.str().c_str() << endl;
+					cout << "MeanTempo Output: " << oss2.str().c_str() << endl;
 					
 					outStream2.open(oss2.str().c_str(), ios::out|ios::trunc);
 					outStream2.close();
@@ -180,14 +182,12 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				}
 			}
 
-			if((strcmp(mode_.c_str(), "medianTempo") == 0) || (strcmp(mode_.c_str(), "all") == 0))
+			if((strcmp(mode_.c_str(), "medianTempo") == 0) || (strcmp(mode_.c_str(), "beats+tempo") == 0))
 			{
 				ostringstream oss3;
 				if(initialOut3_)
 				{
 					oss3 << ctrl_destFileName_->to<mrs_string>() << "_medianTempo.txt";
-					cout << "Median Tempo Output: " << oss3.str().c_str() << endl;
-
 					outStream3.open(oss3.str().c_str(), ios::out|ios::trunc);
 					outStream3.close();
 					initialOut3_ = false;

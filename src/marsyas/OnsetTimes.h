@@ -26,15 +26,15 @@ namespace Marsyas
 /** 
     \class OnsetTimes
 	\ingroup Processing Basic
-    \brief Retrieves N first beat times (in frames), retrieved from
+    \brief Retrieves M first beat times (phases, in "frames"-ticks), retrieved from
 	peaks from an onset function.
-	Supposed to have PeakerOnsets, or similar, as input.
 
-	- \b mrs_natural/n1stOnsets [w] : Nr. of first beat times
-	- \b mrs_natural/accSamples [w] : Nr. of accumulated frames -> corresponds to 
-	the winSize used in ShiftInput as signal memory for analysis.
-	- \b mrs_natural/lookAheadSamples [w] : Nr. of frames to adjust the lookahead 
-	used in PeakerOnset
+	Input: Supposed to have PeakerOnsets, or similar, as input.
+	Output: [x|Phasei|x|Phasei+1|  ...  |x|PhaseM]
+
+	- \b mrs_natural/n1stOnsets [w] : Nr. of first detected onsets (= M phases).
+	- \b mrs_natural/nPeriods [w] : Nr. of considered period hypotheses (N) - to avoid Fanout crash (requires equal number of columns in each line)! 
+	- \b mrs_natural/lookAheadSamples [w] : Nr. of frames to adjust the lookahead used in PeakerOnset.
 */
 
 

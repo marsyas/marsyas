@@ -26,20 +26,33 @@ namespace Marsyas
 /** 
     \class TempoHypotheses
 	\ingroup Processing Basic
-    \brief 
-		  Organizes N x 2 matrix with tempo hypotheses as [ BPMi  | Beatj  ]
-		  where N = m * n.		     					  | BPMi  | Beatj+1|
-														  |  ...  |  ...   |
-														  | BPMi  | Beatn  |
-														  |BPMi+1 | Beatj  |
-														  |BPMi+1 | Beatj+1|
-														  |  ...  |  ...   |
-														  | BPMm  | Beatj  |
-														  |  ...  |  ...   | 
-														  [ BPMm  | Beatn  ]
+    \brief Organizes a NN x 3 matrix given NN = N x M raw {period, phase, periodSalience} hypotheses.
+	(if no periods were retrieved some manually defined periods will be assumed)
+
+	Input: N period and M phase hypotheses retrieved from the analysis of the initial induction window:
+
+		[x|Phasei|x|Phasei+1|                   ...                              |x|PhaseM]
+		[PeriodSaliencei|Periodi|PeriodSaliencei+1|Periodi+1| ... |PeriodSalienceN|PeriodN]
+
+	Output: (NxM) x 3 matrix with M phases for each of the N predicted periods:
+
+			[  periodi  |  Phasej  ]
+			|  periodi  | Phasej+1 |
+			|    ...    |   ...    |
+			|  periodi  |  PhaseM  |
+			| periodi+1 |  Phasej  |
+			| periodi+1 | Phasej+1 |
+			|    ...    |   ...    |
+			|  periodN  |  Phasej  |
+			|    ...    |   ...    | 
+			[  periodN  |  PhaseM  ]
+
 	Controls:
-	- \b mrs_natural/nBeats [w] : Nr. of considered beat timming hypotheses (m).
-	- \b mrs_natural/nBpms [w] : Nr. of considered beat tempo hypotheses (n).
+	- \b mrs_natural/nPhases [r] : Nr. of considered beat phase (in "frames"-ticks) hypotheses (M).
+	- \b mrs_natural/nPeriods [r] : Nr. of considered beat period (in "frames"-ticks) hypotheses (N).
+	- \b mrs_natural/inductionTime [r] : time (in tick counts) dispended in the initial induction stage.
+	- \b mrs_natural/hopSize [r] : hop size of the analysis.
+	- \b mrs_real/srcFs [r] : input sampling rate.
 */
 
 
@@ -61,6 +74,7 @@ private:
 	mrs_natural nPhases_;
 	mrs_natural nPeriods_;
 	mrs_bool noBPMs_;
+	int forceBPM_[10];
 	void myUpdate(MarControlPtr sender);
 
 public:

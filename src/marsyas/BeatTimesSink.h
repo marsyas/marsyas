@@ -26,11 +26,18 @@ namespace Marsyas
 /** 
     \class BeatTimesSink
 	\ingroup Processing Basic
-    \brief 
+    \brief Outputs predicted beat times (in seconds or "frames"-ticks) and/or the median IBI (in BPMs).
+
+	Output: outPath\inputFileName.txt -> beat times.
+			outPath\inputFileName_medianTempo.txt -> median IBI (in BPMs)
 		  
 	Controls:
-	- \b mrs_natural/nBeats [w] : Nr. of considered beat timming hypotheses (m).
-	- \b mrs_natural/nBpms [w] : Nr. of considered beat tempo hypotheses (n).
+	- \b mrs_natural/hopSize [r] : hop size of the analysis.
+	- \b mrs_natural/winSize [r] : window size of the analysis.
+	- \b mrs_real/srcFs [r] : input sampling rate.
+	- \b mrs_string/destFileName [r] : path of the output destination directory.
+	- \b mrs_string/mode [r] : considered time unit (seconds or "frames"-ticks). 
+	- \b mrs_natural/tickCount [r] : current considered time (tick count) by the BeatReferee.
 */
 
 
