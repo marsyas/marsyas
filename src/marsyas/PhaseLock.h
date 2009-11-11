@@ -20,6 +20,7 @@
 #define MARSYAS_PHASELOCK_H
 
 #include "MarSystem.h"	
+#include <string.h>
 
 namespace Marsyas
 {
