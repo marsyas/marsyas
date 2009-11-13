@@ -28,6 +28,7 @@ add_subdirectory(MarGrid)
 add_subdirectory(MarGrid2)
 add_subdirectory(MarNetworkWidget)
 add_subdirectory(MarOscIn)
+add_subdirectory(MarOscOut)
 add_subdirectory(MarOscMultiGain)
 
 if (MARSYAS_OPENGL)
