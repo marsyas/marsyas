@@ -15,7 +15,7 @@
 #include <sys/types.h> 
 #include <complex>
 #include <limits>
-
+#include "DLLDefines.h"
 #include "MrsLog.h"
 
 /************************************************************************/

@@ -92,7 +92,6 @@ endif (GSTREAMER_FOUND)
 
 else (MARSYAS_STATIC)
      add_library(marsyas SHARED ${Marsyas_SOURCES} ${Marsyas_HEADERS})
-     SET_TARGET_PROPERTIES(marsyas PROPERTIES CLEAN_DIRECT_OUTPUT 1)
      TARGET_LINK_LIBRARIES(marsyas ${OS_LIBS})
 
 ## LINKING

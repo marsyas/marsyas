@@ -86,9 +86,9 @@ class MarSystemControlsGUI;
 class MATLABeditorGUI;
 class MarSystemNetworkGUI;
 
-class MarSystem : public QObject
+class marsyas_EXPORT MarSystem : public QObject
 #else
-class MarSystem
+class marsyas_EXPORT MarSystem
 #endif
 {
 
