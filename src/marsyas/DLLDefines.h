@@ -11,6 +11,6 @@
 #define marsyas_EXPORT __declspec(dllimport)
 #endif 
 #else
-#define marsyas_EXPORt
+#define marsyas_EXPORT
 #endif 
 #endif 
