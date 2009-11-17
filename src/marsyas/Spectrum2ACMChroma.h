@@ -53,7 +53,7 @@ namespace Marsyas
 	- \b mrs_real/ChordEvidence [r] : store the chord evidence of the last examined frame
 	*/
 
-	class Spectrum2ACMChroma: public MarSystem
+	class marsyas_EXPORT Spectrum2ACMChroma: public MarSystem
 	{
 		public:
 			Spectrum2ACMChroma(mrs_string inName);

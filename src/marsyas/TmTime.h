@@ -34,7 +34,7 @@ namespace Marsyas
 	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
-class TmTime {
+class marsyas_EXPORT TmTime {
 protected:
 	/** \brief a string representation of time meaningful on a particular timer */
 	std::string time_;

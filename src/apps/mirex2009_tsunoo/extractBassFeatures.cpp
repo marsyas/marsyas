@@ -32,9 +32,9 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	MarSystem *net = mng.create("Series", "net");
 	MarSystem *src = mng.create("SoundFileSource", "src");
 	MarSystem *pws = mng.create("PowerSpectrum", "pws");
-	MarSystem *wlt = new ConstQFiltering("wlt");
+	MarSystem *wlt = mng.create("ConstQFiltering","wlt");
 	MarSystem *met = mng.create("Metric", "met");
-	MarSystem *mbm = new MatchBassModel("mbm");
+	MarSystem *mbm = mng.create("MatchBassModel","mbm");
 	//MarSystem *total = mng.create("Series", "total");
 	//MarSystem *total2 = mng.create("Series", "total2");
 	MarSystem *total3 = mng.create("Series", "total3");

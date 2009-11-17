@@ -39,7 +39,7 @@ Class for handling command-line options
 */
 
 
-class CommandLineOptions
+class marsyas_EXPORT CommandLineOptions
 {
 protected:
   std::vector<std::string> arguments_;

@@ -40,20 +40,20 @@ namespace Marsyas
 		
 		// some operators are mandatory for all controls!
 		// so we must declare and define them for our custom controls
-		friend bool operator==(const MyHeader& hdr1, const MyHeader& hdr2);
-		friend bool operator!=(const MyHeader& hdr1, const MyHeader& hdr2);
-		friend MyHeader operator+(MyHeader& hdr1, MyHeader& hdr2);
-		friend MyHeader operator-(MyHeader& hdr1, MyHeader& hdr2);
-		friend MyHeader operator*(MyHeader& hdr1, MyHeader& hdr2);
-		friend MyHeader operator/(MyHeader& hdr1, MyHeader& hdr2);
-		friend std::ostream& operator<<(std::ostream& os, const MyHeader& hdr);
-		friend std::istream& operator>>(std::istream& is, MyHeader& hdr);
+		marsyas_EXPORT friend bool operator==(const MyHeader& hdr1, const MyHeader& hdr2);
+		marsyas_EXPORT friend bool operator!=(const MyHeader& hdr1, const MyHeader& hdr2);
+		marsyas_EXPORT friend MyHeader operator+(MyHeader& hdr1, MyHeader& hdr2);
+		marsyas_EXPORT friend MyHeader operator-(MyHeader& hdr1, MyHeader& hdr2);
+		marsyas_EXPORT friend MyHeader operator*(MyHeader& hdr1, MyHeader& hdr2);
+		marsyas_EXPORT friend MyHeader operator/(MyHeader& hdr1, MyHeader& hdr2);
+		marsyas_EXPORT friend std::ostream& operator<<(std::ostream& os, const MyHeader& hdr);
+		marsyas_EXPORT friend std::istream& operator>>(std::istream& is, MyHeader& hdr);
 	};
 
 	// alias to avoid excessive verbosity (see addControls() definition in .cpp)
 	typedef MarControlValueT<MyHeader> MyHeaderT;
 
-	class MarSystemTemplateAdvanced: public MarSystem
+	class marsyas_EXPORT MarSystemTemplateAdvanced: public MarSystem
 	{
 	private:
 		std::string someString_;

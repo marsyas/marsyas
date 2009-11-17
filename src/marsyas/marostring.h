@@ -21,6 +21,7 @@
 
 #include <string>
 #include <sstream>
+#include "DLLDefines.h" 
 
 namespace Marsyas
 {
@@ -31,7 +32,7 @@ namespace Marsyas
 	\author inb@cs.uvic.ca
 */
 
-class marostring
+class marsyas_EXPORT marostring
 {
 protected:
 	std::ostringstream result_;

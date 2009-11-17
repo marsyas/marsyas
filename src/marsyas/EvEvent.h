@@ -35,7 +35,7 @@ namespace Marsyas
 */
 class TmTimer;
 
-class EvEvent {
+class marsyas_EXPORT EvEvent {
 protected:
 	/** \brief the type of the event, probably the class name */
 	std::string type_;

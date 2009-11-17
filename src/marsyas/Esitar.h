@@ -34,7 +34,7 @@ namespace Marsyas
 */
 
 
-class Esitar: public MarSystem
+class marsyas_EXPORT Esitar: public MarSystem
 {
 private: 
 	void myUpdate(MarControlPtr sender);

@@ -39,9 +39,9 @@ namespace Marsyas
 	Created by lfpt@inescporto.pt and lmartins@inescporto.pt
 */
 
-	class MarControl; //forward declaration
+	class marsyas_EXPORT MarControl; //forward declaration
 
-class MarControlValue
+class marsyas_EXPORT MarControlValue
 {
 	friend class MarControl;
 	friend class MarControlAccessor;
@@ -162,7 +162,7 @@ public:
 };
 
 template<>
-class MarControlValueT<realvec> : public MarControlValue
+class marsyas_EXPORT MarControlValueT<realvec> : public MarControlValue
 {
 	friend class MarControl;
 	friend class MarControlAccessor;
@@ -209,7 +209,7 @@ public:
 
 // To avoid the compiler complaints
 template<>
-class MarControlValueT<bool> : public MarControlValue
+class marsyas_EXPORT MarControlValueT<bool> : public MarControlValue
 {
 	friend class MarControl;
 	friend class MarControlAccessor;

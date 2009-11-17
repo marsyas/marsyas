@@ -33,7 +33,7 @@ namespace Marsyas
 	\author Neil Burroughs  inb@cs.uvic.ca
 */
 
-class Repeat {
+class marsyas_EXPORT Repeat {
 private:
 	bool infinite_;
 	std::string interval_;

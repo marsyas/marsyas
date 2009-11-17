@@ -21,6 +21,7 @@
 #define MARSYAS_FILENAME_H
 
 #include <string>
+#include "DLLDefines.h"
 
 namespace Marsyas
 {
@@ -34,7 +35,7 @@ unrelated convenience utilities related to filenames.
 */
 
 
-class FileName
+class marsyas_EXPORT FileName
 {
 private:
   std::string filename_;

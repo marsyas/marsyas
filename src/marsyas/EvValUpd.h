@@ -39,7 +39,7 @@ namespace Marsyas
 
 class MarSystem; // forward declaration
 
-class EvValUpd : public EvEvent {
+class marsyas_EXPORT EvValUpd : public EvEvent {
 protected:
 	MarSystem* target_;
 	std::string cname_;

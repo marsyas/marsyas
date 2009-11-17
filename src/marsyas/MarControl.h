@@ -65,7 +65,7 @@ namespace Marsyas
 //////////////////////////////////////////////////////////////////////////
 //	MarControlPtr declaration
 //////////////////////////////////////////////////////////////////////////
-class MarControlPtr
+class marsyas_EXPORT MarControlPtr
 {
 #ifdef TRACECONTROLS
 public:
@@ -133,9 +133,9 @@ public:
 //	MarControl declaration
 //////////////////////////////////////////////////////////////////////////
 #ifdef MARSYAS_QT
-class MarControl : public QObject
+class marsyas_EXPORT MarControl : public QObject
 #else
-class MarControl
+class marsyas_EXPORT MarControl
 #endif
 {
 	friend class MarControlManager;

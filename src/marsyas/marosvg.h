@@ -24,6 +24,7 @@
 #include <map>
 #include "marostring.h"
 
+
 namespace Marsyas
 {
 /**
@@ -33,7 +34,7 @@ namespace Marsyas
 	\author inb@cs.uvic.ca
 */
 
-class marosvg : public marostring
+class marsyas_EXPORT marosvg : public marostring
 {
 private:
 	std::map<std::string, std::map<std::string,std::string> > style_;

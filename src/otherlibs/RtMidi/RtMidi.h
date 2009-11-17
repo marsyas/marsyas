@@ -40,10 +40,11 @@
 #ifndef RTMIDI_H
 #define RTMIDI_H
 
+#include "DLLDefines.h"
 #include "RtError3.h"
 #include <string>
 
-class RtMidi
+class marsyas_EXPORT RtMidi
 {
  public:
 
@@ -98,7 +99,7 @@ class RtMidi
 #include <vector>
 #include <queue>
 
-class RtMidiIn : public RtMidi
+class marsyas_EXPORT RtMidiIn : public RtMidi
 {
  public:
 
@@ -236,7 +237,7 @@ class RtMidiIn : public RtMidi
 */
 /**********************************************************************/
 
-class RtMidiOut : public RtMidi
+class marsyas_EXPORT RtMidiOut : public RtMidi
 {
  public:
 

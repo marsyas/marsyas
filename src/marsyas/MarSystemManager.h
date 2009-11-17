@@ -34,7 +34,7 @@ class MarSystem;
 	\brief MarSystemManager of MarSystem objects
 */
 
-class MarSystemManager
+class marsyas_EXPORT MarSystemManager
 {
 protected:
 	std::map<std::string, MarSystem*> registry_;

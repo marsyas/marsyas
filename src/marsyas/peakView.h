@@ -21,6 +21,7 @@
 
 #include "realvec.h"
 #include <vector>
+#include "DLLDefines.h"
 
 namespace Marsyas
 {
@@ -30,7 +31,7 @@ namespace Marsyas
 \brief Helper class for accessing peaks in a realvec. 
 */
 
-	class peakView
+	class marsyas_EXPORT peakView
 	{
 	public:
 		enum pkParameter{

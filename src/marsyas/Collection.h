@@ -37,7 +37,7 @@ List of files used for batch processing.
 */
 
 
-class Collection
+class marsyas_EXPORT Collection
 {
 private:
   std::vector<std::string> collectionList_;
@@ -70,8 +70,8 @@ public:
   void concatenate(std::vector<Collection> cls);
   
   
-  friend std::ostream& operator<<(std::ostream&, const Collection&);
-  friend std::istream& operator>>(std::istream&, Collection&);
+  marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const Collection&);
+  marsyas_EXPORT friend std::istream& operator>>(std::istream&, Collection&);
 };
 
 }//namespace Marsyas

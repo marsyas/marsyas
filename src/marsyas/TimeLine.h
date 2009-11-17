@@ -60,7 +60,7 @@ region2 name (mrs_string)
 */
 
 
-struct TimeRegion
+struct marsyas_EXPORT TimeRegion
 {
   mrs_natural start;
   mrs_natural classId;
@@ -69,7 +69,7 @@ struct TimeRegion
   mrs_string name;
 };
 
-class TimeLine
+class marsyas_EXPORT TimeLine
 {
 protected:
 	mrs_string filename_;

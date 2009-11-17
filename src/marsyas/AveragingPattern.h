@@ -20,7 +20,10 @@ namespace Marsyas
      
   */
 
-  class AveragingPattern: public MarSystem
+  class 
+
+
+AveragingPattern: public MarSystem
   {
   private:
     realvec counts_;

@@ -32,7 +32,7 @@ namespace Marsyas
 	\author inb@cs.uvic.ca
 */
 
-class maroxml : public marostring
+class marsyas_EXPORT maroxml : public marostring
 {
 public:
 	maroxml();

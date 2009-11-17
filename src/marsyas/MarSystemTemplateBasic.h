@@ -36,7 +36,7 @@ namespace Marsyas
 	- \b mrs_bool/dummy [rw] : does nothing.
 */
 
-class MarSystemTemplateBasic: public MarSystem
+class marsyas_EXPORT MarSystemTemplateBasic: public MarSystem
 {
 private:
 

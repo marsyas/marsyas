@@ -42,6 +42,7 @@
 #ifndef __RTAUDIO3_H
 #define __RTAUDIO3_H
 
+#include "DLLDefines.h" 
 #include "RtError3.h"
 #include <string>
 #include <vector>
@@ -325,7 +326,7 @@ protected:
 //
 // **************************************************************** //
 
-class RtAudio3
+class marsyas_EXPORT RtAudio3
 {
 public:
 

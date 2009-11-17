@@ -31,10 +31,10 @@ void recognize(string sfName, string tpName)
   MarSystem* plTpl = mng.create("Parallel","plTpl");
   MarSystem* Inp = mng.create("Series","Inp");
   MarSystem* Tpl = mng.create("Series","Tpl");
-  MarSystem* sim = new SimilarityMatrix("sim");
-  MarSystem* met = new Metric2("met");
-  MarSystem* dtw = new DTW("dtw");
-  MarSystem* ap = new AveragingPattern("ap");
+  MarSystem* sim = mng.create("SimilarityMatrix", "sim");
+  MarSystem* met = mng.create("Metric2", "met");
+  MarSystem* dtw = mng.create("DTW", "dtw");
+  MarSystem* ap = mng.create("AveragingPattern", "ap");
   Collection templates;
   ostringstream oss, oss2;
   string tmpStr;

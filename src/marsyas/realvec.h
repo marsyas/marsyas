@@ -67,7 +67,7 @@ namespace Marsyas
 */
 
 
-class realvec
+class marsyas_EXPORT realvec
 {
 protected:
 	/// total number of values in data_
@@ -201,8 +201,8 @@ public:
 	/// Dump the realvec data (without header) to an output stream.
 	void dumpDataOnly(std::ostream& o=std::cout, std::string columnSep=" ", std::string rowSep="\n") const;
 
-	friend std::ostream& operator<<(std::ostream&, const realvec&);
-	friend std::istream& operator>>(std::istream&, realvec&);
+	marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const realvec&);
+	marsyas_EXPORT friend std::istream& operator>>(std::istream&, realvec&);
 	/// input function for line-separated text files
 	bool readText(std::string filename);
 	/// output function for line-separated text files

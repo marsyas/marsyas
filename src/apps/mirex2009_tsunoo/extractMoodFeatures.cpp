@@ -23,8 +23,8 @@ void recognize(string sfName, string outName)
   MarSystem* src = mng.create("SoundFileSource", "src");
   MarSystem* spc = mng.create("Spectrum", "spc");
   MarSystem* pws = mng.create("PowerSpectrum", "pws");
-  MarSystem* crm = new Chroma("crm");
-  MarSystem* csl = new ChromaScale("csl");
+  MarSystem* crm = mng.create("Chroma","crm");
+  MarSystem* csl = mng.create("ChromaScale","csl");
   MarSystem* ff = mng.create("Fanout", "ff");
   MarSystem* ss = mng.create("Fanout", "ss");
   MarSystem* mn = mng.create("Mean", "mn");

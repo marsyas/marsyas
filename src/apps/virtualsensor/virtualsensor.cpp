@@ -26,9 +26,8 @@ record: record a clip using AudioSource
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
-#include "MidiInput.h"
-#include "Esitar.h"
-#include "MidiOutput.h"
+#include "ESitar.h" 
+
 #include "CommandLineOptions.h"
 #include "mididevices.h"
 
@@ -165,7 +164,7 @@ void recordVirtualSensor(mrs_real length)
     MarSystem* dest = mng.create("SoundFileSink", "dest");
 
     
-    MidiInput* midiin = new MidiInput("midiin");
+    MarSystem* midiin = mng.create("MidiInput","midiin"); 
 
     recordNet->addMarSystem(asrc);
     recordNet->addMarSystem(midiin);
@@ -1002,7 +1001,7 @@ void recordSitarSensors(mrs_real length)
     MarSystem* recordNet = mng.create("Series", "recordNet");
     MarSystem* asrc = mng.create("AudioSource", "asrc");
     MarSystem* dest = mng.create("SoundFileSink", "dest");
-    MidiInput* vmidi = new MidiInput("vmidi");
+    MarSystem* vmidi = mng.create("MidiInput","vmidi");
     Esitar* esitar = new Esitar("esitar");
     MarSystem* devibot = mng.create("DeviBot", "devibot");
 

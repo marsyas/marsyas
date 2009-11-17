@@ -39,7 +39,7 @@ namespace Marsyas
 	\author inb@cs.uvic.ca
 */
 
-class TmTimer
+class marsyas_EXPORT TmTimer
 {
 private:
 	/** \brief heap containing the scheduled events */

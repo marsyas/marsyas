@@ -23,6 +23,7 @@
 #include <vector>
 #include "marostring.h"
 
+
 namespace Marsyas
 {
 /**
@@ -32,7 +33,7 @@ namespace Marsyas
 	\author inb@cs.uvic.ca
 */
 
-class marohtml : public marostring
+class marsyas_EXPORT marohtml : public marostring
 {
 private:
 
