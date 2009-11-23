@@ -26,7 +26,7 @@ record: record a clip using AudioSource
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "Accumulator.h"
-#include "ESitar.h" 
+#include "Esitar.h" 
 
 #include "CommandLineOptions.h"
 #include "mididevices.h"
