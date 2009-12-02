@@ -2310,6 +2310,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		featureNetwork->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	}
 
+	if(tline) {
+	  featureNetwork->updctrl("TimelineLabeler/timelineLabeler/mrs_bool/playRegionsOnly", false);
+	}
+
 	// don't output to WekaSink
 	if (wekafname != EMPTYSTRING)
 		bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", false);
