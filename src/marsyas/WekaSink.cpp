@@ -271,70 +271,70 @@ WekaSink::myProcess(realvec& in, realvec& out)
 
 		label = (mrs_natural)in(inObservations_ - 1, t);
 
-		// Ignore unlabeled data (i.e. label = -1)
-		if (label < 0)
-		{
-			continue;
-		}
-
 		// Output all but last feature values.
 		// TODO: this should be refactored together with the injection stuff from
 		// WekaSink::myUpdate().
 		for (o=0; o < inObservations_; o++)
-		{
+		  {
 			out(o,t) = in(o,t);
-			if (o < inObservations_ - 1)
-			{
-				if ((count % downsample_) == 0)
-				{
-					if ( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
-					{
-						// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
-						// DO NOT OUTPUT FEATURES
-						// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
-						//notPrint = true;
-						(*mos_) << "?" << ",";
-					}
-					else
-					{
-						(*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
-						//notPrint = false;
-					}
-				}
-			}
-		}
+			if (label >= 0)
+			  {
+				if (o < inObservations_ - 1)
+				  {
+					if ((count % downsample_) == 0)
+					  {
+						if ( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
+						  {
+							// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
+							// DO NOT OUTPUT FEATURES
+							// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
+							//notPrint = true;
+							(*mos_) << "?" << ",";
+						  }
+						else
+						  {
+							(*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
+							//notPrint = false;
+						  }
+					  }
+				  }
+			  }
+		  }
 
 		// Output last value (e.g. as label).
 		ostringstream oss;
 		if ((count % downsample_) == 0)
-		{
-			if (!ctrl_regression_->isTrue())
-			{
-				//  if (!notPrint)
+		  {
+			if (label >= 0)
+			  {
+				if (!ctrl_regression_->isTrue())
+				  {
+					//  if (!notPrint)
+					//{
+					if (label >= labelNames_.size())
+					  {
+						MRSWARN("WekaSink: label number is too big");
+						oss << "non-label";
+					  }
+					else
+					  {
+						oss << labelNames_[label];
+					  }
+					(*mos_) << oss.str();
+					(*mos_) << endl;
+				  }
+				//  else
 				//{
-				if (label >= labelNames_.size())
-				{
-					MRSWARN("WekaSink: label number is too big");
-					oss << "non-label";
-				}
+				//  cout << "skipping instance" << endl;
+				//}
+				//}
 				else
-				{
-					oss << labelNames_[label];
-				}
-				(*mos_) << oss.str();
-				(*mos_) << endl;
-			}
-			//  else
-			//{
-			//  cout << "skipping instance" << endl;
-			//}
-			//}
-			else
-			{
-				(*mos_) << in(inObservations_ - 1, t);
-				(*mos_) << endl;
-			}
-		}
+				  {
+					(*mos_) << in(inObservations_ - 1, t);
+					(*mos_) << endl;
+				  }
+			  }
+		  }
 	}
 	count++;
 }
