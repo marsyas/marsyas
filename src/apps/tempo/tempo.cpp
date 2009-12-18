@@ -4,6 +4,7 @@
 #include <algorithm>
 
 
+#include "FileName.h"
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
@@ -213,7 +214,7 @@ void tempo_medianMultiBands(string sfName, string resName)
 
   // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
-  cout << "FINAL = " << bpms[bpms.size()/2] << endl;
+  cout << sfName << "\t" << bpms[bpms.size()/2] << endl;
 
   // Output to file
   ofstream oss(resName.c_str());
@@ -831,7 +832,7 @@ tempo_medianSumBands(string sfName, string resName)
   
   // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
-  cout << "FINAL = " << bpms[bpms.size()/2] << endl;
+  cout << sfName << "\t" << bpms[bpms.size()/2] << endl;
 
   // Output to file
   
@@ -1438,7 +1439,6 @@ void tempo(string inFname, string outFname, string method)
 
   if (method == "MEDIAN_SUMBANDS")
     {
-      cout << "TEMPO INDUCTION USING MEDIAN_SUMBANDS method" << endl;
       tempo_medianSumBands(sfName,resName);
     }
   else if (method == "MEDIAN_MULTIBANDS")
@@ -1573,11 +1573,18 @@ main(int argc, const char **argv)
 
   vector<string> soundfiles = cmd_options.getRemaining();
 
-
+  FileName inputfile(soundfiles[0]);
+  
+  bool haveCollections = true;
+  if (inputfile.ext() == "mf")
+	  haveCollections = true; 
+  else 
+	  haveCollections = false; 
+  
   // collection code for batch processing
-  bool haveCollections = true; // TODO: set this based on input files
   if (haveCollections)
   {
+	  
     Collection l;
     vector<string>::iterator sfi;
     for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
