@@ -45,17 +45,13 @@ class PeakPeriods2BPM: public MarSystem
 private: 
 void addControls();
   mrs_real factor_;
-  MarControlPtr ctrl_srcFs_;
-  MarControlPtr ctrl_hopsize_;
+		
+  mrs_real srate_;
 
-  mrs_real srcFs_;
-  mrs_natural hopsize_;
-
-	void myUpdate(MarControlPtr sender);
+		void myUpdate(MarControlPtr sender);
 
 public:
   PeakPeriods2BPM(std::string name);
-  PeakPeriods2BPM(const PeakPeriods2BPM& a);
   ~PeakPeriods2BPM();
   MarSystem* clone() const;  
   

@@ -1608,6 +1608,7 @@ void toy_with_pngwriter(string fname)
   double normalizedData;
 
   // Give it a white background
+
   png.invert();
 
   // A line across the middle of the plot

@@ -85,9 +85,9 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 		{
 			mrs_real newmax = in(o,t);
 			mrs_real newmax_i = t;
-			// cout << "nmx = " << newmax << endl;
-			// cout << "nmx_i = " << newmax_i << endl;
 			
+
+			 
 			//pair indexes = peak amplitude
 			//odd indexes = peak argument
 			for (ki=0; ki < k; ki++)
@@ -100,6 +100,8 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 					out(o,2*ki+1) = newmax_i;
 					newmax = oldmax;
 					newmax_i = oldmax_i;
+
+					
 				}
 			}
 		}
@@ -115,6 +117,7 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 				out(o,2*ki+1) = ix;
 			}
 	}
+
 
 	//MATLAB_PUT(in, "Peaker_output");
 	//MATLAB_PUT(out, "MaxPeaks");

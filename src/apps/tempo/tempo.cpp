@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <algorithm>
 
+
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
@@ -12,6 +13,10 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+
+#ifdef MARSYAS_PNG
+#include "pngwriter.h" 
+#endif 
 
 
 using namespace std;
@@ -188,7 +193,7 @@ void tempo_medianMultiBands(string sfName, string resName)
 		  // pitch = srate * 60.0 / (estimate(b,1) * factor);
 		  // bin = (mrs_natural) (pitch);
 		  bin = (mrs_natural)(estimate(b,1));
-		  cout << "max bpm(" << b << ") = " << bin << endl;
+		  // cout << "max bpm(" << b << ") = " << bin << endl;
 		  bpms.push_back(bin);
 	  }
       numPlayed++;
@@ -655,7 +660,7 @@ tempo_histoSumBands(string sfName, string resName)
 
 
       bin = (mrs_natural) estimate(1);
-      cout << "max bpm = " << bin << endl;
+      // cout << "max bpm = " << bin << endl;
       bpms.push_back(bin);
 
       numPlayed++;
@@ -759,7 +764,6 @@ tempo_medianSumBands(string sfName, string resName)
   total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
 
 
-
   // prepare vectors for processing
   realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
 	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
@@ -777,20 +781,40 @@ tempo_medianSumBands(string sfName, string resName)
   vector<int> bpms;
   onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
+  
+  pngwriter png(4096,256,0, "waveform.png");  
+  png.invert();
+  
+  int k=0;
+   
   while (repetitions * duration > samplesPlayed)
     {
-      total->process(iwin, estimate);
-      bin = (mrs_natural) estimate(1);
-
-      cout << "max bpm = " << bin << endl;
+		total->process(iwin, estimate);
+		
+		mrs_realvec pdata = total->getctrl("Peaker/pkr/mrs_realvec/processedData")->to<mrs_realvec>();
+		pdata.normMaxMin();
+		
+		if (k == 6)
+		{
+			for (int i=0; i < 4096; i++)
+			{
+				png.line(i, 0, i, pdata(i)  * 128, 0.0, 0.0, 1.0);
+			}
+		}
+		
+		
+		
+		bin = (mrs_natural) estimate(1);
+		
+      // cout << "max bpm = " << bin << endl;
       bpms.push_back(bin);
 
       numPlayed++;
       if (samplesPlayed > repeatId * duration)
-	{
-	  total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);
-	  repeatId++;
-	}
+	  {
+		  total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);
+		  repeatId++;
+	  }
       wc ++;
       samplesPlayed += onSamples;
       // no duration specified so use all of source input
@@ -798,13 +822,20 @@ tempo_medianSumBands(string sfName, string resName)
 	{
 	  duration = samplesPlayed-onSamples;
 	}
-    }
 
+	  k++;
+		
+	  
+    }
+  png.close();
+  
   // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
   cout << "FINAL = " << bpms[bpms.size()/2] << endl;
 
   // Output to file
+  
+  /* 
   ofstream oss(resName.c_str());
   oss << bpms[bpms.size()/2] << endl;
   cerr << "Played " << wc << " slices of " << onSamples << " samples"
@@ -812,6 +843,11 @@ tempo_medianSumBands(string sfName, string resName)
   cout << "Processed " << sfName << endl;
   cout << "Wrote " << resName << endl;
   delete total;
+  */ 
+
+  
+
+
 }
 
 
@@ -1539,7 +1575,7 @@ main(int argc, const char **argv)
 
 
   // collection code for batch processing
-  bool haveCollections = false; // TODO: set this based on input files
+  bool haveCollections = true; // TODO: set this based on input files
   if (haveCollections)
   {
     Collection l;
@@ -1560,6 +1596,8 @@ main(int argc, const char **argv)
     for (vector<string>::iterator sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
     {
       string sfname = *sfi;
+	  cout << "Processing - " << sfname << endl;
+	  
       tempo(*sfi, "default.txt", method);
     }
   }
