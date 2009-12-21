@@ -295,6 +295,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 		}
 		else //no more regions in this timeline...
 		{
+		  cout << "HERE IS THE PROBLEM " << endl;
 			//Should we ask for another audiofile/timeline ot just play the current file till its end?
 			if(ctrl_playRegionsOnly_->to<mrs_bool>())
 			{

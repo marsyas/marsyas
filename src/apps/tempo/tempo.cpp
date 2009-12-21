@@ -782,9 +782,10 @@ tempo_medianSumBands(string sfName, string resName)
   vector<int> bpms;
   onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
-  
+  #ifdef MARSYAS_PNG
   pngwriter png(4096,256,0, "waveform.png");  
   png.invert();
+  #endif MARSYAS_PNG 
   
   int k=0;
    
@@ -797,10 +798,12 @@ tempo_medianSumBands(string sfName, string resName)
 		
 		if (k == 6)
 		{
+#ifdef MARSYAS_PNG
 			for (int i=0; i < 4096; i++)
 			{
 				png.line(i, 0, i, pdata(i)  * 128, 0.0, 0.0, 1.0);
 			}
+#endif MARSYAS_PNG 
 		}
 		
 		
@@ -828,7 +831,9 @@ tempo_medianSumBands(string sfName, string resName)
 		
 	  
     }
+#ifdef MARSYAS_PNG
   png.close();
+#endif MARSYAS_PNG
   
   // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
