@@ -900,6 +900,47 @@ sfplugin -p musp_classify.mpl foo.wav
 @end example 
 
 
+Writing a basic sfplugin plugin
+
+The sfplugin application expects that certain controls are available 
+in any network it tries to handle. Therefore, one of the simplest 
+demonstration plugins one can write is a plugin containing 
+a SoundFileSource and an AudioSink, demonstrated below. 
+As the sfplugin does not know were the sources and sinks are in the network
+it is necessary to link the composite's controls with appropriate controls 
+in the network. 
+
+@example
+// create the network that will become the plugin
+MarSystem* sys = mng.create( "Series", "head" );
+
+// create the two required MarSystems
+sys->addMarSystem( mng.create( "SoundFileSource", "src" ) );
+sys->addMarSystem( mng.create( "AudioSink", "dest" ) );
+
+// while we don't actually want to play a file now, supply a valid
+// filler name to keep the program happy; sfplugin will update it later
+sys->updctrl( "SoundFileSource/src/mrs_string/filename",
+	      "../../SuperGroovyLateralGeniculateNucleus.au" );
+
+// since we're not playing the song now, set initAudio to false;
+// sfplugin will update this to true when the network is executed there
+sys->updctrl( "AudioSink/dest/mrs_bool/initAudio", false );
+
+// set those pesky control links!
+sys->linkctrl( "mrs_string/filename", "SoundFileSource/src/mrs_string/filename" );
+sys->linkctrl( "mrs_bool/initAudio" , "AudioSink/dest/mrs_bool/initAudio" );
+sys->linkctrl( "mrs_natural/pos"    , "SoundFileSource/src/mrs_natural/pos" );
+sys->linkctrl( "mrs_bool/notEmpty"  , "SoundFileSource/src/mrs_bool/notEmpty" );
+
+// finally, write the network to a file; the plugin can be run as
+// follows: sfplugin -p some_plugin.mpl ../../SamsSavorySuperiorColliculus.au
+ofstream ofs( "some_plugin.mpl" );
+ofs << (*sys) << endl;
+@example
+
+
+
 @node msl,  , sfplugin, Marsystem Interaction
 @subsection @code{msl}
 @cindex msl
