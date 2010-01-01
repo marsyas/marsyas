@@ -937,7 +937,7 @@ sys->linkctrl( "mrs_bool/notEmpty"  , "SoundFileSource/src/mrs_bool/notEmpty" );
 // follows: sfplugin -p some_plugin.mpl ../../SamsSavorySuperiorColliculus.au
 ofstream ofs( "some_plugin.mpl" );
 ofs << (*sys) << endl;
-@example
+@end example
 
 
 
