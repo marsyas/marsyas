@@ -30,6 +30,7 @@ add_subdirectory(MarNetworkWidget)
 add_subdirectory(MarOscIn)
 add_subdirectory(MarOscOut)
 add_subdirectory(MarOscMultiGain)
+add_subdirectory(MarMonitors)
 
 if (MARSYAS_OPENGL)
 	add_subdirectory(MarSndPeek)

@@ -63,7 +63,7 @@ MarMonitors::initNetwork(QString pluginName)
   
   nGraphs_ = 2;
   
-  out_.create(512);  
+  out_.create(2048);  
   
   // create the Marsyas 
   MarSystemManager mng;
@@ -85,21 +85,20 @@ MarMonitors::initNetwork(QString pluginName)
   pnet_->addMarSystem(mng.create("Windowing", "ham2"));
   
   
-  pnet_->updctrl("SoundFileSource/src/mrs_string/filename", "/home/gtzan/data/sound/music_speech/music/gravity.au");
+  pnet_->updctrl("SoundFileSource/src/mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au");
   pnet_->updctrl("Windowing/windowing/mrs_bool/zeroPhasing", true);
   pnet_->updctrl("Gain/gain/mrs_real/gain", 2.0);
   pnet_->updctrl("Gain/gain2/mrs_real/gain", 3.0);
   pnet_->updctrl("mrs_bool/probe", true);
+  
   */ 
   
   cout << *pnet_ << endl;
-  
-  
   nTicks = 500;
   
 
   // initialize graphs 
-  int num = 512;
+  int num = 2048;
 
 
 
@@ -160,7 +159,7 @@ MarMonitors::about()
 void 
 MarMonitors::graph()
 {
- int num = 512;
+ int num = 2048;
  nGraphs_ += 1;
 
  // Create new graph

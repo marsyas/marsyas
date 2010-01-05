@@ -101,14 +101,16 @@ AudioSource::myUpdate(MarControlPtr sender)
   
   
   inObservations_ = ctrl_inObservations_->to<mrs_natural>();
-  
+  onObservations_ = ctrl_onObservations_->to<mrs_natural>();
   gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
   
   //resize reservoir if necessary
-  if (inSamples_ * inObservations_ < bufferSize_) 
-    reservoirSize_ = 2 * inObservations_ * bufferSize_;
+
+
+  if (inSamples_ * onObservations_ < bufferSize_) 
+    reservoirSize_ = 2 * onObservations_ * bufferSize_;
   else 
-    reservoirSize_ = 2 * inSamples_ * inObservations_;
+    reservoirSize_ = 2 * inSamples_ * onObservations_;
   
   if (reservoirSize_ > preservoirSize_)
     {
@@ -121,6 +123,8 @@ AudioSource::myUpdate(MarControlPtr sender)
 void 
 AudioSource::initRtAudio()
 {
+
+  cout << "INIT " << endl;
   bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
   nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
   rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
@@ -128,6 +132,9 @@ AudioSource::initRtAudio()
   nBuffers_ = (int)getctrl("mrs_natural/nBuffers")->to<mrs_natural>();
   rtDevice_ = (int)getctrl("mrs_natural/device")->to<mrs_natural>();
   
+
+  cout << "rtChannels = " << rtChannels_ << endl;
+
 //marsyas represents audio data as float numbers
 #ifdef MARSYAS_AUDIOIO
   RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO3_FLOAT64 : RTAUDIO3_FLOAT32;
@@ -207,6 +214,8 @@ AudioSource::localActivate(bool state)
 void 
 AudioSource::myProcess(realvec& in, realvec& out)
 {
+
+  cout << "onObs = " << onObservations_ << endl;
 	(void) in;
 
   //check if RtAudio is initialized
@@ -242,7 +251,7 @@ AudioSource::myProcess(realvec& in, realvec& out)
       for (t=0; t < onObservations_ * bufferSize_; t++)
 	{
 	  reservoir_(ri_) = data_[t];
-	  
+	  cout << data_[t] << endl;
 	  ri_++;
 	}
     }
