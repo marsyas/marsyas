@@ -74,6 +74,7 @@ mrs_bool spectralFeatures_ = false;
 mrs_bool zcrs_ = false;
 mrs_bool timbralFeatures_ = false;
 mrs_bool shuffle_;
+mrs_bool mic_;
 
 
 #define DEFAULT_EXTRACTOR "STFT"
@@ -1936,7 +1937,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 {
 	MRSDIAG("bextract.cpp - bextract_train_refactored");
 	cout << "BEXTRACT REFACTORED" << endl;
-	MarSystemManager mng;
+	MarSystemManager mng; 
 
 
 	// Overall extraction and classification network
@@ -1946,10 +1947,26 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// Build the overall feature calculation network
 	MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
 
+	// Add a fanout for sound file and audio source ...
+	MarSystem *fanout = mng.create("Fanout", "fanout"); 
+
 	// Add a sound file source (which can also read collections)
 	MarSystem *src = mng.create("SoundFileSource", "src");
-	featureNetwork->addMarSystem(src);
-
+	fanout->addMarSystem(src);
+	
+	// Add a live audio source for realtime classification 
+	MarSystem *mic = mng.create("AudioSource", "mic"); 
+	mic->updctrl("mrs_natural/nChannels", 1);	//stereo
+	fanout->addMarSystem(mic);
+	
+	// Add the fanout to our feature Network ... 
+	featureNetwork->addMarSystem(fanout);
+	
+	featureNetwork->updctrl("mrs_real/israte", 22050.0);   //sampling rate  [!hardcoded]
+	
+	// Disable Microphone for training the classifier ... 
+	featureNetwork->updctrl("Fanout/fanout/mrs_natural/disable", 1);
+	//featureNetwork->updctrl("Fanout/fanout/AudioSource/mic/mrs_bool/initAudio", false); 
 
 	// Add a TimelineLabeler, if necessary
 	if(tline)
@@ -2008,79 +2025,79 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 
-		bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename",
-			"mrs_string/filename");
+		bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/filename",
+			"mrs_string/filename"); // added Fanout ... 
 		bextractNetwork->linkctrl("mrs_bool/notEmpty",
-			"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_bool/notEmpty");
+			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/notEmpty"); // added Fanout ... 
 		bextractNetwork->linkctrl("mrs_natural/pos",
-			"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
+			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); // added Fanout ... 
 		bextractNetwork->linkctrl("mrs_real/duration",
-			"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_real/duration");
+			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/duration"); // added Fanout ... 
 		if (pluginName != EMPTYSTRING)
 			bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio",
 			"mrs_bool/initAudio");
 		bextractNetwork->linkctrl("mrs_string/currentlyPlaying",
-			"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
+			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/currentlyPlaying"); // added Fanout ... 
 
 		if(tline)
 		{
 			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
-				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+				"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); // added Fanout ... 
 			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
-				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+				"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); // added Fanout ... 
 			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
-				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
-			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/advance",
-				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance");
+				"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); // added Fanout ... 
+			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance",
+				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance"); // added Fanout ... 
 
 			bextractNetwork->linkctrl("mrs_natural/currentLabel",
 				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
 			bextractNetwork->linkctrl("mrs_string/labelNames",
 				"Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
 			bextractNetwork->linkctrl("mrs_natural/nLabels",
-				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
+				"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels");
 		}
 		else
 		{
 			bextractNetwork->linkctrl("mrs_natural/currentLabel",
-				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+				"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); 
 			bextractNetwork->linkctrl("mrs_natural/nLabels",
-				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
+				"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels"); 
 			bextractNetwork->linkctrl("mrs_string/labelNames",
-				"Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+				"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); 
 		}
 
-		bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/advance",
+		bextractNetwork->linkctrl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance", 
 			"mrs_natural/advance");
 	}
 	else // running feature extraction
 	{
 		bextractNetwork->addMarSystem(featureNetwork);
 		// link controls to top-level to make life simpler
-		bextractNetwork->linkctrl("Series/featureNetwork/SoundFileSource/src/mrs_string/filename",
-			"mrs_string/filename");
+		bextractNetwork->linkctrl("Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/filename",
+			"mrs_string/filename"); 
 		bextractNetwork->linkctrl("mrs_bool/notEmpty",
-			"Series/featureNetwork/SoundFileSource/src/mrs_bool/notEmpty");
+			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/notEmpty"); 
 		bextractNetwork->linkctrl("mrs_natural/pos",
-			"Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
+			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); 
 		bextractNetwork->linkctrl("mrs_real/duration",
-			"Series/featureNetwork/SoundFileSource/src/mrs_real/duration");
+			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/duration"); 
 		if (pluginName != EMPTYSTRING)
 			bextractNetwork->linkctrl("Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio",
 			"mrs_bool/initAudio");
 		bextractNetwork->linkctrl("mrs_string/currentlyPlaying",
-			"Series/featureNetwork/SoundFileSource/src/mrs_string/currentlyPlaying");
+			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/currentlyPlaying"); 
 
 		if(tline)
 		{
 			bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
-				"Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+				"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); 
 			bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
-				"Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+				"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); 
 			bextractNetwork->linkctrl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
-				"Series/featureNetwork/SoundFileSource/src/mrs_natural/pos");
-			bextractNetwork->linkctrl("Series/featureNetwork/SoundFileSource/src/mrs_natural/advance",
-				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance");
+				"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); 
+			bextractNetwork->linkctrl("Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance",
+				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance"); 
 
 			bextractNetwork->linkctrl("mrs_natural/currentLabel",
 				"Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
@@ -2092,11 +2109,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		else
 		{
 			bextractNetwork->linkctrl("mrs_natural/currentLabel",
-				"Series/featureNetwork/SoundFileSource/src/mrs_natural/currentLabel");
+				"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); 
 			bextractNetwork->linkctrl("mrs_natural/nLabels",
-				"Series/featureNetwork/SoundFileSource/src/mrs_natural/nLabels");
+				"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels"); 
 			bextractNetwork->linkctrl("mrs_string/labelNames",
-				"Series/featureNetwork/SoundFileSource/src/mrs_string/labelNames");
+				"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); 
 		}
 	}
 
@@ -2301,19 +2318,39 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->updctrl("Classifier/cl/mrs_string/mode","predict");
 
 	cout << "Finished classifier training" << endl;
-
-
-	// have the plugin play audio
+	if (mic_)
+	  cout << "Microphone input used" << endl;
+	// have the plugin play audio 
 	if (pluginName != EMPTYSTRING && !pluginMute)
 	{
-		featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
-		featureNetwork->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false); 
+		featureNetwork->updctrl("AudioSink/dest/mrs_bool/initAudio", true); 
+		
+		// mute Audio since we are listening with mic at runtime ... 
+		if (mic_)
+		  featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", true);
+		else 
+		  featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false);
 	}
-
-	if(tline) {
-	  featureNetwork->updctrl("TimelineLabeler/timelineLabeler/mrs_bool/playRegionsOnly", false);
-	}
-
+	
+	// init mic audio ... 
+	if (mic_) 
+	  {
+	    bextractNetwork->updctrl("mrs_real/israte", 22050.0);   //sampling rate 
+	    bextractNetwork->updctrl("Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_natural/nChannels", 1);	//stereo
+	    bextractNetwork->linkctrl( "mrs_bool/initAudio" , "Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_bool/initAudio" ); //important link!!!
+	  }
+	    
+	
+	// finally disable the Soundfile Input in Fanout ...
+	if (mic_) 
+	  {
+	    bextractNetwork->updctrl("Series/featureNetwork/Fanout/fanout/mrs_natural/disable", 0);
+	    // ... and enable live audio source ... 
+	    bextractNetwork->updctrl("Series/featureNetwork/Fanout/fanout/mrs_natural/enable", 1);
+	  }
+	
+		
 	// don't output to WekaSink
 	if (wekafname != EMPTYSTRING)
 		bextractNetwork->updctrl("WekaSink/wsink/mrs_bool/mute", false);
@@ -2750,7 +2787,7 @@ initOptions()
 	cmd_options.addBoolOption("stereo", "st", false);
 	cmd_options.addNaturalOption("downsample", "ds", 1);
 	cmd_options.addBoolOption("shuffle", "sh", false);
-
+	cmd_options.addBoolOption("mic", "mc", false);
 
 	// feature selection options
 	cmd_options.addBoolOption("StereoPanningSpectrumFeatures", "spsf", false);
@@ -2796,6 +2833,7 @@ loadOptions()
 	testCollection = cmd_options.getStringOption("test");
 	downSample = cmd_options.getNaturalOption("downsample");
 	shuffle_ = cmd_options.getBoolOption("shuffle");
+	mic_ = cmd_options.getBoolOption("mic");
 	stereo_ = cmd_options.getBoolOption("stereo");
 	featExtract_ = cmd_options.getBoolOption("featExtract");
 

@@ -209,9 +209,6 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
 				out (2+l, t) = sq_sum;
 			}
-			cout << in << endl;
-			cout << "prediction = " << prediction << endl;
-			cout << "label = " << label << endl;
 			out(0,t) = (mrs_real)prediction;
 			out(1,t) = (mrs_real)label;
 		}
