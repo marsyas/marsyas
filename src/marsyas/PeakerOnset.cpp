@@ -73,6 +73,8 @@ PeakerOnset::myUpdate(MarControlPtr sender)
 
 	if(inSamples_ < 1 + 2 * ctrl_lookAheadSamples_->to<mrs_natural>())
 	{
+	  cout << "inSamples_ = " << inSamples_ << endl;
+	  cout << "lookAhead = " << ctrl_lookAheadSamples_->to<mrs_natural>() << endl;
 		MRSWARN("PeakerOnset::myUpdate() - inSamples is too small for specified onsetWinSize: onset detection not possible to be performed!");
 		ctrl_lookAheadSamples_->setValue(0, NOUPDATE);
 	}

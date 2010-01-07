@@ -38,6 +38,7 @@ namespace Marsyas
 	- \b mrs_string/destFileName [r] : path of the output destination directory.
 	- \b mrs_string/mode [r] : considered time unit (seconds or "frames"-ticks). 
 	- \b mrs_natural/tickCount [r] : current considered time (tick count) by the BeatReferee.
+	- \b mrs_real/tempo [r]: estimated tempo 
 */
 
 
@@ -52,7 +53,8 @@ private:
 	MarControlPtr ctrl_destFileName_;
 	MarControlPtr ctrl_mode_;
 	MarControlPtr ctrl_tickCount_;
-	
+	MarControlPtr ctrl_tempo_;
+
 	mrs_realvec ibiBPMVec_;
 	mrs_natural inc_;
 	mrs_string destFile_;
@@ -72,6 +74,7 @@ private:
 	mrs_natural t_;
 	mrs_real ibiBPMSum_;
 	mrs_natural beatCount_;
+	mrs_real tempo_;
 
 	void myUpdate(MarControlPtr sender);
 

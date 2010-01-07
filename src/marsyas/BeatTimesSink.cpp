@@ -44,7 +44,8 @@ BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
   ctrl_destFileName_ = getctrl("mrs_string/destFileName");
   ctrl_mode_ = getctrl("mrs_string/mode");
   ctrl_tickCount_ = getctrl("mrs_natural/tickCount");
-
+  ctrl_tempo_ = getctrl("mrs_real/tempo");
+  
   ibiBPM_ = a.ibiBPM_;
   beatCount_ = a.beatCount_;
   ibiBPMSum_ = a.ibiBPMSum_;
@@ -77,6 +78,7 @@ BeatTimesSink::addControls()
   addctrl("mrs_string/destFileName", "output", ctrl_destFileName_);
   addctrl("mrs_string/mode", "beats+tempo", ctrl_destFileName_);
   setctrlState("mrs_string/mode", true);
+  addctrl("mrs_real/tempo", 80.0, ctrl_tempo_);
 }
 
 void
@@ -88,7 +90,7 @@ BeatTimesSink::myUpdate(MarControlPtr sender)
   hopSize_ = ctrl_hopSize_->to<mrs_natural>();
   winSize_ = ctrl_winSize_->to<mrs_natural>();
   srcFs_ = ctrl_srcFs_->to<mrs_real>();
-
+  
   //adjustment_ = (winSize_ - hopSize_) + floor((mrs_real) winSize_/2);
   adjustment_ = hopSize_/2;
   initialOut_ = true;
@@ -163,7 +165,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				if(initialOut2_)
 				{
 					oss2 << ctrl_destFileName_->to<mrs_string>() << "_meanTempo.txt";
-					cout << "MeanTempo Output: " << oss2.str().c_str() << endl;
+					// cout << "MeanTempo Output: " << oss2.str().c_str() << endl;
 					
 					outStream2.open(oss2.str().c_str(), ios::out|ios::trunc);
 					outStream2.close();
@@ -217,11 +219,17 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 
 					mrs_natural output;
 					if(beatCount_ % 2 == 0) 
-						output = (mrs_natural) ibiBPMVec_((beatCount_ / 2)+1);
+					  {
+					    output = (mrs_natural) ibiBPMVec_((beatCount_ / 2)+1);
+					    tempo_ = output;
+					    ctrl_tempo_->setValue(tempo_, NOUPDATE);
+					  }
 					else
 					{
 						output = (mrs_natural) (ibiBPMVec_((mrs_natural)floor((mrs_real)beatCount_ / 2)+1) 
 							+ ibiBPMVec_((mrs_natural)ceil((mrs_real)beatCount_ / 2)+1)) / 2;
+						tempo_ = output;
+						ctrl_tempo_->setValue(tempo_, NOUPDATE);
 					}
 					//MATLAB_PUT(ibiBPMVec_, "IBIVector");
 					
@@ -233,10 +241,14 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 
 				else if(beatCount_ == 1) //if only two beats => equal to ibi
 				{
+				  
 					oss3 << ctrl_destFileName_->to<mrs_string>() << "_medianTempo.txt";
 					outStream.open(oss3.str().c_str());
 					outStream << (mrs_natural) ibiBPM_ << endl;
 					outStream.close();
+					tempo_ = ibiBPM_;
+					ctrl_tempo_->setValue(tempo_, NOUPDATE);
+					
 				}
 				
 			}

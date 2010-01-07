@@ -4286,11 +4286,11 @@ toy_with_duplex()
 	dnet->addMarSystem(mng.create("Gain", "gain"));
 	dnet->addMarSystem(mng.create("AudioSink", "dest"));
 	
+	
 	dnet->updctrl("mrs_real/israte", 44100.0);
-	dnet->updctrl("AudioSource/src/mrs_natural/nChannels", 2);
+	dnet->updctrl("AudioSource/src/mrs_natural/nChannels", 1);
 	dnet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
 	dnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	
 	for (int i=0; i < 500; i++) 
 	  {
 	    dnet->tick();

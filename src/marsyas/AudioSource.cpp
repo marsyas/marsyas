@@ -124,7 +124,6 @@ void
 AudioSource::initRtAudio()
 {
 
-  cout << "INIT " << endl;
   bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
   nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
   rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
@@ -133,7 +132,6 @@ AudioSource::initRtAudio()
   rtDevice_ = (int)getctrl("mrs_natural/device")->to<mrs_natural>();
   
 
-  cout << "rtChannels = " << rtChannels_ << endl;
 
 //marsyas represents audio data as float numbers
 #ifdef MARSYAS_AUDIOIO
@@ -172,7 +170,6 @@ AudioSource::initRtAudio()
     if (rtDevice_ !=0){
         RtAudio3DeviceInfo info;
         info = audio_->getDeviceInfo(rtDevice_);
-        cout << "Using input device: " << info.name << endl;
     } 
 
 #endif 
@@ -215,7 +212,6 @@ void
 AudioSource::myProcess(realvec& in, realvec& out)
 {
 
-  cout << "onObs = " << onObservations_ << endl;
 	(void) in;
 
   //check if RtAudio is initialized
@@ -251,7 +247,6 @@ AudioSource::myProcess(realvec& in, realvec& out)
       for (t=0; t < onObservations_ * bufferSize_; t++)
 	{
 	  reservoir_(ri_) = data_[t];
-	  cout << data_[t] << endl;
 	  ri_++;
 	}
     }
@@ -271,4 +266,7 @@ AudioSource::myProcess(realvec& in, realvec& out)
  /* MATLAB_PUT(out, "AudioSource_out");
   MATLAB_EVAL("plot(AudioSource_out)");*/
 }
+
+
+
 
