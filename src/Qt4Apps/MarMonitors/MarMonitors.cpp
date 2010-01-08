@@ -25,12 +25,9 @@ MarMonitors::MarMonitors(string pluginName)
   connect(setupButton, SIGNAL(clicked()), this, SLOT(setup()));
   centralWidget_->setLayout(gridLayout_);
   
-  if (pluginName != "") 
-    {
-      QString s(pluginName.c_str());
-      initNetwork(s);
-    }
-
+  QString s(pluginName.c_str());
+  initNetwork(s);
+  
 }
 
 
@@ -42,41 +39,34 @@ MarMonitors::initNetwork(QString pluginName)
   // create the Marsyas 
   MarSystemManager mng;
   
-  ifstream pluginStream(pluginName.toStdString().c_str());
-  pnet_ = mng.getMarSystem(pluginStream);
-  
-  if (pnet_ == 0) 
+  if (pluginName != "")
     {
-      cout << "Manager does not support system " << endl;
-      exit(1);
+      ifstream pluginStream(pluginName.toStdString().c_str());
+      pnet_ = mng.getMarSystem(pluginStream);
+      
+      if (pnet_ == 0) 
+	{
+	  cout << "Manager does not support system " << endl;
+	  exit(1);
+	}
+    }
+  else 
+    {
+      pnet_ = mng.create("Series", "pnet");
+      pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
+      pnet_->addMarSystem(mng.create("Gain", "gain"));
+      pnet_->addMarSystem(mng.create("Windowing", "windowing"));
+      pnet_->addMarSystem(mng.create("Gain", "gain2"));
+      pnet_->addMarSystem(mng.create("Windowing", "ham2"));
+      
+      
+      pnet_->updctrl("SoundFileSource/src/mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au");
+      pnet_->updctrl("Windowing/windowing/mrs_bool/zeroPhasing", true);
+      pnet_->updctrl("Gain/gain/mrs_real/gain", 2.0);
+      pnet_->updctrl("Gain/gain2/mrs_real/gain", 3.0);
     }
   
-  /* pnet_ = mng.create("Series", "pnet");
-  pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
-  pnet_->addMarSystem(mng.create("Gain", "gain"));
-  pnet_->addMarSystem(mng.create("Windowing", "windowing"));
-  pnet_->addMarSystem(mng.create("Gain", "gain2"));
-  pnet_->addMarSystem(mng.create("Windowing", "ham2"));
-  
-  
-  pnet_->updctrl("SoundFileSource/src/mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au");
-  pnet_->updctrl("Windowing/windowing/mrs_bool/zeroPhasing", true);
-  pnet_->updctrl("Gain/gain/mrs_real/gain", 2.0);
-  pnet_->updctrl("Gain/gain2/mrs_real/gain", 3.0);
-  pnet_->updctrl("mrs_bool/probe", true);
-  
-  */ 
-  
-  cout << *pnet_ << endl;
   nTicks = 500;
-  
-
-  // initialize graphs 
-  int num = 2048;
-
-
-
-
   
 }
 
@@ -120,10 +110,9 @@ MarMonitors::open()
 void 
 MarMonitors::about()
 {
-  /* QMessageBox::about(this, tr("Marsyas MarMonitors"),  
-			   tr("Marsyas MarPhasevocoder: A graphical user interface for viewing \n the intermediate results of dataflow calcualtion in arbitrary marsystems stored as plugins"));
-  */ 
-	
+   QMessageBox::about(this, tr("Marsyas MarMonitors"),  
+		      tr("Marsyas MarPhasevocoder: A graphical user interface for viewing \n the intermediate results of dataflow calcualtion in arbitrary marsystems stored as plugins"));
+   
 }
 
 
@@ -148,9 +137,12 @@ MarMonitors::graph(int graph_size)
 void 
 MarMonitors::dialogDone()
 {
-  graph(2048);
-  
-  probes_.push_back(listWidget->currentItem()->text().toStdString());
+  string cname = listWidget->currentItem()->text().toStdString();
+  mrs_realvec foo = pnet_->getctrl(cname)->to<mrs_realvec>();
+  pnet_->updctrl("mrs_string/filename", "gravity.au");
+  graph(foo.getCols());
+  probes_.push_back(cname);
+
 }
 
 

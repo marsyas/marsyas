@@ -825,6 +825,12 @@ tempo_medianSumBands(string sfName, string resName)
   
   int k=0;
    
+
+  ofstream ofs;
+  ofs.open("tempo.mpl");
+  ofs << *total << endl;
+  ofs.close();
+
   while (repetitions * duration > samplesPlayed)
     {
       /* cout << "TICKING " << endl;
