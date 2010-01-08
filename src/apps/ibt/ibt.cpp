@@ -61,6 +61,7 @@ CommandLineOptions cmd_options;
 
 mrs_string score_function;
 mrs_string output;
+mrs_string induction_gt;
 mrs_real induction_time;
 mrs_real metrical_change_time;
 mrs_string execPath;
@@ -76,7 +77,7 @@ printUsage(string progName)
 {
 	MRSDIAG("ibt.cpp - printUsage");
 	cerr << "Usage : " << progName << 
-		"[-s scoreFunction] [-t inductionTime (in secs)] [-m metricalChangeTime (in secs)] [-b backtrace] [-o annotationsOutput] [-a play_w/_beats] [-f outputFile_w/_beats] fileName outDir" << endl;
+		" [-s scoreFunction] [-t inductionTime (in secs)] [-m metricalChangeTime (in secs)] [-b backtrace] [-o annotationsOutput] [-a play_w/_beats] [-f outputFile_w/_beats] [-igt induction_ground-truth] fileName outDir" << endl;
 	cerr << "where fileName is a sound file in a MARSYAS supported format and outDir the directory where the annotation files (beats + tempo) shall be saved (ibt.exe dir by default)." << endl;
 	cerr << endl;
 	exit(1); 
@@ -102,6 +103,7 @@ printHelp(string progName)
 	cerr << "-b --backtrace      : after induction backtrace the analysis to the beginning" << endl;
 	cerr << "-a --audio          : play the original sound mixed with the synthesized beats" << endl;
 	cerr << "-f --audiofile      : output the original sound mixed with the synthesized beats (as fileName_beats.*)" << endl;
+	cerr << "-igt --induction_gt : replace induction stage with ground-truth (two first beats from beatTimes file - .txt or .beats - from the directory given as argument)" << endl;
 	cerr << "-o --annot_output   : output the predicted beat times and/or the (median) tempo (\"beats+tempo\"-default; \"beats\"; \"tempo\"; \"none\")" << endl;
 	cerr << "Available Score Functions: " << endl;
 	cerr << "\"regular\" (default)" << endl;
@@ -118,6 +120,7 @@ initOptions()
 	cmd_options.addBoolOption("audio", "a", false);
 	cmd_options.addBoolOption("audiofile", "f", false);
 	cmd_options.addBoolOption("backtrace", "b", false);
+	cmd_options.addStringOption("induction_gt", "igt", "-1");
 	cmd_options.addStringOption("output", "o", "beats+tempo");
 	//the score function (heuristics) which conducts the beat tracking ("regular" by default)
 	cmd_options.addStringOption("score_function", "s", "regular");
@@ -135,6 +138,7 @@ loadOptions()
 	audioopt = cmd_options.getBoolOption("audio");
 	audiofileopt = cmd_options.getBoolOption("audiofile");
 	backtraceopt = cmd_options.getBoolOption("backtrace");
+	induction_gt = cmd_options.getStringOption("induction_gt");
 	output = cmd_options.getStringOption("output");
 	score_function = cmd_options.getStringOption("score_function");
 	induction_time = cmd_options.getRealOption("induction_time");
@@ -206,6 +210,35 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 
 			MarSystem* initialhypotheses = mng.create("FlowThru", "initialhypotheses");
 				initialhypotheses->addMarSystem(mng.create("PhaseLock", "phaselock"));
+				
+				ostringstream pathGT; //induction ground-truth path
+				if(strcmp(induction_gt.c_str(), "-1") != 0) //enabled induction ground-truth
+				{
+					FileName outputFileGT(sfName);
+
+					pathGT << induction_gt.c_str() << outputFileGT.nameNoExt() << ".txt";
+				
+					//check if ground-truth file, with .txt extension, exists (ifnot try with .beats extension)
+					if (existsFile(pathGT.str()))
+					{	
+						cout << "txt file exists!" << endl;
+						initialhypotheses->addMarSystem(mng.create("InductionGT", "inductiongt"));
+					}
+					//else, check if ground-truth file, with .beats extension, exists (ifnot return to normal induction)
+					else
+					{
+						pathGT.str("");
+						pathGT << induction_gt.c_str() << outputFileGT.nameNoExt() << ".beats";
+						
+						if (existsFile(pathGT.str()))
+						{	
+							cout << "beats file exists!" << endl;
+							initialhypotheses->addMarSystem(mng.create("InductionGT", "inductiongt"));
+						}
+						else
+							cout << "Induction ground-truth file error! - Running normal induction..." << endl;
+					}
+				}
 
 			beattracker->addMarSystem(initialhypotheses);
 			
@@ -320,8 +353,10 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//Link Beat Output Sink parameters with the used ones:
 	if(strcmp(output.c_str(), "none") != 0)
 	{
-		beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/hopSize", "FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/hopSize");
-		beattracker->linkctrl("BeatTimesSink/sink/mrs_real/srcFs", "FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs");
+		beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/hopSize", 
+			"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/hopSize");
+		beattracker->linkctrl("BeatTimesSink/sink/mrs_real/srcFs", 
+			"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs");
 		beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/winSize", 
 			"Series/onsetdetectionfunction/ShiftInput/si/mrs_natural/winSize");
 		beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/tickCount", "BeatReferee/br/mrs_natural/tickCount");
@@ -341,6 +376,24 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//link beatdetected with noise ADSR -> for clicking when beat:
 	IBTsystem->linkctrl("Fanout/beatmix/Series/audioflow/FlowThru/beattracker/BeatReferee/br/mrs_real/beatDetected", 
 		"Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/nton");
+
+
+	//INDUCTION GT: (if ground-truth file exists => run with induction as ground-truth)
+	if (existsFile(pathGT.str()))
+	{
+		beattracker->linkctrl("FlowThru/initialhypotheses/InductionGT/inductiongt/mrs_natural/inductionTime", 
+			"BeatReferee/br/mrs_natural/inductionTime");
+
+		beattracker->linkctrl("FlowThru/initialhypotheses/InductionGT/inductiongt/mrs_natural/hopSize", 
+			"BeatReferee/br/mrs_natural/hopSize");
+		beattracker->linkctrl("FlowThru/initialhypotheses/InductionGT/inductiongt/mrs_real/srcFs", 
+			"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs");
+	
+		beattracker->updctrl("FlowThru/initialhypotheses/InductionGT/inductiongt/mrs_string/sourceFile", pathGT.str());
+	
+		//if induction ground-truth then force backtrace!
+		backtraceopt = true;
+	}
 
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -574,6 +627,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			cout << "Beat Tracking........" << endl;
 		}
 		//Display percentage of processing complete...
+		//printf("  %d % \r", (mrs_natural) frameCount*100/inputSize);
 		//cout << (mrs_natural) frameCount*100/inputSize << "%" << endl;
 	}
 	cout << "Finish!" << endl;
@@ -596,10 +650,10 @@ main(int argc, const char **argv)
 
 	// print help or usage
 	if (helpopt) 
-	printHelp("ibt");
+		printHelp("ibt");
 
 	if (usageopt)
-	printUsage("ibt");
+		printUsage("ibt");
 	
 	execPath = string(argv[0]);
 	#ifdef MARSYAS_WIN32

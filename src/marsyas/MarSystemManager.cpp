@@ -204,6 +204,7 @@
 #include "BeatReferee.h"
 #include "PhaseLock.h"
 #include "BeatTimesSink.h"
+#include "InductionGT.h"
 //modifyHeader
 
 using namespace std;
@@ -397,6 +398,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("BeatReferee", new BeatReferee("beatreferee"));
 	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
+	registerPrototype("InductionGT", new InductionGT("inductiongt"));
 	//modifyRegister
 
 	//***************************************************************************************
