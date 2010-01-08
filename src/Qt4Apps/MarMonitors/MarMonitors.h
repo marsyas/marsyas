@@ -23,11 +23,11 @@ class MarMonitors : public QMainWindow
    Q_OBJECT
 
 public:
-  MarMonitors();
+  MarMonitors(string pluginName);
 
 public slots: 
   void tick();
-  void graph();
+  void graph(int size);
   void setup();
   void dialogDone();
   void open();
@@ -40,7 +40,7 @@ private:
   void initNetwork(QString pluginName);
 
   
-      
+  string pluginName_;
   realvec out_;
   QVector<Marx2DGraph*> graphs;
   Marx2DGraph* graph3;

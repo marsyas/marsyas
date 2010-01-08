@@ -4,24 +4,13 @@ using namespace std;
 using namespace Marsyas;
 
 
-MarMonitors::MarMonitors()
+MarMonitors::MarMonitors(string pluginName)
 {
   centralWidget_ = new QWidget;
   setCentralWidget(centralWidget_);
   
   createActions();
   createMenus();
-
-
-  int num = 2;
-  
-  
-  graph3 = new Marx2DGraph(num, 0);
-  graph3->setPlotType(Marx2DGraph::LINEAR_INTERPOLATION);
-  graph3->setPlotType(Marx2DGraph::POINTS);
-  // graph3->addLabel("redundant graph for testing");
-  graph3->setGraphDataLineSize( 1.0 );
-
   
   gridLayout_ = new QGridLayout;
   QPushButton *tickButton = new QPushButton(tr("Tick"));
@@ -29,28 +18,18 @@ MarMonitors::MarMonitors()
   QPushButton *setupButton = new QPushButton(tr("Setup"));
   
 
-  /* QSpinBox   *numTicksSpinBox = new QSpinBox();
-  numTicksSpinBox->setRange(1, 1000);
-  numTicksSpinBox->setValue(nTicks);
-  */ 
-
-
-  gridLayout_->addWidget(tickButton, 0, 1);
-  gridLayout_->addWidget(graphButton, 0, 0);
-  gridLayout_->addWidget(setupButton, 0, 2);
+  gridLayout_->addWidget(tickButton, 0, 0);
+  gridLayout_->addWidget(setupButton, 0, 1);
   
-  
-  connect(graphButton, SIGNAL(clicked()), this, SLOT(graph()));  
   connect(tickButton, SIGNAL(clicked()), this, SLOT(tick()));
   connect(setupButton, SIGNAL(clicked()), this, SLOT(setup()));
-
-  // connect(numTicksSpinBox, SIGNAL(valueChanged(int)), this, SLOT(setTicks(int)));
   centralWidget_->setLayout(gridLayout_);
-
-
-
-
   
+  if (pluginName != "") 
+    {
+      QString s(pluginName.c_str());
+      initNetwork(s);
+    }
 
 }
 
@@ -59,11 +38,6 @@ void
 MarMonitors::initNetwork(QString pluginName)
 {
   
-
-  
-  nGraphs_ = 2;
-  
-  out_.create(2048);  
   
   // create the Marsyas 
   MarSystemManager mng;
@@ -157,35 +131,26 @@ MarMonitors::about()
 
 
 void 
-MarMonitors::graph()
+MarMonitors::graph(int graph_size)
 {
- int num = 2048;
  nGraphs_ += 1;
 
  // Create new graph
- Marx2DGraph* graph = new Marx2DGraph(num, 0);
+ Marx2DGraph* graph = new Marx2DGraph(graph_size, 0);
  graph->setPlotType(Marx2DGraph::LINEAR_INTERPOLATION);
  graph->setGraphDataLineSize( 1.0 );
  graphs.push_back(graph);
  
  gridLayout_->addWidget(graph, nGraphs_/3, (nGraphs_ % 3));
-
- probes_.push_back("patata");
 }
 
 
 void 
 MarMonitors::dialogDone()
 {
-  if (graphs.size() == 0) 
-    return;
-  else 
-    {
-
-      probes_[graphNum->value()] = listWidget->currentItem()->text().toStdString();
-    }
+  graph(2048);
   
-  
+  probes_.push_back(listWidget->currentItem()->text().toStdString());
 }
 
 
@@ -229,13 +194,12 @@ MarMonitors::setup()
 
   layout->addWidget(label, 0, 0);
   layout->addWidget(listWidget, 2, 0);
-
   layout->addWidget(doneButton, 3, 0);
 
   setupDialog->setLayout(layout);
+  
   connect(doneButton, SIGNAL(clicked()), setupDialog, SLOT(accept()));
   connect(doneButton, SIGNAL(clicked()), this, SLOT(dialogDone()));  
-  
   setupDialog->exec();
 }
 
