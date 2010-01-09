@@ -577,6 +577,7 @@ tempo_histoSumBands(string sfName, string resName)
   // prepare network
   MarSystem *total = mng.create("Series", "src");
   total->addMarSystem(mng.create("SoundFileSource", "src"));
+  total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   total->addMarSystem(mng.create("ShiftInput", "si"));
   total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
 
@@ -706,15 +707,7 @@ tempo_histoSumBands(string sfName, string resName)
 	}
     }
 
-  cout << "FINAL = " << bpms[bpms.size()-1] << endl;
-
-  // Output to file
-  ofstream oss(resName.c_str());
-  oss << bpms[bpms.size()- 1] << endl;
-  cerr << "Played " << wc << " slices of " << onSamples << " samples"
-       << endl;
-  cout << "Processed " << sfName << endl;
-  cout << "Wrote " << resName << endl;
+  cout << sfName << "\t" << bpms[bpms.size()-1] << endl;
   delete total;
 }
 
@@ -1881,7 +1874,6 @@ void tempo(string inFname, string outFname, string method)
     }
   else if (method == "HISTO_SUMBANDS")
     {
-      cout << "TEMPO INDUCTION USING HISTO_SUMBANDS method" << endl;
       tempo_histoSumBands(sfName, resName);
     }
   else if (method == "IBT")
