@@ -1723,21 +1723,22 @@ MarSystem::put(istream& is)
 		// Now, based on the type, we extract the value
 		if (ctype == rstr)
 		{
-			is >> rcvalue;
-			if (iter == controls_.end())
-				addControl(cname, rcvalue);
-			else
-				updControl(cname, rcvalue);
+		  is >> rcvalue;
+		  if (iter == controls_.end())
+		    addControl(cname, rcvalue);
+		  else
+		    updControl(cname, rcvalue);
 		}
 		else if (ctype == sstr)
 		{
-			is >> scvalue;
-			if (scvalue == "MARSYAS_EMPTYSTRING")
-				scvalue = "";
-			if (iter == controls_.end())
-				addControl(cname, scvalue);
-			else
-				updControl(cname, scvalue);
+		  getline(is, scvalue);  // getline is used to include spaces in strings 
+			
+		  if (scvalue == "MARSYAS_EMPTYSTRING")
+		    scvalue = "";
+		  if (iter == controls_.end())
+		    addControl(cname, scvalue);
+		  else
+		    updControl(cname, scvalue);
 		}
 		else if (ctype == nstr)
 		{

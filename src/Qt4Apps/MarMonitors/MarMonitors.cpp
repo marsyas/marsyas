@@ -110,8 +110,8 @@ MarMonitors::open()
 void 
 MarMonitors::about()
 {
-   QMessageBox::about(this, tr("Marsyas MarMonitors"),  
-		      tr("Marsyas MarPhasevocoder: A graphical user interface for viewing \n the intermediate results of dataflow calcualtion in arbitrary marsystems stored as plugins"));
+  // QMessageBox::about(this, tr("Marsyas MarMonitors"),  
+  // tr("Marsyas MarPhasevocoder: A graphical user interface for viewing \n the intermediate results of dataflow calcualtion in arbitrary marsystems stored as plugins"));
    
 }
 

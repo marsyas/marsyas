@@ -801,6 +801,10 @@ tempo_medianSumBands(string sfName, string resName)
   total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
 
 
+  total->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+  total->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+  total->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+
   // prepare vectors for processing
   realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
 	       total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
@@ -833,12 +837,7 @@ tempo_medianSumBands(string sfName, string resName)
 
   while (repetitions * duration > samplesPlayed)
     {
-      /* cout << "TICKING " << endl;
-      cout << "repetitions = " << repetitions << endl;
-      cout << "duration = " << duration << endl;
-      cout << "samplesPlayed = " << samplesPlayed << endl;
-      */ 
-
+      
 		total->process(iwin, estimate);
 		
 		mrs_realvec pdata = total->getctrl("Peaker/pkr/mrs_realvec/processedData")->to<mrs_realvec>();

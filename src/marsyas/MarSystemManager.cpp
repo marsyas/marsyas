@@ -1233,6 +1233,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	else
 	{
 		MRSERR("Unknown MarSystemType" << mcomposite);
+		MRSERR("skipstr = " << skipstr);
 		return 0;
 	}
 
@@ -1242,6 +1243,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	is >> skipstr >> skipstr >> skipstr;
 	string mtype;
 	is >> mtype;
+
 
 	/* next line looks like:
 	 * # Name = mname
@@ -1273,7 +1275,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	//delete all children MarSystems in a (prototype) Composite
 	//and read and link (as possible) local controls
 	is >> *msys;
-
+	
 	msys->update();
 
 	workingSet_[msys->getName()] = msys; // add to workingSet
