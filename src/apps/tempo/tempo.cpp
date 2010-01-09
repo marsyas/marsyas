@@ -133,6 +133,7 @@ void tempo_medianMultiBands(string sfName, string resName)
 
   // prepare network
   MarSystem *total = mng.create("Series", "src");
+  total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   total->addMarSystem(mng.create("SoundFileSource", "src"));
   total->addMarSystem(mng.create("ShiftInput", "si"));
 
@@ -141,8 +142,6 @@ void tempo_medianMultiBands(string sfName, string resName)
 
 
   total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
-  total->addMarSystem(mng.create("HTML5Sink", "html5"));
-
   total->addMarSystem(mng.create("OnePole", "lpf"));
   total->addMarSystem(mng.create("Norm", "norm"));
   {
@@ -247,19 +246,11 @@ void tempo_medianMultiBands(string sfName, string resName)
 		  duration = samplesPlayed-onSamples;
 	  }
   }
-
-  // sort bpm estimates for median filtering
+		      
+		      // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
   cout << sfName << "\t" << bpms[bpms.size()/2] << endl;
 
-  // Output to file
-  ofstream oss(resName.c_str());
-  oss << bpms[bpms.size()/2] << endl;
-  cerr << "Played " << wc << " slices of " << onSamples << " samples"
-       << endl;
-  cout << "Processed " << sfName << endl;
-  cout << "Wrote " << resName << endl;
-  delete total;
 }
 
 
@@ -738,6 +729,7 @@ tempo_medianSumBands(string sfName, string resName)
   // prepare network
   MarSystem *total = mng.create("Series", "src");
   total->addMarSystem(mng.create("SoundFileSource", "src"));
+  total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
   total->addMarSystem(mng.create("ShiftInput", "si"));
   total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
   total->addMarSystem(mng.create("WaveletBands", "wvbnds"));
@@ -1885,7 +1877,6 @@ void tempo(string inFname, string outFname, string method)
     }
   else if (method == "MEDIAN_MULTIBANDS")
     {
-      cout << "TEMPO INDUCTION USING MEDIAN_MULTIBANDS method" << endl;
       tempo_medianMultiBands(sfName,resName);
     }
   else if (method == "HISTO_SUMBANDS")
