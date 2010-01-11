@@ -225,11 +225,13 @@ void
 BeatAgent::myProcess(realvec& in, realvec& out)
 {
 	//Output Format: [Beat/Eval/None|Period|CurBeat|Inner/Outter|Error|Score] -> OnSamples = 6
-	
 	agentControl_ = ctrl_agentControl_->to<mrs_realvec>();
 
-	//t_ is always updated with the actual referee's timming on the previous tick + 1
-	t_ = (mrs_natural) agentControl_(myIndex_, 3) + 1;
+	//t_ is constantly updated with the referee's next time frame
+	t_ = (mrs_natural) agentControl_(myIndex_, 3);
+
+	//if(myIndex_ == 0)
+	//	cout << "BAgent: " << t_ << endl;
 
 	//At first no beat info is considered - while no beat detected:
 	fillOutput(out, NONE, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -245,8 +247,9 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 	innerWin_ = (mrs_natural) innerMargin_;
 	//innerWin_ = (mrs_natural) min(4.0, ceil(period_ * innerMargin_));
 	
-	mrs_natural curBeatPoint = inSamples_-1;
-	mrs_real max = 0;
+	mrs_natural curBeatPoint = inSamples_-1; //curBeatPoint always point to the end point of the full flux window.
+	
+	mrs_real max = 0.0;
 	mrs_natural max_i = 0;
 	
 	//If the agent was just created or its hypothesis updated:
@@ -259,7 +262,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 	//Considers beat hypothesis every phase + period
 	if(t_ == curBeat_)
 	{
-		//cout << identity_ << " -> BEAT (" << beatCount_ << ") -> " << t_ << endl;
+		//cout << "t:" << t_ << "-" << identity_ << " -> BEAT (" << beatCount_ << ")" << endl;
 		
 		//Beat Info filling the remaining indexes of output with undef. value
 		fillOutput(out, BEAT, -1.0, -1.0, -1.0, -1.0, -1.0);
@@ -269,6 +272,8 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		//history_(beatCount_,0) = t_;
 		//history_(beatCount_,1) = curBeatPointValue_;	
 
+		//lastBeatPoint points to the beat time point to be evaluated 
+		//(corresponds to the end point of the flux window - the outter rgt tolerance)
 		lastBeatPoint_ = curBeatPoint - outterWinRgt_;
 
 		beatCount_++;
@@ -280,10 +285,12 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 	//Evaluates each beat at the end of its beat position + outterWindow tolerance:
 	if(t_ == evalPoint)
 	{
+		//point in flux window corresponding to the beat time point being evaluated
 		max_i = lastBeatPoint_;
 
 		for(mrs_natural t = lastBeatPoint_ - outterWinLft_; t <= lastBeatPoint_ + outterWinRgt_; t++)
 		{
+			//check over the full eval window ([lastBeatPoint_-outterWinLft_; lastBeatPoint_+outterWinRgt_]) for maximum flux
 			if(max < in(t))
 			{
 				max = in(t);
@@ -291,6 +298,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 			}
 		}
 
+		//error = difference between predicted beat time point and the point, in the eval window, with maximum flux value
 		error_ = max_i - lastBeatPoint_;
 
 		//cout << identity_ << " -> MAX -> pred: " << in(lastBeatPoint_) << " ; act: " << max << endl;
@@ -315,7 +323,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 				score_ = (1 - fraction_) * max;
 
 				//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
-				//score*= sqrt((mrs_real)period_);
+				//score_*= sqrt((mrs_real)period_);
 			}
 			
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside innerWindow!");
@@ -334,7 +342,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 				//score_ = (1 - fraction_);
 
 				//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
-				//score*= sqrt((mrs_real)period_);
+				//score_*= sqrt((mrs_real)period_);
 			}
 			
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside innerWindow!");
@@ -357,7 +365,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 					//score_ = (1 - fraction_) * max;
 
 					//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
-					//score*= sqrt((mrs_real)period_);
+					//score_*= sqrt((mrs_real)period_);
 				}
 			}
 			if((max_i > lastBeatPoint_ + innerWin_) && (max_i <= lastBeatPoint_ + outterWinRgt_))
@@ -369,7 +377,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 					//score_ = (1 - fraction_) * max;
 
 					//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods) [!]
-					//score*= sqrt((mrs_real)period_);
+					//score_*= sqrt((mrs_real)period_);
 				}
 			}
 
@@ -380,9 +388,10 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 
 			fillOutput(out, EVAL, period_, curBeat_, OUTTER, error_, score_);
 		}
-			
-		//cout << error_ << " (pred: " << curBeat_ << "-" << in(lastBeatPoint_) << " act: " << curBeat_+error_ << 
-		//"-" << max << ") -> " << " dS: " << score_ << " NextBeat(ifNotChanged): " << curBeat_+period_ << endl;
+		
+		//cout << "t:" << t_ << "-" << identity_ << "(error:" << error_ << "): curBeat-" << curBeat_ << "; act-" 
+		//	<< curBeat_+error_ << " -> flux: " << in(lastBeatPoint_) << "-" << lastBeatPoint_ << "(" 
+		//	<< max << "-" << max_i << ") dS: " << score_ << " NextBeat(ifNotChanged): " << curBeat_+period_ << endl;
 
 		/*
 		for(mrs_natural i = 0; i < beatCount_; i++)

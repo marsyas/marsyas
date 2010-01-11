@@ -106,8 +106,10 @@ BeatTimesSink::myUpdate(MarControlPtr sender)
 void 
 BeatTimesSink::myProcess(realvec& in, realvec& out)
 {
-	//Frame (tick) counter:
-	t_ = ctrl_tickCount_->to<mrs_natural>();
+	//Frame (tick) counter: (updated from BeatReferee's next time frame -1)
+	t_ = ctrl_tickCount_->to<mrs_natural>()-1;
+
+	//cout << "BSink: " << t_ << endl;
 
 	//FlowThru input
 	out = in;

@@ -38,6 +38,8 @@ TempoHypotheses::TempoHypotheses(const TempoHypotheses& a) : MarSystem(a)
   ctrl_inductionTime_ = getctrl("mrs_natural/inductionTime");
   ctrl_hopSize_ = getctrl("mrs_natural/hopSize");
   ctrl_srcFs_ = getctrl("mrs_real/srcFs");
+  ctrl_tickCount_ = getctrl("mrs_natural/tickCount");
+
   t_ = a.t_;
   noBPMs_ = a.noBPMs_;
 }
@@ -65,6 +67,7 @@ TempoHypotheses::addControls()
   addctrl("mrs_natural/hopSize", 1, ctrl_hopSize_);
   addctrl("mrs_real/srcFs", 1.0, ctrl_srcFs_);
   setctrlState("mrs_real/srcFs", true);
+  addctrl("mrs_natural/tickCount", 0, ctrl_tickCount_);
 }
 
 void
@@ -87,7 +90,10 @@ TempoHypotheses::myUpdate(MarControlPtr sender)
 void 
 TempoHypotheses::myProcess(realvec& in, realvec& out)
 {
-	t_++;
+	//t_ is constantly updated with the referee's next time frame
+	t_ = ctrl_tickCount_->to<mrs_natural>();
+
+	//cout << "THyp: " << t_ << endl;
 
 	if(t_ == inductionTime_)
 	{

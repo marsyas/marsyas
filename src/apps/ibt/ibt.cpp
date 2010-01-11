@@ -127,7 +127,7 @@ initOptions()
 	//Time (in seconds) of induction before tracking. Has to be > 60/MIN_BPM (5.0 by default)
 	cmd_options.addRealOption("induction_time", "t", 5.0);
 	//initial time (in secs) allowed for eventual tracking metrical changes (0 not allowing at all; -1 for the whole music)" (5.0 by default)
-	cmd_options.addRealOption("metrical_change_time", "m", 5.0);
+	cmd_options.addRealOption("metrical_change_time", "m", -1);
 }
 
 void 
@@ -211,35 +211,6 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			MarSystem* initialhypotheses = mng.create("FlowThru", "initialhypotheses");
 				initialhypotheses->addMarSystem(mng.create("PhaseLock", "phaselock"));
 				
-				ostringstream pathGT; //induction ground-truth path
-				if(strcmp(induction_gt.c_str(), "-1") != 0) //enabled induction ground-truth
-				{
-					FileName outputFileGT(sfName);
-
-					pathGT << induction_gt.c_str() << outputFileGT.nameNoExt() << ".txt";
-				
-					//check if ground-truth file, with .txt extension, exists (ifnot try with .beats extension)
-					if (existsFile(pathGT.str()))
-					{	
-						cout << "txt file exists!" << endl;
-						initialhypotheses->addMarSystem(mng.create("InductionGT", "inductiongt"));
-					}
-					//else, check if ground-truth file, with .beats extension, exists (ifnot return to normal induction)
-					else
-					{
-						pathGT.str("");
-						pathGT << induction_gt.c_str() << outputFileGT.nameNoExt() << ".beats";
-						
-						if (existsFile(pathGT.str()))
-						{	
-							cout << "beats file exists!" << endl;
-							initialhypotheses->addMarSystem(mng.create("InductionGT", "inductiongt"));
-						}
-						else
-							cout << "Induction ground-truth file error! - Running normal induction..." << endl;
-					}
-				}
-
 			beattracker->addMarSystem(initialhypotheses);
 			
 			MarSystem* agentpool = mng.create("Fanout", "agentpool");
@@ -312,7 +283,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		"FlowThru/tempoinduction/Fanout/tempohypotheses/Series/tempo/MaxArgMax/mxr/mrs_natural/fanoutLength");
 
 	//Pass enabled (muted) BeatAgents (from FanOut) to the BeatReferee
-	beattracker->linkctrl("Fanout/agentpool/mrs_realvec/muted", "BeatReferee/br/mrs_realvec/muted");
+	beattracker->linkctrl("Fanout/agentpool/mrs_realvec/muted", "BeatReferee/br/mrs_realvec/mutedAgents");
 	//Pass tempohypotheses Fanout muted vector to the BeatReferee, for disabling induction after induction timming
 	beattracker->linkctrl("FlowThru/tempoinduction/Fanout/tempohypotheses/mrs_realvec/muted", 
 		"BeatReferee/br/mrs_realvec/inductionEnabler");
@@ -327,9 +298,6 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	}
 
 	//Defines tempo induction time after which the BeatAgents' hypotheses are populated:
-	//TempoHypotheses indTime = induction time
-	beattracker->linkctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/inductionTime", 
-		"ShiftInput/acc/mrs_natural/winSize");
 	//PhaseLock timming = induction time
 	beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/inductionTime", 
 		"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/inductionTime");	
@@ -350,6 +318,14 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	beattracker->linkctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs", 
 		"BeatReferee/br/mrs_real/srcFs");
 
+	//Link TickCounter from BeatRefree -> for updating IBT's timer
+	beattracker->linkctrl("FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/OnsetTimes/mrs_natural/tickCount",
+		"BeatReferee/br/mrs_natural/tickCount");
+	beattracker->linkctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/tickCount",	
+		"FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/OnsetTimes/mrs_natural/tickCount");
+	beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/tickCount", 
+		"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/tickCount");	
+	
 	//Link Beat Output Sink parameters with the used ones:
 	if(strcmp(output.c_str(), "none") != 0)
 	{
@@ -359,7 +335,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs");
 		beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/winSize", 
 			"Series/onsetdetectionfunction/ShiftInput/si/mrs_natural/winSize");
-		beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/tickCount", "BeatReferee/br/mrs_natural/tickCount");
+		beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/tickCount", 
+			"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/tickCount");
 	}
 	
 	/*
@@ -377,24 +354,22 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	IBTsystem->linkctrl("Fanout/beatmix/Series/audioflow/FlowThru/beattracker/BeatReferee/br/mrs_real/beatDetected", 
 		"Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/nton");
 
-
-	//INDUCTION GT: (if ground-truth file exists => run with induction as ground-truth)
-	if (existsFile(pathGT.str()))
+	
+	//For Induction Ground-Truth in "PhaseLock"
+	if(strcmp(induction_gt.c_str(), "-1") != 0) //enabled induction ground-truth
 	{
-		beattracker->linkctrl("FlowThru/initialhypotheses/InductionGT/inductiongt/mrs_natural/inductionTime", 
-			"BeatReferee/br/mrs_natural/inductionTime");
-
-		beattracker->linkctrl("FlowThru/initialhypotheses/InductionGT/inductiongt/mrs_natural/hopSize", 
+		beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/hopSize", 
 			"BeatReferee/br/mrs_natural/hopSize");
-		beattracker->linkctrl("FlowThru/initialhypotheses/InductionGT/inductiongt/mrs_real/srcFs", 
+		beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_real/srcFs", 
 			"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs");
-	
-		beattracker->updctrl("FlowThru/initialhypotheses/InductionGT/inductiongt/mrs_string/sourceFile", pathGT.str());
-	
-		//if induction ground-truth then force backtrace!
-		backtraceopt = true;
-	}
 
+		ostringstream pathGT; //induction ground-truth path (retrieved from argument)
+		FileName outputFileGT(sfName);
+		pathGT << induction_gt.c_str() << outputFileGT.nameNoExt();
+
+		beattracker->updctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "ground-truth");
+		beattracker->updctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/gtBeatsFile", pathGT.str());
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
@@ -412,19 +387,24 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 
 	mrs_real fsSrc = beattracker->getctrl("Series/onsetdetectionfunction/ShiftInput/si/mrs_real/israte")->to<mrs_real>();
 
-	mrs_natural inductionTickCount = (mrs_natural) ceil((induction_time * fsSrc) / HOPSIZE); //induction time (in nr. of ticks)
+	//induction time (in nr. of ticks) -> -1 because starting index on accumulator is 0 and it finnishes at accSize-1
+	//So IBT's tick time notion starts also on 0 and finnishes on sound_file_size(in_frames)-1.
+	mrs_natural inductionTickCount = ((mrs_natural) ceil((induction_time * fsSrc) / HOPSIZE)) -1;
 	//to avoid induction time greater than input file size
 	//(in this case the induction time will equal the file size)
 	if((inputSize / HOPSIZE) < inductionTickCount)
-		inductionTickCount = inputSize / HOPSIZE;
+		inductionTickCount = (inputSize / HOPSIZE) -1;
+
+	beattracker->updctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/inductionTime", inductionTickCount);
 
 	mrs_natural metricalChangeTime = inputSize / HOPSIZE; //if metricalChangeTime = -1 it shall equalize the full input file size (in ticks)
 	if(metrical_change_time != -1.0)
 		metricalChangeTime = ((mrs_natural) (metrical_change_time * fsSrc) / HOPSIZE) + 1; //allowed metrical change time (in nr. of ticks)
 	if(metricalChangeTime < 0.0) //if negative value -> default (=5.0secs)
 		metricalChangeTime = (5 * fsSrc) / HOPSIZE;
-
-	beattracker->updctrl("ShiftInput/acc/mrs_natural/winSize", inductionTickCount);
+	
+	//Size of accumulator equals inductionTime + 1 -> [0, inductionTime]
+	beattracker->updctrl("ShiftInput/acc/mrs_natural/winSize", inductionTickCount+1);
 
 	mrs_natural pkinS = tempoinduction->getctrl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
 	mrs_natural peakEnd = (mrs_natural)((60.0 * fsSrc)/(MIN_BPM * HOPSIZE)); //MinBPM (in frames)
@@ -587,15 +567,16 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural frameCount = 0;
 	inputSize = (inputSize / HOPSIZE); //inputSize in ticks
+
+	//suming inductionTickCount because with backtrace it will analyse two times the inductionWindow
 	if(backtraceopt)
-		inputSize += inductionTickCount;
+		inputSize += inductionTickCount; 
 
 	//while(IBTsystem->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
 	while(frameCount <= inputSize)
 	{	
+		//cout << "FrameCount: " << frameCount << endl;
 		IBTsystem->tick();
- 
-		frameCount++;
 
 		if(frameCount == 1)
 		{
@@ -629,6 +610,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		//Display percentage of processing complete...
 		//printf("  %d % \r", (mrs_natural) frameCount*100/inputSize);
 		//cout << (mrs_natural) frameCount*100/inputSize << "%" << endl;
+		
+		frameCount++;
 	}
 	cout << "Finish!" << endl;
 }

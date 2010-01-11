@@ -46,6 +46,7 @@ private:
 	MarControlPtr ctrl_n1stOnsets_;
 	MarControlPtr ctrl_lookAheadSamples_;
 	MarControlPtr ctrl_nPeriods_;
+	MarControlPtr ctrl_tickCount_;
 
 	mrs_natural nPeriods_;
 	mrs_natural lookAhead_;

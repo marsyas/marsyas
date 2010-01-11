@@ -532,25 +532,29 @@ BeatReferee::calcAbsoluteBestScore()
 void 
 BeatReferee::myProcess(realvec& in, realvec& out)
 {
-	//Inititally desactivate all agents:
-	if(t_ == 0)
+	//inititally desactivate all agents:
+	if(t_ == 0 && !inductionFinnished_)
 		updctrl(ctrl_mutedAgents_, mutedAgents_);
 
-	//While no best beat detected => outputs 0 (no beat)
+	//while no best beat detected => outputs 0 (no beat)
 	out.setval(0.0);
 	ctrl_beatDetected_->setValue(0.0);
-
-	t_++;
-	//pass value to beatSink (if used)
-	ctrl_tickCount_->setValue(t_);
 	
 	agentControl_ = ctrl_agentControl_->to<mrs_realvec>();
-	//Always updates agent's timming to equalize referee's:
+	//always updates agent's timming to equalize referee's (+1 for considering next time frame)
 	for(mrs_natural i = 0; i < agentControl_.getRows(); i++)
 	{
-		agentControl_(i, 3) = t_;
+		agentControl_(i, 3) = t_+1;
 		updctrl(ctrl_agentControl_, agentControl_);
 	}
+	//also pass timer value to the other MarSystems (+1 for considering next time frame)
+	ctrl_tickCount_->setValue(t_+1);
+
+	//cout << "BRef: " << t_ << endl;
+	
+	//realvec with the enable flag of all the BeatAgents in the pool
+	//(0 -> agent active; 1 -> agent desactivated)
+	mutedAgents_ = ctrl_mutedAgents_->to<mrs_realvec>();
 
 	//Display Input from BeatAgents:
 	//cout << "INPUT (" << t_ << "): ";
@@ -559,82 +563,9 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	cout << endl;
 */
 
-	//realvec with the enable flag of all the BeatAgents in the pool
-	//(0 -> agent active; 1 -> agent desactivated)
-	mutedAgents_ = ctrl_mutedAgents_->to<mrs_realvec>();
-
 	//cout << "Beat1: " << firstHypotheses_(0,0) << " BPM1: " << firstHypotheses_(0,1) 
 	//	<< " Beat2: " << firstHypotheses_(1,0) << " BPM2: " << firstHypotheses_(1,1) 
 	//		<< " Beat3: " << firstHypotheses_(2,0) << " BPM3: " << firstHypotheses_(2,1) << endl;
-
-	//Create the first BeatAgents with new hypotheses just after Tseconds of induction:
-	//(new agents' score shall be the average of all the already existent ones)
-	inductionTime_ = ctrl_inductionTime_->to<mrs_natural>();
-	if(t_ == inductionTime_ && !inductionFinnished_)
-	{
-		firstHypotheses_ = ctrl_firstHypotheses_->to<mrs_realvec>();
-
-		mrs_natural newAgentPeriod;
-		mrs_natural newAgentPhase;
-		mrs_real newAgentScore;
-
-		//Updating initial bestScore and creating first agents:
-		//(nr of initial agents equals nr of bpm hypotheses)
-		for(mrs_natural i = 0; i < firstHypotheses_.getRows(); i++)
-		{
-			if((mrs_natural) firstHypotheses_(i,0) > 0) //only consider valid hypothesis:
-			{
-				//firstHypotheses_ -> matrix with i generated beat hypotheses + score, in the induction stage
-				//[ BPMi | Beati | Score i ]
-				newAgentPeriod = (mrs_natural) firstHypotheses_(i,0);
-				newAgentPhase = (mrs_natural) firstHypotheses_(i,1);
-				newAgentScore = firstHypotheses_(i,2);
-
-				if(newAgentScore > bestScore_)
-				{
-					bestScore_ = newAgentScore;
-					bestAgentIndex_ = i;
-					//cout << "Best Score From: " << i << "(" << bestScore_ << ")" << endl;
-				}
-
-				//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods)
-				//newAgentScore *= sqrt((mrs_real)maxPeriod_);
-				if(backtrace_) //if backtrace mode the first beat will be considered in a 0 offset
-					createNewAgent(newAgentPeriod, newAgentPhase, newAgentScore, 0);
-				else //if not the first beat must occur after the induction window (induction offset)
-					createNewAgent(newAgentPeriod, calculateFirstBeat(newAgentPeriod, newAgentPhase), newAgentScore, 0);
-				
-				//cout << "Score" << i << ": " << newAgentScore << endl;
-				
-				if(i == nrAgents_-1)
-				{
-					MRSWARN("Last hypotheses discarted because the nr. of hypotheses surpasses the nr. of BeatAgents");
-					break;
-				}
-
-				if(newAgentPeriod == 0)
-				{
-					MRSWARN("Last hypotheses discarted because no more periods considered");
-					break;
-				}
-			}
-		}
-
-		//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods)
-		//bestScore_ *= sqrt((mrs_real)maxPeriod_);
-
-		//After finnishing induction disable induction functioning (tempoinduction Fanout):
-		for(mrs_natural i = 0; i < inductionEnabler_.getSize(); i++)
-			inductionEnabler_(0, i) = 1.0; //diable = muted
-			
-		updctrl(ctrl_inductionEnabler_, inductionEnabler_);
-		
-		//if backtrace restart tick counter
-		if(backtrace_)
-			t_ = 0;
-		
-		inductionFinnished_ = true;
-	}
 	
 	//After induction:
 	if(inductionFinnished_)
@@ -676,10 +607,15 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				//Update Agents' Score
 				score_(o) += agentDScore;
 
+				//if(o == bestAgentIndex_)
+				//	cout << "Agent" << o << "-dScore:" << agentDScore << "; agentScore:" << score_(o) 
+				//	<< "(" << bestScore_ << ")" << endl;
+
 				//If the bestAgent drops or increases its score the BestScore has to drop correspondingly
 				if((score_(bestAgentIndex_) < bestScore_) || (score_(bestAgentIndex_) > bestScore_))
 				{
-					//cout << "Updating bestScore: " << "OLD: " << bestScore_ << " NEW: " << score_(bestAgentIndex_) << endl;
+					//cout << "t:" << t_ << "; Updating bestScore: " << "OLD: " << bestScore_ 
+					//	<< " from Agent" << bestAgentIndex_ << "-NEW: " << score_(bestAgentIndex_) << endl;
 					bestScore_ = score_(bestAgentIndex_);
 					calcAbsoluteBestScore();
 				}
@@ -696,11 +632,6 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 						bestAgentIndex_ = o;
 					}
 				}
-
-				
-				//if(o == bestAgentIndex_)
-				//	cout << "Agent" << o << "-dScore:" << agentDScore << "; agentScore:" << score_(o) 
-				//	<< "(" << bestScore_ << ")" << endl;
 
 				//Kill Agent if its score is bellow minimum (wait 5seconds before taking it into consideration)
 				if (t_ > timeBeforeKilling_ && score_(o) < bestScore_ && fabs(bestScore_ - score_(o)) > fabs(bestScore_ * obsoleteFactor_))
@@ -840,22 +771,83 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		}
 	}
 
+	//Create the first BeatAgents with new hypotheses just after Tseconds of induction:
+	//(new agents' score shall be the average of all the already existent ones)
+	inductionTime_ = ctrl_inductionTime_->to<mrs_natural>();
+	if(t_ == inductionTime_ && !inductionFinnished_)
+	{
+		firstHypotheses_ = ctrl_firstHypotheses_->to<mrs_realvec>();
 
-	//MATLAB_PUT(in, "BeatAgents");
-	/*
-	MATLAB_PUT(out, "BeatReferee");
-	MATLAB_PUT(historyBeatTimes_, "HistoryBeatTimes");
-	MATLAB_PUT(historyCount_, "HistoryCount");
-	MATLAB_PUT(statsPeriods_, "statsPeriods");
-	MATLAB_PUT(statsAgentsLifeCycle_, "statsAgentsLifeCycle");
-	MATLAB_PUT(statsAgentsScore_, "agentsScore");
-	MATLAB_PUT(statsMuted_, "mutedAgents");
-	MATLAB_PUT(bestScore_, "bestScore");
-	MATLAB_EVAL("bestAgentScore = [bestAgentScore bestScore];");
-	MATLAB_EVAL("FinalBeats = [FinalBeats, BeatReferee];");
-	*/
-	//MATLAB_EVAL("hold on;");
-	//MATLAB_EVAL("plot(BeatAgentsTS)");
-	//MATLAB_EVAL("stem(t, 1, 'r');");
-	//MATLAB_EVAL("hold off;");
+		mrs_natural newAgentPeriod;
+		mrs_natural newAgentPhase;
+		mrs_real newAgentScore;
+
+		//Updating initial bestScore and creating first agents:
+		//(nr of initial agents equals nr of bpm hypotheses)
+		for(mrs_natural i = 0; i < firstHypotheses_.getRows(); i++)
+		{
+			if((mrs_natural) firstHypotheses_(i,0) > 0) //only consider valid hypothesis:
+			{
+				//firstHypotheses_ -> matrix with i generated beat hypotheses + score, in the induction stage
+				//[ BPMi | Beati | Score i ]
+				newAgentPeriod = (mrs_natural) firstHypotheses_(i,0);
+				newAgentPhase = (mrs_natural) firstHypotheses_(i,1);
+				newAgentScore = firstHypotheses_(i,2);
+
+				if(newAgentScore > bestScore_)
+				{
+					bestScore_ = newAgentScore;
+					bestAgentIndex_ = i;
+					//cout << "Best Score From: " << i << "(" << bestScore_ << ")-Period: " << newAgentPeriod << endl;
+				}
+
+				//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods)
+				//newAgentScore *= sqrt((mrs_real)maxPeriod_);
+				if(backtrace_) //if backtrace mode the first beat will be considered in a 0 offset
+					createNewAgent(newAgentPeriod, newAgentPhase, newAgentScore, 0);
+				else //if not the first beat must occur after the induction window (induction offset)
+					createNewAgent(newAgentPeriod, calculateFirstBeat(newAgentPeriod, newAgentPhase), newAgentScore, 0);
+				
+				//cout << "Score" << i << ": " << newAgentScore << endl;
+				
+				if(i == nrAgents_-1)
+				{
+					MRSWARN("Last hypotheses discarted because the nr. of hypotheses surpasses the nr. of BeatAgents");
+					break;
+				}
+
+				if(newAgentPeriod == 0)
+				{
+					MRSWARN("Last hypotheses discarted because no more periods considered");
+					break;
+				}
+			}
+		}
+
+		//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods)
+		//bestScore_ *= sqrt((mrs_real)maxPeriod_);
+
+		//After finnishing induction disable induction functioning (tempoinduction Fanout):
+		for(mrs_natural i = 0; i < inductionEnabler_.getSize(); i++)
+			inductionEnabler_(0, i) = 1.0; //diable = muted
+			
+		updctrl(ctrl_inductionEnabler_, inductionEnabler_);
+		
+		//if backtrace restart tick counter
+		if(backtrace_)
+		{
+			t_ = -1; //-1 because timer is updated by the end of the cycle (so next cycle is the actual 0)
+			//put all MarSystem's timer to 0:
+			for(mrs_natural i = 0; i < agentControl_.getRows(); i++)
+			{
+				agentControl_(i, 3) = 0;
+				updctrl(ctrl_agentControl_, agentControl_);
+			}
+			ctrl_tickCount_->setValue(0);
+		}
+		
+		inductionFinnished_ = true;
+	}
+
+	t_++; //increment timer by the end of each cycle
 }

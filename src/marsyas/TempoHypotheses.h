@@ -66,6 +66,7 @@ private:
 	MarControlPtr ctrl_inductionTime_;
 	MarControlPtr ctrl_srcFs_;
 	MarControlPtr ctrl_hopSize_;
+	MarControlPtr ctrl_tickCount_;
 
 	mrs_natural hopSize_;
 	mrs_real srcFs_;
@@ -74,7 +75,7 @@ private:
 	mrs_natural nPhases_;
 	mrs_natural nPeriods_;
 	mrs_bool noBPMs_;
-	int forceBPM_[10];
+	mrs_natural forceBPM_[10];
 	void myUpdate(MarControlPtr sender);
 
 public:

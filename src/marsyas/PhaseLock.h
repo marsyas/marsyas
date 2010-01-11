@@ -21,6 +21,7 @@
 
 #include "MarSystem.h"	
 #include <string.h>
+using namespace std;
 
 namespace Marsyas
 {
@@ -58,11 +59,26 @@ private:
 	MarControlPtr ctrl_nrPeriodHyps_;
 	MarControlPtr ctrl_nrPhasesPerPeriod_;
 	MarControlPtr ctrl_scoreFunc_;
+	MarControlPtr ctrl_tickCount_;
+	MarControlPtr ctrl_mode_;
+	MarControlPtr ctrl_hopSize_;
+	MarControlPtr ctrl_srcFs_;
+	MarControlPtr ctrl_sourceFile_;
 
+	mrs_natural hopSize_;
+	mrs_real srcFs_;
+	mrs_string mode_;
+	mrs_string line_;
+	ifstream inStream_;
+	mrs_real maxScore_;
+	mrs_natural ibi_;
+	mrs_real beatTime1_;
+	mrs_real beatTime2_;
+	mrs_string sourceFile_;
+	mrs_natural phase_;
 	mrs_string scoreFunc_;
 	mrs_natural nrPhasesPerPeriod_;
 	mrs_natural nrPeriodHyps_;
-	mrs_natural hopSize_;
 	mrs_natural inductionTime_;
 	mrs_natural nInitHyp_;
 	mrs_realvec beatHypotheses_;
@@ -83,6 +99,8 @@ private:
 	void myUpdate(MarControlPtr sender);
 	mrs_realvec calcRelationalScore(mrs_bool duple, mrs_realvec rawScoreVec);
 	mrs_natural metricalRelation(mrs_bool duple, mrs_bool triple, mrs_real period1, mrs_real period2);
+	void regularFunc(realvec& in, realvec& out);
+	void inputGT(realvec& in, realvec& out, mrs_string gtFilePath);
 
 public:
   PhaseLock(std::string name);

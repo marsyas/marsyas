@@ -36,6 +36,7 @@ OnsetTimes::OnsetTimes(const OnsetTimes& a) : MarSystem(a)
 	ctrl_n1stOnsets_ = getctrl("mrs_natural/n1stOnsets");
 	ctrl_lookAheadSamples_ = getctrl("mrs_natural/lookAheadSamples");
 	ctrl_nPeriods_ = getctrl("mrs_natural/nPeriods");
+	ctrl_tickCount_ = getctrl("mrs_natural/tickCount");
 	
 	t_ = a.t_;
 	count_ = a.count_;
@@ -60,6 +61,7 @@ OnsetTimes::addControls()
 	addctrl("mrs_natural/lookAheadSamples", 1, ctrl_lookAheadSamples_);
 	addctrl("mrs_natural/nPeriods", 1, ctrl_nPeriods_);
 	setctrlState("mrs_natural/nPeriods", true);
+	addctrl("mrs_natural/tickCount", 0, ctrl_tickCount_);
 }
 
 void
@@ -85,12 +87,16 @@ OnsetTimes::myUpdate(MarControlPtr sender)
 void 
 OnsetTimes::myProcess(realvec& in, realvec& out)
 {
+	//t_ is constantly updated with the referee's next time frame
+	t_ = ctrl_tickCount_->to<mrs_natural>();
+
+	//cout << "OTime: " << t_ << endl;
+
 	lookAhead_ = ctrl_lookAheadSamples_->to<mrs_natural>();
 	
-	t_++;
-	
 	mrs_natural inc = 0; //nr. of first ignored onsets
-	if(in(0,0) == 1.0){
+	if((t_ - lookAhead_) > 0 && in(0,0) == 1.0) //avoid onset at 0 frame
+	{
 		//if task isn't still done && (first peak || peak distance at least 5 frames from last peak)
 		if(count_ == inc || (count_ > inc && count_ < n_ + inc && t_ > out(0, 2*(count_-inc)-1) + 5))
 		{
@@ -99,6 +105,7 @@ OnsetTimes::myProcess(realvec& in, realvec& out)
 			out(0, 2*(count_-inc)+1) = t_ - lookAhead_;
 		}
 		count_++;
+		//cout << "t-" << t_ << ": Onset at: " << t_ - lookAhead_ << endl;
 	}
 
 	//MATLAB_PUT(out, "OnsetTimes");
