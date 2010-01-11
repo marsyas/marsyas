@@ -4,7 +4,7 @@ using namespace std;
 using namespace Marsyas;
 
 
-MarMonitors::MarMonitors(string pluginName)
+MarMonitors::MarMonitors(string pluginName, string audioInputName)
 {
   centralWidget_ = new QWidget;
   setCentralWidget(centralWidget_);
@@ -25,8 +25,9 @@ MarMonitors::MarMonitors(string pluginName)
   connect(setupButton, SIGNAL(clicked()), this, SLOT(setup()));
   centralWidget_->setLayout(gridLayout_);
   
-  QString s(pluginName.c_str());
-  initNetwork(s);
+  QString s1(pluginName.c_str());
+  audioInputName_ = audioInputName;
+  initNetwork(s1);
   
 }
 
@@ -128,6 +129,7 @@ MarMonitors::graph(int graph_size)
  Marx2DGraph* graph = new Marx2DGraph(graph_size, 0);
  graph->setPlotType(Marx2DGraph::LINEAR_INTERPOLATION);
  graph->setGraphDataLineSize( 1.0 );
+ graph->setShowAxisScale(true);
  graphs.push_back(graph);
  
  gridLayout_->addWidget(graph, nGraphs_/3, (nGraphs_ % 3));
@@ -139,7 +141,7 @@ MarMonitors::dialogDone()
 {
   string cname = listWidget->currentItem()->text().toStdString();
   mrs_realvec foo = pnet_->getctrl(cname)->to<mrs_realvec>();
-  pnet_->updctrl("mrs_string/filename", "gravity.au");
+  pnet_->updctrl("mrs_string/filename", audioInputName_);
   graph(foo.getCols());
   probes_.push_back(cname);
 
@@ -206,6 +208,7 @@ MarMonitors::tick()
       cout << "probes_[i] " << probes_[i] << endl;
       
       out_ = (mycontrols_[probes_[i]])->to<mrs_realvec>();
+      out_.normMaxMin();
       cout << out_ << endl;
       
       graphs[i]->setBuffer( out_ );

@@ -364,7 +364,7 @@ Marx2DGraph::draw_y_ticks(QPainter *painter)
                                xaxisoffset+xpos-5, yaxisoffset+ypos+i*interval) );
 
     /* draw axis scale label */
-    if ( (i == 1 || i == 2) && show_axis_scale) {
+    if (show_axis_scale) {
       ostringstream ds;
       ds << setprecision(3) << (gheight/2.0 - i*interval )/(gheight/2);
       //(gheight/2.0 + ypos + yaxisoffset) - (gheight/2)*val
@@ -391,24 +391,15 @@ void Marx2DGraph::draw_x_ticks(QPainter *painter)
 		       );
 
     /* draw axis scale label */
-    if (i == 1 && show_axis_scale) {
+    if (show_axis_scale) {
       ostringstream ds;
-      ds << setprecision(0) << ((float)buffersize/10.0)*(float)i;
+      ds << setprecision(3) << ((float)buffersize/10.0)*(float)i;
 
       painter->drawText( QPointF(xaxisoffset+xpos+i*interval, yaxisoffset+ypos+gheight+17), 
 			QString( QString::fromStdString(ds.str()) )
 			); 
     }
-    else if (i == 2 && show_axis_scale) {
-      ostringstream ds;
-      ds << setprecision(0) << ((float)buffersize/10.0)*(float)i;
-
-      painter->drawText( QPointF(xaxisoffset+xpos+i*interval, yaxisoffset+ypos+gheight+17), 
-			 QString( QString::fromStdString(ds.str()) )
-			);       
-    }
-
-  }
+  }   
 }
 
 

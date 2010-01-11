@@ -23,7 +23,7 @@ class MarMonitors : public QMainWindow
    Q_OBJECT
 
 public:
-  MarMonitors(string pluginName);
+  MarMonitors(string pluginName, string audioInputName);
 
 public slots: 
   void tick();
@@ -41,6 +41,7 @@ private:
 
   
   string pluginName_;
+  string audioInputName_;
   realvec out_;
   QVector<Marx2DGraph*> graphs;
   Marx2DGraph* graph3;
