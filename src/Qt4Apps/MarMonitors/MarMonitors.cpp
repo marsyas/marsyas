@@ -8,7 +8,7 @@ MarMonitors::MarMonitors(string pluginName, string audioInputName)
 {
   centralWidget_ = new QWidget;
   setCentralWidget(centralWidget_);
-  
+  nGraphs_ = 2;  
   createActions();
   createMenus();
   
@@ -19,7 +19,8 @@ MarMonitors::MarMonitors(string pluginName, string audioInputName)
   
 
   gridLayout_->addWidget(tickButton, 0, 0);
-  gridLayout_->addWidget(setupButton, 0, 1);
+  gridLayout_->addWidget(graphButton, 0, 1);
+  gridLayout_->addWidget(setupButton, 0, 2);
   
   connect(tickButton, SIGNAL(clicked()), this, SLOT(tick()));
   connect(setupButton, SIGNAL(clicked()), this, SLOT(setup()));
@@ -132,6 +133,8 @@ MarMonitors::graph(int graph_size)
  graph->setShowAxisScale(true);
  graphs.push_back(graph);
  
+ cout << "nGraphs_/3 = " << nGraphs_/3 << endl;
+ cout << "nGraphs_%3 = " << nGraphs_ % 3 << endl;
  gridLayout_->addWidget(graph, nGraphs_/3, (nGraphs_ % 3));
 }
 
