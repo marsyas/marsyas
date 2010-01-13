@@ -1732,7 +1732,8 @@ MarSystem::put(istream& is)
 		else if (ctype == sstr)
 		{
 		  getline(is, scvalue);  // getline is used to include spaces in strings 
-			
+		  scvalue = scvalue.substr(1, scvalue.length()); // strip leading space 
+
 		  if (scvalue == "MARSYAS_EMPTYSTRING")
 		    scvalue = "";
 		  if (iter == controls_.end())
