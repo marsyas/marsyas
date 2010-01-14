@@ -8,7 +8,7 @@ include_directories(${CMAKE_SOURCE_DIR}/otherlibs/)
 macro (marsyas_unit_test UNIT_TEST UNIT_TEST_SOURCES)
 add_executable(${UNIT_TEST} ${UNIT_TEST_SOURCES})
 target_link_libraries(${UNIT_TEST} marsyas ${OS_LIBS})
-add_test(${UNIT_TEST} ${UNIT_TEST})
+add_test(${UNIT_TEST} ${EXECUTABLE_OUTPUT_PATH}/${UNIT_TEST})
 endmacro (marsyas_unit_test)
 
 
