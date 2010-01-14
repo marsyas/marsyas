@@ -114,6 +114,7 @@ endif (VAMP_FOUND)
 ## tests, for verification
 if (MARSYAS_TESTS)
 	enable_testing()
+  include(CTest)
 	add_subdirectory (tests)
 endif (MARSYAS_TESTS)
 
