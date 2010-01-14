@@ -74,7 +74,7 @@ printHelp(string progName)
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Various tests " << endl;
 	cerr << endl;
-	cerr << "Usage : " << progName << "-t toy_withName file1 file2 file3" << endl;
+	cerr << "Usage : " << progName << " -t toy_withName file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "Supported toy_withs:" << endl;
 	cerr << "audiodevices    : enumerate audio devices " << endl;
@@ -141,7 +141,7 @@ printHelp(string progName)
 	cerr << "getControls     : toy_with getControls functionality " << endl;
 	cerr << "mono2stereo     : toy_with mono2stereo MarSystem " << endl;
 
-	cerr << "marostring      : toy_with marostring [xml|svg|html] " << endl;
+	cerr << "marostring      : toy_with marostring [xml|svg|html|json] " << endl;
 	
 	cerr << "accent_filter_bank	: toy_with AccentFilterBank " << endl;
 	cerr << "ExtractChroma   : toy_with chroma (file1 = in wav file, file 2 = out text file)" << endl;
@@ -5314,6 +5314,7 @@ toy_with_multichannel_merge(string sfName)
 #include "maroxml.h"
 #include "marosvg.h"
 #include "marohtml.h"
+#include "marojson.h"
 
 void toy_with_marostring(std::string format)
 {
@@ -5341,6 +5342,11 @@ void toy_with_marostring(std::string format)
 	}
 	else if (format=="xml") {
 		maroxml m;
+		ser->toString(m);
+		cout << m.str();
+	}
+	else if (format=="json") {
+		marojson m;
 		ser->toString(m);
 		cout << m.str();
 	}
