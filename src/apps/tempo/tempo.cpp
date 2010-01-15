@@ -1649,7 +1649,7 @@ tempo_ibt(string sfName, string outputTxt)
 		"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/tickCount");	
 	
 	//Link Beat Output Sink parameters with the used ones:
-	if(strcmp(output.c_str(), "none") != 0)
+	if(output !=  "none") 
 	{
 		beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/hopSize", 
 			"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/hopSize");
@@ -1770,7 +1770,7 @@ tempo_ibt(string sfName, string outputTxt)
 	ostringstream path;
 	FileName outputFile(sfName);
 	//if no outputTxt dir defined -> exec dir is assumed:
-	if(strcmp(outputTxt.c_str(), "") == 0)
+	if(outputTxt == "")
 		path << outputFile.nameNoExt();
 	else 
 	{
