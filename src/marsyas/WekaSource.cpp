@@ -469,20 +469,20 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	char str[1024];
 	// skip comment lines 
 	while (mis.peek() == '%') 
-    {
-		mis.getline(str, 1023);
-    }
-  
+	  {
+	    
+	    mis.getline(str, 1023);
+	  }
+	
 	string token1,token2,token3;
   
 	mis >> token1;
 	
 	if ((token1 != "@relation")&&(token1 != "@RELATION"))
-    { 
-		
-		MRSERR("Not proper weka .arff file");
-		return;
-    }
+	  {
+	    MRSERR("Not proper weka .arff file");
+	    return;
+	  }
 	
 	mis >> token2;
 //  MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 ); //[!]

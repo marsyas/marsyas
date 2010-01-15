@@ -92,8 +92,7 @@ distance_matrix()
   oss << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
 
   Collection l;
-  l.read(inputdir_ + "extract.txt");
-  
+  l.read(inputdir_ + predictcollectionfname_);
 
 
   for (int i=1; i <= l.size(); i++) 

@@ -84,7 +84,10 @@ additional stereo panning features can be calculated as follows:
 > kea -m distance_matrix -id /path/to/workdir -od /path/to/workdir -w filelist.arff -dm filelist_matrix.txt 
 
 The generated filelist_matrix.txt contains the full distance matrix of all songs 
-to all songs of filelist.txt 
+to all songs of filelist.txt. Note: This command will only work with filelist.txt as 
+the name of the collection. In later version you can supply the desired filelist.txt 
+as an extra command-line argument -pr my_own_collection.txt. 
+
 
 
 ------------- MIREX 2009 Audio Classification Tasks ---------------------
