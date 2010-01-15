@@ -351,9 +351,20 @@ An example of using an Accumulator could look like be:
 MarSystem* net = mng.create("Series", "net");
 
 MarSystem* acc = mng.create("Accumulator", "acc");
-acc->addMarSystem(mng.create("SoundFileSource", "src"));
-acc->addMarSystem(mng.create("Windowing", "ham"));
-acc->addMarSystem(mng.create("Spectrum", "spk"));
+MarSystem* accuInternal = mng.create("Series", "accuInternal");
+
+accuInternal->addMarSystem(mng.create("SoundFileSource", "src"));
+accuInternal->addMarSystem(mng.create("Windowing", "ham"));
+accuInternal->addMarSystem(mng.create("Spectrum", "spk"));
+acc->addMarSystem(accuInternal); 
+
+//IMPORTANT NOTE:
+//
+//note that you can only add one Marsystem to an Accumulator
+//any additional Systems added are simply ignored outputwise !!
+//e.g. if you want to use multiple Marsystems in a row and accumulate
+//their combined output, you need to put them in a series which you add 
+//to the accumulator
 
 net->addMarSystem(acc); 
 net->updctrl("mrs_natural/inSamples", 512);	
