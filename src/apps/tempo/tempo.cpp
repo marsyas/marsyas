@@ -833,7 +833,7 @@ tempo_medianSumBands(string sfName, string resName)
   #ifdef MARSYAS_PNG
   pngwriter png(4096,256,0, "waveform.png");  
   png.invert();
-  #endif MARSYAS_PNG 
+  #endif 
   
   int k=0;
    
@@ -858,7 +858,7 @@ tempo_medianSumBands(string sfName, string resName)
 			{
 				png.line(i, 0, i, pdata(i)  * 128, 0.0, 0.0, 1.0);
 			}
-#endif MARSYAS_PNG 
+#endif  
 		}
 		
 		
@@ -888,7 +888,7 @@ tempo_medianSumBands(string sfName, string resName)
     }
 #ifdef MARSYAS_PNG
   png.close();
-#endif MARSYAS_PNG
+#endif 
   
   // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
@@ -1545,7 +1545,7 @@ tempo_ibt(string sfName, string outputTxt)
 
 			beattracker->addMarSystem(agentpool);
 			beattracker->addMarSystem(mng.create("BeatReferee", "br"));
-			if(strcmp(output.c_str(), "none") != 0)
+			if(output != "none") 
 				beattracker->addMarSystem(mng.create("BeatTimesSink", "sink"));
 
 		audioflow->addMarSystem(beattracker);
