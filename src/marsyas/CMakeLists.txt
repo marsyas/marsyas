@@ -135,11 +135,11 @@ endif (MARSYAS_STATIC)
 
 ## INSTALLING
 
+install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
 if (MARSYAS_STATIC)
    install(TARGETS marsyas_static LIBRARY DESTINATION lib
    ARCHIVE DESTINATION lib)
 else (MARSYAS_STATIC)
-     install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
      install(TARGETS marsyas LIBRARY DESTINATION lib
      ARCHIVE DESTINATION lib)
 endif (MARSYAS_STATIC)
