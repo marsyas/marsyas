@@ -24,7 +24,7 @@
 #define BPM_HYPOTHESES 6 //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
 #define PHASE_HYPOTHESES 20//Nr. of phases per BPM hypothesis (20)
 #define MIN_BPM 50 //minimum tempo considered, in BPMs (50)
-#define MAX_BPM 250 //maximum tempo considered, in BPMs (250)
+#define MAX_BPM 180 //maximum tempo considered, in BPMs (250)
 #define NR_AGENTS 30 //Nr. of agents in the pool (30)
 #define LFT_OUTTER_MARGIN 0.20 //The size of the outer half-window (in % of the IBI) before the predicted beat time (0.20)
 #define RGT_OUTTER_MARGIN 0.30 //The size of the outer half-window (in % of the IBI) after the predicted beat time (0.30)
@@ -250,6 +250,7 @@ void tempo_medianMultiBands(string sfName, string resName)
 		      // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
   cout << sfName << "\t" << bpms[bpms.size()/2] << endl;
+  
 
 }
 
@@ -1483,7 +1484,7 @@ tempo_bcFilter(string sfName, string resName)
 
 
 void
-tempo_ibt(string sfName, string outputTxt)
+tempo_ibt(string sfName, string label, string outputTxt)
 {
 	MarSystemManager mng;
 
@@ -1891,8 +1892,19 @@ tempo_ibt(string sfName, string outputTxt)
 	}
 
 
+	istringstream iss(label);
+	float ground_truth_tempo; 
+	iss >> ground_truth_tempo;
+	float predicted_tempo;
+	predicted_tempo = beattracker->getctrl("BeatTimesSink/sink/mrs_real/tempo")->to<mrs_real>();
+	float diff1 = fabs(predicted_tempo - ground_truth_tempo);
+	float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
+	float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
 
-  cout << sfName << "\t" << beattracker->getctrl("BeatTimesSink/sink/mrs_real/tempo")->to<mrs_real>() << endl;
+	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << endl;
+	
+
+	
   // cout << "Finish!" << endl;
   
   
@@ -1909,13 +1921,14 @@ tempo_ibt(string sfName, string outputTxt)
 
 
 // Play a collection l of soundfiles
-void tempo(string inFname, string outFname, string method)
+void tempo(string inFname, string outFname, string label, string method)
 {
   MRSDIAG("tempo.cpp - tempo");
 
   // For each file in collection estimate tempo
   string sfName = inFname;
   string resName = outFname;
+
 
   /* resName = sfName.substr(0,sfName.rfind(".", sfName.length()));
   resName += "Marsyas";
@@ -1941,7 +1954,7 @@ void tempo(string inFname, string outFname, string method)
       metrical_change_time = 5.0;
       score_function = "regular"; 
       output = "beats+tempo"; 
-      tempo_ibt(sfName, resName);
+      tempo_ibt(sfName, label, resName);
     }
   else if (method == "NEW")
     {
@@ -2092,7 +2105,7 @@ main(int argc, const char **argv)
 
     for (int i=0; i < l.size(); i++)
     {
-      tempo(l.entry(i), "default.txt", method);
+      tempo(l.entry(i), "default.txt", l.labelEntry(i), method);
     }
   }
   else
@@ -2102,7 +2115,7 @@ main(int argc, const char **argv)
       string sfname = *sfi;
 	  cout << "Processing - " << sfname << endl;
 	  
-      tempo(*sfi, "default.txt", method);
+	  tempo(*sfi, "default.txt", "0.0" , method);
     }
   }
 
