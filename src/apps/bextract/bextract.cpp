@@ -1893,7 +1893,7 @@ void
 selectFeatureSet(MarSystem *featExtractor)
 {
 	if (chroma_)
-		featExtractor->updctrl("mrs_string/enableSPChild", "Spectrum2Chroma/chroma");
+		featExtractor->updctrl("mrs_string/enableSPChild", "Series/chromaPrSeries");
 	if (mfcc_)
 		featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
 	if (sfm_)
@@ -1926,6 +1926,8 @@ selectFeatureSet(MarSystem *featExtractor)
 		featExtractor->updctrl("mrs_string/enableSPChild", "Centroid/cntrd");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Flux/flux");
 		featExtractor->updctrl("mrs_string/enableSPChild", "Rolloff/rlf");
+
+		featExtractor->updctrl("mrs_string/enableSPChild", "Series/chromaPrSeries");
 	}
 }
 
