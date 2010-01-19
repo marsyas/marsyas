@@ -54,6 +54,7 @@
 #include "PeakConvert.h"
 #include "OverlapAdd.h"
 #include "Summary.h"
+#include "PeakRatio.h"
 #include "PeakSynthOsc.h"
 #include "PeakSynthOscBank.h"
 #include "PeakSynthFFT.h"
@@ -233,6 +234,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PvFold", new PvFold("pvfp"));
 	registerPrototype("PvOverlapadd", new PvOverlapadd("pvovlfp"));
 	registerPrototype("PvOscBank", new PvOscBank("pvoscp"));
+	registerPrototype("PeakRatio", new PeakRatio("perap"));
 	registerPrototype("PeakSynthOscBank", new PeakSynthOscBank("pvoscp"));
 	registerPrototype("PeakSynthFFT", new PeakSynthFFT("pvfft"));
 	registerPrototype("ShiftInput", new ShiftInput("sip"));
@@ -521,7 +523,13 @@ void MarSystemManager::registerComposite(std::string prototype)
 		stft_features_pr->addMarSystem(create("Rolloff", "rlf"));
 		stft_features_pr->addMarSystem(create("Flux", "flux"));
 		stft_features_pr->addMarSystem(create("MFCC", "mfcc"));
-		stft_features_pr->addMarSystem(create("Spectrum2Chroma", "chroma"));
+		
+		MarSystem* chromaPrSeries =  create("Series", "chromaPrSeries");
+		
+		chromaPrSeries->addMarSystem(create("Spectrum2Chroma", "chroma"));
+		chromaPrSeries->addMarSystem(create("PeakRatio","pr"));
+
+		stft_features_pr->addMarSystem(chromaPrSeries);
 		stft_features_pr->addMarSystem(create("SCF", "scf"));
 		stft_features_pr->addMarSystem(create("SFM", "sfm"));
 		registerPrototype("STFT_features", stft_features_pr);
