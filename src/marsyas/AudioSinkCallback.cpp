@@ -39,7 +39,7 @@ AudioSinkCallback::AudioSinkCallback(string name):MarSystem("AudioSinkCallback",
 	rtSrate_ = 0;
 	bufferSize_ = 0;
 	rtChannels_ = 0;
-	rtDevice_ = 0;
+	rtDevice_ = -1;
   
 
 
@@ -73,7 +73,7 @@ AudioSinkCallback::addControls()
 	addctrl("mrs_bool/initAudio", false);
 	setctrlState("mrs_bool/initAudio", true);
   
-	addctrl("mrs_natural/device", 0);
+	addctrl("mrs_natural/device", -1);
   
 }
 
@@ -124,10 +124,10 @@ AudioSinkCallback::initRtAudio()
 
 #ifdef MARSYAS_MACOSX
 	if (rtSrate_ == 22050) 
-    {
+  {
 		rtSrate_ = 44100;
 		bufferSize_ = 2 * bufferSize_;
-    }
+  }
 #endif	
 
 #ifdef MARSYAS_AUDIOIO
@@ -141,6 +141,9 @@ AudioSinkCallback::initRtAudio()
 	rtChannels_ = 2;
 	
 	RtAudio::StreamParameters oParams;
+  if (rtDevice_ < 0)
+    rtDevice_ = audio_->getDefaultOutputDevice();
+
 	oParams.deviceId = rtDevice_;
 	oParams.nChannels = rtChannels_;
 	oParams.firstChannel = 0; 
@@ -156,7 +159,7 @@ AudioSinkCallback::initRtAudio()
 	//marsyas represents audio data as float numbers
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
-  if (rtDevice_ !=0)
+  if (rtDevice_ != audio_->getDefaultOutputDevice())
   {
       RtAudio::DeviceInfo info;
       info = audio_->getDeviceInfo(rtDevice_);
