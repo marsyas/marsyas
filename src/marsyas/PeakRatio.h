@@ -38,10 +38,6 @@ namespace Marsyas
 	Controls:
 	none
 */
-{
-{
-
-
 
 class PeakRatio: public MarSystem
 {
