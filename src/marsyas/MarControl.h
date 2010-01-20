@@ -767,7 +767,7 @@ MarControl::setValue(MarControlPtr mc, bool update)
 	
 	value_->copyValue(*(mc->value_));
 
-	#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_TRACECONTROLS
 	value_->setDebugValue();
 	#endif
 
@@ -825,7 +825,7 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 
 	value_->copyValue(*(mcv));
 
-	#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_TRACECONTROLS
 	value_->setDebugValue();
 	#endif
 	

@@ -52,7 +52,7 @@ protected:
 		
 
 
-	#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_TRACECONTROLS
 	std::string value_debug_;
 	#endif
 
@@ -79,7 +79,7 @@ protected:
 	};
 	
 	//for debugging purposes only
-	#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_TRACECONTROLS
 	void setDebugValue();
 	#endif
 
@@ -292,7 +292,7 @@ MarControlValueT<T>::MarControlValueT(T value)
 {
 	value_ = value;
 
-	#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
 	#endif
 
@@ -319,7 +319,7 @@ MarControlValueT<T>::MarControlValueT(const MarControlValueT& a):MarControlValue
 	value_ = a.value_;
 	type_ = a.type_;
 
-	#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
 	#endif
 }
@@ -333,7 +333,7 @@ MarControlValueT<T>::operator=(const MarControlValueT& a)
 		value_ = a.value_;
 		type_ = a.type_;
 
-		#ifdef MARSYAS_DEBUG
+		#ifdef MARSYAS_TRACECONTROLS
 		setDebugValue();
 		#endif
 
@@ -416,7 +416,7 @@ MarControlValueT<T>::set(T &val, bool update)
 {
 	value_ = val;
 
-	#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
 	#endif
 
@@ -432,7 +432,7 @@ MarControlValueT<realvec>::set(realvec &val, bool update)
 {
 	value_ = val;
 
-	#ifdef MARSYAS_DEBUG
+	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
 	#endif
 
@@ -448,7 +448,7 @@ MarControlValueT<bool>::set(bool &val, bool update)
 {
 	value_ = val;
 
-#ifdef MARSYAS_DEBUG
+#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
 #endif
 
@@ -469,7 +469,7 @@ MarControlValueT<T>::createFromStream(std::istream& in)
 {
 	in >> value_;
 
-#ifdef MARSYAS_DEBUG
+#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
 #endif
 

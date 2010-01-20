@@ -593,7 +593,9 @@ MarSystem::process(realvec& in, realvec& out)
 	processMutex_->lock();
 #endif
 
-	checkFlow(in, out); //shouldn't this be only active when MARSYAS_DEBUG if defined?
+#ifdef MARSYAS_FLOWCHECK
+	checkFlow(in, out); 
+#endif
 
 	myProcess(in, out);
 

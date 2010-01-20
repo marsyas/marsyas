@@ -77,6 +77,12 @@ float gain = 1.0f;
 float repetitions = 1;
 
 
+int correct_predictions; 
+int correct_harmonic_predictions; 
+int total_instances;
+int total_errors;
+float total_differences;
+
 
 void
 printUsage(string progName)
@@ -126,7 +132,7 @@ printHelp(string progName)
 
 // Play soundfile given by sfName, msys contains the playback
 // network of MarSystem objects
-void tempo_medianMultiBands(string sfName, string resName)
+void tempo_medianMultiBands(string sfName, string label, string resName)
 {
   MarSystemManager mng;
 
@@ -568,7 +574,7 @@ tempo_new(string sfName, string resName)
 
 
 void
-tempo_histoSumBands(string sfName, string resName)
+tempo_histoSumBands(string sfName, string label, string resName)
 {
   MarSystemManager mng;
   mrs_natural nChannels;
@@ -712,8 +718,6 @@ tempo_histoSumBands(string sfName, string resName)
 
 
       bin = (mrs_natural) estimate(1);
-      cout << "value  = " << estimate(0) << endl;
-      cout << "max bpm = " << bin << endl;
       bpms.push_back(bin);
 
       numPlayed++;
@@ -730,14 +734,38 @@ tempo_histoSumBands(string sfName, string resName)
 	  duration = samplesPlayed-onSamples;
 	}
     }
-  cout << bpms.size()-1 << endl;
-  cout << sfName << "\t" << bpms[bpms.size()-1] << endl;
+  
+  istringstream iss(label);
+  float ground_truth_tempo; 
+  iss >> ground_truth_tempo;
+  float predicted_tempo;
+  predicted_tempo = bpms[bpms.size()-1];
+  float diff1 = fabs(predicted_tempo - ground_truth_tempo);
+  float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
+  float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+
+  cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << endl;
+  if (diff1 <= 1.0)
+    correct_predictions++;
+  if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0))
+    correct_harmonic_predictions++;
+  else 
+    {
+      if ((diff1 < diff2)&&(diff1 < diff3))
+	total_differences += diff1;
+      if ((diff2 < diff3)&&(diff1 < diff1))
+	total_differences += diff2;
+      if ((diff3 < diff2)&&(diff3 < diff1))
+	total_differences += diff3;
+      total_errors++;
+    }
+  
+  total_instances++;
   delete total;
 }
 
-
 void
-tempo_medianSumBands(string sfName, string resName)
+tempo_medianSumBands(string sfName, string label, string resName)
 {
   MarSystemManager mng;
   mrs_natural nChannels;
@@ -831,10 +859,6 @@ tempo_medianSumBands(string sfName, string resName)
   vector<int> bpms;
   onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
-  #ifdef MARSYAS_PNG
-  pngwriter png(4096,256,0, "waveform.png");  
-  png.invert();
-  #endif 
   
   int k=0;
    
@@ -848,22 +872,6 @@ tempo_medianSumBands(string sfName, string resName)
     {
       
 		total->process(iwin, estimate);
-		
-		mrs_realvec pdata = total->getctrl("Peaker/pkr/mrs_realvec/processedData")->to<mrs_realvec>();
-		pdata.normMaxMin();
-		
-		if (k == 6)
-		{
-#ifdef MARSYAS_PNG
-			for (int i=0; i < 4096; i++)
-			{
-				png.line(i, 0, i, pdata(i)  * 128, 0.0, 0.0, 1.0);
-			}
-#endif  
-		}
-		
-		
-		
 		bin = (mrs_natural) estimate(1);
 		
       // cout << "max bpm = " << bin << endl;
@@ -887,13 +895,41 @@ tempo_medianSumBands(string sfName, string resName)
 		
 	  
     }
-#ifdef MARSYAS_PNG
-  png.close();
-#endif 
   
   // sort bpm estimates for median filtering
   sort(bpms.begin(), bpms.end());
-  cout << sfName << "\t" << bpms[bpms.size()/2] << endl;
+
+
+
+  istringstream iss(label);
+  float ground_truth_tempo; 
+  iss >> ground_truth_tempo;
+  float predicted_tempo;
+  predicted_tempo = bpms[bpms.size()/2];
+  float diff1 = fabs(predicted_tempo - ground_truth_tempo);
+  float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
+  float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+
+  cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << endl;
+  if (diff1 <= 1.0)
+    correct_predictions++;
+  if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0))
+    correct_harmonic_predictions++;
+  else 
+    {
+      if ((diff1 < diff2)&&(diff1 < diff3))
+	total_differences += diff1;
+      if ((diff2 < diff3)&&(diff1 < diff1))
+	total_differences += diff2;
+      if ((diff3 < diff2)&&(diff3 < diff1))
+	total_differences += diff3;
+      total_errors++;
+    }
+  
+  total_instances++;
+
+
+
 
   // Output to file
   
@@ -1902,8 +1938,22 @@ tempo_ibt(string sfName, string label, string outputTxt)
 	float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
 
 	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << endl;
-	
+	if (diff1 <= 1.0)
+	  correct_predictions++;
+	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0))
+	  correct_harmonic_predictions++;
+	else 
+	  {
+	    if ((diff1 < diff2)&&(diff1 < diff3))
+	      total_differences += diff1;
+	    if ((diff2 < diff3)&&(diff1 < diff1))
+	      total_differences += diff2;
+	    if ((diff3 < diff2)&&(diff3 < diff1))
+	      total_differences += diff3;
+	    total_errors++;
+	  }
 
+	total_instances++;
 	
   // cout << "Finish!" << endl;
   
@@ -1935,17 +1985,18 @@ void tempo(string inFname, string outFname, string label, string method)
   resName += ".txt";
   */
 
+
   if (method == "MEDIAN_SUMBANDS")
     {
-      tempo_medianSumBands(sfName,resName);
+      tempo_medianSumBands(sfName, label, resName);
     }
   else if (method == "MEDIAN_MULTIBANDS")
     {
-      tempo_medianMultiBands(sfName,resName);
+      tempo_medianMultiBands(sfName,label, resName);
     }
   else if (method == "HISTO_SUMBANDS")
     {
-      tempo_histoSumBands(sfName, resName);
+      tempo_histoSumBands(sfName, label, resName);
     }
   else if (method == "IBT")
     {
@@ -2103,10 +2154,22 @@ main(int argc, const char **argv)
       readCollection(l, sfname);
     }
 
+    correct_predictions = 0;
+    correct_harmonic_predictions = 0;
+    total_instances = 0;
+    total_differences = 0.0;
+    total_errors = 0;
+
     for (int i=0; i < l.size(); i++)
     {
       tempo(l.entry(i), "default.txt", l.labelEntry(i), method);
     }
+
+
+      cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
+      cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
+      cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
+
   }
   else
   {
