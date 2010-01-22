@@ -66,8 +66,8 @@ public:
   void write(std::string filename);
   void labelAll(std::string label);
   std::string toLongString();
-
   void concatenate(std::vector<Collection> cls);
+  void clear();
   
   
   marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const Collection&);

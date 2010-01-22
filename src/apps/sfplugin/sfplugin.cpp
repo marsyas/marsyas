@@ -136,7 +136,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		{
 		  while (1) 
 		    {
-		      msys->tick();
+				msys->tick();
 		      wc++;
 		      samplesPlayed += onSamples;
 		      

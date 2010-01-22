@@ -92,6 +92,7 @@ CollectionFileSource::addControls()
 void 
 CollectionFileSource::getHeader(string filename)
 {
+	col_.clear();
 	col_.read(filename);
 	updctrl("mrs_string/allfilenames", col_.toLongString());
 	updctrl("mrs_natural/numFiles", col_.getSize());  
@@ -100,12 +101,18 @@ CollectionFileSource::getHeader(string filename)
 	setctrl("mrs_natural/cindex", 0);
 	setctrl("mrs_bool/notEmpty", true);
 	ctrl_currentlyPlaying_->setValue(col_.entry(0), NOUPDATE);
+
+	
+
 	if (col_.hasLabels())
 	{
 		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(0)), NOUPDATE);
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
 		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
 	}
+
+	
+
 	addctrl("mrs_natural/size", 1); // just so it's not zero 
 	setctrl("mrs_natural/pos", 0);
 	pos_ = 0;
@@ -115,8 +122,12 @@ void
 CollectionFileSource::myUpdate(MarControlPtr sender)
 {
 
+
+
 	
 	(void) sender;
+
+
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
@@ -172,7 +183,6 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 	isrc_->updctrl("mrs_natural/cindex", cindex_);
 
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();  
-
 
 	
 	if (advance_)

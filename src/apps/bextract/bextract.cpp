@@ -2390,6 +2390,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				l.read("bextract_single.mf");
 			bextractNetwork->updctrl("Confidence/confidence/mrs_bool/mute", true);
 
+			 
+
 			if (wekafname != EMPTYSTRING)
 				bextractNetwork->updctrl("WekaSink/wsink/mrs_string/filename", "predict.arff");
 			bextractNetwork->updctrl("Classifier/cl/mrs_string/mode", "predict");
@@ -2401,20 +2403,28 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			int num_instances = 0;
 
 			bextractNetwork->updctrl("mrs_string/filename", testCollection);
-
-			cout << "testCollection = " << testCollection << endl;
+			bextractNetwork->updctrl("mrs_string/labelNames", l.getLabelNames());
+			
+			ofstream ofs;
+			ofs.open("bextract.mpl");
+			ofs << *bextractNetwork << endl;
+			ofs.close();
+			
+		   
 
 			while (ctrl_notEmpty->to<mrs_bool>())
 			{
 				bextractNetwork->tick();
-				if (single_vector)
-				{
-					bextractNetwork->updctrl("mrs_natural/advance", 1);
-				}
 				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
 				cout << "Predicting " << currentlyPlaying << "\t" << "GT:" << l.labelName((mrs_natural)pr(1,0)) << "\t" << "PR:" << l.labelName((mrs_natural)pr(0,0)) << endl;
+
+				if (single_vector)
+				{
+					bextractNetwork->updctrl("mrs_natural/advance", 1);
+				}
+
 
 				if ((mrs_natural)pr(0,0) == (mrs_natural)(pr(1,0)))
 				  correct_instances++;

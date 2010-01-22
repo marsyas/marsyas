@@ -251,43 +251,50 @@ SoundFileSource::checkType()
 		std::transform(ext.begin(), ext.end(), ext.begin(), (int(*)(int))tolower);
 	}
 
-	if (ext == ".au")
+	if (prev_ext_ != ext)
 	{
 		delete src_;
-		src_ = new AuFileSource(getName());
+		src_ = NULL;
+	}
+	
+	
+	if (ext == ".au")
+	{
+		if (src_ == NULL) 
+			src_ = new AuFileSource(getName());
 	}
 	else if (ext == ".wav")
 	{
-		delete src_;
-		src_ = new WavFileSource(getName());
+		if (src_ == NULL) 
+			src_ = new WavFileSource(getName());
 	}
 	else if (ext == ".raw")
 	{
-		delete src_;
+		if (src_ == NULL)
 		src_ = new RawFileSource(getName());
 	}
 	else if (ext == ".txt")
 	{
-		delete src_;
-		src_ = new CollectionFileSource(getName());
+		if (src_ == NULL) 
+			src_ = new CollectionFileSource(getName());
 	}
 	else if (ext == ".mf")
 	{
-		delete src_;
-		src_ = new CollectionFileSource(getName());
+		if (src_ == NULL) 
+			src_ = new CollectionFileSource(getName());
 	}
 #ifdef MARSYAS_MAD
 	else if (ext == ".mp3")
 	{
-		delete src_;
-		src_ = new MP3FileSource(getName());
+		if (src_ == NULL) 
+			src_ = new MP3FileSource(getName());
 	}
 #endif
 #ifdef MARSYAS_VORBIS
 	else if (ext == ".ogg")
 	{
-		delete src_;
-		src_ = new OggFileSource(getName());
+		if (src_ == NULL)
+			src_ = new OggFileSource(getName());
 	}
 #endif
 	else
@@ -296,10 +303,10 @@ SoundFileSource::checkType()
 	{
 		if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
 		{
-
+			
 			MRSDIAG("SoundFileSource is falling back to GStreamerSource\n");
-			delete src_;
-			src_ = new GStreamerSource(getName());
+			if (src_ == NULL)
+				src_ = new GStreamerSource(getName());
 		}
 		else {
 			return false;
@@ -319,7 +326,8 @@ SoundFileSource::checkType()
 		return false;
 	}
 #endif
-
+	prev_ext_ = ext;
+	
 	return true;
 }
 

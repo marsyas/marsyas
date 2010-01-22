@@ -105,6 +105,8 @@ private:
 	AbsSoundFileSource* src_;
 
 	mrs_natural advance_;
+		std::string prev_ext_;
+		
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

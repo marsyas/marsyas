@@ -147,8 +147,10 @@ AuFileSource::ByteSwapShort (unsigned short nValue)
 void 
 AuFileSource::getHeader(string filename)
 {
-  sfp_ = fopen(filename.c_str(), "rb");
-  if (sfp_)
+	if (sfp_ != NULL) 
+		fclose(sfp_);
+	sfp_ = fopen(filename.c_str(), "rb");
+	if (sfp_)
   {
     size_t n = fread(&hdr_, sizeof(snd_header), 1, sfp_);  
     if ((n != 1) ||((hdr_.pref[0] != '.') &&(hdr_.pref[1] != 's')))

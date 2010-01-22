@@ -1492,7 +1492,7 @@ tempo_bcFilter(string sfName, string resName)
 
       if (hitimes[hitindex] < samplesPlayed)
 	{
-	  hitindex++;
+		hitindex++;
 
 	  // Robot Control
 #ifdef MARSYAS_MIDIO
@@ -1515,6 +1515,125 @@ tempo_bcFilter(string sfName, string resName)
   delete hidest;
   delete lowdest;
   delete total;
+}
+
+
+
+float 
+refine(string sfName, float predicted_tempo)
+{
+	cout << "Refining tempo for " << sfName << endl;
+
+	predicted_tempo ++;
+	
+	cout << "Initial tempo = " << predicted_tempo << endl;
+	
+	MarSystemManager mng;
+	
+	MarSystem *net = mng.create("Series/net");
+	net->addMarSystem(mng.create("SoundFileSource/src"));
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	mrs_real srate = net->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
+	mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
+	
+	net->updctrl("mrs_natural/inSamples", winSize);
+
+	ofstream ofs;
+	ofs.open("net.mpl");
+	ofs << *net << endl;
+	
+	ofs.close();
+	
+	
+	net->tick();
+	const mrs_realvec& data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+	
+	float max = 0.0;
+	int max_i;
+	
+	for (int i=0; i < winSize/4; i++) 
+	{
+		if (fabs(data(0,i)) >= max)
+		{
+			max_i = i;
+			max = fabs(data(0,i));
+		}
+		
+	}
+	int start;
+	int end;
+	
+	start = (int)((srate * 60.0) / (predicted_tempo + 2.0));
+	end = (int)((srate * 60.0) / (predicted_tempo - 2.0));
+	
+	
+	max = 0.0;
+	int max_i2;
+	
+	
+	for (int i = max_i + start; i <= max_i + end; i++)
+	{
+		if (data(0,i) >= max)
+		{
+			max = data(0,i);
+			max_i2 = i;
+		}
+	}
+
+	cout << "--------" << endl;
+	cout << max_i << endl;
+	cout << max_i + start << endl;
+	cout << max_i + end << endl;
+	cout << max_i2 << endl;
+	
+
+	net->tick();
+	const mrs_realvec& data2 = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+	
+	max = 0.0;
+	
+	for (int i=0; i < winSize/4; i++) 
+	{
+		if (fabs(data2(0,i)) >= max)
+		{
+			max_i = i;
+			max = fabs(data2(0,i));
+		}
+		
+	}
+
+	
+	start = (int)((srate * 60.0) / (predicted_tempo + 2.0));
+	end = (int)((srate * 60.0) / (predicted_tempo - 2.0));
+	
+	
+	max = 0.0;
+	max_i2;
+	
+	
+	for (int i = max_i + start; i <= max_i + end; i++)
+	{
+		if (data2(0,i) >= max)
+		{
+			max = data2(0,i);
+			max_i2 = i;
+		}
+	}
+	cout << "--------" << endl;
+	
+	cout << max_i << endl;
+	cout << max_i + start << endl;
+	cout << max_i + end << endl;
+	cout << max_i2 << endl;
+	
+	
+
+
+
+	return srate * 60.0 / (max_i2 - max_i);
+	
 }
 
 
@@ -1933,11 +2052,27 @@ tempo_ibt(string sfName, string label, string outputTxt)
 	iss >> ground_truth_tempo;
 	float predicted_tempo;
 	predicted_tempo = beattracker->getctrl("BeatTimesSink/sink/mrs_real/tempo")->to<mrs_real>();
+
+
 	float diff1 = fabs(predicted_tempo - ground_truth_tempo);
 	float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
 	float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+	
 
 	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << endl;
+	predicted_tempo = refine(sfName, predicted_tempo);
+
+	
+	diff1 = fabs(predicted_tempo - ground_truth_tempo);
+	diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
+	diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+
+	
+
+	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << endl;
+	
+
+	
 	if (diff1 <= 1.0)
 	  correct_predictions++;
 	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0))

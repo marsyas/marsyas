@@ -104,6 +104,9 @@ WavFileSource::addControls()
 void 
 WavFileSource::getHeader(string filename)
 {
+	if (sfp_ != NULL) 
+		fclose(sfp_);
+	
 	sfp_ = fopen(filename.c_str(), "rb");
 	if (sfp_)
 	{

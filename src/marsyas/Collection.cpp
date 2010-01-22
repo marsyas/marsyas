@@ -123,9 +123,25 @@ Collection::add(string entry)
     collectionList_.push_back(entry);
 }
 
+
+
+void 
+Collection::clear()
+{
+	collectionList_.clear();
+	labelList_.clear();
+	
+	// Do not clear labelNames so that multiple collections 
+	// can share the same label set 
+	// maybe at some point make this behavior controllable 
+}
+	
+
 void 
 Collection::add(string entry, string label)
 {
+
+	
     collectionList_.push_back(entry);
     hasLabels_ = true;
     labelList_.push_back(label);
@@ -133,6 +149,7 @@ Collection::add(string entry, string label)
     if (find(labelNames_.begin(), labelNames_.end(), label) == labelNames_.end())
         labelNames_.push_back(label);
 
+	
 	sort(labelNames_.begin(), labelNames_.end());
 
 }
@@ -198,15 +215,12 @@ Collection::toLongString()
 mrs_natural 
 Collection::labelNum(mrs_string label) 
 {
+	
     vector<string>::iterator it = find(labelNames_.begin(), labelNames_.end(), label);
     if (it == labelNames_.end())
-        return 0; // why not -1?
-
+        return -1; 
+	
 	mrs_natural l = distance(labelNames_.begin(), it);
-	
-
-	
-	
     return l ;
 	
 }
