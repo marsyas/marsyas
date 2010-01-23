@@ -1964,7 +1964,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// Add the fanout to our feature Network ... 
 	featureNetwork->addMarSystem(fanout);
 	
-	featureNetwork->updctrl("mrs_real/israte", 22050.0);   //sampling rate  [!hardcoded]
+	featureNetwork->updctrl("mrs_real/israte", 44100.0);   //sampling rate  [!hardcoded]
 	
 	// Disable Microphone for training the classifier ... 
 	featureNetwork->updctrl("Fanout/fanout/mrs_natural/disable", 1);
@@ -2325,6 +2325,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// have the plugin play audio 
 	if (pluginName != EMPTYSTRING && !pluginMute)
 	{
+		featureNetwork->updctrl("mrs_real/israte", 44100.0);
 		featureNetwork->updctrl("AudioSink/dest/mrs_bool/mute", false); 
 		featureNetwork->updctrl("AudioSink/dest/mrs_bool/initAudio", true); 
 		
@@ -2338,7 +2339,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// init mic audio ... 
 	if (mic_) 
 	  {
-	    bextractNetwork->updctrl("mrs_real/israte", 22050.0);   //sampling rate 
+	    bextractNetwork->updctrl("mrs_real/israte", 44100.0);   //sampling rate 
 	    bextractNetwork->updctrl("Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_natural/nChannels", 1);	//stereo
 	    bextractNetwork->linkctrl( "mrs_bool/initAudio" , "Series/featureNetwork/Fanout/fanout/AudioSource/mic/mrs_bool/initAudio" ); //important link!!!
 	  }
