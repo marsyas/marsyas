@@ -100,6 +100,21 @@ void Biquad::myUpdate(MarControlPtr sender)
         filter->updctrl("mrs_realvec/dcoeffs", a);
 
     }
+	else if (type == "bandpass")
+	{
+		alpha_ = sin(w0_)/(2*q_);
+
+        b(0) = sin(w0_)/2;
+        b(1) =  0;
+        b(2) = -sin(w0_)/2;
+        
+        a(0) = 1 + alpha_;
+        a(1) = -2 * cos(w0_); // Arian: was positive
+        a(2) = 1 - alpha_;
+        
+        filter->updctrl("mrs_realvec/ncoeffs", b);
+        filter->updctrl("mrs_realvec/dcoeffs", a);
+	}
     else if (type == "allpass")
     {
     		alpha_ = sin(w0_)/(2*q_);
@@ -134,10 +149,5 @@ void Biquad::myUpdate(MarControlPtr sender)
 void Biquad::myProcess(realvec& in, realvec& out)
 {
 	filter->process(in,out);	
-/*
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
-    	out(o,t) *= 10000;
-    	cout << "Biquad:" << in(o,t) << "\t-->\t" << out(o,t) << endl;
-*/
+
 }
