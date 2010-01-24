@@ -666,7 +666,7 @@ PATH   String  /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr
 @end example 
 
 (You can use the ``Property List Editor'' that comes with Apple's
-developer tools or a 3rd-party plist editor – or just an ordinary text
+developer tools or a 3rd-party plist editor - or just an ordinary text
 editor if you are careful to get the format correct.)
 
 Now CMake GUI will know about the MacPorts directory (i.e. /opt) and
