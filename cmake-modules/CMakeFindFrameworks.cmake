@@ -7,10 +7,10 @@ IF(NOT CMAKE_FIND_FRAMEWORKS_INCLUDED)
     IF(APPLE)
       FOREACH(dir
           ~/Library/Frameworks/${fwk}.framework
-          /opt/local/Library/Frameworks/${fwk}.framework
           /Library/Frameworks/${fwk}.framework
           /System/Library/Frameworks/${fwk}.framework
-          /Network/Library/Frameworks/${fwk}.framework)
+          /Network/Library/Frameworks/${fwk}.framework
+          /opt/local/Library/Frameworks/${fwk}.framework)
 	
         IF(EXISTS ${dir})
           SET(${fwk}_FRAMEWORKS ${${fwk}_FRAMEWORKS} ${dir})
