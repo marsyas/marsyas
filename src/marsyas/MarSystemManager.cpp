@@ -124,7 +124,7 @@
 #include "Filter.h"
 #include "Biquad.h"
 #include "ERB.h"
-#include "ClipAudioRange.h"
+#include "Clip.h"
 #include "HarmonicEnhancer.h"
 #include "Reassign.h"
 #include "SilenceRemove.h"
@@ -321,7 +321,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RadioDrumInput", new RadioDrumInput("radiodrump"));
 	registerPrototype("NoiseGate", new NoiseGate("noisegatep"));
 	registerPrototype("ERB", new ERB("erbp"));
-	registerPrototype("ClipAudioRange", new ClipAudioRange("clpr"));
+	registerPrototype("Clip", new Clip("clpr"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
 	registerPrototype("Reassign", new Reassign("reassignpr"));
 	registerPrototype("SilenceRemove", new SilenceRemove("silenceremovepr"));
