@@ -359,9 +359,9 @@ your own examples and case studies to help cover more configurations.
 @menu
 * Compiling on MacOS X 10.6 Snow Leopard ::  
 * Compiling on Ubuntu::         
-* MacOS X additional notes::    
 * Compiling with Visual Studio Express 2008 on Windows XP::  
 * Compiling with MinGW on Windows XP::  
+* MacOS X additional notes::    
 @end menu
 
 @node Compiling on MacOS X 10.6 Snow Leopard , Compiling on Ubuntu, Specific installation examples, Specific installation examples
@@ -418,28 +418,27 @@ http://marsyas.sf.net).
 
 Launch CMake (using the CMake GUI that you can find in the OSX
 Applications folder using Finder, or using the command line tool ccmake
-in the OSX terminal - see Section 2.3.2 of this manual for more detailed
-instructions on to do that), and specify the source and build directory
-you want to use for Marsyas. For example, if you have the Marsyas code
+in the OSX terminal), and specify the source and build directory you
+want to use for Marsyas. For example, if you have the Marsyas code
 directory in you home directory (e.g. ~/Marsyas), you should point your
 source path to ~/Marsyas/src and the build directory to somewhere like
 ~/Marsyas/build/ (you may have to create the ~/Marsyas/build directory
-before hand in case CMake GUI or ccmake does not create it for you - see
-Section 2.3.2). Either using CMake GUI or ccmake in the terminal, just
-select the option to "configure" using the provided options (i.e. using
-the default Marsyas build configuration). CMake GUI will ask youif you
-want to create the "~/Marsyas/build" directory in case you haven't
-dreated it yourself, and then ask you to select a generator from a drop
-down list - here you can ask CMake to create an UNIX makefile, a XCode
-project, among other options, but for now just use the provided options
-and click "done" (you can also specify a generator when using the
-command line tool ccmake - check its documentation). CMake will then
-look into your system for libraries, compilers, and present you with a
-list of the configuration options it set up for you. Just keep hitting
-"configure" until all options are grey (in the CMake GUI) or not
-signaled with a * (if using ccmake on the terminal), and then just
-select "generate". This will generate a UNIX makefile with the default
-build option for Marsyas. You can now close CMake.
+before hand in case CMake GUI or ccmake does not create it for
+you. Either using CMake GUI or ccmake in the terminal, just select the
+option to "configure" using the provided options (i.e. using the default
+Marsyas build configuration). CMake GUI will ask youif you want to
+create the "~/Marsyas/build" directory in case you haven't dreated it
+yourself, and then ask you to select a generator from a drop down list -
+here you can ask CMake to create an UNIX makefile, a XCode project,
+among other options, but for now just use the provided options and click
+"done" (you can also specify a generator when using the command line
+tool ccmake - check its documentation). CMake will then look into your
+system for libraries, compilers, and present you with a list of the
+configuration options it set up for you. Just keep hitting "configure"
+until all options are grey (in the CMake GUI) or not signaled with a *
+(if using ccmake on the terminal), and then just select "generate". This
+will generate a UNIX makefile with the default build option for
+Marsyas. You can now close CMake.
 
 @item 
 
@@ -582,9 +581,7 @@ Download and install Qt 4.6.1 64 bits for cocoa (there are other Qt versions for
 
 @end enumerate 
 
-
-
-@subsubsection Python bindings 
+@subsubheading Python bindings 
 
 The following optional steps can be used to setup the Marsyas python
 bindings using SWIG and setup the NumPy,SciPy,Matlplotlib environment,
@@ -658,7 +655,7 @@ http://developer.apple.com/mac/library/qa/qa2001/qa1067.html).
 In case you don't have the .MacOSX folder in your home directory (you
 may not have it), you'll need to create a folder named ``.MacOSX'' in your
 home folder (note that since there is a dot at the beginning of the
-folder name, it won’t be visible to a simple 'ls' - you would need to
+folder name, it won't be visible to a simple 'ls' - you would need to
 use 'ls -a') and then create a file named ``environment.plist'' in the
 ~/.MacOSX folder. Put the definitions of the environment variables that
 you want defined for all GUI programs in that plist file using a format
@@ -668,7 +665,7 @@ like the following example:
 PATH   String  /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin
 @end example 
 
-(You can use the “Property List Editor” that comes with Apple’s
+(You can use the ``Property List Editor'' that comes with Apple's
 developer tools or a 3rd-party plist editor – or just an ordinary text
 editor if you are careful to get the format correct.)
 
@@ -677,11 +674,16 @@ will be able to find the pythonand SWIG libs from MacPorts.
 
 @item
 
-After compilation finished, make sure you are at ~/Marsyas/build_with_SWIG and run "sudo make install". This will install Marsyas into your system, as well as the Marsyas python module at the right places so python can import it. 
+After compilation finished, make sure you are at
+~/Marsyas/build_with_SWIG and run "sudo make install". This will install
+Marsyas into your system, as well as the Marsyas python module at the
+right places so python can import it.
 
 @item  
 
-You should now be ready to run Marsyas inside Python. Try launching a Python interactive interpreter by typing "python" at the terminal and then trying:
+You should now be ready to run Marsyas inside Python. Try launching a
+Python interactive interpreter by typing "python" at the terminal and
+then trying:
 
 @example 
           import marsyas
@@ -704,7 +706,7 @@ all the different building configurations, e.g.:
 ~/Marsyas/builds/make_with_MAD_LAME_SWIG
 ~/Marsyas/builds/make_with_Qt
 ~/Marsyas/builds/XCode_with_MAD_Qt
-etc…
+etc...
 @end example
 
 @end enumerate 
@@ -714,7 +716,7 @@ etc…
 
  
 
-@node Compiling on Ubuntu, MacOS X additional notes, Compiling on MacOS X 10.6 Snow Leopard , Specific installation examples
+@node Compiling on Ubuntu, Compiling with Visual Studio Express 2008 on Windows XP, Compiling on MacOS X 10.6 Snow Leopard , Specific installation examples
 @subsection Compiling on Ubuntu
 
 These steps were used to install Marsyas from a fresh 
@@ -742,70 +744,9 @@ compile and install the source code from @uref{http://www.cmake.org}
 @end enumerate
 
 
-@node MacOS X additional notes, Compiling with Visual Studio Express 2008 on Windows XP, Compiling on Ubuntu, Specific installation examples
-@subsection MacOS X additional software
-
-@subsubheading Qt
-
-On MacOS X and when using Qt-4.3.0 or higher, you must add:
-
-@example
-export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/
-@end example
-
-@noindent
-to your @file{~/.profile} or @file{~/.bash_profile} and then close
-(and re-open) your terminal window before compiling Marsyas.
 
 
-@subsubheading Recording audio
-
-When trying to record audio, the sample rate must be specified
-explicitly:
-
-@example
-pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
-pnet->updctrl("mrs_real/israte", 44100.0);
-pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
-@end example
-
-
-@subsubheading MATLAB
-
-@enumerate
-@item
-MATLAB and X11 for OS X must be installed
-
-@item
-The configure script assumes it is installed in
-/Applications/MATLAB74
-(this should be an environment variable; this might be fixed soon ).
-
-@item
-The marsaysMATLABrelease configuration must be enabled
-(uncommented in marsyasConfig.pri, or do something for autotools)
-
-@item
-FIXME: THIS IS WRONG!  Compile Marsyas using qmake, make
-
-@item
-try out mudbox -t MATLABengine. MATLAB
-should open and various benchmarks and communication
-between Marsyas and MATLAB should happen. If not
-email the mailing lists for some help.
-
-@item
-There must be a symbolic link to the matlab executable
-from /usr/bin/matlab:
-ln -s /Applications/MATLAB74/bin/matlab /usr/bin/matlab
-
-@item
-You must start X11 windows manually. "open -a X11", or click on the X11
-icon in your /Applications/util/ folder.
-@end enumerate
-
-
-@node Compiling with Visual Studio Express 2008 on Windows XP, Compiling with MinGW on Windows XP, MacOS X additional notes, Specific installation examples
+@node Compiling with Visual Studio Express 2008 on Windows XP, Compiling with MinGW on Windows XP, Compiling on Ubuntu, Specific installation examples
 @subsection Compiling with Visual Studio Express 2008 on Windows XP
 
 
@@ -931,7 +872,7 @@ scripts in src/swig/python.
 @end enumerate 
 
 
-@node Compiling with MinGW on Windows XP,  , Compiling with Visual Studio Express 2008 on Windows XP, Specific installation examples
+@node Compiling with MinGW on Windows XP, MacOS X additional notes, Compiling with Visual Studio Express 2008 on Windows XP, Specific installation examples
 @subsection Compiling with MinGW on Windows XP
 
 @enumerate 
@@ -972,6 +913,78 @@ installed in c:\marsyas these would be c:\marsyas\src and c:\marsyas\build.
 MacOS X machines; Windows users may install it from
 @uref{http://python.org, this site}.  Marsyas contains some very
 useful scripts which are written in Python.
+
+
+
+
+@node MacOS X additional notes,  , Compiling with MinGW on Windows XP, Specific installation examples
+@subsection MacOS X additional notes
+
+These random notes might be useful for OS X users. 
+
+@subsubheading Qt
+
+On MacOS X and when using Qt-4.3.0 or higher, you must add:
+
+@example
+export QMAKESPEC=/usr/local/Qt4.3/mkspecs/macx-g++/
+@end example
+
+@noindent
+to your @file{~/.profile} or @file{~/.bash_profile} and then close
+(and re-open) your terminal window before compiling Marsyas.
+
+
+@subsubheading Recording audio
+
+When trying to record audio, the sample rate must be specified
+explicitly:
+
+@example
+pnet->addMarSystem(mng.create("AudioSource", "srcRec"));
+pnet->updctrl("mrs_real/israte", 44100.0);
+pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
+@end example
+
+
+@subsubheading MATLAB
+
+@enumerate
+@item
+MATLAB and X11 for OS X must be installed
+
+@item
+The configure script assumes it is installed in
+/Applications/MATLAB74
+(this should be an environment variable; this might be fixed soon ).
+
+@item
+The marsaysMATLABrelease configuration must be enabled
+(uncommented in marsyasConfig.pri, or do something for autotools)
+
+@item
+Compile Marsyas and enable the WITH_MATLAB option 
+
+@item
+try out mudbox -t MATLABengine. MATLAB
+should open and various benchmarks and communication
+between Marsyas and MATLAB should happen. If not
+email the mailing lists for some help.
+
+@item
+There must be a symbolic link to the matlab executable
+from /usr/bin/matlab:
+ln -s /Applications/MATLAB74/bin/matlab /usr/bin/matlab
+
+@item
+You must start X11 windows manually. "open -a X11", or click on the X11
+icon in your /Applications/util/ folder.
+@end enumerate
+
+
+
+
+
 
 
 
@@ -1069,5 +1082,8 @@ Marsyas.
 @item @b{scripts/MATLAB/} MATLAB scripts.
 
 @end itemize 
+
+
+
 
 
