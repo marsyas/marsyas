@@ -2008,6 +2008,13 @@ tempo_ibt(string sfName, string label, string outputTxt)
 		inputSize += inductionTickCount; 
 
 	//while(IBTsystem->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+
+
+	ofstream ofs;
+	ofs.open("tempo.mpl");
+	ofs << *IBTsystem << endl;
+	ofs.close();
+
 	while(frameCount <= inputSize)
 	{	
 		//cout << "FrameCount: " << frameCount << endl;

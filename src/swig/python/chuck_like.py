@@ -70,8 +70,8 @@ times2 = [x * 0.2 for x in range(1, 100)]
 
 time = 0;     # time in seconds 
 while(time < 6.0):
-     dispatch(time, times1, set_freq, f1, frequencies[random.randint(1,len(frequencies)-1)])	
-     dispatch(time, times2,  set_freq, f2, mtof(math.fabs(math.sin(time) * 110)))
+   #  dispatch(time, times1, set_freq, f1, frequencies[random.randint(1,len(frequencies)-1)])	
+     dispatch(time, times2,  set_freq, f1, mtof(math.fabs(math.sin(time) * 110)))
      pnet.tick()
      time = time + tstep 
 

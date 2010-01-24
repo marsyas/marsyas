@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,32 +16,40 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_CLIPAUDIORANGE_H
-#define MARSYAS_CLIPAUDIORANGE_H
+#ifndef MARSYAS_CLIP_H
+#define MARSYAS_CLIP_H
 
 #include "MarSystem.h"
 
 namespace Marsyas
 {
 /** 
-    \class ClipAudioRange
+    \class Clip
 	\ingroup Processing
-    \brief ClipAudioRange
+    \brief Clip
 
-    Clip any values greater than 1 or -1 to 1 and -1. 
+    Clip any values greater than 1 or -1 to 1 and -1 by 
+	default or by range if the corresponding control is set. 
+
+	Controls:
+	- \b mrs_real/range [w] : adjust the clipping range.
+ 
 */
 
 
-class ClipAudioRange: public MarSystem
+class Clip: public MarSystem
 {
 private: 
-	void myUpdate(MarControlPtr sender);
-public:
-  ClipAudioRange(std::string name);
-  ~ClipAudioRange();
-  MarSystem* clone() const;  
- 
-  void myProcess(realvec& in, realvec& out);
+		void addControls();
+		void myUpdate(MarControlPtr sender);
+		MarControlPtr ctrl_range_;
+	public:
+		Clip(std::string name);
+		Clip(const Clip& a);
+		~Clip();
+		MarSystem* clone() const;  
+		
+		void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas
