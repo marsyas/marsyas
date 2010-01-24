@@ -115,6 +115,15 @@ void Biquad::myUpdate(MarControlPtr sender)
         filter->updctrl("mrs_realvec/ncoeffs", b);
         filter->updctrl("mrs_realvec/dcoeffs", a);
 	}
+	else if (type == "highpass") 
+	{
+		b(0) = (1 + cos(w0_))/2;
+		b(1) = -(1 + cos(w0_));
+		b(2) =  (1 + cos(w0_))/2;
+		a(0) =   1 + alpha_;
+		a(1) =  -2*cos(w0_);
+		a(2) =   1 - alpha_;
+	}
     else if (type == "allpass")
     {
     		alpha_ = sin(w0_)/(2*q_);
@@ -132,6 +141,10 @@ void Biquad::myUpdate(MarControlPtr sender)
         filter->updctrl("mrs_realvec/dcoeffs", a);
 
     }
+
+
+
+
     else
     {
         cout << "BIQUAD: wrong type specified" << endl;
