@@ -1,4 +1,7 @@
+find_path(lame_INCLUDE_DIR lame/lame.h PATHS /opt/local/include NO_DEFAULT_PATH)
 find_path(lame_INCLUDE_DIR lame/lame.h)
+
+find_library(lame_LIBRARY NAMES mp3lame PATHS /opt/local/lib NO_DEFAULT_PATH)
 find_library(lame_LIBRARY NAMES mp3lame)
 
 if (lame_INCLUDE_DIR AND lame_LIBRARY)

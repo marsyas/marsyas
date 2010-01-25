@@ -1,4 +1,7 @@
+find_path(mad_INCLUDE_DIR mad.h PATHS /opt/local/include NO_DEFAULT_PATH)
 find_path(mad_INCLUDE_DIR mad.h)
+
+find_library(mad_LIBRARY NAMES mad PATHS /opt/local/lib NO_DEFAULT_PATH)
 find_library(mad_LIBRARY NAMES mad)
 
 if (mad_INCLUDE_DIR AND mad_LIBRARY)
