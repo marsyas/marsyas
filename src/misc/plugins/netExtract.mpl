@@ -13,9 +13,9 @@
 # /Series/extractNet/mrs_real/osrate = 43.0664
 
 # Number of links = 1
-# Synonyms of /Series/extractNet/mrs_bool/notEmpty = 
+# Synonyms of /Series/extractNet/mrs_bool/hasData = 
 # Number of synonyms = 1
-# /Series/extractNet/NetworkTCPSource/src/mrs_bool/notEmpty
+# /Series/extractNet/NetworkTCPSource/src/mrs_bool/hasData
 
 # nComponents = 6
 
@@ -26,7 +26,7 @@
 # MarControls = 12
 # /NetworkTCPSource/src/mrs_bool/debug = 0
 # /NetworkTCPSource/src/mrs_bool/mute = 0
-# /NetworkTCPSource/src/mrs_bool/notEmpty = 1
+# /NetworkTCPSource/src/mrs_bool/hasData = 1
 # /NetworkTCPSource/src/mrs_natural/controlsPort = 5010
 # /NetworkTCPSource/src/mrs_natural/dataPort = 5009
 # /NetworkTCPSource/src/mrs_natural/inObservations = 1

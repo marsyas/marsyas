@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -27,43 +27,43 @@
 namespace Marsyas
 {
 /**
-	\class ViconFileSource
-	\ingroup IO
-	\brief ViconFileSource for exported VICON .txt files
+   \class ViconFileSource
+   \ingroup IO
+   \brief ViconFileSource for exported VICON .txt files
    
-	ViconFileSource reader for exported VICON .txt files. 
+   ViconFileSource reader for exported VICON .txt files. 
 
-	Controls:
-	- \b mrs_string/filename [w] : name of file to read
-	- \b mrs_string/markers [w] : separators in the file.
-	- \b mrs_bool/notEmpty [r] : is there any data left?
-	- \b mrs_natural/size [r] : filesize in samples
+   Controls:
+   - \b mrs_string/filename [w] : name of file to read
+   - \b mrs_string/markers [w] : separators in the file.
+   - \b mrs_bool/hasData [r] : is there any data left?
+   - \b mrs_natural/size [r] : filesize in samples
 */
 
 
-class ViconFileSource: public MarSystem 
-{
-private:
+	class ViconFileSource: public MarSystem 
+	{
+		private:
 
-  std::string tfname_;
-  std::string filename_;
+			std::string tfname_;
+			std::string filename_;
   
-  FILE *vfp_;
-  long vfp_begin_;
+			FILE *vfp_;
+			long vfp_begin_;
     
-  mrs_natural size_;  
-  mrs_natural fileObs_;
-  void addControls();
-	void myUpdate(MarControlPtr sender);
+			mrs_natural size_;  
+			mrs_natural fileObs_;
+			void addControls();
+			void myUpdate(MarControlPtr sender);
       
-public:
-  ViconFileSource(std::string name);
-  ~ViconFileSource();
-  MarSystem* clone() const;  
+		public:
+			ViconFileSource(std::string name);
+			~ViconFileSource();
+			MarSystem* clone() const;  
   
-  void getHeader(std::string filename);
-  void myProcess(realvec& in, realvec &out);
-};
+			void getHeader(std::string filename);
+			void myProcess(realvec& in, realvec &out);
+	};
 
 }//namespace Marsyas
 

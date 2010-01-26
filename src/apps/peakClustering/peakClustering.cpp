@@ -1,3 +1,22 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -168,8 +187,8 @@ printHelp(string progName)
 
 void
 peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseName, string mixName, string intervalFrequency, string panningInfo, mrs_real noiseDelay, string T, mrs_natural N, mrs_natural Nw, 
-							 mrs_natural D, mrs_natural S, mrs_natural C,
-							 mrs_natural accSize, mrs_natural synthetize, mrs_real *snr0)
+			   mrs_natural D, mrs_natural S, mrs_natural C,
+			   mrs_natural accSize, mrs_natural synthetize, mrs_real *snr0)
 {
 	MarSystemManager mng;
 
@@ -323,7 +342,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//--------
 	freqSim->addMarSystem(mng.create("PeakFeatureSelect","FREQfeatSelect"));
 	freqSim->updctrl("PeakFeatureSelect/FREQfeatSelect/mrs_natural/selectedFeatures",
-		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq);
+					 PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq);
 	//--------
 	MarSystem* fsimMat = mng.create("SelfSimilarityMatrix","FREQsimMat");
 	fsimMat->addMarSystem(mng.create("Metric","FreqL2Norm"));
@@ -345,7 +364,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//--------
 	ampSim->addMarSystem(mng.create("PeakFeatureSelect","AMPfeatSelect"));
 	ampSim->updctrl("PeakFeatureSelect/AMPfeatSelect/mrs_natural/selectedFeatures",
-		PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp);
+					PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp);
 	//--------
 	MarSystem* asimMat = mng.create("SelfSimilarityMatrix","AMPsimMat");
 	asimMat->addMarSystem(mng.create("Metric","AmpL2Norm"));
@@ -367,7 +386,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//--------
 	HWPSim->addMarSystem(mng.create("PeakFeatureSelect","HWPSfeatSelect"));
 	HWPSim->updctrl("PeakFeatureSelect/HWPSfeatSelect/mrs_natural/selectedFeatures",
-		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes);
+					PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes);
 	//--------
 	MarSystem* HWPSsimMat = mng.create("SelfSimilarityMatrix","HWPSsimMat");
 	HWPSsimMat->addMarSystem(mng.create("HWPS","hwps"));
@@ -386,7 +405,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//--------
 	panSim->addMarSystem(mng.create("PeakFeatureSelect","PANfeatSelect"));
 	panSim->updctrl("PeakFeatureSelect/PANfeatSelect/mrs_natural/selectedFeatures",
-		PeakFeatureSelect::pkPan);
+					PeakFeatureSelect::pkPan);
 	//--------
 	MarSystem* psimMat = mng.create("SelfSimilarityMatrix","PANsimMat");
 	psimMat->addMarSystem(mng.create("Metric","PanL2Norm"));
@@ -405,18 +424,18 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	// LINK controls of PeakFeatureSelects in each similarity branch
 	//
 	simNet->linkctrl("Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/totalNumPeaks",
-		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
 	simNet->linkctrl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks",
-		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
 	simNet->linkctrl("Series/panSim/PeakFeatureSelect/PANfeatSelect/mrs_natural/totalNumPeaks",
-		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
+					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
 	//------
 	simNet->linkctrl("Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks",
-		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
 	simNet->linkctrl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks",
-		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
 	simNet->linkctrl("Series/panSim/PeakFeatureSelect/PANfeatSelect/mrs_natural/frameMaxNumPeaks",
-		"Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
+					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//add simNet to clustNet
 	clustNet->addMarSystem(simNet);
@@ -424,9 +443,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	// LINK controls related to variable number of peak from PeakConvert to simNet
 	//
 	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks",
-		"PeakConvert/conv/mrs_natural/totalNumPeaks");
+					  "PeakConvert/conv/mrs_natural/totalNumPeaks");
 	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks",
-		"PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
+					  "PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
 
 	//***************************************************************
 	// create NCutNet MarSystem and add it to clustNet
@@ -512,10 +531,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 		MarSystem *dest;
 		if (outsfname == "MARSYAS_EMPTY") 
-		  dest = mng.create("AudioSink/dest");
+			dest = mng.create("AudioSink/dest");
 		else
 		{
-		  dest = mng.create("SoundFileSink/dest");
+			dest = mng.create("SoundFileSink/dest");
 			//dest->updctrl("mrs_string/filename", outsfname);
 		}
 
@@ -538,10 +557,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 			MarSystem *destRes;
 			if (outsfname == "MARSYAS_EMPTY") 
-			  destRes = mng.create("AudioSink/destRes");
+				destRes = mng.create("AudioSink/destRes");
 			else
 			{
-			  destRes = mng.create("SoundFileSink/destRes");
+				destRes = mng.create("SoundFileSink/destRes");
 				//dest->updctrl("mrs_string/filename", outsfname);
 			}
 			postNet->addMarSystem(destRes);
@@ -556,7 +575,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 		//link Shredder nTimes to Accumulator nTimes
 		mainNet->linkctrl("Shredder/synthNet/mrs_natural/nTimes",
-			"Accumulator/textWinNet/mrs_natural/nTimes");
+						  "Accumulator/textWinNet/mrs_natural/nTimes");
 	}
 
 	
@@ -653,7 +672,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	{
 		cout << "** Frequency Similarity Computation disabled!" << endl;
 		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
-			"Series/freqSim");
+						 "Series/freqSim");
 	}
 	else
 		cout << "** Frequency Similarity Computation enabled!" << endl;
@@ -662,7 +681,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	{
 		cout << "** Amplitude Similarity Computation disabled!" << endl;
 		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
-			"Series/ampSim");
+						 "Series/ampSim");
 	}
 	else
 		cout << "** Amplitude Similarity Computation enabled!" << endl;
@@ -671,28 +690,28 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	{
 		cout << "** HWPS (harmonicity) Similarity Computation disabled!" << endl;
 		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
-			"Series/HWPSim");
+						 "Series/HWPSim");
 	}
 	else
 		cout << "** HWPS (harmonicity) Similarity Computation enabled!" << endl;
 	//
 	//Panning Similarity
 	if(mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/mrs_natural/onObservations")->to<mrs_natural>() == 2 &&
-		!ignorePan)
+	   !ignorePan)
 	{
 		cout << "** Panning Similarity Computation enabled!" << endl;
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/enableChild",
-			"Series/stereoSpkNet");
+						 "Series/stereoSpkNet");
 		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/enableChild",
-			"Series/panSim");
+						 "Series/panSim");
 	}
 	else //if not stereo or if stereo to be ignored, disable some branches 
 	{
 		cout << "** Panning Similarity Computation disabled!" << endl;
 		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
-			"Series/stereoSpkNet");
+						 "Series/stereoSpkNet");
 		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
-			"Series/panSim");
+						 "Series/panSim");
 	}
 	//
 	mainNet->update(); //probably not necessary... [!]
@@ -720,12 +739,12 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 		//link controls for onset detector
 		onsetdetector->linkctrl("Filter/filt2/mrs_realvec/ncoeffs",
-			"Filter/filt1/mrs_realvec/ncoeffs");
+								"Filter/filt1/mrs_realvec/ncoeffs");
 		onsetdetector->linkctrl("Filter/filt2/mrs_realvec/dcoeffs",
-			"Filter/filt1/mrs_realvec/dcoeffs");
+								"Filter/filt1/mrs_realvec/dcoeffs");
 		//link onset detector to accumulator and if onsets enabled, set "explicitFlush" mode
 		textWinNet->linkControl("mrs_bool/flush",
-			"Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
+								"Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
 
 		//update onset detector controls
 		onsetdetector->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "wrongdBonsets");
@@ -863,9 +882,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 		if (!microphone_)
 		{
-			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
-			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
-			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
+			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
+			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 
 			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 			mrs_real timeLeft;
@@ -879,7 +898,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			fflush(stdout);
 
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
-			///*bool*/ temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+			///*bool*/ temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 
 			//[TODO]
 			// 			mrs_real density = mainNet->getctrl("PeClust/peClust/mrs_real/clusterDensity")->to<mrs_real>();

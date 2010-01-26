@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ WavFileSource2::hdrError()
 	setctrl("mrs_natural/nChannels", (mrs_natural)1);
 	setctrl("mrs_real/israte", MRS_DEFAULT_SLICE_SRATE);//(mrs_real)22050.0);
 	setctrl("mrs_natural/size", (mrs_natural)0);
-	setctrl("mrs_bool/notEmpty", false);
+	setctrl("mrs_bool/hasData", false);
 	setctrl("mrs_string/filename", "defaultfile");
 }
 
@@ -112,23 +112,23 @@ WavFileSource2::getHeader()
 			while (strcmp(id, "fmt ")) 
 			{
 				fread(&chunkSize, 4, 1, sfp_);
-				#if defined(MARSYAS_BIGENDIAN)	      
+#if defined(MARSYAS_BIGENDIAN)	      
 				chunkSize = ByteSwapLong(chunkSize);
-				#endif 
+#endif 
 				fseek(sfp_, chunkSize, SEEK_CUR);
 				fread(id, 4, 1, sfp_);
 			}
 
 			fread(&chunkSize, 4, 1, sfp_);
-			#if defined(MARSYAS_BIGENDIAN)	      
+#if defined(MARSYAS_BIGENDIAN)	      
 			chunkSize = ByteSwapLong(chunkSize);
-			#endif 
+#endif 
 
 			unsigned short format_tag;
 			fread(&format_tag, 2, 1, sfp_);
-			#if defined(MARSYAS_BIGENDIAN)	      
+#if defined(MARSYAS_BIGENDIAN)	      
 			format_tag = ByteSwapShort(format_tag);
-			#endif 
+#endif 
 			if (format_tag != 1) 
 			{
 				fclose(sfp_);
@@ -139,25 +139,25 @@ WavFileSource2::getHeader()
 
 			// Get number of channels
 			fread(&channels, 2,1, sfp_);
-			#if defined(MARSYAS_BIGENDIAN)	      
+#if defined(MARSYAS_BIGENDIAN)	      
 			channels = ByteSwapShort(channels);
-			#endif 
+#endif 
 			// access directly controls to avoid update() recursion
 			setctrl("mrs_natural/nChannels", (mrs_natural)channels);
 			//nChannels_ = channels; //getctrl("mrs_natural/nChannels")->to<mrs_natural>();//[!]
 
 			fread(&srate, 2,1,sfp_);
-			#if defined(MARSYAS_BIGENDIAN)	      
+#if defined(MARSYAS_BIGENDIAN)	      
 			srate = ByteSwapShort(srate);
-			#endif 
+#endif 
 			setctrl("mrs_real/israte", (mrs_real)srate);
 			//israte_ = (mrs_real)srate;
 
 			fseek(sfp_,8,SEEK_CUR);
 			fread(&bits_, 2, 1, sfp_);
-			#if defined(MARSYAS_BIGENDIAN)	      
+#if defined(MARSYAS_BIGENDIAN)	      
 			bits_ = ByteSwapShort(bits_);
-			#endif 
+#endif 
 			if ((bits_ != 16))//&&(bits_ != 8)) 
 			{
 				fclose(sfp_);
@@ -173,18 +173,18 @@ WavFileSource2::getHeader()
 			while (strcmp(id, "data"))
 			{
 				fread(&chunkSize, 4, 1, sfp_);
-				#if defined(MARSYAS_BIGENDIAN)	      
+#if defined(MARSYAS_BIGENDIAN)	      
 				chunkSize = ByteSwapLong(chunkSize);
-				#endif 
+#endif 
 				fseek(sfp_,chunkSize,SEEK_CUR);
 				fread(&id,4,1,sfp_);	  
 			}
 
 			int bytes;
 			fread(&bytes, 4, 1, sfp_);
-			#if defined(MARSYAS_BIGENDIAN)	      
+#if defined(MARSYAS_BIGENDIAN)	      
 			bytes = ByteSwapLong(bytes);
-			#endif 
+#endif 
 			//size in number of samples per channel
 			size = bytes / (bits_ / 8)/ channels;
 			setctrl("mrs_natural/size", size);
@@ -193,9 +193,9 @@ WavFileSource2::getHeader()
 			
 			//check if there is in fact any audio data in the soundfile
 			if(size > 0)
-				setctrl("mrs_bool/notEmpty", true);
+				setctrl("mrs_bool/hasData", true);
 			else
-				setctrl("mrs_bool/notEmpty", false);
+				setctrl("mrs_bool/hasData", false);
 		}
 	}
 	else
@@ -279,7 +279,7 @@ unsigned long
 WavFileSource2::ByteSwapLong(unsigned long nLongNumber)
 {
 	return (((nLongNumber&0x000000FF)<<24)+((nLongNumber&0x0000FF00)<<8)+
-		((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
+			((nLongNumber&0x00FF0000)>>8)+((nLongNumber&0xFF000000)>>24));
 }
 
 unsigned short 
@@ -315,19 +315,19 @@ WavFileSource2::getLinear16(realvec& slice)
 	for (t=0; t < samplesToWrite_; t++)
 	{
 		sval_ = 0;
-		#if defined(MARSYAS_BIGENDIAN)
+#if defined(MARSYAS_BIGENDIAN)
 		for (c=0; c < nChannels_; c++)
 		{
 			sval_ = ByteSwapShort(sdata_[nChannels_*t + c]);
 			slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
 		}
-		#else
+#else
 		for (c=0; c < nChannels_; c++)
 		{
 			sval_ = sdata_[nChannels_ *t + c];
 			slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT));
 		}
-		#endif  
+#endif  
 	}
 
 	//update play position
@@ -355,7 +355,7 @@ WavFileSource2::myProcess(realvec& in, realvec& out)
 	(void) in; 
 	//in case of problems opening the .wav file,
 	//or no audiodata available to read, just send silence
-	if(!getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+	if(!getctrl("mrs_bool/hasData")->to<mrs_bool>())
 	{
 		out.setval(0.0);
 		return;
@@ -378,7 +378,7 @@ WavFileSource2::myProcess(realvec& in, realvec& out)
 
 	//if reached end of file, signal it!
 	if(getctrl("mrs_natural/pos")->to<mrs_natural>() >= size_)
-		setctrl("mrs_bool/notEmpty", false);
+		setctrl("mrs_bool/hasData", false);
 }
 
 

@@ -1,24 +1,23 @@
 /*
- ** Copyright (C) 2000 George Tzanetakis <gtzan@cs.princeton.edu>
- **  
- ** This program is free software; you can redistribute it and/or modify
- ** it under the terms of the GNU General Public License as published by
- ** the Free Software Foundation; either version 2 of the License, or
- ** (at your option) any later version.
- ** 
- ** This program is distributed in the hope that it will be useful,
- ** but WITHOUT ANY WARRANTY; without even the implied warranty of
- ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- ** GNU General Public License for more details.
- ** 
- ** You should have received a copy of the GNU General Public License
- ** along with this program; if not, write to the Free Software 
- ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
 
-/** 
-record: record a clip using AudioSource
- */
+
+
 
 #include "common.h" 
 #include <cstdio>
@@ -177,7 +176,7 @@ void recordVirtualSensor(mrs_real length)
     // OSX tends to like 44100 sampling rate so we make it happy
     recordNet->updctrl("mrs_real/israte", 44100.0); 
     recordNet->updctrl("mrs_real/osrate", 44100.0); 
-    recordNet->linkctrl("mrs_bool/notEmpty", "AudioSource/asrc/mrs_bool/notEmpty");
+    recordNet->linkctrl("mrs_bool/hasData", "AudioSource/asrc/mrs_bool/hasData");
     // this buffer size is needed for the Tascam FW 1804
     //recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize",6144);
     recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
@@ -286,7 +285,7 @@ void testrmspreprocess() {
     playbacknet->updctrl("Peaker/peaker/mrs_real/peakStrength", 0.7);
     playbacknet->updctrl("Peaker/peaker/mrs_real/peakSpacing", 0.3);
 
-    while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
         playbacknet->tick();
     //cout << *playbacknet << endl;
 
@@ -334,7 +333,7 @@ void extractHits() {
     playbacknet->updctrl("Peaker/peaker/mrs_real/peakSpacing", 0.0);
     //playbacknet->updctrl("Peaker/peaker/mrs_natural/peakEnd", srate);
 
-    while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
         playbacknet->tick();
     //cout << *playbacknet << endl;
 
@@ -556,7 +555,7 @@ void drumExtract2() {
 
     cout << *extractNet << endl;
     /*
-       while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+       while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
        playbacknet->tick();
      */
     //cout << *playbacknet << endl;
@@ -570,7 +569,7 @@ void drumExtract2() {
     mrs_string filename;
     mrs_natural count = 1;
     
-    while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() ) 
+    while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() ) 
     { 
         playbacknet->process(in1,out1);
 
@@ -1013,7 +1012,7 @@ void recordSitarSensors(mrs_real length)
     // recordNet->addMarSystem(dest); 
     recordNet->updctrl("mrs_real/israte", 44100.0); 
     recordNet->updctrl("mrs_real/osrate", 44100.0); 
-    recordNet->linkctrl("mrs_bool/notEmpty", "AudioSource/asrc/mrs_bool/notEmpty");
+    recordNet->linkctrl("mrs_bool/hasData", "AudioSource/asrc/mrs_bool/hasData");
     // this buffer size is needed for the Tascam FW 1804
     //recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize",6144);
     recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
@@ -1177,7 +1176,7 @@ void readSitarDataMattAjay()
 	
 	
 
-	while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while (pnet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		snet->tick();
 		const mrs_realvec& data = snet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
@@ -1352,7 +1351,7 @@ void drumExtract(vector<Collection> cls, string classNames)
 
             src->updctrl("mrs_natural/inSamples", 4096);
 
-            while(src->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+            while(src->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
             {
                 src->process(in,out);
 

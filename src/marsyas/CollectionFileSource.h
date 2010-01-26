@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-20010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -27,49 +27,49 @@
 namespace Marsyas
 {
 /**
-	\class CollectionFileSource
-	\ingroup Internal
-	\brief CollectionFileSource abstracts a collections of soundfiles as a SoundFileSource. 
+   \class CollectionFileSource
+   \ingroup Internal
+   \brief CollectionFileSource abstracts a collections of soundfiles as a SoundFileSource. 
    
-	CollectionFileSource reads in a collection file consisting of a list of 
-SoundFiles. The soundfiles are played one after the other with specifics 
-such as offsets,durations as a single SoundFileSource. 
+   CollectionFileSource reads in a collection file consisting of a list of 
+   SoundFiles. The soundfiles are played one after the other with specifics 
+   such as offsets,durations as a single SoundFileSource. 
 */
 
 
-class CollectionFileSource: public AbsSoundFileSource 
-{
-private:
-  void addControls();
-	void myUpdate(MarControlPtr sender);
-  void getHeader(std::string filename);
+	class CollectionFileSource: public AbsSoundFileSource 
+	{
+		private:
+			void addControls();
+			void myUpdate(MarControlPtr sender);
+			void getHeader(std::string filename);
   
-  mrs_natural nChannels_;
-  std::string filename_;
-	mrs_real myIsrate_;
-  MarSystem* isrc_;
-  MarSystem* downsampler_;
+			mrs_natural nChannels_;
+			std::string filename_;
+			mrs_real myIsrate_;
+			MarSystem* isrc_;
+			MarSystem* downsampler_;
   
-  Collection col_;
-  bool mngCreated_;
-  mrs_natural cindex_;
-  mrs_real repetitions_;
-  mrs_real duration_;
+			Collection col_;
+			bool mngCreated_;
+			mrs_natural cindex_;
+			mrs_real repetitions_;
+			mrs_real duration_;
 
-  mrs_natural advance_;
+			mrs_natural advance_;
 
-  realvec temp_;
-  realvec tempi_;
+			realvec temp_;
+			realvec tempi_;
 
-public:
-  CollectionFileSource(std::string name);
-  CollectionFileSource(const CollectionFileSource& a);
+		public:
+			CollectionFileSource(std::string name);
+			CollectionFileSource(const CollectionFileSource& a);
   
-  ~CollectionFileSource();
-  MarSystem* clone() const;    
+			~CollectionFileSource();
+			MarSystem* clone() const;    
 
-  void myProcess(realvec& in,realvec &out);
-};
+			void myProcess(realvec& in,realvec &out);
+	};
 
 }//namespace Marsyas
 

@@ -9,9 +9,9 @@
 # Links = 0
 # mrs_bool/mute = 0
 # Links = 0
-# mrs_bool/notEmpty = 0
+# mrs_bool/hasData = 0
 # Links = 1
-# /Series/featureNetwork/SoundFileSource/src/mrs_bool/notEmpty
+# /Series/featureNetwork/SoundFileSource/src/mrs_bool/hasData
 # mrs_bool/probe = 0
 # Links = 0
 # mrs_natural/inObservations = 1
@@ -141,9 +141,9 @@
 # Links = 0
 # mrs_bool/mute = 0
 # Links = 0
-# mrs_bool/notEmpty = 0
+# mrs_bool/hasData = 0
 # Links = 1
-# /Series/featureNetwork/mrs_bool/notEmpty
+# /Series/featureNetwork/mrs_bool/hasData
 # mrs_bool/noteon = 0
 # Links = 0
 # mrs_bool/shuffle = 0

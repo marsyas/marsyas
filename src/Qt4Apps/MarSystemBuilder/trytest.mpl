@@ -31,9 +31,9 @@
 # Synonyms of /Series/playbacknet/bool/mute = 
 # Number of synonyms = 1
 # /Series/playbacknet/Gain/gt/bool/mute
-# Synonyms of /Series/playbacknet/bool/notEmpty = 
+# Synonyms of /Series/playbacknet/bool/hasData = 
 # Number of synonyms = 1
-# /Series/playbacknet/SoundFileSource/src/bool/notEmpty
+# /Series/playbacknet/SoundFileSource/src/bool/hasData
 # Synonyms of /Series/playbacknet/natural/nChannels = 
 # Number of synonyms = 2
 # /Series/playbacknet/SoundFileSource/src/natural/nChannels
@@ -58,7 +58,7 @@
 # /SoundFileSource/src/bool/advance = 0
 # /SoundFileSource/src/bool/debug = 0
 # /SoundFileSource/src/bool/mute = 0
-# /SoundFileSource/src/bool/notEmpty = 0
+# /SoundFileSource/src/bool/hasData = 0
 # /SoundFileSource/src/bool/noteon = 0
 # /SoundFileSource/src/natural/inObservations = 1
 # /SoundFileSource/src/natural/inSamples = 512

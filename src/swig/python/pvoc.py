@@ -44,7 +44,7 @@ def multires(infile):
 	synthesisHop1 = pvseries.getControl("ShiftOutput/so/mrs_natural/Interpolation")
 	convertMode = pvseries.getControl("PvConvert/conv/mrs_string/mode")
 	outfname = pvseries.getControl("SoundFileSink/dest/mrs_string/filename")
-	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/hasData")
 	sinusoids = pvseries.getControl("PvConvert/conv/mrs_natural/Sinusoids");
 	pitchShift = pvseries.getControl("PvOscBank/pob/mrs_real/PitchShift");
 	zeroPhasing = pvseries.getControl("Windowing/fo/mrs_bool/zeroPhasing");
@@ -64,7 +64,7 @@ def multires(infile):
 	synthesisHop1Long = pvseriesLong.getControl("ShiftOutput/so/mrs_natural/Interpolation")
 	convertModeLong = pvseriesLong.getControl("PvConvert/conv/mrs_string/mode")
 	outfnameLong = pvseriesLong.getControl("SoundFileSink/dest/mrs_string/filename")
-	notemptyLong = pvseriesLong.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	notemptyLong = pvseriesLong.getControl("SoundFileSource/src/mrs_bool/hasData")
 	sinusoidsLong = pvseriesLong.getControl("PvConvert/conv/mrs_natural/Sinusoids");
 	pitchShiftLong = pvseriesLong.getControl("PvOscBank/pob/mrs_real/PitchShift");
 	zeroPhasingLong = pvseriesLong.getControl("Windowing/fo/mrs_bool/zeroPhasing");
@@ -184,7 +184,7 @@ def oscbank(infile):
 	synthesisHop = pvseries.getControl("PhaseVocoderOscBank/pvoc/mrs_natural/Interpolation")
 	convertMode = pvseries.getControl("PhaseVocoderOscBank/pvoc/mrs_string/convertMode")
 	outfname = pvseries.getControl("SoundFileSink/dest/mrs_string/filename")
-	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/hasData")
 	phaselock = pvseries.getControl("PhaseVocoderOscBank/pvoc/mrs_bool/phaselock")
 	pos = pvseries.getControl("SoundFileSource/src/mrs_natural/pos");
 	sinusoids = pvseries.getControl("PhaseVocoderOscBank/pvoc/mrs_natural/Sinusoids");
@@ -238,7 +238,7 @@ def transient(infile):
 	convertMode = pvseries.getControl("PhaseVocoder/pvoc/mrs_string/convertMode")
 	unconvertMode = pvseries.getControl("PhaseVocoder/pvoc/mrs_string/unconvertMode")
 	outfname = pvseries.getControl("SoundFileSink/dest/mrs_string/filename")
-	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/hasData")
 	phaselock = pvseries.getControl("PhaseVocoder/pvoc/mrs_bool/phaselock")
 	magHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/magnitudes"); 
 	peakHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/peaks");
@@ -290,7 +290,7 @@ def classic(infile):
 	convertMode = pvseries.getControl("PhaseVocoder/pvoc/mrs_string/convertMode")
 	unconvertMode = pvseries.getControl("PhaseVocoder/pvoc/mrs_string/unconvertMode")
 	outfname = pvseries.getControl("SoundFileSink/dest/mrs_string/filename")
-	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/hasData")
 	phaselock = pvseries.getControl("PhaseVocoder/pvoc/mrs_bool/phaselock")
 	magHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/magnitudes"); 
 	peakHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/peaks");
@@ -348,7 +348,7 @@ def scaled(infile):
 	convertMode = pvseries.getControl("PhaseVocoder/pvoc/mrs_string/convertMode")
 	unconvertMode = pvseries.getControl("PhaseVocoder/pvoc/mrs_string/unconvertMode")
 	outfname = pvseries.getControl("SoundFileSink/dest/mrs_string/filename")
-	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/hasData")
 	phaselock = pvseries.getControl("PhaseVocoder/pvoc/mrs_bool/phaselock")
 	magHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/magnitudes"); 
 	peakHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/peaks");
@@ -391,7 +391,7 @@ def scaled(infile):
 	pnet.addMarSystem(mng.create("SoundFileSink", "dest"))
 
 	filename = pnet.getControl("SoundFileSource/src/mrs_string/filename")
-	notempty = pnet.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	notempty = pnet.getControl("SoundFileSource/src/mrs_bool/hasData")
 	sfactor = pnet.getControl("StretchLinear/sl/mrs_real/stretch")
 	outfname = pnet.getControl("SoundFileSink/dest/mrs_string/filename")
 	inSamples = pnet.getControl("mrs_natural/inSamples")
@@ -427,7 +427,7 @@ def identity(infile):
 	convertMode = pvseries.getControl("PhaseVocoder/pvoc/mrs_string/convertMode")
 	unconvertMode = pvseries.getControl("PhaseVocoder/pvoc/mrs_string/unconvertMode")
 	outfname = pvseries.getControl("SoundFileSink/dest/mrs_string/filename")
-	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/notEmpty")
+	notempty = pvseries.getControl("SoundFileSource/src/mrs_bool/hasData")
 	phaselock = pvseries.getControl("PhaseVocoder/pvoc/mrs_bool/phaselock")
 	magHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/magnitudes"); 
 	peakHandle = pvseries.getControl("PhaseVocoder/pvoc/PvUnconvert/uconv/mrs_realvec/peaks");

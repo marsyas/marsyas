@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ PeakViewSource::PeakViewSource(const PeakViewSource& a) : MarSystem(a)
 	ctrl_filename_ = getctrl("mrs_string/filename");
 	ctrl_pos_= getctrl("mrs_natural/pos");
 	ctrl_size_ = getctrl("mrs_natural/size");
-	ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty"); 
+	ctrl_hasData_ = getctrl("mrs_bool/hasData"); 
 
 	filename_ = a.filename_;
 	frameIdx_ = a.frameIdx_;
@@ -60,7 +60,7 @@ PeakViewSource::addControls()
 	addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
 	setctrlState("mrs_string/filename", true);
 
-	addctrl("mrs_bool/notEmpty", false, ctrl_notEmpty_);
+	addctrl("mrs_bool/hasData", false, ctrl_hasData_);
 	addctrl("mrs_natural/size", 0, ctrl_size_);
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
 }
@@ -75,7 +75,7 @@ PeakViewSource::defaultConfig()
 
 	ctrl_pos_->setValue(0, NOUPDATE);
 	ctrl_size_->setValue(0, NOUPDATE);
-	ctrl_notEmpty_->setValue(false, NOUPDATE);
+	ctrl_hasData_->setValue(false, NOUPDATE);
 	peakData_.create(0);
 	frameIdx_ = 0;
 	numFrames_ = 0;
@@ -119,7 +119,7 @@ PeakViewSource::myUpdate(MarControlPtr sender)
 				frameIdx_ = 0;
 				ctrl_size_->setValue(numFrames_*frameSize_, NOUPDATE);
 				ctrl_pos_->setValue(0, NOUPDATE);
-				ctrl_notEmpty_->setValue(true, NOUPDATE);
+				ctrl_hasData_->setValue(true, NOUPDATE);
 			}
 			else //failed to load the file
 			{
@@ -139,7 +139,7 @@ PeakViewSource::myProcess(realvec& in, realvec& out)
 {
 	(void) in;
 	//at each tick, output peaks for corresponding frame
-	if(ctrl_notEmpty_->isTrue())
+	if(ctrl_hasData_->isTrue())
 	{
 		ctrl_pos_->setValue(frameIdx_*frameSize_);
 		
@@ -148,7 +148,7 @@ PeakViewSource::myProcess(realvec& in, realvec& out)
 
 		frameIdx_++;
 		if(frameIdx_ == numFrames_)//if EOF
-			ctrl_notEmpty_->setValue(false);
+			ctrl_hasData_->setValue(false);
 	}
 }
 

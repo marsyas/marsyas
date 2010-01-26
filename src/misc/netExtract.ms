@@ -61,4 +61,4 @@ updctrl nsink mrs_natural/dataPort 5011
 updctrl nsink mrs_natural/controlsPort 5012
 add nsink > total
 
-link total bool/notEmpty Accumulator/acc/Series/featureNetwork/NetworkTCPSource/src/mrs_bool/notEmpty
+link total bool/hasData Accumulator/acc/Series/featureNetwork/NetworkTCPSource/src/mrs_bool/hasData

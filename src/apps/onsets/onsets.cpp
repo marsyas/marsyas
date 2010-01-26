@@ -1,25 +1,32 @@
-// mudbox is a container executable for various simple 
-// functions/applications that typically test drive 
-// a single MarSystem or type of processing. It can 
-// either be viewed as repository of simple (but sometimes 
-// broken) examples or as an incubator for more complicated 
-// applications that deserve a separate executable. This 
-// is the best place to experiment with Marsyas without 
-// adding your own application and having to change 
-// the build process.  
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
 
-// #include <linux/soundcard.h>
-// #include <unistd.h>
+
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-// #include <unistd.h>
+
 
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <iomanip> 
-// #include <unistd.h>
 
 #include "common.h"
 #include "MarSystemManager.h"
@@ -77,11 +84,11 @@ printHelp(string progName)
 	cerr << endl;
 	cerr << "Usage : " << progName << "fileName" << endl;
 	cerr << endl;
-  cerr << "where file is a sound file in a Marsyas supported format" << endl;
-  cerr << "Help Options:" << endl;
-  cerr << "-u --usage      : display short usage info" << endl;
-  cerr << "-h --help       : display this information " << endl;
-  cerr << "-v --verbose    : verbose output " << endl;
+	cerr << "where file is a sound file in a Marsyas supported format" << endl;
+	cerr << "Help Options:" << endl;
+	cerr << "-u --usage      : display short usage info" << endl;
+	cerr << "-h --help       : display this information " << endl;
+	cerr << "-v --verbose    : verbose output " << endl;
 	cerr << "-as --audiosynth: synthesize onsets and mix with original sound" << endl;
 	exit(1);
 }
@@ -107,33 +114,33 @@ loadOptions()
 void 
 detect_onsets(string sfName) 
 {
-  // cout << "toying with onsets" << endl;
+	// cout << "toying with onsets" << endl;
 	MarSystemManager mng;
 
 	// assemble the processing network 
 	MarSystem* onsetnet = mng.create("Series", "onsetnet");
-		MarSystem* onsetaccum = mng.create("Accumulator", "onsetaccum");
-			MarSystem* onsetseries= mng.create("Series","onsetseries");
-				onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
-				onsetseries->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
-				//onsetseries->addMarSystem(mng.create("ShiftInput", "si"));
-				//onsetseries->addMarSystem(mng.create("Windowing", "win"));
-				MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
-					onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
-					onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
-					onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
-					onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-					onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
-					//onsetdetector->addMarSystem(mng.create("Memory","mem"));
-					onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
-					onsetdetector->addMarSystem(mng.create("Filter","filt1"));
-					onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
-					onsetdetector->addMarSystem(mng.create("Filter","filt2"));
-					onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
-					onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
-				onsetseries->addMarSystem(onsetdetector);
-			onsetaccum->addMarSystem(onsetseries);
-		onsetnet->addMarSystem(onsetaccum);
+	MarSystem* onsetaccum = mng.create("Accumulator", "onsetaccum");
+	MarSystem* onsetseries= mng.create("Series","onsetseries");
+	onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
+	onsetseries->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
+	//onsetseries->addMarSystem(mng.create("ShiftInput", "si"));
+	//onsetseries->addMarSystem(mng.create("Windowing", "win"));
+	MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
+	onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
+	onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
+	onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
+	onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
+	//onsetdetector->addMarSystem(mng.create("Memory","mem"));
+	onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
+	onsetdetector->addMarSystem(mng.create("Filter","filt1"));
+	onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
+	onsetdetector->addMarSystem(mng.create("Filter","filt2"));
+	onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
+	onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
+	onsetseries->addMarSystem(onsetdetector);
+	onsetaccum->addMarSystem(onsetseries);
+	onsetnet->addMarSystem(onsetaccum);
 	//onsetnet->addMarSystem(mng.create("ShiftOutput","so"));
 	
 	if(audiosynthopt)
@@ -156,11 +163,11 @@ detect_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
 	///////////////////////////////////////////////////////////////////////////////////////
-	onsetnet->linkctrl("mrs_bool/notEmpty", 
-		"Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/notEmpty");
+	onsetnet->linkctrl("mrs_bool/hasData", 
+					   "Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/hasData");
 	//onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
 	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
 	//onsetnet->linkctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
 	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
 	
@@ -169,9 +176,9 @@ detect_onsets(string sfName)
 
 	//link FILTERS coeffs
 	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/ncoeffs",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
 	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/dcoeffs",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
@@ -199,10 +206,10 @@ detect_onsets(string sfName)
 	// best result till now are using dB power Spectrum!
 	// FIXME: should fix PowerSpectrum (remove that ugly wrongdBonsets control) and use a Gain with factor of two instead. 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
-		"wrongdBonsets");
+					  "wrongdBonsets");
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Flux/flux/mrs_string/mode",
-		"DixonDAFX06");
+					  "DixonDAFX06");
 	
 	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
 	// Coefficients taken from MATLAB butter(2, 0.28)
@@ -211,13 +218,13 @@ detect_onsets(string sfName)
 	bcoeffs(1) = 0.2347;
 	bcoeffs(2) = 0.1174;
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs",
-		bcoeffs);
+					  bcoeffs);
 	realvec acoeffs(1,3);
 	acoeffs(0) = 1.0;
 	acoeffs(1) = -0.8252;
 	acoeffs(2) = 0.2946;
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs",
-		acoeffs);
+					  acoeffs);
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
@@ -268,7 +275,7 @@ detect_onsets(string sfName)
 	
 	if(audiosynthopt)
 	{
-		while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+		while(onsetnet->getctrl("mrs_bool/hasData")->to<mrs_bool>())
 		{
 			onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 			onsetnet->tick();
@@ -283,7 +290,7 @@ detect_onsets(string sfName)
 		string outFileName = outputFile.nameNoExt() + ".output";
 		outFile.open(outFileName.c_str(), ios::out);
 		
-		while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+		while(onsetnet->getctrl("mrs_bool/hasData")->to<mrs_bool>())
 		{
 			onsetnet->tick();
 			timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();

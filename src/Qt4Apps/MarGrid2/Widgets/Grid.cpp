@@ -1,3 +1,22 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 #include "Grid.h"
 
 Grid::Grid()
@@ -211,8 +230,8 @@ void Grid::setupNetworks() {
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
 
 
-	total_->linkctrl("mrs_bool/notEmpty",
-		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
+	total_->linkctrl("mrs_bool/hasData",
+		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/hasData");  
 	total_->linkctrl("mrs_natural/advance",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/advance");  
 
@@ -239,7 +258,7 @@ void Grid::setupNetworks() {
 	// pnet_->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	pnet_->addMarSystem(mng.create("Gain", "gain"));
 	pnet_->addMarSystem(mng.create("AudioSink", "dest"));
-	pnet_->linkctrl("mrs_bool/notEmpty","SoundFileSource/src/mrs_bool/notEmpty");
+	pnet_->linkctrl("mrs_bool/hasData","SoundFileSource/src/mrs_bool/hasData");
 
 
 	mwr_ = new MarSystemQtWrapper(pnet_);

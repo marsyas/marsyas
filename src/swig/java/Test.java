@@ -18,7 +18,7 @@ class Test {
 		pipe.addMarSystem(sink);
 
 		MarControlPtr filename = pipe.getControl("SoundFileSource/file/mrs_string/filename");
-		MarControlPtr notempty = pipe.getControl("SoundFileSource/file/mrs_bool/notEmpty");
+		MarControlPtr notempty = pipe.getControl("SoundFileSource/file/mrs_bool/hasData");
 		MarControlPtr iniAudio = pipe.getControl("AudioSink/sink/mrs_bool/initAudio");
 
 		filename.setValue_string("test.ogg");

@@ -1,3 +1,22 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 #include <cstdio>
 #include <cstdlib>
 #include "Collection.h"
@@ -27,48 +46,48 @@ CommandLineOptions cmd_options;
 void 
 printUsage(string progName)
 {
-  MRSDIAG("sfplay.cpp - printUsage");
-  cerr << "Usage : " << progName << " [-g gain] [-s start(seconds)] [-l length(seconds)] [-f outputfile] [-p pluginName] [-r repetitions] [-ws windowsize(samples)] file1 file2 file3" << endl;
-  cerr << endl;
-  cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format or collections " << endl;
-  exit(1);
+	MRSDIAG("sfplay.cpp - printUsage");
+	cerr << "Usage : " << progName << " [-g gain] [-s start(seconds)] [-l length(seconds)] [-f outputfile] [-p pluginName] [-r repetitions] [-ws windowsize(samples)] file1 file2 file3" << endl;
+	cerr << endl;
+	cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format or collections " << endl;
+	exit(1);
 }
 
 void 
 printHelp(string progName)
 {
-  MRSDIAG("sfplay.cpp - printHelp");
-  cerr << "sfplay, MARSYAS, Copyright George Tzanetakis " << endl;
-  cerr << "--------------------------------------------" << endl;
-  cerr << "Play the sound files provided as arguments " << endl;
-  cerr << endl;
-  cerr << "Usage : " << progName << " file1 file2 file3" << endl;
-  cerr << endl;
-  cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
-  cerr << "Help Options:" << endl;
-  cerr << "-u --usage      : display short usage info" << endl;
-  cerr << "-h --help       : display this information " << endl;
-  cerr << "-v --verbose    : verbose output " << endl;
-  cerr << "-f --file       : output to file " << endl;
-  cerr << "-g --gain       : linear volume gain " << endl;
-  cerr << "-s --start      : playback start offest in seconds " << endl;
-  cerr << "-l --length     : playback length in seconds " << endl;
-  cerr << "-p --plugin     : output plugin name " << endl;
-  cerr << "-r --repetitions: number of repetitions " << endl;
-  cerr << "--ws --windowsize: windows size in samples " << endl;
-  exit(1);
+	MRSDIAG("sfplay.cpp - printHelp");
+	cerr << "sfplay, MARSYAS, Copyright George Tzanetakis " << endl;
+	cerr << "--------------------------------------------" << endl;
+	cerr << "Play the sound files provided as arguments " << endl;
+	cerr << endl;
+	cerr << "Usage : " << progName << " file1 file2 file3" << endl;
+	cerr << endl;
+	cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
+	cerr << "Help Options:" << endl;
+	cerr << "-u --usage      : display short usage info" << endl;
+	cerr << "-h --help       : display this information " << endl;
+	cerr << "-v --verbose    : verbose output " << endl;
+	cerr << "-f --file       : output to file " << endl;
+	cerr << "-g --gain       : linear volume gain " << endl;
+	cerr << "-s --start      : playback start offest in seconds " << endl;
+	cerr << "-l --length     : playback length in seconds " << endl;
+	cerr << "-p --plugin     : output plugin name " << endl;
+	cerr << "-r --repetitions: number of repetitions " << endl;
+	cerr << "--ws --windowsize: windows size in samples " << endl;
+	exit(1);
 }
 
 
 // Play a collection l of soundfiles
 void sfplay(vector<string> soundfiles)
 {
-  MRSDIAG("sfplay.cpp - sfplay");
+	MRSDIAG("sfplay.cpp - sfplay");
 
-  MarSystemManager mng;
-  string sfName;
+	MarSystemManager mng;
+	string sfName;
 
-  // Output destination is either audio or soundfile 
+	// Output destination is either audio or soundfile 
 	MarSystem* dest;
 	if (fileName == EMPTYSTRING)	// audio output
 		dest = mng.create("AudioSink", "dest");
@@ -77,139 +96,139 @@ void sfplay(vector<string> soundfiles)
 		dest = mng.create("SoundFileSink", "dest");
 	}
 
-  // create playback network with source-gain-dest
-  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	// create playback network with source-gain-dest
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
 
-  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-  playbacknet->addMarSystem(mng.create("Gain", "gt"));
-  playbacknet->addMarSystem(dest);
+	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+	playbacknet->addMarSystem(mng.create("Gain", "gt"));
+	playbacknet->addMarSystem(dest);
   
-  // playback offset 
+	// playback offset 
 
 
-  // update controls 
-  playbacknet->updctrl("mrs_natural/inSamples", windowsize);
-  playbacknet->updctrl("SoundFileSource/src/mrs_real/repetitions", repetitions);
-  playbacknet->updctrl("SoundFileSource/src/mrs_real/duration", length);
-  playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
+	// update controls 
+	playbacknet->updctrl("mrs_natural/inSamples", windowsize);
+	playbacknet->updctrl("SoundFileSource/src/mrs_real/repetitions", repetitions);
+	playbacknet->updctrl("SoundFileSource/src/mrs_real/duration", length);
+	playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
   
-  // link top-level controls 
-  playbacknet->linkctrl("mrs_string/filename","SoundFileSource/src/mrs_string/filename");
-  playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
-  playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-  playbacknet->linkctrl("mrs_natural/loopPos", "SoundFileSource/src/mrs_natural/loopPos");
-  playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	// link top-level controls 
+	playbacknet->linkctrl("mrs_string/filename","SoundFileSource/src/mrs_string/filename");
+	playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
+	playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+	playbacknet->linkctrl("mrs_natural/loopPos", "SoundFileSource/src/mrs_natural/loopPos");
+	playbacknet->linkctrl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
   
   
-  if (fileName == EMPTYSTRING)	// audio output
-    playbacknet->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
+	if (fileName == EMPTYSTRING)	// audio output
+		playbacknet->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
   
 
 	// play each collection or soundfile 
-  vector<string>::iterator sfi;  
-  for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
+	vector<string>::iterator sfi;  
+	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
-      string fname = *sfi;
-      playbacknet->updctrl("mrs_string/filename", fname);
+		string fname = *sfi;
+		playbacknet->updctrl("mrs_string/filename", fname);
       
-      mrs_natural nChannels = playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+		mrs_natural nChannels = playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
-      mrs_real srate = playbacknet->getctrl("mrs_real/israte")->to<mrs_real>();
+		mrs_real srate = playbacknet->getctrl("mrs_real/israte")->to<mrs_real>();
       
-      offset = (mrs_natural) (start * srate * nChannels);
+		offset = (mrs_natural) (start * srate * nChannels);
 
-      playbacknet->updctrl("mrs_natural/loopPos", offset);
-      playbacknet->updctrl("mrs_natural/pos", offset);
+		playbacknet->updctrl("mrs_natural/loopPos", offset);
+		playbacknet->updctrl("mrs_natural/pos", offset);
       
-      if (fileName != EMPTYSTRING) // soundfile output instead of audio output
-	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", fileName);
+		if (fileName != EMPTYSTRING) // soundfile output instead of audio output
+			playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", fileName);
       
-      if (fileName == EMPTYSTRING)	// audio output
-	{
-	  playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
-	  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	}
-      MarControlPtr notEmptyPtr_ = 
-	playbacknet->getctrl("mrs_bool/notEmpty");
+		if (fileName == EMPTYSTRING)	// audio output
+		{
+			playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
+			playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		}
+		MarControlPtr hasDataPtr_ = 
+			playbacknet->getctrl("mrs_bool/hasData");
       
-      while (notEmptyPtr_->isTrue())	
-	{
-	  playbacknet->tick();
-	}
-      //cout << *playbacknet << endl;
+		while (hasDataPtr_->isTrue())	
+		{
+			playbacknet->tick();
+		}
+		//cout << *playbacknet << endl;
     }
   
-  // output network description to cout  
-  if ((pluginName == EMPTYSTRING) && (verboseopt)) // output to stdout 
+	// output network description to cout  
+	if ((pluginName == EMPTYSTRING) && (verboseopt)) // output to stdout 
     {
-      cout << (*playbacknet) << endl;      
+		cout << (*playbacknet) << endl;      
     }
-  else if (pluginName != EMPTYSTRING)             // output to plugin
+	else if (pluginName != EMPTYSTRING)             // output to plugin
     {
-      ofstream oss(pluginName.c_str());
-      oss << (*playbacknet) << endl;
+		ofstream oss(pluginName.c_str());
+		oss << (*playbacknet) << endl;
     }
-  delete playbacknet;
+	delete playbacknet;
 }
 
 
 void 
 initOptions()
 {
-  cmd_options.addBoolOption("help", "h", false);
-  cmd_options.addBoolOption("usage", "u", false);
-  cmd_options.addBoolOption("verbose", "v", false);
-  cmd_options.addRealOption("start", "s", 0.0f);
-  cmd_options.addStringOption("filename", "f", EMPTYSTRING);
-  cmd_options.addRealOption("length", "l", -1.0f);
-  cmd_options.addRealOption("gain", "g", 1.0);
-  cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
-  cmd_options.addRealOption("repetitions", "r", 1.0);
-  cmd_options.addNaturalOption("windowsize", "ws", 2048);
+	cmd_options.addBoolOption("help", "h", false);
+	cmd_options.addBoolOption("usage", "u", false);
+	cmd_options.addBoolOption("verbose", "v", false);
+	cmd_options.addRealOption("start", "s", 0.0f);
+	cmd_options.addStringOption("filename", "f", EMPTYSTRING);
+	cmd_options.addRealOption("length", "l", -1.0f);
+	cmd_options.addRealOption("gain", "g", 1.0);
+	cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
+	cmd_options.addRealOption("repetitions", "r", 1.0);
+	cmd_options.addNaturalOption("windowsize", "ws", 2048);
 }
 
 
 void 
 loadOptions()
 {
-  helpopt = cmd_options.getBoolOption("help");
-  usageopt = cmd_options.getBoolOption("usage");
-  start = (float)cmd_options.getRealOption("start");
-  length = (float)cmd_options.getRealOption("length");
-  repetitions = (float)cmd_options.getRealOption("repetitions");
-  verboseopt = cmd_options.getBoolOption("verbose");
-  gain = (float)cmd_options.getRealOption("gain");
-  pluginName = cmd_options.getStringOption("plugin");
-  fileName   = cmd_options.getStringOption("filename");
-  windowsize = cmd_options.getNaturalOption("windowsize");
+	helpopt = cmd_options.getBoolOption("help");
+	usageopt = cmd_options.getBoolOption("usage");
+	start = (float)cmd_options.getRealOption("start");
+	length = (float)cmd_options.getRealOption("length");
+	repetitions = (float)cmd_options.getRealOption("repetitions");
+	verboseopt = cmd_options.getBoolOption("verbose");
+	gain = (float)cmd_options.getRealOption("gain");
+	pluginName = cmd_options.getStringOption("plugin");
+	fileName   = cmd_options.getStringOption("filename");
+	windowsize = cmd_options.getNaturalOption("windowsize");
 }
 
 
 int
 main(int argc, const char **argv)
 {
-  MRSDIAG("sfplay.cpp - main");
+	MRSDIAG("sfplay.cpp - main");
 
-  string progName = argv[0];  
-  if (argc == 1)
-    printUsage(progName);
+	string progName = argv[0];  
+	if (argc == 1)
+		printUsage(progName);
 
-  // handling of command-line options 
-  initOptions();
-  cmd_options.readOptions(argc, argv);
-  loadOptions();
+	// handling of command-line options 
+	initOptions();
+	cmd_options.readOptions(argc, argv);
+	loadOptions();
   
-  vector<string> soundfiles = cmd_options.getRemaining();
-  if (helpopt) 
-    printHelp(progName);
+	vector<string> soundfiles = cmd_options.getRemaining();
+	if (helpopt) 
+		printHelp(progName);
   
-  if (usageopt)
-    printUsage(progName);
+	if (usageopt)
+		printUsage(progName);
 
-  // play the soundfiles/collections 
-  sfplay(soundfiles);
+	// play the soundfiles/collections 
+	sfplay(soundfiles);
   
-  exit(0);
+	exit(0);
 }
 
 

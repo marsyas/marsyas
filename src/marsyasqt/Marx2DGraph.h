@@ -1,3 +1,8 @@
+
+
+
+
+
 #ifndef MARX2DGRAPH_H
 #define MARX2DGRAPH_H 
 
@@ -60,7 +65,7 @@ class Marx2DGraph : public QWidget
   void setYAxisLabel( std::string );
   void setXAxisLabelOn( bool );
   void setYAxisLabelOn( bool );
-
+		void setYMaxMin(float ymax, float ymin);
   void displayXaxis( bool );
   
   void addLabel( std::string );
@@ -78,6 +83,7 @@ class Marx2DGraph : public QWidget
   void paintEvent(QPaintEvent *);
   void resizeEvent(QResizeEvent *);
 
+		
 
  private:
   QPainter painter;
@@ -107,6 +113,8 @@ class Marx2DGraph : public QWidget
 /*   float* buffer; */
   Marsyas::realvec* buffer;
   long buffersize;
+		float ymaxval, yminval;
+		
 
   int plot_type;
   int axis_display_type;

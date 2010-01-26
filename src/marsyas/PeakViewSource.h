@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -33,33 +33,33 @@ namespace Marsyas
 
 */
   
-  class PeakViewSource: public MarSystem
-  {
-  private:
-		std::string filename_;
-		realvec peakData_;
+	class PeakViewSource: public MarSystem
+	{
+		private:
+			std::string filename_;
+			realvec peakData_;
 
-		mrs_natural frameSize_;
-		mrs_natural numFrames_;
-		mrs_natural frameIdx_;
+			mrs_natural frameSize_;
+			mrs_natural numFrames_;
+			mrs_natural frameIdx_;
 
-    MarControlPtr ctrl_filename_;
-		MarControlPtr ctrl_notEmpty_;
-		MarControlPtr ctrl_pos_;
-		MarControlPtr ctrl_size_;
+			MarControlPtr ctrl_filename_;
+			MarControlPtr ctrl_hasData_;
+			MarControlPtr ctrl_pos_;
+			MarControlPtr ctrl_size_;
 
-		void defaultConfig();
-		void addControls();
-    void myUpdate(MarControlPtr sender);
+			void defaultConfig();
+			void addControls();
+			void myUpdate(MarControlPtr sender);
     
-  public:
-    PeakViewSource(std::string name);
-    PeakViewSource(const PeakViewSource& a);
-    ~PeakViewSource();
-    MarSystem* clone() const;  
+		public:
+			PeakViewSource(std::string name);
+			PeakViewSource(const PeakViewSource& a);
+			~PeakViewSource();
+			MarSystem* clone() const;  
     
-    void myProcess(realvec& in, realvec& out);
-  };
+			void myProcess(realvec& in, realvec& out);
+	};
   
 }
 

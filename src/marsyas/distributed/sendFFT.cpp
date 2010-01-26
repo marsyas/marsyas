@@ -117,7 +117,7 @@ void sfTransformFile(MarSystem* msys, string sfName)
       samplesPlayed += onSamples;
       
       // no duration specified so use all of source input 
-      if (!(msys->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) && (repeatId == 1))
+      if (!(msys->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) && (repeatId == 1))
 	{
 	  duration = samplesPlayed-onSamples;
 	}
@@ -158,7 +158,7 @@ void sfTransform(Collection l)
   playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
   playbacknet->linkctrl("mrs_natural/nChannels", "AudioSink/dest/mrs_natural/nChannels");
-  playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  playbacknet->linkctrl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
   playbacknet->linkctrl("mrs_bool/mute", "Gain/gt/mrs_bool/mute");
   
   dest->refresh();

@@ -1,3 +1,22 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 // This executable contains various tutorial-style functions 
 // with somewhat more extensive comments that hopefully 
 // help in understanding how to use the Marsyas audio 
@@ -47,13 +66,13 @@ sfplay1(string sfName)
     realvec gout;
 
     in.create(src->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-            src->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			  src->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
     out.create(src->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+			   src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
     gout.create(src->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
     // nothing happens until process is called 
     // usually for MarSystems the in matrix is processed 
@@ -72,7 +91,7 @@ sfplay1(string sfName)
         src->process(in,out);
         // multiply window with gain 
         gain->updctrl("mrs_real/gain", 
-                gain->getctrl("mrs_real/gain")->to<mrs_real>() + 0.1);
+					  gain->getctrl("mrs_real/gain")->to<mrs_real>() + 0.1);
         gain->process(out, gout);
         dest->process(gout, gout); 	// Just outputs the input to the file 
         // and copies it to the output
@@ -123,10 +142,10 @@ sfplay2(string sfName)
     realvec out;
 
     in.create(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-            series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			  series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
     out.create(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+			   series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
     // nothing happens until process is called 
     // usually for MarSystems the in matrix is processed 
@@ -149,7 +168,7 @@ sfplay2(string sfName)
     for (int i=0; i<20; i++)
     {
         series->updctrl("Gain/gain/mrs_real/gain", 
-                series->getctrl("Gain/gain/mrs_real/gain")->to<mrs_real>() + 0.1);      
+						series->getctrl("Gain/gain/mrs_real/gain")->to<mrs_real>() + 0.1);      
         series->process(in,out);  
 
     }
@@ -205,7 +224,7 @@ sfplay3(string sfName)
     {
         series->tick();
         series->updctrl("Gain/gain/mrs_real/gain", 
-                series->getctrl("Gain/gain/mrs_real/gain")->to<mrs_real>() + 0.1);
+						series->getctrl("Gain/gain/mrs_real/gain")->to<mrs_real>() + 0.1);
     }
 
     // Composite deletes the added MarSystems 
@@ -233,7 +252,7 @@ sfplay4(string sfName)
     series->updctrl("SoundFileSink/dest/mrs_string/filename", "ajay.wav"); 
 
     series->linkctrl("mrs_natural/gain", "Gain/gain/mrs_real/gain");
-    while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
         series->updctrl("mrs_natural/gain", 2.0);
         series->tick();
@@ -273,14 +292,14 @@ sfplay5(string sfName)
     cout << (*series) << endl;
 
     realvec in(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-            series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			   series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
     realvec out(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 
 
     // play all the file 
-    while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
         series->process(in,out);
         cout << "centroid = " << out(0,0) << endl;
@@ -323,12 +342,12 @@ sfplay6(string sfName)
     cout << (*series) << endl;
 
     realvec in(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-            series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			   series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
     realvec out(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
     // play all the file 
-    while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
         series->process(in,out);
         // output observation 1 and observation 2 
@@ -382,7 +401,7 @@ sfplay7(string sfName)
     cout << (*series) << endl;
 
     // play all the file 
-    // while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    // while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     acc->addMarSystem(series);
     total->addMarSystem(acc);
 
@@ -393,9 +412,9 @@ sfplay7(string sfName)
 
     // always allocate after updating/adding marsystems 
     realvec in(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-            total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			   total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
     realvec out(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 
 
@@ -438,13 +457,13 @@ wavsfplay(string sfName)
     realvec gout;
 
     in.create(src->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-            src->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			  src->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
     out.create(src->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+			   src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
     gout.create(src->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-            src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				src->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
     // nothing happens until process is called 
     // usually for MarSystems the in matrix is processed 
@@ -456,7 +475,7 @@ wavsfplay(string sfName)
 
     gain->updctrl("mrs_real/gain", 1.0);
 
-    while (src->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+    while (src->getctrl("mrs_bool/hasData")->to<mrs_bool>())
     {
         src->process(in,out);
         // multiply window with gain 
@@ -495,7 +514,7 @@ wavsfplay1(string sfName)
 
     series->updctrl("Gain/gain/mrs_real/gain", 1.0);
     series->updctrl("SoundFileSink/dest/mrs_natural/nChannels", 
-            series->getctrl("SoundFileSource/src/mrs_natural/nChannels"));
+					series->getctrl("SoundFileSource/src/mrs_natural/nChannels"));
     //series->updctrl("SoundFileSink/dest/mrs_real/israte", 
     //        series->getctrl("SoundFileSource/src/mrs_real/osrate"));
 
@@ -505,7 +524,7 @@ wavsfplay1(string sfName)
 
     cout << (*series) << endl;
 
-    while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
         series->tick();
     }
@@ -545,7 +564,7 @@ test_collection(string sfName)
         pnet->updctrl("SoundFileSource/src/mrs_natural/cindex", k);
         cout << pnet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
         for (mrs_natural i=0; i <100; i++) 
-            // 	while(pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+            // 	while(pnet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
         {
             pnet->tick();
         }

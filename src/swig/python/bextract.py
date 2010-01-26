@@ -23,7 +23,7 @@ add(create("WekaSink", "wsink"))
 
 # link the controls to coordinate things
 link("mrs_string/filename", "SoundFileSource/src/mrs_string/filename")
-link("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty")
+link("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData")
 link("WekaSink/wsink/mrs_string/currentlyPlaying","SoundFileSource/src/mrs_string/currentlyPlaying")
 link("Annotator/annotator/mrs_natural/label", "SoundFileSource/src/mrs_natural/currentLabel")
 link("SoundFileSource/src/mrs_natural/nLabels", "WekaSink/wsink/mrs_natural/nLabels")
@@ -40,7 +40,7 @@ upd("WekaSink/wsink/mrs_string/filename", marsyas.MarControlPtr.from_string("bex
 
 # do the processing extracting MFCC features and writing to weka file 
 previouslyPlaying = ""
-while get("SoundFileSource/src/mrs_bool/notEmpty").to_bool():
+while get("SoundFileSource/src/mrs_bool/hasData").to_bool():
 	currentlyPlaying = get("SoundFileSource/src/mrs_string/currentlyPlaying").to_string()
 	if (currentlyPlaying != previouslyPlaying):
 		print "Processing: " +  get("SoundFileSource/src/mrs_string/currentlyPlaying").to_string()

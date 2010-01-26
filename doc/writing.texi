@@ -350,7 +350,7 @@ MarSystemQtWrapper)
 
 Is there any way to do this kind of thing inside a MarSystemQtWrapper?
 
-        while (allNet->getctrl("mrs_bool/notEmpty")->toBool())
+        while (allNet->getctrl("mrs_bool/hasData")->toBool())
                 allNet->tick(); 
 @end example
 

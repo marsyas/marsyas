@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -438,7 +438,7 @@ mrs_real* const NetworkSocket::recvControls() {
     
     if (ctrl_status <= 0) { 
       MRSERR("recvControls: No TCP control data.");
-      updctrl("mrs_bool/notEmpty", false);
+      updctrl("mrs_bool/hasData", false);
       return 0;
     }
 

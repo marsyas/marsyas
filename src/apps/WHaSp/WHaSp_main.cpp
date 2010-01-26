@@ -1,7 +1,25 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 #include <cstdio>
 
 #include "MarSystemManager.h"
-//#include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
 #include "peakView.h"
@@ -90,8 +108,8 @@ printHelp(string progName)
 	cerr << "-v --voices          : number of voices" << endl;
 	cerr << "-f --filename        : output to file " << endl;
 	cerr << "-A --analyse         : peak analyse" << endl;
-        cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
-        cerr << "-P --PeakStore : set peak store" << endl;
+	cerr << "-S --synthetise : synthetize using an oscillator bank (0), an IFFT mono (1), or an IFFT stereo (2)" << endl;
+	cerr << "-P --PeakStore : set peak store" << endl;
 	cerr << "-I --inputdirectoryname   : input directory path" << endl;
 	cerr << "-o --outputdirectoryname   : output directory path" << endl;
 	cerr << "-p --panning : panning informations <foreground level (0..1)>-<foreground pan (-1..1)>-<background level>-<background pan> " << endl;
@@ -105,7 +123,7 @@ printHelp(string progName)
 
 void
 WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw, 
-			mrs_natural D, mrs_natural S, mrs_natural synthetize)
+	  mrs_natural D, mrs_natural S, mrs_natural synthetize)
 {
 	mrs_natural nbFrames_=0, harmonize_=0;
 	realvec harmonizeData_;
@@ -140,7 +158,7 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		{
 			// 			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");  //!!!!!!! [!]
 			// 			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_string/filename", "SoundFileSource/src/mrs_string/filename"); //!!!!!!!!! [!]
-			// 			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty"); //!!!!!!!! [!]
+			// 			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData"); //!!!!!!!! [!]
 
 			pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 			pvseries->updctrl("mrs_natural/inSamples", D);
@@ -166,23 +184,23 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		pvseries->addMarSystem(peSource);
 		/*
 
-		mrs_natural nbF_=0;
-		realvec peakSet_;
-		peakSet_.read(sfName);
+		  mrs_natural nbF_=0;
+		  realvec peakSet_;
+		  peakSet_.read(sfName);
 
-		MATLAB_PUT(peakSet_, "peaks");
-		MATLAB_EVAL("plotPeaks(peaks)");
+		  MATLAB_PUT(peakSet_, "peaks");
+		  MATLAB_EVAL("plotPeaks(peaks)");
 
-		for (mrs_natural i=0 ; i<peakSet_.getRows() ; i++)
-		if(peakSet_(i, pkFrame)>nbF_)
-		{
-		nbF_ = peakSet_(i, pkFrame);
-		}
-		nbF_++;
+		  for (mrs_natural i=0 ; i<peakSet_.getRows() ; i++)
+		  if(peakSet_(i, pkFrame)>nbF_)
+		  {
+		  nbF_ = peakSet_(i, pkFrame);
+		  }
+		  nbF_++;
 
-		realvec peakSetV_(nbSines_*nbPkParameters, nbF_);
-		peakSetV_.setval(0);
-		peaks2V(peakSet_, peakSetV_, peakSetV_, nbSines_);
+		  realvec peakSetV_(nbSines_*nbPkParameters, nbF_);
+		  peakSetV_.setval(0);
+		  peaks2V(peakSet_, peakSetV_, peakSetV_, nbSines_);
 
 		*/
 		realvec peakSet_;
@@ -244,7 +262,7 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 				bool temp;
 				if(analyse_)
 				{
-					temp = pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+					temp = pvseries->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 					mrs_real timeRead =  pvseries->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 					mrs_real timeLeft =  pvseries->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
 					printf("%.2f / %.2f \r", timeRead, timeLeft);
@@ -252,37 +270,37 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 				else 
 					temp =	!pvseries->getctrl("RealvecSource/peSource/mrs_bool/done")->to<mrs_bool>();
 
-				///*bool*/ temp = pvseries->getctrl("PeakAnalyse/peA/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+				///*bool*/ temp = pvseries->getctrl("PeakAnalyse/peA/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 				if (temp == false)
 					break;
 			}
 		}
 
-		if(peakStore_)
+	if(peakStore_)
+	{
+		realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->to<mrs_realvec>();
+		//peakStore(vec, filePeakName, samplingFrequency_, D); 
+		peakView vecView(vec);
+		vecView.peakWrite(filePeakName, samplingFrequency_, D);
+
+
+		MATLAB_PUT(peakSet_, "peaks");
+		MATLAB_EVAL("plotPeaks(peaks)");
+
+		realvec realTry(nbFrames_, 5);
+		realTry.setval(0);
+		for (mrs_natural i=0 ; i<nbFrames_ ; i++)
 		{
-			realvec vec = pvseries->getctrl("RealvecSink/peSink/mrs_realvec/data")->to<mrs_realvec>();
-			//peakStore(vec, filePeakName, samplingFrequency_, D); 
-			peakView vecView(vec);
-			vecView.peakWrite(filePeakName, samplingFrequency_, D);
-
-
-			MATLAB_PUT(peakSet_, "peaks");
-			MATLAB_EVAL("plotPeaks(peaks)");
-
-			realvec realTry(nbFrames_, 5);
-			realTry.setval(0);
-			for (mrs_natural i=0 ; i<nbFrames_ ; i++)
-			{
-				realTry(i, 1) = 20;
-				realTry(i, 2) = .8;
-				realTry(i, 3) = .25;
-				realTry(i, 4) = .6;
-			}
-			ofstream tryFile;
-			string harmonizeName = filePeakName+"HarmoStream";
-			tryFile.open(harmonizeName.c_str());
-			tryFile<< realTry;
+			realTry(i, 1) = 20;
+			realTry(i, 2) = .8;
+			realTry(i, 3) = .25;
+			realTry(i, 4) = .6;
 		}
+		ofstream tryFile;
+		string harmonizeName = filePeakName+"HarmoStream";
+		tryFile.open(harmonizeName.c_str());
+		tryFile<< realTry;
+	}
 }
 
 void 
@@ -363,9 +381,9 @@ main(int argc, const char **argv)
 		{
 			FileName Sfname(*sfi);
 			/*	if(outputDirectoryName == EMPTYSTRING)
-			{
-			outputDirectoryName = ".";
-			}*/
+				{
+				outputDirectoryName = ".";
+				}*/
 
 			if(Sfname.ext() == "peak")
 			{

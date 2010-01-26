@@ -39,7 +39,7 @@ void sfplay(string sfName, float gain1, float gain2)
 	para->addMarSystem(right);
 	playbacknet->addMarSystem(para);
 
-	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		playbacknet->tick();
 	}

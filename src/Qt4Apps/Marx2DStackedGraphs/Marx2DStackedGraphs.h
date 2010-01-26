@@ -25,6 +25,8 @@
 #include <QGridLayout>
 
 #include "Marx2DGraph.h"
+using namespace MarsyasQt;
+
 
 class Marx2DStackedGraphs : public QWidget
 {

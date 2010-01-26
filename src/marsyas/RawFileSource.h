@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ namespace Marsyas
 {
 /**
    \class RawFileSource
-	\ingroup Interal
+   \ingroup Interal
    \brief SoundFileSource for .raw wavetable files
    
    STK rawwave files have no header and are assumed to contain a
@@ -36,45 +36,45 @@ namespace Marsyas
 */
 
 
-class RawFileSource : public AbsSoundFileSource
-{
-private: 
-	FILE *sfp_;
-  mrs_real time_;
-  mrs_real rate_;				// loop frequency
+	class RawFileSource : public AbsSoundFileSource
+	{
+		private: 
+			FILE *sfp_;
+			mrs_real time_;
+			mrs_real rate_;				// loop frequency
   
-  short *buffer_;
+			short *buffer_;
   
   
-  realvec data_;
-  mrs_real phaseOffset_;
+			realvec data_;
+			mrs_real phaseOffset_;
   
-  unsigned long fileSize_;
-  unsigned long bufferSize_;
-  bool byteSwap_;
-  std::string filename_;
-  mrs_natural ch_, pos_, nChannels_;
+			unsigned long fileSize_;
+			unsigned long bufferSize_;
+			bool byteSwap_;
+			std::string filename_;
+			mrs_natural ch_, pos_, nChannels_;
 
-  void addControls();
-	void myUpdate(MarControlPtr sender);
-  void swap16(unsigned char *ptr);
+			void addControls();
+			void myUpdate(MarControlPtr sender);
+			void swap16(unsigned char *ptr);
   
-  void readData( unsigned long index );
-  bool getRawInfo( const char *fileName );
-  void getHeader(std::string filename);
+			void readData( unsigned long index );
+			bool getRawInfo( const char *fileName );
+			void getHeader(std::string filename);
 
-public:
-  RawFileSource(std::string name);
-  ~RawFileSource();
+		public:
+			RawFileSource(std::string name);
+			~RawFileSource();
   
-  MarSystem* clone() const;
-  void myProcess(realvec& in,realvec &out);
+			MarSystem* clone() const;
+			void myProcess(realvec& in,realvec &out);
   
   
-  // helpers for synthesis routines
-  void setFrequency(mrs_real frequency);
-  void openFile(std::string filename); //[?] not coherent with interface defined by AbsSoundFileSource!
-};
+			// helpers for synthesis routines
+			void setFrequency(mrs_real frequency);
+			void openFile(std::string filename); //[?] not coherent with interface defined by AbsSoundFileSource!
+	};
 
 }//namespace Marsyas
 

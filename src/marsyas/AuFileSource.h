@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -45,79 +45,79 @@ namespace Marsyas
 
 
 /********  NeXT/Sun Soundfile Header Struct   *******/
-struct snd_header 
-{
-	char pref[4];
-	int32_t hdrLength;
-	int32_t fileLength;
-	int32_t mode;
-	int32_t srate;
-	int32_t channels;
-	char comment[1024];
-};
+	struct snd_header 
+	{
+			char pref[4];
+			int32_t hdrLength;
+			int32_t fileLength;
+			int32_t mode;
+			int32_t srate;
+			int32_t channels;
+			char comment[1024];
+	};
 
 /* Array containing descriptions of
-the various formats for the samples
-of the Next .snd/ Sun .au format */
+   the various formats for the samples
+   of the Next .snd/ Sun .au format */
 
-class AuFileSource: public AbsSoundFileSource
-{
-private:
-  snd_header hdr_;
-  std::string tfname_;
-  std::string filename_;
+	class AuFileSource: public AbsSoundFileSource
+	{
+		private:
+			snd_header hdr_;
+			std::string tfname_;
+			std::string filename_;
   
-  short *sdata_;
-  short sval_;
-  unsigned short usval_;
+			short *sdata_;
+			short sval_;
+			unsigned short usval_;
   
-  unsigned char *cdata_;
-  FILE *sfp_;
-  long sfp_begin_;
+			unsigned char *cdata_;
+			FILE *sfp_;
+			long sfp_begin_;
   
-  mrs_natural sampleSize_;// in bytes
-  mrs_natural size_;  
-  mrs_natural csize_;
+			mrs_natural sampleSize_;// in bytes
+			mrs_natural size_;  
+			mrs_natural csize_;
 
-  mrs_natural samplesOut_;
+			mrs_natural samplesOut_;
  
-  std::vector<std::string> sndFormats_;
-  std::vector<int>    sndFormatSizes_;
+			std::vector<std::string> sndFormats_;
+			std::vector<int>    sndFormatSizes_;
   
-  mrs_natural nChannels_;
-  mrs_natural samplesToRead_;
-  mrs_natural samplesToWrite_;
-  mrs_natural samplesRead_;
+			mrs_natural nChannels_;
+			mrs_natural samplesToRead_;
+			mrs_natural samplesToWrite_;
+			mrs_natural samplesRead_;
  
-  mrs_real duration_;
-  bool advance_;
-  mrs_natural cindex_;
-  mrs_natural nt_;
+			mrs_real duration_;
+			bool advance_;
+			mrs_natural cindex_;
+			mrs_natural nt_;
   
-  mrs_real repetitions_;
+			mrs_real repetitions_;
 
-	unsigned long ByteSwapLong(unsigned long nLongNumber);
-	unsigned short ByteSwapShort (unsigned short nValue);
+			unsigned long ByteSwapLong(unsigned long nLongNumber);
+			unsigned short ByteSwapShort (unsigned short nValue);
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+			void addControls();
+			void myUpdate(MarControlPtr sender);
 
-  MarControlPtr ctrl_size_;
-  MarControlPtr ctrl_pos_;
+			MarControlPtr ctrl_size_;
+			MarControlPtr ctrl_pos_;
   
  
-public:
-  AuFileSource(std::string name);
-  AuFileSource(const AuFileSource& a);
-  ~AuFileSource();
-  MarSystem* clone() const;    
+		public:
+			AuFileSource(std::string name);
+			AuFileSource(const AuFileSource& a);
+			~AuFileSource();
+			MarSystem* clone() const;    
 
-  void getHeader(std::string filename);
-	mrs_natural getLinear16(realvec& win);
-
-	void myProcess(realvec& in,realvec &out);
-
-};
+			void getHeader(std::string filename);
+			mrs_natural getLinear16(realvec& win);
+			
+			void myProcess(realvec& in,realvec &out);
+			
+	};
 
 }//namespace Marsyas
 

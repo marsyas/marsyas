@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -49,8 +49,8 @@ CollectionFileSource::clone() const
 void
 CollectionFileSource::addControls()
 {
-	addctrl("mrs_bool/notEmpty", true);  
-	notEmpty_ = true;
+	addctrl("mrs_bool/hasData", true);  
+	hasData_ = true;
 	addctrl("mrs_natural/pos", (mrs_natural)0);
 	setctrlState("mrs_natural/pos", true);
 
@@ -99,7 +99,7 @@ CollectionFileSource::getHeader(string filename)
 
 	cindex_ = 0;
 	setctrl("mrs_natural/cindex", 0);
-	setctrl("mrs_bool/notEmpty", true);
+	setctrl("mrs_bool/hasData", true);
 	ctrl_currentlyPlaying_->setValue(col_.entry(0), NOUPDATE);
 
 	
@@ -194,8 +194,8 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 
 		if (cindex_ + advance_ >= col_.size())
 		{
-			setctrl("mrs_bool/notEmpty", false);
-			notEmpty_ = false;      
+			setctrl("mrs_bool/hasData", false);
+			hasData_ = false;      
 			advance_ = 0;
 			cindex_ = 0;
 		}
@@ -235,12 +235,12 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 
 		isrc_->process(in,out);
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-		setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
 
  		if (cindex_ > col_.size()-2)  
  		{
-			setctrl("mrs_bool/notEmpty", false);
-			notEmpty_ = false;      
+			setctrl("mrs_bool/hasData", false);
+			hasData_ = false;      
 			advance_ = 0;
  			return;
  		}
@@ -254,7 +254,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	else
 	{
 		//finished current file. Advance to next one in collection (if any)
-		if (!isrc_->getctrl("mrs_bool/notEmpty")->isTrue())
+		if (!isrc_->getctrl("mrs_bool/hasData")->isTrue())
 		{
 			//check if there a following file ion the collection
 			if (cindex_ < col_.size() -1)
@@ -280,14 +280,14 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			}
 			else //no more files in collection
 			{
-				setctrl("mrs_bool/notEmpty", false);
-				notEmpty_ = false;
+				setctrl("mrs_bool/hasData", false);
+				hasData_ = false;
 			}
 		}
 
 		isrc_->process(in,out);
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-		setctrl("mrs_bool/notEmpty", isrc_->getctrl("mrs_bool/notEmpty"));
+		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
 	} 
 
 

@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
 	MarSystem* pnet = mng.create("Series", "pnet");
     pnet->addMarSystem(mng.create("SoundFileSource", "src"));
     pnet->updctrl("SoundFileSource/src/mrs_string/filename", infile);
-    pnet->linkControl("mrs_bool/notEmpty",
-                     "SoundFileSource/src/mrs_bool/notEmpty");
+    pnet->linkControl("mrs_bool/hasData",
+                     "SoundFileSource/src/mrs_bool/hasData");
 
     pnet->updctrl("mrs_natural/inSamples",256);
 
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	pnet->updctrl("ShiftInput/shift/mrs_natural/WindowSize",512);
 
 	int i=0;
-    while ( pnet->getctrl("mrs_bool/notEmpty")->to<bool>() )
+    while ( pnet->getctrl("mrs_bool/hasData")->to<bool>() )
 	{
         pnet->tick();
 		i++;

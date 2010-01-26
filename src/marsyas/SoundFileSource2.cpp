@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ SoundFileSource2::fileReady(bool ready)
 		setctrl("mrs_string/filename", filename);
 		filename_ = filename;
 
-		setctrl("mrs_bool/notEmpty", src_->getctrl("mrs_bool/notEmpty"));
+		setctrl("mrs_bool/hasData", src_->getctrl("mrs_bool/hasData"));
 
 		//rewind 
 		setctrl("mrs_natural/pos", 0);
@@ -85,7 +85,7 @@ SoundFileSource2::fileReady(bool ready)
 
 		setctrl("mrs_natural/nChannels", (mrs_natural)1);
 		setctrl("mrs_real/israte", MRS_DEFAULT_SLICE_SRATE);
-		setctrl("mrs_bool/notEmpty", false);
+		setctrl("mrs_bool/hasData", false);
 
  		//rewind
 		setctrl("mrs_natural/pos", 0);
@@ -102,7 +102,7 @@ SoundFileSource2::addControls()
 	setctrlState("mrs_natural/pos", true);
 
 	//read-only controls (stateless)
-	addctrl("mrs_bool/notEmpty", true); 
+	addctrl("mrs_bool/hasData", true); 
 	addctrl("mrs_natural/nChannels",(mrs_natural)1);
 	addctrl("mrs_natural/size", (mrs_natural)0);
 }
@@ -132,10 +132,10 @@ SoundFileSource2::myUpdate(MarControlPtr sender)
 
 	//pass configuration to file source object (src_) and update it 
 	src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
-	src_->setctrl("mrs_bool/notEmpty", getctrl("mrs_bool/notEmpty"));
+	src_->setctrl("mrs_bool/hasData", getctrl("mrs_bool/hasData"));
 	//avoid calling src_->update unless it's really necessary
 	if(getctrl("mrs_natural/inSamples") != src_->getctrl("mrs_natural/inSamples") ||
-		 getctrl("mrs_natural/inObservations") != src_->getctrl("mrs_natural/inObservations"))
+	   getctrl("mrs_natural/inObservations") != src_->getctrl("mrs_natural/inObservations"))
 	{
 		src_->setctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
 		src_->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
@@ -150,7 +150,7 @@ SoundFileSource2::myUpdate(MarControlPtr sender)
 	setctrl("mrs_string/onObsNames", src_->getctrl("mrs_string/onObsNames"));
 	
 	setctrl("mrs_natural/nChannels", src_->getctrl("mrs_natural/nChannels"));
-	setctrl("mrs_bool/notEmpty", src_->getctrl("mrs_bool/notEmpty"));
+	setctrl("mrs_bool/hasData", src_->getctrl("mrs_bool/hasData"));
 	setctrl("mrs_natural/size", src_->getctrl("mrs_natural/size"));
 	setctrl("mrs_natural/pos", src_->getctrl("mrs_natural/pos"));
 }
@@ -186,11 +186,11 @@ SoundFileSource2::checkType()
 	else 
 		ext = filename.substr(pos, filename.length());  
 /*if (ext == ".au")
-	{
-		delete src_;
-		src_ = new AuFileSource(name_);
-	}
-	else
+  {
+  delete src_;
+  src_ = new AuFileSource(name_);
+  }
+  else
 */ 
 	if (ext == ".wav")
 	{
@@ -198,31 +198,31 @@ SoundFileSource2::checkType()
 		src_ = new WavFileSource2(name_);
 	}
 /*
-	else if (ext == ".raw") 
-	{
-		delete src_;
-		src_ = new RawFileSource(name_);
-	}	
-	else if (ext == ".mf") 
-	{
-		delete src_;
-		src_ = new CollectionFileSource(name_);
-	}
-	#ifdef MAD_MP3
-	else if (ext == ".mp3")
-	{
-		delete src_;
-		src_ = new MP3FileSource(name_);
-	}
-	#endif 
-	#ifdef OGG_VORBIS
-	else if (ext == ".ogg")
-	{
-		cout << "OGG" << endl;
-		delete src_;
-		src_ = new OggFileSource(name_);
-	}
-	#endif 
+  else if (ext == ".raw") 
+  {
+  delete src_;
+  src_ = new RawFileSource(name_);
+  }	
+  else if (ext == ".mf") 
+  {
+  delete src_;
+  src_ = new CollectionFileSource(name_);
+  }
+  #ifdef MAD_MP3
+  else if (ext == ".mp3")
+  {
+  delete src_;
+  src_ = new MP3FileSource(name_);
+  }
+  #endif 
+  #ifdef OGG_VORBIS
+  else if (ext == ".ogg")
+  {
+  cout << "OGG" << endl;
+  delete src_;
+  src_ = new OggFileSource(name_);
+  }
+  #endif 
 */
 	else 
 	{
@@ -243,7 +243,7 @@ SoundFileSource2::checkType()
 realvec&
 SoundFileSource2::getAudioRegion(mrs_natural startSample, mrs_natural endSample)
 {
-		return src_->getAudioRegion(startSample, endSample);
+	return src_->getAudioRegion(startSample, endSample);
 }
 
 void
@@ -252,9 +252,9 @@ SoundFileSource2::myProcess(realvec& in, realvec &out)
 	//read audio data from audio file
 	src_->process(in,out);
 
-  //sync play controls (no update needed!)
+	//sync play controls (no update needed!)
 	setctrl("mrs_natural/pos", src_->getctrl("mrs_natural/pos"));
-	setctrl("mrs_bool/notEmpty", src_->getctrl("mrs_bool/notEmpty"));
+	setctrl("mrs_bool/hasData", src_->getctrl("mrs_bool/hasData"));
 
 	//if muted, replace output data with silence
 	if(getctrl("mrs_bool/mute")->to<mrs_bool>())

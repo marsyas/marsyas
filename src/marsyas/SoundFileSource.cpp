@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 
 	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_loop_ = getctrl("mrs_natural/loopPos");
-	ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty");
+	ctrl_hasData_ = getctrl("mrs_bool/hasData");
 	ctrl_mute_ = getctrl("mrs_bool/mute");
 	ctrl_advance_ = getctrl("mrs_natural/advance");
 	ctrl_filename_ = getctrl("mrs_string/filename");
@@ -62,7 +62,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 void
 SoundFileSource::addControls()
 {
-	addctrl("mrs_bool/notEmpty", true, ctrl_notEmpty_);
+	addctrl("mrs_bool/hasData", true, ctrl_hasData_);
 
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
 	setctrlState("mrs_natural/pos", true);
@@ -143,17 +143,17 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
 			ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
 
-			ctrl_notEmpty_->setValue(true, NOUPDATE);
+			ctrl_hasData_->setValue(true, NOUPDATE);
 
 			if (src_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
-				src_->notEmpty_ = true; //[!]
+				src_->hasData_ = true; //[!]
 		}
 
 		else
 		{
 			ctrl_onObservations_->setValue(1, NOUPDATE);
 			ctrl_israte_->setValue(22050.0, NOUPDATE);
-			ctrl_notEmpty_->setValue(false, NOUPDATE);
+			ctrl_hasData_->setValue(false, NOUPDATE);
 			src_ = NULL;
 		}
 	}
@@ -170,7 +170,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		src_->setctrl("mrs_natural/advance", getctrl("mrs_natural/advance"));
 		// src_->setctrl("mrs_natural/cindex", getctrl("mrs_natural/cindex"));
 		src_->setctrl("mrs_bool/shuffle", getctrl("mrs_bool/shuffle"));
-		src_->setctrl("mrs_bool/notEmpty", getctrl("mrs_bool/notEmpty"));
+		src_->setctrl("mrs_bool/hasData", getctrl("mrs_bool/hasData"));
 		src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
 		src_->pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();//[!]
 		src_->setctrl("mrs_natural/loopPos", getctrl("mrs_natural/loopPos"));
@@ -184,7 +184,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 
 		setctrl("mrs_natural/pos", src_->pos_);//[!]
 		setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
-		setctrl("mrs_bool/notEmpty", src_->notEmpty_);//[!]
+		setctrl("mrs_bool/hasData", src_->hasData_);//[!]
 		setctrl("mrs_natural/size", src_->getctrl("mrs_natural/size"));
 		setctrl("mrs_real/repetitions", src_->getctrl("mrs_real/repetitions"));
 		setctrl("mrs_real/duration", src_->getctrl("mrs_real/duration"));
@@ -271,7 +271,7 @@ SoundFileSource::checkType()
 	else if (ext == ".raw")
 	{
 		if (src_ == NULL)
-		src_ = new RawFileSource(getName());
+			src_ = new RawFileSource(getName());
 	}
 	else if (ext == ".txt")
 	{
@@ -351,13 +351,13 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 			out.setval(0.0);
 
 		/* setctrl("mrs_natural/pos", src_->pos_); //[!]
-		setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
-		setctrl("mrs_bool/notEmpty", src_->notEmpty_);//[!]
+		   setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
+		   setctrl("mrs_bool/hasData", src_->hasData_);//[!]
 		*/
 		// replaced by gtzan
 		ctrl_pos_->setValue(src_->getctrl("mrs_natural/pos")->to<mrs_natural>(), NOUPDATE);
 		ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
-		ctrl_notEmpty_->setValue(src_->notEmpty_, NOUPDATE);
+		ctrl_hasData_->setValue(src_->hasData_, NOUPDATE);
 		ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
 		ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
 		ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));

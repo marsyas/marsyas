@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -26,128 +26,128 @@ using namespace Marsyas;
 
 MP3FileSource::MP3FileSource(string name):AbsSoundFileSource("MP3FileSource", name)
 {
-  //type_ = "MP3FileSource";
-  //name_ = name;
+	//type_ = "MP3FileSource";
+	//name_ = name;
 
-  ri_ = preservoirSize_ = 0;
-  ptr_ = NULL;
+	ri_ = preservoirSize_ = 0;
+	ptr_ = NULL;
 
-  fileSize_ = 0;
-  fd = 0;  
-  fp = NULL;
-  offset = 0;
-  pos_ = 0;
-  size_ = 0;
-  currentPos_ = 0;
+	fileSize_ = 0;
+	fd = 0;  
+	fp = NULL;
+	offset = 0;
+	pos_ = 0;
+	size_ = 0;
+	currentPos_ = 0;
   
 
-  bufferSize_ = 2048;	// must be initialized, otherwise it may be a very big value and 
+	bufferSize_ = 2048;	// must be initialized, otherwise it may be a very big value and 
   						// may further cause segment fault when allocating space for input buffer
-  frameSamples_ = 0;
-  totalFrames_ = 0;
-  frameCount_ = 0;
+	frameSamples_ = 0;
+	totalFrames_ = 0;
+	frameCount_ = 0;
   
-  // variables for buffer balancing
-  reservoirSize_ = 0;
+	// variables for buffer balancing
+	reservoirSize_ = 0;
 
-  advance_ = 0;
-  cindex_ = 0;
+	advance_ = 0;
+	cindex_ = 0;
   
-  duration_ = 0;
-  csize_ = 0;
-  samplesOut_ = 0;
-  repetitions_ = 0;
+	duration_ = 0;
+	csize_ = 0;
+	samplesOut_ = 0;
+	repetitions_ = 0;
 
 
   
-  addControls();
+	addControls();
 }
 
 MP3FileSource::~MP3FileSource()
 {
 #ifdef MARSYAS_MAD  
-  madStructFinish();
+	madStructFinish();
 #endif
-  closeFile(); 
+	closeFile(); 
 }
 
 MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
 {
-  ptr_ = NULL;
-  fp = NULL;
+	ptr_ = NULL;
+	fp = NULL;
   
-  pos_ = 0;
-  size_ = 0;
-  currentPos_ = 0;
+	pos_ = 0;
+	size_ = 0;
+	currentPos_ = 0;
 
 // must be initialized, otherwise it may be a very big value and
-  bufferSize_ = 2048;
+	bufferSize_ = 2048;
 // may further cause segment fault when allocating space for input buffer
-  frameSamples_ = 0;
-  totalFrames_ = 0;
-  frameCount_ = 0;
+	frameSamples_ = 0;
+	totalFrames_ = 0;
+	frameCount_ = 0;
 
 // variables for buffer balancing
-  reservoirSize_ = 0;
+	reservoirSize_ = 0;
 
-  advance_ = 0;
-  cindex_ = 0;
+	advance_ = 0;
+	cindex_ = 0;
 
-  duration_ = 0;
-  csize_ = 0;
-  samplesOut_ = 0;
-  repetitions_ = 0;
+	duration_ = 0;
+	csize_ = 0;
+	samplesOut_ = 0;
+	repetitions_ = 0;
 
-  ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
-  ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
-  ctrl_labelNames_ = getctrl("mrs_string/labelNames");
-  ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
+	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
+	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
+	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 }
 
 MarSystem* 
 MP3FileSource::clone() const
 {
-  return new MP3FileSource(*this);
+	return new MP3FileSource(*this);
 }
 
 
 void 
 MP3FileSource::addControls()
 {
-  addctrl("mrs_natural/bitRate", 160000);
-  addctrl("mrs_bool/init", false);
-  setctrlState("mrs_bool/init", true);
-  addctrl("mrs_bool/notEmpty", true);
-  addctrl("mrs_natural/loopPos", (mrs_natural)0);
-  setctrlState("mrs_natural/loopPos", true);
-  addctrl("mrs_natural/pos", (mrs_natural)0);
-  setctrlState("mrs_natural/pos", true);
-  addctrl("mrs_string/filename", "daufile");
-  setctrlState("mrs_string/filename", true);
-  addctrl("mrs_natural/size", (mrs_natural)0);
-  addctrl("mrs_string/filetype", "mp3");
-  addctrl("mrs_real/repetitions", 1.0);
-  setctrlState("mrs_real/repetitions", true);
-  addctrl("mrs_real/duration", -1.0);
-  setctrlState("mrs_real/duration", true);
+	addctrl("mrs_natural/bitRate", 160000);
+	addctrl("mrs_bool/init", false);
+	setctrlState("mrs_bool/init", true);
+	addctrl("mrs_bool/hasData", true);
+	addctrl("mrs_natural/loopPos", (mrs_natural)0);
+	setctrlState("mrs_natural/loopPos", true);
+	addctrl("mrs_natural/pos", (mrs_natural)0);
+	setctrlState("mrs_natural/pos", true);
+	addctrl("mrs_string/filename", "daufile");
+	setctrlState("mrs_string/filename", true);
+	addctrl("mrs_natural/size", (mrs_natural)0);
+	addctrl("mrs_string/filetype", "mp3");
+	addctrl("mrs_real/repetitions", 1.0);
+	setctrlState("mrs_real/repetitions", true);
+	addctrl("mrs_real/duration", -1.0);
+	setctrlState("mrs_real/duration", true);
   
 
-  addctrl("mrs_natural/advance", 0);
-  setctrlState("mrs_natural/advance", true);
+	addctrl("mrs_natural/advance", 0);
+	setctrlState("mrs_natural/advance", true);
 
-  addctrl("mrs_bool/shuffle", false);
-  setctrlState("mrs_bool/shuffle", true);
+	addctrl("mrs_bool/shuffle", false);
+	setctrlState("mrs_bool/shuffle", true);
 
-  addctrl("mrs_natural/cindex", 0);
-  setctrlState("mrs_natural/cindex", true);
+	addctrl("mrs_natural/cindex", 0);
+	setctrlState("mrs_natural/cindex", true);
 
-  addctrl("mrs_string/allfilenames", ",");
-  addctrl("mrs_natural/numFiles", 1);
+	addctrl("mrs_string/allfilenames", ",");
+	addctrl("mrs_natural/numFiles", 1);
 	
-  addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
-  addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
-  addctrl("mrs_string/labelNames",",", ctrl_labelNames_);
-  addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
+	addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
+	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+	addctrl("mrs_string/labelNames",",", ctrl_labelNames_);
+	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 }
 
 
@@ -156,81 +156,81 @@ MP3FileSource::addControls()
 void 
 MP3FileSource::PrintFrameInfo(struct mad_header *Header)
 {
-  #ifdef MARSYAS_MAD
-  const char	*Layer,
-    *Mode,
-    *Emphasis;
+#ifdef MARSYAS_MAD
+	const char	*Layer,
+		*Mode,
+		*Emphasis;
   
-  /* Convert the layer number to it's printed representation. */
-  switch(Header->layer)
+	/* Convert the layer number to it's printed representation. */
+	switch(Header->layer)
     {
-    case MAD_LAYER_I:
-      Layer="I";
-      break;
-    case MAD_LAYER_II:
-      Layer="II";
-      break;
-    case MAD_LAYER_III:
-      Layer="III";
-      break;
-    default:
-      Layer="(unexpected layer value)";
-      break;
+		case MAD_LAYER_I:
+			Layer="I";
+			break;
+		case MAD_LAYER_II:
+			Layer="II";
+			break;
+		case MAD_LAYER_III:
+			Layer="III";
+			break;
+		default:
+			Layer="(unexpected layer value)";
+			break;
     }
   
-  /* Convert the audio mode to it's printed representation. */
-  switch(Header->mode)
+	/* Convert the audio mode to it's printed representation. */
+	switch(Header->mode)
     {
-    case MAD_MODE_SINGLE_CHANNEL:
-      Mode="single channel";
-      break;
-    case MAD_MODE_DUAL_CHANNEL:
-      Mode="dual channel";
-      break;
-    case MAD_MODE_JOINT_STEREO:
-      Mode="joint (MS/intensity) stereo";
-      break;
-    case MAD_MODE_STEREO:
-      Mode="normal LR stereo";
-      break;
-    default:
-      Mode="(unexpected mode value)";
-      break;
+		case MAD_MODE_SINGLE_CHANNEL:
+			Mode="single channel";
+			break;
+		case MAD_MODE_DUAL_CHANNEL:
+			Mode="dual channel";
+			break;
+		case MAD_MODE_JOINT_STEREO:
+			Mode="joint (MS/intensity) stereo";
+			break;
+		case MAD_MODE_STEREO:
+			Mode="normal LR stereo";
+			break;
+		default:
+			Mode="(unexpected mode value)";
+			break;
     }
   
-  /* Convert the emphasis to it's printed representation. Note that
-   * the MAD_EMPHASIS_RESERVED enumeration value appeared in libmad
-   * version 0.15.0b.
-   */
-  switch(Header->emphasis)
+	/* Convert the emphasis to it's printed representation. Note that
+	 * the MAD_EMPHASIS_RESERVED enumeration value appeared in libmad
+	 * version 0.15.0b.
+	 */
+	switch(Header->emphasis)
     {
-    case MAD_EMPHASIS_NONE:
-      Emphasis="no";
-      break;
-    case MAD_EMPHASIS_50_15_US:
-      Emphasis="50/15 us";
-      break;
-    case MAD_EMPHASIS_CCITT_J_17:
-      Emphasis="CCITT J.17";
-      break;
-#if (MAD_VERSION_MAJOR>=1) || \
+		case MAD_EMPHASIS_NONE:
+			Emphasis="no";
+			break;
+		case MAD_EMPHASIS_50_15_US:
+			Emphasis="50/15 us";
+			break;
+		case MAD_EMPHASIS_CCITT_J_17:
+			Emphasis="CCITT J.17";
+			break;
+#if (MAD_VERSION_MAJOR>=1) ||							\
 	((MAD_VERSION_MAJOR==0) && (MAD_VERSION_MINOR>=15))
-    case MAD_EMPHASIS_RESERVED:
-      Emphasis="reserved(!)";
-      break;
+		case MAD_EMPHASIS_RESERVED:
+			Emphasis="reserved(!)";
+			break;
 #endif
-    default:
-      Emphasis="(unexpected emphasis value)";
-      break;
+		default:
+			Emphasis="(unexpected emphasis value)";
+			break;
     }
   
-  printf("%lu kb/s audio MPEG layer %s stream %s CRC, "
-	 "%s with %s emphasis at %d Hz sample rate\n",
-	 Header->bitrate,Layer,
-	 Header->flags&MAD_FLAG_PROTECTION?"with":"without",
-	 Mode,Emphasis,Header->samplerate);
+	printf("%lu kb/s audio MPEG layer %s stream %s CRC, "
+		   "%s with %s emphasis at %d Hz sample rate\n",
+		   Header->bitrate,Layer,
+		   Header->flags&MAD_FLAG_PROTECTION?"with":"without",
+		   Mode,Emphasis,Header->samplerate);
 
-  #endif
+#endif
 }
 
 
@@ -247,166 +247,166 @@ MP3FileSource::getHeader(string filename)
 {
 
 #ifdef MARSYAS_MAD  
-  durFull_ = 0.;
-  update();
-  // if we have a file open already, close it
-  closeFile();
-  reservoir_.setval(0.0);
+	durFull_ = 0.;
+	update();
+	// if we have a file open already, close it
+	closeFile();
+	reservoir_.setval(0.0);
   
-  fp = fopen(filename.c_str(), "rb");
-  fseek(fp, 0L, SEEK_END);
-  myStat.st_size = ftell(fp);
-  fseek(fp, 0L, SEEK_SET);
+	fp = fopen(filename.c_str(), "rb");
+	fseek(fp, 0L, SEEK_END);
+	myStat.st_size = ftell(fp);
+	fseek(fp, 0L, SEEK_SET);
 
 
 
-  if (myStat.st_size == 0 ) {
-    MRSWARN("Error reading file: " + filename);
-    setctrl("mrs_natural/onObservations", 2);
-    setctrl("mrs_real/israte", 22050.0);
-    setctrl("mrs_natural/size", 0);
-    notEmpty_ = 0;
-    setctrl("mrs_bool/notEmpty", false);	  
-    return;
-  }
+	if (myStat.st_size == 0 ) {
+		MRSWARN("Error reading file: " + filename);
+		setctrl("mrs_natural/onObservations", 2);
+		setctrl("mrs_real/israte", 22050.0);
+		setctrl("mrs_natural/size", 0);
+		hasData_ = 0;
+		setctrl("mrs_bool/hasData", false);	  
+		return;
+	}
   
 
   
   
-  // libmad seems to read sometimes beyond the file size 
-  // added 2048 as padding for these cases - most likely 
-  // mp3 that are not properly formatted 
-  ptr_ = new unsigned char[myStat.st_size+2048]; 
+	// libmad seems to read sometimes beyond the file size 
+	// added 2048 as padding for these cases - most likely 
+	// mp3 that are not properly formatted 
+	ptr_ = new unsigned char[myStat.st_size+2048]; 
 
   
-  int numRead = fread(ptr_, sizeof(unsigned char), myStat.st_size, fp);
+	int numRead = fread(ptr_, sizeof(unsigned char), myStat.st_size, fp);
   
-  if (numRead != myStat.st_size) 
+	if (numRead != myStat.st_size) 
     {
-      MRSWARN("Error reading: " + filename + " to memory.");
-      setctrl("mrs_natural/onObservations", 2);
-      setctrl("mrs_real/israte", 22050.0);
-      setctrl("mrs_natural/size", 0);
-      notEmpty_ = 0;
-      setctrl("mrs_bool/notEmpty", false);	  
-      return;
+		MRSWARN("Error reading: " + filename + " to memory.");
+		setctrl("mrs_natural/onObservations", 2);
+		setctrl("mrs_real/israte", 22050.0);
+		setctrl("mrs_natural/size", 0);
+		hasData_ = 0;
+		setctrl("mrs_bool/hasData", false);	  
+		return;
     }
   
-  fileSize_ = myStat.st_size;
+	fileSize_ = myStat.st_size;
 
   
 
-  // initialize mad structs and fill the stream
-  madStructInitialize();
-  fillStream();	
+	// initialize mad structs and fill the stream
+	madStructInitialize();
+	fillStream();	
  
 
-  // if there is nothing in the stream...
-  notEmpty_ = getctrl("mrs_bool/notEmpty")->to<mrs_bool>(); 
-  if (!notEmpty_) {
-    pos_ = 0;
-    return;
-  }
-  
-  // decode some frames until we find the samplerate and bitrate
-  while (1)
-    {
-      pos_ += bufferSize_;
-      currentPos_ = pos_;
-      
-      if ( mad_frame_decode(&frame, &stream) ) 
-	{
-	
-	  if(MAD_RECOVERABLE(stream.error)) 
-	    {
-				
-	      if(stream.error != MAD_ERROR_LOSTSYNC) {
-		string errmsg;
-		errmsg += "MP3FileSource: recoverable frame level error: ";
-		errmsg += mad_stream_errorstr(&stream);
-		MRSDIAG(errmsg);
-	      }
-	      
-	      // get some more samples...
-	      fillStream();
-	      if (!notEmpty_) {
+	// if there is nothing in the stream...
+	hasData_ = getctrl("mrs_bool/hasData")->to<mrs_bool>(); 
+	if (!hasData_) {
 		pos_ = 0;
 		return;
-	      }
-	      
-	    } 
-	  else if(stream.error==MAD_ERROR_BUFLEN) 
-	    {
-
-	      fillStream();
-	      if (!notEmpty_) {
-		pos_ = 0;
-		return;
-	      }
-	      
-	    } 
-	  else 
-	    {
-	      MRSERR("MP3FileSource: unrecoverable frame level error, quitting.");
-		  pos_ = 0;
-	      return;
-	    }
-	  
-	  frameCount_++;
 	}
-      else
-	break;
+  
+	// decode some frames until we find the samplerate and bitrate
+	while (1)
+    {
+		pos_ += bufferSize_;
+		currentPos_ = pos_;
+      
+		if ( mad_frame_decode(&frame, &stream) ) 
+		{
+	
+			if(MAD_RECOVERABLE(stream.error)) 
+			{
+				
+				if(stream.error != MAD_ERROR_LOSTSYNC) {
+					string errmsg;
+					errmsg += "MP3FileSource: recoverable frame level error: ";
+					errmsg += mad_stream_errorstr(&stream);
+					MRSDIAG(errmsg);
+				}
+	      
+				// get some more samples...
+				fillStream();
+				if (!hasData_) {
+					pos_ = 0;
+					return;
+				}
+	      
+			} 
+			else if(stream.error==MAD_ERROR_BUFLEN) 
+			{
+
+				fillStream();
+				if (!hasData_) {
+					pos_ = 0;
+					return;
+				}
+	      
+			} 
+			else 
+			{
+				MRSERR("MP3FileSource: unrecoverable frame level error, quitting.");
+				pos_ = 0;
+				return;
+			}
+	  
+			frameCount_++;
+		}
+		else
+			break;
       
     
-  }
+	}
   
-  //PrintFrameInfo(&frame.header);
+	//PrintFrameInfo(&frame.header);
 
 
-  mrs_natural nChannels = MAD_NCHANNELS(&frame.header);
-  setctrl("mrs_natural/onObservations", nChannels);
+	mrs_natural nChannels = MAD_NCHANNELS(&frame.header);
+	setctrl("mrs_natural/onObservations", nChannels);
   
 
-  frameSamples_ = 32 * MAD_NSBSAMPLES(&frame.header);
-  bufferSize_ = frameSamples_; // mad frame size
-  mrs_natural bitRate = frame.header.bitrate;
-  mrs_real sampleRate = frame.header.samplerate;
-
-  
-  // only works for a constant bitrate, duration is (bits in file / bitrate)
-  mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
-  advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
-  cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
-  
-  size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
+	frameSamples_ = 32 * MAD_NSBSAMPLES(&frame.header);
+	bufferSize_ = frameSamples_; // mad frame size
+	mrs_natural bitRate = frame.header.bitrate;
+	mrs_real sampleRate = frame.header.samplerate;
 
   
-  csize_ = size_ * nChannels;
-  totalFrames_ = (mrs_natural)((sampleRate * duration_) / frameSamples_);
+	// only works for a constant bitrate, duration is (bits in file / bitrate)
+	mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
+	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
+	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
+  
+	size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
+
+  
+	csize_ = size_ * nChannels;
+	totalFrames_ = (mrs_natural)((sampleRate * duration_) / frameSamples_);
   
   
-  // update some controls 
-  setctrl("mrs_real/duration", duration_);
-  setctrl("mrs_real/israte", sampleRate); 
-  setctrl("mrs_natural/size", size_ );
-  setctrl("mrs_natural/bitRate", bitRate);
+	// update some controls 
+	setctrl("mrs_real/duration", duration_);
+	setctrl("mrs_real/israte", sampleRate); 
+	setctrl("mrs_natural/size", size_ );
+	setctrl("mrs_natural/bitRate", bitRate);
 
-  update();
+	update();
   
   
-  ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
-  ctrl_currentLabel_->setValue(0, NOUPDATE);
-  ctrl_nLabels_->setValue(0, NOUPDATE);
+	ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
+	ctrl_currentLabel_->setValue(0, NOUPDATE);
+	ctrl_nLabels_->setValue(0, NOUPDATE);
 
 
-  ctrl_labelNames_->setValue(",", NOUPDATE);
+	ctrl_labelNames_->setValue(",", NOUPDATE);
 
 
 
-  offset = 0;
-  pos_ = samplesOut_ = frameCount_ = 0;
-  currentPos_ = 0;
-  notEmpty_ = 1;
+	offset = 0;
+	pos_ = samplesOut_ = frameCount_ = 0;
+	currentPos_ = 0;
+	hasData_ = 1;
 
   
 #endif
@@ -427,67 +427,67 @@ void
 MP3FileSource::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  MRSDIAG("MP3FileSource::myUpdate");
+	MRSDIAG("MP3FileSource::myUpdate");
   
 
   
-  israte_ = ctrl_israte_->to<mrs_real>();
-  inSamples_ = ctrl_inSamples_->to<mrs_natural>();
-  pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
-  mrs_natural nChannels = ctrl_onObservations_->to<mrs_natural>();
+	israte_ = ctrl_israte_->to<mrs_real>();
+	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
+	pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
+	mrs_natural nChannels = ctrl_onObservations_->to<mrs_natural>();
   
-  setctrl("mrs_natural/onSamples", inSamples_);
-  setctrl("mrs_real/osrate", israte_);
+	setctrl("mrs_natural/onSamples", inSamples_);
+	setctrl("mrs_real/osrate", israte_);
   
 
   
   
-  // if the user has seeked somewhere in the file
-  if ( (currentPos_ != pos_) && (pos_ < size_)) 
+	// if the user has seeked somewhere in the file
+	if ( (currentPos_ != pos_) && (pos_ < size_)) 
     {
       
-      // compute a new file offset using the frame target
-      mrs_real ratio = (mrs_real)pos_/size_;
+		// compute a new file offset using the frame target
+		mrs_real ratio = (mrs_real)pos_/size_;
       
 #ifdef MARSYAS_MAD     
-      madStructInitialize();
+		madStructInitialize();
 #endif 
       
-      mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
+		mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
       
-      // if we are rewinding, we call fillStream with -1
-      if (targetOffset==0) {
-	fillStream(-1);
-      } else {
-	fillStream(targetOffset);
-      }
-      currentPos_ = pos_;
+		// if we are rewinding, we call fillStream with -1
+		if (targetOffset==0) {
+			fillStream(-1);
+		} else {
+			fillStream(targetOffset);
+		}
+		currentPos_ = pos_;
     }
   
 
-  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
-  duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
-  advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
-  //rewindpos_ = pos_;
+	filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
+	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
+	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
+	//rewindpos_ = pos_;
   
-  repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
+	repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
   
-  if (duration_ != -1.0)
+	if (duration_ != -1.0)
     {
-      csize_ = (mrs_natural)(duration_ * israte_);
+		csize_ = (mrs_natural)(duration_ * israte_);
     }
 	
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
   	
-  if (inSamples_ < bufferSize_/2) {
-    reservoirSize_ = 2 * nChannels * bufferSize_;
-  } else { 
-    reservoirSize_ = 2 * nChannels * inSamples_;
-  }
-  if (reservoirSize_ > preservoirSize_) {
-    reservoir_.stretch(nChannels,reservoirSize_);
-  }
-  preservoirSize_ = reservoirSize_;
+	if (inSamples_ < bufferSize_/2) {
+		reservoirSize_ = 2 * nChannels * bufferSize_;
+	} else { 
+		reservoirSize_ = 2 * nChannels * inSamples_;
+	}
+	if (reservoirSize_ > preservoirSize_) {
+		reservoir_.stretch(nChannels,reservoirSize_);
+	}
+	preservoirSize_ = reservoirSize_;
 
 
 
@@ -512,124 +512,124 @@ MP3FileSource::getLinear16(realvec& slice)
 {
   
 #ifdef MARSYAS_MAD  
-  register double peak = 1.0/32767; // normalize 24-bit sample
-  register mad_fixed_t left_ch, right_ch;
-  register mrs_real sample;
+	register double peak = 1.0/32767; // normalize 24-bit sample
+	register mad_fixed_t left_ch, right_ch;
+	register mrs_real sample;
   
-  // decode a frame if necessary 
-  while (ri_ < inSamples_) {
+	// decode a frame if necessary 
+	while (ri_ < inSamples_) {
     
-    fillStream();
+		fillStream();
     
-    if (!notEmpty_) {
-      pos_ = 0;
-      return pos_;
-    }
+		if (!hasData_) {
+			pos_ = 0;
+			return pos_;
+		}
     
-    if (mad_frame_decode(&frame, &stream )) 
-      {
-  		long bufferSize = ((long)stream.bufend-(long)stream.buffer)*8  - stream.md_len*8;
+		if (mad_frame_decode(&frame, &stream )) 
+		{
+			long bufferSize = ((long)stream.bufend-(long)stream.buffer)*8  - stream.md_len*8;
 			
-		if (frame.header.bitrate!=0 && bufferSize>0) durFull_ += (float)bufferSize/(float)frame.header.bitrate;
-		//std::cout<<"decoded: bufptr="<<(int)stream.buffer<<" cnt="<<frameCount_<<" bps="<<frame.header.bitrate<<" bufSize="<<bufferSize<<" dur="<<durFull_<<std::endl;
-		//std::cout<<"possible buffersize c="<<bufferSize<<" 1="<<((long)stream.next_frame-(long)stream.this_frame)*8<<" 2="<<stream.anc_bitlen<<" 3="<<stream.md_len*8<<std::endl;
+			if (frame.header.bitrate!=0 && bufferSize>0) durFull_ += (float)bufferSize/(float)frame.header.bitrate;
+			//std::cout<<"decoded: bufptr="<<(int)stream.buffer<<" cnt="<<frameCount_<<" bps="<<frame.header.bitrate<<" bufSize="<<bufferSize<<" dur="<<durFull_<<std::endl;
+			//std::cout<<"possible buffersize c="<<bufferSize<<" 1="<<((long)stream.next_frame-(long)stream.this_frame)*8<<" 2="<<stream.anc_bitlen<<" 3="<<stream.md_len*8<<std::endl;
 		
-	if(MAD_RECOVERABLE(stream.error)) 
-	  {
+			if(MAD_RECOVERABLE(stream.error)) 
+			{
 	    
-	    if(stream.error != MAD_ERROR_LOSTSYNC) {
-	      string errmsg;
-	      errmsg += "MP3FileSource: recoverable frame level error :";
-	      errmsg += mad_stream_errorstr(&stream);
-	      MRSDIAG(errmsg);
-	    }
+				if(stream.error != MAD_ERROR_LOSTSYNC) {
+					string errmsg;
+					errmsg += "MP3FileSource: recoverable frame level error :";
+					errmsg += mad_stream_errorstr(&stream);
+					MRSDIAG(errmsg);
+				}
 	    
-	    fillStream();
-	    if (!notEmpty_) {
-	      pos_ = 0;
-	      return pos_;
-	    }
+				fillStream();
+				if (!hasData_) {
+					pos_ = 0;
+					return pos_;
+				}
 	    
-	  } 
-	else 
-	  if(stream.error==MAD_ERROR_BUFLEN) 
-	    {
+			} 
+			else 
+				if(stream.error==MAD_ERROR_BUFLEN) 
+				{
 	      
-	      fillStream(); 
-	      if (!notEmpty_) {
-		pos_ = 0;
-		return pos_;
-	      }
+					fillStream(); 
+					if (!hasData_) {
+						pos_ = 0;
+						return pos_;
+					}
 	      
-	    } 
+				} 
 	
-	  else 
-	    {
-	      MRSERR("MP3FileSource: unrecoverable frame level error, quitting.");
-	    }
+				else 
+				{
+					MRSERR("MP3FileSource: unrecoverable frame level error, quitting.");
+				}
 	
-	frameCount_++;
-      }
+			frameCount_++;
+		}
     
     
-    mad_synth_frame(&synth, &frame);  
+		mad_synth_frame(&synth, &frame);  
 
 
     
-    // fill the reservoir...
-    for (t=0; t < bufferSize_; t++) {
+		// fill the reservoir...
+		for (t=0; t < bufferSize_; t++) {
 			
-      left_ch = synth.pcm.samples[0][t];
-      sample = (mrs_real) scale(left_ch);	
-      sample *= peak;
+			left_ch = synth.pcm.samples[0][t];
+			sample = (mrs_real) scale(left_ch);	
+			sample *= peak;
       
-      reservoir_(0, ri_) = sample;
+			reservoir_(0, ri_) = sample;
       
       
-      // for 2 channel audio we can add the channels 
-      // and divide by two
-      if(MAD_NCHANNELS(&frame.header)==2) {
-	right_ch = synth.pcm.samples[1][t];
-	sample = (mrs_real) scale(right_ch);
-	sample *= peak;
+			// for 2 channel audio we can add the channels 
+			// and divide by two
+			if(MAD_NCHANNELS(&frame.header)==2) {
+				right_ch = synth.pcm.samples[1][t];
+				sample = (mrs_real) scale(right_ch);
+				sample *= peak;
 	
 	
-	reservoir_(1, ri_) = sample;
-      }
+				reservoir_(1, ri_) = sample;
+			}
       
-      ri_++;
-    }
+			ri_++;
+		}
     
-  } // reservoir fill
+	} // reservoir fill
   
   
-  // spit out the first inSamples_ in our reservoir 
-  for (t=0; t < inSamples_; t++) {
-    slice(0,t) = reservoir_(0,t);
-    if (MAD_NCHANNELS(&frame.header)==2) 
-      {
-	slice(1,t) = reservoir_(1,t);
-      }
-  }
+	// spit out the first inSamples_ in our reservoir 
+	for (t=0; t < inSamples_; t++) {
+		slice(0,t) = reservoir_(0,t);
+		if (MAD_NCHANNELS(&frame.header)==2) 
+		{
+			slice(1,t) = reservoir_(1,t);
+		}
+	}
 	
-  // keep track of where we are
-  pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->to<mrs_natural>());
-  currentPos_ = pos_;	
+	// keep track of where we are
+	pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->to<mrs_natural>());
+	currentPos_ = pos_;	
 	
 	
-  // move the data we ticked to the front of the reservoir
-  for (t=inSamples_; t < ri_; t++) {
-    reservoir_(0,t-inSamples_) = reservoir_(0,t);
-    if (MAD_NCHANNELS(&frame.header)==2) 
-      reservoir_(1,t-inSamples_) = reservoir_(1,t);      
-  }
+	// move the data we ticked to the front of the reservoir
+	for (t=inSamples_; t < ri_; t++) {
+		reservoir_(0,t-inSamples_) = reservoir_(0,t);
+		if (MAD_NCHANNELS(&frame.header)==2) 
+			reservoir_(1,t-inSamples_) = reservoir_(1,t);      
+	}
   
-  // update our reservroi index
-  ri_ = ri_ - inSamples_;	
+	// update our reservroi index
+	ri_ = ri_ - inSamples_;	
 
-  return pos_;
+	return pos_;
 #else
-  return 0;
+	return 0;
   
 #endif 
 
@@ -646,26 +646,26 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 
 
 	(void) in;
-  //checkFlow(in,out);
+	//checkFlow(in,out);
 
-  if (notEmpty_) 
-    getLinear16(out);
-  else
-    out.setval(0.0);
+	if (hasData_) 
+		getLinear16(out);
+	else
+		out.setval(0.0);
 
-  samplesOut_ += onSamples_;
+	samplesOut_ += onSamples_;
   
-  if (notEmpty_) {
+	if (hasData_) {
 
-	  if (repetitions_ != 1)
-		  notEmpty_ = (samplesOut_ < repetitions_ * csize_);
-	  else 
-		  notEmpty_ = pos_ < csize_;
+		if (repetitions_ != 1)
+			hasData_ = (samplesOut_ < repetitions_ * csize_);
+		else 
+			hasData_ = pos_ < csize_;
 	  
-  } else{
-	  // if notEmpty_ was false already it got set in fillStream
-    // MRSWARN("MP3FileSource: track ended.");
-  }
+	} else{
+		// if hasData_ was false already it got set in fillStream
+		// MRSWARN("MP3FileSource: track ended.");
+	}
   
 }
 
@@ -710,42 +710,42 @@ void
 MP3FileSource::fillStream( mrs_natural target ) 
 {
 
-  // fill the input buffer
+	// fill the input buffer
 #ifdef MARSYAS_MAD  
-  if (stream.buffer == NULL || stream.error == MAD_ERROR_BUFLEN) 
+	if (stream.buffer == NULL || stream.error == MAD_ERROR_BUFLEN) 
     {
     
-      register mrs_natural remaining = 0;
-      register mrs_natural chunk = INPUT_BUFFER_SIZE;
+		register mrs_natural remaining = 0;
+		register mrs_natural chunk = INPUT_BUFFER_SIZE;
       
-      // when called with the default parameter, carry on decoding...	  
-      if ( stream.next_frame != NULL ) {
-	offset = stream.next_frame - ptr_;  
-	remaining = fileSize_ - offset;
-      } else if ( target != 0 ) {	
-	// we have seeked somewhere in the file...
-	offset = target;
-	remaining = fileSize_ - offset;
-      } else if ( target == -1 ) {
-	// we rewound the track...
-	offset = 0;
-	remaining = fileSize_;
-      }
+		// when called with the default parameter, carry on decoding...	  
+		if ( stream.next_frame != NULL ) {
+			offset = stream.next_frame - ptr_;  
+			remaining = fileSize_ - offset;
+		} else if ( target != 0 ) {	
+			// we have seeked somewhere in the file...
+			offset = target;
+			remaining = fileSize_ - offset;
+		} else if ( target == -1 ) {
+			// we rewound the track...
+			offset = 0;
+			remaining = fileSize_;
+		}
       
-      // there may not be enough to fill the buffer
-      if ( remaining < INPUT_BUFFER_SIZE ) {
-	chunk = remaining + MAD_BUFFER_GUARD;
-      }
+		// there may not be enough to fill the buffer
+		if ( remaining < INPUT_BUFFER_SIZE ) {
+			chunk = remaining + MAD_BUFFER_GUARD;
+		}
       
-      // if we have hit the end...
-      if ( offset >= fileSize_ ) {
-	notEmpty_ = false;
-	// MRSWARN("MP3FileSource: cannot seek to offset");
-      } else {
-	// fill the mad buffer
-	mad_stream_buffer(&stream, ptr_ + offset, chunk);
-	stream.error = MAD_ERROR_NONE;
-      }
+		// if we have hit the end...
+		if ( offset >= fileSize_ ) {
+			hasData_ = false;
+			// MRSWARN("MP3FileSource: cannot seek to offset");
+		} else {
+			// fill the mad buffer
+			mad_stream_buffer(&stream, ptr_ + offset, chunk);
+			stream.error = MAD_ERROR_NONE;
+		}
     }
   
 #endif
@@ -768,22 +768,22 @@ MP3FileSource::fillStream( mrs_natural target )
 void MP3FileSource::closeFile()
 {
 	
-  // close the file and release mad structs
-  if (fp == NULL) 
-    return;
+	// close the file and release mad structs
+	if (fp == NULL) 
+		return;
 
-  fclose(fp);
-  fd = 0;
-  pos_ = 0;
-  currentPos_ = 0;
-  size_ = 0;
+	fclose(fp);
+	fd = 0;
+	pos_ = 0;
+	currentPos_ = 0;
+	size_ = 0;
   
 
-  delete [] ptr_;
+	delete [] ptr_;
 
 
 #ifdef MARSYAS_MAD  
-  madStructFinish();
+	madStructFinish();
 #endif 
 }
 
@@ -807,17 +807,17 @@ void MP3FileSource::closeFile()
 #ifdef MARSYAS_MAD  
 inline signed int MP3FileSource::scale(mad_fixed_t sample)
 {
-  // round 
-  sample += (1L << (MAD_F_FRACBITS - 16));
+	// round 
+	sample += (1L << (MAD_F_FRACBITS - 16));
 
-  // clip
-  if (sample >= MAD_F_ONE)
-    sample = MAD_F_ONE - 1;
-  else if (sample < -MAD_F_ONE)
-    sample = -MAD_F_ONE;
+	// clip
+	if (sample >= MAD_F_ONE)
+		sample = MAD_F_ONE - 1;
+	else if (sample < -MAD_F_ONE)
+		sample = -MAD_F_ONE;
 
-  // quantize
-  return sample >> (MAD_F_FRACBITS + 1 - 16);
+	// quantize
+	return sample >> (MAD_F_FRACBITS + 1 - 16);
 }
 #endif 
 

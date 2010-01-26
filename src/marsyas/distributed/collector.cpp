@@ -54,7 +54,7 @@ void* run(void * arg)
   featureNetwork->updctrl("NetworkTCPSource/src/mrs_natural/dataPort", data->dataPort);
   featureNetwork->updctrl("NetworkTCPSource/src/mrs_natural/controlsPort", data->controlsPort);
 
-  featureNetwork->linkctrl("mrs_bool/notEmpty", "NetworkTCPSource/src/mrs_bool/notEmpty");
+  featureNetwork->linkctrl("mrs_bool/hasData", "NetworkTCPSource/src/mrs_bool/hasData");
   
   src->refresh();
   
@@ -66,7 +66,7 @@ void* run(void * arg)
   
   
   // start the network 
-  while ( featureNetwork->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() ) {
+  while ( featureNetwork->getctrl("mrs_bool/hasData")->to<mrs_bool>() ) {
 
 	try {
 		

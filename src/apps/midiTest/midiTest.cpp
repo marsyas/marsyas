@@ -1,3 +1,22 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"
@@ -91,10 +110,10 @@ void midiInfo()
 void newMidiInfo()
 {
     /*
-        This function describes using the MidiInput object and MarControlPointers 
-        to read midi controls in a loop. The disadvantage of this approach is that
-        MidiINput will only return the last midi value between buffers. Change the 
-        buffer size you would like more precision and throughput for midi messages. 
+	  This function describes using the MidiInput object and MarControlPointers 
+	  to read midi controls in a loop. The disadvantage of this approach is that
+	  MidiINput will only return the last midi value between buffers. Change the 
+	  buffer size you would like more precision and throughput for midi messages. 
     */
     MarSystemManager mng;
     MarSystem* series = mng.create("Series", "series");
@@ -178,7 +197,7 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
 
     series->updctrl("Gain/gain/mrs_real/gain", 0.10);
     series->updctrl("AudioSink/dest/mrs_real/israte", 
-            series->getctrl("Fanout/mix/Plucked/src0/mrs_real/osrate"));
+					series->getctrl("Fanout/mix/Plucked/src0/mrs_real/osrate"));
 
     series->updctrl("AudioSink/dest/mrs_natural/bufferSize", 128); 
     series->updctrl("Fanout/mix/Plucked/src0/mrs_real/frequency",fre);
@@ -193,7 +212,7 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
     {
         ostringstream oss1;
         oss1 << "Fanout/mix/Plucked/src" 
-            << i << "/mrs_real/nton";
+			 << i << "/mrs_real/nton";
         series->updctrl(oss1.str(), 0.0);      
     }
 
@@ -268,7 +287,7 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
                             << i << "/mrs_real/frequency";
 
                         oss1 << "Fanout/mix/Plucked/src" 
-                            << i << "/mrs_real/nton";
+							 << i << "/mrs_real/nton";
 
                         if (voices[i] != 0) 
                         {
@@ -295,7 +314,7 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
                             ostringstream oss, oss1;
 
                             oss1 << "Fanout/mix/Plucked/src" 
-                                << i << "/mrs_real/nton";
+								 << i << "/mrs_real/nton";
 
 
                             series->updctrl(oss1.str(), 0.0);      
@@ -360,8 +379,8 @@ void PluckLive(string deviceopt, mrs_real pos, mrs_real fre, mrs_real loz, mrs_r
 
 
 void midiBoomChickAnnotate(mrs_natural bufferSize, 
-        mrs_natural inputSize, 
-        string backgroundopt)
+						   mrs_natural inputSize, 
+						   string backgroundopt)
 {
 
     /* RtMidi* rtmidi = NULL;
@@ -373,7 +392,7 @@ void midiBoomChickAnnotate(mrs_natural bufferSize,
        catch (RtError3 &error) {
        exit(1);
        }
-     */ 
+	*/ 
 
     MarSystemManager mng;
     MarSystem* total = mng.create("Series", "total");
@@ -430,54 +449,54 @@ void midiBoomChickAnnotate(mrs_natural bufferSize,
        channel = rtmidi->getChannel();
        type = rtmidi->getType();
 
-    // STC1000 NoteOn's
-    if ((type == 144) && (byte3 != 0)) 
-    {
-    // rewind the files 
-    if (byte2 == 44) 
-    pnet->updctrl("mrs_natural/pos3", 0);
+	   // STC1000 NoteOn's
+	   if ((type == 144) && (byte3 != 0)) 
+	   {
+	   // rewind the files 
+	   if (byte2 == 44) 
+	   pnet->updctrl("mrs_natural/pos3", 0);
 
-    if (byte2 == 53) 
-    pnet->updctrl("mrs_natural/pos4", 0);		
+	   if (byte2 == 53) 
+	   pnet->updctrl("mrs_natural/pos4", 0);		
 
-    }
+	   }
 
-    // Radio Drum stick 1
-    if ((type == 160) && (byte2 == 15)) 	  
-    {
+	   // Radio Drum stick 1
+	   if ((type == 160) && (byte2 == 15)) 	  
+	   {
 
-    if ((byte3 >= 40) && 
-    (byte3 <= 100))
-    {
-    pnet->updctrl("mrs_natural/pos3", 0);	
-    }
-    else 
-    {
-    pnet->updctrl("mrs_natural/pos4", 0);	              
-    }
-    }
+	   if ((byte3 >= 40) && 
+	   (byte3 <= 100))
+	   {
+	   pnet->updctrl("mrs_natural/pos3", 0);	
+	   }
+	   else 
+	   {
+	   pnet->updctrl("mrs_natural/pos4", 0);	              
+	   }
+	   }
 
-    // Radio Drum stick 2 
-    if ((type == 160) && (byte2 == 17)) 	  
-    {
-    if ((byte3 >= 40) && 
-    (byte3 <= 100))
-    {
-    pnet->updctrl("mrs_natural/pos3", 0);	
-    }
-    else 
-    {
-    pnet->updctrl("mrs_natural/pos4", 0);	              
-    }
-    } 
-    }
+	   // Radio Drum stick 2 
+	   if ((type == 160) && (byte2 == 17)) 	  
+	   {
+	   if ((byte3 >= 40) && 
+	   (byte3 <= 100))
+	   {
+	   pnet->updctrl("mrs_natural/pos3", 0);	
+	   }
+	   else 
+	   {
+	   pnet->updctrl("mrs_natural/pos4", 0);	              
+	   }
+	   } 
+	   }
 
-    total->tick();	
+	   total->tick();	
 
 
 
-    }
-     */ 
+	   }
+	*/ 
 
 }
 
@@ -559,8 +578,8 @@ titemp = ti;
 ytemp = floor(byte3/12.7);
 ti = ytemp;
 if (ti != titemp)
-    pindex = 0;		
-    }
+pindex = 0;		
+}
 } 
 
 
@@ -575,24 +594,24 @@ cout << "Retrieved " << retrievedFiles.size() << " files" << endl;
 
 if (retrievedFiles.size() !=  0) 
 {
-    sfName = retrievedFiles[pindex]; 
-    series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);	  
-    if (byte2 == 2)
-    {
-        int zgrid;
+sfName = retrievedFiles[pindex]; 
+series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);	  
+if (byte2 == 2)
+{
+int zgrid;
 
-        if (retrievedFiles.size() > 10)
-            zgrid = 10;
-        else
-            zgrid = retrievedFiles.size();		 
-        pindex = floor(byte3/127.0 * zgrid);
-        pindex = (pindex+1) % (retrievedFiles.size());
-    }
+if (retrievedFiles.size() > 10)
+zgrid = 10;
+else
+zgrid = retrievedFiles.size();		 
+pindex = floor(byte3/127.0 * zgrid);
+pindex = (pindex+1) % (retrievedFiles.size());
+}
 
 }
 else 
 {
-    cout << "No files" << endl;  
+cout << "No files" << endl;  
 }
 
 
@@ -605,7 +624,7 @@ delete series;
 
 */ 
 
-    void 
+void 
 initOptions()
 {
     cmd_options.addBoolOption("help", "h", false);
@@ -619,7 +638,7 @@ initOptions()
     cmd_options.addNaturalOption("port", "p", 0); 
 }
 
-    void 
+void 
 loadOptions()
 {
     helpopt = cmd_options.getBoolOption("help");
@@ -634,7 +653,7 @@ loadOptions()
 }
 
 // take advantage of MarSystemManager 
-    void 
+void 
 tempotest_sfplay(string sfName)
 {
     cout << "Playing " << sfName << endl; 
@@ -650,7 +669,7 @@ tempotest_sfplay(string sfName)
     series->updctrl("mrs_natural/inSamples", 128);
     series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-    while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
         series->tick();
 
     delete series;
@@ -658,7 +677,7 @@ tempotest_sfplay(string sfName)
 
 
 
-    void 
+void 
 tempo_test(string fname, int tempo, int rank)
 {
     ifstream from(fname.c_str());
@@ -721,14 +740,14 @@ tempo_test(string fname, int tempo, int rank)
         /* cout << "Name = " << names[i] << endl;
            cout << "Tempo = " << tempos[i] << endl;
            cout << "Strength = " << strengths[i] << endl;
-         */ 
+		*/ 
 
         int si = (int)strengths[i];
         int ti = (int)tempos[i];
 
         /* cout << "si = " << si << endl;
            cout << "ti = " << ti << endl;
-         */ 
+		*/ 
 
         tempo_map[si][ti].push_back(names[i]);
     }
@@ -769,7 +788,7 @@ tempo_test(string fname, int tempo, int rank)
 
        tempotest_sfplay(retrievedFiles[0]);
        }
-     */ 
+	*/ 
 
 
 

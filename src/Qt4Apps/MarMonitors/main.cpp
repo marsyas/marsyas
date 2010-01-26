@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
   MarMonitors* monitors = new MarMonitors(pluginName, audioInputName);
   
-  monitors->setGeometry(50, 50, 800, 500);
+  monitors->setGeometry(50, 50, 1400, 500);
   monitors->show();
 
   return app.exec();

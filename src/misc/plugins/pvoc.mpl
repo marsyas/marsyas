@@ -16,9 +16,9 @@
 # Synonyms of /Series/playbacknet/mrs_bool/mute = 
 # Number of synonyms = 1
 # /Series/playbacknet/Gain/gt/mrs_bool/mute
-# Synonyms of /Series/playbacknet/mrs_bool/notEmpty = 
+# Synonyms of /Series/playbacknet/mrs_bool/hasData = 
 # Number of synonyms = 1
-# /Series/playbacknet/SoundFileSource/src/mrs_bool/notEmpty
+# /Series/playbacknet/SoundFileSource/src/mrs_bool/hasData
 # Synonyms of /Series/playbacknet/mrs_natural/nChannels = 
 # Number of synonyms = 2
 # /Series/playbacknet/SoundFileSource/src/mrs_natural/nChannels
@@ -42,7 +42,7 @@
 # MarControls = 17
 # /SoundFileSource/src/mrs_bool/debug = 0
 # /SoundFileSource/src/mrs_bool/mute = 0
-# /SoundFileSource/src/mrs_bool/notEmpty = 0
+# /SoundFileSource/src/mrs_bool/hasData = 0
 # /SoundFileSource/src/mrs_bool/noteon = 0
 # /SoundFileSource/src/mrs_natural/inObservations = 1
 # /SoundFileSource/src/mrs_natural/inSamples = 512

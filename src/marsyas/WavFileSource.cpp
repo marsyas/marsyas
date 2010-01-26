@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ void
 WavFileSource::addControls()
 {
 	//addctrl("mrs_natural/nChannels",(mrs_natural)1);
-	addctrl("mrs_bool/notEmpty", true);  
+	addctrl("mrs_bool/hasData", true);  
   
 	addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
 	setctrlState("mrs_natural/pos", true);
@@ -125,8 +125,8 @@ WavFileSource::getHeader(string filename)
 			// setctrl("mrs_natural/nChannels", 1);
 			setctrl("mrs_real/israte", 22050.0);
 			setctrl("mrs_natural/size", 0);
-			notEmpty_ = false;
-			setctrl("mrs_bool/notEmpty", false);	  
+			hasData_ = false;
+			setctrl("mrs_bool/hasData", false);	  
 		}
 		else
 		{
@@ -244,7 +244,7 @@ WavFileSource::getHeader(string filename)
 			ctrl_labelNames_->setValue(",", NOUPDATE);
 			ctrl_nLabels_->setValue(0, NOUPDATE);
 			sfp_begin_ = ftell(sfp_);
-			notEmpty_ = true;
+			hasData_ = true;
 			pos_ = 0;
 			samplesOut_ = 0;
 		}
@@ -255,8 +255,8 @@ WavFileSource::getHeader(string filename)
 		setctrl("mrs_real/israte", 22050.0);
 		setctrl("mrs_natural/onObservations", 1);
 		setctrl("mrs_natural/size", 0);
-		notEmpty_ = false;
-		setctrl("mrs_bool/notEmpty", false);      
+		hasData_ = false;
+		setctrl("mrs_bool/hasData", false);      
 		pos_ = 0;
 	}
   
@@ -409,14 +409,14 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			samplesOut_ += onSamples_;
 
 			if (repetitions_ != 1) 
-				notEmpty_ = (samplesOut_ < repetitions_ * csize_);
+				hasData_ = (samplesOut_ < repetitions_ * csize_);
 			else 
-				notEmpty_ = pos_ < csize_;
+				hasData_ = pos_ < csize_;
 
 
-			notEmpty_ = samplesOut_ < repetitions_ * csize_;
+			hasData_ = samplesOut_ < repetitions_ * csize_;
 			if (repetitions_ == -1) 
-				notEmpty_ = true;
+				hasData_ = true;
 			break;
 		}
 		case 8:
@@ -432,14 +432,14 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			samplesOut_ += onSamples_;
 
 			if (repetitions_ != 1) 
-				notEmpty_ = (samplesOut_ < repetitions_ * csize_);
+				hasData_ = (samplesOut_ < repetitions_ * csize_);
 			else 
-				notEmpty_ = pos_ < csize_;
+				hasData_ = pos_ < csize_;
 
 
-			notEmpty_ = samplesOut_ < repetitions_ * csize_;
+			hasData_ = samplesOut_ < repetitions_ * csize_;
 			if (repetitions_ == -1) 
-				notEmpty_ = true;
+				hasData_ = true;
 			break;
 		}
 	}

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -75,7 +75,7 @@ AudioSource::addControls()
   addctrl("mrs_bool/initAudio", false);
   setctrlState("mrs_bool/initAudio", true);
   
-  addctrl("mrs_bool/notEmpty", true);
+  addctrl("mrs_bool/hasData", true);
   addctrl("mrs_real/gain", 1.0); 
 
   addctrl("mrs_natural/device", 0);

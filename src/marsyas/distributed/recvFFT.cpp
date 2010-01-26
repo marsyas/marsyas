@@ -77,7 +77,7 @@ void sftransform(mrs_real gain, string outName)
   playbacknet->linkctrl("mrs_natural/nChannels", "NetworkTCPSource/netSrc/mrs_natural/nChannels");
   playbacknet->linkctrl("mrs_natural/pos", "NetworkTCPSource/netSrc/mrs_natural/pos");
   playbacknet->linkctrl("mrs_natural/nChannels", "SoundFileSink/dest/mrs_natural/nChannels");
-  playbacknet->linkctrl("mrs_bool/notEmpty", "NetworkTCPSource/netSrc/mrs_bool/notEmpty");
+  playbacknet->linkctrl("mrs_bool/hasData", "NetworkTCPSource/netSrc/mrs_bool/hasData");
   playbacknet->linkctrl("mrs_bool/mute", "Gain/gt/mrs_bool/mute");
 
   

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -23,10 +23,10 @@ using namespace Marsyas;
 
 ViconFileSource::ViconFileSource(string name):MarSystem("ViconFileSource",name)
 {
-  //type_ = "ViconFileSource";
-  //name_ = name;
+	//type_ = "ViconFileSource";
+	//name_ = name;
   
-  vfp_ = 0;
+	vfp_ = 0;
 
 	addControls();
 }
@@ -34,18 +34,18 @@ ViconFileSource::ViconFileSource(string name):MarSystem("ViconFileSource",name)
 
 ViconFileSource::~ViconFileSource()
 {
-  if (vfp_ != NULL)
-    fclose(vfp_);
+	if (vfp_ != NULL)
+		fclose(vfp_);
 }
 
 void 
 ViconFileSource::addControls()
 {
-  addctrl("mrs_bool/notEmpty", true);  
-  addctrl("mrs_natural/size", 0);
-  addctrl("mrs_string/markers", " ");
-  addctrl("mrs_string/filename", "dviconfile");
-  setctrlState("mrs_string/filename", true);
+	addctrl("mrs_bool/hasData", true);  
+	addctrl("mrs_natural/size", 0);
+	addctrl("mrs_string/markers", " ");
+	addctrl("mrs_string/filename", "dviconfile");
+	setctrlState("mrs_string/filename", true);
 }
 
 
@@ -53,7 +53,7 @@ ViconFileSource::addControls()
 MarSystem* 
 ViconFileSource::clone() const
 {
-  return new ViconFileSource(*this);
+	return new ViconFileSource(*this);
 }
 
 
@@ -61,23 +61,23 @@ ViconFileSource::clone() const
 void 
 ViconFileSource::getHeader(string filename)
 {
-  // Need to read Vicon File Header to get number and name of markers
-  vfp_ = fopen(filename.c_str(), "r");
-  if (vfp_)
+	// Need to read Vicon File Header to get number and name of markers
+	vfp_ = fopen(filename.c_str(), "r");
+	if (vfp_)
     {
-      // read first line from file
-      char buffer[4096];
-      fgets(buffer, 4096, vfp_);
-      stringstream line(buffer);
-      char entry[256];
-      fileObs_ = 0;
-      while (line.getline(entry, 256, ','))
-	{
+		// read first line from file
+		char buffer[4096];
+		fgets(buffer, 4096, vfp_);
+		stringstream line(buffer);
+		char entry[256];
+		fileObs_ = 0;
+		while (line.getline(entry, 256, ','))
+		{
 	  
-	  fileObs_++;
-	}
-      setctrl("mrs_natural/onObservations", fileObs_);
-      setctrl("mrs_string/markers", buffer);
+			fileObs_++;
+		}
+		setctrl("mrs_natural/onObservations", fileObs_);
+		setctrl("mrs_string/markers", buffer);
     }
 } 
 
@@ -86,20 +86,20 @@ void
 ViconFileSource::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-  israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
 
 
-  if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
+	if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
     {
-      filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
-      getHeader(filename_);
+		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
+		getHeader(filename_);
       
     }
   
-  setctrl("mrs_natural/onSamples", inSamples_);
-  setctrl("mrs_natural/onObservations", fileObs_);
-  setctrl("mrs_real/osrate", israte_);
+	setctrl("mrs_natural/onSamples", inSamples_);
+	setctrl("mrs_natural/onObservations", fileObs_);
+	setctrl("mrs_real/osrate", israte_);
     
     
 }
@@ -108,42 +108,42 @@ void
 ViconFileSource::myProcess(realvec& in, realvec& out)
 {
 	(void) in;
-  //checkFlow(in,out);
+	//checkFlow(in,out);
 
   
-  for (t = 0; t < inSamples_; t++)
+	for (t = 0; t < inSamples_; t++)
     {
-      bool notValidLine = true;
-      char buffer[4096];      
-      while (notValidLine) 
-	{
-	  char *res;
-	  res = fgets(buffer, 4096, vfp_);
-	  if (res == NULL) 
-	    {
-	      setctrl("mrs_bool/notEmpty",false);
-	      return;
-	    }
-	  
-	  stringstream line(buffer);
-	  stringstream pline(buffer);
-	  char entry[256];
-	  notValidLine = false;
-	  for (o=0; o < onObservations_; o++)
-	    { 
-	      line.getline(entry, 256, ',');
-	      if (!strcmp(entry,"")) 
+		bool notValidLine = true;
+		char buffer[4096];      
+		while (notValidLine) 
 		{
-		  for (mrs_natural j=0; j < o; j++)
-		    out(j,t) = 0.0;
-		  notValidLine = true;
-		}
-	      else 
-			out(o,t) = (mrs_real)atof(entry);
+			char *res;
+			res = fgets(buffer, 4096, vfp_);
+			if (res == NULL) 
+			{
+				setctrl("mrs_bool/hasData",false);
+				return;
+			}
+	  
+			stringstream line(buffer);
+			stringstream pline(buffer);
+			char entry[256];
+			notValidLine = false;
+			for (o=0; o < onObservations_; o++)
+			{ 
+				line.getline(entry, 256, ',');
+				if (!strcmp(entry,"")) 
+				{
+					for (mrs_natural j=0; j < o; j++)
+						out(j,t) = 0.0;
+					notValidLine = true;
+				}
+				else 
+					out(o,t) = (mrs_real)atof(entry);
 
-	      if (notValidLine) break;
-	    }
-	}
+				if (notValidLine) break;
+			}
+		}
     }
 }
 

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ Marx2DGraph::Marx2DGraph( int size, QWidget *parent )
 
   xpos = 0;  // x border around graph
   ypos = 0;  // y border around graph
-  xaxisoffset = 30;  // how far in to draw right of xaxis
+  xaxisoffset = 80;  // how far in to draw right of xaxis
   yaxisoffset = 30;  // how far in to draw top of yaxis
   width = QWidget::width() - 2*xpos;    // widget width
   height = QWidget::height() - 2*ypos;  // widget height
@@ -329,6 +329,7 @@ Marx2DGraph::setShowAxisScale( bool tf )
 bool 
 Marx2DGraph::setBuffer( realvec& rv )
 {
+	
   if ( rv.getSize() == buffersize ) { 
      *buffer = rv;
 
@@ -337,20 +338,28 @@ Marx2DGraph::setBuffer( realvec& rv )
     int xl = (int)(xaxisoffset+xpos+gwidth);
     int yl = (int)(yaxisoffset+ypos+gheight) - pen.width() - 1;
 
-    repaint( QRect( QPoint(xu, yu), QPoint(xl, yl)) );
-
+    // repaint( QRect( QPoint(xu, yu), QPoint(xl, yl)) );
+	update();
+	
     return true;
   }
   return false;
 }
 
+void 
+Marx2DGraph::setYMaxMin(float ymax, float ymin)
+{
+	ymaxval = ymax;
+	yminval = ymin;
+}
+	
 
 
 void
 Marx2DGraph::draw_y_ticks(QPainter *painter)
 {
   float interval = gheight/10;
-                                                                                        
+  
   int stop = 10;
   int start = 0;
   if (!showXaxis){ stop = 11; }
@@ -366,15 +375,23 @@ Marx2DGraph::draw_y_ticks(QPainter *painter)
     /* draw axis scale label */
     if (show_axis_scale) {
       ostringstream ds;
-      ds << setprecision(3) << (gheight/2.0 - i*interval )/(gheight/2);
+	  float tinterval;
+	  tinterval = ymaxval-yminval/10.0;
+	  
+      // ds << fixed << setprecision(3) << i * tinterval + buffer->minval();
+	  
+      ds << setprecision(3) << ymaxval - i * tinterval;
+	  
+      // ds << fixed << setprecision(1) << (yaxisoffset + ypos + i * interval-10)/(gheight/2);
       //(gheight/2.0 + ypos + yaxisoffset) - (gheight/2)*val
 
-      painter->drawText( QPointF(xaxisoffset+xpos-25, yaxisoffset+ypos+i*interval), 
+      painter->drawText( QPointF(xaxisoffset+xpos-80, yaxisoffset+ypos+i*interval), 
 			QString( QString::fromStdString(ds.str()) )
 			); 
     }
 
   }
+  
 }
 
 
@@ -393,9 +410,9 @@ void Marx2DGraph::draw_x_ticks(QPainter *painter)
     /* draw axis scale label */
     if (show_axis_scale) {
       ostringstream ds;
-      ds << setprecision(3) << ((float)buffersize/10.0)*(float)i;
+      ds << fixed << setprecision(0) << ((float)buffersize/10.0)*(float)i;
 
-      painter->drawText( QPointF(xaxisoffset+xpos+i*interval, yaxisoffset+ypos+gheight+17), 
+      painter->drawText( QPointF(xaxisoffset+xpos+i*interval-10, yaxisoffset+ypos+gheight+17), 
 			QString( QString::fromStdString(ds.str()) )
 			); 
     }
@@ -473,15 +490,21 @@ Marx2DGraph::paintEvent( QPaintEvent * )
   
   /* draw label */
   if (label != "") {
-    painter.rotate(270);      
-    painter.drawText( QPointF(-1*(gheight+ypos+2*yaxisoffset-2), 
-			      gwidth+xpos+2*xaxisoffset-5 ), 
-		      QString(QString::fromStdString(label))
-			);
-    painter.rotate(90);
+	  // painter.rotate(270);      
+	  // painter.drawText( QPointF(-1*(gheight+ypos+2*yaxisoffset-2), 
+	  // gwidth+xpos+2*xaxisoffset-5 ), 
+	  // QString(QString::fromStdString(label)));
+	  
+
+	  painter.drawText( QPointF(60,30),
+						QString(QString::fromStdString(label))
+						
+		  );
+	  // painter.rotate(90);
   }
+  
 
-
+  
 
   /* draw data */
   painter.setBrush( QBrush( data_color, Qt::SolidPattern ) );
@@ -697,24 +720,24 @@ Marx2DGraph::mousePressEvent(QMouseEvent* me)
   display = true;
 
   if (me->button() == Qt::LeftButton) {
-    dsamplestring = "closest sample = ";
-    dvaluestring  = "     its value = ";
+    dsamplestring = "x = ";
+    dvaluestring  = "y = ";
 
     if (dsample - floor(dsample) > .5) { dsample = ceil(dsample);}
     else { dsample = floor(dsample); }
     dvalue  = (*buffer)((int)dsample); 
   }
   else if (me->button() == Qt::RightButton) {
-    dsamplestring = "estimated sample = ";
-    dvaluestring  = "       its value = ";
+    dsamplestring = "x = ";
+    dvaluestring  = "y = ";
 
     dvalue  = (mousey - gheight/2. - ypos - yaxisoffset)*-2/gheight;
   }
 
   ostringstream ds, dv;
-  ds << setprecision(2) << dsample;
+  ds << setprecision(4) << dsample;
   dsamplestring.append( ds.str() );
-  dv << setprecision(2) << dvalue;
+  dv << setprecision(4) << dvalue;
   dvaluestring.append( dv.str() );
 
   update();

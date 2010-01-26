@@ -67,7 +67,7 @@ void* run(void * arg)
   playbacknet->linkctrl("mrs_natural/nChannels", "SoundFileSource/src/mrs_natural/nChannels");
   playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
   playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-  playbacknet->linkctrl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+  playbacknet->linkctrl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
  
   dest->refresh();
   
@@ -100,10 +100,10 @@ void* run(void * arg)
 	
 	cout << "Thread: " << data->thread_id << " playing " << soundfile << endl;
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", soundfile);
-	playbacknet->updctrl("mrs_bool/notEmpty", true);
+	playbacknet->updctrl("mrs_bool/hasData", true);
 	
 	// play the sound 
-  	while ( playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
+  	while ( playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>() )
   	  {
 		try {
 	      		playbacknet->tick(); // everything happens here 

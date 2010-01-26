@@ -1,3 +1,23 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
+
 // mudbox is a container executable for various simple 
 // functions/applications that typically test drive 
 // a single MarSystem or type of processing. It can 
@@ -8,18 +28,16 @@
 // adding your own application and having to change 
 // the build process.  
 
-// #include <linux/soundcard.h>
-// #include <unistd.h>
+
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-// #include <unistd.h>
 
 #include <cstdio>
 #include <cstdlib>
 #include <string>
 #include <iomanip> 
-// #include <unistd.h>
+
 
 #include "common.h"
 #include "MarSystemManager.h"
@@ -263,7 +281,7 @@ toy_with_matlab(string sfName)
 	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	net->updctrl("Gain/gain/mrs_real/gain", 8.0);
 	net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	net->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	net->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 	mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
 	mrs_natural inSamples = net->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	mrs_real tstep = inSamples / srate;
@@ -357,16 +375,16 @@ toy_with_CollectionFileSource(string sfName)
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	playbacknet->linkControl("mrs_bool/notEmpty", 
-				 "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", 
+							 "SoundFileSource/src/mrs_bool/hasData");
 	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
 	mrs_bool isEmpty;
 	// int cindex = 0;
-	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
-	  playbacknet->tick();
-	  // playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
+		playbacknet->tick();
+		// playbacknet->updctrl("SoundFileSource/src/mrs_natural/cindex", cindex);
 		cout << playbacknet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
 		cout << playbacknet->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>() << endl;
 		
@@ -398,15 +416,15 @@ toy_with_RadioDrumInput()
 	playbacknet->updctrl("RadioDrumInput/rd/mrs_bool/initmidi", true);
 	while (true) 
 	{
-	  playbacknet->tick();
+		playbacknet->tick();
       
-      /*
-      printf("right stick x position:  %li left stick x position: %li \r", 
-              playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/rightstickx")->to<mrs_natural>(), 
-              playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/leftstickx")->to<mrs_natural>() );
-      */
-      cout << "rightstick= " << playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/rightstickx")->to<mrs_natural>() << endl;
-      cout << "leftstick= " <<  playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/leftstickx")->to<mrs_natural>() << endl;
+		/*
+		  printf("right stick x position:  %li left stick x position: %li \r", 
+		  playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/rightstickx")->to<mrs_natural>(), 
+		  playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/leftstickx")->to<mrs_natural>() );
+		*/
+		cout << "rightstick= " << playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/rightstickx")->to<mrs_natural>() << endl;
+		cout << "leftstick= " <<  playbacknet->getctrl("RadioDrumInput/rd/mrs_natural/leftstickx")->to<mrs_natural>() << endl;
     }
     delete playbacknet;
 }
@@ -417,13 +435,13 @@ toy_with_RadioDrumInput()
 
 
 /*
-This code works by loading an mpl file with a trained classifier. 
+  This code works by loading an mpl file with a trained classifier. 
 
-First run bextract to analyze examples and train a classifier
-bextract -e DRUMEXTRACT -f outputfile.mpl -w 512 -sr 44100.0
+  First run bextract to analyze examples and train a classifier
+  bextract -e DRUMEXTRACT -f outputfile.mpl -w 512 -sr 44100.0
 
-Then run 
-drumextract outputfile.mpl
+  Then run 
+  drumextract outputfile.mpl
 */
 void drumClassify( string drumFile) {
 	int windowsize = 512;
@@ -506,17 +524,17 @@ void drumClassify( string drumFile) {
 				mystream >> readval;
 				means.setval( i,i,readval);
 			}
-			if ( words[i] == "covars" )  
-				for ( int p = 0; p < numberOfCoefficients; p++)
-				{
-					// get he current word from the file
-					word = words[i++];
-					// cast the string to a float
-					float readval;
-					istringstream mystream(word);
-					mystream >> readval;
-					means.setval( i,i,readval);
-				}
+		if ( words[i] == "covars" )  
+			for ( int p = 0; p < numberOfCoefficients; p++)
+			{
+				// get he current word from the file
+				word = words[i++];
+				// cast the string to a float
+				float readval;
+				istringstream mystream(word);
+				mystream >> readval;
+				means.setval( i,i,readval);
+			}
 	}
 
 	cout << means << endl;
@@ -534,13 +552,13 @@ void drumClassify( string drumFile) {
 	realvec out2;
 
 	in1.create(TimeLoop->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		TimeLoop->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			   TimeLoop->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
 	out1.create(TimeLoop->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		TimeLoop->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				TimeLoop->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 	out2.create(extractNet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
-		extractNet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				extractNet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 #ifdef MARSYAS_MIDIIO
 	RtMidiOut *midiout = new RtMidiOut();
@@ -554,7 +572,7 @@ void drumClassify( string drumFile) {
 
 	// PeakerAdaptive looks for hits and then if it finds one reports a non-zero value
 	// When a non-zero value is found extractNet is ticked
-	while ( TimeLoop->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( TimeLoop->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		TimeLoop->process(in1,out1);
 		for (int i = 0; i < windowsize;i++)
@@ -585,41 +603,41 @@ void drumClassify( string drumFile) {
 void 
 toy_with_onsets(string sfName) 
 {
-  // cout << "toying with onsets" << endl;
+	// cout << "toying with onsets" << endl;
 	MarSystemManager mng;
 
 	// assemble the processing network 
 	MarSystem* onsetnet = mng.create("Series", "onsetnet");
-		MarSystem* onsetaccum = mng.create("Accumulator", "onsetaccum");
-			MarSystem* onsetseries= mng.create("Series","onsetseries");
-				onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
-				onsetseries->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
-				//onsetseries->addMarSystem(mng.create("ShiftInput", "si"));
-				//onsetseries->addMarSystem(mng.create("Windowing", "win"));
-				MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
-					onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
-					onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
-					onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
-					onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-					onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
-					//onsetdetector->addMarSystem(mng.create("Memory","mem"));
-					onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
-					onsetdetector->addMarSystem(mng.create("Filter","filt1"));
-					onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
-					onsetdetector->addMarSystem(mng.create("Filter","filt2"));
-					onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
-					onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
-				onsetseries->addMarSystem(onsetdetector);
-			onsetaccum->addMarSystem(onsetseries);
-		onsetnet->addMarSystem(onsetaccum);
+	MarSystem* onsetaccum = mng.create("Accumulator", "onsetaccum");
+	MarSystem* onsetseries= mng.create("Series","onsetseries");
+	onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
+	onsetseries->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
+	//onsetseries->addMarSystem(mng.create("ShiftInput", "si"));
+	//onsetseries->addMarSystem(mng.create("Windowing", "win"));
+	MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
+	onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
+	onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
+	onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
+	onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
+	//onsetdetector->addMarSystem(mng.create("Memory","mem"));
+	onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
+	onsetdetector->addMarSystem(mng.create("Filter","filt1"));
+	onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
+	onsetdetector->addMarSystem(mng.create("Filter","filt2"));
+	onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
+	onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
+	onsetseries->addMarSystem(onsetdetector);
+	onsetaccum->addMarSystem(onsetseries);
+	onsetnet->addMarSystem(onsetaccum);
 	//onsetnet->addMarSystem(mng.create("ShiftOutput","so"));
 	MarSystem* onsetmix = mng.create("Fanout","onsetmix");
-		onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
-			MarSystem* onsetsynth = mng.create("Series","onsetsynth");
-				onsetsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
-				onsetsynth->addMarSystem(mng.create("ADSR","env"));
-				onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
-			onsetmix->addMarSystem(onsetsynth);
+	onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
+	MarSystem* onsetsynth = mng.create("Series","onsetsynth");
+	onsetsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
+	onsetsynth->addMarSystem(mng.create("ADSR","env"));
+	onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
+	onsetmix->addMarSystem(onsetsynth);
 	onsetnet->addMarSystem(onsetmix);
 	
 	//onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
@@ -629,11 +647,11 @@ toy_with_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
 	///////////////////////////////////////////////////////////////////////////////////////
-	onsetnet->linkctrl("mrs_bool/notEmpty", 
-		"Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/notEmpty");
+	onsetnet->linkctrl("mrs_bool/hasData", 
+					   "Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/hasData");
 	//onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
 	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
 	//onsetnet->linkctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
 	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
 	
@@ -642,9 +660,9 @@ toy_with_onsets(string sfName)
 
 	//link FILTERS coeffs
 	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/ncoeffs",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
 	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/dcoeffs",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
@@ -668,10 +686,10 @@ toy_with_onsets(string sfName)
 
 	//best result till now are using dB power Spectrum!
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
-		"wrongdBonsets");
+					  "wrongdBonsets");
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Flux/flux/mrs_string/mode",
-		"DixonDAFX06");
+					  "DixonDAFX06");
 	
 	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
 	// Coefficients taken from MATLAB butter(2, 0.28)
@@ -680,13 +698,13 @@ toy_with_onsets(string sfName)
 	bcoeffs(1) = 0.2347;
 	bcoeffs(2) = 0.1174;
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs",
-		bcoeffs);
+					  bcoeffs);
 	realvec acoeffs(1,3);
 	acoeffs(0) = 1.0;
 	acoeffs(1) = -0.8252;
 	acoeffs(2) = 0.2946;
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs",
-		acoeffs);
+					  acoeffs);
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
@@ -733,7 +751,7 @@ toy_with_onsets(string sfName)
 	sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	// cout << "Sampling rate = " << sampling_rate << endl;
 	
-	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+	while(onsetnet->getctrl("mrs_bool/hasData")->to<mrs_bool>())
 	{
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 		onsetnet->tick();
@@ -754,99 +772,99 @@ toy_with_train_predict(string trainFileName, string testFileName)
 
 	MarSystemManager mng;
 
-  ////////////////////////////////////////////////////////////
-  //
-  // The network that we will use to train and predict
-  //
-  MarSystem* net = mng.create("Series", "series");
+	////////////////////////////////////////////////////////////
+	//
+	// The network that we will use to train and predict
+	//
+	MarSystem* net = mng.create("Series", "series");
 
-  ////////////////////////////////////////////////////////////
-  //
-  // The WekaSource we read the train and test .arf files into
-  //
-  net->addMarSystem(mng.create("WekaSource", "wsrc"));
+	////////////////////////////////////////////////////////////
+	//
+	// The WekaSource we read the train and test .arf files into
+	//
+	net->addMarSystem(mng.create("WekaSource", "wsrc"));
 
-  ////////////////////////////////////////////////////////////
-  //
-  // The classifier
-  //
-  MarSystem* classifier = mng.create("Classifier", "cl");
-  net->addMarSystem(classifier);
+	////////////////////////////////////////////////////////////
+	//
+	// The classifier
+	//
+	MarSystem* classifier = mng.create("Classifier", "cl");
+	net->addMarSystem(classifier);
 
-  ////////////////////////////////////////////////////////////
-  //
-  // Which classifier function to use
-  //
-  string classifier_ = "GS";
-  if (classifier_ == "GS")
-	net->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
-  if (classifier_ == "ZEROR") 
-	net->updctrl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
-  if (classifier_ == "SVM")   
-    net->updctrl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+	////////////////////////////////////////////////////////////
+	//
+	// Which classifier function to use
+	//
+	string classifier_ = "GS";
+	if (classifier_ == "GS")
+		net->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+	if (classifier_ == "ZEROR") 
+		net->updctrl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
+	if (classifier_ == "SVM")   
+		net->updctrl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
 
-  ////////////////////////////////////////////////////////////
-  //
-  // The training file we are feeding into the WekaSource
-  //
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", trainFileName);
-  net->updctrl("mrs_natural/inSamples", 1);
+	////////////////////////////////////////////////////////////
+	//
+	// The training file we are feeding into the WekaSource
+	//
+	net->updctrl("WekaSource/wsrc/mrs_string/filename", trainFileName);
+	net->updctrl("mrs_natural/inSamples", 1);
 
-  ////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
   
 
- ////////////////////////////////////////////////////////////
-  //
-  // Set the classes of the Summary and Classifier to be
-  // the same as the WekaSource
-  //
-  net->updctrl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->updctrl("Classifier/cl/mrs_string/mode", "train");  
+	////////////////////////////////////////////////////////////
+	//
+	// Set the classes of the Summary and Classifier to be
+	// the same as the WekaSource
+	//
+	net->updctrl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+	net->updctrl("Classifier/cl/mrs_string/mode", "train");  
 
-  ////////////////////////////////////////////////////////////
-  //
-  // Tick over the training WekaSource until all lines in the
-  // training file have been read.
-  //
-  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
-	string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
-  	net->tick();
-	net->updctrl("Classifier/cl/mrs_string/mode", mode);
-  }
+	////////////////////////////////////////////////////////////
+	//
+	// Tick over the training WekaSource until all lines in the
+	// training file have been read.
+	//
+	while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+		string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
+		net->tick();
+		net->updctrl("Classifier/cl/mrs_string/mode", mode);
+	}
 
 
- ////////////////////////////////////////////////////////////
-  //
-  // Predict the classes of the test data
-  //
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", testFileName);
-  net->updctrl("Classifier/cl/mrs_string/mode", "predict");  
+	////////////////////////////////////////////////////////////
+	//
+	// Predict the classes of the test data
+	//
+	net->updctrl("WekaSource/wsrc/mrs_string/filename", testFileName);
+	net->updctrl("Classifier/cl/mrs_string/mode", "predict");  
 
-  ////////////////////////////////////////////////////////////
-  //
-  // Tick over the test WekaSource until all lines in the
-  // test file have been read.
-  //
-  realvec data;
+	////////////////////////////////////////////////////////////
+	//
+	// Tick over the test WekaSource until all lines in the
+	// test file have been read.
+	//
+	realvec data;
 
-  int correct_instances = 0;
-  int total_instances = 0;
+	int correct_instances = 0;
+	int total_instances = 0;
   
-  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
-   	net->tick();
-   	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
- 	cout << (int)data(0,0) << "-" << (int)data(1,0) << endl;
-	if ((int)data(0,0) == (int)data(1,0))
-		correct_instances++;
-	total_instances++;
-  }
+	while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+		net->tick();
+		data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		cout << (int)data(0,0) << "-" << (int)data(1,0) << endl;
+		if ((int)data(0,0) == (int)data(1,0))
+			correct_instances++;
+		total_instances++;
+	}
 
-  cout << "Correct instancs = " << correct_instances << " out of a total of " << total_instances << endl;
+	cout << "Correct instancs = " << correct_instances << " out of a total of " << total_instances << endl;
   
 
-  // sness - hmm, I really should be able to delete net, but I get a 
-  // coredump when I do.  Maybe I need to destroy something else first?
-  delete net;
+	// sness - hmm, I really should be able to delete net, but I get a 
+	// coredump when I do.  Maybe I need to destroy something else first?
+	delete net;
 	
 
 }
@@ -879,8 +897,8 @@ toy_with_sfplay(string sfName)
 
 	
 
-	playbacknet->linkControl("mrs_bool/notEmpty", 
-							 "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", 
+							 "SoundFileSource/src/mrs_bool/hasData");
 	playbacknet->linkControl("mrs_natural/pos", 
 							 "SoundFileSource/src/mrs_natural/pos");
 
@@ -888,7 +906,7 @@ toy_with_sfplay(string sfName)
 	mrs_real frequency = 40.0;
 	// mrs_natural win = 1;
 
-	// while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	// while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	for (int i=0; i < 1000; i++)
 	{
 		// playbacknet->updctrl("Fanout/mix/Biquad/f1/mrs_real/frequency", fabs(2000.0 - frequency)+10.0);
@@ -908,26 +926,26 @@ toy_with_sfplay(string sfName)
 void 
 toy_with_sine() 
 {
-  cout << "Toying with sine" << endl;
-  MarSystemManager mng;
+	cout << "Toying with sine" << endl;
+	MarSystemManager mng;
   
-  MarSystem* snet = mng.create("Series/snet");
-  MarSystem* smix = mng.create("Fanout/smix");
-  smix->addMarSystem(mng.create("SineSource/src1"));
-  smix->addMarSystem(mng.create("SineSource/src2"));
-  snet->addMarSystem(smix);
-  snet->addMarSystem(mng.create("AudioSink/dest"));
+	MarSystem* snet = mng.create("Series/snet");
+	MarSystem* smix = mng.create("Fanout/smix");
+	smix->addMarSystem(mng.create("SineSource/src1"));
+	smix->addMarSystem(mng.create("SineSource/src2"));
+	snet->addMarSystem(smix);
+	snet->addMarSystem(mng.create("AudioSink/dest"));
   
-  snet->updctrl("mrs_natural/inSamples", 2048);
-  snet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	snet->updctrl("mrs_natural/inSamples", 2048);
+	snet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
   
  
 
-  for (int i=0; i < 500; i++) 
+	for (int i=0; i < 500; i++) 
     {
-      snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", 440.0);
-      snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", 445.0);
-      snet->tick();
+		snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", 440.0);
+		snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", 445.0);
+		snet->tick();
     }
 
 }
@@ -1075,7 +1093,7 @@ toy_with_labelsfplay(string sfName)
 	MarSystem* playbacknet = mng.create("Series", "playbacknet");
 
 	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
 	playbacknet->addMarSystem(mng.create("TimelineLabeler", "tll"));
@@ -1101,7 +1119,7 @@ toy_with_labelsfplay(string sfName)
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	while (playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 
 		playbacknet->tick();
@@ -1137,7 +1155,7 @@ toy_with_getControls(string sfName)
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
 
 	cout << *playbacknet << endl;
@@ -1171,7 +1189,7 @@ toy_with_mono2stereo(string sfName)
 	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", outName);
 
 
-	while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 		playbacknet->tick();
 	}
@@ -1268,7 +1286,7 @@ toy_with_rmsilence(string sfName)
 	rmnet->updctrl("SoundFileSink/dest/mrs_string/filename", "srm.wav");
 
 	cout << *rmnet << endl;
-	while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while (rmnet->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		rmnet->tick();
 	}
@@ -1351,28 +1369,28 @@ toy_with_mixer(string sfName0, string sfName1)
 void 
 toy_with_inSamples(string sfName)
 {
-  cout << "toy_with_inSamples: sfName = " << sfName << endl;
-  MarSystemManager mng;
+	cout << "toy_with_inSamples: sfName = " << sfName << endl;
+	MarSystemManager mng;
   
-  MarSystem* playbacknet = mng.create("Series", "playbacknet");
-  playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
-  playbacknet->addMarSystem(mng.create("Gain", "gain"));
-  playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
-  // playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
+	playbacknet->addMarSystem(mng.create("Gain", "gain"));
+	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
+	// playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
   
 
-  playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-  //  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "foo.wav");
+	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	//  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "foo.wav");
   
-  int i=1;
-  // increment inSamples by 1 at every iteration 
-  while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	int i=1;
+	// increment inSamples by 1 at every iteration 
+	while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
-      playbacknet->updctrl("mrs_natural/inSamples", i);
-      playbacknet->tick();
-      i++;
-      cout << "inSamples = " << i << endl;
+		playbacknet->updctrl("mrs_natural/inSamples", i);
+		playbacknet->tick();
+		i++;
+		cout << "inSamples = " << i << endl;
 	
     }
   
@@ -1402,7 +1420,7 @@ toy_with_fft(string sfName)
 	// number of samples to process each tick 
 	series->updctrl("mrs_natural/inSamples", 16 * 512);
 
-	while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		series->tick();
 	}
@@ -1464,7 +1482,7 @@ toy_with_rats(string sfName)
 	ofstream oss;
 	oss.open("rat_log.txt");
 
-	while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		series->process(input, output);
 
@@ -1549,95 +1567,95 @@ toy_with_parallel()
 
 void toy_with_pngwriter(string fname) 
 {
-   cout << "Toying with png writer" << endl;
-   cout << "Will only work if Marsyas is successfully compiled with PNG support" << endl;
+	cout << "Toying with png writer" << endl;
+	cout << "Will only work if Marsyas is successfully compiled with PNG support" << endl;
 
    
      
 #ifdef MARSYAS_PNG
-   cout << "starting PNG processing " << endl;
+	cout << "starting PNG processing " << endl;
    
-   MarSystemManager mng;
+	MarSystemManager mng;
   
-  // A series to contain everything
-  MarSystem* series = mng.create("Series", "series");
+	// A series to contain everything
+	MarSystem* series = mng.create("Series", "series");
   
-  // The sound file
-  series->addMarSystem(mng.create("SoundFileSource", "src"));
-  series->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+	// The sound file
+	series->addMarSystem(mng.create("SoundFileSource", "src"));
+	series->updctrl("SoundFileSource/src/mrs_string/filename", fname);
   
-  // Compute the AbsMax of this window
-  series->addMarSystem(mng.create("AbsMax","absmax"));
+	// Compute the AbsMax of this window
+	series->addMarSystem(mng.create("AbsMax","absmax"));
 
 
-  realvec processedData;
-  double normalizedItem;
+	realvec processedData;
+	double normalizedItem;
 
-  int length = 0;
-  double min = 99999999999.9;
-  double max = -99999999999.9;
+	int length = 0;
+	double min = 99999999999.9;
+	double max = -99999999999.9;
 
 
-  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+	while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())  {
+		series->tick();
+		length++;
+
+		processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		if (processedData(0) < min)
+			min = processedData(0);
+		if (processedData(0) > max)
+			max = processedData(0);
+	}
+  
+	int height = 128;
+	int middle = height/2;
+
+	cout << "min = " << min << endl;
+	cout << "max = " << max << endl;
+	cout << "length = " << length << endl;
+  
+
+	pngwriter png(length,height,0, "waveform.png");
+  
+	series->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
 	series->tick();
-	length++;
-
-	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	if (processedData(0) < min)
-	  min = processedData(0);
-	if (processedData(0) > max)
-	  max = processedData(0);
-  }
   
-  int height = 128;
-  int middle = height/2;
-
-  cout << "min = " << min << endl;
-  cout << "max = " << max << endl;
-  cout << "length = " << length << endl;
+	// series->updctrl("SoundFileSource/src/mrs_string/filename", "foo.wav");
+	// series->updctrl("SoundFileSource/src/mrs_string/filename", fname);
   
+	double normalizedData;
 
-  pngwriter png(length,height,0, "waveform.png");
-  
-  series->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
-  series->tick();
-  
-  // series->updctrl("SoundFileSource/src/mrs_string/filename", "foo.wav");
-  // series->updctrl("SoundFileSource/src/mrs_string/filename", fname);
-  
-  double normalizedData;
+	// Give it a white background
 
-  // Give it a white background
+	png.invert();
 
-  png.invert();
-
-  // A line across the middle of the plot
-  png.line(0,middle,length,middle,0.5,0.5,1.0);
+	// A line across the middle of the plot
+	png.line(0,middle,length,middle,0.5,0.5,1.0);
   
-  double x = 0;
-  double y = 0;
-  while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  {
+	double x = 0;
+	double y = 0;
+	while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())  {
 	  
-	series->tick();
-	processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	normalizedData = (processedData(0) - min) / (max - min);
+		series->tick();
+		processedData = series->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		normalizedData = (processedData(0) - min) / (max - min);
 
 //  	cout << "p=" << processedData(0) << " n=" << normalizedData << endl;
 
-	y = processedData(0) / 2.0 * height;
-	// Dark blue full
-	png.line(x,middle,x,middle+y,0.0,0.0,1.0);
-	png.line(x,middle,x,middle-y,0.0,0.0,1.0);
+		y = processedData(0) / 2.0 * height;
+		// Dark blue full
+		png.line(x,middle,x,middle+y,0.0,0.0,1.0);
+		png.line(x,middle,x,middle-y,0.0,0.0,1.0);
 
-	// Light blue 50%
-	png.line(x,middle,x,middle+y*0.5,0.5,0.5,1.0);
-	png.line(x,middle,x,middle-y*0.5,0.5,0.5,1.0);
+		// Light blue 50%
+		png.line(x,middle,x,middle+y*0.5,0.5,0.5,1.0);
+		png.line(x,middle,x,middle-y*0.5,0.5,0.5,1.0);
 
-	x++;
+		x++;
 
-  }
+	}
 
-  png.close();
+	png.close();
 
 #endif 
 
@@ -1770,29 +1788,29 @@ toy_with_filter()
 	// Toy_With 1 
 
 	/* realvec a(3),b(3);
-	Filter* f = new Filter("f");
-	a(0) = 1.0f;
-	a(1) = 0.0f;
-	a(2) = 0.0f;
-	b(0) = 1.0f;
-	b(1) = -0.9f;
-	b(2) = 0.0f;
+	   Filter* f = new Filter("f");
+	   a(0) = 1.0f;
+	   a(1) = 0.0f;
+	   a(2) = 0.0f;
+	   b(0) = 1.0f;
+	   b(1) = -0.9f;
+	   b(2) = 0.0f;
 
-	f->setctrl("mrs_realvec/ncoeffs", a);
-	f->setctrl("mrs_realvec/dcoeffs", b);
-	f->setctrl("mrs_natural/inSamples", mrs_natural(5));
-	f->setctrl("mrs_natural/inObservations", mrs_natural(2));
-	f->setctrl("mrs_real/israte", 44100.0f);
-	f->update();
+	   f->setctrl("mrs_realvec/ncoeffs", a);
+	   f->setctrl("mrs_realvec/dcoeffs", b);
+	   f->setctrl("mrs_natural/inSamples", mrs_natural(5));
+	   f->setctrl("mrs_natural/inObservations", mrs_natural(2));
+	   f->setctrl("mrs_real/israte", 44100.0f);
+	   f->update();
 
-	realvec in, out;
-	in.create(mrs_natural(2),mrs_natural(5));
-	in(0,0) = 1.0f;
-	in(1,0) = 1.0f;
-	out.create(mrs_natural(2),mrs_natural(5));
+	   realvec in, out;
+	   in.create(mrs_natural(2),mrs_natural(5));
+	   in(0,0) = 1.0f;
+	   in(1,0) = 1.0f;
+	   out.create(mrs_natural(2),mrs_natural(5));
 
-	f->process(in, out);
-	cout << out << endl;
+	   f->process(in, out);
+	   cout << out << endl;
 	*/ 
 
 	// Toy_With 2 
@@ -1860,13 +1878,13 @@ toy_with_panorama(string sfName)
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 	mrs_bool isEmpty;
 	mrs_natural t = 0;	
 	mrs_real angle = -PI/4.0;
 	playbacknet->updctrl("Panorama/pan/mrs_real/angle", angle);
-	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 		playbacknet->tick();
 		t++;
@@ -1963,9 +1981,9 @@ toy_with_reverb(string sfName)
 	cout << "sfName " << sfName << endl;
 	mrs_bool isEmpty;
 
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
-	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 		playbacknet->tick();
 	}
@@ -1990,14 +2008,14 @@ toy_with_vibrato(string sfName)
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
 	playbacknet->updctrl("Vibrato/vib/mrs_real/mod_freq", 10.0);
 
 
 	mrs_bool isEmpty;
-	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 		playbacknet->tick();
 	}
@@ -2049,24 +2067,24 @@ toy_with_vicon(string vfName)
 	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 
 	realvec in(viconNet->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		viconNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			   viconNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 	realvec out(viconNet->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		viconNet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				viconNet->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 	playbacknet->updctrl("mrs_natural/inSamples", 184);
 
 	// set message to STK 
 	/* cout << "ControlChange    0.0  1  44 24.000000" << endl;
-	cout << "AfterTouch       0.0 1 64.000000" << endl;
-	cout << "PitchChange      0.0 1 64.000" << endl;
-	cout << "ControlChange    0.0 1  2 20.000000" << endl;
-	cout << "ControlChange    0.0 1  4 64.000000" << endl;
-	cout << "ControlChange    0.0 1  11 64.000000" << endl;
-	cout << "ControlChange    0.0 1  1 0.000000" << endl;
-	cout << "NoteOn           0.0 1 64.000000 64.000000" << endl;
+	   cout << "AfterTouch       0.0 1 64.000000" << endl;
+	   cout << "PitchChange      0.0 1 64.000" << endl;
+	   cout << "ControlChange    0.0 1  2 20.000000" << endl;
+	   cout << "ControlChange    0.0 1  4 64.000000" << endl;
+	   cout << "ControlChange    0.0 1  11 64.000000" << endl;
+	   cout << "ControlChange    0.0 1  1 0.000000" << endl;
+	   cout << "NoteOn           0.0 1 64.000000 64.000000" << endl;
 	*/ 
 
-	while (viconNet->getctrl("ViconFileSource/vsrc/mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (viconNet->getctrl("ViconFileSource/vsrc/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 		viconNet->process(in,out);
 
@@ -2150,7 +2168,7 @@ toy_with_MidiFileSynthSource(string sfName)
 
 	series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	
-	while(series->getctrl("MidiFileSynthSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while(series->getctrl("MidiFileSynthSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		series->tick();
 		cout << "Number of playing notes: " << series->getctrl("MidiFileSynthSource/src/mrs_natural/nActiveNotes")->to<mrs_natural>() << endl;
@@ -2433,39 +2451,39 @@ toy_with_LPC_LSP(string sfName)
 	cout<<"hopeSize: " <<hopSize <<endl;
 
 	/*
-	MarSystemManager mng;
+	  MarSystemManager mng;
 
-	//LPC network
-	MarSystem* input = mng.create("Series", "input");
+	  //LPC network
+	  MarSystem* input = mng.create("Series", "input");
 
-	input->addMarSystem(mng.create("SoundFileSource","src"));
-	input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	input->updctrl("mrs_natural/inSamples", hopSize);
+	  input->addMarSystem(mng.create("SoundFileSource","src"));
+	  input->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	  input->updctrl("mrs_natural/inSamples", hopSize);
 
-	input->addMarSystem(mng.create("ShiftInput", "si"));
+	  input->addMarSystem(mng.create("ShiftInput", "si"));
 
-	input->updctrl("ShiftInput/si/mrs_natural/winSize", hopSize);
+	  input->updctrl("ShiftInput/si/mrs_natural/winSize", hopSize);
 
-	input->addMarSystem(mng.create("LPC", "LPC"));
-	input->updctrl("LPC/LPC/mrs_natural/order",lpcOrder);
-	input->updctrl("LPC/LPC/mrs_real/lambda",0.0);
-	input->updctrl("LPC/LPC/mrs_real/gamma",1.0);
+	  input->addMarSystem(mng.create("LPC", "LPC"));
+	  input->updctrl("LPC/LPC/mrs_natural/order",lpcOrder);
+	  input->updctrl("LPC/LPC/mrs_real/lambda",0.0);
+	  input->updctrl("LPC/LPC/mrs_real/gamma",1.0);
 
-	input->addMarSystem(mng.create("LSP", "lsp"));
-	input->updctrl("LSP/lsp/mrs_natural/order",lpcOrder);
-	input->updctrl("LSP/lsp/mrs_real/gamma",1.0);
+	  input->addMarSystem(mng.create("LSP", "lsp"));
+	  input->updctrl("LSP/lsp/mrs_natural/order",lpcOrder);
+	  input->updctrl("LSP/lsp/mrs_real/gamma",1.0);
 
-	int i = 0;
-	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
-	{
-	input->tick();
-	cout << "Processed frame " << i << endl;
-	i++;
-	}
+	  int i = 0;
+	  while(input->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	  {
+	  input->tick();
+	  cout << "Processed frame " << i << endl;
+	  i++;
+	  }
 
-	cout << endl << "LPC and LSP processing finished!";
+	  cout << endl << "LPC and LSP processing finished!";
 
-	delete input;
+	  delete input;
 	*/
 
 	MarSystemManager mng;
@@ -2491,7 +2509,7 @@ toy_with_LPC_LSP(string sfName)
 	// 	input->updctrl("Series/lspS/LSP/lsp/mrs_real/gamma",1.0);
 
 	int i = 0;
-	while(input->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while(input->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		input->tick();
 		cout << "Processed frame " << i << endl;
@@ -2748,7 +2766,7 @@ toy_with_MarControls(string sfName)
 	//in fact only makes sense to use this new form of controls' access if the
 	//control is to be accessed intensively (e.g. in a for loop), as is this case.
 	//(this control pointer can be somehow seen as an "efficient" link!)
-	MarControlPtr ctrl_notEmpty = pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
+	MarControlPtr ctrl_hasData = pnet->getctrl("SoundFileSource/src/mrs_bool/hasData");
 	MarControlPtr ctrl_repeats = pnet->getctrl("MarSystemTemplateBasic/basic/mrs_natural/repeats");
 
 	//Custom Controls
@@ -2763,7 +2781,7 @@ toy_with_MarControls(string sfName)
 	pnet->updctrl("MarSystemTemplateBasic/basic/mrs_natural/repeats", 2);
 
 	mrs_natural tmp;
-	while(ctrl_notEmpty->isTrue())
+	while(ctrl_hasData->isTrue())
 	{
 		pnet->tick();
 		// just as an example, let's update the number of repeats in
@@ -2868,7 +2886,7 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
 	total->updctrl("WekaSink/wsink/mrs_string/filename", "stereoFeaturesMFCC.arff"); 
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
 
 	total->updctrl("mrs_natural/inSamples", 1024);
@@ -2883,7 +2901,7 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 		/* if (i==0) 
-		total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
+		   total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
 		*/ 
 		cout << "Processing " << l.entry(i) << endl;
 		total->tick();
@@ -2972,7 +2990,7 @@ toy_with_stereoMFCC(string fname0, string fname1)
 	total->updctrl("WekaSink/wsink/mrs_string/filename", "stereoMFCC.arff"); 
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
 
 	total->updctrl("mrs_natural/inSamples", 1024);
@@ -2987,7 +3005,7 @@ toy_with_stereoMFCC(string fname0, string fname1)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 		/* if (i==0) 
-		total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
+		   total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
 		*/ 
 		cout << "Processing " << l.entry(i) << endl;
 		total->tick();
@@ -3054,7 +3072,7 @@ toy_with_mp3convert(string fname0)
 		cout << "Converting " << l.entry(i) << " to " << oss.str() << endl;
 		convertNet->updctrl("SoundFileSink/dest/mrs_string/filename", oss.str());
 
-		while(convertNet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == true)
+		while(convertNet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() == true)
 		{
 			convertNet->tick();
 		}
@@ -3153,7 +3171,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
 	total->updctrl("WekaSink/wsink/mrs_string/filename", "stereoFeatures.arff"); 
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
 	total->updctrl("mrs_natural/inSamples", 1024);
 
@@ -3169,7 +3187,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 		/* if (i==0) 
-		total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
+		   total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
 		*/ 
 		cout << "Processing " << l.entry(i) << endl;
 		total->tick();
@@ -3279,7 +3297,7 @@ toy_with_ADRess(string fname0, string fname1)
 	total->updctrl("WekaSink/wsink/mrs_string/filename", "stereoFeatures.arff"); 
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname0);
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
 
 	total->updctrl("mrs_natural/inSamples", 1024);
@@ -3295,7 +3313,7 @@ toy_with_ADRess(string fname0, string fname1)
 	//{
 	total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", fname0);//l.entry(i));
 	/* if (i==0) 
-	total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
+	   total->updctrl("Accumulator/acc/Series/playbacknet/AudioSink/dest/mrs_bool/initAudio", true);
 	*/ 
 	//cout << "Processing " << l.entry(i) << endl;
 	total->tick();
@@ -3303,50 +3321,50 @@ toy_with_ADRess(string fname0, string fname1)
 	//	}
 
 	/*
-	Collection n;
-	n.read(fname1);
+	  Collection n;
+	  n.read(fname1);
 
-	total->updctrl("Annotator/ann/mrs_natural/label", 1); 
-
-
-	for (i=0; i < n.size(); i++)
-	{
-	total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
-	cout << "Processing " << n.entry(i) << endl;
-	total->tick();
-	cout << "i=" << i << endl;
-	}
+	  total->updctrl("Annotator/ann/mrs_natural/label", 1); 
 
 
-	Collection m;
-	m.read("j.mf");
-
-	total->updctrl("Annotator/ann/mrs_natural/label", 2); 
-
-
-	for (i=0; i < m.size(); i++)
-	{
-	total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
-	cout << "Processing " << m.entry(i) << endl;
-	total->tick();
-	cout << "i=" << i << endl;
-	}
+	  for (i=0; i < n.size(); i++)
+	  {
+	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
+	  cout << "Processing " << n.entry(i) << endl;
+	  total->tick();
+	  cout << "i=" << i << endl;
+	  }
 
 
+	  Collection m;
+	  m.read("j.mf");
 
-	Collection w;
-	w.read("oj.mf");
-
-	total->updctrl("Annotator/ann/mrs_natural/label", 3); 
+	  total->updctrl("Annotator/ann/mrs_natural/label", 2); 
 
 
-	for (i=0; i < w.size(); i++)
-	{
-	total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", w.entry(i));
-	cout << "Processing " << w.entry(i) << endl;
-	total->tick();
-	cout << "i=" << i << endl;
-	}
+	  for (i=0; i < m.size(); i++)
+	  {
+	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
+	  cout << "Processing " << m.entry(i) << endl;
+	  total->tick();
+	  cout << "i=" << i << endl;
+	  }
+
+
+
+	  Collection w;
+	  w.read("oj.mf");
+
+	  total->updctrl("Annotator/ann/mrs_natural/label", 3); 
+
+
+	  for (i=0; i < w.size(); i++)
+	  {
+	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", w.entry(i));
+	  cout << "Processing " << w.entry(i) << endl;
+	  total->tick();
+	  cout << "i=" << i << endl;
+	  }
 	*/
 }
 
@@ -3367,11 +3385,11 @@ toy_with_stereo2mono(string fname)
 
 	playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", fname);
 	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "monoFromStereo.wav");
-	playbacknet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
 	mrs_bool isEmpty;
 
-	while (isEmpty = playbacknet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 		playbacknet->tick();
 	}
@@ -3384,336 +3402,336 @@ void toy_with_swipe(string sfname) {
 // commented out because log2() and exp2() aren't part of the 
 // C++ standard and don't exist on win32.   -gp, 15 Aug 2008.
 /*
-  // std::cout << "Hello, World!!!" <<endl;
+// std::cout << "Hello, World!!!" <<endl;
 
 #ifdef TEST_ERB_CONVERSION
-  double foo = 12345.6;
-  double bar = hertz2erb(foo);
-  std::cout << "Hz->ERB->Hz:" << endl;
-  std::cout << foo << " " << hertz2erb(foo) << " " << erb2hertz(hertz2erb(foo)) << endl;
+double foo = 12345.6;
+double bar = hertz2erb(foo);
+std::cout << "Hz->ERB->Hz:" << endl;
+std::cout << foo << " " << hertz2erb(foo) << " " << erb2hertz(hertz2erb(foo)) << endl;
 #endif
 
 #define VERSUS_MATLAB
 
 #ifdef VERSUS_MATLAB
-  cout << "Starting Matlab..." << endl;
-  MATLAB_EVAL("clear;");
+cout << "Starting Matlab..." << endl;
+MATLAB_EVAL("clear;");
 #endif
 
   
-  //////////////////////////////////////////////////
-  // Sampling rate
-  mrs_real fs = 44100.0;
+//////////////////////////////////////////////////
+// Sampling rate
+mrs_real fs = 44100.0;
 #ifdef VERSUS_MATLAB
-  MATLAB_PUT(fs, "fs");
+MATLAB_PUT(fs, "fs");
 #endif
 
 
-  //////////////////////////////////////////////////
-  // Pitch min and max parameters
-  mrs_real f0_min = 30;
-  mrs_real f0_max = 5000;
+//////////////////////////////////////////////////
+// Pitch min and max parameters
+mrs_real f0_min = 30;
+mrs_real f0_max = 5000;
 #ifdef VERSUS_MATLAB
-  MATLAB_PUT(f0_min, "f0_min");
-  MATLAB_PUT(f0_max, "f0_max");
-  MATLAB_EVAL("plim = [f0_min f0_max];");
+MATLAB_PUT(f0_min, "f0_min");
+MATLAB_PUT(f0_max, "f0_max");
+MATLAB_EVAL("plim = [f0_min f0_max];");
 #endif 
 
 
 
-  //////////////////////////////////////////////////  
-  // Find ws, all the window sizes we'll use, and pO, the optimal pitch for each one
+//////////////////////////////////////////////////  
+// Find ws, all the window sizes we'll use, and pO, the optimal pitch for each one
 
 #ifdef VERSUS_MATLAB
-  MATLAB_EVAL("K = 2; % Parameter k for Hann window");
-  MATLAB_EVAL("logWs = round( log2( 4*K * fs ./ plim ) );");
-  MATLAB_EVAL("ws = 2.^[ logWs(1): -1: logWs(2) ]; % P2-WSs");
-  MATLAB_EVAL("pO = 4*K * fs ./ ws; % Optimal pitches for P2-WSs");
+MATLAB_EVAL("K = 2; % Parameter k for Hann window");
+MATLAB_EVAL("logWs = round( log2( 4*K * fs ./ plim ) );");
+MATLAB_EVAL("ws = 2.^[ logWs(1): -1: logWs(2) ]; % P2-WSs");
+MATLAB_EVAL("pO = 4*K * fs ./ ws; % Optimal pitches for P2-WSs");
 #endif
 
-  mrs_natural K = 2;  // "Parameter k for Hann window"
-  mrs_natural logWs_big = ((int) (0.5 + (log2(4*K*fs/f0_min))));
-  mrs_natural logWs_small = ((int) (0.5 + (log2(4*K*fs/f0_max))));
-  mrs_natural num_Ws = 1+logWs_big-logWs_small;
+mrs_natural K = 2;  // "Parameter k for Hann window"
+mrs_natural logWs_big = ((int) (0.5 + (log2(4*K*fs/f0_min))));
+mrs_natural logWs_small = ((int) (0.5 + (log2(4*K*fs/f0_max))));
+mrs_natural num_Ws = 1+logWs_big-logWs_small;
 
-  realvec ws(num_Ws);
-  realvec pO(num_Ws);
+realvec ws(num_Ws);
+realvec pO(num_Ws);
 
-  for (int i=0; i<num_Ws; ++i) {
-    ws(i) = exp2(logWs_big-i);
-    pO(i) = 4*K*fs/ws(i);
-  }
+for (int i=0; i<num_Ws; ++i) {
+ws(i) = exp2(logWs_big-i);
+pO(i) = 4*K*fs/ws(i);
+}
 
 
 #ifdef VERSUS_MATLAB
-  MATLAB_PUT(ws, "ws_marsyas");
-  // MATLAB_EVAL("figure(); plot(ws(:) - ws_marsyas(:)); title('ws-ws_marsyas');");
-  MATLAB_PUT(pO, "pO_marsyas");
-  // MATLAB_EVAL("figure(); plot(pO(:) - pO_marsyas(:)); title('pO-pO_marsyas');");
-#endif
-
-
-
-
-  //////////////////////////////////////////////////
-  // Find candidate pitches ("pc") and the (log2 of the) window size for each pitch ("d")
-
-  mrs_real dlog2p = 1./96.;
-#ifdef VERSUS_MATLAB
-  MATLAB_PUT(dlog2p, "dlog2p");
-  MATLAB_EVAL("log2pc = [ log2(plim(1)): dlog2p: log2(plim(end)) ]';");
-  MATLAB_EVAL("pc = 2 .^ log2pc;");
-  MATLAB_EVAL("d = 1 + log2pc - log2( 4*K*fs./ws(1) );");
-#endif
-
-  // cout << "dlog2p: " << dlog2p << endl;
-  double num_pc_d = (log2(f0_max)-log2(f0_min)) / dlog2p;
-  // cout << "num_pc_d: " << num_pc_d << endl;
-
-  int num_pc = 1+ ((int) num_pc_d);
-  // cout << "num_pc: " << num_pc << endl;
-
-  realvec pc(num_pc);
-  realvec d(num_pc);
-
-  mrs_real log2_f0min = log2(f0_min);
-  for (int i=0; i<num_pc; ++i) {
-    mrs_real log2pc_i = log2_f0min + (i*dlog2p);
-    pc(i) = exp2(log2pc_i);
-    d(i) = 1 + log2pc_i -log2(4*K*fs / ws(0));
-  }
-  // cout << "pc: " << pc << endl;
-
-#ifdef VERSUS_MATLAB
-  MATLAB_PUT(pc, "pc_marsyas");
-  MATLAB_PUT(d, "d_marsyas");
-  // MATLAB_EVAL("figure(); plot(pc(:) - pc_marsyas(:)); title('pc-pc_marsyas');");
-  // MATLAB_EVAL("figure(); plot(d(:) - d_marsyas(:)); title('d-d_marsyas');");
+MATLAB_PUT(ws, "ws_marsyas");
+// MATLAB_EVAL("figure(); plot(ws(:) - ws_marsyas(:)); title('ws-ws_marsyas');");
+MATLAB_PUT(pO, "pO_marsyas");
+// MATLAB_EVAL("figure(); plot(pO(:) - pO_marsyas(:)); title('pO-pO_marsyas');");
 #endif
 
 
 
-  //////////////////////////////////////////////////
-  // Find "ERBs spaced frequencies (in Hertz)" ("fERBs")
 
-  mrs_real dERBs = 0.1;
-  mrs_real min_fERBs = hertz2erb(pc(0)/4);
-  mrs_real max_fERBs = hertz2erb(fs/2);
-  // cout << "max_fERBS: " << max_fERBs << endl;
+//////////////////////////////////////////////////
+// Find candidate pitches ("pc") and the (log2 of the) window size for each pitch ("d")
 
-  int num_fERBs = 1 + ((int) ((max_fERBs-min_fERBs)/dERBs));
+mrs_real dlog2p = 1./96.;
+#ifdef VERSUS_MATLAB
+MATLAB_PUT(dlog2p, "dlog2p");
+MATLAB_EVAL("log2pc = [ log2(plim(1)): dlog2p: log2(plim(end)) ]';");
+MATLAB_EVAL("pc = 2 .^ log2pc;");
+MATLAB_EVAL("d = 1 + log2pc - log2( 4*K*fs./ws(1) );");
+#endif
 
-  realvec fERBs(num_fERBs);
-  for (int i=0; i<num_fERBs; ++i) {
-    fERBs(i) = erb2hertz(min_fERBs + (i*dERBs));
-  }
+// cout << "dlog2p: " << dlog2p << endl;
+double num_pc_d = (log2(f0_max)-log2(f0_min)) / dlog2p;
+// cout << "num_pc_d: " << num_pc_d << endl;
 
-  // cout << "fERBs(num_fERBs-1): " << fERBs(num_fERBs-1) << endl;
+int num_pc = 1+ ((int) num_pc_d);
+// cout << "num_pc: " << num_pc << endl;
+
+realvec pc(num_pc);
+realvec d(num_pc);
+
+mrs_real log2_f0min = log2(f0_min);
+for (int i=0; i<num_pc; ++i) {
+mrs_real log2pc_i = log2_f0min + (i*dlog2p);
+pc(i) = exp2(log2pc_i);
+d(i) = 1 + log2pc_i -log2(4*K*fs / ws(0));
+}
+// cout << "pc: " << pc << endl;
+
+#ifdef VERSUS_MATLAB
+MATLAB_PUT(pc, "pc_marsyas");
+MATLAB_PUT(d, "d_marsyas");
+// MATLAB_EVAL("figure(); plot(pc(:) - pc_marsyas(:)); title('pc-pc_marsyas');");
+// MATLAB_EVAL("figure(); plot(d(:) - d_marsyas(:)); title('d-d_marsyas');");
+#endif
+
+
+
+//////////////////////////////////////////////////
+// Find "ERBs spaced frequencies (in Hertz)" ("fERBs")
+
+mrs_real dERBs = 0.1;
+mrs_real min_fERBs = hertz2erb(pc(0)/4);
+mrs_real max_fERBs = hertz2erb(fs/2);
+// cout << "max_fERBS: " << max_fERBs << endl;
+
+int num_fERBs = 1 + ((int) ((max_fERBs-min_fERBs)/dERBs));
+
+realvec fERBs(num_fERBs);
+for (int i=0; i<num_fERBs; ++i) {
+fERBs(i) = erb2hertz(min_fERBs + (i*dERBs));
+}
+
+// cout << "fERBs(num_fERBs-1): " << fERBs(num_fERBs-1) << endl;
 
   
 #ifdef VERSUS_MATLAB
-  MATLAB_PUT(dERBs, "dERBs");
-  MATLAB_PUT(fs, "fs");
-  MATLAB_EVAL("fERBs = erbs2hz([ hz2erbs(pc(1)/4): dERBs: hz2erbs(fs/2) ]');");
-  MATLAB_PUT(fERBs, "fERBs_marsyas");
-  // MATLAB_EVAL("figure(); plot(fERBs(:) - fERBs_marsyas(:)); title('fERBs-fERBs_marsyas')");
+MATLAB_PUT(dERBs, "dERBs");
+MATLAB_PUT(fs, "fs");
+MATLAB_EVAL("fERBs = erbs2hz([ hz2erbs(pc(1)/4): dERBs: hz2erbs(fs/2) ]');");
+MATLAB_PUT(fERBs, "fERBs_marsyas");
+// MATLAB_EVAL("figure(); plot(fERBs(:) - fERBs_marsyas(:)); title('fERBs-fERBs_marsyas')");
 #endif
 
   
 
-  //////////////////////////////////////////////////
-  // File read, windowing and spectrogram
+//////////////////////////////////////////////////
+// File read, windowing and spectrogram
 
 
-  // For now just use one window size:
-  mrs_natural windowSize = 16384;
-  mrs_natural overlap = 8192;
-  mrs_natural hopSize = windowSize - overlap;
-  (void) hopSize;
+// For now just use one window size:
+mrs_natural windowSize = 16384;
+mrs_natural overlap = 8192;
+mrs_natural hopSize = windowSize - overlap;
+(void) hopSize;
 
 
 #ifdef VERSUS_MATLAB
-    MATLAB_PUT(sfname, "sfname");
-    MATLAB_PUT(windowSize, "windowSize_marsyas");
-    MATLAB_PUT(overlap, "overlap_marsyas");
-    MATLAB_PUT(hopSize, "hop_marsyas");
-    MATLAB_EVAL("audio = wavread_mono(sfname);");
-    // Zero-pad
-    MATLAB_EVAL("audio_zp = [ zeros(windowSize_marsyas/2,1); audio(:); zeros(hop_marsyas+windowSize_marsyas/2,1) ];");
-    MATLAB_EVAL("magspec = abs(specgram(audio_zp, windowSize_marsyas, fs, hanning(windowSize_marsyas), overlap_marsyas))");
-    MATLAB_EVAL("magspec_freqaxis = [0:windowSize_marsyas/2].*(fs/windowSize_marsyas);");
+MATLAB_PUT(sfname, "sfname");
+MATLAB_PUT(windowSize, "windowSize_marsyas");
+MATLAB_PUT(overlap, "overlap_marsyas");
+MATLAB_PUT(hopSize, "hop_marsyas");
+MATLAB_EVAL("audio = wavread_mono(sfname);");
+// Zero-pad
+MATLAB_EVAL("audio_zp = [ zeros(windowSize_marsyas/2,1); audio(:); zeros(hop_marsyas+windowSize_marsyas/2,1) ];");
+MATLAB_EVAL("magspec = abs(specgram(audio_zp, windowSize_marsyas, fs, hanning(windowSize_marsyas), overlap_marsyas))");
+MATLAB_EVAL("magspec_freqaxis = [0:windowSize_marsyas/2].*(fs/windowSize_marsyas);");
 #endif
 
 
-  MarSystemManager mng;
+MarSystemManager mng;
 
 
 #define COMPARE_WINDOWINGxxx
 #ifdef COMPARE_WINDOWING
 #ifdef VERSUS_MATLAB
-  cout << "Comparing windows..." << endl;
+cout << "Comparing windows..." << endl;
 
-    // See if the window is the same between Marsyas and Matlab
-    MarSystem *winTest = mng.create("Windowing", "win");
-    winTest->updctrl("mrs_string/type", "Hanning");
-    winTest->updctrl("mrs_natural/zeroPadding", 0);
-    winTest->updctrl("mrs_natural/inSamples", windowSize);
+// See if the window is the same between Marsyas and Matlab
+MarSystem *winTest = mng.create("Windowing", "win");
+winTest->updctrl("mrs_string/type", "Hanning");
+winTest->updctrl("mrs_natural/zeroPadding", 0);
+winTest->updctrl("mrs_natural/inSamples", windowSize);
 
-    mrs_realvec win_input;
-    win_input.create(1, windowSize);
-    win_input.setval(1);
+mrs_realvec win_input;
+win_input.create(1, windowSize);
+win_input.setval(1);
 
-    mrs_realvec win;
-    win.create(1, windowSize);
+mrs_realvec win;
+win.create(1, windowSize);
 
-    winTest->process(win_input, win);
+winTest->process(win_input, win);
 
-    MATLAB_PUT(win, "win");
-    // disp doesn't work:
-    // MATLAB_EVAL("disp(['win from marsyas is size ' num2str(length(win))])");
-    // MATLAB_EVAL("disp(['windowSize is ' num2str(windowSize_marsyas)])");
-    // So use this kludge:
-    //    MATLAB_EVAL("figure(); title(['Marsyas size: ' num2str(length(win)) ', windowSize ' num2str(windowSize_marsyas) ]);");
+MATLAB_PUT(win, "win");
+// disp doesn't work:
+// MATLAB_EVAL("disp(['win from marsyas is size ' num2str(length(win))])");
+// MATLAB_EVAL("disp(['windowSize is ' num2str(windowSize_marsyas)])");
+// So use this kludge:
+//    MATLAB_EVAL("figure(); title(['Marsyas size: ' num2str(length(win)) ', windowSize ' num2str(windowSize_marsyas) ]);");
 
-    MATLAB_EVAL("figure(); subplot(211); plot(win, 'b'); hold on; plot(hanning(windowSize_marsyas), 'r'); legend('marsyas hanning', 'matlab hanning'); subplot(212); plot(win' - hanning(windowSize_marsyas)); ylabel('diff');");
+MATLAB_EVAL("figure(); subplot(211); plot(win, 'b'); hold on; plot(hanning(windowSize_marsyas), 'r'); legend('marsyas hanning', 'matlab hanning'); subplot(212); plot(win' - hanning(windowSize_marsyas)); ylabel('diff');");
 #endif
 #endif
 
 
 
 
-  MarSystem *net = mng.create("Series", "net");
-  net->addMarSystem(mng.create("SoundFileSource", "src"));
-  net->addMarSystem(mng.create("ShiftInput", "si"));
-  net->addMarSystem(mng.create("Windowing", "win"));
-  net->addMarSystem(mng.create("Spectrum", "spec"));
-  net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
-  net->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
-  net->updctrl("mrs_natural/inSamples", overlap);
-  net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
-  net->updctrl("Windowing/win/mrs_string/type", "Hanning");
-  net->updctrl("Windowing/win/mrs_natural/zeroPadding", 0);
-  net->updctrl("PowerSpectrum/pspec/mrs_string/spectrumType", "magnitude");
+MarSystem *net = mng.create("Series", "net");
+net->addMarSystem(mng.create("SoundFileSource", "src"));
+net->addMarSystem(mng.create("ShiftInput", "si"));
+net->addMarSystem(mng.create("Windowing", "win"));
+net->addMarSystem(mng.create("Spectrum", "spec"));
+net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
+net->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
+net->updctrl("mrs_natural/inSamples", overlap);
+net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
+net->updctrl("Windowing/win/mrs_string/type", "Hanning");
+net->updctrl("Windowing/win/mrs_natural/zeroPadding", 0);
+net->updctrl("PowerSpectrum/pspec/mrs_string/spectrumType", "magnitude");
 
 
-  int num_windows = 5;
+int num_windows = 5;
 
-  cout << "Entering STFT loop..." << endl;
-
-
-  for (int i = 0; i<num_windows; ++i) {
+cout << "Entering STFT loop..." << endl;
 
 
-    net->tick();
-    mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+for (int i = 0; i<num_windows; ++i) {
+
+
+net->tick();
+mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
 #ifdef VERSUS_MATLAB
-    // Compare STFT spectra
+// Compare STFT spectra
 
-    if (i==0) {
-      MATLAB_PUT(v, "first_spec_marsyas");      
-      MATLAB_EVAL("fmarsyas = first_spec_marsyas ./ max(first_spec_marsyas)");
-      //MATLAB_EVAL("figure();  plot(fmarsyas, 'r'); ylabel('Marsyas');");
-      //MATLAB_EVAL("title('First frame from Marsyas');");
-    }
+if (i==0) {
+MATLAB_PUT(v, "first_spec_marsyas");      
+MATLAB_EVAL("fmarsyas = first_spec_marsyas ./ max(first_spec_marsyas)");
+//MATLAB_EVAL("figure();  plot(fmarsyas, 'r'); ylabel('Marsyas');");
+//MATLAB_EVAL("title('First frame from Marsyas');");
+}
 
-    if (i>=0) {
-      MATLAB_PUT(v, "this_spec_marsyas");
-      mrs_natural fn = i;
-      (void) fn;
-      MATLAB_PUT(fn, "frame_number");
-      char cmd[100];
-      sprintf(cmd, "this_spec = magspec(:,%d);", i+1);
-      MATLAB_EVAL(cmd);
-      MATLAB_EVAL("matlab = this_spec ./ max(this_spec)");
-      MATLAB_EVAL("marsyas = this_spec_marsyas ./ max(this_spec_marsyas)");
+if (i>=0) {
+MATLAB_PUT(v, "this_spec_marsyas");
+mrs_natural fn = i;
+(void) fn;
+MATLAB_PUT(fn, "frame_number");
+char cmd[100];
+sprintf(cmd, "this_spec = magspec(:,%d);", i+1);
+MATLAB_EVAL(cmd);
+MATLAB_EVAL("matlab = this_spec ./ max(this_spec)");
+MATLAB_EVAL("marsyas = this_spec_marsyas ./ max(this_spec_marsyas)");
 
-      if (i==1 && 0) {
-	MATLAB_EVAL("figure(); subplot(311); plot(db(fmarsyas), 'r'); ylabel('Marsyas #0');");
-	MATLAB_EVAL("subplot(312); plot(db(marsyas), 'r'); ylabel('Marsyas #1');");
-	MATLAB_EVAL("subplot(313); plot(db(marsyas-fmarsyas), 'r'); ylabel('diff');");
-	MATLAB_EVAL("samexaxis();");
-      }
+if (i==1 && 0) {
+MATLAB_EVAL("figure(); subplot(311); plot(db(fmarsyas), 'r'); ylabel('Marsyas #0');");
+MATLAB_EVAL("subplot(312); plot(db(marsyas), 'r'); ylabel('Marsyas #1');");
+MATLAB_EVAL("subplot(313); plot(db(marsyas-fmarsyas), 'r'); ylabel('diff');");
+MATLAB_EVAL("samexaxis();");
+}
       
-      MATLAB_EVAL("figure(); subplot(311); plot(magspec_freqaxis,marsyas, 'r'); ylabel('Marsyas');");
-      MATLAB_EVAL("title(['frame ' num2str(frame_number)])");
-      MATLAB_EVAL("subplot(312); plot(magspec_freqaxis,matlab, 'b'); ylabel('Matlab');");
-      MATLAB_EVAL("subplot(313); plot(magspec_freqaxis,matlab-marsyas); ylabel('diff.'); samexaxis();");
-      MATLAB_EVAL("xlabel('Freq (Hz)')");
-    }
+MATLAB_EVAL("figure(); subplot(311); plot(magspec_freqaxis,marsyas, 'r'); ylabel('Marsyas');");
+MATLAB_EVAL("title(['frame ' num2str(frame_number)])");
+MATLAB_EVAL("subplot(312); plot(magspec_freqaxis,matlab, 'b'); ylabel('Matlab');");
+MATLAB_EVAL("subplot(313); plot(magspec_freqaxis,matlab-marsyas); ylabel('diff.'); samexaxis();");
+MATLAB_EVAL("xlabel('Freq (Hz)')");
+}
 #endif
 
 
-    // Interpolate at equidistant ERBs steps, and
-    // call the square root of magnitude the "loudness" L
-    // NB: swipe uses spline interpolation (matlab's INTERP1 with the 'spline' arg)
-    // but here I'm just doing linear interpolation.  You can see in the Matlab plots 
-    // below that it makes almost no difference.
+// Interpolate at equidistant ERBs steps, and
+// call the square root of magnitude the "loudness" L
+// NB: swipe uses spline interpolation (matlab's INTERP1 with the 'spline' arg)
+// but here I'm just doing linear interpolation.  You can see in the Matlab plots 
+// below that it makes almost no difference.
 
 
-    realvec L(num_fERBs);
-    for (int i=0; i<num_fERBs; i++) {
-      mrs_real freq = fERBs(i);
-      // cout << "fERBs(" << i << "): " << fERBs(i) << endl;
+realvec L(num_fERBs);
+for (int i=0; i<num_fERBs; i++) {
+mrs_real freq = fERBs(i);
+// cout << "fERBs(" << i << "): " << fERBs(i) << endl;
 
-      mrs_real fractional_FFT_bin = (freq/fs) * ((mrs_real) windowSize);
-      mrs_natural lower_FFT_bin = (mrs_natural) fractional_FFT_bin;
-      if (lower_FFT_bin < 0) {
-	cout << "error: lower_FFT_bin is " << lower_FFT_bin << endl;
-      }
+mrs_real fractional_FFT_bin = (freq/fs) * ((mrs_real) windowSize);
+mrs_natural lower_FFT_bin = (mrs_natural) fractional_FFT_bin;
+if (lower_FFT_bin < 0) {
+cout << "error: lower_FFT_bin is " << lower_FFT_bin << endl;
+}
 
-      if (lower_FFT_bin+1 >= windowSize/2) {
-	cout << "error: upper_FFT_bin is " << lower_FFT_bin+1 << endl;
-      }
+if (lower_FFT_bin+1 >= windowSize/2) {
+cout << "error: upper_FFT_bin is " << lower_FFT_bin+1 << endl;
+}
 			 
-      mrs_real distance = fractional_FFT_bin - lower_FFT_bin;
-      mrs_real interp_mag = (1-distance) * v(lower_FFT_bin) +
-	distance * v(lower_FFT_bin+1);
-      L(i) = sqrt(interp_mag);
-    }
+mrs_real distance = fractional_FFT_bin - lower_FFT_bin;
+mrs_real interp_mag = (1-distance) * v(lower_FFT_bin) +
+distance * v(lower_FFT_bin+1);
+L(i) = sqrt(interp_mag);
+}
 
 #ifdef VERSUS_MATLAB
-    MATLAB_PUT(L, "L_marsyas");
-    MATLAB_EVAL("M_lin = interp1(magspec_freqaxis, this_spec_marsyas, fERBs);");
-    MATLAB_EVAL("M = interp1(magspec_freqaxis, this_spec_marsyas, fERBs, 'spline', 0);");
-    MATLAB_EVAL("L_lin = sqrt(M_lin);");
-    MATLAB_EVAL("L = sqrt(M);");
+MATLAB_PUT(L, "L_marsyas");
+MATLAB_EVAL("M_lin = interp1(magspec_freqaxis, this_spec_marsyas, fERBs);");
+MATLAB_EVAL("M = interp1(magspec_freqaxis, this_spec_marsyas, fERBs, 'spline', 0);");
+MATLAB_EVAL("L_lin = sqrt(M_lin);");
+MATLAB_EVAL("L = sqrt(M);");
 
-    MATLAB_EVAL("figure(); subplot(411);");
-    MATLAB_EVAL("plot(fERBs, L, 'g'); hold on; plot(fERBs, L_marsyas, 'r');");
-    MATLAB_EVAL("legend('Matlab spline interp', 'Matt C interp')");
-    MATLAB_EVAL("subplot(412);");
-    MATLAB_EVAL("plot(fERBs, L' - L_marsyas)");
-    MATLAB_EVAL("ylabel('matlab-marsyas')");
-    MATLAB_EVAL("subplot(413);");
-    MATLAB_EVAL("plot(fERBs, L_lin, 'g'); hold on; plot(fERBs, L_marsyas, 'r');");
-    MATLAB_EVAL("legend('Matlab linear interp', 'Matt C interp')");
-    MATLAB_EVAL("subplot(414);");
-    MATLAB_EVAL("plot(fERBs, L_lin' - L_marsyas)");
-    MATLAB_EVAL("ylabel('matlab-marsyas')");
-    MATLAB_EVAL("samexaxis(); ylabel('Freq (Hz, ERB-spaced)');");
+MATLAB_EVAL("figure(); subplot(411);");
+MATLAB_EVAL("plot(fERBs, L, 'g'); hold on; plot(fERBs, L_marsyas, 'r');");
+MATLAB_EVAL("legend('Matlab spline interp', 'Matt C interp')");
+MATLAB_EVAL("subplot(412);");
+MATLAB_EVAL("plot(fERBs, L' - L_marsyas)");
+MATLAB_EVAL("ylabel('matlab-marsyas')");
+MATLAB_EVAL("subplot(413);");
+MATLAB_EVAL("plot(fERBs, L_lin, 'g'); hold on; plot(fERBs, L_marsyas, 'r');");
+MATLAB_EVAL("legend('Matlab linear interp', 'Matt C interp')");
+MATLAB_EVAL("subplot(414);");
+MATLAB_EVAL("plot(fERBs, L_lin' - L_marsyas)");
+MATLAB_EVAL("ylabel('matlab-marsyas')");
+MATLAB_EVAL("samexaxis(); ylabel('Freq (Hz, ERB-spaced)');");
 #endif
 
-    // "Select candidates that use this window size"
-    // XXX Kludge
+// "Select candidates that use this window size"
+// XXX Kludge
 
 
-  }
+}
 
  
 #ifdef VERSUS_MATLAB
-  MATLAB_EVAL("dt = 0.01;");
-  MATLAB_EVAL("t = [ 0: dt: length(audio)/fs ]';");
+MATLAB_EVAL("dt = 0.01;");
+MATLAB_EVAL("t = [ 0: dt: length(audio)/fs ]';");
 #endif
 
-  mrs_real dt = 0.01;
-  (void) dt;
+mrs_real dt = 0.01;
+(void) dt;
 
 
 #ifdef VERSUS_MATLAB
-  cout << "Press enter to finish (and close Matlab)" << endl;
-  getchar();
-  MATLAB_CLOSE();
+cout << "Press enter to finish (and close Matlab)" << endl;
+getchar();
+MATLAB_CLOSE();
 #endif
 */
 }
@@ -3793,15 +3811,15 @@ void toy_with_spectralSNR(string fname0, string fname1)
 
 
 	net->updctrl("Series/branch1/SoundFileSource/src1/mrs_string/filename", 
-		fname0);
+				 fname0);
 	net->updctrl("Series/branch2/SoundFileSource/src2/mrs_string/filename", 
-		fname1);
+				 fname1);
 
 	net->updctrl("Series/branch1/PowerSpectrum/pspk1/mrs_string/spectrumType", "magnitude");
 	net->updctrl("Series/branch2/PowerSpectrum/pspk2/mrs_string/spectrumType", "magnitude");
 
 	/* net->updctrl("Series/branch1/PlotSink/psink1/mrs_string/filename", "p1p");
-	net->updctrl("Series/branch2/PlotSink/psink2/mrs_string/filename", "p2p");
+	   net->updctrl("Series/branch2/PlotSink/psink2/mrs_string/filename", "p2p");
 
 	*/ 
 
@@ -3828,34 +3846,34 @@ void toy_with_spectralSNR(string fname0, string fname1)
 
 void toy_with_SNR(string fname0, string fname1)
 {
-  cout << "Toying with SNR" << endl;
-  cout << "SIGNAL = "  << fname0 << endl;
-  cout << "NOISE = " << fname1 << endl;
+	cout << "Toying with SNR" << endl;
+	cout << "SIGNAL = "  << fname0 << endl;
+	cout << "NOISE = " << fname1 << endl;
 
-  MarSystemManager mng;
+	MarSystemManager mng;
   
 
-  MarSystem* net = mng.create("Series", "net");
-  MarSystem* input = mng.create("Parallel", "input");
-  input->addMarSystem(mng.create("SoundFileSource", "signalSrc"));
-  input->addMarSystem(mng.create("SoundFileSource", "noiseSrc"));
+	MarSystem* net = mng.create("Series", "net");
+	MarSystem* input = mng.create("Parallel", "input");
+	input->addMarSystem(mng.create("SoundFileSource", "signalSrc"));
+	input->addMarSystem(mng.create("SoundFileSource", "noiseSrc"));
 
-  net->addMarSystem(input);
-  net->addMarSystem(mng.create("SNR", "snr"));
+	net->addMarSystem(input);
+	net->addMarSystem(mng.create("SNR", "snr"));
   
-  net->updctrl("Parallel/input/SoundFileSource/signalSrc/mrs_string/filename", 
-	       fname0);
-  net->updctrl("Parallel/input/SoundFileSource/noiseSrc/mrs_string/filename", 
-	       fname1);
+	net->updctrl("Parallel/input/SoundFileSource/signalSrc/mrs_string/filename", 
+				 fname0);
+	net->updctrl("Parallel/input/SoundFileSource/noiseSrc/mrs_string/filename", 
+				 fname1);
 
-  net->updctrl("mrs_natural/inSamples", 1024);
+	net->updctrl("mrs_natural/inSamples", 1024);
 
-  while (net->getctrl("Parallel/input/SoundFileSource/signalSrc/mrs_bool/notEmpty")->to<mrs_bool>() == true)
+	while (net->getctrl("Parallel/input/SoundFileSource/signalSrc/mrs_bool/hasData")->to<mrs_bool>() == true)
     {
-      net->tick();
+		net->tick();
     }
   
-  cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
+	cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
   
   
 }
@@ -3907,28 +3925,28 @@ void toy_with_SOM(string collectionName)
 
 	// link top-level controls 
 	total->linkctrl("mrs_string/filename",
-		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
+					"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
 
 	total->linkctrl("mrs_natural/pos",
-		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/pos");  
+					"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/pos");  
 
 
 	total->linkctrl("mrs_string/allfilenames",
-		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
+					"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
 
 	total->linkctrl("mrs_natural/numFiles",
-		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
+					"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
 
-	total->linkctrl("mrs_bool/notEmpty",
-		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
+	total->linkctrl("mrs_bool/hasData",
+					"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/hasData");  
 	total->linkctrl("mrs_bool/advance",
-		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
+					"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
 
 	total->linkctrl("mrs_bool/memReset",
-		"Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
+					"Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
 
 	total->linkctrl("mrs_natural/label",
-		"Annotator/ann/mrs_natural/label");
+					"Annotator/ann/mrs_natural/label");
 
 	total->updctrl("mrs_natural/inSamples", 512);
 
@@ -4079,7 +4097,7 @@ toy_with_weka(string fname)
 
 	net->updctrl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
 	net->updctrl("Summary/summary/mrs_string/classNames", 
-		net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
+				 net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
 
 
 	net->updctrl("GaussianClassifier/gcl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
@@ -4128,146 +4146,146 @@ toy_with_updctrl(string fname)
 void 
 toy_with_dtw(string fname1, string fname2)
 {
-  mrs_natural size1;
-  mrs_natural size2;
-  mrs_natural max_size;
+	mrs_natural size1;
+	mrs_natural size2;
+	mrs_natural max_size;
 
-  MarSystemManager mng; 
+	MarSystemManager mng; 
   
-  MarSystem* rmsnet = mng.create("Series/rmsnet");
-  MarSystem *rmsfan = mng.create("Fanout/rmsfan");
+	MarSystem* rmsnet = mng.create("Series/rmsnet");
+	MarSystem *rmsfan = mng.create("Fanout/rmsfan");
   
-  // Network to compute RMS for file 1 
-  MarSystem* branch1 = mng.create("Series/branch1");
-  branch1->addMarSystem(mng.create("SoundFileSource/src"));
-  branch1->addMarSystem(mng.create("MixToMono/mix2mono"));
-  branch1->addMarSystem(mng.create("Rms/rms"));
+	// Network to compute RMS for file 1 
+	MarSystem* branch1 = mng.create("Series/branch1");
+	branch1->addMarSystem(mng.create("SoundFileSource/src"));
+	branch1->addMarSystem(mng.create("MixToMono/mix2mono"));
+	branch1->addMarSystem(mng.create("Rms/rms"));
   
-  // Network to compute RMS for file 2 
-  MarSystem* branch2 = mng.create("Series/branch2");
-  branch2->addMarSystem(mng.create("SoundFileSource/src"));
-  branch2->addMarSystem(mng.create("MixToMono/mix2mono"));
-  branch2->addMarSystem(mng.create("Rms/rms"));
+	// Network to compute RMS for file 2 
+	MarSystem* branch2 = mng.create("Series/branch2");
+	branch2->addMarSystem(mng.create("SoundFileSource/src"));
+	branch2->addMarSystem(mng.create("MixToMono/mix2mono"));
+	branch2->addMarSystem(mng.create("Rms/rms"));
   
-  rmsfan->addMarSystem(branch1);
-  rmsfan->addMarSystem(branch2);
-  rmsnet->addMarSystem(rmsfan);
+	rmsfan->addMarSystem(branch1);
+	rmsfan->addMarSystem(branch2);
+	rmsnet->addMarSystem(rmsfan);
 
-  // Collect the RMS contours 
-  rmsnet->addMarSystem(mng.create("RealvecSink/rdest"));
+	// Collect the RMS contours 
+	rmsnet->addMarSystem(mng.create("RealvecSink/rdest"));
   
-  rmsnet->updctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_string/filename", fname1);
-  rmsnet->updctrl("Fanout/rmsfan/Series/branch2/SoundFileSource/src/mrs_string/filename", fname2);
-  rmsnet->updctrl("mrs_natural/inSamples", 44100);
+	rmsnet->updctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_string/filename", fname1);
+	rmsnet->updctrl("Fanout/rmsfan/Series/branch2/SoundFileSource/src/mrs_string/filename", fname2);
+	rmsnet->updctrl("mrs_natural/inSamples", 44100);
 
-  size1 = (int)(rmsnet->getctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>() /44100.0);
-  size2 = (int)(rmsnet->getctrl("Fanout/rmsfan/Series/branch2/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>() / 44100.0);
+	size1 = (int)(rmsnet->getctrl("Fanout/rmsfan/Series/branch1/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>() /44100.0);
+	size2 = (int)(rmsnet->getctrl("Fanout/rmsfan/Series/branch2/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>() / 44100.0);
 
-  if (size1 <= size2)
-    max_size =size2;
-  else 
-    max_size = size1;
+	if (size1 <= size2)
+		max_size =size2;
+	else 
+		max_size = size1;
   
-  // RMS contour are calculated below 
-  for (int i = 0; i < max_size; i++) 
-    rmsnet->tick();
-  cout << "Done processing files" << fname1 << " and " << fname2 << endl;
+	// RMS contour are calculated below 
+	for (int i = 0; i < max_size; i++) 
+		rmsnet->tick();
+	cout << "Done processing files" << fname1 << " and " << fname2 << endl;
   
-  mrs_realvec rms_data = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
+	mrs_realvec rms_data = rmsnet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
 
-  // make pictures of contours 
+	// make pictures of contours 
 #ifdef MARSYAS_PNG 
-  pngwriter png1(rms_data.getCols(),128, 0, "rms1.png"); 
-  pngwriter png2(rms_data.getCols(),128, 0, "rms2.png");
-  png1.invert();
-  png2.invert();
+	pngwriter png1(rms_data.getCols(),128, 0, "rms1.png"); 
+	pngwriter png2(rms_data.getCols(),128, 0, "rms2.png");
+	png1.invert();
+	png2.invert();
 
-  rms_data.normMaxMin();
+	rms_data.normMaxMin();
   
-  for (int i=0; i < rms_data.getCols(); i++)
+	for (int i=0; i < rms_data.getCols(); i++)
     {
-      png1.line(i, 0, i, rms_data(0,i) * 128, 0.0, 0.0, 1.0);
-      png2.line(i, 0, i, rms_data(1,i) * 128, 0.0, 0.0, 1.0);
+		png1.line(i, 0, i, rms_data(0,i) * 128, 0.0, 0.0, 1.0);
+		png2.line(i, 0, i, rms_data(1,i) * 128, 0.0, 0.0, 1.0);
     }
   
-  png1.close();
-  png2.close();
+	png1.close();
+	png2.close();
 #endif 
   
-  // Prepare network to compute similarity Matrix and the use 
-  // DTW to find alignment 
+	// Prepare network to compute similarity Matrix and the use 
+	// DTW to find alignment 
   
-  mrs_realvec sizes;
-  sizes.create(2); 
-  sizes(0) = size1;
-  sizes(1) = size2;
+	mrs_realvec sizes;
+	sizes.create(2); 
+	sizes(0) = size1;
+	sizes(1) = size2;
   
-  MarSystem* net = mng.create("Series", "series");
-  net->updctrl("mrs_natural/inSamples", rms_data.getCols());
-  net->updctrl("mrs_natural/inObservations", 2);
-  net->addMarSystem(mng.create("RealvecSource", "src"));
-  net->updctrl("RealvecSource/src/mrs_realvec/data", rms_data);
+	MarSystem* net = mng.create("Series", "series");
+	net->updctrl("mrs_natural/inSamples", rms_data.getCols());
+	net->updctrl("mrs_natural/inObservations", 2);
+	net->addMarSystem(mng.create("RealvecSource", "src"));
+	net->updctrl("RealvecSource/src/mrs_realvec/data", rms_data);
   
-  MarSystem* sim = mng.create("SimilarityMatrix/sim");
-  sim->updctrl("mrs_string/normalize","MinMax");
-  sim->updctrl("mrs_realvec/sizes", sizes);
+	MarSystem* sim = mng.create("SimilarityMatrix/sim");
+	sim->updctrl("mrs_string/normalize","MinMax");
+	sim->updctrl("mrs_realvec/sizes", sizes);
   
-  // Distance/similarity metric used 
-  MarSystem* met = mng.create("Metric/met");
-  met->updctrl("mrs_string/metric", "euclideanDistance");
-  sim->addMarSystem(met);
-  net->addMarSystem(sim);
+	// Distance/similarity metric used 
+	MarSystem* met = mng.create("Metric/met");
+	met->updctrl("mrs_string/metric", "euclideanDistance");
+	sim->addMarSystem(met);
+	net->addMarSystem(sim);
   
-  MarSystem* dtw = mng.create("DTW/dtw");
-  dtw->updctrl("mrs_string/lastPos","end");
-  dtw->updctrl("mrs_string/startPos","zero");
-  dtw->updctrl("mrs_bool/weight",false);
-  dtw->updctrl("mrs_string/mode","normal");
-  net->addMarSystem(dtw);
+	MarSystem* dtw = mng.create("DTW/dtw");
+	dtw->updctrl("mrs_string/lastPos","end");
+	dtw->updctrl("mrs_string/startPos","zero");
+	dtw->updctrl("mrs_bool/weight",false);
+	dtw->updctrl("mrs_string/mode","normal");
+	net->addMarSystem(dtw);
  
-  // Compute the similarity matrix and DTW alignment path 
-  net->tick();
+	// Compute the similarity matrix and DTW alignment path 
+	net->tick();
  
-  mrs_realvec similarity_output = 
-    net->getctrl("SimilarityMatrix/sim/mrs_realvec/processedData")->to<mrs_realvec>();
-  mrs_realvec dtw_output = 
-    net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	mrs_realvec similarity_output = 
+		net->getctrl("SimilarityMatrix/sim/mrs_realvec/processedData")->to<mrs_realvec>();
+	mrs_realvec dtw_output = 
+		net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
 
-  // Make picture for the resulting Matrix 
+	// Make picture for the resulting Matrix 
 #ifdef MARSYAS_PNG 
-  pngwriter png_rms(rms_data.getCols(), rms_data.getCols(), 0, "simMatrix.png");
+	pngwriter png_rms(rms_data.getCols(), rms_data.getCols(), 0, "simMatrix.png");
   
-  // Find max and min
-  double max = MINREAL;
-  double min = MAXREAL;
-  for (int r=0; r < similarity_output.getRows(); r++) {
-    for (int c=0; c < similarity_output.getCols(); c++) {
-      if (similarity_output(r,c) < min)
-	min = similarity_output(r,c);
-      if (similarity_output(r,c) > max)
-	max = similarity_output(r,c);
-    }
-  }
+	// Find max and min
+	double max = MINREAL;
+	double min = MAXREAL;
+	for (int r=0; r < similarity_output.getRows(); r++) {
+		for (int c=0; c < similarity_output.getCols(); c++) {
+			if (similarity_output(r,c) < min)
+				min = similarity_output(r,c);
+			if (similarity_output(r,c) > max)
+				max = similarity_output(r,c);
+		}
+	}
   
-  double colour;
-  // Make a png of the similarity matrix
-  for (int r=0; r < similarity_output.getRows(); r++) {
-    for (int c=0; c < similarity_output.getCols(); c++) {
-      colour = 1.0 - ((similarity_output(r,c) - min) / (max - min));
-      png_rms.plot(c,r,colour,colour,colour);
-    }
-  }
+	double colour;
+	// Make a png of the similarity matrix
+	for (int r=0; r < similarity_output.getRows(); r++) {
+		for (int c=0; c < similarity_output.getCols(); c++) {
+			colour = 1.0 - ((similarity_output(r,c) - min) / (max - min));
+			png_rms.plot(c,r,colour,colour,colour);
+		}
+	}
 
 // Overlay the DTW data
-  for (int r=0; r < dtw_output.getRows(); r++) {
-    int x = dtw_output(r,0);
-    int y = dtw_output(r,1);
-    png_rms.plot(x,y,0.0,0.0,0.0);
-  }
+	for (int r=0; r < dtw_output.getRows(); r++) {
+		int x = dtw_output(r,0);
+		int y = dtw_output(r,1);
+		png_rms.plot(x,y,0.0,0.0,0.0);
+	}
   
   
-  png_rms.close();
+	png_rms.close();
   
 #endif 
 
@@ -4292,9 +4310,9 @@ toy_with_duplex()
 	dnet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
 	dnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	for (int i=0; i < 500; i++) 
-	  {
+	{
 	    dnet->tick();
-	  } 
+	} 
 }
 
 // Pluck(0,100,1.0,0.5,"Toy_WithPluckedRich0_100hz.wav");
@@ -4312,9 +4330,9 @@ Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 
 	series->updctrl("Gain/gain/mrs_real/gain", 1.0);
 	series->updctrl("SoundFileSink/dest/mrs_natural/nChannels", 
-		series->getctrl("Plucked/src/mrs_natural/nChannels"));
+					series->getctrl("Plucked/src/mrs_natural/nChannels"));
 	series->updctrl("mrs_real/israte", 
-		series->getctrl("Plucked/src/mrs_real/osrate"));
+					series->getctrl("Plucked/src/mrs_real/osrate"));
 	series->updctrl("SoundFileSink/dest/mrs_string/filename",name);
 
 	series->updctrl("Plucked/src/mrs_real/frequency",fre);
@@ -4328,9 +4346,9 @@ Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 	cout << (*series) << endl;
 
 	realvec in(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			   series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 	realvec out(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 	mrs_natural t=0;
 
@@ -4340,7 +4358,7 @@ Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 		t++;
 	}	      
 
-	//while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	//while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	//{
 	//  series->tick();
 	//}
@@ -4370,9 +4388,9 @@ void PluckLive(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret)
 	series->updctrl("Gain/gain/mrs_real/gain", 1.0);
 
 	series->updctrl("AudioSink/dest/mrs_natural/nChannels", 
-		series->getctrl("Plucked/src/mrs_natural/nChannels"));
+					series->getctrl("Plucked/src/mrs_natural/nChannels"));
 	series->updctrl("AudioSink/dest/mrs_real/israte", 
-		series->getctrl("Plucked/src/mrs_real/osrate"));
+					series->getctrl("Plucked/src/mrs_real/osrate"));
 
 
 
@@ -4391,9 +4409,9 @@ void PluckLive(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret)
 
 
 	realvec in(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+			   series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 	realvec out(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+				series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 	mrs_natural t=0;
 
@@ -4409,7 +4427,7 @@ void PluckLive(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret)
 
 
 
-	//while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	//while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	//{
 	//  series->tick();
 	//}
@@ -4477,7 +4495,7 @@ tempotoy_with_sfplay(string sfName)
 	series->updctrl("mrs_natural/inSamples", 128);
 	series->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
-	while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 		series->tick();
 
 	delete series;
@@ -4546,15 +4564,15 @@ toy_with_tempo(string fname, mrs_natural tempo, mrs_natural rank)
 		tempos[i] = floor(((tempos[i] - min_tempo) / (max_tempo - min_tempo)) * 10.0 + 0.5);
 
 		/* cout << "Name = " << names[i] << endl;
-		cout << "Tempo = " << tempos[i] << endl;
-		cout << "Strength = " << strengths[i] << endl;
+		   cout << "Tempo = " << tempos[i] << endl;
+		   cout << "Strength = " << strengths[i] << endl;
 		*/ 
 
 		mrs_natural si = (mrs_natural)strengths[i];
 		mrs_natural ti = (mrs_natural)tempos[i];
 
 		/* cout << "si = " << si << endl;
-		cout << "ti = " << ti << endl;
+		   cout << "ti = " << ti << endl;
 		*/ 
 
 		tempo_map[si][ti].push_back(names[i]);
@@ -4585,19 +4603,19 @@ toy_with_tempo(string fname, mrs_natural tempo, mrs_natural rank)
 		}
 
 
-		tempo = (mrs_natural)floor(((tempo - min_tempo) / (max_tempo - min_tempo)) * 10.0 + 0.5);
-		vector<string> retrievedFiles = tempo_map[rank][tempo];
+	tempo = (mrs_natural)floor(((tempo - min_tempo) / (max_tempo - min_tempo)) * 10.0 + 0.5);
+	vector<string> retrievedFiles = tempo_map[rank][tempo];
 
-		if (retrievedFiles.size()  == 0) 
-			cout << "No file for these specs" << endl;
-		else 
-		{
-			cout << "Playing " << retrievedFiles[0] << endl;
+	if (retrievedFiles.size()  == 0) 
+		cout << "No file for these specs" << endl;
+	else 
+	{
+		cout << "Playing " << retrievedFiles[0] << endl;
 
-			tempotoy_with_sfplay(retrievedFiles[0]);
-		}
+		tempotoy_with_sfplay(retrievedFiles[0]);
+	}
 
-		return;
+	return;
 }
 
 
@@ -4622,7 +4640,7 @@ toy_with_stretchLinear(string sfName)
 
 
 	
-	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())				{
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())				{
 		net->tick();
 	}
 }
@@ -4667,7 +4685,7 @@ toy_with_pitch(string sfName)
 	pnet->updctrl("ShiftInput/sfi/mrs_natural/winSize", powerOfTwo(windowSize));
 	//pnet->updctrl("ShiftInput/sfi/mrs_natural/winSize", 1024);
 
-	while (pnet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while (pnet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 		pnet->tick();
 
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
@@ -4702,12 +4720,19 @@ toy_with_centroid(string sfName1)
 	net->addMarSystem(mng.create("Centroid/cntrd"));
 	net->addMarSystem(mng.create("Memory/mem"));
 	net->addMarSystem(mng.create("Mean/mean"));
-
-	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName1);
+	net->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+	
+	net->updctrl("mrs_string/filename", sfName1);
 
 	mrs_real val = 0.0;
 
-	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	ofstream ofs;
+	ofs.open("centroid.mpl");
+	ofs << *net << endl;
+	ofs.close();
+	
+
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		net->tick();
 		const mrs_realvec& src_data = 
@@ -4735,12 +4760,12 @@ toy_with_confidence(string sfName)
 	pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	pnet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	pnet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 	pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
 	mrs_bool isEmpty;
 	//cout << *pnet << endl;
-	while (isEmpty = pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (isEmpty = pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 		//cout << "pos " << pnet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
 		cout << pnet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
@@ -4770,10 +4795,10 @@ toy_with_realvecCtrl(string sfName)
 	pnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	pnet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	pnet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 	pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
-	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 
 		pnet->tick();
@@ -4799,11 +4824,11 @@ toy_with_power(string sfName)
 	pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	pnet->updctrl("ShiftInput/si/mrs_natural/winSize", 2048);
 
-	pnet->linkControl("mrs_bool/notEmpty", "SoundFileSource/src/mrs_bool/notEmpty");
+	pnet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 	pnet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
 	//  cout << *pnet;
-	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 		cout << pnet->getctrl("mrs_natural/pos")->to<mrs_natural>();
 		pnet->tick();
@@ -4837,14 +4862,14 @@ toy_with_shredder(string sfName)
 	pnet->updctrl("Accumulator/acc/SoundFileSource/src/mrs_string/filename", sfName);
 	pnet->updctrl("Shredder/shred/AudioSink/dest/mrs_bool/initAudio", true);
 
-	pnet->linkControl("mrs_bool/notEmpty", "Accumulator/acc/SoundFileSource/src/mrs_bool/notEmpty");
+	pnet->linkControl("mrs_bool/hasData", "Accumulator/acc/SoundFileSource/src/mrs_bool/hasData");
 	pnet->linkControl("mrs_natural/pos", "Accumulator/acc/SoundFileSource/src/mrs_natural/pos");
 
 	pnet->updctrl("Accumulator/acc/mrs_natural/nTimes", 10);
 	pnet->updctrl("Shredder/shred/mrs_natural/nTimes", 10);
 
 
-	while (pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>()) 
+	while (pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
 	{      
 		pnet->tick(); 
 	}
@@ -4861,7 +4886,7 @@ toy_with_scheduler(string sfName)
 	string opName="scheduled.wav";
 
 	cout    << "Input: " << ipName
-                << "\nOutput: " << opName << endl;
+			<< "\nOutput: " << opName << endl;
 
 	MarSystemManager mng;
 
@@ -4935,16 +4960,16 @@ void toy_phisem()
 
 		cout << "===========================" << endl;
 		cout << "numObjects:  " << numObjects << endl
-			<< "baseGain:    " << baseGain << endl
-			<< "systemDecay: " << systemDecay << endl
-			<< "soundDecay:  " << soundDecay << endl
-			<< "numFilters:  " << numFilters << endl;
+			 << "baseGain:    " << baseGain << endl
+			 << "systemDecay: " << systemDecay << endl
+			 << "soundDecay:  " << soundDecay << endl
+			 << "numFilters:  " << numFilters << endl;
 
 		for(int i=0; i < numFilters; i++) {
 			resonances(i) = 0.9 + randomFloat(0.1);
 			frequencies(i) = 200.0 * (1 + randomInt(30));
 			cout << "  filter(" << i << ") freq=" << frequencies(i)
-				<< " res=" << resonances(i) << endl;
+				 << " res=" << resonances(i) << endl;
 		}
 
 		playbacknet->updctrl("PhiSEMSource/src/mrs_natural/numObjects", numObjects);
@@ -5044,8 +5069,8 @@ toy_with_margrid(string sfName)
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
 	
 	
-	total_->linkctrl("mrs_bool/notEmpty",
-					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty");  
+	total_->linkctrl("mrs_bool/hasData",
+					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/hasData");  
 	total_->linkctrl("mrs_bool/advance",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/advance");  
 	
@@ -5064,177 +5089,177 @@ toy_with_margrid(string sfName)
 	total_->updctrl("mrs_string/filename", trainFname);
 	total_->updctrl("mrs_real/repetitions", 1.0);
 	
-  // EXTRACT FEATURES 
-  int index= 0;
-  int numFiles = total_->getctrl("mrs_natural/numFiles")->to<mrs_natural>();
+	// EXTRACT FEATURES 
+	int index= 0;
+	int numFiles = total_->getctrl("mrs_natural/numFiles")->to<mrs_natural>();
 
-  int som_height = 12;
-  int som_width = 12;
+	int som_height = 12;
+	int som_width = 12;
   
 
-  realvec som_in;
-  realvec som_res;
-  realvec som_fmatrix;
+	realvec som_in;
+	realvec som_res;
+	realvec som_fmatrix;
 
-  mrs_natural total_onObservations = 
-    total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+	mrs_natural total_onObservations = 
+		total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   
-  som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+	som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+				  total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
   
-  som_res.create(total_onObservations, 
-		 total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	som_res.create(total_onObservations, 
+				   total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
-  som_fmatrix.create(total_onObservations, 
-		     numFiles);
+	som_fmatrix.create(total_onObservations, 
+					   numFiles);
 
-  // calculate features 
-  cout << "Calculating features" << endl;
-  for (index=0; index < numFiles; index++)
+	// calculate features 
+	cout << "Calculating features" << endl;
+	for (index=0; index < numFiles; index++)
     {
-      total_->updctrl("mrs_natural/label", index);
-      total_->updctrl("mrs_bool/memReset", true);
-      total_->updctrl("mrs_natural/cindex", index);
-      string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
-      cout << current  << " - ";
+		total_->updctrl("mrs_natural/label", index);
+		total_->updctrl("mrs_bool/memReset", true);
+		total_->updctrl("mrs_natural/cindex", index);
+		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+		cout << current  << " - ";
       
-      cout << "Processed " << index << " files " << endl; 
+		cout << "Processed " << index << " files " << endl; 
 
-      total_->process(som_in,som_res);
+		total_->process(som_in,som_res);
 	  
-      for (int o=0; o < total_onObservations; o++) 
-		  som_fmatrix(o, index) = som_res(o, 0);
-      total_->updctrl("mrs_bool/advance", true);      
+		for (int o=0; o < total_onObservations; o++) 
+			som_fmatrix(o, index) = som_res(o, 0);
+		total_->updctrl("mrs_bool/advance", true);      
 	  
     }
 
-  ofstream oss;
-  oss.open("som_fmatrix.txt");
-  oss << som_fmatrix << endl;
+	ofstream oss;
+	oss.open("som_fmatrix.txt");
+	oss << som_fmatrix << endl;
 
 
-  // Read the feature matrix from file som_fmatrix.txt 
-  realvec train_som_fmatrix;
-  ifstream iss;
-  iss.open("som_fmatrix.txt");
-  iss >> train_som_fmatrix;
+	// Read the feature matrix from file som_fmatrix.txt 
+	realvec train_som_fmatrix;
+	ifstream iss;
+	iss.open("som_fmatrix.txt");
+	iss >> train_som_fmatrix;
   
-  MarSystem*  norm_;
-  MarSystem*  som_;
-  realvec norm_som_fmatrix;
-  
-
-  
-  // Normalize the feature matrix so that all features are between 0 and 1
-  norm_som_fmatrix.create(train_som_fmatrix.getRows(),
-			  train_som_fmatrix.getCols());
-  norm_ = mng.create("NormMaxMin", "norm");
-  norm_->updctrl("mrs_natural/inSamples", train_som_fmatrix.getCols());
-  norm_->updctrl("mrs_natural/inObservations", 
-  total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-  norm_->updctrl("mrs_string/mode", "train");
-  norm_->process(train_som_fmatrix, norm_som_fmatrix);
-  norm_->updctrl("mrs_string/mode", "predict");  
-  norm_->process(train_som_fmatrix, norm_som_fmatrix);
-
-
-
-  // Create netork for training the self-organizing map 
-  som_ = mng.create("SOM", "som");  
-  som_->updctrl("mrs_natural/grid_width", som_width);
-  som_->updctrl("mrs_natural/grid_height", som_height);
-  som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
-  som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
-  som_->updctrl("mrs_string/mode", "train");
-
+	MarSystem*  norm_;
+	MarSystem*  som_;
+	realvec norm_som_fmatrix;
   
 
-  realvec som_fmatrixres;
-  som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-			som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
-  cout << "Starting training" << endl;
+	// Normalize the feature matrix so that all features are between 0 and 1
+	norm_som_fmatrix.create(train_som_fmatrix.getRows(),
+							train_som_fmatrix.getCols());
+	norm_ = mng.create("NormMaxMin", "norm");
+	norm_->updctrl("mrs_natural/inSamples", train_som_fmatrix.getCols());
+	norm_->updctrl("mrs_natural/inObservations", 
+				   total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+	norm_->updctrl("mrs_string/mode", "train");
+	norm_->process(train_som_fmatrix, norm_som_fmatrix);
+	norm_->updctrl("mrs_string/mode", "predict");  
+	norm_->process(train_som_fmatrix, norm_som_fmatrix);
 
-  for (int i=0; i < 2000; i ++) 
+
+
+	// Create netork for training the self-organizing map 
+	som_ = mng.create("SOM", "som");  
+	som_->updctrl("mrs_natural/grid_width", som_width);
+	som_->updctrl("mrs_natural/grid_height", som_height);
+	som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
+	som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
+	som_->updctrl("mrs_string/mode", "train");
+
+  
+
+	realvec som_fmatrixres;
+	som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+						  som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+  
+	cout << "Starting training" << endl;
+
+	for (int i=0; i < 2000; i ++) 
     {
-      cout << "Training iteration" << i << endl;
-      norm_som_fmatrix.shuffle();
-      som_->process(norm_som_fmatrix, som_fmatrixres);
+		cout << "Training iteration" << i << endl;
+		norm_som_fmatrix.shuffle();
+		som_->process(norm_som_fmatrix, som_fmatrixres);
     }
 
-  cout << "Training done" << endl;
+	cout << "Training done" << endl;
 
-  // write the trained som network and the feature normalization networks 
-  ofstream oss1;
-  oss1.open("som.mpl");
-  oss1 << *som_ << endl;
-  delete som_;
+	// write the trained som network and the feature normalization networks 
+	ofstream oss1;
+	oss1.open("som.mpl");
+	oss1 << *som_ << endl;
+	delete som_;
 
-  ofstream noss;
-  noss.open("norm.mpl");
-  noss << *norm_ << endl;
-  delete norm_;
+	ofstream noss;
+	noss.open("norm.mpl");
+	noss << *norm_ << endl;
+	delete norm_;
 
-  // read trained som network from file som.mpl and normalization network norm.mpl 
-  ifstream iss1;
-  iss1.open("som.mpl");
-  som_ = mng.getMarSystem(iss1);
+	// read trained som network from file som.mpl and normalization network norm.mpl 
+	ifstream iss1;
+	iss1.open("som.mpl");
+	som_ = mng.getMarSystem(iss1);
 
-  ifstream niss1;
-  niss1.open("norm.mpl");
-  norm_ = mng.getMarSystem(niss1);
+	ifstream niss1;
+	niss1.open("norm.mpl");
+	norm_ = mng.getMarSystem(niss1);
 
-  cout << "Starting prediction" << endl;
-  som_->updctrl("mrs_string/mode", "predict");  
+	cout << "Starting prediction" << endl;
+	som_->updctrl("mrs_string/mode", "predict");  
   
-  Collection l1;
-  l1.read(predictFname);
-  cout << "Read collection" << endl;
+	Collection l1;
+	l1.read(predictFname);
+	cout << "Read collection" << endl;
 
-  total_->updctrl("mrs_natural/pos", 0);
+	total_->updctrl("mrs_natural/pos", 0);
 
-  total_->updctrl("mrs_string/filename", predictFname); 
+	total_->updctrl("mrs_string/filename", predictFname); 
 
-  som_->updctrl("mrs_natural/inSamples", 1);
+	som_->updctrl("mrs_natural/inSamples", 1);
 
-  realvec predict_res(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		      som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-  norm_->updctrl("mrs_natural/inSamples", 1);
+	realvec predict_res(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+						som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	norm_->updctrl("mrs_natural/inSamples", 1);
 
 
-  realvec norm_som_res;
+	realvec norm_som_res;
 
-  som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>()); 
+	som_in.create(total_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+				  total_->getctrl("mrs_natural/inSamples")->to<mrs_natural>()); 
  
- som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		 total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+				   total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
  
-  norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-		      total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	norm_som_res.create(total_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+						total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 
-  for (int index = 0; index < l1.size(); index++)
+	for (int index = 0; index < l1.size(); index++)
     {
-      total_->updctrl("mrs_natural/label", index);
-      total_->updctrl("mrs_bool/memReset", true);
-      total_->updctrl("mrs_natural/cindex", index);
-      string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
+		total_->updctrl("mrs_natural/label", index);
+		total_->updctrl("mrs_bool/memReset", true);
+		total_->updctrl("mrs_natural/cindex", index);
+		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
 
-      total_->process(som_in, som_res);
-      norm_->process(som_res, norm_som_res);
-      som_->process(norm_som_res, predict_res); 
-	  cout << "Predicting  " << current << endl;
+		total_->process(som_in, som_res);
+		norm_->process(som_res, norm_som_res);
+		som_->process(norm_som_res, predict_res); 
+		cout << "Predicting  " << current << endl;
 	  
-      cout << predict_res(0) << endl;
-      cout << predict_res(1) << endl;
+		cout << predict_res(0) << endl;
+		cout << predict_res(1) << endl;
 	  
-      total_->updctrl("mrs_bool/advance", true);            
+		total_->updctrl("mrs_bool/advance", true);            
     }
 
 
 
-  cout << "end_prediction" << endl;
+	cout << "end_prediction" << endl;
 
 
 
@@ -5248,66 +5273,66 @@ void
 toy_with_multichannel_merge(string sfName) 
 {
 
-  string in1AudioFileName = "in1.wav";
-  string in2AudioFileName = "in2.wav";
-  string in3AudioFileName = "in3.wav";
-  string in4AudioFileName = "in4.wav";
-  string in5AudioFileName = "in5.wav";
-  string in6AudioFileName = "in6.wav";
-  string outAudioFileName = "out.wav";
+	string in1AudioFileName = "in1.wav";
+	string in2AudioFileName = "in2.wav";
+	string in3AudioFileName = "in3.wav";
+	string in4AudioFileName = "in4.wav";
+	string in5AudioFileName = "in5.wav";
+	string in6AudioFileName = "in6.wav";
+	string outAudioFileName = "out.wav";
 
     MarSystemManager mng;
 
-  //////////////////////////////////////////////////
-  // 
-  // A network to contain everything
-  //
-  MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	//////////////////////////////////////////////////
+	// 
+	// A network to contain everything
+	//
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
 
-  //////////////////////////////////////////////////
-  // 
-  // A Fanout that contains all our 6 sound sources
-  //
-  MarSystem* fanout = mng.create("Fanout", "fanout");
-  fanout->addMarSystem(mng.create("SoundFileSource", "src1"));
-  fanout->addMarSystem(mng.create("SoundFileSource", "src2"));
-  fanout->addMarSystem(mng.create("SoundFileSource", "src3"));
-  fanout->addMarSystem(mng.create("SoundFileSource", "src4"));
-  fanout->addMarSystem(mng.create("SoundFileSource", "src5"));
-  fanout->addMarSystem(mng.create("SoundFileSource", "src6"));
+	//////////////////////////////////////////////////
+	// 
+	// A Fanout that contains all our 6 sound sources
+	//
+	MarSystem* fanout = mng.create("Fanout", "fanout");
+	fanout->addMarSystem(mng.create("SoundFileSource", "src1"));
+	fanout->addMarSystem(mng.create("SoundFileSource", "src2"));
+	fanout->addMarSystem(mng.create("SoundFileSource", "src3"));
+	fanout->addMarSystem(mng.create("SoundFileSource", "src4"));
+	fanout->addMarSystem(mng.create("SoundFileSource", "src5"));
+	fanout->addMarSystem(mng.create("SoundFileSource", "src6"));
 
-  //////////////////////////////////////////////////
-  // 
-  // Set the filenames on all the SoundFileSources
-  //
-  fanout->updctrl("SoundFileSource/src1/mrs_string/filename",in1AudioFileName);
-  fanout->updctrl("SoundFileSource/src2/mrs_string/filename",in2AudioFileName);
-  fanout->updctrl("SoundFileSource/src3/mrs_string/filename",in3AudioFileName);
-  fanout->updctrl("SoundFileSource/src4/mrs_string/filename",in4AudioFileName);
-  fanout->updctrl("SoundFileSource/src5/mrs_string/filename",in5AudioFileName);
-  fanout->updctrl("SoundFileSource/src6/mrs_string/filename",in6AudioFileName);
+	//////////////////////////////////////////////////
+	// 
+	// Set the filenames on all the SoundFileSources
+	//
+	fanout->updctrl("SoundFileSource/src1/mrs_string/filename",in1AudioFileName);
+	fanout->updctrl("SoundFileSource/src2/mrs_string/filename",in2AudioFileName);
+	fanout->updctrl("SoundFileSource/src3/mrs_string/filename",in3AudioFileName);
+	fanout->updctrl("SoundFileSource/src4/mrs_string/filename",in4AudioFileName);
+	fanout->updctrl("SoundFileSource/src5/mrs_string/filename",in5AudioFileName);
+	fanout->updctrl("SoundFileSource/src6/mrs_string/filename",in6AudioFileName);
 
-  //////////////////////////////////////////////////
-  // 
-  // Add the fanout to the main network
-  //
-  playbacknet->addMarSystem(fanout);
+	//////////////////////////////////////////////////
+	// 
+	// Add the fanout to the main network
+	//
+	playbacknet->addMarSystem(fanout);
 
-  //////////////////////////////////////////////////
-  // 
-  // The output file which is a SoundFileSink
-  //
-  playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
-  playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename",outAudioFileName);
+	//////////////////////////////////////////////////
+	// 
+	// The output file which is a SoundFileSink
+	//
+	playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename",outAudioFileName);
 
-  //////////////////////////////////////////////////
-  // 
-  // Tick the network until the first sound file 
-  // doesn't have any more data.
-  //
-   while (playbacknet->getctrl("Fanout/fanout/SoundFileSource/src1/mrs_bool/notEmpty")->isTrue())	{
-  	playbacknet->tick();
-  }
+	//////////////////////////////////////////////////
+	// 
+	// Tick the network until the first sound file 
+	// doesn't have any more data.
+	//
+	while (playbacknet->getctrl("Fanout/fanout/SoundFileSource/src1/mrs_bool/hasData")->isTrue())	{
+		playbacknet->tick();
+	}
 
 }
 
@@ -5356,35 +5381,35 @@ void toy_with_marostring(std::string format)
 float find_max_rms(string inFileName)
 {
 
-  MarSystemManager mng;
+	MarSystemManager mng;
 
-  MarSystem* net = mng.create("Series", "net");
+	MarSystem* net = mng.create("Series", "net");
 
-  MarSystem* sr = mng.create("SilenceRemove", "sr");
-  // Threshold for silence removal
-  sr->updctrl("mrs_real/threshold",0.00001);
+	MarSystem* sr = mng.create("SilenceRemove", "sr");
+	// Threshold for silence removal
+	sr->updctrl("mrs_real/threshold",0.00001);
 
-  sr->addMarSystem(mng.create("SoundFileSource", "src"));
-  sr->updctrl("SoundFileSource/src/mrs_string/filename",inFileName);
+	sr->addMarSystem(mng.create("SoundFileSource", "src"));
+	sr->updctrl("SoundFileSource/src/mrs_string/filename",inFileName);
 
-  net->addMarSystem(sr);
+	net->addMarSystem(sr);
 
-  MarSystem* rms = mng.create("Rms", "rms");
-  net->addMarSystem(rms);
+	MarSystem* rms = mng.create("Rms", "rms");
+	net->addMarSystem(rms);
 
-  net->addMarSystem(mng.create("Gain", "gain"));
+	net->addMarSystem(mng.create("Gain", "gain"));
 
-  float max_rms = MINREAL;
-  float r;
-  while (sr->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	{
-  	net->tick();
-	r = rms->getctrl("mrs_realvec/processedData")->to<mrs_realvec>()(0);
-	if (r > max_rms) {
-	  max_rms = r;
+	float max_rms = MINREAL;
+	float r;
+	while (sr->getctrl("SoundFileSource/src/mrs_bool/hasData")->isTrue())	{
+		net->tick();
+		r = rms->getctrl("mrs_realvec/processedData")->to<mrs_realvec>()(0);
+		if (r > max_rms) {
+			max_rms = r;
+		}
 	}
-  }
 
-  return max_rms;
+	return max_rms;
 
 }
   
@@ -5392,32 +5417,32 @@ void
 toy_with_volume_normalize(string inFileName, string outFileName)
 {
 
-  float max_rms = find_max_rms(inFileName);
-  float gain = 0.8 / max_rms;
+	float max_rms = find_max_rms(inFileName);
+	float gain = 0.8 / max_rms;
 
-  MarSystemManager mng;
+	MarSystemManager mng;
 
-  MarSystem* net = mng.create("Series", "net");
+	MarSystem* net = mng.create("Series", "net");
 
-  MarSystem* sr = mng.create("SilenceRemove", "sr");
-  // Threshold for silence removal
-  sr->updctrl("mrs_real/threshold",0.00001);
+	MarSystem* sr = mng.create("SilenceRemove", "sr");
+	// Threshold for silence removal
+	sr->updctrl("mrs_real/threshold",0.00001);
 
-  sr->addMarSystem(mng.create("SoundFileSource", "src"));
-  sr->updctrl("SoundFileSource/src/mrs_string/filename",inFileName);
+	sr->addMarSystem(mng.create("SoundFileSource", "src"));
+	sr->updctrl("SoundFileSource/src/mrs_string/filename",inFileName);
 
-  net->addMarSystem(sr);
+	net->addMarSystem(sr);
 
-  net->addMarSystem(mng.create("Gain", "gain"));
-  net->updctrl("Gain/gain/mrs_real/gain",gain);
+	net->addMarSystem(mng.create("Gain", "gain"));
+	net->updctrl("Gain/gain/mrs_real/gain",gain);
 
-  net->addMarSystem(mng.create("SoundFileSink", "dest"));
-  net->updctrl("mrs_real/israte", 44100.0);
-  net->updctrl("SoundFileSink/dest/mrs_string/filename",outFileName);
+	net->addMarSystem(mng.create("SoundFileSink", "dest"));
+	net->updctrl("mrs_real/israte", 44100.0);
+	net->updctrl("SoundFileSink/dest/mrs_string/filename",outFileName);
 
-  while (sr->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	{
-  	net->tick();
-  }
+	while (sr->getctrl("SoundFileSource/src/mrs_bool/hasData")->isTrue())	{
+		net->tick();
+	}
 
 }
 
@@ -5425,9 +5450,9 @@ void toy_with_accent_filter_bank(string inFileName, string outFileName)
 {
 	MarSystemManager mng;
 
-  MarSystem* net = mng.create("Series", "net");
+	MarSystem* net = mng.create("Series", "net");
   
-  net->updctrl("mrs_natural/inSamples", 4096);
+	net->updctrl("mrs_natural/inSamples", 4096);
 
 	net->updctrl("mrs_real/israte", 44100.0);
   	
@@ -5440,9 +5465,9 @@ void toy_with_accent_filter_bank(string inFileName, string outFileName)
 	net->addMarSystem(mng.create("SoundFileSink", "dest"));
  	net->updctrl("SoundFileSink/dest/mrs_string/filename",outFileName);
  	
-	while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	{
-  	net->tick();
-  }
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->isTrue())	{
+		net->tick();
+	}
  
 }
 
@@ -5481,10 +5506,10 @@ void toy_with_chroma(string inSoundFileName, string inTextFileName)
 
 	// 5. Perform windowing on buffer values
 	/* This function includes a 'x 2/Sum(w(n))' normalization
-	with 2/Sum(w(n)) = 2 x 1/FS x FS/Sum(w(n)) with
-	- 2 = energy in positive spectrum = energy in full spectrum
-	- 1/FS = spectrum normalization (?)
-	- FS/Sum(w(n)) = compensate for window shape */
+	   with 2/Sum(w(n)) = 2 x 1/FS x FS/Sum(w(n)) with
+	   - 2 = energy in positive spectrum = energy in full spectrum
+	   - 1/FS = spectrum normalization (?)
+	   - FS/Sum(w(n)) = compensate for window shape */
 	theNewSystem = theManager.create("Windowing","Windowing");
 	theExtractorNet->addMarSystem(theNewSystem);
 
@@ -5555,7 +5580,7 @@ void toy_with_chroma(string inSoundFileName, string inTextFileName)
 
 	// ------------------------ COMPUTE CHROMA PROFILES ------------------------
 	clock_t start = clock();
-	theControlString = "SoundFileSource/Source/mrs_bool/notEmpty";
+	theControlString = "SoundFileSource/Source/mrs_bool/hasData";
 	while (theExtractorNet->getctrl(theControlString)->to<mrs_bool>())
 		theExtractorNet->tick();
 
@@ -5675,7 +5700,7 @@ void toy_with_realvec_record(string outFileName)
 	cout << "Reading data into the RealvecSink" << endl;
     for (mrs_natural t = 0; t < iterations; t++) 
     {
-	  recordNet->tick();
+		recordNet->tick();
     }
 	
 	// The data in the RealvecSink
@@ -5705,128 +5730,128 @@ void toy_with_realvec_record(string outFileName)
 //  	cout << rsrc->getctrl("mrs_realvec/data") << endl;
 
     for (mrs_natural t = 0; t < iterations; t++) 
-	  {
+	{
 // 		cout << "tick" << endl;
-	  playbackNet->tick();
+		playbackNet->tick();
     }
 
 }
 
 void toy_with_stereospectrum_bin_change(string inAudioFileName)
 {
-  MarSystem* net_;
+	MarSystem* net_;
 
-  MarSystemManager mng;
+	MarSystemManager mng;
 
-  net_ = mng.create("Series", "net");
-  net_->addMarSystem(mng.create("SoundFileSource", "src"));
-  net_->addMarSystem(mng.create("AudioSink", "dest"));
+	net_ = mng.create("Series", "net");
+	net_->addMarSystem(mng.create("SoundFileSource", "src"));
+	net_->addMarSystem(mng.create("AudioSink", "dest"));
 
-  MarSystem* fanout = mng.create("Fanout", "fanout");
+	MarSystem* fanout = mng.create("Fanout", "fanout");
 
-  MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
-  powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
-  powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
-  powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
-  powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-  powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
+	MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
+	powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+	powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
+	powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
+	powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
 
-  MarSystem* stereobranches_series = mng.create("Series", "stereobranches_series");
-  MarSystem* stereobranches_parallel = mng.create("Parallel", "stereobranches_parallel");
-  MarSystem* left = mng.create("Series", "left");
-  MarSystem* right = mng.create("Series", "right");
+	MarSystem* stereobranches_series = mng.create("Series", "stereobranches_series");
+	MarSystem* stereobranches_parallel = mng.create("Parallel", "stereobranches_parallel");
+	MarSystem* left = mng.create("Series", "left");
+	MarSystem* right = mng.create("Series", "right");
 
-  left->addMarSystem(mng.create("Windowing", "hamleft"));
-  left->addMarSystem(mng.create("Spectrum", "spkleft"));
+	left->addMarSystem(mng.create("Windowing", "hamleft"));
+	left->addMarSystem(mng.create("Spectrum", "spkleft"));
 
-  right->addMarSystem(mng.create("Windowing", "hamright"));
-  right->addMarSystem(mng.create("Spectrum", "spkright"));
+	right->addMarSystem(mng.create("Windowing", "hamright"));
+	right->addMarSystem(mng.create("Spectrum", "spkright"));
 
-  stereobranches_parallel->addMarSystem(left);
-  stereobranches_parallel->addMarSystem(right);
-  stereobranches_series->addMarSystem(stereobranches_parallel);
-  stereobranches_series->addMarSystem(mng.create("StereoSpectrum", "sspk"));
+	stereobranches_parallel->addMarSystem(left);
+	stereobranches_parallel->addMarSystem(right);
+	stereobranches_series->addMarSystem(stereobranches_parallel);
+	stereobranches_series->addMarSystem(mng.create("StereoSpectrum", "sspk"));
 
-  stereobranches_series->addMarSystem(mng.create("Gain", "gain"));
+	stereobranches_series->addMarSystem(mng.create("Gain", "gain"));
 
-  fanout->addMarSystem(powerspectrum_series);
-  fanout->addMarSystem(stereobranches_series);
+	fanout->addMarSystem(powerspectrum_series);
+	fanout->addMarSystem(stereobranches_series);
 
-  net_->addMarSystem(fanout);
-  net_->addMarSystem(mng.create("Gain", "gain"));
+	net_->addMarSystem(fanout);
+	net_->addMarSystem(mng.create("Gain", "gain"));
 
-  net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
-  net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+	net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-  int i = 0;
-  while (net_->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  { 
-	  net_->tick();
+	int i = 0;
+	while (net_->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())  { 
+		net_->tick();
 
-	  cout << "i=" << i << endl;
- 	  if (i == 100) {
- 		cout << "32" << endl;
- 		net_->updctrl("mrs_natural/inSamples",32);
- 	  }
-	  if (i == 120) {
-		cout << "32768" << endl;
-		net_->updctrl("mrs_natural/inSamples",32768);
-	  }
-	  if (i == 140) {
-		cout << "256" << endl;
-		net_->updctrl("mrs_natural/inSamples",256);
-	  }
-	  if (i == 160) {
-		cout << "32" << endl;
-		net_->updctrl("mrs_natural/inSamples",256);
-	  }
-	  if (i == 180) {
-		cout << "32768" << endl;
-		net_->updctrl("mrs_natural/inSamples",32768);
-	  }
-	  if (i == 240) {
-		cout << "256" << endl;
-		net_->updctrl("mrs_natural/inSamples",256);
-	  }
-	  if (i == 260) {
-		cout << "32" << endl;
-		net_->updctrl("mrs_natural/inSamples",256);
-	  }
-	  if (i == 280) {
-		cout << "32768" << endl;
-		net_->updctrl("mrs_natural/inSamples",32768);
-	  }
+		cout << "i=" << i << endl;
+		if (i == 100) {
+			cout << "32" << endl;
+			net_->updctrl("mrs_natural/inSamples",32);
+		}
+		if (i == 120) {
+			cout << "32768" << endl;
+			net_->updctrl("mrs_natural/inSamples",32768);
+		}
+		if (i == 140) {
+			cout << "256" << endl;
+			net_->updctrl("mrs_natural/inSamples",256);
+		}
+		if (i == 160) {
+			cout << "32" << endl;
+			net_->updctrl("mrs_natural/inSamples",256);
+		}
+		if (i == 180) {
+			cout << "32768" << endl;
+			net_->updctrl("mrs_natural/inSamples",32768);
+		}
+		if (i == 240) {
+			cout << "256" << endl;
+			net_->updctrl("mrs_natural/inSamples",256);
+		}
+		if (i == 260) {
+			cout << "32" << endl;
+			net_->updctrl("mrs_natural/inSamples",256);
+		}
+		if (i == 280) {
+			cout << "32768" << endl;
+			net_->updctrl("mrs_natural/inSamples",32768);
+		}
 	  
-	  i++;
-  }
+		i++;
+	}
 
 }
 
 void toy_with_peaker(string inAudioFileName)
 {
-  MarSystem* net_;
+	MarSystem* net_;
 
-  MarSystemManager mng;
+	MarSystemManager mng;
 
-  net_ = mng.create("Series", "net");
-  net_->addMarSystem(mng.create("SoundFileSource", "src"));
-  net_->addMarSystem(mng.create("AudioSink", "dest"));
-  net_->addMarSystem(mng.create("Peaker", "peaker"));
-   net_->addMarSystem(mng.create("Gain", "gain"));
+	net_ = mng.create("Series", "net");
+	net_->addMarSystem(mng.create("SoundFileSource", "src"));
+	net_->addMarSystem(mng.create("AudioSink", "dest"));
+	net_->addMarSystem(mng.create("Peaker", "peaker"));
+	net_->addMarSystem(mng.create("Gain", "gain"));
 
-  net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
-  net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+	net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 //     mrs_natural winsize = 8820;
 
-      mrs_natural winsize = 512;
- 	 net_->updctrl("mrs_natural/inSamples",winsize);
+	mrs_natural winsize = 512;
+	net_->updctrl("mrs_natural/inSamples",winsize);
 
 //   net_->updctrl("Peaker/peaker/mrs_real/peakStrength",100000.0);
     net_->updctrl("Peaker/peaker/mrs_real/peakSpacing",10.0);
 
-  realvec r;
-  while (net_->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())  { 
-	  net_->tick();
+	realvec r;
+	while (net_->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())  { 
+		net_->tick();
 
 //  	  r = net_->getctrl("SoundFileSource/src/mrs_realvec/processedData")->to<mrs_realvec>();
 // 	  cout << "****************************** SoundFileSource ******************************" << endl;
@@ -5837,66 +5862,66 @@ void toy_with_peaker(string inAudioFileName)
 //   	  cout << r << endl;
 
 
-   	  r = net_->getctrl("Peaker/peaker/mrs_realvec/processedData")->to<mrs_realvec>();
-	  int peakfound = 0;
- 	  for (int i = 0; i < winsize; i++) {
- 		if (r(0,i) > 0.7) {
+		r = net_->getctrl("Peaker/peaker/mrs_realvec/processedData")->to<mrs_realvec>();
+		int peakfound = 0;
+		for (int i = 0; i < winsize; i++) {
+			if (r(0,i) > 0.7) {
 //  		  cout << "r(0," << i << ")=" << r(0,i) << " peak" << endl;
-		  peakfound = 1;
- 		}
- 	  }
-	  if (peakfound) {
-		cout << "peak" << endl;
-	  }
-  }
+				peakfound = 1;
+			}
+		}
+		if (peakfound) {
+			cout << "peak" << endl;
+		}
+	}
 
 }
 
 void 
 toy_with_robot_peak_onset(string sfName, string portNum) 
 {
-  int port;
-  if (portNum == "MARSYAS_EMPTY") {
-	port = 1; 
-  } else {
-	port = atoi(portNum.c_str());
-  }
-   cout << "toying with robot_peak_onset" << endl;
-   cout << endl;
-   cout << "To use another midi port, enter it as the second argument:" << endl;
-   cout << "  mudbox -t robot_peak_onset in.wav 2" << endl;
-   cout << endl;
+	int port;
+	if (portNum == "MARSYAS_EMPTY") {
+		port = 1; 
+	} else {
+		port = atoi(portNum.c_str());
+	}
+	cout << "toying with robot_peak_onset" << endl;
+	cout << endl;
+	cout << "To use another midi port, enter it as the second argument:" << endl;
+	cout << "  mudbox -t robot_peak_onset in.wav 2" << endl;
+	cout << endl;
 	MarSystemManager mng;
 
 	// assemble the processing network 
 	MarSystem* onsetnet = mng.create("Series", "onsetnet");
-		MarSystem* onsetaccum = mng.create("Accumulator", "onsetaccum");
-			MarSystem* onsetseries= mng.create("Series","onsetseries");
-				onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
-				onsetseries->addMarSystem(mng.create("Stereo2Mono", "src"));
-				MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
-					onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
-					onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
-					onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
-					onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-					onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
-					//onsetdetector->addMarSystem(mng.create("Memory","mem"));
-					onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
-					onsetdetector->addMarSystem(mng.create("Filter","filt1"));
-					onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
-					onsetdetector->addMarSystem(mng.create("Filter","filt2"));
-					onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
-					onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
-				onsetseries->addMarSystem(onsetdetector);
-			onsetaccum->addMarSystem(onsetseries);
-		onsetnet->addMarSystem(onsetaccum);
+	MarSystem* onsetaccum = mng.create("Accumulator", "onsetaccum");
+	MarSystem* onsetseries= mng.create("Series","onsetseries");
+	onsetseries->addMarSystem(mng.create("SoundFileSource", "src"));
+	onsetseries->addMarSystem(mng.create("Stereo2Mono", "src"));
+	MarSystem* onsetdetector = mng.create("FlowThru", "onsetdetector");
+	onsetdetector->addMarSystem(mng.create("ShiftInput", "si")); //<---
+	onsetdetector->addMarSystem(mng.create("Windowing", "win")); //<---
+	onsetdetector->addMarSystem(mng.create("Spectrum","spk"));
+	onsetdetector->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	onsetdetector->addMarSystem(mng.create("Flux", "flux")); 
+	//onsetdetector->addMarSystem(mng.create("Memory","mem"));
+	onsetdetector->addMarSystem(mng.create("ShiftInput","sif"));
+	onsetdetector->addMarSystem(mng.create("Filter","filt1"));
+	onsetdetector->addMarSystem(mng.create("Reverse","rev1"));
+	onsetdetector->addMarSystem(mng.create("Filter","filt2"));
+	onsetdetector->addMarSystem(mng.create("Reverse","rev2"));
+	onsetdetector->addMarSystem(mng.create("PeakerOnset","peaker")); 
+	onsetseries->addMarSystem(onsetdetector);
+	onsetaccum->addMarSystem(onsetseries);
+	onsetnet->addMarSystem(onsetaccum);
 	MarSystem* onsetmix = mng.create("Fanout","onsetmix");
-		onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
-			MarSystem* onsetsynth = mng.create("Series","onsetsynth");
-				onsetsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
-				onsetsynth->addMarSystem(mng.create("ADSR","env"));
-				onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
-			onsetmix->addMarSystem(onsetsynth);
+	onsetmix->addMarSystem(mng.create("Gain","gainaudio"));
+	MarSystem* onsetsynth = mng.create("Series","onsetsynth");
+	onsetsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
+	onsetsynth->addMarSystem(mng.create("ADSR","env"));
+	onsetsynth->addMarSystem(mng.create("Gain", "gainonsets"));
+	onsetmix->addMarSystem(onsetsynth);
 	onsetnet->addMarSystem(onsetmix);
 	
 	onsetnet->addMarSystem(mng.create("AudioSink", "dest"));
@@ -5906,11 +5931,11 @@ toy_with_robot_peak_onset(string sfName, string portNum)
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
 	///////////////////////////////////////////////////////////////////////////////////////
-	onsetnet->linkctrl("mrs_bool/notEmpty", 
-		"Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/notEmpty");
+	onsetnet->linkctrl("mrs_bool/hasData", 
+					   "Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/hasData");
 	//onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
 	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
 	//onsetnet->linkctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
 	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
 	
@@ -5919,9 +5944,9 @@ toy_with_robot_peak_onset(string sfName, string portNum)
 
 	//link FILTERS coeffs
 	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/ncoeffs",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
 	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/dcoeffs",
-		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
+					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
@@ -5943,10 +5968,10 @@ toy_with_robot_peak_onset(string sfName, string portNum)
 
 	//best result till now are using dB power Spectrum!
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
-		"wrongdBonsets");
+					  "wrongdBonsets");
 
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Flux/flux/mrs_string/mode",
-		"DixonDAFX06");
+					  "DixonDAFX06");
 	
 	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
 	// Coefficients taken from MATLAB butter(2, 0.28)
@@ -5955,13 +5980,13 @@ toy_with_robot_peak_onset(string sfName, string portNum)
 	bcoeffs(1) = 0.2347;
 	bcoeffs(2) = 0.1174;
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs",
-		bcoeffs);
+					  bcoeffs);
 	realvec acoeffs(1,3);
 	acoeffs(0) = 1.0;
 	acoeffs(1) = -0.8252;
 	acoeffs(2) = 0.2946;
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs",
-		acoeffs);
+					  acoeffs);
 
 	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
 	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
@@ -6000,7 +6025,7 @@ toy_with_robot_peak_onset(string sfName, string portNum)
 	playback->updctrl("MidiOutput/midiout/mrs_natural/port", port);
 	playback->updctrl("MidiOutput/midiout/mrs_bool/initMidi", true);
 	
-	while(onsetnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+	while(onsetnet->getctrl("mrs_bool/hasData")->to<mrs_bool>())
 	{
 		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 		onsetnet->tick();
@@ -6022,26 +6047,26 @@ toy_with_robot_peak_onset(string sfName, string portNum)
 }
 
 void toy_with_midiout() {
-  cout << "toy with midiout" << endl;
+	cout << "toy with midiout" << endl;
 
-  MarSystemManager mng;
+	MarSystemManager mng;
 
-  MarSystem* playback = mng.create("Series", "playback");
-  playback->addMarSystem(mng.create("MidiOutput", "midiout"));
+	MarSystem* playback = mng.create("Series", "playback");
+	playback->addMarSystem(mng.create("MidiOutput", "midiout"));
 
-  playback->updctrl("MidiOutput/midiout/mrs_natural/port", 1);
-  playback->updctrl("MidiOutput/midiout/mrs_bool/initMidi", true);
+	playback->updctrl("MidiOutput/midiout/mrs_natural/port", 1);
+	playback->updctrl("MidiOutput/midiout/mrs_bool/initMidi", true);
 
-  for (int i = 0; i < 100; i++) {
-	cout << "Sending note" << endl;
+	for (int i = 0; i < 100; i++) {
+		cout << "Sending note" << endl;
 #ifdef MARSYAS_MIDIIO
-	playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 0x99);
-	playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 60);
-	playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 127);
-	playback->updctrl("MidiOutput/midiout/mrs_bool/sendMessage", true);
+		playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 0x99);
+		playback->updctrl("MidiOutput/midiout/mrs_natural/byte2", 60);
+		playback->updctrl("MidiOutput/midiout/mrs_natural/byte3", 127);
+		playback->updctrl("MidiOutput/midiout/mrs_bool/sendMessage", true);
 #endif
 
-  }
+	}
 }
 
 void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string progName) 
@@ -6071,124 +6096,124 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 
 	// assemble the processing network 
 	MarSystem* audioflow = mng.create("Series", "audioflow");		
-		audioflow->addMarSystem(mng.create("SoundFileSource", "src"));
-		audioflow->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
+	audioflow->addMarSystem(mng.create("SoundFileSource", "src"));
+	audioflow->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
 
-			MarSystem* beattracker= mng.create("FlowThru","beattracker");
-				//beattracker->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
+	MarSystem* beattracker= mng.create("FlowThru","beattracker");
+	//beattracker->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
 				
-				MarSystem* onsetdetectionfunction = mng.create("Series", "onsetdetectionfunction");
-					onsetdetectionfunction->addMarSystem(mng.create("ShiftInput", "si")); 
-					onsetdetectionfunction->addMarSystem(mng.create("Windowing", "win")); 
-					onsetdetectionfunction->addMarSystem(mng.create("Spectrum","spk"));
-					onsetdetectionfunction->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-					onsetdetectionfunction->addMarSystem(mng.create("Flux", "flux"));
+	MarSystem* onsetdetectionfunction = mng.create("Series", "onsetdetectionfunction");
+	onsetdetectionfunction->addMarSystem(mng.create("ShiftInput", "si")); 
+	onsetdetectionfunction->addMarSystem(mng.create("Windowing", "win")); 
+	onsetdetectionfunction->addMarSystem(mng.create("Spectrum","spk"));
+	onsetdetectionfunction->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	onsetdetectionfunction->addMarSystem(mng.create("Flux", "flux"));
 
-					//onsetdetectionfunction->addMarSystem(mng.create("SonicVisualiserSink", "sonicsink"));
+	//onsetdetectionfunction->addMarSystem(mng.create("SonicVisualiserSink", "sonicsink"));
 							
-			beattracker->addMarSystem(onsetdetectionfunction);
-			beattracker->addMarSystem(mng.create("ShiftInput", "acc"));
+	beattracker->addMarSystem(onsetdetectionfunction);
+	beattracker->addMarSystem(mng.create("ShiftInput", "acc"));
 
-			MarSystem* tempoinduction = mng.create("FlowThru", "tempoinduction");
+	MarSystem* tempoinduction = mng.create("FlowThru", "tempoinduction");
 
-				MarSystem* tempohypotheses = mng.create("Fanout", "tempohypotheses");
+	MarSystem* tempohypotheses = mng.create("Fanout", "tempohypotheses");
 					
-					MarSystem* tempo = mng.create("Series", "tempo");
-						tempo->addMarSystem(mng.create("AutoCorrelation","acf"));
-						tempo->addMarSystem(mng.create("Peaker", "pkr"));
-						tempo->addMarSystem(mng.create("MaxArgMax", "mxr"));
+	MarSystem* tempo = mng.create("Series", "tempo");
+	tempo->addMarSystem(mng.create("AutoCorrelation","acf"));
+	tempo->addMarSystem(mng.create("Peaker", "pkr"));
+	tempo->addMarSystem(mng.create("MaxArgMax", "mxr"));
 						
-					tempohypotheses->addMarSystem(tempo);
+	tempohypotheses->addMarSystem(tempo);
 
-					MarSystem* phase = mng.create("Series", "phase");
-						phase->addMarSystem(mng.create("PeakerOnset","pkronset"));
-						phase->addMarSystem(mng.create("OnsetTimes","OnsetTimes"));
+	MarSystem* phase = mng.create("Series", "phase");
+	phase->addMarSystem(mng.create("PeakerOnset","pkronset"));
+	phase->addMarSystem(mng.create("OnsetTimes","OnsetTimes"));
 
-					tempohypotheses->addMarSystem(phase);
+	tempohypotheses->addMarSystem(phase);
 
-				tempoinduction->addMarSystem(tempohypotheses);
-				tempoinduction->addMarSystem(mng.create("TempoHypotheses", "tempohyp"));
+	tempoinduction->addMarSystem(tempohypotheses);
+	tempoinduction->addMarSystem(mng.create("TempoHypotheses", "tempohyp"));
 		
-			beattracker->addMarSystem(tempoinduction);
+	beattracker->addMarSystem(tempoinduction);
 
-			MarSystem* initialhypotheses = mng.create("FlowThru", "initialhypotheses");
-				initialhypotheses->addMarSystem(mng.create("PhaseLock", "phaselock"));
+	MarSystem* initialhypotheses = mng.create("FlowThru", "initialhypotheses");
+	initialhypotheses->addMarSystem(mng.create("PhaseLock", "phaselock"));
 
-			beattracker->addMarSystem(initialhypotheses);
+	beattracker->addMarSystem(initialhypotheses);
 			
-			MarSystem* agentpool = mng.create("Fanout", "agentpool");
-				for(int i = 0; i < nr_agents; i++)
-				{
-					ostringstream oss;
-					oss << "agent" << i;
-					agentpool->addMarSystem(mng.create("BeatAgent", oss.str()));
-				}
+	MarSystem* agentpool = mng.create("Fanout", "agentpool");
+	for(int i = 0; i < nr_agents; i++)
+	{
+		ostringstream oss;
+		oss << "agent" << i;
+		agentpool->addMarSystem(mng.create("BeatAgent", oss.str()));
+	}
 
-			beattracker->addMarSystem(agentpool);
-			beattracker->addMarSystem(mng.create("BeatReferee", "br"));
-			beattracker->addMarSystem(mng.create("BeatTimesSink", "sink"));
+	beattracker->addMarSystem(agentpool);
+	beattracker->addMarSystem(mng.create("BeatReferee", "br"));
+	beattracker->addMarSystem(mng.create("BeatTimesSink", "sink"));
 
-		audioflow->addMarSystem(beattracker);
-		audioflow->addMarSystem(mng.create("Gain","gainaudio"));
+	audioflow->addMarSystem(beattracker);
+	audioflow->addMarSystem(mng.create("Gain","gainaudio"));
 
-		MarSystem* beatmix = mng.create("Fanout","beatmix");
-		beatmix->addMarSystem(audioflow);
-			MarSystem* beatsynth = mng.create("Series","beatsynth");
-				beatsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
-				beatsynth->addMarSystem(mng.create("ADSR","env"));
-				beatsynth->addMarSystem(mng.create("Gain", "gainbeats"));
-			beatmix->addMarSystem(beatsynth);
+	MarSystem* beatmix = mng.create("Fanout","beatmix");
+	beatmix->addMarSystem(audioflow);
+	MarSystem* beatsynth = mng.create("Series","beatsynth");
+	beatsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
+	beatsynth->addMarSystem(mng.create("ADSR","env"));
+	beatsynth->addMarSystem(mng.create("Gain", "gainbeats"));
+	beatmix->addMarSystem(beatsynth);
 		
 	MarSystem* IBTsystem = mng.create("Series", "IBTsystem");
-		IBTsystem->addMarSystem(beatmix);
-		IBTsystem->addMarSystem(mng.create("AudioSink", "output"));
-		if(audio_file)
-			IBTsystem->addMarSystem(mng.create("SoundFileSink", "fdest"));
+	IBTsystem->addMarSystem(beatmix);
+	IBTsystem->addMarSystem(mng.create("AudioSink", "output"));
+	if(audio_file)
+		IBTsystem->addMarSystem(mng.create("SoundFileSink", "fdest"));
 
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
 	///////////////////////////////////////////////////////////////////////////////////////
-	IBTsystem->linkctrl("mrs_bool/notEmpty", 
-		"Fanout/beatmix/Series/audioflow/SoundFileSource/src/mrs_bool/notEmpty");
+	IBTsystem->linkctrl("mrs_bool/hasData", 
+						"Fanout/beatmix/Series/audioflow/SoundFileSource/src/mrs_bool/hasData");
 
 	//Link LookAheadSamples used in PeakerOnset for compensation when retriving the actual initial OnsetTimes
 	tempoinduction->linkctrl("Fanout/tempohypotheses/Series/phase/PeakerOnset/pkronset/mrs_natural/lookAheadSamples", 
-		"Fanout/tempohypotheses/Series/phase/OnsetTimes/OnsetTimes/mrs_natural/lookAheadSamples");
+							 "Fanout/tempohypotheses/Series/phase/OnsetTimes/OnsetTimes/mrs_natural/lookAheadSamples");
 
 	//Pass hypotheses matrix (from tempoinduction stage) to PhaseLock
 	beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_realvec/beatHypotheses", 
-		"FlowThru/tempoinduction/mrs_realvec/innerOut");
+						  "FlowThru/tempoinduction/mrs_realvec/innerOut");
 	
 	//Pass initital hypotheses to BeatReferee
 	beattracker->linkctrl("BeatReferee/br/mrs_realvec/beatHypotheses", 
-		"FlowThru/initialhypotheses/mrs_realvec/innerOut");
+						  "FlowThru/initialhypotheses/mrs_realvec/innerOut");
 
 	//PhaseLock nr of BPM hypotheses = nr MaxArgMax from ACF
 	beattracker->linkctrl("FlowThru/tempoinduction/Fanout/tempohypotheses/Series/tempo/MaxArgMax/mxr/mrs_natural/nMaximums", 
-		"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/nPeriods");
+						  "FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/nPeriods");
 	//TempoHypotheses nr of BPMs = nr MaxArgMax from ACF
 	beattracker->linkctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/nPeriods",  
-		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/nrPeriodHyps");
+						  "FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/nrPeriodHyps");
 	//OnsetTimes nr of BPMs = nr MaxArgMax from ACF (this is to avoid FanOut crash!)
 	beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/nrPeriodHyps", 
-		"FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/OnsetTimes/mrs_natural/nPeriods");
+						  "FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/OnsetTimes/mrs_natural/nPeriods");
 	
 	//PhaseLock nr of Phases per BPM = nr of OnsetTimes considered
 	beattracker->linkctrl("FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/OnsetTimes/mrs_natural/n1stOnsets", 
-		"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/nPhases");
+						  "FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/nPhases");
 	//TempoHypotheses nr of Beat hypotheses = nr of OnsetTimes considered
 	beattracker->linkctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/nPhases", 
-		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/nrPhasesPerPeriod");
+						  "FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/nrPhasesPerPeriod");
 	//nr of MaxArgMax Phases per BPM = nr OnsetTimes considered (this is to avoid FanOut crash!)
 	beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/nrPhasesPerPeriod", 
-		"FlowThru/tempoinduction/Fanout/tempohypotheses/Series/tempo/MaxArgMax/mxr/mrs_natural/nPhases");
+						  "FlowThru/tempoinduction/Fanout/tempohypotheses/Series/tempo/MaxArgMax/mxr/mrs_natural/nPhases");
 
 	//Pass enabled (muted) BeatAgents (from FanOut) to the BeatReferee
 	beattracker->linkctrl("Fanout/agentpool/mrs_realvec/muted", "BeatReferee/br/mrs_realvec/muted");
 	//Pass tempohypotheses Fanout muted vector to the BeatReferee, for disabling induction after induction timming
 	beattracker->linkctrl("FlowThru/tempoinduction/Fanout/tempohypotheses/mrs_realvec/muted", 
-		"BeatReferee/br/mrs_realvec/inductionEnabler");
+						  "BeatReferee/br/mrs_realvec/inductionEnabler");
 
 	//Link agentControl matrix from the BeatReferee to each agent in the pool
 	for(int i = 0; i < nr_agents; i++)
@@ -6196,19 +6221,19 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 		ostringstream oss;
 		oss << "agent" << i;
 		beattracker->linkctrl("Fanout/agentpool/BeatAgent/"+oss.str()+"/mrs_realvec/agentControl", 
-			"BeatReferee/br/mrs_realvec/agentControl");
+							  "BeatReferee/br/mrs_realvec/agentControl");
 	}
 
 	//Defines tempo induction time after which the BeatAgents' hypotheses are populated:
 	//TempoHypotheses indTime = induction time
 	beattracker->linkctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/inductionTime", 
-		"ShiftInput/acc/mrs_natural/winSize");
+						  "ShiftInput/acc/mrs_natural/winSize");
 	//PhaseLock timming = induction time
 	beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/inductionTime", 
-		"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/inductionTime");	
+						  "FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/inductionTime");	
 	//BeatReferee timming = induction time
 	beattracker->linkctrl("BeatReferee/br/mrs_natural/inductionTime", 
-		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/inductionTime");
+						  "FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/inductionTime");
 
 	//Link BPM conversion parameters to BeatReferee:
 	beattracker->linkctrl("BeatReferee/br/mrs_natural/hopSize", "mrs_natural/inSamples");
@@ -6217,25 +6242,25 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/hopSize", "BeatReferee/br/mrs_natural/hopSize");
 	beattracker->linkctrl("BeatTimesSink/sink/mrs_real/srcFs", "BeatReferee/br/mrs_real/srcFs");
 	beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/winSize", 
-		"Series/onsetdetectionfunction/ShiftInput/si/mrs_natural/winSize");
+						  "Series/onsetdetectionfunction/ShiftInput/si/mrs_natural/winSize");
 	beattracker->linkctrl("BeatTimesSink/sink/mrs_natural/tickCount", "BeatReferee/br/mrs_natural/tickCount");
 
 	//Link SonicVisualiserSink parameters with the used ones:
 	/*
-	beattracker->linkctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_natural/hopSize", 
-		"BeatTimesSink/sink/mrs_natural/hopSize");
-	beattracker->linkctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_real/srcFs", 
-		"BeatTimesSink/sink/mrs_real/srcFs");
+	  beattracker->linkctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_natural/hopSize", 
+	  "BeatTimesSink/sink/mrs_natural/hopSize");
+	  beattracker->linkctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_real/srcFs", 
+	  "BeatTimesSink/sink/mrs_real/srcFs");
 	*/
 
 	beattracker->linkctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/hopSize", 
-		"BeatTimesSink/sink/mrs_natural/hopSize");
+						  "BeatTimesSink/sink/mrs_natural/hopSize");
 	beattracker->linkctrl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs", 
-		"BeatTimesSink/sink/mrs_real/srcFs");
+						  "BeatTimesSink/sink/mrs_real/srcFs");
 
 	//link beatdetected with noise ADSR -> for clicking when beat:
 	IBTsystem->linkctrl("Fanout/beatmix/Series/audioflow/FlowThru/beattracker/BeatReferee/br/mrs_real/beatDetected", 
-		"Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/nton");
+						"Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/nton");
 
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -6268,7 +6293,7 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	mrs_natural peakEnd = (mrs_natural)((60.0 * fsSrc)/(min_bpm * hopSize)); //50BPM (in frames)
 	mrs_natural peakStart = (mrs_natural) ((60.0 * fsSrc)/(max_bpm * hopSize));  //250BPM (in frames)
 	mrs_real peakSpacing = ((mrs_natural) ((60.0 * fsSrc)/(60 * hopSize)) //4BMP resolution
-		- ((60.0 * fsSrc)/(64 * hopSize))) / (pkinS * 1.0);
+							- ((60.0 * fsSrc)/(64 * hopSize))) / (pkinS * 1.0);
 
 	tempoinduction->updctrl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
 	tempoinduction->updctrl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_real/peakStrength", 0.75);
@@ -6314,13 +6339,13 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	FileName outputFile(sfName);
 	ostringstream path;
 
-	#ifdef MARSYAS_WIN32
-		progName = progName.substr(0, progName.rfind('\\'));
-		path << progName << "\\" << outputFile.nameNoExt();
-	#else
-		progName = progName.substr(0, progName.rfind('/'));
-		path << progName << "/" << outputFile.nameNoExt();
-	#endif
+#ifdef MARSYAS_WIN32
+	progName = progName.substr(0, progName.rfind('\\'));
+	path << progName << "\\" << outputFile.nameNoExt();
+#else
+	progName = progName.substr(0, progName.rfind('/'));
+	path << progName << "/" << outputFile.nameNoExt();
+#endif
 	
 	beattracker->updctrl("BeatTimesSink/sink/mrs_string/destFileName", path.str());
 	//beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "medianTempo");
@@ -6328,8 +6353,8 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	beattracker->updctrl("BeatTimesSink/sink/mrs_string/mode", "all");
 
 	/*
-	beattracker->updctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_string/mode", "seconds");
-	beattracker->updctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_string/destFileName", + path.str() + "_onsetFunction.txt");
+	  beattracker->updctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_string/mode", "seconds");
+	  beattracker->updctrl("Series/onsetdetectionfunction/SonicVisualiserSink/sonicsink/mrs_string/destFileName", + path.str() + "_onsetFunction.txt");
 	*/
 
 	//set audio/onset resynth balance and ADSR params for onset sound
@@ -6349,19 +6374,19 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	//MATLAB_EVAL("FluxTS = [];");
 	//MATLAB_EVAL("FinalBeats=[];");
 	/*
-	MATLAB_EVAL("clear;");
-	MATLAB_PUT(induction_time, "timmbing");
-	MATLAB_PUT(fsSrc, "SrcFs");
-	MATLAB_PUT(inductionTickCount, "inductionTickCount");
-	MATLAB_PUT(winSize, "winSize");
-	MATLAB_PUT(hopSize, "hopSize");
-	MATLAB_EVAL("srcAudio = [];");
-	MATLAB_EVAL("FluxTS = [];");
-	MATLAB_EVAL("FinalTS = [];");
-	MATLAB_EVAL("BeatAgentTS=[];");
-	MATLAB_EVAL("BeatAgentsTS=[];");
-	MATLAB_EVAL("bestAgentScore=[];");
-	MATLAB_EVAL("Flux_FilterTS=[];");
+	  MATLAB_EVAL("clear;");
+	  MATLAB_PUT(induction_time, "timmbing");
+	  MATLAB_PUT(fsSrc, "SrcFs");
+	  MATLAB_PUT(inductionTickCount, "inductionTickCount");
+	  MATLAB_PUT(winSize, "winSize");
+	  MATLAB_PUT(hopSize, "hopSize");
+	  MATLAB_EVAL("srcAudio = [];");
+	  MATLAB_EVAL("FluxTS = [];");
+	  MATLAB_EVAL("FinalTS = [];");
+	  MATLAB_EVAL("BeatAgentTS=[];");
+	  MATLAB_EVAL("BeatAgentsTS=[];");
+	  MATLAB_EVAL("bestAgentScore=[];");
+	  MATLAB_EVAL("Flux_FilterTS=[];");
 	*/
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -6370,7 +6395,7 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	mrs_natural frameCount = 0;
 	inputSize = (inputSize / hopSize) + inductionTickCount; //inputSize in ticks
 	
-	//while(IBTsystem->getctrl("mrs_bool/notEmpty")->to<mrs_bool>())
+	//while(IBTsystem->getctrl("mrs_bool/hasData")->to<mrs_bool>())
 	while(frameCount <= inputSize)
 	{	
 		IBTsystem->tick();
@@ -6431,7 +6456,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "labelsfplay")
 		toy_with_labelsfplay(fname0);
 	else if (toy_withName == "SNR")
-	  toy_with_SNR(fname0, fname1);
+		toy_with_SNR(fname0, fname1);
 	else if (toy_withName == "SOM")
 		toy_with_SOM("music.mf");
 	else if (toy_withName == "Windowing")
@@ -6451,7 +6476,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "drumclassify")
 		drumClassify(fname0); 
 	else if (toy_withName == "dtw") 
-	  toy_with_dtw(fname0, fname1);
+		toy_with_dtw(fname0, fname1);
 	else if (toy_withName == "duplex")
 		toy_with_duplex();
 	else if (toy_withName == "fanoutswitch")
@@ -6463,7 +6488,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "getControls")
 		toy_with_getControls(fname0);
 	else if (toy_withName == "inSamples")
-	  toy_with_inSamples(fname0);
+		toy_with_inSamples(fname0);
 	else if (toy_withName == "knn")
 		toy_with_knn();
 	else if (toy_withName == "marsystemIO")
@@ -6517,7 +6542,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "sine") 
 		toy_with_sine();
 	else if (toy_withName == "scales") 
-	  toy_with_scales();
+		toy_with_scales();
 	else if (toy_withName == "spectralSNR")
 		toy_with_spectralSNR(fname0, fname1);
 	else if (toy_withName == "stereo2mono")
@@ -6553,8 +6578,8 @@ main(int argc, const char **argv)
 	else if (toy_withName == "marostring")
 		toy_with_marostring(fname0);
 	else if (toy_withName == "volume_normalize")
-	  toy_with_volume_normalize(fname0,fname1);
-  else if (toy_withName == "accent_filter_bank")
+		toy_with_volume_normalize(fname0,fname1);
+	else if (toy_withName == "accent_filter_bank")
 		toy_with_accent_filter_bank(fname0,fname1);
 	else if (toy_withName == "ExtractChroma")
 		toy_with_chroma(fname0,fname1);
@@ -6567,7 +6592,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "peaker")
 		toy_with_peaker(fname0);
 	else if (toy_withName == "robot_peak_onset")
-	  toy_with_robot_peak_onset(fname0,fname1);
+		toy_with_robot_peak_onset(fname0,fname1);
 	else if (toy_withName == "midiout")
 		toy_with_midiout();
 	else if (toy_withName == "beats")

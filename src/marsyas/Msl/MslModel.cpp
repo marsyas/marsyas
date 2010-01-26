@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -33,42 +33,42 @@ using namespace Marsyas;
 
 MslModel::MslModel()
 {
-  commands["create"]	= new MslCommandCreate (workingSet, mng);
-  commands["add"]	= new MslCommandAdd (workingSet);
-  commands["updctrl"] 	= new MslCommandUpdateControl (workingSet);
-  commands["run"]	= new MslCommandRun (workingSet);
-  commands["show"]	= new MslCommandShow (workingSet);
-  commands["current"]	= new MslCommandCurrent (workingSet); 
-  commands["write"]	= new MslCommandWrite (workingSet);
-  commands["read"]	= new MslCommandRead (workingSet, mng);
-  commands["link"]	= new MslCommandLink (workingSet);
-  commands["quit"]	= new MslCommandQuit ();
-  commands["exit"]	= commands["quit"];
-  commands["help"]	= new MslCommandHelp (commands);
-  commands["script"]	= new MslCommandScript (*this);
-  commands["alias"]	= new MslCommandAlias (commands);
-  commands["unalias"]	= new MslCommandUnalias (commands);
-  commands["del"]	= new MslCommandDelete (workingSet);
-  commands["delete"]	= commands["del"];
-  commands["composite"] = new MslCommandComposite(workingSet, mng, *this);
-  commands["//"]	= new MslCommandComment();
+	commands["create"]	= new MslCommandCreate (workingSet, mng);
+	commands["add"]	= new MslCommandAdd (workingSet);
+	commands["updctrl"] 	= new MslCommandUpdateControl (workingSet);
+	commands["run"]	= new MslCommandRun (workingSet);
+	commands["show"]	= new MslCommandShow (workingSet);
+	commands["current"]	= new MslCommandCurrent (workingSet); 
+	commands["write"]	= new MslCommandWrite (workingSet);
+	commands["read"]	= new MslCommandRead (workingSet, mng);
+	commands["link"]	= new MslCommandLink (workingSet);
+	commands["quit"]	= new MslCommandQuit ();
+	commands["exit"]	= commands["quit"];
+	commands["help"]	= new MslCommandHelp (commands);
+	commands["script"]	= new MslCommandScript (*this);
+	commands["alias"]	= new MslCommandAlias (commands);
+	commands["unalias"]	= new MslCommandUnalias (commands);
+	commands["del"]	= new MslCommandDelete (workingSet);
+	commands["delete"]	= commands["del"];
+	commands["composite"] = new MslCommandComposite(workingSet, mng, *this);
+	commands["//"]	= new MslCommandComment();
 }
 
 
 MslModel::~MslModel() {	
-  map<string, MarSystem *>::const_iterator iter;  
-  for (iter=workingSet.begin(); iter != workingSet.end(); ++iter) {
+	map<string, MarSystem *>::const_iterator iter;  
+	for (iter=workingSet.begin(); iter != workingSet.end(); ++iter) {
 	
- 	// we actually should only have to delete the most top
-	// level composite marsystem as they take care of 
-	// deleting their internal marsystems...  here we assume
-	// that there is only one type Series and its the top level.
-	MarSystem* tmp = (MarSystem*)iter->second;
-	string type = tmp->getType();
-	if (type.compare("Series") == 0) {
-		delete iter->second;
+		// we actually should only have to delete the most top
+		// level composite marsystem as they take care of 
+		// deleting their internal marsystems...  here we assume
+		// that there is only one type Series and its the top level.
+		MarSystem* tmp = (MarSystem*)iter->second;
+		string type = tmp->getType();
+		if (type.compare("Series") == 0) {
+			delete iter->second;
+		}
 	}
-  }
 }
 
 //
@@ -115,7 +115,7 @@ MslModel::input( const string& inputString )
 	else
 	{
 		cout << "Bad command. Try \"help\" for MSL "
-			<< "command listing." << endl;
+			 << "command listing." << endl;
 		return false;
 	}
 
@@ -131,7 +131,7 @@ MslModel::input( const string& inputString )
 	{
 		cout << "Usage: " << cmdToken << " " << 
 			(implicit ? "<name>" : cmd->helpMsg())
-			<< endl;
+			 << endl;
 		return false;
 	}
 	
@@ -146,7 +146,7 @@ MslModel::input( const string& inputString )
 map<string, MarControlPtr> 
 MslModel::getControls( const string& name ) 
 {
-  return workingSet[name]->getLocalControls();
+	return workingSet[name]->getLocalControls();
 }
 
 //
@@ -160,7 +160,7 @@ MslModel::getCmds()
 	vector<string> cmds;
 
 	for (cmdMap_t::const_iterator iter = commands.begin();
-		iter != commands.end(); ++iter)
+		 iter != commands.end(); ++iter)
 	{
 		cmds.push_back (iter->first);
 	}
@@ -169,7 +169,7 @@ MslModel::getCmds()
 	vector<string> types = mng.registeredPrototypes();
 	vector<string> retval (cmds.size() + types.size());
 	merge (cmds.begin(), cmds.end(), types.begin(), types.end(),
-		retval.begin());
+		   retval.begin());
 
 	return retval;
 }
@@ -183,18 +183,18 @@ MslModel::getCmds()
 vector<string> 
 MslModel::tokenize(const string& inputString, const char delim) 
 {
-  vector<string> tokens;
-  stringstream ss( inputString );
-  string tmp;
+	vector<string> tokens;
+	stringstream ss( inputString );
+	string tmp;
 
 
-  //sstr.getline(s,sizeof s,',');
-  // get all the tokens from the stream and fill vector...
-  while ( getline( ss, tmp, delim ) ) {
-    tokens.push_back( tmp );
-  }
+	//sstr.getline(s,sizeof s,',');
+	// get all the tokens from the stream and fill vector...
+	while ( getline( ss, tmp, delim ) ) {
+		tokens.push_back( tmp );
+	}
 
-  return tokens;
+	return tokens;
 } 
 
 
@@ -213,7 +213,7 @@ MslMarSystemCommand::MslMarSystemCommand(marsysMap_t & inSet)
 
 // ------------- MslCommandCreate methods begin -------------
 MslCommandCreate::MslCommandCreate (marsysMap_t & inSet, 
-	MarSystemManager & inManager)
+									MarSystemManager & inManager)
 	: MslMarSystemCommand (inSet), mng (inManager)
 {
 }
@@ -327,18 +327,18 @@ bool MslCommandHelp::execute()
 
 	int x = 1;
 	for (cmdMap_t::const_iterator iter = commands.begin();
-		iter != commands.end(); ++iter, x++)
+		 iter != commands.end(); ++iter, x++)
 	{
 
-	// we call showHelp() on each mapped object to get
-	// syntax for each individual command.  The beauty of this
-	// is that the help is generated *at run time*, and furthermore
-	// additions of new commands do not require any modification
-	// to this help output.  
+		// we call showHelp() on each mapped object to get
+		// syntax for each individual command.  The beauty of this
+		// is that the help is generated *at run time*, and furthermore
+		// additions of new commands do not require any modification
+		// to this help output.  
 
 		cout << left << setw(3) << x << iter->first 
-			<< " " << (iter->second)->helpMsg()
-			<< endl;
+			 << " " << (iter->second)->helpMsg()
+			 << endl;
 
 	}
 
@@ -437,56 +437,56 @@ bool MslCommandUpdateControl::verify (cmdList_t & tokens)
 
 bool MslCommandUpdateControl::execute()
 {
-  if ( control.rfind( "mrs_real", control.length()) != string::npos ) 
+	if ( control.rfind( "mrs_real", control.length()) != string::npos ) 
     {
-      if ( workingSet.find(name) != workingSet.end() ) {
-	mrs_real val = (mrs_real)atof( value->to<mrs_string>().c_str() );
+		if ( workingSet.find(name) != workingSet.end() ) {
+			mrs_real val = (mrs_real)atof( value->to<mrs_string>().c_str() );
 	
-	workingSet[name]->updctrl( control, val );
-	return true;
-      } else {
+			workingSet[name]->updctrl( control, val );
+			return true;
+		} else {
+	
+			return false;
+		}
+    }
+	else if ( control.rfind( "mrs_string", control.length() ) != string::npos ) {
+    
+		if ( workingSet.find(name) != workingSet.end() ) {
+			workingSet[name]->updctrl( control, value->to<mrs_string>() );
+			return true;
+		} else {
+      
+			return false;
+		}
+	} 
+	else if ( control.rfind( "mrs_natural", control.length()) != string::npos ) {
+		if ( workingSet.find(name) != workingSet.end() ) {
+			mrs_natural val = atoi( value->to<mrs_string>().c_str() );
+			workingSet[name]->updctrl( control, val );
+			return true;
+		} else {
+      
+			return false;
+		}
+	}
+	else if ( control.rfind( "mrs_bool", control.length()) != string::npos ) {
+		
+		if( workingSet.find(name) != workingSet.end() ) {
+			mrs_natural val = atoi( value->to<mrs_string>().c_str() );
+			if ( val == 0 ) {
+				workingSet[name]->updctrl( control, false );
+			}
+			else if ( val == 1 ) {
+				workingSet[name]->updctrl( control, true );
+			}
+			return true;
+		} else {
+      
+			return false;
+		}
+	}
 	
 	return false;
-      }
-    }
-  else if ( control.rfind( "mrs_string", control.length() ) != string::npos ) {
-    
-    if ( workingSet.find(name) != workingSet.end() ) {
-      workingSet[name]->updctrl( control, value->to<mrs_string>() );
-      return true;
-    } else {
-      
-      return false;
-    }
-  } 
-  else if ( control.rfind( "mrs_natural", control.length()) != string::npos ) {
-    if ( workingSet.find(name) != workingSet.end() ) {
-      mrs_natural val = atoi( value->to<mrs_string>().c_str() );
-      workingSet[name]->updctrl( control, val );
-      return true;
-    } else {
-      
-      return false;
-    }
-  }
-  else if ( control.rfind( "mrs_bool", control.length()) != string::npos ) {
-		
-    if( workingSet.find(name) != workingSet.end() ) {
-      mrs_natural val = atoi( value->to<mrs_string>().c_str() );
-      if ( val == 0 ) {
-	workingSet[name]->updctrl( control, false );
-      }
-      else if ( val == 1 ) {
-	workingSet[name]->updctrl( control, true );
-      }
-      return true;
-    } else {
-      
-      return false;
-    }
-  }
-	
-  return false;
 }
 
 string MslCommandUpdateControl::helpMsg() const
@@ -513,61 +513,61 @@ bool MslCommandRun::verify(cmdList_t & tokens)
 
 bool MslCommandRun::execute()
 {
-  MarSystem* msys;
+	MarSystem* msys;
   
-  if ( workingSet.find(name) != workingSet.end() ) {
-    msys = (MarSystem *)workingSet[name]; 
-  } else {
-    cout << "Cannot find MarSystem: " << name << endl;
-    return false;
-  }
+	if ( workingSet.find(name) != workingSet.end() ) {
+		msys = (MarSystem *)workingSet[name]; 
+	} else {
+		cout << "Cannot find MarSystem: " << name << endl;
+		return false;
+	}
   
-  mrs_natural wc=0;
-  mrs_natural samplesPlayed = 0;
-  mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
+	mrs_natural wc=0;
+	mrs_natural samplesPlayed = 0;
+	mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   
-  mrs_real* controls = 0;
+	mrs_real* controls = 0;
   
-  while (true) {
+	while (true) {
         
-    try {
+		try {
 		
-	controls = msys->recvControls();	
+			controls = msys->recvControls();	
  	
-	if ( controls != 0 ) {
+			if ( controls != 0 ) {
 			
-			// get some reference controls, so if they have changed we update them
-		mrs_natural inSamples = msys->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-		mrs_natural inObservations = msys->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-		mrs_real israte = msys->getctrl("mrs_real/israte")->to<mrs_real>();
+				// get some reference controls, so if they have changed we update them
+				mrs_natural inSamples = msys->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+				mrs_natural inObservations = msys->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+				mrs_real israte = msys->getctrl("mrs_real/israte")->to<mrs_real>();
 			
-		if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
-				|| controls[3] != israte ) {
+				if ( (mrs_natural)controls[1] != inSamples || (mrs_natural)controls[2] != inObservations 
+					 || controls[3] != israte ) {
 		
-			msys->updctrl("mrs_natural/inSamples",(mrs_natural) controls[1]);
-			msys->updctrl("mrs_natural/inObservations", (mrs_natural)controls[2]);
-			msys->updctrl("mrs_real/israte", controls[3]);
-		}
-      	}
+					msys->updctrl("mrs_natural/inSamples",(mrs_natural) controls[1]);
+					msys->updctrl("mrs_natural/inObservations", (mrs_natural)controls[2]);
+					msys->updctrl("mrs_real/israte", controls[3]);
+				}
+			}
       
-      msys->tick();
-    }
-    catch( SocketException e ) {
-      cout << "Played " << wc << " slices of " << onSamples << " samples" << endl;
-      exit(1);
-    } 
+			msys->tick();
+		}
+		catch( SocketException e ) {
+			cout << "Played " << wc << " slices of " << onSamples << " samples" << endl;
+			exit(1);
+		} 
         
-    wc ++;
+		wc ++;
 					
-    if ( !msys->getctrl("mrs_bool/notEmpty")->isTrue() ) {
-      	break;
-    }
-    samplesPlayed += onSamples;  
+		if ( !msys->getctrl("mrs_bool/hasData")->isTrue() ) {
+			break;
+		}
+		samplesPlayed += onSamples;  
   
-  } // while
+	} // while
     
-  cout << "Played " << wc << " slices of " << onSamples << " samples" << endl;
-  return true;
+	cout << "Played " << wc << " slices of " << onSamples << " samples" << endl;
+	return true;
 }
 
 string MslCommandRun::helpMsg() const
@@ -596,11 +596,11 @@ bool MslCommandShow::verify(cmdList_t & tokens)
 bool MslCommandShow::execute()
 {
     if (workingSet.find(name) != workingSet.end()) {
-      workingSet[name]->put( std::cout );
-      return true;
+		workingSet[name]->put( std::cout );
+		return true;
     } else {
-      cout << "MarSystem: " << name << " not found." << endl;
-      return false;
+		cout << "MarSystem: " << name << " not found." << endl;
+		return false;
     }
 }
 
@@ -622,16 +622,16 @@ MslCommandCurrent::MslCommandCurrent (marsysMap_t & inSet)
 bool MslCommandCurrent::execute()
 {
 	map<string, MarSystem *>::const_iterator iter;  
-  cout << endl;
-  cout << "Working set" << endl;
-  cout << "===========" << endl;
-  for (iter=workingSet.begin(); iter != workingSet.end(); ++iter) {
+	cout << endl;
+	cout << "Working set" << endl;
+	cout << "===========" << endl;
+	for (iter=workingSet.begin(); iter != workingSet.end(); ++iter) {
 		MarSystem* tmp = (MarSystem*)iter->second;
 		cout << "MarSystem: \"" << iter->first << "\"" << " of type: " << tmp->getType() << endl;
 	}
 	cout << endl;
 
-  return true;
+	return true;
 }
 
 // -------------- MslCommandCurrent methods end -------------
@@ -655,16 +655,16 @@ bool MslCommandWrite::verify(cmdList_t & tokens)
 
 bool MslCommandWrite::execute()
 {
-  ofstream saveFile( filename.c_str(), ios::ate );
+	ofstream saveFile( filename.c_str(), ios::ate );
 	
-  if ( workingSet.find( name ) != workingSet.end() ) {
-    workingSet[name]->put( saveFile );
-    saveFile.close();
-    return true;
-  } else {
-    cout << "MarSystem: " << name << " not found." << endl;
-    return false;
-  }
+	if ( workingSet.find( name ) != workingSet.end() ) {
+		workingSet[name]->put( saveFile );
+		saveFile.close();
+		return true;
+	} else {
+		cout << "MarSystem: " << name << " not found." << endl;
+		return false;
+	}
 }
 
 string MslCommandWrite::helpMsg() const
@@ -677,7 +677,7 @@ string MslCommandWrite::helpMsg() const
 // -------------- MslCommandRead methods begin --------------
 
 MslCommandRead::MslCommandRead (marsysMap_t & inSet, 
-	MarSystemManager & inManager)
+								MarSystemManager & inManager)
 	: MslMarSystemCommand (inSet), mng (inManager)
 {
 }
@@ -693,18 +693,18 @@ bool MslCommandRead::verify(cmdList_t & tokens)
 
 bool MslCommandRead::execute()
 {
-  ifstream inFile( filename.c_str(), ios::in );
+	ifstream inFile( filename.c_str(), ios::in );
 
-  if (!inFile)
-  {
-	cout << "File " << filename << " could not be opened\n";
-	return false;
-  }
+	if (!inFile)
+	{
+		cout << "File " << filename << " could not be opened\n";
+		return false;
+	}
 
-  workingSet = mng.getWorkingSet(inFile);
+	workingSet = mng.getWorkingSet(inFile);
   
-  inFile.close();
-  return true;	
+	inFile.close();
+	return true;	
 
 }
 
@@ -737,11 +737,11 @@ bool MslCommandLink::verify(cmdList_t & tokens)
 bool MslCommandLink::execute()
 {
     if ( workingSet.find(msys) != workingSet.end() ) {
-      workingSet[msys]->linkctrl( msysCtrl, subCtrl );
-      return true;
+		workingSet[msys]->linkctrl( msysCtrl, subCtrl );
+		return true;
     } else {
-	cout << "Could not link control." << endl;
-       return false;
+		cout << "Could not link control." << endl;
+		return false;
     }
 }
 
@@ -779,7 +779,7 @@ bool MslCommandAlias::execute()
 	else
 	{
 		cout << "Command " << cmd << " is not a valid existing "
-			<< "command" << endl;
+			 << "command" << endl;
 		return false;
 	}
 
@@ -845,19 +845,19 @@ bool MslCommandDelete::verify(cmdList_t & tokens)
 
 bool MslCommandDelete::execute()
 {
-  MarSystem* p;
+	MarSystem* p;
 
-  if (workingSet.find(name) != workingSet.end()) {
-    p = (MarSystem *) workingSet[name];
-    delete p;
+	if (workingSet.find(name) != workingSet.end()) {
+		p = (MarSystem *) workingSet[name];
+		delete p;
     
-    workingSet.erase(name);
+		workingSet.erase(name);
    
-    return true;
-  } else {
-    cout << "Cannot find MarSystem: " << name << endl;
-    return false;
-  }
+		return true;
+	} else {
+		cout << "Cannot find MarSystem: " << name << endl;
+		return false;
+	}
 }
 
 string MslCommandDelete::helpMsg() const
@@ -870,7 +870,7 @@ string MslCommandDelete::helpMsg() const
 // ------------- MslCommandComposite methods begin -------------
 
 MslCommandComposite::MslCommandComposite (marsysMap_t & inSet, 
-	MarSystemManager & inManager, MslModel & modelIn)
+										  MarSystemManager & inManager, MslModel & modelIn)
 	: MslMarSystemCommand (inSet), mng (inManager), msl(modelIn)
 {
 }

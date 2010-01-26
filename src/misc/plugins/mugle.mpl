@@ -19,9 +19,9 @@
 # Synonyms of /Series/total/mrs_bool/memReset = 
 # Number of synonyms = 1
 # /Series/total/Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset
-# Synonyms of /Series/total/mrs_bool/notEmpty = 
+# Synonyms of /Series/total/mrs_bool/hasData = 
 # Number of synonyms = 1
-# /Series/total/Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/notEmpty
+# /Series/total/Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/hasData
 # Synonyms of /Series/total/mrs_natural/label = 
 # Number of synonyms = 1
 # /Series/total/Annotator/ann/mrs_natural/label
@@ -85,7 +85,7 @@
 # /SoundFileSource/src/mrs_bool/advance = 1
 # /SoundFileSource/src/mrs_bool/debug = 0
 # /SoundFileSource/src/mrs_bool/mute = 0
-# /SoundFileSource/src/mrs_bool/notEmpty = 0
+# /SoundFileSource/src/mrs_bool/hasData = 0
 # /SoundFileSource/src/mrs_bool/noteon = 0
 # /SoundFileSource/src/mrs_natural/inObservations = 1
 # /SoundFileSource/src/mrs_natural/inSamples = 512

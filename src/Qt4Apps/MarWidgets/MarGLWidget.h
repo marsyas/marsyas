@@ -9,8 +9,9 @@
 
 #include <string> 
 #include <iostream>
-using namespace std;
+#include "MarControlValue.h" 
 
+using namespace std;
 	
 class MarGLWidget: public GLWidget
 {
@@ -19,13 +20,13 @@ public:
   MarGLWidget(QString mycname, QWidget *parent);
   
 signals:
-  void valueChanged(QString cname, MarControlValue value);
+		void valueChanged(QString cname, Marsyas::MarControlValue value);
 
   
 private slots:
-void reemitvalueChanged(realvec vec);
+		void reemitvalueChanged(Marsyas::realvec vec);
   
-  void setValue(QString cname, MarControlValue value);
+		void setValue(QString cname, Marsyas::MarControlValue value);
   
   
 private:

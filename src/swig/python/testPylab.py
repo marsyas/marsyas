@@ -20,7 +20,7 @@ pipe.addMarSystem(sl)
 pipe.addMarSystem(gain)
 
 filename = pipe.getControl("SoundFileSource/file/mrs_string/filename")
-notempty = pipe.getControl("SoundFileSource/file/mrs_bool/notEmpty")
+notempty = pipe.getControl("SoundFileSource/file/mrs_bool/hasData")
 outData1  = pipe.getControl("SoundFileSource/file/mrs_realvec/processedData")
 outData2 = pipe.getControl("StretchLinear/sl/mrs_realvec/processedData")
 alpha = pipe.getControl("StretchLinear/sl/mrs_real/stretch")

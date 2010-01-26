@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -36,55 +36,55 @@ namespace Marsyas
    Controls:
    - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
    - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
-   - \b mrs_bool/notEmpty [r] : is there any audio input left?
-     (End-Of-File not yet reached)
+   - \b mrs_bool/hasData [r] : is there any audio input left?
+   (End-Of-File not yet reached)
    - \b mrs_real/gain [w] : scales input
    - \b mrs_natural/nChannels [DOCME] : DOCME
    - \b mrs_natural/nBuffers [DOCME] : DOCME
 */
 
 
-class AudioSource:public MarSystem
-{
-private:
+	class AudioSource:public MarSystem
+	{
+		private:
 #ifdef MARSYAS_AUDIOIO
-  RtAudio3 *audio_;
+			RtAudio3 *audio_;
 #endif 
-  int bufferSize_;
-  int nBuffers_;
-  int rtSrate_;
-  int rtChannels_;
-  int rtDevice_;
+			int bufferSize_;
+			int nBuffers_;
+			int rtSrate_;
+			int rtChannels_;
+			int rtDevice_;
 
-  mrs_natural ri_;
-  mrs_natural nChannels_;
-  mrs_real *data_;  
-  realvec reservoir_;
-  mrs_natural reservoirSize_;
-  mrs_natural preservoirSize_;
+			mrs_natural ri_;
+			mrs_natural nChannels_;
+			mrs_real *data_;  
+			realvec reservoir_;
+			mrs_natural reservoirSize_;
+			mrs_natural preservoirSize_;
 
-  mrs_real gain_;
+			mrs_real gain_;
 
-  bool isInitialized_;
-  bool stopped_;
+			bool isInitialized_;
+			bool stopped_;
 
-  void addControls();
-  void myUpdate(MarControlPtr sender);
+			void addControls();
+			void myUpdate(MarControlPtr sender);
 
-  void initRtAudio();
+			void initRtAudio();
 
-  void start();
-  void stop();
+			void start();
+			void stop();
 
-  void localActivate(bool state);
+			void localActivate(bool state);
   
-public:
-  AudioSource(std::string name);
-  ~AudioSource();
-  MarSystem* clone() const;  
+		public:
+			AudioSource(std::string name);
+			~AudioSource();
+			MarSystem* clone() const;  
 
-  void myProcess(realvec& in, realvec& out);
-};
+			void myProcess(realvec& in, realvec& out);
+	};
 
 }//namespace Marsyas
 

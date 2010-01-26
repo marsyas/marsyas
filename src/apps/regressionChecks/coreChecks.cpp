@@ -1,3 +1,22 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 // core/fundamental  Marsyas checks
 #include "coreChecks.h"
 
@@ -25,13 +44,13 @@ core_isClose(string infile1, string infile2)
 
 	pnet->addMarSystem(fanout);
 	pnet->addMarSystem(mng.create("Sum", "sum"));
-	pnet->linkControl("mrs_bool/notEmpty",
-	                  "Fanout/fanout/SoundFileSource/src1/mrs_bool/notEmpty");
+	pnet->linkControl("mrs_bool/hasData",
+	                  "Fanout/fanout/SoundFileSource/src1/mrs_bool/hasData");
 
 	mrs_natural i;
 	mrs_natural samples =
 	    pnet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		pnet->tick();
 		const realvec& processedData =
@@ -144,6 +163,6 @@ core_realvec()
 	realvec baz;
 	baz = foo+test;
 	cout<<baz;
-}
+`}
 
 

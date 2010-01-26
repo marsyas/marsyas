@@ -24,7 +24,7 @@ void sfplay(string sfName, float gain, float start)
 // set the starting position of the source
 	playbacknet->updctrl("SoundFileSource/src/mrs_natural/pos", startPosition);
 
-	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		playbacknet->tick();
 	}

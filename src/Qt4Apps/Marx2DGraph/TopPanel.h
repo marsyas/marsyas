@@ -2,6 +2,10 @@
 #define TOPPANEL_H 
 
 #include "Marx2DGraph.h"
+#include "MarSystem.h" 
+#include "realvec.h"
+using namespace MarsyasQt;
+
 
 class TopPanel : public QWidget
 {

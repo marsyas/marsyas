@@ -82,4 +82,4 @@ add dest > total
 updctrl total AudioSource/src/mrs_natural/inSamples 512
 # updctrl total SoundFileSource/src/mrs_string/filename /home/gtzan/data/sound/music_speech/speech/allison.au
 
-link total bool/notEmpty AudioSource/src/mrs_bool/notEmpty 
+link total bool/hasData AudioSource/src/mrs_bool/hasData 

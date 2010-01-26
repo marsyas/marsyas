@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -30,33 +30,33 @@ namespace Marsyas
 	\brief Blocks tick()s if the output is silent.
 
 	SilenceRemove takes as argument another Marsystem 
-and ticks it ignoring the output when it is silent. Effectively 
-tick silence remove is the same as playing the sound with 
-silences removed. 
+	and ticks it ignoring the output when it is silent. Effectively 
+	tick silence remove is the same as playing the sound with 
+	silences removed. 
 
 	Controls:
 	- \b mrs_real/threshold [rw] : threshold value of "silence".
 */
 
 
-class SilenceRemove: public MarSystem
-{
-private: 
-  mrs_real threshold_;
+	class SilenceRemove: public MarSystem
+	{
+		private: 
+			mrs_real threshold_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
-	MarControlPtr ctrl_notEmpty_;
-	MarControlPtr ctrl_threshold_;
+			void addControls();
+			void myUpdate(MarControlPtr sender);
+			MarControlPtr ctrl_hasData_;
+			MarControlPtr ctrl_threshold_;
   
-public:
-	SilenceRemove(std::string name);
-	SilenceRemove(const SilenceRemove&);
-  ~SilenceRemove();
-  MarSystem* clone() const;  
+		public:
+			SilenceRemove(std::string name);
+			SilenceRemove(const SilenceRemove&);
+			~SilenceRemove();
+			MarSystem* clone() const;  
 
-  void myProcess(realvec& in, realvec& out);
-};
+			void myProcess(realvec& in, realvec& out);
+	};
 
 }//namespace Marsyas
 

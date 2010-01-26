@@ -1,3 +1,23 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
+
 #include "MarEditor.h"
 
 // #include <QFileDialog>
@@ -52,7 +72,7 @@ MarEditor::MarEditor(QWidget *parent, Qt::WFlags flags)
 	msysNet_->linkctrl("mrs_string/filename", "SoundFileSource2/src/mrs_string/filename");
 	msysNet_->linkctrl("mrs_natural/size", "SoundFileSource2/src/mrs_natural/size");
 	msysNet_->linkctrl("mrs_natural/pos", "SoundFileSource2/src/mrs_natural/pos");
-	msysNet_->linkctrl("mrs_bool/notEmpty", "SoundFileSource2/src/mrs_bool/notEmpty");
+	msysNet_->linkctrl("mrs_bool/hasData", "SoundFileSource2/src/mrs_bool/hasData");
 
 	// make a Qt-like thread object wrapped around the MarSystem
 	msysThread_ = new MarSystemThread(msysNet_);
@@ -231,8 +251,8 @@ MarEditor::openMarSystem()
 	if (msysNet_ == NULL) 
 	{
 		QMessageBox::critical(this, "MarEditor",
-			"Unable to load MarSystem plugin.\n"
-			"Please open another file");
+							  "Unable to load MarSystem plugin.\n"
+							  "Please open another file");
 		
 		setGUIstate(READY_TO_LOAD);
 		return;
@@ -399,7 +419,7 @@ MarEditor::rewind()
 	if(GUIstate() == PLAYING || GUIstate() == STOPPED || GUIstate() == PAUSED)
 	{
 		msysNet_->updctrl("mrs_natural/pos",0);
-		msysNet_->updctrl("mrs_bool/notEmpty", (bool)msysNet_->getctrl("mrs_natural/size")->to<mrs_natural>());
+		msysNet_->updctrl("mrs_bool/hasData", (bool)msysNet_->getctrl("mrs_natural/size")->to<mrs_natural>());
 	}
 }
 

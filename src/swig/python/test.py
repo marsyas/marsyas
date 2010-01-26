@@ -14,7 +14,7 @@ pipe.addMarSystem(gain)
 pipe.addMarSystem(sink)
 
 filename = pipe.getControl("SoundFileSource/file/mrs_string/filename")
-notempty = pipe.getControl("SoundFileSource/file/mrs_bool/notEmpty")
+notempty = pipe.getControl("SoundFileSource/file/mrs_bool/hasData")
 iniAudio = pipe.getControl("AudioSink/sink/mrs_bool/initAudio")
 outData  = pipe.getControl("Gain/gain/mrs_realvec/processedData")
 import sys

@@ -1,7 +1,5 @@
 /*
-** Copyright (C) 2008 Soren Harward <stharward@gmail.com>
-**
-** Based on RawFileSource by George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 2008-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,6 +16,10 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+/* 
+   Author Soren Harward <stharward@gmail.com> 2008
+*/
+
 #include "GStreamerSource.h"
 
 #ifdef MARSYAS_GSTREAMER
@@ -31,7 +33,7 @@ GStreamerSource::GStreamerSource(string name):AbsSoundFileSource("GStreamerSourc
 {
     data_ = NULL;
     phaseOffset_ = 0.0;
-    notEmpty_ = false;
+    hasData_ = false;
     addControls();
 }
 
@@ -58,7 +60,7 @@ GStreamerSource::addControls()
     setctrlState("mrs_natural/pos", true);
     addctrl("mrs_string/filename", "gst-source");
     setctrlState("mrs_string/filename", true);
-    addctrl("mrs_bool/notEmpty", true);
+    addctrl("mrs_bool/hasData", true);
     addctrl("mrs_bool/noteon", false);
     setctrlState("mrs_bool/noteon", true);
     addctrl("mrs_string/filetype", "raw");
@@ -69,7 +71,7 @@ void GStreamerSource::getHeader(string fileName)
     data_ = (mrs_real*)result.data;
     fileSize_ = (mrs_natural)result.size;
     if (fileSize_ > 0) {
-        notEmpty_ = false;
+        hasData_ = false;
     }
     sampleCount_ = fileSize_ / sizeof(mrs_natural);
 }
@@ -106,7 +108,7 @@ void GStreamerSource::myProcess(realvec& in,realvec &out)
         return;
     }
 
-    if (!notEmpty_) {
+    if (!hasData_) {
         return;
     }
 

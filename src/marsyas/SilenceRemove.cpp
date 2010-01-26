@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -74,8 +74,8 @@ SilenceRemove::myUpdate(MarControlPtr sender)
 
 		//marsystems_[0]->update(); //lmartins: shouldn't this have already been called?! [?]
 
-		if (ctrl_notEmpty_.isInvalid()) 
-			ctrl_notEmpty_ = marsystems_[0]->getctrl("mrs_bool/notEmpty");
+		if (ctrl_hasData_.isInvalid()) 
+			ctrl_hasData_ = marsystems_[0]->getctrl("mrs_bool/hasData");
 	}
 	else //if composite is empty...
 		MarSystem::myUpdate(sender);
@@ -99,10 +99,10 @@ SilenceRemove::myProcess(realvec& in, realvec& out)
 					rms += (out(o,t) * out(o,t));
 					count++;
 				}
-				rms /= count;
-				rms = sqrt(rms);
-				count = 0;
-		} while (rms < threshold_ && (ctrl_notEmpty_->isTrue())); 
+			rms /= count;
+			rms = sqrt(rms);
+			count = 0;
+		} while (rms < threshold_ && (ctrl_hasData_->isTrue())); 
 	}
 	else //composite has no children!
 	{

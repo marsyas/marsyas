@@ -16,7 +16,7 @@ void sfplay(string sfName, float gain)
 	playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
 	playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		playbacknet->tick();
 	}

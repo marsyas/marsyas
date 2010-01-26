@@ -20,8 +20,8 @@ mrs_real TranscriberExtract::addFileSource(MarSystem* net, const std::string inf
 	}
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
-	net->linkControl("mrs_bool/notEmpty",
-	                 "SoundFileSource/src/mrs_bool/notEmpty");
+	net->linkControl("mrs_bool/hasData",
+	                 "SoundFileSource/src/mrs_bool/hasData");
 	return net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 }
 
@@ -87,7 +87,7 @@ TranscriberExtract::getAllFromAudio(const std::string audioFilename, realvec&
 	fanout->addMarSystem(makeAmplitudeNet(ampSink));
 	pnet->addMarSystem(fanout);
 
-	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>() )
 		pnet->tick();
 
 	pitchList = getPitchesFromRealvecSink(pitchSink, srate);
@@ -110,7 +110,7 @@ TranscriberExtract::getPitchesFromAudio(const std::string audioFilename)
 	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
 	pnet->addMarSystem(makePitchNet(srate, 100.0, rvSink));
 
-	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>() )
 		pnet->tick();
 
 	realvec pitchList = getPitchesFromRealvecSink(rvSink, srate);
@@ -132,7 +132,7 @@ TranscriberExtract::getAmpsFromAudio(const std::string audioFilename)
 	MarSystem* rvSink = mng.create("RealvecSink", "rvSink");
 	pnet->addMarSystem(makeAmplitudeNet(rvSink));
 
-	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>() )
 		pnet->tick();
 
 	realvec rmsList = getAmpsFromRealvecSink(rvSink);
@@ -194,7 +194,7 @@ TranscriberExtract::getNormalizingGain(const std::string audioFilename)
 	// forces Marsyas to write to processedData
 	pnet->addMarSystem(mng.create("Gain", "null"));
 
-	while ( pnet->getctrl("mrs_bool/notEmpty")->to<mrs_bool>() )
+	while ( pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		pnet->tick();
 	        const realvec& processedData =

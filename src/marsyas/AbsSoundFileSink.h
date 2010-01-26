@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -26,24 +26,24 @@ namespace Marsyas
 {
 /**
    \class AbsSoundFileSink
-	\ingroup Internal
+   \ingroup Internal
    \brief Abstract Interface for SoundFileSinks of various formats
 */
 
 
-class AbsSoundFileSink: public MarSystem
-{
-public:
-  AbsSoundFileSink(std::string type, std::string name);
-  virtual ~AbsSoundFileSink();
+	class AbsSoundFileSink: public MarSystem
+	{
+		public:
+			AbsSoundFileSink(std::string type, std::string name);
+			virtual ~AbsSoundFileSink();
 
-  virtual void putHeader(std::string filename) = 0;
-  virtual void myProcess(realvec& in,realvec &out) = 0;
+			virtual void putHeader(std::string filename) = 0;
+			virtual void myProcess(realvec& in,realvec &out) = 0;
 
-  // public for efficiency [!]
-  mrs_natural pos_;
-  bool notEmpty_;
-};
+			// public for efficiency [!]
+			mrs_natural pos_;
+			bool hasData_;
+	};
 
 }//namespace Marsyas
 

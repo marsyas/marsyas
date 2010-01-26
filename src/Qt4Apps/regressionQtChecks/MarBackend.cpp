@@ -15,8 +15,8 @@ MarBackend::MarBackend(string infile, string outfile)
 	pnet->addMarSystem(mng.create("SoundFileSource", "src"));
 	pnet->updctrl("SoundFileSource/src/mrs_string/filename",
 	              infile);
-	pnet->linkControl("mrs_bool/notEmpty",
-	                  "SoundFileSource/src/mrs_bool/notEmpty");
+	pnet->linkControl("mrs_bool/hasData",
+	                  "SoundFileSource/src/mrs_bool/hasData");
 	// output
 	pnet->addMarSystem(mng.create("SoundFileSink", "dest"));
 	// pnet->addMarSystem(mng.create("AudioSink", "dest"));
@@ -31,7 +31,7 @@ MarBackend::MarBackend(string infile, string outfile)
 	connect(mrsWrapper, SIGNAL(ctrlChanged(MarControlPtr)),
 	        this, SLOT(ctrlChanged(MarControlPtr)));
 
-	isEmptyPtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_bool/notEmpty");
+	isEmptyPtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_bool/hasData");
 	posPtr = mrsWrapper->getctrl("SoundFileSource/src/mrs_natural/pos");
 
 	mrsWrapper->trackctrl( isEmptyPtr );

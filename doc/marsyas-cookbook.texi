@@ -98,7 +98,7 @@ You then just tick the network until all the frames have finished
 playing:
 
 @example
-while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	@{
+while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->isTrue())	@{
   playbacknet->tick();
 @}
 @end example
@@ -125,7 +125,7 @@ playbacknet->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
 // Turn on the audio output
 playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue())	@{
+while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->isTrue())	@{
    playbacknet->tick();
 @}
 @end example
@@ -161,7 +161,7 @@ processing code in between the SoundFileSource and SoundFileSink:
   playbacknet->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
   playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename",outAudioFileName);
 
-  while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->isTrue()) @{
+  while (playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->isTrue()) @{
   	playbacknet->tick();
   @}
 @end example

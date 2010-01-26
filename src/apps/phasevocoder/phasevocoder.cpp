@@ -1,3 +1,22 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -77,7 +96,7 @@ printHelp(string progName)
 
 	/* TODO: Add short description
 
-	cerr << "-a --auto            : " << endl;
+	   cerr << "-a --auto            : " << endl;
 
 	*/
 
@@ -209,7 +228,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	int numticks = 0;
 	int onset_counter = 5;
 	
-	while(pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	while(pvseries->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		// initialize synthesis phases to analysis phases
 		if ((numticks == 0)&&(oscbank_ == false)) 
@@ -273,13 +292,13 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 // original monophonic phasevocoder 
 void 
 phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw, 
-			   mrs_natural D, mrs_natural I, mrs_real P, 
-			   string outsfname)
+				  mrs_natural D, mrs_natural I, mrs_real P, 
+				  string outsfname)
 {
 	if (!quietopt_)
 		cout << "phasevocSeries" << endl;
 
-		vector<int> onsets;
+	vector<int> onsets;
 	if (onsetsfile_ != "") 
 	{
 		cout << "ONSETS FILE IS " << onsetsfile_ << endl;
@@ -512,7 +531,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 		numticks++;
 		
 		if (!microphone_) 
-			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>() == false)
+			if (pvseries->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() == false)
 				break;
 
 		
@@ -1712,7 +1731,7 @@ main(int argc, const char **argv)
 		microphone_ = false;
 		if (vopt_ == 1) 
 		{
-				phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
+			phasevocoder(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);			
 		}
 		else
 		{

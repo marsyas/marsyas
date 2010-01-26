@@ -1,3 +1,22 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
 #include "common.h"
 
 #include <cstdio>
@@ -118,12 +137,12 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		cout << pitches(i) << endl;
 		
         /*
-	    peak_in = pitchExtractor->getctrl("PitchPraat/pitchPraat/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
-	    mrs_natural pos = pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
-	    MATLAB_PUT(peak_in, "peak_in");
-	    MATLAB_PUT(pos, "pos");
-	    MATLAB_EVAL("plot(peak_in); title(num2str(pos));");
-	    getchar();
+		  peak_in = pitchExtractor->getctrl("PitchPraat/pitchPraat/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
+		  mrs_natural pos = pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
+		  MATLAB_PUT(peak_in, "peak_in");
+		  MATLAB_PUT(pos, "pos");
+		  MATLAB_EVAL("plot(peak_in); title(num2str(pos));");
+		  getchar();
 	    */ 
     }
 
@@ -255,7 +274,7 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 
   
     mrs_real pitch;
-    while (pitchExtractor->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+    while (pitchExtractor->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		if (plopt) 
 			playback->tick();
@@ -279,78 +298,78 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 //
 void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, mrs_bool playPitches)
 {
-  // Fill up the realvec with a sine wave
-  MarSystemManager mng;
+	// Fill up the realvec with a sine wave
+	MarSystemManager mng;
 
-  // A series to contain everything
-  MarSystem* net = mng.create("Series", "series");
-  net->addMarSystem(mng.create("SoundFileSource", "src"));
+	// A series to contain everything
+	MarSystem* net = mng.create("Series", "series");
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
 
-  MarSystem* fanout = mng.create("Fanout", "fanout");
+	MarSystem* fanout = mng.create("Fanout", "fanout");
 
-  // Process the input data with Yin
-  MarSystem* yin_series = mng.create("Series", "yin_series");
-  yin_series->addMarSystem(mng.create("ShiftInput", "si"));
-  yin_series->addMarSystem(mng.create("Yin", "yin"));
-  yin_series->addMarSystem(mng.create("Gain", "gain"));
-  fanout->addMarSystem(yin_series);
+	// Process the input data with Yin
+	MarSystem* yin_series = mng.create("Series", "yin_series");
+	yin_series->addMarSystem(mng.create("ShiftInput", "si"));
+	yin_series->addMarSystem(mng.create("Yin", "yin"));
+	yin_series->addMarSystem(mng.create("Gain", "gain"));
+	fanout->addMarSystem(yin_series);
 
-  MarSystem* rms_series = mng.create("Series", "rms_series");
-  rms_series->addMarSystem(mng.create("Rms", "rms"));
-  rms_series->addMarSystem(mng.create("Gain", "gain"));
-  fanout->addMarSystem(rms_series);
+	MarSystem* rms_series = mng.create("Series", "rms_series");
+	rms_series->addMarSystem(mng.create("Rms", "rms"));
+	rms_series->addMarSystem(mng.create("Gain", "gain"));
+	fanout->addMarSystem(rms_series);
 
-  net->addMarSystem(fanout);
+	net->addMarSystem(fanout);
 
-  net->updctrl("mrs_natural/inSamples",overlap_size);
+	net->updctrl("mrs_natural/inSamples",overlap_size);
 
-  net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
-  yin_series->updctrl("ShiftInput/si/mrs_natural/winSize", buffer_size*4);
-  yin_series->updctrl("Yin/yin/mrs_natural/inSamples",buffer_size*4);
-  yin_series->updctrl("Yin/yin/mrs_real/tolerance",0.7);
+	net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+	yin_series->updctrl("ShiftInput/si/mrs_natural/winSize", buffer_size*4);
+	yin_series->updctrl("Yin/yin/mrs_natural/inSamples",buffer_size*4);
+	yin_series->updctrl("Yin/yin/mrs_real/tolerance",0.7);
 
-  realvec r;
-  realvec r1;
-  double pitch;
-  double rms;
-  double time;
-  int count = 0;
-  mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
-  mrs_natural inSamples = net->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	realvec r;
+	realvec r1;
+	double pitch;
+	double rms;
+	double time;
+	int count = 0;
+	mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
+	mrs_natural inSamples = net->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
-  // Using explicit loop 
-  mrs_natural fileSize = net->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
-  mrs_natural len = fileSize / overlap_size;
-  mrs_realvec pitches(len);
-  mrs_realvec confidences(len);
+	// Using explicit loop 
+	mrs_natural fileSize = net->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+	mrs_natural len = fileSize / overlap_size;
+	mrs_realvec pitches(len);
+	mrs_realvec confidences(len);
 
-  int i = 0;
-  while (net->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>()) {
-	net->tick();
-	r = net->getctrl("Fanout/fanout/Series/yin_series/Yin/yin/mrs_realvec/processedData")->to<mrs_realvec>();
-	r1 = net->getctrl("Fanout/fanout/Series/rms_series/Rms/rms/mrs_realvec/processedData")->to<mrs_realvec>();
+	int i = 0;
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) {
+		net->tick();
+		r = net->getctrl("Fanout/fanout/Series/yin_series/Yin/yin/mrs_realvec/processedData")->to<mrs_realvec>();
+		r1 = net->getctrl("Fanout/fanout/Series/rms_series/Rms/rms/mrs_realvec/processedData")->to<mrs_realvec>();
 
-	time = count / srate;
-	pitch = r(0,0);
-	rms = r1(0,0);
-	printf("%12.12f\t%12.12f\t%12.12f\n",time,pitch,rms);
+		time = count / srate;
+		pitch = r(0,0);
+		rms = r1(0,0);
+		printf("%12.12f\t%12.12f\t%12.12f\n",time,pitch,rms);
 
-	pitches.stretchWrite(i,pitch);
-	// sness - Just give it all a confidence of 1 for now.  You can
-	// get the confidence out of the YIN algorithm, but I haven't
-	// implemented it yet.
-	confidences.stretchWrite(i,rms);
+		pitches.stretchWrite(i,pitch);
+		// sness - Just give it all a confidence of 1 for now.  You can
+		// get the confidence out of the YIN algorithm, but I haven't
+		// implemented it yet.
+		confidences.stretchWrite(i,rms);
 
-	count += inSamples;
-	i++;
-  }
+		count += inSamples;
+		i++;
+	}
 
-  len = i;
+	len = i;
 
 	// Playback the pitches
 	if (playPitches) 
 	{
-	  cout << "Playing pitches" << endl;
+		cout << "Playing pitches" << endl;
 
 		MarSystem* playback = mng.create("Series", "playback");
 		playback->addMarSystem(mng.create("SineSource", "ss"));
@@ -436,9 +455,9 @@ main(int argc, const char **argv)
     {
 		string sfname = *sfi;
 		if (yinopt == 0) {
-		  pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0);
+			pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0);
 		} else {
-		  yinpitchextract(sfname, wopt, hopt, plopt != 0);
+			yinpitchextract(sfname, wopt, hopt, plopt != 0);
 		}
 
     }

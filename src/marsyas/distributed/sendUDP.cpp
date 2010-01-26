@@ -101,7 +101,7 @@ mrs_real start, mrs_real length, mrs_real gain, mrs_real repetitions, string sfN
   mrs_natural onSamples = msys.getctrl("mrs_natural/onSamples")->to<mrs_natural>();
   // mrs_natural repeatId = 1;
   
-  while (msys.getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+  while (msys.getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
       msys.tick();
       wc ++;

@@ -1,3 +1,21 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
 #include <cstdio>
 #include <cstdlib>
 
@@ -76,7 +94,7 @@ printHelp(string progName)
 {
 	MRSDIAG("peakSynth.cpp - printHelp");
 	cerr << "peakSynth, MARSYAS, Copyright Mathieu Lagrange " << endl;
-  cerr << "report bugs to lagrange@uvic.ca" << endl;
+	cerr << "report bugs to lagrange@uvic.ca" << endl;
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
@@ -108,7 +126,7 @@ printHelp(string progName)
 // original monophonic PeVocoding
 void
 peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw, 
-				 mrs_natural D, mrs_natural S, mrs_natural synthetize)
+		 mrs_natural D, mrs_natural S, mrs_natural synthetize)
 {
 	mrs_natural nbFrames_=0, harmonize_=0;
 	realvec harmonizeData_;
@@ -170,14 +188,14 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 	}
 
 	if(harmonizeFileName != "MARSYAS_EMPTY")
-		{
-			harmonizeData_.read(harmonizeFileName);
-			if(!harmonizeData_.getSize())
-				cout << "Unable to open "<< harmonizeFileName << endl;
-			harmonize_=1;
+	{
+		harmonizeData_.read(harmonizeFileName);
+		if(!harmonizeData_.getSize())
+			cout << "Unable to open "<< harmonizeFileName << endl;
+		harmonize_=1;
 		
-	   // ctrl_harmonize_->setValue(0, 0.);
-     synthetize = 3;
+		// ctrl_harmonize_->setValue(0, 0.);
+		synthetize = 3;
 	}
 
 	if(synthetize>-1 )
@@ -215,12 +233,12 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 					//ctrl_harmonize_->setValue(1, 1.0);
 					//ctrl_harmonize_->setValue(2, 0.1);
 					if (harmonizeData_.getRows() > nbFrames_)
-					 ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i) != 0);
-				else 
-				{
-	      	ctrl_harmonize_->setValue(i, 0);
-          cout << "Harmonize file too short" << endl;
-				}
+						ctrl_harmonize_->setValue(i, harmonizeData_(nbFrames_, i) != 0);
+					else 
+					{
+						ctrl_harmonize_->setValue(i, 0);
+						cout << "Harmonize file too short" << endl;
+					}
 			}
 			nbFrames_++;
 			if (!microphone_)
@@ -228,14 +246,14 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 				bool temp;
 				if(analyse_)
 				{
-					temp = pvseries->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>();
+					temp = pvseries->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 					mrs_real timeRead =  pvseries->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 					mrs_real timeLeft =  pvseries->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
 					printf("Reading Audio File: %.2f / %.2f \r", timeRead, timeLeft);
 				}
 				else 
 				{
-					temp =	pvseries->getctrl("PeakViewSource/peSource/mrs_bool/notEmpty")->to<mrs_bool>();
+					temp =	pvseries->getctrl("PeakViewSource/peSource/mrs_bool/hasData")->to<mrs_bool>();
 					samplingFrequency_ = pvseries->getctrl("PeakViewSource/peSource/mrs_real/osrate")->to<mrs_real>();
 					mrs_real timeRead =  pvseries->getctrl("PeakViewSource/peSource/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 					mrs_real timeLeft =  pvseries->getctrl("PeakViewSource/peSource/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
@@ -247,30 +265,30 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			}
 		}
 
-		if(peakStore_)
+	if(peakStore_)
+	{
+		pvseries->updctrl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
+		pvseries->updctrl("PeakViewSink/peSink/mrs_natural/frameSize", D);
+		pvseries->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
+		pvseries->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
+
+		//MATLAB_PUT(peakSet_, "peaks");
+		//MATLAB_EVAL("plotPeaks(peaks)");
+
+		realvec realTry(nbFrames_, 5); //[WTF]
+		realTry.setval(0);
+		for (mrs_natural i=0 ; i<nbFrames_ ; i++)
 		{
-			pvseries->updctrl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
-			pvseries->updctrl("PeakViewSink/peSink/mrs_natural/frameSize", D);
-			pvseries->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
-			pvseries->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
-
-			//MATLAB_PUT(peakSet_, "peaks");
-			//MATLAB_EVAL("plotPeaks(peaks)");
-
-			realvec realTry(nbFrames_, 5); //[WTF]
-			realTry.setval(0);
-			for (mrs_natural i=0 ; i<nbFrames_ ; i++)
-			{
-				realTry(i, 1) = 20;
-				realTry(i, 2) = .8;
-				realTry(i, 3) = .25;
-				realTry(i, 4) = .6;
-			}
-			ofstream tryFile;
-			string harmonizeName = filePeakName+"HarmoStream";
-			tryFile.open(harmonizeName.c_str());
-			tryFile<< realTry;
+			realTry(i, 1) = 20;
+			realTry(i, 2) = .8;
+			realTry(i, 3) = .25;
+			realTry(i, 4) = .6;
 		}
+		ofstream tryFile;
+		string harmonizeName = filePeakName+"HarmoStream";
+		tryFile.open(harmonizeName.c_str());
+		tryFile<< realTry;
+	}
 }
 
 void 
@@ -351,10 +369,10 @@ main(int argc, const char **argv)
 		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
 		{
 			FileName Sfname(*sfi);
-		/*	if(outputDirectoryName == EMPTYSTRING)
-			{
+			/*	if(outputDirectoryName == EMPTYSTRING)
+				{
 				outputDirectoryName = ".";
-			}*/
+				}*/
 
 			if(Sfname.ext() == "peak")
 			{

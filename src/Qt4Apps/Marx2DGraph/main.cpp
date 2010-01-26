@@ -5,22 +5,16 @@
 #include <string>
 
 #include "Marx2DGraph.h"
-#include "TopPanelNew.h"
+#include "TopPanel.h"
 
 int main(int argc, char *argv[])
 {
 
   QApplication app(argc, argv);
 
-  if (argc < 2) {
-	std::cout << "Usuage:\n\t$ ./Marx2DGraph /path/to/audiofile.au\n";
-    return 0;
-  }
-
   std::string progName = argv[0];
-  std::string audioFile = argv[1];
 
-  TopPanelNew* panel = new TopPanelNew( audioFile );
+  TopPanel* panel = new TopPanel();
   
   panel->setGeometry(50, 50, 800, 500);
   panel->show();

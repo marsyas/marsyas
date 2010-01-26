@@ -39,7 +39,7 @@ namespace Marsyas
    Controls:
    - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
    - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
-   - \b mrs_bool/notEmpty [r] : is there any audio input left?
+   - \b mrs_bool/hasData [r] : is there any audio input left?
      (End-Of-File not yet reached)
    - \b mrs_real/gain [w] : scales input
    - \b mrs_natural/nChannels [DOCME] : DOCME

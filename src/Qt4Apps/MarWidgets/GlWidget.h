@@ -27,6 +27,7 @@
 #include <QGLWidget>
 #include "MarSystem.h"
 
+
 class GLWidget : public QGLWidget
 {
     Q_OBJECT
@@ -43,14 +44,14 @@ public slots:
     void setXRotation(int angle);
     void setYRotation(int angle);
     void setZRotation(int angle);
-  void setWaveform(realvec vec);
+		void setWaveform(Marsyas::realvec vec);
   
 
 signals:
   void xRotationChanged(int angle);
   void yRotationChanged(int angle);
   void zRotationChanged(int angle);
-  void waveformChanged(realvec vec);
+		void waveformChanged(Marsyas::realvec vec);
   
 protected:
     void initializeGL();
@@ -79,7 +80,7 @@ private:
     int gear1Rot;
   float* data_;
   int size_;
-  realvec vec_;
+		Marsyas::realvec vec_;
   
     
     QPoint lastPos;

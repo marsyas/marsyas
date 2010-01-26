@@ -1,20 +1,20 @@
 /*
- ** Copyright (C) 1998-2008 George Tzanetakis <gtzan@cs.uvic.ca>
- **  
- ** This program is free software; you can redistribute it and/or modify
- ** it under the terms of the GNU General Public License as published by
- ** the Free Software Foundation; either version 2 of the License, or
- ** (at your option) any later version.
- ** 
- ** This program is distributed in the hope that it will be useful,
- ** but WITHOUT ANY WARRANTY; without even the implied warranty of
- ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- ** GNU General Public License for more details.
- ** 
- ** You should have received a copy of the GNU General Public License
- ** along with this program; if not, write to the Free Software 
- ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
 
 #include "MidiFileSynthSource.h"
 
@@ -50,7 +50,7 @@ MidiFileSynthSource::MidiFileSynthSource(const MidiFileSynthSource& a):MarSystem
 	ctrl_numActiveNotes_ = getctrl("mrs_natural/numActiveNotes");
 	ctrl_nChannels_ = getctrl("mrs_natural/nChannels");
 	ctrl_pos_ = getctrl("mrs_natural/pos");
-	ctrl_notEmpty_ = getctrl("mrs_bool/notEmpty");
+	ctrl_hasData_ = getctrl("mrs_bool/hasData");
 	
 	ctrl_start_ = getctrl("mrs_real/start");
 	ctrl_end_ = getctrl("mrs_real/end");
@@ -75,7 +75,7 @@ MidiFileSynthSource::addControls()
 	
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
 	
-	addctrl("mrs_bool/notEmpty", true, ctrl_notEmpty_); 
+	addctrl("mrs_bool/hasData", true, ctrl_hasData_); 
 	
 	addctrl("mrs_real/start", 0.0, ctrl_start_);
 	addctrl("mrs_real/end", 0.0, ctrl_end_);
@@ -142,9 +142,9 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 		
 		ctrl_pos_->setValue(0, NOUPDATE);
 		if(size_>0)
-			ctrl_notEmpty_->setValue(true, NOUPDATE);
+			ctrl_hasData_->setValue(true, NOUPDATE);
 		else
-			ctrl_notEmpty_->setValue(false, NOUPDATE);
+			ctrl_hasData_->setValue(false, NOUPDATE);
 	}
 	
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -166,10 +166,10 @@ MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 	{
 		out.setval(0.0);//fill with silence
 
-		if(!ctrl_notEmpty_->isTrue())
+		if(!ctrl_hasData_->isTrue())
 			return;
 
-		ctrl_notEmpty_->setValue(false);
+		ctrl_hasData_->setValue(false);
 
 		//flush last texture window
 		if(ctrl_sigNewTextWin_->isTrue())

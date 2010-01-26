@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -27,8 +27,8 @@ using namespace Marsyas;
 //
 NetworkUDPSource::NetworkUDPSource(string name) : NetworkSocket("NetworkUDPSource",name)
 {
-  //type_ = "NetworkUDPSource";
-  //name_ = name;
+	//type_ = "NetworkUDPSource";
+	//name_ = name;
 
 	addControls();
 }
@@ -38,37 +38,37 @@ NetworkUDPSource::~NetworkUDPSource()
 }
 
 MarSystem* NetworkUDPSource::clone() const {
-  return new NetworkUDPSource(*this);
+	return new NetworkUDPSource(*this);
 }
 
 void NetworkUDPSource::addControls()
 {
-  addctrl("mrs_real/gain", 1.0);
-  addctrl("mrs_natural/dataPort", 5009);
-  addctrl("mrs_natural/controlsPort", 5010);
-  addctrl("mrs_bool/notEmpty", true); 
+	addctrl("mrs_real/gain", 1.0);
+	addctrl("mrs_natural/dataPort", 5009);
+	addctrl("mrs_natural/controlsPort", 5010);
+	addctrl("mrs_bool/hasData", true); 
 }
 
 
 string NetworkUDPSource::getClientAddr()
 {
-  return NetworkSocket::inet_ntoa();
+	return NetworkSocket::inet_ntoa();
 }
 
 void NetworkUDPSource::myProcess( realvec& in, realvec& out )
 {  
-  //checkFlow(in,out);
+	//checkFlow(in,out);
  
-  if ( !valid( s_sock ) )
-	  refresh();
+	if ( !valid( s_sock ) )
+		refresh();
   
-  int status = NetworkSocket::recvUDP ( out );
+	int status = NetworkSocket::recvUDP ( out );
   
-  if ( status < 0 ) {
-    throw SocketException ( "Cannot read from socket." );
-  } else if ( status == 0 ) {
-    throw SocketException ( "Client closed connection." );
-  }
+	if ( status < 0 ) {
+		throw SocketException ( "Cannot read from socket." );
+	} else if ( status == 0 ) {
+		throw SocketException ( "Client closed connection." );
+	}
 
 
 }
@@ -76,21 +76,21 @@ void NetworkUDPSource::myProcess( realvec& in, realvec& out )
 void NetworkUDPSource::refresh() 
 {
  
-  if ( valid( s_sock ) || valid( c_sock ) ) {
-  	::close ( c_sock );
-	::close ( s_sock );
-  }
-  if ( ! NetworkSocket::createSocket() ) {
-    throw SocketException ( "Could not create server socket." );
-  }
+	if ( valid( s_sock ) || valid( c_sock ) ) {
+		::close ( c_sock );
+		::close ( s_sock );
+	}
+	if ( ! NetworkSocket::createSocket() ) {
+		throw SocketException ( "Could not create server socket." );
+	}
 
-  cout << "Waiting for data on port: " << getctrl("mrs_natural/dataPort") << endl;
+	cout << "Waiting for data on port: " << getctrl("mrs_natural/dataPort") << endl;
 
-  mrs_natural dataPort = getctrl("mrs_natural/dataPort")->to<mrs_natural>();
-  mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->to<mrs_natural>();
+	mrs_natural dataPort = getctrl("mrs_natural/dataPort")->to<mrs_natural>();
+	mrs_natural controlsPort = getctrl("mrs_natural/controlsPort")->to<mrs_natural>();
 
-  if ( ! NetworkSocket::setupSource ( dataPort, controlsPort ) ) {
-    throw SocketException ( "Could not bind to port." );
-  }
+	if ( ! NetworkSocket::setupSource ( dataPort, controlsPort ) ) {
+		throw SocketException ( "Could not bind to port." );
+	}
 }
 

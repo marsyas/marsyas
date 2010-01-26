@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ OggFileSource::OggFileSource(string name):AbsSoundFileSource("OggFileSource", na
 {
   //type_ = "OggFileSource";
   //name_ = name;
-  notEmpty_ = false;
+  hasData_ = false;
   addControls();
 }
 
@@ -82,7 +82,7 @@ OggFileSource::addControls()
   setctrlState("mrs_natural/nChannels", true);
   addctrl("mrs_bool/init", false);
   setctrlState("mrs_bool/init", true);
-  addctrl("mrs_bool/notEmpty", true);
+  addctrl("mrs_bool/hasData", true);
   addctrl("mrs_natural/loopPos", (mrs_natural)0);
   setctrlState("mrs_natural/loopPos", true);
   addctrl("mrs_natural/pos", (mrs_natural)0);
@@ -131,7 +131,7 @@ OggFileSource::getHeader(string filename)
   mrs_real israte = 22050.0;
   mrs_natural nChannels = 1;
   mrs_natural size = 0;
-  notEmpty_ = false;
+  hasData_ = false;
   mrs_natural bitRate = 128*1024;
   
 #ifdef MARSYAS_VORBIS
@@ -146,7 +146,7 @@ OggFileSource::getHeader(string filename)
     duration = ov_time_total(vf,-1);
     nChannels = vi->channels;
     israte = vi->rate;
-    notEmpty_ = true;
+    hasData_ = true;
     bitRate = ov_bitrate(vf, -1);
   }
   else
@@ -157,7 +157,7 @@ OggFileSource::getHeader(string filename)
   setctrl("mrs_natural/nChannels", nChannels);
   setctrl("mrs_real/israte", israte);
   setctrl("mrs_natural/size", size);
-  setctrl("mrs_bool/notEmpty", notEmpty_);
+  setctrl("mrs_bool/hasData", hasData_);
   setctrl("mrs_natural/bitRate", bitRate);
   updctrl("mrs_real/duration", duration);
 }
@@ -205,7 +205,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
 	(void) in;
   //checkFlow(in,out);
 
-  if (notEmpty_)
+  if (hasData_)
   {
 #ifdef MARSYAS_VORBIS
     /*mrs_real duration = getctrl("mrs_real/duration")->to<mrs_real>();
@@ -260,13 +260,13 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
   }
   else
     out.setval(0.0);
-  if (notEmpty_)
+  if (hasData_)
   {
-    // notEmpty_ = (samplesOut_ < repetitions_ * csize_);
+    // hasData_ = (samplesOut_ < repetitions_ * csize_);
   }
   else
   {
-    // if notEmpty_ was false already it got set in fillStream
+    // if hasData_ was false already it got set in fillStream
     MRSWARN("OggFileSource: track ended.");
   }
 }
@@ -282,12 +282,12 @@ void OggFileSource::closeFile()
 {
 #ifdef MARSYAS_VORBIS
 
-  if(notEmpty_)
+  if(hasData_)
   {
     ov_clear(vf);
     delete vf;
   }
 #endif
 
-  notEmpty_ = false;
+  hasData_ = false;
 }

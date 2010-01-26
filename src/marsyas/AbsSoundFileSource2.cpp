@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ AbsSoundFileSource2::addControls()
 
 	addctrl("mrs_natural/pos", (mrs_natural)0);
 
-	addctrl("mrs_bool/notEmpty", false);
+	addctrl("mrs_bool/hasData", false);
 
 	addctrl("mrs_string/filename", "defaultfile");
 	setctrlState("mrs_string/filename", true);

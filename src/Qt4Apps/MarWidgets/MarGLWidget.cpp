@@ -1,5 +1,7 @@
 #include "MarGLWidget.h"
 
+using namespace Marsyas;
+
 	
 MarGLWidget::MarGLWidget(QString cname, QWidget *parent)
         : GLWidget(parent)

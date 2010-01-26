@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -26,32 +26,32 @@ namespace Marsyas
 {
 /**
    \class AbsSoundFileSource
-	\ingroup Internal
+   \ingroup Internal
    \brief Abstract Interface for SoundFileSource of various formats
 */
 
 
-class AbsSoundFileSource: public MarSystem
-{
-public:
-  AbsSoundFileSource(std::string type, std::string name);
-  virtual ~AbsSoundFileSource();
-  AbsSoundFileSource(const AbsSoundFileSource& a);
+	class AbsSoundFileSource: public MarSystem
+	{
+		public:
+			AbsSoundFileSource(std::string type, std::string name);
+			virtual ~AbsSoundFileSource();
+			AbsSoundFileSource(const AbsSoundFileSource& a);
 
-  virtual void getHeader(std::string filename) = 0;
-  virtual void myProcess(realvec& in,realvec &out) = 0;
+			virtual void getHeader(std::string filename) = 0;
+			virtual void myProcess(realvec& in,realvec &out) = 0;
 
-  // public for efficiency [!]
-  mrs_natural pos_;
-  mrs_natural rewindpos_;
-  bool notEmpty_;
-  mrs_real durFull_;
+			// public for efficiency [!]
+			mrs_natural pos_;
+			mrs_natural rewindpos_;
+			bool hasData_;
+			mrs_real durFull_;
 
-  MarControlPtr ctrl_currentlyPlaying_;
-  MarControlPtr ctrl_currentLabel_;
-  MarControlPtr ctrl_nLabels_;
-  MarControlPtr ctrl_labelNames_;
-};
+			MarControlPtr ctrl_currentlyPlaying_;
+			MarControlPtr ctrl_currentLabel_;
+			MarControlPtr ctrl_nLabels_;
+			MarControlPtr ctrl_labelNames_;
+	};
 
 }//namespace Marsyas
 

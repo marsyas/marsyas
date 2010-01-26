@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -35,32 +35,32 @@ namespace Marsyas
    \brief OggFileSource read ogg files using vorbisfile
    \author Taras Glek
  
-This class reads an ogg file using the vorbis ogg decoder library.
+   This class reads an ogg file using the vorbis ogg decoder library.
 */
 
 
-class OggFileSource: public AbsSoundFileSource
-{
-private:
+	class OggFileSource: public AbsSoundFileSource
+	{
+		private:
  
-  void addControls();
-  void myUpdate(MarControlPtr sender);
-  void closeFile(); 
+			void addControls();
+			void myUpdate(MarControlPtr sender);
+			void closeFile(); 
   
-  OggVorbis_File *vf;
-  vorbis_info *vi;
+			OggVorbis_File *vf;
+			vorbis_info *vi;
   
-public:
+		public:
 
-  OggFileSource(std::string name);
-  OggFileSource(const OggFileSource& a);
-  ~OggFileSource();
-  MarSystem* clone() const;  
+			OggFileSource(std::string name);
+			OggFileSource(const OggFileSource& a);
+			~OggFileSource();
+			MarSystem* clone() const;  
 
-  void myProcess(realvec& in, realvec& out);
-  void getHeader(std::string filename);
+			void myProcess(realvec& in, realvec& out);
+			void getHeader(std::string filename);
   
-};
+	};
 
 }//namespace Marsyas
 

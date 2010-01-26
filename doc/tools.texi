@@ -931,7 +931,7 @@ sys->updctrl( "AudioSink/dest/mrs_bool/initAudio", false );
 sys->linkctrl( "mrs_string/filename", "SoundFileSource/src/mrs_string/filename" );
 sys->linkctrl( "mrs_bool/initAudio" , "AudioSink/dest/mrs_bool/initAudio" );
 sys->linkctrl( "mrs_natural/pos"    , "SoundFileSource/src/mrs_natural/pos" );
-sys->linkctrl( "mrs_bool/notEmpty"  , "SoundFileSource/src/mrs_bool/notEmpty" );
+sys->linkctrl( "mrs_bool/hasData"  , "SoundFileSource/src/mrs_bool/hasData" );
 
 // finally, write the network to a file; the plugin can be run as
 // follows: sfplugin -p some_plugin.mpl ../../SamsSavorySuperiorColliculus.au

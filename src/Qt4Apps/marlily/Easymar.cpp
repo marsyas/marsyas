@@ -30,8 +30,8 @@ Easymar::addFileSource(MarSystem* net, const string infile)
 	}
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->updctrl("SoundFileSource/src/mrs_string/filename", infile);
-	net->linkControl("mrs_bool/notEmpty",
-	                 "SoundFileSource/src/mrs_bool/notEmpty");
+	net->linkControl("mrs_bool/hasData",
+	                 "SoundFileSource/src/mrs_bool/hasData");
 	return net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 }
 

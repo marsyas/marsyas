@@ -75,7 +75,7 @@ AudioSourceRt4::addControls()
   addctrl("mrs_bool/initAudio", false);
   setctrlState("mrs_bool/initAudio", true);
   
-  addctrl("mrs_bool/notEmpty", true);
+  addctrl("mrs_bool/hasData", true);
   addctrl("mrs_real/gain", 1.0); 
 }
 

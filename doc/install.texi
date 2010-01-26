@@ -669,6 +669,10 @@ PATH   String  /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr
 developer tools or a 3rd-party plist editor - or just an ordinary text
 editor if you are careful to get the format correct.)
 
+You must then log out and log in again, because
+~/.MacOSX/environment.plist only gets read during login. So do not
+forget this step!
+
 Now CMake GUI will know about the MacPorts directory (i.e. /opt) and
 will be able to find the pythonand SWIG libs from MacPorts.
 
