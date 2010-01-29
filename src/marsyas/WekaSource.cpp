@@ -57,7 +57,7 @@ WekaSource::addControls()
 	addctrl("mrs_string/mode", "train");
 
 	//number of output samples will always be 1, regardless of the input samples
-	setctrl("mrs_natural/onSamples", 1 );
+	setctrl("mrs_natural/onSamples", 1 ); //FIXME: this should not be done here but in myProcess instead...
 
 	//number of attributes and attribute names that will be reported.
 	addctrl("mrs_natural/nAttributes", 0);
@@ -81,17 +81,16 @@ WekaSource::addControls()
 	// We get this from looking for comment strings that begin with "%
 	// filename"
 	addctrl("mrs_string/currentFilename", "");
-
-
+	
+	//TODO: lmartins: document...
+	addctrl("mrs_realvec/instanceIndexes", realvec());
 }
 
 void 
 WekaSource::myUpdate(MarControlPtr sender)
 {
-	
 	(void) sender;
 	MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
-  
 
 	// If 'filename' was updated, or the attributes desired from the Weka file has changed,
 	// parse the header portion of the file to get the required attribute names and possible output labels (if any)...
@@ -101,11 +100,8 @@ WekaSource::myUpdate(MarControlPtr sender)
 		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 		attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->to<mrs_string>();
 	  
-      
 		loadFile(filename_, attributesToInclude_, data_);
 		// data_.Dump("org.txt", classesFound_);
-	  
-	  
 	  
 		string names;
 		bool first = true;
@@ -119,7 +115,6 @@ WekaSource::myUpdate(MarControlPtr sender)
 		}
 		setctrl("mrs_string/classNames", names);
 		setctrl("mrs_natural/nClasses", (mrs_natural)classesFound_.size());
-	  
 	  
 		names = "";
 		first = true;
@@ -137,18 +132,12 @@ WekaSource::myUpdate(MarControlPtr sender)
 		}
 		MRSASSERT(index==attributesIncluded_.size());
 	  
-	  
-	  
-		setctrl("mrs_string/attributeNames", names);
-	  
-		setctrl("mrs_natural/onSamples", 1);
+	  setctrl("mrs_string/attributeNames", names);
+	  setctrl("mrs_natural/onSamples", 1);
 		setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
 		setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
-	  
-		setctrl("mrs_natural/nInstances", (mrs_natural)data_.getRows());
-  
-	  
-	  
+	  setctrl("mrs_natural/nInstances", (mrs_natural)data_.getRows());
+  	  
 		string mode = getctrl("mrs_string/validationMode")->to<mrs_string>();
 		validationMode_ = mode;
 	  
@@ -158,14 +147,20 @@ WekaSource::myUpdate(MarControlPtr sender)
 			currentIndex_ = 0;
 			return;
 		}
-	  
-	  
+		
+		if (validationMode_ == "OutputInstancePair")
+		{
+			validationModeEnum_ = OutputInstancePair;
+			MarControlAccessor acc(getctrl("mrs_realvec/instanceIndexes"));
+			realvec& instIdxs = acc.to<mrs_realvec>();
+			instIdxs.create(0.0, 1, 2); //init row vector
+			setctrl("mrs_natural/onSamples", 2);
+			return;
+		}
+	  	  
 	  
 		char *cp = strtok((char *)mode.c_str(), ",");
-		MRSASSERT(cp!=NULL);
-	  
-	  
-	  
+		MRSASSERT(cp!=NULL);	  
 		if(strcmp(cp ,"kFold")==0)
 		{//Validation mode is Folding, now extract the fold count.
 			data_.Shuffle();
@@ -277,22 +272,19 @@ void WekaSource::myProcess(realvec& in,realvec &out)
 		case PercentageSplit:
 			handlePercentageSplit(trainMode, out);
 			break;
-      
+		case OutputInstancePair:
+			handleInstancePair(out);
+			break;
 		default:
-			
 			handleDefault(trainMode, out);
-			
     }//switch
-
-  
-
 }//myProcess
 
 
 void 
 WekaSource::handleDefault(bool trainMode, realvec &out)
 {
-	// FIXME Unused parameter
+	//FIXME: Unused parameter
 	(void) trainMode;
 
 	vector<mrs_real> *row = NULL;
@@ -305,8 +297,41 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
 	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
     {
 		out(ii, 0) = row->at(ii);
-		this->updctrl("mrs_string/currentFilename", fname);
+		this->updctrl("mrs_string/currentFilename", fname); //???: why are we always updating this control to fname?? (which does not change inside the for loop...)
     }
+}
+
+void
+WekaSource::handleInstancePair(realvec& out)
+{
+	const realvec& instIdxs = getctrl("mrs_realvec/instanceIndexes")->to<mrs_realvec>();
+	
+	mrs_natural i = (mrs_natural)instIdxs(0);
+	mrs_natural j = (mrs_natural)instIdxs(1);
+		
+	if(i >= (mrs_natural)data_.size() || j >= (mrs_natural)data_.size())
+	{
+		//this->updctrl("mrs_bool/done", true); //!!!: done?
+		MRSWARN("WekaSource::handlePair - out of bound file indexes!");
+		return;
+	}
+			
+	vector<mrs_real> *rowi = NULL;
+	vector<mrs_real> *rowj = NULL;
+	
+	string fnamei = data_.GetFilename(i);
+	string fnamej = data_.GetFilename(j);
+	
+	rowi = data_.at(i);
+	rowj = data_.at(j);
+	
+	for(mrs_natural ii=0; ii<(mrs_natural)rowi->size(); ii++)
+	{
+		out(ii, 0) = rowi->at(ii);
+		out(ii, 1) = rowj->at(ii);
+	}
+	this->updctrl("mrs_string/currentFilename", fnamei+"_"+fnamej); 
+																	
 }
 
 void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)

@@ -50,6 +50,11 @@ namespace Marsyas
 		MarControlPtr ctrl_covMatrix_;
 		MarControlPtr ctrl_calcCovMatrix_;
 		MarControlPtr ctrl_normalize_;
+		
+		MarControlPtr ctrl_mode_;
+		MarControlPtr ctrl_instanceIndexes_;
+		MarControlPtr ctrl_nInstances_;
+		MarControlPtr ctrl_done_;
 
     void addControls();
     void myUpdate(MarControlPtr sender);
@@ -60,6 +65,11 @@ namespace Marsyas
 			fixedStdDev = 1,
 			diagCovMatrix = 2,
 			fullCovMatrix = 3
+		};
+		
+		enum mode {
+			outputDistanceMatrix = 0,
+			outputPairDistance = 1
 		};
     
 		SelfSimilarityMatrix(std::string name);

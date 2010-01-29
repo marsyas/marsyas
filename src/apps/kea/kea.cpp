@@ -58,7 +58,7 @@ printHelp(string progName)
 
 
 void 
-distance_matrix() 
+distance_matrix_MIREX() 
 {
   cout << "Distance matrix calculation using " << wekafname_ << endl;
 
@@ -79,7 +79,7 @@ distance_matrix()
   MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
   dmatrix->addMarSystem(mng.create("Metric", "dmetric"));
   dmatrix->updctrl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
-  dmatrix->updctrl("mrs_string/normalize", "MinMax");
+  //dmatrix->updctrl("mrs_string/normalize", "MinMax");
   net->addMarSystem(accum);
   net->addMarSystem(dmatrix);
 
@@ -87,51 +87,88 @@ distance_matrix()
 
   ofstream oss;
   oss.open(distancematrix_.c_str());
-
   
   oss << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
 
-  Collection l;
+  //lmartins ???: what is this collection for?! 
+	Collection l;
   l.read(inputdir_ + predictcollectionfname_);
-
-
   for (int i=1; i <= l.size(); i++) 
-    {
-      oss << i << "\t" << l.entry(i-1) << endl;
-    }
-
-
+	{
+		oss << i << "\t" << l.entry(i-1) << endl;
+	}
+	
 
   oss << "Q/R";
   const mrs_realvec& dmx = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-
-
-
-
+	
   for (int i=1; i <= nInstances; i++) 
-    {
-      oss << "\t" << i;
-    }
+	{
+		oss << "\t" << i;
+	}
   oss << endl;
-
+	
   for (int i=1; i <= nInstances; i++) 
-    {
-      oss << i;
-      for (int j=0; j < nInstances; j++)
-	oss <<"\t" << dmx(i-1, j);
-      oss << endl;
-    }
+	{
+		oss << i;
+		for (int j=0; j < nInstances; j++)
+			oss <<"\t" << dmx(i-1, j);
+		oss << endl;
+	}
+	
+  oss << endl;	
+}
 
-
-  oss << endl;
-
-
-
-
-    
-
-
-
+void 
+distance_matrix() 
+{
+  cout << "Distance matrix calculation using " << wekafname_ << endl;
+	
+  wekafname_  = inputdir_ + wekafname_;
+	
+  MarSystemManager mng; 
+	
+  MarSystem* net = mng.create("Series", "net");
+	
+  MarSystem* wsrc = mng.create("WekaSource", "wsrc");
+  net->addMarSystem(wsrc);
+	//!!!: mode control
+	net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "OutputInstancePair");
+  net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+	
+	
+	MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
+  dmatrix->addMarSystem(mng.create("Metric", "dmetric"));
+  dmatrix->updctrl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
+	//!!!: lmartins: normalization can only be applied when we have all feature vectors in memory...
+	//... which is what we are trying to avoid here (having big realvecs in memory)...
+  //dmatrix->updctrl("mrs_string/normalize", "MinMax");
+  net->addMarSystem(dmatrix);
+	//!!!: mode control
+	net->updctrl("SelfSimilarityMatrix/dmatrix/mrs_natural/mode", 1); //FIXME: replace use of enum for strings?
+  
+	//link controls between WekaSource and SelfSimilarityMatrix
+	net->linkControl("SelfSimilarityMatrix/dmatrix/mrs_natural/nInstances", 
+									 "WekaSource/wsrc/mrs_natural/nInstances");
+	net->linkControl("WekaSource/wsrc/mrs_realvec/instanceIndexes",
+									 "SelfSimilarityMatrix/dmatrix/mrs_realvec/instanceIndexes");
+	
+	ofstream oss;
+	oss.open(distancematrix_.c_str());
+	oss << "Marsyas-kea distance matrix" << endl;
+	
+	while(!net->getctrl("SelfSimilarityMatrix/dmatrix/mrs_bool/done")->to<bool>())
+	{
+		const mrs_realvec& idxs = net->getctrl("SelfSimilarityMatrix/dmatrix/mrs_realvec/instanceIndexes")->to<mrs_realvec>();
+		oss << "(" << mrs_natural(idxs(0)) << "," << mrs_natural(idxs(1)) << ") = ";
+		
+		net->tick();
+				
+		const mrs_realvec& value = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		oss << value(0) << endl;
+	}
+	
+  oss << endl;	
 }
 
 
@@ -598,6 +635,8 @@ main(int argc, const char **argv)
 
   if (mode_ == "train") 
     train();
+	if (mode_ == "distance_matrix_MIREX")
+		distance_matrix_MIREX();
   if (mode_ == "distance_matrix") 
     distance_matrix();
   if (mode_ == "pca")

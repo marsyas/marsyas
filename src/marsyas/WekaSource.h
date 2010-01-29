@@ -143,7 +143,8 @@ typedef enum
 	kFoldStratified,
 	kFoldNonStratified,
 	UseTestSet,
-	PercentageSplit
+	PercentageSplit,
+	OutputInstancePair
 }ValidationModeEnum;
 
 class WekaSource : public MarSystem
@@ -206,6 +207,7 @@ private:
 	mrs_natural percentageIndex_;
 
 	void handleDefault(bool trainMode, realvec& out);
+	void handleInstancePair(realvec& out);
 	void handleFoldingNonStratifiedValidation(bool trainMode, realvec &out);
 	void handleFoldingStratifiedValidation(bool trainMode, realvec &out);
 	void handleUseTestSet(bool trainMode, realvec &out);

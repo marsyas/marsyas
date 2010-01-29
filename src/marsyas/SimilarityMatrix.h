@@ -14,7 +14,7 @@ namespace Marsyas
 
      Controls:
      - \b mrs_bool/calcCovMatrix [w] : enables/disables calculation of covariance matrix from input data
-     - \b mrs_realvec/covMatrix  [r] : covariance matrix from input data (if disalbed, will contain an empty realvec)
+     - \b mrs_realvec/covMatrix  [r] : covariance matrix from input data (if disabled, will contain an empty realvec)
      - \b mrs_realvec/sizes      [w] : sizes of each paralleled feature vectors
      - \b mrs_string/normalize   [w] : sets the type of input data normalization to be used: none, MinMax, or MinStd.
 
