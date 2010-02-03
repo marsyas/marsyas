@@ -205,6 +205,7 @@
 #include "BeatReferee.h"
 #include "PhaseLock.h"
 #include "BeatTimesSink.h"
+#include "CrossCorrelation.h"
 //modifyHeader
 
 using namespace std;
@@ -399,6 +400,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("BeatReferee", new BeatReferee("beatreferee"));
 	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
+	registerPrototype("CrossCorrelation",new CrossCorrelation("crossCorrelationpr"));
 	//modifyRegister
 
 	//***************************************************************************************
