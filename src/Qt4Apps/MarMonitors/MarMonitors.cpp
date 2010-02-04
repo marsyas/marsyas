@@ -240,6 +240,7 @@ MarMonitors::tick()
 		out_ = (mycontrols_[probes_[i]])->to<mrs_realvec>();
 
 		graphs[i]->setYMaxMin(out_.maxval(), out_.minval());	  
+		
 		out_.normMaxMin();
 		out_ -= 0.5;
 		out_ *= 2.0;

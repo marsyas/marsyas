@@ -139,9 +139,9 @@ Peaker::myProcess(realvec& in, realvec& out)
 				if (peakHarmonics)
 				{
 					twice_ = 2 * maxIndex;
-					half_ = (mrs_natural) (0.5 * maxIndex);
+					half_ = (mrs_natural) (0.5 * maxIndex + 0.5);
 					triple_ = 3 * maxIndex;
-					third_ = (mrs_natural) (0.33 * maxIndex);
+					third_ = (mrs_natural) (0.33 * maxIndex + 0.5);
 					
 					if (twice_ < (peakEnd - peakStart))
 					{

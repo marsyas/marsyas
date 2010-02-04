@@ -62,6 +62,8 @@ private:
 	MarControlPtr	ctrl_octaveCost_;
 	MarControlPtr ctrl_voicingThreshold_;
 	MarControlPtr ctrl_aliasedOutput_;
+	MarControlPtr ctrl_makePositive_;
+	
 
   virtual void addControls();
 	void myUpdate(MarControlPtr sender);

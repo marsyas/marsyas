@@ -720,26 +720,34 @@ Marx2DGraph::mousePressEvent(QMouseEvent* me)
   display = true;
 
   if (me->button() == Qt::LeftButton) {
-    dsamplestring = "x = ";
-    dvaluestring  = "y = ";
+	  dsamplestring = "x = ";
+	  dvaluestring  = "y = ";
+	  
+	  if (dsample - floor(dsample) > .5) { dsample = ceil(dsample);}
+	  else { dsample = floor(dsample); }
+	  dvalue  = (*buffer)((int)dsample); 
 
-    if (dsample - floor(dsample) > .5) { dsample = ceil(dsample);}
-    else { dsample = floor(dsample); }
-    dvalue  = (*buffer)((int)dsample); 
+
+	  dvalue *= 0.5;
+	  dvalue += 0.5;
+	  dvalue *= (ymaxval - yminval);
+	  dvalue += yminval;
+
+	  
   }
   else if (me->button() == Qt::RightButton) {
-    dsamplestring = "x = ";
-    dvaluestring  = "y = ";
-
-    dvalue  = (mousey - gheight/2. - ypos - yaxisoffset)*-2/gheight;
+	  dsamplestring = "x = ";
+	  dvaluestring  = "y = ";
+	  
+	  dvalue  = (mousey - gheight/2. - ypos - yaxisoffset)*-2/gheight;
   }
-
+  
   ostringstream ds, dv;
   ds << setprecision(4) << dsample;
   dsamplestring.append( ds.str() );
   dv << setprecision(4) << dvalue;
   dvaluestring.append( dv.str() );
-
+  
   update();
 }
 

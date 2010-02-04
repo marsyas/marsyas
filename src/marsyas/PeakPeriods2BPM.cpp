@@ -23,6 +23,7 @@ using namespace Marsyas;
 
 PeakPeriods2BPM::PeakPeriods2BPM(string name):MarSystem("PeakPeriods2BPM",name)
 {
+	addControls();
 }
 
 
@@ -31,8 +32,11 @@ PeakPeriods2BPM::~PeakPeriods2BPM()
 }
 
 
-
-
+void
+PeakPeriods2BPM::addControls()
+{
+	addctrl("mrs_real/factor", 1.0);
+}
 
 MarSystem* 
 PeakPeriods2BPM::clone() const 
@@ -58,14 +62,16 @@ void
 PeakPeriods2BPM::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
-      
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_/2; t++)
-      {
-		  out(o,2*t) = in(o,2*t);
-		  out(o,2*t+1) = (mrs_real)(srate_ * 60.0 / in(o, 2*t+1));
-      }
-  
+	factor_ = getctrl("mrs_real/factor")->to<mrs_real>();
+    
+	for (o=0; o < inObservations_; o++)
+		for (t = 0; t < inSamples_/2; t++)
+		{
+			out(o,2*t) = in(o,2*t);
+			// out(o,2*t+1) = (mrs_real)(srate_ * 60.0 / in(o, 2*t+1));
+			out(o,2*t+1) = (mrs_real)(srate_ * 60.0 * factor_ / in(o, 2*t+1));
+		}
+	
 }
 
 

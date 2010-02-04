@@ -629,9 +629,9 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("Gain", "histogain"));
 	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
 
+	
 
-
-		     
+	
 
 	// update the controls
 	// input filename with hopSize/winSize
@@ -652,20 +652,21 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);
 	total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
 
-
+	total->updctrl("PeakPeriods2BPM/p2bpm/mrs_real/factor", 2.0);
+	
 	// wavelt filterbank envelope extraction controls
 	total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
 	total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
 	mrs_natural factor = 32;
 	total->updctrl("DownSampler/ds/mrs_natural/factor", factor);
-
-
+	total->updctrl("AutoCorrelation/acr/mrs_bool/makePositive", true);
+	
 	// Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
 	mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
 
 
-	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
-							(mrs_natural)(srate * 60.0 / (factor*66.0))) / (pkinS * 1.0);
+	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor * 60.0)) -
+							(mrs_natural)(srate * 60.0 / (factor * 64.0))) / (pkinS * 1.0);
 
 	
 
@@ -673,18 +674,22 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
 
 	
-
-
+	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
+	total->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
+	
+	
+	total->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
+	
 	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
 	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
 	total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
 	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
 //	total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
-	total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+	// total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
 	
 
 	total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
-	total->updctrl("Histogram/histo/mrs_natural/endBin", 180);
+	total->updctrl("Histogram/histo/mrs_natural/endBin", 360);
 
 
 
@@ -704,7 +709,7 @@ tempo_histoSumBands(string sfName, string label, string resName)
 
 
 
-	mrs_natural bin;
+	mrs_real bin;
 	mrs_natural onSamples;
 
 	int numPlayed =0;
@@ -713,7 +718,7 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	mrs_natural repeatId = 1;
 
 	// vector of bpm estimate used to calculate median
-	vector<int> bpms;
+	vector<mrs_real> bpms;
 	onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
 	ofstream ofs;
@@ -726,7 +731,7 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
 		total->process(iwin, estimate);
-		bin = (mrs_natural) estimate(1);
+		bin = (estimate(1)/2.0);
 		bpms.push_back(bin);
     }
   
@@ -738,11 +743,14 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	float diff1 = fabs(predicted_tempo - ground_truth_tempo);
 	float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
 	float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+	float diff4 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	float diff5 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	
 
-	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << endl;
+	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
 	if (diff1 <= 1.0)
 		correct_predictions++;
-	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0))
+	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0)||(diff4 <= 1.0)||(diff5 <= 1.0))
 		correct_harmonic_predictions++;
 	else 
     {

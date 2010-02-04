@@ -88,7 +88,7 @@ Histogram::myProcess(realvec& in, realvec& out)
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_/2; t++)
 	{
-		bin = (mrs_natural)in(o,2*t+1);
+		bin = (mrs_natural)(in(o,2*t+1)+0.5);
 		amp = in(o,2*t);
 		
 		

@@ -43,6 +43,7 @@ AutoCorrelation::AutoCorrelation(const AutoCorrelation& a):MarSystem(a)
 	ctrl_octaveCost_ = getctrl("mrs_real/octaveCost");
 	ctrl_voicingThreshold_ = getctrl("mrs_real/voicingThreshold");
 	ctrl_aliasedOutput_ = getctrl("mrs_bool/aliasedOutput");
+	ctrl_makePositive_ = getctrl("mrs_bool/makePositive");
 }
 
 void
@@ -53,6 +54,7 @@ AutoCorrelation::addControls()
 	addctrl("mrs_real/octaveCost", 0.0, ctrl_octaveCost_);
 	addctrl("mrs_real/voicingThreshold", 0.1, ctrl_voicingThreshold_);
 	addctrl("mrs_bool/aliasedOutput", false, ctrl_aliasedOutput_);
+	addctrl("mrs_bool/makePositive", false, ctrl_makePositive_);
 	
 	ctrl_normalize_->setState(true);
 	ctrl_octaveCost_->setState(true);
@@ -193,6 +195,13 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 			for (t=0; t < onSamples_; t++)  
 				out(o,t) = scratch_(t);
 	}
+
+
+	if (ctrl_makePositive_->to<mrs_bool>())
+	{
+		out -= out.minval();
+	}
+	
 
 	if(octaveCost_) //is there a reference for this octaveCost computation [?]
 	{

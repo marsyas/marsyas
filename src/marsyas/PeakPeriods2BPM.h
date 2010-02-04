@@ -53,6 +53,8 @@ void addControls();
 public:
   PeakPeriods2BPM(std::string name);
   ~PeakPeriods2BPM();
+
+	
   MarSystem* clone() const;  
   
   void myProcess(realvec& in, realvec& out);
