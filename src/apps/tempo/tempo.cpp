@@ -614,13 +614,6 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
 	total->addMarSystem(mng.create("OnePole", "lpf"));
 	total->addMarSystem(mng.create("Norm", "norm"));
-	{
-		// Extra gain added for compensating the cleanup of the Norm Marsystem,
-		// which used a 0.05 internal gain for some unknown reason.
-		// \todo is this weird gain factor actually required?
-		total->addMarSystem(mng.create("Gain", "normGain"));
-		total->updctrl("Gain/normGain/mrs_real/gain", 0.05);
-	}
 
 	// implicit fanin
 	total->addMarSystem(mng.create("Sum", "sum"));
@@ -637,7 +630,7 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
 
 
-	total->updctrl("Gain/histogain/mrs_real/gain", 10.0);
+
 		     
 
 	// update the controls
@@ -672,21 +665,23 @@ tempo_histoSumBands(string sfName, string label, string resName)
 
 
 	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
-							(mrs_natural)(srate * 60.0 / (factor*64.0))) / pkinS;
+							(mrs_natural)(srate * 60.0 / (factor*66.0))) / (pkinS * 1.0);
 
+	
 
 	mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
-	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 30.0));
+	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
 
-
+	
 
 
 	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
-	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.75);
+	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
 	total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
 	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
-	total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
-
+//	total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
+	total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+	
 
 	total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
 	total->updctrl("Histogram/histo/mrs_natural/endBin", 180);
@@ -728,29 +723,11 @@ tempo_histoSumBands(string sfName, string label, string resName)
 
 	// total->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	while (repetitions * duration > samplesPlayed)
+	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
 		total->process(iwin, estimate);
-
-		// cout << estimate << endl;
-
-
 		bin = (mrs_natural) estimate(1);
 		bpms.push_back(bin);
-
-		numPlayed++;
-		if (samplesPlayed > repeatId * duration)
-		{
-			total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);
-			repeatId++;
-		}
-		wc ++;
-		samplesPlayed += onSamples;
-		// no duration specified so use all of source input
-		if (!(total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) && (repeatId == 1))
-		{
-			duration = samplesPlayed-onSamples;
-		}
     }
   
 	istringstream iss(label);
@@ -963,7 +940,7 @@ tempo_medianSumBands(string sfName, string label, string resName)
 
   
 
-
+  delete total;
 }
 
 
@@ -1540,6 +1517,8 @@ tempo_bcFilter(string sfName, string resName)
 float 
 refine(string sfName, float predicted_tempo)
 {
+	return predicted_tempo;
+	
 	cout << "Refining tempo for " << sfName << endl;
 
 	predicted_tempo ++;
@@ -2118,7 +2097,8 @@ tempo_ibt(string sfName, string label, string outputTxt)
 	// cout << "Finish!" << endl;
   
   
-  
+	delete IBTsystem;
+	
   
 }
 

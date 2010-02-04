@@ -45,6 +45,8 @@ Peaker::addControls()
 	addctrl("mrs_natural/peakEnd", (mrs_natural)0);
 	addctrl("mrs_natural/interpolation", (mrs_natural)0);
 	addctrl("mrs_real/peakGain", 1.0);
+	addctrl("mrs_bool/peakHarmonics", false);
+	
 }
 
 
@@ -57,7 +59,8 @@ Peaker::myProcess(realvec& in, realvec& out)
 	mrs_real peakSpacing;
 	mrs_real peakStrength;
 	mrs_real peakGain;
-
+	mrs_bool peakHarmonics;
+	
 	mrs_natural peakStart;
 	mrs_natural peakEnd;
 	mrs_natural interpolationMode;
@@ -68,7 +71,8 @@ Peaker::myProcess(realvec& in, realvec& out)
 	peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
 	interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
 	peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
-
+	peakHarmonics = getctrl("mrs_bool/peakHarmonics")->to<mrs_bool>();
+	
 
 	
 	if (peakEnd == 0)
@@ -98,7 +102,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 		mrs_natural maxIndex;
 
 		bool peakFound = false;
-
+		
 		for (t=peakStart+1; t < peakEnd-1; t++)
 		{
 			// peak has to be larger than neighbors 
@@ -123,7 +127,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 				}
 
 				t += (mrs_natural)peakSpacing;
-
+				
 				out(o,maxIndex) = in(o,maxIndex);
 				if(interpolationMode && maxIndex > 0 && maxIndex < inSamples_)
 				{
@@ -131,36 +135,45 @@ Peaker::myProcess(realvec& in, realvec& out)
 					out(o,maxIndex+1) = in(o,maxIndex+1);
 				}
 
-				/* twice_ = 2 * maxIndex;
-				half_ = (mrs_natural) (0.5 * maxIndex);
-				triple_ = 3 * maxIndex;
-				third_ = (mrs_natural) (0.33 * maxIndex);
 
-				if (twice_ < (peakEnd - peakStart))
+				if (peakHarmonics)
 				{
-				out(o, maxIndex) += in(o, twice_);
+					twice_ = 2 * maxIndex;
+					half_ = (mrs_natural) (0.5 * maxIndex);
+					triple_ = 3 * maxIndex;
+					third_ = (mrs_natural) (0.33 * maxIndex);
+					
+					if (twice_ < (peakEnd - peakStart))
+					{
+						out(o, maxIndex) += in(o, twice_);
+						out(o, twice_) = in(o,twice_);
+					}
+					
+					if (half_ < (peakEnd - peakStart))
+					{
+						out(o, maxIndex) += in(o, half_);
+						out(o, half_) = in(o,half_);
+					}
+					
+					if (triple_ < (peakEnd - peakStart))
+					{
+						out(o, maxIndex) += in(o, triple_);
+						out(o, triple_) = in(o,triple_);
+					}
+					
+					if (third_ < (peakEnd - peakStart))
+					{
+						out(o, maxIndex) += in(o, third_);
+						out(o, third_) = in(o,third_);
+					}
 				}
-
-				if (half_ < (peakEnd - peakStart))
-				{
-				out(o, maxIndex) += in(o, half_);
-				}
-
-				if (triple_ < (peakEnd - peakStart))
-				{
-				out(o, maxIndex) += in(o, triple_);
-				}
-
-				if (third_ < (peakEnd - peakStart))
-				{
-				out(o, maxIndex) += in(o, third_);
-				}
-
-				*/ 
+				
 				peakFound = true;
 			}
 		}
 	}
+	
+	
 }
 
 

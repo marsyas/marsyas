@@ -82,57 +82,58 @@ Histogram::myProcess(realvec& in, realvec& out)
 
   mrs_natural bin;
   mrs_real amp;
+  mrs_real sum_amp;
   
   
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_/2; t++)
-      {
-	bin = (mrs_natural)in(o,2*t+1);
-	amp = in(o,2*t);
+	{
+		bin = (mrs_natural)in(o,2*t+1);
+		amp = in(o,2*t);
+		
+		
+		if ((bin < endBin_ - startBin_)&&(bin > 0)) 
+		{
+			out(0,bin) += amp;
+		}
+		
 
+		/* 
+		   mrs_real factor;	    
+		   mrs_natural index;
+		   
+		   index = (mrs_natural) 2 * bin;
+		   factor = 0.25;
+		   if (index < endBin_ - startBin_)
+		   out(0,index) += factor * amp;
+		   
+		   index = (mrs_natural) round(0.5 * bin);
+		   factor = 0.25;
+		   
+		   if (index < endBin_ - startBin_)
+		   out(0,index) += factor * amp;
+		   
+		   
+		   index = 3 * bin;
+		   factor = 0.15;
+		   if (index < endBin_ - startBin_)
+		   out(0,index) += factor * amp;
+		   
+		   
+		   index = (mrs_natural) round(0.33333 * bin);
+		   factor = 0.15;
+		   
+		   if (index < endBin_ - startBin_)
+		   out(0,index) += (factor * amp);
+		   
+		   
+		   }
+		*/ 
+		
 	
-	if ((bin < endBin_ - startBin_)&&(bin > 0)) 
-	  {
-	    out(0,bin) += amp;
-	  }
-	
-
-	/* 
-	   mrs_real factor;	    
-	   mrs_natural index;
-	   
-	   index = (mrs_natural) 2 * bin;
-	   factor = 0.25;
-	   if (index < endBin_ - startBin_)
-	   out(0,index) += factor * amp;
-	   
-	   index = (mrs_natural) round(0.5 * bin);
-	   factor = 0.25;
-	   
-	   if (index < endBin_ - startBin_)
-	   out(0,index) += factor * amp;
-	   
-	   
-	   index = 3 * bin;
-	   factor = 0.15;
-	   if (index < endBin_ - startBin_)
-	   out(0,index) += factor * amp;
-	   
-	   
-	   index = (mrs_natural) round(0.33333 * bin);
-	   factor = 0.15;
-	   
-	   if (index < endBin_ - startBin_)
-	   out(0,index) += (factor * amp);
-	   
-	    	     
-	      }
-	*/ 
-	
-	
-
+		
       }
-
+  
 }
 
 
