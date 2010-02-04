@@ -376,7 +376,7 @@ Marx2DGraph::draw_y_ticks(QPainter *painter)
     if (show_axis_scale) {
       ostringstream ds;
 	  float tinterval;
-	  tinterval = ymaxval-yminval/10.0;
+	  tinterval = (ymaxval-yminval)/10.0;
 	  
       // ds << fixed << setprecision(3) << i * tinterval + buffer->minval();
 	  
