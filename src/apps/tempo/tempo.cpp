@@ -674,7 +674,7 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
 
 	
-	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
+	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 3);
 	total->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
 	
 	
