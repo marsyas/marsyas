@@ -273,8 +273,41 @@ void tempo_medianMultiBands(string sfName, string label, string resName)
 		      
 	// sort bpm estimates for median filtering
 	sort(bpms.begin(), bpms.end());
-	cout << sfName << "\t" << bpms[bpms.size()/2] << endl;
+	
+	istringstream iss(label);
+	float ground_truth_tempo; 
+	iss >> ground_truth_tempo;
+	float predicted_tempo;
+	predicted_tempo = bpms[bpms.size()/2];
+
+	float diff1 = fabs(predicted_tempo - ground_truth_tempo);
+	float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
+	float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+	float diff4 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	float diff5 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	
+
+	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
+	if (diff1 <= 1.0)
+		correct_predictions++;
+	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0)||(diff4 <= 1.0)||(diff5 <= 1.0))
+		correct_harmonic_predictions++;
+	else 
+    {
+		if ((diff1 < diff2)&&(diff1 < diff3))
+			total_differences += diff1;
+		if ((diff2 < diff3)&&(diff1 < diff1))
+			total_differences += diff2;
+		if ((diff3 < diff2)&&(diff3 < diff1))
+			total_differences += diff3;
+		total_errors++;
+    }
   
+	total_instances++;
+
+
+	delete total;
+	
 
 }
 
@@ -920,11 +953,14 @@ tempo_medianSumBands(string sfName, string label, string resName)
 	float diff1 = fabs(predicted_tempo - ground_truth_tempo);
 	float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
 	float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+	float diff4 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	float diff5 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	
 
-	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << endl;
+	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
 	if (diff1 <= 1.0)
 		correct_predictions++;
-	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0))
+	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0)||(diff4 <= 1.0)||(diff5 <= 1.0))
 		correct_harmonic_predictions++;
 	else 
     {
@@ -938,9 +974,6 @@ tempo_medianSumBands(string sfName, string label, string resName)
     }
   
 	total_instances++;
-
-
-
 
 	// Output to file
   
