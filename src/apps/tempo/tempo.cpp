@@ -212,9 +212,9 @@ void tempo_medianMultiBands(string sfName, string label, string resName)
 	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
 							(mrs_natural)(srate * 60.0 / (factor*64.0))) / pkinS;
 	mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
-	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 50.0));
+	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
 	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
-	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.75);
+	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.67);
 	total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
 	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
 	total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
@@ -831,14 +831,22 @@ tempo_medianSumBands(string sfName, string label, string resName)
 	// Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
 	mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
 	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
-							(mrs_natural)(srate * 60.0 / (factor*64.0))) / pkinS;
+							(mrs_natural)(srate * 60.0 / (factor*64.0))) / (pkinS * 1.0);
 	mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
-	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 50.0));
+	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
+
+	total->updctrl("AutoCorrelation/acr/mrs_bool/makePositive", true);
+	
+
 	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
-	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.75);
+	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
 	total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
 	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
 	total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
+	total->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
+
+	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 3);
+	total->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
 
 
 	total->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
@@ -871,7 +879,7 @@ tempo_medianSumBands(string sfName, string label, string resName)
 	ofs << *total << endl;
 	ofs.close();
 
-	while (repetitions * duration > samplesPlayed)
+	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
     {
       
 		total->process(iwin, estimate);
