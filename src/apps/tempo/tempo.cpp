@@ -699,15 +699,15 @@ tempo_histoSumBands(string sfName, string label, string resName)
 
 
 	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor * 60.0)) -
-							(mrs_natural)(srate * 60.0 / (factor * 64.0))) / (pkinS * 1.0);
-
+							(mrs_natural)(srate * 60.0 / (factor * 80.0))) / (pkinS * 1.0);
+	
 	
 
 	mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
 	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
 
 	
-	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 3);
+	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
 	total->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
 	
 	
