@@ -121,6 +121,11 @@ printHelp(string progName)
 	cerr << "panorama        : toy_with Panorama amplitude panning " << endl;
 	cerr << "parallel        : toy_with Parallel composite " << endl;
 	cerr << "pngwrite        : toy_with png writer " << endl;
+	
+	cerr << "plucked        : toy_with plucked " << endl;
+	cerr << "pluckedBug     : toy_with plucked Bug " << endl;
+	cerr << "pluckedLive    : toy_with plucked Live" << endl;
+	
 	cerr << "stereoFeaturesVisualization : toy_with stereo features visualization" << endl;
 	cerr << "phisem          : toy_with physem" << endl;
 	cerr << "pitch           : toy_with pitch" << endl;
@@ -4364,10 +4369,99 @@ Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 	//}
 }
 
+// Pluck(0,100,1.0,0.5,"Toy_WithPluckedRich0_100hz.wav");
+//Pluck Karplus Strong Model Kastro.cpp output to wavfile
+//mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name
+void 
+toy_with_plucked(string sfName1,string sfName2,string sfName3,string sfName4,string sfName5,string sfName6)
+{
+	cout << "run using mudbox -t plucked <outputFilename> <position> <frequency> <loss> <stretch> <time played>" << endl;
+	string name=sfName1;
+	cout << "output file: " << name << endl;
+	std::istringstream i1(sfName2);
+	
+	double dpos;
+	i1 >> dpos;
+	mrs_real pos=mrs_real(dpos);
+	cout << "position:" << pos << endl;
+	
+	std::istringstream i2(sfName3);
+	double dfre;
+	i2 >> dfre;
+	mrs_real fre=mrs_real(dfre);
+	cout << "frequency:" << fre << endl;
+
+	
+	std::istringstream i3(sfName4);
+	double dloz;
+	
+	i3 >> dloz;
+	mrs_real loz=mrs_real(dloz);
+	cout << "loss:" << loz << endl;
+
+	double dstret;
+	std::istringstream i4(sfName5);
+	i4 >> dstret;
+	mrs_real stret=mrs_real(dstret);
+	cout << "strech:" <<  stret << endl;
+
+	int time_played=400;
+	std::istringstream i5(sfName6);
+	i5 >> time_played;
+	cout << "time played in ticks:" << time_played << endl;
+	
+
+	MarSystemManager mng;
+	MarSystem* series = mng.create("Series", "series");
+	cout<< "series created" << endl;
+	series->addMarSystem(mng.create("Plucked", "src"));
+	series->addMarSystem(mng.create("Gain", "gain"));
+	//series->addMarSystem(mng.create("MixToMono", "mix"));
+	//series->addMarSystem(mng.create("AudioSink", "asink"));
+	series->addMarSystem(mng.create("SoundFileSink", "dest"));
+
+	cout<< "net designed" << endl;
+
+	series->updctrl("Gain/gain/mrs_real/gain", 1.0);
+	series->updctrl("SoundFileSink/dest/mrs_natural/nChannels", 
+		series->getctrl("Plucked/src/mrs_natural/nChannels"));
+	//set input sample rate
+	series->updctrl("mrs_real/israte", 
+		series->getctrl("Plucked/src/mrs_real/osrate"));
+	series->updctrl("SoundFileSink/dest/mrs_string/filename",name);
+	series->updctrl("Plucked/src/mrs_real/frequency",fre);
+	series->updctrl("Plucked/src/mrs_real/pluckpos",pos);
+	series->updctrl("Plucked/src/mrs_real/loss",loz);
+	series->updctrl("Plucked/src/mrs_real/stretch",stret);
+
+	series->updctrl("mrs_natural/inSamples", 512);
+	//cout << (*series) << endl;
+
+	//realvec in(series->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
+	//	series->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+	//realvec out(series->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
+	//	series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+	mrs_natural t=0;
+
+	for (t = 0; t < time_played ; t++)
+	{
+		series->tick();
+		t++;
+	}	      
+
+	//while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	//{
+	//  series->tick();
+	//}
+}
+
+
 // PluckLive(0,100,1.0,0.5);
 //Pluck Karplus Strong Model Plucked.cpp outputs to DAC
 void PluckLive(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret)
 {
+
 
 
 	MarSystemManager mng;
@@ -4432,6 +4526,217 @@ void PluckLive(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret)
 	//  series->tick();
 	//}
 
+
+}
+
+
+// PluckLive(0,100,1.0,0.5);
+//Pluck Karplus Strong Model Plucked.cpp outputs to DAC
+void toy_with_pluckedLive(string sfName2,string sfName3,string sfName4,string sfName5,string sfName6)
+{
+
+	std::istringstream i1(sfName2);
+	
+	double dpos;
+	i1 >> dpos;
+	mrs_real pos=mrs_real(dpos);
+	cout << "position:" << pos << endl;
+	
+	std::istringstream i2(sfName3);
+	double dfre;
+	i2 >> dfre;
+	mrs_real fre=mrs_real(dfre);
+	cout << "frequency:" << fre << endl;
+
+	
+	std::istringstream i3(sfName4);
+	double dloz;
+	
+	i3 >> dloz;
+	mrs_real loz=mrs_real(dloz);
+	cout << "loss:" << loz << endl;
+
+	double dstret;
+	std::istringstream i4(sfName5);
+	i4 >> dstret;
+	mrs_real stret=mrs_real(dstret);
+	cout << "strech:" <<  stret << endl;
+
+	int samrate=400;
+	std::istringstream i5(sfName6);
+	i5 >> samrate;
+	cout << "samplingrate:" << samrate << endl;
+
+	MarSystemManager mng;
+
+	MarSystem* series = mng.create("Series", "series");
+	MarSystem* fan=mng.create("Fanout","fan");
+	
+
+	MarSystem* intSeries1 = mng.create("Series", "intSeries1");
+	MarSystem* intSeries2 = mng.create("Series", "intSeries2");
+
+
+	intSeries1->addMarSystem(mng.create("Plucked", "src"));
+	intSeries1->addMarSystem(mng.create("ADSR", "adsr1"));
+
+	intSeries2->addMarSystem(mng.create("Plucked", "src2"));
+	intSeries2->addMarSystem(mng.create("ADSR", "adsr2"));
+
+	fan->addMarSystem(intSeries1);
+	fan->addMarSystem(intSeries2);
+
+	series->addMarSystem(fan);
+	series->addMarSystem(mng.create("Selector","sel"));
+	series->addMarSystem(mng.create("MixToMono", "mix"));
+	series->addMarSystem(mng.create("AudioSink", "dest"));
+
+
+
+
+
+	series->updControl("AudioSink/dest/mrs_natural/nChannels", 
+		series->getControl("Plucked/src/mrs_natural/nChannels"));
+
+
+	//	//addctrl("mrs_real/aRate", 0.001);//attack rate 
+	//addctrl("mrs_real/aTime", 0.2);//attack time 
+	//addctrl("mrs_real/aTarget", 1.0);//attack target 
+	////addctrl("mrs_real/dRate", 0.001);//decay rate 
+	//addctrl("mrs_real/dTime", 0.1);//decay time
+	//addctrl("mrs_real/susLevel", 0.85);//sustain level 
+	////addctrl("mrs_real/rRate", 0.001);//release rate
+	//addctrl("mrs_real/rTime", 0.2);//release time
+
+
+	//double dRate=0.001;       //#decay rate -> computed from dTime : Rate_ = 1.0 / (Time_ * sampleRate_);
+	//double rRate=0.001;       // #release rate -> computed from dTime : Rate_ = 1.0 / (Time_ * sampleRate_);
+	double aTime=0.02;         //#attack time 
+	double aTarget=1.0;      // #attack target 
+	double dTime=0.03;         //#decay time
+	double susLevel=0.75;    // #sustain level 
+	double rTime=0.9;  
+
+	series->updControl("Fanout/fan/Series/intSeries1/Plucked/src/mrs_real/frequency",fre);
+	series->updControl("Fanout/fan/Series/intSeries1/Plucked/src/mrs_real/pluckpos",pos);
+	series->updControl("Fanout/fan/Series/intSeries1/Plucked/src/mrs_real/loss",loz);
+	series->updControl("Fanout/fan/Series/intSeries1/Plucked/src/mrs_real/stretch",stret);
+	cout << "4 times" << endl;
+
+	series->updControl("Fanout/fan/Series/intSeries1/ADSR/adsr1/mrs_real/aTime", aTime);         //#attack time 
+	series->updControl("Fanout/fan/Series/intSeries1/ADSR/adsr1/mrs_real/aTarget", aTarget);      // #attack target 
+	series->updControl("Fanout/fan/Series/intSeries1/ADSR/adsr1/mrs_real/dTime", dTime);         //#decay time
+	series->updControl("Fanout/fan/Series/intSeries1/ADSR/adsr1/mrs_real/susLevel", susLevel);    // #sustain level 
+	series->updControl("Fanout/fan/Series/intSeries1/ADSR/adsr1/mrs_real/rTime", rTime);        // #release time
+	
+	//series->updControl("Fanout/fan/Series/intSeries1/Plucked/src/mrs_real/nton",1.0);
+	series->updControl("Fanout/fan/Series/intSeries1/ADSR/adsr1/mrs_natural/state", 1);
+	series->updControl("Fanout/fan/Series/intSeries1/ADSR/adsr1/mrs_real/nton", 1.0);
+
+
+	series->updControl("Fanout/fan/Series/intSeries2/Plucked/src2/mrs_real/frequency",440.0);
+	series->updControl("Fanout/fan/Series/intSeries2/Plucked/src2/mrs_real/pluckpos",pos);
+	series->updControl("Fanout/fan/Series/intSeries2/Plucked/src2/mrs_real/loss",loz);
+	series->updControl("Fanout/fan/Series/intSeries2/Plucked/src2/mrs_real/stretch",stret);
+	cout << "4 times" << endl;
+
+	series->updControl("Fanout/fan/Series/intSeries2/ADSR/adsr2/mrs_real/aTime", aTime);         //#attack time 
+	series->updControl("Fanout/fan/Series/intSeries2/ADSR/adsr2/mrs_real/aTarget", aTarget);      // #attack target 
+	series->updControl("Fanout/fan/Series/intSeries2/ADSR/adsr2/mrs_real/dTime", dTime);         //#decay time
+	series->updControl("Fanout/fan/Series/intSeries2/ADSR/adsr2/mrs_real/susLevel", susLevel);    // #sustain level 
+	series->updControl("Fanout/fan/Series/intSeries2/ADSR/adsr2/mrs_real/rTime", rTime);        // #release time
+	series->updControl("Fanout/fan/Series/intSeries2/ADSR/adsr2/mrs_natural/state", 1);
+	series->updControl("Fanout/fan/Series/intSeries2/ADSR/adsr2/mrs_real/nton", 1.0);
+
+
+	series->updControl("mrs_natural/inSamples", samrate);
+	series->updControl("AudioSink/dest/mrs_bool/initAudio",true);
+	//series->updControl("Selector/sel/mrs_natural/disable",1);
+	
+
+	int t=0;
+	for (t = 0; t < 300; t++)
+	{
+		series->tick();
+		//series->updControl("Fanout/fan/Series/intSeries1/Plucked/src/mrs_real/loss",0.0);
+		cout << t << endl;
+		if (t == 50)
+		{
+			series->updControl("Selector/sel/mrs_natural/disable",0);
+		}
+	}	      
+
+
+
+
+
+	//while (series->getctrl("SoundFileSource/src/mrs_bool/notEmpty")->to<mrs_bool>())
+	//{
+	//  series->tick();
+	//}
+
+
+}
+
+// Example that demonstrates the features of the Plucked Marsystem and should further bug vs feature discussion
+//Pluck Karplus Strong Model Plucked.cpp outputs to DAC
+void toy_with_pluckedBug()
+{
+	
+
+	MarSystemManager mng;
+
+	MarSystem* series = mng.create("Series", "series");
+	MarSystem* fan=mng.create("Fanout","fan");
+	MarSystem* internSeries = mng.create("Series", "internSeries");
+	MarSystem* internSeries2 = mng.create("Series", "internSeries2");
+
+	internSeries->addMarSystem(mng.create("Plucked", "src"));
+	//################ code starts acting strange as soon as a second plucked is in play
+	internSeries2->addMarSystem(mng.create("Plucked", "src2"));
+
+	fan->addMarSystem(internSeries);
+	fan->addMarSystem(internSeries2);
+	series->addMarSystem(fan);
+	series->addMarSystem(mng.create("Selector","sel"));
+	series->addMarSystem(mng.create("MixToMono", "mix"));
+	series->addMarSystem(mng.create("AudioSink", "dest"));
+
+	series->updControl("AudioSink/dest/mrs_natural/nChannels", 
+		series->getControl("Plucked/src/mrs_natural/nChannels"));
+
+
+	mrs_real pos=mrs_real(1.0);
+	mrs_real fre=mrs_real(440.0);
+	mrs_real loz=mrs_real(1.0);
+	mrs_real stret=mrs_real(1.0);
+
+	series->updControl("Fanout/fan/Series/internSeries/Plucked/src/mrs_real/frequency",fre);
+	series->updControl("Fanout/fan/Series/internSeries/Plucked/src/mrs_real/pluckpos",pos);
+	series->updControl("Fanout/fan/Series/internSeries/Plucked/src/mrs_real/loss",loz);
+	series->updControl("Fanout/fan/Series/internSeries/Plucked/src/mrs_real/stretch",stret);
+
+	series->updControl("Fanout/fan/Series/internSeries2/Plucked/src2/mrs_real/frequency",(fre+400.0));
+	series->updControl("Fanout/fan/Series/internSeries2/Plucked/src2/mrs_real/pluckpos",pos);
+	series->updControl("Fanout/fan/Series/internSeries2/Plucked/src2/mrs_real/loss",loz);
+	series->updControl("Fanout/fan/Series/internSeries2/Plucked/src2/mrs_real/stretch",stret);
+
+
+	series->updControl("AudioSink/dest/mrs_bool/initAudio",true);
+	
+
+	int t=0;
+	for (t = 0; t < 300; t++)
+	{
+		series->tick();
+		cout << t << endl;
+		if (t == 50)
+		{
+			//this is when strange things happen
+			
+			series->updControl("Selector/sel/mrs_natural/disable",0);
+		}
+	}	      
 
 }
 
@@ -6434,11 +6739,23 @@ main(int argc, const char **argv)
 
 	string fname0 = EMPTYSTRING;
 	string fname1 = EMPTYSTRING;
+	string fname2 = EMPTYSTRING;
+	string fname3 = EMPTYSTRING;
+	string fname4 = EMPTYSTRING;
+	string fname5 = EMPTYSTRING;
 
 	if (soundfiles.size() > 0)
 		fname0 = soundfiles[0];
 	if (soundfiles.size() > 1)  
 		fname1 = soundfiles[1];
+	if (soundfiles.size() > 2)
+		fname2 = soundfiles[2];
+	if (soundfiles.size() > 3)  
+		fname3 = soundfiles[3];
+	if (soundfiles.size() > 4)
+		fname4 = soundfiles[4];
+	if (soundfiles.size() > 5)
+		fname5 = soundfiles[5];
 
 	cout << "Marsyas toy_with name = " << toy_withName << endl;
 	cout << "fname0 = " << fname0 << endl;
@@ -6516,7 +6833,13 @@ main(int argc, const char **argv)
 	else if (toy_withName == "phisem")
 		toy_phisem();
 	else if (toy_withName == "pitch")
-		toy_with_pitch(fname0);
+		toy_with_pitch(fname0);	
+	else if (toy_withName == "plucked")
+		toy_with_plucked(fname0,fname1,fname2,fname3,fname4,fname5);
+	else if (toy_withName == "pluckedLive")
+		toy_with_pluckedLive(fname0,fname1,fname2,fname3,fname4);
+	else if (toy_withName == "pluckedBug")
+		toy_with_pluckedBug();
 	else if (toy_withName == "power")
 		toy_with_power(fname0);
 	else if (toy_withName == "probe")
