@@ -674,13 +674,13 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->updctrl("mrs_natural/inSamples", hopSize);
 	total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);
 	total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
-	total->updctrl("DownSampler/dsr1/mrs_natural/factor", 2);
+	total->updctrl("DownSampler/dsr1/mrs_natural/factor", 4);
 	total->updctrl("PeakPeriods2BPM/p2bpm/mrs_real/factor", 2.0);
 	
 	// wavelt filterbank envelope extraction controls
 	total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
 	total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
-	mrs_natural factor = 16;
+	mrs_natural factor = 8;
 	total->updctrl("DownSampler/ds/mrs_natural/factor", factor);
 	factor = 32;
 	total->updctrl("AutoCorrelation/acr/mrs_bool/makePositive", false);

@@ -96,8 +96,8 @@ Histogram::myProcess(realvec& in, realvec& out)
 		if ((bin < endBin_ - startBin_)&&(bin > 1)) 
 		{
 			out(0,bin) += amp;
-			out(0,bin) += 0.5 * out(0, bin-1);
-			out(0,bin) += 0.5 * out(0, bin+1);
+			out(0,bin) += 0.25 * out(0, bin-1);
+			out(0,bin) += 0.25 * out(0, bin+1);
 			
 		}
 		
