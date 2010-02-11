@@ -65,6 +65,8 @@ MarMonitors::initNetwork(QString pluginName)
 		ifstream pluginStream(pluginName.toStdString().c_str());
 		pnet_ = mng.getMarSystem(pluginStream);
       
+		pnet_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
 		if (pnet_ == 0) 
 		{
 			cout << "Manager does not support system " << endl;
@@ -233,7 +235,7 @@ MarMonitors::setup()
 void 
 MarMonitors::tick()
 {
-
+	pnet_->updctrl("AudioSink/dest/mrs_bool/mute", true);	
 	pnet_->tick();  
 	for (int i = 0; i < graphs.size(); ++i) 
     {
@@ -246,4 +248,8 @@ MarMonitors::tick()
 		out_ *= 2.0;
 		graphs[i]->setBuffer( out_ );
     }
+	// second tick to silence audio 
+	// pnet_->updctrl("AudioSink/dest/mrs_bool/mute", true);
+	// pnet_->tick();
+	
 }

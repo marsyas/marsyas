@@ -231,7 +231,7 @@ AudioSink::localActivate(bool state)
 void 
 AudioSink::myProcess(realvec& in, realvec& out)
 {
-
+	
 //   cout << "AudioSink::myProcess start" << endl;
 	//check MUTE
 	if(ctrl_mute_->isTrue())
@@ -246,13 +246,31 @@ AudioSink::myProcess(realvec& in, realvec& out)
 #ifdef MARSYAS_AUDIOIO
 		if (audio_ != NULL) 
 		{
-			for (t=0; t < rsize_; t++) 
+			for (t=0; t < bufferSize_; t++) 
 			{
 				data_[2*t] = 0.0;
 				data_[2*t+1] = 0.0;
 			}
+			
+			try 
+			{
+				audio_->tickStream();
+			}
+			catch (RtError3 &error) 
+			{
+				error.printMessage();
+			}
+			
+			
+
+
 		}
+
+
+
+		
 #endif 
+		
 		return;
     }
   

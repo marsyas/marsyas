@@ -46,7 +46,8 @@ Peaker::addControls()
 	addctrl("mrs_natural/interpolation", (mrs_natural)0);
 	addctrl("mrs_real/peakGain", 1.0);
 	addctrl("mrs_bool/peakHarmonics", false);
-	
+	addctrl("mrs_bool/rmsNormalize", false);
+	addctrl("mrs_natural/peakNeighbors", 1);
 }
 
 
@@ -60,10 +61,13 @@ Peaker::myProcess(realvec& in, realvec& out)
 	mrs_real peakStrength;
 	mrs_real peakGain;
 	mrs_bool peakHarmonics;
+	mrs_bool rmsNormalize;
 	
 	mrs_natural peakStart;
 	mrs_natural peakEnd;
 	mrs_natural interpolationMode;
+	mrs_natural peakNeighbors;
+	
 
 	peakSpacing = getctrl("mrs_real/peakSpacing")->to<mrs_real>();
 	peakStrength = getctrl("mrs_real/peakStrength")->to<mrs_real>();
@@ -72,6 +76,8 @@ Peaker::myProcess(realvec& in, realvec& out)
 	interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
 	peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
 	peakHarmonics = getctrl("mrs_bool/peakHarmonics")->to<mrs_bool>();
+	rmsNormalize = getctrl("mrs_bool/rmsNormalize")->to<mrs_bool>();
+	peakNeighbors = getctrl("mrs_natural/peakNeighbors")->to<mrs_natural>();
 	
 
 	
@@ -84,6 +90,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 
 	peakStrength = 0.0;
+	
 	
 
 	for (o = 0; o < inObservations_; o++)
@@ -103,19 +110,38 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 		bool peakFound = false;
 		
+		
 		for (t=peakStart+1; t < peakEnd-1; t++)
 		{
-			// peak has to be larger than neighbors 
-			if ((in(o,t-1) <= in(o,t)) 
-				&& (in(o,t+1) <= in(o,t))
-				&& (in(o,t) > 0.0)
-				&& (in(o,t) > (peakStrength * rms_)))
-				
+			peakFound = true;
+			
+			// peak has to be larger than neighbors 			
+			for (int j = 1; j < peakNeighbors; j++)
+			{
+				if (in(o,t-j) >= in(o,t)) 
+				{
+					peakFound = false;
+					break;
+				}
+				if (in(o,t+j) >= in(o,t))
+				{
+					peakFound = false;
+					break;
+				}
+			}
+			
+			if ((in(o,t) <= 0.0) || (in(o,t) <= peakStrength * rms_))
+			{
+				peakFound = false;
+			}
+			
+			if (peakFound) 
 			{
 				// check for another peak in the peakSpacing area
 				max = in(o,t);
 				maxIndex = t;
-
+				
+				
 				for (int j=0; j < (mrs_natural)peakSpacing; j++)
 				{
 					if (t+j < peakEnd-1)
@@ -125,16 +151,32 @@ Peaker::myProcess(realvec& in, realvec& out)
 							maxIndex = t+j;
 						}
 				}
-
+				
 				t += (mrs_natural)peakSpacing;
 				
-				out(o,maxIndex) = in(o,maxIndex);
-				if(interpolationMode && maxIndex > 0 && maxIndex < inSamples_)
+				if (rmsNormalize)
 				{
-					out(o,maxIndex-1) = in(o,maxIndex-1);
-					out(o,maxIndex+1) = in(o,maxIndex+1);
+					out(o,maxIndex) = in(o,maxIndex) / rms_;
+					if(interpolationMode && maxIndex > 0 && maxIndex < inSamples_)
+					{
+						out(o,maxIndex-1) = in(o,maxIndex-1) /rms_;
+						out(o,maxIndex+1) = in(o,maxIndex+1) / rms_;
+					}
 				}
-
+				else
+				{
+					out(o,maxIndex) = in(o,maxIndex);
+					if(interpolationMode && maxIndex > 0 && maxIndex < inSamples_)
+					{
+						out(o,maxIndex-1) = in(o,maxIndex-1);
+						out(o,maxIndex+1) = in(o,maxIndex+1);
+					}
+				}
+				
+			
+				peakNeighbors = 0;
+				rms_ = 1.0;
+				
 
 				if (peakHarmonics)
 				{
@@ -145,35 +187,123 @@ Peaker::myProcess(realvec& in, realvec& out)
 					
 					if (twice_ < (peakEnd - peakStart))
 					{
-						out(o, maxIndex) += in(o, twice_);
-						out(o, twice_) = in(o,twice_);
+						peakFound = true;
+			
+						// peak has to be larger than neighbors 			
+						for (int j = 1; j < peakNeighbors; j++)
+						{
+							if (in(o,twice_-j) >= in(o,twice_)) 
+							{
+								peakFound = false;
+								break;
+							}
+							if (in(o,twice_+j) >= in(o,twice_))
+							{
+								peakFound = false;
+								break;
+							}
+						}
+						
+						
+						if (peakFound)
+						{
+							out(o, maxIndex) += (in(o, twice_)/rms_);
+							out(o, twice_) = in(o,twice_)/rms_ + 0.5 * out(o, maxIndex);
+						}
+						
 					}
 					
 					if (half_ < (peakEnd - peakStart))
 					{
-						out(o, maxIndex) += in(o, half_);
-						out(o, half_) = in(o,half_);
+						peakFound = true;
+						
+						// peak has to be larger than neighbors 			
+						for (int j = 1; j < peakNeighbors; j++)
+						{
+							if (in(o,half_-j) >= in(o,half_)) 
+							{
+								peakFound = false;
+								break;
+							}
+							if (in(o,half_+j) >= in(o,half_))
+							{
+								peakFound = false;
+								break;
+							}
+						}
+						
+						
+						if (peakFound)
+						{
+							out(o, maxIndex) += (in(o, half_)/rms_);
+							out(o, half_) = in(o,half_)/rms_ + 0.5 * out(o, maxIndex);
+						}
+						
 					}
+					
 					
 					if (triple_ < (peakEnd - peakStart))
 					{
-						out(o, maxIndex) += in(o, triple_);
-						out(o, triple_) = in(o,triple_);
+						peakFound = true;
+			
+						// peak has to be larger than neighbors 			
+						for (int j = 1; j < peakNeighbors; j++)
+						{
+							if (in(o,triple_-j) >= in(o,triple_)) 
+							{
+								peakFound = false;
+								break;
+							}
+							if (in(o,triple_+j) >= in(o,triple_))
+							{
+								peakFound = false;
+								break;
+							}
+						}
+						
+						
+						if (peakFound)
+						{
+							out(o, maxIndex) += (in(o, triple_)/rms_);
+							out(o, triple_) = in(o,triple_)/rms_ + 0.5 * out(o, maxIndex);
+						}
+						
 					}
 					
 					if (third_ < (peakEnd - peakStart))
 					{
-						out(o, maxIndex) += in(o, third_);
-						out(o, third_) = in(o,third_);
+						peakFound = true;
+						
+						// peak has to be larger than neighbors 			
+						for (int j = 1; j < peakNeighbors; j++)
+						{
+							if (in(o,third_-j) >= in(o,third_)) 
+							{
+								peakFound = false;
+								break;
+							}
+							if (in(o,third_+j) >= in(o,triple_))
+							{
+								peakFound = false;
+								break;
+							}
+						}
+						
+						
+						if (peakFound)
+						{
+							out(o, maxIndex) += (in(o, third_)/rms_);
+							out(o, third_) = in(o,third_)/rms_ + 0.5 * out(o, maxIndex);
+						}
+						
 					}
 				}
 				
 				peakFound = true;
 			}
+			
 		}
 	}
-	
-	
 }
 
 
