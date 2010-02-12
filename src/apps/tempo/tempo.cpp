@@ -636,6 +636,8 @@ tempo_histoSumBands(string sfName, string label, string resName)
 
 	total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
 	total->addMarSystem(mng.create("OnePole", "lpf"));
+	total->addMarSystem(mng.create("Reverse", "reverse"));
+	total->addMarSystem(mng.create("OnePole", "lpf1"));
 	total->addMarSystem(mng.create("Norm", "norm"));
 
 	// implicit fanin
@@ -685,9 +687,10 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	// wavelt filterbank envelope extraction controls
 	total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
 	total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
-	mrs_natural factor = 4;
+	total->updctrl("OnePole/lpf1/mrs_real/alpha", 0.99f);
+	mrs_natural factor = 2;
 	total->updctrl("DownSampler/ds/mrs_natural/factor", factor);
-	factor = 32;
+	factor = 16;
 	total->updctrl("AutoCorrelation/acr/mrs_bool/makePositive", false);
 	
 	// Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
