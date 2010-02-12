@@ -16,35 +16,35 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "Histogram.h"
+#include "BeatHistogram.h"
 
 using namespace std;
 using namespace Marsyas;
 
 
-Histogram::Histogram(string name):MarSystem("Histogram",name)
+BeatHistogram::BeatHistogram(string name):MarSystem("BeatHistogram",name)
 {
 	addControls();
 }
 
 
-Histogram::~Histogram()
+BeatHistogram::~BeatHistogram()
 {
 }
 
 
 MarSystem* 
-Histogram::clone() const 
+BeatHistogram::clone() const 
 {
-  return new Histogram(*this);
+  return new BeatHistogram(*this);
 }
 
 void 
-Histogram::addControls()
+BeatHistogram::addControls()
 {
   addctrl("mrs_real/gain", 1.0);
   addctrl("mrs_bool/reset", false);
-	setctrlState("mrs_bool/reset", true);
+  setctrlState("mrs_bool/reset", true);
   addctrl("mrs_natural/startBin", 0);
   setctrlState("mrs_natural/startBin", true);
   addctrl("mrs_natural/endBin", 100);
@@ -52,11 +52,11 @@ Histogram::addControls()
 }
 
 void
-Histogram::myUpdate(MarControlPtr sender)
+BeatHistogram::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  MRSDIAG("Histogram.cpp - Histogram:myUpdate");
-
+  MRSDIAG("BeatHistogram.cpp - BeatHistogram:myUpdate");
+  
   startBin_ = getctrl("mrs_natural/startBin")->to<mrs_natural>();
   endBin_ = getctrl("mrs_natural/endBin")->to<mrs_natural>();
   reset_ = getctrl("mrs_bool/reset")->to<mrs_bool>();  
@@ -68,8 +68,9 @@ Histogram::myUpdate(MarControlPtr sender)
 
 
 void 
-Histogram::myProcess(realvec& in, realvec& out)
+BeatHistogram::myProcess(realvec& in, realvec& out)
 {
+	
   
   //checkFlow(in,out);
 
@@ -85,57 +86,42 @@ Histogram::myProcess(realvec& in, realvec& out)
   mrs_real sum_amp;
   mrs_real factor; 
   mrs_natural index=0;
+  mrs_real srate = getctrl("mrs_real/israte")->to<mrs_real>();
+  mrs_natural count = 1;
+  mrs_natural prev_bin =0;
   
+  mrs_real sumamp = 0.0;
+  
+
   for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_/2; t++)
-	{
-		bin = (mrs_natural)(in(o,2*t+1)+0.5);
-		amp = in(o,2*t);
-		
-		
-		if ((bin < endBin_ - startBin_)&&(bin > 1)) 
-		{
-			out(0,bin) += amp;
-			/* out(0,bin-1) += 0.5 * amp;
-			out(0,bin-2) += 0.25 * amp;
-			out(0,bin+1) += 0.5 * amp;
-			out(0,bin-2) += 0.25 * amp;
-			*/ 
-			
-			out(0,bin) += 0.1 * out(0, bin-1);
-			out(0,bin) += 0.1 * out(0, bin+1);
-			
-		}
-		 		
-		/* index = (mrs_natural) 2 * bin;
-		factor = 0.25;
-		if ((index < endBin_ - startBin_)&&(index > 0))
-			out(0,index) += factor * amp;
-		
-		
-		
-		index = (mrs_natural) (0.5 * bin + 0.5);
-		factor = 0.25;
-		
-		if ((index < endBin_ - startBin_)&&(index > 0))
-			out(0,index) += factor * amp;
-		
-		index = 3 * bin;
-		factor = 0.15;
-		if ((index < endBin_ - startBin_)&&(index > 0))
-		  out(0,index) += factor * amp;
-		
-		
-		index = (mrs_natural) (0.33333 * bin + 0.5);
-		factor = 0.15;
-		
-		if ((index < endBin_ - startBin_)&&(index > 0))
-		  out(0,index) += (factor * amp);
-		
-		
-		*/ 
-		
-	}
+	  for (t = 1; t < inSamples_; t++)
+	  {
+		  bin = (mrs_natural)(srate * 60.0 / t + 0.5);
+		  amp = in(o,t);
+		  
+		  
+		  if ((bin > 40)&&(bin < endBin_))
+		  {
+			  
+			  if (prev_bin == bin) 
+			  {
+				  sumamp += amp;
+				  count++;
+			  }
+			  
+			  else 
+			  {
+				  sumamp += amp;
+				  out(0,prev_bin) += sumamp / count;
+				  count = 1;
+				  sumamp = 0.0;
+			  }
+			  
+			  prev_bin = bin;	  
+		  }
+		  
+	  }
+  // out.normMaxMin();
   
 }
 

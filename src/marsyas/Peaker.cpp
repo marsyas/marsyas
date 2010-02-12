@@ -174,7 +174,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 				}
 				
 			
-				peakNeighbors = 0;
+				// peakNeighbors = 0;
 				rms_ = 1.0;
 				
 

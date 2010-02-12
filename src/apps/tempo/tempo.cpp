@@ -640,17 +640,22 @@ tempo_histoSumBands(string sfName, string label, string resName)
 
 	// implicit fanin
 	total->addMarSystem(mng.create("Sum", "sum"));
-
-
+	
 	total->addMarSystem(mng.create("DownSampler", "ds"));
+	total->addMarSystem(mng.create("Differentiator", "differ"));
+	// total->addMarSystem(mng.create("Differentiator", "differ1"));
+	
 	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	total->addMarSystem(mng.create("Peaker", "pkr"));
-	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
-	total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
+	// total->addMarSystem(mng.create("Peaker", "pkr"));
+	// total->addMarSystem(mng.create("MaxArgMax", "mxr"));
+	// total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
 
-	total->addMarSystem(mng.create("Histogram", "histo"));
+	total->addMarSystem(mng.create("BeatHistogram", "histo"));
+	total->addMarSystem(mng.create("Peaker", "pkr"));
 	total->addMarSystem(mng.create("Gain", "histogain"));
+
 	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
+
 
 	
 
@@ -674,23 +679,24 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->updctrl("mrs_natural/inSamples", hopSize);
 	total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);
 	total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
-	total->updctrl("DownSampler/dsr1/mrs_natural/factor", 4);
-	total->updctrl("PeakPeriods2BPM/p2bpm/mrs_real/factor", 2.0);
+	total->updctrl("DownSampler/dsr1/mrs_natural/factor", 8);
+	// total->updctrl("PeakPeriods2BPM/p2bpm/mrs_real/factor", 2.0);
 	
 	// wavelt filterbank envelope extraction controls
 	total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
 	total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
-	mrs_natural factor = 8;
+	mrs_natural factor = 4;
 	total->updctrl("DownSampler/ds/mrs_natural/factor", factor);
 	factor = 32;
 	total->updctrl("AutoCorrelation/acr/mrs_bool/makePositive", false);
 	
 	// Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
-	mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
+	// mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
 
 
-	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor * 60.0)) -
-							(mrs_natural)(srate * 60.0 / (factor * 80.0))) / (pkinS * 1.0);
+	// mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor * 60.0)) -
+	// (mrs_natural)(srate * 60.0 / (factor * 80.0))) / (pkinS * 1.0);
+	
 	
 	
 
@@ -698,26 +704,37 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
 
 	
-	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 2);
+	/* total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
+	 */ 
+	total->updctrl("MaxArgMax/mxr1/mrs_natural/nMaximums", 2);
+	/* 
 	total->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
+	*/ 
 	
 	
-	total->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
-	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 30);
+	/* total->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
+	 */ 
+	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
+	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
+	total->updctrl("Peaker/pkr/mrs_natural/peakStart", 50);
+	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 180);
+	
+	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
+	/* 
 	total->updctrl("Peaker/pkr/mrs_bool/rmsNormalize", false);
-	
-	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
+
 	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
 	total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
 	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
-//	total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
+	*/ 
 	total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
-	
-
-	total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
-	total->updctrl("Histogram/histo/mrs_natural/endBin", 360);
 
 
+	// total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
+	// total->updctrl("Histogram/histo/mrs_natural/endBin", 360);
+
+	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
+	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
 
 
 	total->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
@@ -756,12 +773,14 @@ tempo_histoSumBands(string sfName, string label, string resName)
 		pluginName = EMPTYSTRING;
 	}
 
+
 	// total->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	// for (int i=0; i< 400; i++)
     {
 		total->process(iwin, estimate);
-		bin = (estimate(1)/2.0);
+		bin = estimate(1);
 		bpms.push_back(bin);
     }
   
@@ -1138,7 +1157,6 @@ tempo_bcWavelet(string sfName, string resName)
 		samplesPlayed += onSamples;
     }
 
-	cout << "Done with first loop" << endl;
 
 
 
