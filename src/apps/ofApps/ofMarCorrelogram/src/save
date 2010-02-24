@@ -1,0 +1,280 @@
+------------------------------ SoundEngine.cpp ------------------------------
+
+#include "SoundEngine.h"
+
+//--------------------------------------------------------------
+SoundEngine::SoundEngine(string name)
+  : ofxMarsyasNetwork(name)
+{
+  priority	= 2;
+
+  disableAllEvents();
+  ofAddListener(ofEvents.setup, (ofxMSAInteractiveObject*)this, &ofxMSAInteractiveObject::_setup);
+  ofAddListener(ofEvents.draw, (ofxMSAInteractiveObject*)this, &ofxMSAInteractiveObject::_draw);	
+
+  ofSetFrameRate(60); // if vertical sync is off, we can go a bit fast... this caps the framerate at 60fps.
+
+  // autocorrelationRingBuffer.create(AUTOCORRELATION_RING_BUFFER_SIZE,1);
+
+  min_data.create(257,1);
+  max_data.create(257,1);
+
+  for (int i = 0; i < 257; i++) {
+  	min_data(i,0) = 999.9;
+  	max_data(i,0) = -999.9;
+  }
+  counter = 0;
+}
+
+//--------------------------------------------------------------
+void
+SoundEngine::setup() {
+  Marsyas::MarSystem *parallel, *source, *accum;
+  
+  addMarSystem(mng.create("SoundFileSource/src"));
+  addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+  addMarSystem(mng.create("AudioSink", "dest"));
+
+  accum = mng.create("Accumulator", "accum");
+  addMarSystem(accum);
+  accum->addMarSystem(mng.create("Windowing", "ham"));
+  accum->addMarSystem(mng.create("Spectrum", "spk"));
+  accum->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  accum->addMarSystem(mng.create("Memory", "mem"));
+
+
+  addMarSystem(parallel);
+  // parallel = mng.create("Parallel", "parallel");
+
+  // for (int i = 0; i < 257; i++) {
+  // 	parallel->addMarSystem(mng.create("AutoCorrelation", "auto"));
+  // }
+
+  // addMarSystem(mng.create("Gain", "gain"));
+
+  updctrl("SoundFileSource/src/mrs_string/filename", "rutten.wav");
+
+  // updctrl("Memory/mem/mrs_natural/memSize", MEMORY_SIZE);
+  updctrl("Accumulator/accum/mrs_natural/nTimes", MEMORY_SIZE);
+
+  updctrl("mrs_real/israte", 44100.0);
+  updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  run();
+}
+
+//--------------------------------------------------------------
+void
+SoundEngine::update() {
+
+  // data = getctrl("PowerSpectrum/pspk/mrs_realvec/processedData")->to<Marsyas::mrs_realvec>();
+  data = getctrl("mrs_realvec/processedData")->to<Marsyas::mrs_realvec>();
+  cout << data << endl;
+
+  // if (counter % 100 == 0) {
+  // 	for (int x = 0; x < MEMORY_SIZE; x++) {
+  // 	  for (int y = 0; y < 257; y++) {
+  // 		if (data(y,x) > max_data(y)) {
+  // 		  max_data(y) = data(y,x);
+  // 		}
+  // 		if (data(y,x) < min_data(y)) {
+  // 		  min_data(y) = data(y,x);
+  // 		}
+  // 	  }
+  // 	}
+  // }
+  // counter++;
+  // for (int i = 0; i < POWER_SPECTRUM_BUFFER_SIZE; i++) {
+  // 	if (data(i,0) > max_data(i,0)) {
+  // 	  max_data(i,0) = data(i,0);
+  // 	}
+  // 	if (data(i,0) < min_data(i,0)) {
+  // 	  min_data(i,0) = data(i,0);
+  // 	}
+  // }
+
+  // cout << "max_data=" << max_data << "\tmin_data=" << min_data << endl;
+}
+
+//--------------------------------------------------------------
+void
+SoundEngine::draw() {
+
+
+  // // //--------------------------- circles
+  // // //let's draw a circle:
+  // ofFill();		// draw "filled shapes"
+
+  // for (int x = 0; x < MEMORY_SIZE; x++) {
+  // 	for (int y = 0; y < 257; y++) {
+  // 	  // int color = (data(i,0) * (1.0 / max_data)) * 256;
+  // 	  // int color = (data(i,0) * (1.0 / max_data(i,0))) * 256;
+  // 	  // int color = (data(y,x) * 50);
+  // 	  int color = (data(y,x) * (1.0 / max_data(y,0))) * 256;
+  // 	  // cout << "data=" << data(y,x) << " color=" << color << endl;
+  // 	  ofSetColor(color,color,color);
+  // 	  ofRect(x*4,y*4,4,4);
+  // 	}
+  // }
+
+}
+
+
+------------------------------ SoundEngine.cpp ------------------------------
+
+The Marsyas way of doing it:
+
+#include "SoundEngine.h"
+
+//--------------------------------------------------------------
+SoundEngine::SoundEngine(string name)
+  : ofxMarsyasNetwork(name)
+{
+  priority	= 2;
+
+  disableAllEvents();
+  ofAddListener(ofEvents.setup, (ofxMSAInteractiveObject*)this, &ofxMSAInteractiveObject::_setup);
+  ofAddListener(ofEvents.draw, (ofxMSAInteractiveObject*)this, &ofxMSAInteractiveObject::_draw);	
+
+  ofSetFrameRate(60); // if vertical sync is off, we can go a bit fast... this caps the framerate at 60fps.
+
+  // autocorrelationRingBuffer.create(AUTOCORRELATION_RING_BUFFER_SIZE,1);
+
+  min_data.create(257,1);
+  max_data.create(257,1);
+
+  for (int i = 0; i < 257; i++) {
+  	min_data(i,0) = 999.9;
+  	max_data(i,0) = -999.9;
+  }
+  counter = 0;
+}
+
+//--------------------------------------------------------------
+void
+SoundEngine::setup() {
+  Marsyas::MarSystem *parallel, *source, *accum;
+  
+  addMarSystem(mng.create("SoundFileSource/src"));
+  addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+  addMarSystem(mng.create("AudioSink", "dest"));
+  addMarSystem(mng.create("Windowing", "ham"));
+  addMarSystem(mng.create("Spectrum", "spk"));
+  addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  addMarSystem(mng.create("Memory", "mem"));
+
+  parallel = mng.create("Parallel", "parallel");
+  addMarSystem(parallel);
+
+  for (int i = 0; i < 257; i++) {
+  	parallel->addMarSystem(mng.create("AutoCorrelation", "auto"));
+  }
+
+  // addMarSystem(mng.create("Gain", "gain"));
+
+  updctrl("SoundFileSource/src/mrs_string/filename", "rutten.wav");
+
+  updctrl("Memory/mem/mrs_natural/memSize", MEMORY_SIZE);
+  // updctrl("Accumulator/accum/mrs_natural/nTimes", MEMORY_SIZE);
+
+  updctrl("mrs_real/israte", 44100.0);
+  updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  run();
+}
+
+//--------------------------------------------------------------
+void
+SoundEngine::update() {
+
+  // data = getctrl("PowerSpectrum/pspk/mrs_realvec/processedData")->to<Marsyas::mrs_realvec>();
+  data = getctrl("mrs_realvec/processedData")->to<Marsyas::mrs_realvec>();
+  cout << data << endl;
+
+  // if (counter % 100 == 0) {
+  // 	for (int x = 0; x < MEMORY_SIZE; x++) {
+  // 	  for (int y = 0; y < 257; y++) {
+  // 		if (data(y,x) > max_data(y)) {
+  // 		  max_data(y) = data(y,x);
+  // 		}
+  // 		if (data(y,x) < min_data(y)) {
+  // 		  min_data(y) = data(y,x);
+  // 		}
+  // 	  }
+  // 	}
+  // }
+  // counter++;
+  // for (int i = 0; i < POWER_SPECTRUM_BUFFER_SIZE; i++) {
+  // 	if (data(i,0) > max_data(i,0)) {
+  // 	  max_data(i,0) = data(i,0);
+  // 	}
+  // 	if (data(i,0) < min_data(i,0)) {
+  // 	  min_data(i,0) = data(i,0);
+  // 	}
+  // }
+
+  // cout << "max_data=" << max_data << "\tmin_data=" << min_data << endl;
+}
+
+//--------------------------------------------------------------
+void
+SoundEngine::draw() {
+
+
+  // // //--------------------------- circles
+  // // //let's draw a circle:
+  // ofFill();		// draw "filled shapes"
+
+  // for (int x = 0; x < MEMORY_SIZE; x++) {
+  // 	for (int y = 0; y < 257; y++) {
+  // 	  // int color = (data(i,0) * (1.0 / max_data)) * 256;
+  // 	  // int color = (data(i,0) * (1.0 / max_data(i,0))) * 256;
+  // 	  // int color = (data(y,x) * 50);
+  // 	  int color = (data(y,x) * (1.0 / max_data(y,0))) * 256;
+  // 	  // cout << "data=" << data(y,x) << " color=" << color << endl;
+  // 	  ofSetColor(color,color,color);
+  // 	  ofRect(x*4,y*4,4,4);
+  // 	}
+  // }
+
+}
+
+
+------------------------------ SoundEngine.cpp ------------------------------
+
+** Wed Feb 24 2010 - 10:05:16 AM
+   -----------------------------
+
+Before changing it to an accumulator
+
+void
+SoundEngine::setup() {
+  Marsyas::MarSystem *parallel, *source, *accum;
+  
+  addMarSystem(mng.create("SoundFileSource/src"));
+  addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+  addMarSystem(mng.create("AudioSink", "dest"));
+  addMarSystem(mng.create("Windowing", "ham"));
+  addMarSystem(mng.create("Spectrum", "spk"));
+  addMarSystem(mng.create("PowerSpectrum", "pspk"));
+
+  addMarSystem(mng.create("Memory", "mem"));
+
+  // parallel = mng.create("Parallel", "parallel");
+  // addMarSystem(parallel);
+
+  // for (int i = 0; i < POWERSPECTRUM_BUFFER_SIZE; i++) {
+  // 	string name = "auto" + ofToString(i);
+	// parallel->addMarSystem(mng.create("AutoCorrelation", name));
+	addMarSystem(mng.create("AutoCorrelation", "auto"));
+  // }
+
+  updctrl("SoundFileSource/src/mrs_string/filename", "rutten.wav");
+
+  updctrl("Memory/mem/mrs_natural/memSize", MEMORY_SIZE);
+
+  updctrl("mrs_real/israte", 44100.0);
+  updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  run();
+}
