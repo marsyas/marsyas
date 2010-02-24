@@ -33,9 +33,10 @@
 #include "CommandLineOptions.h"
 #ifdef MARSYAS_PNG
 #include "pngwriter.h"
-#endif MARSYAS_PNG 
+#endif 
 
 #include <vector> 
+#include <iomanip>
 
 using namespace std;
 using namespace Marsyas;
@@ -48,12 +49,14 @@ int usageopt;
 int verboseopt;
 int windowSize;
 int hopSize;
+int memorySize;
 mrs_real gain;
 int maxFreq;
 bool waveform;
 int position;
 int ticks;
 bool histogram;
+bool correlogram;
 CommandLineOptions cmd_options;
 
 void 
@@ -91,11 +94,13 @@ printHelp(string progName)
 	cerr << "-w --waveform     : draw a waveform instead of a spectrogram" << endl;
 	cerr << "--ws --windowsize : windows size in samples " << endl;
 	cerr << "--hs --hopsize    : hop size in samples (for spectrogram)" << endl;
+	cerr << "--ms --memorysize : memory size in samples (for correlogram)" << endl;
 	cerr << "-g --gain         : gain for spectrogram (for spectrogram)" << endl;
 	cerr << "--mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
 	cerr << "-p --position     : position to start at in the audio file" << endl;
 	cerr << "-t --ticks        : how many times to tick the network" << endl;
 	cerr << "-hi --histogram   : output a histogram of the values for the spectrogram" << endl;
+	cerr << "-co --correlogram : output a series of .pngs for a correlogram" << endl;
    
 	exit(1);
 }
@@ -109,11 +114,13 @@ initOptions()
 	cmd_options.addBoolOption("waveform", "w", false);
 	cmd_options.addNaturalOption("windowsize", "ws", 512);
 	cmd_options.addNaturalOption("hopsize", "hs", 256);
+	cmd_options.addNaturalOption("memorysize", "ms", 300);
 	cmd_options.addRealOption("gain", "g", 1.5);
 	cmd_options.addNaturalOption("maxfreq", "mf", 22050);
 	cmd_options.addNaturalOption("ticks", "t", -1);
 	cmd_options.addNaturalOption("position", "p", 0);
 	cmd_options.addBoolOption("histogram", "hi", false);
+	cmd_options.addBoolOption("correlogram", "co", false);
 }
 
 
@@ -125,12 +132,14 @@ loadOptions()
 	verboseopt = cmd_options.getBoolOption("verbose");
 	waveform = cmd_options.getBoolOption("waveform");
 	windowSize = cmd_options.getNaturalOption("windowsize");
+	memorySize = cmd_options.getNaturalOption("memorysize");
 	hopSize = cmd_options.getNaturalOption("hopsize");
 	gain = cmd_options.getRealOption("gain");
 	maxFreq = cmd_options.getNaturalOption("maxfreq");
 	position = cmd_options.getNaturalOption("position");
 	ticks = cmd_options.getNaturalOption("ticks");
 	histogram = cmd_options.getBoolOption("histogram");
+	correlogram = cmd_options.getBoolOption("correlogram");
 }
 
 
@@ -492,11 +501,85 @@ void fftHistogram(string inFileName)
 	delete net;
 }
 
+void correlogramPNGs(string inFileName, string outFilePrefix)
+{
+  MarSystemManager mng;
+  MarSystem* net = mng.create("Series", "net");
+
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+  net->addMarSystem(mng.create("AudioSink", "dest"));
+  net->addMarSystem(mng.create("Windowing", "ham"));
+  net->addMarSystem(mng.create("Spectrum", "spk"));
+  net->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  net->addMarSystem(mng.create("Memory", "mem"));
+
+  MarSystem* parallel = mng.create("Parallel", "parallel");
+  net->addMarSystem(parallel);
+
+  int powerSpectrumSize = (windowSize/2)+1;
+  for (int i = 0; i < powerSpectrumSize; i++) {
+	std::stringstream ss;
+	ss << "auto" << i;
+	parallel->addMarSystem(mng.create("AutoCorrelation", ss.str()));
+  }
+
+  net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->setctrl("mrs_natural/inSamples", windowSize);
+  net->updctrl("Memory/mem/mrs_natural/memSize", memorySize);
+
+  net->updctrl("mrs_real/israte", 44100.0);
+  net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+
+  realvec data;
+  
+  int counter = 0;
+  realvec max_data(powerSpectrumSize);
+
+  while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) {
+	cout << "Processing tick " << counter << endl;
+	net->tick();
+	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	// cout << "data" << data << endl;
+
+	// Create the png we are going to write into
+	std::stringstream outFileName;
+	outFileName << outFilePrefix << std::setfill('0') << std::setw(5) << counter << ".png";
+	pngwriter png(int(windowSize),int(powerSpectrumSize),0,outFileName.str().c_str());
+
+	// Find the maximum value of the data
+	max_data.setval(-999.9);
+	for (int x = 0; x < memorySize; x++) {
+	  for (int y = 0; y < powerSpectrumSize; y++) {
+		if (data(y,x) > max_data(y)) {
+		  max_data(y) = data(y,x);
+		}
+	  }
+	}
+
+	// for (int x = 0; x < memorySize; x++) {
+	//   cout << "max_data(" << x << ")" << max_data(x) << endl;
+	// }
+
+	// Plot all the data points
+	for (int x = 0; x < memorySize; x++) {
+	  for (int y = 0; y < powerSpectrumSize; y++) {
+		double color = 1.0 - (double(data(y,x)) * (1.0 / max_data(y)));
+		// cout << "x=" << x << " y=" << y << " data(y,x)=" << data(y,x) << " color=" << color << endl;
+		png.plot(int(x),int(y),color,color,color);
+	  }
+	}
+
+	png.close();
+	counter++;
+  }
+}
+
 
 int
 main(int argc, const char **argv)
 {
-	MRSDIAG("sfplay.cpp - main");
+	MRSDIAG("sound2png.cpp - main");
 
 	string progName = argv[0];  
 	if (argc == 1)
@@ -519,6 +602,11 @@ main(int argc, const char **argv)
 		exit(0);
 	}
 
+	if (correlogram) {
+	  correlogramPNGs(files[0],files[1]);
+	  exit(0);
+	}
+
 	if (files.size() != 2) {
 		cerr << "You must specify two files on the command line." << endl;
 		cerr << "One for the input audio file and one for the output PNG file" << endl;
@@ -537,7 +625,7 @@ main(int argc, const char **argv)
 #else 
 	cout << "sound2png requires Marsyas to be compiled with the WITH_PNG option" << endl; 
 	exit(0);
-#endif MARSYAS_PNG
+#endif 
 
 }
 
