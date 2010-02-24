@@ -1,0 +1,9 @@
+ofxThread
+ofxMarsyas
+ofxMSAInteractiveObject
+ofxSimpleGuiToo
+ofxVectorMath
+ofxXmlSettings
+ofxOpenCv
+ofxFiducialFinder
+
