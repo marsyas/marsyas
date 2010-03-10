@@ -14,7 +14,7 @@ using namespace Marsyas;
 
 Delta::Delta(string name): MarSystem("Delta", name)
 {
-  isComposite_ = true;
+	// isComposite_ = true;
   addControls();
 }
 

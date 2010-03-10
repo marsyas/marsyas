@@ -84,6 +84,9 @@ WekaSource::addControls()
 	
 	//TODO: lmartins: document...
 	addctrl("mrs_realvec/instanceIndexes", realvec());
+
+	addctrl("mrs_bool/normMaxMin", false);
+	
 }
 
 void 
@@ -99,8 +102,12 @@ WekaSource::myUpdate(MarControlPtr sender)
 	  this->updctrl("mrs_bool/done", false);	  
 		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 		attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->to<mrs_string>();
-	  
+	 	
+		mrs_bool normMaxMin = getctrl("mrs_bool/normMaxMin")->to<mrs_bool>();
+		 
 		loadFile(filename_, attributesToInclude_, data_);
+		if (normMaxMin) 
+			data_.NormMaxMin();
 		// data_.Dump("org.txt", classesFound_);
 	  
 		string names;

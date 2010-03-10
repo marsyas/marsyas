@@ -103,6 +103,7 @@
 #include "AccentFilterBank.h"
 #include "Compressor.h"
 #include "Differentiator.h"
+#include "Delta.h"
 #include "Square.h"
 #include "Subtract.h"
 #include "Median.h"
@@ -295,6 +296,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AccentFilterBank", new AccentFilterBank("afb"));
 	registerPrototype("Compressor", new Compressor("compressor"));
 	registerPrototype("Differentiator", new Differentiator("differentiator"));
+	registerPrototype("Delta", new Delta("deltapr"));
 	registerPrototype("Square", new Square("square"));
 	registerPrototype("Subtract", new Subtract("subtract"));
 	registerPrototype("Median", new Median("median"));

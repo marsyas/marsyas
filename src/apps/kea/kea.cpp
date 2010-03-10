@@ -134,6 +134,7 @@ distance_matrix()
   net->addMarSystem(wsrc);
 	//!!!: mode control
 	net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "OutputInstancePair");
+	net->updctrl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
   net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
 	
 	

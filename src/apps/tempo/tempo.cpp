@@ -633,19 +633,22 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	// implicit fanout
 	total->addMarSystem(mng.create("WaveletBands", "wvbnds"));
 
-
+	
 	total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
 	total->addMarSystem(mng.create("OnePole", "lpf"));
 	total->addMarSystem(mng.create("Reverse", "reverse"));
 	total->addMarSystem(mng.create("OnePole", "lpf1"));
 	total->addMarSystem(mng.create("Norm", "norm"));
-
+	
+	
 	// implicit fanin
 	total->addMarSystem(mng.create("Sum", "sum"));
-	
 	total->addMarSystem(mng.create("DownSampler", "ds"));
-	total->addMarSystem(mng.create("Differentiator", "differ"));
-	// total->addMarSystem(mng.create("Differentiator", "differ1"));
+	total->addMarSystem(mng.create("Delta", "delta"));
+	
+		
+
+	//total->addMarSystem(mng.create("Differentiator", "differ1"));
 	
 	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
 	// total->addMarSystem(mng.create("Peaker", "pkr"));
@@ -654,13 +657,12 @@ tempo_histoSumBands(string sfName, string label, string resName)
 
 	total->addMarSystem(mng.create("BeatHistogram", "histo"));
 	total->addMarSystem(mng.create("Peaker", "pkr"));
-	total->addMarSystem(mng.create("Gain", "histogain"));
-
 	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
 
 
 	
 
+	
 	
 
 	// update the controls
