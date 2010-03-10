@@ -70,16 +70,18 @@ distance_matrix_MIREX()
   MarSystem* accum = mng.create("Accumulator", "accum");
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   accum->addMarSystem(wsrc);
+  accum->updctrl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
   accum->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   mrs_natural nInstances = 
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   accum->updctrl("mrs_natural/nTimes", nInstances);
 
   
+  
   MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
   dmatrix->addMarSystem(mng.create("Metric", "dmetric"));
   dmatrix->updctrl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
-  //dmatrix->updctrl("mrs_string/normalize", "MinMax");
+
   net->addMarSystem(accum);
   net->addMarSystem(dmatrix);
 

@@ -51,9 +51,9 @@ WaveletBands::clone() const
 void
 WaveletBands::addControls()
 {
-	addctrl("mrs_natural/nBands", 5);
+	addctrl("mrs_natural/nBands", 6);
 	setctrlState("mrs_natural/nBands", true);
-	addctrl("mrs_natural/startBand", 4);
+	addctrl("mrs_natural/startBand", 3);
 	setctrlState("mrs_natural/startBand", true);
 }
 

@@ -107,7 +107,10 @@ WekaSource::myUpdate(MarControlPtr sender)
 		 
 		loadFile(filename_, attributesToInclude_, data_);
 		if (normMaxMin) 
+		{
 			data_.NormMaxMin();
+		}
+		
 		// data_.Dump("org.txt", classesFound_);
 	  
 		string names;

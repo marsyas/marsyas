@@ -33,10 +33,10 @@ add_subdirectory(MarOscMultiGain)
 add_subdirectory(MarMonitors)
 add_subdirectory(Marx2DGraph)
 add_subdirectory(Marx2DStackedGraphs)
-add_subdirectory(MarCorrelogram)
 
 if (MARSYAS_OPENGL)
 	add_subdirectory(MarSndPeek)
 	add_subdirectory(MarPanning)
+	add_subdirectory(MarCorrelogram)
 endif (MARSYAS_OPENGL)
 
