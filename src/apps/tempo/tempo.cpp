@@ -617,7 +617,6 @@ void
 tempo_histoSumBands(string sfName, string label, string resName)
 {
 	MarSystemManager mng;
-	mrs_natural nChannels;
 	mrs_real srate = 0.0;
 
 
@@ -645,46 +644,22 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("Sum", "sum"));
 	total->addMarSystem(mng.create("DownSampler", "ds"));
 	total->addMarSystem(mng.create("Delta", "delta"));
-	
-		
-
-	//total->addMarSystem(mng.create("Differentiator", "differ1"));
-	
 	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	// total->addMarSystem(mng.create("Peaker", "pkr"));
-	// total->addMarSystem(mng.create("MaxArgMax", "mxr"));
-	// total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
-
 	total->addMarSystem(mng.create("BeatHistogram", "histo"));
 	total->addMarSystem(mng.create("Peaker", "pkr"));
-	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
-
-
-	
-
-	
-	
+	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
 
 	// update the controls
 	// input filename with hopSize/winSize
 	total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-
-	nChannels = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
 	srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
-
-	offset = (mrs_natural) (start * srate * nChannels);
-	duration = (mrs_natural) (length * srate * nChannels);
 
 	mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
 	mrs_natural hopSize = winSize / 8;
 
-
-
 	total->updctrl("mrs_natural/inSamples", hopSize);
-	total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);
 	total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
 	total->updctrl("DownSampler/dsr1/mrs_natural/factor", 8);
-	// total->updctrl("PeakPeriods2BPM/p2bpm/mrs_real/factor", 2.0);
 	
 	// wavelt filterbank envelope extraction controls
 	total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
@@ -693,60 +668,23 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	mrs_natural factor = 2;
 	total->updctrl("DownSampler/ds/mrs_natural/factor", factor);
 	factor = 16;
-	total->updctrl("AutoCorrelation/acr/mrs_bool/makePositive", false);
 	
-	// Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
-	// mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
-
-
-	// mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor * 60.0)) -
-	// (mrs_natural)(srate * 60.0 / (factor * 80.0))) / (pkinS * 1.0);
+	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 2);
 	
-	
-	
-
-	mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
-	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
-
-	
-	/* total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
-	 */ 
-	total->updctrl("MaxArgMax/mxr1/mrs_natural/nMaximums", 2);
-	/* 
-	total->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
-	*/ 
-	
-	
-	/* total->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
-	 */ 
 	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
 	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
 	total->updctrl("Peaker/pkr/mrs_natural/peakStart", 50);
 	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 180);
 	
 	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
-	/* 
-	total->updctrl("Peaker/pkr/mrs_bool/rmsNormalize", false);
-
-	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
-	total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
-	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
-	*/ 
 	total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
-
-
-	// total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
-	// total->updctrl("Histogram/histo/mrs_natural/endBin", 360);
-
+	
 	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
 	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
-
 
 	total->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
 	total->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 	total->linkctrl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
-
-
 
 	// prepare vectors for processing
 	realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
@@ -778,8 +716,6 @@ tempo_histoSumBands(string sfName, string label, string resName)
 		pluginName = EMPTYSTRING;
 	}
 
-
-	// total->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	// for (int i=0; i< 400; i++)
@@ -823,10 +759,11 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
 	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
 	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
-	
-
 	delete total;
 }
+
+
+
 
 void
 tempo_medianSumBands(string sfName, string label, string resName)
@@ -840,71 +777,62 @@ tempo_medianSumBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("SoundFileSource", "src"));
 	total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	total->addMarSystem(mng.create("ShiftInput", "si"));
+	total->addMarSystem(mng.create("DownSampler", "dsr1"));
 	total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
 	total->addMarSystem(mng.create("WaveletBands", "wvbnds"));
 
 	// envelope extraction
 	total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
 	total->addMarSystem(mng.create("OnePole", "lpf"));
+	total->addMarSystem(mng.create("Reverse", "reverse"));
+	total->addMarSystem(mng.create("OnePole", "lpf1"));
 	total->addMarSystem(mng.create("Norm", "norm"));
 	
 
 	total->addMarSystem(mng.create("Sum", "sum"));
 	total->addMarSystem(mng.create("DownSampler", "ds"));
+	total->addMarSystem(mng.create("Delta", "delta"));
+	
 	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
+	total->addMarSystem(mng.create("BeatHistogram", "histo"));	
 	total->addMarSystem(mng.create("Peaker", "pkr"));
-	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
-	total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
-
+	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
+	
 	// update the controls
 	// input filename with hopSize/winSize
 
 	total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-
-	nChannels = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
 	srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-
-
-
+	
 	mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
 	mrs_natural hopSize = winSize / 8;
 
-	offset = (mrs_natural) (start * srate * nChannels);
-	duration = (mrs_natural) (length * srate * nChannels);
-
 	total->updctrl("mrs_natural/inSamples", hopSize);
-	total->updctrl("SoundFileSource/src/mrs_natural/pos", offset);
 	total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
-
-
+	total->updctrl("DownSampler/dsr1/mrs_natural/factor", 8);
+	
+	
 	// wavelt filterbank envelope extraction controls
 	total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
 	total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
-	mrs_natural factor = 32;
+	total->updctrl("OnePole/lpf1/mrs_real/alpha", 0.99f);
+	mrs_natural factor = 2;
 	total->updctrl("DownSampler/ds/mrs_natural/factor", factor);
-
-	// Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
-	mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
-	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
-							(mrs_natural)(srate * 60.0 / (factor*80.0))) / (pkinS * 1.0);
-	mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
-	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
-
-	total->updctrl("AutoCorrelation/acr/mrs_bool/makePositive", false);
-	
-	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
-	total->updctrl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
+	factor = 16;
 	
 	
-	total->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
+	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 2);
 
+	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
+	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
+	total->updctrl("Peaker/pkr/mrs_natural/peakStart", 50);
+	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 180);
 
-	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
 	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
-	total->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
-	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
-	total->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
-	total->updctrl("Peaker/pkr/mrs_natural/interpolation", 1);
+	total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+
+	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
+	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
 
 	
 	total->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
