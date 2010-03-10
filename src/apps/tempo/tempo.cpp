@@ -912,8 +912,14 @@ tempo_medianSumBands(string sfName, string label, string resName)
 			total_differences += diff3;
 		total_errors++;
     }
-  
 	total_instances++;
+
+	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
+	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
+	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
+
+  
+
 
 	// Output to file
   
