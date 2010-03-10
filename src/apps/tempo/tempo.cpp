@@ -796,7 +796,7 @@ tempo_medianSumBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
 	total->addMarSystem(mng.create("BeatHistogram", "histo"));	
 	total->addMarSystem(mng.create("Peaker", "pkr"));
-	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
+	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
 	
 	// update the controls
 	// input filename with hopSize/winSize
