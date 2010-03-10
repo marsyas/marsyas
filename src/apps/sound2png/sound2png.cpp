@@ -503,7 +503,9 @@ void fftHistogram(string inFileName)
 
 void correlogramPNGs(string inFileName, string outFilePrefix)
 {
-  MarSystemManager mng;
+  #ifdef MARSYAS_PNG 
+	
+	MarSystemManager mng;
   MarSystem* net = mng.create("Series", "net");
 
   net->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -573,6 +575,7 @@ void correlogramPNGs(string inFileName, string outFilePrefix)
 	png.close();
 	counter++;
   }
+#endif
 }
 
 
