@@ -101,6 +101,7 @@
 #include "Product.h"
 #include "Reciprocal.h"
 #include "AccentFilterBank.h"
+#include "ConstQFiltering.h" 
 #include "Compressor.h"
 #include "Differentiator.h"
 #include "Delta.h"
@@ -294,6 +295,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Product", new Product("product"));
 	registerPrototype("Reciprocal", new Reciprocal("reciprocal"));
 	registerPrototype("AccentFilterBank", new AccentFilterBank("afb"));
+	registerPrototype("ConstQFiltering", new ConstQFiltering("cqfpr"));
 	registerPrototype("Compressor", new Compressor("compressor"));
 	registerPrototype("Differentiator", new Differentiator("differentiator"));
 	registerPrototype("Delta", new Delta("deltapr"));

@@ -141,6 +141,8 @@ printHelp(string progName)
 	cerr << "MEDIAN_SUMBANDS" << endl;
 	cerr << "MEDIAN_MULTIBANDS" << endl;
 	cerr << "HISTO_SUMBANDS" << endl;
+	cerr << "HISTO_SUMBANDSQ" << endl;
+	
 	cerr << "BOOMCHICK_WAVELET" << endl;
 	cerr << "BOOMCHICK_FILTER" << endl;
 
@@ -663,6 +665,165 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	
 	// wavelt filterbank envelope extraction controls
 	total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
+	total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
+	total->updctrl("OnePole/lpf1/mrs_real/alpha", 0.99f);
+	mrs_natural factor = 2;
+	total->updctrl("DownSampler/ds/mrs_natural/factor", factor);
+	factor = 16;
+	
+	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 2);
+	
+	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
+	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
+	total->updctrl("Peaker/pkr/mrs_natural/peakStart", 50);
+	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 180);
+	
+	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
+	total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+	
+	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
+	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
+
+	total->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+	total->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+	total->linkctrl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
+
+	// prepare vectors for processing
+	realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+				 total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+	realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+					 total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+
+
+
+	mrs_real bin;
+	mrs_natural onSamples;
+
+	int numPlayed =0;
+	mrs_natural wc=0;
+	mrs_natural samplesPlayed = 0;
+	mrs_natural repeatId = 1;
+
+	// vector of bpm estimate used to calculate median
+	vector<mrs_real> bpms;
+	onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
+
+	if (pluginName != EMPTYSTRING)
+	{
+		ofstream ofs;
+		ofs.open(pluginName.c_str());
+		ofs << *total << endl;
+		ofs.close();
+		pluginName = EMPTYSTRING;
+	}
+
+
+	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	// for (int i=0; i< 400; i++)
+    {
+		total->process(iwin, estimate);
+		bin = estimate(1);
+		bpms.push_back(bin);
+    }
+  
+	istringstream iss(label);
+	float ground_truth_tempo; 
+	iss >> ground_truth_tempo;
+	float predicted_tempo;
+	predicted_tempo = bpms[bpms.size()-1];
+	float diff1 = fabs(predicted_tempo - ground_truth_tempo);
+	float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
+	float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+	float diff4 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	float diff5 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	
+
+	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
+	if (diff1 <= 1.0)
+		correct_predictions++;
+	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0)||(diff4 <= 1.0)||(diff5 <= 1.0))
+		correct_harmonic_predictions++;
+	else 
+    {
+		if ((diff1 < diff2)&&(diff1 < diff3))
+			total_differences += diff1;
+		if ((diff2 < diff3)&&(diff1 < diff1))
+			total_differences += diff2;
+		if ((diff3 < diff2)&&(diff3 < diff1))
+			total_differences += diff3;
+		total_errors++;
+    }
+  
+	total_instances++;
+
+	
+	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
+	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
+	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
+	delete total;
+}
+
+
+
+void
+tempo_histoSumBandsQ(string sfName, string label, string resName)
+{
+	MarSystemManager mng;
+	mrs_real srate = 0.0;
+
+
+	// prepare network
+	MarSystem *total = mng.create("Series", "src");
+	total->addMarSystem(mng.create("SoundFileSource", "src"));
+	total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+	total->addMarSystem(mng.create("ShiftInput", "si"));
+	total->addMarSystem(mng.create("AudioSink", "dest"));
+	total->addMarSystem(mng.create("DownSampler", "dsr1"));
+	total->addMarSystem(mng.create("ConstQFiltering", "cqf"));
+	
+	// total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
+	// total->addMarSystem(mng.create("WaveletBands", "wvbnds"));
+
+	
+	total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
+	total->addMarSystem(mng.create("OnePole", "lpf"));
+	total->addMarSystem(mng.create("Reverse", "reverse"));
+	total->addMarSystem(mng.create("OnePole", "lpf1"));
+	total->addMarSystem(mng.create("Norm", "norm"));
+	
+	
+	// implicit fanin
+	total->addMarSystem(mng.create("Sum", "sum"));
+	total->addMarSystem(mng.create("DownSampler", "ds"));
+	total->addMarSystem(mng.create("Delta", "delta"));
+	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
+	total->addMarSystem(mng.create("BeatHistogram", "histo"));
+	total->addMarSystem(mng.create("Peaker", "pkr"));
+	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
+
+	// update the controls
+	// input filename with hopSize/winSize
+	total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
+
+	mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
+	mrs_natural hopSize = winSize / 8;
+
+	total->updctrl("mrs_natural/inSamples", hopSize);
+	total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
+
+	total->updctrl("DownSampler/dsr1/mrs_natural/factor", 8);
+
+	total->updctrl("ConstQFiltering/cqf/mrs_natural/channels", 5);
+	total->updctrl("ConstQFiltering/cqf/mrs_real/qValue", 4.0);
+	total->updctrl("ConstQFiltering/cqf/mrs_real/lowFreq", 41.2);
+	total->updctrl("ConstQFiltering/cqf/mrs_real/highFreq", 1318.5);
+	total->updctrl("ConstQFiltering/cqf/mrs_natural/width", winSize/ 8);
+	
+	
+	// wavelt filterbank envelope extraction controls
+	// total->updctrl("WaveletPyramid/wvpt/mrs_bool/forward", true);
 	total->updctrl("OnePole/lpf/mrs_real/alpha", 0.99f);
 	total->updctrl("OnePole/lpf1/mrs_real/alpha", 0.99f);
 	mrs_natural factor = 2;
@@ -2132,6 +2293,11 @@ void tempo(string inFname, string outFname, string label, string method)
     {
 		tempo_histoSumBands(sfName, label, resName);
     }
+	else if (method == "HISTO_SUMBANDSQ")
+	{
+		tempo_histoSumBandsQ(sfName,label, resName);
+	}
+	
 	else if (method == "IBT")
     {
 		// cout << "TEMPO INDUCTION USING THE INESC BEAT TRACKER" << endl;
