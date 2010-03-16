@@ -59,13 +59,10 @@ namespace Marsyas
 	\see SoundFileSource, ShiftInput, MixToMono
 
 	Controls:
+	- \b mrs_string/filename: the file name of the file to load
 	- \b mrs_natural/windowSize: the window size (in samples)
 	- \b mrs_natural/hopSize: the hop size (in samples)
 	- \b mrs_bool/mixToMono [rw] : mix the audio down to mono.
-
-	The desired sound file settings can be configured through
-	the internal SoundFileSource "src", for example with
-	a control string like "SoundFileSource/src/mrs_string/filename".
 
 	@todo: provide reset functionality to reset the Shiftinput
 	memory and also takes reseting the SoundFileSource into account.

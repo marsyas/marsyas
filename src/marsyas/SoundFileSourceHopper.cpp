@@ -34,6 +34,10 @@ SoundFileSourceHopper::SoundFileSourceHopper(string name) : MarSystem("SoundFile
 	addMarSystem(new SoundFileSource("src"));
 	addMarSystem(new MixToMono("mix2mono"));
 	addMarSystem(new ShiftInput("hopper"));
+
+	// Provide a shortcut to the SoundFileSource filename control too.
+	this->linkControl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+
 }
 
 SoundFileSourceHopper::SoundFileSourceHopper(const SoundFileSourceHopper& a) : MarSystem(a)
@@ -50,6 +54,10 @@ SoundFileSourceHopper::SoundFileSourceHopper(const SoundFileSourceHopper& a) : M
 	addMarSystem(new SoundFileSource("src"));
 	addMarSystem(new MixToMono("mix2mono"));
 	addMarSystem(new ShiftInput("hopper"));
+
+	// Provide a shortcut to the SoundFileSource filename control too.
+	this->linkControl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+
 }
 
 
