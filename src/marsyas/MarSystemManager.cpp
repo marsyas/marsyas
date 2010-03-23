@@ -101,7 +101,7 @@
 #include "Product.h"
 #include "Reciprocal.h"
 #include "AccentFilterBank.h"
-#include "ConstQFiltering.h" 
+#include "ConstQFiltering.h"
 #include "Compressor.h"
 #include "Differentiator.h"
 #include "Delta.h"
@@ -209,6 +209,7 @@
 #include "PhaseLock.h"
 #include "BeatTimesSink.h"
 #include "CrossCorrelation.h"
+#include "SliceShuffle.h"
 //modifyHeader
 
 using namespace std;
@@ -370,7 +371,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
 	registerPrototype("Chroma", new Chroma("chromapr"));
 	registerPrototype("Spectrum2Chroma", new Spectrum2Chroma("spectrum2chromapr"));
-	
+
 	registerPrototype("Spectrum2Mel", new Spectrum2Mel("spectrum2melpr"));
 	registerPrototype("ADRess", new ADRess("adresspr"));
 	registerPrototype("ADRessSpectrum", new ADRessSpectrum("adressspectrumpr"));
@@ -407,6 +408,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
 	registerPrototype("CrossCorrelation",new CrossCorrelation("crossCorrelationpr"));
+	registerPrototype("SliceShuffle", new SliceShuffle("sliceshuffle"));
 	//modifyRegister
 
 	//***************************************************************************************
@@ -443,7 +445,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 	if (compositesMap_.find(prototype) == compositesMap_.end())
 		return;
 
-	
+
 	switch (compositesMap_[prototype])
 	{
 	case STUB:
@@ -531,9 +533,9 @@ void MarSystemManager::registerComposite(std::string prototype)
 		stft_features_pr->addMarSystem(create("Rolloff", "rlf"));
 		stft_features_pr->addMarSystem(create("Flux", "flux"));
 		stft_features_pr->addMarSystem(create("MFCC", "mfcc"));
-		
+
 		MarSystem* chromaPrSeries =  create("Series", "chromaPrSeries");
-		
+
 		chromaPrSeries->addMarSystem(create("Spectrum2Chroma", "chroma"));
 		chromaPrSeries->addMarSystem(create("PeakRatio","pr"));
 
@@ -661,7 +663,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 
 	case STEREOFEATURES:
 	{
-		
+
 		/////////////////////////////////////////////////////////////////
 		// combined stereo features
 		/////////////////////////////////////////////////////////////////
@@ -683,11 +685,11 @@ void MarSystemManager::registerComposite(std::string prototype)
 		//link enable controls
 		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableSPChild", "mrs_string/enableSPChild");
 		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableSPChild", "mrs_string/enableSPChild");
-		
- 		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableTDChild", "mrs_string/enableTDChild");
- 		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableTDChild", "mrs_string/enableTDChild");
-		
-		
+
+		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorLeft/mrs_string/enableTDChild", "mrs_string/enableTDChild");
+		stereoFeatures->linkctrl("Parallel/stereoTimbreFeatures/TimbreFeatures/featExtractorRight/mrs_string/enableTDChild", "mrs_string/enableTDChild");
+
+
 		registerPrototype("StereoFeatures", stereoFeatures);
 	}
 	break;
@@ -1167,16 +1169,17 @@ MarSystemManager::~MarSystemManager()
 void
 MarSystemManager::registerPrototype(string type, MarSystem *marsystem)
 {
-  //change type_ of composite to the user specified one
-  marsystem->setType(type);
-  // check and dispose old prototype
-  std::map<std::string,MarSystem*>::iterator iter = registry_.find(type);
-  if(iter != registry_.end()){
-    MarSystem* m = iter->second;
-    delete m;
-  }
-  //and register it
-  registry_[type] = marsystem;
+	//change type_ of composite to the user specified one
+	marsystem->setType(type);
+	// check and dispose old prototype
+	std::map<std::string,MarSystem*>::iterator iter = registry_.find(type);
+	if (iter != registry_.end())
+	{
+		MarSystem* m = iter->second;
+		delete m;
+	}
+	//and register it
+	registry_[type] = marsystem;
 }
 
 
@@ -1195,7 +1198,7 @@ MarSystemManager::getPrototype(string type)
 MarSystem*
 MarSystemManager::create(string type, string name)
 {
-	
+
 	registerComposite(type);
 
 	if (registry_.find(type) != registry_.end())
@@ -1289,7 +1292,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	//delete all children MarSystems in a (prototype) Composite
 	//and read and link (as possible) local controls
 	is >> *msys;
-	
+
 	msys->update();
 
 	workingSet_[msys->getName()] = msys; // add to workingSet
