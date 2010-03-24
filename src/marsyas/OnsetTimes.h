@@ -32,9 +32,10 @@ namespace Marsyas
 	Input: Supposed to have PeakerOnsets, or similar, as input.
 	Output: [x|Phasei|x|Phasei+1|  ...  |x|PhaseM]
 
-	- \b mrs_natural/n1stOnsets [w] : Nr. of first detected onsets (= M phases).
-	- \b mrs_natural/nPeriods [w] : Nr. of considered period hypotheses (N) - to avoid Fanout crash (requires equal number of columns in each line)! 
-	- \b mrs_natural/lookAheadSamples [w] : Nr. of frames to adjust the lookahead used in PeakerOnset.
+	- \b mrs_natural/n1stOnsets [w] : nr. of first detected onsets (= M phases).
+	- \b mrs_natural/nPeriods [w] : nr. of considered period hypotheses (N) - to avoid Fanout crash (requires equal number of columns in each line)! 
+	- \b mrs_natural/lookAheadSamples [w] : nr. of frames to adjust the lookahead used in PeakerOnset.
+	- \b mrs_natural/tickCount [r] : current considered time (tick count) updated from BeatReferee.
 */
 
 
@@ -47,7 +48,11 @@ private:
 	MarControlPtr ctrl_lookAheadSamples_;
 	MarControlPtr ctrl_nPeriods_;
 	MarControlPtr ctrl_tickCount_;
+	MarControlPtr ctrl_inductionTime_;
+	MarControlPtr ctrl_accSize_;
 
+	mrs_natural accSize_;
+	mrs_natural inductionTime_;
 	mrs_natural nPeriods_;
 	mrs_natural lookAhead_;
 	mrs_natural acc_;

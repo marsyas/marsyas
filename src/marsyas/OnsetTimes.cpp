@@ -36,9 +36,10 @@ OnsetTimes::OnsetTimes(const OnsetTimes& a) : MarSystem(a)
 	ctrl_n1stOnsets_ = getctrl("mrs_natural/n1stOnsets");
 	ctrl_lookAheadSamples_ = getctrl("mrs_natural/lookAheadSamples");
 	ctrl_nPeriods_ = getctrl("mrs_natural/nPeriods");
+	ctrl_inductionTime_ = getctrl("mrs_natural/inductionTime");
+	ctrl_accSize_ = getctrl("mrs_natural/accSize");
 	ctrl_tickCount_ = getctrl("mrs_natural/tickCount");
 	
-	t_ = a.t_;
 	count_ = a.count_;
 }
 
@@ -61,6 +62,10 @@ OnsetTimes::addControls()
 	addctrl("mrs_natural/lookAheadSamples", 1, ctrl_lookAheadSamples_);
 	addctrl("mrs_natural/nPeriods", 1, ctrl_nPeriods_);
 	setctrlState("mrs_natural/nPeriods", true);
+	addctrl("mrs_natural/inductionTime", -1, ctrl_inductionTime_);
+	setctrlState("mrs_natural/inductionTime", true);
+	addctrl("mrs_natural/accSize", -1, ctrl_accSize_);
+	setctrlState("mrs_natural/accSize", true);
 	addctrl("mrs_natural/tickCount", 0, ctrl_tickCount_);
 }
 
@@ -79,7 +84,9 @@ OnsetTimes::myUpdate(MarControlPtr sender)
 	
 	ctrl_onObservations_->setValue(1, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-
+	
+	inductionTime_ = ctrl_inductionTime_->to<mrs_natural>();
+	accSize_ = ctrl_accSize_->to<mrs_natural>();
 
 }
 
@@ -98,13 +105,17 @@ OnsetTimes::myProcess(realvec& in, realvec& out)
 	if((t_ - lookAhead_) > 0 && in(0,0) == 1.0) //avoid onset at 0 frame
 	{
 		//if task isn't still done && (first peak || peak distance at least 5 frames from last peak)
-		if(count_ == inc || (count_ > inc && count_ < n_ + inc && t_ > out(0, 2*(count_-inc)-1) + 5))
+		if(count_ == inc || (count_ > inc && count_ < n_ + inc && ((t_-lookAhead_)+(accSize_-1 - inductionTime_)) > out(0, 2*(count_-inc)-1) + 5))
 		{
 			//cout << "Out Last Arg: " << out(0, 2*(count_-inc)+1) << " Current Arg: " << t_ - lookAhead_ << endl;
 			out(0, 2*(count_-inc)) = in(0,0);
-			out(0, 2*(count_-inc)+1) = t_ - lookAhead_;
+			//out(0, 2*(count_-inc)+1) = t_ - lookAhead_; 
+			//onsetTime equals to peakerTime (t_-lookAhead_) + difference between last point in the  
+			//accumulator/ShiftInput (accSize_-1) and the considered inductionTime
+			out(0, 2*(count_-inc)+1) = (t_-lookAhead_)+(accSize_-1 - inductionTime_);
+
+			count_++;
 		}
-		count_++;
 		//cout << "t-" << t_ << ": Onset at: " << t_ - lookAhead_ << endl;
 	}
 

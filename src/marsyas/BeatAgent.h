@@ -58,7 +58,12 @@ private:
 	MarControlPtr ctrl_lftOutterMargin_;
 	MarControlPtr ctrl_rgtOutterMargin_;
 	MarControlPtr ctrl_innerMargin_;
+	MarControlPtr ctrl_maxPeriod_;
+	MarControlPtr ctrl_minPeriod_;
 
+	mrs_real periodFraction_;
+	mrs_natural minPeriod_;
+	mrs_natural maxPeriod_;
 	mrs_real lftOutterMargin_;
 	mrs_real rgtOutterMargin_;
 	mrs_real innerMargin_;

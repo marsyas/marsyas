@@ -37,7 +37,7 @@ namespace Marsyas
 	- \b mrs_real/srcFs [r] : input sampling rate.
 	- \b mrs_string/destFileName [r] : path of the output destination directory.
 	- \b mrs_string/mode [r] : considered time unit (seconds or "frames"-ticks). 
-	- \b mrs_natural/tickCount [r] : current considered time (tick count) by the BeatReferee.
+	- \b mrs_natural/tickCount [r] : current considered time (tick count) updated from BeatReferee.
 	- \b mrs_real/tempo [r]: estimated tempo 
 */
 
@@ -54,7 +54,16 @@ private:
 	MarControlPtr ctrl_mode_;
 	MarControlPtr ctrl_tickCount_;
 	MarControlPtr ctrl_tempo_;
+	MarControlPtr ctrl_adjustment_;
+	MarControlPtr ctrl_bestFinalAgentHistory_;
+	MarControlPtr ctrl_soundFileSize_;
+	MarControlPtr ctrl_nonCausal_;
 
+	mrs_real beatTimeTmp_;
+	mrs_real lastIbi_;
+	mrs_natural soundFileSize_;
+	mrs_bool nonCausal_;
+	mrs_realvec bestFinalAgentHistory_;
 	mrs_realvec ibiBPMVec_;
 	mrs_natural inc_;
 	mrs_string destFile_;
@@ -85,6 +94,7 @@ public:
   MarSystem* clone() const;  
   
   void myProcess(realvec& in, realvec& out);
+  mrs_realvec addMedianVector(mrs_real ibiBPM);
 };
 
 }//namespace Marsyas

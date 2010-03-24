@@ -36,23 +36,24 @@ namespace Marsyas
 
 	Output: (NxM) x 3 matrix with M phases for each of the N predicted periods:
 
-			[  periodi  |  Phasej  ]
-			|  periodi  | Phasej+1 |
-			|    ...    |   ...    |
-			|  periodi  |  PhaseM  |
-			| periodi+1 |  Phasej  |
-			| periodi+1 | Phasej+1 |
-			|    ...    |   ...    |
-			|  periodN  |  Phasej  |
-			|    ...    |   ...    | 
-			[  periodN  |  PhaseM  ]
+			[  periodi  |  phasej  |  periodSaliencei  ]
+			|  periodi  | phasej+1 |  periodSaliencei  |
+			|    ...    |   ...    |        ...        | 
+			|  periodi  |  phaseM  |  periodSaliencei  |
+			| periodi+1 |  phasej  | periodSaliencei+1 |
+			| periodi+1 | phasej+1 | periodSaliencei+1 |
+			|    ...    |   ...    |        ...        | 
+			|  periodN  |  phasej  |  periodSalienceN  |
+			|    ...    |   ...    |        ...        |  
+			[  periodN  |  phaseM  ]  periodSalienceN  ]
 
 	Controls:
-	- \b mrs_natural/nPhases [r] : Nr. of considered beat phase (in "frames"-ticks) hypotheses (M).
-	- \b mrs_natural/nPeriods [r] : Nr. of considered beat period (in "frames"-ticks) hypotheses (N).
+	- \b mrs_natural/nPhases [r] : nr. of considered beat phase (in "frames"-ticks) hypotheses (M).
+	- \b mrs_natural/nPeriods [r] : nr. of considered beat period (in "frames"-ticks) hypotheses (N).
 	- \b mrs_natural/inductionTime [r] : time (in tick counts) dispended in the initial induction stage.
 	- \b mrs_natural/hopSize [r] : hop size of the analysis.
 	- \b mrs_real/srcFs [r] : input sampling rate.
+	- \b mrs_natural/tickCount [r] : current considered time (tick count) updated from BeatReferee.
 */
 
 
@@ -67,7 +68,10 @@ private:
 	MarControlPtr ctrl_srcFs_;
 	MarControlPtr ctrl_hopSize_;
 	MarControlPtr ctrl_tickCount_;
+	MarControlPtr ctrl_dumbInduction_;
 
+	mrs_bool inductionFinished_;
+	mrs_bool dumbInduction_;
 	mrs_natural hopSize_;
 	mrs_real srcFs_;
 	mrs_natural inductionTime_;

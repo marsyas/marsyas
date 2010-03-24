@@ -26,6 +26,7 @@ PeakerOnset::PeakerOnset(string name):MarSystem("PeakerOnset", name)
 	addControls();
 
 	prevValue_ = 0.0;
+	t_ = 0;
 }
 
 PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
@@ -36,6 +37,7 @@ PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
 	ctrl_confidence_ = getctrl("mrs_real/confidence");
 
 	prevValue_ = a.prevValue_;
+	t_ = a.t_;
 }
 
 PeakerOnset::~PeakerOnset()
@@ -141,12 +143,20 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 // 		}
 // 	}
 
-
+/* Last version (by lgmartins) -> corrected (below) for not being strict to the window size defined by the precede ShiftInput
 	//check second condition
 	mrs_real m = 0.0;
 	for(t=0; t < inSamples_; t++)
 		m += in(t);
 	m /= inSamples_;
+*/	
+	
+	mrs_natural mul = 3; //multiplier proposed in Dixon2006
+	mrs_real m = 0.0;
+	for(t=checkPoint-(mul*w); t < inSamples_; t++)
+		m += in(t);
+	m /= (w*4+1);
+	
 	//checkPoint value should be higher than the window mean and mean should
 	//be a significant value (otherwise we most probably are in a silence segment,
 	//and we do not want to detect onsets on segments!)
@@ -168,7 +178,16 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	}
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
+
+	//t_++;
+
+	//if(t_ == 0)
+	//	MATLAB_PUT(in, "PeakerOnset_inWIN");
 	//MATLAB_PUT(in, "PeakerOnset_in");
+	//if(t_ <= 431)
+	//	MATLAB_EVAL("PK_TS2 = [PK_TS2 PeakerOnset_in]");
+	//MATLAB_EVAL("plot(PK_TS, 'r');");
+	//MATLAB_EVAL("plot(FluxTS); hold on; plot(PK_TS, 'r');");
 	//MATLAB_EVAL("plot(PeakerOnset_in,'r');hold on; plot(ShiftInput_out); hold off");
 	//MATLAB_PUT(out,"PeakerOnset_out");
 	//MATLAB_EVAL("onsetTS = [onsetTS, PeakerOnset_out];");

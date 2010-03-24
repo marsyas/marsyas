@@ -84,8 +84,8 @@ private:
 	MarControlPtr ctrl_inductionEnabler_;
 	MarControlPtr ctrl_hopSize_;
 	MarControlPtr ctrl_srcFs_;
-	MarControlPtr ctrl_maxTempo_;
-	MarControlPtr ctrl_minTempo_;
+	MarControlPtr ctrl_maxPeriod_;
+	MarControlPtr ctrl_minPeriod_;
 	MarControlPtr ctrl_agentControl_;
 	MarControlPtr ctrl_beatDetected_;
 	MarControlPtr ctrl_tickCount_;
@@ -100,9 +100,25 @@ private:
 	MarControlPtr ctrl_child3Factor_;
 	MarControlPtr ctrl_metricalChangeTime_;
 	MarControlPtr ctrl_backtrace_;
+	MarControlPtr ctrl_logFile_;
+	MarControlPtr ctrl_logFileName_;
+	MarControlPtr ctrl_lostFactor_;
+	MarControlPtr ctrl_soundFileSize_;
+	MarControlPtr ctrl_bestFinalAgentHistory_;
+	MarControlPtr ctrl_nonCausal_;
 
-	mrs_bool inductionFinnished_;
+	mrs_realvec agentsJustCreated_;
+	mrs_realvec bestFinalAgentHistory_;
+	mrs_natural bestFinalAgent_;
+	mrs_bool nonCausal_;
+	mrs_natural maxNrBeats_;
+	mrs_realvec agentsHistory_;
+	mrs_natural soundFileSize_;
+	mrs_natural lostFactor_;
+	mrs_string logFileName_;
+	mrs_bool inductionFinished_;
 	mrs_bool backtrace_;
+	mrs_bool logFile_;
 	mrs_natural nrAgents_;
 	mrs_natural lastBeatTime_;
 	mrs_natural minPeriod_;
@@ -121,6 +137,7 @@ private:
 	mrs_realvec firstHypotheses_;
 	mrs_realvec beatCounter_;
 	mrs_realvec mutedAgents_;
+	mrs_realvec mutedAgentsTmp_;
 	mrs_realvec inductionEnabler_;
 	mrs_real bestScore_;
 	mrs_natural inductionTime_;
@@ -140,8 +157,9 @@ private:
 	mrs_real child2Factor_;
 	mrs_real child3Factor_;
 	mrs_real metricalChangeTime_;
-	mrs_real maxPeriodChange_;
-	mrs_real timeBeforeKilling_;
+	mrs_natural timeBeforeKilling_;
+	mrs_natural lastBeatPeriod_;
+	mrs_realvec missedBeatsCount_;
 
 	void myUpdate(MarControlPtr sender);
 
@@ -154,13 +172,14 @@ public:
   void myProcess(realvec& in, realvec& out);
   void updateAgentHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, 
 								   mrs_natural prevBeat, mrs_natural error);
-  void createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, 
-	  mrs_real newScore, mrs_real beatCount);
-  void grantPoolSpace();
+  mrs_natural createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, 
+	  mrs_real newScore, mrs_real beatCount, mrs_natural fatherAgent = -1);
+  void grantPoolSpace(mrs_natural callAgent, mrs_real newAgentScore);
   mrs_natural getWorstAgent();
   void setNewHypothesis(mrs_natural agentIndex, mrs_natural newPeriod, mrs_natural nextBeat);
-  mrs_natural calculateFirstBeat(mrs_natural initPeriod, mrs_natural initPhase);
-  void killAgent(mrs_natural agentIndex, mrs_string motif);
+  mrs_natural calcFirstBeat(mrs_natural initPeriod, mrs_natural initPhase);
+  mrs_natural calcFirstBacktracedBeat(mrs_natural initPeriod, mrs_natural initPhase);
+  void killAgent(mrs_natural agentIndex, mrs_string motif, mrs_natural callAgent = -1);
   void createChildren(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error, 
 						mrs_real agentScore, mrs_real beatCount);
   mrs_realvec calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, 
@@ -169,6 +188,10 @@ public:
   mrs_natural getFirstAliveAgent();
   void calcAbsoluteBestScore();
   mrs_natural calcNewPeriod(mrs_natural oldPeriod, mrs_natural error, mrs_real beta);
+  void debugCreateFile();
+  void debugAddEvent(mrs_string ibtEvent, mrs_natural agentIndex, mrs_natural period, mrs_natural lastBeat,
+	  mrs_real score, mrs_real bestScore, mrs_natural callAgent = -1);
+  void checkAndKillEqualAgents(mrs_natural agentIndex);
 };
 
 }//namespace Marsyas
