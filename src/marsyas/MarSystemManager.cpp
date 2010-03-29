@@ -191,6 +191,10 @@
 #include "TimelineLabeler.h"
 #include "RadioDrumInput.h"
 #include "NoiseGate.h"
+#include "ResampleBezier.h"
+#include "ResampleLinear.h"
+#include "Resample.h"
+#include "ResampleSinc.h"
 #include "StretchLinear.h"
 #include "MidiFileSynthSource.h"
 #include "PvMultiResolution.h"
@@ -388,6 +392,10 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("MaxMin", new MaxMin("maxminpr"));
 	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
 	registerPrototype("StretchLinear", new StretchLinear("stretchlinearpr"));
+	registerPrototype("ResampleBezier", new ResampleBezier("resampberpr"));
+	registerPrototype("ResampleLinear", new ResampleLinear("resamplinpr"));
+	registerPrototype("Resample", new Resample("resampabspr"));
+	registerPrototype("ResampleSinc", new ResampleSinc("resampsincpr"));
 	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
 	registerPrototype("PvMultiResolution", new PvMultiResolution("PvMultiResolution"));
 	registerPrototype("AudioSinkCallback", new AudioSinkCallback("AudioSinkCallback"));
