@@ -615,6 +615,140 @@ tempo_new(string sfName, string resName)
 	delete total1;
 }
 
+void 
+tempo_fluxBands(string sfName, string label, string resName) 
+{
+	cout << "Flux bands" << endl;
+	
+	MarSystemManager mng;
+	
+	MarSystem *big = mng.create("Series/big");
+	
+	MarSystem *accum = mng.create("Accumulator/accum");
+	
+	MarSystem *total = mng.create("Series/total");
+	total->addMarSystem(mng.create("SoundFileSource", "src"));
+	total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+	total->addMarSystem(mng.create("ShiftInput", "si"));	
+	total->addMarSystem(mng.create("Windowing", "windowing"));
+	total->addMarSystem(mng.create("Spectrum", "spk"));
+	total->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	total->addMarSystem(mng.create("Flux", "flux"));
+	accum->addMarSystem(total);
+
+
+
+	big->addMarSystem(accum);
+	big->addMarSystem(mng.create("AutoCorrelation", "acr"));
+	big->addMarSystem(mng.create("BeatHistogram", "bhisto"));
+	
+	big->addMarSystem(mng.create("Peaker", "pkr"));
+	big->addMarSystem(mng.create("MaxArgMax", "mxr"));
+
+
+	big->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
+	big->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
+	big->updctrl("Peaker/pkr/mrs_natural/peakStart", 50);
+	big->updctrl("Peaker/pkr/mrs_natural/peakEnd", 180);
+	big->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
+	big->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+
+
+	accum->updctrl("Series/total/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
+	accum->updctrl("Series/total/Flux/flux/mrs_string/mode", "DixonDAFX06");
+	
+
+
+	cout << "I am here" << endl;
+	
+	mrs_real srate = big->getctrl("Accumulator/accum/Series/total/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	cout << "I am here 2" << endl;
+
+	big->updctrl("Accumulator/accum/mrs_natural/nTimes", 128);
+	
+	big->updctrl("BeatHistogram/bhisto/mrs_natural/startBin", 0);
+	big->updctrl("BeatHistogram/bhisto/mrs_natural/endBin", 200);
+
+	
+	mrs_natural winSize = 256;
+	mrs_natural hopSize = 128;
+
+	big->updctrl("Accumulator/accum/Series/total/mrs_natural/inSamples", hopSize);
+	big->updctrl("Accumulator/accum/Series/total/ShiftInput/si/mrs_natural/winSize", winSize);
+
+	big->updctrl("Accumulator/accum/Series/total/SoundFileSource/src/mrs_string/filename", sfName);
+
+	
+	cout << "I am here 2" << endl;
+	
+
+	
+	vector<mrs_real> bpms;
+	mrs_real bin;
+
+	ofstream ofs;
+	ofs.open("accum.mpl");
+	ofs << *big << endl;
+	ofs.close();
+
+
+	
+	while (big->getctrl("Accumulator/accum/Series/total/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	{
+		big->tick();
+		mrs_realvec estimate = big->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		bin = estimate(1);
+		bpms.push_back(bin);
+	}
+	
+
+
+	
+	istringstream iss(label);
+	float ground_truth_tempo; 
+	iss >> ground_truth_tempo;
+	float predicted_tempo;
+	predicted_tempo = bpms[bpms.size()-1];
+	float diff1 = fabs(predicted_tempo - ground_truth_tempo);
+	float diff2 = fabs(predicted_tempo - 2 * ground_truth_tempo);
+	float diff3 = fabs(2 * predicted_tempo - ground_truth_tempo);
+	float diff4 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	float diff5 = fabs(3 * predicted_tempo - ground_truth_tempo);
+	
+
+	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
+	if (diff1 <= 1.0)
+		correct_predictions++;
+	
+	if (diff1 <= 0.04 * ground_truth_tempo)
+		correct_mirex_predictions++;
+	
+	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0)||(diff4 <= 1.0)||(diff5 <= 1.0))
+		correct_harmonic_predictions++;
+	else 
+    {
+		if ((diff1 < diff2)&&(diff1 < diff3))
+			total_differences += diff1;
+		if ((diff2 < diff3)&&(diff1 < diff1))
+			total_differences += diff2;
+		if ((diff3 < diff2)&&(diff3 < diff1))
+			total_differences += diff3;
+		total_errors++;
+    }
+  
+	total_instances++;
+
+	
+	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
+	cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << endl;
+	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
+	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
+	delete big;
+
+
+}
+
+
 
 
 void
@@ -2313,6 +2447,10 @@ void tempo(string inFname, string outFname, string label, string method)
     {
 		tempo_medianMultiBands(sfName,label, resName);
     }
+	else if (method == "FLUX_BANDS")
+	{
+		tempo_fluxBands(sfName, label, resName);
+	}
 	else if (method == "HISTO_SUMBANDS")
     {
 		tempo_histoSumBands(sfName, label, resName);
