@@ -97,6 +97,8 @@ float repetitions = 1;
 
 int correct_predictions; 
 int correct_harmonic_predictions; 
+int correct_mirex_predictions;
+
 int total_instances;
 int total_errors;
 float total_differences;
@@ -648,9 +650,18 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("Delta", "delta"));
 	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
 	total->addMarSystem(mng.create("BeatHistogram", "histo"));
+
+
+	MarSystem* hfanout = mng.create("Fanout", "hfanout");
+	hfanout->addMarSystem(mng.create("Gain", "id1"));
+	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+	// hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
+	
+	total->addMarSystem(hfanout);
+	total->addMarSystem(mng.create("Sum", "hsum"));
 	total->addMarSystem(mng.create("Peaker", "pkr"));
 	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
-
+	
 	// update the controls
 	// input filename with hopSize/winSize
 	total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
@@ -683,6 +694,10 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	
 	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
 	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
+	total->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
+	// total->updctrl("Fanout/hfanout/TimeStretch/tsc2/mrs_real/factor", 0.33);
+
+	
 
 	total->linkctrl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
 	total->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
@@ -726,6 +741,10 @@ tempo_histoSumBands(string sfName, string label, string resName)
 		bin = estimate(1);
 		bpms.push_back(bin);
     }
+
+	
+	
+
   
 	istringstream iss(label);
 	float ground_truth_tempo; 
@@ -742,6 +761,10 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
 	if (diff1 <= 1.0)
 		correct_predictions++;
+	
+	if (diff1 <= 0.04 * ground_truth_tempo)
+		correct_mirex_predictions++;
+	
 	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0)||(diff4 <= 1.0)||(diff5 <= 1.0))
 		correct_harmonic_predictions++;
 	else 
@@ -759,6 +782,7 @@ tempo_histoSumBands(string sfName, string label, string resName)
 
 	
 	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
+	cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << endl;
 	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
 	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
 	delete total;
@@ -2456,6 +2480,8 @@ main(int argc, const char **argv)
 
 		correct_predictions = 0;
 		correct_harmonic_predictions = 0;
+		correct_mirex_predictions = 0;
+		
 		total_instances = 0;
 		total_differences = 0.0;
 		total_errors = 0;
@@ -2467,6 +2493,7 @@ main(int argc, const char **argv)
 
 
 		cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
+		cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << endl;
 		cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
 		cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
 
