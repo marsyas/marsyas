@@ -618,8 +618,6 @@ tempo_new(string sfName, string resName)
 void 
 tempo_fluxBands(string sfName, string label, string resName) 
 {
-	cout << "Flux bands" << endl;
-	
 	MarSystemManager mng;
 	
 	MarSystem *big = mng.create("Series/big");
@@ -634,6 +632,7 @@ tempo_fluxBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("Spectrum", "spk"));
 	total->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 	total->addMarSystem(mng.create("Flux", "flux"));
+	
 	accum->addMarSystem(total);
 
 
@@ -659,10 +658,8 @@ tempo_fluxBands(string sfName, string label, string resName)
 	
 
 
-	cout << "I am here" << endl;
 	
 	mrs_real srate = big->getctrl("Accumulator/accum/Series/total/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-	cout << "I am here 2" << endl;
 
 	big->updctrl("Accumulator/accum/mrs_natural/nTimes", 128);
 	
@@ -671,15 +668,13 @@ tempo_fluxBands(string sfName, string label, string resName)
 
 	
 	mrs_natural winSize = 256;
-	mrs_natural hopSize = 128;
+	mrs_natural hopSize = 32;
 
 	big->updctrl("Accumulator/accum/Series/total/mrs_natural/inSamples", hopSize);
 	big->updctrl("Accumulator/accum/Series/total/ShiftInput/si/mrs_natural/winSize", winSize);
 
 	big->updctrl("Accumulator/accum/Series/total/SoundFileSource/src/mrs_string/filename", sfName);
 
-	
-	cout << "I am here 2" << endl;
 	
 
 	
