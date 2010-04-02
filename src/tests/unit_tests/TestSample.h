@@ -3,42 +3,45 @@
 //
 // A sample skeleton for a unit test
 //
-//
 // (c) 2008 - sness@sness.net - GPL
 //
 
-//
 // Usage instructions:
 //
-// 1) Copy this file to something like TestWekaSource.h
+// 1) Copy this file to something like TestFooBar.h in the unit test folder
+//    src/tests/unit_tests. Make sure the file name starts with "Test" and
+//    ends with ".h".
 //
-// 2) Add this test to the CMakeLists.txt file in the unit test directory (src/tests/unit_tests/CMakeLists.txt)
+//    Replace "FooBar" in this file with the MarSystem you want to test and
+//    implement the tests. For more information: see the already implemented
+//    unit tests in this folder and check out the documentation for cxxtest at
+//    http://cxxtest.sourceforge.net/
 //
-// 3) Add an entry for this class to the generator script (scripts/buildscripts/generate-unit-test-cpp-files.sh)
+//    Note: the CxxTest tools require that the whole function definition of a
+//    test is on one line, like this:
+//        void test_pass(void)
+//    This is contrary to the Marsyas code conventions.
 //
-// 4) Run the generator to generate a xxx_runner.cpp file for this test
+// 2) Run the test runner generator script
+//        scripts/generate-unit-test-cpp-files.py
+//    This will generate a test runner source file like FooBar_runner.cpp.
 //
-// 5) Run CMake to generate the tests 
-//    
-//      cd ~/marsyas-build-dir
-//      ccmake /path/to/marsyas/marsyas/src
-// 
-// 6) Run the tests
+// 3) Add an entry for this generated runner to
+//    src/tests/unit_tests/CMakeLists.txt
 //
-//      make test
+// 4) Run CMake to generate the tests.
+//    (Enable the MARSYAS_TESTS option if not on already.)
 //
-// 7) Enjoy.
+//        cd path/to/marsyas-build-dir
+//        ccmake path/to/marsyas/marsyas/src
 //
+// 6) Compile and run the tests as follows
+//        make test
+//    If everything passes: make a cheering sound.
+//    If not: you'll find the testing log at
+//       path/to/marsyas-build-dir/Testing
 //
-// Check out documentation for cxxtest at: http://cxxtest.sourceforge.net/
-//
-// *NB* : Due to strangeness in cxxtestgen.py, you have to put the whole
-// function definition of all tests on the same line like this:
-//
-//    void test_pass(void)
-//
-// This is contrary to the Marsyas code conventions.
-//
+// TODO: use a Cmake plugin to do step 2 automatically (e.g. after a step like 3)?
 
 #include <cxxtest/TestSuite.h>
 
@@ -47,28 +50,28 @@
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 
-// The class that you want to test, for example "WekaSource"
-#include "Sample.h"
+// The class that you want to test, for example "FooBar"
+#include "FooBar.h"
 
 #include <vector>
 
 using namespace std;
 using namespace Marsyas;
 
-class Sample_runner : public CxxTest::TestSuite
+class FooBar_runner : public CxxTest::TestSuite
 {
 public:
   realvec in,out;
   MarSystemManager mng;
-  Sample *wsrc;
+  FooBar *foobar;
 
   void
   setUp()
   {
-	wsrc = new Sample("wsrc");
+	foobar = new FooBar("foobar");
   }
 
-  void test_pass(void) 
+  void test_pass(void)
   {
 	TS_ASSERT( 1 + 1 > 1 );
   }
