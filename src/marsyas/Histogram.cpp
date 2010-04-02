@@ -92,22 +92,24 @@ Histogram::myProcess(realvec& in, realvec& out)
 		bin = (mrs_natural)(in(o,2*t+1)+0.5);
 		amp = in(o,2*t);
 		
-		
 		if ((bin < endBin_ - startBin_)&&(bin > 1)) 
 		{
-			out(0,bin) += amp;
+	//		out(0,bin) += amp;
+			out(0,bin) += (amp * (bin-startBin_));
 			/* out(0,bin-1) += 0.5 * amp;
 			out(0,bin-2) += 0.25 * amp;
 			out(0,bin+1) += 0.5 * amp;
 			out(0,bin-2) += 0.25 * amp;
 			*/ 
 			
-			out(0,bin) += 0.1 * out(0, bin-1);
+			/* out(0,bin) += 0.1 * out(0, bin-1);
 			out(0,bin) += 0.1 * out(0, bin+1);
+			*/
 			
 		}
-		 		
-		/* index = (mrs_natural) 2 * bin;
+		 	
+		/* 
+		index = (mrs_natural) 2 * bin;
 		factor = 0.25;
 		if ((index < endBin_ - startBin_)&&(index > 0))
 			out(0,index) += factor * amp;
@@ -130,9 +132,7 @@ Histogram::myProcess(realvec& in, realvec& out)
 		factor = 0.15;
 		
 		if ((index < endBin_ - startBin_)&&(index > 0))
-		  out(0,index) += (factor * amp);
-		
-		
+			out(0,index) += (factor * amp);
 		*/ 
 		
 	}

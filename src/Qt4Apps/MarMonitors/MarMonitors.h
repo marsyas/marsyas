@@ -75,7 +75,8 @@ private:
   QSpinBox* graphNum;
   std::map<std::string, MarControlPtr> mycontrols_;
 
-  int nTicks;
+	
+  int nTicks_;
   int nGraphs_;
   
 

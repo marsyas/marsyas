@@ -35,12 +35,17 @@ MarMonitors::MarMonitors(string pluginName, string audioInputName)
 	QPushButton *tickButton = new QPushButton(tr("Tick"));
 	QPushButton *graphButton = new QPushButton(tr("New Graph"));
 	QPushButton *setupButton = new QPushButton(tr("Setup"));
-  
+	QPushButton *tick10Button = new QPushButton(tr("Tick10"));
+	QPushButton *tick100Button = new QPushButton(tr("Tick100"));
+	
 
 	gridLayout_->addWidget(tickButton, 0, 0);
 	// gridLayout_->addWidget(graphButton, 0, 1);
 	gridLayout_->addWidget(setupButton, 0, 1);
-  
+	// gridLayout_->addWidget(tick10Button, 1,0);
+	// gridLayout_->addWidget(tick100Button, 1,1);
+	
+
 	connect(tickButton, SIGNAL(clicked()), this, SLOT(tick()));
 	connect(setupButton, SIGNAL(clicked()), this, SLOT(setup()));
 	centralWidget_->setLayout(gridLayout_);
@@ -89,7 +94,7 @@ MarMonitors::initNetwork(QString pluginName)
 		pnet_->updctrl("Gain/gain2/mrs_real/gain", 3.0);
     }
   
-	nTicks = 500;
+	nTicks_ = 1;
   
 }
 
@@ -168,6 +173,9 @@ MarMonitors::graph(int graph_size, string xlabel, string label)
 void 
 MarMonitors::dialogDone()
 {
+
+	nTicks_ = graphNum->value();
+	
 	string cname = listWidget->currentItem()->text().toStdString();
 	mrs_realvec foo = pnet_->getctrl(cname)->to<mrs_realvec>();
 	pnet_->updctrl("mrs_string/filename", audioInputName_);
@@ -187,7 +195,7 @@ MarMonitors::setup()
 	setupDialog->setGeometry(400,200, 500, 400);
 	
 	
-	QLabel* label = new QLabel(tr("Setup probe for Graph"));
+	QLabel* label = new QLabel(tr("Number of ticks"));
 	QPushButton* doneButton = new QPushButton(tr("Done"));
   
 
@@ -211,14 +219,13 @@ MarMonitors::setup()
 	listWidget->setCurrentRow(0);
   
 
-	if (graphs.size() > 0)
-    {
-		graphNum = new QSpinBox();
-		graphNum->setWrapping(true);
-		graphNum->setMaximum(graphs.size()-1);
-		layout->addWidget(graphNum, 1, 0);  
-    }
-  
+	graphNum = new QSpinBox();
+	graphNum->setWrapping(true);
+	graphNum->setMaximum(1000);
+	graphNum->setValue(nTicks_);
+	
+	layout->addWidget(graphNum, 1, 0);  
+	
 
 	layout->addWidget(label, 0, 0);
 	layout->addWidget(listWidget, 2, 0);
@@ -236,7 +243,8 @@ void
 MarMonitors::tick()
 {
 	pnet_->updctrl("AudioSink/dest/mrs_bool/mute", true);	
-	pnet_->tick();  
+	for (int i=0; i<nTicks_; i++)
+		pnet_->tick();  
 	for (int i = 0; i < graphs.size(); ++i) 
     {
 		out_ = (mycontrols_[probes_[i]])->to<mrs_realvec>();

@@ -317,7 +317,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			beattracker->addMarSystem(onsetdetectionfunction);
 			beattracker->addMarSystem(mng.create("ShiftInput", "acc"));
 
-				MarSystem* normfiltering = mng.create("Series", "normfiltering");
+			MarSystem* normfiltering = mng.create("Series", "normfiltering");
 					normfiltering->addMarSystem(mng.create("Filter","filt1"));
 					
 				//if(sonicOutFluxFilter)

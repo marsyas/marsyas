@@ -184,6 +184,8 @@ Peaker::myProcess(realvec& in, realvec& out)
 					half_ = (mrs_natural) (0.5 * maxIndex + 0.5);
 					triple_ = 3 * maxIndex;
 					third_ = (mrs_natural) (0.33 * maxIndex + 0.5);
+					mrs_real double_factor = 0.40;
+					mrs_real triple_factor = 0.33;
 					
 					if (twice_ < (peakEnd - peakStart))
 					{
@@ -207,12 +209,13 @@ Peaker::myProcess(realvec& in, realvec& out)
 						
 						if (peakFound)
 						{
-							out(o, maxIndex) += (in(o, twice_)/rms_);
-							out(o, twice_) = in(o,twice_)/rms_ + 0.5 * out(o, maxIndex);
+							out(o,maxIndex) *= (1-double_factor);
+							out(o, maxIndex) +=  double_factor * (in(o,twice_)/rms_);
 						}
 						
 					}
 					
+					/* 
 					if (half_ < (peakEnd - peakStart))
 					{
 						peakFound = true;
@@ -239,7 +242,8 @@ Peaker::myProcess(realvec& in, realvec& out)
 							out(o, half_) = in(o,half_)/rms_ + 0.5 * out(o, maxIndex);
 						}
 						
-					}
+						}
+					*/ 
 					
 					
 					if (triple_ < (peakEnd - peakStart))
@@ -264,12 +268,13 @@ Peaker::myProcess(realvec& in, realvec& out)
 						
 						if (peakFound)
 						{
-							out(o, maxIndex) += (in(o, triple_)/rms_);
-							out(o, triple_) = in(o,triple_)/rms_ + 0.5 * out(o, maxIndex);
+							out(o, maxIndex) *= (1-triple_factor);
+							out(o, maxIndex) = triple_factor * (in(o,triple_)/rms_ + 0.5);
 						}
 						
 					}
 					
+					/* 
 					if (third_ < (peakEnd - peakStart))
 					{
 						peakFound = true;
@@ -297,6 +302,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 						}
 						
 					}
+					*/ 
 				}
 				
 				peakFound = true;

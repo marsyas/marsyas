@@ -180,9 +180,9 @@ void tempo_medianMultiBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("Peaker", "pkr"));
 	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
 	total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
-
+	
   
-
+	
 
 	total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 	// update the controls
@@ -420,7 +420,7 @@ tempo_new(string sfName, string resName)
 
 	/* total->updctrl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
 	   total->updctrl("Peaker/pkr1/mrs_real/peakStrength", 1.2);
-	   total->updctrl("Peaker/pkr1/mrs_natural/peakStart", 20);
+	   total->updctrl("Peaker/pkr1/mrs_natural/peakStart", 60);
 	   total->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 180);
 	*/
 
@@ -620,78 +620,137 @@ tempo_fluxBands(string sfName, string label, string resName)
 {
 	MarSystemManager mng;
 	
-	MarSystem *big = mng.create("Series/big");
 	
-	MarSystem *accum = mng.create("Accumulator/accum");
+	// MarSystem *accum = mng.create("Accumulator/accum");
 	
 	MarSystem *total = mng.create("Series/total");
 	total->addMarSystem(mng.create("SoundFileSource", "src"));
 	total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	total->addMarSystem(mng.create("ShiftInput", "si"));	
-	total->addMarSystem(mng.create("Windowing", "windowing"));
+	total->addMarSystem(mng.create("Windowing", "windowing1"));
 	total->addMarSystem(mng.create("Spectrum", "spk"));
 	total->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 	total->addMarSystem(mng.create("Flux", "flux"));
-	
-	accum->addMarSystem(total);
-
-
-
-	big->addMarSystem(accum);
-	big->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	big->addMarSystem(mng.create("BeatHistogram", "bhisto"));
-	
-	big->addMarSystem(mng.create("Peaker", "pkr"));
-	big->addMarSystem(mng.create("MaxArgMax", "mxr"));
-
-
-	big->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
-	big->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
-	big->updctrl("Peaker/pkr/mrs_natural/peakStart", 50);
-	big->updctrl("Peaker/pkr/mrs_natural/peakEnd", 180);
-	big->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
-	big->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
-
-
-	accum->updctrl("Series/total/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
-	accum->updctrl("Series/total/Flux/flux/mrs_string/mode", "DixonDAFX06");
+	total->addMarSystem(mng.create("ShiftInput", "si2"));
 	
 
+	total->addMarSystem(mng.create("Filter", "filt1"));
+	total->addMarSystem(mng.create("Reverse", "reverse"));
+	total->addMarSystem(mng.create("Filter", "filt2"));
+	total->addMarSystem(mng.create("Reverse", "reverse"));
+	 
+	
+	total->addMarSystem(mng.create("Windowing", "windowing2"));
+	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
+	total->addMarSystem(mng.create("BeatHistogram", "histo"));
+	// total->addMarSystem(mng.create("Windowing", "windowing3"));
+	
+	/* total->addMarSystem(mng.create("Peaker", "pkr"));
+	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
+	total->addMarSystem(mng.create("PeakPeriods2BPM", "pbpm"));
+	total->addMarSystem(mng.create("Histogram", "histo"));
+		*/ 
+	 
+	/* MarSystem* hfanout = mng.create("Fanout", "hfanout");
+	hfanout->addMarSystem(mng.create("Gain", "id1"));
+	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+	hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
+	total->addMarSystem(hfanout);
+	total->addMarSystem(mng.create("Sum", "hsum"));
+	*/ 
+	 
+
+
+	total->addMarSystem(mng.create("Peaker", "pkr1"));
+	
+
+
+	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));					  
+
+
+	realvec bcoeffs(1,3);
+	
+	bcoeffs(0) = 0.0564;
+	bcoeffs(1) = 0.1129;
+	bcoeffs(2) = 0.0564;
+	total->updctrl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+	
+	total->updctrl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
+	realvec acoeffs(1,3);
+	acoeffs(0) = 1.0000;
+	acoeffs(1) = -1.2247;
+	acoeffs(2) = 0.4504;
+	total->updctrl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+	total->updctrl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
+	 
+	
+
+	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
+	total->updctrl("ShiftInput/si2/mrs_natural/winSize", 2048);
+	
+	/* total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
+	total->updctrl("Histogram/histo/mrs_natural/endBin", 200);
+
+
+	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
+	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
+	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.75);
+	total->updctrl("Peaker/pkr/mrs_natural/peakStart", 60);
+	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 300);
+	*/ 
+
+
+	total->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
+	total->updctrl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
+	total->updctrl("Peaker/pkr1/mrs_natural/peakStart", 50);
+	total->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 180);
+	// total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+	
+	total->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
+	total->updctrl("Flux/flux/mrs_string/mode", "DixonDAFX06");
+	
+	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
+	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
 
 	
-	mrs_real srate = big->getctrl("Accumulator/accum/Series/total/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-
-	big->updctrl("Accumulator/accum/mrs_natural/nTimes", 128);
-	
-	big->updctrl("BeatHistogram/bhisto/mrs_natural/startBin", 0);
-	big->updctrl("BeatHistogram/bhisto/mrs_natural/endBin", 200);
+	mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
 	
-	mrs_natural winSize = 256;
-	mrs_natural hopSize = 32;
+	
+	mrs_natural winSize = 512;
+	mrs_natural hopSize = 256;
 
-	big->updctrl("Accumulator/accum/Series/total/mrs_natural/inSamples", hopSize);
-	big->updctrl("Accumulator/accum/Series/total/ShiftInput/si/mrs_natural/winSize", winSize);
 
-	big->updctrl("Accumulator/accum/Series/total/SoundFileSource/src/mrs_string/filename", sfName);
+	total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
 
+	total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	total->updctrl("mrs_natural/inSamples", hopSize);
 	
 
 	
 	vector<mrs_real> bpms;
 	mrs_real bin;
 
-	ofstream ofs;
-	ofs.open("accum.mpl");
-	ofs << *big << endl;
-	ofs.close();
 
+	if (pluginName != EMPTYSTRING)
+	{
+		ofstream ofs;
+		ofs.open(pluginName.c_str());
+		ofs << *total << endl;
+		ofs.close();
+		pluginName = EMPTYSTRING;
+	}
 
 	
-	while (big->getctrl("Accumulator/accum/Series/total/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+
+
+        mrs_realvec periods;	
+	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
-		big->tick();
-		mrs_realvec estimate = big->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		total->tick();
+		mrs_realvec estimate = total->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	// 	periods = total->getctrl("PeakPeriods2BPM/pbpm/mrs_realvec/processedData")->to<mrs_realvec>(); 
+	//  cout << "periods = " << periods << endl;
 		bin = estimate(1);
 		bpms.push_back(bin);
 	}
@@ -729,6 +788,8 @@ tempo_fluxBands(string sfName, string label, string resName)
 		if ((diff3 < diff2)&&(diff3 < diff1))
 			total_differences += diff3;
 		total_errors++;
+		cout << "WRONG TEMPO ESTIMATION IN " << sfName << endl;
+		
     }
   
 	total_instances++;
@@ -738,7 +799,7 @@ tempo_fluxBands(string sfName, string label, string resName)
 	cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << endl;
 	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
 	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
-	delete big;
+	delete total;
 
 
 }
@@ -770,6 +831,7 @@ tempo_histoSumBands(string sfName, string label, string resName)
 	total->addMarSystem(mng.create("OnePole", "lpf"));
 	total->addMarSystem(mng.create("Reverse", "reverse"));
 	total->addMarSystem(mng.create("OnePole", "lpf1"));
+	total->addMarSystem(mng.create("Reverse", "reverse1"));
 	total->addMarSystem(mng.create("Norm", "norm"));
 	
 	
