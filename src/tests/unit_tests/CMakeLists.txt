@@ -17,6 +17,7 @@ marsyas_unit_test(NormMaxMin NormMaxMin_runner.cpp)
 marsyas_unit_test(WekaSource WekaSource_runner.cpp)
 marsyas_unit_test(Selector Selector_runner.cpp)
 marsyas_unit_test(AubioYin AubioYin_runner.cpp)
+marsyas_unit_test(RunningAutocorrelation RunningAutocorrelation_runner.cpp)
 
 # Copy the files needed to run the tests
 configure_file(files/tiny.arff ${CMAKE_CURRENT_BINARY_DIR}/files/tiny.arff COPYONLY)
