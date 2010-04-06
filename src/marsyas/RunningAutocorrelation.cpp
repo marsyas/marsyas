@@ -18,6 +18,9 @@
 
 #include "RunningAutocorrelation.h"
 
+// For min().
+#include <algorithm>
+
 using namespace std;
 using namespace Marsyas;
 
@@ -82,22 +85,29 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 
 void RunningAutocorrelation::myProcess(realvec& in, realvec& out) {
 	/// Iterate over the observations and samples and do the processing.
-
 	for (mrs_natural i = 0; i < inObservations_; i++) {
+		// Calculate the autocorrelation terms
 		for (mrs_natural lag = 0; lag <= maxLag_; lag++) {
+			// The index in the output vector.
 			o = i * (maxLag_ + 1) + lag;
 			// For the first part, we need the memory.
-			for (mrs_natural n = 0; n < lag; n++) {
+			for (mrs_natural n = 0; n < min(lag, inSamples_); n++) {
 				acBuffer_(o, 0) += in(i, n) * memory_(i, maxLag_ - lag + n);
 			}
 			// For the second part, we have enough with the input slice.
 			for (mrs_natural n = lag; n < inSamples_; n++) {
 				acBuffer_(o, 0) += in(i, n) * in(i, n - lag);
 			}
+			// Store result in output vector.
 			out(o, 0) = acBuffer_(o, 0);
 		}
 		// Remember the last samples for next time.
-		for (mrs_natural m = 1; m <= maxLag_; m++) {
+		// First, shift samples in memory (if needed).
+		for (mrs_natural m = 0; m < maxLag_ - inSamples_; m++) {
+			memory_(i, m) = memory_(i, m + inSamples_);
+		}
+		// Second, copy over samples from input.
+		for (mrs_natural m = 1; m <= min(maxLag_, inSamples_); m++) {
 			memory_(i, maxLag_ - m) = in(i, inSamples_ - m);
 		}
 	}
