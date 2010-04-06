@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 2010 Stefaan Lippens
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -25,22 +25,31 @@ namespace Marsyas
 {
 /**
 	\class RunningAutocorrelation
-	\ingroup Processing
-	\brief Running calculation of autocorrelation values.
+	\ingroup Analysis
+	\brief Running calculation (across slices) of the autocorrelation values.
 
 	This MarSystem calculates the autocorrelation function of the input signal
-	over successive input slices up to a user defined maximum time lag
-	(in samples).
-	This is unlike the AutoCorrelation MarSystem, which computes the
-	autocorrelation per slice and uses FFT to calculate the autocorrelation.
+	defined by successive input slices. Unlike the AutoCorrelation MarSystem,
+	the calculations are done across slice boundaries in a seamless fashion
+	(RunningAutocorrelation keeps an internal buffer of the appropriate
+	number of samples from previous slices to implement this feature).
+	Calculations are done in time domain for time lags from 0 to a user defined
+	maximum lag (in number of samples).
+	Note that this assumes that the input slices are non overlapping slices.
 
-	Note that RunningAutocorrelation works seamlessly over slice boundaries
-	as it keeps a buffer of previous samples to correctly calculate
-	the autocorrelation values. This assumes that there is no overlap between
-	successive slices.
+	The different autocorrelation values are spread out over several output
+	observation channels (the output slice has only one output sample).
+	Multiple input observation channels are also supported, by appending all
+	the autocorrelation values for all input observation channels after each
+	other.
+	For example, if there are two input channels and the maximum lag is 5, the
+	12 output channels are successively:
+		Rxx[0], Rxx[1], ..., Rxx[5], Ryy[0], Ryy[1], ..., Ryy[5]
+	with Rxx[n] the autocorrelation of the first channel and Ryy[n] the
+	autocorrelation of the second channel.
+
 	TODO: support overlap between slices (e.g. provide a control for skipping
-	a certain amount of samples)
-
+	a certain amount of samples).
 
 	Controls:
 	- \b mrs_natural/maxLag : the maximum time lag (in samples) to calculate

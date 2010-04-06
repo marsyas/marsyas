@@ -1,5 +1,5 @@
 /*
- ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+ ** Copyright (C) 2010 Stefaan Lippens
  **
  ** This program is free software; you can redistribute it and/or modify
  ** it under the terms of the GNU General Public License as published by
@@ -56,7 +56,11 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 
 	// Update the cache of the maxLag control value.
 	maxLag_ = ctrl_maxLag_->to<mrs_natural> ();
-	// TODO: check if it is to small (<1) or too large?
+	if (maxLag_ < 0) {
+		MRSERR("maxLag should be greater than zero.");
+		// Setting it to zero to be sure.
+		maxLag_ = 0;
+	}
 
 	// Output flow:
 	ctrl_onSamples_->setValue(1, NOUPDATE);
