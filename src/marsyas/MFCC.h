@@ -21,6 +21,7 @@
 
 #include "MarSystem.h"
 
+
 namespace Marsyas
 {
 /**
@@ -34,12 +35,21 @@ namespace Marsyas
 	function in the Auditory Toolbox by Malcolm Slaney.
 
 	\see Spectrum, PowerSpectrum
+
+
+	Controls:
+	- \b mrs_natural/coefficients [w]: the number of cepstral coefficients
+	   to calculate.
 */
 
 
 class MFCC: public MarSystem
 {
 private:
+
+	/// Add specific controls needed by this MarSystem.
+	void addControls();
+
 	void myUpdate(MarControlPtr sender);
 
 	mrs_real lowestFrequency_;
@@ -51,7 +61,17 @@ private:
 
 	mrs_natural fftSize_, pfftSize_;
 	mrs_natural samplingRate_, psamplingRate_;
+
+
+	/// Number of cepstral coefficients.
 	mrs_natural cepstralCoefs_;
+	/// Previous number of cepstral coefficients (used for determining whether to update)
+	mrs_natural pcepstralCoefs_;
+	/// Default number of MFCC coefficients.
+	static const int cepstralCoefs_default = 13;
+
+	/// MarControlPtr for the number of cepstral coefficients.
+	MarControlPtr ctrl_cepstralCoefs_;
 
 	realvec freqs_;
 	realvec lower_;
@@ -71,6 +91,7 @@ private:
 	bool init_;
 
 public:
+
 	MFCC(std::string name);
 	MFCC(const MFCC& a);
 	~MFCC();
