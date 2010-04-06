@@ -594,7 +594,7 @@ MarSystem::process(realvec& in, realvec& out)
 #endif
 
 #ifdef MARSYAS_FLOWCHECK
-	checkFlow(in, out); 
+	checkFlow(in, out);
 #endif
 
 	myProcess(in, out);
@@ -1733,8 +1733,8 @@ MarSystem::put(istream& is)
 		}
 		else if (ctype == sstr)
 		{
-		  getline(is, scvalue);  // getline is used to include spaces in strings 
-		  scvalue = scvalue.substr(1, scvalue.length()); // strip leading space 
+		  getline(is, scvalue);  // getline is used to include spaces in strings
+		  scvalue = scvalue.substr(1, scvalue.length()); // strip leading space
 
 		  if (scvalue == "MARSYAS_EMPTYSTRING")
 		    scvalue = "";
@@ -1907,12 +1907,11 @@ Marsyas::obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix)
  * \param delimiter the string to split on.
  * \return a vector of strings.
  *
+ * \see Marsyas::obsNamesSplit()
  * \note Comma separated observation names in Marsyas use/expect a
- * trailing comma after the last item. However, this function
- * follows the more traditional convention where the delimiter
- * is only between items. So when using this function for splitting
- * an observation names string, there will be an empty string
- * at the end of the returned list.
+ * trailing comma after the last item. Splitting this string in the traditional
+ * way, results in an empty string at the end of the list.
+ * Use Marsyas::obsNamesSplit() to avoid this.
  *
  * \todo Use this function in more places (e.g. search for occurrences of 'find(",")').
  */
@@ -1935,6 +1934,32 @@ Marsyas::stringSplit(mrs_string input, mrs_string delimiter)
 	itemList.push_back(input.substr(startPos, input.size() - startPos));
 	return itemList;
 }
+
+
+/**
+ * \brief Helper function for splitting an observation names string used in MarSystems.
+ *
+ * \ingroup String
+ *
+ * \param observationNames: the observation names string to split.
+ * \return a vector of strings.
+ *
+ * Like Marsyas::stringSplit(), but taking the Marsyas convention of a trailing
+ * comma into account: the last comma does not produce an empty item.
+ * For example, the observation name string "foo,bar," will produce the items
+ * "foo" and "bar".
+ *
+ * \todo Use this function in more places (e.g. search for occurrences of 'find(",")').
+ */
+vector<mrs_string>
+Marsyas::obsNamesSplit(mrs_string observationNames)
+{
+	vector<mrs_string> obsNames = stringSplit(observationNames, ",");
+	obsNames.pop_back();
+	return obsNames;
+}
+
+
 
 //**************************************************************************
 //	MARSYAS_QT only methods

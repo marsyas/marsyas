@@ -488,6 +488,9 @@ mrs_string obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix);
 /// Helper function for splitting a string.
 std::vector<mrs_string> stringSplit(mrs_string input, mrs_string delimiter);
 
+/// Helper function for splitting an observation name string.
+std::vector<mrs_string> obsNamesSplit(mrs_string observationNames);
+
 }//namespace Marsyas
 
 #endif
