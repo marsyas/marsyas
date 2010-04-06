@@ -70,12 +70,18 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
 	// Prefix the observation with Autocorr<lag>_.
-	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string> ();
+
+	vector<mrs_string> inObsNames = obsNamesSplit(ctrl_inObsNames_->to<
+			mrs_string> ());
 	mrs_string onObsNames("");
-	for (int lag = 0; lag <= maxLag_; lag++) {
-		ostringstream oss("Autocorr");
-		oss << lag << "_";
-		onObsNames += obsNamesAddPrefix(inObsNames, oss.str());
+	for (vector<mrs_string>::iterator it = inObsNames.begin(); it
+			!= inObsNames.end(); it++) {
+		for (int lag = 0; lag <= maxLag_; lag++) {
+			ostringstream oss;
+			oss << "Autocorr" << lag << "_" << (*it) << ",";
+			onObsNames += oss.str();
+		}
+
 	}
 	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
 

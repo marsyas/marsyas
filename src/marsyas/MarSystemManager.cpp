@@ -214,6 +214,7 @@
 #include "BeatTimesSink.h"
 #include "CrossCorrelation.h"
 #include "SliceShuffle.h"
+#include "RunningAutocorrelation.h"
 //modifyHeader
 
 using namespace std;
@@ -417,6 +418,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
 	registerPrototype("CrossCorrelation",new CrossCorrelation("crossCorrelationpr"));
 	registerPrototype("SliceShuffle", new SliceShuffle("sliceshuffle"));
+	registerPrototype("RunningAutocorrelation", new RunningAutocorrelation("runningautocorrelation"));
+
 	//modifyRegister
 
 	//***************************************************************************************

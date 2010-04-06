@@ -274,5 +274,15 @@ public:
 		}
 	}
 
+	/**
+	 * Test the observation names
+	 */
+	void test_observation_names() {
+		set_flow(2,5,3);
+		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
+		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<mrs_string>();
+		TS_ASSERT_EQUALS(onObsNames, "Autocorr0_foo,Autocorr1_foo,Autocorr2_foo,Autocorr3_foo,Autocorr0_bar,Autocorr1_bar,Autocorr2_bar,Autocorr3_bar,")
+	}
+
 };
 

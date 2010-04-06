@@ -57,4 +57,10 @@ public:
  void runTest() { suite_RunningAutocorrelation_runner.test_maxlag_larger_than_slice_size(); }
 } testDescription_RunningAutocorrelation_runner_test_maxlag_larger_than_slice_size;
 
+static class TestDescription_RunningAutocorrelation_runner_test_observation_names : public CxxTest::RealTestDescription {
+public:
+ TestDescription_RunningAutocorrelation_runner_test_observation_names() : CxxTest::RealTestDescription( Tests_RunningAutocorrelation_runner, suiteDescription_RunningAutocorrelation_runner, 280, "test_observation_names" ) {}
+ void runTest() { suite_RunningAutocorrelation_runner.test_observation_names(); }
+} testDescription_RunningAutocorrelation_runner_test_observation_names;
+
 #include <cxxtest/Root.cpp>
