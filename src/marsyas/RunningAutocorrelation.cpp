@@ -75,18 +75,30 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 	// Allocate and initialize the buffers and counters.
 	this->acBuffer_.stretch(onObservations_, 1);
 	this->acBuffer_.setval(0.0);
+	this->memory_.stretch(inObservations_, maxLag_);
+	this->memory_.setval(0.0);
 
 }
 
 void RunningAutocorrelation::myProcess(realvec& in, realvec& out) {
 	/// Iterate over the observations and samples and do the processing.
+
 	for (mrs_natural i = 0; i < inObservations_; i++) {
 		for (mrs_natural lag = 0; lag <= maxLag_; lag++) {
 			o = i * (maxLag_ + 1) + lag;
+			// For the first part, we need the memory.
+			for (mrs_natural n = 0; n < lag; n++) {
+				acBuffer_(o, 0) += in(i, n) * memory_(i, maxLag_ - lag + n);
+			}
+			// For the second part, we have enough with the input slice.
 			for (mrs_natural n = lag; n < inSamples_; n++) {
 				acBuffer_(o, 0) += in(i, n) * in(i, n - lag);
 			}
 			out(o, 0) = acBuffer_(o, 0);
+		}
+		// Remember the last samples for next time.
+		for (mrs_natural m = 1; m <= maxLag_; m++) {
+			memory_(i, maxLag_ - m) = in(i, inSamples_ - m);
 		}
 	}
 }

@@ -142,5 +142,49 @@ public:
 			}
 		}
 	}
+
+	/**
+	 * Test the processing of two successive slices (single row).
+	 * First slice: [0, 1, 2, ..., 9]:
+	 *    x[0, n] = n     for n=0..9
+	 * Second slice: [10, 11, 12, ..., 19]:
+	 *    x[0,n] = 10 + n  for n=0..9
+	 * The output for second slice for lag=k should be
+	 *    Rxx[k] = sum_{n=k}^{19} n * (n - k)
+	 *           = sum_{n=k}^{19} n^2 - k * sum_{n=k}^19 n
+	 */
+	void test_two_slices_single_row(void) {
+		mrs_natural inObservations = 1;
+		mrs_natural inSamples = 10;
+		mrs_natural maxLag = 6;
+		set_flow(inObservations, inSamples, maxLag);
+
+		// Prepare input and output
+		in.create(inObservations, inSamples);
+		out.create(inObservations * (maxLag + 1), 1);
+		// First slice.
+		for (mrs_natural t = 0; t < inSamples; t++) {
+			in(0, t) = t;
+		}
+		// Process.
+		rac->myProcess(in, out);
+
+		// Second slice
+		for (mrs_natural t = 0; t < inSamples; t++) {
+			in(0, t) = inSamples + t;
+		}
+		// Process.
+		rac->myProcess(in, out);
+
+		// Check output.
+		mrs_natural expected;
+		for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+			expected = sum_of_squares(lag, 2 * inSamples - 1) - lag
+					* sum_of_ints(lag, 2 * inSamples - 1);
+			TS_ASSERT_EQUALS(out(lag, 0), expected);
+		}
+
+	}
+
 };
 

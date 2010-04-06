@@ -39,4 +39,10 @@ public:
  void runTest() { suite_RunningAutocorrelation_runner.test_one_slice_multirow(); }
 } testDescription_RunningAutocorrelation_runner_test_one_slice_multirow;
 
+static class TestDescription_RunningAutocorrelation_runner_test_two_slices_single_row : public CxxTest::RealTestDescription {
+public:
+ TestDescription_RunningAutocorrelation_runner_test_two_slices_single_row() : CxxTest::RealTestDescription( Tests_RunningAutocorrelation_runner, suiteDescription_RunningAutocorrelation_runner, 156, "test_two_slices_single_row" ) {}
+ void runTest() { suite_RunningAutocorrelation_runner.test_two_slices_single_row(); }
+} testDescription_RunningAutocorrelation_runner_test_two_slices_single_row;
+
 #include <cxxtest/Root.cpp>

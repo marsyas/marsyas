@@ -35,7 +35,7 @@ namespace Marsyas
 	autocorrelation per slice and uses FFT to calculate the autocorrelation.
 
 	Note that RunningAutocorrelation works seamlessly over slice boundaries
-	as it keeps a buffer of previous samples (still TODO) to correctly calculate
+	as it keeps a buffer of previous samples to correctly calculate
 	the autocorrelation values. This assumes that there is no overlap between
 	successive slices.
 	TODO: support overlap between slices (e.g. provide a control for skipping
@@ -66,7 +66,8 @@ private:
 	/// Internal buffer of the running autocorrelation values.
 	realvec acBuffer_;
 
-	//TODO: buffer of previous samples
+	/// Buffer of previous samples.
+	realvec memory_;
 
 public:
 	/// RunningAutocorrelation constructor.
