@@ -72,9 +72,9 @@ public:
 	void set_flow(mrs_natural inObservations, mrs_natural inSamples,
 			mrs_natural maxLag) {
 		rac->updctrl("mrs_natural/inObservations", inObservations);
+		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onObservations")->to<mrs_natural>(), inObservations);
 		rac->updctrl("mrs_natural/inSamples", inSamples);
 		rac->updctrl("mrs_natural/maxLag", maxLag);
-		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onObservations")->to<mrs_natural>(), inObservations);
 		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onSamples")->to<mrs_natural>(), maxLag + 1);
 		// Allocate the input and output vectors.
 		in.create(inObservations, inSamples);
@@ -150,7 +150,7 @@ public:
 		for (mrs_natural r = 0; r < inObservations; r++) {
 			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
 				expected = autocorrelation_of_anplusb(1, r, lag, inSamples - 1);
-				TS_ASSERT_EQUALS(out(r,  lag), expected);
+				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
 		}
 	}
@@ -279,5 +279,22 @@ public:
 		TS_ASSERT_EQUALS(onObsNames, "foo,bar,")
 	}
 
+	/**
+	 * Test flow change: the internal buffers should be updated accordingly.
+	 */
+	void test_flow_change() {
+		mrs_natural inObservations = 2;
+		mrs_natural inSamples = 10;
+		mrs_natural maxLag = 6;
+		set_flow(inObservations, inSamples, maxLag);
+		// Inrease the inObservations: internal buffers should be increased too.
+		// (without using set_flow(), to avoid extra updates)
+		inObservations = 200;
+		rac->updctrl("mrs_natural/inObservations", inObservations);
+		in.create(inObservations, inSamples);
+		out.create(inObservations, maxLag + 1);
+		// This should not raise an out of array assertion.
+		rac->myProcess(in, out);
+	}
 };
 

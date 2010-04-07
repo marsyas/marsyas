@@ -69,11 +69,10 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 
 	// Allocate and initialize the buffers and counters.
-	this->acBuffer_.stretch(onObservations_, maxLag_ + 1);
+	this->acBuffer_.stretch(inObservations_, maxLag_ + 1);
 	this->acBuffer_.setval(0.0);
 	this->memory_.stretch(inObservations_, maxLag_);
 	this->memory_.setval(0.0);
-
 }
 
 void RunningAutocorrelation::myProcess(realvec& in, realvec& out) {

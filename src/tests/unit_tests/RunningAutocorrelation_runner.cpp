@@ -63,4 +63,10 @@ public:
  void runTest() { suite_RunningAutocorrelation_runner.test_observation_names(); }
 } testDescription_RunningAutocorrelation_runner_test_observation_names;
 
+static class TestDescription_RunningAutocorrelation_runner_test_flow_change : public CxxTest::RealTestDescription {
+public:
+ TestDescription_RunningAutocorrelation_runner_test_flow_change() : CxxTest::RealTestDescription( Tests_RunningAutocorrelation_runner, suiteDescription_RunningAutocorrelation_runner, 285, "test_flow_change" ) {}
+ void runTest() { suite_RunningAutocorrelation_runner.test_flow_change(); }
+} testDescription_RunningAutocorrelation_runner_test_flow_change;
+
 #include <cxxtest/Root.cpp>
