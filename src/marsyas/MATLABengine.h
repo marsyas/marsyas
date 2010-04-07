@@ -59,7 +59,7 @@ namespace Marsyas
 
 class realvec;
   
-class MATLABengine
+class marsyas_EXPORT  MATLABengine
 {
 private:
   Engine *engine_;

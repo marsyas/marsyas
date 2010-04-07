@@ -66,7 +66,7 @@ namespace Marsyas
 */
 
 
-class NumericLib
+class marsyas_EXPORT NumericLib
 {
 private:
 	
