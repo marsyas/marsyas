@@ -37,16 +37,17 @@ namespace Marsyas
 	maximum lag (in number of samples).
 	Note that this assumes that the input slices are non overlapping slices.
 
-	The different autocorrelation values are spread out over several output
-	observation channels (the output slice has only one output sample).
-	Multiple input observation channels are also supported, by appending all
-	the autocorrelation values for all input observation channels after each
-	other.
-	For example, if there are two input channels and the maximum lag is 5, the
-	12 output channels are successively:
-		Rxx[0], Rxx[1], ..., Rxx[5], Ryy[0], Ryy[1], ..., Ryy[5]
-	with Rxx[n] the autocorrelation of the first channel and Ryy[n] the
-	autocorrelation of the second channel.
+	The autocorrelation values are laid out in the output slice along the
+	time/samples dimension from lag zero to the maximum lag.
+	Multiple input observation channels are supported.
+	For example, if there are two input channels and the maximum lag is 5,
+	the output slice will have two rows and six (not five) columns:
+		Rxx[0], Rxx[1], ..., Rxx[5]
+		Ryy[0], Ryy[1], ..., Ryy[5]
+	with Rxx[n] the autocorrelation of the first channel for lag n
+	and Ryy[n] the autocorrelation of the second channel.
+
+	TODO: provide a reset control
 
 	TODO: support overlap between slices (e.g. provide a control for skipping
 	a certain amount of samples).

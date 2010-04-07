@@ -62,31 +62,14 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 		maxLag_ = 0;
 	}
 
-	// Output flow:
-	ctrl_onSamples_->setValue(1, NOUPDATE);
-	onObservations_ = (mrs_natural) ((maxLag_ + 1) * ctrl_inObservations_->to<
-			mrs_natural> ());
-	ctrl_onObservations_->setValue(onObservations_, NOUPDATE);
+	// Output flow: almost the same as input flow, only the onSamples differ.
+	ctrl_onSamples_->setValue(maxLag_ + 1, NOUPDATE);
+	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-
-	// Prefix the observation with Autocorr<lag>_.
-
-	vector<mrs_string> inObsNames = obsNamesSplit(ctrl_inObsNames_->to<
-			mrs_string> ());
-	mrs_string onObsNames("");
-	for (vector<mrs_string>::iterator it = inObsNames.begin(); it
-			!= inObsNames.end(); it++) {
-		for (int lag = 0; lag <= maxLag_; lag++) {
-			ostringstream oss;
-			oss << "Autocorr" << lag << "_" << (*it) << ",";
-			onObsNames += oss.str();
-		}
-
-	}
-	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
+	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 
 	// Allocate and initialize the buffers and counters.
-	this->acBuffer_.stretch(onObservations_, 1);
+	this->acBuffer_.stretch(onObservations_, maxLag_ + 1);
 	this->acBuffer_.setval(0.0);
 	this->memory_.stretch(inObservations_, maxLag_);
 	this->memory_.setval(0.0);
@@ -98,18 +81,16 @@ void RunningAutocorrelation::myProcess(realvec& in, realvec& out) {
 	for (mrs_natural i = 0; i < inObservations_; i++) {
 		// Calculate the autocorrelation terms
 		for (mrs_natural lag = 0; lag <= maxLag_; lag++) {
-			// The index in the output vector.
-			o = i * (maxLag_ + 1) + lag;
 			// For the first part, we need the memory.
 			for (mrs_natural n = 0; n < min(lag, inSamples_); n++) {
-				acBuffer_(o, 0) += in(i, n) * memory_(i, maxLag_ - lag + n);
+				acBuffer_(i, lag) += in(i, n) * memory_(i, maxLag_ - lag + n);
 			}
 			// For the second part, we have enough with the input slice.
 			for (mrs_natural n = lag; n < inSamples_; n++) {
-				acBuffer_(o, 0) += in(i, n) * in(i, n - lag);
+				acBuffer_(i, lag) += in(i, n) * in(i, n - lag);
 			}
 			// Store result in output vector.
-			out(o, 0) = acBuffer_(o, 0);
+			out(i, lag) = acBuffer_(i, lag);
 		}
 		// Remember the last samples for next time.
 		// First, shift samples in memory (if needed).

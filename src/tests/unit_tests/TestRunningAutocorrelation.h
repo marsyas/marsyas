@@ -67,14 +67,18 @@ public:
 	 * Set up the internal RunningAutocorrelation MarSystem with the input
 	 * flow parameters and maxLag and check if the output flow
 	 * parameters are set accordingly.
+	 * Also allocate the input and output realvecs.
 	 */
 	void set_flow(mrs_natural inObservations, mrs_natural inSamples,
 			mrs_natural maxLag) {
 		rac->updctrl("mrs_natural/inObservations", inObservations);
 		rac->updctrl("mrs_natural/inSamples", inSamples);
 		rac->updctrl("mrs_natural/maxLag", maxLag);
-		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onObservations")->to<mrs_natural>(), (maxLag+1) * inObservations);
-		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onSamples")->to<mrs_natural>(), 1);
+		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onObservations")->to<mrs_natural>(), inObservations);
+		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onSamples")->to<mrs_natural>(), maxLag + 1);
+		// Allocate the input and output vectors.
+		in.create(inObservations, inSamples);
+		out.create(inObservations, maxLag + 1);
 	}
 
 	void test_output_flow(void) {
@@ -100,12 +104,10 @@ public:
 		mrs_natural maxLag = 6;
 		set_flow(inObservations, inSamples, maxLag);
 
-		// Prepare input and output
-		in.create(inObservations, inSamples);
+		// Create input
 		for (mrs_natural t = 0; t < inSamples; t++) {
 			in(0, t) = t;
 		}
-		out.create(inObservations * (maxLag + 1), 1);
 
 		// Process.
 		rac->myProcess(in, out);
@@ -114,7 +116,7 @@ public:
 		mrs_natural expected;
 		for (mrs_natural lag = 0; lag <= maxLag; lag++) {
 			expected = autocorrelation_of_anplusb(1, 0, lag, inSamples - 1);
-			TS_ASSERT_EQUALS(out(lag, 0), expected);
+			TS_ASSERT_EQUALS(out(0, lag), expected);
 		}
 
 	}
@@ -133,14 +135,12 @@ public:
 		mrs_natural maxLag = 6;
 		set_flow(inObservations, inSamples, maxLag);
 
-		// Prepare input and output
-		in.create(inObservations, inSamples);
+		// Create input.
 		for (mrs_natural r = 0; r < inObservations; r++) {
 			for (mrs_natural t = 0; t < inSamples; t++) {
 				in(r, t) = r + t;
 			}
 		}
-		out.create(inObservations * (maxLag + 1), 1);
 
 		// Process.
 		rac->myProcess(in, out);
@@ -150,7 +150,7 @@ public:
 		for (mrs_natural r = 0; r < inObservations; r++) {
 			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
 				expected = autocorrelation_of_anplusb(1, r, lag, inSamples - 1);
-				TS_ASSERT_EQUALS(out(r * (maxLag + 1) + lag, 0), expected);
+				TS_ASSERT_EQUALS(out(r,  lag), expected);
 			}
 		}
 	}
@@ -171,9 +171,7 @@ public:
 		mrs_natural maxLag = 6;
 		set_flow(inObservations, inSamples, maxLag);
 
-		// Prepare input and output
-		in.create(inObservations, inSamples);
-		out.create(inObservations * (maxLag + 1), 1);
+		// Create input.
 		// First slice.
 		for (mrs_natural t = 0; t < inSamples; t++) {
 			in(0, t) = t;
@@ -192,7 +190,7 @@ public:
 		mrs_natural expected;
 		for (mrs_natural lag = 0; lag <= maxLag; lag++) {
 			expected = autocorrelation_of_anplusb(1, 0, lag, 2 * inSamples - 1);
-			TS_ASSERT_EQUALS(out(lag, 0), expected);
+			TS_ASSERT_EQUALS(out(0, lag), expected);
 		}
 	}
 
@@ -214,9 +212,7 @@ public:
 		mrs_natural S = 7;
 		set_flow(inObservations, inSamples, maxLag);
 
-		// Prepare input and output.
-		in.create(inObservations, inSamples);
-		out.create(inObservations * (maxLag + 1), 1);
+		// Create input.
 		// Feed with multiple multirow slices.
 		for (mrs_natural s = 0; s < S; s++) {
 			for (mrs_natural r = 0; r < inObservations; r++) {
@@ -234,7 +230,7 @@ public:
 			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
 				expected = autocorrelation_of_anplusb(1, r, lag, S * inSamples
 						- 1);
-				TS_ASSERT_EQUALS(out(r * (maxLag + 1) + lag, 0), expected);
+				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
 		}
 	}
@@ -249,9 +245,7 @@ public:
 		mrs_natural S = 7;
 		set_flow(inObservations, inSamples, maxLag);
 
-		// Prepare input and output.
-		in.create(inObservations, inSamples);
-		out.create(inObservations * (maxLag + 1), 1);
+		// Create input.
 		// Feed with multiple multirow slices.
 		for (mrs_natural s = 0; s < S; s++) {
 			for (mrs_natural r = 0; r < inObservations; r++) {
@@ -269,7 +263,7 @@ public:
 			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
 				expected = autocorrelation_of_anplusb(1, r, lag, S * inSamples
 						- 1);
-				TS_ASSERT_EQUALS(out(r * (maxLag + 1) + lag, 0), expected);
+				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
 		}
 	}
@@ -278,10 +272,11 @@ public:
 	 * Test the observation names
 	 */
 	void test_observation_names() {
-		set_flow(2,5,3);
+		set_flow(2, 5, 3);
 		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
-		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<mrs_string>();
-		TS_ASSERT_EQUALS(onObsNames, "Autocorr0_foo,Autocorr1_foo,Autocorr2_foo,Autocorr3_foo,Autocorr0_bar,Autocorr1_bar,Autocorr2_bar,Autocorr3_bar,")
+		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
+				mrs_string> ();
+		TS_ASSERT_EQUALS(onObsNames, "foo,bar,")
 	}
 
 };
