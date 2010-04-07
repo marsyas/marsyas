@@ -16,31 +16,31 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "BeatHistogram.h"
+#include "BeatHistogramFromPeaks.h"
 
 using namespace std;
 using namespace Marsyas;
 
 
-BeatHistogram::BeatHistogram(string name):MarSystem("BeatHistogram",name)
+BeatHistogramFromPeaks::BeatHistogramFromPeaks(string name):MarSystem("BeatHistogramFromPeaks",name)
 {
 	addControls();
 }
 
 
-BeatHistogram::~BeatHistogram()
+BeatHistogramFromPeaks::~BeatHistogramFromPeaks()
 {
 }
 
 
 MarSystem* 
-BeatHistogram::clone() const 
+BeatHistogramFromPeaks::clone() const 
 {
-	return new BeatHistogram(*this);
+	return new BeatHistogramFromPeaks(*this);
 }
 
 void 
-BeatHistogram::addControls()
+BeatHistogramFromPeaks::addControls()
 {
 	addctrl("mrs_real/gain", 1.0);
 	addctrl("mrs_bool/reset", false);
@@ -49,20 +49,18 @@ BeatHistogram::addControls()
 	setctrlState("mrs_natural/startBin", true);
 	addctrl("mrs_natural/endBin", 100);
 	setctrlState("mrs_natural/endBin", true);
-	addctrl("mrs_real/factor", 1.0);
-  
 }
 
 void
-BeatHistogram::myUpdate(MarControlPtr sender)
+BeatHistogramFromPeaks::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-	MRSDIAG("BeatHistogram.cpp - BeatHistogram:myUpdate");
-  
+	MRSDIAG("BeatHistogramFromPeaks.cpp - BeatHistogramFromPeaks:myUpdate");
+
 	startBin_ = getctrl("mrs_natural/startBin")->to<mrs_natural>();
 	endBin_ = getctrl("mrs_natural/endBin")->to<mrs_natural>();
 	reset_ = getctrl("mrs_bool/reset")->to<mrs_bool>();  
-	factor_ = getctrl("mrs_real/factor")->to<mrs_real>();
+  
 	setctrl("mrs_natural/onSamples", endBin_ - startBin_);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
@@ -70,7 +68,7 @@ BeatHistogram::myUpdate(MarControlPtr sender)
 
 
 void 
-BeatHistogram::myProcess(realvec& in, realvec& out)
+BeatHistogramFromPeaks::myProcess(realvec& in, realvec& out)
 {
 	if (reset_) 
     {
@@ -78,66 +76,62 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		reset_ = false;
 		setctrl("mrs_bool/reset", false);
     }
-
+	
 	mrs_natural bin=0;
 	mrs_real amp;
 	mrs_real sum_amp;
+	mrs_real factor; 
 	mrs_natural index=0;
-	mrs_real srate = getctrl("mrs_real/israte")->to<mrs_real>();
-	mrs_natural count = 1;
-	mrs_natural prev_bin =0;
   
-	mrs_real sumamp = 0.0;
-  
-  
-
-
 	for (o=0; o < inObservations_; o++)
-		for (t = 1; t < inSamples_; t++)
+		for (t = 0; t < inSamples_/2; t++)
 		{
-			bin = (mrs_natural)((srate * 60.0  * factor_ / (t+1)) + 0.5);
-			amp = in(o,t);
-			// amp = in(o,t) / in(o,0); // normalize so that 0-lag is 1 
-		 
-		  
-			if ((bin > 40)&&(bin < endBin_))
+			bin = (mrs_natural)(in(o,2*t+1)+0.5);
+			amp = in(o,2*t);
+		
+			if ((bin < endBin_ - startBin_)&&(bin > 1)) 
 			{
-			  
-				if (prev_bin == bin) 
-				{
-					sumamp += amp;
-					count++;
-				}
-			  
-				else 
-				{
-					sumamp += amp;
-					out(0,prev_bin) += ((sumamp / count));
-				  
-				  
-					// if ((sumamp / count) >= out(0,prev_bin)) 
-					// {
-					// out(0,prev_bin) = sumamp/ count;
-					// }
-				  
-					count = 1;
-					sumamp = 0.0;
-				}
-			  
-				prev_bin = bin;	  
+				//		out(0,bin) += amp;
+				out(0,bin) += (amp * (bin-startBin_));
+				/* out(0,bin-1) += 0.5 * amp;
+				   out(0,bin-2) += 0.25 * amp;
+				   out(0,bin+1) += 0.5 * amp;
+				   out(0,bin-2) += 0.25 * amp;
+				*/ 
+				
+				/* out(0,bin) += 0.1 * out(0, bin-1);
+				   out(0,bin) += 0.1 * out(0, bin+1);
+				*/
+			
 			}
-		  
+		 	
+			/* 
+			   index = (mrs_natural) 2 * bin;
+			   factor = 0.25;
+			   if ((index < endBin_ - startBin_)&&(index > 0))
+			   out(0,index) += factor * amp;
+		
+		
+		
+			   index = (mrs_natural) (0.5 * bin + 0.5);
+			   factor = 0.25;
+		
+			   if ((index < endBin_ - startBin_)&&(index > 0))
+			   out(0,index) += factor * amp;
+		
+			   index = 3 * bin;
+			   factor = 0.15;
+			   if ((index < endBin_ - startBin_)&&(index > 0))
+			   out(0,index) += factor * amp;
+		
+		
+			   index = (mrs_natural) (0.33333 * bin + 0.5);
+			   factor = 0.15;
+		
+			   if ((index < endBin_ - startBin_)&&(index > 0))
+			   out(0,index) += (factor * amp);
+			*/ 
+		
 		}
-	// out.normMaxMin();
   
 }
-
-
-
-
-
-
-
-	
-
-	

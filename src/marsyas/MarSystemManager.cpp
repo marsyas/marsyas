@@ -112,7 +112,7 @@
 #include "Yin.h"
 #include "DownSampler.h"
 #include "PeakPeriods2BPM.h"
-#include "Histogram.h"
+#include "BeatHistogramFromPeaks.h"
 #include "BeatHistogram.h"
 #include "BeatHistoFeatures.h"
 #include "FM.h"
@@ -312,8 +312,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Yin", new Yin("yin"));
 	registerPrototype("DownSampler", new DownSampler("ds"));
 	registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));
-	registerPrototype("Histogram", new Histogram("histop"));
-	registerPrototype("BeatHistogram", new BeatHistogram("beathistop"));
+	registerPrototype("BeatHistogramFromPeaks", new BeatHistogramFromPeaks("beathistofrompeakspr"));
+	registerPrototype("BeatHistogram", new BeatHistogram("beathistopr"));
 	registerPrototype("BeatHistoFeatures", new BeatHistoFeatures("bhfp"));
 	registerPrototype("SineSource", new SineSource("sinesp"));
 	registerPrototype("NoiseSource", new NoiseSource("noisesrcsp"));

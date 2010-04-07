@@ -345,7 +345,7 @@ tempo_new(string sfName, string resName)
 	// total->addMarSystem(mng.create("PlotSink", "psink2"));
 	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
 	total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
-	total->addMarSystem(mng.create("Histogram", "histo"));
+	total->addMarSystem(mng.create("BeatHistogramFromPeaks", "histo"));
 
 	// total->addMarSystem(mng.create("Peaker", "pkr1"));
 	// total->addMarSystem(mng.create("PlotSink", "psink3"));
@@ -427,8 +427,8 @@ tempo_new(string sfName, string resName)
 
 
 
-	total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
-	total->updctrl("Histogram/histo/mrs_natural/endBin", 230);
+	total->updctrl("BeatHistogramFromPeaks/histo/mrs_natural/startBin", 0);
+	total->updctrl("BeatHistogramFromPeaks/histo/mrs_natural/endBin", 230);
 
 	// prepare vectors for processing
 	realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
@@ -648,7 +648,7 @@ tempo_fluxBands(string sfName, string label, string resName)
 	/* total->addMarSystem(mng.create("Peaker", "pkr"));
 	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
 	total->addMarSystem(mng.create("PeakPeriods2BPM", "pbpm"));
-	total->addMarSystem(mng.create("Histogram", "histo"));
+	total->addMarSystem(mng.create("BeatHistogramFromPeaks", "histo"));
 		*/ 
 	 
 	/* MarSystem* hfanout = mng.create("Fanout", "hfanout");
@@ -685,11 +685,11 @@ tempo_fluxBands(string sfName, string label, string resName)
 	 
 	
 
-	total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
+	// total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
 	total->updctrl("ShiftInput/si2/mrs_natural/winSize", 2048);
 	
-	/* total->updctrl("Histogram/histo/mrs_natural/startBin", 0);
-	total->updctrl("Histogram/histo/mrs_natural/endBin", 200);
+	/* total->updctrl("BeatHistogramFromPeaks/histo/mrs_natural/startBin", 0);
+	total->updctrl("BeatHistogramFromPeaks/histo/mrs_natural/endBin", 200);
 
 
 	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
@@ -711,7 +711,8 @@ tempo_fluxBands(string sfName, string label, string resName)
 	
 	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
 	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 400);
-
+	total->updctrl("BeatHistogram/histo/mrs_real/factor", 8.0);
+	
 	
 	mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 

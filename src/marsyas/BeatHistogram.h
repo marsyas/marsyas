@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -28,28 +28,29 @@ namespace Marsyas
     \ingroup Analysis
     \brief BeatHistogram
 
-    Calculate histogram
+    Calculate Beat Histogram. The input should be the autocorrelation of either 
+	the time waveform or some kind of onset detection function. 
 */
 
 
-class BeatHistogram: public MarSystem
-{
-private: 
-  void addControls();
-	void myUpdate(MarControlPtr sender);
-  
-	mrs_natural startBin_;
-  mrs_natural endBin_;
-  bool reset_;
-  
-public:
-  // BeatHistogram();
-  BeatHistogram(std::string name);
-  ~BeatHistogram();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
-};
+	class BeatHistogram: public MarSystem
+	{
+	private: 
+		void addControls();
+		void myUpdate(MarControlPtr sender);
+	
+		mrs_natural startBin_;
+		mrs_natural endBin_;
+		bool reset_;
+		mrs_real factor_;
+	
+	public:
+		BeatHistogram(std::string name);
+		~BeatHistogram();
+		MarSystem* clone() const;  
+	
+		void myProcess(realvec& in, realvec& out);
+	};
 
 }//namespace Marsyas
 

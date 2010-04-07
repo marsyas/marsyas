@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,39 +16,41 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_HISTOGRAM_H
-#define MARSYAS_HISTOGRAM_H
+#ifndef MARSYAS_BEATHISTOGRAMFROMPEAKS_H
+#define MARSYAS_BEATHISTOGRAMFROMPEAKS_H
 
 #include "MarSystem.h"
 
 namespace Marsyas
 {
 /** 
-    \class Histogram
+    \class BeatHistogramFromPeaks
     \ingroup Analysis
-    \brief Histogram
+    \brief BeatHistogramFromPeaks
 
-    Calculate histogram
+    Calculate BeatHistograms from peaks represented as pairs 
+	of periodicity/amplitude (typically from an autocorrelation function). 
+
 */
 
 
-class Histogram: public MarSystem
+class BeatHistogramFromPeaks: public MarSystem
 {
 private: 
-  void addControls();
+	void addControls();
 	void myUpdate(MarControlPtr sender);
-  
+	
 	mrs_natural startBin_;
-  mrs_natural endBin_;
-  bool reset_;
-  
+	mrs_natural endBin_;
+	bool reset_;
+	
 public:
   // Histogram();
-  Histogram(std::string name);
-  ~Histogram();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
+	BeatHistogramFromPeaks(std::string name);
+	~BeatHistogramFromPeaks();
+	MarSystem* clone() const;  
+	
+	void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas
