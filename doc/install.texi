@@ -953,36 +953,35 @@ pnet->updctrl("AudioSource/srcRec/mrs_bool/initAudio", true);
 
 @subsubheading MATLAB
 
+These instructions have been tested on OS X 10.5.8 and MATLAB_R2009a. 
+
 @enumerate
 @item
 MATLAB and X11 for OS X must be installed
 
 @item
-The configure script assumes it is installed in
-/Applications/MATLAB74
-(this should be an environment variable; this might be fixed soon ).
+The naming conventions of MATLAB are a messy so the CMake configuration 
+assumes that either the MATLAB environment variable is set or looks for 
+MATLAB in /Applications/MATLAB_R2009a.app
 
 @item
-The marsaysMATLABrelease configuration must be enabled
-(uncommented in marsyasConfig.pri, or do something for autotools)
+Compile Marsyas and enable the WITH_MATLAB option. If MATLAB can not 
+be located you will get an error message. Try setting the MATLAB
+enviornment variable and if that does not work then attempt to 
+set the paths to the MATLAB-related variables manually. 
 
-@item
-Compile Marsyas and enable the WITH_MATLAB option 
+@item 
+You will need to edit your .bash_profile with the following lines: 
+@example
+export MATLAB="/Applications/MATLAB_R2009a.app"
+export DYLD_LIBRARY_PATH=$MATLAB/bin/maci/:$MATLAB/sys/os/maci/:$DYLD_LIBRARY_PATH
+@end example
 
 @item
 try out mudbox -t MATLABengine. MATLAB
 should open and various benchmarks and communication
 between Marsyas and MATLAB should happen. If not
 email the mailing lists for some help.
-
-@item
-There must be a symbolic link to the matlab executable
-from /usr/bin/matlab:
-ln -s /Applications/MATLAB74/bin/matlab /usr/bin/matlab
-
-@item
-You must start X11 windows manually. "open -a X11", or click on the X11
-icon in your /Applications/util/ folder.
 @end enumerate
 
 

@@ -702,15 +702,15 @@ tempo_fluxBands(string sfName, string label, string resName)
 
 	total->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
 	total->updctrl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
-	total->updctrl("Peaker/pkr1/mrs_natural/peakStart", 50);
-	total->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 180);
+	total->updctrl("Peaker/pkr1/mrs_natural/peakStart", 100);
+	total->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 360);
 	// total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
 	
 	total->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 	total->updctrl("Flux/flux/mrs_string/mode", "DixonDAFX06");
 	
 	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
-	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
+	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 400);
 
 	
 	mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
@@ -751,7 +751,7 @@ tempo_fluxBands(string sfName, string label, string resName)
 		mrs_realvec estimate = total->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	// 	periods = total->getctrl("PeakPeriods2BPM/pbpm/mrs_realvec/processedData")->to<mrs_realvec>(); 
 	//  cout << "periods = " << periods << endl;
-		bin = estimate(1);
+		bin = estimate(1) * 0.5;
 		bpms.push_back(bin);
 	}
 	
