@@ -53,7 +53,11 @@ namespace Marsyas
 	a certain amount of samples).
 
 	Controls:
-	- \b mrs_natural/maxLag : the maximum time lag (in samples) to calculate
+	- \b mrs_natural/maxLag: the maximum time lag (in samples) to calculate
+	- \b mrs_bool/normalize: normalize the autocorrelation values on the value
+		for lag = 0 (which is the energy of the signal). Note that the
+		autocorrelation value for lag 0 will be 1 (unless the input signal
+		is 0 everywhere).
 */
 
 class marsyas_EXPORT RunningAutocorrelation: public MarSystem
@@ -78,6 +82,12 @@ private:
 
 	/// Buffer of previous samples.
 	realvec memory_;
+
+	/// The normalize control
+	MarControlPtr ctrl_normalize_;
+
+	/// Cache of the normalize control value.
+	mrs_bool normalize_;
 
 public:
 	/// RunningAutocorrelation constructor.

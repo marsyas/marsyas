@@ -209,18 +209,16 @@ public:
 		mrs_natural inObservations = 5;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
-		mrs_natural S = 7;
+		mrs_natural slices = 7;
 		set_flow(inObservations, inSamples, maxLag);
 
-		// Create input.
 		// Feed with multiple multirow slices.
-		for (mrs_natural s = 0; s < S; s++) {
+		for (mrs_natural s = 0; s < slices; s++) {
 			for (mrs_natural r = 0; r < inObservations; r++) {
 				for (mrs_natural t = 0; t < inSamples; t++) {
 					in(r, t) = r + (s * inSamples + t);
 				}
 			}
-			// Process.
 			rac->myProcess(in, out);
 		}
 
@@ -228,8 +226,8 @@ public:
 		mrs_natural expected;
 		for (mrs_natural r = 0; r < inObservations; r++) {
 			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
-				expected = autocorrelation_of_anplusb(1, r, lag, S * inSamples
-						- 1);
+				expected = autocorrelation_of_anplusb(1, r, lag, slices
+						* inSamples - 1);
 				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
 		}
@@ -245,7 +243,6 @@ public:
 		mrs_natural S = 7;
 		set_flow(inObservations, inSamples, maxLag);
 
-		// Create input.
 		// Feed with multiple multirow slices.
 		for (mrs_natural s = 0; s < S; s++) {
 			for (mrs_natural r = 0; r < inObservations; r++) {
@@ -253,7 +250,6 @@ public:
 					in(r, t) = r + (s * inSamples + t);
 				}
 			}
-			// Process.
 			rac->myProcess(in, out);
 		}
 
@@ -295,6 +291,62 @@ public:
 		out.create(inObservations, maxLag + 1);
 		// This should not raise an out of array assertion.
 		rac->myProcess(in, out);
+	}
+
+	/**
+	 * Test the normalization of autocorrelation values.
+	 */
+	void test_normalization() {
+		mrs_natural inObservations = 5;
+		mrs_natural inSamples = 10;
+		mrs_natural maxLag = 6;
+		mrs_natural slices = 7;
+		set_flow(inObservations, inSamples, maxLag);
+		rac->updctrl("mrs_bool/normalize", true);
+
+		// Feed with multiple multirow slices.
+		for (mrs_natural s = 0; s < slices; s++) {
+			for (mrs_natural r = 0; r < inObservations; r++) {
+				for (mrs_natural t = 0; t < inSamples; t++) {
+					in(r, t) = r + (s * inSamples + t);
+				}
+			}
+			rac->myProcess(in, out);
+		}
+
+		// Check output.
+		mrs_real expected;
+		for (mrs_natural r = 0; r < inObservations; r++) {
+			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+				expected = (mrs_real) autocorrelation_of_anplusb(1, r, lag,
+						slices * inSamples - 1) / autocorrelation_of_anplusb(1,
+						r, 0, slices * inSamples - 1);
+				TS_ASSERT_EQUALS(out(r, lag), expected);
+			}
+		}
+	}
+
+	/**
+	 * Test normalization with zero input.
+	 */
+	void test_normalization_of_zero_input() {
+		mrs_natural inObservations = 5;
+		mrs_natural inSamples = 10;
+		mrs_natural maxLag = 6;
+		set_flow(inObservations, inSamples, maxLag);
+		rac->updctrl("mrs_bool/normalize", true);
+
+		// Process.
+		in.setval(0);
+		rac->myProcess(in, out);
+
+		// Check output.
+		mrs_real expected;
+		for (mrs_natural r = 0; r < inObservations; r++) {
+			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+				TS_ASSERT_EQUALS(out(r, lag), 0);
+			}
+		}
 	}
 };
 
