@@ -58,6 +58,8 @@ namespace Marsyas
 		for lag = 0 (which is the energy of the signal). Note that the
 		autocorrelation value for lag 0 will be 1 (unless the input signal
 		is 0 everywhere).
+	- \b mrs_bool/doNotNormalizeForLag0: when normalizing the autocorrelation
+		values, do not normalize the value for lag 0.
 */
 
 class marsyas_EXPORT RunningAutocorrelation: public MarSystem
@@ -88,6 +90,12 @@ private:
 
 	/// Cache of the normalize control value.
 	mrs_bool normalize_;
+
+	/// The doNotNormalizeForLag0 control.
+	MarControlPtr ctrl_doNotNormalizeForLag0_;
+
+	/// Cache of the doNotNormalizeForLag0 control value
+	mrs_bool doNotNormalizeForLag0_;
 
 public:
 	/// RunningAutocorrelation constructor.

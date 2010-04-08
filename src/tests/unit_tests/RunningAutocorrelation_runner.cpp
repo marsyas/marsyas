@@ -81,4 +81,10 @@ public:
  void runTest() { suite_RunningAutocorrelation_runner.test_normalization_of_zero_input(); }
 } testDescription_RunningAutocorrelation_runner_test_normalization_of_zero_input;
 
+static class TestDescription_RunningAutocorrelation_runner_test_do_not_normalize_for_lag_0 : public CxxTest::RealTestDescription {
+public:
+ TestDescription_RunningAutocorrelation_runner_test_do_not_normalize_for_lag_0() : CxxTest::RealTestDescription( Tests_RunningAutocorrelation_runner, suiteDescription_RunningAutocorrelation_runner, 355, "test_do_not_normalize_for_lag_0" ) {}
+ void runTest() { suite_RunningAutocorrelation_runner.test_do_not_normalize_for_lag_0(); }
+} testDescription_RunningAutocorrelation_runner_test_do_not_normalize_for_lag_0;
+
 #include <cxxtest/Root.cpp>

@@ -36,6 +36,7 @@ RunningAutocorrelation::RunningAutocorrelation(const RunningAutocorrelation& a) 
 	/// the copy constructor.
 	ctrl_maxLag_ = getctrl("mrs_natural/maxLag");
 	ctrl_normalize_ = getctrl("mrs_bool/normalize");
+	ctrl_doNotNormalizeForLag0_ = getctrl("mrs_bool/doNotNormalizeForLag0");
 }
 
 RunningAutocorrelation::~RunningAutocorrelation() {
@@ -52,6 +53,9 @@ void RunningAutocorrelation::addControls() {
 	setctrlState("mrs_natural/maxLag", true);
 	addctrl("mrs_bool/normalize", false, ctrl_normalize_);
 	setctrlState("mrs_bool/normalize", true);
+	addctrl("mrs_bool/doNotNormalizeForLag0", false,
+			ctrl_doNotNormalizeForLag0_);
+	setctrlState("mrs_bool/doNotNormalizeForLag0", true);
 }
 
 void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
@@ -66,6 +70,7 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 	}
 	// Update the cache of the normalize control value.
 	normalize_ = ctrl_normalize_->to<mrs_bool> ();
+	doNotNormalizeForLag0_ = ctrl_doNotNormalizeForLag0_->to<mrs_bool> ();
 
 	// Output flow: almost the same as input flow, only the onSamples differ.
 	ctrl_onSamples_->setValue(maxLag_ + 1, NOUPDATE);
@@ -94,12 +99,17 @@ void RunningAutocorrelation::myProcess(realvec& in, realvec& out) {
 				acBuffer_(i, lag) += in(i, n) * in(i, n - lag);
 			}
 			// Store result in output vector.
-			if (normalize_ &&  acBuffer_(i, 0) > 0.0) {
-				out(i, lag) = acBuffer_(i, lag) / acBuffer_(i, 0) ;
-			} else {
-				out(i, lag) = acBuffer_(i, lag);
+			out(i, lag) = acBuffer_(i, lag);
+		}
+
+		// Do the (optional) normalization.
+		if (normalize_ && acBuffer_(i, 0) > 0.0) {
+			mrs_natural lag = doNotNormalizeForLag0_ ? 1 : 0;
+			for (; lag <= maxLag_; lag++) {
+				out(i, lag) = acBuffer_(i, lag) / acBuffer_(i, 0);
 			}
 		}
+
 		// Remember the last samples for next time.
 		// First, shift samples in memory (if needed).
 		for (mrs_natural m = 0; m < maxLag_ - inSamples_; m++) {

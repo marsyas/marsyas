@@ -348,5 +348,43 @@ public:
 			}
 		}
 	}
+
+	/**
+	 * Test the doNotNormalizeForLag0 feature.
+	 */
+	void test_do_not_normalize_for_lag_0() {
+		mrs_natural inObservations = 5;
+		mrs_natural inSamples = 10;
+		mrs_natural maxLag = 6;
+		mrs_natural slices = 7;
+		set_flow(inObservations, inSamples, maxLag);
+		rac->updctrl("mrs_bool/normalize", true);
+		rac->updctrl("mrs_bool/doNotNormalizeForLag0", true);
+
+		// Feed with multiple multirow slices.
+		for (mrs_natural s = 0; s < slices; s++) {
+			for (mrs_natural r = 0; r < inObservations; r++) {
+				for (mrs_natural t = 0; t < inSamples; t++) {
+					in(r, t) = r + (s * inSamples + t);
+				}
+			}
+			rac->myProcess(in, out);
+		}
+
+		// Check output.
+		mrs_real expected;
+		for (mrs_natural r = 0; r < inObservations; r++) {
+			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+				expected = (mrs_real) autocorrelation_of_anplusb(1, r, lag,
+						slices * inSamples - 1);
+				if (lag > 0) {
+					expected = expected / autocorrelation_of_anplusb(1, r, 0,
+							slices * inSamples - 1);
+				}
+				TS_ASSERT_EQUALS(out(r, lag), expected);
+			}
+		}
+	}
+
 };
 
