@@ -11,14 +11,16 @@ using namespace Marsyas;
 /**
  * Sum of the integers from 0 to a given n (including).
  */
-int sum_of_ints(int end) {
+int sum_of_ints(int end)
+{
 	return (end < 0) ? 0 : end * (end + 1) / 2;
 }
 
 /**
  * Sum of integers from given begin to end (including).
  */
-int sum_of_ints(int n_begin, int n_end) {
+int sum_of_ints(int n_begin, int n_end)
+{
 	return (n_end < n_begin) ? 0 : sum_of_ints(n_end)
 			- sum_of_ints(n_begin - 1);
 }
@@ -26,14 +28,16 @@ int sum_of_ints(int n_begin, int n_end) {
 /**
  * Sum of the squares from 0 to the given n (including).
  */
-int sum_of_squares(int n) {
+int sum_of_squares(int n)
+{
 	return (n < 0) ? 0 : n * (n + 1) * (2 * n + 1) / 6;
 }
 
 /**
  * Sum of squares from given begin to end (including).
  */
-int sum_of_squares(int n_begin, int n_end) {
+int sum_of_squares(int n_begin, int n_end)
+{
 	return (n_end < n_begin) ? 0 : sum_of_squares(n_end) - sum_of_squares(
 			n_begin - 1);
 }
@@ -48,18 +52,21 @@ int sum_of_squares(int n_begin, int n_end) {
  *          	+ (2ab - ak) * sum_{n=k}^{N} n
  *              + (b^2 - bk) * sum_{n=k}^{N} 1
  */
-int autocorrelation_of_anplusb(int a, int b, int lag, int N) {
+int autocorrelation_of_anplusb(int a, int b, int lag, int N)
+{
 	return a * a * sum_of_squares(lag, N) + (2 * a * b - a * lag)
 			* sum_of_ints(lag, N) + (b * b - b * lag) * (N + 1 - lag);
 }
 
-class RunningAutocorrelation_runner: public CxxTest::TestSuite {
+class RunningAutocorrelation_runner: public CxxTest::TestSuite
+{
 public:
 	realvec in, out;
 	MarSystemManager mng;
 	RunningAutocorrelation *rac;
 
-	void setUp() {
+	void setUp()
+	{
 		// Use the normal way for getting a Marsystem from the MarSystemManager
 		// to make sure we don't bypass crucial things that should work
 		// (e.g. the copy constructor).
@@ -74,7 +81,8 @@ public:
 	 * Also allocate the input and output realvecs.
 	 */
 	void set_flow(mrs_natural inObservations, mrs_natural inSamples,
-			mrs_natural maxLag) {
+			mrs_natural maxLag)
+	{
 		rac->updctrl("mrs_natural/inObservations", inObservations);
 		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onObservations")->to<mrs_natural>(), inObservations);
 		rac->updctrl("mrs_natural/inSamples", inSamples);
@@ -85,7 +93,8 @@ public:
 		out.create(inObservations, maxLag + 1);
 	}
 
-	void test_output_flow(void) {
+	void test_output_flow(void)
+	{
 		// Try some flow settings
 		set_flow(1, 100, 10);
 		set_flow(10, 10, 7);
@@ -102,14 +111,16 @@ public:
 	 *    Rxx[k] = sum_{n=k}^{9} n * (n - k)
 	 *           = sum_{n=k}^{9} n^2 - k * sum_{n=k}^9 n
 	 */
-	void test_one_slice_single_row(void) {
+	void test_one_slice_single_row(void)
+	{
 		mrs_natural inObservations = 1;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
 		set_flow(inObservations, inSamples, maxLag);
 
 		// Create input
-		for (mrs_natural t = 0; t < inSamples; t++) {
+		for (mrs_natural t = 0; t < inSamples; t++)
+		{
 			in(0, t) = t;
 		}
 
@@ -118,7 +129,8 @@ public:
 
 		// Check output.
 		mrs_natural expected;
-		for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+		for (mrs_natural lag = 0; lag <= maxLag; lag++)
+		{
 			expected = autocorrelation_of_anplusb(1, 0, lag, inSamples - 1);
 			TS_ASSERT_EQUALS(out(0, lag), expected);
 		}
@@ -133,15 +145,18 @@ public:
 	 *     Rxx[k] = sum_{n=k}^{9} (r + n) * (r + n - k)
 	 *            = sum_{n=k}^{9} n^2 + (2r - k) * sum_{n=k}^9 n + (r^2-rk) * sum_{n=k}^9 1
 	 */
-	void test_one_slice_multirow(void) {
+	void test_one_slice_multirow(void)
+	{
 		mrs_natural inObservations = 5;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
 		set_flow(inObservations, inSamples, maxLag);
 
 		// Create input.
-		for (mrs_natural r = 0; r < inObservations; r++) {
-			for (mrs_natural t = 0; t < inSamples; t++) {
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural t = 0; t < inSamples; t++)
+			{
 				in(r, t) = r + t;
 			}
 		}
@@ -151,8 +166,10 @@ public:
 
 		// Check output.
 		mrs_natural expected;
-		for (mrs_natural r = 0; r < inObservations; r++) {
-			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural lag = 0; lag <= maxLag; lag++)
+			{
 				expected = autocorrelation_of_anplusb(1, r, lag, inSamples - 1);
 				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
@@ -169,7 +186,8 @@ public:
 	 *    Rxx[k] = sum_{n=k}^{19} n * (n - k)
 	 *           = sum_{n=k}^{19} n^2 - k * sum_{n=k}^19 n
 	 */
-	void test_two_slices_single_row(void) {
+	void test_two_slices_single_row(void)
+	{
 		mrs_natural inObservations = 1;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
@@ -177,14 +195,16 @@ public:
 
 		// Create input.
 		// First slice.
-		for (mrs_natural t = 0; t < inSamples; t++) {
+		for (mrs_natural t = 0; t < inSamples; t++)
+		{
 			in(0, t) = t;
 		}
 		// Process.
 		rac->myProcess(in, out);
 
 		// Second slice
-		for (mrs_natural t = 0; t < inSamples; t++) {
+		for (mrs_natural t = 0; t < inSamples; t++)
+		{
 			in(0, t) = inSamples + t;
 		}
 		// Process.
@@ -192,7 +212,8 @@ public:
 
 		// Check output.
 		mrs_natural expected;
-		for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+		for (mrs_natural lag = 0; lag <= maxLag; lag++)
+		{
 			expected = autocorrelation_of_anplusb(1, 0, lag, 2 * inSamples - 1);
 			TS_ASSERT_EQUALS(out(0, lag), expected);
 		}
@@ -209,7 +230,8 @@ public:
 	 *                + (2r - k) * sum_{n=k}^{10 S - 1} n
 	 *                + (r^2-rk) * sum_{n=k}^{10 S - 1} 1
 	 */
-	void test_multiple_slices_multirow(void) {
+	void test_multiple_slices_multirow(void)
+	{
 		mrs_natural inObservations = 5;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
@@ -217,9 +239,12 @@ public:
 		set_flow(inObservations, inSamples, maxLag);
 
 		// Feed with multiple multirow slices.
-		for (mrs_natural s = 0; s < slices; s++) {
-			for (mrs_natural r = 0; r < inObservations; r++) {
-				for (mrs_natural t = 0; t < inSamples; t++) {
+		for (mrs_natural s = 0; s < slices; s++)
+		{
+			for (mrs_natural r = 0; r < inObservations; r++)
+			{
+				for (mrs_natural t = 0; t < inSamples; t++)
+				{
 					in(r, t) = r + (s * inSamples + t);
 				}
 			}
@@ -228,8 +253,10 @@ public:
 
 		// Check output.
 		mrs_natural expected;
-		for (mrs_natural r = 0; r < inObservations; r++) {
-			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural lag = 0; lag <= maxLag; lag++)
+			{
 				expected = autocorrelation_of_anplusb(1, r, lag, slices
 						* inSamples - 1);
 				TS_ASSERT_EQUALS(out(r, lag), expected);
@@ -240,7 +267,8 @@ public:
 	/**
 	 * Test with a maxLag larger than the slice size
 	 */
-	void test_maxlag_larger_than_slice_size(void) {
+	void test_maxlag_larger_than_slice_size(void)
+	{
 		mrs_natural inObservations = 5;
 		mrs_natural inSamples = 7;
 		mrs_natural maxLag = 33;
@@ -248,9 +276,12 @@ public:
 		set_flow(inObservations, inSamples, maxLag);
 
 		// Feed with multiple multirow slices.
-		for (mrs_natural s = 0; s < S; s++) {
-			for (mrs_natural r = 0; r < inObservations; r++) {
-				for (mrs_natural t = 0; t < inSamples; t++) {
+		for (mrs_natural s = 0; s < S; s++)
+		{
+			for (mrs_natural r = 0; r < inObservations; r++)
+			{
+				for (mrs_natural t = 0; t < inSamples; t++)
+				{
 					in(r, t) = r + (s * inSamples + t);
 				}
 			}
@@ -259,8 +290,10 @@ public:
 
 		// Check output.
 		mrs_natural expected;
-		for (mrs_natural r = 0; r < inObservations; r++) {
-			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural lag = 0; lag <= maxLag; lag++)
+			{
 				expected = autocorrelation_of_anplusb(1, r, lag, S * inSamples
 						- 1);
 				TS_ASSERT_EQUALS(out(r, lag), expected);
@@ -271,7 +304,8 @@ public:
 	/**
 	 * Test the observation names
 	 */
-	void test_observation_names() {
+	void test_observation_names()
+	{
 		set_flow(2, 5, 3);
 		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
 		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
@@ -282,7 +316,8 @@ public:
 	/**
 	 * Test flow change: the internal buffers should be updated accordingly.
 	 */
-	void test_flow_change() {
+	void test_flow_change()
+	{
 		mrs_natural inObservations = 2;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
@@ -300,7 +335,8 @@ public:
 	/**
 	 * Test the normalization of autocorrelation values.
 	 */
-	void test_normalization() {
+	void test_normalization()
+	{
 		mrs_natural inObservations = 5;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
@@ -309,9 +345,12 @@ public:
 		rac->updctrl("mrs_bool/normalize", true);
 
 		// Feed with multiple multirow slices.
-		for (mrs_natural s = 0; s < slices; s++) {
-			for (mrs_natural r = 0; r < inObservations; r++) {
-				for (mrs_natural t = 0; t < inSamples; t++) {
+		for (mrs_natural s = 0; s < slices; s++)
+		{
+			for (mrs_natural r = 0; r < inObservations; r++)
+			{
+				for (mrs_natural t = 0; t < inSamples; t++)
+				{
 					in(r, t) = r + (s * inSamples + t);
 				}
 			}
@@ -320,8 +359,10 @@ public:
 
 		// Check output.
 		mrs_real expected;
-		for (mrs_natural r = 0; r < inObservations; r++) {
-			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural lag = 0; lag <= maxLag; lag++)
+			{
 				expected = (mrs_real) autocorrelation_of_anplusb(1, r, lag,
 						slices * inSamples - 1) / autocorrelation_of_anplusb(1,
 						r, 0, slices * inSamples - 1);
@@ -333,7 +374,8 @@ public:
 	/**
 	 * Test normalization with zero input.
 	 */
-	void test_normalization_of_zero_input() {
+	void test_normalization_of_zero_input()
+	{
 		mrs_natural inObservations = 5;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
@@ -346,8 +388,10 @@ public:
 
 		// Check output.
 		mrs_real expected;
-		for (mrs_natural r = 0; r < inObservations; r++) {
-			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural lag = 0; lag <= maxLag; lag++)
+			{
 				TS_ASSERT_EQUALS(out(r, lag), 0);
 			}
 		}
@@ -356,7 +400,8 @@ public:
 	/**
 	 * Test the doNotNormalizeForLag0 feature.
 	 */
-	void test_do_not_normalize_for_lag_0() {
+	void test_do_not_normalize_for_lag_0()
+	{
 		mrs_natural inObservations = 5;
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
@@ -366,9 +411,12 @@ public:
 		rac->updctrl("mrs_bool/doNotNormalizeForLag0", true);
 
 		// Feed with multiple multirow slices.
-		for (mrs_natural s = 0; s < slices; s++) {
-			for (mrs_natural r = 0; r < inObservations; r++) {
-				for (mrs_natural t = 0; t < inSamples; t++) {
+		for (mrs_natural s = 0; s < slices; s++)
+		{
+			for (mrs_natural r = 0; r < inObservations; r++)
+			{
+				for (mrs_natural t = 0; t < inSamples; t++)
+				{
 					in(r, t) = r + (s * inSamples + t);
 				}
 			}
@@ -377,17 +425,58 @@ public:
 
 		// Check output.
 		mrs_real expected;
-		for (mrs_natural r = 0; r < inObservations; r++) {
-			for (mrs_natural lag = 0; lag <= maxLag; lag++) {
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural lag = 0; lag <= maxLag; lag++)
+			{
 				expected = (mrs_real) autocorrelation_of_anplusb(1, r, lag,
 						slices * inSamples - 1);
-				if (lag > 0) {
+				if (lag > 0)
+				{
 					expected = expected / autocorrelation_of_anplusb(1, r, 0,
 							slices * inSamples - 1);
 				}
 				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
 		}
+	}
+
+	/**
+	 * Test clearing the internal buffers.
+	 */
+	void test_internal_buffer_clearing(void)
+	{
+		mrs_natural inObservations = 5;
+		mrs_natural inSamples = 10;
+		mrs_natural maxLag = 6;
+		set_flow(inObservations, inSamples, maxLag);
+
+		// Create an input slice.
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural t = 0; t < inSamples; t++)
+			{
+				in(r, t) = r + t;
+			}
+		}
+
+		// Feed the monkey a couple of times but clear buffers first every time.
+		for (mrs_natural i=0; i<10; i++){
+			rac->updctrl("mrs_bool/clear", true);
+			rac->myProcess(in, out);
+		}
+
+		// Check output.
+		mrs_natural expected;
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural lag = 0; lag <= maxLag; lag++)
+			{
+				expected = autocorrelation_of_anplusb(1, r, lag, inSamples - 1);
+				TS_ASSERT_EQUALS(out(r, lag), expected);
+			}
+		}
+
 	}
 
 };

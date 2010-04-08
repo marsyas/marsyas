@@ -49,8 +49,6 @@ namespace Marsyas
 	with \f$R_{xx}[n]\f$ the autocorrelation of the first channel for lag \f$n\f$
 	and \f$R_{yy}[n]\f$ the autocorrelation of the second channel.
 
-	TODO: provide a reset control
-
 	TODO: support overlap between slices (e.g. provide a control for skipping
 	a certain amount of samples).
 
@@ -62,6 +60,8 @@ namespace Marsyas
 		the input signal is 0 everywhere).
 	- \b mrs_bool/doNotNormalizeForLag0: when normalizing the autocorrelation
 		values, do not normalize the value for lag 0.
+	- \b mrs_bool/clear: clear the internal buffers to start fresh.
+
 */
 
 class marsyas_EXPORT RunningAutocorrelation: public MarSystem
@@ -98,6 +98,10 @@ private:
 
 	/// Cache of the doNotNormalizeForLag0 control value
 	mrs_bool doNotNormalizeForLag0_;
+
+	/// MarControlPtr for the clear control
+	MarControlPtr ctrl_clear_;
+
 
 public:
 	/// RunningAutocorrelation constructor.

@@ -37,6 +37,7 @@ RunningAutocorrelation::RunningAutocorrelation(const RunningAutocorrelation& a) 
 	ctrl_maxLag_ = getctrl("mrs_natural/maxLag");
 	ctrl_normalize_ = getctrl("mrs_bool/normalize");
 	ctrl_doNotNormalizeForLag0_ = getctrl("mrs_bool/doNotNormalizeForLag0");
+	ctrl_clear_ = getctrl("mrs_bool/clear");
 }
 
 RunningAutocorrelation::~RunningAutocorrelation() {
@@ -56,6 +57,8 @@ void RunningAutocorrelation::addControls() {
 	addctrl("mrs_bool/doNotNormalizeForLag0", false,
 			ctrl_doNotNormalizeForLag0_);
 	setctrlState("mrs_bool/doNotNormalizeForLag0", true);
+	addctrl("mrs_bool/clear", false, ctrl_clear_);
+	setctrlState("mrs_bool/clear", true);
 }
 
 void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
@@ -83,6 +86,9 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 	this->acBuffer_.setval(0.0);
 	this->memory_.stretch(inObservations_, maxLag_);
 	this->memory_.setval(0.0);
+
+	// We just cleared the internal buffers, so we should reset the clear control.
+	ctrl_clear_->setValue(false, NOUPDATE);
 }
 
 void RunningAutocorrelation::myProcess(realvec& in, realvec& out) {
