@@ -60,7 +60,11 @@ public:
 	RunningAutocorrelation *rac;
 
 	void setUp() {
-		rac = new RunningAutocorrelation("rac");
+		// Use the normal way for getting a Marsystem from the MarSystemManager
+		// to make sure we don't bypass crucial things that should work
+		// (e.g. the copy constructor).
+		rac = (RunningAutocorrelation*) mng.create("RunningAutocorrelation",
+				"rac");
 	}
 
 	/**

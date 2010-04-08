@@ -40,12 +40,14 @@ namespace Marsyas
 	The autocorrelation values are laid out in the output slice along the
 	time/samples dimension from lag zero to the maximum lag.
 	Multiple input observation channels are supported.
-	For example, if there are two input channels and the maximum lag is 5,
-	the output slice will have two rows and six (not five) columns:
-		Rxx[0], Rxx[1], ..., Rxx[5]
-		Ryy[0], Ryy[1], ..., Ryy[5]
-	with Rxx[n] the autocorrelation of the first channel for lag n
-	and Ryy[n] the autocorrelation of the second channel.
+	For example, if there are two input channels and the maximum lag is 4,
+	the output slice will have two rows and five (not four) columns:
+		\f[\begin{array}{ccccc}
+			R_{xx}[0] & R_{xx}[1] & R_{xx}[2] & R_{xx}[3] & R_{xx}[4] \\
+			R_{yy}[0] & R_{yy}[1] & R_{yy}[2] & R_{yy}[3] & R_{yy}[4] \\
+		\end{array}\f]
+	with \f$R_{xx}[n]\f$ the autocorrelation of the first channel for lag \f$n\f$
+	and \f$R_{yy}[n]\f$ the autocorrelation of the second channel.
 
 	TODO: provide a reset control
 
@@ -56,8 +58,8 @@ namespace Marsyas
 	- \b mrs_natural/maxLag: the maximum time lag (in samples) to calculate
 	- \b mrs_bool/normalize: normalize the autocorrelation values on the value
 		for lag = 0 (which is the energy of the signal). Note that the
-		autocorrelation value for lag 0 will be 1 (unless the input signal
-		is 0 everywhere).
+		autocorrelation value for lag 0 will consequently be always 1 (unless
+		the input signal is 0 everywhere).
 	- \b mrs_bool/doNotNormalizeForLag0: when normalizing the autocorrelation
 		values, do not normalize the value for lag 0.
 */
