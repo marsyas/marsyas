@@ -120,6 +120,34 @@ file.  The main groups are @code{Composites}, @code{Basic}, @code{IO},
 @section Code style
 
 @itemize
+
+@item
+We use the Allman  code style (also known as ANSI or BSD code style) with tabs as indentation.
+Code style is of course somewhat personal 
+and we can almost guarantee that everybody will hate @emph{some} aspect of the style,
+but having a uniform style makes it much easier to understand other people's code and fix bugs. 
+
+If possible, configure your editor/IDE to use this code style. 
+Otherwise, you can use the @code{astyle} tool (@uref{http://astyle.sourceforge.net/,Artistic Style}) 
+(with the @code{ansi} style) for automated clean up of code style issues (braces, indentation, whitespace). 
+For ease of use, we have a file @file{misc/astylerc} with predefined options. To use it, call
+
+@example
+astyle --options=@emph{/path/to/marsyas_topdir}/misc/astylerc filename.cpp
+@end example
+
+@samp{filename.cpp} can include wildcards, like @samp{*.h} and @samp{*.cpp}.
+
+You do not need to format your source code according to this style, 
+but don't complain if someone else modifies/cleans up your file accordingly.
+
+Unfortunately, due to historical reasons the code style is not
+consistant within the Marsyas source code itself.
+
+@item
+Files should use unix line endings.
+
+
 @item
 We strongly encourage the use of underscores@code{_} after member
 variables (@qq{member variables} are variables which can be used
@@ -139,34 +167,11 @@ By convention, a program (not a MarSystem) should return
 @code{exit(0)} upon successful completion.  If any problems arise, the
 program should return a number greater than 0.
 
-@item
-Files should use unix line endings.
 
-@item
-We use the @code{ansi} style defined in
-@uref{http://astyle.sourceforge.net/,Artistic Style}; our exact style
-file is in @file{misc/astylerc}.  To use the file, call
-
-@example
-astyle --options=@emph{/path/to/marsyas_topdir}/misc/astylerc filename.cpp
-@end example
-
-@samp{filename.cpp} can include wildcards, ie @samp{*.h} and
-@samp{*.cpp}.
-
-This style changes the positions of braces @code{@{@}}, tab indentation,
-and a few other whitespace issues.  These issues are somewhat personal
-and we can almost guarantee that everybody will hate @emph{some} aspect
-of the style, but having a uniform style makes it much easier to
-understand (and fix bugs in!) unfamiliar code.  You do not need to
-format your source code according to this file, but don't complain if
-your file is modified accordingly.
 
 
 @end itemize
 
-Unfortunately due to historical reasons these last two points are not
-consistant within the Marsyas source code.
 
 
 @node Playing in the mudbox
