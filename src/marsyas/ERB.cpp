@@ -25,7 +25,8 @@
 using namespace std;
 using namespace Marsyas;
 
-ERB::ERB(string name):MarSystem("ERB", name)
+ERB::ERB(string name):MarSystem("ERB", name),
+filterBank (0)
 {
   //type_ = "ERB";
   //name_ = name;
