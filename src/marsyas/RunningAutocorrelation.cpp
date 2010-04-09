@@ -25,61 +25,110 @@ using namespace std;
 using namespace Marsyas;
 
 RunningAutocorrelation::RunningAutocorrelation(string name) :
-	MarSystem("RunningAutocorrelation", name) {
+		MarSystem("RunningAutocorrelation", name)
+{
 	/// Add any specific controls needed by this MarSystem.
 	addControls();
 }
 
 RunningAutocorrelation::RunningAutocorrelation(const RunningAutocorrelation& a) :
-	MarSystem(a) {
+		MarSystem(a)
+{
 	/// All member MarControlPtr have to be explicitly reassigned in
 	/// the copy constructor.
 	ctrl_maxLag_ = getctrl("mrs_natural/maxLag");
 	ctrl_normalize_ = getctrl("mrs_bool/normalize");
 	ctrl_doNotNormalizeForLag0_ = getctrl("mrs_bool/doNotNormalizeForLag0");
 	ctrl_clear_ = getctrl("mrs_bool/clear");
+	ctrl_unfoldToObservations_ = getctrl("mrs_bool/unfoldToObservations");
 }
 
-RunningAutocorrelation::~RunningAutocorrelation() {
+RunningAutocorrelation::~RunningAutocorrelation()
+{
 }
 
 MarSystem*
-RunningAutocorrelation::clone() const {
+RunningAutocorrelation::clone() const
+{
 	return new RunningAutocorrelation(*this);
 }
 
-void RunningAutocorrelation::addControls() {
+void RunningAutocorrelation::addControls()
+{
 	/// Add any specific controls needed by this MarSystem.
 	addctrl("mrs_natural/maxLag", 15, ctrl_maxLag_);
 	setctrlState("mrs_natural/maxLag", true);
 	addctrl("mrs_bool/normalize", false, ctrl_normalize_);
 	setctrlState("mrs_bool/normalize", true);
 	addctrl("mrs_bool/doNotNormalizeForLag0", false,
-			ctrl_doNotNormalizeForLag0_);
+	        ctrl_doNotNormalizeForLag0_);
 	setctrlState("mrs_bool/doNotNormalizeForLag0", true);
 	addctrl("mrs_bool/clear", false, ctrl_clear_);
 	setctrlState("mrs_bool/clear", true);
+	addctrl("mrs_bool/unfoldToObservations", false, ctrl_unfoldToObservations_);
+	setctrlState("mrs_bool/unfoldToObservations", true);
 }
 
-void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
+/**
+ * Helper function to add autocorrelation unfolding prefixes to the observation names.
+ */
+mrs_string prefixObservationNamesWithAutocorrelationUnfoldingPrefixes_(
+    mrs_string inObservationNames, mrs_bool normalize,
+    mrs_bool doNotNormalizeForLag0, mrs_natural maxLag)
+{
+	vector<mrs_string> inObsNames = obsNamesSplit(inObservationNames);
+	mrs_string onObsNames("");
+	for (vector<mrs_string>::iterator it = inObsNames.begin(); it
+	        != inObsNames.end(); it++)
+	{
+		for (int lag = 0; lag <= maxLag; lag++)
+		{
+			ostringstream oss;
+			if (normalize && !(doNotNormalizeForLag0 && lag == 0))
+			{
+				oss << "Normalized";
+			}
+			oss << "Autocorr" << lag << "_" << (*it) << ",";
+			onObsNames += oss.str();
+		}
+
+	}
+	return onObsNames;
+
+}
+
+void RunningAutocorrelation::myUpdate(MarControlPtr sender)
+{
 	MRSDIAG("RunningAutocorrelation.cpp - RunningAutocorrelation:myUpdate");
 
-	// Update the cache of the maxLag control value.
+	// Update the cache of the control values.
 	maxLag_ = ctrl_maxLag_->to<mrs_natural> ();
-	if (maxLag_ < 0) {
+	if (maxLag_ < 0)
+	{
 		MRSERR("maxLag should be greater than zero.");
 		// Setting it to zero to be sure.
 		maxLag_ = 0;
 	}
-	// Update the cache of the normalize control value.
 	normalize_ = ctrl_normalize_->to<mrs_bool> ();
 	doNotNormalizeForLag0_ = ctrl_doNotNormalizeForLag0_->to<mrs_bool> ();
+	unfoldToObservations_ = ctrl_unfoldToObservations_->to<mrs_bool> ();
 
-	// Output flow: almost the same as input flow, only the onSamples differ.
-	ctrl_onSamples_->setValue(maxLag_ + 1, NOUPDATE);
-	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+	// Configure output flow.
+	mrs_natural onObservations = unfoldToObservations_ ? inObservations_
+	                             * (maxLag_ + 1) : inObservations_;
+	mrs_natural onSamples = unfoldToObservations_ ? 1 : maxLag_ + 1;
+	ctrl_onSamples_->setValue(onSamples, NOUPDATE);
+	ctrl_onObservations_->setValue(onObservations, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+	// Handle the observation names.
+	mrs_string onObsNames = ctrl_inObsNames_->to<mrs_string> ();
+	if (unfoldToObservations_)
+	{
+		onObsNames
+		= prefixObservationNamesWithAutocorrelationUnfoldingPrefixes_(
+		      onObsNames, normalize_, doNotNormalizeForLag0_, maxLag_);
+	}
+	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
 
 	// Allocate and initialize the buffers and counters.
 	this->acBuffer_.stretch(inObservations_, maxLag_ + 1);
@@ -91,38 +140,53 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender) {
 	ctrl_clear_->setValue(false, NOUPDATE);
 }
 
-void RunningAutocorrelation::myProcess(realvec& in, realvec& out) {
+void RunningAutocorrelation::myProcess(realvec& in, realvec& out)
+{
 	/// Iterate over the observations and samples and do the processing.
-	for (mrs_natural i = 0; i < inObservations_; i++) {
+	for (mrs_natural i = 0; i < inObservations_; i++)
+	{
 		// Calculate the autocorrelation terms
-		for (mrs_natural lag = 0; lag <= maxLag_; lag++) {
+		for (mrs_natural lag = 0; lag <= maxLag_; lag++)
+		{
 			// For the first part, we need the memory.
-			for (mrs_natural n = 0; n < min(lag, inSamples_); n++) {
+			for (mrs_natural n = 0; n < min(lag, inSamples_); n++)
+			{
 				acBuffer_(i, lag) += in(i, n) * memory_(i, maxLag_ - lag + n);
 			}
 			// For the second part, we have enough with the input slice.
-			for (mrs_natural n = lag; n < inSamples_; n++) {
+			for (mrs_natural n = lag; n < inSamples_; n++)
+			{
 				acBuffer_(i, lag) += in(i, n) * in(i, n - lag);
 			}
-			// Store result in output vector.
-			out(i, lag) = acBuffer_(i, lag);
 		}
 
+		// Store result in output vector.
+		mrs_natural u = (mrs_natural) unfoldToObservations_;
+		mrs_natural o_base = unfoldToObservations_ ? i * (maxLag_ + 1) : i;
+		for (mrs_natural lag = 0; lag <= maxLag_; lag++)
+		{
+			out(o_base + u * lag, (1 - u) * lag) = acBuffer_(i, lag);
+
+		}
 		// Do the (optional) normalization.
-		if (normalize_ && acBuffer_(i, 0) > 0.0) {
+		if (normalize_ && acBuffer_(i, 0) > 0.0)
+		{
 			mrs_natural lag = doNotNormalizeForLag0_ ? 1 : 0;
-			for (; lag <= maxLag_; lag++) {
-				out(i, lag) = acBuffer_(i, lag) / acBuffer_(i, 0);
+			for (; lag <= maxLag_; lag++)
+			{
+				out(o_base + u * lag, (1 - u) * lag) /= acBuffer_(i, 0);
 			}
 		}
 
 		// Remember the last samples for next time.
 		// First, shift samples in memory (if needed).
-		for (mrs_natural m = 0; m < maxLag_ - inSamples_; m++) {
+		for (mrs_natural m = 0; m < maxLag_ - inSamples_; m++)
+		{
 			memory_(i, m) = memory_(i, m + inSamples_);
 		}
 		// Second, copy over samples from input.
-		for (mrs_natural m = 1; m <= min(maxLag_, inSamples_); m++) {
+		for (mrs_natural m = 1; m <= min(maxLag_, inSamples_); m++)
+		{
 			memory_(i, maxLag_ - m) = in(i, inSamples_ - m);
 		}
 	}

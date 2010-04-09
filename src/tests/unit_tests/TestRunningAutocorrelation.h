@@ -22,7 +22,7 @@ int sum_of_ints(int end)
 int sum_of_ints(int n_begin, int n_end)
 {
 	return (n_end < n_begin) ? 0 : sum_of_ints(n_end)
-			- sum_of_ints(n_begin - 1);
+	       - sum_of_ints(n_begin - 1);
 }
 
 /**
@@ -39,7 +39,7 @@ int sum_of_squares(int n)
 int sum_of_squares(int n_begin, int n_end)
 {
 	return (n_end < n_begin) ? 0 : sum_of_squares(n_end) - sum_of_squares(
-			n_begin - 1);
+	           n_begin - 1);
 }
 
 /**
@@ -55,7 +55,7 @@ int sum_of_squares(int n_begin, int n_end)
 int autocorrelation_of_anplusb(int a, int b, int lag, int N)
 {
 	return a * a * sum_of_squares(lag, N) + (2 * a * b - a * lag)
-			* sum_of_ints(lag, N) + (b * b - b * lag) * (N + 1 - lag);
+	       * sum_of_ints(lag, N) + (b * b - b * lag) * (N + 1 - lag);
 }
 
 class RunningAutocorrelation_runner: public CxxTest::TestSuite
@@ -71,7 +71,7 @@ public:
 		// to make sure we don't bypass crucial things that should work
 		// (e.g. the copy constructor).
 		rac = (RunningAutocorrelation*) mng.create("RunningAutocorrelation",
-				"rac");
+		        "rac");
 	}
 
 	/**
@@ -81,16 +81,24 @@ public:
 	 * Also allocate the input and output realvecs.
 	 */
 	void set_flow(mrs_natural inObservations, mrs_natural inSamples,
-			mrs_natural maxLag)
+	              mrs_natural maxLag, mrs_bool unfoldToObservations = false)
 	{
+		mrs_natural onObservations = inObservations;
+		mrs_natural onSamples = maxLag + 1;
+		if (unfoldToObservations)
+		{
+			rac->updctrl("mrs_bool/unfoldToObservations", true);
+			onObservations = inObservations * (maxLag + 1);
+			onSamples = 1;
+		}
 		rac->updctrl("mrs_natural/inObservations", inObservations);
-		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onObservations")->to<mrs_natural>(), inObservations);
 		rac->updctrl("mrs_natural/inSamples", inSamples);
 		rac->updctrl("mrs_natural/maxLag", maxLag);
-		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onSamples")->to<mrs_natural>(), maxLag + 1);
+		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
+		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
 		// Allocate the input and output vectors.
 		in.create(inObservations, inSamples);
-		out.create(inObservations, maxLag + 1);
+		out.create(onObservations, onSamples);
 	}
 
 	void test_output_flow(void)
@@ -258,7 +266,7 @@ public:
 			for (mrs_natural lag = 0; lag <= maxLag; lag++)
 			{
 				expected = autocorrelation_of_anplusb(1, r, lag, slices
-						* inSamples - 1);
+				                                      * inSamples - 1);
 				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
 		}
@@ -295,7 +303,7 @@ public:
 			for (mrs_natural lag = 0; lag <= maxLag; lag++)
 			{
 				expected = autocorrelation_of_anplusb(1, r, lag, S * inSamples
-						- 1);
+				                                      - 1);
 				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
 		}
@@ -309,8 +317,38 @@ public:
 		set_flow(2, 5, 3);
 		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
 		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
-				mrs_string> ();
+		                        mrs_string> ();
 		TS_ASSERT_EQUALS(onObsNames, "foo,bar,")
+	}
+
+	void test_observation_names_with_unfoldToObservations()
+	{
+		set_flow(2, 5, 3, true);
+		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
+		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
+		                        mrs_string> ();
+		TS_ASSERT_EQUALS(onObsNames, "Autocorr0_foo,Autocorr1_foo,Autocorr2_foo,Autocorr3_foo,Autocorr0_bar,Autocorr1_bar,Autocorr2_bar,Autocorr3_bar,")
+	}
+
+	void test_observation_names_with_unfoldToObservations_normalize()
+	{
+		set_flow(2, 5, 3, true);
+		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
+		rac->updctrl("mrs_bool/normalize", true);
+		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
+		                        mrs_string> ();
+		TS_ASSERT_EQUALS(onObsNames, "NormalizedAutocorr0_foo,NormalizedAutocorr1_foo,NormalizedAutocorr2_foo,NormalizedAutocorr3_foo,NormalizedAutocorr0_bar,NormalizedAutocorr1_bar,NormalizedAutocorr2_bar,NormalizedAutocorr3_bar,")
+	}
+
+	void test_observation_names_with_unfoldToObservations_normalize_but_not_lag0()
+	{
+		set_flow(2, 5, 3, true);
+		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
+		rac->updctrl("mrs_bool/normalize", true);
+		rac->updctrl("mrs_bool/doNotNormalizeForLag0", true);
+		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
+		                        mrs_string> ();
+		TS_ASSERT_EQUALS(onObsNames, "Autocorr0_foo,NormalizedAutocorr1_foo,NormalizedAutocorr2_foo,NormalizedAutocorr3_foo,Autocorr0_bar,NormalizedAutocorr1_bar,NormalizedAutocorr2_bar,NormalizedAutocorr3_bar,")
 	}
 
 	/**
@@ -335,7 +373,7 @@ public:
 	/**
 	 * Test the normalization of autocorrelation values.
 	 */
-	void test_normalization()
+	void test_normalization(mrs_bool doNotNormalizeForLag0 = false)
 	{
 		mrs_natural inObservations = 5;
 		mrs_natural inSamples = 10;
@@ -343,6 +381,7 @@ public:
 		mrs_natural slices = 7;
 		set_flow(inObservations, inSamples, maxLag);
 		rac->updctrl("mrs_bool/normalize", true);
+		rac->updctrl("mrs_bool/doNotNormalizeForLag0", doNotNormalizeForLag0);
 
 		// Feed with multiple multirow slices.
 		for (mrs_natural s = 0; s < slices; s++)
@@ -363,12 +402,21 @@ public:
 		{
 			for (mrs_natural lag = 0; lag <= maxLag; lag++)
 			{
-				expected = (mrs_real) autocorrelation_of_anplusb(1, r, lag,
-						slices * inSamples - 1) / autocorrelation_of_anplusb(1,
-						r, 0, slices * inSamples - 1);
+				expected = autocorrelation_of_anplusb(1, r, lag, slices
+				                                      * inSamples - 1);
+				if (!(doNotNormalizeForLag0 && lag == 0))
+				{
+					expected /= autocorrelation_of_anplusb(1, r, 0, slices
+					                                       * inSamples - 1);
+				}
 				TS_ASSERT_EQUALS(out(r, lag), expected);
 			}
 		}
+	}
+
+	void test_normalization_but_not_for_lag0()
+	{
+		test_normalization(true);
 	}
 
 	/**
@@ -398,50 +446,6 @@ public:
 	}
 
 	/**
-	 * Test the doNotNormalizeForLag0 feature.
-	 */
-	void test_do_not_normalize_for_lag_0()
-	{
-		mrs_natural inObservations = 5;
-		mrs_natural inSamples = 10;
-		mrs_natural maxLag = 6;
-		mrs_natural slices = 7;
-		set_flow(inObservations, inSamples, maxLag);
-		rac->updctrl("mrs_bool/normalize", true);
-		rac->updctrl("mrs_bool/doNotNormalizeForLag0", true);
-
-		// Feed with multiple multirow slices.
-		for (mrs_natural s = 0; s < slices; s++)
-		{
-			for (mrs_natural r = 0; r < inObservations; r++)
-			{
-				for (mrs_natural t = 0; t < inSamples; t++)
-				{
-					in(r, t) = r + (s * inSamples + t);
-				}
-			}
-			rac->myProcess(in, out);
-		}
-
-		// Check output.
-		mrs_real expected;
-		for (mrs_natural r = 0; r < inObservations; r++)
-		{
-			for (mrs_natural lag = 0; lag <= maxLag; lag++)
-			{
-				expected = (mrs_real) autocorrelation_of_anplusb(1, r, lag,
-						slices * inSamples - 1);
-				if (lag > 0)
-				{
-					expected = expected / autocorrelation_of_anplusb(1, r, 0,
-							slices * inSamples - 1);
-				}
-				TS_ASSERT_EQUALS(out(r, lag), expected);
-			}
-		}
-	}
-
-	/**
 	 * Test clearing the internal buffers.
 	 */
 	void test_internal_buffer_clearing(void)
@@ -461,7 +465,8 @@ public:
 		}
 
 		// Feed the monkey a couple of times but clear buffers first every time.
-		for (mrs_natural i=0; i<10; i++){
+		for (mrs_natural i = 0; i < 10; i++)
+		{
 			rac->updctrl("mrs_bool/clear", true);
 			rac->myProcess(in, out);
 		}
@@ -477,6 +482,58 @@ public:
 			}
 		}
 
+	}
+
+	/**
+	 * Test the unfoldToObservations feature.
+	 */
+	void test_unfoldToObservations(mrs_bool normalize = false,
+	                               mrs_bool doNotNormalizeForLag0 = false)
+	{
+		mrs_natural inObservations = 5;
+		mrs_natural inSamples = 10;
+		mrs_natural maxLag = 6;
+		set_flow(inObservations, inSamples, maxLag, true);
+		rac->updctrl("mrs_bool/normalize", normalize);
+		rac->updctrl("mrs_bool/doNotNormalizeForLag0", doNotNormalizeForLag0);
+
+		// Create input.
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural t = 0; t < inSamples; t++)
+			{
+				in(r, t) = r + t;
+			}
+		}
+
+		// Process.
+		rac->myProcess(in, out);
+
+		// Check output.
+		mrs_real expected;
+		for (mrs_natural r = 0; r < inObservations; r++)
+		{
+			for (mrs_natural lag = 0; lag <= maxLag; lag++)
+			{
+				expected = autocorrelation_of_anplusb(1, r, lag, inSamples - 1);
+				if (normalize && !(doNotNormalizeForLag0 && lag == 0))
+				{
+					expected /= autocorrelation_of_anplusb(1, r, 0, inSamples
+					                                       - 1);
+				}
+				TS_ASSERT_EQUALS(out(r*(maxLag + 1) + lag, 0), expected);
+			}
+		}
+	}
+
+	void test_unfoldToObservations_normalize(void)
+	{
+		test_unfoldToObservations(true);
+	}
+
+	void test_unfoldToObservations_normalize_but_not_for_lag0(void)
+	{
+		test_unfoldToObservations(true, true);
 	}
 
 };
