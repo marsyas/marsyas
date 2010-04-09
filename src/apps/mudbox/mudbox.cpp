@@ -3401,6 +3401,193 @@ toy_with_stereo2mono(string fname)
 
 }
 
+/*!
+ * compares ERB implementations (matlab marsyas),
+ * requires Auditory Toolbox (http://cobweb.ecn.purdue.edu/~malcolm/interval/1998-010/)
+ * 
+ * \param fname wave file name
+ */
+void 
+toy_with_auditorytbx(string fname)
+{
+    const mrs_bool      doMatlabPlots   = true;
+    const mrs_real      simSampleRate   = 16000.0F;
+    const mrs_natural   numIrSamples    = 512;
+    mrs_real            lowFreq         = 100.0F;
+    mrs_natural         numChan         = 10;
+    mrs_bool            dataMismatch    = false;
+    MarSystemManager    mng;
+    mrs_realvec         srcData,
+                        destData;
+
+    ///////////////////////////////////////////////////////////////
+    cout << ">>>>>>>> compute example IR of ERB filterbank" << endl << endl;
+
+    // network
+    MarSystem* erbSimulNet = mng.create("Series", "erbSimulNet");
+    erbSimulNet->addMarSystem (mng.create("RealvecSource", "rvsrc"));
+    erbSimulNet->addMarSystem(mng.create("ERB", "erb"));
+
+    // initialization of buffers and controls
+    srcData.create (numIrSamples);
+    srcData(0) = 1;
+
+    erbSimulNet->updctrl("ERB/erb/mrs_natural/numChannels", numChan);
+    erbSimulNet->updctrl("ERB/erb/mrs_real/lowFreq", lowFreq);
+    erbSimulNet->updctrl("ERB/erb/mrs_real/israte", simSampleRate);
+    erbSimulNet->updctrl("ERB/erb/mrs_real/osrate", simSampleRate);
+    erbSimulNet->updctrl("RealvecSource/rvsrc/mrs_realvec/data", srcData);
+
+    // compute IR of erb filterbank
+    erbSimulNet->tick();
+
+    // get IR
+    destData = erbSimulNet->getctrl ("mrs_realvec/processedData")->to<mrs_realvec>();
+
+#ifdef MARSYAS_MATLAB
+    mrs_realvec     mtlb_destData;
+    const mrs_real  floatTolerance  = 1e-6F;
+
+    // set parameters
+    MATLAB_PUT(erbSimulNet->getctrl("ERB/erb/mrs_real/israte")->to<mrs_real>(), "fs");
+    MATLAB_PUT(numChan, "numChan");
+    MATLAB_PUT(lowFreq, "lowFreq");
+    MATLAB_PUT(erbSimulNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>(), "inSamples");
+
+    // compute matlab filter coeffs
+    MATLAB_EVAL("fcoefs = MakeERBFilters(fs,numChan,lowFreq);");
+    // compute matlab IR
+    MATLAB_EVAL("mtlbIR = ERBFilterBank([1 zeros(1,inSamples-1)], fcoefs);");
+
+    // set output data
+    MATLAB_PUT(destData, "mrsIR");
+
+    if (doMatlabPlots)
+    {
+        // plot output data
+        MATLAB_EVAL("resp = 20*log10(abs(fft(mrsIR')));");
+        MATLAB_EVAL("freqScale = (0:(inSamples-1))/inSamples*fs;");
+        MATLAB_EVAL("figure,semilogx(freqScale(1:(inSamples*.5-1)),resp(1:(inSamples*.5-1),:));");
+        MATLAB_EVAL("axis([lowFreq fs -60 0]);title('Frequency Response');xlabel('Frequency (Hz)');ylabel('Filterbank Transfer Function (dB)');grid on;");
+
+        // compare IRs
+        MATLAB_EVAL("figure,imagesc (mrsIR-mtlbIR);colorbar;");
+        MATLAB_EVAL("title('IR: Difference between Implementations');xlabel('Time (frames)');ylabel('Filter Band (Idx)');");
+    }
+
+    MATLAB_GET ("mtlbIR", mtlb_destData);
+    mtlb_destData  -= destData;
+    for (int i = 0; i < destData.getRows (); i++)
+    {
+        for (int j = 0; j < destData.getCols (); j++)
+        {
+            if (fabsf (mtlb_destData(i,j)) > floatTolerance)
+            {
+                dataMismatch    = true;
+                break;
+            }
+        }
+    }
+    cout << "Results (Matlab, Marsyas): " << ((dataMismatch)? " not identical!" : "identical") << endl;
+
+#endif
+
+    cout << "ERB IR test done..." << endl;
+    cout << "Hit Enter to continue." << endl;
+    getchar ();
+
+    ///////////////////////////////////////////////////////////////
+    cout << ">>>>>>>> compute example audio output for ERB filterbank" << endl;
+    cout << "(only use with short mono audio files)" << endl << endl;
+
+
+    mrs_bool    isEmpty;
+    mrs_natural sampleCount = 0;
+
+    lowFreq         = 100.0F;
+    numChan         = 40;
+    dataMismatch    = false;
+
+    // new network
+    MarSystem* erbTestNet = mng.create("Series", "erbTestNet");
+    erbTestNet->addMarSystem(mng.create("SoundFileSource", "src"));
+    erbTestNet->addMarSystem(mng.create("ERB", "erb"));
+
+    erbTestNet->updctrl("ERB/erb/mrs_natural/numChannels", numChan);
+    erbTestNet->updctrl("ERB/erb/mrs_real/lowFreq", lowFreq);
+
+    erbTestNet->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+    erbTestNet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
+
+    // first compute the matlab result (no block based processing there with ERB filterbank)
+#ifdef MARSYAS_MATLAB
+    // empty workspace
+    MATLAB_EVAL ("clear;");
+
+    // set parameters
+    MATLAB_PUT(erbTestNet->getctrl("ERB/erb/mrs_real/israte")->to<mrs_real>(), "fs");
+    MATLAB_PUT(numChan, "numChan");
+    MATLAB_PUT(lowFreq, "lowFreq");
+    // only use short audio files because matlab will hold both input and fb output in memory
+    MATLAB_PUT(erbTestNet->getctrl("SoundFileSource/src/mrs_string/filename")->to<mrs_string>(), "fname");
+    
+    // compute matlab filter coeffs
+    MATLAB_EVAL("fcoefs = MakeERBFilters(fs,numChan,lowFreq);");
+    // load audio file (only wav ATM!)
+    MATLAB_EVAL("[audioIn, filefs] = wavread(fname);");
+    // compute ERB output
+    MATLAB_EVAL("mtlbOut = ERBFilterBank(audioIn, fcoefs);");
+#endif
+
+    // do processing until eof
+    while (isEmpty = erbTestNet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+    {
+        // calculate filterbank output
+        erbTestNet->tick();
+        mrs_realvec outData = erbTestNet->getControl ("mrs_realvec/processedData")->to<mrs_realvec>();
+
+#ifdef MARSYAS_MATLAB
+
+        // keep matlab up-to-date with the current position
+        MATLAB_PUT((sampleCount + 1), "currSampleCount");
+        MATLAB_PUT(erbTestNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>(), "inSamples");
+
+        // get matlab data for the current block
+        MATLAB_EVAL("currOutData = mtlbOut (:,currSampleCount:min(end,currSampleCount + inSamples-1));");
+        MATLAB_GET ("currOutData", mtlb_destData);
+
+        // compare output
+        for (int i = 0; i < mtlb_destData.getRows (); i++)
+        {
+            for (int j = 0; j < mtlb_destData.getCols (); j++)
+            {
+                if (fabsf (mtlb_destData(i,j) - outData(i,j)) > floatTolerance)
+                {
+                    dataMismatch    = true;
+                    cout << "Block@Sample: " << sampleCount << ", Row: " << i << ", Col: " << j << ", Diff: " << mtlb_destData(i,j) - outData(i,j) << endl;
+                }
+            }
+        }
+#endif
+        sampleCount += outData.getCols ();
+    }
+#ifdef MARSYAS_MATLAB
+    if (!dataMismatch && doMatlabPlots )
+    {
+        MATLAB_EVAL("for j=1:size(mtlbOut,1) c=max(mtlbOut(j,:),0);  c=filter([1],[1 -.99],c); mtlbOut(j,:)=c; end;");
+        MATLAB_EVAL("imagesc(mtlbOut);");
+    }
+#endif
+    cout << "Results (Matlab, Marsyas): " << ((dataMismatch)? " not identical!" : "identical") << endl << endl;
+    cout << "ERB Audio test done..." << endl;
+    cout << "Hit Enter to continue." << endl;
+    getchar ();
+
+#ifdef MARSYAS_MATLAB
+    MATLAB_CLOSE ();  
+#endif
+}
+
 
 
 void toy_with_swipe(string sfname) {
@@ -6918,8 +7105,10 @@ main(int argc, const char **argv)
 		toy_with_robot_peak_onset(fname0,fname1);
 	else if (toy_withName == "midiout")
 		toy_with_midiout();
-	else if (toy_withName == "beats")
-		toy_with_beats(fname0, fname1, progName);
+    else if (toy_withName == "beats")
+        toy_with_beats(fname0, fname1, progName);
+    else if (toy_withName == "auditorytbx")
+        toy_with_auditorytbx(fname0);
 
 	else 
 	{
