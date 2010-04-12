@@ -608,7 +608,7 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat,
 							mrs_real newScore, mrs_real beatCount, mrs_natural fatherAgent)
 {
 	//if father agent died in the same timestep as it requests a son creation then this request in unconsidered
-	if(mutedAgentsTmp_(fatherAgent) == 1.0)
+	if(fatherAgent >= 0 && mutedAgentsTmp_(fatherAgent) == 1.0)
 	{
 		if(logFile_)
 			debugAddEvent("CREATE_REF_KF", -1, newPeriod, firstBeat, newScore, bestScore_, fatherAgent); 

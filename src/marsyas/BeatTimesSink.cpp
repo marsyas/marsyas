@@ -114,7 +114,7 @@ BeatTimesSink::myUpdate(MarControlPtr sender)
 
   mode_ = ctrl_mode_->to<mrs_string>();
 
-  ibiBPMVec_.create(1000);
+  //ibiBPMVec_.create(1000);
 
   bestFinalAgentHistory_ = ctrl_bestFinalAgentHistory_->to<mrs_realvec>();
   soundFileSize_ = ctrl_soundFileSize_->to<mrs_natural>();
@@ -126,6 +126,10 @@ BeatTimesSink::addMedianVector(mrs_real ibiBPM)
 {
 	mrs_bool bigger = false;
 	mrs_realvec tmp(beatCount_);
+	//stretch median bpm vector if it reaches its limit
+	if(beatCount_ >= ibiBPMVec_.getSize())
+		ibiBPMVec_.stretch(beatCount_);
+
 	for(mrs_natural j = 0; j < beatCount_-1; j++)
 	{
 		//copy all
@@ -140,6 +144,7 @@ BeatTimesSink::addMedianVector(mrs_real ibiBPM)
 
 			for(mrs_natural z = i+1; z < beatCount_-1; z++)
 				ibiBPMVec_(z+1) = tmp(z);
+				//ibiBPMVec_.stretchWrite((z+1), tmp(z));
 
 			bigger = true;
 			break;
@@ -151,6 +156,7 @@ BeatTimesSink::addMedianVector(mrs_real ibiBPM)
 		ibiBPMVec_(0) = ibiBPM;
 		for(mrs_natural z = 0; z < beatCount_-1; z++)
 			ibiBPMVec_(z+1) = tmp(z);
+			//ibiBPMVec_.stretchWrite((z+1), tmp(z));
 	}
 
 	return ibiBPMVec_;

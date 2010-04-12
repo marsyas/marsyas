@@ -81,6 +81,7 @@ mrs_bool logfileopt;
 mrs_bool noncausalopt;
 mrs_bool dumbinductionopt;
 mrs_bool inductionoutopt;
+mrs_bool micinputopt;
 mrs_real phase_;
 
 void 
@@ -88,7 +89,7 @@ printUsage(string progName)
 {
 	MRSDIAG("ibt.cpp - printUsage");
 	cerr << "Usage : " << progName << 
-		" [-s scoreFunction] [-t inductionTime (in secs)] [-m metricalChangeTime (in secs)] [-b backtrace] [-di dumb_induction] [-nc non-causal] [-o annotationsOutput] [-a play_w/_beats] [-f outputFile_w/_beats] [-2b givefirst2beats] [-1b givefirst1beat] [-2bs givefirst2beats_startpoint] [-1bs givefirst1beat_startpoint] [-l log_file] [-io induction_out] fileName outDir" << endl;
+		" [-s scoreFunction] [-t inductionTime (in secs)] [-m metricalChangeTime (in secs)] [-b backtrace] [-di dumb_induction] [-nc non-causal] [-o annotationsOutput] [-a play_w/_beats] [-f outputFile_w/_beats] [-2b givefirst2beats] [-1b givefirst1beat] [-2bs givefirst2beats_startpoint] [-1bs givefirst1beat_startpoint] [-l log_file] [-io induction_out] [-mic microphone_input] fileName outDir" << endl;
 	cerr << "where fileName is a sound file in a MARSYAS supported format and outDir the directory where the annotation files (beats + tempo) shall be saved (ibt.exe dir by default)." << endl;
 	cerr << endl;
 	exit(1); 
@@ -122,7 +123,8 @@ printHelp(string progName)
 	cerr << "-1bs --givefirst1beat_startpoint : equal to givefirst1beat mode but start tracking at the given phase" << endl;
 	cerr << "-o --annot_output   : output the predicted beat times and/or the (median) tempo (\"beats+tempo\"-default; \"beats\"; \"tempo\"; \"none\")" << endl;
 	cerr << "-l --log_file       : generate log file" << endl;
-	cerr << "-io induction_out	 : output best period (in BPMs) by the end of the induction stage (in the outDir directory)" << endl;
+	cerr << "-io --induction_out : output best period (in BPMs) by the end of the induction stage (in the outDir directory)" << endl;
+	cerr << "-mic --microphone_input : input sound via microphone interface" << endl;
 	cerr << "Available Score Functions: " << endl;
 	cerr << "\"regular\" (default)" << endl;
 	cerr << "\"correlation\"" << endl;
@@ -142,6 +144,7 @@ initOptions()
 	cmd_options.addBoolOption("noncausal", "nc", false);
 	cmd_options.addBoolOption("dumbinduction", "di", false);
 	cmd_options.addBoolOption("inductionout", "io", false);
+	cmd_options.addBoolOption("microphoneinput", "mic", false);
 	cmd_options.addStringOption("givefirst2beats", "2b", "-1");
 	cmd_options.addStringOption("givefirst1beat", "1b", "-1");
 	cmd_options.addStringOption("givefirst2beats_startpoint", "2bs", "-1");
@@ -167,6 +170,7 @@ loadOptions()
 	dumbinductionopt = cmd_options.getBoolOption("dumbinduction");
 	logfileopt = cmd_options.getBoolOption("logFile");
 	inductionoutopt = cmd_options.getBoolOption("inductionout");
+	micinputopt = cmd_options.getBoolOption("microphoneinput");
 	givefirst2beats = cmd_options.getStringOption("givefirst2beats");
 	givefirst1beat = cmd_options.getStringOption("givefirst1beat");
 	givefirst2beats_startpoint= cmd_options.getStringOption("givefirst2beats_startpoint");
@@ -297,11 +301,15 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	MarSystemManager mng;
 
 	// assemble the processing network 
-	MarSystem* audioflow = mng.create("Series", "audioflow");		
+	MarSystem* audioflow = mng.create("Series", "audioflow");
+	if(micinputopt) //capture audio via microphone
+		audioflow->addMarSystem(mng.create("AudioSource", "micsrc"));
+	else
 		audioflow->addMarSystem(mng.create("SoundFileSource", "src"));
+		
 		audioflow->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
-
-			MarSystem* beattracker= mng.create("FlowThru","beattracker");
+			
+			MarSystem* beattracker = mng.create("FlowThru","beattracker");
 				//beattracker->addMarSystem(mng.create("Stereo2Mono", "src")); //replace by a "Monofier" MarSystem (to be created) [!]
 				
 				MarSystem* onsetdetectionfunction = mng.create("Series", "onsetdetectionfunction");
@@ -317,7 +325,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			beattracker->addMarSystem(onsetdetectionfunction);
 			beattracker->addMarSystem(mng.create("ShiftInput", "acc"));
 
-			MarSystem* normfiltering = mng.create("Series", "normfiltering");
+				MarSystem* normfiltering = mng.create("Series", "normfiltering");
 					normfiltering->addMarSystem(mng.create("Filter","filt1"));
 					
 				//if(sonicOutFluxFilter)
@@ -373,28 +381,43 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 				beattracker->addMarSystem(mng.create("BeatTimesSink", "sink"));
 
 		audioflow->addMarSystem(beattracker);
+
+	//for synthesizing clicks (on beats) with audio and playing/recording
+	MarSystem* IBTsystem;
+	if(audiofileopt || audioopt)
+	{
 		audioflow->addMarSystem(mng.create("Gain","gainaudio"));
 
-		MarSystem* beatmix = mng.create("Fanout","beatmix");
-		beatmix->addMarSystem(audioflow);
+		MarSystem* beatmix;
+		//if audiofile and not audio play mode, with mic input, then only play clicks
+		if(micinputopt && ((!audiofileopt && audioopt) || (audiofileopt && audioopt)))
+			beatmix = mng.create("Series","beatmix");
+		else //if audiofile without audio play mode, with mic input, then save audio + clicks
+			beatmix = mng.create("Fanout","beatmix");
+		
+			beatmix->addMarSystem(audioflow);
+			
 			MarSystem* beatsynth = mng.create("Series","beatsynth");
 				beatsynth->addMarSystem(mng.create("NoiseSource","noisesrc"));
 				beatsynth->addMarSystem(mng.create("ADSR","env"));
 				beatsynth->addMarSystem(mng.create("Gain", "gainbeats"));
 			beatmix->addMarSystem(beatsynth);
 		
-	MarSystem* IBTsystem = mng.create("Series", "IBTsystem");
+		IBTsystem = mng.create("Series", "IBTsystem");
 		IBTsystem->addMarSystem(beatmix);
-		IBTsystem->addMarSystem(mng.create("AudioSink", "output"));
-		if(audiofileopt)
+		
+		if(audioopt) //for playing audio with clicks
+			IBTsystem->addMarSystem(mng.create("AudioSink", "output"));
+		if(audiofileopt) //for saving audio file with clicks
 			IBTsystem->addMarSystem(mng.create("SoundFileSink", "fdest"));
-
+	}
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
 	///////////////////////////////////////////////////////////////////////////////////////
-	IBTsystem->linkctrl("mrs_bool/hasData", 
-		"Fanout/beatmix/Series/audioflow/SoundFileSource/src/mrs_bool/hasData");
+	//if(!micinputopt)
+	//	IBTsystem->linkctrl("mrs_bool/hasData", 
+	//		"Fanout/beatmix/Series/audioflow/SoundFileSource/src/mrs_bool/hasData");
 
 	//Link LookAheadSamples used in PeakerOnset for compensation when retriving the actual initial OnsetTimes
 	tempoinduction->linkctrl("Fanout/tempohypotheses/Series/phase/PeakerOnset/pkronset/mrs_natural/lookAheadSamples", 
@@ -542,8 +565,16 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	*/
 
 	//link beatdetected with noise ADSR -> for clicking when beat:
-	IBTsystem->linkctrl("Fanout/beatmix/Series/audioflow/FlowThru/beattracker/BeatReferee/br/mrs_real/beatDetected", 
-		"Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/nton");
+	if(audiofileopt || audioopt)
+	{
+		if(micinputopt && ((!audiofileopt && audioopt) || (audiofileopt && audioopt))) //if audiofile and audio play mode, with mic input, then only play clicks
+			IBTsystem->linkctrl("Series/beatmix/Series/audioflow/FlowThru/beattracker/BeatReferee/br/mrs_real/beatDetected", 
+				"Series/beatmix/Series/beatsynth/ADSR/env/mrs_real/nton");
+		else //if audiofile without audio play mode, with mic input, then save audio + clicks
+			IBTsystem->linkctrl("Fanout/beatmix/Series/audioflow/FlowThru/beattracker/BeatReferee/br/mrs_real/beatDetected", 
+				"Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/nton");
+
+	}
 
 	//link sampling rate and hopsize for BPM conversion (in PhaseLock)
 	beattracker->linkctrl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/hopSize", 
@@ -628,10 +659,24 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//in non-causal mode always backtrace
 	if(noncausalopt)
 		backtraceopt = true;
-
-	audioflow->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-	mrs_natural inputSize = audioflow->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>(); //sound input file size (in samples)
 	
+	mrs_natural inputSize;
+	if(micinputopt) //if in mic mode
+	{
+		mrs_real micRate = 44100.0;
+		mrs_real length = 1000.0; //length of microphone capture (big number for "endless" capturing)
+		audioflow->updctrl("mrs_real/israte", micRate);
+		audioflow->updctrl("AudioSource/micsrc/mrs_natural/nChannels", 2);
+		audioflow->updctrl("AudioSource/micsrc/mrs_bool/initAudio", true);
+		
+		inputSize = (mrs_natural) ceil(length * micRate);
+	}
+	else //if in soundfile mode
+	{
+		audioflow->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+		inputSize = audioflow->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>(); //sound input file size (in samples)
+	}
+
 	//best result till now are using dB power Spectrum!
 	beattracker->updctrl("Series/onsetdetectionfunction/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 
@@ -829,12 +874,27 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	*/
 
 	//set audio/onset resynth balance and ADSR params for onset sound
-	IBTsystem->updctrl("Fanout/beatmix/Series/audioflow/Gain/gainaudio/mrs_real/gain", 0.6);
-	IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/Gain/gainbeats/mrs_real/gain", 1.2);
-	IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/aTarget", 1.0);
- 	IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/aTime", WINSIZE/80/fsSrc);
- 	IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/susLevel", 0.0);
- 	IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/dTime", WINSIZE/4/fsSrc);
+	if(audiofileopt || audioopt)
+	{
+		if(micinputopt && ((!audiofileopt && audioopt) || (audiofileopt && audioopt)))
+		{
+			IBTsystem->updctrl("Series/beatmix/Series/audioflow/Gain/gainaudio/mrs_real/gain", 0.6);
+			IBTsystem->updctrl("Series/beatmix/Series/beatsynth/Gain/gainbeats/mrs_real/gain", 1.2);
+			IBTsystem->updctrl("Series/beatmix/Series/beatsynth/ADSR/env/mrs_real/aTarget", 1.0);
+ 			IBTsystem->updctrl("Series/beatmix/Series/beatsynth/ADSR/env/mrs_real/aTime", WINSIZE/80/fsSrc);
+ 			IBTsystem->updctrl("Series/beatmix/Series/beatsynth/ADSR/env/mrs_real/susLevel", 0.0);
+ 			IBTsystem->updctrl("Series/beatmix/Series/beatsynth/ADSR/env/mrs_real/dTime", WINSIZE/4/fsSrc);
+		}
+		else
+		{
+			IBTsystem->updctrl("Fanout/beatmix/Series/audioflow/Gain/gainaudio/mrs_real/gain", 0.6);
+			IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/Gain/gainbeats/mrs_real/gain", 1.2);
+			IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/aTarget", 1.0);
+ 			IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/aTime", WINSIZE/80/fsSrc);
+ 			IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/susLevel", 0.0);
+ 			IBTsystem->updctrl("Fanout/beatmix/Series/beatsynth/ADSR/env/mrs_real/dTime", WINSIZE/4/fsSrc);
+		}
+	}
 
 	//for saving file with audio+clicks (on beats):
 	if(audiofileopt)
@@ -886,6 +946,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	*/
 
 	//ostringstream onsetFunction [-> for inputing sonicvisualiser spectral flux];
+	//onsetFunction << "C:\\Users\\João Lobato\\Desktop\\onsetFunctions\\" << outputFile.nameNoExt() << "_vamp_vamp-aubio_aubioonset_detectionfunction.csv";
 
 	//MATLAB Engine inits
 	//used for autocorrelation.m
@@ -914,7 +975,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural frameCount = 0;
 
-	inputSize = (inputSize / HOPSIZE); //inputSize in ticks
+	inputSize = (mrs_natural) (inputSize / HOPSIZE); //inputSize in ticks
 
 	//suming inductionTickCount because with backtrace it will analyse two times the inductionWindow
 	if(backtraceopt)
@@ -924,14 +985,20 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	while(frameCount <= inputSize)
 	{	
 		//cout << "FrameCount: " << frameCount << endl;
-		IBTsystem->tick();
+		if(audiofileopt || audioopt)
+			IBTsystem->tick();
+		else
+			audioflow->tick();
 
 		if(frameCount == 1)
 		{
+			if(micinputopt)
+				cout << "Capturing Audio......" << endl;
 			if(audioopt && !backtraceopt)
 			{
 				IBTsystem->updctrl("AudioSink/output/mrs_bool/initAudio", true);
-				cout << "Playing Audio........" << endl;
+				if(!micinputopt)
+					cout << "Playing Audio........" << endl;
 			}
 			cout << "Induction........";
 		}
@@ -942,7 +1009,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			//for playing audio (with clicks on beats):
 			cout << "done" << endl;
 
-			if(backtraceopt)
+			//if backtrace and not in mic mode
+			if(backtraceopt && !micinputopt)
 			{
 				//Restart reading audio file
 				audioflow->updctrl("SoundFileSource/src/mrs_natural/pos", 0);
@@ -956,7 +1024,12 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 					IBTsystem->updctrl("AudioSink/output/mrs_bool/initAudio", true);
 			}
 			if(audioopt)
-				cout << "Playing audio with beat taps........" << endl;
+			{
+				if(micinputopt) //in microphone mode only plays clicks
+					cout << "Playing beat taps........" << endl;
+				else
+					cout << "Playing audio with beat taps........" << endl;
+			}
 			
 			if(!noncausalopt)
 				cout << "Real-Time Beat Tracking........" << endl;
@@ -1012,7 +1085,8 @@ main(int argc, const char **argv)
 
 	FileName outputFile(sfName);
 	if(strcmp(outputFile.ext().c_str(), "wav") != 0 && strcmp(outputFile.ext().c_str(), "mp3") != 0 && 
-		strcmp(outputFile.ext().c_str(), "au") != 0 && strcmp(outputFile.ext().c_str(), "raw") != 0)
+		strcmp(outputFile.ext().c_str(), "au") != 0 && strcmp(outputFile.ext().c_str(), "raw") != 0 && 
+		!micinputopt)
 	{
 		if(strcmp(outputFile.ext().c_str(), "mf") == 0 || strcmp(outputFile.ext().c_str(), "txt") == 0)
 		{
@@ -1021,11 +1095,11 @@ main(int argc, const char **argv)
 			mrs_string lineFile;
 			inStream.open(outputFile.fullname().c_str());
 			cout << "InductionTime: " << induction_time << "secs"
-				<< "\nScoreFunction: " << score_function;
-			if(metrical_change_time == -1)
-				cout << "\nMetrical Change: permitted througout all piece" << endl;
-			else
-				cout << "\nMetrical Change: initial " << metrical_change_time << "secs" << endl;
+				<< "\nScoreFunction: " << score_function << endl;
+			//if(metrical_change_time == -1)
+			//	cout << "\nMetrical Change: permitted througout all piece" << endl;
+			//else
+			//	cout << "\nMetrical Change: initial " << metrical_change_time << "secs" << endl;
 			
 			cout << "\nInputing Collection " << sfName << "..." << endl;
 
@@ -1047,19 +1121,28 @@ main(int argc, const char **argv)
 
 	else
 	{
-		cout << "SoundFile: " << sfName << endl;
-		if(existsFile(sfName))
+		cout << "InductionTime: " << induction_time << "secs"
+			<< "\nScoreFunction: " << score_function << endl;
+		//if(metrical_change_time == -1)
+		//	cout << "\nMetrical Change: permitted througout all piece" << endl;
+		//else
+		//	cout << "\nMetrical Change: initial " << metrical_change_time << "secs" << endl;
+		if(micinputopt)
 		{
-			cout << "InductionTime: " << induction_time << "secs"
-				<< "\nScoreFunction: " << score_function;
-			if(metrical_change_time == -1)
-				cout << "\nMetrical Change: permitted througout all piece" << endl;
-			else
-				cout << "\nMetrical Change: initial " << metrical_change_time << "secs" << endl;
-			
+			sfName = "mic";
+			cout << "SoundFile: Captured from Microphone" << endl;
 			ibt(sfName, outputTxt);
 		}
-		else exit(0);
+			
+		else
+		{
+			cout << "SoundFile: " << sfName << endl;
+			if(existsFile(sfName))
+			{	
+				ibt(sfName, outputTxt);
+			}
+			else exit(0);
+		}
 	}
 
 	cout << "All Done!" << endl;
