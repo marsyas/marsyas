@@ -946,7 +946,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	*/
 
 	//ostringstream onsetFunction [-> for inputing sonicvisualiser spectral flux];
-	//onsetFunction << "C:\\Users\\João Lobato\\Desktop\\onsetFunctions\\" << outputFile.nameNoExt() << "_vamp_vamp-aubio_aubioonset_detectionfunction.csv";
+	//onsetFunction << "C:\\Users\\Joao Lobato\\Desktop\\onsetFunctions\\" << outputFile.nameNoExt() << "_vamp_vamp-aubio_aubioonset_detectionfunction.csv";
 
 	//MATLAB Engine inits
 	//used for autocorrelation.m
