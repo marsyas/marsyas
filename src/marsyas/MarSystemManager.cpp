@@ -127,6 +127,7 @@
 #include "Filter.h"
 #include "Biquad.h"
 #include "ERB.h"
+#include "LyonPassiveEar.h"
 #include "Clip.h"
 #include "HarmonicEnhancer.h"
 #include "Reassign.h"
@@ -334,6 +335,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RadioDrumInput", new RadioDrumInput("radiodrump"));
 	registerPrototype("NoiseGate", new NoiseGate("noisegatep"));
 	registerPrototype("ERB", new ERB("erbp"));
+	registerPrototype("LyonPassiveEar", new LyonPassiveEar("lyonp"));
 	registerPrototype("Clip", new Clip("clpr"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
 	registerPrototype("Reassign", new Reassign("reassignpr"));

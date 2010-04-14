@@ -3401,6 +3401,174 @@ toy_with_stereo2mono(string fname)
 
 }
 
+
+
+void 
+toy_with_lyons(string fname)
+{
+	const mrs_bool      doMatlabPlots   = true;
+	const mrs_real      simSampleRate   = 16000.0F;
+	const mrs_natural   numIrSamples    = 256;
+	mrs_bool            dataMismatch    = false;
+	MarSystemManager    mng;
+	mrs_realvec         srcData (numIrSamples),
+		destData;
+
+	// network
+	MarSystem* lyonSimulNet = mng.create("Series", "lyonSimulNet");
+	lyonSimulNet->addMarSystem (mng.create("RealvecSource", "rvsrc"));
+	lyonSimulNet->addMarSystem(mng.create("LyonPassiveEar", "lyon"));
+
+
+	// initialization of buffers and controls
+	srcData.setval (0);
+	srcData(0) = 1;
+	lyonSimulNet->updctrl ("mrs_real/israte", simSampleRate);
+	lyonSimulNet->updctrl("RealvecSource/rvsrc/mrs_realvec/data", srcData);
+	lyonSimulNet->updctrl("mrs_natural/inSamples", numIrSamples);
+	lyonSimulNet->updctrl("mrs_natural/onSamples", numIrSamples);
+
+	// compute IR of lyon filterbank
+	lyonSimulNet->tick();
+
+	// get IR
+	destData = lyonSimulNet->getctrl ("mrs_realvec/processedData")->to<mrs_realvec>();
+#ifdef MARSYAS_MATLAB
+	mrs_realvec     mtlb_destData;
+	const mrs_real  floatTolerance  = 1e-6F;
+
+	// set parameters
+	MATLAB_PUT(lyonSimulNet->getctrl("LyonPassiveEar/lyon/mrs_real/israte")->to<mrs_real>(), "fs");
+	MATLAB_PUT(lyonSimulNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>(), "inSamples");
+
+	// compute matlab filter coeffs
+	MATLAB_EVAL("fcoefs = DesignLyonFilters(fs);");
+	// compute matlab IR
+	MATLAB_EVAL("mtlbIR = soscascade([1 zeros(1,inSamples-1)], fcoefs);");
+
+	// set output data
+	MATLAB_PUT(destData, "mrsIR");
+
+	if (doMatlabPlots)
+	{
+		MATLAB_EVAL("resp = 20*log10(abs(fft(mrsIR(1:5:88,:)')));");
+		MATLAB_EVAL("freqScale = (0:(inSamples-1))/inSamples*fs;");
+		MATLAB_EVAL("figure,semilogx(freqScale(1:(inSamples*.5)),resp(1:(inSamples*.5),:));");
+		MATLAB_EVAL("axis([100 10000 -60 20]);title('Frequency Response');xlabel('Frequency (Hz)');ylabel('Filterbank Transfer Function (dB)');grid on;");
+
+		// compare IRs
+		MATLAB_EVAL("figure,imagesc (mrsIR-mtlbIR);colorbar;");
+		MATLAB_EVAL("title('IR: Difference between Implementations');xlabel('Time (frames)');ylabel('Filter Band (Idx)');");
+	}
+
+	MATLAB_GET ("mtlbIR", mtlb_destData);
+	mtlb_destData  -= destData;
+	for (int i = 0; i < destData.getRows (); i++)
+	{
+		for (int j = 0; j < destData.getCols (); j++)
+		{
+			if (fabs (mtlb_destData(i,j)) > floatTolerance)
+			{
+				dataMismatch    = true;
+				break;
+			}
+		}
+	}
+	cout << "Results (Matlab, Marsyas): " << ((dataMismatch)? " not identical!" : "identical") << endl;
+
+	cout << "Lyon IR test done..." << endl;
+	cout << "Hit Enter to continue." << endl;
+	getchar ();
+
+	///////////////////////////////////////////////////////////////
+	cout << ">>>>>>>> compute example audio output for Lyons filterbank" << endl;
+	cout << "(only use with short mono audio files)" << endl << endl;
+
+
+	mrs_bool    isEmpty;
+	mrs_natural sampleCount = 0;
+
+	dataMismatch    = false;
+
+	// new network
+	MarSystem* lyonTestNet = mng.create("Series", "lyonTestNet");
+	lyonTestNet->addMarSystem(mng.create("SoundFileSource", "src"));
+	lyonTestNet->addMarSystem(mng.create("LyonPassiveEar", "lyonsear"));
+
+	lyonTestNet->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+	lyonTestNet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
+
+	// first compute the matlab result (no block based processing there with lyon filterbank)
+#ifdef MARSYAS_MATLAB
+	// empty workspace
+	MATLAB_EVAL ("clear;");
+
+	// set parameters
+	MATLAB_PUT(lyonTestNet->getctrl("LyonPassiveEar/lyonsear/mrs_real/israte")->to<mrs_real>(), "fs");
+	// only use short audio files because matlab will hold both input and fb output in memory
+	MATLAB_PUT(lyonTestNet->getctrl("SoundFileSource/src/mrs_string/filename")->to<mrs_string>(), "fname");
+
+	// compute matlab filter coeffs
+	MATLAB_EVAL("fcoefs = DesignLyonFilters(fs);");
+	// load audio file (only wav ATM!)
+	MATLAB_EVAL("[audioIn, filefs] = wavread(fname);");
+	// compute lyon output
+	MATLAB_EVAL("mtlbOut = soscascade(audioIn, fcoefs);");
+#endif
+
+	// do processing until eof
+	while (isEmpty = lyonTestNet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+		// calculate filterbank output
+		lyonTestNet->tick();
+		mrs_realvec outData = lyonTestNet->getControl ("mrs_realvec/processedData")->to<mrs_realvec>();
+
+#ifdef MARSYAS_MATLAB
+
+		// keep matlab up-to-date with the current position
+		MATLAB_PUT((sampleCount + 1), "currSampleCount");
+		MATLAB_PUT(lyonTestNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>(), "inSamples");
+
+		// get matlab data for the current block
+		MATLAB_EVAL("currOutData = mtlbOut (:,currSampleCount:min(end,currSampleCount + inSamples-1));");
+		MATLAB_GET ("currOutData", mtlb_destData);
+
+		// compare output
+		for (int i = 0; i < mtlb_destData.getRows (); i++)
+		{
+			for (int j = 0; j < mtlb_destData.getCols (); j++)
+			{
+				if (fabsf (mtlb_destData(i,j) - outData(i,j)) > floatTolerance)
+				{
+					dataMismatch    = true;
+					cout << "Block@Sample: " << sampleCount << ", Row: " << i << ", Col: " << j << ", Diff: " << mtlb_destData(i,j) - outData(i,j) << endl;
+				}
+			}
+		}
+#endif
+		sampleCount += outData.getCols ();
+	}
+#ifdef MARSYAS_MATLAB
+	if (!dataMismatch && doMatlabPlots )
+	{
+		MATLAB_EVAL("for j=1:size(mtlbOut,1) c=max(mtlbOut(j,:),0);  c=filter([1],[1 -.99],c); mtlbOut(j,:)=c; end;");
+		MATLAB_EVAL("imagesc(mtlbOut);colorbar");
+		MATLAB_EVAL("title('filter bank output');xlabel('Time (frames)');ylabel('Filter Band (Idx)');");
+	}
+#endif
+	cout << "Results (Matlab, Marsyas): " << ((dataMismatch)? " not identical!" : "identical") << endl << endl;
+	cout << "Lyons Passive Ear Audio test done..." << endl;
+	cout << "Hit Enter to continue." << endl;
+	getchar ();
+
+#ifdef MARSYAS_MATLAB
+	MATLAB_CLOSE ();  
+#endif
+
+#endif
+
+}
+
 /*!
  * compares ERB implementations (matlab marsyas),
  * requires Auditory Toolbox (http://cobweb.ecn.purdue.edu/~malcolm/interval/1998-010/)
@@ -3432,10 +3600,9 @@ toy_with_auditorytbx(string fname)
     srcData.create (numIrSamples);
     srcData(0) = 1;
 
+	erbSimulNet->updctrl ("mrs_real/israte", simSampleRate);
     erbSimulNet->updctrl("ERB/erb/mrs_natural/numChannels", numChan);
     erbSimulNet->updctrl("ERB/erb/mrs_real/lowFreq", lowFreq);
-    erbSimulNet->updctrl("ERB/erb/mrs_real/israte", simSampleRate);
-    erbSimulNet->updctrl("ERB/erb/mrs_real/osrate", simSampleRate);
     erbSimulNet->updctrl("RealvecSource/rvsrc/mrs_realvec/data", srcData);
 
     // compute IR of erb filterbank
@@ -3511,10 +3678,10 @@ toy_with_auditorytbx(string fname)
     // new network
     MarSystem* erbTestNet = mng.create("Series", "erbTestNet");
     erbTestNet->addMarSystem(mng.create("SoundFileSource", "src"));
-    erbTestNet->addMarSystem(mng.create("ERB", "erb"));
+    erbTestNet->addMarSystem(mng.create("ERB", "erb2"));
 
-    erbTestNet->updctrl("ERB/erb/mrs_natural/numChannels", numChan);
-    erbTestNet->updctrl("ERB/erb/mrs_real/lowFreq", lowFreq);
+    erbTestNet->updctrl("ERB/erb2/mrs_natural/numChannels", numChan);
+    erbTestNet->updctrl("ERB/erb2/mrs_real/lowFreq", lowFreq);
 
     erbTestNet->updctrl("SoundFileSource/src/mrs_string/filename", fname);
     erbTestNet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
@@ -3525,7 +3692,7 @@ toy_with_auditorytbx(string fname)
     MATLAB_EVAL ("clear;");
 
     // set parameters
-    MATLAB_PUT(erbTestNet->getctrl("ERB/erb/mrs_real/israte")->to<mrs_real>(), "fs");
+    MATLAB_PUT(erbTestNet->getctrl("ERB/erb2/mrs_real/israte")->to<mrs_real>(), "fs");
     MATLAB_PUT(numChan, "numChan");
     MATLAB_PUT(lowFreq, "lowFreq");
     // only use short audio files because matlab will hold both input and fb output in memory
@@ -7107,8 +7274,10 @@ main(int argc, const char **argv)
 		toy_with_midiout();
     else if (toy_withName == "beats")
         toy_with_beats(fname0, fname1, progName);
-    else if (toy_withName == "auditorytbx")
-        toy_with_auditorytbx(fname0);
+	else if (toy_withName == "auditorytbx")
+		toy_with_auditorytbx(fname0);
+	else if (toy_withName == "lyons_passive_ear")
+		toy_with_lyons(fname0);
 
 	else 
 	{
