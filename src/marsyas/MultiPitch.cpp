@@ -127,7 +127,7 @@ MultiPitch::clone() const
 void
 MultiPitch::myUpdate(MarControlPtr sender)
 {
-	cout << "------updating multipitch" << endl;
+	//cout << "------updating multipitch" << endl;
 	MarSystem::myUpdate(sender);
 	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	
@@ -218,7 +218,7 @@ MultiPitch::myUpdate(MarControlPtr sender)
 	net_->addMarSystem(pe3_);
 	net_->addMarSystem(pe4_);
 	net_->addMarSystem(hwr3_);
-	cout << "net done" << endl;
+	//cout << "net done" << endl;
 	if (par_==NULL) par_=new Parallel("par");
 
 
@@ -244,84 +244,7 @@ MultiPitch::myUpdate(MarControlPtr sender)
 void 
 MultiPitch::myProcess(realvec& in, realvec& out) 
 {
-	//cout << "<< MultiPitch myprocess" << endl;
-
 	par_->process(in,out);
-
-
-	//lowp_.setval(0);
-	//lpf1_->process(in, lowp_);
-	//cout << "<< MultiPitch filter1" << endl;
-	//
-	//hpf1_->process(in, highp_);
-	//cout << "<< MultiPitch filter2" << endl;
-	//for (int i=0;i<inSamples_;i++)
-	//{
-	//	cout << "in[" << o << ";" << i << "]: " << in(o,i) << "  " << highp_(i) << endl;
-	//}
-	//// Half-Wave rectify low subband 
-	//hwr_->process(lowp_, lowp_);
-	//
-	//cout << "<< MultiPitch Half" << endl;
-	//// Half-Wave rectify and low pass filter the high subband 
-	//hwr_->process(highp_, highp_);
-	//mrs_realvec hpold;
-	//hpold.create(inSamples_);
-	//for (int i=0;i<inSamples_;i++)
-	//{
-	//	cout << "<<<<<<<<<<<<<< " << i << ": " << highp_(i) << endl;
-	//	//hpold(i)=highp_(i);
-	//}
-	//
-	//cout << "LPF2" << endl;
-
-	//lpf1_->process(highp_, hpold);
-	//mrs_realvec bla=lpf2_->getControl("mrs_realvec/ncoeffs")->to<mrs_realvec>();
-	//mrs_realvec blu=lpf2_->getControl("mrs_realvec/dcoeffs")->to<mrs_realvec>();
-	//
-	///*for(int i=0;i<3;i++)
-	//{
-	//	cout << bla(i) << "  " << blu(i) <<  endl;
-	//}*/
-	//
-
-	//lpf1_->process(in, lowp_);
-	//cout << "<< MultiPitch filter1" << endl;
-	//hpf1_->process(in, highp_);
-	//cout << "<< MultiPitch filter2" << endl;
-	//for (int i=0;i<inSamples_;i++)
-	//{
-	//	cout << "-------------in[" << o << ";" << i << "]: " << in(o,i) << "  " << highp_(i) << endl;
-	//}
-
-	//mrs_natural cnt=0;
-	//for (int i=0;i<inSamples_;i++)
-	//{
-	//	cout << "+++++++++++++ " << i << ": " << highp_(i) << endl;
-	//	if(hpold(i)==highp_(i))cnt++;
-	//}
-	//cout << "############## " << cnt << endl;
-	////cout << "<< filtered" << endl;
-	///* Periodicity detection using autocorrelation computed
-	// using the FFT. */ 
-	//autocor_->process(lowp_, lowp_);
-	//autocor_->process(highp_, highp_);
-	////cout << "<< ffted" << endl;
-	//// Sum the results of periodicity detection 
-	//out = lowp_ + highp_;
-	////cout << "<< sum" << endl;
-	//// Enhance the peaks and half wave rectify 
-
-	//pe2_->process(out, out);
-	////cout << "<< processed2" << endl;
-	//pe3_->process(out, out);
-	////cout << "<< processed3" << endl;
-	//pe4_->process(out, out);
-	////cout << "<< processed4" << endl;
-	//hwr_->process(out, out);
-	////cout << "<< hwr" << endl;
-
-
 }
 
 
