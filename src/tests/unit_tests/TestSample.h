@@ -130,7 +130,7 @@ public:
 		rac->myProcess(in, out);
 
 		// Check output slice.
-		mrs_natural expected;
+		mrs_real expected;
 		for (mrs_natural o = 0; o < onObservations; o++)
 		{
 			for (mrs_natural t = 0; t < onSamples; t++)

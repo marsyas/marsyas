@@ -216,6 +216,7 @@
 #include "CrossCorrelation.h"
 #include "SliceShuffle.h"
 #include "RunningAutocorrelation.h"
+#include "SubtractMean.h"
 //modifyHeader
 
 using namespace std;
@@ -421,6 +422,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("CrossCorrelation",new CrossCorrelation("crossCorrelationpr"));
 	registerPrototype("SliceShuffle", new SliceShuffle("sliceshuffle"));
 	registerPrototype("RunningAutocorrelation", new RunningAutocorrelation("runningautocorrelation"));
+	registerPrototype("SubtractMean", new SubtractMean("subtractmean"));
 
 	//modifyRegister
 

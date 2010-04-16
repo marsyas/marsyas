@@ -32,6 +32,7 @@ namespace Marsyas
 
 	This MarSystem has no controls (so far).
 
+	\todo: add option to output running energy (we're calculating it anyway)
 	\todo: add higher order statistics (skewness, kurtosis)
 	\todo: add controls to enable/disable the possible statistics (mean, stddev, skewness, ...)
 */
