@@ -217,6 +217,10 @@
 #include "SliceShuffle.h"
 #include "RunningAutocorrelation.h"
 #include "SubtractMean.h"
+
+#include "AutoCorrelationFFT.h"
+#include "MultiPitch.h"
+#include "PeakEnhancer.h"
 //modifyHeader
 
 using namespace std;
@@ -228,6 +232,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
 	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
 	registerPrototype("AutoCorrelation", new AutoCorrelation("acrp"));
+	registerPrototype("AutoCorrelationFFT", new AutoCorrelationFFT("autocorfftpr"));
+	registerPrototype("MultiPitch", new MultiPitch("multipitpr"));
+	registerPrototype("PeakEnhancer", new PeakEnhancer("peakenhpr"));
 	registerPrototype("Series", new Series("srp"));
 	registerPrototype("Fanin", new Fanin("finp"));
 	registerPrototype("Fanout", new Fanout("fonp"));
