@@ -112,7 +112,7 @@
 #include "Yin.h"
 #include "DownSampler.h"
 #include "PeakPeriods2BPM.h"
-#include "BeatHistogramFromPeaks.h"
+#include "Histogram.h"
 #include "BeatHistogram.h"
 #include "BeatHistoFeatures.h"
 #include "FM.h"
@@ -127,7 +127,6 @@
 #include "Filter.h"
 #include "Biquad.h"
 #include "ERB.h"
-#include "LyonPassiveEar.h"
 #include "Clip.h"
 #include "HarmonicEnhancer.h"
 #include "Reassign.h"
@@ -215,12 +214,10 @@
 #include "BeatTimesSink.h"
 #include "CrossCorrelation.h"
 #include "SliceShuffle.h"
-#include "RunningAutocorrelation.h"
-#include "SubtractMean.h"
 
 #include "AutoCorrelationFFT.h"
-#include "MultiPitch.h"
 #include "PeakEnhancer.h"
+
 //modifyHeader
 
 using namespace std;
@@ -232,9 +229,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
 	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
 	registerPrototype("AutoCorrelation", new AutoCorrelation("acrp"));
-	registerPrototype("AutoCorrelationFFT", new AutoCorrelationFFT("autocorfftpr"));
-	registerPrototype("MultiPitch", new MultiPitch("multipitpr"));
-	registerPrototype("PeakEnhancer", new PeakEnhancer("peakenhpr"));
 	registerPrototype("Series", new Series("srp"));
 	registerPrototype("Fanin", new Fanin("finp"));
 	registerPrototype("Fanout", new Fanout("fonp"));
@@ -321,8 +315,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Yin", new Yin("yin"));
 	registerPrototype("DownSampler", new DownSampler("ds"));
 	registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));
-	registerPrototype("BeatHistogramFromPeaks", new BeatHistogramFromPeaks("beathistofrompeakspr"));
-	registerPrototype("BeatHistogram", new BeatHistogram("beathistopr"));
+	registerPrototype("Histogram", new Histogram("histop"));
+	registerPrototype("BeatHistogram", new BeatHistogram("beathistop"));
 	registerPrototype("BeatHistoFeatures", new BeatHistoFeatures("bhfp"));
 	registerPrototype("SineSource", new SineSource("sinesp"));
 	registerPrototype("NoiseSource", new NoiseSource("noisesrcsp"));
@@ -343,7 +337,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RadioDrumInput", new RadioDrumInput("radiodrump"));
 	registerPrototype("NoiseGate", new NoiseGate("noisegatep"));
 	registerPrototype("ERB", new ERB("erbp"));
-	registerPrototype("LyonPassiveEar", new LyonPassiveEar("lyonp"));
 	registerPrototype("Clip", new Clip("clpr"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
 	registerPrototype("Reassign", new Reassign("reassignpr"));
@@ -424,13 +417,13 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("OnsetTimes", new OnsetTimes("OnsetTimes"));
 	registerPrototype("BeatAgent", new BeatAgent("beatagent"));
 	registerPrototype("BeatReferee", new BeatReferee("beatreferee"));
+
+	registerPrototype("AutoCorrelationFFT", new AutoCorrelationFFT("autocorfftpr"));
+	registerPrototype("PeakEnhancer", new PeakEnhancer("peakenhpr"));
 	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
 	registerPrototype("CrossCorrelation",new CrossCorrelation("crossCorrelationpr"));
 	registerPrototype("SliceShuffle", new SliceShuffle("sliceshuffle"));
-	registerPrototype("RunningAutocorrelation", new RunningAutocorrelation("runningautocorrelation"));
-	registerPrototype("SubtractMean", new SubtractMean("subtractmean"));
-
 	//modifyRegister
 
 	//***************************************************************************************
@@ -460,6 +453,7 @@ MarSystemManager::MarSystemManager()
 	compositesMap_["AFB_Block_B"                  ] = AFB_BLOCK_B;
 	compositesMap_["AFB_Block_C"                  ] = AFB_BLOCK_C;
 	compositesMap_["Decimating_QMF"               ] = DECIMATING_QMF;
+	compositesMap_["MultiPitch"                   ] = MULTIPITCH;
 }
 
 void MarSystemManager::registerComposite(std::string prototype)
@@ -472,6 +466,93 @@ void MarSystemManager::registerComposite(std::string prototype)
 	{
 	case STUB:
 		break;
+
+
+	case MULTIPITCH:
+	{
+
+		MarSystem* lpf1;
+		MarSystem* lpf2;
+		MarSystem* hpf1;
+		MarSystem* hwr;
+		MarSystem* hwr2;
+		MarSystem* hwr3;
+		MarSystem* autocorhi;
+		MarSystem* autocorlo;
+		MarSystem* sum;
+		MarSystem* pe2;
+		MarSystem* pe3;
+		MarSystem* pe4;
+
+		MarSystem* fan;
+		MarSystem* hinet;
+		MarSystem* lonet;
+
+		MarSystem* multipitpr;
+
+		realvec numlow, denomlow;
+		realvec numhigh, denomhigh;
+		
+		numlow.create(3); 
+		denomlow.create(3);
+		numhigh.create(3); 
+		denomhigh.create(3);
+
+		//coefs are for butter(2,1000) and butter(2,1000,'high') 
+		numlow(0)=0.1207f; numlow(1)=0.2415f; numlow(2)=0.1207f;
+		denomlow(0)=1.0f; denomlow(1)=-0.8058f; denomlow(2)=0.2888f;
+
+		numhigh(0)=0.5236f; numhigh(1)=-1.0473f; numhigh(2)=0.5236f;
+		denomhigh(0)=1.0f; denomhigh(1)=-0.8058f; denomhigh(2)=0.2888f;
+		
+		lpf1 = new Filter("lpf1");
+		lpf1->updControl("mrs_realvec/ncoeffs", numlow);
+		lpf1->updControl("mrs_realvec/dcoeffs", denomlow);
+		
+		lpf2 = new Filter("lpf2");
+		lpf2->updControl("mrs_realvec/ncoeffs", numlow);
+		lpf2->updControl("mrs_realvec/dcoeffs", denomlow);
+		
+		hpf1 = new Filter("hpf1");
+		hpf1->updControl("mrs_realvec/ncoeffs", numhigh);
+		hpf1->updControl("mrs_realvec/dcoeffs", denomhigh);
+
+		hwr = new HalfWaveRectifier("hwr");
+		hwr2 = new HalfWaveRectifier("hwr2");
+		hwr3 = new HalfWaveRectifier("hwr3");
+		autocorhi = new AutoCorrelationFFT("autocorhi");
+		autocorlo = new AutoCorrelationFFT("autocorlo");
+
+		pe2 = new PeakEnhancer("pe2");
+		pe3 = new PeakEnhancer("pe3");
+		pe4 = new PeakEnhancer("pe4");
+
+		multipitpr = new Series("multipitpr");
+		fan = new Fanout("fan");
+		hinet = new Series("hinet");
+		lonet = new Series("lonet");
+		sum = new Sum("sum");
+
+		lonet->addMarSystem(lpf1);
+		lonet->addMarSystem(hwr);
+		lonet->addMarSystem(autocorlo);
+		hinet->addMarSystem(hpf1);
+		hinet->addMarSystem(hwr2);
+		hinet->addMarSystem(lpf2);
+		hinet->addMarSystem(autocorhi);
+
+		fan->addMarSystem(hinet);
+		fan->addMarSystem(lonet);
+
+		multipitpr->addMarSystem(fan);
+		multipitpr->addMarSystem(sum);
+		multipitpr->addMarSystem(pe2);
+		multipitpr->addMarSystem(pe3);
+		multipitpr->addMarSystem(pe4);
+		multipitpr->addMarSystem(hwr3);
+		registerPrototype("MultiPitch", multipitpr);
+	}
+	break;
 
 	case DEVIBOT:
 	{

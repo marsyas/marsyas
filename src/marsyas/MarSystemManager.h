@@ -44,6 +44,7 @@ protected:
 	enum compositePrototypes_
 	{
 		STUB,
+		MULTIPITCH,
 		DEVIBOT,
 		STEREO2MONO,
 		TEXTURESTATS,
