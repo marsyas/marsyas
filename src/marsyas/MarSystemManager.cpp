@@ -112,7 +112,7 @@
 #include "Yin.h"
 #include "DownSampler.h"
 #include "PeakPeriods2BPM.h"
-#include "Histogram.h"
+#include "BeatHistogramFromPeaks.h"
 #include "BeatHistogram.h"
 #include "BeatHistoFeatures.h"
 #include "FM.h"
@@ -127,6 +127,7 @@
 #include "Filter.h"
 #include "Biquad.h"
 #include "ERB.h"
+#include "LyonPassiveEar.h"
 #include "Clip.h"
 #include "HarmonicEnhancer.h"
 #include "Reassign.h"
@@ -214,7 +215,8 @@
 #include "BeatTimesSink.h"
 #include "CrossCorrelation.h"
 #include "SliceShuffle.h"
-
+#include "RunningAutocorrelation.h"
+#include "SubtractMean.h"
 #include "AutoCorrelationFFT.h"
 #include "PeakEnhancer.h"
 
@@ -315,8 +317,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Yin", new Yin("yin"));
 	registerPrototype("DownSampler", new DownSampler("ds"));
 	registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));
-	registerPrototype("Histogram", new Histogram("histop"));
-	registerPrototype("BeatHistogram", new BeatHistogram("beathistop"));
+	registerPrototype("BeatHistogramFromPeaks", new BeatHistogramFromPeaks("beathistofrompeakspr"));
+	registerPrototype("BeatHistogram", new BeatHistogram("beathistopr"));
 	registerPrototype("BeatHistoFeatures", new BeatHistoFeatures("bhfp"));
 	registerPrototype("SineSource", new SineSource("sinesp"));
 	registerPrototype("NoiseSource", new NoiseSource("noisesrcsp"));
@@ -337,6 +339,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RadioDrumInput", new RadioDrumInput("radiodrump"));
 	registerPrototype("NoiseGate", new NoiseGate("noisegatep"));
 	registerPrototype("ERB", new ERB("erbp"));
+	registerPrototype("LyonPassiveEar", new LyonPassiveEar("lyonp"));
 	registerPrototype("Clip", new Clip("clpr"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
 	registerPrototype("Reassign", new Reassign("reassignpr"));
@@ -424,6 +427,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
 	registerPrototype("CrossCorrelation",new CrossCorrelation("crossCorrelationpr"));
 	registerPrototype("SliceShuffle", new SliceShuffle("sliceshuffle"));
+	registerPrototype("RunningAutocorrelation", new RunningAutocorrelation("runningautocorrelation"));
+	registerPrototype("SubtractMean", new SubtractMean("subtractmean"));
 	//modifyRegister
 
 	//***************************************************************************************
@@ -492,27 +497,27 @@ void MarSystemManager::registerComposite(std::string prototype)
 
 		realvec numlow, denomlow;
 		realvec numhigh, denomhigh;
-		
-		numlow.create(3); 
+
+		numlow.create(3);
 		denomlow.create(3);
-		numhigh.create(3); 
+		numhigh.create(3);
 		denomhigh.create(3);
 
-		//coefs are for butter(2,1000) and butter(2,1000,'high') 
+		//coefs are for butter(2,1000) and butter(2,1000,'high')
 		numlow(0)=0.1207f; numlow(1)=0.2415f; numlow(2)=0.1207f;
 		denomlow(0)=1.0f; denomlow(1)=-0.8058f; denomlow(2)=0.2888f;
 
 		numhigh(0)=0.5236f; numhigh(1)=-1.0473f; numhigh(2)=0.5236f;
 		denomhigh(0)=1.0f; denomhigh(1)=-0.8058f; denomhigh(2)=0.2888f;
-		
+
 		lpf1 = new Filter("lpf1");
 		lpf1->updControl("mrs_realvec/ncoeffs", numlow);
 		lpf1->updControl("mrs_realvec/dcoeffs", denomlow);
-		
+
 		lpf2 = new Filter("lpf2");
 		lpf2->updControl("mrs_realvec/ncoeffs", numlow);
 		lpf2->updControl("mrs_realvec/dcoeffs", denomlow);
-		
+
 		hpf1 = new Filter("hpf1");
 		hpf1->updControl("mrs_realvec/ncoeffs", numhigh);
 		hpf1->updControl("mrs_realvec/dcoeffs", denomhigh);
