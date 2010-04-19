@@ -88,12 +88,12 @@ AutoCorrelationFFT::myProcess(realvec& in, realvec& out)
 		mrs_natural i;
 		temp_.create(inSamples_);
 		for (i=0; i < inSamples_; i++)
-			temp_(i) = in(i);
+			temp_(i) = in(o,i);
 		mrs_real *temp = temp_.getData();
 		fft_.rfft(temp, inSamples_/2, FFT_FORWARD);
-		temp[0] = 0.0;
-		temp[1] = 0.0;
-		//out(0) = 0.0;				// DC
+		//temp[0] = 0.0;
+		//temp[1] = 0.0;
+		out(o,0) = 0.0;				// DC
 
 
 		// compute magnitude of freqs
