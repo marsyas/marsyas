@@ -97,11 +97,11 @@ Peaker::myProcess(realvec& in, realvec& out)
 	{
 		rms_ = 0.0;
 		peakSpacing = (mrs_real)(peakSpacing * inSamples_);
-		for (t=peakStart+1; t < peakEnd-1; t++)
+		for (t=peakStart; t < peakEnd; t++)
 		{
 			rms_ += in(o,t) * in(o,t);
 		} 
-		if (rms_ != 0.0) 
+		if (rms_ != 0.0)
 			rms_ /= (peakEnd - peakStart);
 		rms_ = sqrt(rms_);
 
@@ -111,19 +111,23 @@ Peaker::myProcess(realvec& in, realvec& out)
 		bool peakFound = false;
 		
 		
-		for (t=peakStart+1; t < peakEnd-1; t++)
+		for (t=peakStart; t < peakEnd; t++)
 		{
 			peakFound = true;
 			
 			// peak has to be larger than neighbors 			
 			for (int j = 1; j < peakNeighbors; j++)
 			{
-				if (in(o,t-j) >= in(o,t)) 
+				mrs_natural index=t-j;
+				if (index<0) index=0;
+				if (in(o,index) >= in(o,t)) 
 				{
 					peakFound = false;
 					break;
 				}
-				if (in(o,t+j) >= in(o,t))
+				index=t+j;
+				if (index>=inSamples_) index=inSamples_-1;
+				if (in(o,index) >= in(o,t))
 				{
 					peakFound = false;
 					break;
@@ -184,8 +188,6 @@ Peaker::myProcess(realvec& in, realvec& out)
 					half_ = (mrs_natural) (0.5 * maxIndex + 0.5);
 					triple_ = 3 * maxIndex;
 					third_ = (mrs_natural) (0.33 * maxIndex + 0.5);
-					mrs_real double_factor = 0.40;
-					mrs_real triple_factor = 0.33;
 					
 					if (twice_ < (peakEnd - peakStart))
 					{
@@ -209,13 +211,12 @@ Peaker::myProcess(realvec& in, realvec& out)
 						
 						if (peakFound)
 						{
-							out(o,maxIndex) *= (1-double_factor);
-							out(o, maxIndex) +=  double_factor * (in(o,twice_)/rms_);
+							out(o, maxIndex) += (in(o, twice_)/rms_);
+							out(o, twice_) = in(o,twice_)/rms_ + 0.5 * out(o, maxIndex);
 						}
 						
 					}
 					
-					/* 
 					if (half_ < (peakEnd - peakStart))
 					{
 						peakFound = true;
@@ -242,8 +243,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 							out(o, half_) = in(o,half_)/rms_ + 0.5 * out(o, maxIndex);
 						}
 						
-						}
-					*/ 
+					}
 					
 					
 					if (triple_ < (peakEnd - peakStart))
@@ -268,13 +268,12 @@ Peaker::myProcess(realvec& in, realvec& out)
 						
 						if (peakFound)
 						{
-							out(o, maxIndex) *= (1-triple_factor);
-							out(o, maxIndex) = triple_factor * (in(o,triple_)/rms_ + 0.5);
+							out(o, maxIndex) += (in(o, triple_)/rms_);
+							out(o, triple_) = in(o,triple_)/rms_ + 0.5 * out(o, maxIndex);
 						}
 						
 					}
 					
-					/* 
 					if (third_ < (peakEnd - peakStart))
 					{
 						peakFound = true;
@@ -302,7 +301,6 @@ Peaker::myProcess(realvec& in, realvec& out)
 						}
 						
 					}
-					*/ 
 				}
 				
 				peakFound = true;
