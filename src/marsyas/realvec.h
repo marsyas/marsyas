@@ -156,11 +156,11 @@ public:
 	realvec& operator+=(const mrs_real val);
 	realvec& operator-=(const mrs_real val);
 
-	marsyas_EXPORT friend realvec operator+(const realvec& vec1, const realvec& vec2);
-	marsyas_EXPORT friend realvec operator-(const realvec& vec1, const realvec& vec2);
-	marsyas_EXPORT friend realvec operator*(const realvec& vec1, const realvec& vec2);
-	marsyas_EXPORT friend realvec operator/(const realvec& vec1, const realvec& vec2);
-	marsyas_EXPORT friend bool operator!=(const realvec& v1, const realvec& v2);
+	friend realvec operator+(const realvec& vec1, const realvec& vec2);
+	friend realvec operator-(const realvec& vec1, const realvec& vec2);
+	friend realvec operator*(const realvec& vec1, const realvec& vec2);
+	friend realvec operator/(const realvec& vec1, const realvec& vec2);
+	friend bool operator!=(const realvec& v1, const realvec& v2);
 	//@}
 
 	/** \name Item access */
@@ -368,6 +368,8 @@ mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
 
 	MRSASSERT(r < rows_);
 	MRSASSERT(c < cols_);
+	MRSASSERT(r >= 0);
+	MRSASSERT(c >= 0);
 
 	return data_[c * rows_ + r];
 }
