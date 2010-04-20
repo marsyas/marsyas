@@ -73,13 +73,8 @@ public:
 		foobar = (FooBar*) mng.create("FooBar", "foobar");
 	}
 
-	void test_pass(void)
-	{
-		TS_ASSERT( 1 + 1 > 1 );
-	}
-
 	/**
-	 * Test the FooBar flow settings.
+	 * Example test of the FooBar flow settings.
 	 */
 	void test_flow_settings()
 	{
@@ -99,7 +94,7 @@ public:
 	}
 
 	/**
-	 * Test the FooBar process.
+	 * Example test of the FooBar process.
 	 */
 	void test_process()
 	{
@@ -127,7 +122,7 @@ public:
 		}
 
 		// Process.
-		rac->myProcess(in, out);
+		foobar->myProcess(in, out);
 
 		// Check output slice.
 		mrs_real expected;
