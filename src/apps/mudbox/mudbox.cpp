@@ -2555,6 +2555,32 @@ toy_with_realvec()
 
 	getchar();
 
+	// check the functions getRow/Col, setRow/Col, getSubMatrix/setSubMatrix
+	cout << endl << ">>>>>>>> getRow/Col, setRow/Col, getSubMatrix/setSubMatrix" << endl;
+	a.create (3,4);
+	for (mrs_natural i = 0; i < 3; i++)
+		for (mrs_natural j = 0; j < 4; j++)
+			a(i,j)	= (i*4)+j;
+	cout << a << endl << endl;
+
+	b.create (2,2);
+	a.getSubMatrix (0,0, b);
+	cout << b << endl;
+	b.create (2,3);
+	a.getSubMatrix (1,1, b);
+	cout << b  << endl;
+	b.create(5,5);
+	a.getSubMatrix (1,1, b);
+	cout << b  << endl;
+
+	b.create(2,2);
+	a.getSubMatrix (0,0, b);
+	a.setSubMatrix (1,1,b);
+	cout << a << endl << endl;
+
+	cout << ">>>>>>>> ...done." << endl;
+	getchar();
+
 #ifdef MARSYAS_MATLAB
 
 	realvec matrixA, matrixB;
@@ -3413,76 +3439,12 @@ toy_with_lyons(string fname)
 	MarSystemManager    mng;
 	mrs_realvec         srcData (numIrSamples),
 		destData;
-
-	// network
-	MarSystem* lyonSimulNet = mng.create("Series", "lyonSimulNet");
-	lyonSimulNet->addMarSystem (mng.create("RealvecSource", "rvsrc"));
-	lyonSimulNet->addMarSystem(mng.create("LyonPassiveEar", "lyon"));
-
-
-	// initialization of buffers and controls
-	srcData.setval (0);
-	srcData(0) = 1;
-	lyonSimulNet->updctrl ("mrs_real/israte", simSampleRate);
-	lyonSimulNet->updctrl("RealvecSource/rvsrc/mrs_realvec/data", srcData);
-	lyonSimulNet->updctrl("mrs_natural/inSamples", numIrSamples);
-	lyonSimulNet->updctrl("mrs_natural/onSamples", numIrSamples);
-
-	// compute IR of lyon filterbank
-	lyonSimulNet->tick();
-
-	// get IR
-	destData = lyonSimulNet->getctrl ("mrs_realvec/processedData")->to<mrs_realvec>();
-#ifdef MARSYAS_MATLAB
-	mrs_realvec     mtlb_destData;
-	const mrs_real  floatTolerance  = 1e-6F;
-
-	// set parameters
-	MATLAB_PUT(lyonSimulNet->getctrl("LyonPassiveEar/lyon/mrs_real/israte")->to<mrs_real>(), "fs");
-	MATLAB_PUT(lyonSimulNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>(), "inSamples");
-
-	// compute matlab filter coeffs
-	MATLAB_EVAL("fcoefs = DesignLyonFilters(fs);");
-	// compute matlab IR
-	MATLAB_EVAL("mtlbIR = soscascade([1 zeros(1,inSamples-1)], fcoefs);");
-
-	// set output data
-	MATLAB_PUT(destData, "mrsIR");
-
-	if (doMatlabPlots)
-	{
-		MATLAB_EVAL("resp = 20*log10(abs(fft(mrsIR(1:5:88,:)')));");
-		MATLAB_EVAL("freqScale = (0:(inSamples-1))/inSamples*fs;");
-		MATLAB_EVAL("figure,semilogx(freqScale(1:(inSamples*.5)),resp(1:(inSamples*.5),:));");
-		MATLAB_EVAL("axis([100 10000 -60 20]);title('Frequency Response');xlabel('Frequency (Hz)');ylabel('Filterbank Transfer Function (dB)');grid on;");
-
-		// compare IRs
-		MATLAB_EVAL("figure,imagesc (mrsIR-mtlbIR);colorbar;");
-		MATLAB_EVAL("title('IR: Difference between Implementations');xlabel('Time (frames)');ylabel('Filter Band (Idx)');");
-	}
-
-	MATLAB_GET ("mtlbIR", mtlb_destData);
-	mtlb_destData  -= destData;
-	for (int i = 0; i < destData.getRows (); i++)
-	{
-		for (int j = 0; j < destData.getCols (); j++)
-		{
-			if (fabs (mtlb_destData(i,j)) > floatTolerance)
-			{
-				dataMismatch    = true;
-				break;
-			}
-		}
-	}
-	cout << "Results (Matlab, Marsyas): " << ((dataMismatch)? " not identical!" : "identical") << endl;
-
-	cout << "Lyon IR test done..." << endl;
-	cout << "Hit Enter to continue." << endl;
-	getchar ();
+	mrs_realvec			mtlb_destData;
+	const mrs_real		floatTolerance  = 1e-6F;
 
 	///////////////////////////////////////////////////////////////
-	cout << ">>>>>>>> compute example audio output for Lyons filterbank" << endl;
-	cout << "(only use with short mono audio files)" << endl << endl;
+	cout << ">>>>>>>> compute example audio output for Lyon's Passive Ear" << endl;
+	cout << "(test only with short mono audio files)" << endl << endl;
 
 
 	mrs_bool    isEmpty;
@@ -3492,11 +3454,15 @@ toy_with_lyons(string fname)
 
 	// new network
 	MarSystem* lyonTestNet = mng.create("Series", "lyonTestNet");
-	lyonTestNet->addMarSystem(mng.create("SoundFileSource", "src"));
+	lyonTestNet->addMarSystem(mng.create("SoundFileSource", "src2"));
 	lyonTestNet->addMarSystem(mng.create("LyonPassiveEar", "lyonsear"));
 
-	lyonTestNet->updctrl("SoundFileSource/src/mrs_string/filename", fname);
-	lyonTestNet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
+	//lyonTestNet->updctrl("mrs_natural/inSamples", 1);
+	lyonTestNet->updctrl("SoundFileSource/src2/mrs_string/filename", fname);
+	lyonTestNet->updctrl("LyonPassiveEar/lyonsear/mrs_natural/decimFactor", 100);
+	lyonTestNet->updctrl("LyonPassiveEar/lyonsear/mrs_bool/agcActive", true);
+
+	lyonTestNet->linkControl("mrs_bool/hasData", "SoundFileSource/src2/mrs_bool/hasData");
 
 	// first compute the matlab result (no block based processing there with lyon filterbank)
 #ifdef MARSYAS_MATLAB
@@ -3506,14 +3472,14 @@ toy_with_lyons(string fname)
 	// set parameters
 	MATLAB_PUT(lyonTestNet->getctrl("LyonPassiveEar/lyonsear/mrs_real/israte")->to<mrs_real>(), "fs");
 	// only use short audio files because matlab will hold both input and fb output in memory
-	MATLAB_PUT(lyonTestNet->getctrl("SoundFileSource/src/mrs_string/filename")->to<mrs_string>(), "fname");
+	MATLAB_PUT(lyonTestNet->getctrl("SoundFileSource/src2/mrs_string/filename")->to<mrs_string>(), "fname");
+	// only use short audio files because matlab will hold both input and fb output in memory
+	MATLAB_PUT(lyonTestNet->getctrl("LyonPassiveEar/lyonsear/mrs_natural/decimFactor")->to<mrs_natural>(), "decimFactor");
 
-	// compute matlab filter coeffs
-	MATLAB_EVAL("fcoefs = DesignLyonFilters(fs);");
 	// load audio file (only wav ATM!)
 	MATLAB_EVAL("[audioIn, filefs] = wavread(fname);");
 	// compute lyon output
-	MATLAB_EVAL("mtlbOut = soscascade(audioIn, fcoefs);");
+	MATLAB_EVAL("mtlbOut = LyonPassiveEar(audioIn,filefs,decimFactor);");
 #endif
 
 	// do processing until eof
@@ -3527,11 +3493,13 @@ toy_with_lyons(string fname)
 
 		// keep matlab up-to-date with the current position
 		MATLAB_PUT((sampleCount + 1), "currSampleCount");
-		MATLAB_PUT(lyonTestNet->getctrl("mrs_natural/inSamples")->to<mrs_natural>(), "inSamples");
+		MATLAB_PUT(lyonTestNet->getctrl("mrs_natural/onSamples")->to<mrs_natural>(), "inSamples");
 
 		// get matlab data for the current block
+		MATLAB_PUT(outData, "mrsOut");
 		MATLAB_EVAL("currOutData = mtlbOut (:,currSampleCount:min(end,currSampleCount + inSamples-1));");
 		MATLAB_GET ("currOutData", mtlb_destData);
+		MATLAB_PUT(outData, "mrsOut");
 
 		// compare output
 		for (int i = 0; i < mtlb_destData.getRows (); i++)
@@ -3551,7 +3519,6 @@ toy_with_lyons(string fname)
 #ifdef MARSYAS_MATLAB
 	if (!dataMismatch && doMatlabPlots )
 	{
-		MATLAB_EVAL("for j=1:size(mtlbOut,1) c=max(mtlbOut(j,:),0);  c=filter([1],[1 -.99],c); mtlbOut(j,:)=c; end;");
 		MATLAB_EVAL("imagesc(mtlbOut);colorbar");
 		MATLAB_EVAL("title('filter bank output');xlabel('Time (frames)');ylabel('Filter Band (Idx)');");
 	}
@@ -3565,7 +3532,6 @@ toy_with_lyons(string fname)
 	MATLAB_CLOSE ();  
 #endif
 
-#endif
 
 }
 
