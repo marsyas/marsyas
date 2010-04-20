@@ -156,11 +156,11 @@ public:
 	realvec& operator+=(const mrs_real val);
 	realvec& operator-=(const mrs_real val);
 
-	friend realvec operator+(const realvec& vec1, const realvec& vec2);
-	friend realvec operator-(const realvec& vec1, const realvec& vec2);
-	friend realvec operator*(const realvec& vec1, const realvec& vec2);
-	friend realvec operator/(const realvec& vec1, const realvec& vec2);
-	friend bool operator!=(const realvec& v1, const realvec& v2);
+	marsyas_EXPORT friend realvec operator+(const realvec& vec1, const realvec& vec2);
+	marsyas_EXPORT friend realvec operator-(const realvec& vec1, const realvec& vec2);
+	marsyas_EXPORT friend realvec operator*(const realvec& vec1, const realvec& vec2);
+	marsyas_EXPORT friend realvec operator/(const realvec& vec1, const realvec& vec2);
+	marsyas_EXPORT friend bool operator!=(const realvec& v1, const realvec& v2);
 	//@}
 
 	/** \name Item access */
