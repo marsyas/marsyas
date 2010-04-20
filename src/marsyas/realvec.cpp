@@ -1188,6 +1188,75 @@ realvec::getCol(const mrs_natural c, realvec& res) const
 		MRSERR("realvec::getCol() - inPlace operation not supported - returning empty result vector!");
 	}
 }
+void 
+realvec::getSubMatrix (const mrs_natural r, const mrs_natural c, realvec& res)
+{
+	if (this != &res)
+	{
+		 mrs_natural	numRows	= res.getRows (), 
+						numCols	= res.getCols ();
+		//if (c + numCols > cols_ || r + numRows > rows_) this might also be a reasonable check...
+		if (c >= cols_ || r >= rows_)
+		{
+			MRSERR("realvec::getSubMatrix() - index larger than realvec number of rows/cols! Returning empty result vector.");
+			res.create(0);
+			return;
+		}
+		mrs_natural	m,n,i,j;
+		mrs_natural	endRow	= min(rows_, r + numRows),
+					endCol	= min(cols_, c + numCols);
+		for (m=r, i=0; m < endRow; m++,i++)
+		{
+			for (n=c, j=0; n < endCol; n++, j++)
+				res(i,j) = (*this)(m,n);
+		}
+
+		// if there are remaining elements, fill up with zeros (or should we throw something? see MRSERR check above)
+		for (i=endRow-r; i < numRows; i++)
+			for (j=0; j < numCols; j++)
+				res(i,j)	= 0;
+		for (j=endCol-c; j < numCols; j++)
+			for (i=0; i < numRows; i++)
+				res(i,j)	= 0;
+	}
+	else
+	{
+		res.create(0);
+		MRSERR("realvec::getSubMatrix() - inPlace operation not supported - returning empty result vector!");
+	}
+}
+
+void 
+realvec::setRow (const mrs_natural r, const realvec src)
+{
+	setSubMatrix (r,0, src);
+}
+void 
+realvec::setCol (const mrs_natural c, const realvec src)
+{
+	setSubMatrix (0,c,src);
+}
+void 
+realvec::setSubMatrix (const mrs_natural r, const mrs_natural c, const realvec src)
+{
+	mrs_natural	m,n;
+	mrs_natural	numRows	= src.getRows (),
+				numCols	= src.getCols ();
+	if (c+numCols > cols_ || r+numRows > rows_)
+	{
+		MRSERR("realvec::setSubMatrix() - dimension mismatch! Abort.");
+		return;
+	}
+
+	mrs_natural	endRow	= min(rows_, r + numRows),
+				endCol	= min(cols_, c + numCols);
+	for (m=r; m < endRow; m++)
+	{
+		for (n=c; n < endCol; n++)
+			(*this)(m,n)	= src(m-r,n-c);
+	}
+}
+
 
 mrs_real
 realvec::maxval(mrs_natural* index) const

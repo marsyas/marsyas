@@ -189,6 +189,14 @@ public:
 	void getRow(const mrs_natural r, realvec& res) const;
 	/// vector indexing
 	void getCol(const mrs_natural c, realvec& res) const;
+	/// get submatrix
+	void getSubMatrix (const mrs_natural r, const mrs_natural c, realvec& res);
+	// set row in matrix
+	void setRow (const mrs_natural r, const realvec src);
+	// set col in matrix
+	void setCol (const mrs_natural c, const realvec src);
+	// set submatrix
+	void setSubMatrix (const mrs_natural r, const mrs_natural c, const realvec src) ;
 	//@}
 
 	/** \name Output functions */
