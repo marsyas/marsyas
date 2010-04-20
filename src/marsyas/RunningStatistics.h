@@ -31,11 +31,11 @@ namespace Marsyas
 	Outputs the running average and standard deviation of all the input so far.
 
 	Controls:
-	- \b mrs_natural/enableMean: enable outputting of the mean values (on by
+	- \b mrs_bool/enableMean: enable outputting of the mean values (on by
 		default).
-	- \b mrs_natural/enableStddev: enable outputting of the standard deviation
+	- \b mrs_bool/enableStddev: enable outputting of the standard deviation
 		values (on by default).
-	- \b mrs_natural/enableSkewness: enable outputting of the skewness
+	- \b mrs_bool/enableSkewness: enable outputting of the skewness
 		values (off by default).
 
 
