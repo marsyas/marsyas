@@ -36,6 +36,23 @@ public:
 	}
 
 	/**
+	 * Helper function to calculate the statistics from a stream of zero and
+	 * ones.
+	 */
+	void statistics_from_zero_and_ones(mrs_natural total, mrs_natural ones,
+			mrs_real& mean, mrs_real& stddev, mrs_real&skewness)
+	{
+		mrs_natural zeros = total - ones;
+		mean = (mrs_real) ones / total;
+		mrs_real var = (ones * (1 - mean) * (1 - mean) + (zeros * mean * mean))
+				/ total;
+		stddev = sqrt(var);
+		skewness = (ones * (1 - mean) * (1 - mean) * (1 - mean) + (zeros
+				* -mean * -mean * -mean)) / total;
+		skewness = var > 0.0 ? skewness / (var * stddev) : 0.0;
+	}
+
+	/**
 	 * Test the default flow settings.
 	 */
 	void test_default_flow_settings()
@@ -168,13 +185,10 @@ public:
 				false);
 
 		// Check output slice.
-		mrs_real mean, var, stddev;
+		mrs_real mean, stddev, skewness;
 		for (mrs_natural i = 0; i < inObservations; i++)
 		{
-			mean = (mrs_real) i / inSamples;
-			var = (i * (1 - mean) * (1 - mean)
-					+ ((inSamples - i) * mean * mean)) / inSamples;
-			stddev = sqrt(var);
+			statistics_from_zero_and_ones(inSamples, i, mean, stddev, skewness);
 			TS_ASSERT_DELTA(out(i, 0), stddev, EPSILON);
 		}
 	}
@@ -191,16 +205,10 @@ public:
 				true);
 
 		// Check output slice.
-		mrs_real mean, var, stddev, skewness;
+		mrs_real mean, stddev, skewness;
 		for (mrs_natural i = 0; i < inObservations; i++)
 		{
-			mean = (mrs_real) i / inSamples;
-			var = (i * (1 - mean) * (1 - mean)
-					+ ((inSamples - i) * mean * mean)) / inSamples;
-			stddev = sqrt(var);
-			skewness = (i * (1 - mean) * (1 - mean) * (1 - mean) + ((inSamples
-					- i) * -mean * -mean * -mean)) / inSamples;
-			skewness = var > 0.0 ? skewness / (var * stddev) : 0.0;
+			statistics_from_zero_and_ones(inSamples, i, mean, stddev, skewness);
 			TS_ASSERT_DELTA(out(i, 0), skewness, EPSILON);
 		}
 	}
@@ -214,13 +222,10 @@ public:
 				false);
 
 		// Check output slice.
-		mrs_real mean, var, stddev;
+		mrs_real mean, stddev, skewness;
 		for (mrs_natural i = 0; i < inObservations; i++)
 		{
-			mean = (mrs_real) i / inSamples;
-			var = (i * (1 - mean) * (1 - mean)
-					+ ((inSamples - i) * mean * mean)) / inSamples;
-			stddev = sqrt(var);
+			statistics_from_zero_and_ones(inSamples, i, mean, stddev, skewness);
 			TS_ASSERT_DELTA(out(i, 0), mean, EPSILON);
 			TS_ASSERT_DELTA(out(inObservations + i, 0), stddev, EPSILON);
 		}
@@ -235,16 +240,10 @@ public:
 				true);
 
 		// Check output slice.
-		mrs_real mean, var, stddev, skewness;
+		mrs_real mean, stddev, skewness;
 		for (mrs_natural i = 0; i < inObservations; i++)
 		{
-			mean = (mrs_real) i / inSamples;
-			var = (i * (1 - mean) * (1 - mean)
-					+ ((inSamples - i) * mean * mean)) / inSamples;
-			stddev = sqrt(var);
-			skewness = (i * (1 - mean) * (1 - mean) * (1 - mean) + ((inSamples
-					- i) * -mean * -mean * -mean)) / inSamples;
-			skewness = var > 0.0 ? skewness / (var * stddev) : 0.0;
+			statistics_from_zero_and_ones(inSamples, i, mean, stddev, skewness);
 			TS_ASSERT_DELTA(out(i, 0), stddev, EPSILON);
 			TS_ASSERT_DELTA(out(inObservations + i, 0), skewness, EPSILON);
 		}
@@ -259,20 +258,189 @@ public:
 				true);
 
 		// Check output slice.
-		mrs_real mean, var, stddev, skewness;
+		mrs_real mean, stddev, skewness;
 		for (mrs_natural i = 0; i < inObservations; i++)
 		{
-			mean = (mrs_real) i / inSamples;
-			var = (i * (1 - mean) * (1 - mean)
-					+ ((inSamples - i) * mean * mean)) / inSamples;
-			stddev = sqrt(var);
-			skewness = (i * (1 - mean) * (1 - mean) * (1 - mean) + ((inSamples
-					- i) * -mean * -mean * -mean)) / inSamples;
-			skewness = var > 0.0 ? skewness / (var * stddev) : 0.0;
+			statistics_from_zero_and_ones(inSamples, i, mean, stddev, skewness);
 			TS_ASSERT_DELTA(out(i, 0), mean, EPSILON);
 			TS_ASSERT_DELTA(out(inObservations + i, 0), stddev, EPSILON);
 			TS_ASSERT_DELTA(out(2*inObservations + i, 0), skewness, EPSILON);
 		}
+	}
+
+	/**
+	 * Test for the "running" property of the statistics.
+	 */
+	void test_running_property()
+	{
+		mrs_natural inObservations = 10;
+		mrs_natural inSamples = 10;
+		mrs_natural onObservations = 3 * inObservations;
+		mrs_natural slices = 4;
+		mrs_natural onSamples = 1;
+		// Set up the input flow.
+		rs->updctrl("mrs_natural/inObservations", inObservations);
+		rs->updctrl("mrs_natural/inSamples", inSamples);
+		rs->updctrl("mrs_bool/enableMean", true);
+		rs->updctrl("mrs_bool/enableStddev", true);
+		rs->updctrl("mrs_bool/enableSkewness", true);
+		// Check the output flow.
+		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
+		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
+
+		// Allocate the input and output slices.
+		in.create(inObservations, inSamples);
+		out.create(onObservations, onSamples);
+
+		// Input is a simple binary pattern.
+		for (mrs_natural s = 0; s < slices; s++)
+		{
+			// Fill the input slice.
+			for (mrs_natural o = 0; o < inObservations; o++)
+			{
+				for (mrs_natural t = 0; t < inSamples; t++)
+				{
+					in(o, t) = mrs_natural(o + s > t);
+				}
+			}
+			// Process.
+			rs->myProcess(in, out);
+		}
+
+		// Check output slice.
+		mrs_natural total, ones;
+		mrs_real mean, stddev, skewness;
+		for (mrs_natural i = 0; i < inObservations; i++)
+		{
+			// How many ones did we get in each observation channel?
+			total = slices * inSamples;
+			ones = 0;
+			for (mrs_natural s = 0; s < slices; s++)
+			{
+				ones += min(i + s, inSamples);
+			}
+			statistics_from_zero_and_ones(total, ones, mean, stddev, skewness);
+			TS_ASSERT_DELTA(out(i, 0), mean, EPSILON);
+			TS_ASSERT_DELTA(out(inObservations + i, 0), stddev, EPSILON);
+			TS_ASSERT_DELTA(out(2*inObservations + i, 0), skewness, EPSILON);
+		}
+	}
+
+	/**
+	 * Test the clear control.
+	 */
+	void test_clear()
+	{
+		mrs_natural inObservations = 10;
+		mrs_natural inSamples = 10;
+		mrs_natural onObservations = 3 * inObservations;
+		mrs_natural slices = 4;
+		mrs_natural onSamples = 1;
+		// Set up the input flow.
+		rs->updctrl("mrs_natural/inObservations", inObservations);
+		rs->updctrl("mrs_natural/inSamples", inSamples);
+		rs->updctrl("mrs_bool/enableMean", true);
+		rs->updctrl("mrs_bool/enableStddev", true);
+		rs->updctrl("mrs_bool/enableSkewness", true);
+		// Check the output flow.
+		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
+		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
+
+		// Allocate the input and output slices.
+		in.create(inObservations, inSamples);
+		out.create(onObservations, onSamples);
+
+		// Input is a simple binary pattern.
+		for (mrs_natural s = 0; s < slices; s++)
+		{
+			// Clear before second last slice.
+			if (s == slices - 2)
+			{
+				rs->updctrl("mrs_bool/clear", true);
+			}
+			// Fill the input slice.
+			for (mrs_natural o = 0; o < inObservations; o++)
+			{
+				for (mrs_natural t = 0; t < inSamples; t++)
+				{
+					in(o, t) = mrs_natural(o + s > t);
+				}
+			}
+			// Process.
+			rs->myProcess(in, out);
+		}
+
+		// Check output slice.
+		mrs_natural total, ones;
+		mrs_real mean, stddev, skewness;
+		for (mrs_natural i = 0; i < inObservations; i++)
+		{
+			// How many ones did we get in each observation channel?
+			total = 2 * inSamples;
+			ones = min(i + slices - 2, inSamples) + min(i + slices - 1,
+					inSamples);
+			statistics_from_zero_and_ones(total, ones, mean, stddev, skewness);
+			TS_ASSERT_DELTA(out(i, 0), mean, EPSILON);
+			TS_ASSERT_DELTA(out(inObservations + i, 0), stddev, EPSILON);
+			TS_ASSERT_DELTA(out(2*inObservations + i, 0), skewness, EPSILON);
+		}
+
+	}
+
+	/**
+	 * Test the clearPerTick control.
+	 */
+	void test_clearPerTick()
+	{
+		mrs_natural inObservations = 10;
+		mrs_natural inSamples = 10;
+		mrs_natural onObservations = 3 * inObservations;
+		mrs_natural slices = 4;
+		mrs_natural onSamples = 1;
+		// Set up the input flow.
+		rs->updctrl("mrs_natural/inObservations", inObservations);
+		rs->updctrl("mrs_natural/inSamples", inSamples);
+		rs->updctrl("mrs_bool/enableMean", true);
+		rs->updctrl("mrs_bool/enableStddev", true);
+		rs->updctrl("mrs_bool/enableSkewness", true);
+		rs->updctrl("mrs_bool/clearPerTick", true);
+		// Check the output flow.
+		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
+		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
+
+		// Allocate the input and output slices.
+		in.create(inObservations, inSamples);
+		out.create(onObservations, onSamples);
+
+		// Input is a simple binary pattern.
+		for (mrs_natural s = 0; s < slices; s++)
+		{
+			// Fill the input slice.
+			for (mrs_natural o = 0; o < inObservations; o++)
+			{
+				for (mrs_natural t = 0; t < inSamples; t++)
+				{
+					in(o, t) = mrs_natural(o + s > t);
+				}
+			}
+			// Process.
+			rs->myProcess(in, out);
+		}
+
+		// Check output slice.
+		mrs_natural total, ones;
+		mrs_real mean, stddev, skewness;
+		for (mrs_natural i = 0; i < inObservations; i++)
+		{
+			// How many ones did we get in each observation channel?
+			total = inSamples;
+			ones = min(i + slices - 1, inSamples);
+			statistics_from_zero_and_ones(total, ones, mean, stddev, skewness);
+			TS_ASSERT_DELTA(out(i, 0), mean, EPSILON);
+			TS_ASSERT_DELTA(out(inObservations + i, 0), stddev, EPSILON);
+			TS_ASSERT_DELTA(out(2*inObservations + i, 0), skewness, EPSILON);
+		}
+
 	}
 
 };

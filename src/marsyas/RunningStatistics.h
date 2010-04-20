@@ -37,11 +37,12 @@ namespace Marsyas
 		values (on by default).
 	- \b mrs_bool/enableSkewness: enable outputting of the skewness
 		values (off by default).
-
+	- \b mrs_bool/clear: clear the internal buffers to start fresh.
+	- \b mrs_book/clearPerTick: clear the buffers at the start of each tick.
+		This disables the "running" property of the calculations.
 
 	\todo: add kurtosis
 	\todo: add option to output running energy (we're calculating it anyway)
-	\todo: add control to reset on every tick (disabling the "running" aspect)
 */
 
 class RunningStatistics: public MarSystem
@@ -81,6 +82,14 @@ private:
 	/// Cache of the enable skewness control value.
 	mrs_bool enable_skewsness_;
 
+	/// MarControlPtr for the clear control.
+	MarControlPtr ctrl_clear_;
+
+	/// MarControlPtr for the clearPerTick control
+	MarControlPtr ctrl_clearPerTick_;
+
+	/// Clear/initialize the internal buffers.
+	void clear(void);
 
 public:
 	RunningStatistics(std::string name);

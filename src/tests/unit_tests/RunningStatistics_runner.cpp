@@ -23,50 +23,68 @@ CxxTest::StaticSuiteDescription suiteDescription_RunningStatistics_runner( "Test
 
 static class TestDescription_RunningStatistics_runner_test_default_flow_settings : public CxxTest::RealTestDescription {
 public:
- TestDescription_RunningStatistics_runner_test_default_flow_settings() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 41, "test_default_flow_settings" ) {}
+ TestDescription_RunningStatistics_runner_test_default_flow_settings() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 58, "test_default_flow_settings" ) {}
  void runTest() { suite_RunningStatistics_runner.test_default_flow_settings(); }
 } testDescription_RunningStatistics_runner_test_default_flow_settings;
 
 static class TestDescription_RunningStatistics_runner_test_flow_settings : public CxxTest::RealTestDescription {
 public:
- TestDescription_RunningStatistics_runner_test_flow_settings() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 90, "test_flow_settings" ) {}
+ TestDescription_RunningStatistics_runner_test_flow_settings() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 107, "test_flow_settings" ) {}
  void runTest() { suite_RunningStatistics_runner.test_flow_settings(); }
 } testDescription_RunningStatistics_runner_test_flow_settings;
 
 static class TestDescription_RunningStatistics_runner_test_process_mean : public CxxTest::RealTestDescription {
 public:
- TestDescription_RunningStatistics_runner_test_process_mean() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 143, "test_process_mean" ) {}
+ TestDescription_RunningStatistics_runner_test_process_mean() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 160, "test_process_mean" ) {}
  void runTest() { suite_RunningStatistics_runner.test_process_mean(); }
 } testDescription_RunningStatistics_runner_test_process_mean;
 
 static class TestDescription_RunningStatistics_runner_test_process_stddev : public CxxTest::RealTestDescription {
 public:
- TestDescription_RunningStatistics_runner_test_process_stddev() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 162, "test_process_stddev" ) {}
+ TestDescription_RunningStatistics_runner_test_process_stddev() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 179, "test_process_stddev" ) {}
  void runTest() { suite_RunningStatistics_runner.test_process_stddev(); }
 } testDescription_RunningStatistics_runner_test_process_stddev;
 
 static class TestDescription_RunningStatistics_runner_test_process_skewness : public CxxTest::RealTestDescription {
 public:
- TestDescription_RunningStatistics_runner_test_process_skewness() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 185, "test_process_skewness" ) {}
+ TestDescription_RunningStatistics_runner_test_process_skewness() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 199, "test_process_skewness" ) {}
  void runTest() { suite_RunningStatistics_runner.test_process_skewness(); }
 } testDescription_RunningStatistics_runner_test_process_skewness;
 
 static class TestDescription_RunningStatistics_runner_test_process_mean_and_stddev : public CxxTest::RealTestDescription {
 public:
- TestDescription_RunningStatistics_runner_test_process_mean_and_stddev() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 208, "test_process_mean_and_stddev" ) {}
+ TestDescription_RunningStatistics_runner_test_process_mean_and_stddev() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 216, "test_process_mean_and_stddev" ) {}
  void runTest() { suite_RunningStatistics_runner.test_process_mean_and_stddev(); }
 } testDescription_RunningStatistics_runner_test_process_mean_and_stddev;
 
 static class TestDescription_RunningStatistics_runner_test_process_stddev_and_skewness : public CxxTest::RealTestDescription {
 public:
- TestDescription_RunningStatistics_runner_test_process_stddev_and_skewness() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 229, "test_process_stddev_and_skewness" ) {}
+ TestDescription_RunningStatistics_runner_test_process_stddev_and_skewness() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 234, "test_process_stddev_and_skewness" ) {}
  void runTest() { suite_RunningStatistics_runner.test_process_stddev_and_skewness(); }
 } testDescription_RunningStatistics_runner_test_process_stddev_and_skewness;
 
 static class TestDescription_RunningStatistics_runner_test_process_mean_and_stddev_and_skewness : public CxxTest::RealTestDescription {
 public:
- TestDescription_RunningStatistics_runner_test_process_mean_and_stddev_and_skewness() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 253, "test_process_mean_and_stddev_and_skewness" ) {}
+ TestDescription_RunningStatistics_runner_test_process_mean_and_stddev_and_skewness() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 252, "test_process_mean_and_stddev_and_skewness" ) {}
  void runTest() { suite_RunningStatistics_runner.test_process_mean_and_stddev_and_skewness(); }
 } testDescription_RunningStatistics_runner_test_process_mean_and_stddev_and_skewness;
+
+static class TestDescription_RunningStatistics_runner_test_running_property : public CxxTest::RealTestDescription {
+public:
+ TestDescription_RunningStatistics_runner_test_running_property() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 274, "test_running_property" ) {}
+ void runTest() { suite_RunningStatistics_runner.test_running_property(); }
+} testDescription_RunningStatistics_runner_test_running_property;
+
+static class TestDescription_RunningStatistics_runner_test_clear : public CxxTest::RealTestDescription {
+public:
+ TestDescription_RunningStatistics_runner_test_clear() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 332, "test_clear" ) {}
+ void runTest() { suite_RunningStatistics_runner.test_clear(); }
+} testDescription_RunningStatistics_runner_test_clear;
+
+static class TestDescription_RunningStatistics_runner_test_clearPerTick : public CxxTest::RealTestDescription {
+public:
+ TestDescription_RunningStatistics_runner_test_clearPerTick() : CxxTest::RealTestDescription( Tests_RunningStatistics_runner, suiteDescription_RunningStatistics_runner, 393, "test_clearPerTick" ) {}
+ void runTest() { suite_RunningStatistics_runner.test_clearPerTick(); }
+} testDescription_RunningStatistics_runner_test_clearPerTick;
 
 #include <cxxtest/Root.cpp>

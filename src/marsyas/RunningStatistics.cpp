@@ -39,6 +39,9 @@ RunningStatistics::RunningStatistics(const RunningStatistics& a) :
 	ctrl_enable_mean_ = getctrl("mrs_bool/enableMean");
 	ctrl_enable_stddev_ = getctrl("mrs_bool/enableStddev");
 	ctrl_enable_skewness_ = getctrl("mrs_bool/enableSkewness");
+	ctrl_clear_ = getctrl("mrs_bool/clear");
+	ctrl_clearPerTick_ = getctrl("mrs_bool/clearPerTick");
+
 }
 
 RunningStatistics::~RunningStatistics()
@@ -59,6 +62,9 @@ void RunningStatistics::addControls()
 	ctrl_enable_stddev_->setState(true);
 	addctrl("mrs_bool/enableSkewness", false, ctrl_enable_skewness_);
 	ctrl_enable_skewness_->setState(true);
+	addctrl("mrs_bool/clear", false, ctrl_clear_);
+	addctrl("mrs_bool/clearPerTick", false, ctrl_clearPerTick_);
+
 }
 
 void RunningStatistics::myUpdate(MarControlPtr sender)
@@ -102,14 +108,25 @@ void RunningStatistics::myUpdate(MarControlPtr sender)
 	sumxBuffer_.stretch(onObservations_, 1);
 	sumx2Buffer_.stretch(onObservations_, 1);
 	sumx3Buffer_.stretch(onObservations_, 1);
+	// Initialize the buffers.
+	clear();
+}
+
+void RunningStatistics::clear(void) {
 	sumxBuffer_.setval(0.0);
 	sumx2Buffer_.setval(0.0);
 	sumx3Buffer_.setval(0.0);
-	this->samplecounter_ = 0;
+	samplecounter_ = 0;
+	// We just cleared the internal buffers, so we should reset the clear control.
+	ctrl_clear_->setValue(false, NOUPDATE);
 }
 
 void RunningStatistics::myProcess(realvec& in, realvec& out)
 {
+	if (ctrl_clear_->to<mrs_bool>() || ctrl_clearPerTick_->to<mrs_bool>()) {
+		clear();
+	}
+
 	// Update the sample counter.
 	samplecounter_ += inSamples_;
 	// Temporary variables for mean, stddev, ...
