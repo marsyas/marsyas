@@ -19,7 +19,7 @@ marsyas_unit_test(Selector Selector_runner.cpp)
 marsyas_unit_test(AubioYin AubioYin_runner.cpp)
 marsyas_unit_test(RunningAutocorrelation RunningAutocorrelation_runner.cpp)
 marsyas_unit_test(SubtractMean SubtractMean_runner.cpp)
-
+marsyas_unit_test(RunningStatistics RunningStatistics_runner.cpp)
 
 # Copy the files needed to run the tests
 configure_file(files/tiny.arff ${CMAKE_CURRENT_BINARY_DIR}/files/tiny.arff COPYONLY)

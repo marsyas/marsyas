@@ -30,11 +30,18 @@ namespace Marsyas
 
 	Outputs the running average and standard deviation of all the input so far.
 
-	This MarSystem has no controls (so far).
+	Controls:
+	- \b mrs_natural/enableMean: enable outputting of the mean values (on by
+		default).
+	- \b mrs_natural/enableStddev: enable outputting of the standard deviation
+		values (on by default).
+	- \b mrs_natural/enableSkewness: enable outputting of the skewness
+		values (off by default).
 
+
+	\todo: add kurtosis
 	\todo: add option to output running energy (we're calculating it anyway)
-	\todo: add higher order statistics (skewness, kurtosis)
-	\todo: add controls to enable/disable the possible statistics (mean, stddev, skewness, ...)
+	\todo: add control to reset on every tick (disabling the "running" aspect)
 */
 
 class RunningStatistics: public MarSystem
@@ -48,16 +55,32 @@ private:
 	void myUpdate(MarControlPtr sender);
 
 	/// Internal buffer for keeping the running sum.
-	realvec sumBuffer_;
+	realvec sumxBuffer_;
 
-	/// Internal buffer for keeping the running sum of the squared samples.
-	realvec squaredSumBuffer_;
+	/// Internal buffer for keeping the running sum of sample^2.
+	realvec sumx2Buffer_;
+
+	/// Internal buffer for keeping the running sum of sample^3.
+	realvec sumx3Buffer_;
 
 	/// Internal counter for counting the number of processed samples.
 	mrs_natural samplecounter_;
 
-	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_gain_EXAMPLE_;
+	/// MarControlPtr for enabling the mean.
+	MarControlPtr ctrl_enable_mean_;
+	/// Cache of the enable mean control value.
+	mrs_bool enable_mean_;
+
+	/// MarControlPtr for enabling the standard deviation.
+	MarControlPtr ctrl_enable_stddev_;
+	/// Cache of the enable stddev control value.
+	mrs_bool enable_stddev_;
+
+	/// MarControlPtr for enabling the skewness.
+	MarControlPtr ctrl_enable_skewness_;
+	/// Cache of the enable skewness control value.
+	mrs_bool enable_skewsness_;
+
 
 public:
 	RunningStatistics(std::string name);
