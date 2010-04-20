@@ -23,7 +23,7 @@
 
 namespace Marsyas
 {
-	class Cascade;
+	class Series;
 	class Filter;
 
 	/** 
@@ -83,13 +83,16 @@ namespace Marsyas
 		mrs_bool	agcActive_;
 		mrs_real	decimTauFactor_;
 
-		mrs_realvec centerFreqs_;
+		mrs_realvec centerFreqs_,
+					tmpOut_,
+					decimOut_;
 
 		//internal variables and parameters
 		mrs_natural numFilterChannels_;
+		mrs_natural currDecimState_;
 
-		//!< the actual filter cascade
-		Cascade		*filterBank_;
+		/// the actual filter cascade plus the post-processing (agc, channeldiff, etc.)
+        Series      *passiveEar_;
 
 	public:
 		LyonPassiveEar(std::string name);
