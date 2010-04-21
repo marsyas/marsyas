@@ -102,7 +102,7 @@ printHelp(string progName)
 	cerr << "confidence      : toy_with confidence calculation" << endl;
 	cerr << "drumclassify    : drumclassify (mplfile argument)" << endl;
 	cerr << "duplex          : duplex audio input/output" << endl;
-
+	cerr << "duplex2         : more duplex functionality" << endl;
 	cerr << "fanoutswitch    : toy_with disabling fanout branches " << endl;
 	cerr << "filter          : toy_with filter MarSystem " << endl;
 	cerr << "fft             : toy_with fft analysis/resynthesis " << endl;
@@ -4616,6 +4616,11 @@ toy_with_dtw(string fname1, string fname2)
 
 }
 
+
+
+
+
+
 void 
 toy_with_duplex()
 {
@@ -4639,6 +4644,48 @@ toy_with_duplex()
 	    dnet->tick();
 	} 
 }
+
+
+void 
+toy_with_duplex2(mrs_string sfName)
+{
+	cout << "Toying with duplex audio input and output (2)" << endl;
+	MarSystemManager mng;  
+
+	MarSystem* dnet;
+	dnet = mng.create("Series", "dnet");
+
+	dnet->addMarSystem(mng.create("SoundFileSource", "src"));
+	dnet->addMarSystem(mng.create("Gain", "gain"));
+	dnet->addMarSystem(mng.create("AudioSink", "adest"));
+	dnet->addMarSystem(mng.create("AudioSource", "asrc"));
+	dnet->addMarSystem(mng.create("SoundFileSink", "dest"));
+	
+	
+	// dnet->updctrl("mrs_real/israte", 44100.0);
+	// dnet->updctrl("AudioSource/asrc/mrs_natural/nChannels", 1);
+
+
+	dnet->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	dnet->updctrl("SoundFileSink/dest/mrs_string/filename", "duplex2.wav");
+	dnet->updctrl("AudioSink/adest/mrs_bool/initAudio", true);
+	dnet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
+	
+	while (dnet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	{
+	    dnet->tick();
+	} 
+}
+
+
+
+
+
+
+
+
+
+
 
 // Pluck(0,100,1.0,0.5,"Toy_WithPluckedRich0_100hz.wav");
 //Pluck Karplus Strong Model Kastro.cpp output to wavfile
@@ -7116,6 +7163,8 @@ main(int argc, const char **argv)
 		toy_with_dtw(fname0, fname1);
 	else if (toy_withName == "duplex")
 		toy_with_duplex();
+	else if (toy_withName == "duplex2")
+		toy_with_duplex2(fname0);
 	else if (toy_withName == "fanoutswitch")
 		toy_with_fanoutswitch();
 	else if (toy_withName == "fft")
