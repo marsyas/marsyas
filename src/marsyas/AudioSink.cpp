@@ -148,8 +148,12 @@ AudioSink::initRtAudio()
 	RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO3_FLOAT64 : RTAUDIO3_FLOAT32;
   
 	// hardwire channels to stereo playback even for mono
-	int rtChannels = 2;
-  
+	int rtChannels = nChannels_;
+	
+
+	if (rtChannels == 1) 				// make mono playback in stereo 
+		rtChannels = 2;
+	
 	//create new RtAudio object (delete any existing one)
 	if (audio_ != NULL) 
     {
@@ -341,13 +345,18 @@ AudioSink::myProcess(realvec& in, realvec& out)
 
 			if (inObservations_ == 1) 
 			{
-				data_[t2] = reservoir_(0, rt);
-				data_[t2+1] = reservoir_(0, rt);
+				for (int j=0; j < nChannels_; j++) 
+				{
+					data_[t2+j] = reservoir_(0, rt);
+				}
 			}
 			else 
 			{
-				data_[t2] = reservoir_(0,   rt);
-				data_[t2+1] = reservoir_(1, rt);
+				for (int j=0; j < nChannels_; j++) 
+				{
+					data_[t2+j] = reservoir_(0+j,   rt);
+				}
+				
 			}
 	  
 #else
@@ -364,12 +373,13 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				}
 				else
 				{
-					data_[t4] = reservoir_(0,rt);
-					data_[t4+1]= reservoir_(1,rt);
-					data_[t4+2] = reservoir_(0,rt);
-					data_[t4+3] = reservoir_(1,rt);
+					for (int j=0; j < nChannels_; j++)
+					{
+						data_[t4] = reservoir_(0+j,rt);
+						data_[t4+2+j] = reservoir_(0+j,rt);
+					}
 				}
-	      
+				
 			}
 			else
 			{
@@ -382,8 +392,12 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				}
 				else 
 				{
-					data_[t2] = reservoir_(0,   rt);
-					data_[t2+1] = reservoir_(1, rt);
+					
+					for (int j=0; j < nChannels_; j++) 
+					{
+						data_[t2+j] = reservoir_(j,   rt);
+					}
+					
 				}
 			}
 #endif 

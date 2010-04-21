@@ -191,7 +191,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				if(!initialOut_ || !initialOut2_ || !initialOut3_)
 					ibiBPM_ = (60.0 / (beatTime_ - lastBeatTime_)); //inter-beat-interval (in BPMs)
 
-				cout << "Beat at: " << beatTime_ << " (s) - " << ibiBPM_ << " (BPMs)" << endl;
+				// cout << "Beat at: " << beatTime_ << " (s) - " << ibiBPM_ << " (BPMs)" << endl;
 
 				fstream outStream;
 				fstream outStream2;
