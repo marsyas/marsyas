@@ -1404,7 +1404,7 @@ toy_with_inSamples(string sfName)
 void 
 toy_with_fft(string sfName) 
 {
-	cout << "Toyping with fft" << endl;
+	cout << "Toying with fft" << endl;
 	MarSystemManager mng;
 	
 	MarSystem* series = mng.create("Series","network");
@@ -1423,8 +1423,10 @@ toy_with_fft(string sfName)
 					"processed.wav");
 	
 	// number of samples to process each tick 
-	series->updctrl("mrs_natural/inSamples", 16 * 512);
+	series->updctrl("mrs_natural/inSamples",  256 * 512);
 
+	cout << *series << endl;
+	
 	while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		series->tick();

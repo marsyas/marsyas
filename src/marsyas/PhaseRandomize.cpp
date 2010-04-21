@@ -88,8 +88,12 @@ PhaseRandomize::myProcess(realvec& in, realvec& out)
 				im_ = in(2*o+1,t);
 			}
 
+
+
 			mag_ = sqrt(re_ * re_ + im_ * im_);
-			phs_ = -atan2(im_, re_);
+			// phs_ = -atan2(im_, re_);
+			phs_ = ((mrs_real)rand() / (mrs_real)(RAND_MAX)) * TWOPI;
+			phs_ -= PI;
 			
 			out(2*o,t) = mag_ * cos(phs_);
 			out(2*o+1,t) = mag_ * sin(phs_);
