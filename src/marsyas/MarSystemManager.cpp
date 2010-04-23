@@ -219,6 +219,7 @@
 #include "SubtractMean.h"
 #include "AutoCorrelationFFT.h"
 #include "PeakEnhancer.h"
+#include "Transposer.h"
 
 //modifyHeader
 
@@ -429,6 +430,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SliceShuffle", new SliceShuffle("sliceshuffle"));
 	registerPrototype("RunningAutocorrelation", new RunningAutocorrelation("runningautocorrelation"));
 	registerPrototype("SubtractMean", new SubtractMean("subtractmean"));
+
+	registerPrototype("Transposer", new Transposer("transposer"));
+
 	//modifyRegister
 
 	//***************************************************************************************
