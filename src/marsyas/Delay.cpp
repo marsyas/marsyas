@@ -25,8 +25,11 @@ using namespace Marsyas;
 Delay::Delay(string name):MarSystem("Delay",name)
 {
   
-  delay_ = 0;
-  cursor_ = 0;
+  delay_		= 0;
+  writeCursor_	= 0;
+  readCursor_	= 0;
+
+  cursorMask_	= 1;
   
   addControls();
 }
@@ -66,7 +69,8 @@ Delay::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  
+ 
+  // these controls aren't really used ????
   gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
   feedback_ = getctrl("mrs_real/feedback")->to<mrs_real>();
 
@@ -77,9 +81,11 @@ Delay::myUpdate(MarControlPtr sender)
   if(getctrl("mrs_real/delaySeconds")->to<mrs_real>() != 0.0)
     delay_ = (mrs_natural) ceil(getctrl("mrs_real/delaySeconds")->to<mrs_real>()*getctrl("mrs_real/osrate")->to<mrs_real>());
   
-  cursor_ = 0;
+  readCursor_	= 0;
+  writeCursor_	= delay_;	// difference between write pointer position and read pointer position should equal delay_
+  cursorMask_	= nextPowOfTwo(delay_+1)-1;		// to ensure an efficient wrap around, buffer length will be a power of two
 
-  buffer_.stretch(delay_);
+  buffer_.stretch(getctrl("mrs_natural/inObservations")->to<mrs_natural>(), cursorMask_+1);
 	buffer_.setval(0);
   setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
 }
@@ -88,7 +94,22 @@ Delay::myUpdate(MarControlPtr sender)
 void 
 Delay::myProcess(realvec& in, realvec& out)
 {
-  
+
+	for (t = 0; t < inSamples_; t++)
+	{
+		for (o=0; o < inObservations_; o++)
+		{
+			// write new sample to buffer
+			buffer_(o, writeCursor_)	= in(o,t);
+
+			// read sample from buffer
+			out(o,t)	= buffer_(o, readCursor_);
+		}
+		writeCursor_	= wrapCursor (++writeCursor_);
+		readCursor_		= wrapCursor (++readCursor_);
+	}
+
+	/* previous code
   if(delay_ < onSamples_)
     {
       for (t = 0; t < delay_ ; t++)
@@ -107,12 +128,30 @@ Delay::myProcess(realvec& in, realvec& out)
       for (t = 0; t < onSamples_ ; t++)
 	buffer_(t+delay_-onSamples_) = in(t);
     }
+	*/
 }
 
+mrs_natural	Delay::wrapCursor (mrs_natural unwrappedCursor)
+{
+	// add delay line length to have a sort-of dealing with negative indices as well; should be a while loop really
+	return (unwrappedCursor + (cursorMask_+1)) & cursorMask_; 
+}
 
+mrs_natural	Delay::nextPowOfTwo (mrs_natural value)
+{
+	mrs_natural    order = 0;
 
+	while (value>>order)
+		order++;
 
+	if (!order)
+		return value;
 
+	if (!(value%(1<<(order-1))))
+		order--;
 
+	order	= (order < 1)? 1 : order;
 
-	
+	return (1<<(order));
+}
+

@@ -44,13 +44,18 @@ class Delay: public MarSystem
 private: 
   void addControls();
 	void myUpdate(MarControlPtr sender);
+
+	mrs_natural	wrapCursor (mrs_natural unwrappedCursor);
+	mrs_natural	nextPowOfTwo (mrs_natural value);
 	
-	realvec buffer_;
+realvec buffer_;
 	mrs_natural delay_;
 	mrs_real gain_;
 	mrs_real feedback_;
 
-	mrs_natural cursor_;
+	mrs_natural writeCursor_,
+				readCursor_,
+				cursorMask_;
 	
 public:
   Delay(std::string name);
