@@ -106,6 +106,7 @@ float repetitions = 1;
 
 int correct_predictions; 
 int correct_harmonic_predictions; 
+int correct_harmonic_mirex_predictions;
 int correct_mirex_predictions;
 
 int total_instances;
@@ -176,27 +177,33 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 	
 	if (diff1 <= 0.04 * ground_truth_tempo)
 		correct_mirex_predictions++;
+
+	if ((diff1 <= 0.04 * ground_truth_tempo)||(diff2 <= 0.04 * ground_truth_tempo)||(diff3 <= 0.04 * ground_truth_tempo)||(diff4 <= 0.04 * ground_truth_tempo)||(diff5 <= 0.04 * ground_truth_tempo))
+	  correct_harmonic_mirex_predictions++;
+
+
 	
 	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0)||(diff4 <= 1.0)||(diff5 <= 1.0))
 		correct_harmonic_predictions++;
 	else 
-    {
-		if ((diff1 < diff2)&&(diff1 < diff3))
-			total_differences += diff1;
-		if ((diff2 < diff3)&&(diff1 < diff1))
-			total_differences += diff2;
-		if ((diff3 < diff2)&&(diff3 < diff1))
-			total_differences += diff3;
-		total_errors++;
-		cout << "WRONG TEMPO ESTIMATION IN " << sfName << endl;
-    }
-  
+	  {
+	    if ((diff1 < diff2)&&(diff1 < diff3))
+	      total_differences += diff1;
+	    if ((diff2 < diff3)&&(diff1 < diff1))
+	      total_differences += diff2;
+	    if ((diff3 < diff2)&&(diff3 < diff1))
+	      total_differences += diff3;
+	    total_errors++;
+	    cout << "WRONG TEMPO ESTIMATION IN " << sfName << endl;
+	  }
+	
 	total_instances++;
 
 	
 	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
 	cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << endl;
 	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
+	cout << "Correct Harmonic MIREX predictions = " << correct_harmonic_mirex_predictions << "/" << total_instances << endl;
 	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
 	
 
@@ -868,7 +875,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 180);
 	
 	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
-	total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+	// total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
 	
 	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
 	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
@@ -2954,6 +2961,7 @@ main(int argc, const char **argv)
 
 		correct_predictions = 0;
 		correct_harmonic_predictions = 0;
+		correct_harmonic_mirex_predictions = 0;
 		correct_mirex_predictions = 0;
 		
 		total_instances = 0;
