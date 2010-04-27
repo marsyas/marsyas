@@ -28,7 +28,7 @@ namespace Marsyas
 	\ingroup Processing Basic
     \brief Delay
 
-	Simple Delay example
+	Simple Delay example; in the first block, it will adapt the delay from 0 to the actual delay
 
 	Controls:
 	- \b mrs_real/maxDelaySamples [w] : maximum delay in samples.

@@ -25,7 +25,7 @@ using namespace Marsyas;
 Delay::Delay(string name):MarSystem("Delay",name)
 {
  
-	delayInSamples_.create(1);
+	delayInSamples_.create(0);
 	writeCursor_	= 0;
 
 	cursorMask_	= 1;
@@ -83,11 +83,15 @@ Delay::myUpdate(MarControlPtr sender)
 	{
 		maxDelayLengthInSamples_	= seconds2Samples (getctrl ("mrs_real/maxDelaySeconds")->to<mrs_real>());
 		setctrl("mrs_real/maxDelaySamples", maxDelayLengthInSamples_);
+		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
+		buffer_.setval(0);
 	}
 	if (maxDelayLengthInSamples_ != getctrl ("mrs_real/maxDelaySamples")->to<mrs_real>())
 	{
 		maxDelayLengthInSamples_	= getctrl ("mrs_real/maxDelaySamples")->to<mrs_real>();
 		setctrl("mrs_real/maxDelaySeconds", samples2Seconds (maxDelayLengthInSamples_));
+		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
+		buffer_.setval(0);
 	}
 
 	if (samples2Seconds (singleDelayInSamples_) != getctrl ("mrs_real/delaySeconds")->to<mrs_real>())
@@ -95,7 +99,7 @@ Delay::myUpdate(MarControlPtr sender)
 		mrs_realvec tmp(1);
 		singleDelayInSamples_	= seconds2Samples (getctrl ("mrs_real/delaySeconds")->to<mrs_real>());
 		MRSASSERT(singleDelayInSamples_ >= 0);
-		MRSASSERT(singleDelayInSamples_ < maxDelayLengthInSamples_);
+		MRSASSERT(singleDelayInSamples_ <= maxDelayLengthInSamples_);
 
 		setctrl("mrs_real/delaySamples", singleDelayInSamples_);
 
@@ -108,7 +112,7 @@ Delay::myUpdate(MarControlPtr sender)
 		mrs_realvec tmp(1);
 		singleDelayInSamples_	= getctrl ("mrs_real/delaySamples")->to<mrs_real>();
 		MRSASSERT(singleDelayInSamples_ >= 0);
-		MRSASSERT(singleDelayInSamples_ < maxDelayLengthInSamples_);
+		MRSASSERT(singleDelayInSamples_ <= maxDelayLengthInSamples_);
 
 		setctrl("mrs_real/delaySeconds", samples2Seconds (singleDelayInSamples_));
 
@@ -137,9 +141,10 @@ Delay::myUpdate(MarControlPtr sender)
 	{
 		// only do this update if needed...
 		ctrlIncrement_.stretch (delayInSamples_.getRows (), delayInSamples_.getCols ());
-		prevDelayInSamples_.stretch	(delayInSamples_.getRows (), delayInSamples_.getCols ());
-		prevDelayInSamples_.setval (0);
+		prevDelayInSamples_	= delayInSamples_;
+
 		// initialize the delay line
+		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
 		buffer_.setval(0);
 		writeCursor_	= 0;	
 
