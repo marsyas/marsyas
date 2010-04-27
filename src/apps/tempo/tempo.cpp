@@ -684,14 +684,14 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	total->addMarSystem(mng.create("PeakPeriods2BPM", "pbpm"));
 	total->addMarSystem(mng.create("BeatHistogramFromPeaks", "histo"));
 		*/ 
-	 
-	/* MarSystem* hfanout = mng.create("Fanout", "hfanout");
+	
+	MarSystem* hfanout = mng.create("Fanout", "hfanout");
 	hfanout->addMarSystem(mng.create("Gain", "id1"));
 	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
 	hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
 	total->addMarSystem(hfanout);
 	total->addMarSystem(mng.create("Sum", "hsum"));
-	*/ 
+	 
 	 
 
 
@@ -742,12 +742,15 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	
 	total->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 	total->updctrl("Flux/flux/mrs_string/mode", "DixonDAFX06");
+	// total->updctrl("Flux/flux/mrs_string/mode", "marsyas");
 	
 	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
 	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 400);
 	total->updctrl("BeatHistogram/histo/mrs_real/factor", 8.0);
+	total->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);	
 	
-	
+
+
 	mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
 	
@@ -918,18 +921,18 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 		pluginName = EMPTYSTRING;
 	}
 
-
+	
 	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-	// for (int i=0; i< 400; i++)
-    {
-		total->process(iwin, estimate);
-		bin = estimate(1);
-		bpms.push_back(bin);
-    }
-
+	  // for (int i=0; i< 400; i++)
+	  {
+	    total->process(iwin, estimate);
+	    bin = estimate(1);
+	    bpms.push_back(bin);
+	  }
 	
 	
-
+	
+	
 	evaluate_estimated_tempo(sfName, bpms[bpms.size()-1], ground_truth_tempo);
 	delete total;
 }
