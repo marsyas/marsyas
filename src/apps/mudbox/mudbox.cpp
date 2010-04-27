@@ -6500,6 +6500,45 @@ void toy_with_stereospectrum_bin_change(string inAudioFileName)
 
 }
 
+void toy_with_delay (string inAudioFileName, string outAudioFileName)
+{
+	mrs_real			fs;
+	mrs_natural			sampleCount		= 0;
+
+	MarSystemManager	mng;
+	MarSystem			*net_;
+
+	// create series
+	net_ = mng.create("Series", "net");
+	net_->addMarSystem(mng.create("SoundFileSource", "src"));
+	net_->addMarSystem (mng.create("Delay", "del"));
+	net_->addMarSystem(mng.create("SoundFileSink", "dest"));
+
+	// set parameters
+	net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+	net_->updctrl("SoundFileSink/dest/mrs_string/filename", outAudioFileName);
+
+	net_->updctrl("Delay/del/mrs_real/maxDelaySeconds",1.0);
+
+	fs = 	net_->getctrl("Delay/del/mrs_real/israte")->to<mrs_real>();
+
+	cout << "input file with vibrato is rendered to output file..." << endl;
+
+	while (net_->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())  
+	{ 
+		mrs_realvec r;
+		mrs_real	modAmpInSecs	= .1,
+					modFreqInHz		= 1.0;
+
+		net_->updctrl("Delay/del/mrs_real/delaySeconds", modAmpInSecs*.5*(1+sin(TWOPI*modFreqInHz*sampleCount / fs)));
+		net_->tick();
+
+		r = net_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+		sampleCount	+= net_->getctrl ("mrs_natural/onSamples")->to<mrs_natural>();
+	}
+}
+
 void toy_with_peaker(string inAudioFileName)
 {
 	MarSystem* net_;
@@ -7295,6 +7334,8 @@ main(int argc, const char **argv)
 		toy_with_auditorytbx(fname0);
 	else if (toy_withName == "lyons_passive_ear")
 		toy_with_lyons(fname0);
+	else if (toy_withName == "delay")
+		toy_with_delay(fname0,fname1);
 
 	else 
 	{

@@ -24,14 +24,13 @@ using namespace Marsyas;
 
 Delay::Delay(string name):MarSystem("Delay",name)
 {
-  
-  delay_		= 0;
-  writeCursor_	= 0;
-  readCursor_	= 0;
+ 
+	delayInSamples_.create(1);
+	writeCursor_	= 0;
 
-  cursorMask_	= 1;
-  
-  addControls();
+	cursorMask_	= 1;
+
+	addControls();
 }
 
 
@@ -46,17 +45,30 @@ Delay::clone() const
   return new Delay(*this);
 }
 
+Delay::Delay(const Delay& a) : MarSystem(a)
+{
+	addControls();
+	maxDelayLengthInSamples_ = getctrl("mrs_real/maxDelaySamples")->to<mrs_real>(); // maximum delay in samples
+	delayInSamples_	=  getctrl("mrs_realvec/delaySamples")->to<mrs_realvec>(); // delay in samples
+}
+
 void 
 Delay::addControls()
 {
-  addctrl("mrs_real/gain", 0.0);   // direct gain
-  addctrl("mrs_real/feedback", 0.0); // feedback gain
-  addctrl("mrs_natural/delaySamples", 0); // delay in samples
-  addctrl("mrs_real/delaySeconds", 0.0); // delay in seconds
-  setctrlState("mrs_real/gain", true);
-  setctrlState("mrs_real/feedback", true);
-  setctrlState("mrs_real/delaySeconds", true);
-  setctrlState("mrs_natural/delaySamples", true);
+	mrs_realvec tmp(1);
+	tmp(0)	= 0;
+	addctrl("mrs_real/maxDelaySamples", 32.0); // maximum delay in samples
+	addctrl("mrs_real/maxDelaySeconds", 0.0); // maximum delay in seconds
+	addctrl("mrs_real/delaySamples", 0.0); // delay in samples
+	addctrl("mrs_real/delaySeconds", 0.0); // delay in seconds
+	addctrl("mrs_realvec/delaySamples", tmp); // delay in samples
+	addctrl("mrs_realvec/delaySeconds", tmp); // delay in samples
+	setctrlState("mrs_real/maxDelaySamples", true);
+	setctrlState("mrs_real/maxDelaySeconds", true);
+	setctrlState("mrs_real/delaySeconds", true);
+	setctrlState("mrs_real/delaySamples", true);
+	setctrlState("mrs_realvec/delaySeconds", true);
+	setctrlState("mrs_realvec/delaySamples", true);
 }
 
 
@@ -64,36 +76,99 @@ void
 Delay::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  MRSDIAG("Delay.cpp - Delay:myUpdate");
-  
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
- 
-  // these controls aren't really used ????
-  gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
-  feedback_ = getctrl("mrs_real/feedback")->to<mrs_real>();
+	MRSDIAG("Delay.cpp - Delay:myUpdate");
 
-  if(getctrl("mrs_natural/delaySamples")->to<mrs_natural>())
-    delay_ = getctrl("mrs_natural/delaySamples")->to<mrs_natural>();
-  
-	// cout << getctrl("mrs_real/delaySeconds")->to<mrs_real>() << " " << endl;
-  if(getctrl("mrs_real/delaySeconds")->to<mrs_real>() != 0.0)
-    delay_ = (mrs_natural) ceil(getctrl("mrs_real/delaySeconds")->to<mrs_real>()*getctrl("mrs_real/osrate")->to<mrs_real>());
-  
-  readCursor_	= 0;
-  writeCursor_	= delay_;	// difference between write pointer position and read pointer position should equal delay_
-  cursorMask_	= nextPowOfTwo(delay_+1)-1;		// to ensure an efficient wrap around, buffer length will be a power of two
+	// for the following controls, check whether they have changed and update dependent controls accordingly
+	if (samples2Seconds (maxDelayLengthInSamples_) != getctrl ("mrs_real/maxDelaySeconds")->to<mrs_real>())
+	{
+		maxDelayLengthInSamples_	= seconds2Samples (getctrl ("mrs_real/maxDelaySeconds")->to<mrs_real>());
+		setctrl("mrs_real/maxDelaySamples", maxDelayLengthInSamples_);
+	}
+	if (maxDelayLengthInSamples_ != getctrl ("mrs_real/maxDelaySamples")->to<mrs_real>())
+	{
+		maxDelayLengthInSamples_	= getctrl ("mrs_real/maxDelaySamples")->to<mrs_real>();
+		setctrl("mrs_real/maxDelaySeconds", samples2Seconds (maxDelayLengthInSamples_));
+	}
 
-  buffer_.stretch(getctrl("mrs_natural/inObservations")->to<mrs_natural>(), cursorMask_+1);
-	buffer_.setval(0);
-  setctrl("mrs_string/onObsNames", getctrl("mrs_string/inObsNames"));
+	if (samples2Seconds (singleDelayInSamples_) != getctrl ("mrs_real/delaySeconds")->to<mrs_real>())
+	{
+		mrs_realvec tmp(1);
+		singleDelayInSamples_	= seconds2Samples (getctrl ("mrs_real/delaySeconds")->to<mrs_real>());
+		MRSASSERT(singleDelayInSamples_ >= 0);
+		MRSASSERT(singleDelayInSamples_ < maxDelayLengthInSamples_);
+
+		setctrl("mrs_real/delaySamples", singleDelayInSamples_);
+
+		// update vector
+		tmp(0)					= singleDelayInSamples_;
+		setctrl("mrs_realvec/delaySamples", tmp);
+	}
+	if (singleDelayInSamples_ != getctrl ("mrs_real/delaySamples")->to<mrs_real>())
+	{
+		mrs_realvec tmp(1);
+		singleDelayInSamples_	= getctrl ("mrs_real/delaySamples")->to<mrs_real>();
+		MRSASSERT(singleDelayInSamples_ >= 0);
+		MRSASSERT(singleDelayInSamples_ < maxDelayLengthInSamples_);
+
+		setctrl("mrs_real/delaySeconds", samples2Seconds (singleDelayInSamples_));
+
+		// update vector
+		tmp(0)					= singleDelayInSamples_;
+		setctrl("mrs_realvec/delaySamples", tmp);
+	}
+
+	if (delayInSamples_ != getctrl ("mrs_realvec/delaySamples")->to<mrs_realvec>())
+	{
+		delayInSamples_	= getctrl ("mrs_realvec/delaySamples")->to<mrs_realvec>();
+		mrs_realvec tmp(delayInSamples_);
+		setctrl("mrs_realvec/delaySeconds", samples2Seconds (tmp));
+	}
+	if (samples2Seconds (delayInSamples_) != getctrl ("mrs_realvec/delaySeconds")->to<mrs_realvec>())
+	{
+		delayInSamples_	= seconds2Samples (getctrl ("mrs_realvec/delaySamples")->to<mrs_realvec>());
+		mrs_realvec tmp(delayInSamples_);
+		setctrl("mrs_realvec/delaySeconds", samples2Seconds (tmp));
+	}
+
+	// allocate the delay line
+	buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
+	cursorMask_	= buffer_.getCols () - 1;		// to ensure an efficient wrap around, buffer length will be a power of two
+	if (prevDelayInSamples_.getRows () != delayInSamples_.getRows ())
+	{
+		// only do this update if needed...
+		ctrlIncrement_.stretch (delayInSamples_.getRows (), delayInSamples_.getCols ());
+		prevDelayInSamples_.stretch	(delayInSamples_.getRows (), delayInSamples_.getCols ());
+		prevDelayInSamples_.setval (0);
+		// initialize the delay line
+		buffer_.setval(0);
+		writeCursor_	= 0;	
+
+		// set output names
+		vector<mrs_string> indiChannels	= stringSplit (getctrl("mrs_string/inObsNames")->to<mrs_string>(), ",");
+		ostringstream	outNames;
+		for (mrs_natural c = 0; c < getctrl("mrs_natural/inObservations")->to<mrs_natural>(); c++)
+			for (mrs_natural i = 0; i < delayInSamples_.getRows (); i++)
+			{
+				outNames << indiChannels.at(c) << "-delay_" << i << ",";
+			}
+			setctrl("mrs_string/onObsNames", outNames.str());
+	}
+
+
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	setctrl("mrs_natural/onObservations", delayInSamples_.getRows () * getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+
 }
 
 
 void 
 Delay::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural k, numDelayLines = delayInSamples_.getRows ();
+
+	// first, get the interpolated delay update (linear interpolation only)
+	getLinearInterPInc (prevDelayInSamples_, delayInSamples_, ctrlIncrement_, inSamples_);
 
 	for (t = 0; t < inSamples_; t++)
 	{
@@ -101,40 +176,38 @@ Delay::myProcess(realvec& in, realvec& out)
 		{
 			// write new sample to buffer
 			buffer_(o, writeCursor_)	= in(o,t);
+			for (k = 0; k < numDelayLines; k++)
+			{
+				// read sample from buffer
+				out(k+o*numDelayLines,t) = getValue (o, writeCursor_ - (prevDelayInSamples_(k) + t*ctrlIncrement_(k)));
+			}
 
-			// read sample from buffer
-			out(o,t)	= buffer_(o, readCursor_);
 		}
 		writeCursor_	= wrapCursor (++writeCursor_);
-		readCursor_		= wrapCursor (++readCursor_);
 	}
 
-	/* previous code
-  if(delay_ < onSamples_)
-    {
-      for (t = 0; t < delay_ ; t++)
-	out(t) = buffer_(t);
-      for (t = 0; t < onSamples_-delay_ ; t++)
-	out(t+delay_) = in(t);
-      for (t = 0; t < delay_ ; t++)
-	buffer_(t) = in(t+onSamples_-delay_);
-    }
-  else
-    {
-      for (t = 0; t < onSamples_ ; t++)
-	out(t) = buffer_(t);
-      for (t = 0; t < delay_-onSamples_ ; t++)
-	buffer_(t) = buffer_(t+onSamples_);
-      for (t = 0; t < onSamples_ ; t++)
-	buffer_(t+delay_-onSamples_) = in(t);
-    }
-	*/
+	prevDelayInSamples_	= delayInSamples_;
+}
+
+mrs_real	Delay::getValue (mrs_natural obs, mrs_real index)
+{
+	mrs_natural integer = (mrs_natural)index + ((index < 0)? -1 : 0);
+	mrs_real	frac	= index - integer;
+	mrs_real	retVal	= buffer_(obs, wrapCursor (integer));
+
+	return retVal + frac * (buffer_(obs, wrapCursor (integer+1))-retVal);
 }
 
 mrs_natural	Delay::wrapCursor (mrs_natural unwrappedCursor)
 {
 	// add delay line length to have a sort-of dealing with negative indices as well; should be a while loop really
 	return (unwrappedCursor + (cursorMask_+1)) & cursorMask_; 
+}
+
+void Delay::getLinearInterPInc (const mrs_realvec startVal, const mrs_realvec stopVal, mrs_realvec &incVal, const mrs_natural numSamples)
+{
+	incVal	= (stopVal - startVal);
+	incVal	/= (1.0*numSamples);
 }
 
 mrs_natural	Delay::nextPowOfTwo (mrs_natural value)
@@ -153,5 +226,31 @@ mrs_natural	Delay::nextPowOfTwo (mrs_natural value)
 	order	= (order < 1)? 1 : order;
 
 	return (1<<(order));
+}
+
+mrs_real Delay::samples2Seconds (mrs_real samples)
+{
+	if (israte_ > 0)
+		return samples / israte_;
+	else
+		return 0;
+}
+mrs_real Delay::seconds2Samples (mrs_real seconds)
+{
+	return seconds * israte_;
+}
+mrs_realvec Delay::samples2Seconds (mrs_realvec samples)
+{
+	for (mrs_natural i = 0; i < samples.getRows (); i++)
+		samples(i)	= samples(i)/ israte_;
+
+	return samples;
+}
+mrs_realvec Delay::seconds2Samples (mrs_realvec seconds)
+{
+	for (mrs_natural i = 0; i < seconds.getRows (); i++)
+		seconds(i)	= seconds(i) * israte_;
+
+	return seconds;
 }
 

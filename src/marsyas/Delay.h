@@ -31,10 +31,12 @@ namespace Marsyas
 	Simple Delay example
 
 	Controls:
-	- \b mrs_real/gain [rw] : direct gain.
-	- \b mrs_real/feedback [rw] : feedback gain.	
-	- \b mrs_natural/delaySamples [w] : delay in samples.
+	- \b mrs_real/maxDelaySamples [w] : maximum delay in samples.
+	- \b mrs_real/maxDelaySeconds [w] : maximum delay in seconds.
+	- \b mrs_real/delaySamples [w] : delay in samples.
+	- \b mrs_realvec/delaySamples [w] : multiple delays in samples.
 	- \b mrs_real/delaySeconds [w] : delay in seconds.
+	- \b mrs_realvec/delaySeconds [w] : multiple delays in seconds.
 
 */
 
@@ -45,17 +47,35 @@ private:
   void addControls();
 	void myUpdate(MarControlPtr sender);
 
+	// ensure buffer bounds for read and write heads
 	mrs_natural	wrapCursor (mrs_natural unwrappedCursor);
+	// get the interpolated sample value
+	mrs_real	getValue (mrs_natural obs, mrs_real index);
+	// required for allocating the delay buffer
 	mrs_natural	nextPowOfTwo (mrs_natural value);
-	
-realvec buffer_;
-	mrs_natural delay_;
-	mrs_real gain_;
-	mrs_real feedback_;
+	// get the increment per sample for the delay control value
+	static void getLinearInterPInc (const mrs_realvec startVal, const mrs_realvec stopVal, mrs_realvec &incVal, const mrs_natural numSamples);
 
-	mrs_natural writeCursor_,
-				readCursor_,
-				cursorMask_;
+	// conversion functions
+	mrs_real samples2Seconds (mrs_real samples);
+	mrs_real seconds2Samples (mrs_real seconds);
+	mrs_realvec samples2Seconds (mrs_realvec samples);
+	mrs_realvec seconds2Samples (mrs_realvec seconds);
+
+	// parameters
+	mrs_real	maxDelayLengthInSamples_,
+				singleDelayInSamples_;
+	
+	//!< the actual delay line
+	mrs_realvec	buffer_;
+
+	
+	mrs_realvec delayInSamples_,		//!< the current (multiple) delays
+				prevDelayInSamples_,	//!< the previous (multiple) delays
+				ctrlIncrement_;			//!< only used in the process function for smoothing delay transitions
+
+	mrs_natural writeCursor_,	//!< position of write head
+				cursorMask_;	//!< bit mask for length of buffer
 	
 public:
   Delay(std::string name);
@@ -63,6 +83,10 @@ public:
   MarSystem* clone() const;  
   
   void myProcess(realvec& in, realvec& out);
+
+protected:
+	Delay::Delay(const Delay& a);
+
 };
 
 }//namespace Marsyas
