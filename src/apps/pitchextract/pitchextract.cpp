@@ -352,7 +352,8 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		time = count / srate;
 		pitch = r(0,0);
 		rms = r1(0,0);
-		printf("%12.12f\t%12.12f\t%12.12f\n",time,pitch,rms);
+		//printf("%12.12f\t%12.12f\t%12.12f\n",time,pitch,rms);
+		printf("%12.12f\n",pitch);
 
 		pitches.stretchWrite(i,pitch);
 		// sness - Just give it all a confidence of 1 for now.  You can
@@ -443,12 +444,12 @@ main(int argc, const char **argv)
 	if (usageopt)
 		printUsage(progName);
 
-	cout << "PitchExtract windowSize = " << wopt << endl;
-	cout << "PitchExtract hopSize = " << hopt << endl;
-	cout << "PitchExtract lowerPitch = " << lpopt << endl;
-	cout << "PitchExtract upperPitch = " << upopt << endl;
-	cout << "PitchExtract threshold  = " << topt << endl;
-	cout << "PitchExtract playback   = " << plopt << endl;
+	// cout << "PitchExtract windowSize = " << wopt << endl;
+	// cout << "PitchExtract hopSize = " << hopt << endl;
+	// cout << "PitchExtract lowerPitch = " << lpopt << endl;
+	// cout << "PitchExtract upperPitch = " << upopt << endl;
+	// cout << "PitchExtract threshold  = " << topt << endl;
+	// cout << "PitchExtract playback   = " << plopt << endl;
   
     vector<string>::iterator sfi;
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
