@@ -85,7 +85,7 @@ public:
   void myProcess(realvec& in, realvec& out);
 
 protected:
-	Delay::Delay(const Delay& a);
+	Delay(const Delay& a);
 
 };
 
