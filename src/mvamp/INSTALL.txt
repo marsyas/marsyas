@@ -1,0 +1,47 @@
+Linux OS:
+(Tested in Linux Ubuntu 9.04-32bits with gcc 4.3 -> may work on others)
+
+1. Marsyas Bextract Vamp Plugin Compilation:
+
+   - $ ccmake WITH_VAMP ON:
+		* VAMP_LIBRARY -> static version of libvamp-sdk, from the install path - /usr/local/lib/libvamp-sdk.a
+		* VAMP_INCLUDE_DIR -> vamp sdk src main path: /xxx/vamp-plugin-sdk-2.1/
+   - $ make (vamp plugin compiled as shared dynamic library: /build/lib/libmvamp.so)
+
+(Alternatively simply download pre-compiled plugin for Linux i686 at http://marsyas.info/download/vamp_plugins)
+
+2. Marsyas Vamp Plugin Integration in SonicVisualiser Transforms:
+
+   - copy libmvamp.so (or pre-compiled mvamp.so) to one of the following paths:
+	* /home/jlo/vamp
+	* /home/jlo/.vamp
+	* /usr/local/lib/vamp
+	* /usr/lib/vamp
+
+(mvamp-plugins.cat, in pre-compiled version or /src/mvamp/, is a txt file for organizing the plugin functions within SonicVisualiser Transforms - for such you may also copy it to the chosen path above, yet it seems to be unnecessary)
+
+============================================================================================
+
+Windows OS:
+(Tested in Windows Vista-32bists with VS2008 -> may work on others)
+
+1. Marsyas Bextract Vamp Plugin Compilation - FOR DYNAMIC MARSYAS LIBRARY (marsyas.dll):
+
+	- run Cmake-GUI WITH_VAMP ON (check that MARSYAS_STATIC is OFF):
+		* VAMP_LIBRARY -> static version of pre-compiled libvamp-sdk - xxx\vamp-plugin-sdk-2.1-staticlibs-win32-msvc\release\VampPluginSDK.lib
+		* VAMP_INCLUDE_DIR -> vamp sdk src main path - xxx\vamp-plugin-sdk-2.1\
+	- load Marsyas.sln in Visual Studio
+	- go to mvamp project proprieties and under Configuration Properties -> Linker -> Command Line -> Additional options, add /EXPORT:vampGetPluginDescriptor on a new line
+	- build marsyas + mvamp in Release mode.
+
+2. Marsyas Vamp Plugin Integration in SonicVisualiser Transforms:
+
+	- copy mvamp.dll from marsyas_path\build\bin\Release\ to C:\Program Files\Vamp Plugins\ (default VAMP_PATH)
+	- run-time linking to marsyas.dll (one of the two options below):
+		(With Static marsyas library (marsyas.lib) [MARSYAS_STATIC OFF] it shouldn't need to have run-time linking to marsyas.lib, yet static marsyas is not working properly on Windows)
+		* set marsyas_path\build\bin\Release\ to environment variable PATH
+		* copy marsyas.dll from marsyas_path\build\bin\Release\ to SonicVisualiser directory.
+		
+	(mvamp-plugins.cat uneccessary)
+
+NOTE: Plugin still being tested under MacOSX.

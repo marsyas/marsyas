@@ -11,10 +11,15 @@ set (MVamp_SOURCES
 	plugins.cpp
 )
 
-add_library(mvamp SHARED ${MVamp_SOURCES} )
+add_library(mvamp SHARED ${MVamp_SOURCES})
+
+include_directories(${VAMP_INCLUDE_DIR})
 
 ## LINKING
 TARGET_LINK_LIBRARIES(mvamp marsyas ${VAMP_LIBRARY})
+
+#unfortuned Windows trial for adding /EXPORT:vampGetPluginDescriptor to Visual Studio project (as referred in http://vamp-plugins.org/wiki/mtp2)
+#install(TARGETS mvamp EXPORT vampGetPluginDescriptor DESTINATION ${LIBRARY_OUTPUT_PATH})
 
 if (MARSYAS_MAD)
 	TARGET_LINK_LIBRARIES(mvamp ${mad_LIBRARY})
