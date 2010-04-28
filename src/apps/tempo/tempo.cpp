@@ -816,7 +816,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 	total->addMarSystem(mng.create("SoundFileSource", "src"));
 	total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	total->addMarSystem(mng.create("ShiftInput", "si"));
-	total->addMarSystem(mng.create("AudioSink", "dest"));
+	// total->addMarSystem(mng.create("AudioSink", "dest"));
 	total->addMarSystem(mng.create("DownSampler", "dsr1"));
 	total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
 
@@ -836,6 +836,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 	total->addMarSystem(mng.create("Sum", "sum"));
 	total->addMarSystem(mng.create("DownSampler", "ds"));
 	total->addMarSystem(mng.create("Delta", "delta"));
+	total->addMarSystem(mng.create("BeatPhase", "beatphase"));
 	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
 	total->addMarSystem(mng.create("BeatHistogram", "histo"));
 
@@ -898,7 +899,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 					 total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 
-
+	
 
 	mrs_real bin;
 	mrs_natural onSamples;
@@ -928,8 +929,10 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 	    total->process(iwin, estimate);
 	    bin = estimate(1);
 	    bpms.push_back(bin);
+	    total->updctrl("BeatPhase/beatphase/mrs_real/tempo", bin);
 	  }
 	
+	  
 	
 	
 	
@@ -2752,7 +2755,7 @@ tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt)
 	evaluate_estimated_tempo(sfName, predicted_tempo, ground_truth_tempo);
 	  
 	delete IBTsystem;
-	
+	delete audioflow;
   
 }
 

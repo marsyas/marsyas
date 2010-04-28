@@ -115,6 +115,7 @@
 #include "BeatHistogramFromPeaks.h"
 #include "BeatHistogram.h"
 #include "BeatHistoFeatures.h"
+#include "BeatPhase.h"
 #include "FM.h"
 #include "Annotator.h"
 #include "ZeroRClassifier.h"
@@ -319,6 +320,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("DownSampler", new DownSampler("ds"));
 	registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));
 	registerPrototype("BeatHistogramFromPeaks", new BeatHistogramFromPeaks("beathistofrompeakspr"));
+	registerPrototype("BeatPhase", new BeatPhase("beatphase"));
 	registerPrototype("BeatHistogram", new BeatHistogram("beathistopr"));
 	registerPrototype("BeatHistoFeatures", new BeatHistoFeatures("bhfp"));
 	registerPrototype("SineSource", new SineSource("sinesp"));

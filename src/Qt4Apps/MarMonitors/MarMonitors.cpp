@@ -244,7 +244,15 @@ MarMonitors::tick()
 {
 	pnet_->updctrl("AudioSink/dest/mrs_bool/mute", true);	
 	for (int i=0; i<nTicks_; i++)
-		pnet_->tick();  
+	  {
+	    pnet_->tick();  
+	    // Hack for specific case - needs to be removed 
+	    mrs_realvec processedData = pnet_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	    mrs_real bin = processedData(1);
+	    cout << "BIN = " << bin << endl;
+	    pnet_->updctrl("BeatPhase/beatphase/mrs_real/tempo", bin);
+	  }
+
 	for (int i = 0; i < graphs.size(); ++i) 
     {
 		out_ = (mycontrols_[probes_[i]])->to<mrs_realvec>();
