@@ -14,7 +14,7 @@ set (MVamp_SOURCES
 add_library(mvamp SHARED ${MVamp_SOURCES} )
 
 ## LINKING
-TARGET_LINK_LIBRARIES(mvamp marsyas ${MVAMP_LIBRARIES})
+TARGET_LINK_LIBRARIES(mvamp marsyas ${VAMP_LIBRARY})
 
 if (MARSYAS_MAD)
 	TARGET_LINK_LIBRARIES(mvamp ${mad_LIBRARY})
