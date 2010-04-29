@@ -47,7 +47,7 @@ Peaker::addControls()
 	addctrl("mrs_real/peakGain", 1.0);
 	addctrl("mrs_bool/peakHarmonics", false);
 	addctrl("mrs_bool/rmsNormalize", false);
-	addctrl("mrs_natural/peakNeighbors", 1);
+	addctrl("mrs_natural/peakNeighbors", 2);
 }
 
 
@@ -89,7 +89,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 	out.setval(0.0);
 
 
-	peakStrength = 0.0;
+	//peakStrength = 0.0;
 	
 	
 
@@ -179,7 +179,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 				
 			
 				// peakNeighbors = 0;
-				rms_ = 1.0;
+				// rms_ = 1.0;
 				
 
 				if (peakHarmonics)
