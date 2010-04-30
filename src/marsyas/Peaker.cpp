@@ -41,6 +41,10 @@ Peaker::addControls()
 {
 	addctrl("mrs_real/peakSpacing", 0.0);
 	addctrl("mrs_real/peakStrength", 0.0);
+	addctrl("mrs_real/peakStrengthRelMax", 0.0);
+	addctrl("mrs_real/peakStrengthRelThresh", 0.0);
+	addctrl("mrs_real/peakStrengthAbs", 0.0);
+	addctrl("mrs_real/peakStrengthTreshLpParam", 0.99);
 	addctrl("mrs_natural/peakStart", (mrs_natural)0);
 	addctrl("mrs_natural/peakEnd", (mrs_natural)0);
 	addctrl("mrs_natural/interpolation", (mrs_natural)0);
@@ -51,6 +55,16 @@ Peaker::addControls()
 }
 
 
+void
+Peaker::myUpdate(MarControlPtr sender)
+{
+	(void) sender;
+	MRSDIAG("Peaker.cpp - Peaker:myUpdate");
+
+	MarSystem::myUpdate (sender);
+
+	lpThresh_.stretch (getctrl ("mrs_natural/inSamples")->to<mrs_natural>());
+}
 
 void 
 Peaker::myProcess(realvec& in, realvec& out)
@@ -58,7 +72,10 @@ Peaker::myProcess(realvec& in, realvec& out)
 
 
 	mrs_real peakSpacing;
-	mrs_real peakStrength;
+	mrs_real peakStrengthRelRms,
+			 peakStrengthRelMax,
+			 peakStrengthRelThresh,
+			 peakStrengthAbs;
 	mrs_real peakGain;
 	mrs_bool peakHarmonics;
 	mrs_bool rmsNormalize;
@@ -70,7 +87,11 @@ Peaker::myProcess(realvec& in, realvec& out)
 	
 
 	peakSpacing = getctrl("mrs_real/peakSpacing")->to<mrs_real>();
-	peakStrength = getctrl("mrs_real/peakStrength")->to<mrs_real>();
+	peakStrengthRelRms = getctrl("mrs_real/peakStrength")->to<mrs_real>();
+	peakStrengthRelMax = getctrl("mrs_real/peakStrengthRelMax")->to<mrs_real>();
+	peakStrengthRelThresh = getctrl("mrs_real/peakStrengthRelThresh")->to<mrs_real>();
+	lpCoeff_ = getctrl("mrs_real/peakStrengthTreshLpParam")->to<mrs_real>();
+	peakStrengthAbs = getctrl("mrs_real/peakStrengthAbs")->to<mrs_real>();
 	peakStart = getctrl("mrs_natural/peakStart")->to<mrs_natural>();
 	peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
 	interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
@@ -89,17 +110,20 @@ Peaker::myProcess(realvec& in, realvec& out)
 	out.setval(0.0);
 
 
-	//peakStrength = 0.0;
+	//peakStrengthRelRms = 0.0;
 	
 	
 
 	for (o = 0; o < inObservations_; o++)
 	{
-		rms_ = 0.0;
+		rms_	= 0.0;
+		max_	= -1e37;
 		peakSpacing = (mrs_real)(peakSpacing * inSamples_);
 		for (t=peakStart; t < peakEnd; t++)
 		{
 			rms_ += in(o,t) * in(o,t);
+			if (max_ < in(o,t))
+				max_	= in(o,t);
 		} 
 		if (rms_ != 0.0)
 			rms_ /= (peakEnd - peakStart);
@@ -109,7 +133,12 @@ Peaker::myProcess(realvec& in, realvec& out)
 		mrs_natural maxIndex;
 
 		bool peakFound = false;
-		
+
+		if (peakStrengthRelThresh > .0)
+		{
+			in.getRow (o,lpThresh_);
+			compLpThresh (lpThresh_, lpThresh_);	// do it inplace to avoid another copy...
+		}
 		
 		for (t=peakStart; t < peakEnd; t++)
 		{
@@ -134,11 +163,12 @@ Peaker::myProcess(realvec& in, realvec& out)
 				}
 			}
 			
-			if ((in(o,t) <= 0.0) || (in(o,t) <= peakStrength * rms_))
+			if (peakFound)
 			{
-				peakFound = false;
+				currThresh_	= lpThresh_(t);
+				peakFound	= doThresholding (in(o,t), peakStrengthRelRms, peakStrengthRelMax, peakStrengthRelThresh, peakStrengthAbs);
 			}
-			
+
 			if (peakFound) 
 			{
 				// check for another peak in the peakSpacing area
@@ -310,7 +340,36 @@ Peaker::myProcess(realvec& in, realvec& out)
 	}
 }
 
+mrs_bool Peaker::doThresholding (mrs_real input, mrs_real peakStrengthRelRms, mrs_real peakStrengthRelMax, mrs_real peakStrengthRelThresh, mrs_real peakStrengthAbs)
+{
+	mrs_real thresh = max (max (max (peakStrengthAbs, peakStrengthRelRms * rms_), peakStrengthRelMax * max_), peakStrengthRelThresh * currThresh_);
+	
+	if (input <= thresh)
+		return false;
+	else
+		return true;
+}
 
+void Peaker::compLpThresh (const mrs_realvec input, mrs_realvec &output)
+{
+	mrs_natural i,
+				len = input.getCols ();
+	mrs_real	buf = input(0);
+//	MATLAB_PUT(input, "in");
+	for (i = 0; i < len; i++)
+	{
+		buf			= input(i) + lpCoeff_ * (buf - input(i));
+		output(i)	= buf;
+	}
+	// do reverse filtering to ensure zero group delay
+	for (i = len-1; i >= 0; i--)
+	{
+		buf			= output(i) + lpCoeff_ * (buf - output(i));
+		output(i)	= buf;
+	}
+	//MATLAB_PUT(output, "out");
+	//MATLAB_EVAL("plot([in;out]')");
+}
 
 
 
