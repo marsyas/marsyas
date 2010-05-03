@@ -79,11 +79,9 @@ protected:
 	};
 	
 	//for debugging purposes only
-	#ifdef MARSYAS_TRACECONTROLS
 	void setDebugValue();
-	#endif
-
-		void current_link_update();
+	
+	void current_link_update();
 		
 	
 public:
@@ -292,9 +290,7 @@ MarControlValueT<T>::MarControlValueT(T value)
 {
 	value_ = value;
 
-	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-	#endif
 
 	// simple tests are used for basic types for efficiency purposes
 	if (typeid(T) == typeid(mrs_real))
@@ -319,9 +315,7 @@ MarControlValueT<T>::MarControlValueT(const MarControlValueT& a):MarControlValue
 	value_ = a.value_;
 	type_ = a.type_;
 
-	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-	#endif
 }
 
 template<class T>
@@ -333,9 +327,8 @@ MarControlValueT<T>::operator=(const MarControlValueT& a)
 		value_ = a.value_;
 		type_ = a.type_;
 
-		#ifdef MARSYAS_TRACECONTROLS
 		setDebugValue();
-		#endif
+
 
 		//callMarSystemsUpdate(); //[?]
 	}
@@ -416,9 +409,7 @@ MarControlValueT<T>::set(T &val, bool update)
 {
 	value_ = val;
 
-	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-	#endif
 
 	if(update)
 	{
@@ -432,9 +423,7 @@ MarControlValueT<realvec>::set(realvec &val, bool update)
 {
 	value_ = val;
 
-	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-	#endif
 
 	if(update)
 	{
@@ -448,9 +437,8 @@ MarControlValueT<bool>::set(bool &val, bool update)
 {
 	value_ = val;
 
-#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-#endif
+
 
 	if(update)
 		callMarSystemsUpdate();
@@ -469,9 +457,9 @@ MarControlValueT<T>::createFromStream(std::istream& in)
 {
 	in >> value_;
 
-#ifdef MARSYAS_TRACECONTROLS
+
 	setDebugValue();
-#endif
+
 
 	//callMarSystemsUpdate();?!?!?!? [?]
 }

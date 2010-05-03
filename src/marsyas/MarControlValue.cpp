@@ -28,15 +28,17 @@ using namespace Marsyas;
 /************************************************************************/
 /* MarControlValue implementation                                       */
 /************************************************************************/
-#ifdef MARSYAS_TRACECONTROLS
+
 void
 MarControlValue::setDebugValue()
 {
+#ifdef MARSYAS_TRACECONTROLS
 	ostringstream oss;
 	serialize(oss);
 	value_debug_ = oss.str();
-}
 #endif
+}
+
 
 
 
@@ -72,9 +74,7 @@ MarControlValueT<realvec>::MarControlValueT(realvec value)
 	value_ = value;
 	type_ = "mrs_realvec";
 
-#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-#endif
 }
 
 MarControlValueT<realvec>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
@@ -82,9 +82,8 @@ MarControlValueT<realvec>::MarControlValueT(const MarControlValueT& a):MarContro
 	value_ = a.value_;
 	type_ = "mrs_realvec";
 
-	#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-	#endif
+
 }
 
 MarControlValueT<realvec>& 
@@ -95,9 +94,8 @@ MarControlValueT<realvec>::operator=(const MarControlValueT& a)
 		value_ = a.value_;
 		type_ = a.type_;
 
-		#ifdef MARSYAS_TRACECONTROLS
 		setDebugValue();
-		#endif
+
 	}
 	return *this;
 }
@@ -173,9 +171,7 @@ MarControlValueT<realvec>::createFromStream(std::istream& in)
 {
 	in >> value_;
 
-#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-#endif
 }
 
 std::ostream&
@@ -228,9 +224,10 @@ MarControlValueT<bool>::MarControlValueT(bool value)
 	value_ = value;
 	type_ = "mrs_bool";
 
-#ifdef MARSYAS_TRACECONTROLS
+
 	setDebugValue();
-#endif
+
+
 }
 
 MarControlValueT<bool>::MarControlValueT(const MarControlValueT& a):MarControlValue(a)
@@ -238,9 +235,7 @@ MarControlValueT<bool>::MarControlValueT(const MarControlValueT& a):MarControlVa
 	value_ = a.value_;
 	type_ = "mrs_bool";
 
-#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-#endif
 }
 
 MarControlValueT<bool>& 
@@ -251,9 +246,8 @@ MarControlValueT<bool>::operator=(const MarControlValueT& a)
 		value_ = a.value_;
 		type_ = a.type_;
 
-		#ifdef MARSYAS_TRACECONTROLS
 		setDebugValue();
-		#endif
+		
 	}
 	return *this;
 }
@@ -308,9 +302,7 @@ MarControlValueT<bool>::createFromStream(std::istream& in)
 {
 	in >> value_;
 
-#ifdef MARSYAS_TRACECONTROLS
 	setDebugValue();
-#endif
 }
 
 bool
