@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MARSYSTEM_H
 #define MARSYAS_MARSYSTEM_H
 
-#include "common.h"
+#include "common_header.h"
 #include "MarControl.h"
 #include "realvec.h"
 #include "Conversions.h"

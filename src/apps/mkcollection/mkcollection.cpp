@@ -30,7 +30,7 @@ Daniel German at UVic added recursive reading of subdirectories
 #include <cstring>
 #include <sys/stat.h>
 #include <assert.h>
-
+#include "common.h"
 #include "CommandLineOptions.h"
 #include "FileName.h"
 #include "Collection.h"
