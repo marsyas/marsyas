@@ -19,6 +19,7 @@
 #ifndef MARSYAS_CONVERSIONS_H
 #define MARSYAS_CONVERSIONS_H
 
+#include "common_header.h"
 #include "common.h"
 
 #include <cmath> 

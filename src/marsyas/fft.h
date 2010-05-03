@@ -21,7 +21,7 @@
 
 #include <cstdio>
 #include <cmath>
-#include "common.h" 
+#include "common_header.h" 
 
 namespace Marsyas
 {

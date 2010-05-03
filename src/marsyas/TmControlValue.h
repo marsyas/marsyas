@@ -23,6 +23,8 @@
 #include <iostream>
 
 #include "common.h"
+#include "common_header.h" 
+
 namespace Marsyas
 {
 /** 
