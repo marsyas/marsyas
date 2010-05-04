@@ -107,7 +107,8 @@ LSP::myProcess(realvec& in, realvec& out)
 		if (!numLib.polyRoots(P, false, order_+1, Proots))//P has only real coefs => complexCoefs = false
 			MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!");
 		if(!numLib.polyRoots(Q, false, order_+1, Qroots))//Q has only real coefs => complexCoefs = false
-			MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!")
+			MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!");
+		
 
 		mrs_real phase;
 		vector<mrs_real> out_vec;

@@ -32,7 +32,10 @@
 /************************************************************************/
 #define MRSMSG(x) {std::ostringstream oss; MrsLog::mrsMessage((std::ostringstream&)(oss << x));}
 
+
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
+
+
 
 #define MRS_WARNINGS_OFF MrsLog::warnings_off_ = true;
 #define MRS_WARNINGS_ON MrsLog::warnings_off_ = false;
@@ -55,15 +58,8 @@
 #define MRSDEBUG(x)
 #endif 
 
-#ifdef MARSYAS_ASSERTS
-#define MRSASSERT(f) \
-        if (f)       \
-             {}      \
-        else         \
-           MrsLog::mrsAssert(__FILE__, __LINE__)
-#else 
-#define MRSASSERT(x) 
-#endif 
+#define MRSASSERT(f) MrsLog::mrsAssert(__FILE__, __LINE__)
+
 
 /************************************************************************/
 /*  MATLAB engine macros                                                */

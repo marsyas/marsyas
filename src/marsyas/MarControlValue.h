@@ -27,9 +27,6 @@
 #include "common.h"
 #include "realvec.h"
 
-#ifdef MARSYAS_QT
-#include <QtCore>
-#endif
 
 namespace Marsyas
 {
@@ -451,18 +448,8 @@ MarControlValueT<T>::get() const
 	return value_;
 }
 
-template<class T>
-void
-MarControlValueT<T>::createFromStream(std::istream& in)
-{
-	in >> value_;
 
 
-	setDebugValue();
-
-
-	//callMarSystemsUpdate();?!?!?!? [?]
-}
 
 template<class T>
 bool
@@ -475,7 +462,7 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 			std::ostringstream sstr;
 			sstr << "MarControlValueT::isNotEqual() - Trying to compare different types of MarControlValue. "
 				<< "(" << this->getType() << " with " << v->getType() << ")";
-			MRSWARN(sstr.str());
+			// MRSWARN(sstr.str());
 			return false;
 		}
 		
@@ -495,7 +482,7 @@ MarControlValueT<T>::sum(MarControlValue *v)
 		std::ostringstream sstr;
 		sstr << "MarControlValueT::sum() - Trying to sum different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
-		MRSWARN(sstr.str());
+		// MRSWARN(sstr.str());
 		return false;
 	}
 	return new MarControlValueT<T>(value_+ptr->value_);
@@ -511,7 +498,7 @@ MarControlValueT<T>::subtract(MarControlValue *v)
 		std::ostringstream sstr;
 		sstr << "MarControlValueT::subtract() - Trying to subtract different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
-		MRSWARN(sstr.str());
+		// MRSWARN(sstr.str());
 		return false;
 	}
 	return new MarControlValueT<T>(value_-ptr->value_);
@@ -527,7 +514,7 @@ MarControlValueT<T>::multiply(MarControlValue *v)
 		std::ostringstream sstr;
 		sstr << "MarControlValueT::multiply() - Trying to multiply different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
-		MRSWARN(sstr.str());
+		// MRSWARN(sstr.str());
 		return false;
 	}
 	return new MarControlValueT<T>(value_*ptr->value_);
@@ -543,11 +530,29 @@ MarControlValueT<T>::divide(MarControlValue *v)
 		std::ostringstream sstr;
 		sstr << "[MarControlValueT::divide] Trying to divide different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
-		MRSWARN(sstr.str());
+		// MRSWARN(sstr.str());
 		return false;
 	}
 	return new MarControlValueT<T>(value_/ptr->value_);
 }
+
+
+
+
+
+template<class T>
+void
+MarControlValueT<T>::createFromStream(std::istream& in)
+{
+	in >> value_;
+
+
+	setDebugValue();
+
+
+	//callMarSystemsUpdate();?!?!?!? [?]
+}
+
 
 template<class T>
 std::ostream&

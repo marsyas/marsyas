@@ -43,9 +43,12 @@ MrsLog::mrsMessage(const ostringstream& oss)
 void 
 MrsLog::mrsErr(const ostringstream& oss)
 {
-//#ifdef MARSYAS_LOG2STDOUT
+ 
+#ifdef MARSYAS_LOG_ERRORS 
+
+#ifdef MARSYAS_LOG2STDOUT
 	cout << "[MRSERR] " << oss.str() << endl;
-//#endif
+#endif
 
 #ifdef MARSYAS_LOG2FILE
 	ofstream ofs(fname_.c_str(), ios::out | ios::app);
@@ -57,6 +60,11 @@ MrsLog::mrsErr(const ostringstream& oss)
 		return;
 	}
 	ofs.close();
+	return;
+#endif 
+
+#else 
+ 
 	return;
 #endif 
 }
@@ -130,10 +138,14 @@ MrsLog::mrsDebug(const ostringstream& oss)
 void 
 MrsLog::mrsAssert(const char *strFile, unsigned uLine) 
 {
+#ifdef MARSYAS_ASSERTS
 	fflush(NULL);
 	fprintf(stderr, "\nMARSYAS Assertion failed: %s, line %u\n", 
 		strFile, uLine);
 	fflush(stderr);
 	abort();
+#else
+	;
+#endif
 }
 

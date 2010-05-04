@@ -22,8 +22,17 @@
 
 #include <algorithm>
 
+#ifdef MARSYAS_QT
+#include <QtCore>
+#endif
+
+
 using namespace std;
 using namespace Marsyas;
+
+
+
+
 
 /************************************************************************/
 /* MarControlValue implementation                                       */

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2007 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -21,6 +21,10 @@
 
 using namespace std;
 using namespace Marsyas;
+
+
+
+
 
 /******************************************************************/
 void

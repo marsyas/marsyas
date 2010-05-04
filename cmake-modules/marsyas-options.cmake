@@ -4,9 +4,20 @@
 # as well!
 #
 
+
+
+IF(NOT CMAKE_BUILD_TYPE)
+  SET(CMAKE_BUILD_TYPE Relelease CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+      FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+
+
 ### USER OPTIONS
 option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
+option(MARSYAS_INLINE "Inline functions" ON)
 if (MARSYAS_LINUX)
 	option(OSS "[LINUX ONLY] Use OSS instead of ALSA" OFF)
 endif (MARSYAS_LINUX)
@@ -81,3 +92,10 @@ NOTWORKING" OFF)
 NOTWORKING" OFF)
 endif (WITH_SWIG)
 
+
+IF (CMAKE_BUILD_TYPE STREQUAL "Debug") 
+set(MARSYAS_ASSERTS ON CACHE BOOL "" FORCE)
+set(MARSYAS_FLOWCHECK ON CACHE BOOL "" FORCE)
+set(MARSYAS_TRACECONTROLS ON CACHE BOOL "" FORCE)
+set(MARSYAS_INLINE OFF CACHE BOOL "" FORCE)
+ENDIF (CMAKE_BUILD_TYPE STREQUAL "Debug")

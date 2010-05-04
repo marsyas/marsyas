@@ -35,23 +35,23 @@ Logging class for diagnostic, warning, error, debug, etc messages. Can output
 messages to a log file or std output (i.e. screen).
 */
 
-  class marsyas_EXPORT MrsLog
-  {
-    static std::string fname_;
+	class marsyas_EXPORT MrsLog
+	{
+		static std::string fname_;
     
 		
-	public:   
-               static bool warnings_off_;
-		 static  void setLogFile(std::string fname);
-		 static  void getLogFile();
+	  public:   
+		static bool warnings_off_;
+		static  void setLogFile(std::string fname);
+		static  void getLogFile();
 		
-		 static  void mrsMessage(const std::ostringstream& oss);
+		static  void mrsMessage(const std::ostringstream& oss);
 		//logging methods
-		 static  void mrsErr(const std::ostringstream& oss);
-		 static  void mrsWarning(const std::ostringstream& oss);
-		 static  void mrsDiagnostic(const std::ostringstream& oss);
-		 static  void mrsDebug(const std::ostringstream& oss);
-		 static  void mrsAssert(const char *strFile, unsigned uLine);
+		static  void mrsErr(const std::ostringstream& oss);
+		static  void mrsWarning(const std::ostringstream& oss);
+		static  void mrsDiagnostic(const std::ostringstream& oss);
+		static  void mrsDebug(const std::ostringstream& oss);
+		static  void mrsAssert(const char *strFile, unsigned uLine);
 	};
 } //namespec Marsyas
 
