@@ -19,10 +19,6 @@
 #ifndef MARSYAS_SCHEDULER_H
 #define MARSYAS_SCHEDULER_H
 
-/*
-#include "realvec.h"
-#include "common.h"
-*/
 #include "TmTimer.h"
 #include "TmTime.h"
 #include "TmControlValue.h"

@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "common.h"
+#include "common_header.h"
 
 #if _MSC_VER >= 1400
 #define coco_sprintf sprintf_s

@@ -22,7 +22,7 @@
 #include <string> 
 #include <iostream>
 #include "TmControlValue.h"
-#include "common.h"
+#include "common_header.h"
 
 namespace Marsyas
 {

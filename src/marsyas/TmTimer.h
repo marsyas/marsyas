@@ -19,7 +19,7 @@
 #ifndef MARSYAS_TM_TIMER_H
 #define MARSYAS_TM_TIMER_H
 
-#include "common.h"
+#include "common_header.h"
 #include "TmParam.h"
 #include "TmControlValue.h"
 #include "EvEvent.h"

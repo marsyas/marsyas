@@ -20,7 +20,7 @@
 #define MARSYAS_TM_TIME_H
  
 #include <string>
-#include "common.h"
+#include "common_header.h"
 
 namespace Marsyas
 {

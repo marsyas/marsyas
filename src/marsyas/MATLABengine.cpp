@@ -30,7 +30,7 @@ http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.htm
 Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 */
 
-
+#include "common.h"
 #include "MATLABengine.h"
 
 #ifdef MARSYAS_MATLAB

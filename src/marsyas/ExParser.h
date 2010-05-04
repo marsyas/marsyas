@@ -25,7 +25,7 @@
 #include "ExNode.h"
 #include "ExSymTbl.h"
 #include "MarSystem.h"
-#include "common.h"
+#include "common_header.h"
 
 
 #include "Scheduler.h"

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_OGGSOURCE_H
 #define MARSYAS_OGGSOURCE_H
 
-#include "common.h"
+#include "common_header.h"
 #include "AbsSoundFileSource.h"
  
 // So we don't need to include vorbis headers,

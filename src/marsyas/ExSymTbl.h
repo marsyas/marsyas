@@ -24,7 +24,7 @@
 #include <vector>
 #include "ExVal.h"
 #include "ExCommon.h"
-#include "common.h"
+#include "common_header.h"
 
 namespace Marsyas
 {

@@ -19,7 +19,7 @@
 #ifndef MARSYAS_WAVFILESOURCE_H
 #define MARSYAS_WAVFILESOURCE_H
 
-#include "common.h"
+#include "common_header.h"
 #include "AbsSoundFileSource.h"
 
 #include <string>

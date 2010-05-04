@@ -19,7 +19,7 @@
 #ifndef MARSYAS_WAVELETSTEP_H
 #define MARSYAS_WAVELETSTEP_H
 
-#include "common.h"
+#include "common_header.h"
 #include "MarSystem.h"
 
 namespace Marsyas

@@ -20,7 +20,7 @@
 #define __QGMMMODEL_H
 
 #include <vector>
-#include "common.h"
+#include "common_header.h"
 #include "realvec.h"
 
 namespace Marsyas

@@ -29,7 +29,6 @@ http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.htm
 Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 */
 
-#include "config.h" 
 
 #ifdef MARSYAS_MATLAB 
 
@@ -41,7 +40,7 @@ Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 #include <vector>
 
 #include "realvec.h"
-#include "common.h"
+#include "common_header.h"
 
 #include "engine.h" //$(MATLAB)\extern\include
 

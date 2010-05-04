@@ -19,7 +19,7 @@
 #ifndef MARSYAS_REPEAT_H
 #define MARSYAS_REPEAT_H
 
-#include "common.h"
+#include "common_header.h"
 #include "Conversions.h"
 
 #include <string>

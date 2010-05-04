@@ -47,7 +47,7 @@ class ExNode_NatDbl : public ExNode_Fun {
 #include "ExSymTbl.h"
 #include "MarControl.h"
 #include "MarSystem.h"
-#include "common.h"
+#include "common_header.h"
 #include "TmTimer.h"
 #include "ExCommon.h"
 

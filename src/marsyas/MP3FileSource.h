@@ -28,7 +28,7 @@
 #include <fcntl.h>
 #endif 
 
-#include "common.h"
+#include "common_header.h"
 #include "AbsSoundFileSource.h"
 
 #ifdef MARSYAS_MAD

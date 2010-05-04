@@ -19,7 +19,7 @@
 #ifndef MARSYAS_MP3FILESINK_H
 #define MARSYAS_MP3FILESINK_H
 
-#include "common.h"
+#include "common_header.h"
 #include "SoundFileSink.h"
 #include "FileName.h"
 #include "AbsSoundFileSink.h"
