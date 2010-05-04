@@ -22,7 +22,6 @@
 #include <iostream>
 #include <sstream> 
 #include "common_header.h"
-#include "common.h"
   
 namespace Marsyas
 {
