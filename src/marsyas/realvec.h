@@ -274,9 +274,9 @@ public:
 inline
 bool realvec::operator==(const realvec &v1)
 {
-	//cant compare two matricies of different sizes
-	MRSASSERT(v1.getRows()==rows_);
-	MRSASSERT(v1.getCols()==cols_);
+	//different size -> not equal
+	if (v1.getRows()!=rows_) return false;
+	if (v1.getCols()!=cols_) return false;
 
 	for(int r=0;r<v1.getRows();r++)
 	{
