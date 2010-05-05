@@ -20,6 +20,10 @@
 #ifndef MARSYAS_AUDIOSINK_H
 #define MARSYAS_AUDIOSINK_H
 
+
+#include "common_header.h" 
+#include "common.h"
+
 #include "MarSystem.h"
 #ifdef MARSYAS_AUDIOIO
 #include "RtAudio3.h"

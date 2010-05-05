@@ -14,7 +14,10 @@
 
 #cmakedefine MARSYAS_ASSERTS
 #cmakedefine MARSYAS_PROFILING
-#cmakedefine MARSYAS_DEBUG
+#cmakedefine MARSYAS_TRACECONTROLS
+#cmakedefine MARSYAS_FLOWCHECK 
+#cmakedefine MARSYAS_BOUNDCHECK
+
 
 #cmakedefine MARSYAS_LOG_WARNINGS
 #cmakedefine MARSYAS_LOG_DEBUGS

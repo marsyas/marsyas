@@ -24,6 +24,7 @@
 #include <ctime>
 #include <string>
 
+#include "common.h"
 #include "MarSystemManager.h"
 #include "Conversions.h"
 #include "FileName.h"

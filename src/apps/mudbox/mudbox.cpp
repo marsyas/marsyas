@@ -1402,7 +1402,7 @@ toy_with_inSamples(string sfName)
 }
 
 void 
-toy_with_fft(string sfName) 
+toy_with_fft(string sfName, int size) 
 {
 	cout << "Toying with fft" << endl;
 	MarSystemManager mng;
@@ -1412,20 +1412,28 @@ toy_with_fft(string sfName)
 	series->addMarSystem(mng.create("Spectrum", "spk"));
 	series->addMarSystem(mng.create("PhaseRandomize", "prandom"));
 	series->addMarSystem(mng.create("InvSpectrum", "ispk"));
-	series->addMarSystem(mng.create("SoundFileSink", "dest"));
+	// series->addMarSystem(mng.create("SoundFileSink", "dest"));
+	series->addMarSystem(mng.create("AudioSink", "dest"));
 	
 	// the name of the input file 
 	series->updctrl("SoundFileSource/src/mrs_string/filename", 
 					sfName);
+	
 
 	// the name of the output file
-	series->updctrl("SoundFileSink/dest/mrs_string/filename", 
-					"processed.wav");
+	// series->updctrl("SoundFileSink/dest/mrs_string/filename", 
+	// "processed.wav");
 	
-	// number of samples to process each tick 
-	series->updctrl("mrs_natural/inSamples",  256 * 512);
 
-	cout << *series << endl;
+
+	// number of samples to process each tick 
+	series->updctrl("mrs_natural/inSamples",  size * 512);
+	
+	series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	
+	
+	
+	// cout << *series << endl;
 	
 	while (series->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
@@ -7209,7 +7217,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "fanoutswitch")
 		toy_with_fanoutswitch();
 	else if (toy_withName == "fft")
-		toy_with_fft(fname0);
+		toy_with_fft(fname0, atoi(fname1.c_str()));
 	else if (toy_withName == "filter")
 		toy_with_filter();
 	else if (toy_withName == "getControls")
