@@ -728,24 +728,7 @@ operator-(const realvec& vec1, const realvec& vec2)
 	return diff;
 }
 
-bool
-operator!=(const realvec& v1, const realvec& v2)
-{
-	//if vectors have the same dimensions, compare all their values
-	if (v1.cols_ == v2.cols_ && v1.rows_ == v2.rows_)
-	{
-		for (mrs_natural r = 0; r < v1.rows_; ++r)
-			for (mrs_natural c = 0; c < v1.cols_; ++c)
-				if (v1(r,c) != v2(r,c))
-					return true; //at least one value is diferent!
 
-		//all values are equal!
-		return false;
-	}
-	//if their dimensions are different... that basically means they are diferent! ;-)
-	else
-		return true;
-}
 
 void
 realvec::send(Communicator *com)
