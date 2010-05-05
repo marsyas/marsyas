@@ -37,11 +37,6 @@
 #include <cassert>
 #include <utility>
 
-#ifdef MARSYAS_QT
-#include <QtCore>
-#include <QtGui>
-#endif
-
 namespace Marsyas
 {
 /**
@@ -80,46 +75,18 @@ Controls:  (these are inherited by all MarSystems)
 */
 
 
-#ifdef MARSYAS_QT
-//forward declarations
-class MarSystemControlsGUI;
-class MATLABeditorGUI;
-class MarSystemNetworkGUI;
-
-class marsyas_EXPORT MarSystem : public QObject
-#else
 class marsyas_EXPORT MarSystem
-#endif
 {
 
 //friend classes
 	friend class MarSystemManager;
 	friend class MarControl;
 
-#ifdef MARSYAS_QT
-	Q_OBJECT
-#endif
-
 private:
 	void addControls();//add MarSystem default controls
 	virtual void activate(bool state);
 
-#ifdef MARSYAS_QT
-	//Qt Mutexes
-	QMutex* processMutex_;
-	//Qt GUIs
-	MarSystemNetworkGUI* msysNetGUI_;
-	QMainWindow* MATLABeditorGUI_;
-
-	QHash<QString, MarSystemControlsGUI*> activeControlsGUIs_;
-	QHash<QString, QWidget*> activeDataGUIs_; //[!]
-#endif
-
 protected:
-
-#ifdef MARSYAS_QT
-	mutable QReadWriteLock rwLock_;
-#endif
 
 	/// Parent MarSystem (if in a composite, otherwise it's NULL)
 	MarSystem* parent_;
@@ -462,24 +429,6 @@ public:
 	MarControlPtr ctrl_mute_;
 	MarControlPtr ctrl_active_;
 	MarControlPtr ctrl_processedData_;
-
-#ifdef MARSYAS_QT
-
-protected slots:
-	void GUIdestroyed(QObject* obj);
-
-public slots:
-	virtual QMainWindow* getMarSystemNetworkGUI(QWidget* parent = 0, Qt::WFlags f = 0);
-	virtual QMainWindow* getControlsGUI(QWidget* parent = 0, Qt::WFlags f = 0);
-	virtual QMainWindow* getDataGUI(QWidget* parent = 0, Qt::WFlags f = 0);
-	virtual QMainWindow* getMATLABeditorGUI(QWidget* parent = 0, Qt::WFlags f = 0);
-
-signals:
-	void controlChanged(MarControl* control);
-	//void processed();
-
-#endif //MARSYAS_QT
-
 };
 
 /// Helper function for adding a prefix to each of the observation names.

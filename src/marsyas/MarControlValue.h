@@ -46,8 +46,6 @@ class marsyas_EXPORT MarControlValue
 protected:
 	std::string type_;
 	MarControl* current_link_;
-		
-
 
 	#ifdef MARSYAS_TRACECONTROLS
 	std::string value_debug_;
@@ -58,20 +56,10 @@ protected:
 	std::vector<std::pair<MarControl*, MarControl*> > links_;
 	std::vector<std::pair<MarControl*, MarControl*> >::iterator lit_;
 
-	#ifdef MARSYAS_QT
-	mutable QReadWriteLock valuerwLock_;
-	mutable QReadWriteLock linksrwLock_;
-	#else
-	char valuerwLock_; //dummy for macros
-	char linksrwLock_; //dummy for macros
-	#endif
-
 protected:
 	MarControlValue() {} // can't be directly created (use MarControl or MarControlValueT)
 	MarControlValue(const MarControlValue& a) 
 	{
-		//READ_LOCKER(a.valuerwLock_);
-		//READ_LOCKER(a.linksrwLock_);
 		type_ = a.type_;
 	};
 	

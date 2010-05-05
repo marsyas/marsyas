@@ -43,17 +43,6 @@ namespace Marsyas
 			ctrl_ = ctrl;
 			update_ = update;
 			readOnlyAccess_ = readOnlyAccess;
-			
-			if(readOnlyAccess_) //more efficient: allows multiple readers
-			{
-				LOCK_FOR_READ(ctrl_->rwLock_);
-				LOCK_FOR_READ(ctrl_->value_->valuerwLock_);
-			}
-			else //only a single writer/reader
-			{
-				LOCK_FOR_READ(ctrl_->rwLock_);
-				LOCK_FOR_WRITE(ctrl_->value_->valuerwLock_);
-			}
 		}
 
 		~MarControlAccessor()
@@ -61,10 +50,6 @@ namespace Marsyas
 			#ifdef MARSYAS_TRACECONTROLS
 			ctrl_->value_->setDebugValue();
 			#endif
-
-			UNLOCK(ctrl_->value_->rwLock_);
-			READ_LOCKER(ctrl_->value_->linksrwLock_);
-			UNLOCK(ctrl_->rwLock_);
 
 			if(update_)
 				ctrl_->value_->callMarSystemsUpdate();

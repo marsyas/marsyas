@@ -21,25 +21,11 @@
 #include "EvValUpd.h"
 #include "TmVirtualTime.h"
 
-#ifdef MARSYAS_QT
-#include "MarGUIManager.h"
-#include "MarSystemNetworkGUI.h"
-#include "MarSystemControlsGUI.h"
-//#include "MarSystemDataGUI.h"
-#include "MATLABeditorGUI.h"
-#endif
-
 using namespace std;
 using namespace Marsyas;
 
 MarSystem::MarSystem(string type, string name)
 {
-#ifdef MARSYAS_QT
-	processMutex_ = new QMutex(QMutex::Recursive);
-	msysNetGUI_ = NULL;
-	MATLABeditorGUI_ = NULL;
-#endif
-
 	parent_ = NULL;
 	name_ = name;
 	type_ = type;
@@ -66,12 +52,6 @@ MarSystem::MarSystem(string type, string name)
 // copy constructor
 MarSystem::MarSystem(const MarSystem& a)
 {
-#ifdef MARSYAS_QT
-	processMutex_ = new QMutex(QMutex::Recursive);
-	msysNetGUI_ = NULL;
-	MATLABeditorGUI_ = NULL;
-#endif
-
 	parent_ = NULL;
 	type_ = a.type_;
 	name_ = a.name_;
@@ -86,11 +66,6 @@ MarSystem::MarSystem(const MarSystem& a)
 
 	//clone controls (cloned controls will have no links! - they have to be relinked as done below)
 	{
-#ifdef MARSYAS_QT
-		QWriteLocker locker_w(&rwLock_);
-		QReadLocker locker_r(&(a.rwLock_));
-#endif
-
 		controls_.clear();
 		for (ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 		{
@@ -240,25 +215,6 @@ MarSystem::~MarSystem()
 	{
 		delete marsystems_[i];
 	}
-
-#ifdef MARSYAS_QT
-	delete processMutex_;
-	delete msysNetGUI_;
-	delete MATLABeditorGUI_;
-
-	//this closes all opened GUIs when the MarSystem is destroyed
-	//and clears the internal hash table used to store its pointers
-	QList<MarSystemControlsGUI*> controlsGUIs = activeControlsGUIs_.values();
-	for (int i = 0; i < controlsGUIs.size(); ++i)
-	{
-		delete controlsGUIs[i];
-	}
-	QList<QWidget*> dataGUIs = activeDataGUIs_.values();
-	for (int i = 0; i < dataGUIs.size(); ++i)
-	{
-		delete dataGUIs[i];
-	}
-#endif
 }
 
 void
@@ -303,17 +259,10 @@ MarSystem::addControls()
 bool
 MarSystem::addMarSystem(MarSystem *marsystem)
 {
-#ifdef MARSYAS_QT
-	rwLock_.lockForRead();
-#endif
-
 	//idiot proof 1
 	if (this == marsystem)
 	{
 		MRSWARN("MarSystem::addMarSystem - Trying to add MarSystem to itself - failing...");
-#ifdef MARSYAS_QT
-		rwLock_.unlock();
-#endif
 		return false;
 	}
 
@@ -330,9 +279,6 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 		if (msys == marsystem)
 		{
 			MRSWARN("MarSystem::addMarSystem - Trying to add an ancestor MarSystem as a child - failing...");
-#ifdef MARSYAS_QT
-			rwLock_.unlock();
-#endif
 			return false;
 		}
 		msys = msys->parent_;
@@ -341,10 +287,6 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 	//it's only possible to add MarSystems to Composites
 	if (isComposite_)
 	{
-#ifdef MARSYAS_QT
-		rwLock_.unlock();
-		rwLock_.lockForWrite();
-#endif
 		vector<MarSystem*>::iterator it;
 		bool replaced = false;
 		//check if a child MarSystem with the same type/name
@@ -369,9 +311,6 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 			marsystems_.push_back(marsystem);
 			marsystemsSize_ = (mrs_natural)marsystems_.size();
 		}
-#ifdef MARSYAS_QT
-		rwLock_.unlock();
-#endif
 		//set parent for the new child MarSystem
 		marsystem->setParent(this);
 
@@ -384,9 +323,6 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 	else
 	{
 		MRSWARN("MarSystem::addMarSystem - Trying to add MarSystem to a non-Composite - failing...");
-#ifdef MARSYAS_QT
-		rwLock_.unlock();
-#endif
 		return false;
 	}
 }
@@ -589,10 +525,6 @@ MarSystem::checkFlow(realvec& in, realvec& out)
 void
 MarSystem::process(realvec& in, realvec& out)
 {
-#ifdef MARSYAS_QT
-	processMutex_->lock();
-#endif
-
 #ifdef MARSYAS_FLOWCHECK
 	checkFlow(in, out);
 #endif
@@ -611,11 +543,6 @@ MarSystem::process(realvec& in, realvec& out)
 		if ((out.getRows() < onObservations_)||(out.getCols() < onSamples_))
 			out.stretch(onObservations_, onSamples_);
 	}
-#endif
-
-#ifdef MARSYAS_QT
-	processMutex_->unlock();
-	//emit processed();
 #endif
 }
 
@@ -660,20 +587,12 @@ MarSystem::myUpdate(MarControlPtr sender)
 bool
 MarSystem::isUpdating()
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&processMutex_);
-#endif
-
 	return isUpdating_;
 }
 
 void
 MarSystem::update(MarControlPtr sender)
 {
-#ifdef MARSYAS_QT
-	processMutex_->lock();
-#endif
-
 	MRSDIAG("MarSystem.cpp - MarSystem:Update");
 
 	isUpdating_ = true;
@@ -748,10 +667,6 @@ MarSystem::update(MarControlPtr sender)
 	}
 
 	isUpdating_ = false;
-
-#ifdef MARSYAS_QT
-	processMutex_->unlock();
-#endif
 }
 
 void
@@ -1014,9 +929,6 @@ MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 	if (localcname != "")
 	{
 		//This may be a local control, so look for it
-#ifdef MARSYAS_QT
-		QReadLocker locker(&rwLock_); //reading controls_ [!]
-#endif
 		if (controls_.find(localcname) != controls_.end())
 		{
 			return controls_[localcname]; //control found
@@ -1091,10 +1003,6 @@ MarSystem::hasControl(string cname, bool searchChildren)
 bool
 MarSystem::hasControl(MarControlPtr control, bool searchChildren)
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
-#endif
-
 	//search local controls
 	for (ctrlIter_=controls_.begin(); ctrlIter_!=controls_.end();++ctrlIter_)
 	{
@@ -1143,10 +1051,6 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 const map<string, MarControlPtr>&
 MarSystem::getLocalControls()
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_); //reading controls_ [!]
-#endif
-
 	return controls_;
 }
 
@@ -1155,10 +1059,6 @@ MarSystem::getLocalControls()
 map<string, MarControlPtr>
 MarSystem::getControls(map<string, MarControlPtr>* cmap)
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
-#endif
-
 	if (!cmap)
 	{
 		map<string, MarControlPtr> controlsmap;
@@ -1204,9 +1104,6 @@ MarSystem::getControls(map<string, MarControlPtr>* cmap)
 vector<MarSystem*>
 MarSystem::getChildren()
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
-#endif
 	return marsystems_;
 }
 
@@ -1248,10 +1145,6 @@ MarSystem::addControl(string cname, MarControlPtr v)
 		MRSWARN("MarSystem::addControl control type mismatch (" + ctype + "!=" + v->getType() + ")");
 		return false;
 	}
-
-#ifdef MARSYAS_QT
-	QWriteLocker locker(&rwLock_); //writing controls_
-#endif
 	controls_[cname] = v;
 	controls_[cname]->setMarSystem(this);
 	controls_[cname]->setName(cname);
@@ -1339,29 +1232,13 @@ MarSystem::getTime(string timer_name)
 void
 MarSystem::setMATLABscript(std::string script)
 {
-#ifdef MARSYAS_QT
-	processMutex_->lock();
-#endif
-
 	MATLABscript_ = script;
-
-#ifdef MARSYAS_QT
-	processMutex_->unlock();
-#endif
 }
 
 string
 MarSystem::getMATLABscript()
 {
-#ifdef MARSYAS_QT
-	processMutex_->lock();
-#endif
-
 	return MATLABscript_;
-
-#ifdef MARSYAS_QT
-	processMutex_->unlock();
-#endif
 }
 
 mrs_real*
@@ -1460,10 +1337,6 @@ MarSystem::toString(marostring& m)
 ostream&
 MarSystem::put(ostream &o)
 {
-#ifdef MARSYAS_QT
-	QReadLocker locker(&rwLock_);
-#endif
-
 	if (isComposite_)
 	{
 		o << "# MarSystemComposite" << endl;
@@ -1674,10 +1547,6 @@ MarSystem::put(istream& is)
 	string cname;
 	map<string, MarControlPtr>::iterator iter;
 
-#ifdef MARSYAS_QT
-	rwLock_.lockForWrite();
-#endif
-
 	// if composite, clear all children to avoid bad links to prototype children
 	if (isComposite_)
 	{
@@ -1688,11 +1557,6 @@ MarSystem::put(istream& is)
 		marsystems_.clear();
 		marsystemsSize_ = 0;
 	}
-
-#ifdef MARSYAS_QT
-	rwLock_.unlock();
-	QReadLocker lock(&(rwLock_));
-#endif
 
 	// Start reading!
 
@@ -1961,177 +1825,4 @@ Marsyas::obsNamesSplit(mrs_string observationNames)
 
 
 
-//**************************************************************************
-//	MARSYAS_QT only methods
-//**************************************************************************
-#ifdef MARSYAS_QT
 
-QMainWindow*
-MarSystem::getMarSystemNetworkGUI(QWidget* parent, Qt::WFlags f)
-{
-	//if a network viewer already exists (i.e. is being displayed)
-	//close it first in order to allow creating a new one
-	//(this avoids any container window from being "empty")
-	if (msysNetGUI_)
-		return NULL;
-
-	//create the Dialog
-	msysNetGUI_ = new MarSystemNetworkGUI(this, parent, f);
-	msysNetGUI_->setObjectName("MarSystemNetworkGUI");
-	//string prefix = prefix_.substr(0, prefix_.length()-1);//remove trailing "/"
-	msysNetGUI_->setWindowTitle(QString::fromStdString(prefix_) + " network");
-
-	connect(msysNetGUI_, SIGNAL(destroyed(QObject*)),
-	        this, SLOT(GUIdestroyed(QObject*)));
-
-	//if no parent widget is specified, open the controls dialog
-	//as an independent window and return a NULL pointer so it can
-	//not be deleted by mistake. The MarSystemControlsGUI class, when
-	//created without a parent deletes itself on close.
-	if (!parent)
-	{
-		msysNetGUI_->setAttribute(Qt::WA_DeleteOnClose, true);
-		msysNetGUI_->show();
-		return NULL;
-	}
-	else
-		return msysNetGUI_;
-}
-
-QMainWindow*
-MarSystem::getMATLABeditorGUI(QWidget* parent, Qt::WFlags f)
-{
-#ifdef MARSYAS_MATLAB
-
-	//if a MATLAB editor already exists (i.e. is being displayed)
-	//close it first in order to allow creating a new one
-	//(this avoids any container window from being "empty")
-	if (MATLABeditorGUI_)
-		return NULL;
-
-	//create the Dialog
-	MATLABeditorGUI_ = new MATLABeditorGUI(MATLABscript_,parent, f);
-	//string path = prefix_.substr(0, absPath_.length()-1);//remove trailing "/"
-	MATLABeditorGUI_->setWindowTitle(QString::fromStdString(absPath_));
-	MATLABeditorGUI_->setObjectName("MATLABeditorGUI");
-
-	connect(MATLABeditorGUI_, SIGNAL(scriptChanged(std::string)),
-	        this, SLOT(setMATLABscript(std::string)));
-
-	// 	Q_ASSERT(
-	// 		connect(this, SIGNAL(processed()),
-	// 						MATLABeditorGUI_, SLOT(updateOutputDisplay()))
-	// 		);
-
-	connect(MATLABeditorGUI_, SIGNAL(destroyed(QObject*)),
-	        this, SLOT(GUIdestroyed(QObject*)));
-
-	//if no parent widget is specified, open the controls dialog
-	//as an independent window and return a NULL pointer so it can
-	//not be deleted by mistake. The MarSystemControlsGUI class, when
-	//created without a parent deletes itself on close.
-	if (!parent)
-	{
-		MATLABeditorGUI_->setAttribute(Qt::WA_DeleteOnClose, true);
-		MATLABeditorGUI_->show();
-		return NULL;
-	}
-	else
-		return MATLABeditorGUI_;
-
-#else //MARSYAS_MATLAB
-	MRSWARN("MarSystem::getMATLABeditor(): Marsyas not built with MATLAB engine support!");
-	return NULL;
-#endif //MARSYAS_MATLAB
-}
-
-QMainWindow*
-MarSystem::getControlsGUI(QWidget* parent, Qt::WFlags f)
-{
-	//create a MarControls editor GUI for this MarSystem
-	MarSystemControlsGUI* controlsGUI = MarGUIManager::getControlsGUI(this, parent, f);
-	controlsGUI->setWindowTitle(QString::fromStdString(absPath_));
-	controlsGUI->setObjectName("controlsGUI_" + QDateTime::currentDateTime().toString(Qt::ISODate));
-
-	//store this control in the active GUIs list
-	activeControlsGUIs_[controlsGUI->objectName()] = controlsGUI;
-
-	//connect signal sent by controlsGUI whenever a control value is changed
-	//by the user
-	// 	Q_ASSERT(
-	// 		connect(controlsGUI_, SIGNAL(controlChanged(std::string, MarControlPtr)),
-	// 		this, SLOT(updControl(std::string, MarControlPtr)))
-	// 		);
-
-	//connect a signal to the controlsGUI to update any control
-	//whose value was modified elsewhere.
-	//This would in theory create an infinite loop anytime a control was changed
-	//using the GUI, but the MarSystemControlsGUI class provides a mechanism for
-	//avoiding that (See MarSystemControlsGUI.cpp).
-	connect(this, SIGNAL(controlChanged(MarControl*)),
-	        controlsGUI, SLOT(updControl(MarControl*)));
-
-	//connect the controlsGUI destroyed signal to a slot so we can detect
-	//when the controls editor was closed/destroyed
-	connect(controlsGUI, SIGNAL(destroyed(QObject*)),
-	        this, SLOT(GUIdestroyed(QObject*)));
-
-	//if no parent widget is specified, open the controls dialog
-	//as an independent window and return a NULL pointer so it can
-	//not be deleted by mistake. The MarSystemControlsGUI class, when
-	//created without a parent deletes itself on close.
-	if (!parent)
-	{
-		controlsGUI->setAttribute(Qt::WA_DeleteOnClose, true);
-		controlsGUI->show();
-		return NULL;
-	}
-	else
-		return controlsGUI;
-}
-
-QMainWindow*
-MarSystem::getDataGUI(QWidget* parent, Qt::WFlags f)
-{
-	//to be further defined...
-	//...
-	return NULL;
-}
-
-void
-MarSystem::GUIdestroyed(QObject *obj)
-{
-	//check if the Qt object destroyed was the network viewer...
-	if (obj->objectName() == "MarSystemNetworkGUI")
-	{
-		msysNetGUI_ = NULL;
-		return;
-	}
-	//check if the Qt object destroyed was the MATLAB editor...
-	if (obj->objectName() == "MATLABeditorGUI")
-	{
-		MATLABeditorGUI_ = NULL;
-		return;
-	}
-	//remove destroyed GUI objects from the active lists
-	//so they are not deleted again at the destructor
-	activeControlsGUIs_.remove(obj->objectName());
-	activeDataGUIs_.remove(obj->objectName());
-}
-
-// #ifdef MARSYAS_QT
-// void
-// MarControls::emitControlChanged(MarControlPtr* control)
-// {
-// 	//only bother calling MarSystem's controlChanged signal
-// 	//if there is a GUI currently active(i.e. being displayed)
-// 	//=> more efficient! [!]
-// 	if(msys_->controlsGUI_ || msys_->dataGUI_)//possible because this class is friend of MarSystem //[!]
-// 	{
-// 		Q_ASSERT(QMetaObject::invokeMethod(msys_, "controlChanged", Qt::AutoConnection,
-// 			Q_ARG(MarControlPtr*, control)));
-// 	}
-// }
-// #endif //MARSYAS_QT
-
-#endif //MARSYAS_QT

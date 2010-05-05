@@ -42,10 +42,6 @@
 #define TRACE_ADDCONTROL
 #define TRACE_REMCONTROL
 
-#ifdef MARSYAS_QT
-#include <QtCore>
-#endif
-
 namespace Marsyas
 {
 /** 
@@ -133,26 +129,10 @@ public:
 //////////////////////////////////////////////////////////////////////////
 //	MarControl declaration
 //////////////////////////////////////////////////////////////////////////
-#ifdef MARSYAS_QT
-class marsyas_EXPORT MarControl : public QObject
-#else
 class marsyas_EXPORT MarControl
-#endif
 {
 	friend class MarControlManager;
 	friend class MarControlAccessor;
-
-#ifdef MARSYAS_QT
-	Q_OBJECT
-#endif
-
-#ifdef MARSYAS_MT
-protected:
-	mutable QReadWriteLock rwLock_;
-	std::vector<QReadWriteLock*> lockedMutexes_;
-#else
-	char rwLock_; //dummy for macros
-#endif
 
 protected:
 	int refCount_;
@@ -164,10 +144,6 @@ protected:
 
 	// default constructor
 	MarControl() {} // not allowed
-
-	void lockAllLinkedControls(MarControl* ctrl);
-	void unlockAllLinkedControls(MarControl* ctrl);
-	void unlinkFromTargetNonReentrant();
 
 public:
 	// copy constructor
@@ -193,17 +169,14 @@ public:
 
 	inline void ref() 
 	{ 
-		WRITE_LOCKER(rwLock_);
 		refCount_++; 
 	}
 	inline void unref() 
 	{
-		WRITE_LOCKER(rwLock_);
 		if (--refCount_ <= 0) delete this; 
 	}
 	int getRefCount() const 
 	{ 
-		READ_LOCKER(rwLock_);
 		return refCount_; 
 	}
 
@@ -258,14 +231,6 @@ public:
 	friend inline MarControl operator-(const MarControl& v1, const MarControl& v2);
 	friend inline MarControl operator*(const MarControl& v1, const MarControl& v2);
 	friend inline MarControl operator/(const MarControl& v1, const MarControl& v2);
-
-#ifdef MARSYAS_QT
-protected:
-	void emitControlChanged(MarControl* control);//inline
-
-	// signals:
-	// 	void controlChanged(MarControl* value);
-#endif
 };
 
 /************************************************************************/
@@ -482,9 +447,6 @@ MarControl::to() const
 		MRSERR("MarControl::to() - trying to get a value from a NULL MarControl! Returning invalid value...");
 		return MarControlValueT<T>::invalidValue;
 	}
-	
-	READ_LOCKER(rwLock_);
-	READ_LOCKER(value_->valuerwLock_);
 
 	const MarControlValueT<T> *ptr = dynamic_cast<const MarControlValueT<T>*>(value_);
 	if(ptr)
@@ -507,13 +469,6 @@ MarControl::to() const
 inline
 MarControl::MarControl(const MarControl& a)
 {
-	#ifdef MARSYAS_QT
-	qRegisterMetaType<MarControl*>("MarControl*");
-	#endif
-
-	READ_LOCKER(a.rwLock_);
-	READ_LOCKER(a.value_->valuerwLock_);
-
 	refCount_ = 0;
 	msys_			= a.msys_;
 	cname_		= a.cname_;
@@ -526,12 +481,6 @@ MarControl::MarControl(const MarControl& a)
 inline
 MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msys, bool state)
 {
-	#ifdef MARSYAS_QT
-	qRegisterMetaType<MarControl*>("MarControl*");
-	#endif
-
-	READ_LOCKER(value->valuerwLock_);
-
 	refCount_ = 0;
 	msys_			= msys;
 	cname_		= cname;
@@ -544,10 +493,6 @@ MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msy
 inline
 MarControl::MarControl(double re, std::string cname, MarSystem* msys, bool state)
 {
-	#ifdef MARSYAS_QT
-	qRegisterMetaType<MarControl*>("MarControl*");
-	#endif
-
 	refCount_ = 0;
 	msys_			= msys;
 	cname_		= cname;
@@ -561,10 +506,6 @@ MarControl::MarControl(double re, std::string cname, MarSystem* msys, bool state
 inline
 MarControl::MarControl(float re, std::string cname, MarSystem* msys, bool state)
 {
-	#ifdef MARSYAS_QT
-	qRegisterMetaType<MarControl*>("MarControl*");
-	#endif
-
 	refCount_ = 0;
 	msys_			= msys;
 	cname_		= cname;
@@ -578,10 +519,6 @@ MarControl::MarControl(float re, std::string cname, MarSystem* msys, bool state)
 inline
 MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool state)
 {
-	#ifdef MARSYAS_QT
-	qRegisterMetaType<MarControl*>("MarControl*");
-	#endif
-
 	refCount_ = 0;
 	msys_			= msys;
 	cname_		= cname;
@@ -594,10 +531,6 @@ MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool 
 inline
 MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool state)
 {
-	#ifdef MARSYAS_QT
-	qRegisterMetaType<MarControl*>("MarControl*");
-	#endif
-
 	refCount_ = 0;
 	msys_			= msys;
 	cname_		= cname;
@@ -610,10 +543,6 @@ MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool 
 inline
 MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool state)
 {
-	#ifdef MARSYAS_QT
-	qRegisterMetaType<MarControl*>("MarControl*");
-	#endif
-
 	refCount_ = 0;
 	msys_			= msys;
 	cname_		= cname;
@@ -626,10 +555,6 @@ MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool sta
 inline
 MarControl::MarControl(realvec& ve, std::string cname, MarSystem* msys, bool state)
 {
-	#ifdef MARSYAS_QT
-	qRegisterMetaType<MarControl*>("MarControl*");
-	#endif
-
 	refCount_ = 0;
 	msys_			= msys;
 	cname_		= cname;
@@ -654,7 +579,6 @@ MarControl::operator=(const MarControl& a)
 {
 	if (this != &a)
 	{
-		READ_LOCKER(a.rwLock_);
 		this->setValue(a.value_);
 		/*
 		refCount_ = 0;
@@ -674,9 +598,6 @@ inline
 bool
 MarControl::setValue(T& t, bool update)
 {
-	READ_LOCKER(rwLock_);
-	WRITE_LOCKER(value_->valuerwLock_);
-
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
 	if(ptr)
 	{
@@ -685,15 +606,10 @@ MarControl::setValue(T& t, bool update)
 
 		ptr->set(t, update);
 
-		#ifdef MARSYAS_QT
-		emitControlChanged(this);
-		#endif
-
 		return true;
 	}
 	else
 	{
-		READ_LOCKER(value_->valuerwLock_);
 		std::ostringstream sstr;
 		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
 			<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
@@ -707,9 +623,6 @@ inline
 bool
 MarControl::setValue(const T& t, bool update)
 {
-	READ_LOCKER(rwLock_);
-	WRITE_LOCKER(value_->valuerwLock_);
-
 	MarControlValueT<T> *ptr = dynamic_cast<MarControlValueT<T>*>(value_);
 	if(ptr)
 	{
@@ -717,10 +630,6 @@ MarControl::setValue(const T& t, bool update)
 			return true;
 
 		ptr->set(const_cast<T&>(t), update);
-
-		#ifdef MARSYAS_QT
-		emitControlChanged(this);
-		#endif
 
 		return true;
 	}
@@ -738,31 +647,17 @@ inline
 bool
 MarControl::setValue(MarControlPtr mc, bool update)
 {
-	LOCK_FOR_READ(rwLock_);
-	LOCK_FOR_WRITE(value_->valuerwLock_);
-	
-	LOCK_FOR_READ(mc->rwLock_);
-	LOCK_FOR_READ(mc->value_->valuerwLock_);
-
 	if (value_->type_ != mc->value_->type_)
 	{
 		std::ostringstream sstr;
 		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
 			<< "(expected " << value_->type_ << ", given " << mc->value_->type_ << ")";
 		MRSWARN(sstr.str());
-		UNLOCK(value_->valuerwLock_);
-		UNLOCK(rwLock_);
-		UNLOCK(mc->rwLock_);
-		UNLOCK(mc->value_->valuerwLock_);
 		return false;
 	}
 
 	if (MarControlPtr(this) == mc)
 	{
-		UNLOCK(value_->valuerwLock_);
-		UNLOCK(rwLock_);
-		UNLOCK(mc->rwLock_);
-		UNLOCK(mc->value_->valuerwLock_);
 		return true;
 	}
 	
@@ -772,27 +667,9 @@ MarControl::setValue(MarControlPtr mc, bool update)
 	value_->setDebugValue();
 	#endif
 
-	UNLOCK(mc->rwLock_);
-	UNLOCK(mc->value_->valuerwLock_);
-
-	//lock links before unlocking value, so we can iterate over
-	//the links list safely 
-	READ_LOCKER(value_->linksrwLock_);
-	//unlock write mutexes for the value of MarControlValue so we 
-	//can call updates without risk of deadlocking...
-	UNLOCK(value_->valuerwLock_);
-	//and unlock this control so we can call update without deadlocks
-	//(since the links table is locked, no changes can happen to value_ - these
-	//would only happen in case of an unlink/link operation, which is never possible
-	//to happen with the links table locked)
-	UNLOCK(rwLock_);
 	//check if it's needed to call update()
 	if(update)
 		value_->callMarSystemsUpdate();
-
-	#ifdef MARSYAS_QT
-	emitControlChanged(this);
-	#endif
 
 	return true;
 }
@@ -801,26 +678,17 @@ inline
 bool
 MarControl::setValue(MarControlValue *mcv, bool update)
 {
-	READ_LOCKER(rwLock_);
-	LOCK_FOR_WRITE(value_->valuerwLock_);
-
-	LOCK_FOR_READ(mcv->valuerwLock_);
-
 	if (value_->type_ != mcv->type_)
 	{
 		std::ostringstream sstr;
 		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
 			<< "(expected " << value_->type_ << ", given " << mcv->type_ << ")";
 		MRSWARN(sstr.str());
-		UNLOCK(value_->valuerwLock_);
-		UNLOCK(mcv->valuerwLock_);
 		return false;
 	}
 
 	if (!mcv->isNotEqual(value_))
 	{
-		UNLOCK(value_->valuerwLock_);
-		UNLOCK(mcv->valuerwLock_);
 		return true;
 	}
 
@@ -830,24 +698,9 @@ MarControl::setValue(MarControlValue *mcv, bool update)
 	value_->setDebugValue();
 	#endif
 	
-	//lock links before unlocking value, so we can iterate over
-	//the links list safely 
-	READ_LOCKER(value_->linksrwLock_);
-	//unlock write mutexes for the value of MarControlValue so we 
-	//can call updates without risk of deadlocking...
-	UNLOCK(value_->valuerwLock_);
-	//and unlock this control so we can call update without deadlocks
-	//(since the links table is still locked, no changes can happen to value_ - these
-	//would only happen in case of an unlink/link operation, which is never possible
-	//to happen with the links table locked)
-	UNLOCK(rwLock_);
 	//check if it's needed to call update()
 	if(update)
 		value_->callMarSystemsUpdate();
-
-	#ifdef MARSYAS_QT
-	emitControlChanged(this);
-	#endif
 
 	return true;
 }
@@ -870,9 +723,6 @@ inline
 bool
 MarControl::isTrue()
 {
-	READ_LOCKER(rwLock_);
-	READ_LOCKER(value_->valuerwLock_);
-
 	MarControlValueT<bool> *ptr = dynamic_cast<MarControlValueT<bool>*>(value_);
 	if(ptr)
 	{
@@ -891,8 +741,6 @@ inline
 std::ostream&
 operator<<(std::ostream& os, const MarControl& ctrl)
 {
-	READ_LOCKER(ctrl.rwLock_);
-	READ_LOCKER(ctrl.value_->valuerwLock_);
 	return ctrl.value_->serialize(os);
 }
 
@@ -900,10 +748,6 @@ inline
 bool
 operator==(const MarControl& v1, const MarControl& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
 	return !(v1.value_->isNotEqual(v2.value_));
 }
 
@@ -911,10 +755,6 @@ inline
 bool
 operator!=(const MarControl& v1, const MarControl& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
 	return v1.value_->isNotEqual(v2.value_);
 }
 
@@ -922,9 +762,6 @@ inline
 mrs_real
 operator+(const MarControl& v1, const mrs_real& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
 	if(ptr)
@@ -946,9 +783,6 @@ inline
 mrs_real
 operator+(const mrs_real& v1, const MarControl& v2)
 {
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
-
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
 	if(ptr)
@@ -970,9 +804,6 @@ inline
 mrs_real
 operator-(const MarControl& v1, const mrs_real& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
 	if(ptr)
@@ -994,9 +825,6 @@ inline
 mrs_real
 operator-(const mrs_real& v1, const MarControl& v2)
 {
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
-
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
 	if(ptr)
@@ -1018,9 +846,6 @@ inline
 mrs_real
 operator*(const MarControl& v1, const mrs_real& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
 	if(ptr)
@@ -1042,9 +867,6 @@ inline
 mrs_real
 operator*(const mrs_real& v1, const MarControl& v2)
 {
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
-
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
 	if(ptr)
@@ -1066,9 +888,6 @@ inline
 mrs_real
 operator/(const MarControl& v1, const mrs_real& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-
 	mrs_real r1;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
 	if(ptr)
@@ -1090,9 +909,6 @@ inline
 mrs_real
 operator/(const mrs_real& v1, const MarControl& v2)
 {
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
-
 	mrs_real r2;
 	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
 	if(ptr)
@@ -1114,11 +930,6 @@ inline
 MarControl
 operator+(const MarControl& v1, const MarControl& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
-
 	MarControlValue *val = v1.value_->sum(v2.value_);
 	MarControl ret(val);
 	delete val;
@@ -1129,11 +940,6 @@ inline
 MarControl
 operator-(const MarControl& v1, const MarControl& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
-
 	MarControlValue *val = v1.value_->subtract(v2.value_);
 	MarControl ret(val);
 	delete val;
@@ -1144,11 +950,6 @@ inline
 MarControl
 operator*(const MarControl& v1, const MarControl& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
-
 	MarControlValue *val = v1.value_->multiply(v2.value_);
 	MarControl ret(val);
 	delete val;
@@ -1159,32 +960,11 @@ inline
 MarControl
 operator/(const MarControl& v1, const MarControl& v2)
 {
-	READ_LOCKER(v1.rwLock_);
-	READ_LOCKER(v1.value_->valuerwLock_);
-	READ_LOCKER(v2.rwLock_);
-	READ_LOCKER(v2.value_->valuerwLock_);
-
 	MarControlValue *val = v1.value_->divide(v2.value_);
 	MarControl ret(val);
 	delete val;
 	return ret;
 }
-
-// #ifdef MARSYAS_QT
-// inline
-// void
-// MarControlValue::emitControlChanged(MarControlValue* cvalue)
-// {
-// 	//only bother calling MarSystem's controlChanged signal
-// 	//if there is a GUI currently active(i.e. being displayed)
-// 	//=> more efficient! [!]
-// 	if(msys_->controlsGUI_ || msys_->dataGUI_)//possible because this class is friend of MarSystem //[!]
-// 	{
-// 		Q_ASSERT(QMetaObject::invokeMethod(msys_, "controlChanged", Qt::AutoConnection,
-// 			Q_ARG(MarControlValue*, cvalue)));
-// 	}
-// }
-// #endif //MARSYAS_QT 
 
 }//namespace Marsyas
 
