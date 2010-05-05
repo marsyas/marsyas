@@ -23,25 +23,6 @@
 #cmakedefine MARSYAS_LOG2STDOUT
 #cmakedefine MARSYAS_LOG2GUI
 
-//For debug building configuration
-#ifndef NDEBUG
-	#ifndef MARSYAS_DEBUG
-		#define MARSYAS_DEBUG
-	#endif
-	#ifndef MARSYAS_ASSERTS
-		#define MARSYAS_ASSERTS
-	#endif
-	#ifndef MARSYAS_LOG_DEBUG
-		#define MARSYAS_LOG_DEBUG
-	#endif
-	#ifndef MARSYAS_LOG_WARNINGS
-		#define MARSYAS_LOG_WARNINGS
-	#endif
-	#ifndef MARSYAS_LOG2STDOUT
-		#define MARSYAS_LOG2STDOUT
-	#endif
-#endif
-
 #cmakedefine MARSYAS_LAME
 #cmakedefine MARSYAS_MAD
 #cmakedefine MARSYAS_MATLAB
