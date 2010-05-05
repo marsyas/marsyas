@@ -24,7 +24,7 @@
 #include <utility>
 #include <typeinfo>
 
-#include "common.h"
+#include "common_header.h"
 #include "realvec.h"
 
 
@@ -462,7 +462,7 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 			std::ostringstream sstr;
 			sstr << "MarControlValueT::isNotEqual() - Trying to compare different types of MarControlValue. "
 				<< "(" << this->getType() << " with " << v->getType() << ")";
-			// MRSWARN(sstr.str());
+			MRSWARN(sstr.str());
 			return false;
 		}
 		
@@ -482,7 +482,7 @@ MarControlValueT<T>::sum(MarControlValue *v)
 		std::ostringstream sstr;
 		sstr << "MarControlValueT::sum() - Trying to sum different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
-		// MRSWARN(sstr.str());
+		MRSWARN(sstr.str());
 		return false;
 	}
 	return new MarControlValueT<T>(value_+ptr->value_);
@@ -498,7 +498,7 @@ MarControlValueT<T>::subtract(MarControlValue *v)
 		std::ostringstream sstr;
 		sstr << "MarControlValueT::subtract() - Trying to subtract different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
-		// MRSWARN(sstr.str());
+		MRSWARN(sstr.str());
 		return false;
 	}
 	return new MarControlValueT<T>(value_-ptr->value_);
@@ -514,7 +514,7 @@ MarControlValueT<T>::multiply(MarControlValue *v)
 		std::ostringstream sstr;
 		sstr << "MarControlValueT::multiply() - Trying to multiply different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
-		// MRSWARN(sstr.str());
+		MRSWARN(sstr.str());
 		return false;
 	}
 	return new MarControlValueT<T>(value_*ptr->value_);
@@ -530,7 +530,7 @@ MarControlValueT<T>::divide(MarControlValue *v)
 		std::ostringstream sstr;
 		sstr << "[MarControlValueT::divide] Trying to divide different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
-		// MRSWARN(sstr.str());
+		MRSWARN(sstr.str());
 		return false;
 	}
 	return new MarControlValueT<T>(value_/ptr->value_);

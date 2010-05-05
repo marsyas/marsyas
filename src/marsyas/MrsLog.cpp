@@ -72,6 +72,7 @@ MrsLog::mrsErr(const ostringstream& oss)
 void 
 MrsLog::mrsWarning(const ostringstream& oss)
 {
+#ifdef MARSYAS_LOG_WARNINGS
   if (!warnings_off_) 
     {
 #ifdef MARSYAS_LOG2STDOUT
@@ -89,13 +90,22 @@ MrsLog::mrsWarning(const ostringstream& oss)
 	}
       ofs.close();
       return;
+
 #endif
     }
+
+
+#else 
+  ; 
+#endif 
+
 }
 
 void 
 MrsLog::mrsDiagnostic(const ostringstream& oss)
 {
+#ifdef MARSYAS_LOG_DIAGNOSTICS
+
 #ifdef MARSYAS_LOG2STDOUT
 	cout << "[MRS_DIAG] " << oss.str() << endl;
 #endif
@@ -112,6 +122,12 @@ MrsLog::mrsDiagnostic(const ostringstream& oss)
 	ofs.close();
 	return;
 #endif
+
+#else 
+	;
+#endif
+
+
 }
 
 void 
