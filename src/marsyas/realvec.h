@@ -250,7 +250,7 @@ public:
 	void norm();
 	void normMaxMin();
 
-	static void realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out);
+	static void matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out);
 	void norm(mrs_real mean, mrs_real std);
 	void renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real new_std);
 	mrs_natural invert(realvec& res);//lmartins: this seems to be both inplace and returning the inverse matrix in "res"... why both?!? [!][?]
@@ -375,8 +375,8 @@ realvec::operator/=(const realvec& vec)
  * \return the value at the requested index.
  * \exception std::out_of_range is thrown when the index is out of bounds.
  */
-inline void 
-realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out) 
+inline
+void realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out) 
 {
 	//naive Matrix multiplication
 
