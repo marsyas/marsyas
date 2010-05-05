@@ -58,8 +58,15 @@
 #define MRSDEBUG(x)
 #endif 
 
-#define MRSASSERT(f) MrsLog::mrsAssert(__FILE__, __LINE__)
-
+#ifdef MARSYAS_ASSERTS
+#define MRSASSERT(f) \
+        if (f)       \
+             {}      \
+        else         \
+           MrsLog::mrsAssert(__FILE__, __LINE__)
+#else 
+#define MRSASSERT(x) 
+#endif 
 
 /************************************************************************/
 /*  MATLAB engine macros                                                */
