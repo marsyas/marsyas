@@ -124,23 +124,21 @@ Delay::myUpdate(MarControlPtr sender)
 	if (delayInSamples_ != getctrl ("mrs_realvec/delaySamples")->to<mrs_realvec>())
 	{
 		delayInSamples_	= getctrl ("mrs_realvec/delaySamples")->to<mrs_realvec>();
-		mrs_realvec tmp(delayInSamples_);
-		setctrl("mrs_realvec/delaySeconds", samples2Seconds (tmp));
+		setctrl("mrs_realvec/delaySeconds", samples2Seconds (delayInSamples_));
 	}
 	if (samples2Seconds (delayInSamples_) != getctrl ("mrs_realvec/delaySeconds")->to<mrs_realvec>())
 	{
-		delayInSamples_	= seconds2Samples (getctrl ("mrs_realvec/delaySamples")->to<mrs_realvec>());
-		mrs_realvec tmp(delayInSamples_);
-		setctrl("mrs_realvec/delaySeconds", samples2Seconds (tmp));
+		delayInSamples_	= seconds2Samples (getctrl ("mrs_realvec/delaySeconds")->to<mrs_realvec>());
+		setctrl("mrs_realvec/delaySamples", delayInSamples_);
 	}
 
 	// allocate the delay line
 	buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
 	cursorMask_	= buffer_.getCols () - 1;		// to ensure an efficient wrap around, buffer length will be a power of two
-	if (prevDelayInSamples_.getRows () != delayInSamples_.getRows ())
+	if (prevDelayInSamples_.getSize () != delayInSamples_.getSize ())
 	{
 		// only do this update if needed...
-		ctrlIncrement_.stretch (delayInSamples_.getRows (), delayInSamples_.getCols ());
+		ctrlIncrement_.stretch (delayInSamples_.getSize (), delayInSamples_.getCols ());
 		prevDelayInSamples_	= delayInSamples_;
 
 		// initialize the delay line
@@ -152,7 +150,7 @@ Delay::myUpdate(MarControlPtr sender)
 		vector<mrs_string> indiChannels	= stringSplit (getctrl("mrs_string/inObsNames")->to<mrs_string>(), ",");
 		ostringstream	outNames;
 		for (mrs_natural c = 0; c < getctrl("mrs_natural/inObservations")->to<mrs_natural>(); c++)
-			for (mrs_natural i = 0; i < delayInSamples_.getRows (); i++)
+			for (mrs_natural i = 0; i < delayInSamples_.getSize (); i++)
 			{
 				outNames << indiChannels.at(c) << "-delay_" << i << ",";
 			}
@@ -162,7 +160,7 @@ Delay::myUpdate(MarControlPtr sender)
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	setctrl("mrs_natural/onObservations", delayInSamples_.getRows () * getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+	setctrl("mrs_natural/onObservations", delayInSamples_.getSize () * getctrl("mrs_natural/inObservations")->to<mrs_natural>());
 
 }
 
@@ -170,7 +168,7 @@ Delay::myUpdate(MarControlPtr sender)
 void 
 Delay::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural k, numDelayLines = delayInSamples_.getRows ();
+	mrs_natural k, numDelayLines = delayInSamples_.getSize ();
 
 	// first, get the interpolated delay update (linear interpolation only)
 	getLinearInterPInc (prevDelayInSamples_, delayInSamples_, ctrlIncrement_, inSamples_);
@@ -246,14 +244,14 @@ mrs_real Delay::seconds2Samples (mrs_real seconds)
 }
 mrs_realvec Delay::samples2Seconds (mrs_realvec samples)
 {
-	for (mrs_natural i = 0; i < samples.getRows (); i++)
+	for (mrs_natural i = 0; i < samples.getSize (); i++)
 		samples(i)	= samples(i)/ israte_;
 
 	return samples;
 }
 mrs_realvec Delay::seconds2Samples (mrs_realvec seconds)
 {
-	for (mrs_natural i = 0; i < seconds.getRows (); i++)
+	for (mrs_natural i = 0; i < seconds.getSize (); i++)
 		seconds(i)	= seconds(i) * israte_;
 
 	return seconds;
