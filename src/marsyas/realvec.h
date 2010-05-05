@@ -162,11 +162,16 @@ public:
 	marsyas_EXPORT friend realvec operator-(const realvec& vec1, const realvec& vec2);
 	marsyas_EXPORT friend realvec operator*(const realvec& vec1, const realvec& vec2);
 	marsyas_EXPORT friend realvec operator/(const realvec& vec1, const realvec& vec2);
-	marsyas_EXPORT friend bool operator!=(const realvec& v1, const realvec& v2);
+	
+	bool operator!=(const realvec& v1);
+	bool operator==(const realvec &v1);
+	
 	//@}
 
 	/** \name Item access */
 	//@{
+
+	
 	mrs_real& operator()(const mrs_natural i);
 	mrs_real operator()(const mrs_natural i) const;
 	mrs_real& operator()(const mrs_natural r, const mrs_natural c);
@@ -246,7 +251,7 @@ public:
 	void norm();
 	void normMaxMin();
 
-
+	static void realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out);
 	void norm(mrs_real mean, mrs_real std);
 	void renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real new_std);
 	mrs_natural invert(realvec& res);//lmartins: this seems to be both inplace and returning the inverse matrix in "res"... why both?!? [!][?]
@@ -265,6 +270,29 @@ public:
 	//@}
 };
 
+
+inline
+bool realvec::operator==(const realvec &v1)
+{
+	//cant compare two matricies of different sizes
+	MRSASSERT(v1.getRows()==rows_);
+	MRSASSERT(v1.getCols()==cols_);
+
+	for(int r=0;r<v1.getRows();r++)
+	{
+		for(int c=0;c<v1.getCols();c++)
+		{
+			if(v1(r,c)!=data_[c * rows_ + r])return false;
+		}
+	}
+	return true;
+}
+
+inline
+bool realvec::operator!=(const realvec &v1) 
+{
+	return !(*this == v1);
+}
 
 inline
 realvec&
@@ -337,6 +365,40 @@ realvec::operator/=(const realvec& vec)
 	for (mrs_natural i=0; i<size_; i++)
 		data_[i] /= vec.data_[i];
 	return *this;
+}
+
+/**
+ * \brief matrix Multiplication
+ *
+ * \param a first input matrix
+ * \param b second input matrix
+ * \param out preallocated realvec for the output
+ * \return the value at the requested index.
+ * \exception std::out_of_range is thrown when the index is out of bounds.
+ */
+inline void 
+realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out) 
+{
+	//naive Matrix multiplication
+
+	MRSASSERT(a.getCols()==b.getRows());
+	MRSASSERT(out.getRows()==a.getRows());
+	MRSASSERT(out.getCols()==b.getCols());
+
+	for (mrs_natural r=0;r<out.getRows();r++) 
+	{
+		for (mrs_natural c=0;c<out.getCols();c++) 
+		{
+        
+            for (mrs_natural i=0;i<a.getCols();i++) 
+			{
+				if ((a(r,i)==0)||(b(i,c)==0)) 
+					out(r,c)+=0;
+				else 
+					out(r,c)+=a(r,i)*b(i,c);
+            }
+        }
+    }
 }
 
 inline
