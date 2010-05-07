@@ -17,6 +17,9 @@
 */
 
 
+#include "common.h" 
+
+
 #ifdef MARSYAS_WIN32
 #ifndef MARSYAS_CYGWIN
 typedef __int32 int32_t;
@@ -25,7 +28,34 @@ typedef __int32 int32_t;
 #include <stdint.h> 
 #endif
 
+
+
+
+
 #include "AuFileSource.h"
+
+
+
+
+
+/********  NeXT/Sun Soundfile Header Struct   *******/
+struct Marsyas::snd_header 
+{
+	char pref[4];
+	int32_t hdrLength;
+	int32_t fileLength;
+	int32_t mode;
+	int32_t srate;
+	int32_t channels;
+	char comment[1024];
+};
+
+
+
+/* Array containing descriptions of
+   the various formats for the samples
+   of the Next .snd/ Sun .au format */
+
 
 using namespace std;
 using namespace Marsyas;
@@ -50,7 +80,7 @@ AuFileSource::AuFileSource(string name):AbsSoundFileSource("AuFileSource",name)
 	cdata_ = 0;
 	sfp_ = 0;
 	pos_ =0;
-  
+	hdr_ = new snd_header;
 	sndFormats_.push_back("Unspecified format");
 	sndFormatSizes_.push_back(0);
 	sndFormats_.push_back("Mulaw 8-bit");
@@ -162,7 +192,7 @@ AuFileSource::getHeader(string filename)
 	if (sfp_)
 	{
 		size_t n = fread(&hdr_, sizeof(snd_header), 1, sfp_);  
-		if ((n != 1) ||((hdr_.pref[0] != '.') &&(hdr_.pref[1] != 's')))
+		if ((n != 1) ||((hdr_->pref[0] != '.') &&(hdr_->pref[1] != 's')))
 		{
 			MRSWARN("Filename " + filename + " is not correct .au file \n or has settings that are not supported in Marsyas");
 			setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -174,31 +204,31 @@ AuFileSource::getHeader(string filename)
 		else 
 		{ 
 #if defined(MARSYAS_BIGENDIAN)
-			hdr_.hdrLength = hdr_.hdrLength;
-			hdr_.comment[hdr_.hdrLength-24] = '\0';
-			hdr_.srate = hdr_.srate;
-			hdr_.channels = hdr_.channels;
-			hdr_.mode = hdr_.mode;
-			hdr_.fileLength = hdr_.fileLength;
+			hdr_->hdrLength = hdr_->hdrLength;
+			hdr_->comment[hdr_->hdrLength-24] = '\0';
+			hdr_->srate = hdr_->srate;
+			hdr_->channels = hdr_->channels;
+			hdr_->mode = hdr_->mode;
+			hdr_->fileLength = hdr_->fileLength;
 #else
-			hdr_.hdrLength = ByteSwapLong(hdr_.hdrLength);
-			hdr_.comment[hdr_.hdrLength-24] = '\0';
-			hdr_.srate = ByteSwapLong(hdr_.srate);
-			hdr_.channels = ByteSwapLong(hdr_.channels);
-			hdr_.mode = ByteSwapLong(hdr_.mode);
-			hdr_.fileLength = ByteSwapLong(hdr_.fileLength);
+			hdr_->hdrLength = ByteSwapLong(hdr_->hdrLength);
+			hdr_->comment[hdr_->hdrLength-24] = '\0';
+			hdr_->srate = ByteSwapLong(hdr_->srate);
+			hdr_->channels = ByteSwapLong(hdr_->channels);
+			hdr_->mode = ByteSwapLong(hdr_->mode);
+			hdr_->fileLength = ByteSwapLong(hdr_->fileLength);
 #endif 
 		  
 			sampleSize_ = 2;
-			size_ = (hdr_.fileLength) / sndFormatSizes_[hdr_.mode] / hdr_.channels;
-			// csize_ = size_ * hdr_.channels;
+			size_ = (hdr_->fileLength) / sndFormatSizes_[hdr_->mode] / hdr_->channels;
+			// csize_ = size_ * hdr_->channels;
 			csize_ = size_;
 
-			fseek(sfp_, hdr_.hdrLength, 0);
+			fseek(sfp_, hdr_->hdrLength, 0);
 			sfp_begin_ = ftell(sfp_);
-			setctrl("mrs_natural/onObservations", (mrs_natural)hdr_.channels);
+			setctrl("mrs_natural/onObservations", (mrs_natural)hdr_->channels);
 		    
-			setctrl("mrs_real/israte", (mrs_real)hdr_.srate);
+			setctrl("mrs_real/israte", (mrs_real)hdr_->srate);
 			setctrl("mrs_natural/size", size_);
 			ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
 			ctrl_currentLabel_->setValue(0, NOUPDATE);
@@ -315,7 +345,7 @@ AuFileSource::myProcess(realvec& in, realvec &out)
     {
 		//checkFlow(in,out);
       
-		switch (hdr_.mode)
+		switch (hdr_->mode)
 		{
 			case SND_FORMAT_UNSPECIFIED:
 			{
@@ -367,9 +397,9 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 			default:
 			{
 				string warn = "File mode";
-				warn += sndFormats_[hdr_.mode];
+				warn += sndFormats_[hdr_->mode];
 				warn += "(";
-				warn += hdr_.mode;
+				warn += hdr_->mode;
 				warn += ") is not supported for now";
 				MRSWARN(warn);
 			}

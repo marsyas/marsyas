@@ -21,21 +21,23 @@
 using namespace std;
 using namespace Marsyas;
 
-#define SND_MAGIC_NUM 0x2e736e64
 
 /********  NeXT/Sun Soundfile Header Struct   *******/
-
-/* struct snd_header 
+struct Marsyas::snd_header 
 {
-char pref[4];
-long hdrLength;
-long fileLength;
-long mode;
-long srate;
-long channels;
-char comment[1024];
+	char pref[4];
+	int32_t hdrLength;
+	int32_t fileLength;
+	int32_t mode;
+	int32_t srate;
+	int32_t channels;
+	char comment[1024];
 };
-*/ 
+
+
+
+#define SND_MAGIC_NUM 0x2e736e64
+
 
 /* Array containing descriptions of
 the various formats for the samples
@@ -57,8 +59,9 @@ AuFileSink::AuFileSink(string name):AbsSoundFileSink("AuFileSink",name)
   
 	sfp_ = NULL;
 	cdata_ = NULL;
-  sdata_ = NULL;
-
+	sdata_ = NULL;
+	hdr_ = new snd_header;
+	
 	addControls();
 }
 
@@ -66,6 +69,7 @@ AuFileSink::~AuFileSink()
 {
   delete sdata_;
   delete cdata_;
+  delete hdr_;
 	if (sfp_) fclose(sfp_);
 }
 
@@ -133,23 +137,23 @@ AuFileSink::putHeader(string filename)
   const char *comment = "MARSYAS 2001, George Tzanetakis.\n";
   size_t commentSize = strlen(comment);
   sfp_ = fopen(filename.c_str(), "wb");
-  hdr_.pref[0] = '.';
-  hdr_.pref[1] = 's';
-  hdr_.pref[2] = 'n';
-  hdr_.pref[3] = 'd';
+  hdr_->pref[0] = '.';
+  hdr_->pref[1] = 's';
+  hdr_->pref[2] = 'n';
+  hdr_->pref[3] = 'd';
 
 #if defined(MARSYAS_BIGENDIAN)
-	  hdr_.hdrLength = 24 + commentSize;
-	  hdr_.fileLength = 0;
-	  hdr_.mode = SND_FORMAT_LINEAR_16;                           
-	  hdr_.srate = (mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>();
-	  hdr_.channels = nChannels;
+	  hdr_->hdrLength = 24 + commentSize;
+	  hdr_->fileLength = 0;
+	  hdr_->mode = SND_FORMAT_LINEAR_16;                           
+	  hdr_->srate = (mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>();
+	  hdr_->channels = nChannels;
 #else
-	  hdr_.hdrLength = ByteSwapLong(24 + (unsigned long)commentSize);
-	  hdr_.fileLength = ByteSwapLong(0);
-	  hdr_.mode = ByteSwapLong(SND_FORMAT_LINEAR_16);                           
-	  hdr_.srate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>());
-	  hdr_.channels = ByteSwapLong(nChannels);
+	  hdr_->hdrLength = ByteSwapLong(24 + (unsigned long)commentSize);
+	  hdr_->fileLength = ByteSwapLong(0);
+	  hdr_->mode = ByteSwapLong(SND_FORMAT_LINEAR_16);                           
+	  hdr_->srate = ByteSwapLong((mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>());
+	  hdr_->channels = ByteSwapLong(nChannels);
 #endif 
 
   fwrite(&hdr_, 24, 1, sfp_);

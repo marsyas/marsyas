@@ -20,14 +20,15 @@
 #ifndef MARSYAS_AUDIOSINK_H
 #define MARSYAS_AUDIOSINK_H
 
-
-#include "common_header.h" 
 #include "common.h"
+#include "common_header.h" 
 
 #include "MarSystem.h"
 #ifdef MARSYAS_AUDIOIO
 #include "RtAudio3.h"
 #endif 
+
+
 
 namespace Marsyas
 {
@@ -42,6 +43,9 @@ namespace Marsyas
    - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
    - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
 */
+
+
+
 
 
 class AudioSink:public MarSystem

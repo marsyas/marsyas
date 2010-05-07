@@ -37,26 +37,14 @@ namespace Marsyas
 */
 
 
-/********  NeXT/Sun Soundfile Header Struct   *******/
-	struct snd_header 
-	{
-			char pref[4];
-			int32_t hdrLength;
-			int32_t fileLength;
-			int32_t mode;
-			int32_t srate;
-			int32_t channels;
-			char comment[1024];
-	};
-
-/* Array containing descriptions of
-   the various formats for the samples
-   of the Next .snd/ Sun .au format */
+	struct snd_header;
+	
 
 	class AuFileSource: public AbsSoundFileSource
 	{
+
 		private:
-			snd_header hdr_;
+		snd_header* hdr_;
 			std::string tfname_;
 			std::string filename_;
   

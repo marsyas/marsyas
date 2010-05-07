@@ -25,6 +25,9 @@
 #include "AuFileSource.h"
 #include "FileName.h"
 
+
+
+
 namespace Marsyas
 {
 /**
@@ -37,10 +40,13 @@ namespace Marsyas
 */
 
 
+
+	struct snd_header;
+	
 class AuFileSink: public AbsSoundFileSink
 {
 private:
-  snd_header hdr_;
+	snd_header* hdr_;
   unsigned long written_;
   long fpos_;
 
