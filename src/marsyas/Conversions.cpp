@@ -181,14 +181,39 @@ Marsyas::hertz2octs(mrs_real f, mrs_real middleAfreq)
 	return log(f/(middleAfreq/16.0))/log(2.0); 
 }
 
-mrs_real Marsyas::hertz2bark(mrs_real f)
+mrs_real Marsyas::hertz2bark(mrs_real f, mrs_natural mode)
 {
-	return  6 * log(f/600 + sqrt(1+ (pow(f/600,2)))); // 6*asinh(f/600);
+	switch (mode)
+	{
+	case 0:
+	default:
+		return  6 * log(f/600 + sqrt(1+ (pow(f/600,2)))); // 6*asinh(f/600);
+
+	case  1:  //  zwicker
+		return  atan  (0.00076*f)  +  3.5  *  atan  ((f*0.000133333333333333)*(f*0.000133333333333333));
+
+	case  2:  //  terhardt
+		return  13.3  *  atan  (0.00075*f);
+
+	case  3:  //  schroeder
+		return  7.0  *  log  (f*0.00153846153846154  +  sqrt  ((f*0.00153846153846154)*(f*0.00153846153846154)  +  1));  //  7*asinh  (fFrequency/650);
+	}
 }
 
-mrs_real Marsyas::bark2hertz(mrs_real f)
+mrs_real Marsyas::bark2hertz(mrs_real f, mrs_natural mode)
 {
-	return 600*sinh(f/6);
+	switch  (mode)
+	{
+	case 0:
+	case 1:
+	default:
+		return 600*sinh(f/6.0);
+
+	case  2:  //  terhardt
+		return  4*1000.0/3.0  *  tan  (f*0.075187969924812);
+	case  3:  //  schroeder
+		return  650.0  *  sinh  (f*0.142857142857143);  
+	}
 }
 
 mrs_real Marsyas::hertz2erb(mrs_real hz)

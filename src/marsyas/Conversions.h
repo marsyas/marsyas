@@ -48,8 +48,8 @@ marsyas_EXPORT mrs_real dB2amplitude(mrs_real a);
 
 marsyas_EXPORT mrs_real hertz2octs(mrs_real f, mrs_real middleAfreq = 440.0);
 
-marsyas_EXPORT mrs_real hertz2bark(mrs_real f);
-marsyas_EXPORT mrs_real bark2hertz(mrs_real f);
+marsyas_EXPORT mrs_real hertz2bark(mrs_real f, mrs_natural mode = 0);
+marsyas_EXPORT mrs_real bark2hertz(mrs_real f, mrs_natural mode = 0);
 
 marsyas_EXPORT mrs_real hertz2erb(mrs_real f);
 marsyas_EXPORT mrs_real erb2hertz(mrs_real e);
