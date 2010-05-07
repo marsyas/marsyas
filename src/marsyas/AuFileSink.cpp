@@ -23,6 +23,16 @@ using namespace std;
 using namespace Marsyas;
 
 
+
+#ifdef MARSYAS_WIN32
+#ifndef MARSYAS_CYGWIN
+typedef __int32 int32_t;
+#endif
+#else 
+#include <stdint.h> 
+#endif
+
+
 /********  NeXT/Sun Soundfile Header Struct   *******/
 struct Marsyas::snd_header 
 {
@@ -36,13 +46,6 @@ struct Marsyas::snd_header
 };
 
 
-#ifdef MARSYAS_WIN32
-#ifndef MARSYAS_CYGWIN
-typedef __int32 int32_t;
-#endif
-#else 
-#include <stdint.h> 
-#endif
 
 
 
