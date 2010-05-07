@@ -16,6 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+
+#ifdef MARSYAS_WIN32
+#ifndef MARSYAS_CYGWIN
+typedef __int32 int32_t;
+#endif
+#else 
+#include <stdint.h> 
+#endif
+
 #include "AuFileSource.h"
 
 using namespace std;

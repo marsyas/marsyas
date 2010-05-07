@@ -21,13 +21,6 @@
 
 #include "AbsSoundFileSource.h"
 
-#ifdef MARSYAS_WIN32
-#ifndef MARSYAS_CYGWIN
-typedef __int32 int32_t;
-#endif
-#else 
-#include <stdint.h> 
-#endif
 
 #include <string> 
 #include <vector> 

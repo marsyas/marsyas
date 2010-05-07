@@ -36,6 +36,7 @@
 #pragma warning( disable : 4290 )
 #endif 
 
+
 /* This is heap is designed to sort pointers to objects.
    The heap template requires a Type, a Comparator object for determining Type
    ordering, and a Destructor object for destroying Type objects still in the
