@@ -164,10 +164,11 @@ SimulMaskingFft::myProcess(realvec& in, realvec& out)
 	}
 	out	/= normFactor_;
 
+#ifdef MARSYAS_MATLAB
 	MATLAB_PUT(in, "in");
 	MATLAB_PUT(out, "out");	
 	MATLAB_EVAL("figure(1);clf ;plot(1:length(out),in, 1:length(out),out,'r')");
-
+#endif
 }
 
 
