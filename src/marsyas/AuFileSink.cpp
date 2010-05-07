@@ -16,6 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h" 
 #include "AuFileSink.h"
 
 using namespace std;
@@ -33,6 +34,16 @@ struct Marsyas::snd_header
 	int32_t channels;
 	char comment[1024];
 };
+
+
+#ifdef MARSYAS_WIN32
+#ifndef MARSYAS_CYGWIN
+typedef __int32 int32_t;
+#endif
+#else 
+#include <stdint.h> 
+#endif
+
 
 
 
