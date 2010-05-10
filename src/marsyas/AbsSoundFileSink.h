@@ -36,6 +36,8 @@ namespace Marsyas
 		public:
 			AbsSoundFileSink(std::string type, std::string name);
 			virtual ~AbsSoundFileSink();
+			AbsSoundFileSink(const AbsSoundFileSink& a);
+			
 
 			virtual void putHeader(std::string filename) = 0;
 			virtual void myProcess(realvec& in,realvec &out) = 0;

@@ -30,6 +30,13 @@ AbsSoundFileSink::~AbsSoundFileSink()
 {
 }
 
+AbsSoundFileSink::AbsSoundFileSink(const AbsSoundFileSink& a):MarSystem(a) 
+{
+  
+}
+
+
+
 
 
 

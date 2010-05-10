@@ -67,6 +67,7 @@ private:
 
 public:
   AuFileSink(std::string name);
+  AuFileSink(const AuFileSink& a);
   ~AuFileSink();
   MarSystem* clone() const;  
 

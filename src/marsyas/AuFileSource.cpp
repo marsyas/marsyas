@@ -75,8 +75,8 @@ using namespace Marsyas;
 AuFileSource::AuFileSource(string name):AbsSoundFileSource("AuFileSource",name)
 {
 	//type_ = "SoundFileSource";//"AuFileSource"?!?
-	//name_ = name;
-  
+	//name_ = name
+	
 	sdata_ = 0;
 	cdata_ = 0;
 	sfp_ = 0;
@@ -104,8 +104,11 @@ AuFileSource::AuFileSource(string name):AbsSoundFileSource("AuFileSource",name)
 
 AuFileSource::~AuFileSource()
 {
+
 	delete [] sdata_;
 	delete [] cdata_;
+	delete hdr_;
+	
 	if (sfp_ != NULL)
 		fclose(sfp_);
 }
@@ -119,12 +122,15 @@ AuFileSource::clone() const
 
 AuFileSource::AuFileSource(const AuFileSource& a): AbsSoundFileSource(a) 
 {
+
 	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_size_ = getctrl("mrs_natural/size");
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
+	hdr_ = new snd_header;
+
 }
 
 
@@ -192,7 +198,7 @@ AuFileSource::getHeader(string filename)
 	sfp_ = fopen(filename.c_str(), "rb");
 	if (sfp_)
 	{
-		size_t n = fread(&hdr_, sizeof(snd_header), 1, sfp_);  
+		size_t n = fread(hdr_, sizeof(snd_header), 1, sfp_);  
 		if ((n != 1) ||((hdr_->pref[0] != '.') &&(hdr_->pref[1] != 's')))
 		{
 			MRSWARN("Filename " + filename + " is not correct .au file \n or has settings that are not supported in Marsyas");

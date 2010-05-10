@@ -87,6 +87,14 @@ AuFileSink::~AuFileSink()
 	if (sfp_) fclose(sfp_);
 }
 
+
+AuFileSink::AuFileSink(const AuFileSink& a): AbsSoundFileSink(a)
+{
+	hdr_ = new snd_header;
+}
+
+
+
 MarSystem* 
 AuFileSink::clone() const
 {
@@ -170,7 +178,7 @@ AuFileSink::putHeader(string filename)
 	  hdr_->channels = ByteSwapLong(nChannels);
 #endif 
 
-  fwrite(&hdr_, 24, 1, sfp_);
+  fwrite(hdr_, 24, 1, sfp_);
   // Write comment part of header 
   fwrite(comment, commentSize, 1, sfp_);      
   sfp_begin_ = ftell(sfp_);  

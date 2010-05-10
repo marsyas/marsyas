@@ -1409,10 +1409,13 @@ toy_with_fft(string sfName, int size)
 	
 	MarSystem* series = mng.create("Series","network");
 	series->addMarSystem(mng.create("SoundFileSource","src"));
+	// series->addMarSystem(mng.create("ShiftInput", "si"));
+	// series->addMarSystem(mng.create("Windowing", "win"));
 	series->addMarSystem(mng.create("Spectrum", "spk"));
 	series->addMarSystem(mng.create("PhaseRandomize", "prandom"));
 	series->addMarSystem(mng.create("InvSpectrum", "ispk"));
 	// series->addMarSystem(mng.create("SoundFileSink", "dest"));
+	// series->addMarSystem(mng.create("ShiftOutput", "so"));
 	series->addMarSystem(mng.create("AudioSink", "dest"));
 	
 	// the name of the input file 
@@ -1428,10 +1431,9 @@ toy_with_fft(string sfName, int size)
 
 	// number of samples to process each tick 
 	series->updctrl("mrs_natural/inSamples",  size * 512);
-	
-	series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	
-	
+	// series->updctrl("ShiftOutput/so/mrs_natural/Interpolation", size * 512);
+	// series->updctrl("ShiftInput/si/mrs_natural/winSize", size * 1024);
+	series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);	
 	
 	// cout << *series << endl;
 	
