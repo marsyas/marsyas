@@ -1621,7 +1621,7 @@ void toy_with_phase(string fname, int size)
 	// net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 	net->updctrl("SoundFileSink/dest/mrs_string/filename", "processed.wav");
 	
-	int sample_count;
+	int sample_count = 0;
 	 
 	
 	while(net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
