@@ -120,6 +120,8 @@ printHelp(string progName)
 	cerr << "onsets          : toy_with onsets" << endl;
 	cerr << "panorama        : toy_with Panorama amplitude panning " << endl;
 	cerr << "parallel        : toy_with Parallel composite " << endl;
+	cerr << "phase           : toy_with phase manipulation " << endl;
+	
 	cerr << "pngwrite        : toy_with png writer " << endl;
 	
 	cerr << "plucked        : toy_with plucked " << endl;
@@ -1409,20 +1411,15 @@ toy_with_fft(string sfName, int size)
 	
 	MarSystem* series = mng.create("Series","network");
 	series->addMarSystem(mng.create("SoundFileSource","src"));
-	// series->addMarSystem(mng.create("ShiftInput", "si"));
-	// series->addMarSystem(mng.create("Windowing", "win"));
 	series->addMarSystem(mng.create("Spectrum", "spk"));
-	series->addMarSystem(mng.create("PhaseRandomize", "prandom"));
+	// series->addMarSystem(mng.create("PhaseRandomize", "prandom"));
 	series->addMarSystem(mng.create("InvSpectrum", "ispk"));
-	// series->addMarSystem(mng.create("SoundFileSink", "dest"));
-	// series->addMarSystem(mng.create("ShiftOutput", "so"));
 	series->addMarSystem(mng.create("AudioSink", "dest"));
 	
 	// the name of the input file 
 	series->updctrl("SoundFileSource/src/mrs_string/filename", 
 					sfName);
 	
-
 	// the name of the output file
 	// series->updctrl("SoundFileSink/dest/mrs_string/filename", 
 	// "processed.wav");
@@ -1431,8 +1428,6 @@ toy_with_fft(string sfName, int size)
 
 	// number of samples to process each tick 
 	series->updctrl("mrs_natural/inSamples",  size * 512);
-	// series->updctrl("ShiftOutput/so/mrs_natural/Interpolation", size * 512);
-	// series->updctrl("ShiftInput/si/mrs_natural/winSize", size * 1024);
 	series->updctrl("AudioSink/dest/mrs_bool/initAudio", true);	
 	
 	// cout << *series << endl;
@@ -1581,6 +1576,84 @@ toy_with_parallel()
 
 	delete parallel;
 }
+
+
+void toy_with_phase(string fname, int size) 
+{
+	cout << "Toying with phase" << endl;
+	
+	MarSystemManager mng;
+	
+	
+	MarSystem* net = mng.create("Series/net");
+	net->addMarSystem(mng.create("SoundFileSource/src"));
+	net->addMarSystem(mng.create("ShiftInput/si"));
+	net->addMarSystem(mng.create("PvFold/fo"));
+	net->addMarSystem(mng.create("Spectrum/spk"));
+	net->addMarSystem(mng.create("PhaseRandomize/prandom"));
+	net->addMarSystem(mng.create("InvSpectrum/ispk"));
+	net->addMarSystem(mng.create("PvOverlapadd/pover"));
+	net->addMarSystem(mng.create("ShiftOutput/so"));
+	// net->addMarSystem(mng.create("AudioSink/dest"));
+	net->addMarSystem(mng.create("SoundFileSink/dest"));
+	
+	
+	mrs_natural winSize;
+	mrs_natural hopSize;
+	
+
+	winSize = (mrs_natural)pow(2.0, size);
+	hopSize = (mrs_natural)pow(2.0, size-1);	
+
+	cout << "winSize = " << winSize << endl;
+	cout << "hopSize = " << hopSize << endl;
+
+	net->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
+	net->updctrl("ShiftOutput/so/mrs_natural/Interpolation", hopSize);
+	net->updctrl("mrs_natural/inSamples", hopSize);
+	net->updctrl("PvFold/fo/mrs_natural/FFTSize", winSize);
+	net->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", winSize);
+	net->updctrl("PvOverlapadd/pover/mrs_natural/winSize", winSize);
+	net->updctrl("PvOverlapadd/pover/mrs_natural/Decimation", hopSize);
+	net->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation", hopSize);
+	
+	net->updctrl("SoundFileSource/src/mrs_string/filename", fname);
+	// net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+	net->updctrl("SoundFileSink/dest/mrs_string/filename", "processed.wav");
+	
+	int sample_count;
+	 
+	
+	while(net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+		winSize = (mrs_natural)pow(2.0, size);
+		hopSize = (mrs_natural)pow(2.0, size-1);
+		
+		cout << "winSize = " << winSize << endl;
+		cout << "hopSize = " << hopSize << endl;
+		net->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
+		net->updctrl("ShiftOutput/so/mrs_natural/Interpolation", hopSize);
+		net->updctrl("PvFold/fo/mrs_natural/FFTSize", winSize);
+		net->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", winSize);
+		net->updctrl("PvOverlapadd/pover/mrs_natural/winSize", winSize);
+		net->updctrl("PvOverlapadd/pover/mrs_natural/Decimation", hopSize);
+		net->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation", hopSize);
+		net->updctrl("mrs_natural/inSamples", hopSize);
+		
+		sample_count += hopSize;
+		
+		net->tick();
+		if (sample_count >= 2 * 44100)
+		{
+			size ++;
+			sample_count = 0;
+		}
+		
+	}
+	
+	
+}
+
 
 void toy_with_pngwriter(string fname) 
 {
@@ -7248,6 +7321,8 @@ main(int argc, const char **argv)
 		toy_with_panorama(fname0);
 	else if (toy_withName == "parallel")
 		toy_with_parallel();
+	else if (toy_withName == "phase")
+		toy_with_phase(fname0, atoi(fname1.c_str()));
 	else if (toy_withName == "pngwriter")
 		toy_with_pngwriter(fname0);
 	else if (toy_withName == "phisem")
