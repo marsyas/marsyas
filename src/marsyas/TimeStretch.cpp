@@ -60,7 +60,10 @@ TimeStretch::myProcess(realvec& in, realvec& out)
       ri = li + 1;
       
       w_ = ni - li;
-      out(0,t) = in(li) + w_ * (in(0,ri) - in(0,li));
+	  if (ri < inSamples) 
+		  out(0,t) = in(li) + w_ * (in(0,ri) - in(0,li));
+	  else 
+		  out(0,t) = in(li);
     }
 }
 

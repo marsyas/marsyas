@@ -53,7 +53,7 @@ WaveletBands::addControls()
 {
 	addctrl("mrs_natural/nBands", 6);
 	setctrlState("mrs_natural/nBands", true);
-	addctrl("mrs_natural/startBand", 3);
+	addctrl("mrs_natural/startBand", 2);
 	setctrlState("mrs_natural/startBand", true);
 }
 
@@ -108,10 +108,10 @@ WaveletBands::myProcess(realvec& in, realvec& out)
 		}
 
 		// Get the ranges to set to zero.
-		level = 7 + o;
+		level =  7+o;
 		hlevel = base << level;
 		llevel = base << (level -1);
-
+		
 		// Set the desired parts of band_ to zero.
 		band_.setval(hlevel, inSamples_, 0.0);
 		band_.setval(0, llevel, 0.0);

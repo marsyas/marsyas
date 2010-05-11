@@ -836,7 +836,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 	total->addMarSystem(mng.create("Sum", "sum"));
 	total->addMarSystem(mng.create("DownSampler", "ds"));
 	total->addMarSystem(mng.create("Delta", "delta"));
-	total->addMarSystem(mng.create("BeatPhase", "beatphase"));
+	// total->addMarSystem(mng.create("BeatPhase", "beatphase"));
 	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
 	total->addMarSystem(mng.create("BeatHistogram", "histo"));
 
@@ -929,7 +929,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 	    total->process(iwin, estimate);
 	    bin = estimate(1);
 	    bpms.push_back(bin);
-	    total->updctrl("BeatPhase/beatphase/mrs_real/tempo", bin);
+	    // total->updctrl("BeatPhase/beatphase/mrs_real/tempo", bin);
 	  }
 	
 	  
