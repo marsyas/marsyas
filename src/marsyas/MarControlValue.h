@@ -47,9 +47,7 @@ protected:
 	std::string type_;
 	MarControl* current_link_;
 
-	#ifdef MARSYAS_TRACECONTROLS
 	std::string value_debug_;
-	#endif
 
 	//MarControls that use this MarControlValue
 	//(i.e. linked MarControls)
