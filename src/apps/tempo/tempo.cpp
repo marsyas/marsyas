@@ -655,16 +655,21 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	MarSystemManager mng;
 	
 	
-	// MarSystem *accum = mng.create("Accumulator/accum");
-	
 	MarSystem *total = mng.create("Series/total");
-	total->addMarSystem(mng.create("SoundFileSource", "src"));
-	total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	total->addMarSystem(mng.create("ShiftInput", "si"));	
-	total->addMarSystem(mng.create("Windowing", "windowing1"));
-	total->addMarSystem(mng.create("Spectrum", "spk"));
-	total->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-	total->addMarSystem(mng.create("Flux", "flux"));
+	MarSystem *accum = mng.create("Accumulator/accum");
+	
+	MarSystem *fluxnet = mng.create("Series/fluxnet");
+	fluxnet->addMarSystem(mng.create("SoundFileSource", "src"));
+	fluxnet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+	fluxnet->addMarSystem(mng.create("ShiftInput", "si"));	
+	fluxnet->addMarSystem(mng.create("Windowing", "windowing1"));
+	fluxnet->addMarSystem(mng.create("Spectrum", "spk"));
+	fluxnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	fluxnet->addMarSystem(mng.create("Flux", "flux"));
+
+	accum->addMarSystem(fluxnet);
+	
+	total->addMarSystem(accum);
 	total->addMarSystem(mng.create("ShiftInput", "si2"));
 	
 
@@ -698,9 +703,11 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	total->addMarSystem(mng.create("Peaker", "pkr1"));
 	
 
-
+	
 	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));					  
 
+
+	total->updctrl("Accumulator/accum/mrs_natural/nTimes", 1024);
 
 	realvec bcoeffs(1,3);
 	
@@ -740,8 +747,8 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	total->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 360);
 	// total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
 	
-	total->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
-	total->updctrl("Flux/flux/mrs_string/mode", "DixonDAFX06");
+	total->updctrl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
+	total->updctrl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
 	// total->updctrl("Flux/flux/mrs_string/mode", "marsyas");
 	
 	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
@@ -759,9 +766,9 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	mrs_natural hopSize = 256;
 
 
-	total->updctrl("ShiftInput/si/mrs_natural/winSize", winSize);
+	total->updctrl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
 
-	total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	total->updctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
 	total->updctrl("mrs_natural/inSamples", hopSize);
 	
 
@@ -782,13 +789,13 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	
 
 
-        mrs_realvec periods;	
-	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	mrs_realvec periods;	
+	while (total->getctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		total->tick();
 		mrs_realvec estimate = total->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	// 	periods = total->getctrl("PeakPeriods2BPM/pbpm/mrs_realvec/processedData")->to<mrs_realvec>(); 
-	//  cout << "periods = " << periods << endl;
+		// 	periods = total->getctrl("PeakPeriods2BPM/pbpm/mrs_realvec/processedData")->to<mrs_realvec>(); 
+		//  cout << "periods = " << periods << endl;
 		bin = estimate(1) * 0.5;
 		bpms.push_back(bin);
 	}
