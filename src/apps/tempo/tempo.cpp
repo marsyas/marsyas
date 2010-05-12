@@ -707,7 +707,7 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));					  
 
 
-	total->updctrl("Accumulator/accum/mrs_natural/nTimes", 1024);
+	total->updctrl("Accumulator/accum/mrs_natural/nTimes", 128);
 
 	realvec bcoeffs(1,3);
 	
@@ -727,24 +727,13 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	
 
 	// total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
-	total->updctrl("ShiftInput/si2/mrs_natural/winSize", 2048);
+	total->updctrl("ShiftInput/si2/mrs_natural/winSize", 1024);
 	
-	/* total->updctrl("BeatHistogramFromPeaks/histo/mrs_natural/startBin", 0);
-	total->updctrl("BeatHistogramFromPeaks/histo/mrs_natural/endBin", 200);
-
-
-	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
-	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
-	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.75);
-	total->updctrl("Peaker/pkr/mrs_natural/peakStart", 60);
-	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 300);
-	*/ 
-
 
 	total->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
 	total->updctrl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
 	total->updctrl("Peaker/pkr1/mrs_natural/peakStart", 100);
-	total->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 360);
+	total->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 320);
 	// total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
 	
 	total->updctrl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
@@ -756,7 +745,7 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	total->updctrl("BeatHistogram/histo/mrs_real/factor", 8.0);
 	total->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);	
 	
-
+	total->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67); 
 
 	mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 

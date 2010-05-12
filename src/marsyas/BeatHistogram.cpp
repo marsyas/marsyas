@@ -89,7 +89,7 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
   
 	mrs_real sumamp = 0.0;
   
-  
+  	mrs_real weight;
 
 
 	for (o=0; o < inObservations_; o++)
@@ -97,8 +97,8 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		{
 			bin = (mrs_natural)((srate * 60.0  * factor_ / (t+1)) + 0.5);
 			amp = in(o,t);
-			// amp = in(o,t) / in(o,0); // normalize so that 0-lag is 1 
-		 
+	
+		        // amp = in(o,t) / in(o,0); // normalize so that 0-lag is 1 
 		  
 			if ((bin > 40)&&(bin < endBin_))
 			{
