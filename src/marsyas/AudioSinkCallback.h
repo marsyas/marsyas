@@ -22,10 +22,10 @@
 
 #include "MarSystem.h"
 
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio.h"
-#endif 
 
+
+class RtAudio;
+extern typedef unsigned int RtAudioStreamStatus;
 
 
 namespace Marsyas
@@ -62,9 +62,9 @@ class AudioSinkCallback:public MarSystem
 		} odata;
 		
 		
-#ifdef MARSYAS_AUDIOIO
+
 		RtAudio*  audio_;
-#endif 
+
 		int bufferSize_;
 		int rtSrate_;
 		int rtChannels_;
@@ -94,9 +94,9 @@ class AudioSinkCallback:public MarSystem
 		unsigned int getSamplesAvailable();
 		void localActivate(bool state);
 		
-#ifdef MARSYAS_AUDIOIO
+
 		static int playCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void *userData);
-#endif
+
 		
 	public:
 		AudioSinkCallback(std::string name);

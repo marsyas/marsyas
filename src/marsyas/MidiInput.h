@@ -21,9 +21,9 @@
 
 #include "MarSystem.h"	
 
-#ifdef MARSYAS_MIDIIO
-#include "RtMidi.h"
-#endif 
+
+class RtMidiIn;
+
 
 namespace Marsyas
 {
@@ -45,10 +45,9 @@ namespace Marsyas
             void addControls();
             static void mycallback(double deltatime, std::vector< unsigned char> * message, void *userData);
 
-#ifdef MARSYAS_MIDIIO
-            RtMidiIn* midiin;
-#endif 
-            int byte3, byte2, byte1;  
+		RtMidiIn* midiin;
+		
+		int byte3, byte2, byte1;  
             bool initMidi;
             bool virtualPort;
 	    MarControlPtr ctrl_byte1_;

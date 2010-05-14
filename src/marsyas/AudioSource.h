@@ -20,9 +20,8 @@
 #define MARSYAS_AUDIOSOURCE_H
 
 #include "MarSystem.h" 
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio3.h"
-#endif 
+
+class RtAudio3;
 
 namespace Marsyas
 {
@@ -47,9 +46,9 @@ namespace Marsyas
 	class AudioSource:public MarSystem
 	{
 		private:
-#ifdef MARSYAS_AUDIOIO
+
 			RtAudio3 *audio_;
-#endif 
+
 			int bufferSize_;
 			int nBuffers_;
 			int rtSrate_;

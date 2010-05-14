@@ -24,19 +24,6 @@
 #include "WavFileSource.h"
 #include "RawFileSource.h"
 
-
-#ifdef MARSYAS_MAD
-#include "MP3FileSource.h"
-#endif
-
-#ifdef MARSYAS_VORBIS
-#include "OggFileSource.h"
-#endif
-
-#ifdef MARSYAS_GSTREAMER
-#include "GStreamerSource.h"
-#endif
-
 #include "CollectionFileSource.h"
 
 #include <cstdio>

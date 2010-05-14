@@ -20,18 +20,22 @@
 #ifndef MARSYAS_AUDIOSINK_H
 #define MARSYAS_AUDIOSINK_H
 
-#include "common.h"
+
 #include "common_header.h" 
 
 #include "MarSystem.h"
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio3.h"
-#endif 
+
+
+
+
+class RtAudio3;
 
 
 
 namespace Marsyas
 {
+
+
 /**
    \class AudioSink
    \ingroup IO
@@ -46,14 +50,14 @@ namespace Marsyas
 
 
 
+	
 
 
 class AudioSink:public MarSystem
 {
 private:
-#ifdef MARSYAS_AUDIOIO
   RtAudio3 *audio_;
-#endif 
+
   int bufferSize_;
   int rtSrate_;
   int rtChannels_;

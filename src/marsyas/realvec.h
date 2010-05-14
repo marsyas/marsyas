@@ -83,6 +83,8 @@ protected:
 	/// the actual array
 	mrs_real *data_;
 
+	
+
 public:
 	realvec();
 	virtual ~realvec();
@@ -403,40 +405,17 @@ void realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& o
 inline
 mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
 {
-#ifdef MARSYAS_BOUNDCHECK
-	if ((r >= rows_) || (c >= cols_))
-	{
-		MRSERR("rows_ = " << rows_);
-		MRSERR("r = " << r);
-		MRSERR("c = " << c);
-		MRSERR("cols = " << cols_);
-	}
-#endif
-	
 
 	MRSASSERT(r < rows_);
 	MRSASSERT(c < cols_);
 
 	return data_[c * rows_ + r];
-	// return data_[r * cols_ + c];
 }
 
 inline
 mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
+
 {
-#ifdef MARSYAS_BOUNDCHECK
-	if ((r >= rows_) || (c >= cols_))
-	{
-		MRSERR("rows_ = " << rows_);
-		MRSERR("r = " << r);
-		MRSERR("c = " << c);
-		MRSERR("cols = " << cols_);
-	}
-#endif
-
-
-
-
 	MRSASSERT(r < rows_);
 	MRSASSERT(c < cols_);
 	MRSASSERT(r >= 0);
@@ -455,14 +434,6 @@ mrs_real realvec::operator()(const mrs_natural i) const
 inline
 mrs_real& realvec::operator()(const mrs_natural i)
 {
-#ifdef MARSYAS_BOUNDCHECK
-	if (i >= size_)
-	{
-		MRSERR("i= " << i);
-		MRSERR("size = " << size_);
-	}
-#endif
-
 
 	MRSASSERT(i < size_);
 

@@ -464,6 +464,10 @@ realvec::allocate(mrs_natural rows, mrs_natural cols)
 		data_ = new mrs_real[size_];
 }
 
+
+	
+
+	
 void
 realvec::setval(mrs_natural start, mrs_natural end, mrs_real val)
 {

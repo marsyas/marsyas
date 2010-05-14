@@ -16,10 +16,28 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h" 
+
+#ifdef MARSYAS_MAD
+#include "MP3FileSource.h"
+#endif
+
+#ifdef MARSYAS_VORBIS
+#include "OggFileSource.h"
+#endif
+
+#ifdef MARSYAS_GSTREAMER
+#include "GStreamerSource.h"
+#endif
+
+
 #include "SoundFileSource.h"
 #include <string>
 #include <cctype>
 #include <algorithm>
+
+
+
 
 using namespace std;
 using namespace Marsyas;

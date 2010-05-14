@@ -22,7 +22,7 @@
 
 #include "config.h"
 
-#ifdef MARSYAS_GSTREAMER
+
 
 #ifndef MARSYAS_GSTREAMERSOURCE_H
 #define MARSYAS_GSTREAMERSOURCE_H
@@ -78,4 +78,5 @@ public:
 
 #endif    // !MARSYAS_GSTREAMERSOURCE_H
 
-#endif //MARSYAS_GSTREAMER
+
+

@@ -22,6 +22,13 @@
 using namespace std;
 using namespace Marsyas;
 
+
+#ifdef MARSYAS_AUDIOIO
+#include "RtAudio.h"
+#endif 
+
+
+
 AudioSinkCallback::AudioSinkCallback(string name):MarSystem("AudioSinkCallback", name)
 {
 #ifdef MARSYAS_AUDIOIO

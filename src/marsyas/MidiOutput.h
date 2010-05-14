@@ -21,9 +21,8 @@
 
 #include "MarSystem.h"	
 
-#ifdef MARSYAS_MIDIIO
-#include "RtMidi.h"
-#endif 
+class RtMidiOut;
+
 
 namespace Marsyas
 {
@@ -51,9 +50,9 @@ namespace Marsyas
       std::vector<unsigned char> message;
       
 
-#ifdef MARSYAS_MIDIIO
+
       RtMidiOut* midiout;
-#endif 
+
       bool initMidi;
       bool virtualPort;
       int byte3, byte2, type;  

@@ -21,9 +21,8 @@
 
 #include "MarSystem.h"	
 
-#ifdef MARSYAS_MIDIIO
-#include "RtMidi.h"
-#endif 
+class RtMidiIn;
+
 
 namespace Marsyas
 {
@@ -45,9 +44,10 @@ Controls:
             void addControls();
             static void mycallback(double deltatime, std::vector< unsigned char> * message, void *userData);
 
-#ifdef MARSYAS_MIDIIO
+
+
             RtMidiIn* rdin;
-#endif 
+
             int byte3, byte2, byte1;  
             int rightstickx,rightsticky,rightstickz,leftstickx,leftsticky,leftstickz;  
             bool initMidi;

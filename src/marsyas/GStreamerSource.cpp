@@ -20,11 +20,13 @@
    Author Soren Harward <stharward@gmail.com> 2008
 */
 
+#include "common.h" 
 #include "GStreamerSource.h"
 
-#ifdef MARSYAS_GSTREAMER
 
+#ifdef MARSYAS_GSTREAMER
 #include "gst-decode.h"
+#endif //MARSYAS_GSTREAMER
 
 using namespace std;
 using namespace Marsyas;
@@ -67,13 +69,16 @@ GStreamerSource::addControls()
 }    
 void GStreamerSource::getHeader(string fileName)
 {
+#ifdef MARSYAS_GSTREAMER
     audioVector result = gst_decode_file((gchar*)fileName.c_str());
+
     data_ = (mrs_real*)result.data;
     fileSize_ = (mrs_natural)result.size;
     if (fileSize_ > 0) {
         hasData_ = false;
     }
     sampleCount_ = fileSize_ / sizeof(mrs_natural);
+#endif 
 }
 
 void GStreamerSource::myUpdate(MarControlPtr sender) 
@@ -122,4 +127,5 @@ void GStreamerSource::myProcess(realvec& in,realvec &out)
     }
 }
 
-#endif //MARSYAS_GSTREAMER
+
+

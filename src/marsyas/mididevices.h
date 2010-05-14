@@ -2,7 +2,7 @@
 #define MARSYAS_MIDIDEVICES_H
 
 
-#ifdef MARSYAS_MIDIIO
+
 
 #define DEVIBOT_DHA 3
 #define DEVIBOT_TU 2
@@ -13,5 +13,4 @@
 
 
 
-#endif 
 #endif 

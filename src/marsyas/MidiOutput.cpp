@@ -18,6 +18,11 @@
 
 #include "MidiOutput.h"
 
+#ifdef MARSYAS_MIDIIO
+#include "RtMidi.h"
+#endif 
+
+
 using namespace std;
 using namespace Marsyas;
 

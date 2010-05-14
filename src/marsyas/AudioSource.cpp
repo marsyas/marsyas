@@ -16,7 +16,16 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+
+
+#include "common.h" 
 #include "AudioSource.h"
+
+
+#ifdef MARSYAS_AUDIOIO
+#include "RtAudio3.h"
+#endif 
+
 
 using namespace std;
 using namespace Marsyas;
