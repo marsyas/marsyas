@@ -26,6 +26,7 @@
 #include "Fanin.h"
 #include "Fanout.h"
 #include "TimeStretch.h"
+#include "PatchMatrix.h"
 #include "Peaker.h"
 #include "PeakerAdaptive.h"
 #include "MaxArgMax.h"
@@ -186,6 +187,8 @@
 #include "PeakerOnset.h"
 #include "ADSR.h"
 #include "Reverse.h"
+#include "Deinterleave.h"
+#include "DeInterleaveSizecontrol.h"
 #include "SNR.h"
 #include "PCA.h"
 #include "AbsMax.h"
@@ -240,6 +243,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Cascade", new Cascade("cascadep"));
 	registerPrototype("TimeStretch", new TimeStretch("tscp"));
 	registerPrototype("Peaker", new Peaker("pkrp"));
+	registerPrototype("PatchMatrix", new PatchMatrix("patmatpr"));
 	registerPrototype("PeakerAdaptive", new PeakerAdaptive("pkr1pr"));
 	registerPrototype("MaxArgMax", new MaxArgMax("mxrp"));
 	registerPrototype("MinArgMin", new MinArgMin("mnrp"));
@@ -396,6 +400,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PeakerOnset", new PeakerOnset("pkronsetpr"));
 	registerPrototype("ADSR", new ADSR("adsrpr"));
 	registerPrototype("Reverse", new Reverse("reversepr"));
+	registerPrototype("DeInterleaveSizecontrol", new DeInterleaveSizecontrol("deintszctrlpr"));
+	registerPrototype("Deinterleave", new Deinterleave("deintpr"));
 	registerPrototype("SNR", new SNR("snrpr"));
 	registerPrototype("PCA", new PCA("pcapr"));
 	registerPrototype("AbsMax", new AbsMax("absmaxpr"));
@@ -478,7 +484,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 	case STUB:
 		break;
 
-
+	
 	case MULTIPITCH:
 	{
 
