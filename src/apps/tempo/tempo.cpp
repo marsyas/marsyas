@@ -200,10 +200,11 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 	total_instances++;
 
 	
-	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
-	cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << endl;
-	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
-	cout << "Correct Harmonic MIREX predictions = " << correct_harmonic_mirex_predictions << "/" << total_instances << endl;
+
+	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << " - " << correct_predictions * 1.0 / total_instances * 100.0 << endl;
+	cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << " - " << correct_mirex_predictions * 1.0 / total_instances * 100.0 << endl;
+	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << " - " << correct_harmonic_predictions * 1.0  / total_instances * 100.0 << endl;
+	cout << "Correct Harmonic MIREX predictions = " << correct_harmonic_mirex_predictions << "/" << total_instances << " - " << correct_harmonic_mirex_predictions * 1.0  / total_instances * 100.0  << endl;
 	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
 	
 
@@ -707,7 +708,7 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));					  
 
 
-	total->updctrl("Accumulator/accum/mrs_natural/nTimes", 128);
+	total->updctrl("Accumulator/accum/mrs_natural/nTimes", 64);
 
 	realvec bcoeffs(1,3);
 	
@@ -727,7 +728,7 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	
 
 	// total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
-	total->updctrl("ShiftInput/si2/mrs_natural/winSize", 1024);
+	total->updctrl("ShiftInput/si2/mrs_natural/winSize", 2048);
 	
 
 	total->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
@@ -745,7 +746,7 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	total->updctrl("BeatHistogram/histo/mrs_real/factor", 8.0);
 	total->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);	
 	
-	total->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67); 
+	total->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 1.0); 
 
 	mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
