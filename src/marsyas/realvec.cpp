@@ -1011,17 +1011,17 @@ operator>>(istream& is, realvec& vec)
 realvec
 realvec::operator()(std::string r, std::string c)
 {
-	unsigned int r_l = r.length();
-	unsigned int c_l = c.length();
+	size_t r_l = r.length();
+	size_t c_l = c.length();
 
-	unsigned int r_c = r.find(":");
-	unsigned int c_c = c.find(":");
+	size_t r_c = r.find(":");
+	size_t c_c = c.find(":");
 
-	unsigned int r_a;
-	unsigned int r_b;
+	size_t r_a;
+	size_t r_b;
 
-	unsigned int c_a;
-	unsigned int c_b;
+	size_t c_a;
+	size_t c_b;
 
 	char *endptr;
 
@@ -1089,10 +1089,10 @@ realvec::operator()(std::string r, std::string c)
 realvec
 realvec::operator()(std::string c)
 {
-	unsigned int c_l = c.length();
-	unsigned int c_c = c.find(":");
-	unsigned int c_a;
-	unsigned int c_b;
+	size_t c_l = c.length();
+	size_t c_c = c.find(":");
+	size_t c_a;
+	size_t c_b;
 	char *endptr;
 
 	MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );

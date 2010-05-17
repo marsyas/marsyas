@@ -104,26 +104,30 @@ BeatPhase::myProcess(realvec& in, realvec& out)
       mrs_real sum_phase = 0.0;
       mrs_real max_sum_phase = 0.0;
       mrs_natural max_phase = 0;
-      
-      for (t = 0; t < period; t++) 
+	  
+	  if (period < inSamples_)
 	  {
-		  sum_phase = 0.0;
-		  sum_phase += in(0,t);
-		  sum_phase += in(0,t+period);
-		  
-		  if (sum_phase >= max_sum_phase) 
+		  for (t = 0; t < period; t++) 
 		  {
-			  max_phase = t;
-			  max_sum_phase = sum_phase;
+			  sum_phase = 0.0;
+			  sum_phase += in(0,t);
+			  sum_phase += in(0,t+period);
+			  
+			  if (sum_phase >= max_sum_phase) 
+			  {
+				  max_phase = t;
+				  max_sum_phase = sum_phase;
+			  }
+		  }
+		  for (int k=0; k < 16; k++) 
+		  {
+			  if ((max_phase + k * period) < inSamples_)
+			  {
+				  beats(0, max_phase + k * period) = 1.0;
+			  }
 		  }
 	  }
-      for (int k=0; k < 16; k++) 
-	  {
-		  if ((max_phase + k * period) < inSamples_)
-		  {
-			  beats(0, max_phase + k * period) = 1.0;
-		  }
-	  }
+	  
       cout << "max_phase = " << max_phase << endl;
   }
   
