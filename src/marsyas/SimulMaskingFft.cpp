@@ -16,8 +16,11 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "SimulMaskingFft.h"
 #include "basis.h"
+
+//#define MTLB_DBG_LOG
 
 using namespace std;
 using namespace Marsyas;
@@ -25,6 +28,8 @@ using namespace Marsyas;
 static const mrs_natural h2bIdx	= 3;
 static const mrs_real	lowFreq	= 80.;
 static const mrs_real	upFreq	= 18000.;
+
+static const mrs_real   truncTresh = 10;
 
 static inline mrs_real IntPow (mrs_real a, mrs_natural b)
 {
@@ -89,9 +94,9 @@ SimulMaskingFft::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
 
 	// compute audio samplerate, numBands, and normalization
-	audiosrate_	= israte_*(mrs_real)inObservations_*2;
+	audiosrate_	= israte_*(mrs_real)(inObservations_-1)*2;
 	barkRes_	= hertz2bark (lowFreq+israte_, h2bIdx)-hertz2bark (lowFreq,h2bIdx); // Delta f / N
-	numBands_	= (mrs_natural)(hertz2bark (upFreq, h2bIdx) - hertz2bark (lowFreq, h2bIdx) + .5)/barkRes_;
+	numBands_	= (mrs_natural)((hertz2bark (upFreq, h2bIdx) - hertz2bark (lowFreq, h2bIdx) + .5)/barkRes_);
 	normFactor_	= (1<<15)*sqrt(8./3.)*2*20e-6*pow (10.,.05*getctrl("mrs_real/listeningLevelInDbSpl")->to<mrs_real>());
 
 	// alloc memory
@@ -158,24 +163,16 @@ SimulMaskingFft::myProcess(realvec& in, realvec& out)
 		// compute difference
 		ComputeDifference (out, processBuff_,  t);
 
-		// scale back (not really correct, but we do it anyway
-		for (o = 0; o < inObservations_; o++)
-			out(o,t)	= sqrt(out(o,t));
 	}
-	out	/= normFactor_;
-
-#ifdef MARSYAS_MATLAB
-	MATLAB_PUT(in, "in");
-	MATLAB_PUT(out, "out");	
-	MATLAB_EVAL("figure(1);clf ;plot(1:length(out),in, 1:length(out),out,'r')");
-#endif
 }
 
 
 void 
-SimulMaskingFft::ComputeDifference (mrs_realvec &out, const mrs_realvec in, mrs_natural t)
+SimulMaskingFft::ComputeDifference (mrs_realvec &out, mrs_realvec in, mrs_natural t)
 {
 	mrs_natural i;
+	t = 0;
+
 	for (i = 0; i < inObservations_; i++)
 		out(i,t) = 0;
 
@@ -187,9 +184,25 @@ SimulMaskingFft::ComputeDifference (mrs_realvec &out, const mrs_realvec in, mrs_
 			iHighBin    = (mrs_natural)floor(fHighFrac);
 		for (i = iLowBin; i <= iHighBin; i++)
 		{
-			out(i,t)	= max_basis(0,in(i) - excPattern_(k));
+			if (excPattern_(k) <= 1./truncTresh*in(i))
+				out(i,t)	= truncTresh;
+			else if (excPattern_(k) >= truncTresh*in(i))
+				out(i,t)	= 1./truncTresh;
+			else
+				out(i,t)	= in(i) / excPattern_(k);
 		}
 	}
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(in, "a");	
+	MATLAB_PUT(out, "out");	
+	MATLAB_PUT(audiosrate_, "fs");	
+	MATLAB_PUT(normFactor_, "normFactor");	
+	MATLAB_EVAL("figure(1);clf ;semilogy((1:length(out))*fs/(2*length(out)),sqrt(a)/normFactor, (1:length(out))*fs/(2*length(out)),sqrt(a./out)/normFactor,'g'),grid on, axis([50 4000 1e-4 1])");
+	//MATLAB_PUT(excPattern_, "exc");	
+	//MATLAB_EVAL("figure(2);clf ;plot(exc,'r'),grid on");
+#endif
+#endif
 }
 
 void 

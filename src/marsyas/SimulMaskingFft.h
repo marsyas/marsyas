@@ -60,7 +60,7 @@ namespace Marsyas
 		void GetBandLevels (FrequencyBands_t *pFrequencyValues, mrs_realvec &bandLevels, mrs_bool bDezibel);
 		void CalcSpreading (mrs_realvec bandLevels, mrs_realvec &result);
 		void ComputeTables ();
-		void ComputeDifference (mrs_realvec &out, const mrs_realvec in, mrs_natural t);
+		void ComputeDifference (mrs_realvec &out, mrs_realvec in, mrs_natural t);
 
 		mrs_real	normFactor_,
 					audiosrate_,

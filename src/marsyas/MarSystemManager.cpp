@@ -53,6 +53,7 @@
 #include "AudioSink.h"
 #include "Mono2Stereo.h"
 #include "PeakConvert.h"
+#include "PeakConvert2.h"
 #include "OverlapAdd.h"
 #include "Summary.h"
 #include "PeakRatio.h"
@@ -224,6 +225,7 @@
 #include "AutoCorrelationFFT.h"
 #include "PeakEnhancer.h"
 #include "Transposer.h"
+#include "SimulMaskingFft.h"
 
 //modifyHeader
 
@@ -263,6 +265,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Shifter", new Shifter("sp"));
 	registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
 	registerPrototype("PeakConvert", new PeakConvert("peconvp"));
+	registerPrototype("PeakConvert2", new PeakConvert2("peconvp2"));
 	registerPrototype("OverlapAdd", new OverlapAdd("oa"));
 	registerPrototype("PeakSynthOsc", new PeakSynthOsc("pso"));
 	registerPrototype("PeakResidual", new PeakResidual("peres"));
@@ -440,6 +443,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SubtractMean", new SubtractMean("subtractmean"));
 
 	registerPrototype("Transposer", new Transposer("transposer"));
+	registerPrototype("SimulMaskingFft", new SimulMaskingFft("simulmask"));
 
 	//modifyRegister
 

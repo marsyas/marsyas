@@ -44,7 +44,7 @@ Peaker::addControls()
 	addctrl("mrs_real/peakStrengthRelMax", 0.0);
 	addctrl("mrs_real/peakStrengthRelThresh", 0.0);
 	addctrl("mrs_real/peakStrengthAbs", 0.0);
-	addctrl("mrs_real/peakStrengthTreshLpParam", 0.99);
+	addctrl("mrs_real/peakStrengthTreshLpParam", 0.95);
 	addctrl("mrs_natural/peakStart", (mrs_natural)0);
 	addctrl("mrs_natural/peakEnd", (mrs_natural)0);
 	addctrl("mrs_natural/interpolation", (mrs_natural)0);
@@ -355,7 +355,6 @@ void Peaker::compLpThresh (const mrs_realvec input, mrs_realvec &output)
 	mrs_natural i,
 				len = input.getCols ();
 	mrs_real	buf = input(0);
-//	MATLAB_PUT(input, "in");
 	for (i = 0; i < len; i++)
 	{
 		buf			= input(i) + lpCoeff_ * (buf - input(i));
@@ -367,8 +366,6 @@ void Peaker::compLpThresh (const mrs_realvec input, mrs_realvec &output)
 		buf			= output(i) + lpCoeff_ * (buf - output(i));
 		output(i)	= buf;
 	}
-	//MATLAB_PUT(output, "out");
-	//MATLAB_EVAL("plot([in;out]')");
 }
 
 
