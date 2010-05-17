@@ -215,7 +215,7 @@ AudioSinkCallback::start()
 int 
 AudioSinkCallback::playCallback(void *outputBuffer, void *inputBuffer, 
 						unsigned int nBufferFrames, double streamTime, 
-						RtAudioStreamStatus status, void *userData)
+								unsigned int status, void *userData)
 {
 	unsigned int drain_count;
 	

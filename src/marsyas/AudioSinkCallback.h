@@ -25,7 +25,7 @@
 
 
 class RtAudio;
-extern typedef unsigned int RtAudioStreamStatus;
+
 
 
 namespace Marsyas
@@ -95,7 +95,7 @@ class AudioSinkCallback:public MarSystem
 		void localActivate(bool state);
 		
 
-		static int playCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void *userData);
+		static int playCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
 
 		
 	public:
