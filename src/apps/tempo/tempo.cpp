@@ -29,6 +29,7 @@
 #include "Esitar.h"
 #include "mididevices.h"
 #include <string>
+#include <string.h> // This file also uses C-style string functions like strcmp().
 #include <fstream>
 #include <iostream>
 #include <iomanip>
