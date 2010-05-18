@@ -215,7 +215,7 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 
 // Play soundfile given by sfName, msys contains the playback
 // network of MarSystem objects
-void tempo_medianMultiBands(string sfName, float ground_truth_tempo, string resName)
+void tempo_medianMultiBands(string sfName, float ground_truth_tempo, string resName, bool haveCollections)
 {
 	MarSystemManager mng;
 
@@ -341,7 +341,7 @@ void tempo_medianMultiBands(string sfName, float ground_truth_tempo, string resN
 
 
 void
-tempo_new(string sfName, string resName)
+tempo_wavelets(string sfName, string resName, bool haveCollections)
 {
 
 	MarSystemManager mng;
@@ -652,14 +652,15 @@ tempo_new(string sfName, string resName)
 
 
 void 
-tempo_fluxBands(string sfName, float ground_truth_tempo, string resName) 
+tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCollections) 
 {
 	MarSystemManager mng;
 	
+	MarSystem *beatTracker = mng.create("Series/beatTracker");
 	
-	MarSystem *total = mng.create("Series/total");
+	
+	MarSystem *onset_strength = mng.create("Series/onset_strength");
 	MarSystem *accum = mng.create("Accumulator/accum");
-	
 	MarSystem *fluxnet = mng.create("Series/fluxnet");
 	fluxnet->addMarSystem(mng.create("SoundFileSource", "src"));
 	fluxnet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
@@ -668,101 +669,94 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	fluxnet->addMarSystem(mng.create("Spectrum", "spk"));
 	fluxnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 	fluxnet->addMarSystem(mng.create("Flux", "flux"));
-
 	accum->addMarSystem(fluxnet);
 	
-	total->addMarSystem(accum);
-	total->addMarSystem(mng.create("ShiftInput", "si2"));
+	onset_strength->addMarSystem(accum);
+	onset_strength->addMarSystem(mng.create("ShiftInput/si2"));
+	beatTracker->addMarSystem(onset_strength);
 	
-
-	total->addMarSystem(mng.create("Filter", "filt1"));
-	total->addMarSystem(mng.create("Reverse", "reverse"));
-	total->addMarSystem(mng.create("Filter", "filt2"));
-	total->addMarSystem(mng.create("Reverse", "reverse"));
-	 
-	
-	total->addMarSystem(mng.create("Windowing", "windowing2"));
-	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	total->addMarSystem(mng.create("BeatHistogram", "histo"));
-	// total->addMarSystem(mng.create("Windowing", "windowing3"));
-	
-	/* total->addMarSystem(mng.create("Peaker", "pkr"));
-	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
-	total->addMarSystem(mng.create("PeakPeriods2BPM", "pbpm"));
-	total->addMarSystem(mng.create("BeatHistogramFromPeaks", "histo"));
-		*/ 
+	MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
+	tempoInduction->addMarSystem(mng.create("Filter", "filt1"));
+	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
+	tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
+	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
+	tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
+	tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
+	tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
 	
 	MarSystem* hfanout = mng.create("Fanout", "hfanout");
 	hfanout->addMarSystem(mng.create("Gain", "id1"));
 	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
 	hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
-	total->addMarSystem(hfanout);
-	total->addMarSystem(mng.create("Sum", "hsum"));
-	 
-	 
-
-
-	total->addMarSystem(mng.create("Peaker", "pkr1"));
+	tempoInduction->addMarSystem(hfanout);
+	tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+	tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
+	tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));				
+	
+	beatTracker->addMarSystem(tempoInduction);
+	beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
+	beatTracker->addMarSystem(mng.create("Gain/id"));
 	
 
+
+	mrs_natural winSize = 512;
+	mrs_natural hopSize = 256;
+	mrs_natural  bwinSize = 1024;
+	mrs_natural bhopSize = 64;
 	
-	total->addMarSystem(mng.create("MaxArgMax", "mxr1"));					  
 
 
-	total->updctrl("Accumulator/accum/mrs_natural/nTimes", 64);
+	onset_strength->updctrl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  	onset_strength->updctrl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
 
+	
 	realvec bcoeffs(1,3);
-	
 	bcoeffs(0) = 0.0564;
 	bcoeffs(1) = 0.1129;
 	bcoeffs(2) = 0.0564;
-	total->updctrl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+	tempoInduction->updctrl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
 	
-	total->updctrl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
+	tempoInduction->updctrl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
 	realvec acoeffs(1,3);
 	acoeffs(0) = 1.0000;
 	acoeffs(1) = -1.2247;
 	acoeffs(2) = 0.4504;
-	total->updctrl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
-	total->updctrl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
+	tempoInduction->updctrl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+	tempoInduction->updctrl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 	 
 	
 
-	// total->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
-	total->updctrl("ShiftInput/si2/mrs_natural/winSize", 2048);
 	
 
-	total->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
-	total->updctrl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
-	total->updctrl("Peaker/pkr1/mrs_natural/peakStart", 100);
-	total->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 320);
-	// total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
-	
-	total->updctrl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
-	total->updctrl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
-	// total->updctrl("Flux/flux/mrs_string/mode", "marsyas");
-	
-	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
-	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 400);
-	total->updctrl("BeatHistogram/histo/mrs_real/factor", 8.0);
-	total->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);	
-	
-	total->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 1.0); 
-
-	mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-
-	
-	
-	mrs_natural winSize = 512;
-	mrs_natural hopSize = 256;
-
-
-	total->updctrl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
-
-	total->updctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
-	total->updctrl("mrs_natural/inSamples", hopSize);
 	
 
+	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
+	tempoInduction->updctrl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
+	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakStart", 100);
+	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 320);
+	// tempoInduction->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+	
+	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
+	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+
+	tempoInduction->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
+	tempoInduction->updctrl("BeatHistogram/histo/mrs_natural/endBin", 400);
+	tempoInduction->updctrl("BeatHistogram/histo/mrs_real/factor", 8.0);
+	tempoInduction->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);	
+	
+	tempoInduction->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.75); 
+	
+	
+
+	mrs_real srate = tempoInduction->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+
+	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
+
+	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
+	
+	beatTracker->updctrl("mrs_natural/inSamples", hopSize);
+	
+
+	
 	
 	vector<mrs_real> bpms;
 	mrs_real bin;
@@ -772,38 +766,48 @@ tempo_fluxBands(string sfName, float ground_truth_tempo, string resName)
 	{
 		ofstream ofs;
 		ofs.open(pluginName.c_str());
-		ofs << *total << endl;
+		ofs << *beatTracker << endl;
 		ofs.close();
 		pluginName = EMPTYSTRING;
 	}
 
+	beatTracker->updctrl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
+	beatTracker->updctrl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
+
+
+	int extra_ticks = bwinSize/bhopSize;
 	
-
-
-	mrs_realvec periods;	
-	while (total->getctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	while (1) 
 	{
-		total->tick();
-		mrs_realvec estimate = total->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-		// 	periods = total->getctrl("PeakPeriods2BPM/pbpm/mrs_realvec/processedData")->to<mrs_realvec>(); 
-		//  cout << "periods = " << periods << endl;
+		beatTracker->tick();
+		mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
+		
 		bin = estimate(1) * 0.5;
+		beatTracker->updctrl("BeatPhase/beatphase/mrs_real/tempo", bin);
 		bpms.push_back(bin);
+		if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+		{
+			extra_ticks --;
+		}
+		
+		if (extra_ticks == 0)
+			break;
 	}
-	
 
-
+	mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
 	
+	cout << "BPM = " << bpm_estimate << endl;
 	
-	evaluate_estimated_tempo(sfName, bpms[bpms.size()-1], ground_truth_tempo);
-	delete total;
+	if (haveCollections)
+		evaluate_estimated_tempo(sfName, bpm_estimate, ground_truth_tempo);
+	delete beatTracker;
 }
 
 
 
 
 void
-tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
+tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName, bool haveCollections)
 {
 	MarSystemManager mng;
 	mrs_real srate = 0.0;
@@ -941,7 +945,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName)
 
 
 void
-tempo_histoSumBandsQ(string sfName, float ground_truth_tempo, string resName)
+tempo_histoSumBandsQ(string sfName, float ground_truth_tempo, string resName, bool haveCollections)
 {
 	MarSystemManager mng;
 	mrs_real srate = 0.0;
@@ -1071,7 +1075,7 @@ tempo_histoSumBandsQ(string sfName, float ground_truth_tempo, string resName)
 
 
 void
-tempo_medianSumBands(string sfName, float ground_truth_tempo, string resName)
+tempo_medianSumBands(string sfName, float ground_truth_tempo, string resName, bool haveCollections)
 {
 	MarSystemManager mng;
 	mrs_natural nChannels;
@@ -1196,7 +1200,7 @@ tempo_medianSumBands(string sfName, float ground_truth_tempo, string resName)
 
 
 void
-tempo_bcWavelet(string sfName, string resName)
+tempo_bcWavelet(string sfName, string resName, bool haveCollections)
 {
 	MarSystemManager mng;
 	mrs_natural nChannels;
@@ -1435,7 +1439,7 @@ tempo_bcWavelet(string sfName, string resName)
 
 
 void
-tempo_bcFilter(string sfName, string resName)
+tempo_bcFilter(string sfName, string resName, bool haveCollections)
 {
 
 	cout << "BOOMCICK_Filter PROCESSING" << endl;
@@ -1628,7 +1632,7 @@ tempo_bcFilter(string sfName, string resName)
 			if (plowwin(0,t) > 0.0)
 			{
 				lowtimes.push_back(samplesPlayed+t);
-#ifdef MARSYAS_MIDIIO
+#ifdef MARSYA_MIDIIO
 				total->updctrl("MidiOutput/devibot/mrs_natural/byte2", DEVIBOT_NA);
 				total->updctrl("MidiOutput/devibot/mrs_natural/byte3", 50);
 				total->updctrl("MidiOutput/devibot/mrs_natural/byte1", 144);
@@ -1984,7 +1988,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 
 
 void
-tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt)
+tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt, bool haveCollections)
 {
 
 	mrs_bool micinputopt = false;
@@ -2766,7 +2770,7 @@ tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt)
 
 
 // Play a collection l of soundfiles
-void tempo(string inFname, string outFname, string label, string method)
+void tempo(string inFname, string outFname, string label, string method, bool haveCollections)
 {
 	MRSDIAG("tempo.cpp - tempo");
 
@@ -2788,23 +2792,23 @@ void tempo(string inFname, string outFname, string label, string method)
 
 	if (method == "MEDIAN_SUMBANDS")
     {
-		tempo_medianSumBands(sfName, ground_truth_tempo, resName);
+		tempo_medianSumBands(sfName, ground_truth_tempo, resName, haveCollections);
     }
 	else if (method == "MEDIAN_MULTIBANDS")
     {
-		tempo_medianMultiBands(sfName,ground_truth_tempo, resName);
+		tempo_medianMultiBands(sfName,ground_truth_tempo, resName, haveCollections);
     }
-	else if (method == "FLUX_BANDS")
+	else if (method == "FLUX")
 	{
-		tempo_fluxBands(sfName, ground_truth_tempo, resName);
+		tempo_flux(sfName, ground_truth_tempo, resName, haveCollections);
 	}
 	else if (method == "HISTO_SUMBANDS")
     {
-		tempo_histoSumBands(sfName, ground_truth_tempo, resName);
+		tempo_histoSumBands(sfName, ground_truth_tempo, resName, haveCollections);
     }
 	else if (method == "HISTO_SUMBANDSQ")
 	{
-		tempo_histoSumBandsQ(sfName,ground_truth_tempo, resName);
+		tempo_histoSumBandsQ(sfName,ground_truth_tempo, resName, haveCollections);
 	}
 	
 	else if (method == "IBT")
@@ -2814,21 +2818,21 @@ void tempo(string inFname, string outFname, string label, string method)
 		metrical_change_time = 5.0;
 		score_function = "regular"; 
 		output = "beats+tempo"; 
-		tempo_ibt(sfName, ground_truth_tempo, resName);
+		tempo_ibt(sfName, ground_truth_tempo, resName, haveCollections);
     }
-	else if (method == "NEW")
+	else if (method == "WAVELETS")
     {
-		tempo_new(sfName, resName);
+		tempo_wavelets(sfName, resName, haveCollections);
     }
 	else if (method == "BOOMCHICK_WAVELET")
     {
 		cout << "BOOM-CHICK Wavelet RHYTHM EXTRACTION method " << endl;
-		tempo_bcWavelet(sfName, resName);
+		tempo_bcWavelet(sfName, resName, haveCollections);
     }
 	else if (method == "BOOMCHICK_FILTER")
     {
 		cout << "BOOM-CHICK Filter RHYTHM EXTRACTION method " << endl;
-		tempo_bcFilter(sfName, resName);
+		tempo_bcFilter(sfName, resName, haveCollections);
     }
 
 	else
@@ -2937,7 +2941,7 @@ main(int argc, const char **argv)
 
 	string method;
 	if (methodopt == EMPTYSTRING)
-		method = "NEW";
+		method = "FLUX";
 	else
 		method = methodopt;
 
@@ -2974,7 +2978,7 @@ main(int argc, const char **argv)
 
 		for (int i=0; i < l.size(); i++)
 		{
-			tempo(l.entry(i), "default.txt", l.labelEntry(i), method);
+			tempo(l.entry(i), "default.txt", l.labelEntry(i), method, haveCollections);
 		}
 
 
@@ -2989,9 +2993,7 @@ main(int argc, const char **argv)
 		for (vector<string>::iterator sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi)
 		{
 			string sfname = *sfi;
-			cout << "Processing - " << sfname << endl;
-	  
-			tempo(*sfi, "default.txt", "0.0" , method);
+			tempo(*sfi, "default.txt", "0.0" , method, haveCollections);
 		}
 	}
 

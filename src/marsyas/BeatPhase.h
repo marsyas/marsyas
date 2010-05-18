@@ -38,9 +38,13 @@ private:
   void addControls();
   MarControlPtr ctrl_tempo_;
   MarControlPtr ctrl_beats_;
+		MarControlPtr ctrl_bhopSize_;
+		MarControlPtr ctrl_bwinSize_;
+		
   mrs_natural pinSamples_;
   void myUpdate(MarControlPtr sender);
-  
+		mrs_natural sampleCount_;
+		
  public:
   BeatPhase(std::string name);
   BeatPhase(const BeatPhase& a);

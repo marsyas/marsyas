@@ -247,8 +247,8 @@ MarMonitors::tick()
 	  {
 	    pnet_->tick();  
 	    // Hack for specific case - needs to be removed 
-	    mrs_realvec processedData = pnet_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	    mrs_real bin = processedData(1);
+	    mrs_realvec processedData = pnet_->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
+	    mrs_real bin = processedData(1) * 0.5;
 	    cout << "BIN = " << bin << endl;
 	    pnet_->updctrl("BeatPhase/beatphase/mrs_real/tempo", bin);
 	  }
