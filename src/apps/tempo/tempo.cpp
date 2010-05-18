@@ -779,6 +779,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	
 	while (1) 
 	{
+		
 		beatTracker->tick();
 		mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
 		

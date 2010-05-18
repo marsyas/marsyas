@@ -84,6 +84,8 @@ BeatPhase::myUpdate(MarControlPtr sender)
 void 
 BeatPhase::myProcess(realvec& in, realvec& out)
 {
+
+	
 	mrs_real tempo = ctrl_tempo_->to<mrs_real>();
 	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
 	mrs_natural bhopSize = ctrl_bhopSize_->to<mrs_natural>();
@@ -129,11 +131,13 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 				}
 			}
 			int k=0;
-			while (max_phase + k * period < inSamples_)
-			{
-				beats(0, max_phase + k * period) = -0.5;
-				k++;
-			}
+			
+			if (max_phase != 0)
+				while (max_phase + k * period < inSamples_)
+				{
+					beats(0, max_phase + k * period) = -0.5;
+					k++;
+				}
 			
 		}
 		
