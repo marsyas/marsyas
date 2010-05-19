@@ -13,12 +13,12 @@ using namespace std;
 using namespace Marsyas;
 
 // Initialize 'mrs_real' constants outside class definition
-const mrs_real Spectrum2ACMChroma::RaiseFactor_ = 2.;
-const mrs_real Spectrum2ACMChroma::Hysteresis_ = sqrt(2.);
-const mrs_real Spectrum2ACMChroma::Tolerance_ = 0.03;
-const mrs_real Spectrum2ACMChroma::Attenuation_ = 0.75;
-const mrs_real Spectrum2ACMChroma::PowerOfAmplitude_ = 0.5;
-const mrs_real Spectrum2ACMChroma::Diapason_ = 440.;
+// const mrs_real Spectrum2ACMChroma::RaiseFactor_ = 2.;
+// const mrs_real Spectrum2ACMChroma::Hysteresis_ = sqrt(2.);
+// const mrs_real Spectrum2ACMChroma::Tolerance_ = 0.03;
+// const mrs_real Spectrum2ACMChroma::Attenuation_ = 0.75;
+// const mrs_real Spectrum2ACMChroma::PowerOfAmplitude_ = 0.5;
+// const mrs_real Spectrum2ACMChroma::Diapason_ = 440.;
 
 Spectrum2ACMChroma::Spectrum2ACMChroma(mrs_string inName)
 	:MarSystem("Spectrum2ACMChroma",inName)

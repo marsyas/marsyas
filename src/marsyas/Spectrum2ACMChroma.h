@@ -84,12 +84,12 @@ namespace Marsyas
 			static const mrs_natural MedianLength_ = 80;	// Length of median filter (in bins)
 			static const mrs_natural NotesPerOctave_ = 12;	// Number of notes per octave
 
-			static const mrs_real RaiseFactor_;				// Factor to raise background spectrum with
-			static const mrs_real Hysteresis_;				// Hysteresis in peak detection function
-			static const mrs_real Tolerance_;				// Relative tolerance for harmonic analysis
-			static const mrs_real Attenuation_;				// Attenuation of higher order harmonics
-			static const mrs_real PowerOfAmplitude_;		// Power of amplitude (0.5 for loudness)
-			static const mrs_real Diapason_;				// Frequency of middle A (NN69) (in Hz)
+// 			static const mrs_real RaiseFactor_;				// Factor to raise background spectrum with
+// 			static const mrs_real Hysteresis_;				// Hysteresis in peak detection function
+// 			static const mrs_real Tolerance_;				// Relative tolerance for harmonic analysis
+// 			static const mrs_real Attenuation_;				// Attenuation of higher order harmonics
+// 			static const mrs_real PowerOfAmplitude_;		// Power of amplitude (0.5 for loudness)
+// 			static const mrs_real Diapason_;				// Frequency of middle A (NN69) (in Hz)
 	};
 
 }	// End namespace

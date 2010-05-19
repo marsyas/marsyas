@@ -32,9 +32,7 @@
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
-#ifdef MARSYAS_WIN32
 #pragma warning( disable : 4290 )
-#endif 
 
 
 /* This is heap is designed to sort pointers to objects.
@@ -193,6 +191,5 @@ public:
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
-#ifdef MARSYAS_WIN32
 #pragma warning( default : 4290 )
-#endif 
+

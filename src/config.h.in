@@ -17,6 +17,7 @@
 #cmakedefine MARSYAS_TRACECONTROLS
 #cmakedefine MARSYAS_FLOWCHECK 
 #cmakedefine MARSYAS_BOUNDCHECK
+#cmakedefine MARSYAS_STATIC
 
 
 #cmakedefine MARSYAS_LOG_WARNINGS

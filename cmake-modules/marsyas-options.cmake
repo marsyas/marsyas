@@ -42,8 +42,6 @@ endif (MARSYAS_LINUX OR MARSYAS_MACOSX)
 
 
 ## CODE MESSAGES
-option(MARSYAS_ASSERTS "Build with assertions" OFF)
-option(MARSYAS_PROFILING "Build with profiling" OFF)
 #mark_as_advanced (MARSYAS_PROFILING)
 option(MARSYAS_TRACECONTROLS "Build with tracing control info" OFF)
 mark_as_advanced (MARSYAS_TRACECONTROLS)
