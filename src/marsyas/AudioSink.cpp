@@ -55,8 +55,6 @@ AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
 	bufferSize_ = 0;
 	rtChannels_ = 0;
 	rtDevice_ = 0;
-  
-
 
 	addControls();
 }
@@ -245,8 +243,8 @@ void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
 	
-//   cout << "AudioSink::myProcess start" << endl;
-	//check MUTE
+	// cout << "AudioSink::myProcess start" << endl;
+	// check MUTE
 	if(ctrl_mute_->isTrue())
     {
 		for (t=0; t < inSamples_; t++)
@@ -258,32 +256,28 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		}
 #ifdef MARSYAS_AUDIOIO
 		if (audio_ != NULL) 
-		{
-			for (t=0; t < bufferSize_; t++) 
-			{
-				data_[2*t] = 0.0;
-				data_[2*t+1] = 0.0;
-			}
+		{			
+//			for (t=0; t < bufferSize_; t++) 
+//			{
+//				data_[2*t] = 0.0;
+//				data_[2*t+1] = 0.0;
+//			}
+//			
+//			try 
+//			{
+//				audio_->tickStream();
+//			}
 			
-			try 
+			try
 			{
-				audio_->tickStream();
+				audio_->stopStream();
 			}
 			catch (RtError3 &error) 
 			{
 				error.printMessage();
 			}
-			
-			
-
-
 		}
-
-
-
-		
 #endif 
-		
 		return;
     }
   

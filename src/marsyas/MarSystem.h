@@ -212,7 +212,7 @@ public:
 	/// Update controls
 	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
 
-	bool updControl(char* cname, MarControlPtr newcontrol, bool upd = true)
+	bool updControl(const char* cname, MarControlPtr newcontrol, bool upd = true)
 	{
 		MarControlPtr control = getControl(cname);
 		if (control.isInvalid())

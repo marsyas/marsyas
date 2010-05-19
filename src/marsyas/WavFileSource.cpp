@@ -374,7 +374,7 @@ WavFileSource::getLinear16(realvec& slice)
 		sval_ = 0;
 #if defined(MARSYAS_BIGENDIAN)
 		for (c=0; c < nChannels_; c++)
-		{
+		{4
 			sval_ = ByteSwapShort(sdata_[nChannels_*t + c]);
 			slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT + 1);
 		}

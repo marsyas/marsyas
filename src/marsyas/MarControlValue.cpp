@@ -20,7 +20,6 @@
 #include "MarControlValue.h"
 #include "MarControl.h"
 #include "MarControlManager.h"
-
 #include <algorithm>
 
 
@@ -41,8 +40,6 @@ MarControlValue::setDebugValue()
 	value_debug_ = oss.str();
 #endif
 }
-
-
 
 
 

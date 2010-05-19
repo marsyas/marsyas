@@ -76,12 +76,10 @@ public:
 
     FeatureSet getRemainingFeatures();
 
-protected:
+private:
     size_t m_stepSize;
     float m_previousSample;
-
-    MarSystemManager mng;
-    MarSystem* net;
+    MarSystem* m_network;
 };
 
 

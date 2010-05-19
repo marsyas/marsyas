@@ -41,7 +41,6 @@
 #include "vamp-sdk/Plugin.h"
 #include "Collection.h"
 #include "MarSystemManager.h"
-//#include <vector> 
 
 //using namespace std;
 using namespace Marsyas;
@@ -76,14 +75,10 @@ public:
 
     FeatureSet getRemainingFeatures();
 
-protected:
+private:
     size_t m_stepSize;
     float m_previousSample;
-
-    MarSystemManager mng;
-    MarSystem* bextractNetwork;
-    MarSystem* featureNetwork;
-    MarSystem* featExtractor;
+    MarSystem* m_network;
 };
 
 

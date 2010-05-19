@@ -1,5 +1,5 @@
 #include "MarsyasBExtractMFCC.h"
-
+using namespace Marsyas;
 using std::string;
 using std::vector;
 using std::cerr;
@@ -9,12 +9,36 @@ using std::endl;
 MarsyasBExtractMFCC::MarsyasBExtractMFCC(float inputSampleRate) :
   Plugin(inputSampleRate),
   m_stepSize(0),
-  m_previousSample(0.0f)
+  m_previousSample(0.f),
+  m_network(0)
 {
+	MarSystemManager mng;
+	// Overall extraction and classification network 
+	m_network = mng.create("Series", "mainNetwork");
+	
+	// Build the overall feature calculation network 
+	MarSystem *featureNetwork = mng.create("Series", "featureNetwork");
+	
+	// Add a realvec as the source
+	featureNetwork->addMarSystem(mng.create("RealvecSource", "src"));
+	
+	// Convert the data to mono
+	featureNetwork->addMarSystem(mng.create("Stereo2Mono", "m2s"));
+	
+	// Setup the feature extractor
+	MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
+	featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
+	featureNetwork->addMarSystem(featExtractor);
+	
+	// Add the featureNetwork to the main network
+	m_network->addMarSystem(featureNetwork);
+	
 }
 
 MarsyasBExtractMFCC::~MarsyasBExtractMFCC()
 {
+	delete m_network;
+	m_network = 0;
 }
 
 string
@@ -61,36 +85,17 @@ MarsyasBExtractMFCC::initialise(size_t channels, size_t stepSize, size_t blockSi
 
   m_stepSize = std::min(stepSize, blockSize);
 
-  // Overall extraction and classification network 
-  bextractNetwork = mng.create("Series", "bextractNetwork");
-
-  // Build the overall feature calculation network 
-  featureNetwork = mng.create("Series", "featureNetwork");
-
-  // Add a realvec as the source
-  featureNetwork->addMarSystem(mng.create("RealvecSource", "src"));
-
-  // Convert the data to mono
-  featureNetwork->addMarSystem(mng.create("Stereo2Mono", "m2s"));
-
-  // Setup the feature extractor
-  MarSystem* featExtractor = mng.create("TimbreFeatures", "featExtractor");
-  featExtractor->updctrl("mrs_string/enableSPChild", "MFCC/mfcc");
-  featureNetwork->addMarSystem(featExtractor);
-
-  // Add the featureNetwork to the main bextractNetwork
-  bextractNetwork->addMarSystem(featureNetwork);
-
+  
   // src has to be configured with hopSize frame length in case a
   // ShiftInput is used in the feature extraction network
-  bextractNetwork->updctrl("mrs_natural/inSamples", (int)stepSize);
+  m_network->updctrl("mrs_natural/inSamples", (int)stepSize);
 
   // Link the "done" control of the input RealvecSource to the "done"
-  // control of the bextractNetwork
-  bextractNetwork->linkctrl("mrs_bool/done", "Series/featureNetwork/RealvecSource/src/mrs_bool/done");
+  // control of the network
+  m_network->linkctrl("mrs_bool/done", "Series/featureNetwork/RealvecSource/src/mrs_bool/done");
 
   // Update the window size
-  featureNetwork->updctrl("TimbreFeatures/featExtractor/mrs_natural/winSize", (int)blockSize);      
+  m_network->updctrl("Series/featureNetwork/TimbreFeatures/featExtractor/mrs_natural/winSize", (int)blockSize);      
 
   return true;
 }
@@ -99,10 +104,6 @@ void
 MarsyasBExtractMFCC::reset()
 {
   m_previousSample = 0.0f;
-
-  delete bextractNetwork;
-  delete featureNetwork;
-  delete featExtractor;
 }
 
 MarsyasBExtractMFCC::OutputList
@@ -148,13 +149,13 @@ MarsyasBExtractMFCC::process(const float *const *inputBuffers,
   }
 
   // Load the network with the data
-  featureNetwork->updctrl("RealvecSource/src/mrs_realvec/data", r);
+  m_network->updctrl("Series/featureNetwork/RealvecSource/src/mrs_realvec/data", r);
 
   // Tick the network once, which will process one window of data
-  bextractNetwork->tick();
+  m_network->tick();
 
   // Get the data out of the network
-  realvec output_realvec = bextractNetwork->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+  realvec output_realvec = m_network->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
   for (int i = 0; i < output_realvec.getRows(); i++) {
   feature.values.push_back(output_realvec(i));
   }

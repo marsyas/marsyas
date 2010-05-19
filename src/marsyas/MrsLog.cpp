@@ -18,7 +18,6 @@
 
 #include <iostream>
 #include <fstream>
-
 #include "MrsLog.h"
 #include "common.h"
 
@@ -70,7 +69,7 @@ MrsLog::mrsErr(const ostringstream& oss)
 }
 
 void 
-MrsLog::mrsWarning(const ostringstream& oss)
+MrsLog::mrsWarning(const ostringstream& oss)	
 {
 #ifdef MARSYAS_LOG_WARNINGS
   if (!warnings_off_) 

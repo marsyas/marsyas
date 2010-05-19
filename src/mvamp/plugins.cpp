@@ -51,9 +51,6 @@
 #include "vamp-sdk/Plugin.h"
 #include "Collection.h"
 #include "MarSystemManager.h"
-//#include <vector> 
-
-//using namespace std;
 using namespace Marsyas;
 
 static Vamp::PluginAdapter<ZeroCrossing> ZeroCrossingAdapter;

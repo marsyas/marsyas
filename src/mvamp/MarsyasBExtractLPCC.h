@@ -41,10 +41,7 @@
 #include "vamp-sdk/Plugin.h"
 #include "Collection.h"
 #include "MarSystemManager.h"
-//#include <vector> 
 
-//using namespace std;
-using namespace Marsyas;
 
 /**
  * Example plugin that calculates the positions and density of
@@ -76,14 +73,10 @@ public:
 
     FeatureSet getRemainingFeatures();
 
-protected:
+private:
     size_t m_stepSize;
     float m_previousSample;
-
-    MarSystemManager mng;
-    MarSystem* bextractNetwork;
-    MarSystem* featureNetwork;
-    MarSystem* featExtractor;
+    Marsyas::MarSystem* m_network;
 };
 
 
