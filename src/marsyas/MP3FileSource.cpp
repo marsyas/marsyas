@@ -16,8 +16,9 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
+#include "common.h"
 #include "MP3FileSource.h"
+
 
 using namespace std;
 using namespace Marsyas;
