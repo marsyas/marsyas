@@ -94,9 +94,9 @@ double Yin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span) {
 
 unsigned int Yin::vec_min_elem(realvec *s) 
 {
-  unsigned int i = 0;
-  unsigned int j = 0;
-  unsigned int pos=0;
+  int i = 0;
+  int j = 0;
+  int pos=0;
   double tmp = (*s)(0,0);
 //   for (i=0; i < s->channels; i++)
   for (j=0; j < s->getSize(); j++) {
@@ -114,7 +114,7 @@ Yin::myProcess(realvec& in, realvec& out)
   // Make a temporary realvec to build up the yin function in
   // sness - This is very inefficient - Move to update function
   realvec yin;
-  yin.create(0.0,1,inSamples_/2.0);
+  yin.create(0.0,1,inSamples_/2);
 
   // The tolerance for the yin algorithm
   mrs_real tol = ctrl_tolerance_->to<mrs_real>();
@@ -125,7 +125,7 @@ Yin::myProcess(realvec& in, realvec& out)
 //   cout << "tol=" << tol << endl;
 
   // Calculate the pitch with the Yin method
-  unsigned int c=0,j,tau = 0;
+  int c=0,j,tau = 0;
   int period;
   double tmp = 0., tmp2 = 0.;
   yin(c,0) = 1.;
