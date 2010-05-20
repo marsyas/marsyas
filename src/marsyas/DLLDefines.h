@@ -4,9 +4,9 @@
 #ifndef _marsyas_DLLDEFINES_H 
 #define _marsyas_DLLDEFINES_H 
 
-#include "config.h" 
 
 #if defined (_WIN32)
+#include "config.h" 
 #if defined MARSYAS_STATIC 
 #define marsyas_EXPORT 
 #else 
