@@ -38,9 +38,9 @@ Linux OS:
 ============================================================================================
 OSX:
 
-Tested in 10.6 with gcc 4.2 for i386 and x86_64, linking to both the static and dynamic build of Marsyas. Note that x86_64 is not supported by Sonic Visuliser yet, but fat binaries with both architectures work fine.
+Tested in 10.6 with gcc 4.2 for i386 and x86_64, linking to both the static and dynamic build of Marsyas. Note that x86_64 is not supported by Sonic Visualiser yet, but fat binaries with both architectures work fine.
 
-1. Builsinf Marsyas Bextract Vamp Plugins:
+1. Building the Marsyas Bextract Vamp Plugins:
 	
 	- Enable WITH_VAMP in ccmake
 	
@@ -55,10 +55,10 @@ Tested in 10.6 with gcc 4.2 for i386 and x86_64, linking to both the static and 
 
 3. Add plugin to Sonic Visualiser
 
-   To use your plugin in Sonic Visualiser copy libmvamp.dylib to 
+	To use your plugin in Sonic Visualiser copy libmvamp.dylib to 
 	~/Library/Audio/Plug-Ins/Vamp 
 	or 
-	/Library/Audio/Plug-Ins/Vamp
+	/Library/Audio/Plug-Ins/Vamp for system wide use.
 
 ============================================================================================
 
