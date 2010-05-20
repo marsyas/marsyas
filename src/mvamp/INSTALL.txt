@@ -1,3 +1,18 @@
+In order to compile the MVAMP plugins, the VAMP plugin sdk is required. You can either download and install from the distribution (http://www.vamp-plugins.org/develop.html) or check out the latest version from the svn:
+
+$ svn co https://vamp.svn.sourceforge.net/svnroot/vamp/vamp-plugin-sdk/trunk vamp-plugin-sdk
+
+Build and install the plugin sdk using the supplied instructions.
+
+Currently the OSX platform is the only one which will correctly link to the static version of Marsyas if you choose to build Marsyas with MARSYAS_STATIC ON. For the other CMakeLists.txt in the mvamp directory will need to be updated. 
+
+To test your plugins it's recommended to use vamp-plugin-tester. This command line application will give you a very detailed report about the compliance of the plugin.
+
+Download the distribution or compile from source. The latest code can be found here:
+$ svn co https://vamp.svn.sourceforge.net/svnroot/vamp/vamp-plugin-tester/trunk vamp-plugin-tester
+
+============================================================================================
+
 Linux OS:
 (Tested in Linux Ubuntu 9.04-32bits with gcc 4.3 -> may work on others)
 
@@ -19,6 +34,31 @@ Linux OS:
 	* /usr/lib/vamp
 
 (mvamp-plugins.cat, in pre-compiled version or /src/mvamp/, is a txt file for organizing the plugin functions within SonicVisualiser Transforms - for such you may also copy it to the chosen path above, yet it seems to be unnecessary)
+
+============================================================================================
+OSX:
+
+Tested in 10.6 with gcc 4.2 for i386 and x86_64, linking to both the static and dynamic build of Marsyas. Note that x86_64 is not supported by Sonic Visuliser yet, but fat binaries with both architectures work fine.
+
+1. Builsinf Marsyas Bextract Vamp Plugins:
+	
+	- Enable WITH_VAMP in ccmake
+	
+	If the VAMP plugin sdk is compiled and installed using the default procedure the libraries and the include files will be located in /usr/local/lib and /usr/local/include. When in ccmake WITH_VAMP is toggled to ON, VAMP_LIBRARY and VAMP_INCLUDE_DIR are set to these default paths. Change them in order to reflect your own system paths if necessary
+	
+	- Build using gmake. If you generate an XCode project, the mvamp target won't be included so you'll need to build using plain "make".
+	- The resulting library should be located at build_dir/lib/libmvamp.dylib
+
+2. (optional) Testing your plugin with vamp-plugin-tester. Assuming that vamp-plugin-tester is located somewhere in your $PATH.
+	From the cmake build directory execute the plugin tester with it's plugin search path pointing to the mvamp library directory:
+	$ VAMP_PATH=./lib vamp-plugin-tester -a 
+
+3. Add plugin to Sonic Visualiser
+
+   To use your plugin in Sonic Visualiser copy libmvamp.dylib to 
+	~/Library/Audio/Plug-Ins/Vamp 
+	or 
+	/Library/Audio/Plug-Ins/Vamp
 
 ============================================================================================
 
