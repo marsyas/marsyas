@@ -25,6 +25,7 @@
 #include "ResampleLinear.h"
 #include "ResampleBezier.h"
 #include "ResampleSinc.h"
+#include "ResampleNearestNeighbour.h"
 
 
 namespace Marsyas

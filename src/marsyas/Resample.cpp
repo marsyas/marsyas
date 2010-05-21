@@ -171,6 +171,14 @@ Resample::myUpdate(MarControlPtr sender)
 			interpolator_->updctrl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
 			interpolator_->updctrl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
 		}
+		else if (resaMode==(mrs_string)	"near")
+		{
+			interpolator_= new ResampleNearestNeighbour("resa");
+			//interpolator_->updctrl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
+			//interpolator_->updctrl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
+			interpolator_->updctrl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
+			interpolator_->updctrl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
+		}
 		else
 		{
 			interpolator_= new ResampleLinear("resa");

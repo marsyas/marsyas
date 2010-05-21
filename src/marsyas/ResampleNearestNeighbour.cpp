@@ -16,35 +16,35 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "ResampleLinear.h"
+#include "ResampleNearestNeighbour.h"
 
 using namespace std;
 using namespace Marsyas;
 
-ResampleLinear::ResampleLinear(string name):MarSystem("ResampleLinear", name)
+ResampleNearestNeighbour::ResampleNearestNeighbour(string name):MarSystem("ResampleNearestNeighbour", name)
 {
 	addControls();
 }
 
-ResampleLinear::ResampleLinear(const ResampleLinear& a) : MarSystem(a)
+ResampleNearestNeighbour::ResampleNearestNeighbour(const ResampleNearestNeighbour& a) : MarSystem(a)
 {
 	ctrl_stretch_ = getctrl("mrs_real/stretch");
 	ctrl_samplingRateAdjustmentMode_ = getctrl("mrs_bool/samplingRateAdjustmentMode");
 }
 
 
-ResampleLinear::~ResampleLinear()
+ResampleNearestNeighbour::~ResampleNearestNeighbour()
 {
 }
 
 MarSystem*
-ResampleLinear::clone() const
+ResampleNearestNeighbour::clone() const
 {
-	return new ResampleLinear(*this);
+	return new ResampleNearestNeighbour(*this);
 }
 
 void
-ResampleLinear::addControls()
+ResampleNearestNeighbour::addControls()
 {
 	addctrl("mrs_real/stretch", 1.0, ctrl_stretch_);
 	addctrl("mrs_bool/samplingRateAdjustmentMode", (mrs_bool)true , ctrl_samplingRateAdjustmentMode_);
@@ -54,10 +54,10 @@ ResampleLinear::addControls()
 }
 
 void
-ResampleLinear::myUpdate(MarControlPtr sender)
+ResampleNearestNeighbour::myUpdate(MarControlPtr sender)
 {
 	MarSystem::myUpdate(sender);
-	MRSDIAG("ResampleLinear.cpp - ResampleLinear:myUpdate");
+	MRSDIAG("ResampleNearestNeighbour.cpp - ResampleNearestNeighbour:myUpdate");
 	mrs_real alpha = ctrl_stretch_->to<mrs_real>();
 	ctrl_onSamples_->setValue((mrs_natural) (alpha * ctrl_inSamples_->to<mrs_natural>()), NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>());
@@ -71,12 +71,12 @@ ResampleLinear::myUpdate(MarControlPtr sender)
 	
 	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	// Add prefix to the observation names.
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "ResampleLinear_"), NOUPDATE);
+	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "ResampleNearestNeighbour_"), NOUPDATE);
 
 }
 
 void
-ResampleLinear::myProcess(realvec& in, realvec& out)
+ResampleNearestNeighbour::myProcess(realvec& in, realvec& out)
 {
 	mrs_real tp;
 	mrs_natural tl, tr;
@@ -92,9 +92,18 @@ ResampleLinear::myProcess(realvec& in, realvec& out)
 			tr = tl + 1;
 			if (tl<inSamples_)
 			{
+			
 				out(o,t) = (tr-tp) * in(o,tl) + (tp-tl) * in(o,tr);
+				if((tp-tl)>(tr-tp)) //on equality default to the leftmost value
+				{
+					out(o,t) =in(o,tr);
+				}
+				else
+				{
+					out(o,t) =in(o,tl);
+				}
 			}
-			else // reflect on boundary
+			else // "reflect" on boundary  
 			{
 				out(o,t) = in(o,inSamples_-1); //  alternative possibilities would include:
 				
