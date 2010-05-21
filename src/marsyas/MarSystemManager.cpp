@@ -201,6 +201,7 @@
 #include "ResampleLinear.h"
 #include "Resample.h"
 #include "ResampleSinc.h"
+#include "ResampleNearestNeighbour.h"
 #include "StretchLinear.h"
 #include "MidiFileSynthSource.h"
 #include "PvMultiResolution.h"
@@ -415,6 +416,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("ResampleLinear", new ResampleLinear("resamplinpr"));
 	registerPrototype("Resample", new Resample("resampabspr"));
 	registerPrototype("ResampleSinc", new ResampleSinc("resampsincpr"));
+	registerPrototype("ResampleNearestNeighbour", new ResampleNearestNeighbour("resampnnpr"));
 	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
 	registerPrototype("PvMultiResolution", new PvMultiResolution("PvMultiResolution"));
 	registerPrototype("AudioSinkCallback", new AudioSinkCallback("AudioSinkCallback"));
