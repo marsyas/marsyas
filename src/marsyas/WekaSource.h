@@ -147,7 +147,7 @@ typedef enum
 	OutputInstancePair
 }ValidationModeEnum;
 
-class WekaSource : public MarSystem
+class marsyas_EXPORT WekaSource : public MarSystem
 {
 public:
 	WekaSource(std::string name);

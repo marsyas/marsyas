@@ -47,7 +47,7 @@ namespace Marsyas
 
   */
 
-  class Selector: public MarSystem
+class marsyas_EXPORT Selector: public MarSystem
   {
   private:
 	void addControls();

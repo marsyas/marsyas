@@ -42,7 +42,7 @@ namespace Marsyas
 	- \b mrs_real/tolerance [w] : sets the tolerance of the yin algorithm
 */
 
-class AubioYin: public MarSystem
+class marsyas_EXPORT AubioYin: public MarSystem
 {
 private:
 	void addControls();

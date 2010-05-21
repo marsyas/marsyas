@@ -53,7 +53,7 @@ namespace Marsyas
 */
 
 
-class NormMaxMin: public MarSystem
+class marsyas_EXPORT NormMaxMin: public MarSystem
 {
 private: 
   mrs_real lower_;
