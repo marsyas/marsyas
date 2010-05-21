@@ -311,7 +311,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 				  {
 					//  if (!notPrint)
 					//{
-					if (label >= labelNames_.size())
+					  if (label >= (mrs_natural)labelNames_.size())
 					  {
 						MRSWARN("WekaSink: label number is too big");
 						oss << "non-label";

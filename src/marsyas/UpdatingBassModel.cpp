@@ -133,8 +133,8 @@ void UpdatingBassModel::myUpdate(MarControlPtr sender)
 void
 UpdatingBassModel::myProcess(realvec& in, realvec& out)
 {
-  mrs_natural i, j, k, l, m, d, tmpnatural;
-  mrs_real tmpreal, min;
+  mrs_natural i, j, k, l, m, tmpnatural;
+  mrs_real tmpreal;
   realvec covMatrix, tmpvec;
   if(inSamples_ > 0){
     // copy input realvec to output realvec

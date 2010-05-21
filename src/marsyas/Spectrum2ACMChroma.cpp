@@ -207,12 +207,12 @@ void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
 	//    The highest pitch is defined by the algorithm and equals Fs/4
 
 	// 1.1 compute the note index of the diapason referred to the min. pitch
-	mrs_natural theDiapInd = 1 + floor(12. * log(440./100.)/log(2.));
+	mrs_natural theDiapInd = (mrs_natural)(1 + floor(12. * log(440./100.)/log(2.)));
 	// 1.2 compute the pitch of the lowest note given the note index of the diapason
 	mrs_real theLowestNote = 440. * pow(2., (mrs_real)(1-theDiapInd)/12.);
 	// 2 compute the note index of the pitch of the highest note = the number of notes
 	// !! Use Nyquist frequency of input signal instead of 1000Hz!!
-	mrs_natural theMaxInd = theDiapInd + floor(12.*log(1000./(440.))/log(2.));
+	mrs_natural theMaxInd = (mrs_natural)(theDiapInd + floor(12.*log(1000./(440.))/log(2.)));
 
 	theControlString = "Pitch2Chroma/Pitch2Chroma/mrs_real/LowestPitch";
 	Spectrum2ACMChromaNet_->updctrl(theControlString,theLowestNote);

@@ -35,20 +35,20 @@ namespace Marsyas
 class TimeStretch: public MarSystem
 {
 private:
-  mrs_real ni, w_;
-  unsigned long li;
-  unsigned long ri;
-
-  void addControls();
-  
+	mrs_real ni, w_;
+	mrs_natural  li;
+	mrs_natural ri;
+	
+	void addControls();
+	
 public:
-  TimeStretch(std::string name);
-  ~TimeStretch();
-  MarSystem* clone() const;    
-
-  void myProcess(realvec& in, realvec& out);
+	TimeStretch(std::string name);
+	~TimeStretch();
+	MarSystem* clone() const;    
+	
+	void myProcess(realvec& in, realvec& out);
 };
-
+	
 }//namespace Marsyas
 
 #endif
