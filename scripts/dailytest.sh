@@ -21,6 +21,7 @@ logBase=$logDir/`date +%y%m%d`
 configLog=$logBase-config.log
 buildLog=$logBase-build.log
 sanityLog=$logBase-sanity.log
+continuousLog=$logBase-continuous.log
 #coffeeLog=$logBase-coffee.log
 distLog=$logBase-dist.log
 distcheckLog=$logBase-distcheck.log
@@ -76,7 +77,7 @@ fi
 mkdir -p $matDir
 rm -rf $buildDir
 cd $baseDir
-svn export . $buildDir
+svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk $buildDir
 mkdir -p $cmakeDir
 
 
@@ -97,6 +98,7 @@ testthing make $buildLog "Build"
 testthing "make test" $sanityLog Sanity
 #testthing "scripts/regtest_sanity.py" $sanityLog Sanity
 #testthing "scripts/regtest_coffee.py $coffeeDir" $coffeeLog Coffee
+testthing "make Continuous" $continuousLog Continuous
 
 cd ..
 mkdir doc-build
