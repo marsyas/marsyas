@@ -130,12 +130,12 @@ DTW::myProcess(realvec& in, realvec& out)
 	      if(ctrl_startPos_->to<mrs_string>() == "zero")
 		{
 		  // copying first SimilarityMatrix
-		  costMatrix_(0,matrixPos_(0)) = in(0,0);
+		  costMatrix_(0,(mrs_natural)matrixPos_(0)) = in(0,0);
 		  alignment_(0,0) = 0;
 		  // calculating other cost of the first col
 		  for(j=1; j<nObs; j++)
 		    {
-		      costMatrix_(j,matrixPos_(0)) = in(j,0)+costMatrix_(j-1,matrixPos_(0));
+		      costMatrix_(j,(mrs_natural)matrixPos_(0)) = in(j,0)+costMatrix_(j-1,(mrs_natural)matrixPos_(0));
 		      alignment_(j,0) = 1;
 		    }
 		}
@@ -144,31 +144,31 @@ DTW::myProcess(realvec& in, realvec& out)
 		  // copying first col of SimilarityMatrix
 		  for(j=0; j<nObs; j++)
 		    {
-		      costMatrix_(j, matrixPos_(0)) = in(j,0);
+		      costMatrix_(j, (mrs_natural)matrixPos_(0)) = in(j,0);
 		      alignment_(j,0) = 0;
 		    }
 		}
 	      // after first col
 	      for(i=1; i<nSmp; i++)
 		{
-		  costMatrix_(0,matrixPos_(1)) = costMatrix_(0,matrixPos_(0)) + in(0,i);
+		  costMatrix_(0,(mrs_natural)matrixPos_(1)) = costMatrix_(0,(mrs_natural)matrixPos_(0)) + in(0,i);
 		  alignment_(0,i) = 3;
 		  for(j=1; j<nObs; j++)
 		    {
-		      costMatrix_(j,matrixPos_(1)) = costMatrix_(j-1,matrixPos_(1)) + in(j,i);
+		      costMatrix_(j,(mrs_natural)matrixPos_(1)) = costMatrix_(j-1,(mrs_natural)matrixPos_(1)) + in(j,i);
 		      alignment_(j,i) = 1;
-		      tmpReal = costMatrix_(j-1,matrixPos_(0)) + in(j,i);
+		      tmpReal = costMatrix_(j-1,(mrs_natural)matrixPos_(0)) + in(j,i);
 		      if(weight)
 			tmpReal += in(j,i);
-		      if(tmpReal < costMatrix_(j,matrixPos_(1)))
+		      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(1)))
 			{
-			  costMatrix_(j,matrixPos_(1)) = tmpReal;
+			  costMatrix_(j,(mrs_natural)matrixPos_(1)) = tmpReal;
 			  alignment_(j,i) = 2;
 			}
-		      tmpReal = costMatrix_(j,matrixPos_(0)) + in(j,i);
-		      if(tmpReal < costMatrix_(j,matrixPos_(1)))
+		      tmpReal = costMatrix_(j,(mrs_natural)matrixPos_(0)) + in(j,i);
+		      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(1)))
 			{
-			  costMatrix_(j,matrixPos_(1)) = tmpReal;
+			  costMatrix_(j,(mrs_natural)matrixPos_(1)) = tmpReal;
 			  alignment_(j,i) = 3;
 			}
 		    }
@@ -186,28 +186,28 @@ DTW::myProcess(realvec& in, realvec& out)
 		}
 	      if(ctrl_lastPos_->to<mrs_string>() == "end")
 		{
-		  totalDis_ = costMatrix_(nObs-1,matrixPos_(0));
+		  totalDis_ = costMatrix_((mrs_natural)(nObs-1),(mrs_natural)matrixPos_(0));
 		  ctrl_totalDis_->setValue(totalDis_);
-		  i = nSmp-1;
-		  j = nObs-1;
+		  i = (mrs_natural)(nSmp-1);
+		  j = (mrs_natural)(nObs-1);
 		}
 	      else if(ctrl_lastPos_->to<mrs_string>() == "lowest")
 		{
-		  tmpReal = costMatrix_(0, matrixPos_(0));
+		  tmpReal = costMatrix_(0, (mrs_natural)matrixPos_(0));
 		  j = 0;
 		  for(i=1; i<nObs; i++)
 		    {
-		      if(costMatrix_(i, matrixPos_(0)) < tmpReal)
+		      if(costMatrix_(i, (mrs_natural)matrixPos_(0)) < tmpReal)
 			{
-			  tmpReal = costMatrix_(i, matrixPos_(0));
+			  tmpReal = costMatrix_(i, (mrs_natural)matrixPos_(0));
 			  j = i;
 			}
 		    }
-		  i = nSmp-1;
+		  i = (mrs_natural)(nSmp-1);
 		  totalDis_ = tmpReal;
 		  ctrl_totalDis_->setValue(totalDis_);
 		}
-	      k = nSmp + nObs - 1;
+	      k = (mrs_natural)(nSmp + nObs - 1);
 	      while(alignment_(j,i) != 0 && k>=0)
 		{
 		  if(alignment_(j,i) == 1)
@@ -254,36 +254,36 @@ DTW::myProcess(realvec& in, realvec& out)
 	      if(ctrl_startPos_->to<mrs_string>() == "zero")
 		{
 		  // copying the first SimilarityMatrix
-		  costMatrix_(0,matrixPos_(0)) = in(0,0);
+		  costMatrix_(0,(mrs_natural)matrixPos_(0)) = in(0,0);
 		  alignment_(0,0) = 0;
 		  // calculating the second col
-		  costMatrix_(1,matrixPos_(1)) = costMatrix_(0,matrixPos_(0)) + in(1,1);
+		  costMatrix_(1,(mrs_natural)matrixPos_(1)) = costMatrix_(0,(mrs_natural)matrixPos_(0)) + in(1,1);
 		  if(weight)
-		    costMatrix_(1,matrixPos_(1)) += in(1,1);
-		  costMatrix_(2,matrixPos_(1)) = costMatrix_(0,matrixPos_(0)) + in(1,1) + in(2,1);
+		    costMatrix_(1,(mrs_natural)matrixPos_(1)) += in(1,1);
+		  costMatrix_(2,(mrs_natural)matrixPos_(1)) = costMatrix_(0,(mrs_natural)matrixPos_(0)) + in(1,1) + in(2,1);
 		  if(weight)
-		    costMatrix_(2,matrixPos_(1)) += in(1,1);
+		    costMatrix_(2,(mrs_natural)matrixPos_(1)) += in(1,1);
 		  alignment_(1,1) = 2;
 		  alignment_(2,1) = 1;
 		  // calculating the third col
-		  costMatrix_(1,matrixPos_(2)) = costMatrix_(0,matrixPos_(0)) + in(1,1) + in(1,2);
+		  costMatrix_(1,(mrs_natural)matrixPos_(2)) = costMatrix_(0,(mrs_natural)matrixPos_(0)) + in(1,1) + in(1,2);
 		  if(weight)
-		    costMatrix_(1,matrixPos_(2)) += in(1,1);
+		    costMatrix_(1,(mrs_natural)matrixPos_(2)) += in(1,1);
 		  alignment_(1,2) = 3;
-		  costMatrix_(2,matrixPos_(2)) = costMatrix_(1,matrixPos_(1)) + in(2,2);
+		  costMatrix_(2,(mrs_natural)matrixPos_(2)) = costMatrix_(1,(mrs_natural)matrixPos_(1)) + in(2,2);
 		  if(weight)
-		    costMatrix_(2,matrixPos_(2)) += in(2,2);
+		    costMatrix_(2,(mrs_natural)matrixPos_(2)) += in(2,2);
 		  alignment_(2,2) = 2;
-		  costMatrix_(3,matrixPos_(2)) = costMatrix_(2,matrixPos_(1)) + in(3,2);
+		  costMatrix_(3,(mrs_natural)matrixPos_(2)) = costMatrix_(2,(mrs_natural)matrixPos_(1)) + in(3,2);
 		  if(weight)
-		    costMatrix_(3,matrixPos_(2)) += in(3,2);
+		    costMatrix_(3,(mrs_natural)matrixPos_(2)) += in(3,2);
 		  alignment_(3,2) = 2;
-		  tmpReal = costMatrix_(1,matrixPos_(1)) + in(2,2) + in(3,2);
+		  tmpReal = costMatrix_(1,(mrs_natural)matrixPos_(1)) + in(2,2) + in(3,2);
 		  if(weight)
 		    tmpReal += in(2,2);
-		  if(tmpReal < costMatrix_(3,matrixPos_(2)))
+		  if(tmpReal < costMatrix_(3,(mrs_natural)matrixPos_(2)))
 		    {
-		      costMatrix_(3,matrixPos_(2)) = tmpReal;
+		      costMatrix_(3,(mrs_natural)matrixPos_(2)) = tmpReal;
 		      alignment_(3,2) = 1;
 		    }
 		}
@@ -292,57 +292,57 @@ DTW::myProcess(realvec& in, realvec& out)
 		  // copying first col of SimilarityMatrix
 		  for(j=0; j<nObs; j++)
 		    {
-		      costMatrix_(j, matrixPos_(0)) = in(j,0);
+		      costMatrix_(j, (mrs_natural)matrixPos_(0)) = in(j,0);
 		      alignment_(j,0) = 0;
 		    }
 		  // calculating the second col
-		  costMatrix_(1,matrixPos_(1)) = costMatrix_(0,matrixPos_(0)) + in(1,1);
+		  costMatrix_(1,(mrs_natural)matrixPos_(1)) = costMatrix_(0,(mrs_natural)matrixPos_(0)) + in(1,1);
 		  if(weight)
-		    costMatrix_(1,matrixPos_(1)) += in(1,1);
+		    costMatrix_(1,(mrs_natural)matrixPos_(1)) += in(1,1);
 		  alignment_(1,1) = 2;
 		  for(j=2; j<nObs; j++)
 		    {
-		      costMatrix_(j,matrixPos_(1)) = costMatrix_(j-1,matrixPos_(0)) + in(j,1);
+		      costMatrix_(j,(mrs_natural)matrixPos_(1)) = costMatrix_(j-1,(mrs_natural)matrixPos_(0)) + in(j,1);
 		      if(weight)
-			costMatrix_(j,matrixPos_(1)) += in(j,1);
+			costMatrix_(j,(mrs_natural)matrixPos_(1)) += in(j,1);
 		      alignment_(j,1) = 2;
-		      tmpReal = costMatrix_(j-2,matrixPos_(0)) + in(j-1,1) + in(j,1);
+		      tmpReal = costMatrix_(j-2,(mrs_natural)matrixPos_(0)) + in(j-1,1) + in(j,1);
 		      if(weight)
 			tmpReal += in(j-1,1);
-		      if(tmpReal < costMatrix_(j,matrixPos_(1)))
+		      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(1)))
 			{
-			  costMatrix_(j,matrixPos_(1)) = tmpReal;
+			  costMatrix_(j,(mrs_natural)matrixPos_(1)) = tmpReal;
 			  alignment_(j,1) = 1;
 			}
 		    }
 		  // calculating the third col
-		  costMatrix_(1,matrixPos_(2)) = costMatrix_(0,matrixPos_(0)) + in(1,1) + in(1,2);
+		  costMatrix_(1,(mrs_natural)matrixPos_(2)) = costMatrix_(0,(mrs_natural)matrixPos_(0)) + in(1,1) + in(1,2);
 		  if(weight)
-		    costMatrix_(1,matrixPos_(2)) += in(1,1);
+		    costMatrix_(1,(mrs_natural)matrixPos_(2)) += in(1,1);
 		  alignment_(1,2) = 3;
 		  for(j=2; j<nObs; j++)
 		    {
-		      costMatrix_(j,matrixPos_(2)) = costMatrix_(j-1,matrixPos_(1)) + in(j,2);
+		      costMatrix_(j,(mrs_natural)matrixPos_(2)) = costMatrix_(j-1,(mrs_natural)matrixPos_(1)) + in(j,2);
 		      if(weight)
-			costMatrix_(j,matrixPos_(2)) += in(j,2);
+			costMatrix_(j,(mrs_natural)matrixPos_(2)) += in(j,2);
 		      alignment_(j,2) = 2;
 		      if(alignment_(j-2,2) != 0)
 			{
-			  tmpReal = costMatrix_(j-2,matrixPos_(1)) + in(j-1,2) + in(j,2);
+			  tmpReal = costMatrix_(j-2,(mrs_natural)matrixPos_(1)) + in(j-1,2) + in(j,2);
 			  if(weight)
 			    tmpReal += in(j-1,2);
-			  if(tmpReal < costMatrix_(j,matrixPos_(2)))
+			  if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 			    {
-			      costMatrix_(j,matrixPos_(2));
+			      costMatrix_(j,(mrs_natural)matrixPos_(2));
 			      alignment_(j,2) = 1;
 			    }
 			}
-		      tmpReal = costMatrix_(j-1,matrixPos_(0)) + in(j,1) + in(j,2);
+		      tmpReal = costMatrix_(j-1,(mrs_natural)matrixPos_(0)) + in(j,1) + in(j,2);
 		      if(weight)
 			tmpReal += in(j,1);
-		      if(tmpReal < costMatrix_(j,matrixPos_(2)))
+		      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 			{
-			  costMatrix_(j,matrixPos_(2)) = tmpReal;
+			  costMatrix_(j,(mrs_natural)matrixPos_(2)) = tmpReal;
 			  alignment_(j,2) = 3;
 			}
 		    }
@@ -360,42 +360,42 @@ DTW::myProcess(realvec& in, realvec& out)
 		    {
 		      if(alignment_(j-1,i-2) != 0)
 			{
-			  costMatrix_(j,matrixPos_(2)) = costMatrix_(j-1,matrixPos_(0)) + in(j,i-1) + in(j,i);
+			  costMatrix_(j,(mrs_natural)matrixPos_(2)) = costMatrix_(j-1,(mrs_natural)matrixPos_(0)) + in(j,i-1) + in(j,i);
 			  if(weight)
-			    costMatrix_(j,matrixPos_(2)) += in(j,i-1);
+			    costMatrix_(j,(mrs_natural)matrixPos_(2)) += in(j,i-1);
 			  alignment_(j,i) = 3;
 			  if(alignment_(j-1,i-1) != 0)
 			    {
-			      tmpReal = costMatrix_(j-1,matrixPos_(1)) + in(j,i);
+			      tmpReal = costMatrix_(j-1,(mrs_natural)matrixPos_(1)) + in(j,i);
 			      if(weight)
 				tmpReal += in(j,i);
-			      if(tmpReal < costMatrix_(j,matrixPos_(2)))
+			      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 				{
-				  costMatrix_(j,matrixPos_(2)) = tmpReal;
+				  costMatrix_(j,(mrs_natural)matrixPos_(2)) = tmpReal;
 				  alignment_(j,i) = 2;
 				}
 			    }
 			  if(alignment_(j-2,i-1) != 0)
 			    {
-			      tmpReal = costMatrix_(j-2,matrixPos_(1)) + in(j-1,i) + in(j,i);
+			      tmpReal = costMatrix_(j-2,(mrs_natural)matrixPos_(1)) + in(j-1,i) + in(j,i);
 			      if(weight)
 				tmpReal += in(j-1,i);
-			      if(tmpReal < costMatrix_(j,matrixPos_(2)))
+			      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 				{
-				  costMatrix_(j,matrixPos_(2)) = tmpReal;
+				  costMatrix_(j,(mrs_natural)matrixPos_(2)) = tmpReal;
 				  alignment_(j,i) = 1;
 				}
 			    }
 			}
 		      else if(alignment_(j-1,i-1) != 0)
 			{
-			  costMatrix_(j,matrixPos_(2)) = costMatrix_(j-1,matrixPos_(1)) + in(j,i);
+			  costMatrix_(j,(mrs_natural)matrixPos_(2)) = costMatrix_(j-1,(mrs_natural)matrixPos_(1)) + in(j,i);
 			  if(weight)
-			    costMatrix_(j,matrixPos_(2)) += in(j,i);
+			    costMatrix_(j,(mrs_natural)matrixPos_(2)) += in(j,i);
 			  alignment_(j,i) = 2;
 			  if(alignment_(j-2,i-1) != 0)
 			    {
-			      tmpReal = costMatrix_(j-2,matrixPos_(1)) + in(j-1,i) + in(j,i);
+			      tmpReal = costMatrix_(j-2,(mrs_natural)matrixPos_(1)) + in(j-1,i) + in(j,i);
 			      if(weight)
 				tmpReal += in(j-1,i);
 			      alignment_(j,i) = 1;
@@ -403,9 +403,9 @@ DTW::myProcess(realvec& in, realvec& out)
 			}
 		      else if(alignment_(j-2,i-1) != 0)
 			{
-			  costMatrix_(j,matrixPos_(2)) = costMatrix_(j-2,matrixPos_(1)) + in(j-1,i) + in(j,i);
+			  costMatrix_(j,(mrs_natural)matrixPos_(2)) = costMatrix_(j-2,(mrs_natural)matrixPos_(1)) + in(j-1,i) + in(j,i);
 			  if(weight)
-			    costMatrix_(j,matrixPos_(2)) += in(j-1,i);
+			    costMatrix_(j,(mrs_natural)matrixPos_(2)) += in(j-1,i);
 			  alignment_(j,i) = 1;
 			}
 		    }
@@ -427,28 +427,28 @@ DTW::myProcess(realvec& in, realvec& out)
 		}
 	      if(ctrl_lastPos_->to<mrs_string>() == "end")
 		{
-		  totalDis_ = costMatrix_(nObs-1,matrixPos_(1));
+		  totalDis_ = costMatrix_((mrs_natural)(nObs-1),(mrs_natural)matrixPos_(1));
 		  ctrl_totalDis_->setValue(totalDis_);
-		  i = nSmp-1;
-		  j = nObs-1;
+		  i = (mrs_natural)(nSmp-1);
+		  j = (mrs_natural)(nObs-1);
 		}
 	      else if(ctrl_lastPos_->to<mrs_string>() == "lowest")
 		{
-		  tmpReal = costMatrix_(nObs-1, matrixPos_(1));
-		  j = nObs-1;
+		  tmpReal = costMatrix_((mrs_natural)(nObs-1), (mrs_natural)matrixPos_(1));
+		  j = (mrs_natural)(nObs-1);
 		  for(i=0; i<nObs-1; i++)
 		    {
-		      if(costMatrix_(i, matrixPos_(1)) < tmpReal && alignment_(i,nSmp-1) != 0)
+		      if(costMatrix_(i, (mrs_natural)matrixPos_(1)) < tmpReal && alignment_(i,(mrs_natural)(nSmp-1)) != 0)
 			{
-			  tmpReal = costMatrix_(i, matrixPos_(1));
+			  tmpReal = costMatrix_(i, (mrs_natural)matrixPos_(1));
 			  j = i;
 			}
 		    }
-		  i = nSmp-1;
+		  i = (mrs_natural)(nSmp-1);
 		  totalDis_ = tmpReal;
 		  ctrl_totalDis_->setValue(totalDis_);
 		}
-	      k = nSmp + nObs - 1;
+	      k = (mrs_natural)(nSmp + nObs - 1);
 	      while(alignment_(j,i) != 0 && k>=0)
 		{
 		  if(alignment_(j,i) == 1)
@@ -526,15 +526,15 @@ DTW::myProcess(realvec& in, realvec& out)
 		      // copying first SimilarityMatrix
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l),matrixPos_(0)) = in(beginPos_(l),0);
-			  alignment_(beginPos_(l),0) = 0;
+			  costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) = in((mrs_natural)beginPos_(l),0);
+			  alignment_((mrs_natural)beginPos_(l),0) = 0;
 			}
 		      // calculating other cost of the first col
 		      for(l=0; l<nTemplates; l++)
 			{
-			  for(j=beginPos_(l)+1; j<endPos_(l); j++)
+			  for(j=(mrs_natural)beginPos_(l)+1; j<endPos_(l); j++)
 			    {
-			      costMatrix_(j,matrixPos_(0)) = in(j,0) + costMatrix_(j-1,matrixPos_(0));
+			      costMatrix_(j,(mrs_natural)matrixPos_(0)) = in(j,0) + costMatrix_(j-1,(mrs_natural)matrixPos_(0));
 			      alignment_(j,0) = 1;
 			    }
 			}
@@ -544,7 +544,7 @@ DTW::myProcess(realvec& in, realvec& out)
 		      // copying first col of SimilarityMatrix
 		      for(j=0; j<nObs; j++)
 			{
-			  costMatrix_(j,matrixPos_(0)) = in(j,0);
+			  costMatrix_(j,(mrs_natural)matrixPos_(0)) = in(j,0);
 			  alignment_(j,0) = 0;
 			}
 		    }
@@ -553,32 +553,32 @@ DTW::myProcess(realvec& in, realvec& out)
 		    {
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l),matrixPos_(1)) = costMatrix_(endPos_(l)-1,matrixPos_(0)) + in(beginPos_(l),i);
+			  costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(1)) = costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l),i);
 			  if(weight)
-			    costMatrix_(beginPos_(l),matrixPos_(1)) += in(beginPos_(l),i);
-			  alignment_(beginPos_(l),i) = -1*(endPos_(l)-1);
-			  tmpReal = costMatrix_(beginPos_(l),matrixPos_(0)) + in(beginPos_(l),i);
-			  if(tmpReal < costMatrix_(beginPos_(l),matrixPos_(1)))
+			    costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(1)) += in((mrs_natural)beginPos_(l),i);
+			  alignment_((mrs_natural)beginPos_(l),i) = -1*(endPos_(l)-1);
+			  tmpReal = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l),i);
+			  if(tmpReal < costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(1)))
 			    {
-			      costMatrix_(beginPos_(l),matrixPos_(1)) = tmpReal;
-			      alignment_(beginPos_(l), i) = 3;
+			      costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(1)) = tmpReal;
+			      alignment_((mrs_natural)beginPos_(l), i) = 3;
 			    }
-			  for(j=beginPos_(l)+1; j<endPos_(l); j++)
+			  for(j=(mrs_natural)beginPos_(l)+1; j<(mrs_natural)endPos_(l); j++)
 			    {
-			      costMatrix_(j,matrixPos_(1)) = costMatrix_(j-1,matrixPos_(1)) + in(j,i);
+			      costMatrix_(j,(mrs_natural)matrixPos_(1)) = costMatrix_(j-1,(mrs_natural)matrixPos_(1)) + in(j,i);
 			      alignment_(j,i) = 1;
-			      tmpReal = costMatrix_(j-1,matrixPos_(0)) + in(j,i);
+			      tmpReal = costMatrix_(j-1,(mrs_natural)matrixPos_(0)) + in(j,i);
 			      if(weight)
 				tmpReal += in(j,i);
-			      if(tmpReal < costMatrix_(j,matrixPos_(1)))
+			      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(1)))
 				{
-				  costMatrix_(j,matrixPos_(1)) = tmpReal;
+				  costMatrix_(j,(mrs_natural)matrixPos_(1)) = tmpReal;
 				  alignment_(j,i) = 2;
 				}
-			      tmpReal = costMatrix_(j,matrixPos_(0)) + in(j,i);
-			      if(tmpReal < costMatrix_(j,matrixPos_(1)))
+			      tmpReal = costMatrix_(j,(mrs_natural)matrixPos_(0)) + in(j,i);
+			      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(1)))
 				{
-				  costMatrix_(j,matrixPos_(1)) = tmpReal;
+				  costMatrix_(j,(mrs_natural)matrixPos_(1)) = tmpReal;
 				  alignment_(j,i) = 3;
 				}
 			    }
@@ -597,37 +597,37 @@ DTW::myProcess(realvec& in, realvec& out)
 		    }
 		  if(ctrl_lastPos_->to<mrs_string>() == "end")
 		    {
-		      tmpReal = costMatrix_(endPos_(0)-1,matrixPos_(0));
-		      j = endPos_(0)-1;
+		      tmpReal = costMatrix_((mrs_natural)endPos_(0)-1,(mrs_natural)matrixPos_(0));
+		      j = (mrs_natural)endPos_(0)-1;
 		      for(l=1; l<nTemplates; l++)
 			{
-			  if(costMatrix_(endPos_(l)-1,matrixPos_(0)) < tmpReal)
+			  if(costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(0)) < tmpReal)
 			    {
-			      tmpReal = costMatrix_(endPos_(l)-1,matrixPos_(0));
-			      j = endPos_(l)-1;
+			      tmpReal = costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(0));
+			      j = (mrs_natural)endPos_(l)-1;
 			    }
 			}
 		      totalDis_ = tmpReal;
 		      ctrl_totalDis_->setValue(totalDis_);
-		      i = nSmp-1;
+		      i = (mrs_natural)(nSmp-1);
 		    }
 		  else if(ctrl_lastPos_->to<mrs_string>() == "lowest")
 		    {
-		      tmpReal = costMatrix_(0, matrixPos_(0));
+		      tmpReal = costMatrix_(0, (mrs_natural)matrixPos_(0));
 		      j=0;
 		      for(i=1; i<nObs; i++)
 			{
-			  if(costMatrix_(i,matrixPos_(0)) < tmpReal)
+			  if(costMatrix_(i,(mrs_natural)matrixPos_(0)) < tmpReal)
 			    {
-			      tmpReal = costMatrix_(i, matrixPos_(0));
+			      tmpReal = costMatrix_(i, (mrs_natural)matrixPos_(0));
 			      j = i;
 			    }
 			}
-		      i = nSmp-1;
+		      i = (mrs_natural)nSmp-1;
 		      totalDis_ = tmpReal;
 		      ctrl_totalDis_->setValue(totalDis_);
 		    }
-		  k = 3*nSmp - 1;//+ nObs - 1;
+		  k = (mrs_natural)(3*nSmp - 1);//+ nObs - 1;
 		  while(alignment_(j,i) != 0 && k>=0)
 		    {
 		      if(alignment_(j,i) == 1)
@@ -669,7 +669,7 @@ DTW::myProcess(realvec& in, realvec& out)
 			      out(k,1) = j;
 			      k--;
 			    }
-			  j = -1*alignment_(j,i);
+			  j = -1*(mrs_natural)alignment_(j,i);
 			  i--;
 			}
 		    }
@@ -689,43 +689,43 @@ DTW::myProcess(realvec& in, realvec& out)
 		      // copying first SimilarityMatrix
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l),matrixPos_(0)) = in(beginPos_(l),0);
-			  alignment_(beginPos_(l),0) = 0;
+			  costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) = in((mrs_natural)beginPos_(l),0);
+			  alignment_((mrs_natural)beginPos_(l),0) = 0;
 			}
 		      // calculating the second col
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l)+1,matrixPos_(1)) = costMatrix_(beginPos_(l),matrixPos_(0)) + in(beginPos_(l)+1,1);
+			  costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(1)) = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l)+1,1);
 			  if(weight)
-			    costMatrix_(beginPos_(l)+1,matrixPos_(1)) += in(beginPos_(l)+1,1);
-			  costMatrix_(beginPos_(l)+2,matrixPos_(1)) = costMatrix_(beginPos_(l),matrixPos_(0)) + in(beginPos_(l)+1,1) + in(beginPos_(l)+2,1);
+			    costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(1)) += in((mrs_natural)beginPos_(l)+1,1);
+			  costMatrix_((mrs_natural)beginPos_(l)+2,(mrs_natural)matrixPos_(1)) = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l)+1,1) + in((mrs_natural)beginPos_(l)+2,1);
 			  if(weight)
-			    costMatrix_(beginPos_(l)+2,matrixPos_(1)) += in(beginPos_(l)+1,1);
-			  alignment_(beginPos_(l)+1,1) = 2;
-			  alignment_(beginPos_(l)+2,1) = 1;
+			    costMatrix_((mrs_natural)beginPos_(l)+2,(mrs_natural)matrixPos_(1)) += in((mrs_natural)beginPos_(l)+1,1);
+			  alignment_((mrs_natural)beginPos_(l)+1,1) = 2;
+			  alignment_((mrs_natural)beginPos_(l)+2,1) = 1;
 			}
 		      // calculating the third col
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l)+1,matrixPos_(2)) = costMatrix_(beginPos_(l),matrixPos_(0)) + in(beginPos_(l)+1,1) + in(beginPos_(l)+1,2);
+			  costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l)+1,1) + in((mrs_natural)beginPos_(l)+1,2);
 			  if(weight)
-			    costMatrix_(beginPos_(l)+1,matrixPos_(2)) += in(beginPos_(l)+1,1);
-			  alignment_(beginPos_(l)+1,2) = 3;
-			  costMatrix_(beginPos_(l)+2,matrixPos_(2)) = costMatrix_(beginPos_(l)+1,matrixPos_(1)) + in(beginPos_(l)+2,2);
+			    costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) += in((mrs_natural)beginPos_(l)+1,1);
+			  alignment_((mrs_natural)beginPos_(l)+1,2) = 3;
+			  costMatrix_((mrs_natural)beginPos_(l)+2,(mrs_natural)matrixPos_(2)) = costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(1)) + in((mrs_natural)beginPos_(l)+2,2);
 			  if(weight)
-			    costMatrix_(beginPos_(l)+2,matrixPos_(2)) += in(beginPos_(l)+2,2);
-			  alignment_(beginPos_(l)+2,2) = 2;
-			  costMatrix_(beginPos_(l)+3,matrixPos_(2)) = costMatrix_(beginPos_(l)+2,matrixPos_(1)) + in(beginPos_(l)+3,2);
+			    costMatrix_((mrs_natural)beginPos_(l)+2,(mrs_natural)matrixPos_(2)) += in((mrs_natural)beginPos_(l)+2,2);
+			  alignment_((mrs_natural)beginPos_(l)+2,2) = 2;
+			  costMatrix_((mrs_natural)beginPos_(l)+3,(mrs_natural)matrixPos_(2)) = costMatrix_((mrs_natural)beginPos_(l)+2,(mrs_natural)matrixPos_(1)) + in((mrs_natural)beginPos_(l)+3,2);
 			  if(weight)
-			    costMatrix_(beginPos_(l)+3,matrixPos_(2)) += in(beginPos_(l)+3,2);
-			  alignment_(beginPos_(l)+3,2) = 2;
-			  tmpReal = costMatrix_(beginPos_(l)+1,matrixPos_(1)) + in(beginPos_(l)+2,2) + in(beginPos_(l)+3,2);
+			    costMatrix_((mrs_natural)beginPos_(l)+3,(mrs_natural)matrixPos_(2)) += in((mrs_natural)beginPos_(l)+3,2);
+			  alignment_((mrs_natural)beginPos_(l)+3,2) = 2;
+			  tmpReal = costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(1)) + in((mrs_natural)beginPos_(l)+2,2) + in((mrs_natural)beginPos_(l)+3,2);
 			  if(weight)
-			    tmpReal += in(beginPos_(l)+2,2);
-			  if(tmpReal < costMatrix_(beginPos_(l)+3,matrixPos_(2)))
+			    tmpReal += in((mrs_natural)beginPos_(l)+2,2);
+			  if(tmpReal < costMatrix_((mrs_natural)beginPos_(l)+3,(mrs_natural)matrixPos_(2)))
 			    {
-			      costMatrix_(beginPos_(l)+3,matrixPos_(2)) = tmpReal;
-			      alignment_(beginPos_(l)+3,2) = 1;
+			      costMatrix_((mrs_natural)beginPos_(l)+3,(mrs_natural)matrixPos_(2)) = tmpReal;
+			      alignment_((mrs_natural)beginPos_(l)+3,2) = 1;
 			    }
 			}
 		    }
@@ -734,66 +734,66 @@ DTW::myProcess(realvec& in, realvec& out)
 		      // copying first col of SimilarityMatrix
 		      for(j=0; j<nObs; j++)
 			{
-			  costMatrix_(j, matrixPos_(0)) = in(j,0);
+			  costMatrix_(j, (mrs_natural)matrixPos_(0)) = in(j,0);
 			  alignment_(j,0) = 0;
 			}
 		      // calculating the second col
-		      tmpReal = costMatrix_(endPos_(0)-1,matrixPos_(0));
-		      j=endPos_(0)-1;
+		      tmpReal = costMatrix_((mrs_natural)endPos_(0)-1,(mrs_natural)matrixPos_(0));
+		      j=(mrs_natural)endPos_(0)-1;
 		      for(l=1; l<nTemplates; l++)
 			{
-			  if(costMatrix_(endPos_(l)-1,matrixPos_(0)) < tmpReal)
+			  if(costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(0)) < tmpReal)
 			    {
-			      tmpReal = costMatrix_(endPos_(l)-1,matrixPos_(0));
-			      j=endPos_(l)-1;
+			      tmpReal = costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(0));
+			      j=(mrs_natural)endPos_(l)-1;
 			    }
 			}
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l),matrixPos_(1)) = costMatrix_(j,matrixPos_(0)) + in(beginPos_(l),1);
+			  costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(1)) = costMatrix_(j,(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l),1);
 			  if(weight)
-			    costMatrix_(beginPos_(l),matrixPos_(1)) += in(beginPos_(l),1);
-			  alignment_(beginPos_(l),1) = -1*j;
+			    costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(1)) += in((mrs_natural)beginPos_(l),1);
+			  alignment_((mrs_natural)beginPos_(l),1) = -1*j;
 			}
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l)+1,matrixPos_(1)) = costMatrix_(beginPos_(l),matrixPos_(0)) + in(beginPos_(l)+1,1);
+			  costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(1)) = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l)+1,1);
 			  if(weight)
-			    costMatrix_(beginPos_(l)+1,matrixPos_(1)) += in(beginPos_(l)+1,1);
-			  alignment_(beginPos_(l)+1,1) = 2;
-			  for(j=beginPos_(l)+2; j<endPos_(l); j++)
+			    costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(1)) += in((mrs_natural)beginPos_(l)+1,1);
+			  alignment_((mrs_natural)beginPos_(l)+1,1) = 2;
+			  for(j=(mrs_natural)beginPos_(l)+2; j<(mrs_natural)endPos_(l); j++)
 			    {
-			      costMatrix_(j,matrixPos_(1)) = costMatrix_(j-1,matrixPos_(0)) + in(j,1);
+			      costMatrix_(j,(mrs_natural)matrixPos_(1)) = costMatrix_(j-1,(mrs_natural)matrixPos_(0)) + in(j,1);
 			      if(weight)
-				costMatrix_(j,matrixPos_(1)) += in(j,1);
+				costMatrix_(j,(mrs_natural)matrixPos_(1)) += in(j,1);
 			      alignment_(j,1) = 2;
-			      tmpReal = costMatrix_(j-2,matrixPos_(0)) + in(j-1,1) + in(j,1);
+			      tmpReal = costMatrix_(j-2,(mrs_natural)matrixPos_(0)) + in(j-1,1) + in(j,1);
 			      if(weight)
 				tmpReal += in(j-1,1);
-			      if(tmpReal < costMatrix_(j,matrixPos_(1)))
+			      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(1)))
 				{
-				  costMatrix_(j,matrixPos_(1)) = tmpReal;
+				  costMatrix_(j,(mrs_natural)matrixPos_(1)) = tmpReal;
 				  alignment_(j,1) = 1;
 				}
 			    }
 			}
 		      // calculating the third col
-		      tmpReal = costMatrix_(endPos_(0)-1,matrixPos_(1));
-		      j=endPos_(0)-1;
+		      tmpReal = costMatrix_((mrs_natural)endPos_(0)-1,(mrs_natural)matrixPos_(1));
+		      j=(mrs_natural)endPos_(0)-1;
 		      for(l=1; l<nTemplates; l++)
 			{
-			  if(costMatrix_(endPos_(l)-1,matrixPos_(1)) < tmpReal)
+			  if(costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(1)) < tmpReal)
 			    {
-			      tmpReal = costMatrix_(endPos_(l)-1, matrixPos_(1));
-			      j=endPos_(l)-1;
+			      tmpReal = costMatrix_((mrs_natural)endPos_(l)-1, (mrs_natural)matrixPos_(1));
+			      j=(mrs_natural)endPos_(l)-1;
 			    }
 			}
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l),matrixPos_(2)) = costMatrix_(j,matrixPos_(1)) + in(beginPos_(l),2);
+			  costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(2)) = costMatrix_(j,(mrs_natural)matrixPos_(1)) + in((mrs_natural)beginPos_(l),2);
 			  if(weight)
-			    costMatrix_(beginPos_(l),matrixPos_(2)) += in(beginPos_(l),2);
-			  alignment_(beginPos_(l),2) = -1*j;
+			    costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(2)) += in((mrs_natural)beginPos_(l),2);
+			  alignment_((mrs_natural)beginPos_(l),2) = -1*j;
 			}
 		      //tmpReal = costMatrix_(endPos_(0)-1,matrixPos_(1));
 		      //j=endPos_(0)-1;
@@ -816,38 +816,38 @@ DTW::myProcess(realvec& in, realvec& out)
 		      //}
 		      for(l=0; l<nTemplates; l++)
 			{
-			  costMatrix_(beginPos_(l)+1,matrixPos_(2)) = costMatrix_(beginPos_(l),matrixPos_(1)) + in(beginPos_(l)+1,2);
+			  costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(1)) + in((mrs_natural)beginPos_(l)+1,2);
 			  if(weight)
-			    costMatrix_(beginPos_(l)+1,matrixPos_(2)) += in(beginPos_(l)+1,2);
-			  alignment_(beginPos_(l)+1,2) = 2;
-			  tmpReal = costMatrix_(beginPos_(l),matrixPos_(0)) + in(beginPos_(l)+1,1) + in(beginPos_(l)+1,2);
+			    costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) += in((mrs_natural)beginPos_(l)+1,2);
+			  alignment_((mrs_natural)beginPos_(l)+1,2) = 2;
+			  tmpReal = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l)+1,1) + in((mrs_natural)beginPos_(l)+1,2);
 			  if(weight)
-			    tmpReal += in(beginPos_(l)+1,1);
-			  if(tmpReal < costMatrix_(beginPos_(l)+1,matrixPos_(2)))
+			    tmpReal += in((mrs_natural)beginPos_(l)+1,1);
+			  if(tmpReal < costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)))
 			    {
-			      costMatrix_(beginPos_(l)+1,matrixPos_(2)) = tmpReal;
-			      alignment_(beginPos_(l)+1,2) = 3;
+			      costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) = tmpReal;
+			      alignment_((mrs_natural)beginPos_(l)+1,2) = 3;
 			    }
-			  for(j=beginPos_(l)+2; j<endPos_(l); j++)
+			  for(j=(mrs_natural)beginPos_(l)+2; j<(mrs_natural)endPos_(l); j++)
 			    {
-			      costMatrix_(j,matrixPos_(2)) = costMatrix_(j-1,matrixPos_(0)) + in(j,1) + in(j,2);
+			      costMatrix_(j,(mrs_natural)matrixPos_(2)) = costMatrix_(j-1,(mrs_natural)matrixPos_(0)) + in(j,1) + in(j,2);
 			      if(weight)
-				costMatrix_(j,matrixPos_(2)) += in(j,1);
+				costMatrix_(j,(mrs_natural)matrixPos_(2)) += in(j,1);
 			      alignment_(j,2) = 3;
-			      tmpReal = costMatrix_(j-1,matrixPos_(1)) + in(j,2);
+			      tmpReal = costMatrix_(j-1,(mrs_natural)matrixPos_(1)) + in(j,2);
 			      if(weight)
 				tmpReal += in(j,2);
-			      if(tmpReal < costMatrix_(j,matrixPos_(2)))
+			      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 				{
-				  costMatrix_(j,matrixPos_(2)) = tmpReal;
+				  costMatrix_(j,(mrs_natural)matrixPos_(2)) = tmpReal;
 				  alignment_(j,2) = 2;
 				}
-			      tmpReal = costMatrix_(j-2,matrixPos_(1)) + in(j-1,2) + in(j,2);
+			      tmpReal = costMatrix_(j-2,(mrs_natural)matrixPos_(1)) + in(j-1,2) + in(j,2);
 			      if(weight)
 				tmpReal += in(j-1,2);
-			      if(tmpReal < costMatrix_(j,matrixPos_(2)))
+			      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 				{
-				  costMatrix_(j,matrixPos_(2)) = tmpReal;
+				  costMatrix_(j,(mrs_natural)matrixPos_(2)) = tmpReal;
 				  alignment_(j,2) = 1;
 				}
 			    }
@@ -865,12 +865,12 @@ DTW::myProcess(realvec& in, realvec& out)
 		      j = -1;
 		      for(l=0; l<nTemplates; l++)
 			{
-			  if(alignment_(endPos_(l)-1,i-1) != 0)
+			  if(alignment_((mrs_natural)endPos_(l)-1,i-1) != 0)
 			    {
-			      if(j<0 || (j>=0&&costMatrix_(endPos_(l)-1,matrixPos_(1))<tmpReal))
+			      if(j<0 || (j>=0&&costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(1))<tmpReal))
 				{
-				  tmpReal = costMatrix_(endPos_(l)-1,matrixPos_(1));
-				  j = endPos_(l)-1;
+				  tmpReal = costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(1));
+				  j = (mrs_natural)endPos_(l)-1;
 				}
 			    }
 			}
@@ -878,10 +878,10 @@ DTW::myProcess(realvec& in, realvec& out)
 			{
 			  for(l=0; l<nTemplates; l++)
 			    {
-			      costMatrix_(beginPos_(l),matrixPos_(2)) = costMatrix_(j,matrixPos_(1)) + in(beginPos_(l),i);
+			      costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(2)) = costMatrix_(j,(mrs_natural)matrixPos_(1)) + in((mrs_natural)beginPos_(l),i);
 			      if(weight)
-				costMatrix_(beginPos_(l),matrixPos_(2)) += in(beginPos_(l),i);
-			      alignment_(beginPos_(l),i) = -1*j;
+				costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(2)) += in((mrs_natural)beginPos_(l),i);
+			      alignment_((mrs_natural)beginPos_(l),i) = -1*j;
 			    }
 			  //j = -1;
 			  //for(l=0; l<nTemplates; l++)
@@ -933,76 +933,76 @@ DTW::myProcess(realvec& in, realvec& out)
 			    }*/
 		      for(l=0; l<nTemplates; l++)
 			{
-			  if(alignment_(beginPos_(l),i-1) != 0)
+			  if(alignment_((mrs_natural)beginPos_(l),i-1) != 0)
 			    {
-			      costMatrix_(beginPos_(l)+1,matrixPos_(2)) = costMatrix_(beginPos_(l),matrixPos_(1)) + in(beginPos_(l)+1,i);
+			      costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(1)) + in((mrs_natural)beginPos_(l)+1,i);
 			      if(weight)
-				costMatrix_(beginPos_(l)+1,matrixPos_(2)) += in(beginPos_(l)+1,i);
-			      alignment_(beginPos_(l)+1,i) = 2;
-			      if(alignment_(beginPos_(l),i-2) != 0)
+				costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) += in((mrs_natural)beginPos_(l)+1,i);
+			      alignment_((mrs_natural)beginPos_(l)+1,i) = 2;
+			      if(alignment_((mrs_natural)beginPos_(l),i-2) != 0)
 				{
-				  tmpReal = costMatrix_(beginPos_(l),matrixPos_(0)) + in(beginPos_(l)+1,i-1) + in(beginPos_(l)+1,i);
+				  tmpReal = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l)+1,i-1) + in((mrs_natural)beginPos_(l)+1,i);
 				  if(weight)
-				    tmpReal += in(beginPos_(l)+1,i-1);
-				  if(tmpReal < costMatrix_(beginPos_(l)+1,matrixPos_(2)))
+				    tmpReal += in((mrs_natural)beginPos_(l)+1,i-1);
+				  if(tmpReal < costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)))
 				    {
-				      costMatrix_(beginPos_(l)+1,matrixPos_(2)) = tmpReal;
-				      alignment_(beginPos_(l)+1,i) = 3;
+				      costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) = tmpReal;
+				      alignment_((mrs_natural)beginPos_(l)+1,i) = 3;
 				    }
 				}
 			    }
-			  else if(alignment_(beginPos_(l),i-2) != 0)
+			  else if(alignment_((mrs_natural)beginPos_(l),i-2) != 0)
 			    {
-			      costMatrix_(beginPos_(l)+1,matrixPos_(2)) = costMatrix_(beginPos_(l),matrixPos_(0)) + in(beginPos_(l)+1,i-1) + in(beginPos_(l)+1,i);
+			      costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) = costMatrix_((mrs_natural)beginPos_(l),(mrs_natural)matrixPos_(0)) + in((mrs_natural)beginPos_(l)+1,i-1) + in((mrs_natural)beginPos_(l)+1,i);
 			      if(weight)
-				costMatrix_(beginPos_(l)+1,matrixPos_(2)) += in(beginPos_(l)+1,i-1);
-			      alignment_(beginPos_(l)+1,i) = 3;
+				costMatrix_((mrs_natural)beginPos_(l)+1,(mrs_natural)matrixPos_(2)) += in((mrs_natural)beginPos_(l)+1,i-1);
+			      alignment_((mrs_natural)beginPos_(l)+1,i) = 3;
 			      }
-			  for(j=beginPos_(l)+2; j<endPos_(l); j++)
+			  for(j=(mrs_natural)beginPos_(l)+2; j<(mrs_natural)endPos_(l); j++)
 			    {
 			      if(alignment_(j-1,i-2) != 0)
 				{
-				  costMatrix_(j,matrixPos_(2)) = costMatrix_(j-1,matrixPos_(0)) + in(j,i-1) + in(j,i);
+				  costMatrix_(j,(mrs_natural)matrixPos_(2)) = costMatrix_(j-1,(mrs_natural)matrixPos_(0)) + in(j,i-1) + in(j,i);
 				  if(weight)
-				    costMatrix_(j,matrixPos_(2)) += in(j,i-1);
+				    costMatrix_(j,(mrs_natural)matrixPos_(2)) += in(j,i-1);
 				  alignment_(j,i) = 3;
 				  if(alignment_(j-1,i-1) != 0)
 				    {
-				      tmpReal = costMatrix_(j-1,matrixPos_(1)) + in(j,i);
+				      tmpReal = costMatrix_(j-1,(mrs_natural)matrixPos_(1)) + in(j,i);
 				      if(weight)
 					tmpReal += in(j,i);
-				      if(tmpReal < costMatrix_(j,matrixPos_(2)))
+				      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 					{
-					  costMatrix_(j,matrixPos_(2)) = tmpReal;
+					  costMatrix_(j,(mrs_natural)matrixPos_(2)) = tmpReal;
 					  alignment_(j,i) = 2;
 					}
 				    }
 				  if(alignment_(j-2,i-1) != 0)
 				    {
-				      tmpReal = costMatrix_(j-2,matrixPos_(1)) + in(j-1,i) + in(j,i);
+				      tmpReal = costMatrix_(j-2,(mrs_natural)matrixPos_(1)) + in(j-1,i) + in(j,i);
 				      if(weight)
 					tmpReal += in(j-1,i);
-				      if(tmpReal < costMatrix_(j,matrixPos_(2)))
+				      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 					{
-					  costMatrix_(j,matrixPos_(2)) = tmpReal;
+					  costMatrix_(j,(mrs_natural)matrixPos_(2)) = tmpReal;
 					  alignment_(j,i) = 1;
 					}
 				    }
 				}
 			      else if(alignment_(j-1,i-1) != 0)
 				{
-				  costMatrix_(j,matrixPos_(2)) = costMatrix_(j-1,matrixPos_(1)) + in(j,i);
+				  costMatrix_(j,(mrs_natural)matrixPos_(2)) = costMatrix_(j-1,(mrs_natural)matrixPos_(1)) + in(j,i);
 				  if(weight)
-				    costMatrix_(j,matrixPos_(2)) += in(j,i);
+				    costMatrix_(j,(mrs_natural)matrixPos_(2)) += in(j,i);
 				  alignment_(j,i) = 2;
 				  if(alignment_(j-2,i-1) != 0)
 				    {
-				      tmpReal = costMatrix_(j-2,matrixPos_(1)) + in(j-1,i) + in(j,i);
+				      tmpReal = costMatrix_(j-2,(mrs_natural)matrixPos_(1)) + in(j-1,i) + in(j,i);
 				      if(weight)
 					tmpReal += in(j-1,i);
-				      if(tmpReal < costMatrix_(j,matrixPos_(2)))
+				      if(tmpReal < costMatrix_(j,(mrs_natural)matrixPos_(2)))
 					{
-					  costMatrix_(j,matrixPos_(2)) = tmpReal;
+					  costMatrix_(j,(mrs_natural)matrixPos_(2)) = tmpReal;
 					  alignment_(j,i) = 1;
 					}
 
@@ -1010,9 +1010,9 @@ DTW::myProcess(realvec& in, realvec& out)
 				}
 			      else if(alignment_(j-2,i-1) != 0)
 				{
-				  costMatrix_(j,matrixPos_(2)) = costMatrix_(j-2,matrixPos_(1)) + in(j-1,i) + in(j,i);
+				  costMatrix_(j,(mrs_natural)matrixPos_(2)) = costMatrix_(j-2,(mrs_natural)matrixPos_(1)) + in(j-1,i) + in(j,i);
 				  if(weight)
-				    costMatrix_(j,matrixPos_(2)) += in(j-1,i);
+				    costMatrix_(j,(mrs_natural)matrixPos_(2)) += in(j-1,i);
 				  alignment_(j,i) = 1;
 				}
 			    }
@@ -1035,37 +1035,37 @@ DTW::myProcess(realvec& in, realvec& out)
 		    }
 		  if(ctrl_lastPos_->to<mrs_string>() == "end")
 		    {
-		      tmpReal = costMatrix_(endPos_(0)-1,matrixPos_(1));
-		      j = endPos_(0)-1;
+		      tmpReal = costMatrix_((mrs_natural)endPos_(0)-1,(mrs_natural)matrixPos_(1));
+		      j = (mrs_natural)endPos_(0)-1;
 		      for(l=1; l<nTemplates; l++)
 			{
-			  if(costMatrix_(endPos_(l)-1,matrixPos_(1)) < tmpReal)
+			  if(costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(1)) < tmpReal)
 			    {
-			      tmpReal = costMatrix_(endPos_(l)-1,matrixPos_(1));
-			      j = endPos_(l)-1;
+			      tmpReal = costMatrix_((mrs_natural)endPos_(l)-1,(mrs_natural)matrixPos_(1));
+			      j = (mrs_natural)endPos_(l)-1;
 			    }
 			}
 		      totalDis_ = tmpReal;
 		      ctrl_totalDis_->setValue(totalDis_);
-		      i = nSmp-1;
+		      i = (mrs_natural)nSmp-1;
 		    }
 		  else if(ctrl_lastPos_->to<mrs_string>() == "lowest")
 		    {
-		      tmpReal = costMatrix_(0,matrixPos_(1));
+		      tmpReal = costMatrix_(0,(mrs_natural)matrixPos_(1));
 		      j=0;
 		      for(i=1; i<nObs; i++)
 			{
-			  if(costMatrix_(i,matrixPos_(1)) < tmpReal)
+			  if(costMatrix_(i,(mrs_natural)matrixPos_(1)) < tmpReal)
 			    {
-			      tmpReal = costMatrix_(i,matrixPos_(1));
+			      tmpReal = costMatrix_(i,(mrs_natural)matrixPos_(1));
 			      j = i;
 			    }
 			}
-		      i = nSmp-1;
+		      i = (mrs_natural)nSmp-1;
 		      totalDis_ = tmpReal;
 		      ctrl_totalDis_->setValue(totalDis_);
 		    }
-		  k = 3*nSmp -1;// + nObs - 1;
+		  k = (mrs_natural)(3*nSmp -1);// + nObs - 1;
 		  while(alignment_(j,i) != 0 && k>=0)
 		    {
 		      if(alignment_(j,i) == 1)
@@ -1129,7 +1129,7 @@ DTW::myProcess(realvec& in, realvec& out)
 			      out(k,1) = j;
 			      k--;
 			    }
-			  j = -1*alignment_(j,i);
+			  j = (mrs_natural)(-1*alignment_(j,i));
 			  i--;
 			}
 		    }
