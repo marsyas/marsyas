@@ -159,16 +159,16 @@ UpdatingBassModel::myProcess(realvec& in, realvec& out)
 	for(i=0; i<I_; i++){
 	  tmpreal = 0.0;
 	  tmpnatural = 0;
-	  for(m=(int)((double)i/I_*(start_(j+1)-start_(j)))+start_(j); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++){
+	  for(m=(int)(((double)i/I_*(start_(j+1)-start_(j)))+start_(j)); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++){
 	    tmpreal += in(rootMin_+l,m);
 	    tmpnatural ++;
 	  }
 	  if(tmpnatural > 0){
 	    tmpreal /= (mrs_real)tmpnatural;
 	  }
-	  templates_(l+(rootMax_-rootMin_)-d_(j),k_(j)*I_+i) += tmpreal;
+	  templates_((mrs_natural)(l+(rootMax_-rootMin_)-d_(j)),(mrs_natural)((k_(j)*I_+i))) += tmpreal;
 	}
-	counts_(l+(rootMax_-rootMin_)-d_(j),k_(j))++;
+	counts_((mrs_natural)(l+(rootMax_-rootMin_)-d_(j)),(mrs_natural)k_(j))++;
       }
     }
     for(l=0; l<(rootMax_-rootMin_)*2; l++){
