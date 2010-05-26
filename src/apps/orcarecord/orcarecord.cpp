@@ -203,7 +203,7 @@ void record_orcas(mrs_real length, mrs_natural year,
     mrs_natural minutes =0;
 
 
-    for (mrs_natural i = 0; i < iterations; i++) 
+    for (mrs_natural i = 0; i < iterations; ++i) 
     {
         if (((i % 430)==0)&&(i != 0))
         {
@@ -292,7 +292,7 @@ void record_orcas_dat(mrs_real length, mrs_natural year, string id1)
 
     mrs_natural minutes =0;
 
-    for (mrs_natural i = 0; i < iterations; i++) 
+    for (mrs_natural i = 0; i < iterations; ++i) 
     {
         if (((i % 430)==0)&&(i != 0))
         {

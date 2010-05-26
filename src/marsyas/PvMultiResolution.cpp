@@ -106,6 +106,7 @@ PvMultiResolution::myUpdate(MarControlPtr sender)
 void
 PvMultiResolution::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
 
 
@@ -114,14 +115,6 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 	
 	MarControlAccessor acc2(ctrl_longmag_);
 	mrs_realvec& longmag = acc2.to<mrs_realvec>();
-	
-	
-
-
-	mrs_real max = DBL_MIN;
-	mrs_real maxLong = DBL_MIN;
-	mrs_real powerShort = 0.0;
-	mrs_real powerLong = 0.0;
 	
 
 

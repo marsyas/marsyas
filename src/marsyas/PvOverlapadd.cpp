@@ -63,7 +63,7 @@ PvOverlapadd::addControls()
 void
 PvOverlapadd::myUpdate(MarControlPtr sender)
 {
-	
+	mrs_natural t;
 	(void) sender;
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/winSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -84,9 +84,7 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
 	temp_.stretch(N);
 	tin_.create(N);
 	
-
-	
-	for (t=0; t < Nw; t++)
+	for ( t=0; t < Nw; t++)
     {
 		awin_(t) = (mrs_real)(0.5 * (1  - cos(TWOPI * t/(Nw-1))));
 		swin_(t) = (mrs_real)(0.5 * (1  - cos(TWOPI * t/(Nw-1))));
@@ -143,7 +141,7 @@ PvOverlapadd::myUpdate(MarControlPtr sender)
 void 
 PvOverlapadd::myProcess(realvec& in, realvec& out)
 {
-	
+	mrs_natural t;
 	
   // add assertions for sizes
   mrs_natural N,Nw;
@@ -165,9 +163,7 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
   {
 	  tin_(t) = in(0, t);
   }
-  
 
-  
 
   // undo circular shift 
   int half_Nw_ = Nw/2;
@@ -195,10 +191,6 @@ PvOverlapadd::myProcess(realvec& in, realvec& out)
   
   rmsOut /= Nw;
   rmsOut = sqrt(rmsOut);
-  
-
-  mrs_real rmsIn = ctrl_rmsIn_->to<mrs_real>();
-
   
   
   

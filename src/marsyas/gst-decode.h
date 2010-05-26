@@ -34,13 +34,13 @@ typedef double mrs_real;
 typedef struct {
     GList* frameList;
     GList* frameSize;
-    unsigned int frameCount;
-    unsigned int totalSize;
+    uint32_t frameCount;
+    uint32_t totalSize;
 } gstreamerFrames;
 
 typedef struct {
     mrs_real* data;
-    unsigned int size;
+    uint32_t size;
 } audioVector;
 
 static void cb_newpad (GstElement*, GstPad*, gboolean, GstElement*);

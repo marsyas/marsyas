@@ -109,7 +109,7 @@ ViconFileSource::myProcess(realvec& in, realvec& out)
 {
 	(void) in;
 	//checkFlow(in,out);
-
+	mrs_natural o,t;
   
 	for (t = 0; t < inSamples_; t++)
     {

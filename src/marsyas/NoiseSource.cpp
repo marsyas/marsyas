@@ -53,9 +53,8 @@ NoiseSource::myUpdate(MarControlPtr sender)
 void 
 NoiseSource::myProcess(realvec &in, realvec &out)
 {
-	(void) in;
-  for (t=0; t < inSamples_; t++)
-    out(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) )-1;
+	for (mrs_natural t=0; t < inSamples_; t++)
+		out(t) = (mrs_real)(2.0 * rand() / (RAND_MAX + 1.0) )-1;
 }
 
 

@@ -66,6 +66,7 @@ OnePole::myUpdate(MarControlPtr sender)
 void
 OnePole::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	for (o = 0; o < inObservations_; o++)
 	{
 		// Use the last sample from the previous slice for the first sample of

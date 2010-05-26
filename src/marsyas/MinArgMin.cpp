@@ -69,10 +69,10 @@ MinArgMin::myProcess(realvec& in, realvec& out)
   mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
   
-  for (t=0; t < inSamples; t++)
+  for (mrs_natural t=0; t < inSamples; t++)
     {
       // for all the current minimums 
-      for (ki=0; ki < k; ki++)
+      for (ki=0; ki < k; ++ki)
 	{
 	  if (in(0,t) < out(0,2*ki))
 	    {

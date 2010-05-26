@@ -113,7 +113,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	// pitchContour->tick();
 	// mrs_realvec contour = pitchContour->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	// de-interleave the pitch contour
-	// for (int i=0; i < len; i++) 
+	// for (int i=0; i < len; ++i) 
 	// {
 	// confidences(i) = contour(2*i);
 	// pitches(i) = contour(2*i+1);
@@ -126,7 +126,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	mrs_realvec confidences(len);
 	mrs_realvec pitchres;
 	mrs_realvec peak_in;
-	for (int i=0; i < contourSize; i++) 
+	for (int i=0; i < contourSize; ++i) 
 	{
 	    pitchExtractor->tick();
 	    pitchres = pitchExtractor->getctrl("mrs_realvec/processedData")->to<mrs_realvec>(); 
@@ -179,7 +179,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updctrl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
 				
-		for (int i=0; i < len; i++) 
+		for (int i=0; i < len; ++i) 
 		{
 			playback->updctrl("SineSource/ss/mrs_real/frequency", pitches(i));
 			playback->updctrl("Gain/g/mrs_real/gain", confidences(i));
@@ -362,7 +362,7 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		confidences.stretchWrite(i,rms);
 
 		count += inSamples;
-		i++;
+		++i;
 	}
 
 	len = i;
@@ -381,7 +381,7 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updctrl("mrs_real/israte", net->getctrl("mrs_real/osrate"));
 				
-		for (int i=0; i < len; i++) 
+		for (int i=0; i < len; ++i) 
 		{
 			playback->updctrl("SineSource/ss/mrs_real/frequency", pitches(i));
 			playback->updctrl("Gain/g/mrs_real/gain", confidences(i));

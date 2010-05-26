@@ -435,7 +435,6 @@ public:
 		rac->myProcess(in, out);
 
 		// Check output.
-		mrs_real expected;
 		for (mrs_natural r = 0; r < inObservations; r++)
 		{
 			for (mrs_natural lag = 0; lag <= maxLag; lag++)

@@ -65,7 +65,7 @@ LSP::myUpdate(MarControlPtr sender)
 
 	//LSP features names
 	ostringstream oss;
-	for (mrs_natural i = 0; i < order_; i++)
+	for (mrs_natural i = 0; i < order_; ++i)
 		oss << "LSP_" << i+1 << ",";
 	setctrl("mrs_string/onObsNames", oss.str());
 }
@@ -131,7 +131,7 @@ LSP::myProcess(realvec& in, realvec& out)
 		sort(out_vec.begin(), out_vec.end()); //sorts LSP freqs into ascending order
 
 		//output sorted LSP frequencies
-		for(mrs_natural i = 0; i < order_; i++)
+		for(mrs_natural i = 0; i < order_; ++i)
 			out(i) = out_vec[i];
 
 #ifdef _MATLAB_LSP_

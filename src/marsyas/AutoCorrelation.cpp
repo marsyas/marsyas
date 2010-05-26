@@ -110,7 +110,7 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 		autocorr.update();
 		autocorr.process(tmp, norm_);
 		
-		for (mrs_natural i = 0 ; i < norm_.getSize() ; i++)
+		for (size_t i = 0 ; i < norm_.getSize() ; ++i)
 			norm_(i) = 1/norm_(i);
 	}
 
@@ -126,6 +126,7 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 void 
 AutoCorrelation::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	k_ = ctrl_magcompress_->to<mrs_real>();
 
 	// Copy to output to perform inplace fft and zeropad to double size

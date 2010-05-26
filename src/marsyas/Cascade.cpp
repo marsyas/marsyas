@@ -63,7 +63,7 @@ Cascade::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");   
     mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-    for (mrs_natural i=1; i < marsystemsSize_; i++) 
+    for (size_t i=1; i < marsystemsSize_; ++i) 
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
@@ -80,12 +80,12 @@ Cascade::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObsNames_, oss.str());
     
     // update buffers between components
-    if ((mrs_natural)slices_.size() < marsystemsSize_) 
+    if (slices_.size() < marsystemsSize_) 
 		{
       slices_.resize(marsystemsSize_, NULL);
     }
     
-    for (mrs_natural i = 0; i < marsystemsSize_; i++) 
+    for (size_t i = 0; i < marsystemsSize_; ++i) 
 		{
       if (slices_[i] != NULL) 
 			{
@@ -113,6 +113,7 @@ Cascade::myUpdate(MarControlPtr sender)
 void 
 Cascade::myProcess(realvec& in, realvec& out)
 {
+mrs_natural o,t;
   mrs_natural outIndex = 0;
   mrs_natural localIndex = 0;
   
@@ -132,7 +133,7 @@ Cascade::myProcess(realvec& in, realvec& out)
       }
     }
     outIndex += localIndex;
-    for (mrs_natural i = 1; i < marsystemsSize_; i++) 
+    for (size_t i = 1; i < marsystemsSize_; ++i) 
 		{
       marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
       localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();

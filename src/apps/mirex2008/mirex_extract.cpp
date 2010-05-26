@@ -179,7 +179,6 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   // Get parameters
   ////////////////////////////////////////////////////////////
-  mrs_real srate = samplingRate_;
   total->updctrl("mrs_natural/inSamples", winSize);
 
   //////////////////////////////////////////////////////////////////////////
@@ -217,10 +216,6 @@ void extract(Collection collection, string outWekaName)
   wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
 
   mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-  mrs_natural beatSize = 8;
-
-  MarSystem *total1 = NULL;
-
    annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));  
 
    if (outWekaName != EMPTYSTRING)
@@ -235,7 +230,7 @@ void extract(Collection collection, string outWekaName)
    // feature corresponds to which label
    ////////////////////////////////////////////////////////////
    string all_files_in_collection = "";
-   for (int i = 0; i < collection.getSize(); i++) {
+   for (size_t i = 0; i < collection.getSize(); ++i) {
 	 all_files_in_collection += collection.entry(i);
 	 if (i < collection.getSize() - 1)
 	   all_files_in_collection += ",";
@@ -256,7 +251,7 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   // Iterate over all files in collection
   ////////////////////////////////////////////////////////////
-  for (mrs_natural i=0; i < collection.size(); i++)
+  for (size_t i=0; i < collection.size(); ++i)
  	{
 	  // Update the featureNetwork to read the current file in the collection
  	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", collection.entry(i));

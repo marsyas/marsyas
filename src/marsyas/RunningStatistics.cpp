@@ -123,6 +123,7 @@ void RunningStatistics::clear(void) {
 
 void RunningStatistics::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	if (ctrl_clear_->to<mrs_bool>() || ctrl_clearPerTick_->to<mrs_bool>()) {
 		clear();
 	}

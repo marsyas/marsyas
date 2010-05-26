@@ -55,6 +55,7 @@ AMDF::myUpdate(MarControlPtr sender)
 void 
 AMDF::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
   //checkFlow(in,out);
   
 	// FIXME This value is defined but (possibly) not used
@@ -66,7 +67,7 @@ AMDF::myProcess(realvec& in, realvec& out)
     for (t = 0; t < inSamples_; t++)
       {
 	out(o,t) = 0.0;
-	for (i=t, k=0; i < inSamples_; i++, k++)
+	for (i=t, k=0; i < inSamples_; ++i, k++)
 	  {
 	    temp = in(o,i) - in(o,k);
 	    if (temp < 0) 

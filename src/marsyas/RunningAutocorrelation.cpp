@@ -143,7 +143,7 @@ void RunningAutocorrelation::myUpdate(MarControlPtr sender)
 void RunningAutocorrelation::myProcess(realvec& in, realvec& out)
 {
 	/// Iterate over the observations and samples and do the processing.
-	for (mrs_natural i = 0; i < inObservations_; i++)
+	for (mrs_natural i = 0; i < inObservations_; ++i)
 	{
 		// Calculate the autocorrelation terms
 		for (mrs_natural lag = 0; lag <= maxLag_; lag++)

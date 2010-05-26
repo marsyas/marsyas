@@ -36,7 +36,7 @@ char* coco_string_create_upper(char* data) {
 
 	char* newData = new char[dataLen + 1];
 
-	for (int i = 0; i <= dataLen; i++) {
+	for (int i = 0; i <= dataLen; ++i) {
 		if (('a' <= data[i]) && (data[i] <= 'z')) {
 			newData[i] = data[i] + ('A' - 'a');
 		}
@@ -55,7 +55,7 @@ char* coco_string_create_lower(char* data) {
 
 	char* newData = new char[dataLen + 1];
 
-	for (int i = 0; i <= dataLen; i++) {
+	for (int i = 0; i <= dataLen; ++i) {
 		if (('A' <= data[i]) && (data[i] <= 'Z')) {
 			newData[i] = data[i] - ('A'- 'a');
 		}
@@ -172,7 +172,7 @@ Buffer::Buffer(const char* s) {
 //    std::cout << "len=" << bufLen << std::endl;
     if (bufLen>MAX_BUFFER_LENGTH) { bufLen=MAX_BUFFER_LENGTH; }
 	buf = new char[bufLen];
-	for (int i=0;i<fileLen;i++) { buf[i]=s[i]; }
+	for (int i=0;i<fileLen;++i) { buf[i]=s[i]; }
     bufStart = 0; // set to start of buffer
 	SetPos(0);          // setup  buffer to position 0 (start)
 	if (bufLen == fileLen) Close();
@@ -489,7 +489,7 @@ Token* ExScanner::NextToken() {
 			{
 				tlen -= apx;
 				buffer->SetPos(t->pos); NextCh(); line = t->line; col = t->col;
-				for (int i = 0; i < tlen; i++) NextCh();
+				for (int i = 0; i < tlen; ++i) NextCh();
 				t->kind = 1; break;}
 		case 2:
 			case_2:

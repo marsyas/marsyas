@@ -64,6 +64,7 @@ PeakMask::myUpdate(MarControlPtr sender)
 void
 PeakMask::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
 
 	for (o=0; o < inObservations_; o++)

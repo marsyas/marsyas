@@ -54,9 +54,9 @@ ExRecord::ExRecord(int kind, std::string name, ExVal& value, bool reserved) : Ex
 ExRecord::~ExRecord()
 {
 	if (!syms_.empty()) {
-		std::map<std::string,ExRecord*>::iterator ni;
-		for(ni=syms_.begin();ni!=syms_.end();ni++) {
-			((*ni).second)->deref();
+		std::map<std::string,ExRecord*>::iterator it;
+		for(it=syms_.begin();it!=syms_.end();++it) {
+			((*it).second)->deref();
 		}
 	}
 }
@@ -184,7 +184,7 @@ void
 ExRecord::split_on(std::string p, char c, std::string& hd, std::string& tl, bool keep)
 {
 	int adj=(keep) ? 0 : 1;
-	unsigned int i; for(i=0;i<p.length()&&p[i]!=c;i++);
+	uint32_t i; for(i=0;i<p.length()&&p[i]!=c;++i);
 	if (p[i]==c) { hd=p.substr(0,i); tl=p.substr(i+adj,p.length()-i-adj); }
 	else { hd=p; tl=""; }
 }
@@ -192,7 +192,7 @@ ExRecord::split_on(std::string p, char c, std::string& hd, std::string& tl, bool
 void
 ExRecord::rsplit_on(std::string p, char c, std::string& hd, std::string& tl)
 {
-	int i; for(i=p.length()-1;i>=0&&p[i]!=c;i++);
+	int i; for(i=p.length()-1;i>=0&&p[i]!=c;++i);
 	if (p[i]==c) { hd=p.substr(0,i); tl=p.substr(i+1,p.length()-i-1); }
 	else { hd=""; tl=p; }
 }
@@ -209,11 +209,14 @@ ExRecord::find_sym(std::string path)
 		// get leading name in name: a|b|c => a b|c
 		std::map<std::string, ExRecord*>::iterator gi=syms_.find(ghd);
 		if (gi==syms_.end()) {
-			std::map<std::string,std::string>::iterator ni=syms_aliases_.find(ghd);
+			std::map<std::string,std::string>::iterator it = syms_aliases_.find(ghd);
 			// a possible error condition since the path given diverges from the possible paths
-			if (ni==syms_aliases_.end()) { return NULL; }
-			return syms_[ni->second]->find_sym(gtl);
+			if (it==syms_aliases_.end())
+				return NULL;
+			else
+				return syms_[it->second]->find_sym(gtl);
 		}
+		
 		return (gi->second)->find_sym(gtl);
 	}
 	if (path[0]=='(') {
@@ -224,10 +227,12 @@ ExRecord::find_sym(std::string path)
 			else is++;
 		}
 		if (!answer) {
-			std::map<std::string,std::string>::iterator ni=syms_aliases_.begin();
-			while (ni!=syms_aliases_.end()&&!answer) {
-				if (params_compare((ni->first),path)) { answer=syms_[ni->second]; }
-				else ni++;
+			std::map<std::string,std::string>::iterator it=syms_aliases_.begin();
+			while (it!=syms_aliases_.end()&&!answer) {
+				if (params_compare((it->first),path))
+					answer=syms_[it->second];
+				else 
+					++it;
 			}
 		}
 		return answer;
@@ -328,13 +333,13 @@ ExRecord::rmvRecord(std::string path)
 	if (r!=NULL) {
 		std::vector<std::string> names_;
 		// eliminate aliases to r by first getting their names
-		for (alias_i=syms_aliases_.begin();alias_i!=syms_aliases_.end();alias_i++) {
+		for (alias_i=syms_aliases_.begin();alias_i!=syms_aliases_.end();++alias_i) {
 			if (alias_i->second==ghd) names_.push_back(alias_i->first);
 		}
 		if (names_.size()>0) {
 			// delete aliases from syms_aliases_
 			std::vector<std::string>::iterator nmi;
-			for (nmi=names_.begin();nmi!=names_.end();nmi++) {
+			for (nmi=names_.begin();nmi!=names_.end();++nmi) {
 				syms_aliases_.erase(*nmi);
 			}
 		}
@@ -469,7 +474,7 @@ ExSymTbl::getRecord(std::string nm)
 {
 	if (rho_.size()>0) {
 		std::vector<ExRecord*>::reverse_iterator i;
-		for(i=rho_.rbegin(); i!=rho_.rend(); i++) {
+		for(i=rho_.rbegin(); i!=rho_.rend(); ++i) {
 		 ExRecord* r=(*i)->getRecord(nm);
 		 if (r!=NULL) return r;
 		}

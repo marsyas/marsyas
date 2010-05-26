@@ -71,7 +71,7 @@ LPC::myUpdate(MarControlPtr sender)
 
 	//LPC features names
 	ostringstream oss;
-	for (mrs_natural i = 0; i < order_; i++)
+	for (mrs_natural i = 0; i < order_; ++i)
 		oss << "LPC_" << i+1 << ",";
 	oss << "LPC_Pitch," << "LPC_Gain,";
 	setctrl("mrs_string/onObsNames", oss.str());
@@ -122,7 +122,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 		r1 = x[k];
 		r2 = dl[k];
 	}
-	for(mrs_natural i=1; i<=P; i++)
+	for(mrs_natural i=1; i<=P; ++i)
 	{
 		Rt[i]=0;
 		r1=0;
@@ -138,7 +138,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 		}
 	}
 
-	for(long i=0; i<=P; i++)
+	for(long i=0; i<=P; ++i)
 		R[i]=Rt[i]/in.getSize(); // [ML] change /
 
 	delete[] dl;
@@ -149,7 +149,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 	//----------------------------------------------------
 	mrs_real temp = r(0);
 	//set peak searching start point to 2% of total window size [?]
-	mrs_natural j = (mrs_natural)(in.getSize() * 0.02); 
+	uint32_t j = (mrs_real)in.getSize() * 0.02; 
 	//detect first local minimum...
 	while (r(j) < temp && j < in.getSize()/2)
 	{
@@ -158,7 +158,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 	}
 	//... and then from there, detect higher peak => period estimate!
 	temp = 0.0;
-	for (mrs_natural i=j; i < in.getSize() * 0.5; i++)
+	for (mrs_natural i=j; i < in.getSize() * 0.5; ++i)
 	{
 		if (r(i) > temp) 
 		{
@@ -173,7 +173,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 	//so, what is this for??
 	// 	mrs_real norm = 1.0 / (mrs_real)in.getSize();
 	// 	mrs_natural k = in.getSize()/2;
-	// 	for (mrs_natural i=0; i < in.getSize()/2; i++) 
+	// 	for (mrs_natural i=0; i < in.getSize()/2; ++i) 
 	// 	r(i) *= (k-i) * norm;
 
 	//if autocorr peak not very prominent => not a good period estimate
@@ -211,7 +211,7 @@ LPC::LevinsonDurbin(const realvec& r, realvec& a, realvec& kVec, mrs_real& e)
 
 	if(R[0]==0.0) 
 	{
-		for(mrs_natural i=1; i<=P; i++)
+		for(mrs_natural i=1; i<=P; ++i)
 		{
 			K[i]=0.0;
 			A[i]=0.0;
@@ -261,22 +261,25 @@ LPC::LevinsonDurbin(const realvec& r, realvec& a, realvec& kVec, mrs_real& e)
 mrs_real
 LPC::predictionError(const realvec& data, const realvec& coeffs)
 {
-	mrs_natural i,j;
+	uint32_t i,j;
 	mrs_real power = 0.0;
 	mrs_real error, tmp;
 
 	//load delay line with input data...
-	for (i=0; i< order_; i++) 
+	for (i=0; i< order_; ++i) 
 	{
 		Zs_(i) = data(order_-i-1);
 	}
 	//apply LPC filter and estimate RMS of the error (=~ LPC Gain)
 	mrs_natural count = 0;
-	for (i=order_; i<data.getSize() ; i++)
+	for (i=order_; i<data.getSize() ; ++i)
 	{
 		tmp = 0.0;
-		for (j=0; j< order_; j++) tmp += Zs_(j) * coeffs(j);
-		for (j=order_-1; j>0; j--) Zs_(j) = Zs_(j-1);
+		for (j=0; j< order_; j++) 
+			tmp += Zs_(j) * coeffs(j);
+		for (j=order_-1; j>0; j--) 
+			Zs_(j) = Zs_(j-1);
+		
 		Zs_(0) = data(i);
 		error = data(i) - tmp;
 		power += error * error;
@@ -437,7 +440,7 @@ LPC::myProcess(realvec& in, realvec& out)
 	// out = [a(1) a(2) ... a(order_-1)]
 
 
-	for(i=0; i < order_; i++)
+	for(i=0; i < order_; ++i)
 		// out(i) = a(i+1); // musicDsp implementation  
 		out(i) = -a(i); // musicDsp implementation  
 
@@ -464,7 +467,7 @@ LPC::myProcess(realvec& in, realvec& out)
 		MarControlAccessor acc(ctrl_coeffs_);
 		realvec& coeffs = acc.to<mrs_realvec>();
 		coeffs(0) = 1.0;
-		for(i=1; i < order_+1; i++) 
+		for(i=1; i < order_+1; ++i) 
 		{
 			// coeffs(i) = -a(i); // musicDsp implementation  
 			coeffs(i) = out(i-1);  

@@ -59,7 +59,7 @@ AveragingPattern::myUpdate(MarControlPtr sender)
   }
   ctrl_osrate_->setValue(ctrl_osrate_, NOUPDATE);
   ostringstream oss;
-  for(o=0; o<ctrl_onObservations_->to<mrs_natural>(); ++o)
+  for(mrs_natural o=0; o<ctrl_onObservations_->to<mrs_natural>(); ++o)
     oss << "AveragingPattern_" << o << ",";
   ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
@@ -68,11 +68,11 @@ AveragingPattern::myUpdate(MarControlPtr sender)
   if(tmpvec.getRows() == 1 && tmpvec.getCols() >= 2)
     {
       sizes_.create(tmpvec.getCols());
-      for(mrs_natural i=0; i<tmpvec.getCols(); i++)
+      for(mrs_natural i=0; i<tmpvec.getCols(); ++i)
 	{
 	  sizes_(i) = (mrs_natural)tmpvec(0,i);
 	}
-      for(mrs_natural i=0; i<tmpvec.getCols(); i++)
+      for(mrs_natural i=0; i<tmpvec.getCols(); ++i)
 	{
 	  if(sizes_(i) > insize)
 	    sizes_(i) = insize;
@@ -81,11 +81,11 @@ AveragingPattern::myUpdate(MarControlPtr sender)
   else if(tmpvec.getRows() >= 2 && tmpvec.getCols() == 1)
     {
       sizes_.create(tmpvec.getRows());
-      for(mrs_natural i=0; i<tmpvec.getRows(); i++)
+      for(mrs_natural i=0; i<tmpvec.getRows(); ++i)
 	{
 	  sizes_(i) = (mrs_natural)tmpvec(i,0);
 	}
-      for(mrs_natural i=0; i<tmpvec.getRows(); i++)
+      for(mrs_natural i=0; i<tmpvec.getRows(); ++i)
 	{
 	  if(sizes_(i) > insize)
 	    sizes_(i) = insize;
@@ -95,8 +95,7 @@ AveragingPattern::myUpdate(MarControlPtr sender)
   mrs_natural numVec = sizes_.getSize();
   mrs_natural dimVec = ctrl_inObservations_->to<mrs_natural>()/numVec;
   mrs_natural templateSize = 0;
-  mrs_natural tmpNatural = 0;
-  for(mrs_natural i=1; i<numVec; i++)
+  for(mrs_natural i=1; i<numVec; ++i)
     {
       templateSize += sizes_(i);
     }
@@ -105,11 +104,13 @@ AveragingPattern::myUpdate(MarControlPtr sender)
     countvector_ = tmpvec2;
   else 
     countvector_.create(templateSize);
+	
   average_.create(dimVec,templateSize);
   counts_.create(numVec);
   beginPos_.create(numVec-1);
   endPos_.create(numVec-1);
   beginPos_(0) = 0;
+	
   for(mrs_natural l=1; l<numVec-1; l++)
     { 
       beginPos_(l) = sizes_(l) + beginPos_(l-1);
@@ -123,7 +124,8 @@ AveragingPattern::myUpdate(MarControlPtr sender)
 void
 AveragingPattern::myProcess(realvec& in, realvec& out)
 {
-  mrs_natural i, j, k, l;
+
+  mrs_natural j, k, l;
   if(inSamples_>0)
     {
       const realvec& alignment = ctrl_alignment_->to<mrs_realvec>();
@@ -134,19 +136,19 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 	  mrs_natural dimVec = ctrl_inObservations_->to<mrs_natural>()/numVec;
 	  mrs_natural templateSize = 0;
 	  mrs_natural tmpNatural = 0;
-	  for(i=1; i<numVec; i++)
+	  for(mrs_natural i=1; i<numVec; ++i)
 	    {
 	      templateSize += sizes_(i);
 	    }
 
 	  if(!ctrl_setCountVector_->to<mrs_bool>())
 	    {
-	      for(i=0; i<countvector_.getSize(); i++)
+	      for(size_t i=0; i<countvector_.getSize(); ++i)
 		{
 		  countvector_(i) = 0;
 		}
 	    }
-	  for(i=0; i<counts_.getSize(); i++){
+	  for(size_t i=0; i<counts_.getSize(); ++i){
 	    counts_(i) = 0;
 	  }
 	  // initialize according to countVector
@@ -154,7 +156,7 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 	    {
 	      for(k=0; k<numVec-1; k++)
 		{
-		  for(i=0; i<sizes_(k+1); i++)
+		  for(size_t i=0; i<sizes_(k+1); ++i)
 		    {
 		      for(j=0; j<dimVec; j++)
 			{
@@ -167,7 +169,7 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 	    }
 	  else 
 	    {
-	      for(i=0; i<average_.getCols(); i++)
+	      for(mrs_natural i=0; i<average_.getCols(); ++i)
 		{
 		  for(j=0; j<dimVec; j++)
 		    {
@@ -205,19 +207,19 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 		  countvector_(alignment(k,1))++;
 		}
 	    }
-	  for(i=0; i<templateSize; i++)
-	    {
-	      if(countvector_(i)>0)
+	  for(mrs_natural n=0; n<templateSize; ++n)
+	  {
+	      if(countvector_(n)>0)
 		{
 		  for(j=0; j<dimVec; j++)
 		    {
-		      average_(j,i) /= countvector_(i);
+		      average_(j,n) /= countvector_(n);
 		    }
 		}
 	    }
 	  if(ctrl_input_->to<mrs_bool>())
 	    {
-	      for(i=0; i<sizes_(0); i++)
+	      for(size_t i=0; i<sizes_(0); ++i)
 		{
 		  for(j=0; j<dimVec; j++)
 		    {
@@ -230,20 +232,20 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 	    l=1;
 	  for(k=1; k<numVec; k++)
 	    {
-	      for(i=0; i<sizes_(k); i++)
+	      for(size_t n=0; n<sizes_(k); ++n)
 		{
-		  if(countvector_(i+tmpNatural)>0)
+		  if(countvector_(n+tmpNatural)>0)
 		    {
 		      for(j=0; j<dimVec; j++)
 			{
-			  out(j+(k-l)*dimVec,i) = average_(j,i+tmpNatural);
+			  out(j+(k-l)*dimVec,n) = average_(j,n+tmpNatural);
 			}
 		    }
 		  else 
 		    {
 		      for(j=0; j<dimVec; j++)
 			{
-			  out(j+(k-l)*dimVec,i) = in(j+k*dimVec,i);
+			  out(j+(k-l)*dimVec,n) = in(j+k*dimVec,n);
 			}
 		    }
 		}

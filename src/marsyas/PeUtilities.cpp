@@ -36,7 +36,7 @@ using namespace Marsyas;
 // 	int i,j,k,l=start,m=0;
 // 
 // 	if(&first != NULL  && first(0)) //[WTF]
-// 		for (i=0 ; i<maxNbPeaks ; i++)
+// 		for (i=0 ; i<maxNbPeaks ; ++i)
 // 		{
 // 			if(first(i) != 0.0) 
 // 			{
@@ -49,7 +49,7 @@ using namespace Marsyas;
 // 		*nbPkFrame = m;
 // 
 // 		for (j=0 ; j<in.getCols() ; j++)
-// 			for (i=0 ; i<maxNbPeaks ; i++)
+// 			for (i=0 ; i<maxNbPeaks ; ++i)
 // 		 {
 // 			 if(in(i, j) != 0.0) 
 // 			 {
@@ -82,7 +82,7 @@ using namespace Marsyas;
 // 		iStart = 1;
 // 	}
 // 
-// 	for (i=iStart ; i<in.getRows() ; i++, k++)
+// 	for (i=iStart ; i<in.getRows() ; ++i, k++)
 // 	{
 // 		if(frameIndex != in(i, 5))
 // 		{
@@ -111,7 +111,7 @@ using namespace Marsyas;
 // 
 // void Marsyas::updateLabels(realvec& peakSet, realvec& conversion)
 // {
-// 	for (mrs_natural i=0 ; i<peakSet.getRows() ; i++)
+// 	for (mrs_natural i=0 ; i<peakSet.getRows() ; ++i)
 // 		peakSet(i, pkGroup) = conversion((mrs_natural) peakSet(i, pkGroup)+2);
 // }
 // 
@@ -128,14 +128,14 @@ using namespace Marsyas;
 // 	vec.setval(0);
 // 	
 // 	// allocate vector of realvec
-// 	for (i=0 ; i < nbFrames ; i++)
+// 	for (i=0 ; i < nbFrames ; ++i)
 // 	{
 // 		out.push_back(vec);
 // 		l[i]=0;
 // 	}
 // 
 // 	// fill vector
-// 	for (i=0 ; i<in.getRows() ; i++)
+// 	for (i=0 ; i<in.getRows() ; ++i)
 // 	{
 // 		index = (mrs_natural) in(i, pkFrame) - startIndex;
 // 		if( in(i, pkGroup) >= 0)
@@ -145,14 +145,14 @@ using namespace Marsyas;
 // 		}
 // 	}
 // 	// stretch realvecs
-// 	for (i=0 ; i < nbFrames ; i++)
+// 	for (i=0 ; i < nbFrames ; ++i)
 // 	{
 // 		out[i].stretch(l[i]);
 // 	}
 // 
 // 	delete [] l;
 // 	////out.setval(0);
-// 	//for (i=0 ; i<in.getRows() ; i++)
+// 	//for (i=0 ; i<in.getRows() ; ++i)
 // 	//{
 // 	//	if(frameIndex != in(i, pkFrame))
 // 	//	{
@@ -205,7 +205,7 @@ using namespace Marsyas;
 // 		// minDiff = 10000000000000, maxVal = -100000000000000; 
 // 		mrs_real maxVal = 0, minDiff =100;
 // 		// take the highest amplitude peak
-// 		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
+// 		for (mrs_natural i=0 ; i<a1.getSize() ; ++i)
 // 		{
 // 			A1 = a1(i);
 // 			if(i1(i) && A1 > maxVal)
@@ -219,7 +219,7 @@ using namespace Marsyas;
 // 		F1 = f1(ind1);
 // 		A1 = a1(ind1);
 // 		// find the closest frequency peak in the second set
-// 		for (mrs_natural i=0 ; i<f2.getSize() ; i++)
+// 		for (mrs_natural i=0 ; i<f2.getSize() ; ++i)
 // 		{
 // 			F2 = f2(i);
 // 			if(i2(i) && abs(F1-F2) < minDiff)
@@ -253,7 +253,7 @@ using namespace Marsyas;
 // Marsyas::compareTwoPeakSets2(realvec&f1, realvec&a1, realvec&f2, realvec&a2)
 // {
 // 	mrs_real res = 0;
-// 	for (mrs_natural i = 0 ; i < f1.getSize() ; i++)
+// 	for (mrs_natural i = 0 ; i < f1.getSize() ; ++i)
 // 		for (mrs_natural j = 0 ; j < f2.getSize() ; j++)
 // 		{
 // 			res += abs(f1(i)-f2(j))* abs(a1(i)-a2(j));
@@ -283,7 +283,7 @@ using namespace Marsyas;
 // 		// 
 // 		// 
 // 		// look for the smallest couple
-// 		for (mrs_natural i=0 ; i<a1.getSize() ; i++)
+// 		for (mrs_natural i=0 ; i<a1.getSize() ; ++i)
 // 			for (mrs_natural j=0 ; j<a2.getSize() ; j++)
 // 			{
 // 				mrs_real val = abs(f1(i)-f2(j));
@@ -332,7 +332,7 @@ using namespace Marsyas;
 // 		mrs_natural ind1=-1, ind2=-1;
 // 		mrs_real minDiff = 2; 
 // 		// look for the couple closest in frequency
-// 		for (mrs_natural i=0 ; i<f1.getSize() ; i++)
+// 		for (mrs_natural i=0 ; i<f1.getSize() ; ++i)
 // 			for (mrs_natural j=0 ; j<f2.getSize() ; j++)
 // 				if(i1(i) && i2(j))
 // 				{
@@ -399,14 +399,14 @@ using namespace Marsyas;
 // 	x3.setval(0);
 // 	x4.setval(0);
 // 	// first discrete Harmonically Wrapped Spectrum 
-// 	for (mrs_natural i=0 ; i<f1.getSize() ; i++)
+// 	for (mrs_natural i=0 ; i<f1.getSize() ; ++i)
 // 	{
 // 		index= (mrs_natural) fmod(floor(f1(i)*length+.5), length);
 // 		x1(index) += a1(i);
 // 		x3(index) += a3(i);
 // 	}
 // 	// second discrete Harmonically Wrapped Spectrum 
-// 	for (mrs_natural i=0 ; i<f2.getSize()  ; i++)
+// 	for (mrs_natural i=0 ; i<f2.getSize()  ; ++i)
 // 	{
 // 		index= (mrs_natural) fmod(floor(f2(i)*length+.5), length);
 // 		//	cout << endl << "index " << index << endl;
@@ -414,7 +414,7 @@ using namespace Marsyas;
 // 		x4(index) += a4(i);
 // 	}
 // 	// cosine metric
-// 	for (mrs_natural i=0 ; i<x1.getSize()  ; i++)
+// 	for (mrs_natural i=0 ; i<x1.getSize()  ; ++i)
 // 	{
 // 		res1 += x1(i)*x2(i);
 // 		res2 += x3(i)*x3(i);
@@ -631,7 +631,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 // //[WTF]
 // void Marsyas::discrete2labels(realvec &labels, realvec& n, mrs_natural nbClusters, mrs_natural nbPeaks)
 // {
-// 	for(mrs_natural i=0 ; i<nbPeaks ; i++)
+// 	for(mrs_natural i=0 ; i<nbPeaks ; ++i)
 // 		for(mrs_natural j=0 ; j<nbClusters ; j++)
 // 			if(n(i*nbClusters+j) == 1)
 // 				labels(i) = j;
@@ -648,7 +648,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 // 	  peaks.transpose();
 //       nbFrames_ = peaks.getCols();
 // 	}
-// 	realvec peakSetM_ = realvec(peaks.getRows()/nbPkParameters*nbFrames_+1, nbPkParameters);
+// 	realvec peakSetM_.create(peaks.getRows()/nbPkParameters*nbFrames_+1, nbPkParameters);
 // 	peakSetM_(0, 0) = -1;
 // 	peakSetM_(0, 1) =  sf;
 // 	peakSetM_(0, 2) =  hopSize;
@@ -656,7 +656,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 // 	peakSetM_(0, 4) =  nbFrames_;
 // 	peakSetM_(0, 5) = -1;
 // 	peakSetM_(0, pkGroup) = -2; //isn't this overwritten below?!? [WTF]
-// 	for (mrs_natural i=pkGroup ; i< nbPkParameters ; i++)
+// 	for (mrs_natural i=pkGroup ; i< nbPkParameters ; ++i)
 // 		peakSetM_(0, i)=0;
 // 	realvec tmp(1);
 // 	tmp.setval(0);
@@ -712,7 +712,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 // 	map.stretch(nbBins, nbBins);
 // 	map.setval(0);
 // 
-// 	for (i=0 ; i<nbBins ; i++)
+// 	for (i=0 ; i<nbBins ; ++i)
 // 		for (j=0 ; j<nbBins ; j++)
 // 		{
 // 			mrs_real val=0;
@@ -723,7 +723,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 // 
 // 		mrs_natural kSize=5, k, l;
 // 		mrs_real sum=0;
-// 		for (i=0 ; i<nbBins ; i++)
+// 		for (i=0 ; i<nbBins ; ++i)
 // 			for (j=0 ; j<nbBins ; j++)
 // 				for (k=max( (mrs_natural) 0, i-kSize); k<min(nbBins, i+kSize) ; k++)
 // 					for (l=max((mrs_natural) 0, j-kSize) ; l<min(nbBins, j+kSize) ; l++)

@@ -84,7 +84,7 @@ MeddisHairCell::myUpdate(MarControlPtr sender)
     c.create(numChannels);
     q.create(numChannels);
     w.create(numChannels);
-    for (mrs_natural i = 0; i < numChannels; i++){
+    for (mrs_natural i = 0; i < numChannels; ++i){
       c(i) = spont;
       q(i) = c(i)*(l + r)/kt;
       w(i) = c(i)*r/x;
@@ -107,7 +107,7 @@ MeddisHairCell::myProcess(realvec& in, realvec& out)
   mrs_real reprocess;
   bool subtractSpont = getctrl("mrs_bool/subtractSpont")->to<mrs_bool>();
   for (mrs_natural j = 0; j < getctrl("mrs_natural/inSamples")->to<mrs_natural>(); j++){
-    for (mrs_natural i = 0; i < getctrl("mrs_natural/inObservations")->to<mrs_natural>(); i++){
+    for (mrs_natural i = 0; i < getctrl("mrs_natural/inObservations")->to<mrs_natural>(); ++i){
       limitedSt = max(in(i,j) + A, (mrs_real)0.0);
       kt = gdt*limitedSt/(limitedSt + B);
       replenish = max(ydt*(M - q(i)), (mrs_real)0.0);

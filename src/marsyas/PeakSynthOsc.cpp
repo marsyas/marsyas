@@ -83,7 +83,7 @@ PeakSynthOsc::sine(realvec& out, mrs_real f, mrs_real a, mrs_real p)
 {
 	if(f > 0.0 && a > 0.0)
 	{
-		for (mrs_natural i=0 ; i < onSamples_ ; i++)
+		for (mrs_natural i=0 ; i < onSamples_ ; ++i)
 			out(i) += a*cos(factor_*f*(i-delay_)+p); // consider -fftSize/2 for synth in phase
 	}
 }
@@ -104,7 +104,7 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 			mulF_ = ctrl_harmonize_->to<mrs_realvec>()(1+j*2); 
 			mulA_ = ctrl_harmonize_->to<mrs_realvec>()(2+j*2);
 			//cout << "mulF_" << mulF_ << "mulA_" << mulA_ << endl;
-			for (mrs_natural i=0; i < Nb_; i++)
+			for (mrs_natural i=0; i < Nb_; ++i)
 			{
 				//only synthesize peaks with a corresponding GroupID
 				if(in(i+peakView::pkGroup*Nb_) == pkGrp2Synth_)
@@ -115,7 +115,7 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 			}
 		}
 	else
-		for (mrs_natural i=0; i < Nb_; i++)
+		for (mrs_natural i=0; i < Nb_; ++i)
 		{
 			//only synthesize peaks with a corresponding GroupID
 			if(in(i+peakView::pkGroup*Nb_) == pkGrp2Synth_)

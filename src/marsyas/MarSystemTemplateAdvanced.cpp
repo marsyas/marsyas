@@ -80,7 +80,7 @@ MarSystemTemplateAdvanced::addControls()
 	myh.someString = "abcd";
 	myh.someValue = 50;
 	myh.someFlag = true;
-	myh.someVec = realvec(10);
+	myh.someVec.create(10);
 
 	// Alternatively, we could ask our newly created control
 	// for a copy of it that we can then use for setting its parameters
@@ -89,7 +89,7 @@ MarSystemTemplateAdvanced::addControls()
 	// 	myh.someString = "abcd";
 	// 	myh.someValue = 50;
 	// 	myh.someFlag = true;
-	// 	myh.someVec = realvec(10);
+	// 	myh.someVec.create(10);
 
 	// use the temporary header object to set
 	// our custom control values
@@ -125,6 +125,7 @@ MarSystemTemplateAdvanced::myUpdate(MarControlPtr sender)
 void 
 MarSystemTemplateAdvanced::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	//get a reference to our custom control
 	const MyHeader& hdr = ctrl_header_->to<MyHeader>();
 	

@@ -101,6 +101,7 @@ NormCut::myUpdate(MarControlPtr sender)
 void 
 NormCut::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	//check if there is any data at the input, otherwise do nothing
 	if(in.getSize() == 0 || numClusters_ == 0)
 	{
@@ -200,7 +201,7 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 	// SHOULD BE USED IN CONSTRUCTOR !!! JEN
 
 	// Check for matrix symmetry
-	for( i=0 ; i<n ; i++ )
+	for( i=0 ; i<n ; ++i )
 		for( j=0 ; j<n ; j++ ){
 			if( W(i*(n)+j) > 1.0 )
 			{
@@ -220,7 +221,7 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 		ulp = NumericLib::machp("Epsilon") * NumericLib::machp("Base"); // unit in last place            
 
 		//sum each row 
-		for( i=0 ; i<n ; i++ )
+		for( i=0 ; i<n ; ++i )
 		{
 			// can sum the columns since it's symmetric... and its faster
 			dinvsqrt(i) = 2.*paramOffset_;
@@ -230,7 +231,7 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 		}
 
 		// P <- dinvsqrt*dinvsqrt'
-		for( i=0 ; i<n ; i++ )
+		for( i=0 ; i<n ; ++i )
 			for( j=i ; j<n ; j++ )
 				P(i*(n)+j) = dinvsqrt(i)*dinvsqrt(j);
 
@@ -238,7 +239,7 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 		// 2. P <- P .* W (only lower triangle of P computed)
 		for( j=0 ; j<n ; j++ ){
 			P(j*(n)+j) = P(j*(n)+j)*( W(j*(n)+j) + paramOffset_ );       
-			for( i=j+1 ; i<n ; i++ ){
+			for( i=j+1 ; i<n ; ++i ){
 				P(j*(n)+i) = P(j*(n)+i)*W(j*(n)+i);
 			}  
 		}         
@@ -253,26 +254,26 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 		// descending
 		for( j=0 ; j<nbcluster ; j++ )
 		{
-			for( i=0 ; i<n ; i++ )
+			for( i=0 ; i<n ; ++i )
 				NcutEigenvectors(j*(n)+i) = P((n-j-1)*(n)+i);
 			NcutEigenvalues(j) = evals(n-j-1);
 		}
 
 		for( j=0 ; j<nbcluster ; j++ )   
-			for( i=0 ; i<n ; i++ )
+			for( i=0 ; i<n ; ++i )
 				NcutEigenvectors(j*(n)+i) = NcutEigenvectors(j*(n)+i)*dinvsqrt(i); 
 
 		for( j=0 ; j<nbcluster ; j++ ){
 			norm=0.;
-			for( i=0 ; i<n ; i++ )
+			for( i=0 ; i<n ; ++i )
 				norm += NcutEigenvectors(j*(n) + i)*NcutEigenvectors(j*(n) + i);
 			norm = sqrt(norm);
 			norm = sqrtn / norm;
 			if( NcutEigenvectors(j*(n)) >= 0. )
-				for( i=0 ; i<n ; i++ )
+				for( i=0 ; i<n ; ++i )
 					NcutEigenvectors(j*(n) + i) *= -norm;
 			else
-				for( i=0 ; i<n ; i++ )
+				for( i=0 ; i<n ; ++i )
 					NcutEigenvectors(j*(n) + i) *= norm;         
 		}
 
@@ -316,7 +317,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 	//      param.eigsErrorTolerance = 0.000001;
 	//   }   
 
-	for( i=0 ; i<n ; i++ ){
+	for( i=0 ; i<n ; ++i ){
 		vm(i) = 0;
 		for( j=0 ; j<nbcluster ; j++ )
 			vm(i) += NcutEigenvectors(j*(n)+i)*NcutEigenvectors(j*(n)+i);
@@ -332,7 +333,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 	//   randn = (int)round((*n-1)*(double)rand()/RAND_MAX);
 	//cout << randn << endl;
 
-	for( i=0 ; i<nbcluster ; i++ ){
+	for( i=0 ; i<nbcluster ; ++i ){
 		R(i) = NcutEigenvectors(i*(n)+randn);     
 		for( j=0 ; j<nbcluster ; j++ )
 			U(i*(nbcluster)+j) = 0.0;
@@ -342,14 +343,14 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 	{
 		minval = MAXREAL;
 
-		for( i=0 ; i<n ; i++ )
+		for( i=0 ; i<n ; ++i )
 		{
 			tmp(i) = 0.;
 			for( k=0 ; k<nbcluster ; k++ )
 				tmp(i) += NcutEigenvectors(k*(n)+i)*R((j-1)*(nbcluster)+k);
 		}
 
-		for( i=0 ; i<n ; i++ ){
+		for( i=0 ; i<n ; ++i ){
 			c(i) += fabs(tmp(i));
 			if( c(i) < minval )
 			{
@@ -358,7 +359,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 			}         
 		}
 
-		for( i=0 ; i<nbcluster ; i++ ){
+		for( i=0 ; i<nbcluster ; ++i ){
 			R(j*(nbcluster)+i) = NcutEigenvectors(i*(n) + mini);
 		}
 	}
@@ -369,7 +370,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 	{
 		nbIterDiscrete += 1;
 
-		for( i=0 ; i<n ; i++ ){
+		for( i=0 ; i<n ; ++i ){
 			for( j=0 ; j<nbcluster ; j++ ){
 				EVtimesR(j*(n)+i) = 0.;
 				for( k=0 ; k<nbcluster ; k++)
@@ -379,7 +380,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 
 		discretisationEigenvectorData(n, nbcluster, EVtimesR,NcutDiscrete);   
 
-		for( i=0 ; i<nbcluster ; i++ ){
+		for( i=0 ; i<nbcluster ; ++i ){
 			for( j=0 ; j<nbcluster ; j++ ){
 				EVDtimesEV(j*(nbcluster)+i) = 0.;
 				for( k=0 ; k<n ; k++)
@@ -395,7 +396,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 
 		// 2*( n-trace(S) )
 		NcutValue = 0.;
-		for( i=0 ; i<nbcluster ; i++ )
+		for( i=0 ; i<nbcluster ; ++i )
 			NcutValue += s(i);
 		NcutValue = 2*( n - NcutValue );
 
@@ -407,7 +408,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 		{
 			lastObjectiveValue = NcutValue;
 			// R= V * U';
-			for( i=0 ; i<nbcluster ; i++ ){
+			for( i=0 ; i<nbcluster ; ++i ){
 				for( j=0 ; j<nbcluster ; j++ ){
 					R(j*(nbcluster)+i) = 0.;
 					for( k=0 ; k<nbcluster ; k++)
@@ -427,7 +428,7 @@ NormCut::discretisationEigenvectorData(mrs_natural n,  mrs_natural nbcluster, re
 
 	mrs_natural i,j;
 
-	for( i=0 ; i<n ; i++ ){
+	for( i=0 ; i<n ; ++i ){
 		maxval = -MAXREAL; // (Mathieu ??)      
 
 		// Find largest value in the ith row of the eigenvectors
@@ -461,7 +462,7 @@ NormCut::prmrs_natural( realvec &A, mrs_natural m , mrs_natural n )
 
 	if( n > 0 )
 	{         
-		for(i=0; i < m; i++)
+		for(i=0; i < m; ++i)
 		{
 			for (j=0; j < n; j++) 
 				cout << A(j*m+i) << "\t";      
@@ -470,7 +471,7 @@ NormCut::prmrs_natural( realvec &A, mrs_natural m , mrs_natural n )
 	}      
 	else if( n == -1 )
 	{
-		for( i=0 ; i<m ; i++ )
+		for( i=0 ; i<m ; ++i )
 			cout << A(i) << "\t";
 		cout << endl;   }
 }
@@ -488,7 +489,7 @@ NormCut::print( realvec &A, int m , int n )
 
 	if( n > 0 )
 	{         
-		for(i=0; i < m; i++)
+		for(i=0; i < m; ++i)
 		{
 			for (j=0; j < n; j++) 
 				cout << A(j*m+i) << "\t";      
@@ -497,7 +498,7 @@ NormCut::print( realvec &A, int m , int n )
 	}      
 	else if( n == -1 )
 	{
-		for( i=0 ; i<m ; i++ )
+		for( i=0 ; i<m ; ++i )
 			cout << A(i) << "\t";
 		cout << endl;   }
 }
@@ -543,7 +544,7 @@ NormCut::print( realvec &A, int m , int n )
 //      param.eigsErrorTolerance = 0.000001;
 //   }   
 //   
-//   for( i=0 ; i<*n ; i++ ){
+//   for( i=0 ; i<*n ; ++i ){
 //      vm(i) = 0;
 //      for( j=0 ; j<*nbcluster ; j++ )
 //         vm(i) += NcutEigenvectors(j*(*n)+i)*NcutEigenvectors(j*(*n)+i);
@@ -559,7 +560,7 @@ NormCut::print( realvec &A, int m , int n )
 ////   randn = (mrs_natural)round((*n-1)*(mrs_real)rand()/RAND_MAX);
 //
 //      
-//   for( i=0 ; i<*nbcluster ; i++ ){
+//   for( i=0 ; i<*nbcluster ; ++i ){
 //      R(i) = NcutEigenvectors(i*(*n)+randn);     
 //      for( j=0 ; j<*nbcluster ; j++ )
 //         U(i*(*nbcluster)+j) = 0.0;
@@ -569,14 +570,14 @@ NormCut::print( realvec &A, int m , int n )
 //   {
 //      minval = MAXREAL;
 //   
-//      for( i=0 ; i<*n ; i++ )
+//      for( i=0 ; i<*n ; ++i )
 //      {
 //         tmp(i) = 0.;
 //         for( k=0 ; k<*nbcluster ; k++ )
 //            tmp(i) += NcutEigenvectors(k*(*n)+i)*R((j-1)*(*nbcluster)+k);
 //      }
 //      
-//      for( i=0 ; i<*n ; i++ ){
+//      for( i=0 ; i<*n ; ++i ){
 //         c(i) += fabs(tmp(i));
 //         if( c(i) < minval )
 //         {
@@ -585,7 +586,7 @@ NormCut::print( realvec &A, int m , int n )
 //         }         
 //      }
 //      
-//      for( i=0 ; i<*nbcluster ; i++ ){
+//      for( i=0 ; i<*nbcluster ; ++i ){
 //         R(j*(*nbcluster)+i) = NcutEigenvectors(i*(*n) + mini);
 //      }
 //   }
@@ -597,7 +598,7 @@ NormCut::print( realvec &A, int m , int n )
 //   {
 //      nbIterDiscrete += 1;
 //            
-//      for( i=0 ; i<*n ; i++ ){
+//      for( i=0 ; i<*n ; ++i ){
 //         for( j=0 ; j<*nbcluster ; j++ ){
 //            EVtimesR(j*(*n)+i) = 0.;
 //            for( k=0 ; k<*nbcluster ; k++)
@@ -609,7 +610,7 @@ NormCut::print( realvec &A, int m , int n )
 //
 //      discretisationEigenvectorData(n, nbcluster, EVtimesR,NcutDiscrete);   
 //      
-//      for( i=0 ; i<*nbcluster ; i++ ){
+//      for( i=0 ; i<*nbcluster ; ++i ){
 //         for( j=0 ; j<*nbcluster ; j++ ){ // (Mathieu n replaced by nbcluster)
 //            EVDtimesEV(j*(*nbcluster)+i) = 0.;
 //            for( k=0 ; k<*n ; k++)
@@ -623,7 +624,7 @@ NormCut::print( realvec &A, int m , int n )
 //      
 //      // 2*( n-trace(S) )
 //      NcutValue = 0.;
-//      for( i=0 ; i<*nbcluster ; i++ )
+//      for( i=0 ; i<*nbcluster ; ++i )
 //         NcutValue += s(i);
 //      NcutValue = 2*( *n - NcutValue );
 //      
@@ -635,7 +636,7 @@ NormCut::print( realvec &A, int m , int n )
 //      {
 //         lastObjectiveValue = NcutValue;
 //         // R= V * U';
-//         for( i=0 ; i<*nbcluster ; i++ ){
+//         for( i=0 ; i<*nbcluster ; ++i ){
 //            for( j=0 ; j<*nbcluster ; j++ ){
 //               R(j*(*nbcluster)+i) = 0.;
 //               for( k=0 ; k<*nbcluster ; k++)

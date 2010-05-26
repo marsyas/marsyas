@@ -155,7 +155,7 @@ TranscriberExtract::getPitchesFromRealvecSink(MarSystem* rvSink,
 
 	realvec pitchList(data.getSize()/2);
 	mrs_real pitchOutput;
-	for (mrs_natural i=0; i<pitchList.getSize(); i++)
+	for (size_t i=0; i<pitchList.getSize(); ++i)
 	{
 		// on linux (but not OSX), we have pitchOutput of 0.5 if the pitch
 		// detection can't decide on a pitch.
@@ -199,7 +199,7 @@ TranscriberExtract::getNormalizingGain(const std::string audioFilename)
 		pnet->tick();
 	        const realvec& processedData =
                     pnet->getctrl("SoundFileSource/src/mrs_realvec/processedData")->to<mrs_realvec>();
-		for (mrs_natural i=0; i< processedData.getSize(); i++)
+		for (size_t i=0; i< processedData.getSize(); ++i)
 		{
 			mrs_real val = fabs(processedData(i));
 			if (val > maxVal)

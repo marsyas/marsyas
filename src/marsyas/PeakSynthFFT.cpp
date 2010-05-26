@@ -71,8 +71,8 @@ PeakSynthFFT::myUpdate(MarControlPtr sender)
 	bgVolume_ = conv(2); 
   bgPanning_ = conv(3);
 
-	mask_ = realvec(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2);
-	lastMask_ = realvec(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2);
+	mask_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2);
+	lastMask_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2);
 	lastMask_.setval(0);
 }
 
@@ -98,7 +98,7 @@ PeakSynthFFT::generateMask(mrs_natural type)
 		mask_.setval(0);
 
 	// set level info for foreground clusters
-	for (i=0 ; i<onObservations_/2; i++)
+	for (i=0 ; i<onObservations_/2; ++i)
 	{
 		for(j=0 ; j<nbPeaks; j++)
 		{
@@ -136,10 +136,9 @@ PeakSynthFFT::generateMask(mrs_natural type)
 void
 PeakSynthFFT::lpfMask()
 {
-	mrs_natural i;
 	mrs_real gain = 0.8, deltaGain=.3;
 
-	for (i=0 ; i<mask_.getSize() ; i++)
+	for (size_t i=0 ; i<mask_.getSize() ; ++i)
 	{
 		mrs_real g=gain-deltaGain*(mask_.getSize()-i)/mask_.getSize();
     mask_(i) = g*mask_(i)+(1-g)*lastMask_(i);
@@ -151,7 +150,7 @@ void
 PeakSynthFFT::myProcess(realvec& in, realvec& out)
 {	
 	mrs_natural nbChannels = ctrl_NbChannels_->to<mrs_natural>();
-
+	mrs_natural t,o;
 	cout << ctrl_Peaks_->to<mrs_realvec>();
 	for (t = 0; t < onSamples_; t++)
 	{

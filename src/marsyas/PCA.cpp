@@ -98,7 +98,7 @@ PCA::myUpdate(MarControlPtr sender)
   }
   
   ostringstream oss;
-  for (int i=1 ; i <= npc_ ; i++ )
+  for (int i=1 ; i <= npc_ ; ++i )
   {
      oss << "PC_" << i << ",";
   }
@@ -108,9 +108,7 @@ PCA::myUpdate(MarControlPtr sender)
 void 
 PCA::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-  
-
+	mrs_natural t,o;
   mrs_natural o1,o2;
    
 
@@ -277,7 +275,7 @@ http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
    }
    d[0] = 0.0;
    e[0] = 0.0;
-   for (i = 0; i < m; i++)
+   for (i = 0; i < m; ++i)
    {
       l = i - 1;
       if (d[i])
@@ -310,7 +308,7 @@ PCA::tqli(mrs_real d[], mrs_real e[], mrs_natural m, realvec &z)
    mrs_natural n, l, iter, i, k;
    mrs_real s, r, p, g, f, dd, c, b;
    
-   for (i = 1; i < m; i++)
+   for (i = 1; i < m; ++i)
       e[i-1] = e[i];
    e[m-1] = 0.0;
    for (l = 0; l < m; l++)

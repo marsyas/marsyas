@@ -68,39 +68,25 @@ namespace Marsyas
 */
 
 
-class marsyas_EXPORT realvec
+marsyas_EXPORT class realvec
 {
-protected:
-	/// total number of values in data_
-	mrs_natural size_;
-	/// total memory allocated for data_
-	mrs_natural allocatedSize_;
-	/// number of rows in array; for a one-dimensional array, this is 1.
-	mrs_natural rows_;
-	/// number of columns in array.
-	mrs_natural cols_;
-
-	/// the actual array
-	mrs_real *data_;
-
-	
 
 public:
 	realvec();
-	virtual ~realvec();
-	realvec(mrs_natural size);
+	realvec(uint32_t size);
 	realvec(mrs_natural rows, mrs_natural cols);
 	realvec(const realvec& a);
+	~realvec(); // not mean to be inherited from
 
 	realvec& operator=(const realvec& a);
 
 	/** \name Memory allocation */
 	//@{
-	void allocate(mrs_natural size);
-	void allocate(mrs_natural rows, mrs_natural cols);
+//	void allocate(mrs_natural size);
+//	void allocate(mrs_natural rows, mrs_natural cols);
 
 	///allocate(size) + fill with zeros
-	void create(mrs_natural size);
+	void create(uint32_t size);
 	///allocate(rows,cols) + fill with zeros
 	void create(mrs_natural rows, mrs_natural cols);
 	///allocate(rows,cols) + fill with val
@@ -109,7 +95,7 @@ public:
 	/// allocate(size) + keep old vals.  May also be used to shrink realvec.
 	void stretch(mrs_natural rows, mrs_natural cols);
 	/// allocate(size) + keep old vals.  May also be used to shrink realvec.
-	void stretch(mrs_natural size);
+	void stretch(uint32_t size);
 
 	/// write to array, stretching the array if necessary
 	void stretchWrite(const mrs_natural pos, const mrs_real val);
@@ -136,7 +122,7 @@ public:
 
 	/** \name Getting information */
 	//@{
-	mrs_natural getSize() const;
+	size_t getSize() const;
 	mrs_natural getCols() const;
 	mrs_natural getRows() const;
 	/// extracts a subset of a realvec.  One-dimensional realvecs only.
@@ -173,14 +159,14 @@ public:
 	//@{
 
 	
-	mrs_real& operator()(const mrs_natural i);
-	mrs_real operator()(const mrs_natural i) const;
+	mrs_real& operator()(const uint32_t i);
+	mrs_real operator()(const uint32_t i) const;
 	mrs_real& operator()(const mrs_natural r, const mrs_natural c);
 	mrs_real operator()(const mrs_natural r, const mrs_natural c) const;
 
-	mrs_real getValueFenced(const mrs_natural i) const;
+	mrs_real getValueFenced(const uint32_t i) const;
 	mrs_real getValueFenced(const mrs_natural r, const mrs_natural c) const;
-	mrs_real& getValueFenced(const mrs_natural i);
+	mrs_real& getValueFenced(const uint32_t i);
 	mrs_real& getValueFenced(const mrs_natural r, const mrs_natural c);
 
 
@@ -269,250 +255,26 @@ public:
 	void send(Communicator *com);
 	mrs_natural search(mrs_real val);
 	//@}
+	
+
+private:
+	void allocateData(size_t size);
+	/// total number of values in data_
+	size_t size_;
+	/// total memory allocated for data_
+	size_t allocatedSize_;
+	/// the actual array
+	mrs_real *data_;
+	/// number of rows in array; for a one-dimensional array, this is 1.
+	mrs_natural rows_;
+	/// number of columns in array.
+	mrs_natural cols_;
+	
+
+	
 };
-
-
-inline
-bool realvec::operator==(const realvec &v1)
-{
-	//different size -> not equal
-	if (v1.getRows()!=rows_) return false;
-	if (v1.getCols()!=cols_) return false;
-
-	for(int r=0;r<v1.getRows();r++)
-	{
-		for(int c=0;c<v1.getCols();c++)
-		{
-			if(v1(r,c)!=data_[c * rows_ + r])return false;
-		}
-	}
-	return true;
-}
-
-inline
-bool realvec::operator!=(const realvec &v1) 
-{
-	return !(*this == v1);
-}
-
-inline
-realvec&
-realvec::operator/=(const mrs_real val)
-{
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] /= val;
-	return *this;
-}
-
-
-inline
-realvec&
-realvec::operator*=(const mrs_real val)
-{
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] *= val;
-	return *this;
-}
-
-inline
-realvec&
-realvec::operator-=(const mrs_real val)
-{
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] -= val;
-	return *this;
-}
-
-inline
-realvec&
-realvec::operator+=(const mrs_real val)
-{
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] += val;
-	return *this;
-}
-
-inline
-realvec&
-realvec::operator+=(const realvec& vec)
-{
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] += vec.data_[i];
-	return *this;
-}
-
-inline
-realvec&
-realvec::operator-=(const realvec& vec)
-{
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] -= vec.data_[i];
-	return *this;
-}
-
-inline
-realvec&
-realvec::operator*=(const realvec& vec)
-{
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] *= vec.data_[i];
-	return *this;
-}
-
-inline
-realvec&
-realvec::operator/=(const realvec& vec)
-{
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] /= vec.data_[i];
-	return *this;
-}
-
-/**
- * \brief matrix Multiplication
- *
- * \param a first input matrix
- * \param b second input matrix
- * \param out preallocated realvec for the output
- * \return the value at the requested index.
- * \exception std::out_of_range is thrown when the index is out of bounds.
- */
-inline
-void realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out) 
-{
-	//naive Matrix multiplication
-
-	MRSASSERT(a.getCols()==b.getRows());
-	MRSASSERT(out.getRows()==a.getRows());
-	MRSASSERT(out.getCols()==b.getCols());
-
-	for (mrs_natural r=0;r<out.getRows();r++) 
-	{
-		for (mrs_natural c=0;c<out.getCols();c++) 
-		{
-        
-            for (mrs_natural i=0;i<a.getCols();i++) 
-			{
-				if ((a(r,i)==0)||(b(i,c)==0)) 
-					out(r,c)+=0;
-				else 
-					out(r,c)+=a(r,i)*b(i,c);
-            }
-        }
-    }
-}
-
-inline
-mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
-{
-
-	MRSASSERT(r < rows_);
-	MRSASSERT(c < cols_);
-
-	return data_[c * rows_ + r];
-}
-
-inline
-mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
-
-{
-	MRSASSERT(r < rows_);
-	MRSASSERT(c < cols_);
-	MRSASSERT(r >= 0);
-	MRSASSERT(c >= 0);
-
-	return data_[c * rows_ + r];
-}
-
-inline
-mrs_real realvec::operator()(const mrs_natural i) const
-{
-	MRSASSERT(i < size_);
-	return data_[i];
-}
-
-inline
-mrs_real& realvec::operator()(const mrs_natural i)
-{
-
-	MRSASSERT(i < size_);
-
-	return data_[i];
-}
-
-/**
- * \brief Get the value at index i or raise Exception when out of bounds.
- *
- * \param i the index to get the value at.
- * \return the value at the requested index.
- * \exception std::out_of_range is thrown when the index is out of bounds.
- */
-inline
-mrs_real realvec::getValueFenced(const mrs_natural i) const
-{
-	if (i < 0 || i >= size_) {
-		// TODO: use a Marsyas branded exception here?
-		throw std::out_of_range("realvec indexing out of bounds.");
-	}
-	return data_[i];
-}
-
-/**
- * \brief Get the value at position (r, c) or raise Exception when out of bounds.
- *
- * \param r the row index of the position to get the value from.
- * \param c the column index of the position to get the value from.
- * \return the value at the requested position.
- * \exception std::out_of_range is thrown when the row or column index are out of bounds.
- */
-inline
-mrs_real realvec::getValueFenced(const mrs_natural r, const mrs_natural c) const
-{
-	if (r < 0 || r >= rows_ || c < 0 || c >= cols_) {
-		// TODO: use a Marsyas branded exception here?
-		throw std::out_of_range("realvec indexing out of bounds.");
-	}
-	return data_[c * rows_ + r];
-}
-
-/**
- * \brief Get reference to value at index i or raise Exception when out of bounds.
- *
- * Returned reference can be used as left hand side value (lvalue).
- *
- * \param i the index to get the value at.
- * \return the value at the requested index.
- * \exception std::out_of_range is thrown when the index is out of bounds.
- */
-inline
-mrs_real& realvec::getValueFenced(const mrs_natural i)
-{
-	if (i < 0 || i >= size_) {
-		// TODO: use a Marsyas branded exception here?
-		throw std::out_of_range("realvec indexing out of bounds.");
-	}
-	return data_[i];
-}
-
-/**
- * \brief Get reference to value at position (r, c) or raise Exception when out of bounds.
- *
- * Returned reference can be used as left hand side value (lvalue).
- *
- * \param r the row index of the position to get the value from.
- * \param c the column index of the position to get the value from.
- * \return the value at the requested position.
- * \exception std::out_of_range is thrown when the row or column index are out of bounds.
- */
-inline
-mrs_real& realvec::getValueFenced(const mrs_natural r, const mrs_natural c)
-{
-	if (r < 0 || r >= rows_ || c < 0 || c >= cols_) {
-		// TODO: use a Marsyas branded exception here?
-		throw std::out_of_range("realvec indexing out of bounds.");
-	}
-	return data_[c * rows_ + r];
-}
+	
+	
 
 
 }//namespace Marsyas

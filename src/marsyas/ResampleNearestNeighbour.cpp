@@ -78,6 +78,7 @@ ResampleNearestNeighbour::myUpdate(MarControlPtr sender)
 void
 ResampleNearestNeighbour::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	mrs_real tp;
 	mrs_natural tl, tr;
 	mrs_real alpha = ctrl_stretch_->to<mrs_real>();

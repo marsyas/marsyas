@@ -98,7 +98,7 @@ BeatHistoFeatures::sum_nearby(mrs_natural index, mrs_natural radius, mrs_natural
 {
     mrs_real sum = 0.0;
     mrs_natural ix;
-    for (mrs_natural i = 1; i <= radius; i++)
+    for (mrs_natural i = 1; i <= radius; ++i)
     {
         ix = index - i;
         if (0 < ix && ix < size) // Make sure we have a valid index.
@@ -165,7 +165,7 @@ BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
   // in.write("histo.plot");
   //checkFlow(in,out);
-
+  mrs_natural o,c,t;
   mrs_real mx = DBL_MIN;
   mrs_natural tmx  = 0;
   mrs_real pmax = DBL_MIN;
@@ -178,7 +178,7 @@ BeatHistoFeatures::myProcess(realvec& in, realvec& out)
   
   // c, o, and t are declared in MarSystem.h. 
   // TODO: Why do we use c < 3 here? (i.e. why 3?)
-  for (c=0; c < 3; c++)
+  for (c=0; c < 3; ++c)
   {
       for (o=0; o < inObservations_; o++)
       {

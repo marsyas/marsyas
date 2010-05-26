@@ -17,9 +17,8 @@
 // (c) 2009 - sness@sness.net - GPL
 //
 
-// #include <../../otherlibs/cxxtest/TestSuite.h>
-#include <cxxtest/TestSuite.h>
 
+#include <cxxtest/TestSuite.h>
 #include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"
@@ -110,7 +109,7 @@ public:
 	for (int i=0; i < num_buffers; i++) {
 	  // Copy over the section of nbuf to ibuf
 	  int offset = i * buffer_size;
-	  for (int j = 0; j < ibuf.getSize(); j++) {
+	  for (size_t j = 0; j < ibuf.getSize(); j++) {
 		ibuf(0,j) = nbuf(0,j+offset);
 	  }
 
@@ -183,7 +182,7 @@ public:
 	for (int i=0; i < num_buffers; i++) {
 	  // Copy over the section of nbuf to ibuf
 	  int offset = i * buffer_size;
-	  for (int j = 0; j < ibuf.getSize(); j++) {
+	  for (size_t j = 0; j < ibuf.getSize(); j++) {
 		ibuf(0,j) = nbuf(0,j+offset);
 	  }
 
@@ -258,7 +257,7 @@ public:
 	for (int i=0; i < num_buffers; i++) {
 	  // Copy over the section of nbuf to ibuf
 	  int offset = i * buffer_size;
-	  for (int j = 0; j < ibuf.getSize(); j++) {
+	  for (size_t j = 0; j < ibuf.getSize(); j++) {
 		ibuf(0,j) = nbuf(0,j+offset);
 	  }
 

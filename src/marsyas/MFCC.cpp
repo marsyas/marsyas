@@ -84,7 +84,7 @@ MFCC::myUpdate(MarControlPtr sender)
 	// input observation names and prefix it with "MFCCxx"
 	mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
 	ostringstream oss;
-	for (i=0; i < cepstralCoefs_; i++)
+	for (i=0; i < cepstralCoefs_; ++i)
 	{
 		oss << "MFCC" << i << "_" << inObsName << ",";
 	}
@@ -107,42 +107,42 @@ MFCC::myUpdate(MarControlPtr sender)
 		triangle_heights_.create(totalFilters_);
 
 		// Linear filter boundaries
-		for (i=0; i< linearFilters_; i++)
+		for (i=0; i< linearFilters_; ++i)
 		{
 			freqs_(i) = lowestFrequency_ + i * linearSpacing_;
 		}
 
 		// Logarithmic filter boundaries
 		mrs_real first_log = freqs_(linearFilters_-1);
-		for (i=1; i<=logFilters_+2; i++)
+		for (i=1; i<=logFilters_+2; ++i)
 		{
 			freqs_(linearFilters_-1+i) = first_log * pow(logSpacing_, (mrs_real)i);
 		}
 
 		// Triangles information
-		for (i=0; i<totalFilters_; i++)
+		for (i=0; i<totalFilters_; ++i)
 		{
 			lower_(i) = freqs_(i);
 		}
 
-		for (i=1; i<= totalFilters_; i++)
+		for (i=1; i<= totalFilters_; ++i)
 		{
 			center_(i-1) = freqs_(i);
 		}
 
-		for (i=2; i<= totalFilters_+1; i++)
+		for (i=2; i<= totalFilters_+1; ++i)
 		{
 			upper_(i-2) = freqs_(i);
 		}
 
-		for (i=0; i<totalFilters_; i++)
+		for (i=0; i<totalFilters_; ++i)
 		{
 			triangle_heights_(i) = (mrs_real)(2.0 / (upper_(i) - lower_(i)));
 		}
 
 		fftFreqs_.stretch(fftSize_);
 
-		for (i=0; i< fftSize_; i++)
+		for (i=0; i< fftSize_; ++i)
 		{
 			fftFreqs_(i) = (float)i / (float)fftSize_ * (float)samplingRate_;
 		}
@@ -167,7 +167,7 @@ MFCC::myUpdate(MarControlPtr sender)
 			// NEIL's filter weight speedup
 			int len=0;
 			int pos=0;
-			for (i=0; i< fftSize_; i++)
+			for (i=0; i< fftSize_; ++i)
 			{
 				if ((fftFreqs_(i) > lower_(chan))&& (fftFreqs_(i) <= center_(chan)))
 				{
@@ -201,7 +201,7 @@ MFCC::myUpdate(MarControlPtr sender)
 		mrs_real scale_fac = (mrs_real)(1.0/ sqrt((mrs_real)(totalFilters_/2)));
 		for (j = 0; j<cepstralCoefs_; j++)
 		{
-			for (i=0; i< totalFilters_; i++)
+			for (i=0; i< totalFilters_; ++i)
 			{
 				mfccDCT_(j, i) = scale_fac * cos(j * (2*i +1) * PI/2/totalFilters_);
 				if (i == 0)
@@ -222,7 +222,7 @@ MFCC::myUpdate(MarControlPtr sender)
 void
 MFCC::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural i,k;
+	mrs_natural i,k,o;
 
 	// mirror the spectrum
 	for (o=0; o < inObservations_; o++)
@@ -237,7 +237,7 @@ MFCC::myProcess(realvec& in, realvec& out)
 
 	mrs_real sum =0.0;
 	// Calculate the filterbank responce
-	for (i=0; i<totalFilters_; i++)
+	for (i=0; i<totalFilters_; ++i)
 	{
 		sum = 0.0;
 		// NEIL's filter weight speedup
@@ -255,7 +255,7 @@ MFCC::myProcess(realvec& in, realvec& out)
 		}
 	}
 	/* The way it used to be : NEIL
-	for (i=0; i<totalFilters_; i++) {
+	for (i=0; i<totalFilters_; ++i) {
 	sum = 0.0;
 	for (k=0; k<fftSize_; k++) {
 	sum += (mfccFilterWeights_(i, k) * fmagnitude_(k));

@@ -64,6 +64,7 @@ void
 PlotSink::myProcess(realvec& in, realvec& out)
 {
 	out = in;
+	mrs_natural t,o;
 
 	//if using MATLABengine, plot the input data in MATLAB
 #ifdef MARSYAS_MATLAB

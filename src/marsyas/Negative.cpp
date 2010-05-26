@@ -39,6 +39,7 @@ Negative::clone() const
 void
 Negative::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	for (t = 0; t < inSamples_; t++)
 	{
 		for (o = 0; o < inObservations_; o++)

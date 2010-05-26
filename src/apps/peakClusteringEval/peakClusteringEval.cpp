@@ -859,7 +859,7 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 			
 			// string fname = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename")->to<mrs_string>();
 
-			printf("Processed texture window %d : %.2f / %.2f \r", numTextWinds, timeRead, timeLeft);
+			printf("Processed texture window %d : %.2f / %.2f \r", (int)numTextWinds, timeRead, timeLeft);
 			fflush(stdout);
 
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
@@ -1016,7 +1016,7 @@ main(int argc, const char **argv)
 	if (soundfiles.size() != 0)   
 	{
 		// process several soundFiles
-		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
+		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; ++sfi)
 		{
 			FileName Sfname(*sfi);
 

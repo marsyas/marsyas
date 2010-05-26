@@ -46,6 +46,7 @@ FullWaveRectifier::myUpdate(MarControlPtr sender)
 void
 FullWaveRectifier::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// Copy the absolute values of the samples from the input to the output.
 	for (o = 0; o < inObservations_; o++)
 	{

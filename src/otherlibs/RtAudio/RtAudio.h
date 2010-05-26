@@ -113,7 +113,7 @@ static const RtAudioFormat RTAUDIO_FLOAT64 = 0x20; // Normalized between plus/mi
     If the RTAUDIO_SCHEDULE_REALTIME flag is set, RtAudio will attempt 
     to select realtime scheduling (round-robin) for the callback thread.
 */
-typedef unsigned int RtAudioStreamFlags;
+typedef uint32_t RtAudioStreamFlags;
 static const RtAudioStreamFlags RTAUDIO_NONINTERLEAVED = 0x1;    // Use non-interleaved buffers (default = interleaved).
 static const RtAudioStreamFlags RTAUDIO_MINIMIZE_LATENCY = 0x2;  // Attempt to set stream parameters for lowest possible latency.
 static const RtAudioStreamFlags RTAUDIO_HOG_DEVICE = 0x4;        // Attempt grab device and prevent use by others.
@@ -130,7 +130,7 @@ static const RtAudioStreamFlags RTAUDIO_SCHEDULE_REALTIME = 0x8; // Try to selec
     - \e RTAUDIO_INPUT_OVERFLOW:   Input data was discarded because of an overflow condition at the driver.
     - \e RTAUDIO_OUTPUT_UNDERFLOW: The output buffer ran low, likely producing a break in the output sound.
 */
-typedef unsigned int RtAudioStreamStatus;
+typedef uint32_t RtAudioStreamStatus;
 static const RtAudioStreamStatus RTAUDIO_INPUT_OVERFLOW = 0x1;    // Input data was discarded because of an overflow condition at the driver.
 static const RtAudioStreamStatus RTAUDIO_OUTPUT_UNDERFLOW = 0x2;  // The output buffer ran low, likely causing a gap in the output sound.
 
@@ -174,7 +174,7 @@ static const RtAudioStreamStatus RTAUDIO_OUTPUT_UNDERFLOW = 0x2;  // The output 
    the stream immediately, the client should return a value of two.
  */
 typedef int (*RtAudioCallback)( void *outputBuffer, void *inputBuffer,
-                                unsigned int nFrames,
+                                uint32_t nFrames,
                                 double streamTime,
                                 RtAudioStreamStatus status,
                                 void *userData );
@@ -215,12 +215,12 @@ class marsyas_EXPORT RtAudio
   struct DeviceInfo {
     bool probed;                  /*!< true if the device capabilities were successfully probed. */
     std::string name;             /*!< Character string device identifier. */
-    unsigned int outputChannels;  /*!< Maximum output channels supported by device. */
-    unsigned int inputChannels;   /*!< Maximum input channels supported by device. */
-    unsigned int duplexChannels;  /*!< Maximum simultaneous input/output channels supported by device. */
+    uint32_t outputChannels;  /*!< Maximum output channels supported by device. */
+    uint32_t inputChannels;   /*!< Maximum input channels supported by device. */
+    uint32_t duplexChannels;  /*!< Maximum simultaneous input/output channels supported by device. */
     bool isDefaultOutput;         /*!< true if this is the default output device. */
     bool isDefaultInput;          /*!< true if this is the default input device. */
-    std::vector<unsigned int> sampleRates; /*!< Supported sample rates (queried from list of standard rates). */
+    std::vector<uint32_t> sampleRates; /*!< Supported sample rates (queried from list of standard rates). */
     RtAudioFormat nativeFormats;  /*!< Bit mask of supported data formats. */
 
     // Default constructor.
@@ -231,9 +231,9 @@ class marsyas_EXPORT RtAudio
 
   //! The structure for specifying input or ouput stream parameters.
   struct StreamParameters {
-    unsigned int deviceId;     /*!< Device index (0 to getDeviceCount() - 1). */
-    unsigned int nChannels;    /*!< Number of channels. */
-    unsigned int firstChannel; /*!< First channel index on device (default = 0). */
+    uint32_t deviceId;     /*!< Device index (0 to getDeviceCount() - 1). */
+    uint32_t nChannels;    /*!< Number of channels. */
+    uint32_t firstChannel; /*!< First channel index on device (default = 0). */
 
     // Default constructor.
     StreamParameters()
@@ -294,7 +294,7 @@ class marsyas_EXPORT RtAudio
   */
   struct StreamOptions {
     RtAudioStreamFlags flags;      /*!< A bit-mask of stream flags (RTAUDIO_NONINTERLEAVED, RTAUDIO_MINIMIZE_LATENCY, RTAUDIO_HOG_DEVICE). */
-    unsigned int numberOfBuffers;  /*!< Number of stream buffers. */
+    uint32_t numberOfBuffers;  /*!< Number of stream buffers. */
     std::string streamName;        /*!< A stream name (currently used only in Jack). */
     int priority;                  /*!< Scheduling priority of callback thread (only used with flag RTAUDIO_SCHEDULE_REALTIME). */
 
@@ -338,7 +338,7 @@ class marsyas_EXPORT RtAudio
     is called, thus supporting devices connected \e after instantiation. If
     a system error occurs during processing, a warning will be issued. 
   */
-  unsigned int getDeviceCount( void ) throw();
+  uint32_t getDeviceCount( void ) throw();
 
   //! Return an RtAudio::DeviceInfo structure for a specified device number.
   /*!
@@ -351,7 +351,7 @@ class marsyas_EXPORT RtAudio
     current default input or output device, the corresponding
     "isDefault" member will have a value of "true".
   */
-  RtAudio::DeviceInfo getDeviceInfo( unsigned int device );
+  RtAudio::DeviceInfo getDeviceInfo( uint32_t device );
 
   //! A function that returns the index of the default output device.
   /*!
@@ -361,7 +361,7 @@ class marsyas_EXPORT RtAudio
     client's responsibility to verify that a device is available
     before attempting to open a stream.
   */
-  unsigned int getDefaultOutputDevice( void ) throw();
+  uint32_t getDefaultOutputDevice( void ) throw();
 
   //! A function that returns the index of the default input device.
   /*!
@@ -371,7 +371,7 @@ class marsyas_EXPORT RtAudio
     client's responsibility to verify that a device is available
     before attempting to open a stream.
   */
-  unsigned int getDefaultInputDevice( void ) throw();
+  uint32_t getDefaultInputDevice( void ) throw();
 
   //! A public function for opening a stream with the specified parameters.
   /*!
@@ -413,8 +413,8 @@ class marsyas_EXPORT RtAudio
   */
   void openStream( RtAudio::StreamParameters *outputParameters,
                    RtAudio::StreamParameters *inputParameters,
-                   RtAudioFormat format, unsigned int sampleRate,
-                   unsigned int *bufferFrames, RtAudioCallback callback,
+                   RtAudioFormat format, uint32_t sampleRate,
+                   uint32_t *bufferFrames, RtAudioCallback callback,
                    void *userData = NULL, RtAudio::StreamOptions *options = NULL );
 
   //! A function that closes a stream and frees any associated stream memory.
@@ -480,7 +480,7 @@ class marsyas_EXPORT RtAudio
    than that specified in the stream parameters.  If a stream is not
    open, an RtError (type = INVALID_USE) will be thrown.
  */
-  unsigned int getStreamSampleRate( void );
+  uint32_t getStreamSampleRate( void );
 
   //! Specify whether warning messages should be printed to stderr.
   void showWarnings( bool value = true ) throw();
@@ -557,21 +557,21 @@ public:
   RtApi();
   virtual ~RtApi();
   virtual RtAudio::Api getCurrentApi( void ) = 0;
-  virtual unsigned int getDeviceCount( void ) = 0;
-  virtual RtAudio::DeviceInfo getDeviceInfo( unsigned int device ) = 0;
-  virtual unsigned int getDefaultInputDevice( void );
-  virtual unsigned int getDefaultOutputDevice( void );
+  virtual uint32_t getDeviceCount( void ) = 0;
+  virtual RtAudio::DeviceInfo getDeviceInfo( uint32_t device ) = 0;
+  virtual uint32_t getDefaultInputDevice( void );
+  virtual uint32_t getDefaultOutputDevice( void );
   void openStream( RtAudio::StreamParameters *outputParameters,
                    RtAudio::StreamParameters *inputParameters,
-                   RtAudioFormat format, unsigned int sampleRate,
-                   unsigned int *bufferFrames, RtAudioCallback callback,
+                   RtAudioFormat format, uint32_t sampleRate,
+                   uint32_t *bufferFrames, RtAudioCallback callback,
                    void *userData, RtAudio::StreamOptions *options );
   virtual void closeStream( void );
   virtual void startStream( void ) = 0;
   virtual void stopStream( void ) = 0;
   virtual void abortStream( void ) = 0;
   long getStreamLatency( void );
-  unsigned int getStreamSampleRate( void );
+  uint32_t getStreamSampleRate( void );
   virtual double getStreamTime( void );
   bool isStreamOpen( void ) const { return stream_.state != STREAM_CLOSED; };
   bool isStreamRunning( void ) const { return stream_.state == STREAM_RUNNING; };
@@ -580,8 +580,8 @@ public:
 
 protected:
 
-  static const unsigned int MAX_SAMPLE_RATES;
-  static const unsigned int SAMPLE_RATES[];
+  static const uint32_t MAX_SAMPLE_RATES;
+  static const uint32_t SAMPLE_RATES[];
 
   enum { FAILURE, SUCCESS };
 
@@ -609,7 +609,7 @@ protected:
 
   // A protected structure for audio streams.
   struct RtApiStream {
-    unsigned int device[2];    // Playback and record, respectively.
+    uint32_t device[2];    // Playback and record, respectively.
     void *apiHandle;           // void pointer for API specific stream handle information
     StreamMode mode;           // OUTPUT, INPUT, or DUPLEX.
     StreamState state;         // STOPPED, RUNNING, or CLOSED
@@ -619,12 +619,12 @@ protected:
     bool userInterleaved;
     bool deviceInterleaved[2]; // Playback and record, respectively.
     bool doByteSwap[2];        // Playback and record, respectively.
-    unsigned int sampleRate;
-    unsigned int bufferSize;
-    unsigned int nBuffers;
-    unsigned int nUserChannels[2];    // Playback and record, respectively.
-    unsigned int nDeviceChannels[2];  // Playback and record channels, respectively.
-    unsigned int channelOffset[2];    // Playback and record, respectively.
+    uint32_t sampleRate;
+    uint32_t bufferSize;
+    uint32_t nBuffers;
+    uint32_t nUserChannels[2];    // Playback and record, respectively.
+    uint32_t nDeviceChannels[2];  // Playback and record channels, respectively.
+    uint32_t channelOffset[2];    // Playback and record, respectively.
     unsigned long latency[2];         // Playback and record, respectively.
     RtAudioFormat userFormat;
     RtAudioFormat deviceFormat[2];    // Playback and record, respectively.
@@ -658,9 +658,9 @@ protected:
     "warning" message is reported and FAILURE is returned. A
     successful probe is indicated by a return value of SUCCESS.
   */
-  virtual bool probeDeviceOpen( unsigned int device, StreamMode mode, unsigned int channels, 
-                                unsigned int firstChannel, unsigned int sampleRate,
-                                RtAudioFormat format, unsigned int *bufferSize,
+  virtual bool probeDeviceOpen( uint32_t device, StreamMode mode, uint32_t channels, 
+                                uint32_t firstChannel, uint32_t sampleRate,
+                                RtAudioFormat format, uint32_t *bufferSize,
                                 RtAudio::StreamOptions *options );
 
   //! A protected function used to increment the stream time.
@@ -685,13 +685,13 @@ protected:
   void convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info );
 
   //! Protected common method used to perform byte-swapping on buffers.
-  void byteSwapBuffer( char *buffer, unsigned int samples, RtAudioFormat format );
+  void byteSwapBuffer( char *buffer, uint32_t samples, RtAudioFormat format );
 
   //! Protected common method that returns the number of bytes for a given format.
-  unsigned int formatBytes( RtAudioFormat format );
+  uint32_t formatBytes( RtAudioFormat format );
 
   //! Protected common method that sets up the parameters for buffer conversion.
-  void setConvertInfo( StreamMode mode, unsigned int firstChannel );
+  void setConvertInfo( StreamMode mode, uint32_t firstChannel );
 };
 
 // **************************************************************** //
@@ -701,10 +701,10 @@ protected:
 // **************************************************************** //
 
 inline RtAudio::Api RtAudio :: getCurrentApi( void ) throw() { return rtapi_->getCurrentApi(); }
-inline unsigned int RtAudio :: getDeviceCount( void ) throw() { return rtapi_->getDeviceCount(); }
-inline RtAudio::DeviceInfo RtAudio :: getDeviceInfo( unsigned int device ) { return rtapi_->getDeviceInfo( device ); }
-inline unsigned int RtAudio :: getDefaultInputDevice( void ) throw() { return rtapi_->getDefaultInputDevice(); }
-inline unsigned int RtAudio :: getDefaultOutputDevice( void ) throw() { return rtapi_->getDefaultOutputDevice(); }
+inline uint32_t RtAudio :: getDeviceCount( void ) throw() { return rtapi_->getDeviceCount(); }
+inline RtAudio::DeviceInfo RtAudio :: getDeviceInfo( uint32_t device ) { return rtapi_->getDeviceInfo( device ); }
+inline uint32_t RtAudio :: getDefaultInputDevice( void ) throw() { return rtapi_->getDefaultInputDevice(); }
+inline uint32_t RtAudio :: getDefaultOutputDevice( void ) throw() { return rtapi_->getDefaultOutputDevice(); }
 inline void RtAudio :: closeStream( void ) throw() { return rtapi_->closeStream(); }
 inline void RtAudio :: startStream( void ) { return rtapi_->startStream(); }
 inline void RtAudio :: stopStream( void )  { return rtapi_->stopStream(); }
@@ -712,7 +712,7 @@ inline void RtAudio :: abortStream( void ) { return rtapi_->abortStream(); }
 inline bool RtAudio :: isStreamOpen( void ) const throw() { return rtapi_->isStreamOpen(); }
 inline bool RtAudio :: isStreamRunning( void ) const throw() { return rtapi_->isStreamRunning(); }
 inline long RtAudio :: getStreamLatency( void ) { return rtapi_->getStreamLatency(); }
-inline unsigned int RtAudio :: getStreamSampleRate( void ) { return rtapi_->getStreamSampleRate(); };
+inline uint32_t RtAudio :: getStreamSampleRate( void ) { return rtapi_->getStreamSampleRate(); };
 inline double RtAudio :: getStreamTime( void ) { return rtapi_->getStreamTime(); }
 inline void RtAudio :: showWarnings( bool value ) throw() { rtapi_->showWarnings( value ); }
 
@@ -729,10 +729,10 @@ public:
   RtApiCore();
   ~RtApiCore();
   RtAudio::Api getCurrentApi( void ) { return RtAudio::MACOSX_CORE; };
-  unsigned int getDeviceCount( void );
-  RtAudio::DeviceInfo getDeviceInfo( unsigned int device );
-  unsigned int getDefaultOutputDevice( void );
-  unsigned int getDefaultInputDevice( void );
+  uint32_t getDeviceCount( void );
+  RtAudio::DeviceInfo getDeviceInfo( uint32_t device );
+  uint32_t getDefaultOutputDevice( void );
+  uint32_t getDefaultInputDevice( void );
   void closeStream( void );
   void startStream( void );
   void stopStream( void );
@@ -749,9 +749,9 @@ public:
 
   private:
 
-  bool probeDeviceOpen( unsigned int device, StreamMode mode, unsigned int channels, 
-                        unsigned int firstChannel, unsigned int sampleRate,
-                        RtAudioFormat format, unsigned int *bufferSize,
+  bool probeDeviceOpen( uint32_t device, StreamMode mode, uint32_t channels, 
+                        uint32_t firstChannel, uint32_t sampleRate,
+                        RtAudioFormat format, uint32_t *bufferSize,
                         RtAudio::StreamOptions *options );
   static const char* getErrorCode( OSStatus code );
 };
@@ -767,8 +767,8 @@ public:
   RtApiJack();
   ~RtApiJack();
   RtAudio::Api getCurrentApi( void ) { return RtAudio::UNIX_JACK; };
-  unsigned int getDeviceCount( void );
-  RtAudio::DeviceInfo getDeviceInfo( unsigned int device );
+  uint32_t getDeviceCount( void );
+  RtAudio::DeviceInfo getDeviceInfo( uint32_t device );
   void closeStream( void );
   void startStream( void );
   void stopStream( void );
@@ -783,9 +783,9 @@ public:
 
   private:
 
-  bool probeDeviceOpen( unsigned int device, StreamMode mode, unsigned int channels, 
-                        unsigned int firstChannel, unsigned int sampleRate,
-                        RtAudioFormat format, unsigned int *bufferSize,
+  bool probeDeviceOpen( uint32_t device, StreamMode mode, uint32_t channels, 
+                        uint32_t firstChannel, uint32_t sampleRate,
+                        RtAudioFormat format, uint32_t *bufferSize,
                         RtAudio::StreamOptions *options );
 };
 
@@ -800,8 +800,8 @@ public:
   RtApiAsio();
   ~RtApiAsio();
   RtAudio::Api getCurrentApi( void ) { return RtAudio::WINDOWS_ASIO; };
-  unsigned int getDeviceCount( void );
-  RtAudio::DeviceInfo getDeviceInfo( unsigned int device );
+  uint32_t getDeviceCount( void );
+  RtAudio::DeviceInfo getDeviceInfo( uint32_t device );
   void closeStream( void );
   void startStream( void );
   void stopStream( void );
@@ -819,9 +819,9 @@ public:
   std::vector<RtAudio::DeviceInfo> devices_;
   void saveDeviceInfo( void );
   bool coInitialized_;
-  bool probeDeviceOpen( unsigned int device, StreamMode mode, unsigned int channels, 
-                        unsigned int firstChannel, unsigned int sampleRate,
-                        RtAudioFormat format, unsigned int *bufferSize,
+  bool probeDeviceOpen( uint32_t device, StreamMode mode, uint32_t channels, 
+                        uint32_t firstChannel, uint32_t sampleRate,
+                        RtAudioFormat format, uint32_t *bufferSize,
                         RtAudio::StreamOptions *options );
 };
 
@@ -836,10 +836,10 @@ public:
   RtApiDs();
   ~RtApiDs();
   RtAudio::Api getCurrentApi( void ) { return RtAudio::WINDOWS_DS; };
-  unsigned int getDeviceCount( void );
-  unsigned int getDefaultOutputDevice( void );
-  unsigned int getDefaultInputDevice( void );
-  RtAudio::DeviceInfo getDeviceInfo( unsigned int device );
+  uint32_t getDeviceCount( void );
+  uint32_t getDefaultOutputDevice( void );
+  uint32_t getDefaultInputDevice( void );
+  RtAudio::DeviceInfo getDeviceInfo( uint32_t device );
   void closeStream( void );
   void startStream( void );
   void stopStream( void );
@@ -857,9 +857,9 @@ public:
   bool coInitialized_;
   bool buffersRolling;
   long duplexPrerollBytes;
-  bool probeDeviceOpen( unsigned int device, StreamMode mode, unsigned int channels, 
-                        unsigned int firstChannel, unsigned int sampleRate,
-                        RtAudioFormat format, unsigned int *bufferSize,
+  bool probeDeviceOpen( uint32_t device, StreamMode mode, uint32_t channels, 
+                        uint32_t firstChannel, uint32_t sampleRate,
+                        RtAudioFormat format, uint32_t *bufferSize,
                         RtAudio::StreamOptions *options );
 };
 
@@ -874,8 +874,8 @@ public:
   RtApiAlsa();
   ~RtApiAlsa();
   RtAudio::Api getCurrentApi() { return RtAudio::LINUX_ALSA; };
-  unsigned int getDeviceCount( void );
-  RtAudio::DeviceInfo getDeviceInfo( unsigned int device );
+  uint32_t getDeviceCount( void );
+  RtAudio::DeviceInfo getDeviceInfo( uint32_t device );
   void closeStream( void );
   void startStream( void );
   void stopStream( void );
@@ -891,9 +891,9 @@ public:
 
   std::vector<RtAudio::DeviceInfo> devices_;
   void saveDeviceInfo( void );
-  bool probeDeviceOpen( unsigned int device, StreamMode mode, unsigned int channels, 
-                        unsigned int firstChannel, unsigned int sampleRate,
-                        RtAudioFormat format, unsigned int *bufferSize,
+  bool probeDeviceOpen( uint32_t device, StreamMode mode, uint32_t channels, 
+                        uint32_t firstChannel, uint32_t sampleRate,
+                        RtAudioFormat format, uint32_t *bufferSize,
                         RtAudio::StreamOptions *options );
 };
 
@@ -908,8 +908,8 @@ public:
   RtApiOss();
   ~RtApiOss();
   RtAudio::Api getCurrentApi() { return RtAudio::LINUX_OSS; };
-  unsigned int getDeviceCount( void );
-  RtAudio::DeviceInfo getDeviceInfo( unsigned int device );
+  uint32_t getDeviceCount( void );
+  RtAudio::DeviceInfo getDeviceInfo( uint32_t device );
   void closeStream( void );
   void startStream( void );
   void stopStream( void );
@@ -923,9 +923,9 @@ public:
 
   private:
 
-  bool probeDeviceOpen( unsigned int device, StreamMode mode, unsigned int channels, 
-                        unsigned int firstChannel, unsigned int sampleRate,
-                        RtAudioFormat format, unsigned int *bufferSize,
+  bool probeDeviceOpen( uint32_t device, StreamMode mode, uint32_t channels, 
+                        uint32_t firstChannel, uint32_t sampleRate,
+                        RtAudioFormat format, uint32_t *bufferSize,
                         RtAudio::StreamOptions *options );
 };
 
@@ -939,8 +939,8 @@ public:
 
   RtApiDummy() { errorText_ = "RtApiDummy: This class provides no functionality."; error( RtError::WARNING ); };
   RtAudio::Api getCurrentApi( void ) { return RtAudio::RTAUDIO_DUMMY; };
-  unsigned int getDeviceCount( void ) { return 0; };
-  RtAudio::DeviceInfo getDeviceInfo( unsigned int device ) { RtAudio::DeviceInfo info; return info; };
+  uint32_t getDeviceCount( void ) { return 0; };
+  RtAudio::DeviceInfo getDeviceInfo( uint32_t device ) { RtAudio::DeviceInfo info; return info; };
   void closeStream( void ) {};
   void startStream( void ) {};
   void stopStream( void ) {};
@@ -948,9 +948,9 @@ public:
 
   private:
 
-  bool probeDeviceOpen( unsigned int device, StreamMode mode, unsigned int channels, 
-                        unsigned int firstChannel, unsigned int sampleRate,
-                        RtAudioFormat format, unsigned int *bufferSize,
+  bool probeDeviceOpen( uint32_t device, StreamMode mode, uint32_t channels, 
+                        uint32_t firstChannel, uint32_t sampleRate,
+                        RtAudioFormat format, uint32_t *bufferSize,
                         RtAudio::StreamOptions *options ) { return false; };
 };
 

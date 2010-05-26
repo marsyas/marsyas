@@ -58,23 +58,13 @@ Reassign::myUpdate(MarControlPtr sender)
 void 
 Reassign::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-
+  mrs_natural o,t,c;
   mrs_real mx = DBL_MIN;
   mrs_natural tmx  = 0;
-  
-
-  
-  // mrs_real pmax = DBL_MIN;
-//  mrs_natural t1;
-//  mrs_natural t2;
-//  mrs_real s1;
-//  mrs_real s2;
-
   flag_.setval(0.0);
   
   
-  for (c=0; c < 5; c++)
+  for (c=0; c < 5; ++c)
     {
       
       for (o=0; o < inObservations_; o++)
@@ -178,7 +168,7 @@ Reassign::myProcess(realvec& in, realvec& out)
   flag_.setval(0.0);
   
   
-  for (c=0; c < 4; c++)
+  for (c=0; c < 4; ++c)
     {
       
       for (o=0; o < inObservations_; o++)

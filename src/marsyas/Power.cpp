@@ -64,6 +64,7 @@ Power::myUpdate(MarControlPtr sender)
 void 
 Power::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
   //checkFlow(in,out);
 
   out.setval(0.0);

@@ -80,7 +80,7 @@ private:
 	mrs_real adjustment_;
 	mrs_natural hopSize_;
 	mrs_natural winSize_;
-	mrs_natural t_;
+	mrs_natural t;
 	mrs_real ibiBPMSum_;
 	mrs_natural beatCount_;
 	mrs_real tempo_;

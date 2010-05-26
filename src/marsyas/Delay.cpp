@@ -149,8 +149,8 @@ Delay::myUpdate(MarControlPtr sender)
 		// set output names
 		vector<mrs_string> indiChannels	= stringSplit (getctrl("mrs_string/inObsNames")->to<mrs_string>(), ",");
 		ostringstream	outNames;
-		for (mrs_natural c = 0; c < getctrl("mrs_natural/inObservations")->to<mrs_natural>(); c++)
-			for (mrs_natural i = 0; i < delayInSamples_.getSize (); i++)
+		for (mrs_natural c = 0; c < getctrl("mrs_natural/inObservations")->to<mrs_natural>(); ++c)
+			for (size_t i = 0; i < delayInSamples_.getSize (); ++i)
 			{
 				outNames << indiChannels.at(c) << "-delay_" << i << ",";
 			}
@@ -160,7 +160,7 @@ Delay::myUpdate(MarControlPtr sender)
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	setctrl("mrs_natural/onObservations", delayInSamples_.getSize () * getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+	setctrl("mrs_natural/onObservations", (mrs_natural) delayInSamples_.getSize () * getctrl("mrs_natural/inObservations")->to<mrs_natural>());
 
 }
 
@@ -169,7 +169,7 @@ void
 Delay::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural k, numDelayLines = delayInSamples_.getSize ();
-
+	mrs_natural o,t;
 	// first, get the interpolated delay update (linear interpolation only)
 	getLinearInterPInc (prevDelayInSamples_, delayInSamples_, ctrlIncrement_, inSamples_);
 
@@ -244,14 +244,14 @@ mrs_real Delay::seconds2Samples (mrs_real seconds)
 }
 mrs_realvec Delay::samples2Seconds (mrs_realvec samples)
 {
-	for (mrs_natural i = 0; i < samples.getSize (); i++)
+	for (size_t i = 0; i < samples.getSize (); ++i)
 		samples(i)	= samples(i)/ israte_;
 
 	return samples;
 }
 mrs_realvec Delay::seconds2Samples (mrs_realvec seconds)
 {
-	for (mrs_natural i = 0; i < seconds.getSize (); i++)
+	for (size_t i = 0; i < seconds.getSize (); ++i)
 		seconds(i)	= seconds(i) * israte_;
 
 	return seconds;

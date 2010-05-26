@@ -94,7 +94,7 @@ PeakSynthOscBank::myUpdate(MarControlPtr sender)
 		L_ = 8192;
 		table_.stretch(L_);
 
-		for (t=0; t < L_; t++)
+		for (mrs_natural t=0; t < L_; t++)
 		{
 			table_(t) =  cos(TWOPI * t/L_);
 		}
@@ -110,6 +110,7 @@ PeakSynthOscBank::myUpdate(MarControlPtr sender)
 void 
 PeakSynthOscBank::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,c;
 	out.setval(0.0);
 
 	if (P_ > 1.0)
@@ -153,7 +154,7 @@ PeakSynthOscBank::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	for (t=0; t < nextamp_.getSize(); t++)
+	for (size_t t=0; t < nextamp_.getSize(); t++)
 	{
 		// cout << endl << index << endl;	
 		if(lastfreq_(t) && nextfreq_(t))
@@ -182,7 +183,7 @@ PeakSynthOscBank::myProcess(realvec& in, realvec& out)
 		{
 			// accumulate I samples from each oscillator 
 			// into output slice
-			for (c=0; c < I_; c++)
+			for (c=0; c < I_; ++c)
 			{
 				naddress_ = (mrs_natural)address_ % L_;
 				out(0, c) += a_ * table_(naddress_);

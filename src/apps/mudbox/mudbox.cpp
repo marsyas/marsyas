@@ -213,7 +213,7 @@ toy_with_audiodevices()
 	int devices = audio->getDeviceCount();
 	std::cout << "\nFound " << devices << " device(s) ...\n";
 
-	for (int i=1; i<=devices; i++)
+	for (int i=1; i<=devices; ++i)
 	{
 		try
 		{
@@ -260,7 +260,7 @@ toy_with_audiodevices()
 			else
 			{
 				std::cout << "Supported sample rates = ";
-				for (unsigned int j=0; j<info.sampleRates.size(); j++)
+				for (uint32_t j=0; j<info.sampleRates.size(); j++)
 					std::cout << info.sampleRates[j] << " ";
 			}
 			std::cout << std::endl;
@@ -303,7 +303,7 @@ toy_with_matlab(string sfName)
 	MATLAB_EVAL("plot(a(1:200))");;
 	mrs_real maxp = 0.0, maxl = 0.0;
 	
-	for (int i=0; i < 500; i++)
+	for (int i=0; i < 500; ++i)
 	{
 		net->tick();
 		src_data = net->getctrl("SoundFileSource/src/mrs_realvec/processedData")->to<mrs_realvec>();	
@@ -517,14 +517,14 @@ void drumClassify( string drumFile) {
 	while(in >> word) 
 		words.push_back(word);  
 
-	for ( unsigned int i = 0; i < words.size(); i++)
+	for ( uint32_t i = 0; i < words.size(); ++i)
 	{
 
 		if ( words[i] == "means" )
 			for ( int p = 0; p < numberOfCoefficients; p++)
 			{
 				// get he current word from the file
-				word = words[i++];
+				word = words[++i];
 				// cast the string to a float
 				float readval;
 				istringstream mystream(word);
@@ -535,7 +535,7 @@ void drumClassify( string drumFile) {
 			for ( int p = 0; p < numberOfCoefficients; p++)
 			{
 				// get he current word from the file
-				word = words[i++];
+				word = words[++i];
 				// cast the string to a float
 				float readval;
 				istringstream mystream(word);
@@ -582,7 +582,7 @@ void drumClassify( string drumFile) {
 	while ( TimeLoop->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		TimeLoop->process(in1,out1);
-		for (int i = 0; i < windowsize;i++)
+		for (int i = 0; i < windowsize;++i)
 		{
 			if ( out1(i) > 0)
 			{
@@ -909,12 +909,8 @@ toy_with_sfplay(string sfName)
 	playbacknet->linkControl("mrs_natural/pos", 
 							 "SoundFileSource/src/mrs_natural/pos");
 
-	mrs_bool isEmpty;
-	mrs_real frequency = 40.0;
-	// mrs_natural win = 1;
-
 	// while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
-	for (int i=0; i < 1000; i++)
+	for (int i=0; i < 1000; ++i)
 	{
 		// playbacknet->updctrl("Fanout/mix/Biquad/f1/mrs_real/frequency", fabs(2000.0 - frequency)+10.0);
 		// playbacknet->updctrl("Fanout/mix/Biquad/f2/mrs_real/frequency", frequency);
@@ -948,7 +944,7 @@ toy_with_sine()
   
  
 
-	for (int i=0; i < 500; i++) 
+	for (int i=0; i < 500; ++i) 
     {
 		snet->updctrl("Fanout/smix/SineSource/src1/mrs_real/frequency", 440.0);
 		snet->updctrl("Fanout/smix/SineSource/src2/mrs_real/frequency", 445.0);
@@ -991,7 +987,7 @@ toy_with_scales()
 	
 //  	cout << "Beating" << endl;
 	
-//  	for (int i=0; i < 200; i++) 
+//  	for (int i=0; i < 200; ++i) 
 //  	{
 //  		f1->setValue(440.0);
 //  		f2->setValue(442.0);
@@ -1009,7 +1005,7 @@ toy_with_scales()
 	
 // 	cout << "Ratios as chords" << endl;
 	
-// 	for (int i=0; i<5; i++)
+// 	for (int i=0; i<5; ++i)
 // 	{
 // 		f1->setValue(440.0);
 // 		f2->setValue(ratios[i] * 440.0);		
@@ -1020,7 +1016,7 @@ toy_with_scales()
 
 // 	cout << "Ratios as intervals" << endl;
 // 	g2->setValue(0.0);
-// 	for (int i=0; i<5; i++)
+// 	for (int i=0; i<5; ++i)
 // 	{
 // 		f1->setValue(440.0);
 // 		for (int j=0; j<50; j++)
@@ -1045,7 +1041,7 @@ toy_with_scales()
 	mrs_real c = pow(2, 1.0/divisions);
 	cout << "c = " << c << endl;
 	
-	for (int i=0; i < divisions+1; i++)
+	for (int i=0; i < divisions+1; ++i)
 	{
 		f1->setValue(440.0 * pow(c, i));
 		cout << 440.0 * pow(c,i) << " - " << pow(c,i) << endl;
@@ -1074,7 +1070,7 @@ toy_with_scales()
 	c = pow(3.0, 1.0/divisions);
 	cout << "c = " << c << endl;
 	
-	for (int i=0; i < divisions+1; i++)
+	for (int i=0; i < divisions+1; ++i)
 	{
 		f1->setValue(440.0 * pow(c, i));
 		cout << 440.0 * pow(c,i) << " - " << pow(c,i) << endl;
@@ -1396,7 +1392,7 @@ toy_with_inSamples(string sfName)
     {
 		playbacknet->updctrl("mrs_natural/inSamples", i);
 		playbacknet->tick();
-		i++;
+		++i;
 		cout << "inSamples = " << i << endl;
 	
     }
@@ -1524,7 +1520,7 @@ toy_with_rats(string sfName)
 		}
 		
 		
-		i++; 
+		++i; 
 		sample_count += 8192;
 	}  
 
@@ -1544,7 +1540,7 @@ toy_with_parallel()
 
 	realvec in;
 	in.create(mrs_natural(10), mrs_natural(10));
-	for (mrs_natural i = 0; i < in.getRows(); i++){
+	for (mrs_natural i = 0; i < in.getRows(); ++i){
 		for (mrs_natural j = 0; j < in.getCols(); j++){
 			in(i,j) = i*j;
 		}
@@ -2568,7 +2564,7 @@ toy_with_LPC_LSP(string sfName)
 	  {
 	  input->tick();
 	  cout << "Processed frame " << i << endl;
-	  i++;
+	  ++i;
 	  }
 
 	  cout << endl << "LPC and LSP processing finished!";
@@ -2603,7 +2599,7 @@ toy_with_LPC_LSP(string sfName)
 	{
 		input->tick();
 		cout << "Processed frame " << i << endl;
-		i++;
+		++i;
 	}
 
 	cout << endl << "LPC and LSP processing finished!";
@@ -2643,7 +2639,7 @@ toy_with_realvec()
 	// check the functions getRow/Col, setRow/Col, getSubMatrix/setSubMatrix
 	cout << endl << ">>>>>>>> getRow/Col, setRow/Col, getSubMatrix/setSubMatrix" << endl;
 	a.create (3,4);
-	for (mrs_natural i = 0; i < 3; i++)
+	for (mrs_natural i = 0; i < 3; ++i)
 		for (mrs_natural j = 0; j < 4; j++)
 			a(i,j)	= (i*4)+j;
 	cout << a << endl << endl;
@@ -2891,7 +2887,7 @@ toy_with_MarControls(string sfName)
 	hdr.someString = "myHeader.txt";
 	hdr.someFlag = true;
 	hdr.someValue = 666;
-	hdr.someVec = realvec(2);
+	hdr.someVec.create(2);
 	ctrl_hdr->setValue(hdr);
 
 	pnet->updctrl("MarSystemTemplateBasic/basic/mrs_natural/repeats", 2);
@@ -3010,10 +3006,8 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
 	Collection l;
 	l.read(fname0);
 
-	int i;
-
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
-	for (i=0; i < l.size(); i++) 
+	for (size_t i=0; i < l.size(); ++i) 
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 		/* if (i==0) 
@@ -3031,7 +3025,7 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
 	total->updctrl("Annotator/ann/mrs_natural/label", 1); 
 
 
-	for (i=0; i < m.size(); i++)
+	for (size_t i=0; i < m.size(); ++i)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
 		cout << "Processing " << m.entry(i) << endl;
@@ -3046,7 +3040,7 @@ toy_with_stereoFeaturesMFCC(string fname0, string fname1)
 	total->updctrl("Annotator/ann/mrs_natural/label", 2); 
 
 
-	for (i=0; i < n.size(); i++)
+	for (size_t i=0; i < n.size(); ++i)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
 		cout << "Processing " << n.entry(i) << endl;
@@ -3114,10 +3108,9 @@ toy_with_stereoMFCC(string fname0, string fname1)
 	
 	Collection l;
 	l.read(fname0);
-
-	int i;
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
-	for (i=0; i < l.size(); i++) 
+	
+	for (size_t i=0; i < l.size(); ++i) 
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 		/* if (i==0) 
@@ -3135,7 +3128,7 @@ toy_with_stereoMFCC(string fname0, string fname1)
 	total->updctrl("Annotator/ann/mrs_natural/label", 1); 
 
 
-	for (i=0; i < m.size(); i++)
+	for (size_t i=0; i < m.size(); ++i)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
 		cout << "Processing " << m.entry(i) << endl;
@@ -3149,7 +3142,7 @@ toy_with_stereoMFCC(string fname0, string fname1)
 	total->updctrl("Annotator/ann/mrs_natural/label", 2); 
 
 
-	for (i=0; i < n.size(); i++)
+	for (size_t i=0; i < n.size(); ++i)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
 		cout << "Processing " << n.entry(i) << endl;
@@ -3170,7 +3163,7 @@ toy_with_mp3convert(string fname0)
 	Collection l;
 	l.read(fname0);
 
-	for (int i=0; i < l.size(); i++)
+	for (size_t  i=0; i < l.size(); ++i)
 	{
 		convertNet->updctrl("SoundFileSource/src/mrs_string/filename", l.entry(i));
 		string::size_type pos = l.entry(i).rfind(".", l.entry(i).length());
@@ -3291,15 +3284,11 @@ toy_with_stereoFeatures(string fname0, string fname1)
 
 	total->updctrl("mrs_natural/inSamples", 1024);
 
-	// cout << *total << endl;
-
 	Collection l;
 	l.read(fname0);
 
-	int i;
-
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
-	for (i=0; i < l.size(); i++) 
+	for (size_t i=0; i < l.size(); ++i) 
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 		/* if (i==0) 
@@ -3316,7 +3305,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
 
 	total->updctrl("Annotator/ann/mrs_natural/label", 1); 
 
-	for (i=0; i < n.size(); i++)
+	for (size_t i=0; i < n.size(); ++i)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
 		cout << "Processing " << n.entry(i) << endl;
@@ -3331,23 +3320,18 @@ toy_with_stereoFeatures(string fname0, string fname1)
 	total->updctrl("Annotator/ann/mrs_natural/label", 2); 
 
 
-	for (i=0; i < m.size(); i++)
+	for (size_t i=0; i < m.size(); ++i)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
 		cout << "Processing " << m.entry(i) << endl;
 		total->tick();
 		cout << "i=" << i << endl;
 	}
-
-
-
 	Collection w;
 	w.read("oj.mf");
-
 	total->updctrl("Annotator/ann/mrs_natural/label", 3); 
 
-
-	for (i=0; i < w.size(); i++)
+	for (size_t i=0; i < w.size(); ++i)
 	{
 		total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", w.entry(i));
 		cout << "Processing " << w.entry(i) << endl;
@@ -3425,7 +3409,7 @@ toy_with_ADRess(string fname0, string fname1)
 
 
 	total->updctrl("Annotator/ann/mrs_natural/label", 0); 
-	//for (i=0; i < l.size(); i++) 
+	//for (i=0; i < l.size(); ++i) 
 	//{
 	total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", fname0);//l.entry(i));
 	/* if (i==0) 
@@ -3443,7 +3427,7 @@ toy_with_ADRess(string fname0, string fname1)
 	  total->updctrl("Annotator/ann/mrs_natural/label", 1); 
 
 
-	  for (i=0; i < n.size(); i++)
+	  for (i=0; i < n.size(); ++i)
 	  {
 	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", n.entry(i));
 	  cout << "Processing " << n.entry(i) << endl;
@@ -3458,7 +3442,7 @@ toy_with_ADRess(string fname0, string fname1)
 	  total->updctrl("Annotator/ann/mrs_natural/label", 2); 
 
 
-	  for (i=0; i < m.size(); i++)
+	  for (i=0; i < m.size(); ++i)
 	  {
 	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", m.entry(i));
 	  cout << "Processing " << m.entry(i) << endl;
@@ -3474,7 +3458,7 @@ toy_with_ADRess(string fname0, string fname1)
 	  total->updctrl("Annotator/ann/mrs_natural/label", 3); 
 
 
-	  for (i=0; i < w.size(); i++)
+	  for (i=0; i < w.size(); ++i)
 	  {
 	  total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", w.entry(i));
 	  cout << "Processing " << w.entry(i) << endl;
@@ -3517,15 +3501,15 @@ toy_with_stereo2mono(string fname)
 void 
 toy_with_lyons(string fname)
 {
-	const mrs_bool      doMatlabPlots   = true;
-	const mrs_real      simSampleRate   = 16000.0F;
+	//const mrs_bool      doMatlabPlots   = true;
+	//const mrs_real      simSampleRate   = 16000.0F;
 	const mrs_natural   numIrSamples    = 256;
 	mrs_bool            dataMismatch    = false;
 	MarSystemManager    mng;
 	mrs_realvec         srcData (numIrSamples),
 		destData;
 	mrs_realvec			mtlb_destData;
-	const mrs_real		floatTolerance  = 1e-6F;
+	//const mrs_real		floatTolerance  = 1e-6F;
 
 	///////////////////////////////////////////////////////////////
 	cout << ">>>>>>>> compute example audio output for Lyon's Passive Ear" << endl;
@@ -3587,7 +3571,7 @@ toy_with_lyons(string fname)
 		MATLAB_PUT(outData, "mrsOut");
 
 		// compare output
-		for (int i = 0; i < mtlb_destData.getRows (); i++)
+		for (int i = 0; i < mtlb_destData.getRows (); ++i)
 		{
 			for (int j = 0; j < mtlb_destData.getCols (); j++)
 			{
@@ -3629,7 +3613,7 @@ toy_with_lyons(string fname)
 void 
 toy_with_auditorytbx(string fname)
 {
-    const mrs_bool      doMatlabPlots   = true;
+    //const mrs_bool      doMatlabPlots   = true;
     const mrs_real      simSampleRate   = 16000.0F;
     const mrs_natural   numIrSamples    = 512;
     mrs_real            lowFreq         = 100.0F;
@@ -3695,7 +3679,7 @@ toy_with_auditorytbx(string fname)
 
     MATLAB_GET ("mtlbIR", mtlb_destData);
     mtlb_destData  -= destData;
-    for (int i = 0; i < destData.getRows (); i++)
+    for (int i = 0; i < destData.getRows (); ++i)
     {
         for (int j = 0; j < destData.getCols (); j++)
         {
@@ -3775,7 +3759,7 @@ toy_with_auditorytbx(string fname)
         MATLAB_GET ("currOutData", mtlb_destData);
 
         // compare output
-        for (int i = 0; i < mtlb_destData.getRows (); i++)
+        for (int i = 0; i < mtlb_destData.getRows (); ++i)
         {
             for (int j = 0; j < mtlb_destData.getCols (); j++)
             {
@@ -4080,7 +4064,7 @@ MATLAB_EVAL("xlabel('Freq (Hz)')");
 
 
 realvec L(num_fERBs);
-for (int i=0; i<num_fERBs; i++) {
+for (int i=0; i<num_fERBs; ++i) {
 mrs_real freq = fERBs(i);
 // cout << "fERBs(" << i << "): " << fERBs(i) << endl;
 
@@ -4387,7 +4371,7 @@ void toy_with_SOM(string collectionName)
 
 	cout << "Initializing training data" << endl;
 
-	for (mrs_natural i=0; i < trainSize; i++) 
+	for (mrs_natural i=0; i < trainSize; ++i) 
 	{
 		train_data(i) = randD(1.0);
 		cout << train_data(i) << endl;
@@ -4405,7 +4389,7 @@ void toy_with_SOM(string collectionName)
 	{
 		cout << "Iteration " << k << endl;
 
-		for (mrs_natural i=0; i < trainSize; i++) 
+		for (mrs_natural i=0; i < trainSize; ++i) 
 		{
 			input(0) = train_data(i);
 			input(1) = 0;
@@ -4426,7 +4410,7 @@ void toy_with_SOM(string collectionName)
 	// predict 
 	som->updctrl("mrs_string/mode", "predict");
 
-	for (mrs_natural i=0; i < 100; i++) 
+	for (mrs_natural i=0; i < 100; ++i) 
 	{
 		input(0) = train_data(i);
 		cout << "input(0) = " << input(0) << endl;
@@ -4472,7 +4456,7 @@ void toy_with_Windowing()
 	out.create(series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 	in.setval(1.0);
 
-	for (unsigned int i = 0 ; i < winname.size(); i++)
+	for (uint32_t i = 0 ; i < winname.size(); ++i)
 	{
 		series->updctrl("Windowing/win/mrs_string/type", winname[i]);                    
 		series->updctrl("PlotSink/plot/mrs_string/filename", "marsyas" + winname[i]); 
@@ -4597,7 +4581,7 @@ toy_with_dtw(string fname1, string fname2)
 		max_size = size1;
   
 	// RMS contour are calculated below 
-	for (int i = 0; i < max_size; i++) 
+	for (int i = 0; i < max_size; ++i) 
 		rmsnet->tick();
 	cout << "Done processing files" << fname1 << " and " << fname2 << endl;
   
@@ -4612,7 +4596,7 @@ toy_with_dtw(string fname1, string fname2)
 
 	rms_data.normMaxMin();
   
-	for (int i=0; i < rms_data.getCols(); i++)
+	for (int i=0; i < rms_data.getCols(); ++i)
     {
 		png1.line(i, 0, i, rms_data(0,i) * 128, 0.0, 0.0, 1.0);
 		png2.line(i, 0, i, rms_data(1,i) * 128, 0.0, 0.0, 1.0);
@@ -4669,8 +4653,8 @@ toy_with_dtw(string fname1, string fname2)
 	// Find max and min
 	double max = MINREAL;
 	double min = MAXREAL;
-	for (int r=0; r < similarity_output.getRows(); r++) {
-		for (int c=0; c < similarity_output.getCols(); c++) {
+	for (int r=0; r < similarity_output.getRows(); ++r) {
+		for (int c=0; c < similarity_output.getCols(); ++c) {
 			if (similarity_output(r,c) < min)
 				min = similarity_output(r,c);
 			if (similarity_output(r,c) > max)
@@ -4680,15 +4664,15 @@ toy_with_dtw(string fname1, string fname2)
   
 	double colour;
 	// Make a png of the similarity matrix
-	for (int r=0; r < similarity_output.getRows(); r++) {
-		for (int c=0; c < similarity_output.getCols(); c++) {
+	for (int r=0; r < similarity_output.getRows(); ++r) {
+		for (int c=0; c < similarity_output.getCols(); ++c) {
 			colour = 1.0 - ((similarity_output(r,c) - min) / (max - min));
 			png_rms.plot(c,r,colour,colour,colour);
 		}
 	}
 
 // Overlay the DTW data
-	for (int r=0; r < dtw_output.getRows(); r++) {
+	for (int r=0; r < dtw_output.getRows(); ++r) {
 		int x = dtw_output(r,0);
 		int y = dtw_output(r,1);
 		png_rms.plot(x,y,0.0,0.0,0.0);
@@ -4724,7 +4708,7 @@ toy_with_duplex()
 	dnet->updctrl("AudioSource/src/mrs_natural/nChannels", 1);
 	dnet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
 	dnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-	for (int i=0; i < 500; i++) 
+	for (int i=0; i < 500; ++i) 
 	{
 	    dnet->tick();
 	} 
@@ -5314,7 +5298,7 @@ toy_with_tempo(string fname, mrs_natural tempo, mrs_natural rank)
 	cout << "Max temp = " << max_tempo << endl;
 
 
-	for (mrs_natural i=0; i < count; i++)
+	for (mrs_natural i=0; i < count; ++i)
 	{
 		strengths[i] = floor(((strengths[i] - min_strength) / (max_strength - min_strength)) * 10.0 + 0.5);
 
@@ -5342,8 +5326,8 @@ toy_with_tempo(string fname, mrs_natural tempo, mrs_natural rank)
 
 
 
-	for (mrs_natural ti = 0; ti < 11; ti++)
-		for (mrs_natural si = 0; si < 11; si++)
+	for (mrs_natural ti = 0; ti < 11; ++ti)
+		for (mrs_natural si = 0; si < 11; ++si)
 		{
 			cout << "Tempo = " << ti << " - " << "Strength = " << si << endl;
 			vector<string> retrievedFiles = tempo_map[si][ti];
@@ -5446,7 +5430,7 @@ toy_with_pitch(string sfName)
 		pnet->tick();
 
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
-	for (mrs_natural i=1; i<data.getSize();i+=2)
+	for (size_t i=1; i<data.getSize();i+=2)
 		data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
 
 	pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
@@ -5594,7 +5578,7 @@ toy_with_power(string sfName)
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
 
 	// dB conversion
-	for (mrs_natural i=0 ; i<data.getSize() ; i++)
+	for (size_t i=0 ; i<data.getSize() ; ++i)
 		data(i) = 20*log10(data(i));
 
 	cout << data;
@@ -5664,7 +5648,7 @@ toy_with_scheduler(string sfName)
 	series1->updctrl(TmTime("TmVirtualTime/Virtual","1s"), Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 0.0));
 	series1->updctrl(TmTime("TmVirtualTime/Virtual","2s"), Repeat("2s", 3), new EvValUpd(series1,"Gain/gain/mrs_real/gain", 1.0));
 
-	for (int i=0; i<1000; i++) {
+	for (int i=0; i<1000; ++i) {
 		series1->tick();
 	}
 
@@ -5722,7 +5706,7 @@ void toy_phisem()
 			 << "soundDecay:  " << soundDecay << endl
 			 << "numFilters:  " << numFilters << endl;
 
-		for(int i=0; i < numFilters; i++) {
+		for(int i=0; i < numFilters; ++i) {
 			resonances(i) = 0.9 + randomFloat(0.1);
 			frequencies(i) = 200.0 * (1 + randomInt(30));
 			cout << "  filter(" << i << ") freq=" << frequencies(i)
@@ -5738,7 +5722,7 @@ void toy_phisem()
 		playbacknet->updctrl("PhiSEMFilter/filter/mrs_realvec/frequencies", frequencies);
 		playbacknet->updctrl("PhiSEMFilter/filter/mrs_natural/numFilters", numFilters);
 
-		for(int i=0; i < 2*israte/1024; i++) {
+		for(int i=0; i < 2*israte/1024; ++i) {
 			playbacknet->tick();
 		}
 	}
@@ -5996,7 +5980,7 @@ toy_with_margrid(string sfName)
 						total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 
-	for (int index = 0; index < l1.size(); index++)
+	for (size_t index = 0; index < l1.size(); index++)
     {
 		total_->updctrl("mrs_natural/label", index);
 		total_->updctrl("mrs_bool/memReset", true);
@@ -6578,7 +6562,7 @@ void toy_with_stereospectrum_bin_change(string inAudioFileName)
 			net_->updctrl("mrs_natural/inSamples",32768);
 		}
 	  
-		i++;
+		++i;
 	}
 
 }
@@ -6660,7 +6644,7 @@ void toy_with_peaker(string inAudioFileName)
 
 		r = net_->getctrl("Peaker/peaker/mrs_realvec/processedData")->to<mrs_realvec>();
 		int peakfound = 0;
-		for (int i = 0; i < winsize; i++) {
+		for (int i = 0; i < winsize; ++i) {
 			if (r(0,i) > 0.7) {
 //  		  cout << "r(0," << i << ")=" << r(0,i) << " peak" << endl;
 				peakfound = 1;
@@ -6853,7 +6837,7 @@ void toy_with_midiout() {
 	playback->updctrl("MidiOutput/midiout/mrs_natural/port", 1);
 	playback->updctrl("MidiOutput/midiout/mrs_bool/initMidi", true);
 
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 100; ++i) {
 		cout << "Sending note" << endl;
 #ifdef MARSYAS_MIDIIO
 		playback->updctrl("MidiOutput/midiout/mrs_natural/byte1", 0x99);
@@ -6938,7 +6922,7 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	beattracker->addMarSystem(initialhypotheses);
 			
 	MarSystem* agentpool = mng.create("Fanout", "agentpool");
-	for(int i = 0; i < nr_agents; i++)
+	for(int i = 0; i < nr_agents; ++i)
 	{
 		ostringstream oss;
 		oss << "agent" << i;
@@ -7012,7 +6996,7 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 						  "BeatReferee/br/mrs_realvec/inductionEnabler");
 
 	//Link agentControl matrix from the BeatReferee to each agent in the pool
-	for(int i = 0; i < nr_agents; i++)
+	for(int i = 0; i < nr_agents; ++i)
 	{
 		ostringstream oss;
 		oss << "agent" << i;
@@ -7108,7 +7092,7 @@ void toy_with_beats(mrs_string score_function, mrs_string sfName, mrs_string pro
 	tempoinduction->updctrl("Fanout/tempohypotheses/Series/phase/OnsetTimes/OnsetTimes/mrs_natural/n1stOnsets", phase_hypotheses);
 	
 	//Pass chosen score_function to each BeatAgent in the pool:
-	for(int i = 0; i < nr_agents; i++)
+	for(int i = 0; i < nr_agents; ++i)
 	{
 		ostringstream oss, oss2;
 		oss << "agent" << i;

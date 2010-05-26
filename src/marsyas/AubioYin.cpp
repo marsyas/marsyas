@@ -70,7 +70,7 @@ double AubioYin::aubio_quadfrac(double s0, double s1, double s2, double pf) {
   return tmp;
 }
 
-double AubioYin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span) {
+double AubioYin::vec_quadint_min(realvec *x,uint32_t pos, uint32_t span) {
   double step = 1./200.;
   /* init resold to - something (in case x[pos+-span]<0)) */
   double res, frac, s0, s1, s2, exactpos = (double)pos, resold = 100000.;
@@ -92,13 +92,13 @@ double AubioYin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span)
   return exactpos;
 }
 
-unsigned int AubioYin::vec_min_elem(realvec *s) 
+uint32_t AubioYin::vec_min_elem(realvec *s) 
 {
-  unsigned int i = 0;
-  unsigned int j = 0;
-  unsigned int pos=0;
+  uint32_t i = 0;
+  uint32_t j = 0;
+  uint32_t pos=0;
   double tmp = (*s)(0,0);
-//   for (i=0; i < s->channels; i++)
+//   for (i=0; i < s->channels; ++i)
   for (j=0; j < s->getSize(); j++) {
 	pos = (tmp < (*s)(i,j))? pos : j;
 	tmp = (tmp < (*s)(i,j))? tmp : (*s)(i,j);
@@ -110,11 +110,11 @@ unsigned int AubioYin::vec_min_elem(realvec *s)
 void
 AubioYin::myProcess(realvec& in, realvec& out)
 {
+  mrs_natural c;
 
   // Make a temporary realvec to build up the yin function in
   // sness - This is very inefficient - Move to update function
-  realvec yin;
-  yin.create(0.0,1,inSamples_/2.0);
+  realvec yin(inSamples_/2.0);
 
   // The tolerance for the yin algorithm
   mrs_real tol = ctrl_tolerance_->to<mrs_real>();
@@ -125,7 +125,7 @@ AubioYin::myProcess(realvec& in, realvec& out)
 //   cout << "tol=" << tol << endl;
 
   // Calculate the pitch with the Yin method
-  unsigned int c=0,j,tau = 0;
+  uint32_t j,tau = 0;
   int period;
   double tmp = 0., tmp2 = 0.;
   yin(c,0) = 1.;

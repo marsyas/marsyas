@@ -80,7 +80,7 @@ EnhADRess::myProcess(realvec& in, realvec& out)
 {
 	out.setval(0.0);
 
-	for(t=0; t < inSamples_; ++t)
+	for(mrs_natural t=0; t < inSamples_; ++t)
 	{
 		for (mrs_natural k=0; k < N4_; k++)
 		{

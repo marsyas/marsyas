@@ -61,7 +61,7 @@ Skewness::myUpdate(MarControlPtr sender)
 void 
 Skewness::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
+  mrs_natural t,o;
 
   for (t = 0; t < inSamples_; t++)
     {

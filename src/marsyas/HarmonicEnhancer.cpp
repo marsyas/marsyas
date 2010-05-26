@@ -222,7 +222,7 @@ HarmonicEnhancer::myProcess(realvec& in, realvec& out)
 
   mrs_real mx = DBL_MIN;
   mrs_natural tmx  = 0;
-  
+  mrs_natural o,t,c;
 
   
   mrs_real pmax = DBL_MIN;
@@ -234,7 +234,7 @@ HarmonicEnhancer::myProcess(realvec& in, realvec& out)
   
   flag_.setval(0.0);
   
-  for (c=0; c < 3; c++)
+  for (c=0; c < 3; ++c)
     {
       
       for (o=0; o < inObservations_; o++)

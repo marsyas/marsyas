@@ -53,6 +53,7 @@ Peak2Rms::myProcess(realvec& in, realvec& out)
 {
     mrs_real peak = in.maxval();
     mrs_real rms = 0.0;
+	mrs_natural t;
 
     for (t = 0; t < inSamples_; t++)
     {

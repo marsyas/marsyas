@@ -61,6 +61,7 @@ SpectralSNR::myUpdate(MarControlPtr sender)
 void 
 SpectralSNR::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	for (t = 0; t < inSamples_; t++)
 	{
 		sum_ = 0.0;

@@ -69,7 +69,7 @@ Selector::myUpdate(MarControlPtr sender)
   // If the enabled realvec has not been created, create it now.
   // Enable all observations by default.
   //
-  if (enabled.getSize() < inObservations_) 
+  if (enabled.getSize() < (uint32_t)inObservations_) 
 	{
 	  enabled.create(inObservations_);
 	  enabled.setval(1.0);
@@ -104,7 +104,7 @@ Selector::myUpdate(MarControlPtr sender)
   // Count how many of the observations are enabled
   //
   mrs_natural total_enabled = 0;
-  for (int i=0; i < enabled.getSize(); i++) {
+  for (size_t i=0; i < enabled.getSize(); ++i) {
 	if (enabled(i) > 0.1) // sness - Just in case of floating point roundoff
 	  total_enabled++;
   }
@@ -122,6 +122,7 @@ Selector::myProcess(realvec& in, realvec& out)
   mrs_realvec& enabled = acc.to<mrs_realvec>();
 
   mrs_natural outIndex = 0;
+	mrs_natural t,o;
 
   //
   // Copy all the input observations and samples to the output except

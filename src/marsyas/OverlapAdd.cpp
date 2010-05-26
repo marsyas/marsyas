@@ -50,6 +50,7 @@ OverlapAdd::myUpdate(MarControlPtr sender)
 void 
 OverlapAdd::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	for(o=0 ; o<onObservations_; o++)
 	{
 		for(t=0;t<onSamples_;t++)

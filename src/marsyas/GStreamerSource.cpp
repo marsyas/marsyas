@@ -117,7 +117,7 @@ void GStreamerSource::myProcess(realvec& in,realvec &out)
         return;
     }
 
-    for (i = 0; i < inSamples_; i++ ) {
+    for (i = 0; i < inSamples_; ++i ) {
         // TODO: looping?
         if (index >= sampleCount_) {
             out(0,i) = 0.0;

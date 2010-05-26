@@ -29,7 +29,7 @@ Transcriber::findMedianWithoutZeros(const mrs_natural start,
 	noZeros.create(length);
 	mrs_natural j=0;
 	// don't include 0s
-	for (mrs_natural i=0; i<length; i++)
+	for (mrs_natural i=0; i<length; ++i)
 	{
 		if ( array(start+i) > 0 )
 		{
@@ -53,14 +53,14 @@ Transcriber::findPeaks(const realvec& list, const mrs_real cutoff)
 	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
-	for (mrs_natural i=minSpace; i<list.getSize()-minSpace; i++)
+	for (size_t i=minSpace; i<list.getSize()-minSpace; ++i)
 	{
 		if ( (list(i) > list(i-1)) &&
 		        (list(i) > list(i+1)) &&
 		        (list(i) > cutoff) )
 		{
 			localMax = list(i);
-			if (i < prevValIndex+minSpace)
+			if (i < (size_t) prevValIndex+minSpace)
 			{
 				if (localMax > prevValValue)
 				{
@@ -94,13 +94,13 @@ Transcriber::findValleys(const realvec& list)
 	mrs_natural minSpace = MIN_NOTE_FRAMES;
 	mrs_natural prevValIndex = 0;
 	mrs_real prevValValue = 1.0;
-	for (mrs_natural i=minSpace; i<list.getSize()-minSpace; i++)
+	for (size_t i=minSpace; i<list.getSize()-minSpace; ++i)
 	{
 		if ( (list(i) < list(i-1)) &&
 		        (list(i) < list(i+1)))
 		{
 			localMin = list(i);
-			if (i < prevValIndex+minSpace)
+			if (i < (size_t)prevValIndex+minSpace)
 			{
 				if (localMin < prevValValue)
 				{
@@ -128,12 +128,12 @@ mrs_real
 Transcriber::findNextPeakValue(const realvec& list, const mrs_natural
                                start)
 {
-	mrs_natural i = start;
+	uint32_t i = start;
 	mrs_bool isPeak = false;
 	mrs_real minValue = 0.1;
 	do
 	{
-		i++;
+		++i;
 		if (i == list.getSize())
 			return 0.0;
 		if ( (list(i) > list(i-1)) &&
@@ -164,7 +164,7 @@ boundaries, const mrs_natural width)
 	realvec region, *newBoundaries, regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
-	for (mrs_natural i=0; i<boundaries.getSize()-1; i++)
+	for (size_t i=0; i<boundaries.getSize()-1; ++i)
 	{
 		start = (mrs_natural) boundaries(i);
 		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
@@ -191,12 +191,12 @@ mrs_natural width)
 	mrs_real median;
 	mrs_real prevNote=0.0;
 	mrs_natural prevSamp=0;
-	for (mrs_natural i=minSpace; i<pitchList.getSize()-minSpace; i++)
+	for (size_t i=minSpace; i<pitchList.getSize()-minSpace; ++i)
 	{
 		median = findMedianWithoutZeros(i-minSpace, 2*minSpace, pitchList);
 		if ( fabs(median-prevNote) > noteBoundary )
 		{
-			if (i>prevSamp+minSpace)
+			if (i > (size_t) prevSamp+minSpace)
 			{
 				prevNote = median;
 				prevSamp = i;
@@ -229,7 +229,7 @@ boundaries, const mrs_real cutoff)
 	realvec region, *newBoundaries, regionBounds;
 	mrs_natural start, length;
 	newBoundaries = new realvec;
-	for (mrs_natural i=0; i<boundaries.getSize()-1; i++)
+	for (size_t i=0; i<boundaries.getSize()-1; ++i)
 	{
 		start = (mrs_natural) boundaries(i);
 		length = (mrs_natural) (boundaries(i+1) - boundaries(i));
@@ -273,7 +273,7 @@ Transcriber::filterAmpBoundaries(realvec& regionAmps, realvec &regionBounds)
 	mrs_real valleyMinVal = 0.20;
 	mrs_real valley;
 	realvec region;
-	for (mrs_natural i=0; i<regionBounds.getSize(); i++)
+	for (size_t i=0; i<regionBounds.getSize(); ++i)
 	{
 		start = (mrs_natural) regionBounds(i);
 		if (i < regionBounds.getSize()-1 )
@@ -318,7 +318,7 @@ Transcriber::getRelativeDurations(const realvec& boundaries, realvec
 	mrs_natural min = 99999; // infinity
 	// calculate durations in samples
 	// and find smallest
-	for (i=0; i<numNotes; i++)
+	for (i=0; i<numNotes; ++i)
 	{
 		durations(i) = boundaries(i+1) - boundaries(i);
 //		cout<<"duration: "<<(*durations)(i)<<endl;
@@ -329,7 +329,7 @@ Transcriber::getRelativeDurations(const realvec& boundaries, realvec
 //	cout<<"min: "<<min<<endl;
 	// find relative durations
 	// yes, we want to truncate the division.
-	for (i=0; i<numNotes; i++)
+	for (i=0; i<numNotes; ++i)
 	{
 		durations(i) = (mrs_natural) ( durations(i) / (min) );
 	}
@@ -343,7 +343,7 @@ Transcriber::discardBeginEndSilences(const realvec& pitchList, const realvec&
 	(void) ampList;
 
 	mrs_real notePitch;
-	mrs_natural i,j;
+	size_t i,j;
 	mrs_natural start,length;
 	// Remove beginning silences.
 	i=0;
@@ -355,7 +355,7 @@ Transcriber::discardBeginEndSilences(const realvec& pitchList, const realvec&
 		for (j=i; j<boundaries.getSize()-1; j++)
 			boundaries(j) = boundaries(j+1);
 		boundaries.stretch(j);
-		i++;
+		++i;
 		start = (mrs_natural) boundaries(i);
 		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
 		notePitch = findMedianWithoutZeros(start, length, pitchList);
@@ -392,7 +392,7 @@ Transcriber::discardBeginEndSilencesAmpsOnly(const realvec& ampList,
         realvec& boundaries)
 {
 	mrs_real sampleAmp;
-	mrs_natural i,j;
+	size_t i,j;
 	i=0;
 	// Remove beginning silences.
 	mrs_natural start = (mrs_natural) boundaries(i);
@@ -403,7 +403,7 @@ Transcriber::discardBeginEndSilencesAmpsOnly(const realvec& ampList,
 		for (j=i; j<boundaries.getSize()-1; j++)
 			boundaries(j) = boundaries(j+1);
 		boundaries.stretch(j);
-		i++;
+		++i;
 		start = (mrs_natural) boundaries(i);
 		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
 		sampleAmp = ampList(start);
@@ -441,7 +441,7 @@ Transcriber::getNotes(const realvec& pitchList, const realvec& ampList,
 	if (notePitch == 0)
 		boundIndex++;
 	mrs_natural firstFrame = (mrs_natural) boundaries(boundIndex);
-	for (mrs_natural i=0; i<numNotes; i++)
+	for (mrs_natural i=0; i<numNotes; ++i)
 	{
 		notes(i,1) = boundaries(boundIndex) - firstFrame;
 

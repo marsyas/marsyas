@@ -31,7 +31,7 @@ void
 ExVal::clear_list()
 {
 	if (list_) {
-		for (int i=0;i<natural_;i++) { list_[i]->deref(); }
+		for (int i=0;i<natural_;++i) { list_[i]->deref(); }
 		delete [] list_;
 		list_=NULL;
 	}
@@ -93,7 +93,7 @@ ExVal::set(const ExVal& v)
 	scheduler_ =v.scheduler_;
 	if (is_list()) { // can do this now that type_=v.type_
 		list_=new ExNode*[natural_];
-		for (int i=0;i<natural_;i++) {
+		for (int i=0;i<natural_;++i) {
 			list_[i]=v.list_[i];
 			list_[i]->inc_ref();
 		}
@@ -156,7 +156,7 @@ ExVal::getElemType() const
 bool
 ExVal::is_list() const
 {   // whoa! that's crazy man..
-	unsigned int len=(unsigned int)type_.length();
+	uint32_t len=(uint32_t)type_.length();
 	return (len>3)
 		&& (type_[len-4]=='l')
 		&& (type_[len-3]=='i')
@@ -189,7 +189,7 @@ ExVal::getSeqRange(int lidx, int ridx)
 
 		ExNode** new_list=new ExNode*[new_len];
 		int p=0;
-		for (int i=lidx;i<ridx;i++) {
+		for (int i=lidx;i<ridx;++i) {
 			ExNode* e=list_[i];
 			new_list[p]=e; p++;
 			e->inc_ref();
@@ -245,7 +245,7 @@ Marsyas::operator<<(std::ostream& o, ExVal& v)
 	bool i_am_a_list = v.is_list();
 	if (i_am_a_list) {
 		o<<"[";
-		for (int i=0;i<v.natural_;i++) {
+		for (int i=0;i<v.natural_;++i) {
 			ExVal x=v.list_[i]->eval();
 			o<<x;
 			if (i<v.natural_-1) { o<<", "; }
@@ -270,13 +270,13 @@ ExVal::append(const ExVal v) const
 		mrs_natural len=natural_+v.toNatural(); ExNode** elems=new ExNode*[len];
 		int l=0;
 		if (natural_>0) {
-			for (int i=0;i<natural_;i++,l++) {
+			for (int i=0;i<natural_;++i,l++) {
 				elems[l]=list_[i];
 				elems[l]->inc_ref();
 			}
 		}
 		if (v.toNatural()>0) {
-			for (int i=0;i<v.toNatural();i++,l++) {
+			for (int i=0;i<v.toNatural();++i,l++) {
 				elems[l]=v.list_[i];
 				elems[l]->inc_ref();
 			}

@@ -62,7 +62,7 @@ void
 WekaData::NormMaxMinRow(realvec& in)
 {
   int ii;
-  for(ii=0; ii<(int)in.getSize()-1; ii++)
+  for(ii=0; ii<(int)in.getSize()-1; ++ii)
     {
       in(ii) =  (in(ii) - minimums_(ii)) / (maximums_(ii) - minimums_(ii));
     }
@@ -81,7 +81,7 @@ WekaData::NormMaxMin()
     {
       const vector<mrs_real> *row = (*citer);
       int ii;
-      for(ii=0; ii<(int)row->size()-1; ii++)
+      for(ii=0; ii<(int)row->size()-1; ++ii)
 	{
 	  if (row->at(ii) > maximums_(ii))
 	    maximums_(ii) = row->at(ii);
@@ -96,7 +96,7 @@ WekaData::NormMaxMin()
     {
       vector<mrs_real> *row = (*citer);
       int ii;
-      for(ii=0; ii<(int)row->size()-1; ii++)
+      for(ii=0; ii<(int)row->size()-1; ++ii)
 	  {
 		  // don't divide by zero 
 		  if (maximums_(ii) - minimums_(ii) == 0)
@@ -127,7 +127,7 @@ mrs_realvec WekaData::GetMaximums() const
 void WekaData::Shuffle()
 {
 	mrs_natural size = this->size()-1;
-	for (mrs_natural ii=0; ii<size; ii++)
+	for (mrs_natural ii=0; ii<size; ++ii)
 	{
 		mrs_natural rind = (mrs_natural)(((mrs_real)rand() / (mrs_real)(RAND_MAX))*size);
 		//swap row ii with row rind
@@ -213,7 +213,7 @@ void WekaData::Append(const realvec& in)
 	
 	if (in(in.getRows()-1, 0) >=0)
 	{
-		for(mrs_natural ii=0; ii<in.getRows(); ii++)
+		for(mrs_natural ii=0; ii<in.getRows(); ++ii)
 		{
 			data_->at(ii) = in(ii, 0);
 		}
@@ -228,7 +228,7 @@ void WekaData::Append(const realvec& in)
 //add rows of data to the table
 void WekaData::Append(vector<mrs_real> *data)
 {
-  MRSASSERT(data!=NULL&&data->size()==cols_);
+  MRSASSERT(data!=NULL && (int)data->size()==cols_);
   rows_++;
   
   this->push_back(data);
@@ -268,7 +268,7 @@ void WekaData::Dump(const string& filename, const vector<string>& classNames) co
 		bool first = true;
 		const vector<mrs_real> *row = (*citer);
 		int ii;
-		for(ii=0; ii<(int)row->size()-1; ii++)
+		for(ii=0; ii<(int)row->size()-1; ++ii)
 		{
 			if(!first)
 				mis->write(", ", 2);

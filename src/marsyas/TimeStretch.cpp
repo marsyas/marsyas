@@ -50,9 +50,9 @@ TimeStretch::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   mrs_real factor = getctrl("mrs_real/factor")->to<mrs_real>();
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  uint32_t inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
-  for (t=0; t < inSamples; t++)
+  for (mrs_natural t=0; t < inSamples; t++)
     {
       // linear interpolation 
       ni = t* factor;

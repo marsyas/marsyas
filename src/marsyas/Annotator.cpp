@@ -89,6 +89,7 @@ Annotator::myUpdate(MarControlPtr sender)
 void
 Annotator::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// Get the label to annotate the feature stream with.
 	const mrs_natural& label = ctrl_label_->to<mrs_natural>();
 	const mrs_real& rlabel = ctrl_rlabel_->to<mrs_real>();

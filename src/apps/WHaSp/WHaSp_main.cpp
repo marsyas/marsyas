@@ -191,7 +191,7 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		  MATLAB_PUT(peakSet_, "peaks");
 		  MATLAB_EVAL("plotPeaks(peaks)");
 
-		  for (mrs_natural i=0 ; i<peakSet_.getRows() ; i++)
+		  for (mrs_natural i=0 ; i<peakSet_.getRows() ; ++i)
 		  if(peakSet_(i, pkFrame)>nbF_)
 		  {
 		  nbF_ = peakSet_(i, pkFrame);
@@ -247,10 +247,6 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		harmonize.stretch(harmonizeData_.getCols());
 	}
 
-	mrs_real globalSnr = 0;
-
-	mrs_natural nb=0;
-
 	if(analyse_ || synthetize > -1)
 		while(1)
 		{
@@ -289,7 +285,7 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 		realvec realTry(nbFrames_, 5);
 		realTry.setval(0);
-		for (mrs_natural i=0 ; i<nbFrames_ ; i++)
+		for (mrs_natural i=0 ; i<nbFrames_ ; ++i)
 		{
 			realTry(i, 1) = 20;
 			realTry(i, 2) = .8;
@@ -377,7 +373,7 @@ main(int argc, const char **argv)
 	if (soundfiles.size() != 0)   
 	{
 		// process several soundFiles
-		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
+		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; ++sfi)
 		{
 			FileName Sfname(*sfi);
 			/*	if(outputDirectoryName == EMPTYSTRING)

@@ -287,7 +287,7 @@ void tempo_medianMultiBands(string sfName, float ground_truth_tempo, string resN
 	int numPlayed =0;
 	mrs_natural wc=0;
 	mrs_natural samplesPlayed = 0;
-	mrs_natural repeatId = 1;
+	//mrs_natural repeatId = 1;
 	// vector of bpm estimate used to calculate median
 	vector<int> bpms;
 
@@ -562,7 +562,7 @@ tempo_wavelets(string sfName, string resName, bool haveCollections)
 
 
 
-	for (mrs_natural i = 0; i < p1; i++)
+	for (mrs_natural i = 0; i < p1; ++i)
     {
 		sum = 0.0;
 		sum += estimate1(0,i);
@@ -589,7 +589,7 @@ tempo_wavelets(string sfName, string resName, bool haveCollections)
 
 	mrs_real ph1 = (imx * factor * 1.0) / srate;
 
-	for (mrs_natural i = 0; i < p2; i++)
+	for (mrs_natural i = 0; i < p2; ++i)
     {
 		sum = 0.0;
 		sum += estimate1(0,i);
@@ -747,7 +747,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	
 	
 
-	mrs_real srate = tempoInduction->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	//mrs_real srate = tempoInduction->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
 
@@ -906,11 +906,11 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName, boo
 
 	mrs_real bin;
 	mrs_natural onSamples;
-
-	int numPlayed =0;
-	mrs_natural wc=0;
-	mrs_natural samplesPlayed = 0;
-	mrs_natural repeatId = 1;
+//
+//	int numPlayed =0;
+//	mrs_natural wc=0;
+//	mrs_natural samplesPlayed = 0;
+//	mrs_natural repeatId = 1;
 
 	// vector of bpm estimate used to calculate median
 	vector<mrs_real> bpms;
@@ -927,7 +927,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName, boo
 
 	
 	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-	  // for (int i=0; i< 400; i++)
+	  // for (int i=0; i< 400; ++i)
 	  {
 	    total->process(iwin, estimate);
 	    bin = estimate(1);
@@ -1038,10 +1038,10 @@ tempo_histoSumBandsQ(string sfName, float ground_truth_tempo, string resName, bo
 	mrs_real bin;
 	mrs_natural onSamples;
 
-	int numPlayed =0;
-	mrs_natural wc=0;
-	mrs_natural samplesPlayed = 0;
-	mrs_natural repeatId = 1;
+//	int numPlayed =0;
+//	mrs_natural wc=0;
+//	mrs_natural samplesPlayed = 0;
+//	mrs_natural repeatId = 1;
 
 	// vector of bpm estimate used to calculate median
 	vector<mrs_real> bpms;
@@ -1079,7 +1079,7 @@ void
 tempo_medianSumBands(string sfName, float ground_truth_tempo, string resName, bool haveCollections)
 {
 	MarSystemManager mng;
-	mrs_natural nChannels;
+	//mrs_natural nChannels;
 	mrs_real srate;
 
 	// prepare network
@@ -1161,7 +1161,7 @@ tempo_medianSumBands(string sfName, float ground_truth_tempo, string resName, bo
 	int numPlayed =0;
 	mrs_natural wc=0;
 	mrs_natural samplesPlayed = 0;
-	mrs_natural repeatId = 1;
+	//mrs_natural repeatId = 1;
 	// vector of bpm estimate used to calculate median
 	vector<int> bpms;
 	onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
@@ -1803,7 +1803,7 @@ refine(string sfName, float predicted_tempo)
 	float max = 0.0;
 	int max_i;
 	
-	for (int i=0; i < winSize/4; i++) 
+	for (int i=0; i < winSize/4; ++i) 
 	{
 		if (fabs(data(0,i)) >= max)
 		{
@@ -1823,7 +1823,7 @@ refine(string sfName, float predicted_tempo)
 	int max_i2;
 	
 	
-	for (int i = max_i + start; i <= max_i + end; i++)
+	for (int i = max_i + start; i <= max_i + end; ++i)
 	{
 		if (data(0,i) >= max)
 		{
@@ -1845,7 +1845,7 @@ refine(string sfName, float predicted_tempo)
 	
 	max = 0.0;
 	
-	for (int i=0; i < winSize/4; i++) 
+	for (int i=0; i < winSize/4; ++i) 
 	{
 		if (fabs(data2(0,i)) >= max)
 		{
@@ -1860,11 +1860,9 @@ refine(string sfName, float predicted_tempo)
 	end = (int)((srate * 60.0) / (predicted_tempo - 2.0));
 	
 	
-	max = 0.0;
-	max_i2;
+	max = 0.0;	
 	
-	
-	for (int i = max_i + start; i <= max_i + end; i++)
+	for (int i = max_i + start; i <= max_i + end; ++i)
 	{
 		if (data2(0,i) >= max)
 		{
@@ -1901,10 +1899,11 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 	//if gtBeatsFile = directory => add extension (.txt or .beats) to the end of filepath
 	if(file == -1)
 	{
-		ostringstream oss;				
+		ostringstream oss;	
+		//FILE* file;
 		oss << gtBeatsFile << inputFileGT.nameNoExt() << ".txt";
 		//check if ground-truth file, with .txt extension, exists (ifnot try with .beats extension)
-		if(FILE * file = fopen(oss.str().c_str(), "r"))
+		if(fopen(oss.str().c_str(), "r"))
 		{
 			inStream.open(oss.str().c_str());
 			getline (inStream, line);
@@ -1918,7 +1917,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 		{
 			oss.str("");
 			oss << gtBeatsFile << inputFileGT.nameNoExt() << ".beats";
-			if(FILE * file = fopen(oss.str().c_str(), "r"))
+			if(fopen(oss.str().c_str(), "r"))
 			{
 				inStream.open(oss.str().c_str());
 				getline (inStream, line);
@@ -1946,7 +1945,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 		if(strcmp(extension.c_str(), "txt") == 0 || strcmp(extension.c_str(), "beats") == 0)
 		{
 			//if file exists
-			if(FILE * file = fopen(gtBeatsFile.c_str(), "r"))
+			if(fopen(gtBeatsFile.c_str(), "r"))
 			{
 				inStream.open(gtBeatsFile.c_str());
 				getline (inStream, line);
@@ -2074,7 +2073,7 @@ tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt, bool haveCo
 			beattracker->addMarSystem(initialhypotheses);
 			
 			MarSystem* agentpool = mng.create("Fanout", "agentpool");
-				for(int i = 0; i < NR_AGENTS; i++)
+				for(int i = 0; i < NR_AGENTS; ++i)
 				{
 					ostringstream oss;
 					oss << "agent" << i;
@@ -2174,7 +2173,7 @@ tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt, bool haveCo
 
 	//Link agentControl matrix from the BeatReferee to each agent in the pool
 	//Also link period limits from PhaseLock
-	for(int i = 0; i < NR_AGENTS; i++)
+	for(int i = 0; i < NR_AGENTS; ++i)
 	{
 		ostringstream oss;
 		oss << "agent" << i;
@@ -2451,7 +2450,7 @@ tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt, bool haveCo
 	tempoinduction->updctrl("Fanout/tempohypotheses/Series/phase/OnsetTimes/onsettimes/mrs_natural/n1stOnsets", PHASE_HYPOTHESES);
 	
 	//Pass chosen score_function to each BeatAgent in the pool:
-	for(int i = 0; i < NR_AGENTS; i++)
+	for(int i = 0; i < NR_AGENTS; ++i)
 	{
 		ostringstream oss, oss2;
 		oss << "agent" << i;
@@ -2977,7 +2976,7 @@ main(int argc, const char **argv)
 		total_differences = 0.0;
 		total_errors = 0;
 
-		for (int i=0; i < l.size(); i++)
+		for (size_t i=0; i < l.size(); ++i)
 		{
 			tempo(l.entry(i), "default.txt", l.labelEntry(i), method, haveCollections);
 		}

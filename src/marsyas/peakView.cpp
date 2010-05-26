@@ -107,14 +107,14 @@ peakView::getPeaksParam(vector<realvec>& result, const pkParameter param, mrs_na
 	}	
 
 	mrs_natural numPeaks;
-	realvec valVec;
 
 	for(mrs_natural f = startFrame; f <= endFrame; ++f)
 	{
 		//get a vector with the parameter values for all the peaks
 		//detected in the frame (i.e. whose freq != 0)
 		numPeaks = getFrameNumPeaks(f);
-		valVec.allocate(numPeaks);
+		realvec valVec(numPeaks);
+		
 		for(mrs_natural p=0; p<numPeaks; ++p)
 			valVec(p) = (*this)(p, param, f);
 
@@ -186,7 +186,7 @@ peakView::toTable(realvec& vecTable)
 	vecTable(0, 4) =  numFrames_;
 	vecTable(0, 5) = -1;
 	vecTable(0, pkGroup) = -2;
-	for (mrs_natural i = pkGroup+1 ; i < nbPkParameters ; i++) //i = pkGroup or i = pkGroup+1 [?]
+	for (mrs_natural i = pkGroup+1 ; i < nbPkParameters ; ++i) //i = pkGroup or i = pkGroup+1 [?]
 		vecTable(0, i)=0;
 
 	//fill the table with peak data
@@ -238,7 +238,7 @@ peakView::fromTable(const realvec& vecTable)
 		{
 			(*this)(p, pkParameter(prm), frame) = vecTable(r, prm);
 		}
-		r++; //move on to next table row (i.e. peak)
+		++r; //move on to next table row (i.e. peak)
 		p++;
 		//if the next row in table is form a different frame,
 		//reset peak index and get new frame index

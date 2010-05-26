@@ -54,7 +54,7 @@ private:
 	mrs_natural inductionTime_;
 	mrs_string line_;
 	ifstream inStream_;
-	mrs_natural t_;
+	mrs_natural t;
 	mrs_real maxScore_;
 	mrs_natural ibi_;
 	mrs_real beatTime1_;

@@ -1437,7 +1437,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 		is >> skipstr >> skipstr >> skipstr;
 		mrs_natural nComponents;
 		is >> nComponents;
-		for (i=0; i < nComponents; i++)
+		for (i=0; i < nComponents; ++i)
 		{
 			MarSystem* cmsys = getMarSystem(is, msys);
 			if (cmsys == 0)

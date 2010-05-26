@@ -87,6 +87,7 @@ Spectrum2Chroma::addControls()
 void
 Spectrum2Chroma::myUpdate(MarControlPtr sender)
 {
+	mrs_natural t,o;
 	(void) sender;
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -235,7 +236,7 @@ Spectrum2Chroma::myProcess(realvec& in, realvec& out)
 	//input must contain spectral magnitude/power/density/etc
 	//(e.g. output of PowerSpectrum MarSystem)
 
-	
+	mrs_natural o,t;
 	out.setval(0.0);
 	
 

@@ -76,6 +76,7 @@ Panorama::myUpdate(MarControlPtr sender)
 void 
 Panorama::myProcess(realvec& in, realvec& out)
 {
+  mrs_natural t,o;
   mrs_real angle = ctrl_angle_->to<mrs_real>();
   mrs_real gl = cos(angle) - sin(angle);
   mrs_real gr = sin(angle) + cos(angle);

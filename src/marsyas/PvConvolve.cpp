@@ -51,8 +51,7 @@ PvConvolve::myUpdate(MarControlPtr sender)
 void 
 PvConvolve::myProcess(realvec& in, realvec& out)
 {
-  
-  //checkFlow(in,out); 
+   //checkFlow(in,out); 
 
 
   mrs_natural N2 = onObservations_ / 2;
@@ -60,7 +59,7 @@ PvConvolve::myProcess(realvec& in, realvec& out)
   
   mrs_real r1, i1, r2, i2;
   
-  for (o=0; o < N2; o++)  
+  for (mrs_natural o=0; o < N2; o++)  
     {
       
       if (o==0) 

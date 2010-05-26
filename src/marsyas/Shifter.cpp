@@ -66,6 +66,7 @@ Shifter::myUpdate(MarControlPtr sender)
 void 
 Shifter::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	int delta = 0;
 	for (o=0; o < onObservations_; o++) 
 	{

@@ -241,7 +241,7 @@ WavFileSource2::myUpdate(MarControlPtr sender)
 
 	//observation's names
 	ostringstream oss;
-	for (mrs_natural i = 0; i < nChannels_; i++)
+	for (mrs_natural i = 0; i < nChannels_; ++i)
 		oss << "audio_ch_" << i+1 << ",";
 	setctrl("mrs_string/onObsNames", oss.str());
 }
@@ -291,6 +291,7 @@ WavFileSource2::ByteSwapShort (unsigned short nValue)
 mrs_natural
 WavFileSource2::getLinear16(realvec& slice)
 {
+	mrs_natural c,t;
 	mrs_natural pos = getctrl("mrs_natural/pos")->to<mrs_natural>();
 
 	fseek(sfp_, 2 * pos * nChannels_ + sfp_begin_, SEEK_SET);
@@ -302,7 +303,7 @@ WavFileSource2::getLinear16(realvec& slice)
 	if (samplesRead_ != samplesToRead_)
 	{
 		samplesToWrite_ = samplesRead_ / nChannels_;
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 			//only fill remaining space with zeros => faster
 			for(t = samplesToWrite_; t < inSamples_; t++) 
 			{
@@ -316,13 +317,13 @@ WavFileSource2::getLinear16(realvec& slice)
 	{
 		sval_ = 0;
 #if defined(MARSYAS_BIGENDIAN)
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 		{
 			sval_ = ByteSwapShort(sdata_[nChannels_*t + c]);
 			slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
 		}
 #else
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 		{
 			sval_ = sdata_[nChannels_ *t + c];
 			slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT));

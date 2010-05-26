@@ -77,7 +77,7 @@ void
 Limiter::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
-  
+  mrs_natural o,t;
   mrs_real thresh = getctrl("mrs_real/thresh")->to<mrs_real>();
   mrs_real at = getctrl("mrs_real/at")->to<mrs_real>();
   mrs_real rt = getctrl("mrs_real/rt")->to<mrs_real>();

@@ -49,6 +49,7 @@ Rms::myUpdate(MarControlPtr sender)
 void 
 Rms::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t;
   mrs_real val;
   mrs_real rmsEnergy = 0.0;
   

@@ -142,7 +142,7 @@ AudioSinkCallback::initRtAudio()
 	if (audio_ == NULL)
 		audio_ = new RtAudio();
 
-	unsigned int bufferFrames;
+	uint32_t bufferFrames;
 	bufferFrames = bufferSize_;
 
 	// hardwire channels to stereo playback even for mono
@@ -214,16 +214,16 @@ AudioSinkCallback::start()
 
 int 
 AudioSinkCallback::playCallback(void *outputBuffer, void *inputBuffer, 
-						unsigned int nBufferFrames, double streamTime, 
-								unsigned int status, void *userData)
+						uint32_t nBufferFrames, double streamTime, 
+								uint32_t status, void *userData)
 {
-	unsigned int drain_count;
+	uint32_t drain_count;
 	
 	mrs_real* data = (mrs_real*)outputBuffer;
 	OutputData *oData = (OutputData *)userData;
-	AudioSinkCallback* mythis = (AudioSinkCallback *)oData->myself;
+	//AudioSinkCallback* mythis = (AudioSinkCallback *)oData->myself;
 	realvec& ringBuffer = *(oData->ringBuffer);
-	unsigned int t;
+	uint32_t t;
    
 	for (t=0; t < nBufferFrames; t++)
 	{
@@ -286,20 +286,20 @@ AudioSinkCallback::localActivate(bool state)
 }
 
 
-unsigned int 
+uint32_t 
 AudioSinkCallback::getSpaceAvailable() 
 {
-	unsigned int free = (odata.rp - odata.wp -1 + odata.ringBufferSize) % odata.ringBufferSize;
-	unsigned int underMark = odata.high_watermark - getSamplesAvailable();
+	uint32_t free = (odata.rp - odata.wp -1 + odata.ringBufferSize) % odata.ringBufferSize;
+	uint32_t underMark = odata.high_watermark - getSamplesAvailable();
 	
 	return(min(underMark, free));
 }
 
 
-unsigned int 
+uint32_t 
 AudioSinkCallback::getSamplesAvailable() 
 {
-	unsigned int samplesAvailable = (odata.wp - odata.rp +odata.ringBufferSize) % odata.ringBufferSize;
+	uint32_t samplesAvailable = (odata.wp - odata.rp +odata.ringBufferSize) % odata.ringBufferSize;
 	return samplesAvailable;
 }
 
@@ -307,6 +307,7 @@ AudioSinkCallback::getSamplesAvailable()
 void 
 AudioSinkCallback::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	 
 	//check MUTE
 	if(ctrl_mute_->isTrue())

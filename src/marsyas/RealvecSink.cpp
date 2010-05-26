@@ -136,6 +136,7 @@ RealvecSink::myUpdate(MarControlPtr sender)
 void 
 RealvecSink::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	out=in;
 
 	if(write_)

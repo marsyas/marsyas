@@ -50,13 +50,13 @@ class AudioSinkCallback:public MarSystem
 		struct OutputData 
 		{
 				mrs_realvec* ringBuffer;
-				unsigned int wp;
-				unsigned int rp;
-				unsigned int samplesInBuffer;
-				unsigned int ringBufferSize;
-				unsigned int inchannels;
-				unsigned int high_watermark;
-				unsigned int low_watermark;
+				uint32_t wp;
+				uint32_t rp;
+				uint32_t samplesInBuffer;
+				uint32_t ringBufferSize;
+				uint32_t inchannels;
+				uint32_t high_watermark;
+				uint32_t low_watermark;
 				AudioSinkCallback* myself;
 				
 		} odata;
@@ -69,7 +69,7 @@ class AudioSinkCallback:public MarSystem
 		int rtSrate_;
 		int rtChannels_;
 		int srate_;
-		int rtDevice_;
+		uint32_t rtDevice_;
 		
 		bool isInitialized_;
 		bool stopped_;
@@ -77,8 +77,8 @@ class AudioSinkCallback:public MarSystem
 		mrs_natural nChannels_;
 		mrs_real *data_;  
 		realvec ringBuffer_;
-		mrs_natural ringBufferSize_;
-		mrs_natural pringBufferSize_;
+		size_t ringBufferSize_;
+		size_t pringBufferSize_;
 		mrs_natural pnChannels_;
   
 		
@@ -90,12 +90,12 @@ class AudioSinkCallback:public MarSystem
 		void start();
 		void stop();
 
-		unsigned int getSpaceAvailable();
-		unsigned int getSamplesAvailable();
+		uint32_t getSpaceAvailable();
+		uint32_t getSamplesAvailable();
 		void localActivate(bool state);
 		
 
-		static int playCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
+		static int playCallback(void *outputBuffer, void *inputBuffer, uint32_t nBufferFrames, double streamTime, uint32_t status, void *userData);
 
 		
 	public:

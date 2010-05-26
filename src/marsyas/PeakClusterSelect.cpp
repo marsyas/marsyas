@@ -93,7 +93,7 @@ PeakClusterSelect::partition(realvec& rv, mrs_natural dimension, mrs_natural lef
 		{
 			if( rv(dimension,j) <= pivot_val )
 			{
-				i++;
+				++i;
 				swap(rv, i, j, sortColumns);
 			}
 		}
@@ -106,7 +106,7 @@ PeakClusterSelect::partition(realvec& rv, mrs_natural dimension, mrs_natural lef
 		{
 			if( rv(j,dimension) <= pivot_val )
 			{
-				i++;
+				++i;
 				swap(rv, i, j, sortColumns);
 			}
 		}
@@ -125,7 +125,7 @@ PeakClusterSelect::swap(realvec& rv, mrs_natural sample1, mrs_natural sample2, m
 		int rows = rv.getRows();
 		mrs_real tmp;
 
-		for( int i=0 ; i<rows ; i++ )
+		for( int i=0 ; i<rows ; ++i )
 		{
 			tmp = rv(i, sample1);
 			rv(i,sample1) = rv(i,sample2);
@@ -137,7 +137,7 @@ PeakClusterSelect::swap(realvec& rv, mrs_natural sample1, mrs_natural sample2, m
 		int cols = rv.getCols();
 		mrs_real tmp;
 
-		for( int i=0 ; i<cols ; i++ )
+		for( int i=0 ; i<cols ; ++i )
 		{
 			tmp = rv(sample1,i);
 			rv(sample1,i) = rv(sample2,i);
@@ -149,6 +149,7 @@ PeakClusterSelect::swap(realvec& rv, mrs_natural sample1, mrs_natural sample2, m
 void 
 PeakClusterSelect::myProcess(realvec& in, realvec& out)
 {	
+	mrs_natural t;
 	mrs_natural numClustersToKeep = ctrl_numClustersToKeep_->to<mrs_natural>();
 	mrs_natural curNumClusters=-1, i, j, curClusterLabel;
 
@@ -159,7 +160,7 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 	curNumClusters += 1;
 
 	realvec intraClusterSimilarities(3, curNumClusters);
-	for( i=0 ; i<curNumClusters ; i++ )
+	for( i=0 ; i<curNumClusters ; ++i )
 	{
 		// Store cluster index in first row
 		// (so upon sorting of density values, 
@@ -171,7 +172,7 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 		intraClusterSimilarities(2,i) = 0;
 	}
 
-	for( i=0 ; i<ctrl_inSamples_->to<mrs_natural>() ; i++ )
+	for( i=0 ; i<ctrl_inSamples_->to<mrs_natural>() ; ++i )
 	{
 		for( j=0 ; j<i ; j++ )
 		{
@@ -184,7 +185,7 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 	}
 
 	// Normalize by the number of elements
-	for( i=0 ; i<curNumClusters ; i++ )
+	for( i=0 ; i<curNumClusters ; ++i )
 	{
 		intraClusterSimilarities( 2 , i ) /= intraClusterSimilarities( 1 , i );
 	}
@@ -197,7 +198,7 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 		curClusterLabel = (mrs_natural)in(0,t);
 		out(0,t) = 0; //curClusterLabel; //signals clusters to be synthesized 
 
-		for( i=0 ; i < (curNumClusters - numClustersToKeep) ; i++ )
+		for( i=0 ; i < (curNumClusters - numClustersToKeep) ; ++i )
 		{
 			if( curClusterLabel == intraClusterSimilarities(0,i) )
 			{

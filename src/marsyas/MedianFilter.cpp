@@ -61,7 +61,7 @@ void MedianFilter::myProcess(realvec& inVec, realvec& outVec)
 		theWindow.insert(element(inVec(p),p));
 
 	mrs_natural I = inVec.getSize();
-	for (int i=0; i<I; i++)
+	for (int i=0; i<I; ++i)
 	{
 		// Define to-be-inserted element
 		element theNewOne(inVec(min(i+N-M,I-1)),i+N-M);

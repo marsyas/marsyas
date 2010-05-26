@@ -94,7 +94,7 @@ WaveletBands::myUpdate(MarControlPtr sender)
 void
 WaveletBands::myProcess(realvec& in, realvec& out)
 {
-
+	mrs_natural o,t;
 	mrs_natural level;
 	mrs_natural hlevel, llevel;
 	mrs_natural base = getctrl("mrs_natural/startBand")->to<mrs_natural>();

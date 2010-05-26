@@ -84,7 +84,7 @@ BeatPhase::myUpdate(MarControlPtr sender)
 void 
 BeatPhase::myProcess(realvec& in, realvec& out)
 {
-
+	mrs_natural o,t;
 	
 	mrs_real tempo = ctrl_tempo_->to<mrs_real>();
 	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();

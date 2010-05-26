@@ -67,7 +67,7 @@ StereoSpectrum::myUpdate(MarControlPtr sender)
 void 
 StereoSpectrum::myProcess(realvec& in, realvec& out)
 {
-	for (t=0; t < N4_; t++)
+	for (mrs_natural t=0; t < N4_; t++)
 	{
 		//left channel
 		if (t==0) //DC bin (i.e. 0)

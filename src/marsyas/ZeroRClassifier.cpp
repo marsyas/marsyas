@@ -58,7 +58,7 @@ ZeroRClassifier::myUpdate(MarControlPtr sender)
 
 	mrs_natural nlabels = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
 
-	if (labelSizes_.getSize() != nlabels)
+	if (labelSizes_.getSize() != (uint32_t)nlabels)
 		labelSizes_.create(nlabels);
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 	if (mode == "predict")
@@ -72,7 +72,7 @@ ZeroRClassifier::myProcess(realvec& in, realvec& out)
 {
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 	mrs_natural nlabels = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
-	mrs_natural l;
+	mrs_natural l, t;
 	mrs_natural prediction = 0;
 
 	mrs_real label;

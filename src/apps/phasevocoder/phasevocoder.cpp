@@ -19,14 +19,11 @@
 
 #include <cstdio>
 #include <cstdlib>
-
+#include <string>
 
 #include "MarSystemManager.h"
-//#include "Messager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
-
-#include <string>
 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"
@@ -140,7 +137,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 			onsets.push_back(onset_index);
 		}
 		// convert to analysis frame rate 
-		for (unsigned int j=0; j < onsets.size(); j++) 
+		for (uint32_t j=0; j < onsets.size(); j++) 
 		{
 			onsets[j] /= D;
 			cout << "on = " << onsets[j] << endl;
@@ -251,7 +248,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 
 		if (onsetsfile_ != "") 
 		{
-			for (unsigned int j=0; j < onsets.size(); j++) 
+			for (uint32_t j=0; j < onsets.size(); j++) 
 			{
 				if (numticks == onsets[j])
 				{
@@ -313,7 +310,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 			onsets.push_back(onset_index);
 		}
 		
-		for (unsigned int j=0; j < onsets.size(); j++) 
+		for (uint32_t j=0; j < onsets.size(); j++) 
 		{
 			onsets[j] /= D;
 			cout << "on = " << onsets[j] << endl;
@@ -428,13 +425,16 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 	if (outsfname == EMPTYSTRING) 
 		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
 
+
+
+#ifdef MARSYAS_MIDIIO
+	
 	int type;
 	int byte2, byte3;
 	double stamp;
 	mrs_real diff;
-
-#ifdef MARSYAS_MIDIIO
 	RtMidiIn *midiin = NULL;
+	int nBytes;
 
 	// open midi if midiPort is specified 
 	if (midi_ != -1) 
@@ -459,7 +459,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 
 	// midi message 
 	std::vector<unsigned char> message;
-	int nBytes;
+	
 
 	if (outsfname != EMPTYSTRING)
 		dest->updctrl("mrs_string/filename", outsfname);
@@ -539,7 +539,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 		
 		if (onsetsfile_ != "") 
 		{
-			for (unsigned int j=0; j < onsets.size(); j++) 
+			for (uint32_t j=0; j < onsets.size(); j++) 
 			{
 				
 				if (numticks == onsets[j])
@@ -563,18 +563,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);		
 			}
 		}
-		
-		
-		
-
-
-
-		 
-		
 	}
-		
-
-	
 
 	// MATLAB_CLOSE();
 	
@@ -598,7 +587,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 
 	// vector of phasevocoders 
 	vector<MarSystem*> pvoices;
-	for (int i=0; i < vopt_; i++)
+	for (int i=0; i < vopt_; ++i)
 	{
 		ostringstream oss;
 		oss << "pvseries" << i;
@@ -660,12 +649,11 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 #endif
 
 	int byte2, byte3;
-	double stamp;
 	mrs_real diff;
 
 	// used to keep track of polyphony
 	vector<int> voices;
-	for (int i=0; i < vopt_; i++) 
+	for (int i=0; i < vopt_; ++i) 
 	{
 		voices.push_back(60);
 	}
@@ -715,7 +703,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 						voices[voiceCount] = byte2;
 						voiceCount = (voiceCount + 1) % vopt_;
 
-						for (int i=0; i < vopt_; i++)
+						for (int i=0; i < vopt_; ++i)
 						{
 							diff = voices[i] - 60.0;
 							if (voices[i] != 0)
@@ -990,7 +978,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 
 	// vector of voices
 	vector<MarSystem*> pvoices;
-	for (int i=0; i < vopt_; i++)
+	for (int i=0; i < vopt_; ++i)
 	{
 		if (i == 0) 
 		{
@@ -1104,15 +1092,10 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	double s2y;
 	double s2z;
   
-	double stamp;
-  
 	while(1)
 	{
 		if (midi_ != -1) 
 		{
-#ifdef MARSYAS_MIDIIO
-			stamp = midiin->getMessage( &message );
-#endif 
 			nBytes = message.size();
 			if (nBytes >2)
 			{
@@ -1199,7 +1182,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
   
 	// vector of voices
 	vector<MarSystem*> pvoices;
-	for (int i=0; i < vopt_; i++)
+	for (int i=0; i < vopt_; ++i)
 	{
 		if (i < 2) 
 		{
@@ -1534,7 +1517,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		mic->process(in, min);
 
 		// accumulte in buffers of 512 for pitch extraction
-		for (int i=0; i < D; i++)
+		for (int i=0; i < D; ++i)
 			pin(0, fc * D + i) = min(0,i);
 
 		// play the sound  

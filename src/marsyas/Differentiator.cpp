@@ -57,6 +57,7 @@ Differentiator::myUpdate(MarControlPtr sender)
 void
 Differentiator::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	for (o=0; o < inObservations_; o++)
 	{
 		// Calculate the difference of the first sample with the last sample of

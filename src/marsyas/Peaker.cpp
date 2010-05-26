@@ -69,7 +69,7 @@ Peaker::myUpdate(MarControlPtr sender)
 void 
 Peaker::myProcess(realvec& in, realvec& out)
 {
-
+	mrs_natural t,o;
 
 	mrs_real peakSpacing;
 	mrs_real peakStrengthRelRms,
@@ -355,7 +355,7 @@ void Peaker::compLpThresh (const mrs_realvec input, mrs_realvec &output)
 	mrs_natural i,
 				len = input.getCols ();
 	mrs_real	buf = input(0);
-	for (i = 0; i < len; i++)
+	for (i = 0; i < len; ++i)
 	{
 		buf			= input(i) + lpCoeff_ * (buf - input(i));
 		output(i)	= buf;

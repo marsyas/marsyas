@@ -55,7 +55,7 @@ UpdatingBassModel::addControls()
 void UpdatingBassModel::myUpdate(MarControlPtr sender)
 {
   (void) sender;
-  mrs_natural i, j, o;
+  uint32_t i, j, o;
   ostringstream oss;
   realvec tmpvec;
   (void) sender;
@@ -85,7 +85,7 @@ void UpdatingBassModel::myUpdate(MarControlPtr sender)
 
   // calculate log frequency
   logFreq_.create(freq_.getSize());
-  for(i=0; i<logFreq_.getSize(); i++){
+  for(i=0; i<logFreq_.getSize(); ++i){
     logFreq_(i) = log(lowFreq_)+(log(highFreq_)-log(lowFreq_))/(double)(logFreq_.getSize()-1)*(double)i;
   }
   // calculate start vector
@@ -97,7 +97,7 @@ void UpdatingBassModel::myUpdate(MarControlPtr sender)
       start_(j) = i;
       j++;
     } else {
-      i++;
+      ++i;
     }
   }
   if(j<seg_.getSize()){
@@ -106,17 +106,17 @@ void UpdatingBassModel::myUpdate(MarControlPtr sender)
   }
   i=0; 
   while(freq_(i) < rootFreq_ && i<inObservations_){
-    i++;
+    ++i;
   }
   rootBin_ = i;
   i=0;
   while(freq_(i) < lowFreq_ && i<inObservations_){
-    i++;
+    ++i;
   }
   rootMin_ = i;// - rootBin_;
   i=0;
   while(freq_(i) < highFreq_ && i<inObservations_){
-    i++;
+    ++i;
   }
   rootMax_ = i;// - rootBin_;
 
@@ -138,7 +138,7 @@ UpdatingBassModel::myProcess(realvec& in, realvec& out)
   realvec covMatrix, tmpvec;
   if(inSamples_ > 0){
     // copy input realvec to output realvec
-    for(i=0; i<inSamples_; i++){
+    for(i=0; i<inSamples_; ++i){
       for(j=0; j<inObservations_; j++){
 	out(j,i) = in(j,i);
       }
@@ -147,16 +147,16 @@ UpdatingBassModel::myProcess(realvec& in, realvec& out)
     
     for(k=0; k<K_; k++){
       for(l=0; l<counts_.getRows(); l++){
-	for(i=0; i<I_; i++){
+	for(i=0; i<I_; ++i){
 	  templates_(l, k*I_+i) *= counts_(l,k);
 	}
       }
     }
     
     // update templates realvec 
-    for(j=0; j<start_.getSize()-1; j++){
+    for(j=0; j< (int)start_.getSize()-1; j++){
       for(l=0; l<rootMax_-rootMin_; l++){
-	for(i=0; i<I_; i++){
+	for(i=0; i<I_; ++i){
 	  tmpreal = 0.0;
 	  tmpnatural = 0;
 	  for(m=(int)(((double)i/I_*(start_(j+1)-start_(j)))+start_(j)); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++){
@@ -174,11 +174,11 @@ UpdatingBassModel::myProcess(realvec& in, realvec& out)
     for(l=0; l<(rootMax_-rootMin_)*2; l++){
       for(k=0; k<K_; k++){
 	if(counts_(l,k) > 0){
-	  for(i=0; i<I_; i++){
+	  for(i=0; i<I_; ++i){
 	    templates_(l,k*I_+i) /= counts_(l,k);
 	  }
 	} else {
-	  for(i=0; i<I_; i++){
+	  for(i=0; i<I_; ++i){
 	    templates_(l,k*I_+i) = tmpvec(l,k*I_+i);
 	  }
 	}

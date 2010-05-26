@@ -62,6 +62,7 @@ Mean::myUpdate(MarControlPtr sender)
 void
 Mean::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	out.setval(0.0);
 	for (o=0; o < inObservations_; o++)
 	{

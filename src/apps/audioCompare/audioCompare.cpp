@@ -64,7 +64,7 @@ isClose(string infile1, string infile2)
 		pnet->tick();
 		const realvec& processedData =
 		    pnet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-		for (i=0; i<samples; i++)
+		for (i=0; i<samples; ++i)
 		{
 			//  useful for tweaking CLOSE_ENOUGH
 			//cout<<processedData(i)<<" ";

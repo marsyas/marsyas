@@ -9,7 +9,7 @@
 // (c) 2009 - sness@sness.net - GPL
 //
 
-#include <../../otherlibs/cxxtest/TestSuite.h>
+#include <cxxtest/TestSuite.h>
 
 #include <cstdio>
 #include "Collection.h"

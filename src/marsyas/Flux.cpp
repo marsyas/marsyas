@@ -68,6 +68,7 @@ Flux::myUpdate(MarControlPtr sender)
 void 
 Flux::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	mrs_string mode = ctrl_mode_->to<mrs_string>();
 
 	for (t = 0; t < inSamples_; t++)

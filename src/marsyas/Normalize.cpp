@@ -39,6 +39,7 @@ void
 Normalize::myProcess(realvec& in, realvec& out)
 {
 	mrs_real rms = 0.0;
+	mrs_natural t,o;
 
 	for (t = 0; t < inSamples_; t++)  
 	{

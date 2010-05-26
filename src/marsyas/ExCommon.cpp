@@ -2,7 +2,7 @@
 
 using namespace Marsyas;
 
-unsigned int
+uint32_t
 ex_string_to_typeid(std::string tp)
 {
 	if (tp=="mrs_unit") return ExT_mrs_unit;
@@ -16,7 +16,7 @@ ex_string_to_typeid(std::string tp)
 }
 
 std::string
-ex_typeid_to_string(unsigned int tp)
+ex_typeid_to_string(uint32_t tp)
 {
 	if (tp==ExT_mrs_unit) return "mrs_unit";
 	if (tp==ExT_mrs_bool) return "mrs_bool";
@@ -62,9 +62,9 @@ Marsyas::btos(mrs_bool b)
 mrs_natural
 Marsyas::stol(std::string n)
 {
-	long num=0; unsigned int i=0; bool neg=false;
+	long num=0; uint32_t i=0; bool neg=false;
 	if (n[0]=='-') { neg=true; i=1; }
-	for (;i<n.length();i++) {
+	for (;i<n.length();++i) {
 		num = (num*10) + (n[i] - '0');
 	}
 	return (neg) ? -num : num;

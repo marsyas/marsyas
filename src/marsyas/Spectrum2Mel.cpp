@@ -83,6 +83,7 @@ Spectrum2Mel::addControls()
 void
 Spectrum2Mel::myUpdate(MarControlPtr sender)
 {
+	mrs_natural t,o;
 	(void) sender;
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -191,7 +192,7 @@ Spectrum2Mel::myProcess(realvec& in, realvec& out)
 {
 	//input must contain spectral magnitude/power/density/etc
 	//(e.g. output of PowerSpectrum MarSystem)
-
+	mrs_natural o,t;
 	out.setval(0.0);
 	for(t=0; t< inSamples_; ++t)
 	{

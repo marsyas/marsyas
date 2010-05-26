@@ -98,7 +98,7 @@ GMMClassifier::initialize()
 			////////////////////////////////////////////////////////
 			temp.setval(0.0);
 			count = 0;
-			for (mrs_natural c=0; c < seedSize; c++)
+			for (mrs_natural c=0; c < seedSize; ++c)
 			{
 				//randomly select a number of feat.vectors from a class  
 				rind = ((mrs_real)rand() / (mrs_real)(RAND_MAX))*trainSize;
@@ -166,12 +166,11 @@ GMMClassifier::initialize()
 	// Perform K-Means
 	///////////////////////////////////////////
   mrs_real dist = 0.0;
-  mrs_real min = 100000000;
   mrs_natural min_k = 0;
 	  
   likelihoods_.create(classSize_, nMixtures_);
   
-  for (mrs_natural i=0; i < kiterations_; i++) 
+  for (mrs_natural i=0; i < kiterations_; ++i) 
   {
     likelihoods_.setval(0.0);
 		
@@ -190,7 +189,7 @@ GMMClassifier::initialize()
 		}
 		
 		//for all the feature vectors (i.e. examples) in the trainMatrix...
-		for (mrs_natural c=0; c < trainSize; c++) 
+		for (mrs_natural c=0; c < trainSize; ++c) 
 		{
 			mrs_natural min = 100000000;
 			
@@ -251,15 +250,10 @@ GMMClassifier::initialize()
   
 	probs_.reserve(classSize_);
   ssprobs_.reserve(classSize_);
-  for (mrs_natural cl=0; cl < classSize_; cl++)
+  for (mrs_natural cl=0; cl < classSize_; ++cl)
 	{
-		realvec clprob;
-		clprob.create(trainSize, nMixtures_);
-		realvec clssprob;
-		clssprob.create(featSize_, nMixtures_);
-
-		probs_.push_back(clprob);
-		ssprobs_.push_back(clssprob);
+		probs_.push_back(realvec(trainSize, nMixtures_));
+		ssprobs_.push_back(realvec(featSize_, nMixtures_));
 	}
 }
 
@@ -307,7 +301,7 @@ GMMClassifier::doEM()
   mrs_real sum;
   
 	//for all feat.vecs in trainMatrix...
-  for (mrs_real c=0; c < trainSize; c++)
+  for (mrs_real c=0; c < trainSize; ++c)
   {
 		//get class label of current feature vector
 		cl = trainMatrix_(labelRow_, c);
@@ -478,16 +472,11 @@ GMMClassifier::myUpdate(MarControlPtr sender)
 		// populate above vectors with realvecs for each class
 		for (mrs_natural cl=0; cl < classSize_; cl++)
     {
-      realvec cmeans;
-      realvec ocmeans;
-      realvec cvars;
-      realvec ccovars;
-      realvec cweights;
-      cmeans.create(featSize_, nMixtures_);
-      ocmeans.create(featSize_, nMixtures_);
-      cvars.create(featSize_, nMixtures_);
-      ccovars.create(featSize_, nMixtures_);
-      cweights.create(nMixtures_);
+      realvec cmeans(featSize_, nMixtures_);
+      realvec ocmeans(featSize_, nMixtures_);
+      realvec cvars(featSize_, nMixtures_);
+      realvec ccovars(featSize_, nMixtures_);
+      realvec cweights(nMixtures_);
       
       // Vectors of realvec for each class
       means_.push_back(cmeans);
@@ -503,7 +492,7 @@ GMMClassifier::myUpdate(MarControlPtr sender)
 	{
 		initialize();
 		
-		for (mrs_natural i=0; i < iterations_ ; i++)
+		for (mrs_natural i=0; i < iterations_ ; ++i)
     {
       doEM();
     }

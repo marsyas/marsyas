@@ -16,7 +16,7 @@ using namespace Marsyas;
 
 void recognize(string sfName, string tpName)
 {
-  mrs_natural i, j, k, l;
+  uint32_t i, j, k, l;
   mrs_natural nsamples, wsize, sfrq, obs, outsize;
   mrs_natural maxsize, totalCount, inputsize;
   mrs_real msecondsPerFrame;
@@ -59,7 +59,7 @@ void recognize(string sfName, string tpName)
     cerr << "Error: invalied templates size!" << endl;
     exit(-1);
   }
-  for(i=0; i<templates.size(); i++){
+  for(i=0; i<templates.size(); ++i){
     oss.str(""); oss << "net" << i;
     tmpStr = oss.str();
     netTpl[i] = mng.create("Series", tmpStr);
@@ -105,25 +105,25 @@ void recognize(string sfName, string tpName)
   sfrq = netTpl[0]->getctrl("SoundFileSource/tplsrc0/mrs_real/osrate")->to<mrs_real>();
   obs = netTpl[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   b.create(BIN+2);
-  for(i=0; i<BIN+2; i++){
+  for(i=0; i<BIN+2; ++i){
     b(i) = wsize*700/sfrq*(pow(10, (log10(1.0+sfrq/1400))*i/(BIN+1))-1);
   }
   for(j=0; j<BIN; j++){
     for(l=0; l<templates.size(); l++){
       for(k=0; k<obs; k++){
 	if(b(j) < k && k < b(j+1)){
-	  for(i=0; i<dataTpl.getCols(); i++){
+	  for(i=0; i<dataTpl.getCols(); ++i){
 	    featuresTpl(j+l*BIN,i) += dataTpl(k+l*obs,i)*(k-b(j))/(b(j+1)-b(j));
 	  }
 	} else if(b(j+1) <= k && k <= b(j+2)){
-	  for(i=0; i<dataTpl.getCols(); i++){
+	  for(i=0; i<dataTpl.getCols(); ++i){
 	    featuresTpl(j+l*BIN,i) += dataTpl(k+l*obs,i)*(b(j+2)-k)/(b(j+2)-b(j+1));
 	  }
 	}
       }
     }
     for(l=0; l<templates.size(); l++){
-      for(i=0; i<featuresTpl.getCols(); i++){
+      for(i=0; i<featuresTpl.getCols(); ++i){
 	featuresTpl(j+l*BIN,i) /= (b(j+2)-b(j))/2;
 	featuresTpl(j+l*BIN,i) = log(100000*featuresTpl(j+l*BIN,i)+1);
       }
@@ -157,7 +157,7 @@ void recognize(string sfName, string tpName)
   /*** calculate first templates ***/
 
   tplOutput.create(featuresTpl.getRows(),maxsize);
-  for(i=0; i<maxsize; i++){
+  for(i=0; i<maxsize; ++i){
     for(j=0; j<featuresTpl.getRows(); j++){
       tplOutput(j,i) = featuresTpl(j,i);
     }
@@ -182,22 +182,22 @@ void recognize(string sfName, string tpName)
   sfrq = netInp->getctrl("SoundFileSource/inpsrc/mrs_real/osrate")->to<mrs_real>();
   obs = netInp->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   b.create(BIN+2);
-  for(i=0; i<BIN+2; i++){
+  for(i=0; i<BIN+2; ++i){
     b(i) = wsize*700/sfrq*(pow(10, (log10(1.0+sfrq/1400))*i/(BIN+1))-1);
   }
   for(j=0; j<BIN; j++){
     for(k=0; k<obs; k++){
       if(b(j) < k && k < b(j+1)){
-	for(i=0; i<dataInp.getCols(); i++){
+	for(i=0; i<dataInp.getCols(); ++i){
 	  featuresInp(j,i) += dataInp(k,i)*(k-b(j))/(b(j+1)-b(j));
 	}
       } else if(b(j+1) <= k && k <= b(j+2)){
-	for(i=0; i<dataInp.getCols(); i++){
+	for(i=0; i<dataInp.getCols(); ++i){
 	  featuresInp(j,i) += dataInp(k,i)*(b(j+2)-k)/(b(j+2)-b(j+1));
 	}
       }
     }
-    for(i=0; i<featuresInp.getCols(); i++){
+    for(i=0; i<featuresInp.getCols(); ++i){
       featuresInp(j,i) /= (b(j+2)-b(j))/2;
       featuresInp(j,i) = log(100000*featuresInp(j,i)+1);
     }
@@ -207,12 +207,12 @@ void recognize(string sfName, string tpName)
   /*** calculate input of SimilarityMatrix ***/
 
   simInput.create(featuresInp.getRows()+featuresTpl.getRows(),dataInp.getCols());
-  for(i=0; i<featuresInp.getCols(); i++){
+  for(i=0; i<featuresInp.getCols(); ++i){
     for(j=0; j<featuresInp.getRows(); j++){
       simInput(j,i) = featuresInp(j,i);
     }
   }
-  for(i=0; i<featuresTpl.getCols(); i++){
+  for(i=0; i<featuresTpl.getCols(); ++i){
     for(j=0; j<featuresTpl.getRows(); j++){
       simInput(j+featuresInp.getRows(),i) = featuresTpl(j,i);
     }
@@ -256,10 +256,10 @@ void recognize(string sfName, string tpName)
   beginPos.create(sizes.getSize()-1);
   endPos.create(sizes.getSize()-1);
   beginPos(0) = 0;
-  for(i=1; i<sizes.getSize()-1; i++){
+  for(i=1; i<sizes.getSize()-1; ++i){
     beginPos(i) = sizes(i) + beginPos(i-1);
   }
-  for(i=0; i<sizes.getSize()-1; i++){
+  for(i=0; i<sizes.getSize()-1; ++i){
     endPos(i) = beginPos(i) + sizes(i+1);
   }
   order.create(sizes.getSize()-1);
@@ -268,10 +268,10 @@ void recognize(string sfName, string tpName)
     if(algOutput(i,0) >= 0 && algOutput(i,1) >= 0){
       l = i;
     }
-    i++ ;
+    ++i ;
   }
   k = 1; totalCount = 1;
-  for(i=0; i<beginPos.getSize(); i++){
+  for(i=0; i<beginPos.getSize(); ++i){
     if(beginPos(i) <= algOutput(l,1) && algOutput(l,1) < endPos(i)){
       order(i) = k;
       k ++;
@@ -279,7 +279,7 @@ void recognize(string sfName, string tpName)
     }
   }
   b_begin = true;
-  for(i=l; i<algOutput.getRows(); i++){
+  for(i=l; i<algOutput.getRows(); ++i){
     for(j=0; j<beginPos.getSize(); j++){
       if(algOutput(i,1) == beginPos(j)){
 	if(!b_begin){
@@ -302,7 +302,7 @@ void recognize(string sfName, string tpName)
   segments(0,0) = 0.0; segments(0,2) = 1;
   b_begin = true;
   k = 0;
-  for(i=l; i<algOutput.getRows(); i++){
+  for(i=l; i<algOutput.getRows(); ++i){
     for(j=0; j<beginPos.getSize(); j++){
       if(algOutput(i,1) == beginPos(j)){
 	if(!b_begin){
@@ -335,7 +335,7 @@ void recognize(string sfName, string tpName)
   wavInp->tick();
   inpspec = wavInp->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
   allspec.create(inpspec.getRows()*sizes.getSize(),inpspec.getCols());
-  for(i=0; i<inpspec.getCols(); i++){
+  for(i=0; i<inpspec.getCols(); ++i){
     for(j=0; j<inpspec.getRows(); j++){
       allspec(j,i) = inpspec(j,i);
     }
@@ -350,7 +350,7 @@ void recognize(string sfName, string tpName)
   for(k=1; k<=order.maxval(); k++){
     for(l=0; l<order.getSize(); l++){
       if(order(l) == k){
-	for(i=0; i<maxsize; i++){
+	for(i=0; i<maxsize; ++i){
 	  for(j=0; j<inpspec.getRows(); j++){
 	    tplspec(j+(k-1)*inpspec.getRows(),i) = allspec(j+(l+1)*inpspec.getRows(),i);
 	  }
@@ -359,7 +359,7 @@ void recognize(string sfName, string tpName)
       }
     }
   }
-  for(i=0; i<order.maxval(); i++){
+  for(i=0; i<order.maxval(); ++i){
     oss.str(""); oss << "wavnetOut" << i;
     wavnetOut[i] = mng.create("Series",oss.str());
     wavplOut->addMarSystem(wavnetOut[i]);

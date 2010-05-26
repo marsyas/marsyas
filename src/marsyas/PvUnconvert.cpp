@@ -92,7 +92,7 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	
 	N2_ = onObservations/2;
 
-	if (N2_+1 != phase_.getSize())
+	if ((uint32_t)N2_+1 != phase_.getSize())
 	{
 		
 		{
@@ -112,7 +112,7 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 			MarControlAccessor acc(ctrl_regions_);
 			mrs_realvec& regions = acc.to<mrs_realvec>();
 			regions.create(N2_+1);
-			for (int i=0; i < N2_+1; i++) 
+			for (int i=0; i < N2_+1; ++i) 
 				regions(i) = i;
 		}
 		
@@ -169,7 +169,7 @@ PvUnconvert::isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp)
 	h = 2;
 
 	if ((bin > 2) && (bin <= N2_-2))
-		for (int i = bin-h; i < bin+h; i++)
+		for (int i = bin-h; i < bin+h; ++i)
 		{
 			if (magnitudes(bin) < magnitudes(i))
 				res = false;
@@ -186,7 +186,7 @@ void
 PvUnconvert::myProcess(realvec& in, realvec& out)
 {
 	
-
+	mrs_natural t;
 	MarControlAccessor acc(ctrl_lastphases_);
 	mrs_realvec& lastphases = acc.to<mrs_realvec>();
 	MarControlAccessor  acc1(ctrl_analysisphases_);

@@ -206,7 +206,7 @@ BeatAgent::getChildIndex()
 	if(parent)
 	{
 		vector<MarSystem*> siblings = parent->getChildren();
-		for(mrs_natural i = 0; i < siblings.size(); i++)
+		for(size_t i = 0; i < siblings.size(); ++i)
 		{
 			if(this == siblings[i])
 			{
@@ -236,8 +236,8 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 	//Output Format: [Beat/Eval/None|Period|CurBeat|Inner/Outter|Error|Score] -> OnSamples = 6
 	agentControl_ = ctrl_agentControl_->to<mrs_realvec>();
 
-	//t_ is constantly updated with the referee's next time frame
-	t_ = (mrs_natural) agentControl_(myIndex_, 3);
+	//t is constantly updated with the referee's next time frame
+	t = (mrs_natural) agentControl_(myIndex_, 3);
 
 	//At first no beat info is considered - while no beat detected:
 	fillOutput(out, NONE, 0.0, 0.0, 0.0, 0.0, 0.0);
@@ -267,16 +267,16 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		curBeat_ = prevBeat_ + period_;
 
 	//Considers beat hypothesis every phase + period
-	if(t_ == curBeat_)
+	if(t == curBeat_)
 	{
-		//cout << "t:" << t_ << "-" << identity_ << " -> BEAT (" << beatCount_ << ")" << endl;
+		//cout << "t:" << t << "-" << identity_ << " -> BEAT (" << beatCount_ << ")" << endl;
 		
 		//Beat Info filling the remaining indexes of output with undef. value
 		fillOutput(out, BEAT, -1.0, -1.0, -1.0, -1.0, -1.0);
 
 		curBeatPointValue_ = in(curBeatPoint);
 
-		//history_(beatCount_,0) = t_;
+		//history_(beatCount_,0) = t;
 		//history_(beatCount_,1) = curBeatPointValue_;	
 
 		//lastBeatPoint points to the beat time point to be evaluated 
@@ -290,7 +290,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 
 	mrs_natural evalPoint = curBeat_ + outterWinRgt_;
 	//Evaluates each beat at the end of its beat position + outterWindow tolerance:
-	if(t_ == evalPoint)
+	if(t == evalPoint)
 	{
 		//point in flux window corresponding to the beat time point being evaluated
 		max_i = lastBeatPoint_;
@@ -335,7 +335,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 			}
 			
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside innerWindow!");
-			//cout << identity_ << "(" << t_ <<") -> Beat (" << curBeat_ << ") Inside innerWindow! with error: ";
+			//cout << identity_ << "(" << t <<") -> Beat (" << curBeat_ << ") Inside innerWindow! with error: ";
 
 			//Evaluation info:
 			//phase = actualBeatPoint = max_i
@@ -355,7 +355,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 			}
 			
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside innerWindow!");
-			//cout << identity_ << "(" << t_ <<") -> Beat (" << curBeat_ << ") Inside innerWindow! with error: ";
+			//cout << identity_ << "(" << t <<") -> Beat (" << curBeat_ << ") Inside innerWindow! with error: ";
 
 			//Evaluation info:
 			//phase = actualBeatPoint = max_i
@@ -394,18 +394,18 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 
 			//Evaluation info:
 			//phase = actualBeatPoint = max_i
-			//cout << identity_ << "(" << t_ <<") -> Beat (" << curBeat_ << ") Outside innerWindow! with error: ";
+			//cout << identity_ << "(" << t <<") -> Beat (" << curBeat_ << ") Outside innerWindow! with error: ";
 			MRSDIAG("BeatAgent::myProcess() - Beat Inside OutterWindow but outside innerWindow!");
 
 			fillOutput(out, EVAL, period_, curBeat_, OUTTER, error_, score_);
 		}
 		
-		//cout << "t:" << t_ << "-" << identity_ << "(error:" << error_ << "): curBeat-" << curBeat_ << "; act-" 
+		//cout << "t:" << t << "-" << identity_ << "(error:" << error_ << "): curBeat-" << curBeat_ << "; act-" 
 		//	<< curBeat_+error_ << " -> flux: " << in(lastBeatPoint_) << "-" << lastBeatPoint_ << "(" 
 		//	<< max << "-" << max_i << ") dS: " << score_ << " NextBeat(ifNotChanged): " << curBeat_+period_ << endl;
 
 		/*
-		for(mrs_natural i = 0; i < beatCount_; i++)
+		for(mrs_natural i = 0; i < beatCount_; ++i)
 		{
 			cout << identity_ << " -> "History Phase(" << i << "): " << history_(i, 0) << endl;
 			cout << identity_ << " ->  "History Value(" << i << "): " << history_(i, 1) << endl;

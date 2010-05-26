@@ -114,7 +114,7 @@ KNNClassifier::myProcess(realvec& in, realvec& out)
   mrs_natural prediction;
   int x, y;  
   int p;
-
+	mrs_natural o,t;
 
   if ((prev_mode_ == "predict")&&(mode == "train"))
     {

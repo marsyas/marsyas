@@ -29,52 +29,56 @@ using namespace std;
 
 namespace Marsyas
 {
+	
+
 
 /// constructor
 realvec::realvec()
+	: size_(0),
+	allocatedSize_(0),
+	data_(NULL),
+	rows_(1),
+	cols_(0)
 {
-	size_ = 0;
-	allocatedSize_ = 0;
-	data_ = NULL;
-	rows_ = 0;  // [!! 0]
-	cols_ = size_;
+	allocateData(size_);
 }
 
 realvec::~realvec()
 {
-	delete [] data_;
+	delete[] data_;
 	data_ = NULL;
 }
 
-realvec::realvec(mrs_natural size)
+realvec::realvec(uint32_t size)
+	: size_(size),
+	allocatedSize_(0),
+	data_(NULL),
+	rows_(1),
+	cols_(size)
 {
-	data_ = NULL;
-	size_ = size;
-	allocatedSize_ = size;
-	if (size_ > 0)
-		data_ = new mrs_real[size_];
-	rows_ = 1;
-	cols_ = size_;
+	allocateData(size_);
 }
 
 realvec::realvec(mrs_natural rows, mrs_natural cols)
+	: size_(rows * cols),
+	allocatedSize_(0),
+	data_(NULL),
+	rows_(rows),
+	cols_(cols)
 {
-	data_ = NULL;
-	size_ = rows * cols;
-	allocatedSize_ = size_;
-	if (size_ > 0)
-		data_ = new mrs_real[size_];
-	rows_ = rows;
-	cols_ = cols;
+	allocateData(size_);
 }
 
-realvec::realvec(const realvec& a) : size_(a.size_),allocatedSize_(a.size_),
-		rows_(a.rows_), cols_(a.cols_)
+realvec::realvec(const realvec& a) 
+	: size_(a.size_),
+	allocatedSize_(0),
+	data_(NULL),
+	rows_(a.rows_), 
+	cols_(a.cols_)
 {
-	data_ = NULL;
-	if ( a.size_ > 0 )
-		data_ = new mrs_real[a.size_];
-	for (mrs_natural i=0; i<size_; i++)
+	allocateData(size_);
+	
+	for (size_t i=0; i<size_; ++i)
 		data_[i] = a.data_[i];
 
 }
@@ -84,36 +88,17 @@ realvec::operator=(const realvec& a)
 {
 	if (this != &a)
 	{
-
-
-		//check if we need to allocate more memory
-		if ((allocatedSize_ < a.size_)||(a.size_ == 0))
-		{
-			//if data_ is not NULL, delete it
-			delete [] data_;
-			data_ = NULL;
-
-			allocatedSize_ = 0;
-			size_ = 0;
-
-			//allocate memory, if size > 0
-			if (a.size_ > 0)
-			{
-				data_ = new mrs_real[a.size_];
-				allocatedSize_ = a.size_; //"a" may have more allocated memory than its current size!
-				size_ = a.size_;
-			}
-		}
-
-		//copy data
-		for (mrs_natural i=0; i < a.size_; i++)
-			data_[i] = a.data_[i];
-
-		//update internal parameters
 		size_ = a.size_;
-		allocatedSize_ = a.size_;
 		rows_ = a.rows_;
 		cols_ = a.cols_;
+		
+		//check if we need to allocate more memory
+		if (allocatedSize_ < size_)
+			allocateData(size_);
+			
+		//copy data
+		for (size_t i=0; i < size_; ++i)
+			data_[i] = a.data_[i];
 	}
 
 	return *this;
@@ -132,7 +117,7 @@ realvec::appendRealvec(const realvec newValues)
 
 	stretch(origSize + newValues.getSize());
 
-	for (mrs_natural i=0; i<newValues.getSize(); i++)
+	for (size_t i=0; i<newValues.getSize(); ++i)
 		data_[origSize + i] = newValues.data_[i];
 }
 
@@ -140,7 +125,7 @@ realvec
 realvec::getSubVector(mrs_natural startPos, mrs_natural length) const
 {
 	realvec subVector(length);
-	for (mrs_natural i=0; i<length; i++)
+	for (mrs_natural i=0; i<length; ++i)
 		subVector.data_[i] = data_[startPos + i];
 	return subVector;
 }
@@ -150,7 +135,7 @@ realvec::transpose()
 {
 	mrs_real *tmp_ = new mrs_real[size_];
 
-	for (mrs_natural i=0; i < rows_; i++)
+	for (mrs_natural i=0; i < rows_; ++i)
 		for (mrs_natural j=0; j < cols_; j++)
 			tmp_[i * cols_ + j] = data_[j * rows_ + i];
 
@@ -177,7 +162,7 @@ mrs_real
 realvec::mean() const
 {
 	mrs_real sum = 0.0;
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		sum += data_[i];
 	}
@@ -195,7 +180,7 @@ mrs_real
 realvec::sum() const
 {
 	mrs_real sum = 0.0;
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		sum += data_[i];
 	}
@@ -211,7 +196,7 @@ realvec::var() const
 	mrs_real val;
 	mrs_real var;
 
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		val = data_[i];
 		sum += val;
@@ -249,7 +234,7 @@ realvec::getCols() const
 	return cols_;
 }
 
-mrs_natural
+size_t
 realvec::getSize() const
 {
 	return size_;
@@ -260,12 +245,11 @@ realvec::debug_info()
 {
 	MRSERR("realvec information");
 	MRSERR("size = " + size_);
-
 }
 
 /* keep the old data and possibly extend */
 void
-realvec::stretch(mrs_natural size)
+realvec::stretch(uint32_t size)
 {
 	if (size_ == size)
 		return; //no need for more memory allocation
@@ -278,19 +262,15 @@ realvec::stretch(mrs_natural size)
 		return; //no need for more memory allocation
 	}
 
-	//we need more memory allocation!
-	mrs_real* ndata = NULL;
-	if (size > 0)
-		ndata = new mrs_real[size];
+	// we need more memory allocation!
+	// size should be always >= 1 at this point
+	mrs_real* ndata = new mrs_real[size];
 
-	// zero new data, but keep existing data
-	for (mrs_natural i=0; i < size; i++)
-	{
-		if (i < size_)
-			ndata[i] = data_[i]; //copy existing data
-		else
-			ndata[i] = 0.0; //zero new data
-	}
+	size_t i=0;
+	for (; i < size_; ++i)
+		ndata[i] = data_[i]; //copy existing data
+	for(; i < size; ++i)
+		ndata[i] = 0.0; //zero new data
 
 	//deallocate existing memory...
 	delete [] data_;
@@ -301,7 +281,7 @@ realvec::stretch(mrs_natural size)
 	size_ = size;
 	allocatedSize_ = size;
 	rows_ = 1;
-	cols_ = size;
+	cols_ = size_;
 }
 
 /* keep the old data and possibly extend */
@@ -313,34 +293,28 @@ realvec::stretch(mrs_natural rows, mrs_natural cols)
 	if ((rows == rows_)&&(cols == cols_))
 		return;
 
-	/*if(size < size_)  [!] should be improved as the simpler stretch function
-	{
-	size_ = size;
-	rows_ = rows;
-	cols_ = cols;
-	return;
-	}*/
+	if(size == 0){
+		size_ = size;
+		rows_ = rows;
+		cols_ = cols;
+		return;
+	}
 
-	mrs_real *ndata = NULL;
-
-	if (size > 0)
-		ndata = new mrs_real[size];
+	mrs_real *ndata = new mrs_real[size];
 
 	// copy and zero new data
-	for (mrs_natural r=0; r < rows; r++)
-		for (mrs_natural c = 0; c < cols; c++)
+	for (mrs_natural r=0; r < rows; ++r)
+		for (mrs_natural c = 0; c < cols; ++c)
 		{
 			if ((r < rows_)&&(c < cols_))
 				ndata[c * rows + r] = data_[c * rows_ + r];
 			else
 				ndata[c * rows + r] = 0.0;
 		}
-	if (data_)
-	{
-		delete [] data_;
-		data_ = NULL;
-	}
+
+	delete [] data_;
 	data_ = ndata;
+	
 	size_ = size;
 	allocatedSize_ = size;
 	rows_ = rows;
@@ -352,14 +326,15 @@ realvec::stretchWrite(const mrs_natural pos, const mrs_real val)
 {
 	// don't forget the zero-indexing position!
 	//   i.e.  pos=0  is the first value to store
-	mrs_natural wantSize = pos+1;
-	if (wantSize > size_)
+	size_t wantSize = pos+1;
+	if (wantSize > size_){
 		if ( wantSize < 2*size_ )
 			// grow exponentially with sequential access
 			stretch( 2*size_ );
 		else
 			// if we have a sudden large value, don't double it
 			stretch( wantSize );
+	}
 	// FIXME: add a MRSASSERT here for debugging.
 	// cout<<"List stretched to "<<size_<<endl;
 	data_[pos] = val;
@@ -392,36 +367,25 @@ realvec::stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real v
 	}
 	data_[c * rows_ + r] = val;
 }
-
+	
 void
-realvec::create(mrs_natural size)
+realvec::create(uint32_t size)
 {
-	delete [] data_;
-	data_ = NULL;
 	size_ = size;
-	allocatedSize_ = size;
+	allocateData(size_);
 	rows_ = 1;
-	cols_ = size;
-	if (size_ > 0)
-		data_ = new mrs_real[size_];
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] = 0.0;
+	cols_ = size_;
 }
 
 void
 realvec::create(mrs_natural rows, mrs_natural cols)
 {
-	delete [] data_;
-	data_ = NULL;
 	size_ = rows * cols;
 	rows_ = rows;
 	cols_ = cols;
-	allocatedSize_ = size_;
-	if (size_ > 0)
-		data_ = new mrs_real[size_];
-	for (mrs_natural i=0; i<size_; i++)
-		data_[i] = 0.0;
+	allocateData(size_);
 }
+
 
 void
 realvec::create(mrs_real val, mrs_natural rows, mrs_natural cols)
@@ -433,48 +397,48 @@ realvec::create(mrs_real val, mrs_natural rows, mrs_natural cols)
 	data_ = NULL;
 	if (size_ > 0)
 		data_ = new mrs_real[size_];
-	for (mrs_natural i=0; i<size_; i++)
+	for (size_t i=0; i<size_; ++i)
 		data_[i] = val;
 	allocatedSize_ = size_;
 }
-
-void
-realvec::allocate(mrs_natural size)
-{
-	delete [] data_;
-	data_ = NULL;
-	size_ = size;
-	cols_ = size_;
-	rows_ = 1;
-	allocatedSize_ = size;
-	if (size_ > 0)
-		data_ = new mrs_real[size_];
-}
-
-void
-realvec::allocate(mrs_natural rows, mrs_natural cols)
-{
-	delete [] data_;
-	data_ = NULL;
-	size_ = rows*cols;
-	cols_ = cols;
-	rows_ = rows;
-	allocatedSize_ = size_;
-	if (size_ > 0)
-		data_ = new mrs_real[size_];
-}
-
-
 	
+	
+
+//void
+//realvec::allocate(mrs_natural size)
+//{
+//	delete [] data_;
+//	data_ = NULL;
+//	size_ = size;
+//	cols_ = size_;
+//	rows_ = 1;
+//	allocatedSize_ = size;
+//	if (size_ > 0)
+//		data_ = new mrs_real[size_];
+//}
+//
+//void
+//realvec::allocate(mrs_natural rows, mrs_natural cols)
+//{
+//	delete [] data_;
+//	data_ = NULL;
+//	size_ = rows*cols;
+//	cols_ = cols;
+//	rows_ = rows;
+//	allocatedSize_ = size_;
+//	if (size_ > 0)
+//		data_ = new mrs_real[size_];
+//}
+
 
 	
 void
 realvec::setval(mrs_natural start, mrs_natural end, mrs_real val)
 {
-	MRSASSERT(start <= size_);
-	MRSASSERT(end <= size_);
+	MRSASSERT(start <= (mrs_natural)size_);
+	MRSASSERT(end <= (mrs_natural)size_);
 
-	for (mrs_natural i=start; i<end; i++)
+	for (mrs_natural i=start; i<end; ++i)
 	{
 		data_[i] = val;
 	}
@@ -483,7 +447,7 @@ realvec::setval(mrs_natural start, mrs_natural end, mrs_real val)
 void
 realvec::apply(mrs_real (*func) (mrs_real))
 {
-	for (mrs_natural i=0; i<size_; i++)
+	for (size_t i=0; i<size_; ++i)
 	{
 		data_[i] = func(data_[i]);
 	}
@@ -492,7 +456,7 @@ realvec::apply(mrs_real (*func) (mrs_real))
 void
 realvec::setval(mrs_real val)
 {
-	for (mrs_natural i=0; i<size_; i++)
+	for (size_t i=0; i<size_; ++i)
 	{
 		data_[i] = val;
 	}
@@ -501,7 +465,7 @@ realvec::setval(mrs_real val)
 void
 realvec::abs()
 {
-	for (mrs_natural i=0; i<size_; i++)
+	for (size_t i=0; i<size_; ++i)
 	{
 		data_[i] = fabs(data_[i]);
 	}
@@ -512,7 +476,7 @@ realvec::norm()
 {
 	mrs_real mean = this->mean();
 	mrs_real std = this->std();
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		data_[i] = (data_[i] - mean) / std;
 	}
@@ -525,7 +489,7 @@ realvec::normMaxMin()
 	mrs_real max = DBL_MIN;
 	mrs_real min = DBL_MAX;
 
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		if (data_[i] > max)
 			max = data_[i];
@@ -534,7 +498,7 @@ realvec::normMaxMin()
 	}
 
 
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		data_[i] = (data_[i] - min) / (max - min);
 	}
@@ -546,7 +510,7 @@ realvec::normMaxMin()
 void
 realvec::norm(mrs_real mean, mrs_real std)
 {
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		data_[i] = (data_[i] - mean) / std;
 	}
@@ -555,8 +519,7 @@ realvec::norm(mrs_real mean, mrs_real std)
 void
 realvec::renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real new_std)
 {
-	mrs_natural i;
-	for (i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		data_[i] = (data_[i] - old_mean) / old_std;
 		data_[i] *= new_std;
@@ -582,30 +545,30 @@ realvec::invert(realvec& res)
 		res.create(rows_, cols_);
 
 		rank = 0;
-		for (r = 0; r < rows_; r++)
-			for (c=0; c < cols_; c++)
+		for (r = 0; r < rows_; ++r)
+			for (c=0; c < cols_; ++c)
 			{
 				if (r == c)
 					res(r,c) = 1.0;
 				else
 					res(r,c) = 0.0;
 			}
-		for (i = 0; i < rows_; i++)
+		for (i = 0; i < rows_; ++i)
 		{
 			if ((*this)(i,i) == 0)
 			{
-				for (r = i; r < rows_; r++)
-					for (c = 0; c < cols_; c++)
+				for (r = i; r < rows_; ++r)
+					for (c = 0; c < cols_; ++c)
 					{
 						(*this)(i,c) += (*this)(r,c);
 						res(i,c) += res(r,c);
 					}
 			}
-			for (r = i; r < rows_; r++)
+			for (r = i; r < rows_; ++r)
 			{
 				temp = (*this)(r,i);
 				if (temp != 0)
-					for (c =0; c < cols_; c++)
+					for (c =0; c < cols_; ++c)
 					{
 						(*this)(r,c) /= temp;
 						res(r,c) /= temp;
@@ -613,11 +576,11 @@ realvec::invert(realvec& res)
 			}
 			if (i != rows_-1)
 			{
-				for (r = i+1; r < rows_; r++)
+				for (r = i+1; r < rows_; ++r)
 				{
 					temp = (*this)(r,i);
 					if (temp != 0.0)
-						for (c=0; c < cols_; c++)
+						for (c=0; c < cols_; ++c)
 						{
 							(*this)(r,c) -= (*this)(i,c);
 							res(r,c) -= res(i,c);
@@ -625,18 +588,18 @@ realvec::invert(realvec& res)
 				}
 			}
 		}
-		for (i=1; i < rows_; i++)
-			for (r=0; r < i; r++)
+		for (i=1; i < rows_; ++i)
+			for (r=0; r < i; ++r)
 			{
 				temp = (*this)(r,i);
-				for (c=0; c < cols_; c++)
+				for (c=0; c < cols_; ++c)
 				{
 					(*this)(r,c) -= (temp * (*this)(i,c));
 					res(r,c) -= (temp * res(i,c));
 				}
 			}
-		for (r =0; r < rows_; r++)
-			for (c=0; c < cols_; c++)
+		for (r =0; r < rows_; ++r)
+			for (c=0; c < cols_; ++c)
 				(*this)(r,c) = res(r,c);
 		return rank;
 	}
@@ -651,7 +614,7 @@ realvec::invert(realvec& res)
 void
 realvec::sqr()
 {
-	for (mrs_natural i=0; i<size_; i++)
+	for (size_t i=0; i<size_; ++i)
 	{
 		data_[i] *= data_[i];
 	}
@@ -662,7 +625,7 @@ realvec::search(mrs_real val)
 {
 	mrs_real minDiff = MAXREAL;
 	mrs_natural index=-1;
-	for (mrs_natural i=0; i<size_; i++)
+	for (size_t i=0; i<size_; ++i)
 		if (fabs(data_[i]-val)< minDiff)
 		{
 			minDiff = fabs(data_[i]-val);
@@ -674,7 +637,7 @@ realvec::search(mrs_real val)
 void
 realvec::sqroot()
 {
-	for (mrs_natural i=0; i<size_; i++)
+	for (size_t i=0; i<size_; ++i)
 	{
 		data_[i] = sqrt(data_[i]);
 	}
@@ -684,7 +647,7 @@ realvec
 operator+(const realvec& vec1, const realvec& vec2)
 {
 	mrs_natural size;
-	mrs_natural i;
+	size_t i;
 	if (vec1.size_ != vec2.size_)
 		MRSERR("Size of realvecs does not match");
 	if (vec1.size_ >= vec2.size_)
@@ -694,11 +657,11 @@ operator+(const realvec& vec1, const realvec& vec2)
 	realvec sum;
 	sum.create(size);
 
-	for (i=0; i<vec1.size_; i++)
+	for (i=0; i<vec1.size_; ++i)
 	{
 		sum.data_[i] = vec1.data_[i];
 	}
-	for (i=0; i<vec2.size_; i++)
+	for (i=0; i<vec2.size_; ++i)
 	{
 		sum.data_[i] += vec2.data_[i];
 	}
@@ -710,7 +673,7 @@ realvec
 operator-(const realvec& vec1, const realvec& vec2)
 {
 	mrs_natural size;
-	mrs_natural i;
+	size_t i;
 	if (vec1.size_ != vec2.size_)
 		MRSERR("Size of realvecs does not match");
 	if (vec1.size_ >= vec2.size_)
@@ -720,11 +683,11 @@ operator-(const realvec& vec1, const realvec& vec2)
 	realvec diff;
 	diff.create(size);
 
-	for (i=0; i<vec1.size_; i++)
+	for (i=0; i<vec1.size_; ++i)
 	{
 		diff.data_[i] = vec1.data_[i];
 	}
-	for (i=0; i<vec2.size_; i++)
+	for (i=0; i<vec2.size_; ++i)
 	{
 		diff.data_[i] -= vec2.data_[i];
 	}
@@ -737,13 +700,13 @@ operator-(const realvec& vec1, const realvec& vec2)
 void
 realvec::send(Communicator *com)
 {
-	mrs_natural i;
+	size_t i;
 	static char *buf = new char[256];
 	string message;
 	sprintf(buf, "%i\n", (int)size_);
 	message = buf;
 	com->send_message(message);
-	for (i=0; i<size_; i++)
+	for (i=0; i<size_; ++i)
 	{
 		sprintf(buf, "%f\n", data_[i]);
 		message = buf;
@@ -774,18 +737,18 @@ void
 realvec::shuffle()
 {
 	// Use a Fisher-Yates shuffle : http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
-	unsigned int n = cols_;
+	uint32_t n = cols_;
 	while (n > 1)
 	{
 		// Generate a random index in the range [0, n).
-		unsigned int k = (unsigned int)((mrs_real)n * (mrs_real)rand() / (mrs_real)(RAND_MAX + 1.0));
+		uint32_t k = (uint32_t)((mrs_real)n * (mrs_real)rand() / (mrs_real)(RAND_MAX + 1.0));
 
 		n--;
 
 		// Swap column n and column k.
 		if (k != n)
 		{
-			for (int r = 0; r < rows_; r++)
+			for (int r = 0; r < rows_; ++r)
 				swap(data_[k * rows_ + r], data_[n * rows_ + r]);
 		}
 	}
@@ -811,7 +774,7 @@ realvec::write(string filename) const
 void
 realvec::dump()
 {
-	for (int i =0 ; i< size_ ; i++)
+	for (size_t i =0 ; i< size_ ; ++i)
 		MRSMSG(data_[i] << " ") ;
 	MRSMSG(endl);
 }
@@ -824,13 +787,14 @@ realvec::readText(string filename)
 	{
 		int i = 0;
 		if (size_ == 0)
-			allocate(1);
+			create(1);
+		
 		mrs_real value;
 		while (infile >> value)
 		{
 			// slower but safer
 			stretchWrite(i,value);
-			i++;
+			++i;
 		}
 		stretch(i-1);
 		infile.close();
@@ -852,7 +816,7 @@ realvec::writeText(string filename)
 	ofstream outfile(filename.c_str());
 	if (outfile.is_open())
 	{
-		for (int i=0; i<size_; i++)
+		for (size_t i=0; i<size_; ++i)
 		{
 			outfile << data_[i] <<endl;
 		}
@@ -873,9 +837,9 @@ realvec::writeText(string filename)
 void
 realvec::dumpDataOnly(std::ostream& o, std::string columnSep, std::string rowSep) const
 {
-	for (mrs_natural r = 0; r < this->rows_; r++)
+	for (mrs_natural r = 0; r < this->rows_; ++r)
 	{
-		for (mrs_natural c = 0; c < this->cols_; c++)
+		for (mrs_natural c = 0; c < this->cols_; ++c)
 		{
 			o << this->data_[c * this->rows_ + r];
 			if (c < this->cols_ - 1)
@@ -904,7 +868,7 @@ operator<< (ostream& o, const realvec& vec)
 	vec.dumpDataOnly(o, " ", "\n");
 	o << endl;
 
-	// for (mrs_natural i=0; i<vec.size_; i++)
+	// for (mrs_natural i=0; i<vec.size_; ++i)
 	// o << vec.data_[i] << endl;
 	o << endl;
 	o << "# Size = " << vec.size_ << endl;
@@ -955,16 +919,16 @@ operator>>(istream& is, realvec& vec)
 	}
 	is >> size;
 
-	vec.allocate(size);
-	for (i=0; i<3; i++)
+	vec.create(size);
+	for (i=0; i<3; ++i)
 	{
 		is >> str0;
 	}
 	is >> str0 >> str1 >> vec.rows_;
 	is >> str0 >> str1 >> vec.cols_;
 
-	for (mrs_natural r = 0; r < vec.rows_; r++)
-		for (mrs_natural c = 0; c < vec.cols_; c++)
+	for (mrs_natural r = 0; r < vec.rows_; ++r)
+		for (mrs_natural c = 0; c < vec.cols_; ++c)
 		{
 			is >> str0;
 			if (str0 == "nan") {
@@ -1140,7 +1104,7 @@ realvec::getRow(const mrs_natural r, realvec& res) const
 			return;
 		}
 		res.stretch(cols_);
-		for (mrs_natural c=0; c < cols_; c++)
+		for (mrs_natural c=0; c < cols_; ++c)
 		{
 			res(c) = (*this)(r,c);
 		}
@@ -1164,7 +1128,7 @@ realvec::getCol(const mrs_natural c, realvec& res) const
 			return;
 		}
 		res.stretch(rows_,1);
-		for (mrs_natural r=0; r < rows_; r++)
+		for (mrs_natural r=0; r < rows_; ++r)
 		{
 			res(r) = (*this)(r,c);
 		}
@@ -1192,18 +1156,18 @@ realvec::getSubMatrix (const mrs_natural r, const mrs_natural c, realvec& res)
 		mrs_natural	m,n,i,j;
 		mrs_natural	endRow	= min(rows_, r + numRows),
 					endCol	= min(cols_, c + numCols);
-		for (m=r, i=0; m < endRow; m++,i++)
+		for (m=r, i=0; m < endRow; m++,++i)
 		{
 			for (n=c, j=0; n < endCol; n++, j++)
 				res(i,j) = (*this)(m,n);
 		}
 
 		// if there are remaining elements, fill up with zeros (or should we throw something? see MRSERR check above)
-		for (i=endRow-r; i < numRows; i++)
+		for (i=endRow-r; i < numRows; ++i)
 			for (j=0; j < numCols; j++)
 				res(i,j)	= 0;
 		for (j=endCol-c; j < numCols; j++)
-			for (i=0; i < numRows; i++)
+			for (i=0; i < numRows; ++i)
 				res(i,j)	= 0;
 	}
 	else
@@ -1250,7 +1214,7 @@ realvec::maxval(mrs_natural* index) const
 {
 	mrs_real max = numeric_limits<mrs_real>::max() * -1.0;
 	mrs_natural ind = 0;
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		if (data_[i] > max)
 		{
@@ -1267,7 +1231,7 @@ mrs_real
 realvec::minval() const
 {
 	mrs_real min = numeric_limits<mrs_real>::max();
-	for (mrs_natural i=0; i < size_; i++)
+	for (size_t i=0; i < size_; ++i)
 	{
 		if (data_[i] < min)
 			min = data_[i];
@@ -1283,10 +1247,10 @@ realvec::meanObs(realvec& res) const
 		realvec obsrow(cols_); //row vector //[TODO]
 		res.stretch(rows_, 1); //column vector
 
-		for (mrs_natural r=0; r<rows_; r++)
+		for (mrs_natural r=0; r<rows_; ++r)
 		{
 			//obsrow = getRow(r);
-			for (mrs_natural c=0; c<cols_; c++)
+			for (mrs_natural c=0; c<cols_; ++c)
 			{
 				obsrow(c) = (*this)(r,c); //get observation row
 			}
@@ -1308,10 +1272,10 @@ realvec::varObs(realvec& res) const
 		res.create(rows_, 1); //column vector
 		realvec obsrow(cols_); //row vector //[TODO]
 
-		for (mrs_natural r=0; r<rows_; r++)
+		for (mrs_natural r=0; r<rows_; ++r)
 		{
 			//obsrow = getRow(r);
-			for (mrs_natural c=0; c<cols_; c++)
+			for (mrs_natural c=0; c<cols_; ++c)
 			{
 				obsrow(c) = (*this)(r,c); //get observation row
 			}
@@ -1332,10 +1296,10 @@ realvec::stdObs(realvec& res) const
 	{
 		realvec obsrow(cols_); //row vector //[TODO]
 		res.stretch(rows_, 1); //column vector
-		for (mrs_natural r=0; r<rows_; r++)
+		for (mrs_natural r=0; r<rows_; ++r)
 		{
 			//obsrow = getRow(r);
-			for (mrs_natural c=0; c < cols_; c++)
+			for (mrs_natural c=0; c < cols_; ++c)
 			{
 				obsrow(c) = (*this)(r,c); //get observation row
 			}
@@ -1357,16 +1321,16 @@ realvec::normObs()
 	realvec obsrow(cols_); //[TODO]
 	mrs_real mean, std;
 
-	for (mrs_natural r=0; r < rows_; r++)
+	for (mrs_natural r=0; r < rows_; ++r)
 	{
-		for (mrs_natural c=0; c < cols_; c++)
+		for (mrs_natural c=0; c < cols_; ++c)
 		{
 			obsrow(c) = (*this)(r,c); //get observation row
 		}
 		//obsrow = getRow(r);
 		mean = obsrow.mean();
 		std = obsrow.std();
-		for (mrs_natural c=0; c < cols_; c++)
+		for (mrs_natural c=0; c < cols_; ++c)
 		{
 			(*this)(r,c) -= mean;
 			(*this)(r,c) /= std;
@@ -1383,9 +1347,9 @@ realvec::normObsMinMax()
 	realvec obsrow(cols_);
 	mrs_real min, max, dif;
 
-	for (mrs_natural r=0; r < rows_; r++)
+	for (mrs_natural r=0; r < rows_; ++r)
 	{
-		//for (mrs_natural c=0; c < cols_; c++)
+		//for (mrs_natural c=0; c < cols_; ++c)
 		//{
 		//	obsrow(c) = (*this)(r,c); //get observation row
 		//}
@@ -1395,7 +1359,7 @@ realvec::normObsMinMax()
 		dif = max-min;
 		if (dif ==0)
 			dif=1.0;
-		for (mrs_natural c=0; c < cols_; c++)
+		for (mrs_natural c=0; c < cols_; ++c)
 		{
 			(*this)(r,c) -= min;
 			(*this)(r,c) /= dif;
@@ -1415,9 +1379,9 @@ realvec::normSpl(mrs_natural index)
 
 	if (!index)
 		index=cols_;
-	for (mrs_natural r=0; r < index; r++)
+	for (mrs_natural r=0; r < index; ++r)
 	{
-		//for (mrs_natural c=0; c < cols_; c++)
+		//for (mrs_natural c=0; c < cols_; ++c)
 		//{
 		//	obsrow(c) = (*this)(r,c); //get observation row
 		//}
@@ -1427,7 +1391,7 @@ realvec::normSpl(mrs_natural index)
 		std = colVec.std();
 
 		if (std)
-			for (mrs_natural c=0; c < rows_; c++)
+			for (mrs_natural c=0; c < rows_; ++c)
 			{
 				(*this)(c, r) -= mean;
 				(*this)(c, r) /= std;
@@ -1446,9 +1410,9 @@ realvec::normSplMinMax(mrs_natural index)
 
 	if (!index)
 		index=cols_;
-	for (mrs_natural r=0; r < index; r++)
+	for (mrs_natural r=0; r < index; ++r)
 	{
-		//for (mrs_natural c=0; c < cols_; c++)
+		//for (mrs_natural c=0; c < cols_; ++c)
 		//{
 		//	obsrow(c) = (*this)(r,c); //get observation row
 		//}
@@ -1459,7 +1423,7 @@ realvec::normSplMinMax(mrs_natural index)
 		if (dif ==0)
 			dif=1.0;
 		if (max)
-			for (mrs_natural c=0; c < rows_; c++)
+			for (mrs_natural c=0; c < rows_; ++c)
 			{
 				(*this)(c, r) -= min;
 				(*this)(c, r) /= dif;
@@ -1487,13 +1451,13 @@ realvec::correlation(realvec& res) const
 		temp.normObs();
 
 		mrs_real sum = 0.0;
-		for (mrs_natural r1=0; r1< rows_; r1++)
+		for (mrs_natural r1=0; r1< rows_; ++r1)
 		{
-			for (mrs_natural r2=0; r2 < rows_; r2++)
+			for (mrs_natural r2=0; r2 < rows_; ++r2)
 			{
 				sum = 0.0;
 
-				for (mrs_natural c=0; c < cols_; c++)
+				for (mrs_natural c=0; c < cols_; ++c)
 					sum += (temp(r1,c) * temp(r2,c));
 
 				sum /= cols_;
@@ -1538,12 +1502,12 @@ realvec::covariance(realvec& res) const
 		this->meanObs(meanobs);//observation means //[TODO]
 
 		mrs_real sum = 0.0;
-		for (mrs_natural r1=0; r1< rows_; r1++)
+		for (mrs_natural r1=0; r1< rows_; ++r1)
 		{
-			for (mrs_natural r2=0; r2 < rows_; r2++)
+			for (mrs_natural r2=0; r2 < rows_; ++r2)
 			{
 				sum = 0.0;
-				for (mrs_natural c=0; c < cols_; c++)
+				for (mrs_natural c=0; c < cols_; ++c)
 					sum += ((data_[c * rows_ + r1] - meanobs(r1)) * (data_[c * rows_ + r2]- meanobs(r2)));
 
 				if (cols_ > 1)
@@ -1588,13 +1552,13 @@ realvec::covariance2(realvec& res) const
 			MRSWARN("realvec::covariance() : too few data points => ill-calculation of covariance matrix!");
 		}
 
-		for (mrs_natural r1=0; r1< rows_; r1++)
+		for (mrs_natural r1=0; r1< rows_; ++r1)
 		{
-			for (mrs_natural r2=0; r2 < rows_; r2++)
+			for (mrs_natural r2=0; r2 < rows_; ++r2)
 			{
-				mrs_real sum = 0.0;
+				mrs_real sum(0);
 
-				for (mrs_natural c=0; c < cols_; c++)
+				for (mrs_natural c=0; c < cols_; ++c)
 					sum += (data_[c * rows_ + r1] * data_[c * rows_ + r2]);
 
 				sum /= cols_;
@@ -1617,8 +1581,9 @@ realvec::trace() const
 		MRSWARN("realvec::trace() - matrix is not square!");
 	}
 
-	mrs_real res = 0.0;
-	for (mrs_natural i = 0; i < size_; )
+	mrs_real res(0);
+	
+	for (size_t i = 0; i < size_;)
 	{
 		res += data_[i];
 		i += cols_+1;
@@ -1634,6 +1599,269 @@ realvec::det() const
 	return numlib.determinant(*this);
 }
 
-
+	//////////////////////////////////////////////////////////////////////////////
+	
+	/////////////////////// THESE USED TO BE INLINED  ////////////////////////////
+	
+	
+	// allocate data and initialize to zero
+	// minimum of 1 element is allocated to prevent null pointers
+	// not that the size_ of the object will stay 0 just like cols_
+	// Allocating data doen't have anything to do with the size count	of the object.
+	void realvec::allocateData(size_t size)
+	{
+		// if data is not null delete it
+		delete[] data_;
+		data_ = NULL;
+		
+		allocatedSize_ = size > 0 ? size : 1; // minimum of 1
+		data_ = new mrs_real[allocatedSize_];
+		
+		for (size_t i=0; i<allocatedSize_; ++i)
+			data_[i] = 0.0;
+	}
+	
+	
+	
+	bool realvec::operator==(const realvec &v1)
+	{
+		//different size -> not equal
+		if (v1.getRows()!=rows_) return false;
+		if (v1.getCols()!=cols_) return false;
+		
+		for(int r=0;r<v1.getRows();++r)
+		{
+			for(int c=0;c<v1.getCols();++c)
+			{
+				if(v1(r,c)!=data_[c * rows_ + r])return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	bool realvec::operator!=(const realvec &v1) 
+	{
+		return !(*this == v1);
+	}
+	
+	
+	realvec&
+	realvec::operator/=(const mrs_real val)
+	{
+		for (size_t i=0; i<size_; ++i)
+			data_[i] /= val;
+		return *this;
+	}
+	
+	
+	
+	realvec&
+	realvec::operator*=(const mrs_real val)
+	{
+		for (size_t i=0; i<size_; ++i)
+			data_[i] *= val;
+		return *this;
+	}
+	
+	
+	realvec&
+	realvec::operator-=(const mrs_real val)
+	{
+		for (size_t i=0; i<size_; ++i)
+			data_[i] -= val;
+		return *this;
+	}
+	
+	
+	realvec&
+	realvec::operator+=(const mrs_real val)
+	{
+		for (size_t i=0; i<size_; ++i)
+			data_[i] += val;
+		return *this;
+	}
+	
+	
+	realvec&
+	realvec::operator+=(const realvec& vec)
+	{
+		for (size_t i=0; i<size_; ++i)
+			data_[i] += vec.data_[i];
+		return *this;
+	}
+	
+	
+	realvec&
+	realvec::operator-=(const realvec& vec)
+	{
+		for (size_t i=0; i<size_; ++i)
+			data_[i] -= vec.data_[i];
+		return *this;
+	}
+	
+	
+	realvec&
+	realvec::operator*=(const realvec& vec)
+	{
+		for (size_t i=0; i<size_; ++i)
+			data_[i] *= vec.data_[i];
+		return *this;
+	}
+	
+	
+	realvec&
+	realvec::operator/=(const realvec& vec)
+	{
+		for (size_t i=0; i<size_; ++i)
+			data_[i] /= vec.data_[i];
+		return *this;
+	}
+	
+	/**
+	 * \brief matrix Multiplication
+	 *
+	 * \param a first input matrix
+	 * \param b second input matrix
+	 * \param out preallocated realvec for the output
+	 * \return the value at the requested index.
+	 * \exception std::out_of_range is thrown when the index is out of bounds.
+	 */
+	
+	void realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out) 
+	{
+		//naive Matrix multiplication
+		
+		MRSASSERT(a.getCols()==b.getRows());
+		MRSASSERT(out.getRows()==a.getRows());
+		MRSASSERT(out.getCols()==b.getCols());
+		
+		for (mrs_natural r=0;r<out.getRows();++r) 
+		{
+			for (mrs_natural c=0;c<out.getCols();++c) 
+			{
+				
+				for (mrs_natural i=0;i<a.getCols();++i) 
+				{
+					if ((a(r,i)==0)||(b(i,c)==0)) 
+						out(r,c)+=0;
+					else 
+						out(r,c)+=a(r,i)*b(i,c);
+				}
+			}
+		}
+	}
+	
+	
+	mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
+	{
+//		
+//		MRSASSERT(r < rows_);
+//		MRSASSERT(c < cols_);
+		
+		return data_[c * rows_ + r];
+	}
+	
+	
+	mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
+	{
+//		MRSASSERT(r < rows_);
+//		MRSASSERT(c < cols_);
+//		MRSASSERT(r >= 0);
+//		MRSASSERT(c >= 0);
+		
+		return data_[c * rows_ + r];
+	}
+	
+	
+	mrs_real realvec::operator()(const uint32_t i) const
+	{
+//		MRSASSERT(i < size_);
+		return data_[i];
+	}
+	
+	
+	mrs_real& realvec::operator()(const uint32_t i)
+	{
+		
+//		MRSASSERT(i < size_);
+		return data_[i];
+	}
+	
+	/**
+	 * \brief Get the value at index i or raise Exception when out of bounds.
+	 *
+	 * \param i the index to get the value at.
+	 * \return the value at the requested index.
+	 * \exception std::out_of_range is thrown when the index is out of bounds.
+	 */
+	
+	mrs_real realvec::getValueFenced(const uint32_t i) const
+	{
+		
+		if (i < 0 || i >= size_) {
+			// TODO: use a Marsyas branded exception here?
+			throw std::out_of_range("realvec indexing out of bounds.");
+		}
+		return data_[i];
+	}
+	
+	/**
+	 * \brief Get the value at position (r, c) or raise Exception when out of bounds.
+	 *
+	 * \param r the row index of the position to get the value from.
+	 * \param c the column index of the position to get the value from.
+	 * \return the value at the requested position.
+	 * \exception std::out_of_range is thrown when the row or column index are out of bounds.
+	 */
+	
+	mrs_real realvec::getValueFenced(const mrs_natural r, const mrs_natural c) const
+	{
+		if (r < 0 || r >= rows_ || c < 0 || c >= cols_) {
+			// TODO: use a Marsyas branded exception here?
+			throw std::out_of_range("realvec indexing out of bounds.");
+		}
+		return data_[c * rows_ + r];
+	}
+	
+	/**
+	 * \brief Get reference to value at index i or raise Exception when out of bounds.
+	 *
+	 * Returned reference can be used as left hand side value (lvalue).
+	 *
+	 * \param i the index to get the value at.
+	 * \return the value at the requested index.
+	 * \exception std::out_of_range is thrown when the index is out of bounds.
+	 */
+	
+	mrs_real& realvec::getValueFenced(const uint32_t i)
+	{
+		if (i >= size_) {
+			// TODO: use a Marsyas branded exception here?
+			throw std::out_of_range("realvec indexing out of bounds.");
+		}
+		return data_[i];
+	}
+	
+	/**
+	 * \brief Get reference to value at position (r, c) or raise Exception when out of bounds.
+	 *
+	 * Returned reference can be used as left hand side value (lvalue).
+	 *
+	 * \param r the row index of the position to get the value from.
+	 * \param c the column index of the position to get the value from.
+	 * \return the value at the requested position.
+	 * \exception std::out_of_range is thrown when the row or column index are out of bounds.
+	 */
+	
+	mrs_real& realvec::getValueFenced(const mrs_natural r, const mrs_natural c)
+	{
+		if (r < 0 || r >= rows_ || c < 0 || c >= cols_) {
+			// TODO: use a Marsyas branded exception here?
+			throw std::out_of_range("realvec indexing out of bounds.");
+		}
+		return data_[c * rows_ + r];
+	}
+	
 
 }

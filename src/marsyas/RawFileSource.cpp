@@ -171,7 +171,7 @@ void RawFileSource::readData(unsigned long index)//[!]
   
 	// find the peak
 	mrs_real max = 0.0;
-	for (i=0; i < length; i++) {
+	for (i=0; i < length; ++i) {
 		if (fabs(data_(i)) > max)
 			max = (mrs_real) fabs((double) data_(i));
 	}
@@ -180,7 +180,7 @@ void RawFileSource::readData(unsigned long index)//[!]
 	if (max > 0.0) {
 		max = (mrs_real)(1.0 / max);
 		max *= 1.0;					// constant factor for now.				
-		for ( i=0; i <= length; i++ )  {
+		for ( i=0; i <= length; ++i )  {
 			data_(i) *= max;
 		}
 	}
@@ -219,7 +219,7 @@ void RawFileSource::myProcess(realvec& in,realvec &out)
 		return;
 	}
   
-	for (i = 0; i < inSamples_; i++ ) {
+	for (i = 0; i < inSamples_; ++i ) {
     
 		// loop back to start of the wavetable
 		if (time_ >= fileSize_) {

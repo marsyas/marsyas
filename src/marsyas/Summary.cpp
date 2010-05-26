@@ -73,7 +73,7 @@ void Summary::myUpdate(MarControlPtr sender)
 
 void Summary::myProcess(realvec& in, realvec& out)
 {
-	
+	mrs_natural t;
   string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   
   //modified this code to check the done flag-dale
@@ -181,9 +181,9 @@ summaryStatistics Summary::computeSummaryStatistics(const realvec& mat)
   mrs_natural size = mat.getCols();
 
   vector<mrs_natural>rowSums(size);
-  for(int ii=0; ii<size; ii++) rowSums[ii] = 0;
+  for(int ii=0; ii<size; ++ii) rowSums[ii] = 0;
   vector<mrs_natural>colSums(size);
-  for(int ii=0; ii<size; ii++) colSums[ii] = 0;
+  for(int ii=0; ii<size; ++ii) colSums[ii] = 0;
   mrs_natural diagonalSum = 0;
 
   mrs_natural instanceCount = 0;
@@ -214,7 +214,7 @@ summaryStatistics Summary::computeSummaryStatistics(const realvec& mat)
   stats.correctInstances = diagonalSum;
 
   mrs_natural sum = 0;
-  for(mrs_natural ii=0; ii<size; ii++)
+  for(mrs_natural ii=0; ii<size; ++ii)
     {
       sum += (rowSums[ii] * colSums[ii]);
     }

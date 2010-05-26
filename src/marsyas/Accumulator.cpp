@@ -136,6 +136,8 @@ Accumulator::myUpdate(MarControlPtr sender)
 void
 Accumulator::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,c,t;
+	
 	if (marsystemsSize_ == 0)
 	{
 		out = in;
@@ -204,7 +206,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 	{
 		//nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 		ctrl_flush_->setValue(false);
-		for (c = 0; c < nTimes_; c++)
+		for (c = 0; c < nTimes_; ++c)
 		{
 			marsystems_[0]->recvControls(); // HACK STU [!]
 			marsystems_[0]->process(in, childOut_);

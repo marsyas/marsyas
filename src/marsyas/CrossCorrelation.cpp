@@ -77,7 +77,7 @@ void
 CrossCorrelation::myProcess(realvec& in, realvec& out)
 {
 	// this cross correlation will take in N observations and return N-1 observations
-
+	mrs_natural o,t;
 	mrs_real re1,im1,re2,im2,re,im,abs_out;
 
 	for (o=0; o < (inObservations_ - 1); o++)

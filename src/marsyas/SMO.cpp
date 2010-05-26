@@ -99,24 +99,12 @@ SMO::myUpdate(MarControlPtr sender)
 void 
 SMO::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
-//  mrs_real v;
+  mrs_natural t,o;
   string mode = modePtr_->to<mrs_string>();
-  // mrs_natural nlabels = nlabelsPtr_->to<mrs_natural>();
-//  mrs_natural l;
   mrs_natural prediction = 0;
   mrs_real label;
-  
-
-//  mrs_real diff;
-  // mrs_real sq_sum=0.0;
-
   mrs_real thres;
-  
-
-  
-
-
+ 
   if (mode == "train")  
     {
       for (t = 0; t < inSamples_; t++)  

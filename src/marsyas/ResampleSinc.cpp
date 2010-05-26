@@ -161,7 +161,7 @@ ResampleSinc::window(mrs_real position)
     
     mrs_real divisor=2.279585302336;
     
-    for (int i=0;i<y.getSize();i++)
+    for (size_t i=0;i<y.getSize();++i)
         
         if (i<=y.getSize()/2)
             y(i)=y(i)/divisor;
@@ -196,14 +196,12 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 		mrs_real offEnd=ctrl_offEnd_->to<mrs_real>();
 
 		mrs_real ratio=(inSamples_-1-offStart-offEnd)/(mrs_real)(samplesout-1);
-		mrs_natural index=0;
-		
 		mrs_realvec arrx;
 		arrx.create(samplesout);
 		mrs_realvec arr;
 		arr.create(samplesout);
 		mrs_natural count=0;
-		for(mrs_natural i=0;i<samplesout;i++)
+		for(mrs_natural i=0;i<samplesout;++i)
 		{
 			arrx(count)=offStart+i*ratio;
 			count=count+1;
@@ -212,7 +210,7 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 		mrs_natural winlength=5;//maximum windowlength is also enforced by the window function
 		for (mrs_natural ansinks=0;ansinks<inSamples_;ansinks++)
 		{
-			for (int i=0;i<samplesout;i++)
+			for (int i=0;i<samplesout;++i)
 			{
 				if (abs(arrx(i)-ansinks)<winlength)
 				{
@@ -229,7 +227,7 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 			
 		}
 		
-		for (int i=0;i<samplesout;i++)
+		for (int i=0;i<samplesout;++i)
 		{
 			out(o,i)=arr(i);
 		}

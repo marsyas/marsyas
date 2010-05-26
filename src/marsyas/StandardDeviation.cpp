@@ -58,6 +58,7 @@ StandardDeviation::myUpdate(MarControlPtr sender)
 void
 StandardDeviation::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	//checkFlow(in,out);
 	out.setval(0.0);
 	for (o=0; o < inObservations_; o++)

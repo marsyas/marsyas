@@ -78,6 +78,7 @@ NoiseGate::myUpdate(MarControlPtr sender)
 void 
 NoiseGate::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
   //checkFlow(in,out);
   
   mrs_real thresh = getctrl("mrs_real/thresh")->to<mrs_real>();

@@ -26,7 +26,7 @@ using namespace Marsyas;
 
 marosvg::SVGObj_::SVGObj_(SVGObj_* p, std::string t, std::string n)
 {
-	parent_=p; t_=t; n_=n;
+	parent_=p; t=t; n_=n;
 	if(parent_!=NULL){
 		parent_->addChild(this);
 	}
@@ -50,7 +50,7 @@ void
 marosvg::SVGObj_::sizeAdj()
 {
 	if (children_.size()>0) {
-		if(t_=="Series") {
+		if(t=="Series") {
 			int max_height=0;
 			int w=0;
 
@@ -65,7 +65,7 @@ marosvg::SVGObj_::sizeAdj()
 			h_ = max_height + 20 + 20;
 			w_ = w + 20;
 		}
-		else if (t_=="Fanout" || t_=="Parallel") {
+		else if (t=="Fanout" || t=="Parallel") {
 			int max_width=0;
 			int h=0;
 
@@ -94,7 +94,7 @@ marosvg::SVGObj_::posAdj(int x, int y)
 	int midY = (h_ >> 1) + y;
 	x+=20;
 	if (children_.size()>0) {
-		if (t_=="Series") {
+		if (t=="Series") {
 			for(int i=0; i < (int)children_.size(); ++i) {
 				SVGObj_* s=children_[i];
 				int sy = midY - (s->h_ >> 1);
@@ -102,7 +102,7 @@ marosvg::SVGObj_::posAdj(int x, int y)
 				x = x + s->w_ + 20;
 			}
 		}
-		else if (t_=="Fanout" || t_=="Parallel") {
+		else if (t=="Fanout" || t=="Parallel") {
 			y += 20;
 			for(int i=0; i < (int)children_.size(); ++i) {
 				SVGObj_* s=children_[i];
@@ -116,9 +116,9 @@ marosvg::SVGObj_::posAdj(int x, int y)
 std::string
 marosvg::SVGObj_::str()
 {
-	bool fanout=(t_=="Fanout");
-	bool parallel=(t_=="Parallel");
-	bool series=(t_=="Series");
+	bool fanout=(t=="Fanout");
+	bool parallel=(t=="Parallel");
+	bool series=(t=="Series");
 	std::ostringstream op;
 	op << "<rect ";
 	if (fanout) { op << "class=\"fanout\" "; }
@@ -130,7 +130,7 @@ marosvg::SVGObj_::str()
 	<< "\" height=\"" << h_
 	<< "\" />\n";//style=\"fill:rgb(230,230,255);stroke-width:1; stroke:rgb(0,0,0)\"/>\n";
 
-	op << "<text class=\"marsysid\" x=\"" << (x_+5) << "\" y=\"" << (y_+15) << "\">" << t_ << "/" << n_ << "</text>\n";
+	op << "<text class=\"marsysid\" x=\"" << (x_+5) << "\" y=\"" << (y_+15) << "\">" << t << "/" << n_ << "</text>\n";
 
 	int my = y_ + (h_ >> 1);
 	if (series) {

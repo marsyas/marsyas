@@ -213,7 +213,7 @@ class ExNode_IterMap : public ExNode//{{{
 		ExNode** new_xs=NULL;
 		if (len>0) {
 			new_xs=new ExNode*[len];
-			for (int i=0;i<len;i++) {
+			for (int i=0;i<len;++i) {
 				ExVal e=liszt.getSeqElem(i);
 				var->setValue(e);
 				ExVal v=exprs->eval();
@@ -235,7 +235,7 @@ class ExNode_IterIter : public ExNode//{{{
 		ExVal liszt=xs->getValue();
 		mrs_natural len=liszt.toNatural();
 		if (len>0) {
-			for (int i=0;i<len;i++) {
+			for (int i=0;i<len;++i) {
 				ExVal e=liszt.getSeqElem(i);
 				var->setValue(e);
 				ExVal v=exprs->eval();
@@ -257,7 +257,7 @@ class ExNode_IterFor : public ExNode//{{{
 		ExVal liszt=xs->eval();
 		mrs_natural len=liszt.toNatural();
 		if (len>0) {
-			for (int i=0;i<len;i++) {
+			for (int i=0;i<len;++i) {
 				ExVal e=liszt.getSeqElem(i);
 				var->setValue(e);
 				exprs->eval();
@@ -301,7 +301,7 @@ class ExNode_StringMap : public ExNode//{{{
 		std::string result="";
 		mrs_natural len=(mrs_natural)str.length();
 		if (len>0) {
-			for (int i=0;i<len;i++) {
+			for (int i=0;i<len;++i) {
 				ExVal v=ExVal(((std::string)"")+str[i]);
 				var->setValue(v);
 				std::string r=(exprs->eval()).toString();
@@ -325,7 +325,7 @@ class ExNode_StringIter : public ExNode//{{{
 		std::string result="";
 		mrs_natural len=(mrs_natural)str.length();
 		if (len>0) {
-			for (int i=0;i<len;i++) {
+			for (int i=0;i<len;++i) {
 				ExVal v=ExVal(((std::string)"")+str[i]);
 				var->setValue(v);
 				result+=(exprs->eval()).toString();
@@ -349,7 +349,7 @@ class ExNode_StringFor : public ExNode//{{{
 		std::string result="";
 		mrs_natural len=(mrs_natural)str.length();
 		if (len>0) {
-			for (int i=0;i<len;i++) {
+			for (int i=0;i<len;++i) {
 				ExVal v=ExVal(((std::string)"")+str[i]);
 				var->setValue(v);
 				exprs->eval();

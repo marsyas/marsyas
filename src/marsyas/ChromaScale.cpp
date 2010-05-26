@@ -44,8 +44,7 @@ void ChromaScale::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(israte_, NOUPDATE);
 	ostringstream oss;
 
-	mrs_real tmpreal;
-	for(o=0; o<ctrl_onObservations_->to<mrs_natural>(); o++){
+	for(mrs_natural o=0; o<ctrl_onObservations_->to<mrs_natural>(); o++){
 		oss << "ChromaScale_" << o << ",";
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
@@ -58,7 +57,7 @@ ChromaScale::myProcess(realvec& in, realvec& out)
   mrs_real s, s12;
   
   if(inSamples_ > 0){
-    for(i=0; i<inSamples_; i++){
+    for(i=0; i<inSamples_; ++i){
       for(j=0; j<6; j++){
 	out(j,i) = 0.0;
       }

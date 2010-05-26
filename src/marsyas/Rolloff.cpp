@@ -71,6 +71,7 @@ Rolloff::myUpdate(MarControlPtr sender)
 void 
 Rolloff::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// computer rolloff of observations for each time sample 
 	for (t = 0; t < inSamples_; t++)
 	{

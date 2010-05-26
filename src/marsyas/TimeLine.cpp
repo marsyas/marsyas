@@ -63,13 +63,13 @@ TimeLine::regular(mrs_natural spacing, mrs_natural size, mrs_natural lineSize)
 	else
 		numRegions_ = (size_ / spacing);
 
-	for (i=0; i < numRegions_; i++)
+	for (i=0; i < numRegions_; ++i)
 	{
 		TimeRegion region;
 		regions_.push_back(region);
 	}
 
-	for (i=0; i<size_; i++)
+	for (i=0; i<size_; ++i)
 	{
 		if ((i % spacing) == 0)
 		{
@@ -97,7 +97,7 @@ TimeLine::segment(realvec segmentation, mrs_natural lineSize)
 	}
 
 	size_ = segmentation.getSize();
-	for (i=0; i<size_; i++)
+	for (i=0; i<size_; ++i)
 	{
 		if (segmentation(i) == 1)
 			peakCount++;
@@ -106,14 +106,14 @@ TimeLine::segment(realvec segmentation, mrs_natural lineSize)
 	numRegions_ = peakCount-1; //[?]
 	lineSize_ = lineSize;
 
-	for (i=0; i < numRegions_; i++)
+	for (i=0; i < numRegions_; ++i)
 	{
 		TimeRegion region;
 		regions_.push_back(region);
 	}
 
 	mrs_natural reg_index = 0;
-	for (i=0; i<size_; i++)
+	for (i=0; i<size_; ++i)
 	{
 		if (segmentation(i) == 1) //[?]
 		{
@@ -230,7 +230,7 @@ TimeLine::smooth(mrs_natural smoothSize) //[?]
 	TimeRegion pregion;
 	TimeRegion nregion;
 
-	for (int i=1; i < numRegions_-1; i++)
+	for (int i=1; i < numRegions_-1; ++i)
 	{
 		region = regions_[i];
 		pregion = regions_[i-1];
@@ -248,7 +248,7 @@ TimeLine::smooth(mrs_natural smoothSize) //[?]
 		}
 	}
 
-	for (mrs_natural i=1; i < numRegions_; i++)
+	for (mrs_natural i=1; i < numRegions_; ++i)
 	{
 		region = regions_[i];
 		pregion = regions_[i-1];
@@ -285,7 +285,7 @@ mrs_natural
 TimeLine::sampleClass(mrs_natural index) const
 {
 	TimeRegion region;
-	for (mrs_natural i=0; i < numRegions_; i++)
+	for (mrs_natural i=0; i < numRegions_; ++i)
 	{
 		region = regions_[i];
 		if ((region.start <= index) && (index < region.end))
@@ -322,13 +322,13 @@ TimeLine::load(mrs_string filename)
 	MRSDIAG("TimeLine::load() - Size is " << size_);
 
 	regions_.clear();
-	for (mrs_natural i=0; i < numRegions_; i++)
+	for (mrs_natural i=0; i < numRegions_; ++i)
 	{
 		TimeRegion region;
 		regions_.push_back(region);
 	}
 
-	for (mrs_natural i=0; i<numRegions_; i++)
+	for (mrs_natural i=0; i<numRegions_; ++i)
 	{
 		mrs_natural token;
 		mrs_string stoken1, stoken2;
@@ -356,7 +356,7 @@ TimeLine::info() const
 	MRSMSG("Line size  = " << lineSize_ << endl);
 	MRSMSG("TimeLine size (# line size blocks ) = " << size_ << endl);
 
-	for (i=0; i < numRegions_; i++)
+	for (i=0; i < numRegions_; ++i)
 	{
 		MRSMSG("--------------------------------------------" << endl);
 		MRSMSG("Region " << i << " start    = " << regions_[i].start << endl);
@@ -374,7 +374,7 @@ TimeLine::printnew(FILE *fp)
 	fprintf(fp, "%d\n", (int)lineSize_);
 	fprintf(fp, "%d\n", (int)size_);
 
-	for (i=0; i<numRegions_; i++)
+	for (i=0; i<numRegions_; ++i)
 	{
 		// convert to milliseconds 
 		float smsec;
@@ -406,7 +406,7 @@ Marsyas::operator<<(ostream& o, const TimeLine& tline)
 	o << tline.lineSize_ << endl;
 	o << tline.size_ << endl;
 
-	for (mrs_natural i=0; i<tline.numRegions_; i++)
+	for (mrs_natural i=0; i<tline.numRegions_; ++i)
 	{
 		o << tline.regions_[i].start ;
 		o << " " << tline.regions_[i].classId;
@@ -424,7 +424,7 @@ TimeLine::print(FILE *fp)
 	fprintf(fp, "%d\n", (int)lineSize_);
 	fprintf(fp, "%d\n", (int)size_);
 
-	for (i=0; i<numRegions_; i++)
+	for (i=0; i<numRegions_; ++i)
 	{
 		fprintf(fp, "%d ", (int)regions_[i].start);
 		fprintf(fp, "%d ", (int)regions_[i].classId);
@@ -445,7 +445,7 @@ fprintf(fp, "%d\n", num_of_regions_);
 fprintf(fp, "%d\n", skip_size_);
 fprintf(fp, "%d\n", (int)(size_ * ratio));
 
-for (i=0; i<num_of_regions_; i++)
+for (i=0; i<num_of_regions_; ++i)
 {
 fprintf(fp, "%d ", (int)(region_[i].start *ratio));
 fprintf(fp, "%d ", region_[i].class_id);
@@ -468,7 +468,7 @@ fprintf(fp,"Segment\n");
 fprintf(fp,"#Number of features and number of different classes\n");
 fprintf(fp,"%d %d\n", num_of_regions_, 0);
 fprintf(fp, "#Names of features\n");
-for (i=0; i<num_of_regions_; i++)
+for (i=0; i<num_of_regions_; ++i)
 fprintf(fp,"f%d ", i);
 fprintf(fp,"\n\n");
 fprintf(fp,"#Name of classes\n");
@@ -480,7 +480,7 @@ fprintf(fp,"#Feature map data\n");
 fprintf(fp,"\n");
 
 
-for (i=0; i<num_of_regions_; i++)
+for (i=0; i<num_of_regions_; ++i)
 {
 fprintf(fp, "%f ", region_[i].end * ratio - region_[i].start *ratio );
 }
@@ -506,7 +506,7 @@ TimeLine::receive(Communicator* com)
 	com->receive_message(buf);
 	size_ = atoi(buf);
 
-	for (i=0; i < numRegions_; i++)
+	for (i=0; i < numRegions_; ++i)
 	{
 		com->receive_message(buf);      
 	}
@@ -531,7 +531,7 @@ TimeLine::send(Communicator* com)
 	message = buf;
 	com->send_message(message);
 
-	for (i=0; i<numRegions_; i++)
+	for (i=0; i<numRegions_; ++i)
 	{
 		sprintf(buf, "%d ", (int)regions_[i].start);
 		message = buf;
@@ -592,7 +592,7 @@ f3.norm(5.63, 2.71, 0.5, 0.2);
 
 int start;
 int end;
-for (i=0; i<num_of_regions_; i++)
+for (i=0; i<num_of_regions_; ++i)
 {
 start = region_[i].start;
 end = region_[i].end;

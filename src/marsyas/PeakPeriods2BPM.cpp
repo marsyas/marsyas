@@ -61,6 +61,7 @@ PeakPeriods2BPM::myUpdate(MarControlPtr sender)
 void 
 PeakPeriods2BPM::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
   //checkFlow(in,out);
 	factor_ = getctrl("mrs_real/factor")->to<mrs_real>();
     factor_ = 4.0;

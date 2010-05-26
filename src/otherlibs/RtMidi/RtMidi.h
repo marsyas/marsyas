@@ -49,16 +49,16 @@ class marsyas_EXPORT RtMidi
  public:
 
   //! Pure virtual openPort() function.
-  virtual void openPort( unsigned int portNumber = 0 ) = 0;
+  virtual void openPort( uint32_t portNumber = 0 ) = 0;
 
   //! Pure virtual openVirtualPort() function.
   virtual void openVirtualPort( const std::string portName = std::string( "RtMidi" ) ) = 0;
 
   //! Pure virtual getPortCount() function.
-  virtual unsigned int getPortCount() = 0;
+  virtual uint32_t getPortCount() = 0;
 
   //! Pure virtual getPortName() function.
-  virtual std::string getPortName( unsigned int portNumber = 0 ) = 0;
+  virtual std::string getPortName( uint32_t portNumber = 0 ) = 0;
 
   //! Pure virtual closePort() function.
   virtual void closePort( void ) = 0;
@@ -120,7 +120,7 @@ class marsyas_EXPORT RtMidiIn : public RtMidi
       An optional port number greater than 0 can be specified.
       Otherwise, the default or first port found is opened.
   */
-  void openPort( unsigned int portNumber = 0 );
+  void openPort( uint32_t portNumber = 0 );
 
   //! Create a virtual input port, with optional name, to allow software connections (OS X and ALSA only).
   /*!
@@ -151,20 +151,20 @@ class marsyas_EXPORT RtMidiIn : public RtMidi
   void closePort( void );
 
   //! Return the number of available MIDI input ports.
-  unsigned int getPortCount();
+  uint32_t getPortCount();
 
   //! Return a string identifier for the specified MIDI input port number.
   /*!
       An exception is thrown if an invalid port specifier is provided.
   */
-  std::string getPortName( unsigned int portNumber = 0 );
+  std::string getPortName( uint32_t portNumber = 0 );
 
   //! Set the maximum number of MIDI messages to be saved in the queue.
   /*!
       If the queue size limit is reached, incoming messages will be
       ignored.  The default limit is 1024.
   */
-  void setQueueSizeLimit( unsigned int queueSize );
+  void setQueueSizeLimit( uint32_t queueSize );
 
   //! Specify whether certain MIDI message types should be queued or ignored during input.
   /*!
@@ -201,7 +201,7 @@ class marsyas_EXPORT RtMidiIn : public RtMidi
   // the MIDI input handling function or thread.
   struct RtMidiInData {
     std::queue<MidiMessage> queue;
-    unsigned int queueLimit;
+    uint32_t queueLimit;
     unsigned char ignoreFlags;
     bool doInput;
     bool firstMessage;
@@ -257,7 +257,7 @@ class marsyas_EXPORT RtMidiOut : public RtMidi
       exception is thrown if an error occurs while attempting to make
       the port connection.
   */
-  void openPort( unsigned int portNumber = 0 );
+  void openPort( uint32_t portNumber = 0 );
 
   //! Close an open MIDI connection (if one exists).
   void closePort();
@@ -274,13 +274,13 @@ class marsyas_EXPORT RtMidiOut : public RtMidi
   void openVirtualPort( const std::string portName = std::string( "RtMidi Output" ) );
 
   //! Return the number of available MIDI output ports.
-  unsigned int getPortCount();
+  uint32_t getPortCount();
 
   //! Return a string identifier for the specified MIDI port type and number.
   /*!
       An exception is thrown if an invalid port specifier is provided.
   */
-  std::string getPortName( unsigned int portNumber = 0 );
+  std::string getPortName( uint32_t portNumber = 0 );
 
   //! Immediately send a single message out an open MIDI output port.
   /*!

@@ -191,12 +191,12 @@ NumericLib::determinant(realvec matrix)
 		return numeric_limits<mrs_real>::max();
 	}
 
-	for (i=0; i<=n; i++)
+	for (i=0; i<=n; ++i)
 		for (j=0; j<=n; j++)
 			A[i][j] = 0.0;
 
 	// define matrix A column by column
-	for (i=1; i<=n; i++)
+	for (i=1; i<=n; ++i)
 		for (j=1; j<=n; j++)
 			A[i][j] = (REAL)matrix(i-1, j-1);
 
@@ -216,7 +216,7 @@ NumericLib::determinant(realvec matrix)
 	//calculate determinant
 	det = id;
 	if (rc==0)  {
-		for (i=1; i<=n; i++)
+		for (i=1; i<=n; ++i)
 			det *= A[i][i];
 		return (mrs_real)det;
 	}
@@ -766,7 +766,7 @@ NumericLib::null(mrs_complex *p,mrs_complex *pred,mrs_natural *n,mrs_complex *ro
 
 	monic(p,n);          /* get monic polynom                     */
 
-	for (i=0;i<=*n;i++)  pred[i]=p[i];  /* original polynomial    */
+	for (i=0;i<=*n;++i)  pred[i]=p[i];  /* original polynomial    */
 	/* = deflated polynomial at beginning   */
 	/* of Muller                            */
 
@@ -831,7 +831,7 @@ NumericLib::poly_check(mrs_complex *pred,mrs_natural *nred,mrs_natural *n,mrs_co
 	i=0;                   /* reset variable for exponent               */
 	do {                   /* find roots at 0                           */
 		if (Cabs(pred[i])==0.) 
-			i++; 
+			++i; 
 		else 
 			notfound=NumLib_FALSE;
 	} while (i<=*n && notfound);
@@ -901,7 +901,7 @@ NumericLib::monic(mrs_complex *p,mrs_natural *n)
 
 	factor=1./Cabs(p[*n]);     /* factor = |1/pn|                 */
 	if ( factor!=1.)           /* get monic pol., when |pn| != 1  */
-		for (i=0;i<=*n;i++) 
+		for (i=0;i<=*n;++i) 
 			p[i]=RCmul(factor,p[i]);
 }
 
@@ -1297,7 +1297,7 @@ http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
    }
    d(0) = 0.0;
    e(0) = 0.0;
-   for (i = 0; i < m; i++)
+   for (i = 0; i < m; ++i)
    {
       l = i - 1;
       if (d(i))
@@ -1330,7 +1330,7 @@ NumericLib::tqli(realvec &d, realvec &e, mrs_natural m, realvec &z)
    mrs_natural n, l, iter, i, j, k;
    mrs_real s, r, p, g, f, dd, c, b, tmp;
    
-   for (i = 1; i < m; i++)
+   for (i = 1; i < m; ++i)
       e(i-1) = e(i);
    e(m-1) = 0.0;
    for (l = 0; l < m; l++)
@@ -1395,7 +1395,7 @@ NumericLib::tqli(realvec &d, realvec &e, mrs_natural m, realvec &z)
       
    }
    
-   for (i = 0; i < m-1; i++) {
+   for (i = 0; i < m-1; ++i) {
       k = i;
       tmp = d(i);
       for (j = i+1; j < m; j++) {
@@ -1441,14 +1441,14 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
            // place the k-th diagonal in s(k).
            // Compute 2-norm of k-th column without under/overflow.
            s(k) = 0;
-           for (i = k; i < m; i++) {
+           for (i = k; i < m; ++i) {
               s(k) = hypot(s(k),A(k*m+i));
            }
            if (s(k) != 0.0) {
               if (A(k*m+k) < 0.0) {
                  s(k) = -s(k);
               }
-              for (i = k; i < m; i++) {
+              for (i = k; i < m; ++i) {
                  A(k*m+i) /= s(k);
               }
               A(k*m+k) += 1.0;
@@ -1461,11 +1461,11 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
               // Apply the transformation.
               
               mrs_real t = 0;
-              for (i = k; i < m; i++) {
+              for (i = k; i < m; ++i) {
                  t += A(k*m+i)*A(j*m+i); 
               }
               t = -t/A(k*m+k);
-              for (i = k; i < m; i++) {
+              for (i = k; i < m; ++i) {
                  A(j*m+i) += t*A(k*m+i); 
               }
            }
@@ -1480,7 +1480,7 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
            // Place the transformation in U for subsequent back
            // multiplication.
            
-           for (i = k; i < m; i++) {
+           for (i = k; i < m; ++i) {
               U(k*m+i) = A(k*m+i);
            }
         }
@@ -1490,14 +1490,14 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
            // k-th super-diagonal in e(k).
            // Compute 2-norm without under/overflow.
            e(k) = 0;
-           for (i = k+1; i < n; i++) {
+           for (i = k+1; i < n; ++i) {
               e(k) = hypot(e(k),e(i));
            }
            if (e(k) != 0.0) {
               if (e(k+1) < 0.0) {
                  e(k) = -e(k);
               }
-              for (i = k+1; i < n; i++) {
+              for (i = k+1; i < n; ++i) {
                  e(i) /= e(k);
               }
               e(k+1) += 1.0;
@@ -1507,17 +1507,17 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
               
               // Apply the transformation.
               
-              for (i = k+1; i < m; i++) {
+              for (i = k+1; i < m; ++i) {
                  work(i) = 0.0;
               }
               for (j = k+1; j < n; j++) {
-                 for (i = k+1; i < m; i++) {
+                 for (i = k+1; i < m; ++i) {
                     work(i) += e(j)*A(j*m+i); 
                  }
               }
               for (j = k+1; j < n; j++) {
                  mrs_real t = -e(j)/e(k+1);
-                 for (i = k+1; i < m; i++) {
+                 for (i = k+1; i < m; ++i) {
                     A(j*m+i) += t*work(i);
                  }
               }
@@ -1527,7 +1527,7 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
               // Place the transformation in V for subsequent
               // back multiplication.
               
-              for (i = k+1; i < n; i++) {
+              for (i = k+1; i < n; ++i) {
                  V(k*n+i) = e(i);
               }
            }
@@ -1552,7 +1552,7 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
      
      if (wantu) {
         for (j = nct; j < nu; j++) {
-           for (i = 0; i < m; i++) {
+           for (i = 0; i < m; ++i) {
               U(j*m+i) = 0.0;
            }
            U(j*m+j) = 1.0;
@@ -1561,23 +1561,23 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
            if (s(k) != 0.0) {
               for (j = k+1; j < nu; j++) {
                  mrs_real t = 0;
-                 for (i = k; i < m; i++) {
+                 for (i = k; i < m; ++i) {
                     t += U(k*m+i)*U(j*m+i); 
                  }
                  t = -t/U(k*m+k); 
-                 for (i = k; i < m; i++) {
+                 for (i = k; i < m; ++i) {
                     U(j*m+i) += t*U(k*m+i);
                  }
               }
-              for (i = k; i < m; i++ ) {
+              for (i = k; i < m; ++i ) {
                  U(k*m+i) = -U(k*m+i);
               }
               U(k*m+k) = 1.0 + U(k*m+k);
-              for (i = 0; i < k-1; i++) {
+              for (i = 0; i < k-1; ++i) {
                  U(k*m+i) = 0.0;
               }
            } else {
-              for (i = 0; i < m; i++) {
+              for (i = 0; i < m; ++i) {
                  U(k*m+i) = 0.0;
               }
               U(k*m+k) = 1.0;
@@ -1592,16 +1592,16 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
            if ((k < nrt) & (e(k) != 0.0)) {
               for (j = k+1; j < nu; j++) {
                  mrs_real t = 0;
-                 for (i = k+1; i < n; i++) {
+                 for (i = k+1; i < n; ++i) {
                     t += V(k*n+i)*V(j*n+i); 
                  }
                  t = -t/V(k*n+(k+1)); 
-                 for (i = k+1; i < n; i++) {
+                 for (i = k+1; i < n; ++i) {
                     V(j*n+i) += t*V(k*n+i);
                  }
               }
            }
-           for (i = 0; i < n; i++) {
+           for (i = 0; i < n; ++i) {
               V(k*n+i) = 0.0;
            }
            V(k*n+k) = 1.0;
@@ -1684,7 +1684,7 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
                     e(j-1) = cs*e(j-1);
                  }
                  if (wantv) {
-                    for (i = 0; i < n; i++) {
+                    for (i = 0; i < n; ++i) {
                        t = cs*V(j*n+i) + sn*V((p-1)*n+i);
                        V((p-1)*n+i) = -sn*V(j*n+i) + cs*V((p-1)*n+i);
                        V(j*n+i) = t;                       
@@ -1707,7 +1707,7 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
                  f = -sn*e(j);
                  e(j) = cs*e(j);
                  if (wantu) {
-                    for (i = 0; i < m; i++) {
+                    for (i = 0; i < m; ++i) {
                        t = cs*U(j*m+i) + sn*U((k-1)*m+i);
                        U((k-1)*m+i) = -sn*U(j*m+i) + cs*U((k-1)*m+i);
                        U(j*m+i) = t;                         
@@ -1758,7 +1758,7 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
                  g = sn*s(j+1);
                  s(j+1) = cs*s(j+1);
                  if (wantv) {
-                    for (i = 0; i < n; i++) {
+                    for (i = 0; i < n; ++i) {
                        t = cs*V(j*n+i) + sn*V((j+1)*n+i);
                        V((j+1)*n+i) = -sn*V(j*n+i) + cs*V((j+1)*n+i);
                        V(j*n+i) = t;                         
@@ -1773,7 +1773,7 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
                  g = sn*e(j+1);
                  e(j+1) = cs*e(j+1);
                  if (wantu && (j < m-1)) {
-                    for (i = 0; i < m; i++) {
+                    for (i = 0; i < m; ++i) {
                        t = cs*U(j*m+i) + sn*U((j+1)*m+i);
                        U((j+1)*m+i) = -sn*U(j*m+i) + cs*U((j+1)*m+i);
                        U(j*m+i) = t;                       
@@ -1794,7 +1794,7 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
               if (s(k) <= 0.0) {
                  s(k) = (s(k) < 0.0 ? -s(k) : 0.0);
                  if (wantv) {
-                    for (i = 0; i <= pp; i++) {
+                    for (i = 0; i <= pp; ++i) {
                        V(k*n+i) = -V(k*n+i);
                     }
                  }
@@ -1810,12 +1810,12 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
                  s(k) = s(k+1);
                  s(k+1) = t;
                  if (wantv && (k < n-1)) {
-                    for (i = 0; i < n; i++) {
+                    for (i = 0; i < n; ++i) {
                        t = V((k+1)*n+i); V((k+1)*n+i) = V(k*n+i); V(k*n+i) = t;
                     }
                  }
                  if (wantu && (k < m-1)) {
-                    for (i = 0; i < m; i++) {
+                    for (i = 0; i < m; ++i) {
                        t = U((k+1)*m+i); U((k+1)*m+i) = U(k*m+i); U(k*m+i) = t;
                     }
                  }
@@ -1842,7 +1842,7 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 	//just do a plain euclidean computation
 	if(covMatrix.getSize() == 0)
 	{
-		for (mrs_natural r=0 ; r < Vi.getSize()  ; r++)
+		for (size_t r=0 ; r < Vi.getSize()  ; ++r)
 		{
 			res1 = Vi(r)-Vj(r);
 			res1 *= res1; //square
@@ -1854,7 +1854,7 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 	{
 		// do a standardized L2 euclidean distance 
 		//(i.e. just use the diagonal elements of covMatrix)
-		for (mrs_natural r=0 ; r < Vi.getSize()  ; r++)
+		for (size_t r=0 ; r < Vi.getSize()  ; ++r)
 		{
 			res1 = Vi(r)-Vj(r);
 			res1 *= res1; //square
@@ -1890,7 +1890,7 @@ NumericLib::cosineDistance(const realvec& Vi, const realvec& Vj, const realvec& 
 	mrs_real res2 = 0;
 	mrs_real res3 = 0;
 	mrs_real res = 0;
-	for (mrs_natural r=0 ; r < Vi.getSize()  ; r++)
+	for (size_t r=0 ; r < Vi.getSize()  ; ++r)
 	{
 		res1 += Vi(r)*Vj(r);
 		res2 += Vi(r)*Vi(r);
@@ -2198,7 +2198,7 @@ NumericLib::assignmentoptimal(mrs_natural *assignment, mrs_real *cost, mrs_real 
 			//		minValue = value;
 			//	distMatrixTemp += nOfRows;
 			//}
-			for (mrs_natural i=1; i< nOfColumns; i++){
+			for (mrs_natural i=1; i< nOfColumns; ++i){
 				value = *(distMatrixTemp++);
 				if (value < minValue)
 					minValue = value;
@@ -2212,7 +2212,7 @@ NumericLib::assignmentoptimal(mrs_natural *assignment, mrs_real *cost, mrs_real 
 			//	distMatrixTemp += nOfRows;
 			//}
 			distMatrixTemp = distMatrix + row*nOfColumns;
-			for (mrs_natural i=0; i< nOfColumns; i++)
+			for (mrs_natural i=0; i< nOfColumns; ++i)
 				*(distMatrixTemp++) -= minValue;
 
 		}
@@ -2257,7 +2257,7 @@ NumericLib::assignmentoptimal(mrs_natural *assignment, mrs_real *cost, mrs_real 
 			//	if(value < minValue)
 			//		minValue = value;
 			//}
-			for (mrs_natural i=1; i<nOfRows; i++){
+			for (mrs_natural i=1; i<nOfRows; ++i){
 				value = *(distMatrixTemp + nOfColumns*i);
 				if (value < minValue)
 					minValue = value;
@@ -2268,7 +2268,7 @@ NumericLib::assignmentoptimal(mrs_natural *assignment, mrs_real *cost, mrs_real 
 			//while(distMatrixTemp < columnEnd)
 			//	*distMatrixTemp++ -= minValue;
 			distMatrixTemp = distMatrix + col;
-			for (mrs_natural i=0; i<nOfRows; i++)
+			for (mrs_natural i=0; i<nOfRows; ++i)
 				*(distMatrixTemp + nOfColumns*i) -= minValue;
 
 		}
@@ -2383,7 +2383,7 @@ NumericLib::step2a(mrs_natural *assignment, mrs_real *distMatrix, bool *starMatr
 		//	}
 		//}	
 		starMatrixTemp = starMatrix + col;
-		for (mrs_natural i=0; i< nOfRows; i++){
+		for (mrs_natural i=0; i< nOfRows; ++i){
 			if (*(starMatrixTemp + nOfColumns*i)){
 				coveredColumns[col] = true;
 				break;

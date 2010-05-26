@@ -64,6 +64,7 @@ AccentFilterBank::myUpdate(MarControlPtr sender)
 void
 AccentFilterBank::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	const mrs_real& gainValueEXAMPLE = ctrl_gain_EXAMPLE_->to<mrs_real>();
 
 	for (o=0; o < inObservations_; o++)

@@ -21,28 +21,23 @@
 using namespace std;
 using namespace Marsyas;
 
-FM::FM(string name):MarSystem("FM",name)
+#define WAVETABLE_SIZE 8192
+
+// create the wavetable.
+FM::FM(string name)
+: MarSystem("FM",name),
+  wavetable_(WAVETABLE_SIZE),
+  wavetableSize_(WAVETABLE_SIZE)
 {
-  
-  //type_ = "FM";
-  //name_ = name;
-  
-  // create the wavetable.
-  wavetableSize_ = 8192;
-  wavetable_.create((mrs_natural)wavetableSize_);
-  
   mrs_real incr = TWOPI / wavetableSize_;
-  for (t=0; t < wavetableSize_; t++) {
+	
+  for (mrs_natural t=0; t < wavetableSize_; ++t) {
     wavetable_(t) = (mrs_real)(0.5 * sin(incr * t));
-    
-    
   }
   
-  mIndex_ = 0;
-  oIndex_ = 0;
-
+	mIndex_ = 0;
+	oIndex_ = 0;
 	addControls();
-
 }
 
 
@@ -95,6 +90,7 @@ void FM::myUpdate(MarControlPtr sender)
 void FM::myProcess( realvec& in, realvec& out ) 
 {
 	(void) in;
+	mrs_natural t;
   //checkFlow(in,out);
   
 

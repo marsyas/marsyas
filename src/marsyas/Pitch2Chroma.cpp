@@ -79,7 +79,7 @@ void Pitch2Chroma::UpdatePitchToNoteTransform()
 	mrs_real theLOGFc = LowestPitch_;
 	mrs_real theLOGFStep = pow(2.,1./(mrs_real)NotesPerOctave_);
 	mrs_real theLinFStep = SampleRate_/(2.f*(mrs_real)inObservations_);
-	for (int i=0; i<NrOfNotes_; i++)
+	for (int i=0; i<NrOfNotes_; ++i)
 	{
 		// Define begin and end frequency
 		mrs_real theLOGFb = theLOGFc/sqrt(theLOGFStep);
@@ -109,7 +109,7 @@ void Pitch2Chroma::UpdateNoteToChromaTransform()
 	// Define note to chroma transformation
 	NoteToChromaTransform_.create(NotesPerOctave_,NrOfNotes_);
 
-	for (int i=0; i<NotesPerOctave_; i++)
+	for (int i=0; i<NotesPerOctave_; ++i)
 		for (int j=i; j<NrOfNotes_; j+=NotesPerOctave_)
 		{
 			int theChromaIndex = (7*i+RefChromaIndex_-1)%NotesPerOctave_;
@@ -119,10 +119,11 @@ void Pitch2Chroma::UpdateNoteToChromaTransform()
 
 void Pitch2Chroma::myProcess(realvec& inVec, realvec& outVec)
 {
+	mrs_natural t,o;
 	outVec.setval(0.);
 	for(o=0; o<onObservations_; o++)
 		for(t=0; t<inSamples_; t++)
-			for(int i=0; i<NrOfNotes_; i++)
+			for(int i=0; i<NrOfNotes_; ++i)
 				for(int j=StartAndEndIndex_(i,0); j<=StartAndEndIndex_(i,1); j++)
 					outVec(o,t) += NoteToChromaTransform_(o,i)*
 						PitchToNoteTransform_(i,j)*inVec(j,t);

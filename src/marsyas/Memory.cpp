@@ -83,7 +83,7 @@ Memory::myUpdate(MarControlPtr sender)
 
 	ostringstream oss;
 	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	for (int i = 0; i < inObservations_; i++)
+	for (int i = 0; i < inObservations_; ++i)
 	{
 		string inObsName;
 		string temp;
@@ -99,6 +99,7 @@ Memory::myUpdate(MarControlPtr sender)
 void 
 Memory::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
 
 	if (reset_) 

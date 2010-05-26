@@ -46,7 +46,7 @@ private:
 	{
 		public:
 			int x_, y_, w_, h_;
-			std::string t_, n_;
+			std::string t, n_;
 			SVGObj_* parent_;
 			std::vector<SVGObj_*> children_;
 

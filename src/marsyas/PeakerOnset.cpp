@@ -26,7 +26,7 @@ PeakerOnset::PeakerOnset(string name):MarSystem("PeakerOnset", name)
 	addControls();
 
 	prevValue_ = 0.0;
-	t_ = 0;
+	t = 0;
 }
 
 PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
@@ -37,7 +37,7 @@ PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
 	ctrl_confidence_ = getctrl("mrs_real/confidence");
 
 	prevValue_ = a.prevValue_;
-	t_ = a.t_;
+	t = a.t;
 }
 
 PeakerOnset::~PeakerOnset()
@@ -179,12 +179,12 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
 
-	//t_++;
+	//t++;
 
-	//if(t_ == 0)
+	//if(t == 0)
 	//	MATLAB_PUT(in, "PeakerOnset_inWIN");
 	//MATLAB_PUT(in, "PeakerOnset_in");
-	//if(t_ <= 431)
+	//if(t <= 431)
 	//	MATLAB_EVAL("PK_TS2 = [PK_TS2 PeakerOnset_in]");
 	//MATLAB_EVAL("plot(PK_TS, 'r');");
 	//MATLAB_EVAL("plot(FluxTS); hold on; plot(PK_TS, 'r');");

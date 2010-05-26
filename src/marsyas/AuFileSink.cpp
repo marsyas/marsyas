@@ -200,7 +200,8 @@ AuFileSink::ByteSwapShort (unsigned short nValue)
 void 
 AuFileSink::putLinear16(realvec& slice)
 {
-  for (c=0; c < nChannels_; c++)
+  mrs_natural c,t;
+  for (c=0; c < nChannels_; ++c)
     for (t=0; t < inSamples_; t++)
     {
 			#if defined(MARSYAS_BIGENDIAN)
@@ -219,6 +220,7 @@ AuFileSink::putLinear16(realvec& slice)
 void 
 AuFileSink::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	//checkFlow(in,out);
   
   // copy input to output 

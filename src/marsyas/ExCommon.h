@@ -84,12 +84,12 @@ enum {
 * \param tp a marsyas type string, ie "mrs_string"
 * \return integer corresponding to the type as defined in the file ExCommon.h
 */
-unsigned int ex_string_to_typeid(std::string tp);
+uint32_t ex_string_to_typeid(std::string tp);
 /** \brief convert an ex type id to a marsyas type string
 * \param tp ex type id, see file ExCommon.h
 * \return marsyas type name corresponding to the input parameter
 */
-std::string ex_typeid_to_string(unsigned int tp);
+std::string ex_typeid_to_string(uint32_t tp);
 
 /** \brief convert a double to a string
 * \param d a double value to convert

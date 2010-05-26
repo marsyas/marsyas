@@ -50,6 +50,7 @@ Delta::addControls()
 void 
 Delta::myUpdate(MarControlPtr sender)
 {
+  mrs_natural o;
   (void)sender;
   absolute_ = ctrl_absolute_->to<mrs_bool>();
   sum_ = ctrl_sum_->to<mrs_bool>();
@@ -92,7 +93,7 @@ Delta::myProcess(realvec& in, realvec& out)
   mrs_natural i, j, k;
   if(inSamples_ > 0){
     for(j=0; j<onObservations_; j++){
-      for(i=0; i<onSamples_; i++){
+      for(i=0; i<onSamples_; ++i){
 	out(j,i) = 0.0;
       }
     }
@@ -100,7 +101,7 @@ Delta::myProcess(realvec& in, realvec& out)
     if(inSamples_ == 1){
       if(normalize_){
 	for(j=0; j<inObservations_; j++){
-	  for(i=0; i<size_-1; i++){
+	  for(i=0; i<size_-1; ++i){
 	    delta_(j,i) = delta_(j,i+1);
 	  }
 	}
@@ -117,7 +118,7 @@ Delta::myProcess(realvec& in, realvec& out)
 	delta_(j,0) = in(j,0);
       }
       for(j=0; j<inObservations_; j++){
-	for(i=1; i<inSamples_; i++){
+	for(i=1; i<inSamples_; ++i){
 	  delta_(j,i) = in(j,i)-in(j,i-1);
 	}
       }
@@ -125,7 +126,7 @@ Delta::myProcess(realvec& in, realvec& out)
     
     if(positive_){
       for(j=0; j<inObservations_; j++){
-	for(i=0; i<delta_.getCols(); i++){
+	for(i=0; i<delta_.getCols(); ++i){
 	  if(delta_(j,i) < 0){
 	    delta_(j,i) = 0.0;
 	  }
@@ -133,7 +134,7 @@ Delta::myProcess(realvec& in, realvec& out)
       }
     } else if(absolute_){
       for(j=0; j<inObservations_; j++){
-	for(i=0; i<delta_.getCols(); i++){
+	for(i=0; i<delta_.getCols(); ++i){
 	  if(delta_(j,i) < 0){
 	    delta_(j,i) = -delta_(j,i);
 	  }
@@ -150,11 +151,11 @@ Delta::myProcess(realvec& in, realvec& out)
     if(normalize_){
       if(inSamples_ == 1){
 	if(sum_){
-	  for(i=0; i<size_; i++){
+	  for(i=0; i<size_; ++i){
 	    normVec_(0,i) = 0.0;
 	  }
 	  for(j=0; j<inObservations_; j++){
-	    for(i=0; i<size_; i++){
+	    for(i=0; i<size_; ++i){
 	      normVec_(0,i) += delta_(j,i);
 	    }
 	  }
@@ -167,7 +168,7 @@ Delta::myProcess(realvec& in, realvec& out)
 	}
       } else {
 	for(k=0; k<size_/2; k++){
-	  for(i=size_/2-k; i<size_; i++){
+	  for(i=size_/2-k; i<size_; ++i){
 	    if(sum_){
 	      normVec_(0,i) = 0.0;
 	      for(j=0; j<inObservations_; j++){
@@ -185,7 +186,7 @@ Delta::myProcess(realvec& in, realvec& out)
 	  }
 	}
 	for(k=size_/2; k<inSamples_-size_/2; k++){
-	  for(i=0; i<size_; i++){
+	  for(i=0; i<size_; ++i){
 	    if(sum_){
 	      normVec_(0,i) = 0.0;
 	      for(j=0; j<inObservations_; j++){
@@ -203,7 +204,7 @@ Delta::myProcess(realvec& in, realvec& out)
 	  }
 	}
 	for(k=inSamples_-size_/2; k<inSamples_; k++){
-	  for(i=k-size_/2; i<inSamples_; i++){
+	  for(i=k-size_/2; i<inSamples_; ++i){
 	    if(sum_){
 	      normVec_(0,i+size_/2-k) = 0.0;
 	      for(j=0; j<inObservations_; j++){
@@ -220,13 +221,13 @@ Delta::myProcess(realvec& in, realvec& out)
     } else {
       if(sum_){
 	for(j=0; j<inObservations_; j++){
-	  for(i=0; i<inSamples_; i++){
+	  for(i=0; i<inSamples_; ++i){
 	    out(0,i) += delta_(j,i);
 	  }
 	}
       } else {
 	for(j=0; j<inObservations_; j++){
-	  for(i=0; i<inSamples_; i++){
+	  for(i=0; i<inSamples_; ++i){
 	    out(j,i) = delta_(j,i);
 	  }
 	}

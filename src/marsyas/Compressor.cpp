@@ -61,6 +61,7 @@ Compressor::myUpdate(MarControlPtr sender)
 void
 Compressor::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	for (o=0; o < inObservations_; o++)
 		for (t = 0; t < inSamples_; t++) {
 			if(in(o,t) > 0.0001) 

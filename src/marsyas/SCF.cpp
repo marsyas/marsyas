@@ -62,7 +62,7 @@ SCF::myUpdate(MarControlPtr sender)
 
 	//features names
 	ostringstream oss;
-	for (i = 0; i < nrBands_; i++)
+	for (i = 0; i < nrBands_; ++i)
 		oss << "SCF_" << i+1 << ",";
 	setctrl(ctrl_onObsNames_, oss.str());
 
@@ -71,13 +71,13 @@ SCF::myUpdate(MarControlPtr sender)
 	bandHiEdge_.create(nrBands_);
 
 	//nominal band edges (Hz) -> reference = 1kHz (MPEG7)
-	for(i = 0 ; i < nrBands_ + 1 ; i++)
+	for(i = 0 ; i < nrBands_ + 1 ; ++i)
 	{
 		// 1/4 octave resolution (MPEG7)
 		edge_(i)= 1000.0f * pow(2.0f, (0.25f * (i - 8))); 
 	}
 	// overlapped low and high band edges (Hz)
-	for (i = 0; i < nrBands_; i++)
+	for (i = 0; i < nrBands_; ++i)
 	{
 		bandLoEdge_(i) = edge_(i) * 0.95f; //band overlapping (MPEG7) 
 		bandHiEdge_(i) = edge_(i+1) * 1.05f; //band overlapping (MPEG7)
@@ -96,7 +96,7 @@ SCF::myUpdate(MarControlPtr sender)
 	//calculate FFT bin indexes for each band's edges
 	il_.resize(nrBands_);
 	ih_.resize(nrBands_);
-	for(i = 0; i < nrBands_; i++)
+	for(i = 0; i < nrBands_; ++i)
 	{
 		//round to nearest int (MPEG7)
 		il_[i] = (mrs_natural)(bandLoEdge_(i)/df_ + 0.5f); 
@@ -128,7 +128,7 @@ SCF::myProcess(realvec& in, realvec& out)
 	//MPEG7 defines a grouping mechanism for the frequency bands above 1KHz
 	//in order to reduce computational effort of the following calculation.
 	//For now such grouping mechanism is not implemented...
-	for(i = 0; i < nrValidBands_; i++)
+	for(i = 0; i < nrValidBands_; ++i)
 	{
 		aritMean = 0.0;
 		maxc = 0.0;
@@ -150,7 +150,7 @@ SCF::myProcess(realvec& in, realvec& out)
 
 	//for freq bands above the nyquist freq
 	//return SFM value defined in MPEG7 for silence
-	//for(i = nrValidBands_; i < nrBands_; i++)
+	//for(i = nrValidBands_; i < nrBands_; ++i)
 	//	out(i) = 1.0;
 }
 

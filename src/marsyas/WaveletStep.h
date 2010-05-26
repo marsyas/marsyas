@@ -39,7 +39,7 @@ class WaveletStep: public MarSystem
 {
 protected:
   int direction_;
-  unsigned int processSize_;
+  uint32_t processSize_;
   
 public:
   WaveletStep(std::string name);

@@ -95,7 +95,7 @@ CollectionFileSource::getHeader(string filename)
 	col_.clear();
 	col_.read(filename);
 	updctrl("mrs_string/allfilenames", col_.toLongString());
-	updctrl("mrs_natural/numFiles", col_.getSize());  
+	updctrl("mrs_natural/numFiles", (uint32_t)col_.getSize());  
 
 	cindex_ = 0;
 	setctrl("mrs_natural/cindex", 0);
@@ -152,7 +152,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 		setctrl("mrs_bool/shuffle", false);
 	}
 
-	if (cindex_ < col_.size()) 
+	if (cindex_ < (int)col_.size()) 
 	{
 		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));
 		isrc_->updctrl("mrs_natural/pos", 0);
@@ -192,7 +192,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 		setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())));
 		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);		
 
-		if (cindex_ + advance_ >= col_.size())
+		if (cindex_ + advance_ >= (int) col_.size())
 		{
 			setctrl("mrs_bool/hasData", false);
 			hasData_ = false;      
@@ -237,7 +237,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
 
- 		if (cindex_ > col_.size()-2)  
+ 		if (cindex_ > (int)col_.size()-2)  
  		{
 			setctrl("mrs_bool/hasData", false);
 			hasData_ = false;      
@@ -257,7 +257,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		if (!isrc_->getctrl("mrs_bool/hasData")->isTrue())
 		{
 			//check if there a following file ion the collection
-			if (cindex_ < col_.size() -1)
+			if (cindex_ < (int)col_.size() -1)
 			{
 				cindex_ = cindex_ + 1;
 				setctrl("mrs_natural/cindex", cindex_);

@@ -142,6 +142,7 @@ NormMaxMin::myProcess(realvec& in, realvec& out)
 
 void 
 NormMaxMin::do_observations(realvec& in, realvec& out) {
+  mrs_natural t,o;
   init_ = true;
   setctrl(initPtr_, init_);
   
@@ -230,8 +231,9 @@ NormMaxMin::do_observations(realvec& in, realvec& out) {
 
 
 void 
-NormMaxMin::do_samples(realvec& in, realvec& out) {
-
+NormMaxMin::do_samples(realvec& in, realvec& out) 
+{
+	mrs_natural o,t;
   init_ = true;
   setctrl(initPtr_, init_);
   
@@ -312,8 +314,10 @@ NormMaxMin::do_samples(realvec& in, realvec& out) {
 }
 
 void 
-NormMaxMin::do_slices(realvec& in, realvec& out) {
+NormMaxMin::do_slices(realvec& in, realvec& out) 
+{
 
+	mrs_natural o,t;
   maximums_(0) = -MAXREAL;
   minimums_(0) = MAXREAL;
 

@@ -123,7 +123,7 @@ ResampleBezier::interpolBezier(mrs_realvec px,mrs_real t)
 	mrs_realvec q;
 	q.create(n,n);
     
-    for (mrs_natural i=0;i<n;i++)
+    for (mrs_natural i=0;i<n;++i)
 	{
         q(i,0) = px(i);
 	}
@@ -132,7 +132,7 @@ ResampleBezier::interpolBezier(mrs_realvec px,mrs_real t)
 	//i - number of points
     for (mrs_natural j=1;j<n;j++)
 	{
-        for (mrs_natural i=0;i<n-j;i++)
+        for (mrs_natural i=0;i<n-j;++i)
 		{
             q(i,j) = (1 - t) * q(i,j - 1) + t * q(i + 1,j - 1);
 		}
@@ -157,7 +157,7 @@ ResampleBezier::myProcess(realvec& in, realvec& out)
 
 	mrs_realvec px;
 	px.create(inSamples_);
-	for(mrs_natural i=0;i<inSamples_;i++)
+	for(mrs_natural i=0;i<inSamples_;++i)
 	{
 		px(i)=i;
 	}
@@ -168,7 +168,7 @@ ResampleBezier::myProcess(realvec& in, realvec& out)
 
 	for (mrs_natural o=0;o<inObservations_;o++)
 	{
-		for (mrs_natural i=0;i<inSamples_;i++)
+		for (mrs_natural i=0;i<inSamples_;++i)
 		{
 
 			if (i!=inSamples_-1)
@@ -190,8 +190,6 @@ ResampleBezier::myProcess(realvec& in, realvec& out)
 		}
 	
 		/////////////////END of parameterization
-
-		mrs_natural bla=(mrs_natural)0;
 
 		mrs_natural foo=(mrs_natural)0;
 		mrs_natural bar=(mrs_natural)0;
@@ -281,7 +279,7 @@ ResampleBezier::myProcess(realvec& in, realvec& out)
 		mrs_realvec yp;
 		ix.create(4);
 		yp.create(4);
-		for(mrs_natural i=0;i<samplesout;i++)
+		for(mrs_natural i=0;i<samplesout;++i)
 		{
 			mrs_real ra=offStart+i*ratio;
 			while (index+1<ra)

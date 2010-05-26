@@ -29,7 +29,7 @@ BeatTimesSink::BeatTimesSink(string name):MarSystem("BeatTimesSink", name)
   ibiBPM_ = 0.0;
   ibiBPMSum_ = 0.0;
   beatCount_ = 0;
-  t_ = 0;
+  t = 0;
   inc_ = 0; //initial beat counting...
   nonCausal_ = true;
   lastIbi_ = 0.0;
@@ -127,7 +127,7 @@ BeatTimesSink::addMedianVector(mrs_real ibiBPM)
 	mrs_bool bigger = false;
 	mrs_realvec tmp(beatCount_);
 	//stretch median bpm vector if it reaches its limit
-	if(beatCount_ >= ibiBPMVec_.getSize())
+	if(beatCount_ >= (mrs_natural)ibiBPMVec_.getSize())
 		ibiBPMVec_.stretch(beatCount_);
 
 	for(mrs_natural j = 0; j < beatCount_-1; j++)
@@ -166,9 +166,9 @@ void
 BeatTimesSink::myProcess(realvec& in, realvec& out)
 {
 	//Frame (tick) counter: (updated from BeatReferee's next time frame -1)
-	t_ = ctrl_tickCount_->to<mrs_natural>()-1;
+	t = ctrl_tickCount_->to<mrs_natural>()-1;
 
-	//cout << "BSink: " << t_ << endl;
+	//cout << "BSink: " << t << endl;
 
 	//FlowThru input
 	out = in;
@@ -181,9 +181,9 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 			//For writing only beats after inc_ (to avoid writing first unconsistent beats)
 			if(beatCount_ >= inc_)
 			{
-				//Output BeatTime (in Seconds) = ((t_ (inFrames) * hopSize_) - adjustment) / srcFs_
+				//Output BeatTime (in Seconds) = ((t (inFrames) * hopSize_) - adjustment) / srcFs_
 				srcFs_ = ctrl_srcFs_->to<mrs_real>();
-				beatTime_ = ((t_ * hopSize_) - adjustment_) / srcFs_;
+				beatTime_ = ((t * hopSize_) - adjustment_) / srcFs_;
 
 				//cout << "Beat at: " << beatTime_ << " (s)" << endl;
 				
@@ -314,13 +314,13 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 	}
 	if(nonCausal_)
 	{
-		if(t_ == soundFileSize_-1) //[! -1 for acouting on time of timing reset on backtrace mode]
+		if(t == soundFileSize_-1) //[! -1 for acouting on time of timing reset on backtrace mode]
 		{
 			//if no beats detected [to avoid writing beatTimes output file]
 			if(bestFinalAgentHistory_(0) >= 0.0)
 			{
 				//reset beatCount, ibiBPMSum, and ibiBPMVec, from causal analysis
-				for(mrs_natural i = 0; i < beatCount_; i++)
+				for(mrs_natural i = 0; i < beatCount_; ++i)
 					ibiBPMVec_(i) = 0.0;
 				beatCount_ = 0;
 				ibiBPMSum_ = 0.0;
@@ -342,7 +342,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				}
 
 				//remaining beatTimes
-				for(int i = 1; i < bestFinalAgentHistory_.getCols(); i++)
+				for(int i = 1; i < bestFinalAgentHistory_.getCols(); ++i)
 				{
 					beatTime_ = ((bestFinalAgentHistory_(i) * hopSize_) - adjustment_) / srcFs_;
 					

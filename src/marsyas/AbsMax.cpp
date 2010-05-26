@@ -52,10 +52,11 @@ AbsMax::myUpdate(MarControlPtr sender)
 void
 AbsMax::myProcess(realvec& in, realvec& out)
 {
-	for (o=0; o < inObservations_; o++)
+	mrs_natural o,t;
+	for (o=0; o < inObservations_; ++o)
 	{
 		max_ = 0.0;
-		for (t=0; t < inSamples_; t++)
+		for (t=0; t < inSamples_; ++t)
 		{
 			if (fabs(in(o,t)) > max_)
 			{

@@ -70,8 +70,8 @@ BeatHistogramFromPeaks::myUpdate(MarControlPtr sender)
 void 
 BeatHistogramFromPeaks::myProcess(realvec& in, realvec& out)
 {
-	if (reset_) 
-    {
+	mrs_natural t,o;
+	if (reset_) {
 		out.setval(0.0);
 		reset_ = false;
 		setctrl("mrs_bool/reset", false);
@@ -79,9 +79,6 @@ BeatHistogramFromPeaks::myProcess(realvec& in, realvec& out)
 	
 	mrs_natural bin=0;
 	mrs_real amp;
-	mrs_real sum_amp;
-	mrs_real factor; 
-	mrs_natural index=0;
   
 	for (o=0; o < inObservations_; o++)
 		for (t = 0; t < inSamples_/2; t++)

@@ -62,7 +62,7 @@ private:
   int rtSrate_;
   int rtChannels_;
   int srate_;
-  int rtDevice_;
+  uint32_t rtDevice_;
 
   bool isInitialized_;
   bool stopped_;

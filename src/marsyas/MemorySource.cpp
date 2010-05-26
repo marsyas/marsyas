@@ -73,6 +73,7 @@ MemorySource::myUpdate(MarControlPtr sender)
 void 
 MemorySource::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
   //checkFlow(in,out);
 
   if( count_ < 1 + (samplesToUse_ -1) / onSamples_ ){

@@ -52,6 +52,7 @@ Square::myUpdate(MarControlPtr sender)
 void
 Square::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	for (o=0; o < inObservations_; o++)
 	{
 		for (t = 0; t < inSamples_; t++)

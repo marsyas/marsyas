@@ -62,6 +62,7 @@ Plucked::addControls()
 void
 Plucked::myUpdate(MarControlPtr sender)
 {
+	mrs_natural t;
   MRSDIAG("Plucked.cpp - Plucked:localuUpdate");
   
   MarSystem::myUpdate(sender);
@@ -131,7 +132,7 @@ Plucked::myProcess(realvec &in, realvec &out)
   
   if (noteon_ > 0)
     {
-      for (t = 0; t < inSamples_; t++)
+      for (mrs_natural t = 0; t < inSamples_; t++)
 	{
 	  // wp holds the current sample
 	  // wpp holds the previous sample

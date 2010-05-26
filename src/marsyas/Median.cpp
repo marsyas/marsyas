@@ -63,7 +63,7 @@ Median::myUpdate(MarControlPtr sender)
 
   ostringstream oss;
   string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-  for (int i = 0; i < inObservations_; i++)
+  for (int i = 0; i < inObservations_; ++i)
 	{
 	  string inObsName;
 	  string temp;
@@ -78,6 +78,7 @@ Median::myUpdate(MarControlPtr sender)
 void
 Median::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	out.setval(0.0);
 	for (o=0; o < inObservations_; o++) {
 	  for (t = 0; t < inSamples_; t++) {

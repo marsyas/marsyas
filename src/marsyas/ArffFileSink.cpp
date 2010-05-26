@@ -136,9 +136,9 @@ ArffFileSink::writeArffHeader()
 	vector<mrs_string> attributeNames = stringSplit(onObsNames, ",");
 	const mrs_natural onObservations = ctrl_onObservations_->to<mrs_natural>();
 	// Print the observation names, if available.
-	for (mrs_natural i = 0; i < onObservations; i++)
+	for (mrs_natural i = 0; i < onObservations; ++i)
 	{
-		if (i < attributeNames.size() && !attributeNames[i].empty())
+		if (i < (mrs_natural)attributeNames.size() && !attributeNames[i].empty())
 		{
 			(*os_ ) << "@attribute " << attributeNames[i] << " real" << endl;
 		}
@@ -155,6 +155,7 @@ ArffFileSink::writeArffHeader()
 void
 ArffFileSink::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// Make sure we can write to the output stream.
 	prepareOutput();
 

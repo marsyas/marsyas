@@ -125,7 +125,7 @@ void
 TmTimer::updtimer(std::vector<TmParam> params)
 {
 	vector<TmParam>::const_iterator tvi;
-  for(tvi=params.begin(); tvi!=params.end(); tvi++) {
+  for(tvi=params.begin(); tvi!=params.end(); ++tvi) {
 		TmParam p = *tvi;
 		updtimer(p);
 	}

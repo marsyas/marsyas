@@ -78,7 +78,7 @@ SNR::myProcess(realvec& in, realvec& out)
 
 //  const mrs_string& mode = ctrl_mode_->to<mrs_string>();
 
-  for (t = 0; t < inSamples_; t++)
+  for (mrs_natural t = 0; t < inSamples_; t++)
     {
       nsum_ += (in(0,t) * in(0,t));
       nbsum_ += (in(1,t) * in(1,t));

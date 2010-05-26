@@ -156,13 +156,15 @@ SeneffEar::myUpdate(MarControlPtr sender)
     b(2) = 1.0f;
     polyConv(a, b, c);
     SeneffPreemphasisCoeffs.create(c.getSize());
-    for (mrs_natural i = 0; i < c.getSize(); i++) SeneffPreemphasisCoeffs(i) = c(c.getSize() - i - 1);
+	  
+    for (size_t i = 0; i < c.getSize(); ++i)
+		SeneffPreemphasisCoeffs(i) = c(c.getSize() - i - 1);
 
     //SeneffFilterBank coefficients computation
     channels = FilterBankRThetaCoeffs.getRows();
     SeneffFilterBankCoeffs.create(channels, 5);
     mrs_real sum;
-    for (mrs_natural i = 0; i < channels; i++) {
+    for (uint32_t i = 0; i < channels; ++i) {
       SeneffFilterBankCoeffs(i,0) =	1.0f;
       SeneffFilterBankCoeffs(i,1) = -2.0f*FilterBankRThetaCoeffs(i,0)*cos(FilterBankRThetaCoeffs(i,1));
       SeneffFilterBankCoeffs(i,2) = FilterBankRThetaCoeffs(i,0)*FilterBankRThetaCoeffs(i,0);
@@ -181,12 +183,12 @@ SeneffEar::myUpdate(MarControlPtr sender)
       a(1) = -2.0f*FilterBankRThetaCoeffs(j,4)*cos(FilterBankRThetaCoeffs(j,3)/2);
       a(2) = 1.0f;
       polyConv(a, a, c);
-      for (mrs_natural i = 0; i < 5; i++) SeneffForwardCoeffs(i,j) = c(5 - i - 1);
+      for (mrs_natural i = 0; i < 5; ++i) SeneffForwardCoeffs(i,j) = c(5 - i - 1);
       b(0) = FilterBankRThetaCoeffs(j,2)*FilterBankRThetaCoeffs(j,2);
       b(1) = -2.0f*FilterBankRThetaCoeffs(j,2)*cos(FilterBankRThetaCoeffs(j,3));
       b(2) = 1.0f;
       polyConv(b, b, c);
-      for (mrs_natural i = 0; i < 5; i++) SeneffBackwardCoeffs(i,j) = c(5 - i - 1);
+      for (mrs_natural i = 0; i < 5; ++i) SeneffBackwardCoeffs(i,j) = c(5 - i - 1);
     }
 
     //SeneffPreemphasis filter creation and coefficients initialization
@@ -201,7 +203,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     Filter* filter;
     a.create(3);
     b.create(3);
-    for (mrs_natural i = 0; i < channels; i++) {
+    for (mrs_natural i = 0; i < channels; ++i) {
       name.clear();
       name.str("");
       name << "filter_" << i;
@@ -221,7 +223,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     resonatorFilter = new Parallel("resonatorFilter");
     a.create(5);
     b.create(5);
-    for (mrs_natural i = 0; i < channels; i++) {
+    for (mrs_natural i = 0; i < channels; ++i) {
       name.clear();
       name.str("");
       name << "filter_" << i;
@@ -255,7 +257,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     //Finally through each of the resonator filters
     y.create(y1.getRows(), y1.getCols());
     resonatorFilter->setctrl("Filter/filter_0/mrs_natural/inSamples", y1.getCols());
-    for (mrs_natural i = 0; i < channels; i++) {
+    for (mrs_natural i = 0; i < channels; ++i) {
       name.clear();
       name.str("");
       name << "Filter/" << "filter_" << i << "/mrs_natural/inObservations";
@@ -272,7 +274,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     SeneffPreemphasisFilter->setctrl("mrs_natural/stateUpdate", mrs_natural(0));
 
     state.create(SeneffFilterBank->getctrl("Filter/filter_0/mrs_realvec/state")->to<mrs_realvec>().getRows(),SeneffFilterBank->getctrl("Filter/filter_0/mrs_realvec/state")->to<mrs_realvec>().getCols());
-    for (mrs_natural i = 0; i < channels; i++) {
+    for (mrs_natural i = 0; i < channels; ++i) {
       name.clear();
       name.str("");
       name << "Filter/" << "filter_" << i << "/mrs_natural/stateUpdate";
@@ -288,7 +290,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     }
 
     state.create(resonatorFilter->getctrl("Filter/filter_0/mrs_realvec/state")->to<mrs_realvec>().getRows(),resonatorFilter->getctrl("Filter/filter_0/mrs_realvec/state")->to<mrs_realvec>().getCols());
-    for (mrs_natural i = 0; i < channels; i++) {
+    for (mrs_natural i = 0; i < channels; ++i) {
       name.clear();
       name.str("");
       name << "Filter/" << "filter_" << i << "/mrs_natural/stateUpdate";
@@ -356,7 +358,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     mrs_real gain;
     mrs_real rolloff;
     SeneffForwardCoeffsNormalized.create(SeneffForwardCoeffs.getRows(), SeneffForwardCoeffs.getCols());
-    for (mrs_natural i = 0; i < channels; i++) {
+    for (mrs_natural i = 0; i < channels; ++i) {
       for (mrs_natural j = 0; j < Y.getCols(); j++) Y(j) = y(i,j);
       fft.rfft(Yd, Y.getCols()/2, FFT_FORWARD);
       maxAbs2 = Y(0)*Y(0);
@@ -367,7 +369,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     }
     //then update the resonatorFilter
     realvec b(5);
-    for (mrs_natural i = 0; i < channels; i++) {
+    for (mrs_natural i = 0; i < channels; ++i) {
       name.clear();
       name.str("");
       name << "Filter/" << "filter_" << i << "/mrs_realvec/ncoeffs";
@@ -386,7 +388,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
   SeneffPreemphasisFilter->setctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
   SeneffPreemphasisFilter->setctrl("mrs_real/israte", getctrl("mrs_real/israte"));
   SeneffPreemphasisFilter->update();
-  if (slice_0.getSize() != SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>() * SeneffPreemphasisFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) {
+  if ((int)slice_0.getSize() != SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>() * SeneffPreemphasisFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) {
     slice_0.create(SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), SeneffPreemphasisFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   }
 
@@ -395,13 +397,13 @@ SeneffEar::myUpdate(MarControlPtr sender)
   SeneffFilterBank->setctrl("Filter/filter_0/mrs_natural/inObservations", SeneffPreemphasisFilter->getctrl("mrs_natural/onObservations"));
   SeneffFilterBank->setctrl("Filter/filter_0/mrs_real/israte", SeneffPreemphasisFilter->getctrl("mrs_real/osrate"));
   SeneffFilterBank->update();
-  if (slice_1.getSize() != SeneffFilterBank->getctrl("mrs_natural/onObservations")->to<mrs_natural>() * SeneffFilterBank->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) {
+  if ((int)slice_1.getSize() != SeneffFilterBank->getctrl("mrs_natural/onObservations")->to<mrs_natural>() * SeneffFilterBank->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) {
     slice_1.create(SeneffFilterBank->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), SeneffFilterBank->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   }
 
   //resonatorFilter update
   resonatorFilter->setctrl("Filter/filter_0/mrs_natural/inSamples", SeneffFilterBank->getctrl("mrs_natural/onSamples"));
-  for (mrs_natural i = 0; i < channels; i++) {
+  for (mrs_natural i = 0; i < channels; ++i) {
     name.clear();
     name.str("");
     name << "Filter/" << "filter_" << i << "/mrs_natural/inObservations";
@@ -409,7 +411,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
   }
   resonatorFilter->setctrl("Filter/filter_0/mrs_real/israte", SeneffFilterBank->getctrl("mrs_real/osrate"));
   resonatorFilter->update();
-  if (slice_2.getSize() != resonatorFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>() * resonatorFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) {
+  if ((int)slice_2.getSize() != resonatorFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>() * resonatorFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) {
     slice_2.create(resonatorFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), resonatorFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   }
 
@@ -418,7 +420,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
   lowPassFilter->setctrl("mrs_natural/inObservations", resonatorFilter->getctrl("mrs_natural/onObservations"));
   lowPassFilter->setctrl("mrs_real/israte", resonatorFilter->getctrl("mrs_real/osrate"));
   lowPassFilter->update();
-  if (slice_3.getSize() != lowPassFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>() * lowPassFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) {
+  if ((int)slice_3.getSize() != lowPassFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>() * lowPassFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) {
     slice_3.create(lowPassFilter->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), lowPassFilter->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   }
 
@@ -446,11 +448,11 @@ SeneffEar::polyConv(realvec& a, realvec& b, realvec& c)
   realvec tc;    tc.create(n);
 
   for (mrs_natural k = 0; k < n; k++){
-    for (mrs_natural i = 0; i <= k; i++){
+    for (mrs_natural i = 0; i <= k; ++i){
       tc(k) += ta(i)*tb(k-i);
     }
   }
-  if (c.getSize() != n) c.create(n);
+  if ((mrs_natural)c.getSize() != n) c.create(n);
   c = tc;
 }
 
@@ -460,7 +462,7 @@ SeneffEar::polyFlip(realvec& a)
   mrs_natural la(a.getSize());
   realvec ta(a);
 
-  for (mrs_natural i = 0; i < la; i++){
+  for (mrs_natural i = 0; i < la; ++i){
     a(i) = ta(la - i - 1);
   }
 }
@@ -482,7 +484,7 @@ SeneffEar::myProcess(realvec& in, realvec& out)
   resonatorFilter->process(slice_1, slice_2);
   if (s++ == stage) {out = slice_2; return;}
   //Seneff's detector non-linearity
-  for (mrs_natural i = 0; i < slice_2.getRows(); i++) {
+  for (mrs_natural i = 0; i < slice_2.getRows(); ++i) {
     for (mrs_natural j = 0; j < slice_2.getCols(); j++) {
       slice_2(i,j) = hwrA*atan(hwrB*max((mrs_real)0.0,slice_2(i,j))) + exp(hwrA*hwrB*min((mrs_real)0.0,slice_2(i,j)));
     }
@@ -490,7 +492,7 @@ SeneffEar::myProcess(realvec& in, realvec& out)
   //Seneff's short-term adaptation (a reservoir hair cell model)
   mrs_real flow;
   for (mrs_natural j = 0; j < slice_2.getCols(); j++) {
-    for (mrs_natural i = 0; i < slice_2.getRows(); i++) {
+    for (mrs_natural i = 0; i < slice_2.getRows(); ++i) {
       flow = max((mrs_real)0.0,Tua*(slice_2(i,j)-Cn(i)));
       Cn(i) = Cn(i) + flow - Tub*Cn(i);
       slice_2(i,j) = flow;
@@ -502,7 +504,7 @@ SeneffEar::myProcess(realvec& in, realvec& out)
   if (s++ == stage) {out = slice_3; return;}
   //Seneff's Adaptive Gain Control
   AGCfilter->process(slice_3, out);
-  for (mrs_natural i = 0; i < out.getRows(); i++) {
+  for (mrs_natural i = 0; i < out.getRows(); ++i) {
     for (mrs_natural j = 0; j < out.getCols(); j++) {
       out(i,j) = slice_3(i,j)/(1.0f + kagc*out(i,j));
     }

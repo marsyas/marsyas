@@ -47,7 +47,7 @@ void info_flush()
 	fflush(stdout);
 }
 #else
-void info(char *fmt,...) {}
+void info(const char *fmt,...) {}
 void info_flush() {}
 #endif
 
@@ -271,7 +271,7 @@ Kernel::Kernel(int l, svm_node * const * x_, const svm_parameter& param)
 	if(kernel_type == RBF)
 	{
 		x_square = new double[l];
-		for(int i=0;i<l;i++)
+		for(int i=0;i<l;++i)
 			x_square[i] = dot(x[i],x[i]);
 	}
 	else
@@ -459,10 +459,10 @@ void Solver::reconstruct_gradient()
 	if(active_size == l) return;
 
 	int i;
-	for(i=active_size;i<l;i++)
+	for(i=active_size;i<l;++i)
 		G[i] = G_bar[i] + p[i];
 	
-	for(i=0;i<active_size;i++)
+	for(i=0;i<active_size;++i)
 		if(is_free(i))
 		{
 			const Qfloat *Q_i = Q->get_Q(i,l);
@@ -490,14 +490,14 @@ void Solver::Solve(int l, const QMatrix& Q, const double *p_, const schar *y_,
 	// initialize alpha_status
 	{
 		alpha_status = new char[l];
-		for(int i=0;i<l;i++)
+		for(int i=0;i<l;++i)
 			update_alpha_status(i);
 	}
 
 	// initialize active set (for shrinking)
 	{
 		active_set = new int[l];
-		for(int i=0;i<l;i++)
+		for(int i=0;i<l;++i)
 			active_set[i] = i;
 		active_size = l;
 	}
@@ -507,12 +507,12 @@ void Solver::Solve(int l, const QMatrix& Q, const double *p_, const schar *y_,
 		G = new double[l];
 		G_bar = new double[l];
 		int i;
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 		{
 			G[i] = p[i];
 			G_bar[i] = 0;
 		}
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 			if(!is_lower_bound(i))
 			{
 				const Qfloat *Q_i = Q.get_Q(i,l);
@@ -706,7 +706,7 @@ void Solver::Solve(int l, const QMatrix& Q, const double *p_, const schar *y_,
 	{
 		double v = 0;
 		int i;
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 			v += alpha[i] * (G[i] + p[i]);
 
 		si->obj = v/2;
@@ -714,13 +714,13 @@ void Solver::Solve(int l, const QMatrix& Q, const double *p_, const schar *y_,
 
 	// put back the solution
 	{
-		for(int i=0;i<l;i++)
+		for(int i=0;i<l;++i)
 			alpha_[active_set[i]] = alpha[i];
 	}
 
 	// juggle everything back
 	/*{
-		for(int i=0;i<l;i++)
+		for(int i=0;i<l;++i)
 			while(active_set[i] != i)
 				swap_index(i,active_set[i]);
 				// or Q.swap_index(i,active_set[i]);
@@ -867,7 +867,7 @@ void Solver::do_shrinking()
 	double Gmax2 = -INF;		// max { y_i * grad(f)_i | i in I_low(\alpha) }
 
 	// find maximal violating pair first
-	for(i=0;i<active_size;i++)
+	for(i=0;i<active_size;++i)
 	{
 		if(y[i]==+1)	
 		{
@@ -899,7 +899,7 @@ void Solver::do_shrinking()
 
 	// shrink
 
-	for(i=0;i<active_size;i++)
+	for(i=0;i<active_size;++i)
 		if (be_shrunken(i, Gmax1, Gmax2))
 		{
 			active_size--;
@@ -942,7 +942,7 @@ double Solver::calculate_rho()
 	double r;
 	int nr_free = 0;
 	double ub = INF, lb = -INF, sum_free = 0;
-	for(int i=0;i<active_size;i++)
+	for(int i=0;i<active_size;++i)
 	{
 		double yG = y[i]*G[i];
 
@@ -1141,7 +1141,7 @@ void Solver_NU::do_shrinking()
 
 	// find maximal violating pair first
 	int i;
-	for(i=0;i<active_size;i++)
+	for(i=0;i<active_size;++i)
 	{
 		if(!is_upper_bound(i))
 		{
@@ -1163,7 +1163,7 @@ void Solver_NU::do_shrinking()
 
 	// shrinking
 
-	for(i=0;i<active_size;i++)
+	for(i=0;i<active_size;++i)
 		if (be_shrunken(i, Gmax1, Gmax2, Gmax3, Gmax4))
 		{
 			active_size--;
@@ -1208,7 +1208,7 @@ double Solver_NU::calculate_rho()
 	double lb1 = -INF, lb2 = -INF;
 	double sum_free1 = 0, sum_free2 = 0;
 
-	for(int i=0;i<active_size;i++)
+	for(int i=0;i<active_size;++i)
 	{
 		if(y[i]==+1)
 		{
@@ -1263,7 +1263,7 @@ public:
 		clone(y,y_,prob.l);
 		cache = new Cache(prob.l,(long int)(param.cache_size*(1<<20)));
 		QD = new Qfloat[prob.l];
-		for(int i=0;i<prob.l;i++)
+		for(int i=0;i<prob.l;++i)
 			QD[i]= (Qfloat)(this->*kernel_function)(i,i);
 	}
 	
@@ -1312,7 +1312,7 @@ public:
 	{
 		cache = new Cache(prob.l,(long int)(param.cache_size*(1<<20)));
 		QD = new Qfloat[prob.l];
-		for(int i=0;i<prob.l;i++)
+		for(int i=0;i<prob.l;++i)
 			QD[i]= (Qfloat)(this->*kernel_function)(i,i);
 	}
 	
@@ -1438,7 +1438,7 @@ static void solve_c_svc(
 
 	int i;
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 	{
 		alpha[i] = 0;
 		minus_ones[i] = -1;
@@ -1450,13 +1450,13 @@ static void solve_c_svc(
 		alpha, Cp, Cn, param->eps, si, param->shrinking);
 
 	double sum_alpha=0;
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 		sum_alpha += alpha[i];
 
 	if (Cp==Cn)
 		info("nu = %f\n", sum_alpha/(Cp*prob->l));
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 		alpha[i] *= y[i];
 
 	delete[] minus_ones;
@@ -1473,7 +1473,7 @@ static void solve_nu_svc(
 
 	schar *y = new schar[l];
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 		if(prob->y[i]>0)
 			y[i] = +1;
 		else
@@ -1482,7 +1482,7 @@ static void solve_nu_svc(
 	double sum_pos = nu*l/2;
 	double sum_neg = nu*l/2;
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 		if(y[i] == +1)
 		{
 			alpha[i] = min(1.0,sum_pos);
@@ -1496,7 +1496,7 @@ static void solve_nu_svc(
 
 	double *zeros = new double[l];
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 		zeros[i] = 0;
 
 	Solver_NU s;
@@ -1506,7 +1506,7 @@ static void solve_nu_svc(
 
 	info("C = %f\n",1/r);
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 		alpha[i] *= y[i]/r;
 
 	si->rho /= r;
@@ -1529,14 +1529,14 @@ static void solve_one_class(
 
 	int n = (int)(param->nu*prob->l);	// # of alpha's at upper bound
 
-	for(i=0;i<n;i++)
+	for(i=0;i<n;++i)
 		alpha[i] = 1;
 	if(n<prob->l)
 		alpha[n] = param->nu * prob->l - n;
-	for(i=n+1;i<l;i++)
+	for(i=n+1;i<l;++i)
 		alpha[i] = 0;
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 	{
 		zeros[i] = 0;
 		ones[i] = 1;
@@ -1560,7 +1560,7 @@ static void solve_epsilon_svr(
 	schar *y = new schar[2*l];
 	int i;
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 	{
 		alpha2[i] = 0;
 		linear_term[i] = param->p - prob->y[i];
@@ -1576,7 +1576,7 @@ static void solve_epsilon_svr(
 		alpha2, param->C, param->C, param->eps, si, param->shrinking);
 
 	double sum_alpha = 0;
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 	{
 		alpha[i] = alpha2[i] - alpha2[i+l];
 		sum_alpha += fabs(alpha[i]);
@@ -1600,7 +1600,7 @@ static void solve_nu_svr(
 	int i;
 
 	double sum = C * param->nu * l / 2;
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 	{
 		alpha2[i] = alpha2[i+l] = min(sum,C);
 		sum -= alpha2[i];
@@ -1618,7 +1618,7 @@ static void solve_nu_svr(
 
 	info("epsilon = %f\n",-si->r);
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 		alpha[i] = alpha2[i] - alpha2[i+l];
 
 	delete[] alpha2;
@@ -1666,7 +1666,7 @@ decision_function svm_train_one(
 
 	int nSV = 0;
 	int nBSV = 0;
-	for(int i=0;i<prob->l;i++)
+	for(int i=0;i<prob->l;++i)
 	{
 		if(fabs(alpha[i]) > 0)
 		{
@@ -1724,7 +1724,7 @@ void sigmoid_train(
 	double prior1=0, prior0 = 0;
 	int i;
 
-	for (i=0;i<l;i++)
+	for (i=0;i<l;++i)
 		if (labels[i] > 0) prior1+=1;
 		else prior0+=1;
 	
@@ -1743,7 +1743,7 @@ void sigmoid_train(
 	A=0.0; B=log((prior0+1.0)/(prior1+1.0));
 	double fval = 0.0;
 
-	for (i=0;i<l;i++)
+	for (i=0;i<l;++i)
 	{
 		if (labels[i]>0) t[i]=hiTarget;
 		else t[i]=loTarget;
@@ -1759,7 +1759,7 @@ void sigmoid_train(
 		h11=sigma; // numerically ensures strict PD
 		h22=sigma;
 		h21=0.0;g1=0.0;g2=0.0;
-		for (i=0;i<l;i++)
+		for (i=0;i<l;++i)
 		{
 			fApB = dec_values[i]*A+B;
 			if (fApB >= 0)
@@ -1800,7 +1800,7 @@ void sigmoid_train(
 
 			// New function value
 			newf = 0.0;
-			for (i=0;i<l;i++)
+			for (i=0;i<l;++i)
 			{
 				fApB = dec_values[i]*newA+newB;
 				if (fApB >= 0)
@@ -1914,13 +1914,13 @@ void svm_binary_svc_probability(
 	double *dec_values = Malloc(double,prob->l);
 
 	// random shuffle
-	for(i=0;i<prob->l;i++) perm[i]=i;
-	for(i=0;i<prob->l;i++)
+	for(i=0;i<prob->l;++i) perm[i]=i;
+	for(i=0;i<prob->l;++i)
 	{
 		int j = i+rand()%(prob->l-i);
 		swap(perm[i],perm[j]);
 	}
-	for(i=0;i<nr_fold;i++)
+	for(i=0;i<nr_fold;++i)
 	{
 		int begin = i*prob->l/nr_fold;
 		int end = (i+1)*prob->l/nr_fold;
@@ -2002,7 +2002,7 @@ double svm_svr_probability(
 	svm_parameter newparam = *param;
 	newparam.probability = 0;
 	svm_cross_validation(prob,&newparam,nr_fold,ymv);
-	for(i=0;i<prob->l;i++)
+	for(i=0;i<prob->l;++i)
 	{
 		ymv[i]=prob->y[i]-ymv[i];
 		mae += fabs(ymv[i]);
@@ -2011,7 +2011,7 @@ double svm_svr_probability(
 	double std=sqrt(2*mae*mae);
 	int count=0;
 	mae=0;
-	for(i=0;i<prob->l;i++)
+	for(i=0;i<prob->l;++i)
 	        if (fabs(ymv[i]) > 5*std) 
                         count=count+1;
 		else 
@@ -2035,7 +2035,7 @@ void svm_group_classes(const svm_problem *prob, int *nr_class_ret, int **label_r
 	int *data_label = Malloc(int,l);	
 	int i;
 
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 	{
 		int this_label = (int)prob->y[i];
 		int j;
@@ -2064,15 +2064,15 @@ void svm_group_classes(const svm_problem *prob, int *nr_class_ret, int **label_r
 
 	int *start = Malloc(int,nr_class);
 	start[0] = 0;
-	for(i=1;i<nr_class;i++)
+	for(i=1;i<nr_class;++i)
 		start[i] = start[i-1]+count[i-1];
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 	{
 		perm[start[data_label[i]]] = i;
 		++start[data_label[i]];
 	}
 	start[0] = 0;
-	for(i=1;i<nr_class;i++)
+	for(i=1;i<nr_class;++i)
 		start[i] = start[i-1]+count[i-1];
 
 	*nr_class_ret = nr_class;
@@ -2116,13 +2116,13 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 
 		int nSV = 0;
 		int i;
-		for(i=0;i<prob->l;i++)
+		for(i=0;i<prob->l;++i)
 			if(fabs(f.alpha[i]) > 0) ++nSV;
 		model->l = nSV;
 		model->SV = Malloc(svm_node *,nSV);
 		model->sv_coef[0] = Malloc(double,nSV);
 		int j = 0;
-		for(i=0;i<prob->l;i++)
+		for(i=0;i<prob->l;++i)
 			if(fabs(f.alpha[i]) > 0)
 			{
 				model->SV[j] = prob->x[i];
@@ -2146,15 +2146,15 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 		svm_group_classes(prob,&nr_class,&label,&start,&count,perm);		
 		svm_node **x = Malloc(svm_node *,l);
 		int i;
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 			x[i] = prob->x[perm[i]];
 
 		// calculate weighted C
 
 		double *weighted_C = Malloc(double, nr_class);
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			weighted_C[i] = param->C;
-		for(i=0;i<param->nr_weight;i++)
+		for(i=0;i<param->nr_weight;++i)
 		{	
 			int j;
 			for(j=0;j<nr_class;j++)
@@ -2169,7 +2169,7 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 		// train k*(k-1)/2 models
 		
 		bool *nonzero = Malloc(bool,l);
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 			nonzero[i] = false;
 		decision_function *f = Malloc(decision_function,nr_class*(nr_class-1)/2);
 
@@ -2181,7 +2181,7 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 		}
 
 		int p = 0;
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			for(int j=i+1;j<nr_class;j++)
 			{
 				svm_problem sub_prob;
@@ -2222,18 +2222,18 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 		model->nr_class = nr_class;
 		
 		model->label = Malloc(int,nr_class);
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			model->label[i] = label[i];
 		
 		model->rho = Malloc(double,nr_class*(nr_class-1)/2);
-		for(i=0;i<nr_class*(nr_class-1)/2;i++)
+		for(i=0;i<nr_class*(nr_class-1)/2;++i)
 			model->rho[i] = f[i].rho;
 
 		if(param->probability)
 		{
 			model->probA = Malloc(double,nr_class*(nr_class-1)/2);
 			model->probB = Malloc(double,nr_class*(nr_class-1)/2);
-			for(i=0;i<nr_class*(nr_class-1)/2;i++)
+			for(i=0;i<nr_class*(nr_class-1)/2;++i)
 			{
 				model->probA[i] = probA[i];
 				model->probB[i] = probB[i];
@@ -2248,7 +2248,7 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 		int total_sv = 0;
 		int *nz_count = Malloc(int,nr_class);
 		model->nSV = Malloc(int,nr_class);
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 		{
 			int nSV = 0;
 			for(int j=0;j<count[i];j++)
@@ -2266,20 +2266,20 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 		model->l = total_sv;
 		model->SV = Malloc(svm_node *,total_sv);
 		p = 0;
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 			if(nonzero[i]) model->SV[p++] = x[i];
 
 		int *nz_start = Malloc(int,nr_class);
 		nz_start[0] = 0;
-		for(i=1;i<nr_class;i++)
+		for(i=1;i<nr_class;++i)
 			nz_start[i] = nz_start[i-1]+nz_count[i-1];
 
 		model->sv_coef = Malloc(double *,nr_class-1);
-		for(i=0;i<nr_class-1;i++)
+		for(i=0;i<nr_class-1;++i)
 			model->sv_coef[i] = Malloc(double,total_sv);
 
 		p = 0;
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			for(int j=i+1;j<nr_class;j++)
 			{
 				// classifier (i,j): coefficients with
@@ -2312,7 +2312,7 @@ svm_model *svm_train(const svm_problem *prob, const svm_parameter *param)
 		free(x);
 		free(weighted_C);
 		free(nonzero);
-		for(i=0;i<nr_class*(nr_class-1)/2;i++)
+		for(i=0;i<nr_class*(nr_class-1)/2;++i)
 			free(f[i].alpha);
 		free(f);
 		free(nz_count);
@@ -2344,25 +2344,25 @@ void svm_cross_validation(const svm_problem *prob, const svm_parameter *param, i
 		int *fold_count = Malloc(int,nr_fold);
 		int c;
 		int *index = Malloc(int,l);
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 			index[i]=perm[i];
-		for (c=0; c<nr_class; c++) 
-			for(i=0;i<count[c];i++)
+		for (c=0; c<nr_class; ++c) 
+			for(i=0;i<count[c];++i)
 			{
 				int j = i+rand()%(count[c]-i);
 				swap(index[start[c]+j],index[start[c]+i]);
 			}
-		for(i=0;i<nr_fold;i++)
+		for(i=0;i<nr_fold;++i)
 		{
 			fold_count[i] = 0;
-			for (c=0; c<nr_class;c++)
+			for (c=0; c<nr_class;++c)
 				fold_count[i]+=(i+1)*count[c]/nr_fold-i*count[c]/nr_fold;
 		}
 		fold_start[0]=0;
-		for (i=1;i<=nr_fold;i++)
+		for (i=1;i<=nr_fold;++i)
 			fold_start[i] = fold_start[i-1]+fold_count[i-1];
-		for (c=0; c<nr_class;c++)
-			for(i=0;i<nr_fold;i++)
+		for (c=0; c<nr_class;++c)
+			for(i=0;i<nr_fold;++i)
 			{
 				int begin = start[c]+i*count[c]/nr_fold;
 				int end = start[c]+(i+1)*count[c]/nr_fold;
@@ -2373,7 +2373,7 @@ void svm_cross_validation(const svm_problem *prob, const svm_parameter *param, i
 				}
 			}
 		fold_start[0]=0;
-		for (i=1;i<=nr_fold;i++)
+		for (i=1;i<=nr_fold;++i)
 			fold_start[i] = fold_start[i-1]+fold_count[i-1];
 		free(start);	
 		free(label);
@@ -2383,17 +2383,17 @@ void svm_cross_validation(const svm_problem *prob, const svm_parameter *param, i
 	}
 	else
 	{
-		for(i=0;i<l;i++) perm[i]=i;
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i) perm[i]=i;
+		for(i=0;i<l;++i)
 		{
 			int j = i+rand()%(l-i);
 			swap(perm[i],perm[j]);
 		}
-		for(i=0;i<=nr_fold;i++)
+		for(i=0;i<=nr_fold;++i)
 			fold_start[i]=i*l/nr_fold;
 	}
 
-	for(i=0;i<nr_fold;i++)
+	for(i=0;i<nr_fold;++i)
 	{
 		int begin = fold_start[i];
 		int end = fold_start[i+1];
@@ -2451,7 +2451,7 @@ int svm_get_nr_class(const svm_model *model)
 void svm_get_labels(const svm_model *model, int* label)
 {
 	if (model->label != NULL)
-		for(int i=0;i<model->nr_class;i++)
+		for(int i=0;i<model->nr_class;++i)
 			label[i] = model->label[i];
 }
 
@@ -2475,7 +2475,7 @@ void svm_predict_values(const svm_model *model, const svm_node *x, double* dec_v
 	{
 		double *sv_coef = model->sv_coef[0];
 		double sum = 0;
-		for(int i=0;i<model->l;i++)
+		for(int i=0;i<model->l;++i)
 			sum += sv_coef[i] * Kernel::k_function(x,model->SV[i],model->param);
 		sum -= model->rho[0];
 		*dec_values = sum;
@@ -2487,16 +2487,16 @@ void svm_predict_values(const svm_model *model, const svm_node *x, double* dec_v
 		int l = model->l;
 		
 		double *kvalue = Malloc(double,l);
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 			kvalue[i] = Kernel::k_function(x,model->SV[i],model->param);
 
 		int *start = Malloc(int,nr_class);
 		start[0] = 0;
-		for(i=1;i<nr_class;i++)
+		for(i=1;i<nr_class;++i)
 			start[i] = start[i-1]+model->nSV[i-1];
 
 		int p=0;
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			for(int j=i+1;j<nr_class;j++)
 			{
 				double sum = 0;
@@ -2561,10 +2561,10 @@ double svm_predict(const svm_model *model, const svm_node *x)
 		svm_predict_values(model, x, dec_values);
 
 		int *vote = Malloc(int,nr_class);
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			vote[i] = 0;
 		int pos=0;
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			for(int j=i+1;j<nr_class;j++)
 			{
 				if(dec_values[pos++] > 0)
@@ -2574,7 +2574,7 @@ double svm_predict(const svm_model *model, const svm_node *x)
 			}
 
 		int vote_max_idx = 0;
-		for(i=1;i<nr_class;i++)
+		for(i=1;i<nr_class;++i)
 			if(vote[i] > vote[vote_max_idx])
 				vote_max_idx = i;
 		free(vote);
@@ -2596,10 +2596,10 @@ double svm_predict_probability(
 
 		double min_prob=1e-7;
 		double **pairwise_prob=Malloc(double *,nr_class);
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			pairwise_prob[i]=Malloc(double,nr_class);
 		int k=0;
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			for(int j=i+1;j<nr_class;j++)
 			{
 				pairwise_prob[i][j]=min(max(sigmoid_predict(dec_values[k],model->probA[k],model->probB[k]),min_prob),1-min_prob);
@@ -2609,10 +2609,10 @@ double svm_predict_probability(
 		multiclass_probability(nr_class,pairwise_prob,prob_estimates);
 
 		int prob_max_idx = 0;
-		for(i=1;i<nr_class;i++)
+		for(i=1;i<nr_class;++i)
 			if(prob_estimates[i] > prob_estimates[prob_max_idx])
 				prob_max_idx = i;
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 			free(pairwise_prob[i]);
 		free(dec_values);
                 free(pairwise_prob);	     
@@ -2658,7 +2658,7 @@ int svm_save_model(const char *model_file_name, const svm_model *model)
 	
 	{
 		fprintf(fp, "rho");
-		for(int i=0;i<nr_class*(nr_class-1)/2;i++)
+		for(int i=0;i<nr_class*(nr_class-1)/2;++i)
 			fprintf(fp," %g",model->rho[i]);
 		fprintf(fp, "\n");
 	}
@@ -2666,7 +2666,7 @@ int svm_save_model(const char *model_file_name, const svm_model *model)
 	if(model->label)
 	{
 		fprintf(fp, "label");
-		for(int i=0;i<nr_class;i++)
+		for(int i=0;i<nr_class;++i)
 			fprintf(fp," %d",model->label[i]);
 		fprintf(fp, "\n");
 	}
@@ -2674,14 +2674,14 @@ int svm_save_model(const char *model_file_name, const svm_model *model)
 	if(model->probA) // regression has probA only
 	{
 		fprintf(fp, "probA");
-		for(int i=0;i<nr_class*(nr_class-1)/2;i++)
+		for(int i=0;i<nr_class*(nr_class-1)/2;++i)
 			fprintf(fp," %g",model->probA[i]);
 		fprintf(fp, "\n");
 	}
 	if(model->probB)
 	{
 		fprintf(fp, "probB");
-		for(int i=0;i<nr_class*(nr_class-1)/2;i++)
+		for(int i=0;i<nr_class*(nr_class-1)/2;++i)
 			fprintf(fp," %g",model->probB[i]);
 		fprintf(fp, "\n");
 	}
@@ -2689,7 +2689,7 @@ int svm_save_model(const char *model_file_name, const svm_model *model)
 	if(model->nSV)
 	{
 		fprintf(fp, "nr_sv");
-		for(int i=0;i<nr_class;i++)
+		for(int i=0;i<nr_class;++i)
 			fprintf(fp," %d",model->nSV[i]);
 		fprintf(fp, "\n");
 	}
@@ -2698,7 +2698,7 @@ int svm_save_model(const char *model_file_name, const svm_model *model)
 	const double * const *sv_coef = model->sv_coef;
 	const svm_node * const *SV = model->SV;
 
-	for(int i=0;i<l;i++)
+	for(int i=0;i<l;++i)
 	{
 		for(int j=0;j<nr_class-1;j++)
 			fprintf(fp, "%.16g ",sv_coef[j][i]);
@@ -2743,7 +2743,7 @@ svm_model *svm_load_model(const char *model_file_name)
 		{
 			fscanf(fp,"%80s",cmd);
 			int i;
-			for(i=0;svm_type_table[i];i++)
+			for(i=0;svm_type_table[i];++i)
 			{
 				if(strcmp(svm_type_table[i],cmd)==0)
 				{
@@ -2765,7 +2765,7 @@ svm_model *svm_load_model(const char *model_file_name)
 		{		
 			fscanf(fp,"%80s",cmd);
 			int i;
-			for(i=0;kernel_type_table[i];i++)
+			for(i=0;kernel_type_table[i];++i)
 			{
 				if(strcmp(kernel_type_table[i],cmd)==0)
 				{
@@ -2797,35 +2797,35 @@ svm_model *svm_load_model(const char *model_file_name)
 		{
 			int n = model->nr_class * (model->nr_class-1)/2;
 			model->rho = Malloc(double,n);
-			for(int i=0;i<n;i++)
+			for(int i=0;i<n;++i)
 				fscanf(fp,"%lf",&model->rho[i]);
 		}
 		else if(strcmp(cmd,"label")==0)
 		{
 			int n = model->nr_class;
 			model->label = Malloc(int,n);
-			for(int i=0;i<n;i++)
+			for(int i=0;i<n;++i)
 				fscanf(fp,"%d",&model->label[i]);
 		}
 		else if(strcmp(cmd,"probA")==0)
 		{
 			int n = model->nr_class * (model->nr_class-1)/2;
 			model->probA = Malloc(double,n);
-			for(int i=0;i<n;i++)
+			for(int i=0;i<n;++i)
 				fscanf(fp,"%lf",&model->probA[i]);
 		}
 		else if(strcmp(cmd,"probB")==0)
 		{
 			int n = model->nr_class * (model->nr_class-1)/2;
 			model->probB = Malloc(double,n);
-			for(int i=0;i<n;i++)
+			for(int i=0;i<n;++i)
 				fscanf(fp,"%lf",&model->probB[i]);
 		}
 		else if(strcmp(cmd,"nr_sv")==0)
 		{
 			int n = model->nr_class;
 			model->nSV = Malloc(int,n);
-			for(int i=0;i<n;i++)
+			for(int i=0;i<n;++i)
 				fscanf(fp,"%d",&model->nSV[i]);
 		}
 		else if(strcmp(cmd,"SV")==0)
@@ -2876,14 +2876,14 @@ out:
 	int l = model->l;
 	model->sv_coef = Malloc(double *,m);
 	int i;
-	for(i=0;i<m;i++)
+	for(i=0;i<m;++i)
 		model->sv_coef[i] = Malloc(double,l);
 	model->SV = Malloc(svm_node*,l);
 	svm_node *x_space=NULL;
 	if(l>0) x_space = Malloc(svm_node,elements);
 
 	int j=0;
-	for(i=0;i<l;i++)
+	for(i=0;i<l;++i)
 	{
 		model->SV[i] = &x_space[j];
 		for(int k=0;k<m;k++)
@@ -2912,7 +2912,7 @@ void svm_destroy_model(svm_model* model)
 {
 	if(model->free_sv && model->l > 0)
 		free((void *)(model->SV[0]));
-	for(int i=0;i<model->nr_class-1;i++)
+	for(int i=0;i<model->nr_class-1;++i)
 		free(model->sv_coef[i]);
 	free(model->SV);
 	free(model->sv_coef);
@@ -3003,7 +3003,7 @@ const char *svm_check_parameter(const svm_problem *prob, const svm_parameter *pa
 		int *count = Malloc(int,max_nr_class);
 
 		int i;
-		for(i=0;i<l;i++)
+		for(i=0;i<l;++i)
 		{
 			int this_label = (int)prob->y[i];
 			int j;
@@ -3027,7 +3027,7 @@ const char *svm_check_parameter(const svm_problem *prob, const svm_parameter *pa
 			}
 		}
 	
-		for(i=0;i<nr_class;i++)
+		for(i=0;i<nr_class;++i)
 		{
 			int n1 = count[i];
 			for(int j=i+1;j<nr_class;j++)

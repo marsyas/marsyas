@@ -81,7 +81,7 @@ PvOscBank::addControls()
 void
 PvOscBank::myUpdate(MarControlPtr sender)
 {
-	
+	mrs_natural t;
 	(void) sender;
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/winSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
@@ -177,7 +177,7 @@ PvOscBank::isPeak(int bin, mrs_realvec& magnitudes, mrs_real maxAmp)
 	int h = subband(bin);
 	h = 2;
 	if ((bin > 2) && (bin <= size_-2))
-		for (int i = bin-h; i < bin+h; i++)
+		for (int i = bin-h; i < bin+h; ++i)
 		{
 			if (magnitudes(bin) < magnitudes(i))
 				res = false;
@@ -195,7 +195,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 {
 
 	
-	
+	mrs_natural c,t;
 	MarControlAccessor acc(ctrl_frequencies_);
 	mrs_realvec& frequencies = acc.to<mrs_realvec>();
 	
@@ -225,22 +225,10 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		frequencies(t) =  in(2*t+1,0);
 	}
 	PS_ = P_;		
-
-	
-	
-
-	
 	Iinv_ = (mrs_real)(1.0 / I_);
 	Pinc_ = PS_ * L_ / TWOPI;
-	
-	
 	Nw_ = getctrl("mrs_natural/winSize")->to<mrs_natural>();
-
-	mrs_real omega_k;
-
 	mrs_real maxAmp =0.0;
-	
-
 
 	for (t=0; t < NP_; t++)
 	{
@@ -259,11 +247,8 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 			analysisphases(t) += TWOPI;
 		
 	}
-
-
-
-
-	for (int i=0; i < size_; i++) 
+	
+	for (int i=0; i < size_; ++i) 
 	{
 		regions(i) = i;
 	}
@@ -345,7 +330,6 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 			ainc_ = (magnitudes_(t) - a_)*Iinv_;
 		}
 		
-		mrs_real diff = (analysisphases(t) - analysisphases(regions(t))) * Pinc_;
 		if (t == regions(t))
 		{
 			address_ = index_(regions(t));
@@ -369,7 +353,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 			
 			// accumulate I samples from each oscillator 
 			// into output slice 
-			for (c=0; c < I_; c++)
+			for (c=0; c < I_; ++c)
 			{
 				naddress_ = (mrs_natural)address_;
 				temp_(c) += a_  * factor * table_(naddress_);

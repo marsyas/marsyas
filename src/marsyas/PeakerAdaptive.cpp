@@ -54,6 +54,7 @@ PeakerAdaptive::addControls()
 void 
 PeakerAdaptive::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	mrs_real peakSpacing;
 	mrs_real peakStrength;
 	mrs_real peakGain;

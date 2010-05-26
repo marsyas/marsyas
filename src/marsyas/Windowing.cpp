@@ -74,6 +74,7 @@ Windowing::addcontrols()
 void
 Windowing::myUpdate(MarControlPtr sender)
 {
+	mrs_natural t;
 	(void) sender;
 	mrs_string type = ctrl_type_->to<mrs_string>();
 
@@ -189,6 +190,7 @@ void
 Windowing::myProcess(realvec& in, realvec& out)
 {
 	out.setval(0);
+	mrs_natural o,t;
 
 	for (o=0; o < inObservations_; o++)
 	{

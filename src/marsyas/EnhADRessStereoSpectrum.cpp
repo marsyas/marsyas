@@ -68,6 +68,7 @@ EnhADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 void
 EnhADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	for(t=0; t < inSamples_; ++t)
 	{
 		for(o=0; o<N2_; ++o)

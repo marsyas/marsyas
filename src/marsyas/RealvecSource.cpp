@@ -84,6 +84,7 @@ RealvecSource::myUpdate(MarControlPtr sender)
 void 
 RealvecSource::myProcess(realvec& in, realvec& out)
 { 
+	mrs_natural o,t;
 	(void) in; 
 	//checkFlow(in,out);
 	const realvec& data = ctrl_data_->to<realvec> ();

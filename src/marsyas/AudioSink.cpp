@@ -242,7 +242,7 @@ AudioSink::localActivate(bool state)
 void 
 AudioSink::myProcess(realvec& in, realvec& out)
 {
-	
+	mrs_natural t,o;
 	// cout << "AudioSink::myProcess start" << endl;
 	// check MUTE
 	if(ctrl_mute_->isTrue())

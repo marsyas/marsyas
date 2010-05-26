@@ -40,13 +40,13 @@ Scheduler::~Scheduler()
 void
 Scheduler::tick()
 {
-	for (int i=0;i<timers_count_;i++) { timers_[i]->tick(); }
+	for (int i=0;i<timers_count_;++i) { timers_[i]->tick(); }
 }
 
 bool
 Scheduler::eventPending()
 {
-	for (int i=0;i<timers_count_;i++) {
+	for (int i=0;i<timers_count_;++i) {
 		if (timers_[i]->eventPending()) { return true; }
 	}
 	return false;
@@ -92,7 +92,7 @@ void
 Scheduler::split_cname(std::string cname, std::string* head, std::string* tail)
 {
 	bool second=false;
-	for (unsigned int i=0;i<cname.length();i++) {
+	for (uint32_t i=0;i<cname.length();++i) {
 		if (cname[i]=='/') {
 			if (!second) {
 //                scheduler_type = cname.substr(0,i);
@@ -159,7 +159,7 @@ Scheduler::appendTimer(TmTimer* s)
 TmTimer*
 Scheduler::findTimer(std::string name)
 {
-	for (int i=0;i<timers_count_;i++) {
+	for (int i=0;i<timers_count_;++i) {
 		TmTimer* s = timers_[i];
 		if (s->getPrefix()==name) {
 			return s;
@@ -171,7 +171,7 @@ Scheduler::findTimer(std::string name)
 bool
 Scheduler::removeTimer(std::string name)
 {
-	for (int i=0; i<timers_count_;i++) {
+	for (int i=0; i<timers_count_;++i) {
 		if (timers_[i]->getPrefix()==name) {
 			delete(timers_[i]);
 			for (int j=i+1;j<timers_count_;j++) {
@@ -189,7 +189,7 @@ void
 Scheduler::removeAll()
 {
 	if (timers_count_>0) {
-		for (int i=0;i<timers_count_;i++) {
+		for (int i=0;i<timers_count_;++i) {
 			delete timers_[i];
 		}
 		free(timers_);

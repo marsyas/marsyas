@@ -84,6 +84,7 @@ void PhiSEMSource::myUpdate(MarControlPtr sender) {
 }
 
 void PhiSEMSource::myProcess(realvec& /* in */, realvec& out) {
+	mrs_natural t,o;
 	for (o=0; o < inObservations_; o++ ) {
 		for ( t=0; t < inSamples_; t++ ) {
 			out(o,t) = computeSample();

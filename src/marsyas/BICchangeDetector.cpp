@@ -119,6 +119,7 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 void 
 BICchangeDetector::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// [!note!] if CX_ matrices are reused they need to be resized since
 	// they meanwhile were assigned to covariance matrices (10x10)
 	C1_.create(nfeats_, segFrames_);

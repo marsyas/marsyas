@@ -72,7 +72,7 @@ ERB::myUpdate(MarControlPtr sender)
     if (filterBank) delete filterBank;
     filterBank = new Fanout("filterBank");
     stringstream name;
-    for(mrs_natural i = 0; i < numChannels; i++){
+    for(mrs_natural i = 0; i < numChannels; ++i){
       name << "channel_" << i;
       Series* channel = new Series(name.str());
       name.str("");
@@ -110,7 +110,7 @@ ERB::myUpdate(MarControlPtr sender)
   minBW = 24.7f;
   order = 1;
   
-  for (mrs_natural i = 0; i < numChannels; i++){
+  for (mrs_natural i = 0; i < numChannels; ++i){
     centerFreqs(i) = - (EarQ*minBW) + exp((i+1)*(-log(highFreq+EarQ*minBW) + log(lowFreq+EarQ*minBW))/numChannels)*(highFreq + EarQ*minBW);
   }
   
@@ -118,7 +118,7 @@ ERB::myUpdate(MarControlPtr sender)
   A2 = 0.0f;
   B0 = 1.0f;
   
-  for (mrs_natural i = 0; i < numChannels; i++){
+  for (mrs_natural i = 0; i < numChannels; ++i){
     fcoefs(i,0) = A0;
     fcoefs(i,1) = A11(centerFreqs(i), B(E(centerFreqs(i))));
     fcoefs(i,2) = A12(centerFreqs(i), B(E(centerFreqs(i))));
@@ -146,7 +146,7 @@ ERB::myUpdate(MarControlPtr sender)
   ctrl.str("");
   ctrl << channel.str() << "mrs_real/israte";
   filterBank->setctrl(ctrl.str(), getctrl("mrs_real/israte"));
-  for(mrs_natural i = 0; i < numChannels; i++){
+  for(mrs_natural i = 0; i < numChannels; ++i){
     //filter 0
     channel.str("");
     channel << "Series/channel_" << i << "/";

@@ -117,7 +117,7 @@ PvConvert::myUpdate(MarControlPtr sender)
 void 
 PvConvert::myProcessFull(realvec& in, realvec& out)
 {
-
+	mrs_natural t;
 	mrs_natural N2 = inObservations_/2;
 	
 	mrs_real a;
@@ -217,6 +217,7 @@ PvConvert::myProcess(realvec& in, realvec& out)
 void 
 PvConvert::myProcessSorted(realvec& in, realvec& out)
 {
+	mrs_natural c,t;
 	
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
@@ -282,7 +283,7 @@ PvConvert::myProcessSorted(realvec& in, realvec& out)
  		val = mag_(t);
 
 		
-		for (c=0; c < kmax_; c++)
+		for (c=0; c < kmax_; ++c)
 		{
 			
 			if (val == sortedmags_(c))
@@ -340,7 +341,7 @@ PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 	MarControlAccessor acc(ctrl_phases_);
 	mrs_realvec& phases = acc.to<mrs_realvec>();
 
-
+	mrs_natural t;
 	mrs_natural N2 = inObservations_/2;
 	mrs_real a;
 	mrs_real b;

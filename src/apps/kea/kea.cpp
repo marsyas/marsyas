@@ -95,7 +95,7 @@ distance_matrix_MIREX()
   //lmartins ???: what is this collection for?! 
 	Collection l;
   l.read(inputdir_ + predictcollectionfname_);
-  for (int i=1; i <= l.size(); i++) 
+  for (size_t i=1; i <= l.size(); ++i) 
 	{
 		oss << i << "\t" << l.entry(i-1) << endl;
 	}
@@ -104,13 +104,13 @@ distance_matrix_MIREX()
   oss << "Q/R";
   const mrs_realvec& dmx = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	
-  for (int i=1; i <= nInstances; i++) 
+  for (int i=1; i <= nInstances; ++i) 
 	{
 		oss << "\t" << i;
 	}
   oss << endl;
 	
-  for (int i=1; i <= nInstances; i++) 
+  for (int i=1; i <= nInstances; ++i) 
 	{
 		oss << i;
 		for (int j=0; j < nInstances; j++)
@@ -229,7 +229,7 @@ pca()
  
  labelNames.clear();
  
- for (int i = 0; i < net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>(); i++)
+ for (int i = 0; i < net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>(); ++i)
  {
 	 string labelName;
 	 string temp;
@@ -324,7 +324,7 @@ train()
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->tick();
       net->updctrl("Classifier/cl/mrs_string/mode", mode);
-      i++;
+      ++i;
     }
 
   net->updctrl("Classifier/cl/mrs_string/mode", "predict");
@@ -406,7 +406,7 @@ void tags() {
   string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
 
   
-  for (int i=0; i < nLabels; i++) 
+  for (int i=0; i < nLabels; ++i) 
     {
       string className;
       string temp;
@@ -479,7 +479,7 @@ void tags() {
       
       seen = false;
       
-      for (int i=0; i<previouslySeenFilenames.size(); i++) {
+      for (size_t i=0; i<previouslySeenFilenames.size(); ++i) {
 	if (currentlyPlaying == previouslySeenFilenames[i]) {
 	  seen = true;
 	  break;
@@ -488,11 +488,11 @@ void tags() {
       
       if (seen == false) {
 	probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-	for (int j=0; j < probs.getSize()-2; j++) 
+	for (size_t j=0; j < probs.getSize()-2; j++) 
 	  wsinkout(j,0) = probs(2+j);
 	
 	
-	for (int i=0; i < probs.getSize()-2; i++) {
+	for (size_t i=0; i < probs.getSize()-2; ++i) {
 	  cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
 	  prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
 
@@ -519,7 +519,6 @@ void tags() {
   realvec data2;
   mrs_string currentlyPlaying2;
   vector<string> previouslySeenFilenames2;
-  bool seen2;
   realvec wsourcedata2;
 
 
@@ -551,7 +550,7 @@ void tags() {
     label = wsourcedata(wsourcedata.getSize()-1,0);
     seen = false;
     
-    for (int i=0; i<previouslySeenFilenames2.size(); i++) {
+    for (size_t i=0; i<previouslySeenFilenames2.size(); ++i) {
       if (currentlyPlaying2 == previouslySeenFilenames2[i]) {
 	seen = true;
 	break;
@@ -560,10 +559,10 @@ void tags() {
     
     probs2 = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();    
     if (seen == false) {
-      for (int j=0; j < probs2.getSize()-2; j++) 
+      for (size_t j=0; j < probs2.getSize()-2; j++) 
 	wsinkout2(j,0) = probs2(2+j);
       
-      for (int i=0; i < probs2.getSize()-2; i++) {
+      for (size_t i=0; i < probs2.getSize()-2; ++i) {
 	cout << currentlyPlaying2 << "\t" << classNames[i] << "\t" << probs2(2+i) << endl;
       }
       previouslySeenFilenames2.push_back(currentlyPlaying2);

@@ -86,6 +86,7 @@ SilenceRemove::myProcess(realvec& in, realvec& out)
 {
 	mrs_real rms = 0.0;
 	mrs_natural count = 0;
+	mrs_natural t,o;
 
 	if(marsystemsSize_>0)
 	{

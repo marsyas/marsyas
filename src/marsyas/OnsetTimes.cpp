@@ -24,7 +24,7 @@ using namespace Marsyas;
 OnsetTimes::OnsetTimes(string name):MarSystem("OnsetTimes", name)
 {
   addControls();
-  t_ = 0;
+  t = 0;
   count_ = 0;
 }
 
@@ -94,29 +94,29 @@ OnsetTimes::myUpdate(MarControlPtr sender)
 void 
 OnsetTimes::myProcess(realvec& in, realvec& out)
 {
-	//t_ is constantly updated with the referee's next time frame
-	t_ = ctrl_tickCount_->to<mrs_natural>();
+	//t is constantly updated with the referee's next time frame
+	t = ctrl_tickCount_->to<mrs_natural>();
 
-	//cout << "OTime: " << t_ << endl;
+	//cout << "OTime: " << t << endl;
 
 	lookAhead_ = ctrl_lookAheadSamples_->to<mrs_natural>();
 	
 	mrs_natural inc = 0; //nr. of first ignored onsets
-	if((t_ - lookAhead_) > 0 && in(0,0) == 1.0) //avoid onset at 0 frame
+	if((t - lookAhead_) > 0 && in(0,0) == 1.0) //avoid onset at 0 frame
 	{
 		//if task isn't still done && (first peak || peak distance at least 5 frames from last peak)
-		if(count_ == inc || (count_ > inc && count_ < n_ + inc && ((t_-lookAhead_)+(accSize_-1 - inductionTime_)) > out(0, 2*(count_-inc)-1) + 5))
+		if(count_ == inc || (count_ > inc && count_ < n_ + inc && ((t-lookAhead_)+(accSize_-1 - inductionTime_)) > out(0, 2*(count_-inc)-1) + 5))
 		{
-			//cout << "Out Last Arg: " << out(0, 2*(count_-inc)+1) << " Current Arg: " << t_ - lookAhead_ << endl;
+			//cout << "Out Last Arg: " << out(0, 2*(count_-inc)+1) << " Current Arg: " << t - lookAhead_ << endl;
 			out(0, 2*(count_-inc)) = in(0,0);
-			//out(0, 2*(count_-inc)+1) = t_ - lookAhead_; 
-			//onsetTime equals to peakerTime (t_-lookAhead_) + difference between last point in the  
+			//out(0, 2*(count_-inc)+1) = t - lookAhead_; 
+			//onsetTime equals to peakerTime (t-lookAhead_) + difference between last point in the  
 			//accumulator/ShiftInput (accSize_-1) and the considered inductionTime
-			out(0, 2*(count_-inc)+1) = (t_-lookAhead_)+(accSize_-1 - inductionTime_);
+			out(0, 2*(count_-inc)+1) = (t-lookAhead_)+(accSize_-1 - inductionTime_);
 
 			count_++;
 		}
-		//cout << "t-" << t_ << ": Onset at: " << t_ - lookAhead_ << endl;
+		//cout << "t-" << t << ": Onset at: " << t - lookAhead_ << endl;
 	}
 
 	//MATLAB_PUT(out, "OnsetTimes");

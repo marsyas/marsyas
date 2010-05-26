@@ -882,8 +882,6 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 		if (!microphone_)
 		{
-			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
-			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 
 			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
@@ -1040,7 +1038,7 @@ main(int argc, const char **argv)
 	if (soundfiles.size() != 0)   
 	{
 		// process several soundFiles
-		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
+		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; ++sfi)
 		{
 			FileName Sfname(*sfi);
 

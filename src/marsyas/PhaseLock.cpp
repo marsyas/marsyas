@@ -27,7 +27,7 @@ using namespace Marsyas;
 PhaseLock::PhaseLock(string name):MarSystem("PhaseLock", name)
 {
   addControls();
-  t_ = 0;
+  t = 0;
   inductionFinished_ = false;
   gtAfter2ndBeat_ = false;
 }
@@ -168,7 +168,7 @@ PhaseLock::myUpdate(MarControlPtr sender)
 	scoreNorm_.create(nrPeriodHyps_);
 
 	// reset maxLoclTrackingScores and indexes to allow negative scores
-	for (int i = 0; i < nrPeriodHyps_; i++)
+	for (int i = 0; i < nrPeriodHyps_; ++i)
 	{
 		maxLocalTrackingScore_(i) = -10000;
 		maxLocalTrackingScoreInd_(i) = -1;
@@ -179,7 +179,7 @@ mrs_realvec
 PhaseLock::GTInitialization(realvec& in, realvec& out, mrs_natural gtInitPhase, mrs_natural gtInitPeriod)
 {
 	mrs_realvec initHypothesis(5); //backtracedPhase, initPeriod, lastPhase, lastPeriod, initScore
-	for(int i = 0; i < initHypothesis.getCols(); i++)
+	for(int i = 0; i < initHypothesis.getCols(); ++i)
 		initHypothesis(i) = 0; //clean array
 
 	//Calculate score inside induction window (simulate tracking behaviour) given the ground-truth (two beats)
@@ -325,7 +325,6 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 
 	//Retrieve best score within induction window -> for starting score normalized with remaining analysis
 	gtSignal_.create(inSamples_);
-	mrs_natural frameCount = 0;
 	gtScore_ = 0;
 
 	mrs_natural phaseAccAdjust = (inSamples_ - 1 - inductionTime_) + gtPhase_;
@@ -369,7 +368,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 		
 		mrs_realvec lastBeatPoint(nInitHyp_);
 		mrs_realvec lastLocalPeriod(nInitHyp_);
-		for(int i = 0; i < nrPeriodHyps_; i++)
+		for(int i = 0; i < nrPeriodHyps_; ++i)
 		{			
 			mrs_natural phase = gtInitPhase_;
 			mrs_natural period = (mrs_natural) beatHypotheses_(i*nrPhasesPerPeriod_, 0);
@@ -401,7 +400,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 		mrs_real avgLocalTrackingScore_ = 0.0;
 		mrs_real maxGlobalTrackingScore_ = -10000.0; //to allow best negative score
 		mrs_natural maxMetricalRelScoreInd = -1;
-		for(int i = 0; i < nrPeriodHyps_; i++)
+		for(int i = 0; i < nrPeriodHyps_; ++i)
 		{
 			if(initPeriods_(i) > 0) //if the given period_ > 0 (= valid period_) (initial phase, being ground-truth, is necessarily valid
 			{
@@ -426,7 +425,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 			}
 		}
 
-		for(int i = 0; i < nrPeriodHyps_; i++)
+		for(int i = 0; i < nrPeriodHyps_; ++i)
 		{
 			if(strcmp(mode_.c_str(), "givefirst1beat") == 0)
 			{
@@ -707,7 +706,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 	}
 
 	//Retrieve best M (nrPeriodHyps_) {period_, phase} pairs, by period:
-	for(int i = 0; i < nrPeriodHyps_; i++)
+	for(int i = 0; i < nrPeriodHyps_; ++i)
 	{
 		//if the given period_ > 0 (= valid period_)
 		if(beatHypotheses_(i*nrPhasesPerPeriod_, 0) > 0)
@@ -750,7 +749,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 	mrs_real avgLocalTrackingScore_ = 0.0;
 	mrs_real maxGlobalTrackingScore_ = -10000.0; //to allow negative scores
 	mrs_natural maxMetricalRelScoreInd = -1;
-	for(int i = 0; i < nrPeriodHyps_; i++)
+	for(int i = 0; i < nrPeriodHyps_; ++i)
 	{
 		//if the given period_ > 0 && given phase > 0 (= valid period_ && valid phase)
 		if(initPeriods_(i) > 0 && initPhases_(i) > 0)
@@ -803,7 +802,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 	avgLocalTrackingScore_ /= nrPeriodHyps_;
 	avgPeriod /= nrPeriodHyps_;
 
-	for(int i = 0; i < nrPeriodHyps_; i++)
+	for(int i = 0; i < nrPeriodHyps_; ++i)
 	{
 		if(backtrace_)
 		{
@@ -861,14 +860,14 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 void 
 PhaseLock::myProcess(realvec& in, realvec& out)
 {
-	//t_ is constantly updated with the referee's next time frame
-	t_ = ctrl_tickCount_->to<mrs_natural>();
+	//t is constantly updated with the referee's next time frame
+	t = ctrl_tickCount_->to<mrs_natural>();
 
-	//cout << "PLock: " << t_ << "; Ind: " << inductionTime_ << endl;
+	//cout << "PLock: " << t << "; Ind: " << inductionTime_ << endl;
 
 	//Output only defined just after induction time
 	//until then output is undefined...
-	for (o=0; o < onObservations_; o++)
+	for (mrs_natural o=0; o < onObservations_; o++)
     {
 		for (t = 0; t < onSamples_; t++)
 		{
@@ -878,7 +877,7 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 
 	//After induction, given the initial beat hypotheses
 	//Calculate the N (nrPeriodHyps_) best (period_, phase) pairs + respective scores:
-	if(!inductionFinished_ && t_ == inductionTime_)
+	if(!inductionFinished_ && t == inductionTime_)
 	{
 		dumbInduction_ = ctrl_dumbInduction_->to<mrs_bool>();
 
@@ -952,6 +951,6 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("hold on;");
 	//MATLAB_EVAL("plot(Flux_FlowThrued), g");
 	//MATLAB_EVAL("FluxFlowTS = [FluxFlowTS, Flux_FlowThrued];");
-	//cout << "T-" << t_ << ": " << in(inSamples_-1) << endl;
+	//cout << "T-" << t << ": " << in(inSamples_-1) << endl;
 }
 

@@ -85,6 +85,7 @@ ADRessSpectrum::myUpdate(MarControlPtr sender)
 void
 ADRessSpectrum::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t;
 	out.setval(0.0);
 
 	//output spectrum of the "selected" source, given d and H

@@ -103,6 +103,7 @@ Metric2::myUpdate(MarControlPtr sender)
 void 
 Metric2::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	if(metricFunc_)
 	{
 		//get the two stacked vectors from the input
@@ -131,7 +132,7 @@ Metric2::logLikelihood(const realvec& Vi, const realvec& Vj, const realvec& covM
   mrs_real logDet;
   if(covMatrix.getSize() == 0)
     {
-      for(mrs_natural r=0; r<Vi.getSize(); r++)
+      for(size_t r=0; r<Vi.getSize(); ++r)
 	{
 	  res1 = Vi(r)-Vj(r);
 	  res1 *= res1;
@@ -143,7 +144,7 @@ Metric2::logLikelihood(const realvec& Vi, const realvec& Vj, const realvec& covM
     {
       //logDet = log(covMatrix.det());
       logDet = 0;
-      for(mrs_natural r=0; r<Vi.getSize(); r++)
+      for(size_t r=0; r<Vi.getSize(); ++r)
 	{
 	  res1 = Vi(r)-Vj(r);
 	  res1 *= res1;

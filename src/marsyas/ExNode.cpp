@@ -182,7 +182,7 @@ ExNode::is_list() const
 {
 	std::string humuhumunukunukuapuaa=getType();
 	// whoa! that's crazy man..
-	unsigned int len=(unsigned int)humuhumunukunukuapuaa.length();
+	uint32_t len=(uint32_t)humuhumunukunukuapuaa.length();
 	return (len>3)
 		&& (humuhumunukunukuapuaa[len-4]=='l')
 		&& (humuhumunukunukuapuaa[len-3]=='i')
@@ -306,7 +306,7 @@ ExFun::setParams(ExNode* ps)
 			}
 			params[i]=param;
 			if (param->getKind()!=T_CONST) { evaluatable=false; }
-			i++;
+			++i;
 		}
 	}
 	const_params=evaluatable;
@@ -334,7 +334,7 @@ ExFun::setParamTypes(std::string t)
 
 ExFun::~ExFun()
 {
-	for (int i=0;i<num_params;i++) { params[i]->deref(); }
+	for (int i=0;i<num_params;++i) { params[i]->deref(); }
 	delete [] params;
 }
 

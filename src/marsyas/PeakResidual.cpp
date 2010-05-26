@@ -51,7 +51,7 @@ PeakResidual::addControls()
 void
 PeakResidual::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	mrs_natural o;
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>()/2, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
@@ -73,6 +73,7 @@ PeakResidual::myUpdate(MarControlPtr sender)
 void 
 PeakResidual::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	mrs_real snr = -80.0;
 	mrs_real originalPower;
 	mrs_real synthPower;

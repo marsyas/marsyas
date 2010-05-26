@@ -81,7 +81,7 @@ private:
 	mrs_natural beatCount_;
 	mrs_natural period_;
 	mrs_natural phase_;
-	mrs_natural t_;
+	mrs_natural t;
 	mrs_natural lastBeatPoint_;
 	mrs_real curBeatPointValue_;
 	mrs_realvec history_;

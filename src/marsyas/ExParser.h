@@ -177,7 +177,7 @@ ExNode* tree;
     {
         s=s.substr(1,s.length()-2); // remove quotes
         int c=0; bool f=false;
-        for (unsigned int i=0;i<s.length();i++,c++) {
+        for (uint32_t i=0;i<s.length();++i,++c) {
             if (f) {
                 if (s[i]=='n') { c--; s[c]='\n'; }
                 if (s[i]=='t') { c--; s[c]='\t'; }
@@ -274,7 +274,7 @@ ExNode* tree;
     bool is_alias(std::string nm) { return (aliases_.find(nm) != aliases_.end()); }
     bool is_num(std::string n)//{{{
     {
-        for (unsigned int i=0;i<n.length();i++) {
+        for (uint32_t i=0;i<n.length();++i) {
             if (n[i]<'0'||n[i]>'9') return false;
         }
         return true;

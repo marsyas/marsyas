@@ -65,7 +65,7 @@ Marsyas::time2samples(string time, mrs_real srate) {
 	int len=(int)time.length();
 	bool decimal_point=false;
 	mrs_real divisor = 10.0;
-	for (i=0;i<len && (time[i]=='.' || (time[i]>='0' && time[i]<='9'));i++) {
+	for (i=0;i<len && (time[i]=='.' || (time[i]>='0' && time[i]<='9'));++i) {
 		if (decimal_point) {
 			if (time[i]=='.') { return -1; }
 			samples = samples + ((mrs_real)(time[i]-'0'))/divisor;
@@ -78,7 +78,7 @@ Marsyas::time2samples(string time, mrs_real srate) {
 	}
 	//
 	if (i<len) {
-		char a=time[i++];
+		char a=time[++i];
 		if (i>=len) {
 			if (a=='h') { // hours
 				samples= 120.0*samples*srate;
@@ -114,7 +114,7 @@ Marsyas::time2usecs(string time) {
 	int len=(int)time.length();
 	bool decimal_point=false;
 	mrs_real divisor = 10.0;
-	for (i=0;i<len && (time[i]=='.' || (time[i]>='0' && time[i]<='9'));i++) {
+	for (i=0;i<len && (time[i]=='.' || (time[i]>='0' && time[i]<='9'));++i) {
 		if (decimal_point) {
 			if (time[i]=='.') { return -1; }
 			usecs = usecs + ((mrs_real)(time[i]-'0'))/divisor;
@@ -127,7 +127,7 @@ Marsyas::time2usecs(string time) {
 	}
 	//
 	if (i<len) {
-		char a=time[i++];
+		char a=time[++i];
 		if (i>=len) {
 			if (a=='h') { // hours
 				usecs *= 1000.0 * 1000.0 * 60.0 * 60.0;
@@ -318,7 +318,7 @@ Marsyas::string2parameters(string s, realvec &v, char d)
 	{
 		newPos = (mrs_natural) s.find_first_of(&d, pos, 1);
 		tmp = s.substr(pos, newPos);
-		v(i++) = atof(tmp.c_str());
+		v(++i) = atof(tmp.c_str());
 		pos = newPos+1;
 	}
 }

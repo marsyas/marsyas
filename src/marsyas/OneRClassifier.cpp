@@ -82,7 +82,7 @@ OneRClassifier::myProcess(realvec& in, realvec& out)
       lastModePredict_ = false;
       
       //get the incoming data and append it to the data table
-      for (mrs_natural ii=0; ii< inSamples_; ii++)
+      for (mrs_natural ii=0; ii< inSamples_; ++ii)
 	{
 	  mrs_real label = in(inObservations_-1, ii);
 	  instances_.Append(in);
@@ -107,7 +107,7 @@ OneRClassifier::myProcess(realvec& in, realvec& out)
 
       //foreach row of predict data, extract the actual class, then call the
       //classifier predict method. Output the actual and predicted classes.
-      for (mrs_natural ii=0; ii<inSamples_; ii++)
+      for (mrs_natural ii=0; ii<inSamples_; ++ii)
 	{
 	  //extract the actual class
 	  mrs_natural label = (mrs_natural)in(inObservations_-1, ii);
@@ -153,7 +153,7 @@ OneRClassifier::OneRRule *OneRClassifier::newRule(mrs_natural attr, mrs_natural 
       for(mrs_natural jj=0; jj<(int)counts.size(); jj++) counts[jj]=0;
       do
 	{//fill it until is has enough of the majority class
-	  it = instances_.GetClass(ii++);
+	  it = instances_.GetClass(++ii);
 	  counts[it]++;
 	}while(counts[it] < minBucketSize_ && ii < lastInstance);
 
@@ -161,7 +161,7 @@ OneRClassifier::OneRRule *OneRClassifier::newRule(mrs_natural attr, mrs_natural 
       while(ii < lastInstance && instances_.GetClass(ii) == it)
 	{
 	  counts[it]++;
-	  ii++;
+	  ++ii;
 	}//while
 
       //keep on while attr value is the same

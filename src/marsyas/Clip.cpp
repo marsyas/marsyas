@@ -63,7 +63,7 @@ Clip::myUpdate(MarControlPtr sender)
 void 
 Clip::myProcess(realvec& in, realvec& out)
 {
-
+	mrs_natural o,t;
 	mrs_real range = ctrl_range_->to<mrs_real>();
 	
 	for (o=0; o < inObservations_; o++)

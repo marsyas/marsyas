@@ -56,7 +56,7 @@ private:
   mrs_real s_;
   mrs_real d_; //the delay of the all pass filter dependant on the freq
   mrs_real g_; //coefficient of all pass filter g_=-(1-d)/d+1)
-  mrs_real c_;//output of inverse comb filt (for pick pos)
+  mrs_real c;//output of inverse comb filt (for pick pos)
 
   mrs_real noteon_;
 

@@ -63,7 +63,7 @@ void
 Daub4::myProcess(realvec& in, realvec& out) 
 {
   //checkFlow(in,out);
-
+	mrs_natural t;
   const mrs_natural& n = ctrl_processSize_->to<mrs_natural>();
   const mrs_bool& forward = ctrl_forward_->to<mrs_bool>();
   
@@ -74,7 +74,7 @@ Daub4::myProcess(realvec& in, realvec& out)
   // Apply Filter 
   if (forward)
   {
-    for (i=0, j=0; j <= n-4; j+=2, i++)
+    for (i=0, j=0; j <= n-4; j+=2, ++i)
 		{
 			workspace_(i) = c0_ * in(0,j) + c1_ * in(0,j+1) +
 				c2_ * in(0,j+2) + c3_ * in(0,j+3);
@@ -93,7 +93,7 @@ Daub4::myProcess(realvec& in, realvec& out)
 											c0_ * in(0,0) + c3_ * in(0,nh1-1);
     workspace_(1) = c3_ * in(0,nh-1) - c0_ * in(0,n-1) + 
 										c1_ * in(0,0) - c2_ * in(0,nh1-1);
-    for (i=0, j=2; i < nh-1; i++)
+    for (i=0, j=2; i < nh-1; ++i)
 		{
 			workspace_(j++) = c2_ * in(0,i) + c1_ * in(0,i+nh) +
 				c0_ * in(0,i+1) + c3_ * in(0,i+nh1);

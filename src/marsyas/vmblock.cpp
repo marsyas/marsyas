@@ -376,7 +376,7 @@ static REAL ***pmatmalloc   /* allocate memory for a matrix of points */
   if (matrix == NULL)                    /* lack of memory?           */
     return NULL;                         /* report this lack          */
 
-  for (i = 0; i < m; i++)                /* allocate one (n,3) matrix */
+  for (i = 0; i < m; ++i)                /* allocate one (n,3) matrix */
   {                                      /* for each row pointer      */
     matmalloc(matrix[i], n, 3, REAL, 0);
     if (matrix[i] == NULL)               /* lack of memory?           */

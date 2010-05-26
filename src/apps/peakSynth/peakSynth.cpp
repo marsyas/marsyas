@@ -216,10 +216,6 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		harmonize.stretch(harmonizeData_.getCols());
 	}
 
-	mrs_real globalSnr = 0;
-
-	mrs_natural nb=0;
-
 	//	mrs_real time=0;
 	if(analyse_ || synthetize > -1)
 		while(1)
@@ -228,7 +224,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			
 			if (harmonize_) //[WTF] 
 			{
-				for (mrs_natural i=0 ; i<harmonizeData_.getCols() ; i++) //[WTF] ?!?!?!?!?!?!
+				for (mrs_natural i=0 ; i<harmonizeData_.getCols() ; ++i) //[WTF] ?!?!?!?!?!?!
 					//ctrl_harmonize_->setValue(i, 0.0);
 					//ctrl_harmonize_->setValue(1, 1.0);
 					//ctrl_harmonize_->setValue(2, 0.1);
@@ -277,7 +273,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 		realvec realTry(nbFrames_, 5); //[WTF]
 		realTry.setval(0);
-		for (mrs_natural i=0 ; i<nbFrames_ ; i++)
+		for (mrs_natural i=0 ; i<nbFrames_ ; ++i)
 		{
 			realTry(i, 1) = 20;
 			realTry(i, 2) = .8;
@@ -366,7 +362,7 @@ main(int argc, const char **argv)
 	if (soundfiles.size() != 0)   
 	{
 		// process several soundFiles
-		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; sfi++)
+		for (sfi=soundfiles.begin() ; sfi!=soundfiles.end() ; ++sfi)
 		{
 			FileName Sfname(*sfi);
 			/*	if(outputDirectoryName == EMPTYSTRING)

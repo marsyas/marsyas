@@ -183,6 +183,7 @@ SOM::myUpdate(MarControlPtr sender)
 void
 SOM::find_grid_location(realvec& in, int t)
 {
+	mrs_natural o;
 	//  int temp;
 	mrs_real ival;				// input value
 	mrs_real pval;				// prototype value 
@@ -229,7 +230,7 @@ SOM::myProcess(realvec& in, realvec& out)
 {
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
-
+	mrs_natural o,t;
 	mrs_real geom_dist;
 	mrs_real geom_dist_gauss;
   
@@ -246,9 +247,6 @@ SOM::myProcess(realvec& in, realvec& out)
 		mrs_real dx;
 		mrs_real dy;
 		mrs_real adj;
-		mrs_real std_ = getctrl("mrs_real/std_factor_train")->to<mrs_real>();
-		
-	
 
 		for (t=0; t < inSamples_; t++) 
 		{
@@ -308,7 +306,7 @@ SOM::myProcess(realvec& in, realvec& out)
 			// no need to find grid locations, just read from the file
 			px = (int) in( in.getRows() - 2, t);
 			py = (int) in( in.getRows() - 1, t);
-			for(int i =0; i < inObservations_ - 3; i++)
+			for(int i =0; i < inObservations_ - 3; ++i)
 			{
 				grid_map(px * grid_height_ + py, i) = in(i);
 			}	

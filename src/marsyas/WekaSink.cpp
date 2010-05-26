@@ -133,7 +133,7 @@ WekaSink::putHeader(string inObsNames)
 		// TODO: this is could be done way more elegant
 		// (e.g. using a 'split()' or 'explode()' function).
 		mrs_natural i;
-		for (i =0; i < nAttributes; i++)
+		for (i =0; i < nAttributes; ++i)
 		{
 			string inObsName;
 			string temp;
@@ -153,7 +153,7 @@ WekaSink::putHeader(string inObsNames)
 			(*mos_) << "@attribute output {";
 			// TODO: this could be done way more elegant
 			// (e.g. with a 'join()' or 'implode()' function).
-			for (i=0; i < nLabels; i++)
+			for (i=0; i < nLabels; ++i)
 			{
 				// TODO: what's the point of using an extra ostringstream here?
 				ostringstream oss;
@@ -191,7 +191,7 @@ WekaSink::myUpdate(MarControlPtr sender)
 	labelNames_.clear();
 	// TODO: this could be done way more elegant
 	// (e.g. by using a split() or explode() function).
-	for (int i = 0; i < ctrl_nLabels_->to<mrs_natural>(); i++)
+	for (int i = 0; i < ctrl_nLabels_->to<mrs_natural>(); ++i)
 	{
 		string labelName;
 		string temp;
@@ -220,7 +220,7 @@ WekaSink::myUpdate(MarControlPtr sender)
 			MarControlAccessor acc_injectVector(ctrl_injectVector_);
 			realvec& injectVector = acc_injectVector.to<mrs_realvec>();
 
-			for (int j=0; j < injectVector.getSize() - 1; j++)
+			for (size_t j=0; j < injectVector.getSize() - 1; j++)
 			{
 				(*mos_) << fixed << setprecision(precision_) << injectVector(j) << ",";
 			}
@@ -241,6 +241,7 @@ WekaSink::myUpdate(MarControlPtr sender)
 void
 WekaSink::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// If muted: just copy input to output.
 	if (ctrl_mute_->isTrue())
 	{
@@ -258,7 +259,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	// TODO: why is count a static and not a class attribute?
 	static int count = 0;
 
-	mrs_natural label = 0;
+	uint32_t label = 0;
 
 	for (t = 0; t < inSamples_; t++)
 	{

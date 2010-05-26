@@ -65,7 +65,7 @@ LPCC::myUpdate(MarControlPtr sender)
 
 	//LPCC features names
 	ostringstream oss;
-	for (mrs_natural i = 0; i < ctrl_order_->to<mrs_natural>(); i++)
+	for (mrs_natural i = 0; i < ctrl_order_->to<mrs_natural>(); ++i)
 		oss << "LPCC_" << i+1 << ",";
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 

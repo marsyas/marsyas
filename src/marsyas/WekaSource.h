@@ -59,7 +59,7 @@ namespace Marsyas
 			}
 			else
 			{//otherwise only copy rows that match input class into this dataset
-				for(mrs_natural ii=0; ii<(mrs_natural)data.size(); ii++)
+				for(mrs_natural ii=0; ii<(mrs_natural)data.size(); ++ii)
 					if(data.GetClass(ii)==classAttr)
 						this->Append(data[ii]);
 			}//else
@@ -77,7 +77,7 @@ namespace Marsyas
 			this->Shuffle();
 
 			rstep_ = (mrs_real)this->size() / (mrs_real)foldCount_;
-			if ((unsigned int)foldCount_ > this->size()) 
+			if ((uint32_t)foldCount_ > this->size()) 
 			{
 				cout << "Folds exceed number of instances" << endl;
 				cout << "foldCount_ = " << foldCount_ << endl;

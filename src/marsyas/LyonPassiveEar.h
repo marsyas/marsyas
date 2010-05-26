@@ -88,8 +88,9 @@ namespace Marsyas
 					decimOut_;
 
 		//internal variables and parameters
-		mrs_natural numFilterChannels_;
 		mrs_natural currDecimState_;
+		uint32_t numFilterChannels_;
+		
 
 		/// the actual filter cascade plus the post-processing (agc, channeldiff, etc.)
         Series      *passiveEar_;

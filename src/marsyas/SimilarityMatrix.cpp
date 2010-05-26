@@ -50,11 +50,11 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 	if(tmpvec.getRows() == 1 && tmpvec.getCols() >= 2)
 	{
 		sizes_.create(tmpvec.getCols());
-		for(mrs_natural i=0; i<tmpvec.getCols(); i++)
+		for(mrs_natural i=0; i<tmpvec.getCols(); ++i)
 		{
 			sizes_(i) = (mrs_natural)tmpvec(0,i);
 		}
-		for(mrs_natural i=0; i<tmpvec.getCols(); i++)
+		for(mrs_natural i=0; i<tmpvec.getCols(); ++i)
 		{
 			if(sizes_(i) > insize)
 				sizes_(i) = insize;
@@ -63,11 +63,11 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 	else if(tmpvec.getRows() >= 2 && tmpvec.getCols() == 1)
 	{
 		sizes_.create(tmpvec.getRows());
-		for(mrs_natural i=0; i<tmpvec.getRows(); i++)
+		for(mrs_natural i=0; i<tmpvec.getRows(); ++i)
 		{
 			sizes_(i) = (mrs_natural)tmpvec(i,0);
 		}
-		for(mrs_natural i=0; i<tmpvec.getRows(); i++)
+		for(mrs_natural i=0; i<tmpvec.getRows(); ++i)
 		{
 			if(sizes_(i) > insize)
 				sizes_(i) = insize;
@@ -81,7 +81,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 	}
 
 	mrs_natural obs = 0;
-	for(mrs_natural i=1; i<sizes_.getSize(); i++)
+	for(size_t i=1; i<sizes_.getSize(); ++i)
 	{
 		obs += sizes_(i);
 	}
@@ -89,13 +89,13 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue((mrs_natural)sizes_(0), NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_osrate_, NOUPDATE);
 	ostringstream oss;
-	for(o=0; o<ctrl_onObservations_->to<mrs_natural>(); o++)
+	for(mrs_natural o=0; o<ctrl_onObservations_->to<mrs_natural>(); o++)
 		oss << "SimilarityMatrix_" << o << ",";
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
 	invecs_.resize(sizes_.getSize());
 	obs = getctrl("mrs_natural/inObservations")->to<mrs_natural>()/sizes_.getSize();
-	for(mrs_natural k=0; k<sizes_.getSize(); k++)
+	for(size_t k=0; k<sizes_.getSize(); k++)
 	{
 		invecs_[k].create(obs, sizes_(k));
 	}
@@ -142,7 +142,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 	//check if there are any elements to process at the input
 	//(in some cases, they may not exist!) - otherwise, do nothing
 	//(i.e. output is also an empty vector)
-	mrs_natural i, j, k, l;
+	uint32_t i, j, k, l;
 	if(inSamples_ > 0)
 	{
 		if(marsystemsSize_ == 1)
@@ -151,7 +151,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 
 			// calculate hte Covariance Matrix from the input, if defined
 			mrs_natural obs = 0;
-			for(i=0; i<sizes_.getSize(); i++)
+			for(i=0; i<sizes_.getSize(); ++i)
 			{
 				for(j=0; j<sizes_(i); j++)
 				{
@@ -165,12 +165,12 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 
 			// normalize input features if necessary
 			if(ctrl_normalize_->to<mrs_string>() == "MinMax")
-				for(i=0; i<sizes_.getSize(); i++)
+				for(i=0; i<sizes_.getSize(); ++i)
 				{
 					invecs_[i].normObsMinMax(); // (x - min)/(max - min)
 				}
 			else if(ctrl_normalize_->to<mrs_string>() == "MeanStd")
-				for(i=0; i<sizes_.getSize(); i++)
+				for(i=0; i<sizes_.getSize(); ++i)
 				{
 					invecs_[i].normObs();  // (x - mean)/std
 				}
@@ -182,7 +182,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 					covMatrix.create(inObservations_/sizes_.getSize(), inObservations_/sizes_.getSize());
 					mrs_real var = ctrl_stdDev_->to<mrs_real>();
 					var *= var;
-					for(mrs_natural i=0; i< inObservations_/sizes_.getSize(); i++)
+					for(i=0; i< inObservations_/sizes_.getSize(); ++i)
 					{
 						covMatrix(i,i) = var;
 					}
@@ -195,7 +195,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 					MarControlAccessor acc(ctrl_covMatrix_);
 					realvec& covMatrix = acc.to<mrs_realvec>();
 					covMatrix.create(dim, dim);
-					for(i=0; i<dim; i++)
+					for(i=0; i<dim; ++i)
 					{
 						covMatrix(i,i) = vars_(i);
 					}
@@ -211,7 +211,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 					ctrl_covMatrix_->setValue(realvec());
 				}
 
-				for(i=0; i<sizes_(0); i++)
+				for(i=0; i<sizes_(0); ++i)
 				{
 					obs = 0;
 					invecs_[0].getCol(i, i_featVec_);

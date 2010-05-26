@@ -63,6 +63,7 @@ Kurtosis::myUpdate(MarControlPtr sender)
 void 
 Kurtosis::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
   //checkFlow(in,out);
 
 	// old code for Kurtosis calculation 

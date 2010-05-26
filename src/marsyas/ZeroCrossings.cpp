@@ -54,7 +54,7 @@ ZeroCrossings::myUpdate(MarControlPtr sender)
 void 
 ZeroCrossings::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
+  mrs_natural o,t;
   zcrs_ = 1.0;
   
   for (o=0; o < inObservations_; o++)

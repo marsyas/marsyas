@@ -72,6 +72,7 @@ Sum::myProcess(realvec& in, realvec& out)
 {
 	mrs_real weightValue = ctrl_weight_->to<mrs_real>();
 	mrs_bool stereo = ctrl_stereo_->to<mrs_bool>();
+	mrs_natural t,o,c;
 	
 	// Sum the observation channels per sample.
 	if (!stereo) 
@@ -88,7 +89,7 @@ Sum::myProcess(realvec& in, realvec& out)
 	else 			// stereo 
 	  {
 	    for (t = 0; t < inSamples_; t++)
-	      for (c=0; c < 2; c++) 
+	      for (c=0; c < 2; ++c) 
 		{
 		  out(c, t) = 0;
 		  for (o = c; o < inObservations_; o+=2)

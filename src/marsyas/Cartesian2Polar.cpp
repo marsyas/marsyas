@@ -54,6 +54,7 @@ Cartesian2Polar::myUpdate(MarControlPtr sender)
 void 
 Cartesian2Polar::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	mrs_natural N = inObservations_/2;
 
 	for (t = 0; t < inSamples_; t++)

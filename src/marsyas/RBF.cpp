@@ -102,7 +102,7 @@ RBF::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE); //[?]
 	ostringstream oss;
 	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	for (mrs_natural i = 0; i < inObservations_; i++)
+	for (mrs_natural i = 0; i < inObservations_; ++i)
 	{
 		string inObsName;
 		string temp;
@@ -117,6 +117,7 @@ RBF::myUpdate(MarControlPtr sender)
 void 
 RBF::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	mrs_real res;
 
 	if(ctrl_symmetricIn_->isTrue())

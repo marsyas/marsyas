@@ -110,7 +110,7 @@ PeakViewSource::myUpdate(MarControlPtr sender)
 				ostringstream oss;
 				for(mrs_natural j=0; j< peakView::nbPkParameters; ++j) //j = param index
 				{
-					for (mrs_natural i=0; i < frameMaxNumPeaks; i++) //i = peak index
+					for (mrs_natural i=0; i < frameMaxNumPeaks; ++i) //i = peak index
 						oss << peakView::getParamName(j) << "_" << i+j*frameMaxNumPeaks << ",";
 				}
 				ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
@@ -143,7 +143,7 @@ PeakViewSource::myProcess(realvec& in, realvec& out)
 	{
 		ctrl_pos_->setValue(frameIdx_*frameSize_);
 		
-		for(o=0; o < peakData_.getRows(); ++o)
+		for(mrs_natural o=0; o < peakData_.getRows(); ++o)
 			out(o,0) = peakData_(o, frameIdx_);
 
 		frameIdx_++;

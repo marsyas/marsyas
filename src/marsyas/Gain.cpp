@@ -69,6 +69,7 @@ Gain::myUpdate(MarControlPtr sender)
 void 
 Gain::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
   //get a local copy of the current gain control value
   //(it will be used for this entire processing, even if it's
   //changed by someone else, e.g. by a different thread)

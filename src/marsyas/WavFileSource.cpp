@@ -185,7 +185,7 @@ WavFileSource::getHeader(string filename)
 			// setctrl("mrs_natural/nChannels", (mrs_natural)channels);
 			setctrl("mrs_natural/onObservations", (mrs_natural)channels);
 
-			unsigned int srate;
+			uint32_t srate;
 			fread(&srate, 4,1,sfp_);
 		  
 #if defined(MARSYAS_BIGENDIAN)	      
@@ -303,7 +303,7 @@ WavFileSource::myUpdate(MarControlPtr sender)
 mrs_natural 
 WavFileSource::getLinear8(realvec& slice)
 {
-	
+	mrs_natural t;
 	mrs_natural c = 0;
 	fseek(sfp_, pos_ * nChannels_ + sfp_begin_, SEEK_SET);
 	
@@ -313,7 +313,7 @@ WavFileSource::getLinear8(realvec& slice)
 
 	if (samplesRead_ != samplesToRead_)
     {
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 			for (t=0; t < inSamples_; t++)
 			{
 				slice(c,t) = 0.0;
@@ -325,7 +325,7 @@ WavFileSource::getLinear8(realvec& slice)
 	
 	for (t=0; t < samplesToWrite_; t++)
     {
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 		{
 			slice(c, t) = (mrs_real)-1.0 + (mrs_real) cdata_[nChannels_ * t + c] / 127;
 		}
@@ -351,7 +351,7 @@ WavFileSource::ByteSwapShort (unsigned short nValue)
 mrs_natural
 WavFileSource::getLinear16(realvec& slice)
 {
-	mrs_natural c = 0;
+	mrs_natural c,t;
 
 	fseek(sfp_, 2 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
 
@@ -361,7 +361,7 @@ WavFileSource::getLinear16(realvec& slice)
 
 	if (samplesRead_ != samplesToRead_)
     {
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 			for (t=0; t < inSamples_; t++)
 			{
 				slice(c, t) = 0.0;
@@ -375,13 +375,13 @@ WavFileSource::getLinear16(realvec& slice)
     {
 		sval_ = 0;
 #if defined(MARSYAS_BIGENDIAN)
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 		{
 			sval_ = ByteSwapShort(sdata_[nChannels_*t + c]);
 			slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT + 1);
 		}
 #else
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 		{
 			sval_ = sdata_[nChannels_ *t + c];
 			slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT + 1));

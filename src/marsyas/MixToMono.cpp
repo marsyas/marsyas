@@ -60,6 +60,7 @@ MixToMono::myUpdate(MarControlPtr sender)
 void
 MixToMono::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	// Average the observation channels per sample.
 	for (t = 0; t < inSamples_; t++)
 	{

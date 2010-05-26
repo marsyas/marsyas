@@ -8,7 +8,6 @@
 //
 
 #include <cxxtest/TestSuite.h>
-
 #include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"

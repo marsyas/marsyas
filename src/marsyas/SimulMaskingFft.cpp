@@ -132,7 +132,7 @@ SimulMaskingFft::myUpdate(MarControlPtr sender)
 void 
 SimulMaskingFft::myProcess(realvec& in, realvec& out)
 {
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
 		in.getCol(t, processBuff_);
 
@@ -173,7 +173,7 @@ SimulMaskingFft::ComputeDifference (mrs_realvec &out, mrs_realvec in, mrs_natura
 	mrs_natural i;
 	t = 0;
 
-	for (i = 0; i < inObservations_; i++)
+	for (i = 0; i < inObservations_; ++i)
 		out(i,t) = 0;
 
 	for (mrs_natural k = 0; k < numBands_; k++)
@@ -182,7 +182,7 @@ SimulMaskingFft::ComputeDifference (mrs_realvec &out, mrs_realvec in, mrs_natura
 			fHighFrac   = freqBounds_[k].fUpFreqBound/audiosrate_ *(inObservations_<<1);
 		mrs_natural     iLowBin     = (mrs_natural)ceil (fLowFrac),
 			iHighBin    = (mrs_natural)floor(fHighFrac);
-		for (i = iLowBin; i <= iHighBin; i++)
+		for (i = iLowBin; i <= iHighBin; ++i)
 		{
 			if (excPattern_(k) <= 1./truncTresh*in(i))
 				out(i,t)	= truncTresh;
@@ -209,7 +209,7 @@ void
 SimulMaskingFft::GetBandLevels (FrequencyBands_t *pFrequencyValues, mrs_realvec &bandLevels, mrs_bool bDezibel)
 {
 
-	for (mrs_natural i = 0; i < numBands_; i++)
+	for (mrs_natural i = 0; i < numBands_; ++i)
 	{
 		mrs_real   fLowFrac    = pFrequencyValues[i].fLowFreqBound/audiosrate_ * (inObservations_<<1),
 			fHighFrac   = pFrequencyValues[i].fUpFreqBound/audiosrate_ *(inObservations_<<1);
@@ -307,7 +307,7 @@ SimulMaskingFft::ComputeTables ()
 
 	// outer ear transfer function
 	{
-		for (i = 0; i < inObservations_; i++)
+		for (i = 0; i < inObservations_; ++i)
 		{
 			mrs_real dTmp;
 			mrs_real fkFreq    = i * .5e-3 * audiosrate_ / inObservations_;
@@ -330,7 +330,7 @@ SimulMaskingFft::ComputeTables ()
 	// frequency bands and spreading
 	{
 		mrs_real fLowBark = hertz2bark (lowFreq, h2bIdx);
-		for (i = 0; i < numBands_; i++)
+		for (i = 0; i < numBands_; ++i)
 		{
 			freqBounds_[i].fLowBarkBound  = fLowBark + i*barkRes_;
 			freqBounds_[i].fMidBark       = freqBounds_[i].fLowBarkBound + .5*barkRes_;
@@ -346,7 +346,7 @@ SimulMaskingFft::ComputeTables ()
 		//m_stmrs_naturalernalTables.pfNormSpread     = new mrs_real [numBands_];
 		//memset (m_stmrs_naturalernalTables.pfNormSpread, 0, sizeof(mrs_real)*numBands_);
 
-		for (i = 0; i < numBands_; i++)
+		for (i = 0; i < numBands_; ++i)
 		{
 			mrs_natural     cBarkk;
 			mrs_real   fAtt    = 1.0,
@@ -390,14 +390,13 @@ SimulMaskingFft::ComputeTables ()
 				normSpread_(cBarkk)    += pow (processBuff_(cBarkk), 0.4);                
 			}
 		}
-		for (i = 0; i < numBands_; i++)
+		for (i = 0; i < numBands_; ++i)
 			normSpread_(i)  = pow (normSpread_(i), -2.5);            // resulting normalization pattern (eq. 19)
 	}
 
 	{
 		// masking (eq.25)
-		mrs_real	v			= pow (.1, .3);
-		for ( i = 0; i <numBands_; i++ )
+		for ( i = 0; i <numBands_; ++i )
 		{
 			intNoise_(i)     = .1456 * pow (.001 * freqBounds_[i].fMidFreq, -0.8);    // noise in dB
 			intNoise_(i)     = pow (10., intNoise_(i));                          // -> in energy domain
@@ -407,14 +406,14 @@ SimulMaskingFft::ComputeTables ()
 	{
 		// masking (eq.25)
 		mrs_real	v			= pow (.1, .3);
-		for ( i = 0; i < 12.0/barkRes_; i++ )
+		for ( i = 0; i < 12.0/barkRes_; ++i )
 			maskingThresh_(i)   = v;
 
 
 		while (i < numBands_)
 		{
 			maskingThresh_(i)   = pow (.1, .025 * barkRes_ * i);
-			i++;
+			++i;
 		}
 	}
 

@@ -70,10 +70,11 @@ public:
 		
 
 private:
-		mrs_bool isFold_;
+		
 		
 	mrs_natural cols_;
 	mrs_natural rows_;
+	mrs_bool isFold_;
 	realvec minimums_;
 	realvec maximums_;
 	std::vector<mrs_real> *data_;

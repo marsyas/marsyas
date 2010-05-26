@@ -212,7 +212,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 		ostringstream oss;
 		oss << gtBeatsFile << inputFileGT.nameNoExt() << ".txt";
 		//check if ground-truth file, with .txt extension, exists (ifnot try with .beats extension)
-		if(FILE * file = fopen(oss.str().c_str(), "r"))
+		if(fopen(oss.str().c_str(), "r"))
 		{
 			inStream.open(oss.str().c_str());
 			getline (inStream, line);
@@ -226,7 +226,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 		{
 			oss.str("");
 			oss << gtBeatsFile << inputFileGT.nameNoExt() << ".beats";
-			if(FILE * file = fopen(oss.str().c_str(), "r"))
+			if(fopen(oss.str().c_str(), "r"))
 			{
 				inStream.open(oss.str().c_str());
 				getline (inStream, line);
@@ -254,7 +254,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 		if(strcmp(extension.c_str(), "txt") == 0 || strcmp(extension.c_str(), "beats") == 0)
 		{
 			//if file exists
-			if(FILE * file = fopen(gtBeatsFile.c_str(), "r"))
+			if(fopen(gtBeatsFile.c_str(), "r"))
 			{
 				inStream.open(gtBeatsFile.c_str());
 				getline (inStream, line);
@@ -368,7 +368,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			beattracker->addMarSystem(initialhypotheses);
 
 			MarSystem* agentpool = mng.create("Fanout", "agentpool");
-				for(int i = 0; i < NR_AGENTS; i++)
+				for(int i = 0; i < NR_AGENTS; ++i)
 				{
 					ostringstream oss;
 					oss << "agent" << i;
@@ -468,7 +468,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 
 	//Link agentControl matrix from the BeatReferee to each agent in the pool
 	//Also link period limits from PhaseLock
-	for(int i = 0; i < NR_AGENTS; i++)
+	for(int i = 0; i < NR_AGENTS; ++i)
 	{
 		ostringstream oss;
 		oss << "agent" << i;
@@ -745,7 +745,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	tempoinduction->updctrl("Fanout/tempohypotheses/Series/phase/OnsetTimes/onsettimes/mrs_natural/n1stOnsets", PHASE_HYPOTHESES);
 
 	//Pass chosen score_function to each BeatAgent in the pool:
-	for(int i = 0; i < NR_AGENTS; i++)
+	for(int i = 0; i < NR_AGENTS; ++i)
 	{
 		ostringstream oss, oss2;
 		oss << "agent" << i;
@@ -1112,7 +1112,7 @@ main(int argc, const char **argv)
 					cout << "SoundFile" << i << ": " << lineFile << endl;
 					if(existsFile(lineFile))
 						ibt(lineFile, outputTxt);
-					i++;
+					++i;
 				}
 			}
 		}

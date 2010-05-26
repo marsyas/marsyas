@@ -52,6 +52,7 @@ MaxMin::myUpdate(MarControlPtr sender)
 void
 MaxMin::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	for (o=0; o < inObservations_; o++)
 	{
 		max_ = -1.0 * DBL_MAX;

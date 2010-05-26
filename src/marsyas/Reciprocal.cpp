@@ -50,6 +50,7 @@ Reciprocal::myUpdate(MarControlPtr sender)
 void 
 Reciprocal::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {

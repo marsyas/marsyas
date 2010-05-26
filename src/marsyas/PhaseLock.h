@@ -114,7 +114,7 @@ private:
 	mrs_realvec hypSignals_;
 	mrs_realvec firstBeatPoint_;
 	mrs_realvec trackingScore_;
-	mrs_natural t_;
+	mrs_natural t;
 	mrs_realvec maxLocalTrackingScore_;
 	mrs_realvec maxLocalTrackingScoreInd_;
 	mrs_realvec metricalSalience_;

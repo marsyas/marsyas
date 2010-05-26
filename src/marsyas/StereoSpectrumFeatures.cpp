@@ -69,6 +69,7 @@ StereoSpectrumFeatures::myUpdate(MarControlPtr sender)
 void 
 StereoSpectrumFeatures::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	for (t = 0; t < inSamples_; t++)
 	{
 		m0_ = 0.0;

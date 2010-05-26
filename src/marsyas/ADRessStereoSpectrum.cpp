@@ -71,6 +71,7 @@ ADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 void
 ADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	for(o=0; o < N2_; ++o)
 	{
 		//look for the maximum in the azimuth plane

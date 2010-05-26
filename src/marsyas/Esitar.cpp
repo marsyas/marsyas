@@ -214,6 +214,7 @@ Esitar::mycallback(double deltatime, std::vector< unsigned char > * message, voi
 void 
 Esitar::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
   //checkFlow(in,out);
 
   for (o=0; o < inObservations_; o++)

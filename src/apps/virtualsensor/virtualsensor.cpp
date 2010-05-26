@@ -241,7 +241,7 @@ void recordVirtualSensor(mrs_real length)
     
     /*
     // uncomment this block if you would like to see the midi message during a hit
-    for (i=0; i < nBytes; i++) 
+    for (i=0; i < nBytes; ++i) 
         std::cout << "Byte " << i << " = " << (int) message[i] << ", "; 
     std::cout << endl;
     */
@@ -443,7 +443,7 @@ void drumExtract3() {
         audioget->process(in1,out1);
         playbacknet->process(out1,peakpickout);
 
-        for (int i = 0; i < windowsize;i++)
+        for (int i = 0; i < windowsize;++i)
         {   
             if ( peakpickout(i) > 0)
             {
@@ -573,7 +573,7 @@ void drumExtract2() {
     { 
         playbacknet->process(in1,out1);
 
-        for (int i = 0; i < windowsize;i++)
+        for (int i = 0; i < windowsize;++i)
         {   
             if ( out1(i) > 0)
             {
@@ -633,7 +633,7 @@ void readRMSmake(mrs_real length, string AudioFile)
     realvec fret;
     fret.read("A_120_thumb_01.txt");
 
-    for (mrs_natural t = 0; t < fret.getSize(); t++)
+    for (size_t t = 0; t < fret.getSize(); t++)
       {
 	if (linecount > len)
 	  {
@@ -747,7 +747,7 @@ void readSitarSensors(mrs_real length)
     int onsetWaitTime = 10; // 10::ms each note on
     int temp = 0;
     
-    for (mrs_natural t = 0; t < fret.getSize(); t++)
+    for (size_t t = 0; t < fret.getSize(); t++)
     {
       //      cout << thumb(t) << "---";
       
@@ -776,7 +776,7 @@ void readSitarSensors(mrs_real length)
       else 
 	{
 	  // remove quick onsets
-	  if (t-temp > onsetWaitTime)
+	  if ((int)t-temp > onsetWaitTime)
 	    {
 	      flag = 0;
 	    }
@@ -849,7 +849,7 @@ void readFrettoPitch(mrs_real length)
     realvec fret;
     fret.read("A_120_fret_20.txt");
 
-    for (mrs_natural t = 0; t < fret.getSize(); t++)
+    for (size_t t = 0; t < fret.getSize(); t++)
       {
 	// Ma - F# 
 	if ((fret(t) > 0) && (fret(t) < 5))
@@ -1256,7 +1256,7 @@ int main(int argc, const char **argv)
         Collection l;
         l.read("rms.mf");
 
-        for (int i=0; i < l.size(); i++)
+        for (size_t i=0; i < l.size(); ++i)
         {
             readRMSmake( lengthopt, l.entry(i) );
         }
@@ -1291,7 +1291,7 @@ void drumExtract(vector<Collection> cls, string classNames)
     realvec in(inObservations, inSamples);
     realvec out(inObservations, inSamples);
 
-    mrs_natural cj,i;
+    mrs_natural cj;
     mrs_natural win = 0;
     mrs_natural startPos = 0;
     mrs_natural endPos = 0;
@@ -1339,7 +1339,7 @@ void drumExtract(vector<Collection> cls, string classNames)
         Collection l = cls[cj];
         extractNet->updctrl("Annotator/ann/mrs_natural/label", cj);
 
-        for (i=0; i < l.size(); i++)
+        for (size_t i=0; i < l.size(); ++i)
         { 
             win = 0;
             startPos = 0;

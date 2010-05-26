@@ -55,6 +55,7 @@ Transposer::myUpdate(MarControlPtr sender)
 void 
 Transposer::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// copy all values but switch the dimensions
 	// if input has [m,n] then output has [n,m]
 	for (o=0; o < inObservations_; o++)

@@ -97,7 +97,7 @@ ClassOutputSink::myUpdate(MarControlPtr sender)
 
   string temp;  
 
-  for (int i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); i++)
+  for (int i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); ++i)
     {
       string labelName;
 
@@ -120,6 +120,7 @@ ClassOutputSink::myProcess(realvec& in, realvec& out)
   
   mrs_natural p;
   mrs_natural g;
+	mrs_natural o,t;
   
   
   for (o=0; o < inObservations_; o++)

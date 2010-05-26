@@ -103,12 +103,12 @@ SVMClassifier::~SVMClassifier() {
 	   free(svm_model_->label);
 	   free(svm_model_->nSV);
 	   free(svm_model_->SV);
-	   for (int i=0; i < svm_model_->nr_class-1; i++) 
+	   for (int i=0; i < svm_model_->nr_class-1; ++i) 
 		free(svm_model_->sv_coef[i]);
 	   free(svm_model_->sv_coef);
 
 	   mrs_natural nInstances = instances_.getRows();
-	   for (int i=0; i < nInstances; i++) 
+	   for (int i=0; i < nInstances; ++i) 
 	       free(svm_prob_.x[i]);
 
 	         free(svm_prob_.x); 
@@ -231,7 +231,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			if (svm_param_.nr_weight) {
 				svm_param_.weight_label = Malloc(int,svm_param_.nr_weight);
 				svm_param_.weight = Malloc(double,svm_param_.nr_weight);
-				for (int i=0; i < svm_param_.nr_weight-1; i++) {
+				for (int i=0; i < svm_param_.nr_weight-1; ++i) {
 					svm_param_.weight_label[i]
 						= (int)ctrl_weight_label_->to<realvec>()(i);
 					svm_param_.weight[i]
@@ -252,13 +252,13 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			int l;
 			mrs_bool seen;
 			
-			for (int i=0; i < nInstances; i++)
+			for (int i=0; i < nInstances; ++i)
 			{
 				l = instances_.GetClass(i);
 				
 				svm_prob_.y[i] = l;
 				seen = false;
-				for (int j=0; j < classPerms_.size(); j++) 
+				for (size_t j=0; j < classPerms_.size(); j++) 
 				{
 					if (l == classPerms_[j])
 						seen = true;
@@ -273,13 +273,13 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			  realvec& classPerms = acc_classPerms.to<mrs_realvec>();
 			  classPerms.create(classPerms_.size());
 
-			  for (int i=0; i < classPerms_.size(); i++) 
+			  for (size_t i=0; i < classPerms_.size(); ++i) 
 			    {
 			      classPerms(i) = classPerms_[i];
 			    }
 			}
 			
-			for (int i=0; i < nInstances; i++) {
+			for (int i=0; i < nInstances; ++i) {
 				svm_prob_.x[i] = new svm_node[inObservations_];
 				for (int j=0; j < inObservations_; j++) {
 					if (j < inObservations_ -1) {
@@ -327,7 +327,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			sv_coef.stretch(svm_model_->nr_class-1,n);
 			SV.stretch(n, (inObservations_-1));
 
-			for (int i=0; i<n; i++) {
+			for (int i=0; i<n; ++i) {
 				for (int j=0; j<svm_model_->nr_class-1; j++)
 					sv_coef(j, i)=svm_model_->sv_coef[j][i];
 				const svm_node *p = svm_model_->SV[i];
@@ -352,7 +352,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				realvec& rho = acc_rho.to<mrs_realvec>();
 				n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
 				rho.stretch(n);
-				for (int i=0; i<n; i++)
+				for (int i=0; i<n; ++i)
 					rho(i)=svm_model_->rho[i];
 			}
 			
@@ -361,7 +361,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				realvec& probA = acc_probA.to<mrs_realvec>();
 				n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
 				probA.stretch(n);
-				for (int i=0; i<n; i++)
+				for (int i=0; i<n; ++i)
 					probA(i)=svm_model_->probA[i];
 			}
 			
@@ -370,7 +370,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				realvec& probB = acc_probB.to<mrs_realvec>();
 				n = svm_model_->nr_class*(svm_model_->nr_class-1)/2;
 				probB.stretch(n+1);
-				for (int i=0; i<n; i++)
+				for (int i=0; i<n; ++i)
 					probB(i)=svm_model_->probB[i];
 			}
 			
@@ -379,7 +379,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				realvec& label = acc_label.to<mrs_realvec>();
 				n = svm_model_->nr_class;
 				label.stretch(n);
-				for (int i=0; i<n; i++)
+				for (int i=0; i<n; ++i)
 					label(i)=svm_model_->label[i];
 			}
 			
@@ -388,7 +388,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				realvec& nSV = acc_nSV.to<mrs_realvec>();
 				n = svm_model_->nr_class;
 				nSV.stretch(n);
-				for (int i=0; i<n; i++)
+				for (int i=0; i<n; ++i)
 					nSV(i)=svm_model_->nSV[i];
 			}
 			
@@ -445,7 +445,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				  MarControlAccessor acc_classPerms(ctrl_classPerms_);
 				  realvec& classPerms = acc_classPerms.to<mrs_realvec>();
 				  classPerms_.clear();
-				  for (int i=0; i < classPerms.getSize(); i++)
+				  for (size_t i=0; i < classPerms.getSize(); ++i)
 				    {
 				      classPerms_.push_back(classPerms(i));
 				    }
@@ -482,7 +482,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				if (ctrl_rho_->to<realvec>().getSize()) //rho
 				{
 					svm_model_->rho = Malloc(double,m);
-					for (int i=0; i<m; i++)
+					for (int i=0; i<m; ++i)
 						svm_model_->rho[i]= ctrl_rho_->to<realvec>()(i);
 				}
 				else
@@ -491,7 +491,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				if (ctrl_probA_->to<realvec>().getSize()) //probA
 				{
 					svm_model_->probA = Malloc(double,m);
-					for (int i=0; i<m; i++)
+					for (int i=0; i<m; ++i)
 						svm_model_->probA[i] = ctrl_probA_->to<realvec>()(i);
 				}
 				else 
@@ -500,7 +500,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				if (ctrl_probB_->to<realvec>().getSize()) //probB
 				{
 					svm_model_->probB = Malloc(double,m);
-					for (int i=0; i<m; i++)
+					for (int i=0; i<m; ++i)
 						svm_model_->probB[i]=ctrl_probB_->to<realvec>()(i);
 				}
 				else 
@@ -509,7 +509,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				if (ctrl_label_->to<realvec>().getSize()) //label
 				{
 					svm_model_->label = Malloc(int,n);
-					for (int i=0; i<n; i++)
+					for (int i=0; i<n; ++i)
 						svm_model_->label[i]
 								= (int)ctrl_label_->to<realvec>()(i);
 				}
@@ -519,7 +519,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				if (ctrl_nSV_->to<realvec>().getSize()) //nr_sv 
 				{
 					svm_model_->nSV = Malloc(int,n);
-					for (int i=0; i<n; i++)
+					for (int i=0; i<n; ++i)
 						svm_model_->nSV[i]=(int)ctrl_nSV_->to<realvec>()(i);
 				}
 				else 
@@ -528,35 +528,35 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 #ifdef MARSYAS_LOG_DEBUGS
 				if (svm_model_->rho) {
 					MRSDEBUG("svm_model_->rho =");
-					for (int i=0; i<m; i++)
+					for (int i=0; i<m; ++i)
 						cout << " "<< svm_model_->rho[i];
 					cout << endl;;
 				}
 
 				if (svm_model_->probA) {
 					MRSDEBUG("svm_model_->probA =");
-					for (int i=0; i<m; i++)
+					for (int i=0; i<m; ++i)
 						cout << " " << svm_model_->probA[i];
 					cout << endl;;
 				}
 
 				if (svm_model_->probB) {
 					MRSDEBUG("svm_model_->probB =");
-					for (int i=0; i<m; i++)
+					for (int i=0; i<m; ++i)
 						cout << " " << svm_model_->probB[i];
 					cout << endl;;
 				}
 
 				if (svm_model_->label) {
 					MRSDEBUG("svm_model_->label =");
-					for (int i=0; i<n; i++)
+					for (int i=0; i<n; ++i)
 						cout << " " << svm_model_->label[i];
 					cout << endl;;
 				}
 
 				if (svm_model_->nSV) {
 					MRSDEBUG("svm_model_->nSV =");
-					for (int i=0; i<n; i++)
+					for (int i=0; i<n; ++i)
 						cout << " " << svm_model_->nSV[i];
 					cout << endl;;
 				}
@@ -568,9 +568,9 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				if (ctrl_sv_coef_->to<realvec>().getSize()) // sv_coef
 				{
 					svm_model_->sv_coef = Malloc(double *,n);
-					for (int i=0; i<n; i++)
+					for (int i=0; i<n; ++i)
 						svm_model_->sv_coef[i] = Malloc(double,l);
-					for (int i=0; i<l; i++)
+					for (int i=0; i<l; ++i)
 						for (int k=0; k<n; k++)
 							svm_model_->sv_coef[k][i]
 									=ctrl_sv_coef_->to<realvec>()(k, i);
@@ -583,7 +583,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 					if (l>0)
 						x_space = Malloc(svm_node, 2*m*l);
 					int j=0;
-					for (int i=0; i<l; i++) {
+					for (int i=0; i<l; ++i) {
 						svm_model_->SV[i] = &x_space[j];
 						for (int k = 0; k < m; k++) {
 							x_space[j].index = k+1;
@@ -599,7 +599,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				MRSDEBUG ("svm_model_->SV = ");
 
 				{
-					for (int i=0; i<l; i++) {
+					for (int i=0; i<l; ++i) {
 						for (int j=0; j<n; j++) {
 							if (svm_model_->sv_coef)
 								cout <<svm_model_->sv_coef[j][i] << " ";
@@ -625,7 +625,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 					MRSDEBUG ("mini/maxi : ");
 					realvec mini = ctrl_minimums_->to<mrs_realvec>();
 					realvec maxi = ctrl_maximums_->to<mrs_realvec>();
-					for (int i=0; i<inObservations_ -1; i++)
+					for (int i=0; i<inObservations_ -1; ++i)
 						cout << "mini(" << i << ")" << mini(i) << "  maxi("
 								<< i << ")" << maxi(i) << endl;
 				}
@@ -638,7 +638,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 		realvec mini = ctrl_minimums_->to<mrs_realvec>();
 		realvec maxi = ctrl_maximums_->to<mrs_realvec>();
 
-		for (int i=0; i<inObservations_ -1; i++)
+		for (int i=0; i<inObservations_ -1; ++i)
 			in(i, 0) = (in(i, 0) - mini(i)) / (maxi(i) - mini(i));
 
 		for (int j=0; j < inObservations_; j++) {
@@ -659,7 +659,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 		    prediction = svm_predict(svm_model_, xv);
 		  }
 
-		for (int i=0; i < svm_model_->nr_class; i++) 
+		for (int i=0; i < svm_model_->nr_class; ++i) 
 		  {
 		    out(2 + classPerms_[i], 0) = probs[i];
 		  }

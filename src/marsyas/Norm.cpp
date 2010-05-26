@@ -41,6 +41,7 @@ Norm::myProcess(realvec& in, realvec& out)
 	realvec row(inSamples_);
 	mrs_real mean;
 	mrs_real std;
+	mrs_natural t,o;
 
 	for (o=0; o < inObservations_; o++)
 	{

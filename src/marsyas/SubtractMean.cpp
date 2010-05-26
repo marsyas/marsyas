@@ -53,6 +53,7 @@ void SubtractMean::myUpdate(MarControlPtr sender)
 
 void SubtractMean::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	mrs_real mean;
 	/// Iterate over the observations and samples and do the processing.
 	for (o = 0; o < inObservations_; o++)

@@ -65,6 +65,7 @@ GaussianClassifier::addControls()
 void
 GaussianClassifier::myUpdate(MarControlPtr sender)
 {
+	mrs_natural o;
 	(void) sender;
 	MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
@@ -128,7 +129,7 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 void 
 GaussianClassifier::myProcess(realvec& in, realvec& out)
 {
-
+	mrs_natural o,t;
 	mrs_real v;
 	string mode = ctrl_mode_->to<string>();
 	mrs_natural nClasses = ctrl_nClasses_->to<mrs_natural>();

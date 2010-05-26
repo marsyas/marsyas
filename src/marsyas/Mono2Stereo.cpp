@@ -85,6 +85,7 @@ Mono2Stereo::myUpdate(MarControlPtr sender)
 void 
 Mono2Stereo::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
   if (inObservations_ != 1) 	// not mono - just pass through
     {
       for (o=0; o < inObservations_; o++)

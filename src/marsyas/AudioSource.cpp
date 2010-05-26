@@ -220,7 +220,7 @@ AudioSource::localActivate(bool state)
 void 
 AudioSource::myProcess(realvec& in, realvec& out)
 {
-
+	mrs_natural t,o;
 	(void) in;
 
   //check if RtAudio is initialized

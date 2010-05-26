@@ -50,12 +50,11 @@ DTWWD::addControls()
 void DTWWD::myUpdate(MarControlPtr sender)
 {
   (void) sender;
-  
   ctrl_onSamples_->setValue(2,NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_inSamples_+ctrl_inObservations_, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_osrate_,NOUPDATE);
   ostringstream oss;
-  for(o=0; o<ctrl_onObservations_->to<mrs_natural>(); ++o)
+  for(mrs_natural o=0; o<ctrl_onObservations_->to<mrs_natural>(); ++o)
     oss << "DTWWD_" << o << ",";
   ctrl_onObsNames_->setValue(oss.str(), NOUPDATE); 
 
@@ -64,7 +63,7 @@ void DTWWD::myUpdate(MarControlPtr sender)
   if(tmpvec.getRows() == 1 && tmpvec.getCols() >= 2)
     {
       sizes_.create(tmpvec.getCols());
-      for(mrs_natural i=0; i<tmpvec.getCols(); i++)
+      for(mrs_natural i=0; i<tmpvec.getCols(); ++i)
 	{
 	  sizes_(i) = (mrs_natural)tmpvec(0,i);
 	}
@@ -72,7 +71,7 @@ void DTWWD::myUpdate(MarControlPtr sender)
   else if(tmpvec.getRows() >= 2 && tmpvec.getCols() == 1)
     {
       sizes_.create(tmpvec.getRows());
-      for(mrs_natural i=0; i<tmpvec.getRows(); i++)
+      for(mrs_natural i=0; i<tmpvec.getRows(); ++i)
 	{
 	  sizes_(i) = (mrs_natural)tmpvec(i,0);
 	}
@@ -132,7 +131,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 	      if((nSmp > 2*nObs || nObs > 2*nSmp) && ctrl_localPath_->to<mrs_string>() == "diagonal")
 		MRSWARN("DTWWD::myProcess - invalid local path control: diagonal (processes with normal local path)");
 
-	      for(i=0; i<2; i++)
+	      for(i=0; i<2; ++i)
 		{
 		  matrixPos_(i) = i;
 		}
@@ -160,7 +159,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		    }
 		}
 	      // after first col
-	      for(i=1; i<nSmp; i++)
+	      for(i=1; i<nSmp; ++i)
 		{
 		  costMatrix_(0,matrixPos_(1)) = costMatrix_(0,matrixPos_(0)) + in(0,i);
 		  alignment_(0,i) = 3;
@@ -188,7 +187,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		}
 	 
 	      // backtrace
-	      for(i=0; i<out.getRows(); i++)
+	      for(i=0; i<out.getRows(); ++i)
 		{
 		  for(j=0; j<out.getCols(); j++)
 		    {
@@ -206,7 +205,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		{
 		  tmpReal = costMatrix_(0, matrixPos_(0));
 		  j = 0;
-		  for(i=1; i<nObs; i++)
+		  for(i=1; i<nObs; ++i)
 		    {
 		      if(costMatrix_(i, matrixPos_(0)) < tmpReal)
 			{
@@ -256,7 +255,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 
 	  else if(ctrl_localPath_->to<mrs_string>() == "diagonal")
 	    {
-	      for(i=0; i<3; i++)
+	      for(i=0; i<3; ++i)
 		{
 		  matrixPos_(i) = i;
 		}
@@ -358,14 +357,14 @@ DTWWD::myProcess(realvec& in, realvec& out)
 			}
 		    }
 		}
-	      for(i=0; i<3; i++)
+	      for(i=0; i<3; ++i)
 		{
 		  matrixPos_(i)++;
 		  if(matrixPos_(i)>=3)
 		    matrixPos_(i) = 0;
 		}
 	      // after third col
-	      for(i=3; i<nSmp; i++)
+	      for(i=3; i<nSmp; ++i)
 		{
 		  for(j=2; j<nObs; j++)
 		    {
@@ -429,7 +428,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		}
 	      
 	      // backtrace
-	      for(i=0; i<out.getRows(); i++)
+	      for(i=0; i<out.getRows(); ++i)
 		{
 		  for(j=0; j<out.getCols(); j++)
 		    {
@@ -447,7 +446,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		{
 		  tmpReal = costMatrix_(nObs-1, matrixPos_(1));
 		  j = nObs-1;
-		  for(i=0; i<nObs-1; i++)
+		  for(i=0; i<nObs-1; ++i)
 		    {
 		      if(costMatrix_(i, matrixPos_(1)) < tmpReal && alignment_(i,nSmp-1) != 0)
 			{
@@ -526,7 +525,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 	      
 	      if(ctrl_localPath_->to<mrs_string>() == "normal")
 		{
-		  for(i=0; i<2; i++)
+		  for(i=0; i<2; ++i)
 		    {
 		      matrixPos_(i) = i;
 		    }
@@ -560,7 +559,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 			}
 		    }
 		  // after first col
-		  for(i=1; i<nSmp; i++)
+		  for(i=1; i<nSmp; ++i)
 		    {
 		      for(l=0; l<nTemplates; l++)
 			{
@@ -600,7 +599,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		    }
 		  
 		  // backtrace
-		  for(i=0; i<out.getRows(); i++)
+		  for(i=0; i<out.getRows(); ++i)
 		    {
 		      for(j=0; j<out.getCols(); j++)
 			{
@@ -627,7 +626,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		    {
 		      tmpReal = costMatrix_(0, matrixPos_(0));
 		      j=0;
-		      for(i=1; i<nObs; i++)
+		      for(i=1; i<nObs; ++i)
 			{
 			  if(costMatrix_(i,matrixPos_(0)) < tmpReal)
 			    {
@@ -690,7 +689,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		}
 	      else if(ctrl_localPath_->to<mrs_string>() == "diagonal")
 		{
-		  for(i=0; i<3; i++)
+		  for(i=0; i<3; ++i)
 		    {
 		      matrixPos_(i) = i;
 		    }
@@ -865,14 +864,14 @@ DTWWD::myProcess(realvec& in, realvec& out)
 			    }
 			}
 		    }
-		  for(i=0; i<3; i++)
+		  for(i=0; i<3; ++i)
 		    {
 		      matrixPos_(i)++;
 		      if(matrixPos_(i)>=3)
 			matrixPos_(i) = 0;
 		    }
 		  // after third col
-		  for(i=3; i<nSmp; i++)
+		  for(i=3; i<nSmp; ++i)
 		    {
 		      j = -1;
 		      for(l=0; l<nTemplates; l++)
@@ -1038,7 +1037,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		    }
 		  
 		  // backtrace
-		  for(i=0; i<out.getRows(); i++)
+		  for(i=0; i<out.getRows(); ++i)
 		    {
 		      for(j=0; j<out.getCols(); j++)
 			{
@@ -1065,7 +1064,7 @@ DTWWD::myProcess(realvec& in, realvec& out)
 		    {
 		      tmpReal = costMatrix_(0,matrixPos_(1));
 		      j=0;
-		      for(i=1; i<nObs; i++)
+		      for(i=1; i<nObs; ++i)
 			{
 			  if(costMatrix_(i,matrixPos_(1)) < tmpReal)
 			    {

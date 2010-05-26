@@ -81,7 +81,7 @@ SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
 		ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 		ctrl_osrate_->setValue(ctrl_osrate_, NOUPDATE); //[?]
 		ostringstream oss;
-		for(o=0; o < ctrl_onObservations_->to<mrs_natural>(); ++o)
+		for(mrs_natural o=0; o < ctrl_onObservations_->to<mrs_natural>(); ++o)
 			oss << "SelfSimilarityMatrix_" << o << ",";
 		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 		

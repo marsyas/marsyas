@@ -65,7 +65,8 @@ PvFold::addControls()
 void
 PvFold::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	
+  mrs_natural t;
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/FFTSize"));
   setctrl("mrs_natural/onObservations", (mrs_natural)1);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
@@ -130,8 +131,7 @@ void
 PvFold::myProcess(realvec& in, realvec& out)
 {
 
-	
-	// mrs_real rmsIn = 0.0;
+	mrs_natural t;
 	
 	for (t=0; t < Nw_; t++)
     {

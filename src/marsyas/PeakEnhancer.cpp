@@ -147,12 +147,12 @@ PeakEnhancer::myProcess(realvec& in, realvec& out)
 		temp2.setval(0.0);
 
 		//timestretching via resampling using upsampling and lowpass filteing (discarding (ctrl_itnum_-1)/ctrl_itnum_ of the data )
-		for (mrs_natural i=0; i<inSamples_/ctrl_itnum_->to<mrs_natural>(); i++) 
+		for (mrs_natural i=0; i<inSamples_/ctrl_itnum_->to<mrs_natural>(); ++i) 
 			temp2(ctrl_itnum_->to<mrs_natural>()*i)=temp(i);
 		
 		lowpass_->process(temp2, temp3);
 
-		for(mrs_natural i=0;i<inSamples_;i++)
+		for(mrs_natural i=0;i<inSamples_;++i)
 		{
 			out(i)=in(o,i)-temp3(i);
 		}

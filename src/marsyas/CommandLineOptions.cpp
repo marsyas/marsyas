@@ -92,7 +92,7 @@ CommandLineOptions::addStringOption(string lname,string sname,string value)
 void 
 CommandLineOptions::readOptions(int argc, const char **argv)
 {
-	for (int i=0; i < argc; i++)
+	for (int i=0; i < argc; ++i)
 	{
 		arguments_.push_back(argv[i]);
 	}
@@ -101,7 +101,7 @@ CommandLineOptions::readOptions(int argc, const char **argv)
 	string argument;
 	bool notFound = true;
 
-	for (int i=1; i < argc; i++)
+	for (int i=1; i < argc; ++i)
 	{
 		argument = arguments_[i];
 		if (argument.substr(0,1) == "-")
@@ -127,7 +127,7 @@ CommandLineOptions::readOptions(int argc, const char **argv)
 			{
 				if (i < argc -1) 
 					naturalOptions_[key] = atoi((arguments_[i+1]).c_str());
-				i++;
+				++i;
 				notFound = false;
 			}
 
@@ -136,7 +136,7 @@ CommandLineOptions::readOptions(int argc, const char **argv)
 			{
 				if (i < argc -1) 
 					realOptions_[key] = (mrs_real)atof((arguments_[i+1]).c_str());
-				i++;
+				++i;
 				notFound = false;
 			}
 
@@ -145,7 +145,7 @@ CommandLineOptions::readOptions(int argc, const char **argv)
 			{
 				if (i < argc -1) 
 					stringOptions_[key] = (arguments_[i+1]).c_str();
-				i++;
+				++i;
 				notFound = false;
 			}
 

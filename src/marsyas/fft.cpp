@@ -83,7 +83,7 @@ fft::rfft( mrs_real x[], int  N, int forward )
 	wpr = (mrs_real)(-2.*pow( sin( 0.5*theta ), 2. ));
 	wpi = sin( theta ) ;
 	N2p1 = (N<<1) + 1 ;
-	for ( i = 0 ; i <= N>>1 ; i++ ) 
+	for ( i = 0 ; i <= N>>1 ; ++i ) 
 	{
 		i1 = i<<1 ;
 		i2 = i1 + 1 ;

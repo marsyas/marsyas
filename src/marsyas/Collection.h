@@ -49,11 +49,11 @@ private:
 public:
   Collection();
   ~Collection();
-  mrs_natural size();
+  size_t size();
   void setName(std::string name);
-  std::string entry(unsigned int i);
-  std::string labelEntry(unsigned int i);
-  mrs_natural getSize();
+  std::string entry(uint32_t i);
+  std::string labelEntry(uint32_t i);
+  size_t getSize();
   mrs_natural getNumLabels();
   mrs_string getLabelNames();
   mrs_natural labelNum(mrs_string label); 

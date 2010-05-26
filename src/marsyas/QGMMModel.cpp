@@ -190,7 +190,7 @@ QGMMModel::BICdistance(realvec &covMatrix, mrs_natural Nframes, mrs_real lambda)
 
 	//mrs_natural curMix = nrGSMixes_ - 1;
 
-	for(mrs_natural i = 0; i < nrGSMixes_; i++)
+	for(mrs_natural i = 0; i < nrGSMixes_; ++i)
 	{
 		realvec combinedModel = updateCovModel(GSmixCovMatrix_[i],GSmixNrFrames_[i],
 			covMatrix, Nframes);

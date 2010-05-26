@@ -62,7 +62,7 @@ Subtract::myUpdate(MarControlPtr sender)
 void
 Subtract::myProcess(realvec& in, realvec& out)
 {
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 		out(0,t) = in(0,t) - in(1,t);
 }
 

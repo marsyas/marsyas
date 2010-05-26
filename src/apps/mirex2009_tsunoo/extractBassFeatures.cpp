@@ -22,7 +22,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 {
 	MarSystemManager mng;
 
-	mrs_natural i, j, k, m, tmpint1, tmpint2/*, maxnum*/;
+	mrs_natural j, k, tmpint1, tmpint2/*, maxnum*/;
 	//mrs_real tmpreal, max, samplingFreq;
 	realvec omegaHat, vHat, sigmaHat, sumW;
 	realvec freq, time, W, seg, tmpvec, /*tmpvec2, */tmpvec3, /*tmpvec4,*/ tmpObs;
@@ -60,14 +60,14 @@ void recognize(string sfName, string segName, string tempName, string outName)
 
 	oss.str("");
 	tmpint1 = tmpint2 = 0;
-	for(i=0; i<tempfiles.size(); i++){
+	for(size_t i=0; i<tempfiles.size(); ++i){
 	  tmpvec.read(tempfiles.entry(i));
 	  tmpint1 += tmpvec.getCols();
 	}
 	tmpvec.read(tempfiles.entry(0));
 	temporg.create(tmpvec.getRows(), tmpint1);
 	genres.create(tmpint1/NDEVISION);
-	for(i=0; i<tempfiles.size(); i++){
+	for(size_t i=0; i<tempfiles.size(); ++i){
 	  tmpvec.read(tempfiles.entry(i));
 	  tmpint1 = tmpint2;
 	  tmpint2 = tmpint1 + tmpvec.getCols();
@@ -157,7 +157,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	*/
 	/*** set controls to bass map (matching) ***/
 
-	mbm->setctrl("mrs_natural/nTemplates", NTEMPLATES*tempfiles.size());
+	mbm->setctrl("mrs_natural/nTemplates", (uint32_t)(NTEMPLATES*tempfiles.size()));
 	mbm->setctrl("mrs_natural/nDevision", NDEVISION);
 	mbm->setctrl("mrs_real/lowFreq", ANALYZELOWFREQ);
 	mbm->setctrl("mrs_real/highFreq", ANALYZEHIGHFREQ);
@@ -172,7 +172,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	templates = temporg;
 	mbm->setctrl("mrs_realvec/templates", templates);
 	mbm->update();
-	for(m=0; m<inputs.size(); m++){
+	for(size_t m=0; m<inputs.size(); m++){
 	  // load input file
 	  src->setctrl("mrs_string/filename", inputs.entry(m));
 	  src->update();
@@ -206,34 +206,34 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	  kVec[m] = mbm->getctrl("mrs_realvec/selections")->to<mrs_realvec>();
 	  cout << "Analyzing file:" << inputs.entry(m) << endl;
 	  distance = mbm->getctrl("mrs_realvec/distance")->to<mrs_realvec>();
-	  /*for(i=0; i<hist.getRows(); i++){
+	  /*for(i=0; i<hist.getRows(); ++i){
 	    hist(i,0) = 0;
 	  }
-	  for(i=0; i<hist2.getRows(); i++){
+	  for(i=0; i<hist2.getRows(); ++i){
 	    hist2(i,0) = 0;
 	  }
 	  tmpint1 = 0;
-	  for(i=0; i<kVec[m].getSize(); i++){
+	  for(i=0; i<kVec[m].getSize(); ++i){
 	    hist(genres(kVec[m](i)),0)++;
 	    tmpint1++;
 	    hist2(kVec[m](i),0)++;
 	  }
-	  for(i=0; i<hist.getRows(); i++){
+	  for(i=0; i<hist.getRows(); ++i){
 	    hist(i,0) /= tmpint1;
 	  }
-	  for(i=0; i<hist2.getRows(); i++){
+	  for(i=0; i<hist2.getRows(); ++i){
 	    hist2(i,0) /= tmpint1;
 	  }
 	  max = 0.0;
 	  maxnum = 0;
-	  for(i=0; i<hist.getRows(); i++){
+	  for(i=0; i<hist.getRows(); ++i){
 	    if(max < hist(i,0)){
 	      max = hist(i,0);
 	      maxnum = i;
 	    }
 	  }
 	  */
-	  for(i=0; i<hist3.getRows(); i++){
+	  for(mrs_natural i=0; i<hist3.getRows(); ++i){
 	    distance.getRow(i,tmpObs);
 	    hist3(i,0) = tmpObs.mean();
 	    //hist4(i,0) = tmpObs.mean();

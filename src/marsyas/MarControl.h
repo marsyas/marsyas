@@ -90,6 +90,8 @@ public:
 	inline MarControlPtr(std::string st);
 	inline MarControlPtr(bool be);
 	inline MarControlPtr(realvec ve);
+	inline MarControlPtr(uint32_t ne);
+	inline MarControlPtr(size_t ne);
 
 	// generic type constructor
 	inline MarControlPtr(MarControl *control);
@@ -250,6 +252,20 @@ inline MarControlPtr::MarControlPtr(MarControlValue *value)
 }
 
 inline MarControlPtr::MarControlPtr(int ne)
+{
+	control_ = new MarControl((mrs_natural)ne);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+inline MarControlPtr::MarControlPtr(uint32_t ne)
+{
+	control_ = new MarControl((mrs_natural)ne);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+inline MarControlPtr::MarControlPtr(size_t ne)
 {
 	control_ = new MarControl((mrs_natural)ne);
 	control_->ref();

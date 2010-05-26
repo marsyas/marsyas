@@ -95,6 +95,7 @@ Metric::myUpdate(MarControlPtr sender)
 void 
 Metric::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	if(metricFunc_)
 	{
 		//get the two stacked vectors from the input

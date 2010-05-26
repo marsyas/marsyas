@@ -93,7 +93,7 @@ PhiSEMFilter::myUpdate(MarControlPtr sender) {
 	output_ = new mrs_realpair[numFilters * 2];
 
 	cout << "Num Filters: " << numFilters << endl;
-	for(int i=0; i < numFilters; i++) {
+	for(int i=0; i < numFilters; ++i) {
 		coeffs_[i].zero = 1.0 - resVec_(i) * 2.0 * cos(freqVec_(i) * TWOPI / israte_);
 		coeffs_[i].one = resVec_(i) * resVec_(i); 
 		output_[i].zero = output_[i].one = 0.0;
@@ -109,10 +109,11 @@ void
 PhiSEMFilter::myProcess(realvec& in, realvec& out) {
 	mrs_real temp = 0.0;
 	mrs_real output = 0.0;
+	mrs_natural t,o;
 	for (o=0; o < inObservations_; o++ ) {
 		for (t=0; t < inSamples_; t++ ) {
 			//apply each filter
-			for(int i=0; i < numFilters_->to<mrs_natural>(); i++) {
+			for(int i=0; i < numFilters_->to<mrs_natural>(); ++i) {
 				temp = in(o,t);
 				temp -= output_[i].zero * coeffs_[i].zero;
 				temp -= output_[i].one * coeffs_[i].one;

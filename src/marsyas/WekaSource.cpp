@@ -140,7 +140,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 				first = false;
 			}//if
 		}
-		MRSASSERT(index==attributesIncluded_.size());
+		MRSASSERT(index == (int)attributesIncluded_.size());
 	  
 	  setctrl("mrs_string/attributeNames", names);
 	  setctrl("mrs_natural/onSamples", 1);
@@ -208,7 +208,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 				foldClassData_.resize(classesFound_.size());
 			  
 				//load each dataset with rows for each class
-				for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ii++)
+				for(mrs_natural ii=0; ii<(mrs_natural)classesFound_.size(); ++ii)
 				{
 					WekaFoldData data;
 					data.setFold(true);
@@ -304,7 +304,7 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
     {
 		this->updctrl("mrs_bool/done", true);
     }
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0) = row->at(ii);
 		this->updctrl("mrs_string/currentFilename", fname); //???: why are we always updating this control to fname?? (which does not change inside the for loop...)
@@ -335,7 +335,7 @@ WekaSource::handleInstancePair(realvec& out)
 	rowi = data_.at(i);
 	rowj = data_.at(j);
 	
-	for(mrs_natural ii=0; ii<(mrs_natural)rowi->size(); ii++)
+	for(mrs_natural ii=0; ii<(mrs_natural)rowi->size(); ++ii)
 	{
 		out(ii, 0) = rowi->at(ii);
 		out(ii, 1) = rowj->at(ii);
@@ -367,7 +367,7 @@ void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
 		}//if
     }//else
 //  MRSASSERT(row->size()==out.getCols()); //[!]
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0) = row->at(ii);
     }//for ii
@@ -396,8 +396,8 @@ void WekaSource::handleUseTestSet(bool trainMode, realvec &out)
 			currentIndex_ = 0;
 		}
     }//else
-	MRSASSERT(row->size()==out.getCols());
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+	MRSASSERT((int)row->size() == out.getCols());
+	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0 ) = row->at(ii);
     }//for ii
@@ -451,8 +451,8 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
     }//switch
 
 
-	MRSASSERT(row->size()==out.getRows());
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+	MRSASSERT((int)row->size() == out.getRows());
+	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0) = row->at(ii);
     }//for ii
@@ -471,8 +471,8 @@ void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 	else if(next == WekaFoldData::Predict && trainMode)
 		this->updctrl("mrs_string/mode", "predict");
 
-	MRSASSERT(row->size()==out.getCols());
-	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ii++)
+	MRSASSERT((int) row->size() == out.getCols());
+	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0) = row->at(ii);
     }//for ii
@@ -616,7 +616,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 			vector<mrs_real> *lineBuffer = new vector<mrs_real>(attributesIncludedList_.size()+1);
 	  
 			mrs_natural index = 0;
-			for(mrs_natural ii=0; ii < (mrs_natural)attributesFound_.size(); ii++)
+			for(mrs_natural ii=0; ii < (mrs_natural)attributesFound_.size(); ++ii)
 			{
 				MRSASSERT( cp!=NULL );
 				if(attributesIncluded_[ii])
@@ -625,7 +625,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 				}
 				cp = strtok(NULL, ",");
 			}//for index
-			MRSASSERT(index==lineBuffer->size()-1);
+			MRSASSERT(index == (int)lineBuffer->size()-1);
 	  
 			//now extract the class name for this record
 			MRSASSERT( cp!=NULL );
@@ -698,7 +698,7 @@ mrs_natural WekaSource::parseAttribute(const char *attribute) const
 	if(ret >= 0) return ret;
 
 	//otherwise, check if the string is a valid integer. If not return -1
-	for(mrs_natural ii=0; attribute[ii]!='\0'; ii++)
+	for(mrs_natural ii=0; attribute[ii]!='\0'; ++ii)
 		if(!isdigit(attribute[ii]))
 			return -1;
 
@@ -729,7 +729,7 @@ void WekaSource::parseAttributesToInclude(const std::string& attributesToInclude
     {
 
 		attributesIncludedList_.assign(attributesFound_.begin(), attributesFound_.end());
-		for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
+		for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ++ii)
 		{
 			attributesIncluded_[ii] = true;
 
@@ -739,7 +739,7 @@ void WekaSource::parseAttributesToInclude(const std::string& attributesToInclude
     }//if
 
 	//Otherwise lets assume all attributes are out for now
-	for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
+	for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ++ii)
 		attributesIncluded_[ii] = false;
 
 	//get a copy of the attributes to include list and start parsing for the "," seperators
@@ -768,7 +768,7 @@ void WekaSource::parseAttributesToInclude(const std::string& attributesToInclude
 			MRSASSERT(right>=left);
 
 			//and set the attributes included flag for this range of attributes
-			for(mrs_natural ii=left; ii<=right; ii++)
+			for(mrs_natural ii=left; ii<=right; ++ii)
 				attributesIncluded_[ii] = true;
 		}//if
 		//No "-" seperator, just parse this one attribute or index
@@ -786,7 +786,7 @@ void WekaSource::parseAttributesToInclude(const std::string& attributesToInclude
 	//Now build the attributes included list from the original attributes found list.
 	//Use the included flags array to determine which attributes to copy
 	attributesIncludedList_.clear();
-	for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ii++)
+	for(mrs_natural ii=0; ii<(mrs_natural)attributesIncluded_.size(); ++ii)
     {
 		if(attributesIncluded_[ii])
 			attributesIncludedList_.push_back(attributesFound_[ii]);

@@ -43,6 +43,7 @@ SliceDelta::myUpdate(MarControlPtr sender)
 void
 SliceDelta::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	// Iterate over observations and samples.
 	for (o=0; o < inObservations_; o++)
 	{

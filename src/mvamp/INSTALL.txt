@@ -47,7 +47,7 @@ Tested in 10.6 with gcc 4.2 for i386 and x86_64, linking to both the static and 
 	If the VAMP plugin sdk is compiled and installed using the default procedure the libraries and the include files will be located in /usr/local/lib and /usr/local/include. When in ccmake WITH_VAMP is toggled to ON, VAMP_LIBRARY and VAMP_INCLUDE_DIR are set to these default paths. Change them in order to reflect your own system paths if necessary
 	
 	- Build using gmake. If you generate an XCode project, the mvamp target won't be included so you'll need to build using plain "make".
-	- The resulting library should be located at build_dir/lib/libmvamp.dylib
+	- The resulting library should be located at your_build_dir/lib/libmvamp.dylib
 
 2. (optional) Testing your plugin with vamp-plugin-tester. Assuming that vamp-plugin-tester is located somewhere in your $PATH.
 	From the cmake build directory execute the plugin tester with it's plugin search path pointing to the mvamp library directory:

@@ -74,7 +74,7 @@
     int i;
     REAL tmp;
 
-    for (i = 0; i < n; i++)
+    for (i = 0; i < n; ++i)
     {
       if (fscanf (fp,FORMAT_IN, &tmp) <= 0) return (-1);
       x[i] = (REAL) tmp;
@@ -95,7 +95,7 @@
     int i;
     REAL tmp;
 
-    for (i = 1; i < n+1; i++)
+    for (i = 1; i < n+1; ++i)
     {
       if (fscanf (fp,FORMAT_IN, &tmp) <= 0) return (-1);
       x[i] = (REAL) tmp;
@@ -108,7 +108,7 @@
   {
     int i;
 
-    for (i = 0; i < n; i++)
+    for (i = 0; i < n; ++i)
       x[i] = val;
   }     
      
@@ -136,7 +136,7 @@ int WriteVec (FILE *fp, int n, REAL x[])
 {
   int i;
 
-  for (i = 0; i < n; i++)
+  for (i = 0; i < n; ++i)
     if (fprintf (fp,FORMAT_126LF, x[i]) <= 0) return (-1);
   if (fprintf (fp,"\n") <= 0) return (-1);
 
@@ -167,7 +167,7 @@ int WriteVec1 (FILE *fp, int n, REAL x[])
 {
   int i;
 
-  for (i = 1; i < n+1; i++)
+  for (i = 1; i < n+1; ++i)
     if (fprintf (fp,FORMAT_126LF, x[i]) <= 0) return (-1);
   if (fprintf (fp,"\n") <= 0) return (-1);
 
@@ -206,7 +206,7 @@ void CopyMat (int m, int n, REAL * source[], REAL * dest[])
 {
   int i, j;
 
-  for (i = 0; i < m; i++)
+  for (i = 0; i < m; ++i)
     for (j = 0; j < n; j++)
       dest[i][j] = source[i][j];
 }    
@@ -453,7 +453,7 @@ int ReadMat (FILE *fp, int m, int n, REAL * a[])
   int i, j;
   double x;
 
-  for (i = 0; i < m; i++)
+  for (i = 0; i < m; ++i)
     for (j = 0; j < n; j++)
     {
       if (fscanf (fp,FORMAT_IN, &x) <= 0) return (-1);
@@ -469,7 +469,7 @@ int ReadMat1 (FILE *fp, int m, int n, REAL * a[])
   int i, j;
   double x;
 
-  for (i = 1; i < m+1; i++)
+  for (i = 1; i < m+1; ++i)
     for (j = 1; j < n+1; j++)
     {
       if (fscanf (fp,FORMAT_IN, &x) <= 0) return (-1);
@@ -506,7 +506,7 @@ int WriteMat (FILE *fp, int m, int n, REAL * a[])
 
   if (fprintf (fp,"\n") <= 0) return (-1);
 
-  for (i = 0; i < m; i++)
+  for (i = 0; i < m; ++i)
   {
     for (j = 0; j < n; j++)
       if (fprintf (fp,FORMAT_126LF, a[i][j]) <= 0) return (-1);
@@ -525,7 +525,7 @@ int WriteMat1 (FILE *fp, int m, int n, REAL * a[])
 
   if (fprintf (fp,"\n") <= 0) return (-1);
 
-  for (i = 1; i < m+1; i++)
+  for (i = 1; i < m+1; ++i)
   {
     for (j = 1; j < n+1; j++)
       if (fprintf (fp,FORMAT_126LF, a[i][j]) <= 0) return (-1);
@@ -563,7 +563,7 @@ void SetMat (int m, int n, REAL * a[], REAL val)
 {
   int i, j;
 
-  for (i = 0; i < m; i++)
+  for (i = 0; i < m; ++i)
     for (j = 0; j < n; j++)
       a[i][j] = val;
 }         

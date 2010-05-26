@@ -70,16 +70,16 @@ void ConstQFiltering::myUpdate(MarControlPtr sender)
     freq_(h) = exp(log(lowFreq_)+(log(highFreq_)-log(lowFreq_))/(double)(channels_-1)*(double)h);
     bw = freq_(h)/(double)qValue_;
     fshift_(h) = (int)(freq_(h)/(israte_/(double)inSamples_));
-    for(i=0; i<width_/2; i++){
+    for(i=0; i<width_/2; ++i){
       f = (double)(i+fshift_(h))/(double)inSamples_*israte_;
       fil_(h,i) = exp(-(f-freq_(h))*(f-freq_(h))/(2.0*bw*bw));
     }
-    for(i=width_/2; i<width_; i++){
+    for(i=width_/2; i<width_; ++i){
       f = (double)(i+fshift_(h)-width_)/(double)inSamples_*(double)israte_;
       fil_(h,i) = exp(-(f-freq_(h))*(f-freq_(h))/(2.0*bw*bw));
     }
   }
-  for(i=0; i<width_; i++){
+  for(i=0; i<width_; ++i){
     time_(i) = (double)inSamples_/width_/israte_*i*1000.0;
   }
 
@@ -105,16 +105,16 @@ ConstQFiltering::myProcess(realvec& in, realvec& out)
   qValue_ = ctrl_qValue_->to<mrs_real>();
 
   if(inSamples_>0){
-    for(i=0; i<inSamples_; i++){
+    for(i=0; i<inSamples_; ++i){
       spec1_(i,0) = in(0,i);
     }
     tmp = spec1_.getData();
     fft1_.rfft(tmp, inSamples_/2, FFT_FORWARD);
     for(h=0; h<channels_; h++){
-      for(i=0; i<width_*2; i++){
+      for(i=0; i<width_*2; ++i){
 	spec2_(i,0) = 0.0;
       }
-      for(i=0; i<width_/2 && fshift_(h)+i<inSamples_/2; i++){
+      for(i=0; i<width_/2 && fshift_(h)+i<inSamples_/2; ++i){
 	spec2_(2*i,0) = fil_(h,i)*spec1_(2*(fshift_(h)+i),0);
 	spec2_(2*i+1,0) = fil_(h,i)*spec1_(2*(fshift_(h)+i)+1,0);
       }
@@ -125,7 +125,7 @@ ConstQFiltering::myProcess(realvec& in, realvec& out)
       
       tmp = spec2_.getData();
       fft2_.cfft(tmp, width_, FFT_INVERSE);
-      for(i=0; i<width_; i++){
+      for(i=0; i<width_; ++i){
 	out(2*h,i) = spec2_(2*i,0)*cos(fshift_(h)/width_*i) - spec2_(2*i+1,0)*sin(fshift_(h)/width_*i);
 	out(2*h+1,i) = spec2_(2*i,0)*sin(fshift_(h)/width_*i) + spec2_(2*i+1,0)*cos(fshift_(h)/width_*i);
       }

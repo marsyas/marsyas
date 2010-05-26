@@ -87,6 +87,7 @@ PeakRatio::myUpdate(MarControlPtr sender)
 void 
 PeakRatio::myProcess(realvec& in, realvec& out)
 {	
+	mrs_natural t,o;
 	realvec maxima;
 	realvec minima;
 
@@ -96,7 +97,6 @@ PeakRatio::myProcess(realvec& in, realvec& out)
 	mrs_real max_ = -1.0 * DBL_MAX;
 	mrs_real min_ = DBL_MAX;
 	mrs_real avg_ = 0.0;
-	mrs_natural numIgnored=0;
 
 
 	for (t=0; t < inSamples_; t++)

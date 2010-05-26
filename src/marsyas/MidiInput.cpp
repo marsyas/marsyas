@@ -141,6 +141,7 @@ void MidiInput::mycallback(double deltatime, std::vector< unsigned char > * mess
 
 void MidiInput::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
   // just pass data through 
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)

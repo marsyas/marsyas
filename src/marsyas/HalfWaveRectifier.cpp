@@ -46,6 +46,7 @@ HalfWaveRectifier::myUpdate(MarControlPtr sender)
 void
 HalfWaveRectifier::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// Positive values are kept, negative values are trimmed to zero.
 	for (t = 0; t < inSamples_; t++)
 	{

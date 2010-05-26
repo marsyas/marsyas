@@ -59,7 +59,7 @@ namespace Marsyas
 				mrs_real epsOverTarget			= epsilon/target;
 				mrs_real prevState				= state(0);
 				
-				for ( i = 0; i < n-1; i++)
+				for ( i = 0; i < n-1; ++i)
 				{
 					output(i)	= fabs (input(i) * (1.0 - state(i)));
 					f			= output(i) * epsOverTarget + oneMinusEpsOverThree * (prevState + state(i) + state(i+1));
@@ -136,7 +136,7 @@ namespace Marsyas
 		void myProcess(realvec& in, realvec& out)
 		{
 			// outer agc loop (compare file agc.c from the auditory toolbox)
-			for (t = 0; t < inSamples_; t++)
+			for (mrs_natural t = 0; t < inSamples_; t++)
 			{
 				mrs_natural i, 
 							nStages = agcParms_.getCols (),
@@ -144,7 +144,7 @@ namespace Marsyas
 				mrs_realvec state;
 				in.getCol (t, tmpOut_);
 
-				for (i = 0; i < nStages; i++)
+				for (i = 0; i < nStages; ++i)
 				{
 					state_.getCol (i, state);
 					agc (tmpOut_, tmpOut_, state, agcParms_(1,i), agcParms_(0,i), nRows);
@@ -206,6 +206,8 @@ namespace Marsyas
 
 		void myProcess(realvec& in, realvec& out)
 		{
+			
+			mrs_natural t;
 			for (t = 0; t < inSamples_; t++)
 			{
 				in.getSubMatrix (0,t, procBuf1_);
@@ -252,6 +254,7 @@ namespace Marsyas
 
 		void myProcess(realvec& in, realvec& out)
 		{
+			mrs_natural t,o;
 			for (t = 0; t < inSamples_; t++)
 			{
 				out(0,t)	= 0;
@@ -268,15 +271,13 @@ namespace Marsyas
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-LyonPassiveEar::LyonPassiveEar(string name):MarSystem("LyonPassiveEar", name),
-passiveEar_ (0),
-numFilterChannels_ (0),
-currDecimState_(0),
-fs_ (0)
+LyonPassiveEar::LyonPassiveEar(string name)
+: MarSystem("LyonPassiveEar", name),
+  fs_ (0),
+  currDecimState_(0),
+  numFilterChannels_ (0),
+  passiveEar_ (0)
 {
-	//type_ = "LyonPassiveEar";
-	//name_ = name;
-
 	addControls();
 }
 
@@ -374,7 +375,7 @@ LyonPassiveEar::myUpdate(MarControlPtr sender)
 	//	(topf + sqrt(Eb^2 + topf^2))) + ...
 	//	(topf + sqrt(Eb^2 + topf^2))./exp((cn*StepFactor)/EarQ))/2;
 	centerFreqs_.create (numChans);
-	for (i = 0; i < numChans; i++)
+	for (i = 0; i < numChans; ++i)
 		centerFreqs_(i) = (-((exp(((i+1)*stepFactor_)/earQ_) * sqr(Eb))/
 		(topFreq + sqrt(sqr(Eb) + sqr(topFreq)))) + (topFreq + sqrt(sqr(Eb) + sqr(topFreq)))/ exp(((i+1)*stepFactor_)/earQ_))*.5;
 
@@ -437,7 +438,7 @@ LyonPassiveEar::myUpdate(MarControlPtr sender)
 	name << "front_" << 1;
 	filterBank->addMarSystem(lyonCreateFilter (b, a, name.str()));		// preemphasis 2
 
-	for (i = 0; i < numChans; i++)
+	for (i = 0; i < numChans; ++i)
 	{
 		mrs_real EarBandwidth, CascadeZeroCF, CascadeZeroQ, CascadePoleCF, CascadePoleQ;
 
@@ -504,7 +505,7 @@ LyonPassiveEar::myProcess(realvec& in, realvec& out)
 	passiveEar_->process(in, tmpOut_);
 
 	// post-"processing": do the sample rate decimation and remove the pre-emphasis filters
-	for (i = 0; i < numOutSamples; i++)
+	for (i = 0; i < numOutSamples; ++i)
 	{
 		mrs_realvec	decimTmp(numFilterChannels_-2,1);
 		currCount	= currCount + decimFactor_;

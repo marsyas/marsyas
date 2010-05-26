@@ -14,7 +14,6 @@ void recognize(string sfName, string outName)
   mrs_natural inputsize, wsize;
   mrs_real samplingFreq;
   Collection inputs;
-  mrs_natural i;
 
   MarSystem* all = mng.create("Series", "all");
   MarSystem* acc = mng.create("Accumulator", "acc");
@@ -67,7 +66,7 @@ void recognize(string sfName, string outName)
   wksnet->updctrl("WekaSink/wks/mrs_string/filename", outName);
   tmpvec.create(all->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+1,1);
 
-  for(i=0; i<inputs.size(); i++){
+  for(size_t i=0; i<inputs.size(); ++i){
     cout << "Now processing: " << inputs.entry(i) << endl;
 
     src->updctrl("mrs_string/filename", inputs.entry(i));

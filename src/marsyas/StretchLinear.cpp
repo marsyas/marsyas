@@ -62,6 +62,7 @@ StretchLinear::myUpdate(MarControlPtr sender)
 void
 StretchLinear::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	mrs_real tp;
 	mrs_natural tl, tr;
 	mrs_real alpha = ctrl_stretch_->to<mrs_real>();

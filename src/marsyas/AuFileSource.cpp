@@ -264,7 +264,7 @@ AuFileSource::getHeader(string filename)
 mrs_natural
 AuFileSource::getLinear16(realvec& slice)
 {
-	mrs_natural c = 0;
+	  mrs_natural c,t;
 	fseek(sfp_, 2 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
   
 	samplesRead_ = (mrs_natural)fread(sdata_, sizeof(short), samplesToRead_, sfp_);
@@ -272,7 +272,7 @@ AuFileSource::getLinear16(realvec& slice)
 	// pad with zeros if necessary 
 	if (samplesRead_ != samplesToRead_)
 	{
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 			for (t=0; t < inSamples_; t++)
 				slice(c, t) = 0.0;
 		samplesToWrite_ = samplesRead_ / nChannels_;
@@ -287,10 +287,10 @@ AuFileSource::getLinear16(realvec& slice)
 		nt_ = nChannels_ * t;
     
 #if defined(MARSYAS_BIGENDIAN)
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 			slice(c, t) = ((mrs_real) sdata_[nt_ + c] / (PCM_FMAXSHRT));
 #else
-		for (c=0; c < nChannels_; c++)
+		for (c=0; c < nChannels_; ++c)
 		{
 			usval_ = sdata_[nt_ + c];
 			usval_ = ((usval_ >> 8) | (usval_ << 8));

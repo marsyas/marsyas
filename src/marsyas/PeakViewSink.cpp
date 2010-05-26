@@ -69,6 +69,7 @@ PeakViewSink::addControls()
 void
 PeakViewSink::done()
 {
+	mrs_natural t,o;
 	if(ctrl_accumulate2Disk_->isTrue())
 	{
 		//read from tmp file and get rid of it (we're done with it ;-))
@@ -132,6 +133,7 @@ void
 PeakViewSink::myProcess(realvec& in, realvec& out)
 {
 	out = in;
+	mrs_natural o,t;
 
 	if(ctrl_accumulate2Disk_->isTrue())
 	{

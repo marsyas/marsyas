@@ -50,8 +50,8 @@
 #include <stdio.h>
 
 // Static variable definitions.
-const unsigned int RtApi3::MAX_SAMPLE_RATES = 14;
-const unsigned int RtApi3::SAMPLE_RATES[] = {
+const uint32_t RtApi3::MAX_SAMPLE_RATES = 14;
+const uint32_t RtApi3::SAMPLE_RATES[] = {
   4000, 5512, 8000, 9600, 11025, 16000, 22050,
   32000, 44100, 48000, 88200, 96000, 176400, 192000
 };
@@ -326,7 +326,7 @@ void RtApi3 :: openStream( int outputDevice, int outputChannels,
     else
       device = outputDevice - 1;
 
-    for ( int i=-1; i<nDevices_; i++ ) {
+    for ( int i=-1; i<nDevices_; ++i ) {
       if ( i >= 0 ) { 
         if ( i == defaultDevice ) continue;
         device = i;
@@ -361,7 +361,7 @@ void RtApi3 :: openStream( int outputDevice, int outputChannels,
     else
       device = inputDevice - 1;
 
-    for ( int i=-1; i<nDevices_; i++ ) {
+    for ( int i=-1; i<nDevices_; ++i ) {
       if (i >= 0 ) { 
         if ( i == defaultDevice ) continue;
         device = i;
@@ -434,7 +434,7 @@ RtAudio3DeviceInfo RtApi3 :: getDeviceInfo( int device )
     info.outputChannels = devices_[deviceIndex].maxOutputChannels;
     info.inputChannels = devices_[deviceIndex].maxInputChannels;
     info.duplexChannels = devices_[deviceIndex].maxDuplexChannels;
-    for (unsigned int i=0; i<devices_[deviceIndex].sampleRates.size(); i++)
+    for (uint32_t i=0; i<devices_[deviceIndex].sampleRates.size(); ++i)
       info.sampleRates.push_back( devices_[deviceIndex].sampleRates[i] );
     info.nativeFormats = devices_[deviceIndex].nativeFormats;
     if ( (deviceIndex == getDefaultOutputDevice()) ||
@@ -570,7 +570,7 @@ void RtApi3Oss :: initialize(void)
   // it will work most of the time.
   int fd = 0;
   RtApi3Device device;
-  for (i=-1; i<MAX_DEVICES; i++) {
+  for (i=-1; i<MAX_DEVICES; ++i) {
 
     // Probe /dev/dsp first, since it is supposed to be the default device.
     if (i == -1)
@@ -651,7 +651,7 @@ void RtApi3Oss :: probeDeviceInfo(RtApi3Device *info)
   info->maxOutputChannels = i;
 
   // Now find the minimum number of channels it can handle
-  for (i=1; i<=info->maxOutputChannels; i++) {
+  for (i=1; i<=info->maxOutputChannels; ++i) {
     channels = i;
     if (ioctl(fd, SNDCTL_DSP_CHANNELS, &channels) == -1 || channels != i)
       continue; // try next channel number
@@ -690,7 +690,7 @@ void RtApi3Oss :: probeDeviceInfo(RtApi3Device *info)
   info->maxInputChannels = i;
 
   // Now find the minimum number of channels it can handle
-  for (i=1; i<=info->maxInputChannels; i++) {
+  for (i=1; i<=info->maxInputChannels; ++i) {
     channels = i;
     if (ioctl(fd, SNDCTL_DSP_CHANNELS, &channels) == -1 || channels != i)
       continue; // try next channel number
@@ -730,7 +730,7 @@ void RtApi3Oss :: probeDeviceInfo(RtApi3Device *info)
     info->maxDuplexChannels = i;
 
     // Now find the minimum number of channels it can handle
-    for (i=1; i<=info->maxDuplexChannels; i++) {
+    for (i=1; i<=info->maxDuplexChannels; ++i) {
       channels = i;
       if (ioctl(fd, SNDCTL_DSP_CHANNELS, &channels) == -1 || channels != i)
         continue; // try next channel number
@@ -835,7 +835,7 @@ void RtApi3Oss :: probeDeviceInfo(RtApi3Device *info)
 
   // Probe the supported sample rates.
   info->sampleRates.clear();
-  for (unsigned int k=0; k<MAX_SAMPLE_RATES; k++) {
+  for (uint32_t k=0; k<MAX_SAMPLE_RATES; k++) {
     int speed = SAMPLE_RATES[k];
     if (ioctl(fd, SNDCTL_DSP_SPEED, &speed) != -1 && speed == (int)SAMPLE_RATES[k])
       info->sampleRates.push_back(speed);
@@ -1614,7 +1614,7 @@ RtApi3Core :: ~RtApi3Core()
 
   // Free our allocated apiDeviceId memory.
   AudioDeviceID *id;
-  for ( unsigned int i=0; i<devices_.size(); i++ ) {
+  for ( uint32_t i=0; i<devices_.size(); ++i ) {
     id = (AudioDeviceID *) devices_[i].apiDeviceId;
     if (id) free(id);
   }
@@ -1655,7 +1655,7 @@ void RtApi3Core :: initialize(void)
   // Create list of device structures and write device identifiers.
   RtApi3Device device;
   AudioDeviceID *id;
-  for (int i=0; i<nDevices_; i++) {
+  for (int i=0; i<nDevices_; ++i) {
     devices_.push_back(device);
     id = (AudioDeviceID *) malloc( sizeof(AudioDeviceID) );
     *id = deviceList[i];
@@ -1679,7 +1679,7 @@ int RtApi3Core :: getDefaultInputDevice(void)
     return 0;
   }
 
-  for ( int i=0; i<nDevices_; i++ ) {
+  for ( int i=0; i<nDevices_; ++i ) {
     deviceId = (AudioDeviceID *) devices_[i].apiDeviceId;
     if ( id == *deviceId ) return i;
   }
@@ -1701,7 +1701,7 @@ int RtApi3Core :: getDefaultOutputDevice(void)
     return 0;
   }
 
-  for ( int i=0; i<nDevices_; i++ ) {
+  for ( int i=0; i<nDevices_; ++i ) {
     deviceId = (AudioDeviceID *) devices_[i].apiDeviceId;
     if ( id == *deviceId ) return i;
   }
@@ -1769,7 +1769,7 @@ void RtApi3Core :: probeDeviceInfo( RtApi3Device *info )
   info->name.append( (const char *)fullname, strlen(fullname)+1);
 
   // Get output channel information.
-  unsigned int i, minChannels = 0, maxChannels = 0, nStreams = 0;
+  uint32_t i, minChannels = 0, maxChannels = 0, nStreams = 0;
   AudioBufferList	*bufferList = nil;
   err = AudioDeviceGetPropertyInfo( *id, 0, false,
                                     kAudioDevicePropertyStreamConfiguration,
@@ -1789,7 +1789,7 @@ void RtApi3Core :: probeDeviceInfo( RtApi3Device *info )
       maxChannels = 0;
       minChannels = 1000;
       nStreams = bufferList->mNumberBuffers;
-      for ( i=0; i<nStreams; i++ ) {
+      for ( i=0; i<nStreams; ++i ) {
         maxChannels += bufferList->mBuffers[i].mNumberChannels;
         if ( bufferList->mBuffers[i].mNumberChannels < minChannels )
           minChannels = bufferList->mBuffers[i].mNumberChannels;
@@ -1831,7 +1831,7 @@ void RtApi3Core :: probeDeviceInfo( RtApi3Device *info )
       maxChannels = 0;
       minChannels = 1000;
       nStreams = bufferList->mNumberBuffers;
-      for ( i=0; i<nStreams; i++ ) {
+      for ( i=0; i<nStreams; ++i ) {
         if ( bufferList->mBuffers[i].mNumberChannels < minChannels )
           minChannels = bufferList->mBuffers[i].mNumberChannels;
         maxChannels += bufferList->mBuffers[i].mNumberChannels;
@@ -1879,7 +1879,7 @@ void RtApi3Core :: probeDeviceInfo( RtApi3Device *info )
 
   // Determine the supported sample rates.
   info->sampleRates.clear();
-  for (unsigned int k=0; k<MAX_SAMPLE_RATES; k++) {
+  for (uint32_t k=0; k<MAX_SAMPLE_RATES; k++) {
     description.mSampleRate = (double) SAMPLE_RATES[k];
     if ( deviceSupportsFormat( *id, isInput, &description, isDuplex ) )
       info->sampleRates.push_back( SAMPLE_RATES[k] );
@@ -2018,7 +2018,7 @@ bool RtApi3Core :: probeDeviceOpen( int device, StreamMode mode, int channels,
   // Search for a stream which contains the desired number of channels.
   OSStatus err = noErr;
   UInt32 dataSize;
-  unsigned int deviceChannels, nStreams = 0;
+  uint32_t deviceChannels, nStreams = 0;
   UInt32 iChannel = 0, iStream = 0;
   AudioBufferList	*bufferList = nil;
   err = AudioDeviceGetPropertyInfo( id, 0, isInput,
@@ -2040,7 +2040,7 @@ bool RtApi3Core :: probeDeviceOpen( int device, StreamMode mode, int channels,
       stream_.deInterleave[mode] = false;
       nStreams = bufferList->mNumberBuffers;
       for ( iStream=0; iStream<nStreams; iStream++ ) {
-        if ( bufferList->mBuffers[iStream].mNumberChannels >= (unsigned int) channels ) break;
+        if ( bufferList->mBuffers[iStream].mNumberChannels >= (uint32_t) channels ) break;
         iChannel += bufferList->mBuffers[iStream].mNumberChannels;
       }
       // If we didn't find a single stream above, see if we can meet
@@ -2049,7 +2049,7 @@ bool RtApi3Core :: probeDeviceOpen( int device, StreamMode mode, int channels,
       // consecutive one-channel streams, where N is the number of
       // desired channels.
       iChannel = 0;
-      if ( iStream >= nStreams && nStreams >= (unsigned int) channels ) {
+      if ( iStream >= nStreams && nStreams >= (uint32_t) channels ) {
         int counter = 0;
         for ( iStream=0; iStream<nStreams; iStream++ ) {
           if ( bufferList->mBuffers[iStream].mNumberChannels == 1 )
@@ -2136,7 +2136,7 @@ bool RtApi3Core :: probeDeviceOpen( int device, StreamMode mode, int channels,
   dataSize = sizeof( AudioStreamBasicDescription );
   if ( stream_.deInterleave[mode] ) nStreams = channels;
   else nStreams = 1;
-  for ( unsigned int i=0; i<nStreams; i++, iChannel++ ) {
+  for ( uint32_t i=0; i<nStreams; ++i, iChannel++ ) {
 
     err = AudioDeviceGetProperty( id, iChannel, isInput,
                                   kAudioDevicePropertyStreamFormat,
@@ -2564,7 +2564,7 @@ void RtApi3Core :: callbackEvent( AudioDeviceID deviceId, void *inData, void *ou
 
       if ( stream_.deInterleave[0] ) {
         int bufferBytes = outBufferList->mBuffers[handle->index[0]].mDataByteSize;
-        for ( int i=0; i<stream_.nDeviceChannels[0]; i++ ) {
+        for ( int i=0; i<stream_.nDeviceChannels[0]; ++i ) {
           memcpy(outBufferList->mBuffers[handle->index[0]+i].mData,
                  &stream_.deviceBuffer[i*bufferBytes], bufferBytes );
         }
@@ -2591,7 +2591,7 @@ void RtApi3Core :: callbackEvent( AudioDeviceID deviceId, void *inData, void *ou
       if ( stream_.deInterleave[1] ) {
         stream_.deviceBuffer = (char *) handle->deviceBuffer;
         int bufferBytes = inBufferList->mBuffers[handle->index[1]].mDataByteSize;
-        for ( int i=0; i<stream_.nDeviceChannels[1]; i++ ) {
+        for ( int i=0; i<stream_.nDeviceChannels[1]; ++i ) {
           memcpy(&stream_.deviceBuffer[i*bufferBytes],
                  inBufferList->mBuffers[handle->index[1]+i].mData, bufferBytes );
         }
@@ -2770,7 +2770,7 @@ void RtApi3Jack :: probeDeviceInfo(RtApi3Device *info)
   // equal RtAudio3 output channels.
   const char **ports;
   char *port;
-  unsigned int nChannels = 0;
+  uint32_t nChannels = 0;
   ports = jack_get_ports( client, NULL, NULL, JackPortIsInput );
   if ( ports ) {
     port = (char *) ports[nChannels];
@@ -3154,7 +3154,7 @@ void RtApi3Jack :: startStream()
   char label[64];
   JackHandle *handle = (JackHandle *) stream_.apiHandle;
   if ( stream_.mode == OUTPUT || stream_.mode == DUPLEX ) {
-    for ( int i=0; i<stream_.nUserChannels[0]; i++ ) {
+    for ( int i=0; i<stream_.nUserChannels[0]; ++i ) {
       snprintf(label, 64, "outport %d", i);
       handle->ports[0][i] = jack_port_register(handle->client, (const char *)label,
                                                JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
@@ -3162,7 +3162,7 @@ void RtApi3Jack :: startStream()
   }
 
   if ( stream_.mode == INPUT || stream_.mode == DUPLEX ) {
-    for ( int i=0; i<stream_.nUserChannels[1]; i++ ) {
+    for ( int i=0; i<stream_.nUserChannels[1]; ++i ) {
       snprintf(label, 64, "inport %d", i);
       handle->ports[1][i] = jack_port_register(handle->client, (const char *)label,
                                                JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0);
@@ -3187,7 +3187,7 @@ void RtApi3Jack :: startStream()
     // Now make the port connections.  Since RtAudio3 wasn't designed to
     // allow the user to select particular channels of a device, we'll
     // just open the first "nChannels" ports.
-    for ( int i=0; i<stream_.nUserChannels[0]; i++ ) {
+    for ( int i=0; i<stream_.nUserChannels[0]; ++i ) {
       result = 1;
       if ( ports[i] )
         result = jack_connect( handle->client, jack_port_name(handle->ports[0][i]), ports[i] );
@@ -3208,7 +3208,7 @@ void RtApi3Jack :: startStream()
     }
 
     // Now make the port connections.  See note above.
-    for ( int i=0; i<stream_.nUserChannels[1]; i++ ) {
+    for ( int i=0; i<stream_.nUserChannels[1]; ++i ) {
       result = 1;
       if ( ports[i] )
         result = jack_connect( handle->client, ports[i], jack_port_name(handle->ports[1][i]) );
@@ -3301,7 +3301,7 @@ void RtApi3Jack :: callbackEvent( unsigned long nframes )
     if (stream_.doConvertBuffer[0]) {
       convertBuffer( stream_.deviceBuffer, stream_.userBuffer, stream_.convertInfo[0] );
 
-      for ( int i=0; i<stream_.nDeviceChannels[0]; i++ ) {
+      for ( int i=0; i<stream_.nDeviceChannels[0]; ++i ) {
         jackbuffer = (jack_default_audio_sample_t *) jack_port_get_buffer(handle->ports[0][i],
                                                                           (jack_nframes_t) nframes);
         memcpy(jackbuffer, &stream_.deviceBuffer[i*bufferBytes], bufferBytes );
@@ -3317,7 +3317,7 @@ void RtApi3Jack :: callbackEvent( unsigned long nframes )
   if ( stream_.mode == INPUT || stream_.mode == DUPLEX ) {
 
     if (stream_.doConvertBuffer[1]) {
-    for ( int i=0; i<stream_.nDeviceChannels[1]; i++ ) {
+    for ( int i=0; i<stream_.nDeviceChannels[1]; ++i ) {
       jackbuffer = (jack_default_audio_sample_t *) jack_port_get_buffer(handle->ports[1][i],
                                                                         (jack_nframes_t) nframes);
       memcpy(&stream_.deviceBuffer[i*bufferBytes], jackbuffer, bufferBytes );
@@ -3453,7 +3453,7 @@ void RtApi3Alsa :: initialize(void)
       // character, use it to identify the device.  This avoids a bug
       // in ALSA such that a numeric string is interpreted as a device
       // number.
-      for ( unsigned int i=0; i<strlen(cardId); i++ ) {
+      for ( uint32_t i=0; i<strlen(cardId); ++i ) {
         if ( !isdigit( cardId[i] ) ) {
           sprintf( name, "hw:%s,%d", cardId, subdevice );
           break;
@@ -3493,7 +3493,7 @@ void RtApi3Alsa :: probeDeviceInfo(RtApi3Device *info)
     error(RtError3::DEBUG_WARNING);
     return;
   }
-  unsigned int dev = (unsigned int) atoi( strtok(NULL, ",") );
+  uint32_t dev = (uint32_t) atoi( strtok(NULL, ",") );
 
   // First try for playback
   stream = SND_PCM_STREAM_PLAYBACK;
@@ -3537,7 +3537,7 @@ void RtApi3Alsa :: probeDeviceInfo(RtApi3Device *info)
   }
 
   // Get output channel information.
-  unsigned int value;
+  uint32_t value;
   err = snd_pcm_hw_params_get_channels_min(params, &value);
   if (err < 0) {
     snd_pcm_close(handle);
@@ -3683,7 +3683,7 @@ void RtApi3Alsa :: probeDeviceInfo(RtApi3Device *info)
   // Test our discrete set of sample rate values.
   int dir = 0;
   info->sampleRates.clear();
-  for (unsigned int i=0; i<MAX_SAMPLE_RATES; i++) {
+  for (uint32_t i=0; i<MAX_SAMPLE_RATES; ++i) {
     if (snd_pcm_hw_params_test_rate(handle, params, SAMPLE_RATES[i], dir) == 0)
       info->sampleRates.push_back(SAMPLE_RATES[i]);
   }
@@ -3891,7 +3891,7 @@ bool RtApi3Alsa :: probeDeviceOpen( int device, StreamMode mode, int channels,
   }
 
   // Set the sample rate.
-  err = snd_pcm_hw_params_set_rate(handle, hw_params, (unsigned int)sampleRate, 0);
+  err = snd_pcm_hw_params_set_rate(handle, hw_params, (uint32_t)sampleRate, 0);
   if (err < 0) {
     snd_pcm_close(handle);
     sprintf(message_, "RtApi3Alsa: error setting sample rate (%d) on device (%s): %s.",
@@ -3903,7 +3903,7 @@ bool RtApi3Alsa :: probeDeviceOpen( int device, StreamMode mode, int channels,
   // Determine the number of channels for this device.  We support a possible
   // minimum device channel number > than the value requested by the user.
   stream_.nUserChannels[mode] = channels;
-  unsigned int value;
+  uint32_t value;
   err = snd_pcm_hw_params_get_channels_max(hw_params, &value);
   int device_channels = value;
   if (err < 0 || device_channels < channels) {
@@ -3937,7 +3937,7 @@ bool RtApi3Alsa :: probeDeviceOpen( int device, StreamMode mode, int channels,
 
   // Set the buffer number, which in ALSA is referred to as the "period".
   int dir;
-  unsigned int periods = numberOfBuffers;
+  uint32_t periods = numberOfBuffers;
   // Even though the hardware might allow 1 buffer, it won't work reliably.
   if (periods < 2) periods = 2;
   err = snd_pcm_hw_params_set_periods_near(handle, hw_params, &periods, &dir);
@@ -4421,7 +4421,7 @@ void RtApi3Alsa :: tickStream()
     if (stream_.deInterleave[1]) {
       void *bufs[channels];
       size_t offset = stream_.bufferSize * formatBytes(format);
-      for (int i=0; i<channels; i++)
+      for (int i=0; i<channels; ++i)
         bufs[i] = (void *) (buffer + (i * offset));
       err = snd_pcm_readn(handle[1], bufs, stream_.bufferSize);
     }
@@ -4497,7 +4497,7 @@ void RtApi3Alsa :: tickStream()
     if (stream_.deInterleave[0]) {
       void *bufs[channels];
       size_t offset = stream_.bufferSize * formatBytes(format);
-      for (int i=0; i<channels; i++)
+      for (int i=0; i<channels; ++i)
         bufs[i] = (void *) (buffer + (i * offset));
       err = snd_pcm_writen(handle[0], bufs, stream_.bufferSize);
     }
@@ -4727,7 +4727,7 @@ void RtApi3Asio :: initialize(void)
   // Create device structures and write device driver names to each.
   RtApi3Device device;
   char name[128];
-  for (int i=0; i<nDevices_; i++) {
+  for (int i=0; i<nDevices_; ++i) {
     if ( drivers.asioGetDriverName( i, name, 128 ) == 0 ) {
       device.name.erase();
       device.name.append( (const char *)name, strlen(name)+1);
@@ -4799,7 +4799,7 @@ void RtApi3Asio :: probeDeviceInfo(RtApi3Device *info)
 
   // Determine the supported sample rates.
   info->sampleRates.clear();
-  for (unsigned int i=0; i<MAX_SAMPLE_RATES; i++) {
+  for (uint32_t i=0; i<MAX_SAMPLE_RATES; ++i) {
     result = ASIOCanSampleRate( (ASIOSampleRate) SAMPLE_RATES[i] );
     if ( result == ASE_OK )
       info->sampleRates.push_back( SAMPLE_RATES[i] );
@@ -5145,12 +5145,12 @@ bool RtApi3Asio :: probeDeviceOpen(int device, StreamMode mode, int channels,
   }
   ASIOBufferInfo *infos;
   infos = handle->bufferInfos;
-  for ( i=0; i<stream_.nDeviceChannels[0]; i++, infos++ ) {
+  for ( i=0; i<stream_.nDeviceChannels[0]; ++i, infos++ ) {
     infos->isInput = ASIOFalse;
     infos->channelNum = i;
     infos->buffers[0] = infos->buffers[1] = 0;
   }
-  for ( i=0; i<stream_.nDeviceChannels[1]; i++, infos++ ) {
+  for ( i=0; i<stream_.nDeviceChannels[1]; ++i, infos++ ) {
     infos->isInput = ASIOTrue;
     infos->channelNum = i;
     infos->buffers[0] = infos->buffers[1] = 0;
@@ -5488,7 +5488,7 @@ void RtApi3Asio :: callbackEvent(long bufferIndex)
 
       // Always de-interleave ASIO output data.
       j = 0;
-      for ( int i=0; i<nChannels; i++ ) {
+      for ( int i=0; i<nChannels; ++i ) {
         if ( handle->bufferInfos[i].isInput != ASIOTrue )
           memcpy(handle->bufferInfos[i].buffers[bufferIndex],
                  &stream_.deviceBuffer[j++*bufferBytes], bufferBytes );
@@ -5501,7 +5501,7 @@ void RtApi3Asio :: callbackEvent(long bufferIndex)
                        stream_.bufferSize * stream_.nUserChannels[0],
                        stream_.userFormat);
 
-      for ( int i=0; i<nChannels; i++ ) {
+      for ( int i=0; i<nChannels; ++i ) {
         if ( handle->bufferInfos[i].isInput != ASIOTrue ) {
           memcpy(handle->bufferInfos[i].buffers[bufferIndex], stream_.userBuffer, bufferBytes );
           break;
@@ -5517,7 +5517,7 @@ void RtApi3Asio :: callbackEvent(long bufferIndex)
 
       // Always interleave ASIO input data.
       j = 0;
-      for ( int i=0; i<nChannels; i++ ) {
+      for ( int i=0; i<nChannels; ++i ) {
         if ( handle->bufferInfos[i].isInput == ASIOTrue )
           memcpy(&stream_.deviceBuffer[j++*bufferBytes],
                  handle->bufferInfos[i].buffers[bufferIndex],
@@ -5532,7 +5532,7 @@ void RtApi3Asio :: callbackEvent(long bufferIndex)
 
     }
     else { // single channel only
-      for ( int i=0; i<nChannels; i++ ) {
+      for ( int i=0; i<nChannels; ++i ) {
         if ( handle->bufferInfos[i].isInput == ASIOTrue ) {
           memcpy(stream_.userBuffer,
                  handle->bufferInfos[i].buffers[bufferIndex],
@@ -5733,7 +5733,7 @@ int RtApi3Ds :: getDefaultInputDevice(void)
     return 0;
   }
 
-  for ( int i=0; i<nDevices_; i++ ) {
+  for ( int i=0; i<nDevices_; ++i ) {
     if ( strncmp( info.name, devices_[i].name.c_str(), 64 ) == 0 ) return i;
   }
 
@@ -5755,7 +5755,7 @@ int RtApi3Ds :: getDefaultOutputDevice(void)
     return 0;
   }
 
-  for ( int i=0; i<nDevices_; i++ )
+  for ( int i=0; i<nDevices_; ++i )
     if ( strncmp( info.name, devices_[i].name.c_str(), 64 ) == 0 ) return i;
 
   return 0;
@@ -5787,7 +5787,7 @@ void RtApi3Ds :: initialize(void)
   if (count == 0) return;
 
   std::vector<enum_info> info(count);
-  for (i=0; i<count; i++) {
+  for (i=0; i<count; ++i) {
     info[i].name[0] = '\0';
     if (i < outs) info[i].isInput = false;
     else info[i].isInput = true;
@@ -5815,7 +5815,7 @@ void RtApi3Ds :: initialize(void)
   // supported data (capture only).
   RtApi3Device device;
   int index = 0;
-  for (i=0; i<count; i++) {
+  for (i=0; i<count; ++i) {
     if ( info[i].isValid ) {
       device.name.erase();
       device.name.append( (const char *)info[i].name, strlen(info[i].name)+1);
@@ -5977,11 +5977,11 @@ void RtApi3Ds :: probeDeviceInfo(RtApi3Device *info)
     }
     else {
       for ( int i=info->sampleRates.size()-1; i>=0; i-- ) {
-        if ( (unsigned int) info->sampleRates[i] > out_caps.dwMaxSecondarySampleRate )
+        if ( (uint32_t) info->sampleRates[i] > out_caps.dwMaxSecondarySampleRate )
           info->sampleRates.erase( info->sampleRates.begin() + i );
       }
       while ( info->sampleRates.size() > 0 &&
-              ((unsigned int) info->sampleRates[0] < out_caps.dwMinSecondarySampleRate) ) {
+              ((uint32_t) info->sampleRates[0] < out_caps.dwMinSecondarySampleRate) ) {
         info->sampleRates.erase( info->sampleRates.begin() );
       }
     }
@@ -6724,7 +6724,7 @@ void RtApi3Ds :: stopStream()
     dsBufferSize = handles[0].dsBufferSize;
 
     // Write zeroes for nBuffer counts.
-    for (int i=0; i<stream_.nBuffers; i++) {
+    for (int i=0; i<stream_.nBuffers; ++i) {
 
       // Find out where the read and "safe write" pointers are.
       result = dsBuffer->GetCurrentPosition(&currentPos, &safePos);
@@ -7112,7 +7112,7 @@ void RtApi3Ds :: tickStream()
     // unsigned.  So, we need to convert our signed 8-bit data here to
     // unsigned.
     if ( stream_.deviceFormat[0] == RTAUDIO3_SINT8 )
-      for ( int i=0; i<buffer_bytes; i++ ) buffer[i] = (unsigned char) (buffer[i] + 128);
+      for ( int i=0; i<buffer_bytes; ++i ) buffer[i] = (unsigned char) (buffer[i] + 128);
 
     DWORD dsBufferSize = handles[0].dsBufferSize;
 	  nextWritePos = handles[0].bufferPointer;
@@ -7568,7 +7568,7 @@ RtApi3Al :: ~RtApi3Al()
 
   // Free our allocated apiDeviceId memory.
   long *id;
-  for ( unsigned int i=0; i<devices_.size(); i++ ) {
+  for ( uint32_t i=0; i<devices_.size(); ++i ) {
     id = (long *) devices_[i].apiDeviceId;
     if (id) free(id);
   }
@@ -7609,7 +7609,7 @@ void RtApi3Al :: initialize(void)
     error(RtError3::DRIVER_ERROR);
   }
 
-  for (i=0; i<outs; i++) {
+  for (i=0; i<outs; ++i) {
     if (alGetParams(vls[i].i, pvs, 1) < 0) {
       delete [] vls;
       sprintf(message_, "RtApi3Al: error querying output devices: %s.",
@@ -7632,7 +7632,7 @@ void RtApi3Al :: initialize(void)
     error(RtError3::DRIVER_ERROR);
   }
 
-  for (i=outs; i<ins+outs; i++) {
+  for (i=outs; i<ins+outs; ++i) {
     if (alGetParams(vls[i].i, pvs, 1) < 0) {
       delete [] vls;
       sprintf(message_, "RtApi3Al: error querying input devices: %s.",
@@ -7661,7 +7661,7 @@ int RtApi3Al :: getDefaultInputDevice(void)
     error(RtError3::WARNING);
   }
   else {
-    for ( unsigned int i=0; i<devices_.size(); i++ ) {
+    for ( uint32_t i=0; i<devices_.size(); ++i ) {
       id = (long *) devices_[i].apiDeviceId;
       if ( id[1] == value.i ) return i;
     }
@@ -7681,7 +7681,7 @@ int RtApi3Al :: getDefaultOutputDevice(void)
     error(RtError3::WARNING);
   }
   else {
-    for ( unsigned int i=0; i<devices_.size(); i++ ) {
+    for ( uint32_t i=0; i<devices_.size(); ++i ) {
       id = (long *) devices_[i].apiDeviceId;
       if ( id[0] == value.i ) return i;
     }
@@ -7722,7 +7722,7 @@ void RtApi3Al :: probeDeviceInfo(RtApi3Device *info)
     }
     else {
       info->sampleRates.clear();
-      for (unsigned int k=0; k<MAX_SAMPLE_RATES; k++) {
+      for (uint32_t k=0; k<MAX_SAMPLE_RATES; k++) {
         if ( SAMPLE_RATES[k] >= pinfo.min.i && SAMPLE_RATES[k] <= pinfo.max.i )
           info->sampleRates.push_back( SAMPLE_RATES[k] );
       }
@@ -7760,7 +7760,7 @@ void RtApi3Al :: probeDeviceInfo(RtApi3Device *info)
       // the input device is most likely to be more limited than the
       // output device, this is ok.
       info->sampleRates.clear();
-      for (unsigned int k=0; k<MAX_SAMPLE_RATES; k++) {
+      for (uint32_t k=0; k<MAX_SAMPLE_RATES; k++) {
         if ( SAMPLE_RATES[k] >= pinfo.min.i && SAMPLE_RATES[k] <= pinfo.max.i )
           info->sampleRates.push_back( SAMPLE_RATES[k] );
       }
@@ -8482,7 +8482,7 @@ void RtApi3 :: clearStreamInfo()
   stream_.bufferSize = 0;
   stream_.nBuffers = 0;
   stream_.userFormat = 0;
-  for ( int i=0; i<2; i++ ) {
+  for ( int i=0; i<2; ++i ) {
     stream_.device[i] = 0;
     stream_.doConvertBuffer[i] = false;
     stream_.deInterleave[i] = false;
@@ -8530,7 +8530,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     if (info.inFormat == RTAUDIO3_SINT8) {
       signed char *in = (signed char *)inBuffer;
       scale = 1.0 / 128.0;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float64) in[info.inOffset[j]];
           out[info.outOffset[j]] *= scale;
@@ -8542,7 +8542,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT16) {
       Int16 *in = (Int16 *)inBuffer;
       scale = 1.0 / 32768.0;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float64) in[info.inOffset[j]];
           out[info.outOffset[j]] *= scale;
@@ -8554,7 +8554,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT24) {
       Int32 *in = (Int32 *)inBuffer;
       scale = 1.0 / 2147483648.0;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float64) (in[info.inOffset[j]] & 0xffffff00);
           out[info.outOffset[j]] *= scale;
@@ -8566,7 +8566,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT32) {
       Int32 *in = (Int32 *)inBuffer;
       scale = 1.0 / 2147483648.0;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float64) in[info.inOffset[j]];
           out[info.outOffset[j]] *= scale;
@@ -8577,7 +8577,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT32) {
       Float32 *in = (Float32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float64) in[info.inOffset[j]];
         }
@@ -8588,7 +8588,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_FLOAT64) {
       // Channel compensation and/or (de)interleaving only.
       Float64 *in = (Float64 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = in[info.inOffset[j]];
         }
@@ -8604,7 +8604,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     if (info.inFormat == RTAUDIO3_SINT8) {
       signed char *in = (signed char *)inBuffer;
       scale = 1.0 / 128.0;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float32) in[info.inOffset[j]];
           out[info.outOffset[j]] *= scale;
@@ -8616,7 +8616,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT16) {
       Int16 *in = (Int16 *)inBuffer;
       scale = 1.0 / 32768.0;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float32) in[info.inOffset[j]];
           out[info.outOffset[j]] *= scale;
@@ -8628,7 +8628,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT24) {
       Int32 *in = (Int32 *)inBuffer;
       scale = 1.0 / 2147483648.0;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float32) (in[info.inOffset[j]] & 0xffffff00);
           out[info.outOffset[j]] *= scale;
@@ -8640,7 +8640,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT32) {
       Int32 *in = (Int32 *)inBuffer;
       scale = 1.0 / 2147483648.0;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float32) in[info.inOffset[j]];
           out[info.outOffset[j]] *= scale;
@@ -8652,7 +8652,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_FLOAT32) {
       // Channel compensation and/or (de)interleaving only.
       Float32 *in = (Float32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = in[info.inOffset[j]];
         }
@@ -8662,7 +8662,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT64) {
       Float64 *in = (Float64 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Float32) in[info.inOffset[j]];
         }
@@ -8675,7 +8675,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     Int32 *out = (Int32 *)outBuffer;
     if (info.inFormat == RTAUDIO3_SINT8) {
       signed char *in = (signed char *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) in[info.inOffset[j]];
           out[info.outOffset[j]] <<= 24;
@@ -8686,7 +8686,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_SINT16) {
       Int16 *in = (Int16 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) in[info.inOffset[j]];
           out[info.outOffset[j]] <<= 16;
@@ -8697,7 +8697,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_SINT24) {
       Int32 *in = (Int32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) in[info.inOffset[j]];
         }
@@ -8708,7 +8708,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT32) {
       // Channel compensation and/or (de)interleaving only.
       Int32 *in = (Int32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = in[info.inOffset[j]];
         }
@@ -8718,7 +8718,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT32) {
       Float32 *in = (Float32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) (in[info.inOffset[j]] * 2147483647.0);
         }
@@ -8728,7 +8728,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT64) {
       Float64 *in = (Float64 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) (in[info.inOffset[j]] * 2147483647.0);
         }
@@ -8741,7 +8741,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     Int32 *out = (Int32 *)outBuffer;
     if (info.inFormat == RTAUDIO3_SINT8) {
       signed char *in = (signed char *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) in[info.inOffset[j]];
           out[info.outOffset[j]] <<= 24;
@@ -8752,7 +8752,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_SINT16) {
       Int16 *in = (Int16 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) in[info.inOffset[j]];
           out[info.outOffset[j]] <<= 16;
@@ -8764,7 +8764,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT24) {
       // Channel compensation and/or (de)interleaving only.
       Int32 *in = (Int32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = in[info.inOffset[j]];
         }
@@ -8774,7 +8774,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_SINT32) {
       Int32 *in = (Int32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) (in[info.inOffset[j]] & 0xffffff00);
         }
@@ -8784,7 +8784,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT32) {
       Float32 *in = (Float32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) (in[info.inOffset[j]] * 2147483647.0);
         }
@@ -8794,7 +8794,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT64) {
       Float64 *in = (Float64 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int32) (in[info.inOffset[j]] * 2147483647.0);
         }
@@ -8807,7 +8807,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     Int16 *out = (Int16 *)outBuffer;
     if (info.inFormat == RTAUDIO3_SINT8) {
       signed char *in = (signed char *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int16) in[info.inOffset[j]];
           out[info.outOffset[j]] <<= 8;
@@ -8819,7 +8819,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     else if (info.inFormat == RTAUDIO3_SINT16) {
       // Channel compensation and/or (de)interleaving only.
       Int16 *in = (Int16 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = in[info.inOffset[j]];
         }
@@ -8829,7 +8829,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_SINT24) {
       Int32 *in = (Int32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int16) ((in[info.inOffset[j]] >> 16) & 0x0000ffff);
         }
@@ -8839,7 +8839,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_SINT32) {
       Int32 *in = (Int32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int16) ((in[info.inOffset[j]] >> 16) & 0x0000ffff);
         }
@@ -8849,7 +8849,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT32) {
       Float32 *in = (Float32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int16) (in[info.inOffset[j]] * 32767.0);
         }
@@ -8859,7 +8859,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT64) {
       Float64 *in = (Float64 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (Int16) (in[info.inOffset[j]] * 32767.0);
         }
@@ -8873,7 +8873,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     if (info.inFormat == RTAUDIO3_SINT8) {
       // Channel compensation and/or (de)interleaving only.
       signed char *in = (signed char *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = in[info.inOffset[j]];
         }
@@ -8883,7 +8883,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     if (info.inFormat == RTAUDIO3_SINT16) {
       Int16 *in = (Int16 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (signed char) ((in[info.inOffset[j]] >> 8) & 0x00ff);
         }
@@ -8893,7 +8893,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_SINT24) {
       Int32 *in = (Int32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (signed char) ((in[info.inOffset[j]] >> 24) & 0x000000ff);
         }
@@ -8903,7 +8903,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_SINT32) {
       Int32 *in = (Int32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (signed char) ((in[info.inOffset[j]] >> 24) & 0x000000ff);
         }
@@ -8913,7 +8913,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT32) {
       Float32 *in = (Float32 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (signed char) (in[info.inOffset[j]] * 127.0);
         }
@@ -8923,7 +8923,7 @@ void RtApi3 :: convertBuffer( char *outBuffer, char *inBuffer, ConvertInfo &info
     }
     else if (info.inFormat == RTAUDIO3_FLOAT64) {
       Float64 *in = (Float64 *)inBuffer;
-      for (int i=0; i<stream_.bufferSize; i++) {
+      for (int i=0; i<stream_.bufferSize; ++i) {
         for (j=0; j<info.channels; j++) {
           out[info.outOffset[j]] = (signed char) (in[info.inOffset[j]] * 127.0);
         }
@@ -8941,7 +8941,7 @@ void RtApi3 :: byteSwapBuffer( char *buffer, int samples, RtAudio3Format format 
 
   ptr = buffer;
   if (format == RTAUDIO3_SINT16) {
-    for (int i=0; i<samples; i++) {
+    for (int i=0; i<samples; ++i) {
       // Swap 1st and 2nd bytes.
       val = *(ptr);
       *(ptr) = *(ptr+1);
@@ -8954,7 +8954,7 @@ void RtApi3 :: byteSwapBuffer( char *buffer, int samples, RtAudio3Format format 
   else if (format == RTAUDIO3_SINT24 ||
            format == RTAUDIO3_SINT32 ||
            format == RTAUDIO3_FLOAT32) {
-    for (int i=0; i<samples; i++) {
+    for (int i=0; i<samples; ++i) {
       // Swap 1st and 4th bytes.
       val = *(ptr);
       *(ptr) = *(ptr+3);
@@ -8971,7 +8971,7 @@ void RtApi3 :: byteSwapBuffer( char *buffer, int samples, RtAudio3Format format 
     }
   }
   else if (format == RTAUDIO3_FLOAT64) {
-    for (int i=0; i<samples; i++) {
+    for (int i=0; i<samples; ++i) {
       // Swap 1st and 8th bytes
       val = *(ptr);
       *(ptr) = *(ptr+7);

@@ -141,7 +141,7 @@ PeakConvert::myUpdate(MarControlPtr sender)
 	ostringstream oss;
 	for(mrs_natural j=0; j< nbParameters_; ++j) //j = param index
 	{
-		for (mrs_natural i=0; i < frameMaxNumPeaks_; i++) //i = peak index
+		for (mrs_natural i=0; i < frameMaxNumPeaks_; ++i) //i = peak index
 			oss << peakView::getParamName(j) << "_" << i+j*frameMaxNumPeaks_ << ",";
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
@@ -219,7 +219,7 @@ PeakConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag) //[
 	while(start<index.getSize() && !index(start))
 		start++;
 
-	for(mrs_natural i=start ; i<nbP ; i++, k++)
+	for(mrs_natural i=start ; i<nbP ; ++i, k++)
 	{
 		interval(2*k) = index(i)-1;
 		interval(2*k+1) = index(i);
@@ -229,18 +229,18 @@ PeakConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag) //[
 void
 PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
-	mrs_natural k=0, start=0, nbP=index.getSize();
-	mrs_natural minIndex = 0;
+	uint32_t k=0, start=0, nbP=index.getSize();
+	uint32_t minIndex = 0;
 
 	// getting rid of padding zeros
 	while(start<index.getSize() && !index(start))
 		start++;
 
-	for(mrs_natural i=start ; i<nbP ; i++, k++)
+	for(mrs_natural i=start ; i<nbP ; ++i, ++k)
 	{
 		minIndex = 0;
 		// look for the next valley location upward
-		for (mrs_natural j=(mrs_natural)index(i) ; j<mag.getSize()-1 ; j++)
+		for (size_t j= index(i) ; j<mag.getSize()-1 ; ++j)
 		{
 			if(mag(j) < mag(j+1))
 			{
@@ -256,7 +256,7 @@ PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag
 		interval(2*k+1) = minIndex;
 
 		// look for the next valley location downward
-		for (mrs_natural j= (mrs_natural) index(i) ; j>1 ; j--)
+		for (size_t j= index(i) ; j>1 ; --j)
 		{
 			if(mag(j) < mag(j-1))
 			{
@@ -300,7 +300,7 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 // 	}
 	interval(0) = minIndex;
 
-	for(mrs_natural i=start ; i<nbP-1 ; i++, k++)
+	for(mrs_natural i=start ; i<nbP-1 ; ++i, k++)
 	{
 		minVal = HUGE_VAL;
 		minIndex = 0;
@@ -325,7 +325,7 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 	// handling the last case
 	minVal = HUGE_VAL;
 	minIndex = 0;
-	for (mrs_natural j= (mrs_natural) index(nbP-1) ; j<mag.getSize()-1 ; j++)
+	for (size_t j= index(nbP-1) ; j<mag.getSize()-1 ; ++j)
 	{
 		if(minVal > mag(j))
 		{
@@ -346,6 +346,7 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 void 
 PeakConvert::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o;
 	mrs_real a, c;
 	mrs_real b, d;
 	mrs_real phasediff;
@@ -448,7 +449,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 				//peaks_ = mag_;
 				for (o = 0 ; o < downFrequency_ ; o++)
 					peaks_(o)=0.0;
-				for (o = upFrequency_ ; o < peaks_.getSize() ; o++)
+				for (o = upFrequency_ ; o < (int)peaks_.getSize() ; ++o)
 					peaks_(o)=0.0;		
 			}
 
@@ -477,7 +478,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 
 			nbPeaks_=tmp_.getSize()/2;
 			realvec index_(nbPeaks_); //[!] make member to avoid reallocation at each tick!
-			for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
+			for (mrs_natural i=0 ; i<nbPeaks_ ; ++i)
 				index_(i) = tmp_(2*i+1);
 			realvec index2_ = index_;
 			index2_.sort();
@@ -500,7 +501,7 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 
 			interval_ /= N_*2;
 
-			for (mrs_natural i = 0; i < nbPeaks_; i++)
+			for (mrs_natural i = 0; i < nbPeaks_; ++i)
 			{
 				pkViewOut(i, peakView::pkFrequency, f) = frequency_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkAmplitude, f) = magCorr_((mrs_natural) index_(i));

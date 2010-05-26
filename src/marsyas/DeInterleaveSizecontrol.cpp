@@ -70,7 +70,7 @@ DeInterleaveSizecontrol::myUpdate(MarControlPtr sender)
 void 
 DeInterleaveSizecontrol::myProcess(realvec& in, realvec& out)
 {
-
+	mrs_natural o,t;
 	for (o=0; o < inSamples_; o++)
 	{
 		mrs_natural size=(mrs_natural)(ctrl_sizes_->to<mrs_realvec>()(o));
@@ -78,7 +78,7 @@ DeInterleaveSizecontrol::myProcess(realvec& in, realvec& out)
 		mrs_natural rest=size%ctrl_numSets_->to<mrs_natural>();
 		mrs_natural part=size/ctrl_numSets_->to<mrs_natural>();
 		mrs_natural count=0;
-		for(int i=0;i<onObservations_/size;i++)
+		for(int i=0;i<onObservations_/size;++i)
 		{
 			for (t = 0; t < rest; t++)
 			{

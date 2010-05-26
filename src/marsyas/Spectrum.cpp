@@ -95,7 +95,7 @@ Spectrum::myUpdate(MarControlPtr sender)
 	// mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
 	ostringstream oss;
 	
-	// for (mrs_natural i = 0; i < inSamples_; i++)
+	// for (mrs_natural i = 0; i < inSamples_; ++i)
 	// {
 	// oss << "FFT" << inSamples_
 	// \todo: shouldn't there be some sort of index included in the obsName? like
@@ -117,7 +117,7 @@ void
 Spectrum::myProcess(realvec& in, realvec& out)
 {
 
-	
+	mrs_natural t;
 	// copy to output to perform inplace fft
 	// notice transposition of matrix
 	// from row to column

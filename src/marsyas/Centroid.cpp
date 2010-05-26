@@ -53,6 +53,7 @@ Centroid::myUpdate(MarControlPtr sender)
 void
 Centroid::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	// computer centroid of observations for each time sample
 	// using zero and first-order moments
 	for (t = 0; t < inSamples_; t++)

@@ -53,7 +53,8 @@ InvSpectrum::myUpdate(MarControlPtr sender)
 void 
 InvSpectrum::myProcess(realvec& in, realvec& out)
 {
-  //checkFlow(in,out);
+  mrs_natural o,t;
+
   for(o=0 ; o<onObservations_; o++)
 	{
 		for (t=0; t < onSamples_; t++)

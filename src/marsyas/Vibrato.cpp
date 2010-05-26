@@ -81,7 +81,7 @@ Vibrato::myUpdate(MarControlPtr sender)
 void 
 Vibrato::myProcess(realvec &in, realvec &out)
 {
-  for (t = 0; t < inSamples_; t++)
+  for (mrs_natural t = 0; t < inSamples_; t++)
     {
       mrs_real M = getctrl("mrs_real/mod_freq")->to<mrs_real>();
       M = M / israte_;

@@ -95,7 +95,7 @@ Confidence::myUpdate(MarControlPtr sender)
 	print_ = getctrl("mrs_bool/print")->to<mrs_bool>();
 	forcePrint_ = getctrl("mrs_bool/forcePrint")->to<mrs_bool>();
 
-	for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); i++)
+	for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); ++i)
 	{
 		string labelName;
 		string temp;
@@ -134,9 +134,7 @@ Confidence::myUpdate(MarControlPtr sender)
 void 
 Confidence::myProcess(realvec& in, realvec& out)
 {
-
-	
-	
+	mrs_natural o,t;
 
 	bool mute = ctrl_mute_->to<mrs_bool>();
 	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();

@@ -157,7 +157,7 @@ MarsyasBExtractCentroid::process(const float *const *inputBuffers,
 
   // Get the data out of the network
   realvec output_realvec = m_network->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-  for (int i = 0; i < output_realvec.getRows(); i++) {
+  for (int i = 0; i < output_realvec.getRows(); ++i) {
   feature.values.push_back(output_realvec(i));
   }
 

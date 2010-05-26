@@ -65,7 +65,7 @@ PhaseRandomize::myUpdate(MarControlPtr sender)
 void
 PhaseRandomize::myProcess(realvec& in, realvec& out)
 {
-	const mrs_real& gainValue = ctrl_gain_->to<mrs_real>();
+	mrs_natural t,o;
 	
 	for(t=0; t < inSamples_; ++t)
 	{

@@ -76,6 +76,7 @@ DownSampler::myUpdate(MarControlPtr sender)
 void
 DownSampler::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	mrs_natural factor = ctrl_factor_->to<mrs_natural>();
 
 	// Only copy samples at multiples of factor.

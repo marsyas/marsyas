@@ -108,9 +108,10 @@ Shredder::myUpdate(MarControlPtr sender)
 void 
 Shredder::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o,c;
 	if(marsystemsSize_>0)
 	{
-		for (c = 0; c < nTimes_; c++) 
+		for (c = 0; c < nTimes_; ++c) 
 		{
 			//shred input
 			for (o=0; o < inObservations_; o++)

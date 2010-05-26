@@ -81,6 +81,7 @@ WaveletPyramid::myUpdate(MarControlPtr sender)
 void
 WaveletPyramid::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	mrs_natural nn;
 	mrs_natural n;
 	mrs_bool forward;

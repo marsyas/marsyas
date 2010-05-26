@@ -177,9 +177,8 @@ MP3FileSink::putHeader(string filename)
 void 
 MP3FileSink::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural encodeCheck=-1;
-  //checkFlow(in,out);
-  	
+	mrs_natural t,o;
+
   // copy input to output 
   for (o=0; o < inObservations_; o++)
     for (t=0; t < inSamples_; t++)
@@ -187,6 +186,9 @@ MP3FileSink::myProcess(realvec& in, realvec& out)
 			out(o,t) = in(o,t);
     }
 #ifdef MARSYAS_LAME
+	
+	mrs_natural encodeCheck=-1;
+	
 	// fill left buffer
 	for (t=0; t < inSamples_; t++)
 		leftpcm_[t] = (short)(in(0,t) * PCM_MAXSHRT);

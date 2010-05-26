@@ -351,7 +351,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 		length++;
 
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-		for (int i = 0; i < processedData.getRows(); i++) {
+		for (int i = 0; i < processedData.getRows(); ++i) {
 			for (int j = 0; j < processedData.getCols(); j++) {
 				if (processedData(i,j) < min)
 					min = processedData(i,j);
@@ -423,7 +423,7 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 		net->tick();
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-		for (int i = 0; i < pngHeight; i++) {
+		for (int i = 0; i < pngHeight; ++i) {
 			double data_y = i;
 
 			double data = processedData(int(data_y),0);
@@ -473,21 +473,17 @@ void fftHistogram(string inFileName)
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
-
 	realvec processedData;
-	double normalizedData;
 
 	// Iterate over the whole input file by ticking, outputting columns
 	// of data to the .png file with each tick
 	double x = 0;
-	double y = 0;
-	double colour = 0;
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
 		   && (ticks == -1 || x < ticks))  {
 		net->tick();
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-		for (int i = 0; i < pngHeight; i++) {
+		for (int i = 0; i < pngHeight; ++i) {
 			double data_y = i;
 
 			double data = processedData(int(data_y),0);
@@ -495,7 +491,6 @@ void fftHistogram(string inFileName)
 			cout << "data=" << data << endl;
 		}
 		x++;
-
 	}
 
 	delete net;
@@ -520,7 +515,7 @@ void correlogramPNGs(string inFileName, string outFilePrefix)
   net->addMarSystem(parallel);
 
   int powerSpectrumSize = (windowSize/2)+1;
-  for (int i = 0; i < powerSpectrumSize; i++) {
+  for (int i = 0; i < powerSpectrumSize; ++i) {
 	std::stringstream ss;
 	ss << "auto" << i;
 	parallel->addMarSystem(mng.create("AutoCorrelation", ss.str()));

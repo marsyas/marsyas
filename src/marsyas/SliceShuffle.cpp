@@ -73,6 +73,7 @@ SliceShuffle::myUpdate(MarControlPtr sender)
 void
 SliceShuffle::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural t,o;
 	/// Pick a random slice.
 	mrs_natural slice_t = (rand() % bufferSize_) * inSamples_;
 

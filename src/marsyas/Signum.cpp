@@ -28,6 +28,7 @@ void Signum::myUpdate(MarControlPtr inSender)
 
 void Signum::myProcess(realvec& inVec, realvec& outVec)
 {
+	mrs_natural t,o;
 	for (o=0; o<inObservations_; o++)
 		for (t=0; t<inSamples_; t++)
 			outVec(o,t) = inVec(o,t)>0?1:0;

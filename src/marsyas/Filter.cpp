@@ -21,25 +21,28 @@
 using namespace std;
 using namespace Marsyas;
 
-Filter::Filter(string name):MarSystem("Filter",name)
+Filter::Filter(string name)
+:
+	MarSystem("Filter",name),
+	norder_(2),
+	dorder_(1),
+	channels_(1),
+	order_(2), 
+	fgain_(1.0)
 {
-	norder_ = 2;
-	dorder_ = 1;
-	channels_ = 1;
-	order_ = 2; 
-	fgain_ = 1.0;
 	ncoeffs_.create(norder_);
 	dcoeffs_.create(dorder_);
 	state_.create(channels_,order_-1);
+	
 	ncoeffs_(0) = 1.0;
 	dcoeffs_(0) = 1.0;
-
 
 	addControls();
 }
 
 Filter::~Filter()
 {
+	
 }
 
 
@@ -109,11 +112,11 @@ void Filter::myUpdate(MarControlPtr sender)
 
 	mrs_real d0 = dcoeffs_(0);
 	if (d0 != 1.0) {
-		for (mrs_natural i = 0; i < dorder_; i++){
+		for (mrs_natural i = 0; i < dorder_; ++i){
 			dcoeffs_(i) /= d0;
 		}
 
-		for (mrs_natural i = 0; i < norder_; i++){
+		for (mrs_natural i = 0; i < norder_; ++i){
 			ncoeffs_(i) /= d0;
 		}
 	}
@@ -152,8 +155,8 @@ Filter::myProcess(realvec& in, realvec& out)
 
 	// state_.setval(0);
 	if (norder_ == dorder_){
-		for (c = 0; c < channels; c++) {
-			for (i = 0; i < size; i++){
+		for (c = 0; c < channels; ++c) {
+			for (i = 0; i < size; ++i){
 				out(c,i) = ncoeffs_(0) * in(c,i) + state_(c,0);	
 				for (j = 0; j < stateSize - 1; j++)
 				{
@@ -164,8 +167,8 @@ Filter::myProcess(realvec& in, realvec& out)
 		}
 	}
 	else if (norder_ < dorder_){
-		for (c = 0; c < channels; c++) {
-			for (i = 0; i < size; i++){
+		for (c = 0; c < channels; ++c) {
+			for (i = 0; i < size; ++i){
 				out(c,i) = ncoeffs_(0) * in(c,i) + state_(c,0);
 				for (j = 0; j < norder_ - 1; j++)
 				{
@@ -180,8 +183,8 @@ Filter::myProcess(realvec& in, realvec& out)
 		}
 	}
 	else {
-		for (c = 0; c < channels; c++) {
-			for (i = 0; i < size; i++){
+		for (c = 0; c < channels; ++c) {
+			for (i = 0; i < size; ++i){
 				out(c,i) = ncoeffs_(0) * in(c,i) + state_(c,0);	
 				for (j = 0; j < dorder_ - 1; j++)
 				{

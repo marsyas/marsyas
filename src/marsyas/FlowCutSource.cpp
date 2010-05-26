@@ -72,6 +72,7 @@ if(getctrl("mrs_natural/setObservations")->to<mrs_natural>())
 void 
 FlowCutSource::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	(void) in;
 	for (o=0; o < onObservations_; o++)
 	{
