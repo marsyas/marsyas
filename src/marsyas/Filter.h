@@ -40,12 +40,12 @@ class Filter: public MarSystem
 {
 private:
 	/// Numerator order
-	uint32_t norder_;
+	unsigned int norder_;
 
 	/// Denominator order
-	uint32_t dorder_;
-	uint32_t channels_;
-	uint32_t order_;
+	unsigned int dorder_;
+	unsigned int channels_;
+	unsigned int order_;
 	realvec state_;
 	mrs_real fgain_;
 	realvec ncoeffs_;

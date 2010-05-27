@@ -260,7 +260,7 @@ toy_with_audiodevices()
 			else
 			{
 				std::cout << "Supported sample rates = ";
-				for (uint32_t j=0; j<info.sampleRates.size(); j++)
+				for (size_t j=0; j<info.sampleRates.size(); j++)
 					std::cout << info.sampleRates[j] << " ";
 			}
 			std::cout << std::endl;
@@ -517,7 +517,7 @@ void drumClassify( string drumFile) {
 	while(in >> word) 
 		words.push_back(word);  
 
-	for ( uint32_t i = 0; i < words.size(); ++i)
+	for ( size_t i = 0; i < words.size(); ++i)
 	{
 
 		if ( words[i] == "means" )
@@ -4456,7 +4456,7 @@ void toy_with_Windowing()
 	out.create(series->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 	in.setval(1.0);
 
-	for (uint32_t i = 0 ; i < winname.size(); ++i)
+	for (size_t i = 0 ; i < winname.size(); ++i)
 	{
 		series->updctrl("Windowing/win/mrs_string/type", winname[i]);                    
 		series->updctrl("PlotSink/plot/mrs_string/filename", "marsyas" + winname[i]); 

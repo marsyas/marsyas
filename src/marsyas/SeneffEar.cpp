@@ -164,7 +164,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     channels = FilterBankRThetaCoeffs.getRows();
     SeneffFilterBankCoeffs.create(channels, 5);
     mrs_real sum;
-    for (uint32_t i = 0; i < channels; ++i) {
+    for (mrs_natural i = 0; i < channels; ++i) {
       SeneffFilterBankCoeffs(i,0) =	1.0f;
       SeneffFilterBankCoeffs(i,1) = -2.0f*FilterBankRThetaCoeffs(i,0)*cos(FilterBankRThetaCoeffs(i,1));
       SeneffFilterBankCoeffs(i,2) = FilterBankRThetaCoeffs(i,0)*FilterBankRThetaCoeffs(i,0);

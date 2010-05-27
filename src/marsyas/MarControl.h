@@ -90,7 +90,7 @@ public:
 	inline MarControlPtr(std::string st);
 	inline MarControlPtr(bool be);
 	inline MarControlPtr(realvec ve);
-	inline MarControlPtr(uint32_t ne);
+	inline MarControlPtr(unsigned int ne);
 	//inline MarControlPtr(mrs_natural ne);
 
 	// generic type constructor
@@ -258,7 +258,7 @@ inline MarControlPtr::MarControlPtr(int ne)
 	TRACE_ADDCONTROL;
 }
 
-inline MarControlPtr::MarControlPtr(uint32_t ne)
+inline MarControlPtr::MarControlPtr(unsigned int ne)
 {
 	control_ = new MarControl((mrs_natural)ne);
 	control_->ref();

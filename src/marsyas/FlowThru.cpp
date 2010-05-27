@@ -126,7 +126,7 @@ FlowThru::myProcess(realvec& in, realvec& out)
 
   if(marsystemsSize_ >= 1)
 	{
-		for (uint32_t i = 0; i < marsystemsSize_; ++i)
+		for (size_t i = 0; i < marsystemsSize_; ++i)
 		{
 			if (i==0)
 			{

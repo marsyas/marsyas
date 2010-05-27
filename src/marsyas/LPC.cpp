@@ -149,7 +149,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 	//----------------------------------------------------
 	mrs_real temp = r(0);
 	//set peak searching start point to 2% of total window size [?]
-	uint32_t j = (mrs_real)in.getSize() * 0.02; 
+	size_t j = (mrs_real)in.getSize() * 0.02; 
 	//detect first local minimum...
 	while (r(j) < temp && j < in.getSize()/2)
 	{
@@ -261,7 +261,7 @@ LPC::LevinsonDurbin(const realvec& r, realvec& a, realvec& kVec, mrs_real& e)
 mrs_real
 LPC::predictionError(const realvec& data, const realvec& coeffs)
 {
-	uint32_t i,j;
+	mrs_natural i, j;
 	mrs_real power = 0.0;
 	mrs_real error, tmp;
 
@@ -272,7 +272,7 @@ LPC::predictionError(const realvec& data, const realvec& coeffs)
 	}
 	//apply LPC filter and estimate RMS of the error (=~ LPC Gain)
 	mrs_natural count = 0;
-	for (i=order_; i<data.getSize() ; ++i)
+	for (i=order_; i<(mrs_natural)data.getSize() ; ++i)
 	{
 		tmp = 0.0;
 		for (j=0; j< order_; j++) 

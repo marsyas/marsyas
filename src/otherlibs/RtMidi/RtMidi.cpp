@@ -106,7 +106,7 @@ void RtMidiIn :: cancelCallback()
   inputData_.usingCallback = false;
 }
 
-void RtMidiIn :: setQueueSizeLimit( uint32_t queueSize )
+void RtMidiIn :: setQueueSizeLimit( unsigned int queueSize )
 {
   inputData_.queueLimit = queueSize;
 }
@@ -193,7 +193,7 @@ void midiInputCallback( const MIDIPacketList *list, void *procRef, void *srcRef 
   unsigned long long time;
   RtMidiIn::MidiMessage message;
   const MIDIPacket *packet = &list->packet[0];
-  for ( uint32_t i=0; i<list->numPackets; ++i ) {
+  for ( unsigned int i=0; i<list->numPackets; ++i ) {
 
     // My interpretation of the CoreMIDI documentation: all message
     // types, except sysex, are complete within a packet and there may
@@ -222,7 +222,7 @@ void midiInputCallback( const MIDIPacketList *list, void *procRef, void *srcRef 
       // We have a continuing, segmented sysex message.
       if ( !(data->ignoreFlags & 0x01) ) {
         // If we're not ignoring sysex messages, copy the entire packet.
-        for ( uint32_t j=0; j<nBytes; j++ )
+        for ( unsigned int j=0; j<nBytes; j++ )
           message.bytes.push_back( packet->data[j] );
       }
       if ( packet->data[nBytes] == 0xF7 ) continueSysex = false;
@@ -329,7 +329,7 @@ void RtMidiIn :: initialize( void )
   inputData_.apiData = (void *) data;
 }
 
-void RtMidiIn :: openPort( uint32_t portNumber )
+void RtMidiIn :: openPort( unsigned int portNumber )
 {
   if ( connected_ ) {
     errorString_ = "RtMidiIn::openPort: a valid connection already exists!";
@@ -337,7 +337,7 @@ void RtMidiIn :: openPort( uint32_t portNumber )
     return;
   }
 
-  uint32_t nSrc = MIDIGetNumberOfSources();
+  unsigned int nSrc = MIDIGetNumberOfSources();
   if (nSrc < 1) {
     errorString_ = "RtMidiIn::openPort: no MIDI input sources found!";
     error( RtError3::NO_DEVICES_FOUND );
@@ -422,12 +422,12 @@ RtMidiIn :: ~RtMidiIn()
   delete data;
 }
 
-uint32_t RtMidiIn :: getPortCount()
+unsigned int RtMidiIn :: getPortCount()
 {
   return MIDIGetNumberOfSources();
 }
 
-std::string RtMidiIn :: getPortName( uint32_t portNumber )
+std::string RtMidiIn :: getPortName( unsigned int portNumber )
 {
   CFStringRef nameRef;
   MIDIEndpointRef portRef;
@@ -453,12 +453,12 @@ std::string RtMidiIn :: getPortName( uint32_t portNumber )
 //  Class Definitions: RtMidiOut
 //*********************************************************************//
 
-uint32_t RtMidiOut :: getPortCount()
+unsigned int RtMidiOut :: getPortCount()
 {
   return MIDIGetNumberOfDestinations();
 }
 
-std::string RtMidiOut :: getPortName( uint32_t portNumber )
+std::string RtMidiOut :: getPortName( unsigned int portNumber )
 {
   CFStringRef nameRef;
   MIDIEndpointRef portRef;
@@ -496,7 +496,7 @@ void RtMidiOut :: initialize( void )
   apiData_ = (void *) data;
 }
 
-void RtMidiOut :: openPort( uint32_t portNumber )
+void RtMidiOut :: openPort( unsigned int portNumber )
 {
   if ( connected_ ) {
     errorString_ = "RtMidiOut::openPort: a valid connection already exists!";
@@ -504,7 +504,7 @@ void RtMidiOut :: openPort( uint32_t portNumber )
     return;
   }
 
-  uint32_t nDest = MIDIGetNumberOfDestinations();
+  unsigned int nDest = MIDIGetNumberOfDestinations();
   if (nDest < 1) {
     errorString_ = "RtMidiOut::openPort: no MIDI output destinations found!";
     error( RtError3::NO_DEVICES_FOUND );
@@ -588,7 +588,7 @@ RtMidiOut :: ~RtMidiOut()
 
 void RtMidiOut :: sendMessage( std::vector<unsigned char> *message )
 {
-  uint32_t nBytes = message->size();
+  unsigned int nBytes = message->size();
   // Pad the buffer for extra (unknown) structure data.
   Byte buffer[nBytes+32];
   MIDIPacketList *pktlist = (MIDIPacketList *) buffer;
@@ -650,7 +650,7 @@ struct AlsaMidiData {
   int vport;
   snd_seq_port_subscribe_t *subscription;
   snd_midi_event_t *coder;
-  uint32_t bufferSize;
+  unsigned int bufferSize;
   unsigned char *buffer;
   pthread_t thread;
   unsigned long long lastTime;
@@ -845,7 +845,7 @@ void RtMidiIn :: initialize( void )
 }
 
 // This function is used to count or get the pinfo structure for a given port number.
-uint32_t portInfo( snd_seq_t *seq, snd_seq_port_info_t *pinfo, uint32_t type, int portNumber )
+unsigned int portInfo( snd_seq_t *seq, snd_seq_port_info_t *pinfo, unsigned int type, int portNumber )
 {
 	snd_seq_client_info_t *cinfo;
   int client;
@@ -871,7 +871,7 @@ uint32_t portInfo( snd_seq_t *seq, snd_seq_port_info_t *pinfo, uint32_t type, in
   return 0;
 }
 
-void RtMidiIn :: openPort( uint32_t portNumber )
+void RtMidiIn :: openPort( unsigned int portNumber )
 {
   if ( connected_ ) {
     errorString_ = "RtMidiIn::openPort: a valid connection already exists!";
@@ -879,7 +879,7 @@ void RtMidiIn :: openPort( uint32_t portNumber )
     return;
   }
 
-  uint32_t nSrc = this->getPortCount();
+  unsigned int nSrc = this->getPortCount();
   if (nSrc < 1) {
     errorString_ = "RtMidiIn::openPort: no MIDI input sources found!";
     error( RtError3::NO_DEVICES_FOUND );
@@ -1038,7 +1038,7 @@ RtMidiIn :: ~RtMidiIn()
   delete data;
 }
 
-uint32_t RtMidiIn :: getPortCount()
+unsigned int RtMidiIn :: getPortCount()
 {
 	snd_seq_port_info_t *pinfo;
 	snd_seq_port_info_alloca( &pinfo );
@@ -1047,7 +1047,7 @@ uint32_t RtMidiIn :: getPortCount()
   return portInfo( data->seq, pinfo, SND_SEQ_PORT_CAP_READ|SND_SEQ_PORT_CAP_SUBS_READ, -1 );
 }
 
-std::string RtMidiIn :: getPortName( uint32_t portNumber )
+std::string RtMidiIn :: getPortName( unsigned int portNumber )
 {
 	snd_seq_port_info_t *pinfo;
 	snd_seq_port_info_alloca( &pinfo );
@@ -1069,7 +1069,7 @@ std::string RtMidiIn :: getPortName( uint32_t portNumber )
 //  Class Definitions: RtMidiOut
 //*********************************************************************//
 
-uint32_t RtMidiOut :: getPortCount()
+unsigned int RtMidiOut :: getPortCount()
 {
 	snd_seq_port_info_t *pinfo;
 	snd_seq_port_info_alloca( &pinfo );
@@ -1078,7 +1078,7 @@ uint32_t RtMidiOut :: getPortCount()
   return portInfo( data->seq, pinfo, SND_SEQ_PORT_CAP_WRITE|SND_SEQ_PORT_CAP_SUBS_WRITE, -1 );
 }
 
-std::string RtMidiOut :: getPortName( uint32_t portNumber )
+std::string RtMidiOut :: getPortName( unsigned int portNumber )
 {
 	snd_seq_port_info_t *pinfo;
 	snd_seq_port_info_alloca( &pinfo );
@@ -1131,7 +1131,7 @@ void RtMidiOut :: initialize( void )
   apiData_ = (void *) data;
 }
 
-void RtMidiOut :: openPort( uint32_t portNumber )
+void RtMidiOut :: openPort( unsigned int portNumber )
 {
   if ( connected_ ) {
     errorString_ = "RtMidiOut::openPort: a valid connection already exists!";
@@ -1139,7 +1139,7 @@ void RtMidiOut :: openPort( uint32_t portNumber )
     return;
   }
 
-  uint32_t nSrc = this->getPortCount();
+  unsigned int nSrc = this->getPortCount();
   if (nSrc < 1) {
     errorString_ = "RtMidiOut::openPort: no MIDI output sources found!";
     error( RtError3::NO_DEVICES_FOUND );
@@ -1229,7 +1229,7 @@ void RtMidiOut :: sendMessage( std::vector<unsigned char> *message )
 {
   int result;
   AlsaMidiData *data = static_cast<AlsaMidiData *> (apiData_);
-  uint32_t nBytes = message->size();
+  unsigned int nBytes = message->size();
   if ( nBytes > data->bufferSize ) {
     data->bufferSize = nBytes;
     result = snd_midi_event_resize_buffer ( data->coder, nBytes);
@@ -1250,7 +1250,7 @@ void RtMidiOut :: sendMessage( std::vector<unsigned char> *message )
   snd_seq_ev_set_source(&ev, data->vport);
   snd_seq_ev_set_subs(&ev);
   snd_seq_ev_set_direct(&ev);
-  for ( uint32_t i=0; i<nBytes; ++i ) data->buffer[i] = message->at(i);
+  for ( unsigned int i=0; i<nBytes; ++i ) data->buffer[i] = message->at(i);
   result = snd_midi_event_encode( data->coder, data->buffer, (long)nBytes, &ev );
   if ( result < (int)nBytes ) {
     errorString_ = "RtMidiOut::sendMessage: event parsing error!";
@@ -1436,7 +1436,7 @@ void RtMidiIn :: initialize( void )
   inputData_.apiData = (void *) data;
 }
 
-void RtMidiIn :: openPort( uint32_t portNumber )
+void RtMidiIn :: openPort( unsigned int portNumber )
 {
   if ( connected_ ) {
     errorString_ = "RtMidiIn::openPort: a valid connection already exists!";
@@ -1515,14 +1515,14 @@ RtMidiIn :: ~RtMidiIn()
   delete data;
 }
 
-uint32_t RtMidiIn :: getPortCount()
+unsigned int RtMidiIn :: getPortCount()
 {
   int nPorts = mdInit();
   if ( nPorts >= 0 ) return nPorts;
   else return 0;
 }
 
-std::string RtMidiIn :: getPortName( uint32_t portNumber )
+std::string RtMidiIn :: getPortName( unsigned int portNumber )
 {
   int nPorts = mdInit();
 
@@ -1542,14 +1542,14 @@ std::string RtMidiIn :: getPortName( uint32_t portNumber )
 //  Class Definitions: RtMidiOut
 //*********************************************************************//
 
-uint32_t RtMidiOut :: getPortCount()
+unsigned int RtMidiOut :: getPortCount()
 {
   int nPorts = mdInit();
   if ( nPorts >= 0 ) return nPorts;
   else return 0;
 }
 
-std::string RtMidiOut :: getPortName( uint32_t portNumber )
+std::string RtMidiOut :: getPortName( unsigned int portNumber )
 {
   int nPorts = mdInit();
 
@@ -1576,7 +1576,7 @@ void RtMidiOut :: initialize( void )
   apiData_ = (void *) data;
 }
 
-void RtMidiOut :: openPort( uint32_t portNumber )
+void RtMidiOut :: openPort( unsigned int portNumber )
 {
   if ( connected_ ) {
     errorString_ = "RtMidiOut::openPort: a valid connection already exists!";
@@ -1642,7 +1642,7 @@ void RtMidiOut :: sendMessage( std::vector<unsigned char> *message )
   IrixMidiData *data = static_cast<IrixMidiData *> (apiData_);
   char *buffer = 0;
 
-  uint32_t nBytes = message->size();
+  unsigned int nBytes = message->size();
   if ( nBytes == 0 ) return;
   event.stamp = 0;
   if ( message->at(0) == 0xF0 ) {
@@ -1793,7 +1793,7 @@ void RtMidiIn :: initialize( void )
 {
   // We'll issue a warning here if no devices are available but not
   // throw an error since the user can plugin something later.
-  uint32_t nDevices = midiInGetNumDevs();
+  unsigned int nDevices = midiInGetNumDevs();
   if ( nDevices == 0 ) {
     errorString_ = "RtMidiIn::initialize: no MIDI input devices currently available.";
     error( RtError3::WARNING );
@@ -1806,7 +1806,7 @@ void RtMidiIn :: initialize( void )
   data->message.bytes.clear();  // needs to be empty for first input message
 }
 
-void RtMidiIn :: openPort( uint32_t portNumber )
+void RtMidiIn :: openPort( unsigned int portNumber )
 {
   if ( connected_ ) {
     errorString_ = "RtMidiIn::openPort: a valid connection already exists!";
@@ -1814,7 +1814,7 @@ void RtMidiIn :: openPort( uint32_t portNumber )
     return;
   }
 
-  uint32_t nDevices = midiInGetNumDevs();
+  unsigned int nDevices = midiInGetNumDevs();
   if (nDevices == 0) {
     errorString_ = "RtMidiIn::openPort: no MIDI input sources found!";
     error( RtError3::NO_DEVICES_FOUND );
@@ -1907,14 +1907,14 @@ RtMidiIn :: ~RtMidiIn()
   delete data;
 }
 
-uint32_t RtMidiIn :: getPortCount()
+unsigned int RtMidiIn :: getPortCount()
 {
   return midiInGetNumDevs();
 }
 
-std::string RtMidiIn :: getPortName( uint32_t portNumber )
+std::string RtMidiIn :: getPortName( unsigned int portNumber )
 {
-  uint32_t nDevices = midiInGetNumDevs();
+  unsigned int nDevices = midiInGetNumDevs();
   if ( portNumber >= nDevices ) {
     std::ostringstream ost;
     ost << "RtMidiIn::getPortName: the 'portNumber' argument (" << portNumber << ") is invalid.";
@@ -1941,14 +1941,14 @@ std::string RtMidiIn :: getPortName( uint32_t portNumber )
 //  Class Definitions: RtMidiOut
 //*********************************************************************//
 
-uint32_t RtMidiOut :: getPortCount()
+unsigned int RtMidiOut :: getPortCount()
 {
   return midiOutGetNumDevs();
 }
 
-std::string RtMidiOut :: getPortName( uint32_t portNumber )
+std::string RtMidiOut :: getPortName( unsigned int portNumber )
 {
-  uint32_t nDevices = midiOutGetNumDevs();
+  unsigned int nDevices = midiOutGetNumDevs();
   if ( portNumber >= nDevices ) {
     std::ostringstream ost;
     ost << "RtMidiOut::getPortName: the 'portNumber' argument (" << portNumber << ") is invalid.";
@@ -1974,7 +1974,7 @@ void RtMidiOut :: initialize( void )
 {
   // We'll issue a warning here if no devices are available but not
   // throw an error since the user can plug something in later.
-  uint32_t nDevices = midiOutGetNumDevs();
+  unsigned int nDevices = midiOutGetNumDevs();
   if ( nDevices == 0 ) {
     errorString_ = "RtMidiOut::initialize: no MIDI output devices currently available.";
     error( RtError3::WARNING );
@@ -1985,7 +1985,7 @@ void RtMidiOut :: initialize( void )
   apiData_ = (void *) data;
 }
 
-void RtMidiOut :: openPort( uint32_t portNumber )
+void RtMidiOut :: openPort( unsigned int portNumber )
 {
   if ( connected_ ) {
     errorString_ = "RtMidiOut::openPort: a valid connection already exists!";
@@ -1993,7 +1993,7 @@ void RtMidiOut :: openPort( uint32_t portNumber )
     return;
   }
 
-  uint32_t nDevices = midiOutGetNumDevs();
+  unsigned int nDevices = midiOutGetNumDevs();
   if (nDevices < 1) {
     errorString_ = "RtMidiOut::openPort: no MIDI output destinations found!";
     error( RtError3::NO_DEVICES_FOUND );
@@ -2049,7 +2049,7 @@ RtMidiOut :: ~RtMidiOut()
 
 void RtMidiOut :: sendMessage( std::vector<unsigned char> *message )
 {
-  uint32_t nBytes = message->size();
+  unsigned int nBytes = message->size();
   if ( nBytes == 0 ) {
     errorString_ = "RtMidiOut::sendMessage: message argument is empty!";
     error( RtError3::WARNING );
@@ -2068,7 +2068,7 @@ void RtMidiOut :: sendMessage( std::vector<unsigned char> *message )
     }
 
     // Copy data to buffer.
-    for ( uint32_t i=0; i<nBytes; ++i ) buffer[i] = message->at(i);
+    for ( unsigned int i=0; i<nBytes; ++i ) buffer[i] = message->at(i);
 
     // Create and prepare MIDIHDR structure.
     MIDIHDR sysex;
@@ -2107,7 +2107,7 @@ void RtMidiOut :: sendMessage( std::vector<unsigned char> *message )
     // Pack MIDI bytes into double word.
     DWORD packet;
     unsigned char *ptr = (unsigned char *) &packet;
-    for ( uint32_t i=0; i<nBytes; ++i ) {
+    for ( unsigned int i=0; i<nBytes; ++i ) {
       *ptr = message->at(i);
       ptr++;
     }

@@ -142,7 +142,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 	//check if there are any elements to process at the input
 	//(in some cases, they may not exist!) - otherwise, do nothing
 	//(i.e. output is also an empty vector)
-	uint32_t i, j, k, l;
+	size_t i, j, k, l;
 	if(inSamples_ > 0)
 	{
 		if(marsystemsSize_ == 1)
@@ -155,7 +155,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 			{
 				for(j=0; j<sizes_(i); j++)
 				{
-					for(k=0; k<invecs_[i].getRows(); k++)
+					for(k=0; (mrs_natural)k<invecs_[i].getRows(); k++)
 					{
 						invecs_[i](k, j) = in(k+obs, j);
 					}
@@ -195,7 +195,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 					MarControlAccessor acc(ctrl_covMatrix_);
 					realvec& covMatrix = acc.to<mrs_realvec>();
 					covMatrix.create(dim, dim);
-					for(i=0; i<dim; ++i)
+					for(i=0; i<(size_t)dim; ++i)
 					{
 						covMatrix(i,i) = vars_(i);
 					}
@@ -215,7 +215,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 				{
 					obs = 0;
 					invecs_[0].getCol(i, i_featVec_);
-					for(l=0; l<nfeats; l++)
+					for(l=0; l<(size_t)nfeats; l++)
 					{
 						stackedFeatVecs_(l,0) = i_featVec_(l);
 					}
@@ -225,7 +225,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 						{
 							invecs_[j].getCol(k, j_featVec_);
 							// stack i and j feat vectors
-							for(l=0; l<nfeats; l++)
+							for(l=0; l<(size_t)nfeats; l++)
 							{
 								stackedFeatVecs_(l+nfeats,0) = j_featVec_(l);
 							}

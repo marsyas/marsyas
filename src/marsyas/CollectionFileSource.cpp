@@ -95,7 +95,7 @@ CollectionFileSource::getHeader(string filename)
 	col_.clear();
 	col_.read(filename);
 	updctrl("mrs_string/allfilenames", col_.toLongString());
-	updctrl("mrs_natural/numFiles", (uint32_t)col_.getSize());  
+	updctrl("mrs_natural/numFiles", (mrs_natural)col_.getSize());  
 
 	cindex_ = 0;
 	setctrl("mrs_natural/cindex", 0);

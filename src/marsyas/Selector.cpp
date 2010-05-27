@@ -69,7 +69,7 @@ Selector::myUpdate(MarControlPtr sender)
   // If the enabled realvec has not been created, create it now.
   // Enable all observations by default.
   //
-  if (enabled.getSize() < (uint32_t)inObservations_) 
+  if ((mrs_natural)enabled.getSize() < inObservations_) 
 	{
 	  enabled.create(inObservations_);
 	  enabled.setval(1.0);

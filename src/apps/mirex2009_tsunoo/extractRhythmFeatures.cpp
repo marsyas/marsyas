@@ -21,7 +21,7 @@ using namespace Marsyas;
 
 void recognize(string sfName, string hName, string tpName, string cnName, string szName, string outName)
 {
-  uint32_t i, j, k, l, m;
+  unsigned int i, j, k, l, m;
   mrs_natural wsize, obs, totalCount;
   mrs_natural inputsize, maxind, outsize/*, prevNum*/;
   mrs_real msecondsPerFrame, sfrq;

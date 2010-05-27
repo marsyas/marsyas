@@ -119,7 +119,7 @@ class ExSymTbl : public ExRefCount {
 			 so that outputting bytecode is easier with variable names ***/
 	std::vector<ExRecord*> rho_;
 	ExRecord* curr_;
-	uint32_t env_id;
+	unsigned int env_id;
 public:
 	ExSymTbl() : ExRefCount() {env_id=0;curr_=NULL;}
 	virtual ~ExSymTbl();

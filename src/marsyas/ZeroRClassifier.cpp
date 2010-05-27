@@ -58,7 +58,7 @@ ZeroRClassifier::myUpdate(MarControlPtr sender)
 
 	mrs_natural nlabels = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
 
-	if (labelSizes_.getSize() != (uint32_t)nlabels)
+	if ((mrs_natural)labelSizes_.getSize() != nlabels)
 		labelSizes_.create(nlabels);
 	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 	if (mode == "predict")

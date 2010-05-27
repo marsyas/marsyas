@@ -164,8 +164,8 @@ public:
 
 protected:
 
-  static const uint32_t MAX_SAMPLE_RATES;
-  static const uint32_t SAMPLE_RATES[];
+  static const unsigned int MAX_SAMPLE_RATES;
+  static const unsigned int SAMPLE_RATES[];
 
   enum { FAILURE, SUCCESS };
 

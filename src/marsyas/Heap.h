@@ -64,9 +64,9 @@ private:
 	public:
 		Node* parent; Node* lchild; Node* rchild; // tree pointers
 		Node* prev; Node* next; // vector list pointers
-		uint32_t m_id; // node id, for determining child type
+		unsigned int m_id; // node id, for determining child type
 		Type* data;
-		Node(uint32_t node_id, Type* d) {
+		Node(unsigned int node_id, Type* d) {
 			parent=NULL; lchild=NULL; rchild=NULL;
 			prev=NULL; next=NULL;
 			data=d; m_id=node_id;
@@ -86,7 +86,7 @@ public:
 	Node* first; Node* last; // first and last pointers in heap
 	// assigned to a node to identify root, l/r child.
 	// An empty tree has a count of 0, while the root node is always 1.
-	uint32_t node_count;
+	unsigned int node_count;
 	// name declaration for required Comparator object
 	Comparator cmp;
 

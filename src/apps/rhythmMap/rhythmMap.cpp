@@ -16,7 +16,7 @@ using namespace Marsyas;
 
 void recognize(string sfName, string tpName)
 {
-  uint32_t i, j, k, l;
+  unsigned int i, j, k, l;
   mrs_natural nsamples, wsize, sfrq, obs, outsize;
   mrs_natural maxsize, totalCount, inputsize;
   mrs_real msecondsPerFrame;

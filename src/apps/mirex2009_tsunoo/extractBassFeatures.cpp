@@ -157,7 +157,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	*/
 	/*** set controls to bass map (matching) ***/
 
-	mbm->setctrl("mrs_natural/nTemplates", (uint32_t)(NTEMPLATES*tempfiles.size()));
+	mbm->setctrl("mrs_natural/nTemplates", (mrs_natural)(NTEMPLATES*tempfiles.size()));
 	mbm->setctrl("mrs_natural/nDevision", NDEVISION);
 	mbm->setctrl("mrs_real/lowFreq", ANALYZELOWFREQ);
 	mbm->setctrl("mrs_real/highFreq", ANALYZEHIGHFREQ);

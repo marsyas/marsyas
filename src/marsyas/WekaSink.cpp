@@ -259,7 +259,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	// TODO: why is count a static and not a class attribute?
 	static int count = 0;
 
-	uint32_t label = 0;
+	mrs_natural label = 0;
 
 	for (t = 0; t < inSamples_; t++)
 	{

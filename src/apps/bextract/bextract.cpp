@@ -518,9 +518,8 @@ bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 		total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
-		uint32_t cj;
 
-		for (cj=0; cj < cls.size(); cj++)
+		for (size_t cj=0; cj < cls.size(); cj++)
 		{
 			Collection l = cls[cj];
 
@@ -661,15 +660,13 @@ bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 
 	if (!collection_has_labels)
 	{
-		// cout << *total << endl;
-		uint32_t cj;
 
 		total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
 		total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-		for (cj=0; cj < cls.size(); cj++)
+		for (size_t cj=0; cj < cls.size(); cj++)
 		{
 			Collection l = cls[cj];
 			total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
@@ -787,14 +784,12 @@ bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
 
 	if (!collection_has_labels)
 	{
-		uint32_t cj;
-
 		total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
 		total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-		for (cj=0; cj < cls.size(); cj++)
+		for (size_t cj=0; cj < cls.size(); cj++)
 		{
 			Collection l = cls[cj];
 			total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
@@ -914,14 +909,13 @@ bextract_trainADRessStereoSPS(vector<Collection> cls, string classNames,
 		total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
-		uint32_t cj;
-		uint32_t i;
-		for (cj=0; cj < cls.size(); cj++)
+
+		for (size_t cj=0; cj < cls.size(); cj++)
 		{
 			Collection l = cls[cj];
 
 			total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
-			for (i=0; i < l.size(); ++i)
+			for (size_t i=0; i < l.size(); ++i)
 			{
 				total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 				cout << "Processing" << l.entry(i) << endl;
@@ -932,7 +926,6 @@ bextract_trainADRessStereoSPS(vector<Collection> cls, string classNames,
 	else
 	{
 		Collection l;
-		uint32_t i;
 		l = cls[0];
 
 		total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
@@ -940,7 +933,7 @@ bextract_trainADRessStereoSPS(vector<Collection> cls, string classNames,
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-		for (i=0; i < l.size(); ++i)
+		for (size_t i=0; i < l.size(); ++i)
 		{
 			total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 			total->updctrl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));
@@ -1033,14 +1026,12 @@ bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
 
 	if (!collection_has_labels)
 	{
-		// cout << *total << endl;
-		uint32_t cj;
 		total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
 		total->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", classNames);
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-		for (cj=0; cj < cls.size(); cj++)
+		for (size_t cj=0; cj < cls.size(); cj++)
 		{
 			Collection l = cls[cj];
 			total->updctrl("Annotator/ann/mrs_natural/label", (mrs_natural)cj);
@@ -1055,7 +1046,6 @@ bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
 	else
 	{
 		Collection l;
-		uint32_t i;
 		l = cls[0];
 
 		total->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
@@ -1063,7 +1053,7 @@ bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
 		total->updctrl("WekaSink/wsink/mrs_string/labelNames", l.getLabelNames());
 		total->updctrl("WekaSink/wsink/mrs_string/filename", wekafname);
 
-		for (i=0; i < l.size(); ++i)
+		for (size_t i=0; i < l.size(); ++i)
 		{
 			total->updctrl("Accumulator/acc/Series/playbacknet/SoundFileSource/src/mrs_string/filename", l.entry(i));
 			total->updctrl("Annotator/ann/mrs_natural/label", l.labelNum(l.labelEntry(i)));

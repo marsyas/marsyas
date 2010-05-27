@@ -45,7 +45,7 @@ public:
 
   // fft(SignalSource *src);
   
-  // void update(uint32_t interSize, uint32_t decimSize);
+  // void update(unsigned int interSize, unsigned int decimSize);
   // void myProcess(fvec& in, fvec& out);
   // void myProcess(fvec& in, int instart, int inlength, fvec& out, int outstart, int outlength);
   // void unprocess(fvec& out, fvec& in);

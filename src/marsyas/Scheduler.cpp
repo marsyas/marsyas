@@ -92,7 +92,7 @@ void
 Scheduler::split_cname(std::string cname, std::string* head, std::string* tail)
 {
 	bool second=false;
-	for (uint32_t i=0;i<cname.length();++i) {
+	for (size_t i=0;i<cname.length();++i) {
 		if (cname[i]=='/') {
 			if (!second) {
 //                scheduler_type = cname.substr(0,i);

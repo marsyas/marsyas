@@ -62,16 +62,16 @@ private:
   void cmd_load(std::string fname, mrs_natural lineSize);
   void cmd_play(mrs_natural start, mrs_natural end, mrs_natural lineSize);
   
-  void cmd_merge(std::string systemName, uint32_t pstart, uint32_t pend, 
-		 uint32_t start,  uint32_t end, 
-		 uint32_t winSize);
-  void cmd_classify(std::string system, std::string classifier, uint32_t start, uint32_t end, uint32_t winSize);
+  void cmd_merge(std::string systemName, unsigned int pstart, unsigned int pend, 
+		 unsigned int start,  unsigned int end, 
+		 unsigned int winSize);
+  void cmd_classify(std::string system, std::string classifier, unsigned int start, unsigned int end, unsigned int winSize);
   void cmd_extract(std::string systemName, std::string fileName, TimeLine tline);
-  void cmd_segment(std::string systemName, uint32_t memSize, uint32_t numPeaks, uint32_t peakSpacing, uint32_t start, uint32_t end, uint32_t winSize);
+  void cmd_segment(std::string systemName, unsigned int memSize, unsigned int numPeaks, unsigned int peakSpacing, unsigned int start, unsigned int end, unsigned int winSize);
   
-  void cmd_fullfft(uint32_t winSize);
-  void cmd_fft(uint32_t start, uint32_t winSize);
-  void cmd_colorgram(std::string collection, std::string system, uint32_t start, uint32_t end, uint32_t win_size);
+  void cmd_fullfft(unsigned int winSize);
+  void cmd_fft(unsigned int start, unsigned int winSize);
+  void cmd_colorgram(std::string collection, std::string system, unsigned int start, unsigned int end, unsigned int win_size);
   SoundFileSource *src_;
   AudioSink *dest_;
   

@@ -50,7 +50,7 @@ TimeStretch::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
   mrs_real factor = getctrl("mrs_real/factor")->to<mrs_real>();
-  uint32_t inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
   for (mrs_natural t=0; t < inSamples; t++)
     {

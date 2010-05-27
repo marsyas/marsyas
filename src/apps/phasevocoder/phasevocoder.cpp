@@ -137,7 +137,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 			onsets.push_back(onset_index);
 		}
 		// convert to analysis frame rate 
-		for (uint32_t j=0; j < onsets.size(); j++) 
+		for (size_t j=0; j < onsets.size(); j++) 
 		{
 			onsets[j] /= D;
 			cout << "on = " << onsets[j] << endl;
@@ -248,7 +248,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 
 		if (onsetsfile_ != "") 
 		{
-			for (uint32_t j=0; j < onsets.size(); j++) 
+			for (size_t j=0; j < onsets.size(); j++) 
 			{
 				if (numticks == onsets[j])
 				{
@@ -310,7 +310,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 			onsets.push_back(onset_index);
 		}
 		
-		for (uint32_t j=0; j < onsets.size(); j++) 
+		for (size_t j=0; j < onsets.size(); j++) 
 		{
 			onsets[j] /= D;
 			cout << "on = " << onsets[j] << endl;
@@ -539,7 +539,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 		
 		if (onsetsfile_ != "") 
 		{
-			for (uint32_t j=0; j < onsets.size(); j++) 
+			for (size_t j=0; j < onsets.size(); j++) 
 			{
 				
 				if (numticks == onsets[j])

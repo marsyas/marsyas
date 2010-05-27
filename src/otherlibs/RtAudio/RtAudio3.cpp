@@ -50,8 +50,8 @@
 #include <stdio.h>
 
 // Static variable definitions.
-const uint32_t RtApi3::MAX_SAMPLE_RATES = 14;
-const uint32_t RtApi3::SAMPLE_RATES[] = {
+const unsigned int RtApi3::MAX_SAMPLE_RATES = 14;
+const unsigned int RtApi3::SAMPLE_RATES[] = {
   4000, 5512, 8000, 9600, 11025, 16000, 22050,
   32000, 44100, 48000, 88200, 96000, 176400, 192000
 };
@@ -434,7 +434,7 @@ RtAudio3DeviceInfo RtApi3 :: getDeviceInfo( int device )
     info.outputChannels = devices_[deviceIndex].maxOutputChannels;
     info.inputChannels = devices_[deviceIndex].maxInputChannels;
     info.duplexChannels = devices_[deviceIndex].maxDuplexChannels;
-    for (uint32_t i=0; i<devices_[deviceIndex].sampleRates.size(); ++i)
+    for (unsigned int i=0; i<devices_[deviceIndex].sampleRates.size(); ++i)
       info.sampleRates.push_back( devices_[deviceIndex].sampleRates[i] );
     info.nativeFormats = devices_[deviceIndex].nativeFormats;
     if ( (deviceIndex == getDefaultOutputDevice()) ||
@@ -835,7 +835,7 @@ void RtApi3Oss :: probeDeviceInfo(RtApi3Device *info)
 
   // Probe the supported sample rates.
   info->sampleRates.clear();
-  for (uint32_t k=0; k<MAX_SAMPLE_RATES; k++) {
+  for (unsigned int k=0; k<MAX_SAMPLE_RATES; k++) {
     int speed = SAMPLE_RATES[k];
     if (ioctl(fd, SNDCTL_DSP_SPEED, &speed) != -1 && speed == (int)SAMPLE_RATES[k])
       info->sampleRates.push_back(speed);
@@ -1614,7 +1614,7 @@ RtApi3Core :: ~RtApi3Core()
 
   // Free our allocated apiDeviceId memory.
   AudioDeviceID *id;
-  for ( uint32_t i=0; i<devices_.size(); ++i ) {
+  for ( unsigned int i=0; i<devices_.size(); ++i ) {
     id = (AudioDeviceID *) devices_[i].apiDeviceId;
     if (id) free(id);
   }
@@ -1769,7 +1769,7 @@ void RtApi3Core :: probeDeviceInfo( RtApi3Device *info )
   info->name.append( (const char *)fullname, strlen(fullname)+1);
 
   // Get output channel information.
-  uint32_t i, minChannels = 0, maxChannels = 0, nStreams = 0;
+  unsigned int i, minChannels = 0, maxChannels = 0, nStreams = 0;
   AudioBufferList	*bufferList = nil;
   err = AudioDeviceGetPropertyInfo( *id, 0, false,
                                     kAudioDevicePropertyStreamConfiguration,
@@ -1879,7 +1879,7 @@ void RtApi3Core :: probeDeviceInfo( RtApi3Device *info )
 
   // Determine the supported sample rates.
   info->sampleRates.clear();
-  for (uint32_t k=0; k<MAX_SAMPLE_RATES; k++) {
+  for (unsigned int k=0; k<MAX_SAMPLE_RATES; k++) {
     description.mSampleRate = (double) SAMPLE_RATES[k];
     if ( deviceSupportsFormat( *id, isInput, &description, isDuplex ) )
       info->sampleRates.push_back( SAMPLE_RATES[k] );
@@ -2018,7 +2018,7 @@ bool RtApi3Core :: probeDeviceOpen( int device, StreamMode mode, int channels,
   // Search for a stream which contains the desired number of channels.
   OSStatus err = noErr;
   UInt32 dataSize;
-  uint32_t deviceChannels, nStreams = 0;
+  unsigned int deviceChannels, nStreams = 0;
   UInt32 iChannel = 0, iStream = 0;
   AudioBufferList	*bufferList = nil;
   err = AudioDeviceGetPropertyInfo( id, 0, isInput,
@@ -2040,7 +2040,7 @@ bool RtApi3Core :: probeDeviceOpen( int device, StreamMode mode, int channels,
       stream_.deInterleave[mode] = false;
       nStreams = bufferList->mNumberBuffers;
       for ( iStream=0; iStream<nStreams; iStream++ ) {
-        if ( bufferList->mBuffers[iStream].mNumberChannels >= (uint32_t) channels ) break;
+        if ( bufferList->mBuffers[iStream].mNumberChannels >= (unsigned int) channels ) break;
         iChannel += bufferList->mBuffers[iStream].mNumberChannels;
       }
       // If we didn't find a single stream above, see if we can meet
@@ -2049,7 +2049,7 @@ bool RtApi3Core :: probeDeviceOpen( int device, StreamMode mode, int channels,
       // consecutive one-channel streams, where N is the number of
       // desired channels.
       iChannel = 0;
-      if ( iStream >= nStreams && nStreams >= (uint32_t) channels ) {
+      if ( iStream >= nStreams && nStreams >= (unsigned int) channels ) {
         int counter = 0;
         for ( iStream=0; iStream<nStreams; iStream++ ) {
           if ( bufferList->mBuffers[iStream].mNumberChannels == 1 )
@@ -2136,7 +2136,7 @@ bool RtApi3Core :: probeDeviceOpen( int device, StreamMode mode, int channels,
   dataSize = sizeof( AudioStreamBasicDescription );
   if ( stream_.deInterleave[mode] ) nStreams = channels;
   else nStreams = 1;
-  for ( uint32_t i=0; i<nStreams; ++i, iChannel++ ) {
+  for ( unsigned int i=0; i<nStreams; ++i, iChannel++ ) {
 
     err = AudioDeviceGetProperty( id, iChannel, isInput,
                                   kAudioDevicePropertyStreamFormat,
@@ -2770,7 +2770,7 @@ void RtApi3Jack :: probeDeviceInfo(RtApi3Device *info)
   // equal RtAudio3 output channels.
   const char **ports;
   char *port;
-  uint32_t nChannels = 0;
+  unsigned int nChannels = 0;
   ports = jack_get_ports( client, NULL, NULL, JackPortIsInput );
   if ( ports ) {
     port = (char *) ports[nChannels];
@@ -3453,7 +3453,7 @@ void RtApi3Alsa :: initialize(void)
       // character, use it to identify the device.  This avoids a bug
       // in ALSA such that a numeric string is interpreted as a device
       // number.
-      for ( uint32_t i=0; i<strlen(cardId); ++i ) {
+      for ( unsigned int i=0; i<strlen(cardId); ++i ) {
         if ( !isdigit( cardId[i] ) ) {
           sprintf( name, "hw:%s,%d", cardId, subdevice );
           break;
@@ -3493,7 +3493,7 @@ void RtApi3Alsa :: probeDeviceInfo(RtApi3Device *info)
     error(RtError3::DEBUG_WARNING);
     return;
   }
-  uint32_t dev = (uint32_t) atoi( strtok(NULL, ",") );
+  unsigned int dev = (unsigned int) atoi( strtok(NULL, ",") );
 
   // First try for playback
   stream = SND_PCM_STREAM_PLAYBACK;
@@ -3537,7 +3537,7 @@ void RtApi3Alsa :: probeDeviceInfo(RtApi3Device *info)
   }
 
   // Get output channel information.
-  uint32_t value;
+  unsigned int value;
   err = snd_pcm_hw_params_get_channels_min(params, &value);
   if (err < 0) {
     snd_pcm_close(handle);
@@ -3683,7 +3683,7 @@ void RtApi3Alsa :: probeDeviceInfo(RtApi3Device *info)
   // Test our discrete set of sample rate values.
   int dir = 0;
   info->sampleRates.clear();
-  for (uint32_t i=0; i<MAX_SAMPLE_RATES; ++i) {
+  for (unsigned int i=0; i<MAX_SAMPLE_RATES; ++i) {
     if (snd_pcm_hw_params_test_rate(handle, params, SAMPLE_RATES[i], dir) == 0)
       info->sampleRates.push_back(SAMPLE_RATES[i]);
   }
@@ -3891,7 +3891,7 @@ bool RtApi3Alsa :: probeDeviceOpen( int device, StreamMode mode, int channels,
   }
 
   // Set the sample rate.
-  err = snd_pcm_hw_params_set_rate(handle, hw_params, (uint32_t)sampleRate, 0);
+  err = snd_pcm_hw_params_set_rate(handle, hw_params, (unsigned int)sampleRate, 0);
   if (err < 0) {
     snd_pcm_close(handle);
     sprintf(message_, "RtApi3Alsa: error setting sample rate (%d) on device (%s): %s.",
@@ -3903,7 +3903,7 @@ bool RtApi3Alsa :: probeDeviceOpen( int device, StreamMode mode, int channels,
   // Determine the number of channels for this device.  We support a possible
   // minimum device channel number > than the value requested by the user.
   stream_.nUserChannels[mode] = channels;
-  uint32_t value;
+  unsigned int value;
   err = snd_pcm_hw_params_get_channels_max(hw_params, &value);
   int device_channels = value;
   if (err < 0 || device_channels < channels) {
@@ -3937,7 +3937,7 @@ bool RtApi3Alsa :: probeDeviceOpen( int device, StreamMode mode, int channels,
 
   // Set the buffer number, which in ALSA is referred to as the "period".
   int dir;
-  uint32_t periods = numberOfBuffers;
+  unsigned int periods = numberOfBuffers;
   // Even though the hardware might allow 1 buffer, it won't work reliably.
   if (periods < 2) periods = 2;
   err = snd_pcm_hw_params_set_periods_near(handle, hw_params, &periods, &dir);
@@ -4799,7 +4799,7 @@ void RtApi3Asio :: probeDeviceInfo(RtApi3Device *info)
 
   // Determine the supported sample rates.
   info->sampleRates.clear();
-  for (uint32_t i=0; i<MAX_SAMPLE_RATES; ++i) {
+  for (unsigned int i=0; i<MAX_SAMPLE_RATES; ++i) {
     result = ASIOCanSampleRate( (ASIOSampleRate) SAMPLE_RATES[i] );
     if ( result == ASE_OK )
       info->sampleRates.push_back( SAMPLE_RATES[i] );
@@ -5977,11 +5977,11 @@ void RtApi3Ds :: probeDeviceInfo(RtApi3Device *info)
     }
     else {
       for ( int i=info->sampleRates.size()-1; i>=0; i-- ) {
-        if ( (uint32_t) info->sampleRates[i] > out_caps.dwMaxSecondarySampleRate )
+        if ( (unsigned int) info->sampleRates[i] > out_caps.dwMaxSecondarySampleRate )
           info->sampleRates.erase( info->sampleRates.begin() + i );
       }
       while ( info->sampleRates.size() > 0 &&
-              ((uint32_t) info->sampleRates[0] < out_caps.dwMinSecondarySampleRate) ) {
+              ((unsigned int) info->sampleRates[0] < out_caps.dwMinSecondarySampleRate) ) {
         info->sampleRates.erase( info->sampleRates.begin() );
       }
     }
@@ -7568,7 +7568,7 @@ RtApi3Al :: ~RtApi3Al()
 
   // Free our allocated apiDeviceId memory.
   long *id;
-  for ( uint32_t i=0; i<devices_.size(); ++i ) {
+  for ( unsigned int i=0; i<devices_.size(); ++i ) {
     id = (long *) devices_[i].apiDeviceId;
     if (id) free(id);
   }
@@ -7661,7 +7661,7 @@ int RtApi3Al :: getDefaultInputDevice(void)
     error(RtError3::WARNING);
   }
   else {
-    for ( uint32_t i=0; i<devices_.size(); ++i ) {
+    for ( unsigned int i=0; i<devices_.size(); ++i ) {
       id = (long *) devices_[i].apiDeviceId;
       if ( id[1] == value.i ) return i;
     }
@@ -7681,7 +7681,7 @@ int RtApi3Al :: getDefaultOutputDevice(void)
     error(RtError3::WARNING);
   }
   else {
-    for ( uint32_t i=0; i<devices_.size(); ++i ) {
+    for ( unsigned int i=0; i<devices_.size(); ++i ) {
       id = (long *) devices_[i].apiDeviceId;
       if ( id[0] == value.i ) return i;
     }
@@ -7722,7 +7722,7 @@ void RtApi3Al :: probeDeviceInfo(RtApi3Device *info)
     }
     else {
       info->sampleRates.clear();
-      for (uint32_t k=0; k<MAX_SAMPLE_RATES; k++) {
+      for (unsigned int k=0; k<MAX_SAMPLE_RATES; k++) {
         if ( SAMPLE_RATES[k] >= pinfo.min.i && SAMPLE_RATES[k] <= pinfo.max.i )
           info->sampleRates.push_back( SAMPLE_RATES[k] );
       }
@@ -7760,7 +7760,7 @@ void RtApi3Al :: probeDeviceInfo(RtApi3Device *info)
       // the input device is most likely to be more limited than the
       // output device, this is ok.
       info->sampleRates.clear();
-      for (uint32_t k=0; k<MAX_SAMPLE_RATES; k++) {
+      for (unsigned int k=0; k<MAX_SAMPLE_RATES; k++) {
         if ( SAMPLE_RATES[k] >= pinfo.min.i && SAMPLE_RATES[k] <= pinfo.max.i )
           info->sampleRates.push_back( SAMPLE_RATES[k] );
       }

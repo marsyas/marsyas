@@ -48,7 +48,7 @@ struct ltstr
 };
 
 void
-Talk::cmd_colorgram(string collection, string system, uint32_t start, uint32_t end, uint32_t winSize)
+Talk::cmd_colorgram(string collection, string system, unsigned int start, unsigned int end, unsigned int winSize)
 {
 	// FIXME All the code to this function is commented out, so none of the parameters are used.
 	(void) collection;
@@ -83,8 +83,8 @@ Talk::cmd_colorgram(string collection, string system, uint32_t start, uint32_t e
 //   int iwinSize = winSize;
 //   if (winSize != DEFAULT_WIN_SIZE)
 //     {
-//       start = (uint32_t)(start * ((float)winSize / DEFAULT_WIN_SIZE));
-//       end = (uint32_t) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
+//       start = (unsigned int)(start * ((float)winSize / DEFAULT_WIN_SIZE));
+//       end = (unsigned int) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
 //       winSize = DEFAULT_WIN_SIZE;
 //     }
 //   src_->initWindow(winSize);
@@ -135,9 +135,9 @@ Talk::cmd_colorgram(string collection, string system, uint32_t start, uint32_t e
 //     }
   
 //   (*(results[extractorstr.c_str()])) *= projectMatrix;
-//   uint32_t rows;
+//   unsigned int rows;
 //   rows =   (*(results[extractorstr.c_str()])).rows();
-//   uint32_t cols;
+//   unsigned int cols;
 //   cols =   (*(results[extractorstr.c_str()])).cols();
 //   string name;
 //   name = (*(results[extractorstr.c_str()])).name();
@@ -161,8 +161,8 @@ Talk::cmd_colorgram(string collection, string system, uint32_t start, uint32_t e
 //   fvec gvec(rows / scale);
 //   fvec bvec(rows / scale);
   
-//   uint32_t i;
-//   uint32_t skip = 0;
+//   unsigned int i;
+//   unsigned int skip = 0;
   
 //   for (i=0; i < rows / scale; ++i)
 //     {
@@ -180,18 +180,18 @@ Talk::cmd_colorgram(string collection, string system, uint32_t start, uint32_t e
 
 
 void
-Talk::cmd_fullfft(uint32_t winSize)
+Talk::cmd_fullfft(unsigned int winSize)
 {
 	// FIXME The code to this function is gone, winSize is unused.
 	(void) winSize;
   
 //   src_->initWindow(winSize, winSize, 0, 0);
-//   uint32_t iterations  = src_->iterations();
+//   unsigned int iterations  = src_->iterations();
 //   fvec win(winSize);
 //   fvec fftmag(winSize/2);
 //   fvec fullmag((winSize/2)* iterations);
 //   MagFFT mag(winSize);
-//   uint32_t i,j;
+//   unsigned int i,j;
 //   for (i=0; i < iterations; ++i)
 //     {
 //       src_->get(win, i);      
@@ -204,7 +204,7 @@ Talk::cmd_fullfft(uint32_t winSize)
 
 
 void
-Talk::cmd_fft(uint32_t start, uint32_t winSize)
+Talk::cmd_fft(unsigned int start, unsigned int winSize)
 {
 	// FIXME Missing code (again).
 	(void) start;
@@ -371,7 +371,7 @@ Talk::cmd_extract(string systemName, string fileName, TimeLine tline)
 
 
 void 
-Talk::cmd_segment(string systemName, uint32_t memSize, uint32_t numPeaks, uint32_t peakSpacing, uint32_t start, uint32_t end, uint32_t winSize)
+Talk::cmd_segment(string systemName, unsigned int memSize, unsigned int numPeaks, unsigned int peakSpacing, unsigned int start, unsigned int end, unsigned int winSize)
 {
 	// FIXME Unused parameters
 	(void) memSize;
@@ -417,8 +417,8 @@ Talk::cmd_segment(string systemName, uint32_t memSize, uint32_t numPeaks, uint32
   
 //   if (winSize != DEFAULT_WIN_SIZE)
 //     {
-//       start = (uint32_t)(start * ((float)winSize / DEFAULT_WIN_SIZE));
-//       end = (uint32_t) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
+//       start = (unsigned int)(start * ((float)winSize / DEFAULT_WIN_SIZE));
+//       end = (unsigned int) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
 //       winSize = DEFAULT_WIN_SIZE;
 //     }
 //   src_->initWindow(winSize);
@@ -480,8 +480,8 @@ Talk::cmd_segment(string systemName, uint32_t memSize, uint32_t numPeaks, uint32
 
 
 void
-Talk::cmd_merge(string systemName, uint32_t pstart, uint32_t pend, 
-		uint32_t start, uint32_t end, uint32_t winSize)
+Talk::cmd_merge(string systemName, unsigned int pstart, unsigned int pend, 
+		unsigned int start, unsigned int end, unsigned int winSize)
 {
 	// FIXME See above (missing function body)
 	(void) systemName;
@@ -494,16 +494,16 @@ Talk::cmd_merge(string systemName, uint32_t pstart, uint32_t pend,
 //   string extractorstr = systemName;
 //   if (winSize != DEFAULT_WIN_SIZE)
 //     {
-//       pstart = (uint32_t)(start * ((float)winSize / DEFAULT_WIN_SIZE));
-//       pend = (uint32_t) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
+//       pstart = (unsigned int)(start * ((float)winSize / DEFAULT_WIN_SIZE));
+//       pend = (unsigned int) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
 //       winSize = DEFAULT_WIN_SIZE;
 //     }
   
   
 //   if (winSize != DEFAULT_WIN_SIZE)
 //     {
-//       start = (uint32_t)(start * ((float)winSize / DEFAULT_WIN_SIZE));
-//       end = (uint32_t) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
+//       start = (unsigned int)(start * ((float)winSize / DEFAULT_WIN_SIZE));
+//       end = (unsigned int) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
 //       winSize = DEFAULT_WIN_SIZE;
 //     }
   
@@ -608,7 +608,7 @@ Talk::cmd_merge(string systemName, uint32_t pstart, uint32_t pend,
 
 
 void 
-Talk::cmd_classify(string systemName, string classifierName, uint32_t start, uint32_t end, uint32_t winSize)
+Talk::cmd_classify(string systemName, string classifierName, unsigned int start, unsigned int end, unsigned int winSize)
 {
 	// FIXME See above.
 	(void) systemName;
@@ -623,8 +623,8 @@ Talk::cmd_classify(string systemName, string classifierName, uint32_t start, uin
 
 //   if (winSize != DEFAULT_WIN_SIZE)
 //     {
-//       start = (uint32_t)(start * ((float)winSize / DEFAULT_WIN_SIZE));
-//       end = (uint32_t) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
+//       start = (unsigned int)(start * ((float)winSize / DEFAULT_WIN_SIZE));
+//       end = (unsigned int) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
 //       winSize = DEFAULT_WIN_SIZE;
 //     }
   
@@ -632,8 +632,8 @@ Talk::cmd_classify(string systemName, string classifierName, uint32_t start, uin
   
 //   if (winSize != DEFAULT_WIN_SIZE)
 //     {
-//       start = (uint32_t)(start * ((float)winSize / DEFAULT_WIN_SIZE));
-//       end = (uint32_t) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
+//       start = (unsigned int)(start * ((float)winSize / DEFAULT_WIN_SIZE));
+//       end = (unsigned int) (end * ((float)winSize/ DEFAULT_WIN_SIZE));
 //       winSize = DEFAULT_WIN_SIZE;
 //     }
 //   src_->initWindow(winSize);
@@ -685,7 +685,7 @@ Talk::cmd_classify(string systemName, string classifierName, uint32_t start, uin
 
 //   float conf;
   
-//   uint32_t classId = classifier.estimateClass(*(results[extractorstr.c_str()]),&conf);
+//   unsigned int classId = classifier.estimateClass(*(results[extractorstr.c_str()]),&conf);
 //   string className = classifier.className(classId);
 //   cerr << "Estimated className = " << className << endl;
 //   cerr << "Estimated classId = " << classId << endl;
@@ -713,7 +713,7 @@ Talk::process(char *message)
   char *word;
   char *filename;
   string fname;
-  uint32_t lineSize;
+  unsigned int lineSize;
   int start, end, win_size;
   word = strtok(message, SEPCHARS);
   if (!strcmp(word,"load"))
@@ -740,11 +740,11 @@ Talk::process(char *message)
   else if (!strcmp(word,"merge"))
     {
       string systemName = strtok(NULL, SEPCHARS);
-      uint32_t pstart = atoi(strtok(NULL, SEPCHARS));
-      uint32_t pend = atoi(strtok(NULL, SEPCHARS));
-      uint32_t start = atoi(strtok(NULL, SEPCHARS));
-      uint32_t end = atoi(strtok(NULL, SEPCHARS));
-      uint32_t win_size = atoi(strtok(NULL, SEPCHARS));
+      unsigned int pstart = atoi(strtok(NULL, SEPCHARS));
+      unsigned int pend = atoi(strtok(NULL, SEPCHARS));
+      unsigned int start = atoi(strtok(NULL, SEPCHARS));
+      unsigned int end = atoi(strtok(NULL, SEPCHARS));
+      unsigned int win_size = atoi(strtok(NULL, SEPCHARS));
       cerr << "Merge command " << endl;
       cerr << "System = " << systemName << " pstart = " << pstart << 
 	   " pend = " << pend << " start = " << start << " end = " << end 

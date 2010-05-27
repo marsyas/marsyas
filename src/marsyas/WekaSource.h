@@ -77,7 +77,7 @@ namespace Marsyas
 			this->Shuffle();
 
 			rstep_ = (mrs_real)this->size() / (mrs_real)foldCount_;
-			if ((uint32_t)foldCount_ > this->size()) 
+			if (foldCount_ > (mrs_natural)this->size()) 
 			{
 				cout << "Folds exceed number of instances" << endl;
 				cout << "foldCount_ = " << foldCount_ << endl;

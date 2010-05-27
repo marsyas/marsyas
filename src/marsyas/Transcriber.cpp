@@ -128,7 +128,7 @@ mrs_real
 Transcriber::findNextPeakValue(const realvec& list, const mrs_natural
                                start)
 {
-	uint32_t i = start;
+	size_t i = start;
 	mrs_bool isPeak = false;
 	mrs_real minValue = 0.1;
 	do

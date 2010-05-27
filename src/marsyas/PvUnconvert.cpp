@@ -92,7 +92,7 @@ PvUnconvert::myUpdate(MarControlPtr sender)
 	
 	N2_ = onObservations/2;
 
-	if ((uint32_t)N2_+1 != phase_.getSize())
+	if (N2_+1 != (mrs_natural)phase_.getSize())
 	{
 		
 		{

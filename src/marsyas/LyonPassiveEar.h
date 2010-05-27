@@ -89,7 +89,7 @@ namespace Marsyas
 
 		//internal variables and parameters
 		mrs_natural currDecimState_;
-		uint32_t numFilterChannels_;
+		unsigned int numFilterChannels_;
 		
 
 		/// the actual filter cascade plus the post-processing (agc, channeldiff, etc.)
