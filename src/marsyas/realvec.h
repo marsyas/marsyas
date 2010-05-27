@@ -68,7 +68,7 @@ namespace Marsyas
 */
 
 
-marsyas_EXPORT class realvec
+class marsyas_EXPORT realvec
 {
 
 public:
