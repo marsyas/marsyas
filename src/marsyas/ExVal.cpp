@@ -156,7 +156,7 @@ ExVal::getElemType() const
 bool
 ExVal::is_list() const
 {   // whoa! that's crazy man..
-	uint32_t len=(uint32_t)type_.length();
+	size_t len = type_.length();
 	return (len>3)
 		&& (type_[len-4]=='l')
 		&& (type_[len-3]=='i')

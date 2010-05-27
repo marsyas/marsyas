@@ -110,7 +110,7 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 		autocorr.update();
 		autocorr.process(tmp, norm_);
 		
-		for (mrs_natural i = 0 ; i < norm_.getSize() ; ++i)
+		for (size_t i = 0 ; i < norm_.getSize() ; ++i)
 			norm_(i) = 1/norm_(i);
 	}
 

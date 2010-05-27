@@ -150,7 +150,7 @@ OneRClassifier::OneRRule *OneRClassifier::newRule(mrs_natural attr, mrs_natural 
   while(ii < lastInstance)
     {
       //zero the current counts
-      for(mrs_natural jj=0; jj<(int)counts.size(); jj++) counts[jj]=0;
+      for(mrs_natural jj=0; jj<(mrs_natural)counts.size(); jj++) counts[jj]=0;
       do
 	{//fill it until is has enough of the majority class
 	  it = instances_.GetClass(++ii);

@@ -64,7 +64,7 @@ PeakLabeler::myProcess(realvec& in, realvec& out)
 	
 	const realvec& peakLabels = ctrl_peakLabels_->to<mrs_realvec>(); //reading unlocked and linked control!!! --> should use MarControlAccessor [TODO][!]
 
-	if(peakLabels.getSize() != (mrs_natural)outPeakView.getTotalNumPeaks())
+	if((mrs_natural)peakLabels.getSize() != outPeakView.getTotalNumPeaks())
 	{
 		MRSERR("PeakLabeler::myProcess - peakLabels control and input peaks number mismatch! Labeling not performed!");
 	}

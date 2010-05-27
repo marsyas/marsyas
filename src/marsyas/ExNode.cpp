@@ -182,7 +182,7 @@ ExNode::is_list() const
 {
 	std::string humuhumunukunukuapuaa=getType();
 	// whoa! that's crazy man..
-	uint32_t len=(uint32_t)humuhumunukunukuapuaa.length();
+	size_t len = humuhumunukunukuapuaa.length();
 	return (len>3)
 		&& (humuhumunukunukuapuaa[len-4]=='l')
 		&& (humuhumunukunukuapuaa[len-3]=='i')

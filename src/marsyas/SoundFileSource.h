@@ -98,7 +98,7 @@ namespace Marsyas
 			void addControls();
 			void myUpdate(MarControlPtr sender);
 
-			bool updateCurrDuration;
+			bool updateCurrDuration;	
 
 		public:
 

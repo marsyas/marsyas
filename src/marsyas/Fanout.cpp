@@ -99,7 +99,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	//check child MarSystems to disable (passed as a string)
 	disableChild_ = getctrl("mrs_string/disableChild")->to<mrs_string>();
 	disableChildIndex_ = -1;
-	for (uint32_t i=0; i < marsystems_.size(); ++i)
+	for (size_t i=0; i < marsystems_.size(); ++i)
 	{
 		string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
@@ -117,7 +117,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	}
 	if (disableChild_ == "all")
 	{
-		for (uint32_t i=0; i < marsystems_.size(); ++i)
+		for (size_t i=0; i < marsystems_.size(); ++i)
 		{
 			enabled(i) = 0.0;
 			localIndices_(i) = 0.0;
@@ -140,7 +140,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	//check child MarSystems to enable (passed as a string)
 	enableChild_ = getctrl("mrs_string/enableChild")->to<mrs_string>();
 	enableChildIndex_ = -1;
-	for (uint32_t i=0; i < marsystems_.size(); ++i)
+	for (size_t i=0; i < marsystems_.size(); ++i)
 	{
 		string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
@@ -186,7 +186,7 @@ Fanout::myUpdate(MarControlPtr sender)
 			localIndices_(0) = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 			oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 		}
-		for (mrs_natural i=1; i < marsystemsSize_; ++i)
+		for (size_t i=1; i < marsystemsSize_; ++i)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
@@ -211,7 +211,7 @@ Fanout::myUpdate(MarControlPtr sender)
 		// update buffers between components
 		if (slices_.size() < marsystemsSize_)
 			slices_.resize(marsystemsSize_, NULL);
-		for (mrs_natural i=0; i< marsystemsSize_; ++i)
+		for (size_t i=0; i< marsystemsSize_; ++i)
 		{
 			if (slices_[i] != NULL)
 			{
@@ -249,7 +249,7 @@ Fanout::myProcess(realvec& in, realvec& out)
 		MarControlAccessor accMuted(ctrl_muted_);
 		mrs_realvec& muted = accMuted.to<mrs_realvec>();
 		
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
+		for (size_t i = 0; i < marsystemsSize_; ++i)
 		{
 			if (localIndices_(i))//enabled child have a non-zero localIndex
 			{

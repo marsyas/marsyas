@@ -241,7 +241,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     {
       for (t=0; t < samples; t++)
       {
-        const uint32_t i=vi->channels*t;
+        const unsigned int i=vi->channels*t;
         switch(vi->channels)
         {
         case 2:

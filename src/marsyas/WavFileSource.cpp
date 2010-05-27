@@ -185,7 +185,7 @@ WavFileSource::getHeader(string filename)
 			// setctrl("mrs_natural/nChannels", (mrs_natural)channels);
 			setctrl("mrs_natural/onObservations", (mrs_natural)channels);
 
-			uint32_t srate;
+			unsigned int srate;
 			fread(&srate, 4,1,sfp_);
 		  
 #if defined(MARSYAS_BIGENDIAN)	      

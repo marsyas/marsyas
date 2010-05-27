@@ -161,7 +161,7 @@ ResampleSinc::window(mrs_real position)
     
     mrs_real divisor=2.279585302336;
     
-    for (mrs_natural i=0;i<y.getSize();++i)
+    for (size_t i=0;i<y.getSize();++i)
         
         if (i<=y.getSize()/2)
             y(i)=y(i)/divisor;

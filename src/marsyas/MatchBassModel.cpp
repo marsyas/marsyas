@@ -68,7 +68,7 @@ MatchBassModel::addControls()
 void MatchBassModel::myUpdate(MarControlPtr sender)
 {
   (void) sender;
-  uint32_t i, j, o;
+  unsigned int i, j, o;
   ostringstream oss;
   realvec tmpvec;
   (void) sender;

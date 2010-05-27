@@ -70,7 +70,7 @@ double AubioYin::aubio_quadfrac(double s0, double s1, double s2, double pf) {
   return tmp;
 }
 
-double AubioYin::vec_quadint_min(realvec *x,uint32_t pos, uint32_t span) {
+double AubioYin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span) {
   double step = 1./200.;
   /* init resold to - something (in case x[pos+-span]<0)) */
   double res, frac, s0, s1, s2, exactpos = (double)pos, resold = 100000.;
@@ -92,11 +92,11 @@ double AubioYin::vec_quadint_min(realvec *x,uint32_t pos, uint32_t span) {
   return exactpos;
 }
 
-uint32_t AubioYin::vec_min_elem(realvec *s) 
+unsigned int AubioYin::vec_min_elem(realvec *s) 
 {
-  uint32_t i = 0;
-  uint32_t j = 0;
-  uint32_t pos=0;
+  unsigned int i = 0;
+  unsigned int j = 0;
+  unsigned int pos=0;
   double tmp = (*s)(0,0);
 //   for (i=0; i < s->channels; ++i)
   for (j=0; j < s->getSize(); j++) {
@@ -125,7 +125,7 @@ AubioYin::myProcess(realvec& in, realvec& out)
 //   cout << "tol=" << tol << endl;
 
   // Calculate the pitch with the Yin method
-  uint32_t j,tau = 0;
+  unsigned int j,tau = 0;
   int period;
   double tmp = 0., tmp2 = 0.;
   yin(c,0) = 1.;

@@ -100,7 +100,7 @@ bool F0Analysis::FindCandidateF0s(const realvec& inPeaks,
 	outF0ToFks.clear();
 
 	mrs_real theFreqStep = SampleRate_/(2.*inPeaks.getSize());
-	for (mrs_natural i=0; i<inPeaks.getSize(); ++i){
+	for (size_t i=0; i<inPeaks.getSize(); ++i){
 		mrs_real theF0 = (mrs_real)i*theFreqStep;
 
 		// F0 > FLower
@@ -109,7 +109,7 @@ bool F0Analysis::FindCandidateF0s(const realvec& inPeaks,
 			// Compute harmonic sum & energy
 			vector<double> theAssignedFks;
 			mrs_real theSum = 0.0f, theNormFactor = 0.0f;
-			for (mrs_natural j=i+1; j<inPeaks.getSize(); j++){
+			for (size_t j=i+1; j<inPeaks.getSize(); j++){
 				if (inPeaks(j)>0){
 					mrs_real theFk = (mrs_real)j*theFreqStep;
 
@@ -146,7 +146,7 @@ bool F0Analysis::SelectUnrelatedF0s(const realvec& inPeaks,
 
 	FreqMap thePeaks;
 	mrs_real theFreqStep = SampleRate_/(2.*inPeaks.getSize());
-	for (mrs_natural i=0; i<inPeaks.getSize(); ++i)
+	for (size_t i=0; i<inPeaks.getSize(); ++i)
 		if (inPeaks(i)>0)
 			thePeaks[(mrs_real)i*theFreqStep] = inPeaks(i);
 
@@ -178,7 +178,7 @@ bool F0Analysis::SelectUnrelatedF0s(const realvec& inPeaks,
 			F0c = Cand->second;
 			bool theRelFlag = false;
 
-			for (mrs_natural i=0; i<outNoteEvidence.getSize(); ++i)
+			for (size_t i=0; i<outNoteEvidence.getSize(); ++i)
 			{
 				if (outNoteEvidence(i) > 0)
 				{
@@ -208,9 +208,9 @@ bool F0Analysis::SelectUnrelatedF0s(const realvec& inPeaks,
 
 		// Normalize note relevances
 		mrs_real theFactor = 0.0f;
-		for (mrs_natural i=0; i<outNoteEvidence.getSize(); ++i)
+		for (size_t i=0; i<outNoteEvidence.getSize(); ++i)
 			theFactor += outNoteEvidence(i);
-		for (mrs_natural i=0; i<outNoteEvidence.getSize(); ++i)
+		for (size_t i=0; i<outNoteEvidence.getSize(); ++i)
 			outNoteEvidence(i) /= theFactor;
 
 		// Compute chord evidence if nr of notes >= 2
@@ -248,7 +248,7 @@ mrs_real F0Analysis::ComputePowerOfHyp(const FreqMap inPeaks,
 	harmonics and store them in the vector Tmp*/
 	vector<double> Tmp;
 	mrs_real theFreqStep = SampleRate_/(2*inNoteEvidence.getSize());
-	for (mrs_natural i=0; i<inNoteEvidence.getSize(); ++i)
+	for (size_t i=0; i<inNoteEvidence.getSize(); ++i)
 	{
 		if (inNoteEvidence(i) > 0)
 		{
@@ -267,7 +267,7 @@ mrs_real F0Analysis::ComputePowerOfHyp(const FreqMap inPeaks,
 	// Compute power of unique frequencies
 	mrs_real thePower = 0.0f;
 	FreqMap::const_iterator iter;
-	for (uint32_t i=0; i<Tmp.size(); ++i){
+	for (size_t i=0; i<Tmp.size(); ++i){
 		iter = inPeaks.find(Tmp[i]);
 		thePower += iter->second * iter->second;
 	}

@@ -69,7 +69,7 @@ void Parallel::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 
-		for (mrs_natural i=1; i < marsystemsSize_; ++i) 
+		for (size_t i=1; i < marsystemsSize_; ++i) 
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
@@ -99,7 +99,7 @@ void Parallel::myUpdate(MarControlPtr sender)
 			slices_.resize(2*marsystemsSize_, NULL);
 		}
 
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i) 
+		for (size_t i = 0; i < marsystemsSize_; ++i) 
 		{
 			if (slices_[2*i] != NULL) 
 			{
@@ -151,7 +151,7 @@ void Parallel::myProcess(realvec& in, realvec& out)
 	}
 	else if (marsystemsSize_ > 1) 
 	{
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i) 
+		for (size_t i = 0; i < marsystemsSize_; ++i) 
 		{
 			localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 			for (o = 0; o < localIndex; o++) 

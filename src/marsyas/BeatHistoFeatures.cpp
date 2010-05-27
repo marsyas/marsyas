@@ -154,7 +154,7 @@ BeatHistoFeatures::harm_prob(mrs_real& pmax, mrs_real factor,
             t1 = index+1;
         }
 
-        t2 = (int)(factor * t1);
+        t2 = (mrs_natural)(factor * t1);
     }  
 }
 

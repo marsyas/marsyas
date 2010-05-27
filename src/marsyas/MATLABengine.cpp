@@ -103,7 +103,7 @@ MATLABengine::putVariable(const string value, string MATLABname)
 }
 
 void
-MATLABengine::putVariable(const long *const value, uint32_t size, string MATLABname)
+MATLABengine::putVariable(const long *const value, unsigned int size, string MATLABname)
 {
   //-----------------------------------
   //send C/C++ vector to MATLAB vector
@@ -124,7 +124,7 @@ MATLABengine::putVariable(const long *const value, uint32_t size, string MATLABn
 }
 
 void
-MATLABengine::putVariable(const float *const value, uint32_t size, string MATLABname)
+MATLABengine::putVariable(const float *const value, unsigned int size, string MATLABname)
 {
   //-----------------------------------
   //send C/C++ vector to MATLAB vector
@@ -146,7 +146,7 @@ MATLABengine::putVariable(const float *const value, uint32_t size, string MATLAB
 
 
 void
-MATLABengine::putVariable(const double *const value, uint32_t size, string MATLABname)
+MATLABengine::putVariable(const double *const value, unsigned int size, string MATLABname)
 {
   //-----------------------------------
   //send C/C++ vector to MATLAB vector
@@ -226,7 +226,7 @@ MATLABengine::putVariable(vector<mrs_natural> value, string MATLABname)
   mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
   double *x = mxGetPr(mxVector);
   
-  for(uint32_t i = 0; i < value.size(); ++i)
+  for(unsigned int i = 0; i < value.size(); ++i)
     {
       *(x + i) = (double)value[i];
     }
@@ -247,7 +247,7 @@ MATLABengine::putVariable(vector<mrs_real> value, string MATLABname)
   mxArray *mxVector = mxCreateNumericArray(2, dims, mxDOUBLE_CLASS, mxREAL);
   double *x = mxGetPr(mxVector);
   
-  for(uint32_t i = 0; i < value.size(); ++i)
+  for(unsigned int i = 0; i < value.size(); ++i)
     {
       *(x + i) = (double)value[i];
     }
@@ -268,7 +268,7 @@ MATLABengine::putVariable(vector<mrs_complex> value, string MATLABname)
   double *xr = mxGetPr(mxVector);
   double *xi = mxGetPi(mxVector);
   
-  for(uint32_t i = 0; i < value.size(); ++i)
+  for(unsigned int i = 0; i < value.size(); ++i)
     {
       *(xr + i) = (double)value[i].real();
       *(xi + i) = (double)value[i].imag();
@@ -392,7 +392,7 @@ MATLABengine::getVariable(std::string MATLABname, realvec& value)
     //number of rows and cols for the 2D MATLAB array
     //resize realvec accordingly
     value.create(mxGetDimensions(mxVector)[0],mxGetDimensions(mxVector)[1]);
-    for(uint32_t i= 0; i < mxGetNumberOfElements(mxVector); ++i)
+    for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); ++i)
 		{
 			//both Marsyas realvec and MATLAB arrays are column-wise,
 			//so they can be copied as linear vectors
@@ -434,7 +434,7 @@ MATLABengine::getVariable(std::string MATLABname, vector<mrs_natural>& value)
     value.clear();
     value.reserve(mxGetNumberOfElements(mxVector));
     
-    for(uint32_t i= 0; i < mxGetNumberOfElements(mxVector); ++i)
+    for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); ++i)
     {
 			//if MATLAB variable is an array, it will be got as a column-wise vector
 			value.push_back((mrs_natural)(*(mxGetPr(mxVector)+i)));
@@ -475,7 +475,7 @@ MATLABengine::getVariable(std::string MATLABname, vector<mrs_real>& value)
     value.clear();
     value.reserve(mxGetNumberOfElements(mxVector));
     
-    for(uint32_t i= 0; i < mxGetNumberOfElements(mxVector); ++i)
+    for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); ++i)
     {
 			//if MATLAB variable is an array, it will be got as a column-wise vector
 			value.push_back((mrs_real)(*(mxGetPr(mxVector)+i)));
@@ -511,7 +511,7 @@ MATLABengine::getVariable(std::string MATLABname, vector<mrs_complex>& value)
     value.clear();
     value.reserve(mxGetNumberOfElements(mxVector));
     
-    for(uint32_t i= 0; i < mxGetNumberOfElements(mxVector); ++i)
+    for(unsigned int i= 0; i < mxGetNumberOfElements(mxVector); ++i)
     {
 			//if MATLAB variable is an array, it will be got as a column-wise vector
 			if(mxIsComplex(mxVector))

@@ -220,7 +220,7 @@ WekaSink::myUpdate(MarControlPtr sender)
 			MarControlAccessor acc_injectVector(ctrl_injectVector_);
 			realvec& injectVector = acc_injectVector.to<mrs_realvec>();
 
-			for (mrs_natural j=0; j < injectVector.getSize() - 1; j++)
+			for (size_t j=0; j < injectVector.getSize() - 1; j++)
 			{
 				(*mos_) << fixed << setprecision(precision_) << injectVector(j) << ",";
 			}

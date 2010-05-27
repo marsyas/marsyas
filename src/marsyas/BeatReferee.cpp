@@ -582,7 +582,7 @@ BeatReferee::grantPoolSpace(mrs_natural callAgent, mrs_real newAgentScore)
 {
 	mrs_bool isAvailable = false;
 	
-	for(mrs_natural a = 0; a < mutedAgentsTmp_.getSize(); a++)
+	for(size_t a = 0; a < mutedAgentsTmp_.getSize(); a++)
 	{
 		if(mutedAgentsTmp_(a))
 		{
@@ -627,7 +627,7 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat,
 	grantPoolSpace(fatherAgent, newScore);
 
 	mrs_natural returnCreatedAgent = -1;
-	for(mrs_natural a = 0; a < mutedAgentsTmp_.getSize(); a++)
+	for(size_t a = 0; a < mutedAgentsTmp_.getSize(); a++)
 	{
 		//Look for first disabled agent (in temporary vector):		
 		if(mutedAgentsTmp_(a))
@@ -1107,7 +1107,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		}
 
 		//After finnishing induction disable induction functioning (tempoinduction Fanout):
-		for(mrs_natural i = 0; i < inductionEnabler_.getSize(); ++i)
+		for(size_t i = 0; i < inductionEnabler_.getSize(); ++i)
 			inductionEnabler_(0, i) = 1.0; //diable = muted
 			
 		updctrl(ctrl_inductionEnabler_, inductionEnabler_);

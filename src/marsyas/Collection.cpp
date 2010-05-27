@@ -78,12 +78,12 @@ Collection::labelAll(string label)
     {
         hasLabels_ = true;
         labelList_.reserve(collectionList_.size());
-        for (uint32_t i = 0; i < collectionList_.size(); ++i) 
+        for (unsigned int i = 0; i < collectionList_.size(); ++i) 
             labelList_.push_back(label);
     }
     else 
     {
-        for (uint32_t i=0; i < collectionList_.size(); ++i) 
+        for (unsigned int i=0; i < collectionList_.size(); ++i) 
             labelList_[i] = label;
     }
 }
@@ -93,7 +93,7 @@ operator<<(ostream& o, const Collection& l)
 {
     // o << "# MARSYAS Collection " << endl;
     // o << "# name = " << l.name_ << endl << endl;
-    for (uint32_t i=0; i < l.collectionList_.size(); ++i)
+    for (unsigned int i=0; i < l.collectionList_.size(); ++i)
     {
         o << l.collectionList_[i];
         if (l.hasLabels_) 
@@ -106,10 +106,16 @@ operator<<(ostream& o, const Collection& l)
 
 
 
-mrs_natural
+size_t
 Collection::size()
 {
     return collectionList_.size();
+}
+/// TODO choose one... 
+size_t 
+Collection::getSize() 
+{
+	return collectionList_.size();
 }
 
 
@@ -157,11 +163,7 @@ Collection::add(string entry, string label)
 }
 
 
-mrs_natural 
-Collection::getSize() 
-{
-    return collectionList_.size();
-}
+
 
 mrs_natural 
 Collection::getNumLabels() 
@@ -195,11 +197,11 @@ Collection::shuffle()
 {
     // Use a Fisher-Yates shuffle
     // http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
-    uint32_t n = collectionList_.size();
+    unsigned int n = collectionList_.size();
     while (n > 1)
     {
         // Generate a random index in the range [0, n).
-        int k = (uint32_t)(n * ((mrs_real)rand() / ((mrs_real)(RAND_MAX) + (mrs_real)1)));
+        int k = (unsigned int)(n * ((mrs_real)rand() / ((mrs_real)(RAND_MAX) + (mrs_real)1)));
 
         n--;
         swap(collectionList_[n], collectionList_[k]);
@@ -228,7 +230,7 @@ Collection::labelNum(mrs_string label)
 }
 
 string 
-Collection::labelEntry(uint32_t i) 
+Collection::labelEntry(unsigned int i) 
 {
     if (hasLabels_)
         return labelList_[i]; 
@@ -236,7 +238,7 @@ Collection::labelEntry(uint32_t i)
 }
 
 string 
-Collection::entry(uint32_t i)
+Collection::entry(unsigned int i)
 {
     return collectionList_[i];
 }
@@ -245,13 +247,13 @@ Collection::entry(uint32_t i)
 void 
 Collection::concatenate(vector<Collection> cls) 
 {
-    for (uint32_t cj = 0; cj < cls.size(); cj++)
+    for (size_t cj = 0; cj < cls.size(); cj++)
     {
         Collection l = cls[cj];
         if (l.hasLabels_)
             hasLabels_ = true;
 
-        for (mrs_natural i = 0; i < l.size(); ++i) 
+        for (size_t i = 0; i < l.size(); ++i) 
             add(l.entry(i), l.labelEntry(i));
     }
 }

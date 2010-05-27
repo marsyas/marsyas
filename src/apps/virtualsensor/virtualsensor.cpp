@@ -633,7 +633,7 @@ void readRMSmake(mrs_real length, string AudioFile)
     realvec fret;
     fret.read("A_120_thumb_01.txt");
 
-    for (mrs_natural t = 0; t < fret.getSize(); t++)
+    for (size_t t = 0; t < fret.getSize(); t++)
       {
 	if (linecount > len)
 	  {
@@ -747,7 +747,7 @@ void readSitarSensors(mrs_real length)
     int onsetWaitTime = 10; // 10::ms each note on
     int temp = 0;
     
-    for (mrs_natural t = 0; t < fret.getSize(); t++)
+    for (size_t t = 0; t < fret.getSize(); t++)
     {
       //      cout << thumb(t) << "---";
       
@@ -849,7 +849,7 @@ void readFrettoPitch(mrs_real length)
     realvec fret;
     fret.read("A_120_fret_20.txt");
 
-    for (mrs_natural t = 0; t < fret.getSize(); t++)
+    for (size_t t = 0; t < fret.getSize(); t++)
       {
 	// Ma - F# 
 	if ((fret(t) > 0) && (fret(t) < 5))
@@ -1256,7 +1256,7 @@ int main(int argc, const char **argv)
         Collection l;
         l.read("rms.mf");
 
-        for (mrs_natural i=0; i < l.size(); ++i)
+        for (size_t i=0; i < l.size(); ++i)
         {
             readRMSmake( lengthopt, l.entry(i) );
         }
@@ -1339,7 +1339,7 @@ void drumExtract(vector<Collection> cls, string classNames)
         Collection l = cls[cj];
         extractNet->updctrl("Annotator/ann/mrs_natural/label", cj);
 
-        for (mrs_natural i=0; i < l.size(); ++i)
+        for (size_t i=0; i < l.size(); ++i)
         { 
             win = 0;
             startPos = 0;

@@ -138,7 +138,7 @@ PeakSynthFFT::lpfMask()
 {
 	mrs_real gain = 0.8, deltaGain=.3;
 
-	for (mrs_natural i=0 ; i<mask_.getSize() ; ++i)
+	for (size_t i=0 ; i<mask_.getSize() ; ++i)
 	{
 		mrs_real g=gain-deltaGain*(mask_.getSize()-i)/mask_.getSize();
     mask_(i) = g*mask_(i)+(1-g)*lastMask_(i);

@@ -2976,7 +2976,7 @@ main(int argc, const char **argv)
 		total_differences = 0.0;
 		total_errors = 0;
 
-		for (mrs_natural i=0; i < l.size(); ++i)
+		for (size_t i=0; i < l.size(); ++i)
 		{
 			tempo(l.entry(i), "default.txt", l.labelEntry(i), method, haveCollections);
 		}

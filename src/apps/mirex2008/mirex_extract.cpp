@@ -230,7 +230,7 @@ void extract(Collection collection, string outWekaName)
    // feature corresponds to which label
    ////////////////////////////////////////////////////////////
    string all_files_in_collection = "";
-   for (mrs_natural i = 0; i < collection.getSize(); ++i) {
+   for (size_t i = 0; i < collection.getSize(); ++i) {
 	 all_files_in_collection += collection.entry(i);
 	 if (i < collection.getSize() - 1)
 	   all_files_in_collection += ",";
@@ -251,14 +251,14 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   // Iterate over all files in collection
   ////////////////////////////////////////////////////////////
-  for (mrs_natural i=0; i < collection.size(); ++i)
+  for (size_t i=0; i < collection.size(); ++i)
  	{
 	  // Update the featureNetwork to read the current file in the collection
  	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", collection.entry(i));
  	  wc = 0;  	  
  	  samplesPlayed = 0;
 //   	  annotator->updctrl("mrs_natural/label", collection.labelNum(collection.labelEntry(i)));
-   	  annotator->updctrl("mrs_natural/label", i);
+   	  annotator->updctrl("mrs_natural/label", (mrs_natural)i);
 
 // 	  cout << "collection.labelNum(collection.labelEntry(i))" << collection.labelNum(collection.labelEntry(i)) << endl;
 

@@ -1842,7 +1842,7 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 	//just do a plain euclidean computation
 	if(covMatrix.getSize() == 0)
 	{
-		for (mrs_natural r=0 ; r < Vi.getSize()  ; ++r)
+		for (size_t r=0 ; r < Vi.getSize()  ; ++r)
 		{
 			res1 = Vi(r)-Vj(r);
 			res1 *= res1; //square
@@ -1854,7 +1854,7 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 	{
 		// do a standardized L2 euclidean distance 
 		//(i.e. just use the diagonal elements of covMatrix)
-		for (mrs_natural r=0 ; r < Vi.getSize()  ; ++r)
+		for (size_t r=0 ; r < Vi.getSize()  ; ++r)
 		{
 			res1 = Vi(r)-Vj(r);
 			res1 *= res1; //square
@@ -1890,7 +1890,7 @@ NumericLib::cosineDistance(const realvec& Vi, const realvec& Vj, const realvec& 
 	mrs_real res2 = 0;
 	mrs_real res3 = 0;
 	mrs_real res = 0;
-	for (mrs_natural r=0 ; r < Vi.getSize()  ; ++r)
+	for (size_t r=0 ; r < Vi.getSize()  ; ++r)
 	{
 		res1 += Vi(r)*Vj(r);
 		res2 += Vi(r)*Vi(r);

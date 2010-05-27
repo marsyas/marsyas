@@ -306,18 +306,18 @@ PeakConvert2::lobe_value_compute(mrs_real f, mrs_natural type, mrs_natural size)
 void
 PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
-	uint32_t k=0, start=0, nbP=index.getSize();
-	uint32_t minIndex = 0;
+	unsigned int k=0, start=0, nbP=index.getSize();
+	unsigned int minIndex = 0;
 
 	// getting rid of padding zeros
 	while(start<index.getSize() && !index(start))
 		start++;
 
-	for(uint32_t i=start ; i<nbP ; i++, k++)
+	for(unsigned int i=start ; i<nbP ; i++, k++)
 	{
 		minIndex = 0;
 		// look for the next valley location upward
-		for (uint32_t j = index(i) ; j<mag.getSize()-1 ; j++)
+		for (unsigned int j = index(i) ; j<mag.getSize()-1 ; j++)
 		{
 			if(mag(j) < mag(j+1))
 			{
@@ -329,7 +329,7 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 		interval(2*k+1) = minIndex;
 
 		// look for the next valley location downward
-		for (uint32_t j= index(i) ; j>1 ; j--)
+		for (unsigned int j= index(i) ; j>1 ; j--)
 		{
 			if(mag(j) < mag(j-1))
 			{
@@ -346,17 +346,17 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 void
 PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
-	uint32_t k=0, start=0, nbP=index.getSize();
+	unsigned int k=0, start=0, nbP=index.getSize();
 
 	// handling the first case
 	mrs_real minVal = HUGE_VAL;
-	uint32_t minIndex = 0;
+	unsigned int minIndex = 0;
 
 	// getting rid of padding zeros
 	while(!index(start))
 		start++;
 
-	for (uint32_t j=0 ; j<index(start) ; j++) //is this foor loop like this?!?!?!?!?!?!?!?! [!]
+	for (unsigned int j=0 ; j<index(start) ; j++) //is this foor loop like this?!?!?!?!?!?!?!?! [!]
 	{
 		if(minVal > mag(j))
 		{
@@ -367,12 +367,12 @@ PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& ma
 
 	interval(0) = minIndex;
 
-	for(uint32_t i=start ; i<nbP-1 ; i++, k++)
+	for(unsigned int i=start ; i<nbP-1 ; i++, k++)
 	{
 		minVal = HUGE_VAL;
 		minIndex = 0;
 		// look for the minimal value among successive peaks
-		for (uint32_t j= index(i) ; j<index(i+1) ; j++) // is this for loop like this?!?!?! [?]
+		for (unsigned int j= index(i) ; j<index(i+1) ; j++) // is this for loop like this?!?!?! [?]
 		{
 			if(minVal > mag(j))
 			{
@@ -388,7 +388,7 @@ PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& ma
 	// handling the last case
 	minVal = HUGE_VAL;
 	minIndex = 0;
-	for (uint32_t j= index(nbP-1) ; j<mag.getSize()-1 ; j++)
+	for (unsigned int j= index(nbP-1) ; j<mag.getSize()-1 ; j++)
 	{
 		if(minVal > mag(j))
 		{
@@ -540,7 +540,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 			{
 				for (o = 0 ; o < downFrequency_ ; o++)
 					peaks_(o)=0.0;
-				for (o = upFrequency_ ; o < (int)peaks_.getSize() ; o++)
+				for (o = upFrequency_ ; o < (mrs_natural)peaks_.getSize() ; o++)
 					peaks_(o)=0.0;		
 			}
 

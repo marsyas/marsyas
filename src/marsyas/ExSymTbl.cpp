@@ -184,7 +184,8 @@ void
 ExRecord::split_on(std::string p, char c, std::string& hd, std::string& tl, bool keep)
 {
 	int adj=(keep) ? 0 : 1;
-	uint32_t i; for(i=0;i<p.length()&&p[i]!=c;++i);
+	size_t i; 
+	for(i=0;i<p.length()&&p[i]!=c;++i);
 	if (p[i]==c) { hd=p.substr(0,i); tl=p.substr(i+adj,p.length()-i-adj); }
 	else { hd=p; tl=""; }
 }

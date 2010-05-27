@@ -66,7 +66,7 @@ Series::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 		// update dataflow component MarSystems in order 
-		for (mrs_natural  i=1; i < marsystemsSize_; ++i)
+		for (size_t  i=1; i < marsystemsSize_; ++i)
 		{
 			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObsNames_, 
 									marsystems_[i-1]->ctrl_onObsNames_);
@@ -85,7 +85,7 @@ Series::myUpdate(MarControlPtr sender)
 		updctrl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
 		updctrl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
 	  
-		for (mrs_natural i=0; i< marsystemsSize_-1; ++i)
+		for (size_t i=0; i< marsystemsSize_-1; ++i)
 		{
 			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
 			realvec& processedData = acc.to<mrs_realvec>();
@@ -111,7 +111,7 @@ Series::myProcess(realvec& in, realvec& out)
 		marsystems_[0]->process(in,out);
 	else if(marsystemsSize_ > 1)
 	{
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
+		for (size_t i = 0; i < marsystemsSize_; ++i)
 		{
 			if (i==0)
 			{

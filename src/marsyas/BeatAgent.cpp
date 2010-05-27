@@ -206,7 +206,7 @@ BeatAgent::getChildIndex()
 	if(parent)
 	{
 		vector<MarSystem*> siblings = parent->getChildren();
-		for(mrs_natural i = 0; i < siblings.size(); ++i)
+		for(size_t i = 0; i < siblings.size(); ++i)
 		{
 			if(this == siblings[i])
 			{

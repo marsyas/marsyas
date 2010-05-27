@@ -73,7 +73,7 @@ marsyas_EXPORT class realvec
 
 public:
 	realvec();
-	realvec(uint32_t size);
+	realvec(mrs_natural size);
 	realvec(mrs_natural rows, mrs_natural cols);
 	realvec(const realvec& a);
 	~realvec(); // not mean to be inherited from
@@ -86,7 +86,7 @@ public:
 //	void allocate(mrs_natural rows, mrs_natural cols);
 
 	///allocate(size) + fill with zeros
-	void create(uint32_t size);
+	void create(mrs_natural size);
 	///allocate(rows,cols) + fill with zeros
 	void create(mrs_natural rows, mrs_natural cols);
 	///allocate(rows,cols) + fill with val
@@ -95,10 +95,10 @@ public:
 	/// allocate(size) + keep old vals.  May also be used to shrink realvec.
 	void stretch(mrs_natural rows, mrs_natural cols);
 	/// allocate(size) + keep old vals.  May also be used to shrink realvec.
-	void stretch(uint32_t size);
+	void stretch(size_t size);
 
 	/// write to array, stretching the array if necessary
-	void stretchWrite(const mrs_natural pos, const mrs_real val);
+	void stretchWrite(const size_t pos, const mrs_real val);
 	/// write to array, stretching the array if necessary
 	void stretchWrite(const mrs_natural r, const mrs_natural c, const mrs_real val);
 	//@}
@@ -122,7 +122,7 @@ public:
 
 	/** \name Getting information */
 	//@{
-	mrs_natural getSize() const;
+	size_t getSize() const;
 	mrs_natural getCols() const;
 	mrs_natural getRows() const;
 	/// extracts a subset of a realvec.  One-dimensional realvecs only.
@@ -159,14 +159,14 @@ public:
 	//@{
 
 	
-	mrs_real& operator()(const uint32_t i);
-	mrs_real operator()(const uint32_t i) const;
+	mrs_real& operator()(const mrs_natural i);
+	mrs_real operator()(const mrs_natural i) const;
 	mrs_real& operator()(const mrs_natural r, const mrs_natural c);
 	mrs_real operator()(const mrs_natural r, const mrs_natural c) const;
 
-	mrs_real getValueFenced(const uint32_t i) const;
+	mrs_real getValueFenced(const mrs_natural i) const;
 	mrs_real getValueFenced(const mrs_natural r, const mrs_natural c) const;
-	mrs_real& getValueFenced(const uint32_t i);
+	mrs_real& getValueFenced(const mrs_natural i);
 	mrs_real& getValueFenced(const mrs_natural r, const mrs_natural c);
 
 
@@ -260,9 +260,9 @@ public:
 private:
 	void allocateData(mrs_natural size);
 	/// total number of values in data_
-	mrs_natural size_;
+	size_t  size_;
 	/// total memory allocated for data_
-	mrs_natural allocatedSize_;
+	size_t allocatedSize_;
 	/// the actual array
 	mrs_real *data_;
 	/// number of rows in array; for a one-dimensional array, this is 1.

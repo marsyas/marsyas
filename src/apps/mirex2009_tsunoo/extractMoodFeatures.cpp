@@ -66,7 +66,7 @@ void recognize(string sfName, string outName)
   wksnet->updctrl("WekaSink/wks/mrs_string/filename", outName);
   tmpvec.create(all->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+1,1);
 
-  for(mrs_natural i=0; i<inputs.size(); ++i){
+  for(size_t i=0; i<inputs.size(); ++i){
     cout << "Now processing: " << inputs.entry(i) << endl;
 
     src->updctrl("mrs_string/filename", inputs.entry(i));

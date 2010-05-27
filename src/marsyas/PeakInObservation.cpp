@@ -66,7 +66,7 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 	int nthresh = 0;
 	bool theValid = true;
 	bool theMaxFlag = true;
-	for (mrs_natural n = 1; n < inVec.getSize(); n++){
+	for (size_t n = 1; n < inVec.getSize(); n++){
 		if (theMaxFlag)
 			if (inVec(n) > vmax){
 				// Zone 1: [min hysteresis, max]
@@ -81,7 +81,7 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 				if (inVec(n)<vmax/HystFactor_ && nmax!=0){
 					// Zone 3: [max hysteresis, min]
 					
-					if ((int)n > nthresh + HystLength_){
+					if ((mrs_natural)n > nthresh + HystLength_){
 						// Maximum was WIDE ENOUGH
 						if (theValid){
 							outVec(nmax) = vmax;
@@ -106,9 +106,9 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 					}
 				}else{
 					// Zone 2: [max, max hysteresis]
-					if (nthresh != (int)n-1){
+					if (nthresh != (mrs_natural)n-1){
 						theValid = false;
-						if ((int)n > nthresh + HystLength_){
+						if ((mrs_natural)n > nthresh + HystLength_){
 							// Search for new maximum
 							vmax = inVec(n);
 							nmax = n;

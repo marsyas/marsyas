@@ -140,7 +140,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 				first = false;
 			}//if
 		}
-		MRSASSERT(index == (int)attributesIncluded_.size());
+		MRSASSERT(index == (mrs_natural)attributesIncluded_.size());
 	  
 	  setctrl("mrs_string/attributeNames", names);
 	  setctrl("mrs_natural/onSamples", 1);
@@ -396,7 +396,7 @@ void WekaSource::handleUseTestSet(bool trainMode, realvec &out)
 			currentIndex_ = 0;
 		}
     }//else
-	MRSASSERT((int)row->size() == out.getCols());
+	MRSASSERT((mrs_natural)row->size() == out.getCols());
 	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0 ) = row->at(ii);
@@ -451,7 +451,7 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
     }//switch
 
 
-	MRSASSERT((int)row->size() == out.getRows());
+	MRSASSERT((mrs_natural)row->size() == out.getRows());
 	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0) = row->at(ii);
@@ -471,7 +471,7 @@ void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 	else if(next == WekaFoldData::Predict && trainMode)
 		this->updctrl("mrs_string/mode", "predict");
 
-	MRSASSERT((int) row->size() == out.getCols());
+	MRSASSERT((mrs_natural) row->size() == out.getCols());
 	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0) = row->at(ii);
@@ -536,7 +536,7 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 		getline(mis, token3);
 		
 		// skip leading spaces of token3
-		mrs_natural startpos = token3.find_first_not_of(" \t");
+		string::size_type startpos = token3.find_first_not_of(" \t");
 		if (string::npos != startpos) 
 			token3 = token3.substr(startpos);
 		
@@ -625,7 +625,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 				}
 				cp = strtok(NULL, ",");
 			}//for index
-			MRSASSERT(index == (int)lineBuffer->size()-1);
+			MRSASSERT(index == (mrs_natural)lineBuffer->size()-1);
 	  
 			//now extract the class name for this record
 			MRSASSERT( cp!=NULL );

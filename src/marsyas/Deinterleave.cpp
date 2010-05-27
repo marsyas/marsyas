@@ -106,7 +106,7 @@ Deinterleave::myUpdate(MarControlPtr sender)
 	}
 	
 	//Weights deinterleave n
-	for(mrs_natural i=0;i<inindex_.getSize();++i)
+	for(size_t i=0;i<inindex_.getSize();++i)
 	{
 		weights_((mrs_natural)(outindex_(i)),(mrs_natural)(inindex_(i)))=1.0;
 	}

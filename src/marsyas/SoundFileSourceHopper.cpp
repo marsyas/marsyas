@@ -119,7 +119,7 @@ SoundFileSourceHopper::myUpdate(MarControlPtr sender)
 	// (which is at index 1).
 	mrs_natural i_src = 0;
 	mrs_natural i_tgt = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
-	for ( ; i_tgt < marsystems_.size(); i_src = i_tgt, i_tgt++) {
+	for ( ; i_tgt < (mrs_natural)marsystems_.size(); i_src = i_tgt, i_tgt++) {
 		// Get the source and target MarSystems.
 		MarSystem* m_src = marsystems_[i_src];
 		MarSystem* m_tgt = marsystems_[i_tgt];
@@ -140,7 +140,7 @@ SoundFileSourceHopper::myUpdate(MarControlPtr sender)
 	updControl(ctrl_osrate_, m_last->ctrl_osrate_, NOUPDATE);
 
 	// Allocate the appropriate amount of memory for the intermediate slices.
-	for (mrs_natural i=0; i < marsystems_.size() - 1; ++i)
+	for (size_t i=0; i < marsystems_.size() - 1; ++i)
 	{
 		MarSystem* m = marsystems_[i];
 		MarControlAccessor acc(m->ctrl_processedData_, NOUPDATE);
@@ -168,7 +168,7 @@ SoundFileSourceHopper::myProcess(realvec& in, realvec& out)
 	// and ShiftInput (and maybe more MarSystems).
 	mrs_natural i_prev = 0;
 	mrs_natural i_curr = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
-	for ( ; i_curr < marsystemsSize_; i_prev = i_curr, i_curr++) {
+	for ( ; i_curr < (mrs_natural) marsystemsSize_; i_prev = i_curr, i_curr++) {
 		MarSystem* m_prev = marsystems_[i_prev];
 		MarSystem* m_curr = marsystems_[i_curr];
 
@@ -176,7 +176,7 @@ SoundFileSourceHopper::myProcess(realvec& in, realvec& out)
 		MarControlAccessor acc_prev(m_prev->ctrl_processedData_, true, true);
 		realvec& data_prev = acc_prev.to<mrs_realvec>();
 
-		if (i_curr < marsystemsSize_ - 1)
+		if (i_curr < (mrs_natural) marsystemsSize_ - 1)
 		{
 			MarControlAccessor acc_curr(m_curr->ctrl_processedData_);
 			realvec& data_curr = acc_curr.to<mrs_realvec>();
