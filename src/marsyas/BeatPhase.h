@@ -37,10 +37,13 @@ private:
   //Add specific controls needed by this MarSystem.
   void addControls();
   MarControlPtr ctrl_tempo_;
+	MarControlPtr ctrl_phase_tempo_;
+	
   MarControlPtr ctrl_beats_;
 		MarControlPtr ctrl_bhopSize_;
 		MarControlPtr ctrl_bwinSize_;
-		
+	MarControlPtr ctrl_timeDomain_;
+	
   mrs_natural pinSamples_;
   void myUpdate(MarControlPtr sender);
 		mrs_natural sampleCount_;

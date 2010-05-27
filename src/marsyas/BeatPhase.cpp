@@ -30,9 +30,12 @@ BeatPhase::BeatPhase(string name):MarSystem("BeatPhase", name)
 BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 {
   ctrl_tempo_ = getctrl("mrs_real/tempo");
+  ctrl_phase_tempo_ = getctrl("mrs_real/phase_tempo");
+  
   ctrl_beats_ = getctrl("mrs_realvec/beats");
   ctrl_bhopSize_ = getctrl("mrs_natural/bhopSize");
   ctrl_bwinSize_ = getctrl("mrs_natural/bwinSize");
+  ctrl_timeDomain_ = getctrl("mrs_realvec/timeDomain");
   
   sampleCount_ = 0.0;
 }
@@ -51,10 +54,12 @@ void
 BeatPhase::addControls()
 {
   //Add specific controls needed by this MarSystem.
-  addctrl("mrs_real/tempo", 1.0, ctrl_tempo_);
+  addctrl("mrs_real/tempo", 100.0, ctrl_tempo_);
+  addctrl("mrs_real/phase_tempo", 100.0, ctrl_phase_tempo_);
   addctrl("mrs_realvec/beats", realvec(), ctrl_beats_);
   addctrl("mrs_natural/bhopSize", 64, ctrl_bhopSize_);
   addctrl("mrs_natural/bwinSize", 1024, ctrl_bwinSize_);
+  addctrl("mrs_realvec/timeDomain", realvec(), ctrl_timeDomain_);
 }
 
 void
@@ -68,9 +73,9 @@ BeatPhase::myUpdate(MarControlPtr sender)
    if (pinSamples_ != inSamples_)
      {
        {
-	 MarControlAccessor acc(ctrl_beats_);
-	 mrs_realvec& beats = acc.to<mrs_realvec>();
-	 beats.create(inSamples_);
+		   MarControlAccessor acc(ctrl_beats_);
+		   mrs_realvec& beats = acc.to<mrs_realvec>();
+		   beats.create(inSamples_);
        }
      }
    
@@ -84,10 +89,13 @@ BeatPhase::myUpdate(MarControlPtr sender)
 void 
 BeatPhase::myProcess(realvec& in, realvec& out)
 {
+	// cout << "BEATPHASE " << endl;
+	
 	mrs_natural o,t;
 	
 	mrs_real tempo = ctrl_tempo_->to<mrs_real>();
 	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
+	mrs_real avg_period;
 	mrs_natural bhopSize = ctrl_bhopSize_->to<mrs_natural>();
 
 	
@@ -97,13 +105,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
   
 	mrs_real period;
 	
-	if (tempo !=0)
-		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
-	else 
-		period = 0;
 	
 	beats.setval(0.0);
-	
+
 	for (o=0; o < inObservations_; o++)
 	{
 		for (t = 0; t < inSamples_; t++)
@@ -111,41 +115,91 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			out (o,t) = in(o,t);
 			beats (o,t) = in(o,t);
 		}
-		
-		mrs_real sum_phase = 0.0;
-		mrs_real max_sum_phase = 0.0;
-		mrs_natural max_phase = 0;
-		
-		if (period < inSamples_)
-		{
-			for (t = 0; t < period; t++) 
-			{
-				sum_phase = 0.0;
-				sum_phase += in(0,t);
-				sum_phase += in(0,t+period);
-				
-				if (sum_phase >= max_sum_phase) 
-				{
-					max_phase = t;
-					max_sum_phase = sum_phase;
-				}
-			}
-			int k=0;
-			
-			if (max_phase != 0)
-				while (max_phase + k * period < inSamples_)
-				{
-					beats(0, max_phase + k * period) = -0.5;
-					k++;
-				}
-			
-		}
-		
-		// cout << "max_phase = " << max_phase << endl;
 	}
 	
-	mrs_natural delay = (bwinSize - bhopSize);
+		
 
+	mrs_real sum_phase = 0.0;
+	mrs_real max_sum_phase = 0.0;
+	mrs_natural max_phase = 0;
+	mrs_natural next_peak =0;
+	
+	mrs_real phase_tempo;
+	mrs_real max_phase_tempo;
+	mrs_real max_score = 0;
+	
+	
+	max_sum_phase = 0.0;
+	if (tempo !=0)
+		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
+	else 
+		period = 0;
+	
+	period = (mrs_natural)(period+0.5);
+	
+	if (period < inSamples_)
+	{
+		// find peak in period interval that also is good periodically 
+		for (t = 0; t < period; t++) 
+		{
+			sum_phase = 0.0;
+			sum_phase += in(0,t);
+			sum_phase += in(0, t+period);
+			if (sum_phase >= max_sum_phase)
+			{
+				max_phase = t;
+				max_sum_phase = sum_phase;
+			}
+		}
+		
+		// look for peaks around period interval and refine tempo estimation
+		/* 
+		max_sum_phase = 0.0;
+
+		mrs_natural prev_peak = max_phase;
+		avg_period = 0.0;
+		
+		for (int k=1; k <= 4; k++) 
+		{
+			max_sum_phase = 0.0;
+			for (t = max_phase+k*period-2; t <= max_phase+k*period+2; t++)
+			{
+				sum_phase = in(0,t);
+				if (sum_phase > max_sum_phase)
+				{
+					max_sum_phase = sum_phase;
+					next_peak = t;
+				}
+			}
+			avg_period += next_peak - prev_peak;
+			prev_peak = next_peak;
+		}
+		*/ 
+	}
+	
+	// avg_period /= 4;
+	
+
+	
+	// max_phase_tempo = (mrs_natural)  ((4.0 * osrate_ * 60.0 / (avg_period)) +0.5);
+	// max_phase_tempo *= 0.5;
+	// cout << "MAX PHASE TEMPO = " << max_phase_tempo << endl;
+
+	int k=0;
+	
+	if (max_phase != 0)
+		while (max_phase + k * period < inSamples_)
+		{
+			beats(0, max_phase + k * period) = -0.5;
+			k++;
+		}
+	
+	
+	ctrl_phase_tempo_->setValue(max_phase_tempo);
+	
+	
+	mrs_natural delay = (bwinSize - bhopSize);
+	
 	
 	
 	for (int k = 0; k < bhopSize; k++) 
@@ -153,9 +207,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		
 		if ((beats(0, k) == -0.5)&&(beats(0,0) != 0.0))
 		{
-			cout << (sampleCount_  - delay) / (2.0 * osrate_) << endl;
+			cout << (sampleCount_  - delay) / (2.0 * osrate_) * 1000.0 << endl;
 			// Audacity label output
-			//cout << (sampleCount_  - delay) / (2.0 * osrate_) << "\t";
+			// cout << (sampleCount_  - delay) / (2.0 * osrate_) << "\t";
 			// cout << (sampleCount_-1 - delay) / (2.0 * osrate_) << " b" << endl;
 			
 			beats(0,k) = -1.0;

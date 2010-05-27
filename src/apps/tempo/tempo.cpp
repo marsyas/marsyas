@@ -173,7 +173,7 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 	
 	
 	cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
-	if (diff1 <= 1.0)
+	if (diff1 < 0.5)
 		correct_predictions++;
 	
 	if (diff1 <= 0.04 * ground_truth_tempo)
@@ -184,7 +184,7 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 
 
 	
-	if ((diff1 <= 1.0)||(diff2 <= 1.0)||(diff3 <= 1.0)||(diff4 <= 1.0)||(diff5 <= 1.0))
+	if ((diff1 < 0.5)||(diff2 < 0.5)||(diff3 < 0.5)||(diff4 < 0.5)||(diff5 < 0.5))
 		correct_harmonic_predictions++;
 	else 
 	  {
@@ -699,10 +699,10 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	
 
 
-	mrs_natural winSize = 512;
-	mrs_natural hopSize = 256;
-	mrs_natural  bwinSize = 1024;
-	mrs_natural bhopSize = 64;
+	mrs_natural winSize = 256;
+	mrs_natural hopSize = 128;
+	mrs_natural  bwinSize = 2048;
+	mrs_natural bhopSize = 128;
 	
 
 
@@ -724,28 +724,32 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	tempoInduction->updctrl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 	 
 	
-
 	
-
-	
-
 	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
 	tempoInduction->updctrl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
-	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakStart", 100);
-	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 320);
+	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakStart", 200);
+	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 640);
 	// tempoInduction->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+
+	tempoInduction->updctrl("MaxArgMax/mxr1/mrs_natural/interpolation", 1);
+	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/interpolation", 1);
+
 	
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
 
 	tempoInduction->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
-	tempoInduction->updctrl("BeatHistogram/histo/mrs_natural/endBin", 400);
-	tempoInduction->updctrl("BeatHistogram/histo/mrs_real/factor", 8.0);
+	tempoInduction->updctrl("BeatHistogram/histo/mrs_natural/endBin", 800);
+	tempoInduction->updctrl("BeatHistogram/histo/mrs_real/factor", 16.0);
+
+
 	tempoInduction->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);	
 	
 	tempoInduction->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.75); 
 	
 	
+	
+
 
 	//mrs_real srate = tempoInduction->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
@@ -774,6 +778,9 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	beatTracker->updctrl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
 	beatTracker->updctrl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
 
+	// beatTracker->linkctrl("Flowthru/tempoInduction/ShiftInput/si/mrs_realvec/processedData", 
+	// "BeatPhase/beatphase/mrs_realvec/timeDomain");
+	
 
 	int extra_ticks = bwinSize/bhopSize;
 	
@@ -783,9 +790,10 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 		beatTracker->tick();
 		mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
 		
-		bin = estimate(1) * 0.5;
+		bin = estimate(1) * 0.25;
 		beatTracker->updctrl("BeatPhase/beatphase/mrs_real/tempo", bin);
-		bpms.push_back(bin);
+		bpms.push_back(beatTracker->getctrl("BeatPhase/beatphase/mrs_real/tempo")->to<mrs_real>());
+		
 		if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 		{
 			extra_ticks --;
@@ -794,9 +802,11 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 		if (extra_ticks == 0)
 			break;
 	}
-
-	mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
 	
+
+	sort(bpms.begin(), bpms.end());
+
+	mrs_real bpm_estimate = bpms[bpms.size()/2];
 	cout << "BPM = " << bpm_estimate << endl;
 	
 	if (haveCollections)

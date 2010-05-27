@@ -318,7 +318,7 @@ Marsyas::string2parameters(string s, realvec &v, char d)
 	{
 		newPos = (mrs_natural) s.find_first_of(&d, pos, 1);
 		tmp = s.substr(pos, newPos);
-		v(++i) = atof(tmp.c_str());
+		v(i++) = atof(tmp.c_str());
 		pos = newPos+1;
 	}
 }
