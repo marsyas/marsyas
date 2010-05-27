@@ -646,6 +646,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 
 #ifdef MARSYAS_MIDIIO
 	RtMidiIn *midiin = NULL;
+	double stamp;
 #endif
 
 	int byte2, byte3;
