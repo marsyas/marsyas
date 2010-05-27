@@ -110,7 +110,7 @@ unsigned int AubioYin::vec_min_elem(realvec *s)
 void
 AubioYin::myProcess(realvec& in, realvec& out)
 {
-  mrs_natural c;
+  mrs_natural c=0;
 
   // Make a temporary realvec to build up the yin function in
   // sness - This is very inefficient - Move to update function

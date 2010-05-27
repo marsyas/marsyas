@@ -188,7 +188,7 @@ WavFileSink::putLinear16Swap(mrs_natural c, realvec& slice)
 void 
 WavFileSink::myProcess(realvec& in, realvec& out)
 {
-  mrs_natural o,t,c;
+  mrs_natural o,t,c =0;
   
   // copy input to output 
   for (o=0; o < inObservations_; o++)

@@ -183,10 +183,10 @@ McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grpOne, 
 void
 McAulayQuatieri::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o,c;
+	mrs_natural t,o,c=0;
 	realvec* outPtr;
 	
-	out(o,t) = in(o,t);
+	out(o,t) = in(o,t);          //    ??????
 	
 	//if we want to use memory and we already have data from
 	//past inputs (i.e. memory is not empty)...
