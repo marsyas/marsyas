@@ -81,14 +81,14 @@ HWPS::harmonicWrap(mrs_real peak1Freq, mrs_real peak2Freq, realvec& peak1SetFreq
   peak1SetFreqs /= hF;
   peak2SetFreqs /= hF;
 
-  for (size_t k=0 ; k<peak1SetFreqs.getSize() ; k++)
+  for (mrs_natural k=0 ; k<peak1SetFreqs.getSize() ; k++)
     {
       peak1SetFreqs(k)=fmod(peak1SetFreqs(k), 1);
       //if(peak1SetFreqs(k)<0)
       while(peak1SetFreqs(k)<0)//replacing "if" in case of strongly negative (=> multiple wraps)
 	peak1SetFreqs(k)+=1;
     }
-  for (size_t k=0 ; k<peak2SetFreqs.getSize() ; k++)
+  for (mrs_natural k=0 ; k<peak2SetFreqs.getSize() ; k++)
     {
       peak2SetFreqs(k)=fmod(peak2SetFreqs(k), 1);
       //if(peak2SetFreqs(k)<0)
@@ -105,7 +105,7 @@ HWPS::discretize(const realvec& peakSetWrapFreqs, const realvec& peakAmps,
 	
 	resultHistogram.create(histSize);
 
-	for (size_t i=0 ; i<peakSetWrapFreqs.getSize() ; ++i)
+	for (mrs_natural i=0 ; i<peakSetWrapFreqs.getSize() ; ++i)
 	{
 		index = (mrs_natural) fmod(floor(peakSetWrapFreqs(i)*histSize+.5), histSize);
 		resultHistogram(index) += peakAmps(i);

@@ -81,7 +81,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 	}
 
 	mrs_natural obs = 0;
-	for(size_t i=1; i<sizes_.getSize(); ++i)
+	for(mrs_natural i=1; i<sizes_.getSize(); ++i)
 	{
 		obs += sizes_(i);
 	}
@@ -95,7 +95,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 
 	invecs_.resize(sizes_.getSize());
 	obs = getctrl("mrs_natural/inObservations")->to<mrs_natural>()/sizes_.getSize();
-	for(size_t k=0; k<sizes_.getSize(); k++)
+	for(mrs_natural k=0; k<sizes_.getSize(); k++)
 	{
 		invecs_[k].create(obs, sizes_(k));
 	}

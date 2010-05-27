@@ -118,7 +118,7 @@ SoundFileSourceHopper::myUpdate(MarControlPtr sender)
 	// Note: if MixToMono is disabled, we skip the MixToMono MarSystem
 	// (which is at index 1).
 	mrs_natural i_src = 0;
-	size_t i_tgt = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
+	mrs_natural i_tgt = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
 	for ( ; i_tgt < marsystems_.size(); i_src = i_tgt, i_tgt++) {
 		// Get the source and target MarSystems.
 		MarSystem* m_src = marsystems_[i_src];
@@ -140,7 +140,7 @@ SoundFileSourceHopper::myUpdate(MarControlPtr sender)
 	updControl(ctrl_osrate_, m_last->ctrl_osrate_, NOUPDATE);
 
 	// Allocate the appropriate amount of memory for the intermediate slices.
-	for (size_t i=0; i < marsystems_.size() - 1; ++i)
+	for (mrs_natural i=0; i < marsystems_.size() - 1; ++i)
 	{
 		MarSystem* m = marsystems_[i];
 		MarControlAccessor acc(m->ctrl_processedData_, NOUPDATE);
@@ -167,7 +167,7 @@ SoundFileSourceHopper::myProcess(realvec& in, realvec& out)
 	// The other steps: do the processing of MixToMono (if required)
 	// and ShiftInput (and maybe more MarSystems).
 	mrs_natural i_prev = 0;
-	size_t i_curr = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
+	mrs_natural i_curr = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
 	for ( ; i_curr < marsystemsSize_; i_prev = i_curr, i_curr++) {
 		MarSystem* m_prev = marsystems_[i_prev];
 		MarSystem* m_curr = marsystems_[i_curr];

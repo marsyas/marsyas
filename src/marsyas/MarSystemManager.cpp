@@ -1343,7 +1343,7 @@ MarSystemManager::create(string type, string name)
 MarSystem*
 MarSystemManager::create(std::string marsystemname)
 {
-	size_t loc = marsystemname.rfind("/", marsystemname.length()-1);
+	mrs_natural loc = marsystemname.rfind("/", marsystemname.length()-1);
 	if (loc != string::npos)
 		return create(marsystemname.substr(0,loc),
 		              marsystemname.substr(loc +1));

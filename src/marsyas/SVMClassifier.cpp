@@ -258,7 +258,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				
 				svm_prob_.y[i] = l;
 				seen = false;
-				for (size_t j=0; j < classPerms_.size(); j++) 
+				for (mrs_natural j=0; j < classPerms_.size(); j++) 
 				{
 					if (l == classPerms_[j])
 						seen = true;
@@ -273,7 +273,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			  realvec& classPerms = acc_classPerms.to<mrs_realvec>();
 			  classPerms.create(classPerms_.size());
 
-			  for (size_t i=0; i < classPerms_.size(); ++i) 
+			  for (mrs_natural i=0; i < classPerms_.size(); ++i) 
 			    {
 			      classPerms(i) = classPerms_[i];
 			    }
@@ -445,7 +445,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				  MarControlAccessor acc_classPerms(ctrl_classPerms_);
 				  realvec& classPerms = acc_classPerms.to<mrs_realvec>();
 				  classPerms_.clear();
-				  for (size_t i=0; i < classPerms.getSize(); ++i)
+				  for (mrs_natural i=0; i < classPerms.getSize(); ++i)
 				    {
 				      classPerms_.push_back(classPerms(i));
 				    }

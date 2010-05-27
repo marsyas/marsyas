@@ -157,7 +157,7 @@ AuFileSink::putHeader(string filename)
   
   written_ = 0;
   const char *comment = "MARSYAS 2001, George Tzanetakis.\n";
-  size_t commentSize = strlen(comment);
+  mrs_natural commentSize = strlen(comment);
   sfp_ = fopen(filename.c_str(), "wb");
   hdr_->pref[0] = '.';
   hdr_->pref[1] = 's';

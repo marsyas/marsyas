@@ -78,7 +78,7 @@ realvec::realvec(const realvec& a)
 {
 	allocateData(size_);
 	
-	for (size_t i=0; i<size_; ++i)
+	for (mrs_natural i=0; i<size_; ++i)
 		data_[i] = a.data_[i];
 
 }
@@ -97,7 +97,7 @@ realvec::operator=(const realvec& a)
 			allocateData(size_);
 			
 		//copy data
-		for (size_t i=0; i < size_; ++i)
+		for (mrs_natural i=0; i < size_; ++i)
 			data_[i] = a.data_[i];
 	}
 
@@ -117,7 +117,7 @@ realvec::appendRealvec(const realvec newValues)
 
 	stretch(origSize + newValues.getSize());
 
-	for (size_t i=0; i<newValues.getSize(); ++i)
+	for (mrs_natural i=0; i<newValues.getSize(); ++i)
 		data_[origSize + i] = newValues.data_[i];
 }
 
@@ -162,7 +162,7 @@ mrs_real
 realvec::mean() const
 {
 	mrs_real sum = 0.0;
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		sum += data_[i];
 	}
@@ -180,7 +180,7 @@ mrs_real
 realvec::sum() const
 {
 	mrs_real sum = 0.0;
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		sum += data_[i];
 	}
@@ -196,7 +196,7 @@ realvec::var() const
 	mrs_real val;
 	mrs_real var;
 
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		val = data_[i];
 		sum += val;
@@ -234,7 +234,7 @@ realvec::getCols() const
 	return cols_;
 }
 
-size_t
+mrs_natural
 realvec::getSize() const
 {
 	return size_;
@@ -266,7 +266,7 @@ realvec::stretch(uint32_t size)
 	// size should be always >= 1 at this point
 	mrs_real* ndata = new mrs_real[size];
 
-	size_t i=0;
+	mrs_natural i=0;
 	for (; i < size_; ++i)
 		ndata[i] = data_[i]; //copy existing data
 	for(; i < size; ++i)
@@ -326,7 +326,7 @@ realvec::stretchWrite(const mrs_natural pos, const mrs_real val)
 {
 	// don't forget the zero-indexing position!
 	//   i.e.  pos=0  is the first value to store
-	size_t wantSize = pos+1;
+	mrs_natural wantSize = pos+1;
 	if (wantSize > size_){
 		if ( wantSize < 2*size_ )
 			// grow exponentially with sequential access
@@ -397,7 +397,7 @@ realvec::create(mrs_real val, mrs_natural rows, mrs_natural cols)
 	data_ = NULL;
 	if (size_ > 0)
 		data_ = new mrs_real[size_];
-	for (size_t i=0; i<size_; ++i)
+	for (mrs_natural i=0; i<size_; ++i)
 		data_[i] = val;
 	allocatedSize_ = size_;
 }
@@ -447,7 +447,7 @@ realvec::setval(mrs_natural start, mrs_natural end, mrs_real val)
 void
 realvec::apply(mrs_real (*func) (mrs_real))
 {
-	for (size_t i=0; i<size_; ++i)
+	for (mrs_natural i=0; i<size_; ++i)
 	{
 		data_[i] = func(data_[i]);
 	}
@@ -456,7 +456,7 @@ realvec::apply(mrs_real (*func) (mrs_real))
 void
 realvec::setval(mrs_real val)
 {
-	for (size_t i=0; i<size_; ++i)
+	for (mrs_natural i=0; i<size_; ++i)
 	{
 		data_[i] = val;
 	}
@@ -465,7 +465,7 @@ realvec::setval(mrs_real val)
 void
 realvec::abs()
 {
-	for (size_t i=0; i<size_; ++i)
+	for (mrs_natural i=0; i<size_; ++i)
 	{
 		data_[i] = fabs(data_[i]);
 	}
@@ -476,7 +476,7 @@ realvec::norm()
 {
 	mrs_real mean = this->mean();
 	mrs_real std = this->std();
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		data_[i] = (data_[i] - mean) / std;
 	}
@@ -489,7 +489,7 @@ realvec::normMaxMin()
 	mrs_real max = DBL_MIN;
 	mrs_real min = DBL_MAX;
 
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		if (data_[i] > max)
 			max = data_[i];
@@ -498,7 +498,7 @@ realvec::normMaxMin()
 	}
 
 
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		data_[i] = (data_[i] - min) / (max - min);
 	}
@@ -510,7 +510,7 @@ realvec::normMaxMin()
 void
 realvec::norm(mrs_real mean, mrs_real std)
 {
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		data_[i] = (data_[i] - mean) / std;
 	}
@@ -519,7 +519,7 @@ realvec::norm(mrs_real mean, mrs_real std)
 void
 realvec::renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real new_std)
 {
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		data_[i] = (data_[i] - old_mean) / old_std;
 		data_[i] *= new_std;
@@ -614,7 +614,7 @@ realvec::invert(realvec& res)
 void
 realvec::sqr()
 {
-	for (size_t i=0; i<size_; ++i)
+	for (mrs_natural i=0; i<size_; ++i)
 	{
 		data_[i] *= data_[i];
 	}
@@ -625,7 +625,7 @@ realvec::search(mrs_real val)
 {
 	mrs_real minDiff = MAXREAL;
 	mrs_natural index=-1;
-	for (size_t i=0; i<size_; ++i)
+	for (mrs_natural i=0; i<size_; ++i)
 		if (fabs(data_[i]-val)< minDiff)
 		{
 			minDiff = fabs(data_[i]-val);
@@ -637,7 +637,7 @@ realvec::search(mrs_real val)
 void
 realvec::sqroot()
 {
-	for (size_t i=0; i<size_; ++i)
+	for (mrs_natural i=0; i<size_; ++i)
 	{
 		data_[i] = sqrt(data_[i]);
 	}
@@ -647,7 +647,7 @@ realvec
 operator+(const realvec& vec1, const realvec& vec2)
 {
 	mrs_natural size;
-	size_t i;
+	mrs_natural i;
 	if (vec1.size_ != vec2.size_)
 		MRSERR("Size of realvecs does not match");
 	if (vec1.size_ >= vec2.size_)
@@ -673,7 +673,7 @@ realvec
 operator-(const realvec& vec1, const realvec& vec2)
 {
 	mrs_natural size;
-	size_t i;
+	mrs_natural i;
 	if (vec1.size_ != vec2.size_)
 		MRSERR("Size of realvecs does not match");
 	if (vec1.size_ >= vec2.size_)
@@ -700,7 +700,7 @@ operator-(const realvec& vec1, const realvec& vec2)
 void
 realvec::send(Communicator *com)
 {
-	size_t i;
+	mrs_natural i;
 	static char *buf = new char[256];
 	string message;
 	sprintf(buf, "%i\n", (int)size_);
@@ -774,7 +774,7 @@ realvec::write(string filename) const
 void
 realvec::dump()
 {
-	for (size_t i =0 ; i< size_ ; ++i)
+	for (mrs_natural i =0 ; i< size_ ; ++i)
 		MRSMSG(data_[i] << " ") ;
 	MRSMSG(endl);
 }
@@ -816,7 +816,7 @@ realvec::writeText(string filename)
 	ofstream outfile(filename.c_str());
 	if (outfile.is_open())
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 		{
 			outfile << data_[i] <<endl;
 		}
@@ -975,17 +975,17 @@ operator>>(istream& is, realvec& vec)
 realvec
 realvec::operator()(std::string r, std::string c)
 {
-	size_t r_l = r.length();
-	size_t c_l = c.length();
+	mrs_natural r_l = r.length();
+	mrs_natural c_l = c.length();
 
-	size_t r_c = r.find(":");
-	size_t c_c = c.find(":");
+	mrs_natural r_c = r.find(":");
+	mrs_natural c_c = c.find(":");
 
-	size_t r_a;
-	size_t r_b;
+	mrs_natural r_a;
+	mrs_natural r_b;
 
-	size_t c_a;
-	size_t c_b;
+	mrs_natural c_a;
+	mrs_natural c_b;
 
 	char *endptr;
 
@@ -1053,10 +1053,10 @@ realvec::operator()(std::string r, std::string c)
 realvec
 realvec::operator()(std::string c)
 {
-	size_t c_l = c.length();
-	size_t c_c = c.find(":");
-	size_t c_a;
-	size_t c_b;
+	mrs_natural c_l = c.length();
+	mrs_natural c_c = c.find(":");
+	mrs_natural c_a;
+	mrs_natural c_b;
 	char *endptr;
 
 	MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
@@ -1214,7 +1214,7 @@ realvec::maxval(mrs_natural* index) const
 {
 	mrs_real max = numeric_limits<mrs_real>::max() * -1.0;
 	mrs_natural ind = 0;
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		if (data_[i] > max)
 		{
@@ -1231,7 +1231,7 @@ mrs_real
 realvec::minval() const
 {
 	mrs_real min = numeric_limits<mrs_real>::max();
-	for (size_t i=0; i < size_; ++i)
+	for (mrs_natural i=0; i < size_; ++i)
 	{
 		if (data_[i] < min)
 			min = data_[i];
@@ -1583,7 +1583,7 @@ realvec::trace() const
 
 	mrs_real res(0);
 	
-	for (size_t i = 0; i < size_;)
+	for (mrs_natural i = 0; i < size_;)
 	{
 		res += data_[i];
 		i += cols_+1;
@@ -1608,7 +1608,7 @@ realvec::det() const
 	// minimum of 1 element is allocated to prevent null pointers
 	// not that the size_ of the object will stay 0 just like cols_
 	// Allocating data doen't have anything to do with the size count	of the object.
-	void realvec::allocateData(size_t size)
+	void realvec::allocateData(mrs_natural size)
 	{
 		// if data is not null delete it
 		delete[] data_;
@@ -1617,7 +1617,7 @@ realvec::det() const
 		allocatedSize_ = size > 0 ? size : 1; // minimum of 1
 		data_ = new mrs_real[allocatedSize_];
 		
-		for (size_t i=0; i<allocatedSize_; ++i)
+		for (mrs_natural i=0; i<allocatedSize_; ++i)
 			data_[i] = 0.0;
 	}
 	
@@ -1649,7 +1649,7 @@ realvec::det() const
 	realvec&
 	realvec::operator/=(const mrs_real val)
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 			data_[i] /= val;
 		return *this;
 	}
@@ -1659,7 +1659,7 @@ realvec::det() const
 	realvec&
 	realvec::operator*=(const mrs_real val)
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 			data_[i] *= val;
 		return *this;
 	}
@@ -1668,7 +1668,7 @@ realvec::det() const
 	realvec&
 	realvec::operator-=(const mrs_real val)
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 			data_[i] -= val;
 		return *this;
 	}
@@ -1677,7 +1677,7 @@ realvec::det() const
 	realvec&
 	realvec::operator+=(const mrs_real val)
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 			data_[i] += val;
 		return *this;
 	}
@@ -1686,7 +1686,7 @@ realvec::det() const
 	realvec&
 	realvec::operator+=(const realvec& vec)
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 			data_[i] += vec.data_[i];
 		return *this;
 	}
@@ -1695,7 +1695,7 @@ realvec::det() const
 	realvec&
 	realvec::operator-=(const realvec& vec)
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 			data_[i] -= vec.data_[i];
 		return *this;
 	}
@@ -1704,7 +1704,7 @@ realvec::det() const
 	realvec&
 	realvec::operator*=(const realvec& vec)
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 			data_[i] *= vec.data_[i];
 		return *this;
 	}
@@ -1713,7 +1713,7 @@ realvec::det() const
 	realvec&
 	realvec::operator/=(const realvec& vec)
 	{
-		for (size_t i=0; i<size_; ++i)
+		for (mrs_natural i=0; i<size_; ++i)
 			data_[i] /= vec.data_[i];
 		return *this;
 	}

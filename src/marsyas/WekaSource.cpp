@@ -536,7 +536,7 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 		getline(mis, token3);
 		
 		// skip leading spaces of token3
-		size_t startpos = token3.find_first_not_of(" \t");
+		mrs_natural startpos = token3.find_first_not_of(" \t");
 		if (string::npos != startpos) 
 			token3 = token3.substr(startpos);
 		

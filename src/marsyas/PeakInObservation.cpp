@@ -66,7 +66,7 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 	int nthresh = 0;
 	bool theValid = true;
 	bool theMaxFlag = true;
-	for (size_t n = 1; n < inVec.getSize(); n++){
+	for (mrs_natural n = 1; n < inVec.getSize(); n++){
 		if (theMaxFlag)
 			if (inVec(n) > vmax){
 				// Zone 1: [min hysteresis, max]

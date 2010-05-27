@@ -230,7 +230,7 @@ void extract(Collection collection, string outWekaName)
    // feature corresponds to which label
    ////////////////////////////////////////////////////////////
    string all_files_in_collection = "";
-   for (size_t i = 0; i < collection.getSize(); ++i) {
+   for (mrs_natural i = 0; i < collection.getSize(); ++i) {
 	 all_files_in_collection += collection.entry(i);
 	 if (i < collection.getSize() - 1)
 	   all_files_in_collection += ",";
@@ -251,7 +251,7 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   // Iterate over all files in collection
   ////////////////////////////////////////////////////////////
-  for (size_t i=0; i < collection.size(); ++i)
+  for (mrs_natural i=0; i < collection.size(); ++i)
  	{
 	  // Update the featureNetwork to read the current file in the collection
  	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", collection.entry(i));

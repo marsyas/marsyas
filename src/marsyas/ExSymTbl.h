@@ -80,7 +80,7 @@ public:
 	std::string getElemType(std::string nm="");
 	int getKind(std::string nm="");
 	bool is_reserved(std::string nm="");
-	size_t size() {return syms_.size();}
+	mrs_natural size() {return syms_.size();}
 
 	void setValue(ExVal& v, std::string path="", int elem_pos=-1);
 	ExVal getValue(std::string path="");
@@ -128,7 +128,7 @@ public:
 	void block_close();
 	void addTable(ExRecord* r);
 
-	size_t size() {return rho_.size();}
+	mrs_natural size() {return rho_.size();}
 	void setValue(ExVal& v, std::string path);
 
 	ExVal getValue(std::string path);

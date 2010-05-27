@@ -198,7 +198,7 @@ AuFileSource::getHeader(string filename)
 	sfp_ = fopen(filename.c_str(), "rb");
 	if (sfp_)
 	{
-		size_t n = fread(hdr_, sizeof(snd_header), 1, sfp_);  
+		mrs_natural n = fread(hdr_, sizeof(snd_header), 1, sfp_);  
 		if ((n != 1) ||((hdr_->pref[0] != '.') &&(hdr_->pref[1] != 's')))
 		{
 			MRSWARN("Filename " + filename + " is not correct .au file \n or has settings that are not supported in Marsyas");

@@ -152,7 +152,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 	  // update dataflow component MarSystems in order
-		for (size_t i=1; i < marsystemsSize_; ++i)
+		for (mrs_natural i=1; i < marsystemsSize_; ++i)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
@@ -183,7 +183,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		// update buffers between components 
 		if (slices_.size() < marsystemsSize_) 
 			slices_.resize(marsystemsSize_, NULL);
-		for (size_t i=0; i< marsystemsSize_; ++i)
+		for (mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			if (slices_[i] != NULL) 
 			{
@@ -231,7 +231,7 @@ FanOutIn::myProcess(realvec& in, realvec& out)
 			return;
 		}
 		
-		for (size_t i = 0; i < marsystemsSize_; ++i)
+		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
 		{
 			if (enabled_(i))
 			{

@@ -60,14 +60,14 @@ void recognize(string sfName, string segName, string tempName, string outName)
 
 	oss.str("");
 	tmpint1 = tmpint2 = 0;
-	for(size_t i=0; i<tempfiles.size(); ++i){
+	for(mrs_natural i=0; i<tempfiles.size(); ++i){
 	  tmpvec.read(tempfiles.entry(i));
 	  tmpint1 += tmpvec.getCols();
 	}
 	tmpvec.read(tempfiles.entry(0));
 	temporg.create(tmpvec.getRows(), tmpint1);
 	genres.create(tmpint1/NDEVISION);
-	for(size_t i=0; i<tempfiles.size(); ++i){
+	for(mrs_natural i=0; i<tempfiles.size(); ++i){
 	  tmpvec.read(tempfiles.entry(i));
 	  tmpint1 = tmpint2;
 	  tmpint2 = tmpint1 + tmpvec.getCols();
@@ -172,7 +172,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	templates = temporg;
 	mbm->setctrl("mrs_realvec/templates", templates);
 	mbm->update();
-	for(size_t m=0; m<inputs.size(); m++){
+	for(mrs_natural m=0; m<inputs.size(); m++){
 	  // load input file
 	  src->setctrl("mrs_string/filename", inputs.entry(m));
 	  src->update();

@@ -154,7 +154,7 @@ PeakSynthOscBank::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	for (size_t t=0; t < nextamp_.getSize(); t++)
+	for (mrs_natural t=0; t < nextamp_.getSize(); t++)
 	{
 		// cout << endl << index << endl;	
 		if(lastfreq_(t) && nextfreq_(t))

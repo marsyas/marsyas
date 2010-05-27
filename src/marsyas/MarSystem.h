@@ -109,7 +109,7 @@ protected:
 	//mrs_natural c,o,t;
 
 	bool isComposite_;
-	size_t marsystemsSize_;
+	mrs_natural marsystemsSize_;
 
 	/// children
 	std::vector<MarSystem*> marsystems_;

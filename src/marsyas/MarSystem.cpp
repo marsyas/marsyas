@@ -95,7 +95,7 @@ MarSystem::MarSystem(const MarSystem& a)
 	marsystemsSize_ = 0;
 	if (isComposite_)
 	{
-		for (size_t i=0; i< a.marsystemsSize_; ++i)
+		for (mrs_natural i=0; i< a.marsystemsSize_; ++i)
 		{
 			MarSystem* clonedChild = (*a.marsystems_[i]).clone();
 			addMarSystem(clonedChild);
@@ -211,7 +211,7 @@ MarSystem::relinkControls(const MarSystem& a)
 MarSystem::~MarSystem()
 {
 	//delete children (if any)
-	for (size_t i=0; i< marsystemsSize_; ++i)
+	for (mrs_natural i=0; i< marsystemsSize_; ++i)
 	{
 		delete marsystems_[i];
 	}
@@ -418,7 +418,7 @@ MarSystem::setName(string name) // => mutexes [?]
 
 	if (isComposite_)
 	{
-		for (size_t i=0; i<marsystemsSize_; ++i)
+		for (mrs_natural i=0; i<marsystemsSize_; ++i)
 		{
 			marsystems_[i]->updatePath();
 		}
@@ -443,7 +443,7 @@ MarSystem::setType(string type) // => mutexes [?]
 
 	if (isComposite_)
 	{
-		for (size_t i=0; i<marsystemsSize_; ++i)
+		for (mrs_natural i=0; i<marsystemsSize_; ++i)
 		{
 			marsystems_[i]->updatePath();
 		}
@@ -488,7 +488,7 @@ MarSystem::updatePath() // => mutexes [?]
 
 	//propagate new path to all children (if any)
 	if (isComposite_)
-		for (size_t i=0; i< marsystemsSize_; ++i)
+		for (mrs_natural i=0; i< marsystemsSize_; ++i)
 			marsystems_[i]->updatePath();
 }
 
@@ -692,7 +692,7 @@ MarSystem::localActivate(bool state)
 	//call activate for all Composite's components
 	if (isComposite_)
 	{
-		for (size_t i=0; i< marsystemsSize_; ++i)
+		for (mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			//marsystems_[i]->activate(state);
 			marsystems_[i]->updctrl("mrs_bool/active", state); //thread-safe
@@ -1278,7 +1278,7 @@ MarSystem::toString(marostring& m)
 
 		std::vector<std::pair<MarControlPtr, MarControlPtr> > links = c->getLinks();
 		int j=0;
-		for (size_t i=0; i<links.size(); ++i)
+		for (mrs_natural i=0; i<links.size(); ++i)
 		{
 			//check who is linking to this control, but avoid outputting root link info
 			if (c == links[i].second() && links[i].first() != c)
@@ -1287,7 +1287,7 @@ MarSystem::toString(marostring& m)
 			}
 		}
 		m.begin_control_links_in(j);
-		for (size_t i=0; i<links.size(); ++i)
+		for (mrs_natural i=0; i<links.size(); ++i)
 		{
 			// check who is linking to this control, but avoid outputting root link info
 			if (c == links[i].second() && links[i].first() != c)
@@ -1297,7 +1297,7 @@ MarSystem::toString(marostring& m)
 		}
 		m.end_control_links_in(j);
 
-		for (size_t i=0; i<links.size(); ++i)
+		for (mrs_natural i=0; i<links.size(); ++i)
 		{
 			//check where to this control is linking, but avoid outputting root link info
 			if (c == links[i].first() && c != links[i].second())
@@ -1306,7 +1306,7 @@ MarSystem::toString(marostring& m)
 			}
 		}
 		m.begin_control_links_out(j);
-		for (size_t i=0; i<links.size(); ++i)
+		for (mrs_natural i=0; i<links.size(); ++i)
 		{
 			//check where to this control is linking, but avoid outputting root link info
 			if (c == links[i].first() && c != links[i].second())
@@ -1363,7 +1363,7 @@ MarSystem::put(ostream &o)
 		std::vector<std::pair<MarControlPtr, MarControlPtr> > links = ctrlIter_->second->getLinks();
 		mrs_natural numLinks = 0;
 		//links to:
-		for (size_t i=0; i<links.size(); ++i)
+		for (mrs_natural i=0; i<links.size(); ++i)
 		{
 			//check where to this control is linking, but avoid outputting root link info
 			if (ctrlIter_->second() == links[i].first() && links[i].first() != links[i].second())
@@ -1376,7 +1376,7 @@ MarSystem::put(ostream &o)
 		//linked from:
 		numLinks = 0;
 		oss.str(""); //clear the stringstream
-		for (size_t i=0; i<links.size(); ++i)
+		for (mrs_natural i=0; i<links.size(); ++i)
 		{
 			//check who is linking to this control, but avoid outputting root link info
 			if (ctrlIter_->second() == links[i].second() && links[i].first() != links[i].second())
@@ -1394,7 +1394,7 @@ MarSystem::put(ostream &o)
 		o << "# nComponents = " << marsystemsSize_ << endl;
 		o << endl;
 
-		for (size_t i=0; i < marsystemsSize_; ++i)
+		for (mrs_natural i=0; i < marsystemsSize_; ++i)
 			o << *(marsystems_[i]) << endl;
 	}
 
@@ -1469,7 +1469,7 @@ MarSystem::put_html_worker(ostream &o)
 		//
 		// Links To:
 		//
-		for (size_t i=0; i<links.size(); ++i)
+		for (mrs_natural i=0; i<links.size(); ++i)
 		{
 			//check where to this control is linking, but avoid outputting root link info
 			if (ctrlIter_->second() == links[i].first() && links[i].first() != links[i].second())
@@ -1486,7 +1486,7 @@ MarSystem::put_html_worker(ostream &o)
 		//
 		numLinks = 0;
 		oss.str(""); //clear the stringstream
-		for (size_t i=0; i<links.size(); ++i)
+		for (mrs_natural i=0; i<links.size(); ++i)
 		{
 			//check who is linking to this control, but avoid outputting root link info
 			if (ctrlIter_->second() == links[i].second() && links[i].first() != links[i].second())
@@ -1507,7 +1507,7 @@ MarSystem::put_html_worker(ostream &o)
 		o << "<li>Components = " << marsystemsSize_ << endl;
 		o << "<ul>" << endl;
 
-		for (size_t i=0; i < marsystemsSize_; ++i)
+		for (mrs_natural i=0; i < marsystemsSize_; ++i)
 			(marsystems_[i])->put_html_worker(o);
 
 		o << "</ul>" << endl;
@@ -1550,7 +1550,7 @@ MarSystem::put(istream& is)
 	// if composite, clear all children to avoid bad links to prototype children
 	if (isComposite_)
 	{
-		for (size_t i=0; i< marsystemsSize_; ++i)
+		for (mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			delete marsystems_[i];
 		}
@@ -1749,7 +1749,7 @@ mrs_string
 Marsyas::obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix)
 {
 	ostringstream oss;
-	size_t startPos = 0, endPos=0;
+	mrs_natural startPos = 0, endPos=0;
 	while ((endPos = observationNames.find(",", startPos)) != string::npos)
 	{
 		// Extract the observation name.
@@ -1783,7 +1783,7 @@ vector<mrs_string>
 Marsyas::stringSplit(mrs_string input, mrs_string delimiter)
 {
 	vector<mrs_string> itemList;
-	size_t startPos = 0, endPos=0;
+	mrs_natural startPos = 0, endPos=0;
 	// Keep searching for the delimiter.
 	while ((endPos = input.find(delimiter, startPos)) != string::npos)
 	{

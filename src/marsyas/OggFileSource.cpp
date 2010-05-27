@@ -215,11 +215,11 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     mrs_natural samples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
     mrs_natural israte = (mrs_natural)getctrl("mrs_real/israte")->to<mrs_real>();
 
-    //size_t size = (size_t)(duration * rate);
-    size_t size = vi->channels*sizeof(short int)*((size_t)(observations * samples));
+    //mrs_natural size = (mrs_natural)(duration * rate);
+    mrs_natural size = vi->channels*sizeof(short int)*((mrs_natural)(observations * samples));
     char* buf = new char[size];
     int bitstream=0;
-    size_t read = 0;
+    mrs_natural read = 0;
     long r = 0;
     bool eof = false; 
     do
@@ -230,7 +230,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
         eof = true;
         break;
       }
-      read += (size_t) r;
+      read += (mrs_natural) r;
     }
     while(read < size);
 

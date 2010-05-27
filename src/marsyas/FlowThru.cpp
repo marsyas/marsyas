@@ -77,7 +77,7 @@ FlowThru::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 		// update dataflow component MarSystems in order 
-		for(size_t i=1; i < marsystemsSize_; ++i){
+		for(mrs_natural i=1; i < marsystemsSize_; ++i){
 			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObsNames_, 
 				marsystems_[i-1]->ctrl_onObsNames_);
 			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObservations_, 
@@ -94,7 +94,7 @@ FlowThru::myUpdate(MarControlPtr sender)
 		//relinking it to the last MarSystem)
 		ctrl_innerOut_->linkTo(marsystems_[marsystemsSize_-1]->ctrl_processedData_);
 
-		for(size_t i=0; i< marsystemsSize_; ++i)
+		for(mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
 			realvec& processedData = acc.to<mrs_realvec>();

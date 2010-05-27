@@ -143,12 +143,12 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 
 	  if(!ctrl_setCountVector_->to<mrs_bool>())
 	    {
-	      for(size_t i=0; i<countvector_.getSize(); ++i)
+	      for(mrs_natural i=0; i<countvector_.getSize(); ++i)
 		{
 		  countvector_(i) = 0;
 		}
 	    }
-	  for(size_t i=0; i<counts_.getSize(); ++i){
+	  for(mrs_natural i=0; i<counts_.getSize(); ++i){
 	    counts_(i) = 0;
 	  }
 	  // initialize according to countVector
@@ -156,7 +156,7 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 	    {
 	      for(k=0; k<numVec-1; k++)
 		{
-		  for(size_t i=0; i<sizes_(k+1); ++i)
+		  for(mrs_natural i=0; i<sizes_(k+1); ++i)
 		    {
 		      for(j=0; j<dimVec; j++)
 			{
@@ -219,7 +219,7 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 	    }
 	  if(ctrl_input_->to<mrs_bool>())
 	    {
-	      for(size_t i=0; i<sizes_(0); ++i)
+	      for(mrs_natural i=0; i<sizes_(0); ++i)
 		{
 		  for(j=0; j<dimVec; j++)
 		    {
@@ -232,7 +232,7 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 	    l=1;
 	  for(k=1; k<numVec; k++)
 	    {
-	      for(size_t n=0; n<sizes_(k); ++n)
+	      for(mrs_natural n=0; n<sizes_(k); ++n)
 		{
 		  if(countvector_(n+tmpNatural)>0)
 		    {

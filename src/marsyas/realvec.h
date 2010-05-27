@@ -122,7 +122,7 @@ public:
 
 	/** \name Getting information */
 	//@{
-	size_t getSize() const;
+	mrs_natural getSize() const;
 	mrs_natural getCols() const;
 	mrs_natural getRows() const;
 	/// extracts a subset of a realvec.  One-dimensional realvecs only.
@@ -258,11 +258,11 @@ public:
 	
 
 private:
-	void allocateData(size_t size);
+	void allocateData(mrs_natural size);
 	/// total number of values in data_
-	size_t size_;
+	mrs_natural size_;
 	/// total memory allocated for data_
-	size_t allocatedSize_;
+	mrs_natural allocatedSize_;
 	/// the actual array
 	mrs_real *data_;
 	/// number of rows in array; for a one-dimensional array, this is 1.

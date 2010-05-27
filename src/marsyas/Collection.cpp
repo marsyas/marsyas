@@ -106,7 +106,7 @@ operator<<(ostream& o, const Collection& l)
 
 
 
-size_t
+mrs_natural
 Collection::size()
 {
     return collectionList_.size();
@@ -157,7 +157,7 @@ Collection::add(string entry, string label)
 }
 
 
-size_t 
+mrs_natural 
 Collection::getSize() 
 {
     return collectionList_.size();
@@ -251,7 +251,7 @@ Collection::concatenate(vector<Collection> cls)
         if (l.hasLabels_)
             hasLabels_ = true;
 
-        for (size_t i = 0; i < l.size(); ++i) 
+        for (mrs_natural i = 0; i < l.size(); ++i) 
             add(l.entry(i), l.labelEntry(i));
     }
 }

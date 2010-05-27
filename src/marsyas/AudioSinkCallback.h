@@ -77,8 +77,8 @@ class AudioSinkCallback:public MarSystem
 		mrs_natural nChannels_;
 		mrs_real *data_;  
 		realvec ringBuffer_;
-		size_t ringBufferSize_;
-		size_t pringBufferSize_;
+		mrs_natural ringBufferSize_;
+		mrs_natural pringBufferSize_;
 		mrs_natural pnChannels_;
   
 		

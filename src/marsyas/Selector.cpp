@@ -104,7 +104,7 @@ Selector::myUpdate(MarControlPtr sender)
   // Count how many of the observations are enabled
   //
   mrs_natural total_enabled = 0;
-  for (size_t i=0; i < enabled.getSize(); ++i) {
+  for (mrs_natural i=0; i < enabled.getSize(); ++i) {
 	if (enabled(i) > 0.1) // sness - Just in case of floating point roundoff
 	  total_enabled++;
   }

@@ -63,7 +63,7 @@ Cascade::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");   
     mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-    for (size_t i=1; i < marsystemsSize_; ++i) 
+    for (mrs_natural i=1; i < marsystemsSize_; ++i) 
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
       marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
@@ -85,7 +85,7 @@ Cascade::myUpdate(MarControlPtr sender)
       slices_.resize(marsystemsSize_, NULL);
     }
     
-    for (size_t i = 0; i < marsystemsSize_; ++i) 
+    for (mrs_natural i = 0; i < marsystemsSize_; ++i) 
 		{
       if (slices_[i] != NULL) 
 			{
@@ -133,7 +133,7 @@ mrs_natural o,t;
       }
     }
     outIndex += localIndex;
-    for (size_t i = 1; i < marsystemsSize_; ++i) 
+    for (mrs_natural i = 1; i < marsystemsSize_; ++i) 
 		{
       marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
       localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
