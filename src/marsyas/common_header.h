@@ -56,11 +56,15 @@ namespace Marsyas
 #define PI 3.14159265358979323846 //double precision instead of 3.14159265359f
 #define TWOPI 6.28318530717958647692 //double precision instead of 6.28318530718f
 
+#ifdef NDEBUG 
+#define MRSASSERT(f) 
+#else 
 #define MRSASSERT(f) \
         if (f)       \
              {}      \
         else         \
            MrsLog::mrsAssert(__FILE__, __LINE__)
+#endif 
 
 
 #define MRSMSG(x) {std::ostringstream oss; MrsLog::mrsMessage((std::ostringstream&)(oss << x));}

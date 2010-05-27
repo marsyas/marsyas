@@ -274,6 +274,45 @@ private:
 	
 };
 	
+	inline
+	mrs_real realvec::operator()(const mrs_natural r, const mrs_natural c) const
+	{
+		
+		MRSASSERT(r < rows_);
+		MRSASSERT(c < cols_);
+		
+		return data_[c * rows_ + r];
+	}
+	
+	inline
+	mrs_real& realvec::operator()(const mrs_natural r, const mrs_natural c)
+	{
+		MRSASSERT(r < rows_);
+		MRSASSERT(c < cols_);
+		MRSASSERT(r >= 0);
+		MRSASSERT(c >= 0);
+		
+		return data_[c * rows_ + r];
+	}
+	
+	
+	inline 
+	mrs_real realvec::operator()(const mrs_natural i) const
+	{
+		MRSASSERT(i < size_);
+		return data_[i];
+	}
+	
+	
+	inline 
+	mrs_real& realvec::operator()(const mrs_natural i)
+	{
+		
+		MRSASSERT(i < size_);
+		return data_[i];
+	}
+
+
 	
 
 
