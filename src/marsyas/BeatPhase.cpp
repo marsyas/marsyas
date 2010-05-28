@@ -196,7 +196,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		
 		if ((beats(0, k) == -0.5)&&(beats(0,0) != 0.0))
 		{
-			cout << (sampleCount_  - delay) / (2.0 * osrate_) * 1000.0 << endl;
+			// cout << (sampleCount_  - delay) / (2.0 * osrate_) * 1000.0 << endl;
 			// Audacity label output
 			// cout << (sampleCount_  - delay) / (2.0 * osrate_) << "\t";
 			// cout << (sampleCount_-1 - delay) / (2.0 * osrate_) << " b" << endl;

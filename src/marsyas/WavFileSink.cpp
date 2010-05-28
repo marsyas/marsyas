@@ -167,9 +167,9 @@ WavFileSink::ByteSwapShort (unsigned short nValue)
 }
 
 void 
-WavFileSink::putLinear16Swap(mrs_natural c, realvec& slice)
+WavFileSink::putLinear16Swap(realvec& slice)
 {
-  for (c=0; c < nChannels_; ++c)
+  for (mrs_natural c=0; c < nChannels_; ++c)
     for (mrs_natural t=0; t < inSamples_; t++)
     {
 			#if defined(MARSYAS_BIGENDIAN)
@@ -211,7 +211,7 @@ WavFileSink::myProcess(realvec& in, realvec& out)
   fwrite(&fileSize, 4, 1, sfp_);
   fseek(sfp_, fpos_, SEEK_SET);
 
-  putLinear16Swap(0, in);
+  putLinear16Swap(in);
 }
 
 

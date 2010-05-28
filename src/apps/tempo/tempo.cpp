@@ -185,18 +185,29 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 
 	
 	if ((diff1 < 0.5)||(diff2 < 0.5)||(diff3 < 0.5)||(diff4 < 0.5)||(diff5 < 0.5))
+	{
+		
 		correct_harmonic_predictions++;
-	else 
-	  {
-	    if ((diff1 < diff2)&&(diff1 < diff3))
+
+		if ((diff1 < diff2)&&(diff1 < diff3))
 	      total_differences += diff1;
 	    if ((diff2 < diff3)&&(diff1 < diff1))
 	      total_differences += diff2;
 	    if ((diff3 < diff2)&&(diff3 < diff1))
 	      total_differences += diff3;
 	    total_errors++;
+
+
+	}
+	
+	else 
+	  {
+		  /* 
 	    cout << "WRONG TEMPO ESTIMATION IN " << sfName << endl;
+		  */ 
 	  }
+
+	
 	
 	total_instances++;
 
@@ -804,9 +815,9 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	}
 	
 
-	sort(bpms.begin(), bpms.end());
+	// sort(bpms.begin(), bpms.end());
 
-	mrs_real bpm_estimate = bpms[bpms.size()/2];
+	mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
 	cout << "BPM = " << bpm_estimate << endl;
 	
 	if (haveCollections)
