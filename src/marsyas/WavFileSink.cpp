@@ -211,6 +211,8 @@ WavFileSink::myProcess(realvec& in, realvec& out)
   fwrite(&fileSize, 4, 1, sfp_);
   fseek(sfp_, fpos_, SEEK_SET);
 
+  c = 0; // did this function rely on c being initialized to zero
+		// when it was still a member variable??
   putLinear16Swap(c, in);
 }
 

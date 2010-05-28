@@ -82,8 +82,8 @@ public:
 
 	/** \name Memory allocation */
 	//@{
-//	void allocate(mrs_natural size);
-//	void allocate(mrs_natural rows, mrs_natural cols);
+	void allocate(mrs_natural size);
+	void allocate(mrs_natural rows, mrs_natural cols);
 
 	///allocate(size) + fill with zeros
 	void create(mrs_natural size);
@@ -159,8 +159,8 @@ public:
 	//@{
 
 	
-	mrs_real& operator()(const mrs_natural i);
-	mrs_real operator()(const mrs_natural i) const;
+	mrs_real& operator()(const size_t i);
+	mrs_real operator()(const size_t i) const;
 	mrs_real& operator()(const mrs_natural r, const mrs_natural c);
 	mrs_real operator()(const mrs_natural r, const mrs_natural c) const;
 
@@ -297,7 +297,7 @@ private:
 	
 	
 	inline 
-	mrs_real realvec::operator()(const mrs_natural i) const
+	mrs_real realvec::operator()(const size_t i) const
 	{
 		MRSASSERT(i < size_);
 		return data_[i];
@@ -305,7 +305,7 @@ private:
 	
 	
 	inline 
-	mrs_real& realvec::operator()(const mrs_natural i)
+	mrs_real& realvec::operator()(const size_t i)
 	{
 		
 		MRSASSERT(i < size_);

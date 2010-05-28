@@ -404,32 +404,31 @@ realvec::create(mrs_real val, mrs_natural rows, mrs_natural cols)
 	
 	
 
-//void
-//realvec::allocate(mrs_natural size)
-//{
-//	delete [] data_;
-//	data_ = NULL;
-//	size_ = size;
-//	cols_ = size_;
-//	rows_ = 1;
-//	allocatedSize_ = size;
-//	if (size_ > 0)
-//		data_ = new mrs_real[size_];
-//}
-//
-//void
-//realvec::allocate(mrs_natural rows, mrs_natural cols)
-//{
-//	delete [] data_;
-//	data_ = NULL;
-//	size_ = rows*cols;
-//	cols_ = cols;
-//	rows_ = rows;
-//	allocatedSize_ = size_;
-//	if (size_ > 0)
-//		data_ = new mrs_real[size_];
-//}
+void
+realvec::allocate(mrs_natural size)
+{
+	delete [] data_;
+	data_ = NULL;
+	size_ = size;
+	cols_ = size_;
+	rows_ = 1; 
+	allocatedSize_ = size;
+	if (size_ > 0)
+		data_ = new mrs_real[size_];
+}
 
+void
+realvec::allocate(mrs_natural rows, mrs_natural cols)
+{
+	delete [] data_;
+	data_ = NULL;
+	size_ = rows*cols;
+	cols_ = cols;
+	rows_ = rows;
+	allocatedSize_ = size_;
+	if (size_ > 0)
+		data_ = new mrs_real[size_];
+}
 
 	
 void
@@ -1596,10 +1595,7 @@ realvec::det() const
 	NumericLib numlib;
 	return numlib.determinant(*this);
 }
-
-	//////////////////////////////////////////////////////////////////////////////
 	
-	/////////////////////// THESE USED TO BE INLINED  ////////////////////////////
 	
 	
 	// allocate data and initialize to zero
@@ -1618,6 +1614,14 @@ realvec::det() const
 		for (size_t i=0; i<allocatedSize_; ++i)
 			data_[i] = 0.0;
 	}
+	
+
+	//////////////////////////////////////////////////////////////////////////////
+	
+	/////////////////////// THESE USED TO BE INLINED  ////////////////////////////
+	
+	
+	
 	
 	
 	

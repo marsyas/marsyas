@@ -95,15 +95,16 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	
 	mrs_real tempo = ctrl_tempo_->to<mrs_real>();
 	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
-	mrs_real avg_period;
 	mrs_natural bhopSize = ctrl_bhopSize_->to<mrs_natural>();
 
-	
 	MarControlAccessor acc(ctrl_beats_);
 	mrs_realvec& beats = acc.to<mrs_realvec>();
-	
-  
+
 	mrs_real period;
+	mrs_real sum_phase = 0.0;
+	mrs_real max_sum_phase = 0.0;
+	mrs_natural max_phase = 0;
+	mrs_real max_phase_tempo;
 	
 	
 	beats.setval(0.0);
@@ -117,19 +118,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		}
 	}
 	
-		
 
-	mrs_real sum_phase = 0.0;
-	mrs_real max_sum_phase = 0.0;
-	mrs_natural max_phase = 0;
-	mrs_natural next_peak =0;
-	
-	mrs_real phase_tempo;
-	mrs_real max_phase_tempo;
-	mrs_real max_score = 0;
-	
-	
-	max_sum_phase = 0.0;
 	if (tempo !=0)
 		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
 	else 
