@@ -227,6 +227,7 @@
 #include "PeakEnhancer.h"
 #include "Transposer.h"
 #include "SimulMaskingFft.h"
+#include "AimPZFC.h"
 
 //modifyHeader
 
@@ -446,6 +447,8 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("Transposer", new Transposer("transposer"));
 	registerPrototype("SimulMaskingFft", new SimulMaskingFft("simulmask"));
+
+	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));
 
 	//modifyRegister
 

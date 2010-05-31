@@ -1,0 +1,155 @@
+/*
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+#ifndef MARSYAS_AIMPZFC_H
+#define MARSYAS_AIMPZFC_H
+
+#include "MarSystem.h"
+
+// sness - TODO - Eventually make these realvecs.  However, in the
+// existing code there is quite a bit of stuff that involves STL
+// methods, so I thought it would be safer to use STL for now.
+#include <vector>
+
+namespace Marsyas
+{
+/**
+    \class AimPZFC
+	\ingroup Analysis
+    \brief Time-domain AimPZFC
+
+    Dick Lyon's Pole-Zero Filter Cascade - implemented in C++ by Tom
+    Walters from the AIM-MAT module based on Dick Lyon's code.
+
+    Ported to Marsyas from AIM-C by Steven Ness (sness@sness.net).
+
+*/
+
+
+class AimPZFC: public MarSystem
+{
+private:
+  mrs_real zcrs_;
+
+  void myUpdate(MarControlPtr sender);
+  void addControls();
+
+  //Reset all internal state variables to their initial values
+  void ResetInternal();
+
+  // Prepare the module
+  bool InitializeInternal();
+
+  // Set the filterbank parameters according to a fit matrix from Unoki
+  bool SetPZBankCoeffsERBFitted();
+
+  // Sets the general filterbank coefficients
+  bool SetPZBankCoeffs();
+
+  // Automatic Gain Control
+  void AGCDampStep();
+
+  // Detector function - halfwave rectification etc. Used internally,
+  // but not applied to the output.
+  float DetectFun(float fIN);
+
+  // Minimum
+  inline float Minimum(float a, float b);
+
+  int channel_count_;
+  // int buffer_length_;
+  int agc_stage_count_;
+  // float sample_rate_;
+  float last_input_;
+
+  // Parameters
+  // User-settable scalars
+  MarControlPtr ctrl_pole_damping_;
+  MarControlPtr ctrl_zero_damping_;
+  MarControlPtr ctrl_zero_factor_;
+  MarControlPtr ctrl_step_factor_;
+  MarControlPtr ctrl_bandwidth_over_cf_;
+  MarControlPtr ctrl_min_bandwidth_hz_;
+  MarControlPtr ctrl_agc_factor_;
+  MarControlPtr ctrl_cf_max_;
+  MarControlPtr ctrl_cf_min_;
+  MarControlPtr ctrl_mindamp_;
+  MarControlPtr ctrl_maxdamp_;
+  MarControlPtr ctrl_do_agc_step_;
+
+  // Internal Buffers
+  // Initialised once
+  //
+  // sness - TODO - Eventually make these realvecs.  However, in the
+  // existing code there is quite a bit of stuff that involves STL
+  // methods, so I thought it would be safer to use STL for now.
+  std::vector<float> pole_dampings_;
+  std::vector<float> agc_epsilons_;
+  std::vector<float> agc_gains_;
+  std::vector<float> pole_frequencies_;
+  std::vector<float> za0_;
+  std::vector<float> za1_;
+  std::vector<float> za2_;
+  std::vector<float> rmin_;
+  std::vector<float> rmax_;
+  std::vector<float> xmin_;
+  std::vector<float> xmax_;
+
+  // Modified by algorithm at each time step
+  std::vector<float> detect_;
+  std::vector<std::vector<float> > agc_state_;
+  std::vector<float> state_1_;
+  std::vector<float> state_2_;
+  std::vector<float> previous_out_;
+  std::vector<float> pole_damps_mod_;
+  std::vector<float> inputs_;
+
+public:
+  AimPZFC(std::string name);
+
+  ~AimPZFC();
+  MarSystem* clone() const;
+
+  void myProcess(realvec& in, realvec& out);
+};
+
+
+// From ERBTools.h in AIMC
+//
+// sness - Not sure if we should make a whole new file to support
+// these.  Will depend on how extensively they are used by other AIMC
+// modules.  Also, not sure if having this in another file would work
+// well with CMake.
+class ERBTools {
+ public:
+  static float Freq2ERB(float freq) {
+    return 21.4f * log10(4.37f * freq / 1000.0f + 1.0f);
+  }
+
+  static float Freq2ERBw(float freq) {
+    return 24.7f * (4.37f * freq / 1000.0f + 1.0f);
+  }
+
+  static float ERB2Freq(float erb) {
+    return (pow(10, (erb / 21.4f)) - 1.0f) / 4.37f * 1000.0f;
+  }
+};
+
+}//namespace marsyas
+
+#endif
