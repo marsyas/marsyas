@@ -36,7 +36,9 @@ class BeatPhase: public MarSystem
 private: 
   //Add specific controls needed by this MarSystem.
   void addControls();
-  MarControlPtr ctrl_tempo_;
+  MarControlPtr ctrl_tempos_;
+	MarControlPtr ctrl_temposcores_;
+	
 	MarControlPtr ctrl_phase_tempo_;
 	
   MarControlPtr ctrl_beats_;

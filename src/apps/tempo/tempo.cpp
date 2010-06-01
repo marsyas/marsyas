@@ -76,6 +76,7 @@
 using namespace std;
 using namespace Marsyas;
 
+vector<string> wrong_filenames_;
 
 mrs_string output;
 mrs_bool audiofileopt;
@@ -180,8 +181,14 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 		correct_mirex_predictions++;
 
 	if ((diff1 <= 0.04 * ground_truth_tempo)||(diff2 <= 0.04 * ground_truth_tempo)||(diff3 <= 0.04 * ground_truth_tempo)||(diff4 <= 0.04 * ground_truth_tempo)||(diff5 <= 0.04 * ground_truth_tempo))
-	  correct_harmonic_mirex_predictions++;
-
+	{
+		correct_harmonic_mirex_predictions++;
+	}
+	else 
+	{
+		wrong_filenames_.push_back(sfName);
+	}
+	
 
 	
 	if ((diff1 < 0.5)||(diff2 < 0.5)||(diff3 < 0.5)||(diff4 < 0.5)||(diff5 < 0.5))
@@ -196,8 +203,6 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 	    if ((diff3 < diff2)&&(diff3 < diff1))
 	      total_differences += diff3;
 	    total_errors++;
-
-
 	}
 	
 	else 
@@ -205,17 +210,16 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 		  /* 
 	    cout << "WRONG TEMPO ESTIMATION IN " << sfName << endl;
 		  */ 
+
 	  }
 
 	
 	
 	total_instances++;
-
 	
-
 	cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << " - " << correct_predictions * 1.0 / total_instances * 100.0 << endl;
 	cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << " - " << correct_mirex_predictions * 1.0 / total_instances * 100.0 << endl;
-	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << " - " << correct_harmonic_predictions * 1.0  / total_instances * 100.0 << endl;
+	cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << " - " << correct_harmonic_predictions * 1.0  / total_instances * 100.0  << endl;
 	cout << "Correct Harmonic MIREX predictions = " << correct_harmonic_mirex_predictions << "/" << total_instances << " - " << correct_harmonic_mirex_predictions * 1.0  / total_instances * 100.0  << endl;
 	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
 	
@@ -691,14 +695,14 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
 	tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
 	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
-	tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
+	// tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
 	tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
 	tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
 	
 	MarSystem* hfanout = mng.create("Fanout", "hfanout");
 	hfanout->addMarSystem(mng.create("Gain", "id1"));
 	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
-	hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
+	// hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
 	tempoInduction->addMarSystem(hfanout);
 	tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 	tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
@@ -707,17 +711,13 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	beatTracker->addMarSystem(tempoInduction);
 	beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
 	beatTracker->addMarSystem(mng.create("Gain/id"));
-	
-
-
 	mrs_natural winSize = 256;
 	mrs_natural hopSize = 128;
 	mrs_natural  bwinSize = 2048;
 	mrs_natural bhopSize = 128;
 	
-
-
-	onset_strength->updctrl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  	onset_strength->updctrl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
+	onset_strength->updctrl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  
+	onset_strength->updctrl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
 
 	
 	realvec bcoeffs(1,3);
@@ -733,18 +733,16 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	acoeffs(2) = 0.4504;
 	tempoInduction->updctrl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 	tempoInduction->updctrl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
-	 
-	
-	
-	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
+
+	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
 	tempoInduction->updctrl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
 	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakStart", 200);
 	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/peakEnd", 640);
-	// tempoInduction->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+	// tempoInduction->updctrl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
 
 	tempoInduction->updctrl("MaxArgMax/mxr1/mrs_natural/interpolation", 1);
 	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/interpolation", 1);
-
+	tempoInduction->updctrl("MaxArgMax/mxr1/mrs_natural/nMaximums", 1);
 	
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
@@ -754,26 +752,19 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	tempoInduction->updctrl("BeatHistogram/histo/mrs_real/factor", 16.0);
 
 
-	tempoInduction->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);	
+	tempoInduction->updctrl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
+	tempoInduction->updctrl("Fanout/hfanout/Gain/id1/mrs_real/gain", 2.0);
+	tempoInduction->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.65); 
 	
-	tempoInduction->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.75); 
-	
-	
-	
-
-
-	//mrs_real srate = tempoInduction->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
-
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
-	
 	beatTracker->updctrl("mrs_natural/inSamples", hopSize);
 	
 
 	
 	
 	vector<mrs_real> bpms;
+	vector<mrs_real> secondary_bpms;
 	mrs_real bin;
 
 
@@ -789,21 +780,28 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	beatTracker->updctrl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
 	beatTracker->updctrl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
 
-	// beatTracker->linkctrl("Flowthru/tempoInduction/ShiftInput/si/mrs_realvec/processedData", 
-	// "BeatPhase/beatphase/mrs_realvec/timeDomain");
-	
-
 	int extra_ticks = bwinSize/bhopSize;
+	mrs_realvec tempos(1);
+	mrs_realvec tempo_scores(1);
+	tempo_scores.setval(0.0);
 	
 	while (1) 
 	{
-		
 		beatTracker->tick();
 		mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
 		
 		bin = estimate(1) * 0.25;
-		beatTracker->updctrl("BeatPhase/beatphase/mrs_real/tempo", bin);
-		bpms.push_back(beatTracker->getctrl("BeatPhase/beatphase/mrs_real/tempo")->to<mrs_real>());
+		
+		tempos(0) = bin;
+		// tempos(1) = estimate(3) * 0.25;
+		// tempos(2) = estimate(5) * 0.25;
+
+		beatTracker->updctrl("BeatPhase/beatphase/mrs_realvec/tempos", tempos);
+		beatTracker->updctrl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
+		bpms.push_back(beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>());
+
+		secondary_bpms.push_back(estimate(3) * 0.25);
+		// cout << "phase_tempo = " << beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>() << endl;
 		
 		if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 		{
@@ -814,14 +812,18 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 			break;
 	}
 	
-
 	// sort(bpms.begin(), bpms.end());
 
 	mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
-	cout << "BPM = " << bpm_estimate << endl;
+	mrs_real secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
 	
 	if (haveCollections)
+	{
 		evaluate_estimated_tempo(sfName, bpm_estimate, ground_truth_tempo);
+		// evaluate_estimated_tempo(sfName,secondary_bpm_estimate, ground_truth_tempo);
+	}
+	
+		
 	delete beatTracker;
 }
 
@@ -870,6 +872,8 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName, boo
 	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
 	// hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
 	
+	hfanout->updctrl("Gain/id1/mrs_real/gain", 2.0);
+	
 	total->addMarSystem(hfanout);
 	total->addMarSystem(mng.create("Sum", "hsum"));
 	total->addMarSystem(mng.create("Peaker", "pkr"));
@@ -900,10 +904,12 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName, boo
 	total->updctrl("Peaker/pkr/mrs_natural/peakNeighbors", 10);
 	total->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
 	total->updctrl("Peaker/pkr/mrs_natural/peakStart", 50);
-	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 180);
+	total->updctrl("Peaker/pkr/mrs_natural/peakEnd", 170);
 	
 	total->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.65);
 	// total->updctrl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+
+	// total->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.5); 
 	
 	total->updctrl("BeatHistogram/histo/mrs_natural/startBin", 0);
 	total->updctrl("BeatHistogram/histo/mrs_natural/endBin", 200);
@@ -2860,6 +2866,9 @@ void tempo(string inFname, string outFname, string label, string method, bool ha
 		cout << "Unsupported tempo induction method " << endl;
 
 
+	
+	
+
 }
 
 
@@ -3003,10 +3012,12 @@ main(int argc, const char **argv)
 		}
 
 
-		cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << endl;
-		cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << endl;
-		cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << endl;
-		cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
+
+		for (int i=0; i<wrong_filenames_.size(); i++)
+			cout << wrong_filenames_[i] << endl;
+		
+
+
 
 	}
 	else
