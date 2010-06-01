@@ -287,7 +287,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 	realvec c(n);
 	realvec tmp(n);
 	double minval;
-	int mini;
+	int mini	= 0; //AL: I don't really know what implications this has - but otherwise the variable might be used uninitialized...
 	realvec EVDtimesEV(nbcluster*(nbcluster));
 	double NcutValue;
 	double lastObjectiveValue=0;
@@ -424,7 +424,7 @@ void
 NormCut::discretisationEigenvectorData(mrs_natural n,  mrs_natural nbcluster, realvec &V, realvec &Vdiscrete)
 {
 	mrs_real maxval;
-	mrs_natural maxi;   
+	mrs_natural maxi = 0; //AL: I don't really know what implications this has - but otherwise the variable might be used uninitialized...;   
 
 	mrs_natural i,j;
 
