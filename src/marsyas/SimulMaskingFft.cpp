@@ -74,7 +74,15 @@ MarSystem*
 SimulMaskingFft::clone() const 
 {
 	SimulMaskingFft *New	= new SimulMaskingFft(*this);
-	New->freqBounds_		= freqBounds_;
+	
+	if (this->numBands_ > 0)
+	{
+		New->freqBounds_	= new FrequencyBands_t [numBands_];
+		New->ComputeTables ();
+	}
+	else
+		New->freqBounds_	= 0;
+
 
 	return New;
 }								

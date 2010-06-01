@@ -28,11 +28,12 @@
 #include <algorithm>
 
 //#define MTLB_DBG_LOG
-
 //#define ORIGINAL_VERSION
 
 using namespace std;
 using namespace Marsyas;
+
+static const mrs_real gaussianStd = 0.42466090014401;	// results in output of .5 for input of .5
 
 static void FreqSmear (mrs_realvec &spectrum)
 {
@@ -62,7 +63,10 @@ mrs_real	princArg (mrs_real phase)
 	return PI + (fx + TWOPI*floor (fx*(-1.0/TWOPI)));
 }
 
-PeakConvert2::PeakConvert2(string name):MarSystem("PeakConvert2",name)
+PeakConvert2::PeakConvert2(string name):MarSystem("PeakConvert2",name),
+peaker_(0),
+max_(0),
+masking_(0)
 {
 	psize_ = 0;
 	size_ = 0;
@@ -79,8 +83,8 @@ PeakConvert2::PeakConvert2(string name):MarSystem("PeakConvert2",name)
 
 	useStereoSpectrum_ = false;
 
-	peaker_ = new Peaker("Peaker");
-	max_ = new MaxArgMax("MaxArgMax");
+	peaker_		= new Peaker("Peaker");
+	max_		= new MaxArgMax("MaxArgMax");
 	masking_	= new SimulMaskingFft("masking");
 
 	addControls();
@@ -104,10 +108,9 @@ PeakConvert2::PeakConvert2(const PeakConvert2& a) : MarSystem(a)
 
 	useStereoSpectrum_ = a.useStereoSpectrum_;
 
-	peaker_ = new Peaker("Peaker");
-	max_ = new MaxArgMax("MaxArgMax");
-	masking_ = a.masking_;
-
+	peaker_		= (Peaker*)a.peaker_->clone ();
+	max_		= (MaxArgMax*)a.max_->clone ();
+	masking_	= (SimulMaskingFft*)a.masking_->clone ();
 
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks");
 	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
@@ -148,6 +151,9 @@ PeakConvert2::addControls()
 	addctrl("mrs_natural/hopSize", 1);
 	setctrlState("mrs_natural/hopSize", true);
 
+	addctrl("mrs_real/probabilityTresh" , .5);
+	setctrlState("mrs_real/probabilityTresh", true);
+
 	addctrl("mrs_natural/totalNumPeaks", 0, ctrl_totalNumPeaks_);
 
 #ifdef ORIGINAL_VERSION
@@ -158,10 +164,7 @@ PeakConvert2::addControls()
 	addctrl("mrs_realvec/peakProbabilityWeight", tmp);
 	setctrlState("mrs_realvec/peakProbabilityWeight", true);
 
-	addctrl("mrs_real/probabilityTresh" , .8);	// for an std of .75
-	setctrlState("mrs_real/probabilityTresh", true);
-
-	addctrl( "mrs_real/peakSmearingTimeInS" , 3e-3);	// check with other hopsizes
+	addctrl( "mrs_real/peakSmearingTimeInS" , .0);	// check with other hopsizes
 	setctrlState( "mrs_real/peakSmearingTimeInS", true);
 #else
 	addctrl("mrs_bool/useMasking", true);
@@ -174,9 +177,6 @@ PeakConvert2::addControls()
 
 	addctrl("mrs_realvec/peakProbabilityWeight", tmp);
 	setctrlState("mrs_realvec/peakProbabilityWeight", true);
-
-	addctrl("mrs_real/probabilityTresh" , .5);
-	setctrlState("mrs_real/probabilityTresh", true);
 
 	addctrl( "mrs_real/peakSmearingTimeInS" , 0.03);	// check with other hopsizes
 	setctrlState( "mrs_real/peakSmearingTimeInS", true);
@@ -230,7 +230,10 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 	
 	mrs_real timeSrate = israte_*(mrs_real)N_;//israte_*(mrs_real)inObservations_/2.0;
 
-	lpCoeff_	= exp(-2.2/(timeSrate/hopSize_*getctrl("mrs_real/peakSmearingTimeInS")->to<mrs_real>()));
+	if (getctrl("mrs_real/peakSmearingTimeInS")->to<mrs_real>() == 0)
+		lpCoeff_	= 0;
+	else
+		lpCoeff_	= exp(-2.2/(timeSrate/hopSize_*getctrl("mrs_real/peakSmearingTimeInS")->to<mrs_real>()));
 
 	size_ = N_/2+1;//inObservations_ /4 +1;
 	if (size_ != psize_)
@@ -469,14 +472,15 @@ void PeakConvert2::ComputeMagnitudeAndPhase (mrs_realvec in)
 		mag_(o) = sqrt((a*a + b*b))*2; 
 		mrs_real mag = lobe_value_compute((o * fundamental_-frequency_(o))/factor_, 1, N_);
 		magCorr_(o) = mag_(o)/mag;
+		mrs_real freq = frequency_(o);
 
 		if(lastfrequency_(o) != 0.0)
 			deltafrequency_(o) = (frequency_(o)-lastfrequency_(o))/(frequency_(o)+lastfrequency_(o));
 
 		deltamag_(o) = (mag_(o)-lastmag_(o))/(mag_(o)+lastmag_(o));
 
-		lastfrequency_(o) = frequency_(o);
-		lastmag_(o) = mag_(o);
+		lastfrequency_(o) = freq;
+		lastmag_(o) = mag;
 	}
 }
 
@@ -509,7 +513,8 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 	out.setval(0);
 	peakView pkViewOut(out);
 
-	mrs_bool useMasking = getctrl("mrs_bool/useMasking")->to<mrs_bool>();
+	const mrs_bool useMasking	= getctrl("mrs_bool/useMasking")->to<mrs_bool>();
+	const mrs_real probThresh	= getctrl("mrs_real/probabilityTresh")->to<mrs_real>();
 
 	for(mrs_natural f=0 ; f < inSamples_; ++f)
 	{
@@ -544,9 +549,8 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 					peaks_(o)=0.0;		
 			}
 
-			mrs_real probThresh	= getctrl("mrs_real/probabilityTresh")->to<mrs_real>();
-
-			FreqSmear (lpPeakerRes_);
+			if (lpCoeff_ > 0)
+				FreqSmear (lpPeakerRes_);
 
 			//compute the probability of a peak being a peak
 			for(o=0 ; o < size_ ; o++)
@@ -557,13 +561,21 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 					lpPeakerRes_(o)	*=lpCoeff_;
 					continue;
 				}
-
+#ifdef ORIGINAL_VERSION
+				// probability of peak being a masker
+				peakProb_(0)	= 0;
+				// probability of peak being stationary
+				peakProb_(1)	= 0;
+				// probability of peak being tonal
+				peakProb_(2)	= (abs(frequency_(o)/fundamental_-o) > .5)? 0 : 1;
+#else
 				// probability of peak being a masker
 				peakProb_(0)	= .5 * (log10(masked_(o)) +1.);
 				// probability of peak being stationary
-				peakProb_(1) = max(.1, lpPeakerRes_(o));
+				peakProb_(1)	= max(.1, lpPeakerRes_(o));
 				// probability or peak being tonal
-				peakProb_(2)	= GaussianPdf (frequency_(o)/fundamental_-o,.75);
+				peakProb_(2)	= GaussianPdf (frequency_(o)/fundamental_-o, gaussianStd);
+#endif
 
 				// reset lpPeakerRes with peaker results
 				lpPeakerRes_(o)	= 1;
@@ -620,6 +632,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 #endif
 			
 
+			// fill output with peaks data
 			interval_ /= N_*2;
 
 			for (mrs_natural i = 0; i < nbPeaks_; i++)
@@ -628,7 +641,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 				pkViewOut(i, peakView::pkAmplitude, f) = magCorr_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkPhase, f) = -phase_((mrs_natural) index_(i));
 				pkViewOut(i, peakView::pkDeltaFrequency, f) = deltafrequency_((mrs_natural) index_(i));
-				pkViewOut(i, peakView::pkDeltaAmplitude, f) = deltamag_((mrs_natural) index_(i));
+				pkViewOut(i, peakView::pkDeltaAmplitude, f) = abs(deltamag_((mrs_natural) index_(i)));
 				pkViewOut(i, peakView::pkFrame, f) = frame_; 
 				pkViewOut(i, peakView::pkGroup, f) = 0.0; //This should be -1!!!! [TODO]
 				pkViewOut(i, peakView::pkVolume, f) = 1.0;
