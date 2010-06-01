@@ -217,7 +217,7 @@ AudioSinkCallback::playCallback(void *outputBuffer, void *inputBuffer,
 						unsigned int nBufferFrames, double streamTime, 
 								unsigned int status, void *userData)
 {
-	unsigned int drain_count;
+	unsigned int drain_count	= 0;
 	
 	mrs_real* data = (mrs_real*)outputBuffer;
 	OutputData *oData = (OutputData *)userData;
