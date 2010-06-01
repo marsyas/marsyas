@@ -127,6 +127,12 @@ compile this new file:
 marsyas_unit_test(AubioYin AubioYin_runner.cpp)
 @end example
 
+In order to generate the AubioYin_runner.cpp file from the
+TestAubioYin.h file, you then need to run the command:
+
+./scripts/generate-unit-test-cpp-files.py
+
+
 @node How do I run the tests?
 @subsection How do I run the tests?
 
