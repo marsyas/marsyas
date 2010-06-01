@@ -85,6 +85,16 @@ PeakFeatureSelect::myUpdate(MarControlPtr sender)
 			numFeats_++;
 			oss << "pkAmplitude,";
 		}
+		if(selectedFeatures_ & PeakFeatureSelect::pkDeltaFrequency)
+		{
+			numFeats_++;
+			oss << "pkDeltaFrequency,";
+		}
+		if(selectedFeatures_ & PeakFeatureSelect::pkDeltaAmplitude)
+		{
+			numFeats_++;
+			oss << "pkDeltaAmplitude,";
+		}
 		if(selectedFeatures_ & PeakFeatureSelect::pkFrame)
 		{
 			numFeats_++;
@@ -169,6 +179,24 @@ PeakFeatureSelect::myProcess(realvec& in, realvec& out)
 				if(selectedFeatures_ & PeakFeatureSelect::pkAmplitude)
 				{
 					out(feat_index, peak_index) = inPeakView(p, peakView::pkAmplitude, f);
+					if(selectedFeatures_ & PeakFeatureSelect::dBPkAmp)
+					{
+						out(feat_index, peak_index) = amplitude2dB(out(feat_index, peak_index));
+					}
+					feat_index++;
+				}
+				if(selectedFeatures_ & PeakFeatureSelect::pkDeltaFrequency)
+				{
+					out(feat_index, peak_index) = inPeakView(p, peakView::pkDeltaFrequency, f);
+					if(selectedFeatures_ & PeakFeatureSelect::barkPkFreq)
+					{
+						out(feat_index, peak_index) = hertz2bark(out(feat_index, peak_index));
+					}
+					feat_index++;
+				}
+				if(selectedFeatures_ & PeakFeatureSelect::pkDeltaAmplitude)
+				{
+					out(feat_index, peak_index) = inPeakView(p, peakView::pkDeltaAmplitude	, f);
 					if(selectedFeatures_ & PeakFeatureSelect::dBPkAmp)
 					{
 						out(feat_index, peak_index) = amplitude2dB(out(feat_index, peak_index));

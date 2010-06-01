@@ -65,6 +65,8 @@ namespace Marsyas
 			barkPkFreq = 64,
 			dBPkAmp = 128,
 			pkPan = 256,
+			pkDeltaFrequency = 512,
+			pkDeltaAmplitude = 1024
 		};//should we also add standardization options here?!? [?]
 
     PeakFeatureSelect(std::string name);
