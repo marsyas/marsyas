@@ -16,11 +16,14 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "RBF.h"
 #include <cmath>
 
 using namespace std;
 using namespace Marsyas;
+
+//#define MTLB_DBG_LOG
 
 RBF::RBF(string name):MarSystem("RBF", name)
 {
@@ -122,7 +125,10 @@ RBF::myProcess(realvec& in, realvec& out)
 
 	if(ctrl_symmetricIn_->isTrue())
 	{
-		for(t=0; t<inSamples_; ++t)
+		mrs_natural endLoop = min(inSamples_, inObservations_);	// just to be sure...
+		MRSASSERT(in.getRows () >= endLoop);
+		MRSASSERT(in.getCols () >= endLoop);
+		for(t=0; t<endLoop; ++t)
 		{
 			for(o=0; o<=t; ++o)
 			{
@@ -173,8 +179,13 @@ RBF::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-	//MATLAB_PUT(out, "RBFMatrix");
-	//MATLAB_EVAL("figure(2);imagesc(RBFMatrix);");
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(name_, "name");
+	MATLAB_PUT(out, "out");
+	MATLAB_EVAL("if (length(out)>1) figure(1);imagesc(out);title(name);colorbar; end");
+#endif
+#endif
 }
 
 
