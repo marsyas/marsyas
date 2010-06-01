@@ -102,6 +102,8 @@ AimPZFC::InitializeInternal() {
 
   // This initialises all buffers which can be modified by Process()
   ResetInternal();
+
+  return true;
 }
 
 void
@@ -168,19 +170,19 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
   // channels can vary quadratically with pole frequency...
 
   // Normalised maximum pole frequency
-  float pole_frequency = cf_max / sample_rate * (2.0f * M_PI);
+  float pole_frequency = cf_max / sample_rate * (2.0f * PI);
 
   channel_count_ = 0;
-  while ((pole_frequency / (2.0f * M_PI)) * sample_rate > cf_min) {
-    float frequency = pole_frequency / (2.0f * M_PI) * sample_rate;
+  while ((pole_frequency / (2.0f * PI)) * sample_rate > cf_min) {
+    float frequency = pole_frequency / (2.0f * PI) * sample_rate;
     float f_dep = ERBTools::Freq2ERB(frequency)
                   / ERBTools::Freq2ERB(1000.0f) - 1.0f;
     float bw = ERBTools::Freq2ERBw(pole_frequency
-                                  / (2.0f * M_PI) * sample_rate);
+                                  / (2.0f * PI) * sample_rate);
     float step_factor = 1.0f
       / (parameter_values[4*3] + parameter_values[4 * 3 + 1]
       * f_dep + parameter_values[4 * 3 + 2] * f_dep * f_dep);  // 1/n2
-    pole_frequency -= step_factor * (bw * (2.0f * M_PI) / sample_rate);
+    pole_frequency -= step_factor * (bw * (2.0f * PI) / sample_rate);
     channel_count_++;
   }
 
@@ -203,14 +205,14 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
   // output_.Initialize(channel_count_, buffer_length_, sample_rate);
 
   // Reset the pole frequency to maximum
-  pole_frequency = cf_max / sample_rate * (2.0f * M_PI);
+  pole_frequency = cf_max / sample_rate * (2.0f * PI);
 
   for (int i = channel_count_ - 1; i > -1; --i) {
     // Store the normalised pole frequncy
     pole_frequencies_[i] = pole_frequency;
 
     // Calculate the real pole frequency from the normalised pole frequency
-    float frequency = pole_frequency / (2.0f * M_PI) * sample_rate;
+    float frequency = pole_frequency / (2.0f * PI) * sample_rate;
 
     // Store the real pole frequency as the 'centre frequency' of the filterbank
     // channel
@@ -239,7 +241,7 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
     float fERBw = ERBTools::Freq2ERBw(frequency);
 
     // Pole bandwidth
-    float fPBW = ((p[7] * fERBw * (2 * M_PI) / sample_rate) / 2)
+    float fPBW = ((p[7] * fERBw * (2 * PI) / sample_rate) / 2)
                  * pow(p[4], 0.5f);
 
     // Pole damping
@@ -249,13 +251,13 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
     pole_dampings_[i] = pole_damping;
 
     // Zero bandwidth
-    float fZBW = ((p[0] * p[5] * fERBw * (2 * M_PI) / sample_rate) / 2)
+    float fZBW = ((p[0] * p[5] * fERBw * (2 * PI) / sample_rate) / 2)
                  * pow(p[4], 0.5f);
 
     // Zero frequency
     float zero_frequency = p[5] * pole_frequency;
 
-    if (zero_frequency > M_PI)
+    if (zero_frequency > PI)
       MRSWARN("Warning: Zero frequency is above the Nyquist frequency\nin ModulePZFC(), continuing anyway but results may not\nbe accurate.");
 
     // Zero damping
@@ -278,7 +280,7 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
     // Subtract step factor (1/n2) times current bandwidth from the pole
     // frequency
     pole_frequency -= ((1.0f / p[4])
-                       * (fERBw * (2.0f * M_PI) / sample_rate));
+                       * (fERBw * (2.0f * PI) / sample_rate));
   }
 return true;
 
