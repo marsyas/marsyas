@@ -1901,7 +1901,8 @@ NumericLib::cosineDistance(const realvec& Vi, const realvec& Vj, const realvec& 
 		res = res1/sqrt(res2 * res3);
 		if(res > 1.0) //cosine similarity should never be bigger than 1.0!!
 		{
-			MRSWARN("NumericLib::cosineDistance() - cosine similarity value is > 1.0 by " << res-1.0 << " -> setting value to 1.0!");
+			if (res-1.0 > 1e-6)
+				MRSWARN("NumericLib::cosineDistance() - cosine similarity value is > 1.0 by " << res-1.0 << " -> setting value to 1.0!");
 			res = 1.0;
 		}
 		return (1.0 - res); //return DISTANCE (and not the cosine similarity)
