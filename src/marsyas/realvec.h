@@ -237,12 +237,15 @@ public:
 	void sqroot();
 	void norm();
 	void normMaxMin();
+	void pow (mrs_real exp);
 
 	static void matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out);
 	void norm(mrs_real mean, mrs_real std);
 	void renorm(mrs_real old_mean, mrs_real old_std, mrs_real new_mean, mrs_real new_std);
 	mrs_natural invert(realvec& res);//lmartins: this seems to be both inplace and returning the inverse matrix in "res"... why both?!? [!][?]
 	void transpose();
+	void fliplr ();
+	void flipud ();
 	void covariance(realvec& res) const; //Typical covariance calculation, as performed by MATLAB cov().
 	void covariance2(realvec& res) const;//Marsyas0.1 covariance calculation (assumes standardized data, and uses biased estimation)
 	void correlation(realvec& res) const;

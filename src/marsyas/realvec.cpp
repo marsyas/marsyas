@@ -147,6 +147,34 @@ realvec::transpose()
 	data_ = tmp_;
 }
 
+void
+realvec::fliplr()
+{
+	mrs_natural i,j,jtmp;
+
+	for (i=0; i < rows_; i++)
+		for (j=0, jtmp = cols_-1; j < cols_/2; j++, jtmp--)
+		{
+			mrs_real tmp	= (*this)(i,j);
+			(*this)(i,j)	= (*this)(i,jtmp); 
+			(*this)(i,jtmp)	= tmp; 
+		}
+}
+
+void
+realvec::flipud()
+{
+	mrs_natural i,j,itmp;
+
+	for (i=0, itmp = rows_-1; i < rows_/2; i++, itmp--)
+		for (j=0; j < cols_; j++)
+		{
+			mrs_real tmp	= (*this)(i,j);
+			(*this)(i,j)	= (*this)(itmp,j); 
+			(*this)(itmp,j)	= tmp; 
+		}
+}
+
 mrs_real
 realvec::median() const
 {
@@ -467,6 +495,15 @@ realvec::abs()
 	for (size_t i=0; i<size_; ++i)
 	{
 		data_[i] = fabs(data_[i]);
+	}
+}
+
+void
+realvec::pow (mrs_real exp)
+{
+	for (mrs_natural i=0; i<size_; i++)
+	{
+		data_[i] = ::pow (data_[i], exp);
 	}
 }
 
