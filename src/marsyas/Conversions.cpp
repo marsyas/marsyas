@@ -156,6 +156,7 @@ Marsyas::time2usecs(string time) {
 
 mrs_real Marsyas::amplitude2dB(mrs_real a)
 {
+	MRSASSERT (a > 0);
 	return 20*log10(a);
 }
 
@@ -190,7 +191,7 @@ mrs_real Marsyas::hertz2bark(mrs_real f, mrs_natural mode)
 		return  6 * log(f/600 + sqrt(1+ (pow(f/600,2)))); // 6*asinh(f/600);
 
 	case  1:  //  zwicker
-		return  atan  (0.00076*f)  +  3.5  *  atan  ((f*0.000133333333333333)*(f*0.000133333333333333));
+		return  13 * atan  (0.00076*f)  +  3.5  *  atan  ((f*0.000133333333333333)*(f*0.000133333333333333));
 
 	case  2:  //  terhardt
 		return  13.3  *  atan  (0.00075*f);
