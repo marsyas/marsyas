@@ -68,7 +68,7 @@ isClose(string infile1, string infile2)
 		{
 			//  useful for tweaking CLOSE_ENOUGH
 			//cout<<processedData(i)<<" ";
-			if ( processedData(i) > CLOSE_ENOUGH )
+			if ( abs(processedData(i)) > CLOSE_ENOUGH )
 			{
 				exit(1);
 			}
