@@ -228,6 +228,8 @@
 #include "Transposer.h"
 #include "SimulMaskingFft.h"
 #include "AimPZFC.h"
+#include "TimeFreqPeakConnectivity.h"
+#include "Combinator.h"
 
 //modifyHeader
 
@@ -447,6 +449,8 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("Transposer", new Transposer("transposer"));
 	registerPrototype("SimulMaskingFft", new SimulMaskingFft("simulmask"));
+	registerPrototype("TimeFreqPeakConnectivity", new TimeFreqPeakConnectivity("tfpeakconn"));
+	registerPrototype("Combinator", new Combinator("combinator"));
 
 	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));
 
