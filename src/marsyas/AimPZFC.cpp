@@ -24,8 +24,6 @@ using namespace Marsyas;
 AimPZFC::AimPZFC(string name):MarSystem("AimPZFC",name)
 {
   addControls();
-
-  InitializeInternal();
 }
 
 
@@ -43,7 +41,6 @@ AimPZFC::~AimPZFC()
   ctrl_mindamp_ = getctrl("mrs_real/mindamp");
   ctrl_maxdamp_ = getctrl("mrs_real/maxdamp");
   ctrl_do_agc_step_ = getctrl("mrs_bool/do_agc_step");
-
 }
 
 
@@ -73,6 +70,8 @@ AimPZFC::addControls()
 void
 AimPZFC::myUpdate(MarControlPtr sender)
 {
+  InitializeInternal();
+
   (void) sender;
   MRSDIAG("AimPZFC.cpp - AimPZFC:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -80,8 +79,6 @@ AimPZFC::myUpdate(MarControlPtr sender)
   // ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
   ctrl_onObsNames_->setValue("AimPZFC_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
-
-
 }
 
 bool
@@ -288,6 +285,8 @@ return true;
 
 bool
 AimPZFC::SetPZBankCoeffs() {
+  cout << "AimPZFC::SetPZBankCoeffs()" << endl;
+
   /*! \todo Re-implement the alternative parameter settings
    */
   if (!SetPZBankCoeffsERBFitted())
@@ -295,6 +294,9 @@ AimPZFC::SetPZBankCoeffs() {
 
   float mindamp = getctrl("mrs_real/mindamp")->to<mrs_real>();
   float maxdamp = getctrl("mrs_real/maxdamp")->to<mrs_real>();
+
+  cout << "mindamp=" << mindamp << endl;
+  cout << "maxdamp=" << maxdamp << endl;
 
   rmin_.resize(channel_count_);
   rmax_.resize(channel_count_);

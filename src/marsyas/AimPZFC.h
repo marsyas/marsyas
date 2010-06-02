@@ -20,6 +20,7 @@
 #define MARSYAS_AIMPZFC_H
 
 #include "MarSystem.h"
+#include "ERBTools.h"
 
 // sness - TODO - Eventually make these realvecs.  However, in the
 // existing code there is quite a bit of stuff that involves STL
@@ -49,7 +50,7 @@ private:
   void myUpdate(MarControlPtr sender);
   void addControls();
 
-  //Reset all internal state variables to their initial values
+  // Reset all internal state variables to their initial values
   void ResetInternal();
 
   // Prepare the module
@@ -126,28 +127,6 @@ public:
   MarSystem* clone() const;
 
   void myProcess(realvec& in, realvec& out);
-};
-
-
-// From ERBTools.h in AIMC
-//
-// sness - Not sure if we should make a whole new file to support
-// these.  Will depend on how extensively they are used by other AIMC
-// modules.  Also, not sure if having this in another file would work
-// well with CMake.
-class ERBTools {
- public:
-  static float Freq2ERB(float freq) {
-    return 21.4f * log10(4.37f * freq / 1000.0f + 1.0f);
-  }
-
-  static float Freq2ERBw(float freq) {
-    return 24.7f * (4.37f * freq / 1000.0f + 1.0f);
-  }
-
-  static float ERB2Freq(float erb) {
-    return (pow(10, (erb / 21.4f)) - 1.0f) / 4.37f * 1000.0f;
-  }
 };
 
 }//namespace marsyas

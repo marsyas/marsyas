@@ -154,5 +154,3 @@ AubioYin::myProcess(realvec& in, realvec& out)
   out(0,0) = ctrl_osrate_/pitch; 
 
 }
-
-

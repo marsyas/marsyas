@@ -7214,8 +7214,31 @@ toy_with_aim_pzfc(string sfName)
 
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
-      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
       net->tick();
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	}
+	delete net;
+}
+
+// Slaney's gammatone filterbank
+void
+toy_with_aim_gammatone(string sfName)
+{
+	cout << "Toy_with: aim_gammatone" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+	
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
+
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      net->tick();
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	}
 	delete net;
 }
@@ -7430,6 +7453,8 @@ main(int argc, const char **argv)
 		toy_with_delay(fname0,fname1);
 	else if (toy_withName == "aim_pzfc")
 		toy_with_aim_pzfc(fname0);
+	else if (toy_withName == "aim_gammatone")
+		toy_with_aim_gammatone(fname0);
 
 	else 
 	{
