@@ -229,6 +229,7 @@
 #include "SimulMaskingFft.h"
 #include "AimPZFC.h"
 #include "AimGammatone.h"
+#include "AimHCL.h"
 #include "TimeFreqPeakConnectivity.h"
 #include "Combinator.h"
 
@@ -455,6 +456,7 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));
 	registerPrototype("AimGammatone", new AimGammatone("aimgammatone"));
+	registerPrototype("AimHCL", new AimHCL("aimhcl"));
 
 	//modifyRegister
 

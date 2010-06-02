@@ -7243,6 +7243,29 @@ toy_with_aim_gammatone(string sfName)
 	delete net;
 }
 
+// Halfwave rectification, compression and lowpass filtering
+void
+toy_with_aim_hcl(string sfName)
+{
+	cout << "Toy_with: aim_hcl" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+	
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("AimHCL", "aimhcl"));
+
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      net->tick();
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	}
+	delete net;
+}
+
 
 int
 main(int argc, const char **argv)
@@ -7455,6 +7478,8 @@ main(int argc, const char **argv)
 		toy_with_aim_pzfc(fname0);
 	else if (toy_withName == "aim_gammatone")
 		toy_with_aim_gammatone(fname0);
+	else if (toy_withName == "aim_hcl")
+		toy_with_aim_hcl(fname0);
 
 	else 
 	{
