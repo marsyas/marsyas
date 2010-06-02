@@ -66,7 +66,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
 
 void 
 AimGammatone::ResetInternal() {
-  cout << "AimGammatone::ResetInternal" << endl;
+  // cout << "AimGammatone::ResetInternal" << endl;
   mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
 
   state_1_.resize(num_channels);
@@ -83,12 +83,16 @@ AimGammatone::ResetInternal() {
 
 bool 
 AimGammatone::InitializeInternal() {
-  cout << "AimGammatone::InitializeInternal" << endl;
+  // cout << "AimGammatone::InitializeInternal" << endl;
 
   mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
-  float max_frequency = ctrl_max_frequency_->to<mrs_natural>();
-  float min_frequency = ctrl_min_frequency_->to<mrs_natural>();
-  
+  float min_frequency = ctrl_min_frequency_->to<mrs_real>();
+  float max_frequency = ctrl_max_frequency_->to<mrs_real>();
+
+  // cout << "num_channels=" << num_channels << endl;
+  // cout << "min_frequency=" << min_frequency << endl;
+  // cout << "max_frequency=" << max_frequency << endl;
+ 
   // Calculate number of channels, and centre frequencies
   float erb_max = ERBTools::Freq2ERB(max_frequency);
   float erb_min = ERBTools::Freq2ERB(min_frequency);
@@ -119,15 +123,19 @@ AimGammatone::InitializeInternal() {
 
   for (int ch = 0; ch < num_channels; ++ch) {
     double cf = centre_frequencies_[ch];
+    // cout << "cf=" << cf << endl;
     double erb = ERBTools::Freq2ERBw(cf);
+    // cout << "erb=" << erb << endl;
     // LOG_INFO("%e", erb);
 
     // Sample interval
     // double dt = 1.0f / input.sample_rate();
     double dt = 1.0f / ctrl_israte_->to<mrs_real>();
+    // cout << "dt=" << dt << endl;
+    // cout << "ctrl_israte_=" << ctrl_israte_->to<mrs_real>() << endl;
 
     // Bandwidth parameter
-    double b = 1.019f * 2.0f * M_PI * erb;
+    double b = 1.019f * 2.0f * PI * erb;
 
     // The following expressions are derived in Apple TR #35, "An
     // Efficient Implementation of the Patterson-Holdsworth Cochlear
@@ -135,7 +143,7 @@ AimGammatone::InitializeInternal() {
     // defines this alternaltive four stage cascade of second-order filters.
 
     // Calculate the gain:
-    double cpt = cf * M_PI * dt;
+    double cpt = cf * PI * dt;
     complex<double> exponent(0.0, 2.0 * cpt);
     complex<double> ec = exp(2.0 * exponent);
     complex<double> two_cf_pi_t(2.0 * cpt, 0.0);
@@ -168,21 +176,21 @@ AimGammatone::InitializeInternal() {
     double B0 = dt;
     double B2 = 0.0f;
 
-    double B11 = -(2.0f * dt * cos(2.0f * cf * M_PI * dt) / exp(b * dt)
+    double B11 = -(2.0f * dt * cos(2.0f * cf * PI * dt) / exp(b * dt)
                    + 2.0f * sqrt(3 + pow(2.0f, 1.5f)) * dt
-                       * sin(2.0f * cf * M_PI * dt) / exp(b * dt)) / 2.0f;
-    double B12 = -(2.0f * dt * cos(2.0f * cf * M_PI * dt) / exp(b * dt)
+                       * sin(2.0f * cf * PI * dt) / exp(b * dt)) / 2.0f;
+    double B12 = -(2.0f * dt * cos(2.0f * cf * PI * dt) / exp(b * dt)
                    - 2.0f * sqrt(3 + pow(2.0f, 1.5f)) * dt
-                       * sin(2.0f * cf * M_PI * dt) / exp(b * dt)) / 2.0f;
-    double B13 = -(2.0f * dt * cos(2.0f * cf * M_PI * dt) / exp(b * dt)
+                       * sin(2.0f * cf * PI * dt) / exp(b * dt)) / 2.0f;
+    double B13 = -(2.0f * dt * cos(2.0f * cf * PI * dt) / exp(b * dt)
                    + 2.0f * sqrt(3 - pow(2.0f, 1.5f)) * dt
-                       * sin(2.0f * cf * M_PI * dt) / exp(b * dt)) / 2.0f;
-    double B14 = -(2.0f * dt * cos(2.0f * cf * M_PI * dt) / exp(b * dt)
+                       * sin(2.0f * cf * PI * dt) / exp(b * dt)) / 2.0f;
+    double B14 = -(2.0f * dt * cos(2.0f * cf * PI * dt) / exp(b * dt)
                    - 2.0f * sqrt(3 - pow(2.0f, 1.5f)) * dt
-                       * sin(2.0f * cf * M_PI * dt) / exp(b * dt)) / 2.0f;
+                       * sin(2.0f * cf * PI * dt) / exp(b * dt)) / 2.0f;
 
     a_[ch][0] = 1.0f;
-    a_[ch][1] = -2.0f * cos(2.0f * cf * M_PI * dt) / exp(b * dt);
+    a_[ch][1] = -2.0f * cos(2.0f * cf * PI * dt) / exp(b * dt);
     a_[ch][2] = exp(-2.0f * b * dt);
     b1_[ch][0] = B0 / gain;
     b1_[ch][1] = B11 / gain;
@@ -219,7 +227,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
 
   // Temporary storage between filter stages
   // std::vector<double> outbuff(input.buffer_length());
-  std::vector<double> outbuff(onObservations_);
+  std::vector<double> outbuff(inSamples_);
 
   mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
 
@@ -232,7 +240,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
 
   for (int ch = 0; ch < num_channels;
        ++ch, ++b1, ++b2, ++b3, ++b4, ++a, ++s1, ++s2, ++s3, ++s4) {
-    for (int i = 0; i < onObservations_; ++i) {
+    for (int i = 0; i < inSamples_; ++i) {
       // Direct-form-II IIR filter
       double inputsample = in(audio_channel, i);
       outbuff[i] = (*b1)[0] * inputsample + (*s1)[0];
@@ -240,7 +248,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
         (*s1)[stage - 1] = (*b1)[stage] * inputsample
                            - (*a)[stage] * outbuff[i] + (*s1)[stage];
     }
-    for (int i = 0; i < onObservations_; ++i) {
+    for (int i = 0; i < inSamples_; ++i) {
       // Direct-form-II IIR filter
       double inputsample = outbuff[i];
       outbuff[i] = (*b2)[0] * inputsample + (*s2)[0];
@@ -248,7 +256,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
         (*s2)[stage - 1] = (*b2)[stage] * inputsample
                            - (*a)[stage] * outbuff[i] + (*s2)[stage];
     }
-    for (int i = 0; i < onObservations_; ++i) {
+    for (int i = 0; i < inSamples_; ++i) {
       // Direct-form-II IIR filter
       double inputsample = outbuff[i];
       outbuff[i] = (*b3)[0] * inputsample + (*s3)[0];
@@ -256,7 +264,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
         (*s3)[stage - 1] = (*b3)[stage] * inputsample
                            - (*a)[stage] * outbuff[i] + (*s3)[stage];
     }
-    for (int i = 0; i < onObservations_; ++i) {
+    for (int i = 0; i < inSamples_; ++i) {
       // Direct-form-II IIR filter
       double inputsample = outbuff[i];
       outbuff[i] = (*b4)[0] * inputsample + (*s4)[0];

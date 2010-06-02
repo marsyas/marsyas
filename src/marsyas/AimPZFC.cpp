@@ -24,6 +24,7 @@ using namespace Marsyas;
 AimPZFC::AimPZFC(string name):MarSystem("AimPZFC",name)
 {
   addControls();
+  InitializeInternal();
 }
 
 
@@ -70,8 +71,6 @@ AimPZFC::addControls()
 void
 AimPZFC::myUpdate(MarControlPtr sender)
 {
-  InitializeInternal();
-
   (void) sender;
   MRSDIAG("AimPZFC.cpp - AimPZFC:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
@@ -285,7 +284,7 @@ return true;
 
 bool
 AimPZFC::SetPZBankCoeffs() {
-  cout << "AimPZFC::SetPZBankCoeffs()" << endl;
+  // cout << "AimPZFC::SetPZBankCoeffs()" << endl;
 
   /*! \todo Re-implement the alternative parameter settings
    */
@@ -295,8 +294,8 @@ AimPZFC::SetPZBankCoeffs() {
   float mindamp = getctrl("mrs_real/mindamp")->to<mrs_real>();
   float maxdamp = getctrl("mrs_real/maxdamp")->to<mrs_real>();
 
-  cout << "mindamp=" << mindamp << endl;
-  cout << "maxdamp=" << maxdamp << endl;
+  // cout << "mindamp=" << mindamp << endl;
+  // cout << "maxdamp=" << maxdamp << endl;
 
   rmin_.resize(channel_count_);
   rmax_.resize(channel_count_);
