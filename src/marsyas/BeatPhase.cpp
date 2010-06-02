@@ -55,8 +55,8 @@ void
 BeatPhase::addControls()
 {
 	//Add specific controls needed by this MarSystem.
-	addctrl("mrs_realvec/tempos", realvec(1), ctrl_tempos_);
-	addctrl("mrs_realvec/tempo_scores", realvec(1), ctrl_temposcores_);
+	addctrl("mrs_realvec/tempos", realvec(2), ctrl_tempos_);
+	addctrl("mrs_realvec/tempo_scores", realvec(2), ctrl_temposcores_);
 	
 	addctrl("mrs_real/phase_tempo", 100.0, ctrl_phase_tempo_);
 	addctrl("mrs_realvec/beats", realvec(), ctrl_beats_);
@@ -157,7 +157,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		}
 	}
 	
-	ctrl_phase_tempo_->setValue(tempos(max_tm));	
+	ctrl_phase_tempo_->setValue(tempos(0));	
 	
 	/* if (period < inSamples_)
 		{

@@ -742,7 +742,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
 	tempoInduction->updctrl("MaxArgMax/mxr1/mrs_natural/interpolation", 1);
 	tempoInduction->updctrl("Peaker/pkr1/mrs_natural/interpolation", 1);
-	tempoInduction->updctrl("MaxArgMax/mxr1/mrs_natural/nMaximums", 1);
+	tempoInduction->updctrl("MaxArgMax/mxr1/mrs_natural/nMaximums", 2);
 	
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 	onset_strength->updctrl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
@@ -781,8 +781,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	beatTracker->updctrl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
 
 	int extra_ticks = bwinSize/bhopSize;
-	mrs_realvec tempos(1);
-	mrs_realvec tempo_scores(1);
+	mrs_realvec tempos(2);
+	mrs_realvec tempo_scores(2);
 	tempo_scores.setval(0.0);
 	
 	while (1) 
@@ -793,7 +793,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 		bin = estimate(1) * 0.25;
 		
 		tempos(0) = bin;
-		// tempos(1) = estimate(3) * 0.25;
+		tempos(1) = estimate(3) * 0.25;
 		// tempos(2) = estimate(5) * 0.25;
 
 		beatTracker->updctrl("BeatPhase/beatphase/mrs_realvec/tempos", tempos);
@@ -823,7 +823,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 		// evaluate_estimated_tempo(sfName,secondary_bpm_estimate, ground_truth_tempo);
 	}
 	
-		
+	cout << "bpm_estimate = " << bpm_estimate << endl;
+	
 	delete beatTracker;
 }
 
