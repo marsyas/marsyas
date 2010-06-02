@@ -1,17 +1,15 @@
-// TestAimPZFC.h
+// TestAimGammatone.h
 //
-// Dick Lyon's Pole-Zero Filter Cascade - implemented in C++ by Tom
-// Walters from the AIM-MAT module based on Dick Lyon's code.
+// Slaney's gammatone filterbank
 //
 // (c) 2009 - sness@sness.net - GPL
 //
-
 
 #include <cxxtest/TestSuite.h>
 #include <cstdio>
 #include "Collection.h"
 #include "MarSystemManager.h"
-#include "AimPZFC.h"
+#include "AimGammatone.h"
 #include "CommandLineOptions.h"
 
 #include <vector>
@@ -19,18 +17,18 @@
 using namespace std;
 using namespace Marsyas;
 
-class AimPZFC_runner : public CxxTest::TestSuite
+class AimGammatone_runner : public CxxTest::TestSuite
 {
 public:
   realvec in,out;
   MarSystemManager mng;
-  AimPZFC *aimc_pzfc;
+  AimGammatone *aimc_gammatone;
 
   void
   setUp()
   {
-	aimc_pzfc = new AimPZFC("aimc_pzfc");
-	aimc_pzfc->updctrl("mrs_real/israte", 44100.0);
+	aimc_gammatone = new AimGammatone("aimc_gammatone");
+	aimc_gammatone->updctrl("mrs_real/israte", 44100.0);
   }
 
   //
@@ -50,8 +48,8 @@ public:
 	  in(0,i) = d;
 	}
 
-	// Process the data with the AIMC_PZFC algorithm
- 	// aimc_pzfc->myProcess(in,out);
+	// Process the data with the AIMC_Gammatone algorithm
+ 	// aimc_gammatone->myProcess(in,out);
 
 	// Check to see if the pitch is correct.
 	// double pitch = out(0,0);
