@@ -23,8 +23,8 @@ using namespace Marsyas;
 
 AimPZFC::AimPZFC(string name):MarSystem("AimPZFC",name)
 {
+  initialized = false;
   addControls();
-  InitializeInternal();
 }
 
 
@@ -71,6 +71,11 @@ AimPZFC::addControls()
 void
 AimPZFC::myUpdate(MarControlPtr sender)
 {
+  if (!initialized) {
+    InitializeInternal();
+    initialized = true;
+  }
+
   (void) sender;
   MRSDIAG("AimPZFC.cpp - AimPZFC:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

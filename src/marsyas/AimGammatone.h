@@ -79,6 +79,8 @@ private:
   // Prepare the module
   bool InitializeInternal();
 
+  bool initialized;
+
 public:
   AimGammatone(std::string name);
 

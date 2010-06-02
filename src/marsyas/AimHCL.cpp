@@ -24,7 +24,6 @@ using namespace Marsyas;
 AimHCL::AimHCL(string name):MarSystem("AimHCL",name)
 {
   addControls();
-  InitializeInternal();
 }
 
 
@@ -71,7 +70,12 @@ AimHCL::ResetInternal() {
 void
 AimHCL::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+  if (!initialized) {
+    InitializeInternal();
+    initialized = true;
+  }
+
+  (void) sender;
   MRSDIAG("AimHCL.cpp - AimHCL:myUpdate");
   ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

@@ -24,7 +24,6 @@ using namespace Marsyas;
 AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)
 {
   addControls();
-  InitializeInternal();
 }
 
 
@@ -55,6 +54,11 @@ AimGammatone::addControls()
 void
 AimGammatone::myUpdate(MarControlPtr sender)
 {
+  if (!initialized) {
+    InitializeInternal();
+    initialized = true;
+  }
+
   (void) sender;
   MRSDIAG("AimGammatone.cpp - AimGammatone:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

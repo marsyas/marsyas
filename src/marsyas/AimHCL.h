@@ -50,6 +50,8 @@ private:
   // Prepare the module
   bool InitializeInternal();
 
+  bool initialized;
+
   MarControlPtr ctrl_do_lowpass_;     // Do lowpass filtering?
   MarControlPtr ctrl_do_log_;         // Do log compression?
   MarControlPtr ctrl_lowpass_cutoff_; // Cutoff frequency for lowpass filter

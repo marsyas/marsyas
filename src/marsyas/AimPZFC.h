@@ -56,6 +56,8 @@ private:
   // Prepare the module
   bool InitializeInternal();
 
+  bool initialized;
+
   // Set the filterbank parameters according to a fit matrix from Unoki
   bool SetPZBankCoeffsERBFitted();
 
