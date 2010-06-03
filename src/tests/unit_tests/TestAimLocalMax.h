@@ -54,9 +54,10 @@ public:
 	// There should be one strobe point at index 15, everything else
 	// should be 0.
   	TS_ASSERT_DELTA(out(0,0),0,0.001);
-  	TS_ASSERT_DELTA(out(0,14),0,0.001);
-  	TS_ASSERT_DELTA(out(0,15),1,0.001);
-  	TS_ASSERT_DELTA(out(0,16),0,0.001);
+  	TS_ASSERT_DELTA(out(0,1),0,0.001);
+  	TS_ASSERT_DELTA(out(0,13),0,0.001);
+  	TS_ASSERT_DELTA(out(0,14),1,0.001);
+  	TS_ASSERT_DELTA(out(0,15),0,0.001);
   }
 
 
