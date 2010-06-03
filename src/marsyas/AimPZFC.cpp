@@ -23,7 +23,8 @@ using namespace Marsyas;
 
 AimPZFC::AimPZFC(string name):MarSystem("AimPZFC",name)
 {
-  initialized = false;
+  is_initialized = false;
+  is_reset = false;
   addControls();
 }
 

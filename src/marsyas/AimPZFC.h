@@ -56,7 +56,17 @@ private:
   // Prepare the module
   bool InitializeInternal();
 
-  bool initialized;
+  // Does the MarSystem need initialization?
+  bool is_initialized;
+
+  // What changes cause it to need initialization?
+  mrs_real initialized_israte;
+
+  // Does the MarSystem need reset?
+  bool is_reset;
+
+  // What changes cause it to need a reset?
+  mrs_natural reset_inobservations;
 
   // Set the filterbank parameters according to a fit matrix from Unoki
   bool SetPZBankCoeffsERBFitted();
