@@ -71,39 +71,45 @@ AimPZFC::addControls()
 void
 AimPZFC::myUpdate(MarControlPtr sender)
 {
-  if (!initialized) {
-    InitializeInternal();
-    initialized = true;
-  }
 
   (void) sender;
   MRSDIAG("AimPZFC.cpp - AimPZFC:myUpdate");
-  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   ctrl_onObservations_->setValue(channel_count_, NOUPDATE);
-  // ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
   ctrl_onObsNames_->setValue("AimPZFC_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
+
+  //
+  // Does the MarSystem need initialization?
+  //
+  if (initialized_israte != ctrl_israte_->to<mrs_real>()) {
+    is_initialized = false;
+  }
+
+  if (!is_initialized) {
+    InitializeInternal();
+    is_initialized = true;
+    initialized_israte = ctrl_israte_->to<mrs_real>();
+  }
+
+  //
+  // Does the MarSystem need a reset?
+  //
+  if (reset_inobservations != ctrl_inObservations_->to<mrs_natural>()) {
+    is_reset = false;
+  }
+
+  if (!is_reset) {
+    ResetInternal();
+    is_reset = true;
+    reset_inobservations = ctrl_inObservations_->to<mrs_natural>();
+  }
+
+
 }
 
 bool
 AimPZFC::InitializeInternal() {
-  // Make local convenience copies of some variables
-  // sample_rate_ = input.sample_rate();
-  // buffer_length_ = input.buffer_length();
   channel_count_ = 0;
-
-  // Prepare the coefficients and also the output SignalBank
-  // if (!SetPZBankCoeffs())
-  //   return false;
   SetPZBankCoeffs();
-
-  // The output signal bank should be set up by now.
-  // if (!output_.initialized())
-  //   return false;
-
-  // This initialises all buffers which can be modified by Process()
-  ResetInternal();
-
   return true;
 }
 
@@ -145,6 +151,62 @@ AimPZFC::ResetInternal() {
   }
 
   last_input_ = 0.0f;
+}
+
+bool
+AimPZFC::SetPZBankCoeffs() {
+  // cout << "AimPZFC::SetPZBankCoeffs()" << endl;
+
+  /*! \todo Re-implement the alternative parameter settings
+   */
+  if (!SetPZBankCoeffsERBFitted())
+    return false;
+
+  float mindamp = getctrl("mrs_real/mindamp")->to<mrs_real>();
+  float maxdamp = getctrl("mrs_real/maxdamp")->to<mrs_real>();
+
+  // cout << "mindamp=" << mindamp << endl;
+  // cout << "maxdamp=" << maxdamp << endl;
+
+  rmin_.resize(channel_count_);
+  rmax_.resize(channel_count_);
+  xmin_.resize(channel_count_);
+  xmax_.resize(channel_count_);
+
+  for (int c = 0; c < channel_count_; ++c) {
+    // Calculate maximum and minimum damping options
+    rmin_[c] = exp(-mindamp * pole_frequencies_[c]);
+    rmax_[c] = exp(-maxdamp * pole_frequencies_[c]);
+
+    xmin_[c] = rmin_[c] * cos(pole_frequencies_[c]
+                                      * pow((1-pow(mindamp, 2)), 0.5f));
+    xmax_[c] = rmax_[c] * cos(pole_frequencies_[c]
+                                      * pow((1-pow(maxdamp, 2)), 0.5f));
+  }
+
+  // Set up AGC parameters
+  agc_stage_count_ = 4;
+  agc_epsilons_.resize(agc_stage_count_);
+  agc_epsilons_[0] = 0.0064f;
+  agc_epsilons_[1] = 0.0016f;
+  agc_epsilons_[2] = 0.0004f;
+  agc_epsilons_[3] = 0.0001f;
+
+  agc_gains_.resize(agc_stage_count_);
+  agc_gains_[0] = 1.0f;
+  agc_gains_[1] = 1.4f;
+  agc_gains_[2] = 2.0f;
+  agc_gains_[3] = 2.8f;
+
+  float mean_agc_gain = 0.0f;
+  for (int c = 0; c < agc_stage_count_; ++c)
+    mean_agc_gain += agc_gains_[c];
+  mean_agc_gain /= static_cast<float>(agc_stage_count_);
+
+  for (int c = 0; c < agc_stage_count_; ++c)
+    agc_gains_[c] /= mean_agc_gain;
+
+  return true;
 }
 
 bool
@@ -285,62 +347,6 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
   }
 return true;
 
-}
-
-bool
-AimPZFC::SetPZBankCoeffs() {
-  // cout << "AimPZFC::SetPZBankCoeffs()" << endl;
-
-  /*! \todo Re-implement the alternative parameter settings
-   */
-  if (!SetPZBankCoeffsERBFitted())
-    return false;
-
-  float mindamp = getctrl("mrs_real/mindamp")->to<mrs_real>();
-  float maxdamp = getctrl("mrs_real/maxdamp")->to<mrs_real>();
-
-  // cout << "mindamp=" << mindamp << endl;
-  // cout << "maxdamp=" << maxdamp << endl;
-
-  rmin_.resize(channel_count_);
-  rmax_.resize(channel_count_);
-  xmin_.resize(channel_count_);
-  xmax_.resize(channel_count_);
-
-  for (int c = 0; c < channel_count_; ++c) {
-    // Calculate maximum and minimum damping options
-    rmin_[c] = exp(-mindamp * pole_frequencies_[c]);
-    rmax_[c] = exp(-maxdamp * pole_frequencies_[c]);
-
-    xmin_[c] = rmin_[c] * cos(pole_frequencies_[c]
-                                      * pow((1-pow(mindamp, 2)), 0.5f));
-    xmax_[c] = rmax_[c] * cos(pole_frequencies_[c]
-                                      * pow((1-pow(maxdamp, 2)), 0.5f));
-  }
-
-  // Set up AGC parameters
-  agc_stage_count_ = 4;
-  agc_epsilons_.resize(agc_stage_count_);
-  agc_epsilons_[0] = 0.0064f;
-  agc_epsilons_[1] = 0.0016f;
-  agc_epsilons_[2] = 0.0004f;
-  agc_epsilons_[3] = 0.0001f;
-
-  agc_gains_.resize(agc_stage_count_);
-  agc_gains_[0] = 1.0f;
-  agc_gains_[1] = 1.4f;
-  agc_gains_[2] = 2.0f;
-  agc_gains_[3] = 2.8f;
-
-  float mean_agc_gain = 0.0f;
-  for (int c = 0; c < agc_stage_count_; ++c)
-    mean_agc_gain += agc_gains_[c];
-  mean_agc_gain /= static_cast<float>(agc_stage_count_);
-
-  for (int c = 0; c < agc_stage_count_; ++c)
-    agc_gains_[c] /= mean_agc_gain;
-
-  return true;
 }
 
 void

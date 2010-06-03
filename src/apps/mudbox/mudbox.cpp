@@ -7275,14 +7275,19 @@ toy_with_aim_localmax(string sfName)
 	MarSystemManager mng;
 
 	MarSystem* net = mng.create("Series", "net");
-	
+
+    cout << "adding" << endl;
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 
+    cout << "updating 1" << endl;
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+    cout << "updating 2" << endl;
 	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
+      cout << "ticking" << endl;
       net->tick();
       cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	}

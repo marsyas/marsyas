@@ -50,7 +50,17 @@ private:
   // Prepare the module
   bool InitializeInternal();
 
-  bool initialized;
+  // Does the MarSystem need initialization?
+  bool is_initialized;
+
+  // What changes cause it to need initialization?
+  mrs_real initialized_israte;
+
+  // Does the MarSystem need reset?
+  bool is_reset;
+
+  // What changes cause it to need a reset?
+  mrs_natural reset_inobservations;
 
   MarControlPtr ctrl_decay_time_ms_;
   MarControlPtr ctrl_timeout_ms_;

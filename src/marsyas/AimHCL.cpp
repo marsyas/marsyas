@@ -79,7 +79,7 @@ AimHCL::myUpdate(MarControlPtr sender)
   MRSDIAG("AimHCL.cpp - AimHCL:myUpdate");
   ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>());
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
   ctrl_onObsNames_->setValue("AimHCL_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 }
 

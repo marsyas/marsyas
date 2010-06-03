@@ -23,7 +23,12 @@ using namespace Marsyas;
 
 AimLocalMax::AimLocalMax(string name):MarSystem("AimLocalMax",name)
 {
-  initialized = false;
+  is_initialized = false;
+  initialized_israte = 0.0;
+
+  is_reset = false;
+  reset_inobservations = 0;
+
   addControls();
 }
 
@@ -32,11 +37,57 @@ AimLocalMax::~AimLocalMax()
 {
 }
 
+MarSystem*
+AimLocalMax::clone() const
+{
+  return new AimLocalMax(*this);
+}
+
+void 
+AimLocalMax::addControls()
+{
+  addControl("mrs_real/decay_time_ms", 20.0f , ctrl_decay_time_ms_);
+  addControl("mrs_real/timeout_ms", 3.0f , ctrl_timeout_ms_);
+}
+
+void
+AimLocalMax::myUpdate(MarControlPtr sender)
+{
+  (void) sender;
+  MRSDIAG("AimLocalMax.cpp - AimLocalMax:myUpdate");
+  ctrl_onObsNames_->setValue("AimLocalMax_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
+
+  //
+  // Does the MarSystem need initialization?
+  //
+  if (initialized_israte != ctrl_israte_->to<mrs_real>()) {
+    is_initialized = false;
+  }
+
+  if (!is_initialized) {
+    InitializeInternal();
+    is_initialized = true;
+    initialized_israte = ctrl_israte_->to<mrs_real>();
+  }
+
+  //
+  // Does the MarSystem need a reset?
+  //
+  if (reset_inobservations != ctrl_inObservations_->to<mrs_natural>()) {
+    is_reset = false;
+  }
+
+  if (!is_reset) {
+    ResetInternal();
+    is_reset = true;
+    reset_inobservations = ctrl_inObservations_->to<mrs_natural>();
+  }
+}
+
 bool 
 AimLocalMax::InitializeInternal() {
-  strobe_timeout_samples_ = floor(ctrl_timeout_ms_->to<mrs_real>() * israte_ / 1000.0f);
-  strobe_decay_samples_ = floor(ctrl_decay_time_ms_->to<mrs_real>() * israte_ / 1000.0f);
-  ResetInternal();
+  strobe_timeout_samples_ = floor(ctrl_timeout_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
+  strobe_decay_samples_ = floor(ctrl_decay_time_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
 }
 
 void 
@@ -56,36 +107,6 @@ AimLocalMax::ResetInternal() {
 }
 
 
-MarSystem*
-AimLocalMax::clone() const
-{
-  return new AimLocalMax(*this);
-}
-
-void 
-AimLocalMax::addControls()
-{
-  addControl("mrs_real/decay_time_ms", 20.0f , ctrl_decay_time_ms_);
-  addControl("mrs_real/timeout_ms", 3.0f , ctrl_timeout_ms_);
-}
-
-void
-AimLocalMax::myUpdate(MarControlPtr sender)
-{
-  if (!initialized) {
-    InitializeInternal();
-    initialized = true;
-  }
-
-	(void) sender;
-  MRSDIAG("AimLocalMax.cpp - AimLocalMax:myUpdate");
-  // The extra observation is for the strobe channel
-  ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>() + 1, NOUPDATE);
-  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>());
-  ctrl_onObsNames_->setValue("AimLocalMax_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
-}
-
 
 void
 AimLocalMax::myProcess(realvec& in, realvec& out)
@@ -96,28 +117,21 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
   int last_strobe;
   int samples_since_last;
 
-  // Zero out the strobe channel
-  for (t = 0; t < inSamples_; t++) {
-    out(inObservations_,t) = 0.0;
-  }
-
   for (o = 0; o < inObservations_; o++) {
     for (t = 0; t < inSamples_; t++) {
-      out(o,t) = in(o,t);
+      // Initialize the strobe
+      out(o,t) = 0.0;
 
       // curr_sample is the sample at time (i - 1)
       prev_sample_[o] = curr_sample_[o];
       curr_sample_[o] = next_sample_[o];
       next_sample_[o] = in(o, t);
-      // Copy input signal to output signal
-      out(o, t) = in(o, t);
 
       // If the current sample is above threshold, the threshold is raised to
       // the level of the current sample, and decays from there.
       if (curr_sample_[o] >= threshold_[o]) {
         threshold_[o] = curr_sample_[o];
         decay_constant_[o] = threshold_[o] / strobe_decay_samples_;
-
         // If the current sample is also a peak, then it is a potential strobe
         // point.
         if (prev_sample_[o] < curr_sample_[o]
@@ -127,19 +141,18 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
           // respected across frame boundaries. This is a minor bug, but I
           // don't believe that it's serious enough to warrant updating the
           // samples since last strobe all the time.)
-          // int count = output_.strobe_count(o);
           if (strobe_count > 0) {
             // If there are previous strobes, then calculate the time since
             // the last one. If it's long enough, then this is a strobe point,
             // if not, then just move on.
-            // int samples_since_last = (t - 1) - output_.strobe(o, strobe_count - 1);
+            samples_since_last = t - last_strobe;
             if (samples_since_last > strobe_timeout_samples_) {
-              out(inObservations_, t) = 1.0;
+              out(o, t-1) = 1.0;
               strobe_count++;
               last_strobe = t;
             }
           } else {
-            out(inObservations_, t) = 1.0;
+            out(o, t-1) = 1.0;
             strobe_count++;
             last_strobe = t;
           }
