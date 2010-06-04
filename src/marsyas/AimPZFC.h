@@ -42,7 +42,7 @@ namespace Marsyas
 */
 
 
-class AimPZFC: public MarSystem
+class marsyas_EXPORT AimPZFC: public MarSystem
 {
 private:
   mrs_real zcrs_;

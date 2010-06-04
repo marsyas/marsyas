@@ -88,6 +88,8 @@ bool
 AimLocalMax::InitializeInternal() {
   strobe_timeout_samples_ = floor(ctrl_timeout_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
   strobe_decay_samples_ = floor(ctrl_decay_time_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
+
+  return true;
 }
 
 void 
