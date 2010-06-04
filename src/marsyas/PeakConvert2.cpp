@@ -29,6 +29,15 @@
 
 //#define MTLB_DBG_LOG
 //#define ORIGINAL_VERSION
+//#define LOG2FILE
+
+
+#ifdef LOG2FILE
+#include <iomanip>
+static std::ofstream pFDbgFile;
+static const std::string kDbgFilePath = "d:/temp/peaks.new.txt";
+#endif
+
 
 using namespace std;
 using namespace Marsyas;
@@ -114,6 +123,10 @@ PeakConvert2::PeakConvert2(const PeakConvert2& a) : MarSystem(a)
 
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks");
 	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
+
+#ifdef LOG2FILE
+	pFDbgFile.open (kDbgFilePath.c_str (), std::ios::out);
+#endif
 }
 
 PeakConvert2::~PeakConvert2()
@@ -122,6 +135,9 @@ PeakConvert2::~PeakConvert2()
 	delete max_;
 	if (masking_)
 		delete masking_;
+#ifdef LOG2FILE
+	pFDbgFile.close ();
+#endif
 }
 
 MarSystem* 
@@ -616,8 +632,11 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 			if(pick_)
 				getShortBinInterval(interval_, index2_, mag_);
 
-			// fill output with peaks data
-			
+#ifdef LOG2FILE
+			for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
+				pFDbgFile << std::scientific << std::setprecision(4) << frequency_((mrs_natural) index_(i)) << "\t";
+			pFDbgFile << std::endl;
+#endif
 #ifdef MARSYAS_MATLAB
 #ifdef MTLB_DBG_LOG
 			MATLAB_PUT(mag_, "peaks");

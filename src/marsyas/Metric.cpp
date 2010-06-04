@@ -22,6 +22,12 @@
 using namespace std;
 using namespace Marsyas;
 
+static mrs_real
+randomDistance(const realvec& Vi, const realvec& Vj, const realvec& covMatrix)
+{
+	return rand()/mrs_real(RAND_MAX);
+}
+
 Metric::Metric(string name):MarSystem("Metric", name)
 {
 	addControls();
@@ -84,6 +90,10 @@ Metric::myUpdate(MarControlPtr sender)
 	else if(metricName == "cosineDistance")
 	{
 		metricFunc_ = &NumericLib::cosineDistance;
+	}
+	else if(metricName == "randomDistance")
+	{
+		metricFunc_ = &randomDistance;
 	}
 	else
 	{

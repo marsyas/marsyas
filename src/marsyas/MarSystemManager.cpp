@@ -233,6 +233,8 @@
 #include "AimLocalMax.h"
 #include "TimeFreqPeakConnectivity.h"
 #include "Combinator.h"
+#include "ParallelMatrixWeight.h"
+#include "PeakDistanceHorizontality.h"
 
 //modifyHeader
 
@@ -454,6 +456,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SimulMaskingFft", new SimulMaskingFft("simulmask"));
 	registerPrototype("TimeFreqPeakConnectivity", new TimeFreqPeakConnectivity("tfpeakconn"));
 	registerPrototype("Combinator", new Combinator("combinator"));
+	registerPrototype("ParallelMatrixWeight", new ParallelMatrixWeight("parallelmatrixweight"));
+	registerPrototype("PeakDistanceHorizontality", new PeakDistanceHorizontality("horizontality"));
+	
 
 	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));
 	registerPrototype("AimGammatone", new AimGammatone("aimgammatone"));
