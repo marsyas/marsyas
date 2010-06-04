@@ -80,15 +80,15 @@ struct SimMeasureProperties_t
 };
 static SimMeasureProperties_t simMeasureProps[kNumSimMeasures] =
 {
-	{"FREQ",	"Frequency",			"euclideanDistance",	"ignoreFrequency",		"if",	false,	1, {PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq}},
-	{"TIME",	"Time",					"euclideanDistance",	"ignoreTime",			"it",	false,	2, {PeakFeatureSelect::pkFrame}},
-	{"AMP",		"Amplitude",			"euclideanDistance",	"ignoreAmplitude",		"ia",	false,	1, {PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp}},
-	{"DFREQ",	"Frequency Modulation",	"euclideanDistance",	"ignoreDeltaFrequency", "idf",	false,	0, {PeakFeatureSelect::pkDeltaFrequency | PeakFeatureSelect::barkPkFreq}},
-	{"DAMP",	"Amplitude Modulation",	"euclideanDistance",	"ignoreDeltaAmplitude", "ida",	false,	0, {PeakFeatureSelect::pkDeltaAmplitude /*| PeakFeatureSelect::dBPkAmp*/}},
-	{"CONN",	"Connectivity",			"doesntmatter",			"ignoreConnectivity",	"ic",	false,	1, {PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq | PeakFeatureSelect::pkFrame}},
-	{"HWPS",	"HPWS",					"doesntmatter",			"ignoreHWPS",			"ih",	false,	2, {PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes}},
-	{"PAN",		"Panning",				"euclideanDistance",	"ignorePan",			"ip",	false,	2, {PeakFeatureSelect::pkPan}},
-	{"RAND",	"Random",				"randomDistance",		"ignoreRand",			"ir",	false,	2, {PeakFeatureSelect::pkPan}},
+	{"FREQ",	"Frequency",			"euclideanDistance",	"ignoreFrequency",		"if",	false,	1, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq},
+	{"TIME",	"Time",					"euclideanDistance",	"ignoreTime",			"it",	false,	2, PeakFeatureSelect::pkFrame},
+	{"AMP",		"Amplitude",			"euclideanDistance",	"ignoreAmplitude",		"ia",	false,	1, PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp},
+	{"DFREQ",	"Frequency Modulation",	"euclideanDistance",	"ignoreDeltaFrequency", "idf",	false,	0, PeakFeatureSelect::pkDeltaFrequency | PeakFeatureSelect::barkPkFreq},
+	{"DAMP",	"Amplitude Modulation",	"euclideanDistance",	"ignoreDeltaAmplitude", "ida",	false,	0, PeakFeatureSelect::pkDeltaAmplitude /*| PeakFeatureSelect::dBPkAmp*/},
+	{"CONN",	"Connectivity",			"doesntmatter",			"ignoreConnectivity",	"ic",	false,	1, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq | PeakFeatureSelect::pkFrame},
+	{"HWPS",	"HPWS",					"doesntmatter",			"ignoreHWPS",			"ih",	false,	2, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes},
+	{"PAN",		"Panning",				"euclideanDistance",	"ignorePan",			"ip",	false,	2, PeakFeatureSelect::pkPan},
+	{"RAND",	"Random",				"randomDistance",		"ignoreRand",			"ir",	false,	2, PeakFeatureSelect::pkPan},
 };
 //static mrs_natural simFeatures[kNumSimMeasures] = 
 //{
