@@ -23,6 +23,15 @@ using namespace Marsyas;
 
 AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)
 {
+  is_initialized = false;
+  initialized_num_channels = 0;
+  initialized_min_frequency = 0.0;
+  initialized_max_frequency = 0.0;
+  initialized_israte = 0.0;
+
+  is_reset = false;
+  reset_num_channels = 0;
+
   addControls();
 }
 
@@ -45,58 +54,62 @@ AimGammatone::addControls()
   addControl("mrs_real/min_frequency", 86.0f , ctrl_min_frequency_);
   addControl("mrs_real/max_frequency", 16000.0f , ctrl_max_frequency_);
 
-  // num_channels_ = parameters_->DefaultInt("gtfb.channel_count", 200);
-  // min_frequency_ = parameters_->DefaultFloat("gtfb.min_frequency", 86.0f);
-  // max_frequency_ = parameters_->DefaultFloat("gtfb.max_frequency", 16000.0f);
-
 }
 
 void
 AimGammatone::myUpdate(MarControlPtr sender)
 {
-  if (!initialized) {
-    InitializeInternal();
-    initialized = true;
-  }
-
   (void) sender;
+
   MRSDIAG("AimGammatone.cpp - AimGammatone:myUpdate");
-  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_num_channels_, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
+  ctrl_osrate_->setValue(ctrl_israte_);
   ctrl_onObsNames_->setValue("AimGammatone_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
-}
 
+  //
+  // Does the MarSystem need initialization?
+  //
+  mrs_real initialized_num_channels;
+  mrs_real initialized_min_frequency;
+  mrs_real initialized_max_frequency;
 
-void 
-AimGammatone::ResetInternal() {
-  // cout << "AimGammatone::ResetInternal" << endl;
-  mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
-
-  state_1_.resize(num_channels);
-  state_2_.resize(num_channels);
-  state_3_.resize(num_channels);
-  state_4_.resize(num_channels);
-  for (int i = 0; i < num_channels; ++i) {
-    state_1_[i].resize(3, 0.0f);
-    state_2_[i].resize(3, 0.0f);
-    state_3_[i].resize(3, 0.0f);
-    state_4_[i].resize(3, 0.0f);
+  if (initialized_num_channels != ctrl_num_channels_->to<mrs_real>() ||
+      initialized_min_frequency != ctrl_min_frequency_->to<mrs_real>() ||
+      initialized_max_frequency != ctrl_max_frequency_->to<mrs_real>() ||
+      initialized_israte != israte_) {
+    is_initialized = false;
   }
+
+  if (!is_initialized) {
+    InitializeInternal();
+    is_initialized = true;
+    initialized_num_channels = ctrl_num_channels_->to<mrs_real>();
+    initialized_min_frequency = ctrl_min_frequency_->to<mrs_real>();
+    initialized_max_frequency = ctrl_max_frequency_->to<mrs_real>();
+    initialized_israte = israte_;
+  }
+
+  //
+  // Does the MarSystem need a reset?
+  //
+  if (reset_num_channels != ctrl_num_channels_->to<mrs_natural>()) {
+    is_reset = false;
+  }
+
+  if (!is_reset) {
+    ResetInternal();
+    is_reset = true;
+    reset_num_channels = ctrl_num_channels_->to<mrs_natural>();
+  }
+
 }
 
 bool 
 AimGammatone::InitializeInternal() {
-  // cout << "AimGammatone::InitializeInternal" << endl;
-
   mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
   float min_frequency = ctrl_min_frequency_->to<mrs_real>();
   float max_frequency = ctrl_max_frequency_->to<mrs_real>();
 
-  // cout << "num_channels=" << num_channels << endl;
-  // cout << "min_frequency=" << min_frequency << endl;
-  // cout << "max_frequency=" << max_frequency << endl;
- 
   // Calculate number of channels, and centre frequencies
   float erb_max = ERBTools::Freq2ERB(max_frequency);
   float erb_min = ERBTools::Freq2ERB(min_frequency);
@@ -105,14 +118,9 @@ AimGammatone::InitializeInternal() {
   centre_frequencies_.resize(num_channels);
   float erb_current = erb_min;
 
-  // output_.Initialize(num_channels,
-  //                    input.buffer_length(),
-  //                    input.sample_rate());
-
   for (int i = 0; i < num_channels; ++i) {
     centre_frequencies_[i] = ERBTools::ERB2Freq(erb_current);
     erb_current += delta_erb;
-    // output_.set_centre_frequency(i, centre_frequencies_[i]);
   }
 
   a_.resize(num_channels);
@@ -127,16 +135,10 @@ AimGammatone::InitializeInternal() {
 
   for (int ch = 0; ch < num_channels; ++ch) {
     double cf = centre_frequencies_[ch];
-    // cout << "cf=" << cf << endl;
     double erb = ERBTools::Freq2ERBw(cf);
-    // cout << "erb=" << erb << endl;
-    // LOG_INFO("%e", erb);
 
     // Sample interval
-    // double dt = 1.0f / input.sample_rate();
     double dt = 1.0f / ctrl_israte_->to<mrs_real>();
-    // cout << "dt=" << dt << endl;
-    // cout << "ctrl_israte_=" << ctrl_israte_->to<mrs_real>() << endl;
 
     // Bandwidth parameter
     double b = 1.019f * 2.0f * PI * erb;
@@ -163,7 +165,6 @@ AimGammatone::InitializeInternal() {
       * (p1 + p2 * (cos(two_cf_pi_t) + sqrt(3.0 + two_pow) * sin(two_cf_pi_t)))
       / pow((-2.0 / exp(2.0 * b_dt) - 2.0 * ec + 2.0 * (1.0 + ec)
             / exp(b_dt)), 4));
-    // LOG_INFO("%e", gain);
 
     // The filter coefficients themselves:
     const int coeff_count = 3;
@@ -212,11 +213,25 @@ AimGammatone::InitializeInternal() {
   return true;
 }
 
+void 
+AimGammatone::ResetInternal() {
+  mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
+
+  state_1_.resize(num_channels);
+  state_2_.resize(num_channels);
+  state_3_.resize(num_channels);
+  state_4_.resize(num_channels);
+  for (int i = 0; i < num_channels; ++i) {
+    state_1_[i].resize(3, 0.0f);
+    state_2_[i].resize(3, 0.0f);
+    state_3_[i].resize(3, 0.0f);
+    state_4_[i].resize(3, 0.0f);
+  }
+}
+
 void
 AimGammatone::myProcess(realvec& in, realvec& out)
 {
-  cout << "AimGammatone::myProcess" << endl;
-  // output_.set_start_time(input.start_time());
   int audio_channel = 0;
 
   std::vector<std::vector<double> >::iterator b1 = b1_.begin();
@@ -230,17 +245,9 @@ AimGammatone::myProcess(realvec& in, realvec& out)
   std::vector<std::vector<double> >::iterator s4 = state_4_.begin();
 
   // Temporary storage between filter stages
-  // std::vector<double> outbuff(input.buffer_length());
   std::vector<double> outbuff(inSamples_);
 
   mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
-
-  cout << "num_channels=" << num_channels << endl;
-  cout << "inSamples_=" << inSamples_ << endl;
-  cout << "onSamples_=" << onSamples_ << endl;
-
-  cout << "inObservations_=" << inObservations_ << endl;
-  cout << "onObservations_=" << onObservations_ << endl;
 
   for (int ch = 0; ch < num_channels;
        ++ch, ++b1, ++b2, ++b3, ++b4, ++a, ++s1, ++s2, ++s3, ++s4) {
@@ -275,16 +282,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
       for (unsigned int stage = 1; stage < s4->size(); ++stage)
         (*s4)[stage - 1] = (*b4)[stage] * inputsample
                            - (*a)[stage] * outbuff[i] + (*s4)[stage];
-      // cout << "outbuff[" << i << "]=" << outbuff[i] << endl;
       out(ch, i) = outbuff[i];
     }
   }
-
-  // mrs_natural o,t;
-
-  // for (o=0; o < onObservations_; o++) {
-  //   for (t = 1; t < inSamples_; t++) {
-  //     out(o,t) = in(o,t);
-  //   }
-  // }
 }
