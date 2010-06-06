@@ -30,16 +30,8 @@ SVMClassifier::SVMClassifier(string name) :
 	trained_ = false;
 	kernel_ = LINEAR;
 	svm_ = C_SVC;
-	// svm_model_ = Malloc(svm_model,1);
 	svm_model_ = NULL;
-/* 	svm_model_->rho = NULL;
-	svm_model_->probA = NULL;
-	svm_model_->probB = NULL;
-	svm_model_->label = NULL;
-	svm_model_->nSV = NULL;
-	svm_model_->SV = NULL;
-	svm_model_->sv_coef = NULL;
-*/ 
+ 
 	addControls();
 }
 
@@ -50,19 +42,9 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 	trained_ = false;
 	kernel_ = LINEAR;
 	svm_ = C_SVC;
-	// svm_model_ = Malloc(svm_model,1);
 	svm_model_ = NULL;
-/* 	svm_model_->rho = NULL;
-	svm_model_->probA = NULL;
-	svm_model_->probB = NULL;
-	svm_model_->label = NULL;
-	svm_model_->nSV = NULL;
-	svm_model_->SV = NULL;
-	svm_model_->sv_coef = NULL;
-*/ 
 
 	ctrl_nClasses_ = getctrl("mrs_natural/nClasses");
-
 	ctrl_sv_coef_ = getctrl("mrs_realvec/sv_coef");
 	ctrl_SV_ = getctrl("mrs_realvec/SV");
 	ctrl_rho_ = getctrl("mrs_realvec/rho");
@@ -97,26 +79,27 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 SVMClassifier::~SVMClassifier() {
 	if (svm_model_ != NULL) 
 	{ 
-	   free(svm_model_->rho);
-	   free(svm_model_->probA);
-	   free(svm_model_->probB);
-	   free(svm_model_->label);
-	   free(svm_model_->nSV);
-	   free(svm_model_->SV);
-	   for (int i=0; i < svm_model_->nr_class-1; ++i) 
-		free(svm_model_->sv_coef[i]);
-	   free(svm_model_->sv_coef);
+		free(svm_model_->rho);
+		free(svm_model_->probA);
+		free(svm_model_->probB);
+		free(svm_model_->label);
+		free(svm_model_->nSV);
+		free(svm_model_->SV);
+		
+		for (int i=0; i < svm_model_->nr_class-1; ++i) 
+		   free(svm_model_->sv_coef[i]);
+		
+		free(svm_model_->sv_coef);
+		mrs_natural nInstances = instances_.getRows();
+		
+		for (int i=0; i < nInstances; ++i) 
+			free(svm_prob_.x[i]);
 
-	   mrs_natural nInstances = instances_.getRows();
-	   for (int i=0; i < nInstances; ++i) 
-	       free(svm_prob_.x[i]);
-
-	         free(svm_prob_.x); 
-	         free(svm_prob_.y);
+		free(svm_prob_.x); 
+		free(svm_prob_.y);
 	} 
 
 	free(svm_model_);
-
 }
 
 MarSystem* SVMClassifier::clone() const {
@@ -165,7 +148,6 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 	(void) sender;
 	MRSDIAG("SVMClassifier.cpp - SVMClassifier:myUpdate");
 
-
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	mrs_natural nClasses = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
 	ctrl_onObservations_->setValue(2 + nClasses, NOUPDATE);
@@ -212,7 +194,10 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 
 	if (!training_) {
 		if (!trained_ && was_training_) {
-
+			// When network is switched from "train" mode to "predict",
+			// we process the data instances which have been stored
+			// in WekaData and pass them onto libsvm classes for actual training.
+			
 			svm_param_.svm_type = svm_;
 			svm_param_.kernel_type = kernel_;
 			svm_param_.degree = ctrl_degree_->to<mrs_natural>();
@@ -225,7 +210,6 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			svm_param_.p = ctrl_p_->to<mrs_real>();
 			svm_param_.shrinking = ctrl_shrinking_->to<mrs_bool>();
 			svm_param_.probability = ctrl_probability_->to<mrs_bool>();
-			
 			svm_param_.nr_weight = ctrl_nr_weight_->to<mrs_natural>();
 			
 			if (svm_param_.nr_weight) {
@@ -242,9 +226,10 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				svm_param_.weight = NULL;
 			}
 			
-			instances_.NormMaxMin();
+			// normalize data
+			instances_.NormMaxMin();  
 			
-			
+			// transfer training data instances into svm_problem
 			mrs_natural nInstances = instances_.getRows();
 			svm_prob_.l = nInstances;
 			svm_prob_.y = new double[svm_prob_.l];
@@ -254,9 +239,11 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			
 			for (int i=0; i < nInstances; ++i)
 			{
+				// set class (as number) for each of the instances
 				l = instances_.GetClass(i);
-				
 				svm_prob_.y[i] = l;
+				
+				// store all distinct classes in classPerms_
 				seen = false;
 				for (size_t j=0; j < classPerms_.size(); j++) 
 				{
@@ -269,16 +256,17 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 
 
 			{
-			  MarControlAccessor acc_classPerms(ctrl_classPerms_);
-			  realvec& classPerms = acc_classPerms.to<mrs_realvec>();
-			  classPerms.create(classPerms_.size());
+				MarControlAccessor acc_classPerms(ctrl_classPerms_);
+				realvec& classPerms = acc_classPerms.to<mrs_realvec>(); // ?
+				classPerms.create(classPerms_.size());
 
-			  for (size_t i=0; i < classPerms_.size(); ++i) 
+				for (size_t i=0; i < classPerms_.size(); ++i) 
 			    {
 			      classPerms(i) = classPerms_[i];
 			    }
 			}
 			
+			// load each instance data into svm_nodes and store in svm_problem
 			for (int i=0; i < nInstances; ++i) {
 				svm_prob_.x[i] = new svm_node[inObservations_];
 				for (int j=0; j < inObservations_; j++) {
@@ -305,20 +293,20 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			trained_ = true;
 
 			MRSDEBUG ("SVMCLassifier train ... done");
-
-			
-
 			MRSDEBUG ("svm_model_->nr_class = " << svm_model_->nr_class);
 			MRSDEBUG ("svm_model_->l = " << svm_model_->l);
 			MRSDEBUG ("svm_model_->free_sv = " << svm_model_->free_sv);
 			MRSDEBUG ("svm_model_->SV = " << svm_model_->SV);
 
-			int n;
-			n = svm_model_->l;
+			int n = 0;
+
 			
+			/////// expose min / max boundary values /////////
 			ctrl_minimums_->setValue(instances_.GetMinimums(), NOUPDATE);
 			ctrl_maximums_->setValue(instances_.GetMaximums(), NOUPDATE);
 			
+		
+			///////  expose sv_coef and SV ////////
 			MarControlAccessor acc_sv_coef(ctrl_sv_coef_, NOUPDATE);
 			realvec& sv_coef = acc_sv_coef.to<mrs_realvec>();
 			MarControlAccessor acc_SV(ctrl_SV_, NOUPDATE);
@@ -328,25 +316,20 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			SV.stretch(n, (inObservations_-1));
 
 			for (int i=0; i<n; ++i) {
-				for (int j=0; j<svm_model_->nr_class-1; j++)
-					sv_coef(j, i)=svm_model_->sv_coef[j][i];
+				for (int j=0; j<svm_model_->nr_class-1; j++) // for every class
+					sv_coef(j, i)=svm_model_->sv_coef[j][i]; // copy coeff to sv_coef MarControl
 				const svm_node *p = svm_model_->SV[i];
 				int ind = 0;
-				while (p->index != -1) {
-					SV(i, ind)=p->value;
+				while (p->index != -1) { // for every observation in the vector
+					SV(i, ind)=p->value; // copy to SV MarControl
 					p++;
 					ind++;
 				}
 			}
 
-
-
-
-
-
-
-
-
+			///////  expose rho, probA, probB, label, nSV, nr_class, l ////////
+			
+			// rho
 			{
 				MarControlAccessor acc_rho(ctrl_rho_, NOUPDATE);
 				realvec& rho = acc_rho.to<mrs_realvec>();
@@ -356,6 +339,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 					rho(i)=svm_model_->rho[i];
 			}
 			
+			// probA
 			if (svm_model_->probA) {
 				MarControlAccessor acc_probA(ctrl_probA_, NOUPDATE);
 				realvec& probA = acc_probA.to<mrs_realvec>();
@@ -365,6 +349,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 					probA(i)=svm_model_->probA[i];
 			}
 			
+			// probB
 			if (svm_model_->probB) {
 				MarControlAccessor acc_probB(ctrl_probB_, NOUPDATE);
 				realvec& probB = acc_probB.to<mrs_realvec>();
@@ -374,6 +359,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 					probB(i)=svm_model_->probB[i];
 			}
 			
+			// label
 			if (svm_model_->label) {
 				MarControlAccessor acc_label(ctrl_label_, NOUPDATE);
 				realvec& label = acc_label.to<mrs_realvec>();
@@ -383,6 +369,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 					label(i)=svm_model_->label[i];
 			}
 			
+			// nSV
 			if (svm_model_->nSV) {
 				MarControlAccessor acc_nSV(ctrl_nSV_, NOUPDATE);
 				realvec& nSV = acc_nSV.to<mrs_realvec>();
@@ -392,7 +379,19 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 					nSV(i)=svm_model_->nSV[i];
 			}
 			
+//			if (svm_model_->nSV) {	
+//				n = svm_model_->nr_class;
+//				realvec nSV(n);
+//				for (int i=0; i<n; ++i)
+//					nSV(i)=svm_model_->nSV[i];
+//				
+//				ctrl_nSV_->setValue(nSV, NOUPDATE);
+//			}
+			
+			// nr_class
 			ctrl_nr_class_->setValue(svm_model_->nr_class, NOUPDATE);
+			
+			// l
 			ctrl_l_->setValue(svm_model_->l, NOUPDATE);
 		}
 	}
@@ -401,23 +400,29 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 void SVMClassifier::myProcess(realvec& in, realvec& out) 
 {
 	
-	if (training_) {
+	if (training_) { 
+		// Training here means simply inserting all input vectors to 
+		// the WekaData instances_. The actual training of libsvm classes 
+		// happens when we update the mode control to "predict".
 
 		if (!was_training_) {
 			instances_.Create(inObservations_);
 		}
 		
 		instances_.Append(in);
-		out(0, 0) = in(inObservations_-1, 0);
+		out(0,0) = in(inObservations_-1, 0);
 		out(1,0) = in(inObservations_-1, 0);
 		
 		
-	} else {
+	} else {  // predict
 		
 		if (!trained_) {
 			if (was_training_) {
 				;
 			} else {
+				// Init libsvm structures and load data from
+				// network controls into libsvm in cased they had been stored
+				
 				svm_prob_.y = NULL;
 				svm_prob_.x = NULL;
 				svm_model_ = Malloc(svm_model,1);
@@ -429,17 +434,13 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				svm_model_->param.gamma = ctrl_gamma_->to<mrs_natural>();
 				svm_model_->param.coef0 = ctrl_coef0_->to<mrs_natural>();
 				svm_model_->param.nu = ctrl_nu_->to<mrs_real>();
-				svm_model_->param.cache_size
-						= ctrl_cache_size_->to<mrs_natural>();
+				svm_model_->param.cache_size = ctrl_cache_size_->to<mrs_natural>();
 				svm_model_->param.C = ctrl_C_->to<mrs_real>();
 				svm_model_->param.eps = ctrl_eps_->to<mrs_real>();
 				svm_model_->param.p = ctrl_p_->to<mrs_real>();
 				svm_model_->param.shrinking = ctrl_shrinking_->to<mrs_bool>();
-				svm_model_->param.probability
-						= ctrl_probability_->to<mrs_bool>();
+				svm_model_->param.probability = ctrl_probability_->to<mrs_bool>();
 				svm_model_->param.nr_weight = ctrl_nr_weight_->to<mrs_natural>();
-
-
 
 				{
 				  MarControlAccessor acc_classPerms(ctrl_classPerms_);
@@ -450,8 +451,6 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				      classPerms_.push_back(classPerms(i));
 				    }
 				}
-
-
 
 				MRSDEBUG ("svm_model_->param.svm_type = " << svm_model_->param.svm_type);
 				MRSDEBUG ("svm_model_->param.kernel_type = " << svm_model_->param.kernel_type);
@@ -479,6 +478,10 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				MRSDEBUG ("svm_model_->nr_class = " << svm_model_->nr_class);
 				MRSDEBUG ("svm_model_->l = " << svm_model_->l);
 
+				
+				
+				////////// Load data from previous training into libsvm if exists /////////////
+				
 				if (ctrl_rho_->to<realvec>().getSize()) //rho
 				{
 					svm_model_->rho = Malloc(double,m);
@@ -630,49 +633,55 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 								<< i << ")" << maxi(i) << endl;
 				}
 #endif				
-			}
-		}
+			} // if(!was_training)
+		}// if(!trained)
+		
+		
+		/// At this point we should have a trained model ready
+		
 		struct svm_node* xv = new svm_node[inObservations_];
 		double* probs = new double[svm_model_->nr_class];
 		
+		// Get the minimum and maximum values to which the 
+		// training set was normalized.
 		realvec mini = ctrl_minimums_->to<mrs_realvec>();
 		realvec maxi = ctrl_maximums_->to<mrs_realvec>();
 
+		// Scale our input the same as our trainingset
 		for (int i=0; i<inObservations_ -1; ++i)
 			in(i, 0) = (in(i, 0) - mini(i)) / (maxi(i) - mini(i));
 
-		for (int j=0; j < inObservations_; j++) {
+		// Copy our input to an SV structure
+		for (int j=0; j < inObservations_; ++j) {
 			if (j < inObservations_ -1) {
 				xv[j].index = j+1;
 				xv[j].value = in(j, 0);
 			} else {
+				// The last index value in the SV is always set to -1
 				xv[j].index = -1;
 				xv[j].value = 0.0;
 			}
 		}
 
-		double prediction = 0;
-		if (ctrl_probability_->to<mrs_bool>())
-		  prediction = svm_predict_probability(svm_model_, xv, probs);
-		else 
-		  {
-		    prediction = svm_predict(svm_model_, xv);
-		  }
-
-		for (int i=0; i < svm_model_->nr_class; ++i) 
-		  {
-		    out(2 + classPerms_[i], 0) = probs[i];
-		  }
+		double prediction = 0.0;
 		
+		if (ctrl_probability_->to<mrs_bool>())
+			prediction = svm_predict_probability(svm_model_, xv, probs);
+		else 
+			prediction = svm_predict(svm_model_, xv);
+	
 
+		// Output
+		for (int i=0; i < svm_model_->nr_class; ++i) 
+		    out(2 + classPerms_[i], 0) = probs[i];
 
-
-
+		out(0,0) = (mrs_real)prediction;
+		out(1,0) = in(inObservations_-1,0);
+		
+		
+		// Cleanup
 		delete [] xv;
 		delete [] probs;
-		
-		out(0, 0) = (mrs_real)prediction;
-		out(1,0) = in(inObservations_-1,0);
 	}
 	was_training_ = training_;
 }
