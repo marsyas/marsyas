@@ -118,9 +118,6 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
   int last_strobe;
   int samples_since_last;
 
-  // cout << "AimLocalMax::myProcess::inObservations_=" << inObservations_ << endl;
-  // cout << "AimLocalMax::myProcess::inSamples_=" << inSamples_ << endl;
-
   for (o = 0; o < inObservations_; o++) {
     strobe_count = 0;
     for (t = 0; t < inSamples_; t++) {

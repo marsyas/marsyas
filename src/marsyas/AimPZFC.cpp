@@ -156,8 +156,6 @@ AimPZFC::ResetInternal() {
 
 bool
 AimPZFC::SetPZBankCoeffs() {
-  // cout << "AimPZFC::SetPZBankCoeffs()" << endl;
-
   /*! \todo Re-implement the alternative parameter settings
    */
   if (!SetPZBankCoeffsERBFitted())
@@ -165,9 +163,6 @@ AimPZFC::SetPZBankCoeffs() {
 
   float mindamp = getctrl("mrs_real/mindamp")->to<mrs_real>();
   float maxdamp = getctrl("mrs_real/maxdamp")->to<mrs_real>();
-
-  // cout << "mindamp=" << mindamp << endl;
-  // cout << "maxdamp=" << maxdamp << endl;
 
   rmin_.resize(channel_count_);
   rmax_.resize(channel_count_);
