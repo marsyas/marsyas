@@ -53,7 +53,6 @@ AimLocalMax::addControls()
 void
 AimLocalMax::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
   MRSDIAG("AimLocalMax.cpp - AimLocalMax:myUpdate");
   ctrl_onObsNames_->setValue("AimLocalMax_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
@@ -82,14 +81,14 @@ AimLocalMax::myUpdate(MarControlPtr sender)
     is_reset = true;
     reset_inobservations = ctrl_inObservations_->to<mrs_natural>();
   }
+
+   MarSystem::myUpdate(sender);
 }
 
 bool 
 AimLocalMax::InitializeInternal() {
   strobe_timeout_samples_ = floor(ctrl_timeout_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
   strobe_decay_samples_ = floor(ctrl_decay_time_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
-
-  return true;
 }
 
 void 
@@ -115,11 +114,15 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
 {
   mrs_natural o,t;
 
-  int strobe_count = 0;
+  int strobe_count;
   int last_strobe;
   int samples_since_last;
 
+  // cout << "AimLocalMax::myProcess::inObservations_=" << inObservations_ << endl;
+  // cout << "AimLocalMax::myProcess::inSamples_=" << inSamples_ << endl;
+
   for (o = 0; o < inObservations_; o++) {
+    strobe_count = 0;
     for (t = 0; t < inSamples_; t++) {
       // Initialize the strobe
       out(o,t) = 0.0;

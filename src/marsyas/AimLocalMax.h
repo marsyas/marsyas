@@ -39,7 +39,7 @@ namespace Marsyas
 */
 
 
-class marsyas_EXPORT AimLocalMax: public MarSystem
+class AimLocalMax: public MarSystem
 {
 private:
   void myUpdate(MarControlPtr sender);

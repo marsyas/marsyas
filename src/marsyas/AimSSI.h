@@ -16,10 +16,11 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_AIMHCL_H
-#define MARSYAS_AIMHCL_H
+#ifndef MARSYAS_AIMSSI_H
+#define MARSYAS_AIMSSI_H
 
 #include "MarSystem.h"
+#include "ERBTools.h"
 
 // sness - TODO - Eventually make these realvecs.  However, in the
 // existing code there is quite a bit of stuff that involves STL
@@ -29,17 +30,17 @@
 namespace Marsyas
 {
 /**
-    \class AimHCL
+    \class AimSSI
 	\ingroup Analysis
-    \brief Halfwave rectification, compression and lowpass filtering
+    \brief Size-shape image (aka the 'sscAI')
 
-    Author Thomas Walters <tom@acousticscale.org>
+    Author : Thomas Walters <tom@acousticscale.org>
 
     Ported to Marsyas by Steven Ness <sness@sness.net>
 */
 
 
-class AimHCL: public MarSystem
+class AimSSI: public MarSystem
 {
 private:
   void myUpdate(MarControlPtr sender);
@@ -54,32 +55,42 @@ private:
   bool is_initialized;
 
   // What changes cause it to need initialization?
-  mrs_real initialized_lowpass_cutoff;
+  mrs_real initialized_israte;
 
   // Does the MarSystem need reset?
   bool is_reset;
 
   // What changes cause it to need a reset?
-  mrs_natural reseted_inobservations;
-  mrs_real reseted_lowpass_order;
+  mrs_natural reset_inobservations;
 
-  MarControlPtr ctrl_do_lowpass_;     // Do lowpass filtering?
-  MarControlPtr ctrl_do_log_;         // Do log compression?
-  MarControlPtr ctrl_lowpass_cutoff_; // Cutoff frequency for lowpass filter
-  MarControlPtr ctrl_lowpass_order_;  // Order of Lowpass Filter
+  int ExtractPitchIndex(realvec& in) const;
 
-  // int channel_count_;  // Internal record of the number of channels in the input
-  float time_constant_;  // Time constant corresponsing to the lowpass filter cutoff freqency
+  // The MarControls
+  MarControlPtr ctrl_do_pitch_cutoff_;
+  MarControlPtr ctrl_weight_by_cutoff_;
+  MarControlPtr ctrl_weight_by_scaling_;
+  MarControlPtr ctrl_log_cycles_axis_;
+  MarControlPtr ctrl_pitch_search_start_ms_;
+  MarControlPtr ctrl_ssi_width_cycles_;
+  MarControlPtr ctrl_pivot_cf_;
 
-  // Lowpass filter state variables
-  float xn_;
-  float yn_;
-  std::vector<std::vector<float> > yns_;
+  // sness - From AimGammatone.  We need these in order to calculate
+  // the centre frequencies.
+  MarControlPtr ctrl_max_frequency_;
+  MarControlPtr ctrl_min_frequency_;
+  bool is_centre_frequencies_calculated;
+  std::vector<double> centre_frequencies_;
+  void CalculateCentreFrequencies();
+
+  // float sample_rate_;
+  // int buffer_length_;
+  // int channel_count_;
+  int ssi_width_samples_;
 
 public:
-  AimHCL(std::string name);
+  AimSSI(std::string name);
 
-  ~AimHCL();
+  ~AimSSI();
   MarSystem* clone() const;
   void addControls();
 

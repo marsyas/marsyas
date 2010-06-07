@@ -49,7 +49,7 @@ namespace Marsyas
 */
 
 
-class marsyas_EXPORT AimGammatone: public MarSystem
+class AimGammatone: public MarSystem
 {
 private:
   void myUpdate(MarControlPtr sender);

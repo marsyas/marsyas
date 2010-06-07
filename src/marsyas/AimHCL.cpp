@@ -23,6 +23,13 @@ using namespace Marsyas;
 
 AimHCL::AimHCL(string name):MarSystem("AimHCL",name)
 {
+  is_initialized = false;
+  initialized_lowpass_cutoff = 0;
+
+  is_reset = false;
+  reseted_inobservations = 0;
+  reseted_lowpass_order = 0;
+
   addControls();
 }
 
@@ -47,12 +54,50 @@ AimHCL::addControls()
   addControl("mrs_natural/lowpass_order", 2 , ctrl_lowpass_order_);
 }
 
+void
+AimHCL::myUpdate(MarControlPtr sender)
+{
+  (void) sender;
+  MRSDIAG("AimHCL.cpp - AimHCL:myUpdate");
+  ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>(), NOUPDATE);
+  ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
+  ctrl_onObsNames_->setValue("AimHCL_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
+
+  //
+  // Does the MarSystem need initialization?
+  //
+  if (initialized_lowpass_cutoff != ctrl_lowpass_cutoff_->to<mrs_real>()) {
+    is_initialized = false;
+  }
+
+  if (!is_initialized) {
+    InitializeInternal();
+    is_initialized = true;
+    initialized_lowpass_cutoff = ctrl_lowpass_cutoff_->to<mrs_real>();
+  }
+
+  //
+  // Does the MarSystem need a reset?
+  //
+  if (reseted_inobservations != ctrl_inObservations_->to<mrs_natural>() || 
+      reseted_lowpass_order != ctrl_lowpass_order_->to<mrs_real>()) {
+    is_reset = false;
+  }
+
+  if (!is_reset) {
+    ResetInternal();
+    is_reset = true;
+    reseted_inobservations = ctrl_inObservations_->to<mrs_natural>();
+    reseted_lowpass_order = ctrl_lowpass_order_->to<mrs_natural>();
+  }
+
+}
+
+
 bool 
 AimHCL::InitializeInternal() {
   time_constant_ = 1.0f / (2.0f * PI * ctrl_lowpass_cutoff_->to<mrs_real>());
-  // channel_count_ = input.channel_count();
-  // output_.Initialize(input);
-  ResetInternal();
   return true;
 }
 
@@ -61,28 +106,11 @@ AimHCL::ResetInternal() {
   xn_ = 0.0f;
   yn_ = 0.0f;
   yns_.clear();
-  yns_.resize(inObservations_);
-  for (int c = 0; c < inObservations_; ++c) {
+  yns_.resize(ctrl_inObservations_->to<mrs_natural>());
+  for (int c = 0; c < ctrl_inObservations_->to<mrs_natural>(); ++c) {
     yns_[c].resize(ctrl_lowpass_order_->to<mrs_natural>(), 0.0f);
   }
 }
-
-void
-AimHCL::myUpdate(MarControlPtr sender)
-{
-  if (!initialized) {
-    InitializeInternal();
-    initialized = true;
-  }
-
-  (void) sender;
-  MRSDIAG("AimHCL.cpp - AimHCL:myUpdate");
-  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
-  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
-  ctrl_onObsNames_->setValue("AimHCL_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
-}
-
 
 //
 // With do_log, the signal is first scaled up so that values <1.0 become
@@ -97,8 +125,8 @@ AimHCL::myProcess(realvec& in, realvec& out)
 {
   mrs_natural o,t;
 
-  for (o = 0; o < inObservations_; o++) {
-    for (t = 0; t < inSamples_; t++) {
+  for (o = 0; o < ctrl_inObservations_->to<mrs_natural>(); o++) {
+    for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
       // out(o,t) = in(o,t);
       if (in(o,t) < 0.0f) {
         out(o, t) = 0.0f;
@@ -109,18 +137,18 @@ AimHCL::myProcess(realvec& in, realvec& out)
           if (s < 1.0f) s = 1.0f;
           s = 20.0f * log10(s);
         }
-        out(c, t) = s;
+        out(o, t) = s;
       }
     }
     if (ctrl_do_lowpass_->to<mrs_bool>()) {
-      float b = exp(-1.0f / (israte_ * time_constant_));
+      float b = exp(-1.0f / (ctrl_israte_->to<mrs_natural>() * time_constant_));
       float gain = 1.0f / (1.0f - b);
       for (int j = 0; j < ctrl_lowpass_order_->to<mrs_natural>(); j++) {
-        for (int k = 0; k < onSamples_; ++k) {
+        for (int k = 0; k < ctrl_onSamples_->to<mrs_natural>(); ++k) {
           xn_ = out(o,k);
           yn_ = xn_ + b * yns_[o][j];
           yns_[o][j] = yn_;
-          out(c, k) = yn_ / gain;
+          out(o, k) = yn_ / gain;
         }
       }
     }
