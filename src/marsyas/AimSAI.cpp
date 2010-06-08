@@ -69,11 +69,12 @@ void
 AimSAI::addControls()
 {
   addControl("mrs_real/min_delay_ms_", 0.0f , ctrl_min_delay_ms_);
-  addControl("mrs_real/max_delay_ms_", 35.0f , ctrl_max_delay_ms_);
+  addControl("mrs_real/max_delay_ms_", 11.6099546485f , ctrl_max_delay_ms_);
   addControl("mrs_real/strobe_weight_alpha_", 0.5f , ctrl_strobe_weight_alpha_);
   addControl("mrs_real/buffer_memory_decay_;", 0.03f , ctrl_buffer_memory_decay_);
   // addControl("mrs_real/frame_period_ms_ ", 20.0f , ctrl_frame_period_ms_);
-  addControl("mrs_real/frame_period_ms_ ", 11.61f , ctrl_frame_period_ms_);
+  // addControl("mrs_real/frame_period_ms_ ", 11.61f , ctrl_frame_period_ms_);
+  addControl("mrs_real/frame_period_ms_ ", 11.6099546485f , ctrl_frame_period_ms_);
   addControl("mrs_natural/max_concurrent_strobes_;", 50 , ctrl_max_concurrent_strobes_);
   addControl("mrs_real/min_frequency", 86.0f , ctrl_min_frequency_);
   addControl("mrs_real/max_frequency", 16000.0f , ctrl_max_frequency_);
@@ -82,7 +83,7 @@ AimSAI::addControls()
 void
 AimSAI::myUpdate(MarControlPtr sender)
 {
-  int temp_frame_period_samples = floor(ctrl_israte_->to<mrs_real>() * ctrl_frame_period_ms_->to<mrs_real>()
+  int temp_frame_period_samples = 1 + floor(ctrl_israte_->to<mrs_real>() * ctrl_frame_period_ms_->to<mrs_real>()
                                 / 1000.0f);
 
   MRSDIAG("AimSAI.cpp - AimSAI:myUpdate");
@@ -91,7 +92,9 @@ AimSAI::myUpdate(MarControlPtr sender)
   // ctrl_onSamples_->setValue(sai_buffer_length, NOUPDATE);
   ctrl_onSamples_->setValue(temp_frame_period_samples, NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>()/2, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+  // sness - Should we copy the strobes over or not?
+  // ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>(), NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);
   ctrl_onObsNames_->setValue("AimSAI_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
 
@@ -380,9 +383,15 @@ AimSAI::myProcess(realvec& in, realvec& out)
           sai_temp_(o, t) =  0.0f;
         }
       }
-
       fire_counter_ = frame_period_samples_ - 1;
     }
   }  // End loop over samples
+
+  // // Copy over the strobes
+  // for (int t = 0; t < ctrl_inSamples_->to<mrs_natural>(); ++t) {
+  //   for (int o = channel_count_; o < channel_count_ * 2; ++o) {
+  //     out(o,t) = in(o,t);
+  //   }
+  // }
 
 }

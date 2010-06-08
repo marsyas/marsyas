@@ -75,6 +75,9 @@ private:
   std::vector<float> curr_sample_;
   std::vector<float> next_sample_;
 
+  std::vector<float> strobe_count_;
+  std::vector<int> last_strobe_;
+
 public:
   AimLocalMax(std::string name);
 

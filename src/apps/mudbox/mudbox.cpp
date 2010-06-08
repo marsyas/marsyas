@@ -7276,19 +7276,98 @@ toy_with_aim_localmax(string sfName)
 
 	MarSystem* net = mng.create("Series", "net");
 
-    cout << "adding" << endl;
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 
-    cout << "updating 1" << endl;
-	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-    cout << "updating 2" << endl;
 	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
-      cout << "ticking" << endl;
       net->tick();
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	}
+	delete net;
+}
+
+// Stabilised auditory image
+void 
+toy_with_aim_sai(string sfName)
+{
+	cout << "Toy_with: aim_sai" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
+    
+	MarSystem* fanout = mng.create("Fanout", "fanout");
+    fanout->addMarSystem(mng.create("AimHCL", "aimhcl"));
+	fanout->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+
+    net->addMarSystem(fanout);
+
+	net->addMarSystem(mng.create("AimSAI", "aimsai"));
+
+    cout << "UPDATE" << endl;
+
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+    // cout << *net;
+
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      // cout << "tik tok" << endl;
+      net->tick();
+      // cout << "AFTER" << endl;
+      // cout << *net;
+
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	}
+	delete net;
+}
+
+// Size-shape image (aka the 'sscAI')
+void
+toy_with_aim_ssi(string sfName)
+{
+	cout << "Toy_with: aim_ssi" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
+    
+	// net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+
+	MarSystem* fanout = mng.create("Fanout", "fanout");
+    // fanout->addMarSystem(mng.create("AimHCL", "aimhcl"));
+    fanout->addMarSystem(mng.create("Gain", "gain"));
+	fanout->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+
+    net->addMarSystem(fanout);
+
+	net->addMarSystem(mng.create("AimSAI", "aimsai"));
+	net->addMarSystem(mng.create("AimSSI", "aimssi"));
+
+    cout << "UPDATE" << endl;
+
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+    // cout << *net;
+
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      // cout << "tik tok" << endl;
+      net->tick();
+      // cout << "AFTER" << endl;
+      // cout << *net;
+
       cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	}
 	delete net;
@@ -7510,6 +7589,10 @@ main(int argc, const char **argv)
 		toy_with_aim_hcl(fname0);
 	else if (toy_withName == "aim_localmax")
 		toy_with_aim_localmax(fname0);
+	else if (toy_withName == "aim_sai")
+		toy_with_aim_sai(fname0);
+	else if (toy_withName == "aim_ssi")
+		toy_with_aim_ssi(fname0);
 
 	else 
 	{

@@ -62,8 +62,8 @@ AimGammatone::myUpdate(MarControlPtr sender)
   (void) sender;
 
   MRSDIAG("AimGammatone.cpp - AimGammatone:myUpdate");
-  ctrl_onObservations_->setValue(ctrl_num_channels_, NOUPDATE);
-  ctrl_osrate_->setValue(ctrl_israte_);
+  ctrl_onObservations_->setValue(ctrl_num_channels_->to<mrs_natural>(), NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
   ctrl_onObsNames_->setValue("AimGammatone_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
   //
@@ -76,7 +76,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
   if (initialized_num_channels != ctrl_num_channels_->to<mrs_real>() ||
       initialized_min_frequency != ctrl_min_frequency_->to<mrs_real>() ||
       initialized_max_frequency != ctrl_max_frequency_->to<mrs_real>() ||
-      initialized_israte != israte_) {
+      initialized_israte != ctrl_israte_->to<mrs_natural>()) {
     is_initialized = false;
   }
 
@@ -86,7 +86,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
     initialized_num_channels = ctrl_num_channels_->to<mrs_real>();
     initialized_min_frequency = ctrl_min_frequency_->to<mrs_real>();
     initialized_max_frequency = ctrl_max_frequency_->to<mrs_real>();
-    initialized_israte = israte_;
+    initialized_israte = ctrl_israte_->to<mrs_natural>();
   }
 
   //
@@ -245,13 +245,13 @@ AimGammatone::myProcess(realvec& in, realvec& out)
   std::vector<std::vector<double> >::iterator s4 = state_4_.begin();
 
   // Temporary storage between filter stages
-  std::vector<double> outbuff(inSamples_);
+  std::vector<double> outbuff(ctrl_inSamples_->to<mrs_natural>());
 
   mrs_natural num_channels = ctrl_num_channels_->to<mrs_natural>();
 
   for (int ch = 0; ch < num_channels;
        ++ch, ++b1, ++b2, ++b3, ++b4, ++a, ++s1, ++s2, ++s3, ++s4) {
-    for (int i = 0; i < inSamples_; ++i) {
+    for (int i = 0; i < ctrl_inSamples_->to<mrs_natural>(); ++i) {
       // Direct-form-II IIR filter
       double inputsample = in(audio_channel, i);
       outbuff[i] = (*b1)[0] * inputsample + (*s1)[0];
@@ -259,7 +259,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
         (*s1)[stage - 1] = (*b1)[stage] * inputsample
                            - (*a)[stage] * outbuff[i] + (*s1)[stage];
     }
-    for (int i = 0; i < inSamples_; ++i) {
+    for (int i = 0; i < ctrl_inSamples_->to<mrs_natural>(); ++i) {
       // Direct-form-II IIR filter
       double inputsample = outbuff[i];
       outbuff[i] = (*b2)[0] * inputsample + (*s2)[0];
@@ -267,7 +267,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
         (*s2)[stage - 1] = (*b2)[stage] * inputsample
                            - (*a)[stage] * outbuff[i] + (*s2)[stage];
     }
-    for (int i = 0; i < inSamples_; ++i) {
+    for (int i = 0; i < ctrl_inSamples_->to<mrs_natural>(); ++i) {
       // Direct-form-II IIR filter
       double inputsample = outbuff[i];
       outbuff[i] = (*b3)[0] * inputsample + (*s3)[0];
@@ -275,7 +275,7 @@ AimGammatone::myProcess(realvec& in, realvec& out)
         (*s3)[stage - 1] = (*b3)[stage] * inputsample
                            - (*a)[stage] * outbuff[i] + (*s3)[stage];
     }
-    for (int i = 0; i < inSamples_; ++i) {
+    for (int i = 0; i < ctrl_inSamples_->to<mrs_natural>(); ++i) {
       // Direct-form-II IIR filter
       double inputsample = outbuff[i];
       outbuff[i] = (*b4)[0] * inputsample + (*s4)[0];

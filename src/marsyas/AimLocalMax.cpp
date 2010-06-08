@@ -27,7 +27,7 @@ AimLocalMax::AimLocalMax(string name):MarSystem("AimLocalMax",name)
   initialized_israte = 0.0;
 
   is_reset = false;
-  reset_inobservations = 0;
+  reset_inobservations = -1;
 
   addControls();
 }
@@ -93,18 +93,23 @@ AimLocalMax::InitializeInternal() {
 
 void 
 AimLocalMax::ResetInternal() {
+  // cout << "AimLocalMax::ResetInternal" << endl;
+  // cout << "ctrl_inObservations_->to<mrs_natural>()" << ctrl_inObservations_->to<mrs_natural>() << endl;
+
+  // sness - Not sure if we should be using 0.0f here, these should be ints.  The original code
+  // had the "f" for floats though.
   threshold_.clear();
-  threshold_.resize(inObservations_, 0.0f);
+  threshold_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
 
   decay_constant_.clear();
-  decay_constant_.resize(inObservations_, 1.0f);
+  decay_constant_.resize(ctrl_inObservations_->to<mrs_natural>(), 1.0f);
 
   prev_sample_.clear();
-  prev_sample_.resize(inObservations_, 10000.0f);
+  prev_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 10000.0f);
   curr_sample_.clear();
-  curr_sample_.resize(inObservations_, 5000.0f);
+  curr_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 5000.0f);
   next_sample_.clear();
-  next_sample_.resize(inObservations_, 0.0f);
+  next_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
 }
 
 
@@ -118,9 +123,31 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
   int last_strobe;
   int samples_since_last;
 
-  for (o = 0; o < inObservations_; o++) {
-    strobe_count = 0;
-    for (t = 0; t < inSamples_; t++) {
+  // sness - Need this because we don't have a SignalBuffer class like AIM-C has, so we
+  // have to keep track of the strobes ourselves.
+  strobe_count_.clear();
+  strobe_count_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
+  last_strobe_.clear();
+  last_strobe_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
+
+  // sness - Hmm, the original code isn't doing this, but I don't see
+  // how this could possibly work if you don't reset these samples at
+  // the beginning of a buffer.  Otherwise, you get carryover from the
+  // last step that causes the line after the condition
+  // "strobe_count_[o] > 0" to coredump.  Requires further
+  // investigation.
+  prev_sample_.clear();
+  prev_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 10000.0f);
+  curr_sample_.clear();
+  curr_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 5000.0f);
+  next_sample_.clear();
+  next_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
+
+  // cout << "ctrl_inObservations_->to<mrs_natural>()=" << ctrl_inObservations_->to<mrs_natural>() << endl;
+  // cout << "ctrl_inSamples_->to<mrs_natural>()=" << ctrl_inSamples_->to<mrs_natural>() << endl;
+
+  for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
+    for (o = 0; o < ctrl_inObservations_->to<mrs_natural>(); o++) {
       // Initialize the strobe
       out(o,t) = 0.0;
 
@@ -143,20 +170,20 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
           // respected across frame boundaries. This is a minor bug, but I
           // don't believe that it's serious enough to warrant updating the
           // samples since last strobe all the time.)
-          if (strobe_count > 0) {
+          if (strobe_count_[o] > 0) {
             // If there are previous strobes, then calculate the time since
             // the last one. If it's long enough, then this is a strobe point,
             // if not, then just move on.
-            samples_since_last = t - last_strobe;
+            samples_since_last = (t - 1) - last_strobe_[o];
             if (samples_since_last > strobe_timeout_samples_) {
               out(o, t-1) = 1.0;
-              strobe_count++;
-              last_strobe = t;
+              strobe_count_[o]++;
+              last_strobe_[o] = t;
             }
           } else {
             out(o, t-1) = 1.0;
-            strobe_count++;
-            last_strobe = t;
+            strobe_count_[o]++;
+            last_strobe_[o] = t;
           }
         }
       }
@@ -166,8 +193,11 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
         threshold_[o] -= decay_constant_[o];
       else
         threshold_[o] = 0.0f;
+      // cout << "out(" << o << "," << t << ")=" << out(o,t) << endl;
     }
   }
 
+  // // sness - Hmmm, not sure if the original code is calling this all
+  // ResetInternal();
 
 }

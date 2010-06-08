@@ -231,6 +231,8 @@
 #include "AimGammatone.h"
 #include "AimHCL.h"
 #include "AimLocalMax.h"
+#include "AimSAI.h"
+#include "AimSSI.h"
 #include "TimeFreqPeakConnectivity.h"
 #include "Combinator.h"
 #include "ParallelMatrixWeight.h"
@@ -464,6 +466,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AimGammatone", new AimGammatone("aimgammatone"));
 	registerPrototype("AimHCL", new AimHCL("aimhcl"));
 	registerPrototype("AimLocalMax", new AimLocalMax("aimlocalmax"));
+	registerPrototype("AimSAI", new AimSAI("aimsai"));
+	registerPrototype("AimSSI", new AimSSI("aimssi"));
 
 	//modifyRegister
 
