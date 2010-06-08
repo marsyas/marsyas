@@ -82,6 +82,7 @@ AimLocalMax::myUpdate(MarControlPtr sender)
     reset_inobservations = ctrl_inObservations_->to<mrs_natural>();
   }
 
+  // sness - Almost definitely wrong.  FIXME.
    MarSystem::myUpdate(sender);
 }
 

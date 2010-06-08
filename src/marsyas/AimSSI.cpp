@@ -72,13 +72,20 @@ AimSSI::myUpdate(MarControlPtr sender)
 
   (void) sender;
   MRSDIAG("AimSSI.cpp - AimSSI:myUpdate");
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue("AimSSI_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
   // sness - Used to be in InitializeInternal in AIM-C.  Would have
   // been really wasteful to keep track of all these variables that
   // need to be initialized.
-  ssi_width_samples_ =  ctrl_israte_->to<mrs_real>() * ctrl_ssi_width_cycles_->to<mrs_real>() / ctrl_pivot_cf_->to<mrs_real>();
-  if (ssi_width_samples_ > ctrl_inObservations_->to<mrs_natural>()) {
+
+  // sness - Hacking this for now
+  ssi_width_samples_ = 512;
+  // ssi_width_samples_ =  ctrl_israte_->to<mrs_real>() * ctrl_ssi_width_cycles_->to<mrs_real>() / ctrl_pivot_cf_->to<mrs_real>();
+
+  if (ssi_width_samples_ > ctrl_inSamples_->to<mrs_natural>()) {
     ssi_width_samples_ = ctrl_inSamples_->to<mrs_natural>();
     float cycles = ssi_width_samples_ * ctrl_pivot_cf_->to<mrs_real>() / ctrl_israte_->to<mrs_real>();
     MRSWARN("Requested SSI width is too long for the input buffer");

@@ -48,6 +48,7 @@ add_subdirectory(ibt)
 add_subdirectory(mirex2008)
 add_subdirectory(peakClusteringEval)
 add_subdirectory(mirex2009_tsunoo)
+add_subdirectory(aim)
 
 ## not in docs; must edit tools.texi   -gp
 add_subdirectory(tempo) 
