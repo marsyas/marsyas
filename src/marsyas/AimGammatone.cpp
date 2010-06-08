@@ -62,6 +62,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
   (void) sender;
 
   MRSDIAG("AimGammatone.cpp - AimGammatone:myUpdate");
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_num_channels_->to<mrs_natural>(), NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
   ctrl_onObsNames_->setValue("AimGammatone_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
