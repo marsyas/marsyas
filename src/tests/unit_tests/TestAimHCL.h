@@ -53,10 +53,10 @@ public:
 
 	// Check to see if the values are correct
   	TS_ASSERT_DELTA(out(0,0),0,0.001);
-  	TS_ASSERT_DELTA(out(0,1),0.00350689,0.001);
-  	TS_ASSERT_DELTA(out(0,2),0.0128542,0.001);
-  	TS_ASSERT_DELTA(out(0,3),0.0294149,0.001);
-  	TS_ASSERT_DELTA(out(0,4),0.0537784,0.001);
+  	TS_ASSERT_DELTA(out(0,1),0.1419,0.001);
+  	TS_ASSERT_DELTA(out(0,2),0.2811,0.001);
+  	TS_ASSERT_DELTA(out(0,3),0.4145,0.001);
+  	TS_ASSERT_DELTA(out(0,4),0.5395,0.001);
   }
 
 
