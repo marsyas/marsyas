@@ -24,7 +24,7 @@ using namespace Marsyas;
 BeatPhase::BeatPhase(string name):MarSystem("BeatPhase", name)
 {
 	addControls();
-	sampleCount_ = 0.0;
+	sampleCount_ = 0;
 }
 
 BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
@@ -38,7 +38,7 @@ BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 	ctrl_bwinSize_ = getctrl("mrs_natural/bwinSize");
 	ctrl_timeDomain_ = getctrl("mrs_realvec/timeDomain");
 	
-	sampleCount_ = 0.0;
+	sampleCount_ = 0;
 }
 
 BeatPhase::~BeatPhase()

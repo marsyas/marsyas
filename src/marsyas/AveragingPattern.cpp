@@ -97,7 +97,7 @@ AveragingPattern::myUpdate(MarControlPtr sender)
   mrs_natural templateSize = 0;
   for(mrs_natural i=1; i<numVec; ++i)
     {
-      templateSize += sizes_(i);
+      templateSize += (mrs_natural)sizes_(i);
     }
   const realvec& tmpvec2 = ctrl_countVector_->to<mrs_realvec>();
   if(tmpvec2.getSize() > 0 && ctrl_setCountVector_->to<mrs_bool>())
@@ -138,7 +138,7 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 	  mrs_natural tmpNatural = 0;
 	  for(mrs_natural i=1; i<numVec; ++i)
 	    {
-	      templateSize += sizes_(i);
+	      templateSize += (mrs_natural)sizes_(i);
 	    }
 
 	  if(!ctrl_setCountVector_->to<mrs_bool>())
@@ -163,7 +163,7 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 			  average_(j,i+tmpNatural) = countvector_(i+tmpNatural)*out(j+dimVec*k,i);
 			}
 		    }
-		  tmpNatural += sizes_(k+1);
+		  tmpNatural += (mrs_natural)sizes_(k+1);
 		}
 	      tmpNatural = 0;
 	    }
@@ -202,9 +202,9 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 		    }
 		  for(j=0; j<dimVec; j++)
 		    {
-		      average_(j,alignment(k,1)) += in(j,alignment(k,0));
+		      average_(j,(mrs_natural)alignment(k,1)) += in(j,(mrs_natural)alignment(k,0));
 		    }
-		  countvector_(alignment(k,1))++;
+		  countvector_((mrs_natural)alignment(k,1))++;
 		}
 	    }
 	  for(mrs_natural n=0; n<templateSize; ++n)
@@ -249,7 +249,7 @@ AveragingPattern::myProcess(realvec& in, realvec& out)
 			}
 		    }
 		}
-	      tmpNatural += sizes_(k);
+	      tmpNatural += (mrs_natural)sizes_(k);
 	    }
 	  for(l=1; l<numVec; l++)
 	    {

@@ -93,7 +93,7 @@ AimSSI::myUpdate(MarControlPtr sender)
 
   if (ssi_width_samples_ > ctrl_inSamples_->to<mrs_natural>()) {
     ssi_width_samples_ = ctrl_inSamples_->to<mrs_natural>();
-    float cycles = ssi_width_samples_ * ctrl_pivot_cf_->to<mrs_real>() / ctrl_israte_->to<mrs_real>();
+    mrs_real cycles = ssi_width_samples_ * ctrl_pivot_cf_->to<mrs_real>() / ctrl_israte_->to<mrs_real>();
     MRSWARN("Requested SSI width is too long for the input buffer");
     // MRSWARN("Requested SSI width of " + ctrl_ssi_width_cycles_->to<mrs_real>() + " cycles is too long for the " +
     //         "input buffer length of " + ctrl_inObservations_->to<mrs_natural>() + " samples. The SSI will be " +
@@ -114,9 +114,9 @@ AimSSI::myUpdate(MarControlPtr sender)
 void 
 AimSSI::CalculateCentreFrequencies() {
   int num_channels = ctrl_inObservations_->to<mrs_natural>();
-  float erb_max = ERBTools::Freq2ERB(ctrl_max_frequency_->to<mrs_real>());
-  float erb_min = ERBTools::Freq2ERB(ctrl_min_frequency_->to<mrs_real>());
-  float delta_erb = (erb_max - erb_min) / (num_channels - 1);
+  mrs_real erb_max = ERBTools::Freq2ERB(ctrl_max_frequency_->to<mrs_real>());
+  mrs_real erb_min = ERBTools::Freq2ERB(ctrl_min_frequency_->to<mrs_real>());
+  mrs_real delta_erb = (erb_max - erb_min) / (num_channels - 1);
 
   centre_frequencies_.resize(num_channels);
   float erb_current = erb_min;

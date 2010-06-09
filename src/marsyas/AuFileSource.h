@@ -71,7 +71,7 @@ namespace Marsyas
 			mrs_natural samplesRead_;
  
 			mrs_real duration_;
-			bool advance_;
+			mrs_natural advance_;
 			mrs_natural cindex_;
 			mrs_natural nt_;
   
