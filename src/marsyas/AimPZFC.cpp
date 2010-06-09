@@ -291,7 +291,6 @@ AimPZFC::SetPZBankCoeffsOrig() {
 
   // Reset the pole frequency to maximum
   pole_frequency = cf_max / sample_rate * (2.0f * PI);
-  // cout << "pole_frequency=" << pole_frequency << endl;
 
   for (int i = channel_count_ - 1; i > -1; --i) {
     // Store the normalised pole frequncy
@@ -661,11 +660,8 @@ inline float AimPZFC::Minimum(float a, float b) {
 void
 AimPZFC::myProcess(realvec& in, realvec& out)
 {
-  // cout << "ctrl_inSamples_->to<mrs_natural>()" << ctrl_inSamples_->to<mrs_natural>() << endl;
   for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
-
     float input_sample = in(0, t);
-    // cout << "input_sample=" << in(0, t) << endl;
 
     // Lowpass filter the input with a zero at PI
     input_sample = 0.5f * input_sample + 0.5f * last_input_;
@@ -674,28 +670,19 @@ AimPZFC::myProcess(realvec& in, realvec& out)
     inputs_[channel_count_ - 1] = input_sample;
     for (int c = 0; c < channel_count_ - 1; ++c) {
       inputs_[c] = previous_out_[c + 1];
-      // cout << "inputs_[" << c << "]=" << inputs_[c] << endl;
     }
 
     // PZBankStep2
     // to save a bunch of divides
 
     float damp_rate = 1.0f / (getctrl("mrs_real/maxdamp")->to<mrs_real>() - getctrl("mrs_real/mindamp")->to<mrs_real>());
-    // cout << "damp_rate=" << damp_rate << endl;
 
     for (int c = channel_count_ - 1; c > -1; --c) {
       float interp_factor = (pole_damps_mod_[c] - getctrl("mrs_real/mindamp")->to<mrs_real>()) * damp_rate;
 
-      // cout << "xmin_[c]=" << xmin_[c] << endl;
-      // cout << "xmax_[c]=" << xmax_[c] << endl;
-      // cout << "rmin_[c]=" << rmin_[c] << endl;
-      // cout << "rmax_[c]=" << rmax_[c] << endl;
-
       float x = xmin_[c] + (xmax_[c] - xmin_[c]) * interp_factor;
       float r = rmin_[c] + (rmax_[c] - rmin_[c]) * interp_factor;
 
-      // cout << "x=" << x << endl;
-      // cout << "r=" << r << endl;
       // optional improvement to constellation adds a bit to r
       float fd = pole_frequencies_[c] * pole_damps_mod_[c];
       // quadratic for small values, then linear
@@ -710,15 +697,6 @@ AimPZFC::myProcess(realvec& in, realvec& out)
       // of input)
       float new_state = inputs_[c] - (state_1_[c] - inputs_[c]) * zb1
                                    - (state_2_[c] - inputs_[c]) * zb2;
-      // float new_state = inputs_[c] - (state_1_[c] - inputs_[c]) * zb1
-      //                   - (state_2_[c] - inputs_[c]) * zb2;
-
-      // cout << "zb1=" << zb1 << endl;
-      // cout << "zb2=" << zb2 << endl;
-      // cout << "inputs_[c]=" << inputs_[c] << endl;
-      // cout << "state_1_[c]=" << state_1_[c] << endl;
-      // cout << "state_2_[c]=" << state_2_[c] << endl;
-      // cout << "new_state=" << new_state << endl;
 
       // canonic zeros part as before:
       float output = za0_[c] * new_state + za1_[c] * state_1_[c]
@@ -726,7 +704,6 @@ AimPZFC::myProcess(realvec& in, realvec& out)
 
       // cubic compression nonlinearity
       output -= 0.0001f * pow(output, 3);
-      // cout << "output=" << output << endl;
 
       out(c, t) = output;
       detect_[c] = DetectFun(output);
