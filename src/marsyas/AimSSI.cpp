@@ -41,6 +41,12 @@ void
 AimSSI::ResetInternal() {
 }
 
+// Calculates log2 of number.
+double
+AimSSI::Log2(double n) {
+  // log(n)/log(2) is log2.  
+  return log( n ) / log( 2 );
+}
 
 
 MarSystem*
@@ -163,7 +169,7 @@ AimSSI::myProcess(realvec& in, realvec& out)
       float cycle_samples = ctrl_israte_->to<mrs_real>() / centre_frequency;
       if (ctrl_log_cycles_axis_->to<mrs_bool>()) {
         float gamma_min = -1.0f;
-        float gamma_max = log2(ctrl_ssi_width_cycles_->to<mrs_real>());
+        float gamma_max = Log2(ctrl_ssi_width_cycles_->to<mrs_real>());
         float gamma = gamma_min + (gamma_max - gamma_min)
                                    * static_cast<float>(t)
                                    / static_cast<float>(ssi_width_samples_);

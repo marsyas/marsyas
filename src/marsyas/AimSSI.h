@@ -87,6 +87,8 @@ private:
   // int channel_count_;
   int ssi_width_samples_;
 
+  double Log2( double n );
+
 public:
   AimSSI(std::string name);
 
