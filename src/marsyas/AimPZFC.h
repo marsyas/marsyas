@@ -61,15 +61,23 @@ private:
 
   // What changes cause it to need initialization?
   mrs_real initialized_israte;
+  mrs_real initialized_inobservations;
+  mrs_real initialized_mindamp;
+  mrs_real initialized_maxdamp;
+  mrs_real initialized_cf_max;
+  mrs_real initialized_cf_min;
 
   // Does the MarSystem need reset?
   bool is_reset;
 
   // What changes cause it to need a reset?
-  mrs_natural reset_inobservations;
+  mrs_natural reseted_inobservations;
+  mrs_natural reseted_agc_factor;
 
   // Set the filterbank parameters according to a fit matrix from Unoki
+  // bool SetPZBankCoeffsERB();
   bool SetPZBankCoeffsERBFitted();
+  bool SetPZBankCoeffsOrig();
 
   // Sets the general filterbank coefficients
   bool SetPZBankCoeffs();
@@ -104,6 +112,7 @@ private:
   MarControlPtr ctrl_mindamp_;
   MarControlPtr ctrl_maxdamp_;
   MarControlPtr ctrl_do_agc_step_;
+  MarControlPtr ctrl_use_fit_;
 
   // Internal Buffers
   // Initialised once
