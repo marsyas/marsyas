@@ -150,7 +150,7 @@ Delay::myUpdate(MarControlPtr sender)
 		vector<mrs_string> indiChannels	= stringSplit (getctrl("mrs_string/inObsNames")->to<mrs_string>(), ",");
 		ostringstream	outNames;
 		for (mrs_natural c = 0; c < getctrl("mrs_natural/inObservations")->to<mrs_natural>(); ++c)
-			for (size_t i = 0; i < delayInSamples_.getSize (); ++i)
+			for (mrs_natural i = 0; i < delayInSamples_.getSize (); ++i)
 			{
 				outNames << indiChannels.at(c) << "-delay_" << i << ",";
 			}
@@ -244,14 +244,14 @@ mrs_real Delay::seconds2Samples (mrs_real seconds)
 }
 mrs_realvec Delay::samples2Seconds (mrs_realvec samples)
 {
-	for (size_t i = 0; i < samples.getSize (); ++i)
+	for (mrs_natural i = 0; i < samples.getSize (); ++i)
 		samples(i)	= samples(i)/ israte_;
 
 	return samples;
 }
 mrs_realvec Delay::seconds2Samples (mrs_realvec seconds)
 {
-	for (size_t i = 0; i < seconds.getSize (); ++i)
+	for (mrs_natural i = 0; i < seconds.getSize (); ++i)
 		seconds(i)	= seconds(i) * israte_;
 
 	return seconds;

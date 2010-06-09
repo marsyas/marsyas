@@ -98,8 +98,8 @@ unsigned int Yin::vec_min_elem(realvec *s)
   int pos=0;
   double tmp = (*s)(0,0);
 //   for (i=0; i < s->channels; ++i)
-  for (size_t j=0; j < s->getSize(); j++) {
-	pos = (tmp < (*s)(i,j))? pos : j;
+  for (mrs_natural j=0; j < s->getSize(); j++) {
+	pos = (tmp < (*s)(+6))? pos : j;
 	tmp = (tmp < (*s)(i,j))? tmp : (*s)(i,j);
   }
 //     }
@@ -124,7 +124,7 @@ Yin::myProcess(realvec& in, realvec& out)
 //   cout << "tol=" << tol << endl;
 
   // Calculate the pitch with the Yin method
-  unsigned int c=0,j,tau = 0;
+  mrs_natural c=0,j,tau = 0;
   int period;
   double tmp = 0., tmp2 = 0.;
   yin(c,0) = 1.;

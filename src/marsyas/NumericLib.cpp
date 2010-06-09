@@ -1093,6 +1093,9 @@ mrs_real NumericLib::machp(const char *cmach)
    mrs_real zero, one, two, half, sixth, third, a, b, c, f, d__1, d__2, d__3, d__4, d__5, qtr, eps;
    mrs_real base;
    mrs_natural lt, rnd, i__1;
+   lt = 0;
+   rnd = 0;
+   eps = 0.0;
    
    one = 1.;
    a = 1.;
@@ -1842,7 +1845,7 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 	//just do a plain euclidean computation
 	if(covMatrix.getSize() == 0)
 	{
-		for (size_t r=0 ; r < Vi.getSize()  ; ++r)
+		for (mrs_natural r=0 ; r < Vi.getSize()  ; ++r)
 		{
 			res1 = Vi(r)-Vj(r);
 			res1 *= res1; //square
@@ -1854,7 +1857,7 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 	{
 		// do a standardized L2 euclidean distance 
 		//(i.e. just use the diagonal elements of covMatrix)
-		for (size_t r=0 ; r < Vi.getSize()  ; ++r)
+		for (mrs_natural r=0 ; r < Vi.getSize()  ; ++r)
 		{
 			res1 = Vi(r)-Vj(r);
 			res1 *= res1; //square
@@ -1890,7 +1893,7 @@ NumericLib::cosineDistance(const realvec& Vi, const realvec& Vj, const realvec& 
 	mrs_real res2 = 0;
 	mrs_real res3 = 0;
 	mrs_real res = 0;
-	for (size_t r=0 ; r < Vi.getSize()  ; ++r)
+	for (mrs_natural r=0 ; r < Vi.getSize()  ; ++r)
 	{
 		res1 += Vi(r)*Vj(r);
 		res2 += Vi(r)*Vi(r);

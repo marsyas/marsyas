@@ -186,7 +186,7 @@ Fanout::myUpdate(MarControlPtr sender)
 			localIndices_(0) = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 			oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 		}
-		for (size_t i=1; i < marsystemsSize_; ++i)
+		for (mrs_natural i=1; i < marsystemsSize_; ++i)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
@@ -209,9 +209,9 @@ Fanout::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObsNames_, oss.str());
 
 		// update buffers between components
-		if (slices_.size() < marsystemsSize_)
+		if ((mrs_natural)slices_.size() < marsystemsSize_)
 			slices_.resize(marsystemsSize_, NULL);
-		for (size_t i=0; i< marsystemsSize_; ++i)
+		for (mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			if (slices_[i] != NULL)
 			{
@@ -249,7 +249,7 @@ Fanout::myProcess(realvec& in, realvec& out)
 		MarControlAccessor accMuted(ctrl_muted_);
 		mrs_realvec& muted = accMuted.to<mrs_realvec>();
 		
-		for (size_t i = 0; i < marsystemsSize_; ++i)
+		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
 		{
 			if (localIndices_(i))//enabled child have a non-zero localIndex
 			{

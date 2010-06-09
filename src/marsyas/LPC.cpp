@@ -149,7 +149,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 	//----------------------------------------------------
 	mrs_real temp = r(0);
 	//set peak searching start point to 2% of total window size [?]
-	size_t j = (mrs_real)in.getSize() * 0.02; 
+	mrs_real j = (mrs_real)in.getSize() * 0.02; 
 	//detect first local minimum...
 	while (r(j) < temp && j < in.getSize()/2)
 	{

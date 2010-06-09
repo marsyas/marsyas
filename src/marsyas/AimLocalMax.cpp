@@ -86,7 +86,7 @@ AimLocalMax::myUpdate(MarControlPtr sender)
    MarSystem::myUpdate(sender);
 }
 
-bool 
+void 
 AimLocalMax::InitializeInternal() {
   strobe_timeout_samples_ = floor(ctrl_timeout_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
   strobe_decay_samples_ = floor(ctrl_decay_time_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
@@ -123,6 +123,10 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
   int strobe_count;
   int last_strobe;
   int samples_since_last;
+  
+  strobe_count = 0;
+  last_strobe = 0;
+  
 
   // sness - Need this because we don't have a SignalBuffer class like AIM-C has, so we
   // have to keep track of the strobes ourselves.

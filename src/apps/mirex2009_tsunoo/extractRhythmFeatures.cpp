@@ -21,7 +21,7 @@ using namespace Marsyas;
 
 void recognize(string sfName, string hName, string tpName, string cnName, string szName, string outName)
 {
-  unsigned int i, j, k, l, m;
+  mrs_natural i, j, k, l, m;
   mrs_natural wsize, obs, totalCount;
   mrs_natural inputsize, maxind, outsize/*, prevNum*/;
   mrs_real msecondsPerFrame, sfrq;
@@ -76,9 +76,9 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 
   oss.str("");
   l=0;
-  for(i=0; i<countsclc.size(); ++i){
+  for(i=0; i< (mrs_natural)countsclc.size(); ++i){
     tmpcounts.read(countsclc.entry(i));
-    for(j=1; j<tmpcounts.getSize(); j++){
+    for(j=1; j<(mrs_natural)tmpcounts.getSize(); j++){
       if(tmpcounts(j) > 0){
 	l++;
       }
@@ -96,7 +96,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   //tmpvec4.create(outFeatures4.getRows()+1,1);
   tmpFeatures.create(1);
   l=0;
-  for(i=0; i<countsclc.size(); ++i){
+  for(i=0; i<(mrs_natural)countsclc.size(); ++i){
     tmpcounts.read(countsclc.entry(i));
     tmpsizes.read(sizesclc.entry(i));
     for(j=1; j<tmpcounts.getSize(); j++){
@@ -107,14 +107,14 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
     }
   }
   featuresTpl.create(sizes.getSize()*BIN,sizes.maxval());
-  for(i=0; i<templates.size(); ++i){
+  for(i=0; i<(mrs_natural)templates.size(); ++i){
     if(templates.labelName(i) != countsclc.labelName(i)){
       cerr << "Error: templates and counts don't match!" << endl;
       exit(-1);
     }
   }
   l=0;
-  for(i=0; i<templates.size(); ++i){
+  for(i=0; i<(mrs_natural)templates.size(); ++i){
     strVec[i] = templates.labelName(i);
     tmpcounts.read(countsclc.entry(i));
     dataTpl.read(templates.entry(i));
@@ -246,7 +246,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   segments.create(1,1);
   tmpbegin.create(1,1);
   tmpend.create(1,1);
-  for(l=0; l<inputs.size(); l++){
+  for(l=0; l<(mrs_natural)inputs.size(); l++){
     cout << "Now processing: " << inputs.entry(l) << endl;
 
     /*** calculate input spectrogram ***/

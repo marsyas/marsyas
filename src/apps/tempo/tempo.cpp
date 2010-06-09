@@ -815,7 +815,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	// sort(bpms.begin(), bpms.end());
 
 	mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
-	mrs_real secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
+	mrs_real secondary_bpm_estimate;
+	secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
 	
 	if (haveCollections)
 	{
@@ -2116,7 +2117,7 @@ tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt, bool haveCo
 		audioflow->addMarSystem(beattracker);
 
 	//for synthesizing clicks (on beats) with audio and playing/recording
-	MarSystem* IBTsystem;
+		MarSystem* IBTsystem = NULL;
 	if(audiofileopt || audioopt)
 	{
 		audioflow->addMarSystem(mng.create("Gain","gainaudio"));
@@ -3014,7 +3015,7 @@ main(int argc, const char **argv)
 
 
 
-		for (int i=0; i<wrong_filenames_.size(); i++)
+		for (int i=0; i< (mrs_natural)wrong_filenames_.size(); i++)
 			cout << wrong_filenames_[i] << endl;
 		
 

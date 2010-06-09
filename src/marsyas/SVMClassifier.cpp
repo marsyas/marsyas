@@ -446,7 +446,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				  MarControlAccessor acc_classPerms(ctrl_classPerms_);
 				  realvec& classPerms = acc_classPerms.to<mrs_realvec>();
 				  classPerms_.clear();
-				  for (size_t i=0; i < classPerms.getSize(); ++i)
+				  for (mrs_natural i=0; i < classPerms.getSize(); ++i)
 				    {
 				      classPerms_.push_back(classPerms(i));
 				    }

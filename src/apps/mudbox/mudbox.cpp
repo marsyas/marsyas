@@ -5430,7 +5430,7 @@ toy_with_pitch(string sfName)
 		pnet->tick();
 
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
-	for (size_t i=1; i<data.getSize();i+=2)
+	for (mrs_natural i=1; i<data.getSize();i+=2)
 		data(i) = samples2hertz(data(i), pnet->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>());
 
 	pnet->updctrl("RealvecSink/rvSink/mrs_bool/done", true); 
@@ -5578,7 +5578,7 @@ toy_with_power(string sfName)
 	realvec data = pnet->getctrl("RealvecSink/rvSink/mrs_realvec/data")->to<mrs_realvec>();
 
 	// dB conversion
-	for (size_t i=0 ; i<data.getSize() ; ++i)
+	for (mrs_natural i=0 ; i<data.getSize() ; ++i)
 		data(i) = 20*log10(data(i));
 
 	cout << data;
@@ -5980,7 +5980,7 @@ toy_with_margrid(string sfName)
 						total_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 
-	for (size_t index = 0; index < l1.size(); index++)
+	for (mrs_natural index = 0; index < (mrs_natural)l1.size(); index++)
     {
 		total_->updctrl("mrs_natural/label", (mrs_natural)index);
 		total_->updctrl("mrs_bool/memReset", true);

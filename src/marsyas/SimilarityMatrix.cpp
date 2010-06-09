@@ -81,7 +81,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 	}
 
 	mrs_natural obs = 0;
-	for(size_t i=1; i<sizes_.getSize(); ++i)
+	for(mrs_natural i=1; i<sizes_.getSize(); ++i)
 	{
 		obs += sizes_(i);
 	}
@@ -95,7 +95,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 
 	invecs_.resize(sizes_.getSize());
 	obs = getctrl("mrs_natural/inObservations")->to<mrs_natural>()/sizes_.getSize();
-	for(size_t k=0; k<sizes_.getSize(); k++)
+	for(mrs_natural k=0; k<sizes_.getSize(); k++)
 	{
 		invecs_[k].create(obs, sizes_(k));
 	}
@@ -142,7 +142,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 	//check if there are any elements to process at the input
 	//(in some cases, they may not exist!) - otherwise, do nothing
 	//(i.e. output is also an empty vector)
-	size_t i, j, k, l;
+	mrs_natural i, j, k, l;
 	if(inSamples_ > 0)
 	{
 		if(marsystemsSize_ == 1)
@@ -195,7 +195,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 					MarControlAccessor acc(ctrl_covMatrix_);
 					realvec& covMatrix = acc.to<mrs_realvec>();
 					covMatrix.create(dim, dim);
-					for(i=0; i<(size_t)dim; ++i)
+					for(i=0; i<(mrs_natural)dim; ++i)
 					{
 						covMatrix(i,i) = vars_(i);
 					}
@@ -215,7 +215,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 				{
 					obs = 0;
 					invecs_[0].getCol(i, i_featVec_);
-					for(l=0; l<(size_t)nfeats; l++)
+					for(l=0; l<(mrs_natural)nfeats; l++)
 					{
 						stackedFeatVecs_(l,0) = i_featVec_(l);
 					}
@@ -225,7 +225,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 						{
 							invecs_[j].getCol(k, j_featVec_);
 							// stack i and j feat vectors
-							for(l=0; l<(size_t)nfeats; l++)
+							for(l=0; l<(mrs_natural)nfeats; l++)
 							{
 								stackedFeatVecs_(l+nfeats,0) = j_featVec_(l);
 							}

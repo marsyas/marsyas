@@ -325,18 +325,18 @@ PeakConvert2::lobe_value_compute(mrs_real f, mrs_natural type, mrs_natural size)
 void
 PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
-	unsigned int k=0, start=0, nbP=index.getSize();
-	unsigned int minIndex = 0;
+	mrs_natural k=0, start=0, nbP=index.getSize();
+	mrs_natural minIndex = 0;
 
 	// getting rid of padding zeros
 	while(start<index.getSize() && !index(start))
 		start++;
 
-	for(unsigned int i=start ; i<nbP ; i++, k++)
+	for(mrs_natural i=start ; i<nbP ; i++, k++)
 	{
 		minIndex = 0;
 		// look for the next valley location upward
-		for (unsigned int j = index(i) ; j<mag.getSize()-1 ; j++)
+		for (mrs_natural j = index(i) ; j<mag.getSize()-1 ; j++)
 		{
 			if(mag(j) < mag(j+1))
 			{
@@ -407,7 +407,7 @@ PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& ma
 	// handling the last case
 	minVal = HUGE_VAL;
 	minIndex = 0;
-	for (unsigned int j= index(nbP-1) ; j<mag.getSize()-1 ; j++)
+	for (mrs_natural j= index(nbP-1) ; j<mag.getSize()-1 ; j++)
 	{
 		if(minVal > mag(j))
 		{

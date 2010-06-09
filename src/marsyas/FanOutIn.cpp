@@ -84,7 +84,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 	//check child MarSystems to disable (passed as a string) 
 	disableChild_ = getctrl("mrs_string/disableChild")->to<mrs_string>();
 	disableChildIndex_ = -1;
-	for (size_t i=0; i < marsystems_.size(); ++i) 
+	for (mrs_natural i=0; i < (mrs_natural)marsystems_.size(); ++i) 
 	{
 		string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
@@ -98,7 +98,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 	}  
 	if (disableChild_ == "all")
 	{
-		for (size_t i=0; i < marsystems_.size(); ++i) 
+		for (mrs_natural i=0; i < (mrs_natural)marsystems_.size(); ++i) 
 		{
 			enabled_(i) = 0.0;
 			setctrl("mrs_string/disableChild", "");
@@ -118,7 +118,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 	//check child MarSystems to enable (passed as a string) 
 	enableChild_ = getctrl("mrs_string/enableChild")->to<mrs_string>();
 	enableChildIndex_ = -1;
-	for (size_t i=0; i < marsystems_.size(); ++i) 
+	for (mrs_natural i=0; i < (mrs_natural)marsystems_.size(); ++i) 
 	{
 		string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
@@ -152,7 +152,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 	  // update dataflow component MarSystems in order
-		for (size_t i=1; i < marsystemsSize_; ++i)
+		for (mrs_natural i=1; i < marsystemsSize_; ++i)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
@@ -181,9 +181,9 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObsNames_, oss.str());
 
 		// update buffers between components 
-		if (slices_.size() < marsystemsSize_) 
+		if ((mrs_natural)slices_.size() < marsystemsSize_) 
 			slices_.resize(marsystemsSize_, NULL);
-		for (size_t i=0; i< marsystemsSize_; ++i)
+		for (mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			if (slices_[i] != NULL) 
 			{
@@ -231,7 +231,7 @@ FanOutIn::myProcess(realvec& in, realvec& out)
 			return;
 		}
 		
-		for (size_t i = 0; i < marsystemsSize_; ++i)
+		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
 		{
 			if (enabled_(i))
 			{

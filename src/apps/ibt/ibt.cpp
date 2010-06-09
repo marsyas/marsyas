@@ -383,7 +383,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		audioflow->addMarSystem(beattracker);
 
 	//for synthesizing clicks (on beats) with audio and playing/recording
-	MarSystem* IBTsystem;
+		MarSystem* IBTsystem = NULL;
+		
 	if(audiofileopt || audioopt)
 	{
 		audioflow->addMarSystem(mng.create("Gain","gainaudio"));

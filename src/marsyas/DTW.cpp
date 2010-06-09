@@ -107,9 +107,11 @@ void
 DTW::myProcess(realvec& in, realvec& out)
 {  
   mrs_natural i, j, k, l;
+  j = 0;
+  
   mrs_real nObs = in.getRows();
   mrs_real nSmp = in.getCols();
-  mrs_real tmpReal;
+  mrs_real tmpReal = 0.0;
   mrs_bool weight = ctrl_weight_->to<mrs_bool>();
 
   if(inSamples_ > 0)

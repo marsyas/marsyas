@@ -488,11 +488,11 @@ void tags() {
       
       if (seen == false) {
 	probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-	for (size_t j=0; j < probs.getSize()-2; j++) 
+	for (mrs_natural j=0; j < probs.getSize()-2; j++) 
 	  wsinkout(j,0) = probs(2+j);
 	
 	
-	for (size_t i=0; i < probs.getSize()-2; ++i) {
+	for (mrs_natural i=0; i < probs.getSize()-2; ++i) {
 	  cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
 	  prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
 
@@ -550,7 +550,7 @@ void tags() {
     label = wsourcedata(wsourcedata.getSize()-1,0);
     seen = false;
     
-    for (size_t i=0; i<previouslySeenFilenames2.size(); ++i) {
+    for (mrs_natural i=0; i<(mrs_natural)previouslySeenFilenames2.size(); ++i) {
       if (currentlyPlaying2 == previouslySeenFilenames2[i]) {
 	seen = true;
 	break;
@@ -559,10 +559,10 @@ void tags() {
     
     probs2 = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();    
     if (seen == false) {
-      for (size_t j=0; j < probs2.getSize()-2; j++) 
+      for (mrs_natural j=0; j < probs2.getSize()-2; j++) 
 	wsinkout2(j,0) = probs2(2+j);
       
-      for (size_t i=0; i < probs2.getSize()-2; ++i) {
+      for (mrs_natural i=0; i < probs2.getSize()-2; ++i) {
 	cout << currentlyPlaying2 << "\t" << classNames[i] << "\t" << probs2(2+i) << endl;
       }
       previouslySeenFilenames2.push_back(currentlyPlaying2);

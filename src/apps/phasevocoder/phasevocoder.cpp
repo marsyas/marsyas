@@ -1313,8 +1313,8 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 	mrs_real pitch = 0.0;
 	mrs_real prev_pitch = 0.0;
   
-	mrs_real glide0;
-	mrs_real glide1;
+	mrs_real glide0 = 0.0;
+	mrs_real glide1 = 0.0;
    
 	mrs_real time = 0.0;
 	mrs_real epsilon;

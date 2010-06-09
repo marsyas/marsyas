@@ -183,7 +183,11 @@ McAulayQuatieri::peakTrack(realvec& vec, mrs_natural frame, mrs_natural grpOne, 
 void
 McAulayQuatieri::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o,c=0;
+	mrs_natural t,o,c;
+	t=0;
+	o=0;
+	c=0;
+	
 	realvec* outPtr;
 	
 	out(o,t) = in(o,t);          //    ??????

@@ -29,6 +29,8 @@ int LUDCMP(REAL **A, int n, int *INDX, int *d)  {
 
   REAL AMAX,DUM, SUM;
   int  I,IMAX,J,K;
+  IMAX = 0;
+  
   REAL *VV;
   void *vmblock = NULL; 
 

@@ -115,7 +115,10 @@ ADRessSpectrum::myProcess(realvec& in, realvec& out)
 		ctrl_d_->setValue(1.0);
 	}
 
-	mrs_real mag, phase, azim;
+	mrs_real mag = 0;
+	mrs_real phase = 0;
+	mrs_real azim = 0;
+	
 	
 	for(mrs_natural k=0; k < N2_; ++k)
 	{

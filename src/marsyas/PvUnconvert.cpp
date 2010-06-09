@@ -147,6 +147,7 @@ int
 PvUnconvert::subband(int bin)
 {
 	int si;
+	si = 0;
 	
 	if (bin  < 16) 
 		si = 0;

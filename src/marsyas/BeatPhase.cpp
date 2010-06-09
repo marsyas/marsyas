@@ -92,13 +92,13 @@ BeatPhase::myUpdate(MarControlPtr sender)
 void 
 BeatPhase::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t, tm;
+	mrs_natural o,t;
 	
 	MarControlAccessor acct(ctrl_tempos_);
 	mrs_realvec& tempos = acct.to<mrs_realvec>();
 
 	MarControlAccessor accts(ctrl_temposcores_);
-	mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
+	// mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
 	
 	
 	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
@@ -111,8 +111,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_real sum_phase = 0.0;
 	mrs_real max_sum_phase = 0.0;
 	mrs_natural max_phase = 0;
-	mrs_real max_phase_tempo;
-	mrs_real avg_period, next_peak;
+	// mrs_real max_phase_tempo;
+	mrs_real avg_period; 
+	// mrs_real next_peak;
 	
 	
 	beats.setval(0.0);
@@ -128,30 +129,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	
 	
 	mrs_real tempo;
-	mrs_real max_tm;
+	// mrs_real max_tm;
 	
 	max_sum_phase = 0;
-	for (tm = 0; tm < 1; tm++)
-	{
-		tempo = tempos(tm);
-		
-		
-		
-
-		
-		sum_phase = 0.0;
-		for (t=0; t < inSamples_; t++) 
-		{
-			sum_phase += in(0,t);
-			if (t+period < inSamples_)
-				sum_phase += in(0,t+period);
-		}
-		if (sum_phase >= max_sum_phase)
-		{
-			max_sum_phase = sum_phase;
-			max_tm = tm;
-		}
-	}
 	
 	ctrl_phase_tempo_->setValue(tempos(0));	
 		
@@ -189,7 +169,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_natural delay = (bwinSize - bhopSize);
 	
 	cout << "max_phase = " << max_phase << endl;
-
+	cout << "delay = " << delay << endl;
+	
 	
 	mrs_natural start;
 	mrs_natural end;

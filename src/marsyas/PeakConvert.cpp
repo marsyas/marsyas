@@ -229,8 +229,8 @@ PeakConvert::getBinInterval(realvec& interval, realvec& index, realvec& mag) //[
 void
 PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
-	unsigned int k=0, start=0, nbP=index.getSize();
-	unsigned int minIndex = 0;
+	mrs_natural k=0, start=0, nbP=index.getSize();
+	mrs_natural minIndex = 0;
 
 	// getting rid of padding zeros
 	while(start<index.getSize() && !index(start))
@@ -240,7 +240,7 @@ PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag
 	{
 		minIndex = 0;
 		// look for the next valley location upward
-		for (size_t j= index(i) ; j<mag.getSize()-1 ; ++j)
+		for (mrs_natural j= index(i) ; j<mag.getSize()-1 ; ++j)
 		{
 			if(mag(j) < mag(j+1))
 			{
@@ -325,7 +325,7 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 	// handling the last case
 	minVal = HUGE_VAL;
 	minIndex = 0;
-	for (size_t j= index(nbP-1) ; j<mag.getSize()-1 ; ++j)
+	for (mrs_natural j= index(nbP-1) ; j<mag.getSize()-1 ; ++j)
 	{
 		if(minVal > mag(j))
 		{

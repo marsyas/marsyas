@@ -94,9 +94,9 @@ double AubioYin::vec_quadint_min(realvec *x,unsigned int pos, unsigned int span)
 
 unsigned int AubioYin::vec_min_elem(realvec *s) 
 {
-  unsigned int i = 0;
-  unsigned int j = 0;
-  unsigned int pos=0;
+  int i = 0;
+  int j = 0;
+  int pos=0;
   double tmp = (*s)(0,0);
 //   for (i=0; i < s->channels; ++i)
   for (j=0; j < s->getSize(); j++) {
@@ -125,7 +125,7 @@ AubioYin::myProcess(realvec& in, realvec& out)
 //   cout << "tol=" << tol << endl;
 
   // Calculate the pitch with the Yin method
-  unsigned int j,tau = 0;
+  int j,tau = 0;
   int period;
   double tmp = 0., tmp2 = 0.;
   yin(c,0) = 1.;

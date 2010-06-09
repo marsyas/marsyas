@@ -379,7 +379,8 @@ PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 	sort(data, data+(N2+1), greater<mrs_real>());
 
 	mrs_real val;
-
+	val = 0.0;
+	
 	for (t=0; t <= N2; t++)
 	{
 		

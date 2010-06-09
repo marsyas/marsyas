@@ -127,7 +127,7 @@ AimPZFC::myUpdate(MarControlPtr sender)
 		ResetInternal();
 		is_reset = true;
 		reseted_inobservations = ctrl_inObservations_->to<mrs_natural>();
-		reseted_agc_factor != ctrl_agc_factor_->to<mrs_real>();
+		reseted_agc_factor= ctrl_agc_factor_->to<mrs_real>();
 	}
 
 }
@@ -300,7 +300,8 @@ AimPZFC::SetPZBankCoeffsOrig() {
 		pole_frequencies_[i] = pole_frequency;
 
 		// Calculate the real pole frequency from the normalised pole frequency
-		float frequency = pole_frequency / (2.0f * PI) * sample_rate;
+		float frequency; 
+		frequency = pole_frequency / (2.0f * PI) * sample_rate;
 
 		// Store the real pole frequency as the 'centre frequency' of the filterbank
 		// channel

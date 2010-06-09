@@ -65,7 +65,7 @@ Fanin::myUpdate(MarControlPtr sender)
 
 		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 
-		for (size_t i=1; i < marsystemsSize_; ++i) 
+		for (mrs_natural i=1; i < marsystemsSize_; ++i) 
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
@@ -81,10 +81,10 @@ Fanin::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObsNames_, oss.str());
 		
 		// update slices for child MarSystems
-		if (slices_.size() < marsystemsSize_) 
+		if ((mrs_natural)slices_.size() < marsystemsSize_) 
 			slices_.resize(marsystemsSize_, NULL);
 
-		for (size_t i=0; i< marsystemsSize_; ++i)
+		for (mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			if (slices_[i] != NULL) 
 			{

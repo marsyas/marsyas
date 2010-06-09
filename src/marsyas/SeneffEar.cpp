@@ -157,7 +157,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     polyConv(a, b, c);
     SeneffPreemphasisCoeffs.create(c.getSize());
 	  
-    for (size_t i = 0; i < c.getSize(); ++i)
+    for (mrs_natural i = 0; i < c.getSize(); ++i)
 		SeneffPreemphasisCoeffs(i) = c(c.getSize() - i - 1);
 
     //SeneffFilterBank coefficients computation

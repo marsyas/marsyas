@@ -78,7 +78,7 @@ void
 ParallelMatrixWeight::myProcess(realvec& in, realvec& out)
 {
 	mrs_realvec weights		= ctrl_weights_->to<mrs_realvec> ();
-	size_t		k,i,j,
+	mrs_natural		k,i,j,
 				numRows		= weights.getRows (),
 				numCols		= weights.getCols (),
 				intRows		= in.getRows () / numRows,
