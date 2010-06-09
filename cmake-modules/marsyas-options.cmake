@@ -12,7 +12,7 @@ IF(NOT CMAKE_BUILD_TYPE)
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
-
+SET(CMAKE_CXX_FLAGS "-Wall")
 
 ### USER OPTIONS
 option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)

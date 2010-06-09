@@ -131,17 +131,13 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_real max_tm;
 	
 	max_sum_phase = 0;
-	for (tm = 0; tm < tempos.getSize(); tm++)
+	for (tm = 0; tm < 1; tm++)
 	{
 		tempo = tempos(tm);
 		
 		
-		if (tempo !=0)
-			period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
-		else 
-			period = 0;
 		
-		period = (mrs_natural)(period+0.5);
+
 		
 		sum_phase = 0.0;
 		for (t=0; t < inSamples_; t++) 
@@ -158,86 +154,81 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	}
 	
 	ctrl_phase_tempo_->setValue(tempos(0));	
+		
+	tempo = tempos(0);
+
+	if (tempo !=0)
+		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
+	else 
+		period = 0;
+	period = (mrs_natural)(period+0.5);	
+
+	cout << "TEMPO = " << tempo << endl;
+	cout << "period = " << period << endl;
 	
-	/* if (period < inSamples_)
+	max_sum_phase = 0.0;
+	
+	for (t= inSamples_-1; t >= inSamples_-1-period; t--) 
+	{
+		sum_phase = 0.0;
+		sum_phase += in(0,t);
+		sum_phase += in(0, t-period);
+		sum_phase += in(0, t-2*period);
+		sum_phase += in(0, t-3*period);
+		if (sum_phase >= max_sum_phase)
 		{
-			// find peak in period interval that also is good periodically 
-			for (t = 0; t < period; t++) 
-			{
-				sum_phase = 0.0;
-				sum_phase += in(0,t);
-				sum_phase += in(0, t+period);
-				sum_phase += in(0, t+2*period);
-				sum_phase += in(0, t+4*period);
-				
-				if (sum_phase >= max_sum_phase)
-				{
-					max_phase = t;
-					max_tm = tm;
-					max_sum_phase = sum_phase;
-				}
-			}
-			
-			// look for peaks around period interval and refine tempo estimation
+			max_sum_phase = sum_phase;
+			max_phase = t;
 		}
 	}
-	*/ 
-	
 
 	
-
-
-	/* 
-	   max_sum_phase = 0.0;
-
-	   mrs_natural prev_peak = max_phase;
-	   avg_period = 0.0;
-		
-	   for (int k=1; k <= 4; k++) 
-	   {
-	   max_sum_phase = 0.0;
-	   for (t = max_phase+k*period-2; t <= max_phase+k*period+2; t++)
-	   {
-	   sum_phase = in(0,t);
-	   if (sum_phase > max_sum_phase)
-	   {
-	   max_sum_phase = sum_phase;
-	   next_peak = t;
-	   }
-	   }
-	   avg_period += next_peak - prev_peak;
-	   prev_peak = next_peak;
-	   }
-		 
-	   }
 	
-	   avg_period /= 4;
-
-	
-
-	
-	   max_phase_tempo = (mrs_natural)  ((4.0 * osrate_ * 60.0 / (avg_period)) +0.5);
-	   max_phase_tempo *= 0.5;
-	
-	   int k=0;
-	
-	   if (max_phase != 0)
-	   while (max_phase + k * period < inSamples_)
-	   {
-	   beats(0, max_phase + k * period) = -0.5;
-	   k++;
-	   }
-	
-	*/ 
-
 	
 	
 	mrs_natural delay = (bwinSize - bhopSize);
 	
+	cout << "max_phase = " << max_phase << endl;
+
 	
+	mrs_natural start;
+	mrs_natural end;
+	mrs_natural prev_phase = max_phase;
+	avg_period = 0;
 	
-	for (int k = 0; k < bhopSize; k++) 
+	for (int k=0; k < 4; k++)
 	{
+		start = max_phase - period - 2;
+		end  =  max_phase - period + 2;
+		max_sum_phase = 0.0;
+		for (t=start; t <= end; t++)
+		{
+			sum_phase = in(0,t);
+			if (sum_phase >= max_sum_phase) 
+			{
+				max_sum_phase = sum_phase;
+				max_phase = t;
+			}
+		}
+		// cout << "max_phase1 = " << max_phase << endl;
+		avg_period += (prev_phase - max_phase);
+		prev_phase = max_phase;
+	}
+	
+	avg_period /= 4;
+	
+	cout << "avg_period = " << avg_period  << endl;
+	cout << "avg_tempo = " << 2.0 * osrate_ * 60.0 / avg_period << endl;
+	
+
+	
+	
+	
+	
+	/* for (int k = 0; k < bhopSize; k++) 
+	{
+
+
 		
 		if ((beats(0, k) == -0.5)&&(beats(0,0) != 0.0))
 		{
@@ -250,6 +241,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		}
 		sampleCount_ ++;
 	}
+	*/ 
 	
 	
 }

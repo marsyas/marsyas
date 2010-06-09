@@ -32,7 +32,6 @@
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
-#pragma warning( disable : 4290 )
 
 
 /* This is heap is designed to sort pointers to objects.
@@ -102,12 +101,12 @@ public:
 
 	bool empty() { return (node_count==0); };
 
-	Type* top() throw(const char*) {
+	Type* top() {
 	// on empty heap throw a const char* exception, specified in the contract
 		if (first==NULL) { throw "Heap::top()  empty heap exception."; }
 		else { return first->data; }
 	};
-	Type* pop() throw(const char*) {
+	Type* pop() {
 	// on empty heap throw a const char* exception, specified in the contract
 		if (first==NULL) { throw "Heap::pop()  empty heap exception."; }
 		// save top data
@@ -191,5 +190,4 @@ public:
 //only  relevant for WIN32 MSVC (and ignored by all other platforms)
 //For more info about the reason for this #pragma consult:
 //http://msdn2.microsoft.com/en-us/library/sa28fef8.aspx
-#pragma warning( default : 4290 )
 
