@@ -7215,7 +7215,7 @@ toy_with_aim_pzfc(string sfName)
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
       net->tick();
-      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+      // cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	}
 	delete net;
 }
