@@ -39,7 +39,7 @@ namespace Marsyas
 */
 
 
-class AimHCL: public MarSystem
+class marsyas_EXPORT AimHCL: public MarSystem
 {
 private:
   void myUpdate(MarControlPtr sender);
