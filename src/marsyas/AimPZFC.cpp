@@ -134,6 +134,7 @@ AimPZFC::myUpdate(MarControlPtr sender)
 
 bool
 AimPZFC::InitializeInternal() {
+  cout << "AimPZFC::InitializeInternal" << endl;
   channel_count_ = 0;
   SetPZBankCoeffs();
   return true;
@@ -141,6 +142,8 @@ AimPZFC::InitializeInternal() {
 
 void
 AimPZFC::ResetInternal() {
+  cout << "AimPZFC::ResetInternal" << endl;
+
   // These buffers may be actively modified by the algorithm
   agc_state_.clear();
   agc_state_.resize(channel_count_);
@@ -259,10 +262,10 @@ AimPZFC::SetPZBankCoeffsOrig() {
   // and SetPZBankCoeffsERBFitted, and SetPZBankCoeffs
 
   // Normalised maximum pole frequency
-  float pole_frequency = cf_max / sample_rate * (2.0f * M_PI);
+  float pole_frequency = cf_max / sample_rate * (2.0f * PI);
   channel_count_ = 0;
-  while ((pole_frequency / (2.0f * M_PI)) * sample_rate > cf_min) {
-    float bw = bandwidth_over_cf * pole_frequency + 2 * M_PI * min_bandwidth_hz / sample_rate;
+  while ((pole_frequency / (2.0f * PI)) * sample_rate > cf_min) {
+    float bw = bandwidth_over_cf * pole_frequency + 2 * PI * min_bandwidth_hz / sample_rate;
     pole_frequency -= step_factor * bw;
     channel_count_++;
   }
@@ -297,13 +300,13 @@ AimPZFC::SetPZBankCoeffsOrig() {
     pole_frequencies_[i] = pole_frequency;
 
     // Calculate the real pole frequency from the normalised pole frequency
-    float frequency = pole_frequency / (2.0f * M_PI) * sample_rate;
+    float frequency = pole_frequency / (2.0f * PI) * sample_rate;
 
     // Store the real pole frequency as the 'centre frequency' of the filterbank
     // channel
     // output_.set_centre_frequency(i, frequency);
 
-    float zero_frequency = Minimum(M_PI, zero_factor * pole_frequency);
+    float zero_frequency = Minimum(PI, zero_factor * pole_frequency);
 
     // Impulse-invariance mapping
     float z_plane_theta = zero_frequency * sqrt(1.0f - pow(zero_damping, 2));
@@ -321,7 +324,7 @@ AimPZFC::SetPZBankCoeffsOrig() {
 
     // Subtract step factor (1/n2) times current bandwidth from the pole
     // frequency
-    float bw = bandwidth_over_cf * pole_frequency + 2 * M_PI * min_bandwidth_hz / sample_rate;
+    float bw = bandwidth_over_cf * pole_frequency + 2 * PI * min_bandwidth_hz / sample_rate;
     pole_frequency -= step_factor * bw;
   }
   return true;
@@ -351,12 +354,12 @@ AimPZFC::SetPZBankCoeffsOrig() {
 //   // SetPZBankCoeffsERBFitted, and SetPZBankCoeffs
 
 //   // Normalised maximum pole frequency
-//   float pole_frequency = cf_max / sample_rate * (2.0f * M_PI);
+//   float pole_frequency = cf_max / sample_rate * (2.0f * PI);
 //   channel_count_ = 0;
-//   while ((pole_frequency / (2.0f * M_PI)) * sample_rate > cf_min) {
+//   while ((pole_frequency / (2.0f * PI)) * sample_rate > cf_min) {
 //     float bw = ERBTools::Freq2ERBw(pole_frequency
-//                                   / (2.0f * M_PI) * sample_rate);
-//     pole_frequency -= step_factor * (bw * (2.0f * M_PI) / sample_rate);
+//                                   / (2.0f * PI) * sample_rate);
+//     pole_frequency -= step_factor * (bw * (2.0f * PI) / sample_rate);
 //     channel_count_++;
 //   }
 
@@ -379,20 +382,20 @@ AimPZFC::SetPZBankCoeffsOrig() {
 //   // output_.Initialize(channel_count_, buffer_length_, sample_rate);
 
 //   // Reset the pole frequency to maximum
-//   pole_frequency = cf_max / sample_rate * (2.0f * M_PI);
+//   pole_frequency = cf_max / sample_rate * (2.0f * PI);
 
 //   for (int i = channel_count_ - 1; i > -1; --i) {
 //     // Store the normalised pole frequncy
 //     pole_frequencies_[i] = pole_frequency;
 
 //     // Calculate the real pole frequency from the normalised pole frequency
-//     float frequency = pole_frequency / (2.0f * M_PI) * sample_rate;
+//     float frequency = pole_frequency / (2.0f * PI) * sample_rate;
 
 //     // Store the real pole frequency as the 'centre frequency' of the filterbank
 //     // channel
 //     // output_.set_centre_frequency(i, frequency);
 
-//     float zero_frequency = Minimum(M_PI, zero_factor * pole_frequency);
+//     float zero_frequency = Minimum(PI, zero_factor * pole_frequency);
 
 //     // Impulse-invariance mapping
 //     float z_plane_theta = zero_frequency * sqrt(1.0f - pow(zero_damping, 2));
@@ -409,14 +412,15 @@ AimPZFC::SetPZBankCoeffsOrig() {
 //     za2_[i] = a2 / a_sum;
 
 //     float bw = ERBTools::Freq2ERBw(pole_frequency
-//                                   / (2.0f * M_PI) * sample_rate);
-//     pole_frequency -= step_factor * (bw * (2.0f * M_PI) / sample_rate);
+//                                   / (2.0f * PI) * sample_rate);
+//     pole_frequency -= step_factor * (bw * (2.0f * PI) / sample_rate);
 //   }
 //   return true;
 // }
 
 bool 
 AimPZFC::SetPZBankCoeffsERBFitted() {
+  cout << "AimPZFC::SetPZBankCoeffsERBFitted" << endl;
   //float parameter_values[3 * 7] = {
     //// Filed, Nfit = 524, 11-3 parameters, PZFC, cwt 0, fit time 9915 sec
     //1.14827,   0.00000,   0.00000,  // % SumSqrErr=  10125.41
@@ -453,19 +457,19 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
   // channels can vary quadratically with pole frequency...
 
   // Normalised maximum pole frequency
-  float pole_frequency = cf_max / sample_rate * (2.0f * M_PI);
+  float pole_frequency = cf_max / sample_rate * (2.0f * PI);
 
   channel_count_ = 0;
-  while ((pole_frequency / (2.0f * M_PI)) * sample_rate > cf_min) {
-    float frequency = pole_frequency / (2.0f * M_PI) * sample_rate;
+  while ((pole_frequency / (2.0f * PI)) * sample_rate > cf_min) {
+    float frequency = pole_frequency / (2.0f * PI) * sample_rate;
     float f_dep = ERBTools::Freq2ERB(frequency)
                   / ERBTools::Freq2ERB(1000.0f) - 1.0f;
     float bw = ERBTools::Freq2ERBw(pole_frequency
-                                  / (2.0f * M_PI) * sample_rate);
+                                  / (2.0f * PI) * sample_rate);
     float step_factor = 1.0f
       / (parameter_values[4*3] + parameter_values[4 * 3 + 1]
       * f_dep + parameter_values[4 * 3 + 2] * f_dep * f_dep);  // 1/n2
-    pole_frequency -= step_factor * (bw * (2.0f * M_PI) / sample_rate);
+    pole_frequency -= step_factor * (bw * (2.0f * PI) / sample_rate);
     channel_count_++;
   }
 
@@ -488,14 +492,14 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
   // output_.Initialize(channel_count_, buffer_length_, sample_rate);
 
   // Reset the pole frequency to maximum
-  pole_frequency = cf_max / sample_rate * (2.0f * M_PI);
+  pole_frequency = cf_max / sample_rate * (2.0f * PI);
 
   for (int i = channel_count_ - 1; i > -1; --i) {
     // Store the normalised pole frequncy
     pole_frequencies_[i] = pole_frequency;
 
     // Calculate the real pole frequency from the normalised pole frequency
-    float frequency = pole_frequency / (2.0f * M_PI) * sample_rate;
+    float frequency = pole_frequency / (2.0f * PI) * sample_rate;
 
     // Store the real pole frequency as the 'centre frequency' of the filterbank
     // channel
@@ -522,7 +526,7 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
     float fERBw = ERBTools::Freq2ERBw(frequency);
 
     // Pole bandwidth
-    float fPBW = ((p[7] * fERBw * (2 * M_PI) / sample_rate) / 2)
+    float fPBW = ((p[7] * fERBw * (2 * PI) / sample_rate) / 2)
                  * pow(p[4], 0.5f);
 
     // Pole damping
@@ -532,13 +536,13 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
     pole_dampings_[i] = pole_damping;
 
     // Zero bandwidth
-    float fZBW = ((p[0] * p[5] * fERBw * (2 * M_PI) / sample_rate) / 2)
+    float fZBW = ((p[0] * p[5] * fERBw * (2 * PI) / sample_rate) / 2)
                  * pow(p[4], 0.5f);
 
     // Zero frequency
     float zero_frequency = p[5] * pole_frequency;
 
-    if (zero_frequency > M_PI) {
+    if (zero_frequency > PI) {
       MRSWARN("Warning: Zero frequency is above the Nyquist frequency.");
       MRSWARN("Continuing anyway but results may not be accurate.");
     }
@@ -566,13 +570,14 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
     // Subtract step factor (1/n2) times current bandwidth from the pole
     // frequency
     pole_frequency -= ((1.0f / p[4])
-                       * (fERBw * (2.0f * M_PI) / sample_rate));
+                       * (fERBw * (2.0f * PI) / sample_rate));
   }
 return true;
 }
 
 void
 AimPZFC::AGCDampStep() {
+  // cout << "AimPZFC::AGCDampStep" << endl;
   if (detect_.size() == 0) {
     // If  detect_ is not initialised, it means that the AGC is not set up.
     // Set up now.
@@ -660,6 +665,7 @@ inline float AimPZFC::Minimum(float a, float b) {
 void
 AimPZFC::myProcess(realvec& in, realvec& out)
 {
+  // cout << "AimPZFC::myProcess" << endl;
   for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
     float input_sample = in(0, t);
 
