@@ -114,7 +114,7 @@ AubioYin::myProcess(realvec& in, realvec& out)
 
   // Make a temporary realvec to build up the yin function in
   // sness - This is very inefficient - Move to update function
-  realvec yin(inSamples_/2.0);
+  realvec yin((mrs_natural)(inSamples_/2.0));
 
   // The tolerance for the yin algorithm
   mrs_real tol = ctrl_tolerance_->to<mrs_real>();

@@ -332,7 +332,7 @@ PvOscBank::myProcess(realvec& in, realvec& out)
 		
 		if (t == regions(t))
 		{
-			address_ = index_(regions(t));
+			address_ = index_((mrs_natural)regions(t));
 		}
 		else 
 		{

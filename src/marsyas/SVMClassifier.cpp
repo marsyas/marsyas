@@ -448,7 +448,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				  classPerms_.clear();
 				  for (mrs_natural i=0; i < classPerms.getSize(); ++i)
 				    {
-				      classPerms_.push_back(classPerms(i));
+				      classPerms_.push_back((mrs_natural)classPerms(i));
 				    }
 				}
 

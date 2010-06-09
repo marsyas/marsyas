@@ -336,7 +336,7 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 	{
 		minIndex = 0;
 		// look for the next valley location upward
-		for (mrs_natural j = index(i) ; j<mag.getSize()-1 ; j++)
+		for (mrs_natural j = (mrs_natural)index(i) ; j<mag.getSize()-1 ; j++)
 		{
 			if(mag(j) < mag(j+1))
 			{
@@ -348,7 +348,7 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 		interval(2*k+1) = minIndex;
 
 		// look for the next valley location downward
-		for (unsigned int j= index(i) ; j>1 ; j--)
+		for (unsigned int j= (mrs_natural)index(i) ; j>1 ; j--)
 		{
 			if(mag(j) < mag(j-1))
 			{
@@ -386,12 +386,12 @@ PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& ma
 
 	interval(0) = minIndex;
 
-	for(unsigned int i=start ; i<nbP-1 ; i++, k++)
+	for(mrs_natural i=start ; i<nbP-1 ; i++, k++)
 	{
 		minVal = HUGE_VAL;
 		minIndex = 0;
 		// look for the minimal value among successive peaks
-		for (unsigned int j= index(i) ; j<index(i+1) ; j++) // is this for loop like this?!?!?! [?]
+		for (mrs_natural j= (mrs_natural)index(i) ; j<(mrs_natural)index(i+1) ; j++) // is this for loop like this?!?!?! [?]
 		{
 			if(minVal > mag(j))
 			{
@@ -407,7 +407,7 @@ PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& ma
 	// handling the last case
 	minVal = HUGE_VAL;
 	minIndex = 0;
-	for (mrs_natural j= index(nbP-1) ; j<mag.getSize()-1 ; j++)
+	for (mrs_natural j= (mrs_natural)index(nbP-1) ; j<mag.getSize()-1 ; j++)
 	{
 		if(minVal > mag(j))
 		{

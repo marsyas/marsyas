@@ -45,7 +45,7 @@ AimSSI::ResetInternal() {
 double
 AimSSI::Log2(double n) {
   // log(n)/log(2) is log2.  
-  return log( n ) / log( 2 );
+  return log( n ) / log( 2.0f );
 }
 
 

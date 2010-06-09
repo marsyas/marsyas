@@ -83,7 +83,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 	mrs_natural obs = 0;
 	for(mrs_natural i=1; i<sizes_.getSize(); ++i)
 	{
-		obs += sizes_(i);
+		obs += (mrs_natural)sizes_(i);
 	}
 	ctrl_onObservations_->setValue(obs, NOUPDATE);
 	ctrl_onSamples_->setValue((mrs_natural)sizes_(0), NOUPDATE);
@@ -97,7 +97,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 	obs = getctrl("mrs_natural/inObservations")->to<mrs_natural>()/sizes_.getSize();
 	for(mrs_natural k=0; k<sizes_.getSize(); k++)
 	{
-		invecs_[k].create(obs, sizes_(k));
+		invecs_[k].create(obs, (mrs_natural)sizes_(k));
 	}
 
 	
@@ -232,7 +232,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 							marsystems_[0]->process(stackedFeatVecs_, metricResult_);
 							out(k+obs,i) = metricResult_(0,0);
 						}
-						obs += sizes_(j);
+						obs += (mrs_natural)sizes_(j);
 					}
 				}
 		}

@@ -151,14 +151,14 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 	//set peak searching start point to 2% of total window size [?]
 	mrs_real j = (mrs_real)in.getSize() * 0.02; 
 	//detect first local minimum...
-	while (r(j) < temp && j < in.getSize()/2)
+	while (r((mrs_natural)j) < temp && j < in.getSize()/2)
 	{
-		temp = r(j);
+		temp = r((mrs_natural)j);
 		j++;
 	}
 	//... and then from there, detect higher peak => period estimate!
 	temp = 0.0;
-	for (mrs_natural i=j; i < in.getSize() * 0.5; ++i)
+	for (mrs_natural i=(mrs_natural)j; i < in.getSize() * 0.5; ++i)
 	{
 		if (r(i) > temp) 
 		{
@@ -178,7 +178,7 @@ LPC::autocorrelationWarped(const realvec& in, realvec& r, mrs_real& pitch, mrs_r
 
 	//if autocorr peak not very prominent => not a good period estimate
 	//so discard it...
-	if ((r(j) / r(0)) < 0.4) j=0;
+	if ((r((mrs_natural)j) / r(0)) < 0.4) j=0;
 	//avoid detection of too high fundamental freqs (e.g. harmonics)?
 	if (j > in.getSize()/4) j = 0;
 

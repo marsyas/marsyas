@@ -89,7 +89,7 @@ void Pitch2Chroma::UpdatePitchToNoteTransform()
 		StartAndEndIndex_(i,0) = max((int)ceil(theLOGFb/theLinFStep),0);
 		StartAndEndIndex_(i,1) = min((int)floor(theLOGFe/theLinFStep),(int)inObservations_-1);
 
-		for (int j=StartAndEndIndex_(i,0); j<=StartAndEndIndex_(i,1); j++)
+		for (int j=(mrs_natural)StartAndEndIndex_(i,0); j<=(mrs_natural)StartAndEndIndex_(i,1); j++)
 		{
 			double theBinFreq = (mrs_real)j*theLinFStep;
 			if (theBinFreq <= theLOGFc)
@@ -124,7 +124,7 @@ void Pitch2Chroma::myProcess(realvec& inVec, realvec& outVec)
 	for(o=0; o<onObservations_; o++)
 		for(t=0; t<inSamples_; t++)
 			for(int i=0; i<NrOfNotes_; ++i)
-				for(int j=StartAndEndIndex_(i,0); j<=StartAndEndIndex_(i,1); j++)
+				for(int j=(mrs_natural)StartAndEndIndex_(i,0); j<=(mrs_natural)StartAndEndIndex_(i,1); j++)
 					outVec(o,t) += NoteToChromaTransform_(o,i)*
 						PitchToNoteTransform_(i,j)*inVec(j,t);
 

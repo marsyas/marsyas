@@ -191,10 +191,10 @@ GMMClassifier::initialize()
 		//for all the feature vectors (i.e. examples) in the trainMatrix...
 		for (mrs_natural c=0; c < trainSize; ++c) 
 		{
-			mrs_natural min = 100000000;
+			mrs_real min = 100000000;
 			
 			//get this feature vector class label
-			mrs_natural cl = trainMatrix_(labelRow_, c);		
+			mrs_natural cl = (mrs_natural)trainMatrix_(labelRow_, c);		
 			trainMatrix_.getCol(c, temp);
 			
 			// look for the minimum distance of this training feat. vec
@@ -301,10 +301,10 @@ GMMClassifier::doEM()
   mrs_real sum;
   
 	//for all feat.vecs in trainMatrix...
-  for (mrs_real c=0; c < trainSize; ++c)
+  for (mrs_natural c=0; c < trainSize; ++c)
   {
 		//get class label of current feature vector
-		cl = trainMatrix_(labelRow_, c);
+		cl = (mrs_natural)trainMatrix_(labelRow_, c);
 		classSizes_(cl)++;
 		sum = 0.0;
 		
@@ -375,7 +375,7 @@ GMMClassifier::doEM()
 	for (mrs_natural t=0; t < trainSize; t++)
 	{
 		//get its class label
-		cl = trainMatrix_(labelRow_, t);
+		cl = (mrs_natural)trainMatrix_(labelRow_, t);
 		
 		//get the feat.Vector
 		trainMatrix_.getCol(t, featVec);

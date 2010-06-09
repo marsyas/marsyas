@@ -59,9 +59,9 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 	outVec.setval(0.f);
 
 	int nmin = 0;
-	float vmin = inVec(0);
+	mrs_real vmin = inVec(0);
 	int nmax = 0;
-	float vmax = inVec(0);
+	mrs_real vmax = inVec(0);
 
 	int nthresh = 0;
 	bool theValid = true;

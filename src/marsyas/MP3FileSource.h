@@ -96,7 +96,7 @@ private:
   mrs_natural ri_;
   mrs_natural offset;
 
-  bool advance_;
+  mrs_natural advance_;
   mrs_natural cindex_;
   
   mrs_real duration_;

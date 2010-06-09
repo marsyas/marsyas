@@ -240,7 +240,7 @@ PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag
 	{
 		minIndex = 0;
 		// look for the next valley location upward
-		for (mrs_natural j= index(i) ; j<mag.getSize()-1 ; ++j)
+		for (mrs_natural j= (mrs_natural)index(i) ; j<mag.getSize()-1 ; ++j)
 		{
 			if(mag(j) < mag(j+1))
 			{
@@ -256,7 +256,7 @@ PeakConvert::getShortBinInterval(realvec& interval, realvec& index, realvec& mag
 		interval(2*k+1) = minIndex;
 
 		// look for the next valley location downward
-		for (mrs_natural j= index(i) ; j>1 ; --j)
+		for (mrs_natural j= (mrs_natural)index(i) ; j>1 ; --j)
 		{
 			if(mag(j) < mag(j-1))
 			{
@@ -325,7 +325,7 @@ PeakConvert::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag
 	// handling the last case
 	minVal = HUGE_VAL;
 	minIndex = 0;
-	for (mrs_natural j= index(nbP-1) ; j<mag.getSize()-1 ; ++j)
+	for (mrs_natural j= (mrs_natural)index(nbP-1) ; j<mag.getSize()-1 ; ++j)
 	{
 		if(minVal > mag(j))
 		{
