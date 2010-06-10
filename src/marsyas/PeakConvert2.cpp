@@ -374,66 +374,6 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 }
 
 
-void
-PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& mag)
-{
-	unsigned int k=0, start=0, nbP=index.getSize();
-
-	// handling the first case
-	mrs_real minVal = HUGE_VAL;
-	unsigned int minIndex = 0;
-
-	// getting rid of padding zeros
-	while(!index(start))
-		start++;
-
-	for (unsigned int j=0 ; j<index(start) ; j++) //is this foor loop like this?!?!?!?!?!?!?!?! [!]
-	{
-		if(minVal > mag(j))
-		{
-			minVal = mag(j);
-			minIndex = j;
-		}
-	}
-
-	interval(0) = minIndex;
-
-	for(unsigned int i=start ; i<nbP-1 ; i++, k++)
-	{
-		minVal = HUGE_VAL;
-		minIndex = 0;
-		// look for the minimal value among successive peaks
-		for (unsigned int j= (unsigned int)(index(i)+.1) ; j<index(i+1) ; j++) // is this for loop like this?!?!?! [?]
-		{
-			if(minVal > mag(j))
-			{
-				minVal = mag(j);
-				minIndex = j;
-			}
-		}
-
-		interval(2*k+1) = minIndex-1;
-		interval(2*(k+1)) = minIndex;
-	}
-
-	// handling the last case
-	minVal = HUGE_VAL;
-	minIndex = 0;
-	for (unsigned int j= (unsigned int)(index(nbP-1)+.1) ; j<mag.getSize()-1 ; j++)
-	{
-		if(minVal > mag(j))
-		{
-			minVal = mag(j);
-			minIndex = j;
-		}
-		// consider stopping the search at the first valley
-		if(minVal<mag(j+1))
-			break;
-	}
-
-	interval(2*(k)+1) = minIndex;
-}
-
 void PeakConvert2::ComputeMasking (realvec& in)
 {
 	masking_->updctrl ("mrs_natural/inObservations", size_);
