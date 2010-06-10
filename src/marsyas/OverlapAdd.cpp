@@ -23,10 +23,17 @@ using namespace Marsyas;
 
 OverlapAdd::OverlapAdd(string name):MarSystem("OverlapAdd",name)
 {
+	this->addControls ();
 }
 
 OverlapAdd::~OverlapAdd()
 {
+}
+
+void 
+OverlapAdd::addControls()
+{
+	addctrl("mrs_natural/ratioBlock2Hop", 2);
 }
 
 MarSystem* 
@@ -39,12 +46,12 @@ void
 OverlapAdd::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-	setctrl("mrs_natural/onSamples", ctrl_inSamples_->to<mrs_natural>()/2);
+	mrs_natural ratio = max((mrs_natural)1,getctrl("mrs_natural/ratioBlock2Hop")->to<mrs_natural>());
+	setctrl("mrs_natural/onSamples", ctrl_inSamples_->to<mrs_natural>()/ratio);
 	setctrl("mrs_natural/onObservations", ctrl_inObservations_->to<mrs_natural>());
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());    
 
-	back_.stretch(ctrl_onObservations_->to<mrs_natural>(), ctrl_onSamples_->to<mrs_natural>());
-	//back_.setval(0);
+	back_.stretch(ctrl_onObservations_->to<mrs_natural>(), ctrl_inSamples_->to<mrs_natural>()-ctrl_onSamples_->to<mrs_natural>());
 }
 
 void 
@@ -53,16 +60,21 @@ OverlapAdd::myProcess(realvec& in, realvec& out)
 	mrs_natural t,o;
 	for(o=0 ; o<onObservations_; o++)
 	{
+		// compute output
 		for(t=0;t<onSamples_;t++)
 			out(o, t) = back_(o, t)+in(o, t);
 
-		//MATLAB_PUT(tmp_, "vec");
-		//MATLAB_PUT(back_, "vec1");
-		//MATLAB_PUT(out, "vec2");
-		//MATLAB_EVAL("figure(1);clf;plot(vec1, 'r'); hold ; plot(vec) ; hold");
+		// old code
+		//for(t=0;t<onSamples_;t++)
+		//	back_(o, t) = in(o, t+onSamples_);
 
-		for(t=0;t<onSamples_;t++)
-			back_(o, t) = in(o, t+onSamples_);
+		// shift internal buffer and add new samples
+		for (t = onSamples_; t < inSamples_ - onSamples_; t++)
+			back_(o,t-onSamples_)	=  back_(o,t) + in(o,t);
+
+		// copy the non-overlapping samples
+		for (t = inSamples_-onSamples_; t < inSamples_; t++)
+			back_(o,t-onSamples_)	=  in(o,t);
 	}
 }
 

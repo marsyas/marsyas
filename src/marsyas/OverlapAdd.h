@@ -28,19 +28,18 @@ namespace Marsyas
     \ingroup Processing Basic
     \brief OverlapAdd
 	
-	Controls: none.
-
    perform an overlap-add operation of the input buffer.
-    Multiply with window (both length Nw) using modulus arithmetic;
-fold and rotate windowed input into output array (FFT) (length N) 
-according to current input time (t)
+   NOTE: does not apply a window function! This would be on the TODO...
+
+   Controls:
+   - \b mrs_natural/ratioBlock2Hop [w] : ratio of block size to hop size (example: bs = 2048, hs = 1024 --> ratio = 2).
 */
 
 
 class OverlapAdd: public MarSystem
 {
 private:
-	realvec win_;
+	void addControls();
 	realvec back_;
 
 	void myUpdate(MarControlPtr sender);
