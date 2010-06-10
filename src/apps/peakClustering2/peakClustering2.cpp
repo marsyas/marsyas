@@ -44,7 +44,7 @@ using namespace Marsyas;
 #define WITH_CLUSTERING
 
 //#define ORIGINAL
-
+//#define GEORGE_DBGVERSION
 #ifdef ORIGINAL
 #define USE_FANOUTIN
 #else
@@ -649,6 +649,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			{
 				postNet->addMarSystem(mng.create("PeakSynthOsc", "pso"));
 				postNet->addMarSystem(mng.create("Windowing", "wiSyn"));
+				postNet->addMarSystem(mng.create("OverlapAdd", "ov"));
 			}
 			else
 			{
@@ -663,6 +664,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				// set the correct buffer size
 				postNet->addMarSystem(mng.create("ShiftInput", "siSyn"));
 				// perform an FFT
+				postNet->addMarSystem(mng.create("Windowing", "wiSyn1"));
 				postNet->addMarSystem(mng.create("Spectrum", "specSyn"));
 				// convert to polar
 				postNet->addMarSystem(mng.create("Cartesian2Polar", "c2p"));
@@ -674,9 +676,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				//	 postNet->addMarSystem(mng.create("PlotSink", "plot"));
 				postNet->addMarSystem(mng.create("InvSpectrum", "invSpecSyn"));
 				// postNet->addMarSystem(mng.create("PlotSink", "plot2"));
-				postNet->addMarSystem(mng.create("Windowing", "wiSyn"));
+				postNet->addMarSystem(mng.create("Windowing", "wiSyn2"));
+				postNet->addMarSystem(mng.create("OverlapAdd", "ov"));
+				postNet->addMarSystem(mng.create("Gain", "ovComp"));
 			}
-			postNet->addMarSystem(mng.create("OverlapAdd", "ov"));
 		}
 		else
 		{
@@ -980,7 +983,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				// linking between the first slice and the psf
 				mainNet->linkControl("Shredder/synthNet/Series/postNet/Gain/fakeGain/mrs_realvec/processedData", "Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
 				//
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn1/mrs_string/type", "Sine");
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn2/mrs_string/type", "Sine");
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/OverlapAdd/ov/mrs_natural/ratioBlock2Hop", Nw/D);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/Gain/ovComp/mrs_real/gain", (2.*D)/Nw);
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
 				// setting the panning mode mono/stereo
