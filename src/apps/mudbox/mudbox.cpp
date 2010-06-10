@@ -3501,15 +3501,15 @@ toy_with_stereo2mono(string fname)
 void 
 toy_with_lyons(string fname)
 {
-	//const mrs_bool      doMatlabPlots   = true;
-	//const mrs_real      simSampleRate   = 16000.0F;
+	const mrs_bool      doMatlabPlots   = true;
+	const mrs_real      simSampleRate   = 16000.0F;
 	const mrs_natural   numIrSamples    = 256;
 	mrs_bool            dataMismatch    = false;
 	MarSystemManager    mng;
 	mrs_realvec         srcData (numIrSamples),
 		destData;
 	mrs_realvec			mtlb_destData;
-	//const mrs_real		floatTolerance  = 1e-6F;
+	const mrs_real		floatTolerance  = 1e-6F;
 
 	///////////////////////////////////////////////////////////////
 	cout << ">>>>>>>> compute example audio output for Lyon's Passive Ear" << endl;
@@ -3613,7 +3613,7 @@ toy_with_lyons(string fname)
 void 
 toy_with_auditorytbx(string fname)
 {
-    //const mrs_bool      doMatlabPlots   = true;
+    const mrs_bool      doMatlabPlots   = true;
     const mrs_real      simSampleRate   = 16000.0F;
     const mrs_natural   numIrSamples    = 512;
     mrs_real            lowFreq         = 100.0F;
@@ -6579,13 +6579,14 @@ void toy_with_delay (string inAudioFileName, string outAudioFileName)
 	net_ = mng.create("Series", "net");
 	net_->addMarSystem(mng.create("SoundFileSource", "src"));
 	net_->addMarSystem (mng.create("Delay", "del"));
+	net_->addMarSystem (mng.create("MixToMono", "m2m"));
 	net_->addMarSystem(mng.create("SoundFileSink", "dest"));
 
 	// set parameters
 	net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
 	net_->updctrl("SoundFileSink/dest/mrs_string/filename", outAudioFileName);
 
-	net_->updctrl("Delay/del/mrs_real/maxDelaySeconds",1.0);
+	net_->updctrl("Delay/del/mrs_real/maxDelaySeconds",5.0);
 
 	fs = 	net_->getctrl("Delay/del/mrs_real/israte")->to<mrs_real>();
 
@@ -6593,11 +6594,19 @@ void toy_with_delay (string inAudioFileName, string outAudioFileName)
 
 	while (net_->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())  
 	{ 
-		mrs_realvec r;
-		mrs_real	modAmpInSecs	= .1,
-					modFreqInHz		= 1.0;
+		mrs_realvec r,
+					test,
+					modFreqInHz;
+		mrs_real	modAmpInSecs	= .1;
+		test.stretch(2);
+		modFreqInHz.stretch(2);
+		modFreqInHz(0)	= 1;
+		modFreqInHz(1)	= 4;
+		test (0)	= fs*modAmpInSecs*.5*(1+sin(TWOPI*modFreqInHz(0)*sampleCount / fs));
+		test (1)	= fs*modAmpInSecs*.5*(1+sin(TWOPI*modFreqInHz(1)*sampleCount / fs));
 
-		net_->updctrl("Delay/del/mrs_real/delaySeconds", modAmpInSecs*.5*(1+sin(TWOPI*modFreqInHz*sampleCount / fs)));
+		net_->updctrl("Delay/del/mrs_realvec/delaySamples", test);
+		//net_->updctrl("Delay/del/mrs_real/delaySeconds", modAmpInSecs*.5*(1+sin(TWOPI*modFreqInHz*sampleCount / fs)));
 		net_->tick();
 
 		r = net_->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
