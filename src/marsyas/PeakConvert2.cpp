@@ -15,6 +15,7 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
+#include <algorithm>
 
 #include "common.h"
 #include "common_header.h"
@@ -25,7 +26,6 @@
 #include "peakView.h"
 #include "basis.h"
 
-#include <algorithm>
 
 //#define MTLB_DBG_LOG
 //#define ORIGINAL_VERSION
@@ -206,8 +206,7 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate (sender);
 
 	hopSize_	= getctrl ("mrs_natural/hopSize")->to<mrs_natural>();
-
-
+	mrs_real timeSrate = israte_*(mrs_real)N_;//israte_*(mrs_real)inObservations_/2.0;
 	//check the input to see if we are also getting stereo information
 	//(N_ is the FFT size)
 	if (fmod(inObservations_, 2.0) == 0.0)
@@ -224,11 +223,34 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 		N_ = (mrs_natural)((inObservations_-1) / 2.5);
 		useStereoSpectrum_ = true; 
 	}
+	size_ = N_/2+1;//inObservations_ /4 +1;
+
+
+	skip_ = getctrl("mrs_natural/nbFramesSkipped")->to<mrs_natural>();
+	prec_ = getctrl("mrs_bool/improvedPrecision")->to<mrs_bool>();
+	pick_ = getctrl("mrs_bool/picking")->to<mrs_bool>(); 
+	if(getctrl("mrs_string/frequencyInterval")->to<mrs_string>() != "MARSYAS_EMPTY")
+	{
+		realvec conv(2);
+		string2parameters(getctrl("mrs_string/frequencyInterval")->to<mrs_string>(), conv, '_'); //[!]
+		downFrequency_ = (mrs_natural) floor(conv(0)/timeSrate*size_*2) ;
+		upFrequency_ = min(size_,(mrs_natural) floor(conv(1)/timeSrate*size_*2));	
+	}
+	else
+	{
+		downFrequency_ = 0;
+		upFrequency_ = size_;
+	}
+
 
 	//if picking is disabled (==false), the number of sinusoids should be set
 	//to the number of unique bins of the spectrums at the input (i.e. N/2+1)
-	if(!pick_ && ctrl_frameMaxNumPeaks_->to<mrs_natural>() == 0)
-		frameMaxNumPeaks_ = N_/2+1; //inObservations_/4+1;
+	if(!pick_ /*&& ctrl_frameMaxNumPeaks_->to<mrs_natural>() == 0*/)
+	{
+		frameMaxNumPeaks_	= N_/2+1; //inObservations_/4+1;
+		downFrequency_		= 0;
+		upFrequency_		= size_;
+	}
 	else
 		frameMaxNumPeaks_ = ctrl_frameMaxNumPeaks_->to<mrs_natural>();
 
@@ -244,14 +266,11 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	
-	mrs_real timeSrate = israte_*(mrs_real)N_;//israte_*(mrs_real)inObservations_/2.0;
-
 	if (getctrl("mrs_real/peakSmearingTimeInS")->to<mrs_real>() == 0)
 		lpCoeff_	= 0;
 	else
 		lpCoeff_	= exp(-2.2/(timeSrate/hopSize_*getctrl("mrs_real/peakSmearingTimeInS")->to<mrs_real>()));
 
-	size_ = N_/2+1;//inObservations_ /4 +1;
 	if (size_ != psize_)
 	{
 		tmpBuff_.stretch(inObservations_);
@@ -279,23 +298,6 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 	if (peakProbWeight_.getRows () > peakProbWeight_.getCols ())
 		peakProbWeight_.transpose ();
 	peakProbWeight_	/= peakProbWeight_.sum ();
-
-	skip_ = getctrl("mrs_natural/nbFramesSkipped")->to<mrs_natural>();
-	prec_ = getctrl("mrs_bool/improvedPrecision")->to<mrs_bool>();
-	pick_ = getctrl("mrs_bool/picking")->to<mrs_bool>(); 
-	
-	if(getctrl("mrs_string/frequencyInterval")->to<mrs_string>() != "MARSYAS_EMPTY")
-	{
-		realvec conv(2);
-		string2parameters(getctrl("mrs_string/frequencyInterval")->to<mrs_string>(), conv, '_'); //[!]
-		downFrequency_ = (mrs_natural) floor(conv(0)/timeSrate*size_*2) ;
-		upFrequency_ = (mrs_natural) floor(conv(1)/timeSrate*size_*2);	
-	}
-	else
-	{
-		downFrequency_ = 0;
-		upFrequency_ = size_;
-	}
 }
 
 mrs_real
@@ -325,18 +327,25 @@ PeakConvert2::lobe_value_compute(mrs_real f, mrs_natural type, mrs_natural size)
 void
 PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& mag)
 {
-	mrs_natural k=0, start=0, nbP=index.getSize();
-	mrs_natural minIndex = 0;
+	const unsigned int maxLobeWidth = 6;
+	unsigned int	nbP=index.getSize();
+	unsigned int minIndex = 0,
+				endLoop,
+				length = mag.getSize ();
 
-	// getting rid of padding zeros
-	while(start<index.getSize() && !index(start))
-		start++;
+	// we could also use the instantaneous frequency here...?
 
-	for(mrs_natural i=start ; i<nbP ; i++, k++)
+	for(unsigned int i=0 ; i<nbP ; i++)
 	{
-		minIndex = 0;
+		unsigned int idx = (unsigned int)(index(i)+.1);
+
+		if (idx <= 0)
+			continue;
+
+		endLoop		= min(length,idx + maxLobeWidth);
+		minIndex	= endLoop;
 		// look for the next valley location upward
-		for (mrs_natural j = (mrs_natural)index(i) ; j<mag.getSize()-1 ; j++)
+		for (unsigned int j = idx ; j < endLoop ; j++)
 		{
 			if(mag(j) < mag(j+1))
 			{
@@ -345,10 +354,13 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 			}
 		}
 
-		interval(2*k+1) = minIndex;
+		interval(2*i+1) = minIndex;
+		
+		endLoop		= max((unsigned int)0,idx - maxLobeWidth);
+		minIndex	= endLoop;
 
 		// look for the next valley location downward
-		for (unsigned int j= (mrs_natural)index(i) ; j>1 ; j--)
+		for (unsigned int j= idx ; j > endLoop ; j--)
 		{
 			if(mag(j) < mag(j-1))
 			{
@@ -357,7 +369,7 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 			}
 		}
 
-		interval(2*k) = minIndex;
+		interval(2*i) = minIndex;
 	}
 }
 
@@ -386,12 +398,12 @@ PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& ma
 
 	interval(0) = minIndex;
 
-	for(mrs_natural i=start ; i<nbP-1 ; i++, k++)
+	for(unsigned int i=start ; i<nbP-1 ; i++, k++)
 	{
 		minVal = HUGE_VAL;
 		minIndex = 0;
 		// look for the minimal value among successive peaks
-		for (mrs_natural j= (mrs_natural)index(i) ; j<(mrs_natural)index(i+1) ; j++) // is this for loop like this?!?!?! [?]
+		for (unsigned int j= (unsigned int)(index(i)+.1) ; j<index(i+1) ; j++) // is this for loop like this?!?!?! [?]
 		{
 			if(minVal > mag(j))
 			{
@@ -407,7 +419,7 @@ PeakConvert2::getLargeBinInterval(realvec& interval, realvec& index, realvec& ma
 	// handling the last case
 	minVal = HUGE_VAL;
 	minIndex = 0;
-	for (mrs_natural j= (mrs_natural)index(nbP-1) ; j<mag.getSize()-1 ; j++)
+	for (unsigned int j= (unsigned int)(index(nbP-1)+.1) ; j<mag.getSize()-1 ; j++)
 	{
 		if(minVal > mag(j))
 		{
@@ -462,23 +474,30 @@ void PeakConvert2::ComputeMagnitudeAndPhase (mrs_realvec in)
 			d = in(N_+2*o+1);
 		}
 
+		if (o < downFrequency_ || o > upFrequency_)
+		{
+			frequency_(o)	= 0;
+			mag_(o)			= sqrt((a*a + b*b))*2; 
+			continue;
+		}
 		if ( a == .0 || c == .0)
 		{
 			frequency_(o) = o*fundamental_;
 		}
 		else
 		{
-			mrs_real Omega = TWOPI*o*instFreqHopSize_/N_;    // now words with hopsizes != 1 as well  (AL)
+			if(prec_ && pick_)
+			{
+				mrs_real Omega = TWOPI*o*instFreqHopSize_/N_;    // now works with hopsizes != 1 as well  (AL)
 
-			// compute phase
-			phase_(o) = atan2(b,a);
+				// compute phase
+				phase_(o)		= atan2(b,a);
 
-			// compute precise frequency using the phase difference
-			lastphase_(o)= atan2(d,c);
-			//	phasediff = phase_(o)-lastphase_(o);
-			phasediff = princArg(phase_(o)-lastphase_(o) - Omega) + Omega;
-			if(prec_)
-				frequency_(o) = abs(phasediff * factor_ );
+				// compute precise frequency using the phase difference
+				lastphase_(o)	= atan2(d,c);
+				phasediff		= princArg(phase_(o)-lastphase_(o) - Omega) + Omega;
+				frequency_(o)	= abs(phasediff * factor_ );
+			}
 			else
 				frequency_(o) = o*fundamental_;
 		}
@@ -486,17 +505,24 @@ void PeakConvert2::ComputeMagnitudeAndPhase (mrs_realvec in)
 
 		// compute precise amplitude
 		mag_(o) = sqrt((a*a + b*b))*2; 
-		mrs_real mag = lobe_value_compute((o * fundamental_-frequency_(o))/factor_, 1, N_);
-		magCorr_(o) = mag_(o)/mag;
-		mrs_real freq = frequency_(o);
+		if (pick_)
+		{
+			mrs_real mag = lobe_value_compute((o * fundamental_-frequency_(o))/factor_, 1, N_);
+			magCorr_(o) = mag_(o)/mag;
+		}
+		else
+		{
+			magCorr_(o) = mag_(o);
+		}
+		//mrs_real freq = frequency_(o);
 
 		if(lastfrequency_(o) != 0.0)
 			deltafrequency_(o) = (frequency_(o)-lastfrequency_(o))/(frequency_(o)+lastfrequency_(o));
 
-		deltamag_(o) = (mag_(o)-lastmag_(o))/(mag_(o)+lastmag_(o));
+		deltamag_(o)		= (mag_(o)-lastmag_(o))/(mag_(o)+lastmag_(o));
 
-		lastfrequency_(o) = freq;
-		lastmag_(o) = mag;
+		lastfrequency_(o)	= frequency_(o);
+		lastmag_(o)			= magCorr_(o);
 	}
 }
 
@@ -525,7 +551,7 @@ void PeakConvert2::ComputePeaker (mrs_realvec in, realvec& out)
 void 
 PeakConvert2::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o;
+	mrs_natural o,i;
 	out.setval(0);
 	peakView pkViewOut(out);
 
@@ -550,7 +576,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 			this->ComputeMagnitudeAndPhase (tmpBuff_);
 
 			// compute masking threshold
-			if (useMasking)
+			if (useMasking && pick_)
 				ComputeMasking (tmpBuff_);
 
 			// select bins with local maxima in magnitude (--> peaks)
@@ -573,6 +599,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 			{
 				if (peaks_(o) <= 0)
 				{
+					frequency_(o)	= .0;
 					// time smearing if no new peak
 					lpPeakerRes_(o)	*=lpCoeff_;
 					continue;
@@ -597,23 +624,17 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 				lpPeakerRes_(o)	= 1;
 
 				peakProb_ *= peakProbWeight_;
-				if (peakProb_.sum() < probThresh)
-					peaks_(o)	= .0;
-				else
-					(void)peaks_(o);
+				if ((peakProb_.sum() < probThresh) && pick_)
+				{
+					peaks_(o)		= .0;
+					frequency_(o)	= .0;
+				}
 			}
 
 			// keep only the frameMaxNumPeaks_ highest amplitude local maxima
-			if(ctrl_frameMaxNumPeaks_->to<mrs_natural>() != 0) //?????????????????? is this check needed?!? See myUpdate
-			{
-				tmp_.stretch(frameMaxNumPeaks_*2);
-				max_->updctrl("mrs_natural/nMaximums", frameMaxNumPeaks_);
-			}
-			else //?????????????????? is this check needed?!? See myUpdate
-			{
-				tmp_.stretch((upFrequency_-downFrequency_)*2);
-				max_->updctrl("mrs_natural/nMaximums", upFrequency_-downFrequency_);
-			}
+			tmp_.stretch(frameMaxNumPeaks_*2);
+			max_->updctrl("mrs_natural/nMaximums", frameMaxNumPeaks_);
+
 			max_->setctrl("mrs_natural/inSamples", size_);
 			max_->setctrl("mrs_natural/inObservations", 1);
 			max_->update();
@@ -621,20 +642,26 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 
 			nbPeaks_=tmp_.getSize()/2;
 			realvec index_(nbPeaks_); //[!] make member to avoid reallocation at each tick!
-			for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
+			for (i=0 ; i<nbPeaks_ ; i++)
 				index_(i) = tmp_(2*i+1);
-			realvec index2_ = index_;
-			index2_.sort();
 
 			// search for bins interval
 			realvec interval_(nbPeaks_*2); //[!] make member to avoid reallocation at each tick!
 			interval_.setval(0);
 			if(pick_)
-				getShortBinInterval(interval_, index2_, mag_);
+				getShortBinInterval(interval_, index_, mag_);
+			else
+			{
+				for (i=0 ; i<nbPeaks_ ; i++)
+					interval_(2*i+1) = index_(i);
+			}
 
 #ifdef LOG2FILE
-			for (mrs_natural i=0 ; i<nbPeaks_ ; i++)
-				pFDbgFile << std::scientific << std::setprecision(4) << frequency_((mrs_natural) index_(i)) << "\t";
+			for (i=0 ; i<nbPeaks_ ; i++)
+			{
+				mrs_real value = frequency_((mrs_natural) (index_(i)+.1)); 
+				pFDbgFile << std::scientific << std::setprecision(4) << value << "\t";
+			}
 			pFDbgFile << std::endl;
 #endif
 #ifdef MARSYAS_MATLAB
@@ -652,22 +679,25 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 			
 
 			// fill output with peaks data
-			interval_ /= N_*2;
+			interval_ /= N_;
 
-			for (mrs_natural i = 0; i < nbPeaks_; i++)
+			for (i = 0; i < nbPeaks_; i++)
 			{
-				pkViewOut(i, peakView::pkFrequency, f) = frequency_((mrs_natural) index_(i));
-				pkViewOut(i, peakView::pkAmplitude, f) = magCorr_((mrs_natural) index_(i));
-				pkViewOut(i, peakView::pkPhase, f) = -phase_((mrs_natural) index_(i));
-				pkViewOut(i, peakView::pkDeltaFrequency, f) = deltafrequency_((mrs_natural) index_(i));
-				pkViewOut(i, peakView::pkDeltaAmplitude, f) = abs(deltamag_((mrs_natural) index_(i)));
+				mrs_natural index = (mrs_natural) (index_(i)+.1); 
+				pkViewOut(i, peakView::pkFrequency, f) = frequency_(index);
+				pkViewOut(i, peakView::pkAmplitude, f) = magCorr_(index);
+				pkViewOut(i, peakView::pkPhase, f) = -phase_(index);
+				pkViewOut(i, peakView::pkDeltaFrequency, f) = deltafrequency_(index);
+				pkViewOut(i, peakView::pkDeltaAmplitude, f) = abs(deltamag_(index));
 				pkViewOut(i, peakView::pkFrame, f) = frame_; 
-				pkViewOut(i, peakView::pkGroup, f) = 0.0; //This should be -1!!!! [TODO]
+				pkViewOut(i, peakView::pkGroup, f) = 0.;//(pick_)?-1.:0.; //This should be -1!!!! [TODO]
 				pkViewOut(i, peakView::pkVolume, f) = 1.0;
 				pkViewOut(i, peakView::pkBinLow, f) = interval_(2*i);
 				pkViewOut(i, peakView::pkBin, f) = index_(i);
 				pkViewOut(i, peakView::pkBinHigh, f) = interval_(2*i+1);
 				pkViewOut(i, peakView::pkTrack, f) = -1.0; //null-track ID
+
+				MRSASSERT((index_(i) <= interval_(2*i)) || (interval_(2*i+1) <= index_(i)));
 
 				if(useStereoSpectrum_)
 					pkViewOut(i, peakView::pkPan, f) = in((mrs_natural)index_(i)+2*N_, f);

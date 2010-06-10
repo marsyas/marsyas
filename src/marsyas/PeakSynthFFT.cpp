@@ -103,7 +103,7 @@ PeakSynthFFT::generateMask(mrs_natural type)
 		for(j=0 ; j<nbPeaks; j++)
 		{
 			if(peaks(j+peakView::pkGroup*nbPeaks) > -1 &&
-				 i>=peaks(j+nbPeaks*peakView::pkBinLow)*onObservations_ && i<peaks(j+nbPeaks*peakView::pkBinHigh)*onObservations_)
+				 i>=peaks(j+nbPeaks*peakView::pkBinLow)*onObservations_ && i<=peaks(j+nbPeaks*peakView::pkBinHigh)*onObservations_)
 			{
 				mrs_real vol, pan;
 				if(fgVolume_ != -1)
@@ -151,7 +151,7 @@ PeakSynthFFT::myProcess(realvec& in, realvec& out)
 {	
 	mrs_natural nbChannels = ctrl_NbChannels_->to<mrs_natural>();
 	mrs_natural t,o;
-	cout << ctrl_Peaks_->to<mrs_realvec>();
+	//cout << ctrl_Peaks_->to<mrs_realvec>();
 	for (t = 0; t < onSamples_; t++)
 	{
 		generateMask(t+(nbChannels-1));

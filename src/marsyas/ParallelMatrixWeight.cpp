@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-#define MTLB_DBG_LOG
+//#define MTLB_DBG_LOG
 
 ParallelMatrixWeight::ParallelMatrixWeight(string name) : MarSystem("ParallelMatrixWeight", name)
 {

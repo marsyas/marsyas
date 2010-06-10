@@ -271,15 +271,9 @@ printHelp(string progName)
 	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1uTabfbho means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames, no precise parameter estimation and using a combination of similarities abfbho)" << endl;
 	cerr << "-npp --noPeakPicking : do not perform peak picking in the spectrum" << endl;
 	cerr << "-u --unprecise : do not perform precise estimation of sinusoidal parameters" << endl;
-	
-	cerr << "-if --ignoreFrequency: ignore frequency similarity between peaks" << endl;
-	cerr << "-it --ignoreTime: ignore time proximity between peaks" << endl;
-	cerr << "-ia --ignoreAmplitude: ignore amplitude similarity between peaks" << endl;
-	cerr << "-idf --ignoreDeltaFrequency: ignore frequency modulation similarity between peaks" << endl;
-	cerr << "-ida --ignoreDeltaAmplitude: ignore amplitude modulation similarity between peaks" << endl;
-	cerr << "-ida --ignoreConnectivity: ignore connectivity measure between peaks" << endl;
-	cerr << "-ih --ignoreHWPS: ignore harmonicity (HWPS) similarity between peaks" << endl;
-	cerr << "-ip --ignorePan: ignore panning similarity between peaks" << endl;
+
+	for (mrs_natural i = 0; i < kNumSimMeasures; i++)
+		cerr << "-" << simMeasureProps[i].clShort << " --" << simMeasureProps[i].clLong << " ignore " << simMeasureProps[i].desc << " similarity between peaks" << endl;
 	
 	cerr << "-uo --useOnsets: use onset detector for dynamically adjusting the length of texture windows" << endl;
 	cerr << "-hw --horizWeight: apply horizontality weighting to features" << endl;
@@ -342,7 +336,7 @@ MarSystem* createSimilarityNet (MarSystemManager *mng, mrs_string seriesName = "
 				tmp << simMeasureProps[i].name << "_" << "L2Norm";
 				newSimMat->addMarSystem(mng->create("Metric", tmp.str ()));
 				tmp.str("");
-				tmp << "Metric/" << simMeasureProps[i].name << "_" << "L2Norm" << "/mrs_string/metric" << "," << "euclideanDistance";
+				tmp << "Metric/" << simMeasureProps[i].name << "_" << "L2Norm" << "/mrs_string/metric","euclideanDistance";
 				newSimMat->updctrl(tmp.str (),simMeasureProps[i].distance);
 				newSimMat->updctrl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
 				break;
@@ -984,7 +978,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			else 
 			{
 				// linking between the first slice and the psf
-				mainNet->linkControl("Shredder/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
+				mainNet->linkControl("Shredder/synthNet/Series/postNet/Gain/fakeGain/mrs_realvec/processedData", "Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
 				//
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
@@ -993,7 +987,8 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_natural/nbChannels", synthetize_);
 				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_string/panning", panningInfo);
 				// setting the FFT size
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", D*2);
+				//mainNet->updctrl("Shredder/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", D*2);
+				mainNet->updctrl("Shredder/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", Nw);
 				// setting the name of the original file
 				if (microphone_) 
 				{
@@ -1064,12 +1059,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 		if (!microphone_)
 		{
-			bool temp;
-			temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
-			bool temp1; 
-			temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
-			bool temp2; 
-			temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
+			bool temp = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
+			bool temp1 = textWinNet->getctrl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
+			bool temp2 = analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 
 			mrs_real timeRead =  analysisNet->getctrl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 			mrs_real timeLeft;
