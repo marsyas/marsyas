@@ -23,8 +23,14 @@ CxxTest::StaticSuiteDescription suiteDescription_AimPZFC_runner( "TestAimPZFC.h"
 
 static class TestDescription_AimPZFC_runner_test_one_window_1000hz : public CxxTest::RealTestDescription {
 public:
- TestDescription_AimPZFC_runner_test_one_window_1000hz() : CxxTest::RealTestDescription( Tests_AimPZFC_runner, suiteDescription_AimPZFC_runner, 39, "test_one_window_1000hz" ) {}
+ TestDescription_AimPZFC_runner_test_one_window_1000hz() : CxxTest::RealTestDescription( Tests_AimPZFC_runner, suiteDescription_AimPZFC_runner, 34, "test_one_window_1000hz" ) {}
  void runTest() { suite_AimPZFC_runner.test_one_window_1000hz(); }
 } testDescription_AimPZFC_runner_test_one_window_1000hz;
+
+static class TestDescription_AimPZFC_runner_test_wav_file : public CxxTest::RealTestDescription {
+public:
+ TestDescription_AimPZFC_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimPZFC_runner, suiteDescription_AimPZFC_runner, 76, "test_wav_file" ) {}
+ void runTest() { suite_AimPZFC_runner.test_wav_file(); }
+} testDescription_AimPZFC_runner_test_wav_file;
 
 #include <cxxtest/Root.cpp>
