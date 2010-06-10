@@ -107,8 +107,9 @@ AimHCL::ResetInternal() {
   yn_ = 0.0f;
   yns_.clear();
   yns_.resize(ctrl_inObservations_->to<mrs_natural>());
+  mrs_natural _lowpass_order = ctrl_lowpass_order_->to<mrs_natural>();
   for (int c = 0; c < ctrl_inObservations_->to<mrs_natural>(); ++c) {
-    yns_[c].resize(ctrl_lowpass_order_->to<mrs_natural>(), 0.0f);
+    yns_[c].resize(_lowpass_order, 0.0f);
   }
 }
 
@@ -124,15 +125,21 @@ void
 AimHCL::myProcess(realvec& in, realvec& out)
 {
   mrs_natural o,t;
+  mrs_real _israte = ctrl_israte_->to<mrs_real>();
+  mrs_natural _inObservations = ctrl_inObservations_->to<mrs_natural>();
+  mrs_natural _inSamples = ctrl_inSamples_->to<mrs_natural>();
+  mrs_natural _onSamples = ctrl_onSamples_->to<mrs_natural>();
+  mrs_natural _lowpass_order = ctrl_lowpass_order_->to<mrs_natural>();
+  mrs_bool _do_lowpass = ctrl_do_lowpass_->to<mrs_bool>();
+  mrs_bool _do_log = ctrl_do_log_->to<mrs_bool>();
 
-  for (o = 0; o < ctrl_inObservations_->to<mrs_natural>(); o++) {
-    for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
-      // out(o,t) = in(o,t);
+  for (o = 0; o < _inObservations; ++o) {
+    for (t = 0; t < _inSamples; ++t) {
       if (in(o,t) < 0.0f) {
         out(o, t) = 0.0f;
       } else {
         float s = in(o,t);
-        if (ctrl_do_log_->to<mrs_bool>()) {
+        if (_do_log) {
           s *= pow(2.0f, 15);
           if (s < 1.0f) s = 1.0f;
           s = 20.0f * log10(s);
@@ -140,11 +147,11 @@ AimHCL::myProcess(realvec& in, realvec& out)
         out(o, t) = s;
       }
     }
-    if (ctrl_do_lowpass_->to<mrs_bool>()) {
-      float b = exp(-1.0f / (ctrl_israte_->to<mrs_natural>() * time_constant_));
+    if (_do_lowpass) {
+      float b = exp(-1.0f / (_israte * time_constant_));
       float gain = 1.0f / (1.0f - b);
-      for (int j = 0; j < ctrl_lowpass_order_->to<mrs_natural>(); j++) {
-        for (int k = 0; k < ctrl_onSamples_->to<mrs_natural>(); ++k) {
+      for (int j = 0; j < _lowpass_order; j++) {
+        for (int k = 0; k < _onSamples; ++k) {
           xn_ = out(o,k);
           yn_ = xn_ + b * yns_[o][j];
           yns_[o][j] = yn_;
