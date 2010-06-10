@@ -24,9 +24,11 @@
 \date 21/07/2007
 */
 
-#ifndef __MARCONTROL__
-#error Do not include this file directly, include only MarControl.h
-#endif
+//#ifndef __MARCONTROL__
+//#error Do not include this file directly, include only MarControl.h
+//#endif
+#include "MarControl.h"
+
 
 namespace Marsyas
 {

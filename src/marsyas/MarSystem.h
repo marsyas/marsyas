@@ -21,6 +21,7 @@
 
 #include "common_header.h"
 #include "MarControl.h"
+#include "MarControlAccessor.h"
 #include "realvec.h"
 #include "Conversions.h"
 

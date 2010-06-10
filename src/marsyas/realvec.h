@@ -150,8 +150,8 @@ namespace Marsyas
 		marsyas_EXPORT friend realvec operator*(const realvec& vec1, const realvec& vec2);
 		marsyas_EXPORT friend realvec operator/(const realvec& vec1, const realvec& vec2);
 	
-		bool operator!=(const realvec& v1);
-		bool operator==(const realvec &v1);
+		bool operator!=(const realvec& v1) const;
+		bool operator==(const realvec &v1) const;
 	
 		//@}
 

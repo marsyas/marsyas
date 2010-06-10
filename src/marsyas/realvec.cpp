@@ -1662,7 +1662,7 @@ namespace Marsyas
 	
 	
 	
-	bool realvec::operator==(const realvec &v1)
+	bool realvec::operator==(const realvec &v1) const
 	{
 		//different size -> not equal
 		if (v1.getRows()!=rows_) return false;
@@ -1679,7 +1679,7 @@ namespace Marsyas
 	}
 	
 	
-	bool realvec::operator!=(const realvec &v1) 
+	bool realvec::operator!=(const realvec &v1)  const
 	{
 		return !(*this == v1);
 	}

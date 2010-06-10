@@ -25,7 +25,9 @@
 #include "MarSystem.h"
 
 using namespace std;
-using namespace Marsyas;
+
+namespace Marsyas {
+	
 
 #ifdef TRACECONTROLS
 std::set<MarControl*> MarControlPtr::controlTracer;
@@ -59,12 +61,29 @@ MarControlPtr::~MarControlPtr()
 	{
 		TRACE_REMCONTROL;
 		control_->unref();
+		control_ = NULL;
 	}
 }
 
 /************************************************************************/
 /* MarControl implementation                                            */
 /************************************************************************/
+	
+
+WAS_INLINE void MarControl::ref() 
+{ 
+	refCount_++; 
+}
+WAS_INLINE void MarControl::unref() 
+{
+	if (--refCount_ <= 0) 
+		delete this; 
+}
+int MarControl::getRefCount() const 
+{ 
+	return refCount_; 
+}
+	
 
 MarControl*
 MarControl::clone()
@@ -368,3 +387,674 @@ MarControl::getLinks()
 	}
 	return res;
 }
+
+
+
+WAS_INLINE MarControlPtr::MarControlPtr(MarControl control)
+{
+	control_ = new MarControl(control);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(MarControlValue *value)
+{
+	control_ = new MarControl(value);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(int ne)
+{
+	control_ = new MarControl((mrs_natural)ne);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(unsigned int ne)
+{
+	control_ = new MarControl((mrs_natural)ne);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(float ne)
+{
+	control_ = new MarControl(ne);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+
+WAS_INLINE MarControlPtr::MarControlPtr(mrs_natural ne)
+{
+	control_ = new MarControl(ne);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(double re)
+{
+	control_ = new MarControl(re);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(const char *c)
+{
+	control_ = new MarControl(std::string(c));
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(std::string st)
+{
+	control_ = new MarControl(st);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(mrs_bool be)
+{
+	control_ = new MarControl(be);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE MarControlPtr::MarControlPtr(realvec ve)
+{
+	control_ = new MarControl(ve);
+	control_->ref();
+	TRACE_ADDCONTROL;
+}
+
+WAS_INLINE std::ostream& operator<<(std::ostream& os, const MarControlPtr& ctrl)
+{ 
+	return (os << (*ctrl.control_)); 
+}
+
+WAS_INLINE bool operator==(const MarControlPtr& v1, const MarControlPtr& v2)
+{
+	return (*v1.control_) == (*v2.control_);
+}
+
+WAS_INLINE bool operator!=(const MarControlPtr& v1, const MarControlPtr& v2)
+{
+	return (*v1.control_) != (*v2.control_);
+}
+
+WAS_INLINE mrs_real operator+(const MarControlPtr& v1, const mrs_real& v2)
+{ 
+	return (*v1.control_)+v2; 
+}
+
+WAS_INLINE mrs_real operator+(const mrs_real& v1, const MarControlPtr& v2)
+{
+	return v1+(*v2.control_); 
+}
+
+WAS_INLINE mrs_real operator-(const MarControlPtr& v1, const mrs_real& v2) 
+{
+	return (*v1.control_)-v2; 
+}
+
+WAS_INLINE mrs_real operator-(const mrs_real& v1, const MarControlPtr& v2)
+{
+	return v1-(*v2.control_); 
+}
+
+WAS_INLINE mrs_real operator*(const MarControlPtr& v1, const mrs_real& v2)
+{ 
+	return (*v1.control_)*v2; 
+}
+WAS_INLINE mrs_real operator*(const mrs_real& v1, const MarControlPtr& v2)
+{
+	return v1*(*v2.control_);
+}
+
+WAS_INLINE mrs_real operator/(const MarControlPtr& v1, const mrs_real& v2)
+{
+	return (*v1.control_)/v2;
+}
+
+WAS_INLINE mrs_real operator/(const mrs_real& v1, const MarControlPtr& v2)
+{
+	return v1/(*v2.control_);
+}
+
+WAS_INLINE MarControlPtr operator+(const MarControlPtr& v1, const MarControlPtr& v2)
+{ 
+	return (*v1.control_)+(*v2.control_); 
+}
+
+WAS_INLINE MarControlPtr operator-(const MarControlPtr& v1, const MarControlPtr& v2) 
+{
+	return (*v1.control_)-(*v2.control_); 
+}
+
+WAS_INLINE MarControlPtr operator*(const MarControlPtr& v1, const MarControlPtr& v2)
+{ 
+	return (*v1.control_)*(*v2.control_); 
+}
+
+WAS_INLINE MarControlPtr operator/(const MarControlPtr& v1, const MarControlPtr& v2)
+{
+	return (*v1.control_)/(*v2.control_);
+}
+
+//WAS_INLINE
+MarControlPtr::MarControlPtr(const MarControlPtr& a) //mutexes? [?]
+{
+	control_ = a.control_;
+	if (control_)
+	{
+		control_->ref();
+		TRACE_ADDCONTROL;
+	}
+}
+
+WAS_INLINE
+MarControlPtr::MarControlPtr(MarControl *control)//mutexes? [?]
+{
+	control_ = control;
+	if (control_)
+	{
+		control_->ref(); 
+		TRACE_ADDCONTROL;
+	}	
+}
+
+WAS_INLINE
+MarControlPtr& 
+MarControlPtr::operator=(const MarControlPtr& a)//mutexes? [?]
+{
+	if (control_)
+	{
+		TRACE_REMCONTROL;
+		control_->unref();
+	}
+	control_ = a.control_;
+	if (control_) 
+	{
+		control_->ref();
+		TRACE_ADDCONTROL;
+	}
+	return *this;
+}
+
+WAS_INLINE
+bool
+MarControlPtr::isInvalid() const
+{
+	return (control_== NULL);
+}
+
+WAS_INLINE 
+bool 
+MarControlPtr::isEqual(const MarControlPtr& p) 
+{
+	return (control_ == p.control_);
+}
+
+	
+	
+// default constructor
+MarControl::MarControl() :
+refCount_(0),
+value_(NULL),
+msys_(NULL),
+state_(false)
+{
+	
+	
+}
+
+
+WAS_INLINE
+MarControl::MarControl(const MarControl& a)
+{
+	refCount_ = 0;
+	msys_			= a.msys_;
+	cname_		= a.cname_;
+	state_		= a.state_;
+	desc_			= a.desc_;
+	value_		= a.value_->clone();
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
+}
+
+WAS_INLINE
+MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msys, bool state)
+{
+	refCount_ = 0;
+	msys_			= msys;
+	cname_		= cname;
+	state_		= state;
+	desc_			= "";
+	value_		= value->clone();
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
+}
+
+WAS_INLINE
+MarControl::MarControl(double re, std::string cname, MarSystem* msys, bool state)
+{
+	refCount_ = 0;
+	msys_			= msys;
+	cname_		= cname;
+	state_		= state;
+	desc_			= "";
+	value_		= new MarControlValueT<mrs_real>(re);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
+}
+
+
+WAS_INLINE
+MarControl::MarControl(float re, std::string cname, MarSystem* msys, bool state)
+{
+	refCount_ = 0;
+	msys_			= msys;
+	cname_		= cname;
+	state_		= state;
+	desc_			= "";
+	value_		= new MarControlValueT<mrs_real>(re);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
+}
+
+
+WAS_INLINE
+MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool state)
+{
+	refCount_ = 0;
+	msys_			= msys;
+	cname_		= cname;
+	state_		= state;
+	desc_			= "";
+	value_		= new MarControlValueT<mrs_natural>(ne);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
+}
+
+WAS_INLINE
+MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool state)
+{
+	refCount_ = 0;
+	msys_			= msys;
+	cname_		= cname;
+	state_		= state;
+	desc_			= "";
+	value_		= new MarControlValueT<std::string>(st);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
+}
+
+WAS_INLINE
+MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool state)
+{
+	refCount_ = 0;
+	msys_			= msys;
+	cname_		= cname;
+	state_		= state;
+	desc_			= "";
+	value_		= new MarControlValueT<bool>(be);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
+}
+
+WAS_INLINE
+MarControl::MarControl(realvec& ve, std::string cname, MarSystem* msys, bool state)
+{
+	refCount_ = 0;
+	msys_			= msys;
+	cname_		= cname;	
+	state_		= state;
+	desc_			= "";
+	value_		= new MarControlValueT<realvec>(ve);
+	value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this)); 
+}
+
+WAS_INLINE
+MarControl::~MarControl()
+{
+	//first unlink this control from everything
+	this->unlinkFromAll();
+	//now we can safely delete its uniquely owned MarControlValue
+	delete value_;
+	value_ = NULL;
+}
+
+WAS_INLINE
+MarControl& 
+MarControl::operator=(const MarControl& a)
+{
+	if (this != &a)
+		this->setValue(a.value_);
+	
+	return *this;
+}
+	
+
+
+WAS_INLINE
+bool
+MarControl::setValue(MarControlPtr mc, bool update)
+{
+	if (value_->type_ != mc->value_->type_)
+	{
+		std::ostringstream sstr;
+		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
+			<< "(expected " << value_->type_ << ", given " << mc->value_->type_ << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+
+	if (MarControlPtr(this) == mc)
+	{
+		return true;
+	}
+	
+	value_->copyValue(*(mc->value_));
+
+	#ifdef MARSYAS_TRACECONTROLS
+	value_->setDebugValue();
+	#endif
+
+	//check if it's needed to call update()
+	if(update)
+		value_->callMarSystemsUpdate();
+
+	return true;
+}
+
+WAS_INLINE
+bool
+MarControl::setValue(MarControlValue *mcv, bool update)
+{
+	if (value_->type_ != mcv->type_)
+	{
+		std::ostringstream sstr;
+		sstr << "MarControl::setValue() - Trying to set value of incompatible type "
+			<< "(expected " << value_->type_ << ", given " << mcv->type_ << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+
+	if (!mcv->isNotEqual(value_))
+	{
+		return true;
+	}
+
+	value_->copyValue(*(mcv));
+
+	#ifdef MARSYAS_TRACECONTROLS
+	value_->setDebugValue();
+	#endif
+	
+	//check if it's needed to call update()
+	if(update)
+		value_->callMarSystemsUpdate();
+
+	return true;
+}
+
+WAS_INLINE
+bool
+MarControl::setValue(const char *t, bool update)
+{
+	return this->setValue(std::string(t), update);
+}
+
+WAS_INLINE
+bool
+MarControl::setValue(const int t, bool update)
+{
+	return this->setValue((mrs_natural)t, update);
+}
+
+
+
+WAS_INLINE
+std::ostream&
+operator<<(std::ostream& os, const MarControl& ctrl)
+{
+	return ctrl.value_->serialize(os);
+}
+
+WAS_INLINE
+bool
+operator==(const MarControl& v1, const MarControl& v2)
+{
+	return !(v1.value_->isNotEqual(v2.value_));
+}
+
+WAS_INLINE
+bool
+operator!=(const MarControl& v1, const MarControl& v2)
+{
+	return v1.value_->isNotEqual(v2.value_);
+}
+
+WAS_INLINE
+mrs_real
+operator+(const MarControl& v1, const mrs_real& v2)
+{
+	mrs_real r1;
+	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
+	if(ptr)
+	{
+		r1 = ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "MarControl::operator + : Trying to get value of incompatible type "
+		<< "(expected " << v1.getType() << ", given " << typeid(mrs_real).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+	return r1 + v2;
+}
+
+WAS_INLINE
+mrs_real
+operator+(const mrs_real& v1, const MarControl& v2)
+{
+	mrs_real r2;
+	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
+	if(ptr)
+	{
+		r2 = ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "MarControl::operator + : Trying to get value of incompatible type "
+		<< "(expected " << v2.getType() << ", given " << typeid(mrs_real).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+	return v1 + r2;
+}
+
+WAS_INLINE
+mrs_real
+operator-(const MarControl& v1, const mrs_real& v2)
+{
+	mrs_real r1;
+	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
+	if(ptr)
+	{
+		r1 = ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
+		<< "(expected " << v1.getType() << ", given " << typeid(mrs_real).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+	return r1 - v2;
+}
+
+WAS_INLINE
+mrs_real
+operator-(const mrs_real& v1, const MarControl& v2)
+{
+	mrs_real r2;
+	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
+	if(ptr)
+	{
+		r2 = ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
+		<< "(expected " << v2.getType() << ", given " << typeid(mrs_real).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+	return v1 - r2;
+}
+
+WAS_INLINE
+mrs_real
+operator*(const MarControl& v1, const mrs_real& v2)
+{
+	mrs_real r1;
+	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
+	if(ptr)
+	{
+		r1 = ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
+		<< "(expected " << v1.getType() << ", given " << typeid(mrs_real).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+	return r1 * v2;
+}
+
+WAS_INLINE
+mrs_real
+operator*(const mrs_real& v1, const MarControl& v2)
+{
+	mrs_real r2;
+	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
+	if(ptr)
+	{
+		r2 = ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
+		<< "(expected " << v2.getType() << ", given " << typeid(mrs_real).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+	return v1 * r2;
+}
+
+WAS_INLINE
+mrs_real
+operator/(const MarControl& v1, const mrs_real& v2)
+{
+	mrs_real r1;
+	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v1.value_);
+	if(ptr)
+	{
+		r1 = ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
+		<< "(expected " << v1.getType() << ", given " << typeid(mrs_real).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+	return r1 / v2;
+}
+
+WAS_INLINE
+mrs_real
+operator/(const mrs_real& v1, const MarControl& v2)
+{
+	mrs_real r2;
+	MarControlValueT<mrs_real> *ptr = dynamic_cast<MarControlValueT<mrs_real>*>(v2.value_);
+	if(ptr)
+	{
+		r2 = ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "[MarControl::setValue] Trying to get value of incompatible type "
+		<< "(expected " << v2.getType() << ", given " << typeid(mrs_real).name() << ")";
+		MRSWARN(sstr.str());
+		return false;
+	}
+	return v1 / r2;
+}
+
+WAS_INLINE
+MarControl
+operator+(const MarControl& v1, const MarControl& v2)
+{
+	MarControlValue *val = v1.value_->sum(v2.value_);
+	MarControl ret(val);
+	delete val;
+	return ret;
+}
+
+WAS_INLINE
+MarControl
+operator-(const MarControl& v1, const MarControl& v2)
+{
+	MarControlValue *val = v1.value_->subtract(v2.value_);
+	MarControl ret(val);
+	delete val;
+	return ret;
+}
+
+WAS_INLINE
+MarControl
+operator*(const MarControl& v1, const MarControl& v2)
+{
+	MarControlValue *val = v1.value_->multiply(v2.value_);
+	MarControl ret(val);
+	delete val;
+	return ret;
+}
+
+WAS_INLINE
+MarControl
+operator/(const MarControl& v1, const MarControl& v2)
+{
+	MarControlValue *val = v1.value_->divide(v2.value_);
+	MarControl ret(val);
+	delete val;
+	return ret;
+}
+
+
+WAS_INLINE
+bool
+MarControl::isTrue()
+{
+	MarControlValueT<bool> *ptr = dynamic_cast<MarControlValueT<bool>*>(value_);
+	if(ptr)
+	{
+		return ptr->get();
+	}
+	else
+	{
+		std::ostringstream sstr;
+		sstr << "MarControl::isTrue() - Trying to get use bool-specific method with " << value_->getType(); 
+		MRSWARN(sstr.str());
+		return false;
+	}
+}
+
+	
+} // namespace Marsyas
