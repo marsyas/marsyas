@@ -40,7 +40,7 @@ namespace Marsyas
 */
 
 
-class AimSSI: public MarSystem
+class marsyas_EXPORT AimSSI: public MarSystem
 {
 private:
   void myUpdate(MarControlPtr sender);

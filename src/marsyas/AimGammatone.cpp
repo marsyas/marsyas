@@ -36,6 +36,13 @@ AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)
 }
 
 
+AimGammatone::AimGammatone(const AimGammatone& a): MarSystem(a) 
+{
+	
+	ctrl_num_channels_= getctrl("mrs_natural/num_channels");
+	ctrl_min_frequency_ = getctrl("mrs_real/min_frequency");
+	ctrl_max_frequency_ = getctrl("mrs_real/max_frequency");
+}
 
 
 

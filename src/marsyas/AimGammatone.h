@@ -49,7 +49,7 @@ namespace Marsyas
 */
 
 
-class AimGammatone: public MarSystem
+class marsyas_EXPORT AimGammatone: public MarSystem
 {
  private:
   void myUpdate(MarControlPtr sender);
@@ -96,7 +96,7 @@ class AimGammatone: public MarSystem
 
  public:
   AimGammatone(std::string name);
-  //  AimGammatone(const AimGammatone& a);
+  AimGammatone(const AimGammatone& a);
 	
   ~AimGammatone();
   MarSystem* clone() const;
