@@ -48,7 +48,7 @@ private:
   void ResetInternal();
 
   // Prepare the module
-  void InitializeInternal();
+  bool InitializeInternal();
 
   // Does the MarSystem need initialization?
   bool is_initialized;

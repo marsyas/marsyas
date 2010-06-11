@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "Talk.h"
 
 using namespace std;
@@ -718,7 +719,11 @@ Talk::process(char *message)
   word = strtok(message, SEPCHARS);
   if (!strcmp(word,"load"))
     {
-      filename = strdup(strtok(NULL,SEPCHARS));
+#ifdef MARSYAS_WIN32
+		filename = _strdup(strtok(NULL,SEPCHARS));
+#else 
+		filename = strdup(strtok(NULL,SEPCHARS));
+#endif
       lineSize = atoi(strtok(NULL, SEPCHARS));
       fname = filename;
       cerr << "load command: Filename = " << filename <<  endl;
