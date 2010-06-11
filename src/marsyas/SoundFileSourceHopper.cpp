@@ -26,6 +26,7 @@ using namespace Marsyas;
 
 SoundFileSourceHopper::SoundFileSourceHopper(string name) : MarSystem("SoundFileSourceHopper", name)
 {
+	
 	/// Add any specific controls needed by this MarSystem.
 	addControls();
 

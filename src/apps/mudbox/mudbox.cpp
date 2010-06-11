@@ -3477,7 +3477,7 @@ void
 toy_with_stereo2mono(string fname)
 {
 	MarSystemManager mng;
-
+	
 	MarSystem* playbacknet = mng.create("Series", "playbacknet");
 	playbacknet->addMarSystem(mng.create("SoundFileSource", "src"));
 	playbacknet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
@@ -3487,6 +3487,7 @@ toy_with_stereo2mono(string fname)
 	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "monoFromStereo.wav");
 	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
+	
 	mrs_bool isEmpty;
 
 	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
@@ -3494,6 +3495,7 @@ toy_with_stereo2mono(string fname)
 		playbacknet->tick();
 	}
 
+	delete playbacknet;
 }
 
 
@@ -3501,15 +3503,15 @@ toy_with_stereo2mono(string fname)
 void 
 toy_with_lyons(string fname)
 {
-	const mrs_bool      doMatlabPlots   = true;
-	const mrs_real      simSampleRate   = 16000.0F;
+
+
 	const mrs_natural   numIrSamples    = 256;
 	mrs_bool            dataMismatch    = false;
 	MarSystemManager    mng;
 	mrs_realvec         srcData (numIrSamples),
 		destData;
 	mrs_realvec			mtlb_destData;
-	const mrs_real		floatTolerance  = 1e-6F;
+
 
 	///////////////////////////////////////////////////////////////
 	cout << ">>>>>>>> compute example audio output for Lyon's Passive Ear" << endl;
@@ -3535,6 +3537,10 @@ toy_with_lyons(string fname)
 
 	// first compute the matlab result (no block based processing there with lyon filterbank)
 #ifdef MARSYAS_MATLAB
+	const mrs_bool      doMatlabPlots   = true;
+	const mrs_real      simSampleRate   = 16000.0F;
+	const mrs_real		floatTolerance  = 1e-6F;
+
 	// empty workspace
 	MATLAB_EVAL ("clear;");
 
@@ -3613,7 +3619,7 @@ toy_with_lyons(string fname)
 void 
 toy_with_auditorytbx(string fname)
 {
-    const mrs_bool      doMatlabPlots   = true;
+
     const mrs_real      simSampleRate   = 16000.0F;
     const mrs_natural   numIrSamples    = 512;
     mrs_real            lowFreq         = 100.0F;
@@ -3647,6 +3653,7 @@ toy_with_auditorytbx(string fname)
     destData = erbSimulNet->getctrl ("mrs_realvec/processedData")->to<mrs_realvec>();
 
 #ifdef MARSYAS_MATLAB
+    const mrs_bool      doMatlabPlots   = true;
     mrs_realvec     mtlb_destData;
     const mrs_real  floatTolerance  = 1e-6F;
 

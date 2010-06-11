@@ -35,6 +35,23 @@ MarSystem::MarSystem(string type, string name)
 	prefix_ = "/" + type_ + "/" + name_ + "/";
 	absPath_ = prefix_;
 
+
+	onObservations_ = 0;
+	onSamples_ = 0;
+	osrate_ = 0.0;
+	
+
+	tonSamples_ = 0;
+	tonObservations_ = 0;
+	tinSamples_ = 0;
+	tinObservations_ = 0;
+	tosrate_ = 0.0;
+	tisrate_ = 0.0;
+	tonObsNames_ = "";
+	onObsNames_ = "";
+	
+
+
 	isComposite_ = false;
 	marsystemsSize_ = 0;
 
@@ -60,6 +77,20 @@ MarSystem::MarSystem(const MarSystem& a)
 	prefix_ = a.prefix_;
 	absPath_ = a.absPath_;
 	active_ = true;
+
+	osrate_ = 0.0;
+	onObservations_ = 0;
+	onSamples_ = 0;
+	tonObsNames_ = "";
+	onObsNames_ = "";
+
+	tonSamples_ = 0;
+	tonObservations_ = 0;
+	tinSamples_ = 0;
+	tinObservations_ = 0;
+	tosrate_ = 0.0;
+	tisrate_ = 0.0;
+	
 
 
 	MATLABscript_ = a.MATLABscript_;
@@ -642,7 +673,7 @@ MarSystem::update(MarControlPtr sender)
 		active_ = active;
 		activate(active);
 	}
-
+	
 	//resize input and output realvec if necessary
 	if ((inObservations_ != inTick_.getRows()) ||
 	        (inSamples_ != inTick_.getCols())      ||
@@ -656,14 +687,14 @@ MarSystem::update(MarControlPtr sender)
 			processedData.create(onObservations_, onSamples_);
 		}
 	}
-
+	
 	//check for OUT-FLOW modifications without parent knowledge!!
 	if (parent_)
 	{
 		if (tonObservations_ != onObservations_ ||
-		        tonSamples_ != onSamples_ ||
-		        tosrate_ != osrate_ ||
-		        tonObsNames_ != onObsNames_)
+			tonSamples_ != onSamples_ ||
+			tosrate_ != osrate_ ||
+			tonObsNames_ != onObsNames_)
 			if (!parent_->isUpdating())
 				parent_->update(sender);
 	}
