@@ -27,16 +27,16 @@ namespace Marsyas
 //
 class ERBTools {
  public:
-  static float Freq2ERB(float freq) {
-    return 21.4f * log10(4.37f * freq / 1000.0f + 1.0f);
+  static double Freq2ERB(double freq) {
+    return 21.4 * log10(4.37 * freq / 1000.0 + 1.0);
   }
 
-  static float Freq2ERBw(float freq) {
-    return 24.7f * (4.37f * freq / 1000.0f + 1.0f);
+  static double Freq2ERBw(double freq) {
+    return 24.7 * (4.37 * freq / 1000.0 + 1.0);
   }
 
-  static float ERB2Freq(float erb) {
-    return (pow(10, (erb / 21.4f)) - 1.0f) / 4.37f * 1000.0f;
+  static double ERB2Freq(double erb) {
+    return (pow(10, (erb / 21.4)) - 1.0) / 4.37 * 1000.0;
   }
 };
 }

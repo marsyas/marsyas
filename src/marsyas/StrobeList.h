@@ -37,12 +37,12 @@ namespace Marsyas {
 using std::deque;
 struct StrobePoint {
   int time;
-  float weight;
-  float working_weight;
+  double weight;
+  double working_weight;
   StrobePoint() {
     time = 0;
-    weight = 0.0f;
-    working_weight = 0.0f;
+    weight = 0.0;
+    working_weight = 0.0;
   }
 };
 
@@ -65,19 +65,19 @@ class StrobeList {
 
   /*! \brief Set the strobe weight
    */
-  inline void SetWeight(int strobe_number, float weight) {
+  inline void SetWeight(int strobe_number, double weight) {
     strobes_.at(strobe_number).weight = weight;
   };
 
   /*! \brief Set the strobe's working weight
    */
-  inline void SetWorkingWeight(int strobe_number, float working_weight) {
+  inline void SetWorkingWeight(int strobe_number, double working_weight) {
     strobes_.at(strobe_number).working_weight = working_weight;
   };
 
   /*! \brief Add a strobe to the list (must be in order)
    */
-  inline void AddStrobe(int time, float weight) {
+  inline void AddStrobe(int time, double weight) {
     StrobePoint s;
     s.time = time;
     s.weight = weight;

@@ -82,7 +82,7 @@ private:
   std::vector<double> centre_frequencies_;
   void CalculateCentreFrequencies();
 
-  // float sample_rate_;
+  // double sample_rate_;
   // int buffer_length_;
   // int channel_count_;
   int ssi_width_samples_;

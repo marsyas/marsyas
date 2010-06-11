@@ -46,14 +46,27 @@ AimLocalMax::clone() const
 void 
 AimLocalMax::addControls()
 {
-  addControl("mrs_real/decay_time_ms", 20.0f , ctrl_decay_time_ms_);
-  addControl("mrs_real/timeout_ms", 3.0f , ctrl_timeout_ms_);
+  addControl("mrs_real/decay_time_ms", 20.0 , ctrl_decay_time_ms_);
+  addControl("mrs_real/timeout_ms", 3.0 , ctrl_timeout_ms_);
 }
 
 void
 AimLocalMax::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("AimLocalMax.cpp - AimLocalMax:myUpdate");
+  ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
+
+  // The output from PZFC (and HCL) is a realvec with the first half
+  // of observations being the signal, and the second half being the
+  // channels.  So, the output of AimLocalMax is a realvec with 3
+  // times the number of channels, with the first block of
+  // observations being the signal (unchanged) the second block being
+  // the centre frequencies (unchanged) and the third block being the
+  // newly calculated strobe points.
+  channel_count_ = ctrl_inObservations_->to<mrs_natural>() / 2;
+  ctrl_onObservations_->setValue(channel_count_ * 3);
+
+  ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue("AimLocalMax_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
   //
@@ -82,14 +95,13 @@ AimLocalMax::myUpdate(MarControlPtr sender)
     reset_inobservations = ctrl_inObservations_->to<mrs_natural>();
   }
 
-  // sness - Almost definitely wrong.  FIXME.
-   MarSystem::myUpdate(sender);
 }
 
-void 
+bool 
 AimLocalMax::InitializeInternal() {
-  strobe_timeout_samples_ = floor(ctrl_timeout_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
-  strobe_decay_samples_ = floor(ctrl_decay_time_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
+  strobe_timeout_samples_ = floor(ctrl_timeout_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0);
+  strobe_decay_samples_ = floor(ctrl_decay_time_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0);
+  return true;
 }
 
 void 
@@ -97,20 +109,20 @@ AimLocalMax::ResetInternal() {
   // cout << "AimLocalMax::ResetInternal" << endl;
   // cout << "ctrl_inObservations_->to<mrs_natural>()" << ctrl_inObservations_->to<mrs_natural>() << endl;
 
-  // sness - Not sure if we should be using 0.0f here, these should be ints.  The original code
-  // had the "f" for floats though.
+  // sness - Not sure if we should be using 0.0 here, these should be ints.  The original code
+  // had the "f" for doubles though.
   threshold_.clear();
-  threshold_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
+  threshold_.resize(channel_count_, 0.0);
 
   decay_constant_.clear();
-  decay_constant_.resize(ctrl_inObservations_->to<mrs_natural>(), 1.0f);
+  decay_constant_.resize(channel_count_, 1.0);
 
   prev_sample_.clear();
-  prev_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 10000.0f);
+  prev_sample_.resize(channel_count_, 10000.0);
   curr_sample_.clear();
-  curr_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 5000.0f);
+  curr_sample_.resize(channel_count_, 5000.0);
   next_sample_.clear();
-  next_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
+  next_sample_.resize(channel_count_, 0.0);
 }
 
 
@@ -118,22 +130,15 @@ AimLocalMax::ResetInternal() {
 void
 AimLocalMax::myProcess(realvec& in, realvec& out)
 {
+  cout << "AimLocalMax::myProcess" << endl;
   mrs_natural o,t;
-
-  int strobe_count;
-  int last_strobe;
-  int samples_since_last;
-  
-  strobe_count = 0;
-  last_strobe = 0;
-  
 
   // sness - Need this because we don't have a SignalBuffer class like AIM-C has, so we
   // have to keep track of the strobes ourselves.
   strobe_count_.clear();
-  strobe_count_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
+  strobe_count_.resize(channel_count_, 0.0);
   last_strobe_.clear();
-  last_strobe_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
+  last_strobe_.resize(channel_count_, 0.0);
 
   // sness - Hmm, the original code isn't doing this, but I don't see
   // how this could possibly work if you don't reset these samples at
@@ -142,24 +147,47 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
   // "strobe_count_[o] > 0" to coredump.  Requires further
   // investigation.
   prev_sample_.clear();
-  prev_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 10000.0f);
+  prev_sample_.resize(channel_count_, 10000.0);
   curr_sample_.clear();
-  curr_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 5000.0f);
+  curr_sample_.resize(channel_count_, 5000.0);
   next_sample_.clear();
-  next_sample_.resize(ctrl_inObservations_->to<mrs_natural>(), 0.0f);
+  next_sample_.resize(channel_count_, 0.0);
 
   // cout << "ctrl_inObservations_->to<mrs_natural>()=" << ctrl_inObservations_->to<mrs_natural>() << endl;
   // cout << "ctrl_inSamples_->to<mrs_natural>()=" << ctrl_inSamples_->to<mrs_natural>() << endl;
 
+  // Skip over the signals and centre frequencies from PZFC (and HCL)
+  mrs_natural skip_channels = channel_count_ + channel_count_;
+  cout << "channel_count_" << channel_count_ << endl;
+  cout << "skip_channels=" << skip_channels << endl;
+  // cout << "ctrl_inObservations_->to<mrs_natural>()=" << ctrl_inObservations_->to<mrs_natural>() << endl;
+  // cout << "ctrl_onObservations_->to<mrs_natural>()=" << ctrl_onObservations_->to<mrs_natural>() << endl;
+
+
+  // // Now that we've added strobes as a second set of observations
+  // // after the first, copy the the data from the input to the output.
+  // for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
+  //   for (o = 0; o < ctrl_onObservations_->to<mrs_natural>(); o++) {
+  //     out(o,t) = 0.0;
+  //   }
+  // }
+
   for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
-    for (o = 0; o < ctrl_inObservations_->to<mrs_natural>(); o++) {
+    for (o = 0; o < channel_count_; o++) {
       // Initialize the strobe
-      out(o,t) = 0.0;
+      out(o + skip_channels,t) = 0.0;
 
       // curr_sample is the sample at time (i - 1)
       prev_sample_[o] = curr_sample_[o];
       curr_sample_[o] = next_sample_[o];
       next_sample_[o] = in(o, t);
+
+      // cout << "curr_sample_[" << o << "]=" << curr_sample_[o] << endl;
+      // cout << "prev_sample_[" << o << "]=" << prev_sample_[o] << endl;
+      // cout << "next_sample_[" << o << "]=" << next_sample_[o] << endl;
+      // cout << "threshold_[o]=" << threshold_[o] << endl;
+
+      // out(o + skip_channels,t) = in(o,t);
 
       // If the current sample is above threshold, the threshold is raised to
       // the level of the current sample, and decays from there.
@@ -179,14 +207,14 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
             // If there are previous strobes, then calculate the time since
             // the last one. If it's long enough, then this is a strobe point,
             // if not, then just move on.
-            samples_since_last = (t - 1) - last_strobe_[o];
+            int samples_since_last = (t - 1) - last_strobe_[o];
             if (samples_since_last > strobe_timeout_samples_) {
-              out(o, t-1) = 1.0;
+              out(o + skip_channels, t-1) = 1.0;
               strobe_count_[o]++;
               last_strobe_[o] = t;
             }
           } else {
-            out(o, t-1) = 1.0;
+            out(o + skip_channels, t-1) = 1.0;
             strobe_count_[o]++;
             last_strobe_[o] = t;
           }
@@ -197,10 +225,19 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
       if (threshold_[o] > decay_constant_[o])
         threshold_[o] -= decay_constant_[o];
       else
-        threshold_[o] = 0.0f;
+        threshold_[o] = 0.0;
       // cout << "out(" << o << "," << t << ")=" << out(o,t) << endl;
     }
   }
+
+  // Now that we've added strobes as a second set of observations
+  // after the first, copy the the data from the input to the output.
+  for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
+    for (o = 0; o < skip_channels; o++) {
+      out(o,t) = in(o,t);
+    }
+  }
+
 
   // // sness - Hmmm, not sure if the original code is calling this all
   // ResetInternal();

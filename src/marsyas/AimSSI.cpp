@@ -45,7 +45,7 @@ AimSSI::ResetInternal() {
 double
 AimSSI::Log2(double n) {
   // log(n)/log(2) is log2.  
-  return log( n ) / log( 2.0f );
+  return log( n ) / log( 2 );
 }
 
 
@@ -62,13 +62,13 @@ AimSSI::addControls()
   addControl("mrs_bool/weight_by_cutoff", false , ctrl_weight_by_cutoff_);
   addControl("mrs_bool/weight_by_scaling", false , ctrl_weight_by_scaling_);
   addControl("mrs_bool/log_cycles_axis", true , ctrl_log_cycles_axis_);
-  addControl("mrs_real/pitch_search_start_ms", 2.0f , ctrl_pitch_search_start_ms_);
-  addControl("mrs_real/ssi_width_cycles", 10.0f , ctrl_ssi_width_cycles_);
-  addControl("mrs_real/pivot_cf", 1000.0f , ctrl_pivot_cf_);
+  addControl("mrs_real/pitch_search_start_ms", 2.0 , ctrl_pitch_search_start_ms_);
+  addControl("mrs_real/ssi_width_cycles", 10.0 , ctrl_ssi_width_cycles_);
+  addControl("mrs_real/pivot_cf", 1000.0 , ctrl_pivot_cf_);
 
   // From AimGammatone
-  addControl("mrs_real/min_frequency", 86.0f , ctrl_min_frequency_);
-  addControl("mrs_real/max_frequency", 16000.0f , ctrl_max_frequency_);
+  addControl("mrs_real/min_frequency", 86.0 , ctrl_min_frequency_);
+  addControl("mrs_real/max_frequency", 16000.0 , ctrl_max_frequency_);
 
 }
 
@@ -93,7 +93,7 @@ AimSSI::myUpdate(MarControlPtr sender)
 
   if (ssi_width_samples_ > ctrl_inSamples_->to<mrs_natural>()) {
     ssi_width_samples_ = ctrl_inSamples_->to<mrs_natural>();
-    mrs_real cycles = ssi_width_samples_ * ctrl_pivot_cf_->to<mrs_real>() / ctrl_israte_->to<mrs_real>();
+    double cycles = ssi_width_samples_ * ctrl_pivot_cf_->to<mrs_real>() / ctrl_israte_->to<mrs_real>();
     MRSWARN("Requested SSI width is too long for the input buffer");
     // MRSWARN("Requested SSI width of " + ctrl_ssi_width_cycles_->to<mrs_real>() + " cycles is too long for the " +
     //         "input buffer length of " + ctrl_inObservations_->to<mrs_natural>() + " samples. The SSI will be " +
@@ -114,12 +114,12 @@ AimSSI::myUpdate(MarControlPtr sender)
 void 
 AimSSI::CalculateCentreFrequencies() {
   int num_channels = ctrl_inObservations_->to<mrs_natural>();
-  mrs_real erb_max = ERBTools::Freq2ERB(ctrl_max_frequency_->to<mrs_real>());
-  mrs_real erb_min = ERBTools::Freq2ERB(ctrl_min_frequency_->to<mrs_real>());
-  mrs_real delta_erb = (erb_max - erb_min) / (num_channels - 1);
+  double erb_max = ERBTools::Freq2ERB(ctrl_max_frequency_->to<mrs_real>());
+  double erb_min = ERBTools::Freq2ERB(ctrl_min_frequency_->to<mrs_real>());
+  double delta_erb = (erb_max - erb_min) / (num_channels - 1);
 
   centre_frequencies_.resize(num_channels);
-  float erb_current = erb_min;
+  double erb_current = erb_min;
 
   for (int i = 0; i < num_channels; ++i) {
     centre_frequencies_[i] = ERBTools::ERB2Freq(erb_current);
@@ -130,9 +130,9 @@ AimSSI::CalculateCentreFrequencies() {
 int 
 AimSSI::ExtractPitchIndex(realvec& in) const {
   // Generate temporal profile of the SAI
-  std::vector<float> sai_temporal_profile(ctrl_inSamples_->to<mrs_natural>(), 0.0f);
+  std::vector<double> sai_temporal_profile(ctrl_inSamples_->to<mrs_natural>(), 0.0);
   for (int i = 0; i < ctrl_inSamples_->to<mrs_natural>(); ++i) {
-    float val = 0.0f;
+    double val = 0.0;
     for (int ch = 0; ch < ctrl_inObservations_->to<mrs_natural>(); ++ch) {
       val += in(ch, i);
     }
@@ -140,9 +140,9 @@ AimSSI::ExtractPitchIndex(realvec& in) const {
   }
 
   // Find pitch value
-  int start_sample = floor(ctrl_pitch_search_start_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0f);
+  int start_sample = floor(ctrl_pitch_search_start_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0);
   int max_idx = 0;
-  float max_val = 0.0f;
+  double max_val = 0.0;
   for (int i = start_sample; i < ctrl_inSamples_->to<mrs_natural>(); ++i) {
     if (sai_temporal_profile[i] > max_val) {
       max_idx = i;
@@ -162,39 +162,39 @@ AimSSI::myProcess(realvec& in, realvec& out)
   }
   
   for (o = 0; o < ctrl_inObservations_->to<mrs_natural>(); o++) {
-    float centre_frequency = centre_frequencies_[o];
+    double centre_frequency = centre_frequencies_[o];
     // Copy the buffer from input to output, addressing by h-value
     for (t = 0; t < ssi_width_samples_; t++) {
-      float h;
-      float cycle_samples = ctrl_israte_->to<mrs_real>() / centre_frequency;
+      double h;
+      double cycle_samples = ctrl_israte_->to<mrs_real>() / centre_frequency;
       if (ctrl_log_cycles_axis_->to<mrs_bool>()) {
-        float gamma_min = -1.0f;
-        float gamma_max = Log2(ctrl_ssi_width_cycles_->to<mrs_real>());
-        float gamma = gamma_min + (gamma_max - gamma_min)
-                                   * static_cast<float>(t)
-                                   / static_cast<float>(ssi_width_samples_);
-        h = pow(2.0f, gamma);
+        double gamma_min = -1.0;
+        double gamma_max = Log2(ctrl_ssi_width_cycles_->to<mrs_real>());
+        double gamma = gamma_min + (gamma_max - gamma_min)
+                                   * static_cast<double>(t)
+                                   / static_cast<double>(ssi_width_samples_);
+        h = pow(2.0, gamma);
       } else {
-        h = static_cast<float>(t) * ctrl_ssi_width_cycles_->to<mrs_real>()
-            / static_cast<float>(ssi_width_samples_);
+        h = static_cast<double>(t) * ctrl_ssi_width_cycles_->to<mrs_real>()
+            / static_cast<double>(ssi_width_samples_);
       }
 
-      // The index into the input array is a floating-point number, which is
+      // The index into the input array is a doubleing-point number, which is
       // split into a whole part and a fractional part. The whole part and
       // fractional part are found, and are used to linearly interpolate
       // between input samples to yield an output sample.
       double whole_part;
-      float frac_part = modf(h * cycle_samples, &whole_part);
+      double frac_part = modf(h * cycle_samples, &whole_part);
       int sample = floor(whole_part);
 
-      float weight = 1.0f;
+      double weight = 1.0;
 
       int cutoff_index = ctrl_inSamples_->to<mrs_natural>() - 1;
       if (ctrl_do_pitch_cutoff_->to<mrs_bool>()) {
         if (pitch_index < cutoff_index) {
           if (ctrl_weight_by_cutoff_->to<mrs_bool>()) {
-            weight *= static_cast<float>(ctrl_inSamples_->to<mrs_natural>())
-                      / static_cast<float>(pitch_index);
+            weight *= static_cast<double>(ctrl_inSamples_->to<mrs_natural>())
+                      / static_cast<double>(pitch_index);
           }
           cutoff_index = pitch_index;
         }
@@ -206,14 +206,14 @@ AimSSI::myProcess(realvec& in, realvec& out)
         }
       }
 
-      float val;
+      double val;
       if (sample < cutoff_index) {
-        float curr_sample = in(o, sample);
-        float next_sample = in(o, sample + 1);
+        double curr_sample = in(o, sample);
+        double next_sample = in(o, sample + 1);
         val = weight * (curr_sample
                         + frac_part * (next_sample - curr_sample));
       } else {
-        val = 0.0f;
+        val = 0.0;
       }
       out(o, t) = val;
     }

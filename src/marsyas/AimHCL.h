@@ -69,12 +69,12 @@ private:
   MarControlPtr ctrl_lowpass_order_;  // Order of Lowpass Filter
 
   // int channel_count_;  // Internal record of the number of channels in the input
-  float time_constant_;  // Time constant corresponsing to the lowpass filter cutoff freqency
+  double time_constant_;  // Time constant corresponsing to the lowpass filter cutoff freqency
 
   // Lowpass filter state variables
-  float xn_;
-  float yn_;
-  std::vector<std::vector<float> > yns_;
+  double xn_;
+  double yn_;
+  std::vector<std::vector<double> > yns_;
 
 public:
   AimHCL(std::string name);

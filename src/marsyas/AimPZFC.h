@@ -87,16 +87,16 @@ private:
 
   // Detector function - halfwave rectification etc. Used internally,
   // but not applied to the output.
-  float DetectFun(float fIN);
+  double DetectFun(double fIN);
 
   // Minimum
-  inline float Minimum(float a, float b);
+  inline double Minimum(double a, double b);
 
   int channel_count_;
   // int buffer_length_;
   int agc_stage_count_;
-  // float sample_rate_;
-  float last_input_;
+  // double sample_rate_;
+  double last_input_;
 
   // Parameters
   // User-settable scalars
@@ -120,26 +120,30 @@ private:
   // sness - TODO - Eventually make these realvecs.  However, in the
   // existing code there is quite a bit of stuff that involves STL
   // methods, so I thought it would be safer to use STL for now.
-  std::vector<float> pole_dampings_;
-  std::vector<float> agc_epsilons_;
-  std::vector<float> agc_gains_;
-  std::vector<float> pole_frequencies_;
-  std::vector<float> za0_;
-  std::vector<float> za1_;
-  std::vector<float> za2_;
-  std::vector<float> rmin_;
-  std::vector<float> rmax_;
-  std::vector<float> xmin_;
-  std::vector<float> xmax_;
+  std::vector<double> pole_dampings_;
+  std::vector<double> agc_epsilons_;
+  std::vector<double> agc_gains_;
+  std::vector<double> pole_frequencies_;
+  std::vector<double> za0_;
+  std::vector<double> za1_;
+  std::vector<double> za2_;
+  std::vector<double> rmin_;
+  std::vector<double> rmax_;
+  std::vector<double> xmin_;
+  std::vector<double> xmax_;
 
   // Modified by algorithm at each time step
-  std::vector<float> detect_;
-  std::vector<std::vector<float> > agc_state_;
-  std::vector<float> state_1_;
-  std::vector<float> state_2_;
-  std::vector<float> previous_out_;
-  std::vector<float> pole_damps_mod_;
-  std::vector<float> inputs_;
+  std::vector<double> detect_;
+  std::vector<std::vector<double> > agc_state_;
+  std::vector<double> state_1_;
+  std::vector<double> state_2_;
+  std::vector<double> previous_out_;
+  std::vector<double> pole_damps_mod_;
+  std::vector<double> inputs_;
+
+  // Hold the centre frequencies, which we will output to the second half
+  // of the observations
+  std::vector<double> centre_frequencies_;
 
 public:
   AimPZFC(std::string name);

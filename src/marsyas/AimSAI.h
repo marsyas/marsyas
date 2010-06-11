@@ -108,10 +108,10 @@ private:
   int max_strobe_delay_idx_; 
 
   // Factor with which the SAI should be decayed
-  float sai_decay_factor_; 
+  double sai_decay_factor_; 
 
   // Precomputed 1/n^alpha values for strobe weighting
-  std::vector<float> strobe_weights_; 
+  std::vector<double> strobe_weights_; 
 
   // Next Strobe for each channels
   std::vector<int> next_strobes_;  
@@ -121,18 +121,25 @@ private:
   
   int fire_counter_;
   int frame_period_samples_;
-  int channel_count_;
+  // int channel_count_;
 
   // The strobes for each observation
   std::vector<std::vector<int> > strobes_;
   void findStrobes(realvec& in);
 
-  // sness - From AimGammatone.  We need these in order to calculate
-  // the centre frequencies.
-  MarControlPtr ctrl_max_frequency_;
-  MarControlPtr ctrl_min_frequency_;
+  // // sness - From AimGammatone.  We need these in order to calculate
+  // // the centre frequencies.
+  // MarControlPtr ctrl_max_frequency_;
+  // MarControlPtr ctrl_min_frequency_;
   std::vector<double> centre_frequencies_;
-  void CalculateCentreFrequencies();
+  // void CalculateCentreFrequencies();
+
+  // The actual number of signal channels in the input.  The output
+  // from PZFC + HCL + Localmax is a realvec with the first third of
+  // observations being the signal, and the second third being the
+  // channels and the last third being the strobes.
+  mrs_natural channel_count_;
+
 
 public:
   AimSAI(std::string name);

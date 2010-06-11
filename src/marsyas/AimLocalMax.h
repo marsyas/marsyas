@@ -68,15 +68,21 @@ private:
   int strobe_timeout_samples_;
   int strobe_decay_samples_;
 
-  std::vector<float> threshold_;
-  std::vector<float> decay_constant_;
+  std::vector<double> threshold_;
+  std::vector<double> decay_constant_;
 
-  std::vector<float> prev_sample_;
-  std::vector<float> curr_sample_;
-  std::vector<float> next_sample_;
+  std::vector<double> prev_sample_;
+  std::vector<double> curr_sample_;
+  std::vector<double> next_sample_;
 
-  std::vector<float> strobe_count_;
+  std::vector<double> strobe_count_;
   std::vector<int> last_strobe_;
+
+  // The actual number of signal channels in the input.  The output
+  // from PZFC (and HCL) is a realvec with the first half of
+  // observations being the signal, and the second half being the
+  // channels.
+  mrs_natural channel_count_;
 
 public:
   AimLocalMax(std::string name);
