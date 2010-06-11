@@ -93,10 +93,10 @@ SVMClassifier::~SVMClassifier() {
 		mrs_natural nInstances = instances_.getRows();
 		
 		for (int i=0; i < nInstances; ++i) 
-			free(svm_prob_.x[i]);
+			delete [] svm_prob_.x[i];
 
-		free(svm_prob_.x); 
-		free(svm_prob_.y);
+		delete [] svm_prob_.x; 
+		delete [] svm_prob_.y;
 	} 
 
 	free(svm_model_);

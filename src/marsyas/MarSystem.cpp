@@ -35,10 +35,12 @@ MarSystem::MarSystem(string type, string name)
 	prefix_ = "/" + type_ + "/" + name_ + "/";
 	absPath_ = prefix_;
 
-
+	inObservations_ = 0;
+	inSamples_ = 0;
 	onObservations_ = 0;
 	onSamples_ = 0;
 	osrate_ = 0.0;
+	israte_ = 0.0;
 	
 
 	tonSamples_ = 0;
@@ -79,7 +81,11 @@ MarSystem::MarSystem(const MarSystem& a)
 	active_ = true;
 
 	osrate_ = 0.0;
+	inObservations_ = 0;
 	onObservations_ = 0;
+	inSamples_ = 0;
+	israte_ = 0.0;
+	
 	onSamples_ = 0;
 	tonObsNames_ = "";
 	onObsNames_ = "";
