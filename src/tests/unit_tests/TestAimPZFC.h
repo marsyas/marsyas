@@ -44,7 +44,7 @@ class AimPZFC_runner : public CxxTest::TestSuite
 	int length = 512;
 	realvec input_realvec;
 	in.create(1,length);
-	out.create(78,length);	
+	out.create(156,length);	
 
 	// Fill up the input realvec with a sine wave
 	for (int i = 0; i < length; i++) {

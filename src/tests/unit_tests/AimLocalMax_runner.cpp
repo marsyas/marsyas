@@ -21,10 +21,10 @@ static AimLocalMax_runner suite_AimLocalMax_runner;
 static CxxTest::List Tests_AimLocalMax_runner = { 0, 0 };
 CxxTest::StaticSuiteDescription suiteDescription_AimLocalMax_runner( "TestAimLocalMax.h", 20, "AimLocalMax_runner", suite_AimLocalMax_runner, Tests_AimLocalMax_runner );
 
-static class TestDescription_AimLocalMax_runner_test_one_window_1000hz : public CxxTest::RealTestDescription {
+static class TestDescription_AimLocalMax_runner_test_wav_file : public CxxTest::RealTestDescription {
 public:
- TestDescription_AimLocalMax_runner_test_one_window_1000hz() : CxxTest::RealTestDescription( Tests_AimLocalMax_runner, suiteDescription_AimLocalMax_runner, 37, "test_one_window_1000hz" ) {}
- void runTest() { suite_AimLocalMax_runner.test_one_window_1000hz(); }
-} testDescription_AimLocalMax_runner_test_one_window_1000hz;
+ TestDescription_AimLocalMax_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimLocalMax_runner, suiteDescription_AimLocalMax_runner, 33, "test_wav_file" ) {}
+ void runTest() { suite_AimLocalMax_runner.test_wav_file(); }
+} testDescription_AimLocalMax_runner_test_wav_file;
 
 #include <cxxtest/Root.cpp>

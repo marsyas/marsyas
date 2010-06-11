@@ -21,15 +21,9 @@ static AimHCL_runner suite_AimHCL_runner;
 static CxxTest::List Tests_AimHCL_runner = { 0, 0 };
 CxxTest::StaticSuiteDescription suiteDescription_AimHCL_runner( "TestAimHCL.h", 20, "AimHCL_runner", suite_AimHCL_runner, Tests_AimHCL_runner );
 
-static class TestDescription_AimHCL_runner_test_one_window_1000hz : public CxxTest::RealTestDescription {
-public:
- TestDescription_AimHCL_runner_test_one_window_1000hz() : CxxTest::RealTestDescription( Tests_AimHCL_runner, suiteDescription_AimHCL_runner, 37, "test_one_window_1000hz" ) {}
- void runTest() { suite_AimHCL_runner.test_one_window_1000hz(); }
-} testDescription_AimHCL_runner_test_one_window_1000hz;
-
 static class TestDescription_AimHCL_runner_test_wav_file : public CxxTest::RealTestDescription {
 public:
- TestDescription_AimHCL_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimHCL_runner, suiteDescription_AimHCL_runner, 65, "test_wav_file" ) {}
+ TestDescription_AimHCL_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimHCL_runner, suiteDescription_AimHCL_runner, 37, "test_wav_file" ) {}
  void runTest() { suite_AimHCL_runner.test_wav_file(); }
 } testDescription_AimHCL_runner_test_wav_file;
 

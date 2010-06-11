@@ -21,44 +21,48 @@ class AimLocalMax_runner : public CxxTest::TestSuite
 {
 public:
   realvec in,out;
-  MarSystemManager mng;
-  AimLocalMax *aimc_localmax;
 
   void
   setUp()
   {
-	aimc_localmax = new AimLocalMax("aimc_localmax");
-	aimc_localmax->updctrl("mrs_real/israte", 44100.0);
   }
 
   //
-  // Test one single buffer of audio with a 1000Hz tone
+  // Test a sample file, test.wav
   //
-  void test_one_window_1000hz(void) 
-  {
-	// Create input and output realvecs
-	int length = 512;
-	realvec input_realvec;
-	in.create(1,length);
-	out.create(2,length);	
+  void test_wav_file(void) {
+    realvec out;
 
-	// Fill up the input realvec with a sine wave
-	for (int i = 0; i < length; i++) {
-	  double d = sin(i/((double)length)*(PI*2.0)*((double)length/44100.0)*1000.0);
-	  in(0,i) = d * i;
-	}
+    MarSystemManager mng;
 
-	// Process the data with the AIMC_LocalMax algorithm
- 	aimc_localmax->myProcess(in,out);
+    MarSystem* net = mng.create("Series", "net");
+  
+    net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("AimPZFC", "aimpfzc"));
+	net->addMarSystem(mng.create("AimHCL", "aimhcl"));
+	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 
-	// There should be one strobe point at index 15, everything else
-	// should be 0.
-  	TS_ASSERT_DELTA(out(0,0),0,0.001);
-  	TS_ASSERT_DELTA(out(0,1),0,0.001);
-  	TS_ASSERT_DELTA(out(0,13),0,0.001);
-  	TS_ASSERT_DELTA(out(0,14),1,0.001);
-  	TS_ASSERT_DELTA(out(0,15),0,0.001);
+    net->updctrl("SoundFileSource/src/mrs_string/filename", "./tests/unit_tests/files/test.wav");
+
+    net->tick();
+
+    out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+	// Check to see if the generated data is correct.  
+    //
+    // This data was generated with the AIM-C version of Gammatone.  I
+    // chose three points from the beginning, middle and end of the
+    // range, and compare the Marsyas Gammatone implementation with these
+    // results
+  	TS_ASSERT_DELTA(out(156,0),0.0,0.001);
+  	TS_ASSERT_DELTA(out(156,289),0.0,0.001);
+  	TS_ASSERT_DELTA(out(156,290),1.0,0.001);
+  	TS_ASSERT_DELTA(out(156,291),0.0,0.001);
+    
+    delete net;
+
   }
+
 
 
 
