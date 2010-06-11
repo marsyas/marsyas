@@ -246,7 +246,7 @@ MatchBassModel::myProcess(realvec& in, realvec& out)
 	  }
 	}
 	for(i=0; i<I_; ++i){
-	  for(m=(int)((double)i/I_*(start_(j+1)-start_(j)))+start_(j); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++){
+	  for(m=(mrs_natural)(((double)i/I_*(start_(j+1)-start_(j)))+start_(j)); m<(int)((double)(i+1)/I_*(start_(j+1)-start_(j)))+start_(j); m++){
 	    for(l=0; l<rootMax_-rootMin_; l++){
 	      i_featVec_(l,i) += invec_(l, m);
 	      tmpvec(l,i) ++;
