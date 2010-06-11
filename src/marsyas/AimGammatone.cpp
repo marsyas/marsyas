@@ -24,7 +24,7 @@ using namespace Marsyas;
 AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)
 {
   is_initialized = false;
-  initialized_num_channels = 0;
+  initialized_num_channels = 0.0;
   initialized_min_frequency = 0.0;
   initialized_max_frequency = 0.0;
   initialized_israte = 0.0;
@@ -38,10 +38,21 @@ AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)
 
 AimGammatone::AimGammatone(const AimGammatone& a): MarSystem(a) 
 {
+
+  is_initialized = false;
+  initialized_num_channels = 0.0;
+  initialized_min_frequency = 0.0;
+  initialized_max_frequency = 0.0;
+  initialized_israte = 0.0;
+
+
+  is_reset = false;
+  reset_num_channels = 0;
+
 	
-	ctrl_num_channels_= getctrl("mrs_natural/num_channels");
-	ctrl_min_frequency_ = getctrl("mrs_real/min_frequency");
-	ctrl_max_frequency_ = getctrl("mrs_real/max_frequency");
+  ctrl_num_channels_= getctrl("mrs_natural/num_channels");
+  ctrl_min_frequency_ = getctrl("mrs_real/min_frequency");
+  ctrl_max_frequency_ = getctrl("mrs_real/max_frequency");
 }
 
 
@@ -85,9 +96,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
   //
   // Does the MarSystem need initialization?
   //
-  mrs_real initialized_num_channels;
-  mrs_real initialized_min_frequency;
-  mrs_real initialized_max_frequency;
+
 
   if (initialized_num_channels != ctrl_num_channels_->to<mrs_real>() ||
       initialized_min_frequency != ctrl_min_frequency_->to<mrs_real>() ||
