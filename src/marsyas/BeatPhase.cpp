@@ -152,9 +152,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	{
 		sum_phase = 0.0;
 		sum_phase += in(0,t);
-		sum_phase += in(0, t-period);
-		sum_phase += in(0, t-2*period);
-		sum_phase += in(0, t-3*period);
+		sum_phase += in(0, t-(mrs_natural)period);
+		sum_phase += in(0, t-(mrs_natural)(2*period));
+		sum_phase += in(0, t-(mrs_natural)(3*period));
 		if (sum_phase >= max_sum_phase)
 		{
 			max_sum_phase = sum_phase;
@@ -179,8 +179,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	
 	for (int k=0; k < 4; k++)
 	{
-		start = max_phase - period - 2;
-		end  =  max_phase - period + 2;
+		start = max_phase - (mrs_natural)period - 2;
+		end  =  max_phase - (mrs_natural)period + 2;
 		max_sum_phase = 0.0;
 		for (t=start; t <= end; t++)
 		{
