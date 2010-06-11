@@ -70,7 +70,7 @@ private:
   bool is_reset;
 
   // What changes cause it to need a reset?
-  mrs_natural reseted_israte;
+  mrs_real reseted_israte;
   mrs_natural reseted_inobservations;
   mrs_real reseted_frame_period_ms;
   

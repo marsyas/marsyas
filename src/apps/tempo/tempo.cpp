@@ -17,6 +17,7 @@
 */
 
 
+#include "common.h" 
 #include <cstdio>
 #include <cstdlib>
 #include <algorithm>
@@ -39,6 +40,9 @@
 #endif 
 
 
+#ifdef MARSYAS_WIN32
+#pragma warning(disable: 4251) 
+#endif 
 
 
 

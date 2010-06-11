@@ -49,7 +49,8 @@ void ConstQFiltering::myUpdate(MarControlPtr sender)
   mrs_natural h, i;
   mrs_real f, bw;
   mrs_real lowFreq_, highFreq_;
-  mrs_natural width_, channels_, qValue_;
+  mrs_natural width_, channels_; 
+  mrs_real qValue_;
 
   lowFreq_ = ctrl_lowFreq_->to<mrs_real>();
   highFreq_ = ctrl_highFreq_->to<mrs_real>();
@@ -96,7 +97,8 @@ ConstQFiltering::myProcess(realvec& in, realvec& out)
   mrs_natural h,i;
   mrs_real *tmp;
   mrs_real lowFreq_, highFreq_;
-  mrs_natural width_, channels_, qValue_;
+  mrs_natural width_, channels_; 
+	mrs_real qValue_;
 
   lowFreq_ = ctrl_lowFreq_->to<mrs_real>();
   highFreq_ = ctrl_highFreq_->to<mrs_real>();
@@ -115,12 +117,12 @@ ConstQFiltering::myProcess(realvec& in, realvec& out)
 	spec2_(i,0) = 0.0;
       }
       for(i=0; i<width_/2 && fshift_(h)+i<inSamples_/2; ++i){
-	spec2_(2*i,0) = fil_(h,i)*spec1_(2*(fshift_(h)+i),0);
-	spec2_(2*i+1,0) = fil_(h,i)*spec1_(2*(fshift_(h)+i)+1,0);
+	spec2_(2*i,0) = fil_(h,i)*spec1_((mrs_natural)(2*(fshift_(h)+i)),0);
+	spec2_(2*i+1,0) = fil_(h,i)*spec1_((mrs_natural)(2*(fshift_(h)+i)+1),0);
       }
       for(i=width_-1; i>=width_/2 && fshift_(h)+i-width_>=0; i--){
-	spec2_(2*i,0) = fil_(h,i)*spec1_(2*(fshift_(h)+i-width_),0);
-	spec2_(2*i+1,0) = fil_(h,i)*spec1_(2*(fshift_(h)+i-width_)+1,0);
+	spec2_(2*i,0) = fil_(h,i)*spec1_((mrs_natural)(2*(fshift_(h)+i-width_)),0);
+	spec2_(2*i+1,0) = fil_(h,i)*spec1_((mrs_natural)(2*(fshift_(h)+i-width_)+1),0);
       }
       
       tmp = spec2_.getData();

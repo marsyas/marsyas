@@ -45,7 +45,7 @@ AimSSI::ResetInternal() {
 double
 AimSSI::Log2(double n) {
   // log(n)/log(2) is log2.  
-  return log( n ) / log( 2 );
+  return log( n ) / log( 2.0f );
 }
 
 
@@ -140,7 +140,7 @@ AimSSI::ExtractPitchIndex(realvec& in) const {
   }
 
   // Find pitch value
-  int start_sample = floor(ctrl_pitch_search_start_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0);
+  int start_sample = (int)floor(ctrl_pitch_search_start_ms_->to<mrs_real>() * ctrl_israte_->to<mrs_real>() / 1000.0);
   int max_idx = 0;
   double max_val = 0.0;
   for (int i = start_sample; i < ctrl_inSamples_->to<mrs_natural>(); ++i) {
@@ -185,7 +185,7 @@ AimSSI::myProcess(realvec& in, realvec& out)
       // between input samples to yield an output sample.
       double whole_part;
       double frac_part = modf(h * cycle_samples, &whole_part);
-      int sample = floor(whole_part);
+      int sample = (int)floor(whole_part);
 
       double weight = 1.0;
 
