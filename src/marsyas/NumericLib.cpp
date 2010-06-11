@@ -16,6 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h" 
 #include "NumericLib.h"
 
 //*************************************************************
@@ -1445,7 +1446,11 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
            // Compute 2-norm of k-th column without under/overflow.
            s(k) = 0;
            for (i = k; i < m; ++i) {
+#ifdef MARSYAS_WIN32
+              s(k) = _hypot(s(k),A(k*m+i));
+#else
               s(k) = hypot(s(k),A(k*m+i));
+#endif 
            }
            if (s(k) != 0.0) {
               if (A(k*m+k) < 0.0) {
@@ -1494,7 +1499,12 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
            // Compute 2-norm without under/overflow.
            e(k) = 0;
            for (i = k+1; i < n; ++i) {
+#ifdef MARSYAS_WIN32
+              e(k) = _hypot(e(k),e(i));
+#else
               e(k) = hypot(e(k),e(i));
+#endif 
+			  
            }
            if (e(k) != 0.0) {
               if (e(k+1) < 0.0) {
@@ -1678,7 +1688,12 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
               mrs_real f = e(p-2);
               e(p-2) = 0.0;
               for (j = p-2; j >= k; j--) {
-                 mrs_real t = hypot(s(j),f);
+#ifdef MARSYAS_WIN32
+				  mrs_real t = _hypot(s(j),f);
+#else
+				  mrs_real t = hypot(s(j),f);
+#endif 
+
                  mrs_real cs = s(j)/t;
                  mrs_real sn = f/t;
                  s(j) = t;
@@ -1703,7 +1718,11 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
               mrs_real f = e(k-1);
               e(k-1) = 0.0;
               for (j = k; j < p; j++) {
+#ifdef MARSYAS_WIN32
+                 mrs_real t = _hypot(s(j),f);
+#else
                  mrs_real t = hypot(s(j),f);
+#endif 
                  mrs_real cs = s(j)/t;
                  mrs_real sn = f/t;
                  s(j) = t;
@@ -1750,7 +1769,12 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
               // Chase zeros.
               
               for (j = k; j < p-1; j++) {
-                 mrs_real t = hypot(f,g);
+#ifdef MARSYAS_WIN32
+                 mrs_real t = _hypot(f,g);
+#else
+				 mrs_real t = hypot(f,g);
+#endif 
+			 
                  mrs_real cs = f/t;
                  mrs_real sn = g/t;
                  if (j != k) {
@@ -1767,7 +1791,11 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
                        V(j*n+i) = t;                         
                     }
                  }
-                 t = hypot(f,g);
+#ifdef MARSYAS_WIN32
+                 t = _hypot(f,g);
+#else
+				 t = hypot(f,g);
+#endif 			 
                  cs = f/t;
                  sn = g/t;
                  s(j) = t;
