@@ -101,7 +101,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
   if (initialized_num_channels != ctrl_num_channels_->to<mrs_real>() ||
       initialized_min_frequency != ctrl_min_frequency_->to<mrs_real>() ||
       initialized_max_frequency != ctrl_max_frequency_->to<mrs_real>() ||
-      initialized_israte != ctrl_israte_->to<mrs_natural>()) {
+      initialized_israte != ctrl_israte_->to<mrs_real>()) {
     is_initialized = false;
   }
 
@@ -111,7 +111,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
     initialized_num_channels = ctrl_num_channels_->to<mrs_real>();
     initialized_min_frequency = ctrl_min_frequency_->to<mrs_real>();
     initialized_max_frequency = ctrl_max_frequency_->to<mrs_real>();
-    initialized_israte = ctrl_israte_->to<mrs_natural>();
+    initialized_israte = ctrl_israte_->to<mrs_real>();
   }
 
   //
