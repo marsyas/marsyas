@@ -4,10 +4,12 @@
 namespace Marsyas
 {
 
-static const mrs_natural MIN_NOTE_FRAMES = 9; // note length
+//static const mrs_natural MIN_NOTE_FRAMES = 9; // note length
+#define MIN_NOTE_FRAMES 9
 // sixteenth notes at 120 BPM would be 10.75 frames apart
 // if each frame is 512 samples, or 11.6 ms.
-static MarSystemManager mng;
+
+
 
 Transcriber::Transcriber()
 {

@@ -19,27 +19,27 @@ class TranscriberExtract
 public:
 	TranscriberExtract();
 	~TranscriberExtract();
-	static mrs_real addFileSource(MarSystem* net,
+	mrs_real addFileSource(MarSystem* net,
 	                              const std::string infile);
 
-	static realvec getPitchesFromAudio(const std::string audioFilename);
-	static realvec getAmpsFromAudio(const std::string audioFilename);
-	static MarSystem* makePitchNet(const mrs_real srate,
+	realvec getPitchesFromAudio(const std::string audioFilename);
+	realvec getAmpsFromAudio(const std::string audioFilename);
+	MarSystem* makePitchNet(const mrs_real srate,
 	                               const mrs_real lowFreq = 100.0,
 	                               MarSystem* rvSink = NULL);
-	static realvec getPitchesFromRealvecSink(MarSystem* rvSink,
+	realvec getPitchesFromRealvecSink(MarSystem* rvSink,
 	        const mrs_real srate);
-	static MarSystem* makeAmplitudeNet(MarSystem* rvSink = NULL);
-	static realvec getAmpsFromRealvecSink(MarSystem* rvSink);
+	MarSystem* makeAmplitudeNet(MarSystem* rvSink = NULL);
+	realvec getAmpsFromRealvecSink(MarSystem* rvSink);
 
-	static void getAllFromAudio(const std::string audioFilename, realvec&
+	void getAllFromAudio(const std::string audioFilename, realvec&
 	                            pitchList, realvec& ampList, realvec&
 	                            boundaries);
-	static void toMidi(realvec& pitchList);
-	static mrs_real getNormalizingGain(const std::string audioFilename);
+	void toMidi(realvec& pitchList);
+	mrs_real getNormalizingGain(const std::string audioFilename);
 
 private:
-
+	MarSystemManager mng;
 };
 }
 #endif

@@ -1,7 +1,8 @@
 #include "TranscriberExtract.h"
-using namespace Marsyas;
+namespace Marsyas
+{
 
-static MarSystemManager mng;
+//static MarSystemManager mng; // moved to private member
 
 TranscriberExtract::TranscriberExtract()
 {
@@ -211,4 +212,4 @@ TranscriberExtract::getNormalizingGain(const std::string audioFilename)
 	return 1.0/maxVal;
 }
 
-
+} // namespace Marsyas
