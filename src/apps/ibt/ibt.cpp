@@ -26,8 +26,10 @@
 using namespace std;
 using namespace Marsyas;
 
+#ifdef MARSYAS_WIN32
 #pragma warning(disable: 4244)  //disable double to float warning
 #pragma warning(disable: 4100) //disable argc warning
+#endif 
 
 mrs_bool sonicOutFlux = 0;
 mrs_bool sonicOutFluxFilter = 0;
