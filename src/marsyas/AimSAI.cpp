@@ -137,7 +137,7 @@ AimSAI::myUpdate(MarControlPtr sender)
 
 }
 
-bool 
+void
 AimSAI::InitializeInternal() {
   // The SAI output bank must be as long as the SAI's Maximum delay.
   // One sample is added to the SAI buffer length to account for the
@@ -186,7 +186,6 @@ AimSAI::InitializeInternal() {
   for (int n = 0; n < ctrl_max_concurrent_strobes_->to<mrs_natural>(); ++n) {
     strobe_weights_[n] = pow(1.0 / (n + 1), (double)ctrl_strobe_weight_alpha_->to<mrs_real>());
   }
-  return true;
 }
 
 void 
