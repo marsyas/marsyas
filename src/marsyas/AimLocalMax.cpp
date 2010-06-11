@@ -32,6 +32,15 @@ AimLocalMax::AimLocalMax(string name):MarSystem("AimLocalMax",name)
   addControls();
 }
 
+AimLocalMax::AimLocalMax(const AimLocalMax& a) : MarSystem(a)
+{
+  // For any MarControlPtr in a MarSystem 
+  // it is necessary to perform this getctrl 
+  // in the copy constructor in order for cloning to work 
+  ctrl_decay_time_ms_ = getctrl("mrs_real/decay_time_ms");
+  ctrl_timeout_ms_ = getctrl("mrs_real/timeout_ms");
+}
+
 
 AimLocalMax::~AimLocalMax()
 {
@@ -108,11 +117,6 @@ AimLocalMax::InitializeInternal() {
 
 void 
 AimLocalMax::ResetInternal() {
-  // cout << "AimLocalMax::ResetInternal" << endl;
-  // cout << "ctrl_inObservations_->to<mrs_natural>()" << ctrl_inObservations_->to<mrs_natural>() << endl;
-
-  // sness - Not sure if we should be using 0.0 here, these should be ints.  The original code
-  // had the "f" for doubles though.
   threshold_.clear();
   threshold_.resize(channel_count_, 0.0);
 
@@ -132,7 +136,6 @@ AimLocalMax::ResetInternal() {
 void
 AimLocalMax::myProcess(realvec& in, realvec& out)
 {
-  cout << "AimLocalMax::myProcess" << endl;
   mrs_natural o,t;
 
   // sness - Need this because we don't have a SignalBuffer class like AIM-C has, so we
@@ -155,24 +158,8 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
   next_sample_.clear();
   next_sample_.resize(channel_count_, 0.0);
 
-  // cout << "ctrl_inObservations_->to<mrs_natural>()=" << ctrl_inObservations_->to<mrs_natural>() << endl;
-  // cout << "ctrl_inSamples_->to<mrs_natural>()=" << ctrl_inSamples_->to<mrs_natural>() << endl;
-
   // Skip over the signals and centre frequencies from PZFC (and HCL)
   mrs_natural skip_channels = channel_count_ + channel_count_;
-  cout << "channel_count_" << channel_count_ << endl;
-  cout << "skip_channels=" << skip_channels << endl;
-  // cout << "ctrl_inObservations_->to<mrs_natural>()=" << ctrl_inObservations_->to<mrs_natural>() << endl;
-  // cout << "ctrl_onObservations_->to<mrs_natural>()=" << ctrl_onObservations_->to<mrs_natural>() << endl;
-
-
-  // // Now that we've added strobes as a second set of observations
-  // // after the first, copy the the data from the input to the output.
-  // for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
-  //   for (o = 0; o < ctrl_onObservations_->to<mrs_natural>(); o++) {
-  //     out(o,t) = 0.0;
-  //   }
-  // }
 
   for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
     for (o = 0; o < channel_count_; o++) {
@@ -183,13 +170,6 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
       prev_sample_[o] = curr_sample_[o];
       curr_sample_[o] = next_sample_[o];
       next_sample_[o] = in(o, t);
-
-      // cout << "curr_sample_[" << o << "]=" << curr_sample_[o] << endl;
-      // cout << "prev_sample_[" << o << "]=" << prev_sample_[o] << endl;
-      // cout << "next_sample_[" << o << "]=" << next_sample_[o] << endl;
-      // cout << "threshold_[o]=" << threshold_[o] << endl;
-
-      // out(o + skip_channels,t) = in(o,t);
 
       // If the current sample is above threshold, the threshold is raised to
       // the level of the current sample, and decays from there.
@@ -228,7 +208,6 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
         threshold_[o] -= decay_constant_[o];
       else
         threshold_[o] = 0.0;
-      // cout << "out(" << o << "," << t << ")=" << out(o,t) << endl;
     }
   }
 
@@ -239,9 +218,4 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
       out(o,t) = in(o,t);
     }
   }
-
-
-  // // sness - Hmmm, not sure if the original code is calling this all
-  // ResetInternal();
-
 }

@@ -86,6 +86,7 @@ private:
 
 public:
   AimLocalMax(std::string name);
+  AimLocalMax(const AimLocalMax& a);
 
   ~AimLocalMax();
   MarSystem* clone() const;
