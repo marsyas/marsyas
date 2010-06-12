@@ -85,24 +85,25 @@ class AimGammatone_runner : public CxxTest::TestSuite
     net->tick();
 
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+    // cout << out << endl;
 
-	// // Check to see if the generated data is correct.  
-    // //
-    // // This data was generated with the AIM-C version of Gammatone.  I
-    // // chose three points from the beginning, middle and end of the
-    // // range, and compare the Marsyas Gammatone implementation with these
-    // // results
-  	// TS_ASSERT_DELTA(out(0,0),0.0,0.001);
-  	// TS_ASSERT_DELTA(out(0,1),0.0,0.001);
-  	// TS_ASSERT_DELTA(out(0,2),0.0,0.001);
+	// Check to see if the generated data is correct.  
+    //
+    // This data was generated with the AIM-C version of Gammatone.  I
+    // chose three points from the beginning, middle and end of the
+    // range, and compare the Marsyas Gammatone implementation with these
+    // results
+  	TS_ASSERT_DELTA(out(0,0),0.0,0.001);
+  	TS_ASSERT_DELTA(out(0,1),0.0,0.001);
+  	TS_ASSERT_DELTA(out(0,2),0.0,0.001);
 
-  	// TS_ASSERT_DELTA(out(0,254),-0.000436661,0.001);
-  	// TS_ASSERT_DELTA(out(0,255),-0.000443985,0.001);
-  	// TS_ASSERT_DELTA(out(0,256),-0.000451316,0.001);
+  	TS_ASSERT_DELTA(out(0,254),-0.000436661,0.001);
+  	TS_ASSERT_DELTA(out(0,255),-0.000443985,0.001);
+  	TS_ASSERT_DELTA(out(0,256),-0.000451316,0.001);
 
-  	// TS_ASSERT_DELTA(out(0,509),0.00257957,0.001);
-  	// TS_ASSERT_DELTA(out(0,510),0.00259566,0.001);
-  	// TS_ASSERT_DELTA(out(0,511),0.00261137,0.001);
+  	TS_ASSERT_DELTA(out(0,509),0.00257957,0.001);
+  	TS_ASSERT_DELTA(out(0,510),0.00259566,0.001);
+  	TS_ASSERT_DELTA(out(0,511),0.00261137,0.001);
 
     //
     // Tick the network 3 more times to see if the values still line up
@@ -112,23 +113,23 @@ class AimGammatone_runner : public CxxTest::TestSuite
     net->tick();
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
     
-	// // Check to see if the generated data is correct.  
-    // //
-    // // This data was generated with the AIM-C version of Gammatone.  I
-    // // chose three points from the beginning, middle and end of the
-    // // range, and compare the Marsyas Gammatone implementation with these
-    // // results
-  	// TS_ASSERT_DELTA(out(0,0),-0.00344842,0.001);
-  	// TS_ASSERT_DELTA(out(0,1),-0.00337253,0.001);
-  	// TS_ASSERT_DELTA(out(0,2),-0.00329647,0.001);
+	// Check to see if the generated data is correct.  
+    //
+    // This data was generated with the AIM-C version of Gammatone.  I
+    // chose three points from the beginning, middle and end of the
+    // range, and compare the Marsyas Gammatone implementation with these
+    // results
+  	TS_ASSERT_DELTA(out(0,0),-0.00344842,0.001);
+  	TS_ASSERT_DELTA(out(0,1),-0.00337253,0.001);
+  	TS_ASSERT_DELTA(out(0,2),-0.00329647,0.001);
 
-  	// TS_ASSERT_DELTA(out(0,254),0.00590044,0.001);
-  	// TS_ASSERT_DELTA(out(0,255),0.00587644,0.001);
-  	// TS_ASSERT_DELTA(out(0,256),0.00585197,0.001);
+  	TS_ASSERT_DELTA(out(0,254),0.00590044,0.001);
+  	TS_ASSERT_DELTA(out(0,255),0.00587644,0.001);
+  	TS_ASSERT_DELTA(out(0,256),0.00585197,0.001);
 
-  	// TS_ASSERT_DELTA(out(0,509),-0.00582105,0.001);
-  	// TS_ASSERT_DELTA(out(0,510),-0.00583112,0.001);
-  	// TS_ASSERT_DELTA(out(0,511),-0.00584065,0.001);
+  	TS_ASSERT_DELTA(out(0,509),-0.00582105,0.001);
+  	TS_ASSERT_DELTA(out(0,510),-0.00583112,0.001);
+  	TS_ASSERT_DELTA(out(0,511),-0.00584065,0.001);
     
     delete net;
 

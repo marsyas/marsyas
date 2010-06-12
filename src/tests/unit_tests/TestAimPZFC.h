@@ -83,7 +83,7 @@ class AimPZFC_runner : public CxxTest::TestSuite
     net->addMarSystem(mng.create("SoundFileSource", "src"));
     net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
 
-    net->updctrl("SoundFileSource/src/mrs_string/filename", "../../tests/unit_tests/files/test.wav");
+    net->updctrl("SoundFileSource/src/mrs_string/filename", "tests/unit_tests/files/test.wav");
     net->tick();
 
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();

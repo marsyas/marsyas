@@ -83,7 +83,7 @@ class marsyas_EXPORT AimGammatone: public MarSystem
   bool is_initialized;
 
   // What changes cause it to need initialization?
-  mrs_real initialized_num_channels;
+  mrs_natural initialized_num_channels;
   mrs_real initialized_min_frequency;
   mrs_real initialized_max_frequency;
   mrs_real initialized_israte;

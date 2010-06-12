@@ -24,7 +24,7 @@ using namespace Marsyas;
 AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)
 {
   is_initialized = false;
-  initialized_num_channels = 0.0;
+  initialized_num_channels = 0;
   initialized_min_frequency = 0.0;
   initialized_max_frequency = 0.0;
   initialized_israte = 0.0;
@@ -38,25 +38,19 @@ AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)
 
 AimGammatone::AimGammatone(const AimGammatone& a): MarSystem(a) 
 {
-
   is_initialized = false;
-  initialized_num_channels = 0.0;
+  initialized_num_channels = 0;
   initialized_min_frequency = 0.0;
   initialized_max_frequency = 0.0;
   initialized_israte = 0.0;
 
-
   is_reset = false;
   reset_num_channels = 0;
-
 	
   ctrl_num_channels_= getctrl("mrs_natural/num_channels");
   ctrl_min_frequency_ = getctrl("mrs_real/min_frequency");
   ctrl_max_frequency_ = getctrl("mrs_real/max_frequency");
 }
-
-
-
 
 AimGammatone::~AimGammatone()
 {
@@ -75,7 +69,6 @@ AimGammatone::addControls()
   addControl("mrs_natural/num_channels", 200 , ctrl_num_channels_);
   addControl("mrs_real/min_frequency", 86.0 , ctrl_min_frequency_);
   addControl("mrs_real/max_frequency", 16000.0 , ctrl_max_frequency_);
-
 }
 
 void
@@ -96,9 +89,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
   //
   // Does the MarSystem need initialization?
   //
-
-
-  if (initialized_num_channels != ctrl_num_channels_->to<mrs_real>() ||
+  if (initialized_num_channels != ctrl_num_channels_->to<mrs_natural>() ||
       initialized_min_frequency != ctrl_min_frequency_->to<mrs_real>() ||
       initialized_max_frequency != ctrl_max_frequency_->to<mrs_real>() ||
       initialized_israte != ctrl_israte_->to<mrs_real>()) {
@@ -108,7 +99,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
   if (!is_initialized) {
     InitializeInternal();
     is_initialized = true;
-    initialized_num_channels = ctrl_num_channels_->to<mrs_real>();
+    initialized_num_channels = ctrl_num_channels_->to<mrs_natural>();
     initialized_min_frequency = ctrl_min_frequency_->to<mrs_real>();
     initialized_max_frequency = ctrl_max_frequency_->to<mrs_real>();
     initialized_israte = ctrl_israte_->to<mrs_real>();
