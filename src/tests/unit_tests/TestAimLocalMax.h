@@ -42,7 +42,7 @@ public:
 	net->addMarSystem(mng.create("AimHCL", "aimhcl"));
 	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 
-    net->updctrl("SoundFileSource/src/mrs_string/filename", "./tests/unit_tests/files/test.wav");
+    net->updctrl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
 
     net->tick();
 
