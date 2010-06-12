@@ -141,7 +141,7 @@ MarSystem* createBEATextrator()
 	extractor->addMarSystem(mng.create("Peaker", "pkr"));
 	extractor->addMarSystem(mng.create("MaxArgMax", "mxr"));
 	extractor->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
-	extractor->addMarSystem(mng.create("Histogram", "histo"));
+	extractor->addMarSystem(mng.create("BeatHistogramFromPeaks", "histo"));
 	// extractor->addMarSystem(mng.create("PlotSink", "psink"));
 	// extractor->addMarSystem(mng.create("Reassign", "reassign"));
 	extractor->addMarSystem(mng.create("BeatHistoFeatures", "bhf"));
@@ -416,9 +416,9 @@ tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
 	total1->updctrl("Peaker/pkr/mrs_natural/peakStart", peakStart);
 	total1->updctrl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
 	total1->updctrl("Peaker/pkr/mrs_real/peakGain", 2.0);
-	total1->updctrl("Histogram/histo/mrs_natural/startBin", 0);
-	total1->updctrl("Histogram/histo/mrs_natural/endBin", 250);
-	total1->updctrl("Histogram/histo/mrs_bool/reset", true);
+	total1->updctrl("BeatHistogramFromPeaks/histo/mrs_natural/startBin", 0);
+	total1->updctrl("BeatHistogramFromPeaks/histo/mrs_natural/endBin", 250);
+	total1->updctrl("BeatHistogramFromPeaks/histo/mrs_bool/reset", true);
 
 	// prepare vectors for processing
 	/* realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
