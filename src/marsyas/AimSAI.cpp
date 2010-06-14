@@ -165,6 +165,9 @@ AimSAI::InitializeInternal() {
   //   LOG_ERROR("Failed to create temporary buffer in SAI module");
   //   return false;
   // }
+
+  centre_frequencies_.resize(channel_count_);
+
   sai_temp_.create(channel_count_,ctrl_inSamples_->to<mrs_natural>());
   frame_period_samples_ = (mrs_real)floor(ctrl_israte_->to<mrs_real>() * ctrl_frame_period_ms_->to<mrs_real>()
                                 / 1000.0);
@@ -251,7 +254,7 @@ AimSAI::findStrobes(realvec& in) {
 void
 AimSAI::myProcess(realvec& in, realvec& out)
 {
-  cout << "AimSAI::myProcess" << endl;
+  // cout << "AimSAI::myProcess" << endl;
   mrs_natural _max_concurrent_strobes = ctrl_max_concurrent_strobes_->to<mrs_natural>();
   mrs_real _israte = ctrl_israte_->to<mrs_real>();
   mrs_natural _inSamples = ctrl_inSamples_->to<mrs_natural>();
@@ -275,13 +278,13 @@ AimSAI::myProcess(realvec& in, realvec& out)
 
   // Loop over samples to make the SAI
   for (int t = 0; t < ctrl_inSamples_->to<mrs_natural>(); ++t) {
-    cout << "i=" << t << endl;
+    // cout << "i=" << t << endl;
 
     double decay_factor = pow(sai_decay_factor_, fire_counter_);
     // cout << "\tdecay_factor=" << decay_factor << endl;
     // Loop over channels
     for (int o = 0; o < channel_count_; ++o) {
-      cout << "o=" << o << endl;
+      // cout << "o=" << o << endl;
       // cout << "\tch=" << o << endl;
       // Local convenience variables
       StrobeList &active_strobes = active_strobes_[o];
@@ -291,12 +294,12 @@ AimSAI::myProcess(realvec& in, realvec& out)
       // Update strobes
       // If we are up to or beyond the next strobe...
       if (next_strobe_index < strobes_[o].size()) {
-        cout << "(next_strobe_index < strobes_[o].size())" << endl;
+        // cout << "(next_strobe_index < strobes_[o].size())" << endl;
         // cout << "\t\tnext_strobe_index" << next_strobe_index << endl;
         // cout << "\t\tinput.strobe(ch, next_strobe_index)=" << strobes_[o][next_strobe_index] << endl;
 
         if (t == strobes_[o][next_strobe_index]) {
-          cout << "(t == strobes_[o][next_strobe_index])" << endl;
+          // cout << "(t == strobes_[o][next_strobe_index])" << endl;
           // A new strobe has arrived.
           // If there are too many strobes active, then get rid of the
           // earliest one
@@ -346,7 +349,7 @@ AimSAI::myProcess(realvec& in, realvec& out)
         if ((t - active_strobes.Strobe(0).time) > max_strobe_delay_idx_) {
           active_strobes.DeleteFirstStrobe();
         } else {
-          cout << "break" << endl;
+          // cout << "break" << endl;
           break;
         }
       }
@@ -384,11 +387,11 @@ AimSAI::myProcess(realvec& in, realvec& out)
 
     fire_counter_--;
 
-    cout << "fire_counter_=" << fire_counter_ << endl;
+    // cout << "fire_counter_=" << fire_counter_ << endl;
 
     // Check to see if we need to output an SAI frame on this sample
     if (fire_counter_ <= 0) {
-      cout << "(fire_counter_ <= 0)" << endl;
+      // cout << "(fire_counter_ <= 0)" << endl;
       // Decay the SAI by the correct amount and add the current output frame
       double decay = pow(sai_decay_factor_, frame_period_samples_);
 
