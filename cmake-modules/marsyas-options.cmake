@@ -14,6 +14,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
 	SET(CMAKE_CXX_FLAGS "-Wall")
+#	SET(CMAKE_CXX_FLAGS "-Wall -D_GLIBCXX_DEBUG")
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 ### USER OPTIONS
@@ -53,7 +54,13 @@ option(MARSYAS_BOUNDCHECK "Check vector element access for boundary violations (
 mark_as_advanced (MARSYAS_BOUNDCHECK)
 option(MARSYAS_STATIC "Build as a static library" OFF) 
 
+## STL DEBUGGING
+option(MARSYAS_ENABLE_CHECKED_STL "Enable bounds checking on STL code" OFF)
+mark_as_advanced (MARSYAS_ENABLE_CHECKED_STL)
 
+IF(MARSYAS_ENABLE_CHECKED_STL)
+	SET(CMAKE_CXX_FLAGS "-Wall -D_GLIBCXX_DEBUG")
+ENDIF(MARSYAS_ENABLE_CHECKED_STL)
 
 ## logging stuff
 option(MARSYAS_LOG_WARNINGS "Build with warnings" ON)
