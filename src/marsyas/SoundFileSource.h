@@ -88,6 +88,9 @@ namespace Marsyas
 			MarControlPtr ctrl_currentLabel_;
 			MarControlPtr ctrl_nLabels_;
 			MarControlPtr ctrl_labelNames_;
+		
+		
+			MarControlPtr ctrl_rewindToPos_;
 
 			AbsSoundFileSource* src_;
 

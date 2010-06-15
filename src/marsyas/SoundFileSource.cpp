@@ -75,6 +75,8 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
+	
+	//ctrl_rewindToPos_ = getctrl("mrs_natural/moveToSamplePos");
 }
 
 void
@@ -127,16 +129,15 @@ SoundFileSource::addControls()
 
 	addctrl("mrs_real/fullDuration", 0.);
 	setctrlState("mrs_real/fullDuration", true);
-
+	
+	addctrl("mrs_natural/moveToSamplePos", 0);
+	setctrlState("mrs_natural/moveToSamplePos", true);
 }
 
 void
 SoundFileSource::myUpdate(MarControlPtr sender)
 {
-
-	(void) sender;
 	MRSDIAG("SoundFileSource::myUpdate");
-
 	ctrl_inObsNames_->setValue("audio,", NOUPDATE);
 
 	if (filename_ != ctrl_filename_->to<mrs_string>())
@@ -161,7 +162,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
 			ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
 
-			ctrl_hasData_->setValue(true, NOUPDATE);
+			ctrl_hasData_->setValue(true, NOUPDATE); // [!] this has to be under the next if statement instead.
+			// src_->hasData_ is updated in the next section automatically.
 
 			if (src_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
 				src_->hasData_ = true; //[!]
@@ -170,12 +172,42 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		else
 		{
 			ctrl_onObservations_->setValue(1, NOUPDATE);
-			ctrl_israte_->setValue(22050.0, NOUPDATE);
+			ctrl_israte_->setValue(22050.0, NOUPDATE); //[!] why not set to 0 or some invalid value?
 			ctrl_hasData_->setValue(false, NOUPDATE);
 			src_ = NULL;
 		}
+		
+	} else if(!sender.isInvalid()) {
+		
+		// Allow the user to jump to any given sample position. It appears to
+		// work across collections as well.
+		
+		string name = sender->getName();
+		if(!name.compare("mrs_natural/moveToSamplePos")){
+			
+			mrs_natural newPos = sender->to<mrs_natural>();
+			//cout << "Move to sample: " << newPos << endl;
+			
+			// getHeader() call seems to be the only way to
+			// initialize the playback position.
+			getHeader();
+			
+			ctrl_pos_->setValue(newPos, NOUPDATE);
+
+			// from here you could run the common last section, 
+			// but this seems redundant, so for efficiency reasons we
+			// return after making these (crucial) updates:
+			
+			src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
+			src_->update(); 
+			setctrl("mrs_bool/hasData", src_->hasData_);
+			
+			return;
+		}
 	}
 
+	
+	
 
 	if (src_ != NULL)
 	{
