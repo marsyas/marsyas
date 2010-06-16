@@ -42,7 +42,7 @@ public:
     MarSystem* net = mng.create("Series", "net");
   
     net->addMarSystem(mng.create("SoundFileSource", "src"));
-    net->addMarSystem(mng.create("AimGammatone", "aimGammatone"));
+    net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
     net->addMarSystem(mng.create("AimHCL", "aimhcl"));
 
     net->updctrl("SoundFileSource/src/mrs_string/filename", "./tests/unit_tests/files/test.wav");
@@ -52,49 +52,49 @@ public:
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
     // cout << out << endl;
 
-	// // Check to see if the generated data is correct.  
+	// Check to see if the generated data is correct.  
+    //
+    // This data was generated with the AIM-C version of HCL.  I
+    // chose three points from the beginning, middle and end of the
+    // range, and compare the Marsyas HCL implementation with these
+    // results
+  	TS_ASSERT_DELTA(out(0,0),0.0,0.001);
+  	TS_ASSERT_DELTA(out(0,1),0.0,0.001);
+  	TS_ASSERT_DELTA(out(0,2),0.0,0.001);
+
+  	TS_ASSERT_DELTA(out(0,254),0.000261777,0.001);
+  	TS_ASSERT_DELTA(out(0,255),0.000274693,0.001);
+  	TS_ASSERT_DELTA(out(0,256),0.000287972,0.001);
+
+  	TS_ASSERT_DELTA(out(0,509),4.71047e-18,0.001);
+  	TS_ASSERT_DELTA(out(0,510),3.98848e-18,0.001);
+  	TS_ASSERT_DELTA(out(0,511),3.37708e-18,0.001);
+
     // //
-    // // This data was generated with the AIM-C version of HCL.  I
-    // // chose three points from the beginning, middle and end of the
-    // // range, and compare the Marsyas HCL implementation with these
-    // // results
-  	// TS_ASSERT_DELTA(out(0,0),0.0,0.001);
-  	// TS_ASSERT_DELTA(out(0,1),0.0,0.001);
-  	// TS_ASSERT_DELTA(out(0,2),0.0,0.001);
-
-  	// TS_ASSERT_DELTA(out(0,254),0.000261777,0.001);
-  	// TS_ASSERT_DELTA(out(0,255),0.000274693,0.001);
-  	// TS_ASSERT_DELTA(out(0,256),0.000287972,0.001);
-
-  	// TS_ASSERT_DELTA(out(0,509),4.71047e-18,0.001);
-  	// TS_ASSERT_DELTA(out(0,510),3.98848e-18,0.001);
-  	// TS_ASSERT_DELTA(out(0,511),3.37708e-18,0.001);
-
-    // // //
-    // // // Tick the network 3 more times to see if the values still line up
-    // // //
-    // net->tick();
-    // net->tick();
-    // net->tick();
-    // out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+    // // Tick the network 3 more times to see if the values still line up
+    // //
+    net->tick();
+    net->tick();
+    net->tick();
+    out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
     
-	// // Check to see if the generated data is correct.  
-    // //
-    // // This data was generated with the AIM-C version of HCL.  I
-    // // chose three points from the beginning, middle and end of the
-    // // range, and compare the Marsyas HCL implementation with these
-    // // results
-  	// TS_ASSERT_DELTA(out(0,0),0.224228,0.001);
-  	// TS_ASSERT_DELTA(out(0,1),0.224561,0.001);
-  	// TS_ASSERT_DELTA(out(0,2),0.224828,0.001);
+	// Check to see if the generated data is correct.  
+    //
+    // This data was generated with the AIM-C version of HCL.  I
+    // chose three points from the beginning, middle and end of the
+    // range, and compare the Marsyas HCL implementation with these
+    // results
+  	TS_ASSERT_DELTA(out(0,0),0.224228,0.001);
+  	TS_ASSERT_DELTA(out(0,1),0.224561,0.001);
+  	TS_ASSERT_DELTA(out(0,2),0.224828,0.001);
 
-  	// TS_ASSERT_DELTA(out(0,254),8.68093e-13,0.001);
-  	// TS_ASSERT_DELTA(out(0,255),7.35964e-13,0.001);
-  	// TS_ASSERT_DELTA(out(0,256),6.23925e-13,0.001);
+  	TS_ASSERT_DELTA(out(0,254),8.68093e-13,0.001);
+  	TS_ASSERT_DELTA(out(0,255),7.35964e-13,0.001);
+  	TS_ASSERT_DELTA(out(0,256),6.23925e-13,0.001);
 
-  	// TS_ASSERT_DELTA(out(0,509),1.89546e-10,0.001);
-  	// TS_ASSERT_DELTA(out(0,510),1.60974e-10,0.001);
-  	// TS_ASSERT_DELTA(out(0,511),1.36701e-10,0.001);
+  	TS_ASSERT_DELTA(out(0,509),1.89546e-10,0.001);
+  	TS_ASSERT_DELTA(out(0,510),1.60974e-10,0.001);
+  	TS_ASSERT_DELTA(out(0,511),1.36701e-10,0.001);
     
     
     delete net;
