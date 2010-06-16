@@ -234,6 +234,7 @@
 #include "AimSAI.h"
 #include "AimSSI.h"
 #include "AimBoxes.h"
+#include "Unfold.h"
 #include "TimeFreqPeakConnectivity.h"
 #include "Combinator.h"
 #include "ParallelMatrixWeight.h"
@@ -470,6 +471,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AimSAI", new AimSAI("aimsai"));
 	registerPrototype("AimSSI", new AimSSI("aimssi"));
 	registerPrototype("AimBoxes", new AimBoxes("aimboxes"));
+	registerPrototype("Unfold", new Unfold("unfold"));
 
 	//modifyRegister
 

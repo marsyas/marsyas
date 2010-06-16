@@ -7459,7 +7459,7 @@ toy_with_aim(string sfName)
 	// delete net;
 }
 
-// Stabilised auditory image
+// Make boxes out of Stabilised auditory image
 void 
 toy_with_aim_boxes(string sfName)
 {
@@ -7476,6 +7476,47 @@ toy_with_aim_boxes(string sfName)
 	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 	net->addMarSystem(mng.create("AimSAI", "aimsai"));
 	net->addMarSystem(mng.create("AimBoxes", "aimboxes"));
+
+    cout << "UPDATE" << endl;
+
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+    // cout << *net;
+
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      cout << "tik tok" << endl;
+      net->tick();
+      // cout << "AFTER" << endl;
+      // cout << *net;
+
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	}
+	delete net;
+}
+
+// Unfold boxes of Stabilised auditory image
+//
+// sness - I could have done this more simply, but the main use case
+// for now is to unfold either a SAI or the output of the boxcutting
+// algorithm from SAI.
+void 
+toy_with_unfold(string sfName)
+{
+	cout << "Toy_with: unfold" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+    net->addMarSystem(mng.create("AimHCL", "aimhcl"));
+	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+	net->addMarSystem(mng.create("AimSAI", "aimsai"));
+	net->addMarSystem(mng.create("AimBoxes", "aimboxes"));
+	net->addMarSystem(mng.create("Unfold", "unfold"));
 
     cout << "UPDATE" << endl;
 
@@ -7719,6 +7760,8 @@ main(int argc, const char **argv)
 		toy_with_aim(fname0);
 	else if (toy_withName == "aim_boxes")
 		toy_with_aim_boxes(fname0);
+	else if (toy_withName == "unfold")
+		toy_with_unfold(fname0);
 
 	else 
 	{
