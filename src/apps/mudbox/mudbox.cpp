@@ -7231,7 +7231,7 @@ toy_with_aim_pzfc(string sfName)
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
       net->tick();
-      // cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	}
 	delete net;
 }
@@ -7270,6 +7270,7 @@ toy_with_aim_hcl(string sfName)
 	MarSystem* net = mng.create("Series", "net");
 	
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
 	net->addMarSystem(mng.create("AimHCL", "aimhcl"));
 
 	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
@@ -7293,6 +7294,8 @@ toy_with_aim_localmax(string sfName)
 	MarSystem* net = mng.create("Series", "net");
 
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("AimPZFC", "aimpfzc"));
+	net->addMarSystem(mng.create("AimHCL", "aimhcl"));
 	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 
 	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
@@ -7300,7 +7303,7 @@ toy_with_aim_localmax(string sfName)
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
       net->tick();
-      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+      // cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	}
 	delete net;
 }
@@ -7317,14 +7320,10 @@ toy_with_aim_sai(string sfName)
 
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 
-	net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
-    
-	MarSystem* fanout = mng.create("Fanout", "fanout");
-    fanout->addMarSystem(mng.create("AimHCL", "aimhcl"));
-	fanout->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
-
-    net->addMarSystem(fanout);
-
+	// net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
+	net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+    net->addMarSystem(mng.create("AimHCL", "aimhcl"));
+	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 	net->addMarSystem(mng.create("AimSAI", "aimsai"));
 
     cout << "UPDATE" << endl;
@@ -7335,7 +7334,7 @@ toy_with_aim_sai(string sfName)
 
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
-      // cout << "tik tok" << endl;
+      cout << "tik tok" << endl;
       net->tick();
       // cout << "AFTER" << endl;
       // cout << *net;
@@ -7380,6 +7379,113 @@ toy_with_aim_ssi(string sfName)
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
       // cout << "tik tok" << endl;
+      net->tick();
+      // cout << "AFTER" << endl;
+      // cout << *net;
+
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	}
+	delete net;
+}
+
+//
+// Playing with AIM-C and Accumulators
+//
+void
+toy_with_aim(string sfName)
+{
+  // mrs_natural memSize = 40;
+  // mrs_natural winSize = 512;
+  // mrs_natural hopSize = 512;
+  // mrs_natural accSize_ = 1298;
+  // mrs_real samplingRate_ = 22050.0;
+  // mrs_real start = 0.0;
+  // mrs_real length = -1.0;
+
+	cout << "Toy_with: aim" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+    
+    MarSystem* accum = mng.create("Accumulator", "accum");
+
+	MarSystem* accumseries = mng.create("Series", "accumseries");
+	accumseries->addMarSystem(mng.create("SoundFileSource", "src"));
+	accumseries->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+
+	// net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
+    
+	// net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+
+	MarSystem* fanout = mng.create("Fanout", "fanout");
+    // fanout->addMarSystem(mng.create("AimHCL", "aimhcl"));
+    fanout->addMarSystem(mng.create("Gain", "gain"));
+	fanout->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+
+    accumseries->addMarSystem(fanout);
+
+	accumseries->addMarSystem(mng.create("AimSAI", "aimsai"));
+	accumseries->addMarSystem(mng.create("AimSSI", "aimssi"));
+
+    // sness - A little hack to take the PZFC output and figure out the
+    // amount of signal in each channel
+	accumseries->addMarSystem(mng.create("MaxMin", "maxmin"));
+	accumseries->addMarSystem(mng.create("Square", "square"));
+	accumseries->addMarSystem(mng.create("Mean", "mean"));
+
+    accum->addMarSystem(accumseries);
+    // accum->updctrl("mrs_natural/nTimes", 10);
+    accum->updctrl("mrs_natural/nTimes", 129);
+    // // accum->updctrl("mrs_natural/nTimes", accSize_);
+
+    net->addMarSystem(accum);
+    //    net->addMarSystem(accumseries);
+
+    MarSystem* statistics = mng.create("Fanout", "statistics2");
+    statistics->addMarSystem(mng.create("Mean", "mn"));
+    statistics->addMarSystem(mng.create("StandardDeviation", "std"));
+    net->addMarSystem(statistics);
+
+	accumseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+	// while (accumseries->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	// {
+      net->tick();
+      // cout << *net << endl;
+
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	// }
+	// delete net;
+}
+
+// Stabilised auditory image
+void 
+toy_with_aim_boxes(string sfName)
+{
+	cout << "Toy_with: aim_boxes" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+    net->addMarSystem(mng.create("AimHCL", "aimhcl"));
+	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+	net->addMarSystem(mng.create("AimSAI", "aimsai"));
+	net->addMarSystem(mng.create("AimBoxes", "aimboxes"));
+
+    cout << "UPDATE" << endl;
+
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+    // cout << *net;
+
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      cout << "tik tok" << endl;
       net->tick();
       // cout << "AFTER" << endl;
       // cout << *net;
@@ -7609,6 +7715,10 @@ main(int argc, const char **argv)
 		toy_with_aim_sai(fname0);
 	else if (toy_withName == "aim_ssi")
 		toy_with_aim_ssi(fname0);
+	else if (toy_withName == "aim")
+		toy_with_aim(fname0);
+	else if (toy_withName == "aim_boxes")
+		toy_with_aim_boxes(fname0);
 
 	else 
 	{
