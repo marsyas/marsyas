@@ -233,6 +233,7 @@
 #include "AimLocalMax.h"
 #include "AimSAI.h"
 #include "AimSSI.h"
+#include "AimBoxes.h"
 #include "TimeFreqPeakConnectivity.h"
 #include "Combinator.h"
 #include "ParallelMatrixWeight.h"
@@ -468,6 +469,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AimLocalMax", new AimLocalMax("aimlocalmax"));
 	registerPrototype("AimSAI", new AimSAI("aimsai"));
 	registerPrototype("AimSSI", new AimSSI("aimssi"));
+	registerPrototype("AimBoxes", new AimBoxes("aimboxes"));
 
 	//modifyRegister
 
