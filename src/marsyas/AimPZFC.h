@@ -147,6 +147,7 @@ private:
 
 public:
   AimPZFC(std::string name);
+  AimPZFC(const AimPZFC& a);
 
   ~AimPZFC();
   MarSystem* clone() const;

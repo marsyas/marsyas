@@ -38,9 +38,20 @@ AimPZFC::AimPZFC(string name):MarSystem("AimPZFC",name)
   addControls();
 }
 
-
-AimPZFC::~AimPZFC()
+AimPZFC::AimPZFC(const AimPZFC& a): MarSystem(a) 
 {
+  is_initialized = false;
+  initialized_israte = 0.0;
+  initialized_inobservations = 0;
+  initialized_mindamp = 0.0;
+  initialized_maxdamp = 0.0;
+  initialized_cf_max = 0.0;
+  initialized_cf_min = 0.0;
+  
+  is_reset = false;
+  reseted_inobservations = 0;
+  reseted_agc_factor = 0;
+
   ctrl_pole_damping_ = getctrl("mrs_real/pole_damping");
   ctrl_zero_damping_ = getctrl("mrs_real/zero_damping");
   ctrl_zero_factor_ = getctrl("mrs_real/zero_factor");
@@ -54,6 +65,12 @@ AimPZFC::~AimPZFC()
   ctrl_maxdamp_ = getctrl("mrs_real/maxdamp");
   ctrl_do_agc_step_ = getctrl("mrs_bool/do_agc_step");
   ctrl_use_fit_ = getctrl("mrs_bool/do_use_fit");
+
+}
+
+
+AimPZFC::~AimPZFC()
+{
 }
 
 
