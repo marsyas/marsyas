@@ -183,7 +183,7 @@ AimBoxes::myProcess(realvec& in, realvec& out)
           float pixel_value = 0.0f;
           for (int k = i * pixel_size_channels; k < (i + 1) * pixel_size_channels; ++k) {
             for (int l = j * pixel_size_samples; l < (j + 1) * pixel_size_samples; ++l) {
-              pixel_value += in(k, l);
+              pixel_value += in(k + box_limits_channels_[c].second, l);
               // pixel_value += input.sample(k, l);
             }
           }
