@@ -44,7 +44,7 @@ public:
 	net->addMarSystem(mng.create("AimSAI", "aimsai"));
 	net->addMarSystem(mng.create("AimBoxes", "aimboxes"));
 
-    net->updctrl("SoundFileSource/src/mrs_string/filename", "./tests/unit_tests/files/test.wav");
+    net->updctrl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
 
     net->tick();
 
@@ -56,15 +56,15 @@ public:
     // chose three points from the beginning, middle and end of the
     // range, and compare the Marsyas SAI implementation with these
     // results
-  	TS_ASSERT_DELTA(out(0,0),0.000271244,0.001);
-  	TS_ASSERT_DELTA(out(0,1),0.000429452,0.001);
-  	TS_ASSERT_DELTA(out(0,2),0.000647149,0.001);
-  	TS_ASSERT_DELTA(out(0,24),0.0513575,0.001);
-  	TS_ASSERT_DELTA(out(0,25),0.0501243,0.001);
-  	TS_ASSERT_DELTA(out(0,26),0.0487665,0.001);
-  	TS_ASSERT_DELTA(out(0,45),0.0183585,0.001);
-  	TS_ASSERT_DELTA(out(0,46),0.0170586,0.001);
-  	TS_ASSERT_DELTA(out(0,47),0.0158053,0.001);
+  	TS_ASSERT_DELTA(out(0,0),0.203709,0.001);
+  	TS_ASSERT_DELTA(out(0,1),0.168188,0.001);
+  	TS_ASSERT_DELTA(out(0,2),0.149391,0.001);
+  	TS_ASSERT_DELTA(out(0,24),0.0612249,0.001);
+  	TS_ASSERT_DELTA(out(0,25),0.0668861,0.001);
+  	TS_ASSERT_DELTA(out(0,26),0.0725046,0.001);
+  	TS_ASSERT_DELTA(out(0,45),0.079052,0.001);
+  	TS_ASSERT_DELTA(out(0,46),0.075481,0.001);
+  	TS_ASSERT_DELTA(out(0,47),0.071827,0.001);
 
     //
     // Tick the network 3 more times to see if the values still line up
@@ -80,15 +80,15 @@ public:
     // chose three points from the beginning, middle and end of the
     // range, and compare the Marsyas SAI implementation with these
     // results
-  	TS_ASSERT_DELTA(out(0,0),0.045335,0.001);
-  	TS_ASSERT_DELTA(out(0,1),0.189983,0.001);
-  	TS_ASSERT_DELTA(out(0,2),0.118463,0.001);
-  	TS_ASSERT_DELTA(out(0,24),0.198095,0.001);
-  	TS_ASSERT_DELTA(out(0,25),0.195077,0.001);
-  	TS_ASSERT_DELTA(out(0,26),0.191725,0.001);
-  	TS_ASSERT_DELTA(out(0,45),0.095455,0.001);
-  	TS_ASSERT_DELTA(out(0,46),0.090432,0.001);
-  	TS_ASSERT_DELTA(out(0,47),0.0861151,0.001);
+  	TS_ASSERT_DELTA(out(0,0),0.300160,0.001);
+  	TS_ASSERT_DELTA(out(0,1),0.269779,0.001);
+  	TS_ASSERT_DELTA(out(0,2),0.252419,0.001);
+  	TS_ASSERT_DELTA(out(0,24),0.130430,0.001);
+  	TS_ASSERT_DELTA(out(0,25),0.134411,0.001);
+  	TS_ASSERT_DELTA(out(0,26),0.137622,0.001);
+  	TS_ASSERT_DELTA(out(0,45),0.132472,0.001);
+  	TS_ASSERT_DELTA(out(0,46),0.132383,0.001);
+  	TS_ASSERT_DELTA(out(0,47),0.132838,0.001);
     
     
     delete net;

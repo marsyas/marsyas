@@ -44,7 +44,7 @@ class AimSAI_runner : public CxxTest::TestSuite
 	net->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 	net->addMarSystem(mng.create("AimSAI", "aimsai"));
 
-    net->updctrl("SoundFileSource/src/mrs_string/filename", "./tests/unit_tests/files/test.wav");
+    net->updctrl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
 
     net->tick();
 
