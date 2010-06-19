@@ -2257,7 +2257,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			else
 			{
 				bextractNetwork->tick();
-			  
+				featureNetwork->updctrl("TextureStats/tStats/mrs_bool/reset", 
+										true);			  
 				fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
 			  
 				bextractNetwork->updctrl("mrs_natural/advance", advance);
