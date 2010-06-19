@@ -25,7 +25,7 @@
 #include <iostream>
 #include <iomanip> 
 
-using namespace std;
+//using namespace std;
 
 namespace Marsyas
 {
@@ -52,10 +52,10 @@ private:
   mrs_natural write_;
   mrs_natural nbFrames_;
   mrs_real hopDuration_;
-  ofstream outputFileSyn_;
-  ofstream outputFileTran_;
-  string lastLabel_;
-  string oriName_;
+	std::ofstream outputFileSyn_;
+	std::ofstream outputFileTran_;
+  std::string lastLabel_;
+  std::string oriName_;
 
   mrs_natural predictions_;
 

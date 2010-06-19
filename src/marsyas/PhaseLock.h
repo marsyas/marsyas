@@ -20,8 +20,8 @@
 #define MARSYAS_PHASELOCK_H
 
 #include "MarSystem.h"	
-#include <string.h>
-using namespace std;
+//#include <string.h>
+//using namespace std;
 
 namespace Marsyas
 {
@@ -95,7 +95,7 @@ private:
 	mrs_real srcFs_;
 	mrs_string mode_;
 	mrs_string line_;
-	ifstream inStream_;
+	std::ifstream inStream_;
 	mrs_real gtScore_;
 	mrs_natural gtInitPeriod_;
 	mrs_natural gtLastPeriod_;

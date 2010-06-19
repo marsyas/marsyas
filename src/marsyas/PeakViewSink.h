@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 
-using namespace std;
+//using namespace std;
 
 namespace Marsyas
 {
@@ -53,8 +53,8 @@ to the specified file and reset accumulated peak memory (disk or memory).
 	{
 	private: 
 		mrs_natural count_;
-		string tmpFilename_;
-		ofstream tmpFile_;
+		std::string tmpFilename_;
+		std::ofstream tmpFile_;
 		realvec accumData_;
 
 		MarControlPtr ctrl_accumulate2Disk_;

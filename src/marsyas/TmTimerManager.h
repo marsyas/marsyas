@@ -41,7 +41,7 @@
 #include <vector>
 #include "TmParam.h"
 
-using namespace std;
+//using namespace std;
 
 namespace Marsyas
 {

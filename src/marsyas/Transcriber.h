@@ -3,7 +3,7 @@
 
 #include "MarSystemManager.h"
 #include "TranscriberExtract.h"
-using namespace std;
+//using namespace std;
 namespace Marsyas
 {
 /**

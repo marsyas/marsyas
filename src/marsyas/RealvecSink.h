@@ -25,7 +25,7 @@
 #include <iostream>
 #include <fcntl.h> // for Mathieu's unlink :-) 
 
-using namespace std;
+//using namespace std;
 
 namespace Marsyas
 {
@@ -47,8 +47,8 @@ private:
   
   mrs_natural count_;
  mrs_natural write_;
- string oriName_;
- ofstream outputFile_;
+	std::string oriName_;
+	std::ofstream outputFile_;
 
 public:
   RealvecSink(std::string name);

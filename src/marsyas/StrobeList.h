@@ -28,7 +28,7 @@
 #define AIMC_SUPPORT_STROBELIST_H_
 
 #include <iostream>
-using namespace std;
+//using namespace std;
 
 #include <cmath>
 #include <deque>
@@ -106,7 +106,7 @@ class StrobeList {
 
   void printStrobes() {
     for (unsigned int i = 0; i < strobes_.size(); ++i) {
-      cout << strobes_[i].time << " " << strobes_[i].weight << strobes_[i].working_weight << endl;
+		std::cout << strobes_[i].time << " " << strobes_[i].weight << strobes_[i].working_weight << std::endl;
     }
 
   }

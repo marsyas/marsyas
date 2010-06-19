@@ -15,7 +15,7 @@
 #include <iostream> 
 #include <cstdlib> 
 #include <cstring> 
-using namespace std;
+//using namespace std;
 
 namespace Marsyas
 {
@@ -79,9 +79,9 @@ namespace Marsyas
 			rstep_ = (mrs_real)this->size() / (mrs_real)foldCount_;
 			if (foldCount_ > (mrs_natural)this->size()) 
 			{
-				cout << "Folds exceed number of instances" << endl;
-				cout << "foldCount_ = " << foldCount_ << endl;
-				cout << "size = " << this->size() << endl;;
+				std::cout << "Folds exceed number of instances" << std::endl;
+				std::cout << "foldCount_ = " << foldCount_ << std::endl;
+				std::cout << "size = " << this->size() << std::endl;;
 				exit(1);
 			}
 			
