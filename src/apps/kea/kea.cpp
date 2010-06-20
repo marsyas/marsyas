@@ -321,8 +321,8 @@ train()
   int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
     {
-      string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->tick();
+      string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->updctrl("Classifier/cl/mrs_string/mode", mode);
       ++i;
     }

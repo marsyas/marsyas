@@ -99,7 +99,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 	// parse the header portion of the file to get the required attribute names and possible output labels (if any)...
 	if (strcmp(filename_.c_str(), getctrl("mrs_string/filename")->to<mrs_string>().c_str()) != 0)
 	{
-	  this->updctrl("mrs_bool/done", false);	  
+		this->updctrl("mrs_bool/done", false);	  
 		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 		attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->to<mrs_string>();
 	 	
@@ -142,12 +142,12 @@ WekaSource::myUpdate(MarControlPtr sender)
 		}
 		MRSASSERT(index == (mrs_natural)attributesIncluded_.size());
 	  
-	  setctrl("mrs_string/attributeNames", names);
-	  setctrl("mrs_natural/onSamples", 1);
+		setctrl("mrs_string/attributeNames", names);
+		setctrl("mrs_natural/onSamples", 1);
 		setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
 		setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
-	  setctrl("mrs_natural/nInstances", (mrs_natural)data_.getRows());
-  	  
+		setctrl("mrs_natural/nInstances", (mrs_natural)data_.getRows());
+		
 		string mode = getctrl("mrs_string/validationMode")->to<mrs_string>();
 		validationMode_ = mode;
 	  
@@ -196,14 +196,15 @@ WekaSource::myUpdate(MarControlPtr sender)
 			foldCount_ = ::atol(cp);
 			MRSASSERT(foldCount_>=2&&foldCount_<=10);
 		  
-			if( validationModeEnum_ == kFoldStratified)
-			{//in stratified mode we simply use all the available data
-				cout << "=== Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+			if( validationModeEnum_ != kFoldStratified)
+			{
+				cout << "=== Non-Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+               //in non-stratified mode we simply use all the available data
 				foldData_.SetupkFoldSections(data_, foldCount_);
 			}
 			else
 			{//in non-stratified we seperate the data according to class
-				cout << "=== Non-Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
+				cout << "=== Stratified cross-validation (" <<  foldCount_ << " folds) ===" << endl;
 				foldClassData_.clear();
 				foldClassData_.resize(classesFound_.size());
 			  
@@ -221,7 +222,6 @@ WekaSource::myUpdate(MarControlPtr sender)
 		}//if "kFold"
 		else if(strcmp(cp ,"UseTestSet")==0)
 		{
-			cout << "WekaSource:UseTestSet" << endl;
 			validationModeEnum_ = UseTestSet;
 		  
 			cp = (char *)strtok(NULL, ",");
@@ -255,9 +255,6 @@ WekaSource::myUpdate(MarControlPtr sender)
       
 		}//else if "PercentageSplit"
   
-		//		cout << "=== Summary ===" << endl << endl;
-  
-
     }
 
 }//myUpdate
@@ -403,12 +400,15 @@ void WekaSource::handleUseTestSet(bool trainMode, realvec &out)
     }//for ii
 }//handleUseTestSet
 
-void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &out)
+void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 {
 	WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
 
 	WekaFoldData::nextMode next;
+
 	vector<mrs_real> *row = foldClassData_[foldClassDataIndex_].Next(next);
+	
+	
 
 	switch(currentMode)
     {
@@ -459,19 +459,27 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
 	
 }
 
-void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
+void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &out)
 {
-	WekaFoldData::nextMode next;
-	vector<mrs_real> *row = foldData_.Next(next);
 
+	WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
+
+	WekaFoldData::nextMode next;
+
+
+	vector<mrs_real> *row = foldData_.Next(next);
+	
 	if(next == WekaFoldData::None)
 		this->updctrl("mrs_bool/done", true);
-	else if(next == WekaFoldData::Training && !trainMode)
+	// else if(next == WekaFoldData::Training&& !trainMode)
+	else if(next == WekaFoldData::Training)
 		this->updctrl("mrs_string/mode", "train");
-	else if(next == WekaFoldData::Predict && trainMode)
+	// else if(next == WekaFoldData::Predict && trainMode)
+	else if(next == WekaFoldData::Predict)
 		this->updctrl("mrs_string/mode", "predict");
 
 	MRSASSERT((mrs_natural) row->size() == out.getCols());
+
 	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0) = row->at(ii);
@@ -504,20 +512,20 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	char str[1024];
 	// skip comment lines 
 	while (mis.peek() == '%') 
-	  {
+	{
 	    
 	    mis.getline(str, 1023);
-	  }
+	}
 	
 	string token1,token2,token3;
   
 	mis >> token1;
 	
 	if ((token1 != "@relation")&&(token1 != "@RELATION"))
-	  {
+	{
 	    MRSERR("Not proper weka .arff file");
 	    return;
-	  }
+	}
 	
 	mis >> token2;
 //  MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 ); //[!]
@@ -643,9 +651,9 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 		else // skip comment line 
 		{
 //		    mis.getline(str, 1023);
-		  // If the line starts with "% filename" set the current_filename
+			// If the line starts with "% filename" set the current_filename
 			if (strncmp(token.c_str(),"% filename",10) == 0) {
-			  currentFname = token.substr(11);
+				currentFname = token.substr(11);
 			} 
 		}
 		getline(mis,token);

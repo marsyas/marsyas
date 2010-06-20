@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -20,11 +20,11 @@
     \class Summary
     \brief summarizes classifier accuracy
 
-When the mode control is set to "predict" then the output 
-of the classifier will output the class with the must instances. 
+	When the mode control is set to "predict" then the output 
+	of the classifier will output the class with the must instances. 
 
-This MarSystems serves as ground truth for classification/regression 
-MarSystem results. 
+	This MarSystems serves as ground truth for classification/regression 
+	MarSystem results. 
 
 */
 
@@ -39,34 +39,34 @@ namespace Marsyas
 {
 
 //Some statistical information computed by computeSummaryStatistics
-typedef struct
-{
-	mrs_natural	instances;
-	mrs_natural	correctInstances;
-	mrs_real kappa;
-	mrs_real meanAbsoluteError;
-	mrs_real rootMeanSquaredError;
-	mrs_real relativeAbsoluteError;
-	mrs_real rootRelativeSquaredError;
-}summaryStatistics;
+	typedef struct
+	{
+			mrs_natural	instances;
+			mrs_natural	correctInstances;
+			mrs_real kappa;
+			mrs_real meanAbsoluteError;
+			mrs_real rootMeanSquaredError;
+			mrs_real relativeAbsoluteError;
+			mrs_real rootRelativeSquaredError;
+	}summaryStatistics;
 
-class Summary: public MarSystem
-{
-private: 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+	class Summary: public MarSystem
+	{
+		private: 
+			void addControls();
+			void myUpdate(MarControlPtr sender);
 
-	realvec confusionMatrix;
-	std::string classNames;
+			realvec confusionMatrix;
+			std::string classNames;
 
-	summaryStatistics computeSummaryStatistics(const realvec& mat);
+			summaryStatistics computeSummaryStatistics(const realvec& mat);
 
-public:
-	Summary(std::string name);
-	~Summary();
-	MarSystem* clone()const;
+		public:
+			Summary(std::string name);
+			~Summary();
+			MarSystem* clone()const;
   
-	void myProcess(realvec& in, realvec& out);
-};//class Summary
+			void myProcess(realvec& in, realvec& out);
+	};//class Summary
 }//namespace Marsyas
 #endif

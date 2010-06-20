@@ -46,11 +46,9 @@ namespace Marsyas
 	public:
 		void SetupkFoldSections(const WekaData& data, mrs_natural foldCount, mrs_natural classAttr=-1)
 		{
-
-			
 			MRSASSERT(foldCount>0);
 			foldCount_ = foldCount;
-
+			
 			//create the dataset with same number of columns as input data
 			this->Create(data.getCols());
 			if(classAttr<0)
@@ -72,11 +70,12 @@ namespace Marsyas
 		//setup the fold sections for this dataset.
 		void Reset()
 		{
-
+			
 			
 			this->Shuffle();
-
+			
 			rstep_ = (mrs_real)this->size() / (mrs_real)foldCount_;
+			
 			if (foldCount_ > (mrs_natural)this->size()) 
 			{
 				std::cout << "Folds exceed number of instances" << std::endl;
@@ -95,6 +94,7 @@ namespace Marsyas
 
 		std::vector<mrs_real> *Next(nextMode& next)
 		{
+			
 			std::vector<mrs_real> *ret = this->at(currentIndex_);
 			
 			if(currentIndex_ == excludeSectionEnd_)
@@ -118,12 +118,14 @@ namespace Marsyas
 					currentIndex_ = excludeSectionEnd_ + 1;
 				}
 
-
+				
 				next = Training;
 				return ret;
 			}//if
 
 			currentIndex_++;
+
+			
 			if(currentIndex_ >= (mrs_natural)this->size())
 				currentIndex_ = 0;
 
@@ -132,7 +134,9 @@ namespace Marsyas
 			else
 				next = Training;
 
+
 			return ret;
+
 		}//Next
 
 	};
