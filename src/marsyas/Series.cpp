@@ -80,10 +80,10 @@ Series::myUpdate(MarControlPtr sender)
 		}
 	  
 		//forward flow propagation
-		updctrl(ctrl_onObsNames_, marsystems_[marsystemsSize_-1]->ctrl_onObsNames_, NOUPDATE);
-		updctrl(ctrl_onSamples_, marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
-		updctrl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
-		updctrl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
+		updControl(ctrl_onObsNames_, marsystems_[marsystemsSize_-1]->ctrl_onObsNames_, NOUPDATE);
+		updControl(ctrl_onSamples_, marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
+		updControl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
+		updControl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
 	  
 		for (mrs_natural i=0; i< marsystemsSize_-1; ++i)
 		{

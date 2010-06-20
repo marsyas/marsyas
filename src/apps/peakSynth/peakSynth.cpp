@@ -152,39 +152,39 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		////////////////////////////////////////////////////////////////
 		if (microphone_) 
 		{
-			pvseries->updctrl("mrs_natural/inSamples", D);
-			pvseries->updctrl("mrs_natural/inObservations", 1);
+			pvseries->updControl("mrs_natural/inSamples", D);
+			pvseries->updControl("mrs_natural/inObservations", 1);
 		}
 		else
 		{
-			pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-			pvseries->updctrl("mrs_natural/inSamples", D);
-			pvseries->updctrl("mrs_natural/inObservations", 1);
+			pvseries->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+			pvseries->updControl("mrs_natural/inSamples", D);
+			pvseries->updControl("mrs_natural/inObservations", 1);
 			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 		}
 
-		pvseries->updctrl("PeakAnalyse/peA/ShiftInput/si/mrs_natural/winSize", Nw+1);
-		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_natural/size", N);
-		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_string/type", "Hanning");
-		pvseries->updctrl("PeakAnalyse/peA/Windowing/wi/mrs_bool/zeroPhasing", true);
-		pvseries->updctrl("PeakAnalyse/peA/Shifter/sh/mrs_natural/shift", 1);
-		pvseries->updctrl("PeakAnalyse/peA/PvFold/fo/mrs_natural/Decimation", D); // useless ?
-		pvseries->updctrl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/Decimation", D);      
-		pvseries->updctrl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S);  
-		pvseries->updctrl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+		pvseries->updControl("PeakAnalyse/peA/ShiftInput/si/mrs_natural/winSize", Nw+1);
+		pvseries->updControl("PeakAnalyse/peA/Windowing/wi/mrs_natural/size", N);
+		pvseries->updControl("PeakAnalyse/peA/Windowing/wi/mrs_string/type", "Hanning");
+		pvseries->updControl("PeakAnalyse/peA/Windowing/wi/mrs_bool/zeroPhasing", true);
+		pvseries->updControl("PeakAnalyse/peA/Shifter/sh/mrs_natural/shift", 1);
+		pvseries->updControl("PeakAnalyse/peA/PvFold/fo/mrs_natural/Decimation", D); // useless ?
+		pvseries->updControl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/Decimation", D);      
+		pvseries->updControl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S);  
+		pvseries->updControl("PeakAnalyse/peA/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	}
 	else //read analysis data (i.e. peaks) from a .peak file
 	{
 		// create PeakViewSource
 		MarSystem *peSource = mng.create("PeakViewSource", "peSource");
 		pvseries->addMarSystem(peSource);
-		peSource->updctrl("mrs_string/filename", sfName);
+		peSource->updControl("mrs_string/filename", sfName);
 	}
 
 	if(peakStore_)
 	{
 		pvseries->addMarSystem(mng.create("peakViewSink", "peSink"));
-		pvseries->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName);
+		pvseries->updControl("PeakViewSink/peSink/mrs_string/filename", filePeakName);
 	}
 
 	if(harmonizeFileName != "MARSYAS_EMPTY")
@@ -263,10 +263,10 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 	if(peakStore_)
 	{
-		pvseries->updctrl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
-		pvseries->updctrl("PeakViewSink/peSink/mrs_natural/frameSize", D);
-		pvseries->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
-		pvseries->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
+		pvseries->updControl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
+		pvseries->updControl("PeakViewSink/peSink/mrs_natural/frameSize", D);
+		pvseries->updControl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
+		pvseries->updControl("PeakViewSink/peSink/mrs_bool/done", true);
 
 		//MATLAB_PUT(peakSet_, "peaks");
 		//MATLAB_EVAL("plotPeaks(peaks)");

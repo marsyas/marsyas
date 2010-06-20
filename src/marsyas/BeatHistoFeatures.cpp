@@ -81,10 +81,10 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
   flag_.create(getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-  mxr_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-  mxr_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-  mxr_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
-  mxr_->updctrl("mrs_natural/nMaximums", 3);
+  mxr_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  mxr_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+  mxr_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
+  mxr_->updControl("mrs_natural/nMaximums", 3);
   
   mxres_.create(mxr_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
 	mxr_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());

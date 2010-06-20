@@ -43,12 +43,12 @@ isClose(string infile1, string infile2)
 
 	MarSystem* invnet = mng.create("Series", "invnet");
 	invnet->addMarSystem(mng.create("SoundFileSource", "src2"));
-	invnet->updctrl("SoundFileSource/src2/mrs_string/filename", infile2);
+	invnet->updControl("SoundFileSource/src2/mrs_string/filename", infile2);
 	invnet->addMarSystem(mng.create("Negative", "neg"));
 
 	MarSystem* fanout = mng.create("Fanout", "fanout");
 	fanout->addMarSystem(mng.create("SoundFileSource", "src1"));
-	fanout->updctrl("SoundFileSource/src1/mrs_string/filename", infile1);
+	fanout->updControl("SoundFileSource/src1/mrs_string/filename", infile1);
 	fanout->addMarSystem(invnet);
 
 	pnet->addMarSystem(fanout);

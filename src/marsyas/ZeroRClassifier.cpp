@@ -107,7 +107,7 @@ ZeroRClassifier::myProcess(realvec& in, realvec& out)
 				max = (int)labelSizes_(l);
 			}
 		}
-		updctrl("mrs_natural/prediction", prediction);
+		updControl("mrs_natural/prediction", prediction);
 	}
 
 	if (mode == "predict")

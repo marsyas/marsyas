@@ -55,7 +55,7 @@ SoundFileSource2::fileReady(bool ready)
 	if(ready)
 	{
 		//...read and setup audio file at src_ level
-		src_->updctrl("mrs_string/filename", getctrl("mrs_string/filename"));
+		src_->updControl("mrs_string/filename", getctrl("mrs_string/filename"));
 
 		//check if audio file header was read  without errors
 		//(if an error occurred, the filename is set to "defaultfile" by src_ )

@@ -61,9 +61,9 @@ void ConstQFiltering::myUpdate(MarControlPtr sender)
   time_.create(width_);
   freq_.create(channels_);
 
-  updctrl("mrs_natural/onSamples", width_);
-  updctrl("mrs_natural/onObservations", channels_*2);
-  updctrl("mrs_real/osrate", israte_);
+  updControl("mrs_natural/onSamples", width_);
+  updControl("mrs_natural/onObservations", channels_*2);
+  updControl("mrs_real/osrate", israte_);
   
   fil_.create(channels_,width_);
   fshift_.create(channels_);

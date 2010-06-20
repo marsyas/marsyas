@@ -70,17 +70,17 @@ distance_matrix_MIREX()
   MarSystem* accum = mng.create("Accumulator", "accum");
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   accum->addMarSystem(wsrc);
-  accum->updctrl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
-  accum->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  accum->updControl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
+  accum->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   mrs_natural nInstances = 
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
-  accum->updctrl("mrs_natural/nTimes", nInstances);
+  accum->updControl("mrs_natural/nTimes", nInstances);
 
   
   
   MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
   dmatrix->addMarSystem(mng.create("Metric", "dmetric"));
-  dmatrix->updctrl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
+  dmatrix->updControl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
 
   net->addMarSystem(accum);
   net->addMarSystem(dmatrix);
@@ -135,20 +135,20 @@ distance_matrix()
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   net->addMarSystem(wsrc);
 	//!!!: mode control
-	net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "OutputInstancePair");
-	net->updctrl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+	net->updControl("WekaSource/wsrc/mrs_string/validationMode", "OutputInstancePair");
+	net->updControl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
 	
 	
 	MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
   dmatrix->addMarSystem(mng.create("Metric", "dmetric"));
-  dmatrix->updctrl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
+  dmatrix->updControl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
 	//!!!: lmartins: normalization can only be applied when we have all feature vectors in memory...
 	//... which is what we are trying to avoid here (having big realvecs in memory)...
-  //dmatrix->updctrl("mrs_string/normalize", "MinMax");
+  //dmatrix->updControl("mrs_string/normalize", "MinMax");
   net->addMarSystem(dmatrix);
 	//!!!: mode control
-	net->updctrl("SelfSimilarityMatrix/dmatrix/mrs_natural/mode", 1); //FIXME: replace use of enum for strings?
+	net->updControl("SelfSimilarityMatrix/dmatrix/mrs_natural/mode", 1); //FIXME: replace use of enum for strings?
   
 	//link controls between WekaSource and SelfSimilarityMatrix
 	net->linkControl("SelfSimilarityMatrix/dmatrix/mrs_natural/nInstances", 
@@ -195,27 +195,27 @@ pca()
   MarSystem* accum = mng.create("Accumulator", "accum");
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   accum->addMarSystem(wsrc);
-  accum->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  accum->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   mrs_natural nInstances = 
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   cout << "nInstances = " << nInstances << endl;
-  accum->updctrl("mrs_natural/nTimes", nInstances);
+  accum->updControl("mrs_natural/nTimes", nInstances);
 
   net->addMarSystem(accum);
   net->addMarSystem(mng.create("PCA", "pca"));
   net->addMarSystem(mng.create("NormMaxMin", "norm"));
   net->addMarSystem(mng.create("WekaSink", "wsink"));
 
-  net->updctrl("PCA/pca/mrs_natural/npc", 2);
-  net->updctrl("NormMaxMin/norm/mrs_natural/ignoreLast", 1);
-  net->updctrl("NormMaxMin/norm/mrs_string/mode", "twopass");
-  net->updctrl("NormMaxMin/norm/mrs_real/lower", 0.0);
-  net->updctrl("NormMaxMin/norm/mrs_real/upper", 11.0);
+  net->updControl("PCA/pca/mrs_natural/npc", 2);
+  net->updControl("NormMaxMin/norm/mrs_natural/ignoreLast", 1);
+  net->updControl("NormMaxMin/norm/mrs_string/mode", "twopass");
+  net->updControl("NormMaxMin/norm/mrs_real/lower", 0.0);
+  net->updControl("NormMaxMin/norm/mrs_real/upper", 11.0);
   
-  net->updctrl("WekaSink/wsink/mrs_natural/nLabels", 
+  net->updControl("WekaSink/wsink/mrs_natural/nLabels", 
 	       net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses"));
-  net->updctrl("WekaSink/wsink/mrs_string/labelNames", net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_string/classNames"));
-  net->updctrl("WekaSink/wsink/mrs_string/filename", "pca_out.arff");
+  net->updControl("WekaSink/wsink/mrs_string/labelNames", net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_string/classNames"));
+  net->updControl("WekaSink/wsink/mrs_string/filename", "pca_out.arff");
 
   net->tick();
 
@@ -297,38 +297,38 @@ train()
   net->addMarSystem(mng.create("Summary", "summary"));
 
   if (classifier_ == "GS")
-    net->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+    net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
   if (classifier_ == "ZEROR") 
-    net->updctrl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
+    net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
   if (classifier_ == "SVM")   
-    net->updctrl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
-  // net->updctrl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
+    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+  // net->updControl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
   
 
-  // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
-  net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
-  // net->updctrl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", wekafname_);
-  net->updctrl("mrs_natural/inSamples", 1);
+  // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
+  net->updControl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
+  // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
+  net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  net->updControl("mrs_natural/inSamples", 1);
 
-  net->updctrl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->updctrl("Summary/summary/mrs_string/classNames", 
+  net->updControl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->updControl("Summary/summary/mrs_string/classNames", 
 	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
   
-  net->updctrl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkctrl("Classifier/cl/mrs_string/mode", "Summary/summary/mrs_string/mode");  
+  net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->linkControl("Classifier/cl/mrs_string/mode", "Summary/summary/mrs_string/mode");  
 
   int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
     {
       net->tick();
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
-      net->updctrl("Classifier/cl/mrs_string/mode", mode);
+      net->updControl("Classifier/cl/mrs_string/mode", mode);
       ++i;
     }
 
-  net->updctrl("Classifier/cl/mrs_string/mode", "predict");
-  net->updctrl("Summary/summary/mrs_bool/done", true);
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");
+  net->updControl("Summary/summary/mrs_bool/done", true);
   net->tick();
 }
 
@@ -365,27 +365,27 @@ void tags() {
   //
   string classifier_ = "SVM";
   if (classifier_ == "GS")
-	net->updctrl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+	net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
   if (classifier_ == "ZEROR") 
-	net->updctrl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
+	net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
   if (classifier_ == "SVM")   
-    net->updctrl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
 
   ////////////////////////////////////////////////////////////
   //
   // The training file we are feeding into the WekaSource
   //
   
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_);
-  net->updctrl("mrs_natural/inSamples", 1);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_);
+  net->updControl("mrs_natural/inSamples", 1);
 
   ////////////////////////////////////////////////////////////
   //
   // Set the classes of the Summary and Classifier to be
   // the same as the WekaSource
   //
-  net->updctrl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkctrl("Classifier/cl/mrs_string/mode", "mrs_string/train");  
+  net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->linkControl("Classifier/cl/mrs_string/mode", "mrs_string/train");  
 
   ////////////////////////////////////////////////////////////
   //
@@ -395,7 +395,7 @@ void tags() {
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
 	string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
   	net->tick();
-	net->updctrl("Classifier/cl/mrs_string/mode", mode);
+	net->updControl("Classifier/cl/mrs_string/mode", mode);
   }
 
   
@@ -423,8 +423,8 @@ void tags() {
   //
   // Predict the classes of the test data
   //
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", inputdir_ + testcollectionfname_);
-  net->updctrl("Classifier/cl/mrs_string/mode", "predict");  
+  net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + testcollectionfname_);
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");  
 
 
   // The output prediction file
@@ -449,12 +449,12 @@ void tags() {
   
   MarSystem* wsink = mng.create("WekaSink/wsink");
   
-  wsink->updctrl("mrs_natural/inSamples", 1);
-  wsink->updctrl("mrs_natural/inObservations", nLabels+1);  
-  wsink->updctrl("mrs_natural/nLabels", nLabels);
-  wsink->updctrl("mrs_string/labelNames", labelNames);  
-  wsink->updctrl("mrs_string/inObsNames", labelNames);
-  wsink->updctrl("mrs_string/filename", outputdir_ + "stacked_" + testcollectionfname_);
+  wsink->updControl("mrs_natural/inSamples", 1);
+  wsink->updControl("mrs_natural/inObservations", nLabels+1);  
+  wsink->updControl("mrs_natural/nLabels", nLabels);
+  wsink->updControl("mrs_string/labelNames", labelNames);  
+  wsink->updControl("mrs_string/inObsNames", labelNames);
+  wsink->updControl("mrs_string/filename", outputdir_ + "stacked_" + testcollectionfname_);
 
 
 
@@ -500,7 +500,7 @@ void tags() {
 	}
 
 	wsinkout(probs.getSize()-2,0) = probs(0);
-	wsink->updctrl("mrs_string/currentlyPlaying", currentlyPlaying);
+	wsink->updControl("mrs_string/currentlyPlaying", currentlyPlaying);
 	wsink->process(wsinkout,wsinkout);	  
 	
 	previouslySeenFilenames.push_back(currentlyPlaying);
@@ -527,12 +527,12 @@ void tags() {
 
   MarSystem* wsink2 = mng.create("WekaSink/wsink2");
   
-  wsink2->updctrl("mrs_natural/inSamples", 1);
-  wsink2->updctrl("mrs_natural/inObservations", nLabels+1);  
-  wsink2->updctrl("mrs_natural/nLabels", nLabels);
-  wsink2->updctrl("mrs_string/labelNames", labelNames);  
-  wsink2->updctrl("mrs_string/inObsNames", labelNames);
-  wsink2->updctrl("mrs_string/filename", outputdir_ + "stacked_" + wekafname_);
+  wsink2->updControl("mrs_natural/inSamples", 1);
+  wsink2->updControl("mrs_natural/inObservations", nLabels+1);  
+  wsink2->updControl("mrs_natural/nLabels", nLabels);
+  wsink2->updControl("mrs_string/labelNames", labelNames);  
+  wsink2->updControl("mrs_string/inObsNames", labelNames);
+  wsink2->updControl("mrs_string/filename", outputdir_ + "stacked_" + wekafname_);
   
 
   cout << "Starting prediction for training collection (for stacked generalization)" << endl;
@@ -541,7 +541,7 @@ void tags() {
   mrs_realvec probs2;
   wsinkout2.create(nLabels+1,1);
 
-  net->updctrl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_); 
+  net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_); 
   
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
     net->tick();
@@ -569,7 +569,7 @@ void tags() {
     } 
     
     wsinkout2(probs2.getSize()-2,0) = label;    
-    wsink2->updctrl("mrs_string/currentlyPlaying", currentlyPlaying2);
+    wsink2->updControl("mrs_string/currentlyPlaying", currentlyPlaying2);
     wsink2->process(wsinkout2,wsinkout2);
   }
   

@@ -84,7 +84,7 @@ PCA::myUpdate(MarControlPtr sender)
   
   if( npc_ != onObservations_-1 ){
      
-     updctrl("mrs_natural/onObservations", npc_ +1);
+     updControl("mrs_natural/onObservations", npc_ +1);
      onObservations_ = npc_+1;     
   }
     

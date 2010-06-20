@@ -68,10 +68,10 @@ Plucked::myUpdate(MarControlPtr sender)
   MarSystem::myUpdate(sender);
 
   gain_ = new Gain("pluckedGain");
-  gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-  gain_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-  gain_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
-  gain_->updctrl("mrs_real/gain", 2.0);
+  gain_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  gain_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+  gain_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
+  gain_->updControl("mrs_real/gain", 2.0);
    
   gout_.create(gain_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
 	       gain_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());

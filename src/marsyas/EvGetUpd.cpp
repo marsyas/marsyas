@@ -46,7 +46,7 @@ void
 EvGetUpd::dispatch()
 {
 	if (target_!=NULL && source_!=NULL) {
-		target_->updctrl(tgt_cname_,source_->getctrl(src_cname_));
+		target_->updControl(tgt_cname_,source_->getctrl(src_cname_));
 	}
 }
 

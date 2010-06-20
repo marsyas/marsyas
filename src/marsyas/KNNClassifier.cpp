@@ -141,7 +141,7 @@ KNNClassifier::myProcess(realvec& in, realvec& out)
 	      // expontentially stretch trainSet_ realvec 
 	      grow_ = 2*grow_;
 	      trainSet_.stretch(grow_, inObservations_);
-	      updctrl("mrs_natural/grow", grow_);
+	      updControl("mrs_natural/grow", grow_);
 	    }
 	
 	  for (o=0; o < inObservations_; o++)
@@ -154,7 +154,7 @@ KNNClassifier::myProcess(realvec& in, realvec& out)
 	  
 	  // update number of points
 	  nPoints_= nPoints_ +1;
-	  updctrl("mrs_natural/nPoints", nPoints_);
+	  updControl("mrs_natural/nPoints", nPoints_);
 	}
     }
 

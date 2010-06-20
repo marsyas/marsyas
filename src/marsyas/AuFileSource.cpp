@@ -357,15 +357,15 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 			case SND_FORMAT_UNSPECIFIED:
 			{
 				MRSWARN("AuFileSource::Unspecified format");
-				updctrl("mrs_natural/pos", pos_);
-				updctrl("mrs_bool/hasData", (pos_ < size_ * nChannels_));
+				updControl("mrs_natural/pos", pos_);
+				updControl("mrs_bool/hasData", (pos_ < size_ * nChannels_));
 				break;
 			}
 			case SND_FORMAT_MULAW_8:
 			{
 				MRSWARN("MU_LAW for now not supported");
-				updctrl("mrs_natural/pos", pos_);
-				updctrl("mrs_bool/hasData", (pos_ < size_ * nChannels_));
+				updControl("mrs_natural/pos", pos_);
+				updControl("mrs_bool/hasData", (pos_ < size_ * nChannels_));
 				break;
 			}
 			case SND_FORMAT_LINEAR_8:

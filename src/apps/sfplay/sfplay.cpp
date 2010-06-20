@@ -107,21 +107,21 @@ void sfplay(vector<string> soundfiles)
 
 
 	// update controls 
-	playbacknet->updctrl("mrs_natural/inSamples", windowsize);
-	playbacknet->updctrl("SoundFileSource/src/mrs_real/repetitions", repetitions);
-	playbacknet->updctrl("SoundFileSource/src/mrs_real/duration", length);
-	playbacknet->updctrl("Gain/gt/mrs_real/gain", gain);
+	playbacknet->updControl("mrs_natural/inSamples", windowsize);
+	playbacknet->updControl("SoundFileSource/src/mrs_real/repetitions", repetitions);
+	playbacknet->updControl("SoundFileSource/src/mrs_real/duration", length);
+	playbacknet->updControl("Gain/gt/mrs_real/gain", gain);
   
 	// link top-level controls 
-	playbacknet->linkctrl("mrs_string/filename","SoundFileSource/src/mrs_string/filename");
-	playbacknet->linkctrl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
-	playbacknet->linkctrl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
-	playbacknet->linkctrl("mrs_natural/loopPos", "SoundFileSource/src/mrs_natural/loopPos");
-	playbacknet->linkctrl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
+	playbacknet->linkControl("mrs_string/filename","SoundFileSource/src/mrs_string/filename");
+	playbacknet->linkControl("mrs_real/israte", "SoundFileSource/src/mrs_real/israte");
+	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
+	playbacknet->linkControl("mrs_natural/loopPos", "SoundFileSource/src/mrs_natural/loopPos");
+	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
   
   
 	if (fileName == EMPTYSTRING)	// audio output
-		playbacknet->linkctrl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
+		playbacknet->linkControl("mrs_bool/initAudio", "AudioSink/dest/mrs_bool/initAudio");
   
 
 	// play each collection or soundfile 
@@ -129,7 +129,7 @@ void sfplay(vector<string> soundfiles)
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
 		string fname = *sfi;
-		playbacknet->updctrl("mrs_string/filename", fname);
+		playbacknet->updControl("mrs_string/filename", fname);
       
 		mrs_natural nChannels = playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
@@ -137,16 +137,16 @@ void sfplay(vector<string> soundfiles)
       
 		offset = (mrs_natural) (start * srate * nChannels);
 
-		playbacknet->updctrl("mrs_natural/loopPos", offset);
-		playbacknet->updctrl("mrs_natural/pos", offset);
+		playbacknet->updControl("mrs_natural/loopPos", offset);
+		playbacknet->updControl("mrs_natural/pos", offset);
       
 		if (fileName != EMPTYSTRING) // soundfile output instead of audio output
-			playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", fileName);
+			playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", fileName);
       
 		if (fileName == EMPTYSTRING)	// audio output
 		{
-			playbacknet->updctrl("AudioSink/dest/mrs_natural/bufferSize", 256); 
-			playbacknet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+			playbacknet->updControl("AudioSink/dest/mrs_natural/bufferSize", 256); 
+			playbacknet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 		}
 		MarControlPtr hasDataPtr_ = 
 			playbacknet->getctrl("mrs_bool/hasData");
@@ -230,9 +230,3 @@ main(int argc, const char **argv)
   
 	exit(0);
 }
-
-
-
-
-
-

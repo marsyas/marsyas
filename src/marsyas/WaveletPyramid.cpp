@@ -71,9 +71,9 @@ WaveletPyramid::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-	waveletStep_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-	waveletStep_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-	waveletStep_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+	waveletStep_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+	waveletStep_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+	waveletStep_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
 
 }
 
@@ -106,7 +106,7 @@ WaveletPyramid::myProcess(realvec& in, realvec& out)
 
 	forward = getctrl("mrs_bool/forward")->to<mrs_bool>();
 
-	waveletStep_->updctrl("mrs_bool/forward", forward);
+	waveletStep_->updControl("mrs_bool/forward", forward);
 	if (forward)
 	{
 		for (nn = n; nn >=4; nn >>= 1)

@@ -205,42 +205,27 @@ public:
 
 	/// Link controls
 	bool linkControl(std::string cname1, std::string cname2, bool update = true);
-	bool linkctrl(std::string cname1, std::string cname2, bool update = true)
+	DEPRECATED(bool linkctrl(std::string cname1, std::string cname2, bool update = true))
 	{
 		return linkControl(cname1, cname2, update);
 	}
 
 	/// Update controls
 	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
+	bool updControl(const char* cname, MarControlPtr newcontrol, bool upd = true);
+	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true);
+	void updControl(EvEvent* me);
+	void updControl(TmTime t, EvEvent* ev);
+	void updControl(TmTime t, Repeat r, EvEvent* ev);
+	void updControl(TmTime t, std::string cname, MarControlPtr control);
+	void updControl(TmTime t, Repeat r, std::string cname, MarControlPtr control);
 
-	bool updControl(const char* cname, MarControlPtr newcontrol, bool upd = true)
-	{
-		MarControlPtr control = getControl(cname);
-		if (control.isInvalid())
-		{
-			MRSWARN("MarSystem::updControl - " + std::string(cname) + " is an invalid control @ " + getAbsPath());
-			return false;
-		}
-		return updControl(control, newcontrol, upd);
-	}
-
-	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true)
-	{
-		MarControlPtr control = getControl(cname);
-		if (control.isInvalid())
-		{
-			MRSWARN("MarSystem::updControl - " + cname + " is an invalid control @ " + getAbsPath());
-			return false;
-		}
-		return updControl(control, newcontrol, upd);
-	}
-
-	bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true)
+	DEPRECATED(bool updctrl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true))
 	{
 		return updControl(control, newcontrol, upd);
 	}
 
-	bool updctrl(const char *cname, MarControlPtr newcontrol, bool upd = true)
+	DEPRECATED(bool updctrl(const char *cname, MarControlPtr newcontrol, bool upd = true))
 	{
 		MarControlPtr control = getControl(cname);
 		if (control.isInvalid())
@@ -251,7 +236,7 @@ public:
 		return updControl(control, newcontrol, upd);
 	}
 
-	bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true)
+	DEPRECATED(bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true))
 	{
 		MarControlPtr control = getControl(cname);
 		if (control.isInvalid())
@@ -265,19 +250,19 @@ public:
 	/// set controls (does not call update())
 	bool setControl(std::string cname, MarControlPtr newcontrol)
 	{
-		return updctrl(cname, newcontrol, NOUPDATE);
+		return updControl(cname, newcontrol, NOUPDATE);
 	}
 	bool setctrl(const char *cname, MarControlPtr newcontrol)
 	{
-		return updctrl(std::string(cname), newcontrol, NOUPDATE);
+		return updControl(std::string(cname), newcontrol, NOUPDATE);
 	}
 	bool setctrl(std::string cname, MarControlPtr newcontrol)
 	{
-		return updctrl(cname, newcontrol, NOUPDATE);
+		return updControl(cname, newcontrol, NOUPDATE);
 	}
 	bool setctrl(MarControlPtr control, MarControlPtr newcontrol)
 	{
-		return updctrl(control, newcontrol, NOUPDATE);
+		return updControl(control, newcontrol, NOUPDATE);
 	}
 
 	// query controls

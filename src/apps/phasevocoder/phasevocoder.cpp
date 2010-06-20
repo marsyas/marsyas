@@ -160,27 +160,27 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	if (oscbank_) 
 	{
 		pvseries->addMarSystem(mng.create("PhaseVocoderOscBank", "pvoc"));		
-		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/winSize", Nw);
-		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/FFTSize", N);
-		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/Interpolation", I);
-		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/Decimation", D);
-		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_natural/Sinusoids", 
+		pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_natural/winSize", Nw);
+		pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_natural/FFTSize", N);
+		pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_natural/Interpolation", I);
+		pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_natural/Decimation", D);
+		pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_natural/Sinusoids", 
 						  (mrs_natural)sopt);
-		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_string/convertMode", convertmode_);
-		pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_real/PitchShift", P);
+		pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_string/convertMode", convertmode_);
+		pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_real/PitchShift", P);
 	}
 	
 	else 
 	{
 		pvseries->addMarSystem(mng.create("PhaseVocoder", "pvoc"));
-		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/winSize", Nw);
-		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/FFTSize", N);
-		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation", I);
-		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Decimation", D);
-		pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Sinusoids", 
+		pvseries->updControl("PhaseVocoder/pvoc/mrs_natural/winSize", Nw);
+		pvseries->updControl("PhaseVocoder/pvoc/mrs_natural/FFTSize", N);
+		pvseries->updControl("PhaseVocoder/pvoc/mrs_natural/Interpolation", I);
+		pvseries->updControl("PhaseVocoder/pvoc/mrs_natural/Decimation", D);
+		pvseries->updControl("PhaseVocoder/pvoc/mrs_natural/Sinusoids", 
 						  (mrs_natural)sopt);
-		pvseries->updctrl("PhaseVocoder/pvoc/mrs_string/convertMode", convertmode_);
-		pvseries->updctrl("PhaseVocoder/pvoc/mrs_string/unconvertMode",
+		pvseries->updControl("PhaseVocoder/pvoc/mrs_string/convertMode", convertmode_);
+		pvseries->updControl("PhaseVocoder/pvoc/mrs_string/unconvertMode",
 						  unconvertmode_);
 	}
 	
@@ -188,7 +188,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	if (outsfname == EMPTYSTRING) 
 	{
 		pvseries->addMarSystem(mng.create("AudioSink", "dest"));
-		pvseries->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
+		pvseries->updControl("AudioSink/dest/mrs_natural/bufferSize", bopt);
 	}
 	else 
 	{
@@ -198,22 +198,22 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	
 	if (microphone_) 
 	{
-		pvseries->updctrl("AudioSource/src/mrs_real/israte", 44100.0);
-		pvseries->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+		pvseries->updControl("AudioSource/src/mrs_real/israte", 44100.0);
+		pvseries->updControl("AudioSource/src/mrs_bool/initAudio", true);
 	}
 	else 
 	{
-		pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+		pvseries->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 	}
 	
-	pvseries->updctrl("mrs_natural/inSamples", D);
+	pvseries->updControl("mrs_natural/inSamples", D);
 	
 	
-	pvseries->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
+	pvseries->updControl("SoundFileSink/dest/mrs_string/filename", outsfname);
 	
 	if (outsfname == EMPTYSTRING) 
 	{
-		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		pvseries->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 	}
 	
 		
@@ -229,12 +229,12 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 	{
 		// initialize synthesis phases to analysis phases
 		if ((numticks == 0)&&(oscbank_ == false)) 
-			pvseries->updctrl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
+			pvseries->updControl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
 		
 		if ((numticks == 0)&&(oscbank_ == true)) 
 		{
 			cout << "PvOscBank phaselock" << endl;
-			pvseries->updctrl("PhaseVocoderOscBank/pvoc/mrs_bool/phaselock", 
+			pvseries->updControl("PhaseVocoderOscBank/pvoc/mrs_bool/phaselock", 
 							  true);
 		}
 		
@@ -268,13 +268,13 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 			if (onset_counter ==2)
 			{
 				// initialize synthesis phases to analysis phases				
-				pvseries->updctrl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
-				pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation", D);			
+				pvseries->updControl("PhaseVocoder/pvoc/mrs_bool/phaselock", true);
+				pvseries->updControl("PhaseVocoder/pvoc/mrs_natural/Interpolation", D);			
 				cout << "onset_counter = " << onset_counter << endl;
 			}
 			else 
 			{
-				pvseries->updctrl("PhaseVocoder/pvoc/mrs_natural/Interpolation", I);
+				pvseries->updControl("PhaseVocoder/pvoc/mrs_natural/Interpolation", I);
 			}
 		}
 	}
@@ -360,62 +360,62 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 	else
 	{
 		dest = mng.create("SoundFileSink", "dest");
-		//dest->updctrl("mrs_string/filename", outsfname);
+		//dest->updControl("mrs_string/filename", outsfname);
 	}
 	pvseries->addMarSystem(dest);
 
 	if (outsfname == EMPTYSTRING) 
-		pvseries->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
+		pvseries->updControl("AudioSink/dest/mrs_natural/bufferSize", bopt);
 
 	// update the controls
 	if (microphone_) 
 	{
-		pvseries->updctrl("mrs_natural/inSamples", D);
-		pvseries->updctrl("mrs_natural/inObservations", 1);
+		pvseries->updControl("mrs_natural/inSamples", D);
+		pvseries->updControl("mrs_natural/inObservations", 1);
 	}
 	else
 	{
-		pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-		pvseries->updctrl("mrs_natural/inSamples", D);
-		pvseries->updctrl("mrs_natural/inObservations", 1);
+		pvseries->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+		pvseries->updControl("mrs_natural/inSamples", D);
+		pvseries->updControl("mrs_natural/inObservations", 1);
 
 		// if audio output loop to infinity and beyond 
 		if (outsfname == EMPTYSTRING) 
-			pvseries->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
+			pvseries->updControl("SoundFileSource/src/mrs_real/repetitions", -1.0);
 	}
   
 	
-	pvseries->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
-	pvseries->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
-	pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation",D);      
-	pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);
-	pvseries->updctrl("PvConvert/conv/mrs_string/mode", convertmode_);
+	pvseries->updControl("ShiftInput/si/mrs_natural/winSize", Nw);
+	pvseries->updControl("PvFold/fo/mrs_natural/FFTSize", N);
+	pvseries->updControl("PvConvert/conv/mrs_natural/Decimation",D);      
+	pvseries->updControl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);
+	pvseries->updControl("PvConvert/conv/mrs_string/mode", convertmode_);
 	
 
 	if (oscbank_) 
 	{
-		pvseries->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
-		pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
-		pvseries->updctrl("PvOscBank/ob/mrs_natural/winSize", Nw);
+		pvseries->updControl("PvOscBank/ob/mrs_natural/Interpolation", I);
+		pvseries->updControl("PvOscBank/ob/mrs_real/PitchShift", P);
+		pvseries->updControl("PvOscBank/ob/mrs_natural/winSize", Nw);
 	}
 	else 
 	{
-		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
-		pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Decimation", D);
-		pvseries->updctrl("PvUnconvert/uconv/mrs_string/mode",unconvertmode_);
-		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/FFTSize", N);
-		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/winSize", Nw);
-		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation", I);
-		pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Decimation",D);
+		pvseries->updControl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
+		pvseries->updControl("PvUnconvert/uconv/mrs_natural/Decimation", D);
+		pvseries->updControl("PvUnconvert/uconv/mrs_string/mode",unconvertmode_);
+		pvseries->updControl("PvOverlapadd/pover/mrs_natural/FFTSize", N);
+		pvseries->updControl("PvOverlapadd/pover/mrs_natural/winSize", Nw);
+		pvseries->updControl("PvOverlapadd/pover/mrs_natural/Interpolation", I);
+		pvseries->updControl("PvOverlapadd/pover/mrs_natural/Decimation",D);
 	}
   
-	pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
-	pvseries->updctrl("Gain/gain/mrs_real/gain", 2.0);
+	pvseries->updControl("ShiftOutput/so/mrs_natural/Interpolation", I);
+	pvseries->updControl("Gain/gain/mrs_real/gain", 2.0);
 	
-	pvseries->linkctrl("PvConvert/conv/mrs_realvec/phases", 
+	pvseries->linkControl("PvConvert/conv/mrs_realvec/phases", 
 					   "PvUnconvert/uconv/mrs_realvec/analysisphases");
 
-	pvseries->linkctrl("PvUnconvert/uconv/mrs_realvec/regions",
+	pvseries->linkControl("PvUnconvert/uconv/mrs_realvec/regions",
 					   "PvConvert/conv/mrs_realvec/regions");
 	
 	
@@ -423,7 +423,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 		cout << *pvseries << endl;
 
 	if (outsfname == EMPTYSTRING) 
-		pvseries->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		pvseries->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
 
 
@@ -462,7 +462,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 	
 
 	if (outsfname != EMPTYSTRING)
-		dest->updctrl("mrs_string/filename", outsfname);
+		dest->updControl("mrs_string/filename", outsfname);
 
 	int numticks = 0;
 
@@ -487,24 +487,24 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 				if ((byte3 != 0)&&(type == 144))
 				{
 					diff = byte2 - 60.0;
-					pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", pow((double)1.06, (double)diff));	  	      
+					pvseries->updControl("PvOscBank/ob/mrs_real/PitchShift", pow((double)1.06, (double)diff));	  	      
 					mrs_real gain = byte3 * 1.0 / 128.0;
-					pvseries->updctrl("Gain/gain/mrs_real/gain", gain);
+					pvseries->updControl("Gain/gain/mrs_real/gain", gain);
 				}
 				if (type == 224) 
 				{
 					mrs_real pitchShift = byte3 * 1.0/ 64.0;
-					pvseries->updctrl("PvOscBank/ob/mrs_real/PitchShift", pitchShift);  
+					pvseries->updControl("PvOscBank/ob/mrs_real/PitchShift", pitchShift);  
 				}
 				if ((type == 176)&&(byte2 == 100)) 
 				{
-					pvseries->updctrl("PvConvert/conv/mrs_natural/Sinusoids", byte3);
+					pvseries->updControl("PvConvert/conv/mrs_natural/Sinusoids", byte3);
 				}
 				if ((type == 176) && (byte2 == 101)&& (byte3 > 4))
 				{
-					pvseries->updctrl("mrs_natural/inSamples", byte3);
+					pvseries->updControl("mrs_natural/inSamples", byte3);
 
-					pvseries->updctrl("PvConvert/conv/mrs_natural/Decimation", byte3 );
+					pvseries->updControl("PvConvert/conv/mrs_natural/Decimation", byte3 );
 				} 
 			}
 		}
@@ -513,16 +513,16 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 		if (numticks == 0) 
 		{
 
-			pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
+			pvseries->updControl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
 			if (oscbank_)
 			{
 				cout << "Oscbank phaselock" << endl;
 				
-				pvseries->updctrl("PvOscBank/ob/mrs_bool/phaselock", true);		
+				pvseries->updControl("PvOscBank/ob/mrs_bool/phaselock", true);		
 			}
 			
 			else 
-				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
+				pvseries->updControl("PvUnconvert/uconv/mrs_bool/phaselock", true);		
 		}
 		
 		
@@ -551,16 +551,16 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 			
 			if (onset_found) 
 			{
-				pvseries->updctrl("PvUnconvert/uconv/mrs_bool/phaselock", true);
-				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation",D);
-				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",D);
-				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", D);
+				pvseries->updControl("PvUnconvert/uconv/mrs_bool/phaselock", true);
+				pvseries->updControl("PvUnconvert/uconv/mrs_natural/Interpolation",D);
+				pvseries->updControl("PvOverlapadd/pover/mrs_natural/Interpolation",D);
+				pvseries->updControl("ShiftOutput/so/mrs_natural/Interpolation", D);
 			}
 			else 
 			{
-				pvseries->updctrl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
-				pvseries->updctrl("PvOverlapadd/pover/mrs_natural/Interpolation",I);
-				pvseries->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);		
+				pvseries->updControl("PvUnconvert/uconv/mrs_natural/Interpolation", I);
+				pvseries->updControl("PvOverlapadd/pover/mrs_natural/Interpolation",I);
+				pvseries->updControl("ShiftOutput/so/mrs_natural/Interpolation", I);		
 			}
 		}
 	}
@@ -594,15 +594,15 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 		pvoices.push_back(mng.create("PhaseVocoder", oss.str()));
 
 		// one-to-many mapping that under the hood 
-		// utilizes linkctrl when the phasevocoder 
+		// utilizes linkControl when the phasevocoder 
 		// prototype is added to the MarSystemManager
-		pvoices[i]->updctrl("mrs_natural/Decimation", D);
-		pvoices[i]->updctrl("mrs_natural/winSize", Nw);
-		pvoices[i]->updctrl("mrs_natural/FFTSize", N);
-		pvoices[i]->updctrl("mrs_natural/Interpolation", I);
-		pvoices[i]->updctrl("mrs_real/PitchShift", P);
-		pvoices[i]->updctrl("mrs_natural/Sinusoids", sopt);
-		pvoices[i]->updctrl("mrs_real/gain", gopt_);
+		pvoices[i]->updControl("mrs_natural/Decimation", D);
+		pvoices[i]->updControl("mrs_natural/winSize", Nw);
+		pvoices[i]->updControl("mrs_natural/FFTSize", N);
+		pvoices[i]->updControl("mrs_natural/Interpolation", I);
+		pvoices[i]->updControl("mrs_real/PitchShift", P);
+		pvoices[i]->updControl("mrs_natural/Sinusoids", sopt);
+		pvoices[i]->updControl("mrs_real/gain", gopt_);
 		mixer->addMarSystem(pvoices[i]);
 	}
 
@@ -617,28 +617,28 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 	if (outsfname == EMPTYSTRING) 
 	{
 		total->addMarSystem(mng.create("AudioSink", "dest"));
-		total->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
+		total->updControl("AudioSink/dest/mrs_natural/bufferSize", bopt);
 	}
 	else
 	{
 		total->addMarSystem(mng.create("SoundFileSink","dest"));
-		total->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
+		total->updControl("SoundFileSink/dest/mrs_string/filename", outsfname);
 	}
 
 	if (microphone_) 
 	{
-		total->updctrl("mrs_natural/inSamples", D);
-		total->updctrl("mrs_natural/inObservations", 1);
+		total->updControl("mrs_natural/inSamples", D);
+		total->updControl("mrs_natural/inObservations", 1);
 	}
 	else
 	{
-		total->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-		total->updctrl("mrs_natural/inSamples", D);
-		total->updctrl("mrs_natural/inObservations", 1);
+		total->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+		total->updControl("mrs_natural/inSamples", D);
+		total->updControl("mrs_natural/inObservations", 1);
 
 		// if audio output loop to infinity and beyond 
 		if (outsfname == EMPTYSTRING) 
-			total->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
+			total->updControl("SoundFileSource/src/mrs_real/repetitions", -1.0);
 	}
 	
 	int type;
@@ -708,7 +708,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 						{
 							diff = voices[i] - 60.0;
 							if (voices[i] != 0)
-								pvoices[i]->updctrl("mrs_real/PitchShift", 
+								pvoices[i]->updControl("mrs_real/PitchShift", 
 													pow((double)1.06, (double)diff));	  	      
 							// cout << pow((double) 1.06, (double) diff) << endl;
 						}
@@ -738,7 +738,7 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 	branch1->addMarSystem(mng.create("PvFold", "fo1"));
 	branch1->addMarSystem(mng.create("Spectrum", "spk1"));
 	branch1->addMarSystem(mng.create("Gain", "gain1"));
-	branch1->updctrl("Gain/gain/mrs_real/gain1", 1.0);
+	branch1->updControl("Gain/gain/mrs_real/gain1", 1.0);
 
 	MarSystem* branch2 = mng.create("Series", "branch2");
 	branch2->addMarSystem(mng.create("SoundFileSource","src2"));
@@ -746,7 +746,7 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 	branch2->addMarSystem(mng.create("PvFold", "fo2"));
 	branch2->addMarSystem(mng.create("Spectrum", "spk2"));
 	branch1->addMarSystem(mng.create("Gain", "gain2"));
-	branch1->updctrl("Gain/gain/mrs_real/gain2", 1.0);
+	branch1->updControl("Gain/gain/mrs_real/gain2", 1.0);
 
 	pvfan->addMarSystem(branch1);
 	pvfan->addMarSystem(branch2);
@@ -761,66 +761,66 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 	total->addMarSystem(mng.create("AudioSink", "dest"));
 
 	// link controls
-	total->linkctrl("mrs_string/filename1", 
+	total->linkControl("mrs_string/filename1", 
 					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_string/filename");
 
-	total->linkctrl("mrs_string/filename2", 
+	total->linkControl("mrs_string/filename2", 
 					"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_string/filename");
 
-	total->linkctrl("mrs_real/repetitions", 
+	total->linkControl("mrs_real/repetitions", 
 					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_real/repetitions");
 
-	total->linkctrl("mrs_real/repetitions", 
+	total->linkControl("mrs_real/repetitions", 
 					"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_real/repetitions");
 
-	total->linkctrl("mrs_natural/inSamples1", 
+	total->linkControl("mrs_natural/inSamples1", 
 					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_natural/inSamples");
 
-	total->linkctrl("mrs_natural/inSamples2", 
+	total->linkControl("mrs_natural/inSamples2", 
 					"Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_natural/inSamples");
 
 
 
 
 
-	total->linkctrl("mrs_natural/Decimation", 
+	total->linkControl("mrs_natural/Decimation", 
 					"PvConvert/conv/mrs_natural/Decimation");
-	total->linkctrl("mrs_natural/Sinusoids",
+	total->linkControl("mrs_natural/Sinusoids",
 					"PvConvert/conv/mrs_natural/Sinusoids");
 
-	total->linkctrl("mrs_natural/FFTSize", 
+	total->linkControl("mrs_natural/FFTSize", 
 					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/FFTSize");
-	total->linkctrl("mrs_natural/FFTSize", 
+	total->linkControl("mrs_natural/FFTSize", 
 					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/FFTSize");  
 
-	total->linkctrl("mrs_natural/winSize", 
+	total->linkControl("mrs_natural/winSize", 
 					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/winSize");
-	total->linkctrl("mrs_natural/winSize", 
+	total->linkControl("mrs_natural/winSize", 
 					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/winSize");  
 
-	total->linkctrl("mrs_natural/Interpolation",
+	total->linkControl("mrs_natural/Interpolation",
 					"ShiftOutput/so/mrs_natural/Interpolation");  
 
-	total->linkctrl("mrs_natural/Interpolation",
+	total->linkControl("mrs_natural/Interpolation",
 					"PvOscBank/ob/mrs_natural/Interpolation");  
 
-	total->linkctrl("mrs_real/PitchShift", 
+	total->linkControl("mrs_real/PitchShift", 
 					"PvOscBank/ob/mrs_real/PitchShift");
 
 	// update controls
-	total->updctrl("mrs_string/filename1", "/home/gtzan/data/sound/Nov2005Concert/ele1.wav");
-	total->updctrl("mrs_string/filename2", "/home/gtzan/data/sound/music_speech/music/gravity.au");
-	total->updctrl("mrs_real/repetitions", -1.0);
-	total->updctrl("mrs_natural/inSamples1", D);
-	total->updctrl("mrs_natural/inSamples2", D);
-	total->updctrl("mrs_natural/Decimation", D);
-	total->updctrl("mrs_natural/winSize", Nw);
-	total->updctrl("mrs_natural/FFTSize", N);
-	total->updctrl("mrs_natural/Interpolation", I);
-	total->updctrl("mrs_real/PitchShift", P);
-	total->updctrl("mrs_natural/Sinusoids", sopt);
-	total->updctrl("SoundFileSink/sdest/mrs_string/filename", "cross.wav");
-	total->updctrl("Gain/destgain/mrs_real/gain", gopt_);
+	total->updControl("mrs_string/filename1", "/home/gtzan/data/sound/Nov2005Concert/ele1.wav");
+	total->updControl("mrs_string/filename2", "/home/gtzan/data/sound/music_speech/music/gravity.au");
+	total->updControl("mrs_real/repetitions", -1.0);
+	total->updControl("mrs_natural/inSamples1", D);
+	total->updControl("mrs_natural/inSamples2", D);
+	total->updControl("mrs_natural/Decimation", D);
+	total->updControl("mrs_natural/winSize", Nw);
+	total->updControl("mrs_natural/FFTSize", N);
+	total->updControl("mrs_natural/Interpolation", I);
+	total->updControl("mrs_real/PitchShift", P);
+	total->updControl("mrs_natural/Sinusoids", sopt);
+	total->updControl("SoundFileSink/sdest/mrs_string/filename", "cross.wav");
+	total->updControl("Gain/destgain/mrs_real/gain", gopt_);
 
 	while(1)
 	{
@@ -847,7 +847,7 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 	branch1->addMarSystem(mng.create("PvFold", "fo1"));
 	branch1->addMarSystem(mng.create("Spectrum", "spk1"));
 	branch1->addMarSystem(mng.create("Gain", "gain"));
-	branch1->updctrl("Gain/gain/mrs_real/gain", 0.25);
+	branch1->updControl("Gain/gain/mrs_real/gain", 0.25);
 
 
 	MarSystem* branch2 = mng.create("Series", "branch2");
@@ -871,76 +871,76 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 	total->addMarSystem(mng.create("AudioSink", "dest"));
 
 	// link controls
-	total->linkctrl("mrs_string/filename1", 
+	total->linkControl("mrs_string/filename1", 
 					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_string/filename");
 
-	// total->linkctrl("mrs_string/filename2", 
+	// total->linkControl("mrs_string/filename2", 
 	// "Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_string/filename");
 
-	total->linkctrl("mrs_real/repetitions", 
+	total->linkControl("mrs_real/repetitions", 
 					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_real/repetitions");
 
-	// total->linkctrl("mrs_real/repetitions", 
+	// total->linkControl("mrs_real/repetitions", 
 	// "Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_real/repetitions");
 
-	total->linkctrl("mrs_natural/inSamples1", 
+	total->linkControl("mrs_natural/inSamples1", 
 					"Fanout/pvfan/Series/branch1/SoundFileSource/src1/mrs_natural/inSamples");
 
-	// total->linkctrl("mrs_natural/inSamples2", 
+	// total->linkControl("mrs_natural/inSamples2", 
 	// "Fanout/pvfan/Series/branch2/SoundFileSource/src2/mrs_natural/inSamples");
 
-	total->linkctrl("mrs_natural/inSamples2", 
+	total->linkControl("mrs_natural/inSamples2", 
 					"Fanout/pvfan/Series/branch2/AudioSource/src2/mrs_natural/inSamples");
 
 	
-	total->linkctrl("mrs_natural/Decimation", 
+	total->linkControl("mrs_natural/Decimation", 
 					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/Decimation");
 
 
-	total->linkctrl("mrs_natural/Decimation", 
+	total->linkControl("mrs_natural/Decimation", 
 					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/Decimation");
 
-	total->linkctrl("mrs_natural/Decimation", 
+	total->linkControl("mrs_natural/Decimation", 
 					"PvConvert/conv/mrs_natural/Decimation");
 
-	total->linkctrl("mrs_natural/Sinusoids",
+	total->linkControl("mrs_natural/Sinusoids",
 					"PvConvert/conv/mrs_natural/Sinusoids");
 
-	total->linkctrl("mrs_natural/FFTSize", 
+	total->linkControl("mrs_natural/FFTSize", 
 					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/FFTSize");
 
-	total->linkctrl("mrs_natural/FFTSize", 
+	total->linkControl("mrs_natural/FFTSize", 
 					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/FFTSize");  
 
-	total->linkctrl("mrs_natural/winSize", 
+	total->linkControl("mrs_natural/winSize", 
 					"Fanout/pvfan/Series/branch1/PvFold/fo1/mrs_natural/winSize");
 
-	total->linkctrl("mrs_natural/winSize", 
+	total->linkControl("mrs_natural/winSize", 
 					"Fanout/pvfan/Series/branch2/PvFold/fo2/mrs_natural/winSize");  
 
-	total->linkctrl("mrs_natural/Interpolation",
+	total->linkControl("mrs_natural/Interpolation",
 					"ShiftOutput/so/mrs_natural/Interpolation");  
 
-	total->linkctrl("mrs_natural/Interpolation",
+	total->linkControl("mrs_natural/Interpolation",
 					"PvOscBank/ob/mrs_natural/Interpolation");  
 
-	total->linkctrl("mrs_real/PitchShift", 
+	total->linkControl("mrs_real/PitchShift", 
 					"PvOscBank/ob/mrs_real/PitchShift");
 
 	// update controls
-	total->updctrl("mrs_string/filename1", "/home/gtzan/data/sound/Nov2005Concert/ele1.wav");
-	// total->updctrl("mrs_string/filename2", "/home/gtzan/data/sound/music_speech/music/gravity.au");
-	total->updctrl("mrs_real/repetitions", -1.0);
-	total->updctrl("mrs_natural/inSamples1", D);
-	total->updctrl("mrs_natural/inSamples2", D);
-	total->updctrl("mrs_natural/Decimation", D);
-	total->updctrl("mrs_natural/winSize", Nw);
-	total->updctrl("mrs_natural/FFTSize", N);
-	total->updctrl("mrs_natural/Interpolation", I);
-	total->updctrl("mrs_real/PitchShift", P);
-	total->updctrl("mrs_natural/Sinusoids", sopt);
-	total->updctrl("SoundFileSink/sdest/mrs_string/filename", "cross.wav");
-	total->updctrl("Gain/destgain/mrs_real/gain", gopt_);
+	total->updControl("mrs_string/filename1", "/home/gtzan/data/sound/Nov2005Concert/ele1.wav");
+	// total->updControl("mrs_string/filename2", "/home/gtzan/data/sound/music_speech/music/gravity.au");
+	total->updControl("mrs_real/repetitions", -1.0);
+	total->updControl("mrs_natural/inSamples1", D);
+	total->updControl("mrs_natural/inSamples2", D);
+	total->updControl("mrs_natural/Decimation", D);
+	total->updControl("mrs_natural/winSize", Nw);
+	total->updControl("mrs_natural/FFTSize", N);
+	total->updControl("mrs_natural/Interpolation", I);
+	total->updControl("mrs_real/PitchShift", P);
+	total->updControl("mrs_natural/Sinusoids", sopt);
+	total->updControl("SoundFileSink/sdest/mrs_string/filename", "cross.wav");
+	total->updControl("Gain/destgain/mrs_real/gain", gopt_);
 
 	while(1)
 	{
@@ -970,7 +970,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	MarSystem* mic;
 	mic = mng.create("SoundFileSource", "mic");
 	// total->addMarSystem(mic);
-	// total->updctrl("SoundFileSource/mic/mrs_string/filename", sfName);
+	// total->updControl("SoundFileSource/mic/mrs_string/filename", sfName);
 
 	MarSystem* mixer = mng.create("Fanout", "mixer");
 
@@ -985,37 +985,37 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 		{
 			pvoices.push_back(mng.create("Series", "background0"));
 			pvoices[i]->addMarSystem(mng.create("SoundFileSource", "mixsrc"));
-			pvoices[i]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", sfName1);
-			pvoices[i]->updctrl("SoundFileSource/mixsrc/mrs_real/repetitions", -1.0);
+			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_string/filename", sfName1);
+			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_real/repetitions", -1.0);
 
 			pvoices[i]->addMarSystem(mng.create("Gain", "bgain0"));	  
 			pvoices[i]->addMarSystem(bpvoc0);
-			pvoices[i]->updctrl("Gain/bgain0/mrs_real/gain", 1.0);
-			bpvoc0->updctrl("mrs_natural/Decimation", D);
-			bpvoc0->updctrl("mrs_natural/winSize", Nw);
-			bpvoc0->updctrl("mrs_natural/FFTSize", N);
-			bpvoc0->updctrl("mrs_natural/Interpolation", I);
-			bpvoc0->updctrl("mrs_real/PitchShift", 1.0);
-			bpvoc0->updctrl("mrs_natural/Sinusoids", sopt);
+			pvoices[i]->updControl("Gain/bgain0/mrs_real/gain", 1.0);
+			bpvoc0->updControl("mrs_natural/Decimation", D);
+			bpvoc0->updControl("mrs_natural/winSize", Nw);
+			bpvoc0->updControl("mrs_natural/FFTSize", N);
+			bpvoc0->updControl("mrs_natural/Interpolation", I);
+			bpvoc0->updControl("mrs_real/PitchShift", 1.0);
+			bpvoc0->updControl("mrs_natural/Sinusoids", sopt);
 			mixer->addMarSystem(pvoices[i]);
 		}
 		else if (i==1)
 		{
 			pvoices.push_back(mng.create("Series", "background1"));
 			pvoices[i]->addMarSystem(mng.create("SoundFileSource", "mixsrc"));
-			pvoices[i]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", sfName2);
+			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_string/filename", sfName2);
 
-			pvoices[i]->updctrl("SoundFileSource/mixsrc/mrs_real/repetitions", -1.0);
+			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_real/repetitions", -1.0);
 
 			pvoices[i]->addMarSystem(mng.create("Gain", "bgain1"));	  
 			pvoices[i]->addMarSystem(bpvoc1);
-			pvoices[i]->updctrl("Gain/bgain1/mrs_real/gain", 1.0);
-			bpvoc1->updctrl("mrs_natural/Decimation", D);
-			bpvoc1->updctrl("mrs_natural/winSize", Nw);
-			bpvoc1->updctrl("mrs_natural/FFTSize", N);
-			bpvoc1->updctrl("mrs_natural/Interpolation", I);
-			bpvoc1->updctrl("mrs_real/PitchShift", 1.0);
-			bpvoc1->updctrl("mrs_natural/Sinusoids", sopt);
+			pvoices[i]->updControl("Gain/bgain1/mrs_real/gain", 1.0);
+			bpvoc1->updControl("mrs_natural/Decimation", D);
+			bpvoc1->updControl("mrs_natural/winSize", Nw);
+			bpvoc1->updControl("mrs_natural/FFTSize", N);
+			bpvoc1->updControl("mrs_natural/Interpolation", I);
+			bpvoc1->updControl("mrs_real/PitchShift", 1.0);
+			bpvoc1->updControl("mrs_natural/Sinusoids", sopt);
 			mixer->addMarSystem(pvoices[i]);
 		}
 	}
@@ -1026,13 +1026,13 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	if (outsfname == EMPTYSTRING) 
 	{
 		total->addMarSystem(mng.create("AudioSink", "dest"));
-		total->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
+		total->updControl("AudioSink/dest/mrs_natural/bufferSize", bopt);
 	}
 	else
 	{
 
 		total->addMarSystem(mng.create("SoundFileSink","dest"));
-		total->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
+		total->updControl("SoundFileSink/dest/mrs_string/filename", outsfname);
 	}
   
 	int type;
@@ -1051,7 +1051,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	bool trigger;
 	trigger = true;
   
-	total->updctrl("mrs_natural/inSamples", D);
+	total->updControl("mrs_natural/inSamples", D);
   
 	cout << "Ready to start processing " << endl;
 
@@ -1106,7 +1106,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 
 				if ((type == 160)&&(byte2 == 1))
 				{
-					pvoices[0]->updctrl("SoundFileSource/mixsrc/mrs_bool/advance", true);
+					pvoices[0]->updControl("SoundFileSource/mixsrc/mrs_bool/advance", true);
 
 					cout << "s1 whack" << endl;
 
@@ -1115,37 +1115,37 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 				{
 					s1x = byte3 / 128.0;
 
-					bpvoc0->updctrl("mrs_natural/Sinusoids", (mrs_natural) (s1x * sopt)+1);
+					bpvoc0->updControl("mrs_natural/Sinusoids", (mrs_natural) (s1x * sopt)+1);
 				}
 				if  ((type == 160)&&(byte2 == 9))
 				{
 					s1y = byte3 / 128.0;
-					bpvoc0->updctrl("mrs_real/PitchShift", (mrs_real) 0.5  + s1y * 1.5);
+					bpvoc0->updControl("mrs_real/PitchShift", (mrs_real) 0.5  + s1y * 1.5);
 				}
 				if  ((type == 160)&&(byte2 == 10))
 				{
 					s1z = (byte3-14.0) / 128.0;
-					pvoices[0]->updctrl("Gain/bgain0/mrs_real/gain", s1z);   
+					pvoices[0]->updControl("Gain/bgain0/mrs_real/gain", s1z);   
 				}
 				if ((type == 160)&&(byte2 == 2))
 				{
 					cout << "s2 whack" << endl;
-					pvoices[1]->updctrl("SoundFileSource/mixsrc/mrs_bool/advance", true);
+					pvoices[1]->updControl("SoundFileSource/mixsrc/mrs_bool/advance", true);
 				}
 				if ((type == 160)&&(byte2 == 11))
 				{
 					s2x = byte3 / 128.0;
-					bpvoc1->updctrl("mrs_natural/Sinusoids", (mrs_natural) (s2x * sopt)+1);
+					bpvoc1->updControl("mrs_natural/Sinusoids", (mrs_natural) (s2x * sopt)+1);
 				}
 				if  ((type == 160)&&(byte2 == 12))
 				{
 					s2y = byte3 / 128.0;
-					bpvoc1->updctrl("mrs_real/PitchShift", (mrs_real) 0.5  + s2y * 1.5);
+					bpvoc1->updControl("mrs_real/PitchShift", (mrs_real) 0.5  + s2y * 1.5);
 				}
 				if  ((type == 160)&&(byte2 == 13))
 				{
 					s2z = (byte3 -14) / 128.0;
-					pvoices[1]->updctrl("Gain/bgain1/mrs_real/gain", s2z);  
+					pvoices[1]->updControl("Gain/bgain1/mrs_real/gain", s2z);  
 				}
 			} 
 		}
@@ -1190,37 +1190,37 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			ostringstream oss;
 			oss << "pvseries" << i;
 			pvoices.push_back(mng.create("PhaseVocoder", oss.str()));
-			pvoices[i]->updctrl("mrs_natural/Decimation", D);
-			pvoices[i]->updctrl("mrs_natural/winSize", Nw);
-			pvoices[i]->updctrl("mrs_natural/FFTSize", N);
-			pvoices[i]->updctrl("mrs_natural/Interpolation", I);
-			pvoices[i]->updctrl("mrs_real/PitchShift", P);
-			pvoices[i]->updctrl("mrs_natural/Sinusoids", sopt);
-			pvoices[i]->updctrl("mrs_real/gain", gopt_);
+			pvoices[i]->updControl("mrs_natural/Decimation", D);
+			pvoices[i]->updControl("mrs_natural/winSize", Nw);
+			pvoices[i]->updControl("mrs_natural/FFTSize", N);
+			pvoices[i]->updControl("mrs_natural/Interpolation", I);
+			pvoices[i]->updControl("mrs_real/PitchShift", P);
+			pvoices[i]->updControl("mrs_natural/Sinusoids", sopt);
+			pvoices[i]->updControl("mrs_real/gain", gopt_);
 			mixer->addMarSystem(pvoices[i]);
 		}
 		else if (i==2)
 		{
 			pvoices.push_back(mng.create("Series", "background"));
 			pvoices[i]->addMarSystem(mng.create("SoundFileSource", "mixsrc"));
-			pvoices[i]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
-			pvoices[i]->updctrl("SoundFileSource/mixsrc/mrs_real/repetitions", -1.0);
+			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_real/repetitions", -1.0);
 			bpvoc = mng.create("PhaseVocoder", "bpvoc");
 			pvoices[i]->addMarSystem(mng.create("Gain", "bgain"));	  
 			pvoices[i]->addMarSystem(bpvoc);
-			pvoices[i]->updctrl("Gain/bgain/mrs_real/gain", 1.0);
-			bpvoc->updctrl("mrs_natural/Decimation", D);
-			bpvoc->updctrl("mrs_natural/winSize", Nw);
-			bpvoc->updctrl("mrs_natural/FFTSize", N);
-			bpvoc->updctrl("mrs_natural/Interpolation", I);
-			bpvoc->updctrl("mrs_real/PitchShift", 1.0);
-			bpvoc->updctrl("mrs_natural/Sinusoids", sopt);
+			pvoices[i]->updControl("Gain/bgain/mrs_real/gain", 1.0);
+			bpvoc->updControl("mrs_natural/Decimation", D);
+			bpvoc->updControl("mrs_natural/winSize", Nw);
+			bpvoc->updControl("mrs_natural/FFTSize", N);
+			bpvoc->updControl("mrs_natural/Interpolation", I);
+			bpvoc->updControl("mrs_real/PitchShift", 1.0);
+			bpvoc->updControl("mrs_natural/Sinusoids", sopt);
 			mixer->addMarSystem(pvoices[i]);
 		}
 		else if (i==3) 
 		{
 			pvoices.push_back(mng.create("SoundFileSource", "osrc"));
-			pvoices[i]->updctrl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[i]->updControl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
 			mixer->addMarSystem(pvoices[i]);
 		}
 	}
@@ -1233,23 +1233,23 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 	if (outsfname == EMPTYSTRING) 
 	{
 		total->addMarSystem(mng.create("AudioSink", "dest"));
-		total->updctrl("AudioSink/dest/mrs_natural/bufferSize", bopt);
+		total->updControl("AudioSink/dest/mrs_natural/bufferSize", bopt);
 	}
 	else
 	{
 
 		total->addMarSystem(mng.create("SoundFileSink","dest"));
-		total->updctrl("SoundFileSink/dest/mrs_string/filename", outsfname);
+		total->updControl("SoundFileSink/dest/mrs_string/filename", outsfname);
 	}
   
 	// vectors used for sharing between phasevocoder 
 	// network and pitch extraction network 
 	realvec in, min, out, pin;
    
-	mic->updctrl("mrs_natural/inSamples", D);
-	mic->updctrl("mrs_natural/inObservations", 1);
-	total->updctrl("mrs_natural/inSamples", D);
-	total->updctrl("mrs_natural/inObservations", 1);
+	mic->updControl("mrs_natural/inSamples", D);
+	mic->updControl("mrs_natural/inObservations", 1);
+	total->updControl("mrs_natural/inSamples", D);
+	total->updControl("mrs_natural/inObservations", 1);
   
 	in.create( (long)1, (long)D);
 	min.create((long)1, (long)D);
@@ -1265,7 +1265,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 	// Build the pitch extractor network 
 	MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
 	pitchExtractor->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	pitchExtractor->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
+	pitchExtractor->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
 	pitchExtractor->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
   
 	MarSystem* fanout = mng.create("Fanout", "fanout");
@@ -1283,8 +1283,8 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 	pitchExtractor->addMarSystem(mng.create("MaxArgMax", "mxr"));
 
 	// update controls 
-	pitchExtractor->updctrl("mrs_natural/inSamples", 512);
-	pitchExtractor->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
+	pitchExtractor->updControl("mrs_natural/inSamples", 512);
+	pitchExtractor->updControl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
 
 	// Convert pitch bounds to samples 
 	mrs_natural lowPitch = 32;
@@ -1296,14 +1296,14 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		hertz2samples(highFreq, 22050.0);
 	mrs_natural highSamples = 
 		hertz2samples(lowFreq, 22050.0);
-	pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
-	pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.5);
-	pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakStart", lowSamples);
-	pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakEnd", highSamples);
-	pitchExtractor->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
+	pitchExtractor->updControl("Peaker/pkr/mrs_real/peakSpacing", 0.1);
+	pitchExtractor->updControl("Peaker/pkr/mrs_real/peakStrength", 0.5);
+	pitchExtractor->updControl("Peaker/pkr/mrs_natural/peakStart", lowSamples);
+	pitchExtractor->updControl("Peaker/pkr/mrs_natural/peakEnd", highSamples);
+	pitchExtractor->updControl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
    
 	MarSystem* gainExtractor = mng.create("MaxArgMax", "mgain");
-	gainExtractor->updctrl("mrs_natural/inSamples", 512);
+	gainExtractor->updControl("mrs_natural/inSamples", 512);
   
 	realvec pitchres(pitchExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), pitchExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
   
@@ -1326,8 +1326,8 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 	bool trigger;
 	trigger = true;
   
-	pvoices[0]->updctrl("mrs_real/gain", 0.0);
-	pvoices[1]->updctrl("mrs_real/gain", 0.0);
+	pvoices[0]->updControl("mrs_real/gain", 0.0);
+	pvoices[1]->updControl("mrs_real/gain", 0.0);
   
 	vector<string> tablas;
 	tablas.push_back("/home/gtzan/data/sound/Nov2005Concert/tabla/Ge2.wav");
@@ -1367,12 +1367,12 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		{
 			cout << "Epoch " << epoch << ": Harmonizer - Ab" << endl;
 			epoch ++;	  
-			pvoices[0]->updctrl("mrs_real/gain", 0.30);
-			pvoices[1]->updctrl("mrs_real/gain", 0.30);
-			pvoices[0]->updctrl("mrs_real/PitchShift", 0.25);
-			pvoices[1]->updctrl("mrs_real/PitchShift", pow((double)1.06, (double)-17.0));
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
-			pvoices[3]->updctrl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[0]->updControl("mrs_real/gain", 0.30);
+			pvoices[1]->updControl("mrs_real/gain", 0.30);
+			pvoices[0]->updControl("mrs_real/PitchShift", 0.25);
+			pvoices[1]->updControl("mrs_real/PitchShift", pow((double)1.06, (double)-17.0));
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[3]->updControl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
 		}
 
 		if ((pitch >= 750.0) &&
@@ -1385,9 +1385,9 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 
 			glide0 = 0.25;
 			glide1 = 1.0;
-			pvoices[0]->updctrl("mrs_real/gain", 0.0);
-			pvoices[1]->updctrl("mrs_real/gain", 0.0);
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/rainSS.wav");
+			pvoices[0]->updControl("mrs_real/gain", 0.0);
+			pvoices[1]->updControl("mrs_real/gain", 0.0);
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/rainSS.wav");
 		}
 
 		if ((pitch >= 1000) && (pitch<= 1050) &&
@@ -1395,10 +1395,10 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			(epoch == 3))
 		{
 			cout << "Epoch " << epoch << ": Greek Folk solo middle B" << endl;
-			pvoices[0]->updctrl("mrs_real/gain", 0.0);
-			pvoices[1]->updctrl("mrs_real/gain", 0.0);
+			pvoices[0]->updControl("mrs_real/gain", 0.0);
+			pvoices[1]->updControl("mrs_real/gain", 0.0);
 			epoch ++;
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
 		}
 
 		if ((pitch >= 435) && (pitch<= 455) &&
@@ -1406,10 +1406,10 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			(epoch == 4))
 		{
 			cout << "Epoch " << epoch << ": Greek Folk solo + tabla : Middle Bb" << endl;
-			pvoices[0]->updctrl("mrs_real/gain", 0.0);
-			pvoices[1]->updctrl("mrs_real/gain", 0.0);
+			pvoices[0]->updControl("mrs_real/gain", 0.0);
+			pvoices[1]->updControl("mrs_real/gain", 0.0);
 			epoch++;
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");	  
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");	  
 		}
 
 		if ((pitch >= 415) && (pitch<= 430) &&
@@ -1417,11 +1417,11 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			(epoch == 5))
 		{
 			cout << "Epoch " << epoch << ": Seashell calls - Low F#" << endl;	  
-			pvoices[0]->updctrl("mrs_real/gain", 0.0);
-			pvoices[1]->updctrl("mrs_real/gain", 0.0);
+			pvoices[0]->updControl("mrs_real/gain", 0.0);
+			pvoices[1]->updControl("mrs_real/gain", 0.0);
 
 			epoch ++;
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
 		}
 
 		if ((pitch >= 320) && (pitch<= 330) &&
@@ -1429,12 +1429,12 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			(epoch == 6))
 
 		{
-			pvoices[0]->updctrl("mrs_real/gain", 0.0);
-			pvoices[1]->updctrl("mrs_real/gain", 0.0);
+			pvoices[0]->updControl("mrs_real/gain", 0.0);
+			pvoices[1]->updControl("mrs_real/gain", 0.0);
 			cout << "Epoch " << epoch << ": Orchestra manipulation : High D" << endl;
 			epoch ++;
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/storm1.wav");
-			bpvoc->updctrl("mrs_real/PitchShift", 1.0);
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/storm1.wav");
+			bpvoc->updControl("mrs_real/PitchShift", 1.0);
 		}
 
 		if ((pitch >= 1000) && (pitch<= 1050) &&
@@ -1443,10 +1443,10 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		{
 			cout << "Epoch " << epoch << ": Glissanti : Low Eb" << endl;
 			epoch ++;
-			pvoices[0]->updctrl("mrs_real/gain", 0.20);
-			pvoices[1]->updctrl("mrs_real/gain", 0.20);
+			pvoices[0]->updControl("mrs_real/gain", 0.20);
+			pvoices[1]->updControl("mrs_real/gain", 0.20);
 			glide1 = 1.0;
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
 		}
 
 		if ((pitch >= 270) && (pitch<= 280) &&
@@ -1455,12 +1455,12 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		{
 			cout << "Epoch " << epoch << ": Seals High D" << endl;
 			epoch ++;
-			pvoices[0]->updctrl("mrs_real/gain", 0.75);
-			pvoices[1]->updctrl("mrs_real/gain", 0.75);
-			pvoices[0]->updctrl("mrs_real/PitchShift", 0.558395);
-			pvoices[1]->updctrl("mrs_real/PitchShift", 0.747259);
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/silence.wav");
-			pvoices[3]->updctrl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/seal.wav");	  
+			pvoices[0]->updControl("mrs_real/gain", 0.75);
+			pvoices[1]->updControl("mrs_real/gain", 0.75);
+			pvoices[0]->updControl("mrs_real/PitchShift", 0.558395);
+			pvoices[1]->updControl("mrs_real/PitchShift", 0.747259);
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/silence.wav");
+			pvoices[3]->updControl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/seal.wav");	  
 			sealCount = 0;
 		}
 
@@ -1471,15 +1471,15 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		{
 			cout << "Epoch " << epoch << ": Storm : Low Eb" << endl;
 			epoch ++;
-			pvoices[0]->updctrl("mrs_real/gain", 0.75);
-			pvoices[1]->updctrl("mrs_real/gain", 0.75);
-			pvoices[0]->updctrl("mrs_real/PitchShift", 0.558395);
-			pvoices[1]->updctrl("mrs_real/PitchShift", 0.747259);
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
-			bpvoc->updctrl("mrs_real/PitchShift", 1.0);
-			pvoices[2]->updctrl("Gain/bgain/mrs_real/gain", 1.0);
-			pvoices[3]->updctrl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/storm2.wav");	  
-			pvoices[3]->updctrl("mrs_real/repetitions", -1.0);
+			pvoices[0]->updControl("mrs_real/gain", 0.75);
+			pvoices[1]->updControl("mrs_real/gain", 0.75);
+			pvoices[0]->updControl("mrs_real/PitchShift", 0.558395);
+			pvoices[1]->updControl("mrs_real/PitchShift", 0.747259);
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			bpvoc->updControl("mrs_real/PitchShift", 1.0);
+			pvoices[2]->updControl("Gain/bgain/mrs_real/gain", 1.0);
+			pvoices[3]->updControl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/storm2.wav");	  
+			pvoices[3]->updControl("mrs_real/repetitions", -1.0);
 		}
 
 		if ((pitch >= 270) && (pitch<= 280) &&
@@ -1488,14 +1488,14 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		{
 			cout << "Epoch " << epoch << ": Drips : Solo sax F# Low" << endl;
 			epoch ++;
-			pvoices[0]->updctrl("mrs_real/gain", 0.5);
-			pvoices[1]->updctrl("mrs_real/gain", 0.5);
-			pvoices[0]->updctrl("mrs_real/PitchShift", pow((double)1.06, (double)7.04));
-			pvoices[1]->updctrl("mrs_real/PitchShift", pow((double)1.06, (double)10.0));
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/drip03.wav");
-			bpvoc->updctrl("mrs_real/PitchShift", 1.0);
-			pvoices[2]->updctrl("Gain/bgain/mrs_real/gain", 1.0);
-			pvoices[3]->updctrl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/howl2.wav");	  
+			pvoices[0]->updControl("mrs_real/gain", 0.5);
+			pvoices[1]->updControl("mrs_real/gain", 0.5);
+			pvoices[0]->updControl("mrs_real/PitchShift", pow((double)1.06, (double)7.04));
+			pvoices[1]->updControl("mrs_real/PitchShift", pow((double)1.06, (double)10.0));
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/drip03.wav");
+			bpvoc->updControl("mrs_real/PitchShift", 1.0);
+			pvoices[2]->updControl("Gain/bgain/mrs_real/gain", 1.0);
+			pvoices[3]->updControl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/howl2.wav");	  
 		}
 
 		if ((pitch >= 320) && (pitch<= 330) &&
@@ -1504,14 +1504,14 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		{
 			cout << "Epoch " << epoch << ": Finale" << endl;
 			epoch ++;
-			pvoices[0]->updctrl("mrs_real/gain", 0.0);
-			pvoices[1]->updctrl("mrs_real/gain", 0.0);
-			pvoices[0]->updctrl("mrs_real/PitchShift", 1.0);
-			pvoices[1]->updctrl("mrs_real/PitchShift", 1.0);
-			pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
-			bpvoc->updctrl("mrs_real/PitchShift", 1.0);
-			pvoices[2]->updctrl("Gain/bgain/mrs_real/gain", 0.0);
-			pvoices[3]->updctrl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");	  
+			pvoices[0]->updControl("mrs_real/gain", 0.0);
+			pvoices[1]->updControl("mrs_real/gain", 0.0);
+			pvoices[0]->updControl("mrs_real/PitchShift", 1.0);
+			pvoices[1]->updControl("mrs_real/PitchShift", 1.0);
+			pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			bpvoc->updControl("mrs_real/PitchShift", 1.0);
+			pvoices[2]->updControl("Gain/bgain/mrs_real/gain", 0.0);
+			pvoices[3]->updControl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");	  
 		}
 
 		// read input for microphone 64 samples
@@ -1537,8 +1537,8 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			if (epoch == 3) 
 			{
 				diff = hertz2pitch(pitch) - 79.0;
-				bpvoc->updctrl("mrs_real/PitchShift", pow((double)1.06, (double)diff));
-				pvoices[2]->updctrl("Gain/bgain/mrs_real/gain", 2.5 * mgres(0));
+				bpvoc->updControl("mrs_real/PitchShift", pow((double)1.06, (double)diff));
+				pvoices[2]->updControl("Gain/bgain/mrs_real/gain", 2.5 * mgres(0));
 			}
 
 			if (epoch == 5) 
@@ -1546,7 +1546,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 				if ((note != prev_note)&&(pitchres(0) > 0.5)&&(noteCount > 4))
 				{
 					mrs_natural tablaIndex = note % 12;
-					pvoices[3]->updctrl("mrs_string/filename", tablas[tablaIndex]);
+					pvoices[3]->updControl("mrs_string/filename", tablas[tablaIndex]);
 					noteCount = 0;
 				}
 
@@ -1557,9 +1557,9 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 				if (pitchres(0) > 0.5)
 				{
 					diff = hertz2pitch(pitch) - 64.0;
-					bpvoc->updctrl("mrs_real/PitchShift", pow((double)1.06, (double)diff));
+					bpvoc->updControl("mrs_real/PitchShift", pow((double)1.06, (double)diff));
 				}
-				pvoices[2]->updctrl("Gain/bgain/mrs_real/gain", 2.0 * mgres(0));
+				pvoices[2]->updControl("Gain/bgain/mrs_real/gain", 2.0 * mgres(0));
 			}
 
 			if (epoch == 8)
@@ -1570,9 +1570,9 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 				}
 
 				diff = hertz2pitch(pitch) - 79.0;
-				pvoices[0]->updctrl("mrs_real/PitchShift", 0.25);
-				pvoices[1]->updctrl("mrs_real/gain", 1.0);
-				pvoices[1]->updctrl("mrs_real/PitchShift", glide1);
+				pvoices[0]->updControl("mrs_real/PitchShift", 0.25);
+				pvoices[1]->updControl("mrs_real/gain", 1.0);
+				pvoices[1]->updControl("mrs_real/PitchShift", glide1);
 				glide1 -= 0.01;
 				if (glide1 < 0.125) 
 					glide1 = 1.0;
@@ -1591,10 +1591,10 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 
 				if ((note != prev_note)&&(pitchres(0) > 0.5))
 				{
-					pvoices[2]->updctrl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/drip03.wav");
+					pvoices[2]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/drip03.wav");
 
 				}
-				pvoices[2]->updctrl("Gain/bgain/mrs_real/gain", mgres(0));
+				pvoices[2]->updControl("Gain/bgain/mrs_real/gain", mgres(0));
 			}
 
 			prev_pitch = pitch;

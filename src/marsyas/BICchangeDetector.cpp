@@ -61,10 +61,10 @@ BICchangeDetector::addControls()
 	addctrl("mrs_real/lambda", 0.8, ctrl_lambda_);
 
 	dynThres_ = 0.0;
-	prevDists_->updctrl("mrs_natural/inSamples", 1);
-	prevDists_->updctrl("mrs_natural/inObservations", 1);
+	prevDists_->updControl("mrs_natural/inSamples", 1);
+	prevDists_->updControl("mrs_natural/inObservations", 1);
 	nrPrevDists_ = 3; // hardcoded! [!]
-	prevDists_->updctrl("mrs_natural/memSize", nrPrevDists_); //store 3 previous distances, for dynamic thresholding
+	prevDists_->updControl("mrs_natural/memSize", nrPrevDists_); //store 3 previous distances, for dynamic thresholding
 }
 
 void
@@ -110,7 +110,7 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 	if(ctrl_reset_->to<bool>())
 	{
 		QGMMmodel_.resetModel();
-		prevDists_->updctrl("mrs_bool/reset", true);
+		prevDists_->updControl("mrs_bool/reset", true);
 		pdists_.setval(0.0);
 		ctrl_reset_->setValue(false, NOUPDATE);
 	}

@@ -227,8 +227,8 @@ void Talk::cmd_play(mrs_natural start, mrs_natural end, mrs_natural lineSize)
 
   
   
-  src_->updctrl("mrs_natural/pos", (mrs_natural)start * lineSize);
-  src_->updctrl("mrs_natural/inSamples", lineSize);
+  src_->updControl("mrs_natural/pos", (mrs_natural)start * lineSize);
+  src_->updControl("mrs_natural/inSamples", lineSize);
   
 
   
@@ -237,7 +237,7 @@ void Talk::cmd_play(mrs_natural start, mrs_natural end, mrs_natural lineSize)
   series->addMarSystem(dest_);
   
 
-  series->updctrl("AudioSink/dest/mrs_natural/nChannels", 
+  series->updControl("AudioSink/dest/mrs_natural/nChannels", 
 		  series->getctrl("SoundFileSource/src/mrs_natural/nChannels")->to<mrs_natural>());  
   for (int i=0; i < end-start; ++i)
     {
@@ -254,9 +254,9 @@ Talk::cmd_load(string fname, mrs_natural lineSize)
   cout << "cmd_load called" << endl;
   
   src_ = new SoundFileSource("src");
-  src_->updctrl("mrs_string/filename", fname);
+  src_->updControl("mrs_string/filename", fname);
   fname_ = fname;
-  src_->updctrl("mrs_natural/inSamples", lineSize);
+  src_->updControl("mrs_natural/inSamples", lineSize);
   AbsMax* absmax = new AbsMax("absmax");
 
   Series *series = new Series("plot");
@@ -268,7 +268,7 @@ Talk::cmd_load(string fname, mrs_natural lineSize)
   
   
   Accumulator* acc = new Accumulator("acc");
-  acc->updctrl("mrs_natural/nTimes", hops);
+  acc->updControl("mrs_natural/nTimes", hops);
   acc->addMarSystem(series);  
 
   

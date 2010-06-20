@@ -96,7 +96,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	pitchExtractor->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	pitchExtractor->addMarSystem(mng.create("ShiftInput", "si"));
 	pitchExtractor->addMarSystem(mng.create("PitchPraat", "pitchPraat"));
-	pitchExtractor->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	pitchExtractor->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	mrs_natural fileSize; 
 	fileSize= pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
@@ -106,7 +106,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	// of size contourSize 
 	MarSystem* pitchAccumulator = mng.create("Accumulator", "pitchAccumulator");
 	pitchAccumulator->addMarSystem(pitchExtractor);
-	pitchAccumulator->updctrl("mrs_natural/nTimes", contourSize);
+	pitchAccumulator->updControl("mrs_natural/nTimes", contourSize);
 	pitchContour->addMarSystem(pitchAccumulator);
 	
 	// Extract the pitch contour using Accumulator 
@@ -174,15 +174,15 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		playback->addMarSystem(mng.create("SineSource", "ss"));
 		playback->addMarSystem(mng.create("Gain", "g"));
 		playback->addMarSystem(mng.create("AudioSink", "dest"));
-		playback->updctrl("mrs_natural/inSamples", 512);
-		playback->updctrl("mrs_real/israte", 44100.0);
-		playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-		playback->updctrl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
+		playback->updControl("mrs_natural/inSamples", 512);
+		playback->updControl("mrs_real/israte", 44100.0);
+		playback->updControl("AudioSink/dest/mrs_bool/initAudio", true);
+		playback->updControl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
 				
 		for (int i=0; i < len; ++i) 
 		{
-			playback->updctrl("SineSource/ss/mrs_real/frequency", pitches(i));
-			playback->updctrl("Gain/g/mrs_real/gain", confidences(i));
+			playback->updControl("SineSource/ss/mrs_real/frequency", pitches(i));
+			playback->updControl("Gain/g/mrs_real/gain", confidences(i));
 			playback->tick();
 		}
 	}
@@ -203,11 +203,11 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	// pitchExtractor->addMarSystem(mng.create("AudioSource", "src"));
 
 	pitchExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
-	pitchExtractor->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	pitchExtractor->updControl("SoundFileSource/src/mrs_string/filename", sfName);
  
 
 	pitchExtractor->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	pitchExtractor->updctrl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
+	pitchExtractor->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.67);
 	pitchExtractor->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
   
 	MarSystem* fanout = mng.create("Fanout", "fanout");
@@ -229,8 +229,8 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	pitchExtractor->addMarSystem(mng.create("MaxArgMax", "mxr"));
 
 	// update controls 
-	pitchExtractor->updctrl("mrs_natural/inSamples", 1024);
-	pitchExtractor->updctrl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
+	pitchExtractor->updControl("mrs_natural/inSamples", 1024);
+	pitchExtractor->updControl("Fanout/fanout/TimeStretch/tsc/mrs_real/factor", 0.5);  
 	// Convert pitch bounds to samples 
 	cout << "lowPitch = " << lowPitch << endl;
 	cout << "highPitch = " << highPitch << endl;
@@ -250,11 +250,11 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	cout << "highSamples" << highSamples << endl;
 
 
-	pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
-	pitchExtractor->updctrl("Peaker/pkr/mrs_real/peakStrength", 0.4);
-	pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakStart", lowSamples);
-	pitchExtractor->updctrl("Peaker/pkr/mrs_natural/peakEnd", highSamples);
-	pitchExtractor->updctrl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
+	pitchExtractor->updControl("Peaker/pkr/mrs_real/peakSpacing", 0.00);
+	pitchExtractor->updControl("Peaker/pkr/mrs_real/peakStrength", 0.4);
+	pitchExtractor->updControl("Peaker/pkr/mrs_natural/peakStart", lowSamples);
+	pitchExtractor->updControl("Peaker/pkr/mrs_natural/peakEnd", highSamples);
+	pitchExtractor->updControl("MaxArgMax/mxr/mrs_natural/nMaximums", 1);
    
 	cout << (*pitchExtractor) << endl;
    
@@ -269,8 +269,8 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	MarSystem* playback = mng.create("Series", "playback");
 	playback->addMarSystem(mng.create("SineSource", "ss"));
 	playback->addMarSystem(mng.create("AudioSink", "dest"));
-	playback->updctrl("mrs_natural/inSamples", 512);
-	//playback->updctrl("mrs_bool/initAudio", true);
+	playback->updControl("mrs_natural/inSamples", 512);
+	//playback->updControl("mrs_bool/initAudio", true);
 
   
     mrs_real pitch;
@@ -289,7 +289,7 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		cout << "hz " << "---" << pitch << endl;
 
 		if (pitchres(0) > 0.05) 
-			playback->updctrl("SineSource/ss/mrs_real/frequency", pitch);
+			playback->updControl("SineSource/ss/mrs_real/frequency", pitch);
     }
 }
 
@@ -321,12 +321,12 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 
 	net->addMarSystem(fanout);
 
-	net->updctrl("mrs_natural/inSamples",overlap_size);
+	net->updControl("mrs_natural/inSamples",overlap_size);
 
-	net->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
-	yin_series->updctrl("ShiftInput/si/mrs_natural/winSize", buffer_size*4);
-	yin_series->updctrl("Yin/yin/mrs_natural/inSamples",buffer_size*4);
-	yin_series->updctrl("Yin/yin/mrs_real/tolerance",0.7);
+	net->updControl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+	yin_series->updControl("ShiftInput/si/mrs_natural/winSize", buffer_size*4);
+	yin_series->updControl("Yin/yin/mrs_natural/inSamples",buffer_size*4);
+	yin_series->updControl("Yin/yin/mrs_real/tolerance",0.7);
 
 	realvec r;
 	realvec r1;
@@ -376,15 +376,15 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		playback->addMarSystem(mng.create("SineSource", "ss"));
 		playback->addMarSystem(mng.create("Gain", "g"));
 		playback->addMarSystem(mng.create("AudioSink", "dest"));
-		playback->updctrl("mrs_natural/inSamples", buffer_size);
-		playback->updctrl("mrs_real/israte", 44100.0);
-		playback->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
-		playback->updctrl("mrs_real/israte", net->getctrl("mrs_real/osrate"));
+		playback->updControl("mrs_natural/inSamples", buffer_size);
+		playback->updControl("mrs_real/israte", 44100.0);
+		playback->updControl("AudioSink/dest/mrs_bool/initAudio", true);
+		playback->updControl("mrs_real/israte", net->getctrl("mrs_real/osrate"));
 				
 		for (int i=0; i < len; ++i) 
 		{
-			playback->updctrl("SineSource/ss/mrs_real/frequency", pitches(i));
-			playback->updctrl("Gain/g/mrs_real/gain", confidences(i));
+			playback->updControl("SineSource/ss/mrs_real/frequency", pitches(i));
+			playback->updControl("Gain/g/mrs_real/gain", confidences(i));
 			playback->tick();
 		}
 	}

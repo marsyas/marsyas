@@ -95,10 +95,10 @@ PvMultiResolution::myUpdate(MarControlPtr sender)
 	}
 	
 
-	flux_->updctrl("mrs_natural/inSamples", 1);
-	flux_->updctrl("mrs_natural/inObservations", onObservations_/2);
-	flux_->updctrl("mrs_real/israte", 44100);
-	flux_->updctrl("mrs_string/mode", "DixonDAFX06");
+	flux_->updControl("mrs_natural/inSamples", 1);
+	flux_->updControl("mrs_natural/inObservations", onObservations_/2);
+	flux_->updControl("mrs_real/israte", 44100);
+	flux_->updControl("mrs_string/mode", "DixonDAFX06");
 	fluxval_.create(1,1);
 	
 }
@@ -224,7 +224,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 		}
 
 		
-		updctrl("mrs_real/flux", fluxval_(0,0) - median_buffer_.median());
+		updControl("mrs_real/flux", fluxval_(0,0) - median_buffer_.median());
 		
 		mrs_real longSum = 0.0;
 		mrs_real shortSum = 0.0;

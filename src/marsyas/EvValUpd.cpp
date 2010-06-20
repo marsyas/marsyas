@@ -51,7 +51,7 @@ void
 EvValUpd::dispatch()
 {
 	if (target_ !=NULL) {
-		target_->updctrl(cname_,value_);
+		target_->updControl(cname_,value_);
 	}
 }
 

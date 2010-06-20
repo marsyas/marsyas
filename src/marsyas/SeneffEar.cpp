@@ -270,7 +270,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     realvec state;
     state.create(SeneffPreemphasisFilter->getctrl("mrs_realvec/state")->to<mrs_realvec>().getRows(),SeneffPreemphasisFilter->getctrl("mrs_realvec/state")->to<mrs_realvec>().getCols());
     SeneffPreemphasisFilter->setctrl("mrs_natural/stateUpdate", mrs_natural(1));
-    SeneffPreemphasisFilter->updctrl("mrs_realvec/state", state);
+    SeneffPreemphasisFilter->updControl("mrs_realvec/state", state);
     SeneffPreemphasisFilter->setctrl("mrs_natural/stateUpdate", mrs_natural(0));
 
     state.create(SeneffFilterBank->getctrl("Filter/filter_0/mrs_realvec/state")->to<mrs_realvec>().getRows(),SeneffFilterBank->getctrl("Filter/filter_0/mrs_realvec/state")->to<mrs_realvec>().getCols());
@@ -282,7 +282,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
       name.clear();
       name.str("");
       name << "Filter/" << "filter_" << i << "/mrs_realvec/state";
-      SeneffFilterBank->updctrl(name.str(), state);
+      SeneffFilterBank->updControl(name.str(), state);
       name.clear();
       name.str("");
       name << "Filter/" << "filter_" << i << "/mrs_natural/stateUpdate";
@@ -298,7 +298,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
       name.clear();
       name.str("");
       name << "Filter/" << "filter_" << i << "/mrs_realvec/state";
-      resonatorFilter->updctrl(name.str(), state);
+      resonatorFilter->updControl(name.str(), state);
       name.clear();
       name.str("");
       name << "Filter/" << "filter_" << i << "/mrs_natural/stateUpdate";
@@ -341,7 +341,7 @@ SeneffEar::myUpdate(MarControlPtr sender)
     state.setval(initial_yn);
     AGCfilter->setctrl("mrs_natural/inObservations", channels);
     AGCfilter->setctrl("mrs_natural/stateUpdate", mrs_natural(1));
-    AGCfilter->updctrl("mrs_realvec/state", state);
+    AGCfilter->updControl("mrs_realvec/state", state);
     AGCfilter->setctrl("mrs_natural/stateUpdate", mrs_natural(0));
 
     firstUpdate = false;

@@ -116,15 +116,15 @@ void record(mrs_real length, mrs_real gain, string filename)
     recordNet->addMarSystem(asrc);
     recordNet->addMarSystem(dest);
 
-    recordNet->updctrl("mrs_natural/inSamples", 4096);
-    recordNet->updctrl("mrs_real/israte", sropt);
-    recordNet->updctrl("AudioSource/asrc/mrs_natural/nChannels", copt);
-    recordNet->updctrl("AudioSource/asrc/mrs_real/gain", gain);
+    recordNet->updControl("mrs_natural/inSamples", 4096);
+    recordNet->updControl("mrs_real/israte", sropt);
+    recordNet->updControl("AudioSource/asrc/mrs_natural/nChannels", copt);
+    recordNet->updControl("AudioSource/asrc/mrs_real/gain", gain);
 
     // Ready to initialize audio device 
-    recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
+    recordNet->updControl("AudioSource/asrc/mrs_bool/initAudio", true);
 
-    recordNet->updctrl("SoundFileSink/dest/mrs_string/filename", filename);
+    recordNet->updControl("SoundFileSink/dest/mrs_string/filename", filename);
 
     mrs_real srate = recordNet->getctrl("mrs_real/israte")->to<mrs_real>();
     mrs_natural nChannels = recordNet->getctrl("AudioSource/asrc/mrs_natural/nChannels")->to<mrs_natural>();
@@ -183,33 +183,33 @@ void record_orcas(mrs_real length, mrs_natural year,
     string fname4 = oss4.str();
 
 
-    dest1->updctrl("mrs_natural/inObservations", 2);
-    dest1->updctrl("mrs_natural/inSamples", bufferSize);
-    dest1->updctrl("mrs_real/israte", sropt);
-    dest1->updctrl("mrs_string/filename", fname1);
+    dest1->updControl("mrs_natural/inObservations", 2);
+    dest1->updControl("mrs_natural/inSamples", bufferSize);
+    dest1->updControl("mrs_real/israte", sropt);
+    dest1->updControl("mrs_string/filename", fname1);
 
 
-    dest2->updctrl("mrs_natural/inObservations", 2);
-    dest2->updctrl("mrs_natural/inSamples", bufferSize);
-    dest2->updctrl("mrs_real/israte", sropt);
-    dest2->updctrl("mrs_string/filename", fname2);
+    dest2->updControl("mrs_natural/inObservations", 2);
+    dest2->updControl("mrs_natural/inSamples", bufferSize);
+    dest2->updControl("mrs_real/israte", sropt);
+    dest2->updControl("mrs_string/filename", fname2);
 
-    dest3->updctrl("mrs_natural/inObservations", 2);
-    dest3->updctrl("mrs_natural/inSamples", bufferSize);
-    dest3->updctrl("mrs_real/israte", sropt);
-    dest3->updctrl("mrs_string/filename", fname3);
+    dest3->updControl("mrs_natural/inObservations", 2);
+    dest3->updControl("mrs_natural/inSamples", bufferSize);
+    dest3->updControl("mrs_real/israte", sropt);
+    dest3->updControl("mrs_string/filename", fname3);
 
 
-    dest4->updctrl("mrs_natural/inObservations", 2);
-    dest4->updctrl("mrs_natural/inSamples", bufferSize);
-    dest4->updctrl("mrs_real/israte", sropt);
-    dest4->updctrl("mrs_string/filename", fname4);
+    dest4->updControl("mrs_natural/inObservations", 2);
+    dest4->updControl("mrs_natural/inSamples", bufferSize);
+    dest4->updControl("mrs_real/israte", sropt);
+    dest4->updControl("mrs_string/filename", fname4);
 
     asrc->setctrl("mrs_natural/nChannels", copt);
     asrc->setctrl("mrs_natural/inSamples", bufferSize);
     asrc->setctrl("mrs_real/israte", sropt);
     asrc->update();
-    // asrc->updctrl("mrs_real/gain", gain);
+    // asrc->updControl("mrs_real/gain", gain);
 
 
 

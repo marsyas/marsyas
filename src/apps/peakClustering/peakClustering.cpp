@@ -334,27 +334,27 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	// create Similarities Network and add it to ClustNet
 	//***************************************************************
 	MarSystem* simNet = mng.create("FanOutIn", "simNet");
-	simNet->updctrl("mrs_string/combinator", "*");
+	simNet->updControl("mrs_string/combinator", "*");
 	//
 	//create Frequency similarity net and add it to simNet
 	//
 	MarSystem* freqSim = mng.create("Series","freqSim");
 	//--------
 	freqSim->addMarSystem(mng.create("PeakFeatureSelect","FREQfeatSelect"));
-	freqSim->updctrl("PeakFeatureSelect/FREQfeatSelect/mrs_natural/selectedFeatures",
+	freqSim->updControl("PeakFeatureSelect/FREQfeatSelect/mrs_natural/selectedFeatures",
 					 PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq);
 	//--------
 	MarSystem* fsimMat = mng.create("SelfSimilarityMatrix","FREQsimMat");
 	fsimMat->addMarSystem(mng.create("Metric","FreqL2Norm"));
-	fsimMat->updctrl("Metric/FreqL2Norm/mrs_string/metric","euclideanDistance");
-	fsimMat->updctrl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
-	//fsimMat->updctrl("mrs_string/normalize", "MinMax");
-	//fsimMat->linkctrl("mrs_realvec/covMatrix", "Metric/FreqL2Norm/mrs_realvec/covMatrix");
+	fsimMat->updControl("Metric/FreqL2Norm/mrs_string/metric","euclideanDistance");
+	fsimMat->updControl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
+	//fsimMat->updControl("mrs_string/normalize", "MinMax");
+	//fsimMat->linkControl("mrs_realvec/covMatrix", "Metric/FreqL2Norm/mrs_realvec/covMatrix");
 	freqSim->addMarSystem(fsimMat);	
 	//--------
 	freqSim->addMarSystem(mng.create("RBF","FREQrbf"));
-	freqSim->updctrl("RBF/FREQrbf/mrs_string/RBFtype","Gaussian");
-	freqSim->updctrl("RBF/FREQrbf/mrs_bool/symmetricIn",true);
+	freqSim->updControl("RBF/FREQrbf/mrs_string/RBFtype","Gaussian");
+	freqSim->updControl("RBF/FREQrbf/mrs_bool/symmetricIn",true);
 	//--------
 	simNet->addMarSystem(freqSim);
 	//
@@ -363,20 +363,20 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* ampSim = mng.create("Series","ampSim");
 	//--------
 	ampSim->addMarSystem(mng.create("PeakFeatureSelect","AMPfeatSelect"));
-	ampSim->updctrl("PeakFeatureSelect/AMPfeatSelect/mrs_natural/selectedFeatures",
+	ampSim->updControl("PeakFeatureSelect/AMPfeatSelect/mrs_natural/selectedFeatures",
 					PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp);
 	//--------
 	MarSystem* asimMat = mng.create("SelfSimilarityMatrix","AMPsimMat");
 	asimMat->addMarSystem(mng.create("Metric","AmpL2Norm"));
-	asimMat->updctrl("Metric/AmpL2Norm/mrs_string/metric","euclideanDistance");
-	asimMat->updctrl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
-	//asimMat->updctrl("mrs_string/normalize", "MinMax");
-	//asimMat->linkctrl("mrs_realvec/covMatrix", "Metric/AmpL2Norm/mrs_realvec/covMatrix");
+	asimMat->updControl("Metric/AmpL2Norm/mrs_string/metric","euclideanDistance");
+	asimMat->updControl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
+	//asimMat->updControl("mrs_string/normalize", "MinMax");
+	//asimMat->linkControl("mrs_realvec/covMatrix", "Metric/AmpL2Norm/mrs_realvec/covMatrix");
 	ampSim->addMarSystem(asimMat);	
 	//--------
 	ampSim->addMarSystem(mng.create("RBF","AMPrbf"));
-	ampSim->updctrl("RBF/AMPrbf/mrs_string/RBFtype","Gaussian");
-	ampSim->updctrl("RBF/AMPrbf/mrs_bool/symmetricIn",true);
+	ampSim->updControl("RBF/AMPrbf/mrs_string/RBFtype","Gaussian");
+	ampSim->updControl("RBF/AMPrbf/mrs_bool/symmetricIn",true);
 	//--------
 	simNet->addMarSystem(ampSim);
 	//
@@ -385,17 +385,17 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* HWPSim = mng.create("Series","HWPSim");
 	//--------
 	HWPSim->addMarSystem(mng.create("PeakFeatureSelect","HWPSfeatSelect"));
-	HWPSim->updctrl("PeakFeatureSelect/HWPSfeatSelect/mrs_natural/selectedFeatures",
+	HWPSim->updControl("PeakFeatureSelect/HWPSfeatSelect/mrs_natural/selectedFeatures",
 					PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes);
 	//--------
 	MarSystem* HWPSsimMat = mng.create("SelfSimilarityMatrix","HWPSsimMat");
 	HWPSsimMat->addMarSystem(mng.create("HWPS","hwps"));
-	HWPSsimMat->updctrl("HWPS/hwps/mrs_bool/calcDistance", true);
+	HWPSsimMat->updControl("HWPS/hwps/mrs_bool/calcDistance", true);
 	HWPSim->addMarSystem(HWPSsimMat);	
 	//--------
 	HWPSim->addMarSystem(mng.create("RBF","HWPSrbf"));
-	HWPSim->updctrl("RBF/HWPSrbf/mrs_string/RBFtype","Gaussian");
-	HWPSim->updctrl("RBF/HWPSrbf/mrs_bool/symmetricIn",true);
+	HWPSim->updControl("RBF/HWPSrbf/mrs_string/RBFtype","Gaussian");
+	HWPSim->updControl("RBF/HWPSrbf/mrs_bool/symmetricIn",true);
 	//--------
 	simNet->addMarSystem(HWPSim);
 	//
@@ -404,37 +404,37 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* panSim = mng.create("Series","panSim");
 	//--------
 	panSim->addMarSystem(mng.create("PeakFeatureSelect","PANfeatSelect"));
-	panSim->updctrl("PeakFeatureSelect/PANfeatSelect/mrs_natural/selectedFeatures",
+	panSim->updControl("PeakFeatureSelect/PANfeatSelect/mrs_natural/selectedFeatures",
 					PeakFeatureSelect::pkPan);
 	//--------
 	MarSystem* psimMat = mng.create("SelfSimilarityMatrix","PANsimMat");
 	psimMat->addMarSystem(mng.create("Metric","PanL2Norm"));
-	psimMat->updctrl("Metric/PanL2Norm/mrs_string/metric","euclideanDistance");
-	psimMat->updctrl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
-	//psimMat->updctrl("mrs_string/normalize", "MinMax");
-	//psimMat->linkctrl("mrs_realvec/covMatrix", "Metric/PanL2Norm/mrs_realvec/covMatrix");
+	psimMat->updControl("Metric/PanL2Norm/mrs_string/metric","euclideanDistance");
+	psimMat->updControl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
+	//psimMat->updControl("mrs_string/normalize", "MinMax");
+	//psimMat->linkControl("mrs_realvec/covMatrix", "Metric/PanL2Norm/mrs_realvec/covMatrix");
 	panSim->addMarSystem(psimMat);	
 	//--------
 	panSim->addMarSystem(mng.create("RBF","PANrbf"));
-	panSim->updctrl("RBF/PANrbf/mrs_string/RBFtype","Gaussian");
-	panSim->updctrl("RBF/PANrbf/mrs_bool/symmetricIn",true);
+	panSim->updControl("RBF/PANrbf/mrs_string/RBFtype","Gaussian");
+	panSim->updControl("RBF/PANrbf/mrs_bool/symmetricIn",true);
 	//--------
 	simNet->addMarSystem(panSim);
 	//
 	// LINK controls of PeakFeatureSelects in each similarity branch
 	//
-	simNet->linkctrl("Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/totalNumPeaks",
+	simNet->linkControl("Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/totalNumPeaks",
 					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
-	simNet->linkctrl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks",
+	simNet->linkControl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/totalNumPeaks",
 					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
-	simNet->linkctrl("Series/panSim/PeakFeatureSelect/PANfeatSelect/mrs_natural/totalNumPeaks",
+	simNet->linkControl("Series/panSim/PeakFeatureSelect/PANfeatSelect/mrs_natural/totalNumPeaks",
 					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks");
 	//------
-	simNet->linkctrl("Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks",
+	simNet->linkControl("Series/ampSim/PeakFeatureSelect/AMPfeatSelect/mrs_natural/frameMaxNumPeaks",
 					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
-	simNet->linkctrl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks",
+	simNet->linkControl("Series/HWPSim/PeakFeatureSelect/HWPSfeatSelect/mrs_natural/frameMaxNumPeaks",
 					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
-	simNet->linkctrl("Series/panSim/PeakFeatureSelect/PANfeatSelect/mrs_natural/frameMaxNumPeaks",
+	simNet->linkControl("Series/panSim/PeakFeatureSelect/PANfeatSelect/mrs_natural/frameMaxNumPeaks",
 					 "Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks");
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	//add simNet to clustNet
@@ -442,9 +442,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//
 	// LINK controls related to variable number of peak from PeakConvert to simNet
 	//
-	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks",
+	mainNet->linkControl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks",
 					  "PeakConvert/conv/mrs_natural/totalNumPeaks");
-	mainNet->linkctrl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks",
+	mainNet->linkControl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks",
 					  "PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
 
 	//***************************************************************
@@ -467,7 +467,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* labeler = mng.create("PeakLabeler","labeler");
 	mainNet->addMarSystem(labeler);
 	//---- link labeler label control to the NCut output control
-	mainNet->linkctrl("PeakLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
+	mainNet->linkControl("PeakLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
 
 	//***************************************************************
 	// create PeakViewSink MarSystem and add it to mainNet
@@ -475,7 +475,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(peakStore_)
 	{
 		mainNet->addMarSystem(mng.create("PeakViewSink", "peSink"));
-		mainNet->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName);
+		mainNet->updControl("PeakViewSink/peSink/mrs_string/filename", filePeakName);
 	}
 
 	//****************************************************************
@@ -535,7 +535,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		else
 		{
 			dest = mng.create("SoundFileSink/dest");
-			//dest->updctrl("mrs_string/filename", outsfname);
+			//dest->updControl("mrs_string/filename", outsfname);
 		}
 
 		if(residual_)
@@ -561,7 +561,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			else
 			{
 				destRes = mng.create("SoundFileSink/destRes");
-				//dest->updctrl("mrs_string/filename", outsfname);
+				//dest->updControl("mrs_string/filename", outsfname);
 			}
 			postNet->addMarSystem(destRes);
 		}
@@ -574,7 +574,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mainNet->addMarSystem(synthNet);
 
 		//link Shredder nTimes to Accumulator nTimes
-		mainNet->linkctrl("Shredder/synthNet/mrs_natural/nTimes",
+		mainNet->linkControl("Shredder/synthNet/mrs_natural/nTimes",
 						  "Accumulator/textWinNet/mrs_natural/nTimes");
 	}
 
@@ -585,75 +585,75 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	////////////////////////////////////////////////////////////////
 	// update the controls
 	////////////////////////////////////////////////////////////////
-	//mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
+	//mainNet->updControl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
 
 	if (microphone_) 
 	{
-		mainNet->updctrl("mrs_natural/inSamples", D);
-		mainNet->updctrl("mrs_natural/inObservations", 1);
+		mainNet->updControl("mrs_natural/inSamples", D);
+		mainNet->updControl("mrs_natural/inObservations", 1);
 	}
 	else
 	{
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
-		mainNet->updctrl("mrs_natural/inSamples", D);
-		mainNet->updctrl("mrs_natural/inObservations", 1);
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
+		mainNet->updControl("mrs_natural/inSamples", D);
+		mainNet->updControl("mrs_natural/inObservations", 1);
 		samplingFrequency_ = mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	}
 
 	if(noiseName != EMPTYSTRING)
 	{
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
-		mainNet->updctrl("mrs_natural/inSamples", D);
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/NoiseSource/noise/mrs_string/mode", "rand");
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Seriesmixseries/Delay/noiseDelay/mrs_real/delaySeconds",  noiseDelay);
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/SoundFileSource/noise/mrs_string/filename", noiseName);
+		mainNet->updControl("mrs_natural/inSamples", D);
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/NoiseSource/noise/mrs_string/mode", "rand");
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Seriesmixseries/Delay/noiseDelay/mrs_real/delaySeconds",  noiseDelay);
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/mixseries/Gain/noiseGain/mrs_real/gain", noiseGain_);
 	}
 
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/ShiftInput/si/mrs_natural/winSize", Nw+1);
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/ShiftInput/si/mrs_natural/winSize", Nw+1);
 
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Shifter/sh/mrs_natural/shift", 1);
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Shifter/sh/mrs_natural/shift", 1);
 
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Windowing/wi/mrs_natural/size", N);
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Windowing/wi/mrs_string/type", "Hanning");
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Windowing/wi/mrs_bool/zeroPhasing", true);
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Windowing/wi/mrs_natural/size", N);
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Windowing/wi/mrs_string/type", "Hanning");
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Windowing/wi/mrs_bool/zeroPhasing", true);
 
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkL/Windowing/win/mrs_natural/size", N);
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkL/Windowing/win/mrs_string/type", "Hanning");
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkL/Windowing/win/mrs_bool/zeroPhasing", true);
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkL/Windowing/win/mrs_natural/size", N);
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkL/Windowing/win/mrs_string/type", "Hanning");
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkL/Windowing/win/mrs_bool/zeroPhasing", true);
 	//
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkR/Windowing/win/mrs_natural/size", N);
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkR/Windowing/win/mrs_string/type", "Hanning");
-	mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkR/Windowing/win/mrs_bool/zeroPhasing", true);
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkR/Windowing/win/mrs_natural/size", N);
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkR/Windowing/win/mrs_string/type", "Hanning");
+	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/stereoSpkNet/Parallel/LRnet/Series/spkR/Windowing/win/mrs_bool/zeroPhasing", true);
 
 	if(unprecise_)
-		mainNet->updctrl("PeakConvert/conv/mrs_bool/improvedPrecision", false);      
+		mainNet->updControl("PeakConvert/conv/mrs_bool/improvedPrecision", false);      
 	else
-		mainNet->updctrl("PeakConvert/conv/mrs_bool/improvedPrecision", true);  
+		mainNet->updControl("PeakConvert/conv/mrs_bool/improvedPrecision", true);  
 	
 	if(noPeakPicking_)
-		mainNet->updctrl("PeakConvert/conv/mrs_bool/picking", false);      
+		mainNet->updControl("PeakConvert/conv/mrs_bool/picking", false);      
 	
-	mainNet->updctrl("PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
-	mainNet->updctrl("PeakConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
-	mainNet->updctrl("PeakConvert/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
+	mainNet->updControl("PeakConvert/conv/mrs_natural/frameMaxNumPeaks", S); 
+	mainNet->updControl("PeakConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
+	mainNet->updControl("PeakConvert/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
 
-	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
-	mainNet->updctrl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
+	mainNet->updControl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
+	mainNet->updControl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
 	
 	// 	//[TODO]
 	// 	mainNet->setctrl("PeClust/peClust/mrs_natural/selectedClusters", nbSelectedClusters_); 
 	// 	mainNet->setctrl("PeClust/peClust/mrs_natural/hopSize", D); 
 	// 	mainNet->setctrl("PeClust/peClust/mrs_natural/storePeaks", (mrs_natural) peakStore_); 
-	// 	mainNet->updctrl("PeClust/peClust/mrs_string/similarityType", T); 
+	// 	mainNet->updControl("PeClust/peClust/mrs_string/similarityType", T); 
 	//
 	// 	similarityWeight_.stretch(3);
 	// 	similarityWeight_(0) = 1;
 	// 	similarityWeight_(1) = 10;  //[WTF]
 	// 	similarityWeight_(2) = 1;
-	// 	mainNet->updctrl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
+	// 	mainNet->updControl("PeClust/peClust/mrs_realvec/similarityWeight", similarityWeight_); 
 
 	if(noiseName != EMPTYSTRING)
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/SoundFileSink/mixSink/mrs_string/filename", mixName);
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/SoundFileSink/mixSink/mrs_string/filename", mixName);
 
 	mainNet->update();
 
@@ -661,7 +661,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/mrs_natural/onObservations")->to<mrs_natural>() == 1)
 	{
 		//if a not a stereo signal, we must set the Stereo2Mono weight to 1.0 (i.e. do no mixing)!
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Stereo2Mono/s2m/mrs_real/weight", 1.0);
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/Stereo2Mono/s2m/mrs_real/weight", 1.0);
 	}
 
 	//------------------------------------------------------------------------
@@ -671,7 +671,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(ignoreFrequency)
 	{
 		cout << "** Frequency Similarity Computation disabled!" << endl;
-		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
 						 "Series/freqSim");
 	}
 	else
@@ -680,7 +680,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(ignoreAmplitude)
 	{
 		cout << "** Amplitude Similarity Computation disabled!" << endl;
-		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
 						 "Series/ampSim");
 	}
 	else
@@ -689,7 +689,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	if(ignoreHWPS)
 	{
 		cout << "** HWPS (harmonicity) Similarity Computation disabled!" << endl;
-		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
 						 "Series/HWPSim");
 	}
 	else
@@ -700,17 +700,17 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	   !ignorePan)
 	{
 		cout << "** Panning Similarity Computation enabled!" << endl;
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/enableChild",
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/enableChild",
 						 "Series/stereoSpkNet");
-		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/enableChild",
+		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/enableChild",
 						 "Series/panSim");
 	}
 	else //if not stereo or if stereo to be ignored, disable some branches 
 	{
 		cout << "** Panning Similarity Computation disabled!" << endl;
-		mainNet->updctrl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
 						 "Series/stereoSpkNet");
-		mainNet->updctrl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
 						 "Series/panSim");
 	}
 	//
@@ -723,7 +723,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		ossi << ((noiseDelay_+noiseDuration_)) << "s";
 		cout << ossi.str() << endl;
 		// touch the gain directly
-		//	noiseGain->updctrl("0.1s", Repeat("0.1s", 1), new EvValUpd(noiseGain,"mrs_real/gain", 0.0));
+		//	noiseGain->updControl("0.1s", Repeat("0.1s", 1), new EvValUpd(noiseGain,"mrs_real/gain", 0.0));
 	}
 
 	//ONSET DETECTION CONFIGURATION (if enabled)
@@ -738,17 +738,17 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		cout << "fs = " << samplingFrequency_ << endl;
 
 		//link controls for onset detector
-		onsetdetector->linkctrl("Filter/filt2/mrs_realvec/ncoeffs",
+		onsetdetector->linkControl("Filter/filt2/mrs_realvec/ncoeffs",
 								"Filter/filt1/mrs_realvec/ncoeffs");
-		onsetdetector->linkctrl("Filter/filt2/mrs_realvec/dcoeffs",
+		onsetdetector->linkControl("Filter/filt2/mrs_realvec/dcoeffs",
 								"Filter/filt1/mrs_realvec/dcoeffs");
 		//link onset detector to accumulator and if onsets enabled, set "explicitFlush" mode
 		textWinNet->linkControl("mrs_bool/flush",
 								"Series/analysisNet/Series/peakExtract/Fanout/stereoFo/Series/spectrumNet/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
 
 		//update onset detector controls
-		onsetdetector->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "wrongdBonsets");
-		onsetdetector->updctrl("Flux/flux/mrs_string/mode", "DixonDAFX06");
+		onsetdetector->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "wrongdBonsets");
+		onsetdetector->updControl("Flux/flux/mrs_string/mode", "DixonDAFX06");
 		realvec bcoeffs(1,3);//configure zero-phase Butterworth filter of Flux time series -> butter(2, 0.28)
 		bcoeffs(0) = 0.1174;
 		bcoeffs(1) = 0.2347;
@@ -757,12 +757,12 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		acoeffs(0) = 1.0;
 		acoeffs(1) = -0.8252;
 		acoeffs(2) = 0.2946;
-		onsetdetector->updctrl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
-		onsetdetector->updctrl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+		onsetdetector->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+		onsetdetector->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 		mrs_natural lookAheadSamples = 6;
-		onsetdetector->updctrl("PeakerOnset/peaker/mrs_natural/lookAheadSamples", lookAheadSamples); //!!
-		onsetdetector->updctrl("PeakerOnset/peaker/mrs_real/threshold", 1.5); //!!!
-		onsetdetector->updctrl("ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
+		onsetdetector->updControl("PeakerOnset/peaker/mrs_natural/lookAheadSamples", lookAheadSamples); //!!
+		onsetdetector->updControl("PeakerOnset/peaker/mrs_real/threshold", 1.5); //!!!
+		onsetdetector->updControl("ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
 
 		//set Accumulator controls for explicit flush mode
 		mrs_natural winds = 1+lookAheadSamples+mrs_natural(ceil(mrs_real(winSize_)/hopSize_/2.0));
@@ -773,17 +773,17 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mrs_natural maxTimes = (mrs_natural)(textureWinMaxLen*samplingFrequency_/hopSize_); 
 		cout << "Accumulator/textWinNet MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
 		cout << "Accumulator/textWinNet MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" <<endl;
-		textWinNet->updctrl("mrs_string/mode", "explicitFlush");
-		textWinNet->updctrl("mrs_natural/timesToKeep", winds);
-		textWinNet->updctrl("mrs_string/mode","explicitFlush");
-		textWinNet->updctrl("mrs_natural/maxTimes", maxTimes); 
-		textWinNet->updctrl("mrs_natural/minTimes", minTimes);
+		textWinNet->updControl("mrs_string/mode", "explicitFlush");
+		textWinNet->updControl("mrs_natural/timesToKeep", winds);
+		textWinNet->updControl("mrs_string/mode","explicitFlush");
+		textWinNet->updControl("mrs_natural/maxTimes", maxTimes); 
+		textWinNet->updControl("mrs_natural/minTimes", minTimes);
 	}
 	else
 	{
 		cout << "** Onset detector disabled -> using fixed length texture windows" << endl;
 		cout << "Accumulator/textWinNet nTimes = " << accSize << " (i.e. " << accSize*hopSize_/samplingFrequency_ << " secs)" << endl;
-		mainNet->updctrl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
+		mainNet->updControl("Accumulator/textWinNet/mrs_natural/nTimes", accSize);
 	}
 
 	if(synthetize>-1)
@@ -794,70 +794,70 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		{
 			if(synthetize==0)
 			{
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_real/samplingFreq", samplingFrequency_);
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", hopSize_*2);//D*2);
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
+				mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_real/samplingFreq", samplingFrequency_);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
+				mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", hopSize_*2);//D*2);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
 			}
 			else 
 			{
 				// linking between the first slice and the psf
 				mainNet->linkControl("Shredder/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
 				//
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
+				mainNet->updControl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
+				mainNet->updControl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
+				mainNet->updControl("Shredder/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
 				// setting the panning mode mono/stereo
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_natural/nbChannels", synthetize_);
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_string/panning", panningInfo);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_natural/nbChannels", synthetize_);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_string/panning", panningInfo);
 				// setting the FFT size
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", D*2);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", D*2);
 				// setting the name of the original file
 				if (microphone_) 
 				{
-					mainNet->updctrl("Shredder/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inSamples", D);
-					mainNet->updctrl("Shredder/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inObservations", 1);
+					mainNet->updControl("Shredder/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inSamples", D);
+					mainNet->updControl("Shredder/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inObservations", 1);
 				}
 				else
 				{
-					mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_string/filename", sfName);
-					// pvseries->updctrl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/pos", 0);
-					mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onSamples", D);
-					mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onObservations", 1);
+					mainNet->updControl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_string/filename", sfName);
+					// pvseries->updControl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/pos", 0);
+					mainNet->updControl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onSamples", D);
+					mainNet->updControl("Shredder/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onObservations", 1);
 				}
 				// setting the synthesis starting time (default 0)
 			}
 		}
 		//else
-		//	mainNet->updctrl("Shredder/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D); //this control exists?!? [WTF]
+		//	mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D); //this control exists?!? [WTF]
 
-		//mainNet->updctrl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
+		//mainNet->updControl("Shredder/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
 
 		if (outsfname == "MARSYAS_EMPTY") 
-			mainNet->updctrl("Shredder/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt_);
+			mainNet->updControl("Shredder/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt_);
 
 		if(residual_)
 		{
-			mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
+			mainNet->updControl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
 
 			if (microphone_) 
 			{
-				mainNet->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
-				mainNet->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
+				mainNet->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
+				mainNet->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
 			}
 			else
 			{
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/pos", 0);
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
-				mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/pos", 0);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
+				mainNet->updControl("Shredder/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
 			}
 
-			mainNet->updctrl("Shredder/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
-			mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", fileResName);//[!]
+			mainNet->updControl("Shredder/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+			mainNet->updControl("Shredder/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", fileResName);//[!]
 		}
 		else
-			mainNet->updctrl("Shredder/synthNet/Series/postNet/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+			mainNet->updControl("Shredder/synthNet/Series/postNet/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
 	}
 
 	//***************************************************************************************************************
@@ -915,10 +915,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	if(peakStore_)
 	{
-		mainNet->updctrl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
-		mainNet->updctrl("PeakViewSink/peSink/mrs_natural/frameSize", D);
-		mainNet->updctrl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
-		mainNet->updctrl("PeakViewSink/peSink/mrs_bool/done", true);
+		mainNet->updControl("PeakViewSink/peSink/mrs_real/fs", samplingFrequency_);
+		mainNet->updControl("PeakViewSink/peSink/mrs_natural/frameSize", D);
+		mainNet->updControl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
+		mainNet->updControl("PeakViewSink/peSink/mrs_bool/done", true);
 	}
 
 	//cfile.close(); [TODO]

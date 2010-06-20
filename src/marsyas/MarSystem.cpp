@@ -734,7 +734,7 @@ MarSystem::localActivate(bool state)
 		for (mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			//marsystems_[i]->activate(state);
-			marsystems_[i]->updctrl("mrs_bool/active", state); //thread-safe
+			marsystems_[i]->updControl("mrs_bool/active", state); //thread-safe
 		}
 	}
 }
@@ -1061,6 +1061,31 @@ MarSystem::hasControl(MarControlPtr control, bool searchChildren)
 	return false;
 }
 
+
+
+bool MarSystem::updControl(const char* cname, MarControlPtr newcontrol, bool upd)
+{
+	MarControlPtr control = getControl(cname);
+	if (control.isInvalid())
+	{
+		MRSWARN("MarSystem::updControl - " + std::string(cname) + " is an invalid control @ " + getAbsPath());
+		return false;
+	}
+	return updControl(control, newcontrol, upd);
+}
+
+bool MarSystem::updControl(std::string cname, MarControlPtr newcontrol, bool upd)
+{
+	MarControlPtr control = getControl(cname);
+	if (control.isInvalid())
+	{
+		MRSWARN("MarSystem::updControl - " + cname + " is an invalid control @ " + getAbsPath());
+		return false;
+	}
+	return updControl(control, newcontrol, upd);
+}
+
+
 bool
 MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 {
@@ -1085,6 +1110,43 @@ MarSystem::updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd)
 
 	return control->setValue(newcontrol, upd);
 }
+
+
+void
+MarSystem::updControl(EvEvent* me)
+{
+	if (me != NULL)
+	{
+		me->dispatch();
+		delete(me);
+	}
+}
+
+void
+MarSystem::updControl(TmTime t, EvEvent* ev)
+{
+	scheduler_.post(t,Repeat(),ev);
+}
+
+void
+MarSystem::updControl(TmTime t, Repeat r, EvEvent* ev)
+{
+	scheduler_.post(t,r,ev);
+}
+
+void
+MarSystem::updControl(TmTime t, string cname, MarControlPtr control)
+{
+	scheduler_.post(t,Repeat(),new EvValUpd(this,cname,control));
+}
+
+void
+MarSystem::updControl(TmTime t, Repeat r, string cname, MarControlPtr control)
+{
+	scheduler_.post(t,r,new EvValUpd(this,cname,control));
+}
+
+
 
 //get local controls only (i.e. no child controls included)
 const map<string, MarControlPtr>&

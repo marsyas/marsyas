@@ -70,7 +70,7 @@ void recognize(string sfName, string tpName)
 		oss.str(""); oss << "tplsrc" << i;
 		netTpl[i]->addMarSystem(mng.create("SoundFileSource",oss.str()));
 		oss2.str(""); oss2 << "SoundFileSource/" << oss.str() << "/mrs_string/filename";
-		netTpl[i]->updctrl(oss2.str(),templates.entry(i));
+		netTpl[i]->updControl(oss2.str(),templates.entry(i));
 		oss2.str(""); oss2 << "SoundFileSource/" << oss.str() << "/mrs_natural/size";
 		nsamples = netTpl[i]->getctrl(oss2.str())->to<mrs_natural>();
 		oss.str(""); oss << "han" << i;
@@ -87,7 +87,7 @@ void recognize(string sfName, string tpName)
 		oss.str(""); oss << "acc" << i;
 		accTpl[i] = mng.create("Accumulator",oss.str());
 		accTpl[i]->addMarSystem(netTpl[i]);
-		accTpl[i]->updctrl("mrs_natural/nTimes",ACC_TEMPLATE);
+		accTpl[i]->updControl("mrs_natural/nTimes",ACC_TEMPLATE);
 		srsTpl[i]->addMarSystem(accTpl[i]);
 		plTpl->addMarSystem(srsTpl[i]);
 		outsize += sizes(i+1);
@@ -141,20 +141,20 @@ void recognize(string sfName, string tpName)
 	netInp->addMarSystem(mng.create("PowerSpectrum","psc"));
 	//netInp->addMarSystem(mng.create("MFCC","mfcc"));
 	accInp->addMarSystem(netInp);
-	accInp->updctrl("mrs_natural/nTimes",ACC_INPUT);
+	accInp->updControl("mrs_natural/nTimes",ACC_INPUT);
 	Inp->addMarSystem(accInp);
   
 	/*** set controls to rhythm map ***/
 
-	sim->updctrl("mrs_natural/calcCovMatrix",2);
-	sim->updctrl("mrs_string/normalize", "MeanStd");
+	sim->updControl("mrs_natural/calcCovMatrix",2);
+	sim->updControl("mrs_string/normalize", "MeanStd");
 	sim->addMarSystem(met);
-	met->updctrl("mrs_string/metric","euclideanDistance");
-	dtw->updctrl("mrs_string/lastPos","lowest");
-	dtw->updctrl("mrs_string/startPos","lowest");
-	dtw->updctrl("mrs_string/localPath","diagonal");
-	dtw->updctrl("mrs_bool/weight",false);
-	dtw->updctrl("mrs_string/mode","OnePass");
+	met->updControl("mrs_string/metric","euclideanDistance");
+	dtw->updControl("mrs_string/lastPos","lowest");
+	dtw->updControl("mrs_string/startPos","lowest");
+	dtw->updControl("mrs_string/localPath","diagonal");
+	dtw->updControl("mrs_bool/weight",false);
+	dtw->updControl("mrs_string/mode","OnePass");
 
 	/*** calculate first templates ***/
 
@@ -169,10 +169,10 @@ void recognize(string sfName, string tpName)
 
 	/*** calculate input spectrogram ***/
 
-	netInp->updctrl("SoundFileSource/inpsrc/mrs_string/filename",sfName);
+	netInp->updControl("SoundFileSource/inpsrc/mrs_string/filename",sfName);
 	inputsize = netInp->getctrl("SoundFileSource/inpsrc/mrs_natural/size")->to<mrs_natural>();
 	inputsize /= wsize;
-	accInp->updctrl("mrs_natural/nTimes",inputsize);
+	accInp->updControl("mrs_natural/nTimes",inputsize);
 	Inp->tick();
 	dataInp = Inp->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
   
@@ -224,21 +224,21 @@ void recognize(string sfName, string tpName)
 	/*** update control of rhythm map ***/
 
 	sizes(0) = featuresInp.getCols();
-	sim->updctrl("mrs_realvec/sizes",sizes);
-	sim->updctrl("mrs_natural/inSamples",simInput.getCols());
-	sim->updctrl("mrs_natural/inObservations",simInput.getRows());
+	sim->updControl("mrs_realvec/sizes",sizes);
+	sim->updControl("mrs_natural/inSamples",simInput.getCols());
+	sim->updControl("mrs_natural/inObservations",simInput.getRows());
 	simOutput.create(outsize,sizes(0));
-	dtw->updctrl("mrs_realvec/sizes",sizes);
-	dtw->updctrl("mrs_natural/inSamples",simOutput.getCols());
-	dtw->updctrl("mrs_natural/inObservations",simOutput.getRows());
+	dtw->updControl("mrs_realvec/sizes",sizes);
+	dtw->updControl("mrs_natural/inSamples",simOutput.getCols());
+	dtw->updControl("mrs_natural/inObservations",simOutput.getRows());
 //<<<<<<< .mine
 //=======
 //
 //>>>>>>> .r3676
 	algOutput.create(3*sizes(0),2);
-	ap->updctrl("mrs_realvec/sizes",sizes);
-	ap->updctrl("mrs_natural/inSamples",simInput.getCols());
-	ap->updctrl("mrs_natural/inObservations",simInput.getRows());
+	ap->updControl("mrs_realvec/sizes",sizes);
+	ap->updControl("mrs_natural/inSamples",simInput.getCols());
+	ap->updControl("mrs_natural/inObservations",simInput.getRows());
   
 
 
@@ -247,7 +247,7 @@ void recognize(string sfName, string tpName)
 	for(l=0; l<NITERATION; l++){
 		sim->process(simInput,simOutput);
 		dtw->process(simOutput,algOutput);
-		ap->updctrl("mrs_realvec/alignment",algOutput);
+		ap->updControl("mrs_realvec/alignment",algOutput);
 		ap->process(simInput,simInput);
 		MarControlAccessor acs(dtw->getctrl("mrs_real/totalDistance"));
 		cout << "ITR#" << l << " " << acs.to<mrs_real>() << endl;
@@ -331,9 +331,9 @@ void recognize(string sfName, string tpName)
 	wavInp->addMarSystem(wavaccInp);
 	wavaccInp->addMarSystem(wavnetInp);
 	wavnetInp->addMarSystem(mng.create("SoundFileSource","wavsrc"));
-	wavnetInp->updctrl("SoundFileSource/wavsrc/mrs_string/filename",sfName);
+	wavnetInp->updControl("SoundFileSource/wavsrc/mrs_string/filename",sfName);
 	wavnetInp->addMarSystem(mng.create("Spectrum","wavspc"));
-	wavaccInp->updctrl("mrs_natural/nTimes",inputsize);
+	wavaccInp->updControl("mrs_natural/nTimes",inputsize);
 	wavInp->tick();
 	inpspec = wavInp->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	allspec.create(inpspec.getRows()*sizes.getSize(),inpspec.getCols());
@@ -343,10 +343,10 @@ void recognize(string sfName, string tpName)
 		}
 	}
 	sizes(0) = inpspec.getCols();
-	ap->updctrl("mrs_natural/inSamples",allspec.getCols());
-	ap->updctrl("mrs_natural/inObservations",allspec.getRows());
-	ap->updctrl("mrs_realvec/sizes",sizes);
-	ap->updctrl("mrs_realvec/alignmnet",algOutput);
+	ap->updControl("mrs_natural/inSamples",allspec.getCols());
+	ap->updControl("mrs_natural/inObservations",allspec.getRows());
+	ap->updControl("mrs_realvec/sizes",sizes);
+	ap->updControl("mrs_realvec/alignmnet",algOutput);
 	ap->process(allspec,allspec);
 	tplspec.create(inpspec.getRows()*order.maxval(),maxsize);
 	for(k=1; k<=order.maxval(); k++){
@@ -370,24 +370,24 @@ void recognize(string sfName, string tpName)
 		oss.str(""); oss << "sfsOut" << i;
 		wavnetOut[i]->addMarSystem(mng.create("SoundFileSink",oss.str()));
 		oss.str(""); oss << "SoundFileSink/sfsOut" << i << "/mrs_natural/inObservations";
-		wavnetOut[i]->updctrl(oss.str(),1);
+		wavnetOut[i]->updControl(oss.str(),1);
 		oss.str(""); oss << "SoundFileSink/sfsOut" << i << "/mrs_natural/inSamples";
-		wavnetOut[i]->updctrl(oss.str(),inpspec.getRows());
+		wavnetOut[i]->updControl(oss.str(),inpspec.getRows());
 		oss.str(""); oss << "SoundFileSink/sfsOut" << i << "/mrs_real/israte";
-		wavnetOut[i]->updctrl(oss.str(),sfrq);
+		wavnetOut[i]->updControl(oss.str(),sfrq);
 		oss2.str(""); oss2 << "SoundFileSink/sfsOut" << i << "/mrs_string/filename";
 		oss.str(""); oss << sfName << "_template" << i+1 << ".wav";
-		wavnetOut[i]->updctrl(oss2.str(),oss.str());
-		wavnetOut[i]->updctrl("mrs_natural/inObservations",inpspec.getRows());
-		wavnetOut[i]->updctrl("mrs_natural/inSamples",1);
+		wavnetOut[i]->updControl(oss2.str(),oss.str());
+		wavnetOut[i]->updControl("mrs_natural/inObservations",inpspec.getRows());
+		wavnetOut[i]->updControl("mrs_natural/inSamples",1);
 		cout << "Now writing WAV file: " << oss.str() << "." << endl;
 	}
 	wavsrdOut->addMarSystem(wavplOut);
-	wavsrdOut->updctrl("mrs_natural/nTimes",maxsize);
-	wavsrdOut->updctrl("mrs_natural/inSamples",tplspec.getCols());
-	wavsrdOut->updctrl("mrs_natural/inObservations",tplspec.getRows());
-	wavplOut->updctrl("mrs_natural/inSamples",1);
-	wavplOut->updctrl("mrs_natural/inObservations",tplspec.getRows());
+	wavsrdOut->updControl("mrs_natural/nTimes",maxsize);
+	wavsrdOut->updControl("mrs_natural/inSamples",tplspec.getCols());
+	wavsrdOut->updControl("mrs_natural/inObservations",tplspec.getRows());
+	wavplOut->updControl("mrs_natural/inSamples",1);
+	wavplOut->updControl("mrs_natural/inObservations",tplspec.getRows());
 	realvec tmpRealvec(order.maxval(),wsize);
 	wavsrdOut->process(tplspec,tmpRealvec);
 

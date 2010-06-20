@@ -141,33 +141,33 @@ void record_orcas(mrs_real length, mrs_natural year,
     string fname4 = oss4.str();
 
 
-    dest1->updctrl("mrs_natural/inObservations", 2);
-    dest1->updctrl("mrs_natural/inSamples", bufferSize);
-    dest1->updctrl("mrs_real/israte", sropt);
-    dest1->updctrl("mrs_string/filename", fname1);
+    dest1->updControl("mrs_natural/inObservations", 2);
+    dest1->updControl("mrs_natural/inSamples", bufferSize);
+    dest1->updControl("mrs_real/israte", sropt);
+    dest1->updControl("mrs_string/filename", fname1);
 
 
-    dest2->updctrl("mrs_natural/inObservations", 2);
-    dest2->updctrl("mrs_natural/inSamples", bufferSize);
-    dest2->updctrl("mrs_real/israte", sropt);
-    dest2->updctrl("mrs_string/filename", fname2);
+    dest2->updControl("mrs_natural/inObservations", 2);
+    dest2->updControl("mrs_natural/inSamples", bufferSize);
+    dest2->updControl("mrs_real/israte", sropt);
+    dest2->updControl("mrs_string/filename", fname2);
 
-    dest3->updctrl("mrs_natural/inObservations", 2);
-    dest3->updctrl("mrs_natural/inSamples", bufferSize);
-    dest3->updctrl("mrs_real/israte", sropt);
-    dest3->updctrl("mrs_string/filename", fname3);
+    dest3->updControl("mrs_natural/inObservations", 2);
+    dest3->updControl("mrs_natural/inSamples", bufferSize);
+    dest3->updControl("mrs_real/israte", sropt);
+    dest3->updControl("mrs_string/filename", fname3);
 
 
-    dest4->updctrl("mrs_natural/inObservations", 2);
-    dest4->updctrl("mrs_natural/inSamples", bufferSize);
-    dest4->updctrl("mrs_real/israte", sropt);
-    dest4->updctrl("mrs_string/filename", fname4);
+    dest4->updControl("mrs_natural/inObservations", 2);
+    dest4->updControl("mrs_natural/inSamples", bufferSize);
+    dest4->updControl("mrs_real/israte", sropt);
+    dest4->updControl("mrs_string/filename", fname4);
 
     asrc->setctrl("mrs_natural/nChannels", copt);
     asrc->setctrl("mrs_natural/inSamples", bufferSize);
     asrc->setctrl("mrs_natural/bufferSize", bufferSize);
     asrc->setctrl("mrs_real/israte", sropt);
-    asrc->updctrl("mrs_bool/initAudio", true);
+    asrc->updControl("mrs_bool/initAudio", true);
     asrc->update();
 
 
@@ -260,16 +260,16 @@ void record_orcas_dat(mrs_real length, mrs_natural year, string id1)
 
     string fname1 = oss1.str();
 
-    dest1->updctrl("mrs_natural/inObservations", 2);
-    dest1->updctrl("mrs_natural/inSamples", bufferSize);
-    dest1->updctrl("mrs_real/israte", sropt);
-    dest1->updctrl("mrs_string/filename", fname1);
+    dest1->updControl("mrs_natural/inObservations", 2);
+    dest1->updControl("mrs_natural/inSamples", bufferSize);
+    dest1->updControl("mrs_real/israte", sropt);
+    dest1->updControl("mrs_string/filename", fname1);
 
     asrc->setctrl("mrs_natural/nChannels", copt);
     asrc->setctrl("mrs_natural/inSamples", bufferSize);
     asrc->setctrl("mrs_natural/bufferSize", bufferSize);
     asrc->setctrl("mrs_real/israte", sropt);
-    asrc->updctrl("mrs_bool/initAudio", true);
+    asrc->updControl("mrs_bool/initAudio", true);
     asrc->update();
 
     mrs_real srate = asrc->getctrl("mrs_real/israte")->to<mrs_real>();

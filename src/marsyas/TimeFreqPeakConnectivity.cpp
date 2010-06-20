@@ -257,8 +257,8 @@ TimeFreqPeakConnectivity::myUpdate(MarControlPtr sender)
 	peakMatrix_.create (numBarkBands_, numSamples);
 	costMatrix_.create (numBarkBands_, numSamples);
 
-	updctrl ("mrs_natural/onObservations", inSamples_);
-	updctrl ("mrs_natural/onSamples", inSamples_);
+	updControl ("mrs_natural/onObservations", inSamples_);
+	updControl ("mrs_natural/onSamples", inSamples_);
 
 	AllocMemory (numSamples);
 }

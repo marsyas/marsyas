@@ -99,7 +99,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 	// parse the header portion of the file to get the required attribute names and possible output labels (if any)...
 	if (strcmp(filename_.c_str(), getctrl("mrs_string/filename")->to<mrs_string>().c_str()) != 0)
 	{
-		this->updctrl("mrs_bool/done", false);	  
+		this->updControl("mrs_bool/done", false);	  
 		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 		attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->to<mrs_string>();
 	 	
@@ -299,12 +299,12 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
 	row = data_.at(currentIndex_++);
 	if(currentIndex_ >= (mrs_natural)data_.size())
     {
-		this->updctrl("mrs_bool/done", true);
+		this->updControl("mrs_bool/done", true);
     }
 	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {
 		out(ii, 0) = row->at(ii);
-		this->updctrl("mrs_string/currentFilename", fname); //???: why are we always updating this control to fname?? (which does not change inside the for loop...)
+		this->updControl("mrs_string/currentFilename", fname); //???: why are we always updating this control to fname?? (which does not change inside the for loop...)
     }
 }
 
@@ -318,7 +318,7 @@ WekaSource::handleInstancePair(realvec& out)
 		
 	if(i >= (mrs_natural)data_.size() || j >= (mrs_natural)data_.size())
 	{
-		//this->updctrl("mrs_bool/done", true); //!!!: done?
+		//this->updControl("mrs_bool/done", true); //!!!: done?
 		MRSWARN("WekaSource::handlePair - out of bound file indexes!");
 		return;
 	}
@@ -337,7 +337,7 @@ WekaSource::handleInstancePair(realvec& out)
 		out(ii, 0) = rowi->at(ii);
 		out(ii, 1) = rowj->at(ii);
 	}
-	this->updctrl("mrs_string/currentFilename", fnamei+"_"+fnamej); 
+	this->updControl("mrs_string/currentFilename", fnamei+"_"+fnamej); 
 																	
 }
 
@@ -352,7 +352,7 @@ void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
 
 		if(currentIndex_>=percentageIndex_)
 		{
-			this->updctrl("mrs_string/mode", "predict");
+			this->updControl("mrs_string/mode", "predict");
 		}
     }
 	else
@@ -360,7 +360,7 @@ void WekaSource::handlePercentageSplit(bool trainMode, realvec &out)
 		row = data_.at(currentIndex_++);
 		if(currentIndex_ >= (mrs_natural)data_.size())
 		{
-			this->updctrl("mrs_bool/done", true);
+			this->updControl("mrs_bool/done", true);
 		}//if
     }//else
 //  MRSASSERT(row->size()==out.getCols()); //[!]
@@ -379,7 +379,7 @@ void WekaSource::handleUseTestSet(bool trainMode, realvec &out)
 
 		if(currentIndex_ >= (mrs_natural)data_.size())
 		{
-			this->updctrl("mrs_string/mode", "predict");
+			this->updControl("mrs_string/mode", "predict");
 			currentIndex_ = 0;
 		}//if
     }
@@ -389,7 +389,7 @@ void WekaSource::handleUseTestSet(bool trainMode, realvec &out)
 
 		if(currentIndex_ >= (mrs_natural)useTestSetData_.size())
 		{
-			this->updctrl("mrs_bool/done", true);
+			this->updControl("mrs_bool/done", true);
 			currentIndex_ = 0;
 		}
     }//else
@@ -420,7 +420,7 @@ void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 				if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
 				{
 					foldClassDataIndex_ = 0;
-					this->updctrl("mrs_string/mode", "predict");
+					this->updControl("mrs_string/mode", "predict");
 				}
 			}
 		}break;
@@ -432,7 +432,7 @@ void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 				if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
 				{
 					foldClassDataIndex_ = 0;
-					this->updctrl("mrs_bool/done", true);
+					this->updControl("mrs_bool/done", true);
 				}
 			}
 			else if(next == WekaFoldData::Training)
@@ -441,7 +441,7 @@ void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 				if(foldClassDataIndex_ >= (mrs_natural)foldClassData_.size())
 				{
 					foldClassDataIndex_ = 0;
-					this->updctrl("mrs_string/mode", "train");
+					this->updControl("mrs_string/mode", "train");
 				}
 			}
 		}break;
@@ -462,7 +462,7 @@ void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &out)
 {
 
-	WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
+	//WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
 
 	WekaFoldData::nextMode next;
 
@@ -470,13 +470,13 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
 	vector<mrs_real> *row = foldData_.Next(next);
 	
 	if(next == WekaFoldData::None)
-		this->updctrl("mrs_bool/done", true);
+		this->updControl("mrs_bool/done", true);
 	// else if(next == WekaFoldData::Training&& !trainMode)
 	else if(next == WekaFoldData::Training)
-		this->updctrl("mrs_string/mode", "train");
+		this->updControl("mrs_string/mode", "train");
 	// else if(next == WekaFoldData::Predict && trainMode)
 	else if(next == WekaFoldData::Predict)
-		this->updctrl("mrs_string/mode", "predict");
+		this->updControl("mrs_string/mode", "predict");
 
 	MRSASSERT((mrs_natural) row->size() == out.getCols());
 

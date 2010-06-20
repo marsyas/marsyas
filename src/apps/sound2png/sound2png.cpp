@@ -152,8 +152,8 @@ int getFileLengthForWaveform(string inFileName, int windowSize, double& min, dou
 	
 	// The sound file
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
-	net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
+	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
 	net->setctrl("mrs_natural/inSamples", windowSize);
 
 	// Compute the AbsMax of this window
@@ -208,8 +208,8 @@ void outputWaveformPNG(string inFileName, string outFileName)
 
 	// The sound file
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
-	net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
+	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
 	net->setctrl("mrs_natural/inSamples", windowSize);
 	net->addMarSystem(mng.create("MaxMin","maxmin"));
 
@@ -337,12 +337,12 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 	net->addMarSystem(mng.create("ShiftInput", "si"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
-	net->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
-	net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
-	net->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
-	net->updctrl("mrs_natural/inSamples", int(hopSize));
+	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
+	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
+	net->updControl("mrs_natural/inSamples", int(hopSize));
 
 	int length = 0;
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() 
@@ -397,12 +397,12 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	net->addMarSystem(mng.create("ShiftInput", "si"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
-	net->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
-	net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
-	net->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
-	net->updctrl("mrs_natural/inSamples", int(hopSize));
+	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
+	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
+	net->updControl("mrs_natural/inSamples", int(hopSize));
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	double pngLength = length;
@@ -464,12 +464,12 @@ void fftHistogram(string inFileName)
 	net->addMarSystem(mng.create("ShiftInput", "si"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
-	net->updctrl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
-	net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updctrl("SoundFileSource/src/mrs_natural/pos", position);
-	net->updctrl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	net->updctrl("ShiftInput/si/mrs_natural/winSize", windowSize);
-	net->updctrl("mrs_natural/inSamples", int(hopSize));
+	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
+	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
+	net->updControl("mrs_natural/inSamples", int(hopSize));
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
@@ -521,12 +521,12 @@ void correlogramPNGs(string inFileName, string outFilePrefix)
 	parallel->addMarSystem(mng.create("AutoCorrelation", ss.str()));
   }
 
-  net->updctrl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
   net->setctrl("mrs_natural/inSamples", windowSize);
-  net->updctrl("Memory/mem/mrs_natural/memSize", memorySize);
+  net->updControl("Memory/mem/mrs_natural/memSize", memorySize);
 
-  net->updctrl("mrs_real/israte", 44100.0);
-  net->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  net->updControl("mrs_real/israte", 44100.0);
+  net->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
   realvec data;
   

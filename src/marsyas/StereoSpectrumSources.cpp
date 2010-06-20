@@ -54,11 +54,11 @@ StereoSpectrumSources::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue("StereoSpectrumSources,", NOUPDATE);
 
-	panPeaker_->updctrl("mrs_natural/inSamples", inObservations_-1);
-	panPeaker_->updctrl("mrs_natural/inObservations", 1);
-	panPeaker_->updctrl("mrs_natural/peakStart", 0);
-	panPeaker_->updctrl("mrs_natural/peakEnd", inObservations_-2);
-	panPeaker_->updctrl("mrs_real/peakStrength", 1.0);
+	panPeaker_->updControl("mrs_natural/inSamples", inObservations_-1);
+	panPeaker_->updControl("mrs_natural/inObservations", 1);
+	panPeaker_->updControl("mrs_natural/peakStart", 0);
+	panPeaker_->updControl("mrs_natural/peakEnd", inObservations_-2);
+	panPeaker_->updControl("mrs_real/peakStrength", 1.0);
 }
 
 void 

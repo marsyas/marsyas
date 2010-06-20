@@ -96,8 +96,8 @@ void Biquad::myUpdate(MarControlPtr sender)
         a(1) = -2 * cos(w0_); // Arian: was positive
         a(2) = 1 - alpha_;
         
-        filter->updctrl("mrs_realvec/ncoeffs", b);
-        filter->updctrl("mrs_realvec/dcoeffs", a);
+        filter->updControl("mrs_realvec/ncoeffs", b);
+        filter->updControl("mrs_realvec/dcoeffs", a);
 
     }
 	else if (type == "bandpass")
@@ -112,8 +112,8 @@ void Biquad::myUpdate(MarControlPtr sender)
         a(1) = -2 * cos(w0_); // Arian: was positive
         a(2) = 1 - alpha_;
         
-        filter->updctrl("mrs_realvec/ncoeffs", b);
-        filter->updctrl("mrs_realvec/dcoeffs", a);
+        filter->updControl("mrs_realvec/ncoeffs", b);
+        filter->updControl("mrs_realvec/dcoeffs", a);
 	}
 	else if (type == "highpass") 
 	{
@@ -137,8 +137,8 @@ void Biquad::myUpdate(MarControlPtr sender)
         a(2) = 1 - alpha_;
         
         
-        filter->updctrl("mrs_realvec/ncoeffs", b);
-        filter->updctrl("mrs_realvec/dcoeffs", a);
+        filter->updControl("mrs_realvec/ncoeffs", b);
+        filter->updControl("mrs_realvec/dcoeffs", a);
 
     }
 

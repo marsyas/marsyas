@@ -100,9 +100,9 @@ Combinator::myUpdate(MarControlPtr sender)
 	//if (ctrl_inObservations_->to<mrs_natural>() % ctrl_numInputs_->to<mrs_natural>())
 	//	MRSWARN("Combinator: dimension mismatch");
 	if (ctrl_numInputs_->to<mrs_natural>())
-		updctrl ("mrs_natural/onObservations", ctrl_inObservations_->to<mrs_natural>() / ctrl_numInputs_->to<mrs_natural>());
+		updControl ("mrs_natural/onObservations", ctrl_inObservations_->to<mrs_natural>() / ctrl_numInputs_->to<mrs_natural>());
 	else
-		updctrl ("mrs_natural/onObservations", 0);
+		updControl ("mrs_natural/onObservations", 0);
 
 }
 

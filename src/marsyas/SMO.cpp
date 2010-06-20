@@ -79,7 +79,7 @@ SMO::myUpdate(MarControlPtr sender)
   if (inObservations != mcols)
     {
       weights_.create(inObservations);
-      updctrl("mrs_realvec/weights", weights_);
+      updControl("mrs_realvec/weights", weights_);
     }
   
   
@@ -251,7 +251,7 @@ SMO::myProcess(realvec& in, realvec& out)
   
   if (donePtr_->to<mrs_bool>())
     {
-      updctrl(weightsPtr_, weights_);
+      updControl(weightsPtr_, weights_);
     }
 
   

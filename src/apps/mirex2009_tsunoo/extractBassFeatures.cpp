@@ -95,7 +95,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	net->addMarSystem(src);
 	net->addMarSystem(wlt);
 	net->addMarSystem(pws);
-	pws->updctrl("mrs_string/spectrumType", "magnitude");
+	pws->updControl("mrs_string/spectrumType", "magnitude");
 	wlt->setctrl("mrs_natural/channels", CHANNELS);
 	wlt->setctrl("mrs_real/qValue", QVALUE);
 	wlt->setctrl("mrs_real/lowFreq", LOWFREQ);
@@ -116,44 +116,44 @@ void recognize(string sfName, string segName, string tempName, string outName)
 
 	/*** update control of wekasink series ***/
 	/*
-	total->updctrl("mrs_natural/inSamples", 1);
-	total->updctrl("mrs_natural/inObservations", hist.getRows());
-	total->updctrl("WekaSink/wks/mrs_string/labelNames",inputs.getLabelNames());
-	total->updctrl("WekaSink/wks/mrs_natural/nLabels",inputs.getNumLabels());
-	total->updctrl("WekaSink/wks/mrs_natural/downsample",1);
-	total->updctrl("WekaSink/wks/mrs_string/inObsNames",oss.str());
-	total->updctrl("WekaSink/wks/mrs_string/filename",outName);
+	total->updControl("mrs_natural/inSamples", 1);
+	total->updControl("mrs_natural/inObservations", hist.getRows());
+	total->updControl("WekaSink/wks/mrs_string/labelNames",inputs.getLabelNames());
+	total->updControl("WekaSink/wks/mrs_natural/nLabels",inputs.getNumLabels());
+	total->updControl("WekaSink/wks/mrs_natural/downsample",1);
+	total->updControl("WekaSink/wks/mrs_string/inObsNames",oss.str());
+	total->updControl("WekaSink/wks/mrs_string/filename",outName);
 
-	total2->updctrl("mrs_natural/inSamples", 1);
-	total2->updctrl("mrs_natural/inObservations", hist2.getRows());
-	total2->updctrl("WekaSink/wks2/mrs_string/labelNames",inputs.getLabelNames());
-	total2->updctrl("WekaSink/wks2/mrs_natural/nLabels",inputs.getNumLabels());
-	total2->updctrl("WekaSink/wks2/mrs_natural/downsample",1);
-	total2->updctrl("WekaSink/wks2/mrs_string/inObsNames",oss.str());
+	total2->updControl("mrs_natural/inSamples", 1);
+	total2->updControl("mrs_natural/inObservations", hist2.getRows());
+	total2->updControl("WekaSink/wks2/mrs_string/labelNames",inputs.getLabelNames());
+	total2->updControl("WekaSink/wks2/mrs_natural/nLabels",inputs.getNumLabels());
+	total2->updControl("WekaSink/wks2/mrs_natural/downsample",1);
+	total2->updControl("WekaSink/wks2/mrs_string/inObsNames",oss.str());
 	oss.str("");
 	oss << outName << "_all.arff";
-	total2->updctrl("WekaSink/wks2/mrs_string/filename",oss.str());
+	total2->updControl("WekaSink/wks2/mrs_string/filename",oss.str());
 	*/
-	total3->updctrl("mrs_natural/inSamples", 1);
-	total3->updctrl("mrs_natural/inObservations", hist3.getRows());
-	total3->updctrl("WekaSink/wks3/mrs_string/labelNames",inputs.getLabelNames());
-	total3->updctrl("WekaSink/wks3/mrs_natural/nLabels",inputs.getNumLabels());
-	total3->updctrl("WekaSink/wks3/mrs_natural/downsample",1);
-	total3->updctrl("WekaSink/wks3/mrs_string/inObsNames",oss.str());
+	total3->updControl("mrs_natural/inSamples", 1);
+	total3->updControl("mrs_natural/inObservations", hist3.getRows());
+	total3->updControl("WekaSink/wks3/mrs_string/labelNames",inputs.getLabelNames());
+	total3->updControl("WekaSink/wks3/mrs_natural/nLabels",inputs.getNumLabels());
+	total3->updControl("WekaSink/wks3/mrs_natural/downsample",1);
+	total3->updControl("WekaSink/wks3/mrs_string/inObsNames",oss.str());
 	//oss.str("");
 	//oss << outName << "_distance.arff";
-	//total3->updctrl("WekaSink/wks3/mrs_string/filename",oss.str());
-	total3->updctrl("WekaSink/wks3/mrs_string/filename",outName);
+	//total3->updControl("WekaSink/wks3/mrs_string/filename",oss.str());
+	total3->updControl("WekaSink/wks3/mrs_string/filename",outName);
 	/*
-	total4->updctrl("mrs_natural/inSamples", 1);
-	total4->updctrl("mrs_natural/inObservations", hist4.getRows());
-	total4->updctrl("WekaSink/wks4/mrs_string/labelNames",inputs.getLabelNames());
-	total4->updctrl("WekaSink/wks4/mrs_natural/nLabels",inputs.getNumLabels());
-	total4->updctrl("WekaSink/wks4/mrs_natural/downsample",1);
-	total4->updctrl("WekaSink/wks4/mrs_string/inObsNames",oss.str());
+	total4->updControl("mrs_natural/inSamples", 1);
+	total4->updControl("mrs_natural/inObservations", hist4.getRows());
+	total4->updControl("WekaSink/wks4/mrs_string/labelNames",inputs.getLabelNames());
+	total4->updControl("WekaSink/wks4/mrs_natural/nLabels",inputs.getNumLabels());
+	total4->updControl("WekaSink/wks4/mrs_natural/downsample",1);
+	total4->updControl("WekaSink/wks4/mrs_string/inObsNames",oss.str());
 	oss.str("");
 	oss << outName << "_distanceStd.arff";
-	total4->updctrl("WekaSink/wks4/mrs_string/filename",oss.str());
+	total4->updControl("WekaSink/wks4/mrs_string/filename",oss.str());
 	*/
 	/*** set controls to bass map (matching) ***/
 
@@ -164,7 +164,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	mbm->setctrl("mrs_realvec/freq", freq);
 	mbm->setctrl("mrs_string/normalize", "none");
 	mbm->addMarSystem(met);
-	met->updctrl("mrs_string/metric", "euclideanDistance");
+	met->updControl("mrs_string/metric", "euclideanDistance");
 	mbm->update();
 
 	/**** update paramater **/
@@ -186,7 +186,7 @@ void recognize(string sfName, string segName, string tempName, string outName)
 	    }
 	  }
 	  width = j;
-	  net->updctrl("mrs_natural/inSamples",width);
+	  net->updControl("mrs_natural/inSamples",width);
 	  wlt->setctrl("mrs_natural/inSamples",width);
 	  wlt->setctrl("mrs_natural/width",width/256);
 	  wlt->update();
@@ -244,10 +244,10 @@ void recognize(string sfName, string segName, string tempName, string outName)
 
 	  /*** update control ***/
 
-	  //total->updctrl("Annotator/ann/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
-	  //total2->updctrl("Annotator/ann2/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
-	  total3->updctrl("Annotator/ann3/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
-	  //total4->updctrl("Annotator/ann4/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
+	  //total->updControl("Annotator/ann/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
+	  //total2->updControl("Annotator/ann2/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
+	  total3->updControl("Annotator/ann3/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
+	  //total4->updControl("Annotator/ann4/mrs_natural/label", inputs.labelNum(inputs.labelEntry(m)));
 
 	  //total->process(hist, tmpvec);
 	  //total2->process(hist2, tmpvec2);

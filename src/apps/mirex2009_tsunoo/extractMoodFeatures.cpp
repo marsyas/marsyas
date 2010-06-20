@@ -58,23 +58,23 @@ void recognize(string sfName, string outName)
   wksnet->addMarSystem(ant);
   wksnet->addMarSystem(wks);
 
-  wksnet->updctrl("mrs_natural/inSamples", 1);
-  wksnet->updctrl("mrs_natural/inObservations", all->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-  wksnet->updctrl("WekaSink/wks/mrs_string/labelNames", inputs.getLabelNames()); // change to just sfName
-  wksnet->updctrl("WekaSink/wks/mrs_natural/nLabels", inputs.getNumLabels());  // change to just 1
-  wksnet->updctrl("WekaSink/wks/mrs_natural/downsample", 1);
-  wksnet->updctrl("WekaSink/wks/mrs_string/filename", outName);
+  wksnet->updControl("mrs_natural/inSamples", 1);
+  wksnet->updControl("mrs_natural/inObservations", all->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+  wksnet->updControl("WekaSink/wks/mrs_string/labelNames", inputs.getLabelNames()); // change to just sfName
+  wksnet->updControl("WekaSink/wks/mrs_natural/nLabels", inputs.getNumLabels());  // change to just 1
+  wksnet->updControl("WekaSink/wks/mrs_natural/downsample", 1);
+  wksnet->updControl("WekaSink/wks/mrs_string/filename", outName);
   tmpvec.create(all->getctrl("mrs_natural/onObservations")->to<mrs_natural>()+1,1);
 
   for(size_t i=0; i<inputs.size(); ++i){
     cout << "Now processing: " << inputs.entry(i) << endl;
 
-    src->updctrl("mrs_string/filename", inputs.entry(i));
-    //spc->updctrl("mrs_natural/inSamples", 1024);
+    src->updControl("mrs_string/filename", inputs.entry(i));
+    //spc->updControl("mrs_natural/inSamples", 1024);
     inputsize = src->getctrl("mrs_natural/size")->to<mrs_natural>();
     wsize = src->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
     inputsize /= wsize;
-    acc->updctrl("mrs_natural/nTimes", inputsize);
+    acc->updControl("mrs_natural/nTimes", inputsize);
     samplingFreq = src->getctrl("mrs_real/israte")->to<mrs_real>();
     all->update();
     crm->setctrl("mrs_real/samplingFreq", samplingFreq);
@@ -89,8 +89,8 @@ void recognize(string sfName, string outName)
 
     out = all->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
     
-    wksnet->updctrl("Annotator/ant/mrs_natural/label", inputs.labelNum(inputs.labelEntry(i)));  // change to just 0
-    wksnet->updctrl("WekaSink/wks/mrs_string/currentlyPlaying", inputs.entry(i));
+    wksnet->updControl("Annotator/ant/mrs_natural/label", inputs.labelNum(inputs.labelEntry(i)));  // change to just 0
+    wksnet->updControl("WekaSink/wks/mrs_string/currentlyPlaying", inputs.entry(i));
     wksnet->process(out, tmpvec);
 
   }

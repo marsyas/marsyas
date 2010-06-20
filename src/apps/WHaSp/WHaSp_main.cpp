@@ -144,38 +144,38 @@ WHaSp(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 
 		//create analyzer (using composite prototype)
 		pvseries->addMarSystem(mng.create("WHaSpnet", "whaspnet"));
-		pvseries->linkctrl("mrs_natural/frameMaxNumPeaks","WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
+		pvseries->linkControl("mrs_natural/frameMaxNumPeaks","WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/frameMaxNumPeaks");
 
 		////////////////////////////////////////////////////////////////
 		// update the controls
 		////////////////////////////////////////////////////////////////
 		if (microphone_) 
 		{
-			pvseries->updctrl("mrs_natural/inSamples", D);
-			pvseries->updctrl("mrs_natural/inObservations", 1);
+			pvseries->updControl("mrs_natural/inSamples", D);
+			pvseries->updControl("mrs_natural/inObservations", 1);
 		}
 		else
 		{
-			// 			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");  //!!!!!!! [!]
-			// 			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_string/filename", "SoundFileSource/src/mrs_string/filename"); //!!!!!!!!! [!]
-			// 			pvseries->linkctrl("HWPSspectrumnet/WHASP/mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData"); //!!!!!!!! [!]
+			// 			pvseries->linkControl("HWPSspectrumnet/WHASP/mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");  //!!!!!!! [!]
+			// 			pvseries->linkControl("HWPSspectrumnet/WHASP/mrs_string/filename", "SoundFileSource/src/mrs_string/filename"); //!!!!!!!!! [!]
+			// 			pvseries->linkControl("HWPSspectrumnet/WHASP/mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData"); //!!!!!!!! [!]
 
-			pvseries->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-			pvseries->updctrl("mrs_natural/inSamples", D);
-			pvseries->updctrl("mrs_natural/inObservations", 1);
+			pvseries->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+			pvseries->updControl("mrs_natural/inSamples", D);
+			pvseries->updControl("mrs_natural/inObservations", 1);
 			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 		}
 
 
-		//pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/Decimation", D);
-		pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/winSize", Nw+1);
-		pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/FFTSize", N);
-		pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_string/WindowType", "Hanning");
-		pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_bool/zeroPhasing", true);
-		pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
-		//pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/Decimation", D);      
-		pvseries->updctrl("mrs_natural/frameMaxNumPeaks", S);  
-		pvseries->updctrl("WHaSpnet/whaspnet/PeakAnalyse/analyse/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
+		//pvseries->updControl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/Decimation", D);
+		pvseries->updControl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/winSize", Nw+1);
+		pvseries->updControl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/FFTSize", N);
+		pvseries->updControl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_string/WindowType", "Hanning");
+		pvseries->updControl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_bool/zeroPhasing", true);
+		pvseries->updControl("WHaSpnet/whaspnet/PeakAnalyse/analyse/Shifter/sh/mrs_natural/shift", 1);
+		//pvseries->updControl("WHaSpnet/whaspnet/PeakAnalyse/analyse/mrs_natural/Decimation", D);      
+		pvseries->updControl("mrs_natural/frameMaxNumPeaks", S);  
+		pvseries->updControl("WHaSpnet/whaspnet/PeakAnalyse/analyse/PeakConvert/conv/mrs_natural/nbFramesSkipped", (N/D));  
 	}
 	else
 	{

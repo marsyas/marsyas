@@ -94,8 +94,8 @@ CollectionFileSource::getHeader(string filename)
 {
 	col_.clear();
 	col_.read(filename);
-	updctrl("mrs_string/allfilenames", col_.toLongString());
-	updctrl("mrs_natural/numFiles", (mrs_natural)col_.getSize());  
+	updControl("mrs_string/allfilenames", col_.toLongString());
+	updControl("mrs_natural/numFiles", (mrs_natural)col_.getSize());  
 
 	cindex_ = 0;
 	setctrl("mrs_natural/cindex", 0);
@@ -154,8 +154,8 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 
 	if (cindex_ < (mrs_natural)col_.size()) 
 	{
-		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));
-		isrc_->updctrl("mrs_natural/pos", 0);
+		isrc_->updControl("mrs_string/filename", col_.entry(cindex_));
+		isrc_->updControl("mrs_natural/pos", 0);
 		ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
 		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
@@ -169,18 +169,18 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 	setctrl("mrs_real/osrate", myIsrate_);
 	setctrl("mrs_natural/onObservations", onObservations_);
 
-	isrc_->updctrl("mrs_natural/inSamples", inSamples_);
+	isrc_->updControl("mrs_natural/inSamples", inSamples_);
 	setctrl("mrs_natural/onSamples", inSamples_);
 	setctrl("mrs_real/israte", myIsrate_);//[!] why set an INPUT flow control?!?
 	setctrl("mrs_real/osrate", myIsrate_);
 	setctrl("mrs_natural/onObservations", onObservations_);
 	temp_.create(inObservations_, inSamples_);
 
-	isrc_->updctrl("mrs_real/repetitions", repetitions_);
-	isrc_->updctrl("mrs_natural/pos", pos_);
-	isrc_->updctrl("mrs_real/duration", duration_);
-	isrc_->updctrl("mrs_natural/advance", advance_);
-	isrc_->updctrl("mrs_natural/cindex", cindex_);
+	isrc_->updControl("mrs_real/repetitions", repetitions_);
+	isrc_->updControl("mrs_natural/pos", pos_);
+	isrc_->updControl("mrs_real/duration", duration_);
+	isrc_->updControl("mrs_natural/advance", advance_);
+	isrc_->updControl("mrs_natural/cindex", cindex_);
 
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();  
 
@@ -213,10 +213,10 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		cindex_ = (cindex_ + advance_) % col_.size();
 		
 		setctrl("mrs_natural/cindex", cindex_);
-		isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));   
-		isrc_->updctrl("mrs_natural/pos", 0);
+		isrc_->updControl("mrs_string/filename", col_.entry(cindex_));   
+		isrc_->updControl("mrs_natural/pos", 0);
 
-		updctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
+		updControl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));   
 		myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
 		onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
@@ -262,8 +262,8 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 				cindex_ = cindex_ + 1;
 				setctrl("mrs_natural/cindex", cindex_);
 				
-				isrc_->updctrl("mrs_string/filename", col_.entry(cindex_));      
-				isrc_->updctrl("mrs_natural/pos", 0);     
+				isrc_->updControl("mrs_string/filename", col_.entry(cindex_));      
+				isrc_->updControl("mrs_natural/pos", 0);     
 				pos_ = 0;
 				myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
 				onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();

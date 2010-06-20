@@ -87,7 +87,7 @@ void F0Analysis::myProcess(realvec& inVec, realvec& outVec)
 	HarmMap theHarmSums;
 	FindCandidateF0s(inVec, theHarmSums, theF0ToFks);
 	SelectUnrelatedF0s(inVec, theHarmSums, theF0ToFks, outVec);
-	updctrl("mrs_real/ChordEvidence",ChordEvidence_);
+	updControl("mrs_real/ChordEvidence",ChordEvidence_);
 }
 
 bool F0Analysis::FindCandidateF0s(const realvec& inPeaks,

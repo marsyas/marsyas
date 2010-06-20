@@ -120,8 +120,8 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		// update source filename 
 		sfName = *sfi;
 
-		msys->updctrl("mrs_string/filename", sfName);
-		msys->updctrl("mrs_bool/initAudio", true);     
+		msys->updControl("mrs_string/filename", sfName);
+		msys->updControl("mrs_bool/initAudio", true);     
 
 		// hack for teligence 
 		//    mrs_natural size = msys->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
@@ -130,7 +130,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		//  cout << "inSamples = " << inSamples << endl;
 		//  mrs_natural memSize = size / inSamples;
 		//  cout << "memSize = " << memSize << endl;
-		//  msys->updctrl("Confidence/confidence/mrs_natural/memSize", memSize);
+		//  msys->updControl("Confidence/confidence/mrs_natural/memSize", memSize);
 		//  cout << (*msys) << endl;      
 		// end of hack 
 
@@ -140,7 +140,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 		offset = (mrs_natural) (start * srate);
 		duration = (mrs_natural) (length * srate);
 
-		msys->updctrl("mrs_natural/pos", offset);     
+		msys->updControl("mrs_natural/pos", offset);     
 
 		mrs_natural samplesPlayed = 0;
 		mrs_natural onSamples = msys->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
@@ -162,7 +162,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 				if (msys->getctrl("mrs_bool/hasData")->to<mrs_bool>() == false)
 				{
 					if (loop) 
-						msys->updctrl("mrs_natural/pos", 0);
+						msys->updControl("mrs_natural/pos", 0);
 					else 
 						break;
 				}

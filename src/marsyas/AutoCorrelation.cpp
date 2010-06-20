@@ -99,14 +99,14 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 		norm_.create(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		norm_.setval(1);
 		Windowing win("Windowing");
-		win.updctrl("mrs_string/type", "Hanning");
-		win.updctrl("mrs_natural/inSamples", norm_.getCols());
-		win.updctrl("mrs_natural/inObservations", norm_.getRows());
+		win.updControl("mrs_string/type", "Hanning");
+		win.updControl("mrs_natural/inSamples", norm_.getCols());
+		win.updControl("mrs_natural/inObservations", norm_.getRows());
 		win.process(norm_, tmp);
 
 		AutoCorrelation autocorr("Autocorrelation");
-		autocorr.updctrl("mrs_natural/inSamples", norm_.getCols());
-		autocorr.updctrl("mrs_natural/inObservations", norm_.getRows());
+		autocorr.updControl("mrs_natural/inSamples", norm_.getCols());
+		autocorr.updControl("mrs_natural/inObservations", norm_.getRows());
 		autocorr.update();
 		autocorr.process(tmp, norm_);
 		

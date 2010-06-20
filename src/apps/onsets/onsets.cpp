@@ -163,31 +163,31 @@ detect_onsets(string sfName)
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
 	///////////////////////////////////////////////////////////////////////////////////////
-	onsetnet->linkctrl("mrs_bool/hasData", 
+	onsetnet->linkControl("mrs_bool/hasData", 
 					   "Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_bool/hasData");
-	//onsetnet->linkctrl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
-	onsetnet->linkctrl("Accumulator/onsetaccum/mrs_bool/flush",
+	//onsetnet->linkControl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
+	onsetnet->linkControl("Accumulator/onsetaccum/mrs_bool/flush",
 					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
-	//onsetnet->linkctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
+	//onsetnet->linkControl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
 	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
 	
-	//onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_bool/reset",
+	//onsetnet->linkControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_bool/reset",
 	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
 
 	//link FILTERS coeffs
-	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/ncoeffs",
+	onsetnet->linkControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/ncoeffs",
 					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs");
-	onsetnet->linkctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/dcoeffs",
+	onsetnet->linkControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt2/mrs_realvec/dcoeffs",
 					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs");
 
 	///////////////////////////////////////////////////////////////////////////////////////
 	// update controls
 	///////////////////////////////////////////////////////////////////////////////////////
 	FileName outputFile(sfName);
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/SoundFileSource/src/mrs_string/filename", sfName);
 	
 	if(audiosynthopt)
-		onsetnet->updctrl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
+		onsetnet->updControl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
 	
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 
@@ -205,10 +205,10 @@ detect_onsets(string sfName)
 
 	// best result till now are using dB power Spectrum!
 	// FIXME: should fix PowerSpectrum (remove that ugly wrongdBonsets control) and use a Gain with factor of two instead. 
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PowerSpectrum/pspk/mrs_string/spectrumType",
 					  "wrongdBonsets");
 
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Flux/flux/mrs_string/mode",
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Flux/flux/mrs_string/mode",
 					  "DixonDAFX06");
 	
 	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
@@ -217,41 +217,41 @@ detect_onsets(string sfName)
 	bcoeffs(0) = 0.1174;
 	bcoeffs(1) = 0.2347;
 	bcoeffs(2) = 0.1174;
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs",
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/ncoeffs",
 					  bcoeffs);
 	realvec acoeffs(1,3);
 	acoeffs(0) = 1.0;
 	acoeffs(1) = -0.8252;
 	acoeffs(2) = 0.2946;
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs",
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Filter/filt1/mrs_realvec/dcoeffs",
 					  acoeffs);
 
-	onsetnet->updctrl("mrs_natural/inSamples", hopSize);
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
+	onsetnet->updControl("mrs_natural/inSamples", hopSize);
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/si/mrs_natural/winSize", winSize);
 
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/lookAheadSamples", lookAheadSamples);
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", thres); //!!!
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_natural/lookAheadSamples", lookAheadSamples);
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/threshold", thres); //!!!
 	
-	onsetnet->updctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
+	onsetnet->updControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/ShiftInput/sif/mrs_natural/winSize", 4*lookAheadSamples+1);
 	
 	mrs_natural winds = 1+lookAheadSamples+mrs_natural(ceil(mrs_real(winSize)/hopSize/2.0));
 	// cout << "timesToKeep = " << winds << endl;
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/timesToKeep", winds);
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/maxTimes", maxTimes); 
-	onsetnet->updctrl("Accumulator/onsetaccum/mrs_natural/minTimes", minTimes);
+	onsetnet->updControl("Accumulator/onsetaccum/mrs_natural/timesToKeep", winds);
+	onsetnet->updControl("Accumulator/onsetaccum/mrs_string/mode","explicitFlush");
+	onsetnet->updControl("Accumulator/onsetaccum/mrs_natural/maxTimes", maxTimes); 
+	onsetnet->updControl("Accumulator/onsetaccum/mrs_natural/minTimes", minTimes);
 
 	if(audiosynthopt)
 	{
 		//set audio/onset resynth balance and ADSR params for onset sound
-		onsetnet->updctrl("Fanout/onsetmix/Gain/gainaudio/mrs_real/gain", 1.0);
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain", 0.8);
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTarget", 1.0);
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTime", winSize/80/fs); //!!!
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
-		onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); //!!!
+		onsetnet->updControl("Fanout/onsetmix/Gain/gainaudio/mrs_real/gain", 1.0);
+		onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain", 0.8);
+		onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTarget", 1.0);
+		onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/aTime", winSize/80/fs); //!!!
+		onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/susLevel", 0.0);
+		onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/dTime", winSize/4/fs); //!!!
 		
-		//onsetnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		//onsetnet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 	}
 
 	
@@ -277,12 +277,12 @@ detect_onsets(string sfName)
 	{
 		while(onsetnet->getctrl("mrs_bool/hasData")->to<mrs_bool>())
 		{
-			onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
+			onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/nton", 1.0); //note on
 			onsetnet->tick();
 			timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 			cout << timestamps_samples / fs << endl; //in seconds
 			//cout << timestamps_samples << endl; //in samples
-			onsetnet->updctrl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
+			onsetnet->updControl("Fanout/onsetmix/Series/onsetsynth/ADSR/env/mrs_real/ntoff", 0.0); //note off
 		}
 	}
 	else {

@@ -71,7 +71,7 @@ WHaSp::createSimMatrixNet()
 	//add a feat selector and 
 	//set the features needed for HWPS
 	MarSystem* peFeatSelect = new PeakFeatureSelect("peFeatSelect");
-	peFeatSelect->updctrl("mrs_natural/selectedFeatures",
+	peFeatSelect->updControl("mrs_natural/selectedFeatures",
 		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies| PeakFeatureSelect::pkSetAmplitudes);
 	HWPSnet_->addMarSystem(peFeatSelect);
 
@@ -96,7 +96,7 @@ WHaSp::createSimMatrixNet()
 	HWPSnet_->setctrl("SelfSimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 20);
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
 
-  HWPSnet_->updctrl("SelfSimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
+  HWPSnet_->updControl("SelfSimilarityMatrix/simMat/HWPS/hwps/mrs_bool/calcDistance", true);
 
 	//HWPSnet_->setctrl("SelfSimilarityMatrix/simMat/HWPS/hwps/mrs_natural/histSize", 100);
 	HWPSnet_->update(); //only call update to HWPSnet_ since this is being called from WHaSp::update()! -> avoid potential infinite recursion!
@@ -116,7 +116,7 @@ WHaSp::myUpdate(MarControlPtr sender)
 	HWPSnet_->setctrl("mrs_natural/inSamples",ctrl_inSamples_);
 	HWPSnet_->setctrl("mrs_natural/inObservations", ctrl_inObservations_);
 	HWPSnet_->setctrl("mrs_real/israte", ctrl_israte_);
-	HWPSnet_->updctrl("mrs_string/inObsNames", ctrl_inObsNames_); //this calls update()
+	HWPSnet_->updControl("mrs_string/inObsNames", ctrl_inObsNames_); //this calls update()
 }
 
 void 

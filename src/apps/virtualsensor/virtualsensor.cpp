@@ -170,16 +170,16 @@ void recordVirtualSensor(mrs_real length)
     srm->addMarSystem(recordNet);
 
     // Make Virtual Midin Port!
-    recordNet->updctrl("MidiInput/midiin/mrs_bool/virtualPort", true);
+    recordNet->updControl("MidiInput/midiin/mrs_bool/virtualPort", true);
     
     // recordNet->addMarSystem(dest); 
     // OSX tends to like 44100 sampling rate so we make it happy
-    recordNet->updctrl("mrs_real/israte", 44100.0); 
-    recordNet->updctrl("mrs_real/osrate", 44100.0); 
-    recordNet->linkctrl("mrs_bool/hasData", "AudioSource/asrc/mrs_bool/hasData");
+    recordNet->updControl("mrs_real/israte", 44100.0); 
+    recordNet->updControl("mrs_real/osrate", 44100.0); 
+    recordNet->linkControl("mrs_bool/hasData", "AudioSource/asrc/mrs_bool/hasData");
     // this buffer size is needed for the Tascam FW 1804
-    //recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize",6144);
-    recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
+    //recordNet->updControl("AudioSource/asrc/mrs_natural/bufferSize",6144);
+    recordNet->updControl("AudioSource/asrc/mrs_bool/initAudio", true);
 
     pnet->addMarSystem(srm);
     pnet->addMarSystem(dest);
@@ -197,14 +197,14 @@ void recordVirtualSensor(mrs_real length)
     pnet->addMarSystem(mng.create("Annotator", "ann"));
     pnet->addMarSystem(mng.create("WekaSink", "wsink"));
 
-    pnet->updctrl("WekaSink/wsink/mrs_natural/nLabels", 2);
-    pnet->updctrl("WekaSink/wsink/mrs_string/labelNames", "edge, middle");
-    pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
+    pnet->updControl("WekaSink/wsink/mrs_natural/nLabels", 2);
+    pnet->updControl("WekaSink/wsink/mrs_string/labelNames", "edge, middle");
+    pnet->updControl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
 
-    pnet->updctrl("mrs_real/israte", 44100.0); 
-    //pnet->updctrl("mrs_real/osrate", 44100.0); 
+    pnet->updControl("mrs_real/israte", 44100.0); 
+    //pnet->updControl("mrs_real/osrate", 44100.0); 
     // output of all hits concatenated
-    pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
+    pnet->updControl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
 
     mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->to<mrs_real>();
     mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->to<mrs_natural>();
@@ -262,28 +262,28 @@ void testrmspreprocess() {
     playbacknet->addMarSystem(mng.create("Peaker", "peaker"));
 
 
-    playbacknet->updctrl("mrs_natural/inSamples", windowsize);
-    playbacknet->updctrl("mrs_real/israte", 44100.0);
-    playbacknet->updctrl("mrs_real/osrate", 44100.0);
-    playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
-    playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "rmsOutput.wav");
+    playbacknet->updControl("mrs_natural/inSamples", windowsize);
+    playbacknet->updControl("mrs_real/israte", 44100.0);
+    playbacknet->updControl("mrs_real/osrate", 44100.0);
+    playbacknet->updControl("SoundFileSource/src/mrs_string/filename", sfname);
+    playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", "rmsOutput.wav");
     int srate; 
     srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     /*
     // values optimized for window size of 512
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.7);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.7);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
     */
 
-    playbacknet->updctrl("Peaker/peaker/mrs_real/peakStrength", 0.7);
-    playbacknet->updctrl("Peaker/peaker/mrs_real/peakSpacing", 0.3);
+    playbacknet->updControl("Peaker/peaker/mrs_real/peakStrength", 0.7);
+    playbacknet->updControl("Peaker/peaker/mrs_real/peakSpacing", 0.3);
 
     while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
         playbacknet->tick();
@@ -307,31 +307,31 @@ void extractHits() {
     playbacknet->addMarSystem(mng.create("Peaker", "peaker"));
     playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
 
-    playbacknet->updctrl("mrs_natural/inSamples", windowsize);
-    playbacknet->updctrl("mrs_real/israte", 44100.0);
-    playbacknet->updctrl("mrs_real/osrate", 44100.0);
+    playbacknet->updControl("mrs_natural/inSamples", windowsize);
+    playbacknet->updControl("mrs_real/israte", 44100.0);
+    playbacknet->updControl("mrs_real/osrate", 44100.0);
 
-    playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
-    playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "output.wav");
+    playbacknet->updControl("SoundFileSource/src/mrs_string/filename", sfname);
+    playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", "output.wav");
     int srate;
     srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     /*
     // values optimized for window size of 512
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 1.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.1);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 1);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.99);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 1.0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.1);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 1);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.99);
     */
 
 
-    playbacknet->updctrl("Peaker/peaker/mrs_real/peakStrength", 0.001);
-    playbacknet->updctrl("Peaker/peaker/mrs_real/peakSpacing", 0.0);
-    //playbacknet->updctrl("Peaker/peaker/mrs_natural/peakEnd", srate);
+    playbacknet->updControl("Peaker/peaker/mrs_real/peakStrength", 0.001);
+    playbacknet->updControl("Peaker/peaker/mrs_real/peakSpacing", 0.0);
+    //playbacknet->updControl("Peaker/peaker/mrs_natural/peakEnd", srate);
 
     while(playbacknet->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
         playbacknet->tick();
@@ -348,11 +348,11 @@ void drumExtract3() {
     MarSystem* audioget= mng.create("Series", "playbacknet");
     audioget->addMarSystem(mng.create("AudioSource", "src"));
     //audioget->addMarSystem(mng.create("SoundFileSink", "predest"));
-    audioget->updctrl("mrs_natural/inSamples", windowsize);
-    audioget->updctrl("mrs_real/israte", 44100.0);
-    audioget->updctrl("mrs_real/osrate", 44100.0);
-    //audioget->updctrl("AudioSource/src/mrs_natural/device", 2);
-    audioget->updctrl("AudioSource/src/mrs_bool/initAudio", true);
+    audioget->updControl("mrs_natural/inSamples", windowsize);
+    audioget->updControl("mrs_real/israte", 44100.0);
+    audioget->updControl("mrs_real/osrate", 44100.0);
+    //audioget->updControl("AudioSource/src/mrs_natural/device", 2);
+    audioget->updControl("AudioSource/src/mrs_bool/initAudio", true);
 
     MarSystem* playbacknet = mng.create("Series", "playbacknet");
     //playbacknet->addMarSystem(mng.create("AudioSource", "src"));
@@ -361,29 +361,29 @@ void drumExtract3() {
     playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
     //playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
         
-    playbacknet->updctrl("mrs_natural/inSamples", windowsize);
-    //playbacknet->updctrl("mrs_natural/onSamples", windowsize);
-    playbacknet->updctrl("mrs_real/israte", 44100.0);
-    playbacknet->updctrl("mrs_real/osrate", 44100.0);
-    //playbacknet->updctrl("AudioSource/src/mrs_natural/device", 2);
-    //playbacknet->updctrl("AudioSource/src/mrs_bool/initAudio", true);
-    playbacknet->updctrl("RadioDrumInput/rd/mrs_bool/initmidi", true);
+    playbacknet->updControl("mrs_natural/inSamples", windowsize);
+    //playbacknet->updControl("mrs_natural/onSamples", windowsize);
+    playbacknet->updControl("mrs_real/israte", 44100.0);
+    playbacknet->updControl("mrs_real/osrate", 44100.0);
+    //playbacknet->updControl("AudioSource/src/mrs_natural/device", 2);
+    //playbacknet->updControl("AudioSource/src/mrs_bool/initAudio", true);
+    playbacknet->updControl("RadioDrumInput/rd/mrs_bool/initmidi", true);
 
-    //audioget->updctrl("SoundFileSink/predest/mrs_string/filename", "prepeakpicking.au");
-    //playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "postpeakpicking.au");
+    //audioget->updControl("SoundFileSink/predest/mrs_string/filename", "prepeakpicking.au");
+    //playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", "postpeakpicking.au");
     //cout << *playbacknet<< endl;
 
     int srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     // values optimized for window size of 512
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.7);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.7);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
 
     MarSystem* extractNet= mng.create("Series", "extractNet");
 
@@ -403,21 +403,21 @@ void drumExtract3() {
     extractNet->addMarSystem(mng.create("Annotator", "ann"));
     extractNet->addMarSystem(mng.create("WekaSink",  "wsink"));
 
-    extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", 2);
-    extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames","center, edge");  
-    extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
+    extractNet->updControl("WekaSink/wsink/mrs_natural/nLabels", 2);
+    extractNet->updControl("WekaSink/wsink/mrs_string/labelNames","center, edge");  
+    extractNet->updControl("WekaSink/wsink/mrs_string/filename", "art.arff");
 
     /*
     // use this block to label regression
-    extractNet->updctrl("WekaSink/wsink/mrs_bool/regression", true);
-    extractNet->updctrl("WekaSink/wsink/mrs_bool/putHeader", true);    
-    extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
+    extractNet->updControl("WekaSink/wsink/mrs_bool/regression", true);
+    extractNet->updControl("WekaSink/wsink/mrs_bool/putHeader", true);    
+    extractNet->updControl("WekaSink/wsink/mrs_string/filename", "art.arff");
     */
 
-    extractNet->updctrl("mrs_natural/inSamples",windowsize);
-    extractNet->updctrl("mrs_natural/onSamples",windowsize);
-    extractNet->updctrl("mrs_real/israte", 44100.0);
-    extractNet->updctrl("mrs_real/osrate", 44100.0);
+    extractNet->updControl("mrs_natural/inSamples",windowsize);
+    extractNet->updControl("mrs_natural/onSamples",windowsize);
+    extractNet->updControl("mrs_real/israte", 44100.0);
+    extractNet->updControl("mrs_real/osrate", 44100.0);
 
 //    cout << *extractNet << endl;
 
@@ -504,23 +504,23 @@ void drumExtract2() {
     playbacknet->addMarSystem(mng.create("PeakerAdaptive", "peaker"));
     playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
 
-    playbacknet->updctrl("mrs_natural/inSamples", windowsize);
-    playbacknet->updctrl("mrs_real/israte", 44100.0);
-    playbacknet->updctrl("mrs_real/osrate", 44100.0);
+    playbacknet->updControl("mrs_natural/inSamples", windowsize);
+    playbacknet->updControl("mrs_real/israte", 44100.0);
+    playbacknet->updControl("mrs_real/osrate", 44100.0);
 
-    playbacknet->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
-    playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "output.wav");
+    playbacknet->updControl("SoundFileSource/src/mrs_string/filename", sfname);
+    playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", "output.wav");
     int srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     // values optimized for window size of 512
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.5);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
-    playbacknet->updctrl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/inSamples", srate);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakSpacing", 4.0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakStrength", 0.5);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakStart", 0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakEnd", srate);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakGain", 1.0);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_natural/peakStrengthReset", 2);
+    playbacknet->updControl("PeakerAdaptive/peaker/mrs_real/peakDecay", 0.999);
 
     MarSystem* extractNet= mng.create("Series", "extractNet");
     extractNet->addMarSystem(mng.create("SoundFileSource","src"));
@@ -542,16 +542,16 @@ void drumExtract2() {
 
     // label everything as one class for now to get it working
     // later will use radio drum to generate these labels
-    extractNet->updctrl("Annotator/ann/mrs_natural/label", 0);
-    extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", 1);
-    extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames","testhits");  
-    extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
+    extractNet->updControl("Annotator/ann/mrs_natural/label", 0);
+    extractNet->updControl("WekaSink/wsink/mrs_natural/nLabels", 1);
+    extractNet->updControl("WekaSink/wsink/mrs_string/labelNames","testhits");  
+    extractNet->updControl("WekaSink/wsink/mrs_string/filename", "art.arff");
 
-    extractNet->updctrl("mrs_natural/inSamples",windowsize);
-    extractNet->updctrl("mrs_natural/onSamples",windowsize);
-    extractNet->updctrl("mrs_real/israte", 44100.0);
-    extractNet->updctrl("mrs_real/osrate", 44100.0);
-    extractNet->updctrl("SoundFileSource/src/mrs_string/filename", sfname);
+    extractNet->updControl("mrs_natural/inSamples",windowsize);
+    extractNet->updControl("mrs_natural/onSamples",windowsize);
+    extractNet->updControl("mrs_real/israte", 44100.0);
+    extractNet->updControl("mrs_real/osrate", 44100.0);
+    extractNet->updControl("SoundFileSource/src/mrs_string/filename", sfname);
 
     cout << *extractNet << endl;
     /*
@@ -579,7 +579,7 @@ void drumExtract2() {
             {
                 int currentindex = playbacknet->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>();
                 currentindex = currentindex - windowsize + i;
-                extractNet->updctrl("SoundFileSource/src/mrs_natural/pos", currentindex);
+                extractNet->updControl("SoundFileSource/src/mrs_natural/pos", currentindex);
         
                 cout << "drumit   "<< count++ << endl;
                 cout << "time     "<< (mrs_real)(currentindex/44100.0) << endl;
@@ -590,7 +590,7 @@ void drumExtract2() {
                 ostringstream oss;
                 oss << "drumhit" << setfill('0') << setw(4)  << count++ << ".wav";
                 filename = oss.str();
-                extractNet->updctrl("SoundFileSink/dest/mrs_string/filename",filename);
+                extractNet->updControl("SoundFileSink/dest/mrs_string/filename",filename);
                 cout << extractNet->getctrl("SoundFileSink/dest/mrs_string/filename")->to<mrs_string>() <<endl;
                 */
 
@@ -620,8 +620,8 @@ void readRMSmake(mrs_real length, string AudioFile)
     pnet->addMarSystem(asrc);
     pnet->addMarSystem(rms);
   
-    pnet->updctrl("SoundFileSource/asrc/mrs_string/filename", AudioFile);   
-    pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+    pnet->updControl("SoundFileSource/asrc/mrs_string/filename", AudioFile);   
+    pnet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
         
     realvec rmsvec; 
@@ -672,8 +672,8 @@ void readSitarSensors(mrs_real length)
     pnet->addMarSystem(rms);
     pnet->addMarSystem(devibot);
 
-    pnet->updctrl("SoundFileSource/asrc/mrs_string/filename", "A_120_01.au");   
-    pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+    pnet->updControl("SoundFileSource/asrc/mrs_string/filename", "A_120_01.au");   
+    pnet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
     // Read in Thumb and Fret data into realvectors
     realvec thumb;
@@ -733,9 +733,9 @@ void readSitarSensors(mrs_real length)
     MarControlPtr velocity = pnet->getctrl("DeviBot/devibot/mrs_natural/velocity");
     MarControlPtr strike = pnet->getctrl("DeviBot/devibot/mrs_bool/strike");
     
-    pnet->updctrl(arm, DEVIBOT_NA);
-    pnet->updctrl(velocity, 40);
-    pnet->updctrl(strike, true);
+    pnet->updControl(arm, DEVIBOT_NA);
+    pnet->updControl(velocity, 40);
+    pnet->updControl(strike, true);
     
     // Thumb Onset Detection Variables
     int deriv;
@@ -758,18 +758,18 @@ void readSitarSensors(mrs_real length)
       if ((deriv > 0) && (deriv > downThresh) && (flag == 0))
 	{
 	  // down Stroke
-	  pnet->updctrl(arm, DEVIBOT_NA);
-	  pnet->updctrl(velocity, 40);
-	  pnet->updctrl(strike, true);
+	  pnet->updControl(arm, DEVIBOT_NA);
+	  pnet->updControl(velocity, 40);
+	  pnet->updControl(strike, true);
 	  flag = 1;
 	  temp = t;
 	}
       else if ((deriv < 0) && (pderiv > upThresh) && (flag == 0))
 	{
 	  // up Stroke
-	  pnet->updctrl(arm, DEVIBOT_NA);
-	  pnet->updctrl(velocity, 40);
-	  pnet->updctrl(strike, true);
+	  pnet->updControl(arm, DEVIBOT_NA);
+	  pnet->updControl(velocity, 40);
+	  pnet->updControl(strike, true);
 	  flag = 1;
 	  temp = t;
 	}
@@ -828,21 +828,21 @@ void readFrettoPitch(mrs_real length)
     pnet->addMarSystem(mng.create("AudioSink", "dest"));
    
     // File name of Sitar Sound File
-    pnet->updctrl("Fanout/mix/Series/DirectChain/SoundFileSource/asrc/mrs_string/filename", "A_120_20.au");   
+    pnet->updControl("Fanout/mix/Series/DirectChain/SoundFileSource/asrc/mrs_string/filename", "A_120_20.au");   
 
     // File name for SineWave Sound File
-    pnet->updctrl("Fanout/mix/Series/SineChain/SoundFileSink/fretpitch/mrs_string/filename", "fretpitch.au");   
+    pnet->updControl("Fanout/mix/Series/SineChain/SoundFileSink/fretpitch/mrs_string/filename", "fretpitch.au");   
     
     // Link Controls to Relevant Variables    
     MarControlPtr freqptr = pnet->getctrl("Fanout/mix/Series/SineChain/SineSource/ssrc/mrs_real/frequency");
     MarControlPtr DirVolptr = pnet->getctrl("Fanout/mix/Series/DirectChain/Gain/dgain/mrs_real/gain");
     MarControlPtr SineVolptr = pnet->getctrl("Fanout/mix/Series/SineChain/Gain/sgain/mrs_real/gain");
 
-    pnet->updctrl(DirVolptr, 2.0);
-    pnet->updctrl(SineVolptr, 0.1);
+    pnet->updControl(DirVolptr, 2.0);
+    pnet->updControl(SineVolptr, 0.1);
     
     
-    pnet->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+    pnet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
     
 
     // Read Fret data into realvectors
@@ -855,127 +855,127 @@ void readFrettoPitch(mrs_real length)
 	if ((fret(t) > 0) && (fret(t) < 5))
 	  {
 	    //Silence
-	    //pnet->updctrl(freqptr, 184.997);  
+	    //pnet->updControl(freqptr, 184.997);  
 	  }
 
 	// Tivra Ma - G
 	else if ((fret(t) > 5) && (fret(t) < 10))
 	  {
-	    pnet->updctrl(freqptr, 195.998);  
+	    pnet->updControl(freqptr, 195.998);  
 	  }
 	
 	// Pa - G# 
 	else if ((fret(t) > 10) && (fret(t) < 15))
 	  {
-	    pnet->updctrl(freqptr, 207.652);  
+	    pnet->updControl(freqptr, 207.652);  
 	  }
 
 	// Komal Dha - A
 	else if ((fret(t) > 15) && (fret(t) < 20))
 	  {
-	    pnet->updctrl(freqptr, 220.000);  
+	    pnet->updControl(freqptr, 220.000);  
 	  }
 	
 	// Dha - A# 
 	else if ((fret(t) > 20) && (fret(t) < 24))
 	  {
-	    pnet->updctrl(freqptr, 233.082);  
+	    pnet->updControl(freqptr, 233.082);  
 	  }
 
 	// Komal Ni - B
 	else if ((fret(t) > 24) && (fret(t) < 28))
 	  {
-	    pnet->updctrl(freqptr, 246.942);  
+	    pnet->updControl(freqptr, 246.942);  
 	  }
 	
 	// Ni - C 
 	else if ((fret(t) > 28) && (fret(t) < 36))
 	  {
-	    pnet->updctrl(freqptr, 261.626);  
+	    pnet->updControl(freqptr, 261.626);  
 	  }
 	
 	// Sa - C#
 	else if ((fret(t) > 35) && (fret(t) < 42))
 	  {
-	    pnet->updctrl(freqptr, 277.183);    
+	    pnet->updControl(freqptr, 277.183);    
 	  }
 
 	// Re - D# 
 	else if ((fret(t) > 41) && (fret(t) < 50))
 	  {
-	    pnet->updctrl(freqptr, 311.127);    
+	    pnet->updControl(freqptr, 311.127);    
 	  }
 
 	// Komal Ga - E 
 	else if ((fret(t) > 49) && (fret(t) < 58))
 	  {
-	    pnet->updctrl(freqptr, 329.628);     
+	    pnet->updControl(freqptr, 329.628);     
 	  }
 	
 	// Ga - F 
 	else if ((fret(t) > 57) && (fret(t) < 66))
 	  {
-	    pnet->updctrl(freqptr, 349.228);    
+	    pnet->updControl(freqptr, 349.228);    
 	  }
 
 	// Ma - F# 
 	else if ((fret(t) > 65) && (fret(t) < 75))
 	  {
-	    pnet->updctrl(freqptr, 369.994);    
+	    pnet->updControl(freqptr, 369.994);    
 	  }
 
 	// Tivra Ma - G 
 	else if ((fret(t) > 74) && (fret(t) < 83))
 	  {
-	    pnet->updctrl(freqptr, 391.995);    
+	    pnet->updControl(freqptr, 391.995);    
 	  }
 	
 	// Pa - G# 
 	else if ((fret(t) > 82) && (fret(t) < 91))
 	  {
-	    pnet->updctrl(freqptr, 415.305);    
+	    pnet->updControl(freqptr, 415.305);    
 	  }
 	
 	// Dha - A# 
 	else if ((fret(t) > 90) && (fret(t) < 99))
 	  {
-	    pnet->updctrl(freqptr, 466.164);    
+	    pnet->updControl(freqptr, 466.164);    
 	  }
 
 	// Komal Ni - B 
 	else if ((fret(t) > 98) && (fret(t) < 106))
 	  {
-	    pnet->updctrl(freqptr, 493.883);    
+	    pnet->updControl(freqptr, 493.883);    
 	  }
 	
 	// Ni - C
 	else if ((fret(t) > 105) && (fret(t) < 112))
 	  {
-	    pnet->updctrl(freqptr, 523.251);    
+	    pnet->updControl(freqptr, 523.251);    
 	  }
 
 	// Sa - C#
 	else if ((fret(t) > 111) && (fret(t) < 117))
 	  {
-	    pnet->updctrl(freqptr, 554.4);    
+	    pnet->updControl(freqptr, 554.4);    
 	  }
 	
 	// Re - D#
 	else if ((fret(t) > 116) && (fret(t) < 122))
 	  {
-	    pnet->updctrl(freqptr, 622.3);    
+	    pnet->updControl(freqptr, 622.3);    
 	  }
 
 	// Ga - F
 	else if ((fret(t) > 121) && (fret(t) < 125))
 	  {
-	    pnet->updctrl(freqptr, 698.5);    
+	    pnet->updControl(freqptr, 698.5);    
 	  }
 	
 	// Ma - F#
 	else if ((fret(t) > 124) && (fret(t) < 128))
 	  {
-	    pnet->updctrl(freqptr, 740.0);    
+	    pnet->updControl(freqptr, 740.0);    
 	  }
 	  
       pnet->tick();
@@ -1010,12 +1010,12 @@ void recordSitarSensors(mrs_real length)
     recordNet->addMarSystem(devibot);
 
     // recordNet->addMarSystem(dest); 
-    recordNet->updctrl("mrs_real/israte", 44100.0); 
-    recordNet->updctrl("mrs_real/osrate", 44100.0); 
-    recordNet->linkctrl("mrs_bool/hasData", "AudioSource/asrc/mrs_bool/hasData");
+    recordNet->updControl("mrs_real/israte", 44100.0); 
+    recordNet->updControl("mrs_real/osrate", 44100.0); 
+    recordNet->linkControl("mrs_bool/hasData", "AudioSource/asrc/mrs_bool/hasData");
     // this buffer size is needed for the Tascam FW 1804
-    //recordNet->updctrl("AudioSource/asrc/mrs_natural/bufferSize",6144);
-    recordNet->updctrl("AudioSource/asrc/mrs_bool/initAudio", true);
+    //recordNet->updControl("AudioSource/asrc/mrs_natural/bufferSize",6144);
+    recordNet->updControl("AudioSource/asrc/mrs_bool/initAudio", true);
 
     pnet->addMarSystem(recordNet);
     
@@ -1034,13 +1034,13 @@ void recordSitarSensors(mrs_real length)
     pnet->addMarSystem(mng.create("Annotator", "ann"));
     pnet->addMarSystem(mng.create("WekaSink", "wsink"));
 
-    pnet->updctrl("WekaSink/wsink/mrs_bool/regression", true);
-    pnet->updctrl("WekaSink/wsink/mrs_bool/putHeader", true);    
-    pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
+    pnet->updControl("WekaSink/wsink/mrs_bool/regression", true);
+    pnet->updControl("WekaSink/wsink/mrs_bool/putHeader", true);    
+    pnet->updControl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
 
-    pnet->updctrl("SoundFileSink/dest/mrs_real/israte", 44100.0); 
-    pnet->updctrl("SoundFileSink/dest/mrs_real/osrate", 44100.0); 
-    pnet->updctrl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
+    pnet->updControl("SoundFileSink/dest/mrs_real/israte", 44100.0); 
+    pnet->updControl("SoundFileSink/dest/mrs_real/osrate", 44100.0); 
+    pnet->updControl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
 
     mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->to<mrs_real>();
     mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->to<mrs_natural>();
@@ -1062,16 +1062,16 @@ void recordSitarSensors(mrs_real length)
 
     
     // Start Signal 
-    pnet->updctrl(arm, DEVIBOT_NA);
-    pnet->updctrl(velocity, 50);
-    pnet->updctrl(strike, true);
+    pnet->updControl(arm, DEVIBOT_NA);
+    pnet->updControl(velocity, 50);
+    pnet->updControl(strike, true);
 
     // Wait
     SLEEP(1);
 
-    pnet->updctrl(arm, DEVIBOT_NA);
-    pnet->updctrl(velocity, 50);
-    pnet->updctrl(strike, true);
+    pnet->updControl(arm, DEVIBOT_NA);
+    pnet->updControl(velocity, 50);
+    pnet->updControl(strike, true);
     
     //    for (mrs_natural t = 0; t < iterations; t++)
     for (mrs_natural t = 0; t < len; t++)
@@ -1079,17 +1079,17 @@ void recordSitarSensors(mrs_real length)
 
       /*  if (t % 100 == 0) 
 	{
-	  pnet->updctrl(arm, DEVIBOT_GE);
-	  pnet->updctrl(velocity, 50);
-	  pnet->updctrl(strike, true);
+	  pnet->updControl(arm, DEVIBOT_GE);
+	  pnet->updControl(velocity, 50);
+	  pnet->updControl(strike, true);
 	}
 
 
       if (t % 100 == 50) 
 	{
-	  pnet->updctrl(arm, DEVIBOT_NA);
-	  pnet->updctrl(velocity, 50);
-	  pnet->updctrl(strike, true);
+	  pnet->updControl(arm, DEVIBOT_NA);
+	  pnet->updControl(velocity, 50);
+	  pnet->updControl(strike, true);
 	  
 	}
       
@@ -1107,9 +1107,9 @@ void recordSitarSensors(mrs_real length)
     }
 
     // Stop Signal
-    pnet->updctrl(arm, DEVIBOT_GE);
-    pnet->updctrl(velocity, 50);
-    pnet->updctrl(strike, true);
+    pnet->updControl(arm, DEVIBOT_GE);
+    pnet->updControl(velocity, 50);
+    pnet->updControl(strike, true);
     
     thumb.write("thumb.plot");
     fret.write("fret.plot");
@@ -1162,13 +1162,13 @@ void readSitarDataMattAjay()
 	
 
 	// initialize controls 
-	pnet->updctrl("SoundFileSource/src/mrs_string/filename", cl.entry(0));
-	snet->updctrl("SoundFileSource/src/mrs_string/filename", cl.entry(1));
-    pnet->updctrl("WekaSink/wsink/mrs_bool/regression", true);
-    pnet->updctrl("WekaSink/wsink/mrs_bool/putHeader", true);    
-	pnet->updctrl("Annotator/ann/mrs_string/mode", "real_label");
-    pnet->updctrl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
-	pnet->updctrl("Memory/mem/mrs_natural/memSize", 40);
+	pnet->updControl("SoundFileSource/src/mrs_string/filename", cl.entry(0));
+	snet->updControl("SoundFileSource/src/mrs_string/filename", cl.entry(1));
+    pnet->updControl("WekaSink/wsink/mrs_bool/regression", true);
+    pnet->updControl("WekaSink/wsink/mrs_bool/putHeader", true);    
+	pnet->updControl("Annotator/ann/mrs_string/mode", "real_label");
+    pnet->updControl("WekaSink/wsink/mrs_string/filename", "vsensor.arff");
+	pnet->updControl("Memory/mem/mrs_natural/memSize", 40);
 	
 	cout << "Audio  File = " << cl.entry(0) << endl;
 	cout << "Sensor File = " << cl.entry(1) << endl;
@@ -1183,7 +1183,7 @@ void readSitarDataMattAjay()
 		cout << "data = " << data << endl;
 		cout << "regression = " << data(0) << endl;
 		
-		pnet->updctrl("Annotator/ann/mrs_real/rlabel", data(0));	
+		pnet->updControl("Annotator/ann/mrs_real/rlabel", data(0));	
 		pnet->tick();
 
 
@@ -1282,7 +1282,7 @@ void drumExtract(vector<Collection> cls, string classNames)
 {
     MarSystemManager mng;
     MarSystem* src = mng.create("SoundFileSource", "src");
-    src->updctrl("mrs_natural/inSamples", 4096);
+    src->updControl("mrs_natural/inSamples", 4096);
 
 
     mrs_natural inObservations = src->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
@@ -1325,19 +1325,19 @@ void drumExtract(vector<Collection> cls, string classNames)
     extractNet->addMarSystem(mng.create("WekaSink",  "wsink"));
     extractNet->addMarSystem(mng.create("GaussianClassifier", "classifier"));  
 
-    extractNet->updctrl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
-    extractNet->updctrl("WekaSink/wsink/mrs_string/labelNames",classNames);  
-    extractNet->updctrl("WekaSink/wsink/mrs_string/filename", "art.arff");
+    extractNet->updControl("WekaSink/wsink/mrs_natural/nLabels", (mrs_natural)cls.size());
+    extractNet->updControl("WekaSink/wsink/mrs_string/labelNames",classNames);  
+    extractNet->updControl("WekaSink/wsink/mrs_string/filename", "art.arff");
 
 
-    extractNet->updctrl("GaussianClassifier/classifier/mrs_natural/nLabels", (mrs_natural)cls.size());
-    extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","train");     
+    extractNet->updControl("GaussianClassifier/classifier/mrs_natural/nLabels", (mrs_natural)cls.size());
+    extractNet->updControl("GaussianClassifier/classifier/mrs_string/mode","train");     
 
 
     for (cj=0; cj < (mrs_natural)cls.size(); cj++)
     {
         Collection l = cls[cj];
-        extractNet->updctrl("Annotator/ann/mrs_natural/label", cj);
+        extractNet->updControl("Annotator/ann/mrs_natural/label", cj);
 
         for (mrs_natural i=0; i < (mrs_natural)l.size(); ++i)
         { 
@@ -1346,10 +1346,10 @@ void drumExtract(vector<Collection> cls, string classNames)
             endPos = 0;
             startWin = 0;
             endWin = 0;
-            src->updctrl("mrs_string/filename", l.entry(i));
+            src->updControl("mrs_string/filename", l.entry(i));
             cout << "Processing " << l.entry(i) << endl;
 
-            src->updctrl("mrs_natural/inSamples", 4096);
+            src->updControl("mrs_natural/inSamples", 4096);
 
             while(src->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
             {
@@ -1374,9 +1374,9 @@ void drumExtract(vector<Collection> cls, string classNames)
             }
             endPos = startPos + 512;
 
-            extractNet->updctrl("mrs_natural/inSamples", 
+            extractNet->updControl("mrs_natural/inSamples", 
                     endPos - startPos);
-            extractNet->updctrl("SoundFileSource/src/mrs_natural/pos", startPos);
+            extractNet->updControl("SoundFileSource/src/mrs_natural/pos", startPos);
             extractNet->tick();
 
 
@@ -1385,8 +1385,8 @@ void drumExtract(vector<Collection> cls, string classNames)
     }
 
 
-    extractNet->updctrl("GaussianClassifier/classifier/mrs_bool/done", true);
-    extractNet->updctrl("GaussianClassifier/classifier/mrs_string/mode","predict");   	  
+    extractNet->updControl("GaussianClassifier/classifier/mrs_bool/done", true);
+    extractNet->updControl("GaussianClassifier/classifier/mrs_string/mode","predict");   	  
     extractNet->tick();  
 
     cout << (*extractNet) << endl;
@@ -1397,8 +1397,8 @@ void drumExtract(vector<Collection> cls, string classNames)
 
     return;
 
-    /* src->updctrl("mrs_string/filename", filename);
-       src->updctrl("mrs_natural/inSamples", 4096);
+    /* src->updControl("mrs_string/filename", filename);
+       src->updControl("mrs_natural/inSamples", 4096);
 
 
        extractNet->tick();

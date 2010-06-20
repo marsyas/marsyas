@@ -52,7 +52,7 @@ MarSystem* createSTFTMFCCextractor()
 	spectrumFeatures->addMarSystem(mng.create("Flux", "flux"));
 	spectrumFeatures->addMarSystem(mng.create("MFCC", "mfcc"));
 	extractor->addMarSystem(spectrumFeatures);
-	extractor->linkctrl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
+	extractor->linkControl("mrs_natural/winSize", "PowerSpectrumNet/powerSpect/mrs_natural/winSize");
 
 	return extractor;
 }
@@ -115,7 +115,7 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   string extractorStr = "STFTMFCC";
   MarSystem* featureExtractor = (*featureExtractors[extractorStr])();
-  featureExtractor->updctrl("mrs_natural/winSize", winSize);
+  featureExtractor->updControl("mrs_natural/winSize", winSize);
 
   ////////////////////////////////////////////////////////////
   // Build the overall feature calculation network
@@ -133,19 +133,19 @@ void extract(Collection collection, string outWekaName)
   // Texture Window Statistics
   ////////////////////////////////////////////////////////////
   featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
-  featureNetwork->updctrl("TextureStats/tStats/mrs_natural/memSize", memSize);
+  featureNetwork->updControl("TextureStats/tStats/mrs_natural/memSize", memSize);
 
   ////////////////////////////////////////////////////////////
   // update controls
   ////////////////////////////////////////////////////////////
-  featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
-  featureNetwork->updctrl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  featureNetwork->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+  featureNetwork->updControl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
 
   ////////////////////////////////////////////////////////////
   // accumulate feature vectors over 30 seconds 
   ////////////////////////////////////////////////////////////
   MarSystem* acc = mng.create("Accumulator", "acc");
-  acc->updctrl("mrs_natural/nTimes", accSize_);
+  acc->updControl("mrs_natural/nTimes", accSize_);
 
   ////////////////////////////////////////////////////////////
   // add network to accumulator
@@ -179,7 +179,7 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   // Get parameters
   ////////////////////////////////////////////////////////////
-  total->updctrl("mrs_natural/inSamples", winSize);
+  total->updControl("mrs_natural/inSamples", winSize);
 
   //////////////////////////////////////////////////////////////////////////
   // Main loop for extracting the features 
@@ -206,20 +206,20 @@ void extract(Collection collection, string outWekaName)
 
   afullres.create(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>() + 1,
  				  total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());  
-  annotator->updctrl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>());      
+  annotator->updControl("mrs_natural/inObservations", total->getctrl("mrs_natural/onObservations")->to<mrs_natural>());      
 
-  annotator->updctrl("mrs_natural/inSamples", total->getctrl("mrs_natural/onSamples"));
-  annotator->updctrl("mrs_real/israte", total->getctrl("mrs_real/israte"));
+  annotator->updControl("mrs_natural/inSamples", total->getctrl("mrs_natural/onSamples"));
+  annotator->updControl("mrs_real/israte", total->getctrl("mrs_real/israte"));
 
-  wsink->updctrl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
-  wsink->updctrl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
-  wsink->updctrl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
+  wsink->updControl("mrs_natural/inSamples", annotator->getctrl("mrs_natural/onSamples"));
+  wsink->updControl("mrs_natural/inObservations", annotator->getctrl("mrs_natural/onObservations")->to<mrs_natural>());
+  wsink->updControl("mrs_real/israte", annotator->getctrl("mrs_real/israte"));
 
   mrs_natural timbreSize = total->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-   annotator->updctrl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));  
+   annotator->updControl("mrs_string/inObsNames", total->getctrl("mrs_string/onObsNames"));  
 
    if (outWekaName != EMPTYSTRING)
-  	wsink->updctrl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
+  	wsink->updControl("mrs_string/inObsNames", annotator->getctrl("mrs_string/onObsNames"));
 
 
   realvec iwin;
@@ -238,9 +238,9 @@ void extract(Collection collection, string outWekaName)
    cout << "all_files_in_collection=" << all_files_in_collection << endl;
    cout << "collection.getSize()=" << collection.getSize() << endl;
 
-   wsink->updctrl("mrs_string/labelNames",all_files_in_collection);
-   wsink->updctrl("mrs_natural/nLabels", (mrs_natural)collection.getSize());  
-   wsink->updctrl("mrs_string/filename", outWekaName);
+   wsink->updControl("mrs_string/labelNames",all_files_in_collection);
+   wsink->updControl("mrs_natural/nLabels", (mrs_natural)collection.getSize());  
+   wsink->updControl("mrs_string/filename", outWekaName);
    cout << "Writing weka .arff file to :" << outWekaName << endl;
 
    cout << "------------------------------" << endl;
@@ -254,11 +254,11 @@ void extract(Collection collection, string outWekaName)
   for (size_t i=0; i < collection.size(); ++i)
  	{
 	  // Update the featureNetwork to read the current file in the collection
- 	  total->updctrl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", collection.entry(i));
+ 	  total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", collection.entry(i));
  	  wc = 0;  	  
  	  samplesPlayed = 0;
-//   	  annotator->updctrl("mrs_natural/label", collection.labelNum(collection.labelEntry(i)));
-   	  annotator->updctrl("mrs_natural/label", (mrs_natural)i);
+//   	  annotator->updControl("mrs_natural/label", collection.labelNum(collection.labelEntry(i)));
+   	  annotator->updControl("mrs_natural/label", (mrs_natural)i);
 
 // 	  cout << "collection.labelNum(collection.labelEntry(i))" << collection.labelNum(collection.labelEntry(i)) << endl;
 

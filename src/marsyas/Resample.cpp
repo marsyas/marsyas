@@ -156,36 +156,36 @@ Resample::myUpdate(MarControlPtr sender)
 		if (resaMode==(mrs_string)"sincip")
 		{
 			interpolator_= new ResampleSinc("resa");
-			interpolator_->updctrl("mrs_bool/windowedMode", ctrl_option_->to<mrs_bool>());
-			interpolator_->updctrl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
-			interpolator_->updctrl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
-			interpolator_->updctrl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
-			interpolator_->updctrl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
+			interpolator_->updControl("mrs_bool/windowedMode", ctrl_option_->to<mrs_bool>());
+			interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
+			interpolator_->updControl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
+			interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
+			interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
 		}
 		else if (resaMode==(mrs_string)	"bezier")
 		{
 			interpolator_= new ResampleBezier("resa");
-			interpolator_->updctrl("mrs_bool/tangentMode", ctrl_option_);
-			interpolator_->updctrl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
-			interpolator_->updctrl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
-			interpolator_->updctrl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
-			interpolator_->updctrl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
+			interpolator_->updControl("mrs_bool/tangentMode", ctrl_option_);
+			interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
+			interpolator_->updControl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
+			interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
+			interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
 		}
 		else if (resaMode==(mrs_string)	"near")
 		{
 			interpolator_= new ResampleNearestNeighbour("resa");
-			//interpolator_->updctrl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
-			//interpolator_->updctrl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
-			interpolator_->updctrl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
-			interpolator_->updctrl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
+			//interpolator_->updControl("mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
+			//interpolator_->updControl("mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
+			interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
+			interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
 		}
 		else
 		{
 			interpolator_= new ResampleLinear("resa");
-			//interpolator_->updctrl("ResampleSinc/resa/mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
-			//interpolator_->updctrl("ResampleSinc/resa/mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
-			interpolator_->updctrl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
-			interpolator_->updctrl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
+			//interpolator_->updControl("ResampleSinc/resa/mrs_real/offStart", ctrl_offStart_->to<mrs_real>());
+			//interpolator_->updControl("ResampleSinc/resa/mrs_real/offEnd", ctrl_offEnd_->to<mrs_real>());
+			interpolator_->updControl("mrs_bool/samplingRateAdjustmentMode", ctrl_samplingRateAdjustmentMode_->to<mrs_bool>());
+			interpolator_->updControl("mrs_real/stretch", ctrl_newSamplingRate_->to<mrs_real>()/ctrl_israte_->to<mrs_real>());
 		}
 
 	//}

@@ -138,7 +138,7 @@ void
 EvEvent::updctrl(std::string cname, TmControlValue value)
 {
 	(void) cname; (void) value; // FIXME These values are unused
-    MRSWARN("EvEvent::updctrl(string,TmControlValue)  not supported by this event");
+    MRSWARN("EvEvent::updControl(string,TmControlValue)  not supported by this event");
 }
 
 bool

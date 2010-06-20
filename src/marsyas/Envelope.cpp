@@ -80,15 +80,15 @@ Envelope::update()
 
   if(noteon_){
     value_=0.0;
-    this->updctrl("mrs_real/nton",0.0);
-    this->updctrl("mrs_real/target",1.0);
+    this->updControl("mrs_real/nton",0.0);
+    this->updControl("mrs_real/target",1.0);
     state_ = 1;
   }
 
   if(noteoff_){
 
-    this->updctrl("mrs_real/ntoff",0.0);
-    this->updctrl("mrs_real/target",0.0);
+    this->updControl("mrs_real/ntoff",0.0);
+    this->updControl("mrs_real/target",0.0);
     state_ = 1;
   }
 

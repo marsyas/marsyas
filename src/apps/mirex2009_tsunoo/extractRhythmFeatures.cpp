@@ -143,7 +143,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   netInp->addMarSystem(mng.create("PowerSpectrum","psc"));
   //netInp->addMarSystem(mng.create("MFCC","mfcc"));
   accInp->addMarSystem(netInp);
-  accInp->updctrl("mrs_natural/nTimes",ACC_INPUT);
+  accInp->updControl("mrs_natural/nTimes",ACC_INPUT);
   Inp->addMarSystem(accInp);
 
   netInp2->addMarSystem(mng.create("SoundFileSource","inpsrc2"));
@@ -153,29 +153,29 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
   netInp2->addMarSystem(crm);
   netInp2->addMarSystem(dlt);
   accInp2->addMarSystem(netInp2);
-  accInp2->updctrl("mrs_natural/nTimes",ACC_INPUT);
+  accInp2->updControl("mrs_natural/nTimes",ACC_INPUT);
   Inp2->addMarSystem(accInp2);
   
   /*** set conttols to rhythm map ***/
 
-  sim->updctrl("mrs_natural/calcCovMatrix",2);
-  sim->updctrl("mrs_string/normalize", "MeanStd");
+  sim->updControl("mrs_natural/calcCovMatrix",2);
+  sim->updControl("mrs_string/normalize", "MeanStd");
   sim->addMarSystem(met);
-  sim2->updctrl("mrs_natural/calcCovMatrix",2);
-  sim2->updctrl("mrs_string/normalize", "MeanStd");
+  sim2->updControl("mrs_natural/calcCovMatrix",2);
+  sim2->updControl("mrs_string/normalize", "MeanStd");
   sim2->addMarSystem(met2);
-  met->updctrl("mrs_string/metric","euclideanDistance");
-  met2->updctrl("mrs_string/metric", "euclideanDistance");
-  dtw->updctrl("mrs_string/lastPos","lowest");
-  dtw->updctrl("mrs_string/startPos","lowest");
-  dtw->updctrl("mrs_string/localPath","diagonal");
-  dtw->updctrl("mrs_bool/weight",false);
-  dtw->updctrl("mrs_string/mode","OnePass");
-  dtw2->updctrl("mrs_string/lastPos", "end");
-  dtw2->updctrl("mrs_string/startPos", "zero");
-  dtw2->updctrl("mrs_string/localPath", "diagonal");
-  dtw2->updctrl("mrs_bool/weight", false);
-  dtw2->updctrl("mrs_string/mode", "normal");
+  met->updControl("mrs_string/metric","euclideanDistance");
+  met2->updControl("mrs_string/metric", "euclideanDistance");
+  dtw->updControl("mrs_string/lastPos","lowest");
+  dtw->updControl("mrs_string/startPos","lowest");
+  dtw->updControl("mrs_string/localPath","diagonal");
+  dtw->updControl("mrs_bool/weight",false);
+  dtw->updControl("mrs_string/mode","OnePass");
+  dtw2->updControl("mrs_string/lastPos", "end");
+  dtw2->updControl("mrs_string/startPos", "zero");
+  dtw2->updControl("mrs_string/localPath", "diagonal");
+  dtw2->updControl("mrs_bool/weight", false);
+  dtw2->updControl("mrs_string/mode", "normal");
 
   /*** create wekasink series ***/
 
@@ -190,44 +190,44 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 
   /*** update control of wekasink series ***/
   /*
-  total->updctrl("mrs_natural/inSamples",1);
-  total->updctrl("mrs_natural/inObservations",outFeatures.getRows());
-  total->updctrl("WekaSink/wks/mrs_string/labelNames",inputs.getLabelNames());
-  total->updctrl("WekaSink/wks/mrs_natural/nLabels",inputs.getNumLabels());
-  total->updctrl("WekaSink/wks/mrs_natural/downsample",1);
-  total->updctrl("WekaSink/wks/mrs_string/inObsNames",oss.str());
-  total->updctrl("WekaSink/wks/mrs_string/filename",outName);
+  total->updControl("mrs_natural/inSamples",1);
+  total->updControl("mrs_natural/inObservations",outFeatures.getRows());
+  total->updControl("WekaSink/wks/mrs_string/labelNames",inputs.getLabelNames());
+  total->updControl("WekaSink/wks/mrs_natural/nLabels",inputs.getNumLabels());
+  total->updControl("WekaSink/wks/mrs_natural/downsample",1);
+  total->updControl("WekaSink/wks/mrs_string/inObsNames",oss.str());
+  total->updControl("WekaSink/wks/mrs_string/filename",outName);
   */
-  total2->updctrl("mrs_natural/inSamples",1);
-  total2->updctrl("mrs_natural/inObservations",outFeatures2.getRows());
-  total2->updctrl("WekaSink/wks2/mrs_string/labelNames",sfName);
-  total2->updctrl("WekaSink/wks2/mrs_natural/nLabels",1);
-  total2->updctrl("WekaSink/wks2/mrs_natural/downsample",1);
-  total2->updctrl("WekaSink/wks2/mrs_string/inObsNames",oss.str());
+  total2->updControl("mrs_natural/inSamples",1);
+  total2->updControl("mrs_natural/inObservations",outFeatures2.getRows());
+  total2->updControl("WekaSink/wks2/mrs_string/labelNames",sfName);
+  total2->updControl("WekaSink/wks2/mrs_natural/nLabels",1);
+  total2->updControl("WekaSink/wks2/mrs_natural/downsample",1);
+  total2->updControl("WekaSink/wks2/mrs_string/inObsNames",oss.str());
   //oss.str("");
   //oss << outName << "_add.arff";
-  //total2->updctrl("WekaSink/wks2/mrs_string/filename",oss.str());
-  total2->updctrl("WekaSink/wks2/mrs_string/filename",outName);
+  //total2->updControl("WekaSink/wks2/mrs_string/filename",oss.str());
+  total2->updControl("WekaSink/wks2/mrs_string/filename",outName);
   /*
-  total3->updctrl("mrs_natural/inSamples",1);
-  total3->updctrl("mrs_natural/inObservations",outFeatures3.getRows());
-  total3->updctrl("WekaSink/wks3/mrs_string/labelNames",inputs.getLabelNames());
-  total3->updctrl("WekaSink/wks3/mrs_natural/nLabels",inputs.getNumLabels());
-  total3->updctrl("WekaSink/wks3/mrs_natural/downsample",1);
-  total3->updctrl("WekaSink/wks3/mrs_string/inObsNames",oss.str());
+  total3->updControl("mrs_natural/inSamples",1);
+  total3->updControl("mrs_natural/inObservations",outFeatures3.getRows());
+  total3->updControl("WekaSink/wks3/mrs_string/labelNames",inputs.getLabelNames());
+  total3->updControl("WekaSink/wks3/mrs_natural/nLabels",inputs.getNumLabels());
+  total3->updControl("WekaSink/wks3/mrs_natural/downsample",1);
+  total3->updControl("WekaSink/wks3/mrs_string/inObsNames",oss.str());
   oss.str("");
   oss << outName << "_LSA.arff";
-  total3->updctrl("WekaSink/wks3/mrs_string/filename",oss.str());
+  total3->updControl("WekaSink/wks3/mrs_string/filename",oss.str());
 
-  total4->updctrl("mrs_natural/inSamples",1);
-  total4->updctrl("mrs_natural/inObservations",outFeatures4.getRows());
-  total4->updctrl("WekaSink/wks4/mrs_string/labelNames",inputs.getLabelNames());
-  total4->updctrl("WekaSink/wks4/mrs_natural/nLabels",inputs.getNumLabels());
-  total4->updctrl("WekaSink/wks4/mrs_natural/downsample",1);
-  total4->updctrl("WekaSink/wks4/mrs_string/inObsNames",oss.str());
+  total4->updControl("mrs_natural/inSamples",1);
+  total4->updControl("mrs_natural/inObservations",outFeatures4.getRows());
+  total4->updControl("WekaSink/wks4/mrs_string/labelNames",inputs.getLabelNames());
+  total4->updControl("WekaSink/wks4/mrs_natural/nLabels",inputs.getNumLabels());
+  total4->updControl("WekaSink/wks4/mrs_natural/downsample",1);
+  total4->updControl("WekaSink/wks4/mrs_string/inObsNames",oss.str());
   oss.str("");
   oss << outName << "_distance.arff";
-  total4->updctrl("WekaSink/wks4/mrs_string/filename",oss.str());
+  total4->updControl("WekaSink/wks4/mrs_string/filename",oss.str());
   */
 
 
@@ -251,13 +251,13 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 
     /*** calculate input spectrogram ***/
 
-    netInp->updctrl("SoundFileSource/inpsrc/mrs_string/filename",inputs.entry(l));
-    netInp2->updctrl("SoundFileSource/inpsrc2/mrs_string/filename",hfiles.entry(l));
+    netInp->updControl("SoundFileSource/inpsrc/mrs_string/filename",inputs.entry(l));
+    netInp2->updControl("SoundFileSource/inpsrc2/mrs_string/filename",hfiles.entry(l));
     inputsize = netInp->getctrl("SoundFileSource/inpsrc/mrs_natural/size")->to<mrs_natural>();
     wsize = netInp->getctrl("Windowing/ham/mrs_natural/size")->to<mrs_natural>();
     inputsize /= wsize;
-    accInp->updctrl("mrs_natural/nTimes",inputsize);
-    accInp2->updctrl("mrs_natural/nTimes",inputsize);
+    accInp->updControl("mrs_natural/nTimes",inputsize);
+    accInp2->updControl("mrs_natural/nTimes",inputsize);
     Inp->tick();
     dataInp = Inp->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
@@ -323,24 +323,24 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 
     /*** update control of rhythm map ***/
     sizes(0) = featuresInp.getCols();
-    sim->updctrl("mrs_realvec/sizes",sizes);
-    sim->updctrl("mrs_natural/inSamples",simInput.getCols());
-    sim->updctrl("mrs_natural/inObservations",simInput.getRows());
+    sim->updControl("mrs_realvec/sizes",sizes);
+    sim->updControl("mrs_natural/inSamples",simInput.getCols());
+    sim->updControl("mrs_natural/inObservations",simInput.getRows());
     simOutput.stretch(outsize,sizes(0));
-    dtw->updctrl("mrs_realvec/sizes",sizes);
+    dtw->updControl("mrs_realvec/sizes",sizes);
     dtw->setctrl("mrs_realvec/delta", delta);
     dtw->setctrl("mrs_real/deltaWeight", 10.0);
-    dtw->updctrl("mrs_natural/inSamples",simOutput.getCols());
-    dtw->updctrl("mrs_natural/inObservations",simOutput.getRows());
+    dtw->updControl("mrs_natural/inSamples",simOutput.getCols());
+    dtw->updControl("mrs_natural/inObservations",simOutput.getRows());
     algOutput.stretch(3*sizes(0),2);
-    ap->updctrl("mrs_realvec/sizes",sizes);
-    ap->updctrl("mrs_natural/inSamples",simInput.getCols());
-    ap->updctrl("mrs_natural/inObservations",simInput.getRows());
+    ap->updControl("mrs_realvec/sizes",sizes);
+    ap->updControl("mrs_natural/inSamples",simInput.getCols());
+    ap->updControl("mrs_natural/inObservations",simInput.getRows());
 
     /*** calculate the alignment ***/
     sim->process(simInput,simOutput);
     dtw->process(simOutput,algOutput);
-    ap->updctrl("mrs_realvec/alignment",algOutput);
+    ap->updControl("mrs_realvec/alignment",algOutput);
     ap->process(simInput,simInput);
 
     /*** out the counts features vector ***/
@@ -409,8 +409,8 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 	 */
 	  
     // update control
-    //total->updctrl("Annotator/ann/mrs_natural/label",inputs.labelNum(inputs.labelEntry(l)));
-    total2->updctrl("Annotator/ann2/mrs_natural/label", 0);
+    //total->updControl("Annotator/ann/mrs_natural/label",inputs.labelNum(inputs.labelEntry(l)));
+    total2->updControl("Annotator/ann2/mrs_natural/label", 0);
     total2->process(outFeatures2,tmpvec2);
 
     // out segment data 
@@ -493,15 +493,15 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 	tmpsizes(0) = segments(i,1) - segments(i,0);
 	tmpsizes(1) = sizes(k+1);
 	tmpsimin.stretch(BIN*2,tmpsizes.maxval());
-	sim2->updctrl("mrs_realvec/sizes",tmpsizes);
+	sim2->updControl("mrs_realvec/sizes",tmpsizes);
 	sim2->update();
-	sim2->updctrl("mrs_natural/inSamples",tmpsimin.getCols());
-	sim2->updctrl("mrs_natural/inObservations",tmpsimin.getRows());
+	sim2->updControl("mrs_natural/inSamples",tmpsimin.getCols());
+	sim2->updControl("mrs_natural/inObservations",tmpsimin.getRows());
 	tmpsimout.stretch(tmpsizes(1),tmpsizes(0));
-	dtw2->updctrl("mrs_realvec/sizes",tmpsizes);
+	dtw2->updControl("mrs_realvec/sizes",tmpsizes);
 	dtw2->update();
-	dtw2->updctrl("mrs_natural/inSamples",tmpsimout.getCols());
-	dtw2->updctrl("mrs_natural/inObservations",tmpsimout.getRows());
+	dtw2->updControl("mrs_natural/inSamples",tmpsimout.getCols());
+	dtw2->updControl("mrs_natural/inObservations",tmpsimout.getRows());
 	tmpalgout.stretch(tmpsizes(0)+tmpsizes(1),2);
 	for(j=0; j<tmpsizes(0); j++){
 	  for(m=0; m<BIN; m++){
@@ -535,7 +535,7 @@ void recognize(string sfName, string hName, string tpName, string cnName, string
 	outFeatures4(j,0) /= segments.getRows();
       }
     }
-    total4->updctrl("Annotator/ann4/mrs_natural/label", inputs.labelNum(inputs.labelEntry(l)));
+    total4->updControl("Annotator/ann4/mrs_natural/label", inputs.labelNum(inputs.labelEntry(l)));
     total4->process(outFeatures4,tmpvec4);*/
   }
 

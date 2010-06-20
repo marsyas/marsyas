@@ -435,13 +435,13 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 			// select bins with local maxima in magnitude (--> peaks)
 			realvec peaks_ = mag_;
 			realvec tmp_;
-			peaker_->updctrl("mrs_real/peakStrength", 0.2);// to be set as a control [!]
-			peaker_->updctrl("mrs_natural/peakStart", downFrequency_);   // 0
-			peaker_->updctrl("mrs_natural/peakEnd", upFrequency_);  // size_
-			peaker_->updctrl("mrs_natural/inSamples", mag_.getCols());
-			peaker_->updctrl("mrs_natural/inObservations", mag_.getRows());
-			peaker_->updctrl("mrs_natural/onSamples", peaks_.getCols());
-			peaker_->updctrl("mrs_natural/onObservations", peaks_.getRows());
+			peaker_->updControl("mrs_real/peakStrength", 0.2);// to be set as a control [!]
+			peaker_->updControl("mrs_natural/peakStart", downFrequency_);   // 0
+			peaker_->updControl("mrs_natural/peakEnd", upFrequency_);  // size_
+			peaker_->updControl("mrs_natural/inSamples", mag_.getCols());
+			peaker_->updControl("mrs_natural/inObservations", mag_.getRows());
+			peaker_->updControl("mrs_natural/onSamples", peaks_.getCols());
+			peaker_->updControl("mrs_natural/onObservations", peaks_.getRows());
 			if(pick_)
 				peaker_->process(mag_, peaks_);
 			else
@@ -464,12 +464,12 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 			if(ctrl_frameMaxNumPeaks_->to<mrs_natural>() != 0) //?????????????????? is this check needed?!? See myUpdate
 			{
 				tmp_.stretch(frameMaxNumPeaks_*2);
-				max_->updctrl("mrs_natural/nMaximums", frameMaxNumPeaks_);
+				max_->updControl("mrs_natural/nMaximums", frameMaxNumPeaks_);
 			}
 			else //?????????????????? is this check needed?!? See myUpdate
 			{
 				tmp_.stretch((upFrequency_-downFrequency_)*2);
-				max_->updctrl("mrs_natural/nMaximums", upFrequency_-downFrequency_);
+				max_->updControl("mrs_natural/nMaximums", upFrequency_-downFrequency_);
 			}
 			max_->setctrl("mrs_natural/inSamples", size_);
 			max_->setctrl("mrs_natural/inObservations", 1);

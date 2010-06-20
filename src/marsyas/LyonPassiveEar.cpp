@@ -497,7 +497,7 @@ LyonPassiveEar::myProcess(realvec& in, realvec& out)
 
 	// update the number of output samples if necessary
 	if (onSamples_ != numOutSamples) 
-		updctrl ("mrs_natural/onSamples", numOutSamples);
+		updControl ("mrs_natural/onSamples", numOutSamples);
 
 	decimOut_.stretch (numFilterChannels_-2, numOutSamples);
 
@@ -567,23 +567,23 @@ mrs_bool LyonPassiveEar::setParametersIntern ()
 
 void LyonPassiveEar::updateControlsIntern ()
 {
-	passiveEar_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>());
-	passiveEar_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-	passiveEar_->updctrl("mrs_real/israte", getctrl("mrs_real/israte")->to<mrs_real>());
+	passiveEar_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+	passiveEar_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+	passiveEar_->updControl("mrs_real/israte", getctrl("mrs_real/israte")->to<mrs_real>());
 
 	ctrl_onSamples_->setValue(inSamples_/decimFactor_); // integer division intended
 	ctrl_osrate_->setValue(israte_*1.0/decimFactor_);
 
 	if (numFilterChannels_)
 	{
-		updctrl ("mrs_realvec/centerFreqs", centerFreqs_);
+		updControl ("mrs_realvec/centerFreqs", centerFreqs_);
 		ctrl_onObservations_->setValue((numFilterChannels_-2)*getctrl("mrs_natural/inObservations")->to<mrs_natural>());
 
 		passiveEar_->setctrl("mrs_natural/onObservations", getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 		if (agcActive_)
-			passiveEar_->updctrl("LyonAgc/agc/mrs_natural/numBands", numFilterChannels_);
+			passiveEar_->updControl("LyonAgc/agc/mrs_natural/numBands", numFilterChannels_);
 		if (channelDiffActive_)
-			passiveEar_->updctrl("LyonChannelDiff/differ/mrs_natural/numBands", numFilterChannels_);
+			passiveEar_->updControl("LyonChannelDiff/differ/mrs_natural/numBands", numFilterChannels_);
 	}
 }
 

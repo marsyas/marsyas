@@ -417,7 +417,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 
 		//Disbales new/updated flag:
 		agentControl_(myIndex_, 0) = 0.0;
-		updctrl(ctrl_agentControl_, agentControl_);
+		updControl(ctrl_agentControl_, agentControl_);
 	}
 	
 	//MATLAB_EVAL("plot(FluxTrack);");

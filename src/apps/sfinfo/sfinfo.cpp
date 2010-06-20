@@ -59,7 +59,7 @@ void sfinfo(vector<string> soundfiles)
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
       string sfName = *sfi;
-      src->updctrl("mrs_string/filename", sfName);
+      src->updControl("mrs_string/filename", sfName);
       
       if (src == NULL) 
 	{

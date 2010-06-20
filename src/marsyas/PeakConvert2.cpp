@@ -376,9 +376,9 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 
 void PeakConvert2::ComputeMasking (realvec& in)
 {
-	masking_->updctrl ("mrs_natural/inObservations", size_);
-	masking_->updctrl ("mrs_natural/inSamples", 1);
-	masking_->updctrl ("mrs_real/israte", israte_);
+	masking_->updControl ("mrs_natural/inObservations", size_);
+	masking_->updControl ("mrs_natural/inSamples", 1);
+	masking_->updControl ("mrs_real/israte", israte_);
 
 	mag_.transpose();
 	masking_->myProcess (mag_,masked_);
@@ -469,21 +469,21 @@ void PeakConvert2::ComputeMagnitudeAndPhase (mrs_realvec in)
 void PeakConvert2::ComputePeaker (mrs_realvec in, realvec& out)
 {
 #ifdef ORIGINAL_VERSION
-	peaker_->updctrl("mrs_real/peakStrength", 0.2);// to be set as a control [!]
+	peaker_->updControl("mrs_real/peakStrength", 0.2);// to be set as a control [!]
 #else
-	peaker_->updctrl("mrs_real/peakStrength",1e-1);
-	peaker_->updctrl("mrs_real/peakStrengthRelMax" ,1e-2);
-	peaker_->updctrl("mrs_real/peakStrengthAbs",1e-10 );
-	peaker_->updctrl("mrs_real/peakStrengthTreshLpParam" ,0.95);
-	peaker_->updctrl("mrs_real/peakStrengthRelThresh" , 1.);
+	peaker_->updControl("mrs_real/peakStrength",1e-1);
+	peaker_->updControl("mrs_real/peakStrengthRelMax" ,1e-2);
+	peaker_->updControl("mrs_real/peakStrengthAbs",1e-10 );
+	peaker_->updControl("mrs_real/peakStrengthTreshLpParam" ,0.95);
+	peaker_->updControl("mrs_real/peakStrengthRelThresh" , 1.);
 #endif
 
-	peaker_->updctrl("mrs_natural/peakStart", downFrequency_);   // 0
-	peaker_->updctrl("mrs_natural/peakEnd", upFrequency_);  // size_
-	peaker_->updctrl("mrs_natural/inSamples", in.getCols());
-	peaker_->updctrl("mrs_natural/inObservations", in.getRows());
-	peaker_->updctrl("mrs_natural/onSamples", out.getCols());
-	peaker_->updctrl("mrs_natural/onObservations", out.getRows());
+	peaker_->updControl("mrs_natural/peakStart", downFrequency_);   // 0
+	peaker_->updControl("mrs_natural/peakEnd", upFrequency_);  // size_
+	peaker_->updControl("mrs_natural/inSamples", in.getCols());
+	peaker_->updControl("mrs_natural/inObservations", in.getRows());
+	peaker_->updControl("mrs_natural/onSamples", out.getCols());
+	peaker_->updControl("mrs_natural/onObservations", out.getRows());
 
 	peaker_->process(in, out);
 }
@@ -573,7 +573,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 
 			// keep only the frameMaxNumPeaks_ highest amplitude local maxima
 			tmp_.stretch(frameMaxNumPeaks_*2);
-			max_->updctrl("mrs_natural/nMaximums", frameMaxNumPeaks_);
+			max_->updControl("mrs_natural/nMaximums", frameMaxNumPeaks_);
 
 			max_->setctrl("mrs_natural/inSamples", size_);
 			max_->setctrl("mrs_natural/inObservations", 1);

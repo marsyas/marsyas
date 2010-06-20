@@ -46,9 +46,9 @@ Transposer::myUpdate(MarControlPtr sender)
 	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 
 	if (getctrl("mrs_natural/inSamples")->to<mrs_natural>() != getctrl("mrs_natural/onObservations")->to<mrs_natural>())
-		updctrl("mrs_natural/onObservations", getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+		updControl("mrs_natural/onObservations", getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 	if (getctrl("mrs_natural/onSamples")->to<mrs_natural>() != getctrl("mrs_natural/inObservations")->to<mrs_natural>())
-		updctrl("mrs_natural/onSamples", getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+		updControl("mrs_natural/onSamples", getctrl("mrs_natural/inObservations")->to<mrs_natural>());
 }
 
 

@@ -101,17 +101,17 @@ Spectrum2ACMChroma::Spectrum2ACMChroma(mrs_string inName)
 	// ------------------------ DEFINE FIXED PARAMETERS ------------------
 	mrs_string theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
 		"Series/SER3/Gain/Gain/mrs_real/gain";
-	Spectrum2ACMChromaNet_->updctrl(theControlString,2.);
+	Spectrum2ACMChromaNet_->updControl(theControlString,2.);
 
 	theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
 		"PeakInObservation/FindPeaks/mrs_real/HystFactor";
-	Spectrum2ACMChromaNet_->updctrl(theControlString,sqrt(2.));
+	Spectrum2ACMChromaNet_->updControl(theControlString,sqrt(2.));
 
 	theControlString = "FanOutIn/FAN1/Gain/Gain/mrs_real/gain";
-	Spectrum2ACMChromaNet_->updctrl(theControlString,1.);
+	Spectrum2ACMChromaNet_->updControl(theControlString,1.);
 
 	theControlString = "FanOutIn/FAN1/mrs_string/combinator";
-	Spectrum2ACMChromaNet_->updctrl(theControlString,"*");
+	Spectrum2ACMChromaNet_->updControl(theControlString,"*");
 }
 
 Spectrum2ACMChroma::Spectrum2ACMChroma(const Spectrum2ACMChroma& inToCopy)
@@ -170,14 +170,14 @@ void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
 	// UPDATE is necessary! (why?)
 
 	// Copy THIS input specs to input specs of Spectrum2ACMChromaNet
-	updctrl(Spectrum2ACMChromaNet_->ctrl_inSamples_, ctrl_inSamples_);
-	updctrl(Spectrum2ACMChromaNet_->ctrl_inObservations_, ctrl_inObservations_);
-	updctrl(Spectrum2ACMChromaNet_->ctrl_israte_, ctrl_israte_);
+	updControl(Spectrum2ACMChromaNet_->ctrl_inSamples_, ctrl_inSamples_);
+	updControl(Spectrum2ACMChromaNet_->ctrl_inObservations_, ctrl_inObservations_);
+	updControl(Spectrum2ACMChromaNet_->ctrl_israte_, ctrl_israte_);
 
 	// Copy output specs of Spectrum2ACMChromaNet to THIS output specs
-	updctrl(ctrl_onSamples_, Spectrum2ACMChromaNet_->ctrl_onSamples_);
-	updctrl(ctrl_onObservations_, Spectrum2ACMChromaNet_->ctrl_onObservations_);
-	updctrl(ctrl_osrate_, Spectrum2ACMChromaNet_->ctrl_osrate_);
+	updControl(ctrl_onSamples_, Spectrum2ACMChromaNet_->ctrl_onSamples_);
+	updControl(ctrl_onObservations_, Spectrum2ACMChromaNet_->ctrl_onObservations_);
+	updControl(ctrl_osrate_, Spectrum2ACMChromaNet_->ctrl_osrate_);
 
 	// Update member variables
 	NrOfHarmonics_ = ctrl_NrOfHarmonics_->to<mrs_natural>();
@@ -192,13 +192,13 @@ void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
 		(mrs_natural)floor((mrs_real)80/israte_+0.5);
 	string theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
 		"Series/SER3/MedianFilter/MedianFilter/mrs_natural/WindowSize";
-	Spectrum2ACMChromaNet_->updctrl(theControlString,theWindowSize);
+	Spectrum2ACMChromaNet_->updControl(theControlString,theWindowSize);
 
 	mrs_natural theHystLength =
 		(mrs_natural)floor(2./(theFrameSize*israte_)+0.5);
 	theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
 		"PeakInObservation/FindPeaks/mrs_natural/HystLength";
-	Spectrum2ACMChromaNet_->updctrl(theControlString,theHystLength);
+	Spectrum2ACMChromaNet_->updControl(theControlString,theHystLength);
 
 	// All notes are referred to the diapason:
 	// 1. search for the pitch of the lowest note >= the lowest pitch
@@ -215,10 +215,10 @@ void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
 	mrs_natural theMaxInd = (mrs_natural)(theDiapInd + floor(12.*log(1000./(440.))/log(2.)));
 
 	theControlString = "Pitch2Chroma/Pitch2Chroma/mrs_real/LowestPitch";
-	Spectrum2ACMChromaNet_->updctrl(theControlString,theLowestNote);
+	Spectrum2ACMChromaNet_->updControl(theControlString,theLowestNote);
 
 	theControlString = "Pitch2Chroma/Pitch2Chroma/mrs_natural/NrOfNotes";
-	Spectrum2ACMChromaNet_->updctrl(theControlString,theMaxInd);
+	Spectrum2ACMChromaNet_->updControl(theControlString,theMaxInd);
 }
 
 void Spectrum2ACMChroma::myProcess(realvec& inSpectrum, realvec& outChroma)
@@ -228,5 +228,5 @@ void Spectrum2ACMChroma::myProcess(realvec& inSpectrum, realvec& outChroma)
 	// Update output variable
 	mrs_string theControlString = "F0Analysis/F0Analysis/mrs_real/ChordEvidence";
 	MarControlPtr theControlPtr = Spectrum2ACMChromaNet_->getctrl(theControlString);
-	updctrl("mrs_real/ChordEvidence",theControlPtr->to<mrs_real>());
+	updControl("mrs_real/ChordEvidence",theControlPtr->to<mrs_real>());
 }

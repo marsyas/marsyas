@@ -78,9 +78,9 @@ WaveletBands::myUpdate(MarControlPtr sender)
 	}
 
 	iwvpt_->setctrl("mrs_bool/forward", false);
-	iwvpt_->updctrl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
-	iwvpt_->updctrl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
-	iwvpt_->updctrl("mrs_real/israte", getctrl("mrs_real/israte"));
+	iwvpt_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+	iwvpt_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+	iwvpt_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
 
 	// Allocate the band and tband realvecs.
 	band_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>(),

@@ -493,7 +493,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 	else
 	{
 		dest = new SoundFileSink("dest");
-		//dest->updctrl("mrs_string/filename", outsfname);
+		//dest->updControl("mrs_string/filename", outsfname);
 	}
 
 	if(residual)
@@ -519,7 +519,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 		else
 		{
 			destRes = new SoundFileSink("destRes");
-			//dest->updctrl("mrs_string/filename", outsfname);
+			//dest->updControl("mrs_string/filename", outsfname);
 		}
 		postNet->addMarSystem(destRes);
 	}
@@ -540,77 +540,77 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 	(void) nbChannels;
 	(void) S;
 
-	pvseries->updctrl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
+	pvseries->updControl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
 
 	if (synType < 3)
 	{
 		if(synType==0)
 		{
-			//pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/nbSinusoids", S);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_real/samplingFreq", fs);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
+			//pvseries->updControl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/nbSinusoids", S);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", D*2);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_real/samplingFreq", fs);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
 		}
 		else 
 		{
 			// linking between the first slice and the psf
 			pvseries->linkControl("PeSynthetize/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
 			//
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setObservations", 1);	
 			// setting the panning mode mono/stereo
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_natural/nbChannels", synType);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_string/panning", panningInfo);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_natural/nbChannels", synType);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_string/panning", panningInfo);
 			// setting the FFT size
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", D*2);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/ShiftInput/siSyn/mrs_natural/winSize", D*2);
 			// setting the name of the original file
 			if (microphone) 
 			{
-					pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inSamples", D);
-					pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inObservations", 1);
+					pvseries->updControl("PeSynthetize/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inSamples", D);
+					pvseries->updControl("PeSynthetize/synthNet/Series/postNet/AudioSource/srcSyn/mrs_natural/inObservations", 1);
 			}
 			else
 			{
-				pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_string/filename", sfName);
-				// pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/pos", 0);
-				pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onSamples", D);
-				pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onObservations", 1);
+				pvseries->updControl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_string/filename", sfName);
+				// pvseries->updControl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/pos", 0);
+				pvseries->updControl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onSamples", D);
+				pvseries->updControl("PeSynthetize/synthNet/Series/postNet/SoundFileSource/srcSyn/mrs_natural/onObservations", 1);
 			}
 			// setting the synthesis starting time (default 0)
 		}
 	}
 	else
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D);
+		pvseries->updControl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D);
 
-	pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
+	pvseries->updControl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
 
 	if (outsfname == "MARSYAS_EMPTY") 
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
+		pvseries->updControl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);
 
 	if(residual)
 	{
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
+		pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/Delay/delay/mrs_natural/delay", delay); // Nw+1-D
 
 		if (microphone) 
 		{
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inSamples", D);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/AudioSource/src2/mrs_natural/inObservations", 1);
 		}
 		else
 		{
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/pos", 0);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
-			pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_string/filename", sfName);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/pos", 0);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inSamples", D);
+			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/Series/fanSeries/SoundFileSource/src2/mrs_natural/inObservations", 1);
 		}
 
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", ressfname);//[!]
+		pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Fanout/fano/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+		pvseries->updControl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/destRes/mrs_string/filename", ressfname);//[!]
 	}
 	else
-		pvseries->updctrl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
+		pvseries->updControl("PeSynthetize/synthNet/Series/postNet/SoundFileSink/dest/mrs_string/filename", outsfname);//[!]
 
 }
 

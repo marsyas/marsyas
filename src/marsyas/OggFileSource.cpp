@@ -159,7 +159,7 @@ OggFileSource::getHeader(string filename)
   setctrl("mrs_natural/size", size);
   setctrl("mrs_bool/hasData", hasData_);
   setctrl("mrs_natural/bitRate", bitRate);
-  updctrl("mrs_real/duration", duration);
+  updControl("mrs_real/duration", duration);
 }
 
 /**
