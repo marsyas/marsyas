@@ -17,32 +17,43 @@
 */
 
 /** 
-    \class Summary
-    When the mode control is set to "predict" then then classifications are tracked
-    when done control is set, then the confusion matrix is shown
+    \class ClassificationReport
+    \brief Reports various measures of classification accuracy 
+
+	This MarSystem typically follows a classification MarSystem 
+	and output various measures used to evaluate the accuracy of a classifier 
+	for a particular dataset. These include accuracy, error-rate, the 
+	confusion matrix. When the mode control is set to "predict" then the 
+	classification decisions are tracked and the measures are computed 
+	until the done control is set to true. Then the measures are displayed 
+	to stdout. The formatting is similar to the one used by the Weka machine 
+	learning software. 
+	
 */
 
-#include "Summary.h"
+
+
+#include "ClassificationReport.h"
 
 using namespace std;
 using namespace Marsyas;
 
-Summary::Summary(string name) : MarSystem("Summary", name)
+ClassificationReport::ClassificationReport(string name) : MarSystem("ClassificationReport", name)
 {
 	addControls();
 }
 
 
-Summary::~Summary()
+ClassificationReport::~ClassificationReport()
 {
 }
 
-MarSystem *Summary::clone() const
+MarSystem *ClassificationReport::clone() const
 {
-	return new Summary(*this);
+	return new ClassificationReport(*this);
 }
 
-void Summary::addControls()
+void ClassificationReport::addControls()
 {
 	addctrl("mrs_string/mode", "train");
 	setctrlState("mrs_string/mode", true);
@@ -53,10 +64,10 @@ void Summary::addControls()
 	addctrl("mrs_bool/done", false);
 }
 
-void Summary::myUpdate(MarControlPtr sender)
+void ClassificationReport::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-	MRSDIAG("Summary.cpp - Summary:myUpdate");
+	MRSDIAG("ClassificationReport.cpp - ClassificationReport:myUpdate");
   
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)2);
@@ -71,7 +82,7 @@ void Summary::myUpdate(MarControlPtr sender)
   
 }//myUpdate
 
-void Summary::myProcess(realvec& in, realvec& out)
+void ClassificationReport::myProcess(realvec& in, realvec& out)
 {
 
 	static int count = 0;
@@ -120,7 +131,7 @@ void Summary::myProcess(realvec& in, realvec& out)
     {
 
 		summaryStatistics stats = computeSummaryStatistics(confusionMatrix);
-		cout << "=== Summary ===" << endl << endl;
+		cout << "=== ClassificationReport ===" << endl << endl;
       
 		cout << "Correctly Classified Instances" << "\t\t" << stats.correctInstances << "\t";
 		cout << (((mrs_real)stats.correctInstances / (mrs_real)stats.instances)*100.0);
@@ -179,7 +190,7 @@ void Summary::myProcess(realvec& in, realvec& out)
     }//if done
 }//myProcess
 
-summaryStatistics Summary::computeSummaryStatistics(const realvec& mat)
+summaryStatistics ClassificationReport::computeSummaryStatistics(const realvec& mat)
 {
 	MRSASSERT(mat.getCols()==mat.getRows());
 

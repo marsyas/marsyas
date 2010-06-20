@@ -55,7 +55,7 @@
 #include "PeakConvert.h"
 #include "PeakConvert2.h"
 #include "OverlapAdd.h"
-#include "Summary.h"
+#include "ClassificationReport.h"
 #include "PeakRatio.h"
 #include "PeakSynthOsc.h"
 #include "PeakSynthOscBank.h"
@@ -399,7 +399,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("NormCut", new NormCut("normcutpr"));
 	registerPrototype("PeakViewSource", new PeakViewSource("peakviewsourcepr"));
 	registerPrototype("OneRClassifier", new OneRClassifier("onerclassifierpr"));
-	registerPrototype("Summary", new Summary("summaryp"));
+	registerPrototype("ClassificationReport", new ClassificationReport("classificationreportpr"));
 	registerPrototype("PhiSEMSource", new PhiSEMSource("phisemsourcepr"));
 	registerPrototype("PhiSEMFilter", new PhiSEMFilter("phisemfilterpr"));
 	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));

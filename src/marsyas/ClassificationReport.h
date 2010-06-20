@@ -17,19 +17,22 @@
 */
 
 /** 
-    \class Summary
-    \brief summarizes classifier accuracy
+    \class ClassificationReport
+    \brief Reports various measures of classification accuracy 
 
-	When the mode control is set to "predict" then the output 
-	of the classifier will output the class with the must instances. 
-
-	This MarSystems serves as ground truth for classification/regression 
-	MarSystem results. 
-
+	This MarSystem typically follows a classification MarSystem 
+	and output various measures used to evaluate the accuracy of a classifier 
+	for a particular dataset. These include accuracy, error-rate, the 
+	confusion matrix. When the mode control is set to "predict" then the 
+	classification decisions are tracked and the measures are computed 
+	until the done control is set to true. Then the measures are displayed 
+	to stdout. The formatting is similar to the one used by the Weka machine 
+	learning software. 
+	
 */
 
-#ifndef MARSYAS_SUMMARY_H
-#define MARSYAS_SUMMARY_H
+#ifndef MARSYAS_CLASSIFICATIONREPORT_H
+#define MARSYAS_CLASSIFICATIONREPORT_H
 
 #include "MarSystem.h"
 
@@ -50,7 +53,7 @@ namespace Marsyas
 			mrs_real rootRelativeSquaredError;
 	}summaryStatistics;
 
-	class Summary: public MarSystem
+	class ClassificationReport: public MarSystem
 	{
 		private: 
 			void addControls();
@@ -62,11 +65,11 @@ namespace Marsyas
 			summaryStatistics computeSummaryStatistics(const realvec& mat);
 
 		public:
-			Summary(std::string name);
-			~Summary();
+			ClassificationReport(std::string name);
+			~ClassificationReport();
 			MarSystem* clone()const;
   
 			void myProcess(realvec& in, realvec& out);
-	};//class Summary
+	};//class ClassificationReport
 }//namespace Marsyas
 #endif
