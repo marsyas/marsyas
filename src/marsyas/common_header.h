@@ -80,5 +80,25 @@ namespace Marsyas
 #define MRS_WARNINGS_ON MrsLog::warnings_off_ = false;
 
 
+//	Macros for marking functions as deprecated.
+//	DEPRECATED(void OldFunc(int a, float b));
+
+#ifdef __GNUC__
+#define DEPRECATED(func) func __attribute__ ((deprecated))
+#elif defined(_MSC_VER)
+#define DEPRECATED(func) __declspec(deprecated) func
+#else
+#pragma message("WARNING: You need to implement DEPRECATED for this compiler")
+#define DEPRECATED(func) func
+#endif
+
+
+
+
+
+
+
+
+
 #endif /* !MARSYAS_COMMONHEADER_H */ 
 	
