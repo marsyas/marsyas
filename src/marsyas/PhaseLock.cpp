@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -26,17 +26,17 @@ using namespace Marsyas;
 
 PhaseLock::PhaseLock(string name):MarSystem("PhaseLock", name)
 {
-  addControls();
-  t = 0;
-  inductionFinished_ = false;
-  gtAfter2ndBeat_ = false;
+	addControls();
+	t = 0;
+	inductionFinished_ = false;
+	gtAfter2ndBeat_ = false;
 }
 
 PhaseLock::PhaseLock(const PhaseLock& a) : MarSystem(a)
 {
-  // For any MarControlPtr in a MarSystem 
-  // it is necessary to perform this getctrl 
-  // in the copy constructor in order for cloning to work
+	// For any MarControlPtr in a MarSystem 
+	// it is necessary to perform this getctrl 
+	// in the copy constructor in order for cloning to work
 	ctrl_beatHypotheses_ = getctrl("mrs_realvec/beatHypotheses");
 	ctrl_inductionTime_ = getctrl("mrs_natural/inductionTime");
 	ctrl_nrPeriodHyps_ = getctrl("mrs_natural/nrPeriodHyps");
@@ -78,13 +78,13 @@ PhaseLock::~PhaseLock()
 MarSystem* 
 PhaseLock::clone() const 
 {
-  return new PhaseLock(*this);
+	return new PhaseLock(*this);
 }
 
 void 
 PhaseLock::addControls()
 {
-  //Add specific controls needed by this MarSystem.
+	//Add specific controls needed by this MarSystem.
 	addctrl("mrs_realvec/beatHypotheses", realvec(), ctrl_beatHypotheses_);
 	addctrl("mrs_natural/inductionTime", -1, ctrl_inductionTime_);
 	setctrlState("mrs_natural/inductionTime", true);
@@ -266,7 +266,7 @@ PhaseLock::GTInitialization(realvec& in, realvec& out, mrs_natural gtInitPhase, 
 		//cout << "-it:" << it << "; Error: " << error << "; Max: " << localPeakAmp 
 		//	<< "; S: " << gtScore_ << "; BeatPoint: " << beatPoint << "; period: " << period << endl;
 		//it++;
-	//don't evaluate beat if the outterWin around it surprasses the induction window
+		//don't evaluate beat if the outterWin around it surprasses the induction window
 	}while(beatPoint < inSamples_); 
 
 	return initHypothesis;
@@ -337,7 +337,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 	//simulate tracking under induction windows, given first two beats (or any two beats)
 	//retrieve initial score, backtraced phase (subtracting period multiples), and phase just after the induction
 	//(ground-truth initial phase and period as the ibi of the given two beats)
-	if(strcmp(mode_.c_str(), "givefirst2beats") == 0 || strcmp(mode_.c_str(), "givefirst2beats_startpoint") == 0)
+	if ((mode_ == "givefirst2beats") || (mode_ == "givefirst2beats_startpoint"))
 	{
 		//return backtracedPhase, initPeriod, lastPhase, lastPeriod, initScore (for each hypothesis)
 		mrs_realvec gtInitHypothesis = GTInitialization(in, out, gtInitPhase_, gtInitPeriod_);
@@ -360,8 +360,8 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 	//simulate tracking under induction windows, given first beat (or any beat)
 	//retrieve initial score, backtraced phase (subtracting period multiples), and phase just after the induction
 	//(ground-truth initial phase and period as calculated through ACF (normal induction))
-	else if(strcmp(mode_.c_str(), "givefirst1beat") == 0 
-		|| strcmp(mode_.c_str(), "givefirst1beat_startpoint") == 0)
+	else if ((mode_ == "givefirst1beat") 
+			 || (mode_ ==  "givefirst1beat_startpoint"))
 	{
 		//matrix with all the N generated beat hypotheses in the induction stage
 		beatHypotheses_ = ctrl_beatHypotheses_->to<mrs_realvec>();
@@ -378,7 +378,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 			if(period > 0) //(phase is necessarily valid)
 			{
 				mrs_realvec gtInitHypothesis = GTInitialization(in, out, phase, period);
-				if(strcmp(mode_.c_str(), "givefirst1beat") == 0)
+				if (mode_ == "givefirst1beat")
 					initPhases_(i) = (mrs_natural) gtInitHypothesis(0) - (inSamples_-1 - inductionTime_) + lastPeriods_(i);
 				lastPhases_(i) = (mrs_natural) gtInitHypothesis(2); //keep each lastPhase
 				lastPeriods_(i) = (mrs_natural) gtInitHypothesis(3); //keep each lastPeriod
@@ -427,7 +427,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 
 		for(int i = 0; i < nrPeriodHyps_; ++i)
 		{
-			if(strcmp(mode_.c_str(), "givefirst1beat") == 0)
+			if (mode_ =="givefirst1beat")
 			{
 				if(backtrace_)
 				{
@@ -464,7 +464,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 					}
 				}
 			}
-			else if(strcmp(mode_.c_str(), "givefirst1beat_startpoint") == 0)
+			else if (mode_ == "givefirst1beat_startpoint")
 			{
 				//Period:
 				out(i, 0) = initPeriods_(i);
@@ -489,7 +489,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 			
 			//to avoid negative score inversions
 			if(metricalRelScore_(i) < 0 && maxMetricalRelScore > 0 && maxGlobalTrackingScore_ > 0 
-				&& abs(metricalRelScore_(i)) > maxMetricalRelScore)
+			   && abs(metricalRelScore_(i)) > maxMetricalRelScore)
 				metricalRelFraction = -1;
 			if(metricalRelScore_(i) < 0 && maxMetricalRelScore < 0 && maxGlobalTrackingScore_ > 0)
 				metricalRelFraction = (maxMetricalRelScore / metricalRelScore_(i));
@@ -507,7 +507,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 				finalScore = rawScore_(i);
 
 			//aditional initial score normalization dependent of score function (due to their relative weights)
-			if(strcmp(scoreFunc_.c_str(), "correlation") == 0 || strcmp(scoreFunc_.c_str(), "squareCorr") == 0 )
+			if ((scoreFunc_ == "correlation") || (scoreFunc_ == "squareCorr"))
 				finalScore *= 5; //("correlation" and "squareCorr" are, in average, 5times more reactive than "regular")
 
 			out(i, 2) = finalScore;
@@ -534,8 +534,8 @@ PhaseLock::metricalRelation(mrs_real period1, mrs_real period2)
 	mrs_natural rel = 0;
 
 	//if(print)	
-		//cout << "Per1:" << period1 << "; Per2:" << period2 << "; Multiple:" << multiple
-		//<< "(" << (multiple - tolerance) << ":" << (multiple + tolerance) << ")" << endl;
+	//cout << "Per1:" << period1 << "; Per2:" << period2 << "; Multiple:" << multiple
+	//<< "(" << (multiple - tolerance) << ":" << (multiple + tolerance) << ")" << endl;
 
 	//if periods are integerly related (with a given tolerance)
 	if(multiple - tolerance <= floorMultiple)
@@ -700,7 +700,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 				//cout << "H:" << h << "-it:" << it << "; Error: " << error << "; Max: " << localPeakAmp 
 				//	<< "; S: " << trackingScore_(h) << "; BeatPoint: " << beatPoint << "; period: " << period << endl;
 				it++;
-			//don't evaluate beat if the outterWin around it surprasses the induction window
+				//don't evaluate beat if the outterWin around it surprasses the induction window
 			}while(beatPoint < inSamples_); 
 		}
 	}
@@ -775,14 +775,14 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 	}
 
 	//if requested output induction best period hypothesis (as estimated by ACF and after adjustment in induction)
-	if(strcmp(inductionOut_.c_str(), "-1") != 0 && !dumbInduction_)
+	if ((inductionOut_ == "-1") && !dumbInduction_)
 	{
 		ostringstream ossInitPeriod, ossLastPeriod;
 		fstream outStream;
 		mrs_natural indInitPeriod = (mrs_natural) (((60.0 / initPeriods_(maxMetricalRelScoreInd)) 
-			* (srcFs_ / hopSize_)) + 0.5); // (+ 0.5 for round integer)
+													* (srcFs_ / hopSize_)) + 0.5); // (+ 0.5 for round integer)
 		mrs_natural indLastPeriod = (mrs_natural) (((60.0 / lastPeriods_(maxMetricalRelScoreInd)) 
-			* (srcFs_ / hopSize_)) + 0.5); // (+ 0.5 for round integer)
+													* (srcFs_ / hopSize_)) + 0.5); // (+ 0.5 for round integer)
 		
 		//write best initPeriod calculation (from ACF peaks)
 		ossInitPeriod << inductionOut_ << "_indInitTempo.txt";
@@ -826,7 +826,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 		
 		//to avoid negative score inversions
 		if(metricalRelScore_(i) < 0 && maxMetricalRelScore > 0 && maxGlobalTrackingScore_ > 0 
-			&& abs(metricalRelScore_(i)) > maxMetricalRelScore)
+		   && abs(metricalRelScore_(i)) > maxMetricalRelScore)
 			metricalRelFraction = -1;
 		if(metricalRelScore_(i) < 0 && maxMetricalRelScore < 0 && maxGlobalTrackingScore_ > 0)
 			metricalRelFraction = (maxMetricalRelScore / metricalRelScore_(i));
@@ -842,10 +842,10 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 
 		if(dumbInduction_) //if dumbInduction don't consider metrical relations
 			finalScore = maxLocalTrackingScore_(i) * (initPeriods_(i) / maxPeriod_);
-			//finalScore = rawScore_(i);
+		//finalScore = rawScore_(i);
 
 		//aditional initial score normalization dependent of score function (due to their relative weights)
-		if(strcmp(scoreFunc_.c_str(), "correlation") == 0 || strcmp(scoreFunc_.c_str(), "squareCorr") == 0 )
+		if ((scoreFunc_ == "correlation") || (scoreFunc_ == "squareCorr"))
 			finalScore *= 5; //("correlation" and "squareCorr" are, in average, 5times more reactive than "regular")
 
 		out(i, 2) = finalScore;
@@ -882,7 +882,7 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 		dumbInduction_ = ctrl_dumbInduction_->to<mrs_bool>();
 
 		//maxScore_ = calcGTNormScore(in);
-		if(strcmp(mode_.c_str(), "givefirst2beats") == 0)
+		if (mode_ == "givefirst2beats")
 		{	
 			inputGT(in, out, ctrl_gtBeatsFile_->to<mrs_string>());
 			
@@ -918,7 +918,7 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 			//score 
 			out(0, 2) = gtScore_; //initialScore
 		}
-		else if(strcmp(mode_.c_str(), "givefirst2beats_startpoint") == 0)
+		else if (mode_ == "givefirst2beats_startpoint")
 		{
 			inputGT(in, out, ctrl_gtBeatsFile_->to<mrs_string>());
 			//Period:
@@ -935,12 +935,12 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 			cout << (((gtPhase_ * hopSize_) - adjustment_) / srcFs_) << "s" << endl;
 			cout << "Ground-truth period: " << ((60.0/gtInitPeriod_)*(srcFs_ / hopSize_)) << "BPMs" << endl;
 		}
-		else if(strcmp(mode_.c_str(), "givefirst1beat") == 0 
-			|| strcmp(mode_.c_str(), "givefirst1beat_startpoint") == 0 )
+		else if ((mode_  == "givefirst1beat")
+				 || (mode_ == "givefirst1beat_startpoint"))
 		{
 			inputGT(in, out, ctrl_gtBeatsFile_->to<mrs_string>());
 		}
-		else if(strcmp(mode_.c_str(), "regular") == 0)
+		else if (mode_ == "regular")
 			regularFunc(in , out);
 
 		inductionFinished_ = true;

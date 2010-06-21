@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <cstring> 
 #include "common_header.h"
 
 #if _MSC_VER >= 1400
