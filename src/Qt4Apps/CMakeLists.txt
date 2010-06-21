@@ -13,7 +13,15 @@ qt4_add_resources(APP_RESOURCE_FILES ${APP_RESOURCES})
 
 add_executable(${APP_NAME} ${APP_SOURCES} ${APP_UIHEADERS}
 ${APP_MOC_SOURCES} ${APP_RESOURCE_FILES})
-TARGET_LINK_LIBRARIES(${APP_NAME} marsyas marsyasqt ${OS_LIBS})
+
+## Link Libraries
+#TARGET_LINK_LIBRARIES(${APP_NAME} marsyas marsyasqt ${OS_LIBS})
+if (MARSYAS_OPENGL)
+    TARGET_LINK_LIBRARIES(${APP_NAME} marsyas marsyasqt ${OS_LIBS} ${OPENGL_LIBRARIES})
+else (MARSYAS_OPENGL)
+    TARGET_LINK_LIBRARIES(${APP_NAME} marsyas marsyasqt ${OS_LIBS})
+endif (MARSYAS_OPENGL)
+
 
 install(TARGETS ${APP_NAME} DESTINATION bin)
 endmacro (marsyas_qt4app)
