@@ -96,7 +96,7 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 	
 	
   
-	if (strcmp(mode.c_str(), "train") == 0 && !done)
+	if ((mode == "train") && !done)
     {
 		for (t=0; t < inSamples_; t++)
 		{
@@ -105,7 +105,7 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 			out(1,t) = label;
 		}//for t
     }//if train
-	else if (strcmp(mode.c_str(), "predict") == 0 && !done)
+	else if ((mode == "predict") && !done)
 	{
 		count++;
 
