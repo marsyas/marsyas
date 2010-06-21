@@ -97,7 +97,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 
 	// If 'filename' was updated, or the attributes desired from the Weka file has changed,
 	// parse the header portion of the file to get the required attribute names and possible output labels (if any)...
-	if (strcmp(filename_.c_str(), getctrl("mrs_string/filename")->to<mrs_string>().c_str()) != 0)
+	if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
 	{
 		this->updControl("mrs_bool/done", false);	  
 		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
