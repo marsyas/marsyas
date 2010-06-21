@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -31,19 +31,19 @@ using namespace Marsyas;
 
 BeatAgent::BeatAgent(string name):MarSystem("BeatAgent", name)
 {
-  addControls();
-  beatCount_ = 0;
-  score_ = 0;
-  curBeatPointValue_ = 0;
-  myIndex_ = -1;
-  fraction_ = 0.0;
+	addControls();
+	beatCount_ = 0;
+	score_ = 0;
+	curBeatPointValue_ = 0;
+	myIndex_ = -1;
+	fraction_ = 0.0;
 }
 
 BeatAgent::BeatAgent(const BeatAgent& a) : MarSystem(a)
 {
-  // For any MarControlPtr in a MarSystem 
-  // it is necessary to perform this getctrl 
-  // in the copy constructor in order for cloning to work 
+	// For any MarControlPtr in a MarSystem 
+	// it is necessary to perform this getctrl 
+	// in the copy constructor in order for cloning to work 
 	ctrl_identity_ = getctrl("mrs_string/identity");
 	ctrl_timming_ = getctrl("mrs_natural/timming");
 	ctrl_agentControl_ = getctrl("mrs_realvec/agentControl");
@@ -68,13 +68,13 @@ BeatAgent::~BeatAgent()
 MarSystem* 
 BeatAgent::clone() const 
 {
-  return new BeatAgent(*this);
+	return new BeatAgent(*this);
 }
 
 void 
 BeatAgent::addControls()
 {
-  //Add specific controls needed by this MarSystem.
+	//Add specific controls needed by this MarSystem.
 	addctrl("mrs_string/identity", "AgentX", ctrl_identity_);
 	addctrl("mrs_natural/timming", 0, ctrl_timming_);
 	addctrl("mrs_realvec/agentControl", realvec(), ctrl_agentControl_);
@@ -152,7 +152,7 @@ BeatAgent::calcDScoreCorrSquare(realvec& in)
 		dScore += -1 * pow((fraction_),2) * in(t);
 	}
 
-	//if(strcmp(identity_.c_str(), "Agent0") == 0);
+	//if (identity_ == "Agent0");
 	//	cout << "MAX: " << max << "; ERRROR: " << error_ << "; dSCORE: " << dScore << endl;
 
 	//dScore /= (outterWinLft_+outterWinRgt_); //normalized by the full window size
@@ -313,17 +313,16 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		//Classification of last beat based on above evaluation:
 
 		//cout << identity_ << " -> Score: " << score_ << endl;
-		if(strcmp(scoreFunc_.c_str(), "squareCorr") == 0)
+		if (scoreFunc_ == "squareCorr")
 			score_ = calcDScoreCorrSquare(in); 
-
-		else if(strcmp(scoreFunc_.c_str(), "correlation") == 0)
+		else if (scoreFunc_ == "correlation")
 			score_ = calcDScoreCorr(in, max_i); 
 
 		//mrs_real phase;
 		//1st Condition: is beat  inside innerWindow?
 		if(max_i >= lastBeatPoint_ - innerWin_ && max_i <= lastBeatPoint_)
 		{
-			if(strcmp(scoreFunc_.c_str(), "regular") == 0)
+			if (scoreFunc_ == "regular")
 			{
 				fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
 				//score_ = (1 - fraction_);
@@ -343,7 +342,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		}
 		else if(max_i > lastBeatPoint_ && max_i <= lastBeatPoint_ + innerWin_)
 		{
-			if(strcmp(scoreFunc_.c_str(), "regular") == 0)
+			if (scoreFunc_ == "regular")
 			{
 				fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
 				//score_ = (1 - fraction_) * max;
@@ -367,7 +366,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		{
 			if((max_i >= lastBeatPoint_ - outterWinLft_) && (max_i < lastBeatPoint_ - innerWin_))
 			{	
-				if(strcmp(scoreFunc_.c_str(), "regular") == 0)
+				if (scoreFunc_  == "regular")
 				{
 					fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
 					//score_ = -1 * fraction_ * max;
@@ -380,7 +379,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 			}
 			if((max_i > lastBeatPoint_ + innerWin_) && (max_i <= lastBeatPoint_ + outterWinRgt_))
 			{	
-				if(strcmp(scoreFunc_.c_str(), "regular") == 0)
+				if (scoreFunc_  == "regular")
 				{
 					fraction_ = (mrs_real) abs(error_) / outterWinRgt_;
 					//score_ = -1 * fraction_ * max;
@@ -405,11 +404,11 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 		//	<< max << "-" << max_i << ") dS: " << score_ << " NextBeat(ifNotChanged): " << curBeat_+period_ << endl;
 
 		/*
-		for(mrs_natural i = 0; i < beatCount_; ++i)
-		{
-			cout << identity_ << " -> "History Phase(" << i << "): " << history_(i, 0) << endl;
-			cout << identity_ << " ->  "History Value(" << i << "): " << history_(i, 1) << endl;
-		}
+		  for(mrs_natural i = 0; i < beatCount_; ++i)
+		  {
+		  cout << identity_ << " -> "History Phase(" << i << "): " << history_(i, 0) << endl;
+		  cout << identity_ << " ->  "History Value(" << i << "): " << history_(i, 1) << endl;
+		  }
 		*/
 
 		//Updates previous Beat
@@ -424,13 +423,13 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("plot(FluxTrack/max(FluxTrack))");
 	//MATLAB_EVAL("hold on;");
 	/*MATLAB_PUT(out, "BeatAgent");
-	MATLAB_PUT(lastBeatPoint_ + 2, "t");
-	MATLAB_PUT(lastBeatPoint_ - outterWinLft_ + 2, "t1");
-	MATLAB_PUT(lastBeatPoint_ + outterWinRgt_ + 2, "t2");
-	MATLAB_EVAL("BeatAgentTS = [BeatAgentTS, BeatAgent];");
-	MATLAB_EVAL("stem(t1,1, 'g');");
-	MATLAB_EVAL("stem(t,1, 'r');");
-	MATLAB_EVAL("stem(t2,1, 'g');");
-	MATLAB_EVAL("hold off;");
+	  MATLAB_PUT(lastBeatPoint_ + 2, "t");
+	  MATLAB_PUT(lastBeatPoint_ - outterWinLft_ + 2, "t1");
+	  MATLAB_PUT(lastBeatPoint_ + outterWinRgt_ + 2, "t2");
+	  MATLAB_EVAL("BeatAgentTS = [BeatAgentTS, BeatAgent];");
+	  MATLAB_EVAL("stem(t1,1, 'g');");
+	  MATLAB_EVAL("stem(t,1, 'r');");
+	  MATLAB_EVAL("stem(t2,1, 'g');");
+	  MATLAB_EVAL("hold off;");
 	*/
 }
