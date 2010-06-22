@@ -294,7 +294,7 @@ train()
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
   net->addMarSystem(mng.create("Classifier", "cl"));
-  net->addMarSystem(mng.create("Summary", "summary"));
+  net->addMarSystem(mng.create("ClassificationReport", "summary"));
 
   if (classifier_ == "GS")
     net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
@@ -311,12 +311,12 @@ train()
   net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   net->updControl("mrs_natural/inSamples", 1);
 
-  net->updControl("Summary/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->updControl("Summary/summary/mrs_string/classNames", 
+  net->updControl("ClassificationReport/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->updControl("ClassificationReport/summary/mrs_string/classNames", 
 	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
   
   net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkControl("Classifier/cl/mrs_string/mode", "Summary/summary/mrs_string/mode");  
+  net->linkControl("Classifier/cl/mrs_string/mode", "ClassificationReport/summary/mrs_string/mode");  
 
   int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
@@ -328,7 +328,7 @@ train()
     }
 
   net->updControl("Classifier/cl/mrs_string/mode", "predict");
-  net->updControl("Summary/summary/mrs_bool/done", true);
+  net->updControl("ClassificationReport/summary/mrs_bool/done", true);
   net->tick();
 }
 
@@ -381,7 +381,7 @@ void tags() {
 
   ////////////////////////////////////////////////////////////
   //
-  // Set the classes of the Summary and Classifier to be
+  // Set the classes of the ClassificationReport and Classifier to be
   // the same as the WekaSource
   //
   net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));

@@ -194,6 +194,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 
 	if (!training_) {
 		if (!trained_ && was_training_) {
+			
 			// When network is switched from "train" mode to "predict",
 			// we process the data instances which have been stored
 			// in WekaData and pass them onto libsvm classes for actual training.
@@ -290,6 +291,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			
 			
 			svm_model_ = svm_train(&svm_prob_, &svm_param_);
+			
 			trained_ = true;
 
 			MRSDEBUG ("SVMCLassifier train ... done");
@@ -397,6 +399,10 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 	}
 }
 
+
+
+
+
 void SVMClassifier::myProcess(realvec& in, realvec& out) 
 {
 	
@@ -407,6 +413,8 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 
 		if (!was_training_) {
 			instances_.Create(inObservations_);
+			trained_ = false;
+
 		}
 		
 		instances_.Append(in);

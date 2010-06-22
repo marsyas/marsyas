@@ -101,6 +101,7 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 
 		if ((prev_mode_ == "train") && (mode == "predict"))
 		{
+			
 			MarControlAccessor acc_means(ctrl_means_);
 			MarControlAccessor acc_covars(ctrl_covars_);
 			
