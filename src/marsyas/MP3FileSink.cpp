@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,6 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h" 
 #include "MP3FileSink.h"
 
 #ifdef MARSYAS_LAME
@@ -27,8 +28,8 @@ using namespace Marsyas;
 
 MP3FileSink::MP3FileSink(string name):AbsSoundFileSink("MP3FileSink",name)
 {
-  //type_ = "MP3FileSink";
-  //name_ = name;
+	//type_ = "MP3FileSink";
+	//name_ = name;
 #ifdef MARSYAS_LAME
 	gfp_ = NULL;
 #endif
@@ -45,15 +46,15 @@ MP3FileSink::~MP3FileSink()
 	
 #ifdef MARSYAS_LAME
 
-			 if (sfp_)
-			 {
-				 mrs_natural encodeCheck = lame_encode_flush(gfp_, mp3Buffer_, 0);
-				 mrs_natural owrite = (int) fwrite(mp3Buffer_, 1, encodeCheck, sfp_);
-				 if (owrite != encodeCheck) {
-					 MRSWARN("Writing MP3 data to "+filename_+" failed.");
-				 }
-				 fclose(sfp_);
-			 }
+	if (sfp_)
+	{
+		mrs_natural encodeCheck = lame_encode_flush(gfp_, mp3Buffer_, 0);
+		mrs_natural owrite = (int) fwrite(mp3Buffer_, 1, encodeCheck, sfp_);
+		if (owrite != encodeCheck) {
+			MRSWARN("Writing MP3 data to "+filename_+" failed.");
+		}
+		fclose(sfp_);
+	}
 	
 
 #endif   
@@ -65,7 +66,7 @@ MP3FileSink::~MP3FileSink()
 MarSystem* 
 MP3FileSink::clone() const
 {
-  return new MP3FileSink(*this);
+	return new MP3FileSink(*this);
 }
 
 void 
@@ -84,26 +85,26 @@ MP3FileSink::addControls()
 bool 
 MP3FileSink::checkExtension(string filename)
 {
-  FileName fn(filename);
-  string mp3ext  = "mp3";
+	FileName fn(filename);
+	string mp3ext  = "mp3";
   
-  if (fn.ext() == mp3ext)
-    return true;
-  else 
-    return false;
+	if (fn.ext() == mp3ext)
+		return true;
+	else 
+		return false;
 }
 
 void 
 MP3FileSink::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
-  MRSDIAG("MP3FileSink::myUpdate");
+	(void) sender;
+	MRSDIAG("MP3FileSink::myUpdate");
 
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-  nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();      
+	nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();      
 
 #ifdef MARSYAS_LAME
 	// initialize to default encoding parameters
@@ -163,28 +164,31 @@ MP3FileSink::myUpdate(MarControlPtr sender)
 
 #endif
 	
-  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
+	filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 }
   
 void 
 MP3FileSink::putHeader(string filename)
 {	
-	#ifdef MARSYAS_LAME
-  sfp_ = fopen(filename.c_str(), "wb");	
+#ifdef MARSYAS_LAME
+	sfp_ = fopen(filename.c_str(), "wb");	
 #endif
 }
 
 void 
 MP3FileSink::myProcess(realvec& in, realvec& out)
 {
+
+	cout << "I am called" << endl;
+	
 	mrs_natural t,o;
 
-  // copy input to output 
-  for (o=0; o < inObservations_; o++)
-    for (t=0; t < inSamples_; t++)
-    {
+	// copy input to output 
+	for (o=0; o < inObservations_; o++)
+		for (t=0; t < inSamples_; t++)
+		{
 			out(o,t) = in(o,t);
-    }
+		}
 #ifdef MARSYAS_LAME
 	
 	mrs_natural encodeCheck=-1;
@@ -197,11 +201,11 @@ MP3FileSink::myProcess(realvec& in, realvec& out)
 		for (t=0; t < inSamples_; t++)
 			rightpcm_[t] = (short)(in(1,t) * PCM_MAXSHRT);
 
-	 encodeCheck = lame_encode_buffer(gfp_,
-							  leftpcm_, rightpcm_,
-							   inSamples_, mp3Buffer_, 0);		
+		encodeCheck = lame_encode_buffer(gfp_,
+										 leftpcm_, rightpcm_,
+										 inSamples_, mp3Buffer_, 0);		
 	}
-   else
+	else
 		encodeCheck = lame_encode_buffer(gfp_,
 										 leftpcm_, leftpcm_,
 										 inSamples_, mp3Buffer_,0); // [ML] 0 do not check for buffer size, should be sizeof(mp3Buffer_) but check fails
@@ -221,7 +225,7 @@ MP3FileSink::myProcess(realvec& in, realvec& out)
 	}
 	
 	
-	#endif   
+#endif   
 
 }
 
