@@ -257,7 +257,7 @@ AimSAI::myProcess(realvec& in, realvec& out)
   // cout << "AimSAI::myProcess" << endl;
   mrs_natural _max_concurrent_strobes = ctrl_max_concurrent_strobes_->to<mrs_natural>();
   mrs_real _israte = ctrl_israte_->to<mrs_real>();
-  mrs_natural _inSamples = ctrl_inSamples_->to<mrs_natural>();
+  // mrs_natural _inSamples = ctrl_inSamples_->to<mrs_natural>();
 
   // Grab the centre frequencies from the input
   for (int o = 0; o < channel_count_; ++o) {
@@ -396,7 +396,8 @@ AimSAI::myProcess(realvec& in, realvec& out)
       double decay = pow(sai_decay_factor_, frame_period_samples_);
 
       for (int o = 0; o < channel_count_; ++o) {
-        for (int t = 0; t < _inSamples; ++t ) {
+        // for (int t = 0; t < _inSamples; ++t ) {
+        for (int t = 0; t < frame_period_samples_; ++t ) {
           // cout << "output2(" << o << "," << t << ")=" << sai_temp_(o,t) + out(o,t) * decay << endl;
           out(o, t) = sai_temp_(o,t) + out(o,t) * decay;
         }
