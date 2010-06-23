@@ -81,7 +81,8 @@ aim(string pluginName, string wekafname,
   featureNetwork->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
   featureNetwork->addMarSystem(mng.create("AimSAI", "aimsai"));
   featureNetwork->addMarSystem(mng.create("AimBoxes", "aimBoxes"));
-  featureNetwork->addMarSystem(mng.create("Unfold", "unfold"));
+  featureNetwork->addMarSystem(mng.create("AimVQ", "aimvq"));
+  // featureNetwork->addMarSystem(mng.create("Unfold", "unfold"));
 
   // featureNetwork->addMarSystem(mng.create("Centroid", "centroid"));
   // featureNetwork->addMarSystem(mng.create("TextureStats", "texturestats"));
@@ -98,10 +99,14 @@ aim(string pluginName, string wekafname,
   acc->addMarSystem(featureNetwork);
   bextractNetwork->addMarSystem(acc);
 
-  MarSystem* song_statistics = mng.create("Fanout", "song_statistics");
-  song_statistics->addMarSystem(mng.create("Mean", "mn"));
-  song_statistics->addMarSystem(mng.create("StandardDeviation", "std"));
-  bextractNetwork->addMarSystem(song_statistics);
+  // MarSystem* song_statistics = mng.create("Fanout", "song_statistics");
+  // song_statistics->addMarSystem(mng.create("Mean", "mn"));
+  // song_statistics->addMarSystem(mng.create("StandardDeviation", "std"));
+  // bextractNetwork->addMarSystem(song_statistics);
+
+  bextractNetwork->addMarSystem(mng.create("Sum", "sum"));
+  bextractNetwork->updControl("Sum/sum/mrs_string/mode", "sum_observations");
+  bextractNetwork->addMarSystem(mng.create("Normalize", "normalize"));
 
   bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/filename",
                             "mrs_string/filename"); // added Fanout ... 
