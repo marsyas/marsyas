@@ -234,6 +234,7 @@
 #include "AimSAI.h"
 #include "AimSSI.h"
 #include "AimBoxes.h"
+#include "AimVQ.h"
 #include "Unfold.h"
 #include "TimeFreqPeakConnectivity.h"
 #include "Combinator.h"
@@ -472,6 +473,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AimSAI", new AimSAI("aimsai"));
 	registerPrototype("AimSSI", new AimSSI("aimssi"));
 	registerPrototype("AimBoxes", new AimBoxes("aimboxes"));
+	registerPrototype("AimVQ", new AimVQ("aimvq"));
 	registerPrototype("Unfold", new Unfold("unfold"));
 
 	registerPrototype("Inject", new Inject("injectpr"));

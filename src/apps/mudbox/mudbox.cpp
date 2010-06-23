@@ -7537,6 +7537,117 @@ toy_with_unfold(string sfName)
 }
 
 
+// Dump out a .wav file as text
+void 
+toy_with_dumpwav(string sfName, string outName)
+{
+	cout << "Toy_with: dumpwav" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+
+	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+    realvec out;
+
+    ofstream outputstream(outName.c_str());
+
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      net->tick();
+      out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+      for (int i = 0; i < out.getCols(); i++) {
+        outputstream << out(0,i) << endl;
+      }
+	}
+	delete net;
+}
+
+// Dump out a .wav file as text
+void 
+toy_with_sness_shredder(string sfName)
+{
+	cout << "Toy_with: sness_shredder" << endl;
+	
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+
+    MarSystem* accum = mng.create("Accumulator", "accum");
+	accum->addMarSystem(mng.create("SoundFileSource", "src"));
+    // accum->updctrl("mrs_natural/nTimes", 1293);
+    accum->updctrl("mrs_natural/nTimes", 1000);
+	accum->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+    net->addMarSystem(accum);
+
+    MarSystem* shredder = mng.create("Shredder", "shredder");
+	shredder->addMarSystem(mng.create("Gain", "gain"));
+    shredder->updctrl("mrs_natural/nTimes", 10);
+    net->addMarSystem(shredder);
+
+    net->addMarSystem(mng.create("Gain", "gain"));
+
+    realvec out;
+
+	while (accum->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      net->tick();
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	}
+	delete net;
+}
+
+// Vector Quantize an input file
+void 
+toy_with_aim_vq(string sfName)
+{
+	cout << "Toy_with: aim_vq" << endl;
+
+	MarSystemManager mng;
+
+	MarSystem* net = mng.create("Series", "net");
+
+	MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
+	featureNetwork->addMarSystem(mng.create("SoundFileSource", "src"));
+	featureNetwork->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+    featureNetwork->addMarSystem(mng.create("AimHCL", "aimhcl"));
+	featureNetwork->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+	featureNetwork->addMarSystem(mng.create("AimSAI", "aimsai"));
+	featureNetwork->addMarSystem(mng.create("AimBoxes", "aimboxes"));
+	featureNetwork->addMarSystem(mng.create("AimVQ", "aimvq"));
+
+    MarSystem* acc = mng.create("Accumulator", "acc");
+    acc->updctrl("mrs_natural/nTimes", 649);
+    acc->addMarSystem(featureNetwork);
+    net->addMarSystem(acc);
+
+	net->addMarSystem(mng.create("Sum", "sum"));
+    net->updctrl("Sum/sum/mrs_string/mode", "sum_observations");
+
+	featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+
+    cout << "UPDATE" << endl;
+
+    // cout << *net;
+
+	while (featureNetwork->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	{
+      cout << "tik tok" << endl;
+      net->tick();
+      // cout << "AFTER" << endl;
+      // cout << *net;
+
+      cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	}
+	delete net;
+}
+
+
+
+
 int
 main(int argc, const char **argv)
 {
@@ -7762,6 +7873,12 @@ main(int argc, const char **argv)
 		toy_with_aim_boxes(fname0);
 	else if (toy_withName == "unfold")
 		toy_with_unfold(fname0);
+	else if (toy_withName == "dumpwav")
+      toy_with_dumpwav(fname0, fname1);
+	else if (toy_withName == "sness_shredder")
+      toy_with_sness_shredder(fname0);
+	else if (toy_withName == "aim_vq")
+		toy_with_aim_vq(fname0);
 
 	else 
 	{

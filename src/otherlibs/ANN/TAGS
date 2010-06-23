@@ -1,0 +1,354 @@
+
+#CMakeLists.txt#,10
+SET(4,38
+
+ANN.cpp,382
+ANNdist annDist(46,1901
+void annPrintPt(70,2467
+ANNpoint annAllocPt(110,3913
+ANNpointArray annAllocPts(117,4068
+void annDeallocPt(127,4336
+void annDeallocPts(133,4426
+ANNpoint annCopyPt(140,4601
+void annAssignRect(148,4803
+ANNbool ANNorthRect::inside(157,5018
+void annError(169,5342
+int	ANNmaxPtsVisited 190,6120
+int	ANNptsVisited;191,6179
+void annMaxPtsVisit(197,6415
+
+ANN.h,1792
+#define ANN_H60,2651
+	 #define DLL_API 77,3537
+	#define DLL_API 79,3585
+  #define DLL_API85,3835
+  const double ANN_DBL_MAX 114,5138
+  const double ANN_DBL_MAX 118,5250
+#define ANNversion 121,5296
+#define ANNversionCmt	122,5358
+#define ANNcopyright	123,5383
+#define ANNlatestRev	124,5436
+enum ANNbool 132,5755
+enum ANNbool {ANNfalse ANNfalse132,5755
+enum ANNbool {ANNfalse = 0, ANNtrue 132,5755
+typedef double	ANNcoord;158,6866
+typedef double	ANNdist;159,6918
+typedef int		ANNidx;175,7688
+const ANNidx	ANN_NULL_IDX 176,7728
+const ANNdist	ANN_DIST_INF 199,8743
+	const int	 ANNcoordPrec	220,9688
+	const int	 ANNcoordPrec	222,9730
+const ANNbool	ANN_ALLOW_SELF_MATCH	235,10296
+#define ANN_POW(336,14187
+#define ANN_ROOT(337,14218
+#define ANN_SUM(338,14248
+#define ANN_DIFF(339,14282
+typedef ANNcoord* ANNpoint;375,15868
+typedef ANNpoint* ANNpointArray;376,15909
+typedef ANNdist*  ANNdistArray;377,15965
+typedef ANNidx*   ANNidxArray;378,16024
+class DLL_API ANNpointSet 491,20865
+enum ANNsplitRule 596,25167
+		ANN_KD_STD	ANNsplitRule::ANN_KD_STD597,25187
+		ANN_KD_MIDPT	ANNsplitRule::ANN_KD_MIDPT598,25243
+		ANN_KD_FAIR	ANNsplitRule::ANN_KD_FAIR599,25283
+		ANN_KD_SL_MIDPT	ANNsplitRule::ANN_KD_SL_MIDPT600,25319
+		ANN_KD_SL_FAIR	ANNsplitRule::ANN_KD_SL_FAIR601,25381
+		ANN_KD_SUGGEST	ANNsplitRule::ANN_KD_SUGGEST602,25434
+const int ANN_N_SPLIT_RULES	603,25495
+enum ANNshrinkRule 605,25555
+		ANN_BD_NONE	ANNshrinkRule::ANN_BD_NONE606,25576
+		ANN_BD_SIMPLE	ANNshrinkRule::ANN_BD_SIMPLE607,25636
+		ANN_BD_CENTROID	ANNshrinkRule::ANN_BD_CENTROID608,25679
+		ANN_BD_SUGGEST	ANNshrinkRule::ANN_BD_SUGGEST609,25726
+const int ANN_N_SHRINK_RULES	610,25784
+typedef ANNkd_node*	ANNkd_ptr;703,30022
+class DLL_API ANNbd_tree: public ANNkd_tree 797,33632
+
+ANNperf.h,517
+#define ANNperf_H31,1331
+class ANNkdStats 45,1815
+	void reset(ANNkdStats::reset59,2312
+	ANNkdStats(ANNkdStats::ANNkdStats66,2464
+	void operator+=(operator+=101,3456
+  #define ANN_FLOP(124,4067
+  #define ANN_LEAF(125,4114
+  #define ANN_SPL(126,4161
+  #define ANN_SHR(127,4207
+  #define ANN_PTS(128,4253
+  #define ANN_COORD(129,4299
+  #define ANN_FLOP(131,4353
+  #define ANN_LEAF(132,4375
+  #define ANN_SPL(133,4397
+  #define ANN_SHR(134,4418
+  #define ANN_PTS(135,4439
+  #define ANN_COORD(136,4460
+
+ANNx.h,1003
+#define ANNx_H37,1522
+enum	{ANN_LO=ANN_LO45,1792
+enum	{ANN_LO=0, ANN_HI=45,1792
+enum	{ANN_IN=ANN_IN46,1840
+enum	{ANN_IN=0, ANN_OUT=46,1840
+enum ANNerr 48,1928
+enum ANNerr {ANNwarn ANNwarn48,1928
+enum ANNerr {ANNwarn = 0, ANNabort 48,1928
+class ANNorthRect 91,3785
+	ANNorthRect(ANNorthRect::ANNorthRect96,3902
+	ANNorthRect(ANNorthRect::ANNorthRect102,4085
+	ANNorthRect(ANNorthRect::ANNorthRect107,4267
+	~ANNorthRect(ANNorthRect::~ANNorthRect113,4451
+class ANNorthHalfSpace 132,5223
+	ANNorthHalfSpace(ANNorthHalfSpace::ANNorthHalfSpace138,5356
+	ANNorthHalfSpace(ANNorthHalfSpace::ANNorthHalfSpace141,5434
+	ANNbool in(ANNorthHalfSpace::in147,5608
+	ANNbool out(ANNorthHalfSpace::out150,5714
+	ANNdist dist(ANNorthHalfSpace::dist153,5821
+	void setLowerBound(ANNorthHalfSpace::setLowerBound156,5929
+	void setUpperBound(ANNorthHalfSpace::setUpperBound159,6035
+	void project(ANNorthHalfSpace::project162,6141
+typedef ANNorthHalfSpace *ANNorthHSArray;ANNorthHSArray167,6274
+
+CMakeLists.txt,10
+SET(4,38
+
+Makefile,709
+BASEDIR	33,1422
+INCDIR	34,1435
+LIBDIR	35,1463
+SOURCES 37,1488
+HEADERS 42,1702
+OBJECTS 45,1825
+default:default51,2033
+targets:targets54,2083
+$(LIBDIR)/$(ANNLIB)$(LIBDIR)/$(ANNLIB56,2113
+ANN.o:ANN.o65,2403
+brute.o:brute.o68,2460
+kd_tree.o:kd_tree.o71,2523
+kd_util.o:kd_util.o74,2592
+kd_split.o:kd_split.o77,2661
+kd_search.o:kd_search.o80,2733
+kd_pr_search.o:kd_pr_search.o83,2808
+kd_fix_rad_search.o:kd_fix_rad_search.o86,2892
+kd_dump.o:kd_dump.o89,2991
+bd_tree.o:bd_tree.o92,3060
+bd_search.o:bd_search.o95,3129
+bd_pr_search.o:bd_pr_search.o98,3204
+bd_fix_rad_search.o:bd_fix_rad_search.o101,3288
+perf.o:perf.o104,3387
+clean:clean117,3828
+realclean:realclean120,3853
+
+bd_fix_rad_search.cpp,42
+void ANNbd_shrink::ann_FR_search(39,1753
+
+bd_pr_search.cpp,43
+void ANNbd_shrink::ann_pri_search(39,1763
+
+bd_search.cpp,39
+void ANNbd_shrink::ann_search(39,1730
+
+bd_tree.cpp,518
+void ANNbd_shrink::print(41,1695
+void ANNbd_shrink::getStats(71,2693
+ANNbd_tree::ANNbd_tree(116,4496
+enum ANNdecomp 162,6152
+enum ANNdecomp {SPLIT,ANNdecomp::SPLIT162,6152
+enum ANNdecomp {SPLIT, SHRINK}ANNdecomp::SHRINK162,6152
+const float BD_GAP_THRESH 178,6999
+const int   BD_CT_THRESH 179,7064
+ANNdecomp trySimpleShrink(181,7128
+const float	BD_MAX_SPLIT_FAC 232,9000
+const float	BD_FRACTION 233,9073
+ANNdecomp tryCentroidShrink(236,9181
+ANNdecomp selectDecomp(279,10858
+ANNkd_ptr rbd_tree(335,13140
+
+bd_tree.h,160
+#define ANN_bd_tree_H28,1170
+class ANNbd_shrink 61,2632
+	ANNbd_shrink(ANNbd_shrink::ANNbd_shrink67,2867
+	~ANNbd_shrink(ANNbd_shrink::~ANNbd_shrink78,3212
+
+brute.cpp,158
+ANNbruteForce::ANNbruteForce(44,1932
+ANNbruteForce::~ANNbruteForce(52,2137
+void ANNbruteForce::annkSearch(54,2197
+int ANNbruteForce::annkFRSearch(80,3083
+
+kd_dump.cpp,484
+const int		STRING_LEN	43,1858
+const double	EPSILON	44,1913
+enum ANNtreeType 46,1982
+enum ANNtreeType {KD_TREE,ANNtreeType::KD_TREE46,1982
+enum ANNtreeType {KD_TREE, BD_TREE}ANNtreeType::BD_TREE46,1982
+void ANNkd_tree::Dump(102,4276
+void ANNkd_split::dump(134,5140
+void ANNkd_leaf::dump(144,5446
+void ANNbd_shrink::dump(159,5757
+ANNkd_tree::ANNkd_tree(186,6850
+ANNbd_tree::ANNbd_tree(215,7907
+static ANNkd_ptr annReadDump(253,9477
+static ANNkd_ptr annReadTree(368,13898
+
+kd_fix_rad_search.cpp,377
+int				ANNkdFRDim;45,2123
+ANNpoint		ANNkdFRQ;46,2167
+ANNdist			ANNkdFRSqRad;47,2205
+double			ANNkdFRMaxErr;48,2262
+ANNpointArray	ANNkdFRPts;49,2319
+ANNmin_k*		ANNkdFRPointMK;50,2362
+int				ANNkdFRPtsVisited;51,2418
+int				ANNkdFRPtsInRange;52,2469
+int ANNkd_tree::annkFRSearch(58,2739
+void ANNkd_split::ann_FR_search(100,4428
+void ANNkd_leaf::ann_FR_search(148,6147
+
+kd_fix_rad_search.h,40
+#define ANN_kd_fix_rad_search_H26,1138
+
+kd_pr_search.cpp,356
+double			ANNprEps;75,3744
+int				ANNprDim;76,3785
+ANNpoint		ANNprQ;77,3827
+double			ANNprMaxErr;78,3864
+ANNpointArray	ANNprPts;79,3919
+ANNpr_queue		*ANNprBoxPQ;ANNprBoxPQ80,3960
+ANNmin_k		*ANNprPointMK;ANNprPointMK81,4016
+void ANNkd_tree::annkPriSearch(87,4277
+void ANNkd_split::ann_pri_search(139,6052
+void ANNkd_leaf::ann_pri_search(181,7620
+
+kd_pr_search.h,35
+#define ANN_kd_pr_search_H26,1111
+
+kd_search.cpp,273
+int				ANNkdDim;79,3994
+ANNpoint		ANNkdQ;80,4036
+double			ANNkdMaxErr;81,4073
+ANNpointArray	ANNkdPts;82,4128
+ANNmin_k		*ANNkdPointMK;ANNkdPointMK83,4169
+void ANNkd_tree::annkSearch(89,4422
+void ANNkd_split::ann_search(124,5666
+void ANNkd_leaf::ann_search(172,7377
+
+kd_search.h,32
+#define ANN_kd_search_H26,1105
+
+kd_split.cpp,199
+const double ERR 34,1419
+const double FS_ASPECT_RATIO 35,1465
+void kd_split(44,1900
+void midpt_split(76,3261
+void sl_midpt_split(146,5982
+void fair_split(243,9828
+void sl_fair_split(346,13969
+
+kd_split.h,31
+#define ANN_KD_SPLIT_H26,1110
+
+kd_tree.cpp,587
+static int				IDX_TRIVIAL[IDX_TRIVIAL49,2208
+ANNkd_leaf				*KD_TRIVIAL KD_TRIVIAL50,2266
+void ANNkd_split::print(67,3087
+void ANNkd_leaf::print(82,3564
+void ANNkd_tree::Print(104,4029
+#define MAX(131,4899
+void ANNkdStats::merge(133,4942
+const double ANN_AR_TOOBIG 145,5328
+void ANNkd_leaf::getStats(147,5394
+void ANNkd_split::getStats(160,5869
+void ANNkd_tree::getStats(191,7099
+ANNkd_tree::~ANNkd_tree(209,7779
+void annClose(221,8278
+void ANNkd_tree::SkeletonTree(244,9122
+ANNkd_tree::ANNkd_tree(273,9951
+ANNkd_ptr rkd_tree(314,11814
+ANNkd_tree::ANNkd_tree(368,13898
+
+kd_tree.h,458
+#define ANN_kd_tree_H28,1180
+using namespace std;32,1246
+class ANNkd_node{ANNkd_node46,1887
+	virtual ~ANNkd_node(ANNkd_node::~ANNkd_node48,1956
+typedef void (*ANNkd_splitter)ANNkd_splitter72,2899
+class ANNkd_leaf:ANNkd_leaf91,3825
+	ANNkd_leaf(ANNkd_leaf::ANNkd_leaf96,3981
+	~ANNkd_leaf(ANNkd_leaf::~ANNkd_leaf104,4167
+class ANNkd_split 142,5913
+	ANNkd_split(ANNkd_split::ANNkd_split150,6239
+	~ANNkd_split(ANNkd_split::~ANNkd_split164,6738
+
+kd_util.cpp,437
+#define PA(42,1913
+#define PP(44,1990
+double annAspectRatio(52,2273
+void annEnclRect(73,3018
+void annEnclCube(92,3602
+ANNdist annBoxDistance(124,4718
+ANNcoord annSpread(154,5707
+void annMinMax(170,6174
+int annMaxSpread(187,6668
+#define PASWAP(228,8111
+void annMedianSplit(230,8189
+void annPlaneSplit(291,10034
+void annBoxSplit(332,11353
+int annSplitBalance(360,12388
+void annBox2Bnds(384,13330
+void annBnds2Box(426,14631
+
+kd_util.h,30
+#define ANN_kd_util_H26,1108
+
+perf.cpp,718
+int				ann_Ndata_pts 49,2141
+int				ann_Nvisit_lfs 50,2194
+int				ann_Nvisit_spl 51,2254
+int				ann_Nvisit_shr 52,2319
+int				ann_Nvisit_pts 53,2384
+int				ann_Ncoord_hts 54,2444
+int				ann_Nfloat_ops 55,2505
+ANNsampStat		ann_visit_lfs;56,2563
+ANNsampStat		ann_visit_spl;57,2623
+ANNsampStat		ann_visit_shr;58,2688
+ANNsampStat		ann_visit_nds;59,2753
+ANNsampStat		ann_visit_pts;60,2814
+ANNsampStat		ann_coord_hts;61,2871
+ANNsampStat		ann_float_ops;62,2929
+ANNsampStat		ann_average_err;64,2987
+ANNsampStat		ann_rank_err;65,3035
+DLL_API void annResetStats(71,3254
+DLL_API void annResetCounts(85,3583
+DLL_API void annUpdateStats(95,3777
+void print_one_stat(107,4144
+DLL_API void annPrintStats(116,4437
+
+pr_queue.h,505
+#define PR_QUEUE_H27,1139
+typedef void			*PQinfo;PQinfo35,1422
+typedef ANNdist			PQkey;36,1480
+class ANNpr_queue 54,2319
+	struct pq_node ANNpr_queue::pq_node56,2340
+	ANNpr_queue(ANNpr_queue::ANNpr_queue65,2607
+	~ANNpr_queue(ANNpr_queue::~ANNpr_queue72,2820
+	ANNbool empty(ANNpr_queue::empty75,2876
+	ANNbool non_empty(ANNpr_queue::non_empty78,2972
+	void reset(ANNpr_queue::reset81,3074
+	inline void insert(ANNpr_queue::insert84,3136
+	inline void extr_min(ANNpr_queue::extr_min102,3672
+
+pr_queue_k.h,573
+#define PR_QUEUE_K_H26,1125
+typedef ANNdist			PQKkey;34,1409
+typedef int				PQKinfo;35,1462
+const PQKkey	PQ_NULL_KEY 46,1979
+const PQKinfo	PQ_NULL_INFO 47,2047
+class ANNmin_k 66,2944
+	struct mk_node ANNmin_k::mk_node67,2961
+	ANNmin_k(ANNmin_k::ANNmin_k77,3238
+	~ANNmin_k(ANNmin_k::~ANNmin_k84,3434
+	PQKkey ANNmin_key(ANNmin_k::ANNmin_key87,3489
+	PQKkey max_key(ANNmin_k::max_key90,3586
+	PQKkey ith_smallest_key(ANNmin_k::ith_smallest_key93,3683
+	PQKinfo ith_smallest_info(ANNmin_k::ith_smallest_info96,3802
+	inline void insert(ANNmin_k::insert99,3928
