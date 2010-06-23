@@ -32,17 +32,25 @@ namespace Marsyas
 	used for mixing audio signals before SoudFileSink or AudioSink.
 
 	Controls:
+	- \b mrs_real/stereo [w] : sum channels to stereo or mono
 	- \b mrs_real/weight [w] : scales input to avoid clipping.
+    - \b mrs_string/mode [w] : Sum over observations, samples or the whole realvec
 
-	\deprecated This MarSystem has a poorly chosen name "Sum", which is too
-	general and does not clearly communicates what kind of summation
-	is implemented: summation of rows, columns, the complete slice, with
-	or without inter-slice memory maybe?
-	For the most obvious use case: averaging observations channels into
-	one mono channel, use MixToMono instead.
+    The "mode" string can be set to four different values:
 
+    - "orig" -> The original behaviour of Sum, to sum all observations
+      into one observation.  In this mode the "stereo" and "weight"
+      flags work as they used to
 
-	\see MixToMono
+    - "sum_observations" -> Sum up across observations.  Add up all
+      the samples in an observation.
+
+    - "sum_observations" -> Sum up across samples.  Add up all
+      the observations for each sample.
+
+    - "sum_whole" -> Sum up all the observations and samples of the
+      realvec into a single number
+
 
 	\todo Sum mrs_real/weight should be implemented as a meta-composite in
 	marsystemmanager.  (?   -- lmartins said this)
@@ -56,6 +64,7 @@ private:
 	void myUpdate(MarControlPtr sender);
 	MarControlPtr ctrl_weight_;
 	MarControlPtr ctrl_stereo_;
+	MarControlPtr ctrl_mode_;
 	void addControls();
 public:
 	Sum(std::string name);
@@ -69,4 +78,3 @@ public:
 }//namespace Marsyas
 
 #endif
-
