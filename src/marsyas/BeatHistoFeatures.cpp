@@ -34,7 +34,7 @@ BeatHistoFeatures::BeatHistoFeatures(const BeatHistoFeatures& a):MarSystem(a)
 {
 	mxr_ = NULL;
 	pkr_ = NULL;
-
+	ctrl_mode_ = getctrl("mrs_string/mode");
 }
 
 BeatHistoFeatures::~BeatHistoFeatures()
@@ -53,7 +53,7 @@ BeatHistoFeatures::clone() const
 void 
 BeatHistoFeatures::addControls()
 {
-
+	addctrl("mrs_string/mode", "method1", ctrl_mode_);
 }
 
 void
@@ -66,11 +66,24 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	delete pkr_;
 	mxr_ = new MaxArgMax("mxr");//[!]
 	pkr_ = new Peaker("pkr");
-	
-	
-	setctrl("mrs_natural/onSamples", (mrs_natural)1);
-	setctrl("mrs_natural/onObservations", (mrs_natural)8);
+
+	setctrl("mrs_natural/onSamples", (mrs_natural)1);	
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	
+	mrs_string mode = ctrl_mode_->to<mrs_string>();
+	 
+	if (mode == "method1")
+	{
+		setctrl("mrs_natural/onObservations", (mrs_natural)8);
+		setctrl("mrs_string/onObsNames", "BH_SUM,BH_AMP1,BH_AMP2,BH_AMP3,BH_PER1,BH_PER2,BH_PER3,BH_RATIO");
+	}
+	else if (mode == "method2")
+	{
+		setctrl("mrs_natural/onObservations", (mrs_natural)8);     // alex 
+		setctrl("mrs_string/onObsNames", "b1,b2,b3,b4,b5,b6,b7,b8");
+	}
+	else 
+		cout << "Unsupported mode" << endl;
 	
 	flag_.create(getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 	mxr_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
@@ -85,7 +98,7 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 
 
 	pkr_->updControl("mrs_natural/peakNeighbors", 40);
-	pkr_->updControl("mrs_real/peakSpacing", 0.1);
+	pkr_->updControl("mrs_real/peakSpacing", 0.2);
 	pkr_->updControl("mrs_natural/peakStart", 200);
 	pkr_->updControl("mrs_natural/peakEnd", 640);
 
@@ -96,8 +109,6 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	pkres_.create(pkr_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
 				  pkr_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
     
-	
-	setctrl("mrs_string/onObsNames", "BH_LowPeakAmp,BH_LowPeakBPM,BH_HighPeakAmp,BH_HighPeakBPM,BH_HighLowRatio,BHSUM1,BHSUM2,BHSUM3");
 }
 
 mrs_real 
@@ -239,38 +250,63 @@ BeatHistoFeatures::harm_prob(mrs_real& pmax, mrs_real factor,
 // }
 
 
+void 
+BeatHistoFeatures::method1(realvec& in, realvec& out) 
+{
+	mrs_real sum = 0;
+  
+	for (o=0; o < inObservations_; o++)
+		for (t = 0; t < inSamples_; t++)
+		{
+			sum += in(o,t);
+		}
+	out(0,0) = sum;
+	
+	// zero-out below 50BPM 
+	for (int i=0; i < 200; i++) 
+		in(i) = 0;
+	
+	pkr_->process(in, pkres_);
+	mxr_->process(pkres_,mxres_);
+	
+	
+	
+	
+	out(1,0) = mxres_(0,0) / sum; 	// maximum amp1 normalized by sum 
+	out(2,0) = mxres_(0,2) / sum;		// maximum amp2 normalized by sum 
+	out(3,0) = mxres_(0,4) / sum;		// maximum amp3 normalized by sum 
+	out(4,0) = mxres_(0,1) /4.0;
+	out(5,0) = mxres_(0,3) /4.0;
+	out(6,0) = mxres_(0,5) /4.0;
+	out(7,0) = mxres_(0,2) / mxres_(0,0);
+	
+	
+
+}
+
+
+
+
+void 
+BeatHistoFeatures::method2(realvec& in, realvec& out)
+{
+
+	// alex 
+}
 
 
 void 
 BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
-  mrs_real sum = 0;
-  
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
-      {
-		  sum += in(o,t);
-      }
-  out(0,0) = sum;
-
-  // zero-out below 50BPM 
-  for (int i=0; i < 200; i++) 
-	  in(i) = 0;
-
-  pkr_->process(in, pkres_);
-  mxr_->process(pkres_,mxres_);
-
-
-  
-
-  out(1,0) = mxres_(0,0) / sum; 	// maximum amp1 normalized by sum 
-  out(2,0) = mxres_(0,2) / sum;		// maximum amp2 normalized by sum 
-  out(3,0) = mxres_(0,4) / sum;		// maximum amp3 normalized by sum 
-  out(4,0) = mxres_(0,1) /4.0;
-  out(5,0) = mxres_(0,3) /4.0;
-  out(6,0) = mxres_(0,5) /4.0;
-  out(7,0) = mxres_(0,2) / mxres_(0,0);
-  
+	mrs_string mode = ctrl_mode_->to<mrs_string>();
+	
+	if (mode == "method1")
+		method1(in,out);
+	else if (mode == "method2") 
+		method2(in,out);
+	else 
+		cout << "Unsupported mode" << endl;
+	
 }
 
 

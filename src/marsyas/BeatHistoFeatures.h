@@ -41,7 +41,8 @@ namespace Marsyas
 	private: 
 		MarSystem* mxr_;
 		MarSystem* pkr_;
-	
+		MarControlPtr ctrl_mode_;
+		
 		realvec mxres_;
 		realvec pkres_;
 		
@@ -59,7 +60,9 @@ namespace Marsyas
 							mrs_natural size, const realvec& in);
 
 		void myUpdate(MarControlPtr sender);
-
+		void method1(realvec& in, realvec& out);
+		void method2(realvec& in, realvec& out);
+		
 		void addControls();  
 	public:
 		BeatHistoFeatures(std::string name);

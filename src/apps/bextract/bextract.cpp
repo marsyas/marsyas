@@ -475,7 +475,9 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
 	mrs_realvec estimate;
 	
 
-
+	int counter = 0;
+	
+	
 	while (1) 
 	{
 		beatTracker->tick();
@@ -489,6 +491,7 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
 		
 		if (extra_ticks == 0)
 			break;
+		counter++;
 	}
 
 	for (int i=0; i < beatfeatures.getSize(); i++) 
@@ -496,7 +499,6 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
 	
 	beatTracker->updControl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_bool/reset", true);
 	
-	// delete beatTracker;
 }
 
 
@@ -2233,14 +2235,24 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// For now dummy test of Inject - eventually will be used for 
 	// features that require a second pass over the file such as 
 	// Beat Histogram features 
+
+	mrs_natural beatFeaturesSize = 0;
+	MarSystem * beatTracker = NULL;
+	
 	
 	if (single_vector && beat_)
 	{
+		beatTracker = createBeatHistogramFeatureNetwork();		
+		
 		bextractNetwork->addMarSystem(mng.create("Inject/inject"));
-		bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", 8);
-		bextractNetwork->updControl("Inject/inject/mrs_string/injectNames", "b0,b1,b2,b3,b4,b5,b6,b7");
+		beatFeaturesSize = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistoFeatures/bhf/mrs_natural/onObservations")->to<mrs_natural>();
+		bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", beatFeaturesSize);
+		
+		bextractNetwork->updControl("Inject/inject/mrs_string/injectNames", beatTracker->getctrl("FlowThru/tempoInduction/BeatHistoFeatures/bhf/mrs_string/onObsNames")->to<mrs_string>());
 		
 	}
+	realvec beatfeatures(beatFeaturesSize);	
+
 	
 	// labeling, weka output, classifier and confidence for real-time output
 	bextractNetwork->addMarSystem(mng.create("Annotator", "annotator"));
@@ -2346,7 +2358,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 
-	MarSystem *beatTracker = createBeatHistogramFeatureNetwork();
+
 
 
 	// main processing loop for training
@@ -2364,6 +2376,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bool seen;
 	realvec fvec;
 	int label;
+
+
+
 
 	while (ctrl_hasData->to<mrs_bool>())
 	{
@@ -2405,10 +2420,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			{
 				if (beat_) 
 				{
-					realvec beatfeatures(8);
 					beatHistogramFeatures(beatTracker, currentlyPlaying, beatfeatures);
-					
-					bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", 8);
 					bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);
 				}
 				
