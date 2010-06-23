@@ -74,7 +74,6 @@ AimSAI::myUpdate(MarControlPtr sender)
 {
   int temp_frame_period_samples = (int)(1 + floor(ctrl_israte_->to<mrs_real>() * ctrl_frame_period_ms_->to<mrs_real>()
                                 / 1000.0));
-
   MRSDIAG("AimSAI.cpp - AimSAI:myUpdate");
 
   (void) sender;
@@ -168,7 +167,10 @@ AimSAI::InitializeInternal() {
 
   centre_frequencies_.resize(channel_count_);
 
-  sai_temp_.create(channel_count_,ctrl_inSamples_->to<mrs_natural>());
+  int temp_frame_period_samples = (int)(1 + floor(ctrl_israte_->to<mrs_real>() * ctrl_frame_period_ms_->to<mrs_real>()
+                                / 1000.0));
+  sai_temp_.create(channel_count_,temp_frame_period_samples);
+
   frame_period_samples_ = (mrs_real)floor(ctrl_israte_->to<mrs_real>() * ctrl_frame_period_ms_->to<mrs_real>()
                                 / 1000.0);
   min_strobe_delay_idx_ = (mrs_real)floor(ctrl_israte_->to<mrs_real>() * ctrl_min_delay_ms_->to<mrs_real>()
