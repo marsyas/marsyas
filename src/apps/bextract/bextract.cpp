@@ -119,7 +119,7 @@ MarSystem* createExtractorFromFile()
 
 MarSystem* createBeatHistogramFeatureNetwork()
 {
-		MarSystemManager mng;
+	MarSystemManager mng;
 	
 	MarSystem *beatTracker = mng.create("Series/beatTracker");
 	
@@ -180,15 +180,6 @@ MarSystem* createBeatHistogramFeatureNetwork()
 	tempoInduction->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 	tempoInduction->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 
-	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
-	tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
-	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
-	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 640);
-	// tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
-
-	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 1);
-	tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 1);
-	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 2);
 	
 	onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 	onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");

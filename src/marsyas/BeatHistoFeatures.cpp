@@ -33,11 +33,14 @@ BeatHistoFeatures::BeatHistoFeatures(string name):MarSystem("BeatHistoFeatures",
 BeatHistoFeatures::BeatHistoFeatures(const BeatHistoFeatures& a):MarSystem(a)
 {
 	mxr_ = NULL;
+	pkr_ = NULL;
+
 }
 
 BeatHistoFeatures::~BeatHistoFeatures()
 {
   delete mxr_;
+  delete pkr_;
 }
 
 
@@ -60,7 +63,10 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:myUpdate");
   
 	delete mxr_;//[!]
+	delete pkr_;
 	mxr_ = new MaxArgMax("mxr");//[!]
+	pkr_ = new Peaker("pkr");
+	
 	
 	setctrl("mrs_natural/onSamples", (mrs_natural)1);
 	setctrl("mrs_natural/onObservations", (mrs_natural)8);
@@ -71,9 +77,24 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	mxr_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
 	mxr_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
 	mxr_->updControl("mrs_natural/nMaximums", 3);
+
+
+	pkr_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+	pkr_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+	pkr_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
+
+
+	pkr_->updControl("mrs_natural/peakNeighbors", 40);
+	pkr_->updControl("mrs_real/peakSpacing", 0.1);
+	pkr_->updControl("mrs_natural/peakStart", 200);
+	pkr_->updControl("mrs_natural/peakEnd", 640);
+
+
 	
 	mxres_.create(mxr_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
 				  mxr_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	pkres_.create(pkr_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+				  pkr_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
     
 	
 	setctrl("mrs_string/onObsNames", "BH_LowPeakAmp,BH_LowPeakBPM,BH_HighPeakAmp,BH_HighPeakBPM,BH_HighLowRatio,BHSUM1,BHSUM2,BHSUM3");
@@ -225,21 +246,23 @@ BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
   mrs_real sum = 0;
   
-  for (int i=0; i < 200; i++) 
-	  in(i) = 0;
-  
-
-  mxr_->process(in,mxres_);
-  
-  
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
 		  sum += in(o,t);
       }
+  out(0,0) = sum;
+
+  // zero-out below 50BPM 
+  for (int i=0; i < 200; i++) 
+	  in(i) = 0;
+
+  pkr_->process(in, pkres_);
+  mxr_->process(pkres_,mxres_);
+
+
   
 
-  out(0,0) = sum;
   out(1,0) = mxres_(0,0) / sum; 	// maximum amp1 normalized by sum 
   out(2,0) = mxres_(0,2) / sum;		// maximum amp2 normalized by sum 
   out(3,0) = mxres_(0,4) / sum;		// maximum amp3 normalized by sum 
@@ -247,7 +270,6 @@ BeatHistoFeatures::myProcess(realvec& in, realvec& out)
   out(5,0) = mxres_(0,3) /4.0;
   out(6,0) = mxres_(0,5) /4.0;
   out(7,0) = mxres_(0,2) / mxres_(0,0);
-  
   
 }
 
