@@ -74,9 +74,9 @@ if (MARSYAS_MIDIIO)
 	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
 endif (MARSYAS_MIDIIO) 
 
-if (MARSYAS_ANN) 
+if (WITH_ANN) 
 	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/ANN/)
-endif (MARSYAS_ANN) 
+endif (WITH_ANN) 
 
 ## from user options
 if (MARSYAS_MATLAB) 

@@ -89,6 +89,10 @@ if (WITH_PNG)
 	set (MARSYAS_PNG 1)
 endif (WITH_PNG)
 
+if (WITH_ANN) 
+	set (MARSYAS_ANN 1)
+endif (WITH_ANN)
+
 if (WITH_GSTREAMER)
 	find_package(GStreamer REQUIRED)
 	set (MARSYAS_GSTREAMER 1) 

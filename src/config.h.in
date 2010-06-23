@@ -34,5 +34,7 @@
 #cmakedefine MARSYAS_GSTREAMER
 #cmakedefine MARSYAS_PNG
 
+#cmakedefine MARSYAS_ANN
+
 #cmakedefine DISTRIBUTED
 #endif

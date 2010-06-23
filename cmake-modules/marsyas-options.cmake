@@ -31,7 +31,7 @@ endif (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
 
 
 ## OPTIONAL CODE
-option(MARSYAS_ANN "Build the ANN (Approximate Nearest Neighbours) library" OFF)
+option(WITH_ANN "Build the ANN (Approximate Nearest Neighbours) library" OFF)
 option(MARSYAS_BUILD_APPS "Build the applications" ON)
 mark_as_advanced (MARSYAS_BUILD_APPS)
 option(MARSYAS_TESTS "Build the tests" OFF)
