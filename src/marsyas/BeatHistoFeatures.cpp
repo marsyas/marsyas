@@ -18,6 +18,8 @@
 
 
 #include "BeatHistoFeatures.h"
+#include <algorithm>
+#include <iterator>
 #include <cfloat> 
 
 using namespace std;
@@ -99,7 +101,7 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 
 
 	pkr_->updControl("mrs_natural/peakNeighbors", 40);
-	pkr_->updControl("mrs_real/peakSpacing", 0.2);
+	pkr_->updControl("mrs_real/peakSpacing", 0.1);
 	pkr_->updControl("mrs_natural/peakStart", 200);
 	pkr_->updControl("mrs_natural/peakEnd", 640);
 
@@ -271,18 +273,26 @@ BeatHistoFeatures::method1(realvec& in, realvec& out)
 	mxr_->process(pkres_,mxres_);
 	
 	
+	vector<mrs_real> bpms;
+	bpms.push_back(mxres_(0,1));
+	bpms.push_back(mxres_(0,3));
+	bpms.push_back(mxres_(0,5));
+	
+	sort(bpms.begin(), bpms.end());
+	
+	for (int i=0; i<bpms.size(); i++) 
+	{
+		if (bpms[0] == mxres_(2*i+1))
+			out(i+1,0) = mxres_(2*i,0) / sum;
+	}
+	
+	out(4,0) = bpms[0] /4.0;
+	out(5,0) = bpms[1] /4.0;
+	out(6,0) = bpms[2] /4.0;
+	out(7,0) = out(4,0) / out(5,0);
 	
 	
-	out(1,0) = mxres_(0,0) / sum; 	// maximum amp1 normalized by sum 
-	out(2,0) = mxres_(0,2) / sum;		// maximum amp2 normalized by sum 
-	out(3,0) = mxres_(0,4) / sum;		// maximum amp3 normalized by sum 
-	out(4,0) = mxres_(0,1) /4.0;
-	out(5,0) = mxres_(0,3) /4.0;
-	out(6,0) = mxres_(0,5) /4.0;
-	out(7,0) = mxres_(0,2) / mxres_(0,0);
 	
-	
-
 }
 
 
