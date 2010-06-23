@@ -116,6 +116,100 @@ MarSystem* createExtractorFromFile()
 	return mng.getMarSystem(mplFile);
 }
 
+
+MarSystem* createBeatHistogramFeatureNetwork()
+{
+		MarSystemManager mng;
+	
+	MarSystem *beatTracker = mng.create("Series/beatTracker");
+	
+	
+	MarSystem *onset_strength = mng.create("Series/onset_strength");
+	MarSystem *accum = mng.create("Accumulator/accum");
+	MarSystem *fluxnet = mng.create("Series/fluxnet");
+	fluxnet->addMarSystem(mng.create("SoundFileSource", "src"));
+	fluxnet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+	fluxnet->addMarSystem(mng.create("ShiftInput", "si"));	
+	fluxnet->addMarSystem(mng.create("Windowing", "windowing1"));
+	fluxnet->addMarSystem(mng.create("Spectrum", "spk"));
+	fluxnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+	fluxnet->addMarSystem(mng.create("Flux", "flux"));
+	accum->addMarSystem(fluxnet);
+	
+	onset_strength->addMarSystem(accum);
+	onset_strength->addMarSystem(mng.create("ShiftInput/si2"));
+	beatTracker->addMarSystem(onset_strength);
+	
+	MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
+	tempoInduction->addMarSystem(mng.create("Filter", "filt1"));
+	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
+	tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
+	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
+	// tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
+	tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
+	tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
+	
+	MarSystem* hfanout = mng.create("Fanout", "hfanout");
+	hfanout->addMarSystem(mng.create("Gain", "id1"));
+	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+	tempoInduction->addMarSystem(hfanout);
+	tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+	tempoInduction->addMarSystem(mng.create("BeatHistoFeatures", "bhf"));
+	beatTracker->addMarSystem(tempoInduction);
+
+	mrs_natural winSize = 256;
+	mrs_natural hopSize = 128;
+	mrs_natural  bwinSize = 2048;
+	mrs_natural bhopSize = 128;
+	
+	onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  
+	onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
+
+	
+	realvec bcoeffs(1,3);
+	bcoeffs(0) = 0.0564;
+	bcoeffs(1) = 0.1129;
+	bcoeffs(2) = 0.0564;
+	tempoInduction->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+	
+	tempoInduction->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
+	realvec acoeffs(1,3);
+	acoeffs(0) = 1.0000;
+	acoeffs(1) = -1.2247;
+	acoeffs(2) = 0.4504;
+	tempoInduction->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+	tempoInduction->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
+
+	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
+	tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
+	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
+	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 640);
+	// tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
+
+	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 1);
+	tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 1);
+	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 2);
+	
+	onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
+	onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+
+	tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
+	tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
+	tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 16.0);
+
+
+	tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
+	tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 2.0);
+	tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.65); 
+	
+	onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
+
+	beatTracker->updControl("mrs_natural/inSamples", hopSize);
+	
+	return beatTracker;
+}
+
+
 MarSystem* createBEATextrator()
 {
 	MarSystemManager mng;
@@ -364,6 +458,57 @@ printHelp(string progName)
 
 	exit(0);
 }
+
+
+
+void
+beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatures)
+{
+	// cout << "Calculating Beat Histogram Features: " << sfName << endl;
+
+
+	beatTracker->updControl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
+	
+	mrs_natural  bwinSize = 2048;
+	mrs_natural bhopSize = 128;
+
+
+	vector<mrs_real> bpms;
+	vector<mrs_real> secondary_bpms;
+	mrs_real bin;
+
+	int extra_ticks = bwinSize/bhopSize;
+	mrs_realvec tempos(2);
+	mrs_realvec tempo_scores(2);
+	tempo_scores.setval(0.0);
+	mrs_realvec estimate;
+	
+
+
+	while (1) 
+	{
+		beatTracker->tick();
+		estimate = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistoFeatures/bhf/mrs_realvec/processedData")->to<mrs_realvec>();
+		
+		
+		if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+		{
+			extra_ticks --;
+		}
+		
+		if (extra_ticks == 0)
+			break;
+	}
+
+	for (int i=0; i < beatfeatures.getSize(); i++) 
+		beatfeatures(i) = estimate(i);
+	
+	beatTracker->updControl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_bool/reset", true);
+	
+	// delete beatTracker;
+}
+
+
 
 void
 tempo_histoSumBands(MarSystem* total1, string sfName, realvec& beatfeatures,
@@ -2101,7 +2246,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	if (single_vector && beat_)
 	{
 		bextractNetwork->addMarSystem(mng.create("Inject/inject"));
-		bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", 3);
+		bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", 8);
+		bextractNetwork->updControl("Inject/inject/mrs_string/injectNames", "b0,b1,b2,b3,b4,b5,b6,b7");
+		
 	}
 	
 	// labeling, weka output, classifier and confidence for real-time output
@@ -2208,6 +2355,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 
+	MarSystem *beatTracker = createBeatHistogramFeatureNetwork();
+
+
 	// main processing loop for training
 	MarControlPtr ctrl_hasData = bextractNetwork->getctrl("mrs_bool/hasData");
 	MarControlPtr ctrl_currentlyPlaying = bextractNetwork->getctrl("mrs_string/currentlyPlaying");
@@ -2264,12 +2414,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			{
 				if (beat_) 
 				{
-					realvec foo(3);
-					foo(0) = 1;
-					foo(1) = 2;
-					foo(2) = 3;
-					bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", 3);
-					bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", foo);
+					realvec beatfeatures(8);
+					beatHistogramFeatures(beatTracker, currentlyPlaying, beatfeatures);
+					
+					bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", 8);
+					bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);
 				}
 				
 				bextractNetwork->tick();

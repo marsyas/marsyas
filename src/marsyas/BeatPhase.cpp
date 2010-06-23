@@ -143,8 +143,6 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		period = 0;
 	period = (mrs_natural)(period+0.5);	
 
-	cout << "TEMPO = " << tempo << endl;
-	cout << "period = " << period << endl;
 	
 	max_sum_phase = 0.0;
 	
@@ -168,8 +166,6 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	
 	mrs_natural delay = (bwinSize - bhopSize);
 	
-	cout << "max_phase = " << max_phase << endl;
-	cout << "delay = " << delay << endl;
 	
 	
 	mrs_natural start;
@@ -191,20 +187,12 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 				max_phase = t;
 			}
 		}
-		// cout << "max_phase1 = " << max_phase << endl;
+
 		avg_period += (prev_phase - max_phase);
 		prev_phase = max_phase;
 	}
 	
 	avg_period /= 4;
-	
-	cout << "avg_period = " << avg_period  << endl;
-	cout << "avg_tempo = " << 2.0 * osrate_ * 60.0 / avg_period << endl;
-	
-
-	
-	
-	
 	
 	/* for (int k = 0; k < bhopSize; k++) 
 	{

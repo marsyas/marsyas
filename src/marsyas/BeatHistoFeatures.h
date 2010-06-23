@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -54,7 +54,8 @@ private:
                       mrs_natural size, const realvec& in);
 
 	void myUpdate(MarControlPtr sender);
-  
+
+		void addControls();  
 public:
   BeatHistoFeatures(std::string name);
   BeatHistoFeatures(const BeatHistoFeatures& a);

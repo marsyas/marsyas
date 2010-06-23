@@ -54,7 +54,7 @@ Inject::addControls()
 	addctrl("mrs_realvec/inject", realvec(), ctrl_inject_);
 	addctrl("mrs_natural/injectSize", 1, ctrl_injectSize_);
 	setctrlState("mrs_natural/injectSize", true);
-	addctrl("mrs_string/injectNames", "i1,i2,i3", ctrl_injectNames_);
+	addctrl("mrs_string/injectNames", "t1,t2,t3,t4,t5,t6,t7,t8", ctrl_injectNames_);
 }
 
 
