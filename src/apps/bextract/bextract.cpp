@@ -67,6 +67,8 @@ mrs_bool rlf_ = false;
 mrs_bool flx_ = false;
 mrs_bool lsp_ = false;
 mrs_bool lpcc_ = false;
+mrs_bool beat_ = false;
+
 
 mrs_bool single_vector_ = false;
 
@@ -1986,14 +1988,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	featureNetwork->updControl("TextureStats/tStats/mrs_natural/memSize", memSize);
 	featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", true);
 
-
-
-
 	// Use accumulator if computing single vector / file
 	if (single_vector)
 	{
-		cout << "accSize_ = " << accSize_ << endl;
-
 		MarSystem* acc = mng.create("Accumulator", "acc");
 		acc->updControl("mrs_natural/nTimes", accSize_);
 		acc->addMarSystem(featureNetwork);
@@ -2002,9 +1999,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		song_statistics->addMarSystem(mng.create("Mean", "mn"));
 		song_statistics->addMarSystem(mng.create("StandardDeviation", "std"));
 		bextractNetwork->addMarSystem(song_statistics);
-
-
-
 
 		bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/filename",
 								  "mrs_string/filename"); // added Fanout ... 
@@ -2098,6 +2092,18 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		}
 	}
 
+	
+
+	// For now dummy test of Inject - eventually will be used for 
+	// features that require a second pass over the file such as 
+	// Beat Histogram features 
+	
+	if (single_vector && beat_)
+	{
+		bextractNetwork->addMarSystem(mng.create("Inject/inject"));
+		bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", 3);
+	}
+	
 	// labeling, weka output, classifier and confidence for real-time output
 	bextractNetwork->addMarSystem(mng.create("Annotator", "annotator"));
 	if (wekafname != EMPTYSTRING)
@@ -2256,6 +2262,16 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			}
 			else
 			{
+				if (beat_) 
+				{
+					realvec foo(3);
+					foo(0) = 1;
+					foo(1) = 2;
+					foo(2) = 3;
+					bextractNetwork->updControl("Inject/inject/mrs_natural/injectSize", 3);
+					bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", foo);
+				}
+				
 				bextractNetwork->tick();
 				featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
 										true);			  
@@ -2794,7 +2810,7 @@ initOptions()
 	cmd_options.addBoolOption("ZeroCrossings", "zcrs", false);
 	cmd_options.addBoolOption("LineSpectralPair", "lsp", false);
 	cmd_options.addBoolOption("LinearPredictionCepstralCoefficients", "lpcc", false);
-
+	cmd_options.addBoolOption("BeatFeatures", "bf", false);
 	cmd_options.addBoolOption("TimbralFeatures", "timbral", false);
 	cmd_options.addBoolOption("SingleVector", "sv", false);
 	cmd_options.addBoolOption("featExtract", "fe", false);
@@ -2840,7 +2856,7 @@ loadOptions()
 	flx_ = cmd_options.getBoolOption("SpectralFlux");
 	lsp_ = cmd_options.getBoolOption("LineSpectralPair");
 	lpcc_ = cmd_options.getBoolOption("LinearPredictionCepstralCoefficients");
-
+	beat_ = cmd_options.getBoolOption("BeatFeatures");
 	spectralFeatures_ = cmd_options.getBoolOption("SpectralFeatures");
 	zcrs_ = cmd_options.getBoolOption("ZeroCrossings");
 	timbralFeatures_ = cmd_options.getBoolOption("TimbralFeatures");

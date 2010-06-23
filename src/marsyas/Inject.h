@@ -16,27 +16,24 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_MARSYSTEMTEMPLATEBASIC_H
-#define MARSYAS_MARSYSTEMTEMPLATEBASIC_H
+#ifndef MARSYAS_INJECT_H
+#define MARSYAS_INJECT_H
 
 #include "MarSystem.h"
 
 namespace Marsyas
 {
 /**
-	\class MarSystemTemplateBasic
+	\class Inject
 	\ingroup Processing
-	\brief Basic example on how to use controls efficiently in MarSystems
-
-	This example is the same as Gain; it scales the output by
-	multiplying each sample with a real number.
+	\brief Inject a vector specified by the mrs_realvec/inject control 
+	into the datastream
 
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- \b mrs_realvec/inject [w] : the vector to be injected
 */
 
-class marsyas_EXPORT MarSystemTemplateBasic: public MarSystem
+class marsyas_EXPORT Inject: public MarSystem
 {
 private:
 
@@ -46,23 +43,24 @@ private:
 	/// Reads changed controls and sets up variables if necessary.
 	void myUpdate(MarControlPtr sender);
 
-	// Pointers to controls allow efficient access to their
-	// values.  For clarity, we use the ctrl_ prefix so these
-	// pointers can be easily identified throughout the code...
-	// but this is not mandatory, just recommended)
 
 	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_gain_EXAMPLE_;
+	MarControlPtr ctrl_inject_;
+	MarControlPtr ctrl_injectSize_;
+	MarControlPtr ctrl_injectNames_;
+	
+	mrs_natural prev_injectSize_;
+	
 
 public:
-	/// MarSystemTemplateBasic constructor.
-	MarSystemTemplateBasic(std::string name);
+	/// Inject constructor.
+	Inject(std::string name);
 
-	/// MarSystemTemplateBasic copy constructor.
-	MarSystemTemplateBasic(const MarSystemTemplateBasic& a);
+	/// Inject copy constructor.
+	Inject(const Inject& a);
 
-	/// MarSystemTemplateBasic destructor.
-	~MarSystemTemplateBasic();
+	/// Inject destructor.
+	~Inject();
 
 	/// Implementation of the MarSystem::clone() method.
 	MarSystem* clone() const;
@@ -75,5 +73,5 @@ public:
 //namespace Marsyas
 
 #endif
-//MARSYAS_MARSYSTEMTEMPLATEBASIC_H
+//MARSYAS_INJECT_H
 

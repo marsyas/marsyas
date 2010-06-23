@@ -95,6 +95,7 @@ Annotator::myProcess(realvec& in, realvec& out)
 	const mrs_real& rlabel = ctrl_rlabel_->to<mrs_real>();
 	mode_ = ctrl_mode_->to<mrs_string>();
 	
+	
 
 	// Copy the input observations to the output and add the label.
 	for (t = 0; t < inSamples_; t++)

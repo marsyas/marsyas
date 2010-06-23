@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -143,8 +143,7 @@ WekaSink::putHeader(string inObsNames)
 			// TODO: what's the point of using an extra ostringstream here?
 			ostringstream oss;
 			// oss << "attribute" << i;
-			oss << inObsName;
-			(*mos_) << "@attribute " << oss.str() << " real" << endl;
+			(*mos_) << "@attribute " << inObsName << " real" << endl;
 		}
 
 		// The attribute for the label.
@@ -276,66 +275,66 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		// TODO: this should be refactored together with the injection stuff from
 		// WekaSink::myUpdate().
 		for (o=0; o < inObservations_; o++)
-		  {
+		{
 			out(o,t) = in(o,t);
 			if (label >= 0)
-			  {
+			{
 				if (o < inObservations_ - 1)
-				  {
+				{
 					if ((count % downsample_) == 0)
-					  {
+					{
 						if ( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
-						  {
+						{
 							// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
 							// DO NOT OUTPUT FEATURES
 							// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
 							//notPrint = true;
 							(*mos_) << "?" << ",";
-						  }
+						}
 						else
-						  {
+						{
 							(*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
 							//notPrint = false;
-						  }
-					  }
-				  }
-			  }
-		  }
+						}
+					}
+				}
+			}
+		}
 
 		// Output last value (e.g. as label).
 		ostringstream oss;
 		if ((count % downsample_) == 0)
-		  {
+		{
 			if (label >= 0)
-			  {
+			{
 				if (!ctrl_regression_->isTrue())
-				  {
+				{
 					//  if (!notPrint)
 					//{
-					  if (label >= (mrs_natural)labelNames_.size())
-					  {
+					if (label >= (mrs_natural)labelNames_.size())
+					{
 						MRSWARN("WekaSink: label number is too big");
 						oss << "non-label";
-					  }
+					}
 					else
-					  {
+					{
 						oss << labelNames_[label];
-					  }
+					}
 					(*mos_) << oss.str();
 					(*mos_) << endl;
-				  }
+				}
 				//  else
 				//{
 				//  cout << "skipping instance" << endl;
 				//}
 				//}
 				else
-				  {
+				{
 					(*mos_) << in(inObservations_ - 1, t);
 					(*mos_) << endl;
-				  }
-			  }
-		  }
+				}
+			}
+		}
 	}
 	count++;
 }
