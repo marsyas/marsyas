@@ -26,7 +26,8 @@ using namespace Marsyas;
 BeatHistoFeatures::BeatHistoFeatures(string name):MarSystem("BeatHistoFeatures", name)
 {
 	mxr_ = NULL;
-
+	pkr_ = NULL;
+	
 	addControls();
 }
 
