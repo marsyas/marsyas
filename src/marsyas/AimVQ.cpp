@@ -117,6 +117,13 @@ AimVQ::InitializeInternal() {
 void
 AimVQ::myProcess(realvec& in, realvec& out)
 {
+  // cout << "AimVQ::myProcess" << endl;
+
+  // Zero out the output first
+  for (int i = 0; i < onObservations_; ++i) {
+    out(i,0) = 0.0;
+  }
+
 #ifdef MARSYAS_ANN
   mrs_natural _num_codewords_to_return = ctrl_num_codewords_to_return_->to<mrs_natural>();
   mrs_real _kd_tree_error_bound = ctrl_kd_tree_error_bound_->to<mrs_real>();
@@ -140,9 +147,13 @@ AimVQ::myProcess(realvec& in, realvec& out)
     delete distances;
   }
 
+  // cout << "sparse_code=";
+
   for (unsigned int j = 0; j < sparse_code.size(); ++j) {
+    // cout << sparse_code[j] << ",";
     out(sparse_code[j],0) = 1.0;
   }
+  // cout << endl;
 #endif
 
 }

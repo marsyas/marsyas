@@ -130,6 +130,12 @@ Sum::myProcess(realvec& in, realvec& out)
     }
   } else {
     // sness - New Sum code
+    for (o = 0; o < onObservations_; o++) {
+      for (t = 0; t < onSamples_; t++) {
+        out(o,0) = 0.0;
+      }
+    }
+
     if(strcmp(ctrl_mode_->to<mrs_string>().c_str(), "sum_observations") == 0) {
         for (o = 0; o < inObservations_; o++) {
           for (t = 0; t < inSamples_; t++) {

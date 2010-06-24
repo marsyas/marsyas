@@ -106,7 +106,7 @@ aim(string pluginName, string wekafname,
 
   bextractNetwork->addMarSystem(mng.create("Sum", "sum"));
   bextractNetwork->updControl("Sum/sum/mrs_string/mode", "sum_observations");
-  bextractNetwork->addMarSystem(mng.create("Normalize", "normalize"));
+  // bextractNetwork->addMarSystem(mng.create("Normalize", "normalize"));
 
   bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/filename",
                             "mrs_string/filename"); // added Fanout ... 
@@ -193,7 +193,11 @@ aim(string pluginName, string wekafname,
   while (ctrl_hasData->to<mrs_bool>()){
 
     currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+
     label = bextractNetwork->getctrl("mrs_natural/currentLabel")->to<mrs_natural>();
+    cout << "currentlyPlaying=" << currentlyPlaying << endl;
+    cout << "label=" << label << endl;
+
     seen = false;
 
     for (size_t j=0; j<processedFiles.size(); j++)
