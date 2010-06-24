@@ -7,7 +7,7 @@ is for MIREX 2010.
 
 Quick instructions for compiling Marsyas 
 (more detailed instructions can be found in the manual 
-which is online at http://marsyas.sness.net - the instructions 
+which is online at http://marsyas.info - the instructions 
 assume that subversion and cmake are available in the system
 the revision number is provided separately for each task). 
 The last command enters the subdirectory where all the 
