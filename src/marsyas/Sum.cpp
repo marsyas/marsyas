@@ -77,7 +77,7 @@ Sum::myUpdate(MarControlPtr sender)
 		}
 	} else {
 		// sness - New Sum code
-		if (ctrl_mode_->to<mrs_string>().c_str() == "sum_observations") {
+		if (ctrl_mode_->to<mrs_string>() == "sum_observations") {
 			ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 			ctrl_onSamples_->setValue(1, NOUPDATE);
 		} else if (ctrl_mode_->to<mrs_string>() == "sum_samples") {
