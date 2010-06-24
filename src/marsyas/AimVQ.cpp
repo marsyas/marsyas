@@ -130,10 +130,12 @@ AimVQ::myProcess(realvec& in, realvec& out)
 
   vector<int> sparse_code;
   int offset = 0;
+  realvec obsRow;
   for (int i = 0; i < codebooks_count_; ++i) {
+    in.getRow(i,obsRow);
     ANNidxArray indices = new ANNidx[_num_codewords_to_return];
     ANNdistArray distances = new ANNdist[_num_codewords_to_return];
-    sparse_coder_trees_[i]->annkSearch(in.getData(),
+    sparse_coder_trees_[i]->annkSearch(obsRow.getData(),
                                        _num_codewords_to_return,
                                        indices,
                                        distances,
@@ -147,13 +149,9 @@ AimVQ::myProcess(realvec& in, realvec& out)
     delete distances;
   }
 
-  // cout << "sparse_code=";
-
   for (unsigned int j = 0; j < sparse_code.size(); ++j) {
-    // cout << sparse_code[j] << ",";
     out(sparse_code[j],0) = 1.0;
   }
-  // cout << endl;
 #endif
 
 }
