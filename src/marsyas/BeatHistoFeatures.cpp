@@ -17,6 +17,7 @@
 */
 
 
+#include "common.h"
 #include "BeatHistoFeatures.h"
 #include <algorithm>
 #include <iterator>
@@ -24,6 +25,158 @@
 
 using namespace std;
 using namespace Marsyas;
+
+//#define MTLB_DBG_LOG
+
+
+static void NormInPlace (realvec& vector)
+{
+	mrs_real sum = vector.sum ();
+	if (sum > 0)
+		vector	/= sum;
+	return;
+}
+
+static mrs_real PeriodicCentroid (realvec& vector, mrs_bool isLog = false, mrs_natural startIdx = 200)
+{
+	mrs_natural len = vector.getCols ();
+	mrs_real res = 0,
+		norm = 0;
+
+	for (mrs_natural i = startIdx; i < len; i++)
+	{
+		mrs_real theta = (isLog)? log(i*1./startIdx)* TWOPI :(i * TWOPI) / startIdx;
+		res		+= vector(i) * (.5*(cos(theta)+1));
+		norm	+= vector(i);
+	}
+
+	return res/norm;
+}
+
+
+static mrs_real PeriodicSpread (realvec& vector, mrs_real centroid, mrs_bool isLog = false, mrs_natural startIdx = 200)
+{
+	mrs_natural len = vector.getCols ();
+	mrs_real res = 0,
+		norm = 0;
+
+	for (mrs_natural i = startIdx; i < len; i++)
+	{
+		mrs_real theta = (isLog)? log(i*1./startIdx)* TWOPI :(i * TWOPI) / startIdx;
+		res		+= vector(i) * abs(.5*(cos(theta)+1)-centroid);
+		norm	+= vector(i);
+	}
+
+	return res/norm;
+}
+
+
+mrs_real BeatHistoFeatures::NumMax (mrs_realvec& vector)
+{
+	pkr_->setctrl("mrs_real/peakStrengthRelMax", 0.5);
+	pkr_->setctrl("mrs_real/peakStrengthRelThresh", 2.0);
+	pkr_->setctrl("mrs_real/peakStrengthTreshLpParam", 0.95);
+	pkr_->setctrl("mrs_natural/peakNeighbors", 4);
+
+	pkr_->process(vector, pkres_);
+
+	return pkres_.sum ();
+}
+
+//static void BeatChroma (realvec& beatChroma, const realvec& beatHistogram, mrs_real beatRes = .25)
+//{
+//
+//	//
+//	mrs_natural i,j,k,
+//		len = beatHistogram.getCols ();
+//	const mrs_real startBpm		= 25;
+//	mrs_natural startIdx = (mrs_natural)(startBpm / beatRes + .5);
+//
+//	beatChroma.stretch (startIdx);		// length equals startIdx
+//
+//	for (j = 0; j < startIdx; j++)
+//	{
+//		mrs_real mean = 0;
+//		for (k = 0; k < 3; k++)
+//		{
+//			for (i = -k; i <= k; i++)
+//				mean	+= beatHistogram((j+startIdx)*k+i);
+//
+//				beatChroma(j)	+= mean/(k+1);
+//		}
+//	}
+//}
+
+static mrs_real SpectralFlatness (const realvec& beatHistogram, mrs_natural startIdx = 200)
+{
+	mrs_real    res = 0;
+	mrs_natural len = beatHistogram.getCols ();
+	//mrs_natural sum = beatHistogram.sum ();
+
+	//beatHistogram	/= sum;
+	for (mrs_natural i = startIdx; i < len; i++)
+		res		+= log(beatHistogram(i)+1e-6);
+
+	return exp(res/(len-startIdx));
+}
+
+static mrs_real Std (const realvec& beatHistogram)
+{
+	return sqrt (beatHistogram.var ());
+}
+
+static mrs_real MaxHps (const realvec& beatHistogram, mrs_natural startIdx = 200)
+{
+	const mrs_natural order = 4;
+	mrs_natural k,len = beatHistogram.getCols ();
+	mrs_realvec	res = beatHistogram;	// make this a member
+
+	//res.setval(-1e38);
+
+	for (k =2; k < order; k++)
+	{
+		for (mrs_natural i = startIdx; i < len; i++)
+		{
+			if (k*i > len)
+				break;
+			res(i)		+= log(beatHistogram(k*i)+1e-6);
+		}
+	}
+
+	for (k = 0; k < startIdx; k++)
+		res(k)	= -1e38;
+
+
+	return exp (res.maxval ());
+}
+
+static void MaxAcf (mrs_real& max, mrs_real& mean, const realvec& beatHistogram, mrs_natural startSearchAt, mrs_natural stopSearchAt)
+{
+	mrs_natural k,len = beatHistogram.getCols ();
+	mrs_realvec	res = beatHistogram;	// make this a member
+
+	res.setval(0.);
+
+	// compute ACF
+	for (k = startSearchAt; k < stopSearchAt; k++) // this can be optimized
+	{
+		mrs_real val	= 0;
+
+		for (mrs_natural i = k; i < len; i++)
+			val += beatHistogram(i) * beatHistogram(i-k);
+
+			res(k)	= val / (len-k);
+	}
+
+
+	//pkr_->process(in, pkres_);
+
+	max = res.maxval ();
+	mean = 1e6*res.mean ();
+}
+
+
+
 
 BeatHistoFeatures::BeatHistoFeatures(string name):MarSystem("BeatHistoFeatures", name)
 {
@@ -56,7 +209,7 @@ BeatHistoFeatures::clone() const
 void 
 BeatHistoFeatures::addControls()
 {
-	addctrl("mrs_string/mode", "method1", ctrl_mode_);
+	addctrl("mrs_string/mode", "method2", ctrl_mode_);
 }
 
 void
@@ -82,8 +235,8 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	}
 	else if (mode == "method2")
 	{
-		setctrl("mrs_natural/onObservations", (mrs_natural)8);     // alex 
-		setctrl("mrs_string/onObsNames", "b1,b2,b3,b4,b5,b6,b7,b8");
+		setctrl("mrs_natural/onObservations", (mrs_natural)10);     // alex 
+		setctrl("mrs_string/onObsNames", "b0,b1,b2,b3,b4,b5,b6,b7,b8,b9");
 	}
 	else 
 		cout << "Unsupported mode" << endl;
@@ -301,8 +454,36 @@ BeatHistoFeatures::method1(realvec& in, realvec& out)
 void 
 BeatHistoFeatures::method2(realvec& in, realvec& out)
 {
+	mrs_real result[2];
+	mrs_natural i,startIdx = 200;
+	// zero-out below 50BPM 
+	for (i=0; i < startIdx; i++) 
+		in(i) = 0;
 
-	// alex 
+	for (i = startIdx; i < in.getCols (); i++)
+		if (in(i) < 0)
+			in(i) = 0;
+
+	NormInPlace (in);
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(in, "beathist");
+	MATLAB_EVAL("figure(1);plot((201:800)/4, beathist(201:800)),grid on");
+#endif
+#endif
+
+	MaxAcf (result[0], result[1],in, startIdx, 600);
+	out(0,0)	= result[0];
+	out(1,0)	= result[1];
+	out(2,0)	= MaxHps (in, startIdx);
+	out(3,0)    = SpectralFlatness (in, startIdx);
+	out(4,0)	= Std(in);
+	out(5,0)	= PeriodicCentroid(in, false, startIdx);
+	out(6,0)	= PeriodicCentroid(in, true, startIdx);
+	out(7,0)	= PeriodicSpread(in, out(5,0), false, startIdx);
+	out(8,0)	= PeriodicSpread(in, out(6,0), true, startIdx);
+	out(9,0)	= NumMax(in);
 }
 
 

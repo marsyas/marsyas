@@ -62,6 +62,8 @@ namespace Marsyas
 		void myUpdate(MarControlPtr sender);
 		void method1(realvec& in, realvec& out);
 		void method2(realvec& in, realvec& out);
+
+		mrs_real NumMax (mrs_realvec& in);
 		
 		void addControls();  
 	public:
