@@ -3619,8 +3619,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 				}
 				
 				bextractNetwork->tick();
-				featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
-										true);			  
+				// featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
+				// 						true);			  
 				fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
 			  
 				bextractNetwork->updControl("mrs_natural/advance", advance);
