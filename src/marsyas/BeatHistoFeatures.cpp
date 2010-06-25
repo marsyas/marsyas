@@ -467,8 +467,8 @@ BeatHistoFeatures::beatHistoFeatures(realvec& in, realvec& out)
 	for (unsigned int i=0; i<bpms.size(); i++) 
 		for (unsigned int j =0; j < bpms.size(); j++)
 		{
-			if (bpms[i] == mxres_(2*j+1))
-				out(i+1,0) = mxres_(2*j,0);
+			if (bpms[i] == mxres_(0,2*j+1))
+				out(i+1,0) = mxres_(0,2*j);
 		}
 	
 

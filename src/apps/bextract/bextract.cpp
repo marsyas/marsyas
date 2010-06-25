@@ -2570,7 +2570,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-				cout << "Predicting " << currentlyPlaying << "\t" << "GT:" << l.labelName((mrs_natural)pr(1,0)) << "\t" << "PR:" << l.labelName((mrs_natural)pr(0,0)) << endl;
+				cout << "Predicting " << currentlyPlaying << "\t" << "as \t" << l.labelName((mrs_natural)pr(0,0)) << endl;
 
 				if (single_vector)
 				{
