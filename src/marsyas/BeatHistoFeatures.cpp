@@ -133,7 +133,7 @@ static mrs_real MaxHps (const realvec& beatHistogram, mrs_natural startIdx = 200
 	{
 		for (mrs_natural i = startIdx; i < len; i++)
 		{
-			if (k*i > len)
+			if (k*i >= len)
 				break;
 			res(i)		+= log(beatHistogram(k*i)+1e-6);
 		}
