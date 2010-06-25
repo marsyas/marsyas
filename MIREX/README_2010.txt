@@ -37,6 +37,22 @@ The executables can be launched in parallel for each fold to take
 advantage of multiple cores without a problem as long as there 
 are different scratch directories for each fold. 
 
+
+------------- MIREX 2010 Audio Classification Tasks - Vector Quantized Stabilized Auditory Image ---------------------
+(use REVISION_NUMBER: TBD) 
+
+IMPORTANT:
+
+When building Marsyas, please enable the "WITH_ANN" flag in cmake.
+
+Extract features, train classifier and predict for 1 fold: 
+./bextract -saivq -sv train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w features.arff 
+(the .arff file contains the calculated features in case anyone is interested) 
+
+The executables can be launched in parallel for each fold to take 
+advantage of multiple cores without a problem as long as there 
+are different scratch directories for each fold. 
+
 ---------------  MIREX 2009 Audio Tag Classification --------------------------
 (for more information check ACM Multimedia 2009 paper: 
 "Improving Automatic Music Tag Annotation Using Stacked Generalization Of Probabilistic SVM 
