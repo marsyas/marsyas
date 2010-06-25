@@ -209,7 +209,7 @@ BeatHistoFeatures::clone() const
 void 
 BeatHistoFeatures::addControls()
 {
-	addctrl("mrs_string/mode", "method2", ctrl_mode_);
+	addctrl("mrs_string/mode", "method", ctrl_mode_);
 }
 
 void
@@ -232,18 +232,8 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	
 	mrs_string mode = ctrl_mode_->to<mrs_string>();
 	 
-	if (mode == "method1")
-	{
-		setctrl("mrs_natural/onObservations", (mrs_natural)8);
-		setctrl("mrs_string/onObsNames", "BH_SUM,BH_AMP1,BH_AMP2,BH_AMP3,BH_PER1,BH_PER2,BH_PER3,BH_RATIO");
-	}
-	else if (mode == "method2")
-	{
-		setctrl("mrs_natural/onObservations", (mrs_natural)18);     // alex 
-		setctrl("mrs_string/onObsNames", "b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17");
-	}
-	else 
-		cout << "Unsupported mode" << endl;
+	setctrl("mrs_natural/onObservations", (mrs_natural)18);     // alex 
+	setctrl("mrs_string/onObsNames", "BeatHisto_Sum,BeatHisto_LowPeakAmp,BeatHisto_MidPeakAmp,BeatHisto_HighPeakAmp,BeatHisto_LowBPM,BeatHisto_MidBPM,BeatHistoHighBPM,BeatHisto_LowMidBPMRatio,BeatHisto_MaxAcr,BeatHisto_MeanACR,BeatHisto_MaxHPS,BeatHisto_Flatness,BeatHisto_Std,BeatHisto_PeriodicCentroid1,BeatHisto_PeriodicCentroi2,BeatHisto_PeriodicSpread1,BeatHisto_PeriodicSpread2,BeatHisto_NumMax");
 	
 	flag_.create(getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 	mxr_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
@@ -430,55 +420,12 @@ BeatHistoFeatures::harm_prob(mrs_real& pmax, mrs_real factor,
 // }
 
 
-void 
-BeatHistoFeatures::method1(realvec& in, realvec& out) 
-{
-	mrs_real sum = 0;
-
-	// zero-out below 50BPM 
-	for (int i=0; i < 200; i++) 
-		in(i) = 0;
-
-  
-	for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
-		{
-			sum += in(o,t);
-		}
-	out(0,0) = sum;
-	
-	
-	pkr_->process(in, pkres_);
-	mxr_->process(pkres_,mxres_);
-	
-	
-	vector<mrs_real> bpms;
-	bpms.push_back(mxres_(0,1));
-	bpms.push_back(mxres_(0,3));
-	bpms.push_back(mxres_(0,5));
-	
-	sort(bpms.begin(), bpms.end());
-	
-	for (unsigned int i=0; i<bpms.size(); i++) 
-	{
-		if (bpms[0] == mxres_(2*i+1))
-			out(i+1,0) = mxres_(2*i,0) / sum;
-	}
-	
-	out(4,0) = bpms[0] /4.0;
-	out(5,0) = bpms[1] /4.0;
-	out(6,0) = bpms[2] /4.0;
-	out(7,0) = out(4,0) / out(5,0);
-	
-	
-	
-}
 
 
 
 
 void 
-BeatHistoFeatures::method2(realvec& in, realvec& out)
+BeatHistoFeatures::beatHistoFeatures(realvec& in, realvec& out)
 {
 
 	mrs_real sum = 0;
@@ -564,13 +511,7 @@ BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
 	mrs_string mode = ctrl_mode_->to<mrs_string>();
 	
-	if (mode == "method1")
-		method1(in,out);
-	else if (mode == "method2") 
-		method2(in,out);
-	else 
-		cout << "Unsupported mode" << endl;
-	
+	beatHistoFeatures(in,out);
 }
 
 
