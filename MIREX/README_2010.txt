@@ -18,6 +18,9 @@ Marsyas executables reside.
 > mkdir build 
 > cd build 
 > ccmake ../src 
+
+(For the SAI/VQ task, please enable the WITH_ANN option in CMake)
+
 > make 
 > cd build/bin 
 
@@ -38,7 +41,7 @@ advantage of multiple cores without a problem as long as there
 are different scratch directories for each fold. 
 
 
-------------- MIREX 2010 Audio Classification Tasks - Vector Quantized Stabilized Auditory Image ---------------------
+------------- MIREX 2010 Audio Classification Tasks - SAI/VQ - Vector Quantized Stabilized Auditory Image ---------------------
 (use REVISION_NUMBER: TBD) 
 
 IMPORTANT:
