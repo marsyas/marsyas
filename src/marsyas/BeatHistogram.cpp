@@ -16,11 +16,13 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "BeatHistogram.h"
 
 using namespace std;
 using namespace Marsyas;
 
+//#define MTLB_DBG_LOG
 
 BeatHistogram::BeatHistogram(string name):MarSystem("BeatHistogram",name)
 {
@@ -83,8 +85,16 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 	mrs_real amp;
 	mrs_real srate = getctrl("mrs_real/israte")->to<mrs_real>();
 	mrs_natural count = 1;
-	mrs_natural prev_bin =0;
+	mrs_natural prev_bin =endBin_-1;
+	mrs_natural pprev_bin =endBin_-1;
 	mrs_real sumamp = 0.0;
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(in, "acr");
+	MATLAB_EVAL("figure(1);plot(acr),grid on");
+#endif
+#endif
 
 	for (mrs_natural o=0; o < inObservations_; o++)
 		for (mrs_natural t = 1; t < inSamples_; t++)
@@ -120,12 +130,27 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 					count = 1;
 					sumamp = 0.0;
 				}
-			  
+				
+				// linear interpolation of the "not-set" bins...
+				if (pprev_bin-prev_bin > 1)
+				{
+					mrs_natural len = prev_bin-pprev_bin-1;
+					for (mrs_natural k = prev_bin+1; k < pprev_bin; k++)
+						out (0,k)	= (k-prev_bin)*(out(0,prev_bin)-out(0,pprev_bin))/len + out(0,prev_bin);
+				}
+
+				pprev_bin = prev_bin;
 				prev_bin = bin;	  
 			}
 		  
 		}
-	// out.normMaxMin();
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+		MATLAB_PUT(out, "bh");
+		MATLAB_EVAL("figure(2);plot(bh),grid on");
+#endif
+#endif
   
 }
 
