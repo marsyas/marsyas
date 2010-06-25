@@ -73,14 +73,10 @@ static mrs_real PeriodicSpread (realvec& vector, mrs_real centroid, mrs_bool isL
 
 mrs_real BeatHistoFeatures::NumMax (mrs_realvec& vector)
 {
-	pkr_->setctrl("mrs_real/peakStrengthRelMax", 0.5);
-	pkr_->setctrl("mrs_real/peakStrengthRelThresh", 2.0);
-	pkr_->setctrl("mrs_real/peakStrengthTreshLpParam", 0.95);
-	pkr_->setctrl("mrs_natural/peakNeighbors", 4);
 
 	pkr_->process(vector, pkres_);
 
-	return pkres_.sum ();
+	return pkres_.sum();
 }
 
 //static void BeatChroma (realvec& beatChroma, const realvec& beatHistogram, mrs_real beatRes = .25)
@@ -182,6 +178,7 @@ BeatHistoFeatures::BeatHistoFeatures(string name):MarSystem("BeatHistoFeatures",
 {
 	mxr_ = NULL;
 	pkr_ = NULL;
+	pkr1_ = NULL;
 	
 	addControls();
 }
@@ -190,6 +187,7 @@ BeatHistoFeatures::BeatHistoFeatures(const BeatHistoFeatures& a):MarSystem(a)
 {
 	mxr_ = NULL;
 	pkr_ = NULL;
+	pkr1_ = NULL;
 	ctrl_mode_ = getctrl("mrs_string/mode");
 }
 
@@ -197,6 +195,8 @@ BeatHistoFeatures::~BeatHistoFeatures()
 {
   delete mxr_;
   delete pkr_;
+  delete pkr1_;
+  
 }
 
 
@@ -220,9 +220,13 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
   
 	delete mxr_;//[!]
 	delete pkr_;
+	delete pkr1_;
+	
 	mxr_ = new MaxArgMax("mxr");//[!]
 	pkr_ = new Peaker("pkr");
-
+	pkr1_ = new Peaker("pkr1");
+	
+	
 	setctrl("mrs_natural/onSamples", (mrs_natural)1);	
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 	
@@ -235,8 +239,8 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	}
 	else if (mode == "method2")
 	{
-		setctrl("mrs_natural/onObservations", (mrs_natural)10);     // alex 
-		setctrl("mrs_string/onObsNames", "b0,b1,b2,b3,b4,b5,b6,b7,b8,b9");
+		setctrl("mrs_natural/onObservations", (mrs_natural)18);     // alex 
+		setctrl("mrs_string/onObsNames", "b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17");
 	}
 	else 
 		cout << "Unsupported mode" << endl;
@@ -253,10 +257,26 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	pkr_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
 
 
+	pkr1_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
+	pkr1_->updControl("mrs_natural/inObservations", getctrl("mrs_natural/inObservations"));
+	pkr1_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
+
+
+	pkr1_->updControl("mrs_natural/peakNeighbors", 40);
+	pkr1_->updControl("mrs_real/peakSpacing", 0.1);
+	pkr1_->updControl("mrs_natural/peakStart", 200);
+	pkr1_->updControl("mrs_natural/peakEnd", 640);
+
+
 	pkr_->updControl("mrs_natural/peakNeighbors", 40);
 	pkr_->updControl("mrs_real/peakSpacing", 0.1);
 	pkr_->updControl("mrs_natural/peakStart", 200);
 	pkr_->updControl("mrs_natural/peakEnd", 640);
+	 
+ 	pkr_->setctrl("mrs_real/peakStrengthRelMax", 0.5);
+	pkr_->setctrl("mrs_real/peakStrengthRelThresh", 2.0);
+	pkr_->setctrl("mrs_real/peakStrengthTreshLpParam", 0.95);
+	pkr_->setctrl("mrs_natural/peakNeighbors", 4);
 
 
 	
@@ -264,7 +284,11 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 				  mxr_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 	pkres_.create(pkr_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
 				  pkr_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+	pkres1_.create(pkr1_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+				   pkr1_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
     
+
 }
 
 mrs_real 
@@ -410,6 +434,11 @@ void
 BeatHistoFeatures::method1(realvec& in, realvec& out) 
 {
 	mrs_real sum = 0;
+
+	// zero-out below 50BPM 
+	for (int i=0; i < 200; i++) 
+		in(i) = 0;
+
   
 	for (o=0; o < inObservations_; o++)
 		for (t = 0; t < inSamples_; t++)
@@ -418,9 +447,6 @@ BeatHistoFeatures::method1(realvec& in, realvec& out)
 		}
 	out(0,0) = sum;
 	
-	// zero-out below 50BPM 
-	for (int i=0; i < 200; i++) 
-		in(i) = 0;
 	
 	pkr_->process(in, pkres_);
 	mxr_->process(pkres_,mxres_);
@@ -433,7 +459,7 @@ BeatHistoFeatures::method1(realvec& in, realvec& out)
 	
 	sort(bpms.begin(), bpms.end());
 	
-	for (int i=0; i<bpms.size(); i++) 
+	for (unsigned int i=0; i<bpms.size(); i++) 
 	{
 		if (bpms[0] == mxres_(2*i+1))
 			out(i+1,0) = mxres_(2*i,0) / sum;
@@ -454,6 +480,16 @@ BeatHistoFeatures::method1(realvec& in, realvec& out)
 void 
 BeatHistoFeatures::method2(realvec& in, realvec& out)
 {
+
+	mrs_real sum = 0;
+  
+	for (o=0; o < inObservations_; o++)
+		for (t = 0; t < inSamples_; t++)
+		{
+			sum += in(o,t);
+		}
+
+	
 	mrs_real result[2];
 	mrs_natural i,startIdx = 200;
 	// zero-out below 50BPM 
@@ -464,7 +500,42 @@ BeatHistoFeatures::method2(realvec& in, realvec& out)
 		if (in(i) < 0)
 			in(i) = 0;
 
-	NormInPlace (in);
+
+
+	
+
+	pkr1_->process(in, pkres1_);
+	mxr_->process(pkres1_,mxres_);
+	
+	
+	
+	vector<mrs_real> bpms;
+	bpms.push_back(mxres_(0,1));
+	bpms.push_back(mxres_(0,3));
+	bpms.push_back(mxres_(0,5));
+	
+	sort(bpms.begin(), bpms.end());
+
+	out(0,0) = sum;	
+	for (unsigned int i=0; i<bpms.size(); i++) 
+		for (unsigned int j =0; j < bpms.size(); j++)
+		{
+			if (bpms[i] == mxres_(2*j+1))
+				out(i+1,0) = mxres_(2*j,0);
+		}
+	
+
+	
+	out(4,0) = bpms[0] /4.0;
+	out(5,0) = bpms[1] /4.0;
+	out(6,0) = bpms[2] /4.0;
+	out(7,0) = out(4,0) / out(5,0);
+
+
+	
+	NormInPlace (in);	
+
+
 
 #ifdef MARSYAS_MATLAB
 #ifdef MTLB_DBG_LOG
@@ -474,16 +545,17 @@ BeatHistoFeatures::method2(realvec& in, realvec& out)
 #endif
 
 	MaxAcf (result[0], result[1],in, startIdx, 600);
-	out(0,0)	= result[0];
-	out(1,0)	= result[1];
-	out(2,0)	= MaxHps (in, startIdx);
-	out(3,0)    = SpectralFlatness (in, startIdx);
-	out(4,0)	= Std(in);
-	out(5,0)	= PeriodicCentroid(in, false, startIdx);
-	out(6,0)	= PeriodicCentroid(in, true, startIdx);
-	out(7,0)	= PeriodicSpread(in, out(5,0), false, startIdx);
-	out(8,0)	= PeriodicSpread(in, out(6,0), true, startIdx);
-	out(9,0)	= NumMax(in);
+	out(8,0)	= result[0];
+	out(9,0)	= result[1];
+	out(10,0)	= MaxHps (in, startIdx);
+	out(11,0)    = SpectralFlatness (in, startIdx);
+	out(12,0)	= Std(in);
+	out(13,0)	= PeriodicCentroid(in, false, startIdx);
+	out(14,0)	= PeriodicCentroid(in, true, startIdx);
+	out(15,0)	= PeriodicSpread(in, out(13,0), false, startIdx);
+	out(16,0)	= PeriodicSpread(in, out(14,0), true, startIdx);
+	out(17,0)	= NumMax(in);	
+	
 }
 
 
