@@ -179,7 +179,6 @@ void
 MP3FileSink::myProcess(realvec& in, realvec& out)
 {
 
-	cout << "I am called" << endl;
 	
 	mrs_natural t,o;
 
