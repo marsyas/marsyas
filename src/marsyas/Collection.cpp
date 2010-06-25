@@ -129,6 +129,7 @@ void
 Collection::add(string entry)
 {
     collectionList_.push_back(entry);
+	hasLabels_ = false;
 }
 
 

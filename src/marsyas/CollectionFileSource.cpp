@@ -195,7 +195,9 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 	if (col_.hasLabels())
 	{
 		setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())));
-		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);		
+		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);
+		cout << "collection has labels" << endl;
+		
 	}
 	
 		if (cindex_ + advance_ >= (mrs_natural)col_.size())
