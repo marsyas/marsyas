@@ -19,7 +19,7 @@ Marsyas executables reside.
 > cd build 
 > ccmake ../src 
 
-(For the SAI/VQ task, please enable the WITH_ANN option in CMake)
+IMPORTANT: (For the SAI/VQ method of feature extraction, please enable the WITH_ANN option in CMake)
 
 > make 
 > cd build/bin 
@@ -29,12 +29,8 @@ Marsyas executables reside.
 (use REVISION_NUMBER: TBD) 
 
 Extract features, train classifier and predict for 1 fold: 
-./bextract -sv train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w features.arff 
+./bextract -sv -bf train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w features.arff 
 (the .arff file contains the calculated features in case anyone is interested) 
-
-(OPTIONAL) If stereo files are available use the following command to 
-extract additional features based on stereo panning information: 
-./bextract -st -sv train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w stereo_features.arff 
 
 The executables can be launched in parallel for each fold to take 
 advantage of multiple cores without a problem as long as there 
@@ -56,18 +52,18 @@ The executables can be launched in parallel for each fold to take
 advantage of multiple cores without a problem as long as there 
 are different scratch directories for each fold. 
 
----------------  MIREX 2009 Audio Tag Classification --------------------------
+---------------  MIREX 2010 Audio Tag Classification --------------------------
 (for more information check ACM Multimedia 2009 paper: 
 "Improving Automatic Music Tag Annotation Using Stacked Generalization Of Probabilistic SVM 
 Outputs" 
 ) 
-(use REVISION_NUMBER 3691) 
+(use REVISION_NUMBER TBD)) 
 Assumes train.txt is a training list file (files and tags) and 
 test.txt is a testing list file (just files) 
 
 Step 1) Extract features for both lists 
-> bextract -ws 1024 -as 400 -sv -fe train.txt -w train.arff -od /path/to/workdir 
-> bextract -ws 1024 -as 400 -sv -fe test.txt -w test.arff -od /path/to/workdir 
+> bextract -ws 1024 -as 400 -sv -fe -bf train.txt -w train.arff -od /path/to/workdir 
+> bextract -ws 1024 -as 400 -sv -fe -bf test.txt -w test.arff -od /path/to/workdir 
 
 These two commands will generate two files in Weka .arff format 
 that will be placed in the working_directory specified. 
@@ -97,53 +93,31 @@ Step3) Second stage (stacked generalization) for automatic tag annotation
 
 
 
----------------  MIREX 2009 Audio Similarity --------------------------
-(use REVISION_NUMBER 3691) 
+---------------  MIREX 2010 Audio Similarity --------------------------
+(use REVISION_NUMBER ) 
 
 
 
 Extract features: 
-> bextract -fe -sv filelist.txt -od /path/to/workdir -w marsyas_features.arff
+> bextract -fe -sv -bf filelist.txt -od /path/to/workdir -w marsyas_features.arff
 
-(OPTIONAL) If stero files are available and filelist contains only stero files then 
-additional stereo panning features can be calculated as follows: 
-> bextract -fe -sv -st filelist.txt -od /path/to/workdir -w filelist.arff 
-
-
-> kea -m distance_matrix -id /path/to/workdir -od /path/to/workdir -w filelist.arff -dm filelist_matrix.txt 
+> kea -m distance_matrix_MIREX -id /path/to/workdir -od /path/to/workdir -w filelist.arff -dm filelist_matrix.txt 
 
 The generated filelist_matrix.txt contains the full distance matrix of all songs 
-to all songs of filelist.txt. Note: This command will only work with filelist.txt as 
-the name of the collection. In later version you can supply the desired filelist.txt 
-as an extra command-line argument -pr my_own_collection.txt. 
+to all songs of filelist.txt.  
 
 
 
-------------- MIREX 2009 Audio Classification Tasks ---------------------
-(use REVISION_NUMBER: 3691) 
-
-Extract features, train classifier and predict for 1 fold: 
-./bextract -sv train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w features.arff 
-(the .arff file contains the calculated features in case anyone is interested) 
-
-(OPTIONAL) If stereo files are available use the following command to 
-extract additional features based on stereo panning information: 
-./bextract -st -sv train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w stereo_features.arff 
-
-The executables can be launched in parallel for each fold to take 
-advantage of multiple cores without a problem as long as there 
-are different scratch directories for each fold. 
-
-------------- MIREX 2009 Audio Onset Detection Tasks ---------------------
-(use REVISION_NUMBER: 3700)
+------------- MIREX 2010 Audio Onset Detection Tasks ---------------------
+(use REVISION_NUMBER: TBD)
 
 ./onsets soundExample.wav
 
 Resulting soundExample.output will be saved in the same directory of the onsets executable.
 
 
-------------- MIREX 2009 Audio Beat Tracking Tasks ---------------------
-(use REVISION_NUMBER: 3719)
+------------- MIREX 2010 Audio Beat Tracking Tasks ---------------------
+(use REVISION_NUMBER: TBD)
 
 This implementation contains two distinct versions, differentiated by its functional heuristics.
 The application outputs two text files: one with the tempo measure (median IBI, 

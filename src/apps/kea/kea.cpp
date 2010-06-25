@@ -92,8 +92,9 @@ distance_matrix_MIREX()
   
   oss << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
 
-  //lmartins ???: what is this collection for?! 
-	Collection l;
+  
+  // collection simply for naming the entries 
+  Collection l;
   l.read(inputdir_ + predictcollectionfname_);
   for (size_t i=1; i <= l.size(); ++i) 
 	{
