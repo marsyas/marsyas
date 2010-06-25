@@ -157,6 +157,8 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 		isrc_->updControl("mrs_string/filename", col_.entry(cindex_));
 		isrc_->updControl("mrs_natural/pos", 0);
 		ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+
+	if (col_.hasLabels())
 		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
 		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
@@ -189,9 +191,13 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 	{
 		
 		setctrl("mrs_string/currentlyPlaying", col_.entry((cindex_+advance_) % col_.size()));
+
+	if (col_.hasLabels())
+	{
 		setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())));
 		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);		
-
+	}
+	
 		if (cindex_ + advance_ >= (mrs_natural)col_.size())
 		{
 			setctrl("mrs_bool/hasData", false);
@@ -226,8 +232,13 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
 		ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
 		
+		if (col_.hasLabels())
+		{
+			
 		setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
 		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+		}
+		
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
 		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
 		
@@ -273,8 +284,14 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 				setctrl("mrs_natural/onObservations", onObservations_);
 				setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
 				ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
-				setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
-				ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+
+		
+				if (col_.hasLabels())
+				{
+					setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
+					ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+				}
+				
 				ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
 				ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
 			}

@@ -2566,7 +2566,17 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 			while (ctrl_hasData->to<mrs_bool>())
 			{
+				if (beat_) 
+				{
+					beatHistogramFeatures(beatTracker, currentlyPlaying, beatfeatures);
+					bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);
+				}
+				
+
+
 				bextractNetwork->tick();
+				featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
+										   true);			  
 				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
