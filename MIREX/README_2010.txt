@@ -26,7 +26,7 @@ IMPORTANT: (For the SAI/VQ method of feature extraction, please enable the WITH_
 
 
 ------------- MIREX 2010 Audio Classification Tasks ---------------------
-(use REVISION_NUMBER: TBD) 
+(use REVISION_NUMBER: 4125) 
 
 Extract features, train classifier and predict for 1 fold: 
 ./bextract -sv -bf train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w features.arff 
@@ -40,7 +40,7 @@ are different scratch directories for each fold.
 ------------- MIREX 2010 Audio Classification Tasks SAI/VQ -------- 
 Vector Quantized Stabilized Auditory Image 
  SAI/VQ - Vector Quantized Stabilized Auditory Image ---------------------
-(use REVISION_NUMBER: TBD) 
+(use REVISION_NUMBER: 4125) 
 
 IMPORTANT:
 
@@ -59,7 +59,7 @@ are different scratch directories for each fold.
 "Improving Automatic Music Tag Annotation Using Stacked Generalization Of Probabilistic SVM 
 Outputs" 
 ) 
-(use REVISION_NUMBER TBD)) 
+(use REVISION_NUMBER 4125)) 
 Assumes train.txt is a training list file (files and tags) and 
 test.txt is a testing list file (just files) 
 
