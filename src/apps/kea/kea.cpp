@@ -393,12 +393,18 @@ void tags() {
   // Tick over the training WekaSource until all lines in the
   // training file have been read.
   //
+  int counter = 0;
+
+  cout << "Reading features" << endl;
+  
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
 	string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
   	net->tick();
 	net->updControl("Classifier/cl/mrs_string/mode", mode);
+	counter++;
   }
 
+  cout << "Training" << endl;
   
   mrs_natural nLabels = net->getctrl("WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>();
   mrs_string labelNames = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
@@ -406,7 +412,7 @@ void tags() {
   vector<string> classNames;
   string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
 
-  
+
   for (int i=0; i < nLabels; ++i) 
     {
       string className;
@@ -424,10 +430,11 @@ void tags() {
   //
   // Predict the classes of the test data
   //
+
+  
   net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + testcollectionfname_);
   net->updControl("Classifier/cl/mrs_string/mode", "predict");  
-
-
+  
   // The output prediction file
   ofstream prout;
   prout.open(predictcollectionfname_.c_str());
@@ -470,8 +477,12 @@ void tags() {
 
   cout << "Starting Prediction for Testing Collection" << endl;
   
+  counter = 0;
+  
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) 
     {
+		counter++;
+		
       net->tick();
       wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
       data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();

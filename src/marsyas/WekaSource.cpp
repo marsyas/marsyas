@@ -99,6 +99,8 @@ WekaSource::myUpdate(MarControlPtr sender)
 	// parse the header portion of the file to get the required attribute names and possible output labels (if any)...
 	if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
 	{
+
+		
 		this->updControl("mrs_bool/done", false);	  
 		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 		attributesToInclude_ = getctrl("mrs_string/attributesToInclude")->to<mrs_string>();

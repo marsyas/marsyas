@@ -37,7 +37,9 @@ advantage of multiple cores without a problem as long as there
 are different scratch directories for each fold. 
 
 
-------------- MIREX 2010 Audio Classification Tasks - SAI/VQ - Vector Quantized Stabilized Auditory Image ---------------------
+------------- MIREX 2010 Audio Classification Tasks SAI/VQ -------- 
+Vector Quantized Stabilized Auditory Image 
+ SAI/VQ - Vector Quantized Stabilized Auditory Image ---------------------
 (use REVISION_NUMBER: TBD) 
 
 IMPORTANT:
@@ -99,9 +101,9 @@ Step3) Second stage (stacked generalization) for automatic tag annotation
 
 
 Extract features: 
-> bextract -fe -sv -bf filelist.txt -od /path/to/workdir -w marsyas_features.arff
+> bextract -fe -sv -bf filelist.txt -od /path/to/workdir -w filelist.arff
 
-> kea -m distance_matrix_MIREX -id /path/to/workdir -od /path/to/workdir -w filelist.arff -dm filelist_matrix.txt 
+> kea -m distance_matrix_MIREX -id /path/to/workdir -od /path/to/workdir -w filelist.arff -pr filelist.txt -dm filelist_matrix.txt 
 
 The generated filelist_matrix.txt contains the full distance matrix of all songs 
 to all songs of filelist.txt.  
