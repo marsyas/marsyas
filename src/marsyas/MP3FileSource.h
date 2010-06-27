@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.cmu.edu>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -41,83 +41,83 @@ namespace Marsyas
 {
 /**
    \class MP3FileSource
-	\ingroup Internal
+   \ingroup Internal
    \brief MP3FileSource read mp3 files using libmad
    \author Stuart Bray
 
-This class reads an mp3 file using the mad mp3 decoder library.  Some
-of this code was inspired from Bertrand Petit's madlld example.  The
-code to resize the buffers was borrowed from Marsyas AudioSource.
+   This class reads an mp3 file using the mad mp3 decoder library.  Some
+   of this code was inspired from Bertrand Petit's madlld example.  The
+   code to resize the buffers was borrowed from Marsyas AudioSource.
 */
 
 
-class MP3FileSource: public AbsSoundFileSource
-{
-private:
- 
-  void addControls();
-  void myUpdate(MarControlPtr sender);
-  mrs_natural getLinear16(realvec& slice);
+	class MP3FileSource: public AbsSoundFileSource
+	{
+		private:
+ 			MarControlPtr ctrl_pos_;
+			void addControls();
+			void myUpdate(MarControlPtr sender);
+			mrs_natural getLinear16(realvec& slice);
 
 #ifdef MARSYAS_MAD
 
-  inline signed int scale(mad_fixed_t sample);
-  void madStructInitialize();
-  void madStructFinish();
+			inline signed int scale(mad_fixed_t sample);
+			void madStructInitialize();
+			void madStructFinish();
 #endif
 
-  void fillStream( mrs_natural offset = 0 );
-  void closeFile(); 
+			void fillStream( mrs_natural offset = 0 );
+			void closeFile(); 
 
-  void  PrintFrameInfo(struct mad_header *Header);
+			void  PrintFrameInfo(struct mad_header *Header);
   
-  // MAD stuff
+			// MAD stuff
 #ifdef MARSYAS_MAD
-  struct mad_stream stream;
-  struct mad_frame frame;
-  struct mad_synth synth;
+			struct mad_stream stream;
+			struct mad_frame frame;
+			struct mad_synth synth;
 #endif
 
-  mrs_natural fileSize_; 
-  mrs_natural frameSamples_;
-  mrs_natural totalFrames_;
-  mrs_natural frameCount_;
-  unsigned char* ptr_;
-  int fd;
-  FILE* fp;
-  struct stat myStat;	 
+			mrs_natural fileSize_; 
+			mrs_natural frameSamples_;
+			mrs_natural totalFrames_;
+			mrs_natural frameCount_;
+			unsigned char* ptr_;
+			int fd;
+			FILE* fp;
+			struct stat myStat;	 
   
-  // variables for buffer balancing
-  int bufferSize_;
-  mrs_natural currentPos_;
-  realvec reservoir_;
-  mrs_natural reservoirSize_;
-  mrs_natural preservoirSize_;
-  mrs_natural ri_;
-  mrs_natural offset;
+			// variables for buffer balancing
+			int bufferSize_;
+			mrs_natural currentPos_;
+			realvec reservoir_;
+			mrs_natural reservoirSize_;
+			mrs_natural preservoirSize_;
+			mrs_natural ri_;
+			mrs_natural offset;
 
-  mrs_natural advance_;
-  mrs_natural cindex_;
+			mrs_natural advance_;
+			mrs_natural cindex_;
   
-  mrs_real duration_;
-  mrs_natural csize_;
-  mrs_natural size_;
-  mrs_natural samplesOut_;
-  std::string filename_;
-  mrs_real repetitions_;
+			mrs_real duration_;
+			mrs_natural csize_;
+			mrs_natural size_;
+			mrs_natural samplesOut_;
+			std::string filename_;
+			mrs_real repetitions_;
   
-public:
+		public:
 
-  MP3FileSource(std::string name);
-  MP3FileSource(const MP3FileSource& a);
-  ~MP3FileSource();
-  MarSystem* clone() const;  
+			MP3FileSource(std::string name);
+			MP3FileSource(const MP3FileSource& a);
+			~MP3FileSource();
+			MarSystem* clone() const;  
 
-  void myProcess(realvec& in, realvec& out);
-  void getHeader(std::string filename);
+			void myProcess(realvec& in, realvec& out);
+			void getHeader(std::string filename);
 
   
-};
+	};
 
 }//namespace Marsyas
 

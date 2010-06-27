@@ -98,7 +98,8 @@ MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
 	csize_ = 0;
 	samplesOut_ = 0;
 	repetitions_ = 0;
-
+	
+	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
@@ -121,7 +122,7 @@ MP3FileSource::addControls()
 	addctrl("mrs_bool/hasData", true);
 	addctrl("mrs_natural/loopPos", (mrs_natural)0);
 	setctrlState("mrs_natural/loopPos", true);
-	addctrl("mrs_natural/pos", (mrs_natural)0);
+	addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
 	setctrlState("mrs_natural/pos", true);
 	addctrl("mrs_string/filename", "daufile");
 	setctrlState("mrs_string/filename", true);
@@ -615,8 +616,11 @@ MP3FileSource::getLinear16(realvec& slice)
 	
 	// keep track of where we are
 	pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->to<mrs_natural>());
+
+	ctrl_pos_->setValue(pos_, NOUPDATE);
 	currentPos_ = pos_;	
 	
+	cout << "MP3FileSource pos_ " << pos_ << endl;
 	
 	// move the data we ticked to the front of the reservoir
 	for (t=inSamples_; t < ri_; t++) {

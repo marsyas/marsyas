@@ -159,7 +159,7 @@ printHelp(string progName)
 	cerr << "windowedsource  : toy_with windowed source" << endl;
 	cerr << "Windowing       : toy_with different window functions of Windowing marsystem" << endl;
 	cerr << "weka            : toy_with weka source and sink functionality" << endl;
-	cerr << "updctrl         : toy_with updating control with pointers " << endl;
+	cerr << "updControl         : toy_with updating control with pointers " << endl;
 
 	cerr << "sfplay          : plays a sound file" << endl;
 	cerr << "SFPlay          : plays only labelled regions in an audio file" << endl;
@@ -398,8 +398,8 @@ toy_with_CollectionFileSource(string sfName)
 		// cindex++;
 		// cout << "cindex = " << cindex << endl;
 		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
-		//if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
-		//	playbacknet->updControl("mrs_natural/pos", 0);
+		if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+			playbacknet->updControl("mrs_natural/pos", 0);
 	}
 	delete playbacknet;
 }
@@ -4522,7 +4522,7 @@ toy_with_weka(string fname)
 
 
 void 
-toy_with_updctrl(string fname) 
+toy_with_updControl(string fname) 
 {
 	MarSystemManager mng;  
 
@@ -7549,7 +7549,7 @@ toy_with_dumpwav(string sfName, string outName)
 
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 
-	net->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	net->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
     realvec out;
 
@@ -7578,14 +7578,14 @@ toy_with_sness_shredder(string sfName)
 
     MarSystem* accum = mng.create("Accumulator", "accum");
 	accum->addMarSystem(mng.create("SoundFileSource", "src"));
-    // accum->updctrl("mrs_natural/nTimes", 1293);
-    accum->updctrl("mrs_natural/nTimes", 1000);
-	accum->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+    // accum->updControl("mrs_natural/nTimes", 1293);
+    accum->updControl("mrs_natural/nTimes", 1000);
+	accum->updControl("SoundFileSource/src/mrs_string/filename", sfName);
     net->addMarSystem(accum);
 
     MarSystem* shredder = mng.create("Shredder", "shredder");
 	shredder->addMarSystem(mng.create("Gain", "gain"));
-    shredder->updctrl("mrs_natural/nTimes", 10);
+    shredder->updControl("mrs_natural/nTimes", 10);
     net->addMarSystem(shredder);
 
     net->addMarSystem(mng.create("Gain", "gain"));
@@ -7620,14 +7620,14 @@ toy_with_aim_vq(string sfName)
 	featureNetwork->addMarSystem(mng.create("AimVQ", "aimvq"));
 
     MarSystem* acc = mng.create("Accumulator", "acc");
-    acc->updctrl("mrs_natural/nTimes", 649);
+    acc->updControl("mrs_natural/nTimes", 649);
     acc->addMarSystem(featureNetwork);
     net->addMarSystem(acc);
 
 	net->addMarSystem(mng.create("Sum", "sum"));
-    net->updctrl("Sum/sum/mrs_string/mode", "sum_observations");
+    net->updControl("Sum/sum/mrs_string/mode", "sum_observations");
 
-	featureNetwork->updctrl("SoundFileSource/src/mrs_string/filename", sfName);
+	featureNetwork->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
     cout << "UPDATE" << endl;
 
@@ -7815,8 +7815,8 @@ main(int argc, const char **argv)
 		toy_with_train_predict(fname0, fname1);
 	else if (toy_withName == "MidiFileSynthSource")
 		toy_with_MidiFileSynthSource(fname0);
-	else if (toy_withName == "updctrl") 
-		toy_with_updctrl(fname0);
+	else if (toy_withName == "updControl") 
+		toy_with_updControl(fname0);
 	else if (toy_withName == "vibrato")
 		toy_with_vibrato(fname0);
 	else if (toy_withName == "vicon")
