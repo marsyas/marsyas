@@ -620,7 +620,6 @@ MP3FileSource::getLinear16(realvec& slice)
 	ctrl_pos_->setValue(pos_, NOUPDATE);
 	currentPos_ = pos_;	
 	
-	cout << "MP3FileSource pos_ " << pos_ << endl;
 	
 	// move the data we ticked to the front of the reservoir
 	for (t=inSamples_; t < ri_; t++) {
