@@ -76,7 +76,7 @@ void
 MaxArgMax::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t,o;
-	out.setval(0.0);
+	out.setval(MINREAL);
 	mrs_natural k = getctrl("mrs_natural/nMaximums")->to<mrs_natural>();
 	
 	mrs_natural interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
