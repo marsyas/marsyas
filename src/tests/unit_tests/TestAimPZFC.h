@@ -38,7 +38,7 @@ class AimPZFC_runner : public CxxTest::TestSuite
     realvec in,out;
 
 	aimc_pzfc = new AimPZFC("aimc_pzfc");
-	aimc_pzfc->updctrl("mrs_real/israte", 44100.0);
+	aimc_pzfc->updControl("mrs_real/israte", 44100.0);
 
 	// Create input and output realvecs
 	int length = 512;
@@ -83,7 +83,7 @@ class AimPZFC_runner : public CxxTest::TestSuite
     net->addMarSystem(mng.create("SoundFileSource", "src"));
     net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
 
-    net->updctrl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
+    net->updControl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
     net->tick();
 
     out = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();

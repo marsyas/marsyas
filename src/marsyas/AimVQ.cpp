@@ -45,6 +45,8 @@ AimVQ::AimVQ(const AimVQ& a): MarSystem(a)
 
 AimVQ::~AimVQ()
 {
+	
+
 }
 
 MarSystem*

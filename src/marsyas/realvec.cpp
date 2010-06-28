@@ -98,7 +98,7 @@ namespace Marsyas
 			
 			//copy data
 			// for (mrs_natural i=0; i < size_; ++i)
-			// data_[i] = a.data_[i];
+			// 'data_[i] = a.data_[i];
 
 			memcpy (data_, a.data_, sizeof(mrs_real)*size_);
 			

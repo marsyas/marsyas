@@ -134,6 +134,8 @@ AimHCL::myProcess(realvec& in, realvec& out)
   mrs_bool _do_log = ctrl_do_log_->to<mrs_bool>();
 
   mrs_natural _num_channels = _inObservations / 2;
+  double b = exp(-1.0 / (_israte * time_constant_));
+  double gain = 1.0 / (1.0 - b);
 
   for (o = 0; o < _num_channels; ++o) {
     for (t = 0; t < _inSamples; ++t) {
@@ -153,8 +155,7 @@ AimHCL::myProcess(realvec& in, realvec& out)
       }
     }
     if (_do_lowpass) {
-      double b = exp(-1.0 / (_israte * time_constant_));
-      double gain = 1.0 / (1.0 - b);
+
       for (int j = 0; j < _lowpass_order; j++) {
         for (int k = 0; k < _onSamples; ++k) {
           xn_ = out(o,k);

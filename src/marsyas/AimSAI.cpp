@@ -278,11 +278,13 @@ AimSAI::myProcess(realvec& in, realvec& out)
     active_strobes_[o].ShiftStrobes(ctrl_inSamples_->to<mrs_natural>());
   }
 
+  double decay_factor = pow(sai_decay_factor_, fire_counter_);
+
   // Loop over samples to make the SAI
   for (int t = 0; t < ctrl_inSamples_->to<mrs_natural>(); ++t) {
     // cout << "i=" << t << endl;
 
-    double decay_factor = pow(sai_decay_factor_, fire_counter_);
+
     // cout << "\tdecay_factor=" << decay_factor << endl;
     // Loop over channels
     for (int o = 0; o < channel_count_; ++o) {
