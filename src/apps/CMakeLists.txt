@@ -46,6 +46,7 @@ add_subdirectory(ibt)
 
 ## EVALUATION PROJECTS
 add_subdirectory(mirex2008)
+add_subdirectory(mirex2010)
 add_subdirectory(peakClusteringEval)
 add_subdirectory(mirex2009_tsunoo)
 add_subdirectory(aim)
