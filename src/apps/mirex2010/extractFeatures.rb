@@ -93,8 +93,8 @@ output_file.close
 threads = []
 (1..num_cores.to_i).each do |n|
   threads << Thread.new(n) do |thread|
-    puts "Running ../mirex_extract input#{n}.mf output#{n}.arff"
-    `#{path_to_mirex_extract} input#{n}.mf output#{n}.arff`
+    puts "Running bextract -fe -saivq -sv input#{n}.mf -w output#{n}.arff"
+    `#{path_to_mirex_extract} -fe -saivq -sv input#{n}.mf -w output#{n}.arff`
   end
 end
 
@@ -107,8 +107,13 @@ threads.each { |thr| thr.join }
 # 6) Join the output of each of the mirex_extract jobs into one big
 # .arff file
 # 
-`cat output1.arff > features.arff`
+`echo"% Created by Marsyas" > features.arff`
+`echo"@relation bextract-one.arff" >> features.arff`
+`echo"@attribute Acc1000_AimVQ_AimBoxes_AimSAI_AimLocalMax_AimHCL_AimPZFC_AudioCh0 real" >> features.arff`
+`echo"@attribute test real" >> features.arff`
+
+`tail -n+5 output1.arff >> features.arff`
 (2..num_cores.to_i).each do |n|
-  `tail -n+71 output#{n}.arff >> features.arff`
+  `tail -n+8807 output#{n}.arff >> features.arff`
 end
 
