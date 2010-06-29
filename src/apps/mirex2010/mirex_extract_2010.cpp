@@ -28,16 +28,10 @@ using namespace Marsyas;
 mrs_natural memSize = 40;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
-mrs_natural accSize_ = 1298;
+mrs_natural accSize_ = 1000;
 mrs_real samplingRate_ = 22050.0;
 mrs_real start = 0.0;
 mrs_real length = -1.0;
-
-// map table with pointers to the functions that create
-// each specific and supported feature extraction MarSystem
-typedef MarSystem* (*FeatureExtractorFactory)();
-map<string,FeatureExtractorFactory >  featureExtractors;
-map<string, string> featureExtractorDesc;
 
 ////////////////////////////////////////
 //
@@ -47,7 +41,6 @@ void usage()
 {
   cout << "mirex_extract input.mf output.arff" << endl;
 }
-
 
 ////////////////////////////////////////
 //
@@ -65,20 +58,7 @@ read_collection(Collection& c, string inCollectionName)
 // Extract features from a single file
 //
 void extract(Collection collection, string outWekaName)
-    // void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label, 
-    // 							   string pluginName, string classNames, 
-    // 							   string wekafname, 
-    // 							   mrs_natural memSize, string extractorStr,
-    // 							   bool withBeatFeatures)
 {
-
-  // open output file
-  //   ofstream outstream(outfname.c_str());
-  //   if (!outstream) {
-  // 	cerr << "Could not open output file (" << outfname << ")" << endl;
-  // 	exit(0);
-  //   }
-
   string sfName = collection.entry(0);
 
   ////////////////////////////////////////////////////////////
@@ -91,12 +71,14 @@ void extract(Collection collection, string outWekaName)
   ////////////////////////////////////////////////////////////
   MarSystem* src = mng.create("SoundFileSource", "src");
 
-
   ////////////////////////////////////////////////////////////
   // Build the overall feature calculation network
   ////////////////////////////////////////////////////////////
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
   featureNetwork->addMarSystem(src);
+
+  // From bextract
+  featureNetwork->updControl("mrs_real/israte", 44100.0);   //sampling rate  [!hardcoded]
 
   ////////////////////////////////////////////////////////////
   // Feature Extractor : create the correct feature extractor
@@ -114,7 +96,7 @@ void extract(Collection collection, string outWekaName)
   // update controls
   ////////////////////////////////////////////////////////////
   featureNetwork->updControl("SoundFileSource/src/mrs_string/filename", sfName);
-  featureNetwork->updControl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
+  // featureNetwork->updControl("mrs_natural/inSamples", MRS_DEFAULT_SLICE_NSAMPLES);
 
   ////////////////////////////////////////////////////////////
   // accumulate feature vectors over 30 seconds 
@@ -126,16 +108,6 @@ void extract(Collection collection, string outWekaName)
   // add network to accumulator
   ////////////////////////////////////////////////////////////
   acc->addMarSystem(featureNetwork->clone());
-
-  ////////////////////////////////////////////////////////////
-  // WEKA output
-  ////////////////////////////////////////////////////////////
-  MarSystem* wsink = mng.create("WekaSink", "wsink");
-
-  ////////////////////////////////////////////////////////////
-  // Annotator
-  ////////////////////////////////////////////////////////////
-  MarSystem* annotator = mng.create("Annotator", "annotator");
 
   ////////////////////////////////////////////////////////////
   // Generate the histogram of the quantized vectors (from AimVQ)
@@ -155,6 +127,16 @@ void extract(Collection collection, string outWekaName)
   // Get parameters
   ////////////////////////////////////////////////////////////
   total->updControl("mrs_natural/inSamples", winSize);
+
+  ////////////////////////////////////////////////////////////
+  // WEKA output
+  ////////////////////////////////////////////////////////////
+  MarSystem* wsink = mng.create("WekaSink", "wsink");
+
+  ////////////////////////////////////////////////////////////
+  // Annotator
+  ////////////////////////////////////////////////////////////
+  MarSystem* annotator = mng.create("Annotator", "annotator");
 
   //////////////////////////////////////////////////////////////////////////
   // Main loop for extracting the features 
@@ -235,9 +217,10 @@ void extract(Collection collection, string outWekaName)
     //   	  annotator->updControl("mrs_natural/label", collection.labelNum(collection.labelEntry(i)));
     annotator->updControl("mrs_natural/label", (mrs_natural)i);
 
-    // 	  cout << "collection.labelNum(collection.labelEntry(i))" << collection.labelNum(collection.labelEntry(i)) << endl;
+    cout << "collection.labelNum(collection.labelEntry(i))" << collection.labelNum(collection.labelEntry(i)) << endl;
 
     total->process(in, timbreres);
+    cout << *total;
 	  
     // concatenate timbre and beat vectors 
     for (int t=0; t < timbreSize; t++)
