@@ -5,12 +5,34 @@
 #
 
 
+ if(CMAKE_CONFIGURATION_TYPES)
+   list(APPEND CMAKE_CONFIGURATION_TYPES Profile)
+   list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
+   set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
+     "Add the configurations that we need"
+     FORCE)
+ endif()
 
 IF(NOT CMAKE_BUILD_TYPE)
-  SET(CMAKE_BUILD_TYPE Relelease CACHE STRING
-      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+  SET(CMAKE_BUILD_TYPE Release CACHE STRING
+      "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile."
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
+
+# Update the documentation string of CMAKE_BUILD_TYPE for GUIs
+# SET( CMAKE_BUILD_TYPE "" CACHE STRING
+#     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile."
+#     FORCE )
+
+SET(CMAKE_CXX_FLAGS_PROFILE "-O3 -finstrument-functions" CACHE STRING "Flags used for profiling")
+# SET(CMAKE_CXX_EXE_LINKER_FLAGS_PROFILE "-lSaturn")
+
+MARK_AS_ADVANCED(CMAKE_CXX_FLAGS_PROFILE)
+
+
+
+
+
 
 IF(CMAKE_COMPILER_IS_GNUCXX)
 	SET(CMAKE_CXX_FLAGS "-Wall")
@@ -22,11 +44,11 @@ option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
 option(MARSYAS_INLINE "Inline functions" ON)
 if (MARSYAS_LINUX)
-	option(OSS "[LINUX ONLY] Use OSS instead of ALSA" OFF)
+	option(MARSYAS_OSS "[LINUX ONLY] Use OSS instead of ALSA" OFF)
 endif (MARSYAS_LINUX)
 
 if (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
-	option(ASIO "[WINDOWS ONLY] Use ASIO instead of DirectSound" OFF)
+	option(MARSYAS_ASIO "[WINDOWS ONLY] Use ASIO instead of DirectSound" OFF)
 endif (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
 
 
