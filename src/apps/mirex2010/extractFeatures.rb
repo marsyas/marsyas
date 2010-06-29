@@ -73,8 +73,9 @@ begin
       file_open = true
     end
     output_file.puts line
-    i = i % ((num_lines.to_f / num_cores.to_f).to_i + 1)
-    if (i == 0)
+#    i = i % ((num_lines.to_f / num_cores.to_f).to_i + 1)
+    i = i % ((num_lines.to_f / num_cores.to_f).to_i)
+    if (i == 0 && current_file < num_cores.to_i)
       output_file.close
       file_open = false
       current_file += 1
@@ -93,8 +94,8 @@ output_file.close
 threads = []
 (1..num_cores.to_i).each do |n|
   threads << Thread.new(n) do |thread|
-    puts "Running bextract -fe -saivq -sv input#{n}.mf -w output#{n}.arff"
-    `#{path_to_mirex_extract} -fe -saivq -sv input#{n}.mf -w output#{n}.arff`
+    puts "Running bextract -fe -saivq -sv input#{n}.mf -w output#{n}.arff -od output#{n}"
+    `#{path_to_mirex_extract} -fe -saivq -sv input#{n}.mf -w output#{n}.arff -od output#{n}`
   end
 end
 
