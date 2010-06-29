@@ -80,7 +80,7 @@ void train_and_predict(string trainFileName,string testFileName)
   // the same as the WekaSource
   //
   net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkControl("Classifier/cl/mrs_string/mode", "train");  
+  net->updControl("Classifier/cl/mrs_string/mode", "train");  
 
   ////////////////////////////////////////////////////////////
   //
@@ -131,7 +131,7 @@ void train_and_predict(string trainFileName,string testFileName)
 	//	cout << data(0,0) << endl;
   }
 
-  cout << "DONE" << endl;
+  // cout << "DONE" << endl;
 
   // sness - hmm, I really should be able to delete net, but I get a 
   // coredump when I do.  Maybe I need to destroy something else first?
@@ -157,9 +157,3 @@ int main(int argc, const char **argv)
   exit(0);
 
 }
-
-
-
-
-
-
