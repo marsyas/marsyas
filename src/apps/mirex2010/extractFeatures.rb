@@ -25,13 +25,15 @@
 # 
 
 
-if ARGV[3] == nil
-  abort("Usage: extractFeatures.rb /path/to/mirex_extract num_cores /path/to/scratch/folder /path/to/featureExtractionListFile.txt")
+if ARGV[4] == nil
+  abort("Usage: extractFeatures.rb /path/to/mirex_extract num_cores /path/to/scratch/folder /path/to/featureExtractionListFile.txt outputarff bextract_args")
 else
   path_to_mirex_extract = ARGV[0]
   num_cores = ARGV[1]
   scratch_folder = ARGV[2]
   extraction_list = ARGV[3]
+  outputarff = ARGV[4]
+  bextract_args = ARGV[5]
 end
 
 puts "Extracting features from #{extraction_list} to #{scratch_folder}/features.arff using #{num_cores} cores"
@@ -94,8 +96,8 @@ output_file.close
 threads = []
 (1..num_cores.to_i).each do |n|
   threads << Thread.new(n) do |thread|
-    puts "Running bextract -fe -saivq -sv input#{n}.mf -w output#{n}.arff -od output#{n}"
-    `#{path_to_mirex_extract} -fe -saivq -sv input#{n}.mf -w output#{n}.arff -od output#{n}`
+    puts "Running bextract -fe -saivq -sv input#{n}.mf -w output#{n}.arff -od output#{n} #{bextract_args.to_s} >& stdout#{n}.txt"
+    `#{path_to_mirex_extract} -fe -saivq -sv input#{n}.mf -w output#{n}.arff -od output#{n} #{bextract_args.to_s}>& stdout#{n}.txt`
   end
 end
 
@@ -107,14 +109,14 @@ threads.each { |thr| thr.join }
 #
 # 6) Join the output of each of the mirex_extract jobs into one big
 # .arff file
-# 
-`echo "% Created by Marsyas" > features.arff`
-`echo "@relation bextract-one.arff" >> features.arff`
-`echo "@attribute Acc1000_AimVQ_AimBoxes_AimSAI_AimLocalMax_AimHCL_AimPZFC_AudioCh0 real" >> features.arff`
-`echo "@attribute test real" >> features.arff`
+#
+`echo "% Created by Marsyas" > #{outputarff}`
+`echo "@relation bextract-one.arff" >> #{outputarff}`
+`echo "@attribute Acc1000_AimVQ_AimBoxes_AimSAI_AimLocalMax_AimHCL_AimPZFC_AudioCh0 real" >> #{outputarff}`
+`echo "@attribute test real" >> #{outputarff}`
 
-`tail -n+5 output1output1.arff >> features.arff`
+`tail -n+5 output1output1.arff >> #{outputarff}`
 (2..num_cores.to_i).each do |n|
-  `tail -n+8807 output#{n}output#{n}.arff >> features.arff`
+  `tail -n+8807 output#{n}output#{n}.arff >> #{outputarff}`
 end
 
