@@ -14,6 +14,7 @@
 #pragma warning(disable: 4251)
 #define marsyas_EXPORT __declspec(dllexport)
 #else 
+#pragma warning(disable: 4251)
 #define marsyas_EXPORT __declspec(dllimport)
 #endif
 #endif  

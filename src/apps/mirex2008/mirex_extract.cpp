@@ -245,7 +245,7 @@ void extract(Collection collection, string outWekaName)
 
    cout << "------------------------------" << endl;
    cout << "Label names" << endl;
-   cout << wsink->getctrl("mrs_string/labelNames") << endl;
+   cout << wsink->getctrl("mrs_string/labelNames")->to<mrs_string>() << endl;
    cout << "------------------------------\n" << endl;
 
   ////////////////////////////////////////////////////////////
