@@ -1,3 +1,2 @@
-marsyas_app(mirex_extract_2010 mirex_extract_2010.cpp)
 marsyas_app(mirex_train_and_predict_2010 mirex_train_and_predict_2010.cpp)
 
