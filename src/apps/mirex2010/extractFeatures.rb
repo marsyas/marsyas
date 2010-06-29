@@ -113,8 +113,8 @@ threads.each { |thr| thr.join }
 `echo "@attribute Acc1000_AimVQ_AimBoxes_AimSAI_AimLocalMax_AimHCL_AimPZFC_AudioCh0 real" >> features.arff`
 `echo "@attribute test real" >> features.arff`
 
-`tail -n+5 output1.arff >> features.arff`
+`tail -n+5 output1output1.arff >> features.arff`
 (2..num_cores.to_i).each do |n|
-  `tail -n+8807 output#{n}.arff >> features.arff`
+  `tail -n+8807 output#{n}output#{n}.arff >> features.arff`
 end
 
