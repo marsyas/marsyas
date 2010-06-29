@@ -23,8 +23,7 @@ using namespace Marsyas;
 using std::string;
 using std::ostringstream;
 
-
-Median::Median(string name):MarSystem("Median", name)
+Median::Median(mrs_string name):MarSystem("Median", name)
 {
 	addControls();
 }
@@ -65,11 +64,11 @@ Median::myUpdate(MarControlPtr sender)
   inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
   ostringstream oss;
-  string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+  mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
   for (int i = 0; i < inObservations_; ++i)
 	{
-	  string inObsName;
-	  string temp;
+	  mrs_string inObsName;
+	  mrs_string temp;
 	  inObsName = inObsNames.substr(0, inObsNames.find(","));
 	  temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
 	  inObsNames = temp;
@@ -91,5 +90,3 @@ Median::myProcess(realvec& in, realvec& out)
 	}
 
 }
-
-
