@@ -112,12 +112,12 @@ threads.each { |thr| thr.join }
 # 6) Join the output of each of the mirex_extract jobs into one big
 # .arff file
 #
-`echo "% Created by Marsyas" > #{outputarff}`
-`echo "@relation bextract-one.arff" >> #{outputarff}`
-`echo "@attribute Acc1000_AimVQ_AimBoxes_AimSAI_AimLocalMax_AimHCL_AimPZFC_AudioCh0 real" >> #{outputarff}`
-`echo "@attribute test real" >> #{outputarff}`
+#`echo "% Created by Marsyas" > #{outputarff}`
+#`echo "@relation bextract-one.arff" >> #{outputarff}`
+#`echo "@attribute Acc1000_AimVQ_AimBoxes_AimSAI_AimLocalMax_AimHCL_AimPZFC_AudioCh0 real" >> #{outputarff}`
+#`echo "@attribute test real" >> #{outputarff}`
 
-`tail -n+5 output1features.arff >> #{outputarff}`
+`cat output1features.arff >> #{outputarff}`
 
 a = `grep -m 1 -n data output1features.arff`
 linenum = (a.split(":")[0].to_i) + 1

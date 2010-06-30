@@ -1,2 +1,1 @@
-marsyas_app(mirex_train_and_predict_2010 mirex_train_and_predict_2010.cpp)
 
