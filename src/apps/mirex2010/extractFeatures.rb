@@ -96,6 +96,8 @@ output_file.close
 threads = []
 (1..num_cores.to_i).each do |n|
   threads << Thread.new(n) do |thread|
+    # puts "Running bextract -fe -sv input#{n}.mf -w output#{n}.arff -od output#{n} #{bextract_args.to_s} >& stdout#{n}.txt"
+    # `#{path_to_mirex_extract} -fe -sv input#{n}.mf -w output#{n}.arff -od output#{n} #{bextract_args.to_s}>& stdout#{n}.txt`
     puts "Running bextract input#{n}.mf -od output#{n} -w features.arff #{bextract_args.to_s} >& stdout#{n}.txt"
     `#{path_to_mirex_extract} input#{n}.mf -od output#{n} -w features.arff #{bextract_args.to_s}>& stdout#{n}.txt`
   end
@@ -116,7 +118,11 @@ threads.each { |thr| thr.join }
 `echo "@attribute test real" >> #{outputarff}`
 
 `tail -n+5 output1output1.arff >> #{outputarff}`
+
+a = `grep -m 1 -n data output1output1.arff`
+linenum = (a.split(":")[0].to_i) + 1
+
 (2..num_cores.to_i).each do |n|
-  `tail -n+8807 output#{n}output#{n}.arff >> #{outputarff}`
+  `tail -n+#{linenum} output#{n}output#{n}.arff >> #{outputarff}`
 end
 
