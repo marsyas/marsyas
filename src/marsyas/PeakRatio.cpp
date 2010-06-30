@@ -18,17 +18,19 @@
 
 #include "PeakRatio.h"
 
-using namespace std;
+using std::string;
+using std::ostringstream;
+
 using namespace Marsyas;
 
 /** Marsystem for incorporating the ratio of the higest peak to minimal/average peak of each observation samplewise to the output vector
-*
-*This Marsystem appends the ratio of the higest peak to minimal peak and ratio of the higest peak to average peak of each observation samplewise to the output vector.
-*
-*
-*
-*
-*/
+ *
+ *This Marsystem appends the ratio of the higest peak to minimal peak and ratio of the higest peak to average peak of each observation samplewise to the output vector.
+ *
+ *
+ *
+ *
+ */
 PeakRatio::PeakRatio(string name):MarSystem("PeakRatio", name)
 {
 	//Add any specific controls needed by PeakRatio
@@ -57,7 +59,7 @@ PeakRatio::~PeakRatio()
 MarSystem* 
 PeakRatio::clone() const 
 {
-  return new PeakRatio(*this);
+	return new PeakRatio(*this);
 }
 
 void 
@@ -81,6 +83,10 @@ PeakRatio::myUpdate(MarControlPtr sender)
 
 	// Add prefix to the observation names.
 	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "PeakRatio_"), NOUPDATE);
+	
+	maxima_.stretch(inSamples_);
+	minima_.stretch(inSamples_);
+
 }
 
 
@@ -88,11 +94,8 @@ void
 PeakRatio::myProcess(realvec& in, realvec& out)
 {	
 	mrs_natural t,o;
-	realvec maxima;
-	realvec minima;
 
-	maxima.create(inSamples_);
-	minima.create(inSamples_);
+
 
 	mrs_real max_ = -1.0 * DBL_MAX;
 	mrs_real min_ = DBL_MAX;
@@ -117,8 +120,8 @@ PeakRatio::myProcess(realvec& in, realvec& out)
 			
 		}
 		avg_=avg_/(inSamples_*inObservations_);
-		maxima(t)=max_;
-		minima(t)=min_;
+		maxima_(t)=max_;
+		minima_(t)=min_;
 	}
 	mrs_real res1=0.0;
 	mrs_real res2=0.0;
@@ -126,8 +129,8 @@ PeakRatio::myProcess(realvec& in, realvec& out)
 	for (t=0; t < inSamples_; t++)
 	{
 		//compute ratios
-		if(minima(t)!=0.0) res1=maxima(t)/minima(t);
-		if(minima(t)!=0.0) res2=maxima(t)/avg_;
+		if(minima_(t)!=0.0) res1=maxima_(t)/minima_(t);
+		if(minima_(t)!=0.0) res2=maxima_(t)/avg_;
 
 		//add the ratios to the output
 		out(onObservations_-1,t)=res1;

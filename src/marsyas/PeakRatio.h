@@ -45,6 +45,9 @@ private:
   //Add specific controls needed by this MarSystem.
 	void addControls();
 	void myUpdate(MarControlPtr sender);
+	realvec maxima_;
+	realvec minima_;
+
 
 public:
   PeakRatio(std::string name);
