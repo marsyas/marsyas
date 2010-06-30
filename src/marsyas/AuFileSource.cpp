@@ -58,7 +58,7 @@ struct Marsyas::snd_header
    of the Next .snd/ Sun .au format */
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 #define SND_MAGIC_NUM 0x2e736e64
@@ -72,7 +72,7 @@ using namespace Marsyas;
 #define SND_FORMAT_LINEAR_32   5
 #define SND_FORMAT_FLOAT       6
 
-AuFileSource::AuFileSource(string name):AbsSoundFileSource("AuFileSource",name)
+AuFileSource::AuFileSource(mrs_string name):AbsSoundFileSource("AuFileSource",name)
 {
 	//type_ = "SoundFileSource";//"AuFileSource"?!?
 	//name_ = name
@@ -191,7 +191,7 @@ AuFileSource::ByteSwapShort (unsigned short nValue)
 }
 
 void 
-AuFileSource::getHeader(string filename)
+AuFileSource::getHeader(mrs_string filename)
 {
 	if (sfp_ != NULL) 
 		fclose(sfp_);
@@ -403,7 +403,7 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 			}
 			default:
 			{
-				string warn = "File mode";
+				mrs_string warn = "File mode";
 				warn += sndFormats_[hdr_->mode];
 				warn += "(";
 				warn += hdr_->mode;
@@ -418,5 +418,3 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 
   
   
-
-

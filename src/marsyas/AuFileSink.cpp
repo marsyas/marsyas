@@ -19,7 +19,7 @@
 #include "common.h" 
 #include "AuFileSink.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
@@ -66,7 +66,7 @@ of the Next .snd/ Sun .au format */
 #define SND_FORMAT_LINEAR_32   5
 #define SND_FORMAT_FLOAT       6
 
-AuFileSink::AuFileSink(string name):AbsSoundFileSink("AuFileSink",name)
+AuFileSink::AuFileSink(mrs_string name):AbsSoundFileSink("AuFileSink",name)
 {
   //type_ = "AuFileSink";
   //name_ = name;
@@ -118,11 +118,11 @@ setctrlState("mrs_string/id3tags", true);
 }
 
 bool 
-AuFileSink::checkExtension(string filename)
+AuFileSink::checkExtension(mrs_string filename)
 {
   FileName fn(filename);
-  string auext  = "au";
-  string sndext = "snd";
+  mrs_string auext  = "au";
+  mrs_string sndext = "snd";
   
   if ((fn.ext() == auext) || (fn.ext() == sndext))
     return true;
@@ -151,7 +151,7 @@ AuFileSink::myUpdate(MarControlPtr sender)
 }
   
 void 
-AuFileSink::putHeader(string filename)
+AuFileSink::putHeader(mrs_string filename)
 {
   mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   

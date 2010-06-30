@@ -18,7 +18,7 @@
 
 #include "ADRess.h"
 
-using std::string;
+
 using std::ostringstream;
 using std::min;
 using std::max;
@@ -26,7 +26,7 @@ using std::max;
 
 using namespace Marsyas;
 
-ADRess::ADRess(string name):MarSystem("ADRess", name)
+ADRess::ADRess(mrs_string name):MarSystem("ADRess", name)
 {
 	addControls();
 }
@@ -180,5 +180,3 @@ ADRess::myProcess(realvec& in, realvec& out)
 // 	MATLAB_EVAL("AZr = out(end/2+1:end,2:end);");
 // 	MATLAB_EVAL("panMap = [AZl(:,1:end-1),AZr(:,end:-1:1)];figure(1);imagesc(panMap);");
 }
-
-

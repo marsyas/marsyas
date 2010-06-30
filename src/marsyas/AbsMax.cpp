@@ -18,11 +18,11 @@
 
 
 #include "AbsMax.h"
-using std::string;
+
 using std::ostringstream;
 using namespace Marsyas;
 
-AbsMax::AbsMax(string name): MarSystem("AbsMax",name)
+AbsMax::AbsMax(mrs_string name): MarSystem("AbsMax",name)
 {
 }
 

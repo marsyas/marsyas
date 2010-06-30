@@ -19,10 +19,10 @@
 #include "common.h" 
 #include "AbsSoundFileSink.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-AbsSoundFileSink::AbsSoundFileSink(string type,string name):MarSystem(type,name)
+AbsSoundFileSink::AbsSoundFileSink(mrs_string type,mrs_string name):MarSystem(type,name)
 {
 }
 

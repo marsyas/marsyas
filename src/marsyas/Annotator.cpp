@@ -18,10 +18,10 @@
 
 #include "Annotator.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Annotator::Annotator(string name):MarSystem("Annotator", name)
+Annotator::Annotator(mrs_string name):MarSystem("Annotator", name)
 {
 	addControls();
 }
@@ -72,15 +72,15 @@ Annotator::myUpdate(MarControlPtr sender)
 
 	
 	// Add the annotation name to onObsNames.
-	string annotationName = ctrl_annotationName_->to<mrs_string>();
-	string onObsNames = ctrl_inObsNames_->to<mrs_string>();
+	mrs_string annotationName = ctrl_annotationName_->to<mrs_string>();
+	mrs_string onObsNames = ctrl_inObsNames_->to<mrs_string>();
 	if (labelInFront_)
 	{
-		onObsNames = annotationName + string(",") + onObsNames;
+      onObsNames = annotationName + mrs_string(",") + onObsNames;
 	}
 	else
 	{
-		onObsNames = onObsNames + string(",") + annotationName;
+		onObsNames = onObsNames + mrs_string(",") + annotationName;
 	}
 	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
 

@@ -18,12 +18,12 @@
 
 #include "AMDF.h"
 
-using std::string;
+
 using std::ostringstream;
 
 using namespace Marsyas;
 
-AMDF::AMDF(string name):MarSystem("AMDF", name)
+AMDF::AMDF(mrs_string name):MarSystem("AMDF", name)
 {
   //type_ = "AMDF";
   //name_ = name;

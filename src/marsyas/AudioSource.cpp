@@ -27,10 +27,10 @@
 #endif 
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
+AudioSource::AudioSource(mrs_string name):MarSystem("AudioSource", name)
 {
   data_ = NULL;
 #ifdef MARSYAS_AUDIOIO
@@ -275,7 +275,3 @@ AudioSource::myProcess(realvec& in, realvec& out)
  /* MATLAB_PUT(out, "AudioSource_out");
   MATLAB_EVAL("plot(AudioSource_out)");*/
 }
-
-
-
-

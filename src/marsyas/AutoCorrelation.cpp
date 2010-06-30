@@ -19,10 +19,10 @@
 #include "AutoCorrelation.h"
 #include "Windowing.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-AutoCorrelation::AutoCorrelation(string name):MarSystem("AutoCorrelation",name)
+AutoCorrelation::AutoCorrelation(mrs_string name):MarSystem("AutoCorrelation",name)
 {
 	myfft_ = NULL;
 	addControls();
@@ -231,12 +231,3 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 	MATLAB_EVAL("plot(corr)");
 	*/
 }
-
-
-
-
-
-
-
-
-

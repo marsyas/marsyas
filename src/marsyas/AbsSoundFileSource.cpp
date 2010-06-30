@@ -18,10 +18,10 @@
 
 #include "AbsSoundFileSource.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-AbsSoundFileSource::AbsSoundFileSource(string type, string name):MarSystem(type, name)
+AbsSoundFileSource::AbsSoundFileSource(mrs_string type, mrs_string name):MarSystem(type, name)
 {
 }
 

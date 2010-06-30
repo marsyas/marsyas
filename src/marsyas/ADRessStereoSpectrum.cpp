@@ -19,11 +19,11 @@
 #include "common.h"
 #include "ADRessStereoSpectrum.h"
 
-using std::string;
+
 using std::ostringstream;
 using namespace Marsyas;
 
-ADRessStereoSpectrum::ADRessStereoSpectrum(string name):MarSystem("ADRessStereoSpectrum", name)
+ADRessStereoSpectrum::ADRessStereoSpectrum(mrs_string name):MarSystem("ADRessStereoSpectrum", name)
 {
 	addControls();
 }
@@ -105,5 +105,3 @@ ADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 	MATLAB_PUT(out, "ADRessBinPan");
 	MATLAB_EVAL("figure(3);plot(ADRessBinPan);");
 }
-
-

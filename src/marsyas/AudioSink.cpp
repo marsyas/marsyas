@@ -27,14 +27,14 @@
 #endif 
 
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
 
 using namespace Marsyas;
 
-AudioSink::AudioSink(string name):MarSystem("AudioSink", name)
+AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
 {
 	bufferSize_ = 0;
   

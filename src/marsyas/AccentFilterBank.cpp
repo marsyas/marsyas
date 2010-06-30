@@ -18,10 +18,10 @@
 
 #include "AccentFilterBank.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-AccentFilterBank::AccentFilterBank(string name):MarSystem("AccentFilterBank", name)
+AccentFilterBank::AccentFilterBank(mrs_string name):MarSystem("AccentFilterBank", name)
 {
 	addControls();
 }
@@ -71,5 +71,3 @@ AccentFilterBank::myProcess(realvec& in, realvec& out)
 		for (t = 0; t < inSamples_; t++)
 			out(o,t) = gainValueEXAMPLE * in(o,t);
 }
-
-

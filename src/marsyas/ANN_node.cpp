@@ -18,12 +18,12 @@
 
 #include "ANN_node.h"
 
-using std::string;
+
 using std::ostringstream;
 
 using namespace Marsyas;
 
-ANN_node::ANN_node(string name):MarSystem("ANN_node", name)
+ANN_node::ANN_node(mrs_string name):MarSystem("ANN_node", name)
 {
   //type_ = "ANN_node";
   //name_ = name;

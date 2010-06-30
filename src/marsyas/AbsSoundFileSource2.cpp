@@ -18,10 +18,10 @@
 
 #include "AbsSoundFileSource2.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-AbsSoundFileSource2::AbsSoundFileSource2(string type, string name):MarSystem(type, name)
+AbsSoundFileSource2::AbsSoundFileSource2(mrs_string type, mrs_string name):MarSystem(type, name)
 {
 	filename_ = "defaultfile";
 	size_ = 0; 
@@ -98,4 +98,3 @@ AbsSoundFileSource2::myProcess(realvec& in,realvec &out)
 	//send silence to the output => used to create a "DummyFileSource"
 	out.setval(0.0);
 }
-

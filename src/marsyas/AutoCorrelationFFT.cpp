@@ -27,11 +27,11 @@
 
 #include "AutoCorrelationFFT.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
-AutoCorrelationFFT::AutoCorrelationFFT(string name):MarSystem("AutoCorrelationFFT", name)
+AutoCorrelationFFT::AutoCorrelationFFT(mrs_string name):MarSystem("AutoCorrelationFFT", name)
 {
 	//Add any specific controls needed by AutoCorrelationFFT
 	//(default controls all MarSystems should have

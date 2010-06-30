@@ -1,9 +1,9 @@
 #include "AveragingPattern.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-AveragingPattern::AveragingPattern(string name):MarSystem("AveragingPattern", name)
+AveragingPattern::AveragingPattern(mrs_string name):MarSystem("AveragingPattern", name)
 {
   isComposite_ = true;
   addControls();

@@ -19,7 +19,7 @@
 #include "common.h"
 #include "AudioSinkCallback.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
@@ -34,7 +34,7 @@ using namespace Marsyas;
 
 
 
-AudioSinkCallback::AudioSinkCallback(string name):MarSystem("AudioSinkCallback", name)
+AudioSinkCallback::AudioSinkCallback(mrs_string name):MarSystem("AudioSinkCallback", name)
 {
 #ifdef MARSYAS_AUDIOIO
 	audio_ = NULL;

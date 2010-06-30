@@ -18,10 +18,10 @@
 
 #include "Accumulator.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Accumulator::Accumulator(string name): MarSystem("Accumulator", name)
+Accumulator::Accumulator(mrs_string name): MarSystem("Accumulator", name)
 {
 	isComposite_ = true;
 	addControls();
@@ -76,7 +76,7 @@ Accumulator::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("Accumulator.cpp - Accumulator:myUpdate");
 
-	string onObsNames;
+	mrs_string onObsNames;
 
 	childOnSamples_ = 0;
 	nTimes_ = ctrl_nTimes_->to<mrs_natural>();

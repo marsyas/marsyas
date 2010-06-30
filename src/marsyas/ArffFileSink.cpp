@@ -21,7 +21,7 @@
 #include <fstream>
 #include <iomanip>
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::ofstream;
 using std::ios_base;
@@ -33,7 +33,7 @@ using std::setprecision;
 
 using namespace Marsyas;
 
-ArffFileSink::ArffFileSink(string name) : MarSystem("ArffFileSink", name)
+ArffFileSink::ArffFileSink(mrs_string name) : MarSystem("ArffFileSink", name)
 {
 	os_ = NULL;
 	filename_ = "";
@@ -141,7 +141,7 @@ ArffFileSink::writeArffHeader()
 
 	// Print the attributes.
 	// Get and output the observation names.
-	string onObsNames = ctrl_onObsNames_->to<mrs_string>();
+	mrs_string onObsNames = ctrl_onObsNames_->to<mrs_string>();
 	vector<mrs_string> attributeNames = stringSplit(onObsNames, ",");
 	const mrs_natural onObservations = ctrl_onObservations_->to<mrs_natural>();
 	// Print the observation names, if available.

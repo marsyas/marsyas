@@ -18,13 +18,13 @@
 
 #include "ADSR.h"
 
-using std::string;
+
 using std::ostringstream;
 
 using namespace Marsyas;
 
 
-ADSR::ADSR(string name):MarSystem("ADSR", name)
+ADSR::ADSR(mrs_string name):MarSystem("ADSR", name)
 {
 	addControls();
 }
@@ -164,4 +164,3 @@ ADSR::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("toy_with_onsets");
 
 }
-

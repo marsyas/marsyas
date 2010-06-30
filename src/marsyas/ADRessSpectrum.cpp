@@ -18,12 +18,12 @@
 
 #include "ADRessSpectrum.h"
 
-using std::string;
+
 using std::ostringstream;
 
 using namespace Marsyas;
 
-ADRessSpectrum::ADRessSpectrum(string name):MarSystem("ADRessSpectrum", name)
+ADRessSpectrum::ADRessSpectrum(mrs_string name):MarSystem("ADRessSpectrum", name)
 {
 	addControls();
 	N2_ = 0;
@@ -178,5 +178,3 @@ ADRessSpectrum::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-

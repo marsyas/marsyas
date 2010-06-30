@@ -18,10 +18,10 @@
 
 #include "AubioYin.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-AubioYin::AubioYin(string name):MarSystem("AubioYin", name)
+AubioYin::AubioYin(mrs_string name):MarSystem("AubioYin", name)
 {
   addControls();
 }
