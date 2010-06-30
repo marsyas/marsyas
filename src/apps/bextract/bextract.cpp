@@ -148,7 +148,7 @@ MarSystem* createBeatHistogramFeatureNetwork()
 	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
 	tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
 	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
-	// tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
+	tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
 	tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
 	tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
 	
@@ -157,6 +157,7 @@ MarSystem* createBeatHistogramFeatureNetwork()
 	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
 	tempoInduction->addMarSystem(hfanout);
 	tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+	
 	tempoInduction->addMarSystem(mng.create("BeatHistoFeatures", "bhf"));
 	beatTracker->addMarSystem(tempoInduction);
 

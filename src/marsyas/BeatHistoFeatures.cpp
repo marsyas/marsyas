@@ -152,7 +152,7 @@ static void MaxAcf (mrs_real& max, mrs_real& mean, const realvec& beatHistogram,
 {
 	mrs_natural k,len = beatHistogram.getCols ();
 	
-	res.setval(0.);
+	res.setval(0.); 
 
 	// compute ACF
 	for (k = startSearchAt; k < stopSearchAt; k++) // this can be optimized
