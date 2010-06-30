@@ -14,6 +14,8 @@ using namespace Marsyas;
 int helpopt_;
 int usageopt_;
 string wekafname_;
+string twekafname_;
+
 string testcollectionfname_;
 string predictcollectionfname_;
 string mode_;
@@ -27,7 +29,7 @@ void
 printUsage(string progName)
 {
   MRSDIAG("kea.cpp - printUsage");
-  cerr << "Usage : " << progName << " [-m mode -c classifier -id inputdir -od outputdir -w weka file -tc test collection file -pr predict collection file] " << endl;
+  cerr << "Usage : " << progName << " [-m mode -c classifier -id inputdir -od outputdir -w weka file -tw test_weka file -tc test collection file -pr predict collection file] " << endl;
   cerr << endl;
   exit(1);
 }
@@ -45,6 +47,7 @@ printHelp(string progName)
   cerr << "-u --usage      : display short usage info" << endl;
   cerr << "-h --help       : display this information " << endl;
   cerr << "-w --wekafname : .arff file for training " << endl;
+  cerr << "-tw --testwekafname: .arff file for testing " << endl;
   cerr << "-cl --classifier : classifier to use " << endl;
   cerr << "-m --mode: mode of operation" << endl;
   cerr << "-id --inputdir: input directory" << endl;
@@ -266,9 +269,129 @@ pca()
 }
 
 void 
-train_predict() 
+train_and_predict() 
 {
-	
+  if (wekafname_ == EMPTYSTRING) 
+  {
+		cout << "Weka .arff file not specified" << endl;
+      return;
+    }
+  
+  wekafname_  = inputdir_ + wekafname_;
+
+  cout << "Training classifier using .arff file: " << wekafname_ << endl;
+  cout << "Classifier type : " << classifier_ << endl;	
+  cout << "Predicting classes for .arff file: " << twekafname_ << endl;
+  
+
+
+  MarSystemManager mng;
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The network that we will use to train and predict
+  //
+  MarSystem* net = mng.create("Series", "series");
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The WekaSource we read the train and test .arf files into
+  //
+  net->addMarSystem(mng.create("WekaSource", "wsrc"));
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The classifier
+  //
+  MarSystem* classifier = mng.create("Classifier", "cl");
+  net->addMarSystem(classifier);
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Which classifier function to use
+  //
+  string classifier_ = "SVM";
+  if (classifier_ == "GS")
+	net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+  if (classifier_ == "ZEROR") 
+	net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
+  if (classifier_ == "SVM")   
+    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The training file we are feeding into the WekaSource
+  //
+  net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  net->updControl("mrs_natural/inSamples", 1);
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Set the classes of the Summary and Classifier to be
+  // the same as the WekaSource
+  //
+  net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->updControl("Classifier/cl/mrs_string/mode", "train");  
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Tick over the training WekaSource until all lines in the
+  // training file have been read.
+  //
+  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+	string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
+  	net->tick();
+	net->updControl("Classifier/cl/mrs_string/mode", mode);
+  }
+
+//     cout << "------------------------------" << endl;
+//     cout << "Class names" << endl;
+//     cout << net->getctrl("WekaSource/wsrc/mrs_string/classNames") << endl;
+//     cout << "------------------------------\n" << endl;
+
+
+   vector<string> classNames;
+   string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
+   char *str = (char *)s.c_str();
+   char * pch;
+   pch = strtok (str,",");
+   classNames.push_back(pch);
+   while (pch != NULL) {
+ 	pch = strtok (NULL, ",");
+ 	if (pch != NULL)
+ 	  classNames.push_back(pch);
+   }
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Predict the classes of the test data
+  //
+  net->updControl("WekaSource/wsrc/mrs_string/filename", twekafname_);
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");  
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Tick over the test WekaSource until all lines in the
+  // test file have been read.
+  //
+  realvec data;
+  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+   	net->tick();
+   	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
+  	cout << classNames[(int)data(0,0)] << endl;
+	//	cout << data(0,0) << endl;
+  }
+
+  // cout << "DONE" << endl;
+
+  // sness - hmm, I really should be able to delete net, but I get a 
+  // coredump when I do.  Maybe I need to destroy something else first?
+  //  delete net;
+
+
+
+
 
 }
 
@@ -596,6 +719,7 @@ initOptions()
   cmd_options_.addBoolOption("help", "h", false);
   cmd_options_.addBoolOption("usage", "u", false);
   cmd_options_.addStringOption("wekafname", "w", EMPTYSTRING);
+  cmd_options_.addStringOption("testwekafname", "tw", EMPTYSTRING);
   cmd_options_.addStringOption("testcollectionfname", "tc", EMPTYSTRING);
   cmd_options_.addStringOption("predictcollectionfname", "pr", EMPTYSTRING);
   cmd_options_.addStringOption("mode", "m", "train");
@@ -612,6 +736,7 @@ loadOptions()
   helpopt_ = cmd_options_.getBoolOption("help");
   usageopt_ = cmd_options_.getBoolOption("usage");
   wekafname_ = cmd_options_.getStringOption("wekafname");
+  twekafname_ = cmd_options_.getStringOption("testwekafname");
   testcollectionfname_ = cmd_options_.getStringOption("testcollectionfname");
   predictcollectionfname_ = cmd_options_.getStringOption("predictcollectionfname");
   mode_ = cmd_options_.getStringOption("mode");
@@ -649,14 +774,17 @@ main(int argc, const char **argv)
 
   if (mode_ == "train") 
     train();
-	if (mode_ == "distance_matrix_MIREX")
-		distance_matrix_MIREX();
+  if (mode_ == "distance_matrix_MIREX")
+	  distance_matrix_MIREX();
   if (mode_ == "distance_matrix") 
-    distance_matrix();
+	  distance_matrix();
   if (mode_ == "pca")
-    pca();
+	  pca();
   if (mode_ == "tags")
-    tags();
+	  tags();
+  if (mode_ == "train_predict") 
+	  train_and_predict();
+  
   exit(0);
 }
 

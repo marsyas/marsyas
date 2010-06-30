@@ -127,6 +127,7 @@ void train_and_predict(string trainFileName,string testFileName)
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
   	cout << classNames[(int)data(0,0)] << endl;
 	//	cout << data(0,0) << endl;
   }
