@@ -28,7 +28,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-AimVQ::AimVQ(string name):MarSystem("AimVQ",name)
+AimVQ::AimVQ(mrs_string name):MarSystem("AimVQ",name)
 {
   is_initialized = false;
   addControls();

@@ -24,7 +24,7 @@ using std::complex;
 
 using namespace Marsyas;
 
-AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)
+AimGammatone::AimGammatone(mrs_string name):MarSystem("AimGammatone",name)
 {
   is_initialized = false;
   initialized_num_channels = 0;

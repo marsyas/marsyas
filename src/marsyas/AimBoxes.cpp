@@ -24,7 +24,7 @@ using std::vector;
 
 using namespace Marsyas;
 
-AimBoxes::AimBoxes(string name):MarSystem("AimBoxes",name)
+AimBoxes::AimBoxes(mrs_string name):MarSystem("AimBoxes",name)
 {
   is_initialized = false;
   initialized_israte = 0.0;

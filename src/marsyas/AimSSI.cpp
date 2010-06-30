@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-AimSSI::AimSSI(string name):MarSystem("AimSSI",name)
+AimSSI::AimSSI(mrs_string name):MarSystem("AimSSI",name)
 {
   is_centre_frequencies_calculated = false;
   addControls();

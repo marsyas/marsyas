@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-AimHCL::AimHCL(string name):MarSystem("AimHCL",name)
+AimHCL::AimHCL(mrs_string name):MarSystem("AimHCL",name)
 {
   is_initialized = false;
   initialized_lowpass_cutoff = 0;

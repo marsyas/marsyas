@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-AimPZFC::AimPZFC(string name):MarSystem("AimPZFC",name)
+AimPZFC::AimPZFC(mrs_string name):MarSystem("AimPZFC",name)
 {
 	is_initialized = false;
 	initialized_israte = 0.0;

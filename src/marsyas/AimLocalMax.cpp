@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-AimLocalMax::AimLocalMax(string name):MarSystem("AimLocalMax",name)
+AimLocalMax::AimLocalMax(mrs_string name):MarSystem("AimLocalMax",name)
 {
   is_initialized = false;
   initialized_israte = 0.0;

@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-AimSAI::AimSAI(string name):MarSystem("AimSAI",name)
+AimSAI::AimSAI(mrs_string name):MarSystem("AimSAI",name)
 {
 	is_initialized = false;
 	initialized_israte = 0;
