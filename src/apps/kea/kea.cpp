@@ -346,10 +346,14 @@ train_and_predict()
 	net->updControl("Classifier/cl/mrs_string/mode", mode);
   }
 
+  cout << "Done training " << endl;
+  
+
 //     cout << "------------------------------" << endl;
 //     cout << "Class names" << endl;
 //     cout << net->getctrl("WekaSource/wsrc/mrs_string/classNames") << endl;
 //     cout << "------------------------------\n" << endl;
+
 
 
    vector<string> classNames;
@@ -364,19 +368,20 @@ train_and_predict()
  	  classNames.push_back(pch);
    }
 
+
   ////////////////////////////////////////////////////////////
   //
   // Predict the classes of the test data
   //
   net->updControl("WekaSource/wsrc/mrs_string/filename", twekafname_);
   net->updControl("Classifier/cl/mrs_string/mode", "predict");  
-
   ////////////////////////////////////////////////////////////
   //
   // Tick over the test WekaSource until all lines in the
   // test file have been read.
   //
 
+  
   ofstream prout;
   prout.open(predictcollectionfname_.c_str());
 
@@ -394,7 +399,7 @@ train_and_predict()
 	//	cout << data(0,0) << endl;
   }
 
-
+  
   prout.close();
   
   // cout << "DONE" << endl;
@@ -798,6 +803,7 @@ main(int argc, const char **argv)
 	  tags();
   if (mode_ == "train_predict") 
 	  train_and_predict();
+  
   
   exit(0);
 }
