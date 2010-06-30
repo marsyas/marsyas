@@ -18,6 +18,9 @@
 
 #include "Median.h"
 
+
+
+	
 using std::string;
 using std::ostringstream;
 using namespace Marsyas;
@@ -89,3 +92,5 @@ Median::myProcess(realvec& in, realvec& out)
 	}
 
 }
+
+

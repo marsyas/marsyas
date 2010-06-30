@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -121,11 +121,11 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 	// http://www.ee.columbia.edu/~dpwe/resources/matlab/chroma-ansyn/#1
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	if(tinObservations_ != inObservations_ || 
-		tonObservations_ != onObservations_ ||
-		tisrate_ != israte_ || 
-		pmiddleAfreq_ != ctrl_middleAfreq_->to<mrs_real>() ||
-		pweightCenterFreq_ != ctrl_weightCenterFreq_->to<mrs_real>() ||
-		pweightStdDev_ != ctrl_weightStdDev_->to<mrs_real>() )
+	   tonObservations_ != onObservations_ ||
+	   tisrate_ != israte_ || 
+	   pmiddleAfreq_ != ctrl_middleAfreq_->to<mrs_real>() ||
+	   pweightCenterFreq_ != ctrl_weightCenterFreq_->to<mrs_real>() ||
+	   pweightStdDev_ != ctrl_weightStdDev_->to<mrs_real>() )
 	{
 
 		pmiddleAfreq_ = ctrl_middleAfreq_->to<mrs_real>();
@@ -236,19 +236,23 @@ Spectrum2Chroma::myProcess(realvec& in, realvec& out)
 	//input must contain spectral magnitude/power/density/etc
 	//(e.g. output of PowerSpectrum MarSystem)
 
-	mrs_natural o,t;
+	mrs_natural o,t,i;
+	mrs_real chroma_weight;
+	
 	out.setval(0.0);
 	
-
-	for(t=0; t< inSamples_; ++t)
+	
+	for(o=0; o< onObservations_; ++o)
 	{
-		for(o=0; o< onObservations_; ++o)
-		{
-			for(mrs_natural i=0; i< inObservations_; ++i)
+		for(i=0; i< inObservations_; ++i)
+		{ 
+			chroma_weight = chromaMap_(o,i);
+
+			for(t=0; t< inSamples_; ++t)
 			{
-				
-				out(o,t) += in(i,t)*chromaMap_(o,i);
+				out(o,t) += in(i,t)*chroma_weight;
 			}
+			
 		}
 	}
 
