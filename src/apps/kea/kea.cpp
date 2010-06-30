@@ -338,6 +338,8 @@ train_and_predict()
   // Tick over the training WekaSource until all lines in the
   // training file have been read.
   //
+
+
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
 	string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
   	net->tick();
@@ -374,15 +376,27 @@ train_and_predict()
   // Tick over the test WekaSource until all lines in the
   // test file have been read.
   //
+
+  ofstream prout;
+  prout.open(predictcollectionfname_.c_str());
+
+  
+
   realvec data;
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
   	cout << classNames[(int)data(0,0)] << endl;
+	prout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
+  	prout << classNames[(int)data(0,0)] << endl;
+
 	//	cout << data(0,0) << endl;
   }
 
+
+  prout.close();
+  
   // cout << "DONE" << endl;
 
   // sness - hmm, I really should be able to delete net, but I get a 
