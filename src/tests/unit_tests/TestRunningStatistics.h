@@ -17,7 +17,6 @@
 using namespace std;
 using namespace Marsyas;
 
-const mrs_real EPSILON = 1e-6;
 
 class RunningStatistics_runner: public CxxTest::TestSuite
 {
@@ -58,9 +57,9 @@ public:
 	void test_default_flow_settings()
 	{
 		// Set up the input flow.
-		rs->updctrl("mrs_natural/inObservations", 3);
-		rs->updctrl("mrs_natural/inSamples", 128);
-		rs->updctrl("mrs_string/inObsNames", "foo0,foo1,foo2,");
+		rs->updControl("mrs_natural/inObservations", 3);
+		rs->updControl("mrs_natural/inSamples", 128);
+		rs->updControl("mrs_string/inObsNames", "foo0,foo1,foo2,");
 		// Check the output flow.
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onObservations")->to<mrs_natural>(), 6);
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onSamples")->to<mrs_natural>(), 1);
@@ -75,12 +74,12 @@ public:
 	{
 		mrs_natural inObservations = 3;
 		// Set up the input flow.
-		rs->updctrl("mrs_natural/inObservations", inObservations);
-		rs->updctrl("mrs_natural/inSamples", 128);
-		rs->updctrl("mrs_string/inObsNames", "foo0,foo1,foo2,");
-		rs->updctrl("mrs_bool/enableMean", enable_mean);
-		rs->updctrl("mrs_bool/enableStddev", enable_stddev);
-		rs->updctrl("mrs_bool/enableSkewness", enable_skewness);
+		rs->updControl("mrs_natural/inObservations", inObservations);
+		rs->updControl("mrs_natural/inSamples", 128);
+		rs->updControl("mrs_string/inObsNames", "foo0,foo1,foo2,");
+		rs->updControl("mrs_bool/enableMean", enable_mean);
+		rs->updControl("mrs_bool/enableStddev", enable_stddev);
+		rs->updControl("mrs_bool/enableSkewness", enable_skewness);
 		// Check the output flow.
 		mrs_natural fanout = (mrs_natural) enable_mean
 				+ (mrs_natural) enable_stddev + (mrs_natural) enable_skewness;
@@ -128,11 +127,11 @@ public:
 	{
 		mrs_natural onSamples = 1;
 		// Set up the input flow.
-		rs->updctrl("mrs_natural/inObservations", inObservations);
-		rs->updctrl("mrs_natural/inSamples", inSamples);
-		rs->updctrl("mrs_bool/enableMean", enable_mean);
-		rs->updctrl("mrs_bool/enableStddev", enable_stddev);
-		rs->updctrl("mrs_bool/enableSkewness", enable_skewness);
+		rs->updControl("mrs_natural/inObservations", inObservations);
+		rs->updControl("mrs_natural/inSamples", inSamples);
+		rs->updControl("mrs_bool/enableMean", enable_mean);
+		rs->updControl("mrs_bool/enableStddev", enable_stddev);
+		rs->updControl("mrs_bool/enableSkewness", enable_skewness);
 		// Check the output flow.
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
@@ -169,7 +168,7 @@ public:
 		for (mrs_natural i = 0; i < inObservations; i++)
 		{
 			mrs_real mean = (mrs_real) i / inSamples;
-			TS_ASSERT_EQUALS(out(i, 0), mean);
+			TS_ASSERT_DELTA(out(i, 0), mean, EPSILON);
 		}
 	}
 
@@ -279,11 +278,11 @@ public:
 		mrs_natural slices = 4;
 		mrs_natural onSamples = 1;
 		// Set up the input flow.
-		rs->updctrl("mrs_natural/inObservations", inObservations);
-		rs->updctrl("mrs_natural/inSamples", inSamples);
-		rs->updctrl("mrs_bool/enableMean", true);
-		rs->updctrl("mrs_bool/enableStddev", true);
-		rs->updctrl("mrs_bool/enableSkewness", true);
+		rs->updControl("mrs_natural/inObservations", inObservations);
+		rs->updControl("mrs_natural/inSamples", inSamples);
+		rs->updControl("mrs_bool/enableMean", true);
+		rs->updControl("mrs_bool/enableStddev", true);
+		rs->updControl("mrs_bool/enableSkewness", true);
 		// Check the output flow.
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
@@ -337,11 +336,11 @@ public:
 		mrs_natural slices = 4;
 		mrs_natural onSamples = 1;
 		// Set up the input flow.
-		rs->updctrl("mrs_natural/inObservations", inObservations);
-		rs->updctrl("mrs_natural/inSamples", inSamples);
-		rs->updctrl("mrs_bool/enableMean", true);
-		rs->updctrl("mrs_bool/enableStddev", true);
-		rs->updctrl("mrs_bool/enableSkewness", true);
+		rs->updControl("mrs_natural/inObservations", inObservations);
+		rs->updControl("mrs_natural/inSamples", inSamples);
+		rs->updControl("mrs_bool/enableMean", true);
+		rs->updControl("mrs_bool/enableStddev", true);
+		rs->updControl("mrs_bool/enableSkewness", true);
 		// Check the output flow.
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
@@ -356,7 +355,7 @@ public:
 			// Clear before second last slice.
 			if (s == slices - 2)
 			{
-				rs->updctrl("mrs_bool/clear", true);
+				rs->updControl("mrs_bool/clear", true);
 			}
 			// Fill the input slice.
 			for (mrs_natural o = 0; o < inObservations; o++)
@@ -398,12 +397,12 @@ public:
 		mrs_natural slices = 4;
 		mrs_natural onSamples = 1;
 		// Set up the input flow.
-		rs->updctrl("mrs_natural/inObservations", inObservations);
-		rs->updctrl("mrs_natural/inSamples", inSamples);
-		rs->updctrl("mrs_bool/enableMean", true);
-		rs->updctrl("mrs_bool/enableStddev", true);
-		rs->updctrl("mrs_bool/enableSkewness", true);
-		rs->updctrl("mrs_bool/clearPerTick", true);
+		rs->updControl("mrs_natural/inObservations", inObservations);
+		rs->updControl("mrs_natural/inSamples", inSamples);
+		rs->updControl("mrs_bool/enableMean", true);
+		rs->updControl("mrs_bool/enableStddev", true);
+		rs->updControl("mrs_bool/enableSkewness", true);
+		rs->updControl("mrs_bool/clearPerTick", true);
 		// Check the output flow.
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
 		TS_ASSERT_EQUALS(rs->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);

@@ -41,7 +41,7 @@ public:
   setUp()
   {
 	yin = new AubioYin("yin");
-	yin->updctrl("mrs_real/israte", 44100.0);
+	yin->updControl("mrs_real/israte", 44100.0);
   }
 
   //
@@ -100,8 +100,8 @@ public:
 	net->addMarSystem(mng.create("RealvecSource", "src"));
 	net->addMarSystem(mng.create("AubioYin", "yin"));
 	
-	net->updctrl("mrs_natural/inSamples", buffer_size);
-	net->updctrl("mrs_real/israte", 44100.0);
+	net->updControl("mrs_natural/inSamples", buffer_size);
+	net->updControl("mrs_real/israte", 44100.0);
 
 	// A realvec to store our answers in
 	realvec check(num_buffers,1);
@@ -114,7 +114,7 @@ public:
 	  }
 
 	  // Copy ibuf to the RealvecSource
-	  net->updctrl("RealvecSource/src/mrs_realvec/data", ibuf);
+	  net->updControl("RealvecSource/src/mrs_realvec/data", ibuf);
 
 	  // Tick the network once to push the data through the network
 	  net->tick();
@@ -173,8 +173,8 @@ public:
 	net->addMarSystem(mng.create("RealvecSource", "src"));
 	net->addMarSystem(mng.create("AubioYin", "yin"));
 	
-	net->updctrl("mrs_natural/inSamples", buffer_size);
-	net->updctrl("mrs_real/israte", 44100.0);
+	net->updControl("mrs_natural/inSamples", buffer_size);
+	net->updControl("mrs_real/israte", 44100.0);
 
 	// A realvec to store our answers in
 	realvec check(num_buffers,1);
@@ -187,7 +187,7 @@ public:
 	  }
 
 	  // Copy ibuf to the RealvecSource
-	  net->updctrl("RealvecSource/src/mrs_realvec/data", ibuf);
+	  net->updControl("RealvecSource/src/mrs_realvec/data", ibuf);
 
 	  // Tick the network once to push the data through the network
 	  net->tick();
@@ -248,8 +248,8 @@ public:
 	net->addMarSystem(mng.create("RealvecSource", "src"));
 	net->addMarSystem(mng.create("AubioYin", "yin"));
 	
-	net->updctrl("mrs_natural/inSamples", buffer_size);
-	net->updctrl("mrs_real/israte", 44100.0);
+	net->updControl("mrs_natural/inSamples", buffer_size);
+	net->updControl("mrs_real/israte", 44100.0);
 
 	// A realvec to store our answers in
 	realvec check(num_buffers,1);
@@ -262,7 +262,7 @@ public:
 	  }
 
 	  // Copy ibuf to the RealvecSource
-	  net->updctrl("RealvecSource/src/mrs_realvec/data", ibuf);
+	  net->updControl("RealvecSource/src/mrs_realvec/data", ibuf);
 
 	  // Tick the network once to push the data through the network
 	  net->tick();

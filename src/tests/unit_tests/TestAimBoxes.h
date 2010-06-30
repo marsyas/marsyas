@@ -44,7 +44,7 @@ public:
 	net->addMarSystem(mng.create("AimSAI", "aimsai"));
 	net->addMarSystem(mng.create("AimBoxes", "aimboxes"));
 
-    net->updctrl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
+    net->updControl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
 
     net->tick();
 

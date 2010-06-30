@@ -38,8 +38,8 @@ public:
   {
 
 	selector = new Selector("selector");
-	selector->updctrl("mrs_natural/inSamples", numSamples);
-	selector->updctrl("mrs_natural/inObservations", numObservations);
+	selector->updControl("mrs_natural/inSamples", numSamples);
+	selector->updControl("mrs_natural/inObservations", numObservations);
 
 	// Setup an input realvec for data to feed into the Marsystem
 	in.create(0.0,numObservations,numSamples);
@@ -76,7 +76,7 @@ public:
   //
   void test_disabling_an_observation_should_make_it_not_appear_in_the_output(void) 
   {
-	selector->updctrl("mrs_natural/disable", 2);
+	selector->updControl("mrs_natural/disable", 2);
  	selector->myProcess(in,out);
 
   	TS_ASSERT_EQUALS(out(0,0), 0.1);
@@ -90,9 +90,9 @@ public:
   //
   void test_should_be_able_to_disable_and_reenable_an_observation(void) 
   {
-	selector->updctrl("mrs_natural/disable", 2);
-	selector->updctrl("mrs_natural/disable", 3);
-	selector->updctrl("mrs_natural/enable", 2);
+	selector->updControl("mrs_natural/disable", 2);
+	selector->updControl("mrs_natural/disable", 3);
+	selector->updControl("mrs_natural/enable", 2);
  	selector->myProcess(in,out);
 
   	TS_ASSERT_EQUALS(out(0,0), 0.1);

@@ -85,8 +85,8 @@ public:
 		mrs_natural onSamples = 16;
 
 		// Set up the input flow.
-		foobar->updctrl("mrs_natural/inObservations", inObservations);
-		foobar->updctrl("mrs_natural/inSamples", inSamples);
+		foobar->updControl("mrs_natural/inObservations", inObservations);
+		foobar->updControl("mrs_natural/inSamples", inSamples);
 
 		// Check the output flow.
 		TS_ASSERT_EQUALS(foobar->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
@@ -105,8 +105,8 @@ public:
 		mrs_natural onSamples = 16;
 
 		// Set up the input flow.
-		foobar->updctrl("mrs_natural/inObservations", inObservations);
-		foobar->updctrl("mrs_natural/inSamples", inSamples);
+		foobar->updControl("mrs_natural/inObservations", inObservations);
+		foobar->updControl("mrs_natural/inSamples", inSamples);
 
 		// Allocate the input and output slices.
 		in.create(inObservations, inSamples);

@@ -7,6 +7,7 @@
 
 using namespace std;
 using namespace Marsyas;
+const mrs_real EPSILON = 1e-6;
 
 /**
  * Sum of the integers from 0 to a given n (including).
@@ -87,13 +88,13 @@ public:
 		mrs_natural onSamples = maxLag + 1;
 		if (unfoldToObservations)
 		{
-			rac->updctrl("mrs_bool/unfoldToObservations", true);
+			rac->updControl("mrs_bool/unfoldToObservations", true);
 			onObservations = inObservations * (maxLag + 1);
 			onSamples = 1;
 		}
-		rac->updctrl("mrs_natural/inObservations", inObservations);
-		rac->updctrl("mrs_natural/inSamples", inSamples);
-		rac->updctrl("mrs_natural/maxLag", maxLag);
+		rac->updControl("mrs_natural/inObservations", inObservations);
+		rac->updControl("mrs_natural/inSamples", inSamples);
+		rac->updControl("mrs_natural/maxLag", maxLag);
 		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
 		TS_ASSERT_EQUALS(rac->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
 		// Allocate the input and output vectors.
@@ -315,7 +316,7 @@ public:
 	void test_observation_names()
 	{
 		set_flow(2, 5, 3);
-		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
+		rac->updControl("mrs_string/inObsNames", "foo,bar,");
 		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
 		                        mrs_string> ();
 		TS_ASSERT_EQUALS(onObsNames, "foo,bar,")
@@ -324,7 +325,7 @@ public:
 	void test_observation_names_with_unfoldToObservations()
 	{
 		set_flow(2, 5, 3, true);
-		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
+		rac->updControl("mrs_string/inObsNames", "foo,bar,");
 		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
 		                        mrs_string> ();
 		TS_ASSERT_EQUALS(onObsNames, "Autocorr0_foo,Autocorr1_foo,Autocorr2_foo,Autocorr3_foo,Autocorr0_bar,Autocorr1_bar,Autocorr2_bar,Autocorr3_bar,")
@@ -333,8 +334,8 @@ public:
 	void test_observation_names_with_unfoldToObservations_normalize()
 	{
 		set_flow(2, 5, 3, true);
-		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
-		rac->updctrl("mrs_bool/normalize", true);
+		rac->updControl("mrs_string/inObsNames", "foo,bar,");
+		rac->updControl("mrs_bool/normalize", true);
 		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
 		                        mrs_string> ();
 		TS_ASSERT_EQUALS(onObsNames, "NormalizedAutocorr0_foo,NormalizedAutocorr1_foo,NormalizedAutocorr2_foo,NormalizedAutocorr3_foo,NormalizedAutocorr0_bar,NormalizedAutocorr1_bar,NormalizedAutocorr2_bar,NormalizedAutocorr3_bar,")
@@ -343,9 +344,9 @@ public:
 	void test_observation_names_with_unfoldToObservations_normalize_but_not_lag0()
 	{
 		set_flow(2, 5, 3, true);
-		rac->updctrl("mrs_string/inObsNames", "foo,bar,");
-		rac->updctrl("mrs_bool/normalize", true);
-		rac->updctrl("mrs_bool/doNotNormalizeForLag0", true);
+		rac->updControl("mrs_string/inObsNames", "foo,bar,");
+		rac->updControl("mrs_bool/normalize", true);
+		rac->updControl("mrs_bool/doNotNormalizeForLag0", true);
 		mrs_string onObsNames = rac->getctrl("mrs_string/onObsNames")->to<
 		                        mrs_string> ();
 		TS_ASSERT_EQUALS(onObsNames, "Autocorr0_foo,NormalizedAutocorr1_foo,NormalizedAutocorr2_foo,NormalizedAutocorr3_foo,Autocorr0_bar,NormalizedAutocorr1_bar,NormalizedAutocorr2_bar,NormalizedAutocorr3_bar,")
@@ -363,7 +364,7 @@ public:
 		// Inrease the inObservations: internal buffers should be increased too.
 		// (without using set_flow(), to avoid extra updates)
 		inObservations = 200;
-		rac->updctrl("mrs_natural/inObservations", inObservations);
+		rac->updControl("mrs_natural/inObservations", inObservations);
 		in.create(inObservations, inSamples);
 		out.create(inObservations, maxLag + 1);
 		// This should not raise an out of array assertion.
@@ -380,8 +381,8 @@ public:
 		mrs_natural maxLag = 6;
 		mrs_natural slices = 7;
 		set_flow(inObservations, inSamples, maxLag);
-		rac->updctrl("mrs_bool/normalize", true);
-		rac->updctrl("mrs_bool/doNotNormalizeForLag0", doNotNormalizeForLag0);
+		rac->updControl("mrs_bool/normalize", true);
+		rac->updControl("mrs_bool/doNotNormalizeForLag0", doNotNormalizeForLag0);
 
 		// Feed with multiple multirow slices.
 		for (mrs_natural s = 0; s < slices; s++)
@@ -409,7 +410,7 @@ public:
 					expected /= autocorrelation_of_anplusb(1, r, 0, slices
 					                                       * inSamples - 1);
 				}
-				TS_ASSERT_EQUALS(out(r, lag), expected);
+				TS_ASSERT_DELTA(out(r, lag), expected, EPSILON);
 			}
 		}
 	}
@@ -428,7 +429,7 @@ public:
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
 		set_flow(inObservations, inSamples, maxLag);
-		rac->updctrl("mrs_bool/normalize", true);
+		rac->updControl("mrs_bool/normalize", true);
 
 		// Process.
 		in.setval(0);
@@ -466,7 +467,7 @@ public:
 		// Feed the monkey a couple of times but clear buffers first every time.
 		for (mrs_natural i = 0; i < 10; i++)
 		{
-			rac->updctrl("mrs_bool/clear", true);
+			rac->updControl("mrs_bool/clear", true);
 			rac->myProcess(in, out);
 		}
 
@@ -493,8 +494,8 @@ public:
 		mrs_natural inSamples = 10;
 		mrs_natural maxLag = 6;
 		set_flow(inObservations, inSamples, maxLag, true);
-		rac->updctrl("mrs_bool/normalize", normalize);
-		rac->updctrl("mrs_bool/doNotNormalizeForLag0", doNotNormalizeForLag0);
+		rac->updControl("mrs_bool/normalize", normalize);
+		rac->updControl("mrs_bool/doNotNormalizeForLag0", doNotNormalizeForLag0);
 
 		// Create input.
 		for (mrs_natural r = 0; r < inObservations; r++)
@@ -520,7 +521,7 @@ public:
 					expected /= autocorrelation_of_anplusb(1, r, 0, inSamples
 					                                       - 1);
 				}
-				TS_ASSERT_EQUALS(out(r*(maxLag + 1) + lag, 0), expected);
+				TS_ASSERT_DELTA(out(r*(maxLag + 1) + lag, 0), expected, EPSILON);
 			}
 		}
 	}

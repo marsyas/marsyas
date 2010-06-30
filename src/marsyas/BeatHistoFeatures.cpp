@@ -148,11 +148,10 @@ static mrs_real MaxHps (const realvec& beatHistogram, mrs_natural startIdx = 200
 	return exp (res.maxval ());
 }
 
-static void MaxAcf (mrs_real& max, mrs_real& mean, const realvec& beatHistogram, mrs_natural startSearchAt, mrs_natural stopSearchAt)
+static void MaxAcf (mrs_real& max, mrs_real& mean, const realvec& beatHistogram, realvec& res,mrs_natural startSearchAt, mrs_natural stopSearchAt)
 {
 	mrs_natural k,len = beatHistogram.getCols ();
-	mrs_realvec	res = beatHistogram;	// make this a member
-
+	
 	res.setval(0.);
 
 	// compute ACF
@@ -429,7 +428,7 @@ BeatHistoFeatures::harm_prob(mrs_real& pmax, mrs_real factor,
 void 
 BeatHistoFeatures::beatHistoFeatures(realvec& in, realvec& out)
 {
-
+	
 	mrs_real sum = 0;
   
 	for (o=0; o < inObservations_; o++)
@@ -493,7 +492,7 @@ BeatHistoFeatures::beatHistoFeatures(realvec& in, realvec& out)
 #endif
 #endif
 
-	MaxAcf (result[0], result[1],in, startIdx, 600);
+	MaxAcf (result[0], result[1],in, flag_, startIdx, 600);
 	out(8,0)	= result[0];
 	out(9,0)	= result[1];
 	out(10,0)	= MaxHps (in, startIdx);
@@ -512,7 +511,6 @@ void
 BeatHistoFeatures::myProcess(realvec& in, realvec& out)
 {
 	mrs_string mode = ctrl_mode_->to<mrs_string>();
-	
 	beatHistoFeatures(in,out);
 }
 

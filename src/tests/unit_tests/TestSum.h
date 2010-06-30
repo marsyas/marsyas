@@ -45,8 +45,8 @@ public:
 	net->addMarSystem(mng.create("RealvecSource", "src"));
 	net->addMarSystem(mng.create("Sum", "sum"));
 
-	net->updctrl("mrs_natural/inObservations", numObservations);
-	net->updctrl("mrs_natural/inSamples", numSamples);
+	net->updControl("mrs_natural/inObservations", numObservations);
+	net->updControl("mrs_natural/inSamples", numSamples);
 
 	// Setup an input realvec for data to feed into the Marsystem
     realvec in;
@@ -60,7 +60,7 @@ public:
     // cout << in << endl;
 
     // Copy in to the RealvecSource
-    net->updctrl("RealvecSource/src/mrs_realvec/data", in);
+    net->updControl("RealvecSource/src/mrs_realvec/data", in);
 
     // Tick the network once to push the data through the network
     net->tick();
@@ -90,8 +90,8 @@ public:
 	net->addMarSystem(mng.create("RealvecSource", "src"));
 	net->addMarSystem(mng.create("Sum", "sum"));
 
-	net->updctrl("mrs_natural/inObservations", numObservations);
-	net->updctrl("mrs_natural/inSamples", numSamples);
+	net->updControl("mrs_natural/inObservations", numObservations);
+	net->updControl("mrs_natural/inSamples", numSamples);
 
 	// Setup an input realvec for data to feed into the Marsystem
     realvec in;
@@ -108,10 +108,10 @@ public:
 	in(2,1) = 2.2;
 	in(2,2) = 2.3;
 
-    net->updctrl("Sum/sum/mrs_string/mode", "sum_observations");
+    net->updControl("Sum/sum/mrs_string/mode", "sum_observations");
 
     // Copy in to the RealvecSource
-    net->updctrl("RealvecSource/src/mrs_realvec/data", in);
+    net->updControl("RealvecSource/src/mrs_realvec/data", in);
 
     // Tick the network once to push the data through the network
     net->tick();
@@ -144,8 +144,8 @@ public:
 	net->addMarSystem(mng.create("RealvecSource", "src"));
 	net->addMarSystem(mng.create("Sum", "sum"));
 
-	net->updctrl("mrs_natural/inObservations", numObservations);
-	net->updctrl("mrs_natural/inSamples", numSamples);
+	net->updControl("mrs_natural/inObservations", numObservations);
+	net->updControl("mrs_natural/inSamples", numSamples);
 
 	// Setup an input realvec for data to feed into the Marsystem
     realvec in;
@@ -162,10 +162,10 @@ public:
 	in(2,1) = 2.2;
 	in(2,2) = 2.3;
 
-    net->updctrl("Sum/sum/mrs_string/mode", "sum_samples");
+    net->updControl("Sum/sum/mrs_string/mode", "sum_samples");
 
     // Copy in to the RealvecSource
-    net->updctrl("RealvecSource/src/mrs_realvec/data", in);
+    net->updControl("RealvecSource/src/mrs_realvec/data", in);
 
     // Tick the network once to push the data through the network
     net->tick();
@@ -198,8 +198,8 @@ public:
 	net->addMarSystem(mng.create("RealvecSource", "src"));
 	net->addMarSystem(mng.create("Sum", "sum"));
 
-	net->updctrl("mrs_natural/inObservations", numObservations);
-	net->updctrl("mrs_natural/inSamples", numSamples);
+	net->updControl("mrs_natural/inObservations", numObservations);
+	net->updControl("mrs_natural/inSamples", numSamples);
 
 	// Setup an input realvec for data to feed into the Marsystem
     realvec in;
@@ -216,10 +216,10 @@ public:
 	in(2,1) = 2.2;
 	in(2,2) = 2.3;
 
-    net->updctrl("Sum/sum/mrs_string/mode", "sum_whole");
+    net->updControl("Sum/sum/mrs_string/mode", "sum_whole");
 
     // Copy in to the RealvecSource
-    net->updctrl("RealvecSource/src/mrs_realvec/data", in);
+    net->updControl("RealvecSource/src/mrs_realvec/data", in);
 
     // Tick the network once to push the data through the network
     net->tick();

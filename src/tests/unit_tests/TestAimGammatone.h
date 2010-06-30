@@ -36,7 +36,7 @@ class AimGammatone_runner : public CxxTest::TestSuite
     realvec in,out;
 
 	aimc_gammatone = new AimGammatone("aimc_gammatone");
-	aimc_gammatone->updctrl("mrs_real/israte", 44100.0);
+	aimc_gammatone->updControl("mrs_real/israte", 44100.0);
 
 	// Create input and output realvecs
 	int length = 512;
@@ -80,7 +80,7 @@ class AimGammatone_runner : public CxxTest::TestSuite
     net->addMarSystem(mng.create("SoundFileSource", "src"));
     net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
 
-    net->updctrl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
+    net->updControl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
 
     net->tick();
 

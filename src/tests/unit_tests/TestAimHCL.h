@@ -28,7 +28,7 @@ public:
   setUp()
   {
 	aimc_hcl = new AimHCL("aimc_hcl");
-	aimc_hcl->updctrl("mrs_real/israte", 44100.0);
+	aimc_hcl->updControl("mrs_real/israte", 44100.0);
   }
 
   //
@@ -45,7 +45,7 @@ public:
     net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
     net->addMarSystem(mng.create("AimHCL", "aimhcl"));
 
-    net->updctrl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
+    net->updControl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
 
     net->tick();
 
