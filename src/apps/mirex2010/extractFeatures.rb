@@ -96,8 +96,8 @@ output_file.close
 threads = []
 (1..num_cores.to_i).each do |n|
   threads << Thread.new(n) do |thread|
-    puts "Running bextract -fe -saivq -sv input#{n}.mf -w output#{n}.arff -od output#{n} #{bextract_args.to_s} >& stdout#{n}.txt"
-    `#{path_to_mirex_extract} -fe -saivq -sv input#{n}.mf -w output#{n}.arff -od output#{n} #{bextract_args.to_s}>& stdout#{n}.txt`
+    puts "Running bextract input#{n}.mf -od output#{n} -w features.arff #{bextract_args.to_s} >& stdout#{n}.txt"
+    `#{path_to_mirex_extract} input#{n}.mf -od output#{n} -w features.arff #{bextract_args.to_s}>& stdout#{n}.txt`
   end
 end
 
