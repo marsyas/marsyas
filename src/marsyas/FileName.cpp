@@ -20,7 +20,10 @@
 #include "FileName.h"
 #include "config.h"
 
-using std::string; using std::ostringstream;
+using std::string; 
+using std::ostringstream;
+using std::max;
+
 using namespace Marsyas;
 
 FileName::FileName()

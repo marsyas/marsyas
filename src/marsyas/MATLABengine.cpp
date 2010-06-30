@@ -35,6 +35,9 @@
 
 #ifdef MARSYAS_MATLAB
 using std::string;
+using std::vector;
+using std::complex;
+
 
 using namespace Marsyas;
 
