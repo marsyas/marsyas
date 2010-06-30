@@ -18,7 +18,7 @@
 
 #include "AimPZFC.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 AimPZFC::AimPZFC(mrs_string name):MarSystem("AimPZFC",name)

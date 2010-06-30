@@ -18,7 +18,7 @@
 
 #include "AimBoxes.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 

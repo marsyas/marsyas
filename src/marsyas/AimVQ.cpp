@@ -25,7 +25,7 @@
 #endif
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 AimVQ::AimVQ(mrs_string name):MarSystem("AimVQ",name)

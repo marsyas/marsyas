@@ -18,7 +18,7 @@
 
 #include "AimSAI.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 AimSAI::AimSAI(mrs_string name):MarSystem("AimSAI",name)

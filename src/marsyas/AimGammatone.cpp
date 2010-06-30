@@ -18,7 +18,7 @@
 
 #include "AimGammatone.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::complex;
 
