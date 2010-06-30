@@ -117,12 +117,12 @@ threads.each { |thr| thr.join }
 `echo "@attribute Acc1000_AimVQ_AimBoxes_AimSAI_AimLocalMax_AimHCL_AimPZFC_AudioCh0 real" >> #{outputarff}`
 `echo "@attribute test real" >> #{outputarff}`
 
-`tail -n+5 output1output1.arff >> #{outputarff}`
+`tail -n+5 output1features.arff >> #{outputarff}`
 
-a = `grep -m 1 -n data output1output1.arff`
+a = `grep -m 1 -n data output1features.arff`
 linenum = (a.split(":")[0].to_i) + 1
 
 (2..num_cores.to_i).each do |n|
-  `tail -n+#{linenum} output#{n}output#{n}.arff >> #{outputarff}`
+  `tail -n+#{linenum} output#{n}features.arff >> #{outputarff}`
 end
 
