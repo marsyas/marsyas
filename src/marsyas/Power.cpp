@@ -18,7 +18,7 @@
 
 #include "Power.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Power::Power(string name):MarSystem("Power",name)

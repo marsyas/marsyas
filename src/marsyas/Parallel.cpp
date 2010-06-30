@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,7 +18,10 @@
 
 #include "Parallel.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+
 using namespace Marsyas;
 
 Parallel::Parallel(string name):MarSystem("Parallel",name)
@@ -104,32 +107,32 @@ void Parallel::myUpdate(MarControlPtr sender)
 			if (slices_[2*i] != NULL) 
 			{
 				if ((slices_[2*i])->getRows() != marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>() ||
-					  (slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>()) 
+					(slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>()) 
 				{
 					delete slices_[2*i];
 					slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-																		 marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+											   marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 				}
 			}
 			else 
 				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-																	 marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+										   marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
 			(slices_[2*i])->setval(0.0);
 
 			if (slices_[2*i+1] != NULL) 
 			{
 				if ((slices_[2*i+1])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>() ||
-					  (slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) 
+					(slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) 
 				{
 					delete slices_[2*i+1];
 					slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-																			 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+												 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 				}
 			}
 			else 
 				slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-																		 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+											 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 			
 			(slices_[2*i+1])->setval(0.0);
 		}

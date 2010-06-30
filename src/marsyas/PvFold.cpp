@@ -18,7 +18,7 @@
 
 #include "PvFold.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PvFold::PvFold(string name):MarSystem("PvFold",name)

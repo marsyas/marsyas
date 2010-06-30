@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,7 +22,13 @@
 #include "PlotSink.h"
 #include <iomanip> 
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+using std::setw;
+using std::setfill;
+
 using namespace Marsyas;
 
 PlotSink::PlotSink(string name):MarSystem("PlotSink",name)

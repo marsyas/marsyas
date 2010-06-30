@@ -23,7 +23,7 @@
 #include "SoundFileSource.h"
 #include "NumericLib.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 //[TODO] -> deprecate all this junk!!

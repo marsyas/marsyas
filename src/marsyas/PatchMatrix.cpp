@@ -18,7 +18,7 @@
 
 #include "PatchMatrix.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PatchMatrix::PatchMatrix(string name):MarSystem("PatchMatrix", name)

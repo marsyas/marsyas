@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -39,7 +39,12 @@ static const std::string kDbgFilePath = "d:/temp/peaks.new.txt";
 #endif
 
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::min;
+using std::max;
+
+
 using namespace Marsyas;
 
 static const mrs_real gaussianStd = 0.42466090014401;	// results in output of .5 for input of .5

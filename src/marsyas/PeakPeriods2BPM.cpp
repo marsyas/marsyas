@@ -18,7 +18,7 @@
 
 #include "PeakPeriods2BPM.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PeakPeriods2BPM::PeakPeriods2BPM(string name):MarSystem("PeakPeriods2BPM",name)

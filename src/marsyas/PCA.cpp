@@ -18,7 +18,7 @@
 
 #include "PCA.h"
   
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 #define SIGN(a, b) ( (b) < 0 ? -fabs(a) : fabs(a) )

@@ -18,7 +18,7 @@
 
 #include "Peak2Rms.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Peak2Rms::Peak2Rms(string name):MarSystem("Peak2Rms", name)

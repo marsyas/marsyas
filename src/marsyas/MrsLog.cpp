@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -21,7 +21,12 @@
 #include "MrsLog.h"
 #include "common.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+
+
 using namespace Marsyas;
 
 string MrsLog::fname_ = "marsyas.log";
@@ -36,7 +41,7 @@ MrsLog::setLogFile(string fname)
 void 
 MrsLog::mrsMessage(const ostringstream& oss)
 {
-  cout << "[MRS_MESSAGE] " << oss.str();
+	cout << "[MRS_MESSAGE] " << oss.str();
 }
 
 void 
@@ -72,30 +77,30 @@ void
 MrsLog::mrsWarning(const ostringstream& oss)	
 {
 #ifdef MARSYAS_LOG_WARNINGS
-  if (!warnings_off_) 
+	if (!warnings_off_) 
     {
 #ifdef MARSYAS_LOG2STDOUT
-      cout << "[MRS_WARNING] " << oss.str() << endl;
+		cout << "[MRS_WARNING] " << oss.str() << endl;
 #endif
       
 #ifdef MARSYAS_LOG2FILE
-      ofstream ofs(fname_.c_str(), ios::out | ios::app);
-      if (ofs.fail())
-	return;
-      if (!(ofs << "[MRS_WARNING] " <<  oss.str() << endl))
-	{
-	  ofs.close();
-	  return;
-	}
-      ofs.close();
-      return;
+		ofstream ofs(fname_.c_str(), ios::out | ios::app);
+		if (ofs.fail())
+			return;
+		if (!(ofs << "[MRS_WARNING] " <<  oss.str() << endl))
+		{
+			ofs.close();
+			return;
+		}
+		ofs.close();
+		return;
 
 #endif
     }
 
 
 #else 
-  ; 
+	; 
 #endif 
 
 }
@@ -156,7 +161,7 @@ MrsLog::mrsAssert(const char *strFile, unsigned uLine)
 #ifdef MARSYAS_ASSERTS
 	fflush(NULL);
 	fprintf(stderr, "\nMARSYAS Assertion failed: %s, line %u\n", 
-		strFile, uLine);
+			strFile, uLine);
 	fflush(stderr);
 	abort();
 #else

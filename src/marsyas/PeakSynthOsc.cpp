@@ -19,7 +19,7 @@
 #include "PeakSynthOsc.h"
 #include "peakView.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PeakSynthOsc::PeakSynthOsc(string name):MarSystem("PeakSynthOsc",name)

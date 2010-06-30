@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -35,7 +35,17 @@
 #include <fstream>
 #include <sstream>
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::numeric_limits;
+using std::endl;
+using std::cout;
+using std::cerr;
+using std::min;
+using std::max;
+
+
+
 using namespace Marsyas;
 
 //#define DBL_EPSILON 2.2204460492503131E-16 //=> already defined in float.h...

@@ -18,7 +18,7 @@
 
 #include "PvOscBank.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PvOscBank::PvOscBank(string name):MarSystem("PvOscBank",name)

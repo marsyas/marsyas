@@ -1,7 +1,11 @@
 #include <map>
 #include "Pitch2Chroma.h"
 
-using namespace std;
+using std::string;
+using std::ostringstream;
+using std::max;
+using std::min;
+
 using namespace Marsyas;
 
 Pitch2Chroma::Pitch2Chroma(mrs_string inName)

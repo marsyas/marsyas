@@ -18,7 +18,7 @@
 
 #include "PeakResidual.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PeakResidual::PeakResidual(string name):MarSystem("PeakResidual", name)

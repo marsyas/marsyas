@@ -18,7 +18,7 @@
 
 #include "Product.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Product::Product(string name):MarSystem("Product",name)

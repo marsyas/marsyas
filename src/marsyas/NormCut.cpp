@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,7 +22,13 @@
 #include <iostream>
 #include <cmath>
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::min;
+
+using std::endl;
+
 using namespace Marsyas;
 
 NormCut::NormCut(string name):MarSystem("NormCut", name)
@@ -149,17 +155,17 @@ NormCut::myProcess(realvec& in, realvec& out)
 
 
 /*
-* Function :    ncutW (driver function)
-* Description : Clusters data items using the normalized cut algorithm given an n x n similarity matrix
-* 
-* Arguments: mrs_natural *n                    -- size of data set (input)
-*            realvec &W                 -- n x n symmetric similarity matrix (input)
-*            mrs_natural *nbcluster            -- desired number of clusters (input)
-*            dataNcutPtr params                   -- algorithm parameters (input) 
-*            realvec &NcutDiscrete      -- nbcluster x n clustering results (output)
-*            realvec &NcutEigenvectors  -- resulting eigenvectors (output)
-*            realvec &NcutEigenvalues   -- resulting eigenvalues (output)
-*/
+ * Function :    ncutW (driver function)
+ * Description : Clusters data items using the normalized cut algorithm given an n x n similarity matrix
+ * 
+ * Arguments: mrs_natural *n                    -- size of data set (input)
+ *            realvec &W                 -- n x n symmetric similarity matrix (input)
+ *            mrs_natural *nbcluster            -- desired number of clusters (input)
+ *            dataNcutPtr params                   -- algorithm parameters (input) 
+ *            realvec &NcutDiscrete      -- nbcluster x n clustering results (output)
+ *            realvec &NcutEigenvectors  -- resulting eigenvectors (output)
+ *            realvec &NcutEigenvalues   -- resulting eigenvalues (output)
+ */
 //void 
 //NormCut::ncutW(mrs_natural *n, realvec &W, mrs_natural *nbcluster, realvec &NcutDiscrete, realvec &NcutEigenvectors, realvec &NcutEigenvalues, dataNcutParamsPtr params)
 //{
@@ -218,64 +224,64 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 			P(i*(n)+j)=0.; 
 		}           
 
-		ulp = NumericLib::machp("Epsilon") * NumericLib::machp("Base"); // unit in last place            
+	ulp = NumericLib::machp("Epsilon") * NumericLib::machp("Base"); // unit in last place            
 
-		//sum each row 
+	//sum each row 
+	for( i=0 ; i<n ; ++i )
+	{
+		// can sum the columns since it's symmetric... and its faster
+		dinvsqrt(i) = 2.*paramOffset_;
+		for( j=0 ; j<n ; j++ )
+			dinvsqrt(i) += W(i*(n)+j);
+		dinvsqrt(i) = 1./sqrt(dinvsqrt(i)+ulp);
+	}
+
+	// P <- dinvsqrt*dinvsqrt'
+	for( i=0 ; i<n ; ++i )
+		for( j=i ; j<n ; j++ )
+			P(i*(n)+j) = dinvsqrt(i)*dinvsqrt(j);
+
+	// 1. Add offset to diagonal of W
+	// 2. P <- P .* W (only lower triangle of P computed)
+	for( j=0 ; j<n ; j++ ){
+		P(j*(n)+j) = P(j*(n)+j)*( W(j*(n)+j) + paramOffset_ );       
+		for( i=j+1 ; i<n ; ++i ){
+			P(j*(n)+i) = P(j*(n)+i)*W(j*(n)+i);
+		}  
+	}         
+
+	NumericLib::tred2(P, n, evals, mrs_naturalerm );
+	NumericLib::tqli( evals, mrs_naturalerm, n, P );
+	/* evals now contains the eigenvalues,
+	   P now contains the associated eigenvectors. */        
+
+	// Must reverse eigenvectors and eigenvalues because
+	// tqli returns them in ascending order, rather than
+	// descending
+	for( j=0 ; j<nbcluster ; j++ )
+	{
 		for( i=0 ; i<n ; ++i )
-		{
-			// can sum the columns since it's symmetric... and its faster
-			dinvsqrt(i) = 2.*paramOffset_;
-			for( j=0 ; j<n ; j++ )
-				dinvsqrt(i) += W(i*(n)+j);
-			dinvsqrt(i) = 1./sqrt(dinvsqrt(i)+ulp);
-		}
+			NcutEigenvectors(j*(n)+i) = P((n-j-1)*(n)+i);
+		NcutEigenvalues(j) = evals(n-j-1);
+	}
 
-		// P <- dinvsqrt*dinvsqrt'
+	for( j=0 ; j<nbcluster ; j++ )   
 		for( i=0 ; i<n ; ++i )
-			for( j=i ; j<n ; j++ )
-				P(i*(n)+j) = dinvsqrt(i)*dinvsqrt(j);
+			NcutEigenvectors(j*(n)+i) = NcutEigenvectors(j*(n)+i)*dinvsqrt(i); 
 
-		// 1. Add offset to diagonal of W
-		// 2. P <- P .* W (only lower triangle of P computed)
-		for( j=0 ; j<n ; j++ ){
-			P(j*(n)+j) = P(j*(n)+j)*( W(j*(n)+j) + paramOffset_ );       
-			for( i=j+1 ; i<n ; ++i ){
-				P(j*(n)+i) = P(j*(n)+i)*W(j*(n)+i);
-			}  
-		}         
-
-		NumericLib::tred2(P, n, evals, mrs_naturalerm );
-		NumericLib::tqli( evals, mrs_naturalerm, n, P );
-		/* evals now contains the eigenvalues,
-		P now contains the associated eigenvectors. */        
-
-		// Must reverse eigenvectors and eigenvalues because
-		// tqli returns them in ascending order, rather than
-		// descending
-		for( j=0 ; j<nbcluster ; j++ )
-		{
+	for( j=0 ; j<nbcluster ; j++ ){
+		norm=0.;
+		for( i=0 ; i<n ; ++i )
+			norm += NcutEigenvectors(j*(n) + i)*NcutEigenvectors(j*(n) + i);
+		norm = sqrt(norm);
+		norm = sqrtn / norm;
+		if( NcutEigenvectors(j*(n)) >= 0. )
 			for( i=0 ; i<n ; ++i )
-				NcutEigenvectors(j*(n)+i) = P((n-j-1)*(n)+i);
-			NcutEigenvalues(j) = evals(n-j-1);
-		}
-
-		for( j=0 ; j<nbcluster ; j++ )   
+				NcutEigenvectors(j*(n) + i) *= -norm;
+		else
 			for( i=0 ; i<n ; ++i )
-				NcutEigenvectors(j*(n)+i) = NcutEigenvectors(j*(n)+i)*dinvsqrt(i); 
-
-		for( j=0 ; j<nbcluster ; j++ ){
-			norm=0.;
-			for( i=0 ; i<n ; ++i )
-				norm += NcutEigenvectors(j*(n) + i)*NcutEigenvectors(j*(n) + i);
-			norm = sqrt(norm);
-			norm = sqrtn / norm;
-			if( NcutEigenvectors(j*(n)) >= 0. )
-				for( i=0 ; i<n ; ++i )
-					NcutEigenvectors(j*(n) + i) *= -norm;
-			else
-				for( i=0 ; i<n ; ++i )
-					NcutEigenvectors(j*(n) + i) *= norm;         
-		}
+				NcutEigenvectors(j*(n) + i) *= norm;         
+	}
 
 }
 
@@ -451,10 +457,10 @@ NormCut::discretisationEigenvectorData(mrs_natural n,  mrs_natural nbcluster, re
 
 
 /* 
-* Display column-oriented matrices 
-* Note : Matrices are stored in column-wise order for compatibility with CLAPACK (translated from FORTRAN)
-* Note2: n=1 --> display column vector         n=-1 --> display row vector
-*/
+ * Display column-oriented matrices 
+ * Note : Matrices are stored in column-wise order for compatibility with CLAPACK (translated from FORTRAN)
+ * Note2: n=1 --> display column vector         n=-1 --> display row vector
+ */
 void 
 NormCut::prmrs_natural( realvec &A, mrs_natural m , mrs_natural n )
 {
@@ -477,10 +483,10 @@ NormCut::prmrs_natural( realvec &A, mrs_natural m , mrs_natural n )
 }
 
 /* 
-* Display column-oriented matrices 
-* Note : Matrices are stored in column-wise order for compatibility with CLAPACK (translated from FORTRAN)
-* Note2: n=1 --> display column vector         n=-1 --> display row vector 
-*/
+ * Display column-oriented matrices 
+ * Note : Matrices are stored in column-wise order for compatibility with CLAPACK (translated from FORTRAN)
+ * Note2: n=1 --> display column vector         n=-1 --> display row vector 
+ */
 
 void 
 NormCut::print( realvec &A, int m , int n )

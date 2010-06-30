@@ -18,7 +18,7 @@
 
 #include "PeakMask.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PeakMask::PeakMask(string name):MarSystem("PeakMask", name)

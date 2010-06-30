@@ -21,7 +21,7 @@
 
 #include "MarSystem.h"	
 //#include <string.h>
-//using namespace std;
+//using std::string; using std::ostringstream;
 
 namespace Marsyas
 {

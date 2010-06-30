@@ -19,7 +19,7 @@
 #include "PeakViewSource.h"
 #include "peakView.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PeakViewSource::PeakViewSource(string name):MarSystem("PeakViewSource", name)

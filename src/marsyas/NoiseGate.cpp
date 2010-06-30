@@ -18,7 +18,7 @@
 
 #include "NoiseGate.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 NoiseGate::NoiseGate(string name):MarSystem("NoiseGate",name)

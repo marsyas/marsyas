@@ -18,7 +18,7 @@
 
 #include "PvOverlapadd.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PvOverlapadd::PvOverlapadd(string name):MarSystem("PvOverlapadd",name)

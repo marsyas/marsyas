@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,7 +19,12 @@
 #include "PeakViewSink.h"
 #include "peakView.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::ifstream;
+using std::ios;
+using std::endl;
+
 using namespace Marsyas;
 
 PeakViewSink::PeakViewSink(string name):MarSystem("PeakViewSink",name)

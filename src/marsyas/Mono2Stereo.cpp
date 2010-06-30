@@ -19,7 +19,7 @@
 
 #include "Mono2Stereo.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Mono2Stereo::Mono2Stereo(string name):MarSystem("Mono2Stereo", name)

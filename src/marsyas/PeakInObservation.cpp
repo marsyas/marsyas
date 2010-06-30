@@ -1,6 +1,6 @@
 #include "PeakInObservation.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PeakInObservation::PeakInObservation(mrs_string inName)

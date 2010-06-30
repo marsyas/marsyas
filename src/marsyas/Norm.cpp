@@ -18,7 +18,7 @@
 
 #include "Norm.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Norm::Norm(string name):MarSystem("Norm",name)

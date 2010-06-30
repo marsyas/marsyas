@@ -21,7 +21,14 @@
 
 #define MINIMUMREAL 0.000001 //(0.000001 minimum float recognized)
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+using std::fstream;
+using std::ios;
+
+
 using namespace Marsyas;
 
 PhaseLock::PhaseLock(string name):MarSystem("PhaseLock", name)

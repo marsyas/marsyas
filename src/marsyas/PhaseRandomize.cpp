@@ -18,7 +18,7 @@
 
 #include "PhaseRandomize.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PhaseRandomize::PhaseRandomize(string name):MarSystem("PhaseRandomize", name)

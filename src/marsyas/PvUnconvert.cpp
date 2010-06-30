@@ -20,7 +20,8 @@
 
 #include <algorithm> 
 
-using namespace std;
+using std::string; using std::ostringstream;
+
 using namespace Marsyas;
 
 PvUnconvert::PvUnconvert(string name):MarSystem("PvUnconvert",name)

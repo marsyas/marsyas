@@ -18,7 +18,7 @@
 
 #include "PeakerAdaptive.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 PeakerAdaptive::PeakerAdaptive(string name):MarSystem("PeakerAdaptive",name)
