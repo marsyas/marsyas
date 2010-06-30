@@ -21,7 +21,7 @@
 //#include "MarSystem.h"
 
 using namespace Marsyas;
-using namespace std;
+using std::string; using std::ostringstream;
 
 MarControlManager* MarControlManager::instance_ = NULL;
 

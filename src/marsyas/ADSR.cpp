@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,8 +18,11 @@
 
 #include "ADSR.h"
 
+using std::string;
+using std::ostringstream;
+
 using namespace Marsyas;
-using namespace std;
+
 
 ADSR::ADSR(string name):MarSystem("ADSR", name)
 {
@@ -122,32 +125,32 @@ ADSR::myProcess(realvec& in, realvec& out)
 		{
 			switch (state_) 
 			{
-			case 1://attack
-				value_ += aRate_;
-				if (value_ >= target_) 
-				{
-					value_ = target_;
-					rate_ = dRate_;
-					target_ = susLevel_;
-					state_ = 2;
-				}
-				break;
-			case 2://decay
-				value_ -= dRate_;
-				if (value_ <= susLevel_) 
-				{
-					value_ = susLevel_;
-					rate_ = 0.0;
-					state_ = 3;
-				}
-				break;
-			case 4://release
-				value_ -= rRate_;
-				if (value_ <= 0.0)       
-				{
-					value_ = 0.0;
-					state_ = 5;//done
-				}
+				case 1://attack
+					value_ += aRate_;
+					if (value_ >= target_) 
+					{
+						value_ = target_;
+						rate_ = dRate_;
+						target_ = susLevel_;
+						state_ = 2;
+					}
+					break;
+				case 2://decay
+					value_ -= dRate_;
+					if (value_ <= susLevel_) 
+					{
+						value_ = susLevel_;
+						rate_ = 0.0;
+						state_ = 3;
+					}
+					break;
+				case 4://release
+					value_ -= rRate_;
+					if (value_ <= 0.0)       
+					{
+						value_ = 0.0;
+						state_ = 5;//done
+					}
 			}//switch
 
 			out(o,t) =  value_* in(o,t);
@@ -155,10 +158,10 @@ ADSR::myProcess(realvec& in, realvec& out)
 			//cout <<"val=" << value_<< endl;
 		}//for
 
-		//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
-		//MATLAB_PUT(out, "ADSR_out");
-		//MATLAB_EVAL("onsetAudio = [onsetAudio, ADSR_out];");
-		//MATLAB_EVAL("toy_with_onsets");
+	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
+	//MATLAB_PUT(out, "ADSR_out");
+	//MATLAB_EVAL("onsetAudio = [onsetAudio, ADSR_out];");
+	//MATLAB_EVAL("toy_with_onsets");
 
 }
 

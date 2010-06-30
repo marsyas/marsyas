@@ -19,7 +19,7 @@
 #include "EvGetUpd.h"
 #include "MarSystem.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 EvGetUpd::EvGetUpd(MarSystem* src, string scname, MarSystem* tgt, string tcname) : EvEvent("EvGetUpd","GetUpd")

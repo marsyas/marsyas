@@ -18,7 +18,7 @@
 
 #include "BaseAudioSink.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 	
 BaseAudioSink::BaseAudioSink(string name):MarSystem("AutoCorrelation", name)

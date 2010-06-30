@@ -19,7 +19,7 @@
 
 #include "DownSampler.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 

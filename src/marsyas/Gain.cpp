@@ -18,7 +18,7 @@
 
 #include "Gain.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Gain::Gain(string name):MarSystem("Gain", name)

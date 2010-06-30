@@ -19,7 +19,12 @@
 #include "common.h"
 #include "AudioSinkCallback.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+using std::min;
+
 using namespace Marsyas;
 
 

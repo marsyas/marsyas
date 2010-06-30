@@ -20,7 +20,7 @@
 #define MARSYAS_INDUCTIONGT_H
 
 #include "MarSystem.h"
-//using namespace std;
+//using std::string; using std::ostringstream;
 
 namespace Marsyas
 {

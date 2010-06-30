@@ -20,7 +20,7 @@
 #include "MP3FileSource.h"
 
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 #define INPUT_BUFFER_SIZE (5*8192)

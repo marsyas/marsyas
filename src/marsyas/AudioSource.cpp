@@ -27,7 +27,7 @@
 #endif 
 
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AudioSource::AudioSource(string name):MarSystem("AudioSource", name)

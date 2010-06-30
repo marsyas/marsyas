@@ -18,7 +18,10 @@
 
 #include "Cascade.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+
 using namespace Marsyas;
 
 Cascade::Cascade(string name):MarSystem("Cascade", name)

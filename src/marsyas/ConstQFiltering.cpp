@@ -1,6 +1,6 @@
 #include "ConstQFiltering.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 ConstQFiltering::ConstQFiltering(string name):MarSystem("ConstQFiltering", name)

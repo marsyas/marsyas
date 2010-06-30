@@ -1,6 +1,6 @@
 #include "AveragingPattern.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AveragingPattern::AveragingPattern(string name):MarSystem("AveragingPattern", name)

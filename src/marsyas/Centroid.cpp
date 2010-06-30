@@ -19,7 +19,7 @@
 
 #include "Centroid.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Centroid::Centroid(string name):MarSystem("Centroid", name)

@@ -16,9 +16,10 @@
  ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include "common.h" 
 #include "Biquad.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Biquad::Biquad(string name):MarSystem("Biquad",name)
@@ -147,7 +148,7 @@ void Biquad::myUpdate(MarControlPtr sender)
 
     else
     {
-        cout << "BIQUAD: wrong type specified" << endl;
+        MRSWARN("BIQUAD: wrong type specified");
     
     }
     filter->setctrl("mrs_real/israte", fs_);

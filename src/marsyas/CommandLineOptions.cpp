@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,7 +18,14 @@
 
 #include "CommandLineOptions.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+using std::istream;
+using std::ostream;
+using std::vector;
+
 using namespace Marsyas;
 
 CommandLineOptions::CommandLineOptions()

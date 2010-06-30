@@ -18,7 +18,7 @@
 
 #include "Mean.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Mean::Mean(string name): MarSystem("Mean", name)

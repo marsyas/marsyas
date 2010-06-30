@@ -18,7 +18,7 @@
 
 #include "FlowThru.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 FlowThru::FlowThru(string name):MarSystem("FlowThru",name)

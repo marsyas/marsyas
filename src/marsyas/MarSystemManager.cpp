@@ -244,7 +244,13 @@
 #include "Inject.h"
 //modifyHeader
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::map;
+using std::istream;
+using std::ostream;
+using std::vector;
+
 using namespace Marsyas;
 
 MarSystemManager::MarSystemManager()

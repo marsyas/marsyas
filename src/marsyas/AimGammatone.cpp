@@ -18,7 +18,10 @@
 
 #include "AimGammatone.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::complex;
+
 using namespace Marsyas;
 
 AimGammatone::AimGammatone(string name):MarSystem("AimGammatone",name)

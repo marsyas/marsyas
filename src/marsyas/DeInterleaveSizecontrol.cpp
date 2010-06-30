@@ -18,7 +18,7 @@
 
 #include "DeInterleaveSizecontrol.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 DeInterleaveSizecontrol::DeInterleaveSizecontrol(string name):MarSystem("DeInterleaveSizecontrol", name)

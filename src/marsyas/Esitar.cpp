@@ -24,7 +24,7 @@
 #endif 
 
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Esitar::Esitar(string name):MarSystem("Esitar",name)

@@ -18,7 +18,7 @@
 
 #include "Deinterleave.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Deinterleave::Deinterleave(string name):MarSystem("Deinterleave", name)

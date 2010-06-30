@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,7 +22,16 @@
 #include <iterator>
 
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+using std::ifstream;
+using std::ofstream;
+using std::ostream_iterator;
+using std::endl;
+using std::ostream;
+using std::istream;
+
 
 
 

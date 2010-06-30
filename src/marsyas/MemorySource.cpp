@@ -18,7 +18,7 @@
 
 #include "MemorySource.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 MemorySource::MemorySource(string name):MarSystem("MemorySource",name)

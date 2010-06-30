@@ -18,7 +18,7 @@
 
 #include "Annotator.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Annotator::Annotator(string name):MarSystem("Annotator", name)

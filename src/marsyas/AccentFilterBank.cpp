@@ -18,7 +18,7 @@
 
 #include "AccentFilterBank.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AccentFilterBank::AccentFilterBank(string name):MarSystem("AccentFilterBank", name)

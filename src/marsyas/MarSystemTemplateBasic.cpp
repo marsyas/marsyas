@@ -19,7 +19,7 @@
 #include "common.h" 
 #include "MarSystemTemplateBasic.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 MarSystemTemplateBasic::MarSystemTemplateBasic(string name) : MarSystem("MarSystemTemplateBasic", name)

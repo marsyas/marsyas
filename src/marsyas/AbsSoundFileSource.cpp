@@ -18,7 +18,7 @@
 
 #include "AbsSoundFileSource.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AbsSoundFileSource::AbsSoundFileSource(string type, string name):MarSystem(type, name)

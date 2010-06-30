@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -23,7 +23,18 @@
 #include "EvValUpd.h"
 #include "TmVirtualTime.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+using std::vector;
+using std::pair;
+using std::map;
+using std::istream;
+using std::ostream;
+
+
+
 using namespace Marsyas;
 
 MarSystem::MarSystem(string type, string name)
@@ -333,7 +344,7 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 		for (it = marsystems_.begin(); it != marsystems_.end(); ++it)
 		{
 			if ((*it)->getName() == marsystem->getName() &&
-			        (*it)->getType() == marsystem->getType())
+				(*it)->getType() == marsystem->getType())
 			{
 				//delete current child MarSystem
 				delete (*it);
@@ -682,9 +693,9 @@ MarSystem::update(MarControlPtr sender)
 	
 	//resize input and output realvec if necessary
 	if ((inObservations_ != inTick_.getRows()) ||
-	        (inSamples_ != inTick_.getCols())      ||
-	        (onObservations_ != outTick_.getRows()) ||
-	        (onSamples_ != outTick_.getCols()))
+		(inSamples_ != inTick_.getCols())      ||
+		(onObservations_ != outTick_.getRows()) ||
+		(onSamples_ != outTick_.getCols()))
 	{
 		inTick_.create(inObservations_, inSamples_);
 		{
@@ -779,7 +790,7 @@ MarSystem::getControlLocalPath(string cname) const
 	// A local path should have only one '/' (e.g. "mrs_xxx/nnnn"),
 	// otherwise it's probably a control from a child MarSystem.
 	if (cname.find_first_of('/') == cname.find_last_of('/') &&
-	        cname.find_first_of('/') != string::npos)
+		cname.find_first_of('/') != string::npos)
 	{
 		// This is a relative and local path, so just return it
 		return cname;
@@ -1690,23 +1701,23 @@ MarSystem::put(istream& is)
 		// Now, based on the type, we extract the value
 		if (ctype == rstr)
 		{
-		  is >> rcvalue;
-		  if (iter == controls_.end())
-		    addControl(cname, rcvalue);
-		  else
-		    updControl(cname, rcvalue);
+			is >> rcvalue;
+			if (iter == controls_.end())
+				addControl(cname, rcvalue);
+			else
+				updControl(cname, rcvalue);
 		}
 		else if (ctype == sstr)
 		{
-		  getline(is, scvalue);  // getline is used to include spaces in strings
-		  scvalue = scvalue.substr(1, scvalue.length()); // strip leading space
+			getline(is, scvalue);  // getline is used to include spaces in strings
+			scvalue = scvalue.substr(1, scvalue.length()); // strip leading space
 
-		  if (scvalue == "MARSYAS_EMPTYSTRING")
-		    scvalue = "";
-		  if (iter == controls_.end())
-		    addControl(cname, scvalue);
-		  else
-		    updControl(cname, scvalue);
+			if (scvalue == "MARSYAS_EMPTYSTRING")
+				scvalue = "";
+			if (iter == controls_.end())
+				addControl(cname, scvalue);
+			else
+				updControl(cname, scvalue);
 		}
 		else if (ctype == nstr)
 		{

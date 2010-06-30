@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,7 +19,16 @@
 #include "Confidence.h"
 #include "FileName.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+using std::setprecision;
+using std::fixed;
+using std::ios;
+
+
+
 using namespace Marsyas;
 
 Confidence::Confidence(string name):MarSystem("Confidence",name)
@@ -160,55 +169,55 @@ Confidence::myProcess(realvec& in, realvec& out)
 					confidences_(label) = confidences_(label) + 1;
 				} 
 			}
-			count_++;
-			bool cond = ((count_ % memSize) == 0);
+		count_++;
+		bool cond = ((count_ % memSize) == 0);
+		if (cond || forcePrint_)
+		{
+			mrs_real max_conf = 0;
+			mrs_natural max_l = 0;
+			for (l=0; l < nLabels; l++)
+			{
+				mrs_real conf = ((confidences_(l)) / count_);
+				if (conf > max_conf) 
+				{
+					max_conf = conf;
+					max_l = l;
+				}
+			}
+			if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
+			{
+				cout << "fileOutput" << endl;
+					
+				if (write_)
+				{ 
+					outputFileSyn_ << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
+					outputFileSyn_ << setprecision(0) << labelNames_[max_l] << "\t" << 
+						((confidences_(max_l) / count_)) * 100.0 << endl;
+
+					if(lastLabel_ == "MARSYAS_EMPTY" || lastLabel_ != labelNames_[max_l])
+					{
+						outputFileTran_ << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << endl;
+						lastLabel_ = labelNames_[max_l];
+					}
+				}
+			}
+			else
+			{
+				if (print_) 
+				{
+					cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
+					cout << fixed << setprecision(0) << labelNames_[max_l] << "\t" <<
+						((confidences_(max_l) / count_)) * 100.0 << setprecision(4) << endl;
+				}
+					
+			}
 			if (cond || forcePrint_)
 			{
-				mrs_real max_conf = 0;
-				mrs_natural max_l = 0;
-				for (l=0; l < nLabels; l++)
-				{
-					mrs_real conf = ((confidences_(l)) / count_);
-					if (conf > max_conf) 
-					{
-						max_conf = conf;
-						max_l = l;
-					}
-				}
-				if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
-				{
-					cout << "fileOutput" << endl;
-					
-					if (write_)
-					{ 
-						outputFileSyn_ << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
-						outputFileSyn_ << setprecision(0) << labelNames_[max_l] << "\t" << 
-							((confidences_(max_l) / count_)) * 100.0 << endl;
-
-						if(lastLabel_ == "MARSYAS_EMPTY" || lastLabel_ != labelNames_[max_l])
-						{
-							outputFileTran_ << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t" << labelNames_[max_l] << endl;
-							lastLabel_ = labelNames_[max_l];
-						}
-					}
-				}
-				else
-				{
-					if (print_) 
-					{
-						cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
-						cout << fixed << setprecision(0) << labelNames_[max_l] << "\t" <<
- 							((confidences_(max_l) / count_)) * 100.0 << setprecision(4) << endl;
-					}
-					
-				}
-				if (cond || forcePrint_)
-				{
-					count_ = 0;
-				}
-
-				confidences_.setval(0.0);
+				count_ = 0;
 			}
+
+			confidences_.setval(0.0);
+		}
 	}
 	nbFrames_++; 
 }

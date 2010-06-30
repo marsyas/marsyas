@@ -19,7 +19,7 @@
 #include "Conversions.h"
 #include "realvec.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 mrs_real

@@ -27,7 +27,11 @@
 #endif 
 
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+
 using namespace Marsyas;
 
 AudioSink::AudioSink(string name):MarSystem("AudioSink", name)

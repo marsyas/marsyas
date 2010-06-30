@@ -18,7 +18,7 @@
 
 #include "BeatPhase.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 BeatPhase::BeatPhase(string name):MarSystem("BeatPhase", name)

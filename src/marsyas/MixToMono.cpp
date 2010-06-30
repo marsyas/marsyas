@@ -18,7 +18,7 @@
 
 #include "MixToMono.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 MixToMono::MixToMono(string name) : MarSystem("MixToMono", name)

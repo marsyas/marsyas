@@ -23,8 +23,10 @@
 #include <iterator>
 #include <cfloat> 
 
-using namespace std;
+using std::string; using std::ostringstream;
+using std::vector;
 using namespace Marsyas;
+
 
 //#define MTLB_DBG_LOG
 

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,13 +18,17 @@
 
 #include "MarFileSink.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::cout;
+using std::endl;
+
 using namespace Marsyas;
 
 MarFileSink::MarFileSink(string name):MarSystem("MarFileSink",name)
 {
-  //type_ = "MarFileSink";
-  //name_ = name;
+	//type_ = "MarFileSink";
+	//name_ = name;
 }
 
 MarFileSink::~MarFileSink()
@@ -35,25 +39,25 @@ MarFileSink::~MarFileSink()
 MarSystem* 
 MarFileSink::clone() const 
 {
-  return new MarFileSink(*this);
+	return new MarFileSink(*this);
 }
 
 void 
 MarFileSink::myProcess(realvec& in, realvec& out)
 {
-  mrs_natural t,o;
-  mrs_natural nObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-  mrs_natural nSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	mrs_natural t,o;
+	mrs_natural nObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	mrs_natural nSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
-  checkFlow(in, out);
+	checkFlow(in, out);
   
-  for (o=0; o < nObservations; o++)
-    for (t = 0; t < nSamples; t++)
-      {
-		out(o,t) = in(o,t);
-		cout << out(o,t) << " ";
-      }
-  cout << endl;
+	for (o=0; o < nObservations; o++)
+		for (t = 0; t < nSamples; t++)
+		{
+			out(o,t) = in(o,t);
+			cout << out(o,t) << " ";
+		}
+	cout << endl;
 }
 
 

@@ -20,7 +20,7 @@
 
 // #define _MATLAB_LPC_
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 LPC::LPC(string name):MarSystem("LPC",name)

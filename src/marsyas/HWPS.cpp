@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,7 +19,11 @@
 #include "HWPS.h"
 #include "NumericLib.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::min;
+using std::max;
+
 using namespace Marsyas;
 
 HWPS::HWPS(string name):MarSystem("HWPS", name)
@@ -54,52 +58,52 @@ void
 HWPS::harmonicWrap(mrs_real peak1Freq, mrs_real peak2Freq, realvec& peak1SetFreqs, realvec& peak2SetFreqs)
 {
 
-  // fundamental frequency estimate
-  mrs_real hF; 
+	// fundamental frequency estimate
+	mrs_real hF; 
 
-  // Use the lowest in frequency highest amplitude 
-  // peak of the frames under consideration
-  hF = min(peak1SetFreqs(0), peak2SetFreqs(0));
+	// Use the lowest in frequency highest amplitude 
+	// peak of the frames under consideration
+	hF = min(peak1SetFreqs(0), peak2SetFreqs(0));
 
-  // Original HWPS using the considered peaks for folding 
-  // hF = min(peak1Freq, peak2Freq);     
+	// Original HWPS using the considered peaks for folding 
+	// hF = min(peak1Freq, peak2Freq);     
 
-  // mrs_real mhF = min(hF, abs(peak1Freq-peak2Freq));
+	// mrs_real mhF = min(hF, abs(peak1Freq-peak2Freq));
   
-  // shift frequencies
-  peak1SetFreqs -= peak1Freq;
-  peak2SetFreqs -= peak2Freq;
+	// shift frequencies
+	peak1SetFreqs -= peak1Freq;
+	peak2SetFreqs -= peak2Freq;
 
 
-  /*
-    MATLAB_PUT(peak1SetFreqs, "P1");
-    MATLAB_PUT(peak2SetFreqs, "P2");
-    MATLAB_EVAL("clf ; subplot(3, 1, 1);  hold ; stem(P1, A1); stem(P2, A2, 'r')");
-  */
+	/*
+	  MATLAB_PUT(peak1SetFreqs, "P1");
+	  MATLAB_PUT(peak2SetFreqs, "P2");
+	  MATLAB_EVAL("clf ; subplot(3, 1, 1);  hold ; stem(P1, A1); stem(P2, A2, 'r')");
+	*/
 
-   // wrap frequencies around fundamental freq estimate
-  peak1SetFreqs /= hF;
-  peak2SetFreqs /= hF;
+	// wrap frequencies around fundamental freq estimate
+	peak1SetFreqs /= hF;
+	peak2SetFreqs /= hF;
 
-  for (mrs_natural k=0 ; k<peak1SetFreqs.getSize() ; k++)
+	for (mrs_natural k=0 ; k<peak1SetFreqs.getSize() ; k++)
     {
-      peak1SetFreqs(k)=fmod(peak1SetFreqs(k), 1);
-      //if(peak1SetFreqs(k)<0)
-      while(peak1SetFreqs(k)<0)//replacing "if" in case of strongly negative (=> multiple wraps)
-	peak1SetFreqs(k)+=1;
+		peak1SetFreqs(k)=fmod(peak1SetFreqs(k), 1);
+		//if(peak1SetFreqs(k)<0)
+		while(peak1SetFreqs(k)<0)//replacing "if" in case of strongly negative (=> multiple wraps)
+			peak1SetFreqs(k)+=1;
     }
-  for (mrs_natural k=0 ; k<peak2SetFreqs.getSize() ; k++)
+	for (mrs_natural k=0 ; k<peak2SetFreqs.getSize() ; k++)
     {
-      peak2SetFreqs(k)=fmod(peak2SetFreqs(k), 1);
-      //if(peak2SetFreqs(k)<0)
-      while(peak2SetFreqs(k)<0) //replacing "if" in case of strongly negative (=> multiple wraps)
-	peak2SetFreqs(k)+=1;
+		peak2SetFreqs(k)=fmod(peak2SetFreqs(k), 1);
+		//if(peak2SetFreqs(k)<0)
+		while(peak2SetFreqs(k)<0) //replacing "if" in case of strongly negative (=> multiple wraps)
+			peak2SetFreqs(k)+=1;
     }
 }
 
 void
 HWPS::discretize(const realvec& peakSetWrapFreqs, const realvec& peakAmps, 
-								 const mrs_natural& histSize, realvec& resultHistogram)
+				 const mrs_natural& histSize, realvec& resultHistogram)
 {
 	mrs_natural index;
 	
@@ -175,11 +179,11 @@ HWPS::myProcess(realvec& in, realvec& out)
 	harmonicWrap(pk_i_freq_, pk_j_freq_, pkSet_i_WrapFreqs_, pkSet_j_WrapFreqs_);
 
 	/*
-	MATLAB_PUT(pkSet_i_WrapFreqs_, "P1");
-	MATLAB_PUT(pkSet_j_WrapFreqs_, "P2");
-	MATLAB_PUT(pkSet_i_Amps_, "A1");
-	MATLAB_PUT(pkSet_j_Amps_, "A2");
-	MATLAB_EVAL("subplot(3, 1, 2);  hold ; stem(P1, A1); stem(P2, A2, 'r')");
+	  MATLAB_PUT(pkSet_i_WrapFreqs_, "P1");
+	  MATLAB_PUT(pkSet_j_WrapFreqs_, "P2");
+	  MATLAB_PUT(pkSet_i_Amps_, "A1");
+	  MATLAB_PUT(pkSet_j_Amps_, "A2");
+	  MATLAB_EVAL("subplot(3, 1, 2);  hold ; stem(P1, A1); stem(P2, A2, 'r')");
 	*/
 
 	//create histograms for both peaks
@@ -188,9 +192,9 @@ HWPS::myProcess(realvec& in, realvec& out)
 	discretize(pkSet_j_WrapFreqs_, pkSet_j_Amps_, histSize_, histogram_j_);
 	
 	/*
-	MATLAB_PUT(histogram_i_, "H1");
-	MATLAB_PUT(histogram_j_, "H2");
-	MATLAB_EVAL("subplot(3, 1, 3); bar([H1; H2]')");
+	  MATLAB_PUT(histogram_i_, "H1");
+	  MATLAB_PUT(histogram_j_, "H2");
+	  MATLAB_EVAL("subplot(3, 1, 3); bar([H1; H2]')");
 	*/
 
 	if(ctrl_calcDistance_->isTrue())

@@ -18,7 +18,7 @@
 
 
 #include "MaxMin.h"
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 MaxMin::MaxMin(string name): MarSystem("MaxMin",name)

@@ -58,7 +58,7 @@ struct Marsyas::snd_header
    of the Next .snd/ Sun .au format */
 
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 #define SND_MAGIC_NUM 0x2e736e64

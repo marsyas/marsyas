@@ -18,7 +18,7 @@
 
 #include "Flux.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Flux::Flux(string name):MarSystem("Flux",name)

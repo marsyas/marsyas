@@ -4,7 +4,10 @@
 
 #define ROUND(x)	(mrs_natural)floor(x+0.5)
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+
 using namespace Marsyas;
 
 F0Analysis::F0Analysis(mrs_string inName)

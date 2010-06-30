@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,7 +18,11 @@
 
 #include "Combinator.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::min;
+using std::max;
+
 using namespace Marsyas;
 
 const mrs_string Combinator::combinatorStrings[kNumCombinators] =
@@ -149,14 +153,14 @@ Combinator::myProcess(realvec& in, realvec& out)
 			// we might also do this with function pointers...
 			switch (combi)
 			{
-			case kAdd:
-			default:
+				case kAdd:
+				default:
 				{
 					for (j = 0; j < onSamples_; j++)
 						out(i,j)	+= weight * in(i+k*onObservations_,j);
 					break;
 				}
-			case kMult:
+				case kMult:
 				{
 					if (weight == 1.0)   // avoid pow if possible
 					{
@@ -170,13 +174,13 @@ Combinator::myProcess(realvec& in, realvec& out)
 					}
 					break;
 				}
-			case kMax:
+				case kMax:
 				{
 					for (j = 0; j < onSamples_; j++)
 						out(i,j)	=  max (out(i,j),in(i+k*onObservations_,j));
 					break;
 				}
-			case kMin:
+				case kMin:
 				{
 					for (j = 0; j < onSamples_; j++)
 						out(i,j)	=  min (out(i,j),in(i+k*onObservations_,j));

@@ -19,7 +19,7 @@
 #include "ExSymTbl.h"
 #include "ExNode.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 ExRecord::ExRecord() : ExRefCount()

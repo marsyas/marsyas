@@ -1,6 +1,6 @@
 
 /*
-** Copyright (C) 1998-2007 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -25,7 +25,11 @@
 
 // #define _MATLAB_LSP_
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+using std::polar;
+
 using namespace Marsyas;
 
 LSP::LSP(string name):MarSystem("LSP",name)
@@ -89,61 +93,61 @@ LSP::myProcess(realvec& in, realvec& out)
 			ak[j] = in(j);//*(-1.0); //no pole-shifting applied
 		}
 
-		vector<mrs_complex> P(order_+2);
-		vector<mrs_complex> Q(order_+2);
-		vector<mrs_complex> Proots(order_+1); 
-		vector<mrs_complex> Qroots(order_+1); 
+	vector<mrs_complex> P(order_+2);
+	vector<mrs_complex> Q(order_+2);
+	vector<mrs_complex> Proots(order_+1); 
+	vector<mrs_complex> Qroots(order_+1); 
 
-		P[order_+1] = polar(1.0, 0.0);
-		Q[order_+1] = polar(1.0, 0.0);
-		for(mrs_natural k = 0; k < order_; k++)
-		{
-			P[order_-k] = polar((double)(ak[k] + ak[order_-1-k]), 0.0);
-			Q[order_-k] = polar((double)(ak[k] - ak[order_-1-k]), 0.0);
-		}
-		P[0] = polar(1.0, 0.0);
-		Q[0] = polar(-1.0, 0.0);
+	P[order_+1] = polar(1.0, 0.0);
+	Q[order_+1] = polar(1.0, 0.0);
+	for(mrs_natural k = 0; k < order_; k++)
+	{
+		P[order_-k] = polar((double)(ak[k] + ak[order_-1-k]), 0.0);
+		Q[order_-k] = polar((double)(ak[k] - ak[order_-1-k]), 0.0);
+	}
+	P[0] = polar(1.0, 0.0);
+	Q[0] = polar(-1.0, 0.0);
 
-		if (!numLib.polyRoots(P, false, order_+1, Proots))//P has only real coefs => complexCoefs = false
-			MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!");
-		if(!numLib.polyRoots(Q, false, order_+1, Qroots))//Q has only real coefs => complexCoefs = false
-			MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!");
+	if (!numLib.polyRoots(P, false, order_+1, Proots))//P has only real coefs => complexCoefs = false
+		MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!");
+	if(!numLib.polyRoots(Q, false, order_+1, Qroots))//Q has only real coefs => complexCoefs = false
+		MRSERR("LSP::myProcess() - numerical error in polynomial root calculation!");
 		
 
-		mrs_real phase;
-		vector<mrs_real> out_vec;
-		for(mrs_natural k = 0; k <= order_; k++)
+	mrs_real phase;
+	vector<mrs_real> out_vec;
+	for(mrs_natural k = 0; k <= order_; k++)
+	{
+		phase = arg(Proots[k]);
+		if((phase > 0) && (phase < PI))
 		{
-			phase = arg(Proots[k]);
-			if((phase > 0) && (phase < PI))
-			{
-				out_vec.push_back(phase);
-			}
+			out_vec.push_back(phase);
 		}
-		for(mrs_natural k = 0; k <= order_; k++)
+	}
+	for(mrs_natural k = 0; k <= order_; k++)
+	{
+		phase = arg(Qroots[k]);
+		if((phase > 0) && (phase < PI))
 		{
-			phase = arg(Qroots[k]);
-			if((phase > 0) && (phase < PI))
-			{
-				out_vec.push_back(phase);
-			}
+			out_vec.push_back(phase);
 		}
-		sort(out_vec.begin(), out_vec.end()); //sorts LSP freqs into ascending order
+	}
+	sort(out_vec.begin(), out_vec.end()); //sorts LSP freqs into ascending order
 
-		//output sorted LSP frequencies
-		for(mrs_natural i = 0; i < order_; ++i)
-			out(i) = out_vec[i];
+	//output sorted LSP frequencies
+	for(mrs_natural i = 0; i < order_; ++i)
+		out(i) = out_vec[i];
 
 #ifdef _MATLAB_LSP_
-		MATLAB_PUT(order_, "LSP_order");
-		MATLAB_PUT(in, "LSP_in");
-		MATLAB_PUT(P, "LSP_P");
-		MATLAB_PUT(Q, "LSP_Q");
-		MATLAB_PUT(Proots, "LSP_Proots");
-		MATLAB_PUT(Qroots, "LSP_Qroots");
-		MATLAB_PUT(out_vec, "LSP_out1");
-		MATLAB_PUT(out, "LSP_out2");
-		MATLAB_EVAL("LSP_test(LSP_order, LSP_in, LSP_P, LSP_Q, LSP_Proots, LSP_Qroots, LSP_out1, LSP_out2);");
+	MATLAB_PUT(order_, "LSP_order");
+	MATLAB_PUT(in, "LSP_in");
+	MATLAB_PUT(P, "LSP_P");
+	MATLAB_PUT(Q, "LSP_Q");
+	MATLAB_PUT(Proots, "LSP_Proots");
+	MATLAB_PUT(Qroots, "LSP_Qroots");
+	MATLAB_PUT(out_vec, "LSP_out1");
+	MATLAB_PUT(out, "LSP_out2");
+	MATLAB_EVAL("LSP_test(LSP_order, LSP_in, LSP_P, LSP_Q, LSP_Proots, LSP_Qroots, LSP_out1, LSP_out2);");
 #endif
 }
 

@@ -19,7 +19,10 @@
 #include "BeatAgent.h"
 #include <string.h>
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+
 using namespace Marsyas;
 
 #define NONE 0.0

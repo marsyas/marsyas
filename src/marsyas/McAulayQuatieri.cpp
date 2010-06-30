@@ -20,7 +20,7 @@
 #include "peakView.h"
 #include "NumericLib.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 McAulayQuatieri::McAulayQuatieri(string name):MarSystem("McAulayQuatieri", name)

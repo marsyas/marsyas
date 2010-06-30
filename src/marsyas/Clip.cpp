@@ -18,7 +18,7 @@
 
 #include "Clip.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Clip::Clip(string name):MarSystem("Clip",name)

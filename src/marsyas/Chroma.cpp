@@ -9,7 +9,7 @@
 
 #include "Chroma.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Chroma::Chroma(string name): MarSystem("Chroma", name)

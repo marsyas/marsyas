@@ -9,7 +9,7 @@
 
 #include "ChromaScale.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 ChromaScale::ChromaScale(string name): MarSystem("ChromaScale", name)

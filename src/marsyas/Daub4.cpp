@@ -18,7 +18,7 @@
 
 #include "Daub4.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Daub4::Daub4(string name):MarSystem("Daub4",name)

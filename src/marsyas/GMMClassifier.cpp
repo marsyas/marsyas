@@ -1,25 +1,28 @@
 /*
- ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
- **  
- ** This program is free software; you can redistribute it and/or modify
- ** it under the terms of the GNU General Public License as published by
- ** the Free Software Foundation; either version 2 of the License, or
- ** (at your option) any later version.
- ** 
- ** This program is distributed in the hope that it will be useful,
- ** but WITHOUT ANY WARRANTY; without even the implied warranty of
- ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- ** GNU General Public License for more details.
- ** 
- ** You should have received a copy of the GNU General Public License
- ** along with this program; if not, write to the Free Software 
- ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- */
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**  
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+** 
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+** 
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software 
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
 
 #include "GMMClassifier.h"
 #include "NumericLib.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+
 using namespace Marsyas;
 
 GMMClassifier::GMMClassifier(string name):MarSystem("GMMClassifier",name)
@@ -79,20 +82,20 @@ GMMClassifier::addControls()
 void
 GMMClassifier::initialize()
 {
-  mrs_natural trainSize = trainMatrix_.getCols();
+	mrs_natural trainSize = trainMatrix_.getCols();
   
-  realvec temp(featSize_);
+	realvec temp(featSize_);
 	realvec randstep(featSize_);
 	
 	mrs_natural count;
 	mrs_natural seedSize = 5; //FIXME: hardcoded; change to a control?
-  mrs_real rind;
+	mrs_real rind;
 	rind = ((mrs_real)rand() / (mrs_real)(RAND_MAX))*trainSize;
 	
-  for (mrs_natural cl=0; cl < classSize_; cl++)
-  {
-    for (mrs_natural k=0; k < nMixtures_; k++)
-	  {
+	for (mrs_natural cl=0; cl < classSize_; cl++)
+	{
+		for (mrs_natural k=0; k < nMixtures_; k++)
+		{
 			////////////////////////////////////////////////////////
 			// Compute feature Means for current class and mixture
 			////////////////////////////////////////////////////////
@@ -142,7 +145,7 @@ GMMClassifier::initialize()
 			//store result for current class and mixture
 			for(mrs_natural f=0; f < featSize_; ++f)
 				vars_[cl](f, k) = temp(f);
-	  }
+		}
 		
 		//////////////////////////////////////////////////////////////
 		// Compute feature Covariances for current class and mixture
@@ -156,26 +159,26 @@ GMMClassifier::initialize()
 					covars_[cl](f,k) = 0.0;
 			}
 		
-	  //////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////
 		// Set initial weights for current class and mixture
 		//////////////////////////////////////////////////////////////
 		weights_[cl].setval(1.0 / nMixtures_);
-  }
+	}
   
 	///////////////////////////////////////////
 	// Perform K-Means
 	///////////////////////////////////////////
-  mrs_real dist = 0.0;
-  mrs_natural min_k = 0;
+	mrs_real dist = 0.0;
+	mrs_natural min_k = 0;
 	  
-  likelihoods_.create(classSize_, nMixtures_);
+	likelihoods_.create(classSize_, nMixtures_);
   
-  for (mrs_natural i=0; i < kiterations_; ++i) 
-  {
-    likelihoods_.setval(0.0);
+	for (mrs_natural i=0; i < kiterations_; ++i) 
+	{
+		likelihoods_.setval(0.0);
 		
 		//init omeans_ with the values of means_
-    for (mrs_natural cl = 0; cl < classSize_; cl++)
+		for (mrs_natural cl = 0; cl < classSize_; cl++)
 			for (mrs_natural k=0; k < nMixtures_; k++)
 				for (mrs_natural f=0; f < featSize_; f++)
 				{
@@ -227,8 +230,8 @@ GMMClassifier::initialize()
 			likelihoods_(cl,min_k)++;
 		}
     
-    //compute means for all classes
-    for (mrs_natural cl=0; cl < classSize_; cl++)
+		//compute means for all classes
+		for (mrs_natural cl=0; cl < classSize_; cl++)
 		{  
 			for (mrs_natural k=0; k < nMixtures_; k++)
 				for (mrs_natural f=0; f < featSize_; f++)
@@ -239,18 +242,18 @@ GMMClassifier::initialize()
 			// cout << "KMEANS CLASS = " << cl << endl;
 			// cout << "Means = " << means_[cl] << endl;
 		}	
-  }//end of k-means iterations
+	}//end of k-means iterations
 	
-  classSizes_.create(classSize_);
-  sum_.create(classSize_);
-  likelihoods_.create(classSize_, nMixtures_);
+	classSizes_.create(classSize_);
+	sum_.create(classSize_);
+	likelihoods_.create(classSize_, nMixtures_);
 	accumVec_.create(featSize_); //FIXME: row?
-  temp_.create(featSize_); //FIXME: ?
+	temp_.create(featSize_); //FIXME: ?
 	sprobs_.create(classSize_,nMixtures_);
   
 	probs_.reserve(classSize_);
-  ssprobs_.reserve(classSize_);
-  for (mrs_natural cl=0; cl < classSize_; ++cl)
+	ssprobs_.reserve(classSize_);
+	for (mrs_natural cl=0; cl < classSize_; ++cl)
 	{
 		probs_.push_back(realvec(trainSize, nMixtures_));
 		ssprobs_.push_back(realvec(featSize_, nMixtures_));
@@ -260,16 +263,16 @@ GMMClassifier::initialize()
 mrs_real
 GMMClassifier::gaussian(mrs_natural cl, mrs_natural k, realvec& vec)
 {
-  mrs_real res;
-  mrs_real oldres;
-  mrs_real temp;
-  mrs_real det = 1.0;
+	mrs_real res;
+	mrs_real oldres;
+	mrs_real temp;
+	mrs_real det = 1.0;
   
 	for (mrs_natural f=0; f < featSize_; f++)
-    det *=  (vars_[cl])(f,k);
+		det *=  (vars_[cl])(f,k);
 	
-  res = 1 / (factor_ * det);
-  oldres = res;
+	res = 1 / (factor_ * det);
+	oldres = res;
 	
 	realvec mean;
 	means_[cl].getCol(k, mean);
@@ -279,7 +282,7 @@ GMMClassifier::gaussian(mrs_natural cl, mrs_natural k, realvec& vec)
   
 	res *= exp(-temp*0.5);
 	
-  return res;
+	return res;
 }
 
 void
@@ -289,20 +292,20 @@ GMMClassifier::doEM()
 	mrs_natural cl;
 	
 	//init to zero
-  classSizes_.setval(0.0);
-  sum_.setval(0.0);
+	classSizes_.setval(0.0);
+	sum_.setval(0.0);
 	sprobs_.setval(0.0);
-  accumVec_.setval(0.0);
+	accumVec_.setval(0.0);
 	for (cl=0; cl < classSize_; cl++)
-    ssprobs_[cl].setval(0.0);
+		ssprobs_[cl].setval(0.0);
 	
 	mrs_natural trainSize = trainMatrix_.getCols();
 	mrs_real prob;
-  mrs_real sum;
+	mrs_real sum;
   
 	//for all feat.vecs in trainMatrix...
-  for (mrs_natural c=0; c < trainSize; ++c)
-  {
+	for (mrs_natural c=0; c < trainSize; ++c)
+	{
 		//get class label of current feature vector
 		cl = (mrs_natural)trainMatrix_(labelRow_, c);
 		classSizes_(cl)++;
@@ -314,16 +317,16 @@ GMMClassifier::doEM()
 		//calculate the probability of the feat.Vector
 		//belonging to each one of the mixtures
 		for (mrs_natural k=0; k < nMixtures_; k++)
-	  {
+		{
 			//compute the probablity p(x|k)
 			likelihoods_(cl,k) = gaussian(cl,k, featVec);
 			//accumulated probability (Sum_k[p(x|k)])
 			sum += likelihoods_(cl,k);
-	  }
+		}
 		
 		//for each mixture...
 		for (mrs_natural k=0; k < nMixtures_; k++)
-	  {
+		{
 			// compute posteriori probablility:
 			// p(k|x) = p(x|k)/sum[p(x|k)] = p(x|k)/p(x)
 			if (sum != 0.0) 
@@ -349,12 +352,12 @@ GMMClassifier::doEM()
 			//store it
 			for(mrs_natural f=0; f < featSize_; ++f)
 				ssprobs_[cl](f, k) = accumVec_(f);
-	  }
-  }
+		}
+	}
 	
 	for (cl = 0; cl < classSize_; cl++)
-    for (mrs_natural k=0; k < nMixtures_; k++)
-    {
+		for (mrs_natural k=0; k < nMixtures_; k++)
+		{
 			weights_[cl](k) = sprobs_(cl,k) / classSizes_(cl);
 			ssprobs_[cl].getCol(k, temp_);
 			if (sprobs_(cl,k) != 0.0)
@@ -368,7 +371,7 @@ GMMClassifier::doEM()
 		}
 	
 	for (cl=0; cl < classSize_; cl++)
-    ssprobs_[cl].setval(0.0);
+		ssprobs_[cl].setval(0.0);
 		
 	
 	//for each feat.Vec in the trainMatrix...
@@ -383,7 +386,7 @@ GMMClassifier::doEM()
 		//for each mixture, compute:
 		// p(x|k)(x-uk)(x-uk)T
 		for (mrs_natural k=0; k < nMixtures_; k++)
-	  {
+		{
 			prob = (probs_[cl])(t,k);
 			temp_ = featVec;
 			realvec means;
@@ -398,20 +401,20 @@ GMMClassifier::doEM()
 			//store it
 			for(mrs_natural f=0; f < featSize_; ++f)
 				ssprobs_[cl](f, k) = accumVec_(f);
-	  }
+		}
 	}
 		
 	for (cl = 0; cl < classSize_; cl++)
 	{
 		for (mrs_natural k=0; k < nMixtures_; k++)
-	  {
+		{
 			ssprobs_[cl].getCol(k, temp_);
 			temp_ *= (1.0 / (sprobs_(cl,k)));// -1.0)); //FIXME: confirm this?
 			
 			//store it
 			for(mrs_natural f=0; f < featSize_; ++f)
 				vars_[cl](f, k) = temp_(f);
-	  }
+		}
 	  
 		for (mrs_natural k=0; k < nMixtures_; k++)
 			for (mrs_natural f=0; f < featSize_; f++)
@@ -448,7 +451,7 @@ GMMClassifier::myUpdate(MarControlPtr sender)
 	// (check for changes in nr of classes, nr of features or 
 	// nr of gaussian mixtures)
 	if((classSize != classSize_) || (nMixtures != nMixtures_) ||
-		 (featSize != featSize_))
+	   (featSize != featSize_))
 	{
 		classSize_ = classSize;
 		nMixtures_ = nMixtures;
@@ -471,20 +474,20 @@ GMMClassifier::myUpdate(MarControlPtr sender)
 		
 		// populate above vectors with realvecs for each class
 		for (mrs_natural cl=0; cl < classSize_; cl++)
-    {
-      realvec cmeans(featSize_, nMixtures_);
-      realvec ocmeans(featSize_, nMixtures_);
-      realvec cvars(featSize_, nMixtures_);
-      realvec ccovars(featSize_, nMixtures_);
-      realvec cweights(nMixtures_);
+		{
+			realvec cmeans(featSize_, nMixtures_);
+			realvec ocmeans(featSize_, nMixtures_);
+			realvec cvars(featSize_, nMixtures_);
+			realvec ccovars(featSize_, nMixtures_);
+			realvec cweights(nMixtures_);
       
-      // Vectors of realvec for each class
-      means_.push_back(cmeans);
-      omeans_.push_back(ocmeans);
-      vars_.push_back(cvars);
-      covars_.push_back(ccovars);
-      weights_.push_back(cweights);
-    }
+			// Vectors of realvec for each class
+			means_.push_back(cmeans);
+			omeans_.push_back(ocmeans);
+			vars_.push_back(cvars);
+			covars_.push_back(ccovars);
+			weights_.push_back(cweights);
+		}
 	}
 	
 	//change from TRAIN to PREDICT mode
@@ -493,9 +496,9 @@ GMMClassifier::myUpdate(MarControlPtr sender)
 		initialize();
 		
 		for (mrs_natural i=0; i < iterations_ ; ++i)
-    {
-      doEM();
-    }
+		{
+			doEM();
+		}
 
 		prev_mode_ = mode;
 	}	

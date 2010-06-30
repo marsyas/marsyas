@@ -18,7 +18,7 @@
 
 #include "Limiter.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Limiter::Limiter(string name):MarSystem("Limiter",name)

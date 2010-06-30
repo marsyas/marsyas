@@ -18,10 +18,9 @@
 
 #include "Median.h"
 
-// using namespace std;
-using namespace Marsyas;
 using std::string;
 using std::ostringstream;
+using namespace Marsyas;
 
 Median::Median(mrs_string name):MarSystem("Median", name)
 {

@@ -1,7 +1,15 @@
 #include <map>
 #include "MedianFilter.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::map;
+using std::multimap;
+using std::less;
+using std::pair;
+using std::min;
+using std::max;
+
 using namespace Marsyas;
 
 MedianFilter::MedianFilter(mrs_string inName)

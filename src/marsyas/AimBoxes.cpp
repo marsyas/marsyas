@@ -18,7 +18,10 @@
 
 #include "AimBoxes.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+
 using namespace Marsyas;
 
 AimBoxes::AimBoxes(string name):MarSystem("AimBoxes",name)

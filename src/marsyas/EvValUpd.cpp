@@ -19,7 +19,7 @@
 #include "EvValUpd.h"
 #include "MarSystem.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 EvValUpd::EvValUpd(string cname, MarControlPtr val) : EvEvent("EvValUpd","vu")

@@ -19,7 +19,7 @@
 #include "common.h" 
 #include "AbsSoundFileSink.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AbsSoundFileSink::AbsSoundFileSink(string type,string name):MarSystem(type,name)

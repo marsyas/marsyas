@@ -18,7 +18,7 @@
 
 #include "LPCC.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 LPCC::LPCC(string name):MarSystem("LPCC",name)

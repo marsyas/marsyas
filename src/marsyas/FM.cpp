@@ -18,7 +18,7 @@
 
 #include "FM.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 #define WAVETABLE_SIZE 8192

@@ -21,7 +21,16 @@
 #include <fstream>
 #include <iomanip>
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::ofstream;
+using std::ios_base;
+using std::endl;
+using std::vector;
+using std::fixed;
+using std::setprecision;
+
+
 using namespace Marsyas;
 
 ArffFileSink::ArffFileSink(string name) : MarSystem("ArffFileSink", name)

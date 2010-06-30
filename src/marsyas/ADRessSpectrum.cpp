@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,7 +18,9 @@
 
 #include "ADRessSpectrum.h"
 
-using namespace std;
+using std::string;
+using std::ostringstream;
+
 using namespace Marsyas;
 
 ADRessSpectrum::ADRessSpectrum(string name):MarSystem("ADRessSpectrum", name)

@@ -18,7 +18,7 @@
 
 #include "Inject.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Inject::Inject(string name) : MarSystem("Inject", name)

@@ -28,7 +28,7 @@
 #include "gst-decode.h"
 #endif //MARSYAS_GSTREAMER
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 GStreamerSource::GStreamerSource(string name):AbsSoundFileSource("GStreamerSource", name)

@@ -18,7 +18,7 @@
 
 #include "InvSpectrum.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 InvSpectrum::InvSpectrum(string name):MarSystem("InvSpectrum",name)

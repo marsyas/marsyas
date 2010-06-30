@@ -20,7 +20,7 @@
 #include "MarSystem.h"
 #include "Scheduler.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 EvExpr::EvExpr(MarSystem* target, std::string e, std::string nm) : EvEvent("EvExpr",nm)

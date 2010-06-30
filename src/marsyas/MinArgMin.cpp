@@ -18,7 +18,7 @@
 
 #include "MinArgMin.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 MinArgMin::MinArgMin(string name):MarSystem("MinArgMin",name)

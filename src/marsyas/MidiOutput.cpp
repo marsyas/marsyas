@@ -23,7 +23,7 @@
 #endif 
 
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 MidiOutput::MidiOutput(string name):MarSystem("MidiOutput",name)

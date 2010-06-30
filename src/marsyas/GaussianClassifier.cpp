@@ -18,7 +18,7 @@
 
 #include "GaussianClassifier.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 GaussianClassifier::GaussianClassifier(string name):MarSystem("GaussianClassifier",name)

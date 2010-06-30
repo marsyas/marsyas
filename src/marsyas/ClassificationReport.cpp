@@ -35,7 +35,13 @@
 
 #include "ClassificationReport.h"
 
-using namespace std;
+using std::string; 
+using std::ostringstream;
+using std::vector;
+using std::cout;
+using std::endl;
+
+
 using namespace Marsyas;
 
 ClassificationReport::ClassificationReport(string name) : MarSystem("ClassificationReport", name)

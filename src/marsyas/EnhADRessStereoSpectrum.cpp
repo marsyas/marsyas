@@ -18,7 +18,7 @@
 
 #include "EnhADRessStereoSpectrum.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 EnhADRessStereoSpectrum::EnhADRessStereoSpectrum(string name):MarSystem("EnhADRessStereoSpectrum", name)

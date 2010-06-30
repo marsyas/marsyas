@@ -21,7 +21,7 @@
 
 
 using namespace Marsyas;
-using namespace std;
+using std::string; using std::ostringstream;
 
 
 Envelope::Envelope(string name):MarSystem("Envelope", name)

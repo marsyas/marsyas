@@ -19,7 +19,7 @@
 #include "common.h"
 #include "MidiFileSynthSource.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 MidiFileSynthSource::MidiFileSynthSource(string name):MarSystem("MidiFileSynthSource",name)

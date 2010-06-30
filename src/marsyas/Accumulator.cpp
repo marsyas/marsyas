@@ -18,7 +18,7 @@
 
 #include "Accumulator.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Accumulator::Accumulator(string name): MarSystem("Accumulator", name)

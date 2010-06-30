@@ -18,7 +18,7 @@
 
 #include "AimHCL.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AimHCL::AimHCL(string name):MarSystem("AimHCL",name)

@@ -18,7 +18,7 @@
 
 #include "CompExp.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 CompExp::CompExp(string name):MarSystem("CompExp",name)

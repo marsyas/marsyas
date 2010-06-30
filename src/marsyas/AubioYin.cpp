@@ -18,7 +18,7 @@
 
 #include "AubioYin.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AubioYin::AubioYin(string name):MarSystem("AubioYin", name)

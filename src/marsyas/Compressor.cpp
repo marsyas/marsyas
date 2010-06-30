@@ -21,7 +21,7 @@
 #include "Compressor.h"
 
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Compressor::Compressor(string name):MarSystem("Compressor", name)

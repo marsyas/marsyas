@@ -1,6 +1,6 @@
 #include "DTWWD.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 DTWWD::DTWWD(string name):MarSystem("DTWWD", name)

@@ -19,7 +19,7 @@
 
 #include "FlowCutSource.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 FlowCutSource::FlowCutSource(string name):MarSystem("FlowCutSource", name)

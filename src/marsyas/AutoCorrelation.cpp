@@ -19,7 +19,7 @@
 #include "AutoCorrelation.h"
 #include "Windowing.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AutoCorrelation::AutoCorrelation(string name):MarSystem("AutoCorrelation",name)

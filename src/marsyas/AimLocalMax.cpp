@@ -18,7 +18,7 @@
 
 #include "AimLocalMax.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 AimLocalMax::AimLocalMax(string name):MarSystem("AimLocalMax",name)

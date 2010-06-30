@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,7 +18,8 @@
 
 
 #include "AbsMax.h"
-using namespace std;
+using std::string;
+using std::ostringstream;
 using namespace Marsyas;
 
 AbsMax::AbsMax(string name): MarSystem("AbsMax",name)
@@ -45,8 +46,8 @@ AbsMax::myUpdate(MarControlPtr sender)
 	// ... but change the number and rate of output samples.
 	setControl("mrs_natural/onSamples",  (mrs_natural)1);
 	setControl("mrs_real/osrate",
-		getControl("mrs_real/israte")->to<mrs_real>() / getControl("mrs_natural/inSamples")->to<mrs_natural>()
-	);
+			   getControl("mrs_real/israte")->to<mrs_real>() / getControl("mrs_natural/inSamples")->to<mrs_natural>()
+		);
 }
 
 void

@@ -23,7 +23,7 @@
 #include "Metric2.h"
 #include "NumericLib.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 Metric2::Metric2(string name):MarSystem("Metric2", name)

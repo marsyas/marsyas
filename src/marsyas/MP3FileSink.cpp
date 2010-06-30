@@ -23,7 +23,7 @@
 #include "lame/lame.h"
 #endif
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 MP3FileSink::MP3FileSink(string name):AbsSoundFileSink("MP3FileSink",name)

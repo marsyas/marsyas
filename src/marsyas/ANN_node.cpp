@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.princeton.edu>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.princeton.edu>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,7 +18,9 @@
 
 #include "ANN_node.h"
 
-using namespace std;
+using std::string;
+using std::ostringstream;
+
 using namespace Marsyas;
 
 ANN_node::ANN_node(string name):MarSystem("ANN_node", name)

@@ -18,7 +18,7 @@
 
 #include "CollectionFileSource.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 CollectionFileSource::CollectionFileSource(string name):AbsSoundFileSource("SoundFileSource", name)

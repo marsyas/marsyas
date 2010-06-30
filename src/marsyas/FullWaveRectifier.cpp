@@ -18,7 +18,7 @@
 
 #include "FullWaveRectifier.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 FullWaveRectifier::FullWaveRectifier(string name) : MarSystem("FullWaveRectifier",name)

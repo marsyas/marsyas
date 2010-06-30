@@ -19,7 +19,7 @@
 #include "Metric.h"
 #include "NumericLib.h"
 
-using namespace std;
+using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 static mrs_real
