@@ -18,10 +18,10 @@
 
 #include "DeInterleaveSizecontrol.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-DeInterleaveSizecontrol::DeInterleaveSizecontrol(string name):MarSystem("DeInterleaveSizecontrol", name)
+DeInterleaveSizecontrol::DeInterleaveSizecontrol(mrs_string name):MarSystem("DeInterleaveSizecontrol", name)
 {
   //Add any specific controls needed by DeInterleaveSizecontrol
   //(default controls all MarSystems should have

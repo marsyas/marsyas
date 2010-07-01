@@ -19,11 +19,11 @@
 
 #include "DownSampler.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
-DownSampler::DownSampler(string name):MarSystem("DownSampler",name)
+DownSampler::DownSampler(mrs_string name):MarSystem("DownSampler",name)
 {
 	addControls();
 }

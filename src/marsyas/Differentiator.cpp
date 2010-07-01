@@ -18,10 +18,10 @@
 
 #include "Differentiator.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Differentiator::Differentiator(string name):MarSystem("Differentiator", name)
+Differentiator::Differentiator(mrs_string name):MarSystem("Differentiator", name)
 {
 }
 
@@ -72,5 +72,3 @@ Differentiator::myProcess(realvec& in, realvec& out)
 		buffer_(o) = in(o, inSamples_-1);
 	}
 }
-
-

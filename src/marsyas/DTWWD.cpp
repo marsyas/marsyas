@@ -1,9 +1,9 @@
 #include "DTWWD.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-DTWWD::DTWWD(string name):MarSystem("DTWWD", name)
+DTWWD::DTWWD(mrs_string name):MarSystem("DTWWD", name)
 {
   isComposite_ = true;
   addControls();

@@ -18,10 +18,10 @@
 
 #include "Daub4.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Daub4::Daub4(string name):MarSystem("Daub4",name)
+Daub4::Daub4(mrs_string name):MarSystem("Daub4",name)
 {
   addControls();
 }

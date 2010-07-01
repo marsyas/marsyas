@@ -9,10 +9,10 @@
 
 #include "Delta.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Delta::Delta(string name): MarSystem("Delta", name)
+Delta::Delta(mrs_string name): MarSystem("Delta", name)
 {
 	// isComposite_ = true;
   addControls();

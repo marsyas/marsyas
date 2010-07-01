@@ -18,14 +18,14 @@
 
 #include "Delay.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 
 using namespace Marsyas;
 
 
-Delay::Delay(string name):MarSystem("Delay",name)
+Delay::Delay(mrs_string name):MarSystem("Delay",name)
 {
  
 	delayInSamples_.create(0);
@@ -259,4 +259,3 @@ mrs_realvec Delay::seconds2Samples (mrs_realvec seconds)
 
 	return seconds;
 }
-

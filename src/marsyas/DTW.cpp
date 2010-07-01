@@ -1,9 +1,9 @@
 #include "DTW.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-DTW::DTW(string name):MarSystem("DTW", name)
+DTW::DTW(mrs_string name):MarSystem("DTW", name)
 {
   isComposite_ = true;
   addControls();

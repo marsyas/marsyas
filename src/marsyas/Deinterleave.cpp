@@ -18,10 +18,10 @@
 
 #include "Deinterleave.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Deinterleave::Deinterleave(string name):MarSystem("Deinterleave", name)
+Deinterleave::Deinterleave(mrs_string name):MarSystem("Deinterleave", name)
 {
 	
 	pat_ = new PatchMatrix("pat");
