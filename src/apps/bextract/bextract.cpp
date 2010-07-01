@@ -30,7 +30,7 @@
 #include "CommandLineOptions.h"
 #include "TimeLine.h"
 #include "FileName.h"
-
+#include "common.h" 
 #include <string>
 using namespace std;
 using namespace Marsyas;
@@ -470,7 +470,7 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
 
 	vector<mrs_real> bpms;
 	vector<mrs_real> secondary_bpms;
-	mrs_real bin;
+	// mrs_real bin;
 
 	int extra_ticks = bwinSize/bhopSize;
 	mrs_realvec tempos(2);
@@ -3251,6 +3251,13 @@ saivq_train_refactored(string pluginName,  string wekafname,
 {
 	MRSDIAG("bextract.cpp - aim_train_refactored");
 	cout << "BEXTRACT SAI/VQ REFACTORED" << endl;
+
+#ifndef MARSYAS_ANN
+	cout << "You need to enable the WITH_ANN option using cmake when compiling Marsyas in order to run this function" << endl;
+	exit(0);
+	
+#endif 
+
 	MarSystemManager mng; 
 
 
