@@ -20,14 +20,14 @@
 #include "Memory.h"
 #include "NumericLib.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
 
 using namespace Marsyas;
 
-BICchangeDetector::BICchangeDetector(string name):MarSystem("BICchangeDetector", name)
+BICchangeDetector::BICchangeDetector(mrs_string name):MarSystem("BICchangeDetector", name)
 {
 	prevDists_ = new Memory("cirMem");
 	nfeats_ = 0;
@@ -224,11 +224,3 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-
-
-
-
-
-
-

@@ -18,10 +18,10 @@
 
 #include "BaseAudioSink.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 	
-BaseAudioSink::BaseAudioSink(string name):MarSystem("AutoCorrelation", name)
+BaseAudioSink::BaseAudioSink(mrs_string name):MarSystem("AutoCorrelation", name)
 {
 }
 

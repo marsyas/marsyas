@@ -19,10 +19,10 @@
 #include "common.h" 
 #include "Biquad.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Biquad::Biquad(string name):MarSystem("Biquad",name)
+Biquad::Biquad(mrs_string name):MarSystem("Biquad",name)
 {
 
     filter = new Filter("filter");

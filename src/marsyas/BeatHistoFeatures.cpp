@@ -23,7 +23,7 @@
 #include <iterator>
 #include <cfloat> 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using std::vector;
 using namespace Marsyas;
 
@@ -175,7 +175,7 @@ static void MaxAcf (mrs_real& max, mrs_real& mean, const realvec& beatHistogram,
 
 
 
-BeatHistoFeatures::BeatHistoFeatures(string name):MarSystem("BeatHistoFeatures", name)
+BeatHistoFeatures::BeatHistoFeatures(mrs_string name):MarSystem("BeatHistoFeatures", name)
 {
 	mxr_ = NULL;
 	pkr_ = NULL;

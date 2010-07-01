@@ -20,18 +20,18 @@
 #include <fstream>
 #include <string.h>
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::fstream;
 using std::cout;
 using std::ios;
 using std::endl;
 
-using std::string; 
+ 
 using std::ostringstream;
 using namespace Marsyas;
 
-BeatTimesSink::BeatTimesSink(string name):MarSystem("BeatTimesSink", name)
+BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 {
 	addControls();
 	ibiBPM_ = 0.0;

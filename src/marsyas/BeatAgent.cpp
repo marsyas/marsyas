@@ -19,7 +19,7 @@
 #include "BeatAgent.h"
 #include <string.h>
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 
@@ -32,7 +32,7 @@ using namespace Marsyas;
 #define INNER 3.0
 #define OUTTER 4.0
 
-BeatAgent::BeatAgent(string name):MarSystem("BeatAgent", name)
+BeatAgent::BeatAgent(mrs_string name):MarSystem("BeatAgent", name)
 {
 	addControls();
 	beatCount_ = 0;

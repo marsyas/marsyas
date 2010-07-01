@@ -18,7 +18,7 @@
 
 #include "BeatReferee.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::fstream;
 using std::cout;
@@ -37,7 +37,7 @@ using namespace Marsyas;
 
 #define MINIMUMREAL 0.000001 //(0.000001 minimum float recognized)
 
-BeatReferee::BeatReferee(string name):MarSystem("BeatReferee", name)
+BeatReferee::BeatReferee(mrs_string name):MarSystem("BeatReferee", name)
 {
 	addControls();
 

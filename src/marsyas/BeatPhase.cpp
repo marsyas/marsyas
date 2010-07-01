@@ -18,10 +18,10 @@
 
 #include "BeatPhase.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-BeatPhase::BeatPhase(string name):MarSystem("BeatPhase", name)
+BeatPhase::BeatPhase(mrs_string name):MarSystem("BeatPhase", name)
 {
 	addControls();
 	sampleCount_ = 0;

@@ -18,11 +18,11 @@
 
 #include "BeatHistogramFromPeaks.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
-BeatHistogramFromPeaks::BeatHistogramFromPeaks(string name):MarSystem("BeatHistogramFromPeaks",name)
+BeatHistogramFromPeaks::BeatHistogramFromPeaks(mrs_string name):MarSystem("BeatHistogramFromPeaks",name)
 {
 	addControls();
 }

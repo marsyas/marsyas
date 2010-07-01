@@ -19,12 +19,12 @@
 #include "common.h"
 #include "BeatHistogram.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 //#define MTLB_DBG_LOG
 
-BeatHistogram::BeatHistogram(string name):MarSystem("BeatHistogram",name)
+BeatHistogram::BeatHistogram(mrs_string name):MarSystem("BeatHistogram",name)
 {
 	addControls();
 }
