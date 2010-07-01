@@ -18,10 +18,10 @@
 
 #include "CollectionFileSource.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-CollectionFileSource::CollectionFileSource(string name):AbsSoundFileSource("SoundFileSource", name)
+CollectionFileSource::CollectionFileSource(mrs_string name):AbsSoundFileSource("SoundFileSource", name)
 {
 	addControls();
 }
@@ -90,7 +90,7 @@ CollectionFileSource::addControls()
 }
 
 void 
-CollectionFileSource::getHeader(string filename)
+CollectionFileSource::getHeader(mrs_string filename)
 {
 	col_.clear();
 	col_.read(filename);
@@ -310,11 +310,3 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 
 	
 }  
-
-
-
-
-
-
-
-

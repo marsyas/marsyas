@@ -35,7 +35,7 @@
 
 #include "ClassificationReport.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 using std::cout;
@@ -44,7 +44,7 @@ using std::endl;
 
 using namespace Marsyas;
 
-ClassificationReport::ClassificationReport(string name) : MarSystem("ClassificationReport", name)
+ClassificationReport::ClassificationReport(mrs_string name) : MarSystem("ClassificationReport", name)
 {
 	addControls();
 }
@@ -95,7 +95,7 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 	
 
 	mrs_natural t;
-	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+	mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   
 	//modified this code to check the done flag-dale
 	bool done = getctrl("mrs_bool/done")->to<mrs_bool>();
@@ -160,8 +160,8 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 		if(!classNames.size())
 			classNames = ",";
       
-		string::size_type from = 0;
-		string::size_type to = classNames.find(",");
+		mrs_string::size_type from = 0;
+		mrs_string::size_type to = classNames.find(",");
       
 		mrs_natural correct = 0;
 		mrs_natural total = 0;
@@ -187,7 +187,7 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 				cout << (char)(y+'a') << " = " << classNames.substr(from, to - from);
 				from = to + 1;
 				to = classNames.find(",", from);
-				if(to == string::npos)
+				if(to == mrs_string::npos)
 					to = classNames.size();
 			}//if
 			cout << endl;

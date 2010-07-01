@@ -18,14 +18,14 @@
 
 #include "CrossCorrelation.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
 
 using namespace Marsyas;
 
-CrossCorrelation::CrossCorrelation(string name):MarSystem("CrossCorrelation",name)
+CrossCorrelation::CrossCorrelation(mrs_string name):MarSystem("CrossCorrelation",name)
 {
 	myfft_ = NULL;
 	addControls();
@@ -327,4 +327,3 @@ CrossCorrelation::myProcess(realvec& in, realvec& out)
 
 	}
 }
-

@@ -19,10 +19,10 @@
 
 #include "Centroid.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Centroid::Centroid(string name):MarSystem("Centroid", name)
+Centroid::Centroid(mrs_string name):MarSystem("Centroid", name)
 {
     m0_ = 0.0;
     m1_ = 0.0;
@@ -71,4 +71,3 @@ Centroid::myProcess(realvec& in, realvec& out)
 					out(0,t) = 0.5;
 	}
 }
-

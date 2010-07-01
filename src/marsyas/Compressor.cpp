@@ -21,10 +21,10 @@
 #include "Compressor.h"
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Compressor::Compressor(string name):MarSystem("Compressor", name)
+Compressor::Compressor(mrs_string name):MarSystem("Compressor", name)
 {
 	addControls();
 }
@@ -72,5 +72,3 @@ Compressor::myProcess(realvec& in, realvec& out)
 			//cout << "Compressor:" << in(o,t) << "\t-->\t" << out(o,t) << endl;
 		}
 }
-
-

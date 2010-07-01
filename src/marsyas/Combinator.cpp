@@ -18,7 +18,7 @@
 
 #include "Combinator.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::min;
 using std::max;
@@ -46,7 +46,7 @@ Combinator::Combinators_t Combinator::GetCombinatorIdx (const mrs_string ctrlStr
 	return ret;
 }
 
-Combinator::Combinator(string name) : MarSystem("Combinator", name)
+Combinator::Combinator(mrs_string name) : MarSystem("Combinator", name)
 {
 	/// Add any specific controls needed by this MarSystem.
 	// Default controls that all MarSystems should have (like "inSamples"
@@ -190,5 +190,3 @@ Combinator::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-

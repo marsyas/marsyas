@@ -19,7 +19,7 @@
 #include "Conversions.h"
 #include "realvec.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 mrs_real
@@ -56,7 +56,7 @@ Errors: -1 is returned. ie more than 1 decimal point, invalid time
 division.
 */
 mrs_natural
-Marsyas::time2samples(string time, mrs_real srate) {
+Marsyas::time2samples(mrs_string time, mrs_real srate) {
 	//example times: { "10us", "10ms", "10s", "10m", "10h" }
 	if (time=="") { return 0; }
 	// calculate time value
@@ -105,7 +105,7 @@ Marsyas::time2samples(string time, mrs_real srate) {
 	return (mrs_natural)samples;
 }
 mrs_natural
-Marsyas::time2usecs(string time) {
+Marsyas::time2usecs(mrs_string time) {
 	//example times: { "10us", "10ms", "10s", "10m", "10h" }
 	if (time=="") { return 0; }
 	// calculate time value
@@ -311,10 +311,10 @@ mrs_natural Marsyas::powerOfTwo(mrs_real v)
 }
 
 void
-Marsyas::string2parameters(string s, realvec &v, char d)
+Marsyas::string2parameters(mrs_string s, realvec &v, char d)
 {
 	mrs_natural i =0, pos=0, newPos=0;
-	string tmp;
+	mrs_string tmp;
 	while(newPos != -1 )
 	{
 		newPos = (mrs_natural) s.find_first_of(&d, pos, 1);

@@ -18,10 +18,10 @@
 
 #include "Clip.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Clip::Clip(string name):MarSystem("Clip",name)
+Clip::Clip(mrs_string name):MarSystem("Clip",name)
 {
 	addControls();
 }

@@ -18,10 +18,10 @@
 
 #include "CompExp.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-CompExp::CompExp(string name):MarSystem("CompExp",name)
+CompExp::CompExp(mrs_string name):MarSystem("CompExp",name)
 {
   //type_ = "CompExp";
   //name_ = name;

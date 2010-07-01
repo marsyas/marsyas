@@ -1,9 +1,9 @@
 #include "ConstQFiltering.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-ConstQFiltering::ConstQFiltering(string name):MarSystem("ConstQFiltering", name)
+ConstQFiltering::ConstQFiltering(mrs_string name):MarSystem("ConstQFiltering", name)
 {
   isComposite_ = true;
   addControls();
@@ -134,4 +134,3 @@ ConstQFiltering::myProcess(realvec& in, realvec& out)
     }
   }
 }
-

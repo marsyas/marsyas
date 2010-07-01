@@ -19,7 +19,7 @@
 #include "Confidence.h"
 #include "FileName.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
@@ -31,7 +31,7 @@ using std::ios;
 
 using namespace Marsyas;
 
-Confidence::Confidence(string name):MarSystem("Confidence",name)
+Confidence::Confidence(mrs_string name):MarSystem("Confidence",name)
 {
 	print_ = false;
 	forcePrint_ = false;
@@ -97,7 +97,7 @@ Confidence::myUpdate(MarControlPtr sender)
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 	confidences_.stretch(getctrl("mrs_natural/nLabels")->to<mrs_natural>());
-	string labelNames = getctrl("mrs_string/labelNames")->to<mrs_string>();
+	mrs_string labelNames = getctrl("mrs_string/labelNames")->to<mrs_string>();
 
 	labelNames_.clear();
 
@@ -106,8 +106,8 @@ Confidence::myUpdate(MarControlPtr sender)
 
 	for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); ++i)
 	{
-		string labelName;
-		string temp;
+		mrs_string labelName;
+		mrs_string temp;
 
 		labelName = labelNames.substr(0, labelNames.find(","));
 		temp = labelNames.substr(labelNames.find(",")+1, labelNames.length());
@@ -127,7 +127,7 @@ Confidence::myUpdate(MarControlPtr sender)
 			}
 			oriName_ = getctrl("mrs_string/fileName")->to<mrs_string>();
 			FileName Sfname(oriName_);
-			string tmp = Sfname.nameNoExt() +"_synSeg.txt";
+			mrs_string tmp = Sfname.nameNoExt() +"_synSeg.txt";
 			//      getchar();
 			outputFileSyn_.open(tmp.c_str(), ios::out);
 			tmp = Sfname.nameNoExt() +"_tranSeg.txt";
@@ -221,13 +221,3 @@ Confidence::myProcess(realvec& in, realvec& out)
 	}
 	nbFrames_++; 
 }
-
-
-
-
-
-
-
-
-
-

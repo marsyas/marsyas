@@ -18,7 +18,7 @@
 
 #include "ClassOutputSink.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::ofstream;
 using std::cout;
@@ -27,7 +27,7 @@ using std::endl;
 using namespace Marsyas;
 
 
-ClassOutputSink::ClassOutputSink(string name):MarSystem("ClassOutputSink", name)
+ClassOutputSink::ClassOutputSink(mrs_string name):MarSystem("ClassOutputSink", name)
 {
   //type_ = "ClassOutputSink";
   //name_ = name;
@@ -96,15 +96,15 @@ ClassOutputSink::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-  string labelNames = getctrl("mrs_string/labelNames")->to<mrs_string>();
+  mrs_string labelNames = getctrl("mrs_string/labelNames")->to<mrs_string>();
   
   labelNames_.clear();
 
-  string temp;  
+  mrs_string temp;  
 
   for (int i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); ++i)
     {
-      string labelName;
+      mrs_string labelName;
 
       
       labelName = labelNames.substr(0, labelNames.find(","));

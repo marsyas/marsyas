@@ -22,7 +22,7 @@
 #include <iterator>
 
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 using std::ifstream;
@@ -39,10 +39,10 @@ namespace Marsyas
 {
 
 // Utility function. Should move this somewhere publicly accessible for code re-use.
-string join(const vector<string>& v, const string delim)
+mrs_string join(const vector<mrs_string>& v, const mrs_string delim)
 {    
     ostringstream os;
-    copy(v.begin(), v.end(), ostream_iterator<string>(os, delim.c_str()));
+    copy(v.begin(), v.end(), ostream_iterator<mrs_string>(os, delim.c_str()));
 	
     return os.str();
 }
@@ -58,13 +58,13 @@ Collection::~Collection()
 }
 
 void 
-Collection::setName(string name) 
+Collection::setName(mrs_string name) 
 {
     name_ = name;
 }
 
 void 
-Collection::read(string filename)
+Collection::read(mrs_string filename)
 {
     ifstream is(filename.c_str());
     name_ = filename.substr(0, filename.rfind(".", filename.length()));
@@ -74,14 +74,14 @@ Collection::read(string filename)
 
 
 void 
-Collection::write(string filename)
+Collection::write(mrs_string filename)
 {
     ofstream os(filename.c_str());
     os << (*this) << endl;
 }
 
 void 
-Collection::labelAll(string label) 
+Collection::labelAll(mrs_string label) 
 {
     if (hasLabels_ == false) 
     {
@@ -128,14 +128,14 @@ Collection::getSize()
 }
 
 
-string
+mrs_string
 Collection::name()
 {
     return name_;
 }
 
 void 
-Collection::add(string entry)
+Collection::add(mrs_string entry)
 {
     collectionList_.push_back(entry);
 	hasLabels_ = false;
@@ -156,7 +156,7 @@ Collection::clear()
 	
 
 void 
-Collection::add(string entry, string label)
+Collection::add(mrs_string entry, mrs_string label)
 {
 
 	
@@ -220,7 +220,7 @@ Collection::shuffle()
     }
 }
 
-string 
+mrs_string 
 Collection::toLongString()
 {
     return join(collectionList_, ",");
@@ -230,7 +230,7 @@ mrs_natural
 Collection::labelNum(mrs_string label) 
 {
 	
-    vector<string>::iterator it = find(labelNames_.begin(), labelNames_.end(), label);
+    vector<mrs_string>::iterator it = find(labelNames_.begin(), labelNames_.end(), label);
     if (it == labelNames_.end())
         return -1; 
 	
@@ -239,7 +239,7 @@ Collection::labelNum(mrs_string label)
 	
 }
 
-string 
+mrs_string 
 Collection::labelEntry(unsigned int i) 
 {
     if (hasLabels_)
@@ -247,7 +247,7 @@ Collection::labelEntry(unsigned int i)
     return "No label"; 
 }
 
-string 
+mrs_string 
 Collection::entry(unsigned int i)
 {
     return collectionList_[i];
@@ -275,7 +275,7 @@ operator>>(istream& i, Collection& l)
 {
     MRSDIAG("Collection.cpp - operator>>");
 
-    string fileEntry;
+    mrs_string fileEntry;
     while (getline(i, fileEntry))
     {
         // Skip blank lines.
@@ -288,11 +288,11 @@ operator>>(istream& i, Collection& l)
 
         // Check to see if there is a label. Could use rfind for efficiency
         // if we were sure there weren't tabs after the label.
-        string::size_type loc = fileEntry.find('\t', 0);
-        if (loc != string::npos) 
+        mrs_string::size_type loc = fileEntry.find('\t', 0);
+        if (loc != mrs_string::npos) 
         {
-            string file = fileEntry.substr(0, loc);
-            string label = fileEntry.substr(loc+1, fileEntry.size());
+            mrs_string file = fileEntry.substr(0, loc);
+            mrs_string label = fileEntry.substr(loc+1, fileEntry.size());
             l.add(file, label);
         } 
         else 

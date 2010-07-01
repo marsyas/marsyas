@@ -9,10 +9,10 @@
 
 #include "ChromaScale.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-ChromaScale::ChromaScale(string name): MarSystem("ChromaScale", name)
+ChromaScale::ChromaScale(mrs_string name): MarSystem("ChromaScale", name)
 {
 	isComposite_ = true;
 	addControls();
@@ -81,4 +81,3 @@ ChromaScale::myProcess(realvec& in, realvec& out)
     }
   }
 }
-

@@ -18,10 +18,10 @@
 
 #include "Cartesian2Polar.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Cartesian2Polar::Cartesian2Polar(string name):MarSystem("Cartesian2Polar", name)
+Cartesian2Polar::Cartesian2Polar(mrs_string name):MarSystem("Cartesian2Polar", name)
 {
 }
 
@@ -66,11 +66,3 @@ Cartesian2Polar::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-
-
-
-
-
-
-

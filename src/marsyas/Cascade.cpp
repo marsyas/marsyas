@@ -18,13 +18,13 @@
 
 #include "Cascade.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 
 using namespace Marsyas;
 
-Cascade::Cascade(string name):MarSystem("Cascade", name)
+Cascade::Cascade(mrs_string name):MarSystem("Cascade", name)
 {
 	isComposite_ = true;
 }
@@ -156,4 +156,3 @@ Cascade::myProcess(realvec& in, realvec& out)
 		out = in;
 	}
 }
-

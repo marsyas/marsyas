@@ -9,10 +9,10 @@
 
 #include "Chroma.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Chroma::Chroma(string name): MarSystem("Chroma", name)
+Chroma::Chroma(mrs_string name): MarSystem("Chroma", name)
 {
   isComposite_ = true;
   addControls();
@@ -143,4 +143,3 @@ Chroma::myProcess(realvec& in, realvec& out)
   }
   
 }
-

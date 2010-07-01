@@ -18,7 +18,7 @@
 
 #include "CommandLineOptions.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
@@ -33,13 +33,13 @@ CommandLineOptions::CommandLineOptions()
 }
 
 void 
-CommandLineOptions::addBoolOption(string lname, string sname, bool value) 
+CommandLineOptions::addBoolOption(mrs_string lname, mrs_string sname, bool value) 
 {
-	string dlname;
+	mrs_string dlname;
 	dlname += "--";
 	dlname += lname;
 
-	string dsname;
+	mrs_string dsname;
 	dsname += "-";
 	dsname += sname;
 
@@ -49,13 +49,13 @@ CommandLineOptions::addBoolOption(string lname, string sname, bool value)
 }
 
 void 
-CommandLineOptions::addNaturalOption(string lname, string sname, mrs_natural value)
+CommandLineOptions::addNaturalOption(mrs_string lname, mrs_string sname, mrs_natural value)
 {
-	string dlname;
+	mrs_string dlname;
 	dlname += "--";
 	dlname += lname;
 
-	string dsname;
+	mrs_string dsname;
 	dsname += "-";
 	dsname += sname;
 
@@ -65,13 +65,13 @@ CommandLineOptions::addNaturalOption(string lname, string sname, mrs_natural val
 }
 
 void 
-CommandLineOptions::addRealOption(string lname,string sname,mrs_real value)
+CommandLineOptions::addRealOption(mrs_string lname,mrs_string sname,mrs_real value)
 {
-	string dlname;
+	mrs_string dlname;
 	dlname += "--";
 	dlname += lname;
 
-	string dsname;
+	mrs_string dsname;
 	dsname += "-";
 	dsname += sname;
 
@@ -81,13 +81,13 @@ CommandLineOptions::addRealOption(string lname,string sname,mrs_real value)
 }
 
 void 
-CommandLineOptions::addStringOption(string lname,string sname,string value)
+CommandLineOptions::addStringOption(mrs_string lname,mrs_string sname,mrs_string value)
 {
-	string dlname;
+	mrs_string dlname;
 	dlname += "--";
 	dlname += lname;
 
-	string dsname;
+	mrs_string dsname;
 	dsname += "-";
 	dsname += sname;
 
@@ -104,8 +104,8 @@ CommandLineOptions::readOptions(int argc, const char **argv)
 		arguments_.push_back(argv[i]);
 	}
 
-	string key;
-	string argument;
+	mrs_string key;
+	mrs_string argument;
 	bool notFound = true;
 
 	for (int i=1; i < argc; ++i)
@@ -165,30 +165,30 @@ CommandLineOptions::readOptions(int argc, const char **argv)
 }
 
 bool 
-CommandLineOptions::getBoolOption(string lname)
+CommandLineOptions::getBoolOption(mrs_string lname)
 {
 	return boolOptions_["--" + lname];
 }
 
 mrs_natural 
-CommandLineOptions::getNaturalOption(string lname)
+CommandLineOptions::getNaturalOption(mrs_string lname)
 {
 	return naturalOptions_["--" + lname];
 }
 
 mrs_real 
-CommandLineOptions::getRealOption(string lname)
+CommandLineOptions::getRealOption(mrs_string lname)
 {
 	return realOptions_["--" + lname];
 }
 
-string 
-CommandLineOptions::getStringOption(string lname)
+mrs_string 
+CommandLineOptions::getStringOption(mrs_string lname)
 {
 	return stringOptions_["--" + lname];
 }
 
-vector<string> 
+vector<mrs_string> 
 CommandLineOptions::getRemaining()
 {
 	return remaining_;
