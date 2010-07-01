@@ -20,7 +20,7 @@
 #include "MarSystem.h"
 #include "Scheduler.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 EvExpr::EvExpr(MarSystem* target, std::string e, std::string nm) : EvEvent("EvExpr",nm)
@@ -90,4 +90,3 @@ EvExpr::updctrl(std::string cname, TmControlValue value)
 	(void) cname; (void) value; // FIXME These values are unused
 	MRSWARN("EvExpr:updControl(string,TmControlValue)  updctrl not supported");
 }
-

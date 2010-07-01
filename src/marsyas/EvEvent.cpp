@@ -20,7 +20,7 @@
 #include "TmTimer.h"
 #include "EvExpr.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 EvEvent::EvEvent() { }

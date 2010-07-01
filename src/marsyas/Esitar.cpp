@@ -24,10 +24,10 @@
 #endif 
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Esitar::Esitar(string name):MarSystem("Esitar",name)
+Esitar::Esitar(mrs_string name):MarSystem("Esitar",name)
 {
   //type_ = "Esitar";
   //name_ = name;

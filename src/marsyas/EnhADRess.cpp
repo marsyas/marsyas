@@ -18,10 +18,10 @@
 
 #include "EnhADRess.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-EnhADRess::EnhADRess(string name):MarSystem("EnhADRess", name)
+EnhADRess::EnhADRess(mrs_string name):MarSystem("EnhADRess", name)
 {
 	addControls();
 }
@@ -218,5 +218,3 @@ EnhADRess::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("figure(1);plot(out);figure(2)");
 	//MATLAB_EVAL("plot(out(length(out)/3*2+1:end))")
 }
-
-

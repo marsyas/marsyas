@@ -17,7 +17,7 @@
 */
 #include "ExNode.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 void
@@ -350,4 +350,3 @@ ExFun::setSignature(const std::string s)
 	signature=s;
 	setParamTypes(s);
 }
-

@@ -26,7 +26,7 @@
 
 #include <fstream>
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 void
@@ -212,5 +212,3 @@ ExFile::store(int pos, std::string data)
 		case 4: rr_=data; break;
 	}
 }
-
-

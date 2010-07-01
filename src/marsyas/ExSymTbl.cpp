@@ -19,7 +19,7 @@
 #include "ExSymTbl.h"
 #include "ExNode.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 ExRecord::ExRecord() : ExRefCount()
@@ -529,4 +529,3 @@ ExSymTbl::setValue(ExVal& v, std::string path)
 {
 	if (curr_) curr_->setValue(v,path);
 }
-

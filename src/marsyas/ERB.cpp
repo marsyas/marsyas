@@ -22,13 +22,13 @@
 #include "Filter.h"
 #include <sstream>
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::stringstream;
 
 using namespace Marsyas;
 
-ERB::ERB(string name):MarSystem("ERB", name),
+ERB::ERB(mrs_string name):MarSystem("ERB", name),
 filterBank (0)
 {
   //type_ = "ERB";
@@ -311,4 +311,3 @@ ERB::myProcess(realvec& in, realvec& out)
   
   filterBank->process(in, out);
 }
-

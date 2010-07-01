@@ -21,10 +21,10 @@
 
 
 using namespace Marsyas;
-using std::string; using std::ostringstream;
+using std::ostringstream;
 
 
-Envelope::Envelope(string name):MarSystem("Envelope", name)
+Envelope::Envelope(mrs_string name):MarSystem("Envelope", name)
 {
   addControls();
 }
@@ -132,4 +132,3 @@ Envelope::myProcess(realvec& in, realvec& out)
 
   
 }
-

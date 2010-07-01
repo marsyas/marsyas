@@ -19,15 +19,15 @@
 #include "EvValUpd.h"
 #include "MarSystem.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-EvValUpd::EvValUpd(string cname, MarControlPtr val) : EvEvent("EvValUpd","vu")
+EvValUpd::EvValUpd(mrs_string cname, MarControlPtr val) : EvEvent("EvValUpd","vu")
 {
 	set(NULL,cname,val);
 }
 
-EvValUpd::EvValUpd(MarSystem* ms, string cname, MarControlPtr val) : EvEvent("EvValUpd","vu")
+EvValUpd::EvValUpd(MarSystem* ms, mrs_string cname, MarControlPtr val) : EvEvent("EvValUpd","vu")
 {
 	set(ms,cname,val);
 }
@@ -40,7 +40,7 @@ EvValUpd::EvValUpd(EvValUpd& e) : EvEvent("EvValUpd","vu")
 EvValUpd::~EvValUpd() { }
 
 void
-EvValUpd::set(MarSystem* ms, string cname, MarControlPtr value)
+EvValUpd::set(MarSystem* ms, mrs_string cname, MarControlPtr value)
 {
 	target_=ms;
 	cname_=cname;
@@ -71,11 +71,11 @@ EvValUpd::updctrl(std::string cname, TmControlValue value)
 }
 
 /* these have been moved to the header file
-string EvValUpd::getCName() const { return cname_; }
+mrs_string EvValUpd::getCName() const { return cname_; }
 MarControlPtr EvValUpd::getValue() const { return value_; }
 MarSystem* EvValUpd::getTarget() const { return target_; }
 
-void EvValUpd::setCName(string cname) { cname_=cname; }
+void EvValUpd::setCName(mrs_string cname) { cname_=cname; }
 void EvValUpd::setValue(MarControlPtr value) { value_=value; }
 void EvValUpd::setTarget(MarSystem* ms) { target_=ms; }
 */
@@ -86,4 +86,3 @@ ostream& Marsyas::operator<< (ostream& o, EvValUpd& e) {
     return o;
 }
 */
-

@@ -19,10 +19,10 @@
 #include "EvGetUpd.h"
 #include "MarSystem.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-EvGetUpd::EvGetUpd(MarSystem* src, string scname, MarSystem* tgt, string tcname) : EvEvent("EvGetUpd","GetUpd")
+EvGetUpd::EvGetUpd(MarSystem* src, mrs_string scname, MarSystem* tgt, mrs_string tcname) : EvEvent("EvGetUpd","GetUpd")
 {
 	setEvent(src,scname,tgt,tcname);
 }
@@ -34,7 +34,7 @@ EvGetUpd::EvGetUpd(EvGetUpd& e) : EvEvent("EvGetUpd","GetUpd")
 EvGetUpd::~EvGetUpd() { }
 
 void
-EvGetUpd::setEvent(MarSystem* src, string scname, MarSystem* tgt, string tcname)
+EvGetUpd::setEvent(MarSystem* src, mrs_string scname, MarSystem* tgt, mrs_string tcname)
 {
 	src_cname_=scname;
 	tgt_cname_=tcname;
@@ -57,13 +57,13 @@ EvGetUpd::clone()
 }
 
 /* these have been moved to the header file
-string EvGetUpd::getSrcCName() const { return tgt_cname_; }
-string EvGetUpd::getTgtCName() const { return src_cname_; }
+mrs_string EvGetUpd::getSrcCName() const { return tgt_cname_; }
+mrs_string EvGetUpd::getTgtCName() const { return src_cname_; }
 MarSystem* EvGetUpd::getSource() const { return source_; }
 MarSystem* EvGetUpd::getTarget() const { return target_; }
 
-void EvGetUpd::setSrcCName(string cname) { src_cname_=cname; }
-void EvGetUpd::setTgtCName(string cname) { tgt_cname_=cname; }
+void EvGetUpd::setSrcCName(mrs_string cname) { src_cname_=cname; }
+void EvGetUpd::setTgtCName(mrs_string cname) { tgt_cname_=cname; }
 void EvGetUpd::setSource(MarSystem* ms) { source_=ms; }
 void EvGetUpd::setTarget(MarSystem* ms) { target_=ms; }
 */

@@ -18,10 +18,10 @@
 
 #include "EnhADRessStereoSpectrum.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-EnhADRessStereoSpectrum::EnhADRessStereoSpectrum(string name):MarSystem("EnhADRessStereoSpectrum", name)
+EnhADRessStereoSpectrum::EnhADRessStereoSpectrum(mrs_string name):MarSystem("EnhADRessStereoSpectrum", name)
 {
 	addControls();
 }
@@ -79,5 +79,3 @@ EnhADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(out, "out2");
 	//MATLAB_EVAL("figure(3);plot(out2)");
 }
-
-
