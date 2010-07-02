@@ -3590,7 +3590,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	int label;
 
 
-
+	cout << *bextractNetwork << endl;
+	
 
 	while (ctrl_hasData->to<mrs_bool>())
 	{

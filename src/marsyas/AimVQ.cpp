@@ -74,7 +74,13 @@ AimVQ::myUpdate(MarControlPtr sender)
   ctrl_onObservations_->setValue(static_array_num_codebooks * static_array_num_codewords, NOUPDATE);
 #endif
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-  ctrl_onObsNames_->setValue("AimVQ_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
+
+  ostringstream oss;
+  for (int i =0; i < ctrl_onObservations_->to<mrs_natural>(); ++i)
+	  oss << "attribute,";
+  //ctrl_onObsNames_->setValue("AimVQ_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
+  ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+  
 
   //
   // Does the MarSystem need initialization?
