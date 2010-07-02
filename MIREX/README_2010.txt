@@ -26,7 +26,7 @@ IMPORTANT: (For the SAI/VQ method of feature extraction, please enable the WITH_
 
 
 ------------- MIREX 2010 Audio Classification Tasks ---------------------
-(use REVISION_NUMBER: 4125) 
+(use REVISION_NUMBER: 4178) 
 
 Extract features, train classifier and predict for 1 fold: 
 ./bextract -sv -bf train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w features.arff 
@@ -36,11 +36,30 @@ The executables can be launched in parallel for each fold to take
 advantage of multiple cores without a problem as long as there 
 are different scratch directories for each fold. 
 
+Multi-core version (Requires Ruby to be installed)
+This assumes a big unlabelled feature extraction filelist from 
+which features are computed followed by train/predict collection 
+for each fold that are used for classification and prediction. 
+
+From the Marsyas top-level directory: 
+cd src/apps/mirex2010 
+
+Feature Extraction Step (while it is running the output of the program
+can be observed in the files stdout1.txt,...stdoutN.txt: 
+> ./extractFeatures.rb path_to_bextract #cores path_to_scratch_folder path_to_feature_extract_list.txt features.arff "-sv -fe -bf"
+
+Train/Classify Step: 
+> ./trainAndClasify.rb path_to_kea path_to_scratch folder
+path_train.txt path_to_test.txt path_to_predicted_output.txt
+
+
+
+
 
 ------------- MIREX 2010 Audio Classification Tasks SAI/VQ -------- 
 Vector Quantized Stabilized Auditory Image 
  SAI/VQ - Vector Quantized Stabilized Auditory Image ---------------------
-(use REVISION_NUMBER: 4125) 
+(use REVISION_NUMBER: 4178) 
 
 IMPORTANT:
 
@@ -54,12 +73,33 @@ The executables can be launched in parallel for each fold to take
 advantage of multiple cores without a problem as long as there 
 are different scratch directories for each fold. 
 
+Multi-core version (Requires Ruby to be installed)
+This assumes a big unlabelled feature extraction filelist from 
+which features are computed followed by train/predict collection 
+for each fold that are used for classification and prediction. 
+
+From the Marsyas top-level directory: 
+cd src/apps/mirex2010 
+
+Feature Extraction Step (while it is running the output of the program
+can be observed in the files stdout1.txt,...stdoutN.txt: 
+> ./extractFeatures.rb path_to_bextract #cores path_to_scratch_folder path_to_feature_extract_list.txt features.arff "-sv -fe -saivq"
+
+Train/Classify Step: 
+> ./trainAndClasify.rb path_to_kea path_to_scratch folder
+path_train.txt path_to_test.txt path_to_predicted_output.txt
+
+
+
+
+
+
 ---------------  MIREX 2010 Audio Tag Classification --------------------------
 (for more information check ACM Multimedia 2009 paper: 
 "Improving Automatic Music Tag Annotation Using Stacked Generalization Of Probabilistic SVM 
 Outputs" 
 ) 
-(use REVISION_NUMBER 4125)) 
+(use REVISION_NUMBER 4178)) 
 Assumes train.txt is a training list file (files and tags) and 
 test.txt is a testing list file (just files) 
 
@@ -96,7 +136,7 @@ Step3) Second stage (stacked generalization) for automatic tag annotation
 
 
 ---------------  MIREX 2010 Audio Similarity --------------------------
-(use REVISION_NUMBER ) 
+(use 4178) 
 
 
 
