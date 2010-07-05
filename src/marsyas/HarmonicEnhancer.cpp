@@ -18,11 +18,11 @@
 
 #include "HarmonicEnhancer.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
-HarmonicEnhancer::HarmonicEnhancer(string name):MarSystem("HarmonicEnhancer",name)
+HarmonicEnhancer::HarmonicEnhancer(mrs_string name):MarSystem("HarmonicEnhancer",name)
 {
   //type_ = "HarmonicEnhancer";
   //name_ = name;

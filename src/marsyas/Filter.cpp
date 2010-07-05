@@ -18,7 +18,7 @@
 
 #include "Filter.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::ofstream;
 using std::endl;
@@ -26,7 +26,7 @@ using std::endl;
 
 using namespace Marsyas;
 
-Filter::Filter(string name)
+Filter::Filter(mrs_string name)
 :
 	MarSystem("Filter",name),
 	norder_(2),
@@ -131,7 +131,7 @@ void Filter::myUpdate(MarControlPtr sender)
 }
 
 void 
-Filter::write(string filename)
+Filter::write(mrs_string filename)
 {
 	ofstream os(filename.c_str());
 	os << (*this) << endl;
@@ -223,4 +223,3 @@ Filter::myProcess(realvec& in, realvec& out)
 	//		//MATLAB_GET("MAT_out", out)
 	//
 }
-

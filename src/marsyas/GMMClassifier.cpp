@@ -19,13 +19,13 @@
 #include "GMMClassifier.h"
 #include "NumericLib.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 
 using namespace Marsyas;
 
-GMMClassifier::GMMClassifier(string name):MarSystem("GMMClassifier",name)
+GMMClassifier::GMMClassifier(mrs_string name):MarSystem("GMMClassifier",name)
 {
 	prev_mode_= "predict";
 	classSize_ = -1;
@@ -441,7 +441,7 @@ GMMClassifier::myUpdate(MarControlPtr sender)
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 	setctrl("mrs_string/onObsNames", "GT_label, Predicted_label,");
 	
-	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+	mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 	
 	mrs_natural classSize = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
 	mrs_natural nMixtures = getctrl("mrs_natural/nMixtures")->to<mrs_natural>();
@@ -507,7 +507,7 @@ GMMClassifier::myUpdate(MarControlPtr sender)
 void 
 GMMClassifier::myProcess(realvec& in, realvec& out)
 {
-	string mode = ctrl_mode_->to<string>();
+	mrs_string mode = ctrl_mode_->to<mrs_string>();
 	
 	// reset 
 	if ((prev_mode_ == "predict") && (mode == "train"))
@@ -575,13 +575,3 @@ GMMClassifier::myProcess(realvec& in, realvec& out)
 	
 	prev_mode_ = mode;
 }
-
-
-
-
-
-
-
-
-
-

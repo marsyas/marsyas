@@ -18,10 +18,10 @@
 
 #include "FlowThru.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-FlowThru::FlowThru(string name):MarSystem("FlowThru",name)
+FlowThru::FlowThru(mrs_string name):MarSystem("FlowThru",name)
 {
 	isComposite_ = true;
 	addControls();
@@ -157,6 +157,3 @@ FlowThru::myProcess(realvec& in, realvec& out)
 		MRSWARN("FlowThru::process: composite has no children MarSystems - passing input to output without changes.");
 	}
 }
-
-
-

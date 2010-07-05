@@ -18,10 +18,10 @@
 
 #include "HalfWaveRectifier.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-HalfWaveRectifier::HalfWaveRectifier(string name): MarSystem("HalfWaveRectifier",name)
+HalfWaveRectifier::HalfWaveRectifier(mrs_string name): MarSystem("HalfWaveRectifier",name)
 {
 }
 

@@ -18,10 +18,10 @@
 
 #include "Inject.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Inject::Inject(string name) : MarSystem("Inject", name)
+Inject::Inject(mrs_string name) : MarSystem("Inject", name)
 {
 	/// Add any specific controls needed by this MarSystem.
 	addControls();
@@ -117,5 +117,3 @@ Inject::myProcess(realvec& in, realvec& out)
 	}
 
 }
-
-

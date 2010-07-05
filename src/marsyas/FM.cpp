@@ -18,13 +18,13 @@
 
 #include "FM.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 #define WAVETABLE_SIZE 8192
 
 // create the wavetable.
-FM::FM(string name)
+FM::FM(mrs_string name)
 : MarSystem("FM",name),
   wavetable_(WAVETABLE_SIZE),
   wavetableSize_(WAVETABLE_SIZE)

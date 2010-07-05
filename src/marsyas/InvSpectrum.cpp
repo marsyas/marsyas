@@ -18,10 +18,10 @@
 
 #include "InvSpectrum.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-InvSpectrum::InvSpectrum(string name):MarSystem("InvSpectrum",name)
+InvSpectrum::InvSpectrum(mrs_string name):MarSystem("InvSpectrum",name)
 {
   //type_ = "InvSpectrum";
   //name_ = name;

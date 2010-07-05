@@ -18,10 +18,10 @@
 
 #include "GaussianClassifier.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-GaussianClassifier::GaussianClassifier(string name):MarSystem("GaussianClassifier",name)
+GaussianClassifier::GaussianClassifier(mrs_string name):MarSystem("GaussianClassifier",name)
 {
 	prev_mode_= "predict";
 	addControls();
@@ -79,7 +79,7 @@ GaussianClassifier::myUpdate(MarControlPtr sender)
 
 	mrs_natural mrows = (getctrl("mrs_realvec/means")->to<mrs_realvec>()).getRows();
 	mrs_natural mcols = (getctrl("mrs_realvec/means")->to<mrs_realvec>()).getCols();
-	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+	mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
 	if (active_) {
 		// Don't bother resetting anything if this system is inactive.
@@ -132,7 +132,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
 	mrs_real v;
-	string mode = ctrl_mode_->to<string>();
+	mrs_string mode = ctrl_mode_->to<mrs_string>();
 	mrs_natural nClasses = ctrl_nClasses_->to<mrs_natural>();
 
 	mrs_natural l;
@@ -218,13 +218,3 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 
 	prev_mode_ = mode;
 }
-
-
-
-
-
-
-
-
-
-

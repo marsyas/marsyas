@@ -28,10 +28,10 @@
 #include "gst-decode.h"
 #endif //MARSYAS_GSTREAMER
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-GStreamerSource::GStreamerSource(string name):AbsSoundFileSource("GStreamerSource", name)
+GStreamerSource::GStreamerSource(mrs_string name):AbsSoundFileSource("GStreamerSource", name)
 {
     data_ = NULL;
     phaseOffset_ = 0.0;
@@ -67,7 +67,7 @@ GStreamerSource::addControls()
     setctrlState("mrs_bool/noteon", true);
     addctrl("mrs_string/filetype", "raw");
 }    
-void GStreamerSource::getHeader(string fileName)
+void GStreamerSource::getHeader(mrs_string fileName)
 {
 #ifdef MARSYAS_GSTREAMER
     audioVector result = gst_decode_file((gchar*)fileName.c_str());
@@ -126,6 +126,3 @@ void GStreamerSource::myProcess(realvec& in,realvec &out)
         }
     }
 }
-
-
-

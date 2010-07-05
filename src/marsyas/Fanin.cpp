@@ -18,14 +18,14 @@
 
 #include "Fanin.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 
 
 using namespace Marsyas;
 
-Fanin::Fanin(string name):MarSystem("Fanin", name)
+Fanin::Fanin(mrs_string name):MarSystem("Fanin", name)
 {
 	isComposite_ = true;
 }
@@ -140,7 +140,3 @@ Fanin::myProcess(realvec& in, realvec& out)
 		out = in;
 	}
 }
-
-
-
-

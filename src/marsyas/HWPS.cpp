@@ -19,14 +19,14 @@
 #include "HWPS.h"
 #include "NumericLib.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::min;
 using std::max;
 
 using namespace Marsyas;
 
-HWPS::HWPS(string name):MarSystem("HWPS", name)
+HWPS::HWPS(mrs_string name):MarSystem("HWPS", name)
 {
 	addControls();
 }
@@ -208,11 +208,3 @@ HWPS::myProcess(realvec& in, realvec& out)
 		out(0) = 1.0 - NumericLib::cosineDistance(histogram_i_, histogram_j_);
 	}
 }
-
-
-
-
-
-
-
-

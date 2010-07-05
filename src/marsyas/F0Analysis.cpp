@@ -4,7 +4,7 @@
 
 #define ROUND(x)	(mrs_natural)floor(x+0.5)
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 

@@ -18,13 +18,13 @@
 
 #include "Fanout.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 
 using namespace Marsyas;
 
-Fanout::Fanout(string name):MarSystem("Fanout", name)
+Fanout::Fanout(mrs_string name):MarSystem("Fanout", name)
 {
 	isComposite_ = true;
 	addControls();
@@ -104,7 +104,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	disableChildIndex_ = -1;
 	for (size_t i=0; i < marsystems_.size(); ++i)
 	{
-		string s;
+		mrs_string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
 		if (disableChild_ == s)
 		{
@@ -145,7 +145,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	enableChildIndex_ = -1;
 	for (size_t i=0; i < marsystems_.size(); ++i)
 	{
-		string s;
+		mrs_string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
 		if (enableChild_ == s)
 		{

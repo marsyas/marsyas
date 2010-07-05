@@ -18,7 +18,7 @@
 
 #include "FanOutIn.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 using std::max;
@@ -26,7 +26,7 @@ using std::min;
 
 using namespace Marsyas;
 
-FanOutIn::FanOutIn(string name):MarSystem("FanOutIn", name)
+FanOutIn::FanOutIn(mrs_string name):MarSystem("FanOutIn", name)
 {
 	isComposite_ = true;
 	wrongOutConfig_ = false;
@@ -91,7 +91,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 	disableChildIndex_ = -1;
 	for (mrs_natural i=0; i < (mrs_natural)marsystems_.size(); ++i) 
 	{
-		string s;
+		mrs_string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
 		if (disableChild_ == s) 
 			disableChildIndex_ = i;
@@ -125,7 +125,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 	enableChildIndex_ = -1;
 	for (mrs_natural i=0; i < (mrs_natural)marsystems_.size(); ++i) 
 	{
-		string s;
+		mrs_string s;
 		s = marsystems_[i]->getType() + "/" + marsystems_[i]->getName();
 		if (enableChild_ == s) 
 			enableChildIndex_ = i;
