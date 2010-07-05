@@ -142,7 +142,7 @@ private:
 	mrs_real bestScore_;
 	mrs_natural inductionTime_;
 	mrs_natural bestAgentIndex_;
-	mrs_natural t;
+	mrs_natural t_;
 	mrs_natural outputCount_;
 	mrs_real obsoleteFactor_;
 	mrs_real childrenScoreFactor_;

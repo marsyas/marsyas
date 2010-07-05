@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,14 +18,7 @@
 
 #include "PeakerOnset.h"
 
-using std::string;
-using std::ostringstream;
-using std::min;
-using std::max;
-using std::cout;
-using std::endl;
-
-
+using namespace std;
 using namespace Marsyas;
 
 PeakerOnset::PeakerOnset(string name):MarSystem("PeakerOnset", name)
@@ -33,7 +26,7 @@ PeakerOnset::PeakerOnset(string name):MarSystem("PeakerOnset", name)
 	addControls();
 
 	prevValue_ = 0.0;
-	t = 0;
+	t_ = 0;
 }
 
 PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
@@ -44,7 +37,7 @@ PeakerOnset::PeakerOnset(const PeakerOnset& a) : MarSystem(a)
 	ctrl_confidence_ = getctrl("mrs_real/confidence");
 
 	prevValue_ = a.prevValue_;
-	t = a.t;
+	t_ = a.t_;
 }
 
 PeakerOnset::~PeakerOnset()
@@ -186,12 +179,12 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
 
-	//t++;
+	//t_++;
 
-	//if(t == 0)
+	//if(t_ == 0)
 	//	MATLAB_PUT(in, "PeakerOnset_inWIN");
 	//MATLAB_PUT(in, "PeakerOnset_in");
-	//if(t <= 431)
+	//if(t_ <= 431)
 	//	MATLAB_EVAL("PK_TS2 = [PK_TS2 PeakerOnset_in]");
 	//MATLAB_EVAL("plot(PK_TS, 'r');");
 	//MATLAB_EVAL("plot(FluxTS); hold on; plot(PK_TS, 'r');");

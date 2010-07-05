@@ -24,7 +24,7 @@ using namespace Marsyas;
 TempoHypotheses::TempoHypotheses(string name):MarSystem("TempoHypotheses", name)
 {
   addControls();
-  t = 0;
+  t_ = 0;
   noBPMs_ = true;
   inductionFinished_ = false;
 }
@@ -94,12 +94,12 @@ TempoHypotheses::myUpdate(MarControlPtr sender)
 void 
 TempoHypotheses::myProcess(realvec& in, realvec& out)
 {
-	//t is constantly updated with the referee's next time frame
-	t = ctrl_tickCount_->to<mrs_natural>();
+	//t_ is constantly updated with the referee's next time frame
+	t_ = ctrl_tickCount_->to<mrs_natural>();
 
-	//cout << "THyp: " << t << "; Ind: " << inductionTime_ << endl;
+	//cout << "THyp: " << t_ << "; Ind: " << inductionTime_ << endl;
 
-	if(t == inductionTime_ && !inductionFinished_)
+	if(t_ == inductionTime_ && !inductionFinished_)
 	{
 		dumbInduction_ = ctrl_dumbInduction_->to<mrs_bool>();
 
@@ -107,13 +107,13 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 		{
 			//retrieve Max Period Peak
 			mrs_real maxPeriodPeak = 0.0;
-			for (int i=0; i < nPeriods_; ++i)
+			for (int i=0; i < nPeriods_; i++)
 			{
 				if(in(0, 2*i) > maxPeriodPeak)
 					maxPeriodPeak = in(0, 2*i);
 			}
 
-			for (int i=0; i < nPeriods_; ++i)
+			for (int i=0; i < nPeriods_; i++)
 			{	
 				int z = 0;
 				for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
@@ -143,7 +143,7 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 			
 			cout << "...Replacing induction with the following BPMs: ";
 
-			for (int i=0; i < nPeriods_; ++i)
+			for (int i=0; i < nPeriods_; i++)
 			{
 				if(i == 10) break; //(to a maximum of 10 unconsidered)
 

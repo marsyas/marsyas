@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ namespace Marsyas
     \brief Outputs predicted beat times (in seconds or "frames"-ticks) and/or the median IBI (in BPMs).
 
 	Output: outPath\inputFileName.txt -> beat times.
-	outPath\inputFileName_medianTempo.txt -> median IBI (in BPMs)
+			outPath\inputFileName_medianTempo.txt -> median IBI (in BPMs)
 		  
 	Controls:
 	- \b mrs_natural/hopSize [r] : hop size of the analysis.
@@ -42,60 +42,60 @@ namespace Marsyas
 */
 
 
-	class BeatTimesSink: public MarSystem
-	{
-		private: 
-			//Add specific controls needed by this MarSystem.
-			void addControls();
-			MarControlPtr ctrl_hopSize_;
-			MarControlPtr ctrl_winSize_;
-			MarControlPtr ctrl_srcFs_;
-			MarControlPtr ctrl_destFileName_;
-			MarControlPtr ctrl_mode_;
-			MarControlPtr ctrl_tickCount_;
-			MarControlPtr ctrl_tempo_;
-			MarControlPtr ctrl_adjustment_;
-			MarControlPtr ctrl_bestFinalAgentHistory_;
-			MarControlPtr ctrl_soundFileSize_;
-			MarControlPtr ctrl_nonCausal_;
+class BeatTimesSink: public MarSystem
+{
+private: 
+  //Add specific controls needed by this MarSystem.
+	void addControls();
+	MarControlPtr ctrl_hopSize_;
+	MarControlPtr ctrl_winSize_;
+	MarControlPtr ctrl_srcFs_;
+	MarControlPtr ctrl_destFileName_;
+	MarControlPtr ctrl_mode_;
+	MarControlPtr ctrl_tickCount_;
+	MarControlPtr ctrl_tempo_;
+	MarControlPtr ctrl_adjustment_;
+	MarControlPtr ctrl_bestFinalAgentHistory_;
+	MarControlPtr ctrl_soundFileSize_;
+	MarControlPtr ctrl_nonCausal_;
 
-			mrs_real beatTimeTmp_;
-			mrs_real lastIbi_;
-			mrs_natural soundFileSize_;
-			mrs_bool nonCausal_;
-			mrs_realvec bestFinalAgentHistory_;
-			mrs_realvec ibiBPMVec_;
-			mrs_natural inc_;
-			mrs_string destFile_;
-			mrs_string destFile2_;
-			mrs_string destFile3_;
-			mrs_string mode_;
-			mrs_real lastBeatTime_;
-			mrs_real ibiBPM_;
-			mrs_bool initialOut_;
-			mrs_bool initialOut2_;
-			mrs_bool initialOut3_;
-			mrs_real beatTime_;
-			mrs_real srcFs_;
-			mrs_real adjustment_;
-			mrs_natural hopSize_;
-			mrs_natural winSize_;
-			mrs_natural t;
-			mrs_real ibiBPMSum_;
-			mrs_natural beatCount_;
-			mrs_real tempo_;
+	mrs_real beatTimeTmp_;
+	mrs_real lastIbi_;
+	mrs_natural soundFileSize_;
+	mrs_bool nonCausal_;
+	mrs_realvec bestFinalAgentHistory_;
+	mrs_realvec ibiBPMVec_;
+	mrs_natural inc_;
+	mrs_string destFile_;
+	mrs_string destFile2_;
+	mrs_string destFile3_;
+	mrs_string mode_;
+	mrs_real lastBeatTime_;
+	mrs_real ibiBPM_;
+	mrs_bool initialOut_;
+	mrs_bool initialOut2_;
+	mrs_bool initialOut3_;
+	mrs_real beatTime_;
+	mrs_real srcFs_;
+	mrs_real adjustment_;
+	mrs_natural hopSize_;
+	mrs_natural winSize_;
+	mrs_natural t_;
+	mrs_real ibiBPMSum_;
+	mrs_natural beatCount_;
+	mrs_real tempo_;
 
-			void myUpdate(MarControlPtr sender);
+	void myUpdate(MarControlPtr sender);
 
-		public:
-			BeatTimesSink(std::string name);
-			BeatTimesSink(const BeatTimesSink& a);
-			~BeatTimesSink();
-			MarSystem* clone() const;  
+public:
+  BeatTimesSink(std::string name);
+	BeatTimesSink(const BeatTimesSink& a);
+  ~BeatTimesSink();
+  MarSystem* clone() const;  
   
-			void myProcess(realvec& in, realvec& out);
-			mrs_realvec addMedianVector(mrs_real ibiBPM);
-	};
+  void myProcess(realvec& in, realvec& out);
+  mrs_realvec addMedianVector(mrs_real ibiBPM);
+};
 
 }//namespace Marsyas
 

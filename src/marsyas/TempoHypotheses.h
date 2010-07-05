@@ -75,7 +75,7 @@ private:
 	mrs_natural hopSize_;
 	mrs_real srcFs_;
 	mrs_natural inductionTime_;
-	mrs_natural t;
+	mrs_natural t_;
 	mrs_natural nPhases_;
 	mrs_natural nPeriods_;
 	mrs_bool noBPMs_;

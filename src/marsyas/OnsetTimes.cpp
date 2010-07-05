@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,16 +18,13 @@
 
 #include "OnsetTimes.h"
 
-using std::string; 
-using std::ostringstream;
-using std::max;
-
+using namespace std;
 using namespace Marsyas;
 
 OnsetTimes::OnsetTimes(string name):MarSystem("OnsetTimes", name)
 {
   addControls();
-  t = 0;
+  t_ = 0;
   count_ = 0;
 }
 
@@ -97,29 +94,29 @@ OnsetTimes::myUpdate(MarControlPtr sender)
 void 
 OnsetTimes::myProcess(realvec& in, realvec& out)
 {
-	//t is constantly updated with the referee's next time frame
-	t = ctrl_tickCount_->to<mrs_natural>();
+	//t_ is constantly updated with the referee's next time frame
+	t_ = ctrl_tickCount_->to<mrs_natural>();
 
-	//cout << "OTime: " << t << endl;
+	//cout << "OTime: " << t_ << endl;
 
 	lookAhead_ = ctrl_lookAheadSamples_->to<mrs_natural>();
 	
 	mrs_natural inc = 0; //nr. of first ignored onsets
-	if((t - lookAhead_) > 0 && in(0,0) == 1.0) //avoid onset at 0 frame
+	if((t_ - lookAhead_) > 0 && in(0,0) == 1.0) //avoid onset at 0 frame
 	{
 		//if task isn't still done && (first peak || peak distance at least 5 frames from last peak)
-		if(count_ == inc || (count_ > inc && count_ < n_ + inc && ((t-lookAhead_)+(accSize_-1 - inductionTime_)) > out(0, 2*(count_-inc)-1) + 5))
+		if(count_ == inc || (count_ > inc && count_ < n_ + inc && ((t_-lookAhead_)+(accSize_-1 - inductionTime_)) > out(0, 2*(count_-inc)-1) + 5))
 		{
-			//cout << "Out Last Arg: " << out(0, 2*(count_-inc)+1) << " Current Arg: " << t - lookAhead_ << endl;
+			//cout << "Out Last Arg: " << out(0, 2*(count_-inc)+1) << " Current Arg: " << t_ - lookAhead_ << endl;
 			out(0, 2*(count_-inc)) = in(0,0);
-			//out(0, 2*(count_-inc)+1) = t - lookAhead_; 
-			//onsetTime equals to peakerTime (t-lookAhead_) + difference between last point in the  
+			//out(0, 2*(count_-inc)+1) = t_ - lookAhead_; 
+			//onsetTime equals to peakerTime (t_-lookAhead_) + difference between last point in the  
 			//accumulator/ShiftInput (accSize_-1) and the considered inductionTime
-			out(0, 2*(count_-inc)+1) = (t-lookAhead_)+(accSize_-1 - inductionTime_);
+			out(0, 2*(count_-inc)+1) = (t_-lookAhead_)+(accSize_-1 - inductionTime_);
 
 			count_++;
 		}
-		//cout << "t-" << t << ": Onset at: " << t - lookAhead_ << endl;
+		//cout << "t-" << t_ << ": Onset at: " << t_ - lookAhead_ << endl;
 	}
 
 	//MATLAB_PUT(out, "OnsetTimes");

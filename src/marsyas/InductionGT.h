@@ -20,7 +20,7 @@
 #define MARSYAS_INDUCTIONGT_H
 
 #include "MarSystem.h"
-//using std::string; using std::ostringstream;
+using namespace std;
 
 namespace Marsyas
 {
@@ -53,8 +53,8 @@ private:
 	mrs_real srcFs_;
 	mrs_natural inductionTime_;
 	mrs_string line_;
-	std::ifstream inStream_;
-	mrs_natural t;
+	ifstream inStream_;
+	mrs_natural t_;
 	mrs_real maxScore_;
 	mrs_natural ibi_;
 	mrs_real beatTime1_;

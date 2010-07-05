@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,14 +18,7 @@
 
 #include "BeatReferee.h"
 
- 
-using std::ostringstream;
-using std::fstream;
-using std::cout;
-using std::ios;
-using std::endl;
-
-
+using namespace std;
 using namespace Marsyas;
 
 #define NONE 0.0
@@ -37,13 +30,13 @@ using namespace Marsyas;
 
 #define MINIMUMREAL 0.000001 //(0.000001 minimum float recognized)
 
-BeatReferee::BeatReferee(mrs_string name):MarSystem("BeatReferee", name)
+BeatReferee::BeatReferee(string name):MarSystem("BeatReferee", name)
 {
 	addControls();
 
   	bestScore_ = -10000.0; //To allow initial negative scores
 	bestAgentIndex_ = 0; //0 by default
-	t = 0;
+	t_ = 0;
 	outputCount_ = 0;
 	lastBeatTime_ = -70;
 	lastBeatPeriod_ = -1;
@@ -85,7 +78,7 @@ BeatReferee::BeatReferee(const BeatReferee& a) : MarSystem(a)
 	ctrl_bestFinalAgentHistory_= getctrl("mrs_realvec/bestFinalAgentHistory");
 	ctrl_nonCausal_ = getctrl("mrs_bool/nonCausal");
 	
-	t = a.t;
+	t_ = a.t_;
 	lastBeatPeriod_ = a.lastBeatPeriod_;
 	historyCount_ = a.historyCount_;
 	historyBeatTimes_ = a.historyBeatTimes_;
@@ -231,7 +224,7 @@ BeatReferee::myUpdate(MarControlPtr sender)
 	updControl(ctrl_agentControl_, agentControl_);
 
 	
-	for(int i = 0; i < nrAgents_; ++i)
+	for(int i = 0; i < nrAgents_; i++)
 	{
 		mutedAgents_(0, i) = 1.0; //initially all agents are muted
 		mutedAgentsTmp_(0, i) = 1.0; //initially all agents are muted
@@ -540,7 +533,7 @@ BeatReferee::createChildren(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_n
 		createNewAgent((mrs_natural) newHypotheses(2,0), (mrs_natural) newHypotheses(2,1),  newScore, beatCount, agentIndex);
 
 	//Display Created BeatAgent:
-	//cout << "NEW AGENT(" << t << "-" << ((t * hopSize_) - (hopSize_/2)) / srcFs_ << ") (reqBy:" << agentIndex << 
+	//cout << "NEW AGENT(" << t_ << "-" << ((t_ * hopSize_) - (hopSize_/2)) / srcFs_ << ") (reqBy:" << agentIndex << 
 	//") -> PrevBeat:" << prevBeat << " Period:" << oldPeriod << " NextBeat1:" << newHypotheses(1) << " NewPeriod1:" << 
 	//	newHypotheses(0) << " NextBeat2:" << newHypotheses(3) << " NewPeriod2:" << newHypotheses(2) << 
 	//	" NextBeat3:" << newHypotheses(5) << " NewPeriod3:" << newHypotheses(4) << 
@@ -565,7 +558,7 @@ BeatReferee::updateAgentHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod
 	}
 
 	//Display Updated BeatAgent:
-	//cout << "UPDATING AGENT" << agentIndex <<" (" << t << ")" << " -> oldPeriod: " << oldPeriod << 
+	//cout << "UPDATING AGENT" << agentIndex <<" (" << t_ << ")" << " -> oldPeriod: " << oldPeriod << 
 	//	" newPeriod: " << newHypothesis(0) << " prevBeat: " << prevBeat << " nextBeat: " << newHypothesis(1) <<  
 	//	" Error: " << error << endl;
 }
@@ -577,7 +570,7 @@ BeatReferee::setNewHypothesis(mrs_natural agentIndex, mrs_natural newPeriod, mrs
 	agentControl_(agentIndex, 0) = 1.0; //is New or Updated
 	agentControl_(agentIndex, 1) = newPeriod;
 	agentControl_(agentIndex, 2) = nextBeat;
-	agentControl_(agentIndex, 3) = t;
+	agentControl_(agentIndex, 3) = t_;
 
 	updControl(ctrl_agentControl_, agentControl_);
 
@@ -589,7 +582,7 @@ BeatReferee::grantPoolSpace(mrs_natural callAgent, mrs_real newAgentScore)
 {
 	mrs_bool isAvailable = false;
 	
-	for(mrs_natural a = 0; a < mutedAgentsTmp_.getSize(); a++)
+	for(int a = 0; a < mutedAgentsTmp_.getSize(); a++)
 	{
 		if(mutedAgentsTmp_(a))
 		{
@@ -622,7 +615,7 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat,
 		return -1;
 	}
 	//or if the score of the new agent is obsolete the newAgent request is also unconsidered
-	else if (t > timeBeforeKilling_ && newScore < bestScore_ && fabs(bestScore_-newScore) > 0.1 
+	else if (t_ > timeBeforeKilling_ && newScore < bestScore_ && fabs(bestScore_-newScore) > 0.1 
 					&& fabs(bestScore_ - newScore) > fabs(bestScore_ * obsoleteFactor_))
 	{
 		if(logFile_)
@@ -634,7 +627,7 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat,
 	grantPoolSpace(fatherAgent, newScore);
 
 	mrs_natural returnCreatedAgent = -1;
-	for(mrs_natural a = 0; a < mutedAgentsTmp_.getSize(); a++)
+	for(int a = 0; a < mutedAgentsTmp_.getSize(); a++)
 	{
 		//Look for first disabled agent (in temporary vector):		
 		if(mutedAgentsTmp_(a))
@@ -665,15 +658,15 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat,
 			initPeriod_(a) = newPeriod; //save agent's initial IBI
 			missedBeatsCount_(a) = 0.0; //reset missed beats counter
 
-			//statsPeriods_(a, t) = newPeriod; 
-			//statsPhases_(a, t) = firstBeat;
+			//statsPeriods_(a, t_) = newPeriod; 
+			//statsPhases_(a, t_) = firstBeat;
 
-			//statsAgentsLifeCycle_(a, t) = 1.0;
+			//statsAgentsLifeCycle_(a, t_) = 1.0;
 			
 			//force timing update when agent is created
 			//(don't know why when a new agent is created its time, in agentControl, keeps
 			//the time of the previous tick)
-			agentControl_(a, 3) = t+1;
+			agentControl_(a, 3) = t_+1;
 			updControl(ctrl_agentControl_, agentControl_);
 
 			returnCreatedAgent = a;
@@ -683,7 +676,7 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat,
 			//in nonCausalAnalysis keep agents history till the end of the analysis
 			if(nonCausal_)
 			{
-				for(int i = 0; i < beatCount; ++i)
+				for(int i = 0; i < beatCount; i++)
 					agentsHistory_(a, i) = agentsHistory_(fatherAgent, i);
 			}
 
@@ -727,7 +720,7 @@ BeatReferee::killAgent(mrs_natural agentIndex, mrs_string motif, mrs_natural cal
 		score_(agentIndex) = 0.0;
 		//beatCounter_(agentIndex) = 0.0;
 
-		//statsAgentsLifeCycle_(agentIndex, t) = -1;
+		//statsAgentsLifeCycle_(agentIndex, t_) = -1;
 		lastPeriods_(agentIndex) = 0.0; //(Periods in frames)
 		lastPhases_(agentIndex) = 0.0; //(Phases in frames)
 
@@ -745,6 +738,7 @@ BeatReferee::killAgent(mrs_natural agentIndex, mrs_string motif, mrs_natural cal
 void
 BeatReferee::calcAbsoluteBestScore()
 {
+	mrs_bool bestChange = false;
 	mrs_natural firstAliveAgent = getFirstAliveAgent();
 	mrs_real bestLocalScore = score_(firstAliveAgent);
 	mrs_natural bestLocalAgent = firstAliveAgent;
@@ -765,7 +759,7 @@ BeatReferee::calcAbsoluteBestScore()
 			(bestScore_ < 0 && bestLocalScore > bestScore_ / bestFactor_))
 	{
 		//Avoid metrical changes within requested time of the analysis
-		if(t <= metricalChangeTime_ || t > metricalChangeTime_ && 
+		if(t_ <= metricalChangeTime_ || t_ > metricalChangeTime_ && 
 			lastPeriods_(bestLocalAgent) > 0.7 * lastPeriods_(bestAgentIndex_) && 
 			lastPeriods_(bestLocalAgent) < 1.3 * lastPeriods_(bestAgentIndex_))
 		{
@@ -798,9 +792,9 @@ BeatReferee::debugAddEvent(mrs_string ibtEvent, mrs_natural agentIndex,
 	//event is appended in the end of the file
 	fstream outStream;
 	outStream.open(logFileName_.c_str(), ios::out|ios::app);
-	outStream << ibtEvent << "|" << t << "|" << agentIndex << "|" << period << "|" << lastBeat
+	outStream << ibtEvent << "|" << t_ << "|" << agentIndex << "|" << period << "|" << lastBeat
 		<< "|" << score << "|" << bestScore << "|" << callAgent << endl;
-	//cout << ibtEvent << "|" << t << "|" << agentIndex << "|" << period << "|" << lastBeat
+	//cout << ibtEvent << "|" << t_ << "|" << agentIndex << "|" << period << "|" << lastBeat
 	//	<< "|" << score << "|" << bestScore << "|" << callAgent << endl;
 	outStream.close();
 }
@@ -810,7 +804,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 {
 	//inititally desactivate all agents
 	//(and deactivate induction's period estimation (ACF) -> computer expensive)
-	if(t == 0 && !inductionFinished_)
+	if(t_ == 0 && !inductionFinished_)
 	{
 		updControl(ctrl_mutedAgents_, mutedAgents_);
 		
@@ -818,7 +812,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		updControl(ctrl_inductionEnabler_, inductionEnabler_);
 	}
 
-	//cout << "t: " << t << endl;
+	//cout << "t: " << t_ << endl;
 
 	//while no best beat detected => outputs 0 (no beat)
 	out.setval(0.0);
@@ -826,17 +820,17 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	
 	agentControl_ = ctrl_agentControl_->to<mrs_realvec>();
 	//always updates every agents' timming to equalize referee's (+1 for considering next time frame)
-	for(mrs_natural i = 0; i < agentControl_.getRows(); ++i)
+	for(mrs_natural i = 0; i < agentControl_.getRows(); i++)
 	{
-		agentControl_(i, 3) = t+1;
+		agentControl_(i, 3) = t_+1;
 		updControl(ctrl_agentControl_, agentControl_);
 		agentsJustCreated_(i) = 0.0; //reset at all frames
 	}
 
 	//also pass timer value to the other MarSystems (+1 for considering next time frame)
-	ctrl_tickCount_->setValue(t+1);
+	ctrl_tickCount_->setValue(t_+1);
 
-	//cout << "BRef: " << t << "; Ind: " << inductionTime_ << endl;
+	//cout << "BRef: " << t_ << "; Ind: " << inductionTime_ << endl;
 	
 	//realvec with the enable flag of all the BeatAgents in the pool
 	//(0 -> agent active; 1 -> agent desactivated)
@@ -846,7 +840,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	mutedAgentsTmp_ = ctrl_mutedAgents_->to<mrs_realvec>();
 
 	//Display Input from BeatAgents:
-	//cout << "INPUT (" << t << "): ";
+	//cout << "INPUT (" << t_ << "): ";
 /*	for(mrs_natural a = 0; a < nrAgents_; a++)
 		cout << "\n" << a << "-> " << in(a, 0) << " | " << in(a, 1) << " | " << in(a, 2) << " | " << in(a, 3); 
 	cout << endl;
@@ -872,10 +866,10 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		{
 			agentFlag = in(o, 0);
 
-			//statsPeriods_(o, t) = lastPeriods_(o); 
-			//statsPhases_(o, t) = lastPhases_(o); 
-			//statsAgentsScore_(o, t) = score_(o);
-			//statsMuted_(o, t) = mutedAgents_(o);
+			//statsPeriods_(o, t_) = lastPeriods_(o); 
+			//statsPhases_(o, t_) = lastPhases_(o); 
+			//statsAgentsScore_(o, t_) = score_(o);
+			//statsMuted_(o, t_) = mutedAgents_(o);
 
 			//Only consider alive agents that send new evaluation:
 			//(Remind that each ouputed beat by the agents is only
@@ -890,8 +884,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				lastPeriods_(o) = agentPeriod; //(Periods in frames)
 				lastPhases_(o) = agentPrevBeat; //(Phases in frames)
 
-				//statsPeriods_(o, t) = agentPeriod; 
-				//statsPhases_(o, t) = agentPrevBeat; 
+				//statsPeriods_(o, t_) = agentPeriod; 
+				//statsPhases_(o, t_) = agentPrevBeat; 
 
 				//Update Agents' Score
 				score_(o) += agentDScore;
@@ -904,7 +898,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				//if((score_(bestAgentIndex_) < bestScore_) || (score_(bestAgentIndex_) > bestScore_))
 				if(score_(bestAgentIndex_) != bestScore_)
 				{
-					//cout << "t:" << t << "; Updating bestScore: " << "OLD: " << bestScore_ 
+					//cout << "t:" << t_ << "; Updating bestScore: " << "OLD: " << bestScore_ 
 					//	<< " from Agent" << bestAgentIndex_ << "-NEW: " << score_(bestAgentIndex_) << endl;
 					bestScore_ = score_(bestAgentIndex_);
 					//calcAbsoluteBestScore();
@@ -916,7 +910,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					killAgent(o, "LOST");
 				}
 				//Kill Agent if its score is bellow minimum (wait 5seconds before taking it into consideration)
-				else if(t > timeBeforeKilling_ && score_(o) < bestScore_ && fabs(bestScore_-score_(o)) > 0.1 
+				else if(t_ > timeBeforeKilling_ && score_(o) < bestScore_ && fabs(bestScore_-score_(o)) > 0.1 
 					&& fabs(bestScore_ - score_(o)) > fabs(bestScore_ * obsoleteFactor_))
 				{
 					//cout << "Agent " << o << " Killed: Score below minimum (" << score_(o) << "\\" << bestScore_ << ")" << endl;
@@ -925,10 +919,10 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				else //Checks if there are equal agents to current EVALuated one
 					checkAndKillEqualAgents(o);
 
-				//statsAgentsScore_(o, t) = score_(o);
+				//statsAgentsScore_(o, t_) = score_(o);
 
 			//Display Scores from BeatAgents:
-			/*	cout << "SCORES(" << t << ") (reqBy:" << o << "): " << endl;
+			/*	cout << "SCORES(" << t_ << ") (reqBy:" << o << "): " << endl;
 				for(mrs_natural a = 0; a < nrAgents_; a++)
 					cout << a << "-> " << score_(a) << " ";
 				cout << endl;
@@ -977,7 +971,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 						//(the agent that generates a new one keeps its original hypothesis);
 						//New agent must look for a new beat on the next (updated) period
 						createChildren(o, agentPeriod, agentPrevBeat, agentError, score_(o), beatCounter_(o));
-						//statsAgentsLifeCycle_(o, t) = 2;
+						//statsAgentsLifeCycle_(o, t_) = 2;
 
 						missedBeatsCount_(o)++; //increment missed beats counter for this agent
 					}
@@ -987,35 +981,35 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				{
 					//in nonCausal analysis keep agents' beat history till the end of the analysis
 					if(nonCausal_)
-						agentsHistory_(o, (mrs_natural) beatCounter_(o)) = t;
+						agentsHistory_(o, (mrs_natural) beatCounter_(o)) = t_;
 
 					//Increment beat counter of each agent
 					beatCounter_(o)++;
 
 					//Display Beats from BeatAgents:
-					//cout << "Agent " << o << "(" << t << ") -> AgentScore: " << score_(o) << " BestAgent: " 
+					//cout << "Agent " << o << "(" << t_ << ") -> AgentScore: " << score_(o) << " BestAgent: " 
 					//	<< bestAgentIndex_ << " BestScore: " << bestScore_ << " BeatCount: " << beatCounter_(o) << endl;
 					
 					//if best agent sends beat => outputs best beat
 					if(o == bestAgentIndex_)
 					{	
 						//to avoid beats given by different agents distanced less then minPeriod frames (+ a tolerance = -1)
-						if((t - lastBeatTime_) >= 0.7*lastBeatPeriod_)
+						if((t_ - lastBeatTime_) >= 0.7*lastBeatPeriod_)
 						{
 							//Display Outputted Beat:
-							//cout << "OUTPUT(" << t << "-" << ((t * hopSize_) - (hopSize_/2)) / srcFs_ << "):Beat from Agent " << bestAgentIndex_ << 
+							//cout << "OUTPUT(" << t_ << "-" << ((t_ * hopSize_) - (hopSize_/2)) / srcFs_ << "):Beat from Agent " << bestAgentIndex_ << 
 							//	" BestScore:" << bestScore_ << " (" << score_(bestAgentIndex_) << ")";
-							//cout << ":" << (60.0 / (t - lastBeatTime_)) * (ctrl_srcFs_->to<mrs_real>() / ctrl_hopSize_->to<mrs_natural>()) << "BPM" << endl;
-							//cout << "BEST_AgentPeriod: " << lastPeriods_(bestAgentIndex_) << "(" << (t - lastBeatTime_) << ")" << endl;
+							//cout << ":" << (60.0 / (t_ - lastBeatTime_)) * (ctrl_srcFs_->to<mrs_real>() / ctrl_hopSize_->to<mrs_natural>()) << "BPM" << endl;
+							//cout << "BEST_AgentPeriod: " << lastPeriods_(bestAgentIndex_) << "(" << (t_ - lastBeatTime_) << ")" << endl;
 							
 							ctrl_beatDetected_->setValue(1.0);
 							out.setval(1.0);
 							//Updates agent history, which accounts for the total number
 							//of the detected best (considered) beats of each agent:
 							historyCount_(o)++;
-							//historyBeatTimes_(o, outputCount_) = t;
+							//historyBeatTimes_(o, outputCount_) = t_;
 							outputCount_ ++;
-							lastBeatTime_ = t;
+							lastBeatTime_ = t_;
 							lastBeatPeriod_ = (mrs_natural) lastPeriods_(o);
 
 							if(logFile_)
@@ -1034,7 +1028,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	}
 
 	//just before the induction take effect estimate periodicity (via ACF peaks)
-	if(t == inductionTime_-1 && !inductionFinished_)
+	if(t_ == inductionTime_-1 && !inductionFinished_)
 	{
 		inductionEnabler_(0, 0) = 0.0; //enable = unmuted	
 		updControl(ctrl_inductionEnabler_, inductionEnabler_);
@@ -1042,7 +1036,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 
 	//Create the first BeatAgents with new hypotheses just after Tseconds of induction:
 	//(new agents' score shall be the average of all the already existent ones)
-	else if(t == inductionTime_ && !inductionFinished_)
+	else if(t_ == inductionTime_ && !inductionFinished_)
 	{
 		firstHypotheses_ = ctrl_firstHypotheses_->to<mrs_realvec>();
 
@@ -1055,7 +1049,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 
 		//Updating initial bestScore and creating first agents:
 		//(nr of initial agents equals nr of bpm hypotheses)
-		for(mrs_natural i = 0; i < firstHypotheses_.getRows(); ++i)
+		for(mrs_natural i = 0; i < firstHypotheses_.getRows(); i++)
 		{
 			if((mrs_natural) firstHypotheses_(i,0) > 0) //only consider valid hypothesis:
 			{
@@ -1097,9 +1091,9 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		//(timing updated here, for bactracing, for being contablized in the log file)
 		if(backtrace_)
 		{
-			t = -1; //-1 because timer is updated by the end of the cycle (so next cycle is the actual 0)
+			t_ = -1; //-1 because timer is updated by the end of the cycle (so next cycle is the actual 0)
 			//put all MarSystem's timer to 0:
-			for(mrs_natural i = 0; i < agentControl_.getRows(); ++i)
+			for(mrs_natural i = 0; i < agentControl_.getRows(); i++)
 			{
 				agentControl_(i, 3) = 0;
 				updControl(ctrl_agentControl_, agentControl_);
@@ -1114,7 +1108,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		}
 
 		//After finnishing induction disable induction functioning (tempoinduction Fanout):
-		for(mrs_natural i = 0; i < inductionEnabler_.getSize(); ++i)
+		for(mrs_natural i = 0; i < inductionEnabler_.getSize(); i++)
 			inductionEnabler_(0, i) = 1.0; //diable = muted
 			
 		updControl(ctrl_inductionEnabler_, inductionEnabler_);
@@ -1126,14 +1120,14 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(bestFinalAgent_, "bestFinalAgent");
 	
 	//by the end of the analysis:
-	if(t == soundFileSize_-1) //[! -1 for acouting on time of timing reset on backtrace mode]
+	if(t_ == soundFileSize_-1) //[! -1 for acouting on time of timing reset on backtrace mode]
 	{
 		//if in nonCausalMode save last best agent history as the final output
 		if(nonCausal_)
 		{
 			mrs_natural bestAgentHistorySize = (mrs_natural) beatCounter_(bestFinalAgent_);
 			bestFinalAgentHistory_.create(bestAgentHistorySize);
-			for(int i = 0; i < bestAgentHistorySize; ++i)
+			for(int i = 0; i < bestAgentHistorySize; i++)
 			{
 				//cout << "I: " << i << "; History: " << agentsHistory_(bestFinalAgent_, i) << endl;
 				bestFinalAgentHistory_(i) = agentsHistory_(bestFinalAgent_, i);
@@ -1170,5 +1164,5 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("stem(t, 1, 'r');");
 	//MATLAB_EVAL("hold off;");
 
-	t++; //increment timer by the end of each cycle
+	t_++; //increment timer by the end of each cycle
 }

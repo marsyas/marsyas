@@ -57,7 +57,7 @@ private:
 	mrs_natural lookAhead_;
 	mrs_natural acc_;
 	mrs_natural n_;
-	mrs_natural t;
+	mrs_natural t_;
 	mrs_natural count_;
 	void myUpdate(MarControlPtr sender);
 

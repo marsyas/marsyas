@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -17,18 +17,14 @@
 */
 
 #include "InductionGT.h"
-using std::string; 
-using std::ostringstream;
-using std::cout;
-using std::endl;
-
-
+using namespace std;
+using namespace std;
 using namespace Marsyas;
 
 InductionGT::InductionGT(string name):MarSystem("InductionGT", name)
 {
   addControls();
-  t = 0;
+  t_ = 0;
   maxScore_ = -100.0;
 }
 
@@ -42,7 +38,7 @@ InductionGT::InductionGT(const InductionGT& a) : MarSystem(a)
 	ctrl_hopSize_ = getctrl("mrs_natural/hopSize");
 	ctrl_srcFs_ = getctrl("mrs_real/srcFs");
 
-	t = a.t;
+	t_ = a.t_;
 	ibi_ = a.ibi_;
 	beatTime1_ = a.beatTime1_;
 	beatTime2_ = a.beatTime2_;
@@ -95,11 +91,11 @@ InductionGT::myUpdate(MarControlPtr sender)
 void 
 InductionGT::myProcess(realvec& in, realvec& out)
 {	
-	t++;	
+	t_++;	
 	
 	//Output only defined just after induction time
 	//until then output is undefined...
-	for (mrs_natural o=0; o < onObservations_; o++)
+	for (o=0; o < onObservations_; o++)
     {
 		for (t = 0; t < onSamples_; t++)
 		{
@@ -107,7 +103,7 @@ InductionGT::myProcess(realvec& in, realvec& out)
 		}
     }
 
-	if(t == inductionTime_)
+	if(t_ == inductionTime_)
 	{
 		ostringstream oss;
 		oss << ctrl_sourceFile_->to<mrs_string>();
@@ -133,7 +129,7 @@ InductionGT::myProcess(realvec& in, realvec& out)
 		phase_ = (mrs_natural) (beatTime1_ * srcFs_ / hopSize_);
 
 		//Retrieve best score within induction window -> for starting score normalized with remaining analysis
-		for(mrs_natural i = 0; i <= inObservations_; ++i)
+		for(mrs_natural i = 0; i <= inObservations_; i++)
 		{
 			if(in(i, 2) > maxScore_)
 				maxScore_ = in(i, 2); //max score from PhaseLock (if actual tempo would be measured)

@@ -57,7 +57,7 @@ private:
 	MarControlPtr ctrl_confidence_;
 
 	mrs_real prevValue_;
-	mrs_natural t;
+	mrs_natural t_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
