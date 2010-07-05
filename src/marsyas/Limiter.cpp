@@ -18,10 +18,10 @@
 
 #include "Limiter.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Limiter::Limiter(string name):MarSystem("Limiter",name)
+Limiter::Limiter(mrs_string name):MarSystem("Limiter",name)
 {
   //type_ = "Limiter";
   //name_ = name;

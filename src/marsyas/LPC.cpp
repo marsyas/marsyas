@@ -20,10 +20,10 @@
 
 // #define _MATLAB_LPC_
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-LPC::LPC(string name):MarSystem("LPC",name)
+LPC::LPC(mrs_string name):MarSystem("LPC",name)
 {
 	addControls();
 }
@@ -488,5 +488,3 @@ LPC::myProcess(realvec& in, realvec& out)
 #endif
 
 }
-
-

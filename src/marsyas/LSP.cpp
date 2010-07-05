@@ -25,14 +25,14 @@
 
 // #define _MATLAB_LSP_
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 using std::polar;
 
 using namespace Marsyas;
 
-LSP::LSP(string name):MarSystem("LSP",name)
+LSP::LSP(mrs_string name):MarSystem("LSP",name)
 {
 	addControls();
 }
@@ -150,5 +150,3 @@ LSP::myProcess(realvec& in, realvec& out)
 	MATLAB_EVAL("LSP_test(LSP_order, LSP_in, LSP_P, LSP_Q, LSP_Proots, LSP_Qroots, LSP_out1, LSP_out2);");
 #endif
 }
-
-

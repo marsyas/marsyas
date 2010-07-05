@@ -18,10 +18,10 @@
 
 #include "LPCC.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-LPCC::LPCC(string name):MarSystem("LPCC",name)
+LPCC::LPCC(mrs_string name):MarSystem("LPCC",name)
 {
 	addControls();
 }
@@ -100,5 +100,3 @@ LPCC::myProcess(realvec& in, realvec& out)
  	//MATLAB_PUT(out, "LPCC_out");
  	//MATLAB_EVAL("LPCC_test");
 }
-
-

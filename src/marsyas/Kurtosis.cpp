@@ -19,11 +19,11 @@
 
 #include "Kurtosis.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
-Kurtosis::Kurtosis(string name):MarSystem("Kurtosis",name)
+Kurtosis::Kurtosis(mrs_string name):MarSystem("Kurtosis",name)
 {
   z_ = 0.0;
   b_ = 0.0;
@@ -134,4 +134,3 @@ Kurtosis::myProcess(realvec& in, realvec& out)
 
 // 	cout << "k2 = " << out(0,0) << endl;
 }
-

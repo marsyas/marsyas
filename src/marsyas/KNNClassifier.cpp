@@ -18,10 +18,10 @@
 
 #include "KNNClassifier.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-KNNClassifier::KNNClassifier(string name):MarSystem("KNNClassifier",name)
+KNNClassifier::KNNClassifier(mrs_string name):MarSystem("KNNClassifier",name)
 {
   prev_mode_ = "predict";
   addControls();
@@ -73,7 +73,7 @@ KNNClassifier::myUpdate(MarControlPtr sender)
   grow_ = getctrl("mrs_natural/grow")->to<mrs_natural>();
   nPoints_ = getctrl("mrs_natural/nPoints")->to<mrs_natural>();
   k_ = getctrl("mrs_natural/k")->to<mrs_natural>();
-  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+  mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   
   if (mode == "train")
     {
@@ -108,7 +108,7 @@ KNNClassifier::myProcess(realvec& in, realvec& out)
   //checkFlow(in,out);
   
   mrs_real v;
-  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+  mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   mrs_real label;
   mrs_natural nlabels = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
   mrs_natural prediction;

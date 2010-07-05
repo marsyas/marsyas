@@ -25,7 +25,7 @@
 #include "basis.h"
 #include <sstream>
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
@@ -271,7 +271,7 @@ namespace Marsyas
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-LyonPassiveEar::LyonPassiveEar(string name)
+LyonPassiveEar::LyonPassiveEar(mrs_string name)
 : MarSystem("LyonPassiveEar", name),
   fs_ (0),
   currDecimState_(0),
