@@ -19,6 +19,8 @@
 #include "Flux.h"
 
 using std::ostringstream;
+using std::abs;
+
 using namespace Marsyas;
 
 Flux::Flux(mrs_string name):MarSystem("Flux",name)
@@ -70,7 +72,7 @@ Flux::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
 	mrs_string mode = ctrl_mode_->to<mrs_string>();
-
+	
 	for (t = 0; t < inSamples_; t++)
 	{
 		if(mode == "marsyas")
@@ -98,8 +100,6 @@ Flux::myProcess(realvec& in, realvec& out)
 		}
 		else if(mode=="DixonDAFX06")
 		{
-
-			
 			flux_ = 0.0;
 			//diff_ = 0.0;
 			//max_ = 0.0;
@@ -111,7 +111,7 @@ Flux::myProcess(realvec& in, realvec& out)
 				mrs_real tmp = in(o,t)  - prevWindow_(o,t);
 				
 				diff_ = (tmp+abs(tmp))/2;
-
+				
 				//lmartins version
 				//diff_ = in(o,t)*in(o,t) - prevWindow_(o,t)*prevWindow_(o,t);
 				//diff_ = (diff_+abs(diff_))/2.0;
