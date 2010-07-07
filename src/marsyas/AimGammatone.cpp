@@ -21,6 +21,7 @@
  
 using std::ostringstream;
 using std::complex;
+using std::abs;
 
 using namespace Marsyas;
 

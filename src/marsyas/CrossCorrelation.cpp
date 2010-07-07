@@ -22,6 +22,7 @@
 using std::ostringstream;
 using std::cout;
 using std::endl;
+using std::abs;
 
 using namespace Marsyas;
 

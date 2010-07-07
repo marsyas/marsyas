@@ -19,6 +19,8 @@
 #include "EnhADRess.h"
 
 using std::ostringstream;
+using std::abs;
+
 using namespace Marsyas;
 
 EnhADRess::EnhADRess(mrs_string name):MarSystem("EnhADRess", name)

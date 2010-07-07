@@ -19,7 +19,10 @@
 #include "common.h"
 #include "PeakDistanceHorizontality.h"
 
-using std::string; using std::ostringstream;
+using std::string;
+using std::ostringstream;
+using std::abs;
+
 using namespace Marsyas;
 
 //#define MTLB_DBG_LOG

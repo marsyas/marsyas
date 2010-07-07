@@ -24,7 +24,10 @@
 
 #include <algorithm>
 
-using std::string; using std::ostringstream;
+using std::string;
+using std::ostringstream;
+using std::abs;
+
 using namespace Marsyas;
 
 PeakConvert::PeakConvert(string name):MarSystem("PeakConvert",name)

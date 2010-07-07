@@ -43,6 +43,7 @@ using std::string;
 using std::ostringstream;
 using std::min;
 using std::max;
+using std::abs;
 
 
 using namespace Marsyas;

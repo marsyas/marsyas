@@ -7,6 +7,7 @@
  
 using std::ostringstream;
 using std::vector;
+using std::abs;
 
 using namespace Marsyas;
 
