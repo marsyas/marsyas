@@ -25,7 +25,7 @@
 
 using std::ostringstream;
 using std::vector;
-using std::abd;
+using std::abs;
 
 using namespace Marsyas;
 
