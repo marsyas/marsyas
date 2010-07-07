@@ -17,14 +17,11 @@
 */
 
 #include "InductionGT.h"
-
-using std::ostringstream;
-using std::cout;
-using std::endl;
-
+using namespace std;
+using namespace std;
 using namespace Marsyas;
 
-InductionGT::InductionGT(mrs_string name):MarSystem("InductionGT", name)
+InductionGT::InductionGT(string name):MarSystem("InductionGT", name)
 {
   addControls();
   t_ = 0;
@@ -95,6 +92,7 @@ void
 InductionGT::myProcess(realvec& in, realvec& out)
 {	
 	t_++;	
+	mrs_natural o,t;
 	
 	//Output only defined just after induction time
 	//until then output is undefined...

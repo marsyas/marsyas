@@ -85,6 +85,7 @@ PeakerOnset::myUpdate(MarControlPtr sender)
 void
 PeakerOnset::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	ctrl_onsetDetected_->setValue(false);
 	ctrl_confidence_->setValue(0.0);
 	out.setval(0.0);

@@ -221,7 +221,7 @@ BeatReferee::myUpdate(MarControlPtr sender)
 	//Each line(observation) accounts for an agent
 	//[New/Update_Flag|Period|Phase|Timming]
 	agentControl_.create(nrAgents_, 4);
-	updControl(ctrl_agentControl_, agentControl_);
+	updctrl(ctrl_agentControl_, agentControl_);
 
 	
 	for(int i = 0; i < nrAgents_; i++)
@@ -572,7 +572,7 @@ BeatReferee::setNewHypothesis(mrs_natural agentIndex, mrs_natural newPeriod, mrs
 	agentControl_(agentIndex, 2) = nextBeat;
 	agentControl_(agentIndex, 3) = t_;
 
-	updControl(ctrl_agentControl_, agentControl_);
+	updctrl(ctrl_agentControl_, agentControl_);
 
 	lastPeriods_(agentIndex) = newPeriod;
 }
@@ -634,10 +634,10 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat,
 		{
 			//Activate new agent
 			//mutedAgents_(a) = 0.0;
-			//updControl(ctrl_mutedAgents_, mutedAgents_);
+			//updctrl(ctrl_mutedAgents_, mutedAgents_);
 
 			mutedAgentsTmp_(a) = 0.0;
-			updControl(ctrl_mutedAgents_, mutedAgentsTmp_);
+			updctrl(ctrl_mutedAgents_, mutedAgentsTmp_);
 
 			//Diplay Created BeatAgent:
 			//cout << " CREATED: Agent " << a << endl;
@@ -667,7 +667,7 @@ BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat,
 			//(don't know why when a new agent is created its time, in agentControl, keeps
 			//the time of the previous tick)
 			agentControl_(a, 3) = t_+1;
-			updControl(ctrl_agentControl_, agentControl_);
+			updctrl(ctrl_agentControl_, agentControl_);
 
 			returnCreatedAgent = a;
 
@@ -712,9 +712,9 @@ BeatReferee::killAgent(mrs_natural agentIndex, mrs_string motif, mrs_natural cal
 		}
 
 		//mutedAgents_(agentIndex) = 1.0;
-		//updControl(ctrl_mutedAgents_, mutedAgents_);
+		//updctrl(ctrl_mutedAgents_, mutedAgents_);
 		mutedAgentsTmp_(agentIndex) = 1.0;
-		updControl(ctrl_mutedAgents_, mutedAgentsTmp_);
+		updctrl(ctrl_mutedAgents_, mutedAgentsTmp_);
 
 
 		score_(agentIndex) = 0.0;
@@ -806,10 +806,10 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//(and deactivate induction's period estimation (ACF) -> computer expensive)
 	if(t_ == 0 && !inductionFinished_)
 	{
-		updControl(ctrl_mutedAgents_, mutedAgents_);
+		updctrl(ctrl_mutedAgents_, mutedAgents_);
 		
 		inductionEnabler_(0, 0) = 1.0; //diable = muted	
-		updControl(ctrl_inductionEnabler_, inductionEnabler_);
+		updctrl(ctrl_inductionEnabler_, inductionEnabler_);
 	}
 
 	//cout << "t: " << t_ << endl;
@@ -823,7 +823,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	for(mrs_natural i = 0; i < agentControl_.getRows(); i++)
 	{
 		agentControl_(i, 3) = t_+1;
-		updControl(ctrl_agentControl_, agentControl_);
+		updctrl(ctrl_agentControl_, agentControl_);
 		agentsJustCreated_(i) = 0.0; //reset at all frames
 	}
 
@@ -1031,7 +1031,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	if(t_ == inductionTime_-1 && !inductionFinished_)
 	{
 		inductionEnabler_(0, 0) = 0.0; //enable = unmuted	
-		updControl(ctrl_inductionEnabler_, inductionEnabler_);
+		updctrl(ctrl_inductionEnabler_, inductionEnabler_);
 	}
 
 	//Create the first BeatAgents with new hypotheses just after Tseconds of induction:
@@ -1096,7 +1096,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 			for(mrs_natural i = 0; i < agentControl_.getRows(); i++)
 			{
 				agentControl_(i, 3) = 0;
-				updControl(ctrl_agentControl_, agentControl_);
+				updctrl(ctrl_agentControl_, agentControl_);
 			}
 			ctrl_tickCount_->setValue(0);
 		}
@@ -1111,7 +1111,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		for(mrs_natural i = 0; i < inductionEnabler_.getSize(); i++)
 			inductionEnabler_(0, i) = 1.0; //diable = muted
 			
-		updControl(ctrl_inductionEnabler_, inductionEnabler_);
+		updctrl(ctrl_inductionEnabler_, inductionEnabler_);
 		
 		inductionFinished_ = true;
 	}
@@ -1139,7 +1139,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				bestFinalAgentHistory_(0) = -1.0;
 			}
 
-			updControl(ctrl_bestFinalAgentHistory_, bestFinalAgentHistory_);
+			updctrl(ctrl_bestFinalAgentHistory_, bestFinalAgentHistory_);
 			//MATLAB_PUT(bestFinalAgentHistory_, "bestAgentHistory");
 		}
 	}

@@ -861,6 +861,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 void 
 PhaseLock::myProcess(realvec& in, realvec& out)
 {
+	mrs_natural o,t;
 	//t_ is constantly updated with the referee's next time frame
 	t_ = ctrl_tickCount_->to<mrs_natural>();
 
