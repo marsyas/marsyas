@@ -19,7 +19,7 @@
 #include "MarSystemTemplateAdvanced.h"
 #include "MarControlManager.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::ofstream;
 using std::endl;
@@ -28,7 +28,7 @@ using std::ios;
 
 using namespace Marsyas;
 
-MarSystemTemplateAdvanced::MarSystemTemplateAdvanced(string name):MarSystem("MarSystemTemplateAdvanced", name)
+MarSystemTemplateAdvanced::MarSystemTemplateAdvanced(mrs_string name):MarSystem("MarSystemTemplateAdvanced", name)
 {
 	// Add any specific controls needed by this MarSystem
 	// (default controls all MarSystems should have
@@ -223,7 +223,7 @@ Marsyas::operator<<(std::ostream& os, const MyHeader& hdr)
 std::istream& 
 Marsyas::operator>>(std::istream& is, MyHeader& hdr)
 {
-	string skip;
+	mrs_string skip;
 	is >> skip >> skip >> skip;
 	
 	if(skip != "mrs_myHeader")
@@ -246,12 +246,3 @@ Marsyas::operator>>(std::istream& is, MyHeader& hdr)
 
 	return is;
 }
-
-
-
-
-
-
-
-
-

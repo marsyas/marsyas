@@ -23,6 +23,7 @@
 #include <string>
 #include <cstdlib>
 #include "DLLDefines.h"
+#include "common_header.h"
 
 namespace Marsyas
 {

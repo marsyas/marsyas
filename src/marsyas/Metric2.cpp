@@ -23,10 +23,10 @@
 #include "Metric2.h"
 #include "NumericLib.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Metric2::Metric2(string name):MarSystem("Metric2", name)
+Metric2::Metric2(mrs_string name):MarSystem("Metric2", name)
 {
 	addControls();
 }
@@ -76,7 +76,7 @@ Metric2::myUpdate(MarControlPtr sender)
 	vec_j_.create(ctrl_inObservations_->to<mrs_natural>()/2, ctrl_inSamples_->to<mrs_natural>());
 
 	//get the pointer for the correct metric function
-	string metricName = ctrl_metric_->to<mrs_string>(); 
+	mrs_string metricName = ctrl_metric_->to<mrs_string>(); 
 	if(metricName == "euclideanDistance")
 	{
 		metricFunc_ = &NumericLib::euclideanDistance;
@@ -159,9 +159,3 @@ Metric2::logLikelihood(const realvec& Vi, const realvec& Vj, const realvec& covM
     }
   return res;
 }
-
-
-
-
-
-

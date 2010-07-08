@@ -20,12 +20,12 @@
 #include "MP3FileSource.h"
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 #define INPUT_BUFFER_SIZE (5*8192)
 
-MP3FileSource::MP3FileSource(string name):AbsSoundFileSource("MP3FileSource", name)
+MP3FileSource::MP3FileSource(mrs_string name):AbsSoundFileSource("MP3FileSource", name)
 {
 	//type_ = "MP3FileSource";
 	//name_ = name;
@@ -245,7 +245,7 @@ MP3FileSource::PrintFrameInfo(struct mad_header *Header)
  * 		information to update the MarSystem. 
  */
 void 
-MP3FileSource::getHeader(string filename) 
+MP3FileSource::getHeader(mrs_string filename) 
 {
 
 #ifdef MARSYAS_MAD  
@@ -323,7 +323,7 @@ MP3FileSource::getHeader(string filename)
 			{
 				
 				if(stream.error != MAD_ERROR_LOSTSYNC) {
-					string errmsg;
+					mrs_string errmsg;
 					errmsg += "MP3FileSource: recoverable frame level error: ";
 					errmsg += mad_stream_errorstr(&stream);
 					MRSDIAG(errmsg);
@@ -540,7 +540,7 @@ MP3FileSource::getLinear16(realvec& slice)
 			{
 	    
 				if(stream.error != MAD_ERROR_LOSTSYNC) {
-					string errmsg;
+					mrs_string errmsg;
 					errmsg += "MP3FileSource: recoverable frame level error :";
 					errmsg += mad_stream_errorstr(&stream);
 					MRSDIAG(errmsg);
@@ -824,4 +824,3 @@ inline signed int MP3FileSource::scale(mad_fixed_t sample)
 	return sample >> (MAD_F_FRACBITS + 1 - 16);
 }
 #endif 
-

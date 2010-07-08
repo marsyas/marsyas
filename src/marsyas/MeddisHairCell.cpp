@@ -18,14 +18,14 @@
 
 #include "MeddisHairCell.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::max;
 using std::min;
 
 using namespace Marsyas;
 
-MeddisHairCell::MeddisHairCell(string name):MarSystem("MeddisHairCell",name)
+MeddisHairCell::MeddisHairCell(mrs_string name):MarSystem("MeddisHairCell",name)
 {
   //type_ = "MeddisHairCell";
   //name_ = name;
@@ -126,4 +126,3 @@ MeddisHairCell::myProcess(realvec& in, realvec& out)
     }
   }
 }
-

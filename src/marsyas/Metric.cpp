@@ -19,7 +19,7 @@
 #include "Metric.h"
 #include "NumericLib.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 static mrs_real
@@ -28,7 +28,7 @@ randomDistance(const realvec& Vi, const realvec& Vj, const realvec& covMatrix)
 	return rand()/mrs_real(RAND_MAX);
 }
 
-Metric::Metric(string name):MarSystem("Metric", name)
+Metric::Metric(mrs_string name):MarSystem("Metric", name)
 {
 	addControls();
 }
@@ -78,7 +78,7 @@ Metric::myUpdate(MarControlPtr sender)
 	vec_j_.create(ctrl_inObservations_->to<mrs_natural>()/2, ctrl_inSamples_->to<mrs_natural>());
 
 	//get the pointer for the correct metric function
-	string metricName = ctrl_metric_->to<mrs_string>(); 
+	mrs_string metricName = ctrl_metric_->to<mrs_string>(); 
 	if(metricName == "euclideanDistance")
 	{
 		metricFunc_ = &NumericLib::euclideanDistance;
@@ -124,11 +124,3 @@ Metric::myProcess(realvec& in, realvec& out)
 	else
 		out(0) = 0; //default output value when no metric is defined
 }
-
-
-
-
-
-
-
-

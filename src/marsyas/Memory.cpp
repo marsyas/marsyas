@@ -18,11 +18,11 @@
 
 #include "Memory.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
-Memory::Memory(string name):MarSystem("Memory",name)
+Memory::Memory(mrs_string name):MarSystem("Memory",name)
 {
 	end_ = 0;
 	addControls();
@@ -82,11 +82,11 @@ Memory::myUpdate(MarControlPtr sender)
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 
 	ostringstream oss;
-	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	for (int i = 0; i < inObservations_; ++i)
 	{
-		string inObsName;
-		string temp;
+		mrs_string inObsName;
+		mrs_string temp;
 		inObsName = inObsNames.substr(0, inObsNames.find(","));
 		temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
 		inObsNames = temp;
@@ -136,16 +136,3 @@ Memory::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(out, "Memory_out");
 	//MATLAB_EVAL("plot(Memory_out);");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

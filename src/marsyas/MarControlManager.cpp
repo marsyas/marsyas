@@ -21,7 +21,7 @@
 //#include "MarSystem.h"
 
 using namespace Marsyas;
-using std::string; using std::ostringstream;
+using std::ostringstream;
 
 MarControlManager* MarControlManager::instance_ = NULL;
 
@@ -42,14 +42,14 @@ MarControlManager::~MarControlManager()
 }
 
 void 
-MarControlManager::registerPrototype(string type, MarControlPtr control)
+MarControlManager::registerPrototype(mrs_string type, MarControlPtr control)
 {
 	registry_[type] = control;
 	typeRegistry_[control->value_->getTypeID()] = type;
 }
 
 MarControlPtr
-MarControlManager::create(string type) 
+MarControlManager::create(mrs_string type) 
 {
 	if (registry_.find(type) != registry_.end())
 	{
@@ -79,7 +79,7 @@ MarControlManager::createFromStream(std::string type, std::istream& in)
 	return ctrl;
 }
 
-bool MarControlManager::isRegistered (string name)
+bool MarControlManager::isRegistered (mrs_string name)
 {
 	return (registry_.find(name) != registry_.end());
 }

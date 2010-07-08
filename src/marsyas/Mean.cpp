@@ -18,10 +18,10 @@
 
 #include "Mean.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-Mean::Mean(string name): MarSystem("Mean", name)
+Mean::Mean(mrs_string name): MarSystem("Mean", name)
 {
 }
 

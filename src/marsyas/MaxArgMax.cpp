@@ -18,14 +18,14 @@
 
 #include "MaxArgMax.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::max;
 using std::min;
 
 using namespace Marsyas;
 
-MaxArgMax::MaxArgMax(string name):MarSystem("MaxArgMax",name)
+MaxArgMax::MaxArgMax(mrs_string name):MarSystem("MaxArgMax",name)
 {
 	addControls();
 }
@@ -126,15 +126,3 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(in, "Peaker_output");
 	//MATLAB_PUT(out, "MaxPeaks");
 }
-
-
-
-
-
-
-
-
-
-
-
-

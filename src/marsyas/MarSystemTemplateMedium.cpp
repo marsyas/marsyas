@@ -18,10 +18,10 @@
 
 #include "MarSystemTemplateMedium.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MarSystemTemplateMedium::MarSystemTemplateMedium(string name):MarSystem("MarSystemTemplateMedium", name)
+MarSystemTemplateMedium::MarSystemTemplateMedium(mrs_string name):MarSystem("MarSystemTemplateMedium", name)
 {
 	// Add any specific controls needed by this MarSystem
 	// (default controls all MarSystems should have
@@ -161,5 +161,3 @@ MarSystemTemplateMedium::myProcess(realvec& in, realvec& out)
 	mrs_real g = (((mrs_natural)(gainValue*10)+1)%10)/10.0;
 	ctrl_gain_EXAMPLE_->setValue(g);
 }
-
-

@@ -29,11 +29,11 @@ using std::endl;
 
 using namespace Marsyas;
 
-string MrsLog::fname_ = "marsyas.log";
+mrs_string MrsLog::fname_ = "marsyas.log";
 bool MrsLog::warnings_off_ = false;
 
 void 
-MrsLog::setLogFile(string fname)
+MrsLog::setLogFile(mrs_string fname)
 {
 	fname_ = fname;
 }
@@ -168,4 +168,3 @@ MrsLog::mrsAssert(const char *strFile, unsigned uLine)
 	;
 #endif
 }
-

@@ -18,10 +18,10 @@
 
 
 #include "MaxMin.h"
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MaxMin::MaxMin(string name): MarSystem("MaxMin",name)
+MaxMin::MaxMin(mrs_string name): MarSystem("MaxMin",name)
 {
 }
 

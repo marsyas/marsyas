@@ -23,7 +23,7 @@
 #include <algorithm>
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 
@@ -43,13 +43,13 @@ MarControlValue::setDebugValue()
 
 
 
-string
+mrs_string
 MarControlValue::getType() const
 {
 	return type_;
 }
 
-string
+mrs_string
 MarControlValue::getRegisteredType()
 {
 	return MarControlManager::getManager()->getRegisteredType(this->getTypeID());
@@ -354,4 +354,3 @@ MarControlValueT<bool>::divide(MarControlValue *v)
 	MRSASSERT(0); //not implemented
 	return 0;
 }
-

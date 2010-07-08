@@ -18,10 +18,10 @@
 
 #include "MinArgMin.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MinArgMin::MinArgMin(string name):MarSystem("MinArgMin",name)
+MinArgMin::MinArgMin(mrs_string name):MarSystem("MinArgMin",name)
 {
   //type_ = "MinArgMin";
   //name_ = name;

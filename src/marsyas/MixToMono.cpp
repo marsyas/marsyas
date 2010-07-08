@@ -18,10 +18,10 @@
 
 #include "MixToMono.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MixToMono::MixToMono(string name) : MarSystem("MixToMono", name)
+MixToMono::MixToMono(mrs_string name) : MarSystem("MixToMono", name)
 {
 	// Nothing special here, no controls to add.
 }
@@ -71,4 +71,3 @@ MixToMono::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-

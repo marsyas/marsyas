@@ -18,10 +18,10 @@
 
 #include "MemorySource.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MemorySource::MemorySource(string name):MarSystem("MemorySource",name)
+MemorySource::MemorySource(mrs_string name):MarSystem("MemorySource",name)
 {
   //type_ = "MemorySource";
   //name_ = name;
@@ -95,5 +95,3 @@ MemorySource::myProcess(realvec& in, realvec& out)
   if( count_ >= 1 + (samplesToUse_ -1) / onSamples_ )
     setctrl("mrs_bool/done", true);  
 }
-
-

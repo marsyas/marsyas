@@ -1,7 +1,7 @@
 #include <map>
 #include "MedianFilter.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::map;
 using std::multimap;

@@ -18,12 +18,12 @@
 
 #include "MFCC.h"
 
-using std::string;
+
 using std::ostringstream;
 
 using namespace Marsyas;
 
-MFCC::MFCC(string name):MarSystem("MFCC",name)
+MFCC::MFCC(mrs_string name):MarSystem("MFCC",name)
 {
 	addControls();
 	pfftSize_ = 0;
@@ -280,11 +280,3 @@ MFCC::myProcess(realvec& in, realvec& out)
 		out(o,0) = sum;
 	}
 }
-
-
-
-
-
-
-
-

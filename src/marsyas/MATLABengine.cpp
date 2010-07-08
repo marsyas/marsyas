@@ -34,7 +34,6 @@
 #include "MATLABengine.h"
 
 #ifdef MARSYAS_MATLAB
-using std::string;
 using std::vector;
 using std::complex;
 
@@ -94,7 +93,7 @@ MATLABengine::evalString(const std::ostringstream& MATLABcmd)
 }
 
 void
-MATLABengine::putVariable(const string value, string MATLABname)
+MATLABengine::putVariable(const mrs_string value, mrs_string MATLABname)
 {
 	//-----------------------------------
 	//send C/C++ string to MATLAB string
@@ -107,7 +106,7 @@ MATLABengine::putVariable(const string value, string MATLABname)
 }
 
 void
-MATLABengine::putVariable(const long *const value, unsigned int size, string MATLABname)
+MATLABengine::putVariable(const long *const value, unsigned int size, mrs_string MATLABname)
 {
 	//-----------------------------------
 	//send C/C++ vector to MATLAB vector
@@ -121,14 +120,14 @@ MATLABengine::putVariable(const long *const value, unsigned int size, string MAT
 	engPutVariable(engine_, MATLABname.c_str(), mxVector);
   
 	//Convert to MATLAB double type
-	string MatCmd = MATLABname + "=double(" + MATLABname + ");";
+	mrs_string MatCmd = MATLABname + "=double(" + MATLABname + ");";
 	engEvalString(engine_, MatCmd.c_str());
   
 	mxDestroyArray(mxVector);
 }
 
 void
-MATLABengine::putVariable(const float *const value, unsigned int size, string MATLABname)
+MATLABengine::putVariable(const float *const value, unsigned int size, mrs_string MATLABname)
 {
 	//-----------------------------------
 	//send C/C++ vector to MATLAB vector
@@ -142,7 +141,7 @@ MATLABengine::putVariable(const float *const value, unsigned int size, string MA
 	engPutVariable(engine_, MATLABname.c_str(), mxVector);
   
 	//Convert to MATLAB double type
-	string MatCmd = MATLABname + "=double(" + MATLABname + ");";
+	mrs_string MatCmd = MATLABname + "=double(" + MATLABname + ");";
 	engEvalString(engine_, MatCmd.c_str());
   
 	mxDestroyArray(mxVector);
@@ -150,7 +149,7 @@ MATLABengine::putVariable(const float *const value, unsigned int size, string MA
 
 
 void
-MATLABengine::putVariable(const double *const value, unsigned int size, string MATLABname)
+MATLABengine::putVariable(const double *const value, unsigned int size, mrs_string MATLABname)
 {
 	//-----------------------------------
 	//send C/C++ vector to MATLAB vector
@@ -168,20 +167,20 @@ MATLABengine::putVariable(const double *const value, unsigned int size, string M
 
 
 void 
-MATLABengine::putVariable(mrs_natural value, string MATLABname)
+MATLABengine::putVariable(mrs_natural value, mrs_string MATLABname)
 {
 	long lvalue = (long)value;
 	putVariable(&lvalue,1, MATLABname);
 }
 void 
-MATLABengine::putVariable(mrs_real value, string MATLABname)
+MATLABengine::putVariable(mrs_real value, mrs_string MATLABname)
 {
 	double dvalue = (double)value;
 	putVariable(&dvalue,1, MATLABname);
 }
 
 void 
-MATLABengine::putVariable(mrs_complex value, string MATLABname)
+MATLABengine::putVariable(mrs_complex value, mrs_string MATLABname)
 {
 	mwSize dims[2];
 	dims[0] = 1; 
@@ -202,7 +201,7 @@ MATLABengine::putVariable(mrs_complex value, string MATLABname)
 
 
 void
-MATLABengine::putVariable(realvec value, string MATLABname)
+MATLABengine::putVariable(realvec value, mrs_string MATLABname)
 {
 	//----------------------------------
 	// send a realvec to a MATLAB matrix
@@ -221,7 +220,7 @@ MATLABengine::putVariable(realvec value, string MATLABname)
 }
 
 void 
-MATLABengine::putVariable(vector<mrs_natural> value, string MATLABname)
+MATLABengine::putVariable(vector<mrs_natural> value, mrs_string MATLABname)
 {
 	mwSize dims[2];
 	dims[0] = 1; //row vector
@@ -242,7 +241,7 @@ MATLABengine::putVariable(vector<mrs_natural> value, string MATLABname)
 
 
 void 
-MATLABengine::putVariable(vector<mrs_real> value, string MATLABname)
+MATLABengine::putVariable(vector<mrs_real> value, mrs_string MATLABname)
 {
 	mwSize dims[2];
 	dims[0] = 1; //row vector
@@ -262,7 +261,7 @@ MATLABengine::putVariable(vector<mrs_real> value, string MATLABname)
 }
 
 void 
-MATLABengine::putVariable(vector<mrs_complex> value, string MATLABname)
+MATLABengine::putVariable(vector<mrs_complex> value, mrs_string MATLABname)
 {
 	mwSize dims[2];
 	dims[0] = 1; //row vector
@@ -534,5 +533,3 @@ MATLABengine::getVariable(std::string MATLABname, vector<mrs_complex>& value)
 
 
 #endif //_MATLAB_ENGINE
-
-

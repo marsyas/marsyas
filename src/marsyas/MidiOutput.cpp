@@ -23,10 +23,10 @@
 #endif 
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MidiOutput::MidiOutput(string name):MarSystem("MidiOutput",name)
+MidiOutput::MidiOutput(mrs_string name):MarSystem("MidiOutput",name)
 {  
 #ifdef MARSYAS_MIDIIO
     midiout = NULL;
@@ -158,11 +158,3 @@ void MidiOutput::myProcess(realvec& in, realvec& out)
             out(o,t) =  in(o,t);
         }
 }
-
-
-
-
-
-
-
-

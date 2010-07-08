@@ -23,10 +23,10 @@
 #include "lame/lame.h"
 #endif
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MP3FileSink::MP3FileSink(string name):AbsSoundFileSink("MP3FileSink",name)
+MP3FileSink::MP3FileSink(mrs_string name):AbsSoundFileSink("MP3FileSink",name)
 {
 	//type_ = "MP3FileSink";
 	//name_ = name;
@@ -83,10 +83,10 @@ MP3FileSink::addControls()
 }
 
 bool 
-MP3FileSink::checkExtension(string filename)
+MP3FileSink::checkExtension(mrs_string filename)
 {
 	FileName fn(filename);
-	string mp3ext  = "mp3";
+	mrs_string mp3ext  = "mp3";
   
 	if (fn.ext() == mp3ext)
 		return true;
@@ -134,7 +134,7 @@ MP3FileSink::myUpdate(MarControlPtr sender)
 	lame_set_quality(gfp_,2);   /* 2=high  5 = medium  7=low */ // ,(int) ceil(getctrl("mrs_natural/encodingQuality")->to<mrs_natural>())
 
 	// split id3 string
-	string id3tags = getctrl("mrs_string/id3tags")->to<mrs_string>();
+	mrs_string id3tags = getctrl("mrs_string/id3tags")->to<mrs_string>();
 	mrs_natural pos=0;
 	pos = id3tags.find("|", 0);
 	id3tag_set_title(gfp_, id3tags.substr(0, pos).c_str());
@@ -168,7 +168,7 @@ MP3FileSink::myUpdate(MarControlPtr sender)
 }
   
 void 
-MP3FileSink::putHeader(string filename)
+MP3FileSink::putHeader(mrs_string filename)
 {	
 #ifdef MARSYAS_LAME
 	sfp_ = fopen(filename.c_str(), "wb");	

@@ -24,7 +24,7 @@
 #include "MarControlValue.h"
 #include "MarSystem.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::vector;
 using std::pair;
@@ -131,7 +131,7 @@ namespace Marsyas {
 		return state_;
 	}
 
-	string
+	mrs_string
 	MarControl::getType() const
 	{ 
 		return value_->getType(); 

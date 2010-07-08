@@ -23,7 +23,7 @@
 #include "EvValUpd.h"
 #include "TmVirtualTime.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
@@ -37,7 +37,7 @@ using std::ostream;
 
 using namespace Marsyas;
 
-MarSystem::MarSystem(string type, string name)
+MarSystem::MarSystem(mrs_string type, mrs_string name)
 {
 	parent_ = NULL;
 	name_ = name;
@@ -414,7 +414,7 @@ MarSystem::getChildMarSystem(std::string childPath)
 		vector<MarSystem*>::const_iterator msysIter;
 		for (msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter)
 		{
-			string prefix = (*msysIter)->getPrefix();
+			mrs_string prefix = (*msysIter)->getPrefix();
 			prefix = prefix.substr(1, prefix.length()-2); //ignore leading and trailing "/"
 			if (childPath.substr(0, prefix.length()) == prefix)
 			{
@@ -451,19 +451,19 @@ MarSystem::setParent(const MarSystem* parent) // => mutexes [?]
 }
 
 void
-MarSystem::setName(string name) // => mutexes [?]
+MarSystem::setName(mrs_string name) // => mutexes [?]
 {
 	if (name == name_)
 		return;
 
-	string oldPrefix = prefix_;
+	mrs_string oldPrefix = prefix_;
 	prefix_ = "/" + type_ + "/" + name + "/";
 	name_ = name;
 
 	//update path accordingly
-	string::size_type pos = absPath_.find(oldPrefix, 0);
-	string uppath = absPath_.substr(0, pos);
-	string downpath = absPath_.substr(oldPrefix.length()+pos, absPath_.length()-(oldPrefix.length()+pos));
+	mrs_string::size_type pos = absPath_.find(oldPrefix, 0);
+	mrs_string uppath = absPath_.substr(0, pos);
+	mrs_string downpath = absPath_.substr(oldPrefix.length()+pos, absPath_.length()-(oldPrefix.length()+pos));
 	absPath_ = uppath + prefix_ + downpath;
 
 	if (isComposite_)
@@ -476,19 +476,19 @@ MarSystem::setName(string name) // => mutexes [?]
 }
 
 void
-MarSystem::setType(string type) // => mutexes [?]
+MarSystem::setType(mrs_string type) // => mutexes [?]
 {
 	if (type == type_)
 		return;
 
-	string oldPrefix = prefix_;
+	mrs_string oldPrefix = prefix_;
 	prefix_ = "/" + type + "/" + name_ + "/";
 	type_ = type;
 
 	//update path accordingly
-	string::size_type pos = absPath_.find_last_of(oldPrefix, 0);
-	string uppath = absPath_.substr(0, pos);
-	string downpath = absPath_.substr(oldPrefix.length()+pos, absPath_.length()-(oldPrefix.length()+pos));
+	mrs_string::size_type pos = absPath_.find_last_of(oldPrefix, 0);
+	mrs_string uppath = absPath_.substr(0, pos);
+	mrs_string downpath = absPath_.substr(oldPrefix.length()+pos, absPath_.length()-(oldPrefix.length()+pos));
 	absPath_ = uppath + prefix_ + downpath;
 
 	if (isComposite_)
@@ -500,25 +500,25 @@ MarSystem::setType(string type) // => mutexes [?]
 	}
 }
 
-string
+mrs_string
 MarSystem::getType() const // => mutexes [?]
 {
 	return type_;
 }
 
-string
+mrs_string
 MarSystem::getName() const // => mutexes [?]
 {
 	return name_;
 }
 
-string
+mrs_string
 MarSystem::getPrefix() const // => mutexes [?]
 {
 	return prefix_;
 }
 
-string
+mrs_string
 MarSystem::getAbsPath() const // => mutexes [?]
 {
 	return absPath_;
@@ -750,8 +750,8 @@ MarSystem::localActivate(bool state)
 	}
 }
 
-string
-MarSystem::getControlRelativePath(string cname) const
+mrs_string
+MarSystem::getControlRelativePath(mrs_string cname) const
 {
 	// If the cname starts with an '/', it is an absolute path
 	// that has to be made relative.
@@ -776,8 +776,8 @@ MarSystem::getControlRelativePath(string cname) const
 	}
 }
 
-string
-MarSystem::getControlLocalPath(string cname) const
+mrs_string
+MarSystem::getControlLocalPath(mrs_string cname) const
 {
 	// Convert cname to the canonical relative format.
 	cname = getControlRelativePath(cname);
@@ -790,7 +790,7 @@ MarSystem::getControlLocalPath(string cname) const
 	// A local path should have only one '/' (e.g. "mrs_xxx/nnnn"),
 	// otherwise it's probably a control from a child MarSystem.
 	if (cname.find_first_of('/') == cname.find_last_of('/') &&
-		cname.find_first_of('/') != string::npos)
+		cname.find_first_of('/') != mrs_string::npos)
 	{
 		// This is a relative and local path, so just return it
 		return cname;
@@ -803,7 +803,7 @@ MarSystem::getControlLocalPath(string cname) const
 }
 
 bool
-MarSystem::linkControl(string cname1, string cname2, bool update)
+MarSystem::linkControl(mrs_string cname1, mrs_string cname2, bool update)
 {
 	//Links the control cname1 with the control cname 2.
 	//
@@ -845,8 +845,8 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 		//MRSWARN("MarSystem::linkControl - 2nd control does not exist anywhere: " + cname2 + " -> THIS MAY BE NORMAL WHEN LOADING A MARSYSTEM NETWORK FROM A .mpl FILE!");
 		//return false;
 
-		string relativecname = getControlRelativePath(cname2);
-		string localcname = getControlLocalPath(cname2);
+		mrs_string relativecname = getControlRelativePath(cname2);
+		mrs_string localcname = getControlLocalPath(cname2);
 
 		//if cname2 is a local control path, add it to this MarSystem
 		if (localcname != "")
@@ -864,13 +864,13 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 		else if (relativecname != "")
 		{
 			//get the MarSystem path from relativecname
-			string::size_type pos = relativecname.find("/mrs_", 0);
-			string relativepath = relativecname.substr(0, pos);
+			mrs_string::size_type pos = relativecname.find("/mrs_", 0);
+			mrs_string relativepath = relativecname.substr(0, pos);
 
 			MarSystem* msys = getChildMarSystem(relativepath);
 			if (msys)
 			{
-				string cname = relativecname.substr(pos+1, relativecname.length());
+				mrs_string cname = relativecname.substr(pos+1, relativecname.length());
 				if (!msys->addControl(cname, ctrl1->clone(), ctrl2))
 				{
 					MRSWARN("MarSystem::linkControl - Error creating new link control " + cname2 + " @ " + msys->getAbsPath());
@@ -898,8 +898,8 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 	// to create and add it to the corresponding MarSystem
 	if (ctrl1.isInvalid())
 	{
-		string relativecname = getControlRelativePath(cname1);
-		string localcname = getControlLocalPath(cname1);
+		mrs_string relativecname = getControlRelativePath(cname1);
+		mrs_string localcname = getControlLocalPath(cname1);
 
 		//if cname1 is a local control path, add it to this MarSystem
 		if (localcname != "")
@@ -917,13 +917,13 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 		else if (relativecname != "")
 		{
 			//get the MarSystem path from relativecname
-			string::size_type pos = relativecname.find("/mrs_", 0);
-			string relativepath = relativecname.substr(0, pos);
+			mrs_string::size_type pos = relativecname.find("/mrs_", 0);
+			mrs_string relativepath = relativecname.substr(0, pos);
 
 			MarSystem* msys = getChildMarSystem(relativepath);
 			if (msys)
 			{
-				string cname = relativecname.substr(pos+1, relativecname.length());
+				mrs_string cname = relativecname.substr(pos+1, relativecname.length());
 				if (!msys->addControl(cname, ctrl2->clone(), ctrl1))
 				{
 					MRSWARN("MarSystem::linkControl - Error creating new link control " + cname1 + " @ " + msys->getAbsPath());
@@ -953,12 +953,12 @@ MarSystem::linkControl(string cname1, string cname2, bool update)
 }
 
 MarControlPtr
-MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
+MarSystem::getControl(mrs_string cname, bool searchParent, bool searchChildren)
 {
 	//USE A CACHE FOR MORE EFFICIENT LOOK-UP?? [!]
 
 	//convert cname to the canonical relative format
-	string relativecname = getControlRelativePath(cname);
+	mrs_string relativecname = getControlRelativePath(cname);
 
 	//if this is not a control from this MarSystem or its children
 	//ask parent (if allowed) to search for it on the remaining of the network
@@ -975,7 +975,7 @@ MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 		}
 	}
 	//check if this relative control path points to a possible local control
-	string localcname = getControlLocalPath(relativecname);
+	mrs_string localcname = getControlLocalPath(relativecname);
 	if (localcname != "")
 	{
 		//This may be a local control, so look for it
@@ -998,13 +998,13 @@ MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 			vector<MarSystem*>::const_iterator msysIter;
 			for (msysIter = marsystems_.begin(); msysIter != marsystems_.end(); ++msysIter) // => mutexes [?]
 			{
-				string prefix = (*msysIter)->getPrefix();
+				mrs_string prefix = (*msysIter)->getPrefix();
 				prefix = prefix.substr(1, prefix.length()); //ignore leading "/"
 				if (relativecname.substr(0, prefix.length()) == prefix)
 				{
 					//a matching child was found!
 					//check if the control exists in the child
-					string childcname = relativecname.substr(prefix.length(),relativecname.length());
+					mrs_string childcname = relativecname.substr(prefix.length(),relativecname.length());
 					return (*msysIter)->getControl(childcname);
 				}
 			}
@@ -1018,7 +1018,7 @@ MarSystem::getControl(string cname, bool searchParent, bool searchChildren)
 }
 
 bool
-MarSystem::hasControlState(string cname)
+MarSystem::hasControlState(mrs_string cname)
 {
 	MarControlPtr control = getControl(cname);
 	if (control.isInvalid())
@@ -1031,7 +1031,7 @@ MarSystem::hasControlState(string cname)
 }
 
 void
-MarSystem::setControlState(string cname, bool state)
+MarSystem::setControlState(mrs_string cname, bool state)
 {
 	MarControlPtr control = getControl(cname);
 	if (control.isInvalid())
@@ -1043,7 +1043,7 @@ MarSystem::setControlState(string cname, bool state)
 }
 
 bool
-MarSystem::hasControl(string cname, bool searchChildren)
+MarSystem::hasControl(mrs_string cname, bool searchChildren)
 {
 	//look for local and (optionally) children controls
 	MarControlPtr control = this->getControl(cname, false, searchChildren);
@@ -1146,13 +1146,13 @@ MarSystem::updControl(TmTime t, Repeat r, EvEvent* ev)
 }
 
 void
-MarSystem::updControl(TmTime t, string cname, MarControlPtr control)
+MarSystem::updControl(TmTime t, mrs_string cname, MarControlPtr control)
 {
 	scheduler_.post(t,Repeat(),new EvValUpd(this,cname,control));
 }
 
 void
-MarSystem::updControl(TmTime t, Repeat r, string cname, MarControlPtr control)
+MarSystem::updControl(TmTime t, Repeat r, mrs_string cname, MarControlPtr control)
 {
 	scheduler_.post(t,r,new EvValUpd(this,cname,control));
 }
@@ -1160,7 +1160,7 @@ MarSystem::updControl(TmTime t, Repeat r, string cname, MarControlPtr control)
 
 
 //get local controls only (i.e. no child controls included)
-const map<string, MarControlPtr>&
+const map<mrs_string, MarControlPtr>&
 MarSystem::getLocalControls()
 {
 	return controls_;
@@ -1168,12 +1168,12 @@ MarSystem::getLocalControls()
 
 // get all the controls (including controls of children)
 // for a particular MarSystem
-map<string, MarControlPtr>
-MarSystem::getControls(map<string, MarControlPtr>* cmap)
+map<mrs_string, MarControlPtr>
+MarSystem::getControls(map<mrs_string, MarControlPtr>* cmap)
 {
 	if (!cmap)
 	{
-		map<string, MarControlPtr> controlsmap;
+		map<mrs_string, MarControlPtr> controlsmap;
 
 		cmap = &controlsmap;
 
@@ -1220,7 +1220,7 @@ MarSystem::getChildren()
 }
 
 bool
-MarSystem::addControl(string cname, MarControlPtr v, MarControlPtr& ptr)
+MarSystem::addControl(mrs_string cname, MarControlPtr v, MarControlPtr& ptr)
 {
 	if (addControl(cname, v))
 	{
@@ -1235,10 +1235,10 @@ MarSystem::addControl(string cname, MarControlPtr v, MarControlPtr& ptr)
 }
 
 bool
-MarSystem::addControl(string cname, MarControlPtr v)
+MarSystem::addControl(mrs_string cname, MarControlPtr v)
 {
 	//convert cname to the canonical local control pathname format
-	string pcname = cname;
+	mrs_string pcname = cname;
 	cname = getControlLocalPath(cname);
 	if (cname == "")
 	{
@@ -1250,8 +1250,8 @@ MarSystem::addControl(string cname, MarControlPtr v)
 
 	//check for type mismatch between cname string (which include type information)
 	//and the actual control type passed as an argument
-	string::size_type pos = cname.find("/", 0);
-	string ctype = cname.substr(0,pos);
+	mrs_string::size_type pos = cname.find("/", 0);
+	mrs_string ctype = cname.substr(0,pos);
 	if (ctype!= v->getType())
 	{
 		MRSWARN("MarSystem::addControl control type mismatch (" + ctype + "!=" + v->getType() + ")");
@@ -1289,19 +1289,19 @@ MarSystem::updctrl(TmTime t, Repeat r, EvEvent* ev)
 }
 
 void
-MarSystem::updctrl(TmTime t, string cname, MarControlPtr control)
+MarSystem::updctrl(TmTime t, mrs_string cname, MarControlPtr control)
 {
 	scheduler_.post(t,Repeat(),new EvValUpd(this,cname,control));
 }
 
 void
-MarSystem::updctrl(TmTime t, Repeat r, string cname, MarControlPtr control)
+MarSystem::updctrl(TmTime t, Repeat r, mrs_string cname, MarControlPtr control)
 {
 	scheduler_.post(t,r,new EvValUpd(this,cname,control));
 }
 
 void
-MarSystem::removeTimer(string name)
+MarSystem::removeTimer(mrs_string name)
 {
 	scheduler_.removeTimer(name);
 }
@@ -1336,7 +1336,7 @@ MarSystem::updtimer(std::string tmr_path, std::vector<TmParam> params)
 
 
 mrs_natural
-MarSystem::getTime(string timer_name)
+MarSystem::getTime(mrs_string timer_name)
 {
 	return scheduler_.getTime(timer_name);
 }
@@ -1347,7 +1347,7 @@ MarSystem::setMATLABscript(std::string script)
 	MATLABscript_ = script;
 }
 
-string
+mrs_string
 MarSystem::getMATLABscript()
 {
 	return MATLABscript_;
@@ -1359,7 +1359,7 @@ const MarSystem::recvControls()
 	return NULL;
 }
 
-string
+mrs_string
 MarSystem::toString()
 {
 	ostringstream oss;
@@ -1644,20 +1644,20 @@ MarSystem::put(istream& is)
 	 * and thus the input has its header data (first 4 lines) stripped off already
 	 */
 
-	string skipstr;
+	mrs_string skipstr;
 	mrs_natural i;
-	string type;
-	string rstr = "mrs_real";
-	string nstr = "mrs_natural";
-	string bstr = "mrs_bool";
-	string sstr = "mrs_string";
-	string vstr = "mrs_realvec";
+	mrs_string type;
+	mrs_string rstr = "mrs_real";
+	mrs_string nstr = "mrs_natural";
+	mrs_string bstr = "mrs_bool";
+	mrs_string sstr = "mrs_string";
+	mrs_string vstr = "mrs_realvec";
 	mrs_real   rcvalue;
-	string scvalue;
+	mrs_string scvalue;
 	mrs_natural ncvalue;
 	bool bcvalue;
-	string cname;
-	map<string, MarControlPtr>::iterator iter;
+	mrs_string cname;
+	map<mrs_string, MarControlPtr>::iterator iter;
 
 	// if composite, clear all children to avoid bad links to prototype children
 	if (isComposite_)
@@ -1692,7 +1692,7 @@ MarSystem::put(istream& is)
 		is >> skipstr;
 		is >> cname;
 
-		string ctype;
+		mrs_string ctype;
 		ctype = cname.substr(0, cname.rfind("/", cname.length()));
 
 		iter = controls_.find(cname);
@@ -1765,8 +1765,8 @@ MarSystem::put(istream& is)
 
 		// read links
 		int nLinks;
-		string linkto;
-		string linkedfrom;
+		mrs_string linkto;
+		mrs_string linkedfrom;
 
 		// Next line looks like:
 		//# LinksTo = nlinks
@@ -1828,11 +1828,11 @@ Marsyas::operator>> (istream& is, MarSystem& sys)
 }
 
 ostream&
-Marsyas::operator<< (ostream& o, const map<string,MarControlPtr>& c)
+Marsyas::operator<< (ostream& o, const map<mrs_string,MarControlPtr>& c)
 {
-	//lock map<string,MarControlPtr>& c for read? [?]
+	//lock map<mrs_string,MarControlPtr>& c for read? [?]
 	o << "# MarControls = " << c.size() << endl;
-	map<string, MarControlPtr>::const_iterator iter;
+	map<mrs_string, MarControlPtr>::const_iterator iter;
 	for (iter=c.begin(); iter != c.end(); ++iter)
 	{
 		o << "# " << iter->first << " = " << iter->second << endl;
@@ -1861,8 +1861,8 @@ mrs_string
 Marsyas::obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix)
 {
 	ostringstream oss;
-	string::size_type startPos = 0, endPos=0;
-	while ((endPos = observationNames.find(",", startPos)) != string::npos)
+	mrs_string::size_type startPos = 0, endPos=0;
+	while ((endPos = observationNames.find(",", startPos)) != mrs_string::npos)
 	{
 		// Extract the observation name.
 		mrs_string name = observationNames.substr(startPos, endPos-startPos);
@@ -1895,9 +1895,9 @@ vector<mrs_string>
 Marsyas::stringSplit(mrs_string input, mrs_string delimiter)
 {
 	vector<mrs_string> itemList;
-	string::size_type startPos = 0, endPos=0;
+	mrs_string::size_type startPos = 0, endPos=0;
 	// Keep searching for the delimiter.
-	while ((endPos = input.find(delimiter, startPos)) != string::npos)
+	while ((endPos = input.find(delimiter, startPos)) != mrs_string::npos)
 	{
 		// Get the current item.
 		mrs_string item = input.substr(startPos, endPos - startPos);
@@ -1934,7 +1934,3 @@ Marsyas::obsNamesSplit(mrs_string observationNames)
 	obsNames.pop_back();
 	return obsNames;
 }
-
-
-
-

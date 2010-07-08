@@ -19,10 +19,10 @@
 #include "common.h"
 #include "MidiFileSynthSource.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MidiFileSynthSource::MidiFileSynthSource(string name):MarSystem("MidiFileSynthSource",name)
+MidiFileSynthSource::MidiFileSynthSource(mrs_string name):MarSystem("MidiFileSynthSource",name)
 {
 	addControls();
 	filename_ = "defaultfile";
@@ -206,6 +206,3 @@ MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 		ctrl_newTextWin_->setValue(newTextWin!=0, NOUPDATE);
 	}
 }
-
-
-

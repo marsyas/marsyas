@@ -18,14 +18,14 @@
 
 #include "MarFileSink.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
 
 using namespace Marsyas;
 
-MarFileSink::MarFileSink(string name):MarSystem("MarFileSink",name)
+MarFileSink::MarFileSink(mrs_string name):MarSystem("MarFileSink",name)
 {
 	//type_ = "MarFileSink";
 	//name_ = name;

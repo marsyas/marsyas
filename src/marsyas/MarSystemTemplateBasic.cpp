@@ -19,10 +19,10 @@
 #include "common.h" 
 #include "MarSystemTemplateBasic.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MarSystemTemplateBasic::MarSystemTemplateBasic(string name) : MarSystem("MarSystemTemplateBasic", name)
+MarSystemTemplateBasic::MarSystemTemplateBasic(mrs_string name) : MarSystem("MarSystemTemplateBasic", name)
 {
 	/// Add any specific controls needed by this MarSystem.
 	// Default controls that all MarSystems should have (like "inSamples"
@@ -118,5 +118,3 @@ MarSystemTemplateBasic::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-

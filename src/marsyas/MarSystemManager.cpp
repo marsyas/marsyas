@@ -244,7 +244,7 @@
 #include "Inject.h"
 //modifyHeader
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::map;
 using std::istream;
@@ -1319,7 +1319,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 
 MarSystemManager::~MarSystemManager()
 {
-	map<string, MarSystem *>::const_iterator iter;
+	map<mrs_string, MarSystem *>::const_iterator iter;
 
 	for (iter=registry_.begin(); iter != registry_.end(); ++iter)
 	{
@@ -1329,7 +1329,7 @@ MarSystemManager::~MarSystemManager()
 }
 
 void
-MarSystemManager::registerPrototype(string type, MarSystem *marsystem)
+MarSystemManager::registerPrototype(mrs_string type, MarSystem *marsystem)
 {
 	//change type_ of composite to the user specified one
 	marsystem->setType(type);
@@ -1346,7 +1346,7 @@ MarSystemManager::registerPrototype(string type, MarSystem *marsystem)
 
 
 MarSystem*
-MarSystemManager::getPrototype(string type)
+MarSystemManager::getPrototype(mrs_string type)
 {
 	if (registry_.find(type) != registry_.end())
 		return (MarSystem *)(registry_[type])->clone();
@@ -1358,7 +1358,7 @@ MarSystemManager::getPrototype(string type)
 }
 
 MarSystem*
-MarSystemManager::create(string type, string name)
+MarSystemManager::create(mrs_string type, mrs_string name)
 {
 
 	registerComposite(type);
@@ -1379,8 +1379,8 @@ MarSystemManager::create(string type, string name)
 MarSystem*
 MarSystemManager::create(std::string marsystemname)
 {
-	string::size_type loc = marsystemname.rfind("/", marsystemname.length()-1);
-	if (loc != string::npos)
+	mrs_string::size_type loc = marsystemname.rfind("/", marsystemname.length()-1);
+	if (loc != mrs_string::npos)
 		return create(marsystemname.substr(0,loc),
 		              marsystemname.substr(loc +1));
 	else
@@ -1393,12 +1393,12 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	/* Create a MarSystem object from an input stream in .mpl format
 	 * ( this is the format created by MarSystem::put(ostream& o) )
 	 */
-	string skipstr;
-	string mcomposite;
+	mrs_string skipstr;
+	mrs_string mcomposite;
 	mrs_natural i;
 	bool isComposite;
-	string marSystem = "MarSystem";
-	string marSystemComposite = "MarSystemComposite";
+	mrs_string marSystem = "MarSystem";
+	mrs_string marSystemComposite = "MarSystemComposite";
 
 	/* first line looks like:
 	 * # marSystem(Composite)
@@ -1420,7 +1420,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	 * # Type = MarSystemSubclass
 	 */
 	is >> skipstr >> skipstr >> skipstr;
-	string mtype;
+	mrs_string mtype;
 	is >> mtype;
 
 
@@ -1428,7 +1428,7 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 	 * # Name = mname
 	 */
 	is >> skipstr >> skipstr >> skipstr;
-	string mname;
+	mrs_string mname;
 	is >> mname;
 
 	MarSystem* msys = getPrototype(mtype);
@@ -1490,11 +1490,11 @@ MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 //
 // Returns a list of all registered prototypes
 //
-vector <string> MarSystemManager::registeredPrototypes()
+vector <mrs_string> MarSystemManager::registeredPrototypes()
 {
-	vector <string> retVal;
+	vector <mrs_string> retVal;
 
-	map<string, MarSystem *>::const_iterator iter;
+	map<mrs_string, MarSystem *>::const_iterator iter;
 
 	for (iter=registry_.begin(); iter != registry_.end(); ++iter)
 	{
@@ -1505,7 +1505,7 @@ vector <string> MarSystemManager::registeredPrototypes()
 }
 
 // Added by Stuart Bray Dec 2004. invoked by MslModel
-map<string, MarSystem*> MarSystemManager::getWorkingSet(istream& is)
+map<mrs_string, MarSystem*> MarSystemManager::getWorkingSet(istream& is)
 {
 	getMarSystem(is);
 	return workingSet_;
@@ -1518,7 +1518,7 @@ map<string, MarSystem*> MarSystemManager::getWorkingSet(istream& is)
 // to a registered MarSystem, the function returns true,
 // otherwise returns false
 //
-bool MarSystemManager::isRegistered (string name)
+bool MarSystemManager::isRegistered (mrs_string name)
 {
 	return (registry_.find(name) != registry_.end());
 }

@@ -24,10 +24,10 @@
 #endif 
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
-MidiInput::MidiInput(string name):MarSystem("MidiInput",name)
+MidiInput::MidiInput(mrs_string name):MarSystem("MidiInput",name)
 {
   initMidi = false;
 #ifdef MARSYAS_MIDIIO

@@ -22,7 +22,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-Mono2Stereo::Mono2Stereo(string name):MarSystem("Mono2Stereo", name)
+Mono2Stereo::Mono2Stereo(mrs_string name):MarSystem("Mono2Stereo", name)
 {
   //Add any specific controls needed by Mono2Stereo
   //(default controls all MarSystems should have
@@ -64,7 +64,7 @@ Mono2Stereo::myUpdate(MarControlPtr sender)
   if (inObservations == 1) 
     {
       setctrl("mrs_natural/onObservations", 2);
-      string inObsNames = getctrl("mrs_string/inObsNames")->to<string>();
+      mrs_string inObsNames = getctrl("mrs_string/inObsNames")->to<mrs_string>();
       inObsNames += ",";
       inObsNames += inObsNames;
       setctrl("mrs_string/onObsNames", inObsNames);

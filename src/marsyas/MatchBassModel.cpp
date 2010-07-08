@@ -21,14 +21,14 @@
 #include "MatchBassModel.h"
 #include "Metric2.h"
 
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::endl;
 
 using namespace Marsyas;
 
-MatchBassModel::MatchBassModel(string name):MarSystem("MatchBassModel", name)
+MatchBassModel::MatchBassModel(mrs_string name):MarSystem("MatchBassModel", name)
 {
   isComposite_ = true;
   addControls();
