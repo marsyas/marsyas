@@ -1770,14 +1770,16 @@ namespace Marsyas
 	 * \exception std::out_of_range is thrown when the index is out of bounds.
 	 */
 	
-	void realvec::matrixMulti(const mrs_realvec a,const mrs_realvec b,mrs_realvec& out) 
+	void realvec::matrixMulti(const mrs_realvec& a,const mrs_realvec& b,mrs_realvec& out) 
 	{
 		//naive Matrix multiplication
 		
 		MRSASSERT(a.getCols()==b.getRows());
 		MRSASSERT(out.getRows()==a.getRows());
 		MRSASSERT(out.getCols()==b.getCols());
-		
+	
+		out.setval (0.);
+
 		for (mrs_natural r=0;r<out.getRows();++r) 
 		{
 			for (mrs_natural c=0;c<out.getCols();++c) 
