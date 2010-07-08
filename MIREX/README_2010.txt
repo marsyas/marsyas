@@ -151,7 +151,7 @@ to all songs of filelist.txt.
 
 
 ------------- MIREX 2010 Audio Onset Detection Tasks ---------------------
-(use REVISION_NUMBER: TBD)
+(use REVISION_NUMBER: 4194))
 
 ./onsets soundExample.wav
 
@@ -159,7 +159,7 @@ Resulting soundExample.output will be saved in the same directory of the onsets 
 
 
 ------------- MIREX 2010 Audio Beat Tracking Tasks ---------------------
-(use REVISION_NUMBER: TBD)
+(use REVISION_NUMBER: 4194))
 
 This implementation contains two distinct versions, differentiated by its functional heuristics.
 The application outputs two text files: one with the tempo measure (median IBI, 
