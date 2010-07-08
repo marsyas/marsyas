@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Shifter::Shifter(string name):MarSystem("Shifter", name)
+Shifter::Shifter(mrs_string name):MarSystem("Shifter", name)
 {
 	addControls();
 }
@@ -81,11 +81,3 @@ Shifter::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("figure(1);plot(mag)");
 	//MATLAB_EAVL("figure(2);plot(peaks(1:2:end))");
 }
-
-
-
-
-
-
-
-

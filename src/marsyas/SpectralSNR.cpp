@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SpectralSNR::SpectralSNR(string name):MarSystem("SpectralSNR",name)
+SpectralSNR::SpectralSNR(mrs_string name):MarSystem("SpectralSNR",name)
 {
 	addControls();
 }

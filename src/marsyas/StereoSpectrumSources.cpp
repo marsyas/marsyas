@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-StereoSpectrumSources::StereoSpectrumSources(string name):MarSystem("StereoSpectrumSources", name)
+StereoSpectrumSources::StereoSpectrumSources(mrs_string name):MarSystem("StereoSpectrumSources", name)
 {
 	panPeaker_ = new Peaker("panPeaker");
 }
@@ -101,17 +101,3 @@ StereoSpectrumSources::myProcess(realvec& in, realvec& out)
 		// if abs(running-average - current_value) > 0.3 * running_average
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

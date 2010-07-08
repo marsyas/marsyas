@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-RawFileSource::RawFileSource(string name):AbsSoundFileSource("RawFileSource", name)
+RawFileSource::RawFileSource(mrs_string name):AbsSoundFileSource("RawFileSource", name)
 {
 	sfp_ = NULL;
 	buffer_ = NULL;
@@ -67,7 +67,7 @@ RawFileSource::addControls()
 }	
 
 
-void RawFileSource::openFile(string filename) 
+void RawFileSource::openFile(mrs_string filename) 
 {
 	getHeader(filename);
 	rate_ = fileSize_ * getctrl("mrs_real/frequency")->to<mrs_real>() / getctrl("mrs_real/israte")->to<mrs_real>();
@@ -96,7 +96,7 @@ bool RawFileSource::getRawInfo( const char *fileName )
 //
 // STK raw files don't have a header, so just open the file and get info
 //
-void RawFileSource::getHeader(string fileName)
+void RawFileSource::getHeader(mrs_string fileName)
 {
   
 	sfp_ = fopen(fileName.c_str(), "raw");
@@ -236,9 +236,3 @@ void RawFileSource::myProcess(realvec& in,realvec &out)
     
 	}	
 }
-
-
-
-
-
-

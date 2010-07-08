@@ -24,7 +24,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SeneffEar::SeneffEar(string name):MarSystem("SeneffEar",name)
+SeneffEar::SeneffEar(mrs_string name):MarSystem("SeneffEar",name)
 {
   //type_ = "SeneffEar";
   //name_ = name;
@@ -510,5 +510,3 @@ SeneffEar::myProcess(realvec& in, realvec& out)
     }
   }
 }
-
-

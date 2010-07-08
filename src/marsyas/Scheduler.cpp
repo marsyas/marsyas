@@ -110,8 +110,8 @@ Scheduler::split_cname(std::string cname, std::string* head, std::string* tail)
 void
 Scheduler::updtimer(std::string tmr_id, TmControlValue value)
 {
-	string timer_ident="";
-	string timer_control="";
+	mrs_string timer_ident="";
+	mrs_string timer_control="";
 	split_cname(tmr_id,&timer_ident,&timer_control);
 	TmTimer* s = findTimer(timer_ident);
 	if (s==NULL) {
@@ -136,8 +136,8 @@ Scheduler::updtimer(std::string tmr_id, TmParam& param)
 void
 Scheduler::updtimer(std::string tmr_id, std::vector<TmParam> params)
 {
-	string timer_ident="";
-	string timer_control="";
+	mrs_string timer_ident="";
+	mrs_string timer_control="";
 	split_cname(tmr_id,&timer_ident,&timer_control);
 	TmTimer* s = findTimer(timer_ident);
 	if (s==NULL) {
@@ -207,14 +207,14 @@ Scheduler::post(std::string time, std::string tmname, Repeat r, EvEvent* me)
 			// EvExpr supports querying of the scheduler environment in expressions
 			EvExpr* e=dynamic_cast<EvExpr*>(me);
 			if (e!=NULL) {
-				MRSWARN("Scheduler::post(string time, string tmname, Repeat r, EvEvent* me) : setScheduler is not working yet");
+				MRSWARN("Scheduler::post(mrs_string time, mrs_string tmname, Repeat r, EvEvent* me) : setScheduler is not working yet");
 				e->getExpression()->setScheduler(this);
 			}
 			s->post(time,r,me);
 		}
-		else MRSWARN("Scheduler::post(string,string,Repeat,EvEvent*)  NULL event");
+		else MRSWARN("Scheduler::post(mrs_string,mrs_string,Repeat,EvEvent*)  NULL event");
 	}
-	else { MRSWARN("Scheduler::post(string,string,Repeat,EvEvent*)  unknown timer name: "+tmname); }
+	else { MRSWARN("Scheduler::post(mrs_string,mrs_string,Repeat,EvEvent*)  unknown timer name: "+tmname); }
 }
 
 void
@@ -257,4 +257,3 @@ Scheduler::getTime(std::string timer)
 //}
 
 }//namespace Marsyas
-

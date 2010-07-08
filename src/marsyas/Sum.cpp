@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Sum::Sum(string name):MarSystem("Sum",name)
+Sum::Sum(mrs_string name):MarSystem("Sum",name)
 {
 	addControls();
 }

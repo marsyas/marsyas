@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-ResampleLinear::ResampleLinear(string name):MarSystem("ResampleLinear", name)
+ResampleLinear::ResampleLinear(mrs_string name):MarSystem("ResampleLinear", name)
 {
 	addControls();
 }
@@ -108,5 +108,3 @@ ResampleLinear::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-

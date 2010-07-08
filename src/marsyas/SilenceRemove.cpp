@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SilenceRemove::SilenceRemove(string name):MarSystem("SilenceRemove",name)
+SilenceRemove::SilenceRemove(mrs_string name):MarSystem("SilenceRemove",name)
 {
 	isComposite_ = true;
 	addControls();

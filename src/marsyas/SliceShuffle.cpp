@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SliceShuffle::SliceShuffle(string name) : MarSystem("SliceShuffle", name)
+SliceShuffle::SliceShuffle(mrs_string name) : MarSystem("SliceShuffle", name)
 {
 	/// Add any specific controls needed by this MarSystem.
 	addControls();
@@ -87,4 +87,3 @@ SliceShuffle::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-

@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 	
-SineSource::SineSource(string name):MarSystem("SineSource",name)
+SineSource::SineSource(mrs_string name):MarSystem("SineSource",name)
 {
   //type_ = "SineSource";
   //name_ = name;

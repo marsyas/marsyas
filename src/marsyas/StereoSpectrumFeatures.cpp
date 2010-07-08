@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-StereoSpectrumFeatures::StereoSpectrumFeatures(string name):MarSystem("StereoSpectrumFeatures", name)
+StereoSpectrumFeatures::StereoSpectrumFeatures(mrs_string name):MarSystem("StereoSpectrumFeatures", name)
 {
 	m0_ = 0.0;
 	m1_ = 0.0;
@@ -125,17 +125,3 @@ StereoSpectrumFeatures::myProcess(realvec& in, realvec& out)
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -3,7 +3,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Signum::Signum(string inName)
+Signum::Signum(mrs_string inName)
 	:MarSystem("Signum",inName)
 {
   addControls();

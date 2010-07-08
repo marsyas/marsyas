@@ -27,12 +27,12 @@ Repeat::Repeat()
 	set(false,"",0);
 }
 
-Repeat::Repeat(string time_interval)
+Repeat::Repeat(mrs_string time_interval)
 {
 	set(true,time_interval,0);
 }
 
-Repeat::Repeat(string time_interval, mrs_natural rep_count)
+Repeat::Repeat(mrs_string time_interval, mrs_natural rep_count)
 {
 	set(false,time_interval,rep_count);
 }
@@ -46,7 +46,7 @@ Repeat::repeat()
 Repeat::~Repeat() { }
 
 void
-Repeat::set(bool inf, string time_interval, mrs_natural rep_count)
+Repeat::set(bool inf, mrs_string time_interval, mrs_natural rep_count)
 {
 	infinite_=inf;
 	interval_=time_interval;

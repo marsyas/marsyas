@@ -30,7 +30,7 @@ using namespace Marsyas;
 *
 */
 
-Resample::Resample(string name):MarSystem("Resample", name)
+Resample::Resample(mrs_string name):MarSystem("Resample", name)
 {
 	//Add any specific controls needed by Resample
 	//(default controls all MarSystems should have

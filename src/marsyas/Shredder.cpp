@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Shredder::Shredder(string name):MarSystem("Shredder", name)
+Shredder::Shredder(mrs_string name):MarSystem("Shredder", name)
 {
 	isComposite_ = true;
 	addControls();
@@ -151,13 +151,3 @@ Shredder::myProcess(realvec& in, realvec& out)
 	MATLAB_EVAL("figure(2);plot(Schredder_out)");
 	*/
 }
-
-
-
-
-
-
-
-
-
-

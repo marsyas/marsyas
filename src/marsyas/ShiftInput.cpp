@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-ShiftInput::ShiftInput(string name): MarSystem("ShiftInput", name)
+ShiftInput::ShiftInput(mrs_string name): MarSystem("ShiftInput", name)
 {
 	winSize_ = 0;
 	hopSize_ = 0;

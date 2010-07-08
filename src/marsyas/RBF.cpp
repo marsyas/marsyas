@@ -25,7 +25,7 @@ using namespace Marsyas;
 
 //#define MTLB_DBG_LOG
 
-RBF::RBF(string name):MarSystem("RBF", name)
+RBF::RBF(mrs_string name):MarSystem("RBF", name)
 {
 	addControls();
 }
@@ -104,11 +104,11 @@ RBF::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE); //[?]
 	ostringstream oss;
-	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	for (mrs_natural i = 0; i < inObservations_; ++i)
 	{
-		string inObsName;
-		string temp;
+		mrs_string inObsName;
+		mrs_string temp;
 		inObsName = inObsNames.substr(0, inObsNames.find(","));
 		temp = inObsNames.substr(inObsNames.find(",")+1, inObsNames.length());
 		inObsNames = temp;
@@ -187,11 +187,3 @@ RBF::myProcess(realvec& in, realvec& out)
 #endif
 #endif
 }
-
-
-
-
-
-
-
-

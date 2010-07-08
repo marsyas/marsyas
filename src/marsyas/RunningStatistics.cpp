@@ -24,7 +24,7 @@
 using namespace std;
 using namespace Marsyas;
 
-RunningStatistics::RunningStatistics(string name) :
+RunningStatistics::RunningStatistics(mrs_string name) :
 		MarSystem("RunningStatistics", name)
 {
 	/// Add any specific controls needed by this MarSystem.
@@ -173,4 +173,3 @@ void RunningStatistics::myProcess(realvec& in, realvec& out)
 
 	}
 }
-

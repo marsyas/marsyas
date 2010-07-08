@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Series::Series(string name):MarSystem("Series",name)
+Series::Series(mrs_string name):MarSystem("Series",name)
 {
 	isComposite_ = true;
 	addControls();
@@ -143,7 +143,3 @@ Series::myProcess(realvec& in, realvec& out)
 
 
 }
-
-
-
-

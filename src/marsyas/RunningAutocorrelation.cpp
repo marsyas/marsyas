@@ -24,7 +24,7 @@
 using namespace std;
 using namespace Marsyas;
 
-RunningAutocorrelation::RunningAutocorrelation(string name) :
+RunningAutocorrelation::RunningAutocorrelation(mrs_string name) :
 		MarSystem("RunningAutocorrelation", name)
 {
 	/// Add any specific controls needed by this MarSystem.
@@ -191,4 +191,3 @@ void RunningAutocorrelation::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-

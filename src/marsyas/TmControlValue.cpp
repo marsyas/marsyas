@@ -146,10 +146,10 @@ TmControlValue::getType()
 	return type_;
 }
 
-string 
+mrs_string 
 TmControlValue::getSType()
 {
-	string res;
+	mrs_string res;
 
 	if(getType() == tmcv_string) res = "mrs_string";
 	else if(getType() == tmcv_real) res = "mrs_real";

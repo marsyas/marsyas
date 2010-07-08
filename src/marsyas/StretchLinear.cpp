@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-StretchLinear::StretchLinear(string name):MarSystem("StretchLinear", name)
+StretchLinear::StretchLinear(mrs_string name):MarSystem("StretchLinear", name)
 {
 	addControls();
 }
@@ -86,5 +86,3 @@ StretchLinear::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-

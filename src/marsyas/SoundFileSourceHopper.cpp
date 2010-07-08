@@ -24,7 +24,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SoundFileSourceHopper::SoundFileSourceHopper(string name) : MarSystem("SoundFileSourceHopper", name)
+SoundFileSourceHopper::SoundFileSourceHopper(mrs_string name) : MarSystem("SoundFileSourceHopper", name)
 {
 	
 	/// Add any specific controls needed by this MarSystem.

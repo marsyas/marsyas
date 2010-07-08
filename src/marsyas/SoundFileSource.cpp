@@ -42,7 +42,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SoundFileSource::SoundFileSource(string name):MarSystem("SoundFileSource",name)
+SoundFileSource::SoundFileSource(mrs_string name):MarSystem("SoundFileSource",name)
 {
 	src_ = NULL;
 	updateCurrDuration = false;
@@ -182,7 +182,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		// Allow the user to jump to any given sample position. It appears to
 		// work across collections as well.
 		
-		string name = sender->getName();
+		mrs_string name = sender->getName();
 		if(!name.compare("mrs_natural/moveToSamplePos")){
 			
 			mrs_natural newPos = sender->to<mrs_natural>();
@@ -270,7 +270,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 bool
 SoundFileSource::checkType()
 {
-	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+	mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 
 	// check if file exists
 	if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
@@ -278,7 +278,7 @@ SoundFileSource::checkType()
 		FILE * sfp = fopen(filename.c_str(), "r");
 		if (sfp == NULL)
 		{
-			string wrn = "SoundFileSource::Problem opening file ";
+			mrs_string wrn = "SoundFileSource::Problem opening file ";
 			wrn += filename;
 			MRSWARN(wrn);
 			filename_ = SOUNDFILESOURCE_UNDEFINEDFILENAME;
@@ -292,9 +292,9 @@ SoundFileSource::checkType()
 	}
 
 	// try to open file with appropriate format
-	string::size_type pos = filename.rfind(".", filename.length());
-	string ext;
-	if (pos != string::npos)
+	mrs_string::size_type pos = filename.rfind(".", filename.length());
+	mrs_string ext;
+	if (pos != mrs_string::npos)
 	{
 		ext = filename.substr(pos, filename.length());
 		// need this to be lowercase for the checks below.
@@ -366,7 +366,7 @@ SoundFileSource::checkType()
 	{
 		if (filename != SOUNDFILESOURCE_UNDEFINEDFILENAME)
 		{
-			string wrn = "Unsupported format for file ";
+			mrs_string wrn = "Unsupported format for file ";
 			wrn += filename;
 			MRSWARN(wrn);
 			filename_ = SOUNDFILESOURCE_UNDEFINEDFILENAME;
@@ -384,7 +384,7 @@ SoundFileSource::checkType()
 void
 SoundFileSource::getHeader()
 {
-	string filename = ctrl_filename_->to<mrs_string>();
+	mrs_string filename = ctrl_filename_->to<mrs_string>();
 	src_->getHeader(filename);
 	ctrl_pos_->setValue(0, NOUPDATE);
 	ctrl_loop_->setValue(0, NOUPDATE);
@@ -429,4 +429,3 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 	//MATLAB_PUT(out, "SoundFileSource_out");
 	//MATLAB_EVAL("srcAudio = [srcAudio, SoundFileSource_out];");
 }
-

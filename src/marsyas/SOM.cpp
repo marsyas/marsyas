@@ -27,7 +27,7 @@ using namespace Marsyas;
 #define ALPHA_DEGRADE		0.98
 #define NEIGHBOURHOOD_DEGRADE	0.97
 
-SOM::SOM(string name):MarSystem("SOM",name)
+SOM::SOM(mrs_string name):MarSystem("SOM",name)
 {
 	//type_ = "SOM";
 	//name_ = name;
@@ -162,7 +162,7 @@ SOM::myUpdate(MarControlPtr sender)
 	mrs_natural mrows = (getctrl("mrs_realvec/grid_map")->to<mrs_realvec>()).getRows();
 	mrs_natural mcols = (getctrl("mrs_realvec/grid_map")->to<mrs_realvec>()).getCols();
 
-	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+	mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
 	if ((grid_size != mrows) || 
 		(inObservations_-3 != mcols))
@@ -228,7 +228,7 @@ SOM::find_grid_location(realvec& in, int t)
 void 
 SOM::myProcess(realvec& in, realvec& out)
 {
-	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+	mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 
 	mrs_natural o,t;
 	mrs_real geom_dist;

@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Spectrum2Chroma::Spectrum2Chroma(string name):MarSystem("Spectrum2Chroma", name)
+Spectrum2Chroma::Spectrum2Chroma(mrs_string name):MarSystem("Spectrum2Chroma", name)
 {
 	addControls();
 
@@ -262,5 +262,3 @@ Spectrum2Chroma::myProcess(realvec& in, realvec& out)
 // 	MATLAB_EVAL("chromaVec = CM*spectrum;");
 #endif //MARSYAS_MATLAB
 }
-
-

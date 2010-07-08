@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SFM::SFM(string name):MarSystem("SFM",name)
+SFM::SFM(mrs_string name):MarSystem("SFM",name)
 {
 }
 
@@ -152,16 +152,3 @@ SFM::myProcess(realvec& in, realvec& out)
 	//for(i = nrValidBands_; i < nrBands_; ++i)
 	//	out(i) = 1.0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

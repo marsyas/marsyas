@@ -190,7 +190,7 @@ void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
 	// israte_ = FFTSize/Fs = width of bins in input spectrum
 	mrs_natural theWindowSize =
 		(mrs_natural)floor((mrs_real)80/israte_+0.5);
-	string theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
+	mrs_string theControlString = "FanOutIn/FAN1/Series/SER2/FanOutIn/FAN2/"
 		"Series/SER3/MedianFilter/MedianFilter/mrs_natural/WindowSize";
 	Spectrum2ACMChromaNet_->updControl(theControlString,theWindowSize);
 

@@ -30,7 +30,7 @@ using namespace Marsyas;
 *
 */
 
-ResampleBezier::ResampleBezier(string name):MarSystem("ResampleBezier", name)
+ResampleBezier::ResampleBezier(mrs_string name):MarSystem("ResampleBezier", name)
 {
 	//Add any specific controls needed by ResampleBezier
 	//(default controls all MarSystems should have

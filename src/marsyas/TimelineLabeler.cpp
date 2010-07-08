@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Marsyas;
 
-TimelineLabeler::TimelineLabeler(string name):MarSystem("TimelineLabeler", name)
+TimelineLabeler::TimelineLabeler(mrs_string name):MarSystem("TimelineLabeler", name)
 {
 	addControls();
 	labelFiles_ = ",";
@@ -310,6 +310,3 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-
-

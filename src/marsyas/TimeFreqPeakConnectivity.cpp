@@ -137,7 +137,7 @@ static inline mrs_natural MyMin (mrs_natural a , mrs_natural b)
 
 }
 
-TimeFreqPeakConnectivity::TimeFreqPeakConnectivity(string name) : MarSystem("TimeFreqPeakConnectivity", name)
+TimeFreqPeakConnectivity::TimeFreqPeakConnectivity(mrs_string name) : MarSystem("TimeFreqPeakConnectivity", name)
 {
 	addControls();
 	

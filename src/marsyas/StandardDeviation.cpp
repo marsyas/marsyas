@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-StandardDeviation::StandardDeviation(string name): MarSystem("StandardDeviation",name)
+StandardDeviation::StandardDeviation(mrs_string name): MarSystem("StandardDeviation",name)
 {
 }
 

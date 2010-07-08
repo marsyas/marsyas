@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SubtractMean::SubtractMean(string name) :
+SubtractMean::SubtractMean(mrs_string name) :
 	MarSystem("SubtractMean", name)
 {
 	// No controls to add
@@ -72,4 +72,3 @@ void SubtractMean::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-

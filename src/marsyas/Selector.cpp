@@ -25,7 +25,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Selector::Selector(string name):MarSystem("Selector", name)
+Selector::Selector(mrs_string name):MarSystem("Selector", name)
 {
   addControls();
 }
@@ -137,5 +137,3 @@ Selector::myProcess(realvec& in, realvec& out)
 	  outIndex++;
 	}
 }
-
-

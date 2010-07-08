@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Spectrum::Spectrum(string name):MarSystem("Spectrum",name)
+Spectrum::Spectrum(mrs_string name):MarSystem("Spectrum",name)
 {
 	ponObservations_ = 0;
 
@@ -154,15 +154,3 @@ Spectrum::myProcess(realvec& in, realvec& out)
 
 	return;
 }
-
-
-
-
-
-
-
-
-
-
-
-

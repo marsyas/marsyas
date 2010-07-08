@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-ResampleNearestNeighbour::ResampleNearestNeighbour(string name):MarSystem("ResampleNearestNeighbour", name)
+ResampleNearestNeighbour::ResampleNearestNeighbour(mrs_string name):MarSystem("ResampleNearestNeighbour", name)
 {
 	addControls();
 }
@@ -117,5 +117,3 @@ ResampleNearestNeighbour::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-

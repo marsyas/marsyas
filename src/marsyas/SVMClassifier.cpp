@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SVMClassifier::SVMClassifier(string name) :
+SVMClassifier::SVMClassifier(mrs_string name) :
 	MarSystem("SVMClassifier", name) {
 	training_ = true;
 	was_training_ = false;

@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Reciprocal::Reciprocal(string name):MarSystem("Reciprocal",name)
+Reciprocal::Reciprocal(mrs_string name):MarSystem("Reciprocal",name)
 {
 }
 

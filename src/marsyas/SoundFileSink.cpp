@@ -27,7 +27,7 @@ using namespace Marsyas;
 	
 
 
-SoundFileSink::SoundFileSink(string name):MarSystem("SoundFileSink",name)
+SoundFileSink::SoundFileSink(mrs_string name):MarSystem("SoundFileSink",name)
 {
 
   
@@ -77,7 +77,7 @@ SoundFileSink::addControls()
 void
 SoundFileSink::putHeader()
 {
-  string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+  mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
   dest_->putHeader(filename);
 }
 
@@ -86,14 +86,14 @@ SoundFileSink::putHeader()
 bool 
 SoundFileSink::checkType()
 {
-  string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+  mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
   // check if file exists
 	if (filename != "defaultfile")
     {
 		sfp_ = fopen(filename.c_str(), "wb");
 		if (sfp_ == NULL) 
 		{
-			string wrn = "SoundFileSink::checkType: Problem opening file ";
+			mrs_string wrn = "SoundFileSink::checkType: Problem opening file ";
 			wrn += filename;
 			MRSWARN(wrn);
 			filename = "defaultfile";
@@ -103,9 +103,9 @@ SoundFileSink::checkType()
     }
 	
 	// try to open file with appropriate format 
-  string::size_type pos = filename.rfind(".", filename.length());
-  string ext;
-  if (pos == string::npos) ext = "";
+  mrs_string::size_type pos = filename.rfind(".", filename.length());
+  mrs_string ext;
+  if (pos == mrs_string::npos) ext = "";
   else 
     ext = filename.substr(pos, filename.length());  
   
@@ -128,7 +128,7 @@ SoundFileSink::checkType()
     {
       if (filename != "defaultfile")
 	{
-	  string wrn = "Unsupported format for file ";
+	  mrs_string wrn = "Unsupported format for file ";
 	  wrn += filename;
 	  MRSWARN(wrn);
 	  filename_ = "defaultfile";

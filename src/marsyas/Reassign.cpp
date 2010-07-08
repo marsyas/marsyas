@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Reassign::Reassign(string name):MarSystem("Reassign",name)
+Reassign::Reassign(mrs_string name):MarSystem("Reassign",name)
 {
   //type_ = "Reassign";
   //name_ = name;

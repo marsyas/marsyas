@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-ShiftOutput::ShiftOutput(string name):MarSystem("ShiftOutput",name)
+ShiftOutput::ShiftOutput(mrs_string name):MarSystem("ShiftOutput",name)
 {
   addControls();
 }

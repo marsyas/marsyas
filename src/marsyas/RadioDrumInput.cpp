@@ -28,7 +28,7 @@
 using namespace std;
 using namespace Marsyas;
 
-RadioDrumInput::RadioDrumInput(string name):MarSystem("RadioDrumInput",name)
+RadioDrumInput::RadioDrumInput(mrs_string name):MarSystem("RadioDrumInput",name)
 {
     initMidi = false;
 #ifdef MARSYAS_MIDIIO

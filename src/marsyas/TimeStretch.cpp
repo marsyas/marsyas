@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-TimeStretch::TimeStretch(string name):MarSystem("TimeStretch",name)
+TimeStretch::TimeStretch(mrs_string name):MarSystem("TimeStretch",name)
 {
   //type_ = "TimeStretch";
   //name_ = name;

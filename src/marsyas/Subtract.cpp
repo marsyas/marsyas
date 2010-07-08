@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Subtract::Subtract(string name):MarSystem("Subtract", name)
+Subtract::Subtract(mrs_string name):MarSystem("Subtract", name)
 {
 	addControls();
 }
@@ -65,5 +65,3 @@ Subtract::myProcess(realvec& in, realvec& out)
 	for (mrs_natural t = 0; t < inSamples_; t++)
 		out(0,t) = in(0,t) - in(1,t);
 }
-
-

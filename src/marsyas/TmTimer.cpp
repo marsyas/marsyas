@@ -26,7 +26,7 @@ TmTimer::TmTimer()
 {
     init();
 }
-TmTimer::TmTimer(string name)
+TmTimer::TmTimer(mrs_string name)
 {
     init();
     name_=name;
@@ -60,19 +60,19 @@ TmTimer::init()
 //    next_trigger_=0;
 }
 
-string
+mrs_string
 TmTimer::getName()
 {
 	return name_;
 }
 
-string
+mrs_string
 TmTimer::getType()
 {
 	return type_;
 }
 
-string
+mrs_string
 TmTimer::getPrefix()
 {
 	return type_ + "/" + name_;
@@ -129,7 +129,7 @@ TmTimer::updtimer(std::vector<TmParam> params)
 		TmParam p = *tvi;
 		updtimer(p);
 	}
-	MRSWARN("TmTimer::updtimer(string,TmControlValue)  updtimer not supported for this timer");
+	MRSWARN("TmTimer::updtimer(mrs_string,TmControlValue)  updtimer not supported for this timer");
 }
 
 void

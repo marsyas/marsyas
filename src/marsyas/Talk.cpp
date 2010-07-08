@@ -49,7 +49,7 @@ struct ltstr
 };
 
 void
-Talk::cmd_colorgram(string collection, string system, unsigned int start, unsigned int end, unsigned int winSize)
+Talk::cmd_colorgram(mrs_string collection, mrs_string system, unsigned int start, unsigned int end, unsigned int winSize)
 {
 	// FIXME All the code to this function is commented out, so none of the parameters are used.
 	(void) collection;
@@ -62,14 +62,14 @@ Talk::cmd_colorgram(string collection, string system, unsigned int start, unsign
 //   fvec statVector;
   
 
-//   string projectStr1 = MARSYAS_MFDIR;
+//   mrs_string projectStr1 = MARSYAS_MFDIR;
 //   projectStr1 += "/projectfiles/";
 //   projectStr1 += collection;
 //   projectStr1 += system;
 //   projectStr1 += "prj.mf";
 //   projectMatrix.read(projectStr1);
 
-//   string projectStr2 = MARSYAS_MFDIR;
+//   mrs_string projectStr2 = MARSYAS_MFDIR;
 //   projectStr2 += "/projectfiles/";
 //   projectStr2 += collection;
 //   projectStr2 += system;
@@ -79,7 +79,7 @@ Talk::cmd_colorgram(string collection, string system, unsigned int start, unsign
 //   cerr << "Colorgram called with " << projectStr1 << endl;
 //   cerr << "Colorgram called with " << projectStr2 << endl;
 
-//   string extractorstr = system;
+//   mrs_string extractorstr = system;
   
 //   int iwinSize = winSize;
 //   if (winSize != DEFAULT_WIN_SIZE)
@@ -140,7 +140,7 @@ Talk::cmd_colorgram(string collection, string system, unsigned int start, unsign
 //   rows =   (*(results[extractorstr.c_str()])).rows();
 //   unsigned int cols;
 //   cols =   (*(results[extractorstr.c_str()])).cols();
-//   string name;
+//   mrs_string name;
 //   name = (*(results[extractorstr.c_str()])).name();
   
 
@@ -249,7 +249,7 @@ void Talk::cmd_play(mrs_natural start, mrs_natural end, mrs_natural lineSize)
 
 
 void 
-Talk::cmd_load(string fname, mrs_natural lineSize)
+Talk::cmd_load(mrs_string fname, mrs_natural lineSize)
 {
   cout << "cmd_load called" << endl;
   
@@ -309,7 +309,7 @@ Talk::cmd_load(string fname, mrs_natural lineSize)
 }
 
 void 
-Talk::cmd_extract(string systemName, string fileName, TimeLine tline)
+Talk::cmd_extract(mrs_string systemName, mrs_string fileName, TimeLine tline)
 {
 	// FIXME See above.
 	(void) systemName;
@@ -319,8 +319,8 @@ Talk::cmd_extract(string systemName, string fileName, TimeLine tline)
 //   cerr << "cmd_extract::fileName   " << fileName << endl;
 
 //   FileName fromFile(fname_);
-//   string fromName = fromFile.name();
-//   string extractorstr = systemName;
+//   mrs_string fromName = fromFile.name();
+//   mrs_string extractorstr = systemName;
 
 //   src_->initWindow(512, 512, 0, 0);
 
@@ -347,7 +347,7 @@ Talk::cmd_extract(string systemName, string fileName, TimeLine tline)
 //   extr->extract(*featMatrix);
 
 //   /* append the feature matrix to the output file for the collection */
-//   string name = fromName.substr(0, fromName.size()-3);
+//   mrs_string name = fromName.substr(0, fromName.size()-3);
 //   featMatrix->setName(name);
 //   imatrix labels(featMatrix->rows(), 2);
 //   ivec labelSizes(2);
@@ -372,7 +372,7 @@ Talk::cmd_extract(string systemName, string fileName, TimeLine tline)
 
 
 void 
-Talk::cmd_segment(string systemName, unsigned int memSize, unsigned int numPeaks, unsigned int peakSpacing, unsigned int start, unsigned int end, unsigned int winSize)
+Talk::cmd_segment(mrs_string systemName, unsigned int memSize, unsigned int numPeaks, unsigned int peakSpacing, unsigned int start, unsigned int end, unsigned int winSize)
 {
 	// FIXME Unused parameters
 	(void) memSize;
@@ -411,8 +411,8 @@ Talk::cmd_segment(string systemName, unsigned int memSize, unsigned int numPeaks
 
 
 
-//   string extractorstr = systemName;
-//   string rextractorstr = systemName;
+//   mrs_string extractorstr = systemName;
+//   mrs_string rextractorstr = systemName;
 //   if (!strcmp(rextractorstr.c_str(), "REG"))
 //       extractorstr = "FFT_SEGM";
   
@@ -481,7 +481,7 @@ Talk::cmd_segment(string systemName, unsigned int memSize, unsigned int numPeaks
 
 
 void
-Talk::cmd_merge(string systemName, unsigned int pstart, unsigned int pend, 
+Talk::cmd_merge(mrs_string systemName, unsigned int pstart, unsigned int pend, 
 		unsigned int start, unsigned int end, unsigned int winSize)
 {
 	// FIXME See above (missing function body)
@@ -492,7 +492,7 @@ Talk::cmd_merge(string systemName, unsigned int pstart, unsigned int pend,
 	(void) end;
 	(void) winSize;
 
-//   string extractorstr = systemName;
+//   mrs_string extractorstr = systemName;
 //   if (winSize != DEFAULT_WIN_SIZE)
 //     {
 //       pstart = (unsigned int)(start * ((float)winSize / DEFAULT_WIN_SIZE));
@@ -609,7 +609,7 @@ Talk::cmd_merge(string systemName, unsigned int pstart, unsigned int pend,
 
 
 void 
-Talk::cmd_classify(string systemName, string classifierName, unsigned int start, unsigned int end, unsigned int winSize)
+Talk::cmd_classify(mrs_string systemName, mrs_string classifierName, unsigned int start, unsigned int end, unsigned int winSize)
 {
 	// FIXME See above.
 	(void) systemName;
@@ -629,7 +629,7 @@ Talk::cmd_classify(string systemName, string classifierName, unsigned int start,
 //       winSize = DEFAULT_WIN_SIZE;
 //     }
   
-//   string extractorstr = systemName;
+//   mrs_string extractorstr = systemName;
   
 //   if (winSize != DEFAULT_WIN_SIZE)
 //     {
@@ -687,7 +687,7 @@ Talk::cmd_classify(string systemName, string classifierName, unsigned int start,
 //   float conf;
   
 //   unsigned int classId = classifier.estimateClass(*(results[extractorstr.c_str()]),&conf);
-//   string className = classifier.className(classId);
+//   mrs_string className = classifier.className(classId);
 //   cerr << "Estimated className = " << className << endl;
 //   cerr << "Estimated classId = " << classId << endl;
 
@@ -697,7 +697,7 @@ Talk::cmd_classify(string systemName, string classifierName, unsigned int start,
 
 //   static char *buf = new char[256];
 //   sprintf(buf, "%d\n", classId);
-//   string classIdmessage;
+//   mrs_string classIdmessage;
 //   classIdmessage = buf;
 
 //   communicator_->send_message(classIdmessage);
@@ -713,7 +713,7 @@ Talk::process(char *message)
   cerr << "Message = " << message << endl;
   char *word;
   char *filename;
-  string fname;
+  mrs_string fname;
   unsigned int lineSize;
   int start, end, win_size;
   word = strtok(message, SEPCHARS);
@@ -744,7 +744,7 @@ Talk::process(char *message)
     }
   else if (!strcmp(word,"merge"))
     {
-      string systemName = strtok(NULL, SEPCHARS);
+      mrs_string systemName = strtok(NULL, SEPCHARS);
       unsigned int pstart = atoi(strtok(NULL, SEPCHARS));
       unsigned int pend = atoi(strtok(NULL, SEPCHARS));
       unsigned int start = atoi(strtok(NULL, SEPCHARS));
@@ -761,8 +761,8 @@ Talk::process(char *message)
 				
   else if (!strcmp(word,"classify"))
     {
-      /* string systemName = strtok(NULL, SEPCHARS);
-      string classifierName = MARSYAS_MFDIR;
+      /* mrs_string systemName = strtok(NULL, SEPCHARS);
+      mrs_string classifierName = MARSYAS_MFDIR;
       classifierName += "/classifiers/";
       classifierName += strtok(NULL, SEPCHARS);
       classifierName += systemName;
@@ -798,7 +798,7 @@ Talk::process(char *message)
       for (int i=0; i<mask_size; ++i)
 	mask(i) = (mrs_real)atof(strtok(NULL, SEPCHARS));
       cerr << "Segment command." << endl;
-      string systemName = strtok(NULL, SEPCHARS);
+      mrs_string systemName = strtok(NULL, SEPCHARS);
       int memSize = atoi(strtok(NULL, SEPCHARS));
       int numPeaks = atoi(strtok(NULL, SEPCHARS));
       int peakSpacing  = atoi(strtok(NULL, SEPCHARS));
@@ -811,8 +811,8 @@ Talk::process(char *message)
   else if (!strcmp(word,"extract"))
     {
       cerr << "Extract command." << endl;
-      string systemName = strtok(NULL, SEPCHARS);
-      string fileName = strtok(NULL, SEPCHARS);
+      mrs_string systemName = strtok(NULL, SEPCHARS);
+      mrs_string fileName = strtok(NULL, SEPCHARS);
       TimeLine tline;
       tline.receive(communicator_);
       
@@ -831,8 +831,8 @@ Talk::process(char *message)
   else if (!strcmp(word,"colorgram"))
     {
       cerr << "Colorgram command." << endl;
-      string collection = strtok(NULL, SEPCHARS);
-      string system = strtok(NULL, SEPCHARS);
+      mrs_string collection = strtok(NULL, SEPCHARS);
+      mrs_string system = strtok(NULL, SEPCHARS);
       start = atoi(strtok(NULL, SEPCHARS));
       end   = atoi(strtok(NULL, SEPCHARS));
       win_size = atoi(strtok(NULL, SEPCHARS));
@@ -846,6 +846,3 @@ Talk::process(char *message)
 
 	
   
-
-
-

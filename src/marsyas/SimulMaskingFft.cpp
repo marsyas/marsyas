@@ -41,7 +41,7 @@ static inline mrs_real IntPow (mrs_real a, mrs_natural b)
 	return (dResult < 1e-30)? 0 : dResult;
 }
 
-SimulMaskingFft::SimulMaskingFft(string name):MarSystem("SimulMaskingFft", name)
+SimulMaskingFft::SimulMaskingFft(mrs_string name):MarSystem("SimulMaskingFft", name)
 {
 	//Add any specific controls needed by SimulMaskingFft
 	//(default controls all MarSystems should have
@@ -427,8 +427,3 @@ SimulMaskingFft::ComputeTables ()
 
 	return;
 }
-
-
-
-
-

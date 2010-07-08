@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Square::Square(string name):MarSystem("Square", name)
+Square::Square(mrs_string name):MarSystem("Square", name)
 {
 }
 
@@ -61,5 +61,3 @@ Square::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-

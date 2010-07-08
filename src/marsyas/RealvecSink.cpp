@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-RealvecSink::RealvecSink(string name):MarSystem("RealvecSink",name)
+RealvecSink::RealvecSink(mrs_string name):MarSystem("RealvecSink",name)
 {
 	//type_ = "RealvecSink";
 	//name_ = name;
@@ -80,7 +80,7 @@ RealvecSink::myUpdate(MarControlPtr sender)
 			// closing output file
 			outputFile_.close();
 			// copy to tmp
-			string tmp  = oriName_.c_str();
+			mrs_string tmp  = oriName_.c_str();
 			tmp+="tmp";
 			ofstream out;
 			out.open(tmp.c_str(), ios::out);
@@ -168,5 +168,3 @@ RealvecSink::myProcess(realvec& in, realvec& out)
 
 	count_+=inSamples_;
 }
-
-

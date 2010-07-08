@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Skewness::Skewness(string name):MarSystem("Skewness",name)
+Skewness::Skewness(mrs_string name):MarSystem("Skewness",name)
 {
   //type_ = "Skewness";
   //name_ = name;
@@ -94,4 +94,3 @@ Skewness::myProcess(realvec& in, realvec& out)
     }
     
 }
-

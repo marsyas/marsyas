@@ -31,7 +31,7 @@ using namespace Marsyas;
 *
 */
 
-ResampleSinc::ResampleSinc(string name):MarSystem("ResampleSinc", name)
+ResampleSinc::ResampleSinc(mrs_string name):MarSystem("ResampleSinc", name)
 {
 	//Add any specific controls needed by ResampleSinc
 	//(default controls all MarSystems should have

@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-StereoSpectrum::StereoSpectrum(string name):MarSystem("StereoSpectrum",name)
+StereoSpectrum::StereoSpectrum(mrs_string name):MarSystem("StereoSpectrum",name)
 {
 	addControls();
 }
@@ -126,18 +126,3 @@ StereoSpectrum::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(out, "stereoSpectrum");
 	//MATLAB_EVAL("plot(stereoSpectrum)");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Spectrum2Mel::Spectrum2Mel(string name):MarSystem("Spectrum2Mel", name)
+Spectrum2Mel::Spectrum2Mel(mrs_string name):MarSystem("Spectrum2Mel", name)
 {
 	addControls();
 
@@ -205,5 +205,3 @@ Spectrum2Mel::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-

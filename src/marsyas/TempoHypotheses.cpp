@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-TempoHypotheses::TempoHypotheses(string name):MarSystem("TempoHypotheses", name)
+TempoHypotheses::TempoHypotheses(mrs_string name):MarSystem("TempoHypotheses", name)
 {
   addControls();
   t_ = 0;

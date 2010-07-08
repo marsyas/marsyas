@@ -3,7 +3,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SimilarityMatrix::SimilarityMatrix(string name):MarSystem("SimilarityMatrix", name)
+SimilarityMatrix::SimilarityMatrix(mrs_string name):MarSystem("SimilarityMatrix", name)
 {
 	isComposite_ = true;
 	addControls();

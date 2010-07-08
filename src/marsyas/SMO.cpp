@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SMO::SMO(string name):MarSystem("SMO",name)
+SMO::SMO(mrs_string name):MarSystem("SMO",name)
 {
   //type_ = "SMO";
   //name_ = name;
@@ -88,7 +88,7 @@ SMO::myUpdate(MarControlPtr sender)
       weights_.create(inObservations);
     }
   
-  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+  mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   if (mode == "predict")
     {
       weights_ = getctrl("mrs_realvec/weights")->to<mrs_realvec>();
@@ -100,7 +100,7 @@ void
 SMO::myProcess(realvec& in, realvec& out)
 {
   mrs_natural t,o;
-  string mode = modePtr_->to<mrs_string>();
+  mrs_string mode = modePtr_->to<mrs_string>();
   mrs_natural prediction = 0;
   mrs_real label;
   mrs_real thres;

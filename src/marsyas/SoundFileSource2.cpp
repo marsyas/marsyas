@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SoundFileSource2::SoundFileSource2(string name):MarSystem("SoundFileSource2",name)
+SoundFileSource2::SoundFileSource2(mrs_string name):MarSystem("SoundFileSource2",name)
 {
 	src_ = NULL;
 	//filename_ = "defaultfile";
@@ -59,7 +59,7 @@ SoundFileSource2::fileReady(bool ready)
 
 		//check if audio file header was read  without errors
 		//(if an error occurred, the filename is set to "defaultfile" by src_ )
-		string filename = src_->getctrl("mrs_string/filename")->to<mrs_string>();
+		mrs_string filename = src_->getctrl("mrs_string/filename")->to<mrs_string>();
 		if (filename == "defaultfile")
 		{
 			fileReady(false);
@@ -114,7 +114,7 @@ SoundFileSource2::myUpdate(MarControlPtr sender)
 	MRSDIAG("SoundFileSource2::localUpdate");
 
 	//if file name changed, open new audio file
-	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+	mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 	if (filename_ != filename)
 	{
 		//if valid audio file format, create corresponding file object (src_)...
@@ -158,7 +158,7 @@ SoundFileSource2::myUpdate(MarControlPtr sender)
 bool 
 SoundFileSource2::checkType()
 {	
-	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+	mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 
 	if (filename == "defaultfile")
 	{
@@ -170,7 +170,7 @@ SoundFileSource2::checkType()
 	FILE * sfp = fopen(filename.c_str(), "r");
 	if (sfp == NULL) 
 	{
-		string wrn = "SoundFileSource2::checkType: Problem opening file ";
+		mrs_string wrn = "SoundFileSource2::checkType: Problem opening file ";
 		wrn += filename;
 		MRSWARN(wrn);
 		return false;
@@ -178,10 +178,10 @@ SoundFileSource2::checkType()
 	fclose(sfp);
 
 	// try to open file with appropriate format 
-	string::size_type pos = filename.rfind(".", filename.length());
-	string ext;
+	mrs_string::size_type pos = filename.rfind(".", filename.length());
+	mrs_string ext;
 
-	if (pos == string::npos) 
+	if (pos == mrs_string::npos) 
 		ext = "";
 	else 
 		ext = filename.substr(pos, filename.length());  
@@ -228,7 +228,7 @@ SoundFileSource2::checkType()
 	{
 		if (filename != "defaultfile")
 		{
-			string wrn = "Unsupported format for file ";
+			mrs_string wrn = "Unsupported format for file ";
 			wrn += filename;
 			MRSWARN(wrn);
 			return false;
@@ -260,4 +260,3 @@ SoundFileSource2::myProcess(realvec& in, realvec &out)
 	if(getctrl("mrs_bool/mute")->to<mrs_bool>())
 		out.setval(0.0); 
 }
-

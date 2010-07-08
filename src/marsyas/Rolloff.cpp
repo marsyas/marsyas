@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Rolloff::Rolloff(string name):MarSystem("Rolloff",name)
+Rolloff::Rolloff(mrs_string name):MarSystem("Rolloff",name)
 {
 	perc_ = 0.0;
 	sum_ = 0.0;

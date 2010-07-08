@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Transposer::Transposer(string name):MarSystem("Transposer", name)
+Transposer::Transposer(mrs_string name):MarSystem("Transposer", name)
 {
 }
 
@@ -67,11 +67,3 @@ Transposer::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-
-
-
-
-
-
-

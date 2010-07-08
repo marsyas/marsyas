@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Reverse::Reverse(string name):MarSystem("Reverse", name)
+Reverse::Reverse(mrs_string name):MarSystem("Reverse", name)
 {
 	addControls();
 }
@@ -63,5 +63,3 @@ Reverse::myProcess(realvec& in, realvec& out)
 		for (t = 0; t < inSamples_; t++)
 			out(o,t) = in(o,inSamples_-1-t);
 }
-
-

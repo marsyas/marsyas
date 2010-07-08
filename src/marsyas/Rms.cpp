@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Rms::Rms(string name):MarSystem("Rms",name)
+Rms::Rms(mrs_string name):MarSystem("Rms",name)
 {
   //type_ = "Rms";
 	//name_ = name;  

@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-RealvecSource::RealvecSource(string name):MarSystem("RealvecSource",name)
+RealvecSource::RealvecSource(mrs_string name):MarSystem("RealvecSource",name)
 {
 	count_= 0;
 	addControls();
@@ -110,4 +110,3 @@ RealvecSource::myProcess(realvec& in, realvec& out)
 
 	//out.dump();
 }
-

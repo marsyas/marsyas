@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SNR::SNR(string name):MarSystem("SNR", name)
+SNR::SNR(mrs_string name):MarSystem("SNR", name)
 {
 	addControls();
 	nsum_ = 0.0;

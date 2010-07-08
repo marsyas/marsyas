@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-SelfSimilarityMatrix::SelfSimilarityMatrix(string name):MarSystem("SelfSimilarityMatrix", name)
+SelfSimilarityMatrix::SelfSimilarityMatrix(mrs_string name):MarSystem("SelfSimilarityMatrix", name)
 {
 	isComposite_ = true;
 	addControls();
@@ -374,11 +374,3 @@ SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
 		}					 
 	}
 }
-
-
-
-
-
-
-
-
