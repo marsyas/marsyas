@@ -21,6 +21,7 @@
 
 using std::ostringstream;
 
+
 using namespace Marsyas;
 
 MFCC::MFCC(mrs_string name):MarSystem("MFCC",name)
@@ -206,7 +207,7 @@ MFCC::myUpdate(MarControlPtr sender)
 			for (i=0; i< totalFilters_; ++i)
 			{
 				mfccDCT_(j, i) = scale_fac * cos(j * (2*i +1) * PI/2/totalFilters_);
-				if (i == 0)
+				if (j == 0)
 				{
 					mfccDCT_(j,i) *= (mrs_real)(sqrt(2.0)/2.0);
 				}
@@ -214,6 +215,7 @@ MFCC::myUpdate(MarControlPtr sender)
 		}
 	}
 
+	
 	pfftSize_ = fftSize_;
 	psamplingRate_ = samplingRate_;
 
