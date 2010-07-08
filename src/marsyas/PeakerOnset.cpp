@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-PeakerOnset::PeakerOnset(string name):MarSystem("PeakerOnset", name)
+PeakerOnset::PeakerOnset(mrs_string name):MarSystem("PeakerOnset", name)
 {
 	addControls();
 
@@ -193,5 +193,3 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(out,"PeakerOnset_out");
 	//MATLAB_EVAL("onsetTS = [onsetTS, PeakerOnset_out];");
 }
-
-

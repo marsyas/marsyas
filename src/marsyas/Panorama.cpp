@@ -22,7 +22,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-Panorama::Panorama(string name):MarSystem("Panorama", name)
+Panorama::Panorama(mrs_string name):MarSystem("Panorama", name)
 {
   addControls();
 }
@@ -59,7 +59,7 @@ Panorama::myUpdate(MarControlPtr sender)
   if (inObservations == 1) 
     {
       setctrl("mrs_natural/onObservations", 2);
-      string inObsNames = getctrl("mrs_string/inObsNames")->to<string>();
+      mrs_string inObsNames = getctrl("mrs_string/inObsNames")->to<mrs_string>();
       inObsNames += ",";
       inObsNames += inObsNames;
       setctrl("mrs_string/onObsNames", inObsNames);

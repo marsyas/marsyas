@@ -27,7 +27,7 @@ using namespace Marsyas;
 #define PSD_WDB  4
 #define PSD_PD  5
 
-PowerSpectrum::PowerSpectrum(string name):MarSystem("PowerSpectrum",name)
+PowerSpectrum::PowerSpectrum(mrs_string name):MarSystem("PowerSpectrum",name)
 {
 	ntype_ = PSD_POWER;
 	N2_ = 0;
@@ -151,16 +151,3 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(out, "PowerSpectrum");
 	//MATLAB_EVAL("plot(PowerSpectrum)");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

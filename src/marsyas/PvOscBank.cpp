@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PvOscBank::PvOscBank(string name):MarSystem("PvOscBank",name)
+PvOscBank::PvOscBank(mrs_string name):MarSystem("PvOscBank",name)
 {
 	//type_ = "PvOscBank";
 	//name_ = name;

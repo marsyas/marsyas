@@ -24,7 +24,7 @@ using std::max;
 
 using namespace Marsyas;
 
-OverlapAdd::OverlapAdd(string name):MarSystem("OverlapAdd",name)
+OverlapAdd::OverlapAdd(mrs_string name):MarSystem("OverlapAdd",name)
 {
 	this->addControls ();
 }

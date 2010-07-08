@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakClusterSelect::PeakClusterSelect(string name):MarSystem("PeakClusterSelect", name)
+PeakClusterSelect::PeakClusterSelect(mrs_string name):MarSystem("PeakClusterSelect", name)
 {
 	addControls();  
 }
@@ -208,6 +208,3 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-
-

@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-Plucked::Plucked(string name):MarSystem("Plucked",name)
+Plucked::Plucked(mrs_string name):MarSystem("Plucked",name)
 {
   pointer1_ = 0;
   pointer2_ = 0;

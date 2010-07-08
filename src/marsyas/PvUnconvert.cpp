@@ -24,7 +24,7 @@ using std::string; using std::ostringstream;
 
 using namespace Marsyas;
 
-PvUnconvert::PvUnconvert(string name):MarSystem("PvUnconvert",name)
+PvUnconvert::PvUnconvert(mrs_string name):MarSystem("PvUnconvert",name)
 {
   //type_ = "PvUnconvert";
   //name_ = name;

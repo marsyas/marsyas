@@ -31,7 +31,7 @@ using std::vector;
 
 using namespace Marsyas;
 
-OneRClassifier::OneRClassifier(const string name) : MarSystem("OneRClassifier", name)
+OneRClassifier::OneRClassifier(const mrs_string name) : MarSystem("OneRClassifier", name)
 {
   addControls();
   rule_ = NULL;
@@ -257,4 +257,3 @@ OneRClassifier::Predict(const realvec& in)
   //return the class for this prediction.
   return rule_->getClassifications()[vv];
 }//Predict
-

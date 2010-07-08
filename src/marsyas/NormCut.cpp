@@ -31,7 +31,7 @@ using std::endl;
 
 using namespace Marsyas;
 
-NormCut::NormCut(string name):MarSystem("NormCut", name)
+NormCut::NormCut(mrs_string name):MarSystem("NormCut", name)
 {
 	numClusters_ = -1;
 	paramOffset_ = 0.5;
@@ -653,4 +653,3 @@ NormCut::print( realvec &A, int m , int n )
 //      }    
 //   } 
 //}
-

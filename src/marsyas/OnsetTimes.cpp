@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-OnsetTimes::OnsetTimes(string name):MarSystem("OnsetTimes", name)
+OnsetTimes::OnsetTimes(mrs_string name):MarSystem("OnsetTimes", name)
 {
   addControls();
   t_ = 0;
@@ -121,4 +121,3 @@ OnsetTimes::myProcess(realvec& in, realvec& out)
 
 	//MATLAB_PUT(out, "OnsetTimes");
 }
-

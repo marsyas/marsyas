@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-Product::Product(string name):MarSystem("Product",name)
+Product::Product(mrs_string name):MarSystem("Product",name)
 {
 }
 

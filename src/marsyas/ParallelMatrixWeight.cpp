@@ -24,7 +24,7 @@ using namespace Marsyas;
 
 //#define MTLB_DBG_LOG
 
-ParallelMatrixWeight::ParallelMatrixWeight(string name) : MarSystem("ParallelMatrixWeight", name)
+ParallelMatrixWeight::ParallelMatrixWeight(mrs_string name) : MarSystem("ParallelMatrixWeight", name)
 {
 	/// Add any specific controls needed by this MarSystem.
 	// Default controls that all MarSystems should have (like "inSamples"
@@ -129,5 +129,3 @@ ParallelMatrixWeight::myProcess(realvec& in, realvec& out)
 #endif
 #endif
 }
-
-

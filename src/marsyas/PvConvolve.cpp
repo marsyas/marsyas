@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PvConvolve::PvConvolve(string name):MarSystem("PvConvolve",name)
+PvConvolve::PvConvolve(mrs_string name):MarSystem("PvConvolve",name)
 {
   //type_ = "PvConvolve";
   //name_ = name;

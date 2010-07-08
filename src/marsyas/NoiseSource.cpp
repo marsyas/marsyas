@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 	
-NoiseSource::NoiseSource(string name):MarSystem("NoiseSource",name)
+NoiseSource::NoiseSource(mrs_string name):MarSystem("NoiseSource",name)
 {
   addControls();
 }

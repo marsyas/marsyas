@@ -22,7 +22,7 @@ using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 
-OnePole::OnePole(string name) : MarSystem("OnePole", name)
+OnePole::OnePole(mrs_string name) : MarSystem("OnePole", name)
 {
 	addControls();
 }

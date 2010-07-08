@@ -38,7 +38,7 @@ using std::endl;
 
 using namespace Marsyas;
 
-PhiSEMFilter::PhiSEMFilter(string name)
+PhiSEMFilter::PhiSEMFilter(mrs_string name)
 	: MarSystem("PhiSEMFilter", name) {
 	output_ = NULL;
 	coeffs_ = NULL;
@@ -130,5 +130,3 @@ PhiSEMFilter::myProcess(realvec& in, realvec& out) {
 		}
 	}
 }
-
-

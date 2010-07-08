@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PatchMatrix::PatchMatrix(string name):MarSystem("PatchMatrix", name)
+PatchMatrix::PatchMatrix(mrs_string name):MarSystem("PatchMatrix", name)
 {
 	//Add any specific controls needed by PatchMatrix
 	//(default controls all MarSystems should have

@@ -35,7 +35,7 @@ using namespace Marsyas;
 const mrs_real PhiSEMSource::MIN_ENERGY = 0.3;
 const mrs_real PhiSEMSource::MAX_ENERGY = 2000;
 	
-PhiSEMSource::PhiSEMSource(string name)
+PhiSEMSource::PhiSEMSource(mrs_string name)
 	: MarSystem("PhiSEMSource", name) {
 	addControls();
 	temp_ = 0.0;
@@ -166,4 +166,3 @@ PhiSEMSource::randomFloat(mrs_real max) {
 	mrs_real temp = (mrs_real)(max * rand() / (RAND_MAX + 1.0));
 	return temp;
 }
-

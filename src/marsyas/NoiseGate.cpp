@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-NoiseGate::NoiseGate(string name):MarSystem("NoiseGate",name)
+NoiseGate::NoiseGate(mrs_string name):MarSystem("NoiseGate",name)
 {
   //type_ = "NoiseGate";
   //name_ = name;

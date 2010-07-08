@@ -22,7 +22,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakFeatureSelect::PeakFeatureSelect(string name):MarSystem("PeakFeatureSelect", name)
+PeakFeatureSelect::PeakFeatureSelect(mrs_string name):MarSystem("PeakFeatureSelect", name)
 {
 	addControls();
 }
@@ -254,11 +254,3 @@ PeakFeatureSelect::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-
-
-
-
-
-
-

@@ -22,7 +22,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakSynthOsc::PeakSynthOsc(string name):MarSystem("PeakSynthOsc",name)
+PeakSynthOsc::PeakSynthOsc(mrs_string name):MarSystem("PeakSynthOsc",name)
 {
 	addControls();
 }
@@ -128,16 +128,3 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 	//signal if at least one peak was synthesized or not
 	ctrl_isSilence_->setValue(silence_);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

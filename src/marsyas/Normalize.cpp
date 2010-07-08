@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-Normalize::Normalize(string name):MarSystem("Normalize",name)
+Normalize::Normalize(mrs_string name):MarSystem("Normalize",name)
 {
 }
 
@@ -57,14 +57,3 @@ Normalize::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-

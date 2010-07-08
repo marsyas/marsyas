@@ -22,7 +22,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakSynthFFT::PeakSynthFFT(string name):MarSystem("PeakSynthFFT", name)
+PeakSynthFFT::PeakSynthFFT(mrs_string name):MarSystem("PeakSynthFFT", name)
 {
  
   addControls();

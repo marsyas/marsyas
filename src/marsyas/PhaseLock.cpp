@@ -24,7 +24,7 @@
 using namespace std;
 using namespace Marsyas;
 
-PhaseLock::PhaseLock(string name):MarSystem("PhaseLock", name)
+PhaseLock::PhaseLock(mrs_string name):MarSystem("PhaseLock", name)
 {
   addControls();
   t_ = 0;
@@ -955,4 +955,3 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("FluxFlowTS = [FluxFlowTS, Flux_FlowThrued];");
 	//cout << "T-" << t_ << ": " << in(inSamples_-1) << endl;
 }
-

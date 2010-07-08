@@ -31,7 +31,7 @@ using std::setfill;
 
 using namespace Marsyas;
 
-PlotSink::PlotSink(string name):MarSystem("PlotSink",name)
+PlotSink::PlotSink(mrs_string name):MarSystem("PlotSink",name)
 {
 	counter_ = 0;
 	addControls();
@@ -100,7 +100,7 @@ PlotSink::myProcess(realvec& in, realvec& out)
 	
 	if(ctrl_messages_->isTrue())
 	{
-		string sep =ctrl_separator_->to<mrs_string>();
+		mrs_string sep =ctrl_separator_->to<mrs_string>();
 		//ostringstream oss; 
 		//output input content as a Marsyas Message (stdout by default)
 //		for (t = 0; t < inSamples_; t++)
@@ -116,7 +116,7 @@ PlotSink::myProcess(realvec& in, realvec& out)
 //					oss << out(o,t);
 //				}
 //			}
-//			string s = oss.str(); 
+//			mrs_string s = oss.str(); 
 //			MRSMSG(s << endl);
 //		}//FIXME: confirm that code below is correct and remove commented code above
 		
@@ -135,26 +135,8 @@ PlotSink::myProcess(realvec& in, realvec& out)
 					oss << out(o,t);
 				}
 			}
-			string s = oss.str(); 
+			mrs_string s = oss.str(); 
 			MRSMSG(s << endl);
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

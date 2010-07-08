@@ -36,7 +36,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-OggFileSource::OggFileSource(string name):AbsSoundFileSource("OggFileSource", name)
+OggFileSource::OggFileSource(mrs_string name):AbsSoundFileSource("OggFileSource", name)
 {
   //type_ = "OggFileSource";
   //name_ = name;
@@ -123,7 +123,7 @@ OggFileSource::addControls()
  *   information to update the MarSystem. 
  */
 void
-OggFileSource::getHeader(string filename)
+OggFileSource::getHeader(mrs_string filename)
 {
   // if we have a file open already, close it
   closeFile();

@@ -28,7 +28,7 @@ using std::sort;
 
 using namespace Marsyas;
 
-PvConvert::PvConvert(string name):MarSystem("PvConvert",name)
+PvConvert::PvConvert(mrs_string name):MarSystem("PvConvert",name)
 {
 	//type_ = "PvConvert";
 	//name_ = name;
@@ -422,16 +422,3 @@ PvConvert::myProcessNeighbors(realvec& in, realvec& out)
 }
 
 		
-
-
-
-
-
-
-
-
-
-
-
-
-

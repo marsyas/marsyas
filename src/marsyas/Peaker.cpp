@@ -25,7 +25,7 @@ using std::max;
 
 using namespace Marsyas;
 
-Peaker::Peaker(string name):MarSystem("Peaker",name)
+Peaker::Peaker(mrs_string name):MarSystem("Peaker",name)
 {
 	addControls();
 }
@@ -371,10 +371,3 @@ void Peaker::compLpThresh (const mrs_realvec input, mrs_realvec &output)
 		output(i)	= buf;
 	}
 }
-
-
-
-
-
-
-

@@ -30,7 +30,7 @@ using std::abs;
 
 using namespace Marsyas;
 
-PeakConvert::PeakConvert(string name):MarSystem("PeakConvert",name)
+PeakConvert::PeakConvert(mrs_string name):MarSystem("PeakConvert",name)
 {
 	psize_ = 0;
 	size_ = 0;
@@ -554,10 +554,3 @@ PeakConvert::myProcess(realvec& in, realvec& out)
 	// MATLAB_EVAL("figure(1);clf;plot(peaks(6*k+1:7*k));");
 
 }
-
-
-
-
-
-
-

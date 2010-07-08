@@ -441,7 +441,7 @@ using namespace Marsyas;
 // 	return res;
 // }
 
-void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool microphone, mrs_natural synType, bool residual)
+void Marsyas::synthNetCreate(MarSystemManager *mng, mrs_string outsfname, bool microphone, mrs_natural synType, bool residual)
 {
 	//create Shredder series
 	MarSystem* postNet = mng->create("Series", "postNet");
@@ -536,7 +536,7 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, string outsfname, bool micro
 }
 
 void
-Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname, string ressfname, std::string panningInfo, mrs_natural nbChannels, mrs_natural Nw, 
+Marsyas::synthNetConfigure(MarSystem *pvseries, mrs_string sfName, mrs_string outsfname, mrs_string ressfname, std::string panningInfo, mrs_natural nbChannels, mrs_natural Nw, 
 													 mrs_natural D, mrs_natural S, mrs_natural accSize, bool microphone, mrs_natural synType, mrs_natural bopt, mrs_natural delay, mrs_real fs, bool residual)
 {
 	// FIXME Unused parameters
@@ -640,7 +640,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 // 				labels(i) = j;
 // }
 // 
-// void Marsyas::peakStore(realvec &peaks, string filename, mrs_real sf, mrs_natural hopSize)
+// void Marsyas::peakStore(realvec &peaks, mrs_string filename, mrs_real sf, mrs_natural hopSize)
 // {
 //   mrs_natural nbFrames_ = peaks.getCols();
 // 	
@@ -679,7 +679,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 // 	peakFile.close();
 // }
 // 
-// void Marsyas::peakLoad(realvec &peaks, string filename, mrs_real &fs, mrs_natural &nbSines, mrs_natural &nbFrames, mrs_natural &hopSize, bool tf_format)
+// void Marsyas::peakLoad(realvec &peaks, mrs_string filename, mrs_real &fs, mrs_natural &nbSines, mrs_natural &nbFrames, mrs_natural &hopSize, bool tf_format)
 // {
 // 	realvec peakSet;
 // 	peakSet.read(filename);
@@ -738,4 +738,3 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, string sfName, string outsfname,
 // 					}
 // 					map/=sum;
 // }
-

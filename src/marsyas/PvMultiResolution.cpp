@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PvMultiResolution::PvMultiResolution(string name):MarSystem("PvMultiResolution", name)
+PvMultiResolution::PvMultiResolution(mrs_string name):MarSystem("PvMultiResolution", name)
 {
 	flux_ = new Flux("flux");
 	r_ = 0.1;
@@ -306,5 +306,3 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 	
 	
 }
-
-

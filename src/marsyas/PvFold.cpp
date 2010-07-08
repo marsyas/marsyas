@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PvFold::PvFold(string name):MarSystem("PvFold",name)
+PvFold::PvFold(mrs_string name):MarSystem("PvFold",name)
 {
   //type_ = "PvFold";
   //name_ = name;

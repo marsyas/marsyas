@@ -22,7 +22,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakViewSource::PeakViewSource(string name):MarSystem("PeakViewSource", name)
+PeakViewSource::PeakViewSource(mrs_string name):MarSystem("PeakViewSource", name)
 {
 	addControls();
 	filename_ = "EMPTY_STRING";
@@ -151,11 +151,3 @@ PeakViewSource::myProcess(realvec& in, realvec& out)
 			ctrl_hasData_->setValue(false);
 	}
 }
-
-
-
-
-
-
-
-

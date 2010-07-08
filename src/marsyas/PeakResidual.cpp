@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakResidual::PeakResidual(string name):MarSystem("PeakResidual", name)
+PeakResidual::PeakResidual(mrs_string name):MarSystem("PeakResidual", name)
 {
 
 	addControls();
@@ -57,9 +57,9 @@ PeakResidual::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
 	ostringstream oss;
-	string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	string inObsName;
-	string temp;
+	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+	mrs_string inObsName;
+	mrs_string temp;
 	for(o=0; o < ctrl_onObservations_->to<mrs_natural>(); o++)
 	{
 		inObsName = inObsNames.substr(0, inObsNames.find(","));
@@ -104,11 +104,3 @@ PeakResidual::myProcess(realvec& in, realvec& out)
 
 	ctrl_SNR_->setValue(snr);
 }
-
-
-
-
-
-
-
-

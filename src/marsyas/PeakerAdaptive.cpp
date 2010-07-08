@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakerAdaptive::PeakerAdaptive(string name):MarSystem("PeakerAdaptive",name)
+PeakerAdaptive::PeakerAdaptive(mrs_string name):MarSystem("PeakerAdaptive",name)
 {
 	rms_ = 0.0;
 	winCount_ = 1;

@@ -24,7 +24,7 @@ using namespace Marsyas;
 #define SIGN(a, b) ( (b) < 0 ? -fabs(a) : fabs(a) )
 
 
-PCA::PCA(string name):MarSystem("PCA",name)
+PCA::PCA(mrs_string name):MarSystem("PCA",name)
 {
   //type_ = "PCA";
   //name_ = name;

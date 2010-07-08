@@ -24,7 +24,7 @@ using std::vector;
 
 using namespace Marsyas;
 
-Parallel::Parallel(string name):MarSystem("Parallel",name)
+Parallel::Parallel(mrs_string name):MarSystem("Parallel",name)
 {
 	isComposite_ = true;
 }
@@ -183,4 +183,3 @@ void Parallel::myProcess(realvec& in, realvec& out)
 		out = in;
 	}
 }
-

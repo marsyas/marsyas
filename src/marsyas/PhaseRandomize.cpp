@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PhaseRandomize::PhaseRandomize(string name):MarSystem("PhaseRandomize", name)
+PhaseRandomize::PhaseRandomize(mrs_string name):MarSystem("PhaseRandomize", name)
 {
 	addControls();
 }
@@ -107,5 +107,3 @@ PhaseRandomize::myProcess(realvec& in, realvec& out)
 		
 
 }
-
-

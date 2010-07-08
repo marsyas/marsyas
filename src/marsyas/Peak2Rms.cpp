@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-Peak2Rms::Peak2Rms(string name):MarSystem("Peak2Rms", name)
+Peak2Rms::Peak2Rms(mrs_string name):MarSystem("Peak2Rms", name)
 {
 }
 

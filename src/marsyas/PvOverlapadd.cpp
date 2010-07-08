@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PvOverlapadd::PvOverlapadd(string name):MarSystem("PvOverlapadd",name)
+PvOverlapadd::PvOverlapadd(mrs_string name):MarSystem("PvOverlapadd",name)
 {
   //type_ = "PvOverlapadd";
   //name_ = name;

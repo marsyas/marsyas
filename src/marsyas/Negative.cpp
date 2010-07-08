@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-Negative::Negative(string name): MarSystem("Negative", name)
+Negative::Negative(mrs_string name): MarSystem("Negative", name)
 {
 }
 
@@ -48,4 +48,3 @@ Negative::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-

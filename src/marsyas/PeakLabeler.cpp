@@ -22,7 +22,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakLabeler::PeakLabeler(string name):MarSystem("PeakLabeler", name)
+PeakLabeler::PeakLabeler(mrs_string name):MarSystem("PeakLabeler", name)
 {
 	addControls();
 }
@@ -83,11 +83,3 @@ PeakLabeler::myProcess(realvec& in, realvec& out)
 		}
 	}
 }
-
-
-
-
-
-
-
-

@@ -27,7 +27,7 @@ using std::endl;
 
 using namespace Marsyas;
 
-PeakViewSink::PeakViewSink(string name):MarSystem("PeakViewSink",name)
+PeakViewSink::PeakViewSink(mrs_string name):MarSystem("PeakViewSink",name)
 {
 	count_= 0;
 	tmpFilename_ = "defaultfile.tmp";
@@ -171,5 +171,3 @@ PeakViewSink::myProcess(realvec& in, realvec& out)
 			}
 	}
 }
-
-

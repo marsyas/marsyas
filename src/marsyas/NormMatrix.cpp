@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-NormMatrix::NormMatrix(string name): MarSystem("NormMatrix",name)
+NormMatrix::NormMatrix(mrs_string name): MarSystem("NormMatrix",name)
 {
 
 }

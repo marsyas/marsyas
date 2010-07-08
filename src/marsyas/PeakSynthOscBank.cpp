@@ -26,7 +26,7 @@ using std::endl;
 
 using namespace Marsyas;
 
-PeakSynthOscBank::PeakSynthOscBank(string name):MarSystem("PeakSynthOscBank",name)
+PeakSynthOscBank::PeakSynthOscBank(mrs_string name):MarSystem("PeakSynthOscBank",name)
 {
 	psize_ = 0;
 	size_ = 0;

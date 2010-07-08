@@ -35,7 +35,7 @@ using std::string; using std::ostringstream;
 using namespace Marsyas;
 
 
-PeakEnhancer::PeakEnhancer(string name):MarSystem("PeakEnhancer", name)
+PeakEnhancer::PeakEnhancer(mrs_string name):MarSystem("PeakEnhancer", name)
 {
 	//Add any specific controls needed by PeakEnhancer
 	//(default controls all MarSystems should have
@@ -160,6 +160,3 @@ PeakEnhancer::myProcess(realvec& in, realvec& out)
 
 
 }
-
-
-

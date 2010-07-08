@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakPeriods2BPM::PeakPeriods2BPM(string name):MarSystem("PeakPeriods2BPM",name)
+PeakPeriods2BPM::PeakPeriods2BPM(mrs_string name):MarSystem("PeakPeriods2BPM",name)
 {
 	addControls();
 }

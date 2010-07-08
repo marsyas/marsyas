@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-NormMaxMin::NormMaxMin(string name):MarSystem("NormMaxMin",name)
+NormMaxMin::NormMaxMin(mrs_string name):MarSystem("NormMaxMin",name)
 {
 
   init_ = false;
@@ -101,7 +101,7 @@ NormMaxMin::myUpdate(MarControlPtr sender)
       minimumsPtr_->setValue(minimums_, NOUPDATE);  
     }
 
-  string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+  mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
   if (mode == "predict")
     {
       minimums_ = minimumsPtr_->to<mrs_realvec>();
@@ -398,12 +398,3 @@ NormMaxMin::do_slices(realvec& in, realvec& out)
     }
 
 }
-
-
-
-
-
-
-
-
-

@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-PeakMask::PeakMask(string name):MarSystem("PeakMask", name)
+PeakMask::PeakMask(mrs_string name):MarSystem("PeakMask", name)
 {
 	addControls();
 }
@@ -71,5 +71,3 @@ PeakMask::myProcess(realvec& in, realvec& out)
 		for (t = 0; t < inSamples_; t++)
 			out(o,t) = gainValueEXAMPLE * in(o,t);
 }
-
-

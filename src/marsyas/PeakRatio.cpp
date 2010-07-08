@@ -18,7 +18,7 @@
 
 #include "PeakRatio.h"
 
-using std::string;
+
 using std::ostringstream;
 
 using namespace Marsyas;
@@ -31,7 +31,7 @@ using namespace Marsyas;
  *
  *
  */
-PeakRatio::PeakRatio(string name):MarSystem("PeakRatio", name)
+PeakRatio::PeakRatio(mrs_string name):MarSystem("PeakRatio", name)
 {
 	//Add any specific controls needed by PeakRatio
 	//(default controls all MarSystems should have

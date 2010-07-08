@@ -21,7 +21,7 @@
 using std::string; using std::ostringstream;
 using namespace Marsyas;
 
-Power::Power(string name):MarSystem("Power",name)
+Power::Power(mrs_string name):MarSystem("Power",name)
 {
 	  addControls();
 }
