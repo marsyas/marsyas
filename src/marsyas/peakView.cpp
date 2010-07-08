@@ -122,7 +122,7 @@ peakView::getPeaksParam(vector<realvec>& result, const pkParameter param, mrs_na
 	}
 }
 
-string
+mrs_string
 peakView::getParamName(mrs_natural paramIdx)
 {
 	switch(paramIdx)
@@ -251,7 +251,7 @@ peakView::fromTable(const realvec& vecTable)
 }
 
 bool
-peakView::peakWrite(string filename, mrs_real fs, mrs_natural frameSize)
+peakView::peakWrite(mrs_string filename, mrs_real fs, mrs_natural frameSize)
 {
 	//we may want to write this peakVector with its internal parameters
 	if(fs != 0)
@@ -266,7 +266,7 @@ peakView::peakWrite(string filename, mrs_real fs, mrs_natural frameSize)
 }
 
 bool
-peakView::peakRead(string filename)
+peakView::peakRead(mrs_string filename)
 {
 	//read .peak into a realvec
 	realvec vec_Table;
@@ -279,9 +279,3 @@ peakView::peakRead(string filename)
 	else
 		return false; //problem reading .peak file
 }
-
-
-
-
-
-

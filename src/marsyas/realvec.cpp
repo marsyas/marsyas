@@ -739,7 +739,7 @@ namespace Marsyas
 	realvec::send(Communicator *com)
 	{
 		static char *buf = new char[256];
-		string message;
+		mrs_string message;
 		sprintf(buf, "%i\n", (int)size_);
 		message = buf;
 		com->send_message(message);
@@ -754,7 +754,7 @@ namespace Marsyas
 	}
 
 	bool
-	realvec::read(string filename)
+	realvec::read(mrs_string filename)
 	{
 		ifstream from(filename.c_str());
 		if (from.is_open())
@@ -793,7 +793,7 @@ namespace Marsyas
 
 
 	bool
-	realvec::write(string filename) const
+	realvec::write(mrs_string filename) const
 	{
 		ofstream os(filename.c_str());
 		if (os.is_open())
@@ -817,7 +817,7 @@ namespace Marsyas
 	}
 
 	bool
-	realvec::readText(string filename)
+	realvec::readText(mrs_string filename)
 	{
 		ifstream infile(filename.c_str());
 		if (infile.is_open())
@@ -845,7 +845,7 @@ namespace Marsyas
 	}
 
 	bool
-	realvec::writeText(string filename)
+	realvec::writeText(mrs_string filename)
 	{
 		if (size_ == 0)
 			return true; //[?]
@@ -924,7 +924,7 @@ namespace Marsyas
 		//
 		//      return is;
 		//    }
-		string str0,str1,str2;
+		mrs_string str0,str1,str2;
 		mrs_natural size;
 		mrs_natural i;
 
@@ -1012,31 +1012,31 @@ namespace Marsyas
 	realvec
 	realvec::operator()(std::string r, std::string c)
 	{
-		string::size_type r_l = r.length();
-		string::size_type c_l = c.length();
+		mrs_string::size_type r_l = r.length();
+		mrs_string::size_type c_l = c.length();
 
-		string::size_type r_c = r.find(":");
-		string::size_type c_c = c.find(":");
+		mrs_string::size_type r_c = r.find(":");
+		mrs_string::size_type c_c = c.find(":");
 
-		string::size_type r_a;
-		string::size_type r_b;
+		mrs_string::size_type r_a;
+		mrs_string::size_type r_b;
 
-		string::size_type c_a;
-		string::size_type c_b;
+		mrs_string::size_type c_a;
+		mrs_string::size_type c_b;
 
 		char *endptr;
 
-		MRSASSERT( (r_c == 0 && r_l == 1) || (r_c == string::npos) || (r_c>0 && r_l-r_c>1) );
-		MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
+		MRSASSERT( (r_c == 0 && r_l == 1) || (r_c == mrs_string::npos) || (r_c>0 && r_l-r_c>1) );
+		MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == mrs_string::npos) || (c_c>0 && c_l-c_c>1) );
 
-		if ( r_c != string::npos && r_l > 1 )
+		if ( r_c != mrs_string::npos && r_l > 1 )
 		{
 			r_a = strtol( r.substr(0,r_c).c_str() , &endptr , 10  );
 			MRSASSERT( *endptr == '\0' );
 			r_b = strtol( r.substr(r_c+1,r_l-r_c-1).c_str() , &endptr , 10  );
 			MRSASSERT( *endptr == '\0' );
 		}
-		else if ( r_c == string::npos )
+		else if ( r_c == mrs_string::npos )
 		{
 			r_a = r_b = strtol( r.c_str() , &endptr , 10 );
 			MRSASSERT( *endptr == '\0' );
@@ -1049,14 +1049,14 @@ namespace Marsyas
 
 		MRSASSERT( r_a >= 0 && (mrs_natural)r_b < rows_ );
 
-		if ( c_c != string::npos && c_l > 1 )
+		if ( c_c != mrs_string::npos && c_l > 1 )
 		{
 			c_a = strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
 			MRSASSERT( *endptr == '\0' );
 			c_b = strtol( c.substr(c_c+1,c_l-c_c-1).c_str() , &endptr , 10 );
 			MRSASSERT( *endptr == '\0' );
 		}
-		else if ( c_c == string::npos )
+		else if ( c_c == mrs_string::npos )
 		{
 			c_a = c_b = strtol( c.c_str() , &endptr , 10 );
 			MRSASSERT( *endptr == '\0' );
@@ -1090,22 +1090,22 @@ namespace Marsyas
 	realvec
 	realvec::operator()(std::string c)
 	{
-		string::size_type c_l = c.length();
-		string::size_type c_c = c.find(":");
-		string::size_type c_a;
-		string::size_type c_b;
+		mrs_string::size_type c_l = c.length();
+		mrs_string::size_type c_c = c.find(":");
+		mrs_string::size_type c_a;
+		mrs_string::size_type c_b;
 		char *endptr;
 
-		MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == string::npos) || (c_c>0 && c_l-c_c>1) );
+		MRSASSERT( (c_c == 0 && c_l == 1) || (c_c == mrs_string::npos) || (c_c>0 && c_l-c_c>1) );
 
-		if ( c_c != string::npos && c_l > 1 )
+		if ( c_c != mrs_string::npos && c_l > 1 )
 		{
 			c_a = strtol( c.substr(0,c_c).c_str() , &endptr , 10  );
 			MRSASSERT( *endptr == '\0' );
 			c_b = strtol( c.substr(c_c+1,c_l-c_c-1).c_str() , &endptr , 10  );
 			MRSASSERT( *endptr == '\0' );
 		}
-		else if ( c_c == string::npos )
+		else if ( c_c == mrs_string::npos )
 		{
 			c_a = c_b = strtol( c.c_str() , &endptr , 10 );
 			MRSASSERT( *endptr == '\0' );
