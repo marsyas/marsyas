@@ -18,7 +18,7 @@
 
 #include "Parallel.h"
 
-using std::string; 
+
 using std::ostringstream;
 using std::vector;
 

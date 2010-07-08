@@ -19,7 +19,7 @@
 #include "PeakViewSink.h"
 #include "peakView.h"
 
-using std::string; 
+
 using std::ostringstream;
 using std::ifstream;
 using std::ios;

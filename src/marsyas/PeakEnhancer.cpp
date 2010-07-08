@@ -31,7 +31,7 @@ upsampled fvec from the original fvec.
 #include "Filter.h"
 #include "MarSystem.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 

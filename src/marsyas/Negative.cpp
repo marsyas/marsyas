@@ -18,7 +18,7 @@
 
 #include "Negative.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 Negative::Negative(mrs_string name): MarSystem("Negative", name)

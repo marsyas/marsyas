@@ -18,10 +18,9 @@
 
 #include "InductionGT.h"
 using namespace std;
-using namespace std;
 using namespace Marsyas;
 
-InductionGT::InductionGT(string name):MarSystem("InductionGT", name)
+InductionGT::InductionGT(mrs_string name):MarSystem("InductionGT", name)
 {
   addControls();
   t_ = 0;

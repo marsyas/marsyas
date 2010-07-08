@@ -18,7 +18,7 @@
 
 #include "PvMultiResolution.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 PvMultiResolution::PvMultiResolution(mrs_string name):MarSystem("PvMultiResolution", name)

@@ -19,7 +19,6 @@
 #include "common.h"
 #include "PeakDistanceHorizontality.h"
 
-using std::string;
 using std::ostringstream;
 using std::abs;
 
@@ -32,7 +31,7 @@ static const mrs_real kIdentityThresh	= 1e-6;
 static const mrs_real kSteepness		= .8;
 static const mrs_real kCutoff			= 1.;	// in Bark
 
-PeakDistanceHorizontality::PeakDistanceHorizontality(string name) : MarSystem("PeakDistanceHorizontality", name)
+PeakDistanceHorizontality::PeakDistanceHorizontality(mrs_string name) : MarSystem("PeakDistanceHorizontality", name)
 {
 	/// Add any specific controls needed by this MarSystem.
 	// Default controls that all MarSystems should have (like "inSamples"
@@ -155,5 +154,3 @@ PeakDistanceHorizontality::ComputeHorizontality(mrs_real freq1, mrs_real freq2)
 	//return this->sigmoid (abs(freq1-freq2));	
 	return this->gaussian (freq1-freq2);	
 }
-
-

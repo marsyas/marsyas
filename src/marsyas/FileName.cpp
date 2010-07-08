@@ -19,7 +19,6 @@
 #include "common.h" 
 #include "FileName.h"
 
-using std::string; 
 using std::ostringstream;
 using std::max;
 
@@ -29,7 +28,7 @@ FileName::FileName()
 {
 }
 
-FileName::FileName(string filename)
+FileName::FileName(mrs_string filename)
 {
   filename_ = filename;
 }
@@ -43,17 +42,17 @@ FileName::~FileName()
 
 
 
-string 
+mrs_string 
 FileName::fullname()
 {
   return filename_;
 }
 
 
-string 
+mrs_string 
 FileName::name()
 {
-  string name;
+  mrs_string name;
   size_t loc;
 
 #ifdef MARSYAS_WIN32
@@ -64,7 +63,7 @@ FileName::name()
   loc = filename_.rfind("/", filename_.length()-1);
 #endif
   
-  if (loc != string::npos)
+  if (loc != mrs_string::npos)
     name = filename_.substr(loc+1, filename_.length()-1);
   else 
     name = filename_;			// file in current directory 
@@ -73,17 +72,17 @@ FileName::name()
   
 }
 
-string
+mrs_string
 FileName::nameNoExt()
 {
-  string str = name();
+  mrs_string str = name();
   size_t loc;  
 
   loc = str.rfind(".", str.length()-1);
   return str.substr(0,loc);
 }
 
-string
+mrs_string
 FileName::ext()
 {
   size_t loc;
@@ -91,11 +90,11 @@ FileName::ext()
   return filename_.substr(loc+1, filename_.length()-1);
 }
 
-string
+mrs_string
 FileName::path()
 {
 
-  string name;
+  mrs_string name;
   size_t loc;
 
 #ifdef MARSYAS_WIN32
@@ -106,7 +105,7 @@ FileName::path()
   loc = filename_.rfind("/", filename_.length()-1);
 #endif
   
-  if (loc != string::npos)
+  if (loc != mrs_string::npos)
     name = filename_.substr(0, loc+1);
   else 
     name = "";			// file in current directory no path

@@ -23,7 +23,7 @@ using std::abs;
 
 using namespace Marsyas;
 
-Flux::Flux(string name):MarSystem("Flux",name)
+Flux::Flux(mrs_string name):MarSystem("Flux",name)
 {
 	addControls();
 
@@ -148,17 +148,3 @@ Flux::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("FluxTS = [FluxTS, Flux_out];");
 	//MATLAB_EVAL("plot(FluxTS)");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

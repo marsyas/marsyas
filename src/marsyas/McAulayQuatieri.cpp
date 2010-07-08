@@ -20,13 +20,12 @@
 #include "peakView.h"
 #include "NumericLib.h"
 
-using std::string;
 using std::ostringstream;
 using std::abs;
 
 using namespace Marsyas;
 
-McAulayQuatieri::McAulayQuatieri(string name):MarSystem("McAulayQuatieri", name)
+McAulayQuatieri::McAulayQuatieri(mrs_string name):MarSystem("McAulayQuatieri", name)
 {
 	addControls();
 	nextGroup_ = 0;
@@ -366,5 +365,3 @@ McAulayQuatieri::myProcess(realvec& in, realvec& out)
 			memory_(o, 0) = out(o, onSamples_-1); 
 	}
 }
-
-

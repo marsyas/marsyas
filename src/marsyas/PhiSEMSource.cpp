@@ -29,7 +29,7 @@
 #include "common.h"
 #include "PhiSEMSource.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 const mrs_real PhiSEMSource::MIN_ENERGY = 0.3;

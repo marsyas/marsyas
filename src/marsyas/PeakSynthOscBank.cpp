@@ -19,7 +19,7 @@
 #include "PeakSynthOscBank.h"
 #include "peakView.h"
 
-using std::string; 
+
 using std::ostringstream;
 using std::cout;
 using std::endl;

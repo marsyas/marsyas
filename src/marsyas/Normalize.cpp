@@ -18,7 +18,7 @@
 
 #include "Normalize.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 Normalize::Normalize(mrs_string name):MarSystem("Normalize",name)

@@ -18,7 +18,7 @@
 
 #include "Peaker.h"
 
-using std::string; 
+
 using std::ostringstream;
 using std::min;
 using std::max;

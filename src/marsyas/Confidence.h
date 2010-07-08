@@ -25,7 +25,7 @@
 #include <iostream>
 #include <iomanip> 
 
-//using std::string; using std::ostringstream;
+//using std::ostringstream;
 
 namespace Marsyas
 {

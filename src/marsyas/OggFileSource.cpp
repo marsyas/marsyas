@@ -33,7 +33,7 @@
 #endif
 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 OggFileSource::OggFileSource(mrs_string name):AbsSoundFileSource("OggFileSource", name)

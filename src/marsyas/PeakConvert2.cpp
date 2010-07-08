@@ -39,7 +39,7 @@ static const std::string kDbgFilePath = "d:/temp/peaks.new.txt";
 #endif
 
 
-using std::string; 
+
 using std::ostringstream;
 using std::min;
 using std::max;
@@ -78,7 +78,7 @@ mrs_real	princArg (mrs_real phase)
 	return PI + (fx + TWOPI*floor (fx*(-1.0/TWOPI)));
 }
 
-PeakConvert2::PeakConvert2(string name):MarSystem("PeakConvert2",name),
+PeakConvert2::PeakConvert2(mrs_string name):MarSystem("PeakConvert2",name),
 peaker_(0),
 max_(0),
 masking_(0)
@@ -675,10 +675,3 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 	//count the total number of existing peaks (i.e. peak freq != 0)
 	ctrl_totalNumPeaks_->setValue(pkViewOut.getTotalNumPeaks());
 }
-
-
-
-
-
-
-

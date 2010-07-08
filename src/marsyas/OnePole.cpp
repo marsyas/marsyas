@@ -18,7 +18,7 @@
 
 #include "OnePole.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 

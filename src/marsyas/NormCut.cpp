@@ -21,8 +21,7 @@
 
 #include <iostream>
 #include <cmath>
-
-using std::string; 
+ 
 using std::ostringstream;
 using std::cout;
 using std::min;

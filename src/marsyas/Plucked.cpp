@@ -18,7 +18,7 @@
 
 #include "Plucked.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 Plucked::Plucked(mrs_string name):MarSystem("Plucked",name)

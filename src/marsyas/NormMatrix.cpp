@@ -18,7 +18,7 @@
 
 #include "NormMatrix.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 NormMatrix::NormMatrix(mrs_string name): MarSystem("NormMatrix",name)

@@ -24,7 +24,6 @@
 
 #include <algorithm>
 
-using std::string;
 using std::ostringstream;
 using std::abs;
 

@@ -20,7 +20,7 @@
 
 #include <algorithm> 
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 
 using namespace Marsyas;
 

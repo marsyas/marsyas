@@ -35,7 +35,7 @@
 #include <fstream>
 #include <sstream>
 
-using std::string; 
+
 using std::ostringstream;
 using std::numeric_limits;
 using std::endl;

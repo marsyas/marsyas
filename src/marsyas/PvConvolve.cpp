@@ -18,7 +18,7 @@
 
 #include "PvConvolve.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 PvConvolve::PvConvolve(mrs_string name):MarSystem("PvConvolve",name)

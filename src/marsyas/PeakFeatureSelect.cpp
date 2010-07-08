@@ -19,7 +19,7 @@
 #include "PeakFeatureSelect.h"
 #include "peakView.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 PeakFeatureSelect::PeakFeatureSelect(mrs_string name):MarSystem("PeakFeatureSelect", name)

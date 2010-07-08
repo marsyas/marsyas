@@ -18,7 +18,7 @@
 
 #include "OverlapAdd.h"
 
-using std::string; 
+
 using std::ostringstream;
 using std::max;
 

@@ -23,7 +23,6 @@
 
 #include "OneRClassifier.h"
 
-using std::string;
  using std::ostringstream;
 using std::cout;
 using std::endl;

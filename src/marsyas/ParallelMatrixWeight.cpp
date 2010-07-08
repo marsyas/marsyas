@@ -19,7 +19,7 @@
 #include "common.h"
 #include "ParallelMatrixWeight.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 //#define MTLB_DBG_LOG

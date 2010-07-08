@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Marsyas;
 
-BeatTimesSink::BeatTimesSink(string name):MarSystem("BeatTimesSink", name)
+BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 {
 	addControls();
 	ibiBPM_ = 0.0;

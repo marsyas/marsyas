@@ -19,7 +19,7 @@
 #include "PeakLabeler.h"
 #include "peakView.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 PeakLabeler::PeakLabeler(mrs_string name):MarSystem("PeakLabeler", name)

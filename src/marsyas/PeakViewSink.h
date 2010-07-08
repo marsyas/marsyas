@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 
-//using std::string; using std::ostringstream;
+//using std::ostringstream;
 
 namespace Marsyas
 {
@@ -79,4 +79,3 @@ to the specified file and reset accumulated peak memory (disk or memory).
 } //namespace Marsyas
 
 #endif // MARSYAS_PEAKVIEWSINK_H
-

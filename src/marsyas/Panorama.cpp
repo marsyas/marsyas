@@ -19,7 +19,7 @@
 
 #include "Panorama.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 Panorama::Panorama(mrs_string name):MarSystem("Panorama", name)

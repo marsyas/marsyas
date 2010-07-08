@@ -19,7 +19,7 @@
 #include "PeakSynthFFT.h"
 #include "peakView.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 PeakSynthFFT::PeakSynthFFT(mrs_string name):MarSystem("PeakSynthFFT", name)

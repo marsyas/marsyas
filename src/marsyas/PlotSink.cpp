@@ -22,7 +22,7 @@
 #include "PlotSink.h"
 #include <iomanip> 
 
-using std::string; 
+
 using std::ostringstream;
 using std::cout;
 using std::endl;

@@ -18,7 +18,7 @@
 
 #include "PowerSpectrum.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 #define PSD_POWER 1

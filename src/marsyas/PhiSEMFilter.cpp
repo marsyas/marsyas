@@ -30,7 +30,7 @@
 #include "common.h"
 #include "PhiSEMFilter.h"
 
-using std::string; 
+
 using std::ostringstream;
 using std::cout;
 using std::endl;

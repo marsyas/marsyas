@@ -18,7 +18,7 @@
 
 #include "Polar2Cartesian.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 
 Polar2Cartesian::Polar2Cartesian(mrs_string name):MarSystem("Polar2Cartesian", name)

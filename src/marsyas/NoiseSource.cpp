@@ -18,7 +18,7 @@
 
 #include "NoiseSource.h"
 
-using std::string; using std::ostringstream;
+using std::ostringstream;
 using namespace Marsyas;
 	
 NoiseSource::NoiseSource(mrs_string name):MarSystem("NoiseSource",name)

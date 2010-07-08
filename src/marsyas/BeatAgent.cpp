@@ -29,7 +29,7 @@ using namespace Marsyas;
 #define INNER 3.0
 #define OUTTER 4.0
 
-BeatAgent::BeatAgent(string name):MarSystem("BeatAgent", name)
+BeatAgent::BeatAgent(mrs_string name):MarSystem("BeatAgent", name)
 {
 	addControls();
 	beatCount_ = 0;
