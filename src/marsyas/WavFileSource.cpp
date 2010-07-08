@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WavFileSource::WavFileSource(string name):AbsSoundFileSource("WavFileSource",name)
+WavFileSource::WavFileSource(mrs_string name):AbsSoundFileSource("WavFileSource",name)
 {
 	sdata_ = 0;
 	cdata_ = 0;
@@ -104,7 +104,7 @@ WavFileSource::addControls()
 }
 
 void 
-WavFileSource::getHeader(string filename)
+WavFileSource::getHeader(mrs_string filename)
 {
 	if (sfp_ != NULL) 
 		fclose(sfp_);

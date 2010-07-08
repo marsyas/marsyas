@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WaveletPyramid::WaveletPyramid(string name):MarSystem("WaveletPyramid",name)
+WaveletPyramid::WaveletPyramid(mrs_string name):MarSystem("WaveletPyramid",name)
 {
 	waveletStep_ = NULL;
 
@@ -125,7 +125,3 @@ WaveletPyramid::myProcess(realvec& in, realvec& out)
 	}
 
 }
-
-
-
-

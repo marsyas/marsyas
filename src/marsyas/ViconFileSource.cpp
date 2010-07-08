@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-ViconFileSource::ViconFileSource(string name):MarSystem("ViconFileSource",name)
+ViconFileSource::ViconFileSource(mrs_string name):MarSystem("ViconFileSource",name)
 {
 	//type_ = "ViconFileSource";
 	//name_ = name;
@@ -59,7 +59,7 @@ ViconFileSource::clone() const
 
 
 void 
-ViconFileSource::getHeader(string filename)
+ViconFileSource::getHeader(mrs_string filename)
 {
 	// Need to read Vicon File Header to get number and name of markers
 	vfp_ = fopen(filename.c_str(), "r");
@@ -152,5 +152,3 @@ ViconFileSource::myProcess(realvec& in, realvec& out)
 
   
   
-
-

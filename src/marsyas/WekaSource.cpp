@@ -10,7 +10,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WekaSource::WekaSource(string name):MarSystem("WekaSource",name)
+WekaSource::WekaSource(mrs_string name):MarSystem("WekaSource",name)
 {
 	addControls();
 	validationModeEnum_ = None;
@@ -115,9 +115,9 @@ WekaSource::myUpdate(MarControlPtr sender)
 		
 		// data_.Dump("org.txt", classesFound_);
 	  
-		string names;
+		mrs_string names;
 		bool first = true;
-		for(vector<string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++)
+		for(vector<mrs_string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++)
 		{
 			if(!first)
 				names += ",";
@@ -131,7 +131,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 		names = "";
 		first = true;
 		mrs_natural index = 0;
-		for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
+		for(vector<mrs_string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
 		{
 			if(attributesIncluded_[index])
 			{
@@ -150,7 +150,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 		setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
 		setctrl("mrs_natural/nInstances", (mrs_natural)data_.getRows());
 		
-		string mode = getctrl("mrs_string/validationMode")->to<mrs_string>();
+		mrs_string mode = getctrl("mrs_string/validationMode")->to<mrs_string>();
 		validationMode_ = mode;
 	  
 		if (validationMode_ == "") 
@@ -297,7 +297,7 @@ WekaSource::handleDefault(bool trainMode, realvec &out)
 	(void) trainMode;
 
 	vector<mrs_real> *row = NULL;
-	string fname = data_.GetFilename(currentIndex_);
+	mrs_string fname = data_.GetFilename(currentIndex_);
 	row = data_.at(currentIndex_++);
 	if(currentIndex_ >= (mrs_natural)data_.size())
     {
@@ -328,8 +328,8 @@ WekaSource::handleInstancePair(realvec& out)
 	vector<mrs_real> *rowi = NULL;
 	vector<mrs_real> *rowj = NULL;
 	
-	string fnamei = data_.GetFilename(i);
-	string fnamej = data_.GetFilename(j);
+	mrs_string fnamei = data_.GetFilename(i);
+	mrs_string fnamej = data_.GetFilename(j);
 	
 	rowi = data_.at(i);
 	rowj = data_.at(j);
@@ -507,7 +507,7 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
   
 }//loadFile
 
-void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::string& attributesToExtract)
+void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const std::string& attributesToExtract)
 {
 	// FIXME Unused parameter
 	(void) attributesToExtract;
@@ -519,7 +519,7 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	    mis.getline(str, 1023);
 	}
 	
-	string token1,token2,token3;
+	mrs_string token1,token2,token3;
   
 	mis >> token1;
 	
@@ -546,8 +546,8 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 		getline(mis, token3);
 		
 		// skip leading spaces of token3
-		string::size_type startpos = token3.find_first_not_of(" \t");
-		if (string::npos != startpos) 
+		mrs_string::size_type startpos = token3.find_first_not_of(" \t");
+		if (mrs_string::npos != startpos) 
 			token3 = token3.substr(startpos);
 		
 		if ((token3 == "real") || (token3 == "REAL"))
@@ -557,7 +557,7 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 		}
 		else if (token3[0] == '{')
 		{
-			string token = token3.substr( 1, token3.length()-2 );	// Remove curly braces			
+			mrs_string token = token3.substr( 1, token3.length()-2 );	// Remove curly braces			
 			
 			std::stringstream  tokenStream(token); 
 			std::string        cell;
@@ -580,7 +580,7 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	//attributes.
 	
 	
-	for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++)
+	for(vector<mrs_string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++)
     {
     }
 	
@@ -591,11 +591,11 @@ void WekaSource::parseHeader(ifstream& mis, const string& filename, const std::s
 	
 }//parseHeader
 
-void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data)
+void WekaSource::parseData(ifstream& mis, const mrs_string& filename, WekaData& data)
 {
 	// FIXME Unused parameter
 	(void) filename;
-	string currentFname;
+	mrs_string currentFname;
 
 	MRSASSERT(!mis.eof());
   
@@ -609,7 +609,7 @@ void WekaSource::parseData(ifstream& mis, const string& filename, WekaData& data
 	}
 	
 
-	string token;
+	mrs_string token;
 	// mis >> token;
 	
 	while (token == "") 
@@ -671,7 +671,7 @@ mrs_natural WekaSource::findClass(const char *className) const
 {
 	MRSASSERT(className!=NULL);
 	mrs_natural index = 0;
-	for(vector<string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++,index++)
+	for(vector<mrs_string>::const_iterator citer = classesFound_.begin(); citer!= classesFound_.end(); citer++,index++)
     {
 		if(*citer == className)
 			return index;
@@ -686,7 +686,7 @@ mrs_natural WekaSource::findAttribute(const char *attribute) const
 	MRSASSERT(attribute!=NULL);
 
 	mrs_natural index = 0;
-	for(vector<string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
+	for(vector<mrs_string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++,index++)
     {
 		if(*citer == attribute)
 			return index;
@@ -753,7 +753,7 @@ void WekaSource::parseAttributesToInclude(const std::string& attributesToInclude
 		attributesIncluded_[ii] = false;
 
 	//get a copy of the attributes to include list and start parsing for the "," seperators
-	string str = attributesToInclude_;
+	mrs_string str = attributesToInclude_;
 	char *cp = strtok((char *)str.c_str(), ",");
 
 	//find each string seperated by a "," and parse it for attributes

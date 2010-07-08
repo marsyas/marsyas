@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Windowing::Windowing(string name):MarSystem("Windowing",name)
+Windowing::Windowing(mrs_string name):MarSystem("Windowing",name)
 {
 	zeroPadding_ = 0;
 	size_ = 0;

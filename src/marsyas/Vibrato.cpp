@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Vibrato::Vibrato(string name):MarSystem("Vibrato",name)
+Vibrato::Vibrato(mrs_string name):MarSystem("Vibrato",name)
 {
   addControls();
 }

@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WavFileSource2::WavFileSource2(string name):AbsSoundFileSource2("WavFileSource2",name)
+WavFileSource2::WavFileSource2(mrs_string name):AbsSoundFileSource2("WavFileSource2",name)
 {
 	sdata_ = NULL;
 	cdata_ = NULL;
@@ -73,7 +73,7 @@ WavFileSource2::getHeader()
 	unsigned short channels, srate;
 	mrs_natural size;
 
-	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+	mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 	//if an empty filename, return error and default configuration
 	if(filename == "defaultfile")
 	{
@@ -212,7 +212,7 @@ WavFileSource2::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
 	//if not a new audiofile, no need to read header again
-	string filename = getctrl("mrs_string/filename")->to<mrs_string>();
+	mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 	if(filename_ != filename)
 	{
 		getHeader();//sets controls filename, nChannels, israte and size
@@ -398,11 +398,3 @@ WavFileSource2::myProcess(realvec& in, realvec& out)
 
 
 	
-
-
-
-
-
-
-
-

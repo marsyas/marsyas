@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-ZeroCrossings::ZeroCrossings(string name):MarSystem("ZeroCrossings",name)
+ZeroCrossings::ZeroCrossings(mrs_string name):MarSystem("ZeroCrossings",name)
 {
 }
 

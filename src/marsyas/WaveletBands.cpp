@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WaveletBands::WaveletBands(string name):MarSystem("WaveletBands",name)
+WaveletBands::WaveletBands(mrs_string name):MarSystem("WaveletBands",name)
 {
 	iwvpt_ = NULL;
 
@@ -127,4 +127,3 @@ WaveletBands::myProcess(realvec& in, realvec& out)
 	}
 
 }
-

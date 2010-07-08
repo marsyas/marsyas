@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Yin::Yin(string name):MarSystem("Yin", name)
+Yin::Yin(mrs_string name):MarSystem("Yin", name)
 {
   addControls();
 }
@@ -153,5 +153,3 @@ Yin::myProcess(realvec& in, realvec& out)
   out(0,0) = ctrl_osrate_/pitch; 
 
 }
-
-

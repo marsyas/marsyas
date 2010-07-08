@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WavFileSink::WavFileSink(string name):AbsSoundFileSink("WavFileSink",name)
+WavFileSink::WavFileSink(mrs_string name):AbsSoundFileSink("WavFileSink",name)
 {
   //type_ = "WavFileSink";
   //name_ = name;
@@ -64,11 +64,11 @@ WavFileSink::addControls()
 }
 
 bool 
-WavFileSink::checkExtension(string filename)
+WavFileSink::checkExtension(mrs_string filename)
 {
   FileName fn(filename);
-  string wavext  = "wav";
-  string sndext = "snd";
+  mrs_string wavext  = "wav";
+  mrs_string sndext = "snd";
   
   if (fn.ext() == wavext)
     return true;
@@ -98,7 +98,7 @@ WavFileSink::myUpdate(MarControlPtr sender)
 }
   
 void 
-WavFileSink::putHeader(string filename)
+WavFileSink::putHeader(mrs_string filename)
 {
   mrs_natural nChannels = (mrs_natural)getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   sfp_ = fopen(filename.c_str(), "wb");

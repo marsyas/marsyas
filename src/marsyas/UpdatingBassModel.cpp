@@ -3,7 +3,7 @@
 using namespace std;
 using namespace Marsyas;
 
-UpdatingBassModel::UpdatingBassModel(string name):MarSystem("MatchBassModel", name)
+UpdatingBassModel::UpdatingBassModel(mrs_string name):MarSystem("MatchBassModel", name)
 {
   isComposite_ = true;
   addControls();

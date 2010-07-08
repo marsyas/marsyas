@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WekaSink::WekaSink(string name) : MarSystem("WekaSink",name)
+WekaSink::WekaSink(mrs_string name) : MarSystem("WekaSink",name)
 {
 	mos_ = NULL;
 	addControls();
@@ -88,7 +88,7 @@ WekaSink::addControls()
 }
 
 void
-WekaSink::putHeader(string inObsNames)
+WekaSink::putHeader(mrs_string inObsNames)
 {
 	//updctrl(ctrl_putHeader_, false);
 	ctrl_putHeader_->setValue(true);
@@ -135,8 +135,8 @@ WekaSink::putHeader(string inObsNames)
 		mrs_natural i;
 		for (i =0; i < nAttributes; ++i)
 		{
-			string inObsName;
-			string temp;
+			mrs_string inObsName;
+			mrs_string temp;
 			inObsName = inObsNames.substr(0, inObsNames.find(","));
 			temp = inObsNames.substr(inObsNames.find(",") + 1, inObsNames.length());
 			inObsNames = temp;
@@ -185,15 +185,15 @@ WekaSink::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
 
 	// (Re)build the list of label names.
-	string labelNames = ctrl_labelNames_->to<mrs_string>();
+	mrs_string labelNames = ctrl_labelNames_->to<mrs_string>();
 
 	labelNames_.clear();
 	// TODO: this could be done way more elegant
 	// (e.g. by using a split() or explode() function).
 	for (int i = 0; i < ctrl_nLabels_->to<mrs_natural>(); ++i)
 	{
-		string labelName;
-		string temp;
+		mrs_string labelName;
+		mrs_string temp;
 		labelName = labelNames.substr(0, labelNames.find(","));
 		temp = labelNames.substr(labelNames.find(",") + 1, labelNames.length());
 		labelNames = temp;
@@ -203,7 +203,7 @@ WekaSink::myUpdate(MarControlPtr sender)
 	// If not muted: write the header with the observation names.
 	if (!ctrl_mute_->isTrue())
 	{
-		string onObsNames = ctrl_onObsNames_->to<mrs_string>();
+		mrs_string onObsNames = ctrl_onObsNames_->to<mrs_string>();
 		putHeader(onObsNames);
 	}
 

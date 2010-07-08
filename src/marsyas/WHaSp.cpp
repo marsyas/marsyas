@@ -25,7 +25,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WHaSp::WHaSp(string name):MarSystem("WHaSp", name)
+WHaSp::WHaSp(mrs_string name):MarSystem("WHaSp", name)
 {
 	HWPSnet_ = NULL;
 

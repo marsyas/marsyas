@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-ZeroRClassifier::ZeroRClassifier(string name):MarSystem("ZeroRClassifier",name)
+ZeroRClassifier::ZeroRClassifier(mrs_string name):MarSystem("ZeroRClassifier",name)
 {
 	addControls();
 }
@@ -60,7 +60,7 @@ ZeroRClassifier::myUpdate(MarControlPtr sender)
 
 	if ((mrs_natural)labelSizes_.getSize() != nlabels)
 		labelSizes_.create(nlabels);
-	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+	mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 	if (mode == "predict")
 	{
 
@@ -70,7 +70,7 @@ ZeroRClassifier::myUpdate(MarControlPtr sender)
 void
 ZeroRClassifier::myProcess(realvec& in, realvec& out)
 {
-	string mode = getctrl("mrs_string/mode")->to<mrs_string>();
+	mrs_string mode = getctrl("mrs_string/mode")->to<mrs_string>();
 	mrs_natural nlabels = getctrl("mrs_natural/nClasses")->to<mrs_natural>();
 	mrs_natural l, t;
 	mrs_natural prediction = 0;
@@ -122,4 +122,3 @@ ZeroRClassifier::myProcess(realvec& in, realvec& out)
 	}
 	prev_mode_ = mode;
 }
-

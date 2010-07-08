@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-WaveletStep::WaveletStep(string name):MarSystem("WaveletStep",name)
+WaveletStep::WaveletStep(mrs_string name):MarSystem("WaveletStep",name)
 {
   //type_ = "WaveletStep";
   //name_ = name;

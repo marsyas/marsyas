@@ -254,7 +254,7 @@ mrs_natural WekaData::GetClass(mrs_natural row) const
 }
 
 //debug helper funtion to dump table to an ascii file
-void WekaData::Dump(const string& filename, const vector<string>& classNames) const
+void WekaData::Dump(const mrs_string& filename, const vector<mrs_string>& classNames) const
 {
 	char buffer[32];
 

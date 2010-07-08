@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-Unfold::Unfold(string name):MarSystem("Unfold",name)
+Unfold::Unfold(mrs_string name):MarSystem("Unfold",name)
 {
 	addControls();
 }
