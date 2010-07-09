@@ -158,6 +158,14 @@ to all songs of filelist.txt.
 Resulting soundExample.output will be saved in the same directory of the onsets executable.
 
 
+-------------- MIREX 2010 Audio Tempo Estimation ------------------
+(use REVISION_NUMBER: 4202) 
+
+./tempo soundFile.wav -f output_filename.txt 
+
+output_filename contains the output (two tempi and their relative strength tab-separated) of the tempo estimation. 
+
+
 ------------- MIREX 2010 Audio Beat Tracking Tasks ---------------------
 (use REVISION_NUMBER: 4194))
 

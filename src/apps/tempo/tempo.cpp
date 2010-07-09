@@ -94,6 +94,7 @@ mrs_real phase_;
 string fileName;
 string pluginName = EMPTYSTRING;
 string methodopt;
+
 CommandLineOptions cmd_options;
 
 
@@ -895,12 +896,16 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	
 	mrs_real strength = bpm_amp + secondary_bpm_amp;
 	
-	if (bpm_estimate < secondary_bpm_estimate)
-		cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
-	else 
-		cout << secondary_bpm_estimate << "\t" << bpm_estimate << "\t" << secondary_bpm_amp / strength << endl;
-	
 
+	ofstream ofs;
+	ofs.open(fileName.c_str());
+
+	if (bpm_estimate < secondary_bpm_estimate)
+		ofs << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	else 
+		ofs << secondary_bpm_estimate << "\t" << bpm_estimate << "\t" << secondary_bpm_amp / strength << endl;
+	
+	ofs.close();
 
 	delete beatTracker;
 }
@@ -3013,6 +3018,7 @@ loadOptions()
 	fileName   = cmd_options.getStringOption("filename");
 	methodopt = cmd_options.getStringOption("method");
 	bandopt = (mrs_natural)cmd_options.getRealOption("band");
+	
 }
 
 
