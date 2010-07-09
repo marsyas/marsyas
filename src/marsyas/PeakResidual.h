@@ -26,7 +26,11 @@ namespace Marsyas
 /** 
 \class PeakResidual
 \ingroup none
-\brief Compute the Reconstruction Signal-to-Noise Ratio
+\brief Compute the Signal-to-Noise Ratio (input: obs1:noisy signal, obs2:original signal)
+Controls:
+- \b mrs_real/SNR [r] : result (SNR between observations)
+- \b mrs_bool/snrInDb [rw] : flag whether the SNR output is in decibel or not (default: true)
+- \b mrs_string/outFilePath [rw] : path to optional output text file (SNR between observations) (default: EMPTYSTRING)
 */
 
 
@@ -38,6 +42,7 @@ private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
 
+	std::ofstream outFile_;
 public:
   PeakResidual(std::string name);
 	PeakResidual(const PeakResidual& a);

@@ -15,8 +15,12 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
+#include <iostream>
 
+#include "common.h"
 #include "PeakResidual.h"
+
+//#define MTLB_DBG_LOG
 
 using std::ostringstream;
 using namespace Marsyas;
@@ -34,6 +38,7 @@ PeakResidual::PeakResidual(const PeakResidual& a) : MarSystem(a)
 
 PeakResidual::~PeakResidual()
 {
+	outFile_.close ();
 }
 
 MarSystem* 
@@ -46,6 +51,8 @@ void
 PeakResidual::addControls()
 {
 	addctrl("mrs_real/SNR", 0.0, ctrl_SNR_);
+	addctrl("mrs_bool/snrInDb", true);
+	addctrl("mrs_string/outFilePath", EMPTYSTRING);
 }
 
 void
@@ -68,16 +75,32 @@ PeakResidual::myUpdate(MarControlPtr sender)
 		oss << inObsName << "_residual,";
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+
+	outFile_.close ();
+	outFile_.clear ();
+
+	mrs_string fileName = getControl ("mrs_string/outFilePath")->to<mrs_string> ();
+	if (fileName != EMPTYSTRING)
+		outFile_.open(fileName.c_str ());
+
 }
 
 void 
 PeakResidual::myProcess(realvec& in, realvec& out)
 {
+	mrs_bool inDb = getControl ("mrs_bool/snrInDb")->to<mrs_bool>();
 	mrs_natural t,o;
-	mrs_real snr = -80.0;
+	mrs_real snr = (inDb)? -80.0 : 0.;
 	mrs_real originalPower;
 	mrs_real synthPower;
 	mrs_real diffPower;
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(in, "in");
+	MATLAB_EVAL("figure(31),subplot(211),plot(in(1,:)),axis([1 512 -1 1]),grid on,subplot(212),plot(in(2,:)),axis([1 512 -1 1]),grid on");
+#endif
+#endif
 
 	for (o=0; o < inObservations_/2; o++)
 	{
@@ -98,9 +121,18 @@ PeakResidual::myProcess(realvec& in, realvec& out)
 
 		if(synthPower > .001 && originalPower > .01) //[?]
 		{
-			snr = log10((originalPower)/(diffPower+MINREAL)); // +synthPower
+			snr = (originalPower)/(diffPower+MINREAL);
+			if (inDb)
+				snr = 10*log10(snr); // +synthPower
 		}
 	}
 
 	ctrl_SNR_->setValue(snr);
+
+	if (outFile_.good ())
+	{
+		outFile_ << snr << std::endl;
+		//outFile_.flush ();
+	}
 }
+
