@@ -159,7 +159,7 @@ Resulting soundExample.output will be saved in the same directory of the onsets 
 
 
 -------------- MIREX 2010 Audio Tempo Estimation ------------------
-(use REVISION_NUMBER: 4202) 
+(use REVISION_NUMBER: 4206) 
 
 ./tempo soundFile.wav -f output_filename.txt 
 
