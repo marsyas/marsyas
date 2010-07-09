@@ -746,7 +746,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
 	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 1);
 	tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 1);
-	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 2);
+	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 10);
 	
 	onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
 	onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
@@ -804,7 +804,25 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 		beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
 		bpms.push_back(beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>());
 
-		secondary_bpms.push_back(estimate(3) * 0.25);
+		mrs_real max_secondary_amp = 0.0;
+		mrs_natural max_b;
+		
+		for (mrs_natural b=3; b<20; b+=2)
+		{
+			if (fabs(estimate(b) * 0.25 - bin) > 10)
+			{
+				if (estimate(b-1) >= max_secondary_amp) 
+				{
+					max_secondary_amp = estimate(b-1);
+					max_b = b;
+				}
+			}
+		}
+		
+		
+		secondary_bpms.push_back(estimate(max_b) * 0.25);
+		
+		
 		// cout << "phase_tempo = " << beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>() << endl;
 		
 		if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
@@ -829,7 +847,10 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	}
 	
 	cout << "bpm_estimate = " << bpm_estimate << endl;
+	cout << "secondary_bpm_estimate = " << secondary_bpm_estimate << endl;
 	
+
+
 	delete beatTracker;
 }
 
