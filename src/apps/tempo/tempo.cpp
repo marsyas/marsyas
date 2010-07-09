@@ -796,6 +796,9 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	{
 		beatTracker->tick();
 		mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
+
+		mrs_realvec bhisto = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
+		
 		
 		bin = estimate(1) * 0.25;
 		
@@ -806,10 +809,10 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 		beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", tempos);
 		beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
 		bpms.push_back(bin);
-		bpms_amps.push_back(estimate(0));
+		bpms_amps.push_back(bhisto(bin * 4));
 		
 		mrs_real max_secondary_amp = 0.0;
-		mrs_natural max_b;
+		mrs_natural max_b=0;
 		
 		for (mrs_natural b=3; b<20; b+=2)
 		{
@@ -824,8 +827,38 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 		}
 		
 		
-		secondary_bpms.push_back(estimate(max_b) * 0.25);
-		secondary_bpms_amps.push_back(estimate(max_b-1));
+		// secondary_bpms.push_back(estimate(max_b) * 0.25);
+		// secondary_bpms_amps.push_back(estimate(max_b-1));
+
+		if (bin < 100)
+		{
+			if (bhisto(2 * bin * 4) > bhisto(3 * bin * 4))
+			{
+				secondary_bpms.push_back(2 * bin);
+				secondary_bpms_amps.push_back(bhisto(2 * bin * 4));
+			}
+			else
+			{
+				secondary_bpms.push_back(3 * bin);
+				secondary_bpms_amps.push_back(bhisto(3 * bin * 4));				
+			}
+			
+		}
+		else 
+		{
+			if (bhisto(0.5 * bin * 4) > bhisto(0.33 * bin * 4))
+			{
+				secondary_bpms.push_back(0.5 * bin);
+				secondary_bpms_amps.push_back(bhisto(0.5 * bin * 4));
+			}
+			else
+			{
+				secondary_bpms.push_back(0.33 * bin);
+				secondary_bpms_amps.push_back(bhisto(0.33 * bin * 4));
+			}
+		}
+		
+
 		
 		// cout << "phase_tempo = " << beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>() << endl;
 		
@@ -858,7 +891,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	bpm_estimate = (mrs_natural)bpm_estimate;
 	secondary_bpm_estimate = (mrs_natural)secondary_bpm_estimate;
 	bpm_estimate /= 2.0;
-	secondary_bpm_estimate /= 2.0;	
+	secondary_bpm_estimate /= 2.0;	 
 	
 	mrs_real strength = bpm_amp + secondary_bpm_amp;
 	
