@@ -769,6 +769,9 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	
 	vector<mrs_real> bpms;
 	vector<mrs_real> secondary_bpms;
+	vector<mrs_real> bpms_amps;
+	vector<mrs_real> secondary_bpms_amps;
+	
 	mrs_real bin;
 
 
@@ -802,8 +805,9 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
 		beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", tempos);
 		beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
-		bpms.push_back(beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>());
-
+		bpms.push_back(bin);
+		bpms_amps.push_back(estimate(0));
+		
 		mrs_real max_secondary_amp = 0.0;
 		mrs_natural max_b;
 		
@@ -821,7 +825,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 		
 		
 		secondary_bpms.push_back(estimate(max_b) * 0.25);
-		
+		secondary_bpms_amps.push_back(estimate(max_b-1));
 		
 		// cout << "phase_tempo = " << beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>() << endl;
 		
@@ -840,14 +844,28 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	mrs_real secondary_bpm_estimate;
 	secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
 	
+	mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
+	mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
+	
 	if (haveCollections)
 	{
 		evaluate_estimated_tempo(sfName, bpm_estimate, ground_truth_tempo);
 		// evaluate_estimated_tempo(sfName,secondary_bpm_estimate, ground_truth_tempo);
 	}
 	
-	cout << "bpm_estimate = " << bpm_estimate << endl;
-	cout << "secondary_bpm_estimate = " << secondary_bpm_estimate << endl;
+	bpm_estimate *= 2.0;
+	secondary_bpm_estimate *= 2.0;
+	bpm_estimate = (mrs_natural)bpm_estimate;
+	secondary_bpm_estimate = (mrs_natural)secondary_bpm_estimate;
+	bpm_estimate /= 2.0;
+	secondary_bpm_estimate /= 2.0;	
+	
+	mrs_real strength = bpm_amp + secondary_bpm_amp;
+	
+	if (bpm_estimate < secondary_bpm_estimate)
+		cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	else 
+		cout << secondary_bpm_estimate << "\t" << bpm_estimate << "\t" << secondary_bpm_amp / strength << endl;
 	
 
 
