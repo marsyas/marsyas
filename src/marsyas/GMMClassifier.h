@@ -52,6 +52,11 @@ namespace Marsyas
 	 This MarSystems serves as a prototypical classification/regression 
 	 MarSystem. 
 	 
+	 WARNING: This MarSystem is a "work in progress" and is not in a working state.
+	 It is still missing some coding, testing and validation of results. In case
+	 you're interested in using or developing a GMM Classifier in Marsyas, please
+	 contact lgustavomartins@gmail.com or the Marsyas mailing lists.
+	 
 	 */
 	
 	
