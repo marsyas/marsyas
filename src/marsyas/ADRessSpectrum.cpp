@@ -20,6 +20,7 @@
 
 
 using std::ostringstream;
+using std::abs;
 
 using namespace Marsyas;
 
