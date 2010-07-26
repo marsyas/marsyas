@@ -388,19 +388,30 @@ toy_with_CollectionFileSource(string sfName)
 
 	mrs_bool isEmpty;
 	// int cindex = 0;
-	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	int index = 0;
+	
+	playbacknet->updControl("SoundFileSource/src/mrs_real/repetitions", 1.0);
+	
+// 	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	for (int i=0; i < 2000; i++)
 	{
 		playbacknet->tick();
 		// playbacknet->updControl("SoundFileSource/src/mrs_natural/cindex", cindex);
 		cout << playbacknet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
 		cout << playbacknet->getctrl("SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>() << endl;
+		cout << playbacknet->getctrl("SoundFileSource/src/mrs_real/repetitions")->to<mrs_real>() << endl;
 		
 		// cindex++;
 		// cout << "cindex = " << cindex << endl;
 		//toy_with if setting "mrs_natural/pos" to 0 for rewinding is working
-		if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 100000)
+		if(playbacknet->getctrl("mrs_natural/pos")->to<mrs_natural>() > 800000)
 			playbacknet->updControl("mrs_natural/pos", 0);
+		cout << playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>() << endl;
+		
+		index++;
 	}
+	cout << "index = " << index << endl;
+	
 	delete playbacknet;
 }
 

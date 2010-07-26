@@ -64,6 +64,8 @@ namespace Marsyas
 			mrs_natural samplesRead_;
 			mrs_natural samplesToWrite_;
 
+		mrs_natural nt_;
+		
 			mrs_natural samplesOut_;
   
 			mrs_real repetitions_;

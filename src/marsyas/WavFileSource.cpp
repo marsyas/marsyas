@@ -354,36 +354,47 @@ WavFileSource::getLinear16(realvec& slice)
 	mrs_natural c,t;
 
 	fseek(sfp_, 2 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
-
-	samplesToRead_ = inSamples_ * nChannels_;
-  
 	samplesRead_ = (mrs_natural)fread(sdata_, sizeof(short), samplesToRead_, sfp_);
-
-	if (samplesRead_ != samplesToRead_)
-    {
+	
+	// pad with zeros if necessary 
+	if ((samplesRead_ != samplesToRead_)&&(samplesRead_ != 0))
+	{
 		for (c=0; c < nChannels_; ++c)
 			for (t=0; t < inSamples_; t++)
-			{
 				slice(c, t) = 0.0;
-			}
 		samplesToWrite_ = samplesRead_ / nChannels_;
-    }
-	else 
+	}
+	else // default case - read enough samples or no samples in which case zero output 
+	{
 		samplesToWrite_ = inSamples_;
-  
+		
+		// if there are no more samples output zeros 
+		if (samplesRead_ == 0)
+			for (t=0; t < inSamples_; t++)
+			{
+				nt_ = nChannels_ * t;
+				for (c=0; c < nChannels_; ++c)
+				{
+					sdata_[nt_ + c] = 0;
+				}
+			}
+	}
+	
+	// write the read samples to output slice once for each channel 
 	for (t=0; t < samplesToWrite_; t++)
     {
 		sval_ = 0;
+		nt_ = nChannels_ * t;
 #if defined(MARSYAS_BIGENDIAN)
 		for (c=0; c < nChannels_; ++c)
 		{
-			sval_ = ByteSwapShort(sdata_[nChannels_*t + c]);
+			sval_ = ByteSwapShort(sdata_[nt_ + c]);
 			slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT + 1);
 		}
 #else
 		for (c=0; c < nChannels_; ++c)
 		{
-			sval_ = sdata_[nChannels_ *t + c];
+			sval_ = sdata_[nt_ + c];
 			slice(c, t) = ((mrs_real) sval_ / (PCM_FMAXSHRT + 1));
 		}
 #endif  
@@ -411,12 +422,11 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			samplesOut_ += onSamples_;
 
 			if (repetitions_ != 1) 
-				hasData_ = (samplesOut_ < repetitions_ * csize_);
+				hasData_ = (samplesOut_ < rewindpos_ + repetitions_ * csize_);
 			else 
-				hasData_ = pos_ < csize_;
+				hasData_ = pos_ < rewindpos_ + csize_;
 
 
-			hasData_ = samplesOut_ < repetitions_ * csize_;
 			if (repetitions_ == -1) 
 				hasData_ = true;
 			break;

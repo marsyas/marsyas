@@ -26,6 +26,8 @@
 
 
 #include "AuFileSource.h"
+using std::cout;
+using std::endl;
 
 
 
@@ -264,28 +266,43 @@ AuFileSource::getHeader(mrs_string filename)
 mrs_natural
 AuFileSource::getLinear16(realvec& slice)
 {
-	  mrs_natural c,t;
+	mrs_natural c,t =0;
+
+	// read samples 
 	fseek(sfp_, 2 * pos_ * nChannels_ + sfp_begin_, SEEK_SET);
-  
-	samplesRead_ = (mrs_natural)fread(sdata_, sizeof(short), samplesToRead_, sfp_);
+  	samplesRead_ = (mrs_natural)fread(sdata_, sizeof(short), samplesToRead_, sfp_);
+	
 
 	// pad with zeros if necessary 
-	if (samplesRead_ != samplesToRead_)
+	if ((samplesRead_ != samplesToRead_)&&(samplesRead_ != 0))
 	{
 		for (c=0; c < nChannels_; ++c)
 			for (t=0; t < inSamples_; t++)
 				slice(c, t) = 0.0;
 		samplesToWrite_ = samplesRead_ / nChannels_;
 	}
-	else 
+	else // default case - read enough samples or no samples in which case zero output 
+	{
 		samplesToWrite_ = inSamples_;
-  
+		
+		// if there are no more samples output zeros 
+		if (samplesRead_ == 0)
+			for (t=0; t < inSamples_; t++)
+			{
+				nt_ = nChannels_ * t;
+				for (c=0; c < nChannels_; ++c)
+				{
+					sdata_[nt_ + c] = 0;
+				}
+			}
+	}
+	
 	// write the read samples to output slice once for each channel 
 	for (t=0; t < samplesToWrite_; t++)
 	{
 		sval_ = 0;
 		nt_ = nChannels_ * t;
-    
+		
 #if defined(MARSYAS_BIGENDIAN)
 		for (c=0; c < nChannels_; ++c)
 			slice(c, t) = ((mrs_real) sdata_[nt_ + c] / (PCM_FMAXSHRT));
@@ -295,7 +312,6 @@ AuFileSource::getLinear16(realvec& slice)
 			usval_ = sdata_[nt_ + c];
 			usval_ = ((usval_ >> 8) | (usval_ << 8));
 			sval_ = usval_;
-		  
 			slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
 		}
 #endif 
@@ -347,6 +363,8 @@ AuFileSource::myUpdate(MarControlPtr sender)
 void
 AuFileSource::myProcess(realvec& in, realvec &out)
 {
+
+	
 	(void) in;
 	if (ctrl_size_->to<mrs_natural>() != 0)
     {
@@ -388,9 +406,9 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 				samplesOut_ += onSamples_;
 		
 				if (repetitions_ != 1) 
-					hasData_ = (samplesOut_ < repetitions_ * csize_);
+					hasData_ = (samplesOut_ < rewindpos_ + repetitions_ * csize_);
 				else 
-					hasData_ = pos_ < csize_;
+					hasData_ = pos_ < rewindpos_ + csize_;
 		
 				if (repetitions_ == -1) 
 					hasData_ = true;
