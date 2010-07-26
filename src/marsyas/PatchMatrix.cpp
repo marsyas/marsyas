@@ -15,10 +15,13 @@
 ** along with this program; if not, write to the Free Software 
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-
+#include "common.h"
 #include "PatchMatrix.h"
 
 using namespace Marsyas;
+
+
+//#define MTLB_DBG_LOG
 
 PatchMatrix::PatchMatrix(mrs_string name):MarSystem("PatchMatrix", name)
 {
@@ -92,7 +95,15 @@ PatchMatrix::myProcess(realvec& in, realvec& out)
 	
 	if(PatchMatrixValue.getSize()!=0) use_weights_=true;
 	if(patchConstValues.getSize()!=0) use_consts_=true;
-	
+
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(in, "in");
+	MATLAB_EVAL("figure(11),plot(in'),axis('tight'),grid on");
+#endif
+#endif
+
 	if (use_weights_)
 	{
 		mrs_realvec::matrixMulti(PatchMatrixValue,in,out);
@@ -102,7 +113,13 @@ PatchMatrix::myProcess(realvec& in, realvec& out)
 	{
 			out += patchConstValues;
 	}
-			
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(out, "out");
+	MATLAB_EVAL("figure(12),plot(out'),axis('tight'),grid on");
+#endif
+#endif
 
 }
 

@@ -71,8 +71,8 @@ PeakSynthFFT::myUpdate(MarControlPtr sender)
 	bgVolume_ = conv(2); 
   bgPanning_ = conv(3);
 
-	mask_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2);
-	lastMask_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2);
+	mask_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2+1);
+	lastMask_.create(getctrl("mrs_natural/inObservations")->to<mrs_natural>()/2+1);
 	lastMask_.setval(0);
 }
 
@@ -98,12 +98,13 @@ PeakSynthFFT::generateMask(mrs_natural type)
 		mask_.setval(0);
 
 	// set level info for foreground clusters
-	for (i=0 ; i<onObservations_/2; ++i)
+	for (i=0 ; i<onObservations_/2 + 1; ++i)
 	{
 		for(j=0 ; j<nbPeaks; j++)
 		{
-			if(peaks(j+peakView::pkGroup*nbPeaks) > -1 &&
-				 i>=peaks(j+nbPeaks*peakView::pkBinLow)*onObservations_ && i<=peaks(j+nbPeaks*peakView::pkBinHigh)*onObservations_)
+			if(peaks(j+peakView::pkGroup*nbPeaks) <= -1)
+				continue;
+			if (i>=peaks(j+nbPeaks*peakView::pkBinLow)*onObservations_ && i<=peaks(j+nbPeaks*peakView::pkBinHigh)*onObservations_)
 			{
 				mrs_real vol, pan;
 				if(fgVolume_ != -1)
@@ -156,12 +157,12 @@ PeakSynthFFT::myProcess(realvec& in, realvec& out)
 	{
 		generateMask(t+(nbChannels-1));
 		lpfMask();
-		for (o=0; o < onObservations_/2; o++)
+		for (o=0; o < onObservations_/2+1; o++)
 		{
 			//apply PeakSynthFFT to all channels
 			out(o,t) = mask_(o) * in(o, 0);		
 		}
-		for (o=onObservations_/2; o < onObservations_; o++)
+		for (o=onObservations_/2+1; o < onObservations_; o++)
 		{
 			//apply PeakSynthFFT to all channels
 			out(o,t) = in(o, 0);		

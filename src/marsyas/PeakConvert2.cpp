@@ -155,6 +155,7 @@ PeakConvert2::clone() const
 void 
 PeakConvert2::addControls()
 {
+	realvec tmp(3); 
 	addctrl("mrs_natural/frameMaxNumPeaks", 0);
 	setctrlState("mrs_natural/frameMaxNumPeaks", true);
 	
@@ -182,7 +183,9 @@ PeakConvert2::addControls()
 	addctrl("mrs_bool/useMasking", false);
 	setctrlState("mrs_bool/useMasking", true);
 
-	realvec tmp(3); tmp(0) = 0; tmp(1) = 0; tmp(2) = 1;
+	tmp(0) = 0;	// probability weight for peak being a masker
+	tmp(1) = 0; // probability weight for peak being stationary
+	tmp(2) = 1;	// probability weight for peak being tonal
 	addctrl("mrs_realvec/peakProbabilityWeight", tmp);
 	setctrlState("mrs_realvec/peakProbabilityWeight", true);
 
@@ -192,10 +195,10 @@ PeakConvert2::addControls()
 	addctrl("mrs_bool/useMasking", true);
 	setctrlState("mrs_bool/useMasking", true);
 
-	realvec tmp(3); 
-	tmp(0) = 1; 
-	tmp(1) = 1;
-	tmp(2) = 1;
+
+	tmp(0) = 1;	// probability weight for peak being a masker
+	tmp(1) = 1; // probability weight for peak being stationary
+	tmp(2) = 1;	// probability weight for peak being tonal
 
 	addctrl("mrs_realvec/peakProbabilityWeight", tmp);
 	setctrlState("mrs_realvec/peakProbabilityWeight", true);
@@ -272,7 +275,7 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 	}
 	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	
-	if (getctrl("mrs_real/peakSmearingTimeInS")->to<mrs_real>() == 0)
+	if (getctrl("mrs_real/peakSmearingTimeInS")->to<mrs_real>() == 0 || !pick_)
 		lpCoeff_	= 0;
 	else
 		lpCoeff_	= exp(-2.2/(timeSrate/hopSize_*getctrl("mrs_real/peakSmearingTimeInS")->to<mrs_real>()));
@@ -293,7 +296,7 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 		deltafrequency_.stretch(size_);
 		psize_ = size_;
 
-		lpPeakerRes_.setval (.0);
+		lpPeakerRes_.setval (1.);
 	}
 	
 	factor_ = timeSrate / TWOPI / instFreqHopSize_;
@@ -524,6 +527,8 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 			// compute masking threshold
 			if (useMasking && pick_)
 				ComputeMasking (tmpBuff_);
+			else
+				masked_.setval(10.);
 
 			// select bins with local maxima in magnitude (--> peaks)
 			peaks_ = mag_;
@@ -579,6 +584,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 
 			// keep only the frameMaxNumPeaks_ highest amplitude local maxima
 			tmp_.stretch(frameMaxNumPeaks_*2);
+			tmp_.setval(0.);
 			max_->updControl("mrs_natural/nMaximums", frameMaxNumPeaks_);
 
 			max_->setctrl("mrs_natural/inSamples", size_);

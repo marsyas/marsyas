@@ -81,6 +81,8 @@ Accumulator::myUpdate(MarControlPtr sender)
 	childOnSamples_ = 0;
 	nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 
+	MarSystem::myUpdate(sender);
+
 	if (marsystemsSize_ > 0)
 	{
 		//propagate in flow controls to first (and single) child
@@ -101,10 +103,6 @@ Accumulator::myUpdate(MarControlPtr sender)
 		        marsystems_[0]->getctrl("mrs_real/osrate"));
 
 		onObsNames = marsystems_[0]->getctrl("mrs_string/onObsNames")->to<mrs_string>();
-	}
-	else
-	{
-		MarSystem::myUpdate(sender);
 	}
 
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
