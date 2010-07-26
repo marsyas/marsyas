@@ -52,6 +52,7 @@ SimulMaskingFft::SimulMaskingFft(mrs_string name):MarSystem("SimulMaskingFft", n
 	//method (see for e.g. Rms.cpp)
 	addControls();
 
+	numBands_	= 0;
 	freqBounds_	= 0;
 }
 
@@ -338,21 +339,17 @@ SimulMaskingFft::ComputeTables ()
 	// frequency bands and spreading
 	{
 		mrs_real fLowBark = hertz2bark (lowFreq, h2bIdx);
+		mrs_real fMaxBark = hertz2bark (.5*audiosrate_-1, h2bIdx);
 		for (i = 0; i < numBands_; ++i)
 		{
-			freqBounds_[i].fLowBarkBound  = fLowBark + i*barkRes_;
-			freqBounds_[i].fMidBark       = freqBounds_[i].fLowBarkBound + .5*barkRes_;
-			freqBounds_[i].fUpBarkBound   = freqBounds_[i].fLowBarkBound + barkRes_;
+			freqBounds_[i].fLowBarkBound  = min(fMaxBark,fLowBark + i*barkRes_);
+			freqBounds_[i].fMidBark       = min(fMaxBark,freqBounds_[i].fLowBarkBound + .5*barkRes_);
+			freqBounds_[i].fUpBarkBound   = min(fMaxBark,freqBounds_[i].fLowBarkBound + barkRes_);
 
 			freqBounds_[i].fLowFreqBound  = bark2hertz (freqBounds_[i].fLowBarkBound, h2bIdx);
 			freqBounds_[i].fMidFreq       = bark2hertz (freqBounds_[i].fMidBark, h2bIdx);
 			freqBounds_[i].fUpFreqBound   = bark2hertz (freqBounds_[i].fUpBarkBound, h2bIdx);
 		}
-		//m_pfHRBandLevels                    = new mrs_real [numBands_];
-		//m_pfExcitationPatterns              = new mrs_real [numBands_];
-		//m_stmrs_naturalernalTables.pfSlopeSpread    = new mrs_real [numBands_];
-		//m_stmrs_naturalernalTables.pfNormSpread     = new mrs_real [numBands_];
-		//memset (m_stmrs_naturalernalTables.pfNormSpread, 0, sizeof(mrs_real)*numBands_);
 
 		for (i = 0; i < numBands_; ++i)
 		{
