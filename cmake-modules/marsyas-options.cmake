@@ -93,6 +93,7 @@ option(MARSYAS_LOG_DEBUGS "Log debugs" OFF)
 option(MARSYAS_LOG_DIAGNOSTICS "Log debugs" OFF)
 option(MARSYAS_LOG2FILE "Log messages to a file" OFF)
 option(MARSYAS_LOG2STDOUT "Log messages to a standard out" ON)
+option(MARSYAS_LOG2STDERR "Log messages to a standard error" OFF)
 option(MARSYAS_LOG2GUI "Log messages to GUI" OFF)
 mark_as_advanced (MARSYAS_LOG2GUI)
 

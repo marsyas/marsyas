@@ -25,6 +25,7 @@
 #cmakedefine MARSYAS_LOG_DIAGNOSTICS
 #cmakedefine MARSYAS_LOG2FILE
 #cmakedefine MARSYAS_LOG2STDOUT
+#cmakedefine MARSYAS_LOG2STDERR
 #cmakedefine MARSYAS_LOG2GUI
 
 #cmakedefine MARSYAS_LAME
