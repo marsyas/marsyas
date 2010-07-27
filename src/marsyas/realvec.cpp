@@ -1784,13 +1784,9 @@ namespace Marsyas
 		{
 			for (mrs_natural c=0;c<out.getCols();++c) 
 			{
-				
 				for (mrs_natural i=0;i<a.getCols();++i) 
 				{
-					if ((a(r,i)==0)||(b(i,c)==0)) 
-						out(r,c)+=0;
-					else 
-						out(r,c)+=a(r,i)*b(i,c);
+					out(r,c)+=a(r,i)*b(i,c);
 				}
 			}
 		}

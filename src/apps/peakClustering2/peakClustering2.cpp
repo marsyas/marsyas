@@ -89,17 +89,6 @@ static SimMeasureProperties_t simMeasureProps[kNumSimMeasures] =
 	{"PAN",		"Panning",				"euclideanDistance",	"ignorePan",			"ip",	false,	2, PeakFeatureSelect::pkPan},
 	{"RAND",	"Random",				"randomDistance",		"ignoreRand",			"ir",	false,	2, PeakFeatureSelect::pkPan},
 };
-//static mrs_natural simFeatures[kNumSimMeasures] = 
-//{
-//	{PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq},
-//	{PeakFeatureSelect::pkFrame},
-//	{PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp},
-//	{PeakFeatureSelect::pkDeltaFrequency | PeakFeatureSelect::barkPkFreq},
-//	{PeakFeatureSelect::pkDeltaAmplitude /*| PeakFeatureSelect::dBPkAmp*/},
-//	{PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq | PeakFeatureSelect::pkFrame},
-//	{PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes},
-//	{PeakFeatureSelect::pkPan}
-//};
 
 static mrs_natural GetNumSimMeasures ()
 {
@@ -229,7 +218,7 @@ mrs_natural clusterSynthetize_ = -1;
 bool peakStore_= false;
 bool residual_ = false;
 bool evalInPlace = true;
-bool computeInputSnr = false;
+bool computeInputSnr = true;
 bool computeSnrWithoutBandLimits = true;
 
 bool useOnsets = false;
@@ -1055,8 +1044,20 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		MarSystem* snrCalc		= mng.create("Shredder", "snrShred");
 		MarSystem* snrSeries	= mng.create("Series", "snrSeries");
 		MarSystem* snrParallel	= mng.create("Parallel", "snrParallel");
+		snrSeries->addMarSystem(mng.create("PatchMatrix", "patch"));
+		snrSeries->addMarSystem(snrParallel);
+		snrCalc->addMarSystem(snrSeries);
+		metaNet->addMarSystem(snrCalc);
+
 		snrParallel->addMarSystem(mng.create("PeakResidual", "OutOriRes"));
-		snrParallel->addMarSystem(mng.create("PeakResidual", "OutDoriRes"));
+		if (computeSnrWithoutBandLimits)
+		{
+			snrParallel->addMarSystem(mng.create("PeakResidual", "OutDoriRes"));
+			snrParallel->linkControl ("PeakResidual/OutDoriRes/mrs_natural/inObservations", 
+				"PeakResidual/OutOriRes/mrs_natural/inObservations");
+			snrParallel->linkControl ("PeakResidual/OutDoriRes/mrs_bool/snrInDb", 
+				"PeakResidual/OutOriRes/mrs_bool/snrInDb");
+		}
 		if (computeInputSnr)
 		{
 			snrParallel->addMarSystem(mng.create("PeakResidual", "InOriRes"));
@@ -1069,41 +1070,32 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				"PeakResidual/OutOriRes/mrs_bool/snrInDb");
 			snrParallel->linkControl ("PeakResidual/InDoriRes/mrs_bool/snrInDb", 
 				"PeakResidual/OutOriRes/mrs_bool/snrInDb");
+			
+			metaFan->linkControl("Series/mixNet/Accumulator/textWinMixNet/mrs_natural/nTimes",
+				"Series/mainNet/Accumulator/textWinNet/mrs_natural/nTimes");
+			mixNet->linkControl("Shredder/synthMixNet/mrs_natural/nTimes",
+				"Accumulator/textWinMixNet/mrs_natural/nTimes");
 		}
-		snrParallel->addMarSystem(mng.create("PeakResidual", "OriDoriRes"));
-		snrSeries->addMarSystem(mng.create("PatchMatrix", "patch"));
-		snrSeries->addMarSystem(snrParallel);
-		snrCalc->addMarSystem(snrSeries);
-		metaNet->addMarSystem(snrCalc);
+		if (computeSnrWithoutBandLimits)
+		{
+			snrParallel->addMarSystem(mng.create("PeakResidual", "OriDoriRes"));
+			snrParallel->linkControl ("PeakResidual/OriDoriRes/mrs_natural/inObservations", 
+				"PeakResidual/OutOriRes/mrs_natural/inObservations");
+			snrParallel->linkControl ("PeakResidual/OriDoriRes/mrs_bool/snrInDb", 
+				"PeakResidual/OutOriRes/mrs_bool/snrInDb");
+			
+			metaFan->linkControl("Series/delayedOriNet/Accumulator/accu/mrs_natural/nTimes",
+				"Series/mainNet/Accumulator/textWinNet/mrs_natural/nTimes");
+		}
 
 
 		// link snr controls
-		snrParallel->linkControl ("PeakResidual/OutDoriRes/mrs_natural/inObservations", 
-			"PeakResidual/OutOriRes/mrs_natural/inObservations");
-		snrParallel->linkControl ("PeakResidual/OriDoriRes/mrs_natural/inObservations", 
-			"PeakResidual/OutOriRes/mrs_natural/inObservations");
-
-		snrParallel->linkControl ("PeakResidual/OutDoriRes/mrs_bool/snrInDb", 
-			"PeakResidual/OutOriRes/mrs_bool/snrInDb");
-		snrParallel->linkControl ("PeakResidual/OriDoriRes/mrs_bool/snrInDb", 
-			"PeakResidual/OutOriRes/mrs_bool/snrInDb");
-
 		metaFan->linkControl("Series/oriNet/Accumulator/textWinOriNet/mrs_natural/nTimes",
 			"Series/mainNet/Accumulator/textWinNet/mrs_natural/nTimes");
-		if (computeInputSnr)
-			metaFan->linkControl("Series/mixNet/Accumulator/textWinMixNet/mrs_natural/nTimes",
-				"Series/mainNet/Accumulator/textWinNet/mrs_natural/nTimes");
-		if (computeSnrWithoutBandLimits)
-			metaFan->linkControl("Series/delayedOriNet/Accumulator/accu/mrs_natural/nTimes",
-				"Series/mainNet/Accumulator/textWinNet/mrs_natural/nTimes");
 
 		//link Shredder nTimes to Accumulator nTimes
 		oriNet->linkControl("Shredder/synthOriNet/mrs_natural/nTimes",
 			"Accumulator/textWinOriNet/mrs_natural/nTimes");
-		if (computeInputSnr)
-			mixNet->linkControl("Shredder/synthMixNet/mrs_natural/nTimes",
-				"Accumulator/textWinMixNet/mrs_natural/nTimes");
-
 	}
 
 	//****************************************************************
@@ -1232,40 +1224,44 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mrs_natural count = -1;
 		mrs_realvec PatchMatrix(10,4);
 
+		mrs_natural rows	= 2,
+					cols	= 2;
+
 		if (computeInputSnr)
 		{
-			PatchMatrix.stretch (10,4);
-			PatchMatrix.setval (0);
-			PatchMatrix(++count,0)=1; //order: syn,mix,ori,delayed ori
+			rows	+= 2 * ((computeSnrWithoutBandLimits)? 2 : 1);
+			cols	+= 1;
+		}
+		if (computeSnrWithoutBandLimits)
+		{
+			rows	+= 4;
+			cols	+= 1;
+		}
+		PatchMatrix.stretch (rows, cols);
+		PatchMatrix.setval (0.);
+		PatchMatrix(++count,0)=1; //order: syn,(mix),ori,(delayed ori)
+		if (computeInputSnr)
+		{
 			PatchMatrix(++count,2)=1;
 			if (computeSnrWithoutBandLimits)
 			{
 				PatchMatrix(++count,0)=1;
 				PatchMatrix(++count,3)=1;
-				if (computeInputSnr)
-				{
-					PatchMatrix(++count,1)=1; //order: syn,mix,ori,delayed ori
-					PatchMatrix(++count,2)=1;
-						PatchMatrix(++count,1)=1;
-						PatchMatrix(++count,3)=1;
-				}
+				PatchMatrix(++count,1)=1; //order: syn,mix,ori,delayed ori
+				PatchMatrix(++count,2)=1;
+				PatchMatrix(++count,1)=1;
+				PatchMatrix(++count,3)=1;
 				PatchMatrix(++count,2)=1; //order: syn,mix,ori,delayed ori
 				PatchMatrix(++count,3)=1;
 			}
 			else
 			{
-				if (computeInputSnr)
-				{
-					PatchMatrix(++count,1)=1; //order: syn,mix,ori,delayed ori
-					PatchMatrix(++count,2)=1;
-				}
+				PatchMatrix(++count,1)=1; //order: syn,mix,ori,delayed ori
+				PatchMatrix(++count,2)=1;
 			}
 		}
 		else
 		{
-			PatchMatrix.stretch (6,3);
-			PatchMatrix.setval (0);
-			PatchMatrix(++count,0)=1; //order: syn,ori,delayed ori
 			PatchMatrix(++count,1)=1;
 			if (computeSnrWithoutBandLimits)
 			{
@@ -1294,8 +1290,11 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			metaNet->setControl ("Shredder/snrShred/Series/snrSeries/Parallel/snrParallel/PeakResidual/InOriRes/mrs_string/outFilePath", fileInOriSnrName);
 			metaNet->setControl ("Shredder/snrShred/Series/snrSeries/Parallel/snrParallel/PeakResidual/InDoriRes/mrs_string/outFilePath", fileInDoriSnrName);
 		}
-		metaNet->setControl ("Shredder/snrShred/Series/snrSeries/Parallel/snrParallel/PeakResidual/OutDoriRes/mrs_string/outFilePath", fileOutDoriSnrName);
-		metaNet->setControl ("Shredder/snrShred/Series/snrSeries/Parallel/snrParallel/PeakResidual/OriDoriRes/mrs_string/outFilePath", fileOriDoriSnrName);
+		if (computeSnrWithoutBandLimits)
+		{
+			metaNet->setControl ("Shredder/snrShred/Series/snrSeries/Parallel/snrParallel/PeakResidual/OutDoriRes/mrs_string/outFilePath", fileOutDoriSnrName);
+			metaNet->setControl ("Shredder/snrShred/Series/snrSeries/Parallel/snrParallel/PeakResidual/OriDoriRes/mrs_string/outFilePath", fileOriDoriSnrName);
+		}
 	}
 
 	metaNet->update(); //probably not necessary... [!]
