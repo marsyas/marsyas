@@ -24,7 +24,6 @@
 #include "MaxArgMax.h"
 #include "SimulMaskingFft.h"
 #include "peakView.h"
-#include "basis.h"
 
 
 //#define MTLB_DBG_LOG
@@ -69,7 +68,7 @@ static void FreqSmear (mrs_realvec &spectrum)
 mrs_real 
 PeakConvert2::GaussianPdf (mrs_real x, mrs_real std)
 {
-	return exp (-sqr(x)/(2*sqr(std)));// / sqrt (TWOPI*std);
+	return exp (-(x*x)/(2*(std*std)));// / sqrt (TWOPI*std);
 }
 
 mrs_real	princArg (mrs_real phase)
@@ -256,9 +255,10 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 	//to the number of unique bins of the spectrums at the input (i.e. N/2+1)
 	if(!pick_ /*&& ctrl_frameMaxNumPeaks_->to<mrs_natural>() == 0*/)
 	{
-		frameMaxNumPeaks_	= N_/2+1; //inObservations_/4+1;
-		downFrequency_		= 0;
-		upFrequency_		= size_;
+		//frameMaxNumPeaks_	= N_/2+1; //inObservations_/4+1;
+		//downFrequency_		= 0;
+		//upFrequency_		= size_;
+		frameMaxNumPeaks_	= upFrequency_-downFrequency_;
 	}
 	else
 		frameMaxNumPeaks_ = ctrl_frameMaxNumPeaks_->to<mrs_natural>();

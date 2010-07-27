@@ -16,14 +16,30 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "Delay.h"
 
- 
 using std::ostringstream;
 using std::vector;
 
 using namespace Marsyas;
 
+//#define MTLB_DBG_LOG
+
+static inline mrs_natural	wrapCursor (mrs_natural unwrappedCursor, mrs_natural cursorMask)
+{
+	// add delay line length to have a sort-of dealing with negative indices as well; should be a while loop really
+	return (unwrappedCursor + (cursorMask+1)) & cursorMask; 
+}
+
+static inline mrs_real	getValue (mrs_natural obs, mrs_real index, mrs_realvec& buffer, mrs_natural cursorMask)
+{
+	mrs_natural integer = (mrs_natural)index + ((index < 0)? -1 : 0);
+	mrs_real	frac	= index - integer;
+	mrs_real	retVal	= buffer(obs, wrapCursor (integer, cursorMask));
+
+	return retVal + frac * (buffer(obs, wrapCursor (integer+1, cursorMask))-retVal);
+}
 
 Delay::Delay(mrs_string name):MarSystem("Delay",name)
 {
@@ -176,6 +192,13 @@ Delay::myProcess(realvec& in, realvec& out)
 	// first, get the interpolated delay update (linear interpolation only)
 	getLinearInterPInc (prevDelayInSamples_, delayInSamples_, ctrlIncrement_, inSamples_);
 
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(in, "in");
+	MATLAB_EVAL("figure(41),subplot(211),plot(in'),axis('tight'),grid on, title('in')");
+#endif
+#endif
+
 	for (t = 0; t < inSamples_; t++)
 	{
 		for (o=0; o < inObservations_; o++)
@@ -185,29 +208,22 @@ Delay::myProcess(realvec& in, realvec& out)
 			for (k = 0; k < numDelayLines; k++)
 			{
 				// read sample from buffer
-				out(k+o*numDelayLines,t) = getValue (o, writeCursor_ - (prevDelayInSamples_(k) + t*ctrlIncrement_(k)));
+				out(k+o*numDelayLines,t) = getValue (o, writeCursor_ - (prevDelayInSamples_(k) + t*ctrlIncrement_(k)), buffer_, cursorMask_);
 			}
 
 		}
-		writeCursor_	= wrapCursor (++writeCursor_);
+		writeCursor_	= wrapCursor (++writeCursor_, cursorMask_);
 	}
 
 	prevDelayInSamples_	= delayInSamples_;
-}
 
-mrs_real	Delay::getValue (mrs_natural obs, mrs_real index)
-{
-	mrs_natural integer = (mrs_natural)index + ((index < 0)? -1 : 0);
-	mrs_real	frac	= index - integer;
-	mrs_real	retVal	= buffer_(obs, wrapCursor (integer));
 
-	return retVal + frac * (buffer_(obs, wrapCursor (integer+1))-retVal);
-}
-
-mrs_natural	Delay::wrapCursor (mrs_natural unwrappedCursor)
-{
-	// add delay line length to have a sort-of dealing with negative indices as well; should be a while loop really
-	return (unwrappedCursor + (cursorMask_+1)) & cursorMask_; 
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(out, "out");
+	MATLAB_EVAL("figure(41),subplot(212),plot(out'),axis('tight'),grid on, title('out')");
+#endif
+#endif
 }
 
 void Delay::getLinearInterPInc (const mrs_realvec startVal, const mrs_realvec stopVal, mrs_realvec &incVal, const mrs_natural numSamples)

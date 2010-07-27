@@ -160,8 +160,6 @@ string fileOutDoriSnrName = EMPTYSTRING;
 string fileOriDoriSnrName = EMPTYSTRING;
 string panningInfo = EMPTYSTRING;
 
-ofstream snrFile;
-
 // set the seeking frequency interval for peaks
 #ifdef ORIGINAL
 string intervalFrequency = "250_2500";
@@ -232,6 +230,7 @@ bool peakStore_= false;
 bool residual_ = false;
 bool evalInPlace = true;
 bool computeInputSnr = false;
+bool computeSnrWithoutBandLimits = true;
 
 bool useOnsets = false;
 bool horizWeight = false;
@@ -931,15 +930,15 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 
 	MarSystem* metaNet = mng.create("Series", "metaNet");
 	MarSystem* metaFan = mng.create("Fanout", "metaFan");
-	MarSystem* oriNet;
-	MarSystem* mixNet;
-	MarSystem* textWinOriNet;
-	MarSystem* textWinMixNet;
-	MarSystem* synthOriNet;
-	MarSystem* synthMixNet;
-	MarSystem* postOriNet;
-	MarSystem* postMixNet;
-	MarSystem* delayedOriNet;
+	MarSystem* oriNet			= 0;
+	MarSystem* mixNet			= 0;
+	MarSystem* textWinOriNet	= 0;
+	MarSystem* textWinMixNet	= 0;
+	MarSystem* synthOriNet		= 0;
+	MarSystem* synthMixNet		= 0;
+	MarSystem* postOriNet		= 0;
+	MarSystem* postMixNet		= 0;
+	MarSystem* delayedOriNet	= 0;
 
 	metaNet->addMarSystem (metaFan);
 	//**************************************************
@@ -1032,10 +1031,15 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		if (computeInputSnr)
 			metaFan->addMarSystem(mixNet);
 		metaFan->addMarSystem(oriNet);
-		metaFan->addMarSystem(delayedOriNet);
+		if (computeSnrWithoutBandLimits)
+			metaFan->addMarSystem(delayedOriNet);
 
 		oriNet->addMarSystem(textWinOriNet);
 		mixNet->addMarSystem(textWinMixNet);
+
+		// checking only
+		//mixNet->updControl("mrs_bool/mute", true);			
+		//mixNet->updControl("mrs_bool/active", false);			
 
 		oriNet->addMarSystem(mng.create("PeakConvert2", "conv"));
 		mixNet->addMarSystem(mng.create("PeakConvert2", "conv"));
@@ -1089,8 +1093,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		if (computeInputSnr)
 			metaFan->linkControl("Series/mixNet/Accumulator/textWinMixNet/mrs_natural/nTimes",
 				"Series/mainNet/Accumulator/textWinNet/mrs_natural/nTimes");
-		metaFan->linkControl("Series/delayedOriNet/Accumulator/accu/mrs_natural/nTimes",
-			"Series/mainNet/Accumulator/textWinNet/mrs_natural/nTimes");
+		if (computeSnrWithoutBandLimits)
+			metaFan->linkControl("Series/delayedOriNet/Accumulator/accu/mrs_natural/nTimes",
+				"Series/mainNet/Accumulator/textWinNet/mrs_natural/nTimes");
 
 		//link Shredder nTimes to Accumulator nTimes
 		oriNet->linkControl("Shredder/synthOriNet/mrs_natural/nTimes",
@@ -1099,14 +1104,6 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			mixNet->linkControl("Shredder/synthMixNet/mrs_natural/nTimes",
 				"Accumulator/textWinMixNet/mrs_natural/nTimes");
 
-		//delayedOriNet->linkControl("Shredder/shred/mrs_natural/nTimes",
-		//	"Accumulator/accu/mrs_natural/nTimes");
-
-
-		// snr output
-		//snrFile.open(fileSnrName.c_str ());
-
-		
 	}
 
 	//****************************************************************
@@ -1164,18 +1161,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	{
 		oriNet->updControl("mrs_natural/inSamples", D);
 		oriNet->updControl("mrs_natural/inObservations", 1);
-		mixNet->updControl("mrs_natural/inSamples", D);
-		mixNet->updControl("mrs_natural/inObservations", 1);
-		delayedOriNet->updControl("Accumulator/accu/Series/accuint/SoundFileSource/oriSrc/mrs_string/filename", oriName);
-		delayedOriNet->updControl("mrs_natural/inSamples", D);
-		delayedOriNet->updControl("Accumulator/accu/Series/accuint/SoundFileSource/oriSrc/mrs_natural/inSamples", D);
-		//delayedOriNet->updControl("mrs_natural/inSamples", D*accSize);
-		//delayedOriNet->updControl("Accumulator/accu/Series/accuint/SoundFileSource/oriSrc/mrs_natural/inSamples", D*accSize);
-		delayedOriNet->updControl("mrs_natural/inObservations", 1);
-		delayedOriNet->updControl("Accumulator/accu/Series/accuint/Delay/delay/mrs_real/maxDelaySamples", 1.*Nw);
-		delayedOriNet->updControl("Accumulator/accu/Series/accuint/Delay/delay/mrs_real/delaySamples", 1.*Nw-D);
 		updateAnalysisNetCtrls (textWinOriNet, oriName, accSize, D, Nw, N, S);
-		updateAnalysisNetCtrls (textWinMixNet, sfName, accSize, D, Nw, N, S);
 
 		oriNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", true);  
 		oriNet->updControl("PeakConvert2/conv/mrs_bool/picking", false);      
@@ -1183,11 +1169,31 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		oriNet->updControl("PeakConvert2/conv/mrs_string/frequencyInterval", intervalFrequency);  
 		oriNet->updControl("PeakConvert2/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
 
-		mixNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", true);  
-		mixNet->updControl("PeakConvert2/conv/mrs_bool/picking", false);      
-		mixNet->updControl("PeakConvert2/conv/mrs_natural/hopSize", D);
-		//mixNet->updControl("PeakConvert2/conv/mrs_string/frequencyInterval", intervalFrequency);  
-		mixNet->updControl("PeakConvert2/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
+		if (computeSnrWithoutBandLimits)
+		{
+			delayedOriNet->updControl("Accumulator/accu/Series/accuint/SoundFileSource/oriSrc/mrs_string/filename", oriName);
+			delayedOriNet->updControl("mrs_natural/inSamples", D);
+			delayedOriNet->updControl("Accumulator/accu/Series/accuint/SoundFileSource/oriSrc/mrs_natural/inSamples", D);
+			delayedOriNet->updControl("mrs_natural/inObservations", 1);
+			delayedOriNet->updControl("Accumulator/accu/Series/accuint/Delay/delay/mrs_real/maxDelaySamples", 1.*Nw);
+			delayedOriNet->updControl("Accumulator/accu/Series/accuint/Delay/delay/mrs_real/delaySamples", 1.*Nw-D);
+			
+			//delayedOriNet->updControl("Accumulator/accu/Series/accuint/Delay/delay/mrs_bool/mute", true);			
+			//delayedOriNet->updControl("Accumulator/accu/Series/accuint/Delay/delay/mrs_bool/active", false);			
+			//delayedOriNet->updControl("Accumulator/accu/Series/accuint/SoundFileSource/oriSrc/mrs_bool/mute", true);			
+			//delayedOriNet->updControl("Accumulator/accu/Series/accuint/SoundFileSource/oriSrc/mrs_bool/active", false);			
+		}
+
+		if (computeInputSnr)
+		{
+			mixNet->updControl("mrs_natural/inSamples", D);
+			mixNet->updControl("mrs_natural/inObservations", 1);
+			updateAnalysisNetCtrls (textWinMixNet, sfName, accSize, D, Nw, N, S);
+			mixNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", true);  
+			mixNet->updControl("PeakConvert2/conv/mrs_bool/picking", false);      
+			mixNet->updControl("PeakConvert2/conv/mrs_natural/hopSize", D);
+			mixNet->updControl("PeakConvert2/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
+		}
 
 		metaNet->updControl ("Shredder/snrShred/mrs_natural/nTimes", accSize);
 	}
@@ -1200,10 +1206,12 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		
 		if (evalInPlace)
 		{
-			oriNet->updControl("Accumulator/textWinOriNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
-				"Series/stereoSpkNet");
-			mixNet->updControl("Accumulator/textWinMixNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
-				"Series/stereoSpkNet");
+			if (oriNet)
+				oriNet->updControl("Accumulator/textWinOriNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
+					"Series/stereoSpkNet");
+			if (mixNet)
+				mixNet->updControl("Accumulator/textWinMixNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
+					"Series/stereoSpkNet");
 		}
 	}
 
@@ -1230,17 +1238,28 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			PatchMatrix.setval (0);
 			PatchMatrix(++count,0)=1; //order: syn,mix,ori,delayed ori
 			PatchMatrix(++count,2)=1;
-			PatchMatrix(++count,0)=1;
-			PatchMatrix(++count,3)=1;
-			if (computeInputSnr)
+			if (computeSnrWithoutBandLimits)
 			{
-				PatchMatrix(++count,1)=1; //order: syn,mix,ori,delayed ori
-				PatchMatrix(++count,2)=1;
-				PatchMatrix(++count,1)=1;
+				PatchMatrix(++count,0)=1;
+				PatchMatrix(++count,3)=1;
+				if (computeInputSnr)
+				{
+					PatchMatrix(++count,1)=1; //order: syn,mix,ori,delayed ori
+					PatchMatrix(++count,2)=1;
+						PatchMatrix(++count,1)=1;
+						PatchMatrix(++count,3)=1;
+				}
+				PatchMatrix(++count,2)=1; //order: syn,mix,ori,delayed ori
 				PatchMatrix(++count,3)=1;
 			}
-			PatchMatrix(++count,2)=1; //order: syn,mix,ori,delayed ori
-			PatchMatrix(++count,3)=1;
+			else
+			{
+				if (computeInputSnr)
+				{
+					PatchMatrix(++count,1)=1; //order: syn,mix,ori,delayed ori
+					PatchMatrix(++count,2)=1;
+				}
+			}
 		}
 		else
 		{
@@ -1248,16 +1267,23 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			PatchMatrix.setval (0);
 			PatchMatrix(++count,0)=1; //order: syn,ori,delayed ori
 			PatchMatrix(++count,1)=1;
-			PatchMatrix(++count,0)=1;
-			PatchMatrix(++count,2)=1;
-			PatchMatrix(++count,1)=1; //order: syn,ori,delayed ori
-			PatchMatrix(++count,2)=1;
+			if (computeSnrWithoutBandLimits)
+			{
+				PatchMatrix(++count,0)=1;
+				PatchMatrix(++count,2)=1;
+				PatchMatrix(++count,1)=1; //order: syn,ori,delayed ori
+				PatchMatrix(++count,2)=1;
+			}
 		}
 
-		updatePostNetCtrls (postOriNet, synthetize, Nw, D, panningInfo, oriName, EMPTYSTRING, fileResName);
-		updatePostNetCtrls (postMixNet, synthetize, Nw, D, panningInfo, sfName, EMPTYSTRING, fileResName);
-		oriNet->updControl("Shredder/synthOriNet/mrs_bool/accumulate", true);
-		mixNet->updControl("Shredder/synthMixNet/mrs_bool/accumulate", true);
+		if (postOriNet)
+			updatePostNetCtrls (postOriNet, synthetize, Nw, D, panningInfo, oriName, EMPTYSTRING, fileResName);
+		if (postMixNet)
+			updatePostNetCtrls (postMixNet, synthetize, Nw, D, panningInfo, sfName, EMPTYSTRING, fileResName);
+		if (oriNet)
+			oriNet->updControl("Shredder/synthOriNet/mrs_bool/accumulate", true);
+		if (mixNet)
+			mixNet->updControl("Shredder/synthMixNet/mrs_bool/accumulate", true);
 
 		metaNet->setControl ("Shredder/snrShred/Series/snrSeries/PatchMatrix/patch/mrs_realvec/weights",PatchMatrix);
 		metaNet->setControl ("Shredder/snrShred/Series/snrSeries/Parallel/snrParallel/PeakResidual/OutOriRes/mrs_natural/inObservations", 2);
@@ -1281,6 +1307,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	mrs_natural frameCount = 0;
 	//	mrs_real time=0;
 
+	nbTicks = clock();
 	while(1)
 	{	
 		metaNet->tick();
@@ -1292,21 +1319,6 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			frameCount++;
 			// cout << "Frame " << frameCount << " SNR : "<< snr << endl;
 		}
-
-		//if (evalInPlace)
-		//{
-		//	snrFile << 
-		//		metaNet->getControl ("Shredder/snrShred/Parallel/snrParallel/PeakResidual/OutOriRes/mrs_real/SNR")->to<mrs_real>() <<
-		//		"\t" <<
-		//		metaNet->getControl ("Shredder/snrShred/Parallel/snrParallel/PeakResidual/OutDoriRes/mrs_real/SNR")->to<mrs_real>() <<
-		//		"\t" <<
-		//		metaNet->getControl ("Shredder/snrShred/Parallel/snrParallel/PeakResidual/InOriRes/mrs_real/SNR")->to<mrs_real>() <<
-		//		"\t" <<
-		//		metaNet->getControl ("Shredder/snrShred/Parallel/snrParallel/PeakResidual/InDoriRes/mrs_real/SNR")->to<mrs_real>() <<
-		//		"\t" <<
-		//		metaNet->getControl ("Shredder/snrShred/Parallel/snrParallel/PeakResidual/OriDoriRes/mrs_real/SNR")->to<mrs_real>() <<
-		//		endl;
-		//}
 
 			bool temp = mainNet->getControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 			//bool temp1 = textWinNet->getControl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
@@ -1334,7 +1346,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			if (temp == false || (stopAnalyse_ !=0 && stopAnalyse_<timeRead))
 				break;
 	}
-	if(synthetize_ > -1 && residual_)
+	timeElapsed = (clock()-nbTicks)/((mrs_real) CLOCKS_PER_SEC );
+	cout << "Time elapsed: " << timeElapsed << endl;
+	
+    if(synthetize_ > -1 && residual_)
 	{
 		cout << "Global SNR : " << globalSnr/frameCount << endl;
 		*snr0 = globalSnr/frameCount;
@@ -1347,9 +1362,6 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mainNet->updControl("PeakViewSink/peSink/mrs_string/filename", filePeakName); 
 		mainNet->updControl("PeakViewSink/peSink/mrs_bool/done", true);
 	}
-
-	if (evalInPlace)
-		snrFile.close ();
 
 	delete metaNet;
 	//cfile.close(); [TODO]
@@ -1474,7 +1486,6 @@ main(int argc, const char **argv)
 	cerr << "outputDirectory  (-o) = " << outputDirectoryName << endl;
 	cerr << "inputDirectory  (-i) = " << inputDirectoryName << endl;
 
-	nbTicks = clock();
 
 	// extract peaks and clusters
 	// soundfile input 
@@ -1549,9 +1560,6 @@ main(int argc, const char **argv)
 			}	
 
 		}
-
-		timeElapsed = (clock()-nbTicks)/((mrs_real) CLOCKS_PER_SEC );
-		cout << "Time elapsed: " << timeElapsed << endl;
 
 		exit(0);
 	}

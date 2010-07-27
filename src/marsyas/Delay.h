@@ -47,10 +47,6 @@ private:
   void addControls();
 	void myUpdate(MarControlPtr sender);
 
-	// ensure buffer bounds for read and write heads
-	mrs_natural	wrapCursor (mrs_natural unwrappedCursor);
-	// get the interpolated sample value
-	mrs_real	getValue (mrs_natural obs, mrs_real index);
 	// required for allocating the delay buffer
 	mrs_natural	nextPowOfTwo (mrs_natural value);
 	// get the increment per sample for the delay control value

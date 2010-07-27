@@ -18,11 +18,11 @@
 
 #include "common.h"
 #include "SimulMaskingFft.h"
-#include "basis.h"
 
 //#define MTLB_DBG_LOG
 
-using namespace std;
+using std::min;
+using std::max;
 using namespace Marsyas;
 
 static const mrs_natural h2bIdx	= 3;
@@ -177,7 +177,7 @@ SimulMaskingFft::myProcess(realvec& in, realvec& out)
 
 
 void 
-SimulMaskingFft::ComputeDifference (mrs_realvec &out, mrs_realvec in, mrs_natural t)
+SimulMaskingFft::ComputeDifference (mrs_realvec &out, mrs_realvec &in, mrs_natural t)
 {
 	mrs_natural i;
 	t = 0;
@@ -227,13 +227,13 @@ SimulMaskingFft::GetBandLevels (FrequencyBands_t *pFrequencyValues, mrs_realvec 
 
 		fLowFrac            = iLowBin - fLowFrac;
 		fHighFrac           = fHighFrac - iHighBin;
-		bandLevels(i)   = fLowFrac * processBuff_(max_basis(0,iLowBin-1));
-		bandLevels(i)  += fHighFrac * processBuff_(min_basis((mrs_natural)(inObservations_ - .5),iHighBin+1));
+		bandLevels(i)   = fLowFrac * processBuff_(max(0L,iLowBin-1));
+		bandLevels(i)  += fHighFrac * processBuff_(min((mrs_natural)(inObservations_ - .5),iHighBin+1));
 		for (mrs_natural j = iLowBin; j < iHighBin; j++)
 			bandLevels(i)  += processBuff_(j);
 		if (bDezibel)
 		{
-			bandLevels(i)   = max_basis (bandLevels(i), 1e-20F);
+			bandLevels(i)   = max (bandLevels(i), 1e-20);
 			bandLevels(i)   = 10./log(10.) * log ((bandLevels(i)));
 		}
 	}
@@ -242,7 +242,7 @@ SimulMaskingFft::GetBandLevels (FrequencyBands_t *pFrequencyValues, mrs_realvec 
 }
 
 void 
-SimulMaskingFft::CalcSpreading (mrs_realvec bandLevels, mrs_realvec &result)
+SimulMaskingFft::CalcSpreading (mrs_realvec &bandLevels, mrs_realvec &result)
 {
 	// this is level dependent adapted from ITU-R BS.1387
 
@@ -301,9 +301,11 @@ SimulMaskingFft::CalcSpreading (mrs_realvec bandLevels, mrs_realvec &result)
 	// normalization 
 	for (iBarkk = 0; iBarkk < numBands_; iBarkk++)
 	{
-		result(iBarkk)        = sqrt (result(iBarkk));
-		result(iBarkk)       *= sqr(sqr(result(iBarkk)));
-		result(iBarkk)       *= pfNorm[iBarkk];
+		mrs_real  dTmp      = result(iBarkk);
+		result(iBarkk)		= sqrt(dTmp) * dTmp * dTmp *pfNorm[iBarkk];
+		//result(iBarkk)        = sqrt (result(iBarkk));
+		//result(iBarkk)       *= result(iBarkk)*result(iBarkk)*result(iBarkk)*result(iBarkk);
+		//result(iBarkk)       *= pfNorm[iBarkk];
 	}       
 	return;
 }
@@ -326,7 +328,7 @@ SimulMaskingFft::ComputeTables ()
 				continue;
 			}
 			dTmp	= -.2184 * pow (fkFreq, -.8);
-			dTmp   += .65 * exp (-.6 * sqr(fkFreq-3.3));
+			dTmp   += .65 * exp (-.6 * (fkFreq-3.3)*(fkFreq-3.3));
 			//outerEar_(i)   = (dTmp > 1e-37)? (mrs_real)dTmp : 0;
 			outerEar_(i)  = dTmp - 1e-4 * pow (fkFreq, 3.6);
 			if (outerEar_(i) < -12)
