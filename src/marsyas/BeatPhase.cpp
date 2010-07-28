@@ -19,6 +19,9 @@
 #include "BeatPhase.h"
 
 using std::ostringstream;
+using std::cout;
+using std::endl;
+
 using namespace Marsyas;
 
 BeatPhase::BeatPhase(mrs_string name):MarSystem("BeatPhase", name)
@@ -159,26 +162,29 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			max_phase = t;
 		}
 	}
-
 	
+
+	beats(0, max_phase) = -0.5;
+	beats(0, max_phase - period) = -0.5;
+	beats(0, max_phase - 2*period) = -0.5;
+	beats(0, max_phase - 3*period) = -0.5;
 	
 	
 	
 	mrs_natural delay = (bwinSize - bhopSize);
-	
-	
-	
 	mrs_natural start;
 	mrs_natural end;
 	mrs_natural prev_phase = max_phase;
-	avg_period = 0;
+	mrs_natural prev_sample_count;
+	
+	/* avg_period = 0;
 	
 	for (int k=0; k < 4; k++)
 	{
-		start = max_phase - (mrs_natural)period - 2;
-		end  =  max_phase - (mrs_natural)period + 2;
-		max_sum_phase = 0.0;
-		for (t=start; t <= end; t++)
+			start = max_phase - (mrs_natural)period - 2;
+			end  =  max_phase - (mrs_natural)period + 2;
+			max_sum_phase = 0.0;
+			for (t=start; t <= end; t++)
 		{
 			sum_phase = in(0,t);
 			if (sum_phase >= max_sum_phase) 
@@ -190,29 +196,50 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 		avg_period += (prev_phase - max_phase);
 		prev_phase = max_phase;
+
 	}
 	
 	avg_period /= 4;
+	*/ 
+
+	prev_sample_count = sampleCount_;
+
 	
-	/* for (int k = 0; k < bhopSize; k++) 
+ 	for (int t = inSamples_-1; t >= inSamples_-1-bhopSize; t--) 
 	{
-
-
-		
-		if ((beats(0, k) == -0.5)&&(beats(0,0) != 0.0))
+		if (beats(0, t) == -0.5)
 		{
 			// cout << (sampleCount_  - delay) / (2.0 * osrate_) * 1000.0 << endl;
 			// Audacity label output
 			// cout << (sampleCount_  - delay) / (2.0 * osrate_) << "\t";
 			// cout << (sampleCount_-1 - delay) / (2.0 * osrate_) << " b" << endl;
+			/* cout << "SampleCount = " << sampleCount_ << endl;
+			cout << "t = " << t << endl;
+			cout << "inSamples_ = " << inSamples_ << endl;
+			cout << "bhopSize = " << bhopSize << endl;
 			
-			beats(0,k) = -1.0;
+			cout << "nt = " << t - (inSamples_-1-bhopSize) << endl;
+			*/ 
+			cout <<  (sampleCount_ + t - (inSamples_-1-bhopSize)) / (2.0 * osrate_) << "\t";
+			cout << (sampleCount_ + t - (inSamples_-1-bhopSize+1)) / (2.0 * osrate_) << " b" << endl;
+			beats(0,t) = -1.0;
 		}
-		sampleCount_ ++;
+	}
+	sampleCount_ += bhopSize;
+	
+
+	/* sampleCount_ += bhopSize;
+	if (sampleCount_ == bwinSize) 
+	{
+		cout << "FULL WINDOW" << endl;
+		t = max_phase;
+		for (t = max_phase; t > 0; t-=period)
+		{
+			beats(0,t) = -0.5;
+		}
+		
 	}
 	*/ 
-	
-	
 }
 
 

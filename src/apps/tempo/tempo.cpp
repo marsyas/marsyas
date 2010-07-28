@@ -97,6 +97,7 @@ string methodopt;
 
 CommandLineOptions cmd_options;
 
+bool beatsopt_;
 
 int helpopt;
 int usageopt;
@@ -156,6 +157,8 @@ printHelp(string progName)
 	cerr << "-l --length     : playback length in seconds " << endl;
 	cerr << "-p --plugin     : output plugin name " << endl;
 	cerr << "-r --repetitions: number of repetitions " << endl;
+	cerr << "-b --beats      : output beat locations " << endl;
+	
 	cerr << "Available methods: " << endl;
 	cerr << "MEDIAN_SUMBANDS" << endl;
 	cerr << "MEDIAN_MULTIBANDS" << endl;
@@ -901,9 +904,16 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	ofs.open(fileName.c_str());
 
 	if (bpm_estimate < secondary_bpm_estimate)
+	{
 		ofs << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+		cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	}
+	
 	else 
+	{
 		ofs << secondary_bpm_estimate << "\t" << bpm_estimate << "\t" << secondary_bpm_amp / strength << endl;
+		cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	}
 	
 	ofs.close();
 
@@ -3001,8 +3011,8 @@ initOptions()
 	cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
 	cmd_options.addRealOption("repetitions", "r", 1.0);
 	cmd_options.addStringOption("method", "m", EMPTYSTRING);
-	cmd_options.addRealOption("band", "b", 0.0);
-
+	cmd_options.addRealOption("band", "bd", 0.0);
+	cmd_options.addBoolOption("beats", "b", false);
 }
 
 void
@@ -3018,7 +3028,7 @@ loadOptions()
 	fileName   = cmd_options.getStringOption("filename");
 	methodopt = cmd_options.getStringOption("method");
 	bandopt = (mrs_natural)cmd_options.getRealOption("band");
-	
+	beatsopt_ = cmd_options.getBoolOption("beats");
 }
 
 
