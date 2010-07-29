@@ -43,6 +43,8 @@ private:
   realvec lastphase_;
   realvec phase_;
   realvec mag_;
+  realvec peaks_;
+  realvec tmp_;
 	realvec magCorr_;
 	realvec frequency_;
   realvec lastmag_;

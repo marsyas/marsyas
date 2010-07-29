@@ -507,6 +507,13 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 	const mrs_bool useMasking	= getctrl("mrs_bool/useMasking")->to<mrs_bool>();
 	const mrs_real probThresh	= getctrl("mrs_real/probabilityTresh")->to<mrs_real>();
 
+	max_->updControl("mrs_natural/nMaximums", frameMaxNumPeaks_);
+
+	max_->setctrl("mrs_natural/inSamples", size_);
+	max_->setctrl("mrs_natural/inObservations", 1);
+	max_->update();
+	tmp_.stretch(frameMaxNumPeaks_*2);
+
 	for(mrs_natural f=0 ; f < inSamples_; ++f)
 	{
 		//we should avoid the first empty frames, 
@@ -515,9 +522,6 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 		//only process if we have a full data vector (i.e. no zeros)
 		if(frame_ >= skip_) 
 		{
-			realvec peaks_;
-			realvec tmp_;
-
 			// get pair of ffts
 			in.getCol (f, tmpBuff_);
 
@@ -583,13 +587,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 			}
 
 			// keep only the frameMaxNumPeaks_ highest amplitude local maxima
-			tmp_.stretch(frameMaxNumPeaks_*2);
 			tmp_.setval(0.);
-			max_->updControl("mrs_natural/nMaximums", frameMaxNumPeaks_);
-
-			max_->setctrl("mrs_natural/inSamples", size_);
-			max_->setctrl("mrs_natural/inObservations", 1);
-			max_->update();
 			max_->process(peaks_, tmp_);
 
 			nbPeaks_=tmp_.getSize()/2;

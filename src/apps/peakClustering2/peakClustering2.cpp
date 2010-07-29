@@ -41,7 +41,7 @@ using namespace std;
 using namespace Marsyas;
 
 
-//#define WITH_CLUSTERING
+#define WITH_CLUSTERING
 
 //#define ORIGINAL
 #ifdef ORIGINAL
@@ -1156,7 +1156,8 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		updateAnalysisNetCtrls (textWinOriNet, oriName, accSize, D, Nw, N, S);
 
 		oriNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", true);  
-		oriNet->updControl("PeakConvert2/conv/mrs_bool/picking", false);      
+		oriNet->updControl("PeakConvert2/conv/mrs_bool/picking", true);      
+		oriNet->updControl("PeakConvert2/conv/mrs_natural/frameMaxNumPeaks", S); 
 		oriNet->updControl("PeakConvert2/conv/mrs_natural/hopSize", D);
 		oriNet->updControl("PeakConvert2/conv/mrs_string/frequencyInterval", intervalFrequency);  
 		oriNet->updControl("PeakConvert2/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
@@ -1184,6 +1185,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			mixNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", true);  
 			mixNet->updControl("PeakConvert2/conv/mrs_bool/picking", false);      
 			mixNet->updControl("PeakConvert2/conv/mrs_natural/hopSize", D);
+			mixNet->updControl("PeakConvert2/conv/mrs_string/frequencyInterval", intervalFrequency);  
 			mixNet->updControl("PeakConvert2/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
 		}
 
