@@ -192,9 +192,9 @@ mrs_natural synthetize_ = 0;
 mrs_natural clusterSynthetize_ = -1;
 bool peakStore_= false;
 bool residual_ = false;
-bool evalInPlace = true;
-bool computeInputSnr = true;
-bool computeSnrWithoutBandLimits = true;
+bool evalInPlace = false;
+bool computeInputSnr = false;
+bool computeSnrWithoutBandLimits = false;
 bool disableClustering = false;
 
 bool useOnsets = false;
@@ -925,7 +925,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	mainNet->addMarSystem(mng.create("PeakConvert2", "conv"));
 
 	
-	if (disableClustering)
+	if (!disableClustering)
 	{
 		//***************************************************************
 		//create a FlowThru for the Clustering Network and add to main net
@@ -1187,7 +1187,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		}
 	}
 
-	if (disableClustering)
+	if (!disableClustering)
 	{
 		updateClustNetCtrls (mainNet, C);
 		//mainNet->update();
