@@ -41,16 +41,6 @@ using namespace std;
 using namespace Marsyas;
 
 
-#define WITH_CLUSTERING
-
-//#define ORIGINAL
-#ifdef ORIGINAL
-#define USE_FANOUTIN
-#else
-#define NEWBOOLS
-#endif
-
-#ifdef NEWBOOLS
 enum SimMeasures_t
 {
 	kFreq,
@@ -118,17 +108,6 @@ static mrs_realvec GetHorizontality ()
 	return result;
 }
 
-#else
-static const int kNumSimMeasures = 8;
-bool ignoreFrequency = false;
-bool ignoreTime = true;
-bool ignoreAmplitude = false;
-bool ignoreDeltaFrequency = true;
-bool ignoreDeltaAmplitude = true;
-bool ignoreConnectivity = true;
-bool ignoreHWPS = false;
-bool ignorePan = false;
-#endif
 
 string pluginName = EMPTYSTRING;
 string inputDirectoryName = EMPTYSTRING;
@@ -150,11 +129,7 @@ string fileOriDoriSnrName = EMPTYSTRING;
 string panningInfo = EMPTYSTRING;
 
 // set the seeking frequency interval for peaks
-#ifdef ORIGINAL
-string intervalFrequency = "250_2500";
-#else
 string intervalFrequency = "100_4000";
-#endif
 
 // Global variables for command-line options 
 bool helpopt_ = 0;
@@ -220,6 +195,7 @@ bool residual_ = false;
 bool evalInPlace = true;
 bool computeInputSnr = true;
 bool computeSnrWithoutBandLimits = true;
+bool disableClustering = false;
 
 bool useOnsets = false;
 bool horizWeight = false;
@@ -274,6 +250,7 @@ printHelp(string progName)
 	for (mrs_natural i = 0; i < kNumSimMeasures; i++)
 		cerr << "-" << simMeasureProps[i].clShort << " --" << simMeasureProps[i].clLong << " ignore " << simMeasureProps[i].desc << " similarity between peaks" << endl;
 	cerr << "-ori --oriname : name of original mono audio file for evaluation " << endl;
+	cerr << "-dc --disableClustering : only do peak picking " << endl;
 	
 	cerr << "-nsm --noSimulMasking : don't use simultaneous masking for the peak picking" << endl;
 	
@@ -948,52 +925,53 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	mainNet->addMarSystem(mng.create("PeakConvert2", "conv"));
 
 	
-#ifdef WITH_CLUSTERING
-	//***************************************************************
-	//create a FlowThru for the Clustering Network and add to main net
-	//***************************************************************
-	MarSystem* clustNet = mng.create("FlowThru", "clustNet");
+	if (disableClustering)
+	{
+		//***************************************************************
+		//create a FlowThru for the Clustering Network and add to main net
+		//***************************************************************
+		MarSystem* clustNet = mng.create("FlowThru", "clustNet");
 
-	//***************************************************************
-	// create Similarities Network and add it to ClustNet
-	//***************************************************************
-	MarSystem* simNet  = createSimilarityNet (&mng);
-	clustNet->addMarSystem(simNet);
-	mainNet->addMarSystem(clustNet);
+		//***************************************************************
+		// create Similarities Network and add it to ClustNet
+		//***************************************************************
+		MarSystem* simNet  = createSimilarityNet (&mng);
+		clustNet->addMarSystem(simNet);
+		mainNet->addMarSystem(clustNet);
 
-	//
-	// LINK controls related to variable number of peak from PeakConvert to simNet
-	//
-	ostringstream ctrl;
-	ctrl.str("");
-	ctrl << "FlowThru/clustNet/Series/simNet/Fanout/simFan/Series/" << simMeasureProps[0].name << "_" << "Sim/PeakFeatureSelect/" << simMeasureProps[0].name << "_FeatSelect/mrs_natural/totalNumPeaks";
-	mainNet->linkControl(ctrl.str (), "PeakConvert2/conv/mrs_natural/totalNumPeaks");
-	ctrl.str("");
-	ctrl << "FlowThru/clustNet/Series/simNet/Fanout/simFan/Series/" << simMeasureProps[0].name << "_" << "Sim/PeakFeatureSelect/" << simMeasureProps[0].name << "_FeatSelect/mrs_natural/frameMaxNumPeaks";
-	mainNet->linkControl(ctrl.str (), "PeakConvert2/conv/mrs_natural/frameMaxNumPeaks");
+		//
+		// LINK controls related to variable number of peak from PeakConvert to simNet
+		//
+		ostringstream ctrl;
+		ctrl.str("");
+		ctrl << "FlowThru/clustNet/Series/simNet/Fanout/simFan/Series/" << simMeasureProps[0].name << "_" << "Sim/PeakFeatureSelect/" << simMeasureProps[0].name << "_FeatSelect/mrs_natural/totalNumPeaks";
+		mainNet->linkControl(ctrl.str (), "PeakConvert2/conv/mrs_natural/totalNumPeaks");
+		ctrl.str("");
+		ctrl << "FlowThru/clustNet/Series/simNet/Fanout/simFan/Series/" << simMeasureProps[0].name << "_" << "Sim/PeakFeatureSelect/" << simMeasureProps[0].name << "_FeatSelect/mrs_natural/frameMaxNumPeaks";
+		mainNet->linkControl(ctrl.str (), "PeakConvert2/conv/mrs_natural/frameMaxNumPeaks");
 
-	//***************************************************************
-	// create NCutNet MarSystem and add it to clustNet
-	//***************************************************************
-	MarSystem* NCutNet = mng.create("Series","NCutNet");
-	clustNet->addMarSystem(NCutNet);
-	//---add NCutNet components
-	// add a stack to stack the 
-	MarSystem* stack = mng.create("Fanout","stack");
-	NCutNet->addMarSystem(stack);
-	stack->addMarSystem(mng.create("NormCut","NCut"));
-	stack->addMarSystem(mng.create("Gain", "ID"));
-	// add the cluster selection module
-	NCutNet->addMarSystem(mng.create("PeakClusterSelect","clusterSelect"));
+		//***************************************************************
+		// create NCutNet MarSystem and add it to clustNet
+		//***************************************************************
+		MarSystem* NCutNet = mng.create("Series","NCutNet");
+		clustNet->addMarSystem(NCutNet);
+		//---add NCutNet components
+		// add a stack to stack the 
+		MarSystem* stack = mng.create("Fanout","stack");
+		NCutNet->addMarSystem(stack);
+		stack->addMarSystem(mng.create("NormCut","NCut"));
+		stack->addMarSystem(mng.create("Gain", "ID"));
+		// add the cluster selection module
+		NCutNet->addMarSystem(mng.create("PeakClusterSelect","clusterSelect"));
 
-	//***************************************************************
-	// create PeakLabeler MarSystem and add it to mainNet
-	//***************************************************************
-	MarSystem* labeler = mng.create("PeakLabeler","labeler");
-	mainNet->addMarSystem(labeler);
-	//---- link labeler label control to the NCut output control
-	mainNet->linkControl("PeakLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
-#endif
+		//***************************************************************
+		// create PeakLabeler MarSystem and add it to mainNet
+		//***************************************************************
+		MarSystem* labeler = mng.create("PeakLabeler","labeler");
+		mainNet->addMarSystem(labeler);
+		//---- link labeler label control to the NCut output control
+		mainNet->linkControl("PeakLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
+	}
 
 	//***************************************************************
 	// create PeakViewSink MarSystem and add it to mainNet
@@ -1209,11 +1187,12 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		}
 	}
 
-#ifdef WITH_CLUSTERING
-	updateClustNetCtrls (mainNet, C);
-	//mainNet->update();
-	updateSimNetCtrls (mainNet, horizWeight);
-#endif
+	if (disableClustering)
+	{
+		updateClustNetCtrls (mainNet, C);
+		//mainNet->update();
+		updateSimNetCtrls (mainNet, horizWeight);
+	}
 
 	//mainNet->update(); //probably not necessary... [!]
 	//------------------------------------------------------------------------
@@ -1399,6 +1378,7 @@ initOptions()
 	cmd_options.addBoolOption("noSimulMasking", "nsm", 0);
 	cmd_options.addNaturalOption("clusterSynthetize", "SC", clusterSynthetize_);
 	cmd_options.addBoolOption("peakStore", "P", peakStore_);
+	cmd_options.addBoolOption("disableClustering", "dc", disableClustering);
 
 	for (mrs_natural i = 0; i < kNumSimMeasures; i++)
 	{
@@ -1406,7 +1386,7 @@ initOptions()
 	}
 	cmd_options.addStringOption("oriname", "ori", EMPTYSTRING);
 
-	cmd_options.addBoolOption("horizWeight", "hw", useOnsets);
+	cmd_options.addBoolOption("horizWeight", "hw", horizWeight);
 
 	cmd_options.addBoolOption("useOnsets", "uo", useOnsets);
 }
@@ -1443,6 +1423,7 @@ loadOptions()
 	peakStore_ = cmd_options.getBoolOption("peakStore"); 
 	residual_ = cmd_options.getBoolOption("residual");
 	unprecise_ = cmd_options.getBoolOption("unprecise");
+	disableClustering = cmd_options.getBoolOption("disableClustering");
 
 	for (mrs_natural i = 0; i < kNumSimMeasures; i++)
 	{
