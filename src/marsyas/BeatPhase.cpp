@@ -40,6 +40,8 @@ BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 	ctrl_bhopSize_ = getctrl("mrs_natural/bhopSize");
 	ctrl_bwinSize_ = getctrl("mrs_natural/bwinSize");
 	ctrl_timeDomain_ = getctrl("mrs_realvec/timeDomain");
+
+	ctrl_beatOutput_ = getctrl("mrs_realvec/beatOutput");
 	
 	sampleCount_ = 0;
 }
@@ -66,6 +68,8 @@ BeatPhase::addControls()
 	addctrl("mrs_natural/bhopSize", 64, ctrl_bhopSize_);
 	addctrl("mrs_natural/bwinSize", 1024, ctrl_bwinSize_);
 	addctrl("mrs_realvec/timeDomain", realvec(), ctrl_timeDomain_);
+
+	addctrl("mrs_realvec/beatOutput", realvec(), ctrl_beatOutput_);
 }
 
 void
@@ -82,6 +86,11 @@ BeatPhase::myUpdate(MarControlPtr sender)
 			MarControlAccessor acc(ctrl_beats_);
 			mrs_realvec& beats = acc.to<mrs_realvec>();
 			beats.create(inSamples_);
+
+            // Output all the beats that are detected via a MarControl
+			MarControlAccessor beatOutputAcc(ctrl_beatOutput_);
+			mrs_realvec& beatOutput = beatOutputAcc.to<mrs_realvec>();
+			beatOutput.create(inSamples_);
 		}
 	}
    
@@ -204,7 +213,15 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 	prev_sample_count = sampleCount_;
 
-	
+    // Output all the detected beats to it's own MarControl
+    int total_beats = 0;
+	MarControlAccessor beatOutputAcc(ctrl_beatOutput_);
+	mrs_realvec& beatOutput = beatOutputAcc.to<mrs_realvec>();
+    for (t = 0; t < inSamples_; t++)
+    {
+      beatOutput(t) = 0.0;
+    }
+
  	for (int t = inSamples_-1; t >= inSamples_-1-bhopSize; t--) 
 	{
 		if (beats(0, t) == -0.5)
@@ -220,9 +237,13 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			
 			cout << "nt = " << t - (inSamples_-1-bhopSize) << endl;
 			*/ 
-			cout <<  (sampleCount_ + t - (inSamples_-1-bhopSize)) / (2.0 * osrate_) << "\t";
-			cout << (sampleCount_ + t - (inSamples_-1-bhopSize+1)) / (2.0 * osrate_) << " b" << endl;
+			// cout <<  (sampleCount_ + t - (inSamples_-1-bhopSize)) / (2.0 * osrate_) << "\t";
+			// cout << (sampleCount_ + t - (inSamples_-1-bhopSize+1)) / (2.0 * osrate_) << " b" << endl;
 			beats(0,t) = -1.0;
+
+            // Add that beat to the beatOutput control
+            beatOutput(total_beats) = (sampleCount_ + t - (inSamples_-1-bhopSize)) / (2.0 * osrate_);
+            total_beats++;
 		}
 	}
 	sampleCount_ += bhopSize;

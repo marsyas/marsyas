@@ -45,6 +45,7 @@ private:
 		MarControlPtr ctrl_bhopSize_;
 		MarControlPtr ctrl_bwinSize_;
 	MarControlPtr ctrl_timeDomain_;
+  MarControlPtr ctrl_beatOutput_;
 	
   mrs_natural pinSamples_;
   void myUpdate(MarControlPtr sender);
