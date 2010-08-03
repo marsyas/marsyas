@@ -4256,14 +4256,19 @@ void toy_with_spectralSNR(string fname0, string fname1)
 
 
 
-void toy_with_SNR(string fname0, string fname1)
+void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING)
 {
+	std::ofstream outTextFile;
+
 	cout << "Toying with SNR" << endl;
 	cout << "SIGNAL = "  << fname0 << endl;
 	cout << "NOISE = " << fname1 << endl;
 
+	mrs_realvec snrResult(2);
 	MarSystemManager mng;
   
+	if (fname2 != EMPTYSTRING)
+		outTextFile.open(fname2.c_str ());
 
 	MarSystem* net = mng.create("Series", "net");
 	MarSystem* input = mng.create("Fanout", "input");
@@ -4279,14 +4284,24 @@ void toy_with_SNR(string fname0, string fname1)
 				 fname1);
 
 	net->updControl("mrs_natural/inSamples", 1024);
+	net->updControl("mrs_natural/inObservations", 2);
 
 	while (net->getctrl("Fanout/input/SoundFileSource/signalSrc/mrs_bool/hasData")->to<mrs_bool>() == true)
     {
 		net->tick();
+		//cout << frameCount++;
+
     }
+
+	snrResult	= net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+	cout << snrResult << endl;
+	if (outTextFile.good ())
+	{
+		outTextFile << snrResult(0) <<"\t" << snrResult(1) << std::endl;
+	}
   
-	cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
-  
+	outTextFile.close ();
   
 }
 
@@ -7709,7 +7724,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "labelsfplay")
 		toy_with_labelsfplay(fname0);
 	else if (toy_withName == "SNR")
-		toy_with_SNR(fname0, fname1);
+		toy_with_SNR(fname0, fname1, fname2);
 	else if (toy_withName == "SOM")
 		toy_with_SOM("music.mf");
 	else if (toy_withName == "Windowing")
