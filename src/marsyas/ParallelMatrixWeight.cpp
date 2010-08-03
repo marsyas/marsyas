@@ -81,8 +81,14 @@ ParallelMatrixWeight::myProcess(realvec& in, realvec& out)
 	mrs_natural		k,i,j,
 				numRows		= weights.getRows (),
 				numCols		= weights.getCols (),
-				intRows		= in.getRows () / numRows,
-				intCols		= in.getCols ();
+				intRows,
+				intCols;
+
+	if (numRows == 0)
+	{
+		out.setval(0);
+		return;
+	}
 
 	if (in.getRows () % numRows)
 	{
@@ -91,6 +97,9 @@ ParallelMatrixWeight::myProcess(realvec& in, realvec& out)
 		out.setval(0);
 		return;
 	}
+
+	intRows		= in.getRows () / numRows,
+	intCols		= in.getCols ();
 
 	out = in;
 

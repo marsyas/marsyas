@@ -16,12 +16,15 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "NormCut.h"
 #include "NumericLib.h"
 
 #include <iostream>
 #include <cmath>
  
+//#define MTLB_DBG_LOG
+
 using std::ostringstream;
 using std::cout;
 using std::min;
@@ -107,11 +110,24 @@ void
 NormCut::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t,o;
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(in, "in");
+	MATLAB_EVAL("figure(71),mesh(in'),axis('tight'),grid on");
+#endif
+#endif
 	//check if there is any data at the input, otherwise do nothing
 	if(in.getSize() == 0 || numClusters_ == 0)
 	{
 		//MRSWARN("NormCut::myProcess - empty input!");
 		out.setval(-1.0);
+		return;
+	}
+	if(in.getSize() == 1 || numClusters_ == 0)
+	{
+		//MRSWARN("NormCut::myProcess - empty input!");
+		out.setval(0);
 		return;
 	}
 
@@ -233,6 +249,7 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 		for( j=0 ; j<n ; j++ )
 			dinvsqrt(i) += W(i*(n)+j);
 		dinvsqrt(i) = 1./sqrt(dinvsqrt(i)+ulp);
+		MRSASSERT(dinvsqrt(i) == dinvsqrt(i));
 	}
 
 	// P <- dinvsqrt*dinvsqrt'
@@ -260,13 +277,20 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 	for( j=0 ; j<nbcluster ; j++ )
 	{
 		for( i=0 ; i<n ; ++i )
+		{
 			NcutEigenvectors(j*(n)+i) = P((n-j-1)*(n)+i);
+			MRSASSERT(NcutEigenvectors(j*n + i) == NcutEigenvectors(j*n + i));
+		}
 		NcutEigenvalues(j) = evals(n-j-1);
 	}
 
 	for( j=0 ; j<nbcluster ; j++ )   
 		for( i=0 ; i<n ; ++i )
+		{
 			NcutEigenvectors(j*(n)+i) = NcutEigenvectors(j*(n)+i)*dinvsqrt(i); 
+			MRSASSERT(NcutEigenvectors(j*n + i) == NcutEigenvectors(j*n + i));
+		}
+
 
 	for( j=0 ; j<nbcluster ; j++ ){
 		norm=0.;
@@ -276,10 +300,18 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 		norm = sqrtn / norm;
 		if( NcutEigenvectors(j*(n)) >= 0. )
 			for( i=0 ; i<n ; ++i )
+			{
 				NcutEigenvectors(j*(n) + i) *= -norm;
+				MRSASSERT(NcutEigenvectors(j*n + i) == NcutEigenvectors(j*n + i));
+			}
+
 		else
 			for( i=0 ; i<n ; ++i )
+			{
 				NcutEigenvectors(j*(n) + i) *= norm;         
+				MRSASSERT(NcutEigenvectors(j*n + i) == NcutEigenvectors(j*n + i));
+			}
+
 	}
 
 }
@@ -325,10 +357,14 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 	for( i=0 ; i<n ; ++i ){
 		vm(i) = 0;
 		for( j=0 ; j<nbcluster ; j++ )
+		{
 			vm(i) += NcutEigenvectors(j*(n)+i)*NcutEigenvectors(j*(n)+i);
+			MRSASSERT(vm(i) == vm(i));
+		}
 		vm(i) = sqrt(vm(i));
 		for( j=0 ; j<nbcluster ; j++ ){
 			NcutEigenvectors(j*(n)+i) /= vm(i);
+			MRSASSERT(NcutEigenvectors(j*(n)+i) == NcutEigenvectors(j*(n)+i));
 		}
 		c(i) = 0;
 	}
@@ -340,6 +376,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 
 	for( i=0 ; i<nbcluster ; ++i ){
 		R(i) = NcutEigenvectors(i*(n)+randn);     
+		MRSASSERT(R(i) == R(i));
 		for( j=0 ; j<nbcluster ; j++ )
 			U(i*(nbcluster)+j) = 0.0;
 	}
@@ -366,6 +403,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 
 		for( i=0 ; i<nbcluster ; ++i ){
 			R(j*(nbcluster)+i) = NcutEigenvectors(i*(n) + mini);
+			MRSASSERT(R(j*(nbcluster)+i) == R(j*(nbcluster)+i));
 		}
 	}
 
@@ -379,7 +417,10 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 			for( j=0 ; j<nbcluster ; j++ ){
 				EVtimesR(j*(n)+i) = 0.;
 				for( k=0 ; k<nbcluster ; k++)
+				{
 					EVtimesR(j*(n)+i) += NcutEigenvectors(k*(n)+i)*R(j*(nbcluster)+k);
+					MRSASSERT(EVtimesR(j*(n)+i) == EVtimesR(j*(n)+i));
+				}
 			}
 		}            
 
@@ -389,7 +430,10 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 			for( j=0 ; j<nbcluster ; j++ ){
 				EVDtimesEV(j*(nbcluster)+i) = 0.;
 				for( k=0 ; k<n ; k++)
+				{
 					EVDtimesEV(j*(nbcluster)+i) += NcutDiscrete(k*(nbcluster)+i)*NcutEigenvectors(j*(n)+k);
+					MRSASSERT(EVDtimesEV(j*(nbcluster)+i) == EVDtimesEV(j*(nbcluster)+i));
+				}
 			}
 		}                      
 		//  cout << endl;
