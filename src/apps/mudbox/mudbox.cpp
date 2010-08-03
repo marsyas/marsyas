@@ -4266,21 +4266,21 @@ void toy_with_SNR(string fname0, string fname1)
   
 
 	MarSystem* net = mng.create("Series", "net");
-	MarSystem* input = mng.create("Parallel", "input");
+	MarSystem* input = mng.create("Fanout", "input");
 	input->addMarSystem(mng.create("SoundFileSource", "signalSrc"));
 	input->addMarSystem(mng.create("SoundFileSource", "noiseSrc"));
 
 	net->addMarSystem(input);
 	net->addMarSystem(mng.create("SNR", "snr"));
   
-	net->updControl("Parallel/input/SoundFileSource/signalSrc/mrs_string/filename", 
+	net->updControl("Fanout/input/SoundFileSource/signalSrc/mrs_string/filename", 
 				 fname0);
-	net->updControl("Parallel/input/SoundFileSource/noiseSrc/mrs_string/filename", 
+	net->updControl("Fanout/input/SoundFileSource/noiseSrc/mrs_string/filename", 
 				 fname1);
 
 	net->updControl("mrs_natural/inSamples", 1024);
 
-	while (net->getctrl("Parallel/input/SoundFileSource/signalSrc/mrs_bool/hasData")->to<mrs_bool>() == true)
+	while (net->getctrl("Fanout/input/SoundFileSource/signalSrc/mrs_bool/hasData")->to<mrs_bool>() == true)
     {
 		net->tick();
     }

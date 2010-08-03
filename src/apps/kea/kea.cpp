@@ -480,6 +480,8 @@ train()
 //
 void tags() {
 
+	cout << "Starting tags" << endl;
+	
   MarSystemManager mng;
 
   ////////////////////////////////////////////////////////////
@@ -518,8 +520,12 @@ void tags() {
   //
   // The training file we are feeding into the WekaSource
   //
+
+  cout << "Filename = " << inputdir_ + wekafname_ << endl;
   
   net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_);
+  
+
   net->updControl("mrs_natural/inSamples", 1);
 
   ////////////////////////////////////////////////////////////
@@ -529,6 +535,7 @@ void tags() {
   //
   net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
   net->linkControl("Classifier/cl/mrs_string/mode", "mrs_string/train");  
+
 
   ////////////////////////////////////////////////////////////
   //

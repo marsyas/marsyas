@@ -54,6 +54,8 @@ SimulMaskingFft::SimulMaskingFft(mrs_string name):MarSystem("SimulMaskingFft", n
 
 	numBands_	= 0;
 	freqBounds_	= 0;
+	numBands_ = 0;
+	
 }
 
 SimulMaskingFft::SimulMaskingFft(const SimulMaskingFft& a) : MarSystem(a)
@@ -101,6 +103,7 @@ SimulMaskingFft::myUpdate(MarControlPtr sender)
 {
 	// no need to do anything SimulMaskingFft-specific in myUpdate 
 	MarSystem::myUpdate(sender);
+
 
 	// compute audio samplerate, numBands, and normalization
 	audiosrate_	= israte_*(mrs_real)(inObservations_-1)*2;

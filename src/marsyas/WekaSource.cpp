@@ -97,9 +97,11 @@ WekaSource::myUpdate(MarControlPtr sender)
 
 	// If 'filename' was updated, or the attributes desired from the Weka file has changed,
 	// parse the header portion of the file to get the required attribute names and possible output labels (if any)...
+
+	
 	if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
 	{
-
+		
 		
 		this->updControl("mrs_bool/done", false);	  
 		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
@@ -491,10 +493,13 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
 void WekaSource::loadFile(const std::string& filename, const std::string& attributesToExtract, WekaData& data)
 {
 
+	
+
 	ifstream *mis = new ifstream;
   
-	
 	mis->open(filename.c_str());
+
+	
 	MRSASSERT( mis->is_open() );
   
   	data_.Clear();
@@ -509,15 +514,16 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
 
 void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const std::string& attributesToExtract)
 {
+	
 	// FIXME Unused parameter
 	(void) attributesToExtract;
 	char str[1024];
 	// skip comment lines 
 	while (mis.peek() == '%') 
 	{
-	    
 	    mis.getline(str, 1023);
 	}
+	
 	
 	mrs_string token1,token2,token3;
   
@@ -529,10 +535,13 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 	    return;
 	}
 	
+
+	
+
 	mis >> token2;
 //  MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 ); //[!]
 	relation_ = token2;
-
+	
 	attributesFound_.clear();
 	attributesIncluded_.clear();
 	classesFound_.clear();
@@ -588,6 +597,9 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 	
 	
 	parseAttributesToInclude(attributesToInclude_);
+	
+
+
 	
 }//parseHeader
 
