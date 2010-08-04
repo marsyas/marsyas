@@ -205,7 +205,7 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		pvseries->addMarSystem(peSynth);
 		cout << Nw << " " << D << " " << Nw+1-D << endl;
 		// commented out by gtzan - not compiling
-		// synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize, bopt_, -D);
+		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize, bopt_, -D, samplingFrequency_ );
 	}
 
 	if(harmonize_)

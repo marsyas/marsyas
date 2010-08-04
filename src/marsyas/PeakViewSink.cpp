@@ -24,6 +24,8 @@ using std::ostringstream;
 using std::ifstream;
 using std::ios;
 using std::endl;
+using std::cout;
+
 
 using namespace Marsyas;
 
@@ -77,6 +79,7 @@ PeakViewSink::done()
 	mrs_natural t,o;
 	if(ctrl_accumulate2Disk_->isTrue())
 	{
+		
 		//read from tmp file and get rid of it (we're done with it ;-))
 		if(tmpFile_.is_open())
 		{
@@ -87,6 +90,8 @@ PeakViewSink::done()
 			ifstream tmpFile;
 			tmpFile.open(tmpFilename_.c_str(), ios::in);
 
+
+			
 			//read data from tmp file into memory
 			accumData_.create(inObservations_, count_);
 			for(t=0; t < count_; ++t)
@@ -106,6 +111,8 @@ PeakViewSink::done()
 			accumData_.create(0,0); //no data was accumulated in the temp file...
 	}
 
+
+	
 	//save peak data into a .peak formated output file
 	if(accumData_.getSize() != 0)
 	{
@@ -140,8 +147,13 @@ PeakViewSink::myProcess(realvec& in, realvec& out)
 	out = in;
 	mrs_natural o,t;
 
+	
+
 	if(ctrl_accumulate2Disk_->isTrue())
 	{
+
+		
+
 		//if a tmp file is not yet created, create one
 		if(!tmpFile_.is_open())
 		{

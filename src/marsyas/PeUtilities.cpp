@@ -586,7 +586,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, mrs_string sfName, mrs_string ou
 	else
 		pvseries->updControl("PeSynthetize/synthNet/Series/postNet/PeakSynthOscBank/pso/mrs_natural/Interpolation", D);
 
-	pvseries->updControl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
+	// pvseries->updControl("PeSynthetize/synthNet/Series/postNet/ShiftOutput/so/mrs_natural/Interpolation", D); //[WTF]
 
 	if (outsfname == "MARSYAS_EMPTY") 
 		pvseries->updControl("PeSynthetize/synthNet/Series/postNet/AudioSink/dest/mrs_natural/bufferSize", bopt);

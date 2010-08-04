@@ -177,6 +177,8 @@ peakView::toTable(realvec& vecTable)
 {
 	//resize and initialize the table (assuming the largest possible number of peaks + the header for now...)
 	vecTable.create(frameMaxNumPeaks_*numFrames_+1, nbPkParameters);
+	
+
 
 	//In Table format, the 1st row is a "header row"
 	vecTable(0, 0) = -1;
@@ -259,6 +261,7 @@ peakView::peakWrite(mrs_string filename, mrs_real fs, mrs_natural frameSize)
 	if(frameSize != 0)
 		frameSize_ = frameSize;
 
+	
 	//convert vec_ to table format and save to file
 	realvec resVec;
 	this->toTable(resVec);
