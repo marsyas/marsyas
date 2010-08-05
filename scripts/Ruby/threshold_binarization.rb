@@ -106,8 +106,10 @@ end
 #
 affinities.each do |song,tags|
   tags.each do |tag,affinity|
-    if (affinity > tag_cutoff_affinities[tag])
-      puts "#{song}\t#{tag}"
+    if (!tag_cutoff_affinities[tag].nil?)
+      if (affinity.to_f > tag_cutoff_affinities[tag].to_f)
+        puts "#{song}\t#{tag}"
+      end
     end
   end
 end
