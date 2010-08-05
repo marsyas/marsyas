@@ -762,9 +762,9 @@ void updateSimNetCtrls (MarSystem *mainNet, bool horizWeight)
 	//------------------------------------------------------------------------
 	//check which similarity computations should be disabled (if any)
 	//------------------------------------------------------------------------
+	ostringstream string;
 	for (mrs_natural i = 0; i < kNumSimMeasures; i++)
 	{
-		ostringstream string;
 		if (simMeasureProps[i].isIgnored)
 		{
 			cout << simMeasureProps[i].desc << " Similarity Computation disabled!" << endl;
@@ -808,6 +808,11 @@ void updateSimNetCtrls (MarSystem *mainNet, bool horizWeight)
 
 
 	mainNet->updControl("FlowThru/clustNet/Series/simNet/FlowThru/weightCalc/PeakDistanceHorizontality/horizontality/mrs_bool/bypass", !horizWeight);
+
+	string.str ("");
+	string << "FlowThru/clustNet/Series/simNet/Fanout/simFan/Series/" << simMeasureProps[kConn].name << "_Sim/TimeFreqPeakConnectivity/" << simMeasureProps[kConn].name  << "_SimMat/mrs_natural/textureWindowSize";
+	mainNet->updControl(string.str(), accSize_);
+
 }
 
 void updatePostNetCtrls (MarSystem *postNet, mrs_natural synthetize, mrs_natural Nw, mrs_natural D, mrs_string panningInfo, mrs_string sfName, mrs_string outsfname, mrs_string fileResName)
