@@ -75,29 +75,57 @@ SNR::myUpdate(MarControlPtr sender)
 void
 SNR::myProcess(realvec& in, realvec& out)
 {
+	const mrs_string& mode = ctrl_mode_->to<mrs_string>();
+	mrs_bool accumulateNow = true;
 
-//  const mrs_string& mode = ctrl_mode_->to<mrs_string>();
+	out.setval (0.);
 
-  for (mrs_natural t = 0; t < inSamples_; t++)
-    {
-      nsum_ += (in(0,t) * in(0,t));
-      nbsum_ += (in(1,t) * in(1,t));
-      psum_ += (in(0,t) * in(1,t));
-      diff_ = (in(0,t) - in(1,t));
-      dsum_ += (diff_ * diff_);
-    }
-  out(0,0) = 10 * log10(nsum_ / dsum_);
-  
-  r_ = (psum_ / sqrt(nsum_ * nbsum_));
-  out(1,0) = 10 * log10(1 / (1 - (r_ * r_)));
-  
-  if (ctrl_done_->to<mrs_bool>() == true) 
-    {
-      nsum_ = 0.0;
-      nbsum_ = 0.0;
-      dsum_ = 0.0;
-      psum_ = 0.0;
-    }
+	mrs_real	nsum	= 0, 
+		nbsum	= 0,
+		psum	= 0,
+		diff	= 0,
+		dsum	= 0;
+
+	for (mrs_natural t = 0; t < inSamples_; t++)
+	{
+		nsum	+= (in(0,t) * in(0,t));
+		nbsum	+= (in(1,t) * in(1,t));
+		psum	+= (in(0,t) * in(1,t));
+		diff	= (in(0,t) - in(1,t));
+		dsum 	+= (diff * diff);
+	}
+
+	if (mode == "checkRef4Silence")
+	{
+		if (nbsum/inSamples_ < 1e-6) //-60dB
+			accumulateNow	= false;
+	}
+
+	if (accumulateNow)
+	{
+		nsum_	+= nsum;
+		nbsum_	+= nbsum;
+		psum_	+= psum;
+		dsum_	+= dsum;
+	}
+
+	if (nsum_ != 0 && dsum_ != 0)
+		out(0,0) = 10. * log10(nsum_ / dsum_);
+
+	if (nsum_ != 0 && nbsum_ != 0)
+		r_ = (psum_ / sqrt(nsum_ * nbsum_));
+	else
+		r_ = 0;
+
+	out(1,0) = 10. * log10(1 / (1 - (r_ * r_)));
+
+	if (ctrl_done_->to<mrs_bool>() == true) 
+	{
+		nsum_ = 0.0;
+		nbsum_ = 0.0;
+		dsum_ = 0.0;
+		psum_ = 0.0;
+	}
 
 
 
