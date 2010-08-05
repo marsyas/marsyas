@@ -79,14 +79,15 @@ namespace Marsyas
 
 		void SetOutput(mrs_realvec &out, const mrs_real cost, mrs_natural idxRowA, mrs_natural idxColA, mrs_natural idxRowB, mrs_natural idxColB);
 		mrs_natural BarkFreq2RowIdx (mrs_real barkFreq, mrs_real bres);
-		void CalcDp (mrs_realvec Matrix, mrs_natural startr, mrs_natural startc, mrs_natural stopr, mrs_natural stopc);
+		void CalcDp (mrs_realvec &Matrix, mrs_natural startr, mrs_natural startc, mrs_natural stopr, mrs_natural stopc);
 		void InitMatrix (mrs_realvec &Matrix, unsigned char **traceback, mrs_natural rowIdx, mrs_natural colIdx);
 		MarControlPtr	ctrl_bres_;
 		mrs_realvec		peakMatrix_,
 						costMatrix_;
 		mrs_real		downBarkFreq_,
 						upBarkFreq_;
-		mrs_natural		numBarkBands_;
+		mrs_natural		numBarkBands_,
+						textWinSize_;
 		mrs_natural		*path_,
 						**peakIndices_;
 		unsigned char** tracebackIdx_;

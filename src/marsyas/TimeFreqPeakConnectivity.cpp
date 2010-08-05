@@ -19,7 +19,7 @@
 #include "common.h"
 #include "TimeFreqPeakConnectivity.h"
 
-using namespace std;
+using std::max;
 using namespace Marsyas;
 
 //#define MATLAB_DBG_OUT
@@ -185,6 +185,7 @@ TimeFreqPeakConnectivity::addControls()
 	setctrlState("mrs_string/frequencyInterval", true);
 
 	addctrl("mrs_real/barkresolution", .1, ctrl_bres_);
+	addctrl("mrs_natural/textureWindowSize", 0);
 }
 
 void 
@@ -252,15 +253,16 @@ TimeFreqPeakConnectivity::myUpdate(MarControlPtr sender)
 		downBarkFreq_	= 0;
 		upBarkFreq_		= 0;
 	}
+	textWinSize_ = getControl ("mrs_natural/textureWindowSize")->to<mrs_natural>();
 
 	// create peak matrix
-	peakMatrix_.create (numBarkBands_, numSamples);
-	costMatrix_.create (numBarkBands_, numSamples);
+	peakMatrix_.create (numBarkBands_, textWinSize_);
+	costMatrix_.create (numBarkBands_, textWinSize_);
 
 	updControl ("mrs_natural/onObservations", inSamples_);
 	updControl ("mrs_natural/onSamples", inSamples_);
 
-	AllocMemory (numSamples);
+	AllocMemory (textWinSize_);
 }
 
 void
@@ -270,18 +272,22 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 	const mrs_real bres = ctrl_bres_->to<mrs_real>();
 
 	// a matrix indicating where peaks are in the time frequency plane
-	peakMatrix_.stretch(numBarkBands_, (mrs_natural)(in(1,inSamples_-1)-in(1,0))+1);
+	MRSASSERT(textWinSize_ >= in(1,inSamples_-1)-in(1,0));
+	peakMatrix_.stretch(numBarkBands_, textWinSize_);
 
 	// init
 	peakMatrix_.setval (1);
-	for (t = 0; t < inSamples_; t++)
+	for (t = 0; t < textWinSize_; t++)
 		for (o=0; o < numBarkBands_; o++)
 			peakIndices_[o][t]	= -1;
 
+	// initialized pseudo spectrogram representation
 	for (t = 0; t < inSamples_; t++)
 	{
 		mrs_natural	row = BarkFreq2RowIdx (in(0,t),bres),
 					col = (mrs_natural)(in(1,t)-in(1,0)+.1);
+		MRSASSERT(col >= 0 && col < textWinSize_);
+		MRSASSERT(row >= 0 && row < numBarkBands_);
 		// check whether more than one peak are at that matrix pos, i.e. we already have set the entry
 		if (peakIndices_[row][col] != -1)
 		{
@@ -325,12 +331,12 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 						colo = (mrs_natural)(in(1,o)-in(1,0)+.1),
 						pathLength;
 
-			//// self similarity
-			//if (t == o)
-			//{
-			//	out(t,o) = 0;
-			//	continue;
-			//}
+			MRSASSERT(colt >= 0 && colt < textWinSize_);
+			MRSASSERT(colo >= 0 && colo < textWinSize_);
+			MRSASSERT(rowt >= 0 && rowt < numBarkBands_);
+			MRSASSERT(rowo >= 0 && rowo < numBarkBands_);
+
+
 			// self similarity and similarity with overlapping peaks
 			if ((t == o) || (rowt == rowo && colt == colo))
 			{
@@ -533,7 +539,7 @@ void TimeFreqPeakConnectivity::InitMatrix (mrs_realvec &Matrix, unsigned char **
 	//cout << Matrix << endl;
 }
 
-void TimeFreqPeakConnectivity::CalcDp (mrs_realvec Matrix, mrs_natural startr, mrs_natural startc, mrs_natural stopr, mrs_natural stopc)
+void TimeFreqPeakConnectivity::CalcDp (mrs_realvec &Matrix, mrs_natural startr, mrs_natural startc, mrs_natural stopr, mrs_natural stopc)
 {
 	mrs_natural i,j,
 		numRows = Matrix.getRows (),
