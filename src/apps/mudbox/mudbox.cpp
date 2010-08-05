@@ -4256,13 +4256,13 @@ void toy_with_spectralSNR(string fname0, string fname1)
 
 
 
-void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING)
+void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING, string ignoreSilence = EMPTYSTRING)
 {
 	std::ofstream outTextFile;
 
 	cout << "Toying with SNR" << endl;
 	cout << "SIGNAL = "  << fname0 << endl;
-	cout << "NOISE = " << fname1 << endl;
+	cout << "REFERENCE = " << fname1 << endl;
 
 	mrs_realvec snrResult(2);
 	MarSystemManager mng;
@@ -4277,12 +4277,14 @@ void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING)
 
 	net->addMarSystem(input);
 	net->addMarSystem(mng.create("SNR", "snr"));
-  
+	  
 	net->updControl("Fanout/input/SoundFileSource/signalSrc/mrs_string/filename", 
 				 fname0);
 	net->updControl("Fanout/input/SoundFileSource/noiseSrc/mrs_string/filename", 
 				 fname1);
 
+	if (ignoreSilence == "is")
+		net->updControl ("SNR/snr/mrs_string/mode", "checkRef4Silence");
 	net->updControl("mrs_natural/inSamples", 1024);
 	net->updControl("mrs_natural/inObservations", 2);
 
@@ -4297,10 +4299,10 @@ void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING)
 
 	cout << snrResult << endl;
 	if (outTextFile.good ())
-	{
 		outTextFile << snrResult(0) <<"\t" << snrResult(1) << std::endl;
-	}
-  
+	else if (ignoreSilence == "is")
+		cout << "Problem writing output file!" << endl;
+
 	outTextFile.close ();
   
 }
@@ -7672,6 +7674,87 @@ toy_with_aim_vq(string sfName)
 }
 
 
+void toy_with_NCut ()
+{
+	MarSystemManager mng;
+	mrs_realvec simMat(1);
+	mrs_natural t,k,i,j,
+				numTests = 2;
+
+	MarSystem* NCutNet = mng.create("Series","NCutNet");
+	NCutNet->addMarSystem(mng.create("RealvecSource","SimMatrix"));
+	NCutNet->addMarSystem(mng.create("NormCut","NCut"));
+
+
+	for (t=0; t < numTests; t++)
+	{
+		mrs_natural dim			= 0,	// dim has to be integer-dividable by numClusters
+					numClusters = 0,
+					kStart		= 0;
+
+		// generate input matrix
+		dim			= 50;  // dim has to be integer-dividable by numClusters
+		numClusters = 5; 
+		kStart		= 0;
+		simMat.stretch(dim, dim);
+		simMat.setval (0.);
+
+		for (k = 0; k < numClusters; k++)
+		{
+			for (i = kStart; i < (kStart + dim/numClusters); i++)
+				for (j = kStart; j < (kStart + dim/numClusters); j++)
+					simMat(i,j)	= 1.;
+
+			kStart	+= dim/numClusters;
+		}
+
+		switch (t)
+		{
+		case 0:
+		default:
+			{
+				break;
+			}
+		case 1:
+			{
+				mrs_realvec scramble (dim,dim);
+				mrs_realvec tmp (dim,dim);
+				scramble.setval (0.);
+
+				for (i = 0; i < dim; i++)
+					scramble(dim-i-1,i)	= 1.;
+				// scramble
+				realvec::matrixMulti (simMat, scramble, tmp);
+				//realvec::matrixMulti (scramble, tmp, simMat);
+				simMat = tmp;
+
+				break;
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////////
+		// run test
+		cout << "Clustering Input:" << endl;
+		cout << simMat << endl;
+
+		// set parameters
+		NCutNet->updControl("RealvecSource/SimMatrix/mrs_realvec/data", simMat);
+		NCutNet->updControl("mrs_natural/inSamples", dim); 
+		NCutNet->updControl("NormCut/NCut/mrs_natural/numClusters", numClusters); 
+
+		// do the clustering
+		NCutNet->tick ();
+
+		// display the clustering results
+		cout << "Clustering Output:" << endl;
+		cout << NCutNet->getControl ("mrs_realvec/processedData")->to<mrs_realvec>() << endl << endl;
+
+		cout << "press enter to continue..." << endl;
+		getchar();
+
+	}
+}
+
 
 
 int
@@ -7724,7 +7807,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "labelsfplay")
 		toy_with_labelsfplay(fname0);
 	else if (toy_withName == "SNR")
-		toy_with_SNR(fname0, fname1, fname2);
+		toy_with_SNR(fname0, fname1, fname2, fname3);
 	else if (toy_withName == "SOM")
 		toy_with_SOM("music.mf");
 	else if (toy_withName == "Windowing")
@@ -7905,6 +7988,8 @@ main(int argc, const char **argv)
       toy_with_sness_shredder(fname0);
 	else if (toy_withName == "aim_vq")
 		toy_with_aim_vq(fname0);
+	else if (toy_withName == "ncut")
+		toy_with_NCut();
 
 	else 
 	{

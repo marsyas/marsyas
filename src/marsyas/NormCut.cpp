@@ -96,6 +96,8 @@ NormCut::myUpdate(MarControlPtr sender)
 
 	//check if there was a change in the input similarity matrix (i.e. in the nr of elements)
 	//or if the number of clusters to detect was changed
+	// [AL]: [!] this means that the number of inObservations has to be set *before* the number of clusters,
+	// [AL] otherwise nCutDiscrete_	and nCutEigVectors_ have the wrong dimension !!!
 	if(numClusters_ != ctrl_numClusters_->to<mrs_natural>() || onSamples_ != inSamples_)
 	{
 		numClusters_ = ctrl_numClusters_->to<mrs_natural>();
