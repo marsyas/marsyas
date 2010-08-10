@@ -184,7 +184,7 @@ TimeFreqPeakConnectivity::addControls()
 	addctrl("mrs_string/frequencyInterval", "MARSYAS_EMPTY");
 	setctrlState("mrs_string/frequencyInterval", true);
 
-	addctrl("mrs_real/barkresolution", .1, ctrl_bres_);
+	addctrl("mrs_real/barkresolution", .15, ctrl_bres_);
 	addctrl("mrs_natural/textureWindowSize", 0);
 }
 
@@ -303,23 +303,18 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 	// initialize output
 	out.setval (costInit);
 
-//#ifdef MARSYAS_MATLAB
-//	MATLAB_PUT(peakMatrix_, "peakMatrix");
-//	MATLAB_EVAL ("figure(1),imagesc(peakMatrix)");
-//#endif
+#ifdef MATLAB_DBG_OUT
+#ifdef MARSYAS_MATLAB
+	MATLAB_PUT(peakMatrix_, "peakMatrix");
+	MATLAB_EVAL ("figure(1),imagesc(peakMatrix),colorbar");
+#endif
+#endif
 
-	//if (inSamples_==196)
-	//	int alex = 0;
 	// iteration over all pairs
 	for (t = 0; t < inSamples_; t++)
 	{
 		for (o=inSamples_-1; o >= t;o--)
 		{
-			//if (inSamples_==196 && t==53 && o==55)
-			//	cout << out(t,o) << endl;
-			//if (inSamples_==196 && t==53 && o==53)
-			//	cout << out(t,o) << endl;
-			
 			// don't compute distance if we already have it
 			if (out(t,o) != costInit)
 				continue;
@@ -347,8 +342,6 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 			// check if path calculation makes sense with the current dp step size
 			if (abs(rowt - rowo) > abs(colt-colo))
 			{
-				//out(t,o)	= 1;
-				//out(o,t)	= out(t,o);
 				SetOutput(out, 1, rowt, colt, rowo, colo);
 				continue;
 			}
@@ -361,10 +354,12 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 			CalcDp (peakMatrix_, rowt, colt, rowo, colo);
 			pathLength	= colo-colt+1;
 
-//#ifdef MARSYAS_MATLAB
-//			MATLAB_PUT(costMatrix_, "cost");
-//			MATLAB_EVAL ("figure(2),imagesc(cost,[0 10]),colorbar");
-//#endif
+#ifdef MATLAB_DBG_OUT
+#ifdef MARSYAS_MATLAB
+			MATLAB_PUT(costMatrix_, "cost");
+			MATLAB_EVAL ("figure(2),imagesc(cost,[0 10]),colorbar");
+#endif
+#endif
 
 			// set cost for this path and all subpaths
 			for (mrs_natural i = 0; i < pathLength; i++)
@@ -389,6 +384,13 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 		}
 	}
 	multipleIndices->Reset ();
+
+	// scale output because of RBF without std??
+	//out	*= 10.;
+
+	// convert distance to similarity
+	//out	*= -1;
+	//out += 1;
 #ifdef SANITY_CHECK
 	for (t=0; t < inSamples_;t++)
 		for (o=0; o < inSamples_;o++)
