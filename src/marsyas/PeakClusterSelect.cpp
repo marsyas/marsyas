@@ -187,7 +187,10 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 	// Normalize by the number of elements
 	for( i=0 ; i<curNumClusters ; ++i )
 	{
-		intraClusterSimilarities( 2 , i ) /= intraClusterSimilarities( 1 , i );
+		if (intraClusterSimilarities( 1 , i ) > 1)
+			intraClusterSimilarities( 2 , i ) /= intraClusterSimilarities( 1 , i );
+		else
+			intraClusterSimilarities( 2 , i )	= 0;
 	}
 
 	// (Quick) Sort by intra-cluster similarity density
