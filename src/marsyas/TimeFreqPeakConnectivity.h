@@ -28,14 +28,18 @@ namespace Marsyas
 	/**
 	\class TimeFreqPeakConnectivity
 	\ingroup Processing
-	\brief Basic example on how to use controls efficiently in MarSystems
+	\brief uses dynamic programming to create a (symmetric) distance 
+	       matrix between the series of peaks at the inputs
 
-	This example is the same as Gain; it scales the output by
-	multiplying each sample with a real number.
+		   the input is a matrix with the dimension 2x numpeaks,
+		   row 1 is the frequency of the peak in bark, row 2 is
+		   the block index of the peak.
 
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- \b mrs_string/frequencyIntervalInHz [w] : tells the system which frequency range to expect, e.g. 250_2500
+	- \b mrs_natural/textureWindowSize [rw] : tells the system how many block indices to expect per call
+	- \b mrs_bool/inBark [rw] : controls whether the computation is done in the frequency or in the bark domain
+	- \b mrs_bool/freqResolution [rw] : sets the frequency resolution of the system (in Hz or in Bark, depending on inBark
 	*/
 
 	class marsyas_EXPORT TimeFreqPeakConnectivity: public MarSystem
@@ -78,15 +82,15 @@ namespace Marsyas
 		void FreeMemory ();
 
 		void SetOutput(mrs_realvec &out, const mrs_real cost, mrs_natural idxRowA, mrs_natural idxColA, mrs_natural idxRowB, mrs_natural idxColB);
-		mrs_natural BarkFreq2RowIdx (mrs_real barkFreq, mrs_real bres);
+		mrs_natural Freq2RowIdx (mrs_real barkFreq, mrs_real bres);
 		void CalcDp (mrs_realvec &Matrix, mrs_natural startr, mrs_natural startc, mrs_natural stopr, mrs_natural stopc);
 		void InitMatrix (mrs_realvec &Matrix, unsigned char **traceback, mrs_natural rowIdx, mrs_natural colIdx);
-		MarControlPtr	ctrl_bres_;
+		MarControlPtr	ctrl_reso_;
 		mrs_realvec		peakMatrix_,
 						costMatrix_;
-		mrs_real		downBarkFreq_,
-						upBarkFreq_;
-		mrs_natural		numBarkBands_,
+		mrs_real		downFreq_,
+						upFreq_;
+		mrs_natural		numBands_,
 						textWinSize_;
 		mrs_natural		*path_,
 						**peakIndices_;

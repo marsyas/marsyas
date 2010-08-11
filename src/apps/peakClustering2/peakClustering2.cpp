@@ -323,7 +323,7 @@ MarSystem* createSimilarityNet (MarSystemManager *mng, mrs_string seriesName = "
 		case kConn:
 			{
 				newSimMat = mng->create("TimeFreqPeakConnectivity", tmp.str ());
-				newSimMat->updControl("mrs_string/frequencyInterval", intervalFrequency);
+				newSimMat->updControl("mrs_string/frequencyIntervalInHz", intervalFrequency);
 				break;
 			}
 		case kHwps:

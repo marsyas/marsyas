@@ -22,7 +22,7 @@
 using std::max;
 using namespace Marsyas;
 
-//#define MATLAB_DBG_OUT
+#define MATLAB_DBG_OUT
 #define SANITY_CHECK
 
 static const mrs_real		costInit	= 1e30;
@@ -144,7 +144,7 @@ TimeFreqPeakConnectivity::TimeFreqPeakConnectivity(mrs_string name) : MarSystem(
 	tracebackIdx_	= 0;
 	peakIndices_	= 0;
 	path_			= 0;
-	numBarkBands_	= 0;
+	numBands_		= 0;
 	multipleIndices = 0;
 }
 
@@ -154,12 +154,12 @@ TimeFreqPeakConnectivity::TimeFreqPeakConnectivity(const TimeFreqPeakConnectivit
 	/// All member MarControlPtr have to be explicitly reassigned in
 	/// the copy constructor.
 	// Otherwise this would result in trying to deallocate them twice!
-	ctrl_bres_	= getctrl("mrs_real/barkresolution");
+	ctrl_reso_	= getctrl("mrs_real/freqResolution");
 
 	tracebackIdx_	= 0;
 	peakIndices_	= 0;
 	path_			= 0;
-	numBarkBands_	= 0;
+	numBands_		= 0;
 	multipleIndices = 0;
 }
 
@@ -181,19 +181,23 @@ TimeFreqPeakConnectivity::clone() const
 void
 TimeFreqPeakConnectivity::addControls()
 {
-	addctrl("mrs_string/frequencyInterval", "MARSYAS_EMPTY");
-	setctrlState("mrs_string/frequencyInterval", true);
+	addctrl("mrs_string/frequencyIntervalInHz", "MARSYAS_EMPTY");
+	setctrlState("mrs_string/frequencyIntervalInHz", true);
 
-	addctrl("mrs_real/barkresolution", .15, ctrl_bres_);
+	addctrl("mrs_bool/inBark", false);
+	addctrl("mrs_real/freqResolution", 25., ctrl_reso_);
+	//addctrl("mrs_bool/inBark", true);
+	//addctrl("mrs_real/freqResolution", .15, ctrl_reso_);
+
 	addctrl("mrs_natural/textureWindowSize", 0);
 }
 
 void 
 TimeFreqPeakConnectivity::AllocMemory (mrs_natural numSamples)
 {
-	tracebackIdx_	= new unsigned char* [numBarkBands_];
-	peakIndices_	= new mrs_natural* [numBarkBands_];
-	for (mrs_natural i = 0; i < numBarkBands_; i++) 
+	tracebackIdx_	= new unsigned char* [numBands_];
+	peakIndices_	= new mrs_natural* [numBands_];
+	for (mrs_natural i = 0; i < numBands_; i++) 
 	{
 		tracebackIdx_[i]	= new unsigned char [numSamples];
 		peakIndices_[i]		= new mrs_natural[numSamples];
@@ -211,13 +215,13 @@ TimeFreqPeakConnectivity::FreeMemory ()
 {
 	if (tracebackIdx_)
 	{
-		for (mrs_natural i = 0; i < numBarkBands_; i++) 
+		for (mrs_natural i = 0; i < numBands_; i++) 
 			delete [] tracebackIdx_[i];
 		delete [] tracebackIdx_;
 	}
 	if (peakIndices_)
 	{
-		for (mrs_natural i = 0; i < numBarkBands_; i++) 
+		for (mrs_natural i = 0; i < numBands_; i++) 
 			delete [] peakIndices_[i];
 		delete [] peakIndices_;
 	}
@@ -233,31 +237,32 @@ TimeFreqPeakConnectivity::myUpdate(MarControlPtr sender)
 	/// Use the default MarSystem setup with equal input/output stream format.
 	MarSystem::myUpdate(sender);
 
-	mrs_natural numSamples;
+	mrs_natural		numSamples;
+	const mrs_bool	isInBark	= getctrl("mrs_bool/inBark")->to<mrs_bool>();
 
 	FreeMemory ();
 
 	// compute matrix dimensions
 	numSamples		= inSamples_;
-	if(getctrl("mrs_string/frequencyInterval")->to<mrs_string>() != "MARSYAS_EMPTY")
+	if(getctrl("mrs_string/frequencyIntervalInHz")->to<mrs_string>() != "MARSYAS_EMPTY")
 	{
 		realvec conv(2);
-		string2parameters(getctrl("mrs_string/frequencyInterval")->to<mrs_string>(), conv, '_'); //[!]
-		downBarkFreq_	= hertz2bark (conv(0));
-		upBarkFreq_		= hertz2bark (conv(1));	
-		numBarkBands_	= (mrs_natural)((upBarkFreq_-downBarkFreq_)/ctrl_bres_->to<mrs_real>() + .5);
+		string2parameters(getctrl("mrs_string/frequencyIntervalInHz")->to<mrs_string>(), conv, '_'); //[!]
+		downFreq_	= (isInBark)? hertz2bark (conv(0)) : conv(0);
+		upFreq_		= (isInBark)? hertz2bark (conv(1)) : conv(1);	
+		numBands_	= (mrs_natural)((upFreq_-downFreq_)/ctrl_reso_->to<mrs_real>() + .5);
 	}
 	else
 	{
-		numBarkBands_	= 0;
-		downBarkFreq_	= 0;
-		upBarkFreq_		= 0;
+		numBands_	= 0;
+		downFreq_	= 0;
+		upFreq_		= 0;
 	}
 	textWinSize_ = getControl ("mrs_natural/textureWindowSize")->to<mrs_natural>();
 
 	// create peak matrix
-	peakMatrix_.create (numBarkBands_, textWinSize_);
-	costMatrix_.create (numBarkBands_, textWinSize_);
+	peakMatrix_.create (numBands_, textWinSize_);
+	costMatrix_.create (numBands_, textWinSize_);
 
 	updControl ("mrs_natural/onObservations", inSamples_);
 	updControl ("mrs_natural/onSamples", inSamples_);
@@ -269,25 +274,26 @@ void
 TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 {
 	// get pitch resolution
-	const mrs_real bres = ctrl_bres_->to<mrs_real>();
+	const mrs_real	reso		= ctrl_reso_->to<mrs_real>();
+	const mrs_bool	isInBark	= getctrl("mrs_bool/inBark")->to<mrs_bool>();
 
 	// a matrix indicating where peaks are in the time frequency plane
 	MRSASSERT(textWinSize_ >= in(1,inSamples_-1)-in(1,0));
-	peakMatrix_.stretch(numBarkBands_, textWinSize_);
+	peakMatrix_.stretch(numBands_, textWinSize_);
 
 	// init
 	peakMatrix_.setval (1);
 	for (t = 0; t < textWinSize_; t++)
-		for (o=0; o < numBarkBands_; o++)
+		for (o=0; o < numBands_; o++)
 			peakIndices_[o][t]	= -1;
 
 	// initialized pseudo spectrogram representation
 	for (t = 0; t < inSamples_; t++)
 	{
-		mrs_natural	row = BarkFreq2RowIdx (in(0,t),bres),
+		mrs_natural	row = (isInBark)? Freq2RowIdx (in(0,t),reso) : Freq2RowIdx (bark2hertz(in(0,t)),reso),	// input is in bark frequency, so we might have to convert it back
 					col = (mrs_natural)(in(1,t)-in(1,0)+.1);
 		MRSASSERT(col >= 0 && col < textWinSize_);
-		MRSASSERT(row >= 0 && row < numBarkBands_);
+		MRSASSERT(row >= 0 && row < numBands_);
 		// check whether more than one peak are at that matrix pos, i.e. we already have set the entry
 		if (peakIndices_[row][col] != -1)
 		{
@@ -320,16 +326,16 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 				continue;
 
 			// get peak matrix indices
-			mrs_natural rowt = BarkFreq2RowIdx (in(0,t),bres),
-						rowo = BarkFreq2RowIdx (in(0,o),bres),
+			mrs_natural rowt = (isInBark)? Freq2RowIdx (in(0,t),reso) : Freq2RowIdx (bark2hertz(in(0,t)),reso),	// input is in bark frequency, so we might have to convert it back
+						rowo = (isInBark)? Freq2RowIdx (in(0,o),reso) : Freq2RowIdx (bark2hertz(in(0,o)),reso),	// input is in bark frequency, so we might have to convert it back
 						colt = (mrs_natural)(in(1,t)-in(1,0)+.1),
 						colo = (mrs_natural)(in(1,o)-in(1,0)+.1),
 						pathLength;
 
 			MRSASSERT(colt >= 0 && colt < textWinSize_);
 			MRSASSERT(colo >= 0 && colo < textWinSize_);
-			MRSASSERT(rowt >= 0 && rowt < numBarkBands_);
-			MRSASSERT(rowo >= 0 && rowo < numBarkBands_);
+			MRSASSERT(rowt >= 0 && rowt < numBands_);
+			MRSASSERT(rowo >= 0 && rowo < numBands_);
 
 
 			// self similarity and similarity with overlapping peaks
@@ -484,14 +490,14 @@ void TimeFreqPeakConnectivity::SetOutput(mrs_realvec &out, const mrs_real cost, 
 	}
 }
 
-mrs_natural TimeFreqPeakConnectivity::BarkFreq2RowIdx (mrs_real barkFreq, mrs_real bres)
+mrs_natural TimeFreqPeakConnectivity::Freq2RowIdx (mrs_real barkFreq, mrs_real bres)
 {
-	mrs_natural result = (mrs_natural)((barkFreq-downBarkFreq_)/bres +.5);
+	mrs_natural result = (mrs_natural)((barkFreq-downFreq_)/bres +.5);
 
 	if (result < 0)
 		result = 0;
-	if (result >= numBarkBands_)
-		result =numBarkBands_-1;
+	if (result >= numBands_)
+		result =numBands_-1;
 
 	return result;
 }
