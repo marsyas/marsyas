@@ -152,6 +152,8 @@ NormCut::myProcess(realvec& in, realvec& out)
 		}
 	}
 
+	//cout << out << endl;
+
 	//   //get a local copy of the current gain control value
 	//   //(it will be used for this entire processing, even if it's
 	//   //changed by someone else, e.g. by a different thread)
@@ -365,7 +367,10 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 		}
 		vm(i) = sqrt(vm(i));
 		for( j=0 ; j<nbcluster ; j++ ){
-			NcutEigenvectors(j*(n)+i) /= vm(i);
+			if (vm(i) > 0)
+				NcutEigenvectors(j*(n)+i) /= vm(i);
+			else
+				NcutEigenvectors(j*(n)+i)  = 0.;
 			MRSASSERT(NcutEigenvectors(j*(n)+i) == NcutEigenvectors(j*(n)+i));
 		}
 		c(i) = 0;
