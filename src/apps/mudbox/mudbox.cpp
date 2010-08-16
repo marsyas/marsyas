@@ -7679,7 +7679,7 @@ void toy_with_NCut ()
 	MarSystemManager mng;
 	mrs_realvec simMat(1);
 	mrs_natural t,k,i,j,
-				numTests = 2;
+				numTests = 3;
 
 	MarSystem* NCutNet = mng.create("Series","NCutNet");
 	NCutNet->addMarSystem(mng.create("RealvecSource","SimMatrix"));
@@ -7730,6 +7730,21 @@ void toy_with_NCut ()
 
 				break;
 			}
+		case 2:
+			{
+				dim			= 20;
+				numClusters = 3; 
+				kStart		= 0;
+				simMat.stretch(dim, dim);
+				simMat.setval (0.);
+
+				for (k = 0; k < numClusters; k++)
+				{
+					for (i = 0; i < dim; i++)
+						for (j = 0; j < dim; j++)
+							simMat(i,j)	= ((i+j)%2==0)? 1. : 0.;
+				}
+			}
 		}
 
 		///////////////////////////////////////////////////////////////////////
@@ -7738,6 +7753,7 @@ void toy_with_NCut ()
 		cout << simMat << endl;
 
 		// set parameters
+
 		NCutNet->updControl("RealvecSource/SimMatrix/mrs_realvec/data", simMat);
 		NCutNet->updControl("mrs_natural/inSamples", dim); 
 		NCutNet->updControl("NormCut/NCut/mrs_natural/numClusters", numClusters); 
