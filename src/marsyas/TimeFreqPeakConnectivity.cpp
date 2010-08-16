@@ -22,8 +22,8 @@
 using std::max;
 using namespace Marsyas;
 
-#define MATLAB_DBG_OUT
-#define SANITY_CHECK
+//#define MATLAB_DBG_OUT
+//#define SANITY_CHECK
 
 static const mrs_real		costInit	= 1e30;
 static const mrs_natural	listLenInit = 16;
