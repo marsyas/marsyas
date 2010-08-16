@@ -58,7 +58,8 @@ FileName::name()
 #ifdef MARSYAS_WIN32
   size_t loc2  = filename_.rfind("/", filename_.length()-1);  // you can use the slash in windows, too
   loc = filename_.rfind("\\", filename_.length()-1);
-  loc = max (loc, loc2);
+  if (loc2 != mrs_string::npos)
+	  loc = max (loc, loc2);
 #else 
   loc = filename_.rfind("/", filename_.length()-1);
 #endif
@@ -100,7 +101,8 @@ FileName::path()
 #ifdef MARSYAS_WIN32
   size_t loc2  = filename_.rfind("/", filename_.length()-1);  // you can use the slash in windows, too
   loc = filename_.rfind("\\", filename_.length()-1);
-  loc = max (loc, loc2);
+  if (loc2 != mrs_string::npos)
+	loc = max (loc, loc2);
 #else 
   loc = filename_.rfind("/", filename_.length()-1);
 #endif
