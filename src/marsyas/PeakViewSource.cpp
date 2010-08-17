@@ -37,6 +37,9 @@ PeakViewSource::PeakViewSource(const PeakViewSource& a) : MarSystem(a)
 	ctrl_pos_= getctrl("mrs_natural/pos");
 	ctrl_size_ = getctrl("mrs_natural/size");
 	ctrl_hasData_ = getctrl("mrs_bool/hasData"); 
+	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
+	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks"); 
+	ctrl_nTimes_ = getctrl("mrs_natural/nTimes"); 
 
 	filename_ = a.filename_;
 	frameIdx_ = a.frameIdx_;
@@ -59,6 +62,10 @@ PeakViewSource::addControls()
 {
 	addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
 	setctrlState("mrs_string/filename", true);
+
+	addctrl("mrs_natural/frameMaxNumPeaks", 0, ctrl_frameMaxNumPeaks_);
+	addctrl("mrs_natural/totalNumPeaks", 0, ctrl_totalNumPeaks_);
+	addctrl("mrs_natural/nTimes", 1, ctrl_nTimes_);
 
 	addctrl("mrs_bool/hasData", false, ctrl_hasData_);
 	addctrl("mrs_natural/size", 0, ctrl_size_);
@@ -86,7 +93,8 @@ PeakViewSource::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
 	//check for a new filename (this is also true for the first call to myUpdate())
-	if(ctrl_filename_->to<mrs_string>() != filename_)
+	// hack: disabled this so other control can be updated after setting the filename
+	//if(ctrl_filename_->to<mrs_string>() != filename_)
 	{
 		//check if this is the first call to myUpdate()
 		if(ctrl_filename_->to<mrs_string>() == "defaultfile")
@@ -102,16 +110,17 @@ PeakViewSource::myUpdate(MarControlPtr sender)
 				numFrames_ = peakDataView.getNumFrames();
 				frameSize_ = peakDataView.getFrameSize();
 
-				mrs_natural frameMaxNumPeaks = peakDataView.getFrameMaxNumPeaks();
+				ctrl_frameMaxNumPeaks_->setValue (peakDataView.getFrameMaxNumPeaks());
+				//mrs_natural frameMaxNumPeaks = peakDataView.getFrameMaxNumPeaks();
 
-				ctrl_onSamples_->setValue(1, NOUPDATE);
-				ctrl_onObservations_->setValue(frameMaxNumPeaks * peakView::nbPkParameters, NOUPDATE);
+				ctrl_onSamples_->setValue(ctrl_nTimes_->to<mrs_natural>(), NOUPDATE);
+				ctrl_onObservations_->setValue(ctrl_frameMaxNumPeaks_->to<mrs_natural>() * peakView::nbPkParameters, NOUPDATE);
 				ctrl_osrate_->setValue(peakDataView.getFs(), NOUPDATE);
 				ostringstream oss;
 				for(mrs_natural j=0; j< peakView::nbPkParameters; ++j) //j = param index
 				{
-					for (mrs_natural i=0; i < frameMaxNumPeaks; ++i) //i = peak index
-						oss << peakView::getParamName(j) << "_" << i+j*frameMaxNumPeaks << ",";
+					for (mrs_natural i=0; i < ctrl_frameMaxNumPeaks_->to<mrs_natural>(); ++i) //i = peak index
+						oss << peakView::getParamName(j) << "_" << i+j*ctrl_frameMaxNumPeaks_->to<mrs_natural>() << ",";
 				}
 				ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 
@@ -138,16 +147,33 @@ void
 PeakViewSource::myProcess(realvec& in, realvec& out)
 {
 	(void) in;
-	//at each tick, output peaks for corresponding frame
-	if(ctrl_hasData_->isTrue())
-	{
-		ctrl_pos_->setValue(frameIdx_*frameSize_);
-		
-		for(mrs_natural o=0; o < peakData_.getRows(); ++o)
-			out(o,0) = peakData_(o, frameIdx_);
 
-		frameIdx_++;
-		if(frameIdx_ == numFrames_)//if EOF
-			ctrl_hasData_->setValue(false);
+	mrs_natural totalNumPeaks	= 0,
+		frameMaxNumPeaks = ctrl_frameMaxNumPeaks_->to<mrs_natural>();
+	mrs_natural nTimes			= ctrl_nTimes_->to<mrs_natural>();
+	mrs_natural numRows			= peakData_.getRows();
+
+	for (mrs_natural f = 0; f < nTimes; f++)
+	{
+		//at each tick, output peaks for corresponding frame
+		if(ctrl_hasData_->isTrue())
+		{
+			ctrl_pos_->setValue(frameIdx_*frameSize_);
+			
+			for(mrs_natural o=0; o < numRows; ++o)
+			{
+				mrs_real test = peakData_(o, frameIdx_);
+				out(o,f) = peakData_(o, frameIdx_);
+				if (o / frameMaxNumPeaks == peakView::pkFrequency)
+					if (peakData_(o, frameIdx_) != 0)
+						totalNumPeaks++;
+
+			}
+
+			frameIdx_++;
+			if(frameIdx_ == numFrames_)//if EOF
+				ctrl_hasData_->setValue(false);
+		}
 	}
+	ctrl_totalNumPeaks_->setValue(totalNumPeaks);
 }

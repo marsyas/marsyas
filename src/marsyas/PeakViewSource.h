@@ -46,6 +46,9 @@ namespace Marsyas
 			MarControlPtr ctrl_filename_;
 			MarControlPtr ctrl_hasData_;
 			MarControlPtr ctrl_pos_;
+			MarControlPtr ctrl_frameMaxNumPeaks_;
+			MarControlPtr ctrl_totalNumPeaks_;
+			MarControlPtr ctrl_nTimes_;
 			MarControlPtr ctrl_size_;
 
 			void defaultConfig();
