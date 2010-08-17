@@ -185,20 +185,21 @@ mrs_natural noPeakPicking_;
 mrs_bool	noSimulMasking_;
 
 //bool microphone_ = false;
-bool analyse_ = true;
+//bool analyse_ = true;
 bool attributes_ = false;
 bool ground_ = false;
 mrs_natural synthetize_ = 0;
 mrs_natural clusterSynthetize_ = -1;
-bool peakStore_= false;
-bool residual_ = false;
-bool evalInPlace = false;
-bool computeInputSnr = false;
-bool computeSnrWithoutBandLimits = false;
-bool disableClustering = false;
+mrs_bool peakStore_= false;
+mrs_bool residual_ = false;
+mrs_bool evalInPlace = false;
+mrs_bool computeInputSnr = false;
+mrs_bool computeSnrWithoutBandLimits = false;
+mrs_bool disableClustering = false;
+mrs_bool readPeaksFromFile = false;
 
 bool useOnsets = false;
-bool horizWeight = false;
+mrs_bool horizWeight = false;
 
 CommandLineOptions cmd_options;
 
@@ -629,6 +630,22 @@ MarSystem* createAnalysisNet (MarSystemManager *mng, mrs_string seriesName = "te
 	return textWinNet;
 }
 
+
+MarSystem* createPeakReadNet (MarSystemManager *mng, mrs_string seriesName = "textWinNet")
+{
+
+	//**************************************************************************
+	//create accumulator for the texture window and add it to the main network
+	//**************************************************************************
+	//MarSystem* textWinNet = mng->create("Accumulator", seriesName);
+	//MarSystem* analysisNet = mng->create("PeakViewSource", "analysisNet");
+	//textWinNet->addMarSystem(analysisNet);
+
+	MarSystem* textWinNet = mng->create("PeakViewSource", "analysisNet");
+
+	return textWinNet;
+}
+
 void updateAnalysisNetCtrls (MarSystem *textWinNet, mrs_string sfName, mrs_natural accSize, mrs_natural D, mrs_natural Nw, mrs_natural N, mrs_natural S)
 {
 	textWinNet->updControl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
@@ -832,6 +849,7 @@ void updatePostNetCtrls (MarSystem *postNet, mrs_natural synthetize, mrs_natural
 			}
 			else 
 			{
+				FileName Sfname(sfName);
 				// linking between the first slice and the psf
 				postNet->linkControl("Gain/fakeGain/mrs_realvec/processedData", "PeakSynthFFT/psf/mrs_realvec/peaks");
 				//
@@ -848,7 +866,11 @@ void updatePostNetCtrls (MarSystem *postNet, mrs_natural synthetize, mrs_natural
 				//postNet->updControl("ShiftInput/siSyn/mrs_natural/winSize", D*2);
 				postNet->updControl("ShiftInput/siSyn/mrs_natural/winSize", Nw);
 				// setting the name of the original file
-				postNet->updControl("SoundFileSource/srcSyn/mrs_string/filename", sfName);
+				if (!readPeaksFromFile)
+					postNet->updControl("SoundFileSource/srcSyn/mrs_string/filename", sfName);
+				else
+					postNet->updControl("SoundFileSource/srcSyn/mrs_string/filename", Sfname.path() + Sfname.nameNoExt () + ".wav"); // AL: only a quick hack -  this assumes wave input file format!!!
+
 				// pvseries->updControl("SoundFileSource/srcSyn/mrs_natural/pos", 0);
 				postNet->updControl("SoundFileSource/srcSyn/mrs_natural/onSamples", D);
 				postNet->updControl("SoundFileSource/srcSyn/mrs_natural/onObservations", 1);
@@ -910,6 +932,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* postOriNet		= 0;
 	MarSystem* postMixNet		= 0;
 	MarSystem* delayedOriNet	= 0;
+	MarSystem* textWinNet		= 0;
 
 	metaNet->addMarSystem (metaFan);
 	//**************************************************
@@ -918,17 +941,24 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	MarSystem* mainNet = mng.create("Series", "mainNet");
 	metaFan->addMarSystem(mainNet);
 
-	//**************************************************************************
-	//create the peak analysis network
-	//**************************************************************************
-	MarSystem* textWinNet = createAnalysisNet (&mng);
-	mainNet->addMarSystem(textWinNet);
+	if (!readPeaksFromFile)
+	{
+		//**************************************************************************
+		//create the peak analysis network
+		//**************************************************************************
+		textWinNet = createAnalysisNet (&mng);
+		mainNet->addMarSystem(textWinNet);
 
-	//***************************************************************
-	//add PeakConvert to main SERIES for processing texture windows
-	//***************************************************************
-	mainNet->addMarSystem(mng.create("PeakConvert2", "conv"));
-
+		//***************************************************************
+		//add PeakConvert to main SERIES for processing texture windows
+		//***************************************************************
+		mainNet->addMarSystem(mng.create("PeakConvert2", "conv"));
+	}
+	else
+	{
+		textWinNet = createPeakReadNet (&mng);
+		mainNet->addMarSystem(textWinNet);
+	}
 	
 	if (!disableClustering)
 	{
@@ -950,10 +980,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		ostringstream ctrl;
 		ctrl.str("");
 		ctrl << "FlowThru/clustNet/Series/simNet/Fanout/simFan/Series/" << simMeasureProps[0].name << "_" << "Sim/PeakFeatureSelect/" << simMeasureProps[0].name << "_FeatSelect/mrs_natural/totalNumPeaks";
-		mainNet->linkControl(ctrl.str (), "PeakConvert2/conv/mrs_natural/totalNumPeaks");
+		mainNet->linkControl(ctrl.str (), (readPeaksFromFile)? "PeakViewSource/analysisNet/mrs_natural/totalNumPeaks" : "PeakConvert2/conv/mrs_natural/totalNumPeaks");
 		ctrl.str("");
 		ctrl << "FlowThru/clustNet/Series/simNet/Fanout/simFan/Series/" << simMeasureProps[0].name << "_" << "Sim/PeakFeatureSelect/" << simMeasureProps[0].name << "_FeatSelect/mrs_natural/frameMaxNumPeaks";
-		mainNet->linkControl(ctrl.str (), "PeakConvert2/conv/mrs_natural/frameMaxNumPeaks");
+		mainNet->linkControl(ctrl.str (), (readPeaksFromFile)? "PeakViewSource/analysisNet/mrs_natural/frameMaxNumPeaks" : "PeakConvert2/conv/mrs_natural/frameMaxNumPeaks");
 
 		//***************************************************************
 		// create NCutNet MarSystem and add it to clustNet
@@ -1095,8 +1125,12 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mainNet->addMarSystem(synthNet);
 
 		//link Shredder nTimes to Accumulator nTimes
-		mainNet->linkControl("Shredder/synthNet/mrs_natural/nTimes",
+		if (!readPeaksFromFile)
+			mainNet->linkControl("Shredder/synthNet/mrs_natural/nTimes",
 						  "Accumulator/textWinNet/mrs_natural/nTimes");
+		else
+			mainNet->linkControl("Shredder/synthNet/mrs_natural/nTimes",
+			"PeakViewSource/analysisNet/mrs_natural/nTimes");
 	}
 
 	
@@ -1111,25 +1145,37 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	metaNet->updControl("mrs_natural/inObservations", 1);
 	mainNet->updControl("mrs_natural/inSamples", D);
 	mainNet->updControl("mrs_natural/inObservations", 1);
-	mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
-	samplingFrequency_ = mainNet->getControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	if (!readPeaksFromFile)
+	{
+		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
+		samplingFrequency_ = mainNet->getControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+		updateAnalysisNetCtrls (textWinNet, sfName, accSize, D, Nw, N, S);
 
-	updateAnalysisNetCtrls (textWinNet, sfName, accSize, D, Nw, N, S);
-	if(unprecise_)
-		mainNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", false);      
+		if(unprecise_)
+			mainNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", false);      
+		else
+			mainNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", true);  
+
+		if(noPeakPicking_)
+			mainNet->updControl("PeakConvert2/conv/mrs_bool/picking", false);      
+
+		mainNet->updControl("PeakConvert2/conv/mrs_bool/useMasking", !noSimulMasking_);  
+
+		mainNet->updControl("PeakConvert2/conv/mrs_natural/hopSize", D);
+
+		mainNet->updControl("PeakConvert2/conv/mrs_natural/frameMaxNumPeaks", S); 
+		mainNet->updControl("PeakConvert2/conv/mrs_string/frequencyInterval", intervalFrequency);  
+		mainNet->updControl("PeakConvert2/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
+	}
 	else
-		mainNet->updControl("PeakConvert2/conv/mrs_bool/improvedPrecision", true);  
-
-	if(noPeakPicking_)
-		mainNet->updControl("PeakConvert2/conv/mrs_bool/picking", false);      
-
-	mainNet->updControl("PeakConvert2/conv/mrs_bool/useMasking", !noSimulMasking_);  
-
-	mainNet->updControl("PeakConvert2/conv/mrs_natural/hopSize", D);
-
-	mainNet->updControl("PeakConvert2/conv/mrs_natural/frameMaxNumPeaks", S); 
-	mainNet->updControl("PeakConvert2/conv/mrs_string/frequencyInterval", intervalFrequency);  
-	mainNet->updControl("PeakConvert2/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
+	{
+		//textWinNet->updControl("PeakViewSource/analysisNet/mrs_string/filename", sfName);
+		//samplingFrequency_ = mainNet->getControl("Accumulator/textWinNet/PeakViewSource/analysisNet/mrs_real/osrate")->to<mrs_real>();
+		//textWinNet->updControl("mrs_natural/nTimes", accSize);
+		textWinNet->updControl("mrs_string/filename", sfName);
+		samplingFrequency_ = mainNet->getControl("PeakViewSource/analysisNet/mrs_real/osrate")->to<mrs_real>();
+		textWinNet->updControl("mrs_natural/nTimes", accSize);
+	}
 
 
 	if (evalInPlace)
@@ -1178,8 +1224,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	simMeasureProps[kPan].isIgnored	= simMeasureProps[kPan].isIgnored || !(mainNet->getControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/mrs_natural/onObservations")->to<mrs_natural>() == 2);
 	if (simMeasureProps[kPan].isIgnored)
 	{
-		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
-			"Series/stereoSpkNet");
+		if (!readPeaksFromFile)
+			mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
+				"Series/stereoSpkNet");
 		
 		if (evalInPlace)
 		{
@@ -1309,7 +1356,8 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			//bool temp1 = textWinNet->getControl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 			//bool temp2 = analysisNet->getControl("FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 
-			mrs_real timeRead =  mainNet->getControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
+			mrs_real timeRead =  (readPeaksFromFile)? mainNet->getControl("PeakViewSource/analysisNet/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_:
+				mainNet->getControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/pos")->to<mrs_natural>()/samplingFrequency_;
 			mrs_real timeLeft;
 			if(!stopAnalyse_)
 				timeLeft =  mainNet->getControl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>()/samplingFrequency_;
@@ -1323,6 +1371,8 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			//cout << fixed << setprecision(2) << timeRead << "/" <<  setprecision(2) << timeLeft;
 			///*bool*/ temp = mainNet->getControl("Accumulator/textWinNet/Series/analysisNet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>();
 
+			if (readPeaksFromFile)
+				temp = mainNet->getControl ("PeakViewSource/analysisNet/mrs_bool/hasData")->to<mrs_bool>();
 			//[TODO]
 			// 			mrs_real density = mainNet->getControl("PeClust/peClust/mrs_real/clusterDensity")->to<mrs_real>();
 			// 			cfile << density << " " << oriGain << endl;
@@ -1504,9 +1554,10 @@ main(int argc, const char **argv)
 				outputInfo = outputInf.str();
 			}
 
-			fileName = path + "/" + Sfname.nameNoExt()+outputInfo+"Sep"+"."+Sfname.ext() ;
-			fileResName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Res"+ "." + Sfname.ext() ;
-			mixName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Mix" + "."+ Sfname.ext() ;
+			mrs_string	extension = (Sfname.ext() == "peak") ? "wav" : Sfname.ext();
+			fileName = path + "/" + Sfname.nameNoExt()+outputInfo+"Sep"+"."+ extension;
+			fileResName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Res"+ "." + extension ;
+			mixName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Mix" + "."+ extension ;
 			filePeakName = path + "/" + Sfname.nameNoExt() + outputInfo+".peak" ;
 			fileClustName = path + "/" + Sfname.nameNoExt()+outputInfo+ "Clust" +".txt" ;
 			fileVoicingName = path + "/" + Sfname.nameNoExt() +outputInfo+ "Voicing" +".txt" ;
@@ -1519,17 +1570,7 @@ main(int argc, const char **argv)
 
 			if(Sfname.ext() == "peak")
 			{
-				analyse_ = false;
-				if(synthetize_ > -1)
-					clusterSynthetize_ = synthetize_;
-				else
-					clusterSynthetize_ = 0;
-				fileName = path + "/" + Sfname.nameNoExt()+outputInfo+".wav" ;
-			}
-
-			if(Sfname.ext() == "wav")
-			{
-				analyse_ = 1;
+				readPeaksFromFile	= true;
 			}
 
 			if(noiseName == "music")
@@ -1540,7 +1581,7 @@ main(int argc, const char **argv)
 			}
 			cout << noiseName << endl;
 
-			if(analyse_)
+//			if(analyse_)
 			{
 				cout << "PeakClustering " << Sfname.name() << endl; 
 				peakClustering(peakSet_, *sfi, fileName, noiseName, oriName, mixName, intervalFrequency, panningInfo, noiseDelay_, similarityType_, fftSize_, winSize_, hopSize_, nbSines_, nbClusters_, accSize_, synthetize_, &snr0);
