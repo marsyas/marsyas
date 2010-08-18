@@ -240,6 +240,7 @@
 #include "Combinator.h"
 #include "ParallelMatrixWeight.h"
 #include "PeakDistanceHorizontality.h"
+#include "PeakViewMerge.h"
 
 #include "Inject.h"
 //modifyHeader
@@ -470,6 +471,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Combinator", new Combinator("combinator"));
 	registerPrototype("ParallelMatrixWeight", new ParallelMatrixWeight("parallelmatrixweight"));
 	registerPrototype("PeakDistanceHorizontality", new PeakDistanceHorizontality("horizontality"));
+	registerPrototype("PeakViewMerge", new PeakViewMerge("PeakViewMerge"));
 	
 
 	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));

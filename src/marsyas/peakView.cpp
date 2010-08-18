@@ -22,7 +22,7 @@
 using namespace std;
 using namespace Marsyas;
 
-peakView::peakView(realvec& vec): vec_(vec)
+peakView::peakView(realvec& vec): vec_(vec), fs_(0), frameSize_(0)
 {
 	//max number of peaks in each frame
 	frameMaxNumPeaks_ = vec_.getRows() / nbPkParameters;

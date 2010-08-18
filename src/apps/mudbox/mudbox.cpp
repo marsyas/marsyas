@@ -4255,14 +4255,55 @@ void toy_with_spectralSNR(string fname0, string fname1)
 }
 
 
+void toy_with_PeakView (string peakFile0, string peakFile1, string outputFile, string option)
+{
+	MarSystemManager	mng;
+	MarSystem*			net			= mng.create("Series", "net");
+	MarSystem*			input		= mng.create("Fanout", "input");
 
-void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING, string ignoreSilence = EMPTYSTRING)
+	mrs_natural			assFrameSize= 512;
+
+	input->addMarSystem(mng.create("PeakViewSource", "peakFile0"));
+	input->addMarSystem (mng.create("PeakViewSource", "peakFile1"));
+
+	net->addMarSystem (input);
+	net->addMarSystem (mng.create("PeakViewMerge", "merge"));
+	net->addMarSystem (mng.create("PeakViewSink", "output"));
+
+	// set file names
+	net->updControl("Fanout/input/PeakViewSource/peakFile0/mrs_string/filename", 
+		peakFile0);
+	net->updControl("Fanout/input/PeakViewSource/peakFile1/mrs_string/filename", 
+		peakFile1);
+	net->updControl("PeakViewSink/output/mrs_string/filename", 
+		outputFile);
+
+	// set options
+	net->linkControl("PeakViewSink/output/mrs_real/fs", "Fanout/input/PeakViewSource/peakFile0/mrs_real/osrate");
+	net->updControl("PeakViewSink/output/mrs_natural/frameSize", assFrameSize);
+
+	if (option != EMPTYSTRING)
+		net->updControl("PeakViewMerge/merge/mrs_string/mode", option);
+	
+	// do the processing
+	while (net->getControl("Fanout/input/PeakViewSource/peakFile0/mrs_bool/hasData")->to<mrs_bool>() == true)
+		net->tick();
+
+	net->updControl("PeakViewSink/output/mrs_bool/done", true);
+
+	delete net;
+}
+
+void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING, string ignoreSilence = EMPTYSTRING, int refDelay = 0)
 {
 	std::ofstream outTextFile;
+	const mrs_natural blockSize = 1024;
 
 	cout << "Toying with SNR" << endl;
+	cout << "mudbox -t SNR testfile reffile [outtextfile] [is] [refDelayInSamples]"<< endl << endl;
 	cout << "SIGNAL = "  << fname0 << endl;
 	cout << "REFERENCE = " << fname1 << endl;
+	cout << "Reference Delay = " << refDelay << " samples" << endl;
 
 	mrs_realvec snrResult(2);
 	MarSystemManager mng;
@@ -4270,29 +4311,42 @@ void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING, str
 	if (fname2 != EMPTYSTRING)
 		outTextFile.open(fname2.c_str ());
 
-	MarSystem* net = mng.create("Series", "net");
-	MarSystem* input = mng.create("Fanout", "input");
+	// create network
+	MarSystem* net			= mng.create("Series", "net");
+	MarSystem* input		= mng.create("Fanout", "input");
+	MarSystem* refSeries	= mng.create("Series", "refSeries");
+
 	input->addMarSystem(mng.create("SoundFileSource", "signalSrc"));
-	input->addMarSystem(mng.create("SoundFileSource", "noiseSrc"));
+	input->addMarSystem (refSeries);
+
+	refSeries->addMarSystem(mng.create("SoundFileSource", "refSrc"));
+	if (refDelay > 0)
+		refSeries->addMarSystem (mng.create("Delay", "delay"));
 
 	net->addMarSystem(input);
 	net->addMarSystem(mng.create("SNR", "snr"));
-	  
+
+	// set file names
 	net->updControl("Fanout/input/SoundFileSource/signalSrc/mrs_string/filename", 
 				 fname0);
-	net->updControl("Fanout/input/SoundFileSource/noiseSrc/mrs_string/filename", 
+	net->updControl("Fanout/input/Series/refSeries/SoundFileSource/refSrc/mrs_string/filename", 
 				 fname1);
 
+	// set other controls
+	net->updControl("mrs_natural/inSamples", blockSize);
+	net->updControl("mrs_natural/inObservations", 2);
 	if (ignoreSilence == "is")
 		net->updControl ("SNR/snr/mrs_string/mode", "checkRef4Silence");
-	net->updControl("mrs_natural/inSamples", 1024);
-	net->updControl("mrs_natural/inObservations", 2);
+	if (refDelay > 0)
+	{
+		net->updControl ("Fanout/input/Series/refSeries/Delay/delay/mrs_real/maxDelaySamples", 1.0*refDelay);
+		net->updControl ("Fanout/input/Series/refSeries/Delay/delay/mrs_real/delaySamples", 1.0*refDelay);
+	}
 
+	// process
 	while (net->getctrl("Fanout/input/SoundFileSource/signalSrc/mrs_bool/hasData")->to<mrs_bool>() == true)
     {
 		net->tick();
-		//cout << frameCount++;
-
     }
 
 	snrResult	= net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
@@ -4305,6 +4359,7 @@ void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING, str
 
 	outTextFile.close ();
   
+	delete net;
 }
 
 
@@ -7823,7 +7878,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "labelsfplay")
 		toy_with_labelsfplay(fname0);
 	else if (toy_withName == "SNR")
-		toy_with_SNR(fname0, fname1, fname2, fname3);
+		toy_with_SNR(fname0, fname1, fname2, fname3, (fname4 == EMPTYSTRING)? 0 : atoi(fname4.c_str()));
 	else if (toy_withName == "SOM")
 		toy_with_SOM("music.mf");
 	else if (toy_withName == "Windowing")
@@ -8006,6 +8061,8 @@ main(int argc, const char **argv)
 		toy_with_aim_vq(fname0);
 	else if (toy_withName == "ncut")
 		toy_with_NCut();
+	else if (toy_withName == "peakmerge")
+		toy_with_PeakView(fname0,fname1,fname2,fname3);
 
 	else 
 	{
