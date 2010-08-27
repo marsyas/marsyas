@@ -1756,7 +1756,10 @@ namespace Marsyas
 	realvec::operator/=(const realvec& vec)
 	{
 		for (mrs_natural i=0; i<size_; ++i)
+		{
+			MRSASSERT(vec.data_[i] != 0);
 			data_[i] /= vec.data_[i];
+		}
 		return *this;
 	}
 	
