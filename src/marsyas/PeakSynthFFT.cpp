@@ -16,11 +16,14 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "PeakSynthFFT.h"
 #include "peakView.h"
 
 using std::ostringstream;
 using namespace Marsyas;
+
+//#define MTLB_DBG_LOG
 
 PeakSynthFFT::PeakSynthFFT(mrs_string name):MarSystem("PeakSynthFFT", name)
 {
@@ -156,6 +159,13 @@ PeakSynthFFT::myProcess(realvec& in, realvec& out)
 	for (t = 0; t < onSamples_; t++)
 	{
 		generateMask(t+(nbChannels-1));
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+		MATLAB_PUT(mask_, "mask");
+		MATLAB_EVAL("figure(71),plot(mask),axis('tight'),grid on");
+#endif
+#endif
 		lpfMask();
 		for (o=0; o < onObservations_/2+1; o++)
 		{

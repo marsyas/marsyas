@@ -116,7 +116,7 @@ NormCut::myProcess(realvec& in, realvec& out)
 #ifdef MARSYAS_MATLAB
 #ifdef MTLB_DBG_LOG
 	MATLAB_PUT(in, "in");
-	MATLAB_EVAL("figure(71),mesh(in'),axis('tight'),grid on");
+	MATLAB_EVAL("figure(71),imagesc(in'),colorbar,axis('tight'),grid on");
 #endif
 #endif
 	//check if there is any data at the input, otherwise do nothing

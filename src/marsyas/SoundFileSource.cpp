@@ -37,6 +37,7 @@
 #include <algorithm>
 
 
+//#define MTLB_DBG_LOG
 
 
 using namespace std;
@@ -399,6 +400,13 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 
 		if (ctrl_mute_->isTrue())
 			out.setval(0.0);
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+		MATLAB_PUT(out, "out");
+		MATLAB_EVAL("figure(41),subplot(212),plot(out'),axis('tight'),grid on, title('out')");
+#endif
+#endif
 
 		/* setctrl("mrs_natural/pos", src_->pos_); //[!]
 		   setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]

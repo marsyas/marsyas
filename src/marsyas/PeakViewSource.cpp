@@ -162,11 +162,14 @@ PeakViewSource::myProcess(realvec& in, realvec& out)
 			
 			for(mrs_natural o=0; o < numRows; ++o)
 			{
-				mrs_real test = peakData_(o, frameIdx_);
-				out(o,f) = peakData_(o, frameIdx_);
+				mrs_real currData = peakData_(o, frameIdx_);
+				out(o,f) = currData;
 				if (o / frameMaxNumPeaks == peakView::pkFrequency)
-					if (peakData_(o, frameIdx_) != 0)
+					if (currData != 0)
 						totalNumPeaks++;
+				if (o / frameMaxNumPeaks == peakView::pkGroup)   // AL: not sure about the implications of this but it seems to be necessary for peakClustering2 with the peak files from peakClustering
+					if (currData < 0)
+						out(o, f) = 0;
 
 			}
 
