@@ -37,7 +37,6 @@ namespace Marsyas
 List of files used for batch processing.
 */
 
-
 class marsyas_EXPORT Collection
 {
 private:
@@ -46,6 +45,7 @@ private:
   std::vector<std::string> labelNames_;
   std::string name_;
   bool hasLabels_;
+	
 public:
   Collection();
   ~Collection();
@@ -69,7 +69,6 @@ public:
   std::string toLongString();
   void concatenate(std::vector<Collection> cls);
   void clear();
-  
   
   marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const Collection&);
   marsyas_EXPORT friend std::istream& operator>>(std::istream&, Collection&);

@@ -460,8 +460,6 @@ void
 beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatures)
 {
 	// cout << "Calculating Beat Histogram Features: " << sfName << endl;
-
-
 	beatTracker->updControl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
 	
 	mrs_natural  bwinSize = 2048;
@@ -478,13 +476,13 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
 	tempo_scores.setval(0.0);
 	mrs_realvec estimate;
 	
-
 	int counter = 0;
 	
 	
 	while (1) 
 	{
 		beatTracker->tick();
+		// TODO: estimate should only be written after the last tick. This is redundant copying.
 		estimate = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistoFeatures/bhf/mrs_realvec/processedData")->to<mrs_realvec>();
 		
 		
@@ -498,6 +496,7 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
 		counter++;
 	}
 
+	// TODO this is redundant, just return estimate after calling estimate.transpose();
 	for (int i=0; i < beatfeatures.getSize(); i++) 
 		beatfeatures(i) = estimate(i);
 	

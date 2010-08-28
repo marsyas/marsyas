@@ -861,9 +861,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 				secondary_bpms_amps.push_back(bhisto(0.33 * bin * 4));
 			}
 		}
-		
 
-		
 		// cout << "phase_tempo = " << beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>() << endl;
 		
 		if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
