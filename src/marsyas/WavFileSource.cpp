@@ -169,7 +169,7 @@ WavFileSource::getHeader(mrs_string filename)
 			{
 				fclose(sfp_);
 				MRSWARN("Non pcm(compressed) wave files are not supported");
-				return;
+				exit(1);
 			}
 		  
 			// Get number of channels
