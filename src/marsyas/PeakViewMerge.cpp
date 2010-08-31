@@ -92,9 +92,9 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 	mrs_natural i,
 				numPeaks[kNumMatrices],
 				numRows		= in.getRows ()/kNumMatrices,   // this assumes that frameMaxNumPeaks is equal in the input files
-//				currFrame	= (mrs_natural)(in(numRows*peakView::pkFrame/peakView::nbPkParameters,0) + .1),
 				outputIdx	= 0;
 	out.setval(0.);
+	
 	for (i = 0; i < kNumMatrices; i++)
 	{
 		peakViewIn_[i].stretch (numRows, in.getCols ());
@@ -126,7 +126,7 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-	else
+	else if (ctrl_mode_->to<mrs_string>() == "AND")
 	{
 		// find duplicates and write only them to output
 		for (i = 0; i < numPeaks[0]; i++)
@@ -142,5 +142,40 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
+	else if (ctrl_mode_->to<mrs_string>() == "XOR")
+	{
+		// find duplicates and write only residual to output
+		for (i = 0; i < numPeaks[0]; i++)
+		{
+			mrs_natural Idx	= FindDuplicate (In[1], (*In[0])(i, peakView::pkFrequency), numPeaks[1]);
+
+			if (Idx < 0)
+			{
+				WriteOutput (Out, In[0], i, outputIdx);
+				outputIdx++;
+			}
+		}
+		// find duplicates and write only residual to output
+		for (i = 0; i < numPeaks[1]; i++)
+		{
+			mrs_natural Idx= FindDuplicate (In[0], (*In[1])(i, peakView::pkFrequency), numPeaks[0]);
+
+			if (Idx < 0)
+			{
+				WriteOutput (Out, In[1], i, outputIdx);
+				outputIdx++;
+			}
+		}
+	}
+	else 
+	{
+		MRSERR("PeakViewMerfe::myProcess() : illegal mode string: " << ctrl_mode_->to<mrs_string>());
+	}
+
+	for (i = 0; i < kNumMatrices; i++)
+	{
+		delete In[i];
+	}
+
 }
 

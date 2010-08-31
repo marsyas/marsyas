@@ -24,28 +24,17 @@
 #include <fstream>
 #include <iostream>
 
-//using std::ostringstream;
-
 namespace Marsyas
 {
 	/** 
 	\class PeakViewMerge
 	\ingroup IO
-	\brief This MarSystem accumulates realvecs with peak information (using peakView) 
-	arriving at its input and when receiving a "done" control trigger, saves the peak data
-	to the specified file in .peak format.
+	\brief This MarSystem receives two stacked realvecs peak information (using peakView) 
+	and merges them.
 
 	Controls:
-	- \b mrs_string/filename [w] : specifies the name of the file to where the accumulated 
-	peak data will be saved.
-	- \b mrs_bool/accumulate2Disk [w] : specifies if the peak data accumulation should be 
-	performed using a temporary disk file ("true") or accumulate peak data in memory ("false").
-	- \b mrs_real/fs [w]: sampling frequency associated with peak data (will be saved in the 
-	.peak file header).
-	- \b mrs_natural/frameSize [w]: frame size (in samples) associated with the peak data 
-	(will be saved in the .peak file header).
-	- \b mrs_bool/done [w] : "trigger" this control to "true" to save accumulated peak data 
-	to the specified file and reset accumulated peak memory (disk or memory).
+	- \b mrs_string/mode [w] : AND (output only peaks in both), OR (output all peaks), XOR 
+	(output only the peaks that are not in both inputs).
 	*/
 
 
