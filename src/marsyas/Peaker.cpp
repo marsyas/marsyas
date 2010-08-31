@@ -75,7 +75,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t,o;
 
-	mrs_real peakSpacing;
+	const mrs_natural peakSpacing  = (mrs_natural)(inSamples_ *getctrl("mrs_real/peakSpacing")->to<mrs_real>() + .5);
 	mrs_real peakStrengthRelRms,
 			 peakStrengthRelMax,
 			 peakStrengthRelThresh,
@@ -90,7 +90,6 @@ Peaker::myProcess(realvec& in, realvec& out)
 	mrs_natural peakNeighbors;
 	
 
-	peakSpacing = getctrl("mrs_real/peakSpacing")->to<mrs_real>();
 	peakStrengthRelRms = getctrl("mrs_real/peakStrength")->to<mrs_real>();
 	peakStrengthRelMax = getctrl("mrs_real/peakStrengthRelMax")->to<mrs_real>();
 	peakStrengthRelThresh = getctrl("mrs_real/peakStrengthRelThresh")->to<mrs_real>();
@@ -122,7 +121,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 	{
 		rms_	= 0.0;
 		max_	= -1e37;
-		peakSpacing = (mrs_real)(peakSpacing * inSamples_);
+
 		for (t=peakStart; t < peakEnd; t++)
 		{
 			rms_ += in(o,t) * in(o,t);
@@ -180,7 +179,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 				maxIndex = t;
 				
 				
-				for (int j=0; j < (mrs_natural)peakSpacing; j++)
+				for (int j=0; j < peakSpacing; j++)
 				{
 					if (t+j < peakEnd-1)
 						if (in(o,t+j) > max)
@@ -190,7 +189,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 						}
 				}
 				
-				t += (mrs_natural)peakSpacing;
+				t += peakSpacing;
 				
 				if (rmsNormalize)
 				{
