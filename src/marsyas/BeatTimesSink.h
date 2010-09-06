@@ -19,6 +19,11 @@
 #ifndef MARSYAS_BEATTIMESSINK_H
 #define MARSYAS_BEATTIMESSINK_H
 
+//sockets only available in Windows
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include "MarSystem.h"
 
 namespace Marsyas
@@ -58,6 +63,7 @@ private:
 	MarControlPtr ctrl_bestFinalAgentHistory_;
 	MarControlPtr ctrl_soundFileSize_;
 	MarControlPtr ctrl_nonCausal_;
+	MarControlPtr ctrl_socketsPort_;
 
 	mrs_real beatTimeTmp_;
 	mrs_real lastIbi_;
@@ -85,6 +91,10 @@ private:
 	mrs_natural beatCount_;
 	mrs_real tempo_;
 
+	mrs_natural socketsPort_;
+	SOCKET mySocket_, myAcceptSocket_;
+	mrs_real *data_;
+
 	void myUpdate(MarControlPtr sender);
 
 public:
@@ -95,6 +105,7 @@ public:
   
   void myProcess(realvec& in, realvec& out);
   mrs_realvec addMedianVector(mrs_real ibiBPM);
+  mrs_natural refreshSocket();
 };
 
 }//namespace Marsyas

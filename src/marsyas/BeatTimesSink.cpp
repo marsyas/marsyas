@@ -23,6 +23,8 @@
 using namespace std;
 using namespace Marsyas;
 
+char *szServer = "localhost"; //assume UDP sockets at localhost [CHANGE IF OTHER!!]
+
 BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 {
 	addControls();
@@ -36,6 +38,7 @@ BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 	initialOut_ = true;
 	initialOut2_ = true;
 	initialOut3_ = true;
+	mySocket_ = -1;
 }
 
 BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
@@ -54,6 +57,7 @@ BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
 	ctrl_bestFinalAgentHistory_= getctrl("mrs_realvec/bestFinalAgentHistory");
 	ctrl_soundFileSize_= getctrl("mrs_natural/soundFileSize");
 	ctrl_nonCausal_ = getctrl("mrs_bool/nonCausal");
+	ctrl_socketsPort_ = getctrl("mrs_natural/socketsPort");
   
 	ibiBPM_ = a.ibiBPM_;
 	beatCount_ = a.beatCount_;
@@ -63,6 +67,10 @@ BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
 	initialOut_ = a.initialOut_;
 	initialOut2_ = a.initialOut2_;
 	initialOut3_ = a.initialOut3_;
+
+	socketsPort_ = a.socketsPort_;
+	mySocket_ = a.mySocket_;
+	myAcceptSocket_ = a.myAcceptSocket_;
 }
 
 BeatTimesSink::~BeatTimesSink()
@@ -98,6 +106,8 @@ BeatTimesSink::addControls()
 	setctrlState("mrs_natural/soundFileSize", true);
 	addctrl("mrs_bool/nonCausal", false, ctrl_nonCausal_);
 	setctrlState("mrs_bool/nonCausal", true);
+	addctrl("mrs_natural/socketsPort", -1, ctrl_socketsPort_);
+	setctrlState("mrs_natural/socketsPort", true);
 }
 
 void
@@ -114,11 +124,43 @@ BeatTimesSink::myUpdate(MarControlPtr sender)
 
 	mode_ = ctrl_mode_->to<mrs_string>();
 
-	//ibiBPMVec_.create(1000);
-
 	bestFinalAgentHistory_ = ctrl_bestFinalAgentHistory_->to<mrs_realvec>();
 	soundFileSize_ = ctrl_soundFileSize_->to<mrs_natural>();
 	nonCausal_ = ctrl_nonCausal_->to<mrs_bool>();
+	socketsPort_ = ctrl_socketsPort_->to<mrs_natural>();
+}
+
+mrs_natural
+BeatTimesSink::refreshSocket()
+{
+	#pragma comment(lib, "Ws2_32.lib") //include Ws2_32.lib
+
+	WSADATA wsaData;
+	int error;
+	struct sockaddr_in mySckAd;
+	DWORD myError;
+	myError=GetLastError();
+
+	error=WSAStartup(MAKEWORD(2,2),&wsaData);
+	mySocket_=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP); //UDP
+	if(mySocket_==INVALID_SOCKET)
+		cout << "Socket Error - Invalid socket!" << endl;
+	myError=GetLastError();
+
+	struct hostent *host;
+	if((host=gethostbyname(szServer))==NULL)
+	{
+		cout << "Socket Error server problem!" << endl;
+	}
+
+	memset(&mySckAd,0,sizeof(mySckAd));
+	mySckAd.sin_family=AF_INET; 
+	mySckAd.sin_addr.s_addr=((struct in_addr*) (host->h_addr))->s_addr;
+	mySckAd.sin_port=htons((u_short)socketsPort_);
+	error=connect(mySocket_,(LPSOCKADDR) &mySckAd ,sizeof(mySckAd));
+	myError=GetLastError();
+
+	return 1;
 }
 
 mrs_realvec
@@ -310,6 +352,25 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				lastBeatTime_ = beatTime_;
 			}
 			beatCount_ ++;
+		}
+
+		//send beats via UDP sockets
+		if(socketsPort_ > 0)
+		{
+			if ( mySocket_ > 1000 )	//check if socket already initialized
+				refreshSocket(); //intialize socket
+
+			else
+			{
+				//fill the buffer with samples...
+				data_ = in.getData(); //pointer to input data
+				ostringstream msg;
+				msg << *data_ << "(" << tempo_ << ")\n"; //build msg to send via sockets
+				
+				if(*data_ != -1.0) //if valid data
+					send(mySocket_, msg.str().c_str(),strlen(msg.str().c_str()),0);
+
+			}
 		}
 	}
 	if(nonCausal_)

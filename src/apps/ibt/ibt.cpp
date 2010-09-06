@@ -84,6 +84,7 @@ mrs_bool noncausalopt;
 mrs_bool dumbinductionopt;
 mrs_bool inductionoutopt;
 mrs_bool micinputopt;
+mrs_natural sendudp_port;
 mrs_real phase_;
 
 void
@@ -127,6 +128,7 @@ printHelp(string progName)
 	cerr << "-l --log_file       : generate log file" << endl;
 	cerr << "-io --induction_out : output best period (in BPMs) by the end of the induction stage (in the outDir directory)" << endl;
 	cerr << "-mic --microphone_input : input sound via microphone interface" << endl;
+	cerr << "-send_udp --send_udp : [!!WINDOWS_ONLY!!] send beats - \"beat_flag(tempo)\" - via udp sockets at defined port (in localhost) - for causal mode" << endl;
 	cerr << "Available Score Functions: " << endl;
 	cerr << "\"regular\" (default)" << endl;
 	cerr << "\"correlation\"" << endl;
@@ -147,6 +149,7 @@ initOptions()
 	cmd_options.addBoolOption("dumbinduction", "di", false);
 	cmd_options.addBoolOption("inductionout", "io", false);
 	cmd_options.addBoolOption("microphoneinput", "mic", false);
+	cmd_options.addNaturalOption("sendudp", "send_udp", -1);
 	cmd_options.addStringOption("givefirst2beats", "2b", "-1");
 	cmd_options.addStringOption("givefirst1beat", "1b", "-1");
 	cmd_options.addStringOption("givefirst2beats_startpoint", "2bs", "-1");
@@ -169,6 +172,7 @@ loadOptions()
 	audiofileopt = cmd_options.getBoolOption("audiofile");
 	backtraceopt = cmd_options.getBoolOption("backtrace");
 	noncausalopt = cmd_options.getBoolOption("noncausal");
+	sendudp_port = cmd_options.getNaturalOption("sendudp");
 	dumbinductionopt = cmd_options.getBoolOption("dumbinduction");
 	logfileopt = cmd_options.getBoolOption("logFile");
 	inductionoutopt = cmd_options.getBoolOption("inductionout");
@@ -857,6 +861,15 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		}
 	}
 
+	if(sendudp_port > 0)
+	{
+		#ifdef MARSYAS_WIN32 //sockets only available in Windows
+			beattracker->updControl("BeatTimesSink/sink/mrs_natural/socketsPort", sendudp_port);
+		#else
+			cout << "Sockets not available in non-Windows platforms" << endl;
+		#endif
+	}
+
 
 	//SonicVisualiser Controls:
 	/*
@@ -1036,9 +1049,17 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			}
 
 			if(!noncausalopt)
+			{
 				cout << "Real-Time Beat Tracking........" << endl;
+				if(sendudp_port > 0)
+					cout << "Sending via UDP Sockets at port " << sendudp_port << endl;
+			}
 			else
+			{
 				cout << "Off-Line Beat Tracking........" << endl;
+				if(sendudp_port > 0)
+					cout << "Sockets not available in non-causal mode!" << endl;
+			}
 		}
 		//Display percentage of processing complete...
 		//printf("  %d % \r", (mrs_natural) frameCount*100/inputSize);
