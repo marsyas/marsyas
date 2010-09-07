@@ -38,7 +38,7 @@ BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 	initialOut_ = true;
 	initialOut2_ = true;
 	initialOut3_ = true;
-	mySocket_ = -1;
+	// mySocket_ = -1;
 }
 
 BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
@@ -68,9 +68,9 @@ BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
 	initialOut2_ = a.initialOut2_;
 	initialOut3_ = a.initialOut3_;
 
-	socketsPort_ = a.socketsPort_;
-	mySocket_ = a.mySocket_;
-	myAcceptSocket_ = a.myAcceptSocket_;
+	// socketsPort_ = a.socketsPort_;
+	// mySocket_ = a.mySocket_;
+	// myAcceptSocket_ = a.myAcceptSocket_;
 }
 
 BeatTimesSink::~BeatTimesSink()
@@ -135,19 +135,20 @@ BeatTimesSink::refreshSocket()
 {
 	#pragma comment(lib, "Ws2_32.lib") //include Ws2_32.lib
 
-	WSADATA wsaData;
+  /* WSADATA wsaData;
 	int error;
 	struct sockaddr_in mySckAd;
 	DWORD myError;
 	myError=GetLastError();
+  */ 
 
-	error=WSAStartup(MAKEWORD(2,2),&wsaData);
-	mySocket_=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP); //UDP
-	if(mySocket_==INVALID_SOCKET)
-		cout << "Socket Error - Invalid socket!" << endl;
-	myError=GetLastError();
+	// error=WSAStartup(MAKEWORD(2,2),&wsaData);
+	// mySocket_=socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP); //UDP
+	// if(mySocket_==INVALID_SOCKET)
+	// cout << "Socket Error - Invalid socket!" << endl;
+	// myError=GetLastError();
 
-	struct hostent *host;
+	/* struct hostent *host;
 	if((host=gethostbyname(szServer))==NULL)
 	{
 		cout << "Socket Error server problem!" << endl;
@@ -159,7 +160,7 @@ BeatTimesSink::refreshSocket()
 	mySckAd.sin_port=htons((u_short)socketsPort_);
 	error=connect(mySocket_,(LPSOCKADDR) &mySckAd ,sizeof(mySckAd));
 	myError=GetLastError();
-
+	*/ 
 	return 1;
 }
 
@@ -355,9 +356,9 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 		}
 
 		//send beats via UDP sockets
-		if(socketsPort_ > 0)
+		/* if(socketsPort_ > 0)
 		{
-			if ( mySocket_ > 1000 )	//check if socket already initialized
+		  if ( mySocket_ > 1000 )	//check if socket already initialized
 				refreshSocket(); //intialize socket
 
 			else
@@ -372,6 +373,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 
 			}
 		}
+		*/ 
 	}
 	if(nonCausal_)
 	{

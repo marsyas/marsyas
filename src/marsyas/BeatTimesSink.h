@@ -92,7 +92,7 @@ private:
 	mrs_real tempo_;
 
 	mrs_natural socketsPort_;
-	SOCKET mySocket_, myAcceptSocket_;
+	// SOCKET mySocket_, myAcceptSocket_;
 	mrs_real *data_;
 
 	void myUpdate(MarControlPtr sender);

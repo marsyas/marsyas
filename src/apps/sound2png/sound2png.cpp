@@ -31,6 +31,8 @@
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
+#include "common.h"
+
 #ifdef MARSYAS_PNG
 #include "pngwriter.h"
 #endif 
