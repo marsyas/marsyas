@@ -116,7 +116,7 @@ NormCut::myProcess(realvec& in, realvec& out)
 #ifdef MARSYAS_MATLAB
 #ifdef MTLB_DBG_LOG
 	MATLAB_PUT(in, "in");
-	MATLAB_EVAL("figure(71),imagesc(in'),colorbar,axis('tight'),grid on");
+	MATLAB_EVAL("figure(71),imagesc(in',[0 1]),colorbar");
 #endif
 #endif
 	//check if there is any data at the input, otherwise do nothing
@@ -376,10 +376,8 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 		c(i) = 0;
 	}
 
-	//print(NcutEigenvectors, *n, *nbcluster);
-	randn = (int)floor(0.5+(n-1)*(0.42863169099606)); // rand()/RAND_MAX for large decimal -- temporary while debugging
-	//   randn = (int)round((*n-1)*(double)rand()/RAND_MAX);
-	//cout << randn << endl;
+	//randn = (int)floor(0.5+(n-1)*(0.42863169099606)); // rand()/RAND_MAX for large decimal -- temporary while debugging
+	randn	= 0; // although I have absolutely no clue what this means, everything seems to work better with this being 0 (AL)
 
 	for( i=0 ; i<nbcluster ; ++i ){
 		R(i) = NcutEigenvectors(i*(n)+randn);     
