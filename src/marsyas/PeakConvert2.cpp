@@ -307,6 +307,10 @@ PeakConvert2::myUpdate(MarControlPtr sender)
 	if (peakProbWeight_.getRows () > peakProbWeight_.getCols ())
 		peakProbWeight_.transpose ();
 	peakProbWeight_	/= peakProbWeight_.sum ();
+
+	// init lastfreq to avoid distance inconsistencies
+	for (mrs_natural k = 0; k < size_; k++)
+		lastfrequency_(k)	= k*fundamental_;
 }
 
 mrs_real
@@ -465,14 +469,57 @@ void PeakConvert2::ComputeMagnitudeAndPhase (mrs_realvec in)
 		}
 		//mrs_real freq = frequency_(o);
 
-		if(lastfrequency_(o) != 0.0)
-			deltafrequency_(o) = (frequency_(o)-lastfrequency_(o))/(frequency_(o)+lastfrequency_(o));
+		if(frequency_(o) != 0.0)
+		{
+			const mrs_natural searchRange	= 8;
+			mrs_natural	k,
+						kd	= o,
+						ku	= o,
+						kEndSearch;
+			mrs_real	diff[2];
 
-		deltamag_(o)		= (mag_(o)-lastmag_(o))/(mag_(o)+lastmag_(o));
+			// find closest preceding frequency
+			kEndSearch = max ((mrs_natural)0, o-searchRange);
+			for (k = o-1; k > kEndSearch; k--)
+			{
+				diff[0]	= abs(frequency_(o) - lastfrequency_(k));
+				diff[1] = abs(frequency_(o) - lastfrequency_(kd));
+				if (diff[0] < diff[1])
+					kd	= k;
+			}
+			kEndSearch = min (size_, o+searchRange);
+			for (k = o+1; k < kEndSearch; k++)
+			{
+				diff[0]	= abs(frequency_(o) - lastfrequency_(k));
+				diff[1] = abs(frequency_(o) - lastfrequency_(ku));
+				if (diff[0] < diff[1])
+					ku	= k;
+			}
+			diff[0]	= abs(frequency_(o) - lastfrequency_(kd));
+			diff[1] = abs(frequency_(o) - lastfrequency_(ku));
+			k = (diff[0] < diff[1])? kd : ku;
 
-		lastfrequency_(o)	= frequency_(o);
-		lastmag_(o)			= magCorr_(o);
+			deltafrequency_(o) = (lastfrequency_(k) == 0)? .0 : log10(lastfrequency_(k)/frequency_(o));
+			//deltafrequency_(o) = (frequency_(o)-lastfrequency_(o))/(frequency_(o)+lastfrequency_(o));
+		}
+		else 
+			deltafrequency_(o) = .0;
+
+		mrs_real lastmag	= lastmag_(o);
+		if (o > 0)
+			lastmag		= max(lastmag_(o-1), lastmag);
+		if (o < size_-1)
+			lastmag		= max(lastmag_(o+1), lastmag);
+
+		if (mag_(o) > 0)
+			deltamag_(o)		= (mag_(o)-lastmag)/mag_(o);
+		else if (lastmag > 0)
+			deltamag_(o)		= (mag_(o)-lastmag)/lastmag;
+		else
+			deltamag_(o)		= 0;
 	}
+	lastfrequency_	= frequency_;
+	lastmag_		= mag_;
 }
 
 void PeakConvert2::ComputePeaker (mrs_realvec in, realvec& out)
@@ -487,6 +534,7 @@ void PeakConvert2::ComputePeaker (mrs_realvec in, realvec& out)
 	peaker_->updControl("mrs_real/peakStrengthRelThresh" , 1.);
 #endif
 
+    peaker_->updControl("mrs_real/peakSpacing", 2e-3);   // 0
 	peaker_->updControl("mrs_natural/peakStart", downFrequency_);   // 0
 	peaker_->updControl("mrs_natural/peakEnd", upFrequency_);  // size_
 	peaker_->updControl("mrs_natural/inSamples", in.getCols());
@@ -554,7 +602,9 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 			{
 				if (peaks_(o) <= 0)
 				{
-					frequency_(o)	= .0;
+					frequency_(o)		= .0;
+					//lastmag_(o)		= .0;
+					lastfrequency_(o)	= .0;
 					// time smearing if no new peak
 					lpPeakerRes_(o)	*=lpCoeff_;
 					continue;
@@ -568,7 +618,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 				peakProb_(2)	= (abs(frequency_(o)/fundamental_-o) > .5)? 0 : 1;
 #else
 				// probability of peak being a masker
-				peakProb_(0)	= .5 * (log10(masked_(o)) +1.);
+				peakProb_(0)	= max(.1, .5 * (log10(masked_(o)) +1.));
 				// probability of peak being stationary
 				peakProb_(1)	= max(.1, lpPeakerRes_(o));
 				// probability or peak being tonal
@@ -583,6 +633,8 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 				{
 					peaks_(o)		= .0;
 					frequency_(o)	= .0;
+					//lastmag_(o)		= .0;
+					lastfrequency_(o)	= .0;
 				}
 			}
 
@@ -638,7 +690,7 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 				pkViewOut(i, peakView::pkAmplitude, f) = magCorr_(index);
 				pkViewOut(i, peakView::pkPhase, f) = -phase_(index);
 				pkViewOut(i, peakView::pkDeltaFrequency, f) = deltafrequency_(index);
-				pkViewOut(i, peakView::pkDeltaAmplitude, f) = abs(deltamag_(index));
+				pkViewOut(i, peakView::pkDeltaAmplitude, f) = /*abs*/(deltamag_(index));
 				pkViewOut(i, peakView::pkFrame, f) = frame_; 
 				pkViewOut(i, peakView::pkGroup, f) = 0.;//(pick_)?-1.:0.; //This should be -1!!!! [TODO]
 				pkViewOut(i, peakView::pkVolume, f) = 1.0;
