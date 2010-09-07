@@ -30,7 +30,7 @@ namespace Marsyas
 
 	Controls:
 	- \b mrs_string/filename [w] : .peak file name to read
-
+	- \b mrs_bool/ignoreGroups : flag to ignore the group labels in the peak files and set all group indices to 0
 */
   
 	class PeakViewSource: public MarSystem
@@ -46,6 +46,7 @@ namespace Marsyas
 			MarControlPtr ctrl_filename_;
 			MarControlPtr ctrl_hasData_;
 			MarControlPtr ctrl_pos_;
+			MarControlPtr ctrl_ignGroups_;
 			MarControlPtr ctrl_frameMaxNumPeaks_;
 			MarControlPtr ctrl_totalNumPeaks_;
 			MarControlPtr ctrl_nTimes_;

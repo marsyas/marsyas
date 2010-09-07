@@ -40,6 +40,7 @@ PeakViewSource::PeakViewSource(const PeakViewSource& a) : MarSystem(a)
 	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks"); 
 	ctrl_nTimes_ = getctrl("mrs_natural/nTimes"); 
+	ctrl_ignGroups_ = getctrl("mrs_bool/ignoreGroups"); 
 
 	filename_ = a.filename_;
 	frameIdx_ = a.frameIdx_;
@@ -70,6 +71,9 @@ PeakViewSource::addControls()
 	addctrl("mrs_bool/hasData", false, ctrl_hasData_);
 	addctrl("mrs_natural/size", 0, ctrl_size_);
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
+
+	addControl("mrs_bool/ignoreGroups", false, ctrl_ignGroups_);
+
 }
 
 void
@@ -152,6 +156,8 @@ PeakViewSource::myProcess(realvec& in, realvec& out)
 		frameMaxNumPeaks = ctrl_frameMaxNumPeaks_->to<mrs_natural>();
 	mrs_natural nTimes			= ctrl_nTimes_->to<mrs_natural>();
 	mrs_natural numRows			= peakData_.getRows();
+	const mrs_bool ignoreGroups = 	ctrl_ignGroups_->to<mrs_bool>(); 
+
 
 	for (mrs_natural f = 0; f < nTimes; f++)
 	{
@@ -167,7 +173,7 @@ PeakViewSource::myProcess(realvec& in, realvec& out)
 				if (o / frameMaxNumPeaks == peakView::pkFrequency)
 					if (currData != 0)
 						totalNumPeaks++;
-				if (o / frameMaxNumPeaks == peakView::pkGroup)   // AL: not sure about the implications of this but it seems to be necessary for peakClustering2 with the peak files from peakClustering
+				if (ignoreGroups && (o / frameMaxNumPeaks == peakView::pkGroup))
 					if (currData < 0)
 						out(o, f) = 0;
 

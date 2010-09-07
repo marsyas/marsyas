@@ -106,8 +106,9 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 			//cout << "mulF_" << mulF_ << "mulA_" << mulA_ << endl;
 			for (mrs_natural i=0; i < Nb_; ++i)
 			{
-				//only synthesize peaks with a corresponding GroupID
-				if(in(i+peakView::pkGroup*Nb_) == pkGrp2Synth_)
+				// either synthesize peaks with a corresponding GroupID or all with a group ID >= 0
+				mrs_bool synthMe = (pkGrp2Synth_ < 0)? (in(i+peakView::pkGroup*Nb_) >= 0) : (in(i+peakView::pkGroup*Nb_) == pkGrp2Synth_);
+				if( synthMe )
 				{
 					sine(out, in(i)*mulF_, in(i+Nb_)*mulA_, in(i+2*Nb_));
 					silence_ = false;
@@ -117,8 +118,9 @@ PeakSynthOsc::myProcess(realvec& in, realvec& out)
 	else
 		for (mrs_natural i=0; i < Nb_; ++i)
 		{
-			//only synthesize peaks with a corresponding GroupID
-			if(in(i+peakView::pkGroup*Nb_) == pkGrp2Synth_)
+			// either synthesize peaks with a corresponding GroupID or all with a group ID >= 0
+			mrs_bool synthMe = (pkGrp2Synth_ < 0)? (in(i+peakView::pkGroup*Nb_) >= 0) : (in(i+peakView::pkGroup*Nb_) == pkGrp2Synth_);
+			if( synthMe )
 			{
 				sine(out, in(i), in(i+Nb_), in(i+2*Nb_));
 				silence_ = false;
