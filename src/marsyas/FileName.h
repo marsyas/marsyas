@@ -20,6 +20,7 @@
 #ifndef MARSYAS_FILENAME_H
 #define MARSYAS_FILENAME_H
 
+#include <vector>
 #include <string>
 #include "DLLDefines.h"
 #include "common_header.h"
@@ -40,6 +41,9 @@ class marsyas_EXPORT FileName
 {
 private:
   std::string filename_;
+
+  size_t getLastSlashPos ();
+  void removeLastSlash ();
   
 public:
   FileName();
@@ -50,6 +54,8 @@ public:
   std::string nameNoExt(); // returns just the file (no path, no ext)
   std::string path();	// returns the filename path 
   std::string ext();				// returns the filename extension
+  mrs_bool    isDir (); // true if it is a directory, not a file
+  std::vector<mrs_string> getFilesInDir (mrs_string wildcard); //get a list of files in the directory
 };
 
 }//namespace Marsyas

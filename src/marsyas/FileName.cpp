@@ -16,6 +16,8 @@
  ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#include <io.h>
+
 #include "common.h" 
 #include "FileName.h"
 
@@ -31,6 +33,9 @@ FileName::FileName()
 FileName::FileName(mrs_string filename)
 {
   filename_ = filename;
+
+  if (isDir	())
+	  removeLastSlash ();
 }
 
 
@@ -53,16 +58,7 @@ mrs_string
 FileName::name()
 {
   mrs_string name;
-  size_t loc;
-
-#ifdef MARSYAS_WIN32
-  size_t loc2  = filename_.rfind("/", filename_.length()-1);  // you can use the slash in windows, too
-  loc = filename_.rfind("\\", filename_.length()-1);
-  if (loc2 != mrs_string::npos)
-	  loc = max (loc, loc2);
-#else 
-  loc = filename_.rfind("/", filename_.length()-1);
-#endif
+  size_t loc = getLastSlashPos ();
   
   if (loc != mrs_string::npos)
     name = filename_.substr(loc+1, filename_.length()-1);
@@ -96,16 +92,8 @@ FileName::path()
 {
 
   mrs_string name;
-  size_t loc;
+  size_t loc = getLastSlashPos ();
 
-#ifdef MARSYAS_WIN32
-  size_t loc2  = filename_.rfind("/", filename_.length()-1);  // you can use the slash in windows, too
-  loc = filename_.rfind("\\", filename_.length()-1);
-  if (loc2 != mrs_string::npos)
-	loc = max (loc, loc2);
-#else 
-  loc = filename_.rfind("/", filename_.length()-1);
-#endif
   
   if (loc != mrs_string::npos)
     name = filename_.substr(0, loc+1);
@@ -116,6 +104,68 @@ FileName::path()
   
 }
 
-	
+mrs_bool
+FileName::isDir ()
+{
+	const DWORD attr = GetFileAttributes (filename_.c_str ());
+
+	return (attr != 0xffffffff)
+		&& ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0);
+}
+
+std::vector<mrs_string> 
+FileName::getFilesInDir (mrs_string wildcard)
+{
+	std::vector<mrs_string>		result;
+	struct _finddata_t          CurrentFile;
+	long                        hFile;
+	mrs_string                  search4;
+
+	search4	= filename_ + "/" + wildcard;
+
+	// find first file 
+	if( (hFile = _findfirst( search4.c_str (), &CurrentFile )) == -1L )
+		return result;
+	else
+	{
+		// file found, add it to the list
+		result.push_back (filename_ + "/" + CurrentFile.name);
+
+		// Find the rest of the files
+		while( _findnext( hFile, &CurrentFile ) == 0 )
+		{
+			// file found, add it to the list
+			result.push_back (filename_ + "/" + CurrentFile.name);
+		}
+
+		// has to be called at the end
+		_findclose( hFile );
+	}
+	return result;
+}
+size_t
+FileName::getLastSlashPos ()
+{
+	size_t loc;
+
+#ifdef MARSYAS_WIN32
+	size_t loc2  = filename_.rfind("/", filename_.length()-1);  // you can use the slash in windows, too
+	loc = filename_.rfind("\\", filename_.length()-1);
+	if (loc2 != mrs_string::npos)
+		loc = max (loc, loc2);
+#else 
+	loc = filename_.rfind("/", filename_.length()-1);
+#endif
+	return loc;
+}
+
+void
+FileName::removeLastSlash ()
+{
+	size_t loc	= getLastSlashPos ();
+
+	if (loc == filename_.length()-1)
+		filename_	= filename_.substr(0, loc);
+}
       
   

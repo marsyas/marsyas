@@ -72,7 +72,7 @@ static SimMeasureProperties_t simMeasureProps[kNumSimMeasures] =
 	{"FREQ",	"Frequency",			"euclideanDistance",	"ignoreFrequency",		"if",	false,	1, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq},
 	{"TIME",	"Time",					"euclideanDistance",	"ignoreTime",			"it",	false,	2, PeakFeatureSelect::pkFrame},
 	{"AMP",		"Amplitude",			"euclideanDistance",	"ignoreAmplitude",		"ia",	false,	1, PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp},
-	{"DFREQ",	"Frequency Modulation",	"euclideanDistance",	"ignoreDeltaFrequency", "idf",	false,	0, PeakFeatureSelect::pkDeltaFrequency | PeakFeatureSelect::barkPkFreq},
+	{"DFREQ",	"Frequency Modulation",	"euclideanDistance",	"ignoreDeltaFrequency", "idf",	false,	0, PeakFeatureSelect::pkDeltaFrequency},// | PeakFeatureSelect::barkPkFreq},
 	{"DAMP",	"Amplitude Modulation",	"euclideanDistance",	"ignoreDeltaAmplitude", "ida",	false,	0, PeakFeatureSelect::pkDeltaAmplitude /*| PeakFeatureSelect::dBPkAmp*/},
 	{"CONN",	"Connectivity",			"doesntmatter",			"ignoreConnectivity",	"ic",	false,	1, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq | PeakFeatureSelect::pkFrame},
 	{"HWPS",	"HPWS",					"doesntmatter",			"ignoreHWPS",			"ih",	false,	2, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes},
@@ -1129,8 +1129,11 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			mainNet->linkControl("Shredder/synthNet/mrs_natural/nTimes",
 						  "Accumulator/textWinNet/mrs_natural/nTimes");
 		else
+		{
 			mainNet->linkControl("Shredder/synthNet/mrs_natural/nTimes",
 			"PeakViewSource/analysisNet/mrs_natural/nTimes");
+			mainNet->updControl("PeakViewSource/analysisNet/mrs_bool/ignoreGroups", true);
+		}
 	}
 
 	
@@ -1524,6 +1527,9 @@ main(int argc, const char **argv)
 	cerr << "inputDirectory  (-i) = " << inputDirectoryName << endl;
 
 
+    FileName DirectoryName(*soundfiles.begin ());
+    if (DirectoryName.isDir ())
+		soundfiles	= DirectoryName.getFilesInDir ("*.wav");
 	// extract peaks and clusters
 	// soundfile input 
 	string sfname;
