@@ -16,10 +16,21 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "PeakClusterSelect.h"
 
+using std::min;
+using std::max;
 using std::ostringstream;
 using namespace Marsyas;
+
+static std::ofstream outTextFile;
+//#define MTLB_DBG_LOG
+//#define DBG_FILE_OUT
+#ifdef DBG_FILE_OUT
+static const std::string outFileName("d:/temp/peakcluster.txt");
+#endif
+
 
 PeakClusterSelect::PeakClusterSelect(mrs_string name):MarSystem("PeakClusterSelect", name)
 {
@@ -33,6 +44,9 @@ PeakClusterSelect::PeakClusterSelect(const PeakClusterSelect& a) : MarSystem(a)
 
 PeakClusterSelect::~PeakClusterSelect()
 {
+#ifdef DBG_FILE_OUT
+	outTextFile.close ();
+#endif
 }
 
 MarSystem* 
@@ -58,6 +72,11 @@ PeakClusterSelect::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue("peakLabels", NOUPDATE);
+
+#ifdef DBG_FILE_OUT
+	if (!outTextFile.good () || ! outTextFile.is_open ())
+		outTextFile.open(outFileName.c_str ());
+#endif
 }
 
 void
@@ -151,7 +170,8 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 {	
 	mrs_natural t;
 	mrs_natural numClustersToKeep = ctrl_numClustersToKeep_->to<mrs_natural>();
-	mrs_natural curNumClusters=-1, i, j, curClusterLabel;
+	mrs_natural curNumClusters=-1, i, j, k, curClusterLabel;
+	mrs_natural numPeaks = ctrl_inSamples_->to<mrs_natural>();
 
 	// Determine number of clusters in input by finding maximum index plus 1
 	for (t = 0; t < inSamples_; t++)
@@ -159,7 +179,16 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 			curNumClusters = (mrs_natural)in(0,t);
 	curNumClusters += 1;
 
-	realvec intraClusterSimilarities(3, curNumClusters);
+	mrs_realvec intraClusterSimilarities(3, curNumClusters);
+	mrs_realvec clusterSimilarity (curNumClusters, curNumClusters);
+	mrs_realvec clusterNorm (curNumClusters, curNumClusters);
+	mrs_realvec keepMe(curNumClusters);
+	mrs_real	intraSimKeepThresh	= .5;
+
+	clusterSimilarity.setval (0.);
+	clusterNorm.setval (0.);
+	keepMe.setval (1.);
+
 	for( i=0 ; i<curNumClusters ; ++i )
 	{
 		// Store cluster index in first row
@@ -172,40 +201,127 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 		intraClusterSimilarities(2,i) = 0;
 	}
 
-	for( i=0 ; i<ctrl_inSamples_->to<mrs_natural>() ; ++i )
+
+	// compute the similarity of each peak to each each other
+	// accumulate per cluster pair
+	for( i=0 ; i<numPeaks ; ++i )
 	{
-		for( j=0 ; j<i ; j++ )
+		mrs_realvec numAcc(curNumClusters);
+		mrs_realvec similarity(curNumClusters);
+
+		numAcc.setval (0.);
+		similarity.setval (0.);
+		for( j=0 ; j<numPeaks ; j++ )
 		{
-			if( in(0,i) == in(0,j) )
-			{
-				intraClusterSimilarities( 1 , (mrs_natural)in(0,i) ) += 1;
-				intraClusterSimilarities( 2 , (mrs_natural)in(0,i) ) += in( i+1 , j );
-			}
+			if (i==j)
+				continue;
+			similarity((mrs_natural)(in(0,j)+.1))								+= in (i+1, j);
+			clusterNorm ((mrs_natural)(in(0,i)+.1),(mrs_natural)(in(0,j)+.1))	+= 1;
 		}
+		for (k = 0; k < curNumClusters; k++)
+			clusterSimilarity ((mrs_natural)(in(0,i)+.1), k)	+= similarity(k);
 	}
 
-	// Normalize by the number of elements
-	for( i=0 ; i<curNumClusters ; ++i )
+	for (i = 0; i < curNumClusters; i++)
+		for (j = 0; j < curNumClusters; j++)
+			clusterSimilarity(i,j)	/= (clusterNorm(i,j)>0)? clusterNorm(i,j) : 1.;
+
+	// compute something similar to silhouette coefficients
+	mrs_realvec silhouetteCoeffs (curNumClusters);
+	silhouetteCoeffs.setval(0.);
+
+	for (k = 0; k < curNumClusters; k++)
 	{
-		if (intraClusterSimilarities( 1 , i ) > 1)
-			intraClusterSimilarities( 2 , i ) /= intraClusterSimilarities( 1 , i );
-		else
-			intraClusterSimilarities( 2 , i )	= 0;
+		mrs_real selfSim, maximum, minSim = 0;//1e37;
+		selfSim	= clusterSimilarity(k,k);
+		for (i = 0; i < curNumClusters; i++)
+		{
+			if (i == k)
+				continue;
+			//minSim	= (clusterSimilarity(k,i) < minSim)?clusterSimilarity(k,i) :  minSim;
+			minSim	+= clusterSimilarity(k,i);
+		}
+		minSim	/= (curNumClusters-1);
+
+		if ((maximum = max(selfSim, minSim)) != 0)
+			silhouetteCoeffs(k)	= (selfSim - minSim)/ maximum;
 	}
+
+	// update output values
+	for (k = 0; k < curNumClusters; k++)
+		intraClusterSimilarities(2,k)	= clusterSimilarity(k,k);
+
+#ifdef MARSYAS_MATLAB
+#ifdef MTLB_DBG_LOG
+	MATLAB_PUT(clusterSimilarity, "sim");
+	MATLAB_PUT(curNumClusters, "numClust");
+	MATLAB_EVAL ("figure(13),imagesc(0:(numClust-1),0:(numClust-1),sim,[0 1]),colorbar");
+	MATLAB_PUT(silhouetteCoeffs, "sil");
+	MATLAB_EVAL ("figure(14),plot(0:(length(sil)-1), sil),axis([0 length(sil)-1 0 1]), grid on");
+#endif
+#endif	
+
+
 
 	// (Quick) Sort by intra-cluster similarity density
 	sort( intraClusterSimilarities, 2, 0, curNumClusters-1 );   
 
+
+#ifdef DBG_FILE_OUT
+	if (outTextFile.good ())
+	{
+		if (curNumClusters < 6)
+		{
+			for (k = 0; k < 6-curNumClusters; k++)
+				outTextFile << 0 <<"\t";
+		}
+		for (k = 0; k < curNumClusters; k++)
+			outTextFile << silhouetteCoeffs(k) <<"\t"; ;
+			//outTextFile << intraClusterSimilarities(2,k) <<"\t"; ;
+
+		outTextFile << std::endl;
+	}
+#endif
+
+	// ignore setting of numclusters2Keep and set it by threshold of the intraclustersimilarity
+	if (numClustersToKeep == 0)
+	{
+		const mrs_real intraThreshBounds[2]	= {.3,.6};
+		const mrs_real silThreshBound		= 1./curNumClusters;
+		intraSimKeepThresh	= max(intraThreshBounds[0],min(intraThreshBounds[1],.5*(intraClusterSimilarities(2,0) + intraClusterSimilarities(2, curNumClusters-1))));
+		for (k = 0; k < curNumClusters; k++)
+		{
+			// intra cluster similarity threshold
+			if (intraClusterSimilarities(2,k) < intraSimKeepThresh)
+				keepMe(k)	= 0;
+
+			// silhouette coefficient threshold
+			if (silhouetteCoeffs((mrs_natural)(intraClusterSimilarities(0,k)+.1)) < silThreshBound)
+				keepMe(k)	= 0;
+		}
+		numClustersToKeep	= (mrs_natural)(keepMe.sum () +.1);
+
+		if (numClustersToKeep == curNumClusters)
+			keepMe(0)	= 0; // always abandon one cluster!
+		//std::cout << numClustersToKeep << " " << std::endl;
+	}
+	else
+	{
+		for (k = 0; k < (curNumClusters - numClustersToKeep); k++)
+			keepMe(k) = 0;
+	}
+
 	for (t = 0; t < inSamples_; t++)
 	{
 		curClusterLabel = (mrs_natural)in(0,t);
-		out(0,t) = 0; //curClusterLabel; //signals clusters to be synthesized 
+		out(0,t) = curClusterLabel; //signals clusters to be synthesized 
 
-		for( i=0 ; i < (curNumClusters - numClustersToKeep) ; ++i )
+		for( k=0 ; k < curNumClusters; k++)
 		{
-			if( curClusterLabel == intraClusterSimilarities(0,i) )
+			if( curClusterLabel == intraClusterSimilarities(0,k) )
 			{
-				out(0,t) = -1; //-1 signals clusters to be discarded
+				if (keepMe(k) < .5)
+					out(0,t) = (curClusterLabel)? -curClusterLabel : -1; //negative value signals clusters to be discarded, zero is mapped to -1
 				break;
 			}
 		}
