@@ -110,8 +110,9 @@ bool attributes_ = false;
 bool ground_ = false;
 mrs_natural synthetize_ = 0;
 mrs_natural clusterSynthetize_ = -1;
-bool peakStore_= true;
+bool peakStore_= false;
 bool residual_ = false;
+mrs_bool disableClustering = false;
 
 bool ignoreFrequency = false;
 bool ignoreAmplitude = false;
@@ -165,6 +166,7 @@ printHelp(string progName)
 	cerr << "-f --fileInfo : provide clustering parameters in the output name (s20t10i250_2500c2k1uTabfbho means 20 sines per frames in the 250_2500 Hz frequency Interval, 1 cluster selected among 2 in one texture window of 10 frames, no precise parameter estimation and using a combination of similarities abfbho)" << endl;
 	cerr << "-npp --noPeakPicking : do not perform peak picking in the spectrum" << endl;
 	cerr << "-u --unprecise : do not perform precise estimation of sinusoidal parameters" << endl;
+	cerr << "-dc --disableClustering : only do peak picking " << endl;
 	
 	cerr << "-if --ignoreFrequency: ignore frequency similarity between peaks" << endl;
 	cerr << "-ia --ignoreAmplitude: ignore amplitude similarity between peaks" << endl;
@@ -328,7 +330,9 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//create a FlowThru for the Clustering Network and add to main net
 	//***************************************************************
 	MarSystem* clustNet = mng.create("FlowThru", "clustNet");
-	mainNet->addMarSystem(clustNet);
+	
+	if (!disableClustering)
+		mainNet->addMarSystem(clustNet);
 
 	//***************************************************************
 	// create Similarities Network and add it to ClustNet
@@ -442,10 +446,13 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//
 	// LINK controls related to variable number of peak from PeakConvert to simNet
 	//
-	mainNet->linkControl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks",
+	if (!disableClustering)
+	{
+		mainNet->linkControl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/totalNumPeaks",
 					  "PeakConvert/conv/mrs_natural/totalNumPeaks");
-	mainNet->linkControl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks",
+		mainNet->linkControl("FlowThru/clustNet/FanOutIn/simNet/Series/freqSim/PeakFeatureSelect/FREQfeatSelect/mrs_natural/frameMaxNumPeaks",
 					  "PeakConvert/conv/mrs_natural/frameMaxNumPeaks");
+	}
 
 	//***************************************************************
 	// create NCutNet MarSystem and add it to clustNet
@@ -466,8 +473,11 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//***************************************************************
 	MarSystem* labeler = mng.create("PeakLabeler","labeler");
 	mainNet->addMarSystem(labeler);
-	//---- link labeler label control to the NCut output control
-	mainNet->linkControl("PeakLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
+	if (!disableClustering)
+	{
+		//---- link labeler label control to the NCut output control
+		mainNet->linkControl("PeakLabeler/labeler/mrs_realvec/peakLabels", "FlowThru/clustNet/mrs_realvec/innerOut");
+	}	
 
 	//***************************************************************
 	// create PeakViewSink MarSystem and add it to mainNet
@@ -637,9 +647,12 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	mainNet->updControl("PeakConvert/conv/mrs_string/frequencyInterval", intervalFrequency);  
 	mainNet->updControl("PeakConvert/conv/mrs_natural/nbFramesSkipped", 0);//(N/D));  
 
-	mainNet->updControl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
-	mainNet->updControl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
-	
+	if (!disableClustering)
+	{
+		mainNet->updControl("FlowThru/clustNet/Series/NCutNet/Fanout/stack/NormCut/NCut/mrs_natural/numClusters", C); 
+		mainNet->updControl("FlowThru/clustNet/Series/NCutNet/PeakClusterSelect/clusterSelect/mrs_natural/numClustersToKeep", nbSelectedClusters_);
+	}
+
 	// 	//[TODO]
 	// 	mainNet->setctrl("PeClust/peClust/mrs_natural/selectedClusters", nbSelectedClusters_); 
 	// 	mainNet->setctrl("PeClust/peClust/mrs_natural/hopSize", D); 
@@ -667,51 +680,59 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	//------------------------------------------------------------------------
 	//check which similarity computations should be disabled (if any)
 	//------------------------------------------------------------------------
-	// Frequency Similarity
-	if(ignoreFrequency)
+	if (!disableClustering)
 	{
-		cout << "** Frequency Similarity Computation disabled!" << endl;
-		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
-						 "Series/freqSim");
+		// Frequency Similarity
+		if(ignoreFrequency)
+		{
+			cout << "** Frequency Similarity Computation disabled!" << endl;
+			mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+							 "Series/freqSim");
+		}
+		else
+			cout << "** Frequency Similarity Computation enabled!" << endl;
+		// amplitude similarity
+		if(ignoreAmplitude)
+		{
+			cout << "** Amplitude Similarity Computation disabled!" << endl;
+			mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+							 "Series/ampSim");
+		}
+		else
+			cout << "** Amplitude Similarity Computation enabled!" << endl;
+		// HWPS similarity
+		if(ignoreHWPS)
+		{
+			cout << "** HWPS (harmonicity) Similarity Computation disabled!" << endl;
+			mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+							 "Series/HWPSim");
+		}
+		else
+			cout << "** HWPS (harmonicity) Similarity Computation enabled!" << endl;
+		//
+		//Panning Similarity
+		if(mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/mrs_natural/onObservations")->to<mrs_natural>() == 2 &&
+		   !ignorePan)
+		{
+			cout << "** Panning Similarity Computation enabled!" << endl;
+			mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/enableChild",
+							 "Series/stereoSpkNet");
+			mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/enableChild",
+							 "Series/panSim");
+		}
+		else //if not stereo or if stereo to be ignored, disable some branches 
+		{
+			cout << "** Panning Similarity Computation disabled!" << endl;
+			mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
+							 "Series/stereoSpkNet");
+			mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
+							 "Series/panSim");
+		}
 	}
 	else
-		cout << "** Frequency Similarity Computation enabled!" << endl;
-	// amplitude similarity
-	if(ignoreAmplitude)
 	{
-		cout << "** Amplitude Similarity Computation disabled!" << endl;
-		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
-						 "Series/ampSim");
-	}
-	else
-		cout << "** Amplitude Similarity Computation enabled!" << endl;
-	// HWPS similarity
-	if(ignoreHWPS)
-	{
-		cout << "** HWPS (harmonicity) Similarity Computation disabled!" << endl;
-		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
-						 "Series/HWPSim");
-	}
-	else
-		cout << "** HWPS (harmonicity) Similarity Computation enabled!" << endl;
-	//
-	//Panning Similarity
-	if(mainNet->getctrl("Accumulator/textWinNet/Series/analysisNet/FanOutIn/mixer/mrs_natural/onObservations")->to<mrs_natural>() == 2 &&
-	   !ignorePan)
-	{
-		cout << "** Panning Similarity Computation enabled!" << endl;
-		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/enableChild",
-						 "Series/stereoSpkNet");
-		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/enableChild",
-						 "Series/panSim");
-	}
-	else //if not stereo or if stereo to be ignored, disable some branches 
-	{
-		cout << "** Panning Similarity Computation disabled!" << endl;
 		mainNet->updControl("Accumulator/textWinNet/Series/analysisNet/Series/peakExtract/Fanout/stereoFo/mrs_string/disableChild",
-						 "Series/stereoSpkNet");
-		mainNet->updControl("FlowThru/clustNet/FanOutIn/simNet/mrs_string/disableChild",
-						 "Series/panSim");
+			"Series/stereoSpkNet");
 	}
 	//
 	mainNet->update(); //probably not necessary... [!]
@@ -798,6 +819,10 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 				mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/delay", delay); // Nw/2+1 
 				mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/synSize", hopSize_*2);//D*2);
 				mainNet->updControl("Shredder/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
+
+				// changed the cluster labeling from -1 (don't use) and 0 (use) to negative (don't use) and positive (use) indices
+				mainNet->updControl("Shredder/synthNet/Series/postNet/PeakSynthOsc/pso/mrs_natural/peakGroup2Synth", -1);
+
 			}
 			else 
 			{
@@ -954,6 +979,7 @@ initOptions()
 	cmd_options.addBoolOption("noPeakPicking", "npp", 0);
 	cmd_options.addNaturalOption("clusterSynthetize", "SC", clusterSynthetize_);
 	cmd_options.addBoolOption("peakStore", "P", peakStore_);
+	cmd_options.addBoolOption("disableClustering", "dc", disableClustering);
 
 	cmd_options.addBoolOption("ignoreFrequency", "if", ignoreFrequency);
 	cmd_options.addBoolOption("ignoreAmplitude", "ia", ignoreAmplitude);
@@ -993,6 +1019,7 @@ loadOptions()
 	peakStore_ = cmd_options.getBoolOption("peakStore"); 
 	residual_ = cmd_options.getBoolOption("residual");
 	unprecise_ = cmd_options.getBoolOption("unprecise");
+	disableClustering = cmd_options.getBoolOption("disableClustering");
 
 	ignoreFrequency = cmd_options.getBoolOption("ignoreFrequency");
 	ignoreAmplitude = cmd_options.getBoolOption("ignoreAmplitude");
