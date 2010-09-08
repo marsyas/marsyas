@@ -409,6 +409,13 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	double pngLength = length;
 	double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+	
+	cout << "maxFreq = " << maxFreq << endl;
+	cout << "fftBins = " << fftBins << endl;
+	cout << "pngLength = " << pngLength << endl;
+	cout << "pngHeight = " << pngHeight << endl;
+	
+	
 
 	pngwriter png(int(pngLength),int(pngHeight),0,outFileName.c_str());
 
@@ -420,17 +427,24 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	double x = 0;
 	double y = 0;
 	double colour = 0;
+	double diff;
+	double pdiff;
+	
+	 
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
 		   && (ticks == -1 || x < ticks))  {
 		net->tick();
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-
+		
+		diff = 0.0;
+		
 		for (int i = 0; i < pngHeight; ++i) {
 			double data_y = i;
-
+			
 			double data = processedData(int(data_y),0);
 
 			normalizedData = ((data - min) / (max - min)) * gain;
+			diff += normalizedData;
 
 			// Make the spectrogram black on white instead of white on black
 			// TODO - Add the ability to generate different color maps, like Sonic Visualiser
@@ -444,7 +458,15 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 
 			y = i;
 			png.plot(int(x),int(y),colour,colour,colour);
+		
 		}
+		if (fabs(pdiff-diff) > 4.0)
+			for (int i=0; i < 20; i++)
+				png.plot(int(x),pngHeight- i, 1.0, 0.0, 0.0);
+		
+		pdiff = diff;
+		
+		
 		x++;
 
 	}

@@ -16,9 +16,14 @@
  ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#include <io.h>
+
 
 #include "common.h" 
+
+#ifdef MARSYAS_WIN32
+#include <io.h>
+#endif
+
 #include "FileName.h"
 
 using std::ostringstream;
@@ -107,16 +112,28 @@ FileName::path()
 mrs_bool
 FileName::isDir ()
 {
+
+#if (defined(MARSYAS_WIN32))
 	const DWORD attr = GetFileAttributes (filename_.c_str ());
 
 	return (attr != 0xffffffff)
 		&& ((attr & FILE_ATTRIBUTE_DIRECTORY) != 0);
+#else
+	MRSWARN("isDir only implemented on Windows");
+	return false;	
+#endif
+	
+
+	
+	
 }
 
 std::vector<mrs_string> 
 FileName::getFilesInDir (mrs_string wildcard)
 {
 	std::vector<mrs_string>		result;
+
+#ifdef MARSYAS_WIN32
 	struct _finddata_t          CurrentFile;
 	long                        hFile;
 	mrs_string                  search4;
@@ -141,6 +158,9 @@ FileName::getFilesInDir (mrs_string wildcard)
 		// has to be called at the end
 		_findclose( hFile );
 	}
+#else
+	MRSWARN("getFilesInDir only works on Windows");
+#endif
 	return result;
 }
 size_t

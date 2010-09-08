@@ -557,7 +557,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, mrs_string sfName, mrs_string ou
 		else 
 		{
 			// linking between the first slice and the psf
-			pvseries->linkControl("PeSynthetize/synthNet/Series/postNet/mrs_realvec/input0", "PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
+			pvseries->linkControl("PeSynthetize/synthNet/Series/postNet/mrs_realvec/processedData", "PeSynthetize/synthNet/Series/postNet/PeakSynthFFT/psf/mrs_realvec/peaks");
 			//
 			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/Windowing/wiSyn/mrs_string/type", "Hanning");
 			pvseries->updControl("PeSynthetize/synthNet/Series/postNet/FlowCutSource/fcs/mrs_natural/setSamples", D);	

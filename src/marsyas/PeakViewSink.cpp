@@ -25,6 +25,8 @@ using std::ifstream;
 using std::ios;
 using std::endl;
 using std::cout;
+using std::istringstream;
+
 
 
 using namespace Marsyas;
@@ -89,30 +91,37 @@ PeakViewSink::done()
 			//open the tmp file for reading
 			ifstream tmpFile;
 			tmpFile.open(tmpFilename_.c_str(), ios::in);
+			
+			//read data from tmp file intomemory
+			accumData_.create(inObservations_, count_);
 
+
+			double val;
+			
 
 			
-			//read data from tmp file into memory
-			accumData_.create(inObservations_, count_);
+			char myline[2048];			
+
 			for(t=0; t < count_; ++t)
 			{
+				tmpFile.getline(myline, 2048);
+				istringstream iss(myline);
 				for(o=0; o < inObservations_; ++o)
 				{
-					tmpFile >> accumData_(o, t);
+
+					iss >> accumData_(o,t);
 				}
 			}
 
 			//close and delete tmp file from disk
 			tmpFile.close();
-			remove(tmpFilename_.c_str());
+			// remove(tmpFilename_.c_str());
 			count_ = 0;
 		}
 		else
 			accumData_.create(0,0); //no data was accumulated in the temp file...
 	}
 
-
-	
 	//save peak data into a .peak formated output file
 	if(accumData_.getSize() != 0)
 	{

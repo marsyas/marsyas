@@ -690,15 +690,15 @@ toy_with_onsets(string sfName)
 	onsetnet->updControl("SoundFileSink/fdest/mrs_string/filename", outputFile.nameNoExt() + "_onsets.wav");
 	mrs_real fs = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 
-	mrs_natural winSize = 2048;//2048;
-	mrs_natural hopSize = 512;//411;
+	mrs_natural winSize = 4096;//2048;
+	mrs_natural hopSize = 1024;//411;
 	mrs_natural lookAheadSamples = 6;
-	mrs_real thres = 1.75;
+	mrs_real thres = 0.75;
 
 	mrs_real textureWinMinLen = 0.050; //secs
 	mrs_natural minTimes = (mrs_natural) (textureWinMinLen*fs/hopSize); //12;//onsetWinSize+1;//15;
 	// cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
-	mrs_real textureWinMaxLen = 3.000; //secs
+	mrs_real textureWinMaxLen = 22.0; //secs
 	mrs_natural maxTimes = (mrs_natural) (textureWinMaxLen*fs/hopSize);//1000; //whatever... just a big number for now...
 	// cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
 

@@ -72,7 +72,7 @@ mrs_real noiseGain_=.1;
 // duration for noise insertion
 mrs_real noiseDuration_=0;
 // sampling frequency
-mrs_real samplingFrequency_=1;
+mrs_real samplingFrequency_=44100;
 
 bool microphone_ = false;
 bool analyse_ = false;
@@ -161,6 +161,8 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 			pvseries->updControl("mrs_natural/inSamples", D);
 			pvseries->updControl("mrs_natural/inObservations", 1);
 			samplingFrequency_ = pvseries->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+			cout << "SAMPLING FREQ = " << samplingFrequency_ << endl;
+			
 		}
 
 		pvseries->updControl("PeakAnalyse/peA/ShiftInput/si/mrs_natural/winSize", Nw+1);
@@ -204,8 +206,11 @@ peVocode(string sfName, string outsfname, mrs_natural N, mrs_natural Nw,
 		MarSystem *peSynth = mng.create("PeSynthetize", "synthNet");
 		pvseries->addMarSystem(peSynth);
 		cout << Nw << " " << D << " " << Nw+1-D << endl;
-		// commented out by gtzan - not compiling
+		
 		synthNetConfigure (pvseries, sfName, outsfname, fileResName, panningInfo, 1, Nw, D, S, 1, microphone_, synthetize, bopt_, -D, samplingFrequency_ );
+
+		cout << "samplingFrequency_ " << samplingFrequency_ << endl;
+		
 	}
 
 	if(harmonize_)

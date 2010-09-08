@@ -179,7 +179,6 @@ peakView::toTable(realvec& vecTable)
 	vecTable.create(frameMaxNumPeaks_*numFrames_+1, nbPkParameters);
 	
 
-
 	//In Table format, the 1st row is a "header row"
 	vecTable(0, 0) = -1;
 	vecTable(0, 1) =  fs_;
@@ -190,6 +189,7 @@ peakView::toTable(realvec& vecTable)
 	vecTable(0, pkGroup) = -2;
 	for (mrs_natural i = pkGroup+1 ; i < nbPkParameters ; ++i) //i = pkGroup or i = pkGroup+1 [?]
 		vecTable(0, i)=0;
+
 
 	//fill the table with peak data
 	mrs_natural l = 1; //l = peak index for table format (i.e. row index)
@@ -207,6 +207,7 @@ peakView::toTable(realvec& vecTable)
 
 	//resize the table to the correct (i.e. possibly smaller) 
 	//number of peaks (i.e. nr of rows)
+
 	vecTable.stretch(l, nbPkParameters);
 }
 

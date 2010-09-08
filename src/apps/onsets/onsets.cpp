@@ -194,7 +194,7 @@ detect_onsets(string sfName)
 	mrs_natural winSize = 2048;//2048;
 	mrs_natural hopSize = 512;//411;
 	mrs_natural lookAheadSamples = 6;
-	mrs_real thres = 1.75;
+	mrs_real thres = 0.0;
 
 	mrs_real textureWinMinLen = 0.050; //secs
 	mrs_natural minTimes = (mrs_natural) (textureWinMinLen*fs/hopSize); //12;//onsetWinSize+1;//15;
