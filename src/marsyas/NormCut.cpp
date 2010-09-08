@@ -376,7 +376,7 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 		c(i) = 0;
 	}
 
-	//randn = (int)floor(0.5+(n-1)*(0.42863169099606)); // rand()/RAND_MAX for large decimal -- temporary while debugging
+	// randn = (int)floor(0.5+(n-1)*(0.42863169099606)); // rand()/RAND_MAX for large decimal -- temporary while debugging
 	randn	= 0; // although I have absolutely no clue what this means, everything seems to work better with this being 0 (AL)
 
 	for( i=0 ; i<nbcluster ; ++i ){
