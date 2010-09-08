@@ -16,57 +16,61 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_PeakViewMerge_H
-#define MARSYAS_PeakViewMerge_H
+#ifndef MARSYAS_FMEASURE_H
+#define MARSYAS_FMEASURE_H
 
 #include "MarSystem.h"	
-
-#include <fstream>
-#include <iostream>
 
 namespace Marsyas
 {
 	/** 
-	\class PeakViewMerge
-	\ingroup IO
-	\brief This MarSystem receives two stacked realvecs peak information (using peakView) 
-	and merges them.
+	\class FMeasure
+	\brief Compute the FMeasure
+
+	compute the F-Measure from the detection counts given as controls; 
+	output dimensions are 3x1 (F-Measure, Precision, Recall), the input
+	is not used
 
 	Controls:
-	- \b mrs_string/mode [w] : AND (output only peaks in both), OR (output all peaks), XOR 
-	(output only the peaks that are not in both inputs).
-	- \b mrs_natural/totalNumPeaks [r] : number of peaks at the output
+	- \b mrs_natural/numObservationsInReference [w] : number of relevant data points
+	- \b mrs_natural/numObservationsInTest [w] : number of detected data points
+	- \b mrs_natural/numTruePositives [w] : number of correctly detected data points
+	- \b mrs_bool/reset [w] : set to true to reset the internal variables
 	*/
 
 
-	class PeakViewMerge: public MarSystem
+	class FMeasure: public MarSystem
 	{
 	private: 
-
+		//Add specific controls needed by this MarSystem.
 		void addControls();
+		MarControlPtr	ctrl_numObsInRef_,
+						ctrl_numObsInTest_,
+						ctrl_numTruePos_,
+						ctrl_reset_;
+		mrs_natural		numObsInRef_,
+						numObsInTest_,
+						numTruePos_;
 		void myUpdate(MarControlPtr sender);
 
-		enum InputViews
+		enum OutputIdx_t
 		{
-			kMat1,
-			kMat2,
+			kFMeasure,
+			kPrecision,
+			kRecall,
 
-			kNumMatrices
+			kNumOutputs
 		};
 
-		MarControlPtr	ctrl_mode_,
-			ctrl_totalNumPeaks_;
-		mrs_realvec peakViewIn_[kNumMatrices];
-
 	public:
-		PeakViewMerge(std::string name);
-		PeakViewMerge(const PeakViewMerge& a);
-		~PeakViewMerge();
+		FMeasure(std::string name);
+		FMeasure(const FMeasure& a);
+		~FMeasure();
 		MarSystem* clone() const;  
 
 		void myProcess(realvec& in, realvec& out);
 	};
 
-} //namespace Marsyas
+}//namespace Marsyas
 
-#endif // MARSYAS_PeakViewMerge_H
+#endif

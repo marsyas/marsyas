@@ -241,6 +241,7 @@
 #include "ParallelMatrixWeight.h"
 #include "PeakDistanceHorizontality.h"
 #include "PeakViewMerge.h"
+#include "FMeasure.h"
 
 #include "Inject.h"
 //modifyHeader
@@ -472,6 +473,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("ParallelMatrixWeight", new ParallelMatrixWeight("parallelmatrixweight"));
 	registerPrototype("PeakDistanceHorizontality", new PeakDistanceHorizontality("horizontality"));
 	registerPrototype("PeakViewMerge", new PeakViewMerge("PeakViewMerge"));
+	registerPrototype("FMeasure", new FMeasure("F-Measure"));
 	
 
 	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));

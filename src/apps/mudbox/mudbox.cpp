@@ -3592,7 +3592,7 @@ toy_with_lyons(string fname)
 		{
 			for (int j = 0; j < mtlb_destData.getCols (); j++)
 			{
-				if (fabsf (mtlb_destData(i,j) - outData(i,j)) > floatTolerance)
+				if (std::abs (mtlb_destData(i,j) - outData(i,j)) > floatTolerance)
 				{
 					dataMismatch    = true;
 					cout << "Block@Sample: " << sampleCount << ", Row: " << i << ", Col: " << j << ", Diff: " << mtlb_destData(i,j) - outData(i,j) << endl;
@@ -3701,7 +3701,7 @@ toy_with_auditorytbx(string fname)
     {
         for (int j = 0; j < destData.getCols (); j++)
         {
-            if (fabsf (mtlb_destData(i,j)) > floatTolerance)
+			if (std::abs (mtlb_destData(i,j)) > floatTolerance)
             {
                 dataMismatch    = true;
                 break;
@@ -3781,7 +3781,7 @@ toy_with_auditorytbx(string fname)
         {
             for (int j = 0; j < mtlb_destData.getCols (); j++)
             {
-                if (fabsf (mtlb_destData(i,j) - outData(i,j)) > floatTolerance)
+				if (std::abs (mtlb_destData(i,j) - outData(i,j)) > floatTolerance)
                 {
                     dataMismatch    = true;
                     cout << "Block@Sample: " << sampleCount << ", Row: " << i << ", Col: " << j << ", Diff: " << mtlb_destData(i,j) - outData(i,j) << endl;
@@ -4290,6 +4290,62 @@ void toy_with_PeakView (string peakFile0, string peakFile1, string outputFile, s
 		net->tick();
 
 	net->updControl("PeakViewSink/output/mrs_bool/done", true);
+
+	delete net;
+}
+
+void toy_with_PeakEval (string testFile, string refFile, string outTextFileName = EMPTYSTRING)
+{
+	std::ofstream outTextFile;
+	MarSystemManager	mng;
+	MarSystem*			net			= mng.create("Series", "net");
+	MarSystem*			input		= mng.create("Fanout", "input");
+
+	mrs_realvec			fMeasureResult(3,1);
+
+	if (outTextFileName != EMPTYSTRING)
+		outTextFile.open(outTextFileName.c_str ());
+
+	cout << "Reference File: " << refFile << endl;
+	cout << "Test File: " << testFile << endl;
+	input->addMarSystem(mng.create("PeakViewSource", "testFile"));
+	input->addMarSystem (mng.create("PeakViewSource", "refFile"));
+
+	net->addMarSystem (input);
+	net->addMarSystem (mng.create("PeakViewMerge", "merge"));
+
+	net->addMarSystem (mng.create ("FMeasure", "fmeasure"));
+
+	// set file names
+	net->updControl("Fanout/input/PeakViewSource/testFile/mrs_string/filename", 
+		testFile);
+	net->updControl("Fanout/input/PeakViewSource/refFile/mrs_string/filename", 
+		refFile);
+
+	// set options
+	net->updControl("PeakViewMerge/merge/mrs_string/mode", "AND");
+
+	// link controls
+	net->linkControl("FMeasure/fmeasure/mrs_natural/numObservationsInTest", 
+		"Fanout/input/PeakViewSource/testFile/mrs_natural/totalNumPeaks");
+	net->linkControl("FMeasure/fmeasure/mrs_natural/numObservationsInReference", 
+		"Fanout/input/PeakViewSource/refFile/mrs_natural/totalNumPeaks");
+	net->linkControl("FMeasure/fmeasure/mrs_natural/numTruePositives", 
+		"PeakViewMerge/merge/mrs_natural/totalNumPeaks");
+
+	// do the processing
+	while (net->getControl("Fanout/input/PeakViewSource/testFile/mrs_bool/hasData")->to<mrs_bool>() == true)
+		net->tick();
+
+	fMeasureResult	= net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+
+	// write fmeasure outputs
+	cout << endl << "F-Measure Result: " << fMeasureResult(0,0) << endl;
+
+	if (outTextFile.good ())
+		outTextFile << fMeasureResult(0,0) << "\t" << fMeasureResult(1,0) << "\t" << fMeasureResult(2,0) << std::endl;
+
+	outTextFile.close ();
 
 	delete net;
 }
@@ -6209,7 +6265,7 @@ void toy_with_marostring(std::string format)
 }
 
 
-float find_max_rms(string inFileName)
+mrs_real find_max_rms(string inFileName)
 {
 
 	MarSystemManager mng;
@@ -6230,8 +6286,8 @@ float find_max_rms(string inFileName)
 
 	net->addMarSystem(mng.create("Gain", "gain"));
 
-	float max_rms = MINREAL;
-	float r;
+	mrs_real max_rms = MINREAL;
+	mrs_real r;
 	while (sr->getctrl("SoundFileSource/src/mrs_bool/hasData")->isTrue())	{
 		net->tick();
 		r = rms->getctrl("mrs_realvec/processedData")->to<mrs_realvec>()(0);
@@ -6248,8 +6304,8 @@ void
 toy_with_volume_normalize(string inFileName, string outFileName)
 {
 
-	float max_rms = find_max_rms(inFileName);
-	float gain = 0.8 / max_rms;
+	mrs_real max_rms = find_max_rms(inFileName);
+	mrs_real gain = 0.8 / max_rms;
 
 	MarSystemManager mng;
 
@@ -8063,6 +8119,8 @@ main(int argc, const char **argv)
 		toy_with_NCut();
 	else if (toy_withName == "peakmerge")
 		toy_with_PeakView(fname0,fname1,fname2,fname3);
+	else if (toy_withName == "peakeval")
+		toy_with_PeakEval(fname0,fname1,fname2);
 
 	else 
 	{

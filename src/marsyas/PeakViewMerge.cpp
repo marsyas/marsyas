@@ -52,7 +52,8 @@ PeakViewMerge::PeakViewMerge(mrs_string name):MarSystem("PeakViewMerge",name)
 
 PeakViewMerge::PeakViewMerge(const PeakViewMerge& a):MarSystem(a)
 {
-	ctrl_mode_ = getctrl("mrs_string/mode"); 
+	ctrl_mode_			= getctrl("mrs_string/mode"); 
+	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks"); 
 }
 
 PeakViewMerge::~PeakViewMerge()
@@ -69,6 +70,7 @@ void
 PeakViewMerge::addControls()
 {
 	addctrl("mrs_string/mode", "AND", ctrl_mode_);
+	addctrl("mrs_natural/totalNumPeaks", 0, ctrl_totalNumPeaks_);
 }
 
 
@@ -177,5 +179,6 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 		delete In[i];
 	}
 
+	ctrl_totalNumPeaks_->setValue(outputIdx);
 }
 
