@@ -210,6 +210,7 @@
 #include "PhaseRandomize.h"
 #include "RunningStatistics.h"
 #include "SliceDelta.h"
+#include "DeltaFirstOrderRegression.h"
 #include "ArffFileSink.h"
 #include "MixToMono.h"
 #include "SoundFileSourceHopper.h"
@@ -449,6 +450,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PhaseRandomize", new PhaseRandomize("phaserandomizepr"));
 	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
 	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
+	registerPrototype("DeltaFirstOrderRegression", new DeltaFirstOrderRegression("delta"));
 	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
 	registerPrototype("MixToMono", new MixToMono("mixtomono"));
 	registerPrototype("SoundFileSourceHopper", new SoundFileSourceHopper("soundfilesourcehopper"));
