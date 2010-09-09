@@ -25,7 +25,8 @@ public:
 		// Use the normal way for getting a Marsystem from the MarSystemManager
 		// to make sure we don't bypass crucial things that should work
 		// (e.g. the copy constructor).
-		delta = (DeltaFirstOrderRegression*) mng.create("DeltaFirstOrderRegression", "delta");
+		delta = (DeltaFirstOrderRegression*) mng.create(
+				"DeltaFirstOrderRegression", "delta");
 	}
 
 	/**
@@ -46,6 +47,18 @@ public:
 		// Check the output flow.
 		TS_ASSERT_EQUALS(delta->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
 		TS_ASSERT_EQUALS(delta->getControl("mrs_natural/onSamples")->to<mrs_natural>(), onSamples);
+	}
+
+	void test_obsnames()
+	{
+		mrs_natural inObservations = 2;
+		mrs_natural inSamples = 128;
+		delta->updControl("mrs_natural/inObservations", inObservations);
+		delta->updControl("mrs_natural/inSamples", inSamples);
+		delta->updControl("mrs_string/inObsNames", "Input0,Input1,");
+		TS_ASSERT_EQUALS(delta->getControl("mrs_natural/onObservations")->to<mrs_natural>(), inObservations);
+		TS_ASSERT_EQUALS(delta->getControl("mrs_natural/onSamples")->to<mrs_natural>(), inSamples);
+		TS_ASSERT_EQUALS(delta->getControl("mrs_string/onObsNames")->to<mrs_string>(), "DeltaR1_Input0,DeltaR1_Input1,");
 	}
 
 	/**
@@ -70,7 +83,7 @@ public:
 		// Fill the input slice.
 		for (mrs_natural t = 0; t < inSamples; t++)
 		{
-			in(0, t) = t*t;
+			in(0, t) = t * t;
 			in(1, t) = (t % 3 == 0);
 		}
 
@@ -82,10 +95,10 @@ public:
 		for (mrs_natural t = 0; t < onSamples; t++)
 		{
 			// Obchannel 0
-			expected =( t==0 ? 0 : (t==1 ? 0.5 : (t-1) * 2));
+			expected = (t == 0 ? 0 : (t == 1 ? 0.5 : (t - 1) * 2));
 			TS_ASSERT_EQUALS(out(0, t), expected);
 			// Obchannel 1
-			expected = (t%3==0 ? 0.5 : (t%3==1 ? 0 : -0.5));
+			expected = (t % 3 == 0 ? 0.5 : (t % 3 == 1 ? 0 : -0.5));
 			TS_ASSERT_EQUALS(out(1, t), expected);
 		}
 
@@ -113,7 +126,7 @@ public:
 		// Process first input slice.
 		for (mrs_natural t = 0; t < inSamples; t++)
 		{
-			in(0, t) = t*t;
+			in(0, t) = t * t;
 			in(1, t) = (t % 3 == 0);
 		}
 		delta->myProcess(in, out);
@@ -122,7 +135,7 @@ public:
 		for (mrs_natural t = 0; t < inSamples; t++)
 		{
 			mrs_natural t_global = inSamples + t;
-			in(0, t) = t_global*t_global;
+			in(0, t) = t_global * t_global;
 			in(1, t) = (t_global % 3 == 0);
 		}
 		delta->myProcess(in, out);
@@ -133,10 +146,11 @@ public:
 		{
 			mrs_natural t_global = inSamples + t;
 			// Obchannel 0
-			expected = 2 * (t_global - 1) ;
+			expected = 2 * (t_global - 1);
 			TS_ASSERT_EQUALS(out(0, t), expected);
 			// Obchannel 1
-			expected = (t_global%3==0 ? 0.5 : (t_global%3==1 ? 0 : -0.5));
+			expected = (t_global % 3 == 0 ? 0.5
+					: (t_global % 3 == 1 ? 0 : -0.5));
 			TS_ASSERT_EQUALS(out(1, t), expected);
 		}
 
@@ -161,17 +175,17 @@ public:
 
 		for (mrs_natural t = 0; t < slices; t++)
 		{
-			in(0, 0) = t*t;
+			in(0, 0) = t * t;
 			in(1, 0) = (t % 3 == 0);
 			delta->myProcess(in, out);
 
 			// Check output slice.
 			mrs_real expected;
 			// Obchannel 0
-			expected =( t==0 ? 0 : (t==1 ? 0.5 : (t-1) * 2));
+			expected = (t == 0 ? 0 : (t == 1 ? 0.5 : (t - 1) * 2));
 			TS_ASSERT_EQUALS(out(0, 0), expected);
 			// Obchannel 1
-			expected = (t%3==0 ? 0.5 : (t%3==1 ? 0 : -0.5));
+			expected = (t % 3 == 0 ? 0.5 : (t % 3 == 1 ? 0 : -0.5));
 			TS_ASSERT_EQUALS(out(1, 0), expected);
 		}
 

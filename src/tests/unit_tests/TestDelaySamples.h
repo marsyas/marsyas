@@ -8,6 +8,7 @@
 #include "DelaySamples.h"
 
 #include <vector>
+#include <sstream>
 
 using namespace std;
 using namespace Marsyas;
@@ -37,10 +38,23 @@ public:
 		this->delay->updControl("mrs_natural/inObservations", inObservations);
 		this->delay->updControl("mrs_natural/inSamples", inSamples);
 		this->delay->updControl("mrs_natural/delay", delay);
+		ostringstream inObsNames;
+		for (mrs_natural i = 0; i < inObservations; i++)
+		{
+			inObsNames << "Input" << i << ",";
+		}
+		this->delay->updControl("mrs_string/inObsNames", inObsNames.str());
 
 		// Check the output flow.
 		TS_ASSERT_EQUALS(this->delay->getControl("mrs_natural/onObservations")->to<mrs_natural>(), inObservations);
 		TS_ASSERT_EQUALS(this->delay->getControl("mrs_natural/onSamples")->to<mrs_natural>(), inSamples);
+		ostringstream onObsNames;
+		for (mrs_natural i = 0; i < inObservations; i++)
+		{
+			onObsNames << "DelaySamples" << (delay > 0 ? delay : 0) << "_Input"
+					<< i << ",";
+		}
+		TS_ASSERT_EQUALS(this->delay->getControl("mrs_string/onObsNames")->to<mrs_string>(), onObsNames.str());
 	}
 
 	void test_flow_settings()

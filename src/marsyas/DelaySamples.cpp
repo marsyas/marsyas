@@ -58,15 +58,21 @@ void DelaySamples::myUpdate(MarControlPtr sender)
 {
 	/// Use the default MarSystem setup with equal input/output stream format.
 	MarSystem::myUpdate(sender);
-	// TODO: prefix with "DelayX" ?
 
-	// Cache delay value for in myProcess
+	// Handle/cache delay value for in myProcess
 	delay_ = ctrl_delay_->to<mrs_natural> ();
 	if (delay_ < 0)
 	{
 		setctrl("mrs_natural/delay", 0);
 		delay_ = 0;
 	}
+
+	// Prefix observation names with "DelayX".
+	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+	ostringstream oss;
+	oss << "DelaySamples" << delay_ << "_";
+	mrs_string onObsNames = obsNamesAddPrefix(inObsNames, oss.str());
+	ctrl_onObsNames_->setValue(onObsNames, NOUPDATE);
 
 	// Allocate and initialize the buffers.
 	this->memory_.stretch(inObservations_, delay_);
