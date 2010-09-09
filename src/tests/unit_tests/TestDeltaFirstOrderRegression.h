@@ -40,8 +40,8 @@ public:
 		mrs_natural onSamples = 128;
 
 		// Set up the input flow.
-		delta->updctrl("mrs_natural/inObservations", inObservations);
-		delta->updctrl("mrs_natural/inSamples", inSamples);
+		delta->updControl("mrs_natural/inObservations", inObservations);
+		delta->updControl("mrs_natural/inSamples", inSamples);
 
 		// Check the output flow.
 		TS_ASSERT_EQUALS(delta->getControl("mrs_natural/onObservations")->to<mrs_natural>(), onObservations);
@@ -60,8 +60,8 @@ public:
 		mrs_natural onSamples = 10;
 
 		// Set up the input flow.
-		delta->updctrl("mrs_natural/inObservations", inObservations);
-		delta->updctrl("mrs_natural/inSamples", inSamples);
+		delta->updControl("mrs_natural/inObservations", inObservations);
+		delta->updControl("mrs_natural/inSamples", inSamples);
 
 		// Allocate the input and output slices.
 		in.create(inObservations, inSamples);
@@ -103,8 +103,8 @@ public:
 		mrs_natural onSamples = 10;
 
 		// Set up the input flow.
-		delta->updctrl("mrs_natural/inObservations", inObservations);
-		delta->updctrl("mrs_natural/inSamples", inSamples);
+		delta->updControl("mrs_natural/inObservations", inObservations);
+		delta->updControl("mrs_natural/inSamples", inSamples);
 
 		// Allocate the input and output slices.
 		in.create(inObservations, inSamples);
@@ -152,8 +152,8 @@ public:
 		mrs_natural slices = 20;
 
 		// Set up the input flow.
-		delta->updctrl("mrs_natural/inObservations", inObservations);
-		delta->updctrl("mrs_natural/inSamples", inSamples);
+		delta->updControl("mrs_natural/inObservations", inObservations);
+		delta->updControl("mrs_natural/inSamples", inSamples);
 
 		// Allocate the input and output slices.
 		in.create(inObservations, inSamples);
