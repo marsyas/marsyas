@@ -76,49 +76,29 @@ void DelaySamples::myUpdate(MarControlPtr sender)
 void DelaySamples::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t, o;
-
-	/// Iterate over the observations and samples and do the processing.
-	if (delay_ < inSamples_)
+	// The number of samples we'll fetch from and store to the memory buffer.
+	mrs_natural memory_part = delay_ < inSamples_ ? delay_ : inSamples_;
+	for (o = 0; o < inObservations_; o++)
 	{
-		for (o = 0; o < inObservations_; o++)
+		// Fetch initial part from memory.
+		for (t = 0; t < memory_part; t++)
 		{
-			// Fetch initial part from memory.
-			for (t = 0; t < delay_; t++)
-			{
-				out(o, t) = memory_(o, t);
-			}
-			// Copy from input where possible
-			for (t = delay_; t < inSamples_; t++)
-			{
-				out(o, t) = in(o, t - delay_);
-			}
-			// Update memory
-			for (t = 0; t < delay_; t++)
-			{
-				memory_(o, t) = in(o, inSamples_ - delay_ + t);
-			}
+			out(o, t) = memory_(o, t);
 		}
-	}
-	else
-	{
-		for (o = 0; o < inObservations_; o++)
+		// Copy from input if needed/possible (delay_ < inSamples_).
+		for (t = delay_; t < inSamples_; t++)
 		{
-			// Fetch from memory
-			for (t = 0; t < inSamples_; t++)
-			{
-				out(o, t) = memory_(o, t);
-			}
-			// Shift memory
-			for (t = 0; t < delay_ - inSamples_; t++)
-			{
-				memory_(o, t) = memory_(o, t + inSamples_);
-			}
-			// Update memory
-			for (t = 0; t < inSamples_; t++)
-			{
-				memory_(o, t + delay_ - inSamples_) = in(o, t);
-			}
-
+			out(o, t) = in(o, t - delay_);
+		}
+		// Shift memory if needed. (inSamples < delay_).
+		for (t = 0; t < delay_ - inSamples_; t++)
+		{
+			memory_(o, t) = memory_(o, t + inSamples_);
+		}
+		// Put appropriate part of input in memory.
+		for (t = 0; t < memory_part; t++)
+		{
+			memory_(o, delay_ - 1 - t) = in(o, inSamples_ - 1 - t);
 		}
 	}
 }
