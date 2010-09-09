@@ -243,11 +243,12 @@
 #include "PeakDistanceHorizontality.h"
 #include "PeakViewMerge.h"
 #include "FMeasure.h"
+#include "DelaySamples.h"
 
 #include "Inject.h"
 //modifyHeader
 
- 
+
 using std::ostringstream;
 using std::map;
 using std::istream;
@@ -363,6 +364,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SMO", new SMO("smopr"));
 	registerPrototype("Plucked", new Plucked("pluckedpr"));
 	registerPrototype("Delay", new Delay("delaypr"));
+	registerPrototype("DelaySamples", new DelaySamples("delay"));
 	registerPrototype("Kurtosis", new Kurtosis("kurtosisp"));
 	registerPrototype("Skewness", new Skewness("Skewnessp"));
 	registerPrototype("ViconFileSource", new ViconFileSource("viconfilesourcep"));
@@ -476,7 +478,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PeakDistanceHorizontality", new PeakDistanceHorizontality("horizontality"));
 	registerPrototype("PeakViewMerge", new PeakViewMerge("PeakViewMerge"));
 	registerPrototype("FMeasure", new FMeasure("F-Measure"));
-	
+
 
 	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));
 	registerPrototype("AimGammatone", new AimGammatone("aimgammatone"));
@@ -532,7 +534,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 		case STUB:
 			break;
 
-	
+
 		case MULTIPITCH:
 		{
 

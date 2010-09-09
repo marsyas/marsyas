@@ -57,6 +57,7 @@ marsyas_unit_test(AimSAI AimSAI_runner.cpp)
 marsyas_unit_test(AimBoxes AimBoxes_runner.cpp)
 marsyas_unit_test(Sum Sum_runner.cpp)
 marsyas_unit_test(DeltaFirstOrderRegression DeltaFirstOrderRegression_runner.cpp)
+marsyas_unit_test(DelaySamples DelaySamples_runner.cpp)
 
 # Copy the files needed to run the tests
 configure_file(files/tiny.arff ${CMAKE_CURRENT_BINARY_DIR}/files/tiny.arff COPYONLY)
