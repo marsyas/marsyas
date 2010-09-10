@@ -92,6 +92,20 @@ peakView::getTotalNumPeaks(const mrs_natural group) const
 	return numPeaks;
 }
 
+void 
+peakView::removePeak (const mrs_natural peakIndex, const mrs_natural frame)
+{
+	mrs_natural p,
+				totalNumPeaks = getTotalNumPeaks ();
+	for (mrs_natural i = peakIndex; i < totalNumPeaks -1; i++)
+	{
+		for (p = 0; p < nbPkParameters; p++)
+			vec_(peakIndex + p * frameMaxNumPeaks_, frame) = vec_(peakIndex + 1 + p * frameMaxNumPeaks_, frame);
+	}
+	for (p = 0; p < nbPkParameters; p++)
+		vec_(totalNumPeaks -1 + p * frameMaxNumPeaks_, frame) = 0;
+}
+
 void
 peakView::getPeaksParam(vector<realvec>& result, const pkParameter param, mrs_natural startFrame, mrs_natural endFrame) const
 {

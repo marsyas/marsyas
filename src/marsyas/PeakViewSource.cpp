@@ -41,6 +41,7 @@ PeakViewSource::PeakViewSource(const PeakViewSource& a) : MarSystem(a)
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks"); 
 	ctrl_nTimes_ = getctrl("mrs_natural/nTimes"); 
 	ctrl_ignGroups_ = getctrl("mrs_bool/ignoreGroups"); 
+	ctrl_noNegativeGroups_ = getctrl("mrs_bool/discardNegativeGroups"); 
 
 	filename_ = a.filename_;
 	frameIdx_ = a.frameIdx_;
@@ -73,6 +74,7 @@ PeakViewSource::addControls()
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
 
 	addControl("mrs_bool/ignoreGroups", false, ctrl_ignGroups_);
+	addControl("mrs_bool/discardNegativeGroups", false, ctrl_noNegativeGroups_);
 
 }
 
@@ -184,5 +186,27 @@ PeakViewSource::myProcess(realvec& in, realvec& out)
 				ctrl_hasData_->setValue(false);
 		}
 	}
+	if (ctrl_noNegativeGroups_->to<mrs_bool>())
+	{
+		discardNegativeGroups (out);
+		totalNumPeaks = peakView(out).getTotalNumPeaks ();
+	}
+
 	ctrl_totalNumPeaks_->setValue(totalNumPeaks);
+}
+
+void PeakViewSource::discardNegativeGroups (mrs_realvec &output)
+{
+	peakView Out(output);
+	mrs_natural numFrames  = Out.getNumFrames ();
+	for (mrs_natural f = numFrames-1; f >= 0 ; f--)
+	{
+		mrs_natural frameNumPeaks	= Out.getFrameNumPeaks ();
+
+		for (mrs_natural i = frameNumPeaks-1; i >= 0; i--)
+		{
+			if (Out(i,peakView::pkGroup, f) < 0)
+				Out.removePeak(i, f);
+		}
+	}
 }

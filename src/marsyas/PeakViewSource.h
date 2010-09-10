@@ -46,12 +46,14 @@ namespace Marsyas
 			MarControlPtr ctrl_filename_;
 			MarControlPtr ctrl_hasData_;
 			MarControlPtr ctrl_pos_;
-			MarControlPtr ctrl_ignGroups_;
+			MarControlPtr ctrl_ignGroups_,
+				ctrl_noNegativeGroups_;
 			MarControlPtr ctrl_frameMaxNumPeaks_;
 			MarControlPtr ctrl_totalNumPeaks_;
 			MarControlPtr ctrl_nTimes_;
 			MarControlPtr ctrl_size_;
 
+			void discardNegativeGroups (mrs_realvec &output);
 			void defaultConfig();
 			void addControls();
 			void myUpdate(MarControlPtr sender);

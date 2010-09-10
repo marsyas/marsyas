@@ -86,7 +86,9 @@ namespace Marsyas
 		static std::string getParamName(mrs_natural paramIdx);
 
 		bool peakWrite(std::string filename, mrs_real fs=0, mrs_natural frameSize=0);
-		bool peakRead(std::string filename);	
+		bool peakRead(std::string filename);
+
+		void removePeak (const mrs_natural peakIndex, const mrs_natural frame);
 	};
 
 	inline
