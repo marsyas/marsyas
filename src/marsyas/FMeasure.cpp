@@ -75,6 +75,8 @@ FMeasure::myUpdate(MarControlPtr sender)
 void 
 FMeasure::myProcess(realvec& in, realvec& out)
 {
+	(void) in;
+
 	if (ctrl_reset_->to<mrs_bool>())
 	{
 		numObsInRef_	= 0;
@@ -96,6 +98,9 @@ FMeasure::myProcess(realvec& in, realvec& out)
 
 	out(kPrecision,0)	= numTruePos_ * (1.0/ numObsInTest_),
 	out(kRecall,0)		= numTruePos_ * (1.0/ numObsInRef_);
+
+	if (out(kPrecision,0) <= 0 && out(kRecall,0) <= 0)
+		return;
 
 	out(kFMeasure,0)	= 2 * out(kPrecision,0) * out(kRecall,0) / (out(kPrecision,0) + out(kRecall,0));
 }

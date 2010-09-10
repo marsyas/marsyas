@@ -45,6 +45,8 @@ PeakDistanceHorizontality::PeakDistanceHorizontality(mrs_string name) : MarSyste
 PeakDistanceHorizontality::PeakDistanceHorizontality(const PeakDistanceHorizontality& a) : MarSystem(a)
 {
 	ctrl_horizvert_	= getctrl("mrs_realvec/inpIsHorizontal");
+	ctrl_rangeX_	= getctrl("mrs_real/rangeX");
+	ctrl_rangeY_	= getctrl("mrs_real/rangeY");
 }
 
 
@@ -69,6 +71,8 @@ PeakDistanceHorizontality::addControls()
 	addctrl("mrs_realvec/weights", tmp);
 	addctrl("mrs_natural/numInputs", 0);
 	addctrl("mrs_realvec/inpIsHorizontal", tmp, ctrl_horizvert_);
+	addctrl("mrs_real/rangeX", 0., ctrl_rangeX_);
+	addctrl("mrs_real/rangeY", 0., ctrl_rangeY_);
 }
 
 void
@@ -88,11 +92,14 @@ PeakDistanceHorizontality::myUpdate(MarControlPtr sender)
 void
 PeakDistanceHorizontality::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural	numInputs	= getctrl ("mrs_natural/numInputs")->to<mrs_natural>();
-	mrs_realvec isHoriz		= ctrl_horizvert_->to<mrs_realvec>();
-	
+	mrs_natural i;
+	const mrs_natural	numInputs	= getctrl ("mrs_natural/numInputs")->to<mrs_natural>();
+	const mrs_realvec	isHoriz		= ctrl_horizvert_->to<mrs_realvec>();
+	const mrs_real		range[2]	= {ctrl_rangeX_->to<mrs_real>(), ctrl_rangeY_->to<mrs_real>()};
+
 	out = in;
 
+	MRSASSERT(range[0] > 0 && range[1] > 0);
 	if (isHoriz.getSize () != numInputs)
 	{
 		MRSWARN("PeakDistanceHorizontality: dimension mismatch");
@@ -108,22 +115,23 @@ PeakDistanceHorizontality::myProcess(realvec& in, realvec& out)
 		return;
 	}
 
-	for (mrs_natural i = 0; i < inSamples_; i++)
+	for (i = 0; i < inSamples_; i++)
 	{
 		for (mrs_natural j = i; j < inSamples_; j++)
 		{
 			mrs_natural k;
-			mrs_real	horizontality	= ComputeHorizontality (in(i), in(j)),
+			mrs_real	horizontality	= ComputeHorizontality (	std::abs(in(1,i)-in(1,j))/range[0], 
+																	std::abs(in(0,i)-in(0,j))/range[1]),
 						norm			= 0;
 
 			for (k = 0; k < numInputs; k++)
 			{
-			    mrs_real weight = horizontality;
+				mrs_real weight = horizontality;
 
 				if (abs(isHoriz(k) - 2) < kIdentityThresh)
-					weight	= .5;
+					weight	= .5;			// input is both horizontal and vertical
 				else if (abs(isHoriz(k)) < kIdentityThresh)
-					weight	= 1.-weight;
+					weight	= 1.-weight;	// input is vertical
 
 				norm							+= weight;
 				weights_(k*inSamples_ + i, j)	= weight;
@@ -134,7 +142,8 @@ PeakDistanceHorizontality::myProcess(realvec& in, realvec& out)
 			for (k = 0; k < numInputs; k++)
 			{
 				weights_(k*inSamples_ + i, j)	*= norm;
-				weights_(k*inSamples_ + j, i)	*= norm;	// symmetry
+				if (i != j)
+					weights_(k*inSamples_ + j, i)	*= norm;	// symmetry
 			}
 		}
 	}
@@ -148,9 +157,20 @@ PeakDistanceHorizontality::myProcess(realvec& in, realvec& out)
 }
 
 mrs_real
-PeakDistanceHorizontality::ComputeHorizontality(mrs_real freq1, mrs_real freq2)
+PeakDistanceHorizontality::ComputeHorizontality(mrs_real scaledDiffX, mrs_real scaledDiffY)
 {
-	// for now its only the weighted frequency distance...
-	//return this->sigmoid (abs(freq1-freq2));	
-	return this->gaussian (freq1-freq2);	
+	
+	if (scaledDiffX == 0)
+	{
+		if (scaledDiffY == 0)
+			return .5;
+		else
+			return 0.;
+	}
+	else if (scaledDiffY == 0)
+		return   1.;
+
+	mrs_real res = scaledDiffX / std::sqrt(scaledDiffX*scaledDiffX + scaledDiffY*scaledDiffY);
+
+	return res*res;
 }

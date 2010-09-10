@@ -71,11 +71,11 @@ static SimMeasureProperties_t simMeasureProps[kNumSimMeasures] =
 {
 	{"FREQ",	"Frequency",			"euclideanDistance",	"ignoreFrequency",		"if",	false,	1, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq},
 	{"TIME",	"Time",					"euclideanDistance",	"ignoreTime",			"it",	false,	2, PeakFeatureSelect::pkFrame},
-	{"AMP",		"Amplitude",			"euclideanDistance",	"ignoreAmplitude",		"ia",	false,	1, PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp},
+	{"AMP",		"Amplitude",			"euclideanDistance",	"ignoreAmplitude",		"ia",	false,	2, PeakFeatureSelect::pkAmplitude | PeakFeatureSelect::dBPkAmp},
 	{"DFREQ",	"Frequency Modulation",	"euclideanDistance",	"ignoreDeltaFrequency", "idf",	false,	0, PeakFeatureSelect::pkDeltaFrequency},// | PeakFeatureSelect::barkPkFreq},
 	{"DAMP",	"Amplitude Modulation",	"euclideanDistance",	"ignoreDeltaAmplitude", "ida",	false,	0, PeakFeatureSelect::pkDeltaAmplitude /*| PeakFeatureSelect::dBPkAmp*/},
 	{"CONN",	"Connectivity",			"doesntmatter",			"ignoreConnectivity",	"ic",	false,	1, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq | PeakFeatureSelect::pkFrame},
-	{"HWPS",	"HPWS",					"doesntmatter",			"ignoreHWPS",			"ih",	false,	2, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes},
+	{"HWPS",	"HPWS",					"doesntmatter",			"ignoreHWPS",			"ih",	false,	0, PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkSetFrequencies | PeakFeatureSelect::pkSetAmplitudes},
 	{"PAN",		"Panning",				"euclideanDistance",	"ignorePan",			"ip",	false,	2, PeakFeatureSelect::pkPan},
 	{"RAND",	"Random",				"randomDistance",		"ignoreRand",			"ir",	false,	2, PeakFeatureSelect::pkPan},
 };
@@ -280,7 +280,7 @@ MarSystem* createSimilarityNet (MarSystemManager *mng, mrs_string seriesName = "
 
 	flThru->addMarSystem (mng->create("PeakFeatureSelect","FREQfeatSel4Weight"));
 	flThru->updControl("PeakFeatureSelect/FREQfeatSel4Weight/mrs_natural/selectedFeatures",
-		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::barkPkFreq);
+		PeakFeatureSelect::pkFrequency | PeakFeatureSelect::pkFrame);
 	flThru->addMarSystem (mng->create("PeakDistanceHorizontality","horizontality"));
 	
 	//
@@ -826,6 +826,13 @@ void updateSimNetCtrls (MarSystem *mainNet, bool horizWeight)
 
 	mainNet->updControl("FlowThru/clustNet/Series/simNet/FlowThru/weightCalc/PeakDistanceHorizontality/horizontality/mrs_bool/bypass", !horizWeight);
 
+	mainNet->updControl("FlowThru/clustNet/Series/simNet/FlowThru/weightCalc/PeakDistanceHorizontality/horizontality/mrs_real/rangeX",
+		1.*accSize_);
+	mrs_realvec conv(2);
+	string2parameters(intervalFrequency, conv, '_'); //[!]
+	mainNet->updControl("FlowThru/clustNet/Series/simNet/FlowThru/weightCalc/PeakDistanceHorizontality/horizontality/mrs_real/rangeY",
+		conv(1)-conv(0));
+
 	string.str ("");
 	string << "FlowThru/clustNet/Series/simNet/Fanout/simFan/Series/" << simMeasureProps[kConn].name << "_Sim/TimeFreqPeakConnectivity/" << simMeasureProps[kConn].name  << "_SimMat/mrs_natural/textureWindowSize";
 	mainNet->updControl(string.str(), accSize_);
@@ -975,7 +982,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 		mainNet->addMarSystem(clustNet);
 
 		//
-		// LINK controls related to variable number of peak from PeakConvert to simNet
+		// LINK controls related to variable number of peaks from PeakConvert to simNet
 		//
 		ostringstream ctrl;
 		ctrl.str("");

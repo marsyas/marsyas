@@ -54,6 +54,9 @@ PeakViewMerge::PeakViewMerge(const PeakViewMerge& a):MarSystem(a)
 {
 	ctrl_mode_			= getctrl("mrs_string/mode"); 
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks"); 
+	ctrl_frameMaxNumPeaks1_ = getctrl("mrs_natural/frameMaxNumPeaks1"); 
+	ctrl_frameMaxNumPeaks2_ = getctrl("mrs_natural/frameMaxNumPeaks2"); 
+	ctrl_noNegativeGroups_ = getctrl("mrs_bool/discardNegativeGroups"); 
 }
 
 PeakViewMerge::~PeakViewMerge()
@@ -69,8 +72,11 @@ PeakViewMerge::clone() const
 void 
 PeakViewMerge::addControls()
 {
-	addctrl("mrs_string/mode", "AND", ctrl_mode_);
-	addctrl("mrs_natural/totalNumPeaks", 0, ctrl_totalNumPeaks_);
+	addControl("mrs_string/mode", "AND", ctrl_mode_);
+	addControl("mrs_natural/totalNumPeaks", 0, ctrl_totalNumPeaks_);
+	addControl("mrs_natural/frameMaxNumPeaks1", 0, ctrl_frameMaxNumPeaks1_);
+	addControl("mrs_natural/frameMaxNumPeaks2", 0, ctrl_frameMaxNumPeaks2_);
+	addControl("mrs_bool/discardNegativeGroups", false, ctrl_noNegativeGroups_);
 }
 
 
@@ -91,16 +97,22 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 {
 	peakView	*In[kNumMatrices],
 				Out (out);
-	mrs_natural i,
+	mrs_natural i, rowIdx = 0,
 				numPeaks[kNumMatrices],
-				numRows		= in.getRows ()/kNumMatrices,   // this assumes that frameMaxNumPeaks is equal in the input files
 				outputIdx	= 0;
+	const mrs_bool discNegGroups	= ctrl_noNegativeGroups_->to<mrs_bool>();
+
 	out.setval(0.);
 	
 	for (i = 0; i < kNumMatrices; i++)
 	{
+		mrs_natural	numRows		= (i==kMat1)? ctrl_frameMaxNumPeaks1_->to<mrs_natural>() :  ctrl_frameMaxNumPeaks2_->to<mrs_natural>();
+		numRows					*= peakView::nbPkParameters;
+		if (numRows == 0) // if the controls have not been set assume both matrixes to be of equal size	
+			numRows	= in.getRows ()/kNumMatrices;
 		peakViewIn_[i].stretch (numRows, in.getCols ());
-		in.getSubMatrix (i*numRows, 0, peakViewIn_[i]);
+		in.getSubMatrix (rowIdx, 0, peakViewIn_[i]);
+		rowIdx		+= numRows;
 		In[i]		= new peakView(peakViewIn_[i]);
 		numPeaks[i]	= In[i]->getTotalNumPeaks ();
 	}
@@ -110,6 +122,8 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 		// write all entries of the second peakView to output
 		for (i = 0; i < numPeaks[1]; i++)
 		{
+			if (discNegGroups && (*In[1])(i,peakView::pkGroup) < 0)
+				continue;
 			WriteOutput (Out, In[1], i, outputIdx);
 			outputIdx++;
 		}
@@ -118,6 +132,8 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 		for (i = 0; i < numPeaks[0]; i++)
 		{
 			mrs_natural Idx;
+			if (discNegGroups && (*In[0])(i,peakView::pkGroup) < 0)
+				continue;
 			for (mrs_natural k = 1; k < kNumMatrices; k++)
 				Idx	= FindDuplicate (In[k], (*In[0])(i, peakView::pkFrequency), numPeaks[k]);
 
@@ -134,11 +150,15 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 		for (i = 0; i < numPeaks[0]; i++)
 		{
 			mrs_natural Idx;
+			if (discNegGroups && (*In[0])(i,peakView::pkGroup) < 0)
+				continue;
 			for (mrs_natural k = 1; k < kNumMatrices; k++)
 				Idx	= FindDuplicate (In[k], (*In[0])(i, peakView::pkFrequency), numPeaks[k]);
 
 			if (Idx >= 0)
 			{
+				if (discNegGroups && (*In[1])(Idx,peakView::pkGroup) < 0)
+					continue;
 				WriteOutput (Out, In[0], i, outputIdx);
 				outputIdx++;
 			}
@@ -149,6 +169,8 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 		// find duplicates and write only residual to output
 		for (i = 0; i < numPeaks[0]; i++)
 		{
+			if (discNegGroups && (*In[0])(i,peakView::pkGroup) < 0)
+				continue;
 			mrs_natural Idx	= FindDuplicate (In[1], (*In[0])(i, peakView::pkFrequency), numPeaks[1]);
 
 			if (Idx < 0)
@@ -160,6 +182,8 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 		// find duplicates and write only residual to output
 		for (i = 0; i < numPeaks[1]; i++)
 		{
+			if (discNegGroups && (*In[1])(i,peakView::pkGroup) < 0)
+				continue;
 			mrs_natural Idx= FindDuplicate (In[0], (*In[1])(i, peakView::pkFrequency), numPeaks[0]);
 
 			if (Idx < 0)

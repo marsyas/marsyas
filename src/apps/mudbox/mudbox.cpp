@@ -4324,8 +4324,13 @@ void toy_with_PeakEval (string testFile, string refFile, string outTextFileName 
 
 	// set options
 	net->updControl("PeakViewMerge/merge/mrs_string/mode", "AND");
+	net->updControl("PeakViewMerge/merge/mrs_bool/discardNegativeGroups", true);
 
 	// link controls
+	net->linkControl("PeakViewMerge/merge/mrs_natural/frameMaxNumPeaks1", 
+		"Fanout/input/PeakViewSource/testFile/mrs_natural/frameMaxNumPeaks");
+	net->linkControl("PeakViewMerge/merge/mrs_natural/frameMaxNumPeaks2", 
+		"Fanout/input/PeakViewSource/refFile/mrs_natural/frameMaxNumPeaks");
 	net->linkControl("FMeasure/fmeasure/mrs_natural/numObservationsInTest", 
 		"Fanout/input/PeakViewSource/testFile/mrs_natural/totalNumPeaks");
 	net->linkControl("FMeasure/fmeasure/mrs_natural/numObservationsInReference", 

@@ -36,6 +36,9 @@ namespace Marsyas
 	- \b mrs_string/mode [w] : AND (output only peaks in both), OR (output all peaks), XOR 
 	(output only the peaks that are not in both inputs).
 	- \b mrs_natural/totalNumPeaks [r] : number of peaks at the output
+	- \b mrs_natural/frameMaxNumPeaks1 [w] : maximum number of peaks per frame in input 1
+	- \b mrs_natural/frameMaxNumPeaks2 [w] : maximum number of peaks per frame in input 2
+	- \b mrs_natural/discardNegativeGroups [w] : discard all peaks with negative group indices when true
 	*/
 
 
@@ -55,7 +58,10 @@ namespace Marsyas
 		};
 
 		MarControlPtr	ctrl_mode_,
-			ctrl_totalNumPeaks_;
+			ctrl_totalNumPeaks_,
+			ctrl_frameMaxNumPeaks1_,
+			ctrl_frameMaxNumPeaks2_,
+			ctrl_noNegativeGroups_;
 		mrs_realvec peakViewIn_[kNumMatrices];
 
 	public:

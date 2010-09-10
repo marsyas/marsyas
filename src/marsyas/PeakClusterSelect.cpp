@@ -253,11 +253,11 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 
 #ifdef MARSYAS_MATLAB
 #ifdef MTLB_DBG_LOG
-	MATLAB_PUT(clusterSimilarity, "sim");
-	MATLAB_PUT(curNumClusters, "numClust");
-	MATLAB_EVAL ("figure(13),imagesc(0:(numClust-1),0:(numClust-1),sim,[0 1]),colorbar");
-	MATLAB_PUT(silhouetteCoeffs, "sil");
-	MATLAB_EVAL ("figure(14),plot(0:(length(sil)-1), sil),axis([0 length(sil)-1 0 1]), grid on");
+	//MATLAB_PUT(clusterSimilarity, "sim");
+	//MATLAB_PUT(curNumClusters, "numClust");
+	//MATLAB_EVAL ("figure(13),imagesc(0:(numClust-1),0:(numClust-1),sim,[0 1]),colorbar");
+	//MATLAB_PUT(silhouetteCoeffs, "sil");
+	//MATLAB_EVAL ("figure(14),plot(0:(length(sil)-1), sil),axis([0 length(sil)-1 0 1]), grid on");
 #endif
 #endif	
 

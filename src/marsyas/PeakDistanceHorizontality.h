@@ -26,15 +26,15 @@ namespace Marsyas
 	/**
 	\class PeakDistanceHorizontality
 	\ingroup Processing
-	\brief Basic example on how to use controls efficiently in MarSystems
-
-	This example is the same as Gain; it scales the output by
-	multiplying each sample with a real number.
+	\brief compute a weight depending on how "horizontal" the distance between two peak entries is
 
 	Controls:
-	- \b mrs_string/PeakDistanceHorizontality [rw] : choose a *, +, max, min combination operation
+	- \b mrs_realvec/inpIsHorizontal [w] : defines an input to be a horizontal or vertical distance measure
 	- \b mrs_realvec/weights [rw] : weight of combinations default [1 1 1 ... 1] with the length of the number of systems
-	- \b mrs_bool/numInputs [rw] : number of parallels.
+	- \b mrs_natural/numInputs [w] : number of parallels.
+	- \b mrs_bool/bypass [w] : set all weights to 1 if true
+	- \b mrs_real/rangeX [w] : upper - lower bound for abscissa
+	- \b mrs_real/rangeY [w] : upper - lower bound for ordinate
 	*/
 
 	class marsyas_EXPORT PeakDistanceHorizontality: public MarSystem
@@ -47,7 +47,8 @@ namespace Marsyas
 		/// Reads changed controls and sets up variables if necessary.
 		void myUpdate(MarControlPtr sender);
 
-		mrs_real ComputeHorizontality(mrs_real freq1, mrs_real freq2);
+		mrs_real ComputeHorizontality(mrs_real diffX, mrs_real diffY);
+		//mrs_real ComputeHorizontality(mrs_real freq1, mrs_real freq2);
 
 		inline mrs_real sigmoid (mrs_real val)
 		{
@@ -60,7 +61,9 @@ namespace Marsyas
 		}
 
 		/// MarControlPtr for the gain control
-		MarControlPtr	ctrl_horizvert_;
+		MarControlPtr	ctrl_horizvert_,
+						ctrl_rangeX_,
+						ctrl_rangeY_;
 
 		mrs_realvec		weights_;
 		mrs_real		sigSteepness_,
