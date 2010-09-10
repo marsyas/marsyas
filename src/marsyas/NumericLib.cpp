@@ -1363,7 +1363,10 @@ NumericLib::tqli(realvec &d, realvec &e, mrs_natural m, realvec &z)
             if( iter++ == 30 )
             {
                cerr << "tqli did not converge!" << endl;
-               exit(EXIT_SUCCESS);
+			   MRSERR("NumericLib.cpp: tqli did not converge!");
+			   MRSASSERT(0);
+			   return;
+               //exit(EXIT_SUCCESS);
             }
             
             g = (d(l+1) - d(l)) / (2.0 * e(l));
@@ -1891,7 +1894,7 @@ NumericLib::euclideanDistance(const realvec& Vi, const realvec& Vj, const realve
 		}
 		res = sqrt(res);
 	}
-	else 
+	else if (covMatrix.sum () > 0)
 	{
 		// do a standardized L2 euclidean distance 
 		//(i.e. just use the diagonal elements of covMatrix)
