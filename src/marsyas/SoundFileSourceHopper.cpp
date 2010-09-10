@@ -26,7 +26,7 @@ using namespace Marsyas;
 
 SoundFileSourceHopper::SoundFileSourceHopper(mrs_string name) : MarSystem("SoundFileSourceHopper", name)
 {
-	
+
 	/// Add any specific controls needed by this MarSystem.
 	addControls();
 
@@ -163,7 +163,18 @@ SoundFileSourceHopper::myProcess(realvec& in, realvec& out)
 	// First step: do the processing of the SoundFileSource.
 	MarControlAccessor acc(marsystems_[0]->ctrl_processedData_);
 	realvec& slice_out = acc.to<mrs_realvec>();
-	marsystems_[0]->process(in, slice_out);
+	// `slice_out` is the slice that receives the data from the SoundFileSource
+	// Note that we provide `slice_out` also as input argument of
+	// this `process` call instead of the traditional realvec `in`.
+	// We do this to circumvent the (optional) flow check in `process`.
+	// SoundFileSourceHopper does not use its `inSamples_` attribute
+	// to set slice sizes, but uses the `hopSize` control instead.
+	// Consequently, the realvec `in` given as argument from upstream
+	// (based on the inSamples_ attribute) will typically not match the slice
+	// size we expect and the flow check will fail. `slice_out` however
+	// does have the size we expect and because the SoundFileSource just
+	// ignores its input anyway, we can use this trick here.
+	marsystems_[0]->process(slice_out, slice_out);
 
 	// The other steps: do the processing of MixToMono (if required)
 	// and ShiftInput (and maybe more MarSystems).
