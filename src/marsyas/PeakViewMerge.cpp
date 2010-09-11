@@ -164,6 +164,24 @@ PeakViewMerge::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
+	else if (ctrl_mode_->to<mrs_string>() == "ANDOR")
+	{
+		// keep the input[0] peaks that are not in input[1]
+		for (i = 0; i < numPeaks[0]; i++)
+		{
+			mrs_natural Idx;
+			if (discNegGroups && (*In[0])(i,peakView::pkGroup) < 0)
+				continue;
+			for (mrs_natural k = 1; k < kNumMatrices; k++)
+				Idx	= FindDuplicate (In[k], (*In[0])(i, peakView::pkFrequency), numPeaks[k]);
+
+			if (Idx < 0)
+			{
+				WriteOutput (Out, In[0], i, outputIdx);
+				outputIdx++;
+			}
+		}
+	}
 	else if (ctrl_mode_->to<mrs_string>() == "XOR")
 	{
 		// find duplicates and write only residual to output
