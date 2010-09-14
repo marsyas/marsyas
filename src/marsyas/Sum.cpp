@@ -133,9 +133,10 @@ Sum::myProcess(realvec& in, realvec& out)
 		// sness - New Sum code
 		for (o = 0; o < onObservations_; o++) {
 			for (t = 0; t < onSamples_; t++) {
-				out(o,0) = 0.0;
+				out(o,t) = 0.0;
 			}
 		}
+		// AL: why not replace this with out.setval for readability?
 
 		if (ctrl_mode_->to<mrs_string>() == "sum_observations") {
 			for (o = 0; o < inObservations_; o++) {
@@ -158,6 +159,4 @@ Sum::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-
-	  
 }
