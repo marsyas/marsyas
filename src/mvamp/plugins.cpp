@@ -46,6 +46,7 @@
 #include "MarsyasBExtractRolloff.h"
 #include "MarsyasBExtractSCF.h"
 #include "MarsyasBExtractSFM.h"
+#include "MarsyasIBT.h"
 
 #include <cstdio>
 #include "vamp-sdk/Plugin.h"
@@ -62,6 +63,7 @@ static Vamp::PluginAdapter<MarsyasBExtractMFCC> MarsyasBExtractMFCCAdapter;
 static Vamp::PluginAdapter<MarsyasBExtractRolloff> MarsyasBExtractRolloffAdapter;
 static Vamp::PluginAdapter<MarsyasBExtractSCF> MarsyasBExtractSCFAdapter;
 static Vamp::PluginAdapter<MarsyasBExtractSFM> MarsyasBExtractSFMAdapter;
+static Vamp::PluginAdapter<MarsyasIBT> MarsyasIBT;
 
 
 const VampPluginDescriptor *vampGetPluginDescriptor(unsigned int version,
@@ -79,6 +81,7 @@ const VampPluginDescriptor *vampGetPluginDescriptor(unsigned int version,
     case  6: return MarsyasBExtractRolloffAdapter.getDescriptor();
     case  7: return MarsyasBExtractSCFAdapter.getDescriptor();
     case  8: return MarsyasBExtractSFMAdapter.getDescriptor();
+	case  9: return MarsyasIBT.getDescriptor();
     default: return 0;
     }
 }

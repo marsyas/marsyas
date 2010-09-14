@@ -1119,11 +1119,12 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(agentsHistory_, "agentsHistory");
 	//MATLAB_PUT(bestFinalAgent_, "bestFinalAgent");
 	
-	//by the end of the analysis:
-	if(t_ == soundFileSize_-1) //[! -1 for acouting on time of timing reset on backtrace mode]
+	//if in nonCausalMode save last best agent history as the final output
+	if(nonCausal_)
 	{
-		//if in nonCausalMode save last best agent history as the final output
-		if(nonCausal_)
+		soundFileSize_ = ctrl_soundFileSize_->to<mrs_natural>();
+		//by the end of the analysis:
+		if(t_ == soundFileSize_-1) //[! -1 for acouting on time of timing reset on backtrace mode]
 		{
 			mrs_natural bestAgentHistorySize = (mrs_natural) beatCounter_(bestFinalAgent_);
 			bestFinalAgentHistory_.create(bestAgentHistorySize);
@@ -1165,4 +1166,6 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("hold off;");
 
 	t_++; //increment timer by the end of each cycle
+
+	//cout << "size: " << soundFileSize_ << endl;
 }

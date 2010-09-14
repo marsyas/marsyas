@@ -16,7 +16,7 @@ $ svn co https://vamp.svn.sourceforge.net/svnroot/vamp/vamp-plugin-tester/trunk 
 Linux OS:
 (Tested in Linux Ubuntu 9.04-32bits with gcc 4.3 -> may work on others)
 
-1. Marsyas Bextract Vamp Plugin Compilation:
+1. Building Marsyas Vamp Plugin:
 
    - $ ccmake WITH_VAMP ON:
 		* VAMP_LIBRARY -> static version of libvamp-sdk, from the install path - /usr/local/lib/libvamp-sdk.a
@@ -28,8 +28,8 @@ Linux OS:
 2. Marsyas Vamp Plugin Integration in SonicVisualiser Transforms:
 
    - copy libmvamp.so (or pre-compiled mvamp.so) to one of the following paths:
-	* /home/jlo/vamp
-	* /home/jlo/.vamp
+	* /home/(user)/vamp
+	* /home/(user)/.vamp
 	* /usr/local/lib/vamp
 	* /usr/lib/vamp
 
@@ -65,7 +65,7 @@ Tested in 10.6 with gcc 4.2 for i386 and x86_64, linking to both the static and 
 Windows OS:
 (Tested in Windows Vista-32bists with VS2008 -> may work on others)
 
-1. Marsyas Bextract Vamp Plugin Compilation - FOR DYNAMIC MARSYAS LIBRARY (marsyas.dll):
+1. Building Marsyas Vamp Plugin - FOR DYNAMIC MARSYAS LIBRARY (marsyas.dll):
 
 	- run Cmake-GUI WITH_VAMP ON (check that MARSYAS_STATIC is OFF):
 		* VAMP_LIBRARY -> static version of pre-compiled libvamp-sdk - xxx\vamp-plugin-sdk-2.1-staticlibs-win32-msvc\release\VampPluginSDK.lib
@@ -84,4 +84,4 @@ Windows OS:
 		
 	(mvamp-plugins.cat uneccessary)
 
-NOTE: Plugin still being tested under MacOSX.
+NOTE: Only plugins built as x86 architecture are supported by SonicVisualiser.

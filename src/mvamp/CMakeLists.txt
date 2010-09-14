@@ -8,6 +8,7 @@ set (MVamp_SOURCES
 	MarsyasBExtractSFM.cpp
 	MarsyasBExtractZeroCrossings.cpp
 	ZeroCrossing.cpp
+	MarsyasIBT.cpp
 	plugins.cpp
 )
 
