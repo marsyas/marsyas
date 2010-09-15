@@ -9,7 +9,8 @@ require 'pp'
 # results together into an output file suitable for MIREX 2010.
 #
 # Pseudocode:
-#
+# 0) get current working dir and adjust the kea path
+# 
 # 1) Change directory to the scratch folder
 #
 # 2) Count the number of lines in the train_list file and get a list
@@ -45,6 +46,10 @@ else
   test_list = ARGV[3]
   output_list = ARGV[4]
 end
+
+working_dir = Dir.pwd
+
+path_to_mirex_train_and_predict = working_dir + "/" + path_to_mirex_train_and_predict
 
 num_cores = 1
 
@@ -252,8 +257,10 @@ all_test_file_filenames = []
       # find element in feature_labels_array with this label
       feature_index = feature_labels_array.index(filename)
       # Output the corresponding element in feature_vectors_array and the label
-      current_test_output_file.puts "% filename #{filename}"
-      current_test_output_file.puts "#{feature_vectors_array[feature_index]},#{train_labels[0]}"
+      if !feature_index.nil?
+        current_test_output_file.puts "% filename #{filename}"
+        current_test_output_file.puts "#{feature_vectors_array[feature_index]},#{train_labels[0]}"
+      end
     end
     all_test_file_filenames.push(test_file_filenames)
   rescue EOFError
