@@ -61,6 +61,7 @@ int ticks;
 bool histogram;
 bool correlogram;
 bool neptune;
+bool json;
 CommandLineOptions cmd_options;
 
 void 
@@ -126,6 +127,7 @@ initOptions()
 	cmd_options.addBoolOption("histogram", "hi", false);
 	cmd_options.addBoolOption("correlogram", "co", false);
 	cmd_options.addBoolOption("neptune", "npt", false);
+	cmd_options.addBoolOption("json", "json", false);
 }
 
 
@@ -146,6 +148,7 @@ loadOptions()
 	histogram = cmd_options.getBoolOption("histogram");
 	correlogram = cmd_options.getBoolOption("correlogram");
 	neptune = cmd_options.getBoolOption("neptune");
+	json = cmd_options.getBoolOption("json");
 }
 
 
@@ -333,8 +336,8 @@ void outputWaveformPNG(string inFileName, string outFileName)
 
 int getFileLengthForSpectrogram(string inFileName, double& min, double& max, double& average) {
 
-  cout << "windowSize = " << windowSize << endl;
-  cout << "hopSize = " << hopSize << endl;
+  // cout << "windowSize = " << windowSize << endl;
+  // cout << "hopSize = " << hopSize << endl;
 
   
 	realvec processedData;
@@ -359,7 +362,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
   double maxBin = fftBins * (maxFreq / (frequency / 2.0));
-  cout << "maxBin = " << maxBin << endl;
+  // cout << "maxBin = " << maxBin << endl;
 
 	int length = 0;
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() 
@@ -616,6 +619,98 @@ neptune_spectrogram(string inFileName)
 #endif 
 }
 
+// variation of spectrogram generation that generates json
+void 
+json_spectrogram(string inFileName)
+{
+  FileName inFile(inFileName);
+  windowSize = 8192;
+  hopSize = 8192;
+  maxFreq = 8000;
+  gain = 64.0;
+
+  double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+
+  double min = 99999999999.9;
+  double max = -99999999999.9;
+	
+  double average;
+
+  int length = getFileLengthForSpectrogram(inFileName,min,max,average);
+
+  MarSystemManager mng;
+  MarSystem* net = mng.create("Series", "net");
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  net->addMarSystem(mng.create("ShiftInput", "si"));
+  net->addMarSystem(mng.create("Spectrum","spk"));
+  net->addMarSystem(mng.create("PowerSpectrum","pspk"));
+  net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+  net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->updControl("SoundFileSource/src/mrs_natural/pos", position);
+  net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
+  net->updControl("mrs_natural/inSamples", int(hopSize));
+
+  mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  double pngLength = length;
+  double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+	
+  realvec processedData;
+  double normalizedData;
+
+  // Iterate over the whole input file by ticking, outputting columns
+  // of data to the .png file with each tick
+  double x = 0;
+  double y = 0;
+  double colour = 0;
+  double energy;
+  double penergy;
+  double denergy;
+
+  cout << "[" << endl;
+  while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
+		 && (ticks == -1 || x < ticks))  {
+	net->tick();
+	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		
+	energy = 0.0;
+		
+	for (int i = 0; i < pngHeight; ++i) {
+	  double data_y = i;
+			
+	  double data = processedData(int(data_y),0);
+	  normalizedData = ((data - min) / (max - min)) * gain;
+
+	  energy += normalizedData;
+			
+	  // Make the spectrogram black on white instead of white on black
+	  // TODO - Add the ability to generate different color maps, like Sonic Visualiser
+	  colour = 1.0 - normalizedData;
+	  if (colour > 1.0) {
+		colour = 1.0;
+	  }
+	  if (colour < 0.0) {
+		colour = 0.0;
+	  }
+
+	  y = i;
+	  if (colour > 0) {
+		cout << "[" << x << "," << y << "," << colour << "]," << endl;
+	  }
+		
+	}
+		
+	x++;
+
+  }
+
+  cout << "]" << endl;
+
+  delete net;
+
+}
+
 
 
 
@@ -771,6 +866,11 @@ main(int argc, const char **argv)
 	    neptune_spectrogram(files[0]);
 	    exit(0);
 	  }
+
+	if (json) {
+	  json_spectrogram(files[0]);
+	  exit(0);
+	}
 
 	if (correlogram) {
 	  correlogramPNGs(files[0],files[1]);
