@@ -29,6 +29,7 @@
 
 #include <cstdio>
 #include "Collection.h"
+#include "FileName.h" 
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "common.h"
@@ -59,6 +60,7 @@ int position;
 int ticks;
 bool histogram;
 bool correlogram;
+bool neptune;
 CommandLineOptions cmd_options;
 
 void 
@@ -123,6 +125,7 @@ initOptions()
 	cmd_options.addNaturalOption("position", "p", 0);
 	cmd_options.addBoolOption("histogram", "hi", false);
 	cmd_options.addBoolOption("correlogram", "co", false);
+	cmd_options.addBoolOption("neptune", "npt", false);
 }
 
 
@@ -142,6 +145,7 @@ loadOptions()
 	ticks = cmd_options.getNaturalOption("ticks");
 	histogram = cmd_options.getBoolOption("histogram");
 	correlogram = cmd_options.getBoolOption("correlogram");
+	neptune = cmd_options.getBoolOption("neptune");
 }
 
 
@@ -329,6 +333,10 @@ void outputWaveformPNG(string inFileName, string outFileName)
 
 int getFileLengthForSpectrogram(string inFileName, double& min, double& max, double& average) {
 
+  cout << "windowSize = " << windowSize << endl;
+  cout << "hopSize = " << hopSize << endl;
+
+  
 	realvec processedData;
 	double dataLength = 0;
 	double dataTotal = 0.0;
@@ -336,6 +344,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 	MarSystemManager mng;
 	MarSystem* net = mng.create("Series", "net");
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
@@ -346,6 +355,12 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
 	net->updControl("mrs_natural/inSamples", int(hopSize));
 
+
+	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+  double maxBin = fftBins * (maxFreq / (frequency / 2.0));
+  cout << "maxBin = " << maxBin << endl;
+
 	int length = 0;
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() 
 			&& (ticks == -1 || length < ticks)) {
@@ -353,7 +368,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 		length++;
 
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-		for (int i = 0; i < processedData.getRows(); ++i) {
+		for (int i = 0; i < maxBin; ++i) {
 			for (int j = 0; j < processedData.getCols(); j++) {
 				if (processedData(i,j) < min)
 					min = processedData(i,j);
@@ -378,6 +393,8 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 
 	return length;
 }
+
+
 
 void outputSpectrogramPNG(string inFileName, string outFileName)
 {
@@ -444,6 +461,8 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 			double data = processedData(int(data_y),0);
 
 			normalizedData = ((data - min) / (max - min)) * gain;
+
+
 			diff += normalizedData;
 
 			// Make the spectrogram black on white instead of white on black
@@ -460,10 +479,10 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 			png.plot(int(x),int(y),colour,colour,colour);
 		
 		}
-		if (fabs(pdiff-diff) > 4.0)
+		/* if (fabs(pdiff-diff) > 4.0)
 			for (int i=0; i < 20; i++)
 				png.plot(int(x),pngHeight- i, 1.0, 0.0, 0.0);
-		
+		*/ 
 		pdiff = diff;
 		
 		
@@ -476,6 +495,129 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	delete net;
 #endif 
 }
+
+
+// variation of spectrogram generation for NEPTUNE 
+void 
+neptune_spectrogram(string inFileName)
+{
+  FileName inFile(inFileName);
+  string outFileName = inFile.nameNoExt() + ".png";
+  cout << "Generating spectrogram with specific settings for NEPTUNE, Canada" << endl;
+  cout << "Output file is " << outFileName << endl;
+  windowSize = 8192;
+  hopSize = 8192;
+  maxFreq = 8000;
+  gain = 64.0;
+#ifdef MARSYAS_PNG
+    double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+
+	double min = 99999999999.9;
+	double max = -99999999999.9;
+	
+	double average;
+
+	int length = getFileLengthForSpectrogram(inFileName,min,max,average);
+
+	MarSystemManager mng;
+	MarSystem* net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+	net->addMarSystem(mng.create("ShiftInput", "si"));
+	net->addMarSystem(mng.create("Spectrum","spk"));
+	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
+	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
+	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
+	net->updControl("mrs_natural/inSamples", int(hopSize));
+
+	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	double pngLength = length;
+	double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+	
+	cout << "maxFreq = " << maxFreq << endl;
+	cout << "fftBins = " << fftBins << endl;
+	cout << "pngLength = " << pngLength << endl;
+	cout << "pngHeight = " << pngHeight << endl;
+	cout << "gain = " << gain << endl;
+	
+
+	pngwriter png(int(pngLength),int(pngHeight),0,outFileName.c_str());
+
+	realvec processedData;
+	double normalizedData;
+
+	// Iterate over the whole input file by ticking, outputting columns
+	// of data to the .png file with each tick
+	double x = 0;
+	double y = 0;
+	double colour = 0;
+	double energy;
+	double penergy;
+	double denergy;
+	 
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
+		   && (ticks == -1 || x < ticks))  {
+		net->tick();
+		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		
+		energy = 0.0;
+		
+		for (int i = 0; i < pngHeight; ++i) {
+			double data_y = i;
+			
+			double data = processedData(int(data_y),0);
+			normalizedData = ((data - min) / (max - min)) * gain;
+
+			energy += normalizedData;
+
+			
+			// Make the spectrogram black on white instead of white on black
+			// TODO - Add the ability to generate different color maps, like Sonic Visualiser
+			colour = 1.0 - normalizedData;
+			if (colour > 1.0) {
+				colour = 1.0;
+			}
+			if (colour < 0.0) {
+				colour = 0.0;
+			}
+
+			y = i;
+			png.plot(int(x),int(y),colour,colour,colour);
+		
+		}
+		// cout << "e1=" << energy << endl;
+		// cout << "e2=" << energy / pngHeight << endl;
+		// cout << "e3=" << energy / (pngHeight*gain) << endl;
+		
+		energy /= pngHeight;
+		energy *= 100.0;
+		denergy = fabs(penergy - energy);
+		// cout << denergy  << endl;
+		if (denergy > 6.0)
+			for (int i=0; i < 40; i++)
+			  {
+				png.plot(int(x),pngHeight- i, 1.0, 0.0, 0.0);
+				png.plot(int(x),i, 1.0, 0.0, 0.0);
+			  }
+		
+		penergy = energy;
+		
+		
+		x++;
+
+	}
+
+	png.close();
+
+	delete net;
+#endif 
+}
+
+
+
 
 void fftHistogram(string inFileName)
 {
@@ -623,6 +765,12 @@ main(int argc, const char **argv)
 		fftHistogram(files[0]);
 		exit(0);
 	}
+
+	if (neptune) 
+	  {
+	    neptune_spectrogram(files[0]);
+	    exit(0);
+	  }
 
 	if (correlogram) {
 	  correlogramPNGs(files[0],files[1]);

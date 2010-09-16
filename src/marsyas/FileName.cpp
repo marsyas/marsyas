@@ -39,8 +39,12 @@ FileName::FileName(mrs_string filename)
 {
   filename_ = filename;
 
+
+
+#if (defined(MARSYAS_WIN32))
   if (isDir	())
 	  removeLastSlash ();
+#endif 
 }
 
 
