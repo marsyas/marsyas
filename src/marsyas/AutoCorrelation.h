@@ -42,6 +42,9 @@ Fast Fourier Transform (FFT).
 	of the inSamples*2+1, which avoids alising in the iFFT step. In this mode, only the 
 	first inSamples of the autocorrleation function will be output (since the remaining
 	ones are mirrored versions or zero valued).
+	
+	- \b mrs_bool/setr0to1" [w]: if set to true, the output will be normalized so that r_xx(0) = 1
+	Had to use a weird name because there already was a normalize control [AL]
 */
 
 class AutoCorrelation: public MarSystem
@@ -63,6 +66,7 @@ private:
 	MarControlPtr ctrl_voicingThreshold_;
 	MarControlPtr ctrl_aliasedOutput_;
 	MarControlPtr ctrl_makePositive_;
+	MarControlPtr ctrl_setr0to1_;
 	
 
   virtual void addControls();

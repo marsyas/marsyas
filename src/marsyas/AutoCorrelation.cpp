@@ -16,6 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
+#include "common.h"
 #include "AutoCorrelation.h"
 #include "Windowing.h"
 
@@ -44,6 +45,7 @@ AutoCorrelation::AutoCorrelation(const AutoCorrelation& a):MarSystem(a)
 	ctrl_voicingThreshold_ = getctrl("mrs_real/voicingThreshold");
 	ctrl_aliasedOutput_ = getctrl("mrs_bool/aliasedOutput");
 	ctrl_makePositive_ = getctrl("mrs_bool/makePositive");
+	ctrl_setr0to1_ = getctrl("mrs_bool/setr0to1");
 }
 
 void
@@ -55,6 +57,7 @@ AutoCorrelation::addControls()
 	addctrl("mrs_real/voicingThreshold", 0.1, ctrl_voicingThreshold_);
 	addctrl("mrs_bool/aliasedOutput", false, ctrl_aliasedOutput_);
 	addctrl("mrs_bool/makePositive", false, ctrl_makePositive_);
+	addctrl("mrs_bool/setr0to1", false, ctrl_setr0to1_);
 	
 	ctrl_normalize_->setState(true);
 	ctrl_octaveCost_->setState(true);
@@ -220,6 +223,12 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 			else
 				out.setval(0);
 		}
+	}
+	if (ctrl_setr0to1_->to<mrs_bool>())
+	{
+		mrs_real myNorm = out(0,0);
+		if (myNorm > 0)
+			out	/= myNorm;
 	}
 	/*
 	MATLAB_PUT(in, "corr_in");
