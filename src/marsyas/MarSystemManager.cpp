@@ -244,6 +244,7 @@
 #include "PeakViewMerge.h"
 #include "FMeasure.h"
 #include "DelaySamples.h"
+#include "OrcaSnip.h"
 
 #include "Inject.h"
 //modifyHeader
@@ -478,6 +479,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PeakDistanceHorizontality", new PeakDistanceHorizontality("horizontality"));
 	registerPrototype("PeakViewMerge", new PeakViewMerge("PeakViewMerge"));
 	registerPrototype("FMeasure", new FMeasure("F-Measure"));
+	registerPrototype("OrcaSnip", new OrcaSnip("GetSnipBounds"));
 
 
 	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));

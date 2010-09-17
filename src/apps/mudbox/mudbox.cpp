@@ -1341,7 +1341,7 @@ toy_with_marsystemIO()
 }
 
 void 
-toy_with_mixer(string sfName0, string sfName1)
+toy_with_mixer(string sfName0, string sfName1, string sfName2)
 {
 	cout << "Mixing" << endl;
 	cout << "File0 = " << sfName0 << endl;
@@ -1365,14 +1365,23 @@ toy_with_mixer(string sfName0, string sfName1)
 
 	pnet->addMarSystem(mix);
 	pnet->addMarSystem(mng.create("Sum", "sum"));
-	pnet->addMarSystem(mng.create("AudioSink", "dest"));
 
 	pnet->updControl("Fanout/mix/Series/branch0/SoundFileSource/src0/mrs_string/filename", sfName0);
 	pnet->updControl("Fanout/mix/Series/branch1/SoundFileSource/src1/mrs_string/filename", sfName1);
-	pnet->updControl("Fanout/mix/Series/branch0/Gain/gain0/mrs_real/gain", 0.5);
-	pnet->updControl("Fanout/mix/Series/branch1/Gain/gain1/mrs_real/gain", 0.5);
 
-	while(1)
+	if (sfName2 == EMPTYSTRING)
+		pnet->addMarSystem(mng.create("AudioSink", "dest"));
+	else
+	{
+		pnet->addMarSystem(mng.create("SoundFileSink", "dest"));
+		pnet->updControl("SoundFileSink/dest/mrs_string/filename", sfName2);
+	}
+
+	//pnet->updControl("Fanout/mix/Series/branch0/Gain/gain0/mrs_real/gain", 0.5);
+	//pnet->updControl("Fanout/mix/Series/branch1/Gain/gain1/mrs_real/gain", 0.5);
+	pnet->updControl("Sum/sum/mrs_string/mode","sum_samples");
+	
+	while(pnet->getctrl("Fanout/mix/Series/branch0/SoundFileSource/src0/mrs_bool/hasData")->to<mrs_bool>())
 	{
 		pnet->tick();
 	}
@@ -4423,6 +4432,119 @@ void toy_with_SNR(string fname0, string fname1, string fname2 = EMPTYSTRING, str
 	outTextFile.close ();
   
 	delete net;
+}
+
+void toy_with_orcaSnip(string fname0, string outWavFileName = EMPTYSTRING)
+{
+	// settings
+	mrs_natural blockSize	= 2048,
+				hopSize		= 256,
+				accnTimes	= 0;
+	// result
+	mrs_realvec startStopSamples(2);
+	
+	// stuff
+	MarSystemManager mng;
+	FileName Sfname(fname0);
+	mrs_real sampleFreq = 0;
+	const mrs_real tonalityThreshInHz[2] = { 500, 3000};
+
+	cout << "Snipping Orca Sounds" << endl;
+	//startStopSamples.setval (0.);
+
+	if (outWavFileName == EMPTYSTRING)
+		outWavFileName	= Sfname.path () + Sfname.nameNoExt () + ".snip." + Sfname.ext ();
+
+	// create network
+	MarSystem* main			= mng.create("Series", "main");
+	MarSystem* net			= mng.create("Accumulator", "accu");
+	MarSystem* featureSeries= mng.create("Series", "featureSeries");
+	MarSystem* featureFan	= mng.create("Fanout", "featureFan");
+	MarSystem* featTonality	= mng.create("Series", "featTonality");
+	MarSystem* featRms		= mng.create("Series", "rms");
+
+	main->addMarSystem (net);
+	// add decision making system
+	main->addMarSystem (mng.create("OrcaSnip", "getBounds"));
+	
+	net->addMarSystem (featureSeries);
+
+	// add soundfilesrc and hopsize stuff
+	featureSeries->addMarSystem (mng.create("SoundFileSource", "signalSrc"));
+	featureSeries->addMarSystem(mng.create("ShiftInput", "shiftSrc"));
+
+	// add fanout
+	featureSeries->addMarSystem (featureFan);
+
+	// add fanout branches
+	featureFan->addMarSystem (featTonality);
+	featureFan->addMarSystem (featRms);
+
+	// generate rms chain
+	featRms->addMarSystem (mng.create("Rms", "rms"));
+
+	// generate tonality chain
+	//featTonality->addMarSystem (mng.create("HalfWaveRectifier", "Hwr"));
+	featTonality->addMarSystem (mng.create("AutoCorrelation", "Acf"));
+	featTonality->addMarSystem (mng.create("Peaker", "peaker"));
+	featTonality->addMarSystem (mng.create("MaxArgMax", "max"));
+	featTonality->addMarSystem (mng.create("DownSampler", "ds"));
+	
+	//featRms->addMarSystem(mng->create("Windowing", "wiSyn1"));
+	//featRms->addMarSystem(mng->create("Spectrum", "specSyn"));
+	//featRms->addMarSystem (mng.create("2BImplemented", "getBounds"));
+
+	// set parameters
+	main->updControl ("mrs_natural/inSamples", hopSize);
+	featureSeries->updControl ("SoundFileSource/signalSrc/mrs_string/filename", Sfname.fullname ());
+	featureSeries->updControl ("mrs_natural/onSamples", blockSize);
+	
+	featureSeries->updControl ("Fanout/featureFan/Series/featTonality/AutoCorrelation/Acf/mrs_bool/setr0to1", true);
+
+	sampleFreq	= featureSeries->getControl ("SoundFileSource/signalSrc/mrs_real/osrate")->to<mrs_real>();
+	featureSeries->updControl ("Fanout/featureFan/Series/featTonality/Peaker/peaker/mrs_real/peakStrength", .2);
+	featureSeries->updControl ("Fanout/featureFan/Series/featTonality/Peaker/peaker/mrs_real/peakStrengthRelThresh", 1.);
+	featureSeries->updControl ("Fanout/featureFan/Series/featTonality/Peaker/peaker/mrs_real/peakStrengthRelThresh", 1.);
+	featureSeries->updControl ("Fanout/featureFan/Series/featTonality/Peaker/peaker/mrs_natural/peakStart", (mrs_natural)(sampleFreq/tonalityThreshInHz[1] + .1));
+	featureSeries->updControl ("Fanout/featureFan/Series/featTonality/Peaker/peaker/mrs_natural/peakEnd", (mrs_natural)(sampleFreq/tonalityThreshInHz[0] + .1));
+	featureSeries->updControl ("Fanout/featureFan/Series/featTonality/MaxArgMax/max/mrs_natural/nMaximums", 1);
+
+	accnTimes	= (featureSeries->getControl ("SoundFileSource/signalSrc/mrs_natural/size")->to<mrs_natural>()+ 2*(blockSize-hopSize)) * 1./hopSize ;
+	net->updControl ("mrs_natural/nTimes", accnTimes);
+	main->linkControl("OrcaSnip/getBounds/mrs_natural/inSamples", "Accumulator/accu/mrs_natural/nTimes");
+	
+	featureSeries->updControl("ShiftInput/shiftSrc/mrs_natural/winSize", blockSize);
+	
+
+	// process
+	main->tick ();
+
+	// get result
+	startStopSamples(0) = main->getControl ("OrcaSnip/getBounds/mrs_natural/startSnip")->to<mrs_natural>()*hopSize + (blockSize-hopSize);
+	startStopSamples(1) = main->getControl ("OrcaSnip/getBounds/mrs_natural/stopSnip")->to<mrs_natural>()*hopSize + (blockSize-hopSize);
+
+	cout << startStopSamples << endl;
+
+	// write the region between start and stop to a snd file
+	MarSystem* out		= mng.create("Series", "main");
+	out->addMarSystem (mng.create("SoundFileSource", "signalSrc"));
+	out->addMarSystem (mng.create("Clip", "outClip"));
+	out->addMarSystem (mng.create("SoundFileSink", "signalSnk"));
+	
+	out->updControl ("mrs_natural/inSamples", hopSize);
+	out->updControl ("SoundFileSource/signalSrc/mrs_string/filename", Sfname.fullname ());
+	out->updControl ("SoundFileSink/signalSnk/mrs_string/filename", outWavFileName);
+	out->updControl( "SoundFileSource/signalSrc/mrs_natural/pos", (mrs_natural)(startStopSamples(0) + .1));
+	out->updControl("Clip/outClip/mrs_real/range", 1-1./((1<<15)-1)); // assume a 16bit signal - that should do the job.
+
+	while (startStopSamples(0) < startStopSamples(1))
+	{
+		out->tick ();
+		startStopSamples(0)  = startStopSamples(0) + hopSize;
+	}
+
+	delete main;
+	delete out;
 }
 
 
@@ -7985,7 +8107,7 @@ main(int argc, const char **argv)
 	else if (toy_withName == "margrid")
 		toy_with_margrid(fname0);
 	else if (toy_withName == "mixer")
-		toy_with_mixer(fname0, fname1);
+		toy_with_mixer(fname0, fname1, fname2);
 	else if (toy_withName == "mono2stereo")
 		toy_with_mono2stereo(fname0);
 	else if (toy_withName == "mp3convert")
@@ -8128,6 +8250,8 @@ main(int argc, const char **argv)
 		toy_with_PeakView(fname0,fname1,fname2,fname3);
 	else if (toy_withName == "peakeval")
 		toy_with_PeakEval(fname0,fname1,fname2);
+	else if (toy_withName == "orcasnip")
+		toy_with_orcaSnip(fname0,fname1);
 
 	else 
 	{
