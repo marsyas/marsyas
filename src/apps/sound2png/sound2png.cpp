@@ -62,6 +62,7 @@ bool histogram;
 bool correlogram;
 bool neptune;
 bool json;
+bool html;
 CommandLineOptions cmd_options;
 
 void 
@@ -128,6 +129,7 @@ initOptions()
 	cmd_options.addBoolOption("correlogram", "co", false);
 	cmd_options.addBoolOption("neptune", "npt", false);
 	cmd_options.addBoolOption("json", "json", false);
+	cmd_options.addBoolOption("html", "html", false);
 }
 
 
@@ -149,6 +151,7 @@ loadOptions()
 	correlogram = cmd_options.getBoolOption("correlogram");
 	neptune = cmd_options.getBoolOption("neptune");
 	json = cmd_options.getBoolOption("json");
+	html = cmd_options.getBoolOption("html");
 }
 
 
@@ -711,6 +714,140 @@ json_spectrogram(string inFileName)
 
 }
 
+// variation of spectrogram generation that generates HTML5
+void 
+html_spectrogram(string inFileName)
+{
+
+  // Print the header
+  cout << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> " << endl;
+  cout << "<html xmlns=\"http://www.w3.org/1999/xhtml\"" << endl;
+  cout << "xmlns:svg=\"http://www.w3.org/2000/svg\"" << endl;
+  cout << "xmlns:xlink=\"http://www.w3.org/1999/xlink\"> " << endl;
+  
+  cout << "<head> " << endl;
+  cout << "<title>Marsyas sound2png spectrogram</title> " << endl;	
+  cout << "</head> " << endl;
+  
+  cout << "<body> " << endl;
+ 
+  cout << "<canvas id=\"flag\" width=\"2000\" height=\"2000\">" << endl;
+  cout << "You don't support Canvas." << endl;
+  cout << "</canvas> " << endl;
+  cout << "<script> " << endl;
+  cout << "var el= document.getElementById(\"flag\");" << endl;
+ 
+  cout << "if (el && el.getContext) { " << endl;
+  cout << "var context = el.getContext('2d');" << endl;
+  cout << "if(context){" << endl;
+  cout << "var points_array = " << endl;
+
+  FileName inFile(inFileName);
+  windowSize = 8192;
+  hopSize = 8192;
+  maxFreq = 8000;
+  gain = 64.0;
+
+  double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+
+  double min = 99999999999.9;
+  double max = -99999999999.9;
+	
+  double average;
+
+  int length = getFileLengthForSpectrogram(inFileName,min,max,average);
+
+  MarSystemManager mng;
+  MarSystem* net = mng.create("Series", "net");
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  net->addMarSystem(mng.create("ShiftInput", "si"));
+  net->addMarSystem(mng.create("Spectrum","spk"));
+  net->addMarSystem(mng.create("PowerSpectrum","pspk"));
+  net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
+  net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+  net->updControl("SoundFileSource/src/mrs_natural/pos", position);
+  net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
+  net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
+  net->updControl("mrs_natural/inSamples", int(hopSize));
+
+  mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  double pngLength = length;
+  double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+	
+  realvec processedData;
+  double normalizedData;
+
+  // Iterate over the whole input file by ticking, outputting columns
+  // of data to the .png file with each tick
+  double x = 0;
+  double y = 0;
+  double colour = 0;
+  double energy;
+  double penergy;
+  double denergy;
+
+  cout << "[" << endl;
+  while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
+		 && (ticks == -1 || x < ticks))  {
+	net->tick();
+	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		
+	energy = 0.0;
+		
+	for (int i = 0; i < pngHeight; ++i) {
+	  double data_y = i;
+			
+	  double data = processedData(int(data_y),0);
+	  normalizedData = ((data - min) / (max - min)) * gain;
+
+	  energy += normalizedData;
+			
+	  // Make the spectrogram black on white instead of white on black
+	  // TODO - Add the ability to generate different color maps, like Sonic Visualiser
+	  colour = 1.0 - normalizedData;
+	  if (colour > 1.0) {
+		colour = 1.0;
+	  }
+	  if (colour < 0.0) {
+		colour = 0.0;
+	  }
+
+	  y = i;
+	  if (colour > 0) {
+		cout << "[" << x << "," << y << "," << colour << "]," << endl;
+	  }
+		
+	}
+		
+	x++;
+
+  }
+
+  cout << "];" << endl;
+
+  // Print the footer
+  cout << "for(i=0; i<points_array.length; i++) {" << endl;
+  cout << "var colour = points_array[i][2] * 256;  " << endl;
+  cout << "context.fillStyle = \"rgb(\" + colour + \",\" + colour + \",\" + colour + \")\";" << endl;
+  cout << "var x = points_array[i][0];" << endl;
+  cout << "var y = points_array[i][1] / 10;" << endl;
+  cout << "context.fillRect(x, y, 1, 1);" << endl;
+  cout << "}" << endl;
+  cout << "}" << endl;
+  cout << "}" << endl;
+  cout << "</script> " << endl;
+  cout << "" << endl;
+  cout << "</body> " << endl;
+  cout << "</html> " << endl;
+
+
+  delete net;
+
+
+
+}
+
 
 
 
@@ -867,8 +1004,13 @@ main(int argc, const char **argv)
 	    exit(0);
 	  }
 
-	if (json) {
+ 	if (json) {
 	  json_spectrogram(files[0]);
+	  exit(0);
+	}
+
+	if (html) {
+	  html_spectrogram(files[0]);
 	  exit(0);
 	}
 
