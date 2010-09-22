@@ -671,7 +671,10 @@ json_spectrogram(string inFileName)
   double penergy;
   double denergy;
 
-  cout << "[" << endl;
+  cout << "{" << endl;
+  cout << "\"width\" : " << pngLength << "," << endl;
+  cout << "\"height\" : " << pngHeight << "," << endl;
+  cout << "\"points_array\" : [" << endl;
   while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
 		 && (ticks == -1 || x < ticks))  {
 	net->tick();
@@ -708,7 +711,7 @@ json_spectrogram(string inFileName)
 
   }
 
-  cout << "]" << endl;
+  cout << "]}" << endl;
 
   delete net;
 
@@ -718,29 +721,6 @@ json_spectrogram(string inFileName)
 void 
 html_spectrogram(string inFileName)
 {
-
-  // Print the header
-  cout << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> " << endl;
-  cout << "<html xmlns=\"http://www.w3.org/1999/xhtml\"" << endl;
-  cout << "xmlns:svg=\"http://www.w3.org/2000/svg\"" << endl;
-  cout << "xmlns:xlink=\"http://www.w3.org/1999/xlink\"> " << endl;
-  
-  cout << "<head> " << endl;
-  cout << "<title>Marsyas sound2png spectrogram</title> " << endl;	
-  cout << "</head> " << endl;
-  
-  cout << "<body> " << endl;
- 
-  cout << "<canvas id=\"flag\" width=\"2000\" height=\"2000\">" << endl;
-  cout << "You don't support Canvas." << endl;
-  cout << "</canvas> " << endl;
-  cout << "<script> " << endl;
-  cout << "var el= document.getElementById(\"flag\");" << endl;
- 
-  cout << "if (el && el.getContext) { " << endl;
-  cout << "var context = el.getContext('2d');" << endl;
-  cout << "if(context){" << endl;
-  cout << "var points_array = " << endl;
 
   FileName inFile(inFileName);
   windowSize = 8192;
@@ -787,7 +767,49 @@ html_spectrogram(string inFileName)
   double penergy;
   double denergy;
 
-  cout << "[" << endl;
+  // Print the header
+  cout << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> " << endl;
+  cout << "<html xmlns=\"http://www.w3.org/1999/xhtml\"" << endl;
+  cout << "xmlns:svg=\"http://www.w3.org/2000/svg\"" << endl;
+  cout << "xmlns:xlink=\"http://www.w3.org/1999/xlink\"> " << endl;
+  
+  cout << "<head> " << endl;
+  cout << "<title>Marsyas sound2png spectrogram</title> " << endl;	
+
+  cout << "<script type=\"text/javascript\" " << endl;
+  cout << "src=\"http://www.google.com/jsapi\"></script>" << endl;
+  cout << "<script type=\"text/javascript\">" << endl;
+  cout << "// You may specify partial version numbers, such as \"1\" or \"1.3\"," << endl;
+  cout << "//  with the same result. Doing so will automatically load the " << endl;
+  cout << "//  latest version matching that partial revision pattern " << endl;
+  cout << "//  (e.g. 1.3 would load 1.3.2 today and 1 would load 1.4.2)." << endl;
+  cout << "google.load(\"jquery\", \"1.4.2\");" << endl;
+  cout << "" << endl;
+  cout << "google.setOnLoadCallback(function() {" << endl;
+  cout << "// Place init code here instead of $(document).ready()" << endl;
+  cout << "});" << endl;
+  cout << "</script>" << endl;
+
+
+
+  cout << "</head> " << endl;
+  
+  cout << "<body> " << endl;
+ 
+  cout << "<canvas id=\"flag\" width=\"" << pngLength << "\" height=\"" << pngHeight << "\">" << endl;
+  cout << "You don't support Canvas." << endl;
+  cout << "</canvas> " << endl;
+  cout << "<script> " << endl;
+  cout << "var el= document.getElementById(\"flag\");" << endl;
+ 
+  cout << "if (el && el.getContext) { " << endl;
+  cout << "var context = el.getContext('2d');" << endl;
+  cout << "if(context){" << endl;
+  cout << "var points = {" << endl;
+  cout << "\"width\" : " << pngLength << "," << endl;
+  cout << "\"height\" : " << (int)pngHeight << "," << endl;
+  cout << "\"points_array\" : [" << endl;
+
   while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
 		 && (ticks == -1 || x < ticks))  {
 	net->tick();
@@ -824,18 +846,41 @@ html_spectrogram(string inFileName)
 
   }
 
-  cout << "];" << endl;
+  cout << "]};" << endl;
 
   // Print the footer
-  cout << "for(i=0; i<points_array.length; i++) {" << endl;
-  cout << "var colour = points_array[i][2] * 256;  " << endl;
-  cout << "context.fillStyle = \"rgb(\" + colour + \",\" + colour + \",\" + colour + \")\";" << endl;
-  cout << "var x = points_array[i][0];" << endl;
-  cout << "var y = points_array[i][1] / 10;" << endl;
-  cout << "context.fillRect(x, y, 1, 1);" << endl;
+  cout << "$(document).ready(function(){" << endl;
+  cout << "console.log(\"ready\");" << endl;
+  cout << "var el= document.getElementById(\"flag\");" << endl;
+  cout << "" << endl;
+  cout << "if (el && el.getContext) { " << endl;
+  cout << "drawSpectrogram(el);" << endl;
+  cout << "}" << endl;
+  cout << "});" << endl;
+  cout << "" << endl;
+  cout << "function drawSpectrogram(el) {" << endl;
+  cout << "var context = el.getContext('2d');" << endl;
+  cout << "if(context){" << endl;
+  cout << "// Create an ImageData object." << endl;
+  cout << "var imgd = context.createImageData(" << pngLength << "," << (int)pngHeight << ");" << endl;
+  cout << "var pix = imgd.data;" << endl;
+  cout << "" << endl;
+  cout << "for(i=0; i < points.points_array.length; i++) {" << endl;
+  cout << "var colour = points.points_array[i][2] * 256;							  " << endl;
+  cout << "var index = (points.points_array[i][0] + (points.points_array[i][1] * points.width))*4;" << endl;
+  cout << "pix[index+0] = colour; // red" << endl;
+  cout << "pix[index+1] = colour; // green" << endl;
+  cout << "pix[index+2] = colour; // blue" << endl;
+  cout << "pix[index+3] = 127;    // alpha" << endl;
+  cout << "}							  " << endl;
+  cout << "// Draw the ImageData object at the given (x,y) coordinates." << endl;
+  cout << "context.putImageData(imgd, 0, 0);" << endl;
   cout << "}" << endl;
   cout << "}" << endl;
   cout << "}" << endl;
+  cout << "}" << endl;
+
+
   cout << "</script> " << endl;
   cout << "" << endl;
   cout << "</body> " << endl;
