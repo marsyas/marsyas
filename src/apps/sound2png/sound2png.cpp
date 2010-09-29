@@ -92,14 +92,17 @@ printHelp(string progName)
 	cerr << "-u --usage        : display short usage info" << endl;
 	cerr << "-h --help         : display this information " << endl;
 	cerr << "-v --verbose      : verbose output" << endl;
-	cerr << "--ws --windowsize : windows size in samples " << endl;
-	cerr << "--hs --hopsize    : hop size in samples (for spectrogram)" << endl;
-	cerr << "--ms --memorysize : memory size in samples (for correlogram)" << endl;
+	cerr << "------------------------------------------" << endl;
+	
+	cerr << "-m --mode         : mode (waveform, spectrogram, json, html, neptune)" << endl;
+	cerr << "-ws --windowsize : windows size in samples " << endl;
+	cerr << "-hs --hopsize    : hop size in samples (for spectrogram)" << endl;
+	cerr << "-ms --memorysize : memory size in samples (for correlogram)" << endl;
 	cerr << "-g --gain         : gain for spectrogram (for spectrogram)" << endl;
-	cerr << "--mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
+	cerr << "-mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
 	cerr << "-p --position     : position to start at in the audio file" << endl;
 	cerr << "-t --ticks        : how many times to tick the network" << endl;
-	cerr << "-m --mode         : mode (waveform, spectrogram, json, html, neptune" << endl;
+
 	
 	exit(1);
 }
