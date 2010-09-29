@@ -511,10 +511,10 @@ neptune_spectrogram(string inFileName)
   string outFileName = inFile.nameNoExt() + ".png";
   cout << "Generating spectrogram with specific settings for NEPTUNE, Canada" << endl;
   cout << "Output file is " << outFileName << endl;
-  windowSize = 8192;
-  hopSize = 8192;
-  maxFreq = 8000;
-  gain = 64.0;
+  // windowSize = 8192;
+  // hopSize = 8192;
+  // maxFreq = 8000;
+  // gain = 64.0;
 #ifdef MARSYAS_PNG
     double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
 
