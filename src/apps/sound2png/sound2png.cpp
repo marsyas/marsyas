@@ -55,14 +55,9 @@ int hopSize;
 int memorySize;
 mrs_real gain;
 int maxFreq;
-bool waveform;
 int position;
 int ticks;
-bool histogram;
-bool correlogram;
-bool neptune;
-bool json;
-bool html;
+mrs_string mode;
 CommandLineOptions cmd_options;
 
 void 
@@ -86,18 +81,17 @@ printHelp(string progName)
 	cerr << "Generate a PNG of an input audio file.  The PNG can either be" << endl;
 	cerr << "the waveform or the spectrogram of the audio file" << endl;
 	cerr << endl;
-	cerr << "written by sness (c) 2009 GPL - sness@sness.net" << endl;
+	cerr << "written by sness (c) 2010 GPL - sness@sness.net" << endl;
 	cerr << endl;
-	cerr << "Usage : " << progName << " in.wav out.png" << endl;
+	cerr << "Usage : " << progName << " in.wav [out.png]" << endl;
 	cerr << endl;
 	cerr << "where : " << endl;
 	cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
-	cerr << "   out.png is the name of the PNG file to be generated" << endl;
+	cerr << "   out.png is the optional name of the PNG file to be generated" << endl;
 	cerr << "Help Options:" << endl;
 	cerr << "-u --usage        : display short usage info" << endl;
 	cerr << "-h --help         : display this information " << endl;
 	cerr << "-v --verbose      : verbose output" << endl;
-	cerr << "-w --waveform     : draw a waveform instead of a spectrogram" << endl;
 	cerr << "--ws --windowsize : windows size in samples " << endl;
 	cerr << "--hs --hopsize    : hop size in samples (for spectrogram)" << endl;
 	cerr << "--ms --memorysize : memory size in samples (for correlogram)" << endl;
@@ -105,9 +99,8 @@ printHelp(string progName)
 	cerr << "--mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
 	cerr << "-p --position     : position to start at in the audio file" << endl;
 	cerr << "-t --ticks        : how many times to tick the network" << endl;
-	cerr << "-hi --histogram   : output a histogram of the values for the spectrogram" << endl;
-	cerr << "-co --correlogram : output a series of .pngs for a correlogram" << endl;
-   
+	cerr << "-m --mode         : mode (waveform, spectrogram, json, html, neptune" << endl;
+	
 	exit(1);
 }
 
@@ -125,11 +118,7 @@ initOptions()
 	cmd_options.addNaturalOption("maxfreq", "mf", 22050);
 	cmd_options.addNaturalOption("ticks", "t", -1);
 	cmd_options.addNaturalOption("position", "p", 0);
-	cmd_options.addBoolOption("histogram", "hi", false);
-	cmd_options.addBoolOption("correlogram", "co", false);
-	cmd_options.addBoolOption("neptune", "npt", false);
-	cmd_options.addBoolOption("json", "json", false);
-	cmd_options.addBoolOption("html", "html", false);
+	cmd_options.addStringOption("mode" , "m", "spectrogram");
 }
 
 
@@ -139,7 +128,6 @@ loadOptions()
 	helpopt = cmd_options.getBoolOption("help");
 	usageopt = cmd_options.getBoolOption("usage");
 	verboseopt = cmd_options.getBoolOption("verbose");
-	waveform = cmd_options.getBoolOption("waveform");
 	windowSize = cmd_options.getNaturalOption("windowsize");
 	memorySize = cmd_options.getNaturalOption("memorysize");
 	hopSize = cmd_options.getNaturalOption("hopsize");
@@ -147,11 +135,8 @@ loadOptions()
 	maxFreq = cmd_options.getNaturalOption("maxfreq");
 	position = cmd_options.getNaturalOption("position");
 	ticks = cmd_options.getNaturalOption("ticks");
-	histogram = cmd_options.getBoolOption("histogram");
-	correlogram = cmd_options.getBoolOption("correlogram");
-	neptune = cmd_options.getBoolOption("neptune");
-	json = cmd_options.getBoolOption("json");
-	html = cmd_options.getBoolOption("html");
+	mode = cmd_options.getStringOption("mode");
+
 }
 
 
@@ -364,7 +349,10 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
-  double maxBin = fftBins * (maxFreq / (frequency / 2.0));
+  mrs_natural nChannels = net->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
+
+  
+  double maxBin = fftBins * (maxFreq / (frequency / nChannels));
   // cout << "maxBin = " << maxBin << endl;
 
 	int length = 0;
@@ -431,7 +419,12 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	double pngLength = length;
-	double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+
+	  mrs_natural nChannels = net->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
+
+
+	  
+	double pngHeight = fftBins * (maxFreq / (frequency / nChannels));
 	
 	cout << "maxFreq = " << maxFreq << endl;
 	cout << "fftBins = " << fftBins << endl;
@@ -540,8 +533,17 @@ neptune_spectrogram(string inFileName)
 	net->updControl("mrs_natural/inSamples", int(hopSize));
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+
+	  mrs_natural nChannels = net->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
+
+
+	  
+	double pngHeight = fftBins * (maxFreq / (frequency / nChannels));
+	
+
+
 	double pngLength = length;
-	double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+
 	
 	cout << "maxFreq = " << maxFreq << endl;
 	cout << "fftBins = " << fftBins << endl;
@@ -602,12 +604,13 @@ neptune_spectrogram(string inFileName)
 		energy *= 100.0;
 		denergy = fabs(penergy - energy);
 		// cout << denergy  << endl;
-		if (denergy > 6.0)
+		/* if (denergy > 6.0)
 			for (int i=0; i < 40; i++)
 			  {
 				png.plot(int(x),pngHeight- i, 1.0, 0.0, 0.0);
 				png.plot(int(x),i, 1.0, 0.0, 0.0);
 			  }
+		*/ 
 		
 		penergy = energy;
 		
@@ -1038,28 +1041,29 @@ main(int argc, const char **argv)
 	if (usageopt)
 		printUsage(progName);
 
-	if (histogram) {
+	if (mode == "histogram") {
 		fftHistogram(files[0]);
 		exit(0);
 	}
 
-	if (neptune) 
-	  {
+	if (mode == "neptune")
+	{
 	    neptune_spectrogram(files[0]);
 	    exit(0);
-	  }
-
- 	if (json) {
-	  json_spectrogram(files[0]);
-	  exit(0);
+	}
+ 	if (mode == "json") 
+	{
+		json_spectrogram(files[0]);
+		exit(0);
 	}
 
-	if (html) {
+	if (mode == "html") {
 	  html_spectrogram(files[0]);
 	  exit(0);
 	}
 
-	if (correlogram) {
+	if (mode == "correlogram") 
+	{
 	  correlogramPNGs(files[0],files[1]);
 	  exit(0);
 	}
@@ -1072,7 +1076,7 @@ main(int argc, const char **argv)
 
 #ifdef MARSYAS_PNG 
 	// play the soundfiles/collections 
-	if (waveform) {
+	if (mode == "waveform") {
 		outputWaveformPNG(files[0],files[1]);
 	} else {
 		outputSpectrogramPNG(files[0],files[1]);

@@ -1,5 +1,5 @@
 /*
- ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+ ** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
  **  
  ** This program is free software; you can redistribute it and/or modify
  ** it under the terms of the GNU General Public License as published by
@@ -18,6 +18,9 @@
 
 #include "common.h" 
 #include "Biquad.h"
+
+using std::cout;
+using std::endl;
 
 using std::ostringstream;
 using namespace Marsyas;
@@ -85,6 +88,9 @@ void Biquad::myUpdate(MarControlPtr sender)
     
     w0_ = 2 * PI * freq_ / fs_;
 
+	cout << "type = " << type << endl;
+	
+
     if (type == "lowpass")
     {
         alpha_ = sin(w0_)/(2*q_);
@@ -124,6 +130,8 @@ void Biquad::myUpdate(MarControlPtr sender)
 		a(0) =   1 + alpha_;
 		a(1) =  -2*cos(w0_);
 		a(2) =   1 - alpha_;
+        filter->updControl("mrs_realvec/ncoeffs", b);
+        filter->updControl("mrs_realvec/dcoeffs", a);
 	}
     else if (type == "allpass")
     {
