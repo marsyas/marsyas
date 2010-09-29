@@ -204,8 +204,8 @@ BeatReferee::myUpdate(MarControlPtr sender)
 	//statsMuted_.create(nrAgents_, 10000);
 
 	soundFileSize_ = ctrl_soundFileSize_->to<mrs_natural>();
-	//max possible nr. of beats in the analysed sound file (*1.1 - tolerance due to possible limit surpassing)
-	maxNrBeats_ = (mrs_natural) (ceil(((mrs_real) soundFileSize_) / ((mrs_real) minPeriod_)) * 1.1);
+	//max possible nr. of beats in the analysed sound file (*1.2 - tolerance due to possible limit surpassing)
+	maxNrBeats_ = (mrs_natural) (ceil(((mrs_real) soundFileSize_) / ((mrs_real) minPeriod_)) * 1.2);
 	agentsHistory_.create(nrAgents_, maxNrBeats_);
 
 	score_.create(nrAgents_); //1index for each agent
@@ -817,16 +817,14 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//while no best beat detected => outputs 0 (no beat)
 	out.setval(0.0);
 	ctrl_beatDetected_->setValue(0.0);
-	
 	agentControl_ = ctrl_agentControl_->to<mrs_realvec>();
 	//always updates every agents' timming to equalize referee's (+1 for considering next time frame)
 	for(mrs_natural i = 0; i < agentControl_.getRows(); i++)
 	{
 		agentControl_(i, 3) = t_+1;
-		updControl(ctrl_agentControl_, agentControl_);
+		updControl(ctrl_agentControl_, agentControl_); //AKIII!!!!
 		agentsJustCreated_(i) = 0.0; //reset at all frames
 	}
-
 	//also pass timer value to the other MarSystems (+1 for considering next time frame)
 	ctrl_tickCount_->setValue(t_+1);
 
@@ -835,7 +833,6 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//realvec with the enable flag of all the BeatAgents in the pool
 	//(0 -> agent active; 1 -> agent desactivated)
 	mutedAgents_ = ctrl_mutedAgents_->to<mrs_realvec>();
-
 	//created tmp agents vector for just updating mutedAgents_ vector in the next tick
 	mutedAgentsTmp_ = ctrl_mutedAgents_->to<mrs_realvec>();
 
@@ -903,7 +900,6 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					bestScore_ = score_(bestAgentIndex_);
 					//calcAbsoluteBestScore();
 				}
-
 				//Kill agent if it is overly erroneous (many consecutive beats found outside the predicted tolerance inner window)
 				if(missedBeatsCount_(o) >= lostFactor_)
 				{
@@ -981,7 +977,9 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				{
 					//in nonCausal analysis keep agents' beat history till the end of the analysis
 					if(nonCausal_)
+					{
 						agentsHistory_(o, (mrs_natural) beatCounter_(o)) = t_;
+					}
 
 					//Increment beat counter of each agent
 					beatCounter_(o)++;
@@ -1040,6 +1038,13 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	{
 		firstHypotheses_ = ctrl_firstHypotheses_->to<mrs_realvec>();
 
+		//update values for eventual forced periods in induction stage
+		maxPeriod_ = ctrl_maxPeriod_->to<mrs_natural>();
+		minPeriod_ = ctrl_minPeriod_->to<mrs_natural>();
+		//max possible nr. of beats in the analysed sound file (*1.7 - tolerance due to possible limit surpassing)
+		maxNrBeats_ = (mrs_natural) (ceil(((mrs_real) soundFileSize_) / ((mrs_real) minPeriod_)) * 1.7);
+		agentsHistory_.create(nrAgents_, maxNrBeats_);
+
 		mrs_natural newAgentPeriod;
 		mrs_natural newAgentPhase;
 		mrs_real newAgentScore;
@@ -1068,7 +1073,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					//cout << "Best Score From: " << i << "(" << bestScore_ << ")-Period: " << newAgentPeriod << endl;
 				}
 				
-				//cout << "Score" << i << ": " << newAgentScore << endl;
+				//cout << "nAP: " << newAgentPeriod << "; nAPh: " << newAgentPhase << "; Score" << i << ": " << newAgentScore << endl;
 				
 				if(i == nrAgents_-1)
 				{

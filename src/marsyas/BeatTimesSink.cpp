@@ -169,6 +169,7 @@ BeatTimesSink::addMedianVector(mrs_real ibiBPM)
 {
 	mrs_bool bigger = false;
 	mrs_realvec tmp(beatCount_);
+	
 	//stretch median bpm vector if it reaches its limit
 	if(beatCount_ >= ibiBPMVec_.getSize())
 		ibiBPMVec_.stretch(beatCount_);
@@ -178,13 +179,11 @@ BeatTimesSink::addMedianVector(mrs_real ibiBPM)
 		//copy all
 		tmp(j) = ibiBPMVec_(j);
 	}
-
 	for(mrs_natural i = beatCount_-2; i >=0 ; i--)
 	{
 		if(ibiBPM > ibiBPMVec_(i))
 		{
 			ibiBPMVec_(i+1) = ibiBPM;
-
 			for(mrs_natural z = i+1; z < beatCount_-1; z++)
 				ibiBPMVec_(z+1) = tmp(z);
 			//ibiBPMVec_.stretchWrite((z+1), tmp(z));
@@ -193,7 +192,6 @@ BeatTimesSink::addMedianVector(mrs_real ibiBPM)
 			break;
 		}
 	}
-
 	if(!bigger)
 	{
 		ibiBPMVec_(0) = ibiBPM;
@@ -202,6 +200,9 @@ BeatTimesSink::addMedianVector(mrs_real ibiBPM)
 		//ibiBPMVec_.stretchWrite((z+1), tmp(z));
 	}
 
+	//for(int i = 0; i<ibiBPMVec_.getSize(); i++)
+	//	cout << i << ": " << ibiBPMVec_(i) << "; " << endl;
+	
 	return ibiBPMVec_;
 }
 
@@ -349,7 +350,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				}
 				
 
-				//MATLAB_PUT(ibiBPMVec_, "IBIVector");
+				//MATLAB_PUT(ibiBPMVec_, "IBIVector");		
 				lastBeatTime_ = beatTime_;
 			}
 			beatCount_ ++;
@@ -425,7 +426,6 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 						outStream << beatTime_ << " " << ibiBPM_ << endl;
 
 						addMedianVector(ibiBPM_); //for calculating medianTempo
-						ibiBPMSum_ += ibiBPM_; //for calculating meanTempo
 					}
 					
 					//cout << "i: " << i << "; beatTime: " << beatTime_ << "; ibi: " << ibi << "; lastIbi: " << lastIbi_ << endl;
@@ -445,7 +445,6 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 						ibiBPMSum_ += ibiBPM_; //for calculating meanTempo
 						lastBeatTime_ = beatTime_;
 						beatTimeTmp_ = nextBeatTime;
-
 						beatCount_ ++;
 					}
 					lastIbi_ = ibi;

@@ -68,9 +68,12 @@ CommandLineOptions cmd_options;
 mrs_string score_function;
 mrs_string output;
 mrs_string givefirst2beats;
-mrs_string givefirst1beat;
 mrs_string givefirst2beats_startpoint;
+mrs_string givefirst1beat;
 mrs_string givefirst1beat_startpoint;
+mrs_string giveinitperiod;
+mrs_string giveinitperiod_metricalrel;
+mrs_string giveinitperiod_nonrel;
 mrs_real induction_time;
 mrs_real metrical_change_time;
 mrs_string execPath;
@@ -92,7 +95,7 @@ printUsage(string progName)
 {
 	MRSDIAG("ibt.cpp - printUsage");
 	cerr << "Usage : " << progName <<
-		" [-s scoreFunction] [-t inductionTime (in secs)] [-m metricalChangeTime (in secs)] [-b backtrace] [-di dumb_induction] [-nc non-causal] [-o annotationsOutput] [-a play_w/_beats] [-f outputFile_w/_beats] [-2b givefirst2beats] [-1b givefirst1beat] [-2bs givefirst2beats_startpoint] [-1bs givefirst1beat_startpoint] [-l log_file] [-io induction_out] [-mic microphone_input] fileName outDir" << endl;
+		" [-s scoreFunction] [-t inductionTime (in secs)] [-m metricalChangeTime (in secs)] [-b backtrace] [-di dumb_induction] [-nc non-causal] [-o annotationsOutput] [-a play_w/_beats] [-f outputFile_w/_beats] [-2b givefirst2beats] [-1b givefirst1beat] [-pgt giveinitperiod] [-pgt_mr giveinitperiod+metricalrel] [-pgt_nr giveinitperiod+nonrel] [-2bs givefirst2beats_startpoint] [-1bs givefirst1beat_startpoint] [-l log_file] [-io induction_out] [-mic microphone_input] [-send_udp send_udp] fileName outDir" << endl;
 	cerr << "where fileName is a sound file in a MARSYAS supported format and outDir the directory where the annotation files (beats + tempo) shall be saved (ibt.exe dir by default)." << endl;
 	cerr << endl;
 	exit(1);
@@ -121,9 +124,12 @@ printHelp(string progName)
 	cerr << "-a --audio          : play the original sound mixed with the synthesized beats" << endl;
 	cerr << "-f --audiofile      : output the original sound mixed with the synthesized beats (as fileName_beats.*)" << endl;
 	cerr << "-2b --givefirst2beats : replace induction stage with ground-truth (two first beats from beatTimes file - .txt or .beats - from the directory or file given as argument)" << endl;
-	cerr << "-1b --givefirst1beat : replace initial phase by the given ground-truth first beat (from beatTimes file - .txt or .beats - from the directory or file given as argument)" << endl;
 	cerr << "-2bs --givefirst2beats_startpoint : equal to givefirst2beats mode but starting tracking at the first given beat time" << endl;
+	cerr << "-1b --givefirst1beat : replace initial phase by the given ground-truth first beat (from beatTimes file - .txt or .beats - from the directory or file given as argument)" << endl;
 	cerr << "-1bs --givefirst1beat_startpoint : equal to givefirst1beat mode but start tracking at the given phase" << endl;
+	cerr << "-pgt --giveinitperiod   : replace initial period given by the ibi of the ground-truth two first beats (from beatTimes file - .txt or .beats - from the directory or file given as argument)" << endl;
+	cerr << "-pgt_mr --giveinitperiod+metricalrel : equal to giveinitperiod but complementing it with metrically related tempi (2x, 1/2x, 3x, 1/3x)" << endl;
+	cerr << "-pgt_nr --giveinitperiod+nonrel : equal to giveinitperiod but complementing it with non-related tempi" << endl;
 	cerr << "-o --output         : what to output (predicted beat times, mean/median tempo): \"beats\", \"medianTempo\", \"meanTempo\", \"beats+medianTempo\", \"beats+meanTempo\", \"beats+meanTempo+medianTempo\" or \"none\"." << endl;
 	cerr << "-l --log_file       : generate log file" << endl;
 	cerr << "-io --induction_out : output best period (in BPMs) by the end of the induction stage (in the outDir directory)" << endl;
@@ -152,6 +158,9 @@ initOptions()
 	cmd_options.addNaturalOption("sendudp", "send_udp", -1);
 	cmd_options.addStringOption("givefirst2beats", "2b", "-1");
 	cmd_options.addStringOption("givefirst1beat", "1b", "-1");
+	cmd_options.addStringOption("giveinitperiod", "pgt", "-1");
+	cmd_options.addStringOption("giveinitperiod+metricalrel", "pgt_mr", "-1");
+	cmd_options.addStringOption("giveinitperiod+nonrel", "pgt_nr", "-1");
 	cmd_options.addStringOption("givefirst2beats_startpoint", "2bs", "-1");
 	cmd_options.addStringOption("givefirst1beat_startpoint", "1bs", "-1");
 	cmd_options.addStringOption("output", "o", "beats+medianTempo");
@@ -178,9 +187,12 @@ loadOptions()
 	inductionoutopt = cmd_options.getBoolOption("inductionout");
 	micinputopt = cmd_options.getBoolOption("microphoneinput");
 	givefirst2beats = cmd_options.getStringOption("givefirst2beats");
-	givefirst1beat = cmd_options.getStringOption("givefirst1beat");
 	givefirst2beats_startpoint= cmd_options.getStringOption("givefirst2beats_startpoint");
+	givefirst1beat = cmd_options.getStringOption("givefirst1beat");
 	givefirst1beat_startpoint = cmd_options.getStringOption("givefirst1beat_startpoint");
+	giveinitperiod = cmd_options.getStringOption("giveinitperiod");
+	giveinitperiod_metricalrel = cmd_options.getStringOption("giveinitperiod+metricalrel");
+	giveinitperiod_nonrel = cmd_options.getStringOption("giveinitperiod+nonrel");
 	output = cmd_options.getStringOption("output");
 	score_function = cmd_options.getStringOption("score_function");
 	induction_time = cmd_options.getRealOption("induction_time");
@@ -205,7 +217,7 @@ existsFile(mrs_string fileName)
 mrs_bool
 readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audioFile, mrs_bool startPoint)
 {
-	mrs_natural file = gtBeatsFile.rfind(".", gtBeatsFile.length()-1);
+	mrs_natural file = (mrs_natural) gtBeatsFile.rfind(".", gtBeatsFile.length()-1);
 
 	mrs_bool readFileOK = true;
 	mrs_string line;
@@ -590,7 +602,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs");
 
 	//For Induction Ground-Truth in "PhaseLock"
-	if(strcmp(givefirst2beats.c_str(), "-1") != 0 || strcmp(givefirst1beat.c_str(), "-1") != 0 ||
+	if(strcmp(givefirst2beats.c_str(), "-1") != 0 || strcmp(givefirst1beat.c_str(), "-1") != 0 || strcmp(giveinitperiod.c_str(), "-1") != 0 ||
+		strcmp(giveinitperiod_metricalrel.c_str(), "-1") != 0 || strcmp(giveinitperiod_nonrel.c_str(), "-1") != 0 ||
 		strcmp(givefirst2beats_startpoint.c_str(), "-1") != 0 || strcmp(givefirst1beat_startpoint.c_str(), "-1") != 0)
 	{
 		//if normal induction_gt:
@@ -612,7 +625,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		}
 		else if(strcmp(givefirst1beat.c_str(), "-1") != 0)
 		{
-			if(readGTBeatsFile(beattracker, givefirst1beat, sfName, true))
+			if(readGTBeatsFile(beattracker, givefirst1beat, sfName, false))
 			{
 				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "givefirst1beat");
 			}
@@ -627,6 +640,31 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			}
 			else givefirst1beat_startpoint = "-1";
 		}
+		else if(strcmp(giveinitperiod.c_str(), "-1") != 0)
+		{
+			if(readGTBeatsFile(beattracker, giveinitperiod, sfName, false))
+			{
+				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "giveinitperiod");
+			}
+			else giveinitperiod = "-1";
+		}
+		else if(strcmp(giveinitperiod_metricalrel.c_str(), "-1") != 0)
+		{
+			if(readGTBeatsFile(beattracker, giveinitperiod_metricalrel, sfName, false))
+			{
+				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "giveinitperiod_metricalrel");
+			}
+			else giveinitperiod_metricalrel = "-1";
+		}
+		else if(strcmp(giveinitperiod_nonrel.c_str(), "-1") != 0)
+		{
+			if(readGTBeatsFile(beattracker, giveinitperiod_nonrel, sfName, false))
+			{
+				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "giveinitperiod_nonrel");
+			}
+			else giveinitperiod_nonrel = "-1";
+		}
+
 	}
 
 	//if requested output of induction best period hypothesis link output directory
@@ -797,7 +835,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	else
 	{
 		path.str("");
-		mrs_natural loc;
+		size_t loc;
 		loc = outputTxt.rfind(".txt", outputTxt.length()-1);
 
 		if(loc == -1) //if only output dir defined -> append filename:

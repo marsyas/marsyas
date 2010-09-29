@@ -142,6 +142,7 @@ private:
 	void inputGT(realvec& in, realvec& out, mrs_string gtFilePath);
 	mrs_realvec GTInitialization(realvec& in, realvec& out, mrs_natural gtIniPhase, 
 		mrs_natural gtInitPeriod);
+	void forceInitPeriods(mrs_string mode);
 
 public:
   PhaseLock(std::string name);

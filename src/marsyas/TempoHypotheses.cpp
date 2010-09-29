@@ -118,7 +118,7 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 				int z = 0;
 				for (int j = (i * nPhases_); j < ((i+1) * nPhases_); j++)
 				{
-					if(in(0, 2*i+1) > 0 && in(1, 2*z+1) > 0)
+					if(in(0, 2*i+1) > 1 && in(1, 2*z+1) > 0) //period > 1 because it may appear as decimals meaning 0
 					{
 						out(j, 0) = in(0, 2*i+1); //Periods
 						out(j, 1) = in(1, 2*z+1); //Phases

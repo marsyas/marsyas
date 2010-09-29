@@ -220,10 +220,17 @@ PhaseLock::GTInitialization(realvec& in, realvec& out, mrs_natural gtInitPhase, 
 		if(periodTmp >= minPeriod_ && periodTmp <= maxPeriod_)
 			period = periodTmp;
 
+		//(for safechecking)
+		if((beatPoint + (period + (mrs_natural) ((errorIn*corFactor_) + ((errorIn/abs(errorIn)) * 0.5)))) >= inSamples_) 
+		{
+			initHypothesis(2) = beatPoint; //Keep current lastPhase
+			initHypothesis(3) = period; //Keep current lastPeriod
+			break;
+		}
+
 		beatPoint += (period + (mrs_natural) ((errorIn*corFactor_) + ((errorIn/abs(errorIn)) * 0.5)));
-		if(beatPoint >= inSamples_) break; //(for safechecking)
-		
 		errorIn = MINIMUMREAL; //to avoid divide by zero
+		
 		initHypothesis(2) = beatPoint; //Keep current lastPhase
 		initHypothesis(3) = period; //Keep current lastPeriod
 		//Check maximum around outter window
@@ -282,9 +289,9 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 	//for beat groundtruth files (in line, separated by spaces):
 	
 	mrs_natural pos0, pos1, pos2;
-	pos0 = line_.find_first_of(" ", 0); //initial delimiter
-	pos1 = line_.find_first_of(" ", pos0+1); //second delimiter
-	pos2 = line_.find_first_of(" ", pos1+1); //third delimiter
+	pos0 = (mrs_natural) line_.find_first_of(" ", 0); //initial delimiter
+	pos1 = (mrs_natural) line_.find_first_of(" ", pos0+1); //second delimiter
+	pos2 = (mrs_natural) line_.find_first_of(" ", pos1+1); //third delimiter
 
 	//if more than two beatTimes given in the annotation file
 	//discart initial beatTime (due to inconsistencies in the beggining of some annotation files)
@@ -301,7 +308,6 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 	}
 
 	//==========================================================
-	//cout << "beat1: " << gtBeatTime1_ << "; beat2: " << gtBeatTime2_ << endl;
 	
 	//to assure that it could read from file => beatFile in column (ifnot => beatFile in row)
 	if(gtBeatTime1_ == gtBeatTime2_ || gtBeatTime2_ == 0.0 || gtBeatTime2_ > 40)
@@ -323,6 +329,8 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 	gtInitPeriod_ = (mrs_natural) ((((gtBeatTime2_ - gtBeatTime1_) * srcFs_) / hopSize_) + 0.5);
 	gtPhase_ = (mrs_natural) ceil(((gtBeatTime1_ * srcFs_) + adjustment_) / hopSize_);
 
+	//cout << "beat1: " << gtBeatTime1_ << "; beat2: " << gtBeatTime2_ << "; gtPer: " << gtInitPeriod_ << "; gtPh: " << gtPhase_ << endl;
+
 	//Retrieve best score within induction window -> for starting score normalized with remaining analysis
 	gtSignal_.create(inSamples_);
 	mrs_natural frameCount = 0;
@@ -335,7 +343,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 	k += 1; //start on 2nd beat prediction (due to unconsistencies on the very beggining of the accumulator)
 	gtInitPhase_ = ((mrs_natural) phaseAccAdjust) + ((mrs_natural) (k * gtInitPeriod_));
 
-	//simulate tracking under induction windows, given first two beats (or any two beats)
+	//simulate tracking under induction windows, given first or first two beats (or any two beats)
 	//retrieve initial score, backtraced phase (subtracting period multiples), and phase just after the induction
 	//(ground-truth initial phase and period as the ibi of the given two beats)
 	if(strcmp(mode_.c_str(), "givefirst2beats") == 0 || strcmp(mode_.c_str(), "givefirst2beats_startpoint") == 0)
@@ -347,7 +355,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 		gtInitPeriod_ = (mrs_natural) gtInitHypothesis(1); //initPeriod
 		gtLastPhase_ = (mrs_natural) gtInitHypothesis(2); //lastPhase
 		gtLastPeriod_ = (mrs_natural) gtInitHypothesis(3); //lastPeriod
-		gtScore_ = gtInitHypothesis(4) * (gtInitPeriod_/105.0); //initScore
+		gtScore_ = gtInitHypothesis(4) * (gtInitPeriod_/(mrs_real)maxPeriod_); //initScore
 
 		gtInitPhase_ -= (inSamples_-1 - inductionTime_);
 		gtLastPhase_ = gtLastPhase_ - (inSamples_-1 - inductionTime_) + gtLastPeriod_;
@@ -356,6 +364,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 			gtLastPhase_ += gtLastPeriod_;
 
 		cout << "\nInduction replaced by IBI given by two beats from ground-truth file at: " << gtFilePath << endl;
+		//cout << "gtIniPh: " << gtInitPhase_ << "; gtIniPer: " << gtInitPeriod_ << "; gtLasPh: " << gtLastPhase_ << "; gtLasPer: " << gtLastPeriod_ << endl;
 	}
 
 	//simulate tracking under induction windows, given first beat (or any beat)
@@ -571,7 +580,7 @@ mrs_real
 PhaseLock::calcRelationalScore(mrs_natural i, mrs_realvec rawScoreVec)
 {
 	mrs_real score = 0.0;
-	score = 2*5*rawScoreVec(i); //self-relation = 5
+	score = 2*5*rawScoreVec(i); //self-relation = 10*
 
 	mrs_natural metricalRel;
 	for(int j = 0; j < nrPeriodHyps_; j++)
@@ -600,11 +609,15 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 	{			
 		mrs_natural phase = (mrs_natural) beatHypotheses_(h, 1);
 		mrs_natural period = (mrs_natural) beatHypotheses_(h, 0);
+		//cout << "h: " << h << "; ph: " << phase << "; per: " << period << endl;
 		if(phase > 0 && period > 0)
 		{
 			//calculate k for reversing phase till minimum (by subtracting period multiples)
 			mrs_natural k = (mrs_natural) (((mrs_real)((inSamples_-1-inductionTime_)-phase)/(mrs_real)period)+MINIMUMREAL);
-			k += 1; //start on 2nd beat prediction (due to unconsistencies on the very beggining of the accumulator)
+
+			if((phase + ((mrs_natural) ((k+1) * period))) < inSamples_) //to avoid surpassing accumulator
+				k += 1; //start on 2nd beat prediction (due to unconsistencies on the very beggining of the accumulator)
+			
 			firstBeatPoint_(h) = phase + ((mrs_natural) (k * period));
 
 			//cout << "H: " << h << "-1BP: " << firstBeatPoint_(h) << endl;
@@ -633,6 +646,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 			//	<< ";adPhase: " << localPeak << ";S: " << trackingScore_(h) << endl;
 
 			firstBeatPoint_(h) = localPeak; //Keep first beat point (adjusted to maximum wihtin innerMargin)
+			
 			hypSignals_(h, (mrs_natural) firstBeatPoint_(h)) = 1.0;
 
 			outterWinLft_ = (mrs_natural) ceil(period * lftOutterMargin_); //(% of IBI)
@@ -642,7 +656,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 			mrs_natural error = 0;
 			mrs_real errorIn = MINIMUMREAL; //to avoid divide by zero
 			mrs_natural periodTmp = 0;
-			mrs_natural it=1; //used for cout debugging
+			//mrs_natural it=1; //used for cout debugging
 			do
 			{
 				//cout << "Period: " << period;
@@ -654,10 +668,17 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 				if(periodTmp >= minPeriod_ && periodTmp <= maxPeriod_)
 					period = periodTmp;
 
-				beatPoint += (period + (mrs_natural) ((errorIn*corFactor_) + ((errorIn/abs(errorIn)) * 0.5)));
-				if(beatPoint >= inSamples_) break; //(for safechecking)
-				
+				//(for safechecking)
+				if((beatPoint + (period + (mrs_natural) ((errorIn*corFactor_) + ((errorIn/abs(errorIn)) * 0.5)))) >= inSamples_) 
+				{
+					lastBeatPoint(h) = beatPoint; //Keep current lastPhase
+					lastLocalPeriod(h) = period; //Keep current lastPeriod
+					break;
+				}
+
+				beatPoint += (period + (mrs_natural) ((errorIn*corFactor_) + ((errorIn/abs(errorIn)) * 0.5)));			
 				errorIn = MINIMUMREAL; //to avoid divide by zero
+
 				lastBeatPoint(h) = beatPoint;
 				lastLocalPeriod(h) = period;
 				//Check maximum around outter window
@@ -692,7 +713,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 				else
 				{
 					scoreFraction = (mrs_real) ((mrs_real)abs(error)/ outterWinRgt_);
-					trackingScore_(h) += ((-1 * scoreFraction * localPeakAmp) * ((mrs_real)period / (mrs_real)105));
+					trackingScore_(h) += ((-1 * scoreFraction * localPeakAmp) * ((mrs_real)period / (mrs_real)maxPeriod_));
 				}
 				
 				hypSignals_(h, beatPoint) = 1.0;
@@ -700,9 +721,9 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 			
 				//cout << "H:" << h << "-it:" << it << "; Error: " << error << "; Max: " << localPeakAmp 
 				//	<< "; S: " << trackingScore_(h) << "; BeatPoint: " << beatPoint << "; period: " << period << endl;
-				it++;
+				//it++;
 			//don't evaluate beat if the outterWin around it surprasses the induction window
-			}while(beatPoint < inSamples_); 
+			}while(beatPoint < inSamples_);
 		}
 	}
 
@@ -858,6 +879,93 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 	//MATLAB_PUT(out, "FinalHypotheses");
 }
 
+void
+PhaseLock::forceInitPeriods(mrs_string mode)
+{
+	cout << "\nInitial period(s) given by ground-truth file at: " << ctrl_gtBeatsFile_->to<mrs_string>() << endl;
+
+	beatHypotheses_ = ctrl_beatHypotheses_->to<mrs_realvec>();
+	if(strcmp(mode_.c_str(), "giveinitperiod") == 0)
+	{  
+		//just pass gt period
+		for(int h = 0; h < nInitHyp_; h++)
+			beatHypotheses_(h, 0) = (mrs_real) gtInitPeriod_;
+
+		nrPeriodHyps_ = 1;
+		
+		cout << "Period as ibi of given first 2 beats: ";
+		cout << ((60.0/gtInitPeriod_)*(srcFs_ / hopSize_)) << " (BPMs)" << endl;
+	}
+	else if(strcmp(mode_.c_str(), "giveinitperiod_metricalrel") == 0)
+	{
+		nrPeriodHyps_ = 5;
+		nInitHyp_ = nrPeriodHyps_ * nrPhasesPerPeriod_; //Nr. of initial hypothesis
+
+		mrs_natural p = 0, ph = 0;
+		double periods[] = {gtInitPeriod_, (mrs_natural) (gtInitPeriod_ * 2.0), (mrs_natural) (gtInitPeriod_ * 0.5), 
+			(mrs_natural) (gtInitPeriod_ * 3.0), (mrs_natural) (gtInitPeriod_ * 0.333)};
+		//assume gt period + (4) others metrical related (2x, 1/2x, 3x, 1/3x)
+		for(int i = 0; i < nrPeriodHyps_; i++)
+		{
+			for(int h = i*nrPhasesPerPeriod_; h < (i*nrPhasesPerPeriod_)+nrPhasesPerPeriod_; h++)
+			{
+				beatHypotheses_(h, 0) = periods[p];
+				beatHypotheses_(h, 1) = beatHypotheses_(ph, 1);
+				//cout << "i-" << i <<"; h-" << h << "; p-" << p << ": " << ((60.0/periods[p])*(srcFs_ / hopSize_)) << "; ph: " << beatHypotheses_(h, 1) << endl;
+				ph++;
+			}
+			p++;
+			ph = 0;
+		}
+
+		//redefine tempo ranges to account for imposed values
+		if(periods[3] > maxPeriod_) maxPeriod_ = periods[3];
+		if(periods[4] < minPeriod_) minPeriod_ = periods[4];
+		updControl(ctrl_maxPeriod_, maxPeriod_);
+		updControl(ctrl_minPeriod_, minPeriod_);
+
+		cout << "Periods as ibi of given first 2 beats + others metrical related: ";
+		cout << ((60.0/periods[0])*(srcFs_ / hopSize_)) << "; " << ((60.0/periods[1])*(srcFs_ / hopSize_)) << "; " << 
+			((60.0/periods[2])*(srcFs_ / hopSize_)) << "; " << ((60.0/periods[3])*(srcFs_ / hopSize_)) << "; " <<
+			((60.0/periods[4])*(srcFs_ / hopSize_)) << " (BPMs)" << endl;
+	}
+	else if(strcmp(mode_.c_str(), "giveinitperiod_nonrel") == 0)
+	{
+		nrPeriodHyps_ = 5;
+		nInitHyp_ = nrPeriodHyps_ * nrPhasesPerPeriod_; //Nr. of initial hypothesis
+
+		mrs_natural p = 0, ph = 0;
+		double periods[] = {gtInitPeriod_, (mrs_natural) (gtInitPeriod_ * 1.8), (mrs_natural) (gtInitPeriod_ * 1.2), 
+			(mrs_natural) (gtInitPeriod_ * 2.3), (mrs_natural) (gtInitPeriod_ * 0.7)};
+		//assume gt period + (4) others metrical related (2x, 1/2x, 3x, 1/3x)
+		for(int i = 0; i < nrPeriodHyps_; i++)
+		{
+			for(int h = i*nrPhasesPerPeriod_; h < (i*nrPhasesPerPeriod_)+nrPhasesPerPeriod_; h++)
+			{
+				beatHypotheses_(h, 0) = periods[p];
+				beatHypotheses_(h, 1) = beatHypotheses_(ph, 1);
+				//cout << "i-" << i <<"; h-" << h << "; p-" << p << ": " << ((60.0/periods[p])*(srcFs_ / hopSize_)) << "; ph: " << beatHypotheses_(h, 1) << endl;
+				ph++;
+			}
+			p++;
+			ph = 0;
+		}
+
+		//redefine tempo ranges to account for imposed values
+		if(periods[3] > maxPeriod_) maxPeriod_ = periods[3];
+		if(periods[4] < minPeriod_) minPeriod_ = periods[4];
+		updControl(ctrl_maxPeriod_, maxPeriod_);
+		updControl(ctrl_minPeriod_, minPeriod_);
+
+		cout << "Periods as ibi of given first 2 beats + others non-related: ";
+		cout << ((60.0/periods[0])*(srcFs_ / hopSize_)) << "; " << ((60.0/periods[1])*(srcFs_ / hopSize_)) << "; " << 
+			((60.0/periods[2])*(srcFs_ / hopSize_)) << "; " << ((60.0/periods[3])*(srcFs_ / hopSize_)) << "; " <<
+			((60.0/periods[4])*(srcFs_ / hopSize_)) << " (BPMs)" << endl;
+	}
+
+	updControl(ctrl_beatHypotheses_, beatHypotheses_);
+}
+
 void 
 PhaseLock::myProcess(realvec& in, realvec& out)
 {
@@ -884,16 +992,16 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 		dumbInduction_ = ctrl_dumbInduction_->to<mrs_bool>();
 
 		//maxScore_ = calcGTNormScore(in);
-		if(strcmp(mode_.c_str(), "givefirst2beats") == 0)
+		if(strcmp(mode_.c_str(), "givefirst2beats") == 0) //gt period+phase
 		{	
 			inputGT(in, out, ctrl_gtBeatsFile_->to<mrs_string>());
 			
 			if(backtrace_)
 			{
 				//Period:
-				out(0, 0) = gtInitPeriod_; //period in frames
+				out(0, 0) = gtInitPeriod_; //keep period as ibi from first 2 beats in gt file
 				//Phase:
-				out(0, 1) = gtInitPhase_;
+				out(0, 1) = gtInitPhase_; //first/second beat in gt file
 
 				if(gtAfter2ndBeat_)
 					cout << "Initial phase backtraced from second beat of given ground-truth file: ";
@@ -901,28 +1009,29 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 					cout << "Initial phase backtraced from first beat of given ground-truth file: ";
 				
 				cout << (((gtInitPhase_ * hopSize_) - adjustment_) / srcFs_) << "s" << endl;
-				cout << "Ground-truth period: " << ((60.0/gtInitPeriod_)*(srcFs_ / hopSize_)) << "BPMs" << endl;
+				cout << "Ground-truth period: " << ((60.0/gtInitPeriod_)*(srcFs_ / hopSize_)) << " (BPMs)" << endl;
 			}
 			else
 			{
 				//Period:
-				out(0, 0) = gtLastPeriod_; //period in frames
+				out(0, 0) = gtLastPeriod_; //period adjusted from ibi given by first 2 beats in gt file
 				//Phase:
-				out(0, 1) = gtLastPhase_;
+				out(0, 1) = gtLastPhase_; //adjusted from first/second beat in gt file
 
 				if(gtAfter2ndBeat_)
 					cout << "Initial phase adjusted from second beat of given ground-truth file: ";
 				else
 					cout << "Initial phase adjusted from first beat of given ground-truth file: ";
 				cout << (((gtLastPhase_ * hopSize_) - adjustment_) / srcFs_) << "s" << endl;
-				cout << "Ground-truth period (adjusted): " << ((60.0/gtLastPeriod_)*(srcFs_ / hopSize_)) << "BPMs" << endl;
+				cout << "Ground-truth period (adjusted): " << ((60.0/gtLastPeriod_)*(srcFs_ / hopSize_)) << " (BPMs)" << endl;
 			}
 			//score 
 			out(0, 2) = gtScore_; //initialScore
 		}
-		else if(strcmp(mode_.c_str(), "givefirst2beats_startpoint") == 0)
+		else if(strcmp(mode_.c_str(), "givefirst2beats_startpoint") == 0) //gt period+phase
 		{
 			inputGT(in, out, ctrl_gtBeatsFile_->to<mrs_string>());
+			
 			//Period:
 			out(0, 0) = gtInitPeriod_; //period in frames
 			//Phase:
@@ -935,12 +1044,23 @@ PhaseLock::myProcess(realvec& in, realvec& out)
 			else
 				cout << "Initial phase as first beat of given ground-truth file: ";
 			cout << (((gtPhase_ * hopSize_) - adjustment_) / srcFs_) << "s" << endl;
-			cout << "Ground-truth period: " << ((60.0/gtInitPeriod_)*(srcFs_ / hopSize_)) << "BPMs" << endl;
+			cout << "Ground-truth period: " << ((60.0/gtInitPeriod_)*(srcFs_ / hopSize_)) << " (BPMs)" << endl;
 		}
 		else if(strcmp(mode_.c_str(), "givefirst1beat") == 0 
-			|| strcmp(mode_.c_str(), "givefirst1beat_startpoint") == 0 )
+			|| strcmp(mode_.c_str(), "givefirst1beat_startpoint") == 0 ) //gt phase
 		{
 			inputGT(in, out, ctrl_gtBeatsFile_->to<mrs_string>());
+		}
+		else if((strcmp(mode_.c_str(), "giveinitperiod") == 0) || (strcmp(mode_.c_str(), "giveinitperiod_metricalrel") == 0)
+			|| (strcmp(mode_.c_str(), "giveinitperiod_nonrel") == 0))
+		{
+			inputGT(in, out, ctrl_gtBeatsFile_->to<mrs_string>());
+
+			//force gt period (given by gt file - ibi of first 2 beats) in beatHypotheses vector
+			forceInitPeriods(mode_);
+			
+			//run as regular induction
+			regularFunc(in, out);
 		}
 		else if(strcmp(mode_.c_str(), "regular") == 0)
 			regularFunc(in , out);
