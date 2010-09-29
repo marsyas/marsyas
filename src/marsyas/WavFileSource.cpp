@@ -423,7 +423,7 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			samplesOut_ += onSamples_;
 
 			if (repetitions_ != 1) 
-				hasData_ = (samplesOut_ < rewindpos_ + repetitions_ * csize_);
+				hasData_ = (samplesOut_ < repetitions_ * csize_);
 			else 
 				hasData_ = pos_ < rewindpos_ + csize_;
 

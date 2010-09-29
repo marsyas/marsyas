@@ -19,6 +19,9 @@
 #include "common.h"
 #include "MP3FileSource.h"
 
+using std::cout;
+using std::endl;
+
 
 using std::ostringstream;
 using namespace Marsyas;
@@ -376,14 +379,23 @@ MP3FileSource::getHeader(mrs_string filename)
 
   
 	// only works for a constant bitrate, duration is (bits in file / bitrate)
-	mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
+	mrs_real duration = 2 * (fileSize_ * 8) / bitRate;
 	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
   
-	size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
 
-  
+	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
+	
+	size_ = (mrs_natural) ((duration * sampleRate) / nChannels);
 	csize_ = size_ * nChannels;
+
+	if (duration_ != -1.0)
+	{
+		csize_ = (mrs_natural)(duration_ * sampleRate);
+	}
+	
+
+
 	totalFrames_ = (mrs_natural)((sampleRate * duration_) / frameSamples_);
   
   
@@ -616,7 +628,7 @@ MP3FileSource::getLinear16(realvec& slice)
 	
 	// keep track of where we are
 	pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->to<mrs_natural>());
-
+	
 	ctrl_pos_->setValue(pos_, NOUPDATE);
 	currentPos_ = pos_;	
 	
@@ -656,20 +668,46 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 		getLinear16(out);
 	else
 		out.setval(0.0);
+	
+
+	if (pos_ >= rewindpos_ + csize_)
+	{
+		if (repetitions_ != 1) 
+		{
+			pos_ = rewindpos_;
+			cout << "REWIND" << endl;
+			// compute a new file offset using the frame target
+			mrs_real ratio = (mrs_real)pos_/size_;
+			
+#ifdef MARSYAS_MAD     
+			madStructInitialize();
+#endif 
+			
+			mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
+			
+			// if we are rewinding, we call fillStream with -1
+			if (targetOffset==0) {
+				fillStream(-1);
+			} else {
+				fillStream(targetOffset);
+			}
+			currentPos_ = pos_;
+		}
+		
+	}
+	 
 
 	samplesOut_ += onSamples_;
   
-	if (hasData_) {
-
-		if (repetitions_ != 1)
-			hasData_ = (samplesOut_ < repetitions_ * csize_);
-		else 
-			hasData_ = pos_ < csize_;
-	  
-	} else{
-		// if hasData_ was false already it got set in fillStream
-		// MRSWARN("MP3FileSource: track ended.");
-	}
+	
+	if (repetitions_ != 1)
+		hasData_ = (samplesOut_ < repetitions_ * csize_);
+	else 
+		hasData_ = pos_ < rewindpos_ + csize_;
+	
+	if (repetitions_ == -1)
+		hasData_ = true;
+	
   
 }
 

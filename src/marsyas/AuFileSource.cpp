@@ -397,16 +397,20 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 			{
 				getLinear16(out);
 				ctrl_pos_->setValue(pos_, NOUPDATE);
-	    
-				if (pos_ >= rewindpos_ + csize_) 
+				
+				if (pos_ >= rewindpos_ + csize_)
 				{
 					if (repetitions_ != 1)
+					{
 						pos_ = rewindpos_;
+					}
+					
 				}
+				
 				samplesOut_ += onSamples_;
-		
+				
 				if (repetitions_ != 1) 
-					hasData_ = (samplesOut_ < rewindpos_ + repetitions_ * csize_);
+					hasData_ = (samplesOut_ < repetitions_ * csize_);
 				else 
 					hasData_ = pos_ < rewindpos_ + csize_;
 		
