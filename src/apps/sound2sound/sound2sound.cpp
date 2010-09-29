@@ -51,6 +51,8 @@ int verboseopt;
 mrs_real gain;
 mrs_real frequency;
 mrs_real qfactor;
+mrs_real start;
+mrs_real length;
 
 mrs_string mode;
 CommandLineOptions cmd_options;
@@ -83,11 +85,14 @@ printHelp(string progName)
 	cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
 	cerr << "   out.wav is the optional name of the audio file to be generated" << endl;
 	cerr << "Help Options:" << endl;
-	cerr << "-u --usage        : display short usage info" << endl;
-	cerr << "-h --help         : display this information " << endl;
-	cerr << "-v --verbose      : verbose output" << endl;
+	cerr << "-u --usage       : display short usage info" << endl;
+	cerr << "-h --help        : display this information " << endl;
+	cerr << "-v --verbose     : verbose output" << endl;
 	cerr << "------------------------------------------------------"<< endl;
 	cerr << "-m --mode        : mode which can be one of [bandpass, highpass, lowpass]" << endl;
+	cerr << "-s --start       : start in seconds" << endl;
+	cerr << "-l --length      : length in seconds" << endl;
+	
 	cerr << "-g --gain        : gain" << endl;
 	cerr << "-f --frequency   : frequency" << endl;
 	cout << "-q --qfactor     : qfacotr" << endl;
@@ -104,6 +109,9 @@ initOptions()
 	cmd_options.addRealOption("frequency", "f", 500);
 	cmd_options.addRealOption("qfactor", "q", 1.0);
 	cmd_options.addStringOption("mode" , "m", "bandpass");
+	cmd_options.addRealOption("length", "l", -1.0);
+	cmd_options.addRealOption("start", "s", 0.0);
+	
 }
 
 
@@ -117,14 +125,11 @@ loadOptions()
 	frequency = cmd_options.getRealOption("frequency");
 	qfactor = cmd_options.getRealOption("qfactor");
 	mode = cmd_options.getStringOption("mode");
+	start = cmd_options.getRealOption("start");
+	length = cmd_options.getRealOption("length");
 }
 
 
-MarSystem* createNetwork()
-{
-
-	
-}
 
 
 
@@ -135,9 +140,23 @@ process(string ifname, string ofname, string mode)
   if (ofname == "default.wav")
 	  ofname = inFile.nameNoExt() + "Output.wav";
   
-  cout << "***** sound2sound-bandpass *****" << endl;
-  cout << "Input filename  = " << ifname << endl;
-  cout << "Output filename = " << ofname << endl;
+  if (verboseopt)
+  {
+	  cout << "***** sound2sound *****" << endl;
+	  cout << "Input filename  = " << ifname << endl;
+	  cout << "Output filename = " << ofname << endl;
+	  cout << "Mode            = " << mode << endl;
+	  cout << "Start           = " << start << " seconds" << endl;
+	  if (length == -1.0)
+		  cout << "Length          = full duration" << endl;
+	  else
+		  cout << "Length          = " << length << " seconds" << endl;
+	  cout << "Gain            = " << gain << endl;
+	  cout << "Frequency       = " << frequency << endl;
+	  cout << "Q-factor        = " << qfactor << endl;
+	  
+  }
+  
   MarSystemManager mng;
   MarSystem* net = mng.create("Series/net");
   net->addMarSystem(mng.create("SoundFileSource/src"));
@@ -147,6 +166,18 @@ process(string ifname, string ofname, string mode)
   
   net->updControl("SoundFileSource/src/mrs_string/filename", ifname);
   net->updControl("SoundFileSink/dest/mrs_string/filename", ofname);
+
+
+  mrs_natural nChannels = net->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+  mrs_real srate = net->getctrl("mrs_real/israte")->to<mrs_real>();
+
+  mrs_natural offset = (mrs_natural) (start * srate * nChannels);
+  
+  net->updControl("SoundFileSource/src/mrs_natural/pos", offset);
+  net->updControl("SoundFileSource/src/mrs_natural/loopPos", offset);
+  net->updControl("SoundFileSource/src/mrs_real/duration", length);
+  
+
   net->updControl("Biquad/filter/mrs_real/frequency", frequency);
   net->updControl("Biquad/filter/mrs_real/resonance", qfactor);
   net->updControl("Gain/gain/mrs_real/gain", gain);

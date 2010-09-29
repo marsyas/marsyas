@@ -108,8 +108,6 @@ void sfplay(vector<string> soundfiles)
 
 	// update controls 
 	playbacknet->updControl("mrs_natural/inSamples", windowsize);
-	playbacknet->updControl("SoundFileSource/src/mrs_real/repetitions", repetitions);
-	playbacknet->updControl("SoundFileSource/src/mrs_real/duration", length);
 	playbacknet->updControl("Gain/gt/mrs_real/gain", gain);
   
 	// link top-level controls 
@@ -132,13 +130,17 @@ void sfplay(vector<string> soundfiles)
 		playbacknet->updControl("mrs_string/filename", fname);
       
 		mrs_natural nChannels = playbacknet->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-
 		mrs_real srate = playbacknet->getctrl("mrs_real/israte")->to<mrs_real>();
-      
+
+;
 		offset = (mrs_natural) (start * srate * nChannels);
 
 		playbacknet->updControl("mrs_natural/loopPos", offset);
 		playbacknet->updControl("mrs_natural/pos", offset);
+		playbacknet->updControl("SoundFileSource/src/mrs_real/repetitions", repetitions);
+		playbacknet->updControl("SoundFileSource/src/mrs_real/duration", length);
+		
+
       
 		if (fileName != EMPTYSTRING) // soundfile output instead of audio output
 			playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", fileName);

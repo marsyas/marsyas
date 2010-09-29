@@ -88,7 +88,6 @@ void Biquad::myUpdate(MarControlPtr sender)
     
     w0_ = 2 * PI * freq_ / fs_;
 
-	cout << "type = " << type << endl;
 	
 
     if (type == "lowpass")
