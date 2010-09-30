@@ -691,8 +691,8 @@ json_spectrogram(string inFileName)
   double y = 0;
   double colour = 0;
   double energy;
-  double penergy;
-  double denergy;
+  // double penergy;
+  // double denergy;
 
   cout << "{" << endl;
   cout << "\"width\" : " << pngLength << "," << endl;
@@ -735,6 +735,54 @@ json_spectrogram(string inFileName)
   }
 
   cout << "]}" << endl;
+
+  delete net;
+
+}
+
+// Variation that outputs RMS and Flux
+void 
+output_rmsflux(string inFileName)
+{
+
+  MarSystemManager mng;
+  MarSystem* net = mng.create("Series", "net");
+
+  net->addMarSystem(mng.create("SoundFileSource", "src"));
+  net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+
+  // A fanout that will do both RMS and Flux calculations
+  MarSystem* fanout = mng.create("Fanout","fanout");
+  net->addMarSystem(fanout);
+
+  // The branch to do the RMS
+  MarSystem* rms_series = mng.create("Series","rms_series");
+  rms_series->addMarSystem(mng.create("Rms", "rms"));
+  fanout->addMarSystem(rms_series);
+
+  // The branch to do the Flux
+  MarSystem* flux_series = mng.create("Series","flux_series");
+  flux_series->addMarSystem(mng.create("ShiftInput", "si"));
+  flux_series->addMarSystem(mng.create("Windowing", "win"));
+  flux_series->addMarSystem(mng.create("Spectrum","spk"));
+  flux_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  flux_series->addMarSystem(mng.create("Flux", "flux")); 
+  fanout->addMarSystem(flux_series);
+
+  // Update the controls with required values
+  net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+
+  realvec processedData;
+  float time = 0;
+  mrs_natural samples_per_tick = net->getControl("SoundFileSource/src/mrs_natural/onSamples")->to<mrs_natural>();
+  mrs_real rate = net->getControl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  mrs_real sec_per_tick = samples_per_tick / rate;
+  while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) {
+	net->tick();
+	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	cout << time << "," << processedData(0,0) << "," << processedData(1,0) << endl;
+ 	time += sec_per_tick;
+  }
 
   delete net;
 
@@ -1085,6 +1133,12 @@ main(int argc, const char **argv)
 	if (mode == "correlogram") 
 	{
 	  correlogramPNGs(files[0],files[1]);
+	  exit(0);
+	}
+
+	if (mode == "rmsflux") 
+	{
+	  output_rmsflux(files[0]);
 	  exit(0);
 	}
 
