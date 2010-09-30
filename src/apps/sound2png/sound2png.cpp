@@ -58,6 +58,8 @@ int maxFreq;
 int position;
 int ticks;
 mrs_string mode;
+mrs_real start, length;
+
 CommandLineOptions cmd_options;
 
 void 
@@ -102,7 +104,9 @@ printHelp(string progName)
 	cerr << "-mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
 	cerr << "-p --position     : position to start at in the audio file" << endl;
 	cerr << "-t --ticks        : how many times to tick the network" << endl;
-
+	cerr << "-s --start        : start in seconds " << endl;
+	cerr << "-l --length       : length in seconds " << endl;
+	
 	
 	exit(1);
 }
@@ -122,6 +126,9 @@ initOptions()
 	cmd_options.addNaturalOption("ticks", "t", -1);
 	cmd_options.addNaturalOption("position", "p", 0);
 	cmd_options.addStringOption("mode" , "m", "spectrogram");
+	cmd_options.addRealOption("start", "s", 0.0);
+	cmd_options.addRealOption("length", "l", -1.0);
+	
 }
 
 
@@ -139,7 +146,9 @@ loadOptions()
 	position = cmd_options.getNaturalOption("position");
 	ticks = cmd_options.getNaturalOption("ticks");
 	mode = cmd_options.getStringOption("mode");
-
+	start = cmd_options.getRealOption("start");
+	length = cmd_options.getRealOption("length");
+	
 }
 
 
@@ -344,6 +353,14 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
 	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
+	
+	mrs_real srate = net->getControl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	if ((position == 0) && (start != 0.0))
+		position = (mrs_natural) (srate * start);
+	
+	if ((ticks == -1) && (length != -1.0))
+		ticks = (mrs_natural) ((length * srate) / windowSize);
+
 	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
 	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
 	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
