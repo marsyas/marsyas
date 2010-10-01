@@ -518,10 +518,10 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 
 // variation of spectrogram generation for NEPTUNE 
 void 
-neptune_spectrogram(string inFileName)
+neptune_spectrogram(string inFileName, string outFileName)
 {
   FileName inFile(inFileName);
-  string outFileName = inFile.nameNoExt() + ".png";
+  // string outFileName = inFile.nameNoExt() + ".png";
   cout << "Generating spectrogram with specific settings for NEPTUNE, Canada" << endl;
   cout << "Output file is " << outFileName << endl;
   // windowSize = 8192;
@@ -1116,7 +1116,7 @@ main(int argc, const char **argv)
 
 	if (mode == "neptune")
 	{
-	    neptune_spectrogram(files[0]);
+	  neptune_spectrogram(files[0],files[1]);
 	    exit(0);
 	}
  	if (mode == "json") 
