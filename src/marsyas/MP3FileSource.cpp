@@ -379,7 +379,7 @@ MP3FileSource::getHeader(mrs_string filename)
 
   
 	// only works for a constant bitrate, duration is (bits in file / bitrate)
-	mrs_real duration = 2 * (fileSize_ * 8) / bitRate;
+	mrs_real duration =  (fileSize_ * 8) / bitRate;
 	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
   
@@ -387,7 +387,7 @@ MP3FileSource::getHeader(mrs_string filename)
 	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
 	
 	size_ = (mrs_natural) ((duration * sampleRate) / nChannels);
-	csize_ = size_ * nChannels;
+	csize_ = size_ ;
 
 	if (duration_ != -1.0)
 	{
@@ -674,8 +674,8 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 	{
 		if (repetitions_ != 1) 
 		{
-			pos_ = rewindpos_;
-			cout << "REWIND" << endl;
+			if (repetitions_ != 1)
+				pos_ = rewindpos_;
 			// compute a new file offset using the frame target
 			mrs_real ratio = (mrs_real)pos_/size_;
 			
@@ -704,7 +704,7 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 		hasData_ = (samplesOut_ < repetitions_ * csize_);
 	else 
 		hasData_ = pos_ < rewindpos_ + csize_;
-	
+
 	if (repetitions_ == -1)
 		hasData_ = true;
 	
