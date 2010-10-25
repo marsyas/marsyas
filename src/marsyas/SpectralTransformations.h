@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,39 +16,43 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#ifndef MARSYAS_PHASERANDOMIZE_H
-#define MARSYAS_PHASERANDOMIZE_H
+#ifndef MARSYAS_SPECTRALTRANSFORMATIONS_H
+#define MARSYAS_SPECTRALTRANSFORMATIONS_H
 
 #include "MarSystem.h"
 
 namespace Marsyas
 {
 /**
-	\class PhaseRandomize
+	\class SpectralTransformation
 	\ingroup Processing
-	\brief Randomize phases 
+	\brief Contains various spectral transformation. Input and output is a complex spectrum. 
+	Mostly used to demonstrate how spectral analyis works. 
 
 
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
+	- \b mrs_real/gain [w]   : sets the gain multiplier.
+	- \b mrs_string/mode [w] : sets the specific transformation to be used (for example PhaseRandomize or SingleBin). 
 
 */
 
-class PhaseRandomize: public MarSystem
+class SpectralTransformations: public MarSystem
 {
 private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
 
 	MarControlPtr ctrl_gain_;
-		mrs_real N2_, re_, im_, mag_, phs_;
+	MarControlPtr ctrl_mode_;
+	
+	mrs_real N2_, re_, im_, mag_, phs_;
 		
 public:
-	PhaseRandomize(std::string name);
-	PhaseRandomize(const PhaseRandomize& a);
-	~PhaseRandomize();
+	SpectralTransformations(std::string name);
+	SpectralTransformations(const SpectralTransformations& a);
+	~SpectralTransformations();
 	MarSystem* clone() const;
-
+	void phaseRandomize(realvec& in, realvec& out);
 	void myProcess(realvec& in, realvec& out);
 };
 

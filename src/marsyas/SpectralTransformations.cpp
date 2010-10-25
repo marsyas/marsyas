@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,43 +16,50 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "PhaseRandomize.h"
+#include "SpectralTransformations.h"
+
+using std::cout;
+using std::endl;
 
 using std::ostringstream;
 using namespace Marsyas;
 
-PhaseRandomize::PhaseRandomize(mrs_string name):MarSystem("PhaseRandomize", name)
+SpectralTransformations::SpectralTransformations(mrs_string name):MarSystem("SpectralTransformations", name)
 {
 	addControls();
 }
 
-PhaseRandomize::PhaseRandomize(const PhaseRandomize& a) : MarSystem(a)
+SpectralTransformations::SpectralTransformations(const SpectralTransformations& a) : MarSystem(a)
 {
 	ctrl_gain_ = getctrl("mrs_real/gain");
+	ctrl_mode_ = getctrl("mrs_string/mode");
+	
 }
 
 
-PhaseRandomize::~PhaseRandomize()
+SpectralTransformations::~SpectralTransformations()
 {
 }
 
 MarSystem*
-PhaseRandomize::clone() const
+SpectralTransformations::clone() const
 {
-	return new PhaseRandomize(*this);
+	return new SpectralTransformations(*this);
 }
 
 void
-PhaseRandomize::addControls()
+SpectralTransformations::addControls()
 {
 	addctrl("mrs_real/gain", 1.0, ctrl_gain_);
+	addctrl("mrs_string/mode", "PhaseRandomize", ctrl_mode_);
+	
 
 }
 
 void
-PhaseRandomize::myUpdate(MarControlPtr sender)
+SpectralTransformations::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("PhaseRandomize.cpp - PhaseRandomize:myUpdate");
+	MRSDIAG("SpectralTransformations.cpp - SpectralTransformations:myUpdate");
 
 	//Spectrum outputs N values, corresponding to N/2+1
 	//complex and unique spectrum points - see Spectrum.h documentation
@@ -62,13 +69,12 @@ PhaseRandomize::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
 }
 
-void
-PhaseRandomize::myProcess(realvec& in, realvec& out)
+
+void 
+SpectralTransformations::phaseRandomize(realvec& in, realvec& out)
 {
 	mrs_natural t,o;
-	
 	for(t=0; t < inSamples_; ++t)
-	{
 		for (o=0; o < N2_; o++)
 		{
 			if (o==0) //DC bin (i.e. 0)
@@ -87,9 +93,7 @@ PhaseRandomize::myProcess(realvec& in, realvec& out)
 				// randomize phase 
 				im_ = in(2*o+1,t);
 			}
-
-
-
+			
 			mag_ = sqrt(re_ * re_ + im_ * im_);
 			// phs_ = -atan2(im_, re_);
 			phs_ = ((mrs_real)rand() / (mrs_real)(RAND_MAX)) * TWOPI;
@@ -102,8 +106,21 @@ PhaseRandomize::myProcess(realvec& in, realvec& out)
 			}
 			
 		}
+}
+
+
+
+void
+SpectralTransformations::myProcess(realvec& in, realvec& out)
+{
+
+	if (ctrl_mode_->to<mrs_string>() == "PhaseRandomize")
+	{
+		cout << "PhaseRandomize" << endl;
+		
+		phaseRandomize(in, out);
+	
 	}
 	
-		
 
 }

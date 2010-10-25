@@ -46,3 +46,11 @@ for i in range(1,2):  # Show first five windows of the time domain waveform
 	plot(plotdata2)
 
 	show()
+
+
+
+
+
+
+
+
