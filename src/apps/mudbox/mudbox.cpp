@@ -1428,7 +1428,7 @@ toy_with_fft(string sfName, int size)
 	MarSystem* series = mng.create("Series","network");
 	series->addMarSystem(mng.create("SoundFileSource","src"));
 	series->addMarSystem(mng.create("Spectrum", "spk"));
-	series->addMarSystem(mng.create("SpectralTransformations", "spectrans"));
+	// series->addMarSystem(mng.create("SpectralTransformations", "spectrans"));
 	series->addMarSystem(mng.create("InvSpectrum", "ispk"));
 	series->addMarSystem(mng.create("AudioSink", "dest"));
 	

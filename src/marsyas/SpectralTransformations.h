@@ -53,6 +53,7 @@ public:
 	~SpectralTransformations();
 	MarSystem* clone() const;
 	void phaseRandomize(realvec& in, realvec& out);
+	void singlebin(realvec& in, realvec& out);
 	void myProcess(realvec& in, realvec& out);
 };
 

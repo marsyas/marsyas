@@ -51,7 +51,7 @@ void
 SpectralTransformations::addControls()
 {
 	addctrl("mrs_real/gain", 1.0, ctrl_gain_);
-	addctrl("mrs_string/mode", "PhaseRandomize", ctrl_mode_);
+	addctrl("mrs_string/mode", "singlebin", ctrl_mode_);
 	
 
 }
@@ -109,6 +109,56 @@ SpectralTransformations::phaseRandomize(realvec& in, realvec& out)
 }
 
 
+void 
+SpectralTransformations::singlebin(realvec& in, realvec& out)
+{
+	mrs_natural t,o;
+	for(t=0; t < inSamples_; ++t)
+		for (o=0; o < N2_; o++)
+		{
+			if (o==4) //DC bin (i.e. 0)
+			{
+				re_ = in(0,t);
+				im_ = 0.0;
+			}
+			else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+			{
+				re_ = in(1,t);
+				im_ = 0.0;
+			}
+			else //all other bins
+			{
+
+				// if (o ==3)
+				if (o == 5) 
+				{
+					re_ = 0.5;
+					im_ = 0.0;
+				}
+				else 
+				{
+					re_ = 0.0;
+					im_ = 0.0;
+				}
+				
+			}
+			
+			
+			mag_ = sqrt(re_ * re_ + im_ * im_);
+			phs_ = -atan2(im_, re_);
+			// phs_ = ((mrs_real)rand() / (mrs_real)(RAND_MAX)) * TWOPI;
+			// phs_ -= PI;
+			
+			if (o < N2_-1)
+			{
+				out(2*o,t) = mag_ * cos(phs_);
+				out(2*o+1,t) = mag_ * sin(phs_);
+			}
+			
+		}
+}
+
+
 
 void
 SpectralTransformations::myProcess(realvec& in, realvec& out)
@@ -117,10 +167,15 @@ SpectralTransformations::myProcess(realvec& in, realvec& out)
 	if (ctrl_mode_->to<mrs_string>() == "PhaseRandomize")
 	{
 		cout << "PhaseRandomize" << endl;
-		
 		phaseRandomize(in, out);
-	
 	}
+	else if (ctrl_mode_->to<mrs_string>() == "singlebin")
+	{
+		cout << "SingleBin" << endl;
+		singlebin(in, out);		
+	}
+	
+	   
 	
 
 }
