@@ -164,6 +164,7 @@ These tests are deliberately simple and easy to understand.
 
 @menu
 * What does regression mean?::  
+* How do I write a regression test?::      
 * How do the tests work?::      
 * When a test fails...::        
 * Why should I care?::          
@@ -210,6 +211,62 @@ In other words, these tests do not check for @emph{correctness};
 they simply check for @emph{consistency}.  Fixing a bug could
 result in a test @qq{failing}.  However, this is not a problem:
 see @ref{When a test fails...}
+
+
+@node How do I write a regression test?
+@subsection How do I write a regression test?
+
+Writing a regression test is very easy.  
+
+1) Run your program with the normal command line flags on an input
+audio file.  I would suggest to use one of the files in the
+marsyas/src/tests/regressions/input directory if possible.  To test
+the waveform generation functionality of sound2png I ran it with the
+following flags:
+
+@example
+sound2png -m waveform marsyas/src/tests/regressions/input/right.wav waveform.png
+@end example
+
+2) Copy the output file to the marsyas/src/tests/regressions/output
+directory
+
+@example
+cp waveform.png marsyas/src/tests/regressions/output
+@end example
+
+3) Add a section to marsyas/src/tests/regressions/CMakeLists.txt for
+your new test:
+
+@example
+set( ARGUMENTS
+	-m waveform
+)
+regression_explicit(sound2png_waveform right.wav waveform.png sound2png "$@{ARGUMENTS@}")
+@end example
+
+The first section ``ARGUMENTS'' are where you should put all the
+command line arguments for your program.  ``regression_explicit'' is a
+test MACRO that we've written to help make it easy to write tests like
+this, and it takes 5 arguments:
+
+
+@example
+macro(regression_audio REG_NAME REG_INPUT REG_OUTPUT REG_COMMAND REG_ARGS)
+@end example
+
+REG_NAME is the name of your test.  Each test must be named
+differently, if not, the duplicate tests won't be run.
+
+REG_INPUT is the input file for your test.  In our case this was
+``right.wav''
+
+REG_OUTPUT is the output file for your test.  In our case this was
+``waveform.png''
+
+REG_COMMAND is the command to run, ``sound2png'' in this example.
+
+REG_ARGS are the command line arguments to REG_COMMAND.
 
 
 @node How do the tests work?
