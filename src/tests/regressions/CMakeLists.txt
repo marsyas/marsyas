@@ -17,6 +17,23 @@ add_test( ${REG_NAME}-verification ${EXECUTABLE_OUTPUT_PATH}/audioCompare
 	${TEST_OUTPUT}/${REG_OUTPUT} ${REG_OUTPUT} )
 endmacro(regression_audio)
 
+#
+# A macro that explicitly specifies the name of the input and output
+# files on the command line for the first step.
+#
+macro( regression_explicit REG_NAME REG_INPUT REG_OUTPUT REG_COMMAND REG_ARGS)
+# otherwise the command-line args get all screwed up.
+separate_arguments(REG_ARGS)
+#  Can't get this to work.  :(
+#add_custom_command( OUTPUT ${REG_NAME}.au
+#	COMMAND "${REG_COMMAND} ${REG_INPUT}"
+#)
+add_test( ${REG_NAME}-creation ${EXECUTABLE_OUTPUT_PATH}/${REG_COMMAND}
+	${REG_ARGS} ${TEST_INPUT}/${REG_INPUT} ${TEST_OUTPUT}/${REG_OUTPUT} )
+add_test( ${REG_NAME}-verification ${EXECUTABLE_OUTPUT_PATH}/audioCompare
+	${TEST_OUTPUT}/${REG_OUTPUT} ${REG_OUTPUT} )
+endmacro(regression_explicit)
+
 
 ## actual tests
 set( NEXT_COMMAND
@@ -24,15 +41,43 @@ set( NEXT_COMMAND
 )
 regression_audio( sfplay right.wav right-sfplay.au sfplay "${NEXT_COMMAND}")
 
-
 set( NEXT_COMMAND
 	-q -p 1.5 -s 50 -g 0.9 -ob -f right-phasevocoder.au
 )
 regression_audio (phasevocoder right.wav right-phasevocoder.au
 	phasevocoder "${NEXT_COMMAND}")
 
+#
+# Test the spectrogram creation mode of sound2png
+#
+set( ARGUMENTS
+)
+regression_explicit( sound2png_spectrogram right.wav spectrogram.png sound2png "${ARGUMENTS}")
 
+#
+# Test the waveform creation mode of sound2png
+#
+set( ARGUMENTS
+	-m waveform
+)
+regression_explicit( sound2png_waveform right.wav waveform.png sound2png "${ARGUMENTS}")
+
+#
+# Test the neptune creation mode of sound2png
+#
+set( ARGUMENTS
+	-m neptune
+)
+regression_explicit( sound2png_neptune right.wav neptune.png sound2png "${ARGUMENTS}")
+
+#
+# Test peakClustering
+#
 set( NEXT_COMMAND
 )
 regression_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
+
+
+
+
