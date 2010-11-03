@@ -117,6 +117,7 @@ as Marsyas does not perform automatic sampling conversion on collections.
 * record::                      
 * orcarecord::                  
 * sound2png::                  
+* sound2sound::                  
 @end menu
 
 
@@ -207,7 +208,7 @@ orcarecord -l 8 -g 0.3 foo.wav
 @end example 
 
 
-@node sound2png,  , orcarecord, Soundfile Interaction
+@node sound2png, sound2sound , orcarecord, Soundfile Interaction
 @subsection @code{sound2png}
 
 A program that uses Marsyas to generate a PNG of an input audio file.
@@ -233,7 +234,7 @@ The maximum frequency is set to 8000Hz.  A gain of 1.5 is used to make
 the spectrogram darker:
 
 @example 
-sound2png A30.wav -ws 1024 -hs 1024 -mf 8000 -g 1.5 out.png
+sound2png -m spectrogram A30.wav -ws 1024 -hs 1024 -mf 8000 -g 1.5 out.png
 @end example 
 
 @image{images/sound2png_spectrogram,,5cm}
@@ -243,7 +244,7 @@ audio file.  For this, you use the -w option.  An example of this is
 shown below:
 
 @example 
-sound2png tiny.wav -ws 1 -w out.png
+sound2png -m waveform tiny.wav -ws 1 out.png
 @end example 
 
 @image{images/sound2png_waveform,,5cm}
@@ -255,10 +256,39 @@ a bar from the minimum to the maximum value for each window.  An
 example of this is shown below:
 
 @example 
-sound2png small.wav -ws 100 -w out.png
+sound2png -m waveform small.wav -ws 100 out.png
 @end example 
 
 @image{images/sound2png_waveform2,,5cm}
+
+@node sound2sound,  , sound2png, Soundfile Interaction
+@subsection @code{sound2sound}
+
+A program that uses Marsyas to do various types of audio                                                                    
+processing/digital audio effects that takes as input a single                                                               
+audio file and generate a single audio file that is the result of                                                           
+the processing.   
+
+Help info (this should give you all the parameters that you can adjust 
+from the interface):
+
+@example
+sound2sound -h
+@end example
+
+
+Bandpass filter with center frequency 500 Hz and a q-factor of 10 the
+file input.wav processing 30 seconds starting 15 seconds into the file
+with a gain of 0.8 and write the result to output.wav
+
+@example
+sound2sound input.wav -m bandpass -f 500 -q 10 -s 15 -l 30 -g 0.8 output.wav
+@end example
+
+Equivalently:
+@example
+sound2sound input.wav --method bandpass --frequency 500 --qfactor 10 --start 15 --length 30 --gain 0.8 output.wav
+@end example
 
 
 @node Feature Extraction, Synthesis, Soundfile Interaction, Available tools
