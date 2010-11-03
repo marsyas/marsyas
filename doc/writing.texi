@@ -433,7 +433,8 @@ gnuplot> plot "dataToPlot.txt"
 * WEKA::                        
 * MATLAB::                      
 * Python::                      
-* OCaml::                       
+* OCaml::        
+* SonicVisualiser Vamp Plugins::                 
 @end menu
 
 @node Open Sound Control (OSC)
@@ -612,6 +613,177 @@ are installed.
 
 To combine Marsyas and OCaml, see the MarsyasOCaml documentation at
 @uref{http://www.cs.uvic.ca/~inb/work/marsyasOCaml/}
+
+
+@node SonicVisualiser Vamp Plugins
+@subsection SonicVisualiser Vamp Plugins
+@subsubsection Instalation
+
+@b{Requirements:}
+@itemize
+@item @b{CMake} (@uref{http://www.cmake.org/}).
+@item @b{SonicVisualiser} (@uref{http://www.sonicvisualiser.org/}).
+@item @b{Vamp Plugin SDK:}
+@itemize
+@item Latest revision: @code{$ svn co https://vamp.svn.sourceforge.net/svnroot/vamp/vamp-plugin-sdk/trunk vamp-plugin-sdk}.
+@item Distribution: @uref{http://sourceforge.net/projects/vamp/files/vamp-plugin-sdk/}.
+@item Build and install the plugin sdk using the supplied instructions.@*
+(vamp-simple-host, a command-line host for Vamp plugins, is installed along)
+@end itemize
+@item @b{Vamp Tester [@strong{optional}]}@*
+A command line application for testing plugins, giving you a very detailed report about the compliance of the plugin:
+@itemize
+@item Latest revision: @code{$ svn co https://vamp.svn.sourceforge.net/svnroot/vamp/vamp-plugin-tester/trunk vamp-plugin-tester}.
+@item Distribution (source + binaries): @uref{http://sourceforge.net/projects/vamp/files/vamp-plugin-tester/}.
+@item Add vamp-plugin-tester path to environment @code{PATH}.
+@end itemize
+@end itemize
+
+
+@strong{MacOSX:}@*
+(Tested in 10.6 with gcc 4.2 for i386 and x86_64, linking to both the static and dynamic build of Marsyas.@*
+Note that x86_64 is not supported by Sonic Visualiser yet, but fat binaries with both architectures work fine.)
+
+@enumerate
+@item @b{Building Marsyas Vamp Plugin:}@*
+
+@itemize
+@item @code{$ cmake-gui}@*
+@code{WITH_VAMP ON};@*
+@code{MARSYAS_STATIC OFF} (static linking not supported)@*
+@code{VAMP_LIBRARY}: dynamic/static version of libvamp-sdk, from the install path -> @code{/usr/local/lib/libvamp-sdk.dylib} or @code{/usr/local/lib/libvamp-sdk.a}@*
+@code{VAMP_INCLUDE_DIR}: vamp sdk src main path -> @code{/usr/local/include/}@*
+(choose your own paths if different)
+@item @code{$ make}@*
+(If you generate an XCode project, the mvamp target won't be included so you'll need to build using plain "make")@*
+(vamp plugin compiled as shared dynamic library at @code{marsyas_path/build_dir/lib/libmvamp.dylib)}
+@end itemize
+
+@item @b{Marsyas Vamp Plugin Integration in SonicVisualiser Transforms:}
+@itemize
+@item Copy @code{libmvamp.dylib} to one of the following paths:
+@example
+~/Library/Audio/Plug-Ins/Vamp (user use)
+/Library/Audio/Plug-Ins/Vamp (system use)
+@end example
+@end itemize
+(@code{mvamp-plugins.cat}, in pre-compiled version or in @code{path/to/marsyas/src/mvamp/}, is a txt file for organizing the plugin functions within SonicVisualiser Transforms - for such you may also copy it to the chosen path above, yet it seems to be unnecessary)
+
+@item @b{(Optional) Testing Plugin with vamp-plugin-tester:}
+@itemize
+@item @code{$ VAMP_PATH=Path/To/Vamp_Plugins_Directory}
+@item @code{$ vamp-plugin-tester -a}
+@end itemize
+
+@item @b{(Optional) Testing Plugin with vamp-simple-host:}
+@itemize
+@item @code{$ VAMP_PATH=Path/To/Vamp_Plugins_Directory}
+@item List the plugin libraries and Vamp plugins in the library search path: @code{$ vamp-simple-host -l}
+@item Run the plugin: @code{$ vamp-simple-host [-s] pluginlibrary[.dylib]:plugin file.wav [outputno] [-o out.txt]}@*
+(check pluginlibrary and plugin name with @code{-l} above)
+@end itemize
+@end enumerate
+
+
+@strong{Linux OS:}@*
+(Tested in Linux Ubuntu 9.04-32bits with gcc 4.3 -> may work on others)
+
+@enumerate
+@item @b{Building Marsyas Vamp Plugin:}@*
+(Alternatively simply download pre-compiled plugin for Linux i686 at @uref{http://marsyas.info/download/vamp_plugins})
+
+@itemize
+@item @code{$ cmake-gui}@*
+@code{WITH_VAMP ON};@*
+@code{MARSYAS_STATIC OFF} (static linking not supported)@*
+@code{VAMP_LIBRARY}: dynamic/static version of libvamp-sdk, from the install path -> @code{/usr/local/lib/libvamp-sdk.so} or @code{/usr/local/lib/libvamp-sdk.a}@*
+@code{VAMP_INCLUDE_DIR}: vamp sdk src main path -> @code{/usr/local/include/}@*
+(choose your own paths if different)
+@item @code{$ make}@*
+(vamp plugin compiled as shared dynamic library at @code{marsyas_path/build/lib/libmvamp.so)}
+@end itemize
+
+@item @b{Marsyas Vamp Plugin Integration in SonicVisualiser Transforms:}
+@itemize
+@item Copy @code{libmvamp.so} (or pre-compiled @code{mvamp.so}) to one of the following paths:
+@example
+/home/(user)/vamp (user use)
+/usr/local/lib/vamp (system use)
+@end example
+@end itemize
+(@code{mvamp-plugins.cat}, in pre-compiled version or in @code{path/to/marsyas/src/mvamp/}, is a txt file for organizing the plugin functions within SonicVisualiser Transforms - for such you may also copy it to the chosen path above, yet it seems to be unnecessary)
+
+@item @b{(Optional) Testing Plugin with vamp-plugin-tester:}
+@itemize
+@item @code{$ VAMP_PATH=Path/To/Vamp_Plugins_Directory}
+@item @code{$ vamp-plugin-tester -a}
+@end itemize
+
+@item @b{(Optional) Testing Plugin with vamp-simple-host:}
+@itemize
+@item @code{$ VAMP_PATH=Path/To/Vamp_Plugins_Directory}
+@item List the plugin libraries and Vamp plugins in the library search path: @code{$ vamp-simple-host -l}
+@item Run the plugin: @code{$ vamp-simple-host [-s] pluginlibrary[.so]:plugin file.wav [outputno] [-o out.txt]}@*
+(check pluginlibrary and plugin name with @code{-l} above)
+@end itemize
+
+@end enumerate
+
+
+@strong{Windows OS:}@*
+(Tested in Windows Vista-32bists with VS2008 and Windows 7 with VS2010 -> may work on others)
+
+@enumerate
+@item @b{Building Marsyas Vamp Plugin:}@*
+
+@itemize
+@item Run CMake-GUI:@*
+@code{WITH_VAMP ON};@*
+@code{MARSYAS_STATIC OFF} (static linking not supported)@*
+@code{VAMP_LIBRARY}: static version of libvamp-sdk -> @code{path\to\vamp-plugin-sdk-x.x\build_dir\Release\VampPluginSDK.lib}@*
+@code{VAMP_INCLUDE_DIR}: vamp sdk src main path -> @code{path\to\vamp-plugin-sdk-x.x}@*
+(choose your own paths if different)
+@item Load @code{marsyas_path\build\Marsyas.sln} in Visual Studio@*
+@item Open mvamp project proprieties:@*
+@itemize
+@item Go to @code{Configuration Properties -> Linker -> Command Line -> Additional options}
+@item Add @code{/EXPORT:vampGetPluginDescriptor}
+@end itemize
+@item Build marsyas + mvamp in Release mode and @strong{in Win32} architecture.@*
+(x64 not currently supported by SonicVisualiser)
+@end itemize
+
+@item @b{Marsyas Vamp Plugin Integration in SonicVisualiser Transforms:}
+@itemize
+@item Copy @code{mvamp.dll} from @code{marsyas_path\build\bin\Release\} to @code{C:\Program Files\Vamp Plugins\} (default @code{VAMP_PATH})@*
+(if used different path for Vamp Plugins define it in environment @code{VAMP_PATH})
+@item Run-time linking to Marsyas (one of the two options below):
+@itemize
+@item Set @code{marsyas_path\build\bin\Release\} to environment variable @code{PATH}
+@item Copy @code{marsyas.dll from marsyas_path\build\bin\Release\} to SonicVisualiser main directory.
+@end itemize
+@end itemize
+
+@item @b{(Optional) Testing Plugin with vamp-plugin-tester:}
+@itemize
+@item @code{$ vamp-plugin-tester.exe -a}
+@end itemize
+
+@item @b{(Optional) Testing Plugin with vamp-simple-host:}
+@itemize
+@item List the plugin libraries and Vamp plugins in the library search path: @code{$ vamp-simple-host.exe -l}
+@item Run the plugin: @code{$ vamp-simple-host.exe [-s] pluginlibrary[.dylib]:plugin file.wav [outputno] [-o out.txt]}@*
+(check pluginlibrary and plugin name with @code{-l} above)
+@end itemize
+
+@end enumerate
+
+
+@subsubsection Writing Plugin
+
+Check tutorial on @uref{http://www.vamp-plugins.org/develop.html}
+
+
 
 @node Using and Extending the Scheduler
 @section Using and Extending the Scheduler

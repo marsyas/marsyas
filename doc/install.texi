@@ -301,7 +301,7 @@ Builds the marsyasqt library and Qt applications.  Requires Qt
 4.2.3 or higher.
 
 @item WITH_VAMP
-Build plugins for Vamp.
+Build plugins for Vamp (see @ref{SonicVisualiser Vamp Plugins} for more information).
 
 @item WITH_GSTREAMER
 Use GStreamer as an audio source

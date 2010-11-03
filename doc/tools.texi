@@ -296,7 +296,8 @@ sound2sound input.wav --method bandpass --frequency 500 --qfactor 10 --start 15 
 
 @menu
 * pitchextract::                
-* bextract::                    
+* bextract::
+* ibt::                     
 @end menu
 
 
@@ -318,7 +319,7 @@ pitchextract -w 1024 -l 36 -u 128 soundfile
 
 
 
-@node bextract,  , pitchextract, Feature Extraction
+@node bextract, ibt, pitchextract, Feature Extraction
 @subsection @code{bextract}
 @cindex bextract
 
@@ -625,7 +626,94 @@ songs from the annotated Beatles archive, but you can easily
 change this by modifying the "chords_array" variable.
 
 
+@node ibt,  , bextract, Feature Extraction
+@subsection @code{ibt}
+@cindex ibt
+ 
+@code{ibt} @cindex ibt 
+-- standing for INESC-Porto Beat Tracker --
+is a tempo induction and beat tracking system based on a competing 
+multi-agent system that considers parallel hypotheses regarding tempo and beats.
+The algorithm works either in real-time, for on-line systems, 
+and off-line, for MIR-based applications.@*
+Benchmarks on causal and noncausal versions reveal competitive results, 
+under alternative conditions.@*
+More technical information can be found in the paper 
+``IBT: A Real-Time Tempo and Beat Tracking System'' 
+published in the International Conference on Music Information Retrieval (ISMIR) 2010.
+Online at: @uref{http://www.inescporto.pt/~fgouyon/docs/OliveiraGouyonMartinsReis_ISMIR2010.pdf}.@*@*
+Examples of usage:
 
+@example 
+1. ibt foo.wav
+2. ibt -a foo.wav
+3. ibt -f foo.wav
+4. ibt -mic
+5. ibt -a -mic
+6. ibt -f -mic
+7. ibt -nc foo.wav
+@end example 
+
+@strong{1.} This causally processes foo.wav retrieving the processed beat times, in foo.txt,
+and the respective median tempo, in foo_medianTempo.txt.@*
+@b{NOTE:} By default an initial 5secs is used for the phase+tempo induction stage,
+where the system is setup.@*
+@strong{2.} Identical to @strong{1.} but playing audio with "clicks" on beats.@*
+@strong{3.} Identical to @strong{1.} but saving a file with the audio + "clicks" on processed beats.@*
+@strong{4.} This captures audio from microphone inpute and processes beats in real-time.@*
+The processed beat times and tempo are saved, respectively, in mic.txt and mic_medianTempo.txt.@*
+@b{NOTE:} Although IBT makes an effort to be noise robust it is still quite prone to it, so
+a noise-clean environment is adviced for using the mode of operation.@*
+@strong{5.} Identical to @strong{4}. but playing "clicks" on processed beats.@*
+@strong{6.} Identical to @strong{4}. but saving a file with the captured audio + "clicks" on processed beats.@*
+@strong{7.} This processes foo.wav non-causally (off-line mode), retrieving the the processed 
+beat times, in foo.txt, and the respective median tempo, in foo_medianTempo.txt.@*
+@b{NOTE:} this mode of operation working off-line provides better performance than 1., ideal
+to MIR-based applications.
+
+@table @samp 
+@item -mic --microphone_input
+      input sound via microphone interface.
+@item -nc --non-causal
+     for running in non-causal mode.
+@item -t --induction_time
+      time (in secs) dispended in the initial induction stage.
+@item -o --output
+	  output files (predicted beat times, mean/median tempo):@*
+"beats", "medianTempo", "meanTempo", "beats+medianTempo", "beats+meanTempo", "beats+meanTempo+medianTempo", "none".
+@item -b --backtrace
+      after induction backtrace the analysis to the beginning (for causal [default] mode). 	  
+@item -di --dumb_induction
+      for ignoring period induction substituting it by manual defined values.
+@item -a --audio
+      play the original audio mixed with the synthesized beats.
+@item -f --audiofile   
+      output the original audio mixed with the synthesized beats (as fileName_beats.*).
+@item -s --score_function
+      heuristics which conducts the beat tracking: "regular" [default], "correlation", "squareCorr".
+@item -m --metrical_time
+      initial time (in secs) which allows tracking metrical changes (0 not allowing at all; -1 for the whole music [default]).
+@item -l --log_file
+      generate log file of the analysis.
+@item -2b --givefirst2beats    
+      replace induction stage with ground-truth 
+(two first beats from beatTimes file - .txt or .beats - from the directory or file given as argument).
+@item -2bs --givefirst2beats_startpoint
+      equal to givefirst2beats mode but starting tracking at the first given beat time.
+@item -1b --givefirst1beat
+      replace initial phase by the given ground-truth first beat 
+(from beatTimes file - .txt or .beats - from the directory or file given as argument).
+@item -1bs --givefirst1beat_startpoint
+      equal to givefirst1beat mode but start tracking at the given phase.
+@item -pgt --giveinitperiod
+      replace initial period given by the ibi of the ground-truth two first beats 
+(from beatTimes file - .txt or .beats - from the directory or file given as argument).
+@item -pgt_mr --giveinitperiod+metricalrel
+      equal to giveinitperiod but complementing it with metrically related tempi (2x, 1/2x, 3x, 1/3x).
+@item -pgt_nr --giveinitperiod+nonrel
+      equal to giveinitperiod but complementing it with non-related tempi.
+	  
+@end table 
 
 
 
