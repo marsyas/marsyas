@@ -249,6 +249,10 @@ Marsyas::windowingFillRaisedCosine(realvec& envelope, mrs_real alpha, mrs_real b
 	}
 }
 
+
+
+
+
 /**
  * \ingroup Basic
  *
