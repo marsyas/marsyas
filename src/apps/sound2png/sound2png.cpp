@@ -47,18 +47,21 @@ using namespace Marsyas;
 //
 // Global variables for various commandline options
 //
-int helpopt;
-int usageopt;
-int verboseopt;
-int windowSize;
-int hopSize;
-int memorySize;
-mrs_real gain;
-int maxFreq;
-int position;
-int ticks;
-mrs_string mode;
-mrs_real start, length;
+mrs_natural helpopt_;
+mrs_natural usageopt_;
+mrs_natural verboseopt_;
+mrs_natural windowSize_;
+mrs_natural hopSize_;
+mrs_natural memorySize_;
+mrs_real gain_;
+mrs_natural maxFreq_;
+mrs_natural position_;
+mrs_natural ticks_;
+mrs_string mode_;
+mrs_real start_, length_;
+mrs_natural width_, height_;
+
+
 
 CommandLineOptions cmd_options;
 
@@ -106,6 +109,8 @@ printHelp(string progName)
 	cerr << "-t --ticks        : how many times to tick the network" << endl;
 	cerr << "-s --start        : start in seconds " << endl;
 	cerr << "-l --length       : length in seconds " << endl;
+	cerr << "-w --width        : width of resulting png in pixels " << endl;
+	cerr << "-h --height       : height of resulting png in pixels " << endl;
 	
 	
 	exit(1);
@@ -117,7 +122,6 @@ initOptions()
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addBoolOption("verbose", "v", false);
-	cmd_options.addBoolOption("waveform", "w", false);
 	cmd_options.addNaturalOption("windowsize", "ws", 512);
 	cmd_options.addNaturalOption("hopsize", "hs", 256);
 	cmd_options.addNaturalOption("memorysize", "ms", 300);
@@ -128,6 +132,8 @@ initOptions()
 	cmd_options.addStringOption("mode" , "m", "spectrogram");
 	cmd_options.addRealOption("start", "s", 0.0);
 	cmd_options.addRealOption("length", "l", -1.0);
+	cmd_options.addNaturalOption("width", "w", -1);
+	cmd_options.addNaturalOption("height", "h", -1);
 	
 }
 
@@ -135,24 +141,25 @@ initOptions()
 void 
 loadOptions()
 {
-	helpopt = cmd_options.getBoolOption("help");
-	usageopt = cmd_options.getBoolOption("usage");
-	verboseopt = cmd_options.getBoolOption("verbose");
-	windowSize = cmd_options.getNaturalOption("windowsize");
-	memorySize = cmd_options.getNaturalOption("memorysize");
-	hopSize = cmd_options.getNaturalOption("hopsize");
-	gain = cmd_options.getRealOption("gain");
-	maxFreq = cmd_options.getNaturalOption("maxfreq");
-	position = cmd_options.getNaturalOption("position");
-	ticks = cmd_options.getNaturalOption("ticks");
-	mode = cmd_options.getStringOption("mode");
-	start = cmd_options.getRealOption("start");
-	length = cmd_options.getRealOption("length");
-	
+	helpopt_ = cmd_options.getBoolOption("help");
+	usageopt_ = cmd_options.getBoolOption("usage");
+	verboseopt_ = cmd_options.getBoolOption("verbose");
+	windowSize_ = cmd_options.getNaturalOption("windowsize");
+	memorySize_ = cmd_options.getNaturalOption("memorysize");
+	hopSize_ = cmd_options.getNaturalOption("hopsize");
+	gain_ = cmd_options.getRealOption("gain");
+	maxFreq_ = cmd_options.getNaturalOption("maxfreq");
+	position_ = cmd_options.getNaturalOption("position");
+	ticks_ = cmd_options.getNaturalOption("ticks");
+	mode_ = cmd_options.getStringOption("mode");
+	start_ = cmd_options.getRealOption("start");
+	length_ = cmd_options.getRealOption("length");
+	width_ = cmd_options.getNaturalOption("width");
+	height_ = cmd_options.getNaturalOption("height");
 }
 
 
-int getFileLengthForWaveform(string inFileName, int windowSize, double& min, double& max) {
+int getFileLengthForWaveform(string inFileName, int windowSize_, double& min, double& max) {
 
 	MarSystemManager mng;
 
@@ -162,8 +169,8 @@ int getFileLengthForWaveform(string inFileName, int windowSize, double& min, dou
 	// The sound file
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
-	net->setctrl("mrs_natural/inSamples", windowSize);
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
+	net->setctrl("mrs_natural/inSamples", windowSize_);
 
 	// Compute the AbsMax of this window
 	net->addMarSystem(mng.create("AbsMax","absmax"));
@@ -173,7 +180,7 @@ int getFileLengthForWaveform(string inFileName, int windowSize, double& min, dou
 	int length = 0;
 
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() 
-		   && (ticks == -1 || length < ticks))  {
+		   && (ticks_ == -1 || length < ticks_))  {
 		net->tick();
 		length++;
 
@@ -187,7 +194,7 @@ int getFileLengthForWaveform(string inFileName, int windowSize, double& min, dou
 
 	delete net;
 
-	if (verboseopt) {
+	if (verboseopt_) {
 		cout << "length=" << length << endl;
 		cout << "max=" << max << endl;
 		cout << "min=" << min << endl;
@@ -207,7 +214,7 @@ void outputWaveformPNG(string inFileName, string outFileName)
 	double min = 99999999999.9;
 	double max = -99999999999.9;
 
-	length = getFileLengthForWaveform(inFileName,windowSize,min,max);
+	length = getFileLengthForWaveform(inFileName,windowSize_,min,max);
 	pngwriter png(length,height,0,outFileName.c_str());
 
 	MarSystemManager mng;
@@ -218,13 +225,13 @@ void outputWaveformPNG(string inFileName, string outFileName)
 	// The sound file
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
-	net->setctrl("mrs_natural/inSamples", windowSize);
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
+	net->setctrl("mrs_natural/inSamples", windowSize_);
 	net->addMarSystem(mng.create("MaxMin","maxmin"));
 
 	mrs_natural channels = net->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
-	if (verboseopt) {
+	if (verboseopt_) {
 		cout << "channels=" << channels << endl;
 	}
 
@@ -261,14 +268,14 @@ void outputWaveformPNG(string inFileName, string outFileName)
 	double draw_color;
 
 	// If we are just displaying individual samples, make the line dark blue.
-	if (windowSize == 1) {
+	if (windowSize_ == 1) {
 		draw_color = 0.0;
 	} else {
 		draw_color = 0.2;
 	}
   
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
-		   && (ticks == -1 || x < ticks))  {
+		   && (ticks_ == -1 || x < ticks_))  {
 		net->tick();
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
@@ -336,7 +343,7 @@ void outputWaveformPNG(string inFileName, string outFileName)
 
 int getFileLengthForSpectrogram(string inFileName, double& min, double& max, double& average) {
 
-  // cout << "windowSize = " << windowSize << endl;
+  // cout << "windowSize_ = " << windowSize_ << endl;
   // cout << "hopSize = " << hopSize << endl;
 
   
@@ -355,29 +362,29 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
 	
 	mrs_real srate = net->getControl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-	if ((position == 0) && (start != 0.0))
-		position = (mrs_natural) (srate * start);
+	if ((position_ == 0) && (start_ != 0.0))
+		position_ = (mrs_natural) (srate * start_);
 	
-	if ((ticks == -1) && (length != -1.0))
-		ticks = (mrs_natural) ((length * srate) / windowSize);
+	if ((ticks_ == -1) && (length_ != -1.0))
+		ticks_ = (mrs_natural) ((length_ * srate) / windowSize_);
 
-	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
-	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
-	net->updControl("mrs_natural/inSamples", int(hopSize));
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
+	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize_);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize_);
+	net->updControl("mrs_natural/inSamples", int(hopSize_));
 
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-  double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+  double fftBins = windowSize_ / 2.0 + 1;  // N/2 + 1
   mrs_natural nChannels = net->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
 
   
-  double maxBin = fftBins * (maxFreq / (frequency / nChannels));
+  double maxBin = fftBins * (maxFreq_ / (frequency / nChannels));
   // cout << "maxBin = " << maxBin << endl;
 
 	int length = 0;
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() 
-			&& (ticks == -1 || length < ticks)) {
+			&& (ticks_ == -1 || length < ticks_)) {
 		net->tick();
 		length++;
 
@@ -398,7 +405,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 
 	average = dataTotal / dataLength;
 
-	if (verboseopt) {
+	if (verboseopt_) {
 		cout << "length=" << length << endl;
 		cout << "max=" << max << endl;
 		cout << "min=" << min << endl;
@@ -413,7 +420,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 void outputSpectrogramPNG(string inFileName, string outFileName)
 {
 #ifdef MARSYAS_PNG
-	double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+	double fftBins = windowSize_ / 2.0 + 1;  // N/2 + 1
 
 	double min = 99999999999.9;
 	double max = -99999999999.9;
@@ -421,7 +428,7 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 
 	int length = getFileLengthForSpectrogram(inFileName,min,max,average);
 
-	cout << "position=" << position << endl;
+	cout << "position=" << position_ << endl;
 
 	MarSystemManager mng;
 	MarSystem* net = mng.create("Series", "net");
@@ -432,10 +439,10 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
 	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
-	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
-	net->updControl("mrs_natural/inSamples", int(hopSize));
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
+	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize_);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize_);
+	net->updControl("mrs_natural/inSamples", int(hopSize_));
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	double pngLength = length;
@@ -444,12 +451,14 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 
 
 	  
-	double pngHeight = fftBins * (maxFreq / (frequency / nChannels));
+	double pngHeight = fftBins * (maxFreq_ / (frequency / nChannels));
 	
-	cout << "maxFreq = " << maxFreq << endl;
+	cout << "maxFreq = " << maxFreq_ << endl;
 	cout << "fftBins = " << fftBins << endl;
 	cout << "pngLength = " << pngLength << endl;
 	cout << "pngHeight = " << pngHeight << endl;
+	cout << "width = " << width_ << endl;
+	cout << "height = " << height_ << endl;
 	
 	
 
@@ -468,7 +477,7 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	
 	 
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
-		   && (ticks == -1 || x < ticks))  {
+		   && (ticks_ == -1 || x < ticks_))  {
 		net->tick();
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		
@@ -479,7 +488,7 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 			
 			double data = processedData(int(data_y),0);
 
-			normalizedData = ((data - min) / (max - min)) * gain;
+			normalizedData = ((data - min) / (max - min)) * gain_;
 
 
 			diff += normalizedData;
@@ -509,6 +518,9 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 
 	}
 
+	if ((width_ !=-1)&&(height_ != -1))
+		png.scale_wh(width_, height_);
+	
 	png.close();
 
 	delete net;
@@ -524,12 +536,12 @@ neptune_spectrogram(string inFileName, string outFileName)
   // string outFileName = inFile.nameNoExt() + ".png";
   cout << "Generating spectrogram with specific settings for NEPTUNE, Canada" << endl;
   cout << "Output file is " << outFileName << endl;
-  // windowSize = 8192;
+  // windowSize_ = 8192;
   // hopSize = 8192;
   // maxFreq = 8000;
   // gain = 64.0;
 #ifdef MARSYAS_PNG
-    double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+    double fftBins = windowSize_ / 2.0 + 1;  // N/2 + 1
 
 	double min = 99999999999.9;
 	double max = -99999999999.9;
@@ -547,10 +559,10 @@ neptune_spectrogram(string inFileName, string outFileName)
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
 	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
-	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
-	net->updControl("mrs_natural/inSamples", int(hopSize));
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
+	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize_);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize_);
+	net->updControl("mrs_natural/inSamples", int(hopSize_));
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
@@ -558,18 +570,20 @@ neptune_spectrogram(string inFileName, string outFileName)
 
 
 	  
-	double pngHeight = fftBins * (maxFreq / (frequency / nChannels));
+	double pngHeight = fftBins * (maxFreq_ / (frequency / nChannels));
 	
 
 
 	double pngLength = length;
 
-	
-	cout << "maxFreq = " << maxFreq << endl;
-	cout << "fftBins = " << fftBins << endl;
-	cout << "pngLength = " << pngLength << endl;
-	cout << "pngHeight = " << pngHeight << endl;
-	cout << "gain = " << gain << endl;
+	if (verboseopt_)
+	{
+		cout << "maxFreq = " << maxFreq_ << endl;
+		cout << "fftBins = " << fftBins << endl;
+		cout << "pngLength = " << pngLength << endl;
+		cout << "pngHeight = " << pngHeight << endl;
+		cout << "gain = " << gain_ << endl;
+	}
 	
 
 	pngwriter png(int(pngLength),int(pngHeight),0,outFileName.c_str());
@@ -587,7 +601,7 @@ neptune_spectrogram(string inFileName, string outFileName)
 	double denergy;
 	 
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
-		   && (ticks == -1 || x < ticks))  {
+		   && (ticks_ == -1 || x < ticks_))  {
 		net->tick();
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		
@@ -597,7 +611,7 @@ neptune_spectrogram(string inFileName, string outFileName)
 			double data_y = i;
 			
 			double data = processedData(int(data_y),0);
-			normalizedData = ((data - min) / (max - min)) * gain;
+			normalizedData = ((data - min) / (max - min)) * gain_;
 
 			energy += normalizedData;
 
@@ -650,12 +664,12 @@ void
 json_spectrogram(string inFileName)
 {
   FileName inFile(inFileName);
-  windowSize = 8192;
-  hopSize = 8192;
-  maxFreq = 8000;
-  gain = 64.0;
+  windowSize_ = 8192;
+  hopSize_ = 8192;
+  maxFreq_ = 8000;
+  gain_ = 64.0;
 
-  double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+  double fftBins = windowSize_ / 2.0 + 1;  // N/2 + 1
 
   double min = 99999999999.9;
   double max = -99999999999.9;
@@ -673,14 +687,14 @@ json_spectrogram(string inFileName)
   net->addMarSystem(mng.create("PowerSpectrum","pspk"));
   net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
   net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
-  net->updControl("SoundFileSource/src/mrs_natural/pos", position);
-  net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-  net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
-  net->updControl("mrs_natural/inSamples", int(hopSize));
+  net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
+  net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize_);
+  net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize_);
+  net->updControl("mrs_natural/inSamples", int(hopSize_));
 
   mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   double pngLength = length;
-  double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+  double pngHeight = fftBins * (maxFreq_ / (frequency / 2.0));
 	
   realvec processedData;
   double normalizedData;
@@ -699,7 +713,7 @@ json_spectrogram(string inFileName)
   cout << "\"height\" : " << pngHeight << "," << endl;
   cout << "\"points_array\" : [" << endl;
   while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
-		 && (ticks == -1 || x < ticks))  {
+		 && (ticks_ == -1 || x < ticks_))  {
 	net->tick();
 	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		
@@ -709,7 +723,7 @@ json_spectrogram(string inFileName)
 	  double data_y = i;
 			
 	  double data = processedData(int(data_y),0);
-	  normalizedData = ((data - min) / (max - min)) * gain;
+	  normalizedData = ((data - min) / (max - min)) * gain_;
 
 	  energy += normalizedData;
 			
@@ -794,12 +808,12 @@ html_spectrogram(string inFileName)
 {
 
   FileName inFile(inFileName);
-  windowSize = 8192;
-  hopSize = 8192;
-  maxFreq = 8000;
-  gain = 64.0;
+  windowSize_ = 8192;
+  hopSize_ = 8192;
+  maxFreq_ = 8000;
+  gain_ = 64.0;
 
-  double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+  double fftBins = windowSize_ / 2.0 + 1;  // N/2 + 1
 
   double min = 99999999999.9;
   double max = -99999999999.9;
@@ -817,14 +831,14 @@ html_spectrogram(string inFileName)
   net->addMarSystem(mng.create("PowerSpectrum","pspk"));
   net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
   net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
-  net->updControl("SoundFileSource/src/mrs_natural/pos", position);
-  net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-  net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
-  net->updControl("mrs_natural/inSamples", int(hopSize));
+  net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
+  net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize_);
+  net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize_);
+  net->updControl("mrs_natural/inSamples", int(hopSize_));
 
   mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
   double pngLength = length;
-  double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+  double pngHeight = fftBins * (maxFreq_ / (frequency / 2.0));
 	
   realvec processedData;
   double normalizedData;
@@ -882,7 +896,7 @@ html_spectrogram(string inFileName)
   cout << "\"points_array\" : [" << endl;
 
   while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
-		 && (ticks == -1 || x < ticks))  {
+		 && (ticks_ == -1 || x < ticks_))  {
 	net->tick();
 	processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		
@@ -892,7 +906,7 @@ html_spectrogram(string inFileName)
 	  double data_y = i;
 			
 	  double data = processedData(int(data_y),0);
-	  normalizedData = ((data - min) / (max - min)) * gain;
+	  normalizedData = ((data - min) / (max - min)) * gain_;
 
 	  energy += normalizedData;
 			
@@ -969,7 +983,7 @@ html_spectrogram(string inFileName)
 
 void fftHistogram(string inFileName)
 {
-	double fftBins = windowSize / 2.0 + 1;  // N/2 + 1
+	double fftBins = windowSize_ / 2.0 + 1;  // N/2 + 1
 
 	MarSystemManager mng;
 	MarSystem* net = mng.create("Series", "net");
@@ -980,20 +994,20 @@ void fftHistogram(string inFileName)
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
 	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
-	net->updControl("SoundFileSource/src/mrs_natural/pos", position);
-	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize);
-	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize);
-	net->updControl("mrs_natural/inSamples", int(hopSize));
+	net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
+	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize_);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize_);
+	net->updControl("mrs_natural/inSamples", int(hopSize_));
 
 	mrs_real frequency = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-	double pngHeight = fftBins * (maxFreq / (frequency / 2.0));
+	double pngHeight = fftBins * (maxFreq_ / (frequency / 2.0));
 	realvec processedData;
 
 	// Iterate over the whole input file by ticking, outputting columns
 	// of data to the .png file with each tick
 	double x = 0;
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()
-		   && (ticks == -1 || x < ticks))  {
+		   && (ticks_ == -1 || x < ticks_))  {
 		net->tick();
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
@@ -1028,7 +1042,7 @@ void correlogramPNGs(string inFileName, string outFilePrefix)
   MarSystem* parallel = mng.create("Parallel", "parallel");
   net->addMarSystem(parallel);
 
-  int powerSpectrumSize = (windowSize/2)+1;
+  int powerSpectrumSize = (windowSize_/2)+1;
   for (int i = 0; i < powerSpectrumSize; ++i) {
 	std::stringstream ss;
 	ss << "auto" << i;
@@ -1036,8 +1050,8 @@ void correlogramPNGs(string inFileName, string outFilePrefix)
   }
 
   net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
-  net->setctrl("mrs_natural/inSamples", windowSize);
-  net->updControl("Memory/mem/mrs_natural/memSize", memorySize);
+  net->setctrl("mrs_natural/inSamples", windowSize_);
+  net->updControl("Memory/mem/mrs_natural/memSize", memorySize_);
 
   net->updControl("mrs_real/israte", 44100.0);
   net->updControl("AudioSink/dest/mrs_bool/initAudio", true);
@@ -1056,11 +1070,11 @@ void correlogramPNGs(string inFileName, string outFilePrefix)
 	// Create the png we are going to write into
 	std::stringstream outFileName;
 	outFileName << outFilePrefix << std::setfill('0') << std::setw(5) << counter << ".png";
-	pngwriter png(int(windowSize),int(powerSpectrumSize),0,outFileName.str().c_str());
+	pngwriter png(int(windowSize_),int(powerSpectrumSize),0,outFileName.str().c_str());
 
 	// Find the maximum value of the data
 	max_data.setval(-999.9);
-	for (int x = 0; x < memorySize; x++) {
+	for (int x = 0; x < memorySize_; x++) {
 	  for (int y = 0; y < powerSpectrumSize; y++) {
 		if (data(y,x) > max_data(y)) {
 		  max_data(y) = data(y,x);
@@ -1073,7 +1087,7 @@ void correlogramPNGs(string inFileName, string outFilePrefix)
 	// }
 
 	// Plot all the data points
-	for (int x = 0; x < memorySize; x++) {
+	for (int x = 0; x < memorySize_; x++) {
 	  for (int y = 0; y < powerSpectrumSize; y++) {
 		double color = 1.0 - (double(data(y,x)) * (1.0 / max_data(y)));
 		// cout << "x=" << x << " y=" << y << " data(y,x)=" << data(y,x) << " color=" << color << endl;
@@ -1103,40 +1117,40 @@ main(int argc, const char **argv)
 	loadOptions();
   
 	vector<string> files = cmd_options.getRemaining();
-	if (helpopt) 
+	if (helpopt_) 
 		printHelp(progName);
   
-	if (usageopt)
+	if (usageopt_)
 		printUsage(progName);
 
-	if (mode == "histogram") {
+	if (mode_ == "histogram") {
 		fftHistogram(files[0]);
 		exit(0);
 	}
 
-	if (mode == "neptune")
+	if (mode_ == "neptune")
 	{
 	  neptune_spectrogram(files[0],files[1]);
 	    exit(0);
 	}
- 	if (mode == "json") 
+ 	if (mode_ == "json") 
 	{
 		json_spectrogram(files[0]);
 		exit(0);
 	}
 
-	if (mode == "html") {
+	if (mode_ == "html") {
 	  html_spectrogram(files[0]);
 	  exit(0);
 	}
 
-	if (mode == "correlogram") 
+	if (mode_ == "correlogram") 
 	{
 	  correlogramPNGs(files[0],files[1]);
 	  exit(0);
 	}
 
-	if (mode == "rmsflux") 
+	if (mode_ == "rmsflux") 
 	{
 	  output_rmsflux(files[0]);
 	  exit(0);
@@ -1150,7 +1164,7 @@ main(int argc, const char **argv)
 
 #ifdef MARSYAS_PNG 
 	// play the soundfiles/collections 
-	if (mode == "waveform") {
+	if (mode_ == "waveform") {
 		outputWaveformPNG(files[0],files[1]);
 	} else {
 		outputSpectrogramPNG(files[0],files[1]);

@@ -36,7 +36,7 @@ translation approved by the Free Software Foundation.
      
 @titlepage
 @title Marsyas User Manual 
-@subtitle For version 0.2 
+@subtitle For version 0.3 
 @subtitle @b{M}usic @b{A}nalysis @b{R}etrieval and @b{SY}nthesis for @b{A}udio @b{S}ignals 
 @author Graham Percival and George Tzanetakis 
      
