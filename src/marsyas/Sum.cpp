@@ -62,7 +62,10 @@ Sum::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
+
+	// get name of first observation and use for sum 
+	mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
+	ctrl_onObsNames_->setValue("Sum" + inObsName+",", NOUPDATE);
   
 	// sness - Do what the MarSystem did before we refactored it, just in case
 	// other people are depending on the old behaviour.  In the future, probably 
