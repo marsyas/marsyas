@@ -209,6 +209,7 @@ GaussianClassifier::myProcess(realvec& in, realvec& out)
 					prediction = l;
 				}
 
+				// output the distances in the probability slots 
 				out (2+l, t) = sq_sum;
 			}
 			out(0,t) = (mrs_real)prediction;

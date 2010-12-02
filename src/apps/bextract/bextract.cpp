@@ -2448,6 +2448,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 			if (currentlyPlaying != previouslyPlaying)
 			{
+				featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
+										   true);			  
 				cout << "Processed: " << n << " - " << currentlyPlaying << endl;
 				n++;
 
