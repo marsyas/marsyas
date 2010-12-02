@@ -94,26 +94,27 @@ Spectrum2Chroma::myUpdate(MarControlPtr sender)
 	ctrl_onObservations_->setValue(ctrl_nbins_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	
-	if (pnbins_ != ctrl_nbins_->to<mrs_natural>())
+	//if (pnbins_ != ctrl_nbins_->to<mrs_natural>())
+	// {
+	pnbins_ = ctrl_nbins_->to<mrs_natural>();
+	ostringstream oss;
+	if(pnbins_ == 12)
 	{
-		pnbins_ = ctrl_nbins_->to<mrs_natural>();
-		ostringstream oss;
-		if(pnbins_ == 12)
+		for (mrs_natural n=0; n < pnbins_; n++)
 		{
-			for (mrs_natural n=0; n < pnbins_; n++)
-			{
-				oss << "Chroma_" << noteNames_[n] << ",";
-			}
+			oss << "Chroma_" << noteNames_[n] << "_" << ctrl_inObsNames_->to<mrs_string>();
 		}
-		else
-		{
-			for (mrs_natural n=0; n < pnbins_; n++)
-			{
-				oss << "Chroma_" << n << ",";
-			}
-		}
-		ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
 	}
+	else
+	{
+		for (mrs_natural n=0; n < pnbins_; n++)
+		{
+			oss << "Chroma_" << n << "_" << ctrl_inObsNames_->to<mrs_string>();
+		}
+	}
+	ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
+	
+// }
 
 	//////////////////////////////////////////////////////////////////////////////////////////////
 	// calculate the Chroma map

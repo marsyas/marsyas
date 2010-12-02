@@ -65,7 +65,7 @@ Sum::myUpdate(MarControlPtr sender)
 
 	// get name of first observation and use for sum 
 	mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
-	ctrl_onObsNames_->setValue("Sum" + inObsName+",", NOUPDATE);
+	ctrl_onObsNames_->setValue("Sum_" + inObsName+",", NOUPDATE);
   
 	// sness - Do what the MarSystem did before we refactored it, just in case
 	// other people are depending on the old behaviour.  In the future, probably 

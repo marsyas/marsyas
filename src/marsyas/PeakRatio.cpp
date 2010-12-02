@@ -18,6 +18,8 @@
 
 #include "PeakRatio.h"
 
+using std::cout;
+using std::endl;
 
 using std::ostringstream;
 
@@ -79,7 +81,8 @@ PeakRatio::myUpdate(MarControlPtr sender)
 	setControl("mrs_natural/onObservations",  (mrs_natural)(ctrl_inObservations_->to<mrs_natural>()+2));  
 
 	// Add Names of The Observations to the observation names.
-	inObsNames+="Average,Minimum,";
+	mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
+	inObsNames+="Average_" + inObsName + ",Minimum_" + inObsName + ",";
 
 	// Add prefix to the observation names.
 	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "PeakRatio_"), NOUPDATE);
