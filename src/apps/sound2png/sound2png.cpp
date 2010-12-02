@@ -100,17 +100,17 @@ printHelp(string progName)
 	cerr << "------------------------------------------" << endl;
 	
 	cerr << "-m --mode         : mode (waveform, spectrogram, json, html, neptune)" << endl;
-	cerr << "-ws --windowsize : windows size in samples " << endl;
-	cerr << "-hs --hopsize    : hop size in samples (for spectrogram)" << endl;
-	cerr << "-ms --memorysize : memory size in samples (for correlogram)" << endl;
+	cerr << "-ws --windowsize  : windows size in samples " << endl;
+	cerr << "-hs --hopsize     : hop size in samples (for spectrogram)" << endl;
+	cerr << "-ms --memorysize  : memory size in samples (for correlogram)" << endl;
 	cerr << "-g --gain         : gain for spectrogram (for spectrogram)" << endl;
-	cerr << "-mf --maxfreq    : maximum frequency (for spectrogram)" << endl;
+	cerr << "-mf --maxfreq     : maximum frequency (for spectrogram)" << endl;
 	cerr << "-p --position     : position to start at in the audio file" << endl;
 	cerr << "-t --ticks        : how many times to tick the network" << endl;
 	cerr << "-s --start        : start in seconds " << endl;
 	cerr << "-l --length       : length in seconds " << endl;
-	cerr << "-w --width        : width of resulting png in pixels " << endl;
-	cerr << "-h --height       : height of resulting png in pixels " << endl;
+	cerr << "-wi --width        : width of resulting png in pixels " << endl;
+	cerr << "-hg --height       : height of resulting png in pixels " << endl;
 	
 	
 	exit(1);
@@ -132,8 +132,8 @@ initOptions()
 	cmd_options.addStringOption("mode" , "m", "spectrogram");
 	cmd_options.addRealOption("start", "s", 0.0);
 	cmd_options.addRealOption("length", "l", -1.0);
-	cmd_options.addNaturalOption("width", "w", -1);
-	cmd_options.addNaturalOption("height", "h", -1);
+	cmd_options.addNaturalOption("width", "wd", -1);
+	cmd_options.addNaturalOption("height", "hg", -1);
 	
 }
 
