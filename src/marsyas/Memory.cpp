@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -18,6 +18,9 @@
 
 #include "Memory.h"
 
+using std::cout;
+using std::endl;
+
 using std::ostringstream;
 using namespace Marsyas;
 
@@ -25,6 +28,7 @@ using namespace Marsyas;
 Memory::Memory(mrs_string name):MarSystem("Memory",name)
 {
 	end_ = 0;
+	counter_since_reset_ = 0;
 	addControls();
 }
 
@@ -35,6 +39,7 @@ Memory::~Memory()
 Memory::Memory(const Memory& a):MarSystem(a)
 {
 	end_ = 0;
+	counter_since_reset_ = 0 ;
 	ctrl_reset_ = getctrl("mrs_bool/reset");
 	ctrl_memSize_ = getctrl("mrs_natural/memSize");
 }
@@ -66,7 +71,7 @@ Memory::myUpdate(MarControlPtr sender)
 	if (memSize != 0) 
 	{
 		ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>() * memSize, 
-			NOUPDATE);
+								  NOUPDATE);
 		ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 		ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	}
@@ -99,7 +104,7 @@ Memory::myUpdate(MarControlPtr sender)
 void 
 Memory::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
+	mrs_natural t,o,j;
 	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
 
 	if (reset_) 
@@ -109,11 +114,22 @@ Memory::myProcess(realvec& in, realvec& out)
 		reset_ = false;
 		ctrl_reset_->setValue(false, NOUPDATE);
 		end_ = 0;
+		counter_since_reset_ = 0;
+
+		// fill up with copies of first incoming vector
+		for (j=0; j < onSamples_; j++)
+		{
+			for (o=0; o < inObservations_; o++)
+			{
+				out(o, end_) = in(o,0);
+			}
+			end_ = (end_ + 1) % onSamples_; 		// circular buffer index  		
+		}
 	}
 
 	if (memSize != 0) 
 	{
-		for (t = 0; t < inSamples_; t++)
+		for (t=0; t < inSamples_; t++) 
 		{
 			for (o=0; o < inObservations_; o++)
 			{
@@ -121,6 +137,7 @@ Memory::myProcess(realvec& in, realvec& out)
 			}
 			end_ = (end_ + 1) % onSamples_; 		// circular buffer index  		
 		}
+		counter_since_reset_++;
 	}
 	else // memSize == 0 
 	{

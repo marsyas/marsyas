@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -29,10 +29,10 @@ namespace Marsyas
     \brief Memory output the past memSize input observations. 
 
     Memory is essentially a circular buffer that holds 
-past observations. It used to compute "texture" features 
--or dynamic features- which are stastics of short-term features 
--typically around 10-20 milliseconds- over a larger 
-window -around 1 second-.
+	past observations. It used to compute "texture" features 
+	-or dynamic features- which are stastics of short-term features 
+	-typically around 10-20 milliseconds- over a larger 
+	window -around 1 second-.
 
 	Controls:
 	- \b mrs_natural/memSize [rw] : maximum buffer size (in samples)
@@ -40,27 +40,28 @@ window -around 1 second-.
 */
 
 
-class Memory: public MarSystem
-{
-private: 
-  void addControls();
-  void myUpdate(MarControlPtr sender);
+	class Memory: public MarSystem
+	{
+	private: 
+		void addControls();
+		void myUpdate(MarControlPtr sender);
 
-  mrs_natural end_;
-  bool reset_;
-  MarControlPtr ctrl_reset_;
-  MarControlPtr ctrl_memSize_;
+		mrs_natural end_;
+		bool reset_;
+		MarControlPtr ctrl_reset_;
+		MarControlPtr ctrl_memSize_;
+		mrs_natural counter_since_reset_;
+	
+
+	public:
+		Memory(std::string name);
+		Memory(const Memory& a);
+		~Memory();
+		MarSystem* clone() const;  
   
+		void myProcess(realvec& in, realvec& out);
 
-public:
-  Memory(std::string name);
-  Memory(const Memory& a);
-  ~Memory();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
-
-};
+	};
 
 }//namespace Marsyas
 
