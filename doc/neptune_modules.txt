@@ -1,0 +1,264 @@
+Last Update: Dec. 2 2010 
+Marsyas svn revision: 4307 
+
+List of available modules in Marsyas for use in CANARIE/NEPTUNE workflow system: 
+(* denotes documented modules *) 
+
+
+Visualization Modules: *Spectrogram, *Waveform, *SimilarityMatrix
+Audio Modules: *LowPass, *BandPass, *HighPass, Resample, NoiseRemove
+Feature Extraction Modules: Centroid, Rolloff, Flux, MFCC, RMS 
+AnnotationModules: TimeLine, ConstantLabel 
+Classifier Modules: Gaussian, SVM, KNN, ZeroR 
+Prediction Modules: TimeLineIntegrator, SummaryStatistics 
+
+
+Name of module: Spectrogram 
+Type of module: Visualization 
+Code: marsyas/src/apps/sound2png 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/sound2png.html#sound2png
+Default commandline: sound2png -m spectrogram 
+Examples: 
+> sound2png --help 
+> sound2png -m spectrogram -ws 512 -hs 512 -s 5 -l 10 input.wav output.png 
+> sound2png input.wav  output.png --verbose --lowfreq 1000 --highfreq 2000 --height 100 --width 500
+
+
+Input : Audio file in non-compressed .wav or .mp3 compressed format 
+Output: Image file in .png format 
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: windowsize 
+   -Units: samples 
+   -Possible values: 128, 256, 8192 (powers of two) 
+   -Default value 256 
+   -Description: The window size for the calculation of the spectrogram 
+-Name: hopsize 
+    -Units: samples 
+    -Possible values: any positive number 
+    -Default value: 256
+    -Description: The hop size for the calculation of the spectrogram 
+-Name: gain
+    -Units: no units 
+    -Possible values: any possitive real number 
+    -Default value: 1.5 
+    -Description: The gain to multiply the spectrogram for plotting 
+-Name: highfreq 
+    -Units: Hertz 
+    -Possible values: 100-22050 (for 44100 sampling rate) or any frequency less than half the sampling frequency 
+    -Default value: 22050 
+    -Description: the highest frequency to plot on the spectrogram 
+-Name: lowfreq 
+    -Units: Hertz 
+    -Possible values: 100-22050 (for 44100 sampling rate) or any frequency less than half the sampling frequency 
+    -Default value: 0 
+    -Description: the lowest frequency to plot on the spectrogram 
+-Name: start 
+    -Units: seconds 
+    -Possible values: 0 - end of the input audio file in seconds 
+    -Default value: 0.0 
+-Name: length 
+    -Units: seconds 
+    -Possible values: 0-end of the input audio file in seconds 
+    -Default value: the entire length of the audio file in seconds
+-Name: width 
+    -Units: pixels 
+    -Possible values: any positive integer 
+    -Default value: the number of spectra computed 
+-Name: height 
+    -Units: pixels 
+    -Possible values: any positive integer 
+    -Default value: the number of FFT bins (half the window size) 
+
+
+
+
+
+
+
+Name of module: Waveform 
+Type of module: Visualization 
+Code: marsyas/src/apps/sound2png 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/sound2png.html#sound2png
+Default commandline: sound2png -m waveform 
+Examples: 
+> sound2png --help 
+> sound2png -m waveform -ws 512 -s 5 -l 10 input.wav output.png 
+> sound2png input.wav output.png --verbose --height 100 --width 500
+
+
+Input : Audio file in non-compressed .wav or .mp3 compressed format 
+Output: Image file in .png format 
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: windowsize 
+   -Units: samples 
+   -Possible values: 128, 256, 8192 (powers of two) 
+   -Default value 256 
+   -Description: The window size for the calculation of the spectrogram 
+-Name: hopsize 
+    -Units: samples 
+    -Possible values: any positive number 
+    -Default value: 256
+    -Description: The hop size for the calculation of the spectrogram 
+-Name: start 
+    -Units: seconds 
+    -Possible values: 0 - end of the input audio file in seconds 
+    -Default value: 0.0 
+-Name: length 
+    -Units: seconds 
+    -Possible values: 0-end of the input audio file in seconds 
+    -Default value: the entire length of the audio file in seconds
+-Name: width 
+    -Units: pixels 
+    -Possible values: any positive integer 
+    -Default value: the number of spectra computed 
+-Name: height 
+    -Units: pixels 
+    -Possible values: any positive integer 
+    -Default value: the number of FFT bins (half the window size) 
+
+
+
+
+
+Name of module: LowPass 
+Type of module: Audio 
+Code: marsyas/src/apps/sound2sound 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/sound2sound.html#sound2sound
+Default commandline: sound2sound -m lowpass 
+Examples: 
+> sound2png --help 
+> sound2sound input.wav -m lowpass -f 500 -q 10 -s 15 -l 30 -g 0.8 output.wav
+> sound2sound input.wav --method lowpass --frequency 500 --qfactor 10 --start 15 --length 30 --gain 0.8 output.wav 
+
+Input : Audio file in non-compressed .wav or .mp3 compressed format 
+Output: Audio file in non-compressed .wav format 
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: start 
+    -Units: seconds 
+    -Possible values: 0 - end of the input audio file in seconds 
+    -Default value: 0.0 
+-Name: length 
+    -Units: seconds 
+    -Possible values: 0-end of the input audio file in seconds 
+    -Default value: the entire length of the audio file in seconds
+-Name: gain 
+    -Units: no units 
+    -Possible values: any positive float 
+    -Default value: 1.0 
+    -Description: Apply gain to audio signal (>1.0 amplifies) 
+-Name: frequency 
+    -Units: Hertz 
+    -Possible values: 0..half the sampling rate 
+    -Default value: 500 
+    -Description: The cut-off frequency 
+-Name: qfactor 
+    -Units: no units 
+    -Possible values: any positive float 
+    -Default value: 1.0 
+    -Description: the q-factor of the filter 
+
+ 
+Name of module: BandPass 
+Type of module: Audio 
+Code: marsyas/src/apps/sound2sound 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/sound2sound.html#sound2sound
+Default commandline: sound2sound -m lowpass 
+Examples: 
+> sound2png --help 
+> sound2sound input.wav -m bandpass -f 500 -q 10 -s 15 -l 30 -g 0.8 output.wav
+> sound2sound input.wav --method bandpass --frequency 500 --qfactor 10 --start 15 --length 30 --gain 0.8 output.wav 
+
+Input : Audio file in non-compressed .wav or .mp3 compressed format 
+Output: Audio file in non-compressed .wav format 
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: start 
+    -Units: seconds 
+    -Possible values: 0 - end of the input audio file in seconds 
+    -Default value: 0.0 
+-Name: length 
+    -Units: seconds 
+    -Possible values: 0-end of the input audio file in seconds 
+    -Default value: the entire length of the audio file in seconds
+-Name: gain 
+    -Units: no units 
+    -Possible values: any positive float 
+    -Default value: 1.0 
+    -Description: Apply gain to audio signal (>1.0 amplifies) 
+-Name: frequency 
+    -Units: Hertz 
+    -Possible values: 0..half the sampling rate 
+    -Default value: 500 
+    -Description: The center frequency 
+-Name: qfactor
+    -Units: no units 
+    -Possible values: any positive float 
+    -Default value: 1.0 
+    -Description: The q-factor of the filter
+
+
+Name of module: HighPass 
+Type of module: Audio 
+Code: marsyas/src/apps/sound2sound 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/sound2sound.html#sound2sound
+Default commandline: sound2sound -m highpass 
+Examples: 
+> sound2png --help 
+> sound2sound input.wav -m highpass -f 500 -q 10 -s 15 -l 30 -g 0.8 output.wav
+> sound2sound input.wav --method highpass --frequency 500 --qfactor 10 --start 15 --length 30 --gain 0.8 output.wav 
+
+Input : Audio file in non-compressed .wav or .mp3 compressed format 
+Output: Audio file in non-compressed .wav format 
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: start 
+    -Units: seconds 
+    -Possible values: 0 - end of the input audio file in seconds 
+    -Default value: 0.0 
+-Name: length 
+    -Units: seconds 
+    -Possible values: 0-end of the input audio file in seconds 
+    -Default value: the entire length of the audio file in seconds
+-Name: gain 
+    -Units: no units 
+    -Possible values: any positive float 
+    -Default value: 1.0 
+    -Description: Apply gain to audio signal (>1.0 amplifies) 
+-Name: frequency 
+    -Units: Hertz 
+    -Possible values: 0..half the sampling rate 
+    -Default value: 500 
+    -Description: The cut-off frequency 
+-Name: qfactor 
+    -Units: no units 
+    -Possible values: any positive float 
+    -Default value: 1.0 
+    -Description: The q-factor of the filter
