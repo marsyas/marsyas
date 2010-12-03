@@ -312,40 +312,95 @@ TimeLine::load(mrs_string filename)
 		return false;
 	}
 
-	in >> numRegions_; // read numRegions
-	MRSDIAG("TimeLine::load() - Number of regions is " << numRegions_);
+	FileName f(filename);
+	vector<mrs_string> labels;
 
-	in >> lineSize_; //read lineSize
-	MRSDIAG("TimeLine::load() - lineSize size is " << lineSize_);
-
-	in >> size_; //read size
-	MRSDIAG("TimeLine::load() - Size is " << size_);
-
-	regions_.clear();
-	for (mrs_natural i=0; i < numRegions_; ++i)
+	if (f.ext() == "txt") // audacity label format 
 	{
-		TimeRegion region;
-		regions_.push_back(region);
-	}
+		numRegions_ = 0;
+		mrs_real start, end;
+		mrs_string label;
+		regions_.clear();
+		while (!in.eof())
+		{
+			in >> start >> end >> label;
+			
+			TimeRegion region;			
+			region.start = start * 22050;
+			region.end = end * 22050;
+			region.classId = 1;
+			region.name = label;
+			mrs_bool label_found = false;
+			
+			for (unsigned int i=0; i < labels.size(); i++)
+			{
+				if (label == labels[i])
+				{
+					label_found = true;
+					region.classId = i;
+				}
+				
+			}
+			if (!label_found)
+			{
+				labels.push_back(label);
+				region.classId = labels.size()-1;
+			}
+			regions_.push_back(region);
+			numRegions_ ++;			
+		}
+		
+		// last region is a duplicate due to empty last line 
+		// kind of a hack but works 
+		numRegions_ --;
+		regions_.pop_back();
+		
 
-	for (mrs_natural i=0; i<numRegions_; ++i)
+		lineSize_ = 1;
+		size_ = end * 22050;
+
+		in.close();
+		return true;
+	}
+	else     // marsyas .mtl format 
 	{
-		mrs_natural token;
-		mrs_string stoken1, stoken2;
-		in >> token;
-		regions_[i].start = token;
-		in >> token;
-		regions_[i].classId = token;
-		in >> token;
-		regions_[i].end = token;
-		in >> stoken1;// >> stoken2; //used for .cue files in IEEE TASLP paper...
-		//regions_[i].name = stoken1 +" "+stoken2; //used for .cue files in IEEE TASLP paper...
-		regions_[i].name = stoken1;
+		in >> numRegions_; // read numRegions
+		MRSDIAG("TimeLine::load() - Number of regions is " << numRegions_);
+		
+		in >> lineSize_; //read lineSize
+		MRSDIAG("TimeLine::load() - lineSize size is " << lineSize_);
+		
+		in >> size_; //read size
+		MRSDIAG("TimeLine::load() - Size is " << size_);
+
+		regions_.clear();
+		for (mrs_natural i=0; i < numRegions_; ++i)
+		{
+			TimeRegion region;
+			regions_.push_back(region);
+		}
+		
+		for (mrs_natural i=0; i<numRegions_; ++i)
+		{
+			mrs_natural token;
+			mrs_string stoken1, stoken2;
+			in >> token;
+			regions_[i].start = token;
+			in >> token;
+			regions_[i].classId = token;
+			in >> token;
+			regions_[i].end = token;
+			in >> stoken1;// >> stoken2; //used for .cue files in IEEE TASLP paper...
+			//regions_[i].name = stoken1 +" "+stoken2; //used for .cue files in IEEE TASLP paper...
+			regions_[i].name = stoken1;
+		}
+		
+		in.close();
+		
+		return true;
+
 	}
-
-	in.close();
-
-	return true;
+	
 }
 
 void

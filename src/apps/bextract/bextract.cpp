@@ -2953,7 +2953,7 @@ initOptions()
 	cmd_options.addNaturalOption("accSize", "as", 1000);
 	cmd_options.addNaturalOption("hopsamples", "hp", 512);
 	cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
-	cmd_options.addBoolOption("tline", "t", false);
+	cmd_options.addBoolOption("timeline", "t", false);
 	cmd_options.addBoolOption("pluginmute", "pm", false);
 	cmd_options.addBoolOption("playback", "pb", false);
 	cmd_options.addStringOption("outputdir", "od", EMPTYSTRING);
@@ -3001,7 +3001,7 @@ loadOptions()
 	winSize = cmd_options.getNaturalOption("winsamples");
 	hopSize = cmd_options.getNaturalOption("hopsamples");
 	accSize_ = cmd_options.getNaturalOption("accSize");
-	tline = cmd_options.getBoolOption("tline");
+	tline = cmd_options.getBoolOption("timeline");
 	pluginMute  = cmd_options.getBoolOption("pluginmute");
 	playback = cmd_options.getBoolOption("playback");
 	workspaceDir = cmd_options.getStringOption("outputdir");

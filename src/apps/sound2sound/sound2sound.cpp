@@ -194,7 +194,6 @@ process(string ifname, string ofname, string mode)
 		  if (rms(0) >= max_rms) 
 			  max_rms = rms(0);
 	  }
-	  cout << "targetrms = " << targetrms << endl;
 	  
 	  mrs_real gain = targetrms / max_rms;
 	  

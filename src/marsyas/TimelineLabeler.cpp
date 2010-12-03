@@ -124,6 +124,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 			//It is different - try to read the timeline into memory
 			if(timeline_.load(fname))
 			{
+				
 				newTimeline = true;
 				//get the number of classes in the currently loaded timeline
 				numClasses_ = (mrs_natural)timeline_.numClasses();
@@ -295,7 +296,6 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 		}
 		else //no more regions in this timeline...
 		{
-		  cout << "HERE IS THE PROBLEM " << endl;
 			//Should we ask for another audiofile/timeline ot just play the current file till its end?
 			if(ctrl_playRegionsOnly_->to<mrs_bool>())
 			{
