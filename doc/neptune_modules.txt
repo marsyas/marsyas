@@ -1,12 +1,12 @@
 Last Update: Dec. 2 2010 
-Marsyas svn revision: 4307 
+Marsyas svn revision: 4309
 
 List of available modules in Marsyas for use in CANARIE/NEPTUNE workflow system: 
 (* denotes documented modules *) 
 
 
 Visualization Modules: *Spectrogram, *Waveform, *SimilarityMatrix
-Audio Modules: *LowPass, *BandPass, *HighPass, Resample, NoiseRemove
+Audio Modules: *LowPass, *BandPass, *HighPass, *Normalize, Resample, NoiseRemove
 Feature Extraction Modules: Centroid, Rolloff, Flux, MFCC, RMS 
 AnnotationModules: TimeLine, ConstantLabel 
 Classifier Modules: Gaussian, SVM, KNN, ZeroR 
@@ -15,6 +15,8 @@ Prediction Modules: TimeLineIntegrator, SummaryStatistics
 
 Name of module: Spectrogram 
 Type of module: Visualization 
+Description: Calculate the spectrogram of an audio file using the
+magnitude of the Short Time Fourier Transform (STFT) 
 Code: marsyas/src/apps/sound2png 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/sound2png.html#sound2png
@@ -83,6 +85,8 @@ Parameters:
 
 Name of module: Waveform 
 Type of module: Visualization 
+Description: Compute the time-domain envelope waveform for the input
+audio signal 
 Code: marsyas/src/apps/sound2png 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/sound2png.html#sound2png
@@ -134,6 +138,7 @@ Parameters:
 
 Name of module: LowPass 
 Type of module: Audio 
+Description: Low pass filter with two poles and two zeroes (BiQuad)
 Code: marsyas/src/apps/sound2sound 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/sound2sound.html#sound2sound
@@ -179,6 +184,7 @@ Parameters:
 Name of module: BandPass 
 Type of module: Audio 
 Code: marsyas/src/apps/sound2sound 
+Description: BandPass filter with two poles and two zeroes (Biquad) 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/sound2sound.html#sound2sound
 Default commandline: sound2sound -m lowpass 
@@ -222,6 +228,7 @@ Parameters:
 
 Name of module: HighPass 
 Type of module: Audio 
+Description: HighPass filter with two poles and two zeroes (Biquad) 
 Code: marsyas/src/apps/sound2sound 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/sound2sound.html#sound2sound
@@ -262,3 +269,41 @@ Parameters:
     -Possible values: any positive float 
     -Default value: 1.0 
     -Description: The q-factor of the filter
+
+
+
+Name of module: Normalize
+Type of module: Audio 
+Description: Normalize the audio so that the dynamic range is
+reasonable 
+Code: marsyas/src/apps/sound2sound 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/sound2sound.html#sound2sound
+Default commandline: sound2sound -m highpass 
+Examples: 
+> sound2png --help 
+> sound2sound input.wav -m normalize -s 15 -l 30 output.wav
+> sound2sound input.wav --method normalize --target_rms 0.3 --start 15 --length 30 output.wav 
+
+Input : Audio file in non-compressed .wav or .mp3 compressed format 
+Output: Audio file in non-compressed .wav format 
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: start 
+    -Units: seconds 
+    -Possible values: 0 - end of the input audio file in seconds 
+    -Default value: 0.0 
+-Name: length 
+    -Units: seconds 
+    -Possible values: 0-end of the input audio file in seconds 
+    -Default value: the entire length of the audio file in seconds
+-Name: target_rms
+    -Units: no units 
+    -Possible values: a positive number between 0.0 and 1.0 
+    -Default value: 0.5 
+    -Description: Apply gain to audio signal so that the maximum
+	window rms is 0.5 

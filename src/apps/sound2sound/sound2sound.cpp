@@ -49,6 +49,8 @@ int helpopt;
 int usageopt;
 int verboseopt;
 mrs_real gain;
+mrs_real targetrms;
+
 mrs_real frequency;
 mrs_real qfactor;
 mrs_real start;
@@ -94,6 +96,7 @@ printHelp(string progName)
 	cerr << "-l --length      : length in seconds" << endl;
 	
 	cerr << "-g --gain        : gain" << endl;
+	cerr << "-tr --target_rms : scale so that output has global target RMS" << endl;
 	cerr << "-f --frequency   : frequency" << endl;
 	cout << "-q --qfactor     : qfacotr" << endl;
 	exit(1);
@@ -111,7 +114,7 @@ initOptions()
 	cmd_options.addStringOption("mode" , "m", "bandpass");
 	cmd_options.addRealOption("length", "l", -1.0);
 	cmd_options.addRealOption("start", "s", 0.0);
-	
+	cmd_options.addRealOption("target_rms", "tr", 0.5);
 }
 
 
@@ -127,6 +130,7 @@ loadOptions()
 	mode = cmd_options.getStringOption("mode");
 	start = cmd_options.getRealOption("start");
 	length = cmd_options.getRealOption("length");
+	targetrms = cmd_options.getRealOption("target_rms");
 }
 
 
@@ -158,36 +162,96 @@ process(string ifname, string ofname, string mode)
   }
   
   MarSystemManager mng;
-  MarSystem* net = mng.create("Series/net");
-  net->addMarSystem(mng.create("SoundFileSource/src"));
-  net->addMarSystem(mng.create("Biquad/filter"));
-  net->addMarSystem(mng.create("Gain/gain"));
-  net->addMarSystem(mng.create("SoundFileSink/dest"));
-  
-  net->updControl("SoundFileSource/src/mrs_string/filename", ifname);
-  net->updControl("SoundFileSink/dest/mrs_string/filename", ofname);
-
-
-  mrs_natural nChannels = net->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-  mrs_real srate = net->getctrl("mrs_real/israte")->to<mrs_real>();
-
-  mrs_natural offset = (mrs_natural) (start * srate * nChannels);
-  
-  net->updControl("SoundFileSource/src/mrs_natural/pos", offset);
-  net->updControl("SoundFileSource/src/mrs_natural/loopPos", offset);
-  net->updControl("SoundFileSource/src/mrs_real/duration", length);
+  mrs_natural nChannels;
+  mrs_real srate;
+  mrs_natural offset;
   
 
-  net->updControl("Biquad/filter/mrs_real/frequency", frequency);
-  net->updControl("Biquad/filter/mrs_real/resonance", qfactor);
-  net->updControl("Gain/gain/mrs_real/gain", gain);
-  net->updControl("Biquad/filter/mrs_string/type", mode);
-  
-  while (net->getControl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+  if (mode == "normalize")
   {
-	  net->tick();
+	  MarSystem* rmsnet = mng.create("Series/rmsnet");
+	  rmsnet->addMarSystem(mng.create("SoundFileSource/src"));
+	  rmsnet->addMarSystem(mng.create("Rms/rms"));
+	  
+	  rmsnet->updControl("SoundFileSource/src/mrs_string/filename", ifname);
+	  rmsnet->updControl("mrs_natural/inSamples", 4096);
+	  
+	  nChannels = rmsnet->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+	  srate = rmsnet->getctrl("mrs_real/israte")->to<mrs_real>();
+	  offset = (mrs_natural) (start * srate * nChannels);
+	  
+	  rmsnet->updControl("SoundFileSource/src/mrs_natural/pos", offset);
+	  rmsnet->updControl("SoundFileSource/src/mrs_natural/loopPos", offset);
+	  rmsnet->updControl("SoundFileSource/src/mrs_real/duration", length);
+	  
+	  mrs_realvec rms(1);
+	  mrs_real max_rms = 0.0;
+	  
+	  while (rmsnet->getControl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	  {
+		  rmsnet->tick();
+		  rms = rmsnet->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
+		  if (rms(0) >= max_rms) 
+			  max_rms = rms(0);
+	  }
+	  cout << "targetrms = " << targetrms << endl;
+	  
+	  mrs_real gain = targetrms / max_rms;
+	  
+	  MarSystem* gainnet = mng.create("Series/gainnet");
+	  gainnet->addMarSystem(mng.create("SoundFileSource/src"));
+	  gainnet->addMarSystem(mng.create("Gain/gain"));
+	  gainnet->addMarSystem(mng.create("SoundFileSink/dest"));
+	  
+	  gainnet->updControl("SoundFileSource/src/mrs_string/filename", ifname);
+	  gainnet->updControl("SoundFileSink/dest/mrs_string/filename", ofname);
+	  gainnet->updControl("Gain/gain/mrs_real/gain", gain);
+	  
+	  nChannels = gainnet->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+	  srate = gainnet->getctrl("mrs_real/israte")->to<mrs_real>();
+	  offset = (mrs_natural) (start * srate * nChannels);
+	  
+	  gainnet->updControl("SoundFileSource/src/mrs_natural/pos", offset);
+	  gainnet->updControl("SoundFileSource/src/mrs_natural/loopPos", offset);
+	  gainnet->updControl("SoundFileSource/src/mrs_real/duration", length);
+	  
+	  while (gainnet->getControl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	  {
+		  gainnet->tick();
+	  }
   }
-  
+  else 
+  {
+	  MarSystem* net = mng.create("Series/net");
+	  net->addMarSystem(mng.create("SoundFileSource/src"));
+	  net->addMarSystem(mng.create("Biquad/filter"));
+	  net->addMarSystem(mng.create("Gain/gain"));
+	  net->addMarSystem(mng.create("SoundFileSink/dest"));
+	  
+	  net->updControl("SoundFileSource/src/mrs_string/filename", ifname);
+	  net->updControl("SoundFileSink/dest/mrs_string/filename", ofname);
+	  
+	  
+	  nChannels = net->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+	  srate = net->getctrl("mrs_real/israte")->to<mrs_real>();
+	  offset = (mrs_natural) (start * srate * nChannels);
+	  
+	  net->updControl("SoundFileSource/src/mrs_natural/pos", offset);
+	  net->updControl("SoundFileSource/src/mrs_natural/loopPos", offset);
+	  net->updControl("SoundFileSource/src/mrs_real/duration", length);
+	  
+	  
+	  net->updControl("Biquad/filter/mrs_real/frequency", frequency);
+	  net->updControl("Biquad/filter/mrs_real/resonance", qfactor);
+	  net->updControl("Gain/gain/mrs_real/gain", gain);
+	  net->updControl("Biquad/filter/mrs_string/type", mode);
+	  
+	  while (net->getControl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	  {
+		  net->tick();
+	  }
+	  
+  }
   
 }
 
