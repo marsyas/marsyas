@@ -259,6 +259,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	static int count = 0;
 
 	mrs_natural label = 0;
+	
 
 	for (t = 0; t < inSamples_; t++)
 	{
@@ -266,6 +267,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		if (ctrl_currentlyPlaying_->to<mrs_string>() != prev_playing_)
 		{
 			(*mos_) << "% filename " << ctrl_currentlyPlaying_->to<mrs_string>() << endl;
+			(*mos_) << "% srate " << israte_ << endl;
 			prev_playing_ = ctrl_currentlyPlaying_->to<mrs_string>();
 		}
 

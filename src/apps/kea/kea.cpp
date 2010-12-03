@@ -269,7 +269,7 @@ pca()
 }
 
 void 
-train_and_predict() 
+train_and_predict(mrs_string mode) 
 {
   if (wekafname_ == EMPTYSTRING) 
   {
@@ -388,15 +388,52 @@ train_and_predict()
   
 
   realvec data;
+  int end=0;
+  int start=0;
+  
+  mrs_string prev_name = "";
+  mrs_string name;
+  
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
-  	cout << classNames[(int)data(0,0)] << endl;
-	prout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
-  	prout << classNames[(int)data(0,0)] << endl;
 
+	if (mode == "default")
+	{
+		cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
+		cout << classNames[(int)data(0,0)] << endl;
+		prout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
+		prout << classNames[(int)data(0,0)] << endl;
+	}
+	else if (mode == "timeline")
+	{
+		name = classNames[(int)data(0,0)];
+
+		
+		if (name != prev_name)
+		{
+			if (((int)data(0,0) == 0)&&(end * (1.0/43.0664)-start*(1.0 / 43.0664) > 1.0)) // not background 
+			{
+				cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
+				cout << prev_name[0] << endl;		
+			}
+			
+			start = end;
+		}
+		else 
+			{
+				
+			}
+				
+		prev_name = name;
+		
+		
+	}
+	else 
+		cout << "Unsupported mode" << endl;
+	
 	//	cout << data(0,0) << endl;
+	end++;
   }
 
   
@@ -809,7 +846,9 @@ main(int argc, const char **argv)
   if (mode_ == "tags")
 	  tags();
   if (mode_ == "train_predict") 
-	  train_and_predict();
+	  train_and_predict("default");
+  if (mode_ == "train_predict_timeline")
+	  train_and_predict("timeline");
   
   
   exit(0);
