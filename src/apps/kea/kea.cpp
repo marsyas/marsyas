@@ -394,10 +394,15 @@ train_and_predict(mrs_string mode)
   mrs_string prev_name = "";
   mrs_string name;
   
+  mrs_real srate;
+  
+
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
 
+	
 	if (mode == "default")
 	{
 		cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
@@ -412,7 +417,7 @@ train_and_predict(mrs_string mode)
 		
 		if (name != prev_name)
 		{
-			if (((int)data(0,0) == 0)&&(end * (1.0/43.0664)-start*(1.0 / 43.0664) > 1.0)) // not background 
+			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > 1.0)) // not background 
 			{
 				cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
 				cout << prev_name[0] << endl;		

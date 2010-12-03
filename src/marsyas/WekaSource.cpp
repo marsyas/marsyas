@@ -81,7 +81,8 @@ WekaSource::addControls()
 	// We get this from looking for comment strings that begin with "%
 	// filename"
 	addctrl("mrs_string/currentFilename", "");
-	
+	addctrl("mrs_real/currentSrate", 22050.0);
+
 	//TODO: lmartins: document...
 	addctrl("mrs_realvec/instanceIndexes", realvec());
 
@@ -668,6 +669,11 @@ void WekaSource::parseData(ifstream& mis, const mrs_string& filename, WekaData& 
 			// If the line starts with "% filename" set the current_filename
 			if (strncmp(token.c_str(),"% filename",10) == 0) {
 				currentFname = token.substr(11);
+			}
+			
+			if (strncmp(token.c_str(),"% srate",7) == 0) {
+				mrs_real currentSrate = atof(token.substr(8).c_str());
+				this->updControl("mrs_real/currentSrate", currentSrate);	  
 			} 
 		}
 		getline(mis,token);
