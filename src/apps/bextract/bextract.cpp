@@ -2124,11 +2124,14 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		featureNetwork->addMarSystem(featExtractor);
 	}
 
-	// texture statistics
-	featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
-	featureNetwork->updControl("TextureStats/tStats/mrs_natural/memSize", memSize);
-	featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", true);
-
+	// texture statistics - disable if memSize is 0 
+	if (memSize != 0)
+	{
+		featureNetwork->addMarSystem(mng.create("TextureStats", "tStats"));
+		featureNetwork->updControl("TextureStats/tStats/mrs_natural/memSize", memSize);
+		featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", true);
+	}
+	
 	// Use accumulator if computing single vector / file
 	if (single_vector)
 	{
@@ -2428,8 +2431,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 				}
 				
 				bextractNetwork->tick();
-				featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
-										true);			  
+				if (memSize != 0) 
+					featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
+											   true);			  
 				fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
 			  
 				bextractNetwork->updControl("mrs_natural/advance", advance);
@@ -2448,8 +2452,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 			if (currentlyPlaying != previouslyPlaying)
 			{
-				featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
-										   true);			  
+				if (memSize != 0)
+					featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",  true);			  
 				cout << "Processed: " << n << " - " << currentlyPlaying << endl;
 				n++;
 
@@ -2577,8 +2581,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 				bextractNetwork->tick();
-				featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
-										   true);			  
+				if (memSize != 0)
+					featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
+											   true);			  
 				currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 
 				mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
