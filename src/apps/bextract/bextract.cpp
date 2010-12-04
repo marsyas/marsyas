@@ -434,8 +434,8 @@ printHelp(string progName)
 	cerr << "-m  --memory       : memory size " << endl;
 	cerr << "-w  --weka         : weka .arff filename " << endl;
 	cerr << "-od --outputdir    : output directory for output of files" << endl;
-	cerr << "-ws --winsamples   : analysis window size in samples " << endl;
-	cerr << "-hp --hopsamples   : analysis hop size in samples " << endl;
+	cerr << "-ws --windowsize   : analysis window size in samples " << endl;
+	cerr << "-hp --hopsize      : analysis hop size in samples " << endl;
 	cerr << "-t  --timeline     : flag 2nd input collection as timelines for the 1st collection";
 	cerr << endl;
 
@@ -2954,9 +2954,9 @@ initOptions()
 	cmd_options.addStringOption("wekafile", "w", EMPTYSTRING);
 	cmd_options.addStringOption("extractor", "e", "REFACTORED");
 	cmd_options.addNaturalOption("memory", "m", 40);
-	cmd_options.addNaturalOption("winsamples", "ws", 512);
+	cmd_options.addNaturalOption("windowsize", "ws", 512);
 	cmd_options.addNaturalOption("accSize", "as", 1000);
-	cmd_options.addNaturalOption("hopsamples", "hp", 512);
+	cmd_options.addNaturalOption("hopsize", "hp", 512);
 	cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
 	cmd_options.addBoolOption("timeline", "t", false);
 	cmd_options.addBoolOption("pluginmute", "pm", false);
@@ -3003,8 +3003,8 @@ loadOptions()
 	extractorName = cmd_options.getStringOption("extractor");
 	classifierName = cmd_options.getStringOption("classifier");
 	memSize = cmd_options.getNaturalOption("memory");
-	winSize = cmd_options.getNaturalOption("winsamples");
-	hopSize = cmd_options.getNaturalOption("hopsamples");
+	winSize = cmd_options.getNaturalOption("windowsize");
+	hopSize = cmd_options.getNaturalOption("hopsize");
 	accSize_ = cmd_options.getNaturalOption("accSize");
 	tline = cmd_options.getBoolOption("timeline");
 	pluginMute  = cmd_options.getBoolOption("pluginmute");

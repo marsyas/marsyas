@@ -310,7 +310,6 @@ train_and_predict(mrs_string mode)
   //
   // Which classifier function to use
   //
-  string classifier_ = "SVM";
   if (classifier_ == "GS")
 	net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
   if (classifier_ == "ZEROR") 
@@ -413,7 +412,6 @@ train_and_predict(mrs_string mode)
 	else if (mode == "timeline")
 	{
 		name = classNames[(int)data(0,0)];
-
 		
 		if (name != prev_name)
 		{
