@@ -264,10 +264,12 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	}
 	else
 	{
+		isrc_->process(in,out);
+
 		//finished current file. Advance to next one in collection (if any)
 		if (!isrc_->getctrl("mrs_bool/hasData")->isTrue())
 		{
-			//check if there a following file ion the collection
+			//check if there a following file in the collection
 			if (cindex_ < (mrs_natural)col_.size() -1)
 			{
 				cindex_ = cindex_ + 1;
@@ -302,7 +304,10 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			}
 		}
 
-		isrc_->process(in,out);
+		// done above now -- this allows us to detect if
+		// we're finished the collection *before* making
+		// an extra (useless/harmful) tick().
+//		isrc_->process(in,out);
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
 	} 
