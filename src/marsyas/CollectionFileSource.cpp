@@ -21,7 +21,7 @@
 using std::ostringstream;
 using namespace Marsyas;
 
-CollectionFileSource::CollectionFileSource(mrs_string name):AbsSoundFileSource("SoundFileSource", name)
+CollectionFileSource::CollectionFileSource(mrs_string name):AbsSoundFileSource("CollectionFileSource", name)
 {
 	addControls();
 }
