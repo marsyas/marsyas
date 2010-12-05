@@ -16,6 +16,7 @@ Visualization Modules: *Spectrogram, *Waveform, SimilarityMatrix
 Audio Modules: *LowPass, *BandPass, *HighPass, *Normalize, Resample, NoiseRemove
 Feature Extraction Modules: *SpectralCentroid, *SpectralRolloff, *SpectralFlux, 
 *MelFrequencyCepstralCoefficients, *ZeroCrossings 
+Feature Transformation Modules: PCA 
 Classification Modules: Gaussian, SVM, KNN, ZeroR 
 Prediction Modules: *TimeLine, *ClassificationStatistics  
 

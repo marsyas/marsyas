@@ -26,6 +26,8 @@ string inputdir_;
 string outputdir_;
 string distancematrix_;
 string classifier_;
+mrs_real minspan_;
+
 
 void 
 printUsage(string progName)
@@ -58,6 +60,7 @@ printHelp(string progName)
   cerr << "-tc --testcollectionfname : .mf test collection file " << endl;
   cerr << "-pr --predictcollectionfname : .mf output prediction file " << endl;
   cerr << "-prtl --predicttimeline: predicted timeline" << endl;
+  cerr << "-msp  --minspan: minimum duration of predicted timeline region" << endl;
   
   exit(1);
 }
@@ -424,8 +427,7 @@ train_and_predict(mrs_string mode)
 		
 		if (name != prev_name)
 		{
-			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > 1.0)) // not background 
-			if (end * (1.0/srate)-start*(1.0 / srate) > 1.0) // not background 
+			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > minspan_)) // not background 
 			{
 				if (predicttimeline_ == EMPTYSTRING)
 				{
@@ -813,6 +815,7 @@ initOptions()
   cmd_options_.addStringOption("distancematrix", "dm", "dm.txt");
   cmd_options_.addStringOption("classifier", "cl", "SVM");
   cmd_options_.addStringOption("predicttimeline", "prtl", EMPTYSTRING);
+  cmd_options_.addRealOption("minspan", "msp", 1.0);
 }
 
 
@@ -831,6 +834,8 @@ loadOptions()
   distancematrix_ = cmd_options_.getStringOption("distancematrix");
   classifier_ = cmd_options_.getStringOption("classifier");
   predicttimeline_ = cmd_options_.getStringOption("predicttimeline");
+  minspan_ = cmd_options_.getRealOption("minspan");
+  
 }
 
 
