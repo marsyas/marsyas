@@ -692,10 +692,10 @@ Gaussian with a diagonal covariance matrix. ZEROR is a trivial
 classifier that classify everything based on the label with the most 
 training instances. 
 
--Name: timeline 
+-Name: predicttimeline 
     -Units: no units 
     -Possible values: string 
-    -Default value: "timeline.txt" 
+    -Default value: ""
     -Description: The output timeline file
 
 

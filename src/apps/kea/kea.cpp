@@ -18,6 +18,8 @@ string twekafname_;
 
 string testcollectionfname_;
 string predictcollectionfname_;
+string predicttimeline_;
+
 string mode_;
 CommandLineOptions cmd_options_;
 string inputdir_;
@@ -55,7 +57,8 @@ printHelp(string progName)
   cerr << "-dm --distancematrix: distance matrix in MIREX format" << endl;
   cerr << "-tc --testcollectionfname : .mf test collection file " << endl;
   cerr << "-pr --predictcollectionfname : .mf output prediction file " << endl;
-
+  cerr << "-prtl --predicttimeline: predicted timeline" << endl;
+  
   exit(1);
 }
 
@@ -384,6 +387,9 @@ train_and_predict(mrs_string mode)
   ofstream prout;
   prout.open(predictcollectionfname_.c_str());
 
+  ofstream prtout;
+  prtout.open(predicttimeline_.c_str());
+  
   
 
   realvec data;
@@ -395,6 +401,8 @@ train_and_predict(mrs_string mode)
   
   mrs_real srate;
   
+
+
 
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
@@ -411,17 +419,28 @@ train_and_predict(mrs_string mode)
 	}
 	else if (mode == "timeline")
 	{
+
 		name = classNames[(int)data(0,0)];
 		
 		if (name != prev_name)
 		{
 			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > 1.0)) // not background 
+			if (end * (1.0/srate)-start*(1.0 / srate) > 1.0) // not background 
 			{
-				cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-				cout << prev_name[0] << endl;		
+				if (predicttimeline_ == EMPTYSTRING)
+				{
+					cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
+					cout << prev_name[0] << endl;		
+				}
+				else 
+				{
+					prtout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
+					prtout << prev_name[0] << endl;							
+				}
+				
 			}
-			
 			start = end;
+			
 		}
 		else 
 			{
@@ -793,6 +812,7 @@ initOptions()
   cmd_options_.addStringOption("outputdir", "od", "");
   cmd_options_.addStringOption("distancematrix", "dm", "dm.txt");
   cmd_options_.addStringOption("classifier", "cl", "SVM");
+  cmd_options_.addStringOption("predicttimeline", "prtl", EMPTYSTRING);
 }
 
 
@@ -810,6 +830,7 @@ loadOptions()
   outputdir_ = cmd_options_.getStringOption("outputdir");
   distancematrix_ = cmd_options_.getStringOption("distancematrix");
   classifier_ = cmd_options_.getStringOption("classifier");
+  predicttimeline_ = cmd_options_.getStringOption("predicttimeline");
 }
 
 
