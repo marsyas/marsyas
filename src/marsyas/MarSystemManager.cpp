@@ -247,6 +247,7 @@
 #include "OrcaSnip.h"
 
 #include "Inject.h"
+#include "PowerToAverageRatio.h"
 //modifyHeader
 
 
@@ -493,6 +494,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Unfold", new Unfold("unfold"));
 
 	registerPrototype("Inject", new Inject("injectpr"));
+	registerPrototype("PowerToAverageRatio", new PowerToAverageRatio("crestpr"));
 	//modifyRegister
 
 	//***************************************************************************************
