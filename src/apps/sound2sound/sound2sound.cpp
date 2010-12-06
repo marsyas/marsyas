@@ -219,6 +219,13 @@ process(string ifname, string ofname, string mode)
 		  gainnet->tick();
 	  }
   }
+  else if (mode == "resample")
+  {
+	  if (verboseopt)
+		  cout << "Resampling mode" << endl;
+	  
+  }
+  
   else 
   {
 	  MarSystem* net = mng.create("Series/net");
