@@ -18,7 +18,7 @@ Feature Extraction Modules: *SpectralCentroid, *SpectralRolloff, *SpectralFlux,
 *MelFrequencyCepstralCoefficients, *ZeroCrossings 
 Feature Transformation Modules: PCA 
 Classification Modules: Gaussian, SVM, KNN, ZeroR 
-Prediction Modules: *TimeLine, *ClassificationStatistics  
+Prediction Modules: *TimeLine, *ClassificationStatistics, Frames
 
 
 Name of module: Spectrogram 
@@ -645,11 +645,11 @@ creates a predicted time-line for a test .arff file.
 Code: marsyas/src/apps/kea 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/kea.html#kea
-Default commandline: kea --train_predict_timeline  
+Default commandline: kea -m train_predict_timeline  
 Examples: 
 > kea --help 
-> kea -m train_predict_timeline -w train.arff -tw test.arff -tl test.txt -cl SVM 
-> kea --modem train_predict_timeline --wekafname train.arff --testwekafname test.arff --timeline test.txt 
+> kea -m train_predict_timeline -w train.arff -tw test.arff -prtl test_timeline.txt -cl SVM 
+> kea --mode train_predict_timeline --wekafname train.arff --testwekafname test.arff --predicttimeline test_timeline.txt 
 
 Input : An input .arff file for training a classifier and a test .arff file 
 for predicting a timeline in audacity format.  
@@ -713,6 +713,61 @@ timeline
     -Default value: 1 second 
 	-Description: the minimum duration that a region in the predicted
 timeline can span 
+
+
+
+
+Name of module: ClassificationStatistics
+Type of module: Prediction   
+Description: Trains a classifier using a provided .arff training file and 
+shows classification statistics using 10-fold cross-validation
+Code: marsyas/src/apps/kea 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/kea.html#kea
+Default commandline: kea -m train_predict_timeline
+Examples: 
+> kea --help 
+> kea -m train -w train.arff -tw test.arff  -cl SVM 
+> kea --mode train --wekafname train.arff  
+
+Input : An input .arff file for training a classifier 
+Output: Classification statistics at stdout
+
+
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+
+-Name: wekafname   
+    -Units: no units
+    -Possible values: string
+    -Default value: ""
+    -Description: The name of the .arff filename containing the
+labeled feature vectors used for training the classifier 
+
+-Name: testwekafname
+   -Units: no units 
+   -Possible values: string
+   -Default value: ""
+   -Description: The name of the .arff filename containing the 
+feature vectors that are classified to calculate the statistics 
+when used in UseTestSet validation mode. 
+
+
+-Name: classifier 
+    -Units: no units
+    -Possible values: SVM or GS or ZEROR
+    -Default value: SVM
+    -Description: The type of classifier to use. SVM is a linear SVM
+trained using sequential minimal optimization and GS is a simple Naive
+Bayes Classifier where each class is represented as a single
+Gaussian with a diagonal covariance matrix. ZEROR is a trivial 
+classifier that classify everything based on the label with the most 
+training instances. 
+
 
 
 
