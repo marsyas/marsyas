@@ -1,5 +1,5 @@
-Last updated: December 3 2010
-Marsyas svn revision: 4309
+Last updated: December 6 2010
+Marsyas svn revision: 4321
 
 List of available modules in Marsyas for use in CANARIE/NEPTUNE workflow system: 
 (* denotes documented modules). These modules are all based on command-line tools 
