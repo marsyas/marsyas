@@ -69,6 +69,9 @@ namespace Marsyas
 			MarSystem* clone() const;    
 
 			void myProcess(realvec& in,realvec &out);
+
+			// public for efficiency; just like AbsFileSource
+			mrs_bool iHasData_;
 	};
 
 }//namespace Marsyas

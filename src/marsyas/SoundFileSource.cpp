@@ -76,6 +76,7 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
+	ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
 	
 	//ctrl_rewindToPos_ = getctrl("mrs_natural/moveToSamplePos");
 }
@@ -133,6 +134,8 @@ SoundFileSource::addControls()
 	
 	addctrl("mrs_natural/moveToSamplePos", 0);
 	setctrlState("mrs_natural/moveToSamplePos", true);
+
+	addctrl("mrs_bool/currentHasData", true, ctrl_currentHasData_);
 }
 
 void
@@ -424,6 +427,13 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 		if (updateCurrDuration)
 		{
 			setctrl("mrs_real/fullDuration", src_->durFull_);
+		}
+
+		if (src_->getType() == "CollectionFileSource") {
+			ctrl_currentHasData_->setValue(
+				((CollectionFileSource*)src_)->iHasData_);
+		} else {
+			ctrl_currentHasData_->setValue(src_->hasData_);
 		}
 
 	}

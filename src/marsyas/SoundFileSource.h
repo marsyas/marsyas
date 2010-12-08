@@ -62,6 +62,8 @@ namespace Marsyas
    - \b mrs_natural/currentLabel [r] : current label of file played
    - \b mrs_natural/nLabels [r] : number of labels
    - \b mrs_string/labelNames [r] : labels (for collections)
+   - \b mrs_string/currentHasData [r] : is there any audio data
+     remaining (for collections)
 
 
    \see SoundFileSourceHopper for generating an audio slices from
@@ -88,6 +90,7 @@ namespace Marsyas
 			MarControlPtr ctrl_currentLabel_;
 			MarControlPtr ctrl_nLabels_;
 			MarControlPtr ctrl_labelNames_;
+			MarControlPtr ctrl_currentHasData_;
 		
 		
 			MarControlPtr ctrl_rewindToPos_;

@@ -41,6 +41,7 @@ WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
+	ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
 }
 
 
@@ -101,6 +102,8 @@ WavFileSource::addControls()
 	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
+
+	addctrl("mrs_bool/currentHasData", true, ctrl_currentHasData_);
 }
 
 void 
@@ -456,4 +459,5 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			break;
 		}
 	}
+	ctrl_currentHasData_->setValue(hasData_);
 }

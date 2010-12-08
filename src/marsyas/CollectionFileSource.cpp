@@ -32,6 +32,7 @@ CollectionFileSource::CollectionFileSource(const CollectionFileSource& a):AbsSou
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
+	iHasData_ = false;
 }
 
 CollectionFileSource::~CollectionFileSource()
@@ -264,8 +265,6 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	}
 	else
 	{
-		isrc_->process(in,out);
-
 		//finished current file. Advance to next one in collection (if any)
 		if (!isrc_->getctrl("mrs_bool/hasData")->isTrue())
 		{
@@ -304,12 +303,21 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			}
 		}
 
-		// done above now -- this allows us to detect if
-		// we're finished the collection *before* making
-		// an extra (useless/harmful) tick().
-//		isrc_->process(in,out);
+		isrc_->process(in,out);
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
+
+		// check internal data *after* process()
+		iHasData_ = isrc_->getctrl("mrs_bool/hasData")->to<mrs_bool>();
+		if (! iHasData_ ) {
+			// check if we're at the end
+			// if we're not at the end, the above code
+			// will handle it in the next tick()
+			if (cindex_ == (mrs_natural)col_.size() - 1) {
+				setctrl("mrs_bool/hasData", false);
+				hasData_ = false;
+			}
+		}
 	} 
 
 

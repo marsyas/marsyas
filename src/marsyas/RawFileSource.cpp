@@ -64,6 +64,7 @@ RawFileSource::addControls()
 	addctrl("mrs_bool/noteon", false);
 	setctrlState("mrs_bool/noteon", true);
 	addctrl("mrs_string/filetype", "raw");
+	addctrl("mrs_bool/currentHasData", true, ctrl_currentHasData_);
 }	
 
 
@@ -235,4 +236,5 @@ void RawFileSource::myProcess(realvec& in,realvec &out)
 		time_ += rate_;
     
 	}	
+	ctrl_currentHasData_->setValue(hasData_);
 }
