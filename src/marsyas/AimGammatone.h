@@ -46,6 +46,9 @@ namespace Marsyas
    version which uses a cascade of four second-order filters in place of the 
    eighth-order filter.
 
+	The original source code for these functions in AIM-C can be found at:
+	http://code.google.com/p/aimc/
+
 */
 
 

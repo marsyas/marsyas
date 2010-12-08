@@ -36,6 +36,10 @@ namespace Marsyas
     Author : Thomas Walters <tom@acousticscale.org>
 
     Ported to Marsyas by Steven Ness <sness@sness.net>
+
+	The original source code for these functions in AIM-C can be found at:
+	http://code.google.com/p/aimc/
+
 */
 
 
