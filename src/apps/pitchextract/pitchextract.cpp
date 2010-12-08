@@ -18,6 +18,7 @@
 
 
 #include "common.h"
+#include "Conversions.h"
 
 #include <cstdio>
 #include <cstdlib>
@@ -43,6 +44,8 @@ int upopt = 128;
 int plopt = 0;
 float topt = 0.2f;
 int yinopt = 0;
+string frsopt = "hertz";
+bool skipopt = false;
 
 void 
 printUsage(string progName)
@@ -68,14 +71,17 @@ printHelp(string progName)
 	cerr << endl;
 	cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
 	cerr << "Help Options:" << endl;
-	cerr << "-u --usage      : display short usage info" << endl;
-	cerr << "-h --help       : display this information " << endl;
-	cerr << "-v --verbose    : verbose output " << endl;
-	cerr << "-c --collection : Marsyas collection of sound files " << endl;
-	cerr << "-w --windowSize : windowSize " << endl;
-	cerr << "-p --hopSize    : hopSize " << endl;
-	cerr << "-l --lowerPitch : lowerPitch " << endl;
-	cerr << "-u --upperPitch : upperPitch " << endl;
+	cerr << "-u --usage            : display short usage info" << endl;
+	cerr << "-h --help             : display this information " << endl;
+	cerr << "-v --verbose          : verbose output " << endl;
+	cerr << "-c --collection       : Marsyas collection of sound files " << endl;
+	cerr << "-w --windowSize       : windowSize " << endl;
+	cerr << "-p --hopSize          : hopSize " << endl;
+	cerr << "-l --lowerPitch       : lowerPitch " << endl;
+	cerr << "-u --upperPitch       : upperPitch " << endl;
+	cerr << "-y --yin              : Use the YIN algorithm to determine pitches" << endl;
+	cerr << "-f --frs              : Scale frequencies to bark, mel, or MIDI " << endl;
+	cerr << "-s --skipunreliable   : Don't print unreliable YIN values (infinity) " << endl;
 	exit(1);
 }
 
@@ -298,6 +304,7 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 //
 void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, mrs_bool playPitches)
 {
+
 	// Fill up the realvec with a sine wave
 	MarSystemManager mng;
 
@@ -353,7 +360,29 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		pitch = r(0,0);
 		rms = r1(0,0);
 		//printf("%12.12f\t%12.12f\t%12.12f\n",time,pitch,rms);
-		printf("%12.12f\n",pitch);
+
+		// Scale the pitch
+		float scaled_pitch = pitch;
+		if (frsopt == "bark") {
+		  scaled_pitch = hertz2bark(pitch);
+		}
+		if (frsopt == "mel") {
+		  scaled_pitch = hertz2mel(pitch,1);
+		}
+		if (frsopt == "midi") {
+		  scaled_pitch = hertz2pitch(pitch);
+		}
+
+		if (skipopt == false) { 
+		  printf("%12.12f\n",scaled_pitch);
+		}
+
+		if (skipopt == true) {
+		  // Check to see if pitch is a finite number (i.e. not NaN or inf).
+		  if (pitch <= DBL_MAX && pitch >= -DBL_MAX) {
+			printf("%12.12f\n",scaled_pitch);
+		  }
+		}
 
 		pitches.stretchWrite(i,pitch);
 		// sness - Just give it all a confidence of 1 for now.  You can
@@ -405,7 +434,8 @@ initOptions()
 	cmd_options.addBoolOption("playback", "p", false);
 	cmd_options.addRealOption("threshold", "t", 0.2);
 	cmd_options.addBoolOption("yin", "y", false);
-
+	cmd_options.addStringOption("frs", "f", "hertz");
+	cmd_options.addBoolOption("skipunreliable", "s", false);
 }
 
 
@@ -421,6 +451,8 @@ loadOptions()
 	plopt = cmd_options.getBoolOption("playback");
 	topt  = (float)cmd_options.getRealOption("threshold");
 	yinopt = cmd_options.getBoolOption("yin");
+	frsopt = cmd_options.getStringOption("frs");
+	skipopt = cmd_options.getBoolOption("skipunreliable");
 }
 
 
@@ -442,6 +474,11 @@ main(int argc, const char **argv)
 		printHelp(progName);
   
 	if (usageopt)
+		printUsage(progName);
+
+	// If the user didn't specify the filename to extract, show the
+	// usage information.
+	if (argc < 2)
 		printUsage(progName);
 
 	// cout << "PitchExtract windowSize = " << wopt << endl;
