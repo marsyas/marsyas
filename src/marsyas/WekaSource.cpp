@@ -482,8 +482,8 @@ void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &o
 	// else if(next == WekaFoldData::Predict && trainMode)
 	else if(next == WekaFoldData::Predict)
 		this->updControl("mrs_string/mode", "predict");
-
-	MRSASSERT((mrs_natural) row->size() == out.getCols());
+	
+	MRSASSERT((mrs_natural) row->size() == out.getRows());
 
 	for(mrs_natural ii=0; ii<(mrs_natural)row->size(); ++ii)
     {

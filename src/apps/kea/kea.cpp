@@ -27,6 +27,7 @@ string outputdir_;
 string distancematrix_;
 string classifier_;
 mrs_real minspan_;
+mrs_string trainedclassifier_;
 
 
 void 
@@ -61,7 +62,7 @@ printHelp(string progName)
   cerr << "-pr --predictcollectionfname : .mf output prediction file " << endl;
   cerr << "-prtl --predicttimeline: predicted timeline" << endl;
   cerr << "-msp  --minspan: minimum duration of predicted timeline region" << endl;
-  
+  cerr << "-trcl --trainedclassifier: plugin file for storing the trained classifier" << endl;
   exit(1);
 }
 
@@ -274,8 +275,224 @@ pca()
 
 }
 
+
 void 
-train_and_predict(mrs_string mode) 
+train_classifier() 
+{
+
+  if (wekafname_ == EMPTYSTRING) 
+  {
+		cout << "Weka .arff file not specified" << endl;
+      return;
+    }
+  
+  wekafname_  = inputdir_ + wekafname_;
+
+  cout << "Training classifier using .arff file: " << wekafname_ << endl;
+  cout << "Classifier type : " << classifier_ << endl;	
+
+  MarSystemManager mng;
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The network that we will use to train and predict
+  //
+  MarSystem* net = mng.create("Series", "series");
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The WekaSource we read the train and test .arf files into
+  //
+  net->addMarSystem(mng.create("WekaSource", "wsrc"));
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The classifier
+  //
+  MarSystem* classifier = mng.create("Classifier", "cl");
+  net->addMarSystem(classifier);
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Which classifier function to use
+  //
+  if (classifier_ == "GS")
+	net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+  if (classifier_ == "ZEROR") 
+	net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
+  if (classifier_ == "SVM")   
+    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+
+  ////////////////////////////////////////////////////////////
+  //
+  // The training file we are feeding into the WekaSource
+  //
+  net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
+  net->updControl("mrs_natural/inSamples", 1);
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Set the classes of the Summary and Classifier to be
+  // the same as the WekaSource
+  //
+  net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  net->updControl("Classifier/cl/mrs_string/mode", "train");  
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Tick over the training WekaSource until all lines in the
+  // training file have been read.
+  //
+
+
+  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+	string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
+  	net->tick();
+	net->updControl("Classifier/cl/mrs_string/mode", mode);
+  }
+
+
+  ofstream clout;
+  clout.open(trainedclassifier_.c_str());
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");    
+  
+ 
+  clout << *net << endl;
+  
+  cout << "Done training " << endl;
+	
+}
+
+
+void 
+predict(mrs_string mode) 
+{
+	
+	MarSystemManager mng;
+	
+	cout << "Predicting using " << trainedclassifier_ << endl;
+	
+	ifstream pluginStream(trainedclassifier_.c_str());
+	// MRS_WARNINGS_OFF;
+	MarSystem* net = mng.getMarSystem(pluginStream);
+	// MRS_WARNINGS_ON;
+	
+
+   vector<string> classNames;
+   string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
+   char *str = (char *)s.c_str();
+   char * pch;
+   pch = strtok (str,",");
+   classNames.push_back(pch);
+   while (pch != NULL) {
+ 	pch = strtok (NULL, ",");
+ 	if (pch != NULL)
+ 	  classNames.push_back(pch);
+   }
+
+
+  ////////////////////////////////////////////////////////////
+  //
+  // Predict the classes of the test data
+  //
+  net->updControl("WekaSource/wsrc/mrs_string/filename", twekafname_);
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");  
+  ////////////////////////////////////////////////////////////
+  //
+  // Tick over the test WekaSource until all lines in the
+  // test file have been read.
+  //
+
+  
+  ofstream prout;
+  prout.open(predictcollectionfname_.c_str());
+
+  ofstream prtout;
+  prtout.open(predicttimeline_.c_str());
+  
+  
+
+  realvec data;
+  int end=0;
+  int start=0;
+  
+  mrs_string prev_name = "";
+  mrs_string name;
+  
+  mrs_real srate;
+  
+
+
+
+  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
+   	net->tick();
+   	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
+
+	
+	if (mode == "default")
+	{
+		cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
+		cout << classNames[(int)data(0,0)] << endl;
+		prout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
+		prout << classNames[(int)data(0,0)] << endl;
+	}
+	else if (mode == "timeline")
+	{
+
+		name = classNames[(int)data(0,0)];
+		
+		if (name != prev_name)
+		{
+			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > minspan_)) // not background 
+			{
+				if (predicttimeline_ == EMPTYSTRING)
+				{
+					cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
+					cout << prev_name[0] << endl;		
+				}
+				else 
+				{
+					prtout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
+					prtout << prev_name[0] << endl;							
+				}
+				
+			}
+			start = end;
+			
+		}
+		else 
+			{
+				
+			}
+				
+		prev_name = name;
+		
+		
+	}
+	else 
+		cout << "Unsupported mode" << endl;
+	
+	//	cout << data(0,0) << endl;
+	end++;
+  }
+
+  
+  prout.close();
+  
+  // cout << "DONE" << endl;
+
+  // sness - hmm, I really should be able to delete net, but I get a 
+  // coredump when I do.  Maybe I need to destroy something else first?
+  //  delete net;
+
+
+}
+
+
+
+void 
+train_predict(mrs_string mode) 
 {
   if (wekafname_ == EMPTYSTRING) 
   {
@@ -478,7 +695,7 @@ train_and_predict(mrs_string mode)
 
 
 void 
-train()
+train_evaluate()
 {
   if (wekafname_ == EMPTYSTRING) 
     {
@@ -809,13 +1026,14 @@ initOptions()
   cmd_options_.addStringOption("testwekafname", "tw", EMPTYSTRING);
   cmd_options_.addStringOption("testcollectionfname", "tc", EMPTYSTRING);
   cmd_options_.addStringOption("predictcollectionfname", "pr", EMPTYSTRING);
-  cmd_options_.addStringOption("mode", "m", "train");
+  cmd_options_.addStringOption("mode", "m", "train_evaluate");
   cmd_options_.addStringOption("inputdir", "id", "");
   cmd_options_.addStringOption("outputdir", "od", "");
   cmd_options_.addStringOption("distancematrix", "dm", "dm.txt");
   cmd_options_.addStringOption("classifier", "cl", "SVM");
   cmd_options_.addStringOption("predicttimeline", "prtl", EMPTYSTRING);
   cmd_options_.addRealOption("minspan", "msp", 1.0);
+  cmd_options_.addStringOption("trainedclassifier", "trcl", "trained.mpl");
 }
 
 
@@ -835,14 +1053,14 @@ loadOptions()
   classifier_ = cmd_options_.getStringOption("classifier");
   predicttimeline_ = cmd_options_.getStringOption("predicttimeline");
   minspan_ = cmd_options_.getRealOption("minspan");
-  
+  trainedclassifier_ = cmd_options_.getStringOption("trainedclassifier");
 }
 
 
 int
 main(int argc, const char **argv)
 {
-  MRSDIAG("train.cpp - main");
+  MRSDIAG("kea.cpp - main");
 
   cout << "Kea - Machine Learning in Marsyas ala Weka" << endl;
 
@@ -864,8 +1082,8 @@ main(int argc, const char **argv)
 
   cout << "Mode = " << mode_ << endl;
 
-  if (mode_ == "train") 
-    train();
+  if (mode_ == "train_evaluate") 
+    train_evaluate();
   if (mode_ == "distance_matrix_MIREX")
 	  distance_matrix_MIREX();
   if (mode_ == "distance_matrix") 
@@ -875,9 +1093,15 @@ main(int argc, const char **argv)
   if (mode_ == "tags")
 	  tags();
   if (mode_ == "train_predict") 
-	  train_and_predict("default");
+	  train_predict("default");
   if (mode_ == "train_predict_timeline")
-	  train_and_predict("timeline");
+	  train_predict("timeline");
+  if (mode_ == "predict") 
+	  predict("default");
+  if (mode_ == "predict_timeline")
+	  predict("timeline");
+  if (mode_ == "train_classifier") 
+	  train_classifier();
   
   
   exit(0);
