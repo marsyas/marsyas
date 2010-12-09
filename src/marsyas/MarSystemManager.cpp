@@ -248,6 +248,7 @@
 
 #include "Inject.h"
 #include "PowerToAverageRatio.h"
+#include "MeanAbsoluteDeviation.h"
 //modifyHeader
 
 
@@ -495,6 +496,7 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("Inject", new Inject("injectpr"));
 	registerPrototype("PowerToAverageRatio", new PowerToAverageRatio("crestpr"));
+	registerPrototype("MeanAbsoluteDeviation", new MeanAbsoluteDeviation("meanabsolutedeviationpr"));
 	//modifyRegister
 
 	//***************************************************************************************
