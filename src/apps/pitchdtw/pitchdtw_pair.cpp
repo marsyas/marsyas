@@ -1,0 +1,141 @@
+//
+// pitchdtw.cpp
+//
+// Output the DTW cost of two similarity matrices
+//
+
+#include <cstdio>
+#include <vector> 
+#include "MarSystemManager.h"
+#include "CommandLineOptions.h"
+#include "SimilarityMatrix.h"
+#include "Metric2.h"
+#include "DTW.h"
+// #include "pngwriter.h"
+
+using namespace std;
+using namespace Marsyas;
+
+void usage()
+{
+  cout << "pitchdtw in1.txt in2.txt" << endl;
+}
+
+void pitchdtw(realvec input_realvec,int size1, int size2)
+{
+
+  int numObservations = 2;
+  int numSamples = input_realvec.getCols();
+
+  MarSystemManager mng;
+
+  // A series to contain everything
+  MarSystem* net = mng.create("Series", "series");
+  net->updControl("mrs_natural/inSamples", numSamples);
+  net->updControl("mrs_natural/inObservations", numObservations);
+  net->addMarSystem(mng.create("RealvecSource", "src"));
+  net->updControl("RealvecSource/src/mrs_realvec/data", input_realvec);
+
+  mrs_realvec sizes;
+  sizes.create(2);
+  sizes(0) = size1;
+  sizes(1) = size2;
+
+  MarSystem* sim = new SimilarityMatrix("sim");
+  sim->updControl("mrs_realvec/sizes",sizes);
+
+  MarSystem* met = new Metric2("met");
+  met->updControl("mrs_string/metric","euclideanDistance");
+
+  sim->addMarSystem(met);
+  net->addMarSystem(sim);
+
+
+   MarSystem* dtw = new DTW("dtw");
+   dtw->updControl("mrs_string/lastPos","end");
+   dtw->updControl("mrs_string/startPos","zero");
+   dtw->updControl("mrs_bool/weight",false);
+   dtw->updControl("mrs_string/mode","normal");
+   net->addMarSystem(dtw);
+
+  net->tick();
+
+   cout << dtw->getctrl("mrs_real/totalDistance")->to<mrs_real>() << endl;  
+}
+  
+void read_file_of_floats_into_vector(string name, vector<float> &file) {
+
+  int readChars;
+  char line[256];
+  double f;
+
+  FILE *inFile = fopen(name.c_str(), "r");
+
+  do {
+    readChars = fscanf(inFile,"%s", line );
+	if (readChars < 0) 
+	  break;
+	f = atof(line);
+	file.push_back(f);
+  } while (readChars > 0);
+
+}
+
+int main(int argc, const char **argv)
+{
+  string inFileName1;
+  string inFileName2;
+
+  vector<float> file1;
+  vector<float> file2;
+
+  realvec input_realvec;
+
+  if (argc < 2) {
+	usage();
+	exit(1);
+  } else {
+	inFileName1 = argv[1];
+	inFileName2 = argv[2];
+  }
+  
+  read_file_of_floats_into_vector(inFileName1,file1);
+  read_file_of_floats_into_vector(inFileName2,file2);
+
+  unsigned int max_size;
+
+  if (file1.size() > file2.size()) {
+	max_size = file1.size();
+  } else {
+	max_size = file2.size();
+  }
+
+   input_realvec.create(2,max_size);
+
+   // Copy both file1 and file2 into input_realvec
+   for(unsigned int i = 0; i < max_size; i++) {
+ 	if (i < file1.size()) {
+ 	  input_realvec(0,i) = file1[i];
+ 	} else {
+ 	  input_realvec(0,i) = 0;
+ 	}
+
+ 	if (i < file2.size()) {
+ 	  input_realvec(1,i) = file2[i];
+ 	} else {
+ 	  input_realvec(1,i) = 0;
+ 	}
+   }
+
+
+   pitchdtw(input_realvec,file1.size(),file2.size());
+
+  exit(0);
+
+}
+
+
+
+
+
+

@@ -17,13 +17,12 @@ using namespace Marsyas;
 
 void usage()
 {
-  cout << "pitchdtw in1.txt in2.txt" << endl;
+  cout << "pitchdtw file1.txt file2.txt file3.txt ..." << endl;
 }
 
 void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 {
   unsigned int max_size;
-  realvec input_realvec;
 
   MarSystemManager mng;
 
@@ -50,10 +49,14 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
   // A vector of distances between all files
   vector<vector<mrs_real> > distances;
+  vector<mrs_real> tmp_distances;
+
+  mrs_realvec sizes;
+  sizes.create(2);
 
   // Find the DTW distance between all pairs of files
   for (unsigned int i = 0; i < data.size(); i++) {
-	vector<mrs_real> tmp_distances;
+	tmp_distances.clear();
   	for (unsigned int j = 0; j < data.size(); j++) {
 		// Which of the two files is longer?
 		if (data[i].size() > data[j].size()) {
@@ -61,10 +64,11 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 		} else {
 			max_size = data[j].size();
 		}
-		
-		// Create a realvec to hold both pairs of data
-		input_realvec.create(2,max_size);
 
+		// Create a realvec to hold both pairs of data
+		realvec input_realvec;
+		input_realvec.create(2,max_size);
+		
 		// Copy both data[i] and data[j] into input_realvec.  If one
 		// file is shorter than the other, pad it with zeros.
  		for(unsigned int k = 0; k < max_size; k++) {
@@ -83,8 +87,6 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
 		// Update the SimilarityMatrix with the sizes
 		// of the two input vectors
-		mrs_realvec sizes;
-		sizes.create(2);
 		sizes(0) = data[i].size();
 		sizes(1) = data[j].size();
 		sim->updControl("mrs_realvec/sizes",sizes);
@@ -106,7 +108,8 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 		net->process(input_realvec,output_realvec);
 
 		// The distance between this pair of files
-		tmp_distances.push_back(dtw->getctrl("mrs_real/totalDistance")->to<mrs_real>());
+		mrs_real d = dtw->getctrl("mrs_real/totalDistance")->to<mrs_real>();
+		tmp_distances.push_back(d);
 	}
 	distances.push_back(tmp_distances);
   }
@@ -161,54 +164,8 @@ int main(int argc, const char **argv)
 
   // Calculate the DTW distance for all pairs of files
   pitchdtw(filenames,data);
-  
-  // string inFileName1;
-  // string inFileName2;
 
-  // vector<float> data[i][j];
-  // vector<float> data[i][k];
-
-  // realvec input_realvec;
-
-  // if (argc < 2) {
-  // 	usage();
-  // 	exit(1);
-  // } else {
-  // 	inFileName1 = argv[1];
-  // 	inFileName2 = argv[2];
-  // }
-  
-  // read_file_of_floats_into_vector(inFileName1,data[i][j]);
-  // read_file_of_floats_into_vector(inFileName2,data[i][k]);
-
-  // unsigned int max_size;
-
-  // if (data[i][j].size() > data[i][k].size()) {
-  // 	max_size = data[i][j].size();
-  // } else {
-  // 	max_size = data[i][k].size();
-  // }
-
-  //  input_realvec.create(2,max_size);
-
-  //  // Copy both data[i][j] and data[i][k] into input_realvec
-  //  for(unsigned int i = 0; i < max_size; i++) {
-  // 	if (i < data[i][j].size()) {
-  // 	  input_realvec(0,i) = data[i][j][i];
-  // 	} else {
-  // 	  input_realvec(0,i) = 0;
-  // 	}
-
-  // 	if (i < data[i][k].size()) {
-  // 	  input_realvec(1,i) = data[i][k][i];
-  // 	} else {
-  // 	  input_realvec(1,i) = 0;
-  // 	}
-  //  }
-
-
-
-  // exit(0);
+  exit(0);
 
 }
 
