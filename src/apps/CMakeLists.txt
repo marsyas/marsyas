@@ -43,6 +43,7 @@ add_subdirectory(rhythmMap)
 add_subdirectory(sound2png)
 add_subdirectory(sound2sound)
 add_subdirectory(ibt)
+add_subdirectory(pitchdtw)
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
