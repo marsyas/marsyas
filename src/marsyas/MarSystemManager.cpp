@@ -1040,7 +1040,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pitchPraat->addMarSystem(create("Windowing", "wi"));
 			pitchPraat->addMarSystem(create("AutoCorrelation", "acr"));
 			pitchPraat->updControl("AutoCorrelation/acr/mrs_natural/normalize", 1);
-			pitchPraat->updControl("AutoCorrelation/acr/mrs_real/octaveCost", 0.01); // 0.01
+			pitchPraat->updControl("AutoCorrelation/acr/mrs_real/octaveCost", 0.0);
 			pitchPraat->updControl("AutoCorrelation/acr/mrs_real/voicingThreshold", 0.3);
 			pitchPraat->linkControl("mrs_real/voicingThreshold", "AutoCorrelation/acr/mrs_real/voicingThreshold");
 			pitchPraat->addMarSystem(create("Peaker", "pkr"));
@@ -1064,6 +1064,9 @@ void MarSystemManager::registerComposite(std::string prototype)
 			highPitch = 79;
 			lowFreq = pitch2hertz(lowPitch);
 			highFreq = pitch2hertz(highPitch);
+			cout << lowFreq << endl;
+			cout << highFreq << endl;
+			
 			lowSamples =
 				hertz2samples(highFreq, pitchPraat->getctrl("mrs_real/osrate")->to<mrs_real>());
 			highSamples =

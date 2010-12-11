@@ -18,7 +18,9 @@
 
 #include "MaxArgMax.h"
 
- 
+using std::cout;
+using std::endl;
+
 using std::ostringstream;
 using std::max;
 using std::min;
@@ -70,11 +72,27 @@ MaxArgMax::myUpdate(MarControlPtr sender)
 
 void quadraticInterpolation(mrs_real *ix, mrs_real *iy, realvec& data)
 {
+	
 	mrs_natural index = (mrs_natural) *ix;
-  mrs_real d = (data(index-1)-data(index+1))/(2*(-2*data(index)+data(index-1)+data(index+1))); 
+
+	if (*iy < 0.000001) 
+	{
+		*ix = 0.0;
+		*iy = 0.0;
+	}
+	else 
+	{
+		
+	mrs_real d = (data(index-1)-data(index+1))/(2*(-2*data(index)+data(index-1)+data(index+1))); 
 	*ix += d;
 	*iy -= d*(data(index-1)-data(index+1))/4;
+	}
+	
+
+	
+
 }
+
 
 void 
 MaxArgMax::myProcess(realvec& in, realvec& out)

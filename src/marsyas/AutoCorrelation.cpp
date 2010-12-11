@@ -20,6 +20,9 @@
 #include "AutoCorrelation.h"
 #include "Windowing.h"
 
+using std::cout;
+using std::endl;
+
 using std::ostringstream;
 using namespace Marsyas;
 
@@ -141,7 +144,8 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 		//zeropad
 		for(t=inSamples_; t < fftSize_; t++)
 			scratch_(t) = 0.0;
-
+		
+		
 		//get pointer to data (THIS BREAKS ENCAPSULATION! FIXME [!])
 		mrs_real *tmp = scratch_.getData();
 		
@@ -166,7 +170,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 			re_ = sqrt(re_ * re_);
 			tmp[1] = pow(re_, k_);
 		}
-
+		
 		// Compress the magnitude spectrum and zero 
 		// the imaginary part.   
 		for (t=1; t < fftSize_/2; t++)
@@ -195,18 +199,20 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 				out(o,t) = scratch_(t)*norm_(t);
 			}
 		}
-		else
-			for (t=0; t < onSamples_; t++)  
-				out(o,t) = scratch_(t);
+		else 
+		for (t=0; t < onSamples_; t++)  
+		{
+			out(o,t) = scratch_(t);
+		}
+		
 	}
 
-
+	
 	if (ctrl_makePositive_->to<mrs_bool>())
 	{
 		out -= out.minval();
 	}
 	
-
 	if(octaveCost_) //is there a reference for this octaveCost computation [?]
 	{
 		for (o=0; o < inObservations_; o++)
@@ -224,12 +230,14 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 				out.setval(0);
 		}
 	}
+
 	if (ctrl_setr0to1_->to<mrs_bool>())
 	{
 		mrs_real myNorm = out(0,0);
 		if (myNorm > 0)
 			out	/= myNorm;
 	}
+
 	/*
 	MATLAB_PUT(in, "corr_in");
 	MATLAB_PUT(out, "corr");

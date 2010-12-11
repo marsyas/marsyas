@@ -100,7 +100,6 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
 	pitchExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
 	pitchExtractor->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	pitchExtractor->addMarSystem(mng.create("ShiftInput", "si"));
 	pitchExtractor->addMarSystem(mng.create("PitchPraat", "pitchPraat"));
 	pitchExtractor->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
@@ -115,17 +114,17 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	pitchAccumulator->updControl("mrs_natural/nTimes", contourSize);
 	pitchContour->addMarSystem(pitchAccumulator);
 	
-	// Extract the pitch contour using Accumulator 
-	// pitchContour->tick();
-	// mrs_realvec contour = pitchContour->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	// de-interleave the pitch contour
-	// for (int i=0; i < len; ++i) 
-	// {
-	// confidences(i) = contour(2*i);
-	// pitches(i) = contour(2*i+1);
-	// }
-
-
+	pitchExtractor->updControl("mrs_natural/inSamples", 1024);
+	
+	mrs_real srate = pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+	
+	ofstream ofs;
+	ofs.open("p.mpl");
+	ofs << *pitchExtractor << endl;
+	ofs.close();
+	
+	
+	
 	// Using explicit loop 
 	mrs_natural len = contourSize;
 	mrs_realvec pitches(len);
@@ -137,10 +136,10 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	    pitchExtractor->tick();
 	    pitchres = pitchExtractor->getctrl("mrs_realvec/processedData")->to<mrs_realvec>(); 
 	    confidences(i) = pitchres(0);
-	    pitches(i) = pitchres(1);
-		
-		cout << confidences(i) << endl;
-		cout << pitches(i) << endl;
+	    pitches(i) = samples2hertz(pitchres(1), srate);
+		cout << "Pitch = " << pitches(i) << endl;		
+		cout << "Confidence = " << confidences(i) << endl;
+
 		
         /*
 		  peak_in = pitchExtractor->getctrl("PitchPraat/pitchPraat/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
@@ -154,6 +153,8 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 
 	// Normalize confidence to 0-1 range
 	confidences.normMaxMin();
+	
+	
 
 	// Optionally plot the pitches 	
 #ifdef MARSYAS_MATLAB
@@ -189,6 +190,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		{
 			playback->updControl("SineSource/ss/mrs_real/frequency", pitches(i));
 			playback->updControl("Gain/g/mrs_real/gain", confidences(i));
+			playback->updControl("Gain/g/mrs_real/gain", 1.0);
 			playback->tick();
 		}
 	}
