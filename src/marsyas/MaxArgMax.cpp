@@ -74,22 +74,9 @@ void quadraticInterpolation(mrs_real *ix, mrs_real *iy, realvec& data)
 {
 	
 	mrs_natural index = (mrs_natural) *ix;
-
-	if (*iy < 0.000001) 
-	{
-		*ix = 0.0;
-		*iy = 0.0;
-	}
-	else 
-	{
-		
 	mrs_real d = (data(index-1)-data(index+1))/(2*(-2*data(index)+data(index-1)+data(index+1))); 
 	*ix += d;
 	*iy -= d*(data(index-1)-data(index+1))/4;
-	}
-	
-
-	
 
 }
 
@@ -112,6 +99,7 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 			
 			//pair indexes = peak amplitude
 			//odd indexes = peak argument
+
 			for (ki=0; ki < k; ++ki)
 			{
 				if (newmax > out(o, 2*ki))
@@ -122,8 +110,6 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 					out(o,2*ki+1) = newmax_i;
 					newmax = oldmax;
 					newmax_i = oldmax_i;
-
-					
 				}
 			}
 		}

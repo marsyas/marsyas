@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ marsyas_EXPORT mrs_real hertz2pitch(mrs_real hz);
 
 marsyas_EXPORT mrs_natural hertz2samples(mrs_real hz, mrs_real srate);
 
-marsyas_EXPORT mrs_real samples2hertz(mrs_natural samples, mrs_real srate);
 marsyas_EXPORT mrs_real samples2hertz(mrs_real samples, mrs_real srate);
+marsyas_EXPORT mrs_real samples2hertz(mrs_natural samples, mrs_real srate);
 
 marsyas_EXPORT mrs_natural time2samples(std::string time, mrs_real srate);
 marsyas_EXPORT mrs_natural time2usecs(std::string time);

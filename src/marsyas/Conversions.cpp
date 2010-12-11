@@ -34,12 +34,12 @@ Marsyas::hertz2pitch(mrs_real hz) {
 
 mrs_real
 Marsyas::samples2hertz(mrs_natural samples, mrs_real srate) {
-	return (samples == 0.0)  ? (mrs_real)0.0 : (mrs_real) (srate * 1.0) / (samples);
+	return (samples <= 0)  ? (mrs_real)0.0 : (mrs_real) (srate * 1.0) / (samples); 
 }
 
 mrs_real
 Marsyas::samples2hertz(mrs_real samples, mrs_real srate) {
-	return (samples == 0.0)  ? (mrs_real)0.0 : (mrs_real) (srate * 1.0) / (samples);
+	return (samples <= 0.001)  ? (mrs_real)0.0 : (mrs_real) (srate * 1.0) / (samples);
 }
 
 

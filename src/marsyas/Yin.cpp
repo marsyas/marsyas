@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -142,14 +142,17 @@ Yin::myProcess(realvec& in, realvec& out)
 	  period = tau-3;
 	  if(tau > 4 && (yin(c,period) < tol) && 
 		 (yin(c,period) < yin(c,period+1))) {
-		pitch = vec_quadint_min(&yin,period,1);
+		  pitch = vec_quadint_min(&yin,period,1);
 		break;
 	  }
 	}
   if (pitch < 0) {
-	pitch = vec_quadint_min(&yin,vec_min_elem(&yin),1);
+	  pitch = vec_quadint_min(&yin,vec_min_elem(&yin),1);
   }
-
-  out(0,0) = ctrl_osrate_/pitch; 
+  
+  if (pitch !=0)
+	  out(0,0) = ctrl_osrate_/pitch; 
+  else 
+	  out(0,0) = 0.0;
 
 }

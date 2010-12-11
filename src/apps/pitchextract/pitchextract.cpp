@@ -100,7 +100,11 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
 	pitchExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
 	pitchExtractor->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	pitchExtractor->addMarSystem(mng.create("PitchPraat", "pitchPraat"));
+	// pitchExtractor->addMarSystem(mng.create("PitchPraat", "pitchPraat"));
+	pitchExtractor->addMarSystem(mng.create("PitchSACF", "pitchSACF"));
+
+			 
+
 	pitchExtractor->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	mrs_natural fileSize; 
@@ -137,8 +141,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	    pitchres = pitchExtractor->getctrl("mrs_realvec/processedData")->to<mrs_realvec>(); 
 	    confidences(i) = pitchres(0);
 	    pitches(i) = samples2hertz(pitchres(1), srate);
-		cout << "Pitch = " << pitches(i) << endl;		
-		cout << "Confidence = " << confidences(i) << endl;
+		cout << "Pitch = " << pitches(i) << "- (conf) - " << confidences(i) << endl;		
 
 		
         /*
@@ -397,7 +400,8 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 	}
 
 	len = i;
-
+	
+	
 	// Playback the pitches
 	if (playPitches) 
 	{
