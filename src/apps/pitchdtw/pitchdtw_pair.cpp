@@ -58,7 +58,12 @@ void pitchdtw(realvec input_realvec,int size1, int size2)
    dtw->updControl("mrs_string/mode","normal");
    net->addMarSystem(dtw);
 
+   cout << "in=" << input_realvec << endl;
+  cout << "sizes=" << sizes << endl;
+
   net->tick();
+
+  cout << net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
 
    cout << dtw->getctrl("mrs_real/totalDistance")->to<mrs_real>() << endl;  
 }

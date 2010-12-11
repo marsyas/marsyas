@@ -84,12 +84,15 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 			input_realvec(1,k) = 0;
 		  }
 		}
+		cout << "in=" << input_realvec << endl;
 
 		// Update the SimilarityMatrix with the sizes
 		// of the two input vectors
 		sizes(0) = data[i].size();
 		sizes(1) = data[j].size();
-		sim->updControl("mrs_realvec/sizes",sizes);
+		//sim->updControl("mrs_realvec/sizes",sizes);
+		sim->update();
+		cout << "sizes=" << sizes << endl;
 		sim->update();
 		
 		// Update the network with the size of the input data
@@ -107,9 +110,14 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
 		// Process the data
 		net->process(input_realvec,output_realvec);
+		cout << "out=" << output_realvec << endl;
+
+		cout << "**********sim" << endl;
+		cout << sim->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
 
 		// The distance between this pair of files
 		mrs_real d = dtw->getctrl("mrs_real/totalDistance")->to<mrs_real>();
+		cout << "i=" << i << "\tj=" << j << "\td=" << d << endl;
 		tmp_distances.push_back(d);
 	}
 	distances.push_back(tmp_distances);
