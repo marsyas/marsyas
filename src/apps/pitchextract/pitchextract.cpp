@@ -449,8 +449,9 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 			playback->updControl("Gain/g/mrs_real/gain", confidences(i));
 			playback->tick();
 		}
+		delete playback;
 	}
-
+	delete net;
 }
 
 

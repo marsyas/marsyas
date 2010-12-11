@@ -117,7 +117,8 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 	}
 	distances.push_back(tmp_distances);
   }
-
+  cerr << "Done with distances " << endl;
+  
 
   
 	  
@@ -128,6 +129,7 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 	  // cout << filenames[i] << " ";
 	  for (unsigned int j = 0; j < distances[i].size(); j++) {
 		  cout << distances[i][j] << " ";
+		  flush(cout);
 	  }
 	cout << endl;
   }
