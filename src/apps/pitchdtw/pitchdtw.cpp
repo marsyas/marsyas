@@ -90,7 +90,8 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 		sizes(0) = data[i].size();
 		sizes(1) = data[j].size();
 		sim->updControl("mrs_realvec/sizes",sizes);
-
+		sim->update();
+		
 		// Update the network with the size of the input data
 		int numSamples = input_realvec.getCols();
 		net->updControl("mrs_natural/inSamples", numSamples);
@@ -113,6 +114,8 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 	}
 	distances.push_back(tmp_distances);
   }
+
+  
 
   // Print out all the distances
   for (unsigned int i = 0; i < distances.size(); i++) {

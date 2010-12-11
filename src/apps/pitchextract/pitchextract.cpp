@@ -118,7 +118,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	pitchAccumulator->updControl("mrs_natural/nTimes", contourSize);
 	pitchContour->addMarSystem(pitchAccumulator);
 	
-	pitchExtractor->updControl("mrs_natural/inSamples", 1024);
+	pitchExtractor->updControl("mrs_natural/inSamples", hopSize);
 	
 	mrs_real srate = pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	
@@ -141,8 +141,9 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	    pitchres = pitchExtractor->getctrl("mrs_realvec/processedData")->to<mrs_realvec>(); 
 	    confidences(i) = pitchres(0);
 	    pitches(i) = samples2hertz(pitchres(1), srate);
-		cout << "Pitch = " << pitches(i) << "- (conf) - " << confidences(i) << endl;		
-
+		// cout << "Pitch = " << pitches(i) << "- (conf) - " << confidences(i) << endl;		
+		cout << pitches(i) << endl;
+		
 		
         /*
 		  peak_in = pitchExtractor->getctrl("PitchPraat/pitchPraat/AutoCorrelation/acr/mrs_realvec/processedData")->to<mrs_realvec>();
@@ -184,7 +185,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		playback->addMarSystem(mng.create("SineSource", "ss"));
 		playback->addMarSystem(mng.create("Gain", "g"));
 		playback->addMarSystem(mng.create("AudioSink", "dest"));
-		playback->updControl("mrs_natural/inSamples", 512);
+		playback->updControl("mrs_natural/inSamples", hopSize);
 		playback->updControl("mrs_real/israte", 44100.0);
 		playback->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updControl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
@@ -193,7 +194,6 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 		{
 			playback->updControl("SineSource/ss/mrs_real/frequency", pitches(i));
 			playback->updControl("Gain/g/mrs_real/gain", confidences(i));
-			playback->updControl("Gain/g/mrs_real/gain", 1.0);
 			playback->tick();
 		}
 	}
