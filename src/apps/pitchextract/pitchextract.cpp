@@ -150,7 +150,21 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	    confidences(i) = pitchres(0);
 	    pitches(i) = samples2hertz(pitchres(1), srate);
 		// cout << "Pitch = " << pitches(i) << "- (conf) - " << confidences(i) << endl;		
-		ofs << pitches(i) << endl;
+
+		float scaled_pitch = pitches(i);
+		if (frsopt == "bark") {
+			scaled_pitch = hertz2bark(pitches(i));
+		}
+		if (frsopt == "mel") {
+			scaled_pitch = hertz2mel(pitches(i),1);
+		}
+		if (frsopt == "midi") {
+			scaled_pitch = hertz2pitch(pitches(i));
+		}
+
+		
+
+		ofs << scaled_pitch << endl;
 		
 		
         /*

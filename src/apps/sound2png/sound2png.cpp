@@ -112,7 +112,7 @@ printHelp(string progName)
 	cerr << "-t --ticks        : how many times to tick the network" << endl;
 	cerr << "-s --start        : start in seconds " << endl;
 	cerr << "-l --length       : length in seconds " << endl;
-	cerr << "-wi --width        : width of resulting png in pixels " << endl;
+	cerr << "-wd --width        : width of resulting png in pixels " << endl;
 	cerr << "-hg --height       : height of resulting png in pixels " << endl;
 	
 	
@@ -129,8 +129,8 @@ initOptions()
 	cmd_options.addNaturalOption("hopsize", "hs", 256);
 	cmd_options.addNaturalOption("memorysize", "ms", 300);
 	cmd_options.addRealOption("gain", "g", 1.5);
-	cmd_options.addNaturalOption("lowfreq", "lf", 0);	
-	cmd_options.addNaturalOption("highfreq", "hf", 22050);
+	cmd_options.addNaturalOption("maxfreq", "mxf", 22050);	
+	cmd_options.addNaturalOption("minfreq", "mnf", 0);
 	cmd_options.addNaturalOption("ticks", "t", -1);
 	cmd_options.addNaturalOption("position", "p", 0);
 	cmd_options.addStringOption("mode" , "m", "spectrogram");
@@ -152,8 +152,8 @@ loadOptions()
 	memorySize_ = cmd_options.getNaturalOption("memorysize");
 	hopSize_ = cmd_options.getNaturalOption("hopsize");
 	gain_ = cmd_options.getRealOption("gain");
-	highFreq_ = cmd_options.getNaturalOption("highfreq");
-	lowFreq_ = cmd_options.getNaturalOption("lowfreq");
+	highFreq_ = cmd_options.getNaturalOption("maxfreq");
+	lowFreq_ = cmd_options.getNaturalOption("minfreq");
 	position_ = cmd_options.getNaturalOption("position");
 	ticks_ = cmd_options.getNaturalOption("ticks");
 	mode_ = cmd_options.getStringOption("mode");
