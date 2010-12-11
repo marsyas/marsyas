@@ -1,0 +1,19 @@
+#!/bin/bash
+
+((a=0))
+mkdir ./snippets
+for i in *.mp3; do
+        # b=$(printf "%06d\n" $a)
+	# c=${i:27} 
+	# d=${c//\//-}
+	b=$(echo ./snippets/$i)
+	mpg123 -m -r 22050 --wav temp.wav $i
+        chop 30 temp.wav 
+ 	sox chopped.au chopped.wav
+	lame --resample 22050 -m mono chopped.wav ./snippets/$i
+	rm temp.wav 
+	rm chopped.au
+	rm chopped.wav
+	# ((a++))
+	echo $b
+done

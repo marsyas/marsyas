@@ -1064,8 +1064,6 @@ void MarSystemManager::registerComposite(std::string prototype)
 			highPitch = 79;
 			lowFreq = pitch2hertz(lowPitch);
 			highFreq = pitch2hertz(highPitch);
-			cout << lowFreq << endl;
-			cout << highFreq << endl;
 			
 			lowSamples =
 				hertz2samples(highFreq, pitchPraat->getctrl("mrs_real/osrate")->to<mrs_real>());

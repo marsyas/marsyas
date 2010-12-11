@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for i in tracks/*.mp3; do
+	echo $i
+	echo "${i%mp3}wav" 
+	mpg123 -m -r 22050 --wav "${i%mp3}wav" $i
+done

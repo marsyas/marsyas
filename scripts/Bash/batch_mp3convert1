@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for i in /home/gtzan/data/sound/teligence/male_recordings/*.mp3; do
+        j=`echo "${i%mp3}wav" | sed 's/ /_/g'`
+ 
+	mpg123 -m -r 22050 --wav $j $i
+done

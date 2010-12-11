@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo Convert wav audio files to 22050 mono .au 
+for i in *.wav; do
+	j=`echo "${i%wav}au" | sed 's/ /_/g'`
+	sox $i -r 4000 -c 1 $j
+	echo processing $i $j
+done

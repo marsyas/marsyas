@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo Convert raw audio files (16000 mono) to 22050 mono .au 
+for i in *.raw; do
+	j=`echo "${i%raw}au" | sed 's/ /_/g'`
+	sox -r 16000 -c 1 -s -w $i -r 22050 -c 1 $j
+	echo processing $i $j
+done

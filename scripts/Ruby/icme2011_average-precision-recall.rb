@@ -70,6 +70,7 @@ all_lines.each_index do |index|
   # 2) Sort this array by distance
   b = a.sort_by { |n| n[:distance] }
 
+
   # 3) Calculate the average precision for each item in this list  
   total_precision = 0.0
   count = 0.0
@@ -85,10 +86,10 @@ all_lines.each_index do |index|
       bb = "%.3f" % (total_precision)
       cc = "%.3f" % (total_precision/count)
                     
-      #puts "match - current_sign=#{current_sign} b[i][:sign]=#{b[i][:sign]} count=#{count} i=#{i} v=#{aa} total_precision=#{bb} tp/count=#{cc}"
+#      puts "match - current_sign=#{current_sign} b[i][:sign]=#{b[i][:sign]} count=#{count} i=#{i} v=#{aa} total_precision=#{bb} tp/count=#{cc}"
 
-    else
-      #puts "no ma - current_sign=#{current_sign} b[i][:sign]=#{b[i][:sign]} count=#{count} i=#{i} v=#{aa} total_precision=#{bb} tp/count=#{cc}"
+ #   else
+ #     puts "no ma - current_sign=#{current_sign} b[i][:sign]=#{b[i][:sign]} count=#{count} i=#{i} v=#{aa} total_precision=#{bb} tp/count=#{cc}"
     end
   end
   average_precision = total_precision / count

@@ -57,7 +57,9 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
   // Find the DTW distance between all pairs of files
   for (unsigned int i = 0; i < data.size(); i++) {
 	tmp_distances.clear();
+	cerr << "Processing query " << i << endl;
   	for (unsigned int j = 0; j < data.size(); j++) {
+
 		// Which of the two files is longer?
 		if (data[i].size() > data[j].size()) {
 			max_size = data[i].size();
@@ -84,15 +86,12 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 			input_realvec(1,k) = 0;
 		  }
 		}
-		cout << "in=" << input_realvec << endl;
-
+		
 		// Update the SimilarityMatrix with the sizes
 		// of the two input vectors
 		sizes(0) = data[i].size();
 		sizes(1) = data[j].size();
-		//sim->updControl("mrs_realvec/sizes",sizes);
-		sim->update();
-		cout << "sizes=" << sizes << endl;
+		sim->updControl("mrs_realvec/sizes",sizes);
 		sim->update();
 		
 		// Update the network with the size of the input data
@@ -110,27 +109,26 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
 		// Process the data
 		net->process(input_realvec,output_realvec);
-		cout << "out=" << output_realvec << endl;
 
-		cout << "**********sim" << endl;
-		cout << sim->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
 
 		// The distance between this pair of files
 		mrs_real d = dtw->getctrl("mrs_real/totalDistance")->to<mrs_real>();
-		cout << "i=" << i << "\tj=" << j << "\td=" << d << endl;
 		tmp_distances.push_back(d);
 	}
 	distances.push_back(tmp_distances);
   }
 
-  
 
+  
+	  
   // Print out all the distances
   for (unsigned int i = 0; i < distances.size(); i++) {
-	cout << filenames[i] << " ";
-	for (unsigned int j = 0; j < distances[i].size(); j++) {
-	  cout << distances[i][j] << " ";
-	}
+	  mrs_string className = filenames[i].substr(0, filenames[i].find("_"));
+	  cout << className << " ";	  
+	  // cout << filenames[i] << " ";
+	  for (unsigned int j = 0; j < distances[i].size(); j++) {
+		  cout << distances[i][j] << " ";
+	  }
 	cout << endl;
   }
 
@@ -152,6 +150,7 @@ void read_file_of_floats_into_vector(string name, vector<float> &file) {
 	file.push_back(f);
   } while (readChars > 0);
 
+  fclose(inFile);
 }
 
 int main(int argc, const char **argv)
@@ -173,6 +172,8 @@ int main(int argc, const char **argv)
 	data.push_back(tmp);
   }
 
+  cerr << "Finished reading" << endl;
+  
   // Calculate the DTW distance for all pairs of files
   pitchdtw(filenames,data);
 

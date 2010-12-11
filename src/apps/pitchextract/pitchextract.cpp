@@ -23,6 +23,7 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "FileName.h" 
 #include "Collection.h"
 #include "MarSystemManager.h"
 
@@ -46,6 +47,8 @@ float topt = 0.2f;
 int yinopt = 0;
 string frsopt = "hertz";
 bool skipopt = false;
+mrs_string ofnameopt = "pitch.txt";
+
 
 void 
 printUsage(string progName)
@@ -87,9 +90,9 @@ printHelp(string progName)
 
 
 void 
-pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize, 
+pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize, 
 			 mrs_real lowPitch, mrs_real highPitch, mrs_real threshold, 
-			 mrs_bool playPitches)
+			 mrs_bool playPitches, mrs_string ofName)
 {
 	MRSDIAG("pitchextract.cpp - pitchextract");	
 
@@ -122,10 +125,10 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	
 	mrs_real srate = pitchExtractor->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 	
-	ofstream ofs;
-	ofs.open("p.mpl");
-	ofs << *pitchExtractor << endl;
-	ofs.close();
+	ofstream ofs1;
+	ofs1.open("p.mpl");
+	ofs1 << *pitchExtractor << endl;
+	ofs1.close();
 	
 	
 	
@@ -135,6 +138,11 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	mrs_realvec confidences(len);
 	mrs_realvec pitchres;
 	mrs_realvec peak_in;
+	
+	ofstream ofs;
+	ofs.open(ofName.c_str());
+	
+	
 	for (int i=0; i < contourSize; ++i) 
 	{
 	    pitchExtractor->tick();
@@ -142,7 +150,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	    confidences(i) = pitchres(0);
 	    pitches(i) = samples2hertz(pitchres(1), srate);
 		// cout << "Pitch = " << pitches(i) << "- (conf) - " << confidences(i) << endl;		
-		cout << pitches(i) << endl;
+		ofs << pitches(i) << endl;
 		
 		
         /*
@@ -158,6 +166,7 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 	// Normalize confidence to 0-1 range
 	confidences.normMaxMin();
 	
+	ofs.close();
 	
 
 	// Optionally plot the pitches 	
@@ -196,7 +205,12 @@ pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 			playback->updControl("Gain/g/mrs_real/gain", confidences(i));
 			playback->tick();
 		}
+		delete playback;
 	}
+
+
+	delete pitchExtractor;
+	
 }
 
 
@@ -307,7 +321,7 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 //
 // Use the YIN algorithm (de Chevigne) for doing pitch extraction
 //
-void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, mrs_bool playPitches)
+void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, mrs_bool playPitches, string ofName)
 {
 
 	// Fill up the realvec with a sine wave
@@ -355,6 +369,10 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 	mrs_realvec pitches(len);
 	mrs_realvec confidences(len);
 
+	ofstream ofs;
+	ofs.open(ofName.c_str());
+	
+
 	int i = 0;
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) {
 		net->tick();
@@ -379,13 +397,19 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		}
 
 		if (skipopt == false) { 
-		  printf("%12.12f\n",scaled_pitch);
+// 		  printf("%12.12f\n",scaled_pitch);
+			ofs << scaled_pitch << endl;;
+			
 		}
+
+		
 
 		if (skipopt == true) {
 		  // Check to see if pitch is a finite number (i.e. not NaN or inf).
 		  if (pitch <= DBL_MAX && pitch >= -DBL_MAX) {
-			printf("%12.12f\n",scaled_pitch);
+// 			printf("%12.12f\n",scaled_pitch);
+			ofs << scaled_pitch << endl;;
+			
 		  }
 		}
 
@@ -399,6 +423,9 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		++i;
 	}
 
+
+	ofs.close();
+	
 	len = i;
 	
 	
@@ -442,6 +469,7 @@ initOptions()
 	cmd_options.addBoolOption("yin", "y", false);
 	cmd_options.addStringOption("frs", "f", "hertz");
 	cmd_options.addBoolOption("skipunreliable", "s", false);
+	cmd_options.addStringOption("outputFile", "of", "pitch.txt");
 }
 
 
@@ -459,6 +487,7 @@ loadOptions()
 	yinopt = cmd_options.getBoolOption("yin");
 	frsopt = cmd_options.getStringOption("frs");
 	skipopt = cmd_options.getBoolOption("skipunreliable");
+	ofnameopt = cmd_options.getStringOption("outputFile");
 }
 
 
@@ -498,12 +527,36 @@ main(int argc, const char **argv)
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
 		string sfname = *sfi;
-		if (yinopt == 0) {
-			pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0);
-		} else {
-			yinpitchextract(sfname, wopt, hopt, plopt != 0);
+		FileName fn(sfname);
+		if (fn.ext() != "mf")
+		{
+			if (yinopt == 0) {
+				pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofnameopt);
+			} else {
+				yinpitchextract(sfname, wopt, hopt, plopt != 0, ofnameopt);
+			}
 		}
-
+		else 
+		{
+			Collection l;
+			l.read(sfname);
+			
+			for (unsigned int i=0; i < l.size(); i++) 
+			{
+				FileName fn(l.entry(i));
+				sfname = l.entry(i);
+				mrs_string ofname = fn.nameNoExt() + ".txt";
+				cout << ofname << endl;
+				
+				if (yinopt == 0) {
+					pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofname);
+				} else {
+					yinpitchextract(sfname, wopt, hopt, plopt != 0, ofname);
+				}
+			}
+			
+		}
+		
     }
 
     exit(0);
