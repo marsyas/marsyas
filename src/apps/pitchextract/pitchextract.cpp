@@ -44,10 +44,10 @@ int lpopt = 36;
 int upopt = 128;
 int plopt = 0;
 float topt = 0.2f;
-int yinopt = 0;
 string frsopt = "hertz";
 bool skipopt = false;
 mrs_string ofnameopt = "pitch.txt";
+mrs_string mode = "sacf";
 
 
 void 
@@ -57,8 +57,6 @@ printUsage(string progName)
 	cerr << "Usage : " << progName << "[-c collection] [-w windowSize] [-s hopSize] [-l lowerPitch] [-u upperPitch] [-t threshold] -p file1 file2 file3" << endl;
 	cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format" << endl;
 	cerr << endl; 
-	cerr << "Options:" << endl;
-	cerr << " -y - Use the YIN algorithm to determine pitches" << endl;
 	exit(1);
 }
 
@@ -82,9 +80,9 @@ printHelp(string progName)
 	cerr << "-p --hopSize          : hopSize " << endl;
 	cerr << "-l --lowerPitch       : lowerPitch " << endl;
 	cerr << "-u --upperPitch       : upperPitch " << endl;
-	cerr << "-y --yin              : Use the YIN algorithm to determine pitches" << endl;
 	cerr << "-f --frs              : Scale frequencies to bark, mel, or MIDI " << endl;
 	cerr << "-s --skipunreliable   : Don't print unreliable YIN values (infinity) " << endl;
+	cerr << "-m --mode             : Pitch extractor to use (yin,sacf,praat)" << endl;
 	exit(1);
 }
 
@@ -103,10 +101,11 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
 	pitchExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
 	pitchExtractor->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	// pitchExtractor->addMarSystem(mng.create("PitchPraat", "pitchPraat"));
-	pitchExtractor->addMarSystem(mng.create("PitchSACF", "pitchSACF"));
-
-			 
+	if (mode == "praat") {
+	  pitchExtractor->addMarSystem(mng.create("PitchPraat", "pitchPraat"));
+	} else {
+	  pitchExtractor->addMarSystem(mng.create("PitchSACF", "pitchSACF"));
+	}
 
 	pitchExtractor->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
@@ -481,10 +480,10 @@ initOptions()
 	cmd_options.addNaturalOption("upperPitch", "u", 79);
 	cmd_options.addBoolOption("playback", "p", false);
 	cmd_options.addRealOption("threshold", "t", 0.2);
-	cmd_options.addBoolOption("yin", "y", false);
 	cmd_options.addStringOption("frs", "f", "hertz");
 	cmd_options.addBoolOption("skipunreliable", "s", false);
 	cmd_options.addStringOption("outputFile", "of", "pitch.txt");
+	cmd_options.addStringOption("mode", "m", "sacf");
 }
 
 
@@ -499,10 +498,10 @@ loadOptions()
 	upopt = cmd_options.getNaturalOption("upperPitch");
 	plopt = cmd_options.getBoolOption("playback");
 	topt  = (float)cmd_options.getRealOption("threshold");
-	yinopt = cmd_options.getBoolOption("yin");
 	frsopt = cmd_options.getStringOption("frs");
 	skipopt = cmd_options.getBoolOption("skipunreliable");
 	ofnameopt = cmd_options.getStringOption("outputFile");
+	mode = cmd_options.getStringOption("mode");
 }
 
 
@@ -545,10 +544,13 @@ main(int argc, const char **argv)
 		FileName fn(sfname);
 		if (fn.ext() != "mf")
 		{
-			if (yinopt == 0) {
+			if (mode == "sacf" || mode == "praat") {
 				pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofnameopt);
-			} else {
+			} else if (mode == "yin") {
 				yinpitchextract(sfname, wopt, hopt, plopt != 0, ofnameopt);
+			} else {
+			  cout << "Unsupported pitch extraction mode (" << mode << ")" << endl;
+			  printUsage(progName);
 			}
 		}
 		else 
@@ -563,10 +565,13 @@ main(int argc, const char **argv)
 				mrs_string ofname = fn.nameNoExt() + ".txt";
 				cout << ofname << endl;
 				
-				if (yinopt == 0) {
+				if (mode == "sacf" || mode == "praat") {
 					pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofname);
-				} else {
+				} else if (mode == "yin") {
 					yinpitchextract(sfname, wopt, hopt, plopt != 0, ofname);
+				} else {
+				  cout << "Unsupported pitch extraction mode (" << mode << ")" << endl;
+				  printUsage(progName);
 				}
 			}
 			
