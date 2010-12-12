@@ -12,6 +12,7 @@ import datetime
 import commands
 import re
 import numpy as np
+import math
 
 #
 # Normalize each element in the list to the range of 0 to 1
@@ -25,7 +26,10 @@ def normalize_list(input):
     min = a.min()
     max = a.max()
     for m in input:
-        output.append((m - min) / (max-min))
+        result = (m - min) / (max-min)
+        if math.isnan(result):
+            result = 0
+        output.append(result)
 
     return output
 
@@ -69,7 +73,7 @@ for filename in filenames:
     a = np.array(data)
     all_data.append(a)
 
-print all_data    
+#print all_data    
 #
 # Calculate min, max, median, mean, std. dev of all files
 #
@@ -93,7 +97,6 @@ norm_max_list = normalize_list(max_list)
 norm_mean_list = normalize_list(mean_list)
 norm_median_list = normalize_list(median_list)
 norm_std_list = normalize_list(std_list)
-
 #
 # Reconstruct the original data with these new normalized values
 #
@@ -111,7 +114,7 @@ for i in range(0,len(norm_min_list)):
 #
 output = open(output_filename, 'w')
 for i in range(0,len(all_normed_data)):
-    output.write("%s " % filenames[i])
+    output.write("%s " % os.path.basename(filenames[i]))
     for j in range(0,len(all_normed_data)):
         dist = np.linalg.norm(all_normed_data[i]-all_normed_data[j])
         output.write("%f " % (dist))
