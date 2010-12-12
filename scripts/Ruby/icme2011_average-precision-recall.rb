@@ -58,6 +58,7 @@ global_precision = []
 # For each line in all_lines:
 puts "Average Precision Recall for all calls"
 average_precision_vector = []
+top_one = []
 all_lines.each_index do |index|
 
   # 1) Build up an Array containing hashes with both the name of the
@@ -85,11 +86,18 @@ all_lines.each_index do |index|
       aa = "%.3f" % ((count / (i.to_f)))
       bb = "%.3f" % (total_precision)
       cc = "%.3f" % (total_precision/count)
+      if (i == 1)
+        top_one << 1
+      end
                     
-#      puts "match - current_sign=#{current_sign} b[i][:sign]=#{b[i][:sign]} count=#{count} i=#{i} v=#{aa} total_precision=#{bb} tp/count=#{cc}"
+      #puts "match - current_sign=#{current_sign} b[i][:sign]=#{b[i][:sign]} count=#{count} i=#{i} v=#{aa} total_precision=#{bb} tp/count=#{cc}"
 
- #   else
- #     puts "no ma - current_sign=#{current_sign} b[i][:sign]=#{b[i][:sign]} count=#{count} i=#{i} v=#{aa} total_precision=#{bb} tp/count=#{cc}"
+    else
+      if (i == 1)
+        top_one << 0
+      end
+
+      #puts "no ma - current_sign=#{current_sign} b[i][:sign]=#{b[i][:sign]} count=#{count} i=#{i} v=#{aa} total_precision=#{bb} tp/count=#{cc}"
     end
   end
   average_precision = total_precision / count
@@ -121,8 +129,12 @@ end
 average_precision = total_precision / global_precision.length
 puts "#{average_precision}"
 
+puts "top_one"
+pp top_one
 
-
-  
-
-
+total_top_one = 0
+top_one.each do |n|
+  total_top_one += n
+end
+average_top_one = total_top_one.to_f / top_one.size().to_f
+puts "Average top_one = #{average_top_one}"
