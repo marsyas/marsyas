@@ -24,6 +24,8 @@ using namespace Marsyas;
 CollectionFileSource::CollectionFileSource(mrs_string name):AbsSoundFileSource("CollectionFileSource", name)
 {
 	addControls();
+	iHasData_ = false;
+	iNewFile_ = true;
 }
 
 CollectionFileSource::CollectionFileSource(const CollectionFileSource& a):AbsSoundFileSource(a)
@@ -33,6 +35,7 @@ CollectionFileSource::CollectionFileSource(const CollectionFileSource& a):AbsSou
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	iHasData_ = false;
+	iNewFile_ = true;
 }
 
 CollectionFileSource::~CollectionFileSource()
@@ -248,6 +251,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		isrc_->process(in,out);
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
+		iNewFile_ = true;
 
  		if (cindex_ > (mrs_natural)col_.size()-2)  
  		{
@@ -295,12 +299,16 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 				
 				ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
 				ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
+				iNewFile_ = true;
 			}
 			else //no more files in collection
 			{
 				setctrl("mrs_bool/hasData", false);
 				hasData_ = false;
 			}
+		} else {
+			if (isrc_->getctrl("mrs_natural/pos")->to<mrs_natural>() > 0)
+				iNewFile_ = false;
 		}
 
 		isrc_->process(in,out);

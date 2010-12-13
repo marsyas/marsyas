@@ -64,6 +64,8 @@ namespace Marsyas
    - \b mrs_string/labelNames [r] : labels (for collections)
    - \b mrs_string/currentHasData [r] : is there any audio data
      remaining (for collections)
+   - \b mrs_string/currentCollectionNewFile [r] : the current tick
+     began reading a new file (for collections)
 
 
    \see SoundFileSourceHopper for generating an audio slices from
@@ -91,7 +93,7 @@ namespace Marsyas
 			MarControlPtr ctrl_nLabels_;
 			MarControlPtr ctrl_labelNames_;
 			MarControlPtr ctrl_currentHasData_;
-		
+			MarControlPtr ctrl_currentCollectionNewFile_;
 		
 			MarControlPtr ctrl_rewindToPos_;
 
