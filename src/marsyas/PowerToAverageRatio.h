@@ -28,13 +28,10 @@ namespace Marsyas
 	\ingroup Analysis
 	\brief PowerToAverageRatio (or Power-to-Average Ratio) of a window
 
-	This calculates the PAR for a complete window; it is
-similar to SCF (Spectral Crest Factor), however SCF calculates the
-PAR in various frequency bands.
+	This calculates the PAR for a complete window of samples;
+it is similar to SCF (Spectral Crest Factor), however SCF
+calculates the PAR in various frequency bands of observations.
 
-	Controls:
-	- \b mrs_bool/cancelDCoffset [rw] : removes a DC offset
-	  (the mean of samples) before calculating the power.
 */
 
 class marsyas_EXPORT PowerToAverageRatio: public MarSystem
@@ -47,9 +44,6 @@ private:
 	/// Reads changed controls and sets up variables if necessary.
 	void myUpdate(MarControlPtr sender);
 
-
-	/// MarControlPtr for the gain control
-	MarControlPtr ctrl_cancelDCoffset_;
 
 public:
 	/// PowerToAverageRatio constructor.

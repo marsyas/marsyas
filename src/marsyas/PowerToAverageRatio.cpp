@@ -30,9 +30,6 @@ PowerToAverageRatio::PowerToAverageRatio(mrs_string name) : MarSystem("PowerToAv
 
 PowerToAverageRatio::PowerToAverageRatio(const PowerToAverageRatio& a) : MarSystem(a)
 {
-	/// All member MarControlPtr have to be explicitly reassigned in
-	/// the copy constructor.
-	ctrl_cancelDCoffset_ = getctrl("mrs_bool/cancelDCoffset");
 }
 
 
@@ -50,9 +47,6 @@ void
 PowerToAverageRatio::addControls()
 {
 	/// Add any specific controls needed by this MarSystem.
-
-	addctrl("mrs_bool/cancelDCoffset", false);
-	setctrlState("mrs_bool/cancelDCoffset", true);
 
 }
 
@@ -80,29 +74,21 @@ PowerToAverageRatio::myProcess(realvec& in, realvec& out)
 	/// Iterate over the observations and samples and do the processing.
 	for (o = 0; o < inObservations_; o++)
 	{
-		mrs_real dc_offset = 0.0;
-		if (ctrl_cancelDCoffset_->isTrue()) {
-			// find mean sample value (i.e. the DC)
-			for (t = 0; t < inSamples_; t++)
-				dc_offset += in(o,t);
-			dc_offset /= inSamples_;
-		}
 		mrs_real samp_max = 0.0;
 		mrs_real rms = 0.0;
 		for (t = 0; t < inSamples_; t++)
 		{
-			mrs_real samp_abs = fabs(in(o,t) - dc_offset);
+			mrs_real samp_abs = fabs(in(o,t));
 			if (samp_max < samp_abs)
 				samp_max = samp_abs;
 			rms += samp_abs*samp_abs;
 		}
 		if (inSamples_ > 0)
-			rms = sqrt( rms/inSamples_);
+			rms = sqrt( rms/inSamples_ );
 
-		mrs_real par = 0.0;
 		if (rms != 0)
-			par = samp_max / rms;
-
-		out(o, 0) = par;
+			out(o,0) = samp_max / rms;
+		else
+			out(o,0) = 0.0;
 	}
 }
