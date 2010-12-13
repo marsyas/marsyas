@@ -250,6 +250,7 @@
 #include "PowerToAverageRatio.h"
 #include "MeanAbsoluteDeviation.h"
 #include "NormalizeAbs.h"
+#include "RemoveObservations.h"
 //modifyHeader
 
 
@@ -499,6 +500,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("PowerToAverageRatio", new PowerToAverageRatio("crestpr"));
 	registerPrototype("MeanAbsoluteDeviation", new MeanAbsoluteDeviation("meanabsolutedeviationpr"));
 	registerPrototype("NormalizeAbs", new NormalizeAbs("normalizeabspr"));
+	registerPrototype("RemoveObservations", new RemoveObservations("removeobservationspr"));
 	//modifyRegister
 
 	//***************************************************************************************
