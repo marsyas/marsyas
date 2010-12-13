@@ -130,7 +130,7 @@ average_precision = total_precision / global_precision.length
 puts "#{average_precision}"
 
 puts "top_one"
-pp top_one
+# pp top_one
 
 total_top_one = 0
 top_one.each do |n|
