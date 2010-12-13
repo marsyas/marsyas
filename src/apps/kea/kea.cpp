@@ -373,9 +373,18 @@ predict(mrs_string mode)
 	cout << "Predicting using " << trainedclassifier_ << endl;
 	
 	ifstream pluginStream(trainedclassifier_.c_str());
-	// MRS_WARNINGS_OFF;
+    MRS_WARNINGS_OFF;
 	MarSystem* net = mng.getMarSystem(pluginStream);
-	// MRS_WARNINGS_ON;
+	MRS_WARNINGS_ON;
+
+
+	if (twekafname_ == EMPTYSTRING) 
+	{
+		MRSERR("No test .arff file specified. Use the -tw option");
+		cout << "No test .arff file specified. Use the -tw option" << endl;
+		
+		return;
+	}
 	
 
    vector<string> classNames;
@@ -390,6 +399,9 @@ predict(mrs_string mode)
  	  classNames.push_back(pch);
    }
 
+
+   
+		   
 
   ////////////////////////////////////////////////////////////
   //
@@ -449,12 +461,12 @@ predict(mrs_string mode)
 				if (predicttimeline_ == EMPTYSTRING)
 				{
 					cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-					cout << prev_name[0] << endl;		
+					cout << prev_name << endl;		
 				}
 				else 
 				{
 					prtout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-					prtout << prev_name[0] << endl;							
+					prtout << prev_name << endl;							
 				}
 				
 			}

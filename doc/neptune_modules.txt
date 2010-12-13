@@ -1,5 +1,5 @@
-Last updated: December 6 2010
-Marsyas svn revision: 4321
+Last updated: December 13 2010
+Marsyas svn revision: 4347
 
 List of available modules in Marsyas for use in CANARIE/NEPTUNE workflow system: 
 (* denotes documented modules). These modules are all based on command-line tools 
@@ -12,13 +12,13 @@ is used for training and the prediction happens after training.
 The ability to store a trained classifier is available but not 
 yet documented. 
 
-Visualization Modules: *Spectrogram, *Waveform, SimilarityMatrix
+Visualization Modules: *Spectrogram, *Waveform, SelfSimilarityMatrix
 Audio Modules: *LowPass, *BandPass, *HighPass, *Normalize, Resample, NoiseRemove
 Feature Extraction Modules: *SpectralCentroid, *SpectralRolloff, *SpectralFlux, 
 *MelFrequencyCepstralCoefficients, *ZeroCrossings 
 Feature Transformation Modules: PCA 
-Classification Modules: Gaussian, SVM, KNN, ZeroR 
-Prediction Modules: *TimeLine, *ClassificationStatistics, Frames
+Train   Classification Modules:  *Gaussian, *SVM, *ZeroR 
+Predict Classification Modules: *TimeLine, *ClassificationStatistics,*Frames
 
 
 Name of module: Spectrogram 
@@ -58,12 +58,12 @@ Parameters:
     -Possible values: any possitive real number 
     -Default value: 1.5 
     -Description: The gain to multiply the spectrogram for plotting 
--Name: highfreq 
+-Name: maxfreq 
     -Units: Hertz 
     -Possible values: 100-22050 (for 44100 sampling rate) or any frequency less than half the sampling frequency 
     -Default value: 22050 
     -Description: the highest frequency to plot on the spectrogram 
--Name: lowfreq 
+-Name: minfreq 
     -Units: Hertz 
     -Possible values: 100-22050 (for 44100 sampling rate) or any frequency less than half the sampling frequency 
     -Default value: 0 
@@ -315,6 +315,12 @@ Parameters:
     -Default value: 0.5 
     -Description: Apply gain to audio signal so that the maximum
 	window rms is 0.5 
+
+
+
+
+
+
 
 
 
@@ -634,22 +640,129 @@ Parameters:
 
 
 
+Name of module: Gaussian 
+Type of module: Classifier 
+Description: Trains a classifier uisng the provided .arff file 
+Code: marsyas/src/apps/kea 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/kea.html#kea
+Default commandline: kea -m train  -cl GS 
+Examples: 
+> kea --help 
+> kea -m train_classifier -w train.arff -cl GS -trcl trained.mpl 
+> kea --mode train_classifier --wekafname train.arff -cl GS --trainedclassifier trained.mpl
+
+Input: An input .arff file for training the classifier 
+Output: A trained classifier in the Marsyas plugin format (.mpl) 
+
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: wekafname   
+    -Units: no units
+    -Possible values: string
+    -Default value: ""
+    -Description: The name of the .arff filename containing the
+labeled feature vectors used for training the classifier 
+-Name: trainedclassifier 
+  -Units: no units 
+  -Possible values: string 
+  -Default value: ""
+  -Description: The name of the file for storing the trained
+  classifier in Marsyas plugin format (.mpl) 
+
+
+
+
+Name of module: SupportVectorMachine
+Type of module: Classifier 
+Description: Trains a classifier uisng the provided .arff file 
+Code: marsyas/src/apps/kea 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/kea.html#kea
+Default commandline: kea -m train  -cl SVM
+Examples: 
+> kea --help 
+> kea -m train_classifier -w train.arff -cl SVM -trcl trained.mpl 
+> kea --mode train_classifier --wekafname train.arff -cl SVM --trainedclassifier trained.mpl
+
+Input: An input .arff file for training the classifier 
+Output: A trained classifier in the Marsyas plugin format (.mpl) 
+
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: wekafname   
+    -Units: no units
+    -Possible values: string
+    -Default value: ""
+    -Description: The name of the .arff filename containing the
+labeled feature vectors used for training the classifier 
+-Name: trainedclassifier 
+  -Units: no units 
+  -Possible values: string 
+  -Default value: ""
+  -Description: The name of the file for storing the trained
+  classifier in Marsyas plugin format (.mpl) 
+
+
+Name of module: ZeroR
+Type of module: Classifier 
+Description: Trains a classifier uisng the provided .arff file 
+Code: marsyas/src/apps/kea 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/kea.html#kea
+Default commandline: kea -m train  -cl ZEROR
+Examples: 
+> kea --help 
+> kea -m train_classifier -w train.arff -cl ZEROR -trcl trained.mpl 
+> kea --mode train_classifier --wekafname train.arff -cl ZEROR --trainedclassifier trained.mpl
+
+Input: An input .arff file for training the classifier 
+Output: A trained classifier in the Marsyas plugin format (.mpl) 
+
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: wekafname   
+    -Units: no units
+    -Possible values: string
+    -Default value: ""
+    -Description: The name of the .arff filename containing the
+labeled feature vectors used for training the classifier 
+-Name: trainedclassifier 
+  -Units: no units 
+  -Possible values: string 
+  -Default value: ""
+  -Description: The name of the file for storing the trained
+  classifier in Marsyas plugin format (.mpl) 
+
+
 
 
 
 
 Name of module: TimeLine
-Type of module: Prediction   
-Description: Trains a classifier using a provided .arff training file and 
-creates a predicted time-line for a test .arff file. 
+Type of module: Predict Classification   
+Description: Uses a trained classifier (in .mpl format) to create a
+predicted time-line for a test .arff file. 
 Code: marsyas/src/apps/kea 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/kea.html#kea
-Default commandline: kea -m train_predict_timeline  
+Default commandline: kea -m predict_timeline  
 Examples: 
 > kea --help 
-> kea -m train_predict_timeline -w train.arff -tw test.arff -prtl test_timeline.txt -cl SVM 
-> kea --mode train_predict_timeline --wekafname train.arff --testwekafname test.arff --predicttimeline test_timeline.txt 
+> kea -m predict_timeline -trcl trained.mpl -tw test.arff -prtl test_timeline.txt 
+> kea --mode predict_timeline --trainedclassifier trained.mpl --testwekafname test.arff --predicttimeline test_timeline.txt 
 
 Input : An input .arff file for training a classifier and a test .arff file 
 for predicting a timeline in audacity format.  
@@ -682,22 +795,92 @@ feature vectors that need to be classified in order to predict the
 output timeline
 
 
--Name: classifier 
+-Name: predicttimeline 
+    -Units: no units 
+    -Possible values: string 
+    -Default value: ""
+    -Description: The output timeline file
+
+-Name: trainedclassifier 
+  -Units: no units 
+  -Possible values: string 
+  -Default value: ""
+  -Description: The name of the file for storing the trained
+  classifier in Marsyas plugin format (.mpl) 
+
+
+-Name: label 
     -Units: no units
-    -Possible values: SVM or GS or ZEROR
-    -Default value: SVM
-    -Description: The type of classifier to use. SVM is a linear SVM
-trained using sequential minimal optimization and GS is a simple Naive
-Bayes Classifier where each class is represented as a single
-Gaussian with a diagonal covariance matrix. ZEROR is a trivial 
-classifier that classify everything based on the label with the most 
-training instances. 
+    -Possible values: any of the labels of the time-line 
+    -Default: the second label of the timeline  
+    -Description: Select for which label to output the predicted
+timeline 
+
+-Name: minspan 
+    -Units: seconds 
+	-Possible values: any positive real 
+    -Default value: 1 second 
+	-Description: the minimum duration that a region in the predicted
+timeline can span 
+
+
+
+
+
+Name of module: Frames
+Type of module: Predict Classification   
+Description: Uses a trained classifier (in .mpl format) to predict
+individual frames of audio 
+Code: marsyas/src/apps/kea 
+Documentation: 
+http://marsyas.info/docs/manual/marsyas-user/kea.html#kea
+Default commandline: kea -m predict
+Examples:
+> kea --help 
+> kea -m predict -trcl trained.mpl -tw test.arff 
+> kea --mode predict --trainedclassifier trained.mpl --testwekafname test.arff  
+
+Input : An input .arff file for training a classifier and a test .arff file 
+for predicting a timeline in audacity format.  
+
+Output: Individual classification decisions per frame 
+
+
+
+Parameters: 
+-Name: verbose 
+    -Units: no units 
+    -Possible values: true or false 
+    -Default value: false 
+    -Description: Turn on/off verbose ouput at stdout 
+-Name: wekafname   
+    -Units: no units
+    -Possible values: string
+    -Default value: ""
+    -Description: The name of the .arff filename containing the
+labeled feature vectors used for training the classifier 
+
+-Name: testwekafname
+   -Units: no units 
+   -Possible values: string
+   -Default value: ""
+   -Description: The name of the .arff filename containing the 
+feature vectors that need to be classified in order to predict the
+output timeline
+
 
 -Name: predicttimeline 
     -Units: no units 
     -Possible values: string 
     -Default value: ""
     -Description: The output timeline file
+
+-Name: trainedclassifier 
+  -Units: no units 
+  -Possible values: string 
+  -Default value: ""
+  -Description: The name of the file for storing the trained
+  classifier in Marsyas plugin format (.mpl) 
 
 
 -Name: label 
@@ -718,7 +901,7 @@ timeline can span
 
 
 Name of module: ClassificationStatistics
-Type of module: Prediction   
+Type of module: Predict Classification 
 Description: Trains a classifier using a provided .arff training file and 
 shows classification statistics using 10-fold cross-validation
 Code: marsyas/src/apps/kea 

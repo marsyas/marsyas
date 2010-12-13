@@ -1,0 +1,70 @@
+
+
+As promised we have updated the documentation with enough modules to build a prototype work-flow system.
+Currently we have implemented/written documentation for 4 audio modules, 5 feature extraction modules,
+2 train_classify modules, and 2 visualization modules. About 5-6 additional modules are already implemented in command-line form but we need to complete their documentation and polish them. 6 of the modules already have associated unit/regression tests. This should be more than sufficient to start building a workflow system. Ideally you should also include components in MATLAB so that we can mix and match at least two different frameworks (Marsyas and MATLAB). The associated neptune/canarie specific documentation is about 800 lines of text with pointers
+to the much larger Marsyas user manual (~160 pages).
+
+These modules should be sufficient to create a large number of possible network topologies. As a starter I think
+the most obvious ones are Series (single output->single input) and Fanout (single output->multiple inputs).
+
+Here are some example networks/topologies that you could use as scenarios that are actually also
+useful (I provide them in English, diagram, and expression form). In all cases all the parameters of the
+individual modules should be controllable on the web and they all imply a sound source (a .wav file) at the start of processing that is specified through some interface for searching the NEPTUNE/VENUS hydrophone files.
+They can easily be realized using the provided modules and files in the command-line.
+
+1) Normalize the audio then filter with a band-pass filter to enhance a particular frequency band
+and then calculate the spectrogram.
+
+Normalize-->BandPassFilter->Spectrogram
+
+Series(Normalize,BandPassFilter,Spectrogram)
+
+
+2) Normalize the audio then filter with both a high pass and a band-pass to enhance different frequency
+bands and then calculate both the time domain waveform and the spectrogram.
+
+
+                                                   |---> TimeWaveform
+                   |--->HighPassFilter-| -- > Spectrogram
+Normalize--|
+                   |--->BandPassFilter-|->TimeWaveform
+                                                    |->Spectrogram
+
+
+Series(Normalize, Fanout(Series(HighPassFilter, Fanout(TimeWaveform, Spectrogram)), Series(BandPassFilter), Fanout(TimeWaveform,Spectrogram))))
+
+
+3) Extract the SpectralCentroid and MelFrequencyCepstralCoefficients and then using both an SVM classifier and
+a Gaussian classifier calculate ClassificationStatistics and predict a TimeLine
+                                                                                     |->ClassificationStatistics
+                                                               |->Gaussian -|->TimeLine
+    | MelFrequencyCepstralCoefficients --|
+    |                                                          |                |-->ClassificationStatistcs
+    |                                                           |->SVM--|-->TimeLine
+ --|
+     |                                                                              |->ClassificationStatistics
+     |                                                         |->Gaussian -|->TimeLine
+    | SpectralCentroid-----------------|
+    |                                                          |                |-->ClassificationStatistcs
+    |                                                           |->SVM--|-->TimeLine
+ --|
+
+stats1 = Fanout(ClassificationStatistcs, Timeline)
+stats2 = Fanout(ClassificationStatistcs, Timeline)
+stats3 = Fanout(ClassificationStatistcs, Timeline)
+stats4 = Fanout(ClassificationStatistcs, Timeline)
+
+class1 = Series(Gaussian, stats1)
+class2 = Series(SVM, stats2)
+class3 = Series(Gaussian, stats3)
+class4 = Series(SVM, stats4)
+
+melBranch = Series(MelFrequencyCepstralCoefficients, Fanout(class1, class2))
+ctdBranch = Series(SpectralCentroid, Fanout(class3, class4))
+
+Fanout(melBrand, ctdBranch)
+
+
+4) As an example of mixing a MATLAB module you could use the emd.m module in MATLAB provided
+by Farook as pre-processing before applying any of the above network topologies. 
