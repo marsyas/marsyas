@@ -251,6 +251,7 @@
 #include "MeanAbsoluteDeviation.h"
 #include "NormalizeAbs.h"
 #include "RemoveObservations.h"
+#include "SpectralFlatnessAllBands.h"
 //modifyHeader
 
 
@@ -501,6 +502,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("MeanAbsoluteDeviation", new MeanAbsoluteDeviation("meanabsolutedeviationpr"));
 	registerPrototype("NormalizeAbs", new NormalizeAbs("normalizeabspr"));
 	registerPrototype("RemoveObservations", new RemoveObservations("removeobservationspr"));
+	registerPrototype("SpectralFlatnessAllBands", new SpectralFlatnessAllBands("spectralflatnessallbandspr"));
 	//modifyRegister
 
 	//***************************************************************************************
