@@ -173,11 +173,13 @@ Fanout::myUpdate(MarControlPtr sender)
 
 	if (marsystemsSize_ != 0)
 	{
+		mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
 		//propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
 		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
 		marsystems_[0]->setctrl("mrs_real/israte", israte_);
 		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
+		marsystems_[0]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
 		marsystems_[0]->update();
 
 		// update dataflow component MarSystems in order
@@ -188,6 +190,10 @@ Fanout::myUpdate(MarControlPtr sender)
 			onObservations += marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 			localIndices_(0) = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 			oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
+			mrs_natural localStabilizingDelay = marsystems_[0]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
+			if (highestStabilizingDelay < localStabilizingDelay)
+				highestStabilizingDelay = localStabilizingDelay;
+
 		}
 		for (mrs_natural i=1; i < marsystemsSize_; ++i)
 		{
@@ -195,6 +201,7 @@ Fanout::myUpdate(MarControlPtr sender)
 			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
 			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[i-1]->getctrl("mrs_real/israte"));
 			marsystems_[i]->setctrl("mrs_string/inObsNames", marsystems_[0]->getctrl("mrs_string/inObsNames"));
+			marsystems_[i]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
 			marsystems_[i]->update(sender);
 			if (enabled(i))
 			{
@@ -202,6 +209,9 @@ Fanout::myUpdate(MarControlPtr sender)
 				localIndices_(i) = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 
 				oss << marsystems_[i]->getctrl("mrs_string/onObsNames");
+				mrs_natural localStabilizingDelay = marsystems_[i]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
+				if (highestStabilizingDelay < localStabilizingDelay)
+					highestStabilizingDelay = localStabilizingDelay;
 			}
 		}
 
@@ -210,6 +220,7 @@ Fanout::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObservations_, onObservations);
 		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate")->to<mrs_real>());
 		setctrl(ctrl_onObsNames_, oss.str());
+		setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
 
 		// update buffers between components
 		if ((mrs_natural)slices_.size() < marsystemsSize_)

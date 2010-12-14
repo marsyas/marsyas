@@ -53,6 +53,8 @@ MarSystem::MarSystem(mrs_string type, mrs_string name)
 	osrate_ = 0.0;
 	israte_ = 0.0;
 	
+	inStabilizingDelay_ = 0;
+	onStabilizingDelay_ = 0;
 
 	tonSamples_ = 0;
 	tonObservations_ = 0;
@@ -60,9 +62,12 @@ MarSystem::MarSystem(mrs_string type, mrs_string name)
 	tinObservations_ = 0;
 	tosrate_ = 0.0;
 	tisrate_ = 0.0;
+	tinStabilizingDelay_ = 0;
+	tonStabilizingDelay_ = 0;
 	tonObsNames_ = "";
 	onObsNames_ = "";
 	
+	addToStabilizingDelay_ = 0;
 
 
 	isComposite_ = false;
@@ -96,6 +101,8 @@ MarSystem::MarSystem(const MarSystem& a)
 	onObservations_ = 0;
 	inSamples_ = 0;
 	israte_ = 0.0;
+	inStabilizingDelay_ = 0;
+	onStabilizingDelay_ = 0;
 	
 	onSamples_ = 0;
 	tonObsNames_ = "";
@@ -107,8 +114,11 @@ MarSystem::MarSystem(const MarSystem& a)
 	tinObservations_ = 0;
 	tosrate_ = 0.0;
 	tisrate_ = 0.0;
-	
+	tinStabilizingDelay_ = 0;
+	tonStabilizingDelay_ = 0;
 
+	addToStabilizingDelay_ = 0;
+	
 
 	MATLABscript_ = a.MATLABscript_;
 
@@ -139,6 +149,8 @@ MarSystem::MarSystem(const MarSystem& a)
 	ctrl_mute_ = getctrl("mrs_bool/mute");
 	ctrl_active_ = getctrl("mrs_bool/active");
 	ctrl_processedData_ = getctrl("mrs_realvec/processedData");
+	ctrl_inStabilizingDelay_ = getctrl("mrs_natural/inStabilizingDelay");
+	ctrl_onStabilizingDelay_ = getctrl("mrs_natural/onStabilizingDelay");
 
 	//clone children (if any) => mutexes [?]
 	isComposite_ = a.isComposite_;
@@ -279,17 +291,23 @@ MarSystem::addControls()
 	setctrlState(ctrl_israte_, true);
 	addctrl("mrs_string/inObsNames", ",", ctrl_inObsNames_);
 	setctrlState(ctrl_inObsNames_, true);
+	addctrl("mrs_natural/inStabilizingDelay", 0, ctrl_inStabilizingDelay_);
+	setctrlState(ctrl_inStabilizingDelay_, true);
 
 	//output pin controls (stateless)
 	addctrl("mrs_natural/onSamples", MRS_DEFAULT_SLICE_NSAMPLES, ctrl_onSamples_);
 	addctrl("mrs_natural/onObservations", MRS_DEFAULT_SLICE_NOBSERVATIONS, ctrl_onObservations_);
 	addctrl("mrs_real/osrate", MRS_DEFAULT_SLICE_SRATE, ctrl_osrate_);
 	addctrl("mrs_string/onObsNames", ",", ctrl_onObsNames_);
+	addctrl("mrs_natural/onStabilizingDelay", 0, ctrl_onStabilizingDelay_);
+	setctrlState(ctrl_onStabilizingDelay_, true);
 
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
+	inStabilizingDelay_ = ctrl_inStabilizingDelay_->to<mrs_natural>();
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
+	onStabilizingDelay_ = ctrl_onStabilizingDelay_->to<mrs_natural>();
 
 	//other controls:
 	addctrl("mrs_bool/debug", false, ctrl_debug_);		//no debug by default
@@ -559,6 +577,8 @@ MarSystem::checkFlow(realvec& in, realvec& out)
 		MRSWARN("inSamples_ = " << inSamples_);
 		MRSWARN("onObservations_ = " << onObservations_);
 		MRSWARN("onSamples_ = " << onSamples_);
+		MRSWARN("inStabilizingDelay_ = " << inStabilizingDelay_);
+		MRSWARN("onStabilizingDelay_ = " << onStabilizingDelay_);
 		MRSWARN("Input  Slice Rows = " << irows_ );
 		MRSWARN("Input  Slice Cols = " << icols_ );
 		MRSWARN("Output Slice Rows = " << orows_ );
@@ -656,17 +676,27 @@ MarSystem::update(MarControlPtr sender)
 	tonSamples_ = onSamples_;
 	tosrate_ = osrate_;
 	tonObsNames_ = onObsNames_;
+	tinStabilizingDelay_ = inStabilizingDelay_;
+	tonStabilizingDelay_ = onStabilizingDelay_;
 
 	//sync input member variables
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
 	israte_ = ctrl_israte_->to<mrs_real>();
 	inObsNames_ = ctrl_inObsNames_->to<mrs_string>();
+	inStabilizingDelay_ = ctrl_inStabilizingDelay_->to<mrs_natural>();
 	//sync output member variables
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 	osrate_ = ctrl_osrate_->to<mrs_real>();
 	onObsNames_ = ctrl_onObsNames_->to<mrs_string>();
+	onStabilizingDelay_ = ctrl_onStabilizingDelay_->to<mrs_natural>();
+
+	// do this before myUpdate() in case it needs to be
+	// overridden, i.e. for a Composite
+	ctrl_onStabilizingDelay_->setValue(
+		ctrl_inStabilizingDelay_->to<mrs_natural>()
+		+ addToStabilizingDelay_, NOUPDATE);
 
 	//call derived class specific update
 	myUpdate(sender);
@@ -676,11 +706,13 @@ MarSystem::update(MarControlPtr sender)
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
 	israte_ = ctrl_israte_->to<mrs_real>();
 	inObsNames_ = ctrl_inObsNames_->to<mrs_string>();
+	inStabilizingDelay_ = ctrl_inStabilizingDelay_->to<mrs_natural>();
 	//sync output member variables
 	onObservations_ = ctrl_onObservations_->to<mrs_natural>();
 	onSamples_ = ctrl_onSamples_->to<mrs_natural>();
 	osrate_ = ctrl_osrate_->to<mrs_real>();
 	onObsNames_ = ctrl_onObsNames_->to<mrs_string>();
+	onStabilizingDelay_ = ctrl_onStabilizingDelay_->to<mrs_natural>();
 
 	//check active status
 	bool active = ctrl_active_->isTrue();

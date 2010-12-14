@@ -30,11 +30,13 @@ Flux::Flux(mrs_string name):MarSystem("Flux",name)
 	diff_ = 0.0;
 	flux_ = 0.0;
 	max_ = 0.0;
+	addToStabilizingDelay_ = 1;
 }
 
 Flux::Flux(const Flux& a) : MarSystem(a)
 {
 	ctrl_mode_ = getctrl("mrs_string/mode");
+	addToStabilizingDelay_ = 1;
 }
 
 Flux::~Flux()

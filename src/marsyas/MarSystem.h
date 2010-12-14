@@ -73,6 +73,13 @@ Controls:  (these are inherited by all MarSystems)
   Not support on all MarSystems (yet).
 - \b mrs_bool/active [rw] : used to put all internal threads to sleep.
   (experimental)
+
+- \b mrs_natural/inStabilizingDelay [rw] : number of input ticks
+  before output is stable.  Constant value for each network; any
+  MarSystem wanting to track "stabilization" is responsible for
+  counting its own ticks.
+- \b mrs_natural/onStabilizingDelay [rw] : number of ticks before
+  output is stable.
 */
 
 
@@ -128,24 +135,28 @@ protected:
 	mrs_natural inSamples_;
 	mrs_real israte_;
 	mrs_string inObsNames_;
+	mrs_natural inStabilizingDelay_;
 
 	//out flow member vars
 	mrs_natural onObservations_;
 	mrs_natural onSamples_;
 	mrs_real osrate_;
 	mrs_string onObsNames_;
+	mrs_natural onStabilizingDelay_;
 
 	//temporary in flow vars
 	mrs_natural tinObservations_;
 	mrs_natural tinSamples_;
 	mrs_real		tisrate_;
 	mrs_string	tinObsNames_;
+	mrs_natural tinStabilizingDelay_;
 
 	//temporary out flow vars
 	mrs_natural tonObservations_;
 	mrs_natural tonSamples_;
 	mrs_real		tosrate_;
 	mrs_string	tonObsNames_;
+	mrs_natural tonStabilizingDelay_;
 
 	mrs_natural irows_;
 	mrs_natural icols_;
@@ -161,6 +172,8 @@ protected:
 	mrs_natural count_;
 
 	bool active_;
+
+	mrs_natural addToStabilizingDelay_; /// value which is added to inStabilizingDelay to produce onStabilizingDelay.  Defaults to 0.
 
 	 /// is true while inside ::update() -> used for children to check if an update came from their parent
 	bool isUpdating_;
@@ -407,10 +420,12 @@ public:
 	MarControlPtr ctrl_inObservations_;
 	MarControlPtr ctrl_israte_;
 	MarControlPtr ctrl_inObsNames_;
+	MarControlPtr ctrl_inStabilizingDelay_;
 	MarControlPtr ctrl_onSamples_;
 	MarControlPtr ctrl_onObservations_;
 	MarControlPtr ctrl_osrate_;
 	MarControlPtr ctrl_onObsNames_;
+	MarControlPtr ctrl_onStabilizingDelay_;
 	MarControlPtr ctrl_debug_;
 	MarControlPtr ctrl_mute_;
 	MarControlPtr ctrl_active_;

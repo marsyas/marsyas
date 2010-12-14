@@ -63,6 +63,7 @@ Series::myUpdate(MarControlPtr sender)
 		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
 		marsystems_[0]->setctrl("mrs_real/israte", israte_);
 		marsystems_[0]->setctrl("mrs_string/inObsNames", inObsNames_);
+		marsystems_[0]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
 		marsystems_[0]->update();
 
 		// update dataflow component MarSystems in order 
@@ -76,6 +77,8 @@ Series::myUpdate(MarControlPtr sender)
 									marsystems_[i-1]->ctrl_onSamples_);
 			marsystems_[i]->setctrl(marsystems_[i]->ctrl_israte_, 
 									marsystems_[i-1]->ctrl_osrate_);
+			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inStabilizingDelay_, 
+									marsystems_[i-1]->ctrl_onStabilizingDelay_);
 			marsystems_[i]->update();
 		}
 	  
@@ -84,6 +87,7 @@ Series::myUpdate(MarControlPtr sender)
 		updControl(ctrl_onSamples_, marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
 		updControl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
 		updControl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
+		updControl(ctrl_onStabilizingDelay_, marsystems_[marsystemsSize_-1]->ctrl_onStabilizingDelay_, NOUPDATE);
 	  
 		for (mrs_natural i=0; i< marsystemsSize_-1; ++i)
 		{

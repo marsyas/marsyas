@@ -75,6 +75,9 @@ ShiftInput::myUpdate(MarControlPtr sender)
 	if (hopSize_ < winSize_)
 	{
 		outSavedData_.stretch(ctrl_inObservations_->to<mrs_natural>(), winSize_ - hopSize_);
+		addToStabilizingDelay_ = ceil(winSize_ / hopSize_) - 1;
+	} else {
+		addToStabilizingDelay_ = 0;
 	}
 
 	// Update the output stream format.
