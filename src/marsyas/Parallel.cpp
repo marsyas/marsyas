@@ -52,9 +52,11 @@ void Parallel::myUpdate(MarControlPtr sender)
 {
 	if (marsystemsSize_ != 0) 
 	{
+		mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
 		//propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inSamples", inSamples_);
 		marsystems_[0]->setctrl("mrs_real/israte", israte_);
+		marsystems_[0]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
 
 		mrs_string inObsName;
 		mrs_string temp;
@@ -68,6 +70,9 @@ void Parallel::myUpdate(MarControlPtr sender)
 
 		mrs_natural inObservations = marsystems_[0]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 		mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+		mrs_natural localStabilizingDelay = marsystems_[0]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
+		if (highestStabilizingDelay < localStabilizingDelay)
+			highestStabilizingDelay = localStabilizingDelay;
 
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
@@ -76,6 +81,7 @@ void Parallel::myUpdate(MarControlPtr sender)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
+			marsystems_[i]->setctrl("mrs_natural/inStabilizingDelay", inStabilizingDelay_);
 
 		
 			inObsName = inObsNames.substr(0, inObsNames.find(","));
@@ -88,6 +94,9 @@ void Parallel::myUpdate(MarControlPtr sender)
 
 			inObservations += marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 			onObservations += marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+			localStabilizingDelay = marsystems_[0]->getctrl("mrs_natural/onStabilizingDelay")->to<mrs_natural>();
+			if (highestStabilizingDelay < localStabilizingDelay)
+				highestStabilizingDelay = localStabilizingDelay;
 		}
 
 		//forward flow propagation
@@ -95,6 +104,7 @@ void Parallel::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObservations_, onObservations);
 		setctrl(ctrl_osrate_, marsystems_[0]->getctrl("mrs_real/osrate"));
 		setctrl(ctrl_onObsNames_, oss.str());
+		setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
 
 		// update buffers for children MarSystems
 		if((mrs_natural)slices_.size() < 2*marsystemsSize_) 
