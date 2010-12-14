@@ -43,6 +43,13 @@ namespace Marsyas
    - \b mrs_bool/inject    [w]  : trigger injection of  data to .arff output out of dataflow
    - \b mrs_string/comment [w]  : inject string to .arff output of of dataflow triggered by inject control
    file.
+   - \b mrs_bool/onlyStable [rw] : do not write "unreliable"
+     ticks to disk.  "unreliable" means ticks such as the very
+     beginning of a ShiftInput before the window is filled.
+   - \b mrs_bool/resetStable [w] : if you have set
+     onlyStable, then set this to true whenever the input changes
+     significantly (i.e. reading a new file).  This control will
+     automatically be set to false in the next tick().
 */
 
 
@@ -79,8 +86,12 @@ private:
 	MarControlPtr ctrl_filename_;
 	MarControlPtr ctrl_currentlyPlaying_;
 
+	MarControlPtr ctrl_onlyStable_;
+	MarControlPtr ctrl_resetStable_;
 
 	mrs_string prev_playing_;
+
+	mrs_natural stabilizingTicks_;
 
 public:
 	/// WekaSink constructor.

@@ -24,6 +24,7 @@ using namespace Marsyas;
 WekaSink::WekaSink(mrs_string name) : MarSystem("WekaSink",name)
 {
 	mos_ = NULL;
+	stabilizingTicks_ = 0;
 	addControls();
 }
 
@@ -40,6 +41,7 @@ WekaSink::~WekaSink()
 WekaSink::WekaSink(const WekaSink& a) : MarSystem(a)
 {
 	mos_ = NULL;
+	stabilizingTicks_ = 0;
 
 	ctrl_regression_ = getControl("mrs_bool/regression");
 	ctrl_putHeader_ = getControl("mrs_bool/putHeader");
@@ -52,7 +54,8 @@ WekaSink::WekaSink(const WekaSink& a) : MarSystem(a)
 	ctrl_inject_ = getControl("mrs_bool/inject");
 	ctrl_injectComment_ = getControl("mrs_string/injectComment");
 	ctrl_injectVector_ = getControl("mrs_realvec/injectVector");
-
+	ctrl_onlyStable_ = getControl("mrs_bool/onlyStable");
+	ctrl_resetStable_ = getControl("mrs_bool/resetStable");
 }
 
 MarSystem*
@@ -85,6 +88,11 @@ WekaSink::addControls()
 	setctrlState(ctrl_injectComment_, true);
 	addctrl("mrs_realvec/injectVector", realvec(), ctrl_injectVector_);
 	setctrlState(ctrl_injectVector_, true);
+
+	addctrl("mrs_bool/onlyStable", false, ctrl_onlyStable_);
+	setctrlState(ctrl_onlyStable_, true);
+	addctrl("mrs_bool/resetStable", false, ctrl_resetStable_);
+	setctrlState(ctrl_resetStable_, true);
 }
 
 void
@@ -235,6 +243,11 @@ WekaSink::myUpdate(MarControlPtr sender)
 	}
 	precision_ = ctrl_precision_->to<mrs_natural>();
 	downsample_ = ctrl_downsample_->to<mrs_natural>();
+
+	if (ctrl_resetStable_->isTrue()) {
+		stabilizingTicks_ = 0;
+		ctrl_resetStable_->setValue(false, NOUPDATE);
+	}
 }
 
 void
@@ -252,6 +265,26 @@ WekaSink::myProcess(realvec& in, realvec& out)
 			}
 		}
 		return;
+	}
+
+	// do the increment before the potential return!
+	stabilizingTicks_++;
+	if (ctrl_onlyStable_->isTrue())
+	{
+		// yes, we want <= because we incremented it above.
+		if (stabilizingTicks_ <= ctrl_inStabilizingDelay_->to<mrs_natural>())
+		{
+			// just copy input to output
+			for (o=0; o < inObservations_; o++)
+			{
+				for (t = 0; t < inSamples_; t++)
+				{
+					out(o,t) =  in(o,t);
+				}
+			}
+			// do not write anything to file; just bail
+			return;
+		}
 	}
 
 	// Counter for handling the decimation (see ctrl_downsample).

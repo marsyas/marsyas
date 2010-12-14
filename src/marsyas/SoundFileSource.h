@@ -62,10 +62,12 @@ namespace Marsyas
    - \b mrs_natural/currentLabel [r] : current label of file played
    - \b mrs_natural/nLabels [r] : number of labels
    - \b mrs_string/labelNames [r] : labels (for collections)
-   - \b mrs_string/currentHasData [r] : is there any audio data
+   - \b mrs_bool/currentHasData [r] : is there any audio data
      remaining (for collections)
-   - \b mrs_string/currentCollectionNewFile [r] : the current tick
+   - \b mrs_bool/currentCollectionNewFile [r] : the current tick
      began reading a new file (for collections)
+   - \b mrs_bool/startStable [r] : the current tick should begin a
+     new stabilization count (for WekaSink resetStable).
 
 
    \see SoundFileSourceHopper for generating an audio slices from
@@ -94,6 +96,7 @@ namespace Marsyas
 			MarControlPtr ctrl_labelNames_;
 			MarControlPtr ctrl_currentHasData_;
 			MarControlPtr ctrl_currentCollectionNewFile_;
+			MarControlPtr ctrl_startStable_;
 		
 			MarControlPtr ctrl_rewindToPos_;
 
