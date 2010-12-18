@@ -48,6 +48,11 @@ def plot_figure(pluginName):
 		
 	outData1 = net.getControl("FlowThru/tempoInduction/Sum/hsum/mrs_realvec/processedData")
 	outData2 = net.getControl("FlowThru/tempoInduction/Peaker/pkr1/mrs_realvec/processedData")
+
+	outData3 = net.getControl("Series/onset_strength/mrs_realvec/processedData");
+
+	print outData3.to_realvec()
+
 	plot(linspace(0,200, outData1.to_realvec().getSize()), outData1.to_realvec(), label="BeatHistogram")
 	plot(linspace(0,200, outData2.to_realvec().getSize()), outData2.to_realvec(), label="Tempo Candidates")
 	xlabel("Tempo (BPM)")
@@ -56,6 +61,17 @@ def plot_figure(pluginName):
 	legend()
 	
  	savefig('monitor.ps');
+
+
+	figure()
+
+
+	plot(outData3.to_realvec())
+
+	xlabel("Analysis Frames")
+	ylabel("Onset Strength") 
+	# legend()
+	savefig('onsets.ps')
 	
  	show()
 	
