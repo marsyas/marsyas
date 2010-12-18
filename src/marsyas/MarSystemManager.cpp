@@ -1408,6 +1408,18 @@ MarSystemManager::create(std::string marsystemname)
 		return create(marsystemname, marsystemname + "_unknown");
 }
 
+
+MarSystem* 
+MarSystemManager::loadFromFile(std::string filename)
+{
+	ifstream ifs(filename.c_str());
+	MarSystem* net;
+	net = getMarSystem(ifs);
+	return net;
+}
+
+
+
 MarSystem*
 MarSystemManager::getMarSystem(istream& is, MarSystem *parent)
 {

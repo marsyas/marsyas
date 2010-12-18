@@ -779,12 +779,6 @@ Parameters:
     -Possible values: true or false 
     -Default value: false 
     -Description: Turn on/off verbose ouput at stdout 
--Name: wekafname   
-    -Units: no units
-    -Possible values: string
-    -Default value: ""
-    -Description: The name of the .arff filename containing the
-labeled feature vectors used for training the classifier 
 
 -Name: testwekafname
    -Units: no units 
@@ -853,12 +847,6 @@ Parameters:
     -Possible values: true or false 
     -Default value: false 
     -Description: Turn on/off verbose ouput at stdout 
--Name: wekafname   
-    -Units: no units
-    -Possible values: string
-    -Default value: ""
-    -Description: The name of the .arff filename containing the
-labeled feature vectors used for training the classifier 
 
 -Name: testwekafname
    -Units: no units 

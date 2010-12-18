@@ -63,6 +63,8 @@ int helpopt;
 int usageopt;
 int verboseopt;
 int audiosynthopt;
+mrs_real thresholdopt;
+
 
 void 
 printUsage(string progName)
@@ -90,6 +92,8 @@ printHelp(string progName)
 	cerr << "-h --help       : display this information " << endl;
 	cerr << "-v --verbose    : verbose output " << endl;
 	cerr << "-as --audiosynth: synthesize onsets and mix with original sound" << endl;
+	cerr << "-th --threshold : a positive floating number for thresholding the novelty function" << endl;
+	
 	exit(1);
 }
 
@@ -100,6 +104,7 @@ initOptions()
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addBoolOption("verbose", "v", false);
 	cmd_options.addBoolOption("audiosynth", "as", false);
+	cmd_options.addRealOption("threshold", "th", 0.1);
 }
 
 void 
@@ -109,6 +114,7 @@ loadOptions()
 	usageopt = cmd_options.getBoolOption("usage");
 	verboseopt = cmd_options.getBoolOption("verbose");
 	audiosynthopt = cmd_options.getBoolOption("audiosynth");
+	thresholdopt = cmd_options.getRealOption("threshold");
 }
 
 void 
@@ -193,13 +199,18 @@ detect_onsets(string sfName)
 
 	mrs_natural winSize = 2048;//2048;
 	mrs_natural hopSize = 512;//411;
+
+
+	// mrs_natural winSize = 4096;//2048;
+	// mrs_natural hopSize = 1024;//411;
+
 	mrs_natural lookAheadSamples = 6;
-	mrs_real thres = 0.0;
+	mrs_real thres = thresholdopt;
 
 	mrs_real textureWinMinLen = 0.050; //secs
 	mrs_natural minTimes = (mrs_natural) (textureWinMinLen*fs/hopSize); //12;//onsetWinSize+1;//15;
 	// cout << "MinTimes = " << minTimes << " (i.e. " << textureWinMinLen << " secs)" << endl;
-	mrs_real textureWinMaxLen = 20.000; //secs
+	mrs_real textureWinMaxLen = 60.000; //secs
 	mrs_natural maxTimes = (mrs_natural) (textureWinMaxLen*fs/hopSize);//1000; //whatever... just a big number for now...
 	// cout << "MaxTimes = " << maxTimes << " (i.e. " << textureWinMaxLen << " secs)" << endl;
 
@@ -295,7 +306,10 @@ detect_onsets(string sfName)
 			onsetnet->tick();
 			timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 			cout << timestamps_samples / fs << endl; //in seconds
-			outFile << timestamps_samples / fs << endl;
+			outFile << timestamps_samples / fs << "\t";
+			outFile << (timestamps_samples / fs)+1 << "\t";
+			outFile << "w" << endl;
+			
 		}
 		
 		cout << "Done writing " << outFileName << endl;

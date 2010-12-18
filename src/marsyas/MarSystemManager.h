@@ -80,7 +80,7 @@ public:
 	MarSystem* create(std::string type, std::string name);
 	MarSystem* create(std::string fullname);
 	MarSystem* getMarSystem(std::istream& is, MarSystem *parent=NULL);
-
+	MarSystem* loadFromFile(std::string fname);
 	std::map<std::string, MarSystem*> getWorkingSet(std::istream& is);
 
 	bool isRegistered (std::string name);

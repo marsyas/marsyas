@@ -21,6 +21,7 @@ class MarSystemManager {
                 /* Create a MarSystem of a given <type> having the given <name>. */
                 MarSystem *create(std::string,std::string);
 		MarSystem *create(std::string);
+		MarSystem *loadFromFile(std::string);
 		void registerPrototype(std::string, MarSystem*);
 
                 /* Get a list of all prototypes in this MarSystemManager */
