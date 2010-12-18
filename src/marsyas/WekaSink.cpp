@@ -25,6 +25,7 @@ WekaSink::WekaSink(mrs_string name) : MarSystem("WekaSink",name)
 {
 	mos_ = NULL;
 	stabilizingTicks_ = 0;
+	resetStable_ = false;
 	addControls();
 }
 
@@ -244,10 +245,8 @@ WekaSink::myUpdate(MarControlPtr sender)
 	precision_ = ctrl_precision_->to<mrs_natural>();
 	downsample_ = ctrl_downsample_->to<mrs_natural>();
 
-	if (ctrl_resetStable_->isTrue()) {
-		stabilizingTicks_ = 0;
-		ctrl_resetStable_->setValue(false, NOUPDATE);
-	}
+	resetStable_ = ctrl_resetStable_->to<mrs_bool>();
+
 }
 
 void
@@ -268,11 +267,15 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	}
 
 	// do the increment before the potential return!
-	stabilizingTicks_++;
+	if (resetStable_) {
+		stabilizingTicks_ = 0;
+	} else {
+		stabilizingTicks_++;
+	}
+
 	if (ctrl_onlyStable_->isTrue())
 	{
-		// yes, we want <= because we incremented it above.
-		if (stabilizingTicks_ <= ctrl_inStabilizingDelay_->to<mrs_natural>())
+		if (stabilizingTicks_ < ctrl_inStabilizingDelay_->to<mrs_natural>())
 		{
 			// just copy input to output
 			for (o=0; o < inObservations_; o++)
