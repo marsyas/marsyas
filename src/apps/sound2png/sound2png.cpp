@@ -1026,6 +1026,130 @@ html_spectrogram(string inFileName)
 }
 
 
+void 
+selfSimilarity(string fname, string outfname) 
+{
+	
+	cout << "Calculating the self similarity matrix of " << fname << endl;
+
+	MarSystemManager mng;
+	
+
+	MarSystem* featureNet = mng.create("Series/featureNet");
+	featureNet->addMarSystem(mng.create("SoundFileSource/src"));
+	featureNet->addMarSystem(mng.create("MixToMono/mix2mono"));
+	featureNet->addMarSystem(mng.create("Rms/rms"));
+	featureNet->addMarSystem(mng.create("RealvecSink/rdest"));
+	
+	featureNet->updControl("SoundFileSource/src/mrs_string/filename", fname);
+	featureNet->updControl("mrs_natural/inSamples", 1024);
+	
+	
+	for (int i = 0; i < 128; i++) 
+		featureNet->tick();
+	
+
+	mrs_realvec rms_data = featureNet->getctrl("RealvecSink/rdest/mrs_realvec/data")->to<mrs_realvec>();
+	
+
+	cout << rms_data << endl;
+
+	mrs_natural rms_height = 32;
+	
+	
+	#ifdef MARSYAS_PNG 
+	pngwriter png1(rms_data.getCols(),rms_height, 0, "rms.png"); 
+	png1.invert();
+
+	rms_data.normMaxMin();
+  
+	for (int i=0; i < rms_data.getCols(); ++i)
+    {
+		png1.line(i, 0, i, rms_data(0,i) * rms_height, 0.0, 0.0, 1.0);
+	}
+  
+	png1.close();
+#endif 
+
+	MarSystem* simNet = mng.create("Series/simnet");
+	simNet->updControl("mrs_natural/inSamples", rms_data.getCols());
+	simNet->updControl("mrs_natural/inObservations", 1);
+	simNet->addMarSystem(mng.create("RealvecSource", "src"));
+	simNet->updControl("RealvecSource/src/mrs_realvec/data", rms_data);
+	
+	MarSystem* sim = mng.create("SelfSimilarityMatrix/sim");
+	sim->updControl("mrs_string/normalize", "MinMax");
+	
+	MarSystem* met = mng.create("Metric/met");
+	met->updControl("mrs_string/metric", "euclideanDistance");
+	sim->addMarSystem(met);
+	simNet->addMarSystem(sim);
+	
+	simNet->tick();
+
+	mrs_realvec similarity_output = 
+		simNet->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+	
+	cout << similarity_output << endl;
+	
+
+
+#ifdef MARSYAS_PNG 
+	pngwriter png_rms(rms_height+rms_data.getCols(), rms_height+rms_data.getCols(), 0, "simMatrix.png");
+  
+	png_rms.invert();
+	
+	// Find max and min
+	double max = MINREAL;
+	double min = MAXREAL;
+	for (int r=0; r < similarity_output.getRows(); ++r) {
+		for (int c=0; c < similarity_output.getCols(); ++c) {
+			if (similarity_output(r,c) < min)
+				min = similarity_output(r,c);
+			if (similarity_output(r,c) > max)
+				max = similarity_output(r,c);
+		}
+	}
+  
+	double colour;
+	// Make a png of the similarity matrix
+	for (int r=0; r < similarity_output.getRows(); ++r) {
+		for (int c=0; c < similarity_output.getCols(); ++c) {
+			colour = 1.0 - ((similarity_output(r,c) - min) / (max - min));
+			png_rms.plot(rms_height+c,rms_height+r,colour,colour,colour);
+		}
+	}
+
+	for (int i=0; i < rms_data.getCols(); ++i)
+    {
+		png_rms.line(rms_height+i, 0, rms_height+i, rms_data(0,i) * rms_height, 0.0, 0.0, 1.0);
+		png_rms.line(0, rms_height+i , rms_data(0,i) * rms_height, rms_height+i, 0.0, 0.0, 1.0);
+	}
+
+
+	
+	mrs_natural pngLength;
+	mrs_natural pngHeight;
+	
+	if (width_ !=-1) 
+		pngLength = width_;
+	if (height_ != -1) 
+		pngHeight = height_;
+	
+	if ((width_ !=-1)||(height_ != -1))
+	{
+		png_rms.scale_wh(pngLength, pngHeight);
+	}
+	
+	png_rms.close();
+	
+	
+#endif 
+
+
+}
+
+
 
 
 void fftHistogram(string inFileName)
@@ -1174,6 +1298,13 @@ main(int argc, const char **argv)
 		fftHistogram(files[0]);
 		exit(0);
 	}
+
+	if (mode_ == "selfsimilarity") 
+	{
+		selfSimilarity(files[0], files[1]);
+		exit(0);
+	}
+	
 
 	if (mode_ == "neptune")
 	{

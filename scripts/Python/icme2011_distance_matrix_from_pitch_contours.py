@@ -27,8 +27,8 @@ def normalize_list(input):
     max = a.max()
     for m in input:
         result = (m - min) / (max-min)
-        if math.isnan(result):
-            result = 0
+        #if math.isnan(result):
+        #    result = 0
         output.append(result)
 
     return output
