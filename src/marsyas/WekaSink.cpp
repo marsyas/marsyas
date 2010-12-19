@@ -25,7 +25,6 @@ WekaSink::WekaSink(mrs_string name) : MarSystem("WekaSink",name)
 {
 	mos_ = NULL;
 	stabilizingTicks_ = 0;
-	resetStable_ = false;
 	addControls();
 }
 
@@ -93,7 +92,6 @@ WekaSink::addControls()
 	addctrl("mrs_bool/onlyStable", false, ctrl_onlyStable_);
 	setctrlState(ctrl_onlyStable_, true);
 	addctrl("mrs_bool/resetStable", false, ctrl_resetStable_);
-	setctrlState(ctrl_resetStable_, true);
 }
 
 void
@@ -245,8 +243,6 @@ WekaSink::myUpdate(MarControlPtr sender)
 	precision_ = ctrl_precision_->to<mrs_natural>();
 	downsample_ = ctrl_downsample_->to<mrs_natural>();
 
-	resetStable_ = ctrl_resetStable_->to<mrs_bool>();
-
 }
 
 void
@@ -266,15 +262,14 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		return;
 	}
 
-	// do the increment before the potential return!
-	if (resetStable_) {
-		stabilizingTicks_ = 0;
-	} else {
-		stabilizingTicks_++;
-	}
-
 	if (ctrl_onlyStable_->isTrue())
 	{
+		// do the increment before the potential return!
+		if (ctrl_resetStable_->isTrue()) {
+			stabilizingTicks_ = 0;
+		} else {
+			stabilizingTicks_++;
+		}
 		if (stabilizingTicks_ < ctrl_inStabilizingDelay_->to<mrs_natural>())
 		{
 			// just copy input to output

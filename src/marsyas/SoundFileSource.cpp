@@ -436,13 +436,17 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 
 		if (src_->getType() == "CollectionFileSource") {
 			CollectionFileSource *coll = (CollectionFileSource*)src_;
-			ctrl_currentHasData_->setValue(coll->iHasData_);
-			ctrl_currentCollectionNewFile_->setValue(coll->iNewFile_);
+			ctrl_currentHasData_->setValue(coll->iHasData_,
+				NOUPDATE);
+			ctrl_currentCollectionNewFile_->setValue(coll->iNewFile_,
+				NOUPDATE);
 			if ( !(coll->iHasData_) ||
 			      (coll->iNewFile_)) {
-				ctrl_startStable_->setValue((mrs_bool)true);
+				ctrl_startStable_->setValue((mrs_bool)true,
+					NOUPDATE);
 			} else {
-				ctrl_startStable_->setValue((mrs_bool)false);
+				ctrl_startStable_->setValue((mrs_bool)false,
+					NOUPDATE);
 			}
 		} else {
 			ctrl_currentHasData_->setValue(src_->hasData_);
