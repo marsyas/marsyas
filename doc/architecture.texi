@@ -18,8 +18,8 @@ in @ref{Programming MarSystems}.
 @menu
 * Architecture overview::       
 * Implicit patching::           
-* MarSystem composites:: 
-* Linking of controls (MarControls links)::       
+* MarSystem composites::        
+* Linking of controls::         
 * Scheduling::                  
 @end menu
 
@@ -178,7 +178,7 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 
 
 
-@node MarSystem composites, Scheduling, Implicit patching, Architecture concepts
+@node MarSystem composites, Linking of controls, Implicit patching, Architecture concepts
 @section MarSystem composites
 
 @WANTED{ descriptions of composites, add the other composites }
@@ -431,8 +431,8 @@ times the size of the number of samples that were input.  So, since we
 set the inSamples of the network to 256, the number of samples output
 by the Acccumulator would be 2560.
 
-@node Linking of controls (MarControls links),  , MarSystem composites, Architecture concepts
-@section Linking of controls (MarControls links)
+@node Linking of controls, Scheduling, MarSystem composites, Architecture concepts
+@section Linking of controls 
 
 THIS SECTION WAS JUST A COPY-PASTE FROM A LONG EMAIL FROM THE DEVELOPERS MAILING LIST - STILL NEEDS A BIT OF REVISION, BUT ALREADY PROVIDES IMPORTANT INFORMATION ABOUT THE LINKING OF CONTROLS IN MARSYAS (lgmartins)
 
@@ -547,7 +547,7 @@ Although not so usefull as the former version of unlinking, there are some situa
 As a conclusion, if when constructing networks of linked controls in Marsyas we take into mind the importance of the linking order, it's really easy to construct semantically meaninful links that will allow easy reconfiguration of MarSystem networks. Actually, this is a mandatory feature if we want in the future to have MarSystem insertion/deletion at runtime, without messing up all the linked controls in the network.
 
 
-@node Scheduling,  , MarSystem composites, Architecture concepts
+@node Scheduling,  , Linking of controls, Architecture concepts
 @section Scheduling
 
 @menu
