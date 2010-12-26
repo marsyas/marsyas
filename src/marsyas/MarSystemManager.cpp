@@ -252,6 +252,7 @@
 #include "NormalizeAbs.h"
 #include "RemoveObservations.h"
 #include "SpectralFlatnessAllBands.h"
+#include "MathPower.h"
 //modifyHeader
 
 
@@ -503,6 +504,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("NormalizeAbs", new NormalizeAbs("normalizeabspr"));
 	registerPrototype("RemoveObservations", new RemoveObservations("removeobservationspr"));
 	registerPrototype("SpectralFlatnessAllBands", new SpectralFlatnessAllBands("spectralflatnessallbandspr"));
+	registerPrototype("MathPower", new MathPower("mathpowerpr"));
 	//modifyRegister
 
 	//***************************************************************************************
