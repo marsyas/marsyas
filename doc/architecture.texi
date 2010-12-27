@@ -25,7 +25,7 @@ in @ref{Programming MarSystems}.
 
 
 
-@node Architecture overview, Implicit patching, Architecture concepts, Architecture concepts
+@node Architecture overview
 @section Architecture overview
 
 @menu
@@ -34,7 +34,7 @@ in @ref{Programming MarSystems}.
 @end menu
 
 
-@node Building MarSystems, Dataflow model, Architecture overview, Architecture overview
+@node Building MarSystems
 @subsection Building MarSystems
 
 The basic idea behind the design of Marsyas is that any audio
@@ -60,7 +60,7 @@ does the whole thing. A figure showing a block diagram-like
 presentation of this network is shown in the next section.
 
 
-@node Dataflow model,  , Building MarSystems, Architecture overview
+@node Dataflow model
 @subsection Dataflow model
 
 Marsyas follows a dataflow model of audio computation.
@@ -74,7 +74,7 @@ slices to be semantically correct.
 
 
 
-@node Implicit patching, MarSystem composites, Architecture overview, Architecture concepts
+@node Implicit patching
 @section Implicit patching
 
 @menu
@@ -84,7 +84,7 @@ slices to be semantically correct.
 @end menu
 
 
-@node Implicit patching vs. explicit patching, Implicit patching advantages, Implicit patching, Implicit patching
+@node Implicit patching vs. explicit patching
 @subsection Implicit patching vs. explicit patching
 
 Many audio analysis programs require the user to explicitly (manually)
@@ -117,7 +117,7 @@ Series(source, Fanout, destination);
 @image{images/implicit-patching,,5cm}
 
 
-@node Implicit patching advantages, Patching example of Feature extraction, Implicit patching vs. explicit patching, Implicit patching
+@node Implicit patching advantages
 @subsection Implicit patching advantages 
 
 Creating a neural network with explicit patching soon becomes
@@ -146,7 +146,7 @@ the number of bands in a filter bank without changing any code.
 
 
 
-@node Patching example of Feature extraction,  , Implicit patching advantages, Implicit patching
+@node Patching example of Feature extraction
 @subsection Patching example of Feature extraction
 
 Suppose we wish to create a typical feature extraction program:
@@ -178,7 +178,7 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 
 
 
-@node MarSystem composites, Linking of controls, Implicit patching, Architecture concepts
+@node MarSystem composites
 @section MarSystem composites
 
 @WANTED{ descriptions of composites, add the other composites }
@@ -193,7 +193,7 @@ Series1->addMarSystem(mng.create("classifier", "Classifier"));
 @end menu
 
 
-@node Series, Parallel, MarSystem composites, MarSystem composites
+@node Series
 @subsection Series
 
 @image{images/composite-series}
@@ -219,7 +219,7 @@ different stages of processing.
 
 
 
-@node Parallel, Fanout, Series, MarSystem composites
+@node Parallel
 @subsection Parallel
 
 A Parallel composite is used when you have an input with multiple
@@ -277,7 +277,7 @@ left channels of a sound source would look something like:
 
 
 
-@node Fanout, Accumulator, Parallel, MarSystem composites
+@node Fanout
 @subsection Fanout
 
 A Fanout is another composite MarSytem that, like a Parallel, contains
@@ -327,7 +327,7 @@ net->addMarSystem(filterbank);
 
 
 
-@node Accumulator, Shredder, Fanout, MarSystem composites
+@node Accumulator
 @subsection Accumulator
 
 An Accumulator MarSystem accumulates result of multiple tick process
@@ -384,7 +384,7 @@ Spectrum, and with 10 rows.  Your algorithm could then analyze this
 two-dimensional matrix to look for the audio feature you are
 investigating.
 
-@node Shredder,  , Accumulator, MarSystem composites
+@node Shredder
 @subsection Shredder
 
 A Shredder composite MarSystem does the inverse to what an Accumulator
@@ -431,7 +431,7 @@ times the size of the number of samples that were input.  So, since we
 set the inSamples of the network to 256, the number of samples output
 by the Acccumulator would be 2560.
 
-@node Linking of controls, Scheduling, MarSystem composites, Architecture concepts
+@node Linking of controls
 @section Linking of controls 
 
 THIS SECTION WAS JUST A COPY-PASTE FROM A LONG EMAIL FROM THE DEVELOPERS MAILING LIST - STILL NEEDS A BIT OF REVISION, BUT ALREADY PROVIDES IMPORTANT INFORMATION ABOUT THE LINKING OF CONTROLS IN MARSYAS (lgmartins)
@@ -446,11 +446,15 @@ When linking a control (let's say ctrl_A) to another control (ctrl_B), it's now 
 
 To do so, in marsyas pseuso-code, we would write:
 
+@example
 ctrl_A->linkTo(ctrl_B);
+@end example
 
 Or, in case we didn't have the direct pointer to the controls, using their pathnames and the MarSystem API:
 
+@example
 msys->linkControl("mrs_xxx/A", "mrs_xxx/B");
+@end example
 
 This brings us to the first important detail: during the linking of two controls, it's important the order of the linking operation. Doing ctrl_A->linkTo(ctrl_B) will discard the current value of ctrl_A, which will now use the value currently stored in ctrl_B. If we reverse it (ctrl_B->linkTo(ctrl_A);), ctrl_B value will be discarded (we can think as "overwriten") in favour of the value of ctrl_A. This is only relevant at the time of the linking operation, and users should, if nothing else, be aware of which value the want to keep when linking two controls. Of course, after the linking is done, changing the value of ctrl_B will also change the value of ctrl_A, and vice-versa, making this detail syntatically meaningless.
 
@@ -464,49 +468,62 @@ The problem is that in Marsyas, the most interesting use of unlinking controls i
 
 Suppose the following scenario: we have a composite MarSystem (i.e. a MarSystem with other MarSystems inside, connected in series, for e.g.) where we have a control (say, ctrl_X) that we want to always link to, for example, the output control of the last child MarSystem (let's say ctrl_processedData control of the last child MarSystem). This is exactly the case of the composite FlowThru, so you can refer to its .cpp/.h code for an actual implementation. So we start by linking ctrl_X to the ctrl_processedData of the last child:
 
+@example
 ctrl_processedData = msys->getctrl("xxx/lastChildMsys1/mrs_realvec/processedData");
 ctrl_X->linkTo(ctrl_processedData);
+@end example
 
 Semanticaly, this is the order that makes more sense (but nothing prevents us to do it the other way around - the link will work as well!), since we are overwriting ctrl_X's value with the current value of ctrl_processedData, which is in fact an "output" control (controls in Marsyas do not have an explicit in/out attribute - "output" controls are considered controls to which makes no sense writing to because they will be ignored and overwriten by their owning MarSystem; "input" controls on the other hand will be used internally by their owning MarSystem as parameters, but they may also be read to know the current control value currently being used).
 
 Graphically, this link can be represented as:
 
+@example
 ctrl_processedData <--- ctrl_X
+@end example
 
 If we now need to link some other controls from other MarSystems to ctrl_X, we just need to explicitly do it:
 
+@example
 ctrl_Y->linkTo(ctrl_X);
 ctrl_W->linkTo(ctrl_X);
 ctrl_Z->linkTo(ctrl_W); //this control will be indirectly connected to ctrl_X, altough its link target is ctrl_W
+@end example
 
 Graphically:
 
+@example
 ctrl_processedData <--- ctrl_X <--- ctrl_Y
                             ^
-                           	|--- ctrl_W <--- ctrl_Z
+                            |--- ctrl_W <--- ctrl_Z
+@end example
 
 So, after this we have ctrl_X, ctrl_Y, ctrl_W and ctrl_Z effectively all linked to and sharing the same value with ctrl_processedData, with minimal computational burden and a small memory footprint.
 
 Now imagine that we want to add a new child to the FlowThru composite. Since we want ctrl_X (and all the controls linked to it) sharing the value of the last child in the FlowThru composite, we must update the ctrl_X ---> ctrl_processedData link! In other words, we need to unlink ctrl_X from ctrl_processedData of the previous last child MarSystem, and re-link it to the ctrl_processedData of the new last child of the composite. For that we could think that the following way would cut it:
 
+@example
 ctrl_processedData = msys->getctrl("xxx/lastChildMsys2/mrs_realvec/processedData");
 ctrl_X->unlink();
 ctrl_X->linkTo(ctrl_processedData);
+@end example
 
 However, calling unlink in this way (i.e. the way implemented in "part I" of the refactoring) would unlink ctrl_X from all the other linked controls (i.e. ctrl_W, ctrl_Y, etc) and relinking it alone to the new ctrl_processedData (i.e. represented as (2) below) from the new last child. All the other previously linked controls would still be linked to the same ctrl_processedData of the previous last child in the composite. The only way around this would be to manually keep track of what links would have to be unlinked and relinked to the new control.
 
 Graphically:
 
+@example
 ctrl_processedData(1) <--- ctrl_Y
-                   			^
-                  			|--- ctrl_W <--- ctrl_Z
+                             ^
+                             |--- ctrl_W <--- ctrl_Z
 
 
 ctrl_processedData(2) <--- ctrl_X
+@end example
 
 
 As it is easy to imagine, any minimally complex network of multiple-nested MarSystems and linked controls would be totally insane to manage! Here's an example of what we would have to explicitly do to achieve what we really wanted:
 
+@example
 ctrl_processedData = msys->getctrl("xxx/lastChildMsys2/mrs_realvec/processedData");
 ctrl_X->unlink();
 ctrl_X->linkTo(ctrl_processedData_X);
@@ -516,22 +533,27 @@ ctrl_W->unlink();
 ctrl_W->linkTo(ctrl_X);
 ctrl_Z->unlink();
 ctrl_Z->linkTo(ctrl_W); //we must remind that this one was originally connected to W and not directly to X! :-\
+@end example
 
 (OK, if you managed to follow me till here without getting suicidal tendencies or falling totally asleep, please go to http://marsyas.sness.net/community/getting_involved and welcome aboard ;-)).
 
 The best way to make Marsyas solve this automatically for us was to keep a simple record of the original link orders, as explained above. If we know who originally linked to whom, it's then easy to unlink a control from a set of controls, but keep all the controls that were originally connected (or indirectely connected) still attached to it. So after the "part II" of the refactoring, if we want to reconnect ctrl_X (and all the controls originally linked to it) to the new last child in the composite, we would only need to do:
 
+@example
 ctrl_X->unlinkFromTarget(); //this is in fact not needed! See below...
 ctrl_processedData = msys->getctrl("xxx/lastChildMsys2/mrs_realvec/processedData");
 ctrl_X->linkTo(ctrl_processedData);
+@end example
 
 As it's possible to see, the unlink() method is no longer used (it was deprecated) and we should now use unlinkFromTarget() for achieving the desired result. By "target" I mean the following: everytime we link a control *to* another control (and here we start to see the importance of the order of linking, other than the known issue of which control gets its value overwriten by the other as explained above), we are directly "targeting" or linking to that control. So for the case of ctrl_X, when we linked it to ctrl_processedData, we made the latter the "target" of ctrl_X. As we can see, each control, even if linked to any arbitrary number of controls, only has one "target" control, i.e. the one it was originaly linked to. So, when we call ctrl_X->unlinkFromTarget() above, we are just unlinking ctrl_X from its target (i.e. ctrl_processedData(1) and any other controls that have that control as their target) but keeping the links with all the other controls that have ctrl_X as their direct or indirect target. Graphically we get:
 
+@example
 ctrl_processedData(1)
 
 ctrl_processedData(2) <--- ctrl_X <--- ctrl_Y
-                               	^
-                             	|--- ctrl_W <--- ctrl_Z
+                                ^
+                                |--- ctrl_W <--- ctrl_Z
+@end example
 
 
 In truth, we do not even need to explicitly call unlinkFromTarget() before linking ctrl_X to the new target. Since each linked control can only have one target, re-linking it to other control will automatically unlink it from its previous target.
@@ -540,14 +562,16 @@ All these linked controls can be seen as a directed graph problem (but please do
 
 In any case, if we need to completely unlink a control from all its linked controls (regardeless of targets etc - i.e. the way the now deprecated unlink() method worked), we can simply use:
 
+@example
 ctrl_X->unlinkFromAll();
+@end example
 
 Although not so usefull as the former version of unlinking, there are some situations in Marsyas where we need this (if you dare or if you are really curious about this, you can have a look ate MarSystem copy constructor and at the put() method ;-)).
 
 As a conclusion, if when constructing networks of linked controls in Marsyas we take into mind the importance of the linking order, it's really easy to construct semantically meaninful links that will allow easy reconfiguration of MarSystem networks. Actually, this is a mandatory feature if we want in the future to have MarSystem insertion/deletion at runtime, without messing up all the linked controls in the network.
 
 
-@node Scheduling,  , Linking of controls, Architecture concepts
+@node Scheduling
 @section Scheduling
 
 @menu
@@ -555,7 +579,7 @@ As a conclusion, if when constructing networks of linked controls in Marsyas we 
 * Components of the Marsyas Scheduler::  
 @end menu
 
-@node Scheduling in Marsyas, Components of the Marsyas Scheduler, Scheduling, Scheduling
+@node Scheduling in Marsyas
 @subsection Scheduling in Marsyas
 
 Scheduling is the art of delaying actions (events) until later periods in time.
@@ -627,7 +651,7 @@ it. Marsyas is not threaded and neither is the scheduler so the scheduler will
 wait for the event to complete its action before resuming. Be careful not to
 do excessive processing during the dispatch of an event.
 
-@node Components of the Marsyas Scheduler,  , Scheduling in Marsyas, Scheduling
+@node Components of the Marsyas Scheduler
 @subsection Components of the Marsyas Scheduler
 
 The scheduler is made up of a collection of files from those used by
