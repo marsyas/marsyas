@@ -292,11 +292,23 @@ main(int argc, const char **argv)
 	cmd_options.readOptions(argc, argv);
 	loadOptions();
 
-	cout << "CollectionName = " << collectionName << endl;
+	string collectionFileName = collectionName;
+
+	// adjust the collection name and the output file name
+	if(collectionName.compare(collectionName.size() - 3, 3, ".mf") == 0)
+	{
+		collectionName = collectionName.substr(0, collectionName.size()-3); 	    
+	}
+	else
+	{
+		collectionFileName += ".mf";
+	}
+
+	cout << "Writing collectionName = " << collectionName << "into file " 
+		 << collectionFileName << endl;
+
 	Collection cl;
-	FileName fname(collectionName);
-	// remove .mf
-	collectionName = collectionName.substr(0, collectionName.size()-3); 
+	FileName fname(collectionFileName);
 
 	cl.setName(collectionName);
 
@@ -322,15 +334,12 @@ main(int argc, const char **argv)
 		}
 	}
 
-	string collectionstr;
-	collectionstr += collectionName;
-	collectionstr += ".mf";
 	if (labelopt != EMPTYSTRING) 
 		cl.labelAll(labelopt);
 
-	cl.write(collectionstr);
+	cl.write(collectionFileName);
 
-	cout << "Wrote collection " << collectionstr << endl;
+	cout << "Wrote collection " << collectionFileName << endl;
 	return 0;
 }
 
