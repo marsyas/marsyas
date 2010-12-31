@@ -299,6 +299,10 @@ main(int argc, const char **argv)
 	{
 		collectionName = collectionName.substr(0, collectionName.size()-3); 	    
 	}
+	if (collectionName.compare(collectionName.size() - 4, 4, ".txt") == 0)
+	{
+		collectionName = collectionName.substr(0, collectionName.size() -4);
+	}
 	else
 	{
 		collectionFileName += ".mf";
