@@ -63,6 +63,9 @@ Yin::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 
+	// Add prefix to the observation names.
+	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Yin_"), NOUPDATE);
 }
 
 double Yin::aubio_quadfrac(double s0, double s1, double s2, double pf) {
