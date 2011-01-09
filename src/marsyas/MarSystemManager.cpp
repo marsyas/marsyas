@@ -253,6 +253,7 @@
 #include "RemoveObservations.h"
 #include "SpectralFlatnessAllBands.h"
 #include "MathPower.h"
+#include "PitchDiff.h"
 //modifyHeader
 
 
@@ -505,6 +506,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("RemoveObservations", new RemoveObservations("removeobservationspr"));
 	registerPrototype("SpectralFlatnessAllBands", new SpectralFlatnessAllBands("spectralflatnessallbandspr"));
 	registerPrototype("MathPower", new MathPower("mathpowerpr"));
+	registerPrototype("PitchDiff", new PitchDiff("pitchdiffpr"));
 	//modifyRegister
 
 	//***************************************************************************************
