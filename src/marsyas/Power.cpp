@@ -58,7 +58,10 @@ Power::myUpdate(MarControlPtr sender)
 		getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", 
 		getctrl("mrs_real/israte"));
-	}
+	// Add prefix to the observation names.
+	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Power_"), NOUPDATE);
+}
 
 
 void 

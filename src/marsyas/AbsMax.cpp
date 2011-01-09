@@ -48,6 +48,9 @@ AbsMax::myUpdate(MarControlPtr sender)
 	setControl("mrs_real/osrate",
 			   getControl("mrs_real/israte")->to<mrs_real>() / getControl("mrs_natural/inSamples")->to<mrs_natural>()
 		);
+
+	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
+	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "AbsMax_"), NOUPDATE);
 }
 
 void
