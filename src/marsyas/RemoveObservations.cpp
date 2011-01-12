@@ -73,6 +73,23 @@ RemoveObservations::myUpdate(MarControlPtr sender)
 			) - lowestObs_;
 
 	ctrl_onObservations_->setValue(numObs_, NOUPDATE);
+
+	// remove unused observation names, so they don't
+	// overwrite other observations from other parts
+	// of the network
+	mrs_string names = ctrl_inObsNames_->to<mrs_string>();
+	int lowNamePos = 0;
+	int highNamePos = 0;
+	for (int i=0; i < lowestObs_; i++) {
+		lowNamePos = names.find(",", lowNamePos) + 1;
+	}
+	for (int i=0; i < numObs_; i++) {
+		highNamePos = names.find(",", highNamePos) + 1;
+	}
+	if (highNamePos > 0) {
+		names = names.substr(lowNamePos, highNamePos);
+		ctrl_onObsNames_->setValue(names, NOUPDATE);
+	}
 }
 
 void
