@@ -24,7 +24,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 #     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile."
 #     FORCE )
 
-SET(CMAKE_CXX_FLAGS_PROFILE "-O3 -finstrument-functions" CACHE STRING "Flags used for profiling")
+SET(CMAKE_CXX_FLAGS_PROFILE "-O3 -fPIC -finstrument-functions" CACHE STRING "Flags used for profiling")
 SET(CMAKE_SHARED_LINKER_FLAGS_PROFILE "")
 SET(CMAKE_EXE_LINKER_FLAGS_PROFILE "")
 

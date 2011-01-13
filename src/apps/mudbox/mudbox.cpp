@@ -7486,19 +7486,21 @@ void
 toy_with_aim_pzfc(string sfName)
 {
 	cout << "Toy_with: aim_pzfc" << endl;
-	
+
 	MarSystemManager mng;
 
 	MarSystem* net = mng.create("Series", "net");
-	
+
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
-	net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
-	
+	net->addMarSystem(mng.create("AimPZFC2", "aimpzfc"));
+
 	net->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
 
 	cout << *net << endl;
+	net->updControl("mrs_natural/inSamples", 1024);
 	
+
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
       net->tick();
@@ -7535,18 +7537,18 @@ void
 toy_with_aim_hcl(string sfName)
 {
 	cout << "Toy_with: aim_hcl" << endl;
-	
+
 	MarSystemManager mng;
 
 	MarSystem* net = mng.create("Series", "net");
-	
+
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
 	net->addMarSystem(mng.create("AimHCL", "aimhcl"));
 
 	net->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
-	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
+	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
       net->tick();
       cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
