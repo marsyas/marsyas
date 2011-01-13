@@ -5,8 +5,9 @@
 #!/usr/bin/env python
 
 
-from pylab import *
+# from pylab import *
 import sys
+from matplotlib import pyplot
 from marsyas import MarSystemManager,MarControlPtr
 
 # create a global MarSystemManager 

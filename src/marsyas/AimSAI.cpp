@@ -382,7 +382,7 @@ AimSAI::myProcess(realvec& in, realvec& out)
 					out(o, delay) = out(o, delay) + sig;
 				}
 			}
-
+  
 			next_strobes_[o] = next_strobe_index;
 		}  // End loop over channels
 

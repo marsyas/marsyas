@@ -7493,9 +7493,12 @@ toy_with_aim_pzfc(string sfName)
 	
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
-
+	
 	net->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
+
+	cout << *net << endl;
+	
 	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
       net->tick();

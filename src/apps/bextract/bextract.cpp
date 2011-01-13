@@ -3328,12 +3328,12 @@ saivq_train_refactored(string pluginName,  string wekafname,
 		// selectFeatureSet(featExtractor);
 		// featureNetwork->addMarSystem(featExtractor);
 
-        featureNetwork->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
-        featureNetwork->addMarSystem(mng.create("AimHCL", "aimhcl"));
-        featureNetwork->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
-        featureNetwork->addMarSystem(mng.create("AimSAI", "aimsai"));
-        featureNetwork->addMarSystem(mng.create("AimBoxes", "aimBoxes"));
-        featureNetwork->addMarSystem(mng.create("AimVQ", "aimvq"));
+		featureNetwork->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+		featureNetwork->addMarSystem(mng.create("AimHCL", "aimhcl"));
+		featureNetwork->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+		featureNetwork->addMarSystem(mng.create("AimSAI", "aimsai"));
+		featureNetwork->addMarSystem(mng.create("AimBoxes", "aimBoxes"));
+		featureNetwork->addMarSystem(mng.create("AimVQ", "aimvq"));
 
 	}
 

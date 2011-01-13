@@ -30,7 +30,7 @@ AimPZFC::AimPZFC(mrs_string name):MarSystem("AimPZFC",name)
 	initialized_maxdamp = 0.0;
 	initialized_cf_max = 0.0;
 	initialized_cf_min = 0.0;
-  
+
 	is_reset = false;
 	reseted_inobservations = 0;
 	reseted_agc_factor = 0;
@@ -38,7 +38,7 @@ AimPZFC::AimPZFC(mrs_string name):MarSystem("AimPZFC",name)
 	addControls();
 }
 
-AimPZFC::AimPZFC(const AimPZFC& a): MarSystem(a) 
+AimPZFC::AimPZFC(const AimPZFC& a): MarSystem(a)
 {
 	is_initialized = false;
 	initialized_israte = 0.0;
@@ -291,6 +291,8 @@ AimPZFC::SetPZBankCoeffsOrig() {
 		pole_frequency -= step_factor * bw;
 		channel_count_++;
 	}
+
+	
 
 	// Now the number of channels is known, various buffers for the filterbank
 	// coefficients can be initialised
@@ -753,42 +755,39 @@ AimPZFC::myProcess(realvec& in, realvec& out)
 				// of input)
 				double new_state = inputs_[c] - (state_1_[c] - inputs_[c]) * zb1
 					- (state_2_[c] - inputs_[c]) * zb2;
-			  
+
 				// canonic zeros part as before:
 				// cout << "za0_[c]=" << za0_[c] << endl;
 				// cout << "new_state=" << new_state << endl;
 				// cout << "za1_[c]=" << za1_[c] << endl;
 				// cout << "state_1_[c]=" << state_1_[c] << endl;
 				// cout << "state_2_[c]=" << state_2_[c] << endl;
-			  
+
 				double output = za0_[c] * new_state + za1_[c] * state_1_[c]
 					+ za2_[c] * state_2_[c];
-			  
+
 				// cubic compression nonlinearity
 				output -= 0.0001 * pow(output, 3);
 				// cout << "output=" << output << endl;
-			  
+
 				out(c, t) = output;
 				detect_[c] = DetectFun(output);
 				state_2_[c] = state_1_[c];
 				state_1_[c] = new_state;
 			}
-		  
+
 			if (do_agc)
 			{
 				// double offset = 1.0 - ctrl_agc_factor_->to<mrs_real>() * DetectFun(0.0);
 				// double agc_factor = ctrl_agc_factor_->to<mrs_real>();
 				AGCDampStep();
 			}
-			
-			
+
 			for (int c = 0; c < channel_count_; ++c)
 				previous_out_[c] = out(c,t);
 		}
-			 
-			 
-			 
-		   
+
+
 // Copy over the centre frequencies to the second half of the observations
 			 for (t = 0; t < inSamples_; t++)
 				 {
@@ -797,9 +796,5 @@ AimPZFC::myProcess(realvec& in, realvec& out)
 						 out(o + channel_count_, t) = centre_frequencies_[o];
 					 }
 				 }
-					  
+
 }
-			 
-		   
-	
-	

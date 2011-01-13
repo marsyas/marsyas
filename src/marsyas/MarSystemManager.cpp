@@ -229,6 +229,7 @@
 #include "Transposer.h"
 #include "SimulMaskingFft.h"
 #include "AimPZFC.h"
+#include "AimPZFC2.h"
 #include "AimGammatone.h"
 #include "AimHCL.h"
 #include "AimLocalMax.h"
@@ -490,6 +491,8 @@ MarSystemManager::MarSystemManager()
 
 
 	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));
+	registerPrototype("AimPZFC2", new AimPZFC2("aimpzfc2"));
+
 	registerPrototype("AimGammatone", new AimGammatone("aimgammatone"));
 	registerPrototype("AimHCL", new AimHCL("aimhcl"));
 	registerPrototype("AimLocalMax", new AimLocalMax("aimlocalmax"));
