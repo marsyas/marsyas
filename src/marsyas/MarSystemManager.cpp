@@ -232,6 +232,7 @@
 #include "AimPZFC2.h"
 #include "AimGammatone.h"
 #include "AimHCL.h"
+#include "AimHCL2.h" 
 #include "AimLocalMax.h"
 #include "AimSAI.h"
 #include "AimSSI.h"
@@ -495,6 +496,7 @@ MarSystemManager::MarSystemManager()
 
 	registerPrototype("AimGammatone", new AimGammatone("aimgammatone"));
 	registerPrototype("AimHCL", new AimHCL("aimhcl"));
+	registerPrototype("AimHCL2", new AimHCL2("aimhcl2"));
 	registerPrototype("AimLocalMax", new AimLocalMax("aimlocalmax"));
 	registerPrototype("AimSAI", new AimSAI("aimsai"));
 	registerPrototype("AimSSI", new AimSSI("aimssi"));

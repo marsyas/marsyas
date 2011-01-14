@@ -36,13 +36,13 @@
 #include <iomanip>
 
 #ifdef MARSYAS_PNG
-#include "pngwriter.h" 
-#endif 
+#include "pngwriter.h"
+#endif
 
 
 #ifdef MARSYAS_WIN32
-#pragma warning(disable: 4251) 
-#endif 
+#pragma warning(disable: 4251)
+#endif
 
 
 
@@ -240,123 +240,123 @@ evaluate_estimated_tempo(string sfName, float predicted_tempo, float ground_trut
 // network of MarSystem objects
 void tempo_medianMultiBands(string sfName, float ground_truth_tempo, string resName, bool haveCollections)
 {
-	MarSystemManager mng;
+  MarSystemManager mng;
 
 
-	// prepare network
-	MarSystem *total = mng.create("Series", "src");
-	total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	total->addMarSystem(mng.create("SoundFileSource", "src"));
-	total->addMarSystem(mng.create("ShiftInput", "si"));
+  // prepare network
+  MarSystem *total = mng.create("Series", "src");
+  total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  total->addMarSystem(mng.create("SoundFileSource", "src"));
+  total->addMarSystem(mng.create("ShiftInput", "si"));
 
-	total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
-	total->addMarSystem(mng.create("WaveletBands", "wvbnds"));
+  total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
+  total->addMarSystem(mng.create("WaveletBands", "wvbnds"));
 
 
-	total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
-	total->addMarSystem(mng.create("OnePole", "lpf"));
-	total->addMarSystem(mng.create("Norm", "norm"));
+  total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
+  total->addMarSystem(mng.create("OnePole", "lpf"));
+  total->addMarSystem(mng.create("Norm", "norm"));
 	
-	// total->addMarSystem(mng.create("Sum", "sum"));
+  // total->addMarSystem(mng.create("Sum", "sum"));
 
-	total->addMarSystem(mng.create("DownSampler", "ds"));
-	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	total->addMarSystem(mng.create("Peaker", "pkr"));
-	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
-	total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
+  total->addMarSystem(mng.create("DownSampler", "ds"));
+  total->addMarSystem(mng.create("AutoCorrelation", "acr"));
+  total->addMarSystem(mng.create("Peaker", "pkr"));
+  total->addMarSystem(mng.create("MaxArgMax", "mxr"));
+  total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
 	
   
 	
 
-	total->updControl("SoundFileSource/src/mrs_string/filename", sfName);
-	// update the controls
-	mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
+  total->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+  // update the controls
+  mrs_real srate = total->getctrl("SoundFileSource/src/mrs_real/israte")->to<mrs_real>();
 
-	// input filename with hopSize/winSize
-	mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
-	mrs_natural hopSize = winSize / 16;
+  // input filename with hopSize/winSize
+  mrs_natural winSize = (mrs_natural)(srate / 22050.0) * 65536;
+  mrs_natural hopSize = winSize / 16;
 
-	total->updControl("mrs_natural/inSamples", hopSize);
-	total->updControl("SoundFileSource/src/mrs_natural/pos", offset);
-	total->updControl("ShiftInput/si/mrs_natural/winSize", winSize);
+  total->updControl("mrs_natural/inSamples", hopSize);
+  total->updControl("SoundFileSource/src/mrs_natural/pos", offset);
+  total->updControl("ShiftInput/si/mrs_natural/winSize", winSize);
 
 
-	// wavelet filterbank envelope extraction controls
-	total->updControl("WaveletPyramid/wvpt/mrs_bool/forward", true);
-	total->updControl("OnePole/lpf/mrs_real/alpha", 0.99f);
-	mrs_natural factor = 32;
-	total->updControl("DownSampler/ds/mrs_natural/factor", factor);
+  // wavelet filterbank envelope extraction controls
+  total->updControl("WaveletPyramid/wvpt/mrs_bool/forward", true);
+  total->updControl("OnePole/lpf/mrs_real/alpha", 0.99f);
+  mrs_natural factor = 32;
+  total->updControl("DownSampler/ds/mrs_natural/factor", factor);
 
-	// Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
+  // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
 
-	mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
-	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
-							(mrs_natural)(srate * 60.0 / (factor*80.0))) / pkinS;
-	mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
-	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
-	total->updControl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
-	total->updControl("Peaker/pkr/mrs_real/peakStrength", 0.75);
-	total->updControl("Peaker/pkr/mrs_natural/peakStart", peakStart);
-	total->updControl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
+  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
+  mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
+						  (mrs_natural)(srate * 60.0 / (factor*80.0))) / pkinS;
+  mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 180.0));
+  mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 40.0));
+  total->updControl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
+  total->updControl("Peaker/pkr/mrs_real/peakStrength", 0.75);
+  total->updControl("Peaker/pkr/mrs_natural/peakStart", peakStart);
+  total->updControl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
 	
 
-	// prepare vectors for processing
-	realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
-				 total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-	realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
-					 total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-	mrs_natural bin;
-	mrs_natural onSamples, nChannels;
-	int numPlayed =0;
-	mrs_natural wc=0;
-	mrs_natural samplesPlayed = 0;
-	//mrs_natural repeatId = 1;
-	// vector of bpm estimate used to calculate median
-	vector<int> bpms;
+  // prepare vectors for processing
+  realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+			   total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+				   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+  mrs_natural bin;
+  mrs_natural onSamples, nChannels;
+  int numPlayed =0;
+  mrs_natural wc=0;
+  mrs_natural samplesPlayed = 0;
+  //mrs_natural repeatId = 1;
+  // vector of bpm estimate used to calculate median
+  vector<int> bpms;
 
-	onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
-	nChannels = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
+  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
+  nChannels = total->getctrl("SoundFileSource/src/mrs_natural/onObservations")->to<mrs_natural>();
 
-	total->updControl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
-	total->updControl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
+  total->updControl("MaxArgMax/mxr/mrs_natural/nMaximums", 4);
+  total->updControl("MaxArgMax/mxr/mrs_natural/interpolation", 1);
 	
 	
-	total->updControl("Peaker/pkr/mrs_natural/interpolation", 1);
+  total->updControl("Peaker/pkr/mrs_natural/interpolation", 1);
 
 
 
-	// playback offset & duration
-	offset = (mrs_natural) (start * srate * nChannels);
-	duration = (mrs_natural) (length * srate * nChannels);
+  // playback offset & duration
+  offset = (mrs_natural) (start * srate * nChannels);
+  duration = (mrs_natural) (length * srate * nChannels);
 
 
-	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-	{
-		total->process(iwin, estimate);
+  while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+  {
+	total->process(iwin, estimate);
 		
-		// convert highest peak to BPMs and add to vector
-		for (int b=0; b < 4; b++)
-		{
-			// pitch = srate * 60.0 / (estimate(b,1) * factor);
-			// bin = (mrs_natural) (pitch);
-			bin = (mrs_natural)(estimate(b,1));
-			// cout << "max bpm(" << b << ") = " << bin << endl;
-			bpms.push_back(bin);
-		}
-		numPlayed++;
-		wc ++;
-		samplesPlayed += onSamples;
+	// convert highest peak to BPMs and add to vector
+	for (int b=0; b < 4; b++)
+	{
+	  // pitch = srate * 60.0 / (estimate(b,1) * factor);
+	  // bin = (mrs_natural) (pitch);
+	  bin = (mrs_natural)(estimate(b,1));
+	  // cout << "max bpm(" << b << ") = " << bin << endl;
+	  bpms.push_back(bin);
 	}
+	numPlayed++;
+	wc ++;
+	samplesPlayed += onSamples;
+  }
 		      
-	// sort bpm estimates for median filtering
-	sort(bpms.begin(), bpms.end());
+  // sort bpm estimates for median filtering
+  sort(bpms.begin(), bpms.end());
 	
 	
-	float predicted_tempo;
-	predicted_tempo = bpms[bpms.size()/2];
-	evaluate_estimated_tempo(sfName, predicted_tempo, ground_truth_tempo);
+  float predicted_tempo;
+  predicted_tempo = bpms[bpms.size()/2];
+  evaluate_estimated_tempo(sfName, predicted_tempo, ground_truth_tempo);
 	
-	delete total;
+  delete total;
 }
 
 
@@ -367,307 +367,307 @@ void
 tempo_wavelets(string sfName, string resName, bool haveCollections)
 {
 
-	MarSystemManager mng;
+  MarSystemManager mng;
 
-	mrs_real srate = 0.0;
+  mrs_real srate = 0.0;
 
 
-	// prepare network
-	MarSystem *total = mng.create("Series", "src");
-	total->addMarSystem(mng.create("SoundFileSource", "src"));
-	total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	total->addMarSystem(mng.create("ShiftInput", "si"));
-	total->addMarSystem(mng.create("DownSampler", "initds"));
-	total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
-	// implicit fanout
-	total->addMarSystem(mng.create("WaveletBands", "wvbnds"));
-	total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
-	total->addMarSystem(mng.create("OnePole", "lpf"));
-	total->addMarSystem(mng.create("Norm", "norm"));
+  // prepare network
+  MarSystem *total = mng.create("Series", "src");
+  total->addMarSystem(mng.create("SoundFileSource", "src"));
+  total->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  total->addMarSystem(mng.create("ShiftInput", "si"));
+  total->addMarSystem(mng.create("DownSampler", "initds"));
+  total->addMarSystem(mng.create("WaveletPyramid", "wvpt"));
+  // implicit fanout
+  total->addMarSystem(mng.create("WaveletBands", "wvbnds"));
+  total->addMarSystem(mng.create("FullWaveRectifier", "fwr"));
+  total->addMarSystem(mng.create("OnePole", "lpf"));
+  total->addMarSystem(mng.create("Norm", "norm"));
+  {
+	// Extra gain added for compensating the cleanup of the Norm Marsystem,
+	// which used a 0.05 internal gain for some unknown reason.
+	// \todo is this weird gain factor actually required?
+	total->addMarSystem(mng.create("Gain", "normGain"));
+	total->updControl("Gain/normGain/mrs_real/gain", 0.05);
+  }
+  // implicit fanin
+  total->addMarSystem(mng.create("Sum", "sum"));
+  total->addMarSystem(mng.create("DownSampler", "ds"));
+  total->addMarSystem(mng.create("AutoCorrelation", "acr"));
+  // total->addMarSystem(mng.create("PlotSink", "psink1"));
+  total->addMarSystem(mng.create("Peaker", "pkr"));
+  // total->addMarSystem(mng.create("PlotSink", "psink2"));
+  total->addMarSystem(mng.create("MaxArgMax", "mxr"));
+  total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
+  total->addMarSystem(mng.create("BeatHistogramFromPeaks", "histo"));
+
+  // total->addMarSystem(mng.create("Peaker", "pkr1"));
+  // total->addMarSystem(mng.create("PlotSink", "psink3"));
+  // total->addMarSystem(mng.create("Reassign", "reassign"));
+  // total->addMarSystem(mng.create("PlotSink", "psink4"));
+  total->addMarSystem(mng.create("HarmonicEnhancer", "harm"));
+  // total->addMarSystem(mng.create("HarmonicEnhancer", "harm"));
+  // total->addMarSystem(mng.create("PlotSink", "psink4"));
+  // total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
+
+
+  mrs_natural ifactor = 8;
+  total->updControl("DownSampler/initds/mrs_natural/factor", ifactor);
+  total->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+  srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+  // srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();
+  // cout << "srate = " << srate << endl;
+
+  // update the controls
+  // input filename with hopSize/winSize
+  mrs_natural winSize = (mrs_natural)((srate / 22050.0) * 2 * 65536);
+  mrs_natural hopSize = winSize / 16;
+  // cout << "winSize = " << winSize << endl;
+  // cout << "hopSize = " << hopSize << endl;
+
+  offset = (mrs_natural) (start * srate);
+  duration = (mrs_natural) (length * srate);
+
+  // total->updControl("PlotSink/psink1/mrs_string/filename", "acr");
+  // total->updControl("PlotSink/psink2/mrs_string/filename", "peaks");
+
+  // total->updControl("PlotSink/psink3/mrs_string/filename", "histo");
+  // total->updControl("PlotSink/psink4/mrs_string/filename", "rhisto");
+  total->updControl("mrs_natural/inSamples", hopSize);
+  total->updControl("SoundFileSource/src/mrs_natural/pos", offset);
+
+  total->updControl("MaxArgMax/mxr/mrs_natural/nMaximums", 5);
+  // total->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 2);
+
+
+  total->updControl("ShiftInput/si/mrs_natural/winSize", winSize);
+
+
+
+  // wavelet filterbank envelope extraction controls
+  total->updControl("WaveletPyramid/wvpt/mrs_bool/forward", true);
+  total->updControl("OnePole/lpf/mrs_real/alpha", 0.99f);
+  mrs_natural factor = 32;
+  total->updControl("DownSampler/ds/mrs_natural/factor", factor);
+
+  srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();
+
+
+
+
+  // Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
+  mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
+  mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
+						  (mrs_natural)(srate * 60.0 / (factor*62.0))) / (pkinS * 1.0);
+
+
+  mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 230.0));
+  mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 30.0));
+
+
+  total->updControl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
+  total->updControl("Peaker/pkr/mrs_real/peakStrength", 0.5);
+  total->updControl("Peaker/pkr/mrs_natural/peakStart", peakStart);
+  total->updControl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
+  total->updControl("Peaker/pkr/mrs_real/peakGain", 2.0);
+
+
+  /* total->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
+	 total->updControl("Peaker/pkr1/mrs_real/peakStrength", 1.2);
+	 total->updControl("Peaker/pkr1/mrs_natural/peakStart", 60);
+	 total->updControl("Peaker/pkr1/mrs_natural/peakEnd", 180);
+  */
+
+
+
+
+  total->updControl("BeatHistogramFromPeaks/histo/mrs_natural/startBin", 0);
+  total->updControl("BeatHistogramFromPeaks/histo/mrs_natural/endBin", 230);
+
+  // prepare vectors for processing
+  realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+			   total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+				   total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+
+  // mrs_natural bin;
+  mrs_natural onSamples;
+
+  int numPlayed =0;
+  mrs_natural wc=0;
+  mrs_natural samplesPlayed = 0;
+  mrs_natural repeatId = 1;
+
+  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
+
+
+
+
+
+
+
+
+  while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+  {
+	total->process(iwin, estimate);
+
+	numPlayed++;
+	if (samplesPlayed > repeatId * duration)
 	{
-		// Extra gain added for compensating the cleanup of the Norm Marsystem,
-		// which used a 0.05 internal gain for some unknown reason.
-		// \todo is this weird gain factor actually required?
-		total->addMarSystem(mng.create("Gain", "normGain"));
-		total->updControl("Gain/normGain/mrs_real/gain", 0.05);
+	  total->updControl("SoundFileSource/src/mrs_natural/pos", offset);
+	  repeatId++;
 	}
-	// implicit fanin
-	total->addMarSystem(mng.create("Sum", "sum"));
-	total->addMarSystem(mng.create("DownSampler", "ds"));
-	total->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	// total->addMarSystem(mng.create("PlotSink", "psink1"));
-	total->addMarSystem(mng.create("Peaker", "pkr"));
-	// total->addMarSystem(mng.create("PlotSink", "psink2"));
-	total->addMarSystem(mng.create("MaxArgMax", "mxr"));
-	total->addMarSystem(mng.create("PeakPeriods2BPM", "p2bpm"));
-	total->addMarSystem(mng.create("BeatHistogramFromPeaks", "histo"));
+	wc ++;
+	samplesPlayed += onSamples;
+  }
 
-	// total->addMarSystem(mng.create("Peaker", "pkr1"));
-	// total->addMarSystem(mng.create("PlotSink", "psink3"));
-	// total->addMarSystem(mng.create("Reassign", "reassign"));
-	// total->addMarSystem(mng.create("PlotSink", "psink4"));
-	total->addMarSystem(mng.create("HarmonicEnhancer", "harm"));
-	// total->addMarSystem(mng.create("HarmonicEnhancer", "harm"));
-	// total->addMarSystem(mng.create("PlotSink", "psink4"));
-	// total->addMarSystem(mng.create("MaxArgMax", "mxr1"));
 
 
-	mrs_natural ifactor = 8;
-	total->updControl("DownSampler/initds/mrs_natural/factor", ifactor);
-	total->updControl("SoundFileSource/src/mrs_string/filename", sfName);
-	srate = total->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
-	// srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();
-	// cout << "srate = " << srate << endl;
+  // phase calculation
 
-	// update the controls
-	// input filename with hopSize/winSize
-	mrs_natural winSize = (mrs_natural)((srate / 22050.0) * 2 * 65536);
-	mrs_natural hopSize = winSize / 16;
-	// cout << "winSize = " << winSize << endl;
-	// cout << "hopSize = " << hopSize << endl;
+  MarSystem *total1 = mng.create("Series", "total1");
+  total1->addMarSystem(mng.create("SoundFileSource", "src1"));
+  total1->addMarSystem(mng.create("FullWaveRectifier", "fwr1"));
 
-	offset = (mrs_natural) (start * srate);
-	duration = (mrs_natural) (length * srate);
+  // implicit fanin
+  total1->addMarSystem(mng.create("Sum", "sum1"));
+  total1->addMarSystem(mng.create("DownSampler", "ds1"));
+  total1->updControl("SoundFileSource/src1/mrs_string/filename", sfName);
 
-	// total->updControl("PlotSink/psink1/mrs_string/filename", "acr");
-	// total->updControl("PlotSink/psink2/mrs_string/filename", "peaks");
 
-	// total->updControl("PlotSink/psink3/mrs_string/filename", "histo");
-	// total->updControl("PlotSink/psink4/mrs_string/filename", "rhisto");
-	total->updControl("mrs_natural/inSamples", hopSize);
-	total->updControl("SoundFileSource/src/mrs_natural/pos", offset);
+  srate = total1->getctrl("SoundFileSource/src1/mrs_real/osrate")->to<mrs_real>();
 
-	total->updControl("MaxArgMax/mxr/mrs_natural/nMaximums", 5);
-	// total->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 2);
 
 
-	total->updControl("ShiftInput/si/mrs_natural/winSize", winSize);
+  // update the controls
+  // input filename with hopSize/winSize
+  winSize = (mrs_natural)(srate / 22050.0) * 8 * 65536;
 
+  total1->updControl("mrs_natural/inSamples", winSize);
+  total1->updControl("SoundFileSource/src1/mrs_natural/pos", 0);
 
+  // wavelt filterbank envelope extraction controls
+  // total1->updControl("OnePole/lpf1/mrs_real/alpha", 0.99f);
+  factor = 4;
+  total1->updControl("DownSampler/ds1/mrs_natural/factor", factor);
 
-	// wavelet filterbank envelope extraction controls
-	total->updControl("WaveletPyramid/wvpt/mrs_bool/forward", true);
-	total->updControl("OnePole/lpf/mrs_real/alpha", 0.99f);
-	mrs_natural factor = 32;
-	total->updControl("DownSampler/ds/mrs_natural/factor", factor);
 
-	srate = total->getctrl("DownSampler/initds/mrs_real/osrate")->to<mrs_real>();
 
 
 
 
-	// Peak picker 4BPMs at 60BPM resolution from 50 BPM to 250 BPM
-	mrs_natural pkinS = total->getctrl("Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
-	mrs_real peakSpacing = ((mrs_natural)(srate * 60.0 / (factor *60.0)) -
-							(mrs_natural)(srate * 60.0 / (factor*62.0))) / (pkinS * 1.0);
 
 
-	mrs_natural peakStart = (mrs_natural)(srate * 60.0 / (factor * 230.0));
-	mrs_natural peakEnd   = (mrs_natural)(srate * 60.0 / (factor * 30.0));
+  realvec iwin1(total1->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+				total1->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+  realvec estimate1(total1->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
+					total1->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
 
-	total->updControl("Peaker/pkr/mrs_real/peakSpacing", peakSpacing);
-	total->updControl("Peaker/pkr/mrs_real/peakStrength", 0.5);
-	total->updControl("Peaker/pkr/mrs_natural/peakStart", peakStart);
-	total->updControl("Peaker/pkr/mrs_natural/peakEnd", peakEnd);
-	total->updControl("Peaker/pkr/mrs_real/peakGain", 2.0);
+  total1->process(iwin1, estimate1);
 
 
-	/* total->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
-	   total->updControl("Peaker/pkr1/mrs_real/peakStrength", 1.2);
-	   total->updControl("Peaker/pkr1/mrs_natural/peakStart", 60);
-	   total->updControl("Peaker/pkr1/mrs_natural/peakEnd", 180);
-	*/
 
+  mrs_real s1 = estimate(0);
+  mrs_real s2 = estimate(2);
+  mrs_real t1 = estimate(1);
+  mrs_real t2 = estimate(3);
 
+  mrs_natural p1 = (mrs_natural)((int)((srate * 60.0) / (factor * t1)+0.5));
+  mrs_natural p2 = (mrs_natural)((int)((srate * 60.0) / (factor * t2)+0.5));
 
 
-	total->updControl("BeatHistogramFromPeaks/histo/mrs_natural/startBin", 0);
-	total->updControl("BeatHistogramFromPeaks/histo/mrs_natural/endBin", 230);
+  mrs_real mx = 0.0;
+  mrs_natural imx = 0;
+  mrs_real sum = 0.0;
 
-	// prepare vectors for processing
-	realvec iwin(total->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
-				 total->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-	realvec estimate(total->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
-					 total->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 
-	// mrs_natural bin;
-	mrs_natural onSamples;
 
-	int numPlayed =0;
-	mrs_natural wc=0;
-	mrs_natural samplesPlayed = 0;
-	mrs_natural repeatId = 1;
 
-	onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
+  for (mrs_natural i = 0; i < p1; ++i)
+  {
+	sum = 0.0;
+	sum += estimate1(0,i);
 
+	sum += estimate1(0,i+p1);
+	sum += estimate1(0,i+p1-1);
+	sum += estimate1(0,i+p1+1);
 
+	sum += estimate1(0,i+2*p1);
+	sum += estimate1(0,i+2*p1-1);
+	sum += estimate1(0,i+2*p1+1);
 
 
+	sum += estimate1(0,i+3*p1);
+	sum += estimate1(0,i+3*p1-1);
+	sum += estimate1(0,i+3*p1+1);
 
+	if (sum > mx)
+	{
+	  mx = sum;
+	  imx = i;
+	}
+  }
 
+  mrs_real ph1 = (imx * factor * 1.0) / srate;
 
+  for (mrs_natural i = 0; i < p2; ++i)
+  {
+	sum = 0.0;
+	sum += estimate1(0,i);
 
-	while (total->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-    {
-		total->process(iwin, estimate);
+	sum += estimate1(0,i+p2);
+	sum += estimate1(0,i+p2-1);
+	sum += estimate1(0,i+p2+1);
 
-		numPlayed++;
-		if (samplesPlayed > repeatId * duration)
-		{
-			total->updControl("SoundFileSource/src/mrs_natural/pos", offset);
-			repeatId++;
-		}
-		wc ++;
-		samplesPlayed += onSamples;
-    }
+	sum += estimate1(0,i+2*p2);
+	sum += estimate1(0,i+2*p2-1);
+	sum += estimate1(0,i+2*p2+1);
 
+	sum += estimate1(0,i+3*p2);
+	sum += estimate1(0,i+3*p2-1);
+	sum += estimate1(0,i+3*p2+1);
 
 
-	// phase calculation
+	if (sum > mx)
+	{
+	  mx = sum;
+	  imx = i;
+	}
+  }
 
-	MarSystem *total1 = mng.create("Series", "total1");
-	total1->addMarSystem(mng.create("SoundFileSource", "src1"));
-	total1->addMarSystem(mng.create("FullWaveRectifier", "fwr1"));
+  mrs_real ph2 = (imx * factor * 1.0) / srate;
 
-	// implicit fanin
-	total1->addMarSystem(mng.create("Sum", "sum1"));
-	total1->addMarSystem(mng.create("DownSampler", "ds1"));
-	total1->updControl("SoundFileSource/src1/mrs_string/filename", sfName);
 
 
-	srate = total1->getctrl("SoundFileSource/src1/mrs_real/osrate")->to<mrs_real>();
 
 
+  mrs_real st = s1 / (s1 + s2);
 
-	// update the controls
-	// input filename with hopSize/winSize
-	winSize = (mrs_natural)(srate / 22050.0) * 8 * 65536;
 
-	total1->updControl("mrs_natural/inSamples", winSize);
-	total1->updControl("SoundFileSource/src1/mrs_natural/pos", 0);
 
-	// wavelt filterbank envelope extraction controls
-	// total1->updControl("OnePole/lpf1/mrs_real/alpha", 0.99f);
-	factor = 4;
-	total1->updControl("DownSampler/ds1/mrs_natural/factor", factor);
+  ofstream os(resName.c_str());
 
 
 
 
+  os << fixed << setprecision(1)
+	 << t1 << "\t"
+	 << t2 << "\t"
+	 << setprecision(2)
+	 << st << "\t"
+	 << setprecision(3)
+	 << ph1 << "\t"
+	 << ph2 << "\t"
+	 << endl;
 
+  cout << "Estimated tempo = " << t1 << endl;
 
+  cout << sfName << " " << t1 << " " << s1 << endl;
 
-
-	realvec iwin1(total1->getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
-				  total1->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-	realvec estimate1(total1->getctrl("mrs_natural/onObservations")->to<mrs_natural>(),
-					  total1->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-
-
-	total1->process(iwin1, estimate1);
-
-
-
-	mrs_real s1 = estimate(0);
-	mrs_real s2 = estimate(2);
-	mrs_real t1 = estimate(1);
-	mrs_real t2 = estimate(3);
-
-	mrs_natural p1 = (mrs_natural)((int)((srate * 60.0) / (factor * t1)+0.5));
-	mrs_natural p2 = (mrs_natural)((int)((srate * 60.0) / (factor * t2)+0.5));
-
-
-	mrs_real mx = 0.0;
-	mrs_natural imx = 0;
-	mrs_real sum = 0.0;
-
-
-
-
-	for (mrs_natural i = 0; i < p1; ++i)
-    {
-		sum = 0.0;
-		sum += estimate1(0,i);
-
-		sum += estimate1(0,i+p1);
-		sum += estimate1(0,i+p1-1);
-		sum += estimate1(0,i+p1+1);
-
-		sum += estimate1(0,i+2*p1);
-		sum += estimate1(0,i+2*p1-1);
-		sum += estimate1(0,i+2*p1+1);
-
-
-		sum += estimate1(0,i+3*p1);
-		sum += estimate1(0,i+3*p1-1);
-		sum += estimate1(0,i+3*p1+1);
-
-		if (sum > mx)
-		{
-			mx = sum;
-			imx = i;
-		}
-    }
-
-	mrs_real ph1 = (imx * factor * 1.0) / srate;
-
-	for (mrs_natural i = 0; i < p2; ++i)
-    {
-		sum = 0.0;
-		sum += estimate1(0,i);
-
-		sum += estimate1(0,i+p2);
-		sum += estimate1(0,i+p2-1);
-		sum += estimate1(0,i+p2+1);
-
-		sum += estimate1(0,i+2*p2);
-		sum += estimate1(0,i+2*p2-1);
-		sum += estimate1(0,i+2*p2+1);
-
-		sum += estimate1(0,i+3*p2);
-		sum += estimate1(0,i+3*p2-1);
-		sum += estimate1(0,i+3*p2+1);
-
-
-		if (sum > mx)
-		{
-			mx = sum;
-			imx = i;
-		}
-    }
-
-	mrs_real ph2 = (imx * factor * 1.0) / srate;
-
-
-
-
-
-	mrs_real st = s1 / (s1 + s2);
-
-
-
-	ofstream os(resName.c_str());
-
-
-
-
-	os << fixed << setprecision(1)
-	   << t1 << "\t"
-	   << t2 << "\t"
-	   << setprecision(2)
-	   << st << "\t"
-	   << setprecision(3)
-	   << ph1 << "\t"
-	   << ph2 << "\t"
-	   << endl;
-
-	cout << "Estimated tempo = " << t1 << endl;
-
-	cout << sfName << " " << t1 << " " << s1 << endl;
-
-	delete total;
-	delete total1;
+  delete total;
+  delete total1;
 }
 
 
@@ -677,191 +677,191 @@ tempo_wavelets(string sfName, string resName, bool haveCollections)
 void 
 tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCollections) 
 {
-	MarSystemManager mng;
+  MarSystemManager mng;
 	
-	MarSystem *beatTracker = mng.create("Series/beatTracker");
+  MarSystem *beatTracker = mng.create("Series/beatTracker");
 	
 	
-	MarSystem *onset_strength = mng.create("Series/onset_strength");
-	MarSystem *accum = mng.create("Accumulator/accum");
-	MarSystem *fluxnet = mng.create("Series/fluxnet");
-	fluxnet->addMarSystem(mng.create("SoundFileSource", "src"));
-	fluxnet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	fluxnet->addMarSystem(mng.create("ShiftInput", "si"));	
-	fluxnet->addMarSystem(mng.create("Windowing", "windowing1"));
-	fluxnet->addMarSystem(mng.create("Spectrum", "spk"));
-	fluxnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-	fluxnet->addMarSystem(mng.create("Flux", "flux"));
-	accum->addMarSystem(fluxnet);
+  MarSystem *onset_strength = mng.create("Series/onset_strength");
+  MarSystem *accum = mng.create("Accumulator/accum");
+  MarSystem *fluxnet = mng.create("Series/fluxnet");
+  fluxnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  fluxnet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  fluxnet->addMarSystem(mng.create("ShiftInput", "si"));	
+  fluxnet->addMarSystem(mng.create("Windowing", "windowing1"));
+  fluxnet->addMarSystem(mng.create("Spectrum", "spk"));
+  fluxnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  fluxnet->addMarSystem(mng.create("Flux", "flux"));
+  accum->addMarSystem(fluxnet);
 	
-	onset_strength->addMarSystem(accum);
-	onset_strength->addMarSystem(mng.create("ShiftInput/si2"));
-	beatTracker->addMarSystem(onset_strength);
+  onset_strength->addMarSystem(accum);
+  onset_strength->addMarSystem(mng.create("ShiftInput/si2"));
+  beatTracker->addMarSystem(onset_strength);
 	
-	MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
-	tempoInduction->addMarSystem(mng.create("Filter", "filt1"));
-	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
-	tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
-	tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
-	// tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
-	tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
-	tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
+  MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
+  tempoInduction->addMarSystem(mng.create("Filter", "filt1"));
+  tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
+  tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
+  tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
+  // tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
+  tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
+  tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
 	
-	MarSystem* hfanout = mng.create("Fanout", "hfanout");
-	hfanout->addMarSystem(mng.create("Gain", "id1"));
-	hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
-	// hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
-	tempoInduction->addMarSystem(hfanout);
-	tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
-	tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
-	tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));				
+  MarSystem* hfanout = mng.create("Fanout", "hfanout");
+  hfanout->addMarSystem(mng.create("Gain", "id1"));
+  hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+  // hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
+  tempoInduction->addMarSystem(hfanout);
+  tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+  tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
+  tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));				
 	
-	beatTracker->addMarSystem(tempoInduction);
-	beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
-	beatTracker->addMarSystem(mng.create("Gain/id"));
-	mrs_natural winSize = 256;
-	mrs_natural hopSize = 128;
-	mrs_natural  bwinSize = 2048;
-	mrs_natural bhopSize = 128;
+  beatTracker->addMarSystem(tempoInduction);
+  //   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
+  beatTracker->addMarSystem(mng.create("Gain/id"));
+  mrs_natural winSize = 256;
+  mrs_natural hopSize = 128;
+  mrs_natural  bwinSize = 2048;
+  mrs_natural bhopSize = 128;
 	
-	onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  
-	onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
+  onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  
+  onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
 
 	
-	realvec bcoeffs(1,3);
-	bcoeffs(0) = 0.0564;
-	bcoeffs(1) = 0.1129;
-	bcoeffs(2) = 0.0564;
-	tempoInduction->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+  realvec bcoeffs(1,3);
+  bcoeffs(0) = 0.0564;
+  bcoeffs(1) = 0.1129;
+  bcoeffs(2) = 0.0564;
+  tempoInduction->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
 	
-	tempoInduction->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
-	realvec acoeffs(1,3);
-	acoeffs(0) = 1.0000;
-	acoeffs(1) = -1.2247;
-	acoeffs(2) = 0.4504;
-	tempoInduction->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
-	tempoInduction->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
+  tempoInduction->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
+  realvec acoeffs(1,3);
+  acoeffs(0) = 1.0000;
+  acoeffs(1) = -1.2247;
+  acoeffs(2) = 0.4504;
+  tempoInduction->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+  tempoInduction->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 
-	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
-	tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
-	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
-	tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 640);
-	// tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
+  tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 640);
+  // tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
 
-	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 1);
-	tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 1);
-	tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 10);
+  tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 1);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 1);
+  tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 10);
 	
-	onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
-	onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
 
-	tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
-	tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
-	tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 16.0);
+  tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
+  tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
+  tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 16.0);
 
 
-	tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
-	tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 2.0);
-	tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.65); 
+  tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
+  tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 2.0);
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.65); 
 	
-	onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
-	onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
-	beatTracker->updControl("mrs_natural/inSamples", hopSize);
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
+  beatTracker->updControl("mrs_natural/inSamples", hopSize);
 	
 
 	
 	
-	vector<mrs_real> bpms;
-	vector<mrs_real> secondary_bpms;
-	vector<mrs_real> bpms_amps;
-	vector<mrs_real> secondary_bpms_amps;
+  vector<mrs_real> bpms;
+  vector<mrs_real> secondary_bpms;
+  vector<mrs_real> bpms_amps;
+  vector<mrs_real> secondary_bpms_amps;
 	
-	mrs_real bin;
+  mrs_real bin;
 
 
-	if (pluginName != EMPTYSTRING)
-	{
-		ofstream ofs;
-		ofs.open(pluginName.c_str());
-		ofs << *beatTracker << endl;
-		ofs.close();
-		pluginName = EMPTYSTRING;
-	}
+  if (pluginName != EMPTYSTRING)
+  {
+	ofstream ofs;
+	ofs.open(pluginName.c_str());
+	ofs << *beatTracker << endl;
+	ofs.close();
+	pluginName = EMPTYSTRING;
+  }
 
-	beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
-	beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
+  // beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
+  // beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
 
-	int extra_ticks = bwinSize/bhopSize;
-	mrs_realvec tempos(2);
-	mrs_realvec tempo_scores(2);
-	tempo_scores.setval(0.0);
+  int extra_ticks = bwinSize/bhopSize;
+  mrs_realvec tempos(2);
+  mrs_realvec tempo_scores(2);
+  tempo_scores.setval(0.0);
 	
-	while (1) 
-	{
-		beatTracker->tick();
-		mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
+  while (1) 
+  {
+	beatTracker->tick();
+	mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
 
-		mrs_realvec bhisto = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
+	mrs_realvec bhisto = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
 		
 		
-		bin = estimate(1) * 0.25;
+	bin = estimate(1) * 0.25;
 		
-		tempos(0) = bin;
-		tempos(1) = estimate(3) * 0.25;
-		// tempos(2) = estimate(5) * 0.25;
+	tempos(0) = bin;
+	tempos(1) = estimate(3) * 0.25;
+	// tempos(2) = estimate(5) * 0.25;
 
-		beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", tempos);
-		beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
-		bpms.push_back(bin);
-		bpms_amps.push_back(bhisto(bin * 4));
+	// beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", tempos);
+	// beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
+	bpms.push_back(bin);
+	bpms_amps.push_back(bhisto(bin * 4));
 		
-		mrs_real max_secondary_amp = 0.0;
-		mrs_natural max_b=0;
+	// mrs_real max_secondary_amp = 0.0;
+	// mrs_natural max_b=0;
 		
-		for (mrs_natural b=3; b<20; b+=2)
-		{
-			if (fabs(estimate(b) * 0.25 - bin) > 10)
-			{
-				if (estimate(b-1) >= max_secondary_amp) 
-				{
-					max_secondary_amp = estimate(b-1);
-					max_b = b;
-				}
-			}
-		}
+	// for (mrs_natural b=3; b<20; b+=2)
+	// {
+	//   if (fabs(estimate(b) * 0.25 - bin) > 10)
+	//   {
+	// 	if (estimate(b-1) >= max_secondary_amp) 
+	// 	{
+	// 	  max_secondary_amp = estimate(b-1);
+	// 	  max_b = b;
+	// 	}
+	//   }
+	// }
 		
 		
-		// secondary_bpms.push_back(estimate(max_b) * 0.25);
-		// secondary_bpms_amps.push_back(estimate(max_b-1));
+	// // secondary_bpms.push_back(estimate(max_b) * 0.25);
+	// // secondary_bpms_amps.push_back(estimate(max_b-1));
 
-		if (bin < 100)
-		{
-			if (bhisto(2 * bin * 4) > bhisto(3 * bin * 4))
-			{
-				secondary_bpms.push_back(2 * bin);
-				secondary_bpms_amps.push_back(bhisto(2 * bin * 4));
-			}
-			else
-			{
-				secondary_bpms.push_back(3 * bin);
-				secondary_bpms_amps.push_back(bhisto(3 * bin * 4));				
-			}
-			
-		}
-		else 
-		{
-			if (bhisto(0.5 * bin * 4) > bhisto(0.33 * bin * 4))
-			{
-				secondary_bpms.push_back(0.5 * bin);
-				secondary_bpms_amps.push_back(bhisto(0.5 * bin * 4));
-			}
-			else
-			{
-				secondary_bpms.push_back(0.33 * bin);
-				secondary_bpms_amps.push_back(bhisto(0.33 * bin * 4));
-			}
-		}
-
+	// if (bin < 100)
+	// {
+	//   if (bhisto(2 * bin * 4) > bhisto(3 * bin * 4))
+	//   {
+	// 	secondary_bpms.push_back(2 * bin);
+	// 	secondary_bpms_amps.push_back(bhisto(2 * bin * 4));
+	//   }
+	//   else
+	//   {
+	// 	secondary_bpms.push_back(3 * bin);
+	// 	secondary_bpms_amps.push_back(bhisto(3 * bin * 4));				
+	//   }
+	  
+	// }
+	// else 
+	// {
+	//   if (bhisto(0.5 * bin * 4) > bhisto(0.33 * bin * 4))
+	//   {
+	// 	secondary_bpms.push_back(0.5 * bin);
+	// 	secondary_bpms_amps.push_back(bhisto(0.5 * bin * 4));
+	//   }
+	//   else
+	//   {
+	// 	secondary_bpms.push_back(0.33 * bin);
+	// 	secondary_bpms_amps.push_back(bhisto(0.33 * bin * 4));
+	//   }
+	// }
+	
 		// cout << "phase_tempo = " << beatTracker->getctrl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>() << endl;
 		
 		if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
@@ -876,11 +876,11 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	// sort(bpms.begin(), bpms.end());
 
 	mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
-	mrs_real secondary_bpm_estimate;
-	secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
+	// 	mrs_real secondary_bpm_estimate;
+	// secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
 	
 	mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
-	mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
+	// mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
 	
 	if (haveCollections)
 	{
@@ -889,29 +889,37 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	}
 	
 	bpm_estimate *= 2.0;
-	secondary_bpm_estimate *= 2.0;
+	// secondary_bpm_estimate *= 2.0;
 	bpm_estimate = (mrs_natural)bpm_estimate;
-	secondary_bpm_estimate = (mrs_natural)secondary_bpm_estimate;
+	// secondary_bpm_estimate = (mrs_natural)secondary_bpm_estimate;
 	bpm_estimate /= 2.0;
-	secondary_bpm_estimate /= 2.0;	 
+	// secondary_bpm_estimate /= 2.0;	 
 	
-	mrs_real strength = bpm_amp + secondary_bpm_amp;
+	// mrs_real strength = bpm_amp + secondary_bpm_amp;
 	
 
 	ofstream ofs;
 	ofs.open(fileName.c_str());
 
-	if (bpm_estimate < secondary_bpm_estimate)
-	{
-		ofs << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
-		cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
-	}
+	// if (bpm_estimate < secondary_bpm_estimate)
+	// {
+	// 	ofs << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	// 	cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	// }
 	
-	else 
-	{
-		ofs << secondary_bpm_estimate << "\t" << bpm_estimate << "\t" << secondary_bpm_amp / strength << endl;
-		cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
-	}
+	// else 
+	// {
+	// 	ofs << secondary_bpm_estimate << "\t" << bpm_estimate << "\t" << secondary_bpm_amp / strength << endl;
+	// 	cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	// }
+
+
+
+	cout << bpm_estimate << endl;
+	ofs << bpm_estimate << endl;
+	
+
+
 	
 	ofs.close();
 
@@ -3126,9 +3134,3 @@ main(int argc, const char **argv)
 
 	exit(0);
 }
-
-
-
-
-
-
