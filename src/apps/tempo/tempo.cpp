@@ -671,7 +671,11 @@ tempo_wavelets(string sfName, string resName, bool haveCollections)
 }
 
 
-
+void 
+tempo_aim(string sfName, float ground_truth_tempo, string resName, bool haveCollections) 
+{
+  cout << "Tempo-aim" << endl;
+}
 
 
 void 
@@ -2928,6 +2932,10 @@ void tempo(string inFname, string outFname, string label, string method, bool ha
 	{
 		tempo_flux(sfName, ground_truth_tempo, resName, haveCollections);
 	}
+	else if (method == "AIM")
+	  {
+	    tempo_aim(sfName, ground_truth_tempo, resName, haveCollections);
+	  }
 	else if (method == "HISTO_SUMBANDS")
     {
 		tempo_histoSumBands(sfName, ground_truth_tempo, resName, haveCollections);

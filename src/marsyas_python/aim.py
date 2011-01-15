@@ -120,6 +120,9 @@ def plot_figure(fname, duration):
 	
 	figure()
 	imshow(imgdata.transpose(), cmap = 'gray', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
+	show();
+	raw_input("Hello")
+
 	
 
 
