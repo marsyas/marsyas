@@ -74,16 +74,16 @@ def plot_figure(fname, duration):
 
 	filename.setValue_string(fname)
 	# winSize = int(float(duration) * 44100.0);
-	winSize = int(16 * 4096);
+	winSize = int(32 * 4096);
 	inSamples.setValue_natural(winSize)
 	mode.setValue_string("sum_samples");
 	# factor.setValue_natural(32)
-	acr_compress.setValue_real(0.85);
+	acr_compress.setValue_real(0.7);
 	srate = 44100.0
        	filterbank_output = net.getControl("AimHCL2/aimhcl2/mrs_realvec/processedData")
 
 	net.updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
-	net.updControl("BeatHistogram/histo/mrs_natural/endBin", 200);
+	net.updControl("BeatHistogram/histo/mrs_natural/endBin", 300);
 	
 
 	

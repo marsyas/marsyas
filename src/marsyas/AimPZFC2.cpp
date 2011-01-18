@@ -31,6 +31,8 @@ AimPZFC2::AimPZFC2(mrs_string name):MarSystem("AimPZFC2",name)
 	initialized_cf_max = 0.0;
 	initialized_cf_min = 0.0;
 
+	channel_count_ = 1;
+
 	is_reset = false;
 	reseted_inobservations = 0;
 	reseted_agc_factor = 0;
@@ -51,6 +53,9 @@ AimPZFC2::AimPZFC2(const AimPZFC2& a): MarSystem(a)
 	is_reset = false;
 	reseted_inobservations = 0;
 	reseted_agc_factor = 0;
+
+	channel_count_ = 1;
+	
 
 	ctrl_pole_damping_ = getctrl("mrs_real/pole_damping");
 	ctrl_zero_damping_ = getctrl("mrs_real/zero_damping");

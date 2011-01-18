@@ -693,12 +693,18 @@ tempo_aim(string sfName, float ground_truth_tempo, string resName, bool haveColl
   net->updControl("SoundFileSource/src/mrs_string/filename", 
 		  sfName);
   net->updControl("mrs_natural/inSamples", 16 * 4096);
-
+  
   net->updControl("Sum/sum/mrs_string/mode","sum_samples");
   net->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.85);
   net->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
   net->updControl("BeatHistogram/histo/mrs_natural/endBin", 200);
   
+  
+  net->updControl("Peaker/pkr/mrs_natural/peakStart", 50);
+  net->updControl("Peaker/pkr/mrs_natural/peakEnd", 150);
+  
+
+	  
   
   for (int i=0; i < 7; i++)
     {

@@ -30,7 +30,8 @@ AimPZFC::AimPZFC(mrs_string name):MarSystem("AimPZFC",name)
 	initialized_maxdamp = 0.0;
 	initialized_cf_max = 0.0;
 	initialized_cf_min = 0.0;
-
+	channel_count_ = 1;
+	
 	is_reset = false;
 	reseted_inobservations = 0;
 	reseted_agc_factor = 0;
@@ -48,6 +49,9 @@ AimPZFC::AimPZFC(const AimPZFC& a): MarSystem(a)
 	initialized_cf_max = 0.0;
 	initialized_cf_min = 0.0;
   
+
+	channel_count_ = 1;
+	
 	is_reset = false;
 	reseted_inobservations = 0;
 	reseted_agc_factor = 0;
