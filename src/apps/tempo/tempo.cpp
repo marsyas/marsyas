@@ -675,6 +675,55 @@ void
 tempo_aim(string sfName, float ground_truth_tempo, string resName, bool haveCollections) 
 {
   cout << "Tempo-aim" << endl;
+
+ 
+  MarSystemManager mng;
+
+  MarSystem* net = mng.create("Series/net");
+  
+  net->addMarSystem(mng.create("SoundFileSource/src"));
+  net->addMarSystem(mng.create("AimPZFC2/aimpzfc"));
+  net->addMarSystem(mng.create("AimHCL2/aimhcl2"));
+  net->addMarSystem(mng.create("Sum/sum"));
+  net->addMarSystem(mng.create("AutoCorrelation/acr"));
+  net->addMarSystem(mng.create("BeatHistogram/histo"));
+  net->addMarSystem(mng.create("Peaker/pkr"));
+  net->addMarSystem(mng.create("MaxArgMax/mxr"));
+  
+  net->updControl("SoundFileSource/src/mrs_string/filename", 
+		  sfName);
+  net->updControl("mrs_natural/inSamples", 16 * 4096);
+
+  net->updControl("Sum/sum/mrs_string/mode","sum_samples");
+  net->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.85);
+  net->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
+  net->updControl("BeatHistogram/histo/mrs_natural/endBin", 200);
+  
+  
+  for (int i=0; i < 7; i++)
+    {
+      net->tick();
+    }
+
+  
+  mrs_realvec amp_tempo  = net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
+  cout << "Tempo = " << amp_tempo(1) << endl;
+  mrs_real bpm_estimate = amp_tempo(1);
+
+  if (haveCollections)
+    {
+      evaluate_estimated_tempo(sfName, bpm_estimate, ground_truth_tempo);
+    }
+  
+  ofstream ofs;
+  ofs.open(fileName.c_str());
+  cout << bpm_estimate << endl;
+  ofs << bpm_estimate << endl;
+  
+  ofs.close();
+  
+  delete net;
+
 }
 
 
