@@ -87,30 +87,30 @@ def plot_figure(fname, duration):
 	
 
 	
-	for i in range(1,8):
+	for i in range(1,4):
 		net.tick()
 
-       	data = filterbank_output.to_realvec()
-	imgdata = realvec2array(data) 
-	ossdata = net.getControl("Sum/sum/mrs_realvec/processedData").to_realvec();
-	acrdata = net.getControl("AutoCorrelation/acr/mrs_realvec/processedData").to_realvec();
-	bhistodata = net.getControl("BeatHistogram/histo/mrs_realvec/processedData").to_realvec();
+		data = filterbank_output.to_realvec()
+		imgdata = realvec2array(data) 
+		ossdata = net.getControl("Sum/sum/mrs_realvec/processedData").to_realvec();
+		acrdata = net.getControl("AutoCorrelation/acr/mrs_realvec/processedData").to_realvec();
+		bhistodata = net.getControl("BeatHistogram/histo/mrs_realvec/processedData").to_realvec();
 
-	peaks = net.getControl("Peaker/pkr/mrs_realvec/processedData");
-	figure()
-	plot(peaks.to_realvec())
+		peaks = net.getControl("Peaker/pkr/mrs_realvec/processedData");
+		figure()
+		plot(peaks.to_realvec())
 
-	max_peak = net.getControl("mrs_realvec/processedData");
-	print max_peak.to_realvec()
+		max_peak = net.getControl("mrs_realvec/processedData");
+		print max_peak.to_realvec()
 
-	figure()
-	plot(ossdata)
-	figure() 
-	plot(acrdata)
-	figure()
-	plot(bhistodata)
-	print imgdata.shape
-	print ossdata.getSize()
+		figure()
+		plot(ossdata)
+		figure() 
+		plot(acrdata)
+		figure()
+		plot(bhistodata)
+		print imgdata.shape
+		print ossdata.getSize()
 	# (values, vecs) = pca(imgdata.transpose())
 	# figure()
 	# plot(vecs[1])
@@ -127,10 +127,11 @@ def plot_figure(fname, duration):
 	# plot(vecs[5])
 	# print vecs.shape
 	
-	figure()
-	imshow(imgdata.transpose(), cmap = 'gray', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
-	show();
-	raw_input("Press any key to continue")
+		figure()
+		imshow(imgdata.transpose(), cmap = 'gray', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
+		show();
+
+       	raw_input("Press any key to continue")
 
 	
 

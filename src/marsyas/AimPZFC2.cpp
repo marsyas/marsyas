@@ -551,8 +551,8 @@ AimPZFC2::SetPZBankCoeffsERBFitted() {
 	cout << pole_dampings_ << endl;
 	
 
-	pole_frequencies_.clear();
-	pole_frequencies_.resize(channel_count_, 0.0);
+	pole_frequencies_.stretch(channel_count_);
+	pole_frequencies_.setval(0.0);
 
 	// Direct-form coefficients
 	za0_.clear();

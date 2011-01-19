@@ -685,6 +685,9 @@ tempo_aim(string sfName, float ground_truth_tempo, string resName, bool haveColl
   net->addMarSystem(mng.create("AimPZFC2/aimpzfc"));
   net->addMarSystem(mng.create("AimHCL2/aimhcl2"));
   net->addMarSystem(mng.create("Sum/sum"));
+  net->addMarSystem(mng.create("Delta/delta"));
+
+
   net->addMarSystem(mng.create("AutoCorrelation/acr"));
   net->addMarSystem(mng.create("BeatHistogram/histo"));
   net->addMarSystem(mng.create("Peaker/pkr"));
@@ -698,17 +701,20 @@ tempo_aim(string sfName, float ground_truth_tempo, string resName, bool haveColl
   net->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.85);
   net->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
   net->updControl("BeatHistogram/histo/mrs_natural/endBin", 200);
-  
-  
   net->updControl("Peaker/pkr/mrs_natural/peakStart", 50);
   net->updControl("Peaker/pkr/mrs_natural/peakEnd", 150);
   
-
-	  
   
-  for (int i=0; i < 7; i++)
+  ofstream ofs2;
+  ofs2.open("tempo.mpl");
+  ofs2 << *net << endl;
+  ofs2.close();
+  
+  
+  for (int i=0; i < 4; i++)
     {
-      net->tick();    }
+      net->tick();    
+    }
 
   
   mrs_realvec amp_tempo  = net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
