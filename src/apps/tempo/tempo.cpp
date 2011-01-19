@@ -708,8 +708,7 @@ tempo_aim(string sfName, float ground_truth_tempo, string resName, bool haveColl
   
   for (int i=0; i < 7; i++)
     {
-      net->tick();
-    }
+      net->tick();    }
 
   
   mrs_realvec amp_tempo  = net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();

@@ -19,6 +19,9 @@
 #include "AimPZFC.h"
 
 using std::ostringstream;
+using std::cout;
+using std::endl;
+
 using namespace Marsyas;
 
 AimPZFC::AimPZFC(mrs_string name):MarSystem("AimPZFC",name)
@@ -582,6 +585,8 @@ AimPZFC::SetPZBankCoeffsERBFitted() {
 		// Pole damping
 		double pole_damping = fPBW / sqrt(pow(pole_frequency, 2) + pow(fPBW, 2));
 
+		cout << "pole_damping = " << pole_damping << endl;
+		
 		// Store the pole damping
 		pole_dampings_[i] = pole_damping;
 
@@ -690,6 +695,7 @@ AimPZFC::AGCDampStep() {
 
 		fAGCStateMean /= static_cast<double>(agc_stage_count_);
 
+		
 		pole_damps_mod_[i] = pole_dampings_[i] *
 			(offset_ + agc_factor_ * fAGCStateMean);
 	}

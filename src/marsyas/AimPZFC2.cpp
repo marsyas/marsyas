@@ -19,6 +19,9 @@
 #include "AimPZFC2.h"
 
 using std::ostringstream;
+using std::cout;
+using std::endl;
+
 using namespace Marsyas;
 
 AimPZFC2::AimPZFC2(mrs_string name):MarSystem("AimPZFC2",name)
@@ -30,8 +33,12 @@ AimPZFC2::AimPZFC2(mrs_string name):MarSystem("AimPZFC2",name)
 	initialized_maxdamp = 0.0;
 	initialized_cf_max = 0.0;
 	initialized_cf_min = 0.0;
-
+	
+	
+	
 	channel_count_ = 1;
+	pole_dampings_.create(1);
+	
 
 	is_reset = false;
 	reseted_inobservations = 0;
@@ -55,6 +62,7 @@ AimPZFC2::AimPZFC2(const AimPZFC2& a): MarSystem(a)
 	reseted_agc_factor = 0;
 
 	channel_count_ = 1;
+	pole_dampings_.create(1);
 	
 
 	ctrl_pole_damping_ = getctrl("mrs_real/pole_damping");
@@ -118,6 +126,7 @@ AimPZFC2::myUpdate(MarControlPtr sender)
 	// the centre frequencies
 	ctrl_onObservations_->setValue(channel_count_ , NOUPDATE);
 
+
 	//
 	// Does the MarSystem need initialization?
 	//
@@ -160,220 +169,230 @@ AimPZFC2::myUpdate(MarControlPtr sender)
 
 bool
 AimPZFC2::InitializeInternal() {
-	channel_count_ = 0;
-	SetPZBankCoeffs();
-	return true;
+  channel_count_ = 1;
+  SetPZBankCoeffs();
+  return true;
 }
 
 void
 AimPZFC2::ResetInternal() {
-	// cout << "AimPZFC2::ResetInternal" << endl;
+  // cout << "AimPZFC2::ResetInternal" << endl;
 
-	// These buffers may be actively modified by the algorithm
-	agc_state_.clear();
-	agc_state_.resize(channel_count_);
-	for (int i = 0; i < channel_count_; ++i) {
-		agc_state_[i].clear();
-		agc_state_[i].resize(agc_stage_count_, 0.0);
-	}
+  // These buffers may be actively modified by the algorithm
+  agc_state_.clear();
+  agc_state_.resize(channel_count_);
+  for (int i = 0; i < channel_count_; ++i) {
+	agc_state_[i].clear();
+	agc_state_[i].resize(agc_stage_count_, 0.0);
+  }
 
-	state_1_.clear();
-	state_1_.resize(channel_count_, 0.0);
+  state_1_.clear();
+  state_1_.resize(channel_count_, 0.0);
 
-	state_2_.clear();
-	state_2_.resize(channel_count_, 0.0);
+  state_2_.clear();
+  state_2_.resize(channel_count_, 0.0);
 
-	previous_out_.clear();
-	previous_out_.resize(channel_count_, 0.0);
+  previous_out_.clear();
+  previous_out_.resize(channel_count_, 0.0);
 
-	pole_damps_mod_.clear();
-	pole_damps_mod_.resize(channel_count_, 0.0);
+  pole_damps_mod_.clear();
+  pole_damps_mod_.resize(channel_count_, 0.0);
 
-	inputs_.clear();
-	inputs_.resize(channel_count_, 0.0);
+  inputs_.clear();
+  inputs_.resize(channel_count_, 0.0);
 
-	// Init AGC
-	offset_ = 1.0 - ctrl_agc_factor_->to<mrs_real>() * DetectFun(0.0);
-	agc_factor_ = ctrl_agc_factor_->to<mrs_real>();	
-	AGCDampStep();
-	// pole_damps_mod_ and agc_state_ are now be initialized
+  // Init AGC
+  offset_ = 1.0 - ctrl_agc_factor_->to<mrs_real>() * DetectFun(0.0);
+  agc_factor_ = ctrl_agc_factor_->to<mrs_real>();	
+  AGCDampStep();
+  // pole_damps_mod_ and agc_state_ are now be initialized
 
-	// Modify the pole dampings and AGC state slightly from their values in
-	// silence in case the input is abuptly loud.
-	for (int i = 0; i < channel_count_; ++i) {
-		pole_damps_mod_[i] += 0.05;
-		for (int j = 0; j < agc_stage_count_; ++j)
-			agc_state_[i][j] += 0.05;
-	}
+  // Modify the pole dampings and AGC state slightly from their values in
+  // silence in case the input is abuptly loud.
+  for (int i = 0; i < channel_count_; ++i) {
+	pole_damps_mod_[i] += 0.05;
+	for (int j = 0; j < agc_stage_count_; ++j)
+	  agc_state_[i][j] += 0.05;
+  }
 
-	last_input_ = 0.0;
+  last_input_ = 0.0;
 }
 
 bool
 AimPZFC2::SetPZBankCoeffs() {
-	/*! \todo Re-implement the alternative parameter settings
-	 */
-	if (ctrl_use_fit_->to<mrs_bool>()) {
-		if (!SetPZBankCoeffsERBFitted())
-			return false;
-	} else {
-		if (!SetPZBankCoeffsOrig())
-			return false;
-	}
+  /*! \todo Re-implement the alternative parameter settings
+   */
 
-	double mindamp = ctrl_mindamp_->to<mrs_real>();
-	double maxdamp = ctrl_maxdamp_->to<mrs_real>();
+  
+  if (ctrl_use_fit_->to<mrs_bool>()) {
+	if (!SetPZBankCoeffsERBFitted())
+	  return false;
+  } else {
+	if (!SetPZBankCoeffsOrig())
+	  return false;
+  }
 
-	rmin_.resize(channel_count_);
-	rmax_.resize(channel_count_);
-	xmin_.resize(channel_count_);
-	xmax_.resize(channel_count_);
+  double mindamp = ctrl_mindamp_->to<mrs_real>();
+  double maxdamp = ctrl_maxdamp_->to<mrs_real>();
 
-	for (int c = 0; c < channel_count_; ++c) {
-		// Calculate maximum and minimum damping options
-		rmin_[c] = exp(-mindamp * pole_frequencies_[c]);
-		rmax_[c] = exp(-maxdamp * pole_frequencies_[c]);
+  rmin_.resize(channel_count_);
+  rmax_.resize(channel_count_);
+  xmin_.resize(channel_count_);
+  xmax_.resize(channel_count_);
 
-		xmin_[c] = rmin_[c] * cos(pole_frequencies_[c]
-								  * pow((1-pow(mindamp, 2)), 0.5));
-		xmax_[c] = rmax_[c] * cos(pole_frequencies_[c]
-								  * pow((1-pow(maxdamp, 2)), 0.5));
+  for (int c = 0; c < channel_count_; ++c) {
+	// Calculate maximum and minimum damping options
+	rmin_[c] = exp(-mindamp * pole_frequencies_(c));
+	rmax_[c] = exp(-maxdamp * pole_frequencies_(c));
 
-	}
+	xmin_[c] = rmin_[c] * cos(pole_frequencies_(c)
+							  * pow((1-pow(mindamp, 2)), 0.5));
+	xmax_[c] = rmax_[c] * cos(pole_frequencies_(c)
+							  * pow((1-pow(maxdamp, 2)), 0.5));
 
-	// Set up AGC parameters
-	agc_stage_count_ = 4;
-	agc_epsilons_.resize(agc_stage_count_);
-	agc_epsilons_[0] = 0.0064;
-	agc_epsilons_[1] = 0.0016;
-	agc_epsilons_[2] = 0.0004;
-	agc_epsilons_[3] = 0.0001;
+  }
 
-	agc_gains_.resize(agc_stage_count_);
-	agc_gains_[0] = 1.0;
-	agc_gains_[1] = 1.4;
-	agc_gains_[2] = 2.0;
-	agc_gains_[3] = 2.8;
+  // Set up AGC parameters
+  agc_stage_count_ = 4;
+  agc_epsilons_.create(agc_stage_count_);
+  agc_epsilons_(0) = 0.0064;
+  agc_epsilons_(1) = 0.0016;
+  agc_epsilons_(2) = 0.0004;
+  agc_epsilons_(3) = 0.0001;
 
-	double mean_agc_gain = 0.0;
-	for (int c = 0; c < agc_stage_count_; ++c)
-		mean_agc_gain += agc_gains_[c];
-	mean_agc_gain /= static_cast<double>(agc_stage_count_);
+  agc_gains_.create(agc_stage_count_);
+  agc_gains_(0) = 1.0;
+  agc_gains_(1) = 1.4;
+  agc_gains_(2) = 2.0;
+  agc_gains_(3) = 2.8;
 
-	for (int c = 0; c < agc_stage_count_; ++c)
-		agc_gains_[c] /= mean_agc_gain;
+  double mean_agc_gain = 0.0;
+  for (int c = 0; c < agc_stage_count_; ++c)
+	mean_agc_gain += agc_gains_(c);
+  mean_agc_gain /= static_cast<double>(agc_stage_count_);
 
-	return true;
+  for (int c = 0; c < agc_stage_count_; ++c)
+	agc_gains_(c) /= mean_agc_gain;
+
+  return true;
 }
 
 bool 
 AimPZFC2::SetPZBankCoeffsOrig() {
-	// This function sets the following variables:
-	// channel_count_
-	// pole_dampings_
-	// pole_frequencies_
-	// za0_, za1_, za2
-	// output_
+  // This function sets the following variables:
+  // channel_count_
+  // pole_dampings_
+  // pole_frequencies_
+  // za0_, za1_, za2
+  // output_
 
-	double sample_rate = getctrl("mrs_real/israte")->to<mrs_real>();
-	double cf_max = getctrl("mrs_real/cf_max")->to<mrs_real>();
-	double cf_min = getctrl("mrs_real/cf_min")->to<mrs_real>();
-	double bandwidth_over_cf = getctrl("mrs_real/bandwidth_over_cf")->to<mrs_real>();
-	double min_bandwidth_hz = getctrl("mrs_real/min_bandwidth_hz")->to<mrs_real>();
-	double step_factor = getctrl("mrs_real/step_factor")->to<mrs_real>();
-	double pole_damping = getctrl("mrs_real/pole_damping")->to<mrs_real>();
-	double zero_factor = getctrl("mrs_real/zero_factor")->to<mrs_real>();
-	double zero_damping = getctrl("mrs_real/zero_damping")->to<mrs_real>();
+  double sample_rate = getctrl("mrs_real/israte")->to<mrs_real>();
+  double cf_max = getctrl("mrs_real/cf_max")->to<mrs_real>();
+  double cf_min = getctrl("mrs_real/cf_min")->to<mrs_real>();
+  double bandwidth_over_cf = getctrl("mrs_real/bandwidth_over_cf")->to<mrs_real>();
+  double min_bandwidth_hz = getctrl("mrs_real/min_bandwidth_hz")->to<mrs_real>();
+  double step_factor = getctrl("mrs_real/step_factor")->to<mrs_real>();
+  double pole_damping = getctrl("mrs_real/pole_damping")->to<mrs_real>();
+  double zero_factor = getctrl("mrs_real/zero_factor")->to<mrs_real>();
+  double zero_damping = getctrl("mrs_real/zero_damping")->to<mrs_real>();
+  
+  // TODO(tomwalters): There's significant code-duplication between this function
+  // and SetPZBankCoeffsERBFitted, and SetPZBankCoeffs
+  
+  // Normalised maximum pole frequency
+  double pole_frequency = cf_max / sample_rate * (2.0 * PI);
+  channel_count_ = 0;
+  while ((pole_frequency / (2.0 * PI)) * sample_rate > cf_min) {
+	double bw = bandwidth_over_cf * pole_frequency + 2 * PI * min_bandwidth_hz / sample_rate;
+	pole_frequency -= step_factor * bw;
+	channel_count_++;
+  }
+  
 
-	// TODO(tomwalters): There's significant code-duplication between this function
-	// and SetPZBankCoeffsERBFitted, and SetPZBankCoeffs
+  // Now the number of channels is known, various buffers for the filterbank
+  // coefficients can be initialised
+  
+  
 
-	// Normalised maximum pole frequency
-	double pole_frequency = cf_max / sample_rate * (2.0 * PI);
-	channel_count_ = 0;
-	while ((pole_frequency / (2.0 * PI)) * sample_rate > cf_min) {
-		double bw = bandwidth_over_cf * pole_frequency + 2 * PI * min_bandwidth_hz / sample_rate;
-		pole_frequency -= step_factor * bw;
-		channel_count_++;
-	}
+  
+  pole_dampings_.stretch(channel_count_);
+  pole_dampings_.setval(pole_damping);
+  
+  
+  pole_frequencies_.stretch(channel_count_);
+  pole_frequencies_.setval(0.0);
+  
 
-
-	// Now the number of channels is known, various buffers for the filterbank
-	// coefficients can be initialised
-	pole_dampings_.clear();
-	pole_dampings_.resize(channel_count_, pole_damping);
-	pole_frequencies_.clear();
-	pole_frequencies_.resize(channel_count_, 0.0);
-
-	// Direct-form coefficients
-	za0_.clear();
-	za0_.resize(channel_count_, 0.0);
-	za1_.clear();
-	za1_.resize(channel_count_, 0.0);
-	za2_.clear();
-	za2_.resize(channel_count_, 0.0);
-
-	// The output signal bank
-	// output_.Initialize(channel_count_, buffer_length_, sample_rate);
-
-	// cout.precision(20);
-
-	// cout << "********** 1/3=" << 1.0/3.0 << endl;
-
-	// Reset the pole frequency to maximum
-	pole_frequency = cf_max / sample_rate * (2.0 * PI);
-	// cout << "cf_max=" << cf_max << endl;
-	// cout << "sample_rate=" << sample_rate << endl;
-	// cout << "pole_frequency=" << pole_frequency << endl;
-
-	centre_frequencies_.clear();
-	centre_frequencies_.resize(channel_count_);
-
-	for (int i = channel_count_ - 1; i > -1; --i) {
-		// cout << "i=" << i << endl;
-
-		// Store the normalised pole frequncy
-		pole_frequencies_[i] = pole_frequency;
-
-		// Calculate the real pole frequency from the normalised pole frequency
-		double frequency = pole_frequency / (2.0 * PI) * sample_rate;
-		// cout << "\tfrequency=" << frequency << endl;
-
+  
+  // Direct-form coefficients
+  za0_.clear();
+  za0_.resize(channel_count_, 0.0);
+  za1_.clear();
+  za1_.resize(channel_count_, 0.0);
+  za2_.clear();
+  za2_.resize(channel_count_, 0.0);
+  
+  // The output signal bank
+  // output_.Initialize(channel_count_, buffer_length_, sample_rate);
+  
+  // cout.precision(20);
+  
+  // cout << "********** 1/3=" << 1.0/3.0 << endl;
+  
+  // Reset the pole frequency to maximum
+  pole_frequency = cf_max / sample_rate * (2.0 * PI);
+  // cout << "cf_max=" << cf_max << endl;
+  // cout << "sample_rate=" << sample_rate << endl;
+  // cout << "pole_frequency=" << pole_frequency << endl;
+  
+  centre_frequencies_.clear();
+  centre_frequencies_.resize(channel_count_);
+  
+  for (int i = channel_count_ - 1; i > -1; --i) {
+	// cout << "i=" << i << endl;
+	
+	// Store the normalised pole frequncy
+	pole_frequencies_(i) = pole_frequency;
+	
+	// Calculate the real pole frequency from the normalised pole frequency
+	double frequency = pole_frequency / (2.0 * PI) * sample_rate;
+	// cout << "\tfrequency=" << frequency << endl;
+	
 		// Store the real pole frequency as the 'centre frequency' of the filterbank
-		// channel
-		centre_frequencies_[i] = frequency;
-		// output_.set_centre_frequency(i, frequency);
-
-		double zero_frequency = Minimum(PI, zero_factor * pole_frequency);
-		// cout << "\tzero_frequency=" << zero_frequency << endl;
-
-		// Impulse-invariance mapping
-		double z_plane_theta = zero_frequency * sqrt(1.0 - pow(zero_damping, 2));
-		double z_plane_rho = exp(-zero_damping * zero_frequency);
-		// cout << "\tz_plane_theta=" << z_plane_theta << endl;
-		// cout << "\tz_plane_rho=" << z_plane_rho << endl;
-		// Direct-form coefficients from z-plane rho and theta
-		double a1 = -2.0 * z_plane_rho * cos(z_plane_theta);
-		double a2 = z_plane_rho * z_plane_rho;
-
-		// Normalised to unity gain at DC
-		double a_sum = 1.0 + a1 + a2;
-		// cout << "\ta1=" << a1 << endl;
-		// cout << "\ta2=" << a2 << endl;
-		// cout << "\ta_sum=" << a_sum << endl;
-
-		za0_[i] = 1.0 / a_sum;
-		za1_[i] = a1 / a_sum;
-		za2_[i] = a2 / a_sum;
-
-		// Subtract step factor (1/n2) times current bandwidth from the pole
-		// frequency
-		double bw = bandwidth_over_cf * pole_frequency + 2 * PI * min_bandwidth_hz / sample_rate;
-		// cout << "\tmin_bandwidth_hz_=" << min_bandwidth_hz << endl;
-		// cout << "\tbw=" << bw << endl;
-		// cout << "\tstep_factor=" << step_factor << endl;
-		pole_frequency -= step_factor * bw;
-	}
+	// channel
+	centre_frequencies_[i] = frequency;
+	// output_.set_centre_frequency(i, frequency);
+	
+	double zero_frequency = Minimum(PI, zero_factor * pole_frequency);
+	// cout << "\tzero_frequency=" << zero_frequency << endl;
+	
+	// Impulse-invariance mapping
+	double z_plane_theta = zero_frequency * sqrt(1.0 - pow(zero_damping, 2));
+	double z_plane_rho = exp(-zero_damping * zero_frequency);
+	// cout << "\tz_plane_theta=" << z_plane_theta << endl;
+	// cout << "\tz_plane_rho=" << z_plane_rho << endl;
+	// Direct-form coefficients from z-plane rho and theta
+	double a1 = -2.0 * z_plane_rho * cos(z_plane_theta);
+	double a2 = z_plane_rho * z_plane_rho;
+	
+	// Normalised to unity gain at DC
+	double a_sum = 1.0 + a1 + a2;
+	// cout << "\ta1=" << a1 << endl;
+	// cout << "\ta2=" << a2 << endl;
+	// cout << "\ta_sum=" << a_sum << endl;
+	
+	za0_[i] = 1.0 / a_sum;
+	za1_[i] = a1 / a_sum;
+	za2_[i] = a2 / a_sum;
+	
+	// Subtract step factor (1/n2) times current bandwidth from the pole
+	// frequency
+	double bw = bandwidth_over_cf * pole_frequency + 2 * PI * min_bandwidth_hz / sample_rate;
+	// cout << "\tmin_bandwidth_hz_=" << min_bandwidth_hz << endl;
+	// cout << "\tbw=" << bw << endl;
+	// cout << "\tstep_factor=" << step_factor << endl;
+	pole_frequency -= step_factor * bw;
+  }
 
 	return true;
 }
@@ -524,8 +543,14 @@ AimPZFC2::SetPZBankCoeffsERBFitted() {
 
 	// Now the number of channels is known, various buffers for the filterbank
 	// coefficients can be initialised
-	pole_dampings_.clear();
-	pole_dampings_.resize(channel_count_, 0.0);
+
+
+	cout << "channel_count_ = " << channel_count_ << endl;
+	pole_dampings_.stretch(channel_count_);
+	pole_dampings_.setval(0.0);
+	cout << pole_dampings_ << endl;
+	
+
 	pole_frequencies_.clear();
 	pole_frequencies_.resize(channel_count_, 0.0);
 
@@ -545,7 +570,7 @@ AimPZFC2::SetPZBankCoeffsERBFitted() {
 
 	for (int i = channel_count_ - 1; i > -1; --i) {
 		// Store the normalised pole frequncy
-		pole_frequencies_[i] = pole_frequency;
+	  pole_frequencies_(i) = pole_frequency;
 
 		// Calculate the real pole frequency from the normalised pole frequency
 		double frequency = pole_frequency / (2.0 * PI) * sample_rate;
@@ -582,7 +607,10 @@ AimPZFC2::SetPZBankCoeffsERBFitted() {
 		double pole_damping = fPBW / sqrt(pow(pole_frequency, 2) + pow(fPBW, 2));
 
 		// Store the pole damping
-		pole_dampings_[i] = pole_damping;
+		pole_dampings_(i) = pole_damping;
+
+		cout << "pole_damping = " << pole_damping << endl;
+		
 
 		// Zero bandwidth
 		double fZBW = ((p[0] * p[5] * fERBw * (2 * PI) / sample_rate) / 2)
@@ -638,7 +666,7 @@ AimPZFC2::AGCDampStep() {
 
 		for (int c = 0; c < channel_count_; c++)
 			for (int st = 0; st < agc_stage_count_; st++)
-				agc_state_[c][st] = (1.2 * detect_[c] * agc_gains_[st]);
+			  agc_state_[c][st] = (1.2 * detect_[c] * agc_gains_(st));
 	}
 
 	double fAGCEpsLeft = 0.3;
@@ -674,8 +702,8 @@ AimPZFC2::AGCDampStep() {
 				+ (1.0 - fAGCEpsLeft - fAGCEpsRight) * fCurrAGCState
 				+ fAGCEpsRight * fNextAGCState;
 			// Temporal smoothing
-			agc_state_[c][st] = agc_avg * (1.0 - agc_epsilons_[st])
-				+ agc_epsilons_[st] * detect_[c] * agc_gains_[st];
+			agc_state_[c][st] = agc_avg * (1.0 - agc_epsilons_(st))
+				+ agc_epsilons_(st) * detect_[c] * agc_gains_(st);
 		}
 	}
 
@@ -689,7 +717,8 @@ AimPZFC2::AGCDampStep() {
 
 		fAGCStateMean /= static_cast<double>(agc_stage_count_);
 
-		pole_damps_mod_[i] = pole_dampings_[i] *
+		
+		pole_damps_mod_[i] = pole_dampings_(i) *
 			(offset_ + agc_factor_ * fAGCStateMean);
 	}
 }
@@ -746,7 +775,7 @@ AimPZFC2::myProcess(realvec& in, realvec& out)
 				double r = rmin_[c] + (rmax_[c] - rmin_[c]) * interp_factor;
 
 				// optional improvement to constellation adds a bit to r
-				double fd = pole_frequencies_[c] * pole_damps_mod_[c];
+				double fd = pole_frequencies_(c) * pole_damps_mod_[c];
 				// quadratic for small values, then linear
 				r = r + 0.25 * fd * Minimum(0.05, fd);
 

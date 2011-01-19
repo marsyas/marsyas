@@ -127,13 +127,14 @@ private:
   // Internal Buffers
   // Initialised once
   //
-  // sness - TODO - Eventually make these realvecs.  However, in the
-  // existing code there is quite a bit of stuff that involves STL
-  // methods, so I thought it would be safer to use STL for now.
-  std::vector<double> pole_dampings_;
-  std::vector<double> agc_epsilons_;
-  std::vector<double> agc_gains_;
-  std::vector<double> pole_frequencies_;
+  
+  mrs_realvec pole_dampings_;
+  mrs_realvec agc_epsilons_;
+  mrs_realvec agc_gains_;
+  mrs_realvec pole_frequencies_;
+  
+  
+
   std::vector<double> za0_;
   std::vector<double> za1_;
   std::vector<double> za2_;
