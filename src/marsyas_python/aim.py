@@ -78,7 +78,7 @@ def plot_figure(fname, duration):
 	inSamples.setValue_natural(winSize)
 	mode.setValue_string("sum_samples");
 	# factor.setValue_natural(32)
-	acr_compress.setValue_real(0.7);
+	acr_compress.setValue_real(0.75);
 	srate = 44100.0
        	filterbank_output = net.getControl("AimHCL2/aimhcl2/mrs_realvec/processedData")
 

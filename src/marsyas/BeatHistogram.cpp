@@ -105,9 +105,7 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 				amp = 0.0;
 			
 
-			// amp = in(o,t) / (inSamples_-t);
-			
-	
+			amp = in(o,t) / (inSamples_-t);
 			// amp = in(o,t) / in(o,0); // normalize so that 0-lag is 1 
 		  
 			if ((bin > 40)&&(bin < endBin_))
@@ -147,6 +145,20 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 			}
 		  
 		}
+
+	mrs_real weight;
+	for (int i=startBin_; i < endBin_; i++)
+	  {
+	    weight = (128.0 - i) * 0.005;
+	    if (weight < 0.0) 
+	      weight = 0.0;
+	    weight = weight * weight * weight;
+	    out(0,i) += out(0,i) * (weight /3.0);
+	  }
+	    
+	
+
+	
 
 #ifdef MARSYAS_MATLAB
 #ifdef MTLB_DBG_LOG

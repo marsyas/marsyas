@@ -685,7 +685,7 @@ tempo_aim(string sfName, float ground_truth_tempo, string resName, bool haveColl
   net->addMarSystem(mng.create("AimPZFC2/aimpzfc"));
   net->addMarSystem(mng.create("AimHCL2/aimhcl2"));
   net->addMarSystem(mng.create("Sum/sum"));
-  net->addMarSystem(mng.create("Delta/delta"));
+  // net->addMarSystem(mng.create("Delta/delta"));
 
 
   net->addMarSystem(mng.create("AutoCorrelation/acr"));
