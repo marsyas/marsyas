@@ -38,8 +38,14 @@ def create_network():
 				    "Sum/sum", 
 				    "AutoCorrelation/acr", 
 				    "BeatHistogram/histo",
+
+				    
+
 				    "Peaker/pkr", 
 				    "MaxArgMax/mxr"]))
+	
+
+
 	return net
 
 
@@ -85,9 +91,13 @@ def plot_figure(fname, duration):
 	net.updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
 	net.updControl("BeatHistogram/histo/mrs_natural/endBin", 300);
 	
+	net.updControl("Peaker/pkr/mrs_natural/peakStart", 50);
+	net.updControl("Peaker/pkr/mrs_natural/peakEnd", 150);
 
+	tempoWeight = net.getControl("BeatHistogram/histo/mrs_bool/tempoWeighting")
+	tempoWeight.setValue_bool(True)
 	
-	for i in range(1,4):
+	for i in range(1,3):
 		net.tick()
 
 		data = filterbank_output.to_realvec()
@@ -97,20 +107,20 @@ def plot_figure(fname, duration):
 		bhistodata = net.getControl("BeatHistogram/histo/mrs_realvec/processedData").to_realvec();
 
 		peaks = net.getControl("Peaker/pkr/mrs_realvec/processedData");
-		figure()
-		plot(peaks.to_realvec())
+		#figure()
+		#plot(peaks.to_realvec())
 
 		max_peak = net.getControl("mrs_realvec/processedData");
 		print max_peak.to_realvec()
 
-		figure()
-		plot(ossdata)
-		figure() 
-		plot(acrdata)
+		#figure()
+		#plot(ossdata)
+		#figure() 
+		#plot(acrdata)
 		figure()
 		plot(bhistodata)
-		print imgdata.shape
-		print ossdata.getSize()
+		#print imgdata.shape
+		#print ossdata.getSize()
 	# (values, vecs) = pca(imgdata.transpose())
 	# figure()
 	# plot(vecs[1])
@@ -127,8 +137,8 @@ def plot_figure(fname, duration):
 	# plot(vecs[5])
 	# print vecs.shape
 	
-		figure()
-		imshow(imgdata.transpose(), cmap = 'gray', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
+#		figure()
+#		imshow(imgdata.transpose(), cmap = 'gray', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
 		show();
 
        	raw_input("Press any key to continue")

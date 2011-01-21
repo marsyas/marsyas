@@ -20,6 +20,9 @@
 #include "BeatHistogram.h"
 
 using std::ostringstream;
+using std::cout;
+using std::endl;
+
 using namespace Marsyas;
 
 //#define MTLB_DBG_LOG
@@ -52,6 +55,8 @@ BeatHistogram::addControls()
 	addctrl("mrs_natural/endBin", 100);
 	setctrlState("mrs_natural/endBin", true);
 	addctrl("mrs_real/factor", 1.0);
+	addctrl("mrs_bool/tempoWeighting", false);
+	
   
 }
 
@@ -96,68 +101,73 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 #endif
 #endif
 
-	for (mrs_natural o=0; o < inObservations_; o++)
-		for (mrs_natural t = 1; t < inSamples_; t++)
-		{
-			bin = (mrs_natural)((srate * 60.0  * factor_ / (t+1)) + 0.5);
-			amp = in(o,t);
-			if (amp < 0.0) 
-				amp = 0.0;
-			
-
-			amp = in(o,t) / (inSamples_-t);
-			// amp = in(o,t) / in(o,0); // normalize so that 0-lag is 1 
-		  
-			if ((bin > 40)&&(bin < endBin_))
-			{
-			  
-				if (prev_bin == bin) 
-				{
-					sumamp += amp;
-					count++;
-				}
-			  
-				else 
-				{
-					sumamp += amp;
-					out(0,prev_bin) += ((sumamp / count));
-				  
-				  
-					// if ((sumamp / count) >= out(0,prev_bin)) 
-					// {
-					// out(0,prev_bin) = sumamp/ count;
-					// }
-				  
-					count = 1;
-					sumamp = 0.0;
-				}
-				
-				// linear interpolation of the "not-set" bins...
-				if (pprev_bin-prev_bin > 1)
-				{
-					mrs_natural len = prev_bin-pprev_bin-1;
-					for (mrs_natural k = prev_bin+1; k < pprev_bin; k++)
-						out (0,k)	= (k-prev_bin)*(out(0,prev_bin)-out(0,pprev_bin))/len + out(0,prev_bin);
-				}
-
-				pprev_bin = prev_bin;
-				prev_bin = bin;	  
-			}
-		  
-		}
-
-	mrs_real weight;
-	for (int i=startBin_; i < endBin_; i++)
-	  {
-	    weight = (128.0 - i) * 0.005;
-	    if (weight < 0.0) 
-	      weight = 0.0;
-	    weight = weight * weight * weight;
-	    out(0,i) += out(0,i) * (weight /3.0);
-	  }
-	    
 	
+	for (mrs_natural o=0; o < inObservations_; o++)
+	{
+	  for (mrs_natural t = 1; t < inSamples_; t++)
+	  {
+		bin = (mrs_natural)((srate * 60.0  * factor_ / (t+1)) + 0.5);
+		amp = in(o,t);
+		if (amp < 0.0) 
+		  amp = 0.0;
 
+
+		// amp = in(o,t) / (inSamples_- t);
+		// amp = in(o,t) / in(o,0); // normalize so that 0-lag is 1 
+
+		if ((bin > 40)&&(bin < endBin_))
+		{
+		  if (prev_bin == bin) 
+		  {
+			sumamp += amp;
+			count++;
+		  }
+		  else 
+		  {
+			sumamp += amp;
+			out(o,prev_bin) += ((sumamp / count));
+
+			// if ((sumamp / count) >= out(0,prev_bin)) 
+			// {
+			// out(0,prev_bin) = sumamp/ count;
+			// }
+
+			count = 1;
+			sumamp = 0.0;
+		  }
+
+		  // linear interpolation of the "not-set" bins...
+		  if (pprev_bin-prev_bin > 1)
+		  {
+			mrs_natural len = prev_bin-pprev_bin-1;
+			for (mrs_natural k = prev_bin+1; k < pprev_bin; k++)
+			  out (o,k)	= (k-prev_bin)*(out(o,prev_bin)-out(o,pprev_bin))/len + out(o,prev_bin);
+		  }
+
+		  pprev_bin = prev_bin;
+		  prev_bin = bin;
+		}
+	  }
+
+
+	  if (getctrl("mrs_bool/tempoWeighting")->to<mrs_bool>())
+	  {
+
+		mrs_real weight;
+		for (int i=startBin_; i < endBin_; i++)
+		{
+		  weight = (100.0 - i) * 0.018;
+		  if (weight < 0.0) 
+			weight = 0.0;
+		  weight = weight * weight * weight;
+		  // out(0,i) += out(0,i) * (weight /3.0);
+		  out(o,i) = out(o,i);
+
+		  // out(0,i) = (weight /3.0);
+		}
+	  }
+
+	}
 	
 
 #ifdef MARSYAS_MATLAB
@@ -166,15 +176,5 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		MATLAB_EVAL("figure(2);plot(bh),grid on");
 #endif
 #endif
-  
+
 }
-
-
-
-
-
-
-
-	
-
-	

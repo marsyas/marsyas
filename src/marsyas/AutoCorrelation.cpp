@@ -237,6 +237,8 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 		if (myNorm > 0)
 			out	/= myNorm;
 	}
+	
+	
 
 	/*
 	MATLAB_PUT(in, "corr_in");
