@@ -111,7 +111,7 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		if (amp < 0.0) 
 		  amp = 0.0;
 
-
+		
 		// amp = in(o,t) / (inSamples_- t);
 		// amp = in(o,t) / in(o,0); // normalize so that 0-lag is 1 
 
@@ -153,17 +153,21 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 	  if (getctrl("mrs_bool/tempoWeighting")->to<mrs_bool>())
 	  {
 
+
+		
 		mrs_real weight;
 		for (int i=startBin_; i < endBin_; i++)
 		{
-		  weight = (100.0 - i) * 0.018;
-		  if (weight < 0.0) 
-			weight = 0.0;
-		  weight = weight * weight * weight;
-		  // out(0,i) += out(0,i) * (weight /3.0);
-		  out(o,i) = out(o,i);
 
-		  // out(0,i) = (weight /3.0);
+		  weight = 1.0 - (400.0 - i)*(400.0-i);
+		  
+		  // weight = (400.0 - i) * 0.018;
+		  // if (weight < 0.0) 
+		  // weight = 0.0;
+		  // weight = weight * weight * weight;
+		  // out(0,i) += out(0,i) * (weight /3.0);
+		   out(o,i) = out(o,i);
+
 		}
 	  }
 

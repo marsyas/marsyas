@@ -67,6 +67,8 @@ private:
 	MarControlPtr ctrl_aliasedOutput_;
 	MarControlPtr ctrl_makePositive_;
 	MarControlPtr ctrl_setr0to1_;
+  MarControlPtr ctrl_setr0to0_;
+  
 	
 
   virtual void addControls();

@@ -310,11 +310,12 @@ Peaker::myProcess(realvec& in, realvec& out)
 					if (third_ < (peakEnd - peakStart))
 					{
 						peakFound = true;
-						
-						// peak has to be larger than neighbors 			
+
+						// peak has to be larger than neighbors
+
 						for (int j = 1; j < peakNeighbors; j++)
 						{
-							if (in(o,third_-j) >= in(o,third_)) 
+							if (in(o,third_-j) >= in(o,third_))
 							{
 								peakFound = false;
 								break;
@@ -325,20 +326,19 @@ Peaker::myProcess(realvec& in, realvec& out)
 								break;
 							}
 						}
-						
-						
+
 						if (peakFound)
 						{
 							out(o, maxIndex) += (in(o, third_)/rms_);
 							out(o, third_) = in(o,third_)/rms_ + 0.5 * out(o, maxIndex);
 						}
-						
+
 					}
 				}
-				
+
 				peakFound = true;
 			}
-			
+
 		}
 	}
 }

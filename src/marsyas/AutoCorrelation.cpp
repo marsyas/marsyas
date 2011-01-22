@@ -49,6 +49,7 @@ AutoCorrelation::AutoCorrelation(const AutoCorrelation& a):MarSystem(a)
 	ctrl_aliasedOutput_ = getctrl("mrs_bool/aliasedOutput");
 	ctrl_makePositive_ = getctrl("mrs_bool/makePositive");
 	ctrl_setr0to1_ = getctrl("mrs_bool/setr0to1");
+	ctrl_setr0to0_ = getctrl("mrs_bool/setr0to0");
 }
 
 void
@@ -61,6 +62,8 @@ AutoCorrelation::addControls()
 	addctrl("mrs_bool/aliasedOutput", false, ctrl_aliasedOutput_);
 	addctrl("mrs_bool/makePositive", false, ctrl_makePositive_);
 	addctrl("mrs_bool/setr0to1", false, ctrl_setr0to1_);
+	addctrl("mrs_bool/setr0to0", true, ctrl_setr0to0_);
+	
 	
 	ctrl_normalize_->setState(true);
 	ctrl_octaveCost_->setState(true);
@@ -237,6 +240,25 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 		if (myNorm > 0)
 			out	/= myNorm;
 	}
+
+	
+	if (ctrl_setr0to0_->to<mrs_bool>())
+	{
+	  for (o=0; o < onObservations_; o++)
+		out(o,0) = 0.0;
+	  
+	  for (o=0; o < onObservations_; o++)
+	   	for (t=1; t< onSamples_-2; t++)
+	   	  out(o,t) = out(o,t) / (onSamples_ - 2 - t);
+	   
+	  
+
+	}
+	
+	
+
+
+
 	
 	
 

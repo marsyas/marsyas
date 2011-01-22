@@ -54,10 +54,12 @@ public:
 	MarSystem* clone() const;
 	void phaseRandomize(realvec& in, realvec& out);
 	void singlebin(realvec& in, realvec& out);
+    void three_peaks(realvec& in, realvec& out);
+  void compress_magnitude(realvec& in, realvec& out);
+  
 	void myProcess(realvec& in, realvec& out);
 };
 
 }
 
 #endif
-

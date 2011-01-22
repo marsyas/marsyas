@@ -33,7 +33,6 @@ SpectralTransformations::SpectralTransformations(const SpectralTransformations& 
 {
 	ctrl_gain_ = getctrl("mrs_real/gain");
 	ctrl_mode_ = getctrl("mrs_string/mode");
-	
 }
 
 
@@ -52,8 +51,6 @@ SpectralTransformations::addControls()
 {
 	addctrl("mrs_real/gain", 1.0, ctrl_gain_);
 	addctrl("mrs_string/mode", "singlebin", ctrl_mode_);
-	
-
 }
 
 void
@@ -107,6 +104,154 @@ SpectralTransformations::phaseRandomize(realvec& in, realvec& out)
 			
 		}
 }
+
+
+
+void 
+SpectralTransformations::compress_magnitude(realvec& in, realvec& out)
+{
+  mrs_natural t,o;
+  for(t=0; t < inSamples_; ++t)
+	for (o=0; o < N2_; o++)
+	{
+	  if (o==0) //DC bin (i.e. 0)
+	  {
+		re_ = in(0,t);
+		im_ = 0.0;
+	  }
+	  else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+	  {
+		re_ = in(1,t);
+		im_ = 0.0;
+	  }
+	  else //all other bins
+	  {
+		re_ = in(2*o, t);
+		// randomize phase 
+		im_ = in(2*o+1,t);
+	  }
+	  
+	  mag_ = sqrt(re_ * re_ + im_ * im_);
+	  phs_ = -atan2(im_, re_);
+	  
+	  if (o < N2_-1)
+	  {
+		out(2*o,t) = log(1+1000.0 * mag_) * cos(phs_);
+		out(2*o+1,t) = log(1+1000.0 * mag_) * sin(phs_);
+	  }
+	  
+	}
+  
+  
+}
+
+
+
+void 
+SpectralTransformations::three_peaks(realvec& in, realvec& out)
+{
+	mrs_natural t,o;
+	mrs_real max_mag = 0.0;
+	mrs_real second_max_mag = 0.0;
+	mrs_real third_max_mag = 0.0;
+	mrs_natural max_o;
+	mrs_natural second_max_o;
+	mrs_natural third_max_o;
+
+	
+	
+
+	
+	for(t=0; t < inSamples_; ++t)
+	  for (o=0; o < N2_; o++)
+	  {
+		if (o==0) //DC bin (i.e. 0)
+		{
+		  re_ = in(0,t);
+		  im_ = 0.0;
+		}
+		else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+		{
+		  re_ = in(1,t);
+		  im_ = 0.0;
+		}
+		else //all other bins
+		{
+		  re_ = in(2*o, t);
+		  im_ = in(2*o+1,t);
+		}
+
+		mag_ = sqrt(re_ * re_ + im_ * im_);
+
+		
+
+		if ((mag_ > max_mag) && (o > 2))
+		{
+		  max_mag = mag_;
+		  max_o = o;
+		}
+		if ((mag_ < max_mag) && (mag_ > second_max_mag) && (o > 2))
+		{
+		  second_max_mag = mag_;
+		  second_max_o = o;
+		}
+
+
+		if ((mag_ < max_mag) && (mag_ < second_max_mag) && (mag_ > third_max_mag) && (o > 2))
+		{
+		  third_max_mag = mag_;
+		  third_max_o = o;
+		}
+		
+
+		phs_ = -atan2(im_, re_);
+
+	  }
+
+
+	
+
+	for(t=0; t < inSamples_; ++t)
+	  for (o=0; o < N2_; o++)
+	  {
+		if (o==0) //DC bin (i.e. 0)
+		{
+		  re_ = in(0,t);
+		  im_ = 0.0;
+		}
+		else if (o == N2_-1) //Nyquist bin (i.e. N/2)
+		{
+		  re_ = in(1,t);
+		  im_ = 0.0;
+		}
+		else //all other bins
+		{
+		  re_ = in(2*o, t);
+		  im_ = in(2*o+1,t);
+		}
+
+		mag_ = sqrt(re_ * re_ + im_ * im_);
+		phs_ = -atan2(im_, re_);
+
+		if (o < N2_-1)
+		{
+		  if ((o == max_o) || (o == second_max_o) || (o == third_max_o))
+		  {
+			out(2*o,t) = 2.0 * mag_ * cos(phs_);
+			out(2*o+1,t) = 2.0 * mag_ * sin(phs_);
+		  } 
+		  else {
+			out(2*o,t) = 0 * cos(phs_);
+			out(2*o+1,t) = 0 * sin(phs_);
+		  }
+		}
+		
+	  }
+		
+		
+}
+
+
 
 
 void 
@@ -174,8 +319,19 @@ SpectralTransformations::myProcess(realvec& in, realvec& out)
 		cout << "SingleBin" << endl;
 		singlebin(in, out);		
 	}
+
+
+	if (ctrl_mode_->to<mrs_string>() == "three_peaks")
+	{
+	  three_peaks(in,out);
+	}
+
+
+	if (ctrl_mode_->to<mrs_string>() == "compress_magnitude")
+	{
+	  compress_magnitude(in,out);
+	}
 	
-	   
 	
 
 }
