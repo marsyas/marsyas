@@ -22,6 +22,9 @@
 using std::ostringstream;
 using std::min;
 using std::max;
+using std::cout;
+using std::endl;
+
 
 using namespace Marsyas;
 
@@ -48,7 +51,7 @@ Peaker::addControls()
 	addctrl("mrs_real/peakStrengthRelMax", 0.0);
 	addctrl("mrs_real/peakStrengthRelThresh", 0.0);
 	addctrl("mrs_real/peakStrengthAbs", 0.0);
-	addctrl("mrs_real/peakStrengthTreshLpParam", 0.95);
+	addctrl("mrs_real/peakStrengthThreshLpParam", 0.95);
 	addctrl("mrs_natural/peakStart", (mrs_natural)0);
 	addctrl("mrs_natural/peakEnd", (mrs_natural)0);
 	addctrl("mrs_natural/interpolation", (mrs_natural)0);
@@ -93,7 +96,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 	peakStrengthRelRms = getctrl("mrs_real/peakStrength")->to<mrs_real>();
 	peakStrengthRelMax = getctrl("mrs_real/peakStrengthRelMax")->to<mrs_real>();
 	peakStrengthRelThresh = getctrl("mrs_real/peakStrengthRelThresh")->to<mrs_real>();
-	lpCoeff_ = getctrl("mrs_real/peakStrengthTreshLpParam")->to<mrs_real>();
+	lpCoeff_ = getctrl("mrs_real/peakStrengthThreshLpParam")->to<mrs_real>();
 	peakStrengthAbs = getctrl("mrs_real/peakStrengthAbs")->to<mrs_real>();
 	peakStart = getctrl("mrs_natural/peakStart")->to<mrs_natural>();
 	peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
@@ -346,6 +349,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 mrs_bool Peaker::doThresholding (mrs_real input, mrs_real peakStrengthRelRms, mrs_real peakStrengthRelMax, mrs_real peakStrengthRelThresh, mrs_real peakStrengthAbs)
 {
 	mrs_real thresh = max (max (max (peakStrengthAbs, peakStrengthRelRms * rms_), peakStrengthRelMax * max_), peakStrengthRelThresh * currThresh_);
+	
 	
 	if (input <= thresh)
 		return false;

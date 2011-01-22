@@ -135,14 +135,26 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 void 
 AutoCorrelation::myProcess(realvec& in, realvec& out)
 {
+
+
+
+
 	mrs_natural t,o;
 	k_ = ctrl_magcompress_->to<mrs_real>();
 
 	// Copy to output to perform inplace fft and zeropad to double size
+
+	
 	for (o=0; o < inObservations_; o++)
 	{
 		for (t=0; t < inSamples_; t++)
+		{
 			scratch_(t) = in(o,t); 
+		}
+		
+		
+		// hack for testing needs to be moved to MarSystem 
+		
 
 		//zeropad
 		for(t=inSamples_; t < fftSize_; t++)

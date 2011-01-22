@@ -20,6 +20,9 @@
 
 using namespace std;
 using namespace Marsyas;
+using std::cout;
+using std::endl;
+
 
 Reverse::Reverse(mrs_string name):MarSystem("Reverse", name)
 {
