@@ -63,6 +63,8 @@ Sum::myUpdate(MarControlPtr sender)
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 
+	
+
 	// get name of first observation and use for sum 
 	mrs_string inObsName = stringSplit(ctrl_inObsNames_->to<mrs_string>(), ",")[0];
 	ctrl_onObsNames_->setValue("Sum_" + inObsName+",", NOUPDATE);
@@ -83,6 +85,8 @@ Sum::myUpdate(MarControlPtr sender)
 		if (ctrl_mode_->to<mrs_string>() == "sum_observations") {
 			ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
 			ctrl_onSamples_->setValue(1, NOUPDATE);
+			ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);
+			
 		} else if (ctrl_mode_->to<mrs_string>() == "sum_samples") {
 			ctrl_onObservations_->setValue(1, NOUPDATE);
 			ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

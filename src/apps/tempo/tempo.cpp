@@ -1086,6 +1086,322 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
 
 
+void 
+tempo_aim_flux(string sfName, float ground_truth_tempo, string resName, bool haveCollections) 
+{
+  MarSystemManager mng;
+	
+  MarSystem *beatTracker = mng.create("Series/beatTracker");
+	
+	
+  MarSystem *onset_strength = mng.create("Series/onset_strength");
+  MarSystem *accum = mng.create("Accumulator/accum");
+  MarSystem *fluxnet = mng.create("Series/fluxnet");
+  fluxnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  fluxnet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  fluxnet->addMarSystem(mng.create("ShiftInput", "si"));	
+  fluxnet->addMarSystem(mng.create("AimPZFC2/aimpzfc"));
+  fluxnet->addMarSystem(mng.create("AimHCL2/aimhcl2"));
+  fluxnet->addMarSystem(mng.create("Sum/aimsum"));
+  
+  
+  fluxnet->updControl("Sum/aimsum/mrs_string/mode", "sum_observations");
+  
+  
+  // fluxnet->addMarSystem(mng.create("Windowing", "windowing1"));
+  // fluxnet->addMarSystem(mng.create("Spectrum", "spk"));
+  // fluxnet->addMarSystem(mng.create("SpectralTransformations", "spktr"));
+  // fluxnet->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  // fluxnet->addMarSystem(mng.create("Spectrum2Chroma", "spk"));
+  
+  fluxnet->addMarSystem(mng.create("Flux", "flux"));
+  accum->addMarSystem(fluxnet);
+	
+  onset_strength->addMarSystem(accum);
+  onset_strength->addMarSystem(mng.create("ShiftInput/si2"));
+  beatTracker->addMarSystem(onset_strength);
+	
+  MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
+  tempoInduction->addMarSystem(mng.create("Filter", "filt1"));
+  tempoInduction->addMarSystem(mng.create("Reverse", "reverse1"));
+  tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
+  tempoInduction->addMarSystem(mng.create("Reverse", "reverse2"));
+  // tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
+
+  /* tempoInduction->addMarSystem(mng.create("Spectrum", "spk"));
+  tempoInduction->addMarSystem(mng.create("SpectralTransformations", "spktr2"));
+  tempoInduction->addMarSystem(mng.create("InvSpectrum", "ispk"));
+  tempoInduction->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
+  */ 
+
+  tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
+  tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
+	
+  MarSystem* hfanout = mng.create("Fanout", "hfanout");
+  hfanout->addMarSystem(mng.create("Gain", "id1"));
+  hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+  // hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
+  tempoInduction->addMarSystem(hfanout);
+  tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+  tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
+  tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));				
+	
+  beatTracker->addMarSystem(tempoInduction);
+  //   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
+  beatTracker->addMarSystem(mng.create("Gain/id"));
+  mrs_natural winSize = 256;
+  mrs_natural hopSize = 128;
+  mrs_natural  bwinSize = 2048;
+  mrs_natural bhopSize = 128;
+
+  
+  onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  
+  onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
+
+	
+  realvec bcoeffs(1,3);
+  bcoeffs(0) = 0.0564;
+  bcoeffs(1) = 0.1129;
+  bcoeffs(2) = 0.0564;
+  tempoInduction->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+	
+  tempoInduction->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
+  realvec acoeffs(1,3);
+  acoeffs(0) = 1.0000;
+  acoeffs(1) = -1.2247;
+  acoeffs(2) = 0.4504;
+  tempoInduction->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+  tempoInduction->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
+
+  fluxnet->updControl("SpectralTransformations/spktr/mrs_string/mode", "compress_magnitude");
+  
+  tempoInduction->updControl("SpectralTransformations/spktr2/mrs_string/mode", "three_peaks");
+  
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
+  tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 640);
+  // tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
+
+  tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
+  tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 10);
+	
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+
+  tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
+  tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
+  tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 16.0);
+  tempoInduction->updControl("BeatHistogram/histo/mrs_bool/tempoWeighting", true);
+  
+
+  tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
+  tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5); 
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
+  
+  
+	
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
+  beatTracker->updControl("mrs_natural/inSamples", hopSize);
+	
+
+	
+  vector<mrs_real> bpms;
+  vector<mrs_real> secondary_bpms;
+  vector<mrs_real> bpms_amps;
+  vector<mrs_real> secondary_bpms_amps;
+	
+  mrs_real bin;
+
+
+  if (pluginName != EMPTYSTRING)
+  {
+	ofstream ofs;
+	ofs.open(pluginName.c_str());
+	ofs << *beatTracker << endl;
+	ofs.close();
+	pluginName = EMPTYSTRING;
+  }
+
+  // beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
+  // beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
+
+  int extra_ticks = bwinSize/bhopSize;
+  mrs_realvec tempos(10);
+  mrs_realvec tempo_scores(10);
+  tempo_scores.setval(0.0);
+
+
+
+  // while (1) 
+  for (int i=0; i < 25; i++)
+  {
+	beatTracker->tick();
+	mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
+
+	mrs_realvec bhisto = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
+		
+		
+	bin = estimate(1) * 0.25;
+		
+	
+	cout << "BIN = " << bin << endl;
+	
+	
+	for (int k=0; k < 10; k++)
+	{
+	  tempos(k) = estimate(2*k+1) * 0.25;
+	  tempo_scores(k) = estimate(2*k);
+	}
+	
+	
+	// beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", tempos);
+	// beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
+
+	bpms.push_back(bin);
+	bpms_amps.push_back(bhisto(bin * 4));
+
+	/* if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	{
+	  break;
+
+	}
+	*/ 
+	
+
+	 if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	{
+	  extra_ticks --;
+	}
+
+	if (extra_ticks == 0)
+	  break;
+  }
+
+
+  // cout << tempos << endl;
+  // cout << tempo_scores << endl;
+  mrs_realvec tempo_rescores(10);
+  
+  for (int i= 0; i < tempos.getSize(); i++) 
+  {
+	tempo_rescores(i) = tempo_scores(i);
+  }
+  
+  
+  for (int i= 0; i < tempos.getSize(); i++) 
+  {
+	// cout << "Tempo Hypothesis = " << tempos(i) << endl;
+	for (int j=0; j < tempos.getSize(); j++) 
+	{ 
+	  // 	  cout << tempos(i) / tempos(j) << endl;
+	  
+	  if (fabs(    (tempos(i) / tempos(j))  - 2.0) < 0.01) 
+	  {
+		tempo_rescores(i) += 0.5 * tempo_scores(j);
+		// cout << tempos(j) << endl;
+	  }
+	   
+	  
+	  if (fabs(    (tempos(i) / tempos(j)) - 0.5) < 0.01)
+	  {
+		tempo_rescores(i) += 0.5 * tempo_scores(j);
+		// cout << tempos(j) << endl;
+	  }
+	  
+	  
+	}
+  }
+
+  // cout << tempos << endl;
+  // cout << tempo_scores << endl;
+  // cout << tempo_rescores << endl;
+  
+  
+  mrs_real max_score = 0.0;
+  int max_i=0;
+  
+  for (int i= 0; i < tempos.getSize(); i++) 
+  {
+	if (tempo_rescores(i) > max_score) 
+	{
+	  max_score = tempo_rescores(i);
+	  max_i = i;
+	}
+  }
+  
+
+  // tempos(0) = tempos(0);
+  
+		  
+
+
+
+
+  extra_ticks = bwinSize/bhopSize;
+  extra_ticks = 0;
+  
+  mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
+
+	// 	mrs_real secondary_bpm_estimate;
+	// secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
+
+   mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
+	// mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
+
+  // tempos(0) = tempos(max_i);
+   tempos(0) = bpm_estimate;
+	
+	
+	if (haveCollections)
+	{
+	  evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo);
+		// evaluate_estimated_tempo(sfName,secondary_bpm_estimate, ground_truth_tempo);
+	}
+	
+	bpm_estimate *= 2.0;
+	// secondary_bpm_estimate *= 2.0;
+	bpm_estimate = (mrs_natural)bpm_estimate;
+	// secondary_bpm_estimate = (mrs_natural)secondary_bpm_estimate;
+	bpm_estimate /= 2.0;
+	// secondary_bpm_estimate /= 2.0;	 
+	
+	// mrs_real strength = bpm_amp + secondary_bpm_amp;
+	
+
+	ofstream ofs;
+	ofs.open(fileName.c_str());
+
+	// if (bpm_estimate < secondary_bpm_estimate)
+	// {
+	// 	ofs << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	// 	cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	// }
+	
+	// else 
+	// {
+	// 	ofs << secondary_bpm_estimate << "\t" << bpm_estimate << "\t" << secondary_bpm_amp / strength << endl;
+	// 	cout << bpm_estimate << "\t" << secondary_bpm_estimate << "\t" << bpm_amp / strength << endl;
+	// }
+
+
+
+	cout << bpm_estimate << endl;
+	ofs << bpm_estimate << endl;
+	
+
+
+	
+	ofs.close();
+
+	delete beatTracker;
+}
+
+
+
 
 void
 tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName, bool haveCollections)
@@ -3038,7 +3354,12 @@ tempo_ibt(string sfName, float ground_truth_tempo, string outputTxt, bool haveCo
 
 	mrs_real predicted_tempo = beattracker->getctrl("BeatTimesSink/sink/mrs_real/tempo")->to<mrs_real>();	
 	
-	evaluate_estimated_tempo(sfName, predicted_tempo, ground_truth_tempo);
+
+	mrs_realvec tempos(1);
+	
+	tempos(0) = predicted_tempo;
+	
+	evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo);
 	  
 	delete IBTsystem;
 	delete audioflow;
@@ -3085,7 +3406,13 @@ void tempo(string inFname, string outFname, string label, string method, bool ha
 	else if (method == "FLUX")
 	{
 		tempo_flux(sfName, ground_truth_tempo, resName, haveCollections);
+	} 
+	else if (method == "AIM_FLUX") 
+	{
+	  tempo_aim_flux(sfName, ground_truth_tempo, resName, haveCollections);
+	  
 	}
+	
 	else if (method == "AIM")
 	  {
 	    tempo_aim(sfName, ground_truth_tempo, resName, haveCollections);

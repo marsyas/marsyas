@@ -256,12 +256,13 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 	
 	if (ctrl_setr0to0_->to<mrs_bool>())
 	{
+	  
 	  for (o=0; o < onObservations_; o++)
 		out(o,0) = 0.0;
 	  
 	  for (o=0; o < onObservations_; o++)
-	   	for (t=1; t< onSamples_-2; t++)
-	   	  out(o,t) = out(o,t) / (onSamples_ - 2 - t);
+	   for (t=1; t< onSamples_-2; t++)
+		 out(o,t) = out(o,t) / (onSamples_ - 2 - t);
 	   
 	   
 	  

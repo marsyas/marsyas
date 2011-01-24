@@ -108,6 +108,8 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 	  {
 		bin = (mrs_natural)((srate * 60.0  * factor_ / (t+1)) + 0.5);
 		amp = in(o,t);
+		
+
 		if (amp < 0.0) 
 		  amp = 0.0;
 
