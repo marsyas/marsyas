@@ -263,6 +263,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 	   	for (t=1; t< onSamples_-2; t++)
 	   	  out(o,t) = out(o,t) / (onSamples_ - 2 - t);
 	   
+	   
 	  
 
 	}

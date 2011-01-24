@@ -866,10 +866,10 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   
   tempoInduction->updControl("SpectralTransformations/spktr2/mrs_string/mode", "three_peaks");
   
-  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
-  tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
-  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 100);
-  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 800);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
+  tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 640);
   // tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
 
   tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
@@ -886,7 +886,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   
 
   tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
-  tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 2.0);
+  tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5); 
   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
   
@@ -1019,7 +1019,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	}
   }
   
-  tempos(0) = tempos(max_i);
+
+  // tempos(0) = tempos(0);
   
 		  
 
@@ -1032,10 +1033,11 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	// 	mrs_real secondary_bpm_estimate;
 	// secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
 
-	mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
+   mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
 	// mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
 
-	tempos(0) = bpm_estimate;
+  // tempos(0) = tempos(max_i);
+   tempos(0) = bpm_estimate;
 	
 	
 	if (haveCollections)
@@ -1162,7 +1164,7 @@ tempo_histoSumBands(string sfName, float ground_truth_tempo, string resName, boo
 	total->updControl("Peaker/pkr/mrs_natural/peakEnd", 170);
 	
 	total->updControl("Peaker/pkr/mrs_real/peakStrength", 0.65);
-	total->updControl("Peaker/pkr/mrs_bool/peakHarmonics", true);
+	// total->updControl("Peaker/pkr/mrs_bool/peakHarmonics", true);
 
 	total->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5); 
 	
