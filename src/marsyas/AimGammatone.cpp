@@ -22,6 +22,8 @@
 using std::ostringstream;
 using std::complex;
 using std::abs;
+using std::cout;
+using std::endl;
 
 using namespace Marsyas;
 
@@ -78,6 +80,7 @@ AimGammatone::addControls()
 void
 AimGammatone::myUpdate(MarControlPtr sender)
 {
+  cout << "myUpdate" << endl;
   (void) sender;
 
   MRSDIAG("AimGammatone.cpp - AimGammatone:myUpdate");
@@ -88,7 +91,7 @@ AimGammatone::myUpdate(MarControlPtr sender)
   // Need to have double the amount of channels, the first set of
   // channels are for the signals the second set of channels are for
   // the centre frequencies
-  ctrl_onObservations_->setValue(ctrl_num_channels_->to<mrs_natural>() * 2, NOUPDATE);
+  ctrl_onObservations_->setValue(ctrl_num_channels_->to<mrs_natural>() , NOUPDATE);
 
   //
   // Does the MarSystem need initialization?
@@ -307,10 +310,11 @@ AimGammatone::myProcess(realvec& in, realvec& out)
   }
 
   // Copy over the centre frequencies to the second half of the observations
-  for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
+  /* for (t = 0; t < ctrl_inSamples_->to<mrs_natural>(); t++) {
     for (o = 0; o < _channel_count; o++) {
       out(o + _channel_count, t) = centre_frequencies_[o];
     }
   }
+  */ 
 
 }

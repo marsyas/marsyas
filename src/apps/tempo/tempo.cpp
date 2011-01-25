@@ -1099,6 +1099,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 void 
 tempo_aim_flux(string sfName, float ground_truth_tempo, string resName, bool haveCollections) 
 {
+  
   MarSystemManager mng;
 	
   MarSystem *beatTracker = mng.create("Series/beatTracker");
@@ -1109,10 +1110,11 @@ tempo_aim_flux(string sfName, float ground_truth_tempo, string resName, bool hav
   MarSystem *fluxnet = mng.create("Series/fluxnet");
   fluxnet->addMarSystem(mng.create("SoundFileSource", "src"));
   fluxnet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-  fluxnet->addMarSystem(mng.create("ShiftInput", "si"));	
   fluxnet->addMarSystem(mng.create("AimPZFC2/aimpzfc"));
+  // fluxnet->addMarSystem(mng.create("AimGammatone/aimgm"));
   fluxnet->addMarSystem(mng.create("AimHCL2/aimhcl2"));
   fluxnet->addMarSystem(mng.create("Sum/aimsum"));
+  fluxnet->addMarSystem(mng.create("ShiftInput", "si"));	
   
   
   fluxnet->updControl("Sum/aimsum/mrs_string/mode", "sum_observations");
@@ -1444,7 +1446,7 @@ tempo_aim_flux1(string sfName, float ground_truth_tempo, string resName, bool ha
   fluxnet->addMarSystem(mng.create("Flux", "flux"));
   fluxnet->updControl("Sum/aimsum/mrs_string/mode", "sum_observations");
   fluxnet->updControl("ShiftInput/si/mrs_natural/winSize", 256);
-  fluxnet->updControl("mrs_natural/inSamples", 128);
+
   
   accum->addMarSystem(fluxnet);
   
@@ -1452,35 +1454,41 @@ tempo_aim_flux1(string sfName, float ground_truth_tempo, string resName, bool ha
 
 
   onset_strength->addMarSystem(accum);
-  onset_strength->addMarsystem(mng.create("ShiftInput/si2"));
+  onset_strength->addMarSystem(mng.create("ShiftInput/si2"));
   onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+  onset_strength->updControl("mrs_natural/inSamples", 128);
 
 
+
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
+  onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", 128);	  
+  onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize", 2048);
   
   if (pluginName != EMPTYSTRING)
   {
 	ofstream ofs;
 	ofs.open(pluginName.c_str());
-	ofs << *fluxnet << endl;
+	ofs << *onset_strength << endl;
 	ofs.close();
 	pluginName = EMPTYSTRING;
   }
 
-  onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
-  onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", 128);	  
+
   
   int ticks = 0;
+  
+  cout << *onset_strength << endl;
   while (1) 
-  {
-	accum->tick();
-	ticks++;
-	
-	if (!accum->getctrl("Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-	{
-	  break;
-	}
+    {
+      cout << "starting tick" << endl;
+      onset_strength->tick();
+      cout << "end tick" << endl;
+      ticks++;
 
-	  cout << "ticks = " << ticks << endl;
+      
+      cout << onset_strength->getctrl("Acccumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() << endl;
+  
+      cout << "ticks = " << ticks << endl;
   }
 
   

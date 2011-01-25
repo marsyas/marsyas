@@ -19,6 +19,8 @@
 #include "Accumulator.h"
 
 using std::ostringstream;
+using std::cout;
+using std::endl;
 using namespace Marsyas;
 
 Accumulator::Accumulator(mrs_string name): MarSystem("Accumulator", name)
@@ -206,15 +208,15 @@ Accumulator::myProcess(realvec& in, realvec& out)
 		ctrl_flush_->setValue(false);
 		for (c = 0; c < nTimes_; ++c)
 		{
-			marsystems_[0]->recvControls(); // HACK STU [!]
-			marsystems_[0]->process(in, childOut_);
-			for (o=0; o < onObservations_; o++)
+		  marsystems_[0]->recvControls(); // HACK STU [!]
+		  marsystems_[0]->process(in, childOut_);
+		  for (o=0; o < onObservations_; o++)
+		    {
+		      for (t = 0; t < childOnSamples_; t++)
 			{
-				for (t = 0; t < childOnSamples_; t++)
-				{
-					out(o, t + c * childOnSamples_) = childOut_(o,t);
-				}
+			  out(o, t + c * childOnSamples_) = childOut_(o,t);
 			}
+		    }
 		}
 		ctrl_flush_->setValue(true);
 	}
