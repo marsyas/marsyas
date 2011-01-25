@@ -122,7 +122,7 @@ Flux::myProcess(realvec& in, realvec& out)
 			//diff_ = 0.0;
 			//max_ = 0.0;
 			
-			for(o = 1; o < inObservations_; o++)
+			for(o = 1 ; o < inObservations_; o++)
 			{
 				
 				//Simon's version
