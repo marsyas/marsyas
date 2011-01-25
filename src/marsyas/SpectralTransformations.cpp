@@ -127,7 +127,6 @@ SpectralTransformations::compress_magnitude(realvec& in, realvec& out)
 	  else //all other bins
 	  {
 		re_ = in(2*o, t);
-		// randomize phase 
 		im_ = in(2*o+1,t);
 	  }
 	  
@@ -136,8 +135,11 @@ SpectralTransformations::compress_magnitude(realvec& in, realvec& out)
 	  
 	  if (o < N2_-1)
 	  {
-		out(2*o,t) = log(1+1000.0 * mag_) * cos(phs_);
-		out(2*o+1,t) = log(1+1000.0 * mag_) * sin(phs_);
+	    out(2*o,t) = log(1+1000.0 * mag_) * cos(phs_);
+	    out(2*o+1,t) = log(1+1000.0 * mag_) * sin(phs_);
+
+	    // out(2*o,t) = sqrt(mag_) * cos(phs_);
+	    // out(2*o+1,t) = sqrt(mag_) * sin(phs_);
 	  }
 	  
 	}

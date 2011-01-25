@@ -765,11 +765,12 @@ tempo_aim(string sfName, float ground_truth_tempo, string resName, bool haveColl
 
 
 
-
+  mrs_realvec tempos(1);
+  tempos(0) = bpm_estimate;
 
   if (haveCollections)
     {
-      evaluate_estimated_tempo(sfName, bpm_estimate, ground_truth_tempo);
+      evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo);
     }
   
   ofstream ofs;
@@ -968,8 +969,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   }
 
 
-  cout << tempos << endl;
-  cout << tempo_scores << endl;
+  // cout << tempos << endl;
+  // cout << tempo_scores << endl;
   mrs_realvec tempo_rescores(10);
   
   for (int i= 0; i < tempos.getSize(); i++) 
@@ -980,31 +981,31 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   
   for (int i= 0; i < tempos.getSize(); i++) 
   {
-	cout << "Tempo Hypothesis = " << tempos(i) << endl;
+    // cout << "Tempo Hypothesis = " << tempos(i) << endl;
 	for (int j=0; j < tempos.getSize(); j++) 
 	{ 
 	  // 	  cout << tempos(i) / tempos(j) << endl;
 	  
 	  if (fabs(    (tempos(i) / tempos(j))  - 2.0) < 0.01) 
 	  {
-		tempo_rescores(i) += 0.5 * tempo_scores(j);
-		cout << tempos(j) << endl;
+		tempo_rescores(i) += 0.0 * tempo_scores(j);
+		// cout << tempos(j) << endl;
 	  }
 	   
 	  
 	  if (fabs(    (tempos(i) / tempos(j)) - 0.5) < 0.01)
 	  {
-		tempo_rescores(i) += 0.5 * tempo_scores(j);
-		cout << tempos(j) << endl;
+		tempo_rescores(i) += 0.0 * tempo_scores(j);
+		// cout << tempos(j) << endl;
 	  }
 	  
 	  
 	}
   }
 
-  cout << tempos << endl;
-  cout << tempo_scores << endl;
-  cout << tempo_rescores << endl;
+  // cout << tempos << endl;
+  // cout << tempo_scores << endl;
+  // cout << tempo_rescores << endl;
   
   
   mrs_real max_score = 0.0;
@@ -1030,11 +1031,13 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   extra_ticks = bwinSize/bhopSize;
   mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
 
-	// 	mrs_real secondary_bpm_estimate;
-	// secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
+  // 	mrs_real secondary_bpm_estimate;
+  // secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
+  
+  mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
+  // mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
 
-   mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
-	// mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
+
 
   // tempos(0) = tempos(max_i);
    tempos(0) = bpm_estimate;
