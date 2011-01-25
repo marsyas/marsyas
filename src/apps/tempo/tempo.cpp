@@ -867,6 +867,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   
   tempoInduction->updControl("SpectralTransformations/spktr2/mrs_string/mode", "three_peaks");
   
+  // tempoInduction->updControl("Windowing/windowing2/mrs_string/type", "Hanning");
+  
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
   tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
@@ -890,7 +892,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5); 
   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
-  
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to1", true);
+  // tempoInduction->updControl("AutoCorrelation/acr/mrs_natural/normalize", 1);
   
 	
   onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);

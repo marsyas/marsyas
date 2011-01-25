@@ -103,6 +103,7 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 	normalize_ = 0;
 	if(getctrl("mrs_natural/normalize")->to<mrs_natural>())
 	{
+	  cout << "Normalized" << endl;
 		realvec tmp(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 		normalize_ = 1;
 		norm_.create(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
@@ -152,10 +153,6 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 			scratch_(t) = in(o,t); 
 		}
 		
-		
-		// hack for testing needs to be moved to MarSystem 
-		
-
 		//zeropad
 		for(t=inSamples_; t < fftSize_; t++)
 			scratch_(t) = 0.0;

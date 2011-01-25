@@ -100,6 +100,22 @@ Flux::myProcess(realvec& in, realvec& out)
 
 			out(0,t) = flux_;
 		}
+		else if (mode == "Laroche2003")
+		  {
+		    flux_ = 0.0;
+		    
+		    for (o=1; o < inObservations_; o++)
+		      {
+			mrs_real tmp = in(o,t)  - prevWindow_(o,t);
+			flux_ += tmp;
+			
+		      }
+		    if (flux_ <= 0.0)
+		      flux_ = 0.0;
+		    
+		    out(0,t) = flux_;
+		  }
+		
 		else if(mode=="DixonDAFX06")
 		{
 			flux_ = 0.0;
