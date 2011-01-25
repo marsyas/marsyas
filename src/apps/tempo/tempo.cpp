@@ -975,6 +975,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   }
 
 
+  cout << "ticks = " << ticks << endl;
+  
   // cout << tempos << endl;
   // cout << tempo_scores << endl;
   mrs_realvec tempo_rescores(10);
@@ -987,15 +989,17 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   
   for (int i= 0; i < tempos.getSize(); i++) 
   {
-    // cout << "Tempo Hypothesis = " << tempos(i) << endl;
+	// cout << "Tempo Hypothesis = " << tempos(i) << endl;
+
 	for (int j=0; j < tempos.getSize(); j++) 
 	{ 
 	  // 	  cout << tempos(i) / tempos(j) << endl;
 	  
 	  if (fabs(    (tempos(i) / tempos(j))  - 2.0) < 0.01) 
 	  {
-		tempo_rescores(i) += 0.0 * tempo_scores(j);
+		tempo_rescores(i) += 0.5 * tempo_scores(j);
 		// cout << tempos(j) << endl;
+
 	  }
 	   
 	  
@@ -1003,6 +1007,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	  {
 		tempo_rescores(i) += 0.0 * tempo_scores(j);
 		// cout << tempos(j) << endl;
+
 	  }
 	  
 	  
@@ -1240,11 +1245,20 @@ tempo_aim_flux(string sfName, float ground_truth_tempo, string resName, bool hav
   tempo_scores.setval(0.0);
 
 
-
-  // while (1) 
-  for (int i=0; i < 25; i++)
+  int ticks = 0;
+  while (1) 
+  // for (int i=0; i < 25; i++)
   {
+    if (ticks == extra_ticks)
+      tempoInduction->updControl("BeatHistogram/histo/mrs_bool/reset", true);
+
+	
+	
+
+	
 	beatTracker->tick();
+	ticks++;
+	
 	mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
 
 	mrs_realvec bhisto = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
@@ -1253,7 +1267,7 @@ tempo_aim_flux(string sfName, float ground_truth_tempo, string resName, bool hav
 	bin = estimate(1) * 0.25;
 		
 	
-	cout << "BIN = " << bin << endl;
+	cout << "BIN = " << bin << " - " << ticks << endl;
 	
 	
 	for (int k=0; k < 10; k++)
@@ -1403,6 +1417,74 @@ tempo_aim_flux(string sfName, float ground_truth_tempo, string resName, bool hav
 	ofs.close();
 
 	delete beatTracker;
+}
+
+
+
+
+void 
+tempo_aim_flux1(string sfName, float ground_truth_tempo, string resName, bool haveCollections) 
+{
+  cout << "Aim flux 1" << endl;
+  
+  MarSystemManager mng;
+	
+
+  MarSystem *onset_strength = mng.create("Series/onset_strength");
+  
+  MarSystem *accum = mng.create("Accumulator/accum");
+  
+  MarSystem *fluxnet = mng.create("Series/fluxnet");
+  fluxnet->addMarSystem(mng.create("SoundFileSource", "src"));
+  fluxnet->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  fluxnet->addMarSystem(mng.create("ShiftInput", "si"));	
+  fluxnet->addMarSystem(mng.create("AimPZFC2/aimpzfc"));
+  fluxnet->addMarSystem(mng.create("AimHCL2/aimhcl2"));
+  fluxnet->addMarSystem(mng.create("Sum/aimsum"));
+  fluxnet->addMarSystem(mng.create("Flux", "flux"));
+  fluxnet->updControl("Sum/aimsum/mrs_string/mode", "sum_observations");
+  fluxnet->updControl("ShiftInput/si/mrs_natural/winSize", 256);
+  fluxnet->updControl("mrs_natural/inSamples", 128);
+  
+  accum->addMarSystem(fluxnet);
+  
+
+
+
+  onset_strength->addMarSystem(accum);
+  onset_strength->addMarsystem(mng.create("ShiftInput/si2"));
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+
+
+  
+  if (pluginName != EMPTYSTRING)
+  {
+	ofstream ofs;
+	ofs.open(pluginName.c_str());
+	ofs << *fluxnet << endl;
+	ofs.close();
+	pluginName = EMPTYSTRING;
+  }
+
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
+  onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", 128);	  
+  
+  int ticks = 0;
+  while (1) 
+  {
+	accum->tick();
+	ticks++;
+	
+	if (!accum->getctrl("Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	{
+	  break;
+	}
+
+	  cout << "ticks = " << ticks << endl;
+  }
+
+  
+  delete fluxnet;
 }
 
 
@@ -3414,7 +3496,7 @@ void tempo(string inFname, string outFname, string label, string method, bool ha
 	} 
 	else if (method == "AIM_FLUX") 
 	{
-	  tempo_aim_flux(sfName, ground_truth_tempo, resName, haveCollections);
+	  tempo_aim_flux1(sfName, ground_truth_tempo, resName, haveCollections);
 	  
 	}
 	

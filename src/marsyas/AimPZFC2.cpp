@@ -192,14 +192,23 @@ AimPZFC2::ResetInternal() {
   state_2_.clear();
   state_2_.resize(channel_count_, 0.0);
 
-  previous_out_.clear();
-  previous_out_.resize(channel_count_, 0.0);
+  // previous_out_.clear();
+  // previous_out_.resize(channel_count_, 0.0);
+
+  
+  previous_out_.stretch(channel_count_);
+  previous_out_.setval(0.0);
+  
+  
 
   pole_damps_mod_.clear();
   pole_damps_mod_.resize(channel_count_, 0.0);
 
-  inputs_.clear();
-  inputs_.resize(channel_count_, 0.0);
+
+  inputs_.stretch(channel_count_);
+  inputs_.setval(0.0);
+  
+
 
   // Init AGC
   offset_ = 1.0 - ctrl_agc_factor_->to<mrs_real>() * DetectFun(0.0);
@@ -758,10 +767,10 @@ AimPZFC2::myProcess(realvec& in, realvec& out)
 			input_sample = 0.5 * input_sample + 0.5 * last_input_;
 			last_input_ = in(0, t);
 
-			inputs_[channel_count_ - 1] = input_sample;
+			inputs_(channel_count_ - 1) = input_sample;
 			for (int c = 0; c < channel_count_ - 1; ++c)
 			{
-				inputs_[c] = previous_out_[c + 1];
+			  inputs_(c) = previous_out_(c + 1);
 
 			}
 
@@ -786,8 +795,8 @@ AimPZFC2::myProcess(realvec& in, realvec& out)
 				// canonic poles but with input provided where unity DC gain is
 				// assured (mean value of state is always equal to mean value
 				// of input)
-				double new_state = inputs_[c] - (state_1_[c] - inputs_[c]) * zb1
-					- (state_2_[c] - inputs_[c]) * zb2;
+				double new_state = inputs_(c) - (state_1_[c] - inputs_(c)) * zb1
+					- (state_2_[c] - inputs_(c)) * zb2;
 
 				// canonic zeros part as before:
 				// cout << "za0_[c]=" << za0_[c] << endl;
@@ -813,11 +822,11 @@ AimPZFC2::myProcess(realvec& in, realvec& out)
 			{
 				// double offset = 1.0 - ctrl_agc_factor_->to<mrs_real>() * DetectFun(0.0);
 				// double agc_factor = ctrl_agc_factor_->to<mrs_real>();
-				AGCDampStep();
+			  AGCDampStep();
 			}
 
 			for (int c = 0; c < channel_count_; ++c)
-				previous_out_[c] = out(c,t);
+			  previous_out_(c)  = out(c,t);
 		}
 
 

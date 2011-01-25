@@ -148,9 +148,11 @@ private:
   std::vector<std::vector<double> > agc_state_;
   std::vector<double> state_1_;
   std::vector<double> state_2_;
-  std::vector<double> previous_out_;
+  // std::vector<double> previous_out_;
+  mrs_realvec previous_out_;
+  
   std::vector<double> pole_damps_mod_;
-  std::vector<double> inputs_;
+  mrs_realvec inputs_;
 
   // Hold the centre frequencies, which we will output to the second half
   // of the observations
