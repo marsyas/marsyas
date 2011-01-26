@@ -888,7 +888,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
   tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
-  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 640);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 720);
   // tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
 
   tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
