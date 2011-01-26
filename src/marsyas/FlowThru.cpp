@@ -20,6 +20,9 @@
 
 using std::ostringstream;
 using namespace Marsyas;
+using std::cout;
+using std::endl;
+
 
 FlowThru::FlowThru(mrs_string name):MarSystem("FlowThru",name)
 {
@@ -94,6 +97,8 @@ FlowThru::myUpdate(MarControlPtr sender)
 		//relinking it to the last MarSystem)
 		ctrl_innerOut_->linkTo(marsystems_[marsystemsSize_-1]->ctrl_processedData_);
 
+		
+		
 		for(mrs_natural i=0; i< marsystemsSize_; ++i)
 		{
 			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
@@ -102,16 +107,17 @@ FlowThru::myUpdate(MarControlPtr sender)
 			if (processedData.getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
 				processedData.getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
 			{
+			  
 				processedData.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
 					marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 			}
 
-// 			if(i==marsystemsSize_-1)
-// 			{
-// 				MarControlAccessor acc(ctrl_innerOut_, NOUPDATE);
-// 				realvec& innerOut = acc.to<mrs_realvec>();
-// 				innerOut.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(),marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
-// 			}
+ 			if(i==marsystemsSize_-1)
+ 			{
+ 				MarControlAccessor acc(ctrl_innerOut_, NOUPDATE);
+ 				realvec& innerOut = acc.to<mrs_realvec>();
+ 				innerOut.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(),marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
+ 			}
 		}
 	}
 }
@@ -140,6 +146,8 @@ FlowThru::myProcess(realvec& in, realvec& out)
 				realvec& slice = accSlice.to<mrs_realvec>();
 				MarControlAccessor accInnerOut(ctrl_innerOut_);
 				realvec& innerOut = accInnerOut.to<mrs_realvec>();
+				
+				
 				marsystems_[i]->process(slice, innerOut);
 			}
 			else

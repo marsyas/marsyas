@@ -719,8 +719,8 @@ MarSystem::update(MarControlPtr sender)
 	//if active status changed...
 	if (active_ !=  active)
 	{
-		active_ = active;
-		activate(active);
+	  active_ = active;
+	  activate(active);
 	}
 	
 	//resize input and output realvec if necessary
@@ -729,12 +729,17 @@ MarSystem::update(MarControlPtr sender)
 		(onObservations_ != outTick_.getRows()) ||
 		(onSamples_ != outTick_.getCols()))
 	{
-		inTick_.create(inObservations_, inSamples_);
-		{
-			MarControlAccessor acc(ctrl_processedData_);
-			realvec& processedData = acc.to<mrs_realvec>();
-			processedData.create(onObservations_, onSamples_);
+
+	  
+	  inTick_.create(inObservations_, inSamples_);
+	  {
+		MarControlAccessor acc(ctrl_processedData_);
+		realvec& processedData = acc.to<mrs_realvec>();
+		processedData.create(onObservations_, onSamples_);
+			
 		}
+
+
 	}
 	
 	//check for OUT-FLOW modifications without parent knowledge!!

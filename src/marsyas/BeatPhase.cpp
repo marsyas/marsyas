@@ -96,7 +96,7 @@ BeatPhase::myUpdate(MarControlPtr sender)
 
 	MarControlAccessor acc_tc(ctrl_tempo_candidates_);	
 	mrs_realvec& tempocandidates = acc_tc.to<mrs_realvec>();
-	tempocandidates.stretch(nCandidates);
+	tempocandidates.stretch(nCandidates * 2);
 
 	
 	
@@ -125,7 +125,7 @@ void
 BeatPhase::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
-
+	
 
 
 	MarControlAccessor acctc(ctrl_tempo_candidates_);
@@ -175,46 +175,49 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_real max_crco=0.0;
 	mrs_natural max_phase = 0.0;
 	
-	for (int k=0; k < tempos.getSize(); k++)
-	{
-	  max_crco = 0.0;
-	  
-	  tempo = tempos(k);
-	  if (tempo !=0)
-		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
-	  else 
-		period = 0;
-	  period = (mrs_natural)(period+0.5);	
-	  
 
-	  
-	  if (period > 1.0)
+	for (o=0; o < inObservations_; o++)
+	{
+	  for (int k=0; k < tempos.getSize(); k++)
 	  {
+		max_crco = 0.0;
 		
-		for (phase=0; phase < period; phase++) 
+		tempo = tempos(k);
+		if (tempo !=0)
+		  period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
+		else 
+		  period = 0;
+		period = (mrs_natural)(period+0.5);	
+		
+		
+		
+		if (period > 1.0)
 		{
-		  cross_correlation = 0.0;
-		  for (int b=0; b < 8; b++)
-		    {
-			cross_correlation += in(o,phase + b * period);
-			cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
-		    }
-		  if (cross_correlation > max_crco) 
+		  
+		  for (phase=0; phase < period; phase++) 
 		  {
-			max_crco = cross_correlation;
-			max_phase = phase;
+			cross_correlation = 0.0;
+			for (int b=0; b < 8; b++)
+		    {
+			  cross_correlation += in(o,phase + b * period);
+			  cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
+		    }
+			if (cross_correlation > max_crco) 
+			{
+			  max_crco = cross_correlation;
+			  max_phase = phase;
+			}
 		  }
-		}
-		
-		tempo_scores(k) = max_crco;
-		
-		
-		for (o=0; o < inObservations_; o++)	
+		  
+		  tempo_scores(k) = max_crco;
+		  
+		  
 		  for (int b=0; b < 8; b++)
 			beats(o,max_phase + b * period) = in(o, max_phase + b * period);
-		
+		  
+		}
 	  }
-			
+	  
 	  
 	  
 	  
@@ -237,6 +240,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	      }
 	  }
 	
+	// cout << "TEMPO = " << tempos(max_i) << endl;
 	
 
 	ctrl_phase_tempo_->setValue(tempos(max_i));	

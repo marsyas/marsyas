@@ -68,6 +68,8 @@ MaxArgMax::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onSamples",  size);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  
+	
+	
 }
 
 void quadraticInterpolation(mrs_real *ix, mrs_real *iy, realvec& data)
@@ -126,6 +128,7 @@ MaxArgMax::myProcess(realvec& in, realvec& out)
 			}
 	}
 
+	
 
 	//MATLAB_PUT(in, "Peaker_output");
 	//MATLAB_PUT(out, "MaxPeaks");

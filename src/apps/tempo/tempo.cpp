@@ -838,20 +838,25 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
   tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
   tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));				
-	
+  tempoInduction->addMarSystem(mng.create("Gain", "gain"));
+  
   beatTracker->addMarSystem(tempoInduction);
+  beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
   beatTracker->addMarSystem(mng.create("Gain/id"));
   mrs_natural winSize = 256;
   mrs_natural hopSize = 128;
   mrs_natural  bwinSize = 2048;
+  mrs_natural bp_winSize = 8192;
+  
   mrs_natural bhopSize = 128;
   mrs_natural nCandidates = 10;    // number of tempo candidates 
   
   
   onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  
   onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
-
+  beatTracker->updControl("ShiftInput/si3/mrs_natural/winSize", bp_winSize);
+  
 	
   realvec bcoeffs(1,3);
   bcoeffs(0) = 0.0564;
@@ -881,7 +886,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
   tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
-  tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
+  beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
 	
   onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
   onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
@@ -916,14 +921,12 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
 
   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
+  
   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/nCandidates", nCandidates);
-
-  beatTracker->linkControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData", 
-						   "BeatPhase/beatphase/mrs_realvec/tempo_candidates");
-
-
-
+  beatTracker->linkControl("BeatPhase/beatphase/mrs_realvec/tempo_candidates", 
+						   "FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData");
+  
 
   if (pluginName != EMPTYSTRING)
   {
@@ -939,11 +942,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   mrs_realvec tempos(10);
   mrs_realvec tempo_scores(10);
   tempo_scores.setval(0.0);
-
   
   
-
-
   int ticks = 0;
   while (1) 
   {
@@ -1155,19 +1155,22 @@ tempo_aim_flux(string sfName, float ground_truth_tempo, string resName, bool hav
   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
   tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
   tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));				
-	
+  tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/nMaximums", 10);	
   beatTracker->addMarSystem(tempoInduction);
+  beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
   beatTracker->addMarSystem(mng.create("Gain/id"));
   mrs_natural winSize = 256;
   mrs_natural hopSize = 128;
   mrs_natural  bwinSize = 2048;
   mrs_natural bhopSize = 128;
-
+  mrs_natural bp_winSize = 4096;
+  
   
   onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);	  
   onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
-
+  beatTracker->updControl("ShiftInput/si3/mrs_natural/winSize", bp_winSize);
+  
 	
   realvec bcoeffs(1,3);
   bcoeffs(0) = 0.0564;
