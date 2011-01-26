@@ -82,6 +82,7 @@ using namespace Marsyas;
 
 vector<string> wrong_filenames_;
 vector<float> wrong_filenames_tempos_;
+vector<float> ground_truth_tempos_;
 
 
 mrs_string output;
@@ -215,8 +216,6 @@ evaluate_estimated_tempo(string sfName, mrs_realvec tempos, float ground_truth_t
 	}
 	else 
 	{
-	  wrong_filenames_.push_back(sfName);
-	  wrong_filenames_tempos_.push_back(ground_truth_tempo);
 	}
 	
 
@@ -243,6 +242,14 @@ evaluate_estimated_tempo(string sfName, mrs_realvec tempos, float ground_truth_t
 
 	  }
 
+
+
+	wrong_filenames_.push_back(sfName);
+	wrong_filenames_tempos_.push_back(predicted_tempo);
+	ground_truth_tempos_.push_back(ground_truth_tempo);
+	
+
+
 	
 	
 	total_instances++;
@@ -254,8 +261,8 @@ evaluate_estimated_tempo(string sfName, mrs_realvec tempos, float ground_truth_t
 	cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
 	
 
-	cout << "# Half   predicted tempos = " << errors_(0) * 1.0 / total_instances * 100.0 << endl;;
-	cout << "# Double predicted tempos = " << errors_(1) * 1.0 / total_instances * 100.0 << endl;;
+	cout << "# Half   predicted tempos = " << errors_(0) * 1.0 / total_instances * 100.0 << " - " << errors_(0) << endl;;
+	cout << "# Double predicted tempos = " << errors_(1) * 1.0 / total_instances * 100.0 << " - " << errors_(1) << endl;;
 	cout << "# triple predicted tempos = " << errors_(2) * 1.0 / total_instances * 100.0 << endl;;
 	cout << "# third predicted tempos = " << errors_(3) * 1.0 / total_instances * 100.0 << endl;;
 
@@ -1040,12 +1047,20 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
     
 
 
+  mrs_real median = bpms[bpms.size()/2];
   
+
   // tempos(0) = tempos(max_i);
   // tempos(0) = bpm_estimate;
-  tempos(0) = bpms[bpms.size()/2];
+  tempos(0) = median;
+  
+  
+
+  
 
   cout << "tempos(0) = " << tempos(0) << endl;
+  cout << tempos << endl;
+  
 
   if (haveCollections)
     {
@@ -3640,7 +3655,7 @@ main(int argc, const char **argv)
 		ofstream evil_collection;
 		evil_collection.open("evil.mf");
 		for (int i=0; i< (mrs_natural)wrong_filenames_.size(); i++)
-		  evil_collection << wrong_filenames_[i] << "\t" << wrong_filenames_tempos_[i] << endl;
+		  evil_collection << wrong_filenames_[i] << "\t" << wrong_filenames_tempos_[i] << "-"  << ground_truth_tempos_[i] << endl;
 		evil_collection.close();
 		
 

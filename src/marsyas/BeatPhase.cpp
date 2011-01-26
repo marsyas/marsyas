@@ -131,6 +131,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	MarControlAccessor acctc(ctrl_tempo_candidates_);
 	mrs_realvec& tempo_candidates = acctc.to<mrs_realvec>();
 
+
+
+
 	mrs_natural nCandidates = ctrl_nCandidates_->to<mrs_natural>();
 
 
@@ -150,7 +153,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	}
 
 
-
+	// cout << "TEMPO CANDIDATES " << tempos << endl;
+	// cout << tempo_candidates << endl;
+	
 	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
 	mrs_natural bhopSize = ctrl_bhopSize_->to<mrs_natural>();
 
