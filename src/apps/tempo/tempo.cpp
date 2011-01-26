@@ -947,8 +947,6 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   int ticks = 0;
   while (1) 
   {
-    
-    
     if (ticks == extra_ticks)
       tempoInduction->updControl("BeatHistogram/histo/mrs_bool/reset", true);
     
@@ -975,9 +973,10 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	//beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", estimate);
 	// beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
 	
-	bpms.push_back(bin);
+	mrs_real phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
+	bpms.push_back(phase_tempo);
 	bpms_amps.push_back(bhisto(bin * 4));
-
+	
 	if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
 	  // extra_ticks --;
@@ -987,11 +986,14 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
 	// if (extra_ticks == 0)
 	// break;
+
+	
   }
 
 
-  cout << "ticks = " << ticks << endl;
   
+
+  sort(bpms.begin(), bpms.end());
 
 
   mrs_realvec phase_tempos(nCandidates);
@@ -1031,17 +1033,26 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   // mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
 
 
+  // if ((bpm_estimate - bpms[bpms.size()/2]) < 0)
+  //   tempos(0) = bpm_estimate;
+  // else 
+  //   tempos(0) = bpms[bpms.size()/2];
+    
 
+
+  
   // tempos(0) = tempos(max_i);
-   tempos(0) = bpm_estimate;
-	
-	
-	if (haveCollections)
-	{
-	  evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo);
-		// evaluate_estimated_tempo(sfName,secondary_bpm_estimate, ground_truth_tempo);
-	}
-	
+  // tempos(0) = bpm_estimate;
+  tempos(0) = bpms[bpms.size()/2];
+
+  cout << "tempos(0) = " << tempos(0) << endl;
+
+  if (haveCollections)
+    {
+      evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo);
+      // evaluate_estimated_tempo(sfName,secondary_bpm_estimate, ground_truth_tempo);
+    }
+  
 	bpm_estimate *= 2.0;
 	// secondary_bpm_estimate *= 2.0;
 	bpm_estimate = (mrs_natural)bpm_estimate;

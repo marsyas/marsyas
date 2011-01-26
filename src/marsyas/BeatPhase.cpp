@@ -195,7 +195,10 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		{
 		  cross_correlation = 0.0;
 		  for (int b=0; b < 8; b++)
+		    {
 			cross_correlation += in(o,phase + b * period);
+			cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
+		    }
 		  if (cross_correlation > max_crco) 
 		  {
 			max_crco = cross_correlation;
@@ -219,12 +222,25 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	
 	  
 	  // beats(o,t) = 1.0;
-	  
 
 
+
+	mrs_real max_score = 0.0;
+	int max_i=0;
+	
+	for (int i= 0; i < tempos.getSize(); i++) 
+	  {
+	    if (tempo_scores(i) > max_score) 
+	      {
+		max_score = tempo_scores(i);
+		max_i = i;
+	      }
+	  }
 	
 	
 
+	ctrl_phase_tempo_->setValue(tempos(max_i));	
+	
 	return;
 	
 	
@@ -248,7 +264,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	
 	max_sum_phase = 0;
 	
-	ctrl_phase_tempo_->setValue(tempos(0));	
+
 		
 	tempo = tempos(0);
 
