@@ -216,6 +216,10 @@ evaluate_estimated_tempo(string sfName, mrs_realvec tempos, float ground_truth_t
 	}
 	else 
 	{
+	  wrong_filenames_.push_back(sfName);
+	  wrong_filenames_tempos_.push_back(predicted_tempo);
+	  ground_truth_tempos_.push_back(ground_truth_tempo);
+	
 	}
 	
 
@@ -244,9 +248,6 @@ evaluate_estimated_tempo(string sfName, mrs_realvec tempos, float ground_truth_t
 
 
 
-	wrong_filenames_.push_back(sfName);
-	wrong_filenames_tempos_.push_back(predicted_tempo);
-	ground_truth_tempos_.push_back(ground_truth_tempo);
 	
 
 
@@ -886,7 +887,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   // tempoInduction->updControl("Windowing/windowing2/mrs_string/type", "Hanning");
   
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
-  tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.1);
+  tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 720);
   // tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
@@ -895,8 +896,9 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
   beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
 	
-  onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
   onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+  // onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
 
   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
@@ -931,8 +933,12 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   
   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/nCandidates", nCandidates);
+  beatTracker->updControl("BeatPhase/beatphase/mrs_real/ground_truth_tempo", ground_truth_tempo);
+
+
   beatTracker->linkControl("BeatPhase/beatphase/mrs_realvec/tempo_candidates", 
 						   "FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData");
+
   
 
   if (pluginName != EMPTYSTRING)

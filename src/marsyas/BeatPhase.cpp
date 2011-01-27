@@ -37,7 +37,7 @@ BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 	ctrl_tempos_ = getctrl("mrs_realvec/tempos");
 	ctrl_temposcores_ = getctrl("mrs_realvec/tempo_scores");
 	ctrl_phase_tempo_ = getctrl("mrs_real/phase_tempo");
-	
+	ctrl_ground_truth_tempo_ = getctrl("mrs_real/ground_truth_tempo");
 	ctrl_beats_ = getctrl("mrs_realvec/beats");
 	ctrl_bhopSize_ = getctrl("mrs_natural/bhopSize");
 	ctrl_bwinSize_ = getctrl("mrs_natural/bwinSize");
@@ -63,11 +63,11 @@ BeatPhase::addControls()
 {
 	//Add specific controls needed by this MarSystem.
   addctrl("mrs_realvec/tempo_candidates", realvec(20), ctrl_tempo_candidates_);
-  
   addctrl("mrs_realvec/tempos", realvec(20), ctrl_tempos_);
   addctrl("mrs_realvec/tempo_scores", realvec(2), ctrl_temposcores_);
   
   addctrl("mrs_real/phase_tempo", 100.0, ctrl_phase_tempo_);
+  addctrl("mrs_real/ground_truth_tempo", 100.0, ctrl_ground_truth_tempo_);
   addctrl("mrs_realvec/beats", realvec(), ctrl_beats_);
   addctrl("mrs_natural/bhopSize", 64, ctrl_bhopSize_);
   addctrl("mrs_natural/bwinSize", 1024, ctrl_bwinSize_);
@@ -125,14 +125,12 @@ void
 BeatPhase::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
-	
 
+	mrs_real ground_truth_tempo = ctrl_ground_truth_tempo_->to<mrs_real>();
 
 	MarControlAccessor acctc(ctrl_tempo_candidates_);
 	mrs_realvec& tempo_candidates = acctc.to<mrs_realvec>();
-
-
-
+	
 
 	mrs_natural nCandidates = ctrl_nCandidates_->to<mrs_natural>();
 
@@ -143,7 +141,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 
 	MarControlAccessor accts(ctrl_temposcores_);
-	 mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
+	mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
 
 
 	for (int i=0; i < tempo_candidates.getSize()/2; i++)
@@ -151,6 +149,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	  tempos(i) = 0.25 * tempo_candidates(2*i+1);
 	  tempo_scores(i) = tempo_candidates(2*i);
 	}
+
+	// tempos(0) = ground_truth_tempo;
 
 
 	// cout << "TEMPO CANDIDATES " << tempos << endl;
@@ -203,15 +203,15 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		  {
 			cross_correlation = 0.0;
 			for (int b=0; b < 8; b++)
-		    {
-			  cross_correlation += in(o,phase + b * period);
-			  cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
-		    }
+			  {
+			    cross_correlation += in(o,phase + b * period);
+			    cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
+			  }
 			if (cross_correlation > max_crco) 
-			{
-			  max_crco = cross_correlation;
-			  max_phase = phase;
-			}
+			  {
+			    max_crco = cross_correlation;
+			    max_phase = phase;
+			  }
 		  }
 		  
 		  tempo_scores(k) = max_crco;
@@ -247,9 +247,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	
 	// cout << "TEMPO = " << tempos(max_i) << endl;
 	
-
 	ctrl_phase_tempo_->setValue(tempos(max_i));	
 	
+
 	return;
 	
 	
