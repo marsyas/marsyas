@@ -966,6 +966,10 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   
   
   int ticks = 0;
+
+  mrs_realvec bhisto; 
+  bhisto.create(200);
+  
   while (1) 
   {
     if (ticks == extra_ticks)
@@ -976,8 +980,6 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
     
     ticks++;
     mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
-    
-    mrs_realvec bhisto = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
     
     
     bin = estimate(1) * 0.25;
@@ -995,6 +997,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
     // beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
     
     mrs_real phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
+
+    bhisto((mrs_natural)phase_tempo) = bhisto((mrs_natural)phase_tempo) + 1;
     if (ticks >= extra_ticks)
       {
 	bpms.push_back(phase_tempo);
@@ -1014,8 +1018,18 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	
   }
 
-
-  
+  cout << bhisto << endl;
+  mrs_real bhmax = 0.0;
+  mrs_natural max_i = 0;
+  for (int i=0; i < 200; i++) 
+    {
+      if (bhisto(i) > bhmax)
+	{
+	  bhmax = bhisto(i);
+	  max_i = i;
+	}
+    }
+  mrs_real bhmaxt = max_i;
 
   sort(bpms.begin(), bpms.end());
 
@@ -1029,8 +1043,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
   
   mrs_real max_score = 0.0;
-  int max_i=0;
-  
+  max_i = 0;
   for (int i= 0; i < phase_tempos.getSize(); i++) 
   {
 	if (phase_tempo_scores(i) > max_score) 
@@ -1069,8 +1082,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
   // tempos(0) = tempos(max_i);
   // tempos(0) = bpm_estimate;
-  tempos(0) = median;
-  
+  // tempos(0) = median;
+  tempos(0) = bhmaxt;
   
 
   

@@ -244,7 +244,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		max_i = i;
 	      }
 	  }
-	
+
 	ctrl_phase_tempo_->setValue(tempos(max_i));	
 	return;
 	
