@@ -968,67 +968,61 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   int ticks = 0;
 
   mrs_realvec bhisto; 
+  mrs_real phase_tempo;
+  
   bhisto.create(200);
   
   while (1) 
   {
     if (ticks == extra_ticks)
       tempoInduction->updControl("BeatHistogram/histo/mrs_bool/reset", true);
-    
-    
+
     beatTracker->tick();
-    
+	
     ticks++;
     mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
-    
-    
     bin = estimate(1) * 0.25;
-    
-    
-    
+	
     for (int k=0; k < 10; k++)
-      {
-	tempos(k) = estimate(2*k+1) * 0.25;
-	tempo_scores(k) = estimate(2*k);
-      }
+	{
+	  tempos(k) = estimate(2*k+1) * 0.25;
+	  tempo_scores(k) = estimate(2*k);
+	}
     
     
-    //beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", estimate);
-    // beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
-    
-    mrs_real phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
+	
+    phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
 
     bhisto((mrs_natural)phase_tempo) = bhisto((mrs_natural)phase_tempo) + 1;
     if (ticks >= extra_ticks)
       {
-	bpms.push_back(phase_tempo);
+		bpms.push_back(phase_tempo);
       }
-    bpms_amps.push_back(bhisto(bin * 4));
-    
-    if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-      {
-	// extra_ticks --;
-	break;
 	
-      }
+    if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	{
+	  // extra_ticks --;
+	  break;
+	  
+	}
     
     // if (extra_ticks == 0)
     // break;
     
 	
   }
-
+  
   cout << bhisto << endl;
   mrs_real bhmax = 0.0;
   mrs_natural max_i = 0;
   for (int i=0; i < 200; i++) 
-    {
-      if (bhisto(i) > bhmax)
+  {
+	if (bhisto(i) > bhmax)
 	{
 	  bhmax = bhisto(i);
 	  max_i = i;
 	}
-    }
+  }
   mrs_real bhmaxt = max_i;
 
   sort(bpms.begin(), bpms.end());
@@ -1059,14 +1053,20 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   extra_ticks = bwinSize/bhopSize;
   extra_ticks = 0.0;
   
-  mrs_real bpm_estimate = bpms[bpms.size()-1-extra_ticks];
+  mrs_real bpm_estimate = 100.0;
+  
+  if (bpms.size() > 0) 
+	bpm_estimate = bpms[bpms.size()-1-extra_ticks];
+  else 
+	bpm_estimate = bin;
+  
 
   bpm_estimate = phase_tempos(0);
   
   // 	mrs_real secondary_bpm_estimate;
   // secondary_bpm_estimate = secondary_bpms[bpms.size()-1-extra_ticks];
   
-  mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
+  // mrs_real bpm_amp = bpms_amps[bpms.size()-1-extra_ticks];
   // mrs_real secondary_bpm_amp = secondary_bpms_amps[bpms.size()-1-extra_ticks];
 
 
@@ -1075,15 +1075,26 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   // else 
   //   tempos(0) = bpms[bpms.size()/2];
     
-
-
-  mrs_real median = bpms[bpms.size()/2];
+  
+  mrs_real median = 100;
+  
+  if (bpms.size() > 0)
+	median = bpms[bpms.size()/2];
+  else 
+	median = phase_tempo;
+  
   cout << "MEDIAN = " << median << endl;
 
   // tempos(0) = tempos(max_i);
-  // tempos(0) = bpm_estimate;
+
   // tempos(0) = median;
-  tempos(0) = bhmaxt;
+  if (bhmaxt < 75)
+	tempos(0) = bhmaxt * 2;
+  else 
+	tempos(0) = bhmaxt;
+
+
+  tempos(0) = bpm_estimate; 
   
 
   
