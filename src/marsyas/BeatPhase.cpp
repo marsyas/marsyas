@@ -245,11 +245,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	      }
 	  }
 	
-	// cout << "TEMPO = " << tempos(max_i) << endl;
-	
 	ctrl_phase_tempo_->setValue(tempos(max_i));	
-	
-
 	return;
 	
 	

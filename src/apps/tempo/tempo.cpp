@@ -820,13 +820,21 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 	
   onset_strength->addMarSystem(accum);
   onset_strength->addMarSystem(mng.create("ShiftInput/si2"));
+
+  onset_strength->addMarSystem(mng.create("Filter", "filt1"));
+  onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
+  onset_strength->addMarSystem(mng.create("Filter", "filt2"));
+  onset_strength->addMarSystem(mng.create("Reverse", "reverse2"));
+
+
+
   beatTracker->addMarSystem(onset_strength);
 	
   MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
-  tempoInduction->addMarSystem(mng.create("Filter", "filt1"));
-  tempoInduction->addMarSystem(mng.create("Reverse", "reverse1"));
-  tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
-  tempoInduction->addMarSystem(mng.create("Reverse", "reverse2"));
+  // tempoInduction->addMarSystem(mng.create("Filter", "filt1"));
+  // tempoInduction->addMarSystem(mng.create("Reverse", "reverse1"));
+  // tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
+  // tempoInduction->addMarSystem(mng.create("Reverse", "reverse2"));
   // tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
 
   /* tempoInduction->addMarSystem(mng.create("Spectrum", "spk"));
@@ -870,15 +878,15 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   bcoeffs(0) = 0.0564;
   bcoeffs(1) = 0.1129;
   bcoeffs(2) = 0.0564;
-  tempoInduction->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+  onset_strength->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
 	
-  tempoInduction->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
+  onset_strength->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
   realvec acoeffs(1,3);
   acoeffs(0) = 1.0000;
   acoeffs(1) = -1.2247;
   acoeffs(2) = 0.4504;
-  tempoInduction->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
-  tempoInduction->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
+  onset_strength->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+  onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 
   fluxnet->updControl("SpectralTransformations/spktr/mrs_string/mode", "compress_magnitude");
   
@@ -889,7 +897,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 40);
   tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
-  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 720);
+  tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 640);
   // tempoInduction->updControl("Peaker/pkr1/mrs_bool/peakHarmonics", true);
 
   tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
@@ -897,8 +905,8 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
 	
   onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
-  onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
-  // onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
+  // onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
 
   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
@@ -964,42 +972,45 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
       tempoInduction->updControl("BeatHistogram/histo/mrs_bool/reset", true);
     
     
-	beatTracker->tick();
+    beatTracker->tick();
     
-	ticks++;
-	mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
-
-	mrs_realvec bhisto = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
-		
-		
-	bin = estimate(1) * 0.25;
-		
-	
-	
-	for (int k=0; k < 10; k++)
-	{
-	  tempos(k) = estimate(2*k+1) * 0.25;
-	  tempo_scores(k) = estimate(2*k);
-	}
-	
-	
-	//beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", estimate);
-	// beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
-	
-	mrs_real phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
+    ticks++;
+    mrs_realvec estimate = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
+    
+    mrs_realvec bhisto = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
+    
+    
+    bin = estimate(1) * 0.25;
+    
+    
+    
+    for (int k=0; k < 10; k++)
+      {
+	tempos(k) = estimate(2*k+1) * 0.25;
+	tempo_scores(k) = estimate(2*k);
+      }
+    
+    
+    //beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempos", estimate);
+    // beatTracker->updControl("BeatPhase/beatphase/mrs_realvec/tempo_scores", tempo_scores);
+    
+    mrs_real phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
+    if (ticks >= extra_ticks)
+      {
 	bpms.push_back(phase_tempo);
-	bpms_amps.push_back(bhisto(bin * 4));
+      }
+    bpms_amps.push_back(bhisto(bin * 4));
+    
+    if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+      {
+	// extra_ticks --;
+	break;
 	
-	if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-	{
-	  // extra_ticks --;
-	  break;
-	  
-	}
-
-	// if (extra_ticks == 0)
-	// break;
-
+      }
+    
+    // if (extra_ticks == 0)
+    // break;
+    
 	
   }
 
@@ -1054,7 +1065,7 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
 
 
   mrs_real median = bpms[bpms.size()/2];
-  
+  cout << "MEDIAN = " << median << endl;
 
   // tempos(0) = tempos(max_i);
   // tempos(0) = bpm_estimate;
@@ -1067,20 +1078,19 @@ tempo_flux(string sfName, float ground_truth_tempo, string resName, bool haveCol
   cout << "tempos(0) = " << tempos(0) << endl;
   cout << tempos << endl;
   
-
   if (haveCollections)
     {
       evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo);
       // evaluate_estimated_tempo(sfName,secondary_bpm_estimate, ground_truth_tempo);
     }
   
-	bpm_estimate *= 2.0;
-	// secondary_bpm_estimate *= 2.0;
-	bpm_estimate = (mrs_natural)bpm_estimate;
-	// secondary_bpm_estimate = (mrs_natural)secondary_bpm_estimate;
-	bpm_estimate /= 2.0;
-	// secondary_bpm_estimate /= 2.0;	 
-	
+  bpm_estimate *= 2.0;
+  // secondary_bpm_estimate *= 2.0;
+  bpm_estimate = (mrs_natural)bpm_estimate;
+  // secondary_bpm_estimate = (mrs_natural)secondary_bpm_estimate;
+  bpm_estimate /= 2.0;
+  // secondary_bpm_estimate /= 2.0;	 
+  
 	// mrs_real strength = bpm_amp + secondary_bpm_amp;
 	
 
