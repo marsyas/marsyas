@@ -70,7 +70,7 @@ RealvecSource::myUpdate(MarControlPtr sender)
 	const realvec& data = ctrl_data_->to<realvec> ();
 
 	setctrl("mrs_natural/onObservations", data.getRows());
-	setctrl("mrs_natural/onSamples", inSamples_);
+	setctrl("mrs_natural/onSamples", data.getCols());
 	setctrl("mrs_real/osrate", israte_);
 	samplesToUse_ = data.getCols();
 	
