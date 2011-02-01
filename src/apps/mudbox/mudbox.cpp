@@ -4547,6 +4547,50 @@ void toy_with_orcaSnip(string fname0, string outWavFileName = EMPTYSTRING)
 	delete out;
 }
 
+// currently produces memory errors in valgrind!
+void toy_with_realvecsource_realtime()
+{
+	MarSystemManager mng;
+	MarSystem *net = mng.create("Series", "net");
+
+	// data we want to get these two observations into our network.
+	mrs_natural a = 0.0;
+	mrs_natural b = 0.0;
+
+	realvec input(2,1);
+	MarSystem *src = mng.create("RealvecSource", "src");
+	src->updControl("mrs_realvec/data", input);
+	// manually update?
+	//src->updControl("mrs_natural/inSamples", 2);
+
+	src->updControl("mrs_string/onObsNames", "a,b,");
+	net->addMarSystem(src);
+	net->addMarSystem(mng.create("Annotator", "ann"));
+	net->addMarSystem(mng.create("WekaSink", "dest"));
+
+	cout << input << endl;
+	// according to realvecsource.h "When you feed in a
+	// realvec, the rows turn into observations and
+        // the columns turn into samples.", so I expected
+	// the onSamples to be 2.
+	cout << (*src) << endl;
+
+	// do processing
+	for (int i=0; i < 2; i++) {
+		// get new values from somewhere
+		a = 1.0*i;
+		b = 2.0*i;
+
+		// enter values to network
+		input(0,0) = a;
+		input(1,0) = b;
+		src->updControl("mrs_realvec/data", input);
+
+		// process
+		net->tick();
+	}
+	delete net; // also handles src!
+}
 
 void toy_with_SOM(string collectionName) 
 {
@@ -8257,6 +8301,8 @@ main(int argc, const char **argv)
 		toy_with_PeakEval(fname0,fname1,fname2);
 	else if (toy_withName == "orcasnip")
 		toy_with_orcaSnip(fname0,fname1);
+	else if (toy_withName == "realvecsource_realtime")
+		toy_with_realvecsource_realtime();
 
 	else 
 	{
