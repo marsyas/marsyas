@@ -50,7 +50,7 @@ private:
 
 public:
 	/// MathPower constructor.
-	MathPower(std::string name);
+	MathPower(mrs_string name);
 
 	/// MathPower copy constructor.
 	MathPower(const MathPower& a);
@@ -70,4 +70,3 @@ public:
 
 #endif
 //MARSYAS_MATHPOWER_H
-

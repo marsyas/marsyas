@@ -80,7 +80,7 @@ class OneRClassifier: public MarSystem
 
 private: 
 	void addControls();
-	void myUpdate();
+	void myUpdate(MarControlPtr sender);
 
 	//this is a table of all the attribute data. It is built
 	//when mode = "train"

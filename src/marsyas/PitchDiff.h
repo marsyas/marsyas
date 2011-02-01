@@ -80,4 +80,3 @@ public:
 
 #endif
 //MARSYAS_PITCHDIFF_H
-

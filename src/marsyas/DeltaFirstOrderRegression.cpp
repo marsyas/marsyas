@@ -21,7 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
-DeltaFirstOrderRegression::DeltaFirstOrderRegression(string name) :
+DeltaFirstOrderRegression::DeltaFirstOrderRegression(mrs_string name) :
 		MarSystem("DeltaFirstOrderRegression", name)
 {
 	/// Add any specific controls needed by this MarSystem.
@@ -83,4 +83,3 @@ void DeltaFirstOrderRegression::myProcess(realvec& in, realvec& out)
 		memory_(o, 1) = in(o, inSamples_ - 1);
 	}
 }
-

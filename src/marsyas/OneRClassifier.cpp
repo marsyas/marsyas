@@ -58,7 +58,7 @@ OneRClassifier::addControls()
 }
 
 void 
-OneRClassifier::myUpdate()
+OneRClassifier::myUpdate(MarControlPtr sender)
 {
   MRSDIAG("OneRClassifier.cpp - OneRClassifier:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
