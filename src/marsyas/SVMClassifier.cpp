@@ -603,6 +603,8 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 						}
 						x_space[j++].index = -1;
 					}
+					if (x_space != NULL)
+						free(x_space);
 				}
 
 #ifdef MARSYAS_LOG_DEBUGS
