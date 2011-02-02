@@ -52,6 +52,7 @@ class AutoCorrelation: public MarSystem
 private:
   fft *myfft_;
   realvec scratch_;
+  
   realvec norm_;
   mrs_natural normalize_;
 	mrs_real octaveCost_;

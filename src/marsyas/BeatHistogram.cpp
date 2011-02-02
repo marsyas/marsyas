@@ -79,20 +79,17 @@ BeatHistogram::myUpdate(MarControlPtr sender)
 void 
 BeatHistogram::myProcess(realvec& in, realvec& out)
 {
-	if (reset_) 
-    {
-		out.setval(0.0);
-		reset_ = false;
-		setctrl("mrs_bool/reset", false);
-    }
+  out.setval(0.0);
+  
+  mrs_natural bin=0;
+  mrs_real amp;
+  mrs_real srate = getctrl("mrs_real/israte")->to<mrs_real>();
+  mrs_natural count = 1;
+  mrs_natural prev_bin =endBin_-1;
+  mrs_natural pprev_bin =endBin_-1;
+  mrs_real sumamp = 0.0;
+  mrs_real tempo_weight = 0.0;
 
-	mrs_natural bin=0;
-	mrs_real amp;
-	mrs_real srate = getctrl("mrs_real/israte")->to<mrs_real>();
-	mrs_natural count = 1;
-	mrs_natural prev_bin =endBin_-1;
-	mrs_natural pprev_bin =endBin_-1;
-	mrs_real sumamp = 0.0;
 
 #ifdef MARSYAS_MATLAB
 #ifdef MTLB_DBG_LOG
@@ -107,9 +104,15 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 	  for (mrs_natural t = 1; t < inSamples_; t++)
 	  {
 		bin = (mrs_natural)((srate * 60.0  * factor_ / (t+1)) + 0.5);
-		amp = in(o,t);
 		
+		amp = in(o,t);
 
+		tempo_weight = 5.0 * log10(t * 400.0 / (srate * 60.0 * factor_)) * log10(t * 400.0 / (srate * 60.0 * factor_));
+		tempo_weight = exp(0.5 * tempo_weight * tempo_weight);
+		tempo_weight = 1.0;
+		
+		amp = tempo_weight * amp;
+		
 		if (amp < 0.0) 
 		  amp = 0.0;
 

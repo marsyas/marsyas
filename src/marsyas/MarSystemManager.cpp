@@ -110,6 +110,7 @@
 #include "Square.h"
 #include "Subtract.h"
 #include "Median.h"
+#include "MedianFilter.h"
 #include "AubioYin.h"
 #include "Yin.h"
 #include "DownSampler.h"
@@ -357,6 +358,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Square", new Square("square"));
 	registerPrototype("Subtract", new Subtract("subtract"));
 	registerPrototype("Median", new Median("median"));
+	registerPrototype("MedianFilter", new MedianFilter("medianfilterpr"));
+
 	registerPrototype("AubioYin", new AubioYin("aubioyin"));
 	registerPrototype("Yin", new Yin("yin"));
 	registerPrototype("DownSampler", new DownSampler("ds"));

@@ -16,7 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "PitchDiff.h" 
+#include "PitchDiff.h"
 
 using std::ostringstream;
 using namespace Marsyas;
@@ -67,7 +67,8 @@ PitchDiff::myUpdate(MarControlPtr sender)
 
 	// Add prefix to the observation names.
 	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
-	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "PitchDiff_"), NOUPDATE);
+	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "PitchDiff_"), 
+							   NOUPDATE);
 
 	expectedMidiPitch_ = hertz2pitch(ctrl_expectedPitch_->to<mrs_real>());
 }

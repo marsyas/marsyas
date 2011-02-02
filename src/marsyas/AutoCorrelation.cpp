@@ -98,6 +98,7 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 	}
 
 	scratch_.create(fftSize_);
+	
 
 	// only working for hanning window
 	normalize_ = 0;
@@ -140,6 +141,8 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 
 
 
+  
+
 	mrs_natural t,o;
 	k_ = ctrl_magcompress_->to<mrs_real>();
 
@@ -152,6 +155,10 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 		{
 			scratch_(t) = in(o,t); 
 		}
+
+
+		
+
 		
 		//zeropad
 		for(t=inSamples_; t < fftSize_; t++)
@@ -208,14 +215,18 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 		{
 			for (t=0; t < onSamples_; t++) 
 			{
-				out(o,t) = scratch_(t)*norm_(t);
+			  out(o,t) = scratch_(t)*norm_(t);
 			}
 		}
 		else 
-		for (t=0; t < onSamples_; t++)  
-		{
-			out(o,t) = scratch_(t);
-		}
+		  for (t=0; t < onSamples_; t++)  
+		  {
+			// out(o,t) = 0.1 * scratch_(t) + 0.99 * out(o,t);
+			out(o,t) = 1.0 * scratch_(t) + 0.0 * out(o,t);
+			// out(o,t) = 0.5 * scratch_(t) + 0.5 * out(o,t);
+			// out(o,t) +=  scratch_(t);
+			
+		  }
 		
 	}
 
@@ -245,33 +256,40 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 
 	if (ctrl_setr0to1_->to<mrs_bool>())
 	{
-		mrs_real myNorm = out(0,0);
-		if (myNorm > 0)
-			out	/= myNorm;
+	  // out -= out.minval();
+
+	  for (o=0; o < onObservations_; o++)
+		for (t=0; t< onSamples_-1; t++)
+		{
+		  out(o,t) = out(o,t) / (onSamples_ - 1 - t);
+		  if (t > onSamples_-1-100) 
+			out(o,t) = 0.0;
+		}
+	  
+	  
+
+	  mrs_real myNorm = out(0,0);
+	  if (myNorm > 0)
+		out	/= myNorm;
 	}
+
+
 
 	
 	if (ctrl_setr0to0_->to<mrs_bool>())
 	{
 	  
-	  for (o=0; o < onObservations_; o++)
-		out(o,0) = 0.0;
+	  // for (o=0; o < onObservations_; o++)
+	  // out(o,0) = 0.0;
 	  
-	  for (o=0; o < onObservations_; o++)
-	   for (t=1; t< onSamples_-2; t++)
-		 out(o,t) = out(o,t) / (onSamples_ - 2 - t);
-	   
-	   
 	  
 
+	  for (o=0; o < onObservations_; o++)
+		for (t=0; t < onSamples_; t++)
+		{
+		  out(o,t) = out(o,t);
+		}
 	}
-	
-	
-
-
-
-	
-	
 
 	/*
 	MATLAB_PUT(in, "corr_in");
