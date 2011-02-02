@@ -79,6 +79,15 @@ BeatHistogram::myUpdate(MarControlPtr sender)
 void 
 BeatHistogram::myProcess(realvec& in, realvec& out)
 {
+  
+  if (reset_)
+  {
+	out.setval(0.0);
+	reset_ = false;
+	setctrl("mrs_bool/reset", false);
+  }
+  
+
   out.setval(0.0);
   
   mrs_natural bin=0;

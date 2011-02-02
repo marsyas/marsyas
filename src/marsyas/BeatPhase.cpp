@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -33,7 +33,7 @@ BeatPhase::BeatPhase(mrs_string name):MarSystem("BeatPhase", name)
 BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 {
   ctrl_tempo_candidates_ = getctrl("mrs_realvec/tempo_candidates");
-  
+
 	ctrl_tempos_ = getctrl("mrs_realvec/tempos");
 	ctrl_temposcores_ = getctrl("mrs_realvec/tempo_scores");
 	ctrl_phase_tempo_ = getctrl("mrs_real/phase_tempo");
@@ -44,7 +44,7 @@ BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 	ctrl_timeDomain_ = getctrl("mrs_realvec/timeDomain");
 	ctrl_nCandidates_ = getctrl("mrs_natural/nCandidates");
 	ctrl_beatOutput_ = getctrl("mrs_realvec/beatOutput");
-	
+
 	sampleCount_ = 0;
 }
 
@@ -52,27 +52,27 @@ BeatPhase::~BeatPhase()
 {
 }
 
-MarSystem* 
-BeatPhase::clone() const 
+MarSystem*
+BeatPhase::clone() const
 {
 	return new BeatPhase(*this);
 }
 
-void 
+void
 BeatPhase::addControls()
 {
 	//Add specific controls needed by this MarSystem.
   addctrl("mrs_realvec/tempo_candidates", realvec(20), ctrl_tempo_candidates_);
   addctrl("mrs_realvec/tempos", realvec(20), ctrl_tempos_);
   addctrl("mrs_realvec/tempo_scores", realvec(2), ctrl_temposcores_);
-  
+
   addctrl("mrs_real/phase_tempo", 100.0, ctrl_phase_tempo_);
   addctrl("mrs_real/ground_truth_tempo", 100.0, ctrl_ground_truth_tempo_);
   addctrl("mrs_realvec/beats", realvec(), ctrl_beats_);
   addctrl("mrs_natural/bhopSize", 64, ctrl_bhopSize_);
   addctrl("mrs_natural/bwinSize", 1024, ctrl_bwinSize_);
   addctrl("mrs_realvec/timeDomain", realvec(), ctrl_timeDomain_);
-  addctrl("mrs_natural/nCandidates", 3, ctrl_nCandidates_);
+  addctrl("mrs_natural/nCandidates", 20, ctrl_nCandidates_);
   setctrlState("mrs_natural/nCandidates", true);
   addctrl("mrs_realvec/beatOutput", realvec(), ctrl_beatOutput_);
 }
@@ -80,26 +80,26 @@ BeatPhase::addControls()
 void
 BeatPhase::myUpdate(MarControlPtr sender)
 {
-	// no need to do anything BeatPhase-specific in myUpdate 
+	// no need to do anything BeatPhase-specific in myUpdate
 	MarSystem::myUpdate(sender);
 
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	mrs_natural nCandidates = getctrl("mrs_natural/nCandidates")->to<mrs_natural>();
-	
-	MarControlAccessor acc_t(ctrl_tempos_);	
+
+	MarControlAccessor acc_t(ctrl_tempos_);
 	mrs_realvec& tempos = acc_t.to<mrs_realvec>();
 	tempos.stretch(nCandidates);
-	
+
 	MarControlAccessor acc_ts(ctrl_temposcores_);
 	mrs_realvec& temposcores = acc_ts.to<mrs_realvec>();
 	temposcores.stretch(nCandidates);
 
-	MarControlAccessor acc_tc(ctrl_tempo_candidates_);	
+	MarControlAccessor acc_tc(ctrl_tempo_candidates_);
 	mrs_realvec& tempocandidates = acc_tc.to<mrs_realvec>();
 	tempocandidates.stretch(nCandidates * 2);
 
-	
-	
+
+
 	if (pinSamples_ != inSamples_)
 	{
 		{
@@ -113,15 +113,15 @@ BeatPhase::myUpdate(MarControlPtr sender)
 			beatOutput.create(inSamples_);
 		}
 	}
-   
+
 	pinSamples_ = inSamples_;
 
 
-   
+
 }
 
 
-void 
+void
 BeatPhase::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
@@ -130,7 +130,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 	MarControlAccessor acctc(ctrl_tempo_candidates_);
 	mrs_realvec& tempo_candidates = acctc.to<mrs_realvec>();
-	
+
 
 	mrs_natural nCandidates = ctrl_nCandidates_->to<mrs_natural>();
 
@@ -143,27 +143,73 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	MarControlAccessor accts(ctrl_temposcores_);
 	mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
 
-
-	for (int i=0; i < tempo_candidates.getSize()/2; i++)
+	// shift old ones 
+	for (int i=tempos.getSize()/2-1; i < tempos.getSize(); i++)
+	{
+	  tempos(i) = tempos(i-tempos.getSize()/2);
+	  tempo_scores(i) = tempo_scores(i-tempos.getSize()/2);
+	}
+	
+	
+	for (int i=0; i < tempo_candidates.getSize()/4; i++)
 	{
 	  tempos(i) = 0.25 * tempo_candidates(2*i+1);
 	  tempo_scores(i) = tempo_candidates(2*i);
 	}
 
-	// tempos(0) = ground_truth_tempo;
 
+
+	  
+
+	
+
+	// tempos(5) = ground_truth_tempo;
+
+	
+	/* tempos(5) = tempos(0) +1;
+	tempos(6) = tempos(0) -1;
+	tempos(7) = tempos(0) +2;
+	tempos(8) = tempos(0) -2;
+	tempos(9) = tempos(0) + 0.5;
+	tempos(10) = tempos(0) - 0.5;
+	tempos(11) = tempos(0) + 1.5;
+	tempos(12) = tempos(0) - 1.5;
+	*/ 
+	
+
+	/* 
+	tempos(8) = tempos(1) -1;
+	tempos(9) = tempos(2) + 1;
+	tempos(10) = tempos(2) -1;
+	tempos(11) = tempos(3) +1;
+	tempos(12) = tempos(3) +1;
+	*/ 
+
+
+	
+	for (int k=0; k < tempos.getSize(); k++)
+	{
+	  if (tempos(k) < 50.0)
+		tempos(k) = 0;
+	  if (tempos(k) > 200)
+		tempos(k) = 0;
+
+	}
 
 	// cout << "TEMPO CANDIDATES " << tempos << endl;
 	// cout << tempo_candidates << endl;
-	
+
 	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
 	mrs_natural bhopSize = ctrl_bhopSize_->to<mrs_natural>();
 
 	MarControlAccessor acc(ctrl_beats_);
 	mrs_realvec& beats = acc.to<mrs_realvec>();
 
-	
-	
+
+
+
+
+
 	for (o=0; o < inObservations_; o++)
 	{
 	  for (t = 0; t < inSamples_; t++)
@@ -179,27 +225,27 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_real cross_correlation = 0.0;
 	mrs_real max_crco=0.0;
 	mrs_natural max_phase = 0.0;
-	
+
 
 	for (o=0; o < inObservations_; o++)
 	{
-	  for (int k=0; k < tempos.getSize(); k++)
+	  for (int k=0; k < tempos.getSize()/2; k++)
 	  {
 		max_crco = 0.0;
-		
+
 		tempo = tempos(k);
-		if (tempo !=0)
-		  period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
-		else 
+		if (tempo >= 50)
+		  period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
+		else
 		  period = 0;
-		period = (mrs_natural)(period+0.5);	
-		
-		
-		
+		period = (mrs_natural)(period+0.5);
+
+
+
 		if (period > 1.0)
 		{
-		  
-		  for (phase=0; phase < period; phase++) 
+
+		  for (phase=0; phase < period; phase++)
 		  {
 			cross_correlation = 0.0;
 			for (int b=0; b < 8; b++)
@@ -207,48 +253,54 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			    cross_correlation += in(o,phase + b * period);
 			    cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
 			  }
-			if (cross_correlation > max_crco) 
+			if (cross_correlation > max_crco)
 			  {
 			    max_crco = cross_correlation;
 			    max_phase = phase;
 			  }
 		  }
-		  
+
 		  tempo_scores(k) = max_crco;
-		  
-		  
+
 		  for (int b=0; b < 8; b++)
 			beats(o,max_phase + b * period) = in(o, max_phase + b * period);
-		  
+
 		}
 	  }
-	  
-	  
-	  
-	  
 	}
-	
-	  
-	  // beats(o,t) = 1.0;
-
 
 
 	mrs_real max_score = 0.0;
 	int max_i=0;
-	
-	for (int i= 0; i < tempos.getSize(); i++) 
+
+	for (int i= 0; i < tempos.getSize(); i++)
 	  {
-	    if (tempo_scores(i) > max_score) 
-	      {
-		max_score = tempo_scores(i);
-		max_i = i;
-	      }
+	    if (tempo_scores(i) > max_score)
+		{
+		  max_score = tempo_scores(i);
+		  max_i = i;
+		}
 	  }
 
-	ctrl_phase_tempo_->setValue(tempos(max_i));	
+	
+	mrs_real correct_tempo = 0;
+	for (int k=0; k < tempos.getSize(); k++)
+	{
+	  if (fabs(tempos(k) - ground_truth_tempo) <= 0.02 * ground_truth_tempo)
+	  {
+		correct_tempo = ground_truth_tempo;
+		break;
+	  }
+	}
+
+	
+	// cout << "TEMPO " << tempos(max_i) << endl;
+	// cout << "Index = " << max_i << endl;
+	
+	ctrl_phase_tempo_->setValue(tempos(max_i));
 	return;
-	
-	
+
+
 
 
 
@@ -256,33 +308,33 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_real max_sum_phase = 0.0;
 	// mrs_natural max_phase = 0;
 	// mrs_real max_phase_tempo;
-	mrs_real avg_period; 
+	mrs_real avg_period;
 	// mrs_real next_peak;
-	
-	
+
+
 	beats.setval(0.0);
 
-	
-	
+
+
 	// mrs_real tempo;
 	// mrs_real max_tm;
-	
-	max_sum_phase = 0;
-	
 
-		
+	max_sum_phase = 0;
+
+
+
 	tempo = tempos(0);
 
 	if (tempo !=0)
-		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize 
-	else 
+		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
+	else
 		period = 0;
-	period = (mrs_natural)(period+0.5);	
+	period = (mrs_natural)(period+0.5);
 
-	
+
 	max_sum_phase = 0.0;
-	
-	for (t= inSamples_-1; t >= inSamples_-1-period; t--) 
+
+	for (t= inSamples_-1; t >= inSamples_-1-period; t--)
 	{
 		sum_phase = 0.0;
 		sum_phase += in(0,t);
@@ -295,23 +347,23 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			max_phase = t;
 		}
 	}
-	
+
 
 	beats(0, max_phase) = -0.5;
 	beats(0, max_phase - period) = -0.5;
 	beats(0, max_phase - 2*period) = -0.5;
 	beats(0, max_phase - 3*period) = -0.5;
-	
-	
-	
+
+
+
 	mrs_natural delay = (bwinSize - bhopSize);
 	mrs_natural start;
 	mrs_natural end;
 	mrs_natural prev_phase = max_phase;
 	mrs_natural prev_sample_count;
-	
+
 	/* avg_period = 0;
-	
+
 	for (int k=0; k < 4; k++)
 	{
 			start = max_phase - (mrs_natural)period - 2;
@@ -320,7 +372,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			for (t=start; t <= end; t++)
 		{
 			sum_phase = in(0,t);
-			if (sum_phase >= max_sum_phase) 
+			if (sum_phase >= max_sum_phase)
 			{
 				max_sum_phase = sum_phase;
 				max_phase = t;
@@ -331,9 +383,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		prev_phase = max_phase;
 
 	}
-	
+
 	avg_period /= 4;
-	*/ 
+	*/
 
 	prev_sample_count = sampleCount_;
 
@@ -346,7 +398,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
       beatOutput(t) = 0.0;
     }
 
- 	for (int t = inSamples_-1; t >= inSamples_-1-bhopSize; t--) 
+ 	for (int t = inSamples_-1; t >= inSamples_-1-bhopSize; t--)
 	{
 		if (beats(0, t) == -0.5)
 		{
@@ -358,9 +410,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			cout << "t = " << t << endl;
 			cout << "inSamples_ = " << inSamples_ << endl;
 			cout << "bhopSize = " << bhopSize << endl;
-			
+
 			cout << "nt = " << t - (inSamples_-1-bhopSize) << endl;
-			*/ 
+			*/
 			// cout <<  (sampleCount_ + t - (inSamples_-1-bhopSize)) / (2.0 * osrate_) << "\t";
 			// cout << (sampleCount_ + t - (inSamples_-1-bhopSize+1)) / (2.0 * osrate_) << " b" << endl;
 			beats(0,t) = -1.0;
@@ -371,10 +423,10 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		}
 	}
 	sampleCount_ += bhopSize;
-	
+
 
 	/* sampleCount_ += bhopSize;
-	if (sampleCount_ == bwinSize) 
+	if (sampleCount_ == bwinSize)
 	{
 		cout << "FULL WINDOW" << endl;
 		t = max_phase;
@@ -382,15 +434,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		{
 			beats(0,t) = -0.5;
 		}
-		
+
 	}
-	*/ 
+	*/
 }
-
-
-
-
-
-
-
-	
