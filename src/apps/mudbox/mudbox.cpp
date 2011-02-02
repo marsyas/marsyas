@@ -4559,14 +4559,16 @@ void toy_with_realvecsource_realtime()
 
 	realvec input(2,1);
 	MarSystem *src = mng.create("RealvecSource", "src");
-	src->updControl("mrs_realvec/data", input);
-	// manually update?
-	//src->updControl("mrs_natural/inSamples", 2);
 
-	src->updControl("mrs_string/onObsNames", "a,b,");
+	// src->updControl("mrs_string/onObsNames", "a,b,");
 	net->addMarSystem(src);
 	net->addMarSystem(mng.create("Annotator", "ann"));
 	net->addMarSystem(mng.create("WekaSink", "dest"));
+
+	net->updControl("mrs_natural/inSamples", 1);
+	net->updControl("RealvecSource/src/mrs_string/onObsNames", "a,b,");
+	net->updControl("RealvecSource/src/mrs_realvec/data", input);
+	
 
 	cout << input << endl;
 	// according to realvecsource.h "When you feed in a
