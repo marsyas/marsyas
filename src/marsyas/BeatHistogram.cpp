@@ -107,9 +107,9 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		
 		amp = in(o,t);
 
-		tempo_weight = 5.0 * log10(t * 400.0 / (srate * 60.0 * factor_)) * log10(t * 400.0 / (srate * 60.0 * factor_));
+		tempo_weight = 5.0 * log10((t+1) * 400.0 / (srate * 60.0 * factor_)) * log10((t+1) * 400.0 / (srate * 60.0 * factor_));
 		tempo_weight = exp(0.5 * tempo_weight * tempo_weight);
-		tempo_weight = 1.0;
+		// tempo_weight = 1.0;
 		
 		amp = tempo_weight * amp;
 		
