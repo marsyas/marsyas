@@ -254,7 +254,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	if (ctrl_setr0to1_->to<mrs_bool>())
+	/* if (ctrl_setr0to1_->to<mrs_bool>())
 	{
 	  // out -= out.minval();
 
@@ -272,6 +272,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 	  if (myNorm > 0)
 		out	/= myNorm;
 	}
+	*/ 
 
 
 

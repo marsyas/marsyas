@@ -190,6 +190,41 @@ void
 evaluate_estimated_tempo(mrs_string sfName, mrs_realvec tempos, float ground_truth_tempo)
 {
 
+  cout << "TEMPOS(0) " << tempos(0) << endl;
+  cout << "TEMPOS(1) " << tempos(1) << endl;
+  cout << "TEMPOS(3) " << tempos(2) << endl;
+
+  mrs_real double_threshold = 75.0;
+  if (fabs(2 * tempos(0) - tempos(1)) <= 0.04 * tempos(1) && tempos(0) < double_threshold)
+    tempos(0) = tempos(1);
+  
+  if (fabs(2 * tempos(1) - tempos(0)) <= 0.04 * tempos(0) && tempos(1) < double_threshold)
+    tempos(1) = tempos(0);
+
+  if (fabs(3 * tempos(0) - tempos(1)) <= 0.04 * tempos(1) && tempos(0) < double_threshold)
+    tempos(0) = tempos(1);
+
+  if (fabs(3 * tempos(1) - tempos(0)) <= 0.04 * tempos(0) && tempos(1) < double_threshold)
+    tempos(1) = tempos(0);
+
+
+  // one more time 
+
+  if (fabs(2 * tempos(1) - tempos(2)) <= 0.04 * tempos(2) && tempos(1) < double_threshold)
+    tempos(0) = tempos(2);
+  
+  if (fabs(2 * tempos(2) - tempos(1)) <= 0.04 * tempos(1) && tempos(2) < double_threshold)
+    tempos(0) = tempos(1);
+
+  if (fabs(3 * tempos(1) - tempos(2)) <= 0.04 * tempos(2) && tempos(1) < double_threshold)
+    tempos(0) = tempos(2);
+
+  if (fabs(3 * tempos(2) - tempos(1)) <= 0.04 * tempos(1) && tempos(2) < double_threshold)
+    tempos(1) = tempos(1);
+
+
+
+  
   mrs_real predicted_tempo = tempos(0);
 
   float diff1 = fabs(predicted_tempo - ground_truth_tempo);
@@ -200,7 +235,7 @@ evaluate_estimated_tempo(mrs_string sfName, mrs_realvec tempos, float ground_tru
 
   cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
   if (diff1 < 0.5)
-	correct_predictions++;
+    correct_predictions++;
 
   if (diff1 <= 0.04 * ground_truth_tempo)
 	correct_mirex_predictions++;
@@ -925,10 +960,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 
    // parameters for BH pick peaking
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 15);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 800);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 720);
    tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
@@ -997,6 +1032,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   cout << "extra_ticks = " << extra_ticks << endl;
 
   mrs_real bh_estimate;
+  mrs_real bh_estimate2;
 
   while (1)
   {
@@ -1007,7 +1043,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	
 	// tick the network and get a tempo estimates
 	beatTracker->tick();
-	ticks++;
+    ticks++;
 	
 	mrs_realvec bh_candidates = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
 	for (int k=0; k < 10; k++)
@@ -1016,54 +1052,50 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	}
 	
 	bh_estimate = tempos(0);
+	bh_estimate2 = tempos(1);
 	// tempo estimation using cross-correlation of candidate pulse trains to the onset strength signal
 	phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
 	
 	
-	// cout << "PT = " << phase_tempo << endl;
 	
 	tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
 	temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
 	
 	if (ticks >= extra_ticks)
 	{
-	  /* for (int k=0; k < nCandidates; k++)
-		{
-		  bhisto((mrs_natural)tempos(k)) += temposcores(k);
-		}
-	  */ 
-	  bhisto(phase_tempo) ++;
-	  
+	  bhisto(phase_tempo) += temposcores(0);
 	}
-	  if (num_ticks - ticks < 1)
+	
+	if (num_ticks - ticks < 1)
 	  {
-		break;
+	    break;
 	  }
-	  
+	
+  }
+  
+	
+  cout << "FINAL ticks = " << ticks << endl;
+	
+  
+  // Find the max bin of the histogram created from the
+  // BeatPhase tempo candidates
+  mrs_real bhmax = 0.0;
+  mrs_natural max_i = 0;
+  for (int i=0; i < 200; i++)
+    {
+      if (bhisto(i) > bhmax)
+	{
+	  bhmax = bhisto(i);
+	  max_i = i;
 	}
-	
-	
-	cout << "FINAL ticks = " << ticks << endl;
-	
-
-   // Find the max bin of the histogram created from the
-   // BeatPhase tempo candidates
-   mrs_real bhmax = 0.0;
-   mrs_natural max_i = 0;
-   for (int i=0; i < 200; i++)
-   {
-	 if (bhisto(i) > bhmax)
-	 {
-	   bhmax = bhisto(i);
-	   max_i = i;
-	 }
-   }
+    }
    mrs_real bhmaxt = max_i;
 
-   tempos(0) = bh_estimate;
-   tempos(0) = phase_tempo;
+   // tempos(0) = bh_estimate;
+   // tempos(0) = phase_tempo;
    tempos(0) = bhmaxt;
-   
+   tempos(1) = bh_estimate;
+   tempos(2) = bh_estimate2;
    
 
    // Heuristic for reducing octave errors using the BeatPhase estimate
@@ -1076,7 +1108,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    else
 	 tempos(0) = bhmaxt;
    */ 
-
+    
+   
 
    if (haveCollections)
 	 evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo);
@@ -1338,10 +1371,11 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // Heuristic for reducing octave errors using the BeatPhase estimate
   // Commenting it out evaluates the Beat Histogram estimate
-  if (bhmaxt < 75)
+  /* if (bhmaxt < 75)
 	tempos(0) = bhmaxt * 2;
   else
 	tempos(0) = bhmaxt;
+  */ 
 
   if (haveCollections)
 	evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo);

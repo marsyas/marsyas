@@ -144,21 +144,22 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
 
 	// shift old ones 
-	for (int i=tempos.getSize()/2-1; i < tempos.getSize(); i++)
+	/* for (int i=tempos.getSize()/2-1; i < tempos.getSize(); i++)
 	{
 	  tempos(i) = tempos(i-tempos.getSize()/2);
 	  tempo_scores(i) = tempo_scores(i-tempos.getSize()/2);
 	}
+	*/ 
 	
 	
-	for (int i=0; i < tempo_candidates.getSize()/4; i++)
+	for (int i=0; i < tempo_candidates.getSize()/2; i++)
 	{
 	  tempos(i) = 0.25 * tempo_candidates(2*i+1);
 	  tempo_scores(i) = tempo_candidates(2*i);
 	}
 
 
-
+	tempo_scores /= tempo_scores.sum();
 	  
 
 	
@@ -186,16 +187,19 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	*/ 
 
 
-	
+
+	mrs_realvec onset_scores;
+	onset_scores.create(tempo_scores.getSize());
+			    
 	for (int k=0; k < tempos.getSize(); k++)
-	{
-	  if (tempos(k) < 50.0)
-		tempos(k) = 0;
-	  if (tempos(k) > 200)
-		tempos(k) = 0;
-
-	}
-
+	  {
+	    if (tempos(k) < 50.0)
+	      tempos(k) = 0;
+	    if (tempos(k) > 200)
+	      tempos(k) = 0;
+	    
+	  }
+	
 	// cout << "TEMPO CANDIDATES " << tempos << endl;
 	// cout << tempo_candidates << endl;
 
@@ -229,7 +233,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 	for (o=0; o < inObservations_; o++)
 	{
-	  for (int k=0; k < tempos.getSize()/2; k++)
+	  for (int k=0; k < tempos.getSize(); k++)
 	  {
 		max_crco = 0.0;
 
@@ -247,29 +251,38 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 		  for (phase=0; phase < period; phase++)
 		  {
-			cross_correlation = 0.0;
-			for (int b=0; b < 8; b++)
-			  {
-			    cross_correlation += in(o,phase + b * period);
-			    cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
-			  }
-			if (cross_correlation > max_crco)
-			  {
-			    max_crco = cross_correlation;
-			    max_phase = phase;
-			  }
+		    cross_correlation = 0.0;
+		    for (int b=0; b < 8; b++)
+		      {
+			cross_correlation += in(o,phase + b * period);
+			cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
+			if ((b == 0) || (b == 2) || (b == 4) || (b == 6))
+			  cross_correlation += 0.5 * in(o,phase + b * period);
+		      }
+		    if (cross_correlation > max_crco)
+		      {
+			max_crco = cross_correlation;
+			max_phase = phase;
+		      }
 		  }
-
-		  tempo_scores(k) = max_crco;
-
+		  
+		  onset_scores(k) = max_crco;
+		  
 		  for (int b=0; b < 8; b++)
-			beats(o,max_phase + b * period) = in(o, max_phase + b * period);
-
+		    beats(o,max_phase + b * period) = in(o, max_phase + b * period);
+		  
 		}
 	  }
 	}
+	
 
+	onset_scores /= onset_scores.sum();
+	for (int k=0; k < tempo_scores.getSize()/2; k++)
+	  tempo_scores(k) = onset_scores(k) + 0.0 * tempo_scores(k);
 
+	
+	// tempo_scores /= tempo_scores.sum();
+	
 	mrs_real max_score = 0.0;
 	int max_i=0;
 
@@ -293,6 +306,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	  }
 	}
 
+	tempos(0) = tempos(max_i);
+	tempo_scores(0) = tempo_scores(max_i);
 	
 	// cout << "TEMPO " << tempos(max_i) << endl;
 	// cout << "Index = " << max_i << endl;
