@@ -229,7 +229,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_real cross_correlation = 0.0;
 	mrs_real max_crco=0.0;
 	mrs_natural max_phase = 0.0;
-
+	mrs_realvec phase_correlations;
 
 	for (o=0; o < inObservations_; o++)
 	{
@@ -248,7 +248,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 		if (period > 1.0)
 		{
-
+		  phase_correlations.create(period);
+				  
 		  for (phase=0; phase < period; phase++)
 		  {
 		    cross_correlation = 0.0;
@@ -259,14 +260,15 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			if ((b == 0) || (b == 2) || (b == 4) || (b == 6))
 			  cross_correlation += 0.5 * in(o,phase + b * period);
 		      }
+		    phase_correlations(phase) = cross_correlation;
 		    if (cross_correlation > max_crco)
 		      {
 			max_crco = cross_correlation;
 			max_phase = phase;
 		      }
 		  }
-		  
-		  onset_scores(k) = max_crco;
+		  onset_scores(k) = phase_correlations.var();
+		  tempo_scores(k) = max_crco;
 		  
 		  for (int b=0; b < 8; b++)
 		    beats(o,max_phase + b * period) = in(o, max_phase + b * period);
@@ -275,14 +277,16 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	  }
 	}
 	
-
+	
 	onset_scores /= onset_scores.sum();
-	for (int k=0; k < tempo_scores.getSize()/2; k++)
-	  tempo_scores(k) = onset_scores(k) + 0.0 * tempo_scores(k);
+	tempo_scores /= tempo_scores.sum();
 
+	for (int i=0; i < tempo_scores.getSize(); i++)
+	  tempo_scores(i) = onset_scores(i) + tempo_scores(i);
+
+	tempo_scores /= tempo_scores.sum();
 	
-	// tempo_scores /= tempo_scores.sum();
-	
+
 	mrs_real max_score = 0.0;
 	int max_i=0;
 
@@ -306,11 +310,15 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	  }
 	}
 
+	// cout << tempos << endl;
+	// cout << tempo_scores << endl;
+	// cout << onset_scores << endl;
+
+
 	tempos(0) = tempos(max_i);
 	tempo_scores(0) = tempo_scores(max_i);
 	
-	// cout << "TEMPO " << tempos(max_i) << endl;
-	// cout << "Index = " << max_i << endl;
+
 	
 	ctrl_phase_tempo_->setValue(tempos(max_i));
 	return;

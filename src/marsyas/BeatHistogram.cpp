@@ -82,9 +82,9 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
   
   if (reset_)
   {
-	out.setval(0.0);
-	reset_ = false;
-	setctrl("mrs_bool/reset", false);
+    out.setval(0.0);
+    reset_ = false;
+    setctrl("mrs_bool/reset", false);
   }
   
 
@@ -116,9 +116,20 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		
 		amp = in(o,t);
 
-		tempo_weight = 5.0 * log10((t+1) * 400.0 / (srate * 60.0 * factor_)) * log10((t+1) * 400.0 / (srate * 60.0 * factor_));
-		tempo_weight = exp(0.5 * tempo_weight * tempo_weight);
-		// tempo_weight = 1.0;
+
+		// optional tempo weight 
+		
+		if (getctrl("mrs_bool/tempoWeighting")->to<mrs_bool>())
+		  {
+		     tempo_weight = 5.0 * 
+		       log10((t+1) * 400.0 / (srate * 60.0 * factor_)) * 
+		       log10((t+1) * 400.0 / (srate * 60.0 * factor_));
+		     tempo_weight = exp(0.5 * tempo_weight * tempo_weight);
+		  }
+		else 
+		  {
+		    tempo_weight = 1.0;
+		  }
 		
 		amp = tempo_weight * amp;
 		
@@ -126,11 +137,8 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		  amp = 0.0;
 
 		
-		// amp = in(o,t) / (inSamples_- t);
-		// amp = in(o,t) / in(o,0); // normalize so that 0-lag is 1 
-
 		if ((bin > 40)&&(bin < endBin_))
-		{
+		  {
 		  if (prev_bin == bin) 
 		  {
 			sumamp += amp;
@@ -140,12 +148,6 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		  {
 			sumamp += amp;
 			out(o,prev_bin) += ((sumamp / count));
-
-			// if ((sumamp / count) >= out(0,prev_bin)) 
-			// {
-			// out(0,prev_bin) = sumamp/ count;
-			// }
-
 			count = 1;
 			sumamp = 0.0;
 		  }
@@ -162,29 +164,9 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		  prev_bin = bin;
 		}
 	  }
+	  
 
-
-	  if (getctrl("mrs_bool/tempoWeighting")->to<mrs_bool>())
-	  {
-
-
-		
-		mrs_real weight;
-		for (int i=startBin_; i < endBin_; i++)
-		{
-
-		  weight = 1.0 - (400.0 - i)*(400.0-i);
-		  
-		  // weight = (400.0 - i) * 0.018;
-		  // if (weight < 0.0) 
-		  // weight = 0.0;
-		  // weight = weight * weight * weight;
-		  // out(0,i) += out(0,i) * (weight /3.0);
-		   out(o,i) = out(o,i);
-
-		}
-	  }
-
+	  
 	}
 	
 

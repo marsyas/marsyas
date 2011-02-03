@@ -254,25 +254,26 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 		}
 	}
 
-	/* if (ctrl_setr0to1_->to<mrs_bool>())
-	{
-	  // out -= out.minval();
+	if (ctrl_setr0to1_->to<mrs_bool>())
+	  {
+	    // out -= out.minval();
 
-	  for (o=0; o < onObservations_; o++)
-		for (t=0; t< onSamples_-1; t++)
+	    /* for (o=0; o < onObservations_; o++)
+	      for (t=0; t< onSamples_-1; t++)
 		{
 		  out(o,t) = out(o,t) / (onSamples_ - 1 - t);
 		  if (t > onSamples_-1-100) 
-			out(o,t) = 0.0;
+		    out(o,t) = 0.0;
 		}
+	    */ 
+	    
 	  
-	  
-
-	  mrs_real myNorm = out(0,0);
-	  if (myNorm > 0)
-		out	/= myNorm;
-	}
-	*/ 
+	    
+	    // mrs_real myNorm = out(0,0);
+	    // if (myNorm > 0)
+	    // out	/= myNorm;
+	  }
+	
 
 
 
