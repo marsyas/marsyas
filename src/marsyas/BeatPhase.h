@@ -53,6 +53,9 @@ namespace Marsyas
    
 	
     mrs_natural pinSamples_;
+	  mrs_real current_beat_location_;
+	  
+	  
     void myUpdate(MarControlPtr sender);
     mrs_natural sampleCount_;
 		

@@ -190,40 +190,6 @@ void
 evaluate_estimated_tempo(mrs_string sfName, mrs_realvec tempos, float ground_truth_tempo)
 {
 
-  cout << "TEMPOS(0) " << tempos(0) << endl;
-  cout << "TEMPOS(1) " << tempos(1) << endl;
-  cout << "TEMPOS(3) " << tempos(2) << endl;
-
-  mrs_real double_threshold = 75.0;
-  if (fabs(2 * tempos(0) - tempos(1)) <= 0.04 * tempos(1) && tempos(0) < double_threshold)
-    tempos(0) = tempos(1);
-  
-  if (fabs(2 * tempos(1) - tempos(0)) <= 0.04 * tempos(0) && tempos(1) < double_threshold)
-    tempos(1) = tempos(0);
-
-  if (fabs(3 * tempos(0) - tempos(1)) <= 0.04 * tempos(1) && tempos(0) < double_threshold)
-    tempos(0) = tempos(1);
-
-  if (fabs(3 * tempos(1) - tempos(0)) <= 0.04 * tempos(0) && tempos(1) < double_threshold)
-    tempos(1) = tempos(0);
-
-
-  // one more time 
-
-  if (fabs(2 * tempos(1) - tempos(2)) <= 0.04 * tempos(2) && tempos(1) < double_threshold)
-    tempos(0) = tempos(2);
-  
-  if (fabs(2 * tempos(2) - tempos(1)) <= 0.04 * tempos(1) && tempos(2) < double_threshold)
-    tempos(0) = tempos(1);
-
-  if (fabs(3 * tempos(1) - tempos(2)) <= 0.04 * tempos(2) && tempos(1) < double_threshold)
-    tempos(0) = tempos(2);
-
-  if (fabs(3 * tempos(2) - tempos(1)) <= 0.04 * tempos(1) && tempos(2) < double_threshold)
-    tempos(1) = tempos(1);
-
-
-
   
   mrs_real predicted_tempo = tempos(0);
 
@@ -925,7 +891,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    // Using the tempo induction block calculate the Beat Locations
    beatTracker->addMarSystem(tempoInduction);
-   beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
+   // beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
    beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
    beatTracker->addMarSystem(mng.create("Gain/id"));
 
@@ -934,12 +900,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_natural hopSize = 128;     // for flux calculation
    mrs_natural bhopSize = 128;    // for onset strength signal
    mrs_natural bwinSize = 2048;	 // for onset strength signal
-   mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
-   mrs_natural nCandidates = 20;  // number of tempo candidates
+   // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
+   mrs_natural nCandidates = 8;  // number of tempo candidates
 
    onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);
    onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize",bwinSize);
-   beatTracker->updControl("ShiftInput/si3/mrs_natural/winSize", bp_winSize);
+   // beatTracker->updControl("ShiftInput/si3/mrs_natural/winSize", bp_winSize);
 
    // parameters for the onset strength signal
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
@@ -1023,16 +989,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
    int ticks = 0;
-   cout << "*****" << endl;
 
   int size_in_bytes = onset_strength->getctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
   int num_ticks = (size_in_bytes  / (hopSize * bhopSize)) +1;
 
-  cout << "num_ticks = " << num_ticks << endl;
-  cout << "extra_ticks = " << extra_ticks << endl;
+
 
   mrs_real bh_estimate;
   mrs_real bh_estimate2;
+  
 
   while (1)
   {
@@ -1046,17 +1011,16 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     ticks++;
 	
 	mrs_realvec bh_candidates = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
-	for (int k=0; k < 10; k++)
+	for (int k=0; k < nCandidates; k++)
 	{
-	  tempos(k) = bh_candidates(2*k+1) * 0.25;
+		tempos(k) = bh_candidates(2*k+1) * 0.25;
 	}
 	
 	bh_estimate = tempos(0);
 	bh_estimate2 = tempos(1);
+	
 	// tempo estimation using cross-correlation of candidate pulse trains to the onset strength signal
 	phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
-	
-	
 	
 	tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
 	temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
@@ -1074,41 +1038,54 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
   
 	
-  cout << "FINAL ticks = " << ticks << endl;
-	
   
   // Find the max bin of the histogram created from the
   // BeatPhase tempo candidates
   mrs_real bhmax = 0.0;
+  mrs_real bhmax2 = 0.0;
+  
   mrs_natural max_i = 0;
+  mrs_natural max_i2 = 0;
+  
   for (int i=0; i < 200; i++)
     {
       if (bhisto(i) > bhmax)
-	{
-	  bhmax = bhisto(i);
-	  max_i = i;
-	}
+	  {
+		  bhmax = bhisto(i);
+		  max_i = i;
+	  }
+
+	  if ((bhisto(i) > bhmax2) && (bhisto(i) < bhmax))
+	  {
+		  bhmax2 = bhisto(i);
+		  max_i2 = i;
+	  }
+	  
     }
    mrs_real bhmaxt = max_i;
-
-   // tempos(0) = bh_estimate;
-   // tempos(0) = phase_tempo;
-   tempos(0) = bhmaxt;
-   tempos(1) = bh_estimate;
-   tempos(2) = bh_estimate2;
+   mrs_real bhmaxt2 = max_i2;
    
-
-   // Heuristic for reducing octave errors using the BeatPhase estimate
-   // Commenting it out evaluates the Beat Histogram estimate
-
-   /* if (bhmaxt < 75)
+   
+   tempos(0) = bhmaxt;
+   tempos(1) = bhmaxt2;
+   tempos(2) = bh_estimate;
+   tempos(3) = bh_estimate2;
+   
+   for (int i=0; i < 4; i++)
    {
-	 tempos(0) = bhmaxt * 2;
+	   for (int j=0; j < 4; j++)
+	   {
+		   // if there are two tempo estimates with a ratio of 2 pick the higher 
+		   // one if the lower one is less than 75 BPM 
+		   if (i != j) 
+		   {
+			   if ((fabs(2 * tempos(i) - tempos(j)) < 0.04 * tempos(j)) && (tempos(i) < 75))
+				   tempos(0) = tempos(j);
+		   }
+		   
+	   }
+		   
    }
-   else
-	 tempos(0) = bhmaxt;
-   */ 
-    
    
 
    if (haveCollections)

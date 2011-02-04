@@ -28,6 +28,8 @@ BeatPhase::BeatPhase(mrs_string name):MarSystem("BeatPhase", name)
 {
 	addControls();
 	sampleCount_ = 0;
+	current_beat_location_ = 0.0;
+	
 }
 
 BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
@@ -46,6 +48,8 @@ BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 	ctrl_beatOutput_ = getctrl("mrs_realvec/beatOutput");
 
 	sampleCount_ = 0;
+	current_beat_location_ = 0.0;
+	
 }
 
 BeatPhase::~BeatPhase()
@@ -61,10 +65,12 @@ BeatPhase::clone() const
 void
 BeatPhase::addControls()
 {
+	mrs_natural nCandidates = 8;
+	
 	//Add specific controls needed by this MarSystem.
-  addctrl("mrs_realvec/tempo_candidates", realvec(20), ctrl_tempo_candidates_);
-  addctrl("mrs_realvec/tempos", realvec(20), ctrl_tempos_);
-  addctrl("mrs_realvec/tempo_scores", realvec(2), ctrl_temposcores_);
+  addctrl("mrs_realvec/tempo_candidates", realvec(nCandidates), ctrl_tempo_candidates_);
+  addctrl("mrs_realvec/tempos", realvec(nCandidates), ctrl_tempos_);
+  addctrl("mrs_realvec/tempo_scores", realvec(nCandidates), ctrl_temposcores_);
 
   addctrl("mrs_real/phase_tempo", 100.0, ctrl_phase_tempo_);
   addctrl("mrs_real/ground_truth_tempo", 100.0, ctrl_ground_truth_tempo_);
@@ -72,7 +78,7 @@ BeatPhase::addControls()
   addctrl("mrs_natural/bhopSize", 64, ctrl_bhopSize_);
   addctrl("mrs_natural/bwinSize", 1024, ctrl_bwinSize_);
   addctrl("mrs_realvec/timeDomain", realvec(), ctrl_timeDomain_);
-  addctrl("mrs_natural/nCandidates", 20, ctrl_nCandidates_);
+  addctrl("mrs_natural/nCandidates", nCandidates, ctrl_nCandidates_);
   setctrlState("mrs_natural/nCandidates", true);
   addctrl("mrs_realvec/beatOutput", realvec(), ctrl_beatOutput_);
 }
@@ -143,14 +149,6 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	MarControlAccessor accts(ctrl_temposcores_);
 	mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
 
-	// shift old ones 
-	/* for (int i=tempos.getSize()/2-1; i < tempos.getSize(); i++)
-	{
-	  tempos(i) = tempos(i-tempos.getSize()/2);
-	  tempo_scores(i) = tempo_scores(i-tempos.getSize()/2);
-	}
-	*/ 
-	
 	
 	for (int i=0; i < tempo_candidates.getSize()/2; i++)
 	{
@@ -161,68 +159,39 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 	tempo_scores /= tempo_scores.sum();
 	  
-
 	
-
-	// tempos(5) = ground_truth_tempo;
-
-	
-	/* tempos(5) = tempos(0) +1;
-	tempos(6) = tempos(0) -1;
-	tempos(7) = tempos(0) +2;
-	tempos(8) = tempos(0) -2;
-	tempos(9) = tempos(0) + 0.5;
-	tempos(10) = tempos(0) - 0.5;
-	tempos(11) = tempos(0) + 1.5;
-	tempos(12) = tempos(0) - 1.5;
-	*/ 
-	
-
-	/* 
-	tempos(8) = tempos(1) -1;
-	tempos(9) = tempos(2) + 1;
-	tempos(10) = tempos(2) -1;
-	tempos(11) = tempos(3) +1;
-	tempos(12) = tempos(3) +1;
-	*/ 
-
-
-
 	mrs_realvec onset_scores;
 	onset_scores.create(tempo_scores.getSize());
-			    
-	for (int k=0; k < tempos.getSize(); k++)
-	  {
-	    if (tempos(k) < 50.0)
-	      tempos(k) = 0;
-	    if (tempos(k) > 200)
-	      tempos(k) = 0;
-	    
-	  }
+	mrs_realvec tempo_phases;
+	tempo_phases.create(tempo_scores.getSize());
 	
-	// cout << "TEMPO CANDIDATES " << tempos << endl;
-	// cout << tempo_candidates << endl;
-
+	
+	for (int k=0; k < tempos.getSize(); k++)
+	{
+	    if (tempos(k) < 50.0)
+			tempos(k) = 0;
+	    if (tempos(k) > 200)
+			tempos(k) = 0;
+	    
+	}
+	
+	
 	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
 	mrs_natural bhopSize = ctrl_bhopSize_->to<mrs_natural>();
 
 	MarControlAccessor acc(ctrl_beats_);
 	mrs_realvec& beats = acc.to<mrs_realvec>();
 
-
-
-
-
-
+	
 	for (o=0; o < inObservations_; o++)
 	{
-	  for (t = 0; t < inSamples_; t++)
-	  {
-		out (o,t) = in(o,t);
-		beats (o,t) = 0.0;
-	  }
+		for (t = 0; t < inSamples_; t++)
+		{
+			out (o,t) = in(o,t);
+			beats (o,t) = 0.0;
+		}
 	}
-
+	
 	mrs_real tempo;
 	mrs_real period;
 	mrs_natural phase;
@@ -230,63 +199,73 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_real max_crco=0.0;
 	mrs_natural max_phase = 0.0;
 	mrs_realvec phase_correlations;
-
+	
 	for (o=0; o < inObservations_; o++)
 	{
 	  for (int k=0; k < tempos.getSize(); k++)
 	  {
-		max_crco = 0.0;
-
-		tempo = tempos(k);
-		if (tempo >= 50)
-		  period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
-		else
-		  period = 0;
-		period = (mrs_natural)(period+0.5);
-
-
-
-		if (period > 1.0)
-		{
-		  phase_correlations.create(period);
-				  
-		  for (phase=0; phase < period; phase++)
+		  max_crco = 0.0;
+		  
+		  tempo = tempos(k);
+		  if (tempo >= 50)
+			  period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
+		  else
+			  period = 0;
+		  period = (mrs_natural)(period+0.5);
+		  
+		  
+		  
+		  if (period > 1.0)
 		  {
-		    cross_correlation = 0.0;
-		    for (int b=0; b < 8; b++)
-		      {
-			cross_correlation += in(o,phase + b * period);
-			cross_correlation += 0.65 * in(o,phase + b * 1.5 * period);
-			if ((b == 0) || (b == 2) || (b == 4) || (b == 6))
-			  cross_correlation += 0.5 * in(o,phase + b * period);
-		      }
-		    phase_correlations(phase) = cross_correlation;
-		    if (cross_correlation > max_crco)
-		      {
-			max_crco = cross_correlation;
-			max_phase = phase;
-		      }
+			  phase_correlations.create(period);
+			  
+			  for (phase=inSamples_-1; phase > inSamples_-1-period; phase--)
+			  {
+				  cross_correlation = 0.0;
+				  for (int b=0; b < 4; b++)
+				  {
+					  cross_correlation += in(o,phase - b * period);
+					  cross_correlation += 0.65 * in(o,phase - b * 1.5 * period);
+					  if ((b == 0) || (b == 2))
+						  cross_correlation += 0.5 * in(o,phase - b * period);
+				  }
+				  phase_correlations(inSamples_-1-phase) = cross_correlation;
+				  if (cross_correlation > max_crco)
+				  {
+					  max_crco = cross_correlation;
+					  max_phase = phase;
+				  }
+				  
+			  }
+			  onset_scores(k) = phase_correlations.var();
+			  tempo_scores(k) = max_crco;
+			  tempo_phases(k) = max_phase;
+			  beats.setval(0.0);
+			  
+			  
 		  }
-		  onset_scores(k) = phase_correlations.var();
-		  tempo_scores(k) = max_crco;
 		  
-		  for (int b=0; b < 8; b++)
-		    beats(o,max_phase + b * period) = in(o, max_phase + b * period);
-		  
-		}
 	  }
 	}
+	
+	  
+
+
+
+
+
+	  
 	
 	
 	onset_scores /= onset_scores.sum();
 	tempo_scores /= tempo_scores.sum();
-
+	
 	for (int i=0; i < tempo_scores.getSize(); i++)
-	  tempo_scores(i) = onset_scores(i) + tempo_scores(i);
-
+		tempo_scores(i) = onset_scores(i) + tempo_scores(i);
+	
 	tempo_scores /= tempo_scores.sum();
 	
-
+	
 	mrs_real max_score = 0.0;
 	int max_i=0;
 
@@ -299,117 +278,52 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		}
 	  }
 
-	
-	mrs_real correct_tempo = 0;
-	for (int k=0; k < tempos.getSize(); k++)
-	{
-	  if (fabs(tempos(k) - ground_truth_tempo) <= 0.02 * ground_truth_tempo)
-	  {
-		correct_tempo = ground_truth_tempo;
-		break;
-	  }
-	}
 
-	// cout << tempos << endl;
-	// cout << tempo_scores << endl;
-	// cout << onset_scores << endl;
-
-
-	tempos(0) = tempos(max_i);
-	tempo_scores(0) = tempo_scores(max_i);
-	
+	tempo = tempos(max_i);
 
 	
-	ctrl_phase_tempo_->setValue(tempos(max_i));
-	return;
+	
 
-
-
-
-
-	mrs_real sum_phase = 0.0;
-	mrs_real max_sum_phase = 0.0;
-	// mrs_natural max_phase = 0;
-	// mrs_real max_phase_tempo;
-	mrs_real avg_period;
-	// mrs_real next_peak;
-
-
-	beats.setval(0.0);
-
-
-
-	// mrs_real tempo;
-	// mrs_real max_tm;
-
-	max_sum_phase = 0;
-
-
-
-	tempo = tempos(0);
-
-	if (tempo !=0)
+	if (tempo < 75.0)
+		tempo = tempo * 2;
+	
+	mrs_real beat_length = 60.0 / tempo;
+	
+	
+	if (tempo >= 50)
 		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
 	else
 		period = 0;
+
 	period = (mrs_natural)(period+0.5);
+	
+
+	
+	for (int b=0; b < 4; b++)
+		beats(o,tempo_phases(max_i) - b * period) = -0.5;
 
 
-	max_sum_phase = 0.0;
-
-	for (t= inSamples_-1; t >= inSamples_-1-period; t--)
-	{
-		sum_phase = 0.0;
-		sum_phase += in(0,t);
-		sum_phase += in(0, t-(mrs_natural)period);
-		sum_phase += in(0, t-(mrs_natural)(2*period));
-		sum_phase += in(0, t-(mrs_natural)(3*period));
-		if (sum_phase >= max_sum_phase)
-		{
-			max_sum_phase = sum_phase;
-			max_phase = t;
-		}
-	}
+	
+	
+	tempos(0) = tempos(max_i);
+	tempo_scores(0) = tempo_scores(max_i);
 
 
-	beats(0, max_phase) = -0.5;
-	beats(0, max_phase - period) = -0.5;
-	beats(0, max_phase - 2*period) = -0.5;
-	beats(0, max_phase - 3*period) = -0.5;
+	
 
 
-
+	
+	
+	
+	ctrl_phase_tempo_->setValue(tempos(max_i));
+	
 	mrs_natural delay = (bwinSize - bhopSize);
 	mrs_natural start;
 	mrs_natural end;
 	mrs_natural prev_phase = max_phase;
 	mrs_natural prev_sample_count;
 
-	/* avg_period = 0;
-
-	for (int k=0; k < 4; k++)
-	{
-			start = max_phase - (mrs_natural)period - 2;
-			end  =  max_phase - (mrs_natural)period + 2;
-			max_sum_phase = 0.0;
-			for (t=start; t <= end; t++)
-		{
-			sum_phase = in(0,t);
-			if (sum_phase >= max_sum_phase)
-			{
-				max_sum_phase = sum_phase;
-				max_phase = t;
-			}
-		}
-
-		avg_period += (prev_phase - max_phase);
-		prev_phase = max_phase;
-
-	}
-
-	avg_period /= 4;
-	*/
-
+	
 	prev_sample_count = sampleCount_;
 
     // Output all the detected beats to it's own MarControl
@@ -418,46 +332,32 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_realvec& beatOutput = beatOutputAcc.to<mrs_realvec>();
     for (t = 0; t < inSamples_; t++)
     {
-      beatOutput(t) = 0.0;
+		beatOutput(t) = 0.0;
     }
 
- 	for (int t = inSamples_-1; t >= inSamples_-1-bhopSize; t--)
+
+
+	mrs_real beat_location;
+	
+ 	for (int t = inSamples_-1-2*bhopSize; t < inSamples_; t++)
 	{
-		if (beats(0, t) == -0.5)
+		if (beats(0,t) == -0.5)
 		{
-			// cout << (sampleCount_  - delay) / (2.0 * osrate_) * 1000.0 << endl;
-			// Audacity label output
-			// cout << (sampleCount_  - delay) / (2.0 * osrate_) << "\t";
-			// cout << (sampleCount_-1 - delay) / (2.0 * osrate_) << " b" << endl;
-			/* cout << "SampleCount = " << sampleCount_ << endl;
-			cout << "t = " << t << endl;
-			cout << "inSamples_ = " << inSamples_ << endl;
-			cout << "bhopSize = " << bhopSize << endl;
-
-			cout << "nt = " << t - (inSamples_-1-bhopSize) << endl;
-			*/
-			// cout <<  (sampleCount_ + t - (inSamples_-1-bhopSize)) / (2.0 * osrate_) << "\t";
-			// cout << (sampleCount_ + t - (inSamples_-1-bhopSize+1)) / (2.0 * osrate_) << " b" << endl;
-			beats(0,t) = -1.0;
-
-            // Add that beat to the beatOutput control
-            beatOutput(total_beats) = (sampleCount_ + t - (inSamples_-1-bhopSize)) / (2.0 * osrate_);
-            total_beats++;
+			beat_location = (sampleCount_ + t -(inSamples_-1 -bhopSize)) / (2.0 * osrate_); 
+			if ((beat_location > current_beat_location_)&&((beat_location - current_beat_location_) > beat_length * 0.75))
+			{
+				
+				cout << beat_location << "\t" << beat_location + 0.02 << " b" << endl;
+				current_beat_location_ = beat_location;
+			}
+			
+			
 		}
+		
+		beatOutput(total_beats) = beat_location;
+		total_beats++;
 	}
+
 	sampleCount_ += bhopSize;
-
-
-	/* sampleCount_ += bhopSize;
-	if (sampleCount_ == bwinSize)
-	{
-		cout << "FULL WINDOW" << endl;
-		t = max_phase;
-		for (t = max_phase; t > 0; t-=period)
-		{
-			beats(0,t) = -0.5;
-		}
-
-	}
-	*/
+	
 }
