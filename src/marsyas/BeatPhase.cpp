@@ -29,7 +29,9 @@ BeatPhase::BeatPhase(mrs_string name):MarSystem("BeatPhase", name)
 	addControls();
 	sampleCount_ = 0;
 	current_beat_location_ = 0.0;
-	
+	pinSamples_ = 0;
+
+
 }
 
 BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
@@ -49,7 +51,8 @@ BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 
 	sampleCount_ = 0;
 	current_beat_location_ = 0.0;
-	
+	pinSamples_ = 0;
+
 }
 
 BeatPhase::~BeatPhase()
@@ -66,7 +69,7 @@ void
 BeatPhase::addControls()
 {
 	mrs_natural nCandidates = 8;
-	
+
 	//Add specific controls needed by this MarSystem.
   addctrl("mrs_realvec/tempo_candidates", realvec(nCandidates), ctrl_tempo_candidates_);
   addctrl("mrs_realvec/tempos", realvec(nCandidates), ctrl_tempos_);
@@ -132,57 +135,57 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
 
-	mrs_real ground_truth_tempo = ctrl_ground_truth_tempo_->to<mrs_real>();
+	// mrs_real ground_truth_tempo = ctrl_ground_truth_tempo_->to<mrs_real>();
+	// used for evaluation experiments
 
+
+	// The tempo candidates and their scores
 	MarControlAccessor acctc(ctrl_tempo_candidates_);
 	mrs_realvec& tempo_candidates = acctc.to<mrs_realvec>();
 
 
-	mrs_natural nCandidates = ctrl_nCandidates_->to<mrs_natural>();
-
-
-
 	MarControlAccessor acct(ctrl_tempos_);
 	mrs_realvec& tempos = acct.to<mrs_realvec>();
-
-
 	MarControlAccessor accts(ctrl_temposcores_);
 	mrs_realvec& tempo_scores = accts.to<mrs_realvec>();
 
-	
+
+	// Demultiplex candidates and scores
 	for (int i=0; i < tempo_candidates.getSize()/2; i++)
 	{
 	  tempos(i) = 0.25 * tempo_candidates(2*i+1);
 	  tempo_scores(i) = tempo_candidates(2*i);
 	}
 
-
+	// normalize to pdf
 	tempo_scores /= tempo_scores.sum();
-	  
-	
+
+	// holds the tempo scores based on cross-correlation with pulse train
 	mrs_realvec onset_scores;
 	onset_scores.create(tempo_scores.getSize());
+	// holds the best matching phase for each tempo candidate
 	mrs_realvec tempo_phases;
 	tempo_phases.create(tempo_scores.getSize());
-	
-	
+
+	// make sure the tempo candidates are reasonable
 	for (int k=0; k < tempos.getSize(); k++)
 	{
 	    if (tempos(k) < 50.0)
 			tempos(k) = 0;
 	    if (tempos(k) > 200)
 			tempos(k) = 0;
-	    
+
 	}
-	
-	
-	mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
+
+	// The winSize and hopSize of the onset strength function
+	// needed to output correct beat location times
+	// mrs_natural bwinSize = ctrl_bwinSize_->to<mrs_natural>();
 	mrs_natural bhopSize = ctrl_bhopSize_->to<mrs_natural>();
 
 	MarControlAccessor acc(ctrl_beats_);
 	mrs_realvec& beats = acc.to<mrs_realvec>();
 
-	
+
 	for (o=0; o < inObservations_; o++)
 	{
 		for (t = 0; t < inSamples_; t++)
@@ -191,7 +194,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			beats (o,t) = 0.0;
 		}
 	}
-	
+
 	mrs_real tempo;
 	mrs_real period;
 	mrs_natural phase;
@@ -199,29 +202,37 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_real max_crco=0.0;
 	mrs_natural max_phase = 0.0;
 	mrs_realvec phase_correlations;
-	
+
+
+	// loop for cross-correlating
+	// pulse trains with onset strength function
+	// for each tempo shift the pulse train until the best match is found
+	// tempo_scores holds the values of the cross-correlation
+	// and onset_scores holds the variance of cross-correlation among different phases
+	// for a particular tempo candidate
 	for (o=0; o < inObservations_; o++)
 	{
 	  for (int k=0; k < tempos.getSize(); k++)
 	  {
 		  max_crco = 0.0;
-		  
+
 		  tempo = tempos(k);
 		  if (tempo >= 50)
 			  period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
 		  else
 			  period = 0;
 		  period = (mrs_natural)(period+0.5);
-		  
-		  
-		  
+
+
+
 		  if (period > 1.0)
 		  {
 			  phase_correlations.create(period);
-			  
+
 			  for (phase=inSamples_-1; phase > inSamples_-1-period; phase--)
 			  {
 				  cross_correlation = 0.0;
+				  // correlate with pulse train with half-beats and double beats
 				  for (int b=0; b < 4; b++)
 				  {
 					  cross_correlation += in(o,phase - b * period);
@@ -235,40 +246,32 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 					  max_crco = cross_correlation;
 					  max_phase = phase;
 				  }
-				  
+
 			  }
 			  onset_scores(k) = phase_correlations.var();
 			  tempo_scores(k) = max_crco;
 			  tempo_phases(k) = max_phase;
 			  beats.setval(0.0);
-			  
-			  
 		  }
-		  
 	  }
 	}
-	
-	  
 
 
-
-
-
-	  
-	
-	
+	// renormalize scores
 	onset_scores /= onset_scores.sum();
 	tempo_scores /= tempo_scores.sum();
-	
+
+	// combine the cross-correlation score with the variance
 	for (int i=0; i < tempo_scores.getSize(); i++)
 		tempo_scores(i) = onset_scores(i) + tempo_scores(i);
-	
+
+	// renormalize
 	tempo_scores /= tempo_scores.sum();
-	
-	
+
+
+	// pick the maximum scoring tempo candidate
 	mrs_real max_score = 0.0;
 	int max_i=0;
-
 	for (int i= 0; i < tempos.getSize(); i++)
 	  {
 	    if (tempo_scores(i) > max_score)
@@ -278,52 +281,34 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		}
 	  }
 
+	// return the best tempo candidate and the
+	// corresponding score in both the tempo vector
+	// as well as the control phase_tempo
+	tempos(0) = tempos(max_i);
+	tempo_scores(0) = tempo_scores(max_i);
+	ctrl_phase_tempo_->setValue(tempos(max_i));
 
+
+
+	// select a tempo for the beat locations
+	// with doubling heuristic if tempo < 75 BPM
 	tempo = tempos(max_i);
-
-	
-	
-
 	if (tempo < 75.0)
 		tempo = tempo * 2;
-	
 	mrs_real beat_length = 60.0 / tempo;
-	
-	
+
 	if (tempo >= 50)
 		period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
 	else
 		period = 0;
 
 	period = (mrs_natural)(period+0.5);
-	
-
-	
+	// Place the beats in the right location in the onset detection function
 	for (int b=0; b < 4; b++)
-		beats(o,tempo_phases(max_i) - b * period) = -0.5;
+	  beats(0,tempo_phases(max_i) - b * period) = -0.5;
 
 
-	
-	
-	tempos(0) = tempos(max_i);
-	tempo_scores(0) = tempo_scores(max_i);
-
-
-	
-
-
-	
-	
-	
-	ctrl_phase_tempo_->setValue(tempos(max_i));
-	
-	mrs_natural delay = (bwinSize - bhopSize);
-	mrs_natural start;
-	mrs_natural end;
-	mrs_natural prev_phase = max_phase;
 	mrs_natural prev_sample_count;
-
-	
 	prev_sample_count = sampleCount_;
 
     // Output all the detected beats to it's own MarControl
@@ -335,29 +320,22 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		beatOutput(t) = 0.0;
     }
 
-
-
+	// output the beats
 	mrs_real beat_location;
-	
  	for (int t = inSamples_-1-2*bhopSize; t < inSamples_; t++)
 	{
-		if (beats(0,t) == -0.5)
+	  if (beats(0,t) == -0.5)
+	  {
+		beat_location = (sampleCount_ + t -(inSamples_-1 -bhopSize)) / (2.0 * osrate_);
+		if ((beat_location > current_beat_location_)&&((beat_location - current_beat_location_) > beat_length * 0.75))
 		{
-			beat_location = (sampleCount_ + t -(inSamples_-1 -bhopSize)) / (2.0 * osrate_); 
-			if ((beat_location > current_beat_location_)&&((beat_location - current_beat_location_) > beat_length * 0.75))
-			{
-				
-				cout << beat_location << "\t" << beat_location + 0.02 << " b" << endl;
-				current_beat_location_ = beat_location;
-			}
-			
-			
-		}
-		
-		beatOutput(total_beats) = beat_location;
-		total_beats++;
-	}
 
+		  // cout << beat_location << "\t" << beat_location + 0.02 << " b" << endl;
+		  beatOutput(total_beats) = beat_location;
+		  current_beat_location_ = beat_location;
+		}
+	  }
+	  total_beats++;
+	}
 	sampleCount_ += bhopSize;
-	
 }
