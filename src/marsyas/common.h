@@ -33,14 +33,6 @@
 
 
 
-
-
-
-
-
-
-
-
 #ifdef MARSYAS_LOG_DEBUGS
 #define MRSDEBUG(x) {std::ostringstream oss; MrsLog::mrsDebug((std::ostringstream&)(oss << x));}
 #else

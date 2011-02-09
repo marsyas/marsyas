@@ -19,8 +19,6 @@
 #include "Accumulator.h"
 
 using std::ostringstream;
-using std::cout;
-using std::endl;
 using namespace Marsyas;
 
 Accumulator::Accumulator(mrs_string name): MarSystem("Accumulator", name)

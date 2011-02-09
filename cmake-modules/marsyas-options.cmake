@@ -24,7 +24,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 #     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel Profile."
 #     FORCE )
 
-SET(CMAKE_CXX_FLAGS_PROFILE "-O3 -fPIC -finstrument-functions" CACHE STRING "Flags used for profiling")
+SET(CMAKE_CXX_FLAGS_PROFILE "-Wall -O3 -fPIC -finstrument-functions" CACHE STRING "Flags used for profiling")
 SET(CMAKE_SHARED_LINKER_FLAGS_PROFILE "")
 SET(CMAKE_EXE_LINKER_FLAGS_PROFILE "")
 
@@ -88,10 +88,11 @@ IF(MARSYAS_ENABLE_CHECKED_STL)
 ENDIF(MARSYAS_ENABLE_CHECKED_STL)
 
 ## logging stuff
-option(MARSYAS_LOG_WARNINGS "Build with warnings" ON)
+option(MARSYAS_LOG_WARNINGS "Log warnings" ON)
 option(MARSYAS_LOG_DEBUGS "Log debugs" OFF)
-option(MARSYAS_LOG_DIAGNOSTICS "Log debugs" OFF)
+option(MARSYAS_LOG_DIAGNOSTICS "Log diagnostics" OFF)
 option(MARSYAS_LOG_ERRORS "Log errors" ON)
+option(MARSYAS_LOG_MESSAGES "Log messages" ON)
 option(MARSYAS_LOG2FILE "Log messages to a file" OFF)
 option(MARSYAS_LOG2STDOUT "Log messages to a standard out" ON)
 option(MARSYAS_LOG2STDERR "Log messages to a standard error" OFF)

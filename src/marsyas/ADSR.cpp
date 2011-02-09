@@ -1,25 +1,23 @@
 /*
 ** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
 #include "ADSR.h"
 
-
-using std::ostringstream;
 
 using namespace Marsyas;
 
@@ -33,21 +31,21 @@ ADSR::~ADSR()
 {
 }
 
-MarSystem* 
-ADSR::clone() const 
+MarSystem*
+ADSR::clone() const
 {
 	return new ADSR(*this);
 }
 
-void 
+void
 ADSR::addControls()
 {
-	//addctrl("mrs_real/aRate", 0.001);//attack rate 
-	addctrl("mrs_real/aTime", 0.2);//attack time 
-	addctrl("mrs_real/aTarget", 1.0);//attack target 
-	//addctrl("mrs_real/dRate", 0.001);//decay rate 
+	//addctrl("mrs_real/aRate", 0.001);//attack rate
+	addctrl("mrs_real/aTime", 0.2);//attack time
+	addctrl("mrs_real/aTarget", 1.0);//attack target
+	//addctrl("mrs_real/dRate", 0.001);//decay rate
 	addctrl("mrs_real/dTime", 0.1);//decay time
-	addctrl("mrs_real/susLevel", 0.85);//sustain level 
+	addctrl("mrs_real/susLevel", 0.85);//sustain level
 	//addctrl("mrs_real/rRate", 0.001);//release rate
 	addctrl("mrs_real/rTime", 0.2);//release time
 
@@ -66,7 +64,7 @@ ADSR::addControls()
 	setctrlState("mrs_real/rTime", true);
 	setctrlState("mrs_real/nton", true);
 	setctrlState("mrs_real/ntoff", true);
-} 
+}
 
 void
 ADSR::myUpdate(MarControlPtr sender)
@@ -75,7 +73,7 @@ ADSR::myUpdate(MarControlPtr sender)
 
 	//setctrl("natural/onSamples", getctrl("natural/inSamples"));
 	//setctrl("natural/onObservations", getctrl("natural/inObservations"));
-	//setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
+	//setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 	//setctrl("string/onObsNames", getctrl("string/inObsNames"));
 	MarSystem::myUpdate(sender);
 
@@ -93,9 +91,6 @@ ADSR::myUpdate(MarControlPtr sender)
 	aRate_ = 1.0 / (aTime_ * sampleRate_);
 	dRate_ = 1.0 / (dTime_ * sampleRate_);
 	rRate_ = 1.0 / (rTime_ * sampleRate_);
-	//cout << "attack decay release rates:"<< aRate_ <<" "<< dRate_<<" "<< rRate_<< endl;
-
-	//cout << "attack decay release times:"<< aTime_ <<" "<< dTime_<<" "<< rTime_<< endl;
 	noteon_ = getctrl("mrs_real/nton")->to<mrs_real>();
 	noteoff_ = getctrl("mrs_real/ntoff")->to<mrs_real>();
 
@@ -104,30 +99,29 @@ ADSR::myUpdate(MarControlPtr sender)
 		this->setctrl("mrs_real/nton",0.0);
 		value_=0.0;
 		target_ = aTarget_;
-		state_ = 1;  
+		state_ = 1;
 	}
 
 	if(noteoff_)
 	{
 		this->setctrl("mrs_real/ntoff",0.0);
-		//cout << "noteof ADSR" << endl;
 		target_ = 0.0;
 		state_ = 4;
 	}
 }
 
-void 
+void
 ADSR::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
 	for (o=0; o < inObservations_; o++)
 		for (t = 0; t < inSamples_; t++)
 		{
-			switch (state_) 
+			switch (state_)
 			{
 				case 1://attack
 					value_ += aRate_;
-					if (value_ >= target_) 
+					if (value_ >= target_)
 					{
 						value_ = target_;
 						rate_ = dRate_;
@@ -137,7 +131,7 @@ ADSR::myProcess(realvec& in, realvec& out)
 					break;
 				case 2://decay
 					value_ -= dRate_;
-					if (value_ <= susLevel_) 
+					if (value_ <= susLevel_)
 					{
 						value_ = susLevel_;
 						rate_ = 0.0;
@@ -146,7 +140,7 @@ ADSR::myProcess(realvec& in, realvec& out)
 					break;
 				case 4://release
 					value_ -= rRate_;
-					if (value_ <= 0.0)       
+					if (value_ <= 0.0)
 					{
 						value_ = 0.0;
 						state_ = 5;//done
@@ -154,8 +148,6 @@ ADSR::myProcess(realvec& in, realvec& out)
 			}//switch
 
 			out(o,t) =  value_* in(o,t);
-			//cout <<"output=" << out(o,t)<< endl;
-			//cout <<"val=" << value_<< endl;
 		}//for
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)

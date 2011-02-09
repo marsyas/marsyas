@@ -135,6 +135,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
 
+	
+
 	// mrs_real ground_truth_tempo = ctrl_ground_truth_tempo_->to<mrs_real>();
 	// used for evaluation experiments
 
@@ -288,8 +290,6 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	tempo_scores(0) = tempo_scores(max_i);
 	ctrl_phase_tempo_->setValue(tempos(max_i));
 
-
-
 	// select a tempo for the beat locations
 	// with doubling heuristic if tempo < 75 BPM
 	tempo = tempos(max_i);
@@ -329,7 +329,6 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		beat_location = (sampleCount_ + t -(inSamples_-1 -bhopSize)) / (2.0 * osrate_);
 		if ((beat_location > current_beat_location_)&&((beat_location - current_beat_location_) > beat_length * 0.75))
 		{
-
 		  // cout << beat_location << "\t" << beat_location + 0.02 << " b" << endl;
 		  beatOutput(total_beats) = beat_location;
 		  current_beat_location_ = beat_location;

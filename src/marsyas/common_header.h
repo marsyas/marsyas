@@ -78,7 +78,8 @@ namespace Marsyas
 
 #define MRS_WARNINGS_OFF MrsLog::warnings_off_ = true;
 #define MRS_WARNINGS_ON MrsLog::warnings_off_ = false;
-
+#define MRS_MESSAGES_OFF MrsLog::messages_off_ = true;	
+#define MRS_MESSAGES_ON MrsLog::messages_off_ = false;	
 
 //	Macros for marking functions as deprecated.
 //	DEPRECATED(void OldFunc(int a, float b));

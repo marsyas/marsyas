@@ -43,6 +43,8 @@ messages to a log file or std output (i.e. screen).
 		
 	  public:   
 		static bool warnings_off_;
+		static bool messages_off_;
+		
 		static  void setLogFile(std::string fname);
 		static  void getLogFile();
 		
