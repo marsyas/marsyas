@@ -31,6 +31,10 @@ namespace Marsyas
 
 	Controls:
 	- \b mrs_realvec/inject [w] : the vector to be injected
+	- \b mrs_natural/injectSize [w] : how many observations to
+	  inject
+	- \b mrs_string/injectNames [w] : names of the
+	  observations (for weka output)
 */
 
 class marsyas_EXPORT Inject: public MarSystem
