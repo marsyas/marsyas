@@ -31,6 +31,7 @@ SVMClassifier::SVMClassifier(mrs_string name) :
 	kernel_ = LINEAR;
 	svm_ = C_SVC;
 	svm_model_ = NULL;
+	num_nodes = 0;
  
 	addControls();
 }
@@ -43,6 +44,7 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 	kernel_ = LINEAR;
 	svm_ = C_SVC;
 	svm_model_ = NULL;
+	num_nodes = 0;
 
 	ctrl_nClasses_ = getctrl("mrs_natural/nClasses");
 	ctrl_sv_coef_ = getctrl("mrs_realvec/sv_coef");
@@ -84,6 +86,8 @@ SVMClassifier::~SVMClassifier() {
 		free(svm_model_->probB);
 		free(svm_model_->label);
 		free(svm_model_->nSV);
+		for (int i=0; i < num_nodes; ++i)
+			free(svm_model_->SV[i]);
 		free(svm_model_->SV);
 		
 		for (int i=0; i < svm_model_->nr_class-1; ++i) 
@@ -591,8 +595,10 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 				{
 					svm_model_->SV = Malloc(svm_node*,l);
 					svm_node *x_space=NULL;
-					if (l>0)
+					if (l>0) {
 						x_space = Malloc(svm_node, 2*m*l);
+						num_nodes++;
+					}
 					int j=0;
 					for (int i=0; i<l; ++i) {
 						svm_model_->SV[i] = &x_space[j];

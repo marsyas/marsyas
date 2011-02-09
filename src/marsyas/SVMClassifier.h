@@ -78,6 +78,9 @@ namespace Marsyas
 			mrs_bool trained_, training_, was_training_;
 			mrs_natural kernel_, svm_;
 
+			// to clean-up memory leaks
+			mrs_natural num_nodes;
+
 		public:
 			SVMClassifier(std::string name);
 			SVMClassifier(const SVMClassifier& a);
