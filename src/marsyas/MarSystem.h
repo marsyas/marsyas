@@ -427,6 +427,7 @@ public:
 	MarControlPtr ctrl_onObsNames_;
 	MarControlPtr ctrl_onStabilizingDelay_;
 	MarControlPtr ctrl_debug_;
+	MarControlPtr ctrl_verbose_;
 	MarControlPtr ctrl_mute_;
 	MarControlPtr ctrl_active_;
 	MarControlPtr ctrl_processedData_;

@@ -18,7 +18,6 @@
 
 #include "Gain.h"
 
-using std::ostringstream;
 using namespace Marsyas;
 
 Gain::Gain(mrs_string name):MarSystem("Gain", name)
@@ -61,7 +60,6 @@ Gain::addControls()
 void
 Gain::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("Gain::myUpdate");
 	// no need to do anything Gain-specific in myUpdate
 	MarSystem::myUpdate(sender);
 }
@@ -70,7 +68,6 @@ Gain::myUpdate(MarControlPtr sender)
 void
 Gain::myProcess(realvec& in, realvec& out)
 {
-	MRSDIAG(type_ << "/" << name_ << "::myUpdate");
 	mrs_natural o,t;
 	//get a local copy of the current gain control value
 	//(it will be used for this entire processing, even if it's

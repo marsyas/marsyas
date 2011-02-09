@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -55,7 +55,6 @@ ADRess::addControls()
 void
 ADRess::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("ADRess.cpp - ADRess:myUpdate");
 	(void) sender;
 
 	N2_ = inObservations_ / 2; //i.e. we get two vertically stacked spectrums at the input

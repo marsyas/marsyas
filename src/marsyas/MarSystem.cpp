@@ -146,6 +146,7 @@ MarSystem::MarSystem(const MarSystem& a)
 	ctrl_osrate_ = getctrl("mrs_real/osrate");
 	ctrl_onObsNames_ = getctrl("mrs_string/onObsNames");
 	ctrl_debug_ = getctrl("mrs_bool/debug");
+	ctrl_verbose_ = getctrl("mrs_bool/verbose");
 	ctrl_mute_ = getctrl("mrs_bool/mute");
 	ctrl_active_ = getctrl("mrs_bool/active");
 	ctrl_processedData_ = getctrl("mrs_realvec/processedData");
@@ -311,6 +312,7 @@ MarSystem::addControls()
 
 	//other controls:
 	addctrl("mrs_bool/debug", false, ctrl_debug_);		//no debug by default
+	addctrl("mrs_bool/verbose", false, ctrl_verbose_);
 	addctrl("mrs_bool/mute", false, ctrl_mute_);			//unmuted by default
 	addctrl("mrs_bool/active",true, ctrl_active_);		//active by default
 
@@ -595,6 +597,7 @@ MarSystem::checkFlow(realvec& in, realvec& out)
 void
 MarSystem::process(realvec& in, realvec& out)
 {
+	MRSDIAG(type_ << "/" << name_ << "::process");
 #ifdef MARSYAS_FLOWCHECK
 	checkFlow(in, out);
 #endif
@@ -663,7 +666,7 @@ MarSystem::isUpdating()
 void
 MarSystem::update(MarControlPtr sender)
 {
-	MRSDIAG("MarSystem.cpp - MarSystem:Update");
+	MRSDIAG(type_ << "/" << name_ << "::update");
 
 	isUpdating_ = true;
 

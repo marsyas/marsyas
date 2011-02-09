@@ -92,6 +92,9 @@ BeatPhase::myUpdate(MarControlPtr sender)
 	// no need to do anything BeatPhase-specific in myUpdate
 	MarSystem::myUpdate(sender);
 
+
+	updControl(ctrl_verbose_, true);
+	
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	mrs_natural nCandidates = getctrl("mrs_natural/nCandidates")->to<mrs_natural>();
 
@@ -329,7 +332,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		beat_location = (sampleCount_ + t -(inSamples_-1 -bhopSize)) / (2.0 * osrate_);
 		if ((beat_location > current_beat_location_)&&((beat_location - current_beat_location_) > beat_length * 0.75))
 		{
-		  // cout << beat_location << "\t" << beat_location + 0.02 << " b" << endl;
+			if (ctrl_verbose_->isTrue())
+				MRSMSG(beat_location << "\t" 
+					   << beat_location + 0.02 << " b");
 		  beatOutput(total_beats) = beat_location;
 		  current_beat_location_ = beat_location;
 		}
