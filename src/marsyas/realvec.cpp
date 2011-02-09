@@ -380,17 +380,21 @@ namespace Marsyas
 		mrs_natural wantC = c+1;
 		if ( (wantR >= rows_) || (wantC >= cols_) )
 		{
-			if ( wantR >= rows_ )
-				if ( wantR < 2*rows_ )
+			if ( wantR >= rows_ ) {
+				if ( wantR < 2*rows_ ) {
 					nextR = 2*rows_;
-				else
+				} else {
 					nextR = wantR;
+				}
+			}
 
-			if ( wantC >= cols_ )
-				if ( wantC < 2*cols_ )
+			if ( wantC >= cols_ ) {
+				if ( wantC < 2*cols_ ) {
 					nextC = 2*cols_;
-				else
+				} else {
 					nextC = wantC;
+				}
+			}
 
 			stretch( nextR, nextC );
 			// FIXME: add a MRSASSERT here for debugging.
