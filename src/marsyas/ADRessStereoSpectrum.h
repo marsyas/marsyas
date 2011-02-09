@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -24,31 +24,31 @@
 namespace Marsyas
 {
 /**
-	\class ADRessStereoSpectrum
-	\ingroup Analysis
-	\brief Takes the output of the ADRess (i.e. the panning-frequency maps)
-	and outputs the panning coefficient for each spectral bin (N/2+1 bins). 
+   \class ADRessStereoSpectrum
+   \ingroup Analysis
+   \brief Takes the output of the ADRess (i.e. the panning-frequency maps)
+   and outputs the panning coefficient for each spectral bin (N/2+1 bins).
 */
 
-class ADRessStereoSpectrum: public MarSystem
-{
-private:
-	mrs_natural N2_;
-	mrs_natural beta_;
-	mrs_real maxVal_;
-	mrs_natural maxIndex_;
+	class ADRessStereoSpectrum: public MarSystem
+	{
+		private:
+			mrs_natural N2_;
+			mrs_natural beta_;
+			mrs_real maxVal_;
+			mrs_natural maxIndex_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+			void addControls();
+			void myUpdate(MarControlPtr sender);
 
-public:
-	ADRessStereoSpectrum(std::string name);
-	ADRessStereoSpectrum(const ADRessStereoSpectrum& a);
-	~ADRessStereoSpectrum();
-	MarSystem* clone() const;
+		public:
+			ADRessStereoSpectrum(std::string name);
+			ADRessStereoSpectrum(const ADRessStereoSpectrum& a);
+			~ADRessStereoSpectrum();
+			MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
-};
+			void myProcess(realvec& in, realvec& out);
+	};
 
 }
 

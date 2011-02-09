@@ -93,8 +93,6 @@ BeatPhase::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
 
 
-	updControl(ctrl_verbose_, true);
-	
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	mrs_natural nCandidates = getctrl("mrs_natural/nCandidates")->to<mrs_natural>();
 

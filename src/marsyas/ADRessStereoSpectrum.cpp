@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -60,7 +60,7 @@ ADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue(1, NOUPDATE);
 	ctrl_onObservations_->setValue(N2_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
-	
+
 	ostringstream oss;
 	for (mrs_natural n=0; n < N2_; n++)
 		oss << "ADRess_stereobin_" << n << ",";
@@ -96,12 +96,12 @@ ADRessStereoSpectrum::myProcess(realvec& in, realvec& out)
 		//avoid two indexes for center panning
 		if(maxIndex_ > beta_)
 			maxIndex_--;
-		
+
 		//convert panning index to range [-1,1]
 		//and save it to corresponding output
 		out(o,0) = (mrs_real)maxIndex_/(beta_*2.0)*2.0 - 1.0;
 	}
 
-	MATLAB_PUT(out, "ADRessBinPan");
-	MATLAB_EVAL("figure(3);plot(ADRessBinPan);");
+    // MATLAB_PUT(out, "ADRessBinPan");
+	// MATLAB_EVAL("figure(3);plot(ADRessBinPan);");
 }
