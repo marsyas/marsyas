@@ -84,6 +84,10 @@ if (WITH_VAMP)
 	find_package(vamp REQUIRED)
 endif (WITH_VAMP)
 
+if (WITH_MAX)
+	find_package(maxsdk REQUIRED)
+endif (WITH_MAX)
+
 if (WITH_PNG) 
 	# find_package(png REQUIRED) 
 	set (MARSYAS_PNG 1)

@@ -105,6 +105,10 @@ if (VAMP_FOUND)
 	add_subdirectory(mvamp)
 endif (VAMP_FOUND)
 
+if (MAXSDK_FOUND)
+	add_subdirectory(marsyas_max)
+endif (MAXSDK_FOUND)
+
 
 ## tests, for verification
 if (MARSYAS_TESTS)
