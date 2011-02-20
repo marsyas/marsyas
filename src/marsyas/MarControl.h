@@ -250,10 +250,7 @@ MarControl::to() const
 	}
 	else
 	{
-	    std::ostringstream sstr;
-	    sstr << "MarControl::to() -  Trying to set value of incompatible type "
-				<< "(expected " << value_->getType() << ", given " << typeid(T).name() << ")";
-	    MRSERR(sstr.str());
+		MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType());
 	    return MarControlValueT<T>::invalidValue;
 	}
 }

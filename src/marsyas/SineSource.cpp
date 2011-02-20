@@ -79,6 +79,10 @@ SineSource::myProcess(realvec &in, realvec &out)
   mrs_real incr = (getctrl("mrs_real/frequency")->to<mrs_real>() * wavetableSize_) / (getctrl("mrs_real/israte")->to<mrs_real>());
   mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   
+
+  MRSMSG(ctrl_israte_->to<mrs_natural>());
+  
+
 	for (mrs_natural t=0; t < inSamples; t++)
 	{
 		out(0,t) = wavetable_((mrs_natural)index_);
