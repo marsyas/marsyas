@@ -331,6 +331,15 @@ namespace Marsyas
 			return;
 		}
 
+		if (size < allocatedSize_)
+		{
+			size_ = size;
+			rows_ = rows;
+			cols_ = cols;
+			return; //no need for more memory allocation
+		}
+		
+		
 		mrs_real *ndata = new mrs_real[size];
 
 		// copy and zero new data
@@ -342,7 +351,7 @@ namespace Marsyas
 				else
 					ndata[c * rows + r] = 0.0;
 			}
-
+		
 		delete [] data_;
 		data_ = ndata;
 	
