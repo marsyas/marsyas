@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  {% include "layouts/_xhtml_header.html" %}
+  <body>
+  <div class="audioannotator">
+	<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+			width="800"
+			height="243"
+			id="haxe"
+			align="middle">
+	  <param name="movie" value="/flash/audioannotator.swf"/>
+	  <param name="allowScriptAccess" value="always" />
+	  <param name="quality" value="high" />
+	  <param name="scale" value="noscale" />
+	  <param name="salign" value="lt" />
+	  <param name="bgcolor" value="#ffffff"/>
+	  <param name=FlashVars value="recording_url=/songs/1">
+	  <embed src="/flash/audioannotator.swf"
+			 FlashVars="recording_url=/songs/1&visualization_url=/songs/1/spectrogram&initial_start_ms=18080&initial_zoom=0.001"
+			 bgcolor="#ffffff"
+			 width="800"
+			 height="243"
+			 name="movie"
+			 quality="best"
+			 align="middle"
+			 allowScriptAccess="always"
+			 type="application/x-shockwave-flash"
+			 pluginspage="http://www.macromedia.com/go/getflashplayer">
+	</object>
+  </div>
+  </body>
+</html>

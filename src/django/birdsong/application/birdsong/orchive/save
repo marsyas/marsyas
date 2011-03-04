@@ -1,0 +1,309 @@
+------------------------------ views.py ------------------------------
+
+from django.shortcuts import render_to_response
+import subprocess
+import re
+
+
+def median_filter(input,window_width):
+
+    half = window_width / 2
+    output = []
+    for i in range(half,len(input)-half):
+        b = []
+        for j in range(i-half,i+half+1):
+            b.append(input[j])
+            c = set(b)
+            max_count = 0
+            max_val = -1
+            for n in c:
+                if b.count(n) > max_count:
+                    max_count = b.count(n)
+                    max_val = n
+        output.append(max_val)
+    return output
+
+def index(request):
+    pitches = []
+    output = ""
+    if request.method == 'POST':
+        p = subprocess.Popen('/usr/sness/marsyas/bin/pitchextract -y /home/sness/dDEV/calls/assets/wav/A36_N4__2_.wav',
+                             shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        # Read the output lines
+        for line in p.stdout.readlines():
+            output += line
+            m = re.search('^([0-9.]+)$', line.strip())
+            if m is not None:
+                pitches.append(float(m.group(1)))
+
+    median_filtered_pitches = median_filter(pitches,11)
+
+    # Generate a pretty SVG string for the pitch contour
+    pitchcontour = ""
+    for i in range(0,len(pitches)):
+        if (pitches[i] < 5000):
+            pitchcontour += "%i %i" % (i * 2, 300.0 - pitches[i] / 20.0)
+            if i < (len(pitches) - 1):
+                pitchcontour += ","
+
+    # Generate a pretty SVG string for the median filtered pitch contour
+    median_filtered_pitchcontour = ""
+    for i in range(0,len(median_filtered_pitches)):
+        if (median_filtered_pitches[i] < 5000):
+            median_filtered_pitchcontour += "%i %i" % (i * 2, 300.0 - median_filtered_pitches[i] / 20.0)
+            if i < (len(median_filtered_pitches) - 1):
+                median_filtered_pitchcontour += ","
+
+    return render_to_response('dtw/index.html',
+                              {'pitches' : pitches, 'output' : output,
+                               'pitchcontour' : pitchcontour,
+                               'median_filtered_pitchcontour' : median_filtered_pitchcontour,
+                               },
+                              {}, mimetype="application/xhtml+xml")
+
+
+
+------------------------------ views.py ------------------------------
+
+from django.shortcuts import render_to_response
+import subprocess
+import re
+import marsyas
+
+def median_filter(input,window_width):
+
+    half = window_width / 2
+    output = []
+    for i in range(half,len(input)-half):
+        b = []
+        for j in range(i-half,i+half+1):
+            b.append(input[j])
+            c = set(b)
+            max_count = 0
+            max_val = -1
+            for n in c:
+                if b.count(n) > max_count:
+                    max_count = b.count(n)
+                    max_val = n
+        output.append(max_val)
+    return output
+
+def index(request):
+
+    return render_to_response('dtw/index.html',
+                              {},
+                              {}, mimetype="application/xhtml+xml")
+
+
+def pitchcontour(request,median):
+    pitches = []
+    output = ""
+
+    p = subprocess.Popen('/usr/sness/marsyas/bin/pitchextract -y /home/sness/dDEV/calls/assets/wav/A36_N4__2_.wav',
+                         shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    # Read the output lines
+    for line in p.stdout.readlines():
+        output += line
+        m = re.search('^([0-9.]+)$', line.strip())
+        if m is not None:
+            pitches.append(float(m.group(1)))
+
+    # Generate a pretty SVG string for the pitch contour
+    pitchcontour = ""
+    for i in range(0,len(pitches)):
+        if (pitches[i] < 5000):
+            pitchcontour += "%i %i" % (i * 2, 200.0 - pitches[i] / 20.0)
+            if i < (len(pitches) - 1):
+                pitchcontour += ","
+
+    median_filtered_pitches = median_filter(pitches,int(median))
+
+    # Generate a pretty SVG string for the median filtered pitch contour
+    median_filtered_pitchcontour = ""
+    for i in range(0,len(median_filtered_pitches)):
+        if (median_filtered_pitches[i] < 5000):
+            median_filtered_pitchcontour += "%i %i" % (i * 2, 200.0 - median_filtered_pitches[i] / 20.0)
+            if i < (len(median_filtered_pitches) - 1):
+                median_filtered_pitchcontour += ","
+
+    return render_to_response('dtw/pitchcontour.html',
+                              {'pitches' : pitches, 'output' : output,
+                               'pitchcontour' : pitchcontour,
+                               'median_filtered_pitchcontour' : median_filtered_pitchcontour,
+                               },
+                              {}, mimetype="application/xhtml+xml")
+
+def pitchcontour_embed(request):
+    pitches = []
+    output = ""
+    data = ""
+
+    sfname = "/home/sness/wavfiles/tiny.wav"
+    print "sfname=%s" % sfname
+    mng = marsyas.MarSystemManager()
+
+    # Create net
+    net = mng.create("Series","series")
+
+    # Add the MarSystems
+    net.addMarSystem(mng.create("SoundFileSource", "src"))
+
+    net.updControl("SoundFileSource/src/mrs_string/filename", marsyas.MarControlPtr.from_string(sfname))
+
+    while net.getControl("SoundFileSource/src/mrs_bool/hasData").to_bool():
+        data += str(net.getControl("mrs_realvec/processedData").to_realvec())
+        net.tick()
+
+    return render_to_response('dtw/pitchcontour-embed.html',
+                              {'data' : data
+                               },
+                              {}, mimetype="application/xhtml+xml")
+
+
+
+------------------------------ views.py ------------------------------
+
+from django.shortcuts import render_to_response
+import subprocess
+import re
+import marsyas
+
+def median_filter(input,window_width):
+
+    half = window_width / 2
+    output = []
+    for i in range(half,len(input)-half):
+        b = []
+        for j in range(i-half,i+half+1):
+            b.append(input[j])
+            c = set(b)
+            max_count = 0
+            max_val = -1
+            for n in c:
+                if b.count(n) > max_count:
+                    max_count = b.count(n)
+                    max_val = n
+        output.append(max_val)
+    return output
+
+def index(request):
+
+    return render_to_response('dtw/index.html',
+                              {},
+                              {}, mimetype="application/xhtml+xml")
+
+
+def pitchcontour(request,median):
+    pitches = []
+    output = ""
+
+    p = subprocess.Popen('/usr/sness/marsyas/bin/pitchextract -y /home/sness/dDEV/calls/assets/wav/A36_N4__2_.wav',
+                         shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    # Read the output lines
+    for line in p.stdout.readlines():
+        output += line
+        m = re.search('^([0-9.]+)$', line.strip())
+        if m is not None:
+            pitches.append(float(m.group(1)))
+
+    # Generate a pretty SVG string for the pitch contour
+    pitchcontour = ""
+    for i in range(0,len(pitches)):
+        if (pitches[i] < 5000):
+            pitchcontour += "%i %i" % (i * 2, 200.0 - pitches[i] / 20.0)
+            if i < (len(pitches) - 1):
+                pitchcontour += ","
+
+    median_filtered_pitches = median_filter(pitches,int(median))
+
+    # Generate a pretty SVG string for the median filtered pitch contour
+    median_filtered_pitchcontour = ""
+    for i in range(0,len(median_filtered_pitches)):
+        if (median_filtered_pitches[i] < 5000):
+            median_filtered_pitchcontour += "%i %i" % (i * 2, 200.0 - median_filtered_pitches[i] / 20.0)
+            if i < (len(median_filtered_pitches) - 1):
+                median_filtered_pitchcontour += ","
+
+    return render_to_response('dtw/pitchcontour.html',
+                              {'pitches' : pitches, 'output' : output,
+                               'pitchcontour' : pitchcontour,
+                               'median_filtered_pitchcontour' : median_filtered_pitchcontour,
+                               },
+                              {}, mimetype="application/xhtml+xml")
+
+def pitchcontour_embed(request):
+    pitches = []
+    output = ""
+    data = ""
+
+    buffer_size = int(request.GET.get('buffer_size', '1024'))
+    print "buffer_size=%i" % buffer_size
+
+    hop_size = int(request.GET.get('hop_size', '1024'))
+    print "hop_size=%i" % hop_size
+
+    tolerance = float(request.GET.get('tolerance', '0.7'))
+    print "tolerance=%i" % tolerance
+
+    #sfname = "/home/sness/wavfiles/tiny.wav"
+    sfname = "/home/sness/dDEV/calls/assets/wav/A36_N4__2_.wav"
+    print "sfname=%s" % sfname
+    mng = marsyas.MarSystemManager()
+
+    # Create net
+    net = mng.create("Series","series")
+
+    # Add the MarSystems
+    net.addMarSystem(mng.create("SoundFileSource", "src"))
+    net.addMarSystem(mng.create("ShiftInput", "si"));
+    net.addMarSystem(mng.create("Yin", "yin"));
+
+    net.updControl("mrs_natural/inSamples", hop_size)
+    net.updControl("SoundFileSource/src/mrs_string/filename", marsyas.MarControlPtr.from_string(sfname))
+    net.updControl("ShiftInput/si/mrs_natural/winSize", buffer_size);
+    net.updControl("Yin/yin/mrs_natural/inSamples",buffer_size);
+    net.updControl("Yin/yin/mrs_real/tolerance",tolerance);
+        
+    while net.getControl("SoundFileSource/src/mrs_bool/hasData").to_bool():
+        pitch = net.getControl("mrs_realvec/processedData").to_realvec()[0]
+        pitches.append(pitch)
+        net.tick()
+
+    # Generate a pretty SVG string for the pitch contour
+    pitchcontour = ""
+    for i in range(0,len(pitches)):
+        if (pitches[i] < 5000):  # filter out those really high pitches that YIN gives
+            time = int(((hop_size / 44100.0) * float(i)) * 300.)
+            pitchcontour += "%i %i" % (time, 200.0 - pitches[i] / 20.0)
+            if i < (len(pitches) - 1):
+                pitchcontour += ","
+
+    return render_to_response('dtw/pitchcontour-embed.html',
+                              {'pitches' : pitches,
+                               'pitchcontour' : pitchcontour,
+                               'numpitches' : len(pitches),
+                               },
+                              {}, mimetype="application/xhtml+xml")
+
+
+------------------------------ orchive/views.py ------------------------------
+
+    # Calculate the RGBA values
+    rgba = []
+    for i in range(0,len(rms_array)):
+        rms = rms_array[i]
+        flux = flux_array[i]
+        red = 0;
+        green = 0;
+        blue = 0;
+        alpha = 0;
+        if rms >= 0.5:
+            red = (rms * 2.0) - 1.0
+            alpha = 0.5
+        if flux >= 0.5:
+            blue = (flux * 2.0) - 1.0
+            alpha = 0.5
+        print "red=%f\tgreen=%f\tblue=%f\talpha=%f" % (red,green,blue,alpha)
+        #rgba.append(red,green,blue,alpha)
+			
+    print rgba

@@ -1,0 +1,173 @@
+------------------------------ svg/index.html ------------------------------
+
+An image as SVG:
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<title>Django/Marsyas pitch detector</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="/assets/jquery.min.js" type="text/javascript"></script>
+	<script src="/assets/svg.js" type="text/javascript"></script>
+	
+  </head>
+  
+  <body>
+
+	<div id="doc2">
+	  <center>
+		<h1>SVG Tests</h1>
+	  </center>
+
+	  
+	  <svg:svg version="1.1" baseProfile="full" width="1000px" height="300px" id="test1" >
+		
+
+		<svg:rect x="0" y="0" width="1000" height="300"
+				  fill="none" stroke="black" stroke-width="1" />
+
+	  {% for point in points %}
+		<svg:rect x="{{ point.0 }}" y="{{ point.1 }}" width="1" height="1"
+				  fill="red" stroke="none" stroke-width="1" />
+		
+	  {% endfor %}
+
+	  </svg:svg>
+
+
+	</div>
+  </body>
+</html>
+
+
+
+
+
+------------------------------ svg/index.html ------------------------------
+
+  {% for point in points %}
+  context.fillRect({{ point.0 }}, {{ point.1 }}, 1, 1);
+  {% endfor %}
+
+
+------------------------------ svg/index.html ------------------------------
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<title>Django/Marsyas pitch detector</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="/assets/jquery.min.js" type="text/javascript"></script>
+	<script src="/assets/svg.js" type="text/javascript"></script>
+	
+  </head>
+  
+  <body>
+
+	<div id="doc2">
+	  <center>
+		<h1>SVG Tests</h1>
+	  </center>
+
+	  
+	  <canvas id="flag" width="1000" height="300">
+		You don't support Canvas. If you did, you would see a flag
+	  </canvas>
+
+<script>
+  var el= document.getElementById("flag");
+
+  if (el && el.getContext) { 
+  var context = el.getContext('2d');
+      if(context){
+  var points_array = {{ points }}
+  {% for point in points %}
+  [{{ point.0 }}, {{ point.1 }}],
+  {% endfor %}
+  ];
+  for(i=0; i<points_array.length; i++) {
+	context.fillRect(points_array[i][0], points_array[i][1], 1, 1);
+  }
+
+
+      }
+  }
+  </script>
+
+	</div>
+  </body>
+</html>
+
+
+
+------------------------------ svg/index.html ------------------------------
+
+** Tue Sep 21 2010 - 13:57:10 PM
+   -----------------------------
+
+Using rectangles
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<title>Django/Marsyas pitch detector</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="/assets/jquery.min.js" type="text/javascript"></script>
+	<script src="/assets/svg.js" type="text/javascript"></script>
+	
+  </head>
+  
+  <body>
+
+	<div id="doc2">
+	  <center>
+		<h1>SVG and Canvas Tests</h1>
+	  </center>
+
+	  
+	  <canvas id="flag" width="2000" height="2000">
+		You don't support Canvas. If you did, you would see a flag
+	  </canvas>
+
+<script>
+  var el= document.getElementById("flag");
+
+  if (el && el.getContext) { 
+  var context = el.getContext('2d');
+      if(context){
+  var points_array = {{ points }};
+  for(i=0; i<points_array.length; i++) {
+	var colour = points_array[i][2] * 256;							  
+	context.fillStyle = "rgb(" + colour + "," + colour + "," + colour + ")";			
+    var x = points_array[i][0];
+    var y = points_array[i][1] / 10;
+	context.fillRect(x, y, 1, 1);
+  }
+
+
+      }
+  }
+  </script>
+
+	</div>
+  </body>
+</html>
+

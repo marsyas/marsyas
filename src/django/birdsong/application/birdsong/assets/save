@@ -1,0 +1,49 @@
+------------------------------ calls.js ------------------------------
+
+$(document).ready(function(){
+		console.log("ready");
+		
+		// Chrome and Firefox support ogg.  Safari doesn't.
+		var audio = new Audio("assets/ogg/A12_A12sp__1_.ogg");
+
+		$("#target").click(function(event){
+				console.log("click");
+				// Chrome won't play the audio file twice, you need to
+				// reload it each time.
+				audio.load();
+				audio.play();
+			});
+
+
+		audio.addEventListener('timeupdate', function(evt) {
+				console.log("timeupdate");
+		    var width = parseInt($('#target').css('width'));
+			var percentPlayed = Math.round(audio.currentTime / audio.duration * 100);
+			var barWidth = Math.ceil(percentPlayed * (width / 100));
+			$('#target .play-progress').css( 'width', barWidth);
+				console.log("done");
+		});
+
+	});
+
+------------------------------ svg.js ------------------------------
+
+$(document).ready(function(){
+					  console.log("ready");
+					  var el= document.getElementById("flag");
+
+					  if (el && el.getContext) { 
+						  var context = el.getContext('2d');
+						  if(context){
+							  for(i=0; i<points_array.length; i++) {
+								  var colour = points_array[i][2] * 256;							  
+								  context.fillStyle = "rgb(" + colour + "," + colour + "," + colour + ")";			
+								  var x = points_array[i][0];
+								  var y = points_array[i][1] / 10;
+								  context.fillRect(x, y, 1, 1);
+							  }
+
+
+						  }
+					  }
+				  });

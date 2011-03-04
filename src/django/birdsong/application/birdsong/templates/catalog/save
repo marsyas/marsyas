@@ -1,0 +1,327 @@
+------------------------------ index.html ------------------------------
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+  <head>
+	<title>Orca Call Catalog</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+	<script src="/assets/calls.js" type="text/javascript"></script>
+	
+  </head>
+  <body>
+	<h1>Orca Call Catalog</h1>
+
+	<div id="target1" class="player">
+	<img src="assets/buttons/playbutton.png">
+	  <img src="assets/jpg/A12_A12sp__1_.jpg">
+		<div class="load-progress">
+			<div class="play-progress">
+			</div>
+		</div>
+	</div>
+
+
+	<div id="target2" class="player">
+	  <img src="assets/jpg/A12_N10.jpg">
+		<div class="load-progress">
+			<div class="play-progress">
+			</div>
+		</div>
+	</div>
+
+	<div id="target3" class="player">
+	  <img src="assets/jpg/A12_N47.jpg">
+		<div class="load-progress">
+			<div class="play-progress">
+			</div>
+		</div>
+	</div>
+
+  </body>
+</html>
+
+
+------------------------------ index.html ------------------------------
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  
+  <head>
+	<title>Orca Call Catalog</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
+	<script src="/assets/calls.js" type="text/javascript"></script>
+	
+  </head>
+  <body>
+	<div id="doc2">
+	  <center>
+		<h1>Northern Resident Orca Call Catalog</h1>
+	  </center>
+	  
+	  <div class="yui-gb">
+		
+		<div class="yui-u first">
+		  <div class="playerholder">
+			<div id="target1" class="player" style="background-image: url(assets/jpg/A12_A12sp__1_.jpg);";>
+			  <img class="playbutton" id="playbutton1" src="assets/buttons/playbutton.png">
+			  <div class="load-progress">
+				<div class="play-progress">
+				</div>
+			  </div>
+			</div>
+			<div class="details">
+			  <div>
+				Matriline : A12
+			  </div>
+			  <div>
+				Call :  A12sp
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+		<div class="yui-u">
+		  <div class="playerholder">
+			<div id="target2" class="player" style="background-image: url(assets/jpg/A12_N10.jpg);";>
+			  <img class="playbutton" id="playbutton2" src="assets/buttons/playbutton.png">
+			  <div class="load-progress">
+				<div class="play-progress">
+				</div>
+			  </div>
+			</div>
+			<div class="details">
+			  <div>
+				Matriline : A12
+			  </div>
+			  <div>
+				Call : N10
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+		<div class="yui-u">
+		  <div class="playerholder">
+			<div id="target3" class="player" style="background-image: url(assets/jpg/A12_N47.jpg);";>
+			  <img class="playbutton" id="playbutton3" src="assets/buttons/playbutton.png">
+			  <div class="load-progress">
+				<div class="play-progress">
+				</div>
+			  </div>
+			</div>
+			<div class="details">
+			  <div>
+				Matriline : A12
+			  </div>
+			  <div>
+				Call :  N47
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+  </body>
+</html>
+
+
+------------------------------ index.html ------------------------------
+
+{% include 'catalog/header.html' %}
+
+  <body>
+	<div id="doc2">
+	  <center>
+		<h1>Northern Resident Orca Call Catalog</h1>
+	  </center>
+	  
+	  <div class="yui-gb">
+		
+		<div class="yui-u first">
+		  <div class="playerholder">
+			<div id="target1" class="player" style="background-image: url(assets/jpg/A12_A12sp__1_.jpg);";>
+			  <img class="playbutton" id="playbutton1" src="assets/buttons/playbutton.png">
+			  <div class="load-progress">
+				<div class="play-progress">
+				</div>
+			  </div>
+			</div>
+			<div class="details">
+			  <div>
+				Matriline : A12
+			  </div>
+			  <div>
+				Call :  A12sp
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+		<div class="yui-u">
+		  <div class="playerholder">
+			<div id="target2" class="player" style="background-image: url(assets/jpg/A12_N10.jpg);";>
+			  <img class="playbutton" id="playbutton2" src="assets/buttons/playbutton.png">
+			  <div class="load-progress">
+				<div class="play-progress">
+				</div>
+			  </div>
+			</div>
+			<div class="details">
+			  <div>
+				Matriline : A12
+			  </div>
+			  <div>
+				Call : N10
+			  </div>
+			</div>
+		  </div>
+		</div>
+		
+		<div class="yui-u">
+		  <div class="playerholder">
+			<div id="target3" class="player" style="background-image: url(assets/jpg/A12_N47.jpg);";>
+			  <img class="playbutton" id="playbutton3" src="assets/buttons/playbutton.png">
+			  <div class="load-progress">
+				<div class="play-progress">
+				</div>
+			  </div>
+			</div>
+			<div class="details">
+			  <div>
+				Matriline : A12
+			  </div>
+			  <div>
+				Call :  N47
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	</div>
+	
+  </body>
+</html>
+
+
+------------------------------ audio_js.html ------------------------------
+
+	<script type="text/javascript">
+<!--
+
+$(document).ready(function(){
+		console.log("ready");
+
+   {% index = 1 %}
+	{% for call in calls %}
+   
+		// Chrome and Firefox support ogg.  Safari doesn't.
+		var audio1 = new Audio("assets/ogg/A12_A12sp__1_.ogg");
+
+		$("#target1").click(function(event){
+				console.log("click1");
+				audio1.load();
+				audio1.play();
+				$('#target1 img').animate({opacity : 0},100);
+				$('#target1 .play-progress').css( 'opacity', 1);
+			});
+
+
+		$.fn.wait = function(time, type) {
+			console.log("waiting");
+			time = time || 1000;
+			type = type || "fx";
+			return this.queue(type, function() {
+					var self = this;
+					setTimeout(function() {
+							$(self).dequeue();
+						}, time);
+				});
+		};
+
+		audio1.addEventListener('timeupdate', function(evt) {
+		    var width = parseInt($('#target1').css('width'));
+			var percentPlayed = Math.round(audio1.currentTime / audio1.duration * 100);
+			var barWidth = Math.ceil(percentPlayed * (width / 100));
+			$('#target1 .play-progress').css( 'width', barWidth);
+		});
+
+
+		audio1.addEventListener('ended', function(evt) {
+				$('#target1 .play-progress').wait(500).animate({opacity : 0},500).animate({width : 0},0);
+				$('#target1 img').animate({opacity : 1},100);
+		});
+
+
+	});
+
+//-->
+	</script>
+
+
+
+
+------------------------------ audio_js.html ------------------------------
+
+	<script type="text/javascript">
+<!--
+
+$(document).ready(function(){
+		console.log("ready");
+
+	{% for call in calls %}
+   
+		var audio{{ forloop.counter }} = new Audio("/{{ call.audio }}");
+
+		$("#target{{ forloop.counter }}").click(function(event){
+				console.log("click{{ forloop.counter }}");
+				audio{{ forloop.counter }}.load();
+				audio{{ forloop.counter }}.play();
+				$('#target{{ forloop.counter }} img').animate({opacity : 0},100);
+				$('#target{{ forloop.counter }} .play-progress').css( 'opacity', 1);
+			});
+
+
+		$.fn.wait = function(time, type) {
+			console.log("waiting");
+			time = time || 1000;
+			type = type || "fx";
+			return this.queue(type, function() {
+					var self = this;
+					setTimeout(function() {
+							$(self).dequeue();
+						}, time);
+				});
+		};
+
+		audio{{ forloop.counter }}.addEventListener('timeupdate', function(evt) {
+		    var width = parseInt($('#target{{ forloop.counter }}').css('width'));
+			var percentPlayed = Math.round(audio{{ forloop.counter }}.currentTime / audio{{ forloop.counter }}.duration * 100);
+			var barWidth = Math.ceil((percentPlayed / 100) * (width));
+			$('#target{{ forloop.counter }} .play-progress').css( 'width', barWidth);
+		},false);
+
+
+ 		audio{{ forloop.counter }}.addEventListener('ended', function(evt) {
+				$('#target{{ forloop.counter }} .play-progress').wait(500).animate({opacity : 0},500).animate({width : 0},0);
+				$('#target{{ forloop.counter }} img').animate({opacity : 1},100);
+		},false);
+
+
+
+   {% endfor %}
+
+
+	});
+
+//-->
+	</script>

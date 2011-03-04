@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<movie version="9" width="800" height="600" framerate="30">
+  <background color="#000000"/>
+  <frame>
+    <library>
+      <clip id="playimg" import="library/play.png" />
+      <clip id="pauseimg" import="library/pause.png" />
+      <clip id="volumeon" import="library/volume-on.png" />
+      <clip id="volumeoff" import="library/volume-off.png" />
+	</library>
+  </frame>
+</movie>

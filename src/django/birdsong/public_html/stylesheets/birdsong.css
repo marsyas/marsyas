@@ -1,0 +1,72 @@
+/*********************/
+/* birdsong CSS      */
+/* created by hand   */
+/* by sness in emacs */
+/*********************/
+
+
+html {
+	background-color: #fff;
+}
+
+body {
+	padding-top: 50px;
+	background-color: #fff;
+}
+
+h1 {
+	font-size: 200%;
+}
+
+h2 {
+	font-size: 131%;
+}
+
+h3 {
+	font-size: 116%;
+}
+
+h4 {
+	font-size: 108%;
+}
+
+h5 {
+	font-size: 101%;
+}
+
+
+/* tables */
+
+table { 
+	border: 1px solid #EE7728;
+}
+
+td {
+	padding: 5px;
+	border: 1px solid #F7CB75;
+}
+
+td .center {
+ text-align: center;
+}
+
+th {
+	padding: 5px;
+	border-bottom: 1px solid #EE7728;
+	border-right: 1px solid #EE7728;
+ text-align: center;
+ font-weight: bold;
+}
+
+
+/* Notices */
+
+.notice {
+	font-size: 116%;
+    margin: 20px 20px 5px 20px;
+	padding: 20px;
+	width: 300px;
+	border: 1px dashed red;
+    color: red;
+}
+

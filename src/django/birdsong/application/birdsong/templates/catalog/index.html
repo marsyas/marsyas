@@ -1,0 +1,31 @@
+{% include 'catalog/header.html' %}
+{% include 'catalog/audio_js.html' %}
+
+<body>
+  <div id="doc2">
+	<center>
+	  <h1>Northern Resident Orca Call Catalog</h1>
+	</center>
+	
+	  {% for call in calls %}
+	  
+	  <div class="playerholder">
+		<div id="target{{ forloop.counter }}" class="player" style="background-image: url(/{{ call.image }});";>
+		  <img class="playbutton" id="playbutton{{ forloop.counter }}" src="/assets/buttons/playbutton.png">
+		  <div class="play-progress">
+		  </div>
+		</div>
+		<div class="details">
+		  <div>
+			Call :  {{ call.name }}
+		  </div>
+		  <div>
+			Matriline : {{ call.matriline }}
+		  </div>
+		</div>
+	  </div>
+
+	  {% endfor %}
+
+</body>
+</html>

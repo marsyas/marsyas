@@ -1,0 +1,6 @@
+<h1>recording index</h1>
+
+{% for recording in recordings %}
+  <a href="recordings/show/{{ recording.id }}">{{ recording.name }}</a>
+{% endfor %}
+

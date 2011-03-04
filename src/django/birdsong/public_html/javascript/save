@@ -1,0 +1,36 @@
+------------------------------ birdsong.js ------------------------------
+
+** Wed Mar 02 2011 - 11:40:18 AM
+   -----------------------------
+
+							window.setTimeout(update, 1000);
+
+------------------------------ birdsong.js ------------------------------
+
+function update() {
+		console.log("hi");
+		$.get("/annotations", function(data) {
+							$("#annotations").html(data);
+					});
+};
+
+// Reload the annotations every 10 seconds just
+// in case something didn't get updated in time
+// from the last save
+function autoupdate() {
+		update();
+		window.setTimeout(autoupdate, 10000);
+}
+
+// do stuff when DOM is ready
+$(document).ready(function() {
+											autoupdate();
+									});
+
+function debug(data) {
+		$.get("/recording/annotations/1.txt?user_id=1", function(data) {
+							$("#annotations").html(data);
+					});
+};
+
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <head>
+	<title>Orca Call Catalog</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="/assets/jquery.min.js" type="text/javascript"></script>
+	
+  </head>
+
+<body>
+  <div id="doc2">
+	<center>
+	  <h1>Onset detection</h1>
+	</center>
+	
+
+	<div id="recording" class="recording" style="background-image: url(/{{ recording.image }});">
+	<svg:svg version="1.1" baseProfile="full" width="837" height="200">
+	  {% for onset_pixel in onset_pixels %}
+	    <svg:rect x="{{ onset_pixel }}" y="0" width="1" height="200" fill="#aa3333" />
+	  {% endfor %}
+    </svg:svg>
+
+	</div>
+	
+	onsets={{ onsets }}
+
+	recording.length = {{ recording.length }}
+
+	<form action="/onsets/{{ recording.id}}" method="post">
+	  <input type="hidden" name="testname" />
+	  <input type="submit" value="Detect Onsets" />
+	</form>
+	</div>
+
+</body>
+</html>

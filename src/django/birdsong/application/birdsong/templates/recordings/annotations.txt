@@ -1,0 +1,2 @@
+{% for annotation in annotations %}{{ annotation.id }},{{ annotation.start_time_ms }},{{ annotation.end_time_ms }},{{ annotation.label }}
+{% endfor %}

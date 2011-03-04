@@ -1,0 +1,657 @@
+------------------------------ recordings/show.html ------------------------------
+
+** Wed Mar 02 2011 - 15:06:55 PM
+   -----------------------------
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  {% include "layouts/_xhtml_header.html" %}
+   <body>
+	<div id="#doc2">
+	  <div class="audioannotator">
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+				width="800"
+				height="243"
+				id="haxe"
+				align="middle">
+		  <param name="movie" value="/flash/audioannotator.swf"/>
+		  <param name="allowScriptAccess" value="always" />
+		  <param name="quality" value="high" />
+		  <param name="scale" value="noscale" />
+		  <param name="salign" value="lt" />
+		  <param name="bgcolor" value="#ffffff"/>
+		  <param name=FlashVars value="recording_url=/songs/{{ recording_id }}">
+		  <embed src="/flash/audioannotator.swf"
+				 FlashVars="recording_url=/songs/{{ recording_id }}&visualization_url=/songs/{{ recording_id }}/spectrogram&initial_start_ms=18080&initial_zoom=0.001&recording_id={{ recording_id }}"
+				 bgcolor="#ffffff"
+				 width="800"
+				 height="243"
+				 name="movie"
+				 quality="best"
+				 align="middle"
+				 allowScriptAccess="always"
+				 type="application/x-shockwave-flash"
+				 pluginspage="http://www.macromedia.com/go/getflashplayer">
+		</object>
+	  </div>
+	  <div id="annotations">
+		{% include "recordings/show_annotations.html" %}
+	  </div>
+	  <div id="pitchcontours">
+		pitchcontours
+	  </div>
+	</div>
+  </body>
+</html>
+
+
+
+
+----------------------------------------------------------------------------------------------------
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  {% include "layouts/_xhtml_header.html" %}
+   <body>
+	<div id="#doc2">
+	  <div class="audioannotator">
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+				width="800"
+				height="243"
+				id="haxe"
+				align="middle">
+		  <param name="movie" value="/flash/audioannotator.swf"/>
+		  <param name="allowScriptAccess" value="always" />
+		  <param name="quality" value="high" />
+		  <param name="scale" value="noscale" />
+		  <param name="salign" value="lt" />
+		  <param name="bgcolor" value="#ffffff"/>
+		  <param name=FlashVars value="recording_url=/songs/{{ recording_id }}">
+		  <embed src="/flash/audioannotator.swf"
+				 FlashVars="recording_url=/songs/{{ recording_id }}&visualization_url=/songs/{{ recording_id }}/spectrogram&initial_start_ms=18080&initial_zoom=0.001&recording_id={{ recording_id }}"
+				 bgcolor="#ffffff"
+				 width="800"
+				 height="243"
+				 name="movie"
+				 quality="best"
+				 align="middle"
+				 allowScriptAccess="always"
+				 type="application/x-shockwave-flash"
+				 pluginspage="http://www.macromedia.com/go/getflashplayer">
+		</object>
+	  </div>
+	  <div id="annotations">
+		{% include "recordings/show_annotations.html" %}
+	  </div>
+	  <div id="pitchcontours">
+		pitchcontours
+	  </div>
+	</div>
+  </body>
+</html>
+
+
+
+
+------------------------------ recordings/show.html ------------------------------
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+	<link href="/stylesheets/birdsong.css" rel="stylesheet" type="text/css" />
+
+	<script src="/javascript/birdsong.js"></script>
+	<script src="/javascript/dtw.js"></script>
+  </head>
+   <body>
+	<div id="#doc2">
+
+	  <div class="audioannotator">
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+				width="800"
+				height="243"
+				id="haxe"
+				align="middle">
+		  <param name="movie" value="/flash/audioannotator.swf"/>
+		  <param name="allowScriptAccess" value="always" />
+		  <param name="quality" value="high" />
+		  <param name="scale" value="noscale" />
+		  <param name="salign" value="lt" />
+		  <param name="bgcolor" value="#ffffff"/>
+		  <param name="FlashVars" value="recording_url=/songs/{{ recording_id }}" />
+		  <embed src="/flash/audioannotator.swf"
+				 FlashVars="recording_url=/songs/{{ recording_id }}&amp;visualization_url=/songs/{{ recording_id }}/spectrogram&amp;initial_start_ms=18080&amp;initial_zoom=0.001&amp;recording_id={{ recording_id }}"
+				 bgcolor="#ffffff"
+				 width="800"
+				 height="243"
+				 name="movie"
+				 quality="best"
+				 align="middle"
+				 allowScriptAccess="always"
+				 type="application/x-shockwave-flash"
+				 pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
+		</object>
+	  </div>
+
+
+  <svg:svg version="1.1" baseProfile="full" width="700px" height="240px" id="test1" >
+
+	<svg:rect x="100" y="20" width="600" height="200"
+        fill="none" stroke="black" stroke-width="1" />
+
+	<svg:g stroke="black" >
+	  <svg:line x1="95" y1="20" x2="100" y2="20" stroke-width="1" />
+	  <svg:line x1="95" y1="70" x2="100" y2="70" stroke-width="1" />
+	  <svg:line x1="95" y1="120" x2="100" y2="120" stroke-width="1" />
+	  <svg:line x1="95" y1="170" x2="100" y2="170" stroke-width="1" />
+	  <svg:line x1="95" y1="220" x2="100" y2="220" stroke-width="1" />
+	</svg:g>
+
+<!--	<svg:g stroke="grey" >
+	  <svg:line x1="100" y1="20" x2="700" y2="20" stroke-width="1" />
+	  <svg:line x1="100" y1="70" x2="700" y2="70" stroke-width="1" />
+	  <svg:line x1="100" y1="120" x2="700" y2="120" stroke-width="1" />
+	  <svg:line x1="100" y1="170" x2="700" y2="170" stroke-width="1" />
+	  <svg:line x1="100" y1="220" x2="700" y2="220" stroke-width="1" />
+	</svg:g> 
+-->
+	
+	<svg:text x="50" y="25" font-family="Verdana" font-size="10" fill="black" >10000Hz</svg:text>
+	<svg:text x="50" y="75" font-family="Verdana" font-size="10" fill="black" >7500Hz</svg:text>
+	<svg:text x="50" y="125" font-family="Verdana" font-size="10" fill="black" >5000Hz</svg:text>
+	<svg:text x="50" y="175" font-family="Verdana" font-size="10" fill="black" >2500Hz</svg:text>
+	<svg:text x="65" y="222" font-family="Verdana" font-size="10" fill="black">0Hz</svg:text>
+
+	<svg:polyline
+	   points="{{ pitchcontour }}"
+	   style="stroke: red; stroke-width: 1; fill: none;"/> 
+
+	<svg:polyline
+	   points="{{ median_filtered_pitchcontour }}"
+	   style="stroke: blue; stroke-width: 1; fill: none;"/> 
+  </svg:svg>
+</div>
+  </body>
+
+</html>
+
+
+
+----------------------------------------------------------------------------------------------------
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+	<script type="text/javascript">
+	  <!--
+		 $("#pitchcontour-spinner").hide();
+		 console.log("hmm");
+      -->
+    </script>
+
+  <svg:svg version="1.1" baseProfile="full" width="700px" height="240px" id="test1" >
+
+	<svg:image x="100" y="20" width="600px" height="200px"
+          xlink:href="/assets/jpg/long_A36_N4__2_.jpg" />
+
+	<svg:rect x="100" y="20" width="600" height="200"
+        fill="none" stroke="black" stroke-width="1" />
+
+	<svg:g stroke="black" >
+	  <svg:line x1="95" y1="20" x2="100" y2="20" stroke-width="1" />
+	  <svg:line x1="95" y1="70" x2="100" y2="70" stroke-width="1" />
+	  <svg:line x1="95" y1="120" x2="100" y2="120" stroke-width="1" />
+	  <svg:line x1="95" y1="170" x2="100" y2="170" stroke-width="1" />
+	  <svg:line x1="95" y1="220" x2="100" y2="220" stroke-width="1" />
+	</svg:g>
+
+<!--	<svg:g stroke="grey" >
+	  <svg:line x1="100" y1="20" x2="700" y2="20" stroke-width="1" />
+	  <svg:line x1="100" y1="70" x2="700" y2="70" stroke-width="1" />
+	  <svg:line x1="100" y1="120" x2="700" y2="120" stroke-width="1" />
+	  <svg:line x1="100" y1="170" x2="700" y2="170" stroke-width="1" />
+	  <svg:line x1="100" y1="220" x2="700" y2="220" stroke-width="1" />
+	</svg:g> 
+-->
+	
+	<svg:text x="50" y="25" font-family="Verdana" font-size="10" fill="black" >10000Hz</svg:text>
+	<svg:text x="50" y="75" font-family="Verdana" font-size="10" fill="black" >7500Hz</svg:text>
+	<svg:text x="50" y="125" font-family="Verdana" font-size="10" fill="black" >5000Hz</svg:text>
+	<svg:text x="50" y="175" font-family="Verdana" font-size="10" fill="black" >2500Hz</svg:text>
+	<svg:text x="65" y="222" font-family="Verdana" font-size="10" fill="black">0Hz</svg:text>
+
+	<svg:polyline
+	   points="{{ pitchcontour }}"
+	   style="stroke: red; stroke-width: 1; fill: none;"/> 
+
+	<svg:polyline
+	   points="{{ median_filtered_pitchcontour }}"
+	   style="stroke: blue; stroke-width: 1; fill: none;"/> 
+  </svg:svg>
+
+
+</html>
+
+
+------------------------------ pitchcontour.html ------------------------------
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <svg:svg version="1.1" baseProfile="full" width="700px" height="240px" id="test1" >
+
+	<svg:rect x="100" y="20" width="600" height="200"
+        fill="none" stroke="black" stroke-width="1" />
+
+	<svg:g stroke="black" >
+	  <svg:line x1="95" y1="20" x2="100" y2="20" stroke-width="1" />
+	  <svg:line x1="95" y1="70" x2="100" y2="70" stroke-width="1" />
+	  <svg:line x1="95" y1="120" x2="100" y2="120" stroke-width="1" />
+	  <svg:line x1="95" y1="170" x2="100" y2="170" stroke-width="1" />
+	  <svg:line x1="95" y1="220" x2="100" y2="220" stroke-width="1" />
+	</svg:g>
+
+<!--	<svg:g stroke="grey" >
+	  <svg:line x1="100" y1="20" x2="700" y2="20" stroke-width="1" />
+	  <svg:line x1="100" y1="70" x2="700" y2="70" stroke-width="1" />
+	  <svg:line x1="100" y1="120" x2="700" y2="120" stroke-width="1" />
+	  <svg:line x1="100" y1="170" x2="700" y2="170" stroke-width="1" />
+	  <svg:line x1="100" y1="220" x2="700" y2="220" stroke-width="1" />
+	</svg:g> 
+-->
+	
+	<svg:text x="50" y="25" font-family="Verdana" font-size="10" fill="black" >10000Hz</svg:text>
+	<svg:text x="50" y="75" font-family="Verdana" font-size="10" fill="black" >7500Hz</svg:text>
+	<svg:text x="50" y="125" font-family="Verdana" font-size="10" fill="black" >5000Hz</svg:text>
+	<svg:text x="50" y="175" font-family="Verdana" font-size="10" fill="black" >2500Hz</svg:text>
+	<svg:text x="65" y="222" font-family="Verdana" font-size="10" fill="black">0Hz</svg:text>
+
+	<svg:polyline
+	   points="{{ pitchcontour }}"
+	   style="stroke: red; stroke-width: 1; fill: none;"/></svg:polyline>
+	
+	</svg>
+
+</html>
+
+
+------------------------------ recordings/show.html ------------------------------
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+	<link href="/stylesheets/birdsong.css" rel="stylesheet" type="text/css" />
+	
+	<script src="/javascript/birdsong.js"></script>
+	<script src="/javascript/dtw.js"></script>
+  </head>
+  <body>
+	<div id="#doc2">
+	  
+	  <div class="audioannotator">
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+				width="800"
+				height="243"
+				id="haxe"
+				align="middle">
+		  <param name="movie" value="/flash/audioannotator.swf"/>
+		  <param name="allowScriptAccess" value="always" />
+		  <param name="quality" value="high" />
+		  <param name="scale" value="noscale" />
+		  <param name="salign" value="lt" />
+		  <param name="bgcolor" value="#ffffff"/>
+		  <param name="FlashVars" value="recording_url=/songs/{{ recording_id }}" />
+		  <embed src="/flash/audioannotator.swf"
+				 FlashVars="recording_url=/songs/{{ recording_id }}&amp;visualization_url=/songs/{{ recording_id }}/spectrogram&amp;initial_start_ms=18080&amp;initial_zoom=0.001&amp;recording_id={{ recording_id }}"
+				 bgcolor="#ffffff"
+				 width="800"
+				 height="243"
+				 name="movie"
+				 quality="best"
+				 align="middle"
+				 allowScriptAccess="always"
+				 type="application/x-shockwave-flash"
+				 pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
+		</object>
+	  </div>
+	  <div id="annotations">
+		{% include "recordings/show_annotations.html" %}
+	  </div>
+	  <div id="pitchcontours1">
+		
+		<svg:svg version="1.1" baseProfile="full" width="700px" height="240px" id="test1" >
+		  
+		  <svg:rect x="100" y="20" width="600" height="200"
+					fill="none" stroke="black" stroke-width="1" />
+		  
+		  <svg:g stroke="black" >
+			<svg:line x1="95" y1="20" x2="100" y2="20" stroke-width="1" />
+			<svg:line x1="95" y1="70" x2="100" y2="70" stroke-width="1" />
+			<svg:line x1="95" y1="120" x2="100" y2="120" stroke-width="1" />
+			<svg:line x1="95" y1="170" x2="100" y2="170" stroke-width="1" />
+			<svg:line x1="95" y1="220" x2="100" y2="220" stroke-width="1" />
+		  </svg:g>
+		  
+		  <!--	<svg:g stroke="grey" >
+				<svg:line x1="100" y1="20" x2="700" y2="20" stroke-width="1" />
+				<svg:line x1="100" y1="70" x2="700" y2="70" stroke-width="1" />
+				<svg:line x1="100" y1="120" x2="700" y2="120" stroke-width="1" />
+				<svg:line x1="100" y1="170" x2="700" y2="170" stroke-width="1" />
+				<svg:line x1="100" y1="220" x2="700" y2="220" stroke-width="1" />
+		  </svg:g> 
+		  -->
+		  
+		  <svg:text x="50" y="25" font-family="Verdana" font-size="10" fill="black" >10000Hz</svg:text>
+		  <svg:text x="50" y="75" font-family="Verdana" font-size="10" fill="black" >7500Hz</svg:text>
+		  <svg:text x="50" y="125" font-family="Verdana" font-size="10" fill="black" >5000Hz</svg:text>
+		  <svg:text x="50" y="175" font-family="Verdana" font-size="10" fill="black" >2500Hz</svg:text>
+		  <svg:text x="65" y="222" font-family="Verdana" font-size="10" fill="black">0Hz</svg:text>
+		  
+		  <svg:polyline
+			 points="{{ pitchcontour }}"
+			 style="stroke: red; stroke-width: 1; fill: none;"></svg:polyline>
+		  
+		</svg:svg>
+	  </div>
+	</div>
+  </body>
+  
+</html>
+
+
+
+------------------------------ recordings/show.html ------------------------------
+
+** Thu Mar 03 2011 - 12:08:21 PM
+   -----------------------------
+
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+	<link href="/stylesheets/birdsong.css" rel="stylesheet" type="text/css" />
+	
+	<script src="/javascript/birdsong.js"></script>
+	<script src="/javascript/dtw.js"></script>
+  </head>
+  <body>
+	<div id="#doc2">
+	  
+	  <div class="audioannotator">
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+				width="800"
+				height="243"
+				id="haxe"
+				align="middle">
+		  <param name="movie" value="/flash/audioannotator.swf"/>
+		  <param name="allowScriptAccess" value="always" />
+		  <param name="quality" value="high" />
+		  <param name="scale" value="noscale" />
+		  <param name="salign" value="lt" />
+		  <param name="bgcolor" value="#ffffff"/>
+		  <param name="FlashVars" value="recording_url=/songs/{{ recording_id }}" />
+		  <embed src="/flash/audioannotator.swf"
+				 FlashVars="recording_url=/songs/{{ recording_id }}&amp;visualization_url=/songs/{{ recording_id }}/spectrogram&amp;initial_start_ms=18080&amp;initial_zoom=0.001&amp;recording_id={{ recording_id }}"
+				 bgcolor="#ffffff"
+				 width="800"
+				 height="243"
+				 name="movie"
+				 quality="best"
+				 align="middle"
+				 allowScriptAccess="always"
+				 type="application/x-shockwave-flash"
+				 pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
+		</object>
+	  </div>
+	  <div id="annotations">
+		{% include "recordings/show_annotations.html" %}
+	  </div>
+	  <div id="pitchcontours1">
+		
+		<svg:svg version="1.1" baseProfile="full" width="700px" height="240px" id="test1" >
+		  
+		  <svg:rect x="100" y="20" width="600" height="200"
+					fill="none" stroke="black" stroke-width="1" />
+		  
+		  <svg:g stroke="black" >
+			<svg:line x1="95" y1="20" x2="100" y2="20" stroke-width="1" />
+			<svg:line x1="95" y1="70" x2="100" y2="70" stroke-width="1" />
+			<svg:line x1="95" y1="120" x2="100" y2="120" stroke-width="1" />
+			<svg:line x1="95" y1="170" x2="100" y2="170" stroke-width="1" />
+			<svg:line x1="95" y1="220" x2="100" y2="220" stroke-width="1" />
+		  </svg:g>
+		  
+		  <!--	<svg:g stroke="grey" >
+				<svg:line x1="100" y1="20" x2="700" y2="20" stroke-width="1" />
+				<svg:line x1="100" y1="70" x2="700" y2="70" stroke-width="1" />
+				<svg:line x1="100" y1="120" x2="700" y2="120" stroke-width="1" />
+				<svg:line x1="100" y1="170" x2="700" y2="170" stroke-width="1" />
+				<svg:line x1="100" y1="220" x2="700" y2="220" stroke-width="1" />
+		  </svg:g> 
+		  -->
+		  
+		  <svg:text x="50" y="25" font-family="Verdana" font-size="10" fill="black" >10000Hz</svg:text>
+		  <svg:text x="50" y="75" font-family="Verdana" font-size="10" fill="black" >7500Hz</svg:text>
+		  <svg:text x="50" y="125" font-family="Verdana" font-size="10" fill="black" >5000Hz</svg:text>
+		  <svg:text x="50" y="175" font-family="Verdana" font-size="10" fill="black" >2500Hz</svg:text>
+		  <svg:text x="65" y="222" font-family="Verdana" font-size="10" fill="black">0Hz</svg:text>
+		  
+		  <svg:polyline
+			 points="{{ pitchcontour }}"
+			 style="stroke: red; stroke-width: 1; fill: none;"></svg:polyline>
+		  
+		</svg:svg>
+	  </div>
+	</div>
+  </body>
+  
+</html>
+
+------------------------------ recordings/show.html ------------------------------
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+	<link href="/stylesheets/birdsong.css" rel="stylesheet" type="text/css" />
+	
+	<script src="/javascript/birdsong.js"></script>
+	<script src="/javascript/dtw.js"></script>
+  </head>
+  <body>
+	<div id="#doc2">
+	  
+	  <div class="audioannotator">
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+				width="800"
+				height="243"
+				id="haxe"
+				align="middle">
+		  <param name="movie" value="/flash/audioannotator.swf"/>
+		  <param name="allowScriptAccess" value="always" />
+		  <param name="quality" value="high" />
+		  <param name="scale" value="noscale" />
+		  <param name="salign" value="lt" />
+		  <param name="bgcolor" value="#ffffff"/>
+		  <param name="FlashVars" value="recording_url=/songs/{{ recording_id }}" />
+		  <embed src="/flash/audioannotator.swf"
+				 FlashVars="recording_url=/songs/{{ recording_id }}&amp;visualization_url=/songs/{{ recording_id }}/spectrogram&amp;initial_start_ms=18080&amp;initial_zoom=0.001&amp;recording_id={{ recording_id }}"
+				 bgcolor="#ffffff"
+				 width="800"
+				 height="243"
+				 name="movie"
+				 quality="best"
+				 align="middle"
+				 allowScriptAccess="always"
+				 type="application/x-shockwave-flash"
+				 pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
+		</object>
+	  </div>
+	  <div id="annotations">
+		{% include "recordings/show_annotations.html" %}
+	  </div>
+	  <div id="pitchcontours">
+
+		{% for pitchcontour in pitchcontours %}
+		<div>
+		
+		<svg:svg version="1.1" baseProfile="full" width="700px" height="240px" id="test1" >
+		  
+		  <svg:rect x="100" y="20" width="600" height="200"
+					fill="none" stroke="black" stroke-width="1" />
+		  
+		  <svg:g stroke="black" >
+			<svg:line x1="95" y1="20" x2="100" y2="20" stroke-width="1" />
+			<svg:line x1="95" y1="70" x2="100" y2="70" stroke-width="1" />
+			<svg:line x1="95" y1="120" x2="100" y2="120" stroke-width="1" />
+			<svg:line x1="95" y1="170" x2="100" y2="170" stroke-width="1" />
+			<svg:line x1="95" y1="220" x2="100" y2="220" stroke-width="1" />
+		  </svg:g>
+		  
+		  <!--	<svg:g stroke="grey" >
+				<svg:line x1="100" y1="20" x2="700" y2="20" stroke-width="1" />
+				<svg:line x1="100" y1="70" x2="700" y2="70" stroke-width="1" />
+				<svg:line x1="100" y1="120" x2="700" y2="120" stroke-width="1" />
+				<svg:line x1="100" y1="170" x2="700" y2="170" stroke-width="1" />
+				<svg:line x1="100" y1="220" x2="700" y2="220" stroke-width="1" />
+		  </svg:g> 
+		  -->
+		  
+		  <svg:text x="50" y="25" font-family="Verdana" font-size="10" fill="black" >10000Hz</svg:text>
+		  <svg:text x="50" y="75" font-family="Verdana" font-size="10" fill="black" >7500Hz</svg:text>
+		  <svg:text x="50" y="125" font-family="Verdana" font-size="10" fill="black" >5000Hz</svg:text>
+		  <svg:text x="50" y="175" font-family="Verdana" font-size="10" fill="black" >2500Hz</svg:text>
+		  <svg:text x="65" y="222" font-family="Verdana" font-size="10" fill="black">0Hz</svg:text>
+		  
+		  <svg:polyline
+			 points="{{ pitchcontour }}"
+			 style="stroke: red; stroke-width: 1; fill: none;"></svg:polyline>
+
+		</svg:svg>
+
+		  </div>
+		  {% endfor %}
+
+	  </div>
+	</div>
+  </body>
+  
+</html>
+
+
+
+------------------------------ recordings/show.html ------------------------------
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset-fonts-grids/reset-fonts-grids.css" />
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+	<link href="/stylesheets/birdsong.css" rel="stylesheet" type="text/css" />
+	
+	<script src="/javascript/birdsong.js"></script>
+	<script src="/javascript/dtw.js"></script>
+  </head>
+  <body>
+	<div id="#doc2">
+	  
+	  <div class="audioannotator">
+		<object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
+				width="800"
+				height="243"
+				id="haxe"
+				align="middle">
+		  <param name="movie" value="/flash/audioannotator.swf"/>
+		  <param name="allowScriptAccess" value="always" />
+		  <param name="quality" value="high" />
+		  <param name="scale" value="noscale" />
+		  <param name="salign" value="lt" />
+		  <param name="bgcolor" value="#ffffff"/>
+		  <param name="FlashVars" value="recording_url=/songs/{{ recording_id }}" />
+		  <embed src="/flash/audioannotator.swf"
+				 FlashVars="recording_url=/songs/{{ recording_id }}&amp;visualization_url=/songs/{{ recording_id }}/spectrogram&amp;initial_start_ms=18080&amp;initial_zoom=0.001&amp;recording_id={{ recording_id }}"
+				 bgcolor="#ffffff"
+				 width="800"
+				 height="243"
+				 name="movie"
+				 quality="best"
+				 align="middle"
+				 allowScriptAccess="always"
+				 type="application/x-shockwave-flash"
+				 pluginspage="http://www.macromedia.com/go/getflashplayer"></embed>
+		</object>
+	  </div>
+	  <div id="annotations">
+		{% include "recordings/show_annotations.html" %}
+	  </div>
+	  <div id="pitchcontours">
+
+		{% for pitchcontour in pitchcontours %}
+		<div>
+		
+		<svg:svg version="1.1" baseProfile="full" width="700px" height="240px" id="test1" >
+		  
+		  <svg:rect x="100" y="20" width="600" height="200"
+					fill="none" stroke="black" stroke-width="1" />
+		  
+		  <svg:g stroke="black" >
+			<svg:line x1="95" y1="20" x2="100" y2="20" stroke-width="1" />
+			<svg:line x1="95" y1="70" x2="100" y2="70" stroke-width="1" />
+			<svg:line x1="95" y1="120" x2="100" y2="120" stroke-width="1" />
+			<svg:line x1="95" y1="170" x2="100" y2="170" stroke-width="1" />
+			<svg:line x1="95" y1="220" x2="100" y2="220" stroke-width="1" />
+		  </svg:g>
+		  
+		  <!--	<svg:g stroke="grey" >
+				<svg:line x1="100" y1="20" x2="700" y2="20" stroke-width="1" />
+				<svg:line x1="100" y1="70" x2="700" y2="70" stroke-width="1" />
+				<svg:line x1="100" y1="120" x2="700" y2="120" stroke-width="1" />
+				<svg:line x1="100" y1="170" x2="700" y2="170" stroke-width="1" />
+				<svg:line x1="100" y1="220" x2="700" y2="220" stroke-width="1" />
+		  </svg:g> 
+		  -->
+		  
+		  <svg:text x="50" y="25" font-family="Verdana" font-size="10" fill="black" >10000Hz</svg:text>
+		  <svg:text x="50" y="75" font-family="Verdana" font-size="10" fill="black" >7500Hz</svg:text>
+		  <svg:text x="50" y="125" font-family="Verdana" font-size="10" fill="black" >5000Hz</svg:text>
+		  <svg:text x="50" y="175" font-family="Verdana" font-size="10" fill="black" >2500Hz</svg:text>
+		  <svg:text x="65" y="222" font-family="Verdana" font-size="10" fill="black">0Hz</svg:text>
+		  
+		  <svg:polyline
+			 points="{{ pitchcontour }}"
+			 style="stroke: red; stroke-width: 1; fill: none;"></svg:polyline>
+
+		</svg:svg>
+
+		  </div>
+		  {% endfor %}
+
+	  </div>
+	</div>
+  </body>
+  
+</html>
+

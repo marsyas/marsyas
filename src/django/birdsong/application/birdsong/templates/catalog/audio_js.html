@@ -1,0 +1,54 @@
+	<script type="text/javascript">
+<!--
+
+$(document).ready(function(){
+		console.log("ready");
+
+	{% for call in calls %}
+   
+		var audio{{ forloop.counter }} = new Audio("/{{ call.audio }}");
+
+		$("#target{{ forloop.counter }}").click(function(event){
+				console.log("click{{ forloop.counter }}");
+				audio{{ forloop.counter }}.load();
+				audio{{ forloop.counter }}.play();
+				$('#target{{ forloop.counter }} img').animate({opacity : 0},100);
+				$('#target{{ forloop.counter }} .play-progress').css( 'opacity', 1);
+			});
+
+
+		$.fn.wait = function(time, type) {
+			console.log("waiting");
+			time = time || 1000;
+			type = type || "fx";
+			return this.queue(type, function() {
+					var self = this;
+					setTimeout(function() {
+							$(self).dequeue();
+						}, time);
+				});
+		};
+
+		audio{{ forloop.counter }}.addEventListener('timeupdate', function(evt) {
+		    var width = parseInt($('#target{{ forloop.counter }}').css('width'));
+            var currentTime = audio{{ forloop.counter }}.currentTime;
+			var percentPlayed = currentTime / {{ call.duration }};
+			var barWidth = percentPlayed * width;
+			$('#target{{ forloop.counter }} .play-progress').css( 'width', barWidth);
+		},false);
+
+
+ 		audio{{ forloop.counter }}.addEventListener('ended', function(evt) {
+				$('#target{{ forloop.counter }} .play-progress').wait(500).animate({opacity : 0},500).animate({width : 0},0);
+				$('#target{{ forloop.counter }} img').animate({opacity : 1},100);
+		},false);
+
+
+
+   {% endfor %}
+
+
+	});
+
+//-->
+	</script>

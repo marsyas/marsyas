@@ -1,0 +1,4 @@
+0,0,/songs/1/spectrogram/out-0-0.jpg
+1,0,/songs/1/spectrogram/out-1-0.jpg
+1,1,/songs/1/spectrogram/out-1-1.jpg
+1,2,/songs/1/spectrogram/out-1-2.jpg

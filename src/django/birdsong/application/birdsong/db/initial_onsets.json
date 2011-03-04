@@ -1,0 +1,11 @@
+[
+  {
+    "pk": 1, 
+     "model": "onsets.recording", 
+     "fields": {
+       "audio": "assets/onsets/ogg/2005_449A_trim.ogg", 
+       "image": "assets/onsets/jpg/2005_449A_trim.jpg",
+       "length": 30.0
+      }
+  }
+]

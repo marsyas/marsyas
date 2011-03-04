@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<title>Django/Marsyas pitch detector</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="/assets/jquery.min.js" type="text/javascript"></script>
+	<script src="/assets/svg.js" type="text/javascript"></script>
+	
+  </head>
+  
+  <body>
+
+	<div id="doc2">
+	  <center>
+		<h1>SVG and Canvas Tests</h1>
+	  </center>
+
+	  
+	  <canvas id="flag" width="539" height="1486">
+		You don't support Canvas. If you did, you would see a flag
+	  </canvas>
+
+<script>
+  var points = {{ points|safe }};
+</script>
+
+	</div>
+  </body>
+</html>
+

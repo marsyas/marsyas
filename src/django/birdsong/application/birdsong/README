@@ -1,0 +1,2 @@
+ python manage.py loaddata db/db_initial.json
+

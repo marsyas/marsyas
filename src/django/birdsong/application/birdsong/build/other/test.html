@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title>Scott Andrew's HTML 5 Audio Player</title>
+	
+	<style type="text/css">
+		#jukebox {
+			background-color:#cc0000;
+			-moz-border-radius:10px;
+			-webkit-border-radius:10px;
+			color:#fff;
+			padding:10px;
+			font-family:helvetica, arial, verdana;
+			font-weight:bold;
+			width:300px;
+		}
+		#jukebox .loader {
+			border:1px solid #fff;
+			height:3px;
+			margin:10px 0px
+		}
+		#jukebox .load-progress {
+			width:0px;
+			background-color:#fff;
+			height:3px;
+		}
+		#jukebox .play-progress {
+			width:0px;
+			background-color:#9999cc;
+			height:3px;
+		}
+		
+		#jukebox .controls {
+			text-align:center;
+		}
+		
+		#jukebox .controls a {
+			display:inline-block;
+			width:33px;
+			height:33px;
+			margin:0px 14px;
+			overflow:hidden;
+			background-image:url('audio-controls.png');
+			background-repeat:no-repeat;
+		}
+		
+		#jukebox .controls a:hover {
+			background-color:#ff9900;
+		}
+		
+		#jukebox .controls a span {
+			display:none;
+		}
+		
+		#jukebox .controls a.prev {
+			background-position:top -60px;
+		}
+		#jukebox .controls a.next {
+			background-position:top -90px;
+		}
+		#jukebox .controls a.play {
+			background-position:top left;
+		}
+		#jukebox .controls a.pause {
+			background-position:top -30px;
+		}
+		
+	</style>
+	
+</head>
+
+<body>
+
+<h1>HTML 5 Audio Player</h1>
+
+<div id="jukebox">
+	<div class="info">Please wait...</div>
+	<div class="loader">
+		<div class="load-progress">
+			<div class="play-progress">
+			</div>
+		</div>
+	</div>
+	<div class="controls">
+		<a class="prev" href="#"><span>Prev</span></a>
+		<a class="play" href="#"><span>Play</span></a>
+		<a class="pause" href="#"><span>Pause</span></a>
+		<a class="next" href="#"><span>Next</span></a>
+	</div>
+	<audio class="aud">
+		<p>Oops, looks like your browser doesn't support HTML 5 audio.</p>
+	</audio>
+</div>
+
+<!-- that's it! that's all the HTML needed -->
+
+<p>A proof-of-concept written in HTML 5 with JQuery and CSS3. No Flash!</p>
+<p>Compare to Flash player at <a href="http://www.scottandrew.com">scottandrew.com</a></p>
+<p>Developed by <a href="http://www.scottandrew.com">Scott Andrew</a>.</p>
+<p>Developed with Safari 4.0.4. <del>No Firefox testing.</del> UPDATE: <a href="https://developer.mozilla.org/En/Using_audio_and_video_in_Firefox">Firefox doesn't support the MP3 format</a>.</p>
+<p>Resources used to build this:</p>
+<ul>
+	<li><a href="https://developer.mozilla.org/En/Using_audio_and_video_in_Firefox">Using audio and video in Firefox</a></li>
+	<li><a href="https://developer.mozilla.org/En/HTML/Element/Audio">The HTML 5 Audio element</a></li>
+</ul>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>
+<script type="text/javascript">
+
+	// the playlist is just a JSON-style object.
+	var playlist = [
+		{
+			url : "file:///home/sness/dDEV/calls/build/other/1.mp3",
+			title : "one"
+		},
+		{
+			url : "file:///home/sness/dDEV/calls/build/other/2.mp3",
+			title : "two"
+		},
+		{
+			url : "file:///home/sness/dDEV/calls/build/other/3.mp3",
+			title : "three"
+		}
+	];
+
+	$(document).ready(function() {
+	
+	console.log("test");
+
+	    var aud = $('#jukebox .aud').get(0);
+	    aud.pos = -1;
+	
+		$('#jukebox .play').bind('click', function(evt) {
+			evt.preventDefault();
+			if (aud.pos < 0) {
+				$('#jukebox .next').trigger('click');
+			} else {
+				aud.play();
+			}
+		});
+		
+		$('#jukebox .pause').bind('click', function(evt) {
+			evt.preventDefault();
+			aud.pause();
+		});
+		
+		$('#jukebox .next').bind('click', function(evt) {
+			evt.preventDefault();
+			aud.pause();
+			aud.pos++;
+			if (aud.pos == playlist.length) aud.pos = 0;
+			aud.setAttribute('src', playlist[aud.pos].url);
+                        $('#jukebox .info').html(playlist[aud.pos].title);
+			aud.load();
+		});
+		
+		$('#jukebox .prev').bind('click', function(evt) {
+			evt.preventDefault();
+			aud.pause();
+			aud.pos--;
+			if (aud.pos < 0) aud.pos = playlist.length - 1;
+			aud.setAttribute('src', playlist[aud.pos].url);
+                        $('#jukebox .info').html(playlist[aud.pos].title);
+			aud.load();
+		});
+		
+		// JQuery doesn't seem to like binding to these HTML 5
+		// media events, but addEventListener does just fine
+		
+		aud.addEventListener('timeupdate', function(evt) {
+		    var width = parseInt($('#jukebox').css('width'));
+			var percentPlayed = Math.round(aud.currentTime / aud.duration * 100);
+			var barWidth = Math.ceil(percentPlayed * (width / 100));
+			$('#jukebox .play-progress').css( 'width', barWidth);
+		});
+		
+		aud.addEventListener('canplay', function(evt) {
+			$('#jukebox .play').trigger('click');
+		});
+		
+		aud.addEventListener('ended', function(evt) {
+			$('#jukebox .next').trigger('click');
+		});
+		
+		$('#jukebox .info').html(playlist[0].title);
+	
+	});
+</script>
+
+</body>
+</html>

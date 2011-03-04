@@ -1,0 +1,18 @@
+<h1>annotation index</h1>
+<center>
+<table>
+  <tr>
+	<th>label</th>
+	<th>start time (ms)</th>
+	<th>end time (ms)</th>
+  </tr>
+  {% for annotation in annotations %}
+  <tr>
+	<td><a href="annotations/show/{{ annotation.id }}">{{ annotation.label }}</a></td>
+	<td>{{ annotation.start_time_ms }}</td>
+	<td>{{ annotation.end_time_ms }}</td>
+  </tr>
+  {% endfor %}
+</table>
+
+</center>

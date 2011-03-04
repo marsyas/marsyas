@@ -1,0 +1,131 @@
+<html>
+  <head>
+	<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.2r1/build/reset-fonts-grids/reset-fonts-grids.css">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+	<script src="http://assets.sness.net/jquery.BgImageTransition.js"></script>
+
+	<link  href="http://fonts.googleapis.com/css?family=Ubuntu:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css" >
+	<style>
+	  body {
+	  font-family: 'Ubuntu', serif;
+	  font-size: 70px;
+	  font-style: normal;
+	  font-weight: 900;
+	  text-shadow: none;
+	  text-decoration: none;
+	  text-transform: none;
+	  letter-spacing: 0em;
+	  word-spacing: 0em;
+	  line-height: 1.1;
+	  }
+	  a {
+	  text-decoration:none;
+	  color:#777777;
+	  opacity: .7;
+	  }
+	  a:hover             
+	  { 
+	  color:red;
+	  opacity: 1;
+	  }
+	  a.mistic {
+	  color: #ee0000;
+	  opacity: 1;
+	  }
+	  a.mistic:hover {
+	  color: #ff0000;
+	  }
+	  #backImage {
+	  padding: 0px;
+	  margin: 0px;
+	  background-image: url('images/backgrounds/background_notomoton1.jpg');
+	  z-index: -2;
+	  height: 3000px;
+
+	  }
+	  body {
+	  padding: 0px;
+	  margin: 0px;
+	  }
+	  #nav {
+	  float : left;
+	  text-align: left;
+	  }
+	</style>
+
+
+
+
+  </head>
+
+  <body> 
+
+	<div id="backImage">
+
+	<div style="float: right; padding: 0px; font-size:100px;">
+	  <a class="mistic" href="">
+		<img src="images/assets/mistic3-24.png"><br />
+	  </a>
+	</div>
+
+	<div id="nav">
+	<a href="">about</a><br>
+	<a href="people">people</a><br>
+	<a href="">research</a><br>
+	<a href="papers">papers</a><br>
+	<a href="http://soundcloud.com/uvicmistic">music</a><br>
+	<a href="">code</a><br>
+	<a href="http://uvicmistic.blogspot.com">blog</a><br>
+	<a href="">events</a><br>
+	<a href="http://twitter.com/#!/uvicmistic">twitter</a><br>
+	<a href="http://www.youtube.com/user/uvicmistic">youtube</a><br>
+	<a href="http://www.facebook.com/home.php?sk=group_200045006688800">facebook</a><br>
+	<a href="">conferences</a><br>
+	<a href=""></a><br>
+	<a href=""></a><br>
+	<a href=""></a><br>
+	</div>
+	<br>
+	<br>
+	<br>
+	<br>
+
+</div>
+	<script language="JavaScript" type="text/javascript"> 
+	  $( function(){
+        var bgImages = [ 
+'AndyIRCAM1.jpg',
+'AndyIRCAM2.jpg',
+'AndyIRCAM22.jpg',
+'ag-batonxmitter.jpg',
+'ak-batonxmitrphoto.jpg',
+'background_mistic_concert.jpg',
+'background_notomoton1.jpg',
+'background_notomoton2.jpg',
+'background_radio.jpg',
+'background_trimpin.jpg',
+'da-baton-photo.jpg',
+'dd-baton-system.jpg',
+'df-baton-ciricuit.jpg',
+'dg-baton-single-ckt.jpg',
+'dh-baton-computer.jpg',
+'ga-conductor-program.jpg',
+'ja-bach-scorfe.jpg',
+'jd-chopin-score.jpg',
+'jg-beethoven-score.jpg',
+'speaker_small.gif'
+	  ];
+        var currImage = 'AndyIRCAM22.jpg';
+        setInterval( function() {
+          do {
+           var randImage = bgImages[Math.ceil(Math.random()*(bgImages.length-1))];
+          } while( randImage == currImage )
+          currImage = randImage;
+	      $('#backImage').css("background-image", 'url(images/backgrounds/' + currImage + ')');
+
+          }, 30000)
+          <!-- }, 30000) -->
+	  })
+	</script> 
+
+  </body>

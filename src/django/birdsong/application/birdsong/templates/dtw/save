@@ -1,0 +1,287 @@
+	<svg:svg version="1.1" baseProfile="full" width="837" height="200">
+	  {% for onset_pixel in onset_pixels %}
+	    <svg:rect x="{{ onset_pixel }}" y="0" width="1" height="200" fill="#aa3333" />
+	  {% endfor %}
+    </svg:svg>
+
+------------------------------ index.html ------------------------------
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+
+  <head>
+	<title>Orca Call Catalog</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="/assets/jquery.min.js" type="text/javascript"></script>
+	
+  </head>
+
+<body>
+  <div id="doc2">
+	<center>
+	  <h1>Onset detection</h1>
+	</center>
+	
+	<img src="/assets/jpg/A12_A12sp__1_.jpg" />
+
+	({{ output }})
+
+	{% for pitch in pitches %}
+	{{ pitch }}
+	{% endfor %}
+
+
+
+
+	<form action="/dtw/" method="post">
+	  <input type="hidden" name="testname" />
+	  <input type="submit" value="Calculate Pitch Contour" />
+	</form>
+
+	<svg:svg version="1.1" baseProfile="full" width="200px" height="200px">
+	  <svg:line x1="40" y1="20" x2="80" y2="20" style="stroke: black;"/>
+	</svg:svg>
+
+</div>
+</body>
+</html>
+
+
+
+------------------------------ index.html ------------------------------
+
+	({{ output }})
+
+	<br />
+	{% for pitch in pitches %}
+	{{ pitch }}
+	{% endfor %}
+
+	<br />
+	pitchcontour=({{ pitchcontour }})
+
+
+------------------------------ index.html ------------------------------
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<title>Django/Marsyas pitch detector</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="/assets/jquery.min.js" type="text/javascript"></script>
+	<script src="/assets/dtw.js" type="text/javascript"></script>
+	
+  </head>
+  
+  <body>
+	<div id="doc2">
+	  <center>
+		<h1>Onset detection</h1>
+	  </center>
+	  
+	  <div class="yui-gb">  
+		<div class="yui-u first">  
+		  <img src="/assets/jpg/A36_N4__2_.jpg" />
+		  
+	    </div>  
+		<div class="yui-u">  
+		  
+		  <h3>Median Filtering</h3>
+		  <form id="myform" name="myform" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+			<input type="radio" name="group1" value="1" checked="checked" />1<br />
+			<input type="radio" name="group1" value="3" />3<br />
+			<input type="radio" name="group1" value="5" />5<br />
+			<input type="radio" name="group1" value="7" />7<br />
+			<input type="radio" name="group1" value="9" />9<br />
+			<input type="radio" name="group1" value="11" />11<br />
+			<input type="radio" name="group1" value="13" />13<br />
+			<input type="radio" name="group1" value="15" />15<br />
+			<input type="button" value="Calculate Pitch Contour" onclick="doDTW()"/><br />
+		  </form>
+		  
+	    </div>  
+		<div class="yui-u">  
+			<div class="yui-g">
+			  <div class="yui-u first">
+				<h3>Buffer Size</h3>
+				<form id="buffersize_form" name="myform2" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+				  <input type="radio" name="group2" value="128"/>128<br />
+				  <input type="radio" name="group2" value="256" />256<br />
+				  <input type="radio" name="group2" value="512" />512<br />
+				  <input type="radio" name="group2" value="1024" checked="checked"  />1024<br />
+				  <input type="radio" name="group2" value="2048" />2048<br />
+				  <input type="radio" name="group2" value="4096" />4096<br />
+				  <input type="radio" name="group2" value="8192" />8192<br />
+				</form>
+			  </div>
+			  <div class="yui-u">
+				<h3>Hop Size</h3>
+				<form id="hopsize_form" name="myform2" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+				  <input type="radio" name="group3" value="128"/>128<br />
+				  <input type="radio" name="group3" value="256" />256<br />
+				  <input type="radio" name="group3" value="512" />512<br />
+				  <input type="radio" name="group3" value="1024" checked="checked"  />1024<br />
+				  <input type="radio" name="group3" value="2048" />2048<br />
+				  <input type="radio" name="group3" value="4096" />4096<br />
+				  <input type="radio" name="group3" value="8192" />8192<br />
+				</form>
+			  </div>
+			  <form id="marsyas_form" name="myform2" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+				<input type="button" value="Calculate Pitch Contour with embedded Marsyas" onclick="doDTWEmbed()"/>
+			  </form>
+			</div>
+		</div>
+		
+	  </div>  
+
+	  <div id="pitchcontour-embed">
+	  </div>
+	  
+	  <div id="pitchcontour">
+	  </div>
+
+	  
+	</div>
+  </body>
+</html>
+
+
+
+------------------------------ index.html ------------------------------
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:svg="http://www.w3.org/2000/svg"
+	  xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+  <head>
+	<title>Django/Marsyas pitch detector</title>
+	
+	<link href="/assets/reset-fonts-grids.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	<link href="/assets/calls.css" media="screen, projection" rel="stylesheet" type="text/css" />
+	
+	<script src="/assets/jquery.min.js" type="text/javascript"></script>
+	<script src="/assets/dtw.js" type="text/javascript"></script>
+	
+  </head>
+  
+  <body>
+	<div id="doc2">
+	  <center>
+		<h1>Onset detection</h1>
+	  </center>
+	  
+	  <div class="yui-gb">  
+		<div class="yui-u first">  
+		  <img src="/assets/jpg/A36_N4__2_.jpg" />
+	    </div>  
+		<div class="yui-u">  
+		  
+		  <h3>Median Filtering</h3>
+		  <form id="myform" name="myform" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+			<input type="radio" name="group1" value="1" checked="checked" />1<br />
+			<input type="radio" name="group1" value="3" />3<br />
+			<input type="radio" name="group1" value="5" />5<br />
+			<input type="radio" name="group1" value="7" />7<br />
+			<input type="radio" name="group1" value="9" />9<br />
+			<input type="radio" name="group1" value="11" />11<br />
+			<input type="radio" name="group1" value="13" />13<br />
+			<input type="radio" name="group1" value="15" />15<br />
+			<input type="button" value="Calculate Pitch Contour" onclick="doDTW()"/><br />
+		  </form>
+		  
+	    </div>  
+		<div class="yui-u">  
+		  <table>
+			<tr valign="top">
+			  <td>
+				<h3>Buffer Size</h3>
+				<form id="buffersize_form" name="myform2" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+				  <input type="radio" name="group2" value="128"/>128<br />
+				  <input type="radio" name="group2" value="256" />256<br />
+				  <input type="radio" name="group2" value="512" />512<br />
+				  <input type="radio" name="group2" value="1024" checked="checked"  />1024<br />
+				  <input type="radio" name="group2" value="2048" />2048<br />
+				  <input type="radio" name="group2" value="4096" />4096<br />
+				  <input type="radio" name="group2" value="8192" />8192<br />
+				</form>
+			  </td>
+			  <td>
+				<h3>Hop Size</h3>
+				<form id="hopsize_form" name="myform2" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+				  <input type="radio" name="group3" value="128"/>128<br />
+				  <input type="radio" name="group3" value="256" />256<br />
+				  <input type="radio" name="group3" value="512" />512<br />
+				  <input type="radio" name="group3" value="1024" checked="checked"  />1024<br />
+				  <input type="radio" name="group3" value="2048" />2048<br />
+				  <input type="radio" name="group3" value="4096" />4096<br />
+				  <input type="radio" name="group3" value="8192" />8192<br />
+				</form>
+			  </td>
+			  <td>
+				<h3>Tolerance</h3>
+				<form id="tolerance_form" name="myform3" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+				  <input type="radio" name="group4" value="0.0"/>0.0<br />
+				  <input type="radio" name="group4" value="0.1"/>0.1<br />
+				  <input type="radio" name="group4" value="0.2"/>0.2<br />
+				  <input type="radio" name="group4" value="0.3"/>0.3<br />
+				  <input type="radio" name="group4" value="0.4"/>0.4<br />
+				  <input type="radio" name="group4" value="0.5"/>0.5<br />
+				  <input type="radio" name="group4" value="0.6"/>0.6<br />
+				  <input type="radio" name="group4" value="0.7" checked="checked" />0.7<br />
+				  <input type="radio" name="group4" value="0.8"/>0.8<br />
+				  <input type="radio" name="group4" value="0.9"/>0.9<br />
+				  <input type="radio" name="group4" value="1.0"/>1.0<br />
+				</form>
+				</td>
+			  <td>
+				<h3>Tolerance</h3>
+				<form id="median_form" name="myform" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+				  <input type="radio" name="group5" value="1" checked="checked" />1<br />
+				  <input type="radio" name="group5" value="3" />3<br />
+				  <input type="radio" name="group5" value="5" />5<br />
+				  <input type="radio" name="group5" value="7" />7<br />
+				  <input type="radio" name="group5" value="9" />9<br />
+				  <input type="radio" name="group5" value="11" />11<br />
+				  <input type="radio" name="group5" value="13" />13<br />
+				  <input type="radio" name="group5" value="15" />15<br />
+				  <input type="button" value="Calculate Pitch Contour" onclick="doDTW()"/><br />
+				</form>
+			  </td>
+			</tr>
+		  </table>
+			  <form id="marsyas_form" name="myform2" action="http://www.mydomain.com/myformhandler.cgi" method="POST">
+				<input type="button" value="Calculate Pitch Contour" onclick="doDTWEmbed()"/>
+			  </form>
+		</div>
+		
+	  </div>  
+
+	  <div id="pitchcontour-embed">
+	  </div>
+	  
+	  <div id="pitchcontour">
+	  </div>
+
+	  
+	</div>
+  </body>
+</html>
+
+
+
+------------------------------ pitchcontour-embed.html ------------------------------
+
+
+				

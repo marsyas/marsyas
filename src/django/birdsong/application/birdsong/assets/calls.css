@@ -1,0 +1,65 @@
+/**************************************************/
+/* CSS lovingly created by hand in emacs by sness */
+/**************************************************/
+
+body {
+	background-color: #fff;
+}
+
+h1 {
+	font-size: 174%;
+}
+
+h2 {
+	font-size: 153.9% 
+}
+
+h3 {
+	font-size: 131% 
+}
+
+h4 {
+	font-size: 116% 
+}
+
+h5 {
+	font-size: 108% 
+}
+
+.playerholder {
+	width: 200px;
+ float: left;
+ padding: 10px;
+ margin: 3px;
+ background: #cceeff;
+ border: 1px solid #333333;
+}
+
+.player {
+	width: 200px;
+ height:200px
+background-repeat:no-repeat;
+}
+
+.player .play-progress {
+	width:0px;
+ background-color:#9999cc;
+ height:10px;
+	 margin-top: 37px;
+}
+
+.player .details {
+	margin-top: 100px;
+}
+
+.playbutton {
+	margin-top: 75px;
+	margin-bottom: 25px;
+ margin-left: 75px;
+	width: 50px;
+}
+
+.recording {
+	width: 874px;
+ height: 200px;
+}

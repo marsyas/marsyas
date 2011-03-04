@@ -1,0 +1,33 @@
+------------------------------ svg/views.py ------------------------------
+
+from django.shortcuts import render_to_response
+import subprocess
+import re
+import marsyas
+
+def index(request):
+    points = []
+    for x in range(0,100):
+        for y in range(0,100):
+            point = [x,y]
+            points.append(point)
+    return render_to_response('svg/index.html',
+                              {'points' : points},
+                              {}, mimetype="application/xhtml+xml")
+
+
+------------------------------ svg/views.py ------------------------------
+
+from django.shortcuts import render_to_response
+import subprocess
+import re
+import marsyas
+
+def index(request):
+    points = []
+    for x in range(0,1000):
+        for y in range(0,200):
+            point = [x,y]
+            points.append(point)
+    return render_to_response('svg/index.html', {'points' : points})
+                              

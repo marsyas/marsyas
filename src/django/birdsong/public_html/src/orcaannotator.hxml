@@ -1,0 +1,6 @@
+-main OrcaAnnotator
+-swf ../orcaannotator.swf
+-swf-version 9
+#-swf-header 800:743:30:FFFFFF
+-swf-header 800:243:30:FFFFFF
+
