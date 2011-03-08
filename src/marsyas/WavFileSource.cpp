@@ -417,7 +417,7 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 		{
 			getLinear16(out);
 			ctrl_pos_->setValue(pos_, NOUPDATE);
-			
+
 			if (pos_ >= rewindpos_ + csize_) 
 			{
 				if (repetitions_ != 1)
@@ -460,4 +460,9 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 		}
 	}
 	ctrl_currentHasData_->setValue(hasData_);
+
+			
+
+
+
 }

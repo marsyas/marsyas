@@ -402,64 +402,64 @@ SoundFileSource::getHeader()
 void
 SoundFileSource::myProcess(realvec& in, realvec &out)
 {
-	if (src_ != NULL)
-	{
-		src_->process(in,out);
-
-		if (ctrl_mute_->isTrue())
-			out.setval(0.0);
-
+  if (src_ != NULL)
+    {
+      src_->process(in,out);
+      // if (ctrl_mute_->isTrue())
+      // out.setval(0.0);
+      
 #ifdef MARSYAS_MATLAB
 #ifdef MTLB_DBG_LOG
-		MATLAB_PUT(out, "out");
-		MATLAB_EVAL("figure(41),subplot(212),plot(out'),axis('tight'),grid on, title('out')");
+      MATLAB_PUT(out, "out");
+      MATLAB_EVAL("figure(41),subplot(212),plot(out'),axis('tight'),grid on, title('out')");
 #endif
 #endif
-
-		/* setctrl("mrs_natural/pos", src_->pos_); //[!]
-		   setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
-		   setctrl("mrs_bool/hasData", src_->hasData_);//[!]
-		*/
-		// replaced by gtzan
-		ctrl_pos_->setValue(src_->getctrl("mrs_natural/pos")->to<mrs_natural>(), NOUPDATE);
-		ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
-		ctrl_hasData_->setValue(src_->hasData_, NOUPDATE);
-		ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
-		ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
-		ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
-		ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
-
-		if (updateCurrDuration)
-		{
-			setctrl("mrs_real/fullDuration", src_->durFull_);
-		}
-
-		if (src_->getType() == "CollectionFileSource") {
-			CollectionFileSource *coll = (CollectionFileSource*)src_;
-			ctrl_currentHasData_->setValue(coll->iHasData_,
-				NOUPDATE);
-			ctrl_currentCollectionNewFile_->setValue(coll->iNewFile_,
-				NOUPDATE);
-			if ( !(coll->iHasData_) ||
-			      (coll->iNewFile_)) {
-				ctrl_startStable_->setValue((mrs_bool)true,
-					NOUPDATE);
-			} else {
-				ctrl_startStable_->setValue((mrs_bool)false,
-					NOUPDATE);
-			}
-		} else {
-			ctrl_currentHasData_->setValue(src_->hasData_);
-		}
-
-	}
-
-	if (advance_) //[!] shouldn't this be done in ::myUpdate()?!?
+      
+      /* setctrl("mrs_natural/pos", src_->pos_); //[!]
+	 setctrl("mrs_natural/loopPos", src_->rewindpos_);//[!]
+	 setctrl("mrs_bool/hasData", src_->hasData_);//[!]
+      */
+      // replaced by gtzan
+      ctrl_pos_->setValue(src_->getctrl("mrs_natural/pos")->to<mrs_natural>(), NOUPDATE);
+      ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
+      ctrl_hasData_->setValue(src_->hasData_, NOUPDATE);
+      ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
+      ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
+      ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
+      ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
+      
+      if (updateCurrDuration)
 	{
-		ctrl_advance_->setValue(0);
+	  setctrl("mrs_real/fullDuration", src_->durFull_);
 	}
+      
 
-	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
-	//MATLAB_PUT(out, "SoundFileSource_out");
-	//MATLAB_EVAL("srcAudio = [srcAudio, SoundFileSource_out];");
+      if (src_->getType() == "CollectionFileSource") {
+	CollectionFileSource *coll = (CollectionFileSource*)src_;
+	ctrl_currentHasData_->setValue(coll->iHasData_,
+				       NOUPDATE);
+	ctrl_currentCollectionNewFile_->setValue(coll->iNewFile_,
+						 NOUPDATE);
+	if ( !(coll->iHasData_) ||
+	     (coll->iNewFile_)) {
+	  ctrl_startStable_->setValue((mrs_bool)true,
+				      NOUPDATE);
+	} else {
+	  ctrl_startStable_->setValue((mrs_bool)false,
+				      NOUPDATE);
+	}
+      } else {
+	ctrl_currentHasData_->setValue(src_->hasData_);
+      }
+      
+    }
+  
+  
+  
+  
+  //used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
+  //MATLAB_PUT(out, "SoundFileSource_out");
+  //MATLAB_EVAL("srcAudio = [srcAudio, SoundFileSource_out];");
+  
+
 }

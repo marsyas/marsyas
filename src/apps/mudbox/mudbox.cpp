@@ -386,7 +386,7 @@ toy_with_CollectionFileSource(string sfName)
 							 "SoundFileSource/src/mrs_bool/hasData");
 	playbacknet->linkControl("mrs_natural/pos", "SoundFileSource/src/mrs_natural/pos");
 
-	mrs_bool isEmpty;
+	// mrs_bool isEmpty;
 	// int cindex = 0;
 	int index = 0;
 	
@@ -2084,7 +2084,6 @@ toy_with_reverb(string sfName)
 	playbacknet->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 	playbacknet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	cout << "Starting processing " << endl;
 	cout << "sfName " << sfName << endl;
 	mrs_bool isEmpty;
 
@@ -5776,33 +5775,45 @@ toy_with_centroid(string sfName1)
 	MarSystemManager mng;
 	
 	MarSystem* net = mng.create("Series/net");
-	net->addMarSystem(mng.create("SoundFileSource/src"));
-	net->addMarSystem(mng.create("Windowing/ham"));
-	net->addMarSystem(mng.create("Spectrum/spk"));
-	net->addMarSystem(mng.create("PowerSpectrum/pspk"));
-	net->addMarSystem(mng.create("Centroid/cntrd"));
-	net->addMarSystem(mng.create("Memory/mem"));
-	net->addMarSystem(mng.create("Mean/mean"));
-	net->linkControl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+	MarSystem* accum = mng.create("Accumulator/accum");
 	
-	net->updControl("mrs_string/filename", sfName1);
+	MarSystem* cnet = mng.create("Series/cnet");
+	cnet->addMarSystem(mng.create("SoundFileSource/src"));
+	cnet->addMarSystem(mng.create("Gain/gain"));
+	cnet->addMarSystem(mng.create("Windowing/ham"));
+	cnet->addMarSystem(mng.create("Spectrum/spk"));
+	cnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
+	cnet->addMarSystem(mng.create("Centroid/cntrd"));
+	cnet->linkControl("mrs_string/filename", "SoundFileSource/src/mrs_string/filename");
+
+	accum->addMarSystem(cnet);
+	net->addMarSystem(accum);
+	
+	accum->updControl("mrs_string/mode", "explicitFlush");
+	cnet->updControl("mrs_string/filename", sfName1);
 
 	mrs_real val = 0.0;
 
 	ofstream ofs;
 	ofs.open("centroid.mpl");
-	ofs << *net << endl;
+	ofs << *cnet << endl;
 	ofs.close();
 	
-
-	while (net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	net->updControl("Accumulator/accum/mrs_natural/maxTimes", 2000);
+	net->updControl("Accumulator/accum/mrs_natural/timesToKeep", 1);
+	net->linkControl("Accumulator/accum/mrs_bool/flush", 
+			   "Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+	
+	while (net->getctrl("Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
 	{
-		net->tick();
-		const mrs_realvec& src_data = 
-			net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();			
-		val = src_data(0,0);
-		cout << val << endl;
+	  cout << net->getControl("Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
+	  net->tick();
+	  const mrs_realvec& src_data = 
+	    net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();		
+	  // net->updControl("Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_natural/advance", 1);
+	  cout << src_data << endl;
 	}
+	
 }
 
 

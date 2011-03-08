@@ -70,4 +70,5 @@ Centroid::myProcess(realvec& in, realvec& out)
 			else
 					out(0,t) = 0.5;
 	}
+
 }

@@ -194,24 +194,24 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 	if (advance_)
 	{
 		
-		setctrl("mrs_string/currentlyPlaying", col_.entry((cindex_+advance_) % col_.size()));
-
-	if (col_.hasLabels())
-	{
-		setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())));
-		ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);
+	  setctrl("mrs_string/currentlyPlaying", col_.entry((cindex_+advance_) % col_.size()));
+	  
+	  if (col_.hasLabels())
+	    {
+	      setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())));
+	      ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);
+	    }
+	  
+	  if (cindex_ + advance_ >= (mrs_natural)col_.size())
+	    {
+	      setctrl("mrs_bool/hasData", false);
+	      hasData_ = false;      
+	      advance_ = 0;
+	      cindex_ = 0;
+	    }
 	}
 	
-		if (cindex_ + advance_ >= (mrs_natural)col_.size())
-		{
-			setctrl("mrs_bool/hasData", false);
-			hasData_ = false;      
-			advance_ = 0;
-			cindex_ = 0;
-		}
-	}
 	
-
 
 }
 
@@ -220,8 +220,7 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
 	if (advance_) 
 	{
-		cindex_ = (cindex_ + advance_) % col_.size();
-		
+		cindex_ = (cindex_ + advance_) % col_.size();		
 		setctrl("mrs_natural/cindex", cindex_);
 		isrc_->updControl("mrs_string/filename", col_.entry(cindex_));   
 		isrc_->updControl("mrs_natural/pos", 0);
@@ -264,8 +263,6 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		
 		setctrl("mrs_natural/advance", 0);
 		advance_ = 0;
-		
-		return;
 	}
 	else
 	{
@@ -305,12 +302,13 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			{
 				setctrl("mrs_bool/hasData", false);
 				hasData_ = false;
+				iNewFile_ = true;
 			}
 		} else {
-			if (isrc_->getctrl("mrs_natural/pos")->to<mrs_natural>() > 0)
-				iNewFile_ = false;
+		  if (isrc_->getctrl("mrs_natural/pos")->to<mrs_natural>() > 0)
+		    iNewFile_ = false;
 		}
-
+		
 		isrc_->process(in,out);
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));

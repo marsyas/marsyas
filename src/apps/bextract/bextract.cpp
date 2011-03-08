@@ -2158,6 +2158,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		bextractNetwork->linkControl("mrs_string/currentlyPlaying",
 								  "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/currentlyPlaying"); // added Fanout ... 
 
+		bextractNetwork->linkControl("mrs_bool/currentCollectionNewFile", 
+					     "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+
+
 		if(tline)
 		{
 			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
@@ -2207,6 +2211,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		bextractNetwork->linkControl("mrs_string/currentlyPlaying",
 								  "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/currentlyPlaying"); 
 
+		bextractNetwork->linkControl("mrs_bool/currentCollectionNewFile", 
+					     "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+		
+
+
 		if(tline)
 		{
 			bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
@@ -2238,10 +2247,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	
 
-	// For now dummy test of Inject - eventually will be used for 
-	// features that require a second pass over the file such as 
-	// Beat Histogram features 
-
+	
 	mrs_natural beatFeaturesSize = 0;
 	MarSystem * beatTracker = NULL;
 	
@@ -2370,6 +2376,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// main processing loop for training
 	MarControlPtr ctrl_hasData = bextractNetwork->getctrl("mrs_bool/hasData");
 	MarControlPtr ctrl_currentlyPlaying = bextractNetwork->getctrl("mrs_string/currentlyPlaying");
+	MarControlPtr ctrl_currentCollectionNewFile = bextractNetwork->getctrl("mrs_bool/currentCollectionNewFile");
 	mrs_string previouslyPlaying, currentlyPlaying;
 
 
@@ -2448,18 +2455,20 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		}
 		else
 		{
-			bextractNetwork->tick();
-			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
-			if (currentlyPlaying != previouslyPlaying)
-			{
-				if (memSize != 0)
-					featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",  true);			  
-				cout << "Processed: " << n << " - " << currentlyPlaying << endl;
-				n++;
 
-			}
+		  if (ctrl_currentCollectionNewFile->to<mrs_bool>()) 
+		    {
+		      if (memSize != 0)
+			featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",  true);			  
+		      if (n>0)
+			cout << "Processed: " << n-1 << " - " << currentlyPlaying << endl;
+		      n++;
+		    }
 
-			previouslyPlaying = currentlyPlaying;
+
+		  bextractNetwork->tick();
+
+		  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 		}
 
 

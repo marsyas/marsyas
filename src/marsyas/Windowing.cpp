@@ -189,7 +189,7 @@ Windowing::myUpdate(MarControlPtr sender)
 void
 Windowing::myProcess(realvec& in, realvec& out)
 {
-	out.setval(0);
+	out.setval(0.0);
 	mrs_natural o,t;
 
 	for (o=0; o < inObservations_; o++)
