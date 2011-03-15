@@ -80,7 +80,7 @@ ShiftInput::myUpdate(MarControlPtr sender)
 		if (hopSize_ == 0) {
 			addToStabilizingDelay_ = 0;
 		} else {
-			addToStabilizingDelay_ = ceil(winSize_ / hopSize_) - 1;
+			addToStabilizingDelay_ = ceil(((mrs_real) winSize_ / hopSize_)) - 1;
 		}
 	} else {
 		addToStabilizingDelay_ = 0;
