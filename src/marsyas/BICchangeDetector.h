@@ -33,6 +33,7 @@ namespace Marsyas
     (or BattacharyyaShape), and validation using BIC and quasi-GMM modeling
 
     Implementation by Luis Gustavo Martins - lmartins@inescporto.pt
+         and          David G. Cooper      - dcooper@cs.umass.edu
 */
 
 
@@ -45,6 +46,10 @@ namespace Marsyas
 		mrs_natural minSegFrames_; //minimum nr of frames to avoid ill-cov matrices
 		mrs_natural segHop_;
 		mrs_natural nfeats_;
+		mrs_natural BICTick_; // number of ticks so far
+		mrs_real hopSeconds_; // number of millis per hop
+		
+
 		realvec C1_;
 		realvec C2_;
 		realvec C3_;
@@ -57,7 +62,10 @@ namespace Marsyas
 		mrs_natural nrPrevDists_;
 		Memory* prevDists_;
 		realvec pdists_;
+		// the index of the latest distance in Memory prevDists_
+		mrs_natural pIndex_; 
 		mrs_real dynThres_;
+		// dynamic threshold parameter
 		mrs_real alpha1_;
 
 		//BIC parameter
@@ -67,8 +75,10 @@ namespace Marsyas
 		QGMMModel QGMMmodel_;
 		
 		MarControlPtr ctrl_reset_;
+		MarControlPtr ctrl_prevDists_;
 		MarControlPtr ctrl_alpha1_;
 		MarControlPtr ctrl_lambda_;
+		MarControlPtr ctrl_hopMS_; // number of millis per hop
 
 		void addControls();
 		void myUpdate(MarControlPtr sender);

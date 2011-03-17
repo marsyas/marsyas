@@ -253,10 +253,19 @@ WavFileSource::getHeader(mrs_string filename)
 			hasData_ = true;
 			pos_ = 0;
 			samplesOut_ = 0;
+			MRSDIAG("WavFileSource: " 
+				<< filename 
+				<< " has the following properties: ");
+			mrs_real temprate = getControl("mrs_real/israte")->to<mrs_real>();
+			mrs_natural numInSamples = getControl("mrs_natural/inSamples")->to<mrs_natural>();
+			MRSDIAG("israte == " << temprate);
+			MRSDIAG("inSamples == " << numInSamples);
+
 		}
 	}
 	else
 	{
+	  MRSWARN("couldn't open file: " << filename);
 		// setctrl("mrs_natural/nChannels", 1);
 		setctrl("mrs_real/israte", 22050.0);
 		setctrl("mrs_natural/onObservations", 1);
@@ -302,6 +311,13 @@ WavFileSource::myUpdate(MarControlPtr sender)
     }
 
 	samplesToRead_ = inSamples_ * nChannels_;
+	MRSDIAG("WavFileSource::myUpdate " 
+		<< " has the following properties: ");
+	mrs_real temprate = getControl("mrs_real/israte")->to<mrs_real>();
+	mrs_natural numInSamples = getControl("mrs_natural/inSamples")->to<mrs_natural>();
+	MRSDIAG("israte == " << temprate);
+	MRSDIAG("inSamples == " << numInSamples);
+	
 }
 
 mrs_natural 
@@ -461,7 +477,7 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 	}
 	ctrl_currentHasData_->setValue(hasData_);
 
-			
+		
 
 
 

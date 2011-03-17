@@ -84,15 +84,22 @@ void speakerSeg(vector<string> soundfiles)
 // 	{
 // 		dest = mng.create("SoundFileSink", "dest");
 // 	}
+	MarSystem* lspSeries = mng.create("Series","lspSeries");
+	MarSystem* mfccSeries = mng.create("Series","mfccSeries");
+	MarSystem* lspFeatSeries = mng.create("Series","lspFeatSeries");
+	MarSystem* mfccFeatSeries = mng.create("Series","mfccFeatSeries");
+	MarSystem* pitchSeries = mng.create("Series","pitchSeries");
+	MarSystem* features = mng.create("Fanout","features");
+	MarSystem* parallel = mng.create("Parallel","parallel");
 
-	//create feature extraction network for calculating LSP-10
-	MarSystem* featExtractor = mng.create("Series", "featExtractor");
-	featExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
-	featExtractor->addMarSystem(mng.create("LPCnet", "lpc"));
-	featExtractor->addMarSystem(mng.create("LSP", "lsp"));
-	// do this in the loop belo
-	//featExtractor->updControl("mrs_natural/inSamples", 125); //hardcoded for fs=8khz [!]
-	featExtractor->updControl("LPCnet/lpc/mrs_natural/order", 10);	//hardcoded [!]
+
+	mfccFeatSeries->addMarSystem(mng.create("Windowing", "hammfccFeatSeries"));
+	mfccFeatSeries->addMarSystem(mng.create("Spectrum", "spkmfccFeatSeries"));
+	mfccFeatSeries->addMarSystem(mng.create("PowerSpectrum", "mfccFeatSeriespspk"));
+	mfccFeatSeries->addMarSystem(mng.create("MFCC", "mfcca"));
+	mfccFeatSeries->updControl("MFCC/mfcca/mrs_natural/coefficients",
+				   16);
+	//				   MarControlPtr((mrs_natural)16));
 
 	// based on the nr of features (in this case, the LSP order = 10),
 	// calculate the minimum number of frames each speech segment should have
@@ -100,8 +107,22 @@ void speakerSeg(vector<string> soundfiles)
 	// To have a good estimation of the covariance matrices
 	// the number of data points (i.e. feature vectors) should be at least
 	// equal or bigger than d(d+1)/2, where d = cov matrix dimension.
-	mrs_real d = (mrs_real)featExtractor->getctrl("LPCnet/lpc/mrs_natural/order")->to<mrs_natural>();
-	mrs_natural minSegFrames = (mrs_natural)ceil(0.5*d*(d+1.0)); //0.5*d*(d+1.0) or 0.5*d*(d-1.0) [?]
+	mrs_real d = (mrs_real)mfccFeatSeries->getctrl("MFCC/mfcca/mrs_natural/coefficients")->to<mrs_natural>();
+	mrs_natural minSegFrames = (mrs_natural)ceil(0.5*d*(d+1.0)); //0.5*d*(d+1.0) or 0.5*d*(d-1.0) [?] // make sure it's even
+
+	//	cout << "d = " << d << endl;
+	//exit(0);
+
+
+	lspFeatSeries->addMarSystem(mng.create("LPCnet", "lpc"));
+	lspFeatSeries->addMarSystem(mng.create("LSP", "lsp"));
+	lspFeatSeries->updControl("LPCnet/lpc/mrs_natural/order", 10);	//hardcoded [!]
+
+
+ 	features->addMarSystem(mfccFeatSeries);
+ 	features->addMarSystem(lspFeatSeries);
+
+
 
 	//speakerSeg processes data at each tick as depicted bellow, 
 	//which includes 4 speech sub-segments (C1, C2, C3, C4) that will be used for detecting 
@@ -122,27 +143,69 @@ void speakerSeg(vector<string> soundfiles)
 
 	//create an accumulator for creating hopsize new feature vectors at each tick
 	MarSystem* accum = mng.create("Accumulator", "accum");
-	accum->addMarSystem(featExtractor);
-	accum->updControl("mrs_natural/nTimes", minSegFrames/2);
+	//	accum->addMarSystem(features);
+
+
+// 	MarSystem* accum2 = mng.create("Accumulator", "accum2");
+// 	accum2->addMarSystem(mfccFeatSeries);
+// 	accum2->updControl("mrs_natural/nTimes", minSegFrames/2);
 	//accum->updControl("mrs_natural/nTimes", ceil(minSegFrames/2.0));
 
 	//add accumuated feature extraction to main processing network
-	pnet->addMarSystem(accum);
+	//	lspSeries->addMarSystem(accum);
+	//mfccSeries->addMarSystem(accum2);
 
 	//create a circular buffer for storing most recent LSP10 speech data
-	pnet->addMarSystem(mng.create("Memory", "mem"));
-	pnet->updControl("Memory/mem/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
+	lspSeries->addMarSystem(mng.create("Memory", "mem"));
+	mfccSeries->addMarSystem(mng.create("Memory", "mem2"));
+	mfccSeries->updControl("mrs_natural/inObservations",16);
+	lspSeries->updControl("mrs_natural/inObservations",10);
+	lspSeries->updControl("Memory/mem/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
+	mfccSeries->updControl("Memory/mem2/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
 
 	//add a BIC change detector
-	pnet->addMarSystem(mng.create("BICchangeDetector", "BICdet"));
+	lspSeries->addMarSystem(mng.create("BICchangeDetector", "BICdet"));
+	mfccSeries->addMarSystem(mng.create("BICchangeDetector", "BICdet2"));
+	
+
 	
 	
 	// link top-level controls 
+
+
+
+	parallel->addMarSystem(lspSeries);
+	parallel->addMarSystem(mfccSeries);
+
+	//create feature extraction network for calculating LSP-10
+	MarSystem* featExtractor = mng.create("Series", "featExtractor");
+
+
+	featExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
+	featExtractor->addMarSystem(features);
+	accum->addMarSystem(featExtractor);
+	accum->updControl("mrs_natural/nTimes", minSegFrames/2);
+	pnet->addMarSystem(accum);
+	pnet->addMarSystem(parallel);
 	pnet->linkControl("mrs_string/filename","Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_string/filename");
-	pnet->linkControl("mrs_natural/inSamples","Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_natural/inSamples");
+	pnet->linkControl("Accumulator/accum/mrs_natural/inSamples","mrs_natural/inSamples");
+
+	pnet->linkControl("Accumulator/accum/Series/featExtractor/mrs_natural/inSamples","mrs_natural/inSamples");
+	pnet->linkControl("Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_natural/inSamples","mrs_natural/inSamples");
+	pnet->linkControl("Accumulator/accum/Series/featExtractor/Fanout/features/Series/lspFeatSeries/LPCnet/lpc/mrs_natural/inSamples","mrs_natural/inSamples");
 	pnet->linkControl("mrs_real/israte", "Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_real/israte");
 	pnet->linkControl("mrs_natural/pos", "Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_natural/pos");
-	pnet->linkControl("mrs_bool/hasData", "Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_bool/hasData");
+	//	pnet->linkControl("mrs_bool/hasData", "Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_bool/hasData");
+	pnet->linkControl("Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_bool/hasData","mrs_bool/hasData");
+	pnet->linkControl("mrs_bool/MFCCMemreset", "Parallel/parallel/Series/mfccSeries/Memory/mem2/mrs_bool/reset");
+	pnet->linkControl("mrs_bool/LSPMemreset", "Parallel/parallel/Series/lspSeries/Memory/mem/mrs_bool/reset");
+	pnet->linkControl("mrs_bool/MFCCBICreset", "Parallel/parallel/Series/mfccSeries/BICchangeDetector/BICdet2/mrs_bool/reset");
+	pnet->linkControl("mrs_bool/LSPBICreset", "Parallel/parallel/Series/lspSeries/BICchangeDetector/BICdet/mrs_bool/reset");
+
+
+	//featExtractor->updControl("mrs_natural/inSamples", 125); //hardcoded for fs=8khz [!]
+
+
 
 	// play each collection or soundfile 
 	vector<string>::iterator sfi;  
@@ -150,12 +213,14 @@ void speakerSeg(vector<string> soundfiles)
 	{
 		string fname = *sfi;
 		//clear any memory data and any stored models
-		pnet->updControl("Memory/mem/mrs_bool/reset", true);
-		pnet->updControl("BICchangeDetector/BICdet/mrs_bool/reset", true);
+		pnet->updControl("mrs_bool/LSPMemreset", true);
+		pnet->updControl("mrs_bool/LSPBICreset", true);
+		pnet->updControl("mrs_bool/MFCCMemreset", true);
+		pnet->updControl("mrs_bool/MFCCBICreset", true);
 		//set new file name
 		pnet->updControl("mrs_string/filename", fname);
 		// need to override the control to be 25 ms every time the file is read in.
-		pnet->updControl("mrs_natural/inSamples",200); // hardcoded for 8kHz
+		pnet->updControl("mrs_natural/inSamples",200);
 // 		if (fileName != EMPTYSTRING) // soundfile output instead of audio output
 // 			pnet->updControl("SoundFileSink/dest/mrs_string/filename", fileName);
 // 
@@ -164,15 +229,6 @@ void speakerSeg(vector<string> soundfiles)
 // 			pnet->updControl("AudioSink/dest/mrs_natural/bufferSize", 256); 
 // 			pnet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 // 		}
-
-		MarControlPtr hasDataPtr_ = 
-			pnet->getctrl("mrs_bool/hasData");
-
-		while (hasDataPtr_->isTrue())	
-		{
-			pnet->tick();
-		}
-	}
 
 	// output network description to cout  
 	if ((pluginName == EMPTYSTRING) && (verboseopt)) // output to stdout 
@@ -184,6 +240,18 @@ void speakerSeg(vector<string> soundfiles)
 		ofstream oss(pluginName.c_str());
 		oss << (*pnet) << endl;
 	}
+
+
+
+		MarControlPtr hasDataPtr_ = 
+			pnet->getctrl("mrs_bool/hasData");
+
+		while (hasDataPtr_->isTrue())	
+		{
+			pnet->tick();
+		}
+	}
+
 	delete pnet;
 }
 
