@@ -71,6 +71,25 @@ Accumulator::addControls()
 	ctrl_minTimes_->setState(true);
 }
 
+
+bool
+Accumulator::addMarSystem(MarSystem *marsystem)
+{
+  if(marsystemsSize_ > 0) {
+    MarSystem* mySystem = marsystems_[0];
+    
+    MRSWARN("Accumulator::addMarSystem: already added '" 
+	    << mySystem->getAbsPath()
+	    << "' to the Accumulator NOT ADDING '" 
+	    << marsystem->getName()
+	    << "'.");
+    return false;
+  }
+  return MarSystem::addMarSystem(marsystem);
+
+
+}
+
 void
 Accumulator::myUpdate(MarControlPtr sender)
 {

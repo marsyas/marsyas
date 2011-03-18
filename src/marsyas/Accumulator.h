@@ -70,6 +70,8 @@ public:
 	MarSystem* clone() const;
 
 	void myProcess(realvec& in, realvec& out);
+	bool addMarSystem(MarSystem *marsystem);
+
 };
 
 }//namespace Marsyas
