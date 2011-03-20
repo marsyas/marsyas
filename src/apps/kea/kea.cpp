@@ -16,7 +16,6 @@ int usageopt_;
 string wekafname_;
 string twekafname_;
 
-string testcollectionfname_;
 string predictcollectionfname_;
 string predicttimeline_;
 
@@ -58,7 +57,6 @@ printHelp(string progName)
   cerr << "-id --inputdir: input directory" << endl;
   cerr << "-od --outputdir: output directory" << endl;
   cerr << "-dm --distancematrix: distance matrix in MIREX format" << endl;
-  cerr << "-tc --testcollectionfname : .mf test collection file " << endl;
   cerr << "-pr --predictcollectionfname : .mf output prediction file " << endl;
   cerr << "-prtl --predicttimeline: predicted timeline" << endl;
   cerr << "-msp  --minspan: minimum duration of predicted timeline region" << endl;
@@ -871,7 +869,7 @@ void tags() {
   //
 
   
-  net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + testcollectionfname_);
+  net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + twekafname_);
   net->updControl("Classifier/cl/mrs_string/mode", "predict");  
   
   // The output prediction file
@@ -901,7 +899,7 @@ void tags() {
   wsink->updControl("mrs_natural/nLabels", nLabels);
   wsink->updControl("mrs_string/labelNames", labelNames);  
   wsink->updControl("mrs_string/inObsNames", labelNames);
-  wsink->updControl("mrs_string/filename", outputdir_ + "stacked_" + testcollectionfname_);
+  wsink->updControl("mrs_string/filename", outputdir_ + "stacked_" + twekafname_);
 
 
 
@@ -1036,7 +1034,6 @@ initOptions()
   cmd_options_.addBoolOption("usage", "u", false);
   cmd_options_.addStringOption("wekafname", "w", EMPTYSTRING);
   cmd_options_.addStringOption("testwekafname", "tw", EMPTYSTRING);
-  cmd_options_.addStringOption("testcollectionfname", "tc", EMPTYSTRING);
   cmd_options_.addStringOption("predictcollectionfname", "pr", EMPTYSTRING);
   cmd_options_.addStringOption("mode", "m", "train_evaluate");
   cmd_options_.addStringOption("inputdir", "id", "");
@@ -1056,7 +1053,6 @@ loadOptions()
   usageopt_ = cmd_options_.getBoolOption("usage");
   wekafname_ = cmd_options_.getStringOption("wekafname");
   twekafname_ = cmd_options_.getStringOption("testwekafname");
-  testcollectionfname_ = cmd_options_.getStringOption("testcollectionfname");
   predictcollectionfname_ = cmd_options_.getStringOption("predictcollectionfname");
   mode_ = cmd_options_.getStringOption("mode");
   inputdir_ = cmd_options_.getStringOption("inputdir");
