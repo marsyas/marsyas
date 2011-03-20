@@ -64,10 +64,34 @@ printHelp(string progName)
   exit(1);
 }
 
+bool
+twekafname_Set()
+{
+  if (twekafname_ == EMPTYSTRING)
+  {
+    MRSERR("No test .arff file specified. Use the -tw option");
+    cout << "No test .arff file specified. Use the -tw option" << endl;
+    return false;
+  }
+  return true;
+}
+
+bool
+wekafname_Set()
+{
+  if (wekafname_ == EMPTYSTRING)
+  {
+    cout << "Weka .arff file not specified" << endl;
+    return false;
+  }
+  return true;
+}
 
 void 
 distance_matrix_MIREX() 
 {
+  if (!wekafname_Set()) return;
+
   cout << "Distance matrix calculation using " << wekafname_ << endl;
 
   wekafname_  = inputdir_ + wekafname_;
@@ -133,6 +157,8 @@ distance_matrix_MIREX()
 void 
 distance_matrix() 
 {
+  if (!wekafname_Set()) return;
+
   cout << "Distance matrix calculation using " << wekafname_ << endl;
 	
   wekafname_  = inputdir_ + wekafname_;
@@ -188,11 +214,8 @@ void
 pca() 
 {
   cout << "Principal Component Analysis of .arff file" << endl;
-  if (wekafname_ == EMPTYSTRING) 
-    {
-      cout << "Weka .arff file not specified" << endl;
-      return;
-    }
+
+  if (!wekafname_Set()) return;
 
   wekafname_  = inputdir_ + wekafname_;
 
@@ -278,12 +301,8 @@ void
 train_classifier() 
 {
 
-  if (wekafname_ == EMPTYSTRING) 
-  {
-		cout << "Weka .arff file not specified" << endl;
-      return;
-    }
-  
+  if (!wekafname_Set()) return;
+
   wekafname_  = inputdir_ + wekafname_;
 
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
@@ -375,15 +394,7 @@ predict(mrs_string mode)
 	MarSystem* net = mng.getMarSystem(pluginStream);
 	MRS_WARNINGS_ON;
 
-
-	if (twekafname_ == EMPTYSTRING) 
-	{
-		MRSERR("No test .arff file specified. Use the -tw option");
-		cout << "No test .arff file specified. Use the -tw option" << endl;
-		
-		return;
-	}
-	
+  if (!twekafname_Set()) return;
 
    vector<string> classNames;
    string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
@@ -504,12 +515,9 @@ predict(mrs_string mode)
 void 
 train_predict(mrs_string mode) 
 {
-  if (wekafname_ == EMPTYSTRING) 
-  {
-		cout << "Weka .arff file not specified" << endl;
-      return;
-    }
-  
+  if (!wekafname_Set()) return;
+  if (!twekafname_Set()) return;
+
   wekafname_  = inputdir_ + wekafname_;
 
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
@@ -707,11 +715,7 @@ train_predict(mrs_string mode)
 void 
 train_evaluate()
 {
-  if (wekafname_ == EMPTYSTRING) 
-    {
-      cout << "Weka .arff file not specified" << endl;
-      return;
-    }
+  if (!wekafname_Set()) return;
 
   wekafname_  = inputdir_ + wekafname_;
 
@@ -771,6 +775,9 @@ void tags() {
 	cout << "Starting tags" << endl;
 	
   MarSystemManager mng;
+
+  if (!wekafname_Set()) return;
+  if (!twekafname_Set()) return;
 
   ////////////////////////////////////////////////////////////
   //
