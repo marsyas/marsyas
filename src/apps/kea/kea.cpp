@@ -793,8 +793,8 @@ void tags() {
 	string testing_arff = inputdir_ + twekafname_;
 	string training_arff = inputdir_ + wekafname_;
 	string testing_predictions = outputdir_ + predictcollectionfname_;
-	string testing_predictions_arff = outputdir_ + "stacked_" + twekafname_;
-	string training_predictions_arff = outputdir_ + "stacked_" + wekafname_;
+	string testing_predictions_arff = outputdir_ + twekafname_ + ".affinities.arff";
+	string training_predictions_arff = outputdir_ + wekafname_ + ".affinities.arff";
 
 	// Initialize the network, classifier, and weka source through which
 	// we will read our .arff files
