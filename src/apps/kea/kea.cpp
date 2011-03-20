@@ -770,269 +770,225 @@ train_evaluate()
 //
 // 
 //
-void tags() {
-
-	cout << "Starting tags" << endl;
-	
-  MarSystemManager mng;
-
-  if (!wekafname_Set()) return;
-  if (!twekafname_Set()) return;
-
-  ////////////////////////////////////////////////////////////
-  //
-  // The network that we will use to train and predict
-  //
-  MarSystem* net = mng.create("Series", "series");
-
-  ////////////////////////////////////////////////////////////
-  //
-  // The WekaSource we read the train and test .arf files into
-  //
-  net->addMarSystem(mng.create("WekaSource", "wsrc"));
-
-  ////////////////////////////////////////////////////////////
-  //
-  // The classifier
-  //
-  MarSystem* classifier = mng.create("Classifier", "cl");
-  net->addMarSystem(classifier);
-  net->addMarSystem(mng.create("Gain/gain"));
-
-  ////////////////////////////////////////////////////////////
-  //
-  // Which classifier function to use
-  //
-  string classifier_ = "SVM";
-  if (classifier_ == "GS")
-	net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
-  if (classifier_ == "ZEROR") 
-	net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
-  if (classifier_ == "SVM")   
-    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
-
-  ////////////////////////////////////////////////////////////
-  //
-  // The training file we are feeding into the WekaSource
-  //
-
-  cout << "Filename = " << inputdir_ + wekafname_ << endl;
-  
-  net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_);
-  
-
-  net->updControl("mrs_natural/inSamples", 1);
-
-  ////////////////////////////////////////////////////////////
-  //
-  // Set the classes of the ClassificationReport and Classifier to be
-  // the same as the WekaSource
-  //
-  net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkControl("Classifier/cl/mrs_string/mode", "mrs_string/train");  
-
-
-  ////////////////////////////////////////////////////////////
-  //
-  // Tick over the training WekaSource until all lines in the
-  // training file have been read.
-  //
-  int counter = 0;
-
-  cout << "Reading features" << endl;
-  
-  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
-	string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
-  	net->tick();
-	net->updControl("Classifier/cl/mrs_string/mode", mode);
-	counter++;
-  }
-
-  cout << "Training" << endl;
-  
-  mrs_natural nLabels = net->getctrl("WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>();
-  mrs_string labelNames = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
-
-  vector<string> classNames;
-  string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
-
-
-  for (int i=0; i < nLabels; ++i) 
-    {
-      string className;
-      string temp;
-      className = s.substr(0, s.find(","));
-      temp = s.substr(s.find(",") + 1, s.length());
-      s = temp;
-      classNames.push_back(className);
-    }
-
-
-
-
-  ////////////////////////////////////////////////////////////
-  //
-  // Predict the classes of the test data
-  //
-
-  
-  net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + twekafname_);
-  net->updControl("Classifier/cl/mrs_string/mode", "predict");  
-  
-  // The output prediction file
-  ofstream prout;
-  prout.open(predictcollectionfname_.c_str());
-
-  ////////////////////////////////////////////////////////////
-  //
-  // Tick over the test WekaSource until all lines in the
-  // test file have been read.
-  //
-  realvec data;
-  mrs_string currentlyPlaying;
-  vector<string> previouslySeenFilenames;
-  bool seen;
-  realvec wsourcedata;
-
-
-  
-
-
-  
-  MarSystem* wsink = mng.create("WekaSink/wsink");
-  
-  wsink->updControl("mrs_natural/inSamples", 1);
-  wsink->updControl("mrs_natural/inObservations", nLabels+1);  
-  wsink->updControl("mrs_natural/nLabels", nLabels);
-  wsink->updControl("mrs_string/labelNames", labelNames);  
-  wsink->updControl("mrs_string/inObsNames", labelNames);
-  wsink->updControl("mrs_string/filename", outputdir_ + "stacked_" + twekafname_);
-
-
-
-
-  cout << "Starting prediction" << endl;
-
-  mrs_realvec wsinkout;
-  mrs_natural label;
-  mrs_realvec probs;
-  
-  wsinkout.create(nLabels+1,1);
-
-  cout << "Starting Prediction for Testing Collection" << endl;
-  
-  counter = 0;
-  
-  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) 
-    {
-		counter++;
-		
-      net->tick();
-      wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
-      data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-      
-      currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
-      
-      seen = false;
-      
-      for (size_t i=0; i<previouslySeenFilenames.size(); ++i) {
-	if (currentlyPlaying == previouslySeenFilenames[i]) {
-	  seen = true;
-	  break;
+bool
+alreadySeen(mrs_string currentlyPlaying, vector<string> previouslySeenFilenames)
+{
+	// Check if we have seen the currently 'playing' filename already;
+	// often we don't need to process the same file twice.
+	for (size_t i=0; i < previouslySeenFilenames.size(); ++i)
+	{
+		if (currentlyPlaying == previouslySeenFilenames[i])
+		{
+			return true;
+		}
 	}
-      }
-      
-      if (seen == false) {
-	probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
-	for (mrs_natural j=0; j < probs.getSize()-2; j++) 
-	  wsinkout(j,0) = probs(2+j);
-	
-	
-	for (mrs_natural i=0; i < probs.getSize()-2; ++i) {
-	  cout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
-	  prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
-
-	  
-	}
-
-	wsinkout(probs.getSize()-2,0) = probs(0);
-	wsink->updControl("mrs_string/currentlyPlaying", currentlyPlaying);
-	wsink->process(wsinkout,wsinkout);	  
-	
-	previouslySeenFilenames.push_back(currentlyPlaying);
-      } 
-      
-
-      
-      
-    }
-
-  ////////////////////////////////////////////////////////////
-  //
-  // Tick over the test WekaSource until all lines in the
-  // test file have been read.
-  //
-  realvec data2;
-  mrs_string currentlyPlaying2;
-  vector<string> previouslySeenFilenames2;
-  realvec wsourcedata2;
-
-
-  
-
-
-  MarSystem* wsink2 = mng.create("WekaSink/wsink2");
-  
-  wsink2->updControl("mrs_natural/inSamples", 1);
-  wsink2->updControl("mrs_natural/inObservations", nLabels+1);  
-  wsink2->updControl("mrs_natural/nLabels", nLabels);
-  wsink2->updControl("mrs_string/labelNames", labelNames);  
-  wsink2->updControl("mrs_string/inObsNames", labelNames);
-  wsink2->updControl("mrs_string/filename", outputdir_ + "stacked_" + wekafname_);
-  
-
-  cout << "Starting prediction for training collection (for stacked generalization)" << endl;
-
-  mrs_realvec wsinkout2;
-  mrs_realvec probs2;
-  wsinkout2.create(nLabels+1,1);
-
-  net->updControl("WekaSource/wsrc/mrs_string/filename", inputdir_ + wekafname_); 
-  
-  while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
-    net->tick();
-    currentlyPlaying2 = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
-    wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
-    label = wsourcedata(wsourcedata.getSize()-1,0);
-    seen = false;
-    
-    for (mrs_natural i=0; i<(mrs_natural)previouslySeenFilenames2.size(); ++i) {
-      if (currentlyPlaying2 == previouslySeenFilenames2[i]) {
-	seen = true;
-	break;
-      }
-    }
-    
-    probs2 = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();    
-    if (seen == false) {
-      for (mrs_natural j=0; j < probs2.getSize()-2; j++) 
-	wsinkout2(j,0) = probs2(2+j);
-      
-      for (mrs_natural i=0; i < probs2.getSize()-2; ++i) {
-	cout << currentlyPlaying2 << "\t" << classNames[i] << "\t" << probs2(2+i) << endl;
-      }
-      previouslySeenFilenames2.push_back(currentlyPlaying2);
-    } 
-    
-    wsinkout2(probs2.getSize()-2,0) = label;    
-    wsink2->updControl("mrs_string/currentlyPlaying", currentlyPlaying2);
-    wsink2->process(wsinkout2,wsinkout2);
-  }
-  
-  cout << "DONE" << endl;
-
+	return false;
 }
 
+void tags() {
+	if (!wekafname_Set()) return;
+	if (!twekafname_Set()) return;
+
+	// The file paths we will be reading/writing to.
+	string testing_arff = inputdir_ + twekafname_;
+	string training_arff = inputdir_ + wekafname_;
+	string testing_predictions = outputdir_ + predictcollectionfname_;
+	string testing_predictions_arff = outputdir_ + "stacked_" + twekafname_;
+	string training_predictions_arff = outputdir_ + "stacked_" + wekafname_;
+
+	// Initialize the network, classifier, and weka source through which
+	// we will read our .arff files
+	MarSystemManager mng;
+	MarSystem* net = mng.create("Series", "series");
+	net->addMarSystem(mng.create("WekaSource", "wsrc"));
+	MarSystem* classifier = mng.create("Classifier", "cl");
+	net->addMarSystem(classifier);
+	net->addMarSystem(mng.create("Gain/gain"));
+
+	// Instantiate the correct classifier:
+	cout << "Selected classifier type = " << classifier_ << endl;
+	if (classifier_ == "GS") {
+		net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
+	} else if (classifier_ == "ZEROR") {
+		net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");
+	} else if (classifier_ == "SVM") {
+		net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");
+	} else {
+		// TODO: ERROR CONDITION; ADD ERROR HANDLING HERE
+	}
+
+
+	/**
+	 * TRAINING
+	 *
+	 *     Read in the training arff data, and train the classifier.
+	 **/
+
+	// Set up the weka source to read the training .arff
+	// and hook together some controls.
+	cout << "Training Filename = " << training_arff << endl;
+	net->updControl("WekaSource/wsrc/mrs_string/filename", training_arff);
+	net->updControl("mrs_natural/inSamples", 1);
+	net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+	net->linkControl("Classifier/cl/mrs_string/mode", "mrs_string/train");
+
+	// Tick over the training WekaSource until all lines in the training file have been read.
+	// FIXME: Remove the mode updates, unless someone can justify their existence.
+	//        The mode is not switched to 'predict' until further down.
+	cout << "Reading features" << endl;
+	while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>())
+	{
+		string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
+		net->tick();
+		net->updControl("Classifier/cl/mrs_string/mode", mode);
+	}
+
+	// Switch the Classifier's mode to predict:
+	// This causes the classifier to train itself on all input data so far.
+	cout << "Training" << endl;
+	net->updControl("Classifier/cl/mrs_string/mode", "predict");
+
+	// Collect information about the labels (classes) in this dataset
+	mrs_natural nLabels = net->getctrl("WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>();
+	mrs_string labelNames = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
+	vector<string> classNames;
+	// TODO: you could probably replace "s = ..." with "s = labelNames"
+	string s = net->getctrl("WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
+	for (int i=0; i < nLabels; ++i)
+	{
+		string className;
+		string temp;
+		className = s.substr(0, s.find(","));
+		temp = s.substr(s.find(",") + 1, s.length());
+		s = temp;
+		classNames.push_back(className);
+	}
+
+	/**
+	 * PREDICT STEP 1
+	 *
+	 *     Predictions for the testing arff data.
+	 **/
+
+	// Initialize the weka sink that we will use to write an .arff file
+	// for the testing dataset, where the features are the predicted
+	// probabilities from our classifier
+	MarSystem* testpSink = mng.create("WekaSink/testpSink");
+	testpSink->updControl("mrs_natural/inSamples", 1);
+	testpSink->updControl("mrs_natural/inObservations", nLabels+1);
+	testpSink->updControl("mrs_natural/nLabels", nLabels);
+	testpSink->updControl("mrs_string/labelNames", labelNames);
+	testpSink->updControl("mrs_string/inObsNames", labelNames);
+	testpSink->updControl("mrs_string/filename", testing_predictions_arff);
+
+	// Set up the weka source to read the testing data
+	cout << "Testing Filename = " << testing_arff << endl;
+	net->updControl("WekaSource/wsrc/mrs_string/filename", testing_arff);
+	cout << "Starting Prediction for Testing Collection" << endl;
+	cout << "Writing .mf style predictions to " << testing_predictions << endl;
+	cout << "The following output file can serve as a stacked testing .arff" << endl;
+	cout << "Writing .arff style predictions to " << testing_predictions_arff << endl;
+
+	mrs_realvec probs;
+	mrs_realvec testpSinkOut;
+	mrs_string currentlyPlaying;
+	realvec data;
+	realvec wsourcedata;
+	vector<string> previouslySeenFilenames;
+
+	// Open the non-stacked predictions output file to write to.
+	ofstream prout;
+	prout.open(testing_predictions.c_str());
+
+	// Tick over the test WekaSource, saving our predictions for each line,
+	// until all lines in the test file have been read.
+	testpSinkOut.create(nLabels+1,1);
+	while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>())
+	{
+		net->tick();
+
+		wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
+		data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
+
+		if (!alreadySeen(currentlyPlaying, previouslySeenFilenames))
+		{
+			probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
+
+			for (mrs_natural i=0; i < probs.getSize()-2; i++)
+			{
+				testpSinkOut(i,0) = probs(2+i);
+				prout << currentlyPlaying << "\t" << classNames[i] << "\t" << probs(2+i) << endl;
+			}
+
+			testpSinkOut(probs.getSize()-2,0) = probs(0);
+			testpSink->updControl("mrs_string/currentlyPlaying", currentlyPlaying);
+			testpSink->process(testpSinkOut, testpSinkOut);
+
+			// Mark this filename as seen!
+			previouslySeenFilenames.push_back(currentlyPlaying);
+		}
+	}
+
+	// Close the non-stacked predictions; they are written!
+	prout.close();
+
+	/**
+	 * PREDICT STEP 2
+	 *
+	 *     Predictions for the training arff data
+	 **/
+
+	// Initialize the weka sink that we will use to write an .arff file
+	// for the training dataset, where the features are the predicted
+	// probabilities from our classifier
+	MarSystem* trainpSink = mng.create("WekaSink/trainpSink");
+	trainpSink->updControl("mrs_natural/inSamples", 1);
+	trainpSink->updControl("mrs_natural/inObservations", nLabels+1);
+	trainpSink->updControl("mrs_natural/nLabels", nLabels);
+	trainpSink->updControl("mrs_string/labelNames", labelNames);
+	trainpSink->updControl("mrs_string/inObsNames", labelNames);
+	trainpSink->updControl("mrs_string/filename", training_predictions_arff);
+
+	cout << "Starting prediction for training collection (for stacked generalization)" << endl;
+	cout << "The following output file can serve as a stacked training .arff" << endl;
+	cout << "Writing .arff style predictions to " << training_predictions_arff << endl;
+
+	// Empty our list of previously seen filenames; we will reuse it.
+	previouslySeenFilenames.clear();
+	mrs_realvec trainpSinkOut;
+	trainpSinkOut.create(nLabels+1,1);
+	mrs_natural label;
+
+	net->updControl("WekaSource/wsrc/mrs_string/filename", training_arff);
+	// Tick over the test WekaSource, saving our predictions for each line in
+	// the training file until all lines in the training file have been read.
+	while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>())
+	{
+		net->tick();
+		currentlyPlaying = net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>();
+		wsourcedata = net->getctrl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>();
+		label = wsourcedata(wsourcedata.getSize()-1,0);
+		probs = net->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
+
+		if (!alreadySeen(currentlyPlaying, previouslySeenFilenames))
+		{
+			// Store the predicted probabilities for this file and mark the file as seen!
+			for (mrs_natural i=0; i < probs.getSize()-2; i++)
+			{
+				trainpSinkOut(i,0) = probs(2+i);
+			}
+			previouslySeenFilenames.push_back(currentlyPlaying);
+		}
+
+		// Write out a line in the arff file.
+		trainpSinkOut(probs.getSize()-2,0) = label;
+		trainpSink->updControl("mrs_string/currentlyPlaying", currentlyPlaying);
+		trainpSink->process(trainpSinkOut, trainpSinkOut);
+	}
+
+	cout << "DONE" << endl;
+}
 
 void 
 initOptions()
