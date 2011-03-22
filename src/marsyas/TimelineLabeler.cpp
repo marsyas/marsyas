@@ -39,6 +39,7 @@ TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
 	ctrl_currentLabelFile_ = getctrl("mrs_natural/currentLabelFile");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+	ctrl_previousLabel_ = getctrl("mrs_natural/previousLabel");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_selectLabel_ = getctrl("mrs_string/selectLabel");
 	ctrl_advance_ = getctrl("mrs_natural/advance");
@@ -81,6 +82,7 @@ TimelineLabeler::addControls()
 
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 	addctrl("mrs_natural/currentLabel", -1, ctrl_currentLabel_);
+	addctrl("mrs_natural/previousLabel", -1, ctrl_previousLabel_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 }
 

@@ -59,6 +59,7 @@ namespace Marsyas
    - \b mrs_natural/cindex [rw] : number of the current sound file in the
    collection
    - \b mrs_string/currentlyPlaying [r] : filename of the current sound file.
+   - \b mrs_string/previouslyPlaying [r] : filename of the previous sound file. 
    - \b mrs_natural/currentLabel [r] : current label of file played
    - \b mrs_natural/nLabels [r] : number of labels
    - \b mrs_string/labelNames [r] : labels (for collections)
@@ -91,7 +92,9 @@ namespace Marsyas
 			MarControlPtr ctrl_advance_;
 			MarControlPtr ctrl_filename_;
 			MarControlPtr ctrl_currentlyPlaying_;
+			MarControlPtr ctrl_previouslyPlaying_;
 			MarControlPtr ctrl_currentLabel_;
+			MarControlPtr ctrl_previousLabel_;
 			MarControlPtr ctrl_nLabels_;
 			MarControlPtr ctrl_labelNames_;
 			MarControlPtr ctrl_currentHasData_;

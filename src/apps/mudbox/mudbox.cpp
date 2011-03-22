@@ -5802,15 +5802,16 @@ toy_with_centroid(string sfName1)
 	net->updControl("Accumulator/accum/mrs_natural/maxTimes", 2000);
 	net->updControl("Accumulator/accum/mrs_natural/timesToKeep", 1);
 	net->linkControl("Accumulator/accum/mrs_bool/flush", 
-			   "Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+			 "Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+	net->updControl("Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_real/duration", 0.5);
 	
-	while (net->getctrl("Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
+	while(net->getControl("Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>()) 
 	{
 	  cout << net->getControl("Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
+
 	  net->tick();
 	  const mrs_realvec& src_data = 
-	    net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();		
-	  // net->updControl("Accumulator/accum/Series/cnet/SoundFileSource/src/mrs_natural/advance", 1);
+	    net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();	
 	  cout << src_data << endl;
 	}
 	

@@ -46,7 +46,7 @@ mrs_natural memSize = 1;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
 mrs_real samplingRate_ = 22050.0;
-mrs_natural accSize_ = 1000;
+mrs_natural accSize_ = 5000;  // approximately 2.5 minutes at 22050 sr, 512 win
 mrs_real start = 0.0;
 mrs_real length = -1.0;
 mrs_real gain = 1.0;
@@ -2136,7 +2136,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	if (single_vector)
 	{
 		MarSystem* acc = mng.create("Accumulator", "acc");
-		acc->updControl("mrs_natural/nTimes", accSize_);
+		acc->updControl("mrs_natural/maxTimes", accSize_);
+		acc->updControl("mrs_string/mode", "explicitFlush");
+		acc->updControl("mrs_natural/timesToKeep", 1);
 		acc->addMarSystem(featureNetwork);
 		bextractNetwork->addMarSystem(acc);
 		MarSystem* song_statistics = mng.create("Fanout", "song_statistics");
@@ -2155,10 +2157,17 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		if (pluginName != EMPTYSTRING)
 			bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio",
 									  "mrs_bool/initAudio");
+		bextractNetwork->linkControl("mrs_string/previouslyPlaying",
+								  "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/previouslyPlaying"); // added Fanout ... 
+
+
 		bextractNetwork->linkControl("mrs_string/currentlyPlaying",
 								  "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/currentlyPlaying"); // added Fanout ... 
 
 		bextractNetwork->linkControl("mrs_bool/currentCollectionNewFile", 
+					     "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+
+		bextractNetwork->linkControl("Accumulator/acc/mrs_bool/flush", 
 					     "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 
@@ -2183,7 +2192,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		else
 		{
 			bextractNetwork->linkControl("mrs_natural/currentLabel",
-									  "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); 
+									  "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/previousLabel"); 
 			bextractNetwork->linkControl("mrs_natural/nLabels",
 									  "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels"); 
 			bextractNetwork->linkControl("mrs_string/labelNames",
@@ -2287,13 +2296,17 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	// links with WekaSink
 	if (wekafname != EMPTYSTRING)
-	{
-		bextractNetwork->linkControl("WekaSink/wsink/mrs_string/currentlyPlaying",
-								  "mrs_string/currentlyPlaying");
-
-		bextractNetwork->linkControl("WekaSink/wsink/mrs_string/labelNames",
-								  "mrs_string/labelNames");
-		bextractNetwork->linkControl("WekaSink/wsink/mrs_natural/nLabels", "mrs_natural/nLabels");
+	  {
+	    if (single_vector) 
+	      bextractNetwork->linkControl("WekaSink/wsink/mrs_string/currentlyPlaying",
+					 "mrs_string/previouslyPlaying");	      
+	    else 
+	      bextractNetwork->linkControl("WekaSink/wsink/mrs_string/currentlyPlaying",
+					 "mrs_string/currentlyPlaying");
+	    
+	    bextractNetwork->linkControl("WekaSink/wsink/mrs_string/labelNames",
+					 "mrs_string/labelNames");
+	    bextractNetwork->linkControl("WekaSink/wsink/mrs_natural/nLabels", "mrs_natural/nLabels");
 	}
 
 	// src has to be configured with hopSize frame length in case a ShiftInput
@@ -2376,12 +2389,14 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	// main processing loop for training
 	MarControlPtr ctrl_hasData = bextractNetwork->getctrl("mrs_bool/hasData");
 	MarControlPtr ctrl_currentlyPlaying = bextractNetwork->getctrl("mrs_string/currentlyPlaying");
+	MarControlPtr ctrl_previouslyPlaying = bextractNetwork->getctrl("mrs_string/previouslyPlaying");
 	MarControlPtr ctrl_currentCollectionNewFile = bextractNetwork->getctrl("mrs_bool/currentCollectionNewFile");
+
 	mrs_string previouslyPlaying, currentlyPlaying;
 
 
 	int n = 0;
-	int advance = 1;
+	int advance = 0;
 
 	vector<string> processedFiles;
 	map<string, realvec> processedFeatures;
@@ -2399,78 +2414,81 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 		if (single_vector)
 		{
-			currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
-			label = bextractNetwork->getctrl("mrs_natural/currentLabel")->to<mrs_natural>();
-			seen = false;
-
-
-			for (size_t j=0; j<processedFiles.size(); j++)
-			{
-				if (processedFiles[j] == currentlyPlaying)
-					seen = true;
-			}
-
-
-			if (seen)
-			{
-				advance++;
-				bextractNetwork->updControl("mrs_natural/advance", advance);
-			  
-				if (wekafname != EMPTYSTRING)
-					bextractNetwork->updControl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
-			  
-				fvec = processedFeatures[currentlyPlaying];
-				fvec(fvec.getSize()-1) = label;
-			  
-				if (wekafname != EMPTYSTRING)
-			    {
-					bextractNetwork->updControl("WekaSink/wsink/mrs_realvec/injectVector", fvec);
-			      
-					bextractNetwork->updControl("WekaSink/wsink/mrs_bool/inject", true);
-			    }
-			}
-			else
-			{
-				if (beat_) 
-				{
-					beatHistogramFeatures(beatTracker, currentlyPlaying, beatfeatures);
-					bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);
-				}
-				
-				bextractNetwork->tick();
-				if (memSize != 0) 
-					featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
-											   true);			  
-				fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
-			  
-				bextractNetwork->updControl("mrs_natural/advance", advance);
-				processedFiles.push_back(currentlyPlaying);
-				processedFeatures[currentlyPlaying] = fvec;
-				cout << "Processed: " << n << " - " << currentlyPlaying << endl;
-				advance = 1;
-				bextractNetwork->updControl("mrs_natural/advance", 1);
-			}
-			n++;
-
-		}
-		else
-		{
-
-		  if (ctrl_currentCollectionNewFile->to<mrs_bool>()) 
-		    {
-		      if (memSize != 0)
-			featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",  true);			  
-		      if (n>0)
-			cout << "Processed: " << n-1 << " - " << currentlyPlaying << endl;
-		      n++;
-		    }
-
-
-		  bextractNetwork->tick();
-
 		  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
-		}
+		  previouslyPlaying = ctrl_previouslyPlaying->to<mrs_string>();
+		  
+		  label = bextractNetwork->getctrl("mrs_natural/currentLabel")->to<mrs_natural>();
+		      
+		  seen = false;
+			
+		  for (size_t j=0; j<processedFiles.size(); j++)
+		    {
+			    if (processedFiles[j] == currentlyPlaying)
+				  seen = true;
+		    }
+			
+			
+		  if (seen)
+		    {
+		      advance ++;
+		      if (wekafname != EMPTYSTRING)
+			bextractNetwork->updControl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
+		      bextractNetwork->updControl("mrs_natural/advance", advance);
+		      label = bextractNetwork->getctrl("mrs_natural/currentLabel")->to<mrs_natural>();
+		      
+		      fvec = processedFeatures[currentlyPlaying];
+		      fvec(fvec.getSize()-1) = label;
+		      
+		      if (wekafname != EMPTYSTRING)
+			{
+			  bextractNetwork->updControl("WekaSink/wsink/mrs_realvec/injectVector", fvec);
+			  bextractNetwork->updControl("WekaSink/wsink/mrs_bool/inject", true);
+			}
 
+		      
+		    }
+		  else
+		    {
+		      
+		      bextractNetwork->updControl("mrs_natural/advance", advance);
+		      if (beat_) 
+			{
+			  beatHistogramFeatures(beatTracker, currentlyPlaying, beatfeatures);
+			  bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);
+			}
+
+		      currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+		      bextractNetwork->tick();
+
+		      
+		      if (memSize != 0) 
+			featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
+						   true);			  
+		      fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
+		      
+		      
+		      processedFiles.push_back(currentlyPlaying);
+		      processedFeatures[currentlyPlaying] = fvec;
+		      cout<< "Processed: " << n << " - " << currentlyPlaying << endl;
+		      advance = 0;
+		    }
+		  n++;
+		  
+		}
+		else // running feature extraction 
+		{
+		  bextractNetwork->tick();
+		  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+		  if (ctrl_currentCollectionNewFile->to<mrs_bool>()) 
+		     {
+		       if (memSize != 0)
+			 featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",  true);			  
+		       cout << "Processed: " << n << " - " << currentlyPlaying << endl;
+		       n++;
+		     }
+
+		}
+		
 
 
 	}
@@ -2964,7 +2982,7 @@ initOptions()
 	cmd_options.addStringOption("extractor", "e", "REFACTORED");
 	cmd_options.addNaturalOption("memory", "m", 40);
 	cmd_options.addNaturalOption("windowsize", "ws", 512);
-	cmd_options.addNaturalOption("accSize", "as", 1000);
+	cmd_options.addNaturalOption("accSize", "as", 5000);
 	cmd_options.addNaturalOption("hopsize", "hp", 512);
 	cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
 	cmd_options.addBoolOption("timeline", "t", false);
@@ -3595,7 +3613,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
 
 	int n = 0;
-	int advance = 1;
+	int advance = 0;
 
 	vector<string> processedFiles;
 	map<string, realvec> processedFeatures;

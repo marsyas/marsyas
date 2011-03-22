@@ -44,11 +44,13 @@ namespace Marsyas
 			// public for efficiency [!]
 			mrs_natural pos_;
 			mrs_natural rewindpos_;
-			bool hasData_;
+			mrs_bool hasData_;
 			mrs_real durFull_;
 
 			MarControlPtr ctrl_currentlyPlaying_;
+			MarControlPtr ctrl_previouslyPlaying_;
 			MarControlPtr ctrl_currentLabel_;
+			MarControlPtr ctrl_previousLabel_;
 			MarControlPtr ctrl_nLabels_;
 			MarControlPtr ctrl_labelNames_;
 			MarControlPtr ctrl_currentHasData_;

@@ -69,11 +69,14 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_loop_ = getctrl("mrs_natural/loopPos");
 	ctrl_hasData_ = getctrl("mrs_bool/hasData");
+
 	ctrl_mute_ = getctrl("mrs_bool/mute");
 	ctrl_advance_ = getctrl("mrs_natural/advance");
 	ctrl_filename_ = getctrl("mrs_string/filename");
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
+	ctrl_previouslyPlaying_ = getctrl("mrs_string/previouslyPlaying");
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+	ctrl_previousLabel_ = getctrl("mrs_natural/previousLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
@@ -126,7 +129,9 @@ SoundFileSource::addControls()
 	setctrlState("mrs_natural/cindex", true);
 
 	addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
+	addctrl("mrs_string/previouslyPlaying", "daufile", ctrl_previouslyPlaying_);
 	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+	addctrl("mrs_natural/previousLabel", 0, ctrl_previousLabel_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 	ctrl_mute_ = getctrl("mrs_bool/mute");
@@ -139,6 +144,8 @@ SoundFileSource::addControls()
 
 	addctrl("mrs_bool/currentHasData", true, ctrl_currentHasData_);
 	addctrl("mrs_bool/currentCollectionNewFile", true, ctrl_currentCollectionNewFile_);
+	
+	
 	addctrl("mrs_bool/startStable", true, ctrl_startStable_);
 	setctrlState("mrs_bool/startStable", true);
 }
@@ -156,7 +163,10 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			getHeader();
 			filename_ = ctrl_filename_->to<mrs_string>();
 			ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
+			ctrl_previouslyPlaying_->setValue(src_->getctrl("mrs_string/previouslyPlaying"));
 			ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
+			ctrl_previousLabel_->setValue(src_->getctrl("mrs_natural/previousLabel"));
+
 			ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
 			ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
 			ctrl_onObservations_->setValue(src_->ctrl_onObservations_, NOUPDATE);
@@ -171,11 +181,12 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			ctrl_israte_->setValue(src_->ctrl_israte_, NOUPDATE);
 			ctrl_osrate_->setValue(src_->ctrl_osrate_, NOUPDATE);
 
-			ctrl_hasData_->setValue(true, NOUPDATE); // [!] this has to be under the next if statement instead.
-			// src_->hasData_ is updated in the next section automatically.
 
 			if (src_->getctrl("mrs_natural/size")->to<mrs_natural>() != 0)
-				src_->hasData_ = true; //[!]
+			  {
+			    ctrl_hasData_->setValue(true, NOUPDATE); 
+			    src_->hasData_ = true; 
+			  }
 		}
 
 		else
@@ -210,7 +221,6 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			src_->setctrl("mrs_natural/pos", getctrl("mrs_natural/pos"));
 			src_->update(); 
 			setctrl("mrs_bool/hasData", src_->hasData_);
-			
 			return;
 		}
 	}
@@ -254,7 +264,9 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		setctrl("mrs_bool/shuffle", src_->getctrl("mrs_bool/shuffle"));
 		setctrl("mrs_natural/cindex", src_->getctrl("mrs_natural/cindex"));
 		setctrl("mrs_string/currentlyPlaying", src_->getctrl("mrs_string/currentlyPlaying"));
+		setctrl("mrs_string/previouslyPlaying", src_->getctrl("mrs_string/previouslyPlaying"));
 		setctrl("mrs_natural/currentLabel", src_->getctrl("mrs_natural/currentLabel"));
+		setctrl("mrs_natural/previousLabel", src_->getctrl("mrs_natural/previousLabel"));
 		setctrl("mrs_natural/nLabels", src_->getctrl("mrs_natural/nLabels"));
 		setctrl("mrs_string/labelNames", src_->getctrl("mrs_string/labelNames"));
 		setctrl("mrs_string/allfilenames", src_->getctrl("mrs_string/allfilenames"));
@@ -424,7 +436,10 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
       ctrl_loop_->setValue(src_->rewindpos_, NOUPDATE);
       ctrl_hasData_->setValue(src_->hasData_, NOUPDATE);
       ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
+      ctrl_previouslyPlaying_->setValue(src_->getctrl("mrs_string/previouslyPlaying"));
+
       ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
+      ctrl_previousLabel_->setValue(src_->getctrl("mrs_natural/previousLabel"));
       ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
       ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
       
@@ -438,6 +453,8 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
 	CollectionFileSource *coll = (CollectionFileSource*)src_;
 	ctrl_currentHasData_->setValue(coll->iHasData_,
 				       NOUPDATE);
+
+	
 	ctrl_currentCollectionNewFile_->setValue(coll->iNewFile_,
 						 NOUPDATE);
 	if ( !(coll->iHasData_) ||

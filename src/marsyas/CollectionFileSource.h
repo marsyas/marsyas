@@ -72,6 +72,7 @@ namespace Marsyas
 
 			// public for efficiency; just like AbsFileSource
 			mrs_bool iHasData_;
+			mrs_bool iWillNotHaveData_;
 			mrs_bool iNewFile_;
 	};
 

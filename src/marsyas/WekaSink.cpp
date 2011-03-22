@@ -222,6 +222,7 @@ WekaSink::myUpdate(MarControlPtr sender)
 		if (ctrl_inject_->isTrue())
 		{
 			(* mos_) << ctrl_injectComment_->to<mrs_string>() << endl;
+			(* mos_) << "% srate " << israte_ << endl;
 			ctrl_inject_->setValue(false, NOUPDATE);
 			MarControlAccessor acc_injectVector(ctrl_injectVector_);
 			realvec& injectVector = acc_injectVector.to<mrs_realvec>();
@@ -295,79 +296,79 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	for (t = 0; t < inSamples_; t++)
 	{
 		// Add a comment about the current input file.
-		if (ctrl_currentlyPlaying_->to<mrs_string>() != prev_playing_)
+	  if (ctrl_currentlyPlaying_->to<mrs_string>() != prev_playing_)
+	    {
+	      (*mos_) << "% filename " << ctrl_currentlyPlaying_->to<mrs_string>() << endl;
+	      (*mos_) << "% srate " << israte_ << endl;
+	      prev_playing_ = ctrl_currentlyPlaying_->to<mrs_string>();
+	    }
+	  
+	  label = (mrs_natural)in(inObservations_ - 1, t);
+	  
+	  // Output all but last feature values.
+	  // TODO: this should be refactored together with the injection stuff from
+	  // WekaSink::myUpdate().
+	  for (o=0; o < inObservations_; o++)
+	    {
+	      out(o,t) = in(o,t);
+	      if (label >= 0)
 		{
-			(*mos_) << "% filename " << ctrl_currentlyPlaying_->to<mrs_string>() << endl;
-			(*mos_) << "% srate " << israte_ << endl;
-			prev_playing_ = ctrl_currentlyPlaying_->to<mrs_string>();
-		}
-
-		label = (mrs_natural)in(inObservations_ - 1, t);
-
-		// Output all but last feature values.
-		// TODO: this should be refactored together with the injection stuff from
-		// WekaSink::myUpdate().
-		for (o=0; o < inObservations_; o++)
-		{
-			out(o,t) = in(o,t);
-			if (label >= 0)
+		  if (o < inObservations_ - 1)
+		    {
+		      if ((count % downsample_) == 0)
 			{
-				if (o < inObservations_ - 1)
-				{
-					if ((count % downsample_) == 0)
-					{
-						if ( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
-						{
-							// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
-							// DO NOT OUTPUT FEATURES
-							// (*mos_) << fixed << setprecision(precision_) << 0. << ",";
-							//notPrint = true;
-							(*mos_) << "?" << ",";
-						}
-						else
-						{
-							(*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
-							//notPrint = false;
-						}
-					}
-				}
+			  if ( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
+			    {
+			      // (*mos_) << fixed << setprecision(precision_) << 0. << ",";
+			      // DO NOT OUTPUT FEATURES
+			      // (*mos_) << fixed << setprecision(precision_) << 0. << ",";
+			      //notPrint = true;
+			      (*mos_) << "?" << ",";
+			    }
+			  else
+			    {
+			      (*mos_) << fixed << setprecision(precision_) << out(o,t) << ",";
+			      //notPrint = false;
+			    }
 			}
+		    }
 		}
-
-		// Output last value (e.g. as label).
-		ostringstream oss;
-		if ((count % downsample_) == 0)
+	    }
+	  
+	  // Output last value (e.g. as label).
+	  ostringstream oss;
+	  if ((count % downsample_) == 0)
+	    {
+	      if (label >= 0)
 		{
-			if (label >= 0)
+		  if (!ctrl_regression_->isTrue())
+		    {
+		      //  if (!notPrint)
+		      //{
+		      if (label >= (mrs_natural)labelNames_.size())
 			{
-				if (!ctrl_regression_->isTrue())
-				{
-					//  if (!notPrint)
-					//{
-					if (label >= (mrs_natural)labelNames_.size())
-					{
-						MRSWARN("WekaSink: label number is too big");
-						oss << "non-label";
-					}
-					else
-					{
-						oss << labelNames_[label];
-					}
-					(*mos_) << oss.str();
-					(*mos_) << endl;
-				}
-				//  else
-				//{
-				//  cout << "skipping instance" << endl;
-				//}
-				//}
-				else
-				{
-					(*mos_) << in(inObservations_ - 1, t);
-					(*mos_) << endl;
-				}
+			  MRSWARN("WekaSink: label number is too big");
+			  oss << "non-label";
 			}
+		      else
+			{
+			  oss << labelNames_[label];
+			}
+		      (*mos_) << oss.str();
+		      (*mos_) << endl;
+		    }
+		  //  else
+		  //{
+		  //  cout << "skipping instance" << endl;
+		  //}
+		  //}
+		  else
+		    {
+		      (*mos_) << in(inObservations_ - 1, t);
+		      (*mos_) << endl;
+		    }
 		}
+	    }
 	}
 	count++;
 }

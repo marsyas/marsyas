@@ -183,7 +183,6 @@ Accumulator::myProcess(realvec& in, realvec& out)
 			}
 			timesCount++;
 		}
-
 #ifdef MARSYAS_LOG_DIAGNOSTICS
 		if (!ctrl_flush_->to<mrs_bool>())
 		{

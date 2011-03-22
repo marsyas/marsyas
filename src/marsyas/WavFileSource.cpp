@@ -38,7 +38,9 @@ WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
 {
 	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
+	ctrl_previouslyPlaying_ = getctrl("mrs_string/previouslyPlaying");
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+	ctrl_previousLabel_ = getctrl("mrs_natural/previousLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
@@ -57,14 +59,14 @@ WavFileSource::~WavFileSource()
 MarSystem* 
 WavFileSource::clone() const
 {
-	return new WavFileSource(*this); //shouldn't this class have a copy constructor?!? [?][!]
+	return new WavFileSource(*this); 
 }
 
 void 
 WavFileSource::addControls()
 {
-	//addctrl("mrs_natural/nChannels",(mrs_natural)1);
 	addctrl("mrs_bool/hasData", true);  
+
   
 	addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
 	setctrlState("mrs_natural/pos", true);
@@ -99,11 +101,15 @@ WavFileSource::addControls()
   
 	addctrl("mrs_natural/numFiles", 1);
 	addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_); //"dwavfile" [?]
+	addctrl("mrs_string/previouslyPlaying", "daufile", ctrl_previouslyPlaying_); //"dwavfile" [?]
+	
 	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+	addctrl("mrs_natural/previousLabel", 0, ctrl_previousLabel_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 
 	addctrl("mrs_bool/currentHasData", true, ctrl_currentHasData_);
+
 }
 
 void 
@@ -131,7 +137,8 @@ WavFileSource::getHeader(mrs_string filename)
 			setctrl("mrs_real/israte", 22050.0);
 			setctrl("mrs_natural/size", 0);
 			hasData_ = false;
-			setctrl("mrs_bool/hasData", false);	  
+			setctrl("mrs_bool/hasData", false);
+	  
 		}
 		else
 		{
@@ -185,8 +192,6 @@ WavFileSource::getHeader(mrs_string filename)
 			channels = channels; //[?]
 #endif 
 		  
-			// access directly controls to avoid update() recursion
-			// setctrl("mrs_natural/nChannels", (mrs_natural)channels);
 			setctrl("mrs_natural/onObservations", (mrs_natural)channels);
 
 			unsigned int srate;
@@ -246,7 +251,10 @@ WavFileSource::getHeader(mrs_string filename)
 			csize_ = size_;
 			setctrl("mrs_natural/size", size_);
 			ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
+			ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
 			ctrl_currentLabel_->setValue(0, NOUPDATE);
+			ctrl_previousLabel_->setValue(0, NOUPDATE);
+
 			ctrl_labelNames_->setValue(",", NOUPDATE);
 			ctrl_nLabels_->setValue(0, NOUPDATE);
 			sfp_begin_ = ftell(sfp_);
@@ -271,7 +279,8 @@ WavFileSource::getHeader(mrs_string filename)
 		setctrl("mrs_natural/onObservations", 1);
 		setctrl("mrs_natural/size", 0);
 		hasData_ = false;
-		setctrl("mrs_bool/hasData", false);      
+		setctrl("mrs_bool/hasData", false);     
+
 		pos_ = 0;
 	}
   
@@ -306,9 +315,9 @@ WavFileSource::myUpdate(MarControlPtr sender)
 	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
 
 	if (duration_ != -1.0)
-    {
+	  {
 		csize_ = (mrs_natural)(duration_ * israte_);
-    }
+	  }
 
 	samplesToRead_ = inSamples_ * nChannels_;
 	MRSDIAG("WavFileSource::myUpdate " 
@@ -442,13 +451,19 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			samplesOut_ += onSamples_;
 
 			if (repetitions_ != 1) 
+			  {
 				hasData_ = (samplesOut_ < repetitions_ * csize_);
-			else 
-				hasData_ = pos_ < rewindpos_ + csize_;
 
+			  }
+			else 
+			  {
+				hasData_ = pos_ < rewindpos_ + csize_;
+			  }
 
 			if (repetitions_ == -1) 
-				hasData_ = true;
+			  {
+			    hasData_ = true;
+			  }
 			break;
 		}
 		case 8:
@@ -464,21 +479,24 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			samplesOut_ += onSamples_;
 
 			if (repetitions_ != 1) 
+			  {
 				hasData_ = (samplesOut_ < repetitions_ * csize_);
+
+			  }
 			else 
-				hasData_ = pos_ < csize_;
+			  {
+				hasData_ = pos_ < rewindpos_ + csize_;
+			  }
 
-
-			hasData_ = samplesOut_ < repetitions_ * csize_;
 			if (repetitions_ == -1) 
-				hasData_ = true;
+			  {
+			    hasData_ = true;
+			  }
 			break;
+
+
 		}
 	}
 	ctrl_currentHasData_->setValue(hasData_);
-
-		
-
-
 
 }
