@@ -515,9 +515,11 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
 
 void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const std::string& attributesToExtract)
 {
+	// FIXME: This method does not parse all valid relation or attribute names.
+	//        The ARFF spec allows for names that include spaces, iff those
+	//        names are quoted.
+	// FIXME: Parsing errors should probably be fatal.
 	
-	// FIXME Unused parameter
-	(void) attributesToExtract;
 	char str[1024];
 	// skip comment lines 
 	while (mis.peek() == '%') 
@@ -527,20 +529,25 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 	
 	
 	mrs_string token1,token2,token3;
-  
+
 	mis >> token1;
-	
+	getline(mis, token2);
+
 	if ((token1 != "@relation")&&(token1 != "@RELATION"))
 	{
-	    MRSERR("Not proper weka .arff file");
-	    return;
+		MRSERR("Badly formatted .arff file: file must begin with @relation.");
+		return;
 	}
-	
-
-	
-
-	mis >> token2;
-//  MRSASSERT ( strcmp( token2.c_str(), "marsyas") == 0 ); //[!]
+	if (token2.find("\t") >= 0)
+	{
+		MRSERR("Badly formatted .arff file: Relation name cannot contain tab characters.");
+		return;
+	}
+	if (token2.find_first_of(" \t\v\f\r\n") >= 0)
+	{
+		MRSERR("Badly formatted .arff file: Marsyas cannot handle relation names with whitespace.");
+		return;
+	}
 	relation_ = token2;
 	
 	attributesFound_.clear();
@@ -551,7 +558,7 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 	// Parse the attribute definitions and store their names...
 	//ie: @attribute Mean_Mem40_Centroid real
 	while( mis >> token1 && (token1 == "@attribute" || (token1 == "@ATTRIBUTE")))
-    {
+	{
 		mis >> token2;
 		getline(mis, token3);
 		
@@ -583,25 +590,21 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 			MRSWARN("Incompatible datatype " + token3 + " found in file '" + filename + "'.  " + 
 					"attribute " + token2 + "will be ignored!");
 		}//else
-    }//while
+	}//while
+
+	if (token1 != "@data" || token1 != "@DATA") {
+		MRSERR("Badly formatted .arff file: Finished parsing attributes but did not find @data section.");
+	}
 
 	//Now we parse the attributes to include string and decide which attributes
 	//are to be extracted from the arff file. An empty include list means all
 	//attributes.
-	
-	
+
 	for(vector<mrs_string>::const_iterator citer = attributesFound_.begin(); citer!= attributesFound_.end(); citer++)
-    {
-    }
-	
-	
-	
+	{
+	}
 	
 	parseAttributesToInclude(attributesToInclude_);
-	
-
-
-	
 }//parseHeader
 
 void WekaSource::parseData(ifstream& mis, const mrs_string& filename, WekaData& data)
