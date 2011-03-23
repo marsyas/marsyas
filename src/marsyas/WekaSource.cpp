@@ -529,21 +529,31 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 	
 	
 	mrs_string token1,token2,token3;
+	mrs_string whitespace = " \t\v\f\r\n";
+	mrs_string::size_type startpos;
 
+	// Read in the relation line
 	mis >> token1;
 	getline(mis, token2);
+
+	// Strip leading whitespace from the relation name
+	startpos = token2.find_first_not_of(whitespace);
+	if (startpos != mrs_string::npos)
+	{
+		token2 = token2.substr(startpos);
+	}
 
 	if ((token1 != "@relation")&&(token1 != "@RELATION"))
 	{
 		MRSERR("Badly formatted .arff file: file must begin with @relation.");
 		return;
 	}
-	if (token2.find("\t") >= 0)
+	if (token2.find("\t") != mrs_string::npos)
 	{
 		MRSERR("Badly formatted .arff file: Relation name cannot contain tab characters.");
 		return;
 	}
-	if (token2.find_first_of(" \t\v\f\r\n") >= 0)
+	if (token2.find_first_of(whitespace) != mrs_string::npos)
 	{
 		MRSERR("Badly formatted .arff file: Marsyas cannot handle relation names with whitespace.");
 		return;
@@ -563,7 +573,7 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 		getline(mis, token3);
 		
 		// skip leading spaces of token3
-		mrs_string::size_type startpos = token3.find_first_not_of(" \t");
+		startpos = token3.find_first_not_of(" \t");
 		if (mrs_string::npos != startpos) 
 			token3 = token3.substr(startpos);
 		
@@ -592,7 +602,7 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 		}//else
 	}//while
 
-	if (token1 != "@data" || token1 != "@DATA") {
+	if ((token1 != "@data") && (token1 != "@DATA")) {
 		MRSERR("Badly formatted .arff file: Finished parsing attributes but did not find @data section.");
 	}
 
