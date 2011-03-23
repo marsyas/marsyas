@@ -19,8 +19,6 @@
 #include "common.h"
 #include "MP3FileSource.h"
 
-using std::cout;
-using std::endl;
 
 
 using std::ostringstream;
@@ -104,7 +102,9 @@ MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
 	
 	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
+	ctrl_previouslyPlaying_ = getctrl("mrs_string/previouslyPlaying");
 	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+	ctrl_previousLabel_ = getctrl("mrs_natural/previousLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 }
@@ -150,6 +150,7 @@ MP3FileSource::addControls()
 	addctrl("mrs_natural/numFiles", 1);
 	
 	addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
+	addctrl("mrs_string/previouslyPlaying", "daufile", ctrl_previouslyPlaying_);
 	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
 	addctrl("mrs_string/labelNames",",", ctrl_labelNames_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
@@ -409,7 +410,9 @@ MP3FileSource::getHeader(mrs_string filename)
   
   
 	ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
+	ctrl_previouslyPlaying-_->setValue(filename, NOUPDATE);
 	ctrl_currentLabel_->setValue(0, NOUPDATE);
+	ctrl_previousLabel_->setValue(0, NOUPDATE);
 	ctrl_nLabels_->setValue(0, NOUPDATE);
 
 

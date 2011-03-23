@@ -23,18 +23,31 @@ class WekaSource_runner : public CxxTest::TestSuite
 {
 public:
   realvec in,out;
-  MarSystemManager mng;
-  WekaSource *norm;
+  MarSystem *net;
 
   void
   setUp()
   {
-	norm = new WekaSource("norm");
   }
 
   void test_pass(void) 
   {
-	TS_ASSERT( 1 + 1 > 1 );
+    MarSystemManager mng;
+    MarSystem* net = mng.create("Series/net");
+    net->addMarSystem(mng.create("WekaSource/wsrc"));
+    net->updControl("WekaSource/wsrc/mrs_string/filename", "files/tiny.arff");
+
+
+    net->tick();
+    mrs_realvec processedData = net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
+    cout << processedData << endl;
+    TS_TRACE("Checking WekaSource reading data line 1");
+    TS_ASSERT_EQUALS(processedData(0,0), 0.056167);
+    net->tick();
+    processedData = net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
+    TS_TRACE("Checking WekaSource reading data line 2");
+    TS_ASSERT_EQUALS(processedData(0,0), 0.082136);
+    
   }
 
 
