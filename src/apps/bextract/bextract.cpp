@@ -2056,8 +2056,8 @@ selectFeatureSet(MarSystem *featExtractor)
 
 void
 bextract_train_refactored(string pluginName,  string wekafname,
-						  mrs_natural memSize, string classifierName,
-						  mrs_bool single_vector)
+			  mrs_natural memSize, string classifierName,
+			  mrs_bool single_vector)
 {
   MRSDIAG("bextract.cpp - bextract_train_refactored");
   cout << "BEXTRACT REFACTORED" << endl;
@@ -2134,12 +2134,12 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	
   // Use accumulator if computing single vector / file
   if (single_vector)
-  {
-	MarSystem* acc = mng.create("Accumulator", "acc");
-	acc->updControl("mrs_natural/maxTimes", accSize_);
-	acc->updControl("mrs_string/mode", "explicitFlush");
-	acc->updControl("mrs_natural/timesToKeep", 1);
-	acc->addMarSystem(featureNetwork);
+    {
+      MarSystem* acc = mng.create("Accumulator", "acc");
+      acc->updControl("mrs_natural/maxTimes", accSize_);
+      acc->updControl("mrs_string/mode", "explicitFlush");
+      acc->updControl("mrs_natural/timesToKeep", 1);
+      acc->addMarSystem(featureNetwork);
 	bextractNetwork->addMarSystem(acc);
 	MarSystem* song_statistics = mng.create("Fanout", "song_statistics");
 	song_statistics->addMarSystem(mng.create("Mean", "mn"));
@@ -2171,42 +2171,40 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 
+	bextractNetwork->linkControl(
+				     "Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
+				     "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
+);
+
 	if(tline)
-	{
-	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); // added Fanout ... 
-	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); // added Fanout ... 
-	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); // added Fanout ... 
-	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance",
-								   "Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance"); // added Fanout ... 
-
-	  bextractNetwork->linkControl("mrs_natural/currentLabel",
-								   "Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
-	  bextractNetwork->linkControl("mrs_string/labelNames",
-								   "Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
-	  bextractNetwork->linkControl("mrs_natural/nLabels",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels");
-	}
+	  {
+	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); // added Fanout ... 
+	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); // added Fanout ... 
+	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); // added Fanout ... 
+	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance",
+					 "Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance"); // added Fanout ... 
+	  }
 	else
-	{
-	  bextractNetwork->linkControl("mrs_natural/currentLabel",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/previousLabel"); 
-	  bextractNetwork->linkControl("mrs_natural/nLabels",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels"); 
-	  bextractNetwork->linkControl("mrs_string/labelNames",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); 
-	}
-
+	  {
+	    bextractNetwork->linkControl("mrs_natural/currentLabel",
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/previousLabel"); 
+	    bextractNetwork->linkControl("mrs_natural/nLabels",
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels"); 
+	    bextractNetwork->linkControl("mrs_string/labelNames",
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); 
+	  }
+	
 	bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance", 
-								 "mrs_natural/advance");
-  }
+				     "mrs_natural/advance");
+    }
   else // running feature extraction
-  {
-	bextractNetwork->addMarSystem(featureNetwork);
-	// link controls to top-level to make life simpler
-	bextractNetwork->linkControl("Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/filename",
+    {
+      bextractNetwork->addMarSystem(featureNetwork);
+      // link controls to top-level to make life simpler
+      bextractNetwork->linkControl("Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/filename",
 								 "mrs_string/filename"); 
 	bextractNetwork->linkControl("mrs_bool/hasData",
 								 "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/hasData"); 
@@ -2459,13 +2457,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 		currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 		bextractNetwork->tick();
-
-		      
-		if (memSize != 0) 
-		  featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset", 
-									 true);			  
 		fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
-		      
 		      
 		processedFiles.push_back(currentlyPlaying);
 		processedFeatures[currentlyPlaying] = fvec;

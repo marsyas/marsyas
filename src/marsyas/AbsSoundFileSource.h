@@ -45,6 +45,7 @@ namespace Marsyas
 			mrs_natural pos_;
 			mrs_natural rewindpos_;
 			mrs_bool hasData_;
+			mrs_bool lastTickWithData_;
 			mrs_real durFull_;
 
 			MarControlPtr ctrl_currentlyPlaying_;
@@ -54,6 +55,7 @@ namespace Marsyas
 			MarControlPtr ctrl_nLabels_;
 			MarControlPtr ctrl_labelNames_;
 			MarControlPtr ctrl_currentHasData_;
+			MarControlPtr ctrl_currentLastTickWithData_;
 	};
 
 }//namespace Marsyas

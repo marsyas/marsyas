@@ -44,6 +44,7 @@ WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
+	ctrl_currentLastTickWithData_ = getctrl("mrs_bool/lastTickWithData");
 }
 
 
@@ -66,8 +67,8 @@ void
 WavFileSource::addControls()
 {
 	addctrl("mrs_bool/hasData", true);  
-
-  
+	addctrl("mrs_bool/lastTickWithData", false);
+	
 	addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
 	setctrlState("mrs_natural/pos", true);
   
@@ -109,6 +110,7 @@ WavFileSource::addControls()
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 
 	addctrl("mrs_bool/currentHasData", true, ctrl_currentHasData_);
+	addctrl("mrs_bool/currentLastTickWithData", false, ctrl_currentLastTickWithData_);
 
 }
 
@@ -137,7 +139,9 @@ WavFileSource::getHeader(mrs_string filename)
 			setctrl("mrs_real/israte", 22050.0);
 			setctrl("mrs_natural/size", 0);
 			hasData_ = false;
+			lastTickWithData_ = false;
 			setctrl("mrs_bool/hasData", false);
+			setctrl("mrs_bool/lastTickWithData", true);
 	  
 		}
 		else
@@ -259,6 +263,7 @@ WavFileSource::getHeader(mrs_string filename)
 			ctrl_nLabels_->setValue(0, NOUPDATE);
 			sfp_begin_ = ftell(sfp_);
 			hasData_ = true;
+			lastTickWithData_ = false;
 			pos_ = 0;
 			samplesOut_ = 0;
 			MRSDIAG("WavFileSource: " 
@@ -279,8 +284,9 @@ WavFileSource::getHeader(mrs_string filename)
 		setctrl("mrs_natural/onObservations", 1);
 		setctrl("mrs_natural/size", 0);
 		hasData_ = false;
+		lastTickWithData_ = true;
 		setctrl("mrs_bool/hasData", false);     
-
+		setctrl("mrs_bool/lastTickWithData", true);
 		pos_ = 0;
 	}
   
@@ -453,16 +459,20 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			if (repetitions_ != 1) 
 			  {
 				hasData_ = (samplesOut_ < repetitions_ * csize_);
-
+				
+				lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);
 			  }
+			
 			else 
 			  {
 				hasData_ = pos_ < rewindpos_ + csize_;
+				lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
 			  }
 
 			if (repetitions_ == -1) 
 			  {
 			    hasData_ = true;
+			    lastTickWithData_ = false;
 			  }
 			break;
 		}
@@ -481,16 +491,18 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 			if (repetitions_ != 1) 
 			  {
 				hasData_ = (samplesOut_ < repetitions_ * csize_);
-
+				lastTickWithData_ = ((samplesOut_ + onSamples_ >= repetitions_ * csize_) && hasData_);
 			  }
 			else 
 			  {
 				hasData_ = pos_ < rewindpos_ + csize_;
+				lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
 			  }
 
 			if (repetitions_ == -1) 
 			  {
 			    hasData_ = true;
+			    lastTickWithData_ = false;
 			  }
 			break;
 
@@ -498,5 +510,5 @@ WavFileSource::myProcess(realvec& in, realvec& out)
 		}
 	}
 	ctrl_currentHasData_->setValue(hasData_);
-
+	ctrl_currentLastTickWithData_->setValue(lastTickWithData_);
 }

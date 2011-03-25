@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ namespace Marsyas
    Controls:
    - \b mrs_string/filename [w] : name of the sound file to read
    - \b mrs_bool/hasData [r] : is there any data left?
+   - \b mrs_bool/lastTickWithData [r]: true at the last buffer with data 
    - \b mrs_natural/pos [rw] : sample position currently read, in samples
    - \b mrs_natural/loopPos [rw] : sample position at which to loop
    - \b mrs_string/allfilenames [w] : a long string containing every sound file to read.
@@ -59,16 +60,18 @@ namespace Marsyas
    - \b mrs_natural/cindex [rw] : number of the current sound file in the
    collection
    - \b mrs_string/currentlyPlaying [r] : filename of the current sound file.
-   - \b mrs_string/previouslyPlaying [r] : filename of the previous sound file.
+   - \b mrs_string/previouslyPlaying [r] : filename of the previous sound file. 
    - \b mrs_natural/currentLabel [r] : current label of file played
    - \b mrs_natural/nLabels [r] : number of labels
    - \b mrs_string/labelNames [r] : labels (for collections)
    - \b mrs_bool/currentHasData [r] : is there any audio data
-   remaining (for collections)
+     remaining (for collections)
+   - \b mrs_bool/currentLastTickWithData [r]: The current file 
+     in a collection is at the last tick with data 
    - \b mrs_bool/currentCollectionNewFile [r] : the current tick
-   began reading a new file (for collections)
+     began reading a new file (for collections)
    - \b mrs_bool/startStable [r] : the current tick should begin a
-   new stabilization count (for WekaSink resetStable).
+     new stabilization count (for WekaSink resetStable).
 
 
    \see SoundFileSourceHopper for generating an audio slices from
@@ -76,62 +79,64 @@ namespace Marsyas
 */
 
 
-class SoundFileSource: public MarSystem
-{
- private:
-  std::string filename_;
-  mrs_natural sampleSize_; //in bytes
-  mrs_natural samplesRead_;
-  mrs_natural samplesToRead_;
-  mrs_natural nChannels_;
+	class SoundFileSource: public MarSystem
+	{
+		private:
+			std::string filename_;
+			mrs_natural sampleSize_; //in bytes
+			mrs_natural samplesRead_;
+			mrs_natural samplesToRead_;
+			mrs_natural nChannels_;
 
-  MarControlPtr ctrl_pos_;
-  MarControlPtr ctrl_loop_;
-  MarControlPtr ctrl_hasData_;
-  MarControlPtr ctrl_mute_;
-  MarControlPtr ctrl_advance_;
-  MarControlPtr ctrl_filename_;
-  MarControlPtr ctrl_currentlyPlaying_;
-  MarControlPtr ctrl_previouslyPlaying_;
-  MarControlPtr ctrl_currentLabel_;
-  MarControlPtr ctrl_previousLabel_;
-  MarControlPtr ctrl_nLabels_;
-  MarControlPtr ctrl_labelNames_;
-  MarControlPtr ctrl_currentHasData_;
-  MarControlPtr ctrl_currentCollectionNewFile_;
-  MarControlPtr ctrl_startStable_;
+			MarControlPtr ctrl_pos_;
+			MarControlPtr ctrl_loop_;
+			MarControlPtr ctrl_hasData_;
+			MarControlPtr ctrl_lastTickWithData_;
+			MarControlPtr ctrl_mute_;
+			MarControlPtr ctrl_advance_;
+			MarControlPtr ctrl_filename_;
+			MarControlPtr ctrl_currentlyPlaying_;
+			MarControlPtr ctrl_previouslyPlaying_;
+			MarControlPtr ctrl_currentLabel_;
+			MarControlPtr ctrl_previousLabel_;
+			MarControlPtr ctrl_nLabels_;
+			MarControlPtr ctrl_labelNames_;
+			MarControlPtr ctrl_currentHasData_;
+			MarControlPtr ctrl_currentLastTickWithData_;
+			MarControlPtr ctrl_currentCollectionNewFile_;
+			MarControlPtr ctrl_startStable_;
+		
+			MarControlPtr ctrl_rewindToPos_;
 
-  MarControlPtr ctrl_rewindToPos_;
+			AbsSoundFileSource* src_;
 
-  AbsSoundFileSource* src_;
+			mrs_natural advance_;
+			std::string prev_ext_;
+		
 
-  mrs_natural advance_;
-  std::string prev_ext_;
+			void addControls();
+			void myUpdate(MarControlPtr sender);
 
+			bool updateCurrDuration;	
 
-  void addControls();
-  void myUpdate(MarControlPtr sender);
+		public:
 
-  bool updateCurrDuration;
+			SoundFileSource(std::string name);
+			SoundFileSource(const SoundFileSource& a);
 
- public:
+			~SoundFileSource();
+			MarSystem* clone() const;
 
-  SoundFileSource(std::string name);
-  SoundFileSource(const SoundFileSource& a);
+			virtual void myProcess(realvec& in,realvec& out);
+			virtual bool checkType();
+			virtual void getHeader();
 
-  ~SoundFileSource();
-  MarSystem* clone() const;
-
-  virtual void myProcess(realvec& in,realvec& out);
-  virtual bool checkType();
-  virtual void getHeader();
-
-};
+	};
 
 /// File name value to use for undefined files.
 
-// On OS X this does not get initialized and causes core dumps in the
-// unit tests. Not sure why.
+// On OS X this does not get initialized and causes core dumps in the 
+// unit tests. Not sure why. 
 
 // const mrs_string SOUNDFILESOURCE_UNDEFINEDFILENAME("defaultfile");
 #define SOUNDFILESOURCE_UNDEFINEDFILENAME "defaultfile"

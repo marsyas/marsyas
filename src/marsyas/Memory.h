@@ -47,11 +47,10 @@ namespace Marsyas
 		void myUpdate(MarControlPtr sender);
 
 		mrs_natural end_;
-		bool reset_;
 		MarControlPtr ctrl_reset_;
 		MarControlPtr ctrl_memSize_;
 		mrs_natural counter_since_reset_;
-	
+		mrs_realvec cir_out_;
 
 	public:
 		Memory(std::string name);
