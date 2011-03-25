@@ -410,7 +410,7 @@ MP3FileSource::getHeader(mrs_string filename)
   
   
 	ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
-	ctrl_previouslyPlaying-_->setValue(filename, NOUPDATE);
+	ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
 	ctrl_currentLabel_->setValue(0, NOUPDATE);
 	ctrl_previousLabel_->setValue(0, NOUPDATE);
 	ctrl_nLabels_->setValue(0, NOUPDATE);
