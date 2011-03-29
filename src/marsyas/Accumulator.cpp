@@ -169,7 +169,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 		        || timesCount <= ctrl_timesToKeep_->to<mrs_natural>())
 		{
 			// child MarSystem should have a control linked to the Accumulator flush control
-			// so it can signal the end of this loop (e.g. when an onset is detected or something similar)
+			// so it can signal the end of this loop (e.g. when an onset is detected or some other similar event)
 			marsystems_[0]->recvControls(); // HACK STU [!]
 			marsystems_[0]->process(in, childOut_);
 
@@ -186,7 +186,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 #ifdef MARSYAS_LOG_DIAGNOSTICS
 		if (!ctrl_flush_->to<mrs_bool>())
 		{
-			MRSDIAG("Accumulator::myProcess() - Onset not detected... max length of segment reached!");
+			MRSDIAG("Accumulator::myProcess() - maxTimes reached without a flush event!");
 		}
 #endif
 
