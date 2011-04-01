@@ -66,7 +66,7 @@ namespace Marsyas
 			void madStructFinish();
 #endif
 
-			void fillStream( mrs_natural offset = 0 );
+			void fillStream( long offset = 0 );
 			void closeFile(); 
 
 			void  PrintFrameInfo(struct mad_header *Header);
@@ -94,7 +94,7 @@ namespace Marsyas
 			mrs_natural reservoirSize_;
 			mrs_natural preservoirSize_;
 			mrs_natural ri_;
-			mrs_natural offset;
+			long offset;
 
 			mrs_natural advance_;
 			mrs_natural cindex_;

@@ -44,7 +44,7 @@ WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
-	ctrl_currentLastTickWithData_ = getctrl("mrs_bool/lastTickWithData");
+	ctrl_currentLastTickWithData_ = getctrl("mrs_bool/currentLastTickWithData");
 }
 
 

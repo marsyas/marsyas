@@ -19,7 +19,8 @@
 #include "common.h"
 #include "MP3FileSource.h"
 
-
+using std::cout;
+using std::endl;
 
 using std::ostringstream;
 using namespace Marsyas;
@@ -107,6 +108,8 @@ MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
 	ctrl_previousLabel_ = getctrl("mrs_natural/previousLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
+	ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
+	ctrl_currentLastTickWithData_ = getctrl("mrs_bool/lastTickWithData");	
 }
 
 MarSystem* 
@@ -123,6 +126,7 @@ MP3FileSource::addControls()
 	addctrl("mrs_bool/init", false);
 	setctrlState("mrs_bool/init", true);
 	addctrl("mrs_bool/hasData", true);
+	addctrl("mrs_bool/lastTickWithData", false);
 	addctrl("mrs_natural/loopPos", (mrs_natural)0);
 	setctrlState("mrs_natural/loopPos", true);
 	addctrl("mrs_natural/pos", (mrs_natural)0, ctrl_pos_);
@@ -151,10 +155,14 @@ MP3FileSource::addControls()
 	
 	addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
 	addctrl("mrs_string/previouslyPlaying", "daufile", ctrl_previouslyPlaying_);
+
 	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
 	addctrl("mrs_natural/previousLabel", 0, ctrl_previousLabel_);
 	addctrl("mrs_string/labelNames",",", ctrl_labelNames_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
+
+	addctrl("mrs_bool/currentHasData", true, ctrl_currentHasData_);
+	addctrl("mrs_bool/currentLastTickWithData", false, ctrl_currentLastTickWithData_);	
 }
 
 
@@ -273,7 +281,9 @@ MP3FileSource::getHeader(mrs_string filename)
 		setctrl("mrs_real/israte", 22050.0);
 		setctrl("mrs_natural/size", 0);
 		hasData_ = 0;
+		lastTickWithData_ = false;
 		setctrl("mrs_bool/hasData", false);	  
+		setctrl("mrs_bool/lastTickWithData", true);
 		return;
 	}
   
@@ -295,7 +305,9 @@ MP3FileSource::getHeader(mrs_string filename)
 		setctrl("mrs_real/israte", 22050.0);
 		setctrl("mrs_natural/size", 0);
 		hasData_ = 0;
+		lastTickWithData_ = false;
 		setctrl("mrs_bool/hasData", false);	  
+		setctrl("mrs_bool/lastTickWithData", true);
 		return;
     }
   
@@ -381,23 +393,14 @@ MP3FileSource::getHeader(mrs_string filename)
 
   
 	// only works for a constant bitrate, duration is (bits in file / bitrate)
-	mrs_real duration =  (fileSize_ * 8) / bitRate;
+	mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
 	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
   
+	size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
 
-	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
-	
-	size_ = (mrs_natural) ((duration * sampleRate) / nChannels);
-	csize_ = size_ ;
-
-	if (duration_ != -1.0)
-	{
-		csize_ = (mrs_natural)(duration_ * sampleRate);
-	}
-	
-
-
+  
+	csize_ = size_ * nChannels;
 	totalFrames_ = (mrs_natural)((sampleRate * duration_) / frameSamples_);
   
   
@@ -412,6 +415,7 @@ MP3FileSource::getHeader(mrs_string filename)
   
 	ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
 	ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
+	
 	ctrl_currentLabel_->setValue(0, NOUPDATE);
 	ctrl_previousLabel_->setValue(0, NOUPDATE);
 	ctrl_nLabels_->setValue(0, NOUPDATE);
@@ -632,8 +636,8 @@ MP3FileSource::getLinear16(realvec& slice)
 	
 	// keep track of where we are
 	pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->to<mrs_natural>());
-	
-	ctrl_pos_->setValue(pos_, NOUPDATE);
+
+
 	currentPos_ = pos_;	
 	
 	
@@ -663,8 +667,6 @@ MP3FileSource::getLinear16(realvec& slice)
  */
 void MP3FileSource::myProcess(realvec& in, realvec& out)
 {
-
-
 	(void) in;
 	//checkFlow(in,out);
 
@@ -672,7 +674,9 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 		getLinear16(out);
 	else
 		out.setval(0.0);
-	
+
+	samplesOut_ += onSamples_; 
+	ctrl_pos_->setValue(pos_, NOUPDATE);
 
 	if (pos_ >= rewindpos_ + csize_)
 	{
@@ -699,20 +703,38 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 		}
 		
 	}
-	 
 
-	samplesOut_ += onSamples_;
+
+
   
-	
-	if (repetitions_ != 1)
-		hasData_ = (samplesOut_ < repetitions_ * csize_);
-	else 
-		hasData_ = pos_ < rewindpos_ + csize_;
+	if (hasData_) {
+
+		if (repetitions_ != 1)
+		  {
+		    hasData_ = (samplesOut_ < repetitions_ * csize_);
+		    lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);		    
+		  }
+		else 
+		  {
+		    hasData_ = pos_ < csize_;
+		    lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
+		  }
+	  
+	} else{
+		// if hasData_ was false already it got set in fillStream
+		// MRSWARN("MP3FileSource: track ended.");
+	}
 
 	if (repetitions_ == -1)
-		hasData_ = true;
+	  {
+	    hasData_ = true;
+	    lastTickWithData_ = false;
+	  }
+
+	ctrl_currentHasData_->setValue(hasData_);
+	ctrl_currentLastTickWithData_->setValue(lastTickWithData_);
 	
-  
+	
 }
 
 
