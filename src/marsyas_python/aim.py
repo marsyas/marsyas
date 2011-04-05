@@ -71,6 +71,7 @@ def pca(data):
 # set the controls and plot the data
 def plot_figure(fname, duration):
 	net = create_network()
+	print "After creating " 
 
 	filename = net.getControl("SoundFileSource/src/mrs_string/filename")
 	inSamples = net.getControl("mrs_natural/inSamples")
@@ -94,8 +95,7 @@ def plot_figure(fname, duration):
 	net.updControl("Peaker/pkr/mrs_natural/peakStart", 50);
 	net.updControl("Peaker/pkr/mrs_natural/peakEnd", 150);
 
-	tempoWeight = net.getControl("BeatHistogram/histo/mrs_bool/tempoWeighting")
-	tempoWeight.setValue_bool(True)
+	print "Before ticking" 
 	
 	for i in range(1,3):
 		net.tick()

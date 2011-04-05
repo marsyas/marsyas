@@ -250,8 +250,8 @@ MarControl::to() const
 	}
 	else
 	{
-		MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType());
-	    return MarControlValueT<T>::invalidValue;
+	  MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType() << " for control  " << this->getName()) ;
+	  return MarControlValueT<T>::invalidValue;
 	}
 }
 

@@ -1145,12 +1145,14 @@ tempo_aim_flux2(mrs_string sfName, float ground_truth_tempo, mrs_string resName,
   fluxnet->addMarSystem(mng.create("Stereo2Mono/s2m"));
   fluxnet->addMarSystem(mng.create("ShiftInput/si"));	       // overlap for the spectral flux
 
-
   fluxnet->addMarSystem(mng.create("AimPZFC2/aimpzfc"));
   fluxnet->addMarSystem(mng.create("AimHCL2/aimhcl"));
   fluxnet->addMarSystem(mng.create("Sum/aimsum"));
   fluxnet->updControl("Sum/aimsum/mrs_string/mode", "sum_observations");
-  
+
+
+
+
 
   fluxnet->addMarSystem(mng.create("Flux/flux"));
   accum->addMarSystem(fluxnet);

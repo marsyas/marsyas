@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@ AimPZFC2::AimPZFC2(mrs_string name):MarSystem("AimPZFC2",name)
 	initialized_maxdamp = 0.0;
 	initialized_cf_max = 0.0;
 	initialized_cf_min = 0.0;
-	
-	
-	
+
+
+
 	channel_count_ = 1;
 	pole_dampings_.create(1);
-	
+
 
 	is_reset = false;
 	reseted_inobservations = 0;
@@ -63,7 +63,7 @@ AimPZFC2::AimPZFC2(const AimPZFC2& a): MarSystem(a)
 
 	channel_count_ = 1;
 	pole_dampings_.create(1);
-	
+
 
 	ctrl_pole_damping_ = getctrl("mrs_real/pole_damping");
 	ctrl_zero_damping_ = getctrl("mrs_real/zero_damping");
@@ -93,7 +93,7 @@ AimPZFC2::clone() const
 	return new AimPZFC2(*this);
 }
 
-void 
+void
 AimPZFC2::addControls()
 {
 	addControl("mrs_real/pole_damping", 0.12 , ctrl_pole_damping_);
@@ -108,7 +108,7 @@ AimPZFC2::addControls()
 	addControl("mrs_real/mindamp", 0.18 , ctrl_mindamp_);
 	addControl("mrs_real/maxdamp", 0.4 , ctrl_maxdamp_);
 	addControl("mrs_bool/do_agc_step", true , ctrl_do_agc_step_);
-	addControl("mrs_bool/use_fit", false , ctrl_use_fit_);
+	addControl("mrs_bool/do_use_fit", false , ctrl_use_fit_);
 }
 
 void
@@ -126,37 +126,39 @@ AimPZFC2::myUpdate(MarControlPtr sender)
 	// the centre frequencies
 	ctrl_onObservations_->setValue(channel_count_ , NOUPDATE);
 
-
 	//
 	// Does the MarSystem need initialization?
 	//
-	if (initialized_israte != ctrl_israte_->to<mrs_real>() ||
-		initialized_inobservations != ctrl_inObservations_->to<mrs_natural>() ||
-		initialized_mindamp != ctrl_mindamp_->to<mrs_real>() ||
-		initialized_maxdamp != ctrl_maxdamp_->to<mrs_real>() ||
-		initialized_cf_max != ctrl_cf_max_->to<mrs_real>() ||
-		initialized_cf_min != ctrl_cf_min_->to<mrs_real>()) {
-		is_initialized = false;
-	}
+  if (initialized_israte != ctrl_israte_->to<mrs_real>() ||
+	  initialized_inobservations != ctrl_inObservations_->to<mrs_natural>()  ||
+	  initialized_mindamp != ctrl_mindamp_->to<mrs_real>() ||
+	  initialized_maxdamp != ctrl_maxdamp_->to<mrs_real>() ||
+	  initialized_cf_max != ctrl_cf_max_->to<mrs_real>() ||
+	  initialized_cf_min != ctrl_cf_min_->to<mrs_real>()
+   	) 
+   {
+   is_initialized = false;
+   }
 
-	if (!is_initialized) {
-		InitializeInternal();
-		is_initialized = true;
-		initialized_israte = ctrl_israte_->to<mrs_real>();
-		initialized_inobservations = ctrl_inObservations_->to<mrs_natural>();
-		initialized_mindamp = ctrl_mindamp_->to<mrs_real>();
-		initialized_maxdamp = ctrl_maxdamp_->to<mrs_real>();
-		initialized_cf_max = ctrl_cf_max_->to<mrs_real>();
-		initialized_cf_min = ctrl_cf_min_->to<mrs_real>();
-	}
 
-	//
+  if (!is_initialized) {
+	InitializeInternal();
+	is_initialized = true;
+	initialized_israte = ctrl_israte_->to<mrs_real>();
+	initialized_inobservations = ctrl_inObservations_->to<mrs_natural>();
+	initialized_mindamp = ctrl_mindamp_->to<mrs_real>();
+	initialized_maxdamp = ctrl_maxdamp_->to<mrs_real>();
+	initialized_cf_max = ctrl_cf_max_->to<mrs_real>();
+	initialized_cf_min = ctrl_cf_min_->to<mrs_real>();
+  }
+  //
 	// Does the MarSystem need a reset?
 	//
 	if (reseted_inobservations != ctrl_inObservations_->to<mrs_natural>() ||
 		reseted_agc_factor != ctrl_agc_factor_->to<mrs_real>()) {
 		is_reset = false;
 	}
+
 
 	if (!is_reset) {
 		ResetInternal();
@@ -195,11 +197,11 @@ AimPZFC2::ResetInternal() {
   // previous_out_.clear();
   // previous_out_.resize(channel_count_, 0.0);
 
-  
+
   previous_out_.stretch(channel_count_);
   previous_out_.setval(0.0);
-  
-  
+
+
 
   pole_damps_mod_.clear();
   pole_damps_mod_.resize(channel_count_, 0.0);
@@ -207,12 +209,12 @@ AimPZFC2::ResetInternal() {
 
   inputs_.stretch(channel_count_);
   inputs_.setval(0.0);
-  
+
 
 
   // Init AGC
   offset_ = 1.0 - ctrl_agc_factor_->to<mrs_real>() * DetectFun(0.0);
-  agc_factor_ = ctrl_agc_factor_->to<mrs_real>();	
+  agc_factor_ = ctrl_agc_factor_->to<mrs_real>();
   AGCDampStep();
   // pole_damps_mod_ and agc_state_ are now be initialized
 
@@ -232,7 +234,7 @@ AimPZFC2::SetPZBankCoeffs() {
   /*! \todo Re-implement the alternative parameter settings
    */
 
-  
+
   if (ctrl_use_fit_->to<mrs_bool>()) {
 	if (!SetPZBankCoeffsERBFitted())
 	  return false;
@@ -286,7 +288,7 @@ AimPZFC2::SetPZBankCoeffs() {
   return true;
 }
 
-bool 
+bool
 AimPZFC2::SetPZBankCoeffsOrig() {
   // This function sets the following variables:
   // channel_count_
@@ -304,10 +306,10 @@ AimPZFC2::SetPZBankCoeffsOrig() {
   double pole_damping = getctrl("mrs_real/pole_damping")->to<mrs_real>();
   double zero_factor = getctrl("mrs_real/zero_factor")->to<mrs_real>();
   double zero_damping = getctrl("mrs_real/zero_damping")->to<mrs_real>();
-  
+
   // TODO(tomwalters): There's significant code-duplication between this function
   // and SetPZBankCoeffsERBFitted, and SetPZBankCoeffs
-  
+
   // Normalised maximum pole frequency
   double pole_frequency = cf_max / sample_rate * (2.0 * PI);
   channel_count_ = 0;
@@ -316,23 +318,23 @@ AimPZFC2::SetPZBankCoeffsOrig() {
 	pole_frequency -= step_factor * bw;
 	channel_count_++;
   }
-  
+
 
   // Now the number of channels is known, various buffers for the filterbank
   // coefficients can be initialised
-  
-  
 
-  
+
+
+
   pole_dampings_.stretch(channel_count_);
   pole_dampings_.setval(pole_damping);
-  
-  
+
+
   pole_frequencies_.stretch(channel_count_);
   pole_frequencies_.setval(0.0);
-  
 
-  
+
+
   // Direct-form coefficients
   za0_.clear();
   za0_.resize(channel_count_, 0.0);
@@ -340,41 +342,41 @@ AimPZFC2::SetPZBankCoeffsOrig() {
   za1_.resize(channel_count_, 0.0);
   za2_.clear();
   za2_.resize(channel_count_, 0.0);
-  
+
   // The output signal bank
   // output_.Initialize(channel_count_, buffer_length_, sample_rate);
-  
+
   // cout.precision(20);
-  
+
   // cout << "********** 1/3=" << 1.0/3.0 << endl;
-  
+
   // Reset the pole frequency to maximum
   pole_frequency = cf_max / sample_rate * (2.0 * PI);
   // cout << "cf_max=" << cf_max << endl;
   // cout << "sample_rate=" << sample_rate << endl;
   // cout << "pole_frequency=" << pole_frequency << endl;
-  
+
   centre_frequencies_.clear();
   centre_frequencies_.resize(channel_count_);
-  
+
   for (int i = channel_count_ - 1; i > -1; --i) {
 	// cout << "i=" << i << endl;
-	
+
 	// Store the normalised pole frequncy
 	pole_frequencies_(i) = pole_frequency;
-	
+
 	// Calculate the real pole frequency from the normalised pole frequency
 	double frequency = pole_frequency / (2.0 * PI) * sample_rate;
 	// cout << "\tfrequency=" << frequency << endl;
-	
+
 		// Store the real pole frequency as the 'centre frequency' of the filterbank
 	// channel
 	centre_frequencies_[i] = frequency;
 	// output_.set_centre_frequency(i, frequency);
-	
+
 	double zero_frequency = Minimum(PI, zero_factor * pole_frequency);
 	// cout << "\tzero_frequency=" << zero_frequency << endl;
-	
+
 	// Impulse-invariance mapping
 	double z_plane_theta = zero_frequency * sqrt(1.0 - pow(zero_damping, 2));
 	double z_plane_rho = exp(-zero_damping * zero_frequency);
@@ -383,17 +385,17 @@ AimPZFC2::SetPZBankCoeffsOrig() {
 	// Direct-form coefficients from z-plane rho and theta
 	double a1 = -2.0 * z_plane_rho * cos(z_plane_theta);
 	double a2 = z_plane_rho * z_plane_rho;
-	
+
 	// Normalised to unity gain at DC
 	double a_sum = 1.0 + a1 + a2;
 	// cout << "\ta1=" << a1 << endl;
 	// cout << "\ta2=" << a2 << endl;
 	// cout << "\ta_sum=" << a_sum << endl;
-	
+
 	za0_[i] = 1.0 / a_sum;
 	za1_[i] = a1 / a_sum;
 	za2_[i] = a2 / a_sum;
-	
+
 	// Subtract step factor (1/n2) times current bandwidth from the pole
 	// frequency
 	double bw = bandwidth_over_cf * pole_frequency + 2 * PI * min_bandwidth_hz / sample_rate;
@@ -407,7 +409,7 @@ AimPZFC2::SetPZBankCoeffsOrig() {
 }
 
 
-// bool 
+// bool
 // AimPZFC2::SetPZBankCoeffsERB() {
 //   // This function sets the following variables:
 //   // channel_count_
@@ -494,7 +496,7 @@ AimPZFC2::SetPZBankCoeffsOrig() {
 //   return true;
 // }
 
-bool 
+bool
 AimPZFC2::SetPZBankCoeffsERBFitted() {
 	// cout << "ModulePZFC::SetPZBankCoeffsERBFitted" << endl;
 	// cout << "AimPZFC2::SetPZBankCoeffsERBFitted" << endl;
@@ -558,7 +560,7 @@ AimPZFC2::SetPZBankCoeffsERBFitted() {
 	pole_dampings_.stretch(channel_count_);
 	pole_dampings_.setval(0.0);
 	cout << pole_dampings_ << endl;
-	
+
 
 	pole_frequencies_.stretch(channel_count_);
 	pole_frequencies_.setval(0.0);
@@ -619,7 +621,7 @@ AimPZFC2::SetPZBankCoeffsERBFitted() {
 		pole_dampings_(i) = pole_damping;
 
 		cout << "pole_damping = " << pole_damping << endl;
-		
+
 
 		// Zero bandwidth
 		double fZBW = ((p[0] * p[5] * fERBw * (2 * PI) / sample_rate) / 2)
@@ -726,7 +728,7 @@ AimPZFC2::AGCDampStep() {
 
 		fAGCStateMean /= static_cast<double>(agc_stage_count_);
 
-		
+
 		pole_damps_mod_[i] = pole_dampings_(i) *
 			(offset_ + agc_factor_ * fAGCStateMean);
 	}
