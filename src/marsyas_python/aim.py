@@ -36,13 +36,14 @@ def create_network():
 				    "AimPZFC2/aimpzfc", 
 				    "AimHCL2/aimhcl2",
 				    "Sum/sum", 
-				    "AutoCorrelation/acr", 
-				    "BeatHistogram/histo",
+#				    "AutoCorrelation/acr", 
+#				    "BeatHistogram/histo",
 
 				    
 
-				    "Peaker/pkr", 
-				    "MaxArgMax/mxr"]))
+#				    "Peaker/pkr", 
+#				    "MaxArgMax/mxr"
+				    ]))
 	
 
 
@@ -71,55 +72,53 @@ def pca(data):
 # set the controls and plot the data
 def plot_figure(fname, duration):
 	net = create_network()
-	print "After creating " 
 
 	filename = net.getControl("SoundFileSource/src/mrs_string/filename")
 	inSamples = net.getControl("mrs_natural/inSamples")
 #	factor = net.getControl("DownSampler/downsampler/mrs_natural/factor") 
-	mode = net.getControl("Sum/sum/mrs_string/mode");
-	acr_compress = net.getControl("AutoCorrelation/acr/mrs_real/magcompress");
+#	mode = net.getControl("Sum/sum/mrs_string/mode");
+#	acr_compress = net.getControl("AutoCorrelation/acr/mrs_real/magcompress");
 
 	filename.setValue_string(fname)
 	# winSize = int(float(duration) * 44100.0);
-	winSize = int(32 * 4096);
+	winSize = int(4* 4096);
 	inSamples.setValue_natural(winSize)
-	mode.setValue_string("sum_samples");
+	# mode.setValue_string("sum_samples");
 	# factor.setValue_natural(32)
-	acr_compress.setValue_real(0.75);
+#	acr_compress.setValue_real(0.75);
 	srate = 44100.0
        	filterbank_output = net.getControl("AimHCL2/aimhcl2/mrs_realvec/processedData")
 
-	net.updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
-	net.updControl("BeatHistogram/histo/mrs_natural/endBin", 300);
+#	net.updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
+#	net.updControl("BeatHistogram/histo/mrs_natural/endBin", 300);
 	
-	net.updControl("Peaker/pkr/mrs_natural/peakStart", 50);
-	net.updControl("Peaker/pkr/mrs_natural/peakEnd", 150);
+#	net.updControl("Peaker/pkr/mrs_natural/peakStart", 50);
+#	net.updControl("Peaker/pkr/mrs_natural/peakEnd", 150);
 
-	print "Before ticking" 
-	
-	for i in range(1,3):
+
+	for i in range(1,2):
 		net.tick()
 
 		data = filterbank_output.to_realvec()
 		imgdata = realvec2array(data) 
-		ossdata = net.getControl("Sum/sum/mrs_realvec/processedData").to_realvec();
-		acrdata = net.getControl("AutoCorrelation/acr/mrs_realvec/processedData").to_realvec();
-		bhistodata = net.getControl("BeatHistogram/histo/mrs_realvec/processedData").to_realvec();
+#		ossdata = net.getControl("Sum/sum/mrs_realvec/processedData").to_realvec();
+#		acrdata = net.getControl("AutoCorrelation/acr/mrs_realvec/processedData").to_realvec();
+#		bhistodata = net.getControl("BeatHistogram/histo/mrs_realvec/processedData").to_realvec();
 
-		peaks = net.getControl("Peaker/pkr/mrs_realvec/processedData");
+#		peaks = net.getControl("Peaker/pkr/mrs_realvec/processedData");
 		#figure()
 		#plot(peaks.to_realvec())
 
-		max_peak = net.getControl("mrs_realvec/processedData");
-		print max_peak.to_realvec()
+#		max_peak = net.getControl("mrs_realvec/processedData");
+#		print max_peak.to_realvec()
 
 		#figure()
 		#plot(ossdata)
 		#figure() 
 		#plot(acrdata)
-		figure()
-		plot(bhistodata)
-		#print imgdata.shape
+#		figure()
+#		plot(bhistodata)
+		print imgdata.shape
 		#print ossdata.getSize()
 	# (values, vecs) = pca(imgdata.transpose())
 	# figure()
@@ -137,8 +136,36 @@ def plot_figure(fname, duration):
 	# plot(vecs[5])
 	# print vecs.shape
 	
-#		figure()
-#		imshow(imgdata.transpose(), cmap = 'gray', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
+		figure()
+		imshow(imgdata.transpose(), cmap = 'jet', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
+		# figure();
+		# plot(imgdata[1000:2000,30]);
+		# figure();
+		# plot(imgdata[1000:2000,40]);
+		# figure()
+		# plot(imgdata[1000:2000:,50]);
+		# figure()
+		# xcorr(imgdata[:,40], imgdata[:,30], normed=True, maxlags=1000);
+		# figure()
+		# xcorr(imgdata[:,40], imgdata[:,35], normed=True, maxlags=1000);
+		# figure()
+		# xcorr(imgdata[:,50], imgdata[:,40], normed=True, maxlags=1000);
+		figure() 
+
+		plot(correlate(imgdata[1000:2000,50], imgdata[1000:2000,40], mode='full'));
+		delay1 = (argmax(correlate(imgdata[1000:2000,50], imgdata[1000:2000,40], mode='full')) % 1000);
+		figure();
+		plot(correlate(imgdata[1000:2000,40], imgdata[1000:2000,30], mode='full'));
+		delay2 = (argmax(correlate(imgdata[1000:2000,40], imgdata[1000:2000,30], mode='full')) % 1000);
+
+
+		figure(); 
+		plot(imgdata[1000:2000:,50]);
+		plot(imgdata[1000-delay1:2000-delay1:,40]);
+		figure();
+		plot(imgdata[1000:2000:,40]);
+		plot(imgdata[1000+delay2:2000+delay2:,30]);
+		
 		show();
 
        	raw_input("Press any key to continue")
