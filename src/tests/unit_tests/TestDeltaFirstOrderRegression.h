@@ -29,6 +29,13 @@ public:
 				"DeltaFirstOrderRegression", "delta");
 	}
 
+	
+  	// "destructor"
+	void tearDown()
+	{
+		delete delta;
+	}
+
 	/**
 	 * Example test of the DeltaFirstOrderRegression flow settings.
 	 */

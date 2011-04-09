@@ -28,6 +28,13 @@ public:
 		delay = (DelaySamples*) mng.create("DelaySamples", "delay");
 	}
 
+  	// "destructor"
+	void tearDown()
+	{
+		delete delay;
+	}
+
+
 	/**
 	 * Helper function to set up (and check) the flow settings.
 	 */

@@ -74,6 +74,13 @@ public:
 		rac = (RunningAutocorrelation*) mng.create("RunningAutocorrelation",
 		        "rac");
 	}
+	
+  	// "destructor"
+	void tearDown()
+	{
+		delete rac;
+	}
+
 
 	/**
 	 * Set up the internal RunningAutocorrelation MarSystem with the input

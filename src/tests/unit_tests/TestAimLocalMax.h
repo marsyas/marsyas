@@ -27,7 +27,12 @@ public:
   {
   }
 
-  //
+  	// "destructor"
+	void tearDown()
+	{
+	}
+
+//
   // Test a sample file, test.wav
   //
   void test_wav_file(void) {

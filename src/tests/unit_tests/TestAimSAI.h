@@ -28,6 +28,12 @@ class AimSAI_runner : public CxxTest::TestSuite
   {
   }
 
+  	// "destructor"
+	void tearDown()
+	{
+	}
+
+
   //
   // Test a sample file, test.wav
   //

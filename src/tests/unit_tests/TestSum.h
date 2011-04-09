@@ -30,6 +30,12 @@ public:
   {
   }
 
+  	// "destructor"
+	void tearDown()
+	{
+	}
+
+
   //
   // Should be able to add up observations like it used to
   //

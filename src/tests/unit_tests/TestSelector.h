@@ -53,6 +53,13 @@ public:
 	out.create(numObservations,numSamples);
   }
 
+  	// "destructor"
+	void tearDown()
+	{
+		delete selector;
+	}
+
+
   //
   // By default, all input should be copied to the output unchanged
   //

@@ -29,6 +29,11 @@ public:
   setUp()
   {
   }
+	// "destructor"
+	void tearDown()
+	{
+		delete net;
+	}
 
   void test_pass(void) 
   {

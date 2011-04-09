@@ -31,6 +31,13 @@ public:
 	aimc_hcl->updControl("mrs_real/israte", 44100.0);
   }
 
+	// "destructor"
+	void tearDown()
+	{
+		delete aimc_hcl;
+	}
+
+
   //
   // Test a sample file, test.wav
   //

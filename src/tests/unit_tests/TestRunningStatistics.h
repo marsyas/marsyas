@@ -34,6 +34,12 @@ public:
 				"runningstatistics");
 	}
 
+  	// "destructor"
+	void tearDown()
+	{
+		delete rs;
+	}
+
 	/**
 	 * Helper function to calculate the statistics from a stream of zero and
 	 * ones.

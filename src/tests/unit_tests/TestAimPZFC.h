@@ -28,6 +28,12 @@ class AimPZFC_runner : public CxxTest::TestSuite
   {
   }
 
+  	// "destructor"
+	void tearDown()
+	{
+	}
+
+
   //
   // Test one single buffer of audio with a 1000Hz tone
   //

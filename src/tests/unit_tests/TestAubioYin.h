@@ -44,6 +44,13 @@ public:
 	yin->updControl("mrs_real/israte", 44100.0);
   }
 
+  	// "destructor"
+	void tearDown()
+	{
+		delete yin;
+	}
+
+
   //
   // Test one single buffer of audio with a 1000Hz tone
   //

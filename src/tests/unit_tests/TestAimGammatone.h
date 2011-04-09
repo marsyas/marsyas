@@ -65,6 +65,8 @@ class AimGammatone_runner : public CxxTest::TestSuite
   	TS_ASSERT_DELTA(out(0,509),0.0149255,0.001);
   	TS_ASSERT_DELTA(out(0,510),0.0149466,0.001);
   	TS_ASSERT_DELTA(out(0,511),0.0149655,0.001);
+
+	delete aimc_gammatone;
   }
 
   //

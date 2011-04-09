@@ -27,6 +27,13 @@ public:
 				"SubtractMean");
 	}
 
+
+  	// "destructor"
+	void tearDown()
+	{
+		delete subtractMean;
+	}
+
 	/**
 	 * Test the SubtractMean flow settings.
 	 */
