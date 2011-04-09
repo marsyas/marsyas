@@ -473,8 +473,8 @@ bool ExScanner::Comment1() {
 Token* ExScanner::CreateToken() { return new Token(); }
 
 Token* ExScanner::NextToken() {
-	while (ch == L' ' || ch >= 9 && ch <= 10 || ch == 13) NextCh();
-		if (ch == '#' && Comment0() ||ch == '(' && Comment1()) return NextToken();
+	while ((ch == L' ') || (ch >= 9) && (ch <= 10) || (ch == 13)) NextCh();
+		if ((ch == '#') && (Comment0()) || (ch == '(') && Comment1()) return NextToken();
 	int apx = 0;
 	t = CreateToken();
 	t->pos = pos; t->col = col; t->line = line; 
@@ -502,7 +502,7 @@ Token* ExScanner::NextToken() {
 		case 4:
 			case_4:
 			if (ch == 39) {AddCh(); goto case_5;}
-			else if (ch <= '&' || ch >= '(' && ch <= 65535) {AddCh(); goto case_4;}
+			else if ((ch <= '&') || (ch >= '(') && (ch <= 65535)) {AddCh(); goto case_4;}
 			else {t->kind = noSym; break;}
 		case 5:
 			case_5:
@@ -513,15 +513,15 @@ Token* ExScanner::NextToken() {
 		case 7:
 			case_7:
 			if (ch == '/') {AddCh(); goto case_8;}
-			else if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_7;}
+			else if ((ch >= '0') && (ch <= '9') || (ch >= 'A') && (ch <= 'Z') || (ch == '_') || (ch >= 'a') && (ch <= 'z')) {AddCh(); goto case_7;}
 			else {t->kind = noSym; break;}
 		case 8:
 			case_8:
-			if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_9;}
+			if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z')) {AddCh(); goto case_9;}
 			else {t->kind = noSym; break;}
 		case 9:
 			case_9:
-			if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_10;}
+			if ((ch >= '0') && (ch <= '9') || (ch >= 'A') && (ch <= 'Z') || (ch == '_') || (ch >= 'a') && (ch <= 'z')) {AddCh(); goto case_10;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 10:
 			case_10:
