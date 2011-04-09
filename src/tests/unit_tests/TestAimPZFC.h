@@ -74,6 +74,8 @@ class AimPZFC_runner : public CxxTest::TestSuite
   	TS_ASSERT_DELTA(out(0,509),0.105835,0.001);
   	TS_ASSERT_DELTA(out(0,510),0.0916747,0.001);
   	TS_ASSERT_DELTA(out(0,511),0.0762939,0.001);
+
+	delete aimc_pzfc;
   }
 
   //

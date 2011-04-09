@@ -71,7 +71,7 @@ AimPZFC::AimPZFC(const AimPZFC& a): MarSystem(a)
 	ctrl_mindamp_ = getctrl("mrs_real/mindamp");
 	ctrl_maxdamp_ = getctrl("mrs_real/maxdamp");
 	ctrl_do_agc_step_ = getctrl("mrs_bool/do_agc_step");
-	ctrl_use_fit_ = getctrl("mrs_bool/do_use_fit");
+	ctrl_use_fit_ = getctrl("mrs_bool/use_fit");
 
 }
 
