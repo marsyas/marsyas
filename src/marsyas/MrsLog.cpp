@@ -174,7 +174,7 @@ MrsLog::mrsDiagnostic(const ostringstream& oss)
 #endif
 
 #else 
-	;
+	(void) oss;
 #endif
 
 
@@ -216,6 +216,7 @@ MrsLog::mrsAssert(const char *strFile, unsigned uLine)
 	fflush(stderr);
 	abort();
 #else
-	;
+	(void) strFile;
+	(void) uLine;
 #endif
 }
