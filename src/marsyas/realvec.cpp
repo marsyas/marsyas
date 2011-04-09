@@ -1060,7 +1060,7 @@ namespace Marsyas
 			r_b = rows_-1;
 		}
 
-		MRSASSERT( r_a >= 0 && (mrs_natural)r_b < rows_ );
+		MRSASSERT( (mrs_natural)r_b < rows_ );
 
 		if ( c_c != mrs_string::npos && c_l > 1 )
 		{
@@ -1080,7 +1080,7 @@ namespace Marsyas
 			c_b = cols_-1;
 		}
 
-		MRSASSERT( c_a >= 0 && (mrs_natural)c_b < cols_ );
+		MRSASSERT( (mrs_natural)c_b < cols_ );
 
 		r_l = r_b - r_a + 1;
 		c_l = c_b - c_a + 1;
@@ -1129,7 +1129,7 @@ namespace Marsyas
 			c_b = (rows_*cols_)-1;
 		}
 
-		MRSASSERT( c_a >= 0 && (mrs_natural)c_b < rows_*cols_ );
+		MRSASSERT( (mrs_natural)c_b < rows_*cols_ );
 		c_l = c_b - c_a + 1;
 
 		realvec matrix;
