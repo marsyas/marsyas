@@ -7,17 +7,12 @@
 \todo Move any useful comments out of Gain.h / Gain.cpp and into the
 MarSystemTemplate stuff.
 
-\bug ShiftInput appears to only work with inSamples=256
-
 \todo all .cpp files should be inside the Marsyas namespace, instead of
 importing it.
 
 \todo all Foo::Foo(string blah) need to change to Foo::Foo(std::string
 blah);  In other words, the argument list in .cpp needs to be the same
 as .h
-
-\bug sfplay portability  (see sourceforge).   Not fixed yet, despite
-previous reports.
 
 \todo document controls for ALL "core" MarSystems.  (once that's done,
 tackle Processing, Analysis, and Synthesis)
