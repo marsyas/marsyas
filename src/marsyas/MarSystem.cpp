@@ -1393,11 +1393,7 @@ MarSystem::getMATLABscript()
 	return MATLABscript_;
 }
 
-mrs_real*
-const MarSystem::recvControls()
-{
-	return NULL;
-}
+
 
 mrs_string
 MarSystem::toString()

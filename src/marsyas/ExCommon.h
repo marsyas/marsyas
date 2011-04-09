@@ -143,6 +143,6 @@ public:
     void op_ref() { std::cout<<"Obj<"<<this<<":"<<ref_count<<">\n"; }
 };
 
-};
+}
 #endif
 

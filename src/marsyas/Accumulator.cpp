@@ -170,7 +170,6 @@ Accumulator::myProcess(realvec& in, realvec& out)
 		{
 			// child MarSystem should have a control linked to the Accumulator flush control
 			// so it can signal the end of this loop (e.g. when an onset is detected or some other similar event)
-			marsystems_[0]->recvControls(); // HACK STU [!]
 			marsystems_[0]->process(in, childOut_);
 
 			//accumulate output from child process()into temp buffer
@@ -224,7 +223,6 @@ Accumulator::myProcess(realvec& in, realvec& out)
 		ctrl_flush_->setValue(false);
 		for (c = 0; c < nTimes_; ++c)
 		{
-		  marsystems_[0]->recvControls(); // HACK STU [!]
 		  marsystems_[0]->process(in, childOut_);
 		  for (o=0; o < onObservations_; o++)
 		    {

@@ -123,7 +123,7 @@ public:
 	void post();
 };
 
-};//namespace Marsyas
+}//namespace Marsyas
 
 #endif
 

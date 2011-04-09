@@ -42,16 +42,6 @@ Series::addControls()
 {
 }
 
-mrs_real* 
-const Series::recvControls()
-{
-	if ( marsystemsSize_ != 0 ) {
-		if (marsystems_[0]->getType() == "NetworkTCPSource" ) {
-			return marsystems_[0]->recvControls();
-		}
-	}
-	return 0;
-}
 
 void 
 Series::myUpdate(MarControlPtr sender)

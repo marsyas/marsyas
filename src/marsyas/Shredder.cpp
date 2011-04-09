@@ -120,8 +120,6 @@ Shredder::myProcess(realvec& in, realvec& out)
 					childIn_(o,t) = in(o, t + c * (inSamples_/nTimes_)) ;
 				}
 			
-			marsystems_[0]->recvControls(); // HACK STU
-
 			if(ctrl_accumulate_->isTrue()) //accumulate child output
 			{
 				marsystems_[0]->process(childIn_, childOut_);

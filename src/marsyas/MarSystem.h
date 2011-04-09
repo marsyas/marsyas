@@ -383,9 +383,6 @@ public:
 	marsyas_EXPORT friend std::istream& operator>>(std::istream&, MarSystem&); //[!]
 	marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const std::map<std::string,MarControlPtr>&);
 
-	/// method to receive controls from a network connection
-	virtual mrs_real* const recvControls();
-
 	/// MATLAB scripting
 	void setMATLABscript(std::string script);
 	std::string getMATLABscript();

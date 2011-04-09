@@ -52,16 +52,6 @@ FlowThru::addControls()
 	addctrl("mrs_realvec/innerOut", realvec(), ctrl_innerOut_);
 }
 
-mrs_real* 
-const FlowThru::recvControls()
-{
-	if ( marsystemsSize_ != 0 ) {
-		if (marsystems_[0]->getType() == "NetworkTCPSource" ) {
-			return marsystems_[0]->recvControls();
-		}
-	}
-	return 0;
-}
 
 void 
 FlowThru::myUpdate(MarControlPtr sender)
