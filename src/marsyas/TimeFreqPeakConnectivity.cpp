@@ -54,12 +54,15 @@ public:
 	{
 		for (mrs_natural i = 0; i < currListLength; i++)
 		{
-			if (row == list[i][kRow])
-				if (col == list[i][kCol])
-					if (index == 0)
+			if (row == list[i][kRow]) {
+				if (col == list[i][kCol]) {
+					if (index == 0) {
 						return list[i][kIdx];
-					else 
+					} else {
 						index--;
+					}
+				}
+			}
 		}
 		MRSASSERT(true);
 		return -1;

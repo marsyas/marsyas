@@ -96,10 +96,6 @@ PeakViewSink::done()
 			accumData_.create(inObservations_, count_);
 
 
-			double val;
-			
-
-			
 			char myline[2048];			
 
 			for(t=0; t < count_; ++t)

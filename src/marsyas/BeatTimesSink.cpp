@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Marsyas;
 
-char *szServer = "localhost"; //assume UDP sockets at localhost [CHANGE IF OTHER!!]
+const char *szServer = "localhost"; //assume UDP sockets at localhost [CHANGE IF OTHER!!]
 
 BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 {

@@ -760,8 +760,8 @@ BeatReferee::calcAbsoluteBestScore()
 	{
 		//Avoid metrical changes within requested time of the analysis
 		if(t_ <= metricalChangeTime_ || t_ > metricalChangeTime_ && 
-		   lastPeriods_(bestLocalAgent) > 0.7 * lastPeriods_(bestAgentIndex_) && 
-		   lastPeriods_(bestLocalAgent) < 1.3 * lastPeriods_(bestAgentIndex_))
+		   (lastPeriods_(bestLocalAgent) > 0.7 * lastPeriods_(bestAgentIndex_)) && 
+		   (lastPeriods_(bestLocalAgent) < 1.3 * lastPeriods_(bestAgentIndex_)))
 		{
 			
 			if(logFile_)
