@@ -55,6 +55,12 @@ public:
   }
 
   void
+  tearDown()
+  {
+	delete norm;
+  }
+
+  void
   clear_input_realvec()
   {
 	// Clear the data from the in realvec

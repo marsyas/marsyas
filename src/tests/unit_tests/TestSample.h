@@ -65,12 +65,19 @@ public:
 	MarSystemManager mng;
 	FooBar *foobar;
 
+	// "constructor"
 	void setUp()
 	{
 		// Use the normal way for getting a Marsystem from the MarSystemManager
 		// to make sure we don't bypass crucial things that should work
 		// (e.g. the copy constructor).
 		foobar = (FooBar*) mng.create("FooBar", "foobar");
+	}
+
+	// "destructor"
+	void tearDown()
+	{
+		delete foobar;
 	}
 
 	/**
