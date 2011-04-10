@@ -2,12 +2,12 @@
 #define MARSYAS_COMMONHEADER_H
 
 /**
-  \file common_header.h
-  \ingroup NotmarCore
+	\file common_header.h
+	\ingroup NotmarCore
 */
 
 /************************************************************************/
-/*      common includes			                                            */
+/*      common includes                                                 */
 /************************************************************************/
 
 #include <cstdio> 
@@ -17,13 +17,13 @@
 #include "MrsLog.h"
 
 /************************************************************************/
-/*          common typedefs                                             */
+/*      common typedefs                                                 */
 /************************************************************************/
 namespace Marsyas
 {
 	typedef double mrs_real;
 	typedef long mrs_natural;
-  typedef bool mrs_bool;
+	typedef bool mrs_bool;
 	typedef std::complex<mrs_real> mrs_complex;
 	typedef std::string mrs_string;
 	
@@ -92,13 +92,6 @@ namespace Marsyas
 #pragma message("WARNING: You need to implement DEPRECATED for this compiler")
 #define DEPRECATED(func) func
 #endif
-
-
-
-
-
-
-
 
 
 #endif /* !MARSYAS_COMMONHEADER_H */ 

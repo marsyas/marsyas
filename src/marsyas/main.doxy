@@ -25,5 +25,8 @@
  * - \ref MarsyasQt "MarsyasQt": Library for Marsyas/Qt interaction.
  * - \ref Scheduler "Scheduler" : scheduling related classes.
  *
- *
+ * Certified classes and MarSystems:
+ * - \ref Certified "Certfied": well-tested classes and
+ * MarSystems.
  */
+

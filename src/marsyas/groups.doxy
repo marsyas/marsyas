@@ -124,3 +124,14 @@
  *
  * \brief Classes and functions for various string manipulation.
  */
+
+
+/**  @defgroup Certified Certified classes and MarSystems.
+ *
+ * \brief These classes and MarSystems have been checked
+ * carefully, are believe to be high quality, have unit tests
+ * and/or regression tests, and should not be
+ * modified without discussing it on the mailing list first.
+ *
+ */
+
