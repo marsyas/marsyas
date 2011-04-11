@@ -110,11 +110,15 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 		}
 	}
 
+	
 	//////////////////////////////////////////////////////////////////////////////////
 	//load currentLabelFile into the internal timeline memory (if not already loaded)
 	//////////////////////////////////////////////////////////////////////////////////
 	mrs_bool newTimeline = false;
 	mrs_natural curLabelFile = ctrl_currentLabelFile_->to<mrs_natural>();
+
+
+	
 	if(curLabelFile < (mrs_natural)labelFilesVec_.size()) //sanity check to avoid out of boundaries in vector
 	{
 		mrs_string fname = labelFilesVec_[curLabelFile];
@@ -123,10 +127,11 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 		///////////////////////////////////////////////////////////////////////
 		if(fname != timeline_.filename() && fname != "") 
 		{
+		  
 			//It is different - try to read the timeline into memory
 			if(timeline_.load(fname))
 			{
-				
+			  timeline_.setSampleRate(israte_);			  
 				newTimeline = true;
 				//get the number of classes in the currently loaded timeline
 				numClasses_ = (mrs_natural)timeline_.numClasses();
@@ -212,6 +217,9 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 		ctrl_currentLabel_->setValue(-1); //no labels defined...
  		return;
  	}
+
+	timeline_.setSampleRate(israte_);
+	
 
 	//get the sample position in the audio file of the last sample in
 	//current frame (as set by SoundFileSource)

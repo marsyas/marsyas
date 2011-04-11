@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2004 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -23,7 +23,8 @@ using namespace Marsyas;
 
 TimeLine::TimeLine()
 {
-	srate_ = 0;
+	srate_ = 22050.0;
+	psrate_ = 0.0;
 	lineSize_ = 0;
 	size_ = 0;
 	filename_ = "";
@@ -38,14 +39,38 @@ void
 TimeLine::clear()
 {
 	filename_ = "";
-	srate_ = 0;
+	srate_ = 22050.0;
+	psrate_ = 0.0;
+	
 	lineSize_ = 0;
 	size_ = 0;
 	regions_.clear();
 	numRegions_ = 0;
 }
 
-void 
+void
+TimeLine::setSampleRate(mrs_real srate)
+{
+  srate_ = srate;
+  
+  if ((srate_ != 22050.0)&&(srate_ != psrate_)) // not the default 
+  {
+	// readjust 
+	cout << "Readjusting to srate_"  << srate_ << endl;
+	cout << "ratio = " << (srate_ / 22050.0) << endl;
+	for (mrs_natural i=0; i < numRegions_; ++i)
+	{
+	  regions_[i].start *= (srate_ / 22050.0);
+	  regions_[i].end   *= (srate_ / 22050.0);
+	}
+  }
+
+  psrate_ = srate;
+  
+}
+
+
+void
 TimeLine::regular(mrs_natural spacing, mrs_natural size, mrs_natural lineSize)
 {
 	if (size_ != 0)
@@ -73,13 +98,13 @@ TimeLine::regular(mrs_natural spacing, mrs_natural size, mrs_natural lineSize)
 	{
 		if ((i % spacing) == 0)
 		{
-			if (reg_index > 0) 
+			if (reg_index > 0)
 				regions_[reg_index-1].end = i-1;
 			regions_[reg_index].start = i;
 			regions_[reg_index].classId = 0;
 			reg_index++;
 		}
-	}  
+	}
 	regions_[numRegions_-1].end = size_;
 	regions_[reg_index-1].end = size_;
 }
@@ -102,7 +127,7 @@ TimeLine::segment(realvec segmentation, mrs_natural lineSize)
 		if (segmentation(i) == 1)
 			peakCount++;
 	}
-	
+
 	numRegions_ = peakCount-1; //[?]
 	lineSize_ = lineSize;
 
@@ -117,9 +142,9 @@ TimeLine::segment(realvec segmentation, mrs_natural lineSize)
 	{
 		if (segmentation(i) == 1) //[?]
 		{
-			if (reg_index > 0) 
+			if (reg_index > 0)
 				regions_[reg_index-1].end = i;
-			if (reg_index == peakCount -1) 
+			if (reg_index == peakCount -1)
 				break;
 			regions_[reg_index].start = i;
 			regions_[reg_index].classId = 0;
@@ -133,7 +158,7 @@ TimeLine::numClasses() const
 {
 	vector<mrs_natural> classes;
 	bool found = false;
-	
+
 	for(mrs_natural i = 0; i < numRegions_; ++i)
 	{
 		found = false;
@@ -178,12 +203,12 @@ TimeLine::getRegionNames() const
 	}
 
 	sort(classNames.begin(), classNames.end());
-	
+
 
 	return classNames;
 }
 
-mrs_natural 
+mrs_natural
 TimeLine::regionStart(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
@@ -191,7 +216,7 @@ TimeLine::regionStart(mrs_natural regionNum) const
 	else return -1;
 }
 
-mrs_string 
+mrs_string
 TimeLine::regionName(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
@@ -199,14 +224,14 @@ TimeLine::regionName(mrs_natural regionNum) const
 	else return "";
 }
 
-void 
+void
 TimeLine::setRegionName(mrs_natural regionNum, mrs_string name)
 {
 	if (regionNum < numRegions_)
 		regions_[regionNum].name = name;
 }
 
-void 
+void
 TimeLine::setRegionClass(mrs_natural regionNum, mrs_natural classId)
 {
 	if (regionNum < numRegions_)
@@ -215,7 +240,7 @@ TimeLine::setRegionClass(mrs_natural regionNum, mrs_natural classId)
 	}
 }
 
-mrs_natural 
+mrs_natural
 TimeLine::regionEnd(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
@@ -223,7 +248,7 @@ TimeLine::regionEnd(mrs_natural regionNum) const
 	else return -1;
 }
 
-void 
+void
 TimeLine::smooth(mrs_natural smoothSize) //[?]
 {
 	TimeRegion region;
@@ -243,7 +268,7 @@ TimeLine::smooth(mrs_natural smoothSize) //[?]
 			removeRegion(i);
 			i = i-1;
 			// }
-			// else 
+			// else
 			// remove(i+1);
 		}
 	}
@@ -261,10 +286,10 @@ TimeLine::smooth(mrs_natural smoothSize) //[?]
 	}
 }
 
-void 
+void
 TimeLine::removeRegion(mrs_natural regionNum)
 {
-	if (regionNum >= 1) 
+	if (regionNum >= 1)
 	{
 		regions_[regionNum-1].end = regions_[regionNum].end;
 		regions_.erase(regions_.begin() + regionNum);
@@ -272,12 +297,12 @@ TimeLine::removeRegion(mrs_natural regionNum)
 	}
 }
 
-mrs_natural 
+mrs_natural
 TimeLine::regionClass(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)
 		return regions_[regionNum].classId;
-	else 
+	else
 		return 0;
 }
 
@@ -299,6 +324,8 @@ TimeLine::sampleClass(mrs_natural index) const
 bool
 TimeLine::load(mrs_string filename)
 {
+  cout << "filename = " << filename << endl;
+  
 	ifstream in;
 	filename_ = filename;
 
@@ -315,7 +342,7 @@ TimeLine::load(mrs_string filename)
 	FileName f(filename);
 	vector<mrs_string> labels;
 
-	if (f.ext() == "txt") // audacity label format 
+	if (f.ext() == "txt") // audacity label format
 	{
 		numRegions_ = 0;
 		mrs_real start, end;
@@ -324,14 +351,14 @@ TimeLine::load(mrs_string filename)
 		while (!in.eof())
 		{
 			in >> start >> end >> label;
-			
-			TimeRegion region;			
-			region.start = start * 22050;
-			region.end = end * 22050;
+
+			TimeRegion region;
+			region.start = start * srate_;
+			region.end = end * srate_;
 			region.classId = 1;
 			region.name = label;
 			mrs_bool label_found = false;
-			
+
 			for (unsigned int i=0; i < labels.size(); i++)
 			{
 				if (label == labels[i])
@@ -339,37 +366,49 @@ TimeLine::load(mrs_string filename)
 					label_found = true;
 					region.classId = i;
 				}
-				
+
 			}
 			if (!label_found)
 			{
 				labels.push_back(label);
-				region.classId = labels.size()-1;
+				sort(labels.begin(), labels.end());
 			}
 			regions_.push_back(region);
-			numRegions_ ++;			
+			numRegions_ ++;
 		}
-		
-		// last region is a duplicate due to empty last line 
-		// kind of a hack but works 
+
+		// relabel classIds so that they correspond to sorted labels 
+		for (mrs_natural i=0; i < numRegions_; ++i)
+		{
+		  mrs_string label = regions_[i].name;
+		  vector<mrs_string>::iterator it = find(labels.begin(), labels.end(), label);
+		  if (it == labels.end())
+			regions_[i].classId = -1;
+		  mrs_natural l = distance(labels.begin(), it);
+		  regions_[i].classId = l;
+		}
+
+
+		// last region is a duplicate due to empty last line
+		// kind of a hack but works
 		numRegions_ --;
 		regions_.pop_back();
-		
+
 
 		lineSize_ = 1;
-		size_ = end * 22050;
+		size_ = end * srate_;
 
 		in.close();
 		return true;
 	}
-	else     // marsyas .mtl format 
+	else     // marsyas .mtl format
 	{
 		in >> numRegions_; // read numRegions
 		MRSDIAG("TimeLine::load() - Number of regions is " << numRegions_);
-		
+
 		in >> lineSize_; //read lineSize
 		MRSDIAG("TimeLine::load() - lineSize size is " << lineSize_);
-		
+
 		in >> size_; //read size
 		MRSDIAG("TimeLine::load() - Size is " << size_);
 
@@ -379,7 +418,7 @@ TimeLine::load(mrs_string filename)
 			TimeRegion region;
 			regions_.push_back(region);
 		}
-		
+
 		for (mrs_natural i=0; i<numRegions_; ++i)
 		{
 			mrs_natural token;
@@ -394,13 +433,13 @@ TimeLine::load(mrs_string filename)
 			//regions_[i].name = stoken1 +" "+stoken2; //used for .cue files in IEEE TASLP paper...
 			regions_[i].name = stoken1;
 		}
-		
+
 		in.close();
-		
+
 		return true;
 
 	}
-	
+
 }
 
 void
@@ -421,7 +460,7 @@ TimeLine::info() const
 	}
 }
 
-void 
+void
 TimeLine::printnew(FILE *fp)
 {
 	mrs_natural i;
@@ -431,15 +470,15 @@ TimeLine::printnew(FILE *fp)
 
 	for (i=0; i<numRegions_; ++i)
 	{
-		// convert to milliseconds 
+		// convert to milliseconds
 		float smsec;
 		float emsec;
-		smsec = ((regions_[i].start * lineSize_ * 1.0f) / 22050.0f)*10000;
+		smsec = ((regions_[i].start * lineSize_ * 1.0f) / srate_)*10000;
 		// fprintf(fp, "%d ", regions_[i].start);
 		fprintf(fp, "%6.0f ", smsec);
 
 		fprintf(fp, "%d ", (int)regions_[i].classId);
-		emsec = ((regions_[i].end * lineSize_ * 1.0f) / 22050.0f) * 1000;
+		emsec = ((regions_[i].end * lineSize_ * 1.0f) / srate_) * 1000;
 		// fprintf(fp, "%d ", regions_[i].end);
 		fprintf(fp, "%6.0f\n", emsec);
 
@@ -447,7 +486,7 @@ TimeLine::printnew(FILE *fp)
 	}
 }
 
-void 
+void
 TimeLine::write(mrs_string filename)
 {
 	ofstream os(filename.c_str());
@@ -471,7 +510,7 @@ Marsyas::operator<<(ostream& o, const TimeLine& tline)
 	return o;
 }
 
-void 
+void
 TimeLine::print(FILE *fp)
 {
 	mrs_natural i;
@@ -489,7 +528,7 @@ TimeLine::print(FILE *fp)
 }
 
 /*
-void 
+void
 TimeLine::print_mp3(FILE *fp)
 {
 verbose("TimeLine::print(FILE *fp)");
@@ -512,7 +551,7 @@ fprintf(fp, "Region %d\n", i+1);
 */
 
 /*
-void 
+void
 TimeLine::print_mmf(FILE *fp)
 {
 int i;
@@ -543,7 +582,7 @@ fprintf(fp," 0\n\n");
 }
 */
 
-void 
+void
 TimeLine::receive(Communicator* com)
 {
 	static char *buf = new char[256];
@@ -563,7 +602,7 @@ TimeLine::receive(Communicator* com)
 
 	for (i=0; i < numRegions_; ++i)
 	{
-		com->receive_message(buf);      
+		com->receive_message(buf);
 	}
 }
 
@@ -612,7 +651,7 @@ TimeLine::send(Communicator* com)
 
 		sprintf(buf, "%d\n", (int)regions_[i].end);
 		message = buf;
-		com->send_message(message);      
+		com->send_message(message);
 
 		sprintf(buf, "Region %d\n", (int)i);
 		message = buf;
@@ -632,7 +671,7 @@ float r;
 float g;
 float b;
 
-Gen_Plotter plotter;  
+Gen_Plotter plotter;
 //f1.norm(0.5, 0.2);
 //f2.norm(0.5, 0.2);
 //f3.norm(0.5, 0.2);
@@ -643,7 +682,7 @@ f3.norm(5.63, 2.71, 0.5, 0.2);
 
 //plotter.plot_wait(f1);
 //plotter.plot_wait(f2);
-//plotter.plot_wait(f3);  
+//plotter.plot_wait(f3);
 
 int start;
 int end;
@@ -661,17 +700,14 @@ b = fabs(f3.mean(start,end));
 
 // Clip to colors
 if (r > 1.0) r = 1.0;
-if (g > 1.0) g = 1.0;      
-if (b > 1.0) b = 1.0;      
+if (g > 1.0) g = 1.0;
+if (b > 1.0) b = 1.0;
 if (r < 0.0) r = 0.0;
-if (g < 0.0) g = 0.0;      
-if (b < 0.0) b = 0.0;      
+if (g < 0.0) g = 0.0;
+if (b < 0.0) b = 0.0;
 
 region_[i].color.setRGB(r,g,b);
 }
 
 }
 */
-
-
-

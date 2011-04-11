@@ -52,7 +52,6 @@ in sequence, but forwards the original composite input flow to the output.
 		~FlowThru();
 		MarSystem* clone() const;  
 
-		mrs_real* const recvControls();
 
 		void myProcess(realvec& in, realvec& out);
 	};
@@ -60,5 +59,3 @@ in sequence, but forwards the original composite input flow to the output.
 }//namespace Marsyas
 
 #endif
-
-

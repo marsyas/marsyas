@@ -32,8 +32,8 @@ regression_audio (phasevocoder right.wav right-phasevocoder.au
 	phasevocoder "${NEXT_COMMAND}")
 
 
-#set( NEXT_COMMAND
-#)
-#regression_audio (peakClustering nearhou.wav nearhouSep.wav
-#	peakClustering "${NEXT_COMMAND}")
+set( NEXT_COMMAND
+)
+regression_audio (peakClustering nearhou.wav nearhouSep.wav
+	peakClustering "${NEXT_COMMAND}")
 

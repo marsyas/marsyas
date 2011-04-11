@@ -47,7 +47,6 @@ public:
   ~Series();
   MarSystem* clone() const;  
   
-  mrs_real* const recvControls();
 
   void myProcess(realvec& in, realvec& out);
 };
