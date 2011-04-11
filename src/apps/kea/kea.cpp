@@ -5,12 +5,12 @@
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 
-#include <vector> 
+#include <vector>
 
 using namespace std;
 using namespace Marsyas;
 
-/* global variables for various commandline options */ 
+/* global variables for various commandline options */
 int helpopt_;
 int usageopt_;
 string wekafname_;
@@ -29,7 +29,7 @@ mrs_real minspan_;
 mrs_string trainedclassifier_;
 
 
-void 
+void
 printUsage(string progName)
 {
   MRSDIAG("kea.cpp - printUsage");
@@ -38,7 +38,7 @@ printUsage(string progName)
   exit(1);
 }
 
-void 
+void
 printHelp(string progName)
 {
   MRSDIAG("kea.cpp - printHelp");
@@ -87,8 +87,8 @@ wekafname_Set()
   return true;
 }
 
-void 
-distance_matrix_MIREX() 
+void
+distance_matrix_MIREX()
 {
   if (!wekafname_Set()) return;
 
@@ -96,7 +96,7 @@ distance_matrix_MIREX()
 
   wekafname_  = inputdir_ + wekafname_;
 
-  MarSystemManager mng; 
+  MarSystemManager mng;
 
   MarSystem* net = mng.create("Series", "net");
   MarSystem* accum = mng.create("Accumulator", "accum");
@@ -104,12 +104,12 @@ distance_matrix_MIREX()
   accum->addMarSystem(wsrc);
   accum->updControl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
   accum->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
-  mrs_natural nInstances = 
+  mrs_natural nInstances =
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   accum->updControl("mrs_natural/nTimes", nInstances);
 
-  
-  
+
+
   MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
   dmatrix->addMarSystem(mng.create("Metric", "dmetric"));
   dmatrix->updControl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
@@ -121,60 +121,60 @@ distance_matrix_MIREX()
 
   ofstream oss;
   oss.open(distancematrix_.c_str());
-  
+
   oss << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
 
-  
-  // collection simply for naming the entries 
+
+  // collection simply for naming the entries
   Collection l;
   l.read(inputdir_ + predictcollectionfname_);
-  for (size_t i=1; i <= l.size(); ++i) 
+  for (size_t i=1; i <= l.size(); ++i)
 	{
 		oss << i << "\t" << l.entry(i-1) << endl;
 	}
-	
+
 
   oss << "Q/R";
   const mrs_realvec& dmx = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	
-  for (int i=1; i <= nInstances; ++i) 
+
+  for (int i=1; i <= nInstances; ++i)
 	{
 		oss << "\t" << i;
 	}
   oss << endl;
-	
-  for (int i=1; i <= nInstances; ++i) 
+
+  for (int i=1; i <= nInstances; ++i)
 	{
 		oss << i;
 		for (int j=0; j < nInstances; j++)
 			oss <<"\t" << dmx(i-1, j);
 		oss << endl;
 	}
-	
-  oss << endl;	
+
+  oss << endl;
 }
 
-void 
-distance_matrix() 
+void
+distance_matrix()
 {
   if (!wekafname_Set()) return;
 
   cout << "Distance matrix calculation using " << wekafname_ << endl;
-	
+
   wekafname_  = inputdir_ + wekafname_;
-	
-  MarSystemManager mng; 
-	
+
+  MarSystemManager mng;
+
   MarSystem* net = mng.create("Series", "net");
-	
+
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   net->addMarSystem(wsrc);
 	//!!!: mode control
 	net->updControl("WekaSource/wsrc/mrs_string/validationMode", "OutputInstancePair");
 	net->updControl("WekaSource/wsrc/mrs_bool/normMaxMin", true);
   net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
-	
-	
+
+
 	MarSystem* dmatrix = mng.create("SelfSimilarityMatrix", "dmatrix");
   dmatrix->addMarSystem(mng.create("Metric", "dmetric"));
   dmatrix->updControl("Metric/dmetric/mrs_string/metric", "euclideanDistance");
@@ -184,34 +184,34 @@ distance_matrix()
   net->addMarSystem(dmatrix);
 	//!!!: mode control
 	net->updControl("SelfSimilarityMatrix/dmatrix/mrs_natural/mode", 1); //FIXME: replace use of enum for strings?
-  
+
 	//link controls between WekaSource and SelfSimilarityMatrix
-	net->linkControl("SelfSimilarityMatrix/dmatrix/mrs_natural/nInstances", 
+	net->linkControl("SelfSimilarityMatrix/dmatrix/mrs_natural/nInstances",
 									 "WekaSource/wsrc/mrs_natural/nInstances");
 	net->linkControl("WekaSource/wsrc/mrs_realvec/instanceIndexes",
 									 "SelfSimilarityMatrix/dmatrix/mrs_realvec/instanceIndexes");
-	
+
 	ofstream oss;
 	oss.open(distancematrix_.c_str());
 	oss << "Marsyas-kea distance matrix" << endl;
-	
+
 	while(!net->getctrl("SelfSimilarityMatrix/dmatrix/mrs_bool/done")->to<bool>())
 	{
 		const mrs_realvec& idxs = net->getctrl("SelfSimilarityMatrix/dmatrix/mrs_realvec/instanceIndexes")->to<mrs_realvec>();
 		oss << "(" << mrs_natural(idxs(0)) << "," << mrs_natural(idxs(1)) << ") = ";
-		
+
 		net->tick();
-				
+
 		const mrs_realvec& value = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		oss << value(0) << endl;
 	}
-	
-  oss << endl;	
+
+  oss << endl;
 }
 
 
-void 
-pca() 
+void
+pca()
 {
   cout << "Principal Component Analysis of .arff file" << endl;
 
@@ -228,7 +228,7 @@ pca()
   MarSystem* wsrc = mng.create("WekaSource", "wsrc");
   accum->addMarSystem(wsrc);
   accum->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
-  mrs_natural nInstances = 
+  mrs_natural nInstances =
     accum->getctrl("WekaSource/wsrc/mrs_natural/nInstances")->to<mrs_natural>();
   cout << "nInstances = " << nInstances << endl;
   accum->updControl("mrs_natural/nTimes", nInstances);
@@ -243,46 +243,46 @@ pca()
   net->updControl("NormMaxMin/norm/mrs_string/mode", "twopass");
   net->updControl("NormMaxMin/norm/mrs_real/lower", 0.0);
   net->updControl("NormMaxMin/norm/mrs_real/upper", 11.0);
-  
-  net->updControl("WekaSink/wsink/mrs_natural/nLabels", 
+
+  net->updControl("WekaSink/wsink/mrs_natural/nLabels",
 	       net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses"));
   net->updControl("WekaSink/wsink/mrs_string/labelNames", net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_string/classNames"));
   net->updControl("WekaSink/wsink/mrs_string/filename", "pca_out.arff");
 
   net->tick();
 
-  // the output of the PCA 
+  // the output of the PCA
  const mrs_realvec& pca_transformed_data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
  cout << "Output transformed features using PCA" << endl;
 
- string classNames = net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>(); 
+ string classNames = net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_string/classNames")->to<mrs_string>();
  vector<string> labelNames;
- 
+
  labelNames.clear();
- 
+
  for (int i = 0; i < net->getctrl("Accumulator/accum/WekaSource/wsrc/mrs_natural/nClasses")->to<mrs_natural>(); ++i)
  {
 	 string labelName;
 	 string temp;
-	 
+
 	 labelName = classNames.substr(0, classNames.find(","));
 	 temp = classNames.substr(classNames.find(",")+1, classNames.length());
 	 classNames = temp;
 	 labelNames.push_back(labelName);
  }
- 
- 
+
+
  cout << "12" << endl;
  cout << "12" << endl;
- 
- for (int t=0; t < pca_transformed_data.getCols(); t++) 
+
+ for (int t=0; t < pca_transformed_data.getCols(); t++)
    {
 
 	   cout << (int)pca_transformed_data(0,t) * 12 + (int)pca_transformed_data(1,t) << ",";
 	   cout << labelNames[(int)pca_transformed_data(2,t)];
 	   cout << endl;
-	   
+
 	   // cout << (int)pca_transformed_data(0,t) << "\t";
 	   // cout << (int)pca_transformed_data(1,t) << "\t";
 	   // cout << (int)pca_transformed_data(2,t) << "\t";
@@ -290,15 +290,15 @@ pca()
 	   // cout << endl;
    }
 
-  
 
-  
+
+
 
 }
 
 
-void 
-train_classifier() 
+void
+train_classifier()
 {
 
   if (!wekafname_Set()) return;
@@ -306,7 +306,7 @@ train_classifier()
   wekafname_  = inputdir_ + wekafname_;
 
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
-  cout << "Classifier type : " << classifier_ << endl;	
+  cout << "Classifier type : " << classifier_ << endl;
 
   MarSystemManager mng;
 
@@ -335,10 +335,10 @@ train_classifier()
   //
   if (classifier_ == "GS")
 	net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
-  if (classifier_ == "ZEROR") 
-	net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
-  if (classifier_ == "SVM")   
-    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+  if (classifier_ == "ZEROR")
+	net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");
+  if (classifier_ == "SVM")
+    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");
 
   ////////////////////////////////////////////////////////////
   //
@@ -353,7 +353,7 @@ train_classifier()
   // the same as the WekaSource
   //
   net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->updControl("Classifier/cl/mrs_string/mode", "train");  
+  net->updControl("Classifier/cl/mrs_string/mode", "train");
 
   ////////////////////////////////////////////////////////////
   //
@@ -371,24 +371,24 @@ train_classifier()
 
   ofstream clout;
   clout.open(trainedclassifier_.c_str());
-  net->updControl("Classifier/cl/mrs_string/mode", "predict");    
-  
- 
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");
+
+
   clout << *net << endl;
-  
+
   cout << "Done training " << endl;
-	
+
 }
 
 
-void 
-predict(mrs_string mode) 
+void
+predict(mrs_string mode)
 {
-	
+
 	MarSystemManager mng;
-	
+
 	cout << "Predicting using " << trainedclassifier_ << endl;
-	
+
 	ifstream pluginStream(trainedclassifier_.c_str());
     MRS_WARNINGS_OFF;
 	MarSystem* net = mng.getMarSystem(pluginStream);
@@ -409,39 +409,39 @@ predict(mrs_string mode)
    }
 
 
-   
-		   
+
+
 
   ////////////////////////////////////////////////////////////
   //
   // Predict the classes of the test data
   //
   net->updControl("WekaSource/wsrc/mrs_string/filename", twekafname_);
-  net->updControl("Classifier/cl/mrs_string/mode", "predict");  
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");
   ////////////////////////////////////////////////////////////
   //
   // Tick over the test WekaSource until all lines in the
   // test file have been read.
   //
 
-  
+
   ofstream prout;
   prout.open(predictcollectionfname_.c_str());
 
   ofstream prtout;
   prtout.open(predicttimeline_.c_str());
-  
-  
+
+
 
   realvec data;
   int end=0;
   int start=0;
-  
+
   mrs_string prev_name = "";
   mrs_string name;
-  
+
   mrs_real srate;
-  
+
 
 
 
@@ -450,7 +450,7 @@ predict(mrs_string mode)
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
 
-	
+
 	if (mode == "default")
 	{
 		cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
@@ -461,49 +461,51 @@ predict(mrs_string mode)
 	else if (mode == "timeline")
 	{
 
+	  cout << "SRATE = " << net->getctrl("Weka/Source/wsrc/mrs_real/currentSrate")->to<mrs_real>() << endl;
+
 		name = classNames[(int)data(0,0)];
-		
+
 		if (name != prev_name)
 		{
-			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > minspan_)) // not background 
+			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > minspan_)) // not background
 			{
 				if (predicttimeline_ == EMPTYSTRING)
 				{
 					cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-					cout << prev_name << endl;		
+					cout << prev_name << endl;
 				}
-				else 
+				else
 				{
 					prtout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-					prtout << prev_name << endl;							
+					prtout << prev_name << endl;
 				}
-				
+
 			}
 			start = end;
-			
+
 		}
-		else 
+		else
 			{
-				
+
 			}
-				
+
 		prev_name = name;
-		
-		
+
+
 	}
-	else 
+	else
 		cout << "Unsupported mode" << endl;
-	
+
 	//	cout << data(0,0) << endl;
 	end++;
   }
 
-  
+
   prout.close();
-  
+
   // cout << "DONE" << endl;
 
-  // sness - hmm, I really should be able to delete net, but I get a 
+  // sness - hmm, I really should be able to delete net, but I get a
   // coredump when I do.  Maybe I need to destroy something else first?
   //  delete net;
 
@@ -512,8 +514,8 @@ predict(mrs_string mode)
 
 
 
-void 
-train_predict(mrs_string mode) 
+void
+train_predict(mrs_string mode)
 {
   if (!wekafname_Set()) return;
   if (!twekafname_Set()) return;
@@ -521,9 +523,9 @@ train_predict(mrs_string mode)
   wekafname_  = inputdir_ + wekafname_;
 
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
-  cout << "Classifier type : " << classifier_ << endl;	
+  cout << "Classifier type : " << classifier_ << endl;
   cout << "Predicting classes for .arff file: " << twekafname_ << endl;
-  
+
 
 
   MarSystemManager mng;
@@ -553,10 +555,10 @@ train_predict(mrs_string mode)
   //
   if (classifier_ == "GS")
 	net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
-  if (classifier_ == "ZEROR") 
-	net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
-  if (classifier_ == "SVM")   
-    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+  if (classifier_ == "ZEROR")
+	net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");
+  if (classifier_ == "SVM")
+    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");
 
   ////////////////////////////////////////////////////////////
   //
@@ -571,7 +573,7 @@ train_predict(mrs_string mode)
   // the same as the WekaSource
   //
   net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->updControl("Classifier/cl/mrs_string/mode", "train");  
+  net->updControl("Classifier/cl/mrs_string/mode", "train");
 
   ////////////////////////////////////////////////////////////
   //
@@ -587,7 +589,7 @@ train_predict(mrs_string mode)
   }
 
   cout << "Done training " << endl;
-  
+
 
 //     cout << "------------------------------" << endl;
 //     cout << "Class names" << endl;
@@ -614,31 +616,31 @@ train_predict(mrs_string mode)
   // Predict the classes of the test data
   //
   net->updControl("WekaSource/wsrc/mrs_string/filename", twekafname_);
-  net->updControl("Classifier/cl/mrs_string/mode", "predict");  
+  net->updControl("Classifier/cl/mrs_string/mode", "predict");
   ////////////////////////////////////////////////////////////
   //
   // Tick over the test WekaSource until all lines in the
   // test file have been read.
   //
 
-  
+
   ofstream prout;
   prout.open(predictcollectionfname_.c_str());
 
   ofstream prtout;
   prtout.open(predicttimeline_.c_str());
-  
-  
+
+
 
   realvec data;
   int end=0;
   int start=0;
-  
+
   mrs_string prev_name = "";
   mrs_string name;
-  
+
   mrs_real srate;
-  
+
 
 
 
@@ -647,7 +649,7 @@ train_predict(mrs_string mode)
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 	srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
 
-	
+
 	if (mode == "default")
 	{
 		cout << net->getctrl("WekaSource/wsrc/mrs_string/currentFilename")->to<mrs_string>() << "\t";
@@ -658,49 +660,56 @@ train_predict(mrs_string mode)
 	else if (mode == "timeline")
 	{
 
-		name = classNames[(int)data(0,0)];
+	  mrs_real srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
+
+		name = classNames[(int)data(0,0)];\
+		cout << "name " << name << endl;
+
+		cout << "start = " << start << endl;
+		cout << "end = " << end << endl;
 		
 		if (name != prev_name)
 		{
-			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > minspan_)) // not background 
+		  // if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > minspan_)) // not background
+		  {
+			if (predicttimeline_ == EMPTYSTRING)
 			{
-				if (predicttimeline_ == EMPTYSTRING)
-				{
-					cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-					cout << prev_name[0] << endl;		
-				}
-				else 
-				{
-					prtout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-					prtout << prev_name[0] << endl;							
-				}
-				
+			  cout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
+			  cout << prev_name[0] << endl;
 			}
-			start = end;
-			
+			else
+			{
+			  prtout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
+			  prtout << prev_name[0] << endl;
+			}
+
+		  }
+		  start = end;
+
 		}
-		else 
-			{
-				
-			}
-				
+		
+		// else
+		// {
+
+		// }
+
 		prev_name = name;
-		
-		
+
+
 	}
-	else 
+	else
 		cout << "Unsupported mode" << endl;
-	
+
 	//	cout << data(0,0) << endl;
 	end++;
   }
 
-  
+
   prout.close();
-  
+
   // cout << "DONE" << endl;
 
-  // sness - hmm, I really should be able to delete net, but I get a 
+  // sness - hmm, I really should be able to delete net, but I get a
   // coredump when I do.  Maybe I need to destroy something else first?
   //  delete net;
 
@@ -712,7 +721,7 @@ train_predict(mrs_string mode)
 
 
 
-void 
+void
 train_evaluate()
 {
   if (!wekafname_Set()) return;
@@ -722,9 +731,9 @@ train_evaluate()
   cout << "Training classifier using .arff file: " << wekafname_ << endl;
   cout << "Classifier type : " << classifier_ << endl;
 
-  
+
   MarSystemManager mng;
-  
+
   MarSystem* net;
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("WekaSource", "wsrc"));
@@ -733,12 +742,12 @@ train_evaluate()
 
   if (classifier_ == "GS")
     net->updControl("Classifier/cl/mrs_string/enableChild", "GaussianClassifier/gaussiancl");
-  if (classifier_ == "ZEROR") 
-    net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");    
-  if (classifier_ == "SVM")   
-    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");    
+  if (classifier_ == "ZEROR")
+    net->updControl("Classifier/cl/mrs_string/enableChild", "ZeroRClassifier/zerorcl");
+  if (classifier_ == "SVM")
+    net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");
   // net->updControl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
-  
+
 
   // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updControl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
@@ -747,11 +756,11 @@ train_evaluate()
   net->updControl("mrs_natural/inSamples", 1);
 
   net->updControl("ClassificationReport/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->updControl("ClassificationReport/summary/mrs_string/classNames", 
+  net->updControl("ClassificationReport/summary/mrs_string/classNames",
 	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
-  
+
   net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkControl("Classifier/cl/mrs_string/mode", "ClassificationReport/summary/mrs_string/mode");  
+  net->linkControl("Classifier/cl/mrs_string/mode", "ClassificationReport/summary/mrs_string/mode");
 
   int i = 0;
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
@@ -768,7 +777,7 @@ train_evaluate()
 }
 
 //
-// 
+//
 //
 bool
 alreadySeen(mrs_string currentlyPlaying, vector<string> previouslySeenFilenames)
@@ -990,7 +999,7 @@ void tags() {
 	cout << "DONE" << endl;
 }
 
-void 
+void
 initOptions()
 {
   cmd_options_.addBoolOption("help", "h", false);
@@ -1009,7 +1018,7 @@ initOptions()
 }
 
 
-void 
+void
 loadOptions()
 {
   helpopt_ = cmd_options_.getBoolOption("help");
@@ -1035,51 +1044,45 @@ main(int argc, const char **argv)
 
   cout << "Kea - Machine Learning in Marsyas ala Weka" << endl;
 
-  string progName = argv[0];  
+  string progName = argv[0];
   if (argc == 1)
     printUsage(progName);
 
-  // handling of command-line options 
+  // handling of command-line options
   initOptions();
   cmd_options_.readOptions(argc, argv);
   loadOptions();
-  
+
   vector<string> soundfiles = cmd_options_.getRemaining();
-  if (helpopt_) 
+  if (helpopt_)
     printHelp(progName);
-  
+
   if (usageopt_)
     printUsage(progName);
 
   cout << "Mode = " << mode_ << endl;
 
-  if (mode_ == "train_evaluate") 
+  if (mode_ == "train_evaluate")
     train_evaluate();
   if (mode_ == "distance_matrix_MIREX")
 	  distance_matrix_MIREX();
-  if (mode_ == "distance_matrix") 
+  if (mode_ == "distance_matrix")
 	  distance_matrix();
   if (mode_ == "pca")
 	  pca();
   if (mode_ == "tags")
 	  tags();
-  if (mode_ == "train_predict") 
+  if (mode_ == "train_predict")
 	  train_predict("default");
   if (mode_ == "train_predict_timeline")
 	  train_predict("timeline");
-  if (mode_ == "predict") 
+  if (mode_ == "predict")
 	  predict("default");
   if (mode_ == "predict_timeline")
 	  predict("timeline");
-  if (mode_ == "train_classifier") 
+  if (mode_ == "train_classifier")
 	  train_classifier();
-  
-  
+
+
   exit(0);
 }
-
-
-
-
-
-
