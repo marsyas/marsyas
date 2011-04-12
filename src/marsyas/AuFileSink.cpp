@@ -81,8 +81,8 @@ AuFileSink::AuFileSink(mrs_string name):AbsSoundFileSink("AuFileSink",name)
 
 AuFileSink::~AuFileSink()
 {
-  delete sdata_;
-  delete cdata_;
+  delete [] sdata_;
+  delete [] cdata_;
   delete hdr_;
 	if (sfp_) fclose(sfp_);
 }
