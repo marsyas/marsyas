@@ -23,7 +23,6 @@ class WekaSource_runner : public CxxTest::TestSuite
 {
 public:
   realvec in,out;
-  MarSystem *net;
 
   void
   setUp()
@@ -32,7 +31,6 @@ public:
 	// "destructor"
 	void tearDown()
 	{
-		delete net;
 	}
 
   void test_pass(void) 
@@ -53,6 +51,7 @@ public:
     TS_TRACE("Checking WekaSource reading data line 2");
     TS_ASSERT_EQUALS(processedData(0,0), 0.082136);
     
+    delete net;
   }
 
 

@@ -100,8 +100,6 @@ public:
 	  nbuf(0,i) = d;
 	}
 
-	MarSystemManager mng;
-
 	// A series containing a RealvecSource followed by an AubioYin
 	MarSystem* net = mng.create("Series", "series");
 	net->addMarSystem(mng.create("RealvecSource", "src"));
@@ -143,6 +141,8 @@ public:
   	TS_ASSERT_DELTA(check(7,0),989.122,0.001);
   	TS_ASSERT_DELTA(check(8,0),989.011,0.001);
   	TS_ASSERT_DELTA(check(9,0),989.122,0.001);
+
+	delete net;
   }
 
   //
@@ -172,8 +172,6 @@ public:
 	  double d = sin(i/((double)buffer_size)*(PI*2.0)*((double)buffer_size/44100.0)*500.0);
 	  nbuf(0,i) = d;
 	}
-
-	MarSystemManager mng;
 
 	// A series containing a RealvecSource followed by an AubioYin
 	MarSystem* net = mng.create("Series", "series");
@@ -215,6 +213,8 @@ public:
  	TS_ASSERT_DELTA(check(7,0),497.210,0.001);
  	TS_ASSERT_DELTA(check(8,0),497.210,0.001);
  	TS_ASSERT_DELTA(check(9,0),497.210,0.001);
+
+	delete net;
   }
 
   //
@@ -247,8 +247,6 @@ public:
 	  double d = sin(i/((double)buffer_size)*(PI*2.0)*((double)buffer_size/44100.0)*freq);
 	  nbuf(0,i) = d;
 	}
-
-	MarSystemManager mng;
 
 	// A series containing a RealvecSource followed by an AubioYin
 	MarSystem* net = mng.create("Series", "series");
@@ -290,6 +288,8 @@ public:
   	TS_ASSERT_DELTA(check(7,0),974.586,0.001);
   	TS_ASSERT_DELTA(check(8,0),972.651,0.001);
   	TS_ASSERT_DELTA(check(9,0),970.831,0.001);
+
+	delete net;
   }
 
 
