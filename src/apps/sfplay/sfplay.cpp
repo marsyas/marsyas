@@ -43,17 +43,17 @@ mrs_natural duration;
 mrs_natural windowsize;
 CommandLineOptions cmd_options;
 
-void 
+int
 printUsage(string progName)
 {
 	MRSDIAG("sfplay.cpp - printUsage");
 	cerr << "Usage : " << progName << " [-g gain] [-s start(seconds)] [-l length(seconds)] [-f outputfile] [-p pluginName] [-r repetitions] [-ws windowsize(samples)] file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format or collections " << endl;
-	exit(1);
+	return(1);
 }
 
-void 
+int
 printHelp(string progName)
 {
 	MRSDIAG("sfplay.cpp - printHelp");
@@ -75,7 +75,7 @@ printHelp(string progName)
 	cerr << "-p --plugin     : output plugin name " << endl;
 	cerr << "-r --repetitions: number of repetitions " << endl;
 	cerr << "--ws --windowsize: windows size in samples " << endl;
-	exit(1);
+	return(1);
 }
 
 
@@ -222,13 +222,13 @@ main(int argc, const char **argv)
   
 	vector<string> soundfiles = cmd_options.getRemaining();
 	if (helpopt) 
-		printHelp(progName);
+		return printHelp(progName);
   
 	if (usageopt)
-		printUsage(progName);
+		return printUsage(progName);
 
 	// play the soundfiles/collections 
 	sfplay(soundfiles);
   
-	exit(0);
+	return(0);
 }

@@ -24,7 +24,7 @@ using namespace std;
 
 #define CLOSE_ENOUGH 0.0001
 
-void
+int
 printHelp(string progName)
 {
 	MRSDIAG("audioCompare.cpp - printUsage");
@@ -32,10 +32,10 @@ printHelp(string progName)
 	cerr << "-------------------------" << endl;
 	cerr << "Usage: " <<endl;
 	cerr << progName<<" file1 file2"<<endl;
-	exit(1);
+	return (1);
 }
 
-void
+int
 isClose(string infile1, string infile2)
 {
 	MarSystemManager mng;
@@ -70,10 +70,13 @@ isClose(string infile1, string infile2)
 			//cout<<processedData(i)<<" ";
 			if ( abs(processedData(i)) > CLOSE_ENOUGH )
 			{
-				exit(1);
+				delete pnet;
+				return(1);
 			}
 		}
 	}
+	delete pnet;
+	return 0;
 }
 
 
@@ -83,13 +86,12 @@ main(int argc, const char **argv)
 	string progName = argv[0];
 	if (argc != 3)
 	{
-		printHelp(progName);
+		return printHelp(progName);
 	}
 
 	string file1 = argv[1];
 	string file2 = argv[2];
 
-	isClose(file1, file2);
-	exit(0);
+	return isClose(file1, file2);
 }
 
