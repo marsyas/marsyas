@@ -27,14 +27,19 @@ PvFold::PvFold(mrs_string name):MarSystem("PvFold",name)
   //name_ = name;
   
 	N_ = 0;
-  Nw_ = 0;
-  PNw_ = 0;
+	Nw_ = 0;
+	PNw_ = 0;
+	PN_ = 0;
 
 	addControls();
 }
 
 PvFold::PvFold(const PvFold& a):MarSystem(a) 
 {
+	N_ = 0;
+	Nw_ = 0;
+	PNw_ = 0;
+	PN_ = 0;
 	ctrl_rmsIn_ = getctrl("mrs_real/rmsIn");
 }
 

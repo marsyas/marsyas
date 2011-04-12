@@ -45,6 +45,7 @@ PvConvert::PvConvert(const PvConvert& a):MarSystem(a)
 	ctrl_phases_ = getctrl("mrs_realvec/phases");
 	ctrl_regions_ = getctrl("mrs_realvec/regions");
 	
+	psize_ = 0;
 }
 
 

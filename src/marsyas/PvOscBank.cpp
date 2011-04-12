@@ -28,6 +28,7 @@ PvOscBank::PvOscBank(mrs_string name):MarSystem("PvOscBank",name)
   
 	psize_ = 0;
 	size_ = 0;
+	PS_ = 0;
 
 	addControls();
 }
@@ -43,6 +44,9 @@ PvOscBank::PvOscBank(const PvOscBank& a):MarSystem(a)
 	ctrl_phaselock_ = getctrl("mrs_bool/phaselock");
 	ctrl_onsetsAudible_ = getctrl("mrs_bool/onsetsAudible");
 	ctrl_rmsIn_ = getctrl("mrs_real/rmsIn");
+
+	psize_ = 0;
+	PS_ = 0;
 }
 
 
