@@ -63,16 +63,17 @@ mrs_string multiresMode_ = "transient_switch";
 
 CommandLineOptions cmd_options;
 
-void 
+int
 printUsage(string progName)
 {
 	MRSDIAG("phasevocoder.cpp - printUsage");
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
 	cerr << "If no filename is given the default live audio input is used. " << endl;
+	return 1;
 }
 
-void 
+int
 printHelp(string progName)
 {
 	MRSDIAG("phasevocoder.cpp - printHelp");
@@ -108,7 +109,7 @@ printHelp(string progName)
 	cerr << "-ob --oscbank        : oscbank resynthesis instead of IFFT " << endl;
 	cerr << "-cm --convertmode    : mode for which frequencies/bins to resynthesize " << endl;
 	cerr << "-on --onsets         : file with onsets " << endl;
-	exit(1);
+	return(1);
 }
 
 
@@ -278,6 +279,7 @@ phasevocoder(string sfName, mrs_natural N, mrs_natural Nw,
 			}
 		}
 	}
+	delete pvseries;
 }
 
 
@@ -1677,10 +1679,10 @@ main(int argc, const char **argv)
 	string progName = argv[0];  
 
 	if (helpopt_) 
-		printHelp(progName);
+		return printHelp(progName);
 
 	if (usageopt_)
-		printUsage(progName);
+		return printUsage(progName);
 
 	if (!quietopt_)
 	{
@@ -1760,7 +1762,7 @@ main(int argc, const char **argv)
 				cout << "Not supported heterophonics epoch" << endl;
 	}
 
-	exit(0);
+	return (0);
 }
 
 
