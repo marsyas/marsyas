@@ -98,7 +98,7 @@ AimSAI::myUpdate(MarControlPtr sender)
 		initialized_min_delay_ms != ctrl_min_delay_ms_->to<mrs_real>() ||
 		initialized_max_delay_ms != ctrl_max_delay_ms_->to<mrs_real>() ||
 		initialized_buffer_memory_decay != ctrl_buffer_memory_decay_->to<mrs_real>() ||
-		initialized_max_concurrent_strobes != ctrl_max_concurrent_strobes_->to<mrs_real>() ||
+		initialized_max_concurrent_strobes != ctrl_max_concurrent_strobes_->to<mrs_natural>() ||
 		initialized_strobe_weight_alpha != ctrl_strobe_weight_alpha_->to<mrs_real>()) {
 		is_initialized = false;
 	}
