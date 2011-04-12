@@ -50,7 +50,8 @@ void MarMax_dsp(t_MarMax *x, t_signal **sp, short *count)
 	// 3...: argc additional arguments, all must be sizeof(pointer) or long
 	// these can be whatever, so you might want to include your object pointer in there
 	// so that you have access to the info, if you need it.
-	dsp_add(MarMax_perform, 4, x, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+	//dsp_add(MarMax_perform, 3, x, sp[0]->s_vec, sp[1]->s_vec, sp[0]->s_n);
+	dsp_add(MarMax_perform, 3, x, sp[0]->s_vec, sp[0]->s_n);
 }
 
 t_int *MarMax_perform(t_int *w)
@@ -61,8 +62,9 @@ t_int *MarMax_perform(t_int *w)
 	// w[0] contains &MarMax_perform, so we start at w[1]
 	t_MarMax *x = (t_MarMax *)(w[1]);
 	t_float *inL = (t_float *)(w[2]);
-	t_float *outL = (t_float *)(w[3]);
-	int vectorSize = (int)w[4];
+	//t_float *outL = (t_float *)(w[3]);
+	int vectorSize = (int)w[3];
+	//int vectorSize = (int)w[4];
 	int i;
 	bool Nozero = false;
 	realvec output_realvec;
@@ -100,16 +102,18 @@ t_int *MarMax_perform(t_int *w)
 		//post("output vector copied");
 		
 		//copy Marsystem network output to Max output
-		outL[0] = output_realvec(0,0); //BEAT = 1; NON-BEAT = 0 (1response/frame)
-		for (i = 1 ; i < vectorSize ; i++) //fill remaining output vector with 0
-			outL[i] = 0;
-	
+//		outL[0] = output_realvec(0,0); //BEAT = 1; NON-BEAT = 0 (1response/frame)
+//		for (i = 1 ; i < vectorSize ; i++) //fill remaining output vector with 0
+//			outL[i] = 0;
+		if (output_realvec(0,0))
+			outlet_bang (x->outlet);
 		//if(outL[0] == 1.0)
 		//	post("BEAT!");
 	}
 
 	// you have to return the NEXT pointer in the array OR MAX WILL CRASH
-	return w + 5;
+	//return w + 5;
+	return w + 4;
 }
 
 void MarMax_assist(t_MarMax *x, void *b, long m, long a, char *s)
@@ -141,12 +145,12 @@ void *MarMax_new(t_symbol *s, long argc, t_atom *argv)
 		//x->ob.z_misc = Z_NO_INPLACE;
 		dsp_setup((t_pxobject *)x, 1);	// MSP inlets: arg is # of inlets and is REQUIRED! 
 										// use 0 if you don't need inlets
-		outlet_new(x, "signal"); // signal outlet (note "signal" rather than NULL)
-
+		//outlet_new(x, "signal"); // signal outlet (note "signal" rather than NULL)
+		x->outlet = bangout(x);//an outlet that can only output bangs (nothing else)
 		//Create the MarSystem Network
 
-		MarMaxIBT *ibt = new MarMaxIBT();
-		x->m_MarsyasNetwork = ibt->createMarsyasNet();
+		x->ibt = new MarMaxIBT();
+		x->m_MarsyasNetwork = x->ibt->createMarsyasNet();
 
 		//int xx = fntestdll();
 		//bool yy = x->testdll.test(1, 2.3);
