@@ -131,6 +131,7 @@ PeakConvert::myUpdate(MarControlPtr sender)
 
 	//if picking is disabled (==false), the number of sinusoids should be set
 	//to the number of unique bins of the spectrums at the input (i.e. N/2+1)
+	pick_ = getctrl("mrs_bool/picking")->to<mrs_bool>(); 
 	if(!pick_ && ctrl_frameMaxNumPeaks_->to<mrs_natural>() == 0)
 		frameMaxNumPeaks_ = N_/2+1; //inObservations_/4+1;
 	else
@@ -170,7 +171,6 @@ PeakConvert::myUpdate(MarControlPtr sender)
 	
 	skip_ = getctrl("mrs_natural/nbFramesSkipped")->to<mrs_natural>();
 	prec_ = getctrl("mrs_bool/improvedPrecision")->to<mrs_bool>();
-	pick_ = getctrl("mrs_bool/picking")->to<mrs_bool>(); 
 	
 	if(getctrl("mrs_string/frequencyInterval")->to<mrs_string>() != "MARSYAS_EMPTY")
 	{

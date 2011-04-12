@@ -32,6 +32,10 @@ PeakFeatureSelect::PeakFeatureSelect(const PeakFeatureSelect& a) : MarSystem(a)
 	ctrl_selectedFeatures_ = getctrl("mrs_natural/selectedFeatures");
 	ctrl_totalNumPeaks_ = getctrl("mrs_natural/totalNumPeaks");
 	ctrl_frameMaxNumPeaks_ = getctrl("mrs_natural/frameMaxNumPeaks");
+
+	selectedFeatures_ = 0;
+	frameMaxNumPeaks_ = 0;
+	numFeats_ = 0;
 }
 
 PeakFeatureSelect::~PeakFeatureSelect()
