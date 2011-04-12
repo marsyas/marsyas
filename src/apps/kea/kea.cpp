@@ -637,6 +637,8 @@ train_predict(mrs_string mode)
   int start=0;
 
   mrs_string prev_name = "";
+  mrs_string output_name = "";
+
   mrs_string name;
 
   mrs_real srate;
@@ -667,27 +669,37 @@ train_predict(mrs_string mode)
 
 		cout << "start = " << start << endl;
 		cout << "end = " << end << endl;
-		
+
+
+
 		if (name != prev_name)
 		{
-		  // if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > minspan_)) // not background
+		  if (end * (1.0/srate)-start*(1.0 / srate) <= minspan_) // not background
+		  {
+
+		  }
+		  else
 		  {
 			if (predicttimeline_ == EMPTYSTRING)
 			{
 			  cout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
 			  cout << prev_name[0] << endl;
+			  output_name = prev_name;
 			}
 			else
 			{
 			  prtout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
 			  prtout << prev_name[0] << endl;
+			  output_name = prev_name;
 			}
+
+
 
 		  }
 		  start = end;
 
 		}
-		
+
 		// else
 		// {
 
@@ -1013,7 +1025,7 @@ initOptions()
   cmd_options_.addStringOption("distancematrix", "dm", "dm.txt");
   cmd_options_.addStringOption("classifier", "cl", "SVM");
   cmd_options_.addStringOption("predicttimeline", "prtl", EMPTYSTRING);
-  cmd_options_.addRealOption("minspan", "msp", 1.0);
+  cmd_options_.addRealOption("minspan", "msp", 0.25);
   cmd_options_.addStringOption("trainedclassifier", "trcl", "trained.mpl");
 }
 
