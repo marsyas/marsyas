@@ -122,16 +122,17 @@ bool useOnsets = false;
 
 CommandLineOptions cmd_options;
 
-void 
+int
 printUsage(string progName)
 {
 	MRSDIAG("peakClustering.cpp - printUsage");
 	cerr << "Usage : " << progName << " [file]" << endl;
 	cerr << endl;
 	cerr << "If no filename is given the default live audio input is used. " << endl;
+	return 1;
 }
 
-void 
+int
 printHelp(string progName)
 {
 	MRSDIAG("peakClustering.cpp - printHelp");
@@ -179,7 +180,7 @@ printHelp(string progName)
 	cerr << "-h --help            : display this information " << endl;
 	cerr << "-us --usage : print usage" << endl;
 
-	exit(1);
+	return 1;
 }
 
 
@@ -947,6 +948,7 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 	}
 
 	//cfile.close(); [TODO]
+	delete mainNet;
 }
 
 void 
@@ -1044,10 +1046,10 @@ main(int argc, const char **argv)
 	string progName = argv[0];  
 
 	if (helpopt_) 
-		printHelp(progName);
+		return printHelp(progName);
 
 	if (usageopt_)
-		printUsage(progName);
+		return printUsage(progName);
 
 	cerr << "peakClustering configuration (-h show the options): " << endl;
 	cerr << "fft size (-n)      = " << fftSize_ << endl;
@@ -1131,8 +1133,8 @@ main(int argc, const char **argv)
 		timeElapsed = (clock()-nbTicks)/((mrs_real) CLOCKS_PER_SEC );
 		cout << "Time elapsed: " << timeElapsed << endl;
 
-		exit(0);
 	}
+	return (0);
 }
 
 
