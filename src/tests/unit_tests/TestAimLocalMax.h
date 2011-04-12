@@ -36,8 +36,6 @@ public:
   // Test a sample file, test.wav
   //
   void test_wav_file(void) {
-    realvec out;
-
     MarSystemManager mng;
 
     MarSystem* net = mng.create("Series", "net");

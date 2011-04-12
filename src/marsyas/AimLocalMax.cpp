@@ -39,6 +39,13 @@ AimLocalMax::AimLocalMax(const AimLocalMax& a) : MarSystem(a)
   // in the copy constructor in order for cloning to work 
   ctrl_decay_time_ms_ = getctrl("mrs_real/decay_time_ms");
   ctrl_timeout_ms_ = getctrl("mrs_real/timeout_ms");
+
+  is_initialized = false;
+  initialized_israte = 0.0;
+
+  is_reset = false;
+  reset_inobservations = -1;
+
 }
 
 
