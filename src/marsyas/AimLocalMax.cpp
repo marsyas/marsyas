@@ -69,6 +69,8 @@ AimLocalMax::addControls()
 void
 AimLocalMax::myUpdate(MarControlPtr sender)
 {
+  (void)sender;
+  
   MRSDIAG("AimLocalMax.cpp - AimLocalMax:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 

@@ -461,36 +461,34 @@ predict(mrs_string mode)
 	else if (mode == "timeline")
 	{
 
-	  cout << "SRATE = " << net->getctrl("Weka/Source/wsrc/mrs_real/currentSrate")->to<mrs_real>() << endl;
+	  name = classNames[(int)data(0,0)];
 
-		name = classNames[(int)data(0,0)];
-
-		if (name != prev_name)
+	  if (name != prev_name)
+	  {
+		if ((end * (1.0/srate)-start*(1.0 / srate) > minspan_))
 		{
-			if (((int)data(0,0) == 0)&&(end * (1.0/srate)-start*(1.0 / srate) > minspan_)) // not background
-			{
-				if (predicttimeline_ == EMPTYSTRING)
-				{
-					cout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-					cout << prev_name << endl;
-				}
-				else
-				{
-					prtout << start*(1.0 / 43.0664) << "\t" << end*(1.0 / 43.0664) << "\t";
-					prtout << prev_name << endl;
-				}
-
-			}
-			start = end;
-
+		  if (predicttimeline_ == EMPTYSTRING)
+		  {
+			cout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
+			cout << prev_name << endl;
+		  }
+		  else
+		  {
+			prtout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
+			prtout << prev_name << endl;
+		  }
+		  
 		}
-		else
-			{
-
-			}
-
-		prev_name = name;
-
+		start = end;
+		
+	  }
+	  else
+	  {
+		
+	  }
+	  
+	  prev_name = name;
+	  
 
 	}
 	else
@@ -665,13 +663,6 @@ train_predict(mrs_string mode)
 	  mrs_real srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
 
 		name = classNames[(int)data(0,0)];\
-		cout << "name " << name << endl;
-
-		cout << "start = " << start << endl;
-		cout << "end = " << end << endl;
-
-
-
 		if (name != prev_name)
 		{
 		  if (end * (1.0/srate)-start*(1.0 / srate) <= minspan_) // not background
@@ -721,9 +712,7 @@ train_predict(mrs_string mode)
 
   // cout << "DONE" << endl;
 
-  // sness - hmm, I really should be able to delete net, but I get a
-  // coredump when I do.  Maybe I need to destroy something else first?
-  //  delete net;
+  delete net;
 
 
 
