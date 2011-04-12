@@ -80,7 +80,6 @@ AimGammatone::addControls()
 void
 AimGammatone::myUpdate(MarControlPtr sender)
 {
-  cout << "myUpdate" << endl;
   (void) sender;
 
   MRSDIAG("AimGammatone.cpp - AimGammatone:myUpdate");

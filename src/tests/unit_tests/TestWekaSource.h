@@ -43,7 +43,6 @@ public:
 
     net->tick();
     mrs_realvec processedData = net->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
-    cout << processedData << endl;
     TS_TRACE("Checking WekaSource reading data line 1");
     TS_ASSERT_EQUALS(processedData(0,0), 0.056167);
     net->tick();

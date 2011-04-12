@@ -81,7 +81,7 @@ AimHCL::myUpdate(MarControlPtr sender)
   // Does the MarSystem need a reset?
   //
   if (reseted_inobservations != ctrl_inObservations_->to<mrs_natural>() || 
-      reseted_lowpass_order != ctrl_lowpass_order_->to<mrs_real>()) {
+      reseted_lowpass_order != ctrl_lowpass_order_->to<mrs_natural>()) {
     is_reset = false;
   }
 
