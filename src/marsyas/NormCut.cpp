@@ -243,7 +243,8 @@ NormCut::ncut(mrs_natural n, realvec &W, mrs_natural nbcluster, realvec &NcutEig
 			P(i*(n)+j)=0.; 
 		}           
 
-	ulp = NumericLib::machp("Epsilon") * NumericLib::machp("Base"); // unit in last place            
+	//ulp = NumericLib::machp("Epsilon") * NumericLib::machp("Base"); // unit in last place            
+	ulp = std::numeric_limits<double>::epsilon() * std::numeric_limits<double>::radix;
 
 	//sum each row 
 	for( i=0 ; i<n ; ++i )
@@ -338,7 +339,8 @@ void NormCut::discretisation(mrs_natural n,  mrs_natural nbcluster, realvec &Ncu
 	realvec U(nbcluster*(nbcluster)); // U
 	realvec V(nbcluster*(nbcluster)); // V     
 
-	double ulp = NumericLib::machp("Epsilon") * NumericLib::machp("Base"); // unit in last place  
+	//double ulp = NumericLib::machp("Epsilon") * NumericLib::machp("Base"); // unit in last place  
+	double ulp = std::numeric_limits<double>::epsilon() * std::numeric_limits<double>::radix;
 
 	int nbIterDiscrete = 0;   
 	bool exitLoop = false;
