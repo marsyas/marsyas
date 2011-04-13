@@ -1140,7 +1140,7 @@ mrs_real NumericLib::machp(const char *cmach)
       lt = 0;
       a = 1.;
       c = 1.;
-      
+      printf("%g %g %g %g\n", c, one, a, d__1);
       while( c == one ){
          ++lt;
          a *= base;
@@ -1638,7 +1638,10 @@ void NumericLib::svd(mrs_natural m, mrs_natural n, realvec &A, realvec &U, realv
      
      mrs_natural pp = p-1;
      mrs_natural iter = 0;
-     mrs_real eps = machp("E"); //pow(2.0,-52.0);
+     // mrs_real eps = machp("E"); //pow(2.0,-52.0);
+	 mrs_real eps = std::numeric_limits<double>::epsilon();
+	 
+
 
      while (p > 0) {
         mrs_natural k=0;
