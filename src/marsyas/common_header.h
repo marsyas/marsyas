@@ -14,23 +14,15 @@
 #include <sys/types.h> 
 #include <complex>
 #include <limits>
+#include "marsyas_types.h"
 #include "MrsLog.h"
 
+
 /************************************************************************/
-/*      common typedefs                                                 */
+/*      common constants */
 /************************************************************************/
 namespace Marsyas
 {
-	// variables
-	typedef double mrs_real;
-	typedef long mrs_natural;
-	typedef bool mrs_bool;
-	typedef std::complex<mrs_real> mrs_complex;
-	typedef std::string mrs_string;
-	
-	class realvec;
-	typedef realvec mrs_realvec; //done at realvec.h
-
 	// constants
 	const mrs_natural MRS_DEFAULT_SLICE_NSAMPLES = 512;
 	const mrs_natural MRS_DEFAULT_SLICE_NOBSERVATIONS = 1;
