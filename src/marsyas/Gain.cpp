@@ -57,41 +57,32 @@ Gain::addControls()
 	addctrl("mrs_real/gain", 1.0, ctrl_gain_);
 }
 
+
 void
 Gain::myUpdate(MarControlPtr sender)
 {
-	// no need to do anything Gain-specific in myUpdate
+	// for efficiency
+	gainValue_ = ctrl_gain_->to<mrs_real>();
+	// no change to network flow
 	MarSystem::myUpdate(sender);
 }
-
 
 void
 Gain::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,t;
-	//get a local copy of the current gain control value
-	//(it will be used for this entire processing, even if it's
-	//changed by someone else, e.g. by a different thread)
-	mrs_real gainValue = ctrl_gain_->to<mrs_real>();
-	MRSDIAG(type_ << "/" << name_ << "/mrs_real/gain = " << gainValue);
+	MRSDIAG(type_ << "/" << name_ << "/mrs_real/gain = " << gainValue_);
 
 	// It is important to loop over both observations
 	// and channels so that for example a gain can be
 	// applied to multi-channel signals
-	for (o=0; o < inObservations_; o++)
-    {
-		for (t = 0; t < inSamples_; t++)
+	for (mrs_natural o=0; o < inObservations_; o++)
+	{
+		for (mrs_natural t = 0; t < inSamples_; t++)
 		{
 			//apply gain to all channels
-			out(o,t) = gainValue * in(o,t);
+			out(o,t) = gainValue_ * in(o,t);
 		}
-    }
+	}
 }
-
-
-
-
-
-
 
 
