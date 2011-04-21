@@ -84,9 +84,9 @@ if (WITH_VAMP)
 	find_package(vamp REQUIRED)
 endif (WITH_VAMP)
 
-if (WITH_MAX)
+if (WITH_MAX/MSP)
 	find_package(maxsdk REQUIRED)
-endif (WITH_MAX)
+endif (WITH_MAX/MSP)
 
 if (WITH_PNG) 
 	# find_package(png REQUIRED) 

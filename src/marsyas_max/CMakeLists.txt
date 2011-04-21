@@ -1,4 +1,7 @@
-project(ibt~)
+#Can't define target with ~ in MacOSX -> Best alternative "ibt~ "#
+set(ibt_ext "ibt_")
+
+project(${ibt_ext})
 
 if(MARSYAS_WIN32)
 # On Windows we need to include module definition (.def) file as well
@@ -19,36 +22,65 @@ set (MarMax_HEADERS
 	IBT~.h
 )
 
-#add_library(def_module MODULE IBT~.def)
-add_library(ibt~ SHARED ${MarMax_SOURCES} ${MarMax_HEADERS})
-
-include_directories(${MAXSDK_MAX_INCLUDE_DIR})
-include_directories(${MAXSDK_MSP_INCLUDE_DIR})
-
 # (for now) only works on the static version of Marsyas
 # we need to link to that specific archive library. 
 # Also linking some additional libs/frameworks
 if (MARSYAS_STATIC)
 
-	# CHECK & TEST
+	# TESTED ON MAC/OSX (10.5.8) -> FOR XCODE ONLY!!! (tested on Xcode3.0) -> FOR i386arch (32bits) ONLY (Max/MSP only runs at 32bits, despite the OS architecture)
 	if(MARSYAS_MACOSX)
-	
-		TARGET_LINK_LIBRARIES(ibt~ ${LIBRARY_OUTPUT_PATH}/libmarsyas.a)
-		find_library(COREAUDIO CoreAudio "/System/Library/Frameworks")
-		find_library(CARBON Carbon "/System/Library/Frameworks")
-		TARGET_LINK_LIBRARIES(ibt~ ${COREAUDIO} ${CARBON})
+
+		add_executable(${ibt_ext} MACOSX_BUNDLE ${MarMax_SOURCES} ${MarMax_HEADERS})
+
+		include_directories(${MAXSDK_MAX_INCLUDE_DIR})
+		include_directories(${MAXSDK_MSP_INCLUDE_DIR})
+		#include_directories(/Developer/Headers/FlatCarbon)
+
+		#link static Marsyas lib
+		TARGET_LINK_LIBRARIES(${ibt_ext} "${LIBRARY_OUTPUT_PATH}/${CMAKE_BUILD_TYPE}/libmarsyas.a")
+		
+		#link audio/midi and XCode carbon frameworks
+		FIND_LIBRARY(CARBON_LIBRARY Carbon)
+		FIND_LIBRARY(COREAUDIO_LIBRARY CoreAudio)
+		FIND_LIBRARY(COREMIDI_LIBRARY CoreMidi)
+		TARGET_LINK_LIBRARIES(${ibt_ext} ${CARBON_LIBRARY} ${COREAUDIO_LIBRARY} ${COREMIDI_LIBRARY})
+		
 		#Pre-processor defines
 		ADD_DEFINITIONS(-DMAC_VERSION)
-	
-	#No Max/MSP on Linux (?)
-	#elseif(MARSYAS_LINUX)
-	
-	# TESTED ON WINDOWS
+
+		## LINKING with MaxSDK libs
+		TARGET_LINK_LIBRARIES(${ibt_ext} ${MAXSDK_API_LIBRARY} ${MAXSDK_AUDIO_LIBRARY})
+
+		# Max/MSP External specifications for XCode ONLY
+		# Define Mach-O Type to Bundle
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_MACH_O_TYPE "mh_bundle")
+		# Define external extension as .mxo
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_WRAPPER_EXTENSION "mxo")
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_GCC_PREFIX_HEADER "${MAXSDK_MAINPATH}/c74support/max-includes/macho-prefix.pch")
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_INFOPLIST_FILE "${MAXSDK_MAINPATH}/examples/Info.plist")
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_WARNING_CFLAGS "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas")
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_DEPLOYMENT_LOCATION "YES")
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_GENERATE_PKGINFO_FILE "YES")
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_DSTROOT "${EXECUTABLE_OUTPUT_PATH}")
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_INSTALL_PATH "/${CMAKE_BUILD_TYPE}")
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES XCODE_ATTRIBUTE_GCC_DYNAMIC_NO_PIC "NO")
+
+	# TESTED ON WINDOWS (Windows7_64bits) -> FOR i386arch (32bits) ONLY (Max/MSP only runs at 32bits, despite the OS architecture)
 	elseif(MARSYAS_WIN32)
 	
-		TARGET_LINK_LIBRARIES(ibt~ marsyas_static)
+		add_library(${ibt_ext} SHARED ${MarMax_SOURCES} ${MarMax_HEADERS})
+
+		include_directories(${MAXSDK_MAX_INCLUDE_DIR})
+		include_directories(${MAXSDK_MSP_INCLUDE_DIR})
+
+		TARGET_LINK_LIBRARIES(${ibt_ext} marsyas_static)
 		#Pre-processor defines
 		ADD_DEFINITIONS(-DWIN_VERSION -DEXT_WIN_VERSION)
+		# Define external extension as .mxe
+		SET_TARGET_PROPERTIES(${ibt_ext} PROPERTIES SUFFIX ".mxe")
+
+		## LINKING with MaxSDK libs
+		TARGET_LINK_LIBRARIES(${ibt_ext} ${MAXSDK_API_LIBRARY} ${MAXSDK_CRT_LIBRARY} ${MAXSDK_AUDIO_LIBRARY})
 
 	endif(MARSYAS_MACOSX)
 
@@ -59,26 +91,21 @@ else (MARSYAS_STATIC)
 
 endif (MARSYAS_STATIC)
 
-## LINKING with MaxSDK libs
-TARGET_LINK_LIBRARIES(ibt~ ${MAXSDK_API_LIBRARY} ${MAXSDK_CRT_LIBRARY} ${MAXSDK_AUDIO_LIBRARY})
-# Define external extension as .mxe
-SET_TARGET_PROPERTIES(ibt~ PROPERTIES SUFFIX ".mxe")
 
 if (MARSYAS_MAD)
-	TARGET_LINK_LIBRARIES(ibt~ ${mad_LIBRARY})
+	TARGET_LINK_LIBRARIES(${ibt_ext} ${mad_LIBRARY})
 endif (MARSYAS_MAD)
 
 if (MARSYAS_VORBIS)
-	TARGET_LINK_LIBRARIES(ibt~ ${OGGVORBIS_LIBRARIES})
+	TARGET_LINK_LIBRARIES(${ibt_ext} ${OGGVORBIS_LIBRARIES})
 endif (MARSYAS_VORBIS)
 
 if (MARSYAS_MATLAB) 
-	TARGET_LINK_LIBRARIES(ibt~ ${MATLAB_LIBRARIES})
+	TARGET_LINK_LIBRARIES(${ibt_ext} ${MATLAB_LIBRARIES})
 endif (MARSYAS_MATLAB)
 
 if (GSTREAMER_FOUND)
-	TARGET_LINK_LIBRARIES(ibt~ ${GSTREAMER_LIBRARIES})
+	TARGET_LINK_LIBRARIES(${ibt_ext} ${GSTREAMER_LIBRARIES})
 endif (GSTREAMER_FOUND)
-
 
 

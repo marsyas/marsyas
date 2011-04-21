@@ -1,4 +1,4 @@
-LIBRARY ibt~.mxe
+LIBRARY ibt_.mxe
 
 EXPORTS
 	main

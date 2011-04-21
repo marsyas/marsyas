@@ -1,10 +1,10 @@
 #ifndef _MARMAX_H
 #define _MARMAX_H
 
+#include "IBT~.h" //header + implementation
 #include "ext.h"							// standard Max include, always required (except in Jitter)
 #include "ext_obex.h"						// required for new style objects
 #include "z_dsp.h"						// required for MSP objects
-#include "IBT~.h" //header + implementation
 #include <iostream>
 
 using namespace std;
