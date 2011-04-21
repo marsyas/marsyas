@@ -106,7 +106,7 @@ if (VAMP_FOUND)
 endif (VAMP_FOUND)
 
 if (MAXSDK_FOUND)
-	add_subdirectory(marsyas_max)
+	add_subdirectory(marsyas_max-msp)
 endif (MAXSDK_FOUND)
 
 
