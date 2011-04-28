@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ AimVQ::AimVQ(mrs_string name):MarSystem("AimVQ",name)
   addControls();
 }
 
-AimVQ::AimVQ(const AimVQ& a): MarSystem(a) 
+AimVQ::AimVQ(const AimVQ& a): MarSystem(a)
 {
   is_initialized = false;
 
@@ -45,7 +45,7 @@ AimVQ::AimVQ(const AimVQ& a): MarSystem(a)
 
 AimVQ::~AimVQ()
 {
-	
+
 
 }
 
@@ -55,7 +55,7 @@ AimVQ::clone() const
   return new AimVQ(*this);
 }
 
-void 
+void
 AimVQ::addControls()
 {
   addControl("mrs_natural/kd_tree_bucket_size", 50 , ctrl_kd_tree_bucket_size_);
@@ -77,10 +77,10 @@ AimVQ::myUpdate(MarControlPtr sender)
 
   ostringstream oss;
   for (int i =0; i < ctrl_onObservations_->to<mrs_natural>(); ++i)
-	  oss << "attribute,";
+	oss << "attribute,";
   //ctrl_onObsNames_->setValue("AimVQ_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
   ctrl_onObsNames_->setValue(oss.str(), NOUPDATE);
-  
+
 
   //
   // Does the MarSystem need initialization?
@@ -126,6 +126,9 @@ void
 AimVQ::myProcess(realvec& in, realvec& out)
 {
   // cout << "AimVQ::myProcess" << endl;
+
+  (void) in; // avoid unused parameter warning when MARSYAS_ANN is not enabled
+
 
   // Zero out the output first
   for (int i = 0; i < onObservations_; ++i) {

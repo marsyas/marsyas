@@ -21,6 +21,7 @@
 
 #include "MarSystem.h"
 #include "QGMMModel.h"
+#include <time.h> 
 
 namespace Marsyas
 {

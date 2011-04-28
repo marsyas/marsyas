@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -26,13 +26,13 @@ namespace Marsyas
 /**
 	\class SpectralTransformation
 	\ingroup Processing
-	\brief Contains various spectral transformation. Input and output is a complex spectrum. 
-	Mostly used to demonstrate how spectral analyis works. 
+	\brief Contains various spectral transformation. Input and output is a complex spectrum.
+	Mostly used to demonstrate how spectral analyis works.
 
 
 	Controls:
 	- \b mrs_real/gain [w]   : sets the gain multiplier.
-	- \b mrs_string/mode [w] : sets the specific transformation to be used (for example PhaseRandomize or SingleBin). 
+	- \b mrs_string/mode [w] : sets the specific transformation to be used (for example PhaseRandomize or SingleBin).
 
 */
 
@@ -44,9 +44,9 @@ private:
 
 	MarControlPtr ctrl_gain_;
 	MarControlPtr ctrl_mode_;
-	
+
 	mrs_real N2_, re_, im_, mag_, phs_;
-		
+
 public:
 	SpectralTransformations(std::string name);
 	SpectralTransformations(const SpectralTransformations& a);
@@ -56,7 +56,7 @@ public:
 	void singlebin(realvec& in, realvec& out);
     void three_peaks(realvec& in, realvec& out);
   void compress_magnitude(realvec& in, realvec& out);
-  
+
 	void myProcess(realvec& in, realvec& out);
 };
 

@@ -32,6 +32,8 @@ namespace Marsyas
 	const mrs_natural FFT_INVERSE = 0;
 
 	const mrs_string EMPTYSTRING = "MARSYAS_EMPTY";
+    #undef max
+    #undef min
 
 	const mrs_real MAXREAL = std::numeric_limits<mrs_real>::max();
 	const mrs_real MINREAL = std::numeric_limits<mrs_real>::min();

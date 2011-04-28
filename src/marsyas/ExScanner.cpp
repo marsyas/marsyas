@@ -473,8 +473,8 @@ bool ExScanner::Comment1() {
 Token* ExScanner::CreateToken() { return new Token(); }
 
 Token* ExScanner::NextToken() {
-	while ((ch == L' ') || (ch >= 9) && (ch <= 10) || (ch == 13)) NextCh();
-		if ((ch == '#') && (Comment0()) || (ch == '(') && Comment1()) return NextToken();
+  while ((ch == L' ') || (ch >= 9) && (ch <= 10) || (ch == 13)) NextCh();
+  if ((ch == '#') && (Comment0()) || (ch == '(') && Comment1()) return NextToken();
 	int apx = 0;
 	t = CreateToken();
 	t->pos = pos; t->col = col; t->line = line; 
@@ -767,6 +767,3 @@ Token* ExScanner::Peek() {
 void ExScanner::ResetPeek() {
 	pt = tokens;
 }
-
-
-

@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -34,23 +34,23 @@
 namespace Marsyas
 {
 /**
-    \class AimVQ
-	\ingroup Analysis
-    \brief Vector quantization for dense to sparse features
+   \class AimVQ
+   \ingroup Analysis
+   \brief Vector quantization for dense to sparse features
 
-    Author : Thomas Walters <tom@acousticscale.org>
+   Author : Thomas Walters <tom@acousticscale.org>
 
-    Ported to Marsyas by Steven Ness <sness@sness.net>
+   Ported to Marsyas by Steven Ness <sness@sness.net>
 
-	The original source code for these functions in AIM-C can be found at:
-	http://code.google.com/p/aimc/
+   The original source code for these functions in AIM-C can be found at:
+   http://code.google.com/p/aimc/
 
 */
 
 
 class AimVQ: public MarSystem
 {
-private:
+ private:
   void myUpdate(MarControlPtr sender);
 
   // Prepare the module
@@ -80,7 +80,7 @@ private:
   int codeword_count_;
   int codeword_length_;
 
-public:
+ public:
   AimVQ(std::string name);
   AimVQ(const AimVQ& a);
 
