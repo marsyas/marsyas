@@ -33,18 +33,18 @@ def fanout(name, msys_list):
 def create_network():
 
 	net = series("net", create(["SoundFileSource/src",
-				    "AimPZFC2/aimpzfc", 
+				    "AimPZFC2/aimpzfc",
 				    "AimHCL2/aimhcl2",
-				    "Sum/sum", 
-#				    "AutoCorrelation/acr", 
+				    "Sum/sum",
+#				    "AutoCorrelation/acr",
 #				    "BeatHistogram/histo",
 
-				    
 
-#				    "Peaker/pkr", 
+
+#				    "Peaker/pkr",
 #				    "MaxArgMax/mxr"
 				    ]))
-	
+
 
 
 	return net
@@ -75,13 +75,13 @@ def plot_figure(fname, duration):
 
 	filename = net.getControl("SoundFileSource/src/mrs_string/filename")
 	inSamples = net.getControl("mrs_natural/inSamples")
-#	factor = net.getControl("DownSampler/downsampler/mrs_natural/factor") 
+#	factor = net.getControl("DownSampler/downsampler/mrs_natural/factor")
 #	mode = net.getControl("Sum/sum/mrs_string/mode");
 #	acr_compress = net.getControl("AutoCorrelation/acr/mrs_real/magcompress");
 
 	filename.setValue_string(fname)
 	# winSize = int(float(duration) * 44100.0);
-	winSize = int(4* 4096);
+	winSize = int(1400);
 	inSamples.setValue_natural(winSize)
 	# mode.setValue_string("sum_samples");
 	# factor.setValue_natural(32)
@@ -91,16 +91,18 @@ def plot_figure(fname, duration):
 
 #	net.updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
 #	net.updControl("BeatHistogram/histo/mrs_natural/endBin", 300);
-	
+
 #	net.updControl("Peaker/pkr/mrs_natural/peakStart", 50);
 #	net.updControl("Peaker/pkr/mrs_natural/peakEnd", 150);
 
+	topChannel = 50
 
-	for i in range(1,2):
+
+	for i in range(1,24):
 		net.tick()
 
 		data = filterbank_output.to_realvec()
-		imgdata = realvec2array(data) 
+		imgdata = realvec2array(data)
 #		ossdata = net.getControl("Sum/sum/mrs_realvec/processedData").to_realvec();
 #		acrdata = net.getControl("AutoCorrelation/acr/mrs_realvec/processedData").to_realvec();
 #		bhistodata = net.getControl("BeatHistogram/histo/mrs_realvec/processedData").to_realvec();
@@ -114,7 +116,7 @@ def plot_figure(fname, duration):
 
 		#figure()
 		#plot(ossdata)
-		#figure() 
+		#figure()
 		#plot(acrdata)
 #		figure()
 #		plot(bhistodata)
@@ -125,52 +127,115 @@ def plot_figure(fname, duration):
 	# plot(vecs[1])
 	# figure()
 	# plot(vecs[2])
-	
+
 	# figure()
 	# plot(vecs[3])
-	
+
 	# figure()
 	# plot(vecs[4])
-	
+
 	# figure()
 	# plot(vecs[5])
 	# print vecs.shape
-	
-		figure()
+		hold(False)
+		figure(1)
 		imshow(imgdata.transpose(), cmap = 'jet', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
-		# figure();
-		# plot(imgdata[1000:2000,30]);
-		# figure();
-		# plot(imgdata[1000:2000,40]);
-		# figure()
+		figure(2);
+
+		for i in range(1,topChannel):
+		  params={'axes.linewidth' : 0}
+		  rcParams.update(params)
+
+                  subplots_adjust(hspace=0.001)
+		  ax = subplot(topChannel,1,i)
+		  ax.plot(imgdata[0:winSize,topChannel-i]);
+		  yticklabels = ax.get_yticklabels()
+		  xticklabels = ax.get_xticklabels()
+		  setp(yticklabels, visible=False)
+		  setp(xticklabels, visible=False)
+		  for tick in ax.get_xticklines():
+		    tick.set_visible(False)
+		  for tick in ax.get_yticklines():
+		    tick.set_visible(False)
+
+
+
+
+
+	        figure(3)
+	        subplot(321);
+		plot(imgdata[0:512,58]);
+		subplot(322)
+		plot(imgdata[0:512,66]);
+		subplot(323)
+		c1 = correlate(imgdata[0:512,58], imgdata[0:512,66], mode='full');
+		# plot(c1[winSize/2:winSize/2+512]);
+		s1 = argmax(c1);
+		plot(c1[s1:s1+512]);
+
+		# delay1 = (argmax(correlate(imgdata[1000:2000,50], imgdata[1000:2000,40], mode='full')) % 1000);
+
+		subplot(324)
+		c2 = correlate(imgdata[0:512,58], imgdata[0:512,59], mode='full');
+		s2 = argmax(c2);
+		plot(c2[s2:s2+512]);
+		#plot(c2[winSize/2:winSize/2+512]);
+		# delay2 = (argmax(correlate(imgdata[1000:2000,40], imgdata[1000:2000,30], mode='full')) % 1000);
+
+		subplot(325)
+		plot(c1)
+		hold(True)
+		plot(c2)
+		hold(False)
+		subplot(326)
+		plot(c2)
+
+		# print delay1
+		# print delay2
+
+		# subplot(325)
+		# hold(False)
 		# plot(imgdata[1000:2000:,50]);
-		# figure()
-		# xcorr(imgdata[:,40], imgdata[:,30], normed=True, maxlags=1000);
-		# figure()
-		# xcorr(imgdata[:,40], imgdata[:,35], normed=True, maxlags=1000);
-		# figure()
-		# xcorr(imgdata[:,50], imgdata[:,40], normed=True, maxlags=1000);
-		figure() 
-
-		plot(correlate(imgdata[1000:2000,50], imgdata[1000:2000,40], mode='full'));
-		delay1 = (argmax(correlate(imgdata[1000:2000,50], imgdata[1000:2000,40], mode='full')) % 1000);
-		figure();
-		plot(correlate(imgdata[1000:2000,40], imgdata[1000:2000,30], mode='full'));
-		delay2 = (argmax(correlate(imgdata[1000:2000,40], imgdata[1000:2000,30], mode='full')) % 1000);
+		# hold(True)
+		# plot(imgdata[1000-delay1:2000-delay1:,40]);
+		# hold(False)
+		# # figure();
+		# subplot(326)
+		# hold(False)
+		# plot(imgdata[1000:2000:,40]);
+		# hold(True)
+		# plot(imgdata[1000+delay2:2000+delay2:,30]);
+		# hold(False)
+		# # show();
 
 
-		figure(); 
-		plot(imgdata[1000:2000:,50]);
-		plot(imgdata[1000-delay1:2000-delay1:,40]);
-		figure();
-		plot(imgdata[1000:2000:,40]);
-		plot(imgdata[1000+delay2:2000+delay2:,30]);
-		
-		show();
+		corr_image = zeros((78,78))
+		mean_period = 0;
+		for i in range(0,78):
+		  for j in range(0,78):
+		    a = correlate(imgdata[0:512,i],imgdata[0:512,j], mode='full');
 
-       	raw_input("Press any key to continue")
+		    offset = argmax(a);
+		    b = a[offset:offset+512];
+		    period = 0
+		    if (size(b) > 4):
+		      for k in range(2,size(b)-1):
+			if ((b[k] >= b[k-1]) and (b[k] >= b[k+1])):
+			  period = k
+			  break
 
-	
+		    # figure(6)
+		    # plot(b)
+		    # raw_input("Press any key to continue")
+
+		    mean_period = mean_period + period
+		    corr_image[i,j] = b[period]
+
+		print (mean_period / (78 * 78))
+		figure(5);
+		imshow(corr_image, cmap = 'jet', aspect='auto');
+		raw_input("Press any key to continue")
+
 
 
 # call the plot function

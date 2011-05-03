@@ -340,7 +340,6 @@ AimPZFC::SetPZBankCoeffsOrig() {
 
 		// Calculate the real pole frequency from the normalised pole frequency
 		double frequency = pole_frequency / (2.0 * PI) * sample_rate;
-		// cout << "\tfrequency=" << frequency << endl;
 
 		// Store the real pole frequency as the 'centre frequency' of the filterbank
 		// channel
