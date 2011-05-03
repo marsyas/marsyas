@@ -62,7 +62,7 @@ begin
     a = line.chomp.split("\t")
     clip = a[0]
     tag = a[1]
-    affinity = a[2]
+    affinity = Float(a[2])
     if affinities[clip].nil?
       affinities[clip] = {}
       tags.each do |k,v|
