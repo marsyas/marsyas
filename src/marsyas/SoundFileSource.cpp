@@ -456,32 +456,32 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
       ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
       
       if (updateCurrDuration)
-	{
-	  setctrl("mrs_real/fullDuration", src_->durFull_);
-	}
+	  {
+		  setctrl("mrs_real/fullDuration", src_->durFull_);
+	  }
       
 
       if (src_->getType() == "CollectionFileSource") {
-	CollectionFileSource *coll = (CollectionFileSource*)src_;
-	ctrl_currentHasData_->setValue(coll->iHasData_,
-				       NOUPDATE);
-	
-	ctrl_currentLastTickWithData_->setValue(coll->iLastTickWithData_, NOUPDATE);
-	ctrl_currentCollectionNewFile_->setValue(coll->iNewFile_,
-						 NOUPDATE);
-	if ( !(coll->iHasData_) ||
-	     (coll->iNewFile_)) {
-	  ctrl_startStable_->setValue((mrs_bool)true,
-				      NOUPDATE);
-	} else {
-	  ctrl_startStable_->setValue((mrs_bool)false,
-				      NOUPDATE);
-	}
+		  CollectionFileSource *coll = (CollectionFileSource*)src_;
+		  ctrl_currentHasData_->setValue(coll->iHasData_,
+										 NOUPDATE);
+		  
+		  ctrl_currentLastTickWithData_->setValue(coll->iLastTickWithData_, NOUPDATE);
+		  ctrl_currentCollectionNewFile_->setValue(coll->iNewFile_,
+												   NOUPDATE);
+		  if ( !(coll->iHasData_) ||
+			   (coll->iNewFile_)) {
+			  ctrl_startStable_->setValue((mrs_bool)true,
+										  NOUPDATE);
+		  } else {
+			  ctrl_startStable_->setValue((mrs_bool)false,
+										  NOUPDATE);
+		  }
       } else {
-	ctrl_currentHasData_->setValue(src_->hasData_);
-	ctrl_currentLastTickWithData_->setValue(src_->lastTickWithData_);
+		  ctrl_currentHasData_->setValue(src_->hasData_);
+		  ctrl_currentLastTickWithData_->setValue(src_->lastTickWithData_);
       }
-
+	  
       // MRSMSG("currentLastTickWithData_" << ctrl_currentLastTickWithData_->to<mrs_bool>())      
       // MRSMSG("currentHasData" << ctrl_currentHasData_->to<mrs_bool>())      
     }

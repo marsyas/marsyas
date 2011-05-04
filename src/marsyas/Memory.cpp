@@ -107,21 +107,21 @@ Memory::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t,o,j;
 	mrs_natural memSize = ctrl_memSize_->to<mrs_natural>();
+	
 	if (ctrl_reset_->to<mrs_bool>()) 
-	  {
+	{
 	    cir_out_.setval(0.0);
-	    // ctrl_reset_->setValue(false, NOUPDATE);
 	    end_ = 0;
 	    counter_since_reset_ = 0;
 	    
 	    // fill up with copies of first incoming vector
 	    for (j=0; j < onSamples_; j++)
 	    {
-	      for (o=0; o < inObservations_; o++)
-		{
-		  cir_out_(o, end_) = in(o,0);
-		}
-	      end_ = (end_ + 1) % onSamples_; 		// circular buffer index  		
+			for (o=0; o < inObservations_; o++)
+			{
+				cir_out_(o, end_) = in(o,0);
+			}
+			end_ = (end_ + 1) % onSamples_; 		// circular buffer index  	
 	    }
 
 	  }
@@ -144,19 +144,19 @@ Memory::myProcess(realvec& in, realvec& out)
 		{
 			for (o=0; o < inObservations_; o++)
 			{
-			  cir_out_(o,t) = in(o,t);
+				cir_out_(o,t) = in(o,t);
 			}
 		}
 	}
 
-	for (t = 0; t < inSamples_; t++)
+	for (t = 0; t < onSamples_; t++)
 	  {
 	    for (o=0; o < inObservations_; o++)
 	      {
-		out(o,t) = cir_out_(o,t);
+			  out(o,t) = cir_out_(o,t);
 	      }
 	  }
-	
+
 
 	//MATLAB_PUT(out, "Memory_out");
 	//MATLAB_EVAL("plot(Memory_out);");

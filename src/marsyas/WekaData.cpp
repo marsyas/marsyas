@@ -126,6 +126,8 @@ mrs_realvec WekaData::GetMaximums() const
 //Need only to swap the pointers to row data, nice and fast!
 void WekaData::Shuffle()
 {
+	srand(0);
+	
 	mrs_natural size = this->size()-1;
 	for (mrs_natural ii=0; ii<size; ++ii)
 	{

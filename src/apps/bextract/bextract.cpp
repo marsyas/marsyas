@@ -2103,7 +2103,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   if (pluginName != EMPTYSTRING)
   {
 	MarSystem* dest = mng.create("AudioSink", "dest");
-	dest->updControl("mrs_bool/mute", true);
+	dest->updControl("mrs_bool/mute", false);
 	featureNetwork->addMarSystem(dest);
   }
 
@@ -2172,9 +2172,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 	bextractNetwork->linkControl(
-				     "Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
-				     "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
-);
+	"Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
+	"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
+		);
 
 	if(tline)
 	  {
@@ -2221,6 +2221,12 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->linkControl("mrs_bool/currentCollectionNewFile",
 								 "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
+
+
+	bextractNetwork->linkControl(
+	"Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
+	"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+	
 
 
 	if(tline)
@@ -2405,7 +2411,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 
-
   while (ctrl_hasData->to<mrs_bool>())
   {
 
@@ -2447,7 +2452,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  }
 	  else
 	  {
-
 		bextractNetwork->updControl("mrs_natural/advance", advance);
 		if (beat_)
 		{
@@ -2457,6 +2461,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 		currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 		bextractNetwork->tick();
+		
 		fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
 
 		processedFiles.push_back(currentlyPlaying);
@@ -2473,9 +2478,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 	  if (ctrl_currentCollectionNewFile->to<mrs_bool>())
 	  {
-		if (memSize != 0)
-		  featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",  true);
-		cout << "Processed: " << n << " - " << currentlyPlaying << endl;
+		  // if (memSize != 0)
+		  // featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",  true);
+		cout << "Processing: " << n << " - " << currentlyPlaying << endl;
 		n++;
 	  }
 
@@ -2484,6 +2489,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
   }
+
+
 
 
 
