@@ -19,11 +19,6 @@
 #ifndef MARSYAS_BEATTIMESSINK_H
 #define MARSYAS_BEATTIMESSINK_H
 
-//sockets only available in Windows
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include "MarSystem.h"
 
 namespace Marsyas
