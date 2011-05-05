@@ -162,8 +162,11 @@ static void MaxAcf (mrs_real& max, mrs_real& mean, const realvec& beatHistogram,
 		mrs_real val	= 0;
 
 		for (mrs_natural i = k; i < len; i++)
+		{
 			val += beatHistogram(i) * beatHistogram(i-k);
-
+		}
+		
+		
 			res(k)	= val / (len-k);
 	}
 
@@ -171,6 +174,7 @@ static void MaxAcf (mrs_real& max, mrs_real& mean, const realvec& beatHistogram,
 	//pkr_->process(in, pkres_);
 
 	max = res.maxval ();
+	
 	mean = 1e6*res.mean ();
 }
 
@@ -268,7 +272,7 @@ BeatHistoFeatures::myUpdate(MarControlPtr sender)
 	 
  	pkr_->setctrl("mrs_real/peakStrengthRelMax", 0.5);
 	pkr_->setctrl("mrs_real/peakStrengthRelThresh", 2.0);
-	pkr_->setctrl("mrs_real/peakStrengthTreshLpParam", 0.95);
+	pkr_->setctrl("mrs_real/peakStrengthThreshLpParam", 0.95);
 	pkr_->setctrl("mrs_natural/peakNeighbors", 4);
 
 

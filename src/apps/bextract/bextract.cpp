@@ -141,14 +141,14 @@ MarSystem* createBeatHistogramFeatureNetwork()
 
   onset_strength->addMarSystem(accum);
   onset_strength->addMarSystem(mng.create("ShiftInput/si2"));
+  onset_strength->addMarSystem(mng.create("Filter", "filt1"));
+  onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
+  onset_strength->addMarSystem(mng.create("Filter", "filt2"));
+  onset_strength->addMarSystem(mng.create("Reverse", "reverse2"));
+  
   beatTracker->addMarSystem(onset_strength);
 
   MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
-  tempoInduction->addMarSystem(mng.create("Filter", "filt1"));
-  tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
-  tempoInduction->addMarSystem(mng.create("Filter", "filt2"));
-  tempoInduction->addMarSystem(mng.create("Reverse", "reverse"));
-  tempoInduction->addMarSystem(mng.create("Windowing", "windowing2"));
   tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
   tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
 
@@ -174,19 +174,16 @@ MarSystem* createBeatHistogramFeatureNetwork()
   bcoeffs(0) = 0.0564;
   bcoeffs(1) = 0.1129;
   bcoeffs(2) = 0.0564;
-  tempoInduction->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
-
-  tempoInduction->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
   realvec acoeffs(1,3);
   acoeffs(0) = 1.0000;
   acoeffs(1) = -1.2247;
   acoeffs(2) = 0.4504;
-  tempoInduction->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
-  tempoInduction->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
+  onset_strength->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+  onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 
 
-  onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "magnitude");
-  onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "DixonDAFX06");
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
+  onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
 
   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
@@ -194,8 +191,10 @@ MarSystem* createBeatHistogramFeatureNetwork()
 
 
   tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
-  tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 2.0);
-  tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.65);
+  tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.9);
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
+  tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to1", true);
 
   onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
 
@@ -464,7 +463,9 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
 
   mrs_natural  bwinSize = 2048;
   mrs_natural bhopSize = 128;
-
+  mrs_natural hopSize = 128;
+  mrs_natural winSize = 256;
+  
 
   vector<mrs_real> bpms;
   vector<mrs_real> secondary_bpms;
@@ -478,24 +479,36 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
 
   int counter = 0;
 
+  ofstream oss;
+  oss.open("beatTracker.mpl");
+  oss << *beatTracker;
+  
+  mrs_natural size_in_bytes = beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+  mrs_natural num_ticks = (size_in_bytes / (hopSize * bhopSize)) + 1;
+  
+  mrs_natural ticks = 0;
 
   while (1)
   {
+
+
 	beatTracker->tick();
+	ticks++;
+	
+	
 	// TODO: estimate should only be written after the last tick. This is redundant copying.
 	estimate = beatTracker->getctrl("FlowThru/tempoInduction/BeatHistoFeatures/bhf/mrs_realvec/processedData")->to<mrs_realvec>();
 
 
-	if (!beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())
-	{
-	  extra_ticks --;
-	}
+	if (num_ticks - ticks < 1)
+	  {
+	    break;
+	  }
 
-	if (extra_ticks == 0)
-	  break;
 	counter++;
   }
 
+  
   // TODO this is redundant, just return estimate after calling estimate.transpose();
   for (int i=0; i < beatfeatures.getSize(); i++)
 	beatfeatures(i) = estimate(i);

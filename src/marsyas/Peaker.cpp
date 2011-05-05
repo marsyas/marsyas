@@ -43,6 +43,8 @@ Peaker::clone() const
 	return new Peaker(*this);
 }
 
+
+
 void
 Peaker::addControls()
 {
