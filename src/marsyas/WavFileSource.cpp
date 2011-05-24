@@ -254,6 +254,7 @@ WavFileSource::getHeader(mrs_string filename)
 	  //size in number of samples per channel
 	  size_ = bytes / (bits_ / 8)/ (getctrl("mrs_natural/onObservations")->to<mrs_natural>());
 	  csize_ = size_;
+	  
 	  setctrl("mrs_natural/size", size_);
 	  ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
 	  ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
@@ -323,7 +324,9 @@ WavFileSource::myUpdate(MarControlPtr sender)
 
   if (duration_ != -1.0)
   {
-	csize_ = (mrs_natural)(duration_ * israte_);
+	  csize_ = (mrs_natural)(duration_ * israte_);
+	  cout << "csize_ = " << csize_ << endl;
+	  
   }
 
   samplesToRead_ = inSamples_ * nChannels_;

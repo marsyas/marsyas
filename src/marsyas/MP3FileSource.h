@@ -93,6 +93,8 @@ namespace Marsyas
 			realvec reservoir_;
 			mrs_natural reservoirSize_;
 			mrs_natural preservoirSize_;
+		mrs_natural pnChannels;
+		
 			mrs_natural ri_;
 			long offset;
 
@@ -104,6 +106,8 @@ namespace Marsyas
 			mrs_natural size_;
 			mrs_natural samplesOut_;
 			std::string filename_;
+		    mrs_string debug_filename;
+	   
 			mrs_real repetitions_;
   
 		public:

@@ -44,7 +44,7 @@ MP3FileSource::MP3FileSource(mrs_string name):AbsSoundFileSource("MP3FileSource"
 	currentPos_ = 0;
   
 
-	bufferSize_ = 2048;	// must be initialized, otherwise it may be a very big value and 
+	bufferSize_ = 576;	// must be initialized, otherwise it may be a very big value and 
   						// may further cause segment fault when allocating space for input buffer
 	frameSamples_ = 0;
 	totalFrames_ = 0;
@@ -84,7 +84,7 @@ MP3FileSource::MP3FileSource(const MP3FileSource& a):AbsSoundFileSource(a)
 	currentPos_ = 0;
 
 // must be initialized, otherwise it may be a very big value and
-	bufferSize_ = 2048;
+	bufferSize_ = 576;
 // may further cause segment fault when allocating space for input buffer
 	frameSamples_ = 0;
 	totalFrames_ = 0;
@@ -260,12 +260,15 @@ MP3FileSource::PrintFrameInfo(struct mad_header *Header)
 void 
 MP3FileSource::getHeader(mrs_string filename) 
 {
-
+	
+	debug_filename = filename;
+	
 #ifdef MARSYAS_MAD  
 	durFull_ = 0.;
-	update();
 	// if we have a file open already, close it
 	closeFile();
+	update();
+	
 	reservoir_.setval(0.0);
   
 	fp = fopen(filename.c_str(), "rb");
@@ -312,9 +315,9 @@ MP3FileSource::getHeader(mrs_string filename)
     }
   
 	fileSize_ = myStat.st_size;
+	offset = 0;
 
-  
-
+	
 	// initialize mad structs and fill the stream
 	madStructInitialize();
 	fillStream();	
@@ -332,7 +335,8 @@ MP3FileSource::getHeader(mrs_string filename)
     {
 		pos_ += bufferSize_;
 		currentPos_ = pos_;
-      
+
+		
 		if ( mad_frame_decode(&frame, &stream) ) 
 		{
 	
@@ -379,7 +383,7 @@ MP3FileSource::getHeader(mrs_string filename)
     
 	}
   
-	//PrintFrameInfo(&frame.header);
+	// PrintFrameInfo(&frame.header);
 
 
 	mrs_natural nChannels = MAD_NCHANNELS(&frame.header);
@@ -393,14 +397,16 @@ MP3FileSource::getHeader(mrs_string filename)
 
   
 	// only works for a constant bitrate, duration is (bits in file / bitrate)
-	mrs_real duration_ = 2 * (fileSize_ * 8) / bitRate;
+	mrs_real duration_ = (fileSize_ * 8) / bitRate;
 	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
   
 	size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
 
   
-	csize_ = size_ * nChannels;
+	csize_ = size_ ;
+
+	
 	totalFrames_ = (mrs_natural)((sampleRate * duration_) / frameSamples_);
   
   
@@ -463,28 +469,32 @@ MP3FileSource::myUpdate(MarControlPtr sender)
   
 
   
-  
+
+	
 	// if the user has seeked somewhere in the file
-	if ( (currentPos_ != pos_) && (pos_ < size_)) 
-    {
+// 	if ( (currentPos_ != pos_) && (pos_ < size_)) 
+//     {
+// 		cout << "currentPos_ " << currentPos_ << endl;
+// 		cout << "pos_ = " << pos_ << endl;
+// 		cout << "size_ = " << size_ << endl;
+// 		// compute a new file offset using the frame target
+// 		mrs_real ratio = (mrs_real)pos_/size_;
       
-		// compute a new file offset using the frame target
-		mrs_real ratio = (mrs_real)pos_/size_;
+// #ifdef MARSYAS_MAD     
+// 		madStructInitialize();
+// #endif 
       
-#ifdef MARSYAS_MAD     
-		madStructInitialize();
-#endif 
-      
-		mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
-      
-		// if we are rewinding, we call fillStream with -1
-		if (targetOffset==0) {
-			fillStream(-1);
-		} else {
-			fillStream(targetOffset);
-		}
-		currentPos_ = pos_;
-    }
+// 		mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
+// 		cout << "targetOffset = " << targetOffset << endl;
+		
+// 		// if we are rewinding, we call fillStream with -1
+// 		if (targetOffset==0) {
+// 			fillStream(-1);
+// 		} else {
+// 			fillStream(targetOffset);
+// 		}
+// 		currentPos_ = pos_;
+//     }
   
 
 	filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
@@ -537,24 +547,24 @@ MP3FileSource::getLinear16(realvec& slice)
 	register double peak = 1.0/32767; // normalize 24-bit sample
 	register mad_fixed_t left_ch, right_ch;
 	register mrs_real sample;
-  
+
 	// decode a frame if necessary 
 	while (ri_ < inSamples_) {
     
 		fillStream();
     
-		if (!hasData_) {
-			pos_ = 0;
-			return pos_;
-		}
+		// if (!hasData_) {
+		// pos_ = 0;
+		// return pos_;
+		// }
     
 		if (mad_frame_decode(&frame, &stream )) 
 		{
 			long bufferSize = ((long)stream.bufend-(long)stream.buffer)*8  - stream.md_len*8;
 			
 			if (frame.header.bitrate!=0 && bufferSize>0) durFull_ += (float)bufferSize/(float)frame.header.bitrate;
-			//std::cout<<"decoded: bufptr="<<(int)stream.buffer<<" cnt="<<frameCount_<<" bps="<<frame.header.bitrate<<" bufSize="<<bufferSize<<" dur="<<durFull_<<std::endl;
-			//std::cout<<"possible buffersize c="<<bufferSize<<" 1="<<((long)stream.next_frame-(long)stream.this_frame)*8<<" 2="<<stream.anc_bitlen<<" 3="<<stream.md_len*8<<std::endl;
+			// std::cout<<"decoded: bufptr="<<(long)stream.buffer<<" cnt="<<frameCount_<<" bps="<<frame.header.bitrate<<" bufSize="<<bufferSize<<" dur="<<durFull_<<std::endl;
+			// std::cout<<"possible buffersize c="<<bufferSize<<" 1="<<((long)stream.next_frame-(long)stream.this_frame)*8<<" 2="<<stream.anc_bitlen<<" 3="<<stream.md_len*8<<std::endl;
 		
 			if(MAD_RECOVERABLE(stream.error)) 
 			{
@@ -670,13 +680,16 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 	(void) in;
 	//checkFlow(in,out);
 
-	if (hasData_) 
-		getLinear16(out);
-	else
-		out.setval(0.0);
+	// if (hasData_) 
+	getLinear16(out);
 
-	samplesOut_ += onSamples_; 
+	if (!hasData_) 
+		out.setval(0.0);
+	
 	ctrl_pos_->setValue(pos_, NOUPDATE);
+	
+
+
 
 	if (pos_ >= rewindpos_ + csize_)
 	{
@@ -690,7 +703,7 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 #ifdef MARSYAS_MAD     
 			madStructInitialize();
 #endif 
-			
+						
 			mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
 			
 			// if we are rewinding, we call fillStream with -1
@@ -703,33 +716,26 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 		}
 		
 	}
+	samplesOut_ += onSamples_; 
 
-
-
-  
-	if (hasData_) {
-
-		if (repetitions_ != 1)
-		  {
-		    hasData_ = (samplesOut_ < repetitions_ * csize_);
-		    lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);		    
-		  }
-		else 
-		  {
-		    hasData_ = pos_ < csize_;
-		    lastTickWithData_ = ((pos_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
-		  }
-	  
-	} else{
-		// if hasData_ was false already it got set in fillStream
-		// MRSWARN("MP3FileSource: track ended.");
+	
+	if (repetitions_ != 1)
+	{
+		hasData_ = (samplesOut_ < repetitions_ * csize_);
+		lastTickWithData_ = ((samplesOut_  + onSamples_>= repetitions_ * csize_) && hasData_);		    
 	}
-
+	else 
+	{
+		hasData_ = samplesOut_ < rewindpos_ + csize_;
+		lastTickWithData_ = ((samplesOut_ + onSamples_ >= rewindpos_ + csize_) && hasData_);
+	}
+	
 	if (repetitions_ == -1)
-	  {
+	{
 	    hasData_ = true;
 	    lastTickWithData_ = false;
-	  }
+	}
+	
 
 	ctrl_currentHasData_->setValue(hasData_);
 	ctrl_currentLastTickWithData_->setValue(lastTickWithData_);
@@ -812,6 +818,7 @@ MP3FileSource::fillStream( mrs_natural target )
 		} else {
 			// fill the mad buffer
 			mad_stream_buffer(&stream, ptr_ + offset, chunk);
+			
 			stream.error = MAD_ERROR_NONE;
 		}
     }
@@ -845,7 +852,7 @@ void MP3FileSource::closeFile()
 	pos_ = 0;
 	currentPos_ = 0;
 	size_ = 0;
-  
+	ctrl_pos_->setValue(0, NOUPDATE);
 
 	delete [] ptr_;
 

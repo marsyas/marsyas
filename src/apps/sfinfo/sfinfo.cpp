@@ -70,15 +70,13 @@ void sfinfo(vector<string> soundfiles)
 	{
 		mrs_natural size = src->getctrl("mrs_natural/size")->to<mrs_natural>();
 		mrs_real srate = src->getctrl("mrs_real/osrate")->to<mrs_real>();
-		
 		cout << "Sampling rate: " << srate << endl;
 		cout << "Number of channels:  " << src->getctrl("mrs_natural/onObservations")->to<mrs_natural>() << endl;
 		cout << "Length (in samples): " << size << endl;
 
 		
 		cout << "Duration (in seconds): " << size / srate  << endl;
-		
-		
+		cout << "Fname: " << sfName << endl;
 	}
     }
   

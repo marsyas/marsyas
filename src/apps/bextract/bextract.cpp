@@ -485,7 +485,11 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
   
   mrs_natural size_in_bytes = beatTracker->getctrl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
   mrs_natural num_ticks = (size_in_bytes / (hopSize * bhopSize)) + 1;
+  // for now hard-wire to about 30 seconds 
+  num_ticks = 40;
   
+
+
   mrs_natural ticks = 0;
 
   while (1)
@@ -2367,7 +2371,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   if (pluginName != EMPTYSTRING && playback)
   {
 	featureNetwork->updControl("AudioSink/dest/mrs_bool/mute", false);
-	featureNetwork->updControl("mrs_bool/initAudio", true);
+	featureNetwork->updControl("AudioSink/dest/mrs_bool/initAudio", true);
   }
 
   // don't use linkControl so that only value is copied once and linking doesn't
@@ -2465,8 +2469,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  }
 	  else
 	  {
-		bextractNetwork->updControl("mrs_natural/advance", advance);
-		if (beat_)
+		  bextractNetwork->updControl("mrs_natural/advance", advance);
+		  if (beat_)
 		{
 		  beatHistogramFeatures(beatTracker, currentlyPlaying, beatfeatures);
 		  bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);

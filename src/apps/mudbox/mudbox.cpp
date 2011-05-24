@@ -937,6 +937,9 @@ toy_with_sfplay(string sfName)
 
 
 
+
+
+
 void 
 toy_with_sine() 
 {
@@ -964,6 +967,25 @@ toy_with_sine()
     }
 
 }
+
+
+void 
+toy_with_sizes(mrs_string fname) 
+{
+	
+	MarSystemManager mng;
+	MarSystem* snet = mng.create("Series/snet");
+	MarSystem* src = mng.create("SoundFileSource/src");
+	MarSystem* gain = mng.create("Gain/gain");
+	snet->addMarSystem(src);
+	snet->addMarSystem(gain);
+	
+
+	snet->updControl("SoundFileSource/src/mrs_string/filename", fname);
+	
+	
+}
+
 
 void 
 toy_with_scales() 
@@ -8132,8 +8154,6 @@ main(int argc, const char **argv)
 		toy_with_SOM("music.mf");
 	else if (toy_withName == "Windowing")
 		toy_with_Windowing();
-
-
 	else if (toy_withName == "audiodevices")
 		toy_with_audiodevices(); 
 	else if (toy_withName == "cascade")
