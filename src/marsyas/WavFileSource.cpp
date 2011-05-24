@@ -325,8 +325,6 @@ WavFileSource::myUpdate(MarControlPtr sender)
   if (duration_ != -1.0)
   {
 	  csize_ = (mrs_natural)(duration_ * israte_);
-	  cout << "csize_ = " << csize_ << endl;
-	  
   }
 
   samplesToRead_ = inSamples_ * nChannels_;
