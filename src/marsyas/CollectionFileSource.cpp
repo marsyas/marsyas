@@ -138,100 +138,103 @@ CollectionFileSource::getHeader(mrs_string filename)
 void
 CollectionFileSource::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+	(void) sender;
 
 
-  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   
-  filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
-  pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
+	filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
+	pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
   
-  if (mngCreated_ == false) 
+	if (mngCreated_ == false) 
     {
-      isrc_ = new SoundFileSource("isrc");
-      mngCreated_ = true;
-      downsampler_ = new DownSampler("downsampler_"); 
+		isrc_ = new SoundFileSource("isrc");
+		mngCreated_ = true;
+		downsampler_ = new DownSampler("downsampler_"); 
     }
   
-  repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
-  duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
-  advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
-  setctrl("mrs_natural/advance", 0);
-  cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
-  if (getctrl("mrs_bool/shuffle")->isTrue())
+	repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
+	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
+	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
+	setctrl("mrs_natural/advance", 0);
+	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
+	if (getctrl("mrs_bool/shuffle")->isTrue())
     {
-      col_.shuffle();
-      setctrl("mrs_bool/shuffle", false);
+		col_.shuffle();
+		setctrl("mrs_bool/shuffle", false);
     }
   
-  if (cindex_ < (mrs_natural)col_.size()) 
+	if (cindex_ < (mrs_natural)col_.size()) 
     {
-      isrc_->updControl("mrs_string/filename", col_.entry(cindex_));
-      isrc_->updControl("mrs_natural/pos", 0);
-      ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
-      ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1)%col_.size()), NOUPDATE);
+		isrc_->updControl("mrs_string/filename", col_.entry(cindex_));
+		isrc_->updControl("mrs_natural/pos", 0);
+		ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+		ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1)%col_.size()), NOUPDATE);
       
       
-      if (col_.hasLabels())
-	{
-	  ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
-	  ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())), NOUPDATE);
-	}
-      ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
-      ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
+		if (col_.hasLabels())
+		{
+			ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+			ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())), NOUPDATE);
+		}
+		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
+		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
     }
   
-  myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();//[!] why get an INPUT flow control?!
-  onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+	myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();//[!] why get an INPUT flow control?!
+	onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
   
-  setctrl("mrs_real/israte", myIsrate_);//[!] why set an INPUT flow control?!?
-  setctrl("mrs_real/osrate", myIsrate_);
-  setctrl("mrs_natural/onObservations", onObservations_);
+	setctrl("mrs_real/israte", myIsrate_);//[!] why set an INPUT flow control?!?
+	setctrl("mrs_real/osrate", myIsrate_);
+	setctrl("mrs_natural/onObservations", onObservations_);
   
-  isrc_->updControl("mrs_natural/inSamples", inSamples_);
-  setctrl("mrs_natural/onSamples", inSamples_);
-  setctrl("mrs_real/israte", myIsrate_);//[!] why set an INPUT flow control?!?
-  setctrl("mrs_real/osrate", myIsrate_);
-  setctrl("mrs_natural/onObservations", onObservations_);
-  temp_.create(inObservations_, inSamples_);
+	isrc_->updControl("mrs_natural/inSamples", inSamples_);
+	setctrl("mrs_natural/onSamples", inSamples_);
+	setctrl("mrs_real/israte", myIsrate_);//[!] why set an INPUT flow control?!?
+	setctrl("mrs_real/osrate", myIsrate_);
+	setctrl("mrs_natural/onObservations", onObservations_);
+	temp_.create(inObservations_, inSamples_);
   
-  isrc_->updControl("mrs_real/repetitions", repetitions_);
-  isrc_->updControl("mrs_natural/pos", pos_);
-  isrc_->updControl("mrs_real/duration", duration_);
-  isrc_->updControl("mrs_natural/advance", advance_);
-  isrc_->updControl("mrs_natural/cindex", cindex_);
+	isrc_->updControl("mrs_real/repetitions", repetitions_);
+	isrc_->updControl("mrs_natural/pos", pos_);
+	isrc_->updControl("mrs_real/duration", duration_);
+	isrc_->updControl("mrs_natural/advance", advance_);
+	isrc_->updControl("mrs_natural/cindex", cindex_);
   
-  cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();  
+	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();  
   
   
-  if (advance_)
+	if (advance_)
     {
-      setctrl("mrs_string/currentlyPlaying", col_.entry((cindex_+advance_) % col_.size()));
-      setctrl("mrs_string/previouslyPlaying", col_.entry((cindex_+advance_-1) % col_.size()));
+
+		MRSMSG("ADVANCING 1");
+		
+		setctrl("mrs_string/currentlyPlaying", col_.entry((cindex_+advance_) % col_.size()));
+		setctrl("mrs_string/previouslyPlaying", col_.entry((cindex_+advance_-1) % col_.size()));
       
-      if (col_.hasLabels())
-	{
-	  setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())));
-	  ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);
+		if (col_.hasLabels())
+		{
+			setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())));
+			ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size())), NOUPDATE);
 
 
-	  setctrl("mrs_natural/previousLabel", col_.labelNum(col_.labelEntry((cindex_-1+advance_) % col_.size())));
-	  ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1+advance_) % col_.size())), NOUPDATE);
+			setctrl("mrs_natural/previousLabel", col_.labelNum(col_.labelEntry((cindex_-1+advance_) % col_.size())));
+			ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1+advance_) % col_.size())), NOUPDATE);
 
 
-	}
+		}
       
-      if (cindex_ + advance_ >= (mrs_natural)col_.size())
-	{
-	  setctrl("mrs_bool/hasData", false);
-	  hasData_ = false;
-	  setctrl("mrs_bool/lastTickWithData", true);
-	  lastTickWithData_ = true;
-	  advance_ = 0;
-	  cindex_ = 0;
+		if (cindex_ + advance_ >= (mrs_natural)col_.size())
+		{
+			setctrl("mrs_bool/hasData", false);
+			hasData_ = false;
+			setctrl("mrs_bool/lastTickWithData", true);
+			lastTickWithData_ = true;
+			advance_ = 0;
+			cindex_ = 0;
 	  
-	}
+		}
     }
   
   
@@ -241,167 +244,171 @@ void
 CollectionFileSource::myProcess(realvec& in, realvec &out)
 {
 	
-  if (advance_) 
+	if (advance_) 
     {
-      
-      cindex_ = (cindex_ + advance_) % col_.size();		
-      setctrl("mrs_natural/cindex", cindex_);
-      isrc_->updControl("mrs_string/filename", col_.entry(cindex_));   
-      isrc_->updControl("mrs_natural/pos", 0);
-      
-
-      myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
-      onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-      
-      setctrl("mrs_real/israte", myIsrate_);
-      setctrl("mrs_real/osrate", myIsrate_);
-      setctrl("mrs_natural/onObservations", onObservations_);
-      setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
-      setctrl("mrs_string/previouslyPlaying", col_.entry((cindex_-1) % col_.size()));
+		MRSMSG( "ADVANCING ");
+		
+		cindex_ = (cindex_ + advance_) % col_.size();		
+		setctrl("mrs_natural/cindex", cindex_);
+		isrc_->updControl("mrs_string/filename", col_.entry(cindex_));   
+		isrc_->updControl("mrs_natural/pos", 0);
       
 
-      ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
-      ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1) % col_.size()));
-      if (col_.hasLabels())
-	{
+		myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
+		onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+      
+		setctrl("mrs_real/israte", myIsrate_);
+		setctrl("mrs_real/osrate", myIsrate_);
+		setctrl("mrs_natural/onObservations", onObservations_);
+		setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
+		setctrl("mrs_string/previouslyPlaying", col_.entry((cindex_-1) % col_.size()));
+      
+
+		ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+		ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1) % col_.size()));
+		if (col_.hasLabels())
+		{
 	  
-	  setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
-	  ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+			setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
+			ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
 
 
-	  setctrl("mrs_natural/previousLabel", col_.labelNum(col_.labelEntry((cindex_-1)% col_.size())));
-	  ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())), NOUPDATE);
-	}
+			setctrl("mrs_natural/previousLabel", col_.labelNum(col_.labelEntry((cindex_-1)% col_.size())));
+			ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())), NOUPDATE);
+		}
       
-      ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
-      ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
-      
-
-      update();   
-      
-      isrc_->process(in,out);
-
-      setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-      setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
-      setctrl("mrs_bool/lastTickWithData", isrc_->getctrl("mrs_bool/lastTickWithData"));
-      iNewFile_ = true;
-      
-      if (cindex_ > (mrs_natural)col_.size()-1)  
-	{
-	  setctrl("mrs_bool/hasData", false);
-	  hasData_ = false;      
-	  setctrl("mrs_bool/lastTickWithData", true);
-	  lastTickWithData_ = true;      
-	  advance_ = 0;
-	  setctrl("mrs_natural/advance", 0);
-	  return;
-	}
+		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
+		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
       
 
-      setctrl("mrs_natural/advance", 0);
-      advance_ = 0;
+		// update();   
+      
+		isrc_->process(in,out);
+		
+		MRSMSG("out = " << out);
+		
+
+		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
+		setctrl("mrs_bool/lastTickWithData", isrc_->getctrl("mrs_bool/lastTickWithData"));
+		iNewFile_ = true;
+      
+		if (cindex_ > (mrs_natural)col_.size()-1)  
+		{
+			setctrl("mrs_bool/hasData", false);
+			hasData_ = false;      
+			setctrl("mrs_bool/lastTickWithData", true);
+			lastTickWithData_ = true;      
+			advance_ = 0;
+			setctrl("mrs_natural/advance", 0);
+			return;
+		}
+      
+
+		setctrl("mrs_natural/advance", 0);
+		advance_ = 0;
       
 
 
 
     }
-  else
+	else
     {
 
-      //finished current file. Advance to next one in collection (if any)
-      if (!isrc_->getctrl("mrs_bool/hasData")->isTrue())
-	{
-	  //check if there a following file in the collection
-	  if (cindex_ < (mrs_natural)col_.size() -1)
-	    {
-	      cindex_ = cindex_ + 1;
-	      setctrl("mrs_natural/cindex", cindex_);
-	      
-	      isrc_->updControl("mrs_string/filename", col_.entry(cindex_));      
-	      isrc_->updControl("mrs_natural/pos", 0);     
-	      pos_ = 0;
-	      myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
-	      onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-	      
-	      setctrl("mrs_real/israte", myIsrate_);
-	      setctrl("mrs_real/osrate", myIsrate_);
-	      setctrl("mrs_natural/onObservations", onObservations_);
-	      setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
-	      setctrl("mrs_string/previouslyPlaying", col_.entry((cindex_-1)%col_.size()));
-
-	      
-	      ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
-	      ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1) % col_.size()), NOUPDATE);
-	      
-	      
-	      if (col_.hasLabels())
+		//finished current file. Advance to next one in collection (if any)
+		if (!isrc_->getctrl("mrs_bool/hasData")->isTrue())
 		{
-		  setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
-		  ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
-
-
-		  setctrl("mrs_natural/previousLabel", col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())));
-		  ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1) % col_.size())), NOUPDATE);
+			//check if there a following file in the collection
+			if (cindex_ < (mrs_natural)col_.size() -1)
+			{
+				cindex_ = cindex_ + 1;
+				setctrl("mrs_natural/cindex", cindex_);
+			
+				isrc_->updControl("mrs_string/filename", col_.entry(cindex_));      
+				isrc_->updControl("mrs_natural/pos", 0);     
+				pos_ = 0;
+				myIsrate_ = isrc_->getctrl("mrs_real/israte")->to<mrs_real>();
+				onObservations_ = isrc_->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+			
+				setctrl("mrs_real/israte", myIsrate_);
+				setctrl("mrs_real/osrate", myIsrate_);
+				setctrl("mrs_natural/onObservations", onObservations_);
+				setctrl("mrs_string/currentlyPlaying", col_.entry(cindex_));
+				setctrl("mrs_string/previouslyPlaying", col_.entry((cindex_-1)%col_.size()));
+			
+			
+				ctrl_currentlyPlaying_->setValue(col_.entry(cindex_), NOUPDATE);
+				ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1) % col_.size()), NOUPDATE);
+			
+			
+				if (col_.hasLabels())
+				{
+					setctrl("mrs_natural/currentLabel", col_.labelNum(col_.labelEntry(cindex_)));
+					ctrl_currentLabel_->setValue(col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+				
+				
+					setctrl("mrs_natural/previousLabel", col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())));
+					ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1) % col_.size())), NOUPDATE);
+				}
+			
+				ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
+				ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
+				iNewFile_ = true;
+			}
+			else //no more files in collection
+			{
+			
+				cindex_ = cindex_ + 1;
+				setctrl("mrs_natural/cindex", cindex_);
+				ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1) % col_.size()), NOUPDATE);
+				setctrl("mrs_string/previouslyPlaying", col_.entry((cindex_-1)%col_.size()));
+			
+				setctrl("mrs_natural/previousLabel", col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())));
+				ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1) % col_.size())), NOUPDATE);
+			
+			
+				setctrl("mrs_bool/hasData", false);
+				hasData_ = false;
+			
+				setctrl("mrs_bool/lastTickWithData", true);
+				lastTickWithData_ = true;
+			
+				iNewFile_ = true;
+			}
+		} else 
+		{
+			if (isrc_->getctrl("mrs_natural/pos")->to<mrs_natural>() > 0)
+				iNewFile_ = false;
 		}
-	      
-	      ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
-	      ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
-	      iNewFile_ = true;
-	    }
-	  else //no more files in collection
-	    {
-
-	      cindex_ = cindex_ + 1;
-	      setctrl("mrs_natural/cindex", cindex_);
-	      ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1) % col_.size()), NOUPDATE);
-	      setctrl("mrs_string/previouslyPlaying", col_.entry((cindex_-1)%col_.size()));
-	      
-	      setctrl("mrs_natural/previousLabel", col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())));
-	      ctrl_previousLabel_->setValue(col_.labelNum(col_.labelEntry((cindex_-1) % col_.size())), NOUPDATE);
-
-
-	      setctrl("mrs_bool/hasData", false);
-	      hasData_ = false;
-
-	      setctrl("mrs_bool/lastTickWithData", true);
-	      lastTickWithData_ = true;
-
-	      iNewFile_ = true;
-	    }
-	} else 
-	{
-	  if (isrc_->getctrl("mrs_natural/pos")->to<mrs_natural>() > 0)
-	    iNewFile_ = false;
-	}
       
-      isrc_->process(in,out);
-      setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
-      setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
-      setctrl("mrs_bool/lastTickWithData", isrc_->getctrl("mrs_bool/lastTickWithData"));
+		isrc_->process(in,out);
+		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
+		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
+		setctrl("mrs_bool/lastTickWithData", isrc_->getctrl("mrs_bool/lastTickWithData"));
       
-      // check internal data *after* process()
-      iHasData_ = isrc_->getctrl("mrs_bool/hasData")->to<mrs_bool>();
-      iLastTickWithData_ = isrc_->getctrl("mrs_bool/lastTickWithData")->to<mrs_bool>();
-      if (! iHasData_ ) {
-	// check if we're at the end
-	// if we're not at the end, the above code
-	// will handle it in the next tick()
-	if (cindex_ == (mrs_natural)col_.size() - 1) {
-	  setctrl("mrs_bool/hasData", false);
-	  hasData_ = false;
-	}
-      }
+		// check internal data *after* process()
+		iHasData_ = isrc_->getctrl("mrs_bool/hasData")->to<mrs_bool>();
+		iLastTickWithData_ = isrc_->getctrl("mrs_bool/lastTickWithData")->to<mrs_bool>();
+		if (! iHasData_ ) {
+			// check if we're at the end
+			// if we're not at the end, the above code
+			// will handle it in the next tick()
+			if (cindex_ == (mrs_natural)col_.size() - 1) {
+				setctrl("mrs_bool/hasData", false);
+				hasData_ = false;
+			}
+		}
       
 
-      if (iLastTickWithData_ ) {
-	// check if we're at the end
-	// if we're not at the end, the above code
-	// will handle it in the next tick()
-	if (cindex_ == (mrs_natural)col_.size() - 1) {
-	  setctrl("mrs_bool/lastTickWithData", true);
-	  lastTickWithData_ = true;
-	}
-      }
+		if (iLastTickWithData_ ) {
+			// check if we're at the end
+			// if we're not at the end, the above code
+			// will handle it in the next tick()
+			if (cindex_ == (mrs_natural)col_.size() - 1) {
+				setctrl("mrs_bool/lastTickWithData", true);
+				lastTickWithData_ = true;
+			}
+		}
       
 
 

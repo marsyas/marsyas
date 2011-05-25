@@ -260,6 +260,7 @@ MP3FileSource::PrintFrameInfo(struct mad_header *Header)
 void 
 MP3FileSource::getHeader(mrs_string filename) 
 {
+	// cout << "getHeader " << filename << endl;
 	
 	debug_filename = filename;
 	
@@ -316,7 +317,9 @@ MP3FileSource::getHeader(mrs_string filename)
   
 	fileSize_ = myStat.st_size;
 	offset = 0;
-
+	samplesOut_ = 0;
+	ri_ = 0;
+	
 	
 	// initialize mad structs and fill the stream
 	madStructInitialize();
@@ -382,7 +385,9 @@ MP3FileSource::getHeader(mrs_string filename)
       
     
 	}
-  
+	
+	pos_ = 0;
+	
 	// PrintFrameInfo(&frame.header);
 
 
@@ -461,14 +466,17 @@ MP3FileSource::myUpdate(MarControlPtr sender)
   
 	israte_ = ctrl_israte_->to<mrs_real>();
 	inSamples_ = ctrl_inSamples_->to<mrs_natural>();
-	pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
+	// pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
+	
 	mrs_natural nChannels = ctrl_onObservations_->to<mrs_natural>();
   
 	setctrl("mrs_natural/onSamples", inSamples_);
 	setctrl("mrs_real/osrate", israte_);
   
 
-  
+	// if ( (currentPos_ != pos_) && (pos_ < size_)) 
+	// cout << "REWIND" << endl;
+	
 
 	
 	// if the user has seeked somewhere in the file
@@ -542,11 +550,15 @@ MP3FileSource::myUpdate(MarControlPtr sender)
 mrs_natural 
 MP3FileSource::getLinear16(realvec& slice) 
 {
-  
+
+	// cout << "getLinear16 pos = " << pos_ << endl;
+	
 #ifdef MARSYAS_MAD  
 	register double peak = 1.0/32767; // normalize 24-bit sample
 	register mad_fixed_t left_ch, right_ch;
 	register mrs_real sample;
+
+	
 
 	// decode a frame if necessary 
 	while (ri_ < inSamples_) {
@@ -605,7 +617,7 @@ MP3FileSource::getLinear16(realvec& slice)
     
     
 		mad_synth_frame(&synth, &frame);  
-
+		
 
     
 		// fill the reservoir...
@@ -644,6 +656,8 @@ MP3FileSource::getLinear16(realvec& slice)
 		}
 	}
 	
+	
+
 	// keep track of where we are
 	pos_ += inSamples_; // (inSamples_ * getctrl("mrs_natural/nChannels")->to<mrs_natural>());
 
@@ -680,16 +694,19 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 	(void) in;
 	//checkFlow(in,out);
 
+	// MRSMSG(pos_);
+
+
 	// if (hasData_) 
 	getLinear16(out);
 
-	if (!hasData_) 
-		out.setval(0.0);
+	//if (!hasData_) 
+	// out.setval(0.0);
+
+
 	
 	ctrl_pos_->setValue(pos_, NOUPDATE);
 	
-
-
 
 	if (pos_ >= rewindpos_ + csize_)
 	{
@@ -718,6 +735,13 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 	}
 	samplesOut_ += onSamples_; 
 
+
+	// cout << "pos_ = " << pos_ << endl;
+	// cout << "outSamples_ = " << samplesOut_ << endl;
+	// cout << "ri_ = " << ri_ << endl;
+	// cout << endl;
+
+
 	
 	if (repetitions_ != 1)
 	{
@@ -735,6 +759,10 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 	    hasData_ = true;
 	    lastTickWithData_ = false;
 	}
+
+
+	/// cout << "myProcess hasData_ = " << hasData_ << endl;
+	
 	
 
 	ctrl_currentHasData_->setValue(hasData_);
@@ -792,6 +820,8 @@ MP3FileSource::fillStream( mrs_natural target )
 		register mrs_natural remaining = 0;
 		register mrs_natural chunk = INPUT_BUFFER_SIZE;
       
+		// cout << "offset = " << offset << endl;
+		
 		// when called with the default parameter, carry on decoding...	  
 		if ( stream.next_frame != NULL ) {
 			offset = stream.next_frame - ptr_;  
@@ -806,6 +836,9 @@ MP3FileSource::fillStream( mrs_natural target )
 			remaining = fileSize_;
 		}
       
+		// cout << "REMAINING " << remaining << endl;
+		
+
 		// there may not be enough to fill the buffer
 		if ( remaining < INPUT_BUFFER_SIZE ) {
 			chunk = remaining + MAD_BUFFER_GUARD;

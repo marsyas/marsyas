@@ -2077,7 +2077,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			  mrs_bool single_vector)
 {
   MRSDIAG("bextract.cpp - bextract_train_refactored");
-  cout << "BEXTRACT REFACTORED" << endl;
   MarSystemManager mng;
 
 
@@ -2188,9 +2187,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 
-	bextractNetwork->linkControl(
-	"Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
-	"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
+	if (memSize != 0) 
+		bextractNetwork->linkControl(
+			"Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
+			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
 		);
 
 	if(tline)
@@ -2239,10 +2239,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 
-
-	bextractNetwork->linkControl(
-	"Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
-	"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+	if (memSize != 0)
+		bextractNetwork->linkControl(
+			"Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
+			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 	
 
 
