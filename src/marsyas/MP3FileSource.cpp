@@ -387,6 +387,7 @@ MP3FileSource::getHeader(mrs_string filename)
 	}
 	
 	pos_ = 0;
+	currentPos_ = 0;
 	
 	// PrintFrameInfo(&frame.header);
 
@@ -473,39 +474,10 @@ MP3FileSource::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onSamples", inSamples_);
 	setctrl("mrs_real/osrate", israte_);
   
-
-	// if ( (currentPos_ != pos_) && (pos_ < size_)) 
-	// cout << "REWIND" << endl;
 	
 
-	
-	// if the user has seeked somewhere in the file
-// 	if ( (currentPos_ != pos_) && (pos_ < size_)) 
-//     {
-// 		cout << "currentPos_ " << currentPos_ << endl;
-// 		cout << "pos_ = " << pos_ << endl;
-// 		cout << "size_ = " << size_ << endl;
-// 		// compute a new file offset using the frame target
-// 		mrs_real ratio = (mrs_real)pos_/size_;
-      
-// #ifdef MARSYAS_MAD     
-// 		madStructInitialize();
-// #endif 
-      
-// 		mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
-// 		cout << "targetOffset = " << targetOffset << endl;
-		
-// 		// if we are rewinding, we call fillStream with -1
-// 		if (targetOffset==0) {
-// 			fillStream(-1);
-// 		} else {
-// 			fillStream(targetOffset);
-// 		}
-// 		currentPos_ = pos_;
-//     }
-  
 
-	filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
+	filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    		
 	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
 	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
 	//rewindpos_ = pos_;
@@ -551,7 +523,6 @@ mrs_natural
 MP3FileSource::getLinear16(realvec& slice) 
 {
 
-	// cout << "getLinear16 pos = " << pos_ << endl;
 	
 #ifdef MARSYAS_MAD  
 	register double peak = 1.0/32767; // normalize 24-bit sample
@@ -694,12 +665,12 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 	(void) in;
 	//checkFlow(in,out);
 
-	// MRSMSG(pos_);
 
-
-	// if (hasData_) 
-	getLinear16(out);
-
+	if (hasData_) 
+		getLinear16(out);
+	// else 
+	// out.setval(0.0);
+	
 	//if (!hasData_) 
 	// out.setval(0.0);
 
@@ -736,12 +707,6 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 	samplesOut_ += onSamples_; 
 
 
-	// cout << "pos_ = " << pos_ << endl;
-	// cout << "outSamples_ = " << samplesOut_ << endl;
-	// cout << "ri_ = " << ri_ << endl;
-	// cout << endl;
-
-
 	
 	if (repetitions_ != 1)
 	{
@@ -761,8 +726,6 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 	}
 
 
-	/// cout << "myProcess hasData_ = " << hasData_ << endl;
-	
 	
 
 	ctrl_currentHasData_->setValue(hasData_);
@@ -836,8 +799,6 @@ MP3FileSource::fillStream( mrs_natural target )
 			remaining = fileSize_;
 		}
       
-		// cout << "REMAINING " << remaining << endl;
-		
 
 		// there may not be enough to fill the buffer
 		if ( remaining < INPUT_BUFFER_SIZE ) {
@@ -850,6 +811,9 @@ MP3FileSource::fillStream( mrs_natural target )
 			// MRSWARN("MP3FileSource: cannot seek to offset");
 		} else {
 			// fill the mad buffer
+			if (offset == -1) 
+				offset = 1;
+			
 			mad_stream_buffer(&stream, ptr_ + offset, chunk);
 			
 			stream.error = MAD_ERROR_NONE;

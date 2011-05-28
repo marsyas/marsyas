@@ -118,7 +118,6 @@ WavFileSource::addControls()
 void
 WavFileSource::getHeader(mrs_string filename)
 {
-	MRSMSG("getHeader");
 	
   if (sfp_ != NULL)
 	fclose(sfp_);
@@ -446,7 +445,6 @@ WavFileSource::getLinear16(realvec& slice)
 void
 WavFileSource::myProcess(realvec& in, realvec& out)
 {
-	MRSMSG(pos_);
 	
   switch(bits_)
   {
