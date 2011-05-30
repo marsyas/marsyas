@@ -364,11 +364,14 @@ public:
 	void tick();
 
 	std::string toString();
+	std::string toStringShort();
+
 	virtual marostring& toString(marostring& m);
+
 
 	// derived class such as Composite can override put
 	// essentially overriding operator<<
-	virtual std::ostream& put(std::ostream& o);
+	virtual std::ostream& put(std::ostream& o, bool verbose);
 
 	/// The opposite of toString() and put() above, read in the parameters for a system.
 	virtual std::istream& put(std::istream& is);

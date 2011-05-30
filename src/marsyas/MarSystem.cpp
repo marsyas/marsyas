@@ -1393,15 +1393,29 @@ MarSystem::getMATLABscript()
 	return MATLABscript_;
 }
 
+mrs_string
+MarSystem::toStringShort()
+{
+  ostringstream oss;
+  put(oss, false);
+  return oss.str();
+
+}
+
 
 
 mrs_string
 MarSystem::toString()
 {
 	ostringstream oss;
-	put(oss);
+	put(oss,true);
 	return oss.str();
 }
+
+
+
+
+
 
 marostring&
 MarSystem::toString(marostring& m)
@@ -1483,8 +1497,9 @@ MarSystem::toString(marostring& m)
 
 // write *this to s
 ostream&
-MarSystem::put(ostream &o)
+MarSystem::put(ostream &o, bool verbose)
 {
+
 	if (isComposite_)
 	{
 		o << "# MarSystemComposite" << endl;
@@ -1497,15 +1512,18 @@ MarSystem::put(ostream &o)
 	o << "# Name = " << name_ << endl;
 
 	o << endl;
-	o << "# MarControls = " << controls_.size() << endl;
-	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+	
+	if (verbose)
 	{
+	  o << "# MarControls = " << controls_.size() << endl;
+	  for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+	  {
 		ostringstream toss;
 		toss << ctrlIter_->second;
 		if (toss.str() != "")
-			o << "# " << ctrlIter_->first << " = " << ctrlIter_->second << endl;
+		  o << "# " << ctrlIter_->first << " = " << ctrlIter_->second << endl;
 		else
-			o << "# " << ctrlIter_->first << " = " << "MARSYAS_EMPTYSTRING" << endl;
+		  o << "# " << ctrlIter_->first << " = " << "MARSYAS_EMPTYSTRING" << endl;
 		//serialize links
 		ostringstream oss;
 		std::vector<std::pair<MarControlPtr, MarControlPtr> > links = ctrlIter_->second->getLinks();
@@ -1534,6 +1552,7 @@ MarSystem::put(ostream &o)
 			}
 		}
 		o << "# LinkedFrom = " << numLinks << endl << oss.str();
+	  }
 	}
 
 	if (isComposite_)
@@ -1543,7 +1562,7 @@ MarSystem::put(ostream &o)
 		o << endl;
 
 		for (mrs_natural i=0; i < marsystemsSize_; ++i)
-			o << *(marsystems_[i]) << endl;
+		  marsystems_[i]->put(o,verbose);
 	}
 
 	return o;
@@ -1852,8 +1871,8 @@ MarSystem::put(istream& is)
 ostream&
 Marsyas::operator<< (ostream& o, MarSystem& sys)
 {
-	sys.put(o);
-	return o;
+  sys.put(o, true);
+  return o;
 }
 
 istream&

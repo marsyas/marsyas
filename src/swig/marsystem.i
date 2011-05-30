@@ -36,6 +36,7 @@ class MarSystem {
                 std::string getName ();
                 std::string getPrefix ();
                 std::string toString ();
+				std::string toStringShort ();
 
                 /* Methods for dealing with controls */
                 void            setControl(std::string, MarControlPtr);

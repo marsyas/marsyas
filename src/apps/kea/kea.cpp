@@ -767,6 +767,9 @@ train_evaluate()
   while(net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>() == false)
     {
       net->tick();
+
+	  //  cout << net->getControl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>() << endl;
+	  
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
       net->updControl("Classifier/cl/mrs_string/mode", mode);
       ++i;
