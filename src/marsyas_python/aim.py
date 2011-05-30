@@ -3,7 +3,7 @@
 
 # Plotting auditory image model stuff
 
-
+import pickle
 from pylab import *
 import sys
 from matplotlib import pyplot
@@ -11,6 +11,11 @@ from marsyas import MarSystemManager,MarControlPtr
 
 # create a global MarSystemManager
 msm = MarSystemManager()
+
+
+
+
+
 
 
 # helper function to create a list of MarSystems from a list of names
@@ -35,6 +40,7 @@ def create_network():
 	net = series("net", create(["SoundFileSource/src",
 				    "AimPZFC2/aimpzfc",
 				    "AimHCL2/aimhcl2",
+				    "AimSAI/aimsai",
 				    "Sum/sum",
 #				    "AutoCorrelation/acr",
 #				    "BeatHistogram/histo",
@@ -65,6 +71,26 @@ def pca(data):
    perm = argsort(-values)
    return values[perm], vecs[:, perm]
 
+def control2array(net,cname,so=0,eo=0,st=0,et=0):
+  net_control = net.getControl(cname)
+  net_realvec = net_control.to_realvec()
+  net_array = realvec2array(net_realvec)
+  if et==0:
+    et = net_array.shape[0]
+    eo = net_array.shape[1]
+  res_array = net_array.transpose()
+  res_array = res_array[so:eo][st:et]
+  res_array = flipud(res_array)
+  return res_array
+
+
+def imageplot(imgdata, cmap = 'jet', aspect='None',img_xlabel='Samples', img_ylabel='Observations',sy=0,ey=0,sx=0,ex=0):
+  if ex==0:
+    ex = imgdata.shape[0]
+    ey = imgdata.shape[1]
+  imshow(imgdata, cmap=cmap, aspect=aspect, extent=[sy,ey,sx,ex])
+  xlabel(img_xlabel)
+  ylabel(img_ylabel)
 
 
 
@@ -137,11 +163,30 @@ def plot_figure(fname, duration):
 	# figure()
 	# plot(vecs[5])
 	# print vecs.shape
+		cname = "AimHCL2/aimhcl2/mrs_realvec/processedData"
 		hold(False)
 		figure(1)
 		imshow(imgdata.transpose(), cmap = 'jet', aspect='auto', extent=[0.0, winSize /  srate, 1, 78])
-		figure(2);
 
+		figure(2)
+		array = control2array(net, cname,0,40,0,500);
+		imageplot(array,'bone_r','auto')
+		title(cname);
+
+#		a = (realvec2array(data), 'bone_r', 'auto', 0, 50, 0, 40)
+
+
+#		a = {imgdata:array, cmap:'bone_r', aspect:'auto'}
+#		imageplot(**a)
+#		print pickle.dump(a,")
+#		imageplot(*a)
+
+		figure(3)
+		imageplot(control2array(net, cname), 'jet', 'auto', 'Frequency(Hz)', 'Time(msec)', 0, winSize/srate, 0, 6000)
+		figure(4);
+		imageplot(control2array(net, "AimSAI/aimsai/mrs_realvec/processedData"), 'jet', 'auto')
+
+		figure(5);
 		for i in range(1,topChannel):
 		  params={'axes.linewidth' : 0}
 		  rcParams.update(params)
@@ -162,7 +207,7 @@ def plot_figure(fname, duration):
 
 
 
-	        figure(3)
+	        figure(6)
 	        subplot(321);
 		plot(imgdata[0:512,58]);
 		subplot(322)
@@ -232,7 +277,7 @@ def plot_figure(fname, duration):
 		    corr_image[i,j] = b[period]
 
 		print (mean_period / (78 * 78))
-		figure(5);
+		figure(7);
 		imshow(corr_image, cmap = 'jet', aspect='auto');
 		raw_input("Press any key to continue")
 

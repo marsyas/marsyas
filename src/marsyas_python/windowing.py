@@ -87,22 +87,16 @@ def plot_figure():
 	
 	xlabel("Frequency (Hz)")
 	ylabel("Magnitude (dB)");
+	suptitle("HELLO BABY");
 	legend()
 
 
 	# save .svg and .ps versions of the figure 
 	savefig('windowing.svg')
 	savefig('windowing.ps')
-
+	
 	show()
 
 
 # call the plot function 
 plot_figure()
-
-
-
-
-
-
-
