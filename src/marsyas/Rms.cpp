@@ -50,33 +50,25 @@ Rms::myUpdate(MarControlPtr sender)
   ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Rms_"), NOUPDATE);
 }
 
-void 
+void
 Rms::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t;
+  mrs_natural t;
+  mrs_natural o;
   mrs_real val;
-  mrs_real rmsEnergy = 0.0;
-  
-  
-  for (t=0; t < inSamples_; t++)
-    {
-      val = in(0,t);
+  mrs_real rmsEnergy;
+
+  for (o = 0; o < inObservations_; o++) {
+    rmsEnergy = 0.0;
+    for (t = 0; t < inSamples_; t++) {
+      val = in(o, t);
       rmsEnergy += (val * val);
     }
-  if (rmsEnergy != 0.0) 
-    {
-      rmsEnergy /= inSamples_;
-      rmsEnergy = sqrt(rmsEnergy);
-    }
-
-	out(0) = (mrs_real) rmsEnergy;
+    if (rmsEnergy != 0.0)
+      {
+        rmsEnergy /= inSamples_;
+        rmsEnergy = sqrt(rmsEnergy);
+      }
+    out(o, 0) = (mrs_real) rmsEnergy;
+  }
 }
-
-
-
-
-
-
-	
-
-	
