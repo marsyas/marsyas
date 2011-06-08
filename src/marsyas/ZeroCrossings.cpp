@@ -55,18 +55,20 @@ void
 ZeroCrossings::myProcess(realvec& in, realvec& out)
 {
   mrs_natural o,t;
-  zcrs_ = 1.0;
   
-  for (o=0; o < inObservations_; o++)
-    for (t = 1; t < inSamples_; t++)
-      {
-	if (((in(o, t-1) > 0) && (in(o,t) < 0)) ||
-	    ((in(o, t-1) < 0) && (in(o,t) > 0)))
-	  {
-	    zcrs_++;
-	  }
-	out(o,0) = zcrs_ / inSamples_;
-      }
+  for (o=0; o < inObservations_; o++) 
+    {
+      zcrs_ = 1.0;
+      for (t = 1; t < inSamples_; t++)
+        {
+          if (((in(o, t-1) > 0) && (in(o,t) < 0)) ||
+	      ((in(o, t-1) < 0) && (in(o,t) > 0)))
+	    {
+	      zcrs_++;
+	    }
+	  out(o,0) = zcrs_ / inSamples_;
+        }
+    }
 }
 
 
