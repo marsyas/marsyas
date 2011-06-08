@@ -66,8 +66,8 @@ ZeroCrossings::myProcess(realvec& in, realvec& out)
 	    {
 	      zcrs_++;
 	    }
-	  out(o,0) = zcrs_ / inSamples_;
         }
+      out(o,0) = zcrs_ / inSamples_;
     }
 }
 
