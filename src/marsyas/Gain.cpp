@@ -70,7 +70,7 @@ Gain::myProcess(realvec& in, realvec& out)
 {
 	MRSDIAG(type_ << "/" << name_ << "/mrs_real/gain = " << gainValue_);
 
-	mrs_real gainValue = ctrl_gain->to<mrs_real>();
+	mrs_real gainValue = ctrl_gain_->to<mrs_real>();
 	// It is important to loop over both observations
 	// and channels so that for example a gain can be
 	// applied to multi-channel signals
