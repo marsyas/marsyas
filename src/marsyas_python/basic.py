@@ -4,7 +4,7 @@
 
 
 import marsyas
-
+import json
 msm = marsyas.MarSystemManager()
 
 
@@ -26,5 +26,6 @@ net = ["Series/net",
         "Gain/gain",
         "SoundFileSink/dest"]]
 
-msyslist = create(net)
-print msyslist.toStringShort()
+print json.dumps(net)
+msys = create(net)
+print msys.toStringShort()

@@ -34,10 +34,10 @@ Gain::Gain(mrs_string name):MarSystem("Gain", name)
 
 Gain::Gain(const Gain& a) : MarSystem(a)
 {
-	// For any MarControlPtr in a MarSystem
-	// it is necessary to perform this getctrl
-	// in the copy constructor in order for cloning to work
-	ctrl_gain_ = getctrl("mrs_real/gain");
+  // For any MarControlPtr in a MarSystem
+  // it is necessary to perform this getctrl
+  // in the copy constructor in order for cloning to work
+  ctrl_gain_ = getctrl("mrs_real/gain");
 }
 
 Gain::~Gain()
@@ -61,8 +61,6 @@ Gain::addControls()
 void
 Gain::myUpdate(MarControlPtr sender)
 {
-	// for efficiency
-	gainValue_ = ctrl_gain_->to<mrs_real>();
 	// no change to network flow
 	MarSystem::myUpdate(sender);
 }
@@ -72,6 +70,7 @@ Gain::myProcess(realvec& in, realvec& out)
 {
 	MRSDIAG(type_ << "/" << name_ << "/mrs_real/gain = " << gainValue_);
 
+	mrs_real gainValue = ctrl_gain->to<mrs_real>();
 	// It is important to loop over both observations
 	// and channels so that for example a gain can be
 	// applied to multi-channel signals
@@ -80,9 +79,7 @@ Gain::myProcess(realvec& in, realvec& out)
 		for (mrs_natural t = 0; t < inSamples_; t++)
 		{
 			//apply gain to all channels
-			out(o,t) = gainValue_ * in(o,t);
+		  out(o,t) = gainValue_ * in(o,t);
 		}
 	}
 }
-
-
