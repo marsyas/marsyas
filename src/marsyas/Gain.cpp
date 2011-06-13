@@ -79,7 +79,7 @@ Gain::myProcess(realvec& in, realvec& out)
 		for (mrs_natural t = 0; t < inSamples_; t++)
 		{
 			//apply gain to all channels
-		  out(o,t) = gainValue_ * in(o,t);
+		  out(o,t) = gainValue * in(o,t);
 		}
 	}
 }
