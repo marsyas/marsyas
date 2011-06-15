@@ -43,7 +43,6 @@ private:
 	void myUpdate(MarControlPtr sender);
 
 	MarControlPtr ctrl_gain_;
-	mrs_real gainValue_; // for efficency
 
 public:
 	Gain(std::string name);

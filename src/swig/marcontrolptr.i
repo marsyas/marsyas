@@ -39,7 +39,7 @@ class MarControlPtr {
 				
                 mrs_natural   to_natural () { return (*$self)->to<mrs_natural>(); }
                 mrs_real         to_real () { return (*$self)->to<mrs_real>(); }
-                mrs_string     to_string () { return (*$self)->to<mrs_string>(); }
+                mrs_string     to_string () { return (*self)->to_string(); }
                 mrs_bool         to_bool () { return (*$self)->to<mrs_bool>(); }
                 realvec		  to_realvec () { return (*$self)->to<mrs_realvec>(); }
 };

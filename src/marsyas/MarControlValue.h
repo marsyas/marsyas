@@ -1,18 +1,18 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -30,7 +30,7 @@
 
 namespace Marsyas
 {
-/** 
+/**
 	\class MarControlValue
 	\brief Generic class for Marsyas control values
 	Created by lfpt@inescporto.pt and lmartins@inescporto.pt
@@ -56,17 +56,17 @@ protected:
 
 protected:
 	MarControlValue() {} // can't be directly created (use MarControl or MarControlValueT)
-	MarControlValue(const MarControlValue& a) 
+	MarControlValue(const MarControlValue& a)
 	{
 		type_ = a.type_;
 	};
-	
+
 	//for debugging purposes only
 	void setDebugValue();
-	
+
 	void current_link_update();
-		
-	
+
+
 public:
 	virtual ~MarControlValue() {}
 
@@ -122,7 +122,7 @@ public:
 	virtual void copyValue(MarControlValue& value);
 	virtual void callMarSystemsUpdate();
 	virtual MarControlValue* create();
-	
+
 	virtual std::string getTypeID();
 
 	//setters
@@ -131,7 +131,7 @@ public:
 
 	//getters
 	const T& get() const;
-  
+
 	virtual void createFromStream(std::istream&);
 	virtual std::ostream& serialize(std::ostream& os);
 	virtual bool isNotEqual(MarControlValue *v);
@@ -198,7 +198,7 @@ class marsyas_EXPORT MarControlValueT<bool> : public MarControlValue
 protected:
 	bool value_;
 	bool tempValue_;
-    
+
 public:
 	static bool invalidValue;
 
@@ -264,7 +264,7 @@ MarControlValueT<T>::MarControlValueT()
 		type_ = "mrs_bool";
 	else
 	{
-		type_ = this->getRegisteredType();		
+		type_ = this->getRegisteredType();
 	}
 }
 
@@ -288,7 +288,7 @@ MarControlValueT<T>::MarControlValueT(T value)
 		type_ = "mrs_bool";
 	else
 	{
-		type_ = this->getRegisteredType();		
+		type_ = this->getRegisteredType();
 	}
 }
 
@@ -302,7 +302,7 @@ MarControlValueT<T>::MarControlValueT(const MarControlValueT& a):MarControlValue
 }
 
 template<class T>
-MarControlValueT<T>& 
+MarControlValueT<T>&
 MarControlValueT<T>::operator=(const MarControlValueT& a)
 {
 	if (this != &a)
@@ -342,7 +342,7 @@ MarControlValueT<T>::callMarSystemsUpdate()
 	//so it can be "reinjected" into all MarSystem::update() methods
 	//(otherwise, only the first MarSystem in the loop below would
 	//get the current value - all the remaining ones would get the value
-	//"toggled" bu the first MarSystem update() call) 
+	//"toggled" bu the first MarSystem update() call)
 	tempValue_ = value_;
 
 	//iterate over all the MarControls that own this MarControlValue
@@ -352,7 +352,7 @@ MarControlValueT<T>::callMarSystemsUpdate()
 		value_ = tempValue_; //make sure to use the current value, not a "toggled" one
 		current_link_ = lit_->first;
 		current_link_update();
-		
+
 	}
 
 
@@ -451,7 +451,7 @@ MarControlValueT<T>::isNotEqual(MarControlValue *v)
 			MRSWARN(sstr.str());
 			return false;
 		}
-		
+
 		return (value_ != dynamic_cast<MarControlValueT<T>*>(v)->get());
 	}
 	else //if v1 and v2 refer to the same object, they must be equal (=> return false)

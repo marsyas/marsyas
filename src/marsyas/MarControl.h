@@ -204,6 +204,10 @@ public:
 
 	// getters by return (user must know the parameter's type)
 	template<class T> WAS_INLINE const T& to() const;
+   
+
+	mrs_string to_string() const;
+	
 
 	// bool-specific helper
 	bool isTrue();
@@ -228,6 +232,9 @@ public:
 	friend WAS_INLINE MarControl operator*(const MarControl& v1, const MarControl& v2);
 	friend WAS_INLINE MarControl operator/(const MarControl& v1, const MarControl& v2);
 };
+
+
+
 
 
 /************************************************************************/

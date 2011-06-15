@@ -214,6 +214,29 @@ namespace Marsyas {
 		return true;
 	}
 
+
+    mrs_string 
+	MarControl::to_string() const
+	{
+	  if(!this)
+	  {
+		MRSERR("MarControl::to() - trying to get a value from a NULL MarControl! Returning invalid value...");
+		return "";
+	  }
+	  const MarControlValueT<mrs_string> *ptr = dynamic_cast<const MarControlValueT<mrs_string>*>(value_);
+	  if(ptr)
+	  {
+		return ptr->get();
+	  }
+	  else
+	  {
+		MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType() << " for control  " << this->getName()) ;
+		return "";
+	  }
+	}
+
+
+
 	void
 	MarControl::unlinkFromAll()
 	{
