@@ -205,8 +205,12 @@ public:
 	// getters by return (user must know the parameter's type)
 	template<class T> WAS_INLINE const T& to() const;
    
-
+	// type specific getters useful for SWIG bindings 
 	mrs_string to_string() const;
+	mrs_real   to_real() const;
+	mrs_natural to_natural() const;
+	mrs_realvec to_realvec() const;
+	mrs_bool to_bool() const;
 	
 
 	// bool-specific helper

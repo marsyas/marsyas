@@ -235,6 +235,89 @@ namespace Marsyas {
 	  }
 	}
 
+    mrs_natural 
+	MarControl::to_natural() const
+	{
+	  if(!this)
+	  {
+		MRSERR("MarControl::to() - trying to get a value from a NULL MarControl! Returning invalid value...");
+		return 0;
+	  }
+	  const MarControlValueT<mrs_natural> *ptr = dynamic_cast<const MarControlValueT<mrs_natural>*>(value_);
+	  if(ptr)
+	  {
+		return ptr->get();
+	  }
+	  else
+	  {
+		MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType() << " for control  " << this->getName()) ;
+		return 0;
+	  }
+	}
+
+
+    mrs_bool 
+	MarControl::to_bool() const
+	{
+	  if(!this)
+	  {
+		MRSERR("MarControl::to() - trying to get a value from a NULL MarControl! Returning invalid value...");
+		return 0;
+	  }
+	  const MarControlValueT<mrs_bool> *ptr = dynamic_cast<const MarControlValueT<mrs_bool>*>(value_);
+	  if(ptr)
+	  {
+		return ptr->get();
+	  }
+	  else
+	  {
+		MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType() << " for control  " << this->getName()) ;
+		return 0;
+	  }
+	}
+
+    mrs_real 
+	MarControl::to_real() const
+	{
+	  if(!this)
+	  {
+		MRSERR("MarControl::to() - trying to get a value from a NULL MarControl! Returning invalid value...");
+		return 0.0;
+	  }
+	  const MarControlValueT<mrs_real> *ptr = dynamic_cast<const MarControlValueT<mrs_real>*>(value_);
+	  if(ptr)
+	  {
+		return ptr->get();
+	  }
+	  else
+	  {
+		MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType() << " for control  " << this->getName()) ;
+		return 0.0;
+	  }
+	}
+
+    mrs_realvec  
+	MarControl::to_realvec() const
+	{
+	  if(!this)
+	  {
+		MRSERR("MarControl::to() - trying to get a value from a NULL MarControl! Returning invalid value...");
+		realvec s;
+		return s;
+	  }
+	  const MarControlValueT<mrs_realvec> *ptr = dynamic_cast<const MarControlValueT<mrs_realvec>*>(value_);
+	  if(ptr)
+	  {
+		return ptr->get();
+	  }
+	  else
+	  {
+		MRSERR("MarControl::to() -  Incompatible type requested - " << "expected " << value_->getType() << " for control  " << this->getName()) ;
+		realvec s;
+		return s;
+	  }
+	}
+
 
 
 	void

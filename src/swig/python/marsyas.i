@@ -24,28 +24,28 @@
     // Simple string representation method.
     std::string __str__() {
         std::ostringstream oss;
-        $self->dumpDataOnly(oss);
+        self->dumpDataOnly(oss);
         return oss.str();
     }
 
     // Print method for standard Marsyas representation.
     void print_() {
-        std::cout << *$self;
+        std::cout << *self;
     }
 
     // Length method.
     mrs_natural __len__() {
-        return $self->getSize();
+        return self->getSize();
     }
 
     // __getitem__ method to get value from realvec.
     mrs_real __getitem__(mrs_natural i) {
-        return $self->getValueFenced(i);
+        return self->getValueFenced(i);
     }
 
     // __setitem__ method to set value of realvec.
     void __setitem__(mrs_natural i, mrs_real x) {
-        $self->getValueFenced(i) = x;
+        self->getValueFenced(i) = x;
     }
 
 };
@@ -57,17 +57,17 @@
     // see https://sourceforge.net/tracker/?func=detail&aid=2801824&group_id=1645&atid=101645
     /*
     void updControl(std::string s, mrs_bool x) {
-        $self->updControl(s, MarControlPtr(x));
+        self->updControl(s, MarControlPtr(x));
     }
     */
     void updControl(std::string s, mrs_natural x) {
-        $self->updControl(s, MarControlPtr(x));
+        self->updControl(s, MarControlPtr(x));
     }
     void updControl(std::string s, mrs_real x) {
-        $self->updControl(s, MarControlPtr(x));
+        self->updControl(s, MarControlPtr(x));
     }
     void updControl(std::string s, mrs_string x) {
-        $self->updControl(s, MarControlPtr(x));
+        self->updControl(s, MarControlPtr(x));
     }
 }
 

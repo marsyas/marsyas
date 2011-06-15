@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -215,7 +215,7 @@ MFCC::myUpdate(MarControlPtr sender)
 		}
 	}
 
-	
+
 	pfftSize_ = fftSize_;
 	psamplingRate_ = samplingRate_;
 
