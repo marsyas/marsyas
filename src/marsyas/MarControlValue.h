@@ -469,7 +469,7 @@ MarControlValueT<T>::sum(MarControlValue *v)
 		sstr << "MarControlValueT::sum() - Trying to sum different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
-		return false;
+		return NULL;
 	}
 	return new MarControlValueT<T>(value_+ptr->value_);
 }
@@ -485,7 +485,7 @@ MarControlValueT<T>::subtract(MarControlValue *v)
 		sstr << "MarControlValueT::subtract() - Trying to subtract different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
-		return false;
+		return NULL;
 	}
 	return new MarControlValueT<T>(value_-ptr->value_);
 }
@@ -501,7 +501,7 @@ MarControlValueT<T>::multiply(MarControlValue *v)
 		sstr << "MarControlValueT::multiply() - Trying to multiply different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
-		return false;
+		return NULL;
 	}
 	return new MarControlValueT<T>(value_*ptr->value_);
 }
@@ -517,7 +517,7 @@ MarControlValueT<T>::divide(MarControlValue *v)
 		sstr << "[MarControlValueT::divide] Trying to divide different types of MarControlValue. "
 			<< "(" << this->getType() << " with " << v->getType() << ")";
 		MRSWARN(sstr.str());
-		return false;
+		return NULL;
 	}
 	return new MarControlValueT<T>(value_/ptr->value_);
 }

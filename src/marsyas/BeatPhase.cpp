@@ -335,9 +335,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 					   << beat_location + 0.02 << " b");
 		  beatOutput(total_beats) = beat_location;
 		  current_beat_location_ = beat_location;
+		  total_beats++;
 		}
 	  }
-	  total_beats++;
 	}
 	sampleCount_ += bhopSize;
 }

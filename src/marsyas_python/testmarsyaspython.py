@@ -1,18 +1,25 @@
-#!/usr/bin/python
+#!/usr/bin/python2.4
+#
+# Copyright 2011 Google Inc. All Rights Reserved.
 
+"""Simplest possible test of Marsyas SWIG gindings"""
+
+__author__ = 'snessnet@google.com (Steven Ness)'
 import marsyas
 
-print "normal marsyas"
 
+  # Create the network
 mng = marsyas.MarSystemManager()
 net = mng.create("Series","series")
 net.addMarSystem(mng.create("SoundFileSource", "src"))
 net.addMarSystem(mng.create("Gain", "gain"))
-net.updControl("SoundFileSource/src/mrs_string/filename", "/home/snessnet/tracks/bird1.wav")
 
-print "filename="
+  # Set the filename
+net.updControl("SoundFileSource/src/mrs_string/filename", "foo.wav")
+
+  # Get the name of the input sound file to test getControl
 ctrl_fname = net.getControl("SoundFileSource/src/mrs_string/filename");
-print "##########"
 print ctrl_fname.to_string()
+print ctrl_fname
+#  print net.toString()
 
-# print net.toString()
