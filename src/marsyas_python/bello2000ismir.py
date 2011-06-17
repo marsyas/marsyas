@@ -37,7 +37,8 @@ net_spec = ["Series/pitch_net",
        ["SoundFileSource/src",
         "Windowing/win",
         "AutoCorrelation/acr",
-        "Peaker/pkr"]
+        "Peaker/pkr",
+        "MaxArgMax/mxr"]
        ]
 
 net = create(net_spec)
@@ -48,10 +49,25 @@ fname.setValue_string("notes.wav")
 
 
 
-for i in range(100):
+
+amplitudes  = zeros(800)
+frequencies = zeros(800)
+pitches = zeros(800)
+
+for i in range(800):
   net.tick()
-  multi_plots(net, ["SoundFileSource/src/mrs_realvec/processedData",
-                    "Windowing/win/mrs_realvec/processedData",
-                    "AutoCorrelation/acr/mrs_realvec/processedData",
-                    "mrs_realvec/processedData"])
-  raw_input("Press any key to continue")
+  # multi_plots(net, ["SoundFileSource/src/mrs_realvec/processedData",
+  #                   "Windowing/win/mrs_realvec/processedData",
+  #                   "AutoCorrelation/acr/mrs_realvec/processedData",
+  #                   "Peaker/pkr/mrs_realvec/processedData"])
+  pitchres = net.getControl("mrs_realvec/processedData").to_realvec()
+  amplitudes[i] = pitchres[0]
+  frequencies[i] = pitchres[1]
+  pitches[i] = 49 + math.floor(12 * (log(44100.0 / pitchres[1]) / log(2.0))+0.5);
+
+figure(2)
+plot(amplitudes);
+figure(3)
+plot(frequencies)
+figure(4)
+plot(pitches)
