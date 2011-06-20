@@ -58,4 +58,5 @@ add_subdirectory(aim)
 add_subdirectory(tempo) 
 add_subdirectory(virtualsensor)
 add_subdirectory(onsets)
+add_subdirectory(helloWorld)
 
