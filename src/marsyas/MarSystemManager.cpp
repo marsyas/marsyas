@@ -248,7 +248,7 @@
 #include "FMeasure.h"
 #include "DelaySamples.h"
 #include "OrcaSnip.h"
-
+#include "AMDF.h"
 #include "Inject.h"
 #include "PowerToAverageRatio.h"
 #include "MeanAbsoluteDeviation.h"
@@ -360,7 +360,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Subtract", new Subtract("subtract"));
 	registerPrototype("Median", new Median("median"));
 	registerPrototype("MedianFilter", new MedianFilter("medianfilterpr"));
-
+	registerPrototype("AMDF", new AMDF("amdfpr"));
 	registerPrototype("AubioYin", new AubioYin("aubioyin"));
 	registerPrototype("Yin", new Yin("yin"));
 	registerPrototype("DownSampler", new DownSampler("ds"));
@@ -731,7 +731,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			stft_features_pr->addMarSystem(create("MFCC", "mfcc"));
 
 			MarSystem* chromaPrSeries =  create("Series", "chromaPrSeries");
-
+g
 			chromaPrSeries->addMarSystem(create("Spectrum2Chroma", "chroma"));
 			chromaPrSeries->addMarSystem(create("PeakRatio","pr"));
 
