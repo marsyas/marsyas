@@ -257,6 +257,7 @@
 #include "SpectralFlatnessAllBands.h"
 #include "MathPower.h"
 #include "PitchDiff.h"
+#include "CARFAC.h"
 //modifyHeader
 
 
@@ -515,6 +516,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SpectralFlatnessAllBands", new SpectralFlatnessAllBands("spectralflatnessallbandspr"));
 	registerPrototype("MathPower", new MathPower("mathpowerpr"));
 	registerPrototype("PitchDiff", new PitchDiff("pitchdiffpr"));
+	registerPrototype("CARFAC", new CARFAC("carfac"));
 	//modifyRegister
 
 	//***************************************************************************************
