@@ -76,6 +76,7 @@
 #include "ZeroCrossings.h"
 #include "Memory.h"
 #include "Mean.h"
+#include "DTW.h"
 #include "StandardDeviation.h"
 #include "PlotSink.h"
 #include "GaussianClassifier.h"
@@ -443,6 +444,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("ADSR", new ADSR("adsrpr"));
 	registerPrototype("Reverse", new Reverse("reversepr"));
 	registerPrototype("DeInterleaveSizecontrol", new DeInterleaveSizecontrol("deintszctrlpr"));
+ 	registerPrototype("DTW", new DTW("dtwpr"));
 	registerPrototype("Deinterleave", new Deinterleave("deintpr"));
 	registerPrototype("SNR", new SNR("snrpr"));
 	registerPrototype("PCA", new PCA("pcapr"));

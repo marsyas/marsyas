@@ -32,7 +32,6 @@
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "common.h"
-#include "CARFAC.h"
 
 #include <vector>
 #include <iomanip>

@@ -321,7 +321,7 @@ def chromagram():
 
 def main():
   if (sys.argv[1] == "zerocrossings"):
-    zerocrossings(5, 512, sys.argv[2])
+    zerocrossings(10, 512, sys.argv[2])
   elif (sys.argv[1] == "spectrum"):
     spectrum(5, 1024, sys.argv[2])
   elif (sys.argv[1] == "autocorrelation"):
