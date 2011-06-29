@@ -45,6 +45,7 @@ add_subdirectory(sound2sound)
 add_subdirectory(ibt)
 add_subdirectory(pitchdtw)
 add_subdirectory(speakerSeg)
+add_subdirectory(helloglut)
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
