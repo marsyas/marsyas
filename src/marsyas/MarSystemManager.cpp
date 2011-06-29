@@ -729,7 +729,7 @@ void MarSystemManager::registerComposite(std::string prototype)
 			stft_features_pr->addMarSystem(create("MFCC", "mfcc"));
 
 			MarSystem* chromaPrSeries =  create("Series", "chromaPrSeries");
-g
+
 			chromaPrSeries->addMarSystem(create("Spectrum2Chroma", "chroma"));
 			chromaPrSeries->addMarSystem(create("PeakRatio","pr"));
 
