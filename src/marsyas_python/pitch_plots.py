@@ -2,58 +2,61 @@
 #!/usr/bin/evn python
 
 from pylab import *
-import marsyas
+from marsyas_util import * 
 import sys
+import getopt
+import os
 
-msm = marsyas.MarSystemManager()
+# plot zerocrossings 
+def zerocrossings(frame_num, winSize, input_filename):
+  print "ZeroCrossings"
+  spec = ["Series/pitchExtract",
+                ["SoundFileSource/src",
+                 "Gain/gain",
+                 ]
+                ]
+  net = create(spec)
+  fname = net.getControl("SoundFileSource/src/mrs_string/filename")
+  fname.setValue_string(input_filename)
+  inSamples = net.getControl("mrs_natural/inSamples")
+  inSamples.setValue_natural(winSize);
 
-# create a MarSystem from a recursive list specification
-def create(net):
-  composite = msm.create("Gain/id") # will be overwritten
-  if (len(net) == 2):
-    composite = msm.create(net[0])
-    msyslist = map(create,net[1])
-    msyslist = map(composite.addMarSystem,msyslist)
-  else:
-    composite = msm.create(net)
-  return composite
+  for i in range(frame_num+1):
+    net.tick()
+    if (i==frame_num):
+      figure(1);
+      waveform = control2array(net,
+                               "SoundFileSource/src/mrs_realvec/processedData").transpose();
+      zcrs = zeros(winSize)
+      zcrs_x = [];
+      zcrs_y = [];
+      num_zcrs = 0
+      for j in range(1,winSize):
+        if (((waveform[j-1] > 0.0) and (waveform[j] < 0.0)) or
+            ((waveform[j-1] < 0.0) and (waveform[j] > 0.0))) :
+          zcrs_x.append(j)
+          zcrs_y.append(0.0)
+          num_zcrs = num_zcrs + 1;
 
-
-def imageplot(imgdata, cmap = 'jet', aspect='None',img_xlabel='Samples', img_ylabel='Observations',sy=0,ey=0,sx=0,ex=0):
-  if ex==0:
-    ex = imgdata.shape[0]
-    ey = imgdata.shape[1]
-  imshow(imgdata, cmap=cmap, aspect=aspect, extent=[sy,ey,sx,ex], interpolation='nearest')
-  xlabel(img_xlabel)
-  ylabel(img_ylabel)
-
-
-
-def realvec2array(inrealvec):
-        outarray = zeros((inrealvec.getCols(), inrealvec.getRows()))
-        k = 0;
-        for i in range(0,inrealvec.getCols()):
-                for j in range(0, inrealvec.getRows()):
-                        outarray[i,j] = inrealvec[k]
-                        k = k + 1
-        return outarray
-
-def control2array(net,cname,so=0,eo=0,st=0,et=0):
-  net_control = net.getControl(cname)
-  net_realvec = net_control.to_realvec()
-  net_array = realvec2array(net_realvec)
-  if et==0:
-    et = net_array.shape[0]
-    eo = net_array.shape[1]
-  res_array = net_array.transpose()
-  res_array = res_array[so:60,st:et]
-  res_array = flipud(res_array)
-  return res_array
+      title("Time Domain Zero Crossings " + "(" + str(num_zcrs) +")")
+      # plot the time domain waveform 
+      marplot(waveform)
+      # plot the zero-crossings with stars 
+      plot(zcrs_x, zcrs_y, 'r*', drawstyle = 'steps', markersize=8)
+      # plot a line 0.0
+      plot(zcrs)
+      # label the axes 
+      xlabel("Time in Samples")
+      ylabel("Amplitude")
+      # save the figure
+      output_filename = os.path.splitext(input_filename)[0] + ".png"
+      savefig(output_filename)
 
 
 
-def frequency_domain():
-  pitch_spec = ["Series/pitchExtract",
+# plot a spectrum 
+def spectrum(frame_num, winSize, input_filename):
+  spec = ["Series/pitchExtract",
                 ["SoundFileSource/src",
                  "Windowing/win",
                  "Spectrum/spk",
@@ -61,49 +64,90 @@ def frequency_domain():
                  "Gain/gain"
                  ]
                 ]
+  net = create(spec)
 
+  fname = net.getControl("SoundFileSource/src/mrs_string/filename")
+  fname.setValue_string(input_filename)
+  inSamples = net.getControl("mrs_natural/inSamples");
+  inSamples.setValue_natural(winSize)
 
-  pitchnet = create(pitch_spec)
-
-
-  fname = pitchnet.getControl("SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(sys.argv[1])
-  inSamples = pitchnet.getControl("mrs_natural/inSamples");
-  inSamples.setValue_natural(1024)
-
-
-  for i in range(10):
-    pitchnet.tick()
-    if (i==5):
+  for i in range(frame_num+1):
+    net.tick()
+    if (i==frame_num):
       figure(1);
-      data = pitchnet.getControl("PowerSpectrum/pspk/mrs_realvec/processedData").to_realvec()
-      spectrum = realvec2array(data)
-      print spectrum
-      #zcrs = zeros(512)
-      #zcrs_x = [];
-      #zcrs_y = [];
-      #num_zcrs = 0
-      #for j in range(1,512):
-      #  if (((waveform[j-1] > 0.0) and (waveform[j] < 0.0)) or
-      #      ((waveform[j-1] < 0.0) and (waveform[j] > 0.0))) :
-      #    zcrs_x.append(j)
-      #    zcrs_y.append(0.0)
-      #    num_zcrs = num_zcrs + 1;
-
-      title("Power Spectrum")
-      #plot(zcrs_x, zcrs_y, 'r*', drawstyle = 'steps', markersize=8)
-      plot(linspace(0, 4000, 93), spectrum[0][0:93])
-      # axis([0.0, 1200, 0.0, 0.015])
-      #plot(zcrs)
-      xlabel("Frequency in Hz")
-      ylabel("Power")
-      legend()
-      savefig("spectrum_sine.png")
+      data = net.getControl("PowerSpectrum/pspk/mrs_realvec/processedData").to_realvec()
+      # restrict spectrum to first 93 bins corresponding approximately to 4000Hz
+      spectrum = control2array(net, "PowerSpectrum/pspk/mrs_realvec/processedData", eo=93);
+      # plot spectrum with frequency axis
+      marplot(spectrum,
+              x_label="Frequency in Hz",
+              y_label="Power",
+              plot_title = "Power Spectrum",
+              ex=4000)
+      output_filename = os.path.splitext(input_filename)[0] + ".png"
+      savefig(output_filename)      
 
 
 
-def chroma():
-  pitch_spec = ["Series/pitchExtract",
+def autocorrelation(frame_num, winSize, input_filename):
+  spec = ["Series/pitchExtract",
+                ["SoundFileSource/src",
+                 "Windowing/win",
+                 "AutoCorrelation/acr",
+                 "Gain/gain"
+                 ]
+                ]
+  net = create(spec)
+  
+  fname = net.getControl("SoundFileSource/src/mrs_string/filename")
+  fname.setValue_string(input_filename)
+  inSamples = net.getControl("mrs_natural/inSamples");
+  inSamples.setValue_natural(winSize)
+
+  for i in range(frame_num+1):
+    net.tick()
+    if (i==frame_num):
+      figure(1);
+      acr = control2array(net, "AutoCorrelation/acr/mrs_realvec/processedData")
+      title("AutoCorrelation")
+      marplot(acr, x_label = "Time in samples",
+              y_label = "Correlation",
+              plot_title = "AutoCorrelation")
+      output_filename = os.path.splitext(input_filename)[0] + ".png"
+      savefig(output_filename)      
+      
+
+
+def amdf(frame_num, winSize, input_filename):
+  spec = ["Series/pitchExtract",
+                ["SoundFileSource/src",
+                 "Windowing/win",
+                 "AMDF/amdf",
+                 "Gain/gain"
+                 ]
+                ]
+  net = create(spec)
+
+  fname = net.getControl("SoundFileSource/src/mrs_string/filename")
+  fname.setValue_string(input_filename)
+  inSamples = net.getControl("mrs_natural/inSamples");
+  inSamples.setValue_natural(winSize)
+
+  for i in range(frame_num+1):
+    net.tick()
+    if (i==frame_num):
+      figure(1)
+      amdf = control2array(net, "AMDF/amdf/mrs_realvec/processedData")
+      marplot(amdf,
+              plot_title = "Average Magnitude Difference Function",
+              x_label = "Time in samples",
+              y_label = "Difference")
+      output_filename = os.path.splitext(input_filename)[0] + ".png"
+      savefig(output_filename)      
+
+
+def chroma(frame_num, winSize, input_filename):
+  spec = ["Series/pitchExtract",
                 ["SoundFileSource/src",
                  "Windowing/win",
                  "Spectrum/spk",
@@ -112,51 +156,30 @@ def chroma():
                  "Gain/gain"
                  ]
                 ]
+  net = create(spec)
 
+  fname = net.getControl("SoundFileSource/src/mrs_string/filename")
+  fname.setValue_string(input_filename)
+  inSamples = net.getControl("mrs_natural/inSamples");
+  inSamples.setValue_natural(winSize)
 
-  pitchnet = create(pitch_spec)
-
-
-  fname = pitchnet.getControl("SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(sys.argv[1])
-  inSamples = pitchnet.getControl("mrs_natural/inSamples");
-  inSamples.setValue_natural(1024)
-
-
-  for i in range(10):
-    pitchnet.tick()
-    if (i==5):
+  for i in range(frame_num+1):
+    net.tick()
+    if (i==frame_num):
       figure(1);
-      data = pitchnet.getControl("Spectrum2Chroma/s2c/mrs_realvec/processedData").to_realvec()
+      data = net.getControl("Spectrum2Chroma/s2c/mrs_realvec/processedData").to_realvec()
       spectrum = realvec2array(data)
-      print spectrum
-      #zcrs = zeros(512)
-      #zcrs_x = [];
-      #zcrs_y = [];
-      #num_zcrs = 0
-      #for j in range(1,512):
-      #  if (((waveform[j-1] > 0.0) and (waveform[j] < 0.0)) or
-      #      ((waveform[j-1] < 0.0) and (waveform[j] > 0.0))) :
-      #    zcrs_x.append(j)
-      #    zcrs_y.append(0.0)
-      #    num_zcrs = num_zcrs + 1;
-
       title("Chroma Profile")
-      #plot(zcrs_x, zcrs_y, 'r*', drawstyle = 'steps', markersize=8)
-      #plot(linspace(0, 4000, 93), spectrum[0][0:93])
       plot(spectrum[0], drawstyle = 'steps')
-      # axis([0.0, 1200, 0.0, 0.015])
-      #plot(zcrs)
       xlabel("Pitch Class(Chroma)")
       ylabel("Average Energy")
-      legend()
-      savefig("chroma_clarinet.png")
+      output_filename = os.path.splitext(input_filename)[0] + ".png"
+      savefig(output_filename)      
 
 
 
-
-def spectrogram():
-  pitch_spec = ["Series/pitchExtract",
+def spectrogram(winSize, input_filename):
+  spec = ["Series/pitchExtract",
                 ["SoundFileSource/src",
                  "Windowing/win",
                  "Spectrum/spk",
@@ -166,59 +189,61 @@ def spectrogram():
                 ]
 
   accum_spec = ["Accumulator/acum",
-                [pitch_spec]]
+                [spec]]
 
-  pitchnet = create(accum_spec)
+  net = create(accum_spec)
 
-  fname = pitchnet.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(sys.argv[1])
-  inSamples = pitchnet.getControl("mrs_natural/inSamples")
-  inSamples.setValue_natural(1024)
-  nTimes = pitchnet.getControl("mrs_natural/nTimes")
-  nTimes.setValue_natural(350)
+  fname = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
+  fname.setValue_string(input_filename)
+  inSamples = net.getControl("mrs_natural/inSamples")
+  inSamples.setValue_natural(winSize)
+  nTimes = net.getControl("mrs_natural/nTimes")
+  fsize = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_natural/size").to_natural()
+  nTicks = fsize / winSize
+  nTimes.setValue_natural(nTicks)
 
-
-  pitchnet.tick()
+  net.tick()
   figure(1);
-  spectrum = control2array(pitchnet, "mrs_realvec/processedData")
-  print spectrum.shape
-  imageplot(spectrum, 'bone_r', 'auto')
-  savefig("spectrogram_notes.png")
+  spectrogram = control2array(net, "mrs_realvec/processedData", eo=60)
+  marplot(spectrogram, 'bone_r', 'auto')
+  output_filename = os.path.splitext(input_filename)[0] + ".png"
+  savefig(output_filename)      
 
 
 
-def correlogram():
-  pitch_spec = ["Series/pitchExtract",
-                ["SoundFileSource/src",
-                 "Windowing/win",
-                 "AutoCorrelation/acr",
-                 "Transposer/transpose"
-                 ]
-                ]
-
+def correlogram(winSize, input_filename):
+  spec = ["Series/pitchExtract",
+          ["SoundFileSource/src",
+           "Windowing/win",
+           "AutoCorrelation/acr",
+           "Transposer/transpose"
+           ]
+          ]
+  
   accum_spec = ["Accumulator/acum",
-                [pitch_spec]]
+                [spec]]
 
-  pitchnet = create(accum_spec)
+  net = create(accum_spec)
 
-  fname = pitchnet.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(sys.argv[1])
-  inSamples = pitchnet.getControl("mrs_natural/inSamples")
-  inSamples.setValue_natural(1024)
-  nTimes = pitchnet.getControl("mrs_natural/nTimes")
-  nTimes.setValue_natural(400)
+  fname = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
+  fname.setValue_string(input_filename)
+  inSamples = net.getControl("mrs_natural/inSamples")
+  inSamples.setValue_natural(winSize)
+  nTimes = net.getControl("mrs_natural/nTimes")
+  fsize = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_natural/size").to_natural()
+  nTicks = fsize / winSize
+  nTimes.setValue_natural(nTicks)
 
-
-  pitchnet.tick()
+  net.tick()
   figure(1);
-  spectrum = control2array(pitchnet, "mrs_realvec/processedData")
-  print spectrum.shape
-  imageplot(spectrum, 'bone_r', 'auto')
-  savefig("correlogram_notes.png")
+  correlogram = control2array(net, "mrs_realvec/processedData")
+  marplot(correlogram, 'jet', 'auto')
+  output_filename = os.path.splitext(input_filename)[0] + ".png"
+  savefig(output_filename)      
 
 
-def amdfogram():
-  pitch_spec = ["Series/pitchExtract",
+def amdfogram(winSize, input_filename):
+  spec = ["Series/pitchExtract",
                 ["SoundFileSource/src",
                  "Windowing/win",
                  "AMDF/amdf",
@@ -227,24 +252,25 @@ def amdfogram():
                 ]
 
   accum_spec = ["Accumulator/acum",
-                [pitch_spec]]
+                [spec]]
 
-  pitchnet = create(accum_spec)
+  net = create(accum_spec)
 
-  fname = pitchnet.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(sys.argv[1])
-  inSamples = pitchnet.getControl("mrs_natural/inSamples")
-  inSamples.setValue_natural(1024)
-  nTimes = pitchnet.getControl("mrs_natural/nTimes")
-  nTimes.setValue_natural(1000)
+  fname = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
+  fname.setValue_string(input_filename)
+  inSamples = net.getControl("mrs_natural/inSamples")
+  inSamples.setValue_natural(winSize)
+  nTimes = net.getControl("mrs_natural/nTimes")
+  fsize = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_natural/size").to_natural()
+  nTicks = fsize / winSize
+  nTimes.setValue_natural(nTicks)
 
-
-  pitchnet.tick()
+  net.tick()
   figure(1);
-  spectrum = control2array(pitchnet, "mrs_realvec/processedData")
-  print spectrum.shape
-  imageplot(spectrum, 'bone_r', 'auto')
-  savefig("spectrogram_sine.png")
+  amdfogram = control2array(net, "mrs_realvec/processedData")
+  marplot(amdfogram, 'jet', 'auto')
+  output_filename = os.path.splitext(input_filename)[0] + ".png"
+  savefig(output_filename)      
 
 
 
@@ -280,7 +306,7 @@ def chromagram():
   figure(1);
   spectrum = control2array(pitchnet, "Accumulator/accum/mrs_realvec/processedData")
   print spectrum.shape
-  imageplot(spectrum,'jet', 'auto')
+  marplot(spectrum,'jet', 'auto')
   savefig("chromagram.png")
   figure(2)
   mean_chroma = pitchnet.getControl("mrs_realvec/processedData").to_realvec();
@@ -290,156 +316,40 @@ def chromagram():
 
 
 
-def autocorrelation():
-  pitch_spec = ["Series/pitchExtract",
-                ["SoundFileSource/src",
-                 "Windowing/win",
-                 "AutoCorrelation/acr",
-                 "Gain/gain"
-                 ]
-                ]
-
-
-  pitchnet = create(pitch_spec)
-
-
-  fname = pitchnet.getControl("SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(sys.argv[1])
-  inSamples = pitchnet.getControl("mrs_natural/inSamples");
-  inSamples.setValue_natural(1024)
-
-
-  for i in range(10):
-    pitchnet.tick()
-    if (i==5):
-      figure(1);
-      data = pitchnet.getControl("AutoCorrelation/acr/mrs_realvec/processedData").to_realvec()
-      acr = realvec2array(data)
-
-      #zcrs = zeros(512)
-      #zcrs_x = [];
-      #zcrs_y = [];
-      #num_zcrs = 0
-      #for j in range(1,512):
-      #  if (((waveform[j-1] > 0.0) and (waveform[j] < 0.0)) or
-      #      ((waveform[j-1] < 0.0) and (waveform[j] > 0.0))) :
-      #    zcrs_x.append(j)
-      #    zcrs_y.append(0.0)
-      #    num_zcrs = num_zcrs + 1;
-
-      title("AutoCorrelation")
-      #plot(zcrs_x, zcrs_y, 'r*', drawstyle = 'steps', markersize=8)
-      plot(acr)
-      # axis([0.0, 1200, 0.0, 0.015])
-      #plot(zcrs)
-      xlabel("Time in samples")
-      ylabel("Correlation")
-      legend()
-      savefig("autocorrelation_clarinet.png")
 
 
 
-def amdf():
-  pitch_spec = ["Series/pitchExtract",
-                ["SoundFileSource/src",
-                 "Windowing/win",
-                 "AMDF/amdf",
-                 "Gain/gain"
-                 ]
-                ]
+def main():
+  if (sys.argv[1] == "zerocrossings"):
+    zerocrossings(5, 512, sys.argv[2])
+  elif (sys.argv[1] == "spectrum"):
+    spectrum(5, 1024, sys.argv[2])
+  elif (sys.argv[1] == "autocorrelation"):
+    autocorrelation(5, 1024, sys.argv[2])
+  elif (sys.argv[1] == "amdf"):
+    amdf(5, 1024, sys.argv[2])
+  elif (sys.argv[1] == "chroma"):
+    chroma(5, 512, sys.argv[2])
+  elif (sys.argv[1] == "spectrogram"):
+    spectrogram(1024, sys.argv[2])
+  elif (sys.argv[1] == "correlogram"):
+    correlogram(1024, sys.argv[2])
+  elif (sys.argv[1] == "amdfogram"):
+    amdfogram(1024, sys.argv[2])
 
-
-  pitchnet = create(pitch_spec)
-
-
-  fname = pitchnet.getControl("SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(sys.argv[1])
-  inSamples = pitchnet.getControl("mrs_natural/inSamples");
-  inSamples.setValue_natural(1024)
-
-
-  for i in range(10):
-    pitchnet.tick()
-    if (i==5):
-      figure(1);
-      data = pitchnet.getControl("AMDF/amdf/mrs_realvec/processedData").to_realvec()
-      acr = realvec2array(data)
-
-      #zcrs = zeros(512)
-      #zcrs_x = [];
-      #zcrs_y = [];
-      #num_zcrs = 0
-      #for j in range(1,512):
-      #  if (((waveform[j-1] > 0.0) and (waveform[j] < 0.0)) or
-      #      ((waveform[j-1] < 0.0) and (waveform[j] > 0.0))) :
-      #    zcrs_x.append(j)
-      #    zcrs_y.append(0.0)
-      #    num_zcrs = num_zcrs + 1;
-
-      title("Average Magnitude Difference Function")
-      #plot(zcrs_x, zcrs_y, 'r*', drawstyle = 'steps', markersize=8)
-      plot(acr)
-      # axis([0.0, 1200, 0.0, 0.015])
-      #plot(zcrs)
-      xlabel("Time in samples")
-      ylabel("Magnitude Difference")
-      legend()
-      savefig("amdf_clarient.png")
+  return 0 
 
 
 
 
 
-
-def zerocrossings():
-  pitch_spec = ["Series/pitchExtract",
-                ["SoundFileSource/src",
-                 "Gain/gain",
-                 ]
-                ]
-
-
-  pitchnet = create(pitch_spec)
-
-
-  fname = pitchnet.getControl("SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(sys.argv[1])
-
-
-
-  for i in range(10):
-    pitchnet.tick()
-    if (i==5):
-      figure(1);
-      waveform = control2array(pitchnet, "SoundFileSource/src/mrs_realvec/processedData").transpose();
-      zcrs = zeros(512)
-      zcrs_x = [];
-      zcrs_y = [];
-      num_zcrs = 0
-      for j in range(1,512):
-        if (((waveform[j-1] > 0.0) and (waveform[j] < 0.0)) or
-            ((waveform[j-1] < 0.0) and (waveform[j] > 0.0))) :
-          zcrs_x.append(j)
-          zcrs_y.append(0.0)
-          num_zcrs = num_zcrs + 1;
-
-      title("Time Domain Zero Crossings " + "(" + str(num_zcrs) +")")
-      plot(zcrs_x, zcrs_y, 'r*', drawstyle = 'steps', markersize=8)
-      plot(waveform)
-      plot(zcrs)
-      xlabel("Time in Samples")
-      ylabel("Amplitude")
-      legend()
-      savefig("zcrs.png")
-
-
-#zerocrossings()
-#frequency_domain()
-#chroma()
-#autocorrelation()
-#amdf()
-
-#spectrogram()
-# correlogram()
 # amdfogram()
-chromagram()
+#chromagram()
+
+
+  
+
+if __name__ == "__main__":
+   main()
+
+
