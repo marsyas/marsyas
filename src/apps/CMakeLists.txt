@@ -45,7 +45,11 @@ add_subdirectory(sound2sound)
 add_subdirectory(ibt)
 add_subdirectory(pitchdtw)
 add_subdirectory(speakerSeg)
-add_subdirectory(helloglut)
+
+if (MARSYAS_OPENGL)
+	add_subdirectory(helloglut)
+endif (MARSYAS_OPENGL)
+
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
