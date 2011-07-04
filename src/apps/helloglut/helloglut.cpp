@@ -158,8 +158,12 @@ void setup(string inAudioFileName)
 
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+  net->addMarSystem(mng.create("AudioSink/dest"));
   net->addMarSystem(mng.create("Rms", "rms"));
   net->updControl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+  net->updControl("AudioSink/dest/mrs_bool/initAudio", true);
+  cout << *net << endl;
+  
 }
 
 
