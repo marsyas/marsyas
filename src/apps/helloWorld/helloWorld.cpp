@@ -42,8 +42,8 @@ main(int argc, const char **argv)
 	network->addMarSystem(mng.create("AudioSink", "dest"));
 
 	//set the window (i.e. audio frame) size (in samples). Let's say, 256 samples.
-	//This is done in the outmost MarSystem (i.e. the Series/network) beacuse flow
-	//controls (as is the case o inSamples) are propagated through the network.
+	//This is done in the outmost MarSystem (i.e. the Series/network) because flow
+	//controls (as is the case of inSamples) are propagated through the network.
 	//Check the Marsyas documentation for mode details.
 	network->updControl("mrs_natural/inSamples", 256);
 
