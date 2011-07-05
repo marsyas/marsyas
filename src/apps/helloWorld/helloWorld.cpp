@@ -23,42 +23,49 @@ using namespace Marsyas;
 
 int
 main(int argc, const char **argv)
-{
+{	
 	MRSDIAG("helloWorld.cpp - main");
 
-	cout << "This is probably the simplest Marsyas example code: it simply generates a sine wave with a frequency of 440Hz and send it to the audio card output. Simple press CTRL+C to quit." << endl;
-    
-    //we usualy start by creating a MarSystem manager to help us on MarSystem creation
-    MarSystemManager mng;
-    
-    //create the network, which is a simple Series network with a sine wave
-    //oscilator and a audio sink object to send the ausio data for playing 
-    //in the sound card
-    MarSystem *network = mng.create("Series", "network");
-    network->addMarSystem(mng.create("SineSource", "src"));
-    network->addMarSystem(mng.create("AudioSink", "dest"));
-    
-    //set the window (i.e. audio frame) size (in samples). Let's say, 256 samples.
-    //This is done in the outmost MarSystem (i.e. the Series/network) beacuse flow
-    //controls (as is the case o inSamples) are propagated through the network.
-    //Check the Marsyas documentation for mode details.    
-    network->updControl("mrs_natural/inSamples", 256);
-    
-    //set oscilator frequency to 440Hz
-    network->updControl("SineSource/src/mrs_real/frequency", 440.0);
-    
-    //configure audio sink module
-    network->updControl("AudioSink/dest/mrs_natural/bufferSize", 512); //512 is just some reasonable buffer size - you can try different ones and see what you get...
-    network->updControl("AudioSink/dest/mrs_bool/initAudio", true);
-    
-    //now it's time for ticking the network, ad aeternum (i.e. until the user quits by CTRL+C)
-    while (1) 
-    {
-        network->tick();
-    }
-    
-    //ok, this is not really necessary because we are quiting by CTRL+C, but it's a good habit anyway ;-)
-    delete network;
-    
+	cout << "This is probably the simplest Marsyas example code: it simply \\
+	generates a sine wave with a frequency of 440Hz and send it to the audio \\
+	card output. Simple press CTRL+C to quit." << endl;
+	
+	//we usualy start by creating a MarSystem manager 
+	//to help us on MarSystem creation
+	MarSystemManager mng;
+
+	//create the network, which is a simple Series network with a sine wave
+	//oscilator and a audio sink object to send the ausio data for playing 
+	//in the sound card
+	MarSystem *network = mng.create("Series", "network");
+	network->addMarSystem(mng.create("SineSource", "src"));
+	network->addMarSystem(mng.create("AudioSink", "dest"));
+
+	//set the window (i.e. audio frame) size (in samples). Let's say, 256 samples.
+	//This is done in the outmost MarSystem (i.e. the Series/network) beacuse flow
+	//controls (as is the case o inSamples) are propagated through the network.
+	//Check the Marsyas documentation for mode details.
+	network->updControl("mrs_natural/inSamples", 256);
+
+	//set oscilator frequency to 440Hz
+	network->updControl("SineSource/src/mrs_real/frequency", 440.0);
+
+	//configure audio sink module
+	//512 is just some reasonable buffer size
+	//you can try different ones and see what you get...
+	network->updControl("AudioSink/dest/mrs_natural/bufferSize", 512); 
+	network->updControl("AudioSink/dest/mrs_bool/initAudio", true);
+
+	//now it's time for ticking the network, 
+	//ad aeternum (i.e. until the user quits by CTRL+C)
+	while (1) 
+	{
+		network->tick();
+	}
+
+	//ok, this is not really necessary because we are quiting by CTRL+C, 
+	//but it's a good habit anyway ;-)
+	delete network;
+
 	return(0);
 }
