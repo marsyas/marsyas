@@ -171,6 +171,8 @@ void carfac_setup(string inAudioFileName)
     net->updControl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
   }
 
+  net->addMarSystem(mng.create("AudioSink", "dest"));
+
   MarSystem* carfac = mng.create("CARFAC", "carfac");
   net->addMarSystem(carfac);
   cout << "########## CARFAC ############" << endl;
@@ -178,6 +180,7 @@ void carfac_setup(string inAudioFileName)
   cout << "##############################" << endl;
 
 
+  net->updControl("AudioSink/dest/mrs_bool/initAudio", true);
   net->updControl("mrs_natural/inSamples", 512);
 
   // cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
