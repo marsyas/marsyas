@@ -5,7 +5,6 @@ using namespace Marsyas;
 
 DTWWD::DTWWD(mrs_string name):MarSystem("DTWWD", name)
 {
-  isComposite_ = true;
   addControls();
 }
 

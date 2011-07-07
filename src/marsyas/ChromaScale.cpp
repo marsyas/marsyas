@@ -14,7 +14,6 @@ using namespace Marsyas;
 
 ChromaScale::ChromaScale(mrs_string name): MarSystem("ChromaScale", name)
 {
-	isComposite_ = true;
 	addControls();
 }
 

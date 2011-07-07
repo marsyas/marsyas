@@ -5,7 +5,6 @@ using namespace Marsyas;
 
 DTW::DTW(mrs_string name):MarSystem("DTW", name)
 {
-  isComposite_ = true;
   addControls();
 }
 

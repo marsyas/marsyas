@@ -14,7 +14,6 @@ using namespace Marsyas;
 
 Chroma::Chroma(mrs_string name): MarSystem("Chroma", name)
 {
-  isComposite_ = true;
   addControls();
 }
 

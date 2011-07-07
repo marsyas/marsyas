@@ -5,7 +5,6 @@ using namespace Marsyas;
 
 UpdatingBassModel::UpdatingBassModel(mrs_string name):MarSystem("MatchBassModel", name)
 {
-  isComposite_ = true;
   addControls();
 }
 

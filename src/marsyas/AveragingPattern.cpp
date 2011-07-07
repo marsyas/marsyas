@@ -5,7 +5,6 @@ using namespace Marsyas;
 
 AveragingPattern::AveragingPattern(mrs_string name):MarSystem("AveragingPattern", name)
 {
-  isComposite_ = true;
   addControls();
 }
 

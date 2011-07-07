@@ -5,7 +5,6 @@ using namespace Marsyas;
 
 ConstQFiltering::ConstQFiltering(mrs_string name):MarSystem("ConstQFiltering", name)
 {
-  isComposite_ = true;
   addControls();
 }
 
