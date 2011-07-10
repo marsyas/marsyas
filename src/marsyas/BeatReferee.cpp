@@ -29,12 +29,13 @@ using namespace Marsyas;
 #define OUTTER 4.0
 
 #define MINIMUMREAL 0.000001 //(0.000001 minimum float recognized)
+#define MINNEGATIVE -10000000000.0
 
 BeatReferee::BeatReferee(mrs_string name):MarSystem("BeatReferee", name)
 {
 	addControls();
 
-  	bestScore_ = -10000.0; //To allow initial negative scores
+  	bestScore_ = MINNEGATIVE; //To allow initial negative scores
 	bestAgentIndex_ = 0; //0 by default
 	t_ = 0;
 	outputCount_ = 0;
@@ -245,7 +246,7 @@ BeatReferee::calcFirstBacktracedBeat(mrs_natural initPeriod, mrs_natural initPha
 	mrs_natural count = - (mrs_natural) ((initPhase / (mrs_real)initPeriod)-MINIMUMREAL);
 	mrs_natural firstBeat = (initPhase + initPeriod * count);
 
-	cout << "Period: " << initPeriod << "; Phase: " << initPhase << "; firstBeat: " << firstBeat << endl;
+	//cout << "Period: " << initPeriod << "; Phase: " << initPhase << "; firstBeat: " << firstBeat << endl;
 	return firstBeat;
 }
 
@@ -812,7 +813,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		updControl(ctrl_inductionEnabler_, inductionEnabler_);
 	}
 
-	//cout << "t: " << t_ << endl;
+	//cout << "BR_t: " << t_ << endl;
 
 	//while no best beat detected => outputs 0 (no beat)
 	out.setval(0.0);
@@ -1012,7 +1013,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 
 							if(logFile_)
 								debugAddEvent("==========> BEAT", o, (mrs_natural) lastPeriods_(o), 
-											  (mrs_natural) lastPhases_(o), score_(o), bestScore_);					
+									(mrs_natural) lastPhases_(o), score_(o), bestScore_);					
 						}
 						else if(logFile_)
 							debugAddEvent("BEAT CANCEL", o, (mrs_natural) lastPeriods_(o), 

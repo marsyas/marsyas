@@ -20,6 +20,7 @@
 #include "FileName.h"
 
 #define MINIMUMREAL 0.000001 //(0.000001 minimum float recognized)
+#define MINNEGATIVE -10000000000.0
 
 using namespace std;
 using namespace Marsyas;
@@ -170,7 +171,7 @@ PhaseLock::myUpdate(MarControlPtr sender)
 	// reset maxLoclTrackingScores and indexes to allow negative scores
 	for (int i = 0; i < nrPeriodHyps_; i++)
 	{
-		maxLocalTrackingScore_(i) = -10000;
+		maxLocalTrackingScore_(i) = MINNEGATIVE;
 		maxLocalTrackingScoreInd_(i) = -1;
 	}
 }
@@ -363,7 +364,7 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 		if(gtLastPhase_ <= inductionTime_)
 			gtLastPhase_ += gtLastPeriod_;
 
-		cout << "\nInduction replaced by IBI given by two beats from ground-truth file at: " << gtFilePath << endl;
+		//cout << "\nInduction replaced by IBI given by two beats from ground-truth file at: " << gtFilePath << endl;
 		//cout << "gtIniPh: " << gtInitPhase_ << "; gtIniPer: " << gtInitPeriod_ << "; gtLasPh: " << gtLastPhase_ << "; gtLasPer: " << gtLastPeriod_ << endl;
 	}
 
@@ -405,10 +406,10 @@ PhaseLock::inputGT(realvec& in, realvec& out, mrs_string gtFilePath)
 			}
 		}
 
-		mrs_real maxMetricalRelScore = -10000.0; //to allow best negative score
+		mrs_real maxMetricalRelScore = MINNEGATIVE; //to allow best negative score
 		mrs_natural avgPeriod = 0;
 		mrs_real avgLocalTrackingScore_ = 0.0;
-		mrs_real maxGlobalTrackingScore_ = -10000.0; //to allow best negative score
+		mrs_real maxGlobalTrackingScore_ = MINNEGATIVE; //to allow best negative score
 		mrs_natural maxMetricalRelScoreInd = -1;
 		for(int i = 0; i < nrPeriodHyps_; i++)
 		{
@@ -766,10 +767,10 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 		}
 	}
 
-	mrs_real maxMetricalRelScore = -10000.0; //to allow negative scores
+	mrs_real maxMetricalRelScore = MINNEGATIVE; //to allow negative scores
 	mrs_natural avgPeriod = 0;
 	mrs_real avgLocalTrackingScore_ = 0.0;
-	mrs_real maxGlobalTrackingScore_ = -10000.0; //to allow negative scores
+	mrs_real maxGlobalTrackingScore_ = MINNEGATIVE; //to allow negative scores
 	mrs_natural maxMetricalRelScoreInd = -1;
 	for(int i = 0; i < nrPeriodHyps_; i++)
 	{
