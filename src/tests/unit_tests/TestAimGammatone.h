@@ -80,9 +80,9 @@ class AimGammatone_runner : public CxxTest::TestSuite
     MarSystem* net = mng.create("Series", "net");
   
     net->addMarSystem(mng.create("SoundFileSource", "src"));
-    net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
+    net->addMarSystem(mng.create("AimGammatone", "aimgammatone"));\
 
-    net->updControl("SoundFileSource/src/mrs_string/filename", "files/binaural.wav");
+    net->updControl("SoundFileSource/src/mrs_string/filename", "files/test.wav");
 
     net->tick();
 
