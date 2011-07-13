@@ -273,10 +273,6 @@ CF_class::CF_class()
   n_mics = 2;
 
   CARFAC_Init(n_mics);
-
-  // printcoeffs = false;
-  // printstate = false;
-
 }
 
 CF_class::~CF_class()
@@ -334,6 +330,7 @@ void CF_class::CARFAC_Design(double _fs, double _ERB_break_freq, double _ERB_Q)
   }
 }
 
+// Calculate the Equivalent Rectangular Bandwith of a given frequency
 double CF_class::ERB_Hz(double CF_Hz, double ERB_break_freq, double ERB_Q)
 {
   if (ERB_Q == -1) {
@@ -348,7 +345,8 @@ double CF_class::ERB_Hz(double CF_Hz, double ERB_break_freq, double ERB_Q)
   return ERB;
 }
 
-
+// From the input filter_params, sampling frequency and
+// pole_frequencies, create all the filter coefficients.
 void CF_class::CARFAC_DesignFilters(CF_filter_params_class filter_params, double fs, std::vector<double> pole_freqs)
 {
   int n_ch = pole_freqs.size();
@@ -397,6 +395,7 @@ void CF_class::CARFAC_DesignFilters(CF_filter_params_class filter_params, double
   }
 }
 
+// Calculate the parameters for the AGC step
 void CF_class::CARFAC_DesignAGC(double fs)
 {
   std::vector<double> AGC1_scales = CF_AGC_params.AGC1_scales;
@@ -556,6 +555,9 @@ std::vector<double> CARFAC::CARFAC_FilterStep(double input_waves, int mic)
   return filterstep_detect;
 }
 
+// Perform an Automated Gain Control step to adjust the gains for the
+// various filter channels.  This is done on every nth step of the
+// calculation, and n is typically 16.
 void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> >& avg_detects)
 {
   int n_AGC_stages = CF.AGC_coeffs.AGC_epsilon.size();
@@ -655,30 +657,6 @@ void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> >& avg_detects)
 
 }
 
-// From Filter in Marsyas
-std::vector<double> CARFAC::filter(std::vector<double> &ncoeffs, std::vector<double> &dcoeffs, std::vector<double> &x, std::vector<double>& state)
-{
-  std::vector<double> out(x.size());
-  int size = x.size();
-  int norder = ncoeffs.size();
-  int dorder = dcoeffs.size();
-  int stateSize = state.size();
-  int order = (norder > dorder) ? norder : dorder;
-  int i,j;
-
-  for (i = 0; i < size; ++i){
-    out[i] = ncoeffs[0] * x[i] + state[0];
-    for (j = 0; j < norder - 1; j++) {
-      state[j] = ncoeffs[j+1] * x[i] + state[j+1] - dcoeffs[j+1] * out[i];
-    }
-    for (j = norder - 1; j < stateSize - 1; j++) {
-      state[j] = state[j+1] - dcoeffs[j+1] * out[i];
-    }
-    state[stateSize - 1] = -dcoeffs[order - 1] * out[i];
-  }
-  return out;
-
-}
 
 //////////
 

@@ -24,14 +24,22 @@
 namespace Marsyas
 {
 /**
-   \ingroup Processing Basic Certified
-   \brief Multiply input realvec with a fixed value.
+   \ingroup Processing
 
-   Multiply all the values of the input realvec with
-   mrs_real/gain and put them in the output vector.
+   \brief This function designs the CARFAC (Cascade of Asymmetric
+   Resonators with Fast-Acting Compression); that is, it take bundles
+   of parameters and computes all the filter coefficients needed to
+   run it.
+
+   The original code for CARFAC was designed and written by Dick Lyon
+   (dicklyon@google.com) in MATLAB.  Steven Ness (sness@sness.net)
+   ported this code to C++.  I've written this to be as standard C++
+   as possible so that we can easily port this filter to other
+   frameworks like AIM-C.
 
    Controls:
-   - \b mrs_real/gain [w] : adjust the gain multiplier.
+   - \b mrs_natural/num_channels [w] : The number of output channels.
+
 
 */
 
@@ -47,7 +55,6 @@ class filter_state_class {
 
  public:
   filter_state_class();
-  // filter_state_class(const filter_state_class& a);
   ~filter_state_class();
 
   friend std::ostream& operator<<(std::ostream&, const filter_state_class&);
@@ -63,7 +70,6 @@ class AGC_state_class {
 
  public:
   AGC_state_class();
-  // AGC_state_class(const AGC_state_class& a);
   ~AGC_state_class();
 
   friend std::ostream& operator<<(std::ostream&, const AGC_state_class&);
@@ -82,7 +88,6 @@ class filter_coeffs_class {
 
  public:
   filter_coeffs_class();
-  // filter_coeffs_class(const filter_coeffs_class& a);
   ~filter_coeffs_class();
 
   void init(double velocity_scale, int n_ch);
@@ -120,7 +125,6 @@ class AGC_coeffs_class {
 
  public:
   AGC_coeffs_class();
-  // AGC_coeffs_class(const AGC_coeffs_class& a);
   ~AGC_coeffs_class();
 
   AGC_coeffs_class& operator=(const CF_AGC_params_class& a);
@@ -138,7 +142,6 @@ class CF_filter_params_class {
 
  public:
   CF_filter_params_class();
-  // CF_filter_params_class(const CF_filter_params_class& a);
   ~CF_filter_params_class();
 
   friend std::ostream& operator<<(std::ostream&, const CF_filter_params_class&);
@@ -146,18 +149,18 @@ class CF_filter_params_class {
 
 class CF_class {
  public:
-  int fs; // Sampling frequency
-  CF_filter_params_class CF_filter_params;
-  CF_AGC_params_class CF_AGC_params;
-  int n_ch; // Number of channels
-  std::vector<double> pole_freqs;
-  filter_coeffs_class filter_coeffs;
-  AGC_coeffs_class AGC_coeffs;
-  int n_mics; // Number of microphones (input observations)
-  std::vector<filter_state_class> filter_state;
-  std::vector<AGC_state_class> AGC_state;
-  std::vector<std::vector<std::vector<double> > > nap;
-  int cum_k; // Global time step in concatenated segments
+  int fs;                                                // Sampling frequency
+  CF_filter_params_class CF_filter_params;               // The CARFAC filter parameters
+  CF_AGC_params_class CF_AGC_params;                     // The Automatic Gain Control parameters
+  int n_ch;                                              // Number of channels
+  std::vector<double> pole_freqs;                        // The frequencies of each of the poles
+  filter_coeffs_class filter_coeffs;                     // The filter coefficients
+  AGC_coeffs_class AGC_coeffs;                           // The Automatic Gain Control coefficients
+  int n_mics;                                            // Number of microphones (input observations)
+  std::vector<filter_state_class> filter_state;          // The current state of the filter
+  std::vector<AGC_state_class> AGC_state;                // The current state of the AGC
+  std::vector<std::vector<std::vector<double> > > nap;   // The Neural Activity Pattern, the output of this filter
+  int cum_k;                                             // Global time step in concatenated segments
 
  public:
   CF_class();
@@ -192,7 +195,8 @@ class CARFAC: public MarSystem
   std::vector<double> CARFAC_FilterStep(double input_waves, int mic);
 
   void CARFAC_AGCStep(std::vector<std::vector<double> > &avg_detects);
-  std::vector<double> filter(std::vector<double>& a, std::vector<double>& b, std::vector<double>& x, std::vector<double>& state);
+
+  CF_class CF;
 
  public:
   CARFAC(std::string name);
@@ -244,8 +248,6 @@ class CARFAC: public MarSystem
 
   void allocateVectors();
 
-  // TODO(snessnet) - should be private...
-  CF_class CF;
 
   std::string toString();
   void printParams();
