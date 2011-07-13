@@ -21,8 +21,16 @@ set(APP3_SOURCES
 	carfac_testing.cpp
 )
 
+set(APP4
+	carfac_binaural
+)
+set(APP4_SOURCES
+	carfac_binaural.cpp
+)
+
 marsyas_app(${APP} "${APP_SOURCES}")
 marsyas_app(${APP2} "${APP2_SOURCES}")
 marsyas_app(${APP3} "${APP3_SOURCES}")
+marsyas_app(${APP4} "${APP4_SOURCES}")
 
 TARGET_LINK_LIBRARIES(carfac_hacking ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
