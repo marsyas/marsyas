@@ -191,8 +191,8 @@ class CARFAC: public MarSystem
 
   std::vector<double> CARFAC_FilterStep(double input_waves, int mic);
 
-  void CARFAC_AGCStep(std::vector<std::vector<double> > avg_detects);
-  std::vector<double> filter(std::vector<double> a, std::vector<double>b, std::vector<double> x, std::vector<double>& state);
+  void CARFAC_AGCStep(std::vector<std::vector<double> > &avg_detects);
+  std::vector<double> filter(std::vector<double>& a, std::vector<double>& b, std::vector<double>& x, std::vector<double>& state);
 
  public:
   CARFAC(std::string name);

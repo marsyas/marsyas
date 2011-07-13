@@ -556,7 +556,7 @@ std::vector<double> CARFAC::CARFAC_FilterStep(double input_waves, int mic)
   return filterstep_detect;
 }
 
-void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> > avg_detects)
+void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> >& avg_detects)
 {
   int n_AGC_stages = CF.AGC_coeffs.AGC_epsilon.size();
   int n_mics = CF.n_mics;
@@ -620,7 +620,7 @@ void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> > avg_detects)
       }
 
       // smooth backward with polez2, starting with state from above:
-      for (int index = npts; index >= 0; index--) {
+      for (int index = npts - 1; index >= 0; index--) {
         input = agcstep_AGC_stage[index];
         state = state + (1 - polez2) * (input - state);
         agcstep_AGC_stage[index] = state;
@@ -656,7 +656,7 @@ void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> > avg_detects)
 }
 
 // From Filter in Marsyas
-std::vector<double> CARFAC::filter(std::vector<double> ncoeffs, std::vector<double> dcoeffs, std::vector<double> x, std::vector<double>& state)
+std::vector<double> CARFAC::filter(std::vector<double> &ncoeffs, std::vector<double> &dcoeffs, std::vector<double> &x, std::vector<double>& state)
 {
   std::vector<double> out(x.size());
   int size = x.size();
