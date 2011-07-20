@@ -299,6 +299,32 @@ Marsyas::mel2hertz(mrs_real z, bool htk)
 	}
 }
 
+// Returns the frequency in Hz, represented by a PowerSpectrum bin number
+// (as returned from the PowerSpectrum Marsystem).
+// * bin is the bin number
+// * nyquistFreq is the Nyquist frequency (the sampling rate / 2)
+// * framerate is the samplerate / total # bins (usually we can pass in israte_)
+//
+// For example, if the nyquistFreq = 4000, the original sample rate was 8000Hz,
+// and we are using a framesize of 8 samples (8 FFT bins), then we should pass
+// in framerate=1000(Hz). Then there are 5 PowerSpect bins ((8/2)+1)
+// corresponding to frequencies as follows:
+// bin=0: returns 0
+// bin=1: returns 4000   (+/- 4000 Hz)
+// bin=2: returns 1000   (+/- 1000 Hz)
+// bin=3: returns 2000   (+/- 2000 Hz)
+// bin=4: returns 3000   (+/- 3000 Hz)
+mrs_real
+Marsyas::bin2hertz(mrs_natural bin, mrs_real nyquistFreq, mrs_real framerate)
+{
+  if (bin == 0)
+    return 0;
+  if (bin == 1)
+    return nyquistFreq;
+  else
+    return (bin-1) * framerate;
+}
+
 mrs_natural Marsyas::powerOfTwo(mrs_real v)
 {
 	mrs_natural n=1, res=0;

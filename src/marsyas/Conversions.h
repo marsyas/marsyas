@@ -54,9 +54,11 @@ marsyas_EXPORT mrs_real bark2hertz(mrs_real f, mrs_natural mode = 0);
 marsyas_EXPORT mrs_real hertz2erb(mrs_real f);
 marsyas_EXPORT mrs_real erb2hertz(mrs_real e);
 
-
 marsyas_EXPORT mrs_real hertz2mel(mrs_real f, bool htk = false);
 marsyas_EXPORT mrs_real mel2hertz(mrs_real z, bool htk = false);
+
+marsyas_EXPORT mrs_real bin2hertz(mrs_natural bin, mrs_real nyquistFreq,
+                                  mrs_real framerate);
 
 marsyas_EXPORT mrs_natural powerOfTwo(mrs_real v);
 
