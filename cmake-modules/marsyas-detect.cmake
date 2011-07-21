@@ -40,6 +40,9 @@ if (WITH_MAD)
 	set (MARSYAS_MAD 1)
 endif (WITH_MAD)
 
+
+
+
 if (WITH_LAME)
 	find_package(lame REQUIRED)
 	set (MARSYAS_LAME 1)
@@ -90,6 +93,7 @@ endif (WITH_MAX/MSP)
 
 if (WITH_PNG) 
 	# find_package(png REQUIRED) 
+   find_package(freetype REQUIRED)
 	set (MARSYAS_PNG 1)
 endif (WITH_PNG)
 

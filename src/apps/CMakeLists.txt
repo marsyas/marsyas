@@ -4,7 +4,9 @@
 
 macro (marsyas_static_app APP APP_SOURCES)
    	 add_executable(${APP} ${APP_SOURCES})
-	 include_directories(${GSTREAMER_INCLUDE_DIRS} ${PNGWRITER_INCLUDE_DIR})
+	 include_directories(${GSTREAMER_INCLUDE_DIRS}
+   	 ${PNGWRITER_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR_freetype2}
+   	 ${FREETYPE_INCLUDE_DIR_ft2build} )
 	 target_link_libraries(${APP} marsyas_static)
 	 install(TARGETS ${APP} DESTINATION bin)
 endmacro (marsyas_static_app)
@@ -12,7 +14,7 @@ endmacro (marsyas_static_app)
 macro (marsyas_app APP APP_SOURCES)
    	 add_executable(${APP} ${APP_SOURCES})
 	 include_directories(${GSTREAMER_INCLUDE_DIRS}
-   	 ${PNGWRITER_INCLUDE_DIR})
+   	 ${PNGWRITER_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
 	 if (MARSYAS_STATIC)
 	 	 target_link_libraries(${APP} marsyas_static)
 	 else (MARSYAS_STATIC)

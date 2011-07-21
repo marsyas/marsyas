@@ -27,8 +27,8 @@ endif(NOT WIN32)
 
 
 # COMMAND LINE OPTIONS
-option(PNG_SHARED "Build shared lib" NO)
-option(PNG_STATIC "Build static lib" YES)
+option(PNG_SHARED "Build shared lib" YES)
+option(PNG_STATIC "Build static lib" NO)
 if(MINGW)
   option(PNG_TESTS  "Build pngtest" NO)
 else(MINGW)
@@ -130,7 +130,7 @@ include_directories(${PNG_SOURCE_DIR} ${ZLIB_INCLUDE_DIR})
 
 if(PNG_SHARED)
  add_library(${PNG_LIB_NAME} SHARED ${libpng_sources})
- target_link_libraries(${PNG_LIB_NAME} ${ZLIB_LIBRARY} ${M_LIBRARY})
+ target_link_libraries(${PNG_LIB_NAME} ${ZLIB_LIBRARY} ${M_LIBRARY} -lz)
 endif(PNG_SHARED)
 if(PNG_STATIC)
 # does not work without changing name

@@ -62,6 +62,8 @@ mrs_natural ticks_;
 mrs_string mode_;
 mrs_real start_, length_;
 mrs_natural width_, height_;
+mrs_string fontfile_;
+
 
 
 
@@ -114,6 +116,7 @@ printHelp(string progName)
 	cerr << "-l --length       : length in seconds " << endl;
 	cerr << "-wd --width        : width of resulting png in pixels " << endl;
 	cerr << "-hg --height       : height of resulting png in pixels " << endl;
+	cerr << "-ff --fontfile     : true type font file .ttf " << endl;
 	
 	
 	exit(1);
@@ -138,6 +141,7 @@ initOptions()
 	cmd_options.addRealOption("length", "l", -1.0);
 	cmd_options.addNaturalOption("width", "wd", -1);
 	cmd_options.addNaturalOption("height", "hg", -1);
+	cmd_options.addStringOption("fontfile", "ff", "FreeMonoBold.ttf");
 	
 }
 
@@ -161,6 +165,8 @@ loadOptions()
 	length_ = cmd_options.getRealOption("length");
 	width_ = cmd_options.getNaturalOption("width");
 	height_ = cmd_options.getNaturalOption("height");
+	fontfile_ = cmd_options.getStringOption("fontfile");
+	
 }
 
 
@@ -456,6 +462,9 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 
 void outputSpectrogramPNG(string inFileName, string outFileName)
 {
+
+	cout << "SPECTROGRAM " << endl;
+	
 #ifdef MARSYAS_PNG
 	double fftBins = windowSize_ / 2.0 + 1;  // N/2 + 1
 
@@ -558,6 +567,10 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 		x++;
 
 	}
+
+	png.plot_text(const_cast<char *>(fontfile_.c_str()), 12, 20, 20, 0.0, "THIS IS A SPECTROGRAM", 1.0, 0.0, 0.0);
+	
+
 
 	if (width_ !=-1) 
 		pngLength = width_;
@@ -675,8 +688,9 @@ neptune_spectrogram(string inFileName, string outFileName)
 
 			y = i;
 			png.plot(int(x),int(y),colour,colour,colour);
-		
+			
 		}
+
 		// cout << "e1=" << energy << endl;
 		// cout << "e2=" << energy / pngHeight << endl;
 		// cout << "e3=" << energy / (pngHeight*gain) << endl;
