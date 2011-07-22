@@ -1068,25 +1068,28 @@ main(int argc, const char **argv)
 
   if (mode_ == "train_evaluate")
     train_evaluate();
-  if (mode_ == "distance_matrix_MIREX")
+  else if (mode_ == "distance_matrix_MIREX")
 	  distance_matrix_MIREX();
-  if (mode_ == "distance_matrix")
+  else if (mode_ == "distance_matrix")
 	  distance_matrix();
-  if (mode_ == "pca")
+  else if (mode_ == "pca")
 	  pca();
-  if (mode_ == "tags")
+  else if (mode_ == "tags")
 	  tags();
-  if (mode_ == "train_predict")
+  else if (mode_ == "train_predict")
 	  train_predict("default");
-  if (mode_ == "train_predict_timeline")
+  else if (mode_ == "train_predict_timeline")
 	  train_predict("timeline");
-  if (mode_ == "predict")
+  else if (mode_ == "predict")
 	  predict("default");
-  if (mode_ == "predict_timeline")
+  else if (mode_ == "predict_timeline")
 	  predict("timeline");
-  if (mode_ == "train_classifier")
+  else if (mode_ == "train_classifier")
 	  train_classifier();
-
+  else 
+	  cerr << "Unsupported mode: " << mode_ << endl;
+  
+  
 
   exit(0);
 }

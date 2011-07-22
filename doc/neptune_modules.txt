@@ -334,11 +334,11 @@ over a texture window
 Code: marsyas/src/apps/bextract 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/bextract.html#bextract
-Default commandline: bextract  -fe --SpectralCentroid  
+Default commandline: bextract -t -fe --SpectralCentroid  
 Examples: 
 > bextract --help 
-> bextract -fe -ctd input.txt -w output.arff 
-> bextract -fe --SpectralCentroid input.txt -m 0 --weka output.arff  
+> bextract -t -fe -ctd input.txt -w output.arff 
+> bextract -t -fe --SpectralCentroid input.txt -m 0 --weka output.arff  
 
 Input : A .txt file where each line has the following format  
 full_path_to_audio_file.wav \t full_path_label_file.txt 
@@ -398,11 +398,11 @@ over a texture window
 Code: marsyas/src/apps/bextract 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/bextract.html#bextract
-Default commandline: bextract -fe  --SpectralRolloff  
+Default commandline: bextract -t -fe  --SpectralRolloff  
 Examples: 
 > bextract --help 
-> bextract -fe -rlf input.txt -w output.arff 
-> bextract -fe --SpectralRolloff input.txt -m 0 --weka output.arff  
+> bextract -t -fe -rlf input.txt -w output.arff 
+> bextract -t -fe --SpectralRolloff input.txt -m 0 --weka output.arff  
 
 Input : A .txt file where each line has the following format  
 full_path_to_audio_file.wav \t full_path_label_file.txt 
@@ -462,11 +462,11 @@ over a texture window
 Code: marsyas/src/apps/bextract 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/bextract.html#bextract
-Default commandline: bextract -fe --SpectralFlux  
+Default commandline: bextract -t -fe --SpectralFlux  
 Examples: 
 > bextract --help 
-> bextract -fe -flx input.txt -w output.arff 
-> bextract -fe --SpectralFlux input.txt -m 0 --weka output.arff  
+> bextract -t -fe -flx input.txt -w output.arff 
+> bextract -t -fe --SpectralFlux input.txt -m 0 --weka output.arff  
 
 Input : A .txt file where each line has the following format  
 full_path_to_audio_file.wav \t full_path_label_file.txt 
@@ -523,11 +523,11 @@ over a texture window
 Code: marsyas/src/apps/bextract 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/bextract.html#bextract
-Default commandline: bextract  -fe --MelFrequencyCepstralCoefficients  
+Default commandline: bextract -t -fe --MelFrequencyCepstralCoefficients  
 Examples: 
 > bextract --help 
-> bextract -fe -mfcc input.txt -w output.arff 
-> bextract -fe --MelFrequencyCepstralCoefficients input.txt -m 0 --weka output.arff  
+> bextract -t -fe -mfcc input.txt -w output.arff 
+> bextract -t -fe --MelFrequencyCepstralCoefficients input.txt -m 0 --weka output.arff  
 
 Input : A .txt file where each line has the following format  
 full_path_to_audio_file.wav \t full_path_label_file.txt 
@@ -585,11 +585,11 @@ over a texture window
 Code: marsyas/src/apps/bextract 
 Documentation: 
 http://marsyas.info/docs/manual/marsyas-user/bextract.html#bextract
-Default commandline: bextract  -fe --ZeroCrossings  
+Default commandline: bextract -t  -fe --ZeroCrossings  
 Examples: 
 > bextract --help 
-> bextract -fe -zcrs input.txt -w output.arff 
-> bextract -fe --ZeroCrossings input.txt -m 0 --weka output.arff  
+> bextract -t -fe -zcrs input.txt -w output.arff 
+> bextract -t -fe --ZeroCrossings input.txt -m 0 --weka output.arff  
 
 Input : A .txt file where each line has the following format  
 full_path_to_audio_file.wav \t full_path_label_file.txt 
