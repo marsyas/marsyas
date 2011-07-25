@@ -24,7 +24,7 @@
 namespace Marsyas
 {
 /**
-   \ingroup Processing Basic Certified
+   \ingroup Processing
    \brief Multiply input realvec with a fixed value.
 
    Multiply all the values of the input realvec with

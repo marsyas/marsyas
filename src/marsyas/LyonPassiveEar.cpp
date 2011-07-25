@@ -35,7 +35,7 @@ namespace Marsyas
 {
 	/**
 	\class LyonAgc
-	\ingroup Processing Basic
+	\ingroup Processing
 	\brief Automatic Gain control specific for Lyon's Passive Ear
 
 	- \b mrs_natural/numBands [wr] : number of filter channels in the passive ear
@@ -159,7 +159,7 @@ namespace Marsyas
 
 	/**
 	\class LyonChannelDiff
-	\ingroup Processing Basic
+	\ingroup Processing
 	\brief Channel Difference specific for Lyon's Passive Ear
 
 	- \b mrs_natural/numBands [wr] : number of filter channels in the passive ear
@@ -223,7 +223,7 @@ namespace Marsyas
 
 	/**
 	\class LyonZeroOutPreEmph
-	\ingroup Processing Basic
+	\ingroup Processing
 	\brief set the first two filter channels (preemphasis) to zero
 
 	This MarSystem has no extra controls.

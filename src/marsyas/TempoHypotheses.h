@@ -25,7 +25,7 @@ namespace Marsyas
 {
 /** 
     \class TempoHypotheses
-	\ingroup Processing Basic
+	\ingroup Processing
     \brief Organizes a NN x 3 matrix given NN = N x M raw {period, phase, periodSalience} hypotheses.
 	(if no periods were retrieved some manually defined periods will be assumed)
 

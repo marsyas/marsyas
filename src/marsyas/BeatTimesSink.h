@@ -25,7 +25,7 @@ namespace Marsyas
 {
 /** 
     \class BeatTimesSink
-	\ingroup Processing Basic
+	\ingroup Processing
     \brief Outputs predicted beat times (in seconds or "frames"-ticks) and/or the median IBI (in BPMs).
 
 	Output: outPath\inputFileName.txt -> beat times.

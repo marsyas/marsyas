@@ -27,7 +27,7 @@ namespace Marsyas
 {
 /** 
     \class PhaseLock
-	\ingroup Processing Basic
+	\ingroup Processing
     \brief Retrieves the N best {period, phase} hypotheses by affering the phase more suited to each period
 	(by correlating each of the N*M hypotheses with the onset detection function within the initial induction window).
 	Besides, it tries to infer the correct metre (duple or triple) by atributing the correspondent hierarchical set of initial scores,

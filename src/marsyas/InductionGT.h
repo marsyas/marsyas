@@ -26,7 +26,7 @@ namespace Marsyas
 {
 /** 
     \class TextFileSources
-	\ingroup Processing Basic
+	\ingroup Processing
     \brief Retrieves N first beat times (in frames), retrieved from
 	peaks from an onset function.
 	Supposed to have PeakerOnsets, or similar, as input.

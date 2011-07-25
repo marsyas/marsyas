@@ -25,7 +25,7 @@ namespace Marsyas
 {
 /** 
     \class BeatAgent
-	\ingroup Processing Basic
+	\ingroup Processing
     \brief Entity representing a given {period, phase} hypothesis regarding a train of beat positions paced by the following tempo.
 	A set of initial agents are feeded by the initial hypothesis given by an initial tempo induction stage.
 	Each BeatAgent is recursively evaluated in real-time, by a given score function (heuristics), around each predicted beat.

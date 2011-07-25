@@ -25,7 +25,7 @@ namespace Marsyas
 {
 /** 
     \class PatchMatrix
-	\ingroup Processing Basic
+	\ingroup Processing
     \brief Linear Combine Each input channel (i.e. observation) with each other channel
 			the weights for the combinations can be provided through the weights control:
 			each column of the weights control contains the weight for the input channel (i.e. row)
