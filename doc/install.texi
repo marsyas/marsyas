@@ -1026,7 +1026,11 @@ Useful datasets:
 @item
 @uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
 marsyas-coffee}:
-data set used for large regression tests in Marsyas.
+data set used for large regression tests in Marsyas.  (NOW
+DEFUNCT, MIGHT POSSIBLY BE USED AGAIN LATER)
+
+@item
+@uref{http://marsyas.info/download/data_sets}: large data sets.
 
 @end itemize
 
