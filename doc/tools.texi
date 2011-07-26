@@ -106,6 +106,10 @@ does not check that they are valid soundfiles.  In general
 collection files should contain soundfiles with the same sampling rate
 as Marsyas does not perform automatic sampling conversion on collections. 
 
+@warning{@code{mkcollection} will add a @file{.mf} to the
+collection filename if it does not contain any extention;
+otherwise it will leave the collection filename alone.}
+
 
 @node Soundfile Interaction, Feature Extraction, Collections and input files, Available tools
 @section Soundfile Interaction

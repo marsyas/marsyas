@@ -295,20 +295,21 @@ main(int argc, const char **argv)
 	string collectionFileName = collectionName;
 
 	// adjust the collection name and the output file name
-	if(collectionName.compare(collectionName.size() - 3, 3, ".mf") == 0)
-	{
-		collectionName = collectionName.substr(0, collectionName.size()-3); 	    
-	}
-	if (collectionName.compare(collectionName.size() - 4, 4, ".txt") == 0)
-	{
-		collectionName = collectionName.substr(0, collectionName.size() -4);
-	}
-	else
-	{
+	// ASSUME:
+	//   - no dots in directory portion of filename
+	//   - everything after the FIRST dot is the extension
+	// if those assumptions are a problem, we can change the code
+	size_t dot_position = collectionName.find(".");
+	if (dot_position != string::npos ) {
+		// if there is an extension, don't change the filename
+		// (but still adjust the collection name)
+		collectionName = collectionName.substr(0, dot_position);
+	} else {
+		// Otherwise, add a .mf to the filename
 		collectionFileName += ".mf";
 	}
 
-	cout << "Writing collectionName = " << collectionName << "into file " 
+	cout << "Writing collectionName = " << collectionName << " into file " 
 		 << collectionFileName << endl;
 
 	Collection cl;
