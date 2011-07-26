@@ -216,6 +216,8 @@ BinauralCARFAC::BinauralCARFAC(mrs_string name):MarSystem("BinauralCARFAC", name
 	//there is no need to implement and call this addControl()
 	//method (see for e.g. Rms.cpp)
 	addControls();
+
+    cum_k = -1;
 }
 
 BinauralCARFAC::BinauralCARFAC(const BinauralCARFAC& a) : MarSystem(a)
@@ -225,6 +227,7 @@ BinauralCARFAC::BinauralCARFAC(const BinauralCARFAC& a) : MarSystem(a)
 	// in the copy constructor in order for cloning to work
 	ctrl_printcoeffs_ = getctrl("mrs_bool/printcoeffs");
     allocateVectors();
+    cum_k = -1;
 }
 
 BinauralCARFAC::~BinauralCARFAC()
@@ -283,6 +286,15 @@ void BinauralCARFAC::allocateVectors() {
     }
   }
 
+  // Create the prev_naps array
+  prev_naps.resize(n_samp);
+  for (int i = 0; i < n_samp; i++) {
+    prev_naps[i].resize(n_ch);
+    for (int j = 0; j < n_ch; j++) {
+      prev_naps[i][j].resize(n_mics);
+    }
+  }
+
   // Create the decim_naps array
   int decim_naps_size = n_samp/decim;
   decim_naps.resize(decim_naps_size);
@@ -294,11 +306,11 @@ void BinauralCARFAC::allocateVectors() {
   }
 
   // Create the sai array
-  naps.resize(n_samp);
+  sai.resize(n_samp);
   for (int i = 0; i < n_samp; i++) {
-    naps[i].resize(n_ch);
+    sai[i].resize(n_ch);
     for (int j = 0; j < n_ch; j++) {
-      naps[i][j].resize(n_mics);
+      sai[i][j].resize(n_mics);
     }
   }
 
@@ -323,11 +335,15 @@ void BinauralCARFAC::allocateVectors() {
 void
 BinauralCARFAC::myUpdate(MarControlPtr sender)
 {
+  // TODO(snessnet) - Set this via a control instead
+  sai_width_ = 100;
+
   // no change to network flow
   MarSystem::myUpdate(sender);
 
   int n_ch = 96;
-  ctrl_onObservations_->setValue(n_ch * 2, NOUPDATE);
+  ctrl_onObservations_->setValue(n_ch, NOUPDATE);
+  ctrl_onSamples_->setValue(sai_width_ * 2, NOUPDATE);
 
   allocateVectors();
 
@@ -348,6 +364,8 @@ BinauralCARFAC::myUpdate(MarControlPtr sender)
 void
 BinauralCARFAC::myProcess(realvec& in, realvec& out)
 {
+  // cout << "myProcess" << endl;
+
   lastin = in;
 
   int n_ch = CF.n_ch;
@@ -357,7 +375,7 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
 
   bool make_decim_naps = false;
 
-  int cum_k = -1;
+  // int cum_k = -1;
   int decim = CF.CF_AGC_params.decimation;
 
   std::vector<double> detect;
@@ -409,26 +427,74 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
       }
     }
 
-    // // Detect strobe points
-    // double threshold_alpha = 0.95;
-    // double threshold_jump = 1.5;
-    // double threshold_offset = 0.01;
-    // for (int mic = 0; mic < n_mics; mic++) {
-    //   std::vector<double> above_threshold(n_ch);
-    //   for (int i = 0; i < n_ch; i++) {
-    //     if naps[k][i][mic] >
-    //   }
-    // }
+    // Detect strobe points
+    double threshold_alpha = 0.95;
+    double threshold_jump = 1.5;
+    double threshold_offset = 0.01;
 
-  }
+    for (int mic = 0; mic < n_mics; mic++) {
+      std::vector<bool> above_threshold(n_ch);
+      for (int i = 0; i < n_ch; i++) {
+        if ((CF.strobe_state[mic].lastdata[i] > CF.strobe_state[mic].thresholds[i]) &&
+            (CF.strobe_state[mic].lastdata[i] > naps[k][i][mic])) {
+          above_threshold[i] = true;
+        } else {
+          above_threshold[i] = false;
+        }
+        if (above_threshold[i]) {
+          CF.strobe_state[mic].thresholds[i] = naps[k][i][mic] * threshold_jump + threshold_offset;
+        } else {
+          CF.strobe_state[mic].thresholds[i] = CF.strobe_state[mic].thresholds[i] * threshold_alpha;
+        }
+        CF.strobe_state[mic].lastdata[i] = naps[k][i][mic];
+      }
 
-  // Copy the nap data to the output
-  for (int row = 0; row < n_ch; row++) {
-    for (int col = 0; col < inSamples_; col++) {
-      out(row,col) = naps[col][row][0];
-      out(row+n_ch,col) = naps[col][row][1];
+      if (cum_k > sai_width_) {
+        int othermic = 1 - mic;
+        for (int i = 0; i < n_ch; i++) {
+          if (above_threshold[i]) {
+            // Copy the data from the naps image to the sai, starting with the data from
+            // the previous iteration
+            for (int j = 0; j < sai_width_; j++) {
+              int index = k - sai_width_ + j;
+              if (index < 0) {
+                sai[j][i][mic] = prev_naps[inSamples_ + index][i][othermic];
+              } else {
+                sai[j][i][mic] = naps[index][i][othermic];
+              }
+            }
+          }
+        }
+      }
     }
   }
+
+  // // Copy the sai data to the output
+  // for (int row = 0; row < n_ch; row++) {
+  //   for (int col = 0; col < sai_width_; col++) {
+  //     out(row,col) = sai[col][row][0];
+  //     out(row+n_ch,col) = sai[col][row][1];
+  //   }
+  // }
+  // Copy the sai data to the output
+  for (int row = 0; row < n_ch; row++) {
+    for (int col = 0; col < sai_width_; col++) {
+      out(row,col) = sai[col][row][0];
+      out(row,col+sai_width_) = sai[col][row][1];
+    }
+  }
+
+  // Save the nap data for the next iteration
+  for (int i = 0; i < inSamples_; i++) {
+    for (int j = 0; j < n_ch; j++) {
+      for (int k = 0; k < n_mics; k++) {
+        prev_naps[i][j][k] = naps[i][j][k];
+      }
+    }
+  }
+
+  // sleep(1);
+
 }
 
 

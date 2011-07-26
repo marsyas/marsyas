@@ -83,10 +83,13 @@ class BinauralCARFAC: public MarSystem
   std::vector<double> filter3_out;
 
   std::vector<std::vector<std::vector<double> > > naps;
+  std::vector<std::vector<std::vector<double> > > prev_naps;
+
   std::vector<std::vector<std::vector<double> > > decim_naps;
   std::vector<std::vector<std::vector<double> > > sai;
 
-  // int sai_width = 100;
+  int sai_width_;
+  int cum_k;
 
   std::vector<double> filterstep_inputs;
   std::vector<double> filterstep_zA;

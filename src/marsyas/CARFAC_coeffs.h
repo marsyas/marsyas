@@ -76,6 +76,19 @@ class AGC_state_class {
   friend std::ostream& operator<<(std::ostream&, std::vector<double> a);
 };
 
+class strobe_state_class {
+ public:
+  std::vector<double> lastdata;
+  std::vector<double> thresholds;
+
+ public:
+  strobe_state_class();
+  ~strobe_state_class();
+
+  friend std::ostream& operator<<(std::ostream&, const strobe_state_class&);
+  friend std::ostream& operator<<(std::ostream&, std::vector<double> a);
+};
+
 class filter_coeffs_class {
  public:
   double velocity_scale;
@@ -159,8 +172,11 @@ class CF_class {
   int n_mics;                                            // Number of microphones (input observations)
   std::vector<filter_state_class> filter_state;          // The current state of the filter
   std::vector<AGC_state_class> AGC_state;                // The current state of the AGC
+  std::vector<strobe_state_class> strobe_state;          // The current state of the strobes
   std::vector<std::vector<std::vector<double> > > nap;   // The Neural Activity Pattern, the output of this filter
   int cum_k;                                             // Global time step in concatenated segments
+
+  double strobe_threshold_start;
 
  public:
   CF_class();

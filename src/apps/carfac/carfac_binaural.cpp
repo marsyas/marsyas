@@ -173,7 +173,7 @@ void carfac_setup(string inAudioFileName)
 
   net->addMarSystem(mng.create("AudioSink", "dest"));
 
-  MarSystem* carfac = mng.create("CARFAC", "carfac");
+  MarSystem* carfac = mng.create("BinauralCARFAC", "carfac");
   net->addMarSystem(carfac);
   cout << "########## CARFAC ############" << endl;
   // cout << carfac->toString();
@@ -234,8 +234,8 @@ void display(void)
   for (int row = 0; row < datarows; row++) {
     for (int col = 0; col < datacols; col++) {
       double color = 1 - (data(row,col) * 0.2);
-      double x = ((row / datarows) - 0.5) * 1.8;
-      double y = ((col / datacols) - 0.5) * 1.8;
+      double y = ((1. - (row / datarows) - 0.5)) * 1.8;
+      double x = ((col / datacols) - 0.5) * 1.8;
       glColor3f(color,color,color);
 
       glBegin(GL_POLYGON);

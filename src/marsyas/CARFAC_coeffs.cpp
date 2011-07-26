@@ -95,6 +95,25 @@ ostream& operator<<(ostream& o, const AGC_state_class& l)
 
 //////////
 
+strobe_state_class::strobe_state_class()
+{
+}
+
+strobe_state_class::~strobe_state_class()
+{
+}
+
+ostream& operator<<(ostream& o, const strobe_state_class& l)
+{
+  o << "**strobe_state_class" << endl;
+  o << "\tlastdata=" << l.lastdata << endl;
+  o << "\tthresholds=" << l.thresholds << endl;
+
+  return o;
+}
+
+//////////
+
 filter_coeffs_class::filter_coeffs_class()
 {
 }
@@ -472,6 +491,17 @@ void CF_class::CARFAC_Init(int n_mics)
   for (int mic = 0; mic < n_mics; mic++) {
     AGC_state.push_back(tmp_AGC_state);
   }
+
+  // Strobe state
+  strobe_threshold_start = 0.0100;
+  strobe_state_class tmp_strobe_state;
+  tmp_strobe_state.lastdata.assign(n_ch,0.0);
+  tmp_strobe_state.thresholds.assign(n_ch,strobe_threshold_start);
+
+  for (int mic = 0; mic < n_mics; mic++) {
+    strobe_state.push_back(tmp_strobe_state);
+  }
+
 }
 
 ostream& operator<<(ostream& o, const CF_class& l)
