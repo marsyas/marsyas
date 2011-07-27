@@ -675,6 +675,7 @@ void WekaSource::parseData(ifstream& mis, const mrs_string& filename, WekaData& 
 			data.AppendFilename(currentFname);
 			lineCount++;
 			
+			delete lineBuffer; // info was copied in Append()
 		}
 		else // skip comment line 
 		{
