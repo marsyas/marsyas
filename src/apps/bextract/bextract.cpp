@@ -406,13 +406,13 @@ printHelp(string progName)
   cerr << "--------------------------------------------" << endl;
   cerr << "Prints information about the sound files provided as arguments " << endl;
   cerr << endl;
-  cerr << "Usage : " << progName << "[-c collection] file1 file2 file3" << endl;
+  cerr << "Usage : " << progName << " file1 file2 file3" << endl;
   cerr << endl;
   cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
   cerr << "Help Options:" << endl;
   cerr << "-u  --usage        : display short usage info" << endl;
   cerr << "-v  --verbose      : verbose output" << endl;
-  cerr << "-c  --collection   : use files in this collection" << endl;
+  cerr << "-c  --collection   : use files in this collection [only for MIREX 2007]" << endl;
   cerr << "-n  --normalize    : enable normalization" << endl;
   cerr << "-as --accSize      : accumulator size" << endl;
   cerr << "-cl --classifier   : classifier name" << endl;
