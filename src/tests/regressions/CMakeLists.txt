@@ -37,3 +37,27 @@ set( NEXT_COMMAND
 regression_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
+
+if (EXISTS ${TEST_MINI_GENRES_DIR})
+  # bextract stuff
+  add_test( genre-extract-generate
+    ${CMAKE_COMMAND} -E chdir ${TEST_MINI_GENRES_DIR}
+    bextract -fe -ds 50 -w mini-genres.arff mini-genres.mf
+  )
+  add_test( genre-extract-retrieve
+    ${CMAKE_COMMAND} -E copy
+      ${TEST_MINI_GENRES_DIR}/mini-genres.arff mini-genres.arff
+  )
+  add_test( genre-extract-remove
+    ${CMAKE_COMMAND} -E remove -f
+      ${TEST_MINI_GENRES_DIR}/mini-genres.arff
+  )
+  # kea stuff
+  add_test( genre-classify-gs
+     ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w mini-genres.arff -cl GS mini-genres-gs.txt ${TEST_OUTPUT}/mini-genres-gs.txt
+  )
+  add_test( genre-classify-svm
+     ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w mini-genres.arff -cl SVM mini-genres-svm.txt ${TEST_OUTPUT}/mini-genres-svm.txt
+  )
+endif (EXISTS ${TEST_MINI_GENRES_DIR})
+

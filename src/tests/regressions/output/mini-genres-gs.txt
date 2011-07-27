@@ -1,0 +1,25 @@
+Kea - Machine Learning in Marsyas ala Weka
+Mode = train_evaluate
+Training classifier using .arff file: mini-genres.arff
+Classifier type : GS
+=== Non-Stratified cross-validation (10 folds) ===
+=== ClassificationReport ===
+
+Correctly Classified Instances		785	60.7115 %
+Incorrectly Classified Instances	508	39.2885 %
+Kappa statistic				0.508955	
+Mean absolute error			0.392885
+Root mean squared error			0.626805
+Relative absolute error			78.577
+Root relative squared error		125.361
+Total Number of Instances		1293
+
+=== Confusion Matrix ===
+
+	a	b	c	d	e	<-- classified as
+	151	107	0	1	0	| a = classical
+	12	200	0	42	5	| b = jazz
+	1	2	151	104	0	| c = metal
+	2	36	0	220	0	| d = pop
+	1	31	0	164	63	| e = rock
+60% classified correctly (785/1293)

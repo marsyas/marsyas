@@ -58,7 +58,13 @@ endif (MARSYAS_WIN32 OR MARSYAS_MINGW OR MARSYAS_CYGWIN)
 option(WITH_ANN "Build the ANN (Approximate Nearest Neighbours) library" OFF)
 option(MARSYAS_BUILD_APPS "Build the applications" ON)
 mark_as_advanced (MARSYAS_BUILD_APPS)
+
 option(MARSYAS_TESTS "Build the tests" OFF)
+if(MARSYAS_TESTS)
+  find_path(TEST_MINI_GENRES_DIR
+    "Directory for the mini-genres database" NO_DEFAULT_PATH)
+endif (MARSYAS_TESTS)
+
 if (MARSYAS_LINUX OR MARSYAS_MACOSX)
 	option(MARSYAS_BUILD_DISTRIBUTED "[EXPERIMENTAL] compile code for
 		distributed audio processing" OFF)
