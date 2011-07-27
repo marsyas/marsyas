@@ -29,16 +29,16 @@ mrs_real minspan_;
 mrs_string trainedclassifier_;
 
 
-void
+int
 printUsage(string progName)
 {
   MRSDIAG("kea.cpp - printUsage");
   cerr << "Usage : " << progName << " [-m mode -c classifier -id inputdir -od outputdir -w weka file -tw test_weka file -tc test collection file -pr predict collection file] " << endl;
   cerr << endl;
-  exit(1);
+  return 1;
 }
 
-void
+int
 printHelp(string progName)
 {
   MRSDIAG("kea.cpp - printHelp");
@@ -61,7 +61,7 @@ printHelp(string progName)
   cerr << "-prtl --predicttimeline: predicted timeline" << endl;
   cerr << "-msp  --minspan: minimum duration of predicted timeline region" << endl;
   cerr << "-trcl --trainedclassifier: plugin file for storing the trained classifier" << endl;
-  exit(1);
+  return 1;
 }
 
 bool
@@ -778,6 +778,7 @@ train_evaluate()
   net->updControl("Classifier/cl/mrs_string/mode", "predict");
   net->updControl("ClassificationReport/summary/mrs_bool/done", true);
   net->tick();
+  delete net;
 }
 
 //
@@ -1050,7 +1051,7 @@ main(int argc, const char **argv)
 
   string progName = argv[0];
   if (argc == 1)
-    printUsage(progName);
+    return printUsage(progName);
 
   // handling of command-line options
   initOptions();
@@ -1059,10 +1060,10 @@ main(int argc, const char **argv)
 
   vector<string> soundfiles = cmd_options_.getRemaining();
   if (helpopt_)
-    printHelp(progName);
+    return printHelp(progName);
 
   if (usageopt_)
-    printUsage(progName);
+    return printUsage(progName);
 
   cout << "Mode = " << mode_ << endl;
 
@@ -1091,5 +1092,5 @@ main(int argc, const char **argv)
   
   
 
-  exit(0);
+  return 0;
 }
