@@ -47,10 +47,9 @@ void WekaData::Create(mrs_natural cols)
 //Requires that the vector rows be freed
 void WekaData::Clear()
 {
-  
-	for(vector<vector<mrs_real>*>::iterator iter = this->begin(); iter!=this->end(); iter++)
-	{
-		delete (*iter);
+	vector<vector<mrs_real>*>::iterator iter = this->begin();
+	while (iter != this->end()) {
+		this->erase(iter);
 	}
 	this->clear();
 	filenames_.clear();
@@ -210,18 +209,18 @@ void WekaData::Sort(mrs_natural attr)
 void WekaData::Append(const realvec& in)
 {
 	MRSASSERT(in.getRows()==cols_);
-	data_ = new vector<mrs_real>(cols_);
 	// skip feature vectors labeled with negative labels
 	
 	if (in(in.getRows()-1, 0) >=0)
 	{
+		data_ = new vector<mrs_real>(cols_);
 		for(mrs_natural ii=0; ii<in.getRows(); ++ii)
 		{
 			data_->at(ii) = in(ii, 0);
 		}
 		Append(data_);
 	}
-	
+
 }
 
 
@@ -286,4 +285,5 @@ void WekaData::Dump(const mrs_string& filename, const vector<mrs_string>& classN
 	}
 
 	mis->close();
+	delete mis;
 }//Dump
