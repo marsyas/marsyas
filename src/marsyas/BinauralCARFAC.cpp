@@ -143,7 +143,7 @@ void BinauralCARFAC::BinauralCARFAC_AGCStep(std::vector<std::vector<double> > av
       }
 
       // smooth backward with polez2, starting with state from above:
-      for (int index = npts; index >= 0; index--) {
+      for (int index = npts - 1; index >= 0; index--) {
         input = agcstep_AGC_stage[index];
         state = state + (1 - polez2) * (input - state);
         agcstep_AGC_stage[index] = state;
@@ -480,7 +480,7 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
   for (int row = 0; row < n_ch; row++) {
     for (int col = 0; col < sai_width_; col++) {
       out(row,col) = sai[col][row][0];
-      out(row,col+sai_width_) = sai[col][row][1];
+      out(row,sai_width_*2-col-1) = sai[col][row][1];
     }
   }
 

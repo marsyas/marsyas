@@ -155,23 +155,28 @@ loadOptions()
 
 void carfac_setup(string inAudioFileName)
 {
-  cout << "carfac_hacking" << endl;
-  cout << "inAudioFileName=" << inAudioFileName << endl;
-
-
   // create playback network with source-gain-dest
-  // MarSystem* net = mng.create("Series", "net");
   net = mng.create("Series", "net");
 
   if (audioopt_) {
-    cout << "##############################la" << endl;
     net->addMarSystem(mng.create("AudioSource", "src"));
   } else {
     net->addMarSystem(mng.create("SoundFileSource", "src"));
     net->updControl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
+    net->addMarSystem(mng.create("AudioSink", "dest"));
   }
 
-  net->addMarSystem(mng.create("AudioSink", "dest"));
+  if (audioopt_) {
+    net->updControl("mrs_real/israte", 44100.0);
+    net->updControl("AudioSource/src/mrs_natural/nChannels", 2);
+    net->updControl("AudioSource/src/mrs_real/gain", 2.0);
+    // Ready to initialize audio device 
+    net->updControl("AudioSource/src/mrs_bool/initAudio", true);
+  } else {
+    net->updControl("AudioSink/dest/mrs_bool/initAudio", true);
+  }
+
+  net->updControl("mrs_natural/inSamples", 512);
 
   MarSystem* carfac = mng.create("BinauralCARFAC", "carfac");
   net->addMarSystem(carfac);
@@ -179,12 +184,7 @@ void carfac_setup(string inAudioFileName)
   // cout << carfac->toString();
   cout << "##############################" << endl;
 
-
-  net->updControl("AudioSink/dest/mrs_bool/initAudio", true);
-  net->updControl("mrs_natural/inSamples", 512);
-
   // cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
-  // }
 
 }
 
