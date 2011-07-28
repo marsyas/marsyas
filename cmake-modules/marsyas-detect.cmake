@@ -93,7 +93,7 @@ endif (WITH_MAX/MSP)
 
 if (WITH_PNG) 
 	# find_package(png REQUIRED) 
-   find_package(freetype REQUIRED)
+   find_package(Freetype REQUIRED)
 	set (MARSYAS_PNG 1)
 endif (WITH_PNG)
 
