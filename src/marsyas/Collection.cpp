@@ -51,6 +51,8 @@ Collection::Collection()
 {
     collectionList_.reserve(1024);
     hasLabels_ = false;
+    // initialize random number generation.
+    srand( time( NULL) );
 }
 
 Collection::~Collection()
