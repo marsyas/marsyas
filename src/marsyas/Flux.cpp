@@ -56,7 +56,6 @@ Flux::addControls()
 	addctrl("mrs_string/mode", "marsyas", ctrl_mode_);
 	// set this true initially to clear prevWindow_
 	addctrl("mrs_bool/reset", true, ctrl_reset_);
-	setctrlState("mrs_bool/reset", true);
 }
 
 void
@@ -71,10 +70,6 @@ Flux::myUpdate(MarControlPtr sender)
 
 	prevWindow_.create(ctrl_inObservations_->to<mrs_natural>(),
 		ctrl_inSamples_->to<mrs_natural>());
-	if (ctrl_reset_->to<mrs_bool>()) {
-		prevWindow_.setval(0.0);
-		ctrl_reset_->setValue(false);
-    	}
 }
 
 void 
@@ -83,6 +78,13 @@ Flux::myProcess(realvec& in, realvec& out)
 	mrs_natural o,t;
 	mrs_string mode = ctrl_mode_->to<mrs_string>();
 	
+	if (ctrl_reset_->isTrue()) {
+		prevWindow_.setval(0.0);
+		// don't set this control to be false!
+		// this is almost always linked to by another
+		// control, so let that one do the false'ing!
+    	}
+
 	for (t = 0; t < inSamples_; t++)
 	{
 		if(mode == "marsyas")

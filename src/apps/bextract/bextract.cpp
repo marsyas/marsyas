@@ -2186,17 +2186,16 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->linkControl("Accumulator/acc/mrs_bool/flush",
 								 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
+	bextractNetwork->linkControl(
+		"Accumulator/acc/Series/featureNetwork/Flux/flux/mrs_bool/reset",
+		"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 	if (memSize != 0) {
 		bextractNetwork->linkControl(
 			"Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
 			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
 		);
-		bextractNetwork->linkControl(
-			"Accumulator/acc/Series/featureNetwork/Flux/flux/mrs_bool/reset",
-			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
-		);
-    }
+	}
 
 	if(tline)
 	  {
@@ -2243,13 +2242,14 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->linkControl("mrs_bool/currentCollectionNewFile",
 								 "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
+	bextractNetwork->linkControl(
+		"Series/featureNetwork/TimbreFeatures/featExtractor/Series/spectralShape/STFT_features/spectrumFeatures/Flux/flux/mrs_bool/reset",
+		"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+
 
 	if (memSize != 0) {
 		bextractNetwork->linkControl(
 			"Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
-			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
-		bextractNetwork->linkControl(
-			"Series/featureNetwork/Flux/flux/mrs_bool/reset",
 			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 	}
 
