@@ -69,6 +69,8 @@ mrs_bool lsp_ = false;
 mrs_bool lpcc_ = false;
 mrs_bool beat_ = false;
 
+mrs_bool only_stable_ = false;
+
 // SAI/VQ mode
 mrs_bool saivq_mode_ = false;
 
@@ -435,7 +437,8 @@ printHelp(string progName)
   cerr << "-od --outputdir    : output directory for output of files" << endl;
   cerr << "-ws --windowsize   : analysis window size in samples " << endl;
   cerr << "-hp --hopsize      : analysis hop size in samples " << endl;
-  cerr << "-t  --timeline     : flag 2nd input collection as timelines for the 1st collection";
+  cerr << "-t  --timeline     : flag 2nd input collection as timelines for the 1st collection"<<endl;
+  cerr << "-os  --onlyStable  : only output 'stable' frames (silently omit the rest)"<<endl;
   cerr << endl;
 
   cerr << "Available extractors: " << endl;
@@ -2308,7 +2311,18 @@ bextract_train_refactored(string pluginName,  string wekafname,
   bextractNetwork->addMarSystem(mng.create("Annotator", "annotator"));
   if (wekafname != EMPTYSTRING)
 	bextractNetwork->addMarSystem(mng.create("WekaSink", "wsink"));
-
+  if (only_stable_) {
+	bextractNetwork->updControl("WekaSink/wsink/mrs_bool/onlyStable", true);
+  	if (single_vector) {
+		bextractNetwork->linkControl(
+			"WekaSink/wsink/mrs_bool/resetStable",
+			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/startStable");
+	} else {
+		bextractNetwork->linkControl(
+			"WekaSink/wsink/mrs_bool/resetStable",
+			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/startStable");
+	}
+  }
 
   if (!featExtract_)
   {
@@ -3041,6 +3055,7 @@ initOptions()
   cmd_options.addBoolOption("SingleVector", "sv", false);
   cmd_options.addBoolOption("featExtract", "fe", false);
   cmd_options.addBoolOption("saivq", "saivq", false);
+  cmd_options.addBoolOption("onlyStable", "os", false);
 }
 
 void
@@ -3090,6 +3105,8 @@ loadOptions()
   timbralFeatures_ = cmd_options.getBoolOption("TimbralFeatures");
 
   single_vector_ = cmd_options.getBoolOption("SingleVector");
+
+  only_stable_ = cmd_options.getBoolOption("onlyStable");
 
   // default feature set
   if ((mfcc_ == false) &&

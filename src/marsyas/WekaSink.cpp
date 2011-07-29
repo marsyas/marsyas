@@ -263,27 +263,27 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		return;
 	}
 
+	mrs_bool print_line;
 	if (ctrl_onlyStable_->isTrue())
 	{
-		// do the increment before the potential return!
+		stabilizingTicks_++;
+		// under normal circumstances, do we print it?
+		// use <= because we just incremented it.
+		if (stabilizingTicks_ <= ctrl_inStabilizingDelay_->to<mrs_natural>()) {
+			print_line = false;
+		} else {
+			print_line = true;
+		}
+		// what about special circumstances?
 		if (ctrl_resetStable_->isTrue()) {
 			stabilizingTicks_ = 0;
-		} else {
-			stabilizingTicks_++;
-		}
-		if (stabilizingTicks_ < ctrl_inStabilizingDelay_->to<mrs_natural>())
-		{
-			// just copy input to output
-			for (o=0; o < inObservations_; o++)
-			{
-				for (t = 0; t < inSamples_; t++)
-				{
-					out(o,t) =  in(o,t);
-				}
+			// end of file
+	  		if (ctrl_currentlyPlaying_->to<mrs_string>() == prev_playing_) {
+				print_line = false;
 			}
-			// do not write anything to file; just bail
-			return;
 		}
+	} else {
+		print_line = true;
 	}
 
 	// Counter for handling the decimation (see ctrl_downsample).
@@ -317,6 +317,8 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		    {
 		      if ((count % downsample_) == 0)
 			{
+			if (print_line)
+			{
 			  if ( out(o,t) != out(o,t) )	// Jen's NaN check for MIREX 05
 			    {
 			      // (*mos_) << fixed << setprecision(precision_) << 0. << ",";
@@ -331,6 +333,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 			      //notPrint = false;
 			    }
 			}
+		      }
 		    }
 		}
 	    }
@@ -338,6 +341,8 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	  // Output last value (e.g. as label).
 	  ostringstream oss;
 	  if ((count % downsample_) == 0)
+	    {
+	    if (print_line)
 	    {
 	      if (label >= 0)
 		{
@@ -369,6 +374,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		    }
 		}
 	    }
+	  }
 	}
 	count++;
 }
