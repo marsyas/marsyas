@@ -249,6 +249,13 @@ BinauralCARFAC::addControls()
 
   addctrl("mrs_bool/printstate", true, ctrl_printstate_);
   setControlState("mrs_bool/printstate", true);
+
+  addctrl("mrs_real/memory_factor", 0.8, ctrl_memory_factor_);
+  setControlState("mrs_real/memory_factor", true);
+
+  addctrl("mrs_bool/summary_itd", false, ctrl_summary_itd_);
+  setControlState("mrs_bool/summary_itd", true);
+
 }
 
 // Preallocate any vectors that will get reused over and over.
@@ -343,22 +350,18 @@ BinauralCARFAC::myUpdate(MarControlPtr sender)
 
   int n_ch = 96;
   ctrl_onObservations_->setValue(n_ch, NOUPDATE);
-  ctrl_onSamples_->setValue(sai_width_ * 2, NOUPDATE);
+
+  summary_itd_ = getctrl("mrs_bool/summaryitd")->to<mrs_bool>();
+
+  if (summary_itd_) {
+    ctrl_onSamples_->setValue(2, NOUPDATE);
+  } else {
+    ctrl_onSamples_->setValue(sai_width_ * 2, NOUPDATE);
+  }
 
   allocateVectors();
 
-  // CF.BinauralCARFAC_Design();
-  // CF.BinauralCARFAC_DesignFilters(CF.CF_filter_params, CF.fs, CF.pole_freqs);
-  // CF.BinauralCARFAC_DesignAGC(CF.fs);
-
-  // // TODO(snessnet) - This should get updated from inObservations
-  // int n_mics = 2;
-
-  // CF.BinauralCARFAC_Init(n_mics);
-
-  // printcoeffs = false;
-  // printstate = false;
-
+  memory_factor_ = getctrl("mrs_real/memory_factor")->to<mrs_real>();
 }
 
 void
@@ -428,7 +431,7 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
     }
 
     // Detect strobe points
-    double threshold_alpha = 0.95;
+    double threshold_alpha = 0.9995;
     double threshold_jump = 1.5;
     double threshold_offset = 0.01;
 
@@ -458,9 +461,9 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
             for (int j = 0; j < sai_width_; j++) {
               int index = k - sai_width_ + j;
               if (index < 0) {
-                sai[j][i][mic] = prev_naps[inSamples_ + index][i][othermic];
+                sai[j][i][mic] = prev_naps[inSamples_ + index][i][othermic] + (sai[j][i][mic] * memory_factor_);
               } else {
-                sai[j][i][mic] = naps[index][i][othermic];
+                sai[j][i][mic] = naps[index][i][othermic] + (sai[j][i][mic] * memory_factor_);
               }
             }
           }
@@ -477,10 +480,24 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
   //   }
   // }
   // Copy the sai data to the output
-  for (int row = 0; row < n_ch; row++) {
-    for (int col = 0; col < sai_width_; col++) {
-      out(row,col) = sai[col][row][0];
-      out(row,sai_width_*2-col-1) = sai[col][row][1];
+
+  if (summary_itd_) {
+    for (int row = 0; row < n_ch; row++) {
+      out(row,0) = 0;
+      out(row,1) = 0;
+    }
+    for (int row = 0; row < n_ch; row++) {
+      for (int col = 0; col < sai_width_; col++) {
+        out(row,0) += sai[col][row][0];
+        out(row,1) += sai[col][row][1];
+      }
+    }
+  } else {
+    for (int row = 0; row < n_ch; row++) {
+      for (int col = 0; col < sai_width_; col++) {
+        out(row,col) = sai[col][row][0];
+        out(row,sai_width_*2-col-1) = sai[col][row][1];
+      }
     }
   }
 

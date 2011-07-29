@@ -45,6 +45,11 @@ class BinauralCARFAC: public MarSystem
 
   MarControlPtr ctrl_printcoeffs_;
   MarControlPtr ctrl_printstate_;
+  MarControlPtr ctrl_memory_factor_;
+  MarControlPtr ctrl_summary_itd_;
+
+  double memory_factor_;
+  bool summary_itd_;
 
   std::vector<double> BinauralCARFAC_FilterStep(double input_waves, int mic);
 
@@ -109,6 +114,7 @@ class BinauralCARFAC: public MarSystem
 
   // TODO(snessnet) - should be private...
   CF_class CF;
+
 
   std::string toString();
   void printParams();

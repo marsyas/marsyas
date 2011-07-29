@@ -60,22 +60,26 @@ mrs_real gain_;
 mrs_natural highFreq_;
 mrs_natural lowFreq_;
 mrs_natural audioopt_;
+mrs_bool summaryopt_;
+mrs_real memory_factor_;
+mrs_bool summaryitdopt_;
 
 mrs_natural position_;
 mrs_natural ticks_;
-mrs_string mode_;
-mrs_real start_, length_;
 mrs_natural width_, height_;
 MarSystemManager mng;
 MarSystem *net;
 
-
 CommandLineOptions cmd_options;
+
+mrs_realvec summary;
+bool initialized = false;
+
 
 void
 printUsage(string progName)
 {
-	MRSDIAG("carfac_hacking.cpp - printUsage");
+	MRSDIAG("carfac_binaural.cpp - printUsage");
 	cerr << "Usage : " << progName << " in.wav out.png" << endl;
 	cerr << endl;
 	cerr << "where : " << endl;
@@ -87,8 +91,8 @@ printUsage(string progName)
 void
 printHelp(string progName)
 {
-	MRSDIAG("carfac_hacking.cpp - printHelp");
-	cerr << "carfac_hacking" << endl;
+	MRSDIAG("carfac_binaural.cpp - printHelp");
+	cerr << "carfac_binaural" << endl;
 	cerr << "-------------------------------------------------------------" << endl;
 	cerr << "Generate a PNG of an input audio file.  The PNG can either be" << endl;
 	cerr << "the waveform or the spectrogram of the audio file" << endl;
@@ -123,11 +127,10 @@ initOptions()
 	cmd_options.addNaturalOption("minfreq", "mnf", 0);
 	cmd_options.addNaturalOption("ticks", "t", -1);
 	cmd_options.addNaturalOption("position", "p", 0);
-	cmd_options.addStringOption("mode" , "m", "spectrogram");
-	cmd_options.addRealOption("start", "s", 0.0);
-	cmd_options.addRealOption("length", "l", -1.0);
-	cmd_options.addNaturalOption("width", "wd", -1);
 	cmd_options.addBoolOption("audio", "a", false);
+	cmd_options.addBoolOption("summary", "s", false);
+	cmd_options.addBoolOption("summaryitd", "si", false);
+	cmd_options.addRealOption("memory_factor", "m", 0.9);
 }
 
 
@@ -145,17 +148,18 @@ loadOptions()
 	lowFreq_ = cmd_options.getNaturalOption("minfreq");
 	position_ = cmd_options.getNaturalOption("position");
 	ticks_ = cmd_options.getNaturalOption("ticks");
-	mode_ = cmd_options.getStringOption("mode");
-	start_ = cmd_options.getRealOption("start");
-	length_ = cmd_options.getRealOption("length");
-	width_ = cmd_options.getNaturalOption("width");
 	height_ = cmd_options.getNaturalOption("height");
 	audioopt_ = cmd_options.getBoolOption("audio");
+	summaryopt_ = cmd_options.getBoolOption("summary");
+	memory_factor_ = cmd_options.getRealOption("memory_factor");
+	summaryitdopt_ = cmd_options.getBoolOption("summaryitd");
 }
 
 void carfac_setup(string inAudioFileName)
 {
-  // create playback network with source-gain-dest
+  cout << "input=" << inAudioFileName << endl;
+
+  // Create Marsyas network
   net = mng.create("Series", "net");
 
   if (audioopt_) {
@@ -166,30 +170,25 @@ void carfac_setup(string inAudioFileName)
     net->addMarSystem(mng.create("AudioSink", "dest"));
   }
 
+  MarSystem* carfac = mng.create("BinauralCARFAC", "carfac");
+  net->addMarSystem(carfac);
+  net->updControl("BinauralCARFAC/carfac/mrs_real/memory_factor", memory_factor_);
+
   if (audioopt_) {
     net->updControl("mrs_real/israte", 44100.0);
     net->updControl("AudioSource/src/mrs_natural/nChannels", 2);
     net->updControl("AudioSource/src/mrs_real/gain", 2.0);
-    // Ready to initialize audio device 
+    net->updControl("AudioSource/src/mrs_natural/device", 3);
     net->updControl("AudioSource/src/mrs_bool/initAudio", true);
   } else {
+    net->updControl("AudioSink/dest/mrs_natural/device", 3);
     net->updControl("AudioSink/dest/mrs_bool/initAudio", true);
   }
 
   net->updControl("mrs_natural/inSamples", 512);
 
-  MarSystem* carfac = mng.create("BinauralCARFAC", "carfac");
-  net->addMarSystem(carfac);
-  cout << "########## CARFAC ############" << endl;
-  // cout << carfac->toString();
-  cout << "##############################" << endl;
-
-  // cout << net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>() << endl;
 
 }
-
-double x = 0.1;
-double y = 0.1;
 
 void display(void)
 {
@@ -197,46 +196,51 @@ void display(void)
   net->tick();
   mrs_realvec data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  // Stop at the end of the input soundfile
+  if ((!audioopt_) && (!net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())) {
+    exit(0);
+  }
 
-  GLfloat YELLOW[3] = {1,1,0};
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   int width = 1000;
   int height = 500;
   double side = 0.01;
 
-  // // Find minimum and maximum values for image scaling
-  // double min0 = 9999;
-  // double max0 = -9999;
-  // double min1 = 9999;
-  // double max1 = -9999;
-  // for (int x = 0; x < data.getRows(); x++) {
-  //   for (int y = 0; y < n_ch; y++) {
-  //     double val0 = naps[x][y][0];
-  //     double val1 = naps[x][y][1];
-  //     if (val0 < min0) {
-  //       min0 = val0;
-  //     }
-  //     if (val0 > max0) {
-  //       max0 = val0;
-  //     }
-  //     if (val1 < min1) {
-  //       min1 = val1;
-  //     }
-  //     if (val1 > max1) {
-  //       max1 = val1;
-  //     }
-  //   }
-  // }
+  if (summaryopt_) {
+    if (!initialized) {
+      summary = data;
+      initialized = true;
+    } else {
+      summary += data;
+    }
+    data = summary;
+  }
 
   double datarows = data.getRows();
   double datacols = data.getCols();
+
+  double max = -99999999.;
+  double min = 99999999;
   for (int row = 0; row < datarows; row++) {
     for (int col = 0; col < datacols; col++) {
-      double color = 1 - (data(row,col) * 0.2);
+      double color = data(row,col);
+      if (color > max) {
+        max = color;
+      }
+      if (color < min) {
+        min = color;
+      }
+    }
+  }
+
+  for (int row = 0; row < datarows; row++) {
+    for (int col = 0; col < datacols; col++) {
+      double color = data(row,col);
+      double normalized_color = 1. - ((color - min) / (max - min));
       double y = ((1. - (row / datarows) - 0.5)) * 1.8;
       double x = ((col / datacols) - 0.5) * 1.8;
-      glColor3f(color,color,color);
+      glColor3f(normalized_color,normalized_color,normalized_color);
 
       glBegin(GL_POLYGON);
       glVertex3f(x+side, y+side,0);
@@ -249,15 +253,6 @@ void display(void)
 
   glFlush();
 
-  x += 0.0001;
-  y += 0.0001;
-
-  if (x > 1.0) {
-    x = 0;
-  }
-  if (y > 1.0) {
-    y = 0;
-  }
   glutSwapBuffers();
 }
 
@@ -274,7 +269,7 @@ void idle(void)
 int
 main(int argc, const char **argv)
 {
-	MRSDIAG("carfac_hacking.cpp - main");
+	MRSDIAG("carfac_binaural.cpp - main");
 
 	string progName = argv[0];
 	if (argc == 1)
