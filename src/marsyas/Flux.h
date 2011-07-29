@@ -33,6 +33,7 @@ namespace Marsyas
 
 		Controls:
 		- \b mrs_string/mode [w]: select from the different available implementations for Flux: "marsyas" and "DixonDAFX06"
+		- \b mrs_bool/reset [rw] : clear and reset the memory buffer
 */
 
   class Flux: public MarSystem
@@ -43,6 +44,7 @@ namespace Marsyas
     mrs_real logtmp_;
 
 		MarControlPtr ctrl_mode_;
+		MarControlPtr ctrl_reset_;
 
 		void addControls();
 		void myUpdate(MarControlPtr sender);

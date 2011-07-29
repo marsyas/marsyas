@@ -2187,11 +2187,16 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 
-	if (memSize != 0) 
+	if (memSize != 0) {
 		bextractNetwork->linkControl(
 			"Accumulator/acc/Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
 			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
 		);
+		bextractNetwork->linkControl(
+			"Accumulator/acc/Series/featureNetwork/Flux/flux/mrs_bool/reset",
+			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile"
+		);
+    }
 
 	if(tline)
 	  {
@@ -2239,11 +2244,14 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 
-	if (memSize != 0)
+	if (memSize != 0) {
 		bextractNetwork->linkControl(
 			"Series/featureNetwork/TextureStats/tStats/mrs_bool/reset",
 			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
-	
+		bextractNetwork->linkControl(
+			"Series/featureNetwork/Flux/flux/mrs_bool/reset",
+			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
+	}
 
 
 	if(tline)
@@ -2857,6 +2865,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 
   MarControlPtr donePtr = featureNetwork->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_bool/hasData");
   MarControlPtr memResetPtr = featureNetwork->getctrl("Memory/memory/mrs_bool/reset");
+  MarControlPtr fluxResetPtr = featureNetwork->getctrl("Flux/flux/mrs_bool/reset");
   MarControlPtr fnamePtr = featureNetwork->getctrl("SilenceRemove/srm/SoundFileSource/src/mrs_string/filename");
   MarControlPtr annLabelPtr = featureNetwork->getctrl("Annotator/annotator/mrs_natural/label");
   MarControlPtr nlabelsPtr = featureNetwork->getctrl("WekaSink/wsink/mrs_natural/nLabels");
@@ -2878,10 +2887,12 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 	cout << "Class " << cj << " is " << l.name() << endl;
 
 	featureNetwork->setctrl(memResetPtr, true);
+	featureNetwork->setctrl(fluxResetPtr, true);
 
 	for (size_t i=0; i < l.size(); ++i)
 	{
 	  featureNetwork->setctrl(memResetPtr, true);
+	  featureNetwork->setctrl(fluxResetPtr, true);
 	  featureNetwork->updControl(fnamePtr, l.entry(i));
 	  wc = 0;
 	  samplesPlayed = 0;

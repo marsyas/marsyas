@@ -35,6 +35,7 @@ Flux::Flux(mrs_string name):MarSystem("Flux",name)
 
 Flux::Flux(const Flux& a) : MarSystem(a)
 {
+	ctrl_reset_ = getctrl("mrs_bool/reset");
 	ctrl_mode_ = getctrl("mrs_string/mode");
 	addToStabilizingDelay_ = 1;
 }
@@ -53,6 +54,9 @@ void
 Flux::addControls()
 {
 	addctrl("mrs_string/mode", "marsyas", ctrl_mode_);
+	// set this true initially to clear prevWindow_
+	addctrl("mrs_bool/reset", true, ctrl_reset_);
+	setctrlState("mrs_bool/reset", true);
 }
 
 void
@@ -67,6 +71,10 @@ Flux::myUpdate(MarControlPtr sender)
 
 	prevWindow_.create(ctrl_inObservations_->to<mrs_natural>(),
 		ctrl_inSamples_->to<mrs_natural>());
+	if (ctrl_reset_->to<mrs_bool>()) {
+		prevWindow_.setval(0.0);
+		ctrl_reset_->setValue(false);
+    	}
 }
 
 void 
