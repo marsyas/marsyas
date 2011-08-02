@@ -47,9 +47,21 @@ class BinauralCARFAC: public MarSystem
   MarControlPtr ctrl_printstate_;
   MarControlPtr ctrl_memory_factor_;
   MarControlPtr ctrl_summary_itd_;
+  MarControlPtr ctrl_threshold_alpha_;
+  MarControlPtr ctrl_threshold_jump_factor_;
+  MarControlPtr ctrl_threshold_jump_offset_;
+
+  MarControlPtr ctrl_output_intermediate_data_;
+  MarControlPtr ctrl_output_nap_;
+  MarControlPtr ctrl_output_threshold_;
+  MarControlPtr ctrl_output_strobes_;
 
   double memory_factor_;
   bool summary_itd_;
+  double threshold_alpha_;
+  double threshold_jump_factor_;
+  double threshold_jump_offset_;
+  bool output_intermediate_data_;
 
   std::vector<double> BinauralCARFAC_FilterStep(double input_waves, int mic);
 
