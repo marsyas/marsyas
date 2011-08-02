@@ -63,6 +63,9 @@ mrs_natural audioopt_;
 mrs_bool summaryopt_;
 mrs_real memory_factor_;
 mrs_bool summaryitdopt_;
+mrs_real threshold_alpha_;
+mrs_real threshold_jump_factor_;
+mrs_real threshold_jump_offset_;
 
 mrs_natural position_;
 mrs_natural ticks_;
@@ -81,6 +84,13 @@ vector<vector<double> > summary_itd_;
 
 int summary_itd_width_ = 200;
 int summary_itd_height_ = 96;
+
+double nap_max = -99999999.;
+double nap_min = 99999999;
+
+mrs_realvec nap_data_;
+mrs_realvec threshold_data_;
+mrs_realvec strobes_data_;
 
 
 void
@@ -128,16 +138,13 @@ initOptions()
   cmd_options.addBoolOption("verbose", "v", false);
   cmd_options.addNaturalOption("windowsize", "ws", 512);
   cmd_options.addNaturalOption("hopsize", "hs", 256);
-  cmd_options.addNaturalOption("memorysize", "ms", 300);
-  cmd_options.addRealOption("gain", "g", 1.5);
-  cmd_options.addNaturalOption("maxfreq", "mxf", 22050);
-  cmd_options.addNaturalOption("minfreq", "mnf", 0);
-  cmd_options.addNaturalOption("ticks", "t", -1);
-  cmd_options.addNaturalOption("position", "p", 0);
   cmd_options.addBoolOption("audio", "a", false);
   cmd_options.addBoolOption("summary", "s", false);
   cmd_options.addBoolOption("summaryitd", "si", false);
   cmd_options.addRealOption("memory_factor", "m", 0.9);
+  cmd_options.addRealOption("threshold_alpha", "ta", 0.9999);
+  cmd_options.addRealOption("threshold_jump_factor", "tjf", 1.5);
+  cmd_options.addRealOption("threshold_jump_offset", "tjo", 0.01);
 }
 
 
@@ -148,18 +155,14 @@ loadOptions()
   usageopt_ = cmd_options.getBoolOption("usage");
   verboseopt_ = cmd_options.getBoolOption("verbose");
   windowSize_ = cmd_options.getNaturalOption("windowsize");
-  memorySize_ = cmd_options.getNaturalOption("memorysize");
   hopSize_ = cmd_options.getNaturalOption("hopsize");
-  gain_ = cmd_options.getRealOption("gain");
-  highFreq_ = cmd_options.getNaturalOption("maxfreq");
-  lowFreq_ = cmd_options.getNaturalOption("minfreq");
-  position_ = cmd_options.getNaturalOption("position");
-  ticks_ = cmd_options.getNaturalOption("ticks");
-  // height_ = cmd_options.getNaturalOption("height");
   audioopt_ = cmd_options.getBoolOption("audio");
   summaryopt_ = cmd_options.getBoolOption("summary");
   memory_factor_ = cmd_options.getRealOption("memory_factor");
   summaryitdopt_ = cmd_options.getBoolOption("summaryitd");
+  threshold_alpha_ = cmd_options.getRealOption("threshold_alpha");
+  threshold_jump_factor_ = cmd_options.getRealOption("threshold_jump_factor");
+  threshold_jump_offset_ = cmd_options.getRealOption("threshold_jump_offset");
 }
 
 void carfac_setup(string inAudioFileName)
@@ -177,10 +180,12 @@ void carfac_setup(string inAudioFileName)
     net->addMarSystem(mng.create("AudioSink", "dest"));
   }
 
-
   MarSystem* carfac = mng.create("BinauralCARFAC", "carfac");
   net->addMarSystem(carfac);
   net->updControl("BinauralCARFAC/carfac/mrs_real/memory_factor", memory_factor_);
+  net->updControl("BinauralCARFAC/carfac/mrs_real/threshold_alpha", threshold_alpha_);
+  net->updControl("BinauralCARFAC/carfac/mrs_real/threshold_jump_factor", threshold_jump_factor_);
+  net->updControl("BinauralCARFAC/carfac/mrs_real/threshold_jump_offset", threshold_jump_offset_);
 
   if (audioopt_) {
     net->updControl("mrs_real/israte", 44100.0);
@@ -265,8 +270,8 @@ void display(void)
     for (int col = 0; col < datacols; col++) {
       double color = data(row,col);
       double normalized_color = 1. - ((color - min) / (max - min));
-      double y = (((1. - (row / datarows) - 0.5)) * 1.5) + 0.2;
-      double x = ((col / datacols) - 0.5) * 1.8;
+      double y = (((1. - (row / datarows) - 0.5)) * 1.1) + 0.4;
+      double x = ((col / datacols) - 0.5) * 1.1;
       glColor3f(normalized_color,normalized_color,normalized_color);
 
       glBegin(GL_POLYGON);
@@ -278,8 +283,9 @@ void display(void)
     }
   }
 
-  // // Summary ITD
-
+  //
+  // Summary ITD
+  //
   double littleside_x = 0.01;
   double littleside_y = 0.02;
   double summary_itd_max = -99999999.;
@@ -303,8 +309,8 @@ void display(void)
       double normalized_color = 1. - ((color - summary_itd_min) / (summary_itd_max - summary_itd_min));
       // snessnet(TODO) - These parameters were all picked emperically
       // to make the picture fit.
-      double y = (((1. - (row / datarows) - 0.5)) * 0.3) - 0.8;
-      double x = (((col / datacols) - 0.5) * 1.8) - 0.05;
+      double y = (((1. - (row / datarows) - 0.5)) * 0.3) - 0.4;
+      double x = (((col / datacols) - 0.5) * 1.9) + 0.;
       glColor3f(normalized_color,normalized_color,normalized_color);
 
       glBegin(GL_POLYGON);
@@ -317,9 +323,87 @@ void display(void)
     }
   }
 
+
+
+  //
+  // Threshold graphs
+  //
+  int visualize_channel = 0;
+  double nap_data_rows = nap_data_.getRows();
+  double nap_data_cols = nap_data_.getCols();
+
+  // double nap_max = -99999999.;
+  // double nap_min = 99999999;
+
+  // Decay the maximum plotted value so outliers don't screw us
+  // completely.
+  // nap_max *= 0.99;
+  // nap_min *= 0.99;
+  nap_max = -99999999.;
+  nap_min = 99999999.;
+  for (int col = 0; col < nap_data_cols; col++) {
+    double val = nap_data_(visualize_channel,col);
+    if (val > nap_max) {
+      nap_max = val;
+    }
+    if (val < nap_min) {
+      nap_min = val;
+    }
+
+    val = threshold_data_(visualize_channel,col);
+    if (val > nap_max) {
+      nap_max = val;
+    }
+    if (val < nap_min) {
+      nap_min = val;
+    }
+  }
+
+  // Nap data
+  glColor3f(0.8,0.9,0.8);
+  glBegin(GL_LINE_STRIP);
+  for (int col = 0; col < nap_data_cols; col++) {
+    double x = ((col / 100.) * 0.35) - 0.95;
+    double y = (((nap_data_(visualize_channel,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.9;
+    glVertex3f(x,y,0);
+  }
+  glEnd();
+
+  // Threshold data
+  double threshold_data_rows = threshold_data_.getRows();
+  double threshold_data_cols = threshold_data_.getCols();
+
+  glColor3f(0.9,0.35,0.35);
+  glBegin(GL_LINE_STRIP);
+  for (int col = 0; col < threshold_data_cols; col++) {
+    double x = ((col / 100.) * 0.35) - 0.95;
+    double y = (((threshold_data_(visualize_channel,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.9;
+    glVertex3f(x,y,0);
+  }
+  glEnd();
+
+
+  // Strobes data
+  glColor3f(1.0,1.0,0.0);
+  glBegin(GL_LINES);
+  // cout << "strobes ";
+  for (int col = 0; col < strobes_data_.getCols(); col++) {
+    if (strobes_data_(visualize_channel,col)) {
+      // cout << col << " ";
+    double x = ((col / 100.) * 0.35) - 0.95;
+    glVertex3f(x,-0.9,0);
+    glVertex3f(x,-0.8,0);
+    }
+  }
+  // cout << endl;
+  glEnd();
+
+
   glFlush();
 
   glutSwapBuffers();
+
+  // sleep(1);
 }
 
 void reshape(int width, int height)
@@ -330,6 +414,15 @@ void reshape(int width, int height)
 void idle(void)
 {
   glutPostRedisplay();
+}
+
+void keyPressed (unsigned char key, int x, int y) {
+  if (key == ' ') {
+    strobes_data_ = net->getctrl("BinauralCARFAC/carfac/mrs_realvec/output_strobes")->to<mrs_realvec>();
+    nap_data_ = net->getctrl("BinauralCARFAC/carfac/mrs_realvec/output_nap")->to<mrs_realvec>();
+    threshold_data_ = net->getctrl("BinauralCARFAC/carfac/mrs_realvec/output_threshold")->to<mrs_realvec>();
+  }
+
 }
 
 
@@ -369,12 +462,13 @@ main(int argc, const char **argv)
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
   cout << "width_=" << width_ << endl;
   cout << "height_=" << height_ << endl;
-  glutInitWindowSize(width_,height_+300);
+  glutInitWindowSize(width_,height_+500);
 
   (void)glutCreateWindow("GLUT Program");
   glutDisplayFunc(display);
   glutReshapeFunc(reshape);
   glutIdleFunc(idle);
+  glutKeyboardFunc(keyPressed);
 
   glutMainLoop();
 

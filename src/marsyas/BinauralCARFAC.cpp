@@ -228,6 +228,12 @@ BinauralCARFAC::BinauralCARFAC(const BinauralCARFAC& a) : MarSystem(a)
 	// it is necessary to perform this getctrl
 	// in the copy constructor in order for cloning to work
 	ctrl_printcoeffs_ = getctrl("mrs_bool/printcoeffs");
+	ctrl_output_intermediate_data_ = getctrl("mrs_bool/output_intermediate_data");
+
+	ctrl_output_nap_ = getctrl("mrs_realvec/output_nap");
+	ctrl_output_threshold_ = getctrl("mrs_realvec/output_threshold");
+	ctrl_output_strobes_ = getctrl("mrs_realvec/output_strobes");
+
     allocateVectors();
     cum_k = -1;
 }
@@ -257,6 +263,24 @@ BinauralCARFAC::addControls()
 
   addctrl("mrs_bool/summary_itd", false, ctrl_summary_itd_);
   setControlState("mrs_bool/summary_itd", true);
+
+  addctrl("mrs_real/threshold_alpha", 0.9999, ctrl_threshold_alpha_);
+  setControlState("mrs_real/threshold_alpha", true);
+
+  addctrl("mrs_real/threshold_jump_factor", 1.5, ctrl_threshold_jump_factor_);
+  setControlState("mrs_real/threshold_jump_factor", true);
+
+  addctrl("mrs_real/threshold_jump_offset", 0.1, ctrl_threshold_jump_offset_);
+  setControlState("mrs_real/threshold_jump_offset", true);
+
+  // Output the NAP and thresholds to controls.  Mostly for debugging, but
+  // could also be useful.
+  addctrl("mrs_bool/output_intermediate_data", true, ctrl_output_intermediate_data_);
+  setControlState("mrs_bool/output_intermediate_data", true);
+
+  addctrl("mrs_realvec/output_nap", realvec(), ctrl_output_nap_);
+  addctrl("mrs_realvec/output_threshold", realvec(), ctrl_output_threshold_);
+  addctrl("mrs_realvec/output_strobes", realvec(), ctrl_output_strobes_);
 
 }
 
@@ -344,6 +368,18 @@ void BinauralCARFAC::allocateVectors() {
 void
 BinauralCARFAC::myUpdate(MarControlPtr sender)
 {
+  MarControlAccessor acc_on(ctrl_output_nap_);
+  mrs_realvec& output_nap = acc_on.to<mrs_realvec>();
+  output_nap.stretch(onObservations_,inSamples_);
+
+  MarControlAccessor acc_ot(ctrl_output_threshold_);
+  mrs_realvec& output_threshold = acc_ot.to<mrs_realvec>();
+  output_threshold.stretch(onObservations_,inSamples_);
+
+  MarControlAccessor acc_os(ctrl_output_strobes_);
+  mrs_realvec& output_strobes = acc_os.to<mrs_realvec>();
+  output_strobes.stretch(onObservations_,inSamples_);
+
   // TODO(snessnet) - Set this via a control instead
   sai_width_ = 100;
 
@@ -364,12 +400,26 @@ BinauralCARFAC::myUpdate(MarControlPtr sender)
   allocateVectors();
 
   memory_factor_ = getctrl("mrs_real/memory_factor")->to<mrs_real>();
+  threshold_alpha_ = getctrl("mrs_real/threshold_alpha")->to<mrs_real>();
+  threshold_jump_factor_ = getctrl("mrs_real/threshold_jump_factor")->to<mrs_real>();
+  threshold_jump_offset_ = getctrl("mrs_real/threshold_jump_offset")->to<mrs_real>();
+
+  output_intermediate_data_ = getctrl("mrs_bool/output_intermediate_data")->to<mrs_bool>();
+
+
+  // cout << "hmm" << endl;
 }
 
 void
 BinauralCARFAC::myProcess(realvec& in, realvec& out)
 {
   // cout << "myProcess" << endl;
+
+  MarControlAccessor acc_ot(ctrl_output_threshold_);
+  mrs_realvec& output_threshold = acc_ot.to<mrs_realvec>();
+
+  MarControlAccessor acc_os(ctrl_output_strobes_);
+  mrs_realvec& output_strobes = acc_os.to<mrs_realvec>();
 
   lastin = in;
 
@@ -442,14 +492,14 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
       }
     }
 
-    // Detect strobe points
-    double threshold_alpha = 0.9999;
-    double threshold_jump = 1.5;
-    double threshold_offset = 0.01;
+    // // Detect strobe points
+    // double threshold_alpha = 0.9999;
+    // double threshold_jump_factor_ = 1.5;
+    // double threshold_jump_offset_ = 0.01;
 
     for (int mic = 0; mic < n_mics; mic++) {
       int othermic = 1 - mic;
-      std::vector<bool> above_threshold(n_ch);
+      std::vector<bool> above_threshold(n_ch,false);
       for (int i = 0; i < n_ch; i++) {
         if ((CF.strobe_state[mic].lastdata[i] > CF.strobe_state[mic].thresholds[i]) &&
             (CF.strobe_state[mic].lastdata[i] > naps[k][i][mic])) {
@@ -458,17 +508,27 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
           above_threshold[i] = false;
         }
         if (above_threshold[i]) {
-          CF.strobe_state[mic].thresholds[i] = naps[k][i][mic] * threshold_jump + threshold_offset;
+          CF.strobe_state[mic].thresholds[i] = naps[k][i][mic] * threshold_jump_factor_ + threshold_jump_offset_;
         } else {
-          CF.strobe_state[mic].thresholds[i] = CF.strobe_state[mic].thresholds[i] * threshold_alpha;
+          CF.strobe_state[mic].thresholds[i] = CF.strobe_state[mic].thresholds[i] * threshold_alpha_;
         }
         CF.strobe_state[mic].lastdata[i] = naps[k][i][mic];
+
+        // Copy the thresholds to the output control
+        // TODO(snessnet) - Executive decision to just do first mic
+        if (output_intermediate_data_ && mic == 0) {
+          output_threshold(i,k) = CF.strobe_state[0].thresholds[i];
+          output_strobes(i,k) = above_threshold[i];
+        }
       }
 
       // If above threshold, copy data from the trigger point onwards
       for (int i = 0; i < n_ch; i++) {
-        if (above_threshold[i]) {
+        if (above_threshold[i] && mic == 0) {
           threshold_histogram[i]++;
+        }
+
+        if (above_threshold[i]) {
           CF.strobe_state[mic].trigger_index[i] = k;
           CF.strobe_state[mic].sai_index[i] = 0;
         }
@@ -512,11 +572,21 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
     }
   }
 
-  cout << "histo\t";
-  for (int i = 0; i < n_ch; i++) {
-    cout << setw(3) << threshold_histogram[i] << " ";
+  if (output_intermediate_data_) {
+    MarControlAccessor acc_on(ctrl_output_nap_);
+    mrs_realvec& output_nap = acc_on.to<mrs_realvec>();
+    for (int i = 0; i < n_ch; i++) {
+      for (int j = 0; j < inSamples_; j++) {
+        output_nap(i,j) = naps[j][i][0];
+      }
+    }
   }
-  cout << endl;
+
+  // cout << "histo\t";
+  // for (int i = 0; i < n_ch; i++) {
+  //   cout << setw(3) << threshold_histogram[i] << " ";
+  // }
+  // cout << endl;
 
   // sleep(1);
 
