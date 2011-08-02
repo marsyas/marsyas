@@ -1294,7 +1294,7 @@ MarSystem::addControl(mrs_string cname, MarControlPtr v)
 	mrs_string ctype = cname.substr(0,pos);
 	if (ctype!= v->getType())
 	{
-		MRSWARN("MarSystem::addControl control type mismatch (" + ctype + "!=" + v->getType() + ")");
+		MRSWARN("MarSystem::addControl control type mismatch (" + ctype + "!=" + v->getType() + ", in " + type_ + ")");
 		return false;
 	}
 	controls_[cname] = v;
