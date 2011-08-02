@@ -108,6 +108,8 @@ ostream& operator<<(ostream& o, const strobe_state_class& l)
   o << "**strobe_state_class" << endl;
   o << "\tlastdata=" << l.lastdata << endl;
   o << "\tthresholds=" << l.thresholds << endl;
+  // o << "\ttrigger_index=" << l.trigger_index << endl;
+  // o << "\tsai_index=" << l.sai_index << endl;
 
   return o;
 }
@@ -497,6 +499,8 @@ void CF_class::CARFAC_Init(int n_mics)
   strobe_state_class tmp_strobe_state;
   tmp_strobe_state.lastdata.assign(n_ch,0.0);
   tmp_strobe_state.thresholds.assign(n_ch,strobe_threshold_start);
+  tmp_strobe_state.trigger_index.assign(n_ch,0);
+  tmp_strobe_state.sai_index.assign(n_ch,0);
 
   for (int mic = 0; mic < n_mics; mic++) {
     strobe_state.push_back(tmp_strobe_state);

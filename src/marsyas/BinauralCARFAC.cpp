@@ -17,10 +17,12 @@
 */
 
 #include "BinauralCARFAC.h"
+#include <iomanip>
 
 using std::cout;
 using std::endl;
 using std::ostream;
+using std::setw;
 
 namespace Marsyas
 {
@@ -351,7 +353,7 @@ BinauralCARFAC::myUpdate(MarControlPtr sender)
   int n_ch = 96;
   ctrl_onObservations_->setValue(n_ch, NOUPDATE);
 
-  summary_itd_ = getctrl("mrs_bool/summaryitd")->to<mrs_bool>();
+  summary_itd_ = getctrl("mrs_bool/summary_itd")->to<mrs_bool>();
 
   if (summary_itd_) {
     ctrl_onSamples_->setValue(2, NOUPDATE);
@@ -383,6 +385,16 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
 
   std::vector<double> detect;
   std::vector<double> avg_detect(n_ch);
+
+  std::vector<int> threshold_histogram(n_ch,0);
+
+  // Reset the triggers because we are at the start of the frame
+  for (int mic = 0; mic < n_mics; mic++) {
+    for (int i=0; i < n_ch; i++) {
+      CF.strobe_state[mic].trigger_index[i] = 0;
+    }
+  }
+
 
   for (mrs_natural k = 0; k < inSamples_; k++) {
     cum_k = cum_k + 1;
@@ -431,11 +443,12 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
     }
 
     // Detect strobe points
-    double threshold_alpha = 0.9995;
+    double threshold_alpha = 0.9999;
     double threshold_jump = 1.5;
     double threshold_offset = 0.01;
 
     for (int mic = 0; mic < n_mics; mic++) {
+      int othermic = 1 - mic;
       std::vector<bool> above_threshold(n_ch);
       for (int i = 0; i < n_ch; i++) {
         if ((CF.strobe_state[mic].lastdata[i] > CF.strobe_state[mic].thresholds[i]) &&
@@ -452,35 +465,24 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
         CF.strobe_state[mic].lastdata[i] = naps[k][i][mic];
       }
 
-      if (cum_k > sai_width_) {
-        int othermic = 1 - mic;
-        for (int i = 0; i < n_ch; i++) {
-          if (above_threshold[i]) {
-            // Copy the data from the naps image to the sai, starting with the data from
-            // the previous iteration
-            for (int j = 0; j < sai_width_; j++) {
-              int index = k - sai_width_ + j;
-              if (index < 0) {
-                sai[j][i][mic] = prev_naps[inSamples_ + index][i][othermic] + (sai[j][i][mic] * memory_factor_);
-              } else {
-                sai[j][i][mic] = naps[index][i][othermic] + (sai[j][i][mic] * memory_factor_);
-              }
-            }
-          }
+      // If above threshold, copy data from the trigger point onwards
+      for (int i = 0; i < n_ch; i++) {
+        if (above_threshold[i]) {
+          threshold_histogram[i]++;
+          CF.strobe_state[mic].trigger_index[i] = k;
+          CF.strobe_state[mic].sai_index[i] = 0;
         }
+
+        if ((CF.strobe_state[mic].sai_index[i] < sai_width_) && (CF.strobe_state[mic].trigger_index[i] < inSamples_)) {
+          sai[CF.strobe_state[mic].sai_index[i]][i][mic] = naps[CF.strobe_state[mic].trigger_index[i]][i][othermic] + sai[CF.strobe_state[mic].sai_index[i]][i][mic] * memory_factor_;
+        }
+        CF.strobe_state[mic].trigger_index[i]++;
+        CF.strobe_state[mic].sai_index[i]++;
       }
     }
   }
 
-  // // Copy the sai data to the output
-  // for (int row = 0; row < n_ch; row++) {
-  //   for (int col = 0; col < sai_width_; col++) {
-  //     out(row,col) = sai[col][row][0];
-  //     out(row+n_ch,col) = sai[col][row][1];
-  //   }
-  // }
   // Copy the sai data to the output
-
   if (summary_itd_) {
     for (int row = 0; row < n_ch; row++) {
       out(row,0) = 0;
@@ -495,8 +497,8 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
   } else {
     for (int row = 0; row < n_ch; row++) {
       for (int col = 0; col < sai_width_; col++) {
-        out(row,col) = sai[col][row][0];
-        out(row,sai_width_*2-col-1) = sai[col][row][1];
+        out(row,sai_width_-col) = sai[col][row][0];
+        out(row,sai_width_+col) = sai[col][row][1];
       }
     }
   }
@@ -509,6 +511,12 @@ BinauralCARFAC::myProcess(realvec& in, realvec& out)
       }
     }
   }
+
+  cout << "histo\t";
+  for (int i = 0; i < n_ch; i++) {
+    cout << setw(3) << threshold_histogram[i] << " ";
+  }
+  cout << endl;
 
   // sleep(1);
 

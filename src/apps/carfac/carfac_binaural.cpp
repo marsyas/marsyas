@@ -66,7 +66,6 @@ mrs_bool summaryitdopt_;
 
 mrs_natural position_;
 mrs_natural ticks_;
-mrs_natural width_, height_;
 MarSystemManager mng;
 MarSystem *net;
 
@@ -75,84 +74,92 @@ CommandLineOptions cmd_options;
 mrs_realvec summary;
 bool initialized = false;
 
+int width_ = 1000;
+int height_ = 500;
+int current_summary_pos_ = 0;
+vector<vector<double> > summary_itd_;
+
+int summary_itd_width_ = 200;
+int summary_itd_height_ = 96;
+
 
 void
 printUsage(string progName)
 {
-	MRSDIAG("carfac_binaural.cpp - printUsage");
-	cerr << "Usage : " << progName << " in.wav out.png" << endl;
-	cerr << endl;
-	cerr << "where : " << endl;
-	cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
-	cerr << "   out.png is the name of the PNG file to be generated" << endl;
-	exit(1);
+  MRSDIAG("carfac_binaural.cpp - printUsage");
+  cerr << "Usage : " << progName << " in.wav out.png" << endl;
+  cerr << endl;
+  cerr << "where : " << endl;
+  cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
+  cerr << "   out.png is the name of the PNG file to be generated" << endl;
+  exit(1);
 }
 
 void
 printHelp(string progName)
 {
-	MRSDIAG("carfac_binaural.cpp - printHelp");
-	cerr << "carfac_binaural" << endl;
-	cerr << "-------------------------------------------------------------" << endl;
-	cerr << "Generate a PNG of an input audio file.  The PNG can either be" << endl;
-	cerr << "the waveform or the spectrogram of the audio file" << endl;
-	cerr << endl;
-	cerr << "written by sness (c) 2010 GPL - sness@sness.net" << endl;
-	cerr << endl;
-	cerr << "Usage : " << progName << " in.wav [out.png]" << endl;
-	cerr << endl;
-	cerr << "where : " << endl;
-	cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
-	cerr << "   out.png is the optional name of the PNG file to be generated" << endl;
-	cerr << "Help Options:" << endl;
-	cerr << "-u --usage        : display short usage info" << endl;
-	cerr << "-h --help         : display this information " << endl;
-	cerr << "-v --verbose      : verbose output" << endl;
-	cerr << "------------------------------------------" << endl;
+  MRSDIAG("carfac_binaural.cpp - printHelp");
+  cerr << "carfac_binaural" << endl;
+  cerr << "-------------------------------------------------------------" << endl;
+  cerr << "Generate a PNG of an input audio file.  The PNG can either be" << endl;
+  cerr << "the waveform or the spectrogram of the audio file" << endl;
+  cerr << endl;
+  cerr << "written by sness (c) 2010 GPL - sness@sness.net" << endl;
+  cerr << endl;
+  cerr << "Usage : " << progName << " in.wav [out.png]" << endl;
+  cerr << endl;
+  cerr << "where : " << endl;
+  cerr << "   in.wav is a sound file in a MARSYAS supported format" << endl;
+  cerr << "   out.png is the optional name of the PNG file to be generated" << endl;
+  cerr << "Help Options:" << endl;
+  cerr << "-u --usage        : display short usage info" << endl;
+  cerr << "-h --help         : display this information " << endl;
+  cerr << "-v --verbose      : verbose output" << endl;
+  cerr << "------------------------------------------" << endl;
 
-	exit(1);
+  exit(1);
 }
 
 void
 initOptions()
 {
-	cmd_options.addBoolOption("help", "h", false);
-	cmd_options.addBoolOption("usage", "u", false);
-	cmd_options.addBoolOption("verbose", "v", false);
-	cmd_options.addNaturalOption("windowsize", "ws", 512);
-	cmd_options.addNaturalOption("hopsize", "hs", 256);
-	cmd_options.addNaturalOption("memorysize", "ms", 300);
-	cmd_options.addRealOption("gain", "g", 1.5);
-	cmd_options.addNaturalOption("maxfreq", "mxf", 22050);
-	cmd_options.addNaturalOption("minfreq", "mnf", 0);
-	cmd_options.addNaturalOption("ticks", "t", -1);
-	cmd_options.addNaturalOption("position", "p", 0);
-	cmd_options.addBoolOption("audio", "a", false);
-	cmd_options.addBoolOption("summary", "s", false);
-	cmd_options.addBoolOption("summaryitd", "si", false);
-	cmd_options.addRealOption("memory_factor", "m", 0.9);
+  cmd_options.addBoolOption("help", "h", false);
+  cmd_options.addBoolOption("usage", "u", false);
+  cmd_options.addBoolOption("verbose", "v", false);
+  cmd_options.addNaturalOption("windowsize", "ws", 512);
+  cmd_options.addNaturalOption("hopsize", "hs", 256);
+  cmd_options.addNaturalOption("memorysize", "ms", 300);
+  cmd_options.addRealOption("gain", "g", 1.5);
+  cmd_options.addNaturalOption("maxfreq", "mxf", 22050);
+  cmd_options.addNaturalOption("minfreq", "mnf", 0);
+  cmd_options.addNaturalOption("ticks", "t", -1);
+  cmd_options.addNaturalOption("position", "p", 0);
+  cmd_options.addBoolOption("audio", "a", false);
+  cmd_options.addBoolOption("summary", "s", false);
+  cmd_options.addBoolOption("summaryitd", "si", false);
+  cmd_options.addRealOption("memory_factor", "m", 0.9);
 }
 
 
 void
 loadOptions()
 {
-	helpopt_ = cmd_options.getBoolOption("help");
-	usageopt_ = cmd_options.getBoolOption("usage");
-	verboseopt_ = cmd_options.getBoolOption("verbose");
-	windowSize_ = cmd_options.getNaturalOption("windowsize");
-	memorySize_ = cmd_options.getNaturalOption("memorysize");
-	hopSize_ = cmd_options.getNaturalOption("hopsize");
-	gain_ = cmd_options.getRealOption("gain");
-	highFreq_ = cmd_options.getNaturalOption("maxfreq");
-	lowFreq_ = cmd_options.getNaturalOption("minfreq");
-	position_ = cmd_options.getNaturalOption("position");
-	ticks_ = cmd_options.getNaturalOption("ticks");
-	height_ = cmd_options.getNaturalOption("height");
-	audioopt_ = cmd_options.getBoolOption("audio");
-	summaryopt_ = cmd_options.getBoolOption("summary");
-	memory_factor_ = cmd_options.getRealOption("memory_factor");
-	summaryitdopt_ = cmd_options.getBoolOption("summaryitd");
+  helpopt_ = cmd_options.getBoolOption("help");
+  usageopt_ = cmd_options.getBoolOption("usage");
+  verboseopt_ = cmd_options.getBoolOption("verbose");
+  windowSize_ = cmd_options.getNaturalOption("windowsize");
+  memorySize_ = cmd_options.getNaturalOption("memorysize");
+  hopSize_ = cmd_options.getNaturalOption("hopsize");
+  gain_ = cmd_options.getRealOption("gain");
+  highFreq_ = cmd_options.getNaturalOption("maxfreq");
+  lowFreq_ = cmd_options.getNaturalOption("minfreq");
+  position_ = cmd_options.getNaturalOption("position");
+  ticks_ = cmd_options.getNaturalOption("ticks");
+  // height_ = cmd_options.getNaturalOption("height");
+  audioopt_ = cmd_options.getBoolOption("audio");
+  summaryopt_ = cmd_options.getBoolOption("summary");
+  memory_factor_ = cmd_options.getRealOption("memory_factor");
+  summaryitdopt_ = cmd_options.getBoolOption("summaryitd");
 }
 
 void carfac_setup(string inAudioFileName)
@@ -170,6 +177,7 @@ void carfac_setup(string inAudioFileName)
     net->addMarSystem(mng.create("AudioSink", "dest"));
   }
 
+
   MarSystem* carfac = mng.create("BinauralCARFAC", "carfac");
   net->addMarSystem(carfac);
   net->updControl("BinauralCARFAC/carfac/mrs_real/memory_factor", memory_factor_);
@@ -181,12 +189,30 @@ void carfac_setup(string inAudioFileName)
     net->updControl("AudioSource/src/mrs_natural/device", 3);
     net->updControl("AudioSource/src/mrs_bool/initAudio", true);
   } else {
-    net->updControl("AudioSink/dest/mrs_natural/device", 3);
+    net->updControl("AudioSink/dest/mrs_natural/device", 0);
     net->updControl("AudioSink/dest/mrs_bool/initAudio", true);
   }
 
   net->updControl("mrs_natural/inSamples", 512);
+}
 
+void update_summary_itd(mrs_realvec data)
+{
+  double datarows = data.getRows();
+  double datacols = data.getCols();
+
+  for (int row = 0; row < datarows; row++) {
+    summary_itd_[row][current_summary_pos_] = 0;
+    for (int col = 0; col < datacols; col++) {
+      summary_itd_[row][current_summary_pos_] += data(row,col);
+      // summary_itd_[row][current_summary_pos_] += data(row,col+(datacols/2.));
+    }
+  }
+
+  current_summary_pos_++;
+  if (current_summary_pos_ > summary_itd_width_) {
+    current_summary_pos_ = 0;
+  }
 
 }
 
@@ -201,10 +227,11 @@ void display(void)
     exit(0);
   }
 
+  update_summary_itd(data);
+
+
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  int width = 1000;
-  int height = 500;
   double side = 0.01;
 
   if (summaryopt_) {
@@ -238,7 +265,7 @@ void display(void)
     for (int col = 0; col < datacols; col++) {
       double color = data(row,col);
       double normalized_color = 1. - ((color - min) / (max - min));
-      double y = ((1. - (row / datarows) - 0.5)) * 1.8;
+      double y = (((1. - (row / datarows) - 0.5)) * 1.5) + 0.2;
       double x = ((col / datacols) - 0.5) * 1.8;
       glColor3f(normalized_color,normalized_color,normalized_color);
 
@@ -248,6 +275,45 @@ void display(void)
       glVertex3f(x-side, y-side,0);
       glVertex3f(x+side, y-side,0);
       glEnd();
+    }
+  }
+
+  // // Summary ITD
+
+  double littleside_x = 0.01;
+  double littleside_y = 0.02;
+  double summary_itd_max = -99999999.;
+  double summary_itd_min = 99999999;
+
+  for (unsigned int row = 0; row < summary_itd_.size(); row++) {
+    for (unsigned int col = 0; col < summary_itd_[0].size(); col++) {
+      double color = summary_itd_[row][col];
+      if (color > summary_itd_max) {
+        summary_itd_max = color;
+      }
+      if (color < summary_itd_min) {
+        summary_itd_min = color;
+      }
+    }
+  }
+
+  for (unsigned int row = 0; row < summary_itd_.size(); row++) {
+    for (unsigned int col = 0; col < summary_itd_[0].size(); col++) {
+      double color = summary_itd_[row][col];
+      double normalized_color = 1. - ((color - summary_itd_min) / (summary_itd_max - summary_itd_min));
+      // snessnet(TODO) - These parameters were all picked emperically
+      // to make the picture fit.
+      double y = (((1. - (row / datarows) - 0.5)) * 0.3) - 0.8;
+      double x = (((col / datacols) - 0.5) * 1.8) - 0.05;
+      glColor3f(normalized_color,normalized_color,normalized_color);
+
+      glBegin(GL_POLYGON);
+      glVertex3f(x+littleside_x, y+littleside_y,0);
+      glVertex3f(x-littleside_x, y+littleside_y,0);
+      glVertex3f(x-littleside_x, y-littleside_y,0);
+      glVertex3f(x+littleside_x, y-littleside_y,0);
+      glEnd();
+
     }
   }
 
@@ -266,41 +332,52 @@ void idle(void)
   glutPostRedisplay();
 }
 
+
 int
 main(int argc, const char **argv)
 {
-	MRSDIAG("carfac_binaural.cpp - main");
 
-	string progName = argv[0];
-	if (argc == 1)
-		printUsage(progName);
 
-	// handling of command-line options
-	initOptions();
-	cmd_options.readOptions(argc, argv);
-	loadOptions();
+  // Make data structures for summary_itd_
+  summary_itd_.resize(summary_itd_height_);
+  for (int i = 0; i < summary_itd_height_; i++) {
+    summary_itd_[i].resize(summary_itd_width_);
+  }
 
-	vector<string> files = cmd_options.getRemaining();
-	if (helpopt_)
-		printHelp(progName);
+  MRSDIAG("carfac_binaural.cpp - main");
 
-	if (usageopt_)
-		printUsage(progName);
+  string progName = argv[0];
+  if (argc == 1)
+    printUsage(progName);
 
-    carfac_setup(files[0]);
+  // handling of command-line options
+  initOptions();
+  cmd_options.readOptions(argc, argv);
+  loadOptions();
 
-    glutInit(&argc, (char**) argv);
+  vector<string> files = cmd_options.getRemaining();
+  if (helpopt_)
+    printHelp(progName);
 
-    glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitWindowSize(1000, 500);
+  if (usageopt_)
+    printUsage(progName);
 
-    (void)glutCreateWindow("GLUT Program");
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutIdleFunc(idle);
+  carfac_setup(files[0]);
 
-    glutMainLoop();
+  glutInit(&argc, (char**) argv);
 
-    exit(0);
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+  cout << "width_=" << width_ << endl;
+  cout << "height_=" << height_ << endl;
+  glutInitWindowSize(width_,height_+300);
+
+  (void)glutCreateWindow("GLUT Program");
+  glutDisplayFunc(display);
+  glutReshapeFunc(reshape);
+  glutIdleFunc(idle);
+
+  glutMainLoop();
+
+  exit(0);
 
 }

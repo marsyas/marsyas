@@ -81,6 +81,9 @@ class strobe_state_class {
   std::vector<double> lastdata;
   std::vector<double> thresholds;
 
+  std::vector<int> trigger_index;
+  std::vector<int> sai_index;
+
  public:
   strobe_state_class();
   ~strobe_state_class();
