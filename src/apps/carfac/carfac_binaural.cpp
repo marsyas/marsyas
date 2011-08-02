@@ -93,6 +93,8 @@ mrs_realvec threshold_data_;
 mrs_realvec strobes_data_;
 
 
+int visualize_channel_ = 50;
+
 void
 printUsage(string progName)
 {
@@ -328,7 +330,6 @@ void display(void)
   //
   // Threshold graphs
   //
-  int visualize_channel = 0;
   double nap_data_rows = nap_data_.getRows();
   double nap_data_cols = nap_data_.getCols();
 
@@ -342,7 +343,7 @@ void display(void)
   nap_max = -99999999.;
   nap_min = 99999999.;
   for (int col = 0; col < nap_data_cols; col++) {
-    double val = nap_data_(visualize_channel,col);
+    double val = nap_data_(visualize_channel_,col);
     if (val > nap_max) {
       nap_max = val;
     }
@@ -350,7 +351,7 @@ void display(void)
       nap_min = val;
     }
 
-    val = threshold_data_(visualize_channel,col);
+    val = threshold_data_(visualize_channel_,col);
     if (val > nap_max) {
       nap_max = val;
     }
@@ -364,7 +365,7 @@ void display(void)
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < nap_data_cols; col++) {
     double x = ((col / 100.) * 0.35) - 0.95;
-    double y = (((nap_data_(visualize_channel,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.9;
+    double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.9;
     glVertex3f(x,y,0);
   }
   glEnd();
@@ -377,7 +378,7 @@ void display(void)
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < threshold_data_cols; col++) {
     double x = ((col / 100.) * 0.35) - 0.95;
-    double y = (((threshold_data_(visualize_channel,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.9;
+    double y = (((threshold_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.9;
     glVertex3f(x,y,0);
   }
   glEnd();
@@ -388,7 +389,7 @@ void display(void)
   glBegin(GL_LINES);
   // cout << "strobes ";
   for (int col = 0; col < strobes_data_.getCols(); col++) {
-    if (strobes_data_(visualize_channel,col)) {
+    if (strobes_data_(visualize_channel_,col)) {
       // cout << col << " ";
     double x = ((col / 100.) * 0.35) - 0.95;
     glVertex3f(x,-0.9,0);
@@ -422,7 +423,19 @@ void keyPressed (unsigned char key, int x, int y) {
     nap_data_ = net->getctrl("BinauralCARFAC/carfac/mrs_realvec/output_nap")->to<mrs_realvec>();
     threshold_data_ = net->getctrl("BinauralCARFAC/carfac/mrs_realvec/output_threshold")->to<mrs_realvec>();
   }
-
+  if (key == '-' || key == '_') {
+    visualize_channel_--;
+    if (visualize_channel_ < 0) {
+      visualize_channel_ = 0;
+    }
+  }
+  if (key == '+' || key == '=') {
+    visualize_channel_++;
+    if (visualize_channel_ > 95) {
+      visualize_channel_ = 95;
+    }
+  }
+  cout << "visualize_channel=" << visualize_channel_ << endl;
 }
 
 
