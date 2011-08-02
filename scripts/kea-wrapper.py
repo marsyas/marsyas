@@ -3,6 +3,8 @@
 import sys
 import subprocess
 
+OK_PERCENT_DIFFERENCE = 2.0
+
 try:
     kea_binary = sys.argv[1]
     kea_args = sys.argv[2:-2]
@@ -33,7 +35,7 @@ def compare(logfilename, oldlogfilename):
     new_accuracy = read_accuracy(logfilename)
     old_accuracy = read_accuracy(oldlogfilename)
     # did out percentage accuracy drop?
-    if new_accuracy < old_accuracy:
+    if new_accuracy < (old_accuracy-OK_PERCENT_DIFFERENCE):
         return 1
     return 0
 
