@@ -111,7 +111,7 @@ operator<<(ostream& o, const Collection& l)
             o << "\t" << l.labelList_[i];
         o << endl;
     }
-    o << endl;
+    //o << endl;
     return o;
 }
 

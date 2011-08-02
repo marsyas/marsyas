@@ -1,6 +1,7 @@
 ## BASIC SETUP
 set(TEST_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/input/)
 set(TEST_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/output/)
+set(TEST_TEMPDIR ${CMAKE_CURRENT_BINARY_DIR})
 
 
 ## TESTING MACRO
@@ -38,21 +39,23 @@ regression_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
 
+# tiny bextract example
+add_test( basic-waves-extract-generate
+  ${CMAKE_COMMAND} -E chdir ${TEST_INPUT}/basic-waves/
+  bextract -fe -w ${TEST_TEMPDIR}/basic-waves.arff ${TEST_INPUT}/basic-waves/basic-waves.mf
+)
+add_test( basic-waves-classify-gs
+  ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves.arff -cl GS basic-waves-gs.txt ${TEST_OUTPUT}/basic-waves-gs.txt
+)
+add_test( basic-waves-classify-svm
+  ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves.arff -cl SVM basic-waves-svm.txt ${TEST_OUTPUT}/basic-waves-svm.txt
+)
+
 if (EXISTS ${TEST_MINI_GENRES_DIR})
-  # bextract stuff
   add_test( genre-extract-generate
     ${CMAKE_COMMAND} -E chdir ${TEST_MINI_GENRES_DIR}
-    bextract -fe -ds 50 -w mini-genres.arff mini-genres.mf
+    bextract -fe -ds 50 -w ${TEST_TEMPDIR}/mini-genres.arff mini-genres.mf
   )
-  add_test( genre-extract-retrieve
-    ${CMAKE_COMMAND} -E copy
-      ${TEST_MINI_GENRES_DIR}/mini-genres.arff mini-genres.arff
-  )
-  add_test( genre-extract-remove
-    ${CMAKE_COMMAND} -E remove -f
-      ${TEST_MINI_GENRES_DIR}/mini-genres.arff
-  )
-  # kea stuff
   add_test( genre-classify-gs
      ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w mini-genres.arff -cl GS mini-genres-gs.txt ${TEST_OUTPUT}/mini-genres-gs.txt
   )

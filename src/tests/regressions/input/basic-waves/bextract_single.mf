@@ -1,0 +1,5 @@
+sawtooth/sawtooth-440hz-0.8a-50ms.wav	sawtooth
+silence/silence-50ms.wav	silence
+sine/sine-440hz-0.8a-50ms.wav	sine
+square/square-440hz-0.8a-50ms.wav	square
+

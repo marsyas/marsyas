@@ -1,0 +1,24 @@
+Kea - Machine Learning in Marsyas ala Weka
+Mode = train_evaluate
+Training classifier using .arff file: basic-waves.arff
+Classifier type : SVM
+=== Non-Stratified cross-validation (10 folds) ===
+=== ClassificationReport ===
+
+Correctly Classified Instances		20	100 %
+Incorrectly Classified Instances	0	0 %
+Kappa statistic				1	
+Mean absolute error			0
+Root mean squared error			0
+Relative absolute error			0
+Root relative squared error		0
+Total Number of Instances		20
+
+=== Confusion Matrix ===
+
+	a	b	c	d	<-- classified as
+	5	0	0	0	| a = sawtooth
+	0	5	0	0	| b = silence
+	0	0	5	0	| c = sine
+	0	0	0	5	| d = square
+100% classified correctly (20/20)
