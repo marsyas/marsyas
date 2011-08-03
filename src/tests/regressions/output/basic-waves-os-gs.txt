@@ -1,24 +1,24 @@
 Kea - Machine Learning in Marsyas ala Weka
 Mode = train_evaluate
-Training classifier using .arff file: basic-waves.arff
+Training classifier using .arff file: basic-waves-os.arff
 Classifier type : GS
 === Non-Stratified cross-validation (10 folds) ===
 === ClassificationReport ===
 
 Correctly Classified Instances		0	0 %
-Incorrectly Classified Instances	36	100 %
+Incorrectly Classified Instances	24	100 %
 Kappa statistic				-0.333333	
 Mean absolute error			1
 Root mean squared error			1
 Relative absolute error			200
 Root relative squared error		200
-Total Number of Instances		36
+Total Number of Instances		24
 
 === Confusion Matrix ===
 
 	a	b	c	d	<-- classified as
-	0	0	0	9	| a = sawtooth
-	0	0	0	9	| b = silence
-	9	0	0	0	| c = sine
-	9	0	0	0	| d = square
-0% classified correctly (0/36)
+	0	0	0	6	| a = sawtooth
+	0	0	0	6	| b = silence
+	3	0	0	3	| c = sine
+	6	0	0	0	| d = square
+0% classified correctly (0/24)

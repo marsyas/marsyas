@@ -5,6 +5,8 @@ set(TEST_TEMPDIR ${CMAKE_CURRENT_BINARY_DIR})
 
 if (MARSYAS_MACOSX)
   set(COMMAND_LINE_LIBRARY_ENV DYLD_LIBRARY_PATH=${PROJECT_BINARY_DIR}/lib )
+else (MARSYAS_MACOSX)
+  set(COMMAND_LINE_LIBRARY_ENV "" )
 endif (MARSYAS_MACOSX)
 
 ## TESTING MACRO
@@ -42,14 +44,6 @@ regression_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
 
-# copied from ../unit_tests/CMakeLists.txt
-if (MARSYAS_STATIC)
-	# Cmake knows the location of the libraries it builds
-	# the search path to the dynamic lib will automatically be added
-	# maryas will result in  a "-lmarsyas" linker option.
-	set(MARSYAS_LIBRARIES marsyas)
-endif (MARSYAS_STATIC)
-
 # tiny bextract example
 add_test( basic-waves-extract-generate
   ${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
@@ -59,14 +53,28 @@ add_test( basic-waves-extract-generate
     -w ${TEST_TEMPDIR}/basic-waves.arff
     ${TEST_INPUT}/basic-waves/basic-waves.mf
 )
-
-
 add_test( basic-waves-classify-gs
   ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves.arff -cl GS basic-waves-gs.txt ${TEST_OUTPUT}/basic-waves-gs.txt
 )
 add_test( basic-waves-classify-svm
   ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves.arff -cl SVM basic-waves-svm.txt ${TEST_OUTPUT}/basic-waves-svm.txt
 )
+# bextract with -os
+add_test( basic-waves-os-extract-generate
+  ${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
+    ${TEST_INPUT}/basic-waves ${COMMAND_LINE_LIBRARY_ENV}
+    ${EXECUTABLE_OUTPUT_PATH}/bextract -fe
+    -m 2 -os
+    -w ${TEST_TEMPDIR}/basic-waves-os.arff
+    ${TEST_INPUT}/basic-waves/basic-waves.mf
+)
+add_test( basic-waves-os-classify-gs
+  ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves-os.arff -cl GS basic-waves-os-gs.txt ${TEST_OUTPUT}/basic-waves-os-gs.txt
+)
+add_test( basic-waves-os-classify-svm
+  ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves-os.arff -cl SVM basic-waves-os-svm.txt ${TEST_OUTPUT}/basic-waves-os-svm.txt
+)
+
 
 if (EXISTS ${TEST_MINI_GENRES_DIR})
   add_test( genre-extract-generate
