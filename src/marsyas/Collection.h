@@ -45,6 +45,7 @@ private:
   std::vector<std::string> labelNames_;
   std::string name_;
   bool hasLabels_;
+  bool store_labels_;
 	
 public:
   Collection();
@@ -69,6 +70,8 @@ public:
   std::string toLongString();
   void concatenate(std::vector<Collection> cls);
   void clear();
+  void store_labels(mrs_bool store);
+  mrs_real regression_label(mrs_natural cindex);
   
   marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const Collection&);
   marsyas_EXPORT friend std::istream& operator>>(std::istream&, Collection&);

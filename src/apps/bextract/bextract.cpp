@@ -70,6 +70,7 @@ mrs_bool lpcc_ = false;
 mrs_bool beat_ = false;
 
 mrs_bool only_stable_ = false;
+mrs_bool regression_ = false;
 
 // SAI/VQ mode
 mrs_bool saivq_mode_ = false;
@@ -439,6 +440,7 @@ printHelp(string progName)
   cerr << "-hp --hopsize      : analysis hop size in samples " << endl;
   cerr << "-t  --timeline     : flag 2nd input collection as timelines for the 1st collection"<<endl;
   cerr << "-os  --onlyStable  : only output 'stable' frames (silently omit the rest)"<<endl;
+  cerr << "-rg  --regression  : print regression labels instead of classification labels"<<endl;
   cerr << endl;
 
   cerr << "Available extractors: " << endl;
@@ -2323,6 +2325,18 @@ bextract_train_refactored(string pluginName,  string wekafname,
 			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/startStable");
 	}
   }
+  if (regression_) {
+	bextractNetwork->updControl("WekaSink/wsink/mrs_bool/regression", true);
+  	if (single_vector) {
+		bextractNetwork->updControl(
+			"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/regression",
+			true);
+	} else {
+		bextractNetwork->updControl(
+			"Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/regression",
+			true);
+	}
+  }
 
   if (!featExtract_)
   {
@@ -3058,6 +3072,7 @@ initOptions()
   cmd_options.addBoolOption("featExtract", "fe", false);
   cmd_options.addBoolOption("saivq", "saivq", false);
   cmd_options.addBoolOption("onlyStable", "os", false);
+  cmd_options.addBoolOption("Regression", "rg", false);
 }
 
 void
@@ -3109,6 +3124,7 @@ loadOptions()
   single_vector_ = cmd_options.getBoolOption("SingleVector");
 
   only_stable_ = cmd_options.getBoolOption("onlyStable");
+  regression_ = cmd_options.getBoolOption("Regression");
 
   // default feature set
   if ((mfcc_ == false) &&

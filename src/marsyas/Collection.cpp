@@ -51,6 +51,7 @@ Collection::Collection()
 {
     collectionList_.reserve(1024);
     hasLabels_ = false;
+    store_labels_ = true;
     // initialize random number generation.
     srand( time( NULL) );
 }
@@ -64,6 +65,13 @@ Collection::setName(mrs_string name)
 {
     name_ = name;
 }
+
+void 
+Collection::store_labels(mrs_bool store) 
+{
+    store_labels_ = store;
+}
+
 
 void 
 Collection::read(mrs_string filename)
@@ -161,16 +169,16 @@ void
 Collection::add(mrs_string entry, mrs_string label)
 {
 
-	
     collectionList_.push_back(entry);
     hasLabels_ = true;
     labelList_.push_back(label);
-	
-    if (find(labelNames_.begin(), labelNames_.end(), label) == labelNames_.end())
-        labelNames_.push_back(label);
 
-	
+    if (store_labels_) {
+        if (find(labelNames_.begin(), labelNames_.end(), label) == labelNames_.end()) {
+            labelNames_.push_back(label);
+        }
 	sort(labelNames_.begin(), labelNames_.end());
+    }
 
 }
 
@@ -239,6 +247,14 @@ Collection::labelNum(mrs_string label)
 	mrs_natural l = distance(labelNames_.begin(), it);
     return l ;
 	
+}
+mrs_real
+Collection::regression_label(mrs_natural cindex)
+{
+	if (hasLabels_) {
+		return (mrs_real) atof(labelList_[cindex].c_str());
+	}
+	return 0.0;
 }
 
 mrs_string 

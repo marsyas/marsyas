@@ -1,0 +1,8 @@
+# test for regressions.  The numbers are a vague indication of
+# "user perception of loudness".  Keep the 1 without a 1.0; we
+# should test reading integers as floats.
+silence/silence-100ms.wav	0.0
+sine/sine-440hz-0.8a-100ms.wav	0.5
+square/square-440hz-0.8a-100ms.wav	1
+sawtooth/sawtooth-440hz-0.8a-100ms.wav	4.0
+

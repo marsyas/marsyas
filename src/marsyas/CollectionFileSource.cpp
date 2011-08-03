@@ -110,6 +110,7 @@ void
 CollectionFileSource::getHeader(mrs_string filename)
 {
 	col_.clear();
+	col_.store_labels(!ctrl_regression_->isTrue());
 	col_.read(filename);
 	updControl("mrs_string/allfilenames", col_.toLongString());
 	updControl("mrs_natural/numFiles", (mrs_natural)col_.getSize());  
@@ -124,10 +125,17 @@ CollectionFileSource::getHeader(mrs_string filename)
 
 	if (col_.hasLabels())
 	{
-		ctrl_currentLabel_->setValue((mrs_real)col_.labelNum(col_.labelEntry(0)), NOUPDATE);
-		ctrl_previousLabel_->setValue((mrs_real)col_.labelNum(col_.labelEntry(0)), NOUPDATE);
-		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
-		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
+		if (ctrl_regression_->isTrue()) {
+			ctrl_currentLabel_->setValue(col_.regression_label(0), NOUPDATE);
+			ctrl_previousLabel_->setValue(col_.regression_label(0), NOUPDATE);
+			ctrl_labelNames_->setValue("", NOUPDATE);
+			ctrl_nLabels_->setValue(0, NOUPDATE);
+		} else {
+			ctrl_currentLabel_->setValue((mrs_real)col_.labelNum(col_.labelEntry(0)), NOUPDATE);
+			ctrl_previousLabel_->setValue((mrs_real)col_.labelNum(col_.labelEntry(0)), NOUPDATE);
+			ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
+			ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
+		}
 	}
 
 	
@@ -145,7 +153,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
 
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
-  
+ 
 	filename_ = getctrl("mrs_string/filename")->to<mrs_string>();    
 	pos_ = getctrl("mrs_natural/pos")->to<mrs_natural>();
   
@@ -177,8 +185,13 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
       
 		if (col_.hasLabels())
 		{
-			ctrl_currentLabel_->setValue((mrs_real)col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
-			ctrl_previousLabel_->setValue((mrs_real)col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())), NOUPDATE);
+			if (ctrl_regression_->isTrue()) {
+				ctrl_currentLabel_->setValue( col_.regression_label(cindex_), NOUPDATE);
+				ctrl_previousLabel_->setValue( col_.regression_label((cindex_-1) % col_.size()), NOUPDATE);
+			} else {
+				ctrl_currentLabel_->setValue((mrs_real)col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+				ctrl_previousLabel_->setValue((mrs_real)col_.labelNum(col_.labelEntry((cindex_-1)%col_.size())), NOUPDATE);
+			}
 		}
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
 		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
@@ -216,13 +229,18 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
       
 		if (col_.hasLabels())
 		{
-			setctrl("mrs_real/currentLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size()))));
-			ctrl_currentLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size()))), NOUPDATE);
+			if (ctrl_regression_->isTrue()) {
+				setctrl("mrs_real/currentLabel", col_.regression_label((cindex_+advance_) % col_.size()));
+				ctrl_currentLabel_->setValue( col_.regression_label((cindex_+advance_) % col_.size()), NOUPDATE);
+				setctrl("mrs_real/previousLabel", col_.regression_label((cindex_-1+advance_) % col_.size()));
+				ctrl_previousLabel_->setValue( col_.regression_label((cindex_-1+advance_) % col_.size()), NOUPDATE);
+			} else {
+				setctrl("mrs_real/currentLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size()))));
+				ctrl_currentLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry((cindex_+advance_) % col_.size()))), NOUPDATE);
 
-
-			setctrl("mrs_real/previousLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1+advance_) % col_.size()))));
-			ctrl_previousLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1+advance_) % col_.size()))), NOUPDATE);
-
+				setctrl("mrs_real/previousLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1+advance_) % col_.size()))));
+				ctrl_previousLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1+advance_) % col_.size()))), NOUPDATE);
+			}
 
 		}
       
@@ -268,13 +286,19 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		ctrl_previouslyPlaying_->setValue(col_.entry((cindex_-1) % col_.size()));
 		if (col_.hasLabels())
 		{
-	  
-			setctrl("mrs_real/currentLabel", (mrs_real) (col_.labelNum(col_.labelEntry(cindex_))));
-			ctrl_currentLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry(cindex_))), NOUPDATE);
+	  		if (ctrl_regression_->isTrue()) {
+				setctrl("mrs_real/currentLabel", col_.regression_label(cindex_));
+				ctrl_currentLabel_->setValue( col_.regression_label(cindex_), NOUPDATE);
 
+				setctrl("mrs_real/previousLabel", col_.regression_label((cindex_-1)% col_.size()));
+				ctrl_previousLabel_->setValue( col_.regression_label((cindex_-1)%col_.size()), NOUPDATE);
+			} else {
+				setctrl("mrs_real/currentLabel", (mrs_real) (col_.labelNum(col_.labelEntry(cindex_))));
+				ctrl_currentLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry(cindex_))), NOUPDATE);
 
-			setctrl("mrs_real/previousLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1)% col_.size()))));
-			ctrl_previousLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1)%col_.size()))), NOUPDATE);
+				setctrl("mrs_real/previousLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1)% col_.size()))));
+				ctrl_previousLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1)%col_.size()))), NOUPDATE);
+			}
 		}
       
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
@@ -346,12 +370,19 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 			
 				if (col_.hasLabels())
 				{
-					setctrl("mrs_real/currentLabel", (mrs_real) col_.labelNum(col_.labelEntry(cindex_)));
-					ctrl_currentLabel_->setValue( (mrs_real) col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+					if (ctrl_regression_->isTrue()) {
+						setctrl("mrs_real/currentLabel", col_.regression_label(cindex_));
+						ctrl_currentLabel_->setValue( col_.regression_label(cindex_), NOUPDATE);
+						setctrl("mrs_real/previousLabel", col_.regression_label((cindex_-1)%col_.size()));
+						ctrl_previousLabel_->setValue( col_.regression_label((cindex_-1) % col_.size()), NOUPDATE);
+					} else {
+						setctrl("mrs_real/currentLabel", (mrs_real) col_.labelNum(col_.labelEntry(cindex_)));
+						ctrl_currentLabel_->setValue( (mrs_real) col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
 				
 				
-					setctrl("mrs_real/previousLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1)%col_.size()))));
-					ctrl_previousLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1) % col_.size()))), NOUPDATE);
+						setctrl("mrs_real/previousLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1)%col_.size()))));
+						ctrl_previousLabel_->setValue( (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1) % col_.size()))), NOUPDATE);
+					}
 				}
 			
 				ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
