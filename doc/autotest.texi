@@ -6,7 +6,7 @@ we have added some testing mechanisms to Marsyas.
 
 @menu
 * Unit tests::                  
-* Regression tests::            
+* Black-box tests::            
 * Daily Auto-tester::           
 @end menu
 
@@ -157,28 +157,28 @@ make -j3
 
 
 
-@node Regression tests
-@section Regression tests
+@node Black-box tests
+@section Black-box tests
 
 These tests are deliberately simple and easy to understand.
 
 @menu
-* What does regression mean?::  
-* How do I write a regression test?::      
+* What does black-box mean?::  
+* How do I write a black-box test?::      
 * How do the tests work?::      
 * When a test fails...::        
 * Why should I care?::          
 @end menu
 
-@node What does regression mean?
-@subsection What does "regression" mean?
+@node What does black-box mean?
+@subsection What does "black-box" mean?
 
 @unnumberedsubsubsec Definition
 
-The term @qq{regression testing} seems to mean something different
+The term @qq{black-box testing} seems to mean something different
 to each project, website, and software engineering academic.  So I
-shall define what we mean by @qq{regression testing} in the
-context of Marsyas @qq{regression testing}:
+shall define what we mean by @qq{black-box testing} in the
+context of Marsyas @qq{black-box testing}:
 
 @quotation
 Does it work the way it used to?
@@ -213,46 +213,46 @@ result in a test @qq{failing}.  However, this is not a problem:
 see @ref{When a test fails...}
 
 
-@node How do I write a regression test?
-@subsection How do I write a regression test?
+@node How do I write a black-box test?
+@subsection How do I write a black-box test?
 
-Writing a regression test is very easy.  
+Writing a black-box test is very easy.  
 
 1) Run your program with the normal command line flags on an input
 audio file.  I would suggest to use one of the files in the
-marsyas/src/tests/regressions/input directory if possible.  To test
+marsyas/src/tests/black-box/input directory if possible.  To test
 the waveform generation functionality of sound2png I ran it with the
 following flags:
 
 @example
-sound2png -m waveform marsyas/src/tests/regressions/input/right.wav waveform.png
+sound2png -m waveform marsyas/src/tests/black-box/input/right.wav waveform.png
 @end example
 
-2) Copy the output file to the marsyas/src/tests/regressions/output
+2) Copy the output file to the marsyas/src/tests/black-box/output
 directory
 
 @example
-cp waveform.png marsyas/src/tests/regressions/output
+cp waveform.png marsyas/src/tests/black-box/output
 @end example
 
-3) Add a section to marsyas/src/tests/regressions/CMakeLists.txt for
+3) Add a section to marsyas/src/tests/black-box/CMakeLists.txt for
 your new test:
 
 @example
 set( ARGUMENTS
 	-m waveform
 )
-regression_explicit(sound2png_waveform right.wav waveform.png sound2png "$@{ARGUMENTS@}")
+black-box_explicit(sound2png_waveform right.wav waveform.png sound2png "$@{ARGUMENTS@}")
 @end example
 
 The first section ``ARGUMENTS'' are where you should put all the
-command line arguments for your program.  ``regression_explicit'' is a
+command line arguments for your program.  ``black-box_explicit'' is a
 test MACRO that we've written to help make it easy to write tests like
 this, and it takes 5 arguments:
 
 
 @example
-macro(regression_audio REG_NAME REG_INPUT REG_OUTPUT REG_COMMAND REG_ARGS)
+macro(black-box_audio REG_NAME REG_INPUT REG_OUTPUT REG_COMMAND REG_ARGS)
 @end example
 
 REG_NAME is the name of your test.  Each test must be named
@@ -274,7 +274,7 @@ REG_ARGS are the command line arguments to REG_COMMAND.
 
 @unnumberedsubsubsec List of tests
 
-Tests are defined in @file{src/tests/regression/CMakeLists.txt}.
+Tests are defined in @file{src/tests/black-box/CMakeLists.txt}.
 Each test is split into two steps: creating an audio file, and
 comparing that audio file to the previous (working) audio file.
 
@@ -321,7 +321,7 @@ you should update the answer file.  This is simply a matter of copying
 your new output file over the old answer file.
 
 The new output file is found in
-@file{BUILD_DIR/tests/regressions/}.  You may also create the file
+@file{BUILD_DIR/tests/black-box/}.  You may also create the file
 manually yourself; the exact command-line arguments used for each
 test can be seen with:
 
@@ -330,7 +330,7 @@ make test ARGS="-V"
 @end example
 
 Please commit the changed
-@file{src/tests/regressions/output/@emph{<FILE.au>}} in a separate
+@file{src/tests/black-box/output/@emph{<FILE.au>}} in a separate
 svn commit, and make sure the log message explains that your new
 output is superior to the old one.
 
@@ -339,7 +339,7 @@ output is superior to the old one.
 If you are planning on doing a lot of work on part of Marsyas
 (which would result in tests failing, but having no working output
 yet), tests may be commented out in the
-@file{src/tests/regressions/CMakeLists.txt} file.  Again, please
+@file{src/tests/black-box/CMakeLists.txt} file.  Again, please
 commit this change in a separate svn commit with a log message
 that explains this.
 
@@ -353,7 +353,7 @@ Think of these tests as a mutual assistance pact: you should care
 about not breaking other people's code, because other people will
 care about not breaking @emph{your} code.
 
-Of course, this requires that you create regression tests for your
+Of course, this requires that you create black-box tests for your
 own code.  Due to practicality, we can't check every single case
 of every single program.  So instead, create one or two tests
 which investigate as many things as possible.  For example,
@@ -361,7 +361,7 @@ instead of simply testing if sfplay can output a sound file, we
 test changing the gain, starting at a specific time, and only
 playing for a specific length.
 
-We recommend discussing potential regression tests on the
+We recommend discussing potential black-box tests on the
 developer mailist.
 
 @unnumberedsubsubsec New users

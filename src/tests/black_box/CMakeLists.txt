@@ -10,7 +10,7 @@ else (MARSYAS_MACOSX)
 endif (MARSYAS_MACOSX)
 
 ## TESTING MACRO
-macro( regression_audio REG_NAME REG_INPUT REG_OUTPUT REG_COMMAND REG_ARGS)
+macro( black_box_audio REG_NAME REG_INPUT REG_OUTPUT REG_COMMAND REG_ARGS)
 # otherwise the command-line args get all screwed up.
 separate_arguments(REG_ARGS)
 #  Can't get this to work.  :(
@@ -21,26 +21,26 @@ add_test( ${REG_NAME}-creation ${EXECUTABLE_OUTPUT_PATH}/${REG_COMMAND}
 	${REG_ARGS} ${TEST_INPUT}/${REG_INPUT} )
 add_test( ${REG_NAME}-verification ${EXECUTABLE_OUTPUT_PATH}/audioCompare
 	${TEST_OUTPUT}/${REG_OUTPUT} ${REG_OUTPUT} )
-endmacro(regression_audio)
+endmacro(black_box_audio)
 
 
 ## actual tests
 set( NEXT_COMMAND
 	-ws 100 -s 0.25 -l 0.1 -g 0.7 -f right-sfplay.au
 )
-regression_audio( sfplay right.wav right-sfplay.au sfplay "${NEXT_COMMAND}")
+black_box_audio( sfplay right.wav right-sfplay.au sfplay "${NEXT_COMMAND}")
 
 
 set( NEXT_COMMAND
 	-q -p 1.5 -s 50 -g 0.9 -ob -f right-phasevocoder.au
 )
-regression_audio (phasevocoder right.wav right-phasevocoder.au
+black_box_audio (phasevocoder right.wav right-phasevocoder.au
 	phasevocoder "${NEXT_COMMAND}")
 
 
 set( NEXT_COMMAND
 )
-regression_audio (peakClustering nearhou.wav nearhouSep.wav
+black_box_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
 

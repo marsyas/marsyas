@@ -335,7 +335,7 @@ Windows.
 
 @subsection Testing
 
-Marsyas contains some unit tests and regression tests.  They do
+Marsyas contains some unit tests and black-box tests.  They do
 not test a great deal of Marsyas, but running them is still
 recommended.  On Unix, simply run @code{make test}.  On MSVC on
 Windows, build the @code{RUN-TESTS} project.
@@ -1026,7 +1026,7 @@ Useful datasets:
 @item
 @uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
 marsyas-coffee}:
-data set used for large regression tests in Marsyas.  (NOW
+data set used for large black-box tests in Marsyas.  (NOW
 DEFUNCT, MIGHT POSSIBLY BE USED AGAIN LATER)
 
 @item
@@ -1078,7 +1078,7 @@ compile and run it.
 
 @item @b{src/tests/unit_tests/} tests for individual MarSystems.
 
-@item @b{src/tests/regressions/} tests for apps.
+@item @b{src/tests/black-box/} tests for apps.
 
 @item @b{doc/} contains the source for the user manual (which you
 are currently reading) and developer manual.
