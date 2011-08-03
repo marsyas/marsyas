@@ -9,11 +9,11 @@ do
   fi
 done
 
-cat *.mf > basic-waves.mf
+cat *.mf > collection.mf
 
 for d in *.mf
 do
-  if [ $d != "basic-waves.mf" ]
+  if [ $d != "collection.mf" ]
   then
     rm $d
   fi
