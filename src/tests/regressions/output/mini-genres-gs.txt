@@ -5,21 +5,21 @@ Classifier type : GS
 === Non-Stratified cross-validation (10 folds) ===
 === ClassificationReport ===
 
-Correctly Classified Instances		773	59.7834 %
-Incorrectly Classified Instances	520	40.2166 %
-Kappa statistic				0.49735	
-Mean absolute error			0.402166
-Root mean squared error			0.634165
-Relative absolute error			80.4331
-Root relative squared error		126.833
+Correctly Classified Instances		759	58.7007 %
+Incorrectly Classified Instances	534	41.2993 %
+Kappa statistic				0.483822	
+Mean absolute error			0.412993
+Root mean squared error			0.642645
+Relative absolute error			82.5986
+Root relative squared error		128.529
 Total Number of Instances		1293
 
 === Confusion Matrix ===
 
 	a	b	c	d	e	<-- classified as
-	143	114	0	2	0	| a = classical
-	15	204	0	37	3	| b = jazz
-	0	7	156	95	0	| c = metal
-	2	43	2	210	1	| d = pop
-	1	32	0	166	60	| e = rock
-59% classified correctly (773/1293)
+	133	124	0	2	0	| a = classical
+	12	200	0	42	5	| b = jazz
+	0	6	149	103	0	| c = metal
+	0	38	0	219	1	| d = pop
+	1	33	0	167	58	| e = rock
+58% classified correctly (759/1293)

@@ -6,7 +6,7 @@ set(TEST_TEMPDIR ${CMAKE_CURRENT_BINARY_DIR})
 if (MARSYAS_MACOSX)
   set(COMMAND_LINE_LIBRARY_ENV DYLD_LIBRARY_PATH=${PROJECT_BINARY_DIR}/lib )
 else (MARSYAS_MACOSX)
-  set(COMMAND_LINE_LIBRARY_ENV "" )
+  set(COMMAND_LINE_LIBRARY_ENV "")
 endif (MARSYAS_MACOSX)
 
 ## TESTING MACRO
@@ -44,51 +44,48 @@ regression_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
 
-# tiny bextract example
-add_test( basic-waves-extract-generate
-  ${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
-    ${TEST_INPUT}/basic-waves ${COMMAND_LINE_LIBRARY_ENV}
-    ${EXECUTABLE_OUTPUT_PATH}/bextract -fe
-    -m 0
-    -w ${TEST_TEMPDIR}/basic-waves.arff
-    ${TEST_INPUT}/basic-waves/basic-waves.mf
-)
-add_test( basic-waves-classify-gs
-  ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves.arff -cl GS basic-waves-gs.txt ${TEST_OUTPUT}/basic-waves-gs.txt
-)
-add_test( basic-waves-classify-svm
-  ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves.arff -cl SVM basic-waves-svm.txt ${TEST_OUTPUT}/basic-waves-svm.txt
-)
-# bextract with -os
-add_test( basic-waves-os-extract-generate
-  ${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
-    ${TEST_INPUT}/basic-waves ${COMMAND_LINE_LIBRARY_ENV}
-    ${EXECUTABLE_OUTPUT_PATH}/bextract -fe
-    -m 2 -os
-    -w ${TEST_TEMPDIR}/basic-waves-os.arff
-    ${TEST_INPUT}/basic-waves/basic-waves.mf
-)
-add_test( basic-waves-os-classify-gs
-  ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves-os.arff -cl GS basic-waves-os-gs.txt ${TEST_OUTPUT}/basic-waves-os-gs.txt
-)
-add_test( basic-waves-os-classify-svm
-  ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves-os.arff -cl SVM basic-waves-os-svm.txt ${TEST_OUTPUT}/basic-waves-os-svm.txt
-)
+macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
 
+add_test( ${REG_NAME}-bextract
+	${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
+		${DIR}
+		${COMMAND_LINE_LIBRARY_ENV}
+		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
+		${EXTRA_BEXTRACT}
+		-w ${TEST_TEMPDIR}/${REG_NAME}.arff
+		${MF_INPUT})
+# we don't need the TEST_TEMPDIR for the kea commands
+add_test( ${REG_NAME}-classify-gs
+	${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py
+		${EXECUTABLE_OUTPUT_PATH}/kea
+		-w ${REG_NAME}.arff -cl GS
+		${REG_NAME}-gs.txt
+		${TEST_OUTPUT}/${REG_NAME}-gs.txt
+)
+add_test( ${REG_NAME}-classify-svm
+	${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py
+		${EXECUTABLE_OUTPUT_PATH}/kea
+		-w ${REG_NAME}.arff -cl SVM
+		${REG_NAME}-svm.txt
+		${TEST_OUTPUT}/${REG_NAME}-svm.txt
+)
+endmacro(bextract_kea_test)
+
+
+### bextract + kea tests
+bextract_kea_test( basic-waves
+  ${TEST_INPUT}/basic-waves basic-waves.mf
+  "-m 0"
+)
+bextract_kea_test( basic-waves-os
+  ${TEST_INPUT}/basic-waves basic-waves.mf
+  "-m 0 -os"
+)
 
 if (EXISTS ${TEST_MINI_GENRES_DIR})
-  add_test( genre-extract-generate
-    ${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
-    ${TEST_MINI_GENRES_DIR} ${COMMAND_LINE_LIBRARY_ENV}
-    ${EXECUTABLE_OUTPUT_PATH}/bextract -fe
-    -ds 50
-    -w ${TEST_TEMPDIR}/mini-genres.arff mini-genres.mf
-  )
-  add_test( genre-classify-gs
-     ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w mini-genres.arff -cl GS mini-genres-gs.txt ${TEST_OUTPUT}/mini-genres-gs.txt
-  )
-  add_test( genre-classify-svm
-     ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w mini-genres.arff -cl SVM mini-genres-svm.txt ${TEST_OUTPUT}/mini-genres-svm.txt
+  bextract_kea_test( mini-genres
+    ${TEST_MINI_GENRES_DIR} mini-genres.mf
+    "-ds 50"
   )
 endif (EXISTS ${TEST_MINI_GENRES_DIR})
 

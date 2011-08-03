@@ -5,21 +5,21 @@ Classifier type : SVM
 === Non-Stratified cross-validation (10 folds) ===
 === ClassificationReport ===
 
-Correctly Classified Instances		1122	86.7749 %
-Incorrectly Classified Instances	171	13.2251 %
-Kappa statistic				0.834686	
-Mean absolute error			0.132251
-Root mean squared error			0.363663
-Relative absolute error			26.4501
-Root relative squared error		72.7325
+Correctly Classified Instances		1134	87.703 %
+Incorrectly Classified Instances	159	12.297 %
+Kappa statistic				0.846287	
+Mean absolute error			0.12297
+Root mean squared error			0.350671
+Relative absolute error			24.594
+Root relative squared error		70.1341
 Total Number of Instances		1293
 
 === Confusion Matrix ===
 
 	a	b	c	d	e	<-- classified as
-	235	21	0	2	1	| a = classical
-	26	212	0	8	13	| b = jazz
-	0	0	249	9	0	| c = metal
-	7	17	6	213	15	| d = pop
-	2	22	2	20	213	| e = rock
-86% classified correctly (1122/1293)
+	238	19	0	2	0	| a = classical
+	25	217	0	4	13	| b = jazz
+	0	0	248	10	0	| c = metal
+	8	10	8	219	13	| d = pop
+	2	27	5	13	212	| e = rock
+87% classified correctly (1134/1293)

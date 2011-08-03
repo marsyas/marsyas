@@ -18,7 +18,7 @@ Total Number of Instances		24
 
 	a	b	c	d	<-- classified as
 	0	0	0	6	| a = sawtooth
-	0	0	0	6	| b = silence
+	1	0	0	5	| b = silence
 	3	0	0	3	| c = sine
 	6	0	0	0	| d = square
 0% classified correctly (0/24)
