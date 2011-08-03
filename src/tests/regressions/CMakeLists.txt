@@ -1,8 +1,11 @@
 ## BASIC SETUP
-set(TEST_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/input/)
-set(TEST_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/output/)
+set(TEST_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/input)
+set(TEST_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/output)
 set(TEST_TEMPDIR ${CMAKE_CURRENT_BINARY_DIR})
 
+if (MARSYAS_MACOSX)
+  set(COMMAND_LINE_LIBRARY_ENV DYLD_LIBRARY_PATH=${PROJECT_BINARY_DIR}/lib )
+endif (MARSYAS_MACOSX)
 
 ## TESTING MACRO
 macro( regression_audio REG_NAME REG_INPUT REG_OUTPUT REG_COMMAND REG_ARGS)
@@ -39,11 +42,24 @@ regression_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
 
+# copied from ../unit_tests/CMakeLists.txt
+if (MARSYAS_STATIC)
+	# Cmake knows the location of the libraries it builds
+	# the search path to the dynamic lib will automatically be added
+	# maryas will result in  a "-lmarsyas" linker option.
+	set(MARSYAS_LIBRARIES marsyas)
+endif (MARSYAS_STATIC)
+
 # tiny bextract example
 add_test( basic-waves-extract-generate
-  ${CMAKE_COMMAND} -E chdir ${TEST_INPUT}/basic-waves/
-  bextract -fe -w ${TEST_TEMPDIR}/basic-waves.arff ${TEST_INPUT}/basic-waves/basic-waves.mf
+  ${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
+    ${TEST_INPUT}/basic-waves ${COMMAND_LINE_LIBRARY_ENV}
+    ${EXECUTABLE_OUTPUT_PATH}/bextract -fe
+    -w ${TEST_TEMPDIR}/basic-waves.arff
+    ${TEST_INPUT}/basic-waves/basic-waves.mf
 )
+
+
 add_test( basic-waves-classify-gs
   ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w basic-waves.arff -cl GS basic-waves-gs.txt ${TEST_OUTPUT}/basic-waves-gs.txt
 )
@@ -53,8 +69,11 @@ add_test( basic-waves-classify-svm
 
 if (EXISTS ${TEST_MINI_GENRES_DIR})
   add_test( genre-extract-generate
-    ${CMAKE_COMMAND} -E chdir ${TEST_MINI_GENRES_DIR}
-    bextract -fe -ds 50 -w ${TEST_TEMPDIR}/mini-genres.arff mini-genres.mf
+    ${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
+    ${TEST_MINI_GENRES_DIR} ${COMMAND_LINE_LIBRARY_ENV}
+    ${EXECUTABLE_OUTPUT_PATH}/bextract -fe
+    -ds 50
+    -w ${TEST_TEMPDIR}/mini-genres.arff mini-genres.mf
   )
   add_test( genre-classify-gs
      ${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py ${EXECUTABLE_OUTPUT_PATH}/kea -w mini-genres.arff -cl GS mini-genres-gs.txt ${TEST_OUTPUT}/mini-genres-gs.txt
