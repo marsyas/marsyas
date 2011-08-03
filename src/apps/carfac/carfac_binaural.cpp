@@ -94,6 +94,9 @@ mrs_realvec strobes_data_;
 
 
 int visualize_channel_ = 50;
+int current_time_;
+int last_time_;
+int iteration = 0;
 
 void
 printUsage(string progName)
@@ -182,6 +185,8 @@ void carfac_setup(string inAudioFileName)
     net->addMarSystem(mng.create("AudioSink", "dest"));
   }
 
+  net->addMarSystem(mng.create("Gain", "gain"));
+
   MarSystem* carfac = mng.create("BinauralCARFAC", "carfac");
   net->addMarSystem(carfac);
   net->updControl("BinauralCARFAC/carfac/mrs_real/memory_factor", memory_factor_);
@@ -229,6 +234,8 @@ void display(void)
   net->tick();
   mrs_realvec data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
+  mrs_realvec waveform_data = net->getctrl("Gain/gain/mrs_realvec/processedData")->to<mrs_realvec>();
+
   // Stop at the end of the input soundfile
   if ((!audioopt_) && (!net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())) {
     exit(0);
@@ -268,13 +275,27 @@ void display(void)
     }
   }
 
+  last_time_ = current_time_;
+  current_time_ = glutGet(GLUT_ELAPSED_TIME);
+  double fps = 1.0 / ((current_time_ - last_time_) / 1000.);
+
+  if (iteration % 10 == 0) {
+    cout << "fps=" << int(fps) << endl;
+  }
+  iteration++;
+
   for (int row = 0; row < datarows; row++) {
     for (int col = 0; col < datacols; col++) {
       double color = data(row,col);
       double normalized_color = 1. - ((color - min) / (max - min));
       double y = (((1. - (row / datarows) - 0.5)) * 1.1) + 0.4;
-      double x = ((col / datacols) - 0.5) * 1.1;
-      glColor3f(normalized_color,normalized_color,normalized_color);
+      double x = ((col / datacols) - 0.5) * 1.8;
+
+      if (col < datacols / 2) {
+        glColor3f(normalized_color,normalized_color/1.5,normalized_color/1.5);
+      } else {
+        glColor3f(normalized_color/1.5,normalized_color,normalized_color/1.5);
+      }
 
       glBegin(GL_POLYGON);
       glVertex3f(x+side, y+side,0);
@@ -284,6 +305,28 @@ void display(void)
       glEnd();
     }
   }
+
+  //
+  // Waveform data
+  //
+  glColor3f(1.0,0.5,0.5);
+  glBegin(GL_LINE_STRIP);
+  for (int col = 0; col < waveform_data.getCols(); col++) {
+    double x = ((col / 100.) * 0.37) - 0.95;
+    double y = (waveform_data(0,col) / 10.0) - 0.25;
+    glVertex3f(x,y,0);
+  }
+  glEnd();
+
+  glColor3f(0.5,1.0,0.5);
+  glBegin(GL_LINE_STRIP);
+  for (int col = 0; col < waveform_data.getCols(); col++) {
+    double x = ((col / 100.) * 0.37) - 0.95;
+    double y = (waveform_data(1,col) / 10.0) - 0.25;
+    glVertex3f(x,y,0);
+  }
+  glEnd();
+
 
   //
   // Summary ITD
@@ -311,7 +354,7 @@ void display(void)
       double normalized_color = 1. - ((color - summary_itd_min) / (summary_itd_max - summary_itd_min));
       // snessnet(TODO) - These parameters were all picked emperically
       // to make the picture fit.
-      double y = (((1. - (row / datarows) - 0.5)) * 0.3) - 0.4;
+      double y = (((1. - (row / datarows) - 0.5)) * 0.3) - 0.5;
       double x = (((col / datacols) - 0.5) * 1.9) + 0.;
       glColor3f(normalized_color,normalized_color,normalized_color);
 
@@ -365,7 +408,7 @@ void display(void)
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < nap_data_cols; col++) {
     double x = ((col / 100.) * 0.35) - 0.95;
-    double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.9;
+    double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.90;
     glVertex3f(x,y,0);
   }
   glEnd();
@@ -374,11 +417,11 @@ void display(void)
   double threshold_data_rows = threshold_data_.getRows();
   double threshold_data_cols = threshold_data_.getCols();
 
-  glColor3f(0.9,0.35,0.35);
+  glColor3f(0.95,0.35,0.35);
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < threshold_data_cols; col++) {
-    double x = ((col / 100.) * 0.35) - 0.95;
-    double y = (((threshold_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.9;
+    double x = ((col / 100.) * 0.35) - 0.955;
+    double y = (((threshold_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.90;
     glVertex3f(x,y,0);
   }
   glEnd();
@@ -392,8 +435,8 @@ void display(void)
     if (strobes_data_(visualize_channel_,col)) {
       // cout << col << " ";
     double x = ((col / 100.) * 0.35) - 0.95;
-    glVertex3f(x,-0.9,0);
-    glVertex3f(x,-0.8,0);
+    glVertex3f(x,-0.90,0);
+    glVertex3f(x,-0.80,0);
     }
   }
   // cout << endl;
@@ -443,7 +486,6 @@ int
 main(int argc, const char **argv)
 {
 
-
   // Make data structures for summary_itd_
   summary_itd_.resize(summary_itd_height_);
   for (int i = 0; i < summary_itd_height_; i++) {
@@ -482,6 +524,9 @@ main(int argc, const char **argv)
   glutReshapeFunc(reshape);
   glutIdleFunc(idle);
   glutKeyboardFunc(keyPressed);
+
+  current_time_ = glutGet(GLUT_ELAPSED_TIME);
+  last_time_ = current_time_;
 
   glutMainLoop();
 
