@@ -43,32 +43,34 @@ set( NEXT_COMMAND
 black_box_audio (peakClustering nearhou.wav nearhouSep.wav
 	peakClustering "${NEXT_COMMAND}")
 
-
-macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
-
-add_test( ${REG_NAME}-bextract
+macro(bextract_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
+  add_test( ${REG_NAME}-bextract
 	${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
 		${DIR}
 		${COMMAND_LINE_LIBRARY_ENV}
 		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
 		${EXTRA_BEXTRACT}
 		-w ${TEST_TEMPDIR}/${REG_NAME}.arff
-		${MF_INPUT})
-# we don't need the TEST_TEMPDIR for the kea commands
-add_test( ${REG_NAME}-classify-gs
+		${MF_INPUT} )
+endmacro(bextract_test)
+
+macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
+  bextract_test(${REG_NAME} ${DIR} ${MF_INPUT} ${EXTRA_BEXTRACT} )
+  # we don't need the TEST_TEMPDIR for the kea commands
+  add_test( ${REG_NAME}-classify-gs
 	${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py
 		${EXECUTABLE_OUTPUT_PATH}/kea
 		-w ${REG_NAME}.arff -cl GS
 		${REG_NAME}-gs.txt
 		${TEST_OUTPUT}/${REG_NAME}-gs.txt
-)
-add_test( ${REG_NAME}-classify-svm
+  )
+  add_test( ${REG_NAME}-classify-svm
 	${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py
 		${EXECUTABLE_OUTPUT_PATH}/kea
 		-w ${REG_NAME}.arff -cl SVM
 		${REG_NAME}-svm.txt
 		${TEST_OUTPUT}/${REG_NAME}-svm.txt
-)
+  )
 endmacro(bextract_kea_test)
 
 
@@ -80,6 +82,10 @@ bextract_kea_test( basic-waves
 bextract_kea_test( basic-waves-os
   ${TEST_INPUT}/basic-waves basic-waves.mf
   "-m 0 -os"
+)
+bextract_test( basic-waves-regression
+  ${TEST_INPUT}/basic-waves basic-waves.mf
+  "-m 0 -rg"
 )
 
 if (EXISTS ${TEST_MINI_GENRES_DIR})
