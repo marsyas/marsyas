@@ -40,6 +40,7 @@ sendreport() {
 	if [ `which mail` ]
 	then
 		mail -s "$subject" gtzan@cs.uvic.ca < $report
+		mail -s "$subject" graham@percival-music.ca < $report
 		mail -s "$subject" sness@sness.net < $report
 #		mail -s "$subject" lgmartins@users.sourceforge.net < $report
 	fi
