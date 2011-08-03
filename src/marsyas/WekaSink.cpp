@@ -290,7 +290,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	// TODO: why is count a static and not a class attribute?
 	static int count = 0;
 
-	mrs_natural label = 0;
+	mrs_natural label_class = 0;
 	
 
 	for (t = 0; t < inSamples_; t++)
@@ -303,7 +303,8 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	      prev_playing_ = ctrl_currentlyPlaying_->to<mrs_string>();
 	    }
 	  
-	  label = (mrs_natural)in(inObservations_ - 1, t);
+	  // round value, in case of weird floating-point effects
+	  label_class = (mrs_natural) (in(inObservations_ - 1, t) + 0.5);
 	  
 	  // Output all but last feature values.
 	  // TODO: this should be refactored together with the injection stuff from
@@ -311,7 +312,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	  for (o=0; o < inObservations_; o++)
 	    {
 	      out(o,t) = in(o,t);
-	      if (label >= 0)
+	      if (label_class >= 0)
 		{
 		  if (o < inObservations_ - 1)
 		    {
@@ -344,20 +345,20 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	    {
 	    if (print_line)
 	    {
-	      if (label >= 0)
+	        if (!ctrl_regression_->isTrue())
 		{
-		  if (!ctrl_regression_->isTrue())
+	            if (label_class >= 0)
 		    {
 		      //  if (!notPrint)
 		      //{
-		      if (label >= (mrs_natural)labelNames_.size())
+		      if (label_class >= (mrs_natural)labelNames_.size())
 			{
 			  MRSWARN("WekaSink: label number is too big");
 			  oss << "non-label";
 			}
 		      else
 			{
-			  oss << labelNames_[label];
+			  oss << labelNames_[label_class];
 			}
 		      (*mos_) << oss.str();
 		      (*mos_) << endl;
@@ -367,11 +368,11 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		  //  cout << "skipping instance" << endl;
 		  //}
 		  //}
-		  else
-		    {
-		      (*mos_) << in(inObservations_ - 1, t);
-		      (*mos_) << endl;
-		    }
+		}
+	    	else
+	    	{
+	     	  (*mos_) << in(inObservations_ - 1, t);
+	    	  (*mos_) << endl;
 		}
 	    }
 	  }

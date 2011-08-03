@@ -36,10 +36,10 @@ TimelineLabeler::TimelineLabeler(mrs_string name):MarSystem("TimelineLabeler", n
 TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
 {
 	ctrl_labelFiles_ = getctrl("mrs_string/labelFiles");
-	ctrl_currentLabelFile_ = getctrl("mrs_natural/currentLabelFile");
+	ctrl_currentLabelFile_ = getctrl("mrs_real/currentLabelFile");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
-	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
-	ctrl_previousLabel_ = getctrl("mrs_natural/previousLabel");
+	ctrl_currentLabel_ = getctrl("mrs_real/currentLabel");
+	ctrl_previousLabel_ = getctrl("mrs_real/previousLabel");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_selectLabel_ = getctrl("mrs_string/selectLabel");
 	ctrl_advance_ = getctrl("mrs_natural/advance");
@@ -69,7 +69,7 @@ TimelineLabeler::addControls()
 	addctrl("mrs_string/labelFiles", ",", ctrl_labelFiles_);
 	ctrl_labelFiles_->setState(true);
 
-	addctrl("mrs_natural/currentLabelFile", 0, ctrl_currentLabelFile_);
+	addctrl("mrs_real/currentLabelFile", 0.0, ctrl_currentLabelFile_);
 	ctrl_currentLabelFile_->setState(true);
 
 	addctrl("mrs_string/selectLabel", "", ctrl_selectLabel_);
@@ -81,8 +81,8 @@ TimelineLabeler::addControls()
 	addctrl("mrs_bool/playRegionsOnly", true, ctrl_playRegionsOnly_);
 
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
-	addctrl("mrs_natural/currentLabel", -1, ctrl_currentLabel_);
-	addctrl("mrs_natural/previousLabel", -1, ctrl_previousLabel_);
+	addctrl("mrs_real/currentLabel", -1.0, ctrl_currentLabel_);
+	addctrl("mrs_real/previousLabel", -1.0, ctrl_previousLabel_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 }
 
@@ -115,7 +115,8 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 	//load currentLabelFile into the internal timeline memory (if not already loaded)
 	//////////////////////////////////////////////////////////////////////////////////
 	mrs_bool newTimeline = false;
-	mrs_natural curLabelFile = ctrl_currentLabelFile_->to<mrs_natural>();
+	// round
+	mrs_natural curLabelFile = ctrl_currentLabelFile_->to<mrs_real>() + 0.5;
 
 
 	
@@ -149,7 +150,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 			}
 			else //some problem occurred when reading the timeline file...
 			{
-				MRSWARN("TimelineLabeler::myUpdate() - error reading label file " << labelFilesVec_[ctrl_currentLabelFile_->to<mrs_natural>()]);
+				MRSWARN("TimelineLabeler::myUpdate() - error reading label file " << labelFilesVec_[(mrs_natural) (ctrl_currentLabelFile_->to<mrs_real>()+0.5)]);
 				numClasses_ = 0;
 				ctrl_nLabels_->setValue(numClasses_, NOUPDATE);
 				ctrl_labelNames_->setValue(",", NOUPDATE);
@@ -214,7 +215,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
  	if(timeline_.numRegions() == 0)
  	{
 		MRSWARN("TimelineLabeler::myProcess() - no regions/labels exist in loaded timeline: " << timeline_.filename());
-		ctrl_currentLabel_->setValue(-1); //no labels defined...
+		ctrl_currentLabel_->setValue(-1.0); //no labels defined...
  		return;
  	}
 
@@ -247,7 +248,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 			 ctrl_currentLabel_->setValue(timeline_.regionClass(curRegion_));
 		}
 		else
-			ctrl_currentLabel_->setValue(-1);
+			ctrl_currentLabel_->setValue(-1.0);
 		
 		foundNextRegion_ = false;
 	}
@@ -301,7 +302,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 					ctrl_pos_->setValue(regionStart);
 				}
 				//i.e. outside a region: signal that no label is defined for this audio frame
-				ctrl_currentLabel_->setValue(-1); 
+				ctrl_currentLabel_->setValue(-1.0); 
 			}
 		}
 		else //no more regions in this timeline...
@@ -316,7 +317,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 				//fast forward to next region (at next tick)
 				ctrl_advance_->setValue(1);
 			}
-			ctrl_currentLabel_->setValue(-1); //i.e. no region/label defined for this audio frame
+			ctrl_currentLabel_->setValue(-1.0); //i.e. no region/label defined for this audio frame
 		}
 	}
 }

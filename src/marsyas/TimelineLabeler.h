@@ -42,12 +42,12 @@ namespace Marsyas
 	depending on the currentLabelFile control (see below). It should have a format like, 
 	for e.g.: "audio1.tml,audio2.tml,audio3.tml,", which is what is obtained when using a CollectionFileSource
 	to read a audio1.wav TAB audio1.tml collection file (just link this control to its mrs_string/labelNames control).
-	- \b mrs_natural/currentLabelFile [w] : selects which one of the labelFiles (see above) should be selected. Usually
+	- \b mrs_real/currentLabelFile [w] : selects which one of the labelFiles (see above) should be selected. Usually
 	this control is to be linked to the currentLabel control of a SoundFileSource.
 	- \b mrs_string/labelNames [r] : list of classes in the currently loaded timeline, in the format "label1,label2,label3,".
 	- \b mrs_natural/nLabels [r] : number of distict labels in the labelNames (see above) controls (for the example given above,
 	it would have a value of 3).
-	- \b mrs_natural/currentLabel [r] : indicates the label of the current audio stream position (as a numeric index to the
+	- \b mrs_real/currentLabel [r] : indicates the label of the current audio stream position (as a numeric index to the
 	label in labelNames control - see above).
 */
 

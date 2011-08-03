@@ -75,8 +75,9 @@ SoundFileSource::SoundFileSource(const SoundFileSource& a):MarSystem(a)
 	ctrl_filename_ = getctrl("mrs_string/filename");
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
 	ctrl_previouslyPlaying_ = getctrl("mrs_string/previouslyPlaying");
-	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
-	ctrl_previousLabel_ = getctrl("mrs_natural/previousLabel");
+	ctrl_regression_ = getctrl("mrs_bool/regression");
+	ctrl_currentLabel_ = getctrl("mrs_real/currentLabel");
+	ctrl_previousLabel_ = getctrl("mrs_real/previousLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
@@ -133,8 +134,9 @@ SoundFileSource::addControls()
 
 	addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_);
 	addctrl("mrs_string/previouslyPlaying", "daufile", ctrl_previouslyPlaying_);
-	addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
-	addctrl("mrs_natural/previousLabel", 0, ctrl_previousLabel_);
+	addctrl("mrs_bool/regression", false, ctrl_regression_);
+	addctrl("mrs_real/currentLabel", 0.0, ctrl_currentLabel_);
+	addctrl("mrs_real/previousLabel", 0.0, ctrl_previousLabel_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 	ctrl_mute_ = getctrl("mrs_bool/mute");
@@ -168,8 +170,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 			filename_ = ctrl_filename_->to<mrs_string>();
 			ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
 			ctrl_previouslyPlaying_->setValue(src_->getctrl("mrs_string/previouslyPlaying"));
-			ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
-			ctrl_previousLabel_->setValue(src_->getctrl("mrs_natural/previousLabel"));
+			ctrl_currentLabel_->setValue(src_->getctrl("mrs_real/currentLabel"));
+			ctrl_previousLabel_->setValue(src_->getctrl("mrs_real/previousLabel"));
 
 			ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
 			ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
@@ -243,6 +245,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		//pass configuration to audio source object and update it
 		src_->ctrl_inSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 		src_->ctrl_inObservations_->setValue(ctrl_inObservations_, NOUPDATE);
+		src_->ctrl_regression_->setValue(ctrl_regression_, NOUPDATE);
 		src_->setctrl("mrs_real/repetitions", getctrl("mrs_real/repetitions"));
 		src_->setctrl("mrs_real/duration", getctrl("mrs_real/duration"));
 		src_->setctrl("mrs_natural/advance", getctrl("mrs_natural/advance"));
@@ -276,8 +279,8 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		setctrl("mrs_natural/cindex", src_->getctrl("mrs_natural/cindex"));
 		setctrl("mrs_string/currentlyPlaying", src_->getctrl("mrs_string/currentlyPlaying"));
 		setctrl("mrs_string/previouslyPlaying", src_->getctrl("mrs_string/previouslyPlaying"));
-		setctrl("mrs_natural/currentLabel", src_->getctrl("mrs_natural/currentLabel"));
-		setctrl("mrs_natural/previousLabel", src_->getctrl("mrs_natural/previousLabel"));
+		setctrl("mrs_real/currentLabel", src_->getctrl("mrs_real/currentLabel"));
+		setctrl("mrs_real/previousLabel", src_->getctrl("mrs_real/previousLabel"));
 		setctrl("mrs_natural/nLabels", src_->getctrl("mrs_natural/nLabels"));
 		setctrl("mrs_string/labelNames", src_->getctrl("mrs_string/labelNames"));
 		setctrl("mrs_string/allfilenames", src_->getctrl("mrs_string/allfilenames"));
@@ -450,8 +453,8 @@ SoundFileSource::myProcess(realvec& in, realvec &out)
       ctrl_currentlyPlaying_->setValue(src_->getctrl("mrs_string/currentlyPlaying"));
       ctrl_previouslyPlaying_->setValue(src_->getctrl("mrs_string/previouslyPlaying"));
 
-      ctrl_currentLabel_->setValue(src_->getctrl("mrs_natural/currentLabel"));
-      ctrl_previousLabel_->setValue(src_->getctrl("mrs_natural/previousLabel"));
+      ctrl_currentLabel_->setValue(src_->getctrl("mrs_real/currentLabel"));
+      ctrl_previousLabel_->setValue(src_->getctrl("mrs_real/previousLabel"));
       ctrl_labelNames_->setValue(src_->getctrl("mrs_string/labelNames"));
       ctrl_nLabels_->setValue(src_->getctrl("mrs_natural/nLabels"));
       

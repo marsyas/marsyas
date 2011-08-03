@@ -39,8 +39,9 @@ WavFileSource::WavFileSource(const WavFileSource& a): AbsSoundFileSource(a)
   ctrl_pos_ = getctrl("mrs_natural/pos");
   ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
   ctrl_previouslyPlaying_ = getctrl("mrs_string/previouslyPlaying");
-  ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
-  ctrl_previousLabel_ = getctrl("mrs_natural/previousLabel");
+  ctrl_regression_ = getctrl("mrs_bool/regression");
+  ctrl_currentLabel_ = getctrl("mrs_real/currentLabel");
+  ctrl_previousLabel_ = getctrl("mrs_real/previousLabel");
   ctrl_labelNames_ = getctrl("mrs_string/labelNames");
   ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
   ctrl_currentHasData_ = getctrl("mrs_bool/currentHasData");
@@ -104,8 +105,9 @@ WavFileSource::addControls()
   addctrl("mrs_string/currentlyPlaying", "daufile", ctrl_currentlyPlaying_); //"dwavfile" [?]
   addctrl("mrs_string/previouslyPlaying", "daufile", ctrl_previouslyPlaying_); //"dwavfile" [?]
 
-  addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
-  addctrl("mrs_natural/previousLabel", 0, ctrl_previousLabel_);
+  addctrl("mrs_bool/regression", false, ctrl_regression_);
+  addctrl("mrs_real/currentLabel", 0.0, ctrl_currentLabel_);
+  addctrl("mrs_real/previousLabel", 0.0, ctrl_previousLabel_);
   addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
   addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 
@@ -259,8 +261,8 @@ WavFileSource::getHeader(mrs_string filename)
 	  setctrl("mrs_natural/size", size_);
 	  ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
 	  ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
-	  ctrl_currentLabel_->setValue(0, NOUPDATE);
-	  ctrl_previousLabel_->setValue(0, NOUPDATE);
+	  ctrl_currentLabel_->setValue(0.0, NOUPDATE);
+	  ctrl_previousLabel_->setValue(0.0, NOUPDATE);
 
 	  ctrl_labelNames_->setValue(",", NOUPDATE);
 	  ctrl_nLabels_->setValue(0, NOUPDATE);

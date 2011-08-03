@@ -50,6 +50,7 @@ namespace Marsyas
 
 			MarControlPtr ctrl_currentlyPlaying_;
 			MarControlPtr ctrl_previouslyPlaying_;
+			MarControlPtr ctrl_regression_;
 			MarControlPtr ctrl_currentLabel_;
 			MarControlPtr ctrl_previousLabel_;
 			MarControlPtr ctrl_nLabels_;

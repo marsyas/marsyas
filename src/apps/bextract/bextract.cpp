@@ -2204,8 +2204,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  {
 	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
 					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); // added Fanout ...
-	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
-					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); // added Fanout ...
+	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_real/currentLabelFile",
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel"); // added Fanout ...
 	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
 					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); // added Fanout ...
 	    bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance",
@@ -2213,8 +2213,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  }
 	else
 	  {
-	    bextractNetwork->linkControl("mrs_natural/currentLabel",
-					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/previousLabel");
+	    bextractNetwork->linkControl("mrs_real/currentLabel",
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel");
 	    bextractNetwork->linkControl("mrs_natural/nLabels",
 					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels");
 	    bextractNetwork->linkControl("mrs_string/labelNames",
@@ -2259,8 +2259,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	if(tline)
 	{
-	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
-								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel");
+	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_real/currentLabelFile",
+								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
 								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames");
 	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
@@ -2268,8 +2268,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  bextractNetwork->linkControl("Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance",
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance");
 
-	  bextractNetwork->linkControl("mrs_natural/currentLabel",
-								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
+	  bextractNetwork->linkControl("mrs_real/currentLabel",
+								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("mrs_string/labelNames",
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
 	  bextractNetwork->linkControl("mrs_natural/nLabels",
@@ -2277,8 +2277,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	}
 	else
 	{
-	  bextractNetwork->linkControl("mrs_natural/currentLabel",
-								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel");
+	  bextractNetwork->linkControl("mrs_real/currentLabel",
+								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("mrs_natural/nLabels",
 								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels");
 	  bextractNetwork->linkControl("mrs_string/labelNames",
@@ -2334,8 +2334,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "mrs_string/filename");
   }
 
-  bextractNetwork->linkControl("Annotator/annotator/mrs_natural/label",
-							   "mrs_natural/currentLabel");
+  bextractNetwork->linkControl("Annotator/annotator/mrs_real/label",
+							   "mrs_real/currentLabel");
 
   // links with WekaSink
   if (wekafname != EMPTYSTRING)
@@ -2459,7 +2459,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 	  previouslyPlaying = ctrl_previouslyPlaying->to<mrs_string>();
 
-	  label = bextractNetwork->getctrl("mrs_natural/currentLabel")->to<mrs_natural>();
+	  // round value
+	  label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
 
 	  seen = false;
 
@@ -2476,7 +2477,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		if (wekafname != EMPTYSTRING)
 		  bextractNetwork->updControl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
 		bextractNetwork->updControl("mrs_natural/advance", advance);
-		label = bextractNetwork->getctrl("mrs_natural/currentLabel")->to<mrs_natural>();
+	        // round value
+		label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
 
 		fvec = processedFeatures[currentlyPlaying];
 		fvec(fvec.getSize()-1) = label;
@@ -3445,15 +3447,15 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	{
 	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
 								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames"); // added Fanout ...
-	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel"); // added Fanout ...
+	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_real/currentLabelFile",
+								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel"); // added Fanout ...
 	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
 								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); // added Fanout ...
 	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance",
 								   "Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance"); // added Fanout ...
 
-	  bextractNetwork->linkControl("mrs_natural/currentLabel",
-								   "Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
+	  bextractNetwork->linkControl("mrs_real/currentLabel",
+								   "Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("mrs_string/labelNames",
 								   "Accumulator/acc/Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
 	  bextractNetwork->linkControl("mrs_natural/nLabels",
@@ -3461,8 +3463,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	}
 	else
 	{
-	  bextractNetwork->linkControl("mrs_natural/currentLabel",
-								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel");
+	  bextractNetwork->linkControl("mrs_real/currentLabel",
+								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("mrs_natural/nLabels",
 								   "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels");
 	  bextractNetwork->linkControl("mrs_string/labelNames",
@@ -3492,8 +3494,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
 	if(tline)
 	{
-	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabelFile",
-								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel");
+	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_real/currentLabelFile",
+								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
 								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/labelNames");
 	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/pos",
@@ -3501,8 +3503,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	  bextractNetwork->linkControl("Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/advance",
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/advance");
 
-	  bextractNetwork->linkControl("mrs_natural/currentLabel",
-								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/currentLabel");
+	  bextractNetwork->linkControl("mrs_real/currentLabel",
+								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("mrs_string/labelNames",
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
 	  bextractNetwork->linkControl("mrs_natural/nLabels",
@@ -3510,8 +3512,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	}
 	else
 	{
-	  bextractNetwork->linkControl("mrs_natural/currentLabel",
-								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/currentLabel");
+	  bextractNetwork->linkControl("mrs_real/currentLabel",
+								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("mrs_natural/nLabels",
 								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels");
 	  bextractNetwork->linkControl("mrs_string/labelNames",
@@ -3559,8 +3561,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 								 "mrs_string/filename");
   }
 
-  bextractNetwork->linkControl("Annotator/annotator/mrs_natural/label",
-							   "mrs_natural/currentLabel");
+  bextractNetwork->linkControl("Annotator/annotator/mrs_real/label",
+							   "mrs_real/currentLabel");
 
   // links with WekaSink
   if (wekafname != EMPTYSTRING)
@@ -3676,7 +3678,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	if (single_vector)
 	{
 	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
-	  label = bextractNetwork->getctrl("mrs_natural/currentLabel")->to<mrs_natural>();
+	  // round
+	  label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_natural>() + 0.5;
 	  seen = false;
 
 

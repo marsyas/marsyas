@@ -62,7 +62,9 @@ OggFileSource::OggFileSource(const OggFileSource& a):AbsSoundFileSource(a)
 // 	dbg_ = a.dbg_;
 // 	mute_ = a.mute_;
 	ctrl_currentlyPlaying_ = getctrl("mrs_string/currentlyPlaying");
-	ctrl_currentLabel_ = getctrl("mrs_natural/currentLabel");
+	ctrl_regression_ = getctrl("mrs_bool/regression");
+	ctrl_currentLabel_ = getctrl("mrs_real/currentLabel");
+	ctrl_previousLabel_ = getctrl("mrs_real/previousLabel");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 }
@@ -111,7 +113,9 @@ OggFileSource::addControls()
   // addctrl("mrs_string/currentlyPlaying", "daufile");
 
   addctrl("mrs_string/currentlyPlaying", "doggfile", ctrl_currentlyPlaying_);
-  addctrl("mrs_natural/currentLabel", 0, ctrl_currentLabel_);
+  addctrl("mrs_bool/regression", false, ctrl_regression_);
+  addctrl("mrs_real/currentLabel", 0.0, ctrl_currentLabel_);
+  addctrl("mrs_real/previousLabel", 0.0, ctrl_previousLabel_);
   addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
   addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 }

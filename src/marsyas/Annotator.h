@@ -38,7 +38,9 @@ namespace Marsyas
    given label is applied to all samples of the time slice.
 
    Controls:
-   - \b mrs_natural/label [w]: natural number representation of the label.
+   - \b mrs_real/label [w]: number representation of the label;
+     classification (i.e. integers) are stored as a mrs_real and
+     rounded later.
    - \b mrs_bool/labelInFront [w]: toggle to put the label in front instead of
    at the end of the observations (which is the default).
    - \b mrs_string/annotationName [w]: the name to use for the annotation.
@@ -58,20 +60,15 @@ class Annotator: public MarSystem
 		
 		/// MarControl for setting the annotation label.
 		MarControlPtr ctrl_label_;
-		MarControlPtr ctrl_rlabel_;
 		
 		/// MarControl toggle for putting the annotation label in front of the observations.
 		MarControlPtr ctrl_labelInFront_;
-		MarControlPtr ctrl_mode_;
 
 		
 		
 		
 		/// Cache for storing the value of the labelInFront control.
 		mrs_bool labelInFront_;
-		
-		mrs_string mode_;
-		
 		
 		/// MarControl for setting the annotation name.
 		MarControlPtr ctrl_annotationName_;
