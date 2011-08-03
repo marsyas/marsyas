@@ -55,6 +55,7 @@ add_test( basic-waves-extract-generate
   ${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
     ${TEST_INPUT}/basic-waves ${COMMAND_LINE_LIBRARY_ENV}
     ${EXECUTABLE_OUTPUT_PATH}/bextract -fe
+    -m 0
     -w ${TEST_TEMPDIR}/basic-waves.arff
     ${TEST_INPUT}/basic-waves/basic-waves.mf
 )
