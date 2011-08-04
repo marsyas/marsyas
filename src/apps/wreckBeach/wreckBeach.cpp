@@ -1,0 +1,188 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+
+
+// wreckBeach is a container executable for various simple
+// functions/applications that typically test drive
+// a single MarSystem or type of processing.
+
+// It is a place for the often-times ugly, unobscured source code.
+// No pretence of polite society is here!  Be bold, be
+// adventurous.  Let it all hang out.  Have no shame!
+
+
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <cstdio>
+#include <cstdlib>
+#include <string>
+#include <iomanip>
+
+
+#include "MarSystemManager.h"
+#include "CommandLineOptions.h"
+
+using namespace std;
+using namespace Marsyas;
+
+CommandLineOptions cmd_options;
+string toy_with;
+int helpopt;
+int usageopt;
+int verboseopt;
+
+void
+printUsage(string progName)
+{
+	MRSDIAG("wreckBeach - printUsage");
+	cerr << "Usage : " << progName << " -t toy_with file1 [file2]" << endl;
+	cerr << endl;
+	exit(1);
+}
+
+void
+printHelp(string progName)
+{
+	MRSDIAG("wreckBeach.cpp - printHelp");
+	cerr << "wreckBeach, MARSYAS, Copyright Graham Percival " << endl;
+	cerr << "--------------------------------------------" << endl;
+	cerr << "Various tests " << endl;
+	cerr << endl;
+	cerr << "Usage : " << progName << " -t toy_with file1 file2 file3" << endl;
+	cerr << endl;
+	cerr << "Supported toy_with:" << endl;
+	cerr << "harmonics      : play with HarmonicStrength" << endl;
+	exit(1);
+}
+
+void
+initOptions()
+{
+	cmd_options.addBoolOption("help", "h", false);
+	cmd_options.addBoolOption("usage", "u", false);
+	cmd_options.addBoolOption("verbose", "v", false);
+	cmd_options.addStringOption("toy_with", "t", EMPTYSTRING);
+}
+
+void
+loadOptions()
+{
+	helpopt = cmd_options.getBoolOption("help");
+	usageopt = cmd_options.getBoolOption("usage");
+	verboseopt = cmd_options.getBoolOption("verbose");
+	toy_with = cmd_options.getStringOption("toy_with");
+}
+
+
+// ********************** start toys **********
+void
+toy_with_harmonicStrength(mrs_string sfname)
+{
+	MarSystemManager mng;
+
+	MarSystem *net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("ShiftInput", "si"));
+	net->addMarSystem(mng.create("Windowing", "win"));
+	net->addMarSystem(mng.create("Spectrum", "spec"));
+	net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
+	net->addMarSystem(mng.create("HarmonicStrength", "harm"));
+	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
+	net->updControl("mrs_natural/inSamples", 1024);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", 1024);
+	net->updControl("Windowing/win/mrs_string/type", "Hanning");
+
+	mrs_natural num_harmonics = 4;
+	realvec harmonics(num_harmonics);
+	cout<<"---------------------------"<<endl;
+	cout<<"Relative harmonic strengths"<<endl;
+	for (mrs_natural h = 0; h<num_harmonics; ++h)
+	{
+		cout<<h<<"\t";
+		harmonics(h) = h+1;
+	}
+	cout<<endl;
+
+	net->updControl("HarmonicStrength/harm/mrs_realvec/harmonics", harmonics);
+	net->updControl("HarmonicStrength/harm/mrs_natural/harmonicsSize", num_harmonics);
+	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
+	{
+		net->tick();
+		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		for (mrs_natural h = 0; h<num_harmonics; ++h)
+		{
+			printf("%.4f\t", v(h));
+		}
+		cout<<endl;
+	}
+}
+
+
+// ********************** end toys **********
+
+int
+main(int argc, const char **argv)
+{
+	string progName = argv[0];
+	if (argc == 1)
+		printUsage(progName);
+
+	// handling of command-line options
+	initOptions();
+	cmd_options.readOptions(argc, argv);
+	loadOptions();
+
+	vector<string> soundfiles = cmd_options.getRemaining();
+
+	string fname0 = EMPTYSTRING;
+	string fname1 = EMPTYSTRING;
+	string fname2 = EMPTYSTRING;
+	string fname3 = EMPTYSTRING;
+	string fname4 = EMPTYSTRING;
+	string fname5 = EMPTYSTRING;
+
+	if (soundfiles.size() > 0)
+		fname0 = soundfiles[0];
+	if (soundfiles.size() > 1)
+		fname1 = soundfiles[1];
+	if (soundfiles.size() > 2)
+		fname2 = soundfiles[2];
+	if (soundfiles.size() > 3)
+		fname3 = soundfiles[3];
+	if (soundfiles.size() > 4)
+		fname4 = soundfiles[4];
+	if (soundfiles.size() > 5)
+		fname5 = soundfiles[5];
+
+	cout << "Marsyas toy_with name = " << toy_with << endl;
+	cout << "fname0 = " << fname0 << endl;
+	cout << "fname1 = " << fname1 << endl;
+
+
+	if (toy_with == "harmonics")
+		toy_with_harmonicStrength(fname0);
+	else
+	{
+		cout << "Unsupported toy_with " << endl;
+		printHelp(progName);
+	}
+
+}
