@@ -39,6 +39,12 @@ namespace Marsyas
           (long story, it's a workaround for some weird memory thing)
 */
 
+typedef struct HarmonicPeakInfo {
+	mrs_natural bin_num;
+	mrs_real magnitude;
+};
+
+
 class marsyas_EXPORT HarmonicStrength: public MarSystem
 {
 private:
@@ -53,6 +59,9 @@ private:
 	MarControlPtr ctrl_base_frequency_;
 	MarControlPtr ctrl_harmonics_;
 	MarControlPtr ctrl_harmonicsSize_;
+
+	HarmonicPeakInfo find_peak(mrs_real central_bin, mrs_realvec& in,
+		mrs_natural t);
 
 public:
 	/// HarmonicStrength constructor.

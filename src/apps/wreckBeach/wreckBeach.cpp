@@ -110,14 +110,19 @@ toy_with_harmonicStrength(mrs_string sfname)
 	net->updControl("ShiftInput/si/mrs_natural/winSize", 1024);
 	net->updControl("Windowing/win/mrs_string/type", "Hanning");
 
-	mrs_natural num_harmonics = 4;
+	mrs_natural num_harmonics = 8;
 	realvec harmonics(num_harmonics);
 	cout<<"---------------------------"<<endl;
 	cout<<"Relative harmonic strengths"<<endl;
 	for (mrs_natural h = 0; h<num_harmonics; ++h)
 	{
-		cout<<h<<"\t";
-		harmonics(h) = h+1;
+		if (h==0) {
+			cout<<"0.5"<<"\t";
+			harmonics(0) = 0.5;
+		} else {
+			cout<<h<<"\t";
+			harmonics(h) = h+1;
+		}
 	}
 	cout<<endl;
 
@@ -129,7 +134,7 @@ toy_with_harmonicStrength(mrs_string sfname)
 		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		for (mrs_natural h = 0; h<num_harmonics; ++h)
 		{
-			printf("%.4f\t", v(h));
+			printf("%.2f\t", v(h));
 		}
 		cout<<endl;
 	}
