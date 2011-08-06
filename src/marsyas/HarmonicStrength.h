@@ -39,7 +39,7 @@ namespace Marsyas
           (long story, it's a workaround for some weird memory thing)
 */
 
-typedef struct HarmonicPeakInfo {
+struct HarmonicPeakInfo {
 	mrs_natural bin_num;
 	mrs_real magnitude;
 };

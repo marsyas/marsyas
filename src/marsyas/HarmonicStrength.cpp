@@ -16,7 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common.h" 
+#include "common.h"
 #include "HarmonicStrength.h"
 
 using std::ostringstream;
@@ -63,6 +63,14 @@ HarmonicStrength::myUpdate(MarControlPtr sender)
 	/// Use the default MarSystem setup with equal input/output stream format.
 	MarSystem::myUpdate(sender);
 	ctrl_onObservations_->setValue(ctrl_harmonicsSize_->to<mrs_natural>(), NOUPDATE);
+
+	mrs_natural num_harmonics = ctrl_harmonicsSize_->to<mrs_natural>();
+	//features names
+	ostringstream oss;
+	for (mrs_natural i = 0; i < num_harmonics; ++i) {
+		oss << "HarmonicStrength_" << i+1 << ",";
+    }
+	setctrl("mrs_string/onObsNames", oss.str());
 }
 
 HarmonicPeakInfo
@@ -98,11 +106,11 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 
 	mrs_natural num_harmonics = ctrl_harmonicsSize_->to<mrs_natural>();
 	mrs_real base_freq = ctrl_base_frequency_->to<mrs_real>();
-        MarControlAccessor acc(ctrl_harmonics_);
-        mrs_realvec& harmonics = acc.to<mrs_realvec>();
+	MarControlAccessor acc(ctrl_harmonics_);
+	mrs_realvec& harmonics = acc.to<mrs_realvec>();
 	mrs_real srate = ctrl_israte_->to<mrs_real>();
 	mrs_real freq2bin = srate / inObservations_ / 4.0;
-	
+
 	mrs_real bin = base_freq * freq2bin;
 
 	// Iterate over the samples (remember, FFT is vertical)
