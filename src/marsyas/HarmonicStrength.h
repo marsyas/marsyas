@@ -37,6 +37,10 @@ namespace Marsyas
 	  Need not be integer multiples (e.g. 0.5, 1.5, is ok)
 	- \b mrs_realvec/harmonicsSize [w] : how many harmonics
           (long story, it's a workaround for some weird memory thing)
+	- \b mrs_real/harmonicsWidth [w] : percent of frequency to
+      search for a peak (i.e. a 1000hz harmonic with a
+      harmonicsWidth of 0.1 would look at all bins from 900 to
+      1100 for the peak.
 */
 
 struct HarmonicPeakInfo {
@@ -59,9 +63,10 @@ private:
 	MarControlPtr ctrl_base_frequency_;
 	MarControlPtr ctrl_harmonics_;
 	MarControlPtr ctrl_harmonicsSize_;
+	MarControlPtr ctrl_harmonicsWidth_;
 
 	HarmonicPeakInfo find_peak(mrs_real central_bin, mrs_realvec& in,
-		mrs_natural t);
+		mrs_natural t, mrs_real radius);
 
 public:
 	/// HarmonicStrength constructor.

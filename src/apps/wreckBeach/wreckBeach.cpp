@@ -128,6 +128,7 @@ toy_with_harmonicStrength(mrs_string sfname)
 
 	net->updControl("HarmonicStrength/harm/mrs_realvec/harmonics", harmonics);
 	net->updControl("HarmonicStrength/harm/mrs_natural/harmonicsSize", num_harmonics);
+	net->updControl("HarmonicStrength/harm/mrs_real/harmonicsWidth", 0.05);
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		net->tick();

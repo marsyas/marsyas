@@ -33,6 +33,7 @@ HarmonicStrength::HarmonicStrength(const HarmonicStrength& a) : MarSystem(a)
 	ctrl_base_frequency_ = getctrl("mrs_real/base_frequency");
 	ctrl_harmonics_ = getctrl("mrs_realvec/harmonics");
 	ctrl_harmonicsSize_ = getctrl("mrs_natural/harmonicsSize");
+	ctrl_harmonicsWidth_ = getctrl("mrs_real/harmonicsWidth");
 }
 
 
@@ -53,6 +54,7 @@ HarmonicStrength::addControls()
 	addctrl("mrs_realvec/harmonics", realvec(), ctrl_harmonics_);
 	addctrl("mrs_natural/harmonicsSize", 1, ctrl_harmonicsSize_);
 	setctrlState("mrs_natural/harmonicsSize", true);
+	addctrl("mrs_real/harmonicsWidth", 0.01, ctrl_harmonicsWidth_);
 }
 
 void
@@ -74,11 +76,11 @@ HarmonicStrength::myUpdate(MarControlPtr sender)
 }
 
 HarmonicPeakInfo
-HarmonicStrength::find_peak(mrs_real central_bin, mrs_realvec& in, mrs_natural t)
+HarmonicStrength::find_peak(mrs_real central_bin, mrs_realvec& in,
+mrs_natural t, mrs_real radius)
 {
 	HarmonicPeakInfo info;
 
-	mrs_natural radius = 2;
 	// find peak in 2*radius
 	// in real-world signals, the harmonic isn't always a
 	// literal multiple of the base frequency.  We allow a bit
@@ -109,6 +111,7 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 	MarControlAccessor acc(ctrl_harmonics_);
 	mrs_realvec& harmonics = acc.to<mrs_realvec>();
 	mrs_real srate = ctrl_israte_->to<mrs_real>();
+	mrs_real width = ctrl_harmonicsWidth_->to<mrs_real>();
 	mrs_real freq2bin = srate / inObservations_ / 4.0;
 
 	mrs_real bin = base_freq * freq2bin;
@@ -116,14 +119,16 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 	// Iterate over the samples (remember, FFT is vertical)
 	for (t = 0; t < inSamples_; t++)
 	{
-		HarmonicPeakInfo info = find_peak(bin, in, t);
+        mrs_real radius = base_freq * width * freq2bin;
+		HarmonicPeakInfo info = find_peak(bin, in, t, radius);
 		mrs_real base_strength = info.magnitude;
 //		std::cout<<"\tfreq\tbin\tbin_num\tstrength"<<std::endl;
 		for (h = 0; h < num_harmonics; h++)
 		{
 			mrs_real freq = harmonics(h) * base_freq;
 			bin = freq * freq2bin;
-			info = find_peak(bin, in, t);
+            radius = bin*width;
+			info = find_peak(bin, in, t, radius);
 			mrs_real strength = info.magnitude;
 
 //			std::cout<<"\t"<<freq<<"\t"<<bin<<"\t"<<info.bin_num<<"\t"<<strength<<std::endl;
