@@ -43,6 +43,8 @@ namespace Marsyas
 
 */
 
+class CF_class;
+
 class filter_state_class {
  public:
   std::vector<double> z1_memory;
@@ -53,9 +55,22 @@ class filter_state_class {
   std::vector<double> zY_memory;
   std::vector<double> detect_accum;
 
+  std::vector<double> filterstep_inputs;
+  std::vector<double> filterstep_zA;
+  std::vector<double> filterstep_zB;
+  std::vector<double> filterstep_zY;
+  std::vector<double> filterstep_r;
+  std::vector<double> filterstep_z1;
+  std::vector<double> filterstep_z2;
+  // std::vector<double> filterstep_detect;
+
+  bool init;
+
  public:
   filter_state_class();
   ~filter_state_class();
+
+  std::vector<double> FilterStep(CF_class &CF, double input_waves, std::vector<double> &detect);
 
   friend std::ostream& operator<<(std::ostream&, const filter_state_class&);
   friend std::ostream& operator<<(std::ostream&, std::vector<std::vector<double> > a);
@@ -142,8 +157,6 @@ class AGC_coeffs_class {
  public:
   AGC_coeffs_class();
   ~AGC_coeffs_class();
-
-  AGC_coeffs_class& operator=(const CF_AGC_params_class& a);
 };
 
 
@@ -187,8 +200,8 @@ class CF_class {
   ~CF_class();
 
   void CARFAC_Design(double fs = -1, double ERB_break_freq = -1, double ERB_q = -1);
-  void CARFAC_DesignFilters(CF_filter_params_class params, double fs, std::vector<double> pole_freqs);
-  void CARFAC_DesignAGC(double fs);
+  void CARFAC_DesignFilters();
+  void CARFAC_DesignAGC();
   void CARFAC_Init(int n_mics = -1);
 
   double ERB_Hz(double CF_Hz, double ERB_break_freq = -1, double ERB_Q = -1);

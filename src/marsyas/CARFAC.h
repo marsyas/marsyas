@@ -25,22 +25,14 @@
 namespace Marsyas
 {
 /**
-   \ingroup Processing
+   \ingroup Processing Basic Certified
+   \brief Multiply input realvec with a fixed value.
 
-   \brief This function designs the CARFAC (Cascade of Asymmetric
-   Resonators with Fast-Acting Compression); that is, it take bundles
-   of parameters and computes all the filter coefficients needed to
-   run it.
-
-   The original code for CARFAC was designed and written by Dick Lyon
-   (dicklyon@google.com) in MATLAB.  Steven Ness (sness@sness.net)
-   ported this code to C++.  I've written this to be as standard C++
-   as possible so that we can easily port this filter to other
-   frameworks like AIM-C.
+   Multiply all the values of the input realvec with
+   mrs_real/gain and put them in the output vector.
 
    Controls:
-   - \b mrs_natural/num_channels [w] : The number of output channels.
-
+   - \b mrs_real/gain [w] : adjust the gain multiplier.
 
 */
 
@@ -55,11 +47,11 @@ class CARFAC: public MarSystem
   MarControlPtr ctrl_printcoeffs_;
   MarControlPtr ctrl_printstate_;
 
-  std::vector<double> CARFAC_FilterStep(double input_waves, int mic);
+  // std::vector<double> CARFAC_FilterStep(double input_waves, int mic);
 
-  void CARFAC_AGCStep(std::vector<std::vector<double> > &avg_detects);
-
-  CF_class CF;
+  void DoubleExponentialSmoothing(std::vector<double> &data, double polez1, double polez2, int n_ch);
+  void CARFAC_AGCStep(const std::vector<std::vector<double> > &avg_detects);
+  // std::vector<double> filter(std::vector<double> a, std::vector<double>b, std::vector<double> x, std::vector<double>& state);
 
  public:
   CARFAC(std::string name);
@@ -74,35 +66,35 @@ class CARFAC: public MarSystem
   // Vectors that are reused in the filter, FilterStep and AGCStep
   // functions.  Create them just once and reuse them.
   //
-  std::vector<double> filter1_a;
-  std::vector<double> filter1_b;
-  std::vector<double> filter1_x;
-  std::vector<double> filter1_Z_state;
-  std::vector<double> filter1_junk;
+  // std::vector<double> filter1_a;
+  // std::vector<double> filter1_b;
+  // std::vector<double> filter1_x;
+  // std::vector<double> filter1_Z_state;
+  // std::vector<double> filter1_junk;
 
-  std::vector<double> filter2_a;
-  std::vector<double> filter2_b;
-  std::vector<double> filter2_x;
-  std::vector<double> filter2_Z_state;
-  std::vector<double> filter2_out;
+  // std::vector<double> filter2_a;
+  // std::vector<double> filter2_b;
+  // std::vector<double> filter2_x;
+  // std::vector<double> filter2_Z_state;
+  // std::vector<double> filter2_out;
 
-  std::vector<double> filter3_a;
-  std::vector<double> filter3_b;
-  std::vector<double> filter3_x;
-  std::vector<double> filter3_Z_state;
-  std::vector<double> filter3_out;
+  // std::vector<double> filter3_a;
+  // std::vector<double> filter3_b;
+  // std::vector<double> filter3_x;
+  // std::vector<double> filter3_Z_state;
+  // std::vector<double> filter3_out;
 
   std::vector<std::vector<std::vector<double> > > naps;
   std::vector<std::vector<std::vector<double> > > decim_naps;
 
-  std::vector<double> filterstep_inputs;
-  std::vector<double> filterstep_zA;
-  std::vector<double> filterstep_zB;
-  std::vector<double> filterstep_zY;
-  std::vector<double> filterstep_r;
-  std::vector<double> filterstep_z1;
-  std::vector<double> filterstep_z2;
-  std::vector<double> filterstep_detect;
+  // std::vector<double> filterstep_inputs;
+  // std::vector<double> filterstep_zA;
+  // std::vector<double> filterstep_zB;
+  // std::vector<double> filterstep_zY;
+  // std::vector<double> filterstep_r;
+  // std::vector<double> filterstep_z1;
+  // std::vector<double> filterstep_z2;
+  // std::vector<double> filterstep_detect;
 
   std::vector<double> agcstep_prev_stage_mean;
   std::vector<double> agcstep_stage_sum;
@@ -111,6 +103,8 @@ class CARFAC: public MarSystem
 
   void allocateVectors();
 
+  // TODO(snessnet) - should be private...
+  CF_class CF;
 
   std::string toString();
   void printParams();

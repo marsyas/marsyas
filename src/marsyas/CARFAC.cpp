@@ -25,62 +25,7 @@ using std::ostream;
 namespace Marsyas
 {
 
-std::vector<double> CARFAC::CARFAC_FilterStep(double input_waves, int mic)
-{
-  // Use each stage previous Y as input to next.
-  filterstep_inputs[0] = input_waves;
-
-  for (unsigned int i=0; i < CF.filter_state[mic].zY_memory.size()-1; i++) {
-    filterstep_inputs[i+1] = CF.filter_state[mic].zY_memory[i];
-  }
-
-  // AGC interpolation.
-  for (int i=0; i < CF.n_ch; i++) {
-    CF.filter_state[mic].zB_memory[i] = CF.filter_state[mic].zB_memory[i] + CF.filter_state[mic].dzB_memory[i];
-    filterstep_r[i] = CF.filter_coeffs.r_coeffs[i] - CF.filter_coeffs.c_coeffs[i] * (CF.filter_state[mic].zA_memory[i] + CF.filter_state[mic].zB_memory[i]);
-
-    // Now reduce filter_state by r and rotate with the fixed cos/sin
-    // coeffs.
-    double z1_tmp = filterstep_r[i] * (CF.filter_coeffs.a_coeffs[i] * CF.filter_state[mic].z1_memory[i] -
-                                       CF.filter_coeffs.c_coeffs[i] * CF.filter_state[mic].z2_memory[i]);
-    double z1_mem = CF.filter_state[mic].z1_memory[i];
-    CF.filter_state[mic].z1_memory[i] = z1_tmp + filterstep_inputs[i];
-    CF.filter_state[mic].z2_memory[i] = filterstep_r[i] * (CF.filter_coeffs.c_coeffs[i] * z1_mem +
-              CF.filter_coeffs.a_coeffs[i] * CF.filter_state[mic].z2_memory[i]);
-  }
-
-  // Update the "velocity" for cubic nonlinearity, into zA.
-  for (int i=0; i<CF.n_ch; i++) {
-    CF.filter_state[mic].zA_memory[i] = pow(((CF.filter_state[mic].z2_memory[i] - CF.filter_state[mic].z2_memory[i]) * CF.filter_coeffs.velocity_scale), 2);
-  }
-
-  // Simulate Sigmoidal OHC effect on damping.
-  for (int i=0; i<CF.n_ch; i++) {
-    CF.filter_state[mic].zA_memory[i] = (1 - pow((1 - CF.filter_state[mic].zA_memory[i]), 4)) / 4;  // soft max at 0.25
-  }
-
-  // Get outputs from inputs and new z2 values.
-  for (int i=0; i<CF.n_ch; i++) {
-    CF.filter_state[mic].zY_memory[i] = CF.filter_coeffs.g_coeffs[i] * (filterstep_inputs[i] + CF.filter_coeffs.h_coeffs[i] * CF.filter_state[mic].z2_memory[i]);
-  }
-
-  // TODO(dicklyon): Generalize to a detection nonlinearity.
-  double maxval = 0.0;
-  for (int i=0; i<CF.n_ch; i++) {
-    filterstep_detect[i] = CF.filter_state[mic].zY_memory[i] > maxval ? CF.filter_state[mic].zY_memory[i] : maxval;
-  }
-
-  for (int i=0; i<CF.n_ch; i++) {
-    CF.filter_state[mic].detect_accum[i] = CF.filter_state[mic].detect_accum[i] + filterstep_detect[i];
-  }
-
-  return filterstep_detect;
-}
-
-// Perform an Automated Gain Control step to adjust the gains for the
-// various filter channels.  This is done on every nth step of the
-// calculation, and n is typically 16.
-void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> >& avg_detects)
+void CARFAC::CARFAC_AGCStep(const std::vector<std::vector<double> > &avg_detects)
 {
   int n_AGC_stages = CF.AGC_coeffs.AGC_epsilon.size();
   int n_mics = CF.n_mics;
@@ -115,63 +60,35 @@ void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> >& avg_detects)
           // assuming all(agcstep_prev_stage_mean == AGC_memory(:, stage - 1));
           // but we also don't even allocate or compute the sum or mean.
           for (int i = 0; i < n_ch; i++) {
-            agcstep_AGC_in[i] = CF.AGC_coeffs.AGC_stage_gain * CF.AGC_state[mic].AGC_memory[i][stage - 1];
+            agcstep_AGC_in[i] = CF.AGC_coeffs.AGC_stage_gain * CF.AGC_state[mic].AGC_memory[stage - 1][i];
           }
         } else {
           for (int i = 0; i < n_ch; i++) {
             agcstep_AGC_in[i] = CF.AGC_coeffs.AGC_stage_gain *
                 (CF.AGC_coeffs.AGC_mix_coeff * agcstep_prev_stage_mean[i] +
-                 (1 - CF.AGC_coeffs.AGC_mix_coeff) * CF.AGC_state[mic].AGC_memory[i][stage - 1]);
+                 (1 - CF.AGC_coeffs.AGC_mix_coeff) * CF.AGC_state[mic].AGC_memory[stage - 1][i]);
           }
         }
       }
 
       for (int i = 0; i < n_ch; i++) {
-        agcstep_AGC_stage[i] = CF.AGC_state[mic].AGC_memory[i][stage];
+        CF.AGC_state[mic].AGC_memory[stage][i] = CF.AGC_state[mic].AGC_memory[stage][i] + epsilon * (agcstep_AGC_in[i] - CF.AGC_state[mic].AGC_memory[stage][i]);
       }
 
-      // first-order recursive smooting filter update:
-      for (int i = 0; i < n_ch; i++) {
-        agcstep_AGC_stage[i] = agcstep_AGC_stage[i] + epsilon * (agcstep_AGC_in[i] - agcstep_AGC_stage[i]);
-      }
+      DoubleExponentialSmoothing(CF.AGC_state[mic].AGC_memory[stage], polez1, polez2, n_ch);
 
-      int npts = n_ch;
-      double state = 0;
-      double input;
-      for (int index = npts - 10; index < npts; index++) {
-        input = agcstep_AGC_stage[index];
-        state = state + (1 - polez1) * (input - state);
-      }
-
-      // smooth backward with polez2, starting with state from above:
-      for (int index = npts - 1; index >= 0; index--) {
-        input = agcstep_AGC_stage[index];
-        state = state + (1 - polez2) * (input - state);
-        agcstep_AGC_stage[index] = state;
-      }
-
-      // smooth forward with polez1, starting with state from above:
-      for (int index = 0; index < npts; index++) {
-        state = state + (1 - polez1) * (agcstep_AGC_stage[index] - state);
-        agcstep_AGC_stage[index] = state;
-      }
-
-      // Copy over to AGC_memory
-      for (int i = 0; i < n_ch; i++) {
-        CF.AGC_state[mic].AGC_memory[i][stage] = agcstep_AGC_stage[i];
-      }
       if (stage == 0) {
         for (int i = 0; i < n_ch; i++) {
-          CF.AGC_state[mic].sum_AGC[i] = agcstep_AGC_stage[i];
+          CF.AGC_state[mic].sum_AGC[i] = CF.AGC_state[mic].AGC_memory[stage][i];
         }
       } else {
         for (int i = 0; i < n_ch; i++) {
-          CF.AGC_state[mic].sum_AGC[i] += agcstep_AGC_stage[i];
+          CF.AGC_state[mic].sum_AGC[i] +=  CF.AGC_state[mic].AGC_memory[stage][i];
         }
       }
       if (!optimize_for_mono) {
         for (int i = 0; i < n_ch; i++) {
-          agcstep_stage_sum[i] = agcstep_stage_sum[i] + agcstep_AGC_stage[i];
+          agcstep_stage_sum[i] = agcstep_stage_sum[i] +  CF.AGC_state[mic].AGC_memory[stage][i];
         }
       }
     }
@@ -179,27 +96,13 @@ void CARFAC::CARFAC_AGCStep(std::vector<std::vector<double> >& avg_detects)
 
 }
 
-
-//////////
-
-
 CARFAC::CARFAC(mrs_string name):MarSystem("CARFAC", name)
 {
-	//Add any specific controls needed by CARFAC
-	//(default controls all MarSystems should have
-	//were already added by MarSystem::addControl(),
-	//called by :MarSystem(name) constructor).
-	//If no specific controls are needed by a MarSystem
-	//there is no need to implement and call this addControl()
-	//method (see for e.g. Rms.cpp)
 	addControls();
 }
 
 CARFAC::CARFAC(const CARFAC& a) : MarSystem(a)
 {
-	// For any MarControlPtr in a MarSystem
-	// it is necessary to perform this getctrl
-	// in the copy constructor in order for cloning to work
 	ctrl_printcoeffs_ = getctrl("mrs_bool/printcoeffs");
     allocateVectors();
 }
@@ -217,7 +120,7 @@ CARFAC::clone() const
 void
 CARFAC::addControls()
 {
-  //Add specific controls needed by this MarSystem.
+  // Add specific controls needed by this MarSystem.
   addctrl("mrs_bool/printcoeffs", true, ctrl_printcoeffs_);
   setControlState("mrs_bool/printcoeffs", true);
 
@@ -227,31 +130,12 @@ CARFAC::addControls()
 
 // Preallocate any vectors that will get reused over and over.
 void CARFAC::allocateVectors() {
-  int num_points = 10; // initialize state from 10 points
   int n_ch = CF.n_ch;
   int n_samp = inSamples_;
   int n_mics = CF.n_mics;
   int decim = CF.CF_AGC_params.decimation;
 
-  filter1_a.resize(1);
-  filter1_b.resize(2);
-  filter1_x.resize(num_points);
-  filter1_Z_state.resize(1);
-  filter1_junk.resize(num_points);
-
-  filter2_a.resize(1);
-  filter2_b.resize(2);
-  filter2_x.resize(n_ch);
-  filter2_Z_state.resize(1);
-  filter2_out.resize(n_ch);
-
-  filter3_a.resize(1);
-  filter3_b.resize(2);
-  filter3_x.resize(n_ch);
-  filter3_Z_state.resize(1);
-  filter3_out.resize(n_ch);
-
-  // Create the naps array
+  // Create the naps array.
   naps.resize(n_samp);
   for (int i = 0; i < n_samp; i++) {
     naps[i].resize(n_ch);
@@ -260,7 +144,7 @@ void CARFAC::allocateVectors() {
     }
   }
 
-  // Create the decim_naps array
+  // Create the decim_naps array.
   int decim_naps_size = n_samp/decim;
   decim_naps.resize(decim_naps_size);
   for (int i = 0; i < decim_naps_size; i++) {
@@ -269,16 +153,6 @@ void CARFAC::allocateVectors() {
       decim_naps[i][j].resize(n_mics);
     }
   }
-
-  // For FilterStep
-  filterstep_inputs.resize(n_ch);
-  filterstep_zA.resize(n_ch);
-  filterstep_zB.resize(n_ch);
-  filterstep_zY.resize(n_ch);
-  filterstep_r.resize(n_ch);
-  filterstep_z1.resize(n_ch);
-  filterstep_z2.resize(n_ch);
-  filterstep_detect.resize(n_ch);
 
   // For AGCStep
   agcstep_prev_stage_mean.resize(n_ch);
@@ -291,26 +165,15 @@ void CARFAC::allocateVectors() {
 void
 CARFAC::myUpdate(MarControlPtr sender)
 {
-  // no change to network flow
+  // Initialize the arrays for the Filters and AGC
+  CF.CARFAC_Init(inObservations_);
+
   MarSystem::myUpdate(sender);
 
   int n_ch = 96;
   ctrl_onObservations_->setValue(n_ch * 2, NOUPDATE);
 
   allocateVectors();
-
-  // CF.CARFAC_Design();
-  // CF.CARFAC_DesignFilters(CF.CF_filter_params, CF.fs, CF.pole_freqs);
-  // CF.CARFAC_DesignAGC(CF.fs);
-
-  // // TODO(snessnet) - This should get updated from inObservations
-  // int n_mics = 2;
-
-  // CF.CARFAC_Init(n_mics);
-
-  // printcoeffs = false;
-  // printstate = false;
-
 }
 
 void
@@ -328,14 +191,15 @@ CARFAC::myProcess(realvec& in, realvec& out)
   int cum_k = -1;
   int decim = CF.CF_AGC_params.decimation;
 
-  std::vector<double> detect;
+  std::vector<double> detect(n_ch);
   std::vector<double> avg_detect(n_ch);
 
   for (mrs_natural k = 0; k < inSamples_; k++) {
     cum_k = cum_k + 1;
     for (int mic = 0; mic < n_mics; mic++) {
       double input_to_filterstep = in(mic,k);
-      detect = CARFAC_FilterStep(input_to_filterstep,mic);
+      // detect = CARFAC_FilterStep(input_to_filterstep,mic);
+      CF.filter_state[mic].FilterStep(CF, input_to_filterstep,detect);
       for (unsigned int i=0; i < detect.size(); i++) {
         naps[k][i][mic] = detect[i];
       }
@@ -382,6 +246,31 @@ CARFAC::myProcess(realvec& in, realvec& out)
       out(row+n_ch,col) = naps[col][row][1];
     }
   }
+}
+
+
+void CARFAC::DoubleExponentialSmoothing(std::vector<double> &data, double polez1, double polez2, int n_ch)
+{
+  double state = 0;
+  double input;
+  for (int index = n_ch - 10; index < n_ch; index++) {
+    input = data[index];
+    state = state + (1 - polez1) * (input - state);
+  }
+
+  // smooth backward with polez2, starting with state from above:
+  for (int index = n_ch - 1; index >= 0; index--) {
+    input = data[index];
+    state = state + (1 - polez2) * (input - state);
+    data[index] = state;
+  }
+
+  // smooth forward with polez1, starting with state from above:
+  for (int index = 0; index < n_ch; index++) {
+    state = state + (1 - polez1) * (data[index] - state);
+    data[index] = state;
+  }
+
 }
 
 

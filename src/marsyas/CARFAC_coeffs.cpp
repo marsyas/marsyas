@@ -27,11 +27,75 @@ namespace Marsyas
 
 filter_state_class::filter_state_class()
 {
+  init = false;
 }
 
 filter_state_class::~filter_state_class()
 {
 }
+
+std::vector<double> filter_state_class::FilterStep(CF_class &CF, double input_waves, std::vector<double> &filterstep_detect)
+{
+  if (!init) {
+    filterstep_inputs.resize(CF.n_ch);
+    filterstep_zA.resize(CF.n_ch);
+    filterstep_zB.resize(CF.n_ch);
+    filterstep_zY.resize(CF.n_ch);
+    filterstep_z1.resize(CF.n_ch);
+    filterstep_z2.resize(CF.n_ch);
+  }
+
+  // Use each stage previous Y as input to next.
+  filterstep_inputs[0] = input_waves;
+
+  for (unsigned int i=0; i < zY_memory.size()-1; i++) {
+    filterstep_inputs[i+1] = zY_memory[i];
+  }
+
+  // AGC interpolation.
+  for (int i=0; i < CF.n_ch; i++) {
+    zB_memory[i] = zB_memory[i] + dzB_memory[i];
+    double filterstep_r = CF.filter_coeffs.r_coeffs[i] - CF.filter_coeffs.c_coeffs[i] * (zA_memory[i] + zB_memory[i]);
+
+    // Now reduce filter_state by r and rotate with the fixed cos/sin
+    // coeffs.
+    double z1_mem = z1_memory[i];
+    z1_memory[i] = ((filterstep_r *
+                           (CF.filter_coeffs.a_coeffs[i] * z1_memory[i] -
+                            CF.filter_coeffs.c_coeffs[i] * z2_memory[i]))
+                           + filterstep_inputs[i]);
+    z2_memory[i] = filterstep_r * (CF.filter_coeffs.c_coeffs[i] * z1_mem +
+              CF.filter_coeffs.a_coeffs[i] * z2_memory[i]);
+  }
+
+  // Update the "velocity" for cubic nonlinearity, into zA.
+  for (int i=0; i<CF.n_ch; i++) {
+    zA_memory[i] = pow(((z2_memory[i] - z2_memory[i]) * CF.filter_coeffs.velocity_scale), 2);
+  }
+
+  for (int i=0; i<CF.n_ch; i++) {
+    // Simulate Sigmoidal OHC effect on damping.
+    zA_memory[i] = (1 - pow((1 - zA_memory[i]), 4)) / 4;  // soft max at 0.25
+    // Get outputs from inputs and new z2 values.
+    zY_memory[i] = CF.filter_coeffs.g_coeffs[i] * (filterstep_inputs[i] + CF.filter_coeffs.h_coeffs[i] * z2_memory[i]);
+  }
+
+  // TODO(dicklyon): Generalize to a detection nonlinearity.
+  double maxval = 0.0;
+  for (int i=0; i<CF.n_ch; i++) {
+    filterstep_detect[i] = zY_memory[i] > maxval ? zY_memory[i] : maxval;
+  }
+
+  for (int i=0; i<CF.n_ch; i++) {
+    double output = zY_memory[i];
+    double detect = output > 0.0 ? output : 0.0;
+    filterstep_detect[i] = detect;
+    detect_accum[i] += detect;
+  }
+
+  return filterstep_detect;
+}
+
 
 ostream& operator<<(ostream& o, std::vector<double> a)
 {
@@ -225,14 +289,6 @@ AGC_coeffs_class::~AGC_coeffs_class()
 {
 }
 
-AGC_coeffs_class& AGC_coeffs_class::operator=(const CF_AGC_params_class& params)
-{
-  detect_scale = params.detect_scale;
-  AGC_stage_gain = params.AGC_stage_gain;
-  AGC_mix_coeff = params.AGC_mix_coeff;
-  return *this;
-}
-
 ostream& operator<<(ostream& o, const AGC_coeffs_class& l)
 {
   o << "**AGC_coeffs_class" << endl;
@@ -264,9 +320,6 @@ CF_filter_params_class::~CF_filter_params_class()
 {
 }
 
-// CF_filter_params_class::CF_filter_params_class(const CF_filter_params_class& a)
-// {
-// }
 
 ostream& operator<<(ostream& o, const CF_filter_params_class& l)
 {
@@ -285,13 +338,9 @@ ostream& operator<<(ostream& o, const CF_filter_params_class& l)
 CF_class::CF_class()
 {
   CARFAC_Design();
-  CARFAC_DesignFilters(CF_filter_params, fs, pole_freqs);
-  CARFAC_DesignAGC(fs);
 
-  // TODO(snessnet) - This should get updated from inObservations
+  // Default value for number of microphones
   n_mics = 2;
-
-  CARFAC_Init(n_mics);
 }
 
 CF_class::~CF_class()
@@ -324,7 +373,9 @@ CF_class::~CF_class()
 // TODO(snessnet) - Have CARFAC_Design take parameters like the original function
 void CF_class::CARFAC_Design(double _fs, double _ERB_break_freq, double _ERB_Q)
 {
-  AGC_coeffs = CF_AGC_params;
+  AGC_coeffs.detect_scale = CF_AGC_params.detect_scale;
+  AGC_coeffs.AGC_stage_gain = CF_AGC_params.AGC_stage_gain;
+  AGC_coeffs.AGC_mix_coeff = CF_AGC_params.AGC_mix_coeff;
 
   // TODO(snessnet) - We should get this from israte, but this won't
   // be setup until we load the soundfile.  For now require 22050Hz
@@ -347,6 +398,10 @@ void CF_class::CARFAC_Design(double _fs, double _ERB_break_freq, double _ERB_Q)
     pole_freqs[ch] = pole_Hz;
     pole_Hz = pole_Hz - CF_filter_params.ERB_per_step * ERB_Hz(pole_Hz, _ERB_break_freq, _ERB_Q);
   }
+
+  // Design the AGC and Filters
+  CARFAC_DesignFilters();
+  CARFAC_DesignAGC();
 }
 
 // Calculate the Equivalent Rectangular Bandwith of a given frequency
@@ -366,17 +421,17 @@ double CF_class::ERB_Hz(double CF_Hz, double ERB_break_freq, double ERB_Q)
 
 // From the input filter_params, sampling frequency and
 // pole_frequencies, create all the filter coefficients.
-void CF_class::CARFAC_DesignFilters(CF_filter_params_class filter_params, double fs, std::vector<double> pole_freqs)
+void CF_class::CARFAC_DesignFilters()
 {
   int n_ch = pole_freqs.size();
 
-  filter_coeffs.init(filter_params.velocity_scale, n_ch);
+  filter_coeffs.init(CF_filter_params.velocity_scale, n_ch);
 
   // zero_ratio comes in via h.  In book's circuit D, zero_ratio is
   // 1/sqrt(a), and that a is here 1 / (1+f) where h = f*c.
   // solve for f:  1/zero_ratio^2 = 1 / (1+f)
   // zero_ratio^2 = 1+f => f = zero_ratio^2 - 1
-  double f = pow(filter_params.zero_ratio,2) - 1;  // nominally 1 for half-octave
+  double f = pow(CF_filter_params.zero_ratio,2) - 1;  // nominally 1 for half-octave
 
   // Make pole positions, s and c coeffs, h and g coeffs, etc., which
   // mostly depend on the pole angle theta.
@@ -389,7 +444,7 @@ void CF_class::CARFAC_DesignFilters(CF_filter_params_class filter_params, double
   // r = exp(-theta * CF_filter_params.min_zeta);
   std::vector<double> r(n_ch);
   for (unsigned int i = 0; i < r.size(); i++) {
-    r[i] = (1 - (sin(theta[i]) * filter_params.min_zeta)); // higher Q at highest thetas
+    r[i] = (1 - (sin(theta[i]) * CF_filter_params.min_zeta)); // higher Q at highest thetas
   }
   filter_coeffs.r_coeffs = r;
 
@@ -415,7 +470,7 @@ void CF_class::CARFAC_DesignFilters(CF_filter_params_class filter_params, double
 }
 
 // Calculate the parameters for the AGC step
-void CF_class::CARFAC_DesignAGC(double fs)
+void CF_class::CARFAC_DesignAGC()
 {
   std::vector<double> AGC1_scales = CF_AGC_params.AGC1_scales;
   std::vector<double> AGC2_scales = CF_AGC_params.AGC2_scales;
@@ -459,13 +514,6 @@ void CF_class::CARFAC_DesignAGC(double fs)
 //
 void CF_class::CARFAC_Init(int n_mics)
 {
-  if (n_mics == -1) {
-    n_mics = 1;
-  }
-
-  // TODO(snessnet) - Just hacking this for now to be 2
-  n_mics = 2;
-
   std::vector<double> AGC_time_constants = CF_AGC_params.time_constants;
   int n_AGC_stages = AGC_time_constants.size();
   filter_state_class tmp_filter_state;
@@ -485,8 +533,8 @@ void CF_class::CARFAC_Init(int n_mics)
   AGC_state_class tmp_AGC_state;
   tmp_AGC_state.sum_AGC.assign(n_ch,0.0);
 
-  std::vector<double> tmp_AGC_memory(n_AGC_stages);
-  for (int i = 0; i < n_ch; i++) {
+  std::vector<double> tmp_AGC_memory(n_ch);
+  for (int i = 0; i < n_AGC_stages; i++) {
     tmp_AGC_state.AGC_memory.push_back(tmp_AGC_memory);
   }
 
