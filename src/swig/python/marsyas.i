@@ -69,5 +69,12 @@
     void updControl(std::string s, mrs_string x) {
         self->updControl(s, MarControlPtr(x));
     }
+
+    // HTML representation method.
+    std::string toHtml() {
+        std::ostringstream oss;
+        $self->put_html(oss);
+        return oss.str();
+    }
 }
 
