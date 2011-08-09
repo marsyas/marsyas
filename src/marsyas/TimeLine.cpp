@@ -297,7 +297,7 @@ TimeLine::removeRegion(mrs_natural regionNum)
 	}
 }
 
-mrs_natural
+mrs_real
 TimeLine::regionClass(mrs_natural regionNum) const
 {
 	if (regionNum < numRegions_)

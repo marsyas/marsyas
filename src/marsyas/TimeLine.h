@@ -100,7 +100,7 @@ public:
   mrs_natural regionStart(mrs_natural regionNum) const;
   mrs_natural regionEnd(mrs_natural regionNum) const;
   mrs_string regionName(mrs_natural regionNum) const;
-	mrs_natural regionClass(mrs_natural regionNum) const;
+	mrs_real regionClass(mrs_natural regionNum) const;
 	
 	void setRegionName(mrs_natural regionNum, mrs_string name);
   void setRegionClass(mrs_natural regionNum, mrs_natural classId);
