@@ -1413,6 +1413,86 @@ MarSystem::toString()
 }
 
 
+mrs_string
+MarSystem::toStringGraphViz()
+{
+	ostringstream oss;
+	ostringstream oss_defs;
+	ostringstream oss_links;
+	toStringGraphViz(oss_defs, oss_links);
+	
+	//oss << oss_defs.str() << endl;
+	
+	oss << "digraph G {" << endl;
+	oss << oss_links.str();
+	
+	oss << "}" << endl;
+	return oss.str();
+}
+
+void
+MarSystem::toStringGraphViz(ostringstream& oss_defs, ostringstream& oss_links)
+{
+	// Print the node def.
+	//oss_defs << "Node=" << prefix_ << endl;
+	static int a=0;
+
+	// Print the links
+	int sz=marsystems_.size();
+	if (sz>0)
+	{
+		// Make a cluster.
+		oss_links << "\tsubgraph cluster_" << a++ << " {" << endl;
+		oss_links << "\t\tlabel = \"" << prefix_  << "\"" << endl;	
+		oss_links << "\t\t";	
+
+		for (int i=0; i<sz-1; ++i)
+		{
+			// TODO are there other composite types to handle?
+			if (type_ == "Fanout" || type_ == "Parallel") {
+				if ( marsystems_[i]->isComposite_) {
+					// TODO: handle links to composites better.
+					oss_links << "\"" << marsystems_[i]->prefix_ << "\";" << endl;
+				} else {
+					oss_links << "\"" << marsystems_[i]->prefix_ << "\";" << endl;
+				}
+			} else {
+				if ( marsystems_[i]->isComposite_) {
+					// TODO: handle links to composites better.
+					oss_links << "\"" << marsystems_[i]->prefix_ << "\" -> ";
+				} else {
+					oss_links << "\"" << marsystems_[i]->prefix_ << "\" -> ";
+				}
+			}	
+		}
+		oss_links << "\"" << marsystems_[sz-1]->prefix_ << "\";" << endl;
+		oss_links << "\t}" << endl << endl;	
+
+		// Link to start.
+		// TODO are there other composite types to handle?
+		if (type_ == "Fanout" || type_ == "Parallel") {
+			// Link to all first items for parallel types of composites.
+			for (int j=0; j<sz; ++j)
+				oss_links << "\t\"" << prefix_ << "\" -> \"" << marsystems_[j]->prefix_ << "\";" << endl;
+		} else {
+			// Only link to first item in series.
+			oss_links << "\t\"" << prefix_ << "\" -> \"" << marsystems_[0]->prefix_ << "\";" << endl;
+		}
+
+		// Link the end of series back to parent's next item... tricky.
+		// TODO
+	}
+
+
+
+	// Children.
+	if (sz>0)
+	{
+		for (int i=0; i<sz; ++i)
+			marsystems_[i]->toStringGraphViz(oss_defs, oss_links);
+	}
+}
+
 
 
 

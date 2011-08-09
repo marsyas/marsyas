@@ -365,10 +365,11 @@ public:
 
 	std::string toString();
 	std::string toStringShort();
+	std::string toStringGraphViz();
+	void toStringGraphViz(std::ostringstream& os_defs, std::ostringstream& os_links);
 
 	virtual marostring& toString(marostring& m);
-
-
+	
 	// derived class such as Composite can override put
 	// essentially overriding operator<<
 	virtual std::ostream& put(std::ostream& o, bool verbose);
