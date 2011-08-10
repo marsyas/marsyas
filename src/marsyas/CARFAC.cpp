@@ -104,7 +104,14 @@ CARFAC::CARFAC(mrs_string name):MarSystem("CARFAC", name)
 CARFAC::CARFAC(const CARFAC& a) : MarSystem(a)
 {
 	ctrl_printcoeffs_ = getctrl("mrs_bool/printcoeffs");
-    allocateVectors();
+	ctrl_printstate_ = getctrl("mrs_bool/printstate");
+	ctrl_calculate_binaural_sai_ = getctrl("mrs_bool/calculate_binaural_sai");
+
+	ctrl_sai_output_binaural_sai_ = getctrl("mrs_realvec/sai_output_binaural_sai");
+	ctrl_sai_output_threshold_ = getctrl("mrs_realvec/sai_output_threshold");
+	ctrl_sai_output_strobes_ = getctrl("mrs_realvec/sai_output_strobes");
+
+  allocateVectors();
 }
 
 CARFAC::~CARFAC()
@@ -126,6 +133,34 @@ CARFAC::addControls()
 
   addctrl("mrs_bool/printstate", true, ctrl_printstate_);
   setControlState("mrs_bool/printstate", true);
+
+  // Output the Binaural SAI data to a control
+  addctrl("mrs_bool/calculate_binaural_sai", false, ctrl_calculate_binaural_sai_);
+  setControlState("mrs_bool/calculate_binaural_sai", true);
+
+  // Controls for the Binaural SAI
+  addctrl("mrs_natural/sai_width", 100, ctrl_sai_width_);
+  setControlState("mrs_natural/sai_width", true);
+
+  addctrl("mrs_real/sai_memory_factor", 0.8, ctrl_sai_memory_factor_);
+  setControlState("mrs_real/sai_memory_factor", true);
+
+  addctrl("mrs_bool/sai_summary_itd", false, ctrl_sai_summary_itd_);
+  setControlState("mrs_bool/sai_summary_itd", true);
+
+  addctrl("mrs_real/sai_threshold_alpha", 0.9999, ctrl_sai_threshold_alpha_);
+  setControlState("mrs_real/sai_threshold_alpha", true);
+
+  addctrl("mrs_real/sai_threshold_jump_factor", 1.5, ctrl_sai_threshold_jump_factor_);
+  setControlState("mrs_real/sai_threshold_jump_factor", true);
+
+  addctrl("mrs_real/sai_threshold_jump_offset", 0.1, ctrl_sai_threshold_jump_offset_);
+  setControlState("mrs_real/sai_threshold_jump_offset", true);
+
+  // The output of the SAI module
+  addctrl("mrs_realvec/sai_output_binaural_sai", realvec(), ctrl_sai_output_binaural_sai_);
+  addctrl("mrs_realvec/sai_output_threshold", realvec(), ctrl_sai_output_threshold_);
+  addctrl("mrs_realvec/sai_output_strobes", realvec(), ctrl_sai_output_strobes_);
 }
 
 // Preallocate any vectors that will get reused over and over.
@@ -144,6 +179,15 @@ void CARFAC::allocateVectors() {
     }
   }
 
+  // Create the prev_naps array
+  prev_naps.resize(n_samp);
+  for (int i = 0; i < n_samp; i++) {
+    prev_naps[i].resize(n_ch);
+    for (int j = 0; j < n_ch; j++) {
+      prev_naps[i][j].resize(n_mics);
+    }
+  }
+
   // Create the decim_naps array.
   int decim_naps_size = n_samp/decim;
   decim_naps.resize(decim_naps_size);
@@ -151,6 +195,15 @@ void CARFAC::allocateVectors() {
     decim_naps[i].resize(n_ch);
     for (int j = 0; j < n_ch; j++) {
       decim_naps[i][j].resize(n_mics);
+    }
+  }
+
+  // Create the sai array
+  sai.resize(n_samp);
+  for (int i = 0; i < n_samp; i++) {
+    sai[i].resize(n_ch);
+    for (int j = 0; j < n_ch; j++) {
+      sai[i][j].resize(n_mics);
     }
   }
 
@@ -165,20 +218,52 @@ void CARFAC::allocateVectors() {
 void
 CARFAC::myUpdate(MarControlPtr sender)
 {
+  MarControlAccessor acc_on(ctrl_sai_output_binaural_sai_);
+  mrs_realvec& sai_output_binaural_sai = acc_on.to<mrs_realvec>();
+  // sai_output_binaural_sai.stretch(onObservations_,inSamples_);
+  // TODO(snessnet) - Set this correctly via n_ch
+  sai_output_binaural_sai.stretch(96,sai_width_*2);
+
+  MarControlAccessor acc_ot(ctrl_sai_output_threshold_);
+  mrs_realvec& sai_output_threshold = acc_ot.to<mrs_realvec>();
+  sai_output_threshold.stretch(onObservations_,inSamples_);
+
+  MarControlAccessor acc_os(ctrl_sai_output_strobes_);
+  mrs_realvec& sai_output_strobes = acc_os.to<mrs_realvec>();
+  sai_output_strobes.stretch(onObservations_,inSamples_);
+
   // Initialize the arrays for the Filters and AGC
   CF.CARFAC_Init(inObservations_);
 
   MarSystem::myUpdate(sender);
 
+  // TODO(snessnet) - Don't set n_ch here, set it from a control
   int n_ch = 96;
   ctrl_onObservations_->setValue(n_ch * 2, NOUPDATE);
 
   allocateVectors();
+
+  // Binaural SAI
+  calculate_binaural_sai_ = getctrl("mrs_bool/calculate_binaural_sai")->to<mrs_bool>();
+  sai_width_ = getctrl("mrs_natural/sai_width")->to<mrs_natural>();
+  sai_memory_factor_ = getctrl("mrs_real/sai_memory_factor")->to<mrs_real>();
+  sai_threshold_alpha_ = getctrl("mrs_real/sai_threshold_alpha")->to<mrs_real>();
+  sai_threshold_jump_factor_ = getctrl("mrs_real/sai_threshold_jump_factor")->to<mrs_real>();
+  sai_threshold_jump_offset_ = getctrl("mrs_real/sai_threshold_jump_offset")->to<mrs_real>();
 }
 
 void
 CARFAC::myProcess(realvec& in, realvec& out)
 {
+  MarControlAccessor acc_ob(ctrl_sai_output_binaural_sai_);
+  mrs_realvec& sai_output_binaural_sai_ = acc_ob.to<mrs_realvec>();
+
+  MarControlAccessor acc_ot(ctrl_sai_output_threshold_);
+  mrs_realvec& sai_output_threshold = acc_ot.to<mrs_realvec>();
+
+  MarControlAccessor acc_os(ctrl_sai_output_strobes_);
+  mrs_realvec& sai_output_strobes = acc_os.to<mrs_realvec>();
+
   lastin = in;
 
   int n_ch = CF.n_ch;
@@ -193,6 +278,7 @@ CARFAC::myProcess(realvec& in, realvec& out)
 
   std::vector<double> detect(n_ch);
   std::vector<double> avg_detect(n_ch);
+  std::vector<int> threshold_histogram(n_ch,0);
 
   for (mrs_natural k = 0; k < inSamples_; k++) {
     cum_k = cum_k + 1;
@@ -237,6 +323,51 @@ CARFAC::myProcess(realvec& in, realvec& out)
         }
       }
     }
+
+    // Detect strobe points
+    for (int mic = 0; mic < n_mics; mic++) {
+      int othermic = 1 - mic;
+      std::vector<bool> above_threshold(n_ch,false);
+      for (int i = 0; i < n_ch; i++) {
+        if ((CF.strobe_state[mic].lastdata[i] > CF.strobe_state[mic].thresholds[i]) &&
+            (CF.strobe_state[mic].lastdata[i] > naps[k][i][mic])) {
+          above_threshold[i] = true;
+        } else {
+          above_threshold[i] = false;
+        }
+        if (above_threshold[i]) {
+          CF.strobe_state[mic].thresholds[i] = naps[k][i][mic] * sai_threshold_jump_factor_ + sai_threshold_jump_offset_;
+        } else {
+          CF.strobe_state[mic].thresholds[i] = CF.strobe_state[mic].thresholds[i] * sai_threshold_alpha_;
+        }
+        CF.strobe_state[mic].lastdata[i] = naps[k][i][mic];
+
+        // Copy the thresholds to the output control
+        // TODO(snessnet) - Executive decision to just do first microphone
+        if (calculate_binaural_sai_ && mic == 0) {
+          sai_output_threshold(i,k) = CF.strobe_state[0].thresholds[i];
+          sai_output_strobes(i,k) = above_threshold[i];
+        }
+      }
+
+      // If above threshold, copy data from the trigger point onwards
+      for (int i = 0; i < n_ch; i++) {
+        if (above_threshold[i] && mic == 0) {
+          threshold_histogram[i]++;
+        }
+
+        if (above_threshold[i]) {
+          CF.strobe_state[mic].trigger_index[i] = k;
+          CF.strobe_state[mic].sai_index[i] = 0;
+        }
+
+        if ((CF.strobe_state[mic].sai_index[i] < sai_width_) && (CF.strobe_state[mic].trigger_index[i] < inSamples_)) {
+          sai[CF.strobe_state[mic].sai_index[i]][i][mic] = naps[CF.strobe_state[mic].trigger_index[i]][i][othermic] + sai[CF.strobe_state[mic].sai_index[i]][i][mic] * sai_memory_factor_;
+        }
+        CF.strobe_state[mic].trigger_index[i]++;
+        CF.strobe_state[mic].sai_index[i]++;
+      }
+    }
   }
 
   // Copy the nap data to the output
@@ -246,6 +377,26 @@ CARFAC::myProcess(realvec& in, realvec& out)
       out(row+n_ch,col) = naps[col][row][1];
     }
   }
+
+  // Copy the sai data to the output
+  if (calculate_binaural_sai_) {
+    for (int row = 0; row < n_ch; row++) {
+      for (int col = 0; col < sai_width_; col++) {
+        sai_output_binaural_sai_(row,sai_width_-col) = sai[col][row][0];
+        sai_output_binaural_sai_(row,sai_width_+col) = sai[col][row][1];
+      }
+    }
+
+    // Save the nap data for the next iteration
+    for (int i = 0; i < inSamples_; i++) {
+      for (int j = 0; j < n_ch; j++) {
+        for (int k = 0; k < n_mics; k++) {
+          prev_naps[i][j][k] = naps[i][j][k];
+        }
+      }
+    }
+  }
+
 }
 
 

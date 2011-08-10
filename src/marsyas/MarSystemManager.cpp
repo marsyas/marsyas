@@ -259,7 +259,7 @@
 #include "MathPower.h"
 #include "PitchDiff.h"
 #include "CARFAC.h"
-#include "BinauralCARFAC.h"
+// #include "BinauralCARFAC.h"
 #include "HarmonicStrength.h"
 //modifyHeader
 
@@ -521,7 +521,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("MathPower", new MathPower("mathpowerpr"));
 	registerPrototype("PitchDiff", new PitchDiff("pitchdiffpr"));
 	registerPrototype("CARFAC", new CARFAC("carfac"));
-	registerPrototype("BinauralCARFAC", new BinauralCARFAC("binauralcarfac"));
+	// registerPrototype("BinauralCARFAC", new BinauralCARFAC("binauralcarfac"));
 	registerPrototype("HarmonicStrength", new HarmonicStrength("harmonicstrengthpr"));
 	//modifyRegister
 

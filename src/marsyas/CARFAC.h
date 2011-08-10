@@ -47,11 +47,28 @@ class CARFAC: public MarSystem
   MarControlPtr ctrl_printcoeffs_;
   MarControlPtr ctrl_printstate_;
 
-  // std::vector<double> CARFAC_FilterStep(double input_waves, int mic);
+  MarControlPtr ctrl_calculate_binaural_sai_;
+
+  MarControlPtr ctrl_sai_width_;
+  MarControlPtr ctrl_sai_memory_factor_;
+  MarControlPtr ctrl_sai_summary_itd_;
+  MarControlPtr ctrl_sai_threshold_alpha_;
+  MarControlPtr ctrl_sai_threshold_jump_factor_;
+  MarControlPtr ctrl_sai_threshold_jump_offset_;
+
+  MarControlPtr ctrl_sai_output_binaural_sai_;
+  MarControlPtr ctrl_sai_output_threshold_;
+  MarControlPtr ctrl_sai_output_strobes_;
+
+  bool calculate_binaural_sai_;
+  int sai_width_;
+  double sai_memory_factor_;
+  double sai_threshold_alpha_;
+  double sai_threshold_jump_factor_;
+  double sai_threshold_jump_offset_;
 
   void DoubleExponentialSmoothing(std::vector<double> &data, double polez1, double polez2, int n_ch);
   void CARFAC_AGCStep(const std::vector<std::vector<double> > &avg_detects);
-  // std::vector<double> filter(std::vector<double> a, std::vector<double>b, std::vector<double> x, std::vector<double>& state);
 
  public:
   CARFAC(std::string name);
@@ -61,40 +78,10 @@ class CARFAC: public MarSystem
 
   realvec lastin;
 
-
-  //
-  // Vectors that are reused in the filter, FilterStep and AGCStep
-  // functions.  Create them just once and reuse them.
-  //
-  // std::vector<double> filter1_a;
-  // std::vector<double> filter1_b;
-  // std::vector<double> filter1_x;
-  // std::vector<double> filter1_Z_state;
-  // std::vector<double> filter1_junk;
-
-  // std::vector<double> filter2_a;
-  // std::vector<double> filter2_b;
-  // std::vector<double> filter2_x;
-  // std::vector<double> filter2_Z_state;
-  // std::vector<double> filter2_out;
-
-  // std::vector<double> filter3_a;
-  // std::vector<double> filter3_b;
-  // std::vector<double> filter3_x;
-  // std::vector<double> filter3_Z_state;
-  // std::vector<double> filter3_out;
-
   std::vector<std::vector<std::vector<double> > > naps;
+  std::vector<std::vector<std::vector<double> > > prev_naps;
   std::vector<std::vector<std::vector<double> > > decim_naps;
-
-  // std::vector<double> filterstep_inputs;
-  // std::vector<double> filterstep_zA;
-  // std::vector<double> filterstep_zB;
-  // std::vector<double> filterstep_zY;
-  // std::vector<double> filterstep_r;
-  // std::vector<double> filterstep_z1;
-  // std::vector<double> filterstep_z2;
-  // std::vector<double> filterstep_detect;
+  std::vector<std::vector<std::vector<double> > > sai;
 
   std::vector<double> agcstep_prev_stage_mean;
   std::vector<double> agcstep_stage_sum;
