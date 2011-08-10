@@ -80,7 +80,7 @@ void train_and_predict(string trainFileName,string testFileName)
   // the same as the WekaSource
   //
   net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->linkControl("Classifier/cl/mrs_string/mode", "train");  
+  net->updControl("Classifier/cl/mrs_string/mode", "train");  
 
   ////////////////////////////////////////////////////////////
   //
