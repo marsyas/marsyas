@@ -36,6 +36,7 @@
 
 #include <vector>
 #include <iomanip>
+#include <sstream>
 
 #if defined(__APPLE_CC__)
 #include <GLUT/glut.h>
@@ -88,6 +89,9 @@ int summary_itd_height_ = 96;
 double nap_max = -99999999.;
 double nap_min = 99999999;
 
+
+mrs_realvec data_;
+mrs_realvec waveform_data_;
 mrs_realvec nap_data_;
 mrs_realvec threshold_data_;
 mrs_realvec strobes_data_;
@@ -97,6 +101,11 @@ int visualize_channel_ = 50;
 int current_time_;
 int last_time_;
 int iteration = 0;
+
+double fps_;
+bool freeze_ = false;
+bool key_update_ = false;
+
 
 void
 printUsage(string progName)
@@ -187,12 +196,13 @@ void carfac_setup(string inAudioFileName)
 
   net->addMarSystem(mng.create("Gain", "gain"));
 
-  MarSystem* carfac = mng.create("BinauralCARFAC", "carfac");
+  MarSystem* carfac = mng.create("CARFAC", "carfac");
   net->addMarSystem(carfac);
-  net->updControl("BinauralCARFAC/carfac/mrs_real/memory_factor", memory_factor_);
-  net->updControl("BinauralCARFAC/carfac/mrs_real/threshold_alpha", threshold_alpha_);
-  net->updControl("BinauralCARFAC/carfac/mrs_real/threshold_jump_factor", threshold_jump_factor_);
-  net->updControl("BinauralCARFAC/carfac/mrs_real/threshold_jump_offset", threshold_jump_offset_);
+  net->updControl("CARFAC/carfac/mrs_bool/calculate_binaural_sai", true);
+  net->updControl("CARFAC/carfac/mrs_real/sai_memory_factor", memory_factor_);
+  net->updControl("CARFAC/carfac/mrs_real/sai_threshold_alpha", threshold_alpha_);
+  net->updControl("CARFAC/carfac/mrs_real/sai_threshold_jump_factor", threshold_jump_factor_);
+  net->updControl("CARFAC/carfac/mrs_real/sai_threshold_jump_offset", threshold_jump_offset_);
 
   if (audioopt_) {
     net->updControl("mrs_real/israte", 44100.0);
@@ -210,20 +220,35 @@ void carfac_setup(string inAudioFileName)
 
 void update_summary_itd(mrs_realvec data)
 {
-  double datarows = data.getRows();
-  double datacols = data.getCols();
+  if (!freeze_) {
+    double datarows = data.getRows();
+    double datacols = data.getCols();
 
-  for (int row = 0; row < datarows; row++) {
-    summary_itd_[row][current_summary_pos_] = 0;
-    for (int col = 0; col < datacols; col++) {
-      summary_itd_[row][current_summary_pos_] += data(row,col);
-      // summary_itd_[row][current_summary_pos_] += data(row,col+(datacols/2.));
+    for (int row = 0; row < datarows; row++) {
+      summary_itd_[row][current_summary_pos_] = 0;
+      for (int col = 0; col < datacols; col++) {
+        summary_itd_[row][current_summary_pos_] += data(row,col);
+      }
     }
-  }
 
-  current_summary_pos_++;
-  if (current_summary_pos_ > summary_itd_width_) {
-    current_summary_pos_ = 0;
+    current_summary_pos_++;
+    if (current_summary_pos_ > summary_itd_width_) {
+      current_summary_pos_ = 0;
+    }
+
+  }
+}
+
+void drawGLString(double x, double y, double r, double g, double b, string s) {
+
+  glColor4f(r, g, b, 1.0f);
+  glRasterPos2f(x,y);
+
+  void * font = GLUT_BITMAP_HELVETICA_18;
+  for (string::iterator i = s.begin(); i != s.end(); ++i)
+  {
+    char c = *i;
+    glutBitmapCharacter(font, c);
   }
 
 }
@@ -231,17 +256,25 @@ void update_summary_itd(mrs_realvec data)
 void display(void)
 {
   // Tick the network and then display the data that was generated
-  net->tick();
-  mrs_realvec data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+  if (key_update_ || !freeze_) {
+    net->tick();
+    data_ = net->getctrl("CARFAC/carfac/mrs_realvec/sai_output_binaural_sai")->to<mrs_realvec>();
+    waveform_data_ = net->getctrl("Gain/gain/mrs_realvec/processedData")->to<mrs_realvec>();
+    strobes_data_ = net->getctrl("CARFAC/carfac/mrs_realvec/sai_output_strobes")->to<mrs_realvec>();
+    nap_data_ = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+    threshold_data_ = net->getctrl("CARFAC/carfac/mrs_realvec/sai_output_threshold")->to<mrs_realvec>();
+  }
 
-  mrs_realvec waveform_data = net->getctrl("Gain/gain/mrs_realvec/processedData")->to<mrs_realvec>();
+  // cout << "data=" << data << endl;
+  // exit(0);
+
 
   // Stop at the end of the input soundfile
   if ((!audioopt_) && (!net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>())) {
     exit(0);
   }
 
-  update_summary_itd(data);
+  update_summary_itd(data_);
 
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -250,22 +283,22 @@ void display(void)
 
   if (summaryopt_) {
     if (!initialized) {
-      summary = data;
+      summary = data_;
       initialized = true;
     } else {
-      summary += data;
+      summary += data_;
     }
-    data = summary;
+    data_ = summary;
   }
 
-  double datarows = data.getRows();
-  double datacols = data.getCols();
+  double datarows = data_.getRows();
+  double datacols = data_.getCols();
 
   double max = -99999999.;
   double min = 99999999;
   for (int row = 0; row < datarows; row++) {
     for (int col = 0; col < datacols; col++) {
-      double color = data(row,col);
+      double color = data_(row,col);
       if (color > max) {
         max = color;
       }
@@ -277,16 +310,16 @@ void display(void)
 
   last_time_ = current_time_;
   current_time_ = glutGet(GLUT_ELAPSED_TIME);
-  double fps = 1.0 / ((current_time_ - last_time_) / 1000.);
 
   if (iteration % 10 == 0) {
-    cout << "fps=" << int(fps) << endl;
+    fps_ = 1.0 / ((current_time_ - last_time_) / 1000.);
   }
+
   iteration++;
 
   for (int row = 0; row < datarows; row++) {
     for (int col = 0; col < datacols; col++) {
-      double color = data(row,col);
+      double color = data_(row,col);
       double normalized_color = 1. - ((color - min) / (max - min));
       double y = (((1. - (row / datarows) - 0.5)) * 1.1) + 0.4;
       double x = ((col / datacols) - 0.5) * 1.8;
@@ -311,18 +344,18 @@ void display(void)
   //
   glColor3f(1.0,0.5,0.5);
   glBegin(GL_LINE_STRIP);
-  for (int col = 0; col < waveform_data.getCols(); col++) {
-    double x = ((col / 100.) * 0.37) - 0.95;
-    double y = (waveform_data(0,col) / 10.0) - 0.25;
+  for (int col = 0; col < waveform_data_.getCols(); col++) {
+    double x = ((col / 100.) * 0.3) - 0.95;
+    double y = (waveform_data_(0,col) / 10.0) - 0.25;
     glVertex3f(x,y,0);
   }
   glEnd();
 
   glColor3f(0.5,1.0,0.5);
   glBegin(GL_LINE_STRIP);
-  for (int col = 0; col < waveform_data.getCols(); col++) {
-    double x = ((col / 100.) * 0.37) - 0.95;
-    double y = (waveform_data(1,col) / 10.0) - 0.25;
+  for (int col = 0; col < waveform_data_.getCols(); col++) {
+    double x = ((col / 100.) * 0.3) - 0.95;
+    double y = (waveform_data_(1,col) / 10.0) - 0.25;
     glVertex3f(x,y,0);
   }
   glEnd();
@@ -355,7 +388,7 @@ void display(void)
       // snessnet(TODO) - These parameters were all picked emperically
       // to make the picture fit.
       double y = (((1. - (row / datarows) - 0.5)) * 0.3) - 0.5;
-      double x = (((col / datacols) - 0.5) * 1.9) + 0.;
+      double x = (((col / datacols) - 0.5) * 1.52) - 0.2;
       glColor3f(normalized_color,normalized_color,normalized_color);
 
       glBegin(GL_POLYGON);
@@ -403,11 +436,13 @@ void display(void)
     }
   }
 
+  if (freeze_) {
+
   // Nap data
   glColor3f(0.8,0.9,0.8);
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < nap_data_cols; col++) {
-    double x = ((col / 100.) * 0.35) - 0.95;
+    double x = ((col / 100.) * 0.3) - 0.95;
     double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.90;
     glVertex3f(x,y,0);
   }
@@ -420,35 +455,98 @@ void display(void)
   glColor3f(0.95,0.35,0.35);
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < threshold_data_cols; col++) {
-    double x = ((col / 100.) * 0.35) - 0.955;
+    double x = ((col / 100.) * 0.3) - 0.955;
     double y = (((threshold_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.90;
     glVertex3f(x,y,0);
   }
   glEnd();
 
 
-  // Strobes data
-  glColor3f(1.0,1.0,0.0);
-  glBegin(GL_LINES);
-  // cout << "strobes ";
-  for (int col = 0; col < strobes_data_.getCols(); col++) {
-    if (strobes_data_(visualize_channel_,col)) {
-      // cout << col << " ";
-    double x = ((col / 100.) * 0.35) - 0.95;
-    glVertex3f(x,-0.90,0);
-    glVertex3f(x,-0.80,0);
+    // Strobes data
+    glColor3f(1.0,1.0,0.0);
+    glBegin(GL_LINES);
+    // cout << "strobes ";
+    for (int col = 0; col < strobes_data_.getCols(); col++) {
+      if (strobes_data_(visualize_channel_,col)) {
+        // cout << col << " ";
+        double x = ((col / 100.) * 0.3) - 0.95;
+        glVertex3f(x,-0.90,0);
+        glVertex3f(x,-0.80,0);
+      }
     }
+    // cout << endl;
+    glEnd();
   }
-  // cout << endl;
-  glEnd();
+
+  // Current parameters
+
+
+  stringstream outstr;
+  outstr << setprecision (3);
+  outstr << "memory " << memory_factor_;
+  drawGLString(0.65,-0.22,1,1,1,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "alpha " << threshold_alpha_;
+  drawGLString(0.65,-0.27,1,1,1,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "jump_factor " << threshold_jump_factor_;
+  drawGLString(0.65,-0.32,1,1,1,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "jump_offset " << threshold_jump_offset_;
+  drawGLString(0.65,-0.37,1,1,1,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "channel " << visualize_channel_;
+  drawGLString(0.65,-0.42,1,1,1,outstr.str());
+
+
+
+  // Help functions
+  outstr.str(std::string());
+  outstr << "parameters";
+  drawGLString(0.65,-0.5,1,1,0,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "memory => q/a";
+  drawGLString(0.65,-0.55,1,1,0,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "alpha => w/s";
+  drawGLString(0.65,-0.60,1,1,0,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "jump factor => e/d";
+  drawGLString(0.65,-0.65,1,1,0,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "jump offset => r/f";
+  drawGLString(0.65,-0.70,1,1,0,outstr.str());
+
+  outstr.str(std::string());
+  outstr << "channel => -/+";
+  drawGLString(0.65,-0.75,1,1,0,outstr.str());
+
+  // FPS
+
+  outstr.str(std::string());
+  outstr << "fps = " << (int)fps_;
+  drawGLString(0.65,-0.95,1,0,0,outstr.str());
+
 
 
   glFlush();
 
   glutSwapBuffers();
 
+
+  key_update_ = false;
   // sleep(1);
 }
+
+
 
 void reshape(int width, int height)
 {
@@ -461,10 +559,9 @@ void idle(void)
 }
 
 void keyPressed (unsigned char key, int x, int y) {
+  bool update_strobes = false;
   if (key == ' ') {
-    strobes_data_ = net->getctrl("BinauralCARFAC/carfac/mrs_realvec/output_strobes")->to<mrs_realvec>();
-    nap_data_ = net->getctrl("BinauralCARFAC/carfac/mrs_realvec/output_nap")->to<mrs_realvec>();
-    threshold_data_ = net->getctrl("BinauralCARFAC/carfac/mrs_realvec/output_threshold")->to<mrs_realvec>();
+    freeze_ = !freeze_;
   }
   if (key == '-' || key == '_') {
     visualize_channel_--;
@@ -478,7 +575,81 @@ void keyPressed (unsigned char key, int x, int y) {
       visualize_channel_ = 95;
     }
   }
-  cout << "visualize_channel=" << visualize_channel_ << endl;
+
+  if (key == 'q') {
+    memory_factor_ *= 1.001;
+    if (memory_factor_ > 1.0) {
+      memory_factor_ = 1;
+    }
+  }
+
+  if (key == 'a') {
+    memory_factor_ *= 0.999;
+    if (memory_factor_ < 0.1) {
+      memory_factor_ = 0.1;
+    }
+  }
+
+  // threshold_alpha
+
+  if (key == 'w') {
+    threshold_alpha_ *= 1.001;
+    if (threshold_alpha_ > 1.0) {
+      threshold_alpha_ = 1;
+    }
+    update_strobes = true;
+  }
+
+  if (key == 's') {
+    threshold_alpha_ *= 0.999;
+    if (threshold_alpha_ < 0.1) {
+      threshold_alpha_ = 0.1;
+    }
+    update_strobes = true;
+  }
+
+  // threshold_alpha
+
+  if (key == 'e') {
+    threshold_jump_factor_ *= 1.1;
+    if (threshold_jump_factor_ > 100.0) {
+      threshold_jump_factor_ = 100;
+    }
+    update_strobes = true;
+  }
+
+  if (key == 'd') {
+    threshold_jump_factor_ *= 0.9;
+    if (threshold_jump_factor_ < 0.1) {
+      threshold_jump_factor_ = 0.1;
+    }
+    update_strobes = true;
+  }
+  // threshold_alpha
+
+  if (key == 'r') {
+    threshold_jump_offset_ *= 1.1;
+    if (threshold_jump_offset_ > 100.0) {
+      threshold_jump_offset_ = 100;
+    }
+    update_strobes = true;
+  }
+
+  if (key == 'f') {
+    threshold_jump_offset_ *= 0.9;
+    if (threshold_jump_offset_ < 0.1) {
+      threshold_jump_offset_ = 0.1;
+    }
+    update_strobes = true;
+  }
+
+
+  net->updControl("CARFAC/carfac/mrs_real/sai_memory_factor", memory_factor_);
+  net->updControl("CARFAC/carfac/mrs_real/sai_threshold_alpha", threshold_alpha_);
+  net->updControl("CARFAC/carfac/mrs_real/sai_threshold_jump_factor", threshold_jump_factor_);
+  net->updControl("CARFAC/carfac/mrs_real/sai_threshold_jump_offset", threshold_jump_offset_);
+
+  key_update_ = true;
 }
 
 
