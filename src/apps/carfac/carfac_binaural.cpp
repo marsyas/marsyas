@@ -619,7 +619,7 @@ void keyPressed (unsigned char key, int x, int y) {
     if (threshold_alpha_ > 1.0) {
       threshold_alpha_ = 1;
     }
-    update_strobes = true;
+    key_update_ = true;
   }
 
   if (key == 's') {
@@ -627,7 +627,7 @@ void keyPressed (unsigned char key, int x, int y) {
     if (threshold_alpha_ < 0.1) {
       threshold_alpha_ = 0.1;
     }
-    update_strobes = true;
+    key_update_ = true;
   }
 
   // threshold_alpha
@@ -637,7 +637,7 @@ void keyPressed (unsigned char key, int x, int y) {
     if (threshold_jump_factor_ > 100.0) {
       threshold_jump_factor_ = 100;
     }
-    update_strobes = true;
+    key_update_ = true;
   }
 
   if (key == 'd') {
@@ -645,7 +645,7 @@ void keyPressed (unsigned char key, int x, int y) {
     if (threshold_jump_factor_ < 0.1) {
       threshold_jump_factor_ = 0.1;
     }
-    update_strobes = true;
+    key_update_ = true;
   }
   // threshold_alpha
 
@@ -654,7 +654,7 @@ void keyPressed (unsigned char key, int x, int y) {
     if (threshold_jump_offset_ > 100.0) {
       threshold_jump_offset_ = 100;
     }
-    update_strobes = true;
+    key_update_ = true;
   }
 
   if (key == 'f') {
@@ -662,7 +662,7 @@ void keyPressed (unsigned char key, int x, int y) {
     if (threshold_jump_offset_ < 0.1) {
       threshold_jump_offset_ = 0.1;
     }
-    update_strobes = true;
+    key_update_ = true;
   }
 
   if (key == 'z') {
@@ -670,7 +670,7 @@ void keyPressed (unsigned char key, int x, int y) {
     threshold_alpha_ = orig_threshold_alpha_;
     threshold_jump_factor_ = orig_threshold_jump_factor_;
     threshold_jump_offset_ = orig_threshold_jump_offset_;
-    update_strobes = true;
+    key_update_ = true;
   }
 
   net->updControl("CARFAC/carfac/mrs_real/sai_memory_factor", memory_factor_);
@@ -678,7 +678,7 @@ void keyPressed (unsigned char key, int x, int y) {
   net->updControl("CARFAC/carfac/mrs_real/sai_threshold_jump_factor", threshold_jump_factor_);
   net->updControl("CARFAC/carfac/mrs_real/sai_threshold_jump_offset", threshold_jump_offset_);
 
-  key_update_ = true;
+
 }
 
 
