@@ -383,7 +383,12 @@ void display(void)
 
   for (unsigned int row = 0; row < summary_itd_.size(); row++) {
     for (unsigned int col = 0; col < summary_itd_[0].size(); col++) {
-      double color = summary_itd_[row][col];
+      int curr_col = (current_summary_pos_ + col) % summary_itd_[0].size();
+      // if (curr_col > summary_itd_[0].size()) {
+      //   curr_col = current_summary_pos_ - col;
+      // }
+      // curr_col = 0;
+      double color = summary_itd_[row][curr_col];
       double normalized_color = 1. - ((color - summary_itd_min) / (summary_itd_max - summary_itd_min));
       // snessnet(TODO) - These parameters were all picked emperically
       // to make the picture fit.
