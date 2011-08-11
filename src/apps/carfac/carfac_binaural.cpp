@@ -359,7 +359,7 @@ void display(void)
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < waveform_data_.getCols(); col++) {
     double x = ((col / 100.) * 0.3) - 0.95;
-    double y = (waveform_data_(0,col) / 10.0) - 0.25;
+    double y = (waveform_data_(0,col) / 20.0) - 0.22;
     glVertex3f(x,y,0);
   }
   glEnd();
@@ -368,7 +368,7 @@ void display(void)
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < waveform_data_.getCols(); col++) {
     double x = ((col / 100.) * 0.3) - 0.95;
-    double y = (waveform_data_(1,col) / 10.0) - 0.25;
+    double y = (waveform_data_(1,col) / 20.0) - 0.22;
     glVertex3f(x,y,0);
   }
   glEnd();
@@ -405,7 +405,7 @@ void display(void)
       double normalized_color = 1. - ((color - summary_itd_min) / (summary_itd_max - summary_itd_min));
       // snessnet(TODO) - These parameters were all picked emperically
       // to make the picture fit.
-      double y = (((1. - (row / datarows) - 0.5)) * 0.3) - 0.5;
+      double y = (((1. - (row / datarows) - 0.5)) * 0.4) - 0.5;
       double x = (((col / datacols) - 0.5) * 1.52) - 0.2;
       glColor3f(normalized_color,normalized_color,normalized_color);
 
@@ -461,7 +461,7 @@ void display(void)
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < nap_data_cols; col++) {
     double x = ((col / 100.) * 0.3) - 0.95;
-    double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.90;
+    double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.95;
     glVertex3f(x,y,0);
   }
   glEnd();
@@ -474,7 +474,7 @@ void display(void)
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < threshold_data_cols; col++) {
     double x = ((col / 100.) * 0.3) - 0.955;
-    double y = (((threshold_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.90;
+    double y = (((threshold_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.95;
     glVertex3f(x,y,0);
   }
   glEnd();
