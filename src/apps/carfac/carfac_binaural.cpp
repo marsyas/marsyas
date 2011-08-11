@@ -460,7 +460,7 @@ void display(void)
   glColor3f(0.8,0.9,0.8);
   glBegin(GL_LINE_STRIP);
   for (int col = 0; col < nap_data_cols; col++) {
-    double x = ((col / 100.) * 0.3) - 0.95;
+    double x = ((col / 100.) * 0.3) - 0.955;
     double y = (((nap_data_(visualize_channel_,col) - nap_min) / (nap_max - nap_min)) / 5.) - 0.95;
     glVertex3f(x,y,0);
   }
@@ -487,8 +487,8 @@ void display(void)
     for (int col = 0; col < strobes_data_.getCols(); col++) {
       if (strobes_data_(visualize_channel_,col)) {
         // cout << col << " ";
-        double x = ((col / 100.) * 0.3) - 0.95;
-        glVertex3f(x,-0.90,0);
+        double x = ((col / 100.) * 0.3) - 0.955;
+        glVertex3f(x,-0.97,0);
         glVertex3f(x,-0.80,0);
       }
     }
