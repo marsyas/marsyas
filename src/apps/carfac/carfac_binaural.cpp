@@ -62,11 +62,19 @@ mrs_natural highFreq_;
 mrs_natural lowFreq_;
 mrs_natural audioopt_;
 mrs_bool summaryopt_;
-mrs_real memory_factor_;
 mrs_bool summaryitdopt_;
+
+mrs_real memory_factor_;
 mrs_real threshold_alpha_;
 mrs_real threshold_jump_factor_;
 mrs_real threshold_jump_offset_;
+
+mrs_real orig_memory_factor_;
+mrs_real orig_threshold_alpha_;
+mrs_real orig_threshold_jump_factor_;
+mrs_real orig_threshold_jump_offset_;
+
+
 
 mrs_natural position_;
 mrs_natural ticks_;
@@ -177,6 +185,11 @@ loadOptions()
   threshold_alpha_ = cmd_options.getRealOption("threshold_alpha");
   threshold_jump_factor_ = cmd_options.getRealOption("threshold_jump_factor");
   threshold_jump_offset_ = cmd_options.getRealOption("threshold_jump_offset");
+
+  orig_memory_factor_ = memory_factor_;
+  orig_threshold_alpha_ = threshold_alpha_;
+  orig_threshold_jump_factor_ = threshold_jump_factor_;
+  orig_threshold_jump_offset_ = threshold_jump_offset_;
 }
 
 void carfac_setup(string inAudioFileName)
@@ -534,6 +547,10 @@ void display(void)
   outstr << "channel => -/+";
   drawGLString(0.65,-0.75,1,1,0,outstr.str());
 
+  outstr.str(std::string());
+  outstr << "reset => z";
+  drawGLString(0.65,-0.80,1,1,0,outstr.str());
+
   // FPS
 
   outstr.str(std::string());
@@ -648,6 +665,13 @@ void keyPressed (unsigned char key, int x, int y) {
     update_strobes = true;
   }
 
+  if (key == 'z') {
+    memory_factor_ = orig_memory_factor_;
+    threshold_alpha_ = orig_threshold_alpha_;
+    threshold_jump_factor_ = orig_threshold_jump_factor_;
+    threshold_jump_offset_ = orig_threshold_jump_offset_;
+    update_strobes = true;
+  }
 
   net->updControl("CARFAC/carfac/mrs_real/sai_memory_factor", memory_factor_);
   net->updControl("CARFAC/carfac/mrs_real/sai_threshold_alpha", threshold_alpha_);
