@@ -392,16 +392,16 @@ MarSystem* createLPCCextractor()
   return extractor;
 }
 
-void
+int
 printUsage(string progName)
 {
   MRSDIAG("bextract.cpp - printUsage");
   cerr << "Usage : " << progName << " [-e extractor] [-h help] [-s start(seconds)] [-l length(seconds)] [-m memory]  [-u usage] collection1 collection2 ... collectionN" << endl;
   cerr << endl;
-  exit(0);
+  return 0;
 }
 
-void
+int
 printHelp(string progName)
 {
   MRSDIAG("bextract.cpp - printHelp");
@@ -455,7 +455,7 @@ printHelp(string progName)
   cerr << "All extractors calculate means and variances over a memory size window" << endl;
   cerr << "SV can be appended in front of any extractor to extract a single vector (mean, variances) over a 30-second clip (for example SVSTFT) " << endl;
 
-  exit(0);
+  return 0;
 }
 
 
@@ -2995,7 +2995,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
   delete featureNetwork;
 }
 
-void
+int
 readCollection(Collection& l, string name)
 {
   MRSDIAG("sfplay.cpp - readCollection");
@@ -3020,8 +3020,9 @@ readCollection(Collection& l, string name)
 	warn += name;
 	warn += " - tried both default mf directory and current working directory";
 	MRSWARN(warn);
-	exit(1);
+	return 1;
   }
+  return 0;
 }
 
 void
@@ -3964,10 +3965,10 @@ main(int argc, const char **argv)
   loadOptions();
 
   if (helpopt)
-	printHelp(progName);
+	return printHelp(progName);
 
   if (usageopt)
-	printUsage(progName);
+	return printUsage(progName);
 
   //////////////////////////////////////////////////////////////////////////
   // Print analysis options
@@ -3987,7 +3988,7 @@ main(int argc, const char **argv)
 	if (extractorName.substr(0,2) == "SV")
 	  extractorName = extractorName.substr(2, extractorName.length());
 	mirex_bextract();
-	exit(0);
+	return 0;
   }
 
   int i = 0;
@@ -4004,7 +4005,10 @@ main(int argc, const char **argv)
   {
 	string sfname = *sfi;
 	Collection l;
-	readCollection(l,sfname);
+	int status = readCollection(l,sfname);
+	if (status != 0) {
+		return status;
+	}
 
 	if (!l.hasLabels())
 	{
@@ -4022,7 +4026,7 @@ main(int argc, const char **argv)
   if (single.getSize() == 0)
   {
 	MRSERR("Collection has no files  - exiting");
-	exit(1);
+	return 1;
   }
 
   if (shuffle_)
