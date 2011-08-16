@@ -28,7 +28,8 @@ namespace Marsyas
 	\ingroup Processing
 	\brief Calculates the relative strength of harmonics
 
-	Calculates the relative strength of multiples of the base_frequency
+	Calculates the strength of multiples of the base_frequency
+compared to the overall spectrum rms.
 
 	Controls:
 	- \b mrs_real/base_frequency [w] : sets the fundamental

@@ -22,6 +22,7 @@
 using std::ostringstream;
 using namespace Marsyas;
 
+using namespace std;
 
 HarmonicStrength::HarmonicStrength(mrs_string name) : MarSystem("HarmonicStrength", name)
 {
@@ -54,7 +55,7 @@ HarmonicStrength::addControls()
 	addctrl("mrs_realvec/harmonics", realvec(), ctrl_harmonics_);
 	addctrl("mrs_natural/harmonicsSize", 1, ctrl_harmonicsSize_);
 	setctrlState("mrs_natural/harmonicsSize", true);
-	addctrl("mrs_real/harmonicsWidth", 0.01, ctrl_harmonicsWidth_);
+	addctrl("mrs_real/harmonicsWidth", 0.05, ctrl_harmonicsWidth_);
 }
 
 void
@@ -69,15 +70,18 @@ HarmonicStrength::myUpdate(MarControlPtr sender)
 	mrs_natural num_harmonics = ctrl_harmonicsSize_->to<mrs_natural>();
 	//features names
 	ostringstream oss;
-	for (mrs_natural i = 0; i < num_harmonics; ++i) {
+	for (mrs_natural i = 0; i < num_harmonics; ++i)
+	{
 		oss << "HarmonicStrength_" << i+1 << ",";
-    }
+	}
 	setctrl("mrs_string/onObsNames", oss.str());
 }
 
+
+// used inside myProcess
 HarmonicPeakInfo
 HarmonicStrength::find_peak(mrs_real central_bin, mrs_realvec& in,
-mrs_natural t, mrs_real radius)
+                            mrs_natural t, mrs_real radius)
 {
 	HarmonicPeakInfo info;
 
@@ -88,16 +92,18 @@ mrs_natural t, mrs_real radius)
 	// TODO: use quadratic interpolation for a better estimate
 	//       of the magnitude
 	mrs_natural best_bin = -1;
-	mrs_real best_magnitude = 0; 
-	for (mrs_natural i=central_bin-radius; i<central_bin+1+radius; i++) {
-		if (in(i,t) > best_magnitude) {
+	mrs_real best_magnitude = 0;
+	for (mrs_natural i=central_bin-radius; i<central_bin+radius; i++)
+	{
+		if (in(i,t) > best_magnitude)
+		{
 			best_bin = i;
 			best_magnitude = in(i,t);
 		}
 	}
 
 	info.bin_num = best_bin;
-	info.magnitude = log(best_magnitude);
+	info.magnitude = best_magnitude;
 	return info;
 }
 
@@ -110,32 +116,34 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 	mrs_real base_freq = ctrl_base_frequency_->to<mrs_real>();
 	MarControlAccessor acc(ctrl_harmonics_);
 	mrs_realvec& harmonics = acc.to<mrs_realvec>();
-	mrs_real srate = ctrl_israte_->to<mrs_real>();
 	mrs_real width = ctrl_harmonicsWidth_->to<mrs_real>();
-	mrs_real freq2bin = srate / inObservations_ / 4.0;
 
-	mrs_real bin = base_freq * freq2bin;
+	mrs_real freq2bin = 1.0 / ctrl_israte_->to<mrs_real>();
 
 	// Iterate over the samples (remember, FFT is vertical)
 	for (t = 0; t < inSamples_; t++)
 	{
-        mrs_real radius = base_freq * width * freq2bin;
-		HarmonicPeakInfo info = find_peak(bin, in, t, radius);
-		mrs_real base_strength = info.magnitude;
-//		std::cout<<"\tfreq\tbin\tbin_num\tstrength"<<std::endl;
+		mrs_real energy_rms = 0.0;
+		for (o = 0; o < inObservations_; o++)
+		{
+			energy_rms += in(o, t) * in(o,t);
+		}
+		energy_rms = sqrt(energy_rms);
+
+//		std::cout<<"\tfreq\tbin\tradius\tbin_num\tstrength"<<std::endl;
 		for (h = 0; h < num_harmonics; h++)
 		{
 			mrs_real freq = harmonics(h) * base_freq;
-			bin = freq * freq2bin;
-            radius = bin*width;
-			info = find_peak(bin, in, t, radius);
-			mrs_real strength = info.magnitude;
+			mrs_real bin = freq * freq2bin;
+			mrs_real radius = bin * width;
+			HarmonicPeakInfo info = find_peak(bin, in, t, radius);
 
-//			std::cout<<"\t"<<freq<<"\t"<<bin<<"\t"<<info.bin_num<<"\t"<<strength<<std::endl;
+//           printf("\t%.1f\t%.1f\t%.3g\t%li\t%.2g\n",
+//                    freq, bin, radius, info.bin_num, info.magnitude);
 
-			// we're dealing with log(), so minus is division
-			out(h, t) = strength - base_strength;
+			out(h, t) = log(info.magnitude / energy_rms);
 		}
 	}
+//    std::cout<<in;
 }
 
