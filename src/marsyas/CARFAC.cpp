@@ -218,6 +218,14 @@ void CARFAC::allocateVectors() {
 void
 CARFAC::myUpdate(MarControlPtr sender)
 {
+  // Binaural SAI
+  calculate_binaural_sai_ = getctrl("mrs_bool/calculate_binaural_sai")->to<mrs_bool>();
+  sai_width_ = getctrl("mrs_natural/sai_width")->to<mrs_natural>();
+  sai_memory_factor_ = getctrl("mrs_real/sai_memory_factor")->to<mrs_real>();
+  sai_threshold_alpha_ = getctrl("mrs_real/sai_threshold_alpha")->to<mrs_real>();
+  sai_threshold_jump_factor_ = getctrl("mrs_real/sai_threshold_jump_factor")->to<mrs_real>();
+  sai_threshold_jump_offset_ = getctrl("mrs_real/sai_threshold_jump_offset")->to<mrs_real>();
+
   MarControlAccessor acc_on(ctrl_sai_output_binaural_sai_);
   mrs_realvec& sai_output_binaural_sai = acc_on.to<mrs_realvec>();
   // sai_output_binaural_sai.stretch(onObservations_,inSamples_);
@@ -243,13 +251,6 @@ CARFAC::myUpdate(MarControlPtr sender)
 
   allocateVectors();
 
-  // Binaural SAI
-  calculate_binaural_sai_ = getctrl("mrs_bool/calculate_binaural_sai")->to<mrs_bool>();
-  sai_width_ = getctrl("mrs_natural/sai_width")->to<mrs_natural>();
-  sai_memory_factor_ = getctrl("mrs_real/sai_memory_factor")->to<mrs_real>();
-  sai_threshold_alpha_ = getctrl("mrs_real/sai_threshold_alpha")->to<mrs_real>();
-  sai_threshold_jump_factor_ = getctrl("mrs_real/sai_threshold_jump_factor")->to<mrs_real>();
-  sai_threshold_jump_offset_ = getctrl("mrs_real/sai_threshold_jump_offset")->to<mrs_real>();
 }
 
 void
