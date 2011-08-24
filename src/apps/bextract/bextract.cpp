@@ -3696,7 +3696,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	{
 	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 	  // round
-	  label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_natural>() + 0.5;
+	  label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
 	  seen = false;
 
 
