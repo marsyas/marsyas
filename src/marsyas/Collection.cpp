@@ -20,6 +20,7 @@
 #include "Collection.h"
 #include <algorithm>
 #include <iterator>
+#include <time.h>  // for srand(time(NULL))
 
 
  
