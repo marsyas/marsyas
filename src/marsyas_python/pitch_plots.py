@@ -197,17 +197,19 @@ def something_gram(net, winSize, input_filename, output_filename,
   if (end == None):
     fend = fsize
   else:
-    fend = (float(end) - float(start)) * srate
+    fend = (float(end) - float(start)) * srate 
   nTicks = int(fend / winSize)
   nTimes.setValue_natural(nTicks)
   duration = nTicks * winSize / srate
+  print start
+  print duration
   net.tick()
   figure(1);
   # use eo, so to limit the y-axis 
   correlogram = control2array(net, "mrs_realvec/processedData")
 #  marplot(correlogram, colormap, 'auto', plot_title = plot_title, x_label = "Time(seconds)",
 #          ey=duration, y_label = "Lag (samples)")
-  marplot(correlogram, aspect='auto', cmap=colormap,plot_title = plot_title, x_label= "Time (seconds)", y_label = "Lag(samples)",
+  marplot(correlogram, aspect='auto', cmap=colormap, plot_title = plot_title, x_label= "Time (seconds)", y_label = "Lag(samples)",
           sy = float(start),ey = float(start)+duration)
   print "Writing " + output_filename
   savefig(output_filename)      
@@ -324,6 +326,7 @@ def main():
   if (method == None):
     method = "spectrogram"
 
+  print "start"+str(start)
 
   spec = ["Series/pitchExtract",
           ["SoundFileSource/src",
@@ -365,7 +368,7 @@ def main():
   amdfogram_net = create(accum_spec)
 
 
-
+  
   if (method == "zerocrossings"):
     zerocrossings(10, 512, input_file)
   elif (method == "spectrum"):
