@@ -178,101 +178,40 @@ def chroma(frame_num, winSize, input_filename):
 
 
 
-def spectrogram(winSize, input_filename):
-  spec = ["Series/pitchExtract",
-                ["SoundFileSource/src",
-                 "Windowing/win",
-                 "Spectrum/spk",
-                 "PowerSpectrum/pspk",
-                 "Gain/gain"
-                 ]
-                ]
 
-  accum_spec = ["Accumulator/acum",
-                [spec]]
 
-  net = create(accum_spec)
+
+def something_gram(net, winSize, input_filename, output_filename,
+                plot_title, colormap, start, end):
 
   fname = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
   fname.setValue_string(input_filename)
   inSamples = net.getControl("mrs_natural/inSamples")
   inSamples.setValue_natural(winSize)
+  srate = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_real/osrate").to_real()
   nTimes = net.getControl("mrs_natural/nTimes")
   fsize = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_natural/size").to_natural()
-  nTicks = fsize / winSize
+  pos = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_natural/pos")
+  spos = float(start) * srate
+  pos.setValue_natural(int(spos))
+  if (end == None):
+    fend = fsize
+  else:
+    fend = (float(end) - float(start)) * srate
+  nTicks = int(fend / winSize)
   nTimes.setValue_natural(nTicks)
-
+  duration = nTicks * winSize / srate
   net.tick()
   figure(1);
-  spectrogram = control2array(net, "mrs_realvec/processedData", eo=60)
-  marplot(spectrogram, 'bone_r', 'auto')
-  output_filename = os.path.splitext(input_filename)[0] + ".png"
-  savefig(output_filename)      
-
-
-
-def correlogram(winSize, input_filename):
-  spec = ["Series/pitchExtract",
-          ["SoundFileSource/src",
-           "Windowing/win",
-           "AutoCorrelation/acr",
-           "Transposer/transpose"
-           ]
-          ]
-  
-  accum_spec = ["Accumulator/acum",
-                [spec]]
-
-  net = create(accum_spec)
-
-  fname = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(input_filename)
-  inSamples = net.getControl("mrs_natural/inSamples")
-  inSamples.setValue_natural(winSize)
-  nTimes = net.getControl("mrs_natural/nTimes")
-  fsize = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_natural/size").to_natural()
-  nTicks = fsize / winSize
-  nTimes.setValue_natural(nTicks)
-
-  net.tick()
-  figure(1);
+  # use eo, so to limit the y-axis 
   correlogram = control2array(net, "mrs_realvec/processedData")
-  marplot(correlogram, 'jet', 'auto')
-  output_filename = os.path.splitext(input_filename)[0] + ".png"
+#  marplot(correlogram, colormap, 'auto', plot_title = plot_title, x_label = "Time(seconds)",
+#          ey=duration, y_label = "Lag (samples)")
+  marplot(correlogram, aspect='auto', cmap=colormap,plot_title = plot_title, x_label= "Time (seconds)", y_label = "Lag(samples)",
+          sy = float(start),ey = float(start)+duration)
+  print "Writing " + output_filename
   savefig(output_filename)      
 
-
-
-
-def amdfogram(winSize, input_filename):
-  spec = ["Series/pitchExtract",
-                ["SoundFileSource/src",
-                 "Windowing/win",
-                 "AMDF/amdf",
-                 "Transposer/transpose"
-                 ]
-                ]
-
-  accum_spec = ["Accumulator/acum",
-                [spec]]
-
-  net = create(accum_spec)
-
-  fname = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_string/filename")
-  fname.setValue_string(input_filename)
-  inSamples = net.getControl("mrs_natural/inSamples")
-  inSamples.setValue_natural(winSize)
-  nTimes = net.getControl("mrs_natural/nTimes")
-  fsize = net.getControl("Series/pitchExtract/SoundFileSource/src/mrs_natural/size").to_natural()
-  nTicks = fsize / winSize
-  nTimes.setValue_natural(nTicks)
-
-  net.tick()
-  figure(1);
-  amdfogram = control2array(net, "mrs_realvec/processedData")
-  marplot(amdfogram, 'jet', 'auto')
-  output_filename = os.path.splitext(input_filename)[0] + ".png"
-  savefig(output_filename)      
 
 
 
@@ -318,26 +257,134 @@ def chromagram():
 
 
 
-
-
+def usage():
+  print "Available options:"
+  print "\tcolormap:string (valid colormaps: jet, bone, bone_r, spectral, hot)"
+  print "\tstart:float (start of plot in seconds)"
+  print "\tend:float (start of plot in seconds)"
+  print "\tinput:string (input file .wav)"
+  print "\touput:string (output file .png)"
+  print "\tmethod:string (valid methods: correlogram, spectrogram, amdfogram)"
+  print "\tplot_title:string"
+  print "\twin_size:int"
 
 def main():
-  if (sys.argv[1] == "zerocrossings"):
-    zerocrossings(10, 512, sys.argv[2])
-  elif (sys.argv[1] == "spectrum"):
-    spectrum(5, 1024, sys.argv[2])
-  elif (sys.argv[1] == "autocorrelation"):
-    autocorrelation(5, 1024, sys.argv[2])
-  elif (sys.argv[1] == "amdf"):
-    amdf(5, 1024, sys.argv[2])
-  elif (sys.argv[1] == "chroma"):
-    chroma(5, 512, sys.argv[2])
-  elif (sys.argv[1] == "spectrogram"):
-    spectrogram(1024, sys.argv[2])
-  elif (sys.argv[1] == "correlogram"):
-    correlogram(1024, sys.argv[2])
-  elif (sys.argv[1] == "amdfogram"):
-    amdfogram(1024, sys.argv[2])
+  try:
+    opts, args = getopt.getopt(sys.argv[1:], "hc:e:i:m:o:p:s:w:v", ["help","colormap=","end=","input=","method=","output=",
+                                                                  "plot_title=","start=","win_size="])
+  except:
+    print str(err)
+    usage()
+    sys.exit(2)
+
+
+  input_file = None
+  method = None
+  output_file = None
+  verbose = False
+  colormap = 'jet'
+  plot_title = 'Marsyas plot'
+  start = 0
+  end = None
+  win_size = 1024
+
+  for o, a in opts:
+    if o == "-v":
+      verbose = True
+    elif o in ("-h", "--help"):
+      usage()
+      sys.exit()
+    elif o in ("-o", "--output"):
+      output_file = a
+    elif o in ("-i", "--input"):
+      input_file = a
+    elif o in ("-m", "--method"):
+      method = a
+    elif o in ("-c", "--colormap"):
+      colormap = a
+    elif o in ("-p", "--plot_title"):
+      plot_title = a
+    elif o in ("-s", "--start"):
+      start = a
+    elif o in ("-e", "--end"):
+      end = a
+    elif o in ("-w", "--win_size"):
+      win_size = int(a)
+    else:
+       assert False, "unhandled option"
+
+  if (input_file == None):
+    print "No input .wav file specified"
+    sys.exit(2)
+
+  if (output_file == None):
+    output_file = os.path.splitext(input_file)[0] + ".png"
+
+
+  if (method == None):
+    method = "spectrogram"
+
+
+  spec = ["Series/pitchExtract",
+          ["SoundFileSource/src",
+           "Windowing/win",
+           "AutoCorrelation/acr",
+           "Transposer/transpose"
+           ]
+          ]
+  accum_spec = ["Accumulator/acum",
+                [spec]]
+  correlogram_net = create(accum_spec)
+
+
+  spec = ["Series/pitchExtract",
+                ["SoundFileSource/src",
+                 "Windowing/win",
+                 "Spectrum/spk",
+                 "PowerSpectrum/pspk",
+                 "Gain/gain"
+                 ]
+                ]
+
+  accum_spec = ["Accumulator/acum",
+                [spec]]
+
+  spectrogram_net = create(accum_spec)
+
+  spec = ["Series/pitchExtract",
+                ["SoundFileSource/src",
+                 "Windowing/win",
+                 "AMDF/amdf",
+                 "Transposer/transpose"
+                 ]
+                ]
+
+  accum_spec = ["Accumulator/acum",
+                [spec]]
+
+  amdfogram_net = create(accum_spec)
+
+
+
+  if (method == "zerocrossings"):
+    zerocrossings(10, 512, input_file)
+  elif (method == "spectrum"):
+    spectrum(5, 1024, input_file)
+  elif (method == "autocorrelation"):
+    autocorrelation(5, 1024, input_file)
+  elif (method == "amdf"):
+    amdf(5, 1024, input_file)
+  elif (method == "chroma"):
+    chroma(5, 512, input_file)
+  elif (method == "spectrogram"):
+    something_gram(spectrogram_net, win_size, input_file, output_file,
+                   plot_title, colormap, start, end)
+  elif (method == "correlogram"):
+    something_gram(correlogram_net, win_size, input_file, output_file,
+                   plot_title, colormap, start, end)
+  elif (method == "amdfogram"):
+    something_gram(amdfogram_net, win_size, input_file, output_file,
+                   plot_title, colormap, start, end)
 
   return 0 
 
@@ -345,11 +392,6 @@ def main():
 
 
 
-# amdfogram()
-#chromagram()
-
-
-  
 
 if __name__ == "__main__":
    main()
