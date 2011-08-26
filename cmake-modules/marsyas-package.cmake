@@ -42,5 +42,4 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY
 #SET(CPACK_PACKAGE_EXECUTABLES "MyExecutable" "My Executable")
 
 
-include(CPack)
 
