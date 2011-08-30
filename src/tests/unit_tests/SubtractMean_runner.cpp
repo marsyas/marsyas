@@ -4,7 +4,7 @@
 #define CXXTEST_RUNNING
 #endif
 
-#define CXXTEST_HAVE_STD
+#define _CXXTEST_HAVE_STD
 #include <cxxtest/TestListener.h>
 #include <cxxtest/TestTracker.h>
 #include <cxxtest/TestRunner.h>
@@ -23,13 +23,13 @@ CxxTest::StaticSuiteDescription suiteDescription_SubtractMean_runner( "TestSubtr
 
 static class TestDescription_SubtractMean_runner_test_flow_settings : public CxxTest::RealTestDescription {
 public:
- TestDescription_SubtractMean_runner_test_flow_settings() : CxxTest::RealTestDescription( Tests_SubtractMean_runner, suiteDescription_SubtractMean_runner, 33, "test_flow_settings" ) {}
+ TestDescription_SubtractMean_runner_test_flow_settings() : CxxTest::RealTestDescription( Tests_SubtractMean_runner, suiteDescription_SubtractMean_runner, 40, "test_flow_settings" ) {}
  void runTest() { suite_SubtractMean_runner.test_flow_settings(); }
 } testDescription_SubtractMean_runner_test_flow_settings;
 
 static class TestDescription_SubtractMean_runner_test_process : public CxxTest::RealTestDescription {
 public:
- TestDescription_SubtractMean_runner_test_process() : CxxTest::RealTestDescription( Tests_SubtractMean_runner, suiteDescription_SubtractMean_runner, 53, "test_process" ) {}
+ TestDescription_SubtractMean_runner_test_process() : CxxTest::RealTestDescription( Tests_SubtractMean_runner, suiteDescription_SubtractMean_runner, 60, "test_process" ) {}
  void runTest() { suite_SubtractMean_runner.test_process(); }
 } testDescription_SubtractMean_runner_test_process;
 

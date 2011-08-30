@@ -29,7 +29,7 @@ public:
 
 static class TestDescription_AimGammatone_runner_test_wav_file : public CxxTest::RealTestDescription {
 public:
- TestDescription_AimGammatone_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimGammatone_runner, suiteDescription_AimGammatone_runner, 73, "test_wav_file" ) {}
+ TestDescription_AimGammatone_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimGammatone_runner, suiteDescription_AimGammatone_runner, 75, "test_wav_file" ) {}
  void runTest() { suite_AimGammatone_runner.test_wav_file(); }
 } testDescription_AimGammatone_runner_test_wav_file;
 

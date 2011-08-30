@@ -23,7 +23,7 @@ CxxTest::StaticSuiteDescription suiteDescription_AimSAI_runner( "TestAimSAI.h", 
 
 static class TestDescription_AimSAI_runner_test_wav_file : public CxxTest::RealTestDescription {
 public:
- TestDescription_AimSAI_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimSAI_runner, suiteDescription_AimSAI_runner, 34, "test_wav_file" ) {}
+ TestDescription_AimSAI_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimSAI_runner, suiteDescription_AimSAI_runner, 40, "test_wav_file" ) {}
  void runTest() { suite_AimSAI_runner.test_wav_file(); }
 } testDescription_AimSAI_runner_test_wav_file;
 

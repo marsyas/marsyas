@@ -23,7 +23,7 @@ CxxTest::StaticSuiteDescription suiteDescription_AimLocalMax_runner( "TestAimLoc
 
 static class TestDescription_AimLocalMax_runner_test_wav_file : public CxxTest::RealTestDescription {
 public:
- TestDescription_AimLocalMax_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimLocalMax_runner, suiteDescription_AimLocalMax_runner, 33, "test_wav_file" ) {}
+ TestDescription_AimLocalMax_runner_test_wav_file() : CxxTest::RealTestDescription( Tests_AimLocalMax_runner, suiteDescription_AimLocalMax_runner, 38, "test_wav_file" ) {}
  void runTest() { suite_AimLocalMax_runner.test_wav_file(); }
 } testDescription_AimLocalMax_runner_test_wav_file;
 
