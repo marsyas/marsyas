@@ -53,6 +53,19 @@ public:
     delete net;
   }
 
+  void test_memory_fold(void) 
+  {
+    TS_TRACE("Checking memory leak in wekasource fold");
+    MarSystemManager mng;
+    MarSystem* net = mng.create("Series/net");
+    net->addMarSystem(mng.create("WekaSource/wsrc"));
+    net->updControl("WekaSource/wsrc/mrs_string/filename", "files/tiny.arff");
+    net->updControl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
+
+    net->tick();
+    delete net;
+    TS_TRACE("done test for memory leak in wekasource fold");
+  }
 
 
 };
