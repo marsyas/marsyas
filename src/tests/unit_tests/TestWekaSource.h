@@ -59,14 +59,15 @@ public:
     MarSystemManager mng;
     MarSystem* net = mng.create("Series/net");
     net->addMarSystem(mng.create("WekaSource/wsrc"));
-    net->updControl("WekaSource/wsrc/mrs_string/filename", "files/tiny.arff");
+    // control updates MUST be in this order to trigger the double free!
     net->updControl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
+    net->updControl("WekaSource/wsrc/mrs_string/filename", "files/normal.arff");
 
     net->tick();
+
     delete net;
     TS_TRACE("done test for memory leak in wekasource fold");
   }
-
 
 };
 
