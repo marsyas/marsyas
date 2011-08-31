@@ -116,9 +116,9 @@ toy_with_harmonicStrength(mrs_string sfname)
 	cout<<"Relative harmonic strengths"<<endl;
 	for (mrs_natural h = 0; h<num_harmonics; ++h)
 	{
-		if (h==0) {
+		if (h==num_harmonics-1) {
 			cout<<"0.5"<<"\t";
-			harmonics(0) = 0.5;
+			harmonics(h) = 0.5;
 		} else {
 			cout<<h<<"\t";
 			harmonics(h) = h+1;
