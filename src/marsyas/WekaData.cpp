@@ -47,9 +47,12 @@ void WekaData::Create(mrs_natural cols)
 //Requires that the vector rows be freed
 void WekaData::Clear()
 {
-	vector<vector<mrs_real>*>::iterator iter = this->begin();
-	while (iter != this->end()) {
-		this->erase(iter);
+	if (rows_ > 0) {
+		vector<vector<mrs_real>*>::iterator iter = this->begin();
+		while (iter != this->end()) {
+			delete (*iter);
+			this->erase(iter);
+		}
 	}
 	this->clear();
 	filenames_.clear();
