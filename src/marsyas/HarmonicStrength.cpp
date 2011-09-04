@@ -90,9 +90,14 @@ HarmonicStrength::quadratic_interpolation(mrs_real best_bin,
     mrs_real g = in(best_bin+1, t);
 
     mrs_real p = 0.5 * (a-g)/(a-2*b+g);
+    // avoid some NaNs
+    if ((p < -0.5) || (p > 0.5)) {
+        return b;
+    }
     mrs_real yp = b - 0.25*(a-g)*p;
     return yp;
 }
+
 mrs_real
 HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
                                       mrs_natural t, mrs_real radius)
