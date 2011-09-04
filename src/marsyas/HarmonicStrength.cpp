@@ -95,6 +95,15 @@ HarmonicStrength::quadratic_interpolation(mrs_real best_bin,
         return b;
     }
     mrs_real yp = b - 0.25*(a-g)*p;
+    // avoid all NaNs
+    if (yp < b) {
+        // I think this happens because the search window doesn't
+        // encompass the entire spectrum, so the "highest" bin
+        // might not actually be the highest one, if it was on the
+        // edge of search window.
+        // TODO: find some convincing DSP thing to do in this case
+        return b;
+    }
     return yp;
 }
 
@@ -152,6 +161,12 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
             mrs_real magnitude = find_peak_magnitude(bin, in, t, radius);
 
             out(h, t) = log(magnitude / energy_rms);
+            /*
+            if (out(h,t) != out(h,t)) {
+                cout<<"zzzzzzzzzz NaN detected! zzzzzzz"<<endl;
+                cout<<magnitude<<"\t"<<energy_rms<<endl;
+            }
+            */
         }
     }
 }
