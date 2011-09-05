@@ -261,7 +261,6 @@
 #include "CARFAC.h"
 // #include "BinauralCARFAC.h"
 #include "HarmonicStrength.h"
-#include "SpectralCentroidAllBands.h"
 //modifyHeader
 
 
@@ -524,7 +523,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("CARFAC", new CARFAC("carfac"));
 	// registerPrototype("BinauralCARFAC", new BinauralCARFAC("binauralcarfac"));
 	registerPrototype("HarmonicStrength", new HarmonicStrength("harmonicstrengthpr"));
-	registerPrototype("SpectralCentroidAllBands", new SpectralCentroidAllBands("spectralcentroidallbandspr"));
 	//modifyRegister
 
 	//***************************************************************************************

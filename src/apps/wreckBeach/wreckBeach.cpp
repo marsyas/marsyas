@@ -160,8 +160,7 @@ toy_with_spectral_single(mrs_string sfname)
 
     MarSystem *fan = mng.create("Fanout", "fan");
 	net->addMarSystem(fan);
-	//fan->addMarSystem(mng.create("SpectralFlatnessAllBands", "sfab"));
-	fan->addMarSystem(mng.create("SpectralCentroidAllBands", "scab"));
+	fan->addMarSystem(mng.create("SpectralFlatnessAllBands", "sfab"));
 
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
