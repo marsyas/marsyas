@@ -69,7 +69,8 @@ printHelp(string progName)
 	cerr << "Usage : " << progName << " -t toy_with file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "Supported toy_with:" << endl;
-	cerr << "harmonics      : play with HarmonicStrength" << endl;
+	cerr << "harmonics       : play with HarmonicStrength" << endl;
+	cerr << "spectral_single : play with single SCF and SFM" << endl;
 	exit(1);
 }
 
@@ -141,6 +142,39 @@ toy_with_harmonicStrength(mrs_string sfname)
 	}
 }
 
+void
+toy_with_spectral_single(mrs_string sfname)
+{
+	MarSystemManager mng;
+
+	MarSystem *net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("ShiftInput", "si"));
+	net->addMarSystem(mng.create("Windowing", "win"));
+	net->addMarSystem(mng.create("Spectrum", "spec"));
+	net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
+	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
+	net->updControl("mrs_natural/inSamples", 1024);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", 1024);
+	net->updControl("Windowing/win/mrs_string/type", "Hanning");
+
+    MarSystem *fan = mng.create("Fanout", "fan");
+	net->addMarSystem(fan);
+	//fan->addMarSystem(mng.create("SpectralFlatnessAllBands", "sfab"));
+	fan->addMarSystem(mng.create("SpectralCentroidAllBands", "scab"));
+
+	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
+	{
+		net->tick();
+		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		for (mrs_natural i = 0; i<v.getSize(); ++i)
+		{
+			printf("%.5g\t", v(i));
+		}
+		cout<<endl;
+	}
+}
+
 
 // ********************** end toys **********
 
@@ -185,7 +219,9 @@ main(int argc, const char **argv)
 
 	if (toy_with == "harmonics")
 		toy_with_harmonicStrength(fname0);
-	else
+	else if (toy_with == "spectral_single")
+        toy_with_spectral_single(fname0);
+    else
 	{
 		cout << "Unsupported toy_with " << endl;
 		printHelp(progName);
