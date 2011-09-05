@@ -10,6 +10,8 @@
 
 EXECUTE_PROCESS(COMMAND python-config --prefix OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
 
+MESSAGE(${PYTHON_PREFIX})
+
 INCLUDE(CMakeFindFrameworks)
 IF(WIN32)
   FIND_LIBRARY(PYTHON_DEBUG_LIBRARY
@@ -37,7 +39,8 @@ IF(WIN32)
 ENDIF(WIN32)
 
 FIND_LIBRARY(PYTHON_LIBRARY
-  NAMES python26 python2.6
+  NAMES python27 python2.7
+        python26 python2.6
 	python25 python2.5
         python24 python2.4
         python23 python2.3
@@ -60,6 +63,7 @@ FIND_LIBRARY(PYTHON_LIBRARY
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
 
   PATH_SUFFIXES
+    python2.7/config
     python2.6/config
     python2.5/config
     python2.4/config
@@ -88,6 +92,7 @@ IF(Python_FRAMEWORKS)
   ENDIF(NOT PYTHON_INCLUDE_PATH)
 ENDIF(Python_FRAMEWORKS)
 
+MESSAGE(${PYTHON_PREFIX})
 FIND_PATH(PYTHON_INCLUDE_PATH
   NAMES Python.h
 
@@ -105,6 +110,7 @@ FIND_PATH(PYTHON_INCLUDE_PATH
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/include
 
   PATH_SUFFIXES
+    python2.7
     python2.6
     python2.5
     python2.4
@@ -117,6 +123,8 @@ FIND_PATH(PYTHON_INCLUDE_PATH
 
   NO_DEFAULT_PATH
 )
+
+MESSAGE(${PYTHON_INCLUDE_PATH})
 
 IF (WIN32)
   MARK_AS_ADVANCED(
