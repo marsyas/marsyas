@@ -3073,7 +3073,7 @@ initOptions()
   cmd_options.addBoolOption("featExtract", "fe", false);
   cmd_options.addBoolOption("saivq", "saivq", false);
   cmd_options.addBoolOption("onlyStable", "os", false);
-  cmd_options.addBoolOption("Regression", "rg", false);
+  cmd_options.addBoolOption("regression", "rg", false);
 }
 
 void
@@ -3125,7 +3125,7 @@ loadOptions()
   single_vector_ = cmd_options.getBoolOption("SingleVector");
 
   only_stable_ = cmd_options.getBoolOption("onlyStable");
-  regression_ = cmd_options.getBoolOption("Regression");
+  regression_ = cmd_options.getBoolOption("regression");
 
   // default feature set
   if ((mfcc_ == false) &&
