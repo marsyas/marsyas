@@ -261,6 +261,7 @@
 #include "CARFAC.h"
 // #include "BinauralCARFAC.h"
 #include "HarmonicStrength.h"
+#include "CsvFileSource.h"
 //modifyHeader
 
 
@@ -523,6 +524,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("CARFAC", new CARFAC("carfac"));
 	// registerPrototype("BinauralCARFAC", new BinauralCARFAC("binauralcarfac"));
 	registerPrototype("HarmonicStrength", new HarmonicStrength("harmonicstrengthpr"));
+	registerPrototype("CsvFileSource", new CsvFileSource("csvfilesourcepr"));
 	//modifyRegister
 
 	//***************************************************************************************

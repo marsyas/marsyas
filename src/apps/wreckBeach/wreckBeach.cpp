@@ -71,6 +71,7 @@ printHelp(string progName)
 	cerr << "Supported toy_with:" << endl;
 	cerr << "harmonics       : play with HarmonicStrength" << endl;
 	cerr << "spectral_single : play with single SCF and SFM" << endl;
+	cerr << "csv_input       : play with input csv file" << endl;
 	exit(1);
 }
 
@@ -117,10 +118,13 @@ toy_with_harmonicStrength(mrs_string sfname)
 	cout<<"Relative harmonic strengths"<<endl;
 	for (mrs_natural h = 0; h<num_harmonics; ++h)
 	{
-		if (h==num_harmonics-1) {
+		if (h==num_harmonics-1)
+		{
 			cout<<"0.5"<<"\t";
 			harmonics(h) = 0.5;
-		} else {
+		}
+		else
+		{
 			cout<<h<<"\t";
 			harmonics(h) = h+1;
 		}
@@ -158,11 +162,34 @@ toy_with_spectral_single(mrs_string sfname)
 	net->updControl("ShiftInput/si/mrs_natural/winSize", 1024);
 	net->updControl("Windowing/win/mrs_string/type", "Hanning");
 
-    MarSystem *fan = mng.create("Fanout", "fan");
+	MarSystem *fan = mng.create("Fanout", "fan");
 	net->addMarSystem(fan);
 	fan->addMarSystem(mng.create("SpectralFlatnessAllBands", "sfab"));
 
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
+	{
+		net->tick();
+		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		for (mrs_natural i = 0; i<v.getSize(); ++i)
+		{
+			printf("%.5g\t", v(i));
+		}
+		cout<<endl;
+	}
+}
+
+void
+toy_with_csv_input(mrs_string sfname)
+{
+	MarSystemManager mng;
+
+	MarSystem *net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("CsvFileSource", "src"));
+
+	net->updControl("CsvFileSource/src/mrs_string/filename", sfname);
+	net->updControl("mrs_natural/inSamples", 1);
+
+	while ( net->getctrl("CsvFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		net->tick();
 		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
@@ -219,8 +246,10 @@ main(int argc, const char **argv)
 	if (toy_with == "harmonics")
 		toy_with_harmonicStrength(fname0);
 	else if (toy_with == "spectral_single")
-        toy_with_spectral_single(fname0);
-    else
+		toy_with_spectral_single(fname0);
+	else if (toy_with == "csv_input")
+		toy_with_csv_input(fname0);
+	else
 	{
 		cout << "Unsupported toy_with " << endl;
 		printHelp(progName);
