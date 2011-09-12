@@ -42,6 +42,9 @@ compared to the overall spectrum rms.
       search for a peak (i.e. a 1000hz harmonic with a
       harmonicsWidth of 0.1 would look at all bins from 900 to
       1100 for the peak.
+    - \b mrs_natural/type [w] : 0 = output harmonic strength
+      relative to spectrum rms; 1 = output absolute (interpolated)
+      power of harmonic strength
 */
 
 class marsyas_EXPORT HarmonicStrength: public MarSystem

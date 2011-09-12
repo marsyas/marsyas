@@ -108,8 +108,8 @@ toy_with_harmonicStrength(mrs_string sfname)
 	net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
 	net->addMarSystem(mng.create("HarmonicStrength", "harm"));
 	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
-	net->updControl("mrs_natural/inSamples", 1024);
-	net->updControl("ShiftInput/si/mrs_natural/winSize", 1024);
+	net->updControl("mrs_natural/inSamples", 512);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", 2048);
 	net->updControl("Windowing/win/mrs_string/type", "Hanning");
 
 	mrs_natural num_harmonics = 8;
@@ -118,12 +118,14 @@ toy_with_harmonicStrength(mrs_string sfname)
 	cout<<"Relative harmonic strengths"<<endl;
 	for (mrs_natural h = 0; h<num_harmonics; ++h)
 	{
-		if (h==num_harmonics-1)
-		{
-			cout<<"0.5"<<"\t";
-			harmonics(h) = 0.5;
-		}
-		else
+		/*
+			if (h==num_harmonics-1)
+			{
+				cout<<"0.5"<<"\t";
+				harmonics(h) = 0.5;
+			}
+			else
+		    */
 		{
 			cout<<h<<"\t";
 			harmonics(h) = h+1;
@@ -131,16 +133,19 @@ toy_with_harmonicStrength(mrs_string sfname)
 	}
 	cout<<endl;
 
-	net->updControl("HarmonicStrength/harm/mrs_realvec/harmonics", harmonics);
+	//net->updControl("HarmonicStrength/harm/mrs_realvec/harmonics", harmonics);
 	net->updControl("HarmonicStrength/harm/mrs_natural/harmonicsSize", num_harmonics);
 	net->updControl("HarmonicStrength/harm/mrs_real/harmonicsWidth", 0.05);
+	net->updControl("HarmonicStrength/harm/mrs_natural/type", 1);
+	net->updControl("HarmonicStrength/harm/mrs_real/base_frequency", 293.3);
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		net->tick();
 		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		for (mrs_natural h = 0; h<num_harmonics; ++h)
 		{
-			printf("%.2f\t", v(h));
+			//printf("%.2f\t", v(h));
+			printf("%.8g\t", v(h));
 		}
 		cout<<endl;
 	}

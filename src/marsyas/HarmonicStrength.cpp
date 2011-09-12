@@ -26,15 +26,15 @@ using namespace std;
 
 HarmonicStrength::HarmonicStrength(mrs_string name) : MarSystem("HarmonicStrength", name)
 {
-    addControls();
+	addControls();
 }
 
 HarmonicStrength::HarmonicStrength(const HarmonicStrength& a) : MarSystem(a)
 {
-    ctrl_base_frequency_ = getctrl("mrs_real/base_frequency");
-    ctrl_harmonics_ = getctrl("mrs_realvec/harmonics");
-    ctrl_harmonicsSize_ = getctrl("mrs_natural/harmonicsSize");
-    ctrl_harmonicsWidth_ = getctrl("mrs_real/harmonicsWidth");
+	ctrl_base_frequency_ = getctrl("mrs_real/base_frequency");
+	ctrl_harmonics_ = getctrl("mrs_realvec/harmonics");
+	ctrl_harmonicsSize_ = getctrl("mrs_natural/harmonicsSize");
+	ctrl_harmonicsWidth_ = getctrl("mrs_real/harmonicsWidth");
 }
 
 
@@ -45,36 +45,52 @@ HarmonicStrength::~HarmonicStrength()
 MarSystem*
 HarmonicStrength::clone() const
 {
-    return new HarmonicStrength(*this);
+	return new HarmonicStrength(*this);
 }
 
 void
 HarmonicStrength::addControls()
 {
-    addctrl("mrs_real/base_frequency", 440.0, ctrl_base_frequency_);
-    addctrl("mrs_realvec/harmonics", realvec(), ctrl_harmonics_);
-    addctrl("mrs_natural/harmonicsSize", 1, ctrl_harmonicsSize_);
-    setctrlState("mrs_natural/harmonicsSize", true);
-    addctrl("mrs_real/harmonicsWidth", 0.05, ctrl_harmonicsWidth_);
+	addctrl("mrs_real/base_frequency", 440.0, ctrl_base_frequency_);
+	addctrl("mrs_realvec/harmonics", realvec(0), ctrl_harmonics_);
+	addctrl("mrs_natural/harmonicsSize", 0, ctrl_harmonicsSize_);
+	setctrlState("mrs_natural/harmonicsSize", true);
+	addctrl("mrs_real/harmonicsWidth", 0.05, ctrl_harmonicsWidth_);
+	addctrl("mrs_natural/type", 0);
 }
 
 void
 HarmonicStrength::myUpdate(MarControlPtr sender)
 {
-    MRSDIAG("HarmonicStrength.cpp - HarmonicStrength:myUpdate");
+	MRSDIAG("HarmonicStrength.cpp - HarmonicStrength:myUpdate");
 
-    /// Use the default MarSystem setup with equal input/output stream format.
-    MarSystem::myUpdate(sender);
-    ctrl_onObservations_->setValue(ctrl_harmonicsSize_->to<mrs_natural>(), NOUPDATE);
+	/// Use the default MarSystem setup with equal input/output stream format.
+	MarSystem::myUpdate(sender);
 
-    mrs_natural num_harmonics = ctrl_harmonicsSize_->to<mrs_natural>();
-    //features names
-    ostringstream oss;
-    for (mrs_natural i = 0; i < num_harmonics; ++i)
-    {
-        oss << "HarmonicStrength_" << i+1 << ",";
-    }
-    setctrl("mrs_string/onObsNames", oss.str());
+	mrs_natural num_harmonics = ctrl_harmonicsSize_->to<mrs_natural>();
+	// setup default harmonics
+	{
+		// leave this here for the scope of acc
+		MarControlAccessor acc(ctrl_harmonics_);
+		mrs_realvec& harmonics = acc.to<mrs_realvec>();
+		if ((num_harmonics > 0) && (harmonics.getSize() == 0))
+		{
+			harmonics.stretch(num_harmonics);
+			for (mrs_natural i=0; i < num_harmonics; ++i)
+			{
+				harmonics(i) = i+1;
+			}
+		}
+	}
+	ctrl_onObservations_->setValue(ctrl_harmonicsSize_->to<mrs_natural>(), NOUPDATE);
+
+	//features names
+	ostringstream oss;
+	for (mrs_natural i = 0; i < num_harmonics; ++i)
+	{
+		oss << "HarmonicStrength_" << i+1 << ",";
+	}
+	setctrl("mrs_string/onObsNames", oss.str());
 }
 
 
@@ -83,91 +99,100 @@ mrs_real
 HarmonicStrength::quadratic_interpolation(mrs_real best_bin,
         mrs_realvec& in, mrs_natural t)
 {
-    // https://ccrma.stanford.edu/~jos/sasp/Quadratic_Interpolation_Spectral_Peaks.html
-    // a = alpha, b = beta, g = gamma
-    mrs_real a = in(best_bin-1, t);
-    mrs_real b = in(best_bin+0, t);
-    mrs_real g = in(best_bin+1, t);
+	// https://ccrma.stanford.edu/~jos/sasp/Quadratic_Interpolation_Spectral_Peaks.html
+	// a = alpha, b = beta, g = gamma
+	mrs_real a = in(best_bin-1, t);
+	mrs_real b = in(best_bin+0, t);
+	mrs_real g = in(best_bin+1, t);
 
-    mrs_real p = 0.5 * (a-g)/(a-2*b+g);
-    // avoid some NaNs
-    if ((p < -0.5) || (p > 0.5)) {
-        return b;
-    }
-    mrs_real yp = b - 0.25*(a-g)*p;
-    // avoid all NaNs
-    if (yp < b) {
-        // I think this happens because the search window doesn't
-        // encompass the entire spectrum, so the "highest" bin
-        // might not actually be the highest one, if it was on the
-        // edge of search window.
-        // TODO: find some convincing DSP thing to do in this case
-        return b;
-    }
-    return yp;
+	mrs_real p = 0.5 * (a-g)/(a-2*b+g);
+	// avoid some NaNs
+	if ((p < -0.5) || (p > 0.5))
+	{
+		return b;
+	}
+	mrs_real yp = b - 0.25*(a-g)*p;
+	// avoid all NaNs
+	if (yp < b)
+	{
+		// I think this happens because the search window doesn't
+		// encompass the entire spectrum, so the "highest" bin
+		// might not actually be the highest one, if it was on the
+		// edge of search window.
+		// TODO: find some convincing DSP thing to do in this case
+		return b;
+	}
+	return yp;
 }
 
 mrs_real
 HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
                                       mrs_natural t, mrs_real radius)
 {
-    // find peak in 2*radius
-    // in real-world signals, the harmonic isn't always a
-    // literal multiple of the base frequency.  We allow a bit
-    // of margin (the "radius") to find the best bin
-    mrs_natural best_bin = -1;
-    mrs_real best_magnitude = 0;
-    for (mrs_natural i=central_bin-radius; i<central_bin+radius; i++)
-    {
-        if (in(i,t) > best_magnitude)
-        {
-            best_bin = i;
-            best_magnitude = in(i,t);
-        }
-    }
-    best_magnitude = quadratic_interpolation(best_bin, in, t);
+	// find peak in 2*radius
+	// in real-world signals, the harmonic isn't always a
+	// literal multiple of the base frequency.  We allow a bit
+	// of margin (the "radius") to find the best bin
+	mrs_natural best_bin = -1;
+	mrs_real best_magnitude = 0;
+	for (mrs_natural i=central_bin-radius; i<central_bin+radius; i++)
+	{
+		if (in(i,t) > best_magnitude)
+		{
+			best_bin = i;
+			best_magnitude = in(i,t);
+		}
+	}
+	best_magnitude = quadratic_interpolation(best_bin, in, t);
 
-    return best_magnitude;
+	return best_magnitude;
 }
 
 void
 HarmonicStrength::myProcess(realvec& in, realvec& out)
 {
-    mrs_natural h,t;
+	mrs_natural h,t;
 
-    mrs_natural num_harmonics = ctrl_harmonicsSize_->to<mrs_natural>();
-    mrs_real base_freq = ctrl_base_frequency_->to<mrs_real>();
-    MarControlAccessor acc(ctrl_harmonics_);
-    mrs_realvec& harmonics = acc.to<mrs_realvec>();
-    mrs_real width = ctrl_harmonicsWidth_->to<mrs_real>();
+	mrs_natural num_harmonics = ctrl_harmonicsSize_->to<mrs_natural>();
+	mrs_real base_freq = ctrl_base_frequency_->to<mrs_real>();
+	MarControlAccessor acc(ctrl_harmonics_);
+	mrs_realvec& harmonics = acc.to<mrs_realvec>();
+	mrs_real width = ctrl_harmonicsWidth_->to<mrs_real>();
 
-    mrs_real freq2bin = 1.0 / ctrl_israte_->to<mrs_real>();
+	mrs_real freq2bin = 1.0 / ctrl_israte_->to<mrs_real>();
 
-    // Iterate over the samples (remember, FFT is vertical)
-    for (t = 0; t < inSamples_; t++)
-    {
-        mrs_real energy_rms = 0.0;
-        for (o = 0; o < inObservations_; o++)
-        {
-            energy_rms += in(o, t) * in(o,t);
-        }
-        energy_rms = sqrt(energy_rms);
+	// Iterate over the samples (remember, FFT is vertical)
+	for (t = 0; t < inSamples_; t++)
+	{
+		mrs_real energy_rms = 0.0;
+		for (o = 0; o < inObservations_; o++)
+		{
+			energy_rms += in(o, t) * in(o,t);
+		}
+		energy_rms = sqrt(energy_rms);
 
-        for (h = 0; h < num_harmonics; h++)
-        {
-            mrs_real freq = harmonics(h) * base_freq;
-            mrs_real bin = freq * freq2bin;
-            mrs_real radius = bin * width;
-            mrs_real magnitude = find_peak_magnitude(bin, in, t, radius);
+		for (h = 0; h < num_harmonics; h++)
+		{
+			mrs_real freq = harmonics(h) * base_freq;
+			mrs_real bin = freq * freq2bin;
+			mrs_real radius = bin * width;
+			mrs_real magnitude = find_peak_magnitude(bin, in, t, radius);
 
-            out(h, t) = log(magnitude / energy_rms);
-            /*
-            if (out(h,t) != out(h,t)) {
-                cout<<"zzzzzzzzzz NaN detected! zzzzzzz"<<endl;
-                cout<<magnitude<<"\t"<<energy_rms<<endl;
-            }
-            */
-        }
-    }
+			if (getctrl("mrs_natural/type")->to<mrs_natural>() == 0)
+			{
+				out(h, t) = log(magnitude / energy_rms);
+			}
+			else
+			{
+				out(h, t) = magnitude;
+			}
+			/*
+			if (out(h,t) != out(h,t)) {
+			    cout<<"zzzzzzzzzz NaN detected! zzzzzzz"<<endl;
+			    cout<<magnitude<<"\t"<<energy_rms<<endl;
+			}
+			*/
+		}
+	}
 }
 
