@@ -29,6 +29,13 @@ set(
   CACHE STRING "The installation directory for the Python modules."
 )
 
+if (DEFINED CMAKE_INSTALL_PREFIX)
+  string(
+    REPLACE
+    "/usr" ${CMAKE_INSTALL_PREFIX}
+    PYTHON_INSTDIR ${PYTHON_INSTDIR}
+  )
+endif ()
 
 install(TARGETS _marsyas LIBRARY DESTINATION ${PYTHON_INSTDIR})
 
