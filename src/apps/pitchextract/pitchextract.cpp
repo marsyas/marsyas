@@ -393,7 +393,7 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 			playback->updControl("Fanout/mix/Series/ch2/SineSource/ss/mrs_real/frequency", 
 								 pitch2hertz(48 +chords(i)));
 			playback->updControl("Fanout/mix/Series/ch0/Gain/sinegain/mrs_real/gain", 0.5 * confidences(i));
-			playback->updControl("Fanout/mix/Series/ch1/Gain/soundgain/mrs_real/gain", 0.0);
+			playback->updControl("Fanout/mix/Series/ch1/Gain/soundgain/mrs_real/gain", 0.15);
 			playback->updControl("Fanout/mix/Series/ch2/Gain/sinegain/mrs_real/gain", 0.5);
 			
 			playback->tick();
