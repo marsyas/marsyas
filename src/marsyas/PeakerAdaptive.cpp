@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -49,6 +49,7 @@ PeakerAdaptive::addControls()
 	addctrl("mrs_real/peakGain", 1.0);
 	addctrl("mrs_natural/peakStrengthReset", 4);
 	addctrl("mrs_real/peakDecay", 0.9);
+	addctrl("mrs_bool/peakFound", false);
 }
 
 void 
@@ -73,7 +74,8 @@ PeakerAdaptive::myProcess(realvec& in, realvec& out)
 	peakDecay = getctrl("mrs_real/peakDecay")->to<mrs_real>();
 
 	out.setval(0.0);
-
+	MRSMSG("peakEnd = " << peakEnd);
+	
 	
 
 	for (o = 0; o < inObservations_; o++)
@@ -122,10 +124,18 @@ PeakerAdaptive::myProcess(realvec& in, realvec& out)
 
 				rms_ = fabs(in(o,maxIndex));
 				peakFound = true;
+				
+				
 			}
 		}
+		
 		if (!peakFound) 
+		{
 			rms_ *= peakDecay;
+			setctrl("mrs_bool/peakFound", false);
+		}
+		else 
+			setctrl("mrs_bool/peakFound", true);
 		peakHysterisis_ ++;
 	}
 }

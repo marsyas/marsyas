@@ -135,6 +135,14 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	mrs_natural len = contourSize;
 	mrs_realvec pitches(len);
 	mrs_realvec confidences(len);
+	mrs_realvec chords(len);
+	mrs_realvec booms(len);
+	mrs_realvec chicks(len);
+	
+	
+	vector<mrs_string> chord_names;
+	
+
 	mrs_realvec pitchres;
 	mrs_realvec peak_in;
 	
@@ -203,7 +211,119 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	getchar();	
 	MATLAB_CLOSE();
 #endif 
+	
 
+	// extract chords 
+	
+	MarSystem* chordExtract = mng.create("Series/chordExtract");
+	chordExtract->addMarSystem(mng.create("SoundFileSource/src"));
+	chordExtract->addMarSystem(mng.create("Windowing/win"));
+	chordExtract->addMarSystem(mng.create("Spectrum/spk"));
+	chordExtract->addMarSystem(mng.create("PowerSpectrum/pspk"));
+	chordExtract->addMarSystem(mng.create("Spectrum2Chroma/s2c"));
+	chordExtract->addMarSystem(mng.create("Krumhansl_key_finder/kkf"));
+	
+	chordExtract->updControl("mrs_natural/inSamples", hopSize);
+	chordExtract->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+
+	for (int i=0; i < contourSize; ++i) 
+	{
+	    chordExtract->tick();
+		chords(i) = chordExtract->getControl("Krumhansl_key_finder/kkf/mrs_natural/key")->to<mrs_natural>();
+		chord_names.push_back(chordExtract->getControl("Krumhansl_key_finder/kkf/mrs_string/key_name")->to<mrs_string>());
+		
+	}
+	
+	
+	// extra boom-chick pattern 
+	
+	
+	// high and low bandpass filters
+	MarSystem *filters = mng.create("Fanout", "filters");
+	realvec al(5),bl(5);
+	
+	al(0) = 1.0;
+	al(1) = -3.9680;
+	al(2) = 5.9062;
+	al(3) = -3.9084;
+	al(4) = 0.9702;
+	
+	bl(0) = 0.0001125;
+	bl(1) = 0.0;
+	bl(2) = -0.0002250;
+	bl(3) = 0.0;
+	bl(4) = 0.0001125;
+	
+	MarSystem *lfilter = mng.create("Series", "lfilter");
+	lfilter->addMarSystem(mng.create("Filter", "llfilter"));
+	lfilter->updControl("Filter/llfilter/mrs_realvec/ncoeffs", bl);
+	lfilter->updControl("Filter/llfilter/mrs_realvec/dcoeffs", al);
+
+	MarSystem *lowpkr = mng.create("PeakerAdaptive","lowpkr");
+	lowpkr->updControl("mrs_real/peakSpacing", 0.3);
+	lowpkr->updControl("mrs_real/peakStrength", 0.95);
+	lowpkr->updControl("mrs_natural/peakStart", 0);
+	lowpkr->updControl("mrs_natural/peakEnd", hopSize);
+	
+	lowpkr->updControl("mrs_real/peakGain", 1.0);
+	lowpkr->updControl("mrs_natural/peakStrengthReset", 4);
+	lowpkr->updControl("mrs_real/peakDecay", 0.99);
+	lfilter->addMarSystem(lowpkr);
+
+
+	
+	realvec ah(5),bh(5);
+	ah(0) = 1.0;
+	ah(1) = -3.5797;
+	ah(2) = 4.9370;
+	ah(3) = -3.1066;
+	ah(4) = 0.7542;
+	
+	bh(0) = 0.0087;
+	bh(1) = 0.0;
+	bh(2) = -0.0174;
+	bh(3) = 0;
+	bh(4) = 0.0087;
+	
+	MarSystem *hfilter = mng.create("Series", "hfilter");
+	hfilter->addMarSystem(mng.create("Filter", "hhfilter"));
+	hfilter->addMarSystem(mng.create("Gain", "gain"));
+	hfilter->updControl("Filter/hhfilter/mrs_realvec/ncoeffs", bh);
+	hfilter->updControl("Filter/hhfilter/mrs_realvec/dcoeffs", ah);
+	
+	MarSystem* hipkr = mng.create("PeakerAdaptive", "hipkr");
+	hipkr->updControl("mrs_real/peakSpacing", 0.5);
+	hipkr->updControl("mrs_real/peakStrength", 0.90);
+	hipkr->updControl("mrs_natural/peakStart", 0);
+	hipkr->updControl("mrs_natural/peakEnd", hopSize);
+	hipkr->updControl("mrs_real/peakGain", 1.0);
+	hipkr->updControl("mrs_natural/peakStrengthReset", 4);
+	hipkr->updControl("mrs_real/peakDecay", 0.99);
+	hfilter->addMarSystem(hipkr);
+
+
+	filters->addMarSystem(lfilter);	
+	filters->addMarSystem(hfilter);
+	
+	MarSystem* boomchickExtract = mng.create("Series/boomchickExtract");
+	boomchickExtract->addMarSystem(mng.create("SoundFileSource/src"));
+	boomchickExtract->addMarSystem(filters);
+	boomchickExtract->addMarSystem(mng.create("SoundFileSink/dest"));
+	
+	boomchickExtract->updControl("mrs_natural/inSamples", hopSize);
+	boomchickExtract->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+	boomchickExtract->updControl("SoundFileSink/dest/mrs_string/filename", "boom_chick.wav");
+	
+	for (int i=0; i < contourSize; ++i) 
+	{
+	    boomchickExtract->tick();
+		booms(i) = boomchickExtract->getControl("Fanout/filters/Series/lfilter/PeakerAdaptive/lowpkr/mrs_bool/peakFound")->to<mrs_bool>();
+		chicks(i) = boomchickExtract->getControl("Fanout/filters/Series/hfilter/PeakerAdaptive/hipkr/mrs_bool/peakFound")->to<mrs_bool>();
+		
+	}
+	
+	
+	
 	// Playback the pitches
 	if (playPitches) 
 	{
@@ -217,28 +337,81 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 		MarSystem* ch1 = mng.create("Series/ch1");
 		ch1->addMarSystem(mng.create("SoundFileSource/src"));
 		ch1->addMarSystem(mng.create("Gain/soundgain"));
+
+		MarSystem* ch2 = mng.create("Series/ch2");
+		ch2->addMarSystem(mng.create("SineSource/ss"));
+		ch2->addMarSystem(mng.create("Gain/sinegain"));
+
+
+
+		MarSystem* ch3 = mng.create("Series/ch3");
+		ch3->addMarSystem(mng.create("SoundFileSource/bdsrc"));
+		ch3->addMarSystem(mng.create("Gain/bdsrcgain"));
+
+
+		MarSystem* ch4 = mng.create("Series/ch4");
+		ch4->addMarSystem(mng.create("SoundFileSource/sdsrc"));
+		ch4->addMarSystem(mng.create("Gain/sdsrcgain"));
+
+
+
 		
 		mix->addMarSystem(ch0);
 		mix->addMarSystem(ch1);
+		mix->addMarSystem(ch2);
+		mix->addMarSystem(ch3);
+		mix->addMarSystem(ch4);
+		
 		
 		playback->addMarSystem(mix);
+		playback->addMarSystem(mng.create("Sum/sum"));
 		playback->addMarSystem(mng.create("Gain", "g"));
 		playback->addMarSystem(mng.create("AudioSink", "dest"));
+		playback->addMarSystem(mng.create("SoundFileSink/dest"));
+		
 		playback->updControl("mrs_natural/inSamples", hopSize);
 		playback->updControl("mrs_real/israte", 22050.0);
 		playback->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updControl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
+
+		playback->updControl("SoundFileSink/dest/mrs_string/filename", "caricature.wav");
+		
 		playback->updControl("Fanout/mix/Series/ch1/SoundFileSource/src/mrs_string/filename", 
 							 sfName);
-		
+
+		playback->updControl("Fanout/mix/Series/ch3/SoundFileSource/bdsrc/mrs_string/filename", 
+							 "bd22k.wav");
+
+		playback->updControl("Fanout/mix/Series/ch4/SoundFileSource/sdsrc/mrs_string/filename", 
+							 "sd22k.wav");		
+
+
 		for (int i=0; i < len; ++i) 
 		{
 			playback->updControl("Fanout/mix/Series/ch0/SineSource/ss/mrs_real/frequency", 
 							pitches(i));
-			playback->updControl("Fanout/mix/Series/ch0/Gain/sinegain/mrs_real/gain", 8 * confidences(i));
-			playback->updControl("Fanout/mix/Series/ch1/Gain/soundgain/mrs_real/gain", 0.5);
+			playback->updControl("Fanout/mix/Series/ch2/SineSource/ss/mrs_real/frequency", 
+								 pitch2hertz(48 +chords(i)));
+			playback->updControl("Fanout/mix/Series/ch0/Gain/sinegain/mrs_real/gain", 0.5 * confidences(i));
+			playback->updControl("Fanout/mix/Series/ch1/Gain/soundgain/mrs_real/gain", 0.0);
+			playback->updControl("Fanout/mix/Series/ch2/Gain/sinegain/mrs_real/gain", 0.5);
 			
 			playback->tick();
+
+			
+			if (booms(i))
+			{
+				playback->updControl("Fanout/mix/Series/ch3/SoundFileSource/bdsrc/mrs_natural/pos",0);
+			}
+			
+			if (chicks(i))	
+				playback->updControl("Fanout/mix/Series/ch4/SoundFileSource/sdsrc/mrs_natural/pos",0);
+			
+			
+
+			cout << chord_names[i] << endl;
+			
+				
 		}
 		delete playback;
 	}

@@ -262,6 +262,7 @@
 // #include "BinauralCARFAC.h"
 #include "HarmonicStrength.h"
 #include "CsvFileSource.h"
+#include "Krumhansl_key_finder.h"
 //modifyHeader
 
 
@@ -525,6 +526,7 @@ MarSystemManager::MarSystemManager()
 	// registerPrototype("BinauralCARFAC", new BinauralCARFAC("binauralcarfac"));
 	registerPrototype("HarmonicStrength", new HarmonicStrength("harmonicstrengthpr"));
 	registerPrototype("CsvFileSource", new CsvFileSource("csvfilesourcepr"));
+	registerPrototype("Krumhansl_key_finder", new Krumhansl_key_finder("krumhansl_key_finderpr"));
 	//modifyRegister
 
 	//***************************************************************************************
