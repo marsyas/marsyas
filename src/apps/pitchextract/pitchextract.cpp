@@ -40,8 +40,8 @@ int helpopt;
 int usageopt;
 int wopt = 2 * MRS_DEFAULT_SLICE_NSAMPLES;
 int hopt = 2 * MRS_DEFAULT_SLICE_NSAMPLES;
-int lpopt = 36;
-int upopt = 128;
+int lpopt = 48;
+int upopt = 83;
 int plopt = 0;
 float topt = 0.2f;
 string frsopt = "hertz";
@@ -162,7 +162,11 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 		}
 
 		
-
+		if (pitches(i) <= pitch2hertz(lowPitch))
+			confidences(i) = 0.0;
+		if (pitches(i) >= pitch2hertz(highPitch))
+			confidences(i) = 0.0;
+		
 		ofs << scaled_pitch << endl;
 		
 		
@@ -203,19 +207,37 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	// Playback the pitches
 	if (playPitches) 
 	{
-		MarSystem* playback = mng.create("Series", "playback");
-		playback->addMarSystem(mng.create("SineSource", "ss"));
+		MarSystem* playback = mng.create("Series/playback");
+		MarSystem* mix = mng.create("Fanout/mix");
+		
+		MarSystem* ch0 = mng.create("Series/ch0");
+		ch0->addMarSystem(mng.create("SineSource/ss"));
+		ch0->addMarSystem(mng.create("Gain/sinegain"));
+		
+		MarSystem* ch1 = mng.create("Series/ch1");
+		ch1->addMarSystem(mng.create("SoundFileSource/src"));
+		ch1->addMarSystem(mng.create("Gain/soundgain"));
+		
+		mix->addMarSystem(ch0);
+		mix->addMarSystem(ch1);
+		
+		playback->addMarSystem(mix);
 		playback->addMarSystem(mng.create("Gain", "g"));
 		playback->addMarSystem(mng.create("AudioSink", "dest"));
 		playback->updControl("mrs_natural/inSamples", hopSize);
-		playback->updControl("mrs_real/israte", 44100.0);
+		playback->updControl("mrs_real/israte", 22050.0);
 		playback->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updControl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
-				
+		playback->updControl("Fanout/mix/Series/ch1/SoundFileSource/src/mrs_string/filename", 
+							 sfName);
+		
 		for (int i=0; i < len; ++i) 
 		{
-			playback->updControl("SineSource/ss/mrs_real/frequency", pitches(i));
-			playback->updControl("Gain/g/mrs_real/gain", confidences(i));
+			playback->updControl("Fanout/mix/Series/ch0/SineSource/ss/mrs_real/frequency", 
+							pitches(i));
+			playback->updControl("Fanout/mix/Series/ch0/Gain/sinegain/mrs_real/gain", 8 * confidences(i));
+			playback->updControl("Fanout/mix/Series/ch1/Gain/soundgain/mrs_real/gain", 0.5);
+			
 			playback->tick();
 		}
 		delete playback;

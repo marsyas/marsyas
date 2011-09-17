@@ -104,27 +104,26 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 	normalize_ = 0;
 	if(getctrl("mrs_natural/normalize")->to<mrs_natural>())
 	{
-	  cout << "Normalized" << endl;
-		realvec tmp(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-		normalize_ = 1;
-		norm_.create(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-		norm_.setval(1);
-		Windowing win("Windowing");
-		win.updControl("mrs_string/type", "Hanning");
-		win.updControl("mrs_natural/inSamples", norm_.getCols());
-		win.updControl("mrs_natural/inObservations", norm_.getRows());
-		win.process(norm_, tmp);
-
-		AutoCorrelation autocorr("Autocorrelation");
-		autocorr.updControl("mrs_natural/inSamples", norm_.getCols());
-		autocorr.updControl("mrs_natural/inObservations", norm_.getRows());
-		autocorr.update();
-		autocorr.process(tmp, norm_);
-		
-		for (mrs_natural i = 0 ; i < norm_.getSize() ; ++i)
-			norm_(i) = 1/norm_(i);
+	  realvec tmp(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	  normalize_ = 1;
+	  norm_.create(getctrl("mrs_natural/onSamples")->to<mrs_natural>());
+	  norm_.setval(1);
+	  Windowing win("Windowing");
+	  win.updControl("mrs_string/type", "Hanning");
+	  win.updControl("mrs_natural/inSamples", norm_.getCols());
+	  win.updControl("mrs_natural/inObservations", norm_.getRows());
+	  win.process(norm_, tmp);
+	  
+	  AutoCorrelation autocorr("Autocorrelation");
+	  autocorr.updControl("mrs_natural/inSamples", norm_.getCols());
+	  autocorr.updControl("mrs_natural/inObservations", norm_.getRows());
+	  autocorr.update();
+	  autocorr.process(tmp, norm_);
+	  
+	  for (mrs_natural i = 0 ; i < norm_.getSize() ; ++i)
+	    norm_(i) = 1/norm_(i);
 	}
-
+	
 	octaveCost_ = getctrl("mrs_real/octaveCost")->to<mrs_real>();
 	voicing_ = getctrl("mrs_real/voicingThreshold")->to<mrs_real>();
 	if(octaveCost_)
