@@ -148,6 +148,7 @@ WekaSource::myUpdate(MarControlPtr sender)
 		MRSASSERT(index == (mrs_natural)attributesIncluded_.size());
 	  
 		setctrl("mrs_string/attributeNames", names);
+        ctrl_onObsNames_->setValue(names);
 		setctrl("mrs_natural/onSamples", 1);
 		setctrl("mrs_natural/nAttributes", (mrs_natural)attributesFound_.size());
 		setctrl("mrs_natural/onObservations", (mrs_natural)attributesFound_.size()+1);
