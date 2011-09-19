@@ -9,7 +9,7 @@ list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.h)
 
 
 
-## if (MARSYAS_OSC)
+if (MARSYAS_OSC)
 
 list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscException.h)
 list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscHostEndianness.h)
@@ -40,7 +40,7 @@ else (MARSYAS_WIN32)
    list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/posix/UdpSocket.cpp)
 endif (MARSYAS_WIN32)
 
-## endif (MARSYAS_OSC)
+endif (MARSYAS_OSC)
 
 
 
