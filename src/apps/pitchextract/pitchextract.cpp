@@ -24,8 +24,11 @@
 #include <cstdlib>
 
 
+#ifdef MARSYAS_OSC
 #include "OscOutboundPacketStream.h" 
 #include "UdpSocket.h"
+#endif
+
 #include "FileName.h" 
 #include "Collection.h"
 #include "MarSystemManager.h"
@@ -421,7 +424,7 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 				   << 1 << 127 << osc::EndMessage;
 				 transmitSocket.Send(p.Data(), p.Size());
 				 
-#endif MARSYAS_OSC 
+#endif
 			}
 			
 			if (chicks(i))	
