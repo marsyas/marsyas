@@ -23,6 +23,9 @@
 #include <cstdio>
 #include <cstdlib>
 
+
+#include "OscOutboundPacketStream.h" 
+#include "UdpSocket.h"
 #include "FileName.h" 
 #include "Collection.h"
 #include "MarSystemManager.h"
@@ -370,7 +373,7 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 		playback->addMarSystem(mng.create("SoundFileSink/dest"));
 		
 		playback->updControl("mrs_natural/inSamples", hopSize);
-		playback->updControl("mrs_real/israte", 22050.0);
+		playback->updControl("mrs_real/israte", srate);
 		playback->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 		playback->updControl("mrs_real/israte", pitchContour->getctrl("mrs_real/osrate"));
 
@@ -398,10 +401,26 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 			
 			playback->tick();
 
-			
+			#define ADDRESS "127.0.0.1" 
+			#define PORT 7000
+			#define OUTPUT_BUFFER_SIZE 1024
+			UdpTransmitSocket transmitSocket( IpEndpointName( ADDRESS, PORT ) );
+			char buffer[OUTPUT_BUFFER_SIZE];
+
 			if (booms(i))
 			{
 				playback->updControl("Fanout/mix/Series/ch3/SoundFileSource/bdsrc/mrs_natural/pos",0);
+				
+
+				osc::OutboundPacketStream p( buffer, OUTPUT_BUFFER_SIZE );
+
+				 p << osc::BeginBundleImmediate
+				 << osc::BeginMessage( "/notomoton" )
+				   << 1 << 127 << osc::EndMessage;
+				 transmitSocket.Send(p.Data(), p.Size());
+				 
+				 cout << "OSC" << endl;
+				 
 			}
 			
 			if (chicks(i))	

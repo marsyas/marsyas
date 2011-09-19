@@ -84,6 +84,12 @@ if (MARSYAS_MATLAB)
 	include_directories(${CMAKE_SOURCE_DIR}/marsyas/MATLAB)
 endif (MARSYAS_MATLAB)
 
+
+if (MARSYAS_OSC)
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc)
+	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip)
+endif (MARSYAS_OSC)
+
 if (MARSYAS_PNG)
 	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libpng-1.2.35)
 	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/)

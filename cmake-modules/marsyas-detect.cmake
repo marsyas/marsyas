@@ -91,6 +91,11 @@ if (WITH_MAX/MSP)
 	find_package(maxsdk REQUIRED)
 endif (WITH_MAX/MSP)
 
+
+if (WITH_OSC) 
+	set (MARSYAS_OSC 1)
+endif (WITH_OSC)
+
 if (WITH_PNG) 
 	# find_package(png REQUIRED) 
    find_package(Freetype REQUIRED)

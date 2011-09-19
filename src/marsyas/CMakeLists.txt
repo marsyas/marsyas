@@ -6,6 +6,45 @@ file(GLOB Marsyas_HEADERS RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.h)
 list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
 list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.h)
 
+
+
+
+## if (MARSYAS_OSC)
+
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscException.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscHostEndianness.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscOutboundPacketStream.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscPacketListener.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscPrintReceivedElements.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscReceivedElements.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscTypes.h)
+
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/IpEndpointName.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/NetworkingUtils.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/PacketListener.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/TimerListener.h)
+list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/UdpSocket.h)
+
+
+list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscOutboundPacketStream.cpp)
+list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscPrintReceivedElements.cpp)
+list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscReceivedElements.cpp)
+list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc/OscTypes.cpp)
+list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/IpEndpointName.cpp)
+
+if (MARSYAS_WIN32)
+   list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/win32/NetworkingUtils.cpp)
+   list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/win32/UdpSocket.cpp)
+else (MARSYAS_WIN32)
+   list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/posix/NetworkingUtils.cpp)
+   list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip/posix/UdpSocket.cpp)
+endif (MARSYAS_WIN32)
+
+## endif (MARSYAS_OSC)
+
+
+
+
 if (MARSYAS_PNG)
 	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/pngwriter.cc) 
 	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/otherlibs/libpng-1.2.35/png.h)
