@@ -72,6 +72,7 @@ printHelp(string progName)
 	cerr << "harmonics       : play with HarmonicStrength" << endl;
 	cerr << "spectral_single : play with single SCF and SFM" << endl;
 	cerr << "csv_input       : play with input csv file" << endl;
+	cerr << "arff_in_out : should pass an arff file untouched" << endl;
 	exit(1);
 }
 
@@ -204,6 +205,33 @@ toy_with_csv_input(mrs_string sfname)
 		}
 		cout<<endl;
 	}
+	delete net;
+}
+
+void
+toy_with_arff_in_out(mrs_string in_name, mrs_string out_name)
+{
+	MarSystemManager mng;
+
+	MarSystem *net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("WekaSource", "src"));
+	net->addMarSystem(mng.create("WekaSink", "dest"));
+
+	net->updControl("WekaSource/src/mrs_string/filename", in_name);
+
+	net->updControl("WekaSink/dest/mrs_natural/nLabels",
+	                net->getControl("WekaSource/src/mrs_natural/nClasses"));
+	net->updControl("WekaSink/dest/mrs_string/labelNames",
+	                net->getControl("WekaSource/src/mrs_string/classNames"));
+
+	// must happen after setting the above controls
+	net->updControl("WekaSink/dest/mrs_string/filename", out_name);
+
+	while ( !net->getctrl("WekaSource/src/mrs_bool/done")->to<mrs_bool>() )
+	{
+		net->tick();
+	}
+	delete net;
 }
 
 
@@ -254,6 +282,8 @@ main(int argc, const char **argv)
 		toy_with_spectral_single(fname0);
 	else if (toy_with == "csv_input")
 		toy_with_csv_input(fname0);
+	else if (toy_with == "arff_in_out")
+		toy_with_arff_in_out(fname0, fname1);
 	else
 	{
 		cout << "Unsupported toy_with " << endl;
