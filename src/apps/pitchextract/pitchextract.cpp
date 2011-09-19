@@ -401,17 +401,19 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 			
 			playback->tick();
 
+#ifdef MARSYAS_OSC
 			#define ADDRESS "127.0.0.1" 
 			#define PORT 7000
 			#define OUTPUT_BUFFER_SIZE 1024
 			UdpTransmitSocket transmitSocket( IpEndpointName( ADDRESS, PORT ) );
 			char buffer[OUTPUT_BUFFER_SIZE];
+#endif 
 
 			if (booms(i))
 			{
 				playback->updControl("Fanout/mix/Series/ch3/SoundFileSource/bdsrc/mrs_natural/pos",0);
 				
-
+#ifdef MARSYAS_OSC
 				osc::OutboundPacketStream p( buffer, OUTPUT_BUFFER_SIZE );
 
 				 p << osc::BeginBundleImmediate
@@ -419,8 +421,7 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 				   << 1 << 127 << osc::EndMessage;
 				 transmitSocket.Send(p.Data(), p.Size());
 				 
-				 cout << "OSC" << endl;
-				 
+#endif MARSYAS_OSC 
 			}
 			
 			if (chicks(i))	
