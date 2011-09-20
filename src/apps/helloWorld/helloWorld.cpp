@@ -55,7 +55,7 @@ main(int argc, const char **argv)
 	//you can try different ones and see what you get...
 	network->updControl("AudioSink/dest/mrs_natural/bufferSize", 512); 
 	// set the sampling to 44100  - a safe choice in most configurations 
-	network->updControl("mrs_real/israte", 44100);
+	network->updControl("mrs_real/israte", 44100.0);
 	network->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	//now it's time for ticking the network, 
