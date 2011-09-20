@@ -1,5 +1,10 @@
 %module marsyas
 
+
+%{
+#include <stddef.h>
+
+%}
 %include "marsystem.i"
 %include "marsystemmanager.i"
 %include "marcontrolptr.i"
