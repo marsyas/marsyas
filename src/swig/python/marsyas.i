@@ -2,7 +2,7 @@
 
 
 %{
-#include <stddef.h>
+#include <cstddef>
 
 %}
 %include "marsystem.i"
