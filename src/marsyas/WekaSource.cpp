@@ -26,6 +26,7 @@ WekaSource::~WekaSource()
 WekaSource::WekaSource(const WekaSource& a) : MarSystem(a) {
 	validationModeEnum_ = None;
 	currentIndex_  = 0;
+	ctrl_regression_ = getctrl("mrs_bool/regression");
 }
 
 MarSystem *WekaSource::clone() const
@@ -51,6 +52,7 @@ WekaSource::addControls()
 
 	//number of classes found
 	addctrl("mrs_natural/nClasses", 0);
+	addctrl("mrs_bool/regression", false, ctrl_regression_);
 
 	//The mode that the weka source is currently in.
 	//Can be  "train" or "predict"
@@ -615,6 +617,13 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 	{
 	}
 	
+	if (classesFound_.size() == 0) {
+		ctrl_regression_->setValue(true);
+		// remove the final "output" attribute
+		attributesFound_.pop_back();
+		attributesIncluded_.pop_back();
+	}
+
 	parseAttributesToInclude(attributesToInclude_);
 }//parseHeader
 
@@ -663,14 +672,18 @@ void WekaSource::parseData(ifstream& mis, const mrs_string& filename, WekaData& 
 				cp = strtok(NULL, ",");
 			}//for index
 			MRSASSERT(index == (mrs_natural)lineBuffer->size()-1);
-	  
-			//now extract the class name for this record
-			MRSASSERT( cp!=NULL );
-			
-			mrs_natural classIndex = findClass(cp);
 
-			MRSASSERT(classIndex>=0);
-			lineBuffer->at(index) = (mrs_real)classIndex;
+			if (ctrl_regression_->isTrue()) {
+				// no change needed
+				lineBuffer->at(index) =  ::atof( cp );
+			} else {
+				//now extract the class name for this record
+				MRSASSERT( cp!=NULL );
+				
+				mrs_natural classIndex = findClass(cp);
+				MRSASSERT(classIndex>=0);
+				lineBuffer->at(index) = (mrs_real)classIndex;
+			}
 			
 			data.Append(lineBuffer);
 			data.AppendFilename(currentFname);

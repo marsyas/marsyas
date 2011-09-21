@@ -172,6 +172,8 @@ private:
 
 	//these are the class names froun in the arff file header
 	std::vector<std::string>classesFound_;
+	// if there are no classes, we're doing regression
+	MarControlPtr ctrl_regression_;
 
 	std::string relation_;
 

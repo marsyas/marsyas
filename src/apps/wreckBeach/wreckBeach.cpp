@@ -223,6 +223,8 @@ toy_with_arff_in_out(mrs_string in_name, mrs_string out_name)
 	                net->getControl("WekaSource/src/mrs_natural/nClasses"));
 	net->updControl("WekaSink/dest/mrs_string/labelNames",
 	                net->getControl("WekaSource/src/mrs_string/classNames"));
+	net->updControl("WekaSink/dest/mrs_bool/regression",
+	                net->getControl("WekaSource/src/mrs_bool/regression"));
 
 	// must happen after setting the above controls
 	net->updControl("WekaSink/dest/mrs_string/filename", out_name);
