@@ -99,6 +99,12 @@ mrs_real
 HarmonicStrength::quadratic_interpolation(mrs_real best_bin,
         mrs_realvec& in, mrs_natural t)
 {
+	if ((best_bin == 0) || (best_bin == in.getRows()-1)) {
+		// don't try to interpolate using data that's
+		// outside of the spectogram
+		// TODO: find some convincing DSP thing to do in this case
+		return in(best_bin, t);
+	}
 	// https://ccrma.stanford.edu/~jos/sasp/Quadratic_Interpolation_Spectral_Peaks.html
 	// a = alpha, b = beta, g = gamma
 	mrs_real a = in(best_bin-1, t);
@@ -143,7 +149,11 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 			best_magnitude = in(i,t);
 		}
 	}
-	best_magnitude = quadratic_interpolation(best_bin, in, t);
+	if (best_bin >= 0) {
+		best_magnitude = quadratic_interpolation(best_bin, in, t);
+	} else {
+		best_magnitude = in(central_bin, t);
+	}
 
 	return best_magnitude;
 }
@@ -177,14 +187,17 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 			mrs_real bin = freq * freq2bin;
 			mrs_real radius = bin * width;
 			mrs_real magnitude = find_peak_magnitude(bin, in, t, radius);
-
-			if (getctrl("mrs_natural/type")->to<mrs_natural>() == 0)
-			{
-				out(h, t) = log(magnitude / energy_rms);
-			}
-			else
-			{
-				out(h, t) = magnitude;
+			if (magnitude == 0) {
+				out(h, t) = 0.0;
+			} else {
+				if (getctrl("mrs_natural/type")->to<mrs_natural>() == 0)
+				{
+					out(h, t) = log(magnitude / energy_rms);
+				}
+				else
+				{
+					out(h, t) = magnitude;
+				}
 			}
 			/*
 			if (out(h,t) != out(h,t)) {
