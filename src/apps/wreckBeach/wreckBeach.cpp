@@ -150,6 +150,7 @@ toy_with_harmonicStrength(mrs_string sfname)
 		}
 		cout<<endl;
 	}
+	delete net;
 }
 
 void
@@ -182,6 +183,7 @@ toy_with_spectral_single(mrs_string sfname)
 		}
 		cout<<endl;
 	}
+	delete net;
 }
 
 void
