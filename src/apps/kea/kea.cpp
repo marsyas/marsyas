@@ -749,18 +749,31 @@ train_evaluate()
     net->updControl("Classifier/cl/mrs_string/enableChild", "SVMClassifier/svmcl");
   // net->updControl("WekaSource/wsrc/mrs_string/attributesToInclude", "1,2,3");
 
-
   // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "PercentageSplit,50%");
   net->updControl("WekaSource/wsrc/mrs_string/validationMode", "kFold,NS,10");
   // net->updControl("WekaSource/wsrc/mrs_string/validationMode", "UseTestSet,lg.arff");
   net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   net->updControl("mrs_natural/inSamples", 1);
 
-  net->updControl("ClassificationReport/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
-  net->updControl("ClassificationReport/summary/mrs_string/classNames",
+  if (net->getctrl("WekaSource/wsrc/mrs_bool/regression")->isTrue()) {
+    cout<<"setting up for regression"<<endl;
+    // TODO: enable regression for ZeroRClassifier and GaussianClassifier,
+    // and don't assume we're only dealing with svm
+    net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/svm",
+      "NU_SVR");
+    net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_bool/output_classPerms", false);
+    net->updControl("Classifier/cl/mrs_natural/nClasses", 1);
+
+    net->updControl("ClassificationReport/summary/mrs_natural/nClasses", 1);
+    net->updControl("ClassificationReport/summary/mrs_bool/regression", true);
+  } else {
+    net->updControl("ClassificationReport/summary/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+    net->updControl("ClassificationReport/summary/mrs_string/classNames",
 	       net->getctrl("WekaSource/wsrc/mrs_string/classNames"));
 
-  net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+    net->updControl("Classifier/cl/mrs_natural/nClasses", net->getctrl("WekaSource/wsrc/mrs_natural/nClasses"));
+  }
+
   net->linkControl("Classifier/cl/mrs_string/mode", "ClassificationReport/summary/mrs_string/mode");
 
   int i = 0;

@@ -146,6 +146,9 @@ void SVMClassifier::addControls() {
 	addctrl("mrs_bool/probability", true, ctrl_probability_);
 	addctrl("mrs_natural/nr_weight", (mrs_natural)0, ctrl_nr_weight_);
 	addctrl("mrs_realvec/classPerms", realvec(), ctrl_classPerms_);
+
+	// turn off for regression
+	addctrl("mrs_bool/output_classPerms", true);
 }
 
 void SVMClassifier::myUpdate(MarControlPtr sender) {
@@ -686,8 +689,11 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 	
 
 		// Output
-		for (int i=0; i < svm_model_->nr_class; ++i) 
-		    out(2 + classPerms_[i], 0) = probs[i];
+		if (getctrl("mrs_bool/output_classPerms")->isTrue()) {
+		    for (int i=0; i < svm_model_->nr_class; ++i) {
+		        out(2 + classPerms_[i], 0) = probs[i];
+                    }
+                }
 
 		out(0,0) = (mrs_real)prediction;
 		out(1,0) = in(inObservations_-1,0);

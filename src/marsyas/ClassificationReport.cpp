@@ -68,6 +68,7 @@ void ClassificationReport::addControls()
 	addctrl("mrs_string/classNames", "Music,Speech");
 	setctrlState("mrs_string/classNames", true);
 	addctrl("mrs_bool/done", false);
+	addctrl("mrs_bool/regression", false);
 }
 
 void ClassificationReport::myUpdate(MarControlPtr sender)
@@ -117,6 +118,8 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 
 		for (t=0; t < inSamples_; t++)
 		{    
+		if (getctrl("mrs_bool/regression")->isTrue()) {
+		} else {
 			//swapped the x and y values-dale
 			mrs_natural prediction = (mrs_natural)in(0, t);	//prediction  
 			mrs_natural actual = (mrs_natural)in(1, t);	//actual
@@ -127,6 +130,7 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 			out(0,t) = prediction;
 			out(1,t) = actual;
 		}
+		}
 
 	  
 
@@ -135,6 +139,21 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
   
 	if (done)
     {
+		if (getctrl("mrs_bool/regression")->isTrue()) {
+		mrs_real correlation = 0.0;
+		mrs_real meanAbsoluteError = 0.0;
+		mrs_real rootMeanSquaredError = 0.0;
+		mrs_real relativeAbsoluteError = 0.0;
+		mrs_real rootRelativeSquaredError = 0.0;
+		mrs_real instances = 0;
+		cout << "=== ClassificationReport ===" << endl << endl;
+		cout << "Correlation coefficient" << "\t\t\t" << correlation << "\t" << endl;
+		cout << "Mean absolute error" << "\t\t\t" << meanAbsoluteError << endl;
+		cout << "Root mean squared error" << "\t\t\t" << rootMeanSquaredError << endl;
+		cout << "Relative absolute error" << "\t\t\t" << relativeAbsoluteError << endl;
+		cout << "Root relative squared error" << "\t\t" << rootRelativeSquaredError << endl;
+		cout << "Total Number of Instances" << "\t\t" << instances << endl << endl;
+		} else {
 
 		summaryStatistics stats = computeSummaryStatistics(confusionMatrix);
 		cout << "=== ClassificationReport ===" << endl << endl;
@@ -193,6 +212,7 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 			cout << endl;
 		}//for y
 		cout << (total > 0 ? correct * 100 / total: 0) << "% classified correctly (" << correct << "/" << total << ")" << endl;
+	}
     }//if done
 }//myProcess
 

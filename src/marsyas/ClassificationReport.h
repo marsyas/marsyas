@@ -28,7 +28,11 @@
 	until the done control is set to true. Then the measures are displayed 
 	to stdout. The formatting is similar to the one used by the Weka machine 
 	learning software. 
-	
+
+	Controls:
+	- \b mrs_bool/regression [w] : output regression
+	  statistics instead of classication
+
 */
 
 #ifndef MARSYAS_CLASSIFICATIONREPORT_H
