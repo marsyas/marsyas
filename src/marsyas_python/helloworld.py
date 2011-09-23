@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 # HelloWorld, Marsyas!
 
 # This is a HelloWorld tutorial in Marsyas.
+# It is the first part of the source-code python tutorial to marsyas.
 # It should help the newbie user to understand the basic marsyas stuff.
 #
 #
@@ -73,4 +76,8 @@ while 1:
 	nwk.tick();
 
 # And this program will quit when we hit ctrl-c!
+#
+#
+# When you are finished playing with this, go to windowing.py to continue the tutorial.
+
 

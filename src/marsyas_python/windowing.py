@@ -3,7 +3,8 @@
 # This source code will serve as good tutorial on how to program a more complex MarSystem network using a compact syntax.
 # This syntax will be interpreted by the functions in marsyas_util.py (which should be imported, as well).
 # This program should be the next step in learning after helloworld.py.
-# Some more advanced controls will be shown
+# Some more advanced controls will be shown, and how to specify networks in a more compact way (using marsyas_util)
+# as well.
 
 from pylab import *
 import sys
@@ -20,7 +21,6 @@ from marsyas_util import *
 # Also, all subsystems are specified in the following list, so, you will get things like this:
 # ["Begin/System", ["SystemItem1", "SystemItem2"]]
 # That is very similar to LISP, but with brackets instead of parenthesis.
-# Can you draw the block diagram for this following specification?
 spec = ["Series/MySystem", 
 					[["Fanout/additive",
 						["SineSource/src1",
@@ -108,4 +108,8 @@ savefig('windowing.svg')
 savefig('windowing.ps')
 
 show()
+
+# Try drawing the network we are running
+# When you are finished, go to phone.py to continue the tutorial.
+
 
