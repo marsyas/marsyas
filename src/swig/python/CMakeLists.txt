@@ -18,7 +18,7 @@ SWIG_LINK_LIBRARIES(marsyas marsyas ${PYTHON_LIBRARIES} ${OS_LIBS})
 # The installation directory for the Python modules.
 # Get the default directory from distutils.
 execute_process(
-  COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print sysconfig.get_python_lib(1, 0)"
+  COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1, 0))"
   OUTPUT_VARIABLE PYTHON_INSTDIR_DEFAULT
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
@@ -26,7 +26,7 @@ execute_process(
 if (DEFINED CMAKE_INSTALL_PREFIX)
 
   execute_process(
-    COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print sysconfig.get_python_version()"
+    COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_version())"
     OUTPUT_VARIABLE PYTHON_VERSION
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
