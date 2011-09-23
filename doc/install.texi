@@ -358,13 +358,14 @@ your own examples and case studies to help cover more configurations.
 
 @menu
 * Compiling on MacOS X 10.6 Snow Leopard ::  
+* Compiling on Ubuntu 11.04 - Natty Narwhal (2011) ::  
 * Compiling on Ubuntu::         
 * Compiling with Visual Studio Express 2008 on Windows XP::  
 * Compiling with MinGW on Windows XP::  
 * MacOS X additional notes::    
 @end menu
 
-@node Compiling on MacOS X 10.6 Snow Leopard , Compiling on Ubuntu, Specific installation examples, Specific installation examples
+@node Compiling on MacOS X 10.6 Snow Leopard , Compiling on Ubuntu 11.04 - Natty Narwhal (2011) , Specific installation examples, Specific installation examples
 @subsection Compiling on MacOS X 10.6 Snow Leopard 
 
 These steps were used to install Marsyas on a fresh 
@@ -716,11 +717,69 @@ etc...
 @end enumerate 
  
 
-
+@node Compiling on Ubuntu 11.04 - Natty Narwhal (2011) , Compiling on Ubuntu, Compiling on MacOS X 10.6 Snow Leopard , Specific installation examples
+@subsection Compiling on Ubuntu 11.04 - Natty Narwhal (2011) 
 
  
+These steps were used to install in a fresh install of Ubuntu (11.04 -
+Natty Narwhal - 32 bits) on September 2011. All the command were typed
+in a terminal but it should be straightforward to use the synaptic
+package manager instead of apt-get.  The text in parentheses after each
+command is a simple explanation and should not be typed in the
+terminal. 
 
-@node Compiling on Ubuntu, Compiling with Visual Studio Express 2008 on Windows XP, Compiling on MacOS X 10.6 Snow Leopard , Specific installation examples
+
+@enumerate
+@item sudo apt-get install subversion  (install the subversion version control system) 
+@item svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk marsyas 
+@item cd marsyas 
+@item mkdir build 
+@item cd build 
+@item sudo apt-get install cmake    (the regular cmake) 
+@item sudo apt-get install cmake-curses-gui  (the curses gui invoked by ccmake) 
+@item sudo apt-get install libasound2-dev (alsa development library and
+headers) 
+@item cmake ../src 
+@item Press [c] to configure and [g] to generate the Makefile and exit
+@item make (or make -j k where k is the number of cores of your computer
++ 1)
+@item cd bin 
+@item ./helloWorld (you should hear a sine wave played) 
+@end enumerate 
+
+Additional instructions for creating the Marsyas python bindings through
+Swig as well as installing matplotlib. 
+
+
+@enumerate 
+@item sudo apt-get install swig  (the swig interface generator for the
+Python bindings)
+@item sudo apt-get install python-dev (the header files for Python) 
+@item sudo apt-get install python-matplotlib (the matlab-like plotting
+capabilities for Python) 
+@item sudo apt-get install ipython 
+@item cd .. 
+@item ccmake ../src
+@item enable the WITH_SWIG option 
+@item make 
+@item sudo ldconfig /usr/local/lib (add /usr/local/lib to the location
+searched for libraries) 
+@item sudo make install (install the Marsyas python bindings) 
+@end enumerate 
+
+Now you are ready to test that everything works: 
+@enumerate 
+@item python windowing.py
+@item ipython --pylab windowing.py 
+@end enumerate 
+
+You should see a plot that has been created by passing data through a 
+Marsyas processing network. Congratulations - you now can work 
+with Marsyas and matplotlib a powerful combo. 
+
+
+
+@node Compiling on Ubuntu, Compiling with Visual Studio Express 2008 on Windows XP, Compiling on Ubuntu 11.04 - Natty Narwhal (2011) , Specific installation examples
 @subsection Compiling on Ubuntu
 
 These steps were used to install Marsyas from a fresh 
