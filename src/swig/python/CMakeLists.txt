@@ -23,19 +23,29 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 # User can override the default through the CMake UI.
-set(
-  PYTHON_INSTDIR
-  ${PYTHON_INSTDIR_DEFAULT}
-  CACHE STRING "The installation directory for the Python modules."
-)
-
 if (DEFINED CMAKE_INSTALL_PREFIX)
-  string(
-    REPLACE
-    "/usr" ${CMAKE_INSTALL_PREFIX}
-    PYTHON_INSTDIR ${PYTHON_INSTDIR}
+
+  execute_process(
+    COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print sysconfig.get_python_version()"
+    OUTPUT_VARIABLE PYTHON_VERSION
+    OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-endif ()
+
+  set(
+    PYTHON_INSTDIR
+    ${CMAKE_INSTALL_PREFIX}/lib/python${PYTHON_VERSION}/site-packages
+    CACHE STRING "The installation directory for the Python modules."
+  )
+
+else ()
+
+  set(
+    PYTHON_INSTDIR
+    ${PYTHON_INSTDIR_DEFAULT}
+    CACHE STRING "The installation directory for the Python modules."
+  )
+
+endif()
 
 install(TARGETS _marsyas LIBRARY DESTINATION ${PYTHON_INSTDIR})
 
