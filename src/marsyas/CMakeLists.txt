@@ -209,9 +209,15 @@ endif (MARSYAS_STATIC)
 
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
 if (MARSYAS_STATIC)
-   install(TARGETS marsyas_static LIBRARY DESTINATION lib
-   ARCHIVE DESTINATION lib)
+  install(TARGETS marsyas_static LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
 else (MARSYAS_STATIC)
-     install(TARGETS marsyas LIBRARY DESTINATION lib
-     ARCHIVE DESTINATION lib)
+  if (DEFINED CMAKE_INSTALL_PREFIX)
+    set(LIB_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+  else ()
+    set(LIB_DIR "")
+  endif ()
+  set_target_properties(marsyas PROPERTIES INSTALL_NAME_DIR ${LIB_DIR})
+  install(TARGETS marsyas LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
 endif (MARSYAS_STATIC)
