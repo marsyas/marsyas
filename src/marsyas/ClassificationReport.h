@@ -56,6 +56,18 @@ namespace Marsyas
 			mrs_real rootRelativeSquaredError;
 	}summaryStatistics;
 
+	typedef struct
+	{
+	// rewritten from weka:
+	// https://svn.scms.waikato.ac.nz/svn/weka/trunk/weka/src/main/java/weka/classifiers/Evaluation.java
+		mrs_real sumClass;
+		mrs_real sumSqrClass;
+		mrs_real sumClassPredicted;
+		mrs_real sumPredicted;
+		mrs_real sumSqrPredicted;
+		mrs_real withClass;
+	} RegressionCorrelationCalculate;
+
 	class ClassificationReport: public MarSystem
 	{
 		private: 
@@ -66,6 +78,7 @@ namespace Marsyas
 			std::string classNames;
 
 			summaryStatistics computeSummaryStatistics(const realvec& mat);
+			RegressionCorrelationCalculate regCorr;
 
 		public:
 			ClassificationReport(std::string name);

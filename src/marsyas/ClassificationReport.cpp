@@ -46,6 +46,12 @@ using namespace Marsyas;
 
 ClassificationReport::ClassificationReport(mrs_string name) : MarSystem("ClassificationReport", name)
 {
+	regCorr.sumClass = 0;
+	regCorr.sumSqrClass = 0;
+	regCorr.sumClassPredicted = 0;
+	regCorr.sumPredicted = 0;
+	regCorr.sumSqrPredicted = 0;
+	regCorr.withClass = 0;
 	addControls();
 }
 
@@ -119,6 +125,17 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 		for (t=0; t < inSamples_; t++)
 		{    
 		if (getctrl("mrs_bool/regression")->isTrue()) {
+			mrs_real prediction = in(0, t);	//prediction  
+			mrs_real actual = in(1, t);	//actual
+			//cout<<prediction<<'\t'<<actual<<endl;
+			regCorr.sumClass += actual;
+			regCorr.sumSqrClass += actual*actual;
+			regCorr.sumClassPredicted += actual*prediction;
+			regCorr.sumPredicted += prediction;
+			regCorr.sumSqrPredicted += prediction*prediction;
+			regCorr.withClass += 1.0;
+			out(0,t) = prediction;
+			out(1,t) = actual;
 		} else {
 			//swapped the x and y values-dale
 			mrs_natural prediction = (mrs_natural)in(0, t);	//prediction  
@@ -140,7 +157,24 @@ void ClassificationReport::myProcess(realvec& in, realvec& out)
 	if (done)
     {
 		if (getctrl("mrs_bool/regression")->isTrue()) {
-		mrs_real correlation = 0.0;
+
+		mrs_real varActual = regCorr.sumSqrClass -
+			(regCorr.sumClass*regCorr.sumClass) /
+			regCorr.withClass;
+		mrs_real varPredicted = regCorr.sumSqrPredicted -
+			(regCorr.sumPredicted*regCorr.sumPredicted) /
+			regCorr.withClass;
+		mrs_real varProd = regCorr.sumClassPredicted -
+			(regCorr.sumClass*regCorr.sumPredicted) /
+			regCorr.withClass;
+
+		mrs_real correlation;
+		if (varActual * varPredicted <= 0) {
+			correlation = 0.0;
+		} else {
+			correlation = varProd / sqrt(varActual*varPredicted);
+		}
+
 		mrs_real meanAbsoluteError = 0.0;
 		mrs_real rootMeanSquaredError = 0.0;
 		mrs_real relativeAbsoluteError = 0.0;
