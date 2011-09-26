@@ -756,11 +756,15 @@ train_evaluate()
   net->updControl("mrs_natural/inSamples", 1);
 
   if (net->getctrl("WekaSource/wsrc/mrs_bool/regression")->isTrue()) {
-    cout<<"setting up for regression"<<endl;
+    //cout<<"setting up for regression"<<endl;
     // TODO: enable regression for ZeroRClassifier and GaussianClassifier,
     // and don't assume we're only dealing with svm
     net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/svm",
       "NU_SVR");
+    //net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/svm",
+    //  "EPSILON_SVR");
+    //net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/kernel",
+    //  "LINEAR");
     net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_bool/output_classPerms", false);
     net->updControl("Classifier/cl/mrs_natural/nClasses", 1);
 
