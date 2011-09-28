@@ -164,7 +164,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 	} else if (ctrl_mode_->to<mrs_string>() == "predict") {
 		training_ = false;
 	} else {
-		cerr << "SVMClassifier.cpp, mode not supported";
+		cerr << "SVMClassifier.cpp, mode not supported"<<endl;
 		exit(1);
 	}
 
@@ -179,7 +179,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 		svm_ = NU_SVR;
 	else
 	{
-		cerr << "SVMClassifier.cpp, SVM not supported";
+		cerr << "SVMClassifier.cpp, SVM not supported"<<endl;
 		exit(1);
 	}
 
@@ -195,7 +195,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 		kernel_ = PRECOMPUTED;
 	else
 	{
-		cerr << "SVMClassifier.cpp, kernel not supported";
+		cerr << "SVMClassifier.cpp, kernel not supported"<<endl;
 		exit(1);
 	}
 
