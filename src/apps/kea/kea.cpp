@@ -27,6 +27,8 @@ string distancematrix_;
 string classifier_;
 mrs_real minspan_;
 mrs_string trainedclassifier_;
+mrs_string svm_svm_;
+mrs_string svm_kernel_;
 
 
 int
@@ -61,6 +63,8 @@ printHelp(string progName)
   cerr << "-prtl --predicttimeline: predicted timeline" << endl;
   cerr << "-msp  --minspan: minimum duration of predicted timeline region" << endl;
   cerr << "-trcl --trainedclassifier: plugin file for storing the trained classifier" << endl;
+  cerr << "-ss --svm_svm: parameters for libsvm" <<endl;
+  cerr << "-sk --svm_kernel: parameters for libsvm" <<endl;
   return 1;
 }
 
@@ -755,16 +759,20 @@ train_evaluate()
   net->updControl("WekaSource/wsrc/mrs_string/filename", wekafname_);
   net->updControl("mrs_natural/inSamples", 1);
 
+  if (classifier_ == "SVM") {
+    if (svm_svm_ != EMPTYSTRING) {
+      net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/svm",
+        svm_svm_);
+    }
+    if (svm_kernel_ != EMPTYSTRING) {
+      net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/kernel",
+        svm_kernel_);
+    }
+  }
+
   if (net->getctrl("WekaSource/wsrc/mrs_bool/regression")->isTrue()) {
-    //cout<<"setting up for regression"<<endl;
     // TODO: enable regression for ZeroRClassifier and GaussianClassifier,
     // and don't assume we're only dealing with svm
-    net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/svm",
-      "NU_SVR");
-    //net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/svm",
-    //  "EPSILON_SVR");
-    //net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/kernel",
-    //  "LINEAR");
     net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_bool/output_classPerms", false);
     net->updControl("Classifier/cl/mrs_natural/nClasses", 1);
 
@@ -1037,6 +1045,8 @@ initOptions()
   cmd_options_.addStringOption("predicttimeline", "prtl", EMPTYSTRING);
   cmd_options_.addRealOption("minspan", "msp", 0.25);
   cmd_options_.addStringOption("trainedclassifier", "trcl", "trained.mpl");
+  cmd_options_.addStringOption("svm_svm", "ss", EMPTYSTRING);
+  cmd_options_.addStringOption("svm_kernel", "sk", EMPTYSTRING);
 }
 
 
@@ -1056,6 +1066,8 @@ loadOptions()
   predicttimeline_ = cmd_options_.getStringOption("predicttimeline");
   minspan_ = cmd_options_.getRealOption("minspan");
   trainedclassifier_ = cmd_options_.getStringOption("trainedclassifier");
+  svm_svm_ = cmd_options_.getStringOption("svm_svm");
+  svm_kernel_ = cmd_options_.getStringOption("svm_kernel");
 }
 
 
