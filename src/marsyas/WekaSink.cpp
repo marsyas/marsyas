@@ -312,7 +312,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	  for (o=0; o < inObservations_; o++)
 	    {
 	      out(o,t) = in(o,t);
-	      if (label_class >= 0)
+	      if ((label_class >= 0) || (ctrl_regression_->isTrue()))
 		{
 		  if (o < inObservations_ - 1)
 		    {
