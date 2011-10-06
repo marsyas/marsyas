@@ -35,6 +35,7 @@ HarmonicStrength::HarmonicStrength(const HarmonicStrength& a) : MarSystem(a)
 	ctrl_harmonics_ = getctrl("mrs_realvec/harmonics");
 	ctrl_harmonicsSize_ = getctrl("mrs_natural/harmonicsSize");
 	ctrl_harmonicsWidth_ = getctrl("mrs_real/harmonicsWidth");
+	ctrl_inharmonicity_B_ = getctrl("mrs_real/inharmonicity_B");
 }
 
 
@@ -57,6 +58,7 @@ HarmonicStrength::addControls()
 	setctrlState("mrs_natural/harmonicsSize", true);
 	addctrl("mrs_real/harmonicsWidth", 0.05, ctrl_harmonicsWidth_);
 	addctrl("mrs_natural/type", 0);
+	addctrl("mrs_real/inharmonicity_B", 0.0, ctrl_inharmonicity_B_);
 }
 
 void
@@ -133,7 +135,8 @@ HarmonicStrength::quadratic_interpolation(mrs_real best_bin,
 
 mrs_real
 HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
-                                      mrs_natural t, mrs_real radius)
+                                      mrs_natural t, mrs_real low,
+                                      mrs_real high)
 {
 	// find peak in 2*radius
 	// in real-world signals, the harmonic isn't always a
@@ -141,7 +144,7 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 	// of margin (the "radius") to find the best bin
 	mrs_natural best_bin = -1;
 	mrs_real best_magnitude = 0;
-	for (mrs_natural i=central_bin-radius; i<central_bin+radius; i++)
+	for (mrs_natural i=low; i<high; i++)
 	{
 		if (in(i,t) > best_magnitude)
 		{
@@ -183,10 +186,17 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 
 		for (h = 0; h < num_harmonics; h++)
 		{
-			mrs_real freq = harmonics(h) * base_freq;
+            mrs_real n = harmonics(h);
+            mrs_real B = ctrl_inharmonicity_B_->to<mrs_real>();
+
+			mrs_real freq = n * base_freq * sqrt(1.0 + B*n*n);
 			mrs_real bin = freq * freq2bin;
-			mrs_real radius = bin * width;
-			mrs_real magnitude = find_peak_magnitude(bin, in, t, radius);
+			//mrs_real freqold= n*base_freq;
+			//mrs_real binold = freqold*freq2bin;
+            //cout<<B<<"\t"<<freqold<<"\t"<<binold<<'\t'<<freq<<"\t"<<bin<<endl;
+			mrs_real low = bin - width * inObservations_;
+			mrs_real high = bin + width * inObservations_;
+			mrs_real magnitude = find_peak_magnitude(bin, in, t, low, high);
 			if (magnitude == 0) {
 				out(h, t) = 0.0;
 			} else {

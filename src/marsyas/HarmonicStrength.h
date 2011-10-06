@@ -38,13 +38,12 @@ compared to the overall spectrum rms.
 	  Need not be integer multiples (e.g. 0.5, 1.5, is ok)
 	- \b mrs_realvec/harmonicsSize [w] : how many harmonics
           (long story, it's a workaround for some weird memory thing)
-	- \b mrs_real/harmonicsWidth [w] : percent of frequency to
-      search for a peak (i.e. a 1000hz harmonic with a
-      harmonicsWidth of 0.1 would look at all bins from 900 to
-      1100 for the peak.
+	- \b mrs_real/harmonicsWidth [w] : percent of frequency range to
+      search for a peak.
     - \b mrs_natural/type [w] : 0 = output harmonic strength
       relative to spectrum rms; 1 = output absolute (interpolated)
       power of harmonic strength
+    -b \b mrs_real/inharmonicity_B : string stiffness
 */
 
 class marsyas_EXPORT HarmonicStrength: public MarSystem
@@ -62,9 +61,11 @@ private:
     MarControlPtr ctrl_harmonics_;
     MarControlPtr ctrl_harmonicsSize_;
     MarControlPtr ctrl_harmonicsWidth_;
+    MarControlPtr ctrl_inharmonicity_B_;
 
     mrs_real find_peak_magnitude(mrs_real central_bin,
-                                 mrs_realvec& in, mrs_natural t, mrs_real radius);
+                                 mrs_realvec& in, mrs_natural t,
+                                mrs_real low, mrs_real high);
     mrs_real quadratic_interpolation(mrs_real best_bin,
                                      mrs_realvec& in, mrs_natural t);
 

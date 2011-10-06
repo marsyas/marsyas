@@ -110,35 +110,38 @@ toy_with_harmonicStrength(mrs_string sfname)
 	net->addMarSystem(mng.create("HarmonicStrength", "harm"));
 	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
 	net->updControl("mrs_natural/inSamples", 512);
-	net->updControl("ShiftInput/si/mrs_natural/winSize", 2048);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", 1024);
 	net->updControl("Windowing/win/mrs_string/type", "Hanning");
 
-	mrs_natural num_harmonics = 8;
+	mrs_natural num_harmonics = 30;
 	realvec harmonics(num_harmonics);
+    /*
 	cout<<"---------------------------"<<endl;
 	cout<<"Relative harmonic strengths"<<endl;
 	for (mrs_natural h = 0; h<num_harmonics; ++h)
 	{
-		/*
 			if (h==num_harmonics-1)
 			{
 				cout<<"0.5"<<"\t";
 				harmonics(h) = 0.5;
 			}
 			else
-		    */
 		{
 			cout<<h<<"\t";
 			harmonics(h) = h+1;
 		}
 	}
 	cout<<endl;
+    */
 
 	//net->updControl("HarmonicStrength/harm/mrs_realvec/harmonics", harmonics);
 	net->updControl("HarmonicStrength/harm/mrs_natural/harmonicsSize", num_harmonics);
-	net->updControl("HarmonicStrength/harm/mrs_real/harmonicsWidth", 0.05);
+	net->updControl("HarmonicStrength/harm/mrs_real/harmonicsWidth", 0.0);
 	net->updControl("HarmonicStrength/harm/mrs_natural/type", 1);
-	net->updControl("HarmonicStrength/harm/mrs_real/base_frequency", 293.3);
+	net->updControl("HarmonicStrength/harm/mrs_real/base_frequency", 200.0);
+    // typical value for piano strings
+	net->updControl("HarmonicStrength/harm/mrs_real/inharmonicity_B", 2e-5);
+
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
 		net->tick();
