@@ -67,7 +67,11 @@ CsvFileSource::getHeader(mrs_string filename)
 	{
 		// read first line from file
 		char buffer[4096];
-		fgets(buffer, 4096, vfp_);
+        char *res;
+		res = fgets(buffer, 4096, vfp_);
+        if (res == NULL) {
+            cout<<"CsvFileSource: error reading file "<<filename<<endl;
+        }
 		stringstream line(buffer);
 		char entry[256];
 		fileObs_ = 0;
@@ -80,7 +84,9 @@ CsvFileSource::getHeader(mrs_string filename)
 
 		string obs(buffer);
 		ctrl_onObsNames_->setValue(obs, NOUPDATE);
-	}
+	} else {
+        cout<<"CsvFileSource: error reading file "<<filename<<endl;
+    }
 }
 
 

@@ -42,7 +42,7 @@ compared to the overall spectrum rms.
       search for a peak.
     - \b mrs_natural/type [w] : 0 = output harmonic strength
       relative to spectrum rms; 1 = output absolute (interpolated)
-      power of harmonic strength
+      power of harmonic strength; 2 = log of #1
     -b \b mrs_real/inharmonicity_B : string stiffness
 */
 
@@ -50,40 +50,40 @@ class marsyas_EXPORT HarmonicStrength: public MarSystem
 {
 private:
 
-    /// Add specific controls needed by this MarSystem.
-    void addControls();
+	/// Add specific controls needed by this MarSystem.
+	void addControls();
 
-    /// Reads changed controls and sets up variables if necessary.
-    void myUpdate(MarControlPtr sender);
+	/// Reads changed controls and sets up variables if necessary.
+	void myUpdate(MarControlPtr sender);
 
 
-    MarControlPtr ctrl_base_frequency_;
-    MarControlPtr ctrl_harmonics_;
-    MarControlPtr ctrl_harmonicsSize_;
-    MarControlPtr ctrl_harmonicsWidth_;
-    MarControlPtr ctrl_inharmonicity_B_;
+	MarControlPtr ctrl_base_frequency_;
+	MarControlPtr ctrl_harmonics_;
+	MarControlPtr ctrl_harmonicsSize_;
+	MarControlPtr ctrl_harmonicsWidth_;
+	MarControlPtr ctrl_inharmonicity_B_;
 
-    mrs_real find_peak_magnitude(mrs_real central_bin,
-                                 mrs_realvec& in, mrs_natural t,
-                                mrs_real low, mrs_real high);
-    mrs_real quadratic_interpolation(mrs_real best_bin,
-                                     mrs_realvec& in, mrs_natural t);
+	mrs_real find_peak_magnitude(mrs_real central_bin,
+	                             mrs_realvec& in, mrs_natural t,
+	                             mrs_real low, mrs_real high);
+	mrs_real quadratic_interpolation(mrs_real best_bin,
+	                                 mrs_realvec& in, mrs_natural t);
 
 public:
-    /// HarmonicStrength constructor.
-    HarmonicStrength(std::string name);
+	/// HarmonicStrength constructor.
+	HarmonicStrength(std::string name);
 
-    /// HarmonicStrength copy constructor.
-    HarmonicStrength(const HarmonicStrength& a);
+	/// HarmonicStrength copy constructor.
+	HarmonicStrength(const HarmonicStrength& a);
 
-    /// HarmonicStrength destructor.
-    ~HarmonicStrength();
+	/// HarmonicStrength destructor.
+	~HarmonicStrength();
 
-    /// Implementation of the MarSystem::clone() method.
-    MarSystem* clone() const;
+	/// Implementation of the MarSystem::clone() method.
+	MarSystem* clone() const;
 
-    /// Implementation of the MarSystem::myProcess method.
-    void myProcess(realvec& in, realvec& out);
+	/// Implementation of the MarSystem::myProcess method.
+	void myProcess(realvec& in, realvec& out);
 };
 
 }

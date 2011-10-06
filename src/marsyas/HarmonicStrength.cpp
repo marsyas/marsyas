@@ -101,7 +101,8 @@ mrs_real
 HarmonicStrength::quadratic_interpolation(mrs_real best_bin,
         mrs_realvec& in, mrs_natural t)
 {
-	if ((best_bin == 0) || (best_bin == in.getRows()-1)) {
+	if ((best_bin == 0) || (best_bin == in.getRows()-1))
+	{
 		// don't try to interpolate using data that's
 		// outside of the spectogram
 		// TODO: find some convincing DSP thing to do in this case
@@ -144,12 +145,14 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 	// of margin (the "radius") to find the best bin
 	mrs_natural best_bin = -1;
 	mrs_real best_magnitude = 0;
-    if (low < 0) {
-        low = 0;
-    }
-    if (high < inSamples_) {
-        high = inSamples_ -1;
-    }
+	if (low < 0)
+	{
+		low = 0;
+	}
+	if (high < inSamples_)
+	{
+		high = inSamples_ -1;
+	}
 	for (mrs_natural i=low; i<high; i++)
 	{
 		if (in(i,t) > best_magnitude)
@@ -158,9 +161,12 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 			best_magnitude = in(i,t);
 		}
 	}
-	if (best_bin >= 0) {
+	if (best_bin >= 0)
+	{
 		best_magnitude = quadratic_interpolation(best_bin, in, t);
-	} else {
+	}
+	else
+	{
 		best_magnitude = in(central_bin, t);
 	}
 
@@ -192,27 +198,34 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 
 		for (h = 0; h < num_harmonics; h++)
 		{
-            mrs_real n = harmonics(h);
-            mrs_real B = ctrl_inharmonicity_B_->to<mrs_real>();
+			mrs_real n = harmonics(h);
+			mrs_real B = ctrl_inharmonicity_B_->to<mrs_real>();
 
 			mrs_real freq = n * base_freq * sqrt(1.0 + B*n*n);
 			mrs_real bin = freq * freq2bin;
 			//mrs_real freqold= n*base_freq;
 			//mrs_real binold = freqold*freq2bin;
-            //cout<<B<<"\t"<<freqold<<"\t"<<binold<<'\t'<<freq<<"\t"<<bin<<endl;
+			//cout<<B<<"\t"<<freqold<<"\t"<<binold<<'\t'<<freq<<"\t"<<bin<<endl;
 			mrs_real low = bin - width * inObservations_;
 			mrs_real high = bin + width * inObservations_;
 			mrs_real magnitude = find_peak_magnitude(bin, in, t, low, high);
-			if (magnitude == 0) {
+			if (magnitude == 0)
+			{
 				out(h, t) = 0.0;
-			} else {
-				if (getctrl("mrs_natural/type")->to<mrs_natural>() == 0)
+			}
+			else
+			{
+				switch (getctrl("mrs_natural/type")->to<mrs_natural>())
 				{
+				case 0:
 					out(h, t) = log(magnitude / energy_rms);
-				}
-				else
-				{
+					break;
+				case 2:
+					out(h, t) = log(magnitude);
+					break;
+				default:
 					out(h, t) = magnitude;
+					break;
 				}
 			}
 			/*
