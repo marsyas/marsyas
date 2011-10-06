@@ -27,6 +27,7 @@ CsvFileSource::CsvFileSource(mrs_string name):MarSystem("CsvFileSource",name)
 	//name_ = name;
 
 	vfp_ = 0;
+    fileObs_ = 0;
 
 	addControls();
 }

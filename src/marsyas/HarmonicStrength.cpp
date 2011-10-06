@@ -144,6 +144,12 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 	// of margin (the "radius") to find the best bin
 	mrs_natural best_bin = -1;
 	mrs_real best_magnitude = 0;
+    if (low < 0) {
+        low = 0;
+    }
+    if (high < inSamples_) {
+        high = inSamples_ -1;
+    }
 	for (mrs_natural i=low; i<high; i++)
 	{
 		if (in(i,t) > best_magnitude)
