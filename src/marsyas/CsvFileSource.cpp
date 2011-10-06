@@ -44,7 +44,7 @@ CsvFileSource::addControls()
 {
 	addctrl("mrs_bool/hasData", true);
 	addctrl("mrs_natural/size", 0);
-	addctrl("mrs_string/filename", "input.csv");
+	addctrl("mrs_string/filename", EMPTYSTRING);
 	setctrlState("mrs_string/filename", true);
 }
 
@@ -96,11 +96,16 @@ CsvFileSource::myUpdate(MarControlPtr sender)
 	(void) sender;
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
-
+	setctrl("mrs_real/osrate", israte_);
+	setctrl("mrs_natural/onSamples", inSamples_);
 
 	if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
 	{
 		filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
+        if (filename_ == EMPTYSTRING) {
+	        setctrl("mrs_natural/onObservations", 0);
+            return;
+        }
 
 		// count lines, subtract 1 for header
 		fileSamples_ = 0;
@@ -118,9 +123,7 @@ CsvFileSource::myUpdate(MarControlPtr sender)
 
 	}
 
-	setctrl("mrs_natural/onSamples", inSamples_);
 	setctrl("mrs_natural/onObservations", fileObs_);
-	setctrl("mrs_real/osrate", israte_);
 
 
 }
