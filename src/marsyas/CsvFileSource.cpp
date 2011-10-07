@@ -61,6 +61,9 @@ CsvFileSource::clone() const
 void
 CsvFileSource::getHeader(mrs_string filename)
 {
+    if (vfp_ != NULL) {
+		fclose(vfp_);
+    }
 	// Need to read Csv File Header
 	vfp_ = fopen(filename.c_str(), "r");
 	if (vfp_)
@@ -84,6 +87,7 @@ CsvFileSource::getHeader(mrs_string filename)
 
 		string obs(buffer);
 		ctrl_onObsNames_->setValue(obs, NOUPDATE);
+	    setctrl("mrs_bool/hasData", true);
 	} else {
         cout<<"CsvFileSource: error reading file "<<filename<<endl;
     }
