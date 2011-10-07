@@ -311,7 +311,7 @@ CF_filter_params_class::CF_filter_params_class()
   velocity_scale = 0.002;           // for the cubic nonlinearity
   min_zeta = 0.15;
   first_pole_theta = 0.78 * PI;
-  zero_ratio = sqrt(2);
+  zero_ratio = sqrt((float)2.0);
   ERB_per_step = 0.3333;            // assume G&M's ERB formula
   min_pole_Hz = 40;
 }
