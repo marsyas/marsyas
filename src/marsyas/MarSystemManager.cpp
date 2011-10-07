@@ -263,6 +263,7 @@
 #include "HarmonicStrength.h"
 #include "CsvFileSource.h"
 #include "Krumhansl_key_finder.h"
+#include "PWMSource.h"
 //modifyHeader
 
 
@@ -527,6 +528,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("HarmonicStrength", new HarmonicStrength("harmonicstrengthpr"));
 	registerPrototype("CsvFileSource", new CsvFileSource("csvfilesourcepr"));
 	registerPrototype("Krumhansl_key_finder", new Krumhansl_key_finder("krumhansl_key_finderpr"));
+	registerPrototype("PWMSource", new PWMSource("pwmsourcepr"));
 	//modifyRegister
 
 	//***************************************************************************************
