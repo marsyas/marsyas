@@ -243,7 +243,8 @@ WekaSink::myUpdate(MarControlPtr sender)
 	}
 	precision_ = ctrl_precision_->to<mrs_natural>();
 	downsample_ = ctrl_downsample_->to<mrs_natural>();
-
+    // initalize the downsample count
+    count_ = 0;
 }
 
 void
@@ -287,8 +288,6 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	}
 
 	// Counter for handling the decimation (see ctrl_downsample).
-	// TODO: why is count a static and not a class attribute?
-	static int count = 0;
 
 	mrs_natural label_class = 0;
 	
@@ -316,7 +315,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 		{
 		  if (o < inObservations_ - 1)
 		    {
-		      if ((count % downsample_) == 0)
+		      if ((count_ % downsample_) == 0)
 			{
 			if (print_line)
 			{
@@ -341,7 +340,7 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	  
 	  // Output last value (e.g. as label).
 	  ostringstream oss;
-	  if ((count % downsample_) == 0)
+	  if ((count_ % downsample_) == 0)
 	    {
 	    if (print_line)
 	    {
@@ -377,5 +376,5 @@ WekaSink::myProcess(realvec& in, realvec& out)
 	    }
 	  }
 	}
-	count++;
+	count_++;
 }

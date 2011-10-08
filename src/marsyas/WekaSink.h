@@ -92,6 +92,7 @@ private:
 	mrs_string prev_playing_;
 
 	mrs_natural stabilizingTicks_;
+	mrs_natural count_;
 
 public:
 	/// WekaSink constructor.
