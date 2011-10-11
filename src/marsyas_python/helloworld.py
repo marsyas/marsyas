@@ -68,6 +68,9 @@ nwk.updControl("AudioSink/EndHere/mrs_natural/bufferSize", 512);
 nwk.updControl("mrs_real/israte", 44100.0);
 nwk.updControl("AudioSink/EndHere/mrs_bool/initAudio", MarControlPtr.from_bool(True));
 
+# Will I be able to print the network?
+print nwk.toString()
+
 # Everything seems to be set correctly.
 # Now, we must make time pass.
 # Every time we call a nwk.tick(), time will pass for that MarSystem by a time equivalent to the size of the network's buffer.
