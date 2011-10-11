@@ -264,6 +264,7 @@
 #include "CsvFileSource.h"
 #include "Krumhansl_key_finder.h"
 #include "PWMSource.h"
+#include "DCSource.h"
 //modifyHeader
 
 
@@ -529,6 +530,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("CsvFileSource", new CsvFileSource("csvfilesourcepr"));
 	registerPrototype("Krumhansl_key_finder", new Krumhansl_key_finder("krumhansl_key_finderpr"));
 	registerPrototype("PWMSource", new PWMSource("pwmsourcepr"));
+	registerPrototype("DCSource", new DCSource("dcsourcepr"));
 	//modifyRegister
 
 	//***************************************************************************************
