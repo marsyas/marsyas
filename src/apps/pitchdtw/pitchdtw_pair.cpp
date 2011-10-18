@@ -8,9 +8,6 @@
 #include <vector> 
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
-#include "SimilarityMatrix.h"
-#include "Metric2.h"
-#include "DTW.h"
 // #include "pngwriter.h"
 
 using namespace std;
@@ -41,17 +38,17 @@ void pitchdtw(realvec input_realvec,int size1, int size2)
   sizes(0) = size1;
   sizes(1) = size2;
 
-  MarSystem* sim = new SimilarityMatrix("sim");
+  MarSystem* sim = mng.create("SimilarityMatrix","sim");
   sim->updControl("mrs_realvec/sizes",sizes);
 
-  MarSystem* met = new Metric2("met");
+  MarSystem* met = mng.create("Metric2","met");
   met->updControl("mrs_string/metric","euclideanDistance");
 
   sim->addMarSystem(met);
   net->addMarSystem(sim);
 
 
-   MarSystem* dtw = new DTW("dtw");
+  MarSystem* dtw = mng.create("DTW", "dtw");
    dtw->updControl("mrs_string/lastPos","end");
    dtw->updControl("mrs_string/startPos","zero");
    dtw->updControl("mrs_bool/weight",false);
