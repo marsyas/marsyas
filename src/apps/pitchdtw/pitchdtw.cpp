@@ -8,9 +8,6 @@
 #include <vector> 
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
-#include "SimilarityMatrix.h"
-#include "Metric2.h"
-#include "DTW.h"
 
 using namespace std;
 using namespace Marsyas;
@@ -28,16 +25,16 @@ void pitchdtw(vector<string> filenames, vector<vector<float> > data)
 
   // A series to contain everything
   MarSystem* net = mng.create("Series", "series");
-  MarSystem* sim = new SimilarityMatrix("sim");
+  MarSystem* sim = mng.create("SimilarityMatrix","sim");
   
-  MarSystem* met = new Metric2("met");
+  MarSystem* met = mng.create("Metric2", "met");
   met->updControl("mrs_string/metric","euclideanDistance");
 
   sim->addMarSystem(met);
   net->addMarSystem(sim);
   
   // Calculate the DTW cost
-  MarSystem* dtw = new DTW("dtw");
+  MarSystem* dtw = mng.create("DTW", "dtw");
   dtw->updControl("mrs_string/lastPos","end");
   dtw->updControl("mrs_string/startPos","zero");
   dtw->updControl("mrs_bool/weight",false);
