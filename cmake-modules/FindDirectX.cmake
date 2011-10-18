@@ -15,7 +15,7 @@ if (WIN32)
 			"$ENV{DXSDK_DIR}/Lib/x86"
 			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK/Lib/x86"
 			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK (August 2008)/Lib/x86"
-			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK (August 2010)/Lib/x86"
+			"$ENV{PROGRAMFILES}/Microsoft DirectX SDK (June 2010)/Lib/x86"
 		DOC "The directory where the dsound library resides"
 	)
 	mark_as_advanced(DSOUND_LIBRARY)
