@@ -169,10 +169,17 @@ void Parallel::myProcess(realvec& in, realvec& out)
 			localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 			for (o = 0; o < localIndex; o++) 
 			{
+                // avoid reading unallocated memory
+                if ((inIndex + o) < in.getRows()) {
 				for (t = 0; t < inSamples_; t++) //lmartins: was t < onSamples [!]
 				{
 					(*(slices_[2*i]))(o,t) = in(inIndex + o,t);
 				}
+                } else {
+				for (t = 0; t < inSamples_; t++) {
+					(*(slices_[2*i]))(o,t) = 0;
+                }
+                }
 			}
 			inIndex += localIndex;
 			marsystems_[i]->process(*(slices_[2*i]), *(slices_[2*i+1]));
