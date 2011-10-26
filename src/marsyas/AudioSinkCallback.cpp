@@ -52,7 +52,7 @@ AudioSinkCallback::AudioSinkCallback(mrs_string name):MarSystem("AudioSinkCallba
 	rtSrate_ = 0;
 	bufferSize_ = 0;
 	rtChannels_ = 0;
-	rtDevice_ = -1;
+	rtDevice_ = 0;
   
 
 
@@ -154,8 +154,12 @@ AudioSinkCallback::initRtAudio()
 	rtChannels_ = 2;
 	
 	RtAudio::StreamParameters oParams;
-  if (rtDevice_ < 0)
-    rtDevice_ = audio_->getDefaultOutputDevice();
+	// if (rtDevice_ < 0)
+	// rtDevice_ = audio_->getDefaultOutputDevice();
+	rtDevice_ = 1;
+	
+	cout << "rtChannels_ = " << rtChannels_ << endl;
+	
 
 	oParams.deviceId = rtDevice_;
 	oParams.nChannels = rtChannels_;
@@ -172,13 +176,26 @@ AudioSinkCallback::initRtAudio()
 	//marsyas represents audio data as float numbers
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
+
+	rtFormat = RTAUDIO_FLOAT64;
+	
+	RtAudio::StreamOptions options;
+	audio_->showWarnings(true);
+
+	// options.flags |= RTAUDIO_HOG_DEVICE;
+	// options.flags |= RTAUDIO_SCHEDULE_REALTIME;	
+	// options.flags |= RTAUDIO_NONINTERLEAVED;
+	
+
   if (rtDevice_ != audio_->getDefaultOutputDevice())
   {
       RtAudio::DeviceInfo info;
       info = audio_->getDeviceInfo(rtDevice_);
       cout << "Using output device: " << info.name << endl;
   }
-
+  
+  cout << "rtSrate_ = "  << rtSrate_ << endl;
+  
 	try 
 	{
 		audio_->openStream(&oParams, NULL, rtFormat, rtSrate_, 

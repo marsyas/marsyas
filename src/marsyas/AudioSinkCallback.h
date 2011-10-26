@@ -69,7 +69,7 @@ class AudioSinkCallback:public MarSystem
 		int rtSrate_;
 		int rtChannels_;
 		int srate_;
-		unsigned int rtDevice_;
+	    unsigned int rtDevice_;
 		
 		bool isInitialized_;
 		bool stopped_;
