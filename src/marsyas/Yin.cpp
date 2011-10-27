@@ -63,6 +63,9 @@ Yin::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 
+  yin_buffer_.create(0.0,1,inSamples_/2);
+  yin_size_ = inSamples_/2;
+
 	// Add prefix to the observation names.
 	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
 	ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Yin_"), NOUPDATE);
@@ -113,11 +116,6 @@ void
 Yin::myProcess(realvec& in, realvec& out)
 {
 
-  // Make a temporary realvec to build up the yin function in
-  // sness - This is very inefficient - Move to update function
-  realvec yin;
-  yin.create(0.0,1,inSamples_/2);
-
   // The tolerance for the yin algorithm
   mrs_real tol = ctrl_tolerance_->to<mrs_real>();
 
@@ -130,27 +128,27 @@ Yin::myProcess(realvec& in, realvec& out)
   mrs_natural c=0,j,tau = 0;
   int period;
   double tmp = 0., tmp2 = 0.;
-  yin(c,0) = 1.;
-  for (tau=1;tau<yin.getSize();tau++)
+  yin_buffer_(c,0) = 1.;
+  for (tau=1;tau<yin_size_;tau++)
 	{
 // 	  cout << "tau=" << tau << endl;	  
-	  yin(c,tau) = 0.;
-	  for (j=0;j<yin.getSize();j++)
+	  yin_buffer_(c,tau) = 0.;
+	  for (j=0;j<yin_size_;j++)
 		{
 		  tmp = in(c,j) - in(c,j+tau);
-		  yin(c,tau) += tmp * tmp;
+		  yin_buffer_(c,tau) += tmp * tmp;
 		}
-	  tmp2 += yin(c,tau);
-	  yin(c,tau) *= tau/tmp2;
+	  tmp2 += yin_buffer_(c,tau);
+	  yin_buffer_(c,tau) *= tau/tmp2;
 	  period = tau-3;
-	  if(tau > 4 && (yin(c,period) < tol) && 
-		 (yin(c,period) < yin(c,period+1))) {
-		  pitch = vec_quadint_min(&yin,period,1);
+	  if(tau > 4 && (yin_buffer_(c,period) < tol) && 
+		 (yin_buffer_(c,period) < yin_buffer_(c,period+1))) {
+		  pitch = vec_quadint_min(&yin_buffer_,period,1);
 		break;
 	  }
 	}
   if (pitch < 0) {
-	  pitch = vec_quadint_min(&yin,vec_min_elem(&yin),1);
+	  pitch = vec_quadint_min(&yin_buffer_,vec_min_elem(&yin_buffer_),1);
   }
   
   if (pitch !=0)
