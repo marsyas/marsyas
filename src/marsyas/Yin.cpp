@@ -32,7 +32,9 @@ Yin::Yin(mrs_string name):MarSystem("Yin", name)
 
 Yin::Yin(const Yin& a) : MarSystem(a)
 {
+  yin_size_ = 0;
   yin_buffer_ = NULL;
+  scratch_input_size_ = 0;
   scratch_input_ = NULL;
   ctrl_tolerance_ = getctrl("mrs_real/tolerance");
 }
@@ -41,6 +43,7 @@ Yin::Yin(const Yin& a) : MarSystem(a)
 Yin::~Yin()
 {
   delete [] scratch_input_;
+  delete [] yin_buffer_;
 }
 
 MarSystem*
