@@ -43,23 +43,24 @@ namespace Marsyas
 */
 
 
-class AudioSinkCallback:public MarSystem
-{
+	class AudioSinkCallback:public MarSystem
+	{
 	private:
 		
 		struct OutputData 
 		{
-				mrs_realvec* ringBuffer;
-				unsigned int wp;
-				unsigned int rp;
-				unsigned int samplesInBuffer;
-				unsigned int ringBufferSize;
-				unsigned int inchannels;
-				unsigned int high_watermark;
-				unsigned int low_watermark;
-				AudioSinkCallback* myself;
+			mrs_realvec* ringBuffer;
+			unsigned int wp;
+			unsigned int rp;
+			unsigned int samplesInBuffer;
+			unsigned int ringBufferSize;
+			unsigned int inchannels;
+			unsigned int high_watermark;
+			unsigned int low_watermark;
+			int srate;
+			AudioSinkCallback* myself;
 				
-		} odata;
+		} odata_;
 		
 		
 
@@ -104,7 +105,7 @@ class AudioSinkCallback:public MarSystem
 		MarSystem* clone() const;  
 		
 		void myProcess(realvec& in, realvec& out);
-};
+	};
 	
 }//namespace Marsyas
 

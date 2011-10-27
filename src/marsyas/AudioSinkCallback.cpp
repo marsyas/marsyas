@@ -105,9 +105,9 @@ AudioSinkCallback::myUpdate(MarControlPtr sender)
     {
 		ringBufferSize_ = 8 * inSamples_;
     }
-	odata.ringBufferSize = ringBufferSize_;
-	odata.high_watermark = ringBufferSize_ / 4;
-	odata.low_watermark =  ringBufferSize_ /8;
+	odata_.ringBufferSize = ringBufferSize_;
+	odata_.high_watermark = ringBufferSize_ / 4;
+	odata_.low_watermark =  ringBufferSize_ /8;
 	
 	// resize if necessary 
 	nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();	
@@ -136,8 +136,12 @@ AudioSinkCallback::initRtAudio()
 	rtDevice_= (int)getctrl("mrs_natural/device")->to<mrs_natural>();
 
 #ifdef MARSYAS_MACOSX
+	// hack to get 22050Hz sound files to play 
+	// ok on OS X that by default supports on 44100 
+	// without utilizing explicit resampling 
 	if (rtSrate_ == 22050) 
   {
+	  
 		rtSrate_ = 44100;
 		bufferSize_ = 2 * bufferSize_;
   }
@@ -158,19 +162,19 @@ AudioSinkCallback::initRtAudio()
 	// rtDevice_ = audio_->getDefaultOutputDevice();
 	rtDevice_ = 1;
 	
-	cout << "rtChannels_ = " << rtChannels_ << endl;
 	
 
 	oParams.deviceId = rtDevice_;
 	oParams.nChannels = rtChannels_;
 	oParams.firstChannel = 0; 
 
-	odata.ringBuffer = &ringBuffer_;
-	odata.wp = 0;
-	odata.rp = 0;
-	odata.ringBufferSize = ringBufferSize_;
-	odata.inchannels = inObservations_;
-	odata.myself = this;
+	odata_.ringBuffer = &ringBuffer_;
+	odata_.wp = 0;
+	odata_.rp = 0;
+	odata_.ringBufferSize = ringBufferSize_;
+	odata_.inchannels = inObservations_;
+	odata_.myself = this;
+	odata_.srate = srate_;
 	
 
 	//marsyas represents audio data as float numbers
@@ -191,27 +195,25 @@ AudioSinkCallback::initRtAudio()
   {
       RtAudio::DeviceInfo info;
       info = audio_->getDeviceInfo(rtDevice_);
-      cout << "Using output device: " << info.name << endl;
   }
   
-  cout << "rtSrate_ = "  << rtSrate_ << endl;
   
-	try 
-	{
-		audio_->openStream(&oParams, NULL, rtFormat, rtSrate_, 
-						  &bufferFrames, &playCallback, (void *)&odata, NULL);
-	}
-	catch (RtError& e) 
-	{
-		e.printMessage();
-		exit(0);
-	}
-
+  try 
+  {
+	  audio_->openStream(&oParams, NULL, rtFormat, rtSrate_, 
+						 &bufferFrames, &playCallback, (void *)&odata_, NULL);
+  }
+  catch (RtError& e) 
+  {
+	  e.printMessage();
+	  exit(0);
+  }
+  
 	
   
-	//update bufferSize control which may have been changed
-	//by RtAudio (see RtAudio documentation)
-	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferFrames);
+  //update bufferSize control which may have been changed
+  //by RtAudio (see RtAudio documentation)
+  setctrl("mrs_natural/bufferSize", (mrs_natural)bufferFrames);
   
 #endif
 	isInitialized_ = true;
@@ -236,42 +238,81 @@ AudioSinkCallback::start()
 
 int 
 AudioSinkCallback::playCallback(void *outputBuffer, void *inputBuffer, 
-						unsigned int nBufferFrames, double streamTime, 
+								unsigned int nBufferFrames, double streamTime, 
 								unsigned int status, void *userData)
 {
 	unsigned int drain_count	= 0;
 	
 	mrs_real* data = (mrs_real*)outputBuffer;
-	OutputData *oData = (OutputData *)userData;
-	//AudioSinkCallback* mythis = (AudioSinkCallback *)oData->myself;
-	realvec& ringBuffer = *(oData->ringBuffer);
+	OutputData *odata = (OutputData *)userData;
+	//AudioSinkCallback* mythis = (AudioSinkCallback *)odata_->myself;
+	realvec& ringBuffer = *(odata->ringBuffer);
 	unsigned int t;
    
+	if (odata->srate == 22050) 
+		nBufferFrames = nBufferFrames/2;
+	
+	
+	
 	for (t=0; t < nBufferFrames; t++)
 	{
-		if (oData->samplesInBuffer >= oData->low_watermark)
+		if (odata->samplesInBuffer >= odata->low_watermark)
 		{
 			
-			if (oData->inchannels == 1) 
-			{
-				data[2*t] = ringBuffer(0,oData->rp);
-				data[2*t+1] = ringBuffer(0,oData->rp);
-			}
-			else 
-			{
-				data[2*t] = ringBuffer(0,oData->rp);
-				data[2*t+1] = ringBuffer(1,oData->rp);
+			const int t4 = 4 * t;
+			const int t2 = 2 * t;
+			
+			if (odata->srate == 22050)		// hack to get 22050 working without resampling                                        // on OS X that typically only support 44k
+			{	      
+				
+				if (odata->inchannels == 1) 
+				{
+					mrs_real val = ringBuffer(0, odata->rp);
+					data[t4] = val;
+					data[t4+1] = val;
+					data[t4+2] = val;
+					data[t4+3] = val;
+				}
+				else
+				{
+					for (int j=0; j < odata->inchannels; j++)
+					{
+						data[t4+j] = ringBuffer(0+j,odata->rp);
+						data[t4+1+j] = ringBuffer(0+j,odata->rp);
+					}
+				}
 				
 			}
-			oData->rp = ++(oData->rp) % oData->ringBufferSize;
-			if (oData->wp >= oData->rp) 
-				oData->samplesInBuffer = oData->wp - oData->rp;
+			else						// default case - use actual srate
+			{
+
+				if (odata->inchannels == 1) 
+				{
+					
+					mrs_real val = ringBuffer(0,odata->rp);
+					data[t2] = val;
+					data[t2+1] = val;
+				}
+				else 
+				{
+
+					
+					for (int j=0; j < odata->inchannels; j++) 
+					{
+						data[t2+j] = ringBuffer(j,odata->rp);
+					}
+				}
+			}
+			
+			odata->rp = ++(odata->rp) % odata->ringBufferSize;
+			if (odata->wp >= odata->rp) 
+				odata->samplesInBuffer = odata->wp - odata->rp;
 			else 
-				oData->samplesInBuffer = oData->ringBufferSize - (oData->rp - oData->wp);
+				odata->samplesInBuffer = odata->ringBufferSize - (odata->rp - odata->wp);
 		}
 	}
 	
-	while (oData->samplesInBuffer < oData->low_watermark)
+	while (odata->samplesInBuffer < odata->low_watermark)
 	{
 		// block until there are available samples 
 		SLEEP(1);  // 1 millisecond 
@@ -311,8 +352,8 @@ AudioSinkCallback::localActivate(bool state)
 unsigned int 
 AudioSinkCallback::getSpaceAvailable() 
 {
-	unsigned int free = (odata.rp - odata.wp -1 + odata.ringBufferSize) % odata.ringBufferSize;
-	unsigned int underMark = odata.high_watermark - getSamplesAvailable();
+	unsigned int free = (odata_.rp - odata_.wp -1 + odata_.ringBufferSize) % odata_.ringBufferSize;
+	unsigned int underMark = odata_.high_watermark - getSamplesAvailable();
 	
 	return(min(underMark, free));
 }
@@ -321,7 +362,7 @@ AudioSinkCallback::getSpaceAvailable()
 unsigned int 
 AudioSinkCallback::getSamplesAvailable() 
 {
-	unsigned int samplesAvailable = (odata.wp - odata.rp +odata.ringBufferSize) % odata.ringBufferSize;
+	unsigned int samplesAvailable = (odata_.wp - odata_.rp +odata_.ringBufferSize) % odata_.ringBufferSize;
 	return samplesAvailable;
 }
 
@@ -343,7 +384,7 @@ AudioSinkCallback::myProcess(realvec& in, realvec& out)
 		}
     }
 	
-  	// copy to output and into reservoir
+  	// copy to output 
 	for (t=0; t < inSamples_; t++)
     {
 		for (o=0; o < inObservations_; o++)
@@ -361,21 +402,21 @@ AudioSinkCallback::myProcess(realvec& in, realvec& out)
 	// write samples to reservoir 
 	for (t=0; t < onSamples_; t++)		
 	{
-		if (odata.samplesInBuffer <= odata.high_watermark)
+		if (odata_.samplesInBuffer <= odata_.high_watermark)
 		{
 			
 			for (o=0; o < onObservations_; o++) 
-				ringBuffer_(o,odata.wp) = in(o,t);
+				ringBuffer_(o,odata_.wp) = in(o,t);
 			
-			odata.wp = ++ (odata.wp) % odata.ringBufferSize;
-			if (odata.wp >= odata.rp) 
-				odata.samplesInBuffer = odata.wp - odata.rp;
+			odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;
+			if (odata_.wp >= odata_.rp) 
+				odata_.samplesInBuffer = odata_.wp - odata_.rp;
 			else 
-				odata.samplesInBuffer = odata.ringBufferSize - (odata.rp - odata.wp);
+				odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
 		}
 		else 
 		{
-			while (odata.samplesInBuffer > odata.high_watermark)
+			while (odata_.samplesInBuffer > odata_.high_watermark)
 			{
 				SLEEP(1);
 			}
