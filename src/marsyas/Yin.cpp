@@ -63,8 +63,10 @@ Yin::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 
-  yin_buffer_.create(0.0,1,inSamples_/2);
-  yin_size_ = inSamples_/2;
+  if (yin_buffer_.getSize() != inSamples_/2) {
+    yin_buffer_.allocate(1,inSamples_/2);
+    yin_size_ = inSamples_/2;
+  }
 
 	// Add prefix to the observation names.
 	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
@@ -128,11 +130,11 @@ Yin::myProcess(realvec& in, realvec& out)
   mrs_natural c=0,j,tau = 0;
   int period;
   double tmp = 0., tmp2 = 0.;
+
+  yin_buffer_.setval(0.0);
   yin_buffer_(c,0) = 1.;
   for (tau=1;tau<yin_size_;tau++)
 	{
-// 	  cout << "tau=" << tau << endl;	  
-	  yin_buffer_(c,tau) = 0.;
 	  for (j=0;j<yin_size_;j++)
 		{
 		  tmp = in(c,j) - in(c,j+tau);
