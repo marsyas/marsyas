@@ -53,8 +53,10 @@ private:
   double aubio_quadfrac(double s0, double s1, double s2, double pf);
   double vec_quadint_min(realvec * x,unsigned int pos, unsigned int span);
   unsigned int vec_min_elem(realvec *s);
-  realvec yin_buffer_;
+  mrs_real *yin_buffer_;
   mrs_natural yin_size_;
+  mrs_real *scratch_input_;
+  mrs_natural scratch_input_size_;
 
 public:
 	Yin(std::string name);
