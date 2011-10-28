@@ -38,8 +38,15 @@ namespace Marsyas
 
 	This code was adapted from aubio (http://aubio.org) by sness.
 
+    THIS MARSYSTEM IS VERY SIMILAR TO AUBIO_YIN, BUT DO NOT DELETE
+    IT BECAUSE I NEED IT.  - Graham
+
 	Controls:
 	- \b mrs_real/tolerance [w] : sets the tolerance of the yin algorithm
+	- \b mrs_real/frequency_min [w] : limits the search to
+      frequencies above or equal to this
+	- \b mrs_real/frequency_max [w] : limits the search to
+      frequencies below or equal to this (set to 0 to disable)
 */
 
 class Yin: public MarSystem
@@ -49,6 +56,8 @@ private:
 	void myUpdate(MarControlPtr sender);
 
 	MarControlPtr ctrl_tolerance_;
+	MarControlPtr ctrl_frequency_min_;
+	MarControlPtr ctrl_frequency_max_;
 
   double aubio_quadfrac(double s0, double s1, double s2, double pf);
   double vec_quadint_min(realvec * x,unsigned int pos, unsigned int span);

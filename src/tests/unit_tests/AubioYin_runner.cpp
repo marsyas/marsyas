@@ -45,4 +45,10 @@ public:
  void runTest() { suite_AubioYin_runner.test_ten_windows_1000_990_smooth_hz(); }
 } testDescription_AubioYin_runner_test_ten_windows_1000_990_smooth_hz;
 
+static class TestDescription_AubioYin_runner_test_ten_windows_1000_880_smooth_hz : public CxxTest::RealTestDescription {
+public:
+ TestDescription_AubioYin_runner_test_ten_windows_1000_880_smooth_hz() : CxxTest::RealTestDescription( Tests_AubioYin_runner, suiteDescription_AubioYin_runner, 299, "test_ten_windows_1000_880_smooth_hz" ) {}
+ void runTest() { suite_AubioYin_runner.test_ten_windows_1000_880_smooth_hz(); }
+} testDescription_AubioYin_runner_test_ten_windows_1000_880_smooth_hz;
+
 #include <cxxtest/Root.cpp>

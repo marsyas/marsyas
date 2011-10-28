@@ -18,6 +18,11 @@
 
 #include "Yin.h"
 
+/*
+  THIS MARSYSTEM IS VERY SIMILAR TO AUBIO_YIN, BUT DO NOT DELETE
+  IT BECAUSE I NEED IT.  - Graham
+*/
+
 using namespace std;
 using namespace Marsyas;
 
@@ -37,6 +42,8 @@ Yin::Yin(const Yin& a) : MarSystem(a)
   scratch_input_size_ = 0;
   scratch_input_ = NULL;
   ctrl_tolerance_ = getctrl("mrs_real/tolerance");
+  ctrl_frequency_min_ = getctrl("mrs_real/frequency_min");
+  ctrl_frequency_max_ = getctrl("mrs_real/frequency_max");
 }
 
 
@@ -58,7 +65,8 @@ Yin::addControls()
   
   // The value of 0.15 was the default in Aubio
   addctrl("mrs_real/tolerance", 0.15, ctrl_tolerance_);
-
+  addctrl("mrs_real/frequency_min", 0.0, ctrl_frequency_min_);
+  addctrl("mrs_real/frequency_max", 0.0, ctrl_frequency_max_);
 }
 
 void
