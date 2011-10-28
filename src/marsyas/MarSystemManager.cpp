@@ -49,7 +49,7 @@
 #include "WavFileSource2.h"
 #include "SineSource.h"
 #include "NoiseSource.h"
-#include "AudioSinkCallback.h"
+#include "AudioSinkBlocking.h"
 #include "AudioSink.h"
 #include "Mono2Stereo.h"
 #include "PeakConvert.h"
@@ -466,7 +466,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("ResampleNearestNeighbour", new ResampleNearestNeighbour("resampnnpr"));
 	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
 	registerPrototype("PvMultiResolution", new PvMultiResolution("PvMultiResolution"));
-	registerPrototype("AudioSinkCallback", new AudioSinkCallback("AudioSinkCallback"));
+	registerPrototype("AudioSinkBlocking", new AudioSinkBlocking("AudioSinkBlocking"));
 
 
 	registerPrototype("Gain", new Gain("gp"));

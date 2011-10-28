@@ -908,10 +908,10 @@ toy_with_sfplay(string sfName)
 
 	// playbacknet->addMarSystem(mix);
 	// playbacknet->addMarSystem(mng.create("Reverse", "rev"));	
-	playbacknet->addMarSystem(mng.create("AudioSinkCallback", "dest"));
+	playbacknet->addMarSystem(mng.create("AudioSink", "dest"));
 
 	playbacknet->updControl("SoundFileSource/src/mrs_string/filename", sfName);
-	playbacknet->updControl("AudioSinkCallback/dest/mrs_bool/initAudio", true);
+	playbacknet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	
 
@@ -951,10 +951,10 @@ toy_with_sine()
 	smix->addMarSystem(mng.create("SineSource/src1"));
 	smix->addMarSystem(mng.create("SineSource/src2"));
 	snet->addMarSystem(smix);
-	snet->addMarSystem(mng.create("AudioSinkCallback/dest"));
+	snet->addMarSystem(mng.create("AudioSink/dest"));
   
 	snet->updControl("mrs_natural/inSamples", 2048);
-	snet->updControl("AudioSinkCallback/dest/mrs_bool/initAudio", true);
+	snet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
 	
  

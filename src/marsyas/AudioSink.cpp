@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,41 +16,35 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
 #include "common.h"
 #include "AudioSink.h"
-
-
-
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio3.h"
-#endif 
-
 
  
 using std::ostringstream;
 using std::cout;
 using std::endl;
+using std::min;
 
 using namespace Marsyas;
 
-AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
-{ 
-	bufferSize_ = 0;
-  
-	start_ = 0;
-	end_ = 0;
-  
-	preservoirSize_ = 0;
-	pnChannels_ = 1;
 
-	data_ = NULL;
 #ifdef MARSYAS_AUDIOIO
-	audio_ = NULL;
+#include "RtAudio.h"
 #endif 
 
+
+
+AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
+{
+#ifdef MARSYAS_AUDIOIO
+	audio_ = NULL;
+#endif
+  
+	pringBufferSize_ = 0;
+	pnChannels_ = 1;
+
+
 	rtSrate_ = 0;
-	bufferSize_ = 0;
   
 	isInitialized_ = false;
 	stopped_ = true;//lmartins
@@ -59,6 +53,8 @@ AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
 	bufferSize_ = 0;
 	rtChannels_ = 0;
 	rtDevice_ = 0;
+  
+
 
 	addControls();
 }
@@ -67,8 +63,8 @@ AudioSink::~AudioSink()
 {
 #ifdef MARSYAS_AUDIOIO
 	delete audio_;
-#endif
-	data_ = NULL; // RtAudio deletes the buffer itself.
+#endif 
+
 }
 
 MarSystem* 
@@ -82,7 +78,7 @@ AudioSink::addControls()
 {
   
 #ifdef MARSYAS_MACOSX
-	addctrl("mrs_natural/bufferSize", 512);
+	addctrl("mrs_natural/bufferSize", 256);
 #else
 	addctrl("mrs_natural/bufferSize", 256);
 #endif
@@ -90,7 +86,7 @@ AudioSink::addControls()
 	addctrl("mrs_bool/initAudio", false);
 	setctrlState("mrs_bool/initAudio", true);
   
-	addctrl("mrs_natural/device", 0);
+	addctrl("mrs_natural/device", -1);
   
 }
 
@@ -100,107 +96,128 @@ AudioSink::myUpdate(MarControlPtr sender)
 	MRSDIAG("AudioSink::myUpdate");
 
 	MarSystem::myUpdate(sender);
-  
-  
-	nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();//does nothing... [?]
-
-	if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
-		initRtAudio();
-  
-	//Resize reservoir if necessary
+	//Set ringBuffer size
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
-
-
 	if (inSamples_ < bufferSize_) 
-		reservoirSize_ = 2 * bufferSize_;
+		ringBufferSize_ = 8 * bufferSize_;
 	else 
     {
-		if (2 * inSamples_ > preservoirSize_)      
-			reservoirSize_ = 2 * inSamples_;
+		ringBufferSize_ = 8 * inSamples_;
     }
-  
-
-	if ((reservoirSize_ > preservoirSize_)||(nChannels_ != pnChannels_))
-    {
-      //cout << "NCHANNELS = " << nChannels_ << endl;
-      reservoir_.stretch(nChannels_, reservoirSize_);
-    } else {
-	  reservoirSize_ = preservoirSize_;
-	}
+	odata_.ringBufferSize = ringBufferSize_;
+	odata_.high_watermark = ringBufferSize_ / 4;
+	odata_.low_watermark =  ringBufferSize_ /8;
+	odata_.samplesInBuffer = 0;
 	
-	preservoirSize_ = reservoirSize_;
+
+	// resize if necessary 
+	nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();	
+	if ((ringBufferSize_ > pringBufferSize_)||(nChannels_ != pnChannels_))
+    {
+		ringBuffer_.stretch(nChannels_, ringBufferSize_);
+    }
+	pringBufferSize_ = ringBufferSize_;
 	pnChannels_ = nChannels_;
-  
+
+	
+
+	// initialize RtAudio
+	if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
+		initRtAudio();
 }
+
 
 void 
 AudioSink::initRtAudio()
 {
-
+	
 	rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
 	srate_ = rtSrate_;
 	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
 	rtDevice_= (int)getctrl("mrs_natural/device")->to<mrs_natural>();
 
 #ifdef MARSYAS_MACOSX
+	// hack to get 22050Hz sound files to play 
+	// ok on OS X that by default supports on 44100 
+	// without utilizing explicit resampling 
 	if (rtSrate_ == 22050) 
-    {
+  {
+	  
 		rtSrate_ = 44100;
 		bufferSize_ = 2 * bufferSize_;
-    }
+  }
 #endif	
-  
-  
-
 
 #ifdef MARSYAS_AUDIOIO
-	//marsyas represents audio data as float numbers
-	RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO3_FLOAT64 : RTAUDIO3_FLOAT32;
-  
+	if (audio_ == NULL)
+		audio_ = new RtAudio();
+
+	unsigned int bufferFrames;
+	bufferFrames = bufferSize_;
+
 	// hardwire channels to stereo playback even for mono
-	int rtChannels = nChannels_;
+	rtChannels_ = 2;
+	
+	RtAudio::StreamParameters oParams;
+	// if (rtDevice_ < 0)
+	// rtDevice_ = audio_->getDefaultOutputDevice();
+	rtDevice_ = 1;
+	
 	
 
-	if (rtChannels == 1) 				// make mono playback in stereo 
-		rtChannels = 2;
+	oParams.deviceId = rtDevice_;
+	oParams.nChannels = rtChannels_;
+	oParams.firstChannel = 0; 
+
+	odata_.ringBuffer = &ringBuffer_;
+	odata_.wp = 0;
+	odata_.rp = 0;
+	odata_.ringBufferSize = ringBufferSize_;
+	odata_.inchannels = inObservations_;
+	odata_.myself = this;
+	odata_.srate = srate_;
 	
-	//create new RtAudio object (delete any existing one)
-	if (audio_ != NULL) 
-    {
-		audio_->stopStream();
-		delete audio_;
-    }
+
+	//marsyas represents audio data as float numbers
+	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
-	try 
-    {
-		audio_ = new RtAudio3(rtDevice_, rtChannels, 0, 0, rtFormat,
-							 rtSrate_, &bufferSize_, 4);
 
-		data_ = (mrs_real *) audio_->getStreamBuffer();
-    }
-	catch (RtError3 &error) 
-    {
-		error.printMessage();
-    }
+	rtFormat = RTAUDIO_FLOAT64;
+	
+	RtAudio::StreamOptions options;
+	audio_->showWarnings(true);
+
+	// options.flags |= RTAUDIO_HOG_DEVICE;
+	// options.flags |= RTAUDIO_SCHEDULE_REALTIME;	
+	// options.flags |= RTAUDIO_NONINTERLEAVED;
+	
+
+  if (rtDevice_ != audio_->getDefaultOutputDevice())
+  {
+      RtAudio::DeviceInfo info;
+      info = audio_->getDeviceInfo(rtDevice_);
+  }
   
-	if (audio_ != NULL) 
-    {
-		audio_->startStream();
-    }
-
-    if (rtDevice_ !=0){
-        RtAudio3DeviceInfo info;
-        info = audio_->getDeviceInfo(rtDevice_);
-        cout << "Using output device: " << info.name << endl;
-    }
-
-#endif 
-
-	//update bufferSize control which may have been changed
-	//by RtAudio (see RtAudio documentation)
-	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
   
+  try 
+  {
+	  audio_->openStream(&oParams, NULL, rtFormat, rtSrate_, 
+						 &bufferFrames, &playCallback, (void *)&odata_, NULL);
+  }
+  catch (RtError& e) 
+  {
+	  e.printMessage();
+	  exit(0);
+  }
+  
+	
+  
+  //update bufferSize control which may have been changed
+  //by RtAudio (see RtAudio documentation)
+  setctrl("mrs_natural/bufferSize", (mrs_natural)bufferFrames);
+  
+#endif
 	isInitialized_ = true;
 	setctrl("mrs_bool/initAudio", false);
 
@@ -210,29 +227,119 @@ void
 AudioSink::start()
 {
 #ifdef MARSYAS_AUDIOIO
-
-	if ( stopped_ && audio_) {
+	if ( stopped_) {
 		audio_->startStream();
 		stopped_ = false;
 	}
-
-    
 #endif
 }
+
+
+
+#ifdef MARSYAS_AUDIOIO
+
+int 
+AudioSink::playCallback(void *outputBuffer, void *inputBuffer, 
+								unsigned int nBufferFrames, double streamTime, 
+								unsigned int status, void *userData)
+{
+	unsigned int drain_count	= 0;
+	
+	mrs_real* data = (mrs_real*)outputBuffer;
+	OutputData *odata = (OutputData *)userData;
+	//AudioSink* mythis = (AudioSink *)odata_->myself;
+	realvec& ringBuffer = *(odata->ringBuffer);
+	unsigned int t;
+   
+	if (odata->srate == 22050) 
+		nBufferFrames = nBufferFrames/2;
+	
+	
+	
+	for (t=0; t < nBufferFrames; t++)
+	{
+		if (odata->samplesInBuffer >= odata->low_watermark)
+		{
+			
+			const int t4 = 4 * t;
+			const int t2 = 2 * t;
+			
+			if (odata->srate == 22050)		// hack to get 22050 working without resampling                                        // on OS X that typically only support 44k
+			{	      
+				
+				if (odata->inchannels == 1) 
+				{
+					mrs_real val = ringBuffer(0, odata->rp);
+					data[t4] = val;
+					data[t4+1] = val;
+					data[t4+2] = val;
+					data[t4+3] = val;
+				}
+				else
+				{
+					for (int j=0; j < odata->inchannels; j++)
+					{
+						data[t4+j] = ringBuffer(0+j,odata->rp);
+						data[t4+1+j] = ringBuffer(0+j,odata->rp);
+					}
+				}
+				
+			}
+			else						// default case - use actual srate
+			{
+
+				if (odata->inchannels == 1) 
+				{
+					
+					mrs_real val = ringBuffer(0,odata->rp);
+					data[t2] = val;
+					data[t2+1] = val;
+				}
+				else 
+				{
+
+					
+					for (int j=0; j < odata->inchannels; j++) 
+					{
+						data[t2+j] = ringBuffer(j,odata->rp);
+					}
+				}
+			}
+			
+			odata->rp = ++(odata->rp) % odata->ringBufferSize;
+			if (odata->wp >= odata->rp) 
+				odata->samplesInBuffer = odata->wp - odata->rp;
+			else 
+				odata->samplesInBuffer = odata->ringBufferSize - (odata->rp - odata->wp);
+		}
+	}
+	
+	while (odata->samplesInBuffer < odata->low_watermark)
+	{
+		// block until there are available samples 
+		SLEEP(1);  // 1 millisecond 
+		drain_count++;
+		if (drain_count == 1000)
+			return 1;
+	}
+	return 0;
+}
+
+#endif
+
 
 void 
 AudioSink::stop()
 {
 #ifdef MARSYAS_AUDIOIO
-	if ( !stopped_ && audio_) {
+	if ( !stopped_) {
 
-		audio_->abortStream();
+		audio_->stopStream();
 		stopped_ = true;
-
-
 	}
 #endif 
 }
+
 
 void
 AudioSink::localActivate(bool state)
@@ -243,12 +350,32 @@ AudioSink::localActivate(bool state)
 		stop();
 }
 
+
+unsigned int 
+AudioSink::getSpaceAvailable() 
+{
+	unsigned int free = (odata_.rp - odata_.wp -1 + odata_.ringBufferSize) % odata_.ringBufferSize;
+	unsigned int underMark = odata_.high_watermark - getSamplesAvailable();
+	
+	return(min(underMark, free));
+}
+
+
+unsigned int 
+AudioSink::getSamplesAvailable() 
+{
+	unsigned int samplesAvailable = (odata_.wp - odata_.rp +odata_.ringBufferSize) % odata_.ringBufferSize;
+	return samplesAvailable;
+}
+
+
 void 
 AudioSink::myProcess(realvec& in, realvec& out)
 {
+	
 	mrs_natural t,o;
-	// cout << "AudioSink::myProcess start" << endl;
-	// check MUTE
+	 
+	//check MUTE
 	if(ctrl_mute_->isTrue())
     {
 		for (t=0; t < inSamples_; t++)
@@ -258,57 +385,47 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				out(o,t) = in(o,t);
 			}
 		}
-#ifdef MARSYAS_AUDIOIO
-		if (audio_ != NULL) 
-		{			
-//			for (t=0; t < bufferSize_; t++) 
-//			{
-//				data_[2*t] = 0.0;
-//				data_[2*t+1] = 0.0;
-//			}
-//			
-//			try 
-//			{
-//				audio_->tickStream();
-//			}
-			
-			try
-			{
-				audio_->stopStream();
-			}
-			catch (RtError3 &error) 
-			{
-				error.printMessage();
-			}
-		}
-#endif 
-		return;
     }
-  
-	// copy to output and into reservoir
-
-
-
+	
+  	// copy to output 
 	for (t=0; t < inSamples_; t++)
     {
 		for (o=0; o < inObservations_; o++)
 		{
-			reservoir_(o, end_) = in(o,t);
 			out(o,t) = in(o,t);
 		}
-		end_ ++; 
-		if (end_ == reservoirSize_) 
-			end_ = 0;
-    }
-
-
-       
-	//check if RtAudio is initialized
-	if (!isInitialized_) {
-		return;
 	}
-  
-  
+
+
+	//check if RtAudio is initialized
+	if (!isInitialized_)
+		return;
+
+	// write samples to reservoir 
+	for (t=0; t < onSamples_; t++)		
+	{
+		if (odata_.samplesInBuffer <= odata_.high_watermark)
+		{
+			
+			for (o=0; o < onObservations_; o++) 
+				ringBuffer_(o,odata_.wp) = in(o,t);
+			
+			odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;
+			if (odata_.wp >= odata_.rp) 
+				odata_.samplesInBuffer = odata_.wp - odata_.rp;
+			else 
+				odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
+		}
+		else 
+		{
+			while (odata_.samplesInBuffer > odata_.high_watermark)
+			{
+				SLEEP(1);
+			}
+		}
+	}
+	
+	
 	//assure that RtAudio thread is running
 	//(this may be needed by if an explicit call to start()
 	//is not done before ticking or calling process() )
@@ -316,122 +433,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
     {
 		start();
     }
-
-  
-	//update reservoir pointers 
-	rsize_ = bufferSize_;
-#ifdef MARSYAS_MACOSX 
-	if (srate_ == 22050)
-		rsize_ = bufferSize_/2;		// upsample to 44100
-	else 
-		rsize_ = bufferSize_;
-#endif 
-  
-	if (end_ >= start_) 
-		diff_ = end_ - start_;
-	else 
-		diff_ = reservoirSize_ - (start_ - end_);
-  
-	//send audio data in reservoir to RtAudio
-
-// 	cout << "diff_=" << diff_ << " rsize_=" << rsize_ << " reservoirSize_=" << reservoirSize_ << " start_=" << start_ << " end_=" << end_ << endl;
-	while (diff_ >= rsize_)  
-	{
-// 	  cout << "diff_=" << diff_ << endl;
-		for (t =0; t < rsize_; t++) 
-		{
-			int rt = (start_ + t);
-	  
-			while (rt >= reservoirSize_) 
-				rt -= reservoirSize_;
-			while (rt < 0) 
-				rt += reservoirSize_;
-	  
-			const int t2 = 2 * t;
-#ifndef MARSYAS_MACOSX
-
-			if (inObservations_ == 1) 
-			{
-				for (int j=0; j < nChannels_; j++) 
-				{
-					data_[t2+j] = reservoir_(0, rt);
-				}
-			}
-			else 
-			{
-				for (int j=0; j < nChannels_; j++) 
-				{
-					data_[t2+j] = reservoir_(0+j,   rt);
-				}
-				
-			}
-	  
-#else
-			const int t4 = 4 * t;
-			if (srate_ == 22050)
-			{	      
-
-				if (inObservations_ == 1) 
-				{
-					data_[t4] = reservoir_(0,rt);
-					data_[t4+1] = reservoir_(0,rt);
-					data_[t4+2] = reservoir_(0,rt);
-					data_[t4+3] = reservoir_(0,rt);
-				}
-				else
-				{
-					for (int j=0; j < nChannels_; j++)
-					{
-						data_[t4] = reservoir_(0+j,rt);
-						data_[t4+2+j] = reservoir_(0+j,rt);
-					}
-				}
-				
-			}
-			else
-			{
-				if (inObservations_ == 1) 
-				{
-			  
-					mrs_real foo = reservoir_(0, rt);
-					data_[t2] = foo; 
-					data_[t2+1] = foo;
-				}
-				else 
-				{
-					
-					for (int j=0; j < nChannels_; j++) 
-					{
-						data_[t2+j] = reservoir_(j,   rt);
-					}
-					
-				}
-			}
-#endif 
-		}
-      
-#ifdef MARSYAS_AUDIOIO
- 		//tick RtAudio
- 		try 
- 		{
- 			audio_->tickStream();
- 		}
- 		catch (RtError3 &error) 
- 		{
- 			error.printMessage();
- 		}
-      
-      
-		//update reservoir pointers
-		start_ = (start_ + rsize_) % reservoirSize_;
-		if (end_ >= start_) 
-			diff_ = end_ - start_;
-		else 
-			diff_ = reservoirSize_ - (start_ - end_);
-
-#endif
-    }
-//   cout << "AudioSink::myProcess end" << endl;
 
 }
 
