@@ -35,7 +35,7 @@ using std::endl;
 using namespace Marsyas;
 
 AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
-{
+{ 
 	bufferSize_ = 0;
   
 	start_ = 0;
