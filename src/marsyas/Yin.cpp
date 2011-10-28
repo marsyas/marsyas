@@ -28,19 +28,11 @@ using namespace Marsyas;
 
 Yin::Yin(mrs_string name):MarSystem("Yin", name)
 {
-  yin_size_ = 0;
-  yin_buffer_ = NULL;
-  scratch_input_size_ = 0;
-  scratch_input_ = NULL;
   addControls();
 }
 
 Yin::Yin(const Yin& a) : MarSystem(a)
 {
-  yin_size_ = 0;
-  yin_buffer_ = NULL;
-  scratch_input_size_ = 0;
-  scratch_input_ = NULL;
   ctrl_tolerance_ = getctrl("mrs_real/tolerance");
   ctrl_frequency_min_ = getctrl("mrs_real/frequency_min");
   ctrl_frequency_max_ = getctrl("mrs_real/frequency_max");
@@ -49,8 +41,6 @@ Yin::Yin(const Yin& a) : MarSystem(a)
 
 Yin::~Yin()
 {
-  delete [] scratch_input_;
-  delete [] yin_buffer_;
 }
 
 MarSystem*
@@ -81,15 +71,8 @@ Yin::myUpdate(MarControlPtr sender)
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
   ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 
-  if (yin_size_ != inSamples_/2) {
-    delete [] yin_buffer_;
-    yin_size_ = inSamples_/2;
-    yin_buffer_ = new mrs_real[yin_size_];
-  }
-  if (scratch_input_size_ != inSamples_) {
-    delete [] scratch_input_;
-    scratch_input_size_ = inSamples_;
-    scratch_input_ = new mrs_real[scratch_input_size_];
+  if (yin_buffer_realvec_.getSize() != inSamples_/2) {
+    yin_buffer_realvec_.allocate(inSamples_ / 2);
   }
 
 	// Add prefix to the observation names.
@@ -148,58 +131,64 @@ Yin::myProcess(realvec& in, realvec& out)
   // The tolerance for the yin algorithm
   const mrs_real tol = ctrl_tolerance_->to<mrs_real>();
 
+  // get pointers to avoid excessive (long,long) lookups
+  mrs_real *yin_buffer = yin_buffer_realvec_.getData();
+  const mrs_natural yin_buffer_size = yin_buffer_realvec_.getSize();
+  // ASSUME: only one channel
+  mrs_real *input = in.getData();
+
+
   mrs_real pitch = -1.0;
 
 //   cout << "yin.getSize()=" << yin.getSize() << endl;
 //   cout << "tol=" << tol << endl;
 
-  // Calculate the pitch with the Yin method
-  //mrs_natural c=0;
-  mrs_real tmp2 = 0.;
+  const mrs_real freq_max = ctrl_frequency_max_->to<mrs_real>();
+  const mrs_real freq_min = ctrl_frequency_min_->to<mrs_real>();
 
-  std::fill(yin_buffer_, yin_buffer_+yin_size_, 0.0);
-  //yin_buffer_(c,0) = 1.;
-  yin_buffer_[0] = 1.;
-  // get copy of input to avoid excessive (long,long) lookups
-  for (mrs_natural i=0;i<inSamples_;i++) {
-    scratch_input_[i] = in(0, i);
+  // yes, low_sample comes from the highest pitch
+  mrs_natural low_sample = 4;
+  if (freq_max > 0) {
+    low_sample = israte_ / freq_max;
+  }
+  mrs_natural high_sample = yin_buffer_size;
+  if (freq_min > 0) {
+    high_sample = israte_ / freq_min;
   }
 
-  for (mrs_natural tau=1;tau<yin_size_;tau++)
+  // Calculate the pitch with the Yin method
+  //mrs_natural c=0;
+  mrs_real cmndf = 0.; // cumulative mean normalized difference function
+
+
+  std::fill(yin_buffer, yin_buffer + yin_buffer_size, 0.0);
+  yin_buffer[0] = 1.;
+
+  //for (mrs_natural tau=1; tau < yin_size_; tau++)
+  for (mrs_natural tau=1; tau < high_sample; tau++)
 	{
-	  for (mrs_natural j=0;j<yin_size_;j++)
+      // d_t( tau )
+	  for (mrs_natural j=0; j < yin_buffer_size;j++)
 		{
-		  //mrs_real tmp = in(c,j) - in(c,j+tau);
-		  const mrs_real tmp = scratch_input_[j] - scratch_input_[j+tau];
-		  //yin_buffer_(c,tau) += tmp * tmp;
-		  yin_buffer_[tau] += tmp * tmp;
+		  const mrs_real delta = input[j] - input[j+tau];
+		  yin_buffer[tau] += delta * delta;
 		}
-	  //tmp2 += yin_buffer_(c,tau);
-	  //yin_buffer_(c,tau) *= tau/tmp2;
-	  tmp2 += yin_buffer_[tau];
-	  yin_buffer_[tau] *= tau/tmp2;
-	  const mrs_natural period = tau-3;
-	  //if(tau > 4 && (yin_buffer_(c,period) < tol) && 
-		// (yin_buffer_(c,period) < yin_buffer_(c,period+1))) {
-	  if(tau > 4 && (yin_buffer_[period] < tol) && 
-		 (yin_buffer_[period] < yin_buffer_[period+1])) {
-          // prepare realvec for function
-          realvec yin_buffer_realvec(yin_size_);
-          for (mrs_natural i=0; i<yin_size_; i++) {
-            yin_buffer_realvec(i) = yin_buffer_[i];
+	  cmndf += yin_buffer[tau];
+	  yin_buffer[tau] *= tau / cmndf;
+      if (tau > low_sample) {
+	    const mrs_natural period = tau-3;
+	    //if(tau > 4 && (yin_buffer_(c,period) < tol) && 
+	    // (yin_buffer_(c,period) < yin_buffer_(c,period+1)))
+	    if((yin_buffer[period] < tol) && 
+		   (yin_buffer[period] < yin_buffer[period+1])) {
+		    pitch = vec_quadint_min(&yin_buffer_realvec_,period,1);
+		    break;
           }
-		  pitch = vec_quadint_min(&yin_buffer_realvec,period,1);
-		  break;
-	  }
-	}
+	    }
+        }
   if (pitch < 0) {
-      // prepare realvec for function
-      realvec yin_buffer_realvec(yin_size_);
-      for (mrs_natural i=0; i<yin_size_; i++) {
-          yin_buffer_realvec(i) = yin_buffer_[i];
-      }
-	  pitch = vec_quadint_min(&yin_buffer_realvec,
-        vec_min_elem(&yin_buffer_realvec),1);
+	  pitch = vec_quadint_min(&yin_buffer_realvec_,
+        vec_min_elem(&yin_buffer_realvec_),1);
   }
   
   if (pitch !=0)
