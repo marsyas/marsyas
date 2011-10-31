@@ -28,6 +28,7 @@ CsvFileSource::CsvFileSource(mrs_string name):MarSystem("CsvFileSource",name)
 
 	vfp_ = 0;
     fileObs_ = 0;
+    filename_ = EMPTYSTRING;
 
 	addControls();
 }
@@ -89,7 +90,7 @@ CsvFileSource::getHeader(mrs_string filename)
 		ctrl_onObsNames_->setValue(obs, NOUPDATE);
 	    setctrl("mrs_bool/hasData", true);
 	} else {
-        cout<<"CsvFileSource: error reading file "<<filename<<endl;
+        MRSWARN("CsvFileSource: error reading file " + filename);
     }
 }
 
