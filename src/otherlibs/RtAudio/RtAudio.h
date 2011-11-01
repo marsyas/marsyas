@@ -49,6 +49,7 @@
 
 #include <string>
 #include <vector>
+#include "DLLDefines.h"
 #include "RtError.h"
 
 /*! \typedef typedef unsigned long RtAudioFormat;
@@ -202,7 +203,7 @@ typedef int (*RtAudioCallback)( void *outputBuffer, void *inputBuffer,
 
 class RtApi;
 
-class RtAudio
+class marsyas_EXPORT RtAudio
 {
  public:
 
