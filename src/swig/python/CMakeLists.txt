@@ -30,6 +30,12 @@ if (DEFINED CMAKE_INSTALL_PREFIX)
     CACHE STRING "The installation directory for the Python modules."
   )
 
+ if (MARSYAS_WIN32) 
+    PYTHON_INSTDIR
+    ${PYTHON_INSTDIR_DEFAULT} 
+    CACHE STRING "The installation directory for the Python modules"
+ endif (MARSYAS_WIN32) 
+
 else ()
 
   # The installation directory for the Python modules.
