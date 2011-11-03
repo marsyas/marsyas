@@ -24,17 +24,19 @@ if (DEFINED CMAKE_INSTALL_PREFIX)
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
 
-  set(
-    PYTHON_INSTDIR
-    ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTDIR_DEFAULT}
-    CACHE STRING "The installation directory for the Python modules."
-  )
-
- if (MARSYAS_WIN32) 
-    PYTHON_INSTDIR
-    ${PYTHON_INSTDIR_DEFAULT} 
-    CACHE STRING "The installation directory for the Python modules"
- endif (MARSYAS_WIN32) 
+  if (MARSYAS_WIN32)
+     set(
+     PYTHON_INSTDIR
+     ${PYTHON_INSTDIR_DEFAULT}
+      CACHE STRING "The installation directory for the Python modules."
+      )
+    else (MARSYAS_WIN32) 
+      set(
+      PYTHON_INSTDIR
+      ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTDIR_DEFAULT}
+      CACHE STRING "The installation directory for the Python modules."
+      )
+    endif (MARSYAS_WIN32)
 
 else ()
 
@@ -61,3 +63,7 @@ install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/marsyas.py
   DESTINATION ${PYTHON_INSTDIR}
   )
+
+
+ 
+ 
