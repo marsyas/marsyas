@@ -86,7 +86,7 @@ AudioSink::addControls()
 	addctrl("mrs_bool/initAudio", false);
 	setctrlState("mrs_bool/initAudio", true);
   
-	addctrl("mrs_natural/device", -1);
+	addctrl("mrs_natural/device", 0);
   
 }
 
@@ -160,12 +160,10 @@ AudioSink::initRtAudio()
 	rtChannels_ = 2;
 	
 	RtAudio::StreamParameters oParams;
-	// if (rtDevice_ < 0)
-	// rtDevice_ = audio_->getDefaultOutputDevice();
-	rtDevice_ = 1;
-	
-	
-
+	if (rtDevice_ == 0)
+	{
+		rtDevice_ = audio_->getDefaultOutputDevice();
+	}
 	oParams.deviceId = rtDevice_;
 	oParams.nChannels = rtChannels_;
 	oParams.firstChannel = 0; 
@@ -277,7 +275,7 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 				}
 				else
 				{
-					for (int j=0; j < odata->inchannels; j++)
+					for (int j=0; j < (int)odata->inchannels; j++)
 					{
 						data[t4+j] = ringBuffer(0+j,odata->rp);
 						data[t4+1+j] = ringBuffer(0+j,odata->rp);
@@ -299,7 +297,7 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 				{
 
 					
-					for (int j=0; j < odata->inchannels; j++) 
+					for (int j=0; j < (int)odata->inchannels; j++) 
 					{
 						data[t2+j] = ringBuffer(j,odata->rp);
 					}
