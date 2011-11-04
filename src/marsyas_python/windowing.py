@@ -95,9 +95,9 @@ net.tick()
 
 # These commands below are for plotting.
 plot(linspace(0,11050, 257),outData1.to_realvec(), label="No windowing")
-figure(2)
+#figure(2)
 plot(linspace(0,11050, 257),outData2.to_realvec(), label="Hamming")
-figure(3)
+#figure(3)
 plot(linspace(0,11050, 257),outData3.to_realvec(), label="Hanning")
 
 xlabel("Frequency (Hz)")
