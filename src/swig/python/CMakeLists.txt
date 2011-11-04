@@ -15,7 +15,6 @@ SWIG_ADD_MODULE(marsyas python marsyas.i ../realvec.i)
 
 SWIG_LINK_LIBRARIES(marsyas marsyas ${PYTHON_LIBRARIES} ${OS_LIBS})
 
-MESSAGE(${PYTHON_EXECUTABLE})
 
 
 # User can override the default through the CMake UI - commented out
