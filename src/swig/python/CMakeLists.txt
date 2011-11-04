@@ -15,30 +15,37 @@ SWIG_ADD_MODULE(marsyas python marsyas.i ../realvec.i)
 
 SWIG_LINK_LIBRARIES(marsyas marsyas ${PYTHON_LIBRARIES} ${OS_LIBS})
 
-# User can override the default through the CMake UI.
-if (DEFINED CMAKE_INSTALL_PREFIX)
+MESSAGE(${PYTHON_EXECUTABLE})
 
-  execute_process(
-    COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(0, 0, prefix=''))"
-    OUTPUT_VARIABLE PYTHON_INSTDIR_DEFAULT
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
 
-  if (MARSYAS_WIN32)
-     set(
-     PYTHON_INSTDIR
-     ${PYTHON_INSTDIR_DEFAULT}
-      CACHE STRING "The installation directory for the Python modules."
-      )
-    else (MARSYAS_WIN32) 
-      set(
-      PYTHON_INSTDIR
-      ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTDIR_DEFAULT}
-      CACHE STRING "The installation directory for the Python modules."
-      )
-    endif (MARSYAS_WIN32)
+# User can override the default through the CMake UI - commented out
+# as it did not work on OS X and macports. 
+# if (DEFINED CMAKE_INSTALL_PREFIX)
 
-else ()
+#   execute_process(
+#     COMMAND ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(0, 0, prefix=''))"
+#     OUTPUT_VARIABLE PYTHON_INSTDIR_DEFAULT
+#     OUTPUT_STRIP_TRAILING_WHITESPACE
+#   )
+
+#   MESSAGE(${PYTHON_INSTDIR_DEFAULT})
+#   MESSAGE(${CMAKE_INSTALL_PREFIX})
+
+#   if (MARSYAS_WIN32)
+#      set(
+#      PYTHON_INSTDIR
+#      ${PYTHON_INSTDIR_DEFAULT}
+#       CACHE STRING "The installation directory for the Python modules."
+#       )
+#     else (MARSYAS_WIN32) 
+#       set(
+#       PYTHON_INSTDIR
+#       ${CMAKE_INSTALL_PREFIX}/${PYTHON_INSTDIR_DEFAULT}
+#       CACHE STRING "The installation directory for the Python modules."
+#       )
+#     endif (MARSYAS_WIN32)
+
+# else ()
 
   # The installation directory for the Python modules.
   # Get the default directory from distutils.
@@ -54,7 +61,7 @@ else ()
     CACHE STRING "The installation directory for the Python modules."
   )
 
-endif()
+# endif()
 
 install(TARGETS _marsyas LIBRARY DESTINATION ${PYTHON_INSTDIR})
 

@@ -10,34 +10,56 @@
 
 EXECUTE_PROCESS(COMMAND python-config --prefix OUTPUT_VARIABLE PYTHON_PREFIX OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-
-FOREACH(_CURRENT_VERSION 2.6 2.5 2.4 2.3 2.2 2.1 2.0 1.6 1.5)
-  STRING(REPLACE "." "" _CURRENT_VERSION_NO_DOTS ${_CURRENT_VERSION})
-  IF(WIN32)
-    FIND_LIBRARY(PYTHON_DEBUG_LIBRARY
-      NAMES python${_CURRENT_VERSION_NO_DOTS}_d python
-      PATHS
-      [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs/Debug
-      [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs 
-      [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs/Debug
-      [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs )
-
-  ENDIF(WIN32)
-
-  FIND_LIBRARY(PYTHON_LIBRARY
-    NAMES python${_CURRENT_VERSION_NO_DOTS} python${_CURRENT_VERSION}
+INCLUDE(CMakeFindFrameworks)
+IF(WIN32)
+  FIND_LIBRARY(PYTHON_DEBUG_LIBRARY
+    NAMES python27_d python26_d python25_d python24_d python23_d python22_d python21_d python20_d python
     PATHS
-      [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs
-      [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/libs
-    # Avoid finding the .dll in the PATH.  We want the .lib.
-    NO_SYSTEM_ENVIRONMENT_PATH
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/libs
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs/Debug
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
+
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs/Debug
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
+
   )
 ENDIF(WIN32)
 
 FIND_LIBRARY(PYTHON_LIBRARY
   NAMES python27 python2.7
         python26 python2.6
-	python25 python2.5
+	    python25 python2.5
         python24 python2.4
         python23 python2.3
         python22 python2.2
@@ -48,6 +70,7 @@ FIND_LIBRARY(PYTHON_LIBRARY
 
   PATHS
     ${PYTHON_PREFIX}/lib
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/libs
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/libs
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs
@@ -58,19 +81,29 @@ FIND_LIBRARY(PYTHON_LIBRARY
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
 
-  FIND_PATH(PYTHON_INCLUDE_DIR
-    NAMES Python.h
-    PATHS
-      ${PYTHON_FRAMEWORK_INCLUDES}
-      [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
-      [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\${_CURRENT_VERSION}\\InstallPath]/include
-    PATH_SUFFIXES
-      python${_CURRENT_VERSION}
-  )
 
-  # For backward compatibility, set PYTHON_INCLUDE_PATH, but make it internal.
-  SET(PYTHON_INCLUDE_PATH "${PYTHON_INCLUDE_DIR}" CACHE INTERNAL 
-    "Path to where Python.h is found (deprecated)")
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/libs
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/libs
+
+  PATH_SUFFIXES
+    python2.7/config
+    python2.6/config
+    python2.5/config
+    python2.4/config
+    python2.3/config
+    python2.2/config
+    python2.1/config
+    python2.0/config
+    python1.6/config
+    python1.5/config
   
   # Avoid finding the .dll in the PATH.  We want the .lib.
   NO_SYSTEM_ENVIRONMENT_PATH
@@ -81,7 +114,7 @@ CMAKE_FIND_FRAMEWORKS(Python)
 SET(PYTHON_FRAMEWORK_INCLUDES)
 IF(Python_FRAMEWORKS)
   IF(NOT PYTHON_INCLUDE_PATH)
-    FOREACH(version 2.6 2.5 2.4 2.3 2.2 2.1 2.0 1.6 1.5)
+    FOREACH(version 2.7 2.6 2.5 2.4 2.3 2.2 2.1 2.0 1.6 1.5)
       FOREACH(dir ${Python_FRAMEWORKS})
         SET(PYTHON_FRAMEWORK_INCLUDES ${PYTHON_FRAMEWORK_INCLUDES}
           ${dir}/Versions/${version}/include/python${version})
@@ -96,6 +129,7 @@ FIND_PATH(PYTHON_INCLUDE_PATH
   PATHS
     ${PYTHON_PREFIX}/include
     ${PYTHON_FRAMEWORK_INCLUDES}
+    [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/include
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/include
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/include
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/include
@@ -105,6 +139,17 @@ FIND_PATH(PYTHON_INCLUDE_PATH
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/include
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/include
     [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/include
+
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]/include
+    [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]/include
 
   PATH_SUFFIXES
     python2.7
@@ -120,7 +165,6 @@ FIND_PATH(PYTHON_INCLUDE_PATH
 
   NO_DEFAULT_PATH
 )
-
 
 IF (WIN32)
   MARK_AS_ADVANCED(
