@@ -23,6 +23,18 @@ FIND_PROGRAM(PythonInterp_EXECUTABLE
   [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]
   [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]
   [HKEY_LOCAL_MACHINE\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]
+
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.7\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.6\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.5\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.4\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.3\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.2\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.1\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\2.0\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.6\\InstallPath]
+  [HKEY_CURRENT_USER\\SOFTWARE\\Python\\PythonCore\\1.5\\InstallPath]
+
   )
 MARK_AS_ADVANCED(PythonInterp_EXECUTABLE)
 SET(PYTHON_EXECUTABLE ${PythonInterp_EXECUTABLE})
