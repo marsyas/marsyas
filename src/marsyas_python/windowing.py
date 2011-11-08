@@ -26,7 +26,7 @@ spec = ["Series/MySystem",
 						["SineSource/src1",
 						"SineSource/src2"]],
 					"Sum/sum",					
-					["Parallel/analyzers",
+					["Fanout/analyzers",
 						[["Series/branch1", 
 							["Spectrum/spk","PowerSpectrum/pspk","Gain/gain"]],
 						["Series/branch2", 
@@ -50,14 +50,14 @@ net.linkControl("Fanout/additive/SineSource/src2/mrs_real/frequency", "mrs_real/
 # controls in the network.
 
 # map all spectrum types to the same top level control 
-net.linkControl("Parallel/analyzers/Series/branch1/PowerSpectrum/pspk/mrs_string/spectrumType","mrs_string/spectrumType")
-net.linkControl("Parallel/analyzers/Series/branch2/PowerSpectrum/pspk/mrs_string/spectrumType","mrs_string/spectrumType")
-net.linkControl("Parallel/analyzers/Series/branch3/PowerSpectrum/pspk/mrs_string/spectrumType","mrs_string/spectrumType")
+net.linkControl("Fanout/analyzers/Series/branch1/PowerSpectrum/pspk/mrs_string/spectrumType","mrs_string/spectrumType")
+net.linkControl("Fanout/analyzers/Series/branch2/PowerSpectrum/pspk/mrs_string/spectrumType","mrs_string/spectrumType")
+net.linkControl("Fanout/analyzers/Series/branch3/PowerSpectrum/pspk/mrs_string/spectrumType","mrs_string/spectrumType")
 
 #	# make top level controls for the 3 spectrums 
-net.linkControl("Parallel/analyzers/Series/branch1/PowerSpectrum/pspk/mrs_realvec/processedData","mrs_realvec/spectrum1")
-net.linkControl("Parallel/analyzers/Series/branch2/PowerSpectrum/pspk/mrs_realvec/processedData","mrs_realvec/spectrum2")
-net.linkControl("Parallel/analyzers/Series/branch3/PowerSpectrum/pspk/mrs_realvec/processedData","mrs_realvec/spectrum3")
+net.linkControl("Fanout/analyzers/Series/branch1/PowerSpectrum/pspk/mrs_realvec/processedData","mrs_realvec/spectrum1")
+net.linkControl("Fanout/analyzers/Series/branch2/PowerSpectrum/pspk/mrs_realvec/processedData","mrs_realvec/spectrum2")
+net.linkControl("Fanout/analyzers/Series/branch3/PowerSpectrum/pspk/mrs_realvec/processedData","mrs_realvec/spectrum3")
 
 # Now, we will setup our analyzers in each analyzer branch. 
 # In branch1, we have no window, hence it is a rectangular-shaped window.
@@ -65,7 +65,7 @@ net.linkControl("Parallel/analyzers/Series/branch3/PowerSpectrum/pspk/mrs_realve
 # In branch3, we will have a hann window, which is set below:
 
 #	# make the third branch window by a Hann window instead of the default Hamming 
-net.updControl("Parallel/analyzers/Series/branch3/Windowing/win/mrs_string/type", "Hann");
+net.updControl("Fanout/analyzers/Series/branch3/Windowing/win/mrs_string/type", "Hann");
 
 
 # Using the getControl() method, we access the controls for a certain component of our net.
