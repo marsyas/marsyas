@@ -95,27 +95,13 @@ net.tick()
 
 # These commands below are for plotting.
 plot(linspace(0,11050, 257),outData1.to_realvec(), label="Rectangular")
-xlabel("Frequency (Hz)")
-ylabel("Magnitude (dB)");
-suptitle("Marsyas windowing demo");
-legend()
-savefig('windowing_rect.svg')
-
-figure(2)
 plot(linspace(0,11050, 257),outData2.to_realvec(), label="Hamming")
-xlabel("Frequency (Hz)")
-ylabel("Magnitude (dB)");
-suptitle("Marsyas windowing demo");
-legend()
-savefig('windowing_hamm.svg')
-
-figure(3)
 plot(linspace(0,11050, 257),outData3.to_realvec(), label="Hanning")
+
 xlabel("Frequency (Hz)")
 ylabel("Magnitude (dB)");
 suptitle("Marsyas windowing demo");
 legend()
-savefig('windowing_hann.svg')
 
 # save .svg and .ps versions of the figure 
 savefig('windowing.svg')
