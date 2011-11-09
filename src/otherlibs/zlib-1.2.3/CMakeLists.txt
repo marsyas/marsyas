@@ -6,17 +6,20 @@ adler32.c
 compress.c
 crc32.c
 deflate.c
-example.c
 gzio.c
 infback.c
 inffast.c
 inflate.c
 inftrees.c
-minigzip.c
 trees.c
 uncompr.c
 zutil.c
 )
-ADD_LIBRARY(zlib ${ZLIB_SRCS})
+
+if (MARSYAS_STATIC)
+   ADD_LIBRARY(zlib ${ZLIB_SRCS})
+else (MARSYAS_STATIC)
+   ADD_LIBRARY(zlib SHARED ${ZLIB_SRCS})
+endif (MARSYAS_STATIC) 
 
 
