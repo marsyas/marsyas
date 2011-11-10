@@ -739,7 +739,7 @@ terminal.
 @item sudo apt-get install cmake-curses-gui  (the curses gui invoked by ccmake) 
 @item sudo apt-get install libasound2-dev (alsa development library and
 headers) 
-@item cmake ../src 
+@item ccmake ../src 
 @item Press [c] to configure and [g] to generate the Makefile and exit
 @item make (or make -j k where k is the number of cores of your computer
 + 1)
@@ -776,6 +776,16 @@ Now you are ready to test that everything works:
 You should see a plot that has been created by passing data through a 
 Marsyas processing network. Congratulations - you now can work 
 with Marsyas and matplotlib a powerful combo. 
+
+If you decide to add PNG support you need the following additional
+steps: 
+
+@enumerate 
+@item sudo apt-get install libfreetype6-dev
+@item enable the WITH_PNG option 
+@item make 
+@item sudo make install 
+@end enumerate
 
 
 
