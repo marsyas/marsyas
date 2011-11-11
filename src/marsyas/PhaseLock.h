@@ -81,7 +81,15 @@ private:
 	MarControlPtr ctrl_adjustment_;
 	MarControlPtr ctrl_dumbInduction_;
 	MarControlPtr ctrl_inductionOut_;
+	MarControlPtr ctrl_triggerInduction_;
+	MarControlPtr ctrl_curBestScore_;
+	MarControlPtr ctrl_triggerBestScoreFactor_;
 
+	mrs_real lastGTIBI_;
+	mrs_real triggerBestScoreFactor_;
+	mrs_real lastGTBeatTime_;
+	mrs_real curBestScore_;
+	mrs_bool triggerInduction_;
 	mrs_bool gtAfter2ndBeat_;
 	mrs_string inductionOut_;
 	mrs_bool dumbInduction_;
@@ -99,10 +107,7 @@ private:
 	mrs_real gtScore_;
 	mrs_natural gtInitPeriod_;
 	mrs_natural gtLastPeriod_;
-	mrs_real gtBeatTime1_;
-	mrs_real gtBeatTime2_;
 	mrs_string sourceFile_;
-	mrs_natural gtPhase_;
 	mrs_natural gtInitPhase_;
 	mrs_natural gtLastPhase_;
 	mrs_string scoreFunc_;
@@ -114,7 +119,7 @@ private:
 	mrs_realvec hypSignals_;
 	mrs_realvec firstBeatPoint_;
 	mrs_realvec trackingScore_;
-	mrs_natural t_;
+	mrs_natural timeElapsed_;
 	mrs_realvec maxLocalTrackingScore_;
 	mrs_realvec maxLocalTrackingScoreInd_;
 	mrs_realvec metricalSalience_;
@@ -122,7 +127,6 @@ private:
 	mrs_realvec rawScoreNorm_;
 	mrs_realvec metricalRelScore_;
 	mrs_realvec scoreNorm_;
-	mrs_realvec gtSignal_;
 	mrs_realvec initPhases_;
 	mrs_realvec lastPhases_;
 	mrs_realvec initPeriods_;
@@ -139,7 +143,8 @@ private:
 	mrs_real calcRelationalScore(mrs_natural i, mrs_realvec rawScoreVec);
 	mrs_natural metricalRelation(mrs_real period1, mrs_real period2);
 	void regularFunc(realvec& in, realvec& out);
-	void inputGT(realvec& in, realvec& out, mrs_string gtFilePath);
+	mrs_realvec readGTFile(mrs_string gtFilePath);
+	void handleGTHypotheses(realvec& in, realvec& out, mrs_string gtFilePath, mrs_realvec gtHypotheses);
 	mrs_realvec GTInitialization(realvec& in, realvec& out, mrs_natural gtIniPhase, 
 		mrs_natural gtInitPeriod);
 	void forceInitPeriods(mrs_string mode);

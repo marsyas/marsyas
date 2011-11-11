@@ -26,13 +26,9 @@ if (MARSYAS_STATIC)
 		find_library(CARBON Carbon "/System/Library/Frameworks")
 		TARGET_LINK_LIBRARIES(mvamp ${COREAUDIO} ${CARBON})
 	elseif(MARSYAS_LINUX)
-	
-	# TODO
-	
+		set(MARSYAS_LIBRARY ${LIBRARY_OUTPUT_PATH}/libmarsyas.a)
 	elseif(MARSYAS_WIN32)
-	
-	# TODO
-		
+		set(MARSYAS_LIBRARY marsyas_static)
 	endif(MARSYAS_MACOSX)
 	
 else (MARSYAS_STATIC)

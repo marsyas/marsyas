@@ -50,16 +50,24 @@ private:
 	MarControlPtr ctrl_tickCount_;
 	MarControlPtr ctrl_inductionTime_;
 	MarControlPtr ctrl_accSize_;
+	MarControlPtr ctrl_triggerInduction_;
 
+	mrs_natural maxCount_;
+	mrs_realvec phasesRaw_;
+	mrs_natural size_;
+	mrs_bool triggerInduction_;
+	mrs_natural lastInductionTime_;
 	mrs_natural accSize_;
-	mrs_natural inductionTime_;
+	mrs_natural inductionSize_;
 	mrs_natural nPeriods_;
 	mrs_natural lookAhead_;
 	mrs_natural acc_;
 	mrs_natural n_;
-	mrs_natural t_;
+	mrs_natural timeElapsed_;
 	mrs_natural count_;
+	
 	void myUpdate(MarControlPtr sender);
+	void delSurpassedOnsets();
 
 public:
   OnsetTimes(std::string name);

@@ -67,8 +67,8 @@
 using namespace std;
 using namespace Marsyas;
 
-#pragma warning(disable: 4244)  //disable double to float warning
-#pragma warning(disable: 4100) //disable argc warning
+//#pragma warning(disable: 4244)  //disable double to float warning
+//#pragma warning(disable: 4100) //disable argc warning
 
 /**
  * Example plugin that calculates the positions and density of
@@ -108,19 +108,21 @@ public:
 protected:
     size_t m_stepSize;
     float m_previousSample;
-	float induction_time;
-	size_t output_flag;
-	size_t nr_agents, min_bpm, max_bpm; //must be size_t for int parameters
-	float stamp, prevTimestamp;
-	float ibi;
-	int frameCount;
+    float induction_time;
+    bool online_flag, output_flag, metrical_changes_flag;
+    size_t nr_agents, min_bpm, max_bpm; //must be size_t for int parameters
+    float stamp, prevTimestamp;
+    float ibi;
+    int frameCount;
+    mrs_natural inductionTickCount;
+    vector<vector<double> > backSave;
 
     MarSystemManager mng;
     MarSystem* ibt;
     MarSystem* featureNetwork;
     MarSystem* featExtractor;
-	MarSystem* audioflow;
-	MarSystem* beattracker;
+    MarSystem* audioflow;
+    MarSystem* beattracker;
 };
 
 

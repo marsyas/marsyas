@@ -19,13 +19,14 @@
 #ifndef MARSYAS_BEATREFEREE_H
 #define MARSYAS_BEATREFEREE_H
 
-#include "MarSystem.h"	
+#include <time.h>
+#include "MarSystem.h"
 
 namespace Marsyas
 {
 /** 
     \class BeatReferee
-	\ingroup Processing
+	\ingroup Processing Basic
     \brief Central agency responsible for causally evaluating a pool of active BeatAgents around each beat prediction, 
 	and selecting the best one at each time ("frame" - tick), based on a given heuristics (score function) which affers the 
 	goodness-of-fit between each agent prediction and local maxima in the observed data 
@@ -98,7 +99,6 @@ private:
 	MarControlPtr ctrl_child1Factor_;
 	MarControlPtr ctrl_child2Factor_;
 	MarControlPtr ctrl_child3Factor_;
-	MarControlPtr ctrl_metricalChangeTime_;
 	MarControlPtr ctrl_backtrace_;
 	MarControlPtr ctrl_logFile_;
 	MarControlPtr ctrl_logFileName_;
@@ -106,19 +106,51 @@ private:
 	MarControlPtr ctrl_soundFileSize_;
 	MarControlPtr ctrl_bestFinalAgentHistory_;
 	MarControlPtr ctrl_nonCausal_;
+	MarControlPtr ctrl_triggerInduction_;
+	MarControlPtr ctrl_gtInductionMode_;
+	MarControlPtr ctrl_gtBeatsFile_;
+	MarControlPtr ctrl_triggerGtTolerance_;
+	MarControlPtr ctrl_curBestScore_;
+	MarControlPtr ctrl_adjustment_;
+	MarControlPtr ctrl_inductionMode_;
+	MarControlPtr ctrl_beatTransitionTol_;
+	MarControlPtr ctrl_destFileName_;
+	MarControlPtr ctrl_triggerTimesFile_;
+	MarControlPtr ctrl_resetAfterNewInduction_;
 
+	mrs_natural triggerCount_;
+	mrs_bool lastGTFalsePos_;
+	mrs_real beatTransitionTol_;
+	mrs_natural frames2SecsAdjustment_;
+	mrs_realvec considerAgentTransitionBeat_;
+	mrs_realvec considerFatherTransitionBeat_;
+	mrs_realvec generationCount_;
+	mrs_natural bestAgentBeforeTrigger_;
+	mrs_natural backtraceEndTime_;
+	mrs_natural	triggerGtTolerance_;
+	mrs_real lastGTFileBeat_;
+	mrs_natural lastGTBeatPos_;
+	mrs_string gtBeatsFile_;
+	mrs_natural lostGTBeatsCount_;
+	mrs_string inductionMode_;
+	mrs_bool startTracking_;
+	mrs_bool startSystem_;
+	mrs_natural triggerInductionTime_;
+	mrs_bool processInduction_;
+	mrs_bool triggerInduction_;
 	mrs_realvec agentsJustCreated_;
 	mrs_realvec bestFinalAgentHistory_;
 	mrs_natural bestFinalAgent_;
 	mrs_bool nonCausal_;
 	mrs_natural maxNrBeats_;
 	mrs_realvec agentsHistory_;
+	mrs_realvec agentsFamilyHist_;
 	mrs_natural soundFileSize_;
 	mrs_natural lostFactor_;
-	mrs_string logFileName_;
-	mrs_bool inductionFinished_;
 	mrs_bool backtrace_;
 	mrs_bool logFile_;
+	mrs_string logFileName_;
+	mrs_string logFileUnits_;
 	mrs_natural nrAgents_;
 	mrs_natural lastBeatTime_;
 	mrs_natural minPeriod_;
@@ -126,11 +158,6 @@ private:
 	mrs_realvec agentControl_;
 	mrs_realvec historyCount_; //number of (system) outputed beats by each agent
 	mrs_realvec historyBeatTimes_;
-	mrs_realvec statsPeriods_;
-	mrs_realvec statsPhases_;
-	mrs_realvec statsAgentsLifeCycle_;
-	mrs_realvec statsAgentsScore_;
-	mrs_realvec statsMuted_;
 	mrs_realvec score_; //score of each agent
 	mrs_realvec lastPeriods_; //last tempo hypothesis of each agent
 	mrs_realvec lastPhases_; //last phase hypothesis of each agent
@@ -142,7 +169,7 @@ private:
 	mrs_real bestScore_;
 	mrs_natural inductionTime_;
 	mrs_natural bestAgentIndex_;
-	mrs_natural t_;
+	mrs_natural timeElapsed_;
 	mrs_natural outputCount_;
 	mrs_real obsoleteFactor_;
 	mrs_real childrenScoreFactor_;
@@ -156,10 +183,14 @@ private:
 	mrs_real child1Factor_;
 	mrs_real child2Factor_;
 	mrs_real child3Factor_;
-	mrs_real metricalChangeTime_;
 	mrs_natural timeBeforeKilling_;
 	mrs_natural lastBeatPeriod_;
 	mrs_realvec missedBeatsCount_;
+	mrs_string triggerTimesFile_;
+	mrs_realvec triggerTimes_;
+	mrs_realvec transitionTimes_;
+	mrs_realvec transitionsConsidered_;
+	mrs_bool resetAfterNewInduction_;
 
 	void myUpdate(MarControlPtr sender);
 
@@ -169,16 +200,19 @@ public:
   ~BeatReferee();
   MarSystem* clone() const;  
   
+  void initialization();
   void myProcess(realvec& in, realvec& out);
   void updateAgentHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, 
 								   mrs_natural prevBeat, mrs_natural error);
   mrs_natural createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, 
 	  mrs_real newScore, mrs_real beatCount, mrs_natural fatherAgent = -1);
   void grantPoolSpace(mrs_natural callAgent, mrs_real newAgentScore);
-  mrs_natural getWorstAgent();
+  void grantPoolSpace2(mrs_natural callAgent, mrs_natural nrRequired, mrs_realvec newAgentsScore);
+  mrs_natural getWorstAgent(mrs_natural callAgent);
   void setNewHypothesis(mrs_natural agentIndex, mrs_natural newPeriod, mrs_natural nextBeat);
   mrs_natural calcFirstBeat(mrs_natural initPeriod, mrs_natural initPhase);
   mrs_natural calcFirstBacktracedBeat(mrs_natural initPeriod, mrs_natural initPhase);
+  void resetSystem(mrs_natural saveAgent);
   void killAgent(mrs_natural agentIndex, mrs_string motif, mrs_natural callAgent = -1);
   void createChildren(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error, 
 						mrs_real agentScore, mrs_real beatCount);
@@ -191,7 +225,22 @@ public:
   void debugCreateFile();
   void debugAddEvent(mrs_string ibtEvent, mrs_natural agentIndex, mrs_natural period, mrs_natural lastBeat,
 	  mrs_real score, mrs_real bestScore, mrs_natural callAgent = -1);
+  void debugAddMsg(mrs_string ibtMsg);
   void checkAndKillEqualAgents(mrs_natural agentIndex);
+  mrs_natural existEqualAgents(mrs_natural agentIndex, mrs_natural agentPeriod, mrs_natural agentPhase);
+  mrs_natural existEqualBetterAgents(mrs_natural agentIndex, mrs_natural agentPeriod, mrs_natural agentPhase, mrs_real newAgentScore);
+  mrs_realvec getEqualAgents(mrs_natural agentIndex, mrs_natural agentPeriod, mrs_natural agentPhase);
+  mrs_natural checkBeatInGTFile();
+  mrs_bool isGTFileInLine(mrs_string line);
+  mrs_natural getBestSimilarAgent(mrs_natural newAgentPeriod, mrs_natural newAgentInitPhase, mrs_real newAgentScore);
+  mrs_natural getBestSimilarAgent2(mrs_natural newAgentPeriod, mrs_natural newAgentInitPhase);
+  mrs_natural getBestSimilarAgent3(mrs_natural newAgentPeriod, mrs_real newAgentScore, mrs_realvec completedClustersPer);
+  void grantPoolSpaceForTriggerAgents(mrs_realvec triggerAgentsHypotheses);
+  mrs_realvec clusterIBIs();
+  void handleAgentsTansition(mrs_natural agent);
+  void cleanAgentAndFatherTransitionFlags(mrs_natural agentIndex);
+  mrs_bool loadTriggerTimes(mrs_string triggerTimesFile);
+  
 };
 
 }//namespace Marsyas

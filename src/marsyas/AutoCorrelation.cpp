@@ -50,6 +50,8 @@ AutoCorrelation::AutoCorrelation(const AutoCorrelation& a):MarSystem(a)
 	ctrl_makePositive_ = getctrl("mrs_bool/makePositive");
 	ctrl_setr0to1_ = getctrl("mrs_bool/setr0to1");
 	ctrl_setr0to0_ = getctrl("mrs_bool/setr0to0");
+	ctrl_lowCutoff_ = getctrl("mrs_real/lowCutoff");
+	ctrl_highCutoff_ = getctrl("mrs_real/highCutoff");
 }
 
 void
@@ -63,12 +65,16 @@ AutoCorrelation::addControls()
 	addctrl("mrs_bool/makePositive", false, ctrl_makePositive_);
 	addctrl("mrs_bool/setr0to1", false, ctrl_setr0to1_);
 	addctrl("mrs_bool/setr0to0", true, ctrl_setr0to0_);
+	addctrl("mrs_real/lowCutoff", 0.0, ctrl_lowCutoff_);
+	addctrl("mrs_real/highCutoff", 1.0, ctrl_highCutoff_);
 	
 	
 	ctrl_normalize_->setState(true);
 	ctrl_octaveCost_->setState(true);
 	ctrl_voicingThreshold_->setState(true);
 	ctrl_aliasedOutput_->setState(true);
+	ctrl_lowCutoff_->setState(true);
+	ctrl_highCutoff_->setState(true);
 }
 
 MarSystem*
@@ -85,16 +91,25 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 	if(!myfft_)
 		myfft_ = new fft();
 
+
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
+
+	// round down is the default with C math
+	lowSamples_ = inSamples_
+			* getctrl("mrs_real/lowCutoff")->to<mrs_real>();
+	// round up with ceil()
+	numSamples_ = ceil( inSamples_
+			* getctrl("mrs_real/highCutoff")->to<mrs_real>()
+			) - lowSamples_;
 
 	if(ctrl_aliasedOutput_->to<mrs_bool>())
 		fftSize_ = inSamples_; //will create aliasing!
 	else
 	{
 		//compute fft with a size of the next power of 2 of 2*inSamples-1 samples
-		fftSize_ = (mrs_natural)pow(2.0, ceil(log(2.0*inSamples_-1.0)/log(2.0)));
+		fftSize_ = (mrs_natural)pow(2.0, ceil(log(2.0*numSamples_-1.0)/log(2.0)));
 	}
 
 	scratch_.create(fftSize_);
@@ -139,7 +154,6 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 
 
 
-
   
 
 	mrs_natural t,o;
@@ -150,9 +164,9 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 	
 	for (o=0; o < inObservations_; o++)
 	{
-		for (t=0; t < inSamples_; t++)
+		for (t=lowSamples_; t < (lowSamples_+numSamples_); t++)
 		{
-			scratch_(t) = in(o,t); 
+			scratch_(t-(lowSamples_)) = in(o,t); 
 		}
 
 
@@ -160,7 +174,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 
 		
 		//zeropad
-		for(t=inSamples_; t < fftSize_; t++)
+		for(t=(lowSamples_+numSamples_); t < fftSize_; t++)
 			scratch_(t) = 0.0;
 		
 		

@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Marsyas;
 
-const char *szServer = "localhost"; //assume UDP sockets at localhost [CHANGE IF OTHER!!]
+char *szServer = "localhost"; //assume UDP sockets at localhost [CHANGE IF OTHER!!]
 
 BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 {
@@ -31,7 +31,7 @@ BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 	ibiBPM_ = 0.0;
 	ibiBPMSum_ = 0.0;
 	beatCount_ = 0;
-	t_ = 0;
+	timeElapsed_ = 0;
 	inc_ = 0; //initial beat counting...
 	nonCausal_ = true;
 	lastIbi_ = 0.0;
@@ -210,9 +210,9 @@ void
 BeatTimesSink::myProcess(realvec& in, realvec& out)
 {
 	//Frame (tick) counter: (updated from BeatReferee's next time frame -1)
-	t_ = ctrl_tickCount_->to<mrs_natural>()-1;
+	timeElapsed_ = ctrl_tickCount_->to<mrs_natural>()-1;
 
-	//cout << "BSink: " << t_ << endl;
+	//cout << "BSink: " << timeElapsed_ << endl;
 
 	//FlowThru input
 	out = in;
@@ -225,9 +225,9 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 			//For writing only beats after inc_ (to avoid writing first unconsistent beats)
 			if(beatCount_ >= inc_)
 			{
-				//Output BeatTime (in Seconds) = ((t_ (inFrames) * hopSize_) - adjustment) / srcFs_
+				//Output BeatTime (in Seconds) = ((timeElapsed_ (inFrames) * hopSize_) - adjustment) / srcFs_
 				srcFs_ = ctrl_srcFs_->to<mrs_real>();
-				beatTime_ = ((t_ * hopSize_) - adjustment_) / srcFs_;
+				beatTime_ = ((timeElapsed_ * hopSize_) - adjustment_) / srcFs_;
 
 				//cout << "Beat at: " << beatTime_ << " (s)" << endl;
 				
@@ -378,7 +378,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 	}
 	if(nonCausal_)
 	{
-		if(t_ == soundFileSize_-1) //[! -1 for acouting on time of timing reset on backtrace mode]
+		if(timeElapsed_ == soundFileSize_-1) //[! -1 for acouting on time of timing reset on backtrace mode]
 		{
 			//if no beats detected [to avoid writing beatTimes output file]
 			if(bestFinalAgentHistory_(0) >= 0.0)
@@ -412,27 +412,29 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 					
 					mrs_real ibi = (beatTime_ - lastBeatTime_);
 
+					//cout << "BEAT " << i << ": " << beatTime_ << "; IBI: " << ibi << endl;
+
 					mrs_real nextIbi = 0;
 					mrs_real nextBeatTime = 0;
-					if(i < bestFinalAgentHistory_.getCols()-1)
-					{
+					//if(i < bestFinalAgentHistory_.getCols()-1) //everything commented is for handle transition (see thres below)
+					//{
 						nextBeatTime = ((bestFinalAgentHistory_(i+1) * hopSize_) - adjustment_) / srcFs_;
 						nextIbi = (nextBeatTime - beatTimeTmp_);
-					}
-					
-					else //if last beat always write
-					{	
-						ibiBPM_ = (60.0 / ibi); //inter-beat-interval (in BPMs)
-						outStream << beatTime_ << " " << ibiBPM_ << endl;
+					//}
+					//
+					//else //if last beat always write
+					//{	
+					//	ibiBPM_ = (60.0 / ibi); //inter-beat-interval (in BPMs)
+					//	outStream << beatTime_ << " " << ibiBPM_ << endl;
 
 						addMedianVector(ibiBPM_); //for calculating medianTempo
-					}
+					//}
 					
 					//cout << "i: " << i << "; beatTime: " << beatTime_ << "; ibi: " << ibi << "; lastIbi: " << lastIbi_ << endl;
 					//to avoid supurious beats at the transitions (on best agent changes)
 					//[prioritize replacing (next) agent]
-					if(nextIbi > (0.5*ibi))
-					{
+					//if(nextIbi > (0.3*ibi)) //REMOVE!?!?!?
+					//{
 						ibiBPM_ = (60.0 / ibi); //inter-beat-interval (in BPMs)
 
 						if((strcmp(mode_.c_str(), "beatTimes") == 0) || (strcmp(mode_.c_str(), "beats+meanTempo") == 0)
@@ -446,7 +448,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 						lastBeatTime_ = beatTime_;
 						beatTimeTmp_ = nextBeatTime;
 						beatCount_ ++;
-					}
+					//}
 					lastIbi_ = ibi;
 				}
 

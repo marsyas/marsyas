@@ -53,13 +53,15 @@ private:
   fft *myfft_;
   realvec scratch_;
   
-  realvec norm_;
-  mrs_natural normalize_;
+  	realvec norm_;
+ 	mrs_natural normalize_;
 	mrs_real octaveCost_;
 	mrs_real octaveMax_;
 	mrs_real voicing_;
 	mrs_natural fftSize_;
 	mrs_real re_,im_,am_, k_;
+	mrs_real lowSamples_;
+	mrs_real numSamples_;
 
 	MarControlPtr ctrl_magcompress_;
 	MarControlPtr	ctrl_normalize_;
@@ -68,8 +70,9 @@ private:
 	MarControlPtr ctrl_aliasedOutput_;
 	MarControlPtr ctrl_makePositive_;
 	MarControlPtr ctrl_setr0to1_;
-  MarControlPtr ctrl_setr0to0_;
-  
+  	MarControlPtr ctrl_setr0to0_;
+  	MarControlPtr ctrl_lowCutoff_;
+  	MarControlPtr ctrl_highCutoff_;
 	
 
   virtual void addControls();

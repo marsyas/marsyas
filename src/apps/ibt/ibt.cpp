@@ -1,3 +1,32 @@
+/*
+** Copyright (C) 2000-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+**
+** This program is free software; you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
+**
+** This program is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with this program; if not, write to the Free Software
+** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
+
+/*
+** IBT - standing for INESC-Porto Beat Tracker - is a real-time/off-line 
+** tempo induction and beat tracking system based on a competing multi-agent 
+** strategy, which considers parallel hypotheses regarding tempo and beats.
+** 
+** Published in:
+** Oliveira J. L., Gouyon F., Martins L., Reis L. P. IBT: A Real-Time Tempo and Beat Tracking System. 
+** International Conference on Music Information Retrieval, pp. 291- 296, Utrecht, 2010. ISBN: 978-90-393-53813.
+** 
+*/
+
 #include <cstdio>
 #include <cstdlib>
 #include <string>
@@ -31,32 +60,35 @@ using namespace Marsyas;
 #pragma warning(disable: 4100) //disable argc warning
 #endif 
 
-mrs_bool sonicOutFlux = 0;
-mrs_bool sonicOutFluxFilter = 0;
+//mrs_bool sonicOutFlux = 0;
+//mrs_bool sonicOutFluxFilter = 0;
 
 //============================== IBT FUNCTIONAL PARAMETERS ==============================
 
-//#define SCORE_FUNCTION "regular" //the score function (heuristics) which conducts the beat tracking ("regular")
-//#define INDUCTION_TIME 5.0 //Time (in seconds) of the beat induction step, before tracking. Has to be > 60/MIN_BPM (5.0)
-//#define METRICAL_CHANGE_TIME 0.0 //Initial time (in seconds) allowed for eventual metrical changes within tracking (if 0.0 no metrical changes allowed at all; if -1.0 metrical changes would be allowed along all musical piece) (5.0)
 #define BPM_HYPOTHESES 6 //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
 #define PHASE_HYPOTHESES 30//Nr. of phases per BPM hypothesis (30)
-#define MIN_BPM 50 //minimum tempo considered, in BPMs (50)
-#define MAX_BPM 250 //maximum tempo considered, in BPMs (250)
+#define MIN_BPM 81 //minimum tempo considered, in BPMs (50) [81 -> to prevent octave error]
+#define MAX_BPM 160 //maximum tempo considered, in BPMs (250) [160 -> to prevent octave error]
 #define NR_AGENTS 30 //Nr. of agents in the pool (30)
-#define LFT_OUTTER_MARGIN 0.20 //The size of the outer half-window (in % of the IBI) before the predicted beat time (0.20)
-#define RGT_OUTTER_MARGIN 0.40 //The size of the outer half-window (in % of the IBI) after the predicted beat time (0.30)
-#define INNER_MARGIN 4.0 //Inner tolerance window margin size (= half inner window size -> in ticks) (3.0)
+#define LFT_OUTTER_MARGIN 0.20 //(Inertia1.1) The size of the outer half-window (in % of the IBI) before the predicted beat time (0.20)
+#define RGT_OUTTER_MARGIN 0.40 //(Inertia1.2) The size of the outer half-window (in % of the IBI) after the predicted beat time (0.30)
+#define INNER_MARGIN 4.0 //(Inertia1.3) Inner tolerance window margin size (= half inner window size -> in ticks) (4.0)
 #define OBSOLETE_FACTOR 0.8 //An agent is killed if, at any time (after the initial Xsecs-defined in BeatReferee), the difference between its score and the bestScore is below OBSOLETE_FACTOR * bestScore (0.8)
 #define LOST_FACTOR 8 //An agent is killed if it become lost, i.e. if it found LOST_FACTOR consecutive beat predictions outside its inner tolerance window (8)
-#define CHILDREN_SCORE_FACTOR 0.8 //(Inertia1) Each created agent imports its father score multiplied (or divided if negative) by this factor (0.8)
-#define BEST_FACTOR 1.0 //(Inertia2) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.0)
-#define CORRECTION_FACTOR 0.25 //correction factor for compensating each agents' own {phase, period} hypothesis errors (0.25)
+#define CHILDREN_SCORE_FACTOR 0.99 //(Inertia2) Each created agent imports its father score multiplied (or divided if negative) by this factor (0.8)
+#define BEST_FACTOR 1.0 //(Inertia3) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.0)
+#define CORRECTION_FACTOR 0.25 //(Inertia4) correction factor for compensating each agents' own {phase, period} hypothesis errors (0.25)
 #define EQ_PERIOD 1 //Period threshold which identifies two agents as predicting the same period (IBI, in ticks) (1)
 #define EQ_PHASE 2 //Phase threshold which identifies two agents as predicting the same phase (phase, in ticks) (2)
-#define CHILD1_FACTOR 1.0 //correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child1 (2.0 - only full phase adjustment; -1 - no child considered) (1.0)
-#define CHILD2_FACTOR 2.0 //correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child2 (2.0 - only full phase adjustment; -1 - no child considered) (2.0)
-#define CHILD3_FACTOR 0.5 //correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child3 (2.0 - only full phase adjustment; -1 - no child considered) (0.5)
+#define CHILD1_FACTOR 0.75 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child1 (2.0 - only full phase adjustment; -1 - no child considered) (1.0)
+#define CHILD2_FACTOR 2.0 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child2 (2.0 - only full phase adjustment; -1 - no child considered) (2.0)
+#define CHILD3_FACTOR 0.25 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child3 (2.0 - only full phase adjustment; -1 - no child considered) (0.5)
+#define TRIGGER_GT_TOL 5 //Number of miss computed beats, in comparison to ground-truth beat-times, tolerated before triggering new induction (used in trigger "groundtruth" mode) -> can be defined via -tigt_tol 
+#define TRIGGER_BEST_FACTOR 1.0 //Proportion of the current best agent score which is inherited by the agents created at each triggered induction [shouldn't be much higher than 1, for not inflating scores two much] (1.0)
+#define BEAT_TRANSITION_TOL 0.6 //Tolerance for handling beats at transitions between agents [-1 for unconsider it]: (0.6)
+//In causal mode, if between two consecutive beats there is over a BEAT_TRANSITION_TOL decrease in current IBI the second beat is unconsidered;
+//In non-causal mode, if between a son's first beat and its father's last there is over a BEAT_TRANSITION_TOL descrease on the father last IBI the son's first beat is unconsidered;
+//In non-causal mode, if between a son's first beat and its father's last there is over a BEAT_TRANSITION_TOL increase on the father last IBI the son's first beat shall be its father's next beat, and the second beat shall be its assigned first.
 
 #define WINSIZE 1024 //(2048?)
 #define HOPSIZE 512 //(512)
@@ -65,6 +97,8 @@ mrs_bool sonicOutFluxFilter = 0;
 
 CommandLineOptions cmd_options;
 
+mrs_string groundtruth_file;
+mrs_string groundtruth_induction;
 mrs_string score_function;
 mrs_string output;
 mrs_string givefirst2beats;
@@ -74,28 +108,32 @@ mrs_string givefirst1beat_startpoint;
 mrs_string giveinitperiod;
 mrs_string giveinitperiod_metricalrel;
 mrs_string giveinitperiod_nonrel;
+mrs_string induction_mode;
+mrs_natural triggergt_tol;
 mrs_real induction_time;
-mrs_real metrical_change_time;
+mrs_bool avoid_metrical_changes;
 mrs_string execPath;
 mrs_natural helpopt;
 mrs_natural usageopt;
 mrs_bool audioopt;
 mrs_bool audiofileopt;
 mrs_bool backtraceopt;
-mrs_bool logfileopt;
+mrs_string logfileopt;
 mrs_bool noncausalopt;
 mrs_bool dumbinductionopt;
 mrs_bool inductionoutopt;
 mrs_bool micinputopt;
 mrs_natural sendudp_port;
 mrs_real phase_;
+mrs_natural minBPM_;
+mrs_natural maxBPM_;
 
 void
 printUsage(string progName)
 {
 	MRSDIAG("ibt.cpp - printUsage");
 	cerr << "Usage : " << progName <<
-		" [-s scoreFunction] [-t inductionTime (in secs)] [-m metricalChangeTime (in secs)] [-b backtrace] [-di dumb_induction] [-nc non-causal] [-o annotationsOutput] [-a play_w/_beats] [-f outputFile_w/_beats] [-2b givefirst2beats] [-1b givefirst1beat] [-pgt giveinitperiod] [-pgt_mr giveinitperiod+metricalrel] [-pgt_nr giveinitperiod+nonrel] [-2bs givefirst2beats_startpoint] [-1bs givefirst1beat_startpoint] [-l log_file] [-io induction_out] [-mic microphone_input] [-send_udp send_udp] fileName outDir" << endl;
+		" [-nc : non-causal] [-mic : microphone_input] [-o \"mode\" : annotations_output] [-a : playAudio_w/_beats] [-f : outputAudioFile_w/_beats] [-t time(secs) : inductionTime] [-i : induction_operation] [-gti \"mode\" : groundtruth_induction] [-gt \"gtFile_path(beats\txt)\" : groundtruh_file] [-di : dumb_induction] [-l \"timeUnit\" : log_file] [-s \"heuristics\" : scoreFunction ] [-io : induction_out] [-b : backtrace] [-m : avoid_metrical_changes] fileName outDir" << endl; //[-send_udp send_udp]
 	cerr << "where fileName is a sound file in a MARSYAS supported format and outDir the directory where the annotation files (beats + tempo) shall be saved (ibt.exe dir by default)." << endl;
 	cerr << endl;
 	exit(1);
@@ -107,38 +145,44 @@ printHelp(string progName)
 	MRSDIAG("ibt.cpp - printHelp");
 	cerr << "ibt, MARSYAS, Copyright George Tzanetakis " << endl;
 	cerr << "--------------------------------------------------------" << endl;
-	cerr << "Detect the beat times (and the tempo - median IBI) in the sound file provided as argument" << endl;
+	cerr << "Detect the beat times and tempo (median IBI) in real-time (or off-line), for the sound file (or microphone input) provided as argument" << endl;
 	cerr << endl;
-	cerr << "Usage : " << progName << " fileName" << endl;
+	cerr << "Usage : " << progName << " fileName (output dir)" << endl;
 	cerr << endl;
 	cerr << "where file is a sound file in a Marsyas supported format" << endl;
 	cerr << "Help Options:" << endl;
 	cerr << "-u --usage          : display short usage info" << endl;
 	cerr << "-h --help           : display this information " << endl;
-	cerr << "-s --score_function : heuristics which conducts the beat tracking" << endl;
-	cerr << "-t --induction_time : time (in secs) dispended in the initial induction stage" << endl;
-	cerr << "-m --metrical_time  : initial time (in secs) allowing tracking metrical changes (0 not allowing at all; -1 for the whole music)" << endl;
-	cerr << "-b --backtrace      : after induction backtrace the analysis to the beginning" << endl;
-	cerr << "-di --dumb_induction: for ignoring period induction substituting it by manual defined values" << endl;
-	cerr << "-nc --non-causal    : for running in non-causal mode" << endl;
+	cerr << "-nc --non-causal    : for running in non-causal (off-line) mode -> Best Performance!" << endl;
+	cerr << "-mic --microphone_input : input sound via microphone interface" << endl;
+	cerr << "-o --output         : what to output (predicted beat times, mean/median tempo): \"beats\", \"medianTempo\", \"meanTempo\", \"beats+medianTempo\", \"beats+meanTempo\", \"beats+meanTempo+medianTempo\" or \"none\"." << endl;
 	cerr << "-a --audio          : play the original sound mixed with the synthesized beats" << endl;
 	cerr << "-f --audiofile      : output the original sound mixed with the synthesized beats (as fileName_beats.*)" << endl;
-	cerr << "-2b --givefirst2beats : replace induction stage with ground-truth (two first beats from beatTimes file - .txt or .beats - from the directory or file given as argument)" << endl;
-	cerr << "-2bs --givefirst2beats_startpoint : equal to givefirst2beats mode but starting tracking at the first given beat time" << endl;
-	cerr << "-1b --givefirst1beat : replace initial phase by the given ground-truth first beat (from beatTimes file - .txt or .beats - from the directory or file given as argument)" << endl;
-	cerr << "-1bs --givefirst1beat_startpoint : equal to givefirst1beat mode but start tracking at the given phase" << endl;
-	cerr << "-pgt --giveinitperiod   : replace initial period given by the ibi of the ground-truth two first beats (from beatTimes file - .txt or .beats - from the directory or file given as argument)" << endl;
-	cerr << "-pgt_mr --giveinitperiod+metricalrel : equal to giveinitperiod but complementing it with metrically related tempi (2x, 1/2x, 3x, 1/3x)" << endl;
-	cerr << "-pgt_nr --giveinitperiod+nonrel : equal to giveinitperiod but complementing it with non-related tempi" << endl;
-	cerr << "-o --output         : what to output (predicted beat times, mean/median tempo): \"beats\", \"medianTempo\", \"meanTempo\", \"beats+medianTempo\", \"beats+meanTempo\", \"beats+meanTempo+medianTempo\" or \"none\"." << endl;
-	cerr << "-l --log_file       : generate log file" << endl;
+	cerr << "-t --induction_time : time (in secs) dispended in the initial induction stage (5s default)" << endl;
+	cerr << "-i --induction_operation : induction mode of operation, from the following:" << endl;
+	cerr <<	"  \"single\" --single@beginning : only one induction at the process beginning" << endl;
+	cerr <<	"  \"repeated\" --repeated@equaltimes : repeated at equal spaces distanced by induction time" << endl;
+	cerr <<	"  \"random\" --repeated@randomtimes : repeated at random time-points spaced by a random duration in the range [1.2-15]s" << endl;
+	cerr <<	"  \"supervised\" --supervise&trigger : supervise analysis and trigger new inductions when feels to be required" << endl;
+	cerr <<	"  \"givetransitions\" --givetransitiontimes : give the groundtruth times of transitions given by audioFile_trigger.txt" << endl;
+	//cerr << "  \"groundtruth\"" << endl;
+	//cerr << "-tigt_tol --triggergtmode_tol : Number of miss computed beats, in comparison to ground-truth beat-times, tolerated before triggering new induction (to be used in trigger \"groundtruth\" mode)" << endl;
+	cerr << "-gti --groundtruth_induction : replace induction with known data (phase and/or period) at given induction request time, given by the ground-truth beatTimes file (defined with -gt option), in one of the following modes:" << endl;
+	cerr << "  \"2b2\" --givefirst&last2beats : give the initial and last phase and period hypotheses, for the given induction window" << endl;
+	cerr << "  \"1b1\" --givefirst&last1beat : give the initial and last phase hypotheses, for the given induction window (period regularly calculated)" << endl;
+	cerr << "  \"2b\" --givefirst2beats : give the initial phase and period, and calculate final hypotheses wihtin the given induction window" << endl;
+	cerr << "  \"1b\" --givefirst1beat : give the initial phase, and calculate final phase hypothesis wihtin the given induction window (period regularly calculated)" << endl;
+	cerr << "  \"p\" --giveinit&lastperiod : give the initial and last period, for the given induction window" << endl;
+	cerr <<	"  \"p_mr\" --giveinit&lastperiod+metricalrel : give the initial and last period + 4 metrically related (2x, 1/2x, 3x, 1/3x), for the given induction window" << endl;
+	cerr << "  \"p_nr\" --giveinitperiod+nonrel : give the initial and last period + 4 non-metrically related, for the given induction window" << endl;
+	cerr << "-gt --groundtruh_file : define ground-truh beatTimes file path (.txt or .beats)" << endl;
+	cerr << "-di --dumb_induction: for ignoring period induction substituting it by manual defined values" << endl;
+	cerr << "-l --log_file       : generate log file with time steps in given time units (\"frames\"; \"seconds\"; \"frames+seconds\") or for trigger counting (\"trigger\")" << endl;
+	cerr << "-s --score_function : heuristics which conducts the beat tracking (\"regular\" (default); \"correlation\"; \"squareCorr\")" << endl;
 	cerr << "-io --induction_out : output best period (in BPMs) by the end of the induction stage (in the outDir directory)" << endl;
-	cerr << "-mic --microphone_input : input sound via microphone interface" << endl;
-	cerr << "-send_udp --send_udp : [!!WINDOWS_ONLY!!] send beats - \"beat_flag(tempo)\" - via udp sockets at defined port (in localhost) - for causal mode" << endl;
-	cerr << "Available Score Functions: " << endl;
-	cerr << "\"regular\" (default)" << endl;
-	cerr << "\"correlation\"" << endl;
-	cerr << "\"squareCorr\"" << endl;
+	cerr << "-b --backtrace      : after induction backtrace the analysis to the beginning" << endl;
+	cerr << "-m --avoid_metrical_changes  :  avoid metrical changes by setting the tempo range within one octave at [81-160]BPM (default in causal operation)." << endl;
+	//cerr << "-send_udp --send_udp : [!!WINDOWS_ONLY!!] send beats - \"beat_flag(tempo)\" - via udp sockets at defined port (in localhost) - for causal mode" << endl;
 	exit(1);
 }
 
@@ -150,26 +194,23 @@ initOptions()
 	cmd_options.addBoolOption("audio", "a", false);
 	cmd_options.addBoolOption("audiofile", "f", false);
 	cmd_options.addBoolOption("backtrace", "b", false);
-	cmd_options.addBoolOption("logFile", "l", false);
+	cmd_options.addStringOption("logFile", "l", "-1");
 	cmd_options.addBoolOption("noncausal", "nc", false);
 	cmd_options.addBoolOption("dumbinduction", "di", false);
 	cmd_options.addBoolOption("inductionout", "io", false);
 	cmd_options.addBoolOption("microphoneinput", "mic", false);
 	cmd_options.addNaturalOption("sendudp", "send_udp", -1);
-	cmd_options.addStringOption("givefirst2beats", "2b", "-1");
-	cmd_options.addStringOption("givefirst1beat", "1b", "-1");
-	cmd_options.addStringOption("giveinitperiod", "pgt", "-1");
-	cmd_options.addStringOption("giveinitperiod+metricalrel", "pgt_mr", "-1");
-	cmd_options.addStringOption("giveinitperiod+nonrel", "pgt_nr", "-1");
-	cmd_options.addStringOption("givefirst2beats_startpoint", "2bs", "-1");
-	cmd_options.addStringOption("givefirst1beat_startpoint", "1bs", "-1");
+	cmd_options.addStringOption("groundtruth_file", "gt", "-1");
+	cmd_options.addStringOption("groundtruth_induction", "gti", "-1");
+	cmd_options.addStringOption("induction_operation", "i", "-1");
+	cmd_options.addNaturalOption("triggergt_tol", "tigt_tol", 5);
 	cmd_options.addStringOption("output", "o", "beats+medianTempo");
 	//the score function (heuristics) which conducts the beat tracking ("regular" by default)
 	cmd_options.addStringOption("score_function", "s", "regular");
 	//Time (in seconds) of induction before tracking. Has to be > 60/MIN_BPM (5.0 by default)
 	cmd_options.addRealOption("induction_time", "t", 5.0);
 	//initial time (in secs) allowed for eventual tracking metrical changes (0 not allowing at all; -1 for the whole music)" (5.0 by default)
-	cmd_options.addRealOption("metrical_change_time", "m", -1);
+	cmd_options.addBoolOption("avoid_metrical_changes", "m", false);
 }
 
 void
@@ -183,9 +224,11 @@ loadOptions()
 	noncausalopt = cmd_options.getBoolOption("noncausal");
 	sendudp_port = cmd_options.getNaturalOption("sendudp");
 	dumbinductionopt = cmd_options.getBoolOption("dumbinduction");
-	logfileopt = cmd_options.getBoolOption("logFile");
+	logfileopt = cmd_options.getStringOption("logFile");
 	inductionoutopt = cmd_options.getBoolOption("inductionout");
 	micinputopt = cmd_options.getBoolOption("microphoneinput");
+	groundtruth_file = cmd_options.getStringOption("groundtruth_file");
+	groundtruth_induction = cmd_options.getStringOption("groundtruth_induction");
 	givefirst2beats = cmd_options.getStringOption("givefirst2beats");
 	givefirst2beats_startpoint= cmd_options.getStringOption("givefirst2beats_startpoint");
 	givefirst1beat = cmd_options.getStringOption("givefirst1beat");
@@ -193,10 +236,12 @@ loadOptions()
 	giveinitperiod = cmd_options.getStringOption("giveinitperiod");
 	giveinitperiod_metricalrel = cmd_options.getStringOption("giveinitperiod+metricalrel");
 	giveinitperiod_nonrel = cmd_options.getStringOption("giveinitperiod+nonrel");
+	induction_mode = cmd_options.getStringOption("induction_operation");
+	triggergt_tol = cmd_options.getNaturalOption("triggergt_tol");
 	output = cmd_options.getStringOption("output");
 	score_function = cmd_options.getStringOption("score_function");
 	induction_time = cmd_options.getRealOption("induction_time");
-	metrical_change_time = cmd_options.getRealOption("metrical_change_time");
+	avoid_metrical_changes = cmd_options.getBoolOption("avoid_metrical_changes");
 }
 
 mrs_bool
@@ -209,7 +254,7 @@ existsFile(mrs_string fileName)
 	}
 	else
 	{
-		cout << "Bad or nonexistent file! Please specify a supported one." << endl;
+		cerr << "Bad or nonexistent file! Please specify a supported one." << endl;
 		return false;
 	}
 }
@@ -230,21 +275,20 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 		ostringstream oss;
 		oss << gtBeatsFile << inputFileGT.nameNoExt() << ".txt";
 		//check if ground-truth file, with .txt extension, exists (ifnot try with .beats extension)
-		if(fopen(oss.str().c_str(), "r"))
+		if(fopen(oss.str().c_str(), "r")) //if file exists
 		{
 			inStream.open(oss.str().c_str());
 			getline (inStream, line);
 			phase_ = strtod(line.substr(0, line.find(" ")).c_str(), NULL);
-
+			
 			beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/gtBeatsFile", oss.str());
 		}
-
 		//else, check if ground-truth file, with .beats extension, exists (ifnot return to normal induction)
 		else
 		{
 			oss.str("");
 			oss << gtBeatsFile << inputFileGT.nameNoExt() << ".beats";
-			if(fopen(oss.str().c_str(), "r"))
+			if(fopen(oss.str().c_str(), "r")) //if file exists
 			{
 				inStream.open(oss.str().c_str());
 				getline (inStream, line);
@@ -254,12 +298,16 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 			}
 			else
 			{
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
-				cout << "\nGround-truth beat times file do not exists! -> " << gtBeatsFile << "(.txt/.beats)"
+				//beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
+				cerr << "\nGround-truth beat times file do not exists! -> " << gtBeatsFile << "(.txt/.beats)"
 					<< "\nRunning normal induction..." << endl;
+				
+				if(strcmp(induction_mode.c_str(), "groundtruth") == 0) //if requested ground-truth induction operation
+				{
+					cout << "Running \"single\" induction operation" << endl;
+					induction_mode = "single"; //force single induction mode
+				}
 				readFileOK = false;
-
-				exit(1);
 			}
 		}
 	}
@@ -272,7 +320,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 		if(strcmp(extension.c_str(), "txt") == 0 || strcmp(extension.c_str(), "beats") == 0)
 		{
 			//if file exists
-			if(fopen(gtBeatsFile.c_str(), "r"))
+			if(fopen(gtBeatsFile.c_str(), "r")) //if file exists
 			{
 				inStream.open(gtBeatsFile.c_str());
 				getline (inStream, line);
@@ -282,25 +330,33 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 			}
 			else
 			{
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
-				cout << "\nGround-truth beat times file do not exists! -> " << gtBeatsFile
+				//beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
+				cerr << "\nGround-truth beat times file do not exists! -> " << gtBeatsFile
 					<< "\nRunning normal induction..." << endl;
+				
+				if(strcmp(induction_mode.c_str(), "groundtruth") == 0) //if requested ground-truth induction mode
+				{
+					cout << "Running \"single\" induction mode" << endl;
+					induction_mode = "single"; //force regular trigger mode
+				}
 				readFileOK = false;
-
-				exit(1);
 			}
 		}
 
-		//if not run regular induction
+		//if not => run regular induction
 		else
 		{
-			beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
-			cout << "\nGround-truth beat times file ." << extension
+			//beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
+			cerr << "\nGround-truth beat times file ." << extension
 				<< " extension unknown! Spectify a .txt or .beats file."
 				<< "\nRunning normal induction..." << endl;
+			
+			if(strcmp(induction_mode.c_str(), "groundtruth") == 0) //if requested ground-truth induction operation
+			{
+				cout << "Running \"single\" induction operation" << endl;
+				induction_mode = "single"; //force single induction mode
+			}
 			readFileOK = false;
-
-			exit(1);
 		}
 	}
 
@@ -401,7 +457,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		audioflow->addMarSystem(beattracker);
 
 	//for synthesizing clicks (on beats) with audio and playing/recording
-		MarSystem* IBTsystem = NULL;
+	MarSystem* IBTsystem = NULL;
 		
 	if(audiofileopt || audioopt)
 	{
@@ -431,6 +487,10 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			IBTsystem->addMarSystem(mng.create("SoundFileSink", "fdest"));
 	}
 
+
+	minBPM_ = MIN_BPM;
+	maxBPM_ = MAX_BPM;
+
 	///////////////////////////////////////////////////////////////////////////////////////
 	//link controls
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -444,6 +504,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//Link accumulator/ShiftInput size to OnsetTimes for compensating the timing in order to the considered accumulator size
 	beattracker->linkControl("FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/onsettimes/mrs_natural/accSize",
 		"ShiftInput/acc/mrs_natural/winSize");
+	beattracker->linkControl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/accSize",
+		"FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/onsettimes/mrs_natural/accSize");
 
 	//Pass hypotheses matrix (from tempoinduction stage) to PhaseLock
 	beattracker->linkControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_realvec/beatHypotheses",
@@ -451,9 +513,24 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//link backtrace option
 	beattracker->linkControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_bool/backtrace",
 		"BeatReferee/br/mrs_bool/backtrace");
+	beattracker->linkControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_real/curBestScore",
+		"BeatReferee/br/mrs_real/curBestScore");
 	//link corFactor
 	beattracker->linkControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_real/corFactor",
 		"BeatReferee/br/mrs_real/corFactor");
+	//link induction_mode
+	beattracker->linkControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_bool/triggerInduction",
+		"BeatReferee/br/mrs_bool/triggerInduction");
+	beattracker->linkControl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_bool/triggerInduction",
+		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_bool/triggerInduction");
+	beattracker->linkControl("FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/onsettimes/mrs_bool/triggerInduction",
+		"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_bool/triggerInduction");
+	//link ground-truth file (used at BeatReferee in trigger induction mode)
+	beattracker->linkControl("BeatReferee/br/mrs_string/gtBeatsFile",
+		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/gtBeatsFile");
+	//link gt induction mode from PhaseLock to BeatReferee
+	beattracker->linkControl("BeatReferee/br/mrs_string/gtInductionMode",
+		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode");
 
 	//Pass initital hypotheses to BeatReferee
 	beattracker->linkControl("BeatReferee/br/mrs_realvec/beatHypotheses",
@@ -507,11 +584,15 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//BeatReferee timing = induction time
 	beattracker->linkControl("BeatReferee/br/mrs_natural/inductionTime",
 		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/inductionTime");
-	//Link Period Limits to PhaseLock
+	//Link Period Limits to PhaseLock and TempoHypotheses
 	beattracker->linkControl("BeatReferee/br/mrs_natural/minPeriod",
 		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/minPeriod");
 	beattracker->linkControl("BeatReferee/br/mrs_natural/maxPeriod",
 		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/maxPeriod");
+	beattracker->linkControl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/minPeriod",
+		"BeatReferee/br/mrs_natural/minPeriod");
+	beattracker->linkControl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/maxPeriod",
+		"BeatReferee/br/mrs_natural/maxPeriod");
 	//OnsetTimes timing = induction time
 	beattracker->linkControl("FlowThru/tempoinduction/Fanout/tempohypotheses/Series/phase/OnsetTimes/onsettimes/mrs_natural/inductionTime",
 		"BeatReferee/br/mrs_natural/inductionTime");
@@ -544,7 +625,9 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	beattracker->linkControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/tickCount",
 		"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/tickCount");
 
-	//link frames2seconds adjustment from BeatTimesSink to PhaseLock
+	//link frames2seconds adjustment from BeatTimesSink to PhaseLock and BeatReferee
+	beattracker->linkControl("BeatReferee/br/mrs_natural/adjustment",
+		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/adjustment");
 	beattracker->linkControl("BeatTimesSink/sink/mrs_natural/adjustment",
 		"FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_natural/adjustment");
 	//link dumbinduction to PhaseLock
@@ -601,71 +684,90 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	beattracker->linkControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_real/srcFs",
 			"FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_real/srcFs");
 
-	//For Induction Ground-Truth in "PhaseLock"
-	if(strcmp(givefirst2beats.c_str(), "-1") != 0 || strcmp(givefirst1beat.c_str(), "-1") != 0 || strcmp(giveinitperiod.c_str(), "-1") != 0 ||
-		strcmp(giveinitperiod_metricalrel.c_str(), "-1") != 0 || strcmp(giveinitperiod_nonrel.c_str(), "-1") != 0 ||
-		strcmp(givefirst2beats_startpoint.c_str(), "-1") != 0 || strcmp(givefirst1beat_startpoint.c_str(), "-1") != 0)
+	//if ground-truth induction or ground-truth induction mode
+	if(!strcmp(groundtruth_induction.c_str(), "-1") == 0 || strcmp(induction_mode.c_str(), "groundtruth") == 0)
 	{
-		//if normal induction_gt:
-		if(strcmp(givefirst2beats.c_str(), "-1") != 0)
+		//if not in ground-truth induction mode
+		//&& if gt induction mode different than the defined
+		if(!strcmp(induction_mode.c_str(), "groundtruth") == 0 &&
+		(!strcmp(groundtruth_induction.c_str(), "2b2") == 0 && !strcmp(groundtruth_induction.c_str(), "2b") == 0 &&
+			!strcmp(groundtruth_induction.c_str(), "1b1") == 0 && !strcmp(groundtruth_induction.c_str(), "1b") == 0 &&
+			!strcmp(groundtruth_induction.c_str(), "p") == 0 && !strcmp(groundtruth_induction.c_str(), "p_mr") == 0 &&
+			!strcmp(groundtruth_induction.c_str(), "p_nr") == 0))
 		{
-			if(readGTBeatsFile(beattracker, givefirst2beats, sfName, false))
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "givefirst2beats");
-			else givefirst2beats = "-1";
+			cerr << "Invalid induction groundtruth mode - Please define one of the following: \"2b2\";\"1b1\";\"2b\";\"1b\";\"p\";\"p_mr\";\"p_nr\"" << endl;
+			cerr << "Running \"regular\" induction..." << endl;
+			beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
 		}
-		//if induction_gt starting tracking at given first beat
-		else if(strcmp(givefirst2beats_startpoint.c_str(), "-1") != 0)
+		else
 		{
-			if(readGTBeatsFile(beattracker, givefirst2beats_startpoint, sfName, true))
+			if(strcmp(groundtruth_file.c_str(), "-1") == 0) //if ground-truth file not defined
 			{
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "givefirst2beats_startpoint");
-				backtraceopt = true;
+				//force regular induction
+				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
+				cerr << "Please specify the ground-truth beat-times file path via -gt \"path/file.(beats\\txt)\"" << endl;
+				cerr << "Running \"regular\" induction..." << endl;
+				if(strcmp(induction_mode.c_str(), "groundtruth") == 0) //and requested ground-truth induction operation
+				{
+					cout << "Running \"single\" induction operation" << endl;
+					induction_mode = "single"; //force single induction mode
+				}			
 			}
-			else givefirst2beats_startpoint = "-1";
-		}
-		else if(strcmp(givefirst1beat.c_str(), "-1") != 0)
-		{
-			if(readGTBeatsFile(beattracker, givefirst1beat, sfName, false))
+			else
 			{
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "givefirst1beat");
-			}
-			else givefirst1beat = "-1";
-		}
-		else if(strcmp(givefirst1beat_startpoint.c_str(), "-1") != 0)
-		{
-			if(readGTBeatsFile(beattracker, givefirst1beat_startpoint, sfName, true))
-			{
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "givefirst1beat_startpoint");
-				backtraceopt = true;
-			}
-			else givefirst1beat_startpoint = "-1";
-		}
-		else if(strcmp(giveinitperiod.c_str(), "-1") != 0)
-		{
-			if(readGTBeatsFile(beattracker, giveinitperiod, sfName, false))
-			{
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "giveinitperiod");
-			}
-			else giveinitperiod = "-1";
-		}
-		else if(strcmp(giveinitperiod_metricalrel.c_str(), "-1") != 0)
-		{
-			if(readGTBeatsFile(beattracker, giveinitperiod_metricalrel, sfName, false))
-			{
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "giveinitperiod_metricalrel");
-			}
-			else giveinitperiod_metricalrel = "-1";
-		}
-		else if(strcmp(giveinitperiod_nonrel.c_str(), "-1") != 0)
-		{
-			if(readGTBeatsFile(beattracker, giveinitperiod_nonrel, sfName, false))
-			{
-				beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "giveinitperiod_nonrel");
-			}
-			else giveinitperiod_nonrel = "-1";
-		}
+				mrs_bool readGTFileOk = false;
 
+				//check if ground-truth induction fixed (unchanged) within induction window
+				if(strcmp(groundtruth_induction.c_str(), "2b2") == 0 || strcmp(groundtruth_induction.c_str(), "1b1") == 0)
+					readGTFileOk = readGTBeatsFile(beattracker, groundtruth_file, sfName, true);
+				else readGTFileOk = readGTBeatsFile(beattracker, groundtruth_file, sfName, false);
+
+				if(readGTFileOk) //if could read beat-times gt file (if couldn't read => regular induction)
+				{
+					if(strcmp(groundtruth_induction.c_str(), "-1") == 0) //if no induction mode defined
+					{
+						//assume regular induction mode
+						groundtruth_induction = "regular";
+						cerr << "Trigger Induction: no induction mode defined (define it via -gti option) -> \"regular\" assumed" << endl;
+					}
+
+					//assign requested induction mode
+					beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", groundtruth_induction);
+
+					cout << "Beat-Times Ground-Truth File: " << groundtruth_file << endl;
+				}
+				else
+					beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_string/mode", "regular");
+			}
+		}
 	}
+
+	//if requested induction operation (other than ground-truth - treated above)
+	if(!strcmp(induction_mode.c_str(), "-1") == 0)
+	{
+		//avoid different commands than the defined -> force regular if different
+		if(!strcmp(induction_mode.c_str(), "single") == 0 && !strcmp(induction_mode.c_str(), "repeated") == 0 
+			&& !strcmp(induction_mode.c_str(), "random") == 0 && !strcmp(induction_mode.c_str(), "supervised") == 0
+			&& !strcmp(induction_mode.c_str(), "givetransitions") == 0)
+		{
+			cerr << "Trigger Induction: re-define trigger mode value as one of the following: \"single\", \"repeated\", \"random\", \"supervised\", \"givetransitions\" -> \"single\" assumed." << endl;
+				induction_mode = "single";
+		}
+		
+		cout << "Requested induction in \"" << induction_mode << "\" operation" << endl;
+
+		//handle beat error tolerance, used in trigger groundtruth mode (and assure that beat-times ground file is passed)
+		if(strcmp(induction_mode.c_str(), "groundtruth") == 0)
+		{
+			if(triggergt_tol == 5)
+				cerr << "Beat Error Tolerance: " <<
+					triggergt_tol << " (if wanted different tolerance please define it through -tigt_tol option)" << endl;
+			else
+				cout << "Beat Error Tolerance: " << triggergt_tol << endl;
+		}
+	}
+
+	beattracker->linkControl("BeatReferee/br/mrs_string/destFileName", "BeatTimesSink/sink/mrs_string/destFileName");
 
 	//if requested output of induction best period hypothesis link output directory
 	if(inductionoutopt)
@@ -695,6 +797,24 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//link non-causal mode flag
 	beattracker->linkControl("BeatTimesSink/sink/mrs_bool/nonCausal",
 		"BeatReferee/br/mrs_bool/nonCausal");
+
+
+	//set the default non-causal tempo range to [50-250]BPM
+	//(by default in causal mode tempo is limited to the range [81-160]BPM)
+	//(if the selected tempo range differs from the causal default [81-160]BPM then don't activate non-causal default [50-250]BPM.)
+	if(noncausalopt && ((strcmp(induction_mode.c_str(), "-1") == 0) || (strcmp(induction_mode.c_str(), "single") == 0)) && minBPM_ == 81 && maxBPM_ == 160)
+	{
+		minBPM_ = 50;
+		maxBPM_ = 250;
+	}
+	//if avoid metrical changes set the tempo range within one octave at [81-160]BPM
+	if(avoid_metrical_changes)
+	{
+		minBPM_ = 81;
+		maxBPM_ = 160;
+		cerr << "Avoid metrical changes mode activated (default in causal operation)." << endl;
+	}
+	cerr << "Considered tempo in the range [" << minBPM_ << "-" << maxBPM_ << "]BPM." << endl;
 
 
 	///////////////////////////////////////////////////////////////////////////////////////
@@ -744,11 +864,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		inductionTickCount = (inputSize / HOPSIZE) -1;
 
 	beattracker->updControl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_natural/inductionTime", inductionTickCount);
-	beattracker->updControl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_bool/dumbInduction", dumbinductionopt);
-
-	mrs_natural metricalChangeTime = inputSize / HOPSIZE; //if metricalChangeTime = -1 it shall equalize the full input file size (in ticks)
-	if(metrical_change_time != -1.0 && metrical_change_time >= 0.0)
-		metricalChangeTime = ((mrs_natural) (metrical_change_time * fsSrc) / HOPSIZE) + 1; //allowed metrical change time (in nr. of ticks)
+	beattracker->updControl("FlowThru/tempoinduction/TempoHypotheses/tempohyp/mrs_bool/dumbInductionRequest", dumbinductionopt);
 
 	//Size of accumulator equals inductionTime + 1 -> [0, inductionTime]
 	//beattracker->updControl("ShiftInput/acc/mrs_natural/winSize", inductionTickCount+1);
@@ -762,8 +878,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	beattracker->updControl("ShiftInput/acc/mrs_natural/winSize", accSize);
 
 	mrs_natural pkinS = tempoinduction->getctrl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_natural/onSamples")->to<mrs_natural>();
-	mrs_natural peakEnd = (mrs_natural)((60.0 * fsSrc)/(MIN_BPM * HOPSIZE)); //MinBPM (in frames)
-	mrs_natural peakStart = (mrs_natural) ((60.0 * fsSrc)/(MAX_BPM * HOPSIZE));  //MaxBPM (in frames)
+	mrs_natural peakEnd = (mrs_natural)((60.0 * fsSrc)/(minBPM_ * HOPSIZE)); //MinBPM (in frames)
+	mrs_natural peakStart = (mrs_natural) ((60.0 * fsSrc)/(maxBPM_ * HOPSIZE));  //MaxBPM (in frames)
 
 	//mrs_real peakSpacing = ceil(((peakEnd-peakStart) * 4.0) / ((mrs_real)(MAX_BPM-MIN_BPM))) / pkinS;
 
@@ -779,10 +895,18 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_real/peakGain", 2.0);
 
 
+	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/AutoCorrelation/acf/mrs_real/lowCutoff", 0.5);
+	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/AutoCorrelation/acf/mrs_real/highCutoff", 1.0);
+
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/MaxArgMax/mxr/mrs_natural/nMaximums", BPM_HYPOTHESES);
 
-	mrs_natural lookAheadSamples = 6; //(higher than 3 due to unconsistencies on the very beginning of the filter window)
-	mrs_real thres = 1.2;//1.3; //1.75 (1.2)
+	mrs_natural minPeriod = (mrs_natural) floor(60.0 / (maxBPM_ * HOPSIZE) * fsSrc);
+	mrs_natural maxPeriod = (mrs_natural) ceil(60.0 / (minBPM_ * HOPSIZE) * fsSrc);
+
+	mrs_natural lookAheadSamples = 20; //minPeriod; //(higher than 9 due to unconsistencies on the very beginning of the filter window)
+	mrs_real thres = 1.1;//1.3; //1.75 (1.1)
+	//mrs_natural lookAheadSamples = 6;
+	//mrs_real thres = 1.2;
 
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/phase/PeakerOnset/pkronset/mrs_natural/lookAheadSamples", lookAheadSamples);
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/phase/PeakerOnset/pkronset/mrs_real/threshold", thres);
@@ -805,8 +929,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		beattracker->updControl("Fanout/agentpool/BeatAgent/"+oss.str()+"/mrs_string/identity", oss2.str());
 	}
 
-	mrs_natural minPeriod = (mrs_natural) floor(60.0 / (MAX_BPM * HOPSIZE) * fsSrc);
-	mrs_natural maxPeriod = (mrs_natural) ceil(60.0 / (MIN_BPM * HOPSIZE) * fsSrc);
+	beattracker->updControl("FlowThru/initialhypotheses/PhaseLock/phaselock/mrs_real/triggerBestScoreFactor", TRIGGER_BEST_FACTOR);
 
 	beattracker->updControl("BeatReferee/br/mrs_real/srcFs", fsSrc);
 	beattracker->updControl("BeatReferee/br/mrs_natural/minPeriod", minPeriod);
@@ -821,14 +944,18 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	beattracker->updControl("BeatReferee/br/mrs_real/child3Factor", (mrs_real) CHILD3_FACTOR);
 	beattracker->updControl("BeatReferee/br/mrs_natural/eqPeriod", EQ_PERIOD);
 	beattracker->updControl("BeatReferee/br/mrs_natural/eqPhase", EQ_PHASE);
-	beattracker->updControl("BeatReferee/br/mrs_natural/metricalChangeTime", metricalChangeTime);
 	beattracker->updControl("BeatReferee/br/mrs_bool/backtrace", backtraceopt);
-	beattracker->updControl("BeatReferee/br/mrs_bool/logFile", logfileopt);
 	beattracker->updControl("BeatReferee/br/mrs_natural/soundFileSize", (mrs_natural) ((inputSize / HOPSIZE)));
 	beattracker->updControl("BeatReferee/br/mrs_bool/nonCausal", noncausalopt);
+	beattracker->updControl("BeatReferee/br/mrs_string/inductionMode", induction_mode);
+	beattracker->updControl("BeatReferee/br/mrs_natural/triggerGtTolerance", triggergt_tol);
+	beattracker->updControl("BeatReferee/br/mrs_real/beatTransitionTol", BEAT_TRANSITION_TOL);
+	if(noncausalopt) beattracker->updControl("BeatReferee/br/mrs_bool/resetAfterNewInduction", false);
+	else beattracker->updControl("BeatReferee/br/mrs_bool/resetAfterNewInduction", true);
 
 	ostringstream path;
 	FileName outputFile(sfName);
+	
 	//if no outputTxt dir defined -> exec dir is assumed:
 	if(strcmp(outputTxt.c_str(), "") == 0)
 		path << execPath << outputFile.nameNoExt();
@@ -846,9 +973,30 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 			path << outputTxt;
 		}
 	}
-
-	if(logfileopt)
+	
+	if(!strcmp(logfileopt.c_str(), "-1") == 0)
+	{
+		if(!strcmp(logfileopt.c_str(), "trigger") == 0)
+		{
+			if(!strcmp(logfileopt.c_str(), "frames") == 0 && !strcmp(logfileopt.c_str(), "seconds") == 0
+				&& !strcmp(logfileopt.c_str(), "frames+seconds") == 0)
+			{
+				cerr << "LogFile: Unknown time units specified... \"frames+seconds\" considered." << endl;
+				logfileopt = "frames+seconds";
+			}
+		}
+		
+		beattracker->updControl("BeatReferee/br/mrs_string/logFile", logfileopt);
 		beattracker->updControl("BeatReferee/br/mrs_string/logFileName", path.str() + "_log.txt");
+	}
+	//set the file with the groundtruth times of trigger
+	if(strcmp(induction_mode.c_str(), "triggertimes") == 0)
+	{
+		ostringstream triggerFilePath;
+		triggerFilePath << outputFile.path() << outputFile.nameNoExt() << "_trigger.txt";
+		
+		beattracker->updControl("BeatReferee/br/mrs_string/triggerTimesFile", triggerFilePath.str());
+	}
 
 	//adjustment used in TickCount calculation above
 	beattracker->updControl("BeatTimesSink/sink/mrs_natural/adjustment", adjustment);
@@ -892,7 +1040,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		}
 		else
 		{
-			cout << "Incorrect annotation output defined - beats+medianTempo files will be created:" << endl;
+			cerr << "Incorrect annotation output defined - beats+medianTempo files will be created:" << endl;
 			cout << "BeatTimes Output: " << path.str() << ".txt" << endl;
 			cout << "MedianTempo Output: " << path.str() << "_medianTempo.txt" << endl;
 			beattracker->updControl("BeatTimesSink/sink/mrs_string/mode", "beats+medianTempo");
@@ -958,7 +1106,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		cout << "Audiofile w/ beats being saved: " << path.str() << "_beats.wav" << endl;
 	}
 
-	/*
+
+	
 	//configure zero-phase Butterworth filter of Flux time series (from J.P.Bello TASLP paper)
 	// Coefficients taken from MATLAB butter(2, 0.28)
 	realvec bcoeffs(1,3);
@@ -971,9 +1120,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	acoeffs(1) = -0.8252;
 	acoeffs(2) = 0.2946;
 	beattracker->updControl("Series/normfiltering/Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
-	*/
-
-
+	
+	/*
 	// Coefficients taken from MATLAB butter(2, 0.18)
 	realvec bcoeffs(1,3);
 	bcoeffs(0) = 0.0564;
@@ -985,7 +1133,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	acoeffs(1) = -1.2247;
 	acoeffs(2) = 0.4504;
 	beattracker->updControl("Series/normfiltering/Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
-
+	*/
+	
     /*
 	// Coefficients taken from MATLAB butter(2, 0.1)
 	realvec bcoeffs(1,3);
@@ -1008,6 +1157,10 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//mrs_natural winSize = WINSIZE;
 	//mrs_natural hopSize = HOPSIZE;
 	//MATLAB_EVAL("clear;");
+	//MATLAB_EVAL("Onsets = zeros(1,862);");
+	//MATLAB_EVAL("Onsets2 = zeros(1,862);");
+	//MATLAB_EVAL("Induction = zeros(1,862);");
+	//MATLAB_EVAL("Induction2 = zeros(1,862);");
 	//MATLAB_EVAL("FluxTS = [];");
 	//MATLAB_EVAL("srcAudio = [];");
 	//MATLAB_EVAL("FinalBeats=[];");
@@ -1059,23 +1212,23 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 		}
 
 		//Just after induction:
-		if(frameCount == inductionTickCount)
+		if(frameCount == inductionTickCount) //CHANGE TO TRIGGER!!!
 		{
-			//for playing audio (with clicks on beats):
-			cout << "done" << endl;
+			//cout << "done" << endl;
 
 			//if backtrace and not in mic mode
 			if(backtraceopt && !micinputopt)
 			{
-				//Restart reading audio file
+				//regress to given soundfile position (in samples)
 				audioflow->updControl("SoundFileSource/src/mrs_natural/pos", 0);
 
-				if(strcmp(givefirst2beats_startpoint.c_str(), "-1") == 0 && !noncausalopt)
+				//if in 2bs mode and in causal tracking -> force backtrace to assure starting beat as ground-truth
+				if(strcmp(groundtruth_induction.c_str(), "2b2") == 0 && !noncausalopt)
 					cout << "Backtraced!" << endl;
 				//else
 				//	cout << "Forcing tracking startpoint at: " << phase_ << " (s)" << endl;
 
-				if(audioopt)
+				if(audioopt) //for playing audio (with clicks on beats):
 					IBTsystem->updControl("AudioSink/output/mrs_bool/initAudio", true);
 			}
 			if(audioopt)
@@ -1159,10 +1312,6 @@ main(int argc, const char **argv)
 			inStream.open(outputFile.fullname().c_str());
 			cout << "InductionTime: " << induction_time << "secs"
 				<< "\nScoreFunction: " << score_function << endl;
-			//if(metrical_change_time == -1)
-			//	cout << "\nMetrical Change: permitted througout all piece" << endl;
-			//else
-			//	cout << "\nMetrical Change: initial " << metrical_change_time << "secs" << endl;
 
 			cout << "\nInputing Collection " << sfName << "..." << endl;
 
@@ -1179,17 +1328,14 @@ main(int argc, const char **argv)
 			}
 		}
 		else
-			cout << "Unsupported or nonspecified audio format!" << endl;
+			cerr << "Unsupported or nonspecified audio format!" << endl;
 	}
 
 	else
 	{
 		cout << "InductionTime: " << induction_time << "secs"
 			<< "\nScoreFunction: " << score_function << endl;
-		//if(metrical_change_time == -1)
-		//	cout << "\nMetrical Change: permitted througout all piece" << endl;
-		//else
-		//	cout << "\nMetrical Change: initial " << metrical_change_time << "secs" << endl;
+
 		if(micinputopt)
 		{
 			sfName = "mic";

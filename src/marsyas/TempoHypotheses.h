@@ -69,17 +69,26 @@ private:
 	MarControlPtr ctrl_hopSize_;
 	MarControlPtr ctrl_tickCount_;
 	MarControlPtr ctrl_dumbInduction_;
+	MarControlPtr ctrl_dumbInductionRequest_;
+	MarControlPtr ctrl_triggerInduction_;
+	MarControlPtr ctrl_accSize_;
+	MarControlPtr ctrl_maxPeriod_;
+	MarControlPtr ctrl_minPeriod_;
 
-	mrs_bool inductionFinished_;
-	mrs_bool dumbInduction_;
+	mrs_natural maxPeriod_;
+	mrs_natural minPeriod_;
+	mrs_natural accSize_;
+	mrs_bool triggerInduction_;
+	mrs_bool dumbInductionRequest_;
 	mrs_natural hopSize_;
 	mrs_real srcFs_;
-	mrs_natural inductionTime_;
-	mrs_natural t_;
+	mrs_natural inductionSize_;
+	mrs_natural timeElapsed_;
 	mrs_natural nPhases_;
 	mrs_natural nPeriods_;
-	mrs_bool noBPMs_;
-	mrs_natural forceBPM_[10];
+	mrs_bool foundPeriods_;
+	mrs_bool foundPhases_;
+	mrs_natural manualBPMs_[10];
 	void myUpdate(MarControlPtr sender);
 
 public:

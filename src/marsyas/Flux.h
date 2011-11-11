@@ -42,6 +42,7 @@ namespace Marsyas
     realvec prevWindow_;
     mrs_real diff_,flux_, max_;
     mrs_real logtmp_;
+    mrs_bool reset_;
 
 		MarControlPtr ctrl_mode_;
 		MarControlPtr ctrl_reset_;

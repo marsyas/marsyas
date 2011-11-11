@@ -68,6 +68,8 @@ Flux::myUpdate(MarControlPtr sender)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue("Flux_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
+	reset_ = ctrl_reset_->to<mrs_bool>();
+
 	prevWindow_.create(ctrl_inObservations_->to<mrs_natural>(),
 		ctrl_inSamples_->to<mrs_natural>());
 }
@@ -78,12 +80,13 @@ Flux::myProcess(realvec& in, realvec& out)
 	mrs_natural o,t;
 	mrs_string mode = ctrl_mode_->to<mrs_string>();
 	
-	if (ctrl_reset_->isTrue()) {
+	if (reset_) {
 		prevWindow_.setval(0.0);
 		// don't set this control to be false!
 		// this is almost always linked to by another
 		// control, so let that one do the false'ing!
-    	}
+		reset_ = false;
+    }
 
 	for (t = 0; t < inSamples_; t++)
 	{

@@ -19,6 +19,11 @@
 #ifndef MARSYAS_BEATTIMESSINK_H
 #define MARSYAS_BEATTIMESSINK_H
 
+//sockets only available in Windows
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include "MarSystem.h"
 
 namespace Marsyas
@@ -81,7 +86,7 @@ private:
 	mrs_real adjustment_;
 	mrs_natural hopSize_;
 	mrs_natural winSize_;
-	mrs_natural t_;
+	mrs_natural timeElapsed_;
 	mrs_real ibiBPMSum_;
 	mrs_natural beatCount_;
 	mrs_real tempo_;
