@@ -597,6 +597,7 @@ BeatReferee::grantPoolSpaceForTriggerAgents(mrs_realvec triggerAgentsHypotheses)
 
 		//cout << timeElapsed_ << ": CHECKING POOL SPACE for score: " << agentInitScore << endl;
 
+
 	}
 }
 
@@ -1967,6 +1968,17 @@ BeatReferee::calcAbsoluteBestScore()
 			if(logFile_)
 				debugAddEvent("BEST", bestLocalAgent, (mrs_natural) lastPeriods_(bestLocalAgent), 
 							  (mrs_natural) lastPhases_(bestLocalAgent), bestLocalScore, bestScore_);
+							  
+			//supervision logfile:
+			if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)
+			{
+				ostringstream oss;
+				oss << ctrl_destFileName_->to<mrs_string>() << "_bestChanges.txt";
+				ofstream trigCountStream;
+				trigCountStream.open(oss.str().c_str(), ios::out|ios::app);
+				trigCountStream << timeElapsed_ << endl;
+				trigCountStream.close();
+			}
 
 			bestScore_ = bestLocalScore;
 			bestAgentIndex_ = bestLocalAgent;
@@ -2113,6 +2125,17 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	{
 		initialization();
 		startSystem_ = false;
+	}
+
+	//supervision logfile:
+	if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)
+	{
+		ostringstream oss;
+		oss << ctrl_destFileName_->to<mrs_string>() << "_bestScore.txt";
+		ofstream trigCountStream;
+		trigCountStream.open(oss.str().c_str(), ios::out|ios::app);
+		trigCountStream << timeElapsed_ << ": " << bestScore_ << endl;
+		trigCountStream.close();
 	}
 
 	//if(timeElapsed_ == 3100)
