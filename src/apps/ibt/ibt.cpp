@@ -766,7 +766,9 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 				cout << "Beat Error Tolerance: " << triggergt_tol << endl;
 		}
 	}
-
+	
+	beattracker->linkControl("BeatReferee/br/mrs_bool/resetFeatWindow", "ShiftInput/acc/mrs_bool/clean");
+	
 	beattracker->linkControl("BeatReferee/br/mrs_string/destFileName", "BeatTimesSink/sink/mrs_string/destFileName");
 
 	//if requested output of induction best period hypothesis link output directory
@@ -894,9 +896,11 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_natural/peakEnd", peakEnd);
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_real/peakGain", 2.0);
 
-
+	//for only considering the 2nd half of the induction window in the ACF calculation
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/AutoCorrelation/acf/mrs_real/lowCutoff", 0.5);
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/AutoCorrelation/acf/mrs_real/highCutoff", 1.0);
+	beattracker->updControl("ShiftInput/acc/mrs_real/lowCleanLimit", 0.0);
+	beattracker->updControl("ShiftInput/acc/mrs_real/highCleanLimit", 0.5);
 
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/MaxArgMax/mxr/mrs_natural/nMaximums", BPM_HYPOTHESES);
 

@@ -52,6 +52,12 @@ namespace Marsyas
 	- \b mrs_natural/winSize [rw] : the window size of the sliding window.
 	- \b mrs_bool/reset [w] : reset the internal buffer (used in case of
 		overlapping windows) to zero.
+	- \b mrs_bool/clean [w] : call for a partial clean of the internal buffer.
+		(limited by lowCleanLimit and highCleanLimit).
+	- \b mrs_real/lowCleanLimit [rw] : low limit of a cleaning request
+		(as a portion of the internal buffer size).
+	- \b mrs_real/highCleanLimit [rw] : high limit of a cleaning request
+		(as a portion of the internal buffer size).
 
 	\see SoundFileSource
 
@@ -78,6 +84,15 @@ private:
 
 	/// Internal pointer to the winSize MarControl.
 	MarControlPtr ctrl_winSize_;
+	
+	/// Internal pointer to the clean MarControl.
+	MarControlPtr ctrl_clean_;
+	
+	/// Internal pointer to the lowCleanLimit MarControl.
+	MarControlPtr ctrl_lowCleanLimit_;
+	
+	/// Internal pointer to the highCleanLimit MarControl.
+	MarControlPtr ctrl_highCleanLimit_;
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);

@@ -56,6 +56,7 @@ Flux::addControls()
 	addctrl("mrs_string/mode", "marsyas", ctrl_mode_);
 	// set this true initially to clear prevWindow_
 	addctrl("mrs_bool/reset", true, ctrl_reset_);
+	setctrlState("mrs_bool/reset", true);
 }
 
 void

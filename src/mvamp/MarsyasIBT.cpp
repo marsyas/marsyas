@@ -12,14 +12,14 @@
 #define INNER_MARGIN 4.0 //(Inertia1.3) Inner tolerance window margin size (= half inner window size -> in ticks) (4.0)
 #define OBSOLETE_FACTOR 0.8 //An agent is killed if, at any time (after the initial Xsecs-defined in BeatReferee), the difference between its score and the bestScore is below OBSOLETE_FACTOR * bestScore (0.8)
 #define LOST_FACTOR 8 //An agent is killed if it become lost, i.e. if it found LOST_FACTOR consecutive beat predictions outside its inner tolerance window (8)
-#define CHILDREN_SCORE_FACTOR 0.99 //(Inertia2) Each created agent imports its father score multiplied (or divided if negative) by this factor (0.8)
+#define CHILDREN_SCORE_FACTOR 0.9 //(Inertia2) Each created agent imports its father score multiplied (or divided if negative) by this factor (0.8)
 #define BEST_FACTOR 1.0 //(Inertia3) Mutiple of the bestScore an agent's score must have for replacing the current best agent (1.0)
 #define CORRECTION_FACTOR 0.25 //(Inertia4) correction factor for compensating each agents' own {phase, period} hypothesis errors (0.25)
 #define EQ_PERIOD 1 //Period threshold which identifies two agents as predicting the same period (IBI, in ticks) (1)
 #define EQ_PHASE 2 //Phase threshold which identifies two agents as predicting the same phase (phase, in ticks) (2)
-#define CHILD1_FACTOR 0.75 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child1 (2.0 - only full phase adjustment; -1 - no child considered) (1.0)
+#define CHILD1_FACTOR 1.0 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child1 (2.0 - only full phase adjustment; -1 - no child considered) (1.0)
 #define CHILD2_FACTOR 2.0 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child2 (2.0 - only full phase adjustment; -1 - no child considered) (2.0)
-#define CHILD3_FACTOR 0.25 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child3 (2.0 - only full phase adjustment; -1 - no child considered) (0.5)
+#define CHILD3_FACTOR 0.5 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child3 (2.0 - only full phase adjustment; -1 - no child considered) (0.5)
 #define TRIGGER_GT_TOL 5 //Number of miss computed beats, in comparison to ground-truth beat-times, tolerated before triggering new induction (used in trigger "groundtruth" mode) -> can be defined via -tigt_tol 
 #define TRIGGER_BEST_FACTOR 1.0 //Proportion of the current best agent score which is inherited by the agents created at each triggered induction [shouldn't be much higher than 1, for not inflating scores two much] (1.0)
 #define BEAT_TRANSITION_TOL 0.6 //Tolerance for handling beats at transitions between agents [-1 for unconsider it]: (0.6)
@@ -77,8 +77,8 @@ MarsyasIBT::MarsyasIBT(float inputSampleRate) : Plugin(inputSampleRate),
 	min_bpm(50),
 	max_bpm(250),
 	online_flag(false),
-	metrical_changes_flag(false),
-	output_flag(false)
+	metrical_changes_flag(false)
+	//output_flag(false)
 {
 	prevTimestamp = 0.0;
 	frameCount = 0; //count number of processed frames
@@ -480,6 +480,8 @@ MarsyasIBT::initialise(size_t channels, size_t stepSize, size_t blockSize)
 		}
 	}
 
+	beattracker->linkControl("BeatReferee/br/mrs_bool/resetFeatWindow", "ShiftInput/acc/mrs_bool/clean");
+
 	beattracker->linkControl("BeatReferee/br/mrs_string/destFileName", "BeatTimesSink/sink/mrs_string/destFileName");
 	
 
@@ -587,8 +589,11 @@ MarsyasIBT::initialise(size_t channels, size_t stepSize, size_t blockSize)
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_natural/peakEnd", peakEnd);
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_real/peakGain", 2.0);
 	
+	//for only considering the 2nd half of the induction window in the ACF calculation
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/AutoCorrelation/acf/mrs_real/lowCutoff", 0.5);
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/AutoCorrelation/acf/mrs_real/highCutoff", 1.0);
+	beattracker->updControl("ShiftInput/acc/mrs_real/lowCleanLimit", 0.0);
+	beattracker->updControl("ShiftInput/acc/mrs_real/highCleanLimit", 0.5);
 	
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/MaxArgMax/mxr/mrs_natural/nMaximums", BPM_HYPOTHESES);
 
@@ -681,7 +686,7 @@ MarsyasIBT::initialise(size_t channels, size_t stepSize, size_t blockSize)
 		beattracker->updControl("BeatReferee/br/mrs_string/logFileName", path.str() + "_log.txt");
 	}
 	//set the file with the groundtruth times of trigger
-	if(strcmp(induction_mode.c_str(), "triggertimes") == 0)
+	if(strcmp(induction_mode.c_str(), "givetransitions") == 0)
 	{
 		ostringstream triggerFilePath;
 		triggerFilePath << outputFile.path() << outputFile.nameNoExt() << "_trigger.txt";
@@ -872,8 +877,9 @@ MarsyasIBT::getParameterDescriptors() const
     list.push_back(desc);
 
     //Output Txt:
+    /*
 	desc = ParameterDescriptor();
-	desc.identifier = "output"; //nr of agents
+	desc.identifier = "output";
     desc.name = "Output Beat and (Median) Tempo Annotations";
     desc.description = "Output beat and (median) tempo annotations, at the $HOME directory";
     desc.minValue = 0;
@@ -882,7 +888,7 @@ MarsyasIBT::getParameterDescriptors() const
     desc.isQuantized = true;
 	desc.quantizeStep = 1;
     list.push_back(desc);
-    
+    */
 	return list;
 }
 
@@ -902,9 +908,9 @@ MarsyasIBT::getParameter(std::string name) const
 	else if (name == "maxbpm") {
         return max_bpm;
 	}
-	else if (name == "output") {
-		return output_flag ? 1.0 : 0.0;
-    }
+	//else if (name == "output") {
+	//	return output_flag ? 1.0 : 0.0;
+    //}
     else if (name == "online") {
 		return online_flag ? 1.0 : 0.0;
     }
@@ -938,6 +944,7 @@ MarsyasIBT::setParameter(std::string name, float value)
 	else if (name == "maxbpm") {
         max_bpm = value;
     }
+    /*
 	else if (name == "output") {
 		output_flag = (value > 0.5);
 		switch(output_flag)
@@ -946,6 +953,7 @@ MarsyasIBT::setParameter(std::string name, float value)
 			case 1: output = "beats+medianTempo"; break;
 		}
     }
+    */
     else if (name == "online") {
 		online_flag = (value > 0.5);
 		switch(online_flag)

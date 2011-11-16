@@ -98,6 +98,7 @@ BeatReferee::BeatReferee(const BeatReferee& a) : MarSystem(a)
 	ctrl_destFileName_ = getctrl("mrs_string/destFileName");
 	ctrl_triggerTimesFile_ = getctrl("mrs_string/triggerTimesFile");
 	ctrl_resetAfterNewInduction_ = getctrl("mrs_bool/resetAfterNewInduction");
+	ctrl_resetFeatWindow_ = getctrl("mrs_bool/resetFeatWindow");
 
 	beatTransitionTol_ = a.beatTransitionTol_;
 	considerAgentTransitionBeat_ = a.considerAgentTransitionBeat_;
@@ -213,6 +214,8 @@ BeatReferee::addControls()
 	addctrl("mrs_string/triggerTimesFile", "input_trigger.txt", ctrl_triggerTimesFile_);
 	addctrl("mrs_bool/resetAfterNewInduction", true, ctrl_resetAfterNewInduction_);
 	setctrlState("mrs_bool/resetAfterNewInduction", true);
+	addctrl("mrs_bool/resetFeatWindow", true, ctrl_resetFeatWindow_);
+	setctrlState("mrs_bool/resetFeatWindow", true);
 }
 
 void
@@ -596,6 +599,7 @@ BeatReferee::grantPoolSpaceForTriggerAgents(mrs_realvec triggerAgentsHypotheses)
 		grantPoolSpace(-1, agentInitScore);
 
 		//cout << timeElapsed_ << ": CHECKING POOL SPACE for score: " << agentInitScore << endl;
+
 
 
 	}
@@ -2432,7 +2436,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 							{
 								bestAgentBeforeTrigger_ = bestAgentIndex_;
 								resetSystem(bestAgentBeforeTrigger_); //kill everyone except the bestAgent before trigger
-								transitionsConsidered_(triggerCount_) = 1;
+								transitionsConsidered_(triggerCount_) = 1;								
 								
 								if(logFile_)
 									debugAddEvent("BEST_TRIGGER", bestAgentBeforeTrigger_, (mrs_natural) lastPeriods_(bestAgentBeforeTrigger_), 
@@ -2451,6 +2455,16 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		}
 	}
 
+	//WORKING SOLUTION FOR STREAM DATA: ======================================
+	//if(strcmp(inductionMode_.c_str(), "givetransitions") == 0 && 
+	//	(timeElapsed_ == (transitionTimes_(triggerCount_))))
+	//{
+	//	cout << "TRANSITION: " << (timeElapsed_*(512.0/44100.0)) << "(" << timeElapsed_ << ")" << endl;
+	//	updControl(ctrl_resetFeatWindow_, true);
+	//	//exit(0);
+	//}
+	//========================================================================
+							
 	//Create the first BeatAgents with new hypotheses just after Tseconds of induction:
 	if(processInduction_)
 	{
@@ -2474,7 +2488,10 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		if(strcmp(inductionMode_.c_str(), "givetransitions") == 0)
 			bestAgentBeforeTrigger_ = bestAgentIndex_;
 		if(startTracking_ && resetAfterNewInduction_)
+		{
 			resetSystem(bestAgentBeforeTrigger_); //kill everyone except the bestAgent at transition
+			lastBeatPeriod_ = 0; //reset lastBeatPeriod to avoid BEAT_CANCEL int the first beat after a system reset
+		}
 					
 		//cout << "TRIGGER AGENTS @ " << timeElapsed_ << endl;
 		
@@ -2633,9 +2650,15 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//MATLAB_PUT(agentsHistory_, "agentsHistory");
 	//MATLAB_PUT(bestFinalAgent_, "bestFinalAgent");
 
+	//clean first half of the feature window buffer before every new induction
+	if(timeElapsed_ > backtraceEndTime_ && ((triggerInduction_ || timeElapsed_ == triggerInductionTime_-2)
+		|| (strcmp(inductionMode_.c_str(), "givetransitions") == 0 && timeElapsed_ == triggerTimes_(triggerCount_)-2)))
+	{
+		updControl(ctrl_resetFeatWindow_, true);
+	}
 	//just before the induction triggering activate periodicity estimation (via ACF peaks)
 	//(don't call this wihtin backtrace window)
-	if(timeElapsed_ > backtraceEndTime_ && ((triggerInduction_ || timeElapsed_ == triggerInductionTime_-1)
+	else if(timeElapsed_ > backtraceEndTime_ && ((triggerInduction_ || timeElapsed_ == triggerInductionTime_-1)
 		|| (strcmp(inductionMode_.c_str(), "givetransitions") == 0 && timeElapsed_ == triggerTimes_(triggerCount_)-1)))
 	{	
 		mrs_real outTmp = out(0,0); //[!!] don't know why when calling updControl() out is reset
@@ -2703,6 +2726,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 			}
 		}
 		else triggerInductionTime_ = -1; //avoid another induction by time
+		
+		//updControl(ctrl_resetFeatWindow_, true);
 	}
 	
 	//if in nonCausalMode save last best agent history as the final output

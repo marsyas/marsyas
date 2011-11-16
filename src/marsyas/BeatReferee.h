@@ -117,6 +117,7 @@ private:
 	MarControlPtr ctrl_destFileName_;
 	MarControlPtr ctrl_triggerTimesFile_;
 	MarControlPtr ctrl_resetAfterNewInduction_;
+	MarControlPtr ctrl_resetFeatWindow_;
 
 	mrs_natural triggerCount_;
 	mrs_bool lastGTFalsePos_;

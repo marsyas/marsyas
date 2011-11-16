@@ -21,6 +21,7 @@
 using namespace std;
 using namespace Marsyas;
 
+mrs_natural t__ = 0;
 ShiftInput::ShiftInput(mrs_string name): MarSystem("ShiftInput", name)
 {
 	winSize_ = 0;
@@ -39,6 +40,10 @@ ShiftInput::ShiftInput(const ShiftInput& a): MarSystem(a)
 
 	ctrl_reset_ = getctrl("mrs_bool/reset");
 	ctrl_winSize_ = getctrl("mrs_natural/winSize");
+	
+	ctrl_clean_ = getctrl("mrs_bool/clean");
+	ctrl_lowCleanLimit_ = getctrl("mrs_real/lowCleanLimit");
+	ctrl_highCleanLimit_ = getctrl("mrs_real/highCleanLimit");
 }
 
 MarSystem*
@@ -57,6 +62,13 @@ ShiftInput::addControls()
 	// The control to reset the internal buffer, set to true so the buffer
 	// itself is properly initialized later.
 	addControl("mrs_bool/reset", true, ctrl_reset_);
+	
+	// Clean control for partially cleaning the buffer at any point of the analysis
+	// The low and high clean limits (as a portion of the buffer size) are given by
+	// lowCleanLimit and highCleanLimit controls
+	addControl("mrs_bool/clean", false, ctrl_clean_);
+	addControl("mrs_real/lowCleanLimit", 0.0, ctrl_lowCleanLimit_);
+	addControl("mrs_real/highCleanLimit", 1.0, ctrl_highCleanLimit_);
 }
 
 void
@@ -103,6 +115,7 @@ ShiftInput::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t,o;
 	
+	
 	for (o = 0; o<inObservations_; ++o)
 	{
 		if (hopSize_ < winSize_)
@@ -116,6 +129,24 @@ ShiftInput::myProcess(realvec& in, realvec& out)
 			{
 				outSavedData_.setval(0.0);
 				ctrl_reset_->setValue(false);
+			}
+			
+			// Check if requested a call for a partial clean of the buffer
+			// TODO: shouldn't this be done in myUpdate?
+			if(ctrl_clean_->to<mrs_bool>())
+			{
+				// round down is the default with C math
+				mrs_real lowCleanLimit = winSize_
+						* getctrl("mrs_real/lowCleanLimit")->to<mrs_real>();
+				// round up with ceil()
+				mrs_real highCleanLimit = lowCleanLimit + (ceil( winSize_
+						* getctrl("mrs_real/highCleanLimit")->to<mrs_real>()
+						) - lowCleanLimit);
+
+				for (t = lowCleanLimit; t < highCleanLimit; t++)
+					outSavedData_(o, t) = 0.0;
+
+				ctrl_clean_->setValue(false);
 			}
 
 			// TODO: this can be done more efficiently with a circular buffer
@@ -158,5 +189,5 @@ ShiftInput::myProcess(realvec& in, realvec& out)
 //  MATLAB_EVAL("plot(ShiftInput_out)");
 //	getchar();
 
-
+t__++;
 }

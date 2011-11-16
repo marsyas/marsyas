@@ -597,7 +597,7 @@ PhaseLock::handleGTHypotheses(realvec& in, realvec& out,mrs_string gtFilePath, m
 		mrs_natural maxMetricalRelScoreInd = -1;
 		for(int i = 0; i < nrPeriodHyps_; i++)
 		{
-			if(initPeriods_(i) > 0) //if the given period_ > 0 (= valid period_) (initial phase, being ground-truth, is necessarily valid
+			if(initPeriods_(i) > MINIMUMREAL) //if the given period_ > 0 (= valid period_) (initial phase, being ground-truth, is necessarily valid
 			{
 				metricalRelScore_(i) = calcRelationalScore(i, rawScore_);
 
@@ -742,7 +742,7 @@ PhaseLock::handleGTHypotheses(realvec& in, realvec& out,mrs_string gtFilePath, m
 					//to avoid rawScoreFraction negative inversions
 					mrs_real rawScoreFraction;
 					//(to avoid divide by 0 if hypothesis exists)
-					if(initPeriods_(i) > 0 && initPhases_(i) > 0) 
+					if(initPeriods_(i) > MINIMUMREAL && initPhases_(i) > MINIMUMREAL) 
 					{
 						if(rawScore_(i) == 0.0) rawScore_(i) = MINIMUMREAL;
 						if(maxGlobalTrackingScore_ == 0.0) maxGlobalTrackingScore_ = MINIMUMREAL;
@@ -842,7 +842,7 @@ PhaseLock::calcRelationalScore(mrs_natural i, mrs_realvec rawScoreVec)
 	mrs_natural metricalRel;
 	for(int j = 0; j < nrPeriodHyps_; j++)
 	{
-		if(j != i && initPeriods_(i) > 0 && initPeriods_(j) > 0)
+		if(j != i && initPeriods_(i) > MINIMUMREAL && initPeriods_(j) > MINIMUMREAL)
 		{
 			metricalRel = metricalRelation((mrs_natural)initPeriods_(i), (mrs_natural)initPeriods_(j));
 			score += rawScoreVec(j) * metricalRel;
@@ -1057,7 +1057,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 	for(int i = 0; i < nrPeriodHyps_; i++)
 	{
 		//if the given period_ > 0 && given phase > 0 (= valid period_ && valid phase)
-		if(initPeriods_(i) > 0 && initPhases_(i) > 0)
+		if(initPeriods_(i) > MINIMUMREAL && initPhases_(i) > MINIMUMREAL)
 		{
 			metricalRelScore_(i) = calcRelationalScore(i, rawScore_);
 
@@ -1171,7 +1171,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 				//to avoid rawScoreFraction negative inversions
 				mrs_real rawScoreFraction;
 				//(to avoid divide by 0 if hypothesis exists)
-				if(initPeriods_(i) > 0 && initPhases_(i) > 0) 
+				if(initPeriods_(i) > MINIMUMREAL && initPhases_(i) > MINIMUMREAL) 
 				{
 					if(rawScore_(i) == 0.0) rawScore_(i) = MINIMUMREAL;
 					if(maxGlobalTrackingScore_ == 0.0) maxGlobalTrackingScore_ = MINIMUMREAL;
