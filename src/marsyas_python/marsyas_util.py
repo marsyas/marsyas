@@ -2,7 +2,7 @@
 
 from pylab import *
 import marsyas
-
+import string
 
 msm = marsyas.MarSystemManager()
 
@@ -16,6 +16,30 @@ def create(net):
   else:
     composite = msm.create(net)
   return composite
+
+# return a dictionary containing the string references to all elements of a list specification
+def mar_refs(net, level_predicate="", level="top"):
+  if level_predicate == None:
+    level_predicate = ""
+#  print "Operating net: ", net, " with predicate ", level_predicate, " at level ", level
+  out = {}; # This is the output dictionary
+  if (len(net) == 2):
+    if level!="top": # In the top level, I don't add the group specification
+#      print "not top level!"
+      next_level = level_predicate+net[0]+"/"
+    else:
+#      print "top level!"
+      next_level = ""
+    for subnet in net[1]:
+      out.update(mar_refs(subnet, next_level, "nontop"))
+#    print out
+  else:
+    n = net.split("/")
+    out[n[1]] = level_predicate+net
+#  print "Returning: ", out
+  return out
+
+
 
 # convert a realvec to a numpy array 
 def realvec2array(inrealvec):

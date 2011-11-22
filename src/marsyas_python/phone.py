@@ -74,5 +74,6 @@ pnet.updControl("Gain/gain/mrs_real/gain", marsyas.MarControlPtr.from_real(2.0))
 while(1): 
 	pnet.tick()
 
-# This is the end of the first part of this tutorial. Next step is... still to be done?
+# This is not anymore the end of the tutorial, as the continuation - twosinusoids.py - was added.
+
 
