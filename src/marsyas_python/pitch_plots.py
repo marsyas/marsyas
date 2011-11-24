@@ -175,7 +175,10 @@ def chroma(frame_num, winSize, input_filename):
       ylabel("Average Energy")
       output_filename = os.path.splitext(input_filename)[0] + ".png"
       savefig(output_filename)      
-
+      figure(2)
+      sdata = net.getControl("PowerSpectrum/pspk/mrs_realvec/processedData").to_realvec();
+      sspectrum = realvec2array(sdata);
+      plot(sspectrum[0])
 
 
 
@@ -378,7 +381,7 @@ def main():
   elif (method == "amdf"):
     amdf(5, 1024, input_file)
   elif (method == "chroma"):
-    chroma(5, 512, input_file)
+    chroma(5, 4096, input_file)
   elif (method == "spectrogram"):
     something_gram(spectrogram_net, win_size, input_file, output_file,
                    plot_title, colormap, start, end)
@@ -389,6 +392,7 @@ def main():
     something_gram(amdfogram_net, win_size, input_file, output_file,
                    plot_title, colormap, start, end)
 
+  show()
   return 0 
 
 
