@@ -168,9 +168,12 @@ def chroma(frame_num, winSize, input_filename):
     if (i==frame_num):
       figure(1);
       data = net.getControl("Spectrum2Chroma/s2c/mrs_realvec/processedData").to_realvec()
+      data2 = net.getControl("PowerSpectrum/pspk/mrs_realvec/processedData").to_realvec()
+      print realvec2array(data2)
       spectrum = realvec2array(data)
+      print spectrum
       title("Chroma Profile")
-      plot(spectrum[0], drawstyle = 'steps')
+      plot(spectrum[0])
       xlabel("Pitch Class(Chroma)")
       ylabel("Average Energy")
       output_filename = os.path.splitext(input_filename)[0] + ".png"
