@@ -956,8 +956,6 @@ toy_with_sine()
 	snet->updControl("mrs_natural/inSamples", 2048);
 	snet->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
-	
- 
 
 	for (int i=0; i < 500; ++i) 
     {
