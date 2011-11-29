@@ -1331,6 +1331,39 @@ toy_with_rmsilence(string sfName)
 	delete rmnet;
 }
 
+void 
+toy_with_multiple(mrs_string file1, mrs_string file2)
+{
+	MarSystemManager mng;
+	MarSystem* playbacknet = mng.create("Series", "playbacknet");
+	MarSystem* fanout = mng.create("Fanout", "fanout");
+    
+	// Create the SoundFileSources
+	fanout->addMarSystem(mng.create("SoundFileSource", "src1"));
+	fanout->addMarSystem(mng.create("SoundFileSource", "src2"));
+    
+	// Assign filenames to the SoundFileSources
+	fanout->updctrl("SoundFileSource/src1/mrs_string/filename",file1);
+	fanout->updctrl("SoundFileSource/src2/mrs_string/filename",file2);
+    
+	// Add the fanout to the main network
+	playbacknet->addMarSystem(fanout);
+    
+	// Sum up all of the fanouts
+	playbacknet->addMarSystem(mng.create("Sum", "sum"));
+    
+	// Create the output file which is a SoundFileSink
+	playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
+	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "multiple.wav");
+    
+	while (playbacknet->getControl("Fanout/fanout/SoundFileSource/src1/mrs_bool/hasData")->to<mrs_bool>())
+	{
+		playbacknet->tick();
+	}
+	
+}
+
+
 void
 toy_with_marsystemIO()
 {
@@ -8184,6 +8217,8 @@ main(int argc, const char **argv)
 		toy_with_knn();
 	else if (toy_withName == "marsystemIO")
 		toy_with_marsystemIO();
+	else if (toy_withName == "multiple") 
+		toy_with_multiple(fname0, fname1);
 	else if (toy_withName == "matlab")
 		toy_with_matlab(fname0);
 	else if (toy_withName == "margrid")
