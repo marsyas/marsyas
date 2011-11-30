@@ -118,6 +118,7 @@ private:
 	MarControlPtr ctrl_triggerTimesFile_;
 	MarControlPtr ctrl_resetAfterNewInduction_;
 	MarControlPtr ctrl_resetFeatWindow_;
+	MarControlPtr ctrl_supervisedTriggerThres_;
 
 	mrs_natural triggerCount_;
 	mrs_bool lastGTFalsePos_;
@@ -192,7 +193,12 @@ private:
 	mrs_realvec transitionTimes_;
 	mrs_realvec transitionsConsidered_;
 	mrs_bool resetAfterNewInduction_;
-
+	std::vector <mrs_real> supervisedBestScores_;
+	std::vector <mrs_real> supervisedBestScoresMeans_;
+	mrs_natural lastTriggerInductionTime_;
+	mrs_real lastBestScoreMeanDiff_;
+	mrs_real supervisedTriggerThres_;
+	
 	void myUpdate(MarControlPtr sender);
 
 public:
@@ -235,7 +241,7 @@ public:
   mrs_bool isGTFileInLine(mrs_string line);
   mrs_natural getBestSimilarAgent(mrs_natural newAgentPeriod, mrs_natural newAgentInitPhase, mrs_real newAgentScore);
   mrs_natural getBestSimilarAgent2(mrs_natural newAgentPeriod, mrs_natural newAgentInitPhase);
-  mrs_natural getBestSimilarAgent3(mrs_natural newAgentPeriod, mrs_real newAgentScore, mrs_realvec completedClustersPer);
+  mrs_natural getBestSimilarAgent3(mrs_natural newAgentPeriod, mrs_realvec completedClustersPer);
   void grantPoolSpaceForTriggerAgents(mrs_realvec triggerAgentsHypotheses);
   mrs_realvec clusterIBIs();
   void handleAgentsTansition(mrs_natural agent);

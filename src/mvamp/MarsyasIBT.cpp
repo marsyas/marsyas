@@ -802,6 +802,7 @@ MarsyasIBT::getParameterDescriptors() const
 	list.push_back(desc);
 
 	//Nr of agents:
+	/*
 	desc = ParameterDescriptor();
 	desc.identifier = "nragents"; //nr of agents
     desc.name = "Number of Agents";
@@ -812,6 +813,7 @@ MarsyasIBT::getParameterDescriptors() const
     desc.isQuantized = true;
 	desc.quantizeStep = 1;
     list.push_back(desc);
+	*/
 
 	//Minimum Tempo:
 	desc = ParameterDescriptor();
@@ -846,9 +848,9 @@ MarsyasIBT::getParameterDescriptors() const
     desc.defaultValue = 0;
     desc.valueNames.clear();
     desc.valueNames.push_back("Single (only at the beginning)");
-    desc.valueNames.push_back("Repeated (spaced by induction time)");
+    desc.valueNames.push_back("Supervised (automatically triggered for recovery)");
     desc.valueNames.push_back("Random (every random time-points)");
-    //desc.valueNames.push_back("Supervised (automatically triggered for recovery)");
+    desc.valueNames.push_back("Repeated (spaced by induction time)");    
     list.push_back(desc);
 
 
@@ -899,9 +901,9 @@ MarsyasIBT::getParameter(std::string name) const
 	if (name == "indtime") {
 		return induction_time;
 	}
-    else if (name == "nragents") {
-        return nr_agents;
-    }
+    //else if (name == "nragents") {
+    //    return nr_agents;
+    //}
 	else if (name == "minbpm") {
         return min_bpm;
 	}
@@ -919,9 +921,9 @@ MarsyasIBT::getParameter(std::string name) const
     }
     else if (name == "induction") {
     	if((strcmp(induction_mode.c_str(), "-1") == 0) || (strcmp(induction_mode.c_str(), "single") == 0)) return 0;
-    	else if(strcmp(induction_mode.c_str(), "repeated") == 0) return 1;
+    	else if(strcmp(induction_mode.c_str(), "supervised") == 0) return 1;
     	else if(strcmp(induction_mode.c_str(), "random") == 0) return 2;
-    	//else if(strcmp(induction_mode.c_str(), "supervised") == 0) return 3;
+    	else if(strcmp(induction_mode.c_str(), "repeated") == 0) return 3;
     	else return 0;
     }
     
@@ -935,9 +937,9 @@ MarsyasIBT::setParameter(std::string name, float value)
 	if (name == "indtime") {
 		induction_time = value;
 	}
-	else if (name == "nragents") {
-        nr_agents = value;
-    }
+	//else if (name == "nragents") {
+    //    nr_agents = value;
+    //}
 	else if (name == "minbpm") {
         min_bpm = value;
     }
@@ -975,7 +977,7 @@ MarsyasIBT::setParameter(std::string name, float value)
         case 0: induction_mode="single"; break;
         case 1: induction_mode="repeated"; break;
         case 2: induction_mode="random"; break;
-        //case 3: induction_mode="supervised"; break;
+        case 3: induction_mode="supervised"; break;
         default: induction_mode="single"; break;
     	}
     }

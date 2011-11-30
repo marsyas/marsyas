@@ -85,6 +85,7 @@ using namespace Marsyas;
 #define CHILD3_FACTOR 0.5 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child3 (2.0 - only full phase adjustment; -1 - no child considered) (0.5)
 #define TRIGGER_GT_TOL 5 //Number of miss computed beats, in comparison to ground-truth beat-times, tolerated before triggering new induction (used in trigger "groundtruth" mode) -> can be defined via -tigt_tol 
 #define TRIGGER_BEST_FACTOR 1.0 //Proportion of the current best agent score which is inherited by the agents created at each triggered induction [shouldn't be much higher than 1, for not inflating scores two much] (1.0)
+#define SUPERVISED_TRIGGER_THRES 0.1 //Degree (in percentage) of mean bestScore decrease to trigger a new induction in supervised induction mode (0.1)
 #define BEAT_TRANSITION_TOL 0.6 //Tolerance for handling beats at transitions between agents [-1 for unconsider it]: (0.6)
 //In causal mode, if between two consecutive beats there is over a BEAT_TRANSITION_TOL decrease in current IBI the second beat is unconsidered;
 //In non-causal mode, if between a son's first beat and its father's last there is over a BEAT_TRANSITION_TOL descrease on the father last IBI the son's first beat is unconsidered;
@@ -127,6 +128,8 @@ mrs_natural sendudp_port;
 mrs_real phase_;
 mrs_natural minBPM_;
 mrs_natural maxBPM_;
+
+mrs_real sup_thres;
 
 void
 printUsage(string progName)
@@ -210,7 +213,8 @@ initOptions()
 	//Time (in seconds) of induction before tracking. Has to be > 60/MIN_BPM (5.0 by default)
 	cmd_options.addRealOption("induction_time", "t", 5.0);
 	//initial time (in secs) allowed for eventual tracking metrical changes (0 not allowing at all; -1 for the whole music)" (5.0 by default)
-	cmd_options.addBoolOption("avoid_metrical_changes", "m", false);
+	cmd_options.addBoolOption("avoid_metrical_changes", "m", false);	
+	cmd_options.addRealOption("sup_thres", "st", SUPERVISED_TRIGGER_THRES);
 }
 
 void
@@ -241,7 +245,8 @@ loadOptions()
 	output = cmd_options.getStringOption("output");
 	score_function = cmd_options.getStringOption("score_function");
 	induction_time = cmd_options.getRealOption("induction_time");
-	avoid_metrical_changes = cmd_options.getBoolOption("avoid_metrical_changes");
+	avoid_metrical_changes = cmd_options.getBoolOption("avoid_metrical_changes");	
+	sup_thres = cmd_options.getRealOption("sup_thres");
 }
 
 mrs_bool
@@ -954,8 +959,10 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	beattracker->updControl("BeatReferee/br/mrs_string/inductionMode", induction_mode);
 	beattracker->updControl("BeatReferee/br/mrs_natural/triggerGtTolerance", triggergt_tol);
 	beattracker->updControl("BeatReferee/br/mrs_real/beatTransitionTol", BEAT_TRANSITION_TOL);
+	beattracker->updControl("BeatReferee/br/mrs_real/supervisedTriggerThres", sup_thres);
 	if(noncausalopt) beattracker->updControl("BeatReferee/br/mrs_bool/resetAfterNewInduction", false);
 	else beattracker->updControl("BeatReferee/br/mrs_bool/resetAfterNewInduction", true);
+
 
 	ostringstream path;
 	FileName outputFile(sfName);
@@ -1313,6 +1320,7 @@ main(int argc, const char **argv)
 			ifstream inStream;
 			mrs_natural i = 0;
 			mrs_string lineFile;
+
 			inStream.open(outputFile.fullname().c_str());
 			cout << "InductionTime: " << induction_time << "secs"
 				<< "\nScoreFunction: " << score_function << endl;

@@ -99,6 +99,7 @@ BeatReferee::BeatReferee(const BeatReferee& a) : MarSystem(a)
 	ctrl_triggerTimesFile_ = getctrl("mrs_string/triggerTimesFile");
 	ctrl_resetAfterNewInduction_ = getctrl("mrs_bool/resetAfterNewInduction");
 	ctrl_resetFeatWindow_ = getctrl("mrs_bool/resetFeatWindow");
+	ctrl_supervisedTriggerThres_ = getctrl("mrs_real/supervisedTriggerThres");
 
 	beatTransitionTol_ = a.beatTransitionTol_;
 	considerAgentTransitionBeat_ = a.considerAgentTransitionBeat_;
@@ -137,6 +138,7 @@ BeatReferee::BeatReferee(const BeatReferee& a) : MarSystem(a)
 	transitionTimes_ = a.transitionTimes_;
 	transitionsConsidered_ = a.transitionsConsidered_;
 	resetAfterNewInduction_ = a.resetAfterNewInduction_;
+	supervisedTriggerThres_ = a.supervisedTriggerThres_;
 }
 
 BeatReferee::~BeatReferee()
@@ -216,6 +218,7 @@ BeatReferee::addControls()
 	setctrlState("mrs_bool/resetAfterNewInduction", true);
 	addctrl("mrs_bool/resetFeatWindow", true, ctrl_resetFeatWindow_);
 	setctrlState("mrs_bool/resetFeatWindow", true);
+	addctrl("mrs_real/supervisedTriggerThres", 0.0, ctrl_supervisedTriggerThres_);
 }
 
 void
@@ -251,6 +254,7 @@ BeatReferee::myUpdate(MarControlPtr sender)
 	beatTransitionTol_ = ctrl_beatTransitionTol_->to<mrs_real>();
 	triggerTimesFile_ = ctrl_triggerTimesFile_->to<mrs_string>();
 	resetAfterNewInduction_ = ctrl_resetAfterNewInduction_->to<mrs_bool>();
+	supervisedTriggerThres_ = ctrl_supervisedTriggerThres_->to<mrs_real>();
 
 	//inObservations_ = number of BeatAgents in the pool
 	nrAgents_ = inObservations_;	
@@ -272,7 +276,7 @@ BeatReferee::myUpdate(MarControlPtr sender)
 mrs_bool
 BeatReferee::loadTriggerTimes(mrs_string triggerTimesFile)
 {
-	if (FILE * file = fopen(triggerTimesFile.c_str(), "r"))
+	if (fopen(triggerTimesFile.c_str(), "r"))
 	{
 		cerr << "TriggerTimes File: " << triggerTimesFile.c_str() << endl;
 	
@@ -499,7 +503,7 @@ BeatReferee::checkBeatInGTFile()
 			//FALSE POSITIVE
 			else
 			{
-				mrs_real keepInitGTBeatTime = lastGTBeatTime; //keep it for printing in FP error
+				//mrs_real keepInitGTBeatTime = lastGTBeatTime; //keep it for printing in FP error
 				do //check if false postive (reinforcement -> one iteration should be enough)
 				{
 					lastGTBeatPos_ = (mrs_natural) line.find_first_of(" ", lastGTBeatPos_+1); //current last delimiter
@@ -806,7 +810,7 @@ BeatReferee::clusterIBIs()
 
 //Get best similar agent to selected -> pick the best agent from the most similar period cluster
 mrs_natural
-BeatReferee::getBestSimilarAgent3(mrs_natural newAgentPeriod, mrs_real newAgentScore, mrs_realvec completedClustersPer)
+BeatReferee::getBestSimilarAgent3(mrs_natural newAgentPeriod, mrs_realvec completedClustersPer)
 {
 	//if(timeElapsed_ == 3583)
 	//	MATLAB_PUT(completedClustersPer, "ClusterPerBestSimilar");
@@ -878,7 +882,6 @@ BeatReferee::getBestSimilarAgent(mrs_natural newAgentPeriod, mrs_natural newAgen
 	mrs_real bestSimilarScore = NA; //just a big negative nr
 	mrs_natural bestSimilarAgent = -1;
 	mrs_natural period, phaseRaw, phase, k;
-	mrs_natural mostSimilarAgent = -1;
 	mrs_realvec periodDiffs(nrAgents_);
 	mrs_realvec phaseDiffs(nrAgents_);
 	mrs_realvec bestSimilarity(nrAgents_);
@@ -1685,7 +1688,7 @@ mrs_natural
 BeatReferee::createNewAgent(mrs_natural newPeriod, mrs_natural firstBeat, 
 							mrs_real newScore, mrs_real beatCount, mrs_natural fatherAgent)
 {
-	//if father agent died in the same timestep as it requests a son creation then this request in unconsidered
+	//if father agent died in the same timestep as it requests a son creation then this request is unconsidered
 	if(fatherAgent >= 0 && mutedAgentsTmp_(fatherAgent) == 1.0)
 	{
 		if(logFile_)
@@ -1949,7 +1952,6 @@ BeatReferee::killAgent(mrs_natural agentIndex, mrs_string motif, mrs_natural cal
 void
 BeatReferee::calcAbsoluteBestScore()
 {
-	mrs_bool bestChange = false;
 	mrs_natural firstAliveAgent = getFirstAliveAgent();
 	mrs_real bestLocalScore = score_(firstAliveAgent);
 	mrs_natural bestLocalAgent = firstAliveAgent;
@@ -1972,17 +1974,6 @@ BeatReferee::calcAbsoluteBestScore()
 			if(logFile_)
 				debugAddEvent("BEST", bestLocalAgent, (mrs_natural) lastPeriods_(bestLocalAgent), 
 							  (mrs_natural) lastPhases_(bestLocalAgent), bestLocalScore, bestScore_);
-							  
-			//supervision logfile:
-			if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)
-			{
-				ostringstream oss;
-				oss << ctrl_destFileName_->to<mrs_string>() << "_bestChanges.txt";
-				ofstream trigCountStream;
-				trigCountStream.open(oss.str().c_str(), ios::out|ios::app);
-				trigCountStream << timeElapsed_ << endl;
-				trigCountStream.close();
-			}
 
 			bestScore_ = bestLocalScore;
 			bestAgentIndex_ = bestLocalAgent;
@@ -2117,6 +2108,13 @@ BeatReferee::initialization()
 	//if induction in "givetransitions" mode -> load groundtruth transition times
 	if(strcmp(inductionMode_.c_str(), "givetransitions") == 0)
 		loadTriggerTimes(triggerTimesFile_);
+	else if(strcmp(inductionMode_.c_str(), "supervised") == 0)
+	{
+		supervisedBestScores_.resize(1); //minimum size
+		supervisedBestScoresMeans_.resize(1); //minimum size
+		lastTriggerInductionTime_ = 0;
+		lastBestScoreMeanDiff_ = supervisedTriggerThres_;
+	}
 
 	triggerInductionTime_ = inductionTime_; //initially assume first induction time
 }
@@ -2130,18 +2128,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		initialization();
 		startSystem_ = false;
 	}
-
-	//supervision logfile:
-	if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)
-	{
-		ostringstream oss;
-		oss << ctrl_destFileName_->to<mrs_string>() << "_bestScore.txt";
-		ofstream trigCountStream;
-		trigCountStream.open(oss.str().c_str(), ios::out|ios::app);
-		trigCountStream << timeElapsed_ << ": " << bestScore_ << endl;
-		trigCountStream.close();
-	}
-
+	
 	//if(timeElapsed_ == 3100)
 	//	cout << "BR: " << timeElapsed_ << "; beatTransTol: " << beatTransitionTol_ << endl;
 
@@ -2259,6 +2246,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					cout << a << "-> " << score_(a) << " ";
 					cout << endl;
 				*/
+
+
 			}
 		}
 
@@ -2420,8 +2409,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 								}
 							}
 							else if(strcmp(inductionMode_.c_str(), "repeated") == 0 || 
-								strcmp(inductionMode_.c_str(), "random") == 0)
-								//|| strcmp(inductionMode_.c_str(), "triggertimes") == 0)
+								(strcmp(inductionMode_.c_str(), "random") == 0) ||
+								(strcmp(inductionMode_.c_str(), "supervised") == 0))
 							{
 								//in trigger modes other than "groundtruth" assign the bestAgentBeforeTrigger as the bestAgent at every estimated beat
 								bestAgentBeforeTrigger_ = bestAgentIndex_;
@@ -2454,16 +2443,6 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-
-	//WORKING SOLUTION FOR STREAM DATA: ======================================
-	//if(strcmp(inductionMode_.c_str(), "givetransitions") == 0 && 
-	//	(timeElapsed_ == (transitionTimes_(triggerCount_))))
-	//{
-	//	cout << "TRANSITION: " << (timeElapsed_*(512.0/44100.0)) << "(" << timeElapsed_ << ")" << endl;
-	//	updControl(ctrl_resetFeatWindow_, true);
-	//	//exit(0);
-	//}
-	//========================================================================
 							
 	//Create the first BeatAgents with new hypotheses just after Tseconds of induction:
 	if(processInduction_)
@@ -2605,6 +2584,16 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 
 			//multiplied by sqrt(period) for disinflating the faster agents (with smaller periods)
 			//bestScore_ *= sqrt((mrs_real)maxPeriod_);
+			
+			//reset supervisedBestScores buffers at every induction
+			if(strcmp(inductionMode_.c_str(), "supervised") == 0)
+			{
+				supervisedBestScores_.resize(1); //minimum size
+				supervisedBestScoresMeans_.resize(1); //minimum size
+				lastTriggerInductionTime_ = timeElapsed_; //keep last induction time
+				lastBestScoreMeanDiff_ = supervisedTriggerThres_;
+			}
+
 		}
 		
 		//if backtrace restart tick counter
@@ -2644,7 +2633,6 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		processInduction_ = false;
 		startTracking_ = true; //start tracking (after first induction, tracking keeps on running)
 		updControl(ctrl_triggerInduction_, false); //deactivate trigger induction!!
-					
 	}
 
 	//MATLAB_PUT(agentsHistory_, "agentsHistory");
@@ -2697,7 +2685,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 			triggerCount_++; //counts the number of triggers
 
 		if(strcmp(inductionMode_.c_str(), "repeated") == 0 || 
-			strcmp(inductionMode_.c_str(), "random") == 0)
+			strcmp(inductionMode_.c_str(), "random") == 0 || 
+			strcmp(inductionMode_.c_str(), "supervised") == 0)
 		{
 			if(strcmp(inductionMode_.c_str(), "repeated") == 0) //repeat induction mode (repeated every induction time)
 				triggerInductionTime_ += inductionTime_; //for testing repeated induction x in x secs
@@ -2721,13 +2710,12 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				oss << ctrl_destFileName_->to<mrs_string>() << "_logTrigger.txt";
 				ofstream trigCountStream;
 				trigCountStream.open(oss.str().c_str(), ios::out|ios::trunc);
-				trigCountStream << triggerCount_;
+				trigCountStream << triggerCount_ << endl;
 				trigCountStream.close();
 			}
+			
 		}
-		else triggerInductionTime_ = -1; //avoid another induction by time
-		
-		//updControl(ctrl_resetFeatWindow_, true);
+		else triggerInductionTime_ = -1; //avoid another induction by time when backtracing
 	}
 	
 	//if in nonCausalMode save last best agent history as the final output
@@ -2779,6 +2767,125 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 			updControl(ctrl_bestFinalAgentHistory_, bestFinalAgentHistory_);
 		}
 	}
+	
+	//in supervised induction mode:
+	//1- keep a buffer with all bestScore values since previous induction
+	//2- do a mean of all bestScores in a window with the size of the induction at 1sec increments
+	//3- subtract every mean of bestScores with the previous:
+	//   if difference < supervisedTriggerThres -> request new induction
+	if(strcmp(inductionMode_.c_str(), "supervised") == 0)
+	{	
+		
+		//supervision logfile:
+		ofstream diffBS, meanBS, rawBS;
+		if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)
+		{
+			ostringstream ossDiff, ossMean, ossBS;
+			ossDiff << ctrl_destFileName_->to<mrs_string>() << "_diffBestScore.txt";
+			ossMean << ctrl_destFileName_->to<mrs_string>() << "_meanBestScore.txt";
+			ossBS << ctrl_destFileName_->to<mrs_string>() << "_bestScore.txt";
+			
+			if(timeElapsed_ == 0)
+			{
+				diffBS.open(ossDiff.str().c_str(), ios::out|ios::trunc);
+				meanBS.open(ossMean.str().c_str(), ios::out|ios::trunc);
+				rawBS.open(ossBS.str().c_str(), ios::out|ios::trunc);
+			}
+			else 
+			{
+				diffBS.open(ossDiff.str().c_str(), ios::out|ios::app);
+				meanBS.open(ossMean.str().c_str(), ios::out|ios::app);
+				rawBS.open(ossBS.str().c_str(), ios::out|ios::app);
+			}
+			
+			rawBS << bestScore_ << endl;
+			rawBS.close();
+		}
+	
+		if(bestScore_ == NA)
+			supervisedBestScores_.push_back(0.0);
+		else supervisedBestScores_.push_back(bestScore_);
+		
+		//cout << "time: " << timeElapsed_ << "; BS: " << supervisedBestScores_.at(supervisedBestScores_.size()-1) 
+		//	 << "; Size: " << supervisedBestScores_.size() << endl;
+		
+		//wait the first induction time to fill the supervisedBestScores buffer
+		if(timeElapsed_ >= lastTriggerInductionTime_ + inductionTime_)
+		{			
+			mrs_natural stepTime = timeElapsed_ - (lastTriggerInductionTime_ + inductionTime_);
+			mrs_natural stepSize = 86; //86frames = 1sec
+			if(!(stepTime % stepSize)) 
+			{			
+				mrs_real sum = 0.0;
+				for(mrs_natural s = (mrs_natural) (supervisedBestScores_.size()-inductionTime_); s < (mrs_natural) supervisedBestScores_.size(); s++)
+					sum += supervisedBestScores_.at(s);
+				mrs_real mean = sum /= inductionTime_;
+				supervisedBestScoresMeans_.push_back(mean);
+				
+				mrs_real bestScoreMeanDiff = 0.1;
+				if(supervisedBestScoresMeans_.size() > 1)
+					bestScoreMeanDiff = supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-1)-supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-2);
+
+					//cout << "AKI @ " << timeElapsed_ << "; stepTime: " << stepTime << "; min: " 
+					//<< (supervisedBestScores_.size()-inductionTime_) << "; max: " << supervisedBestScores_.size() //<< "; BSMeanDiff: " << bestScoreMeanDiff 
+					//<< "; thisMean: " << supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-1)
+				  	//<< "; lastMean: " << supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-2) << endl;
+					//<< "; thisDiff: " << bestScoreMeanDiff << "; lastDiff: " << lastBestScoreMeanDiff_ << endl;
+				
+				if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)
+				{
+					diffBS << bestScoreMeanDiff << endl;
+					diffBS.close();
+					meanBS << supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-1) << endl;
+					meanBS.close();
+				}
+
+				//trigger induction time after signalization				
+				if(bestScoreMeanDiff < supervisedTriggerThres_ && lastBestScoreMeanDiff_ > supervisedTriggerThres_)
+				{		
+					//save lastTriggerInductionTime for plotting
+					mrs_natural lastTriggerInductionTime = triggerInductionTime_;
+					
+					//triggerInductionTime_ = timeElapsed_ + (stepSize/2); //+stepSize/2 as mean delay imposed by step
+					triggerInductionTime_ = timeElapsed_ + 3;
+					
+					//supervision logfile:
+					if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)
+					{				
+						ostringstream oss;
+						oss << ctrl_destFileName_->to<mrs_string>() << "_triggerTimes.txt";
+						ofstream triggerBS;
+						if(lastTriggerInductionTime_ == inductionTime_)
+							triggerBS.open(oss.str().c_str(), ios::out|ios::trunc);
+						else triggerBS.open(oss.str().c_str(), ios::out|ios::app);
+						
+						triggerBS << triggerInductionTime_ << endl;
+						triggerBS.close();
+					}
+					
+					//cout << "TRIGGER @ " << timeElapsed_ << "; TT: " << triggerInductionTime_ << endl;
+					//cout << "THRES: " << supervisedTriggerThres_ << endl;
+				}
+				
+				lastBestScoreMeanDiff_ = bestScoreMeanDiff;
+			}
+			else if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0) //DEBUGGING
+			{
+				diffBS << NA << endl;
+				diffBS.close();
+				meanBS << NA << endl;
+				meanBS.close();
+			}
+		}
+		else if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0) //DEBUGGING
+		{
+			diffBS << NA << endl;
+			diffBS.close();
+			meanBS << NA << endl;
+			meanBS.close();
+		}
+	}
+
 
 	//MATLAB_PUT(statsAgentsScore_, "agentsScore");
 	//MATLAB_PUT(in, "BeatAgents");
@@ -2801,4 +2908,5 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//MATLAB_EVAL("hold off;");
 
 	timeElapsed_++; //increment timer by the end of each cycle
+	
 }
