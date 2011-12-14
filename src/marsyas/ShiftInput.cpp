@@ -21,7 +21,6 @@
 using namespace std;
 using namespace Marsyas;
 
-mrs_natural t__ = 0;
 ShiftInput::ShiftInput(mrs_string name): MarSystem("ShiftInput", name)
 {
 	winSize_ = 0;
@@ -92,7 +91,7 @@ ShiftInput::myUpdate(MarControlPtr sender)
 		if (hopSize_ == 0) {
 			addToStabilizingDelay_ = 0;
 		} else {
-			addToStabilizingDelay_ = ceil(((mrs_real) winSize_ / hopSize_)) - 1;
+			addToStabilizingDelay_ = (mrs_natural) ceil(((mrs_real) winSize_ / hopSize_)) - 1;
 		}
 	} else {
 		addToStabilizingDelay_ = 0;
@@ -135,13 +134,12 @@ ShiftInput::myProcess(realvec& in, realvec& out)
 			// TODO: shouldn't this be done in myUpdate?
 			if(ctrl_clean_->to<mrs_bool>())
 			{
-				// round down is the default with C math
-				mrs_real lowCleanLimit = winSize_
-						* getctrl("mrs_real/lowCleanLimit")->to<mrs_real>();
 				// round up with ceil()
-				mrs_real highCleanLimit = lowCleanLimit + (ceil( winSize_
+				mrs_natural lowCleanLimit = (mrs_natural) ceil(winSize_
+						* getctrl("mrs_real/lowCleanLimit")->to<mrs_real>());				
+				mrs_natural highCleanLimit = (mrs_natural) (lowCleanLimit + (ceil( winSize_
 						* getctrl("mrs_real/highCleanLimit")->to<mrs_real>()
-						) - lowCleanLimit);
+						) - lowCleanLimit));
 
 				for (t = lowCleanLimit; t < highCleanLimit; t++)
 					outSavedData_(o, t) = 0.0;
@@ -189,5 +187,4 @@ ShiftInput::myProcess(realvec& in, realvec& out)
 //  MATLAB_EVAL("plot(ShiftInput_out)");
 //	getchar();
 
-t__++;
 }

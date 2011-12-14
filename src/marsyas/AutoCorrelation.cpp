@@ -96,11 +96,10 @@ AutoCorrelation::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")); 
 
-	// round down is the default with C math
-	lowSamples_ = inSamples_
-			* getctrl("mrs_real/lowCutoff")->to<mrs_real>();
 	// round up with ceil()
-	numSamples_ = ceil( inSamples_
+	lowSamples_ = (mrs_natural) ceil(inSamples_
+			* getctrl("mrs_real/lowCutoff")->to<mrs_real>());
+	numSamples_ = (mrs_natural) ceil( inSamples_
 			* getctrl("mrs_real/highCutoff")->to<mrs_real>()
 			) - lowSamples_;
 

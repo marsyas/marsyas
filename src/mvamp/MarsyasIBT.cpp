@@ -542,7 +542,7 @@ MarsyasIBT::initialise(size_t channels, size_t stepSize, size_t blockSize)
 	mrs_real fsSrc = m_inputSampleRate;
 	//HARD-CODED INPUT-SIZE -> give great value in beggining and update true value by the end of the analysis (in getRemainingFeatures())
 	mrs_natural inputLength = 20000; //(in seconds)
-	mrs_natural inputSize = inputLength * fsSrc;
+	mrs_natural inputSize = (mrs_natural) (inputLength * fsSrc);
 	//cout << "fsSrc: " << fsSrc << endl;
 
 	//induction time (in nr. of ticks) -> -1 because starting index on accumulator is 0 and it finnishes at accSize-1
@@ -820,9 +820,9 @@ MarsyasIBT::getParameterDescriptors() const
 	desc.identifier = "minbpm";
     desc.name = "Minimum Allowed Tempo (BPM)";
     desc.description = "Minimum Allowed Tempo (BPM)";
-    desc.minValue = 1;
-    desc.maxValue = max_bpm-1; //can't surpass max tempo
-	desc.defaultValue = minBPM_;
+    desc.minValue = (float) 1;
+    desc.maxValue = (float) max_bpm-1; //can't surpass max tempo
+	desc.defaultValue = (float) minBPM_;
     desc.isQuantized = true;
 	desc.quantizeStep = 1;
     list.push_back(desc);
@@ -832,9 +832,9 @@ MarsyasIBT::getParameterDescriptors() const
 	desc.identifier = "maxbpm";
     desc.name = "Maximum Allowed Tempo (BPM)";
     desc.description = "Maximum Allowed Tempo (BPM)";
-    desc.minValue = min_bpm+1; //can't surpass min tempo
+    desc.minValue = (float) min_bpm+1; //can't surpass min tempo
     desc.maxValue = 400; 
-	desc.defaultValue = maxBPM_;
+	desc.defaultValue = (float) maxBPM_;
     desc.isQuantized = true;
 	desc.quantizeStep = 1;
     list.push_back(desc);
@@ -905,19 +905,19 @@ MarsyasIBT::getParameter(std::string name) const
     //    return nr_agents;
     //}
 	else if (name == "minbpm") {
-        return min_bpm;
+        return (float) min_bpm;
 	}
 	else if (name == "maxbpm") {
-        return max_bpm;
+        return (float) max_bpm;
 	}
 	//else if (name == "output") {
 	//	return output_flag ? 1.0 : 0.0;
     //}
     else if (name == "online") {
-		return online_flag ? 1.0 : 0.0;
+		return (float) (online_flag ? 1.0 : 0.0);
     }
     else if (name == "metrical_changes") {
-		return metrical_changes_flag ? 1.0 : 0.0;
+		return (float) (metrical_changes_flag ? 1.0 : 0.0);
     }
     else if (name == "induction") {
     	if((strcmp(induction_mode.c_str(), "-1") == 0) || (strcmp(induction_mode.c_str(), "single") == 0)) return 0;
@@ -941,10 +941,10 @@ MarsyasIBT::setParameter(std::string name, float value)
     //    nr_agents = value;
     //}
 	else if (name == "minbpm") {
-        min_bpm = value;
+        min_bpm = (size_t) value;
     }
 	else if (name == "maxbpm") {
-        max_bpm = value;
+        max_bpm = (size_t) value;
     }
     /*
 	else if (name == "output") {
@@ -973,7 +973,7 @@ MarsyasIBT::setParameter(std::string name, float value)
 		}
     }
     else if (name == "induction") {
-        switch (lrintf(value)) {
+        switch ((int) value) {
         case 0: induction_mode="single"; break;
         case 1: induction_mode="repeated"; break;
         case 2: induction_mode="random"; break;
@@ -1049,14 +1049,14 @@ MarsyasIBT::process(const float *const *inputBuffers,Vamp::RealTime timestamp)
 		  feature.hasTimestamp = true;
 		  // manipulate the timestamp's value in real-time analysis
 		  //(timestamp is hopSize ahead of real timing)
-		  feature.timestamp = timestamp - Vamp::RealTime::frame2RealTime((m_stepSize/2), lrintf(m_inputSampleRate));
+		  feature.timestamp = timestamp - Vamp::RealTime::frame2RealTime((m_stepSize/2), (int)(m_inputSampleRate));
 
 		  ibi = stamp - prevTimestamp;
 		  
 		  if(prevTimestamp > 0.0) //ignore first beat label
 		  {
 			  ostringstream label;
-			  float stampString = (60.0 / ibi); // (convert to BPMs)
+			  float stampString = (float) (60.0 / ibi); // (convert to BPMs)
 			  label << stampString << "BPM";
 			  feature.label = label.str(); //tempo (BPM) label
 		  }
@@ -1131,12 +1131,12 @@ MarsyasIBT::getRemainingFeatures()
 		for(int i = 0; i < finalBeats.getCols(); i++)
 		{		
 			beats.push_back(((finalBeats(i) * m_stepSize) - (m_stepSize/2)) / m_inputSampleRate);
-			feature.timestamp = Vamp::RealTime::frame2RealTime(((finalBeats(i) * m_stepSize) - (m_stepSize/2)), lrintf(m_inputSampleRate));
+			feature.timestamp = Vamp::RealTime::frame2RealTime((((long) finalBeats(i) * m_stepSize) - (m_stepSize/2)), (int)(m_inputSampleRate));
 			
 			if (i > 0) 
 			{
-				float ibi = (beats[i] - beats[i-1]);
-                float bpm = (60.0 / ibi);
+				float ibi = (float) (beats[i] - beats[i-1]);
+                float bpm = (float) (60.0 / ibi);
                 ostringstream label;
 				label << bpm << "BPM";
 				feature.label = label.str(); //tempo (BPM) label

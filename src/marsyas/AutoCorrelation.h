@@ -60,8 +60,8 @@ private:
 	mrs_real voicing_;
 	mrs_natural fftSize_;
 	mrs_real re_,im_,am_, k_;
-	mrs_real lowSamples_;
-	mrs_real numSamples_;
+	mrs_natural lowSamples_;
+	mrs_natural numSamples_;
 
 	MarControlPtr ctrl_magcompress_;
 	MarControlPtr	ctrl_normalize_;
