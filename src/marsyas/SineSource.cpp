@@ -27,6 +27,7 @@ SineSource::SineSource(mrs_string name):MarSystem("SineSource",name)
   //name_ = name;
 
 	addControls();
+	index_ = 0;
 }
 
 SineSource::~SineSource()
@@ -60,7 +61,7 @@ SineSource::myUpdate(MarControlPtr sender)
   mrs_real incr = TWOPI / wavetableSize_;
   for (mrs_natural t=0; t < wavetableSize_; t++)
     wavetable_(t) = (mrs_real)(0.5 * sin(incr * t));
-  index_ = 0;
+
 }
 
 void 

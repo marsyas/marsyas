@@ -40,6 +40,7 @@ main(int argc, const char **argv)
 	MarSystem *network = mng.create("Series", "network");
 	network->addMarSystem(mng.create("SineSource", "src"));
 	network->addMarSystem(mng.create("AudioSink", "dest"));
+	network->addMarSystem(mng.create("SoundFileSink", "dest2"));
 
 	//set the window (i.e. audio frame) size (in samples). Let's say, 256 samples.
 	//This is done in the outmost MarSystem (i.e. the Series/network) because flow
@@ -50,13 +51,11 @@ main(int argc, const char **argv)
 	//set oscilator frequency to 440Hz
 	network->updControl("SineSource/src/mrs_real/frequency", 440.0);
 
-	//configure audio sink module
-	//512 is just some reasonable buffer size
-	//you can try different ones and see what you get...
-	network->updControl("AudioSink/dest/mrs_natural/bufferSize", 512); 
 	// set the sampling to 44100  - a safe choice in most configurations 
 	network->updControl("mrs_real/israte", 44100.0);
 	network->updControl("AudioSink/dest/mrs_bool/initAudio", true);
+	network->updControl("SoundFileSink/dest2/mrs_string/filename", "helloworld.wav");
+	
 
 	//now it's time for ticking the network, 
 	//ad aeternum (i.e. until the user quits by CTRL+C)
