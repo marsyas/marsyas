@@ -383,47 +383,75 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				out(o,t) = in(o,t);
 			}
 		}
+
+		// write samples to reservoir 
+// 		for (t=0; t < onSamples_; t++)		
+// 		{
+// 			if (odata_.samplesInBuffer <= odata_.high_watermark)
+// 			{
+				
+// 				for (o=0; o < onObservations_; o++) 
+// 					ringBuffer_(o,odata_.wp) = 0.0;
+				
+// 				odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;
+// 				if (odata_.wp >= odata_.rp) 
+// 					odata_.samplesInBuffer = odata_.wp - odata_.rp;
+// 				else 
+// 					odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
+// 			}
+// 			else 
+// 			{
+// 				while (odata_.samplesInBuffer > odata_.high_watermark)
+// 				{
+// 					SLEEP(1);
+// 				}
+// 			}
+// 		}
+		
     }
-	
-  	// copy to output 
-	for (t=0; t < inSamples_; t++)
-    {
-		for (o=0; o < inObservations_; o++)
-		{
-			out(o,t) = in(o,t);
-		}
-	}
-
-
-	//check if RtAudio is initialized
-	if (!isInitialized_)
-		return;
-
-	// write samples to reservoir 
-	for (t=0; t < onSamples_; t++)		
+	else
 	{
-		if (odata_.samplesInBuffer <= odata_.high_watermark)
+		
+		// copy to output 
+		for (t=0; t < inSamples_; t++)
 		{
-			
-			for (o=0; o < onObservations_; o++) 
-				ringBuffer_(o,odata_.wp) = in(o,t);
-			
-			odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;
-			if (odata_.wp >= odata_.rp) 
-				odata_.samplesInBuffer = odata_.wp - odata_.rp;
-			else 
-				odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
-		}
-		else 
-		{
-			while (odata_.samplesInBuffer > odata_.high_watermark)
+			for (o=0; o < inObservations_; o++)
 			{
-				SLEEP(1);
+				out(o,t) = in(o,t);
+			}
+		}
+		
+		
+		//check if RtAudio is initialized
+		if (!isInitialized_)
+			return;
+		
+		// write samples to reservoir 
+		for (t=0; t < onSamples_; t++)		
+		{
+			if (odata_.samplesInBuffer <= odata_.high_watermark)
+			{
+				
+				for (o=0; o < onObservations_; o++) 
+					ringBuffer_(o,odata_.wp) = in(o,t);
+				
+				odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;
+				if (odata_.wp >= odata_.rp) 
+					odata_.samplesInBuffer = odata_.wp - odata_.rp;
+				else 
+					odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
+			}
+			else 
+			{
+				while (odata_.samplesInBuffer > odata_.high_watermark)
+				{
+					SLEEP(1);
+				}
 			}
 		}
 	}
 	
-	
+		
 	//assure that RtAudio thread is running
 	//(this may be needed by if an explicit call to start()
 	//is not done before ticking or calling process() )

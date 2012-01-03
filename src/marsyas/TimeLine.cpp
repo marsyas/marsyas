@@ -56,8 +56,6 @@ TimeLine::setSampleRate(mrs_real srate)
   if ((srate_ != 22050.0)&&(srate_ != psrate_)) // not the default 
   {
 	// readjust 
-	cout << "Readjusting to srate_"  << srate_ << endl;
-	cout << "ratio = " << (srate_ / 22050.0) << endl;
 	for (mrs_natural i=0; i < numRegions_; ++i)
 	{
 	  regions_[i].start *= (srate_ / 22050.0);

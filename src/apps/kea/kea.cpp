@@ -593,10 +593,10 @@ train_predict(mrs_string mode)
   cout << "Done training " << endl;
 
 
-//     cout << "------------------------------" << endl;
-//     cout << "Class names" << endl;
-//     cout << net->getctrl("WekaSource/wsrc/mrs_string/classNames") << endl;
-//     cout << "------------------------------\n" << endl;
+//   cout << "------------------------------" << endl;
+//   cout << "Class names" << endl;
+//   cout << net->getctrl("WekaSource/wsrc/mrs_string/classNames") << endl;
+//   cout << "------------------------------\n" << endl;
 
 
 
@@ -667,6 +667,7 @@ train_predict(mrs_string mode)
 	  mrs_real srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
 
 		name = classNames[(int)data(0,0)];\
+		// cout << name << endl;
 		if (name != prev_name)
 		{
 		  if (end * (1.0/srate)-start*(1.0 / srate) <= minspan_) // not background
@@ -714,7 +715,7 @@ train_predict(mrs_string mode)
 
   prout.close();
 
-  // cout << "DONE" << endl;
+  cout << "DONE" << endl;
 
   delete net;
 

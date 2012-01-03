@@ -207,12 +207,20 @@ WekaSink::myUpdate(MarControlPtr sender)
 		labelNames_.push_back(labelName);
 	}
 
+	downsample_ = ctrl_downsample_->to<mrs_natural>();
+	ctrl_israte_->setValue(israte_ / downsample_, NOUPDATE);
+	
+
+
 	// If not muted: write the header with the observation names.
 	if (!ctrl_mute_->isTrue())
 	{
 		mrs_string onObsNames = ctrl_onObsNames_->to<mrs_string>();
 		putHeader(onObsNames);
 	}
+
+	
+
 
 	// Optional injecting of additional data.
 	// TODO: this should be refactored together with the printing
@@ -242,7 +250,9 @@ WekaSink::myUpdate(MarControlPtr sender)
 		}
 	}
 	precision_ = ctrl_precision_->to<mrs_natural>();
-	downsample_ = ctrl_downsample_->to<mrs_natural>();
+
+	
+	
     // initalize the downsample count
     count_ = 0;
 }
