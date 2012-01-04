@@ -29,6 +29,7 @@ mrs_real minspan_;
 mrs_string trainedclassifier_;
 mrs_string svm_svm_;
 mrs_string svm_kernel_;
+mrs_string label_;
 
 
 int
@@ -676,16 +677,43 @@ train_predict(mrs_string mode)
 		  }
 		  else
 		  {
+
 			if (predicttimeline_ == EMPTYSTRING)
 			{
-			  cout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
-			  cout << prev_name << endl;
-			  output_name = prev_name;
+				if (label_ == EMPTYSTRING)
+				{
+					cout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
+					cout << prev_name << endl;
+				}
+				else 
+				{
+					if (label_ == prev_name) 
+					{
+						cout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
+						cout << prev_name << endl;
+					}
+				}
+				
+					
+				output_name = prev_name;
 			}
-			else
+				else
 			{
-			  prtout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
-			  prtout << prev_name << endl;
+				if (label_ == EMPTYSTRING)
+				{
+					prtout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
+					prtout << prev_name << endl;
+				}
+				else 
+				{
+					if (label_ == prev_name) 
+					{
+						prtout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
+						prtout << prev_name << endl;
+					}
+				}
+				
+						
 			  output_name = prev_name;
 			}
 
@@ -1048,6 +1076,8 @@ initOptions()
   cmd_options_.addStringOption("trainedclassifier", "trcl", "trained.mpl");
   cmd_options_.addStringOption("svm_svm", "ss", EMPTYSTRING);
   cmd_options_.addStringOption("svm_kernel", "sk", EMPTYSTRING);
+  cmd_options_.addStringOption("label", "lb", EMPTYSTRING);
+  
 }
 
 
@@ -1069,6 +1099,8 @@ loadOptions()
   trainedclassifier_ = cmd_options_.getStringOption("trainedclassifier");
   svm_svm_ = cmd_options_.getStringOption("svm_svm");
   svm_kernel_ = cmd_options_.getStringOption("svm_kernel");
+  label_ = cmd_options_.getStringOption("label");
+  
 }
 
 
