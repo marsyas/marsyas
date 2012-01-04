@@ -679,13 +679,13 @@ train_predict(mrs_string mode)
 			if (predicttimeline_ == EMPTYSTRING)
 			{
 			  cout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
-			  cout << prev_name[0] << endl;
+			  cout << prev_name << endl;
 			  output_name = prev_name;
 			}
 			else
 			{
 			  prtout << start*(1.0 / srate) << "\t" << end*(1.0 / srate) << "\t";
-			  prtout << prev_name[0] << endl;
+			  prtout << prev_name << endl;
 			  output_name = prev_name;
 			}
 
