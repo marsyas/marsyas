@@ -1581,8 +1581,8 @@ BeatReferee::grantPoolSpace(mrs_natural callAgent, mrs_real newAgentScore)
 		//only kills current worst agent in the pool if its score is smaller than the new agent score
 		if(score_(agentInd2Kill) <= newAgentScore)
 			killAgent(agentInd2Kill, "POOL", callAgent);
-		else if(logFile_)
-			debugAddEvent("NO_POOL", callAgent, -1, -1, newAgentScore, score_(agentInd2Kill), agentInd2Kill);
+		//else if(logFile_)
+		//	debugAddEvent("NO_POOL", callAgent, -1, -1, newAgentScore, score_(agentInd2Kill), agentInd2Kill);
 	}
 }
 
@@ -2277,7 +2277,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					if(agentTolerance == INNER)
 					{
 						if(logFile_)
-							debugAddEvent("UPDATE", o, agentPeriod, agentPrevBeat, score_(o), bestScore_, agentError);
+							debugAddEvent("UPDATE", o, agentPeriod, agentPrevBeat, score_(o), bestScore_, o);
 
 						missedBeatsCount_(o) = 0.0; //reset (consecutive) missed beats counter for this agent 
 
@@ -2293,7 +2293,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 					if(agentTolerance == OUTTER)
 					{	
 						if(logFile_)
-							debugAddEvent("UPD_OUTTER", o, agentPeriod, agentPrevBeat, score_(o), bestScore_, agentError);
+							debugAddEvent("UPD_OUTTER", o, agentPeriod, agentPrevBeat, score_(o), bestScore_, o);
 
 						//CREATE NEW AGENT WITH THIS NEW HYPOTHESIS KEEPING THE SCORE OF o-delta:
 						//(the agent that generates a new one keeps its original hypothesis);
@@ -2775,7 +2775,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 	//   if difference < supervisedTriggerThres -> request new induction
 	if(strcmp(inductionMode_.c_str(), "supervised") == 0)
 	{	
-		
+		mrs_natural smoothResolution = 3; //3secs resolution
+		smoothResolution = (mrs_natural) (smoothResolution * (srcFs_/hopSize_));
 		//supervision logfile:
 		ofstream diffBS, meanBS, rawBS;
 		if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)
@@ -2813,13 +2814,14 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		if(timeElapsed_ >= lastTriggerInductionTime_ + inductionTime_)
 		{			
 			mrs_natural stepTime = timeElapsed_ - (lastTriggerInductionTime_ + inductionTime_);
-			mrs_natural stepSize = 86; //86frames = 1sec
+			mrs_natural stepSize = 1; // 1 second
+			stepSize = (mrs_natural) (stepSize * (srcFs_/hopSize_));
 			if(!(stepTime % stepSize)) 
 			{			
 				mrs_real sum = 0.0;
-				for(mrs_natural s = (mrs_natural) (supervisedBestScores_.size()-inductionTime_); s < (mrs_natural) supervisedBestScores_.size(); s++)
+				for(mrs_natural s = (mrs_natural) (supervisedBestScores_.size()-smoothResolution); s < (mrs_natural) supervisedBestScores_.size(); s++)
 					sum += supervisedBestScores_.at(s);
-				mrs_real mean = sum /= inductionTime_;
+				mrs_real mean = sum /= smoothResolution;
 				supervisedBestScoresMeans_.push_back(mean);
 				
 				mrs_real bestScoreMeanDiff = 0.1;
@@ -2844,10 +2846,9 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				if(bestScoreMeanDiff < supervisedTriggerThres_ && lastBestScoreMeanDiff_ > supervisedTriggerThres_)
 				{		
 					//save lastTriggerInductionTime for plotting
-					mrs_natural lastTriggerInductionTime = triggerInductionTime_;
+					//mrs_natural lastTriggerInductionTime = triggerInductionTime_;
 					
-					//triggerInductionTime_ = timeElapsed_ + (stepSize/2); //+stepSize/2 as mean delay imposed by step
-					triggerInductionTime_ = timeElapsed_ + 3;
+					triggerInductionTime_ = timeElapsed_ + 3; //trigger new induction now (sum needed 3 frames)
 					
 					//supervision logfile:
 					if(strcmp(ctrl_logFile_->to<mrs_string>().c_str(), "trigger") == 0)

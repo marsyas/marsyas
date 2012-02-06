@@ -22,6 +22,7 @@
 #define CHILD3_FACTOR 0.5 //Correction factor (error proportion-[0.0-1.0]) for compensating its father's {phase, period} hypothesis - used by child3 (2.0 - only full phase adjustment; -1 - no child considered) (0.5)
 #define TRIGGER_GT_TOL 5 //Number of miss computed beats, in comparison to ground-truth beat-times, tolerated before triggering new induction (used in trigger "groundtruth" mode) -> can be defined via -tigt_tol 
 #define TRIGGER_BEST_FACTOR 1.0 //Proportion of the current best agent score which is inherited by the agents created at each triggered induction [shouldn't be much higher than 1, for not inflating scores two much] (1.0)
+#define SUPERVISED_TRIGGER_THRES 0.03 //Degree (in percentage) of mean bestScore decrease to trigger a new induction in supervised induction mode (0.03)
 #define BEAT_TRANSITION_TOL 0.6 //Tolerance for handling beats at transitions between agents [-1 for unconsider it]: (0.6)
 //In causal mode, if between two consecutive beats there is over a BEAT_TRANSITION_TOL decrease in current IBI the second beat is unconsidered;
 //In non-causal mode, if between a son's first beat and its father's last there is over a BEAT_TRANSITION_TOL descrease on the father last IBI the son's first beat is unconsidered;
@@ -54,6 +55,7 @@ mrs_natural usageopt=false;
 mrs_bool audioopt=false;
 mrs_bool audiofileopt=false;
 mrs_bool backtraceopt=false;
+//mrs_string logfileopt="seconds";
 mrs_string logfileopt="-1";
 mrs_bool noncausalopt=true;
 mrs_bool dumbinductionopt=false;
@@ -466,7 +468,11 @@ MarsyasIBT::initialise(size_t channels, size_t stepSize, size_t blockSize)
 			cerr << "Trigger Induction: re-define trigger mode value as one of the following: \"single\", \"repeated\", \"random\", \"supervised\", \"givetransitions\" -> \"single\" assumed." << endl;
 				induction_mode = "single";
 		}
-		
+		else if(strcmp(induction_mode.c_str(), "repeated") == 0 || strcmp(induction_mode.c_str(), "random") == 0
+			 || strcmp(induction_mode.c_str(), "supervised") == 0 || strcmp(induction_mode.c_str(), "givetransitions") == 0)
+		{
+			avoid_metrical_changes = true; //always run repeated induction modes with metrical change avoidance
+		}
 		cout << "Requested induction in \"" << induction_mode << "\" operation" << endl;
 
 		//handle beat error tolerance, used in trigger groundtruth mode (and assure that beat-times ground file is passed)
@@ -542,7 +548,7 @@ MarsyasIBT::initialise(size_t channels, size_t stepSize, size_t blockSize)
 	mrs_real fsSrc = m_inputSampleRate;
 	//HARD-CODED INPUT-SIZE -> give great value in beggining and update true value by the end of the analysis (in getRemainingFeatures())
 	mrs_natural inputLength = 20000; //(in seconds)
-	mrs_natural inputSize = (mrs_natural) (inputLength * fsSrc);
+	mrs_natural inputSize = inputLength * fsSrc;
 	//cout << "fsSrc: " << fsSrc << endl;
 
 	//induction time (in nr. of ticks) -> -1 because starting index on accumulator is 0 and it finnishes at accSize-1
@@ -645,7 +651,9 @@ MarsyasIBT::initialise(size_t channels, size_t stepSize, size_t blockSize)
 	beattracker->updControl("BeatReferee/br/mrs_string/inductionMode", induction_mode);
 	beattracker->updControl("BeatReferee/br/mrs_natural/triggerGtTolerance", triggergt_tol);
 	beattracker->updControl("BeatReferee/br/mrs_real/beatTransitionTol", BEAT_TRANSITION_TOL);
-	beattracker->updControl("BeatReferee/br/mrs_bool/resetAfterNewInduction", false);
+	beattracker->updControl("BeatReferee/br/mrs_real/supervisedTriggerThres", SUPERVISED_TRIGGER_THRES);
+	if(noncausalopt) beattracker->updControl("BeatReferee/br/mrs_bool/resetAfterNewInduction", false);
+	else beattracker->updControl("BeatReferee/br/mrs_bool/resetAfterNewInduction", true);
 
 	ostringstream path;
 	FileName outputFile(sfName);
@@ -668,7 +676,7 @@ MarsyasIBT::initialise(size_t channels, size_t stepSize, size_t blockSize)
 		}
 	}
 
-	//cout << "PATH: " << path.str() << endl;
+	//cout << "PATH: " << path.str() << "===============================================" << endl;
 
 	if(!strcmp(logfileopt.c_str(), "-1") == 0)
 	{
@@ -820,9 +828,9 @@ MarsyasIBT::getParameterDescriptors() const
 	desc.identifier = "minbpm";
     desc.name = "Minimum Allowed Tempo (BPM)";
     desc.description = "Minimum Allowed Tempo (BPM)";
-    desc.minValue = (float) 1;
-    desc.maxValue = (float) max_bpm-1; //can't surpass max tempo
-	desc.defaultValue = (float) minBPM_;
+    desc.minValue = 1;
+    desc.maxValue = max_bpm-1; //can't surpass max tempo
+	desc.defaultValue = minBPM_;
     desc.isQuantized = true;
 	desc.quantizeStep = 1;
     list.push_back(desc);
@@ -832,9 +840,9 @@ MarsyasIBT::getParameterDescriptors() const
 	desc.identifier = "maxbpm";
     desc.name = "Maximum Allowed Tempo (BPM)";
     desc.description = "Maximum Allowed Tempo (BPM)";
-    desc.minValue = (float) min_bpm+1; //can't surpass min tempo
+    desc.minValue = min_bpm+1; //can't surpass min tempo
     desc.maxValue = 400; 
-	desc.defaultValue = (float) maxBPM_;
+	desc.defaultValue = maxBPM_;
     desc.isQuantized = true;
 	desc.quantizeStep = 1;
     list.push_back(desc);
@@ -905,19 +913,19 @@ MarsyasIBT::getParameter(std::string name) const
     //    return nr_agents;
     //}
 	else if (name == "minbpm") {
-        return (float) min_bpm;
+        return min_bpm;
 	}
 	else if (name == "maxbpm") {
-        return (float) max_bpm;
+        return max_bpm;
 	}
 	//else if (name == "output") {
 	//	return output_flag ? 1.0 : 0.0;
     //}
     else if (name == "online") {
-		return (float) (online_flag ? 1.0 : 0.0);
+		return online_flag ? 1.0 : 0.0;
     }
     else if (name == "metrical_changes") {
-		return (float) (metrical_changes_flag ? 1.0 : 0.0);
+		return metrical_changes_flag ? 1.0 : 0.0;
     }
     else if (name == "induction") {
     	if((strcmp(induction_mode.c_str(), "-1") == 0) || (strcmp(induction_mode.c_str(), "single") == 0)) return 0;
@@ -941,10 +949,10 @@ MarsyasIBT::setParameter(std::string name, float value)
     //    nr_agents = value;
     //}
 	else if (name == "minbpm") {
-        min_bpm = (size_t) value;
+        min_bpm = value;
     }
 	else if (name == "maxbpm") {
-        max_bpm = (size_t) value;
+        max_bpm = value;
     }
     /*
 	else if (name == "output") {
@@ -973,7 +981,7 @@ MarsyasIBT::setParameter(std::string name, float value)
 		}
     }
     else if (name == "induction") {
-        switch ((int) value) {
+        switch (lrintf(value)) {
         case 0: induction_mode="single"; break;
         case 1: induction_mode="repeated"; break;
         case 2: induction_mode="random"; break;
@@ -1049,14 +1057,14 @@ MarsyasIBT::process(const float *const *inputBuffers,Vamp::RealTime timestamp)
 		  feature.hasTimestamp = true;
 		  // manipulate the timestamp's value in real-time analysis
 		  //(timestamp is hopSize ahead of real timing)
-		  feature.timestamp = timestamp - Vamp::RealTime::frame2RealTime((m_stepSize/2), (int)(m_inputSampleRate));
+		  feature.timestamp = timestamp - Vamp::RealTime::frame2RealTime((m_stepSize/2), lrintf(m_inputSampleRate));
 
 		  ibi = stamp - prevTimestamp;
 		  
 		  if(prevTimestamp > 0.0) //ignore first beat label
 		  {
 			  ostringstream label;
-			  float stampString = (float) (60.0 / ibi); // (convert to BPMs)
+			  float stampString = (60.0 / ibi); // (convert to BPMs)
 			  label << stampString << "BPM";
 			  feature.label = label.str(); //tempo (BPM) label
 		  }
@@ -1131,12 +1139,12 @@ MarsyasIBT::getRemainingFeatures()
 		for(int i = 0; i < finalBeats.getCols(); i++)
 		{		
 			beats.push_back(((finalBeats(i) * m_stepSize) - (m_stepSize/2)) / m_inputSampleRate);
-			feature.timestamp = Vamp::RealTime::frame2RealTime((((long) finalBeats(i) * m_stepSize) - (m_stepSize/2)), (int)(m_inputSampleRate));
+			feature.timestamp = Vamp::RealTime::frame2RealTime(((finalBeats(i) * m_stepSize) - (m_stepSize/2)), lrintf(m_inputSampleRate));
 			
 			if (i > 0) 
 			{
-				float ibi = (float) (beats[i] - beats[i-1]);
-                float bpm = (float) (60.0 / ibi);
+				float ibi = (beats[i] - beats[i-1]);
+                float bpm = (60.0 / ibi);
                 ostringstream label;
 				label << bpm << "BPM";
 				feature.label = label.str(); //tempo (BPM) label
