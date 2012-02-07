@@ -160,7 +160,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 
 	// Copy to output to perform inplace fft and zeropad to double size
 
-	
+	scratch_.create(fftSize_); //scratch_ needs to be reset every time
 	for (o=0; o < inObservations_; o++)
 	{
 		for (t=lowSamples_; t < (lowSamples_+numSamples_); t++)
