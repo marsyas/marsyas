@@ -289,6 +289,11 @@ public:
 	{
 		return hasControl(cname, false);
 	}
+	
+	bool isComposite()
+	{
+		return isComposite_;
+	}
 
 	// get controls
 	MarControlPtr getControl(std::string cname, bool searchParent = false, bool searchChildren = true);
