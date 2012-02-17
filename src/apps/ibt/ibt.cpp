@@ -844,6 +844,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	}
 	else //if in soundfile mode
 	{
+		audioflow->updControl("mrs_natural/inSamples", HOPSIZE);
 		audioflow->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 		inputSize = audioflow->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>(); //sound input file size (in samples)
 	}
@@ -1089,6 +1090,9 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	//set audio/onset resynth balance and ADSR params for onset sound
 	if(audiofileopt || audioopt)
 	{
+		IBTsystem->updControl("mrs_natural/inSamples", HOPSIZE);
+		if((HOPSIZE != 512 || fsSrc != 44100) && audioopt) //Why different sampling_rates don't work on AudioSink?? - Is it only on LINUX??
+			cerr << "MARSYAS seems to not support playing audio at sampling rates different than 44100 and hop sizes different than 512. Try -f option instead." << endl;
 		if(micinputopt && ((!audiofileopt && audioopt) || (audiofileopt && audioopt)))
 		{
 			IBTsystem->updControl("Series/beatmix/Series/audioflow/Gain/gainaudio/mrs_real/gain", 0.6);
