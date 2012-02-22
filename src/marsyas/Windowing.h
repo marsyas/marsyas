@@ -33,7 +33,7 @@ namespace Marsyas
 		"Hamming", "Hanning", "Triangle", "Bartlett", "Blackman",
 		"Blackman-Harris", "Cosine"
 	- \b mrs_bool/zeroPhasing: TODO DOCME
-	- \b mrs_natural/zeroPadding: TODO DOCME
+	- \b mrs_natural/zeroPadding: After windowing, the signal will be zero-padded to this number of samples
 	- \b mrs_natural/size: TODO DOCME
 	- \b mrs_real/variance: variance to use for the Gaussian window
 	- \b mrs_bool/normalize: TODO DOCME

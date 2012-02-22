@@ -27,6 +27,7 @@ using namespace Marsyas;
 #define PSD_WDB  4
 #define PSD_PD  5
 #define PSD_LOGMAG 6
+#define PSD_LOGMAG2 7
 
 PowerSpectrum::PowerSpectrum(mrs_string name):MarSystem("PowerSpectrum",name)
 {
@@ -89,7 +90,8 @@ PowerSpectrum::myUpdate(MarControlPtr sender)
 		ntype_ = PSD_PD;
 	else if (stype_ == "logmagnitude")
 	  ntype_ = PSD_LOGMAG;
-	
+	else if (stype_ == "logmagnitude2")
+	  ntype_ = PSD_LOGMAG2;	
 
 	// Add prefix to the observation names.
 	mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
@@ -147,6 +149,9 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 			case PSD_PD:
 				pwr_ = re_ * re_ + im_ * im_;
 				out(o,t) = (mrs_real)(2.0 * pwr_) / N2_;
+				break;
+			case PSD_LOGMAG2:
+				out(o,t) = (mrs_real)log10(1+sqrt(re_ * re_ + im_ * im_));
 				break;
 			case PSD_LOGMAG:
 			  out(o,t) = log(1+1000.0 * sqrt(re_ * re_ + im_ * im_));

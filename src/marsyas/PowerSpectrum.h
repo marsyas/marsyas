@@ -34,7 +34,7 @@ namespace Marsyas
 	and computes the corresponding N/2+1 power/magnitude/decibels/powerdensity real values.
 
 	Controls:
-	- \b mrs_string/spectrumType [w] : choose between "power", "magnitude", "decibels" and "powerdensity" computations
+	- \b mrs_string/spectrumType [w] : choose between "power", "magnitude", "decibels", "logmagnitude" (for 1+log(magnitude*1000), "logmagnitude2" (for 1+log10(magnitude)) and "powerdensity" computations
 
 	\see Spectrum
 */
