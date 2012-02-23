@@ -23,12 +23,6 @@ Zero_padding = 2	# After windowing, the signal will be zero-padded to this value
 Min_freq = 20			# Hz. The minimum frequency that will be analyzed
 Max_freq = 5000		# Hz. The maximum frequency that will be analyzed
 
-# Last, for the OSC server:
-input_ip = "127.0.0.1"
-input_port = 9000
-output_ip = "127.0.0.1"
-output_port = 9001
-
 # The following lines will determine the structure of the marsystem
 spec_analyzer = ["Series/analysis", ["AudioSource/asrc", "Gain/pregain", "ShiftInput/sft", "Windowing/win","Spectrum/spk","PowerSpectrum/pspk"]] 
 net = marsyas_util.create(spec_analyzer)
@@ -52,8 +46,6 @@ DFT_SIZE_2 = net.getControl(snet["win"]+"/mrs_natural/onSamples").to_natural();
 freq_bin = fs/DFT_SIZE; # this is the frequency hop for every frequency bin in the DFT
 
 # This is the size of data that will be shown
-width = 640; # pixels
-height = 480; # pixels
 visible_time = 15; # Seconds
 minK = int(math.floor(Min_freq/freq_bin))
 maxK = int(math.ceil(Max_freq/freq_bin))
@@ -65,7 +57,6 @@ Int_Buff = numpy.zeros([deltaK, nTime])
 #print deltaK
 #print nTime
 mat = cv.CreateMat(nTime, deltaK, cv.CV_32FC1)
-im = cv.LoadImageM("test.png")
 cv.NamedWindow("Marsyas Spectral Analysis", cv.CV_WINDOW_AUTOSIZE)
 
 try:
