@@ -88,6 +88,7 @@ BeatReferee::BeatReferee(const BeatReferee& a) : MarSystem(a)
 	ctrl_bestFinalAgentHistory_= getctrl("mrs_realvec/bestFinalAgentHistory");
 	ctrl_nonCausal_ = getctrl("mrs_bool/nonCausal");
 	ctrl_triggerInduction_ = getctrl("mrs_bool/triggerInduction");
+	ctrl_triggerInductionExternalRequest_ = getctrl("mrs_bool/triggerInductionExternalRequest");
 	ctrl_gtInductionMode_ = getctrl("mrs_string/gtInductionMode");
 	ctrl_triggerGtTolerance_ = getctrl("mrs_natural/triggerGtTolerance");
 	ctrl_gtBeatsFile_ = getctrl("mrs_string/gtBeatsFile");
@@ -119,6 +120,7 @@ BeatReferee::BeatReferee(const BeatReferee& a) : MarSystem(a)
 	logFileName_ = a.logFileName_;
 	logFileUnits_ = a.logFileUnits_;
 	triggerInduction_ = a.triggerInduction_;
+	triggerInductionExternalRequest_ = a.triggerInductionExternalRequest_;
 	processInduction_ = a.processInduction_;
 	triggerInductionTime_ = a.triggerInductionTime_;
 	inductionMode_ = a.inductionMode_;
@@ -201,6 +203,8 @@ BeatReferee::addControls()
 	setctrlState("mrs_bool/nonCausal", true);
 	addctrl("mrs_bool/triggerInduction", false, ctrl_triggerInduction_);
 	setctrlState("mrs_bool/triggerInduction", true);
+	addctrl("mrs_bool/triggerInductionExternalRequest", false, ctrl_triggerInductionExternalRequest_);
+	setctrlState("mrs_bool/triggerInductionExternalRequest", true);
 	addctrl("mrs_string/gtInductionMode", "-1", ctrl_gtInductionMode_);
 	setctrlState("mrs_string/gtInductionMode", true);
 	addctrl("mrs_natural/triggerGtTolerance", 5, ctrl_triggerGtTolerance_);
@@ -248,13 +252,16 @@ BeatReferee::myUpdate(MarControlPtr sender)
 	nonCausal_ = ctrl_nonCausal_->to<mrs_bool>();
 	inductionMode_ = ctrl_inductionMode_->to<mrs_string>();
 	gtBeatsFile_ = ctrl_gtBeatsFile_->to<mrs_string>();
-	triggerInduction_ = ctrl_triggerInduction_->to<mrs_bool>();
 	triggerGtTolerance_ = ctrl_triggerGtTolerance_->to<mrs_natural>();
 	frames2SecsAdjustment_ = ctrl_adjustment_->to<mrs_natural>();
 	beatTransitionTol_ = ctrl_beatTransitionTol_->to<mrs_real>();
 	triggerTimesFile_ = ctrl_triggerTimesFile_->to<mrs_string>();
 	resetAfterNewInduction_ = ctrl_resetAfterNewInduction_->to<mrs_bool>();
 	supervisedTriggerThres_ = ctrl_supervisedTriggerThres_->to<mrs_real>();
+	
+	//cout << "TRIGGERTIME @ " << timeElapsed_ << ": " <<  triggerInductionTime_ << endl;
+	//triggerInductionTime_ = ctrl_triggerInductionTime_->to<mrs_natural>();
+	//cout << "TRIGGERTIME @ " << timeElapsed_ << ": " <<  triggerInductionTime_ << endl;
 
 	//inObservations_ = number of BeatAgents in the pool
 	nrAgents_ = inObservations_;	
@@ -2391,7 +2398,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 								{
 									//cout << "LOST req TRIGGER at: " << timeElapsed_ << " (" << ((timeElapsed_ * hopSize_) - (hopSize_/2)) / srcFs_ << ")" << endl;
 									lostGTBeatsCount_ = 0; //reset beat error count
-									triggerInduction_ = true;
+									triggerInductionExternalRequest_ = true;
 									
 									//cout << "2: " << ctrl_logFile_->to<mrs_string>().c_str() << endl;
 
@@ -2633,16 +2640,24 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 		processInduction_ = false;
 		startTracking_ = true; //start tracking (after first induction, tracking keeps on running)
 		updControl(ctrl_triggerInduction_, false); //deactivate trigger induction!!
+		
 	}
 
 	//MATLAB_PUT(agentsHistory_, "agentsHistory");
 	//MATLAB_PUT(bestFinalAgent_, "bestFinalAgent");
 
 	//clean first half of the feature window buffer before every new induction
-	if(timeElapsed_ > backtraceEndTime_ && ((triggerInduction_ || timeElapsed_ == triggerInductionTime_-2)
+	if(timeElapsed_ > backtraceEndTime_ && ((ctrl_triggerInductionExternalRequest_->to<mrs_bool>() || timeElapsed_ == triggerInductionTime_-2)
 		|| (strcmp(inductionMode_.c_str(), "givetransitions") == 0 && timeElapsed_ == triggerTimes_(triggerCount_)-2)))
 	{
 		updControl(ctrl_resetFeatWindow_, true);
+		
+		if(ctrl_triggerInductionExternalRequest_->to<mrs_bool>()) 
+		{
+			triggerInductionExternalRequest_ = false;
+			triggerInduction_ = true;
+		}
+		
 	}
 	//just before the induction triggering activate periodicity estimation (via ACF peaks)
 	//(don't call this wihtin backtrace window)
@@ -2826,6 +2841,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				
 				mrs_real bestScoreMeanDiff = 0.1;
 				if(supervisedBestScoresMeans_.size() > 1)
+
+
 					bestScoreMeanDiff = supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-1)-supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-2);
 
 					//cout << "AKI @ " << timeElapsed_ << "; stepTime: " << stepTime << "; min: " 

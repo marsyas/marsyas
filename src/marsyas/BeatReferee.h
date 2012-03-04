@@ -107,6 +107,7 @@ private:
 	MarControlPtr ctrl_bestFinalAgentHistory_;
 	MarControlPtr ctrl_nonCausal_;
 	MarControlPtr ctrl_triggerInduction_;
+	MarControlPtr ctrl_triggerInductionExternalRequest_;
 	MarControlPtr ctrl_gtInductionMode_;
 	MarControlPtr ctrl_gtBeatsFile_;
 	MarControlPtr ctrl_triggerGtTolerance_;
@@ -198,6 +199,7 @@ private:
 	mrs_natural lastTriggerInductionTime_;
 	mrs_real lastBestScoreMeanDiff_;
 	mrs_real supervisedTriggerThres_;
+	mrs_bool triggerInductionExternalRequest_;
 	
 	void myUpdate(MarControlPtr sender);
 
