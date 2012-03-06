@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.cmu.edu>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -16,29 +16,22 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
-
 #include "common.h" 
 #include "AudioSource.h"
 
-
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio3.h"
-#endif 
-
-
-using std::ostringstream;
+using namespace std;
 using namespace Marsyas;
 
-AudioSource::AudioSource(mrs_string name):MarSystem("AudioSource", name)
+AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 {
-  data_ = NULL;
+
 #ifdef MARSYAS_AUDIOIO
-  audio_ = NULL;
-#endif 
+	audio_ = NULL;
+#endif
+
 
   ri_ = 0;
-  preservoirSize_ = 0;
+  pringBufferSize_ = 0;
 
   isInitialized_ = false;
   stopped_ = true;
@@ -46,18 +39,18 @@ AudioSource::AudioSource(mrs_string name):MarSystem("AudioSource", name)
   rtSrate_ = 0;
   bufferSize_ = 0;
   rtChannels_ = 0;
-  rtDevice_ = 0;
   nChannels_ = 0;
-
+  pnChannels_ = 0;
+  
   addControls();
 }
 
 AudioSource::~AudioSource()
 {
 #ifdef MARSYAS_AUDIOIO
-  delete audio_;
+	delete audio_;
 #endif 
-  data_ = NULL; // RtAudio deletes the buffer itself.
+
 }
 
 
@@ -74,34 +67,71 @@ AudioSource::addControls()
 
   
 #ifdef MARSYAS_MACOSX
-  addctrl("mrs_natural/bufferSize", 512);
+  addctrl("mrs_natural/bufferSize", 1024);
 #else
   addctrl("mrs_natural/bufferSize", 256);
 #endif
 
-  addctrl("mrs_natural/nBuffers", 4);
   
   addctrl("mrs_bool/initAudio", false);
   setctrlState("mrs_bool/initAudio", true);
   
   addctrl("mrs_bool/hasData", true);
   addctrl("mrs_real/gain", 1.0); 
-
-  addctrl("mrs_natural/device", 0);
 }
+
+
+
+
+int 
+AudioSource::recordCallback(void *outputBuffer, void *inputBuffer, 
+							unsigned int nBufferFrames, 
+							double streamTime, unsigned int status, 
+							void *userData)
+{
+	
+	unsigned int drain_count = 0;
+	mrs_real* data = (mrs_real*)inputBuffer;
+	InputData *iData = (InputData *)userData;
+	AudioSource* mythis = (AudioSource *)iData->myself;
+	realvec& ringBuffer = *(iData->ringBuffer);
+	unsigned int t;
+	unsigned int spaceAvailable;
+	
+	for (t=0; t < nBufferFrames; t++)
+	{
+		if (iData->samplesInBuffer <= iData->high_watermark)
+		{
+			ringBuffer(0,iData->wp) = data[2*t];			
+			ringBuffer(1,iData->wp) = data[2*t+1];
+			
+			iData->wp = ++ (iData->wp) % iData->ringBufferSize;
+			if (iData->wp >= iData->rp) 
+				iData->samplesInBuffer = iData->wp - iData->rp;
+			else 
+				iData->samplesInBuffer = iData->ringBufferSize - (iData->rp - iData->wp);
+		}
+		else
+		{
+			while (iData->samplesInBuffer > iData->high_watermark)
+			{
+				SLEEP(1);
+				drain_count++;
+				if (drain_count == 1000)
+					return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+
 
 void 
 AudioSource::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
   MRSDIAG("AudioSource::myUpdate");
-
-
-  if (getctrl("mrs_bool/initAudio")->to<mrs_bool>()) 
-    initRtAudio();
-
-  
-  
   
   //set output controls
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
@@ -109,23 +139,40 @@ AudioSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/nChannels"));
   
   
+  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   inObservations_ = ctrl_inObservations_->to<mrs_natural>();
-  onObservations_ = ctrl_onObservations_->to<mrs_natural>();
   gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
   
-  //resize reservoir if necessary
 
 
-  if (inSamples_ * onObservations_ < bufferSize_) 
-    reservoirSize_ = 2 * onObservations_ * bufferSize_;
+  //resize ringBuffer if necessary
+  if (inSamples_ < bufferSize_) 
+	  ringBufferSize_ =  8 * bufferSize_;
   else 
-    reservoirSize_ = 2 * inSamples_ * onObservations_;
+  {
+	  ringBufferSize_ =  8 * inSamples_;
+  }
   
-  if (reservoirSize_ > preservoirSize_)
+
+  idata.ringBufferSize = ringBufferSize_;
+  idata.high_watermark = ringBufferSize_/4;
+  idata.low_watermark = ringBufferSize_/8;
+  
+
+  nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();	
+  if ((ringBufferSize_ > pringBufferSize_)||(nChannels_ != pnChannels_))
     {
-      reservoir_.stretch(reservoirSize_);
+		ringBuffer_.stretch(nChannels_, ringBufferSize_);
     }
-  preservoirSize_ = reservoirSize_;
+  pringBufferSize_ = ringBufferSize_;
+  pnChannels_ = nChannels_;
+  
+
+
+  
+  
+  if (getctrl("mrs_bool/initAudio")->to<mrs_bool>()) 
+	  initRtAudio();
 }
 
 
@@ -133,55 +180,57 @@ void
 AudioSource::initRtAudio()
 {
 
-  bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
-  nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
-  rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
-  rtChannels_ = (int)getctrl("mrs_natural/nChannels")->to<mrs_natural>();
-  nBuffers_ = (int)getctrl("mrs_natural/nBuffers")->to<mrs_natural>();
-  rtDevice_ = (int)getctrl("mrs_natural/device")->to<mrs_natural>();
-  
+	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+	nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
+	rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
+	rtChannels_ = (int)getctrl("mrs_natural/nChannels")->to<mrs_natural>();
 
-
-//marsyas represents audio data as float numbers
+	
+	//marsyas represents audio data as float numbers
 #ifdef MARSYAS_AUDIOIO
-  RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO3_FLOAT64 : RTAUDIO3_FLOAT32;
-#endif 
+	if (audio_ == NULL)
+		audio_ = new RtAudio();
+	
+
+	unsigned int bufferFrames = bufferSize_;
+	
+	
+	RtAudio::StreamParameters iParams;
+	iParams.deviceId = audio_->getDefaultInputDevice();
+	iParams.nChannels = rtChannels_;
+	iParams.firstChannel = 0; 
+	
+	idata.ringBuffer = &ringBuffer_;
+	idata.wp = 0;
+	idata.rp = 0;
+	idata.ringBufferSize = ringBufferSize_;
+	idata.myself = this;
+	
+
+	
 
 
-  
-  //Create new RtAudio object (delete any existing one)
+	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+	
+	
+	try 
+	{
+		audio_->openStream(NULL, &iParams, rtFormat, rtSrate_, 
+						   &bufferFrames, &recordCallback, (void *)&idata, NULL);
+	}
+	catch (RtError& e) 
+	{
+		e.printMessage();
+		exit(0);
+	}
+	
 
-#ifdef MARSYAS_AUDIOIO
-  if (audio_ != NULL) 
-    {
-      audio_->stopStream(); 
-      delete audio_;
-    } 
-  try 
-    {
-      audio_ = new RtAudio3(0, 0, rtDevice_, rtChannels_, rtFormat,
-			   rtSrate_, &bufferSize_, nBuffers_);
-      data_ = (mrs_real *) audio_->getStreamBuffer();
-    }
-  catch (RtError3 &error) 
-    {
-      error.printMessage();
-    }
-  
   //update bufferSize control which may have been changed
   //by RtAudio (see RtAudio documentation)
-  setctrl("mrs_natural/bufferSize", (mrs_natural)bufferSize_);
-
-  if (audio_ != NULL)
-      audio_->stopStream(); 
-
-
-    if (rtDevice_ !=0){
-        RtAudio3DeviceInfo info;
-        info = audio_->getDeviceInfo(rtDevice_);
-    } 
+	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferFrames);
 
 #endif 
+
   isInitialized_ = true;
   setctrl("mrs_bool/initAudio", false);
 }
@@ -190,10 +239,10 @@ void
 AudioSource::start()
 {
 #ifdef MARSYAS_AUDIOIO
-  if ( stopped_ && audio_) {
-    audio_->startStream();
-    stopped_ = false;
-  }
+	if ( stopped_) {
+		audio_->startStream();
+		stopped_ = false;
+	}
 #endif 
 }
 
@@ -201,7 +250,7 @@ void
 AudioSource::stop()
 {
 #ifdef MARSYAS_AUDIOIO
-  if ( !stopped_ && audio_) {
+  if ( !stopped_ ) {
     audio_->stopStream();
     stopped_ = true;
   }
@@ -217,61 +266,67 @@ AudioSource::localActivate(bool state)
     stop();
 }
 
+
+unsigned int 
+AudioSource::getSpaceAvailable() 
+{
+	unsigned int free = (idata.rp - idata.wp -1 + idata.ringBufferSize) % idata.ringBufferSize;
+	unsigned int underMark = idata.high_watermark - getSamplesAvailable();
+	
+	return(min(underMark, free));
+}
+
+
+unsigned int 
+AudioSource::getSamplesAvailable() 
+{
+	unsigned int samplesAvailable = (idata.wp - idata.rp +idata.ringBufferSize) % idata.ringBufferSize;
+	return samplesAvailable;
+}
+
+
 void 
 AudioSource::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
+	
+	
 	(void) in;
+	
+	//check if RtAudio is initialized
+	if (!isInitialized_)
+		return;
+	
+	//check MUTE
+	if(ctrl_mute_->isTrue()) return;
 
-  //check if RtAudio is initialized
-  if (!isInitialized_)
-    return;
-  
-  //check MUTE
-  if(ctrl_mute_->isTrue()) return;
-  
-  //assure that RtAudio thread is running
-  //(this may be needed by if an explicit call to start()
-  //is not done before ticking or calling process() )
-  if ( stopped_ )
-    start();
-  
-  int ssize = onSamples_ * onObservations_;  
-  
-  //send audio to output
-#ifdef MARSYAS_AUDIOIO
-  while (ri_ < ssize)
-    {
-      try 
+	//assure that RtAudio thread is running
+	//(this may be needed by if an explicit call to start()
+	//is not done before ticking or calling process() )
+	if ( stopped_ )
+		start();
+	
+	for (t=0; t < onSamples_; t++)
 	{
-
-	  audio_->tickStream();
-
+		if (getSamplesAvailable()) 
+		{
+			for (o=0; o < onObservations_; o++)			  
+				out(o,t) = ringBuffer_(o,idata.rp);
+			idata.rp = ++(idata.rp) % idata.ringBufferSize;	
+			if (idata.rp >= idata.rp) 
+				idata.samplesInBuffer = idata.wp - idata.rp;
+			else 
+				idata.samplesInBuffer = idata.ringBufferSize - (idata.rp - idata.wp);
+		  
+		}
 	}
-      catch (RtError3 &error) 
+	
+	while (idata.samplesInBuffer < idata.low_watermark)
 	{
-	  error.printMessage();
+		SLEEP(1);
 	}
-
-      for (t=0; t < onObservations_ * bufferSize_; t++)
-	{
-	  reservoir_(ri_) = data_[t];
-	  ri_++;
-	}
-    }
-  
-  for (o=0; o < onObservations_; o++)
-    for (t=0; t < onSamples_; t++)
-      {
-	out(o,t) = gain_ * reservoir_(onObservations_ * t + o);
-      }
-  
-  for (t=ssize; t < ri_; t++)
-    reservoir_(t-ssize) = reservoir_(t);
-  
-  ri_ = ri_ - ssize;
-#endif 
-  
- /* MATLAB_PUT(out, "AudioSource_out");
-  MATLAB_EVAL("plot(AudioSource_out)");*/
+	
+	
+	
+	
 }
+

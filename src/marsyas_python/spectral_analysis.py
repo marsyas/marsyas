@@ -24,7 +24,7 @@ Min_freq = 20			# Hz. The minimum frequency that will be analyzed
 Max_freq = 5000		# Hz. The maximum frequency that will be analyzed
 
 # The following lines will determine the structure of the marsystem
-spec_analyzer = ["Series/analysis", ["AudioSourceRt4/asrc", "Sum/summation", "Gain/pregain", "ShiftInput/sft", "Windowing/win","Spectrum/spk","PowerSpectrum/pspk"]] 
+spec_analyzer = ["Series/analysis", ["AudioSource/asrc", "Gain/pregain", "ShiftInput/sft", "Windowing/win","Spectrum/spk","PowerSpectrum/pspk"]] 
 net = marsyas_util.create(spec_analyzer)
 snet = marsyas_util.mar_refs(spec_analyzer)
 
@@ -68,7 +68,10 @@ try:
 		out = numpy.array(out)
 		out = out[minK:maxK+1]
 		out = out [::-1]
-		out = out/numpy.max(out)
+		if numpy.max(out)>0:
+			out = out/numpy.max(out)
+		else:
+			print numpy.max(out)
 		if numpy.ndim(out)==1:
 			out = numpy.array([out])
 		Int_Buff = Int_Buff[:,1:]

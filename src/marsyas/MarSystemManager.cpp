@@ -127,7 +127,6 @@
 #include "Kurtosis.h"
 #include "Skewness.h"
 #include "ViconFileSource.h"
-#include "AudioSource.h"
 #include "ClassOutputSink.h"
 #include "Filter.h"
 #include "Biquad.h"
@@ -265,7 +264,8 @@
 #include "Krumhansl_key_finder.h"
 #include "PWMSource.h"
 #include "DCSource.h"
-#include "AudioSourceRt4.h"
+#include "AudioSource.h"
+#include "AudioSourceBlocking.h"
 //modifyHeader
 
 
@@ -390,7 +390,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Kurtosis", new Kurtosis("kurtosisp"));
 	registerPrototype("Skewness", new Skewness("Skewnessp"));
 	registerPrototype("ViconFileSource", new ViconFileSource("viconfilesourcep"));
-	registerPrototype("AudioSource", new AudioSource("audiosourcep"));
 	registerPrototype("ClassOutputSink", new ClassOutputSink("classoutputsinkp"));
 	registerPrototype("Filter", new Filter("filterp"));
 	registerPrototype("Biquad", new Biquad("biquadp"));
@@ -532,7 +531,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Krumhansl_key_finder", new Krumhansl_key_finder("krumhansl_key_finderpr"));
 	registerPrototype("PWMSource", new PWMSource("pwmsourcepr"));
 	registerPrototype("DCSource", new DCSource("dcsourcepr"));
-	registerPrototype("AudioSourceRt4", new AudioSourceRt4("audiosourcert4pr"));
+	registerPrototype("AudioSource", new AudioSource("audiosourcepr"));
+	registerPrototype("AudioSourceBlocking", new AudioSourceBlocking("audiosourceblockingpr"));
 	//modifyRegister
 
 	//***************************************************************************************

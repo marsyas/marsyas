@@ -1,7 +1,7 @@
 
 #!/usr/bin/evn python
 
-from matplotlib import *
+from pylab import *
 from marsyas_util import * 
 import sys
 import getopt

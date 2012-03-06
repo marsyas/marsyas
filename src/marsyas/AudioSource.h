@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.cmu.edu>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -19,9 +19,16 @@
 #ifndef MARSYAS_AUDIOSOURCE_H
 #define MARSYAS_AUDIOSOURCE_H
 
+
+
+#ifdef MARSYAS_AUDIOIO
+#include "RtAudio.h"
+#endif 
+
 #include "MarSystem.h" 
 
-class RtAudio3;
+
+	class RtAudio;
 
 namespace Marsyas
 {
@@ -30,61 +37,91 @@ namespace Marsyas
    \ingroup IO
    \brief Real-time audio source 
 
-   Real-time Audio Source based on RtAudio.
+   Real-time Audio Source based on RtAudio4.
 
    Controls:
    - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
    - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
    - \b mrs_bool/hasData [r] : is there any audio input left?
-   (End-Of-File not yet reached)
+     (End-Of-File not yet reached)
    - \b mrs_real/gain [w] : scales input
    - \b mrs_natural/nChannels [DOCME] : DOCME
    - \b mrs_natural/nBuffers [DOCME] : DOCME
 */
 
+	
 
-	class AudioSource:public MarSystem
+
+class AudioSource:public MarSystem
+{
+	private:
+
+
+		
+	struct InputData 
 	{
-		private:
+			mrs_realvec* ringBuffer;
+			unsigned int wp;
+			unsigned int rp;
+			unsigned int ringBufferSize;
+			unsigned int high_watermark;
+			unsigned int low_watermark;
+			unsigned int samplesInBuffer;
+			
+			AudioSource* myself;
+	} idata;
+		
 
-			RtAudio3 *audio_;
 
-			int bufferSize_;
-			int nBuffers_;
-			int rtSrate_;
-			int rtChannels_;
-			int rtDevice_;
+		unsigned int getSpaceAvailable();
+		unsigned int getSamplesAvailable();
+	
 
-			mrs_natural ri_;
-			mrs_natural nChannels_;
-			mrs_real *data_;  
-			realvec reservoir_;
-			mrs_natural reservoirSize_;
-			mrs_natural preservoirSize_;
 
-			mrs_real gain_;
+#ifdef MARSYAS_AUDIOIO
+		RtAudio* audio_;
+#endif 
+		int bufferSize_;
+		int nBuffers_;
+		int rtSrate_;
+		int rtChannels_;
 
-			bool isInitialized_;
-			bool stopped_;
-
-			void addControls();
-			void myUpdate(MarControlPtr sender);
-
-			void initRtAudio();
-
-			void start();
-			void stop();
-
-			void localActivate(bool state);
-  
-		public:
-			AudioSource(std::string name);
-			~AudioSource();
-			MarSystem* clone() const;  
-
-			void myProcess(realvec& in, realvec& out);
-	};
-
+ 
+		mrs_natural ri_;
+		mrs_natural nChannels_;
+		mrs_natural pnChannels_;
+		
+		mrs_real *data_;  
+		realvec ringBuffer_;
+		mrs_natural ringBufferSize_;
+		mrs_natural pringBufferSize_;
+		mrs_natural pinObservations_;
+		
+		mrs_real gain_;
+		
+		bool isInitialized_;
+		bool stopped_;
+		
+		void addControls();
+		void myUpdate(MarControlPtr sender);
+		
+		void initRtAudio();
+		
+		void start();
+		void stop();
+		
+		void localActivate(bool state);
+		
+		static int recordCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
+		
+	public:
+		AudioSource(std::string name);
+		~AudioSource();
+		MarSystem* clone() const;  
+		
+		void myProcess(realvec& in, realvec& out);
+};
+	
 }//namespace Marsyas
 
 
