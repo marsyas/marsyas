@@ -1,6 +1,6 @@
 #!/usr/bin/evn python
 
-from pylab import *
+from matplotlib import *
 import marsyas
 import string
 

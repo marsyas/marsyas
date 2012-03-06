@@ -196,7 +196,7 @@ AudioSourceRt4::initRtAudio()
 	
 	
 	RtAudio::StreamParameters iParams;
-	iParams.deviceId = 1;
+	iParams.deviceId = audio_->getDefaultInputDevice();
 	iParams.nChannels = rtChannels_;
 	iParams.firstChannel = 0; 
 	

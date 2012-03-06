@@ -265,6 +265,7 @@
 #include "Krumhansl_key_finder.h"
 #include "PWMSource.h"
 #include "DCSource.h"
+#include "AudioSourceRt4.h"
 //modifyHeader
 
 
@@ -531,6 +532,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Krumhansl_key_finder", new Krumhansl_key_finder("krumhansl_key_finderpr"));
 	registerPrototype("PWMSource", new PWMSource("pwmsourcepr"));
 	registerPrototype("DCSource", new DCSource("dcsourcepr"));
+	registerPrototype("AudioSourceRt4", new AudioSourceRt4("audiosourcert4pr"));
 	//modifyRegister
 
 	//***************************************************************************************

@@ -24,7 +24,7 @@ Min_freq = 20			# Hz. The minimum frequency that will be analyzed
 Max_freq = 5000		# Hz. The maximum frequency that will be analyzed
 
 # The following lines will determine the structure of the marsystem
-spec_analyzer = ["Series/analysis", ["AudioSource/asrc", "Gain/pregain", "ShiftInput/sft", "Windowing/win","Spectrum/spk","PowerSpectrum/pspk"]] 
+spec_analyzer = ["Series/analysis", ["AudioSourceRt4/asrc", "Sum/summation", "Gain/pregain", "ShiftInput/sft", "Windowing/win","Spectrum/spk","PowerSpectrum/pspk"]] 
 net = marsyas_util.create(spec_analyzer)
 snet = marsyas_util.mar_refs(spec_analyzer)
 
@@ -32,9 +32,11 @@ snet = marsyas_util.mar_refs(spec_analyzer)
 fs = 44100.0
 net.updControl("mrs_natural/inSamples", Window_step);
 net.updControl("mrs_real/israte", fs);
+
 net.updControl(snet["sft"]+"/mrs_natural/winSize", Window_len);
 net.updControl(snet["win"]+"/mrs_natural/zeroPadding", Window_len * (Zero_padding-1));
 net.updControl(snet["win"]+"/mrs_string/type", "Hanning"); # "Hamming", "Hanning", "Triangle", "Bartlett", "Blackman"
+net.updControl(snet["asrc"]+"/mrs_natural/nChannels", 1);
 net.updControl(snet["asrc"]+"/mrs_bool/initAudio", marsyas.MarControlPtr.from_bool(True));
 net.updControl(snet["pspk"]+"/mrs_string/spectrumType", "logmagnitude2");  # "power", "magnitude", "decibels", "logmagnitude" (for 1+log(magnitude*1000), "logmagnitude2" (for 1+log10(magnitude)), "powerdensity" 
 
