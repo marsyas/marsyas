@@ -89,25 +89,25 @@ class AudioSourceRt4:public MarSystem
 		mrs_real *data_;  
 		realvec ringBuffer_;
 		mrs_natural ringBufferSize_;
-		mrs_natural pringBufferSize_;
+	mrs_natural pringBufferSize_;
 		mrs_natural pinObservations_;
+	
+	mrs_real gain_;
+	
+	bool isInitialized_;
+	bool stopped_;
+	
+	void addControls();
+	void myUpdate(MarControlPtr sender);
+	
+	void initRtAudio();
+	
+	void start();
+	void stop();
+	
+	void localActivate(bool state);
 		
-		mrs_real gain_;
-		
-		bool isInitialized_;
-		bool stopped_;
-		
-		void addControls();
-		void myUpdate(MarControlPtr sender);
-		
-		void initRtAudio();
-		
-		void start();
-		void stop();
-		
-		void localActivate(bool state);
-		
-		static int recordCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, RtAudioStreamStatus status, void *userData);
+	static int recordCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
 		
 	public:
 		AudioSourceRt4(std::string name);
