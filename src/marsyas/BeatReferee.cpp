@@ -2704,7 +2704,7 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 			strcmp(inductionMode_.c_str(), "supervised") == 0)
 		{
 			if(strcmp(inductionMode_.c_str(), "repeated") == 0) //repeat induction mode (repeated every induction time)
-				triggerInductionTime_ += inductionTime_; //for testing repeated induction x in x secs
+				triggerInductionTime_ += 100; //for testing repeated induction x in x secs
 			else if(strcmp(inductionMode_.c_str(), "random") == 0)
 			{
 				mrs_natural minTriggerRep = maxPeriod_;
@@ -2860,7 +2860,8 @@ BeatReferee::myProcess(realvec& in, realvec& out)
 				}
 
 				//trigger induction time after signalization				
-				if(bestScoreMeanDiff < supervisedTriggerThres_ && lastBestScoreMeanDiff_ > supervisedTriggerThres_)
+				if((bestScoreMeanDiff < (supervisedTriggerThres_*supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-1))) 
+					&& (lastBestScoreMeanDiff_ > (supervisedTriggerThres_*supervisedBestScoresMeans_.at(supervisedBestScoresMeans_.size()-2))))
 				{		
 					//save lastTriggerInductionTime for plotting
 					//mrs_natural lastTriggerInductionTime = triggerInductionTime_;
