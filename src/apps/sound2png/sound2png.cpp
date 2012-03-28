@@ -180,7 +180,6 @@ int getFileLengthForWaveform(string inFileName, int windowSize_, double& min, do
 	// The sound file
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
-	net->addMarSystem(mng.create("ShiftInput", "si"));
 	net->updControl("SoundFileSource/src/mrs_string/filename", inFileName);
 
 
@@ -193,7 +192,6 @@ int getFileLengthForWaveform(string inFileName, int windowSize_, double& min, do
 	
 	net->updControl("SoundFileSource/src/mrs_natural/pos", position_);
 	net->updControl("SoundFileSource/src/mrs_natural/inSamples", hopSize_);
-	net->updControl("ShiftInput/si/mrs_natural/winSize", windowSize_);
 	
 	// Compute the AbsMax of this window
 	net->addMarSystem(mng.create("AbsMax","absmax"));
@@ -397,6 +395,7 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
+	net->addMarSystem(mng.create("Windowing", "win"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
@@ -463,8 +462,6 @@ int getFileLengthForSpectrogram(string inFileName, double& min, double& max, dou
 void outputSpectrogramPNG(string inFileName, string outFileName)
 {
 
-	cout << "SPECTROGRAM " << endl;
-	
 #ifdef MARSYAS_PNG
 	double fftBins = windowSize_ / 2.0 + 1;  // N/2 + 1
 
@@ -480,6 +477,7 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
+	net->addMarSystem(mng.create("Windowing", "win"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
@@ -531,17 +529,12 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 		net->tick();
 		processedData = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		
-		diff = 0.0;
-		
 		for (int i = 0; i < pngHeight; ++i) {
 			double data_y = i;
 			
 			double data = processedData(int(data_y),0);
 
-			normalizedData = ((data - min) / (max - min)) * gain_;
-
-
-			diff += normalizedData;
+			normalizedData = ((data - min) / (max - min));
 
 			// Make the spectrogram black on white instead of white on black
 			// TODO - Add the ability to generate different color maps, like Sonic Visualiser
@@ -557,19 +550,8 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 			png.plot(int(x),int(y),colour,colour,colour);
 		
 		}
-		/* if (fabs(pdiff-diff) > 4.0)
-		   for (int i=0; i < 20; i++)
-		   png.plot(int(x),pngHeight- i, 1.0, 0.0, 0.0);
-		*/ 
-		pdiff = diff;
-		
-		
 		x++;
-
 	}
-
-	png.plot_text(const_cast<char *>(fontfile_.c_str()), 12, 20, 20, 0.0, "THIS IS A SPECTROGRAM", 1.0, 0.0, 0.0);
-	
 
 
 	if (width_ !=-1) 
@@ -616,6 +598,7 @@ neptune_spectrogram(string inFileName, string outFileName)
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
+    net->addMarSystem(mng.create("Windowing", "win"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
@@ -744,6 +727,7 @@ json_spectrogram(string inFileName)
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
+    net->addMarSystem(mng.create("Windowing", "win"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
@@ -888,6 +872,7 @@ html_spectrogram(string inFileName)
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
+    net->addMarSystem(mng.create("Windowing", "win"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
@@ -1175,6 +1160,7 @@ void fftHistogram(string inFileName)
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
+    net->addMarSystem(mng.create("Windowing", "win"));
 	net->addMarSystem(mng.create("Spectrum","spk"));
 	net->addMarSystem(mng.create("PowerSpectrum","pspk"));
 	net->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", "decibels");
