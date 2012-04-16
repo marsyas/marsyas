@@ -126,6 +126,8 @@ public:
 	friend WAS_INLINE MarControlPtr operator-(const MarControlPtr& v1, const MarControlPtr& v2);
 	friend WAS_INLINE MarControlPtr operator*(const MarControlPtr& v1, const MarControlPtr& v2);
 	friend WAS_INLINE MarControlPtr operator/(const MarControlPtr& v1, const MarControlPtr& v2);
+
+	marsyas_EXPORT friend bool operator<(const MarControlPtr& v1, const MarControlPtr& v2);
 };
 
 //////////////////////////////////////////////////////////////////////////

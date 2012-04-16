@@ -652,6 +652,11 @@ namespace Marsyas {
 		return (*v1.control_)/(*v2.control_);
 	}
 
+	bool operator<(const MarControlPtr& v1, const MarControlPtr& v2)
+	{
+		return v1.control_ < v1.control_;
+	}
+
 //WAS_INLINE
 	MarControlPtr::MarControlPtr(const MarControlPtr& a) //mutexes? [?]
 	{
