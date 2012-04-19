@@ -654,7 +654,7 @@ namespace Marsyas {
 
 	bool operator<(const MarControlPtr& v1, const MarControlPtr& v2)
 	{
-		return v1.control_ < v1.control_;
+		return v1.control_ < v2.control_;
 	}
 
 //WAS_INLINE
