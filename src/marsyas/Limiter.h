@@ -29,8 +29,8 @@ namespace Marsyas
     \brief Multiply input realvec with Limiter
 
    Simple MarSystem example. Just multiply the values of the input realvec
-with Limiter and put them in the output vector. This object can be used 
-as a prototype template for building more complicated MarSystems. 
+   with Limiter and put them in the output vector. This object can be used 
+   as a prototype template for building more complicated MarSystems. 
 
 	Controls:
 	- \b mrs_real/thresh [rw] : DUNNO
@@ -65,20 +65,20 @@ as a prototype template for building more complicated MarSystems.
 class Limiter: public MarSystem
 {
 private: 
-  void addControls();
-	void myUpdate(MarControlPtr sender);
+    void addControls();
+    void myUpdate(MarControlPtr sender);
 
-  mrs_real xdprev_;
-  realvec xd_;
-  realvec gains_;
-  mrs_real alpha_;
+    mrs_real xdprev_;
+    realvec xd_;
+    realvec gains_;
+    mrs_real alpha_;
   
 public:
-  Limiter(std::string name);
-  ~Limiter();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
+    Limiter(std::string name);
+    ~Limiter();
+    MarSystem* clone() const;  
+    
+    void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas

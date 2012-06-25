@@ -53,7 +53,9 @@ private:
   mrs_real rRate_;
   mrs_real rTime_;
   mrs_real sampleRate_;
+  MarControlPtr eValue_;
   mrs_natural state_;
+  mrs_bool bypass_;
 
 public:
   ADSR(std::string name);

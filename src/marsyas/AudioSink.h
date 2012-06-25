@@ -47,75 +47,69 @@ namespace Marsyas
 */
 
 
-	class AudioSink:public MarSystem
-	{
-	private:
-		
-		struct OutputData 
-		{
-			mrs_realvec* ringBuffer;
-			unsigned int wp;
-			unsigned int rp;
-			unsigned int samplesInBuffer;
-			unsigned int ringBufferSize;
-			unsigned int inchannels;
-			unsigned int high_watermark;
-			unsigned int low_watermark;
-			int srate;
-			AudioSink* myself;
-				
-		} odata_;
-		
-		
+    class AudioSink:public MarSystem
+    {
+    private:
+        
+        struct OutputData 
+        {
+            mrs_realvec* ringBuffer;
+            unsigned int wp;
+            unsigned int rp;
+            unsigned int samplesInBuffer;
+            unsigned int ringBufferSize;
+            unsigned int inchannels;
+            unsigned int high_watermark;
+            unsigned int low_watermark;
+            int srate;
+            AudioSink* myself;
+                
+        } odata_;
+        
+        
 
-		RtAudio*  audio_;
+        RtAudio*  audio_;
 
-		int bufferSize_;
-		int rtSrate_;
-		int rtChannels_;
-		int srate_;
-	    unsigned int rtDevice_;
-		
-		bool isInitialized_;
-		bool stopped_;
-		
-		mrs_natural nChannels_;
-		mrs_real *data_;  
-		realvec ringBuffer_;
-		mrs_natural ringBufferSize_;
-		mrs_natural pringBufferSize_;
-		mrs_natural pnChannels_;
-  
-		
-		void addControls();
-		void myUpdate(MarControlPtr sender);
-		
-		void initRtAudio();
-		
-		void start();
-		void stop();
+        int bufferSize_;
+        int rtSrate_;
+        int rtChannels_;
+        int srate_;
+        unsigned int rtDevice_;
+        
+        bool isInitialized_;
+        bool stopped_;
+        
+        mrs_natural nChannels_;
+        mrs_real *data_;  
+        realvec ringBuffer_;
+        mrs_natural ringBufferSize_;
+        mrs_natural pringBufferSize_;
+        mrs_natural pnChannels_;
 
-		unsigned int getSpaceAvailable();
-		unsigned int getSamplesAvailable();
-		void localActivate(bool state);
-		
 
-		static int playCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
+        void addControls();
+        void myUpdate(MarControlPtr sender);
 
-		
-	public:
-		AudioSink(std::string name);
-		~AudioSink();
-		MarSystem* clone() const;  
-		
-		void myProcess(realvec& in, realvec& out);
-	};
-	
+        void initRtAudio();
+
+        void start();
+        void stop();
+
+        unsigned int getSpaceAvailable();
+        unsigned int getSamplesAvailable();
+        void localActivate(bool state);
+
+        static int playCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
+
+
+    public:
+        AudioSink(std::string name);
+        ~AudioSink();
+        MarSystem* clone() const;  
+
+        void myProcess(realvec& in, realvec& out);
+    };
+    
 }//namespace Marsyas
 
 #endif
-
-	
-
-	
-	

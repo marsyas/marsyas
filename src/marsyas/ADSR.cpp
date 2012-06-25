@@ -25,6 +25,7 @@ using namespace Marsyas;
 ADSR::ADSR(mrs_string name):MarSystem("ADSR", name)
 {
 	addControls();
+    eValue_ = getctrl("mrs_real/eValue");
 }
 
 ADSR::~ADSR()
@@ -40,30 +41,36 @@ ADSR::clone() const
 void
 ADSR::addControls()
 {
-	//addctrl("mrs_real/aRate", 0.001);//attack rate
-	addctrl("mrs_real/aTime", 0.2);//attack time
-	addctrl("mrs_real/aTarget", 1.0);//attack target
-	//addctrl("mrs_real/dRate", 0.001);//decay rate
-	addctrl("mrs_real/dTime", 0.1);//decay time
-	addctrl("mrs_real/susLevel", 0.85);//sustain level
-	//addctrl("mrs_real/rRate", 0.001);//release rate
-	addctrl("mrs_real/rTime", 0.2);//release time
+	//addctrl("mrs_real/aRate",  0.001); //attack rate
+	addctrl("mrs_real/aTime",    0.2);   //attack time
+	addctrl("mrs_real/aTarget",  1.0);   //attack target
+	//addctrl("mrs_real/dRate",  0.001); //decay rate
+	addctrl("mrs_real/dTime",    0.1);   //decay time
+	addctrl("mrs_real/susLevel", 0.85);  //sustain level
+	//addctrl("mrs_real/rRate",  0.001); //release rate
+	addctrl("mrs_real/rTime",    0.2);   //release time
+
+    // Lee's Adjustments
+    addctrl("mrs_real/eValue", 0.0 );     // envelope value
+    addctrl("mrs_bool/bypass", false);
 
 	addctrl("mrs_natural/state", 1);
 
-	addctrl("mrs_real/nton", 0.0);
+	addctrl("mrs_real/nton",  0.0);
 	addctrl("mrs_real/ntoff", 0.0);
 
-	//setctrlState("mrs_real/aRate", true);
-	setctrlState("mrs_real/aTime", true);
-	setctrlState("mrs_real/aTarget", true);
-	//setctrlState("mrs_real/dRate", true);
-	setctrlState("mrs_real/dTime", true);
-	setctrlState("mrs_real/susLevel", true);
-	//setctrlState("mrs_real/rRate", true);
-	setctrlState("mrs_real/rTime", true);
-	setctrlState("mrs_real/nton", true);
-	setctrlState("mrs_real/ntoff", true);
+	//setctrlState("mrs_real/aRate",  true);
+	setctrlState("mrs_real/aTime",    true );
+	setctrlState("mrs_real/aTarget",  true );
+	//setctrlState("mrs_real/dRate",  true );
+	setctrlState("mrs_real/dTime",    true );
+	setctrlState("mrs_real/susLevel", true );
+	//setctrlState("mrs_real/rRate",  true );
+	setctrlState("mrs_real/rTime",    true );
+	setctrlState("mrs_real/nton",     true );
+	setctrlState("mrs_real/ntoff",    true );
+    setctrlState("mrs_real/eValue",   true );
+    setctrlState("mrs_bool/bypass",   true );
 }
 
 void
@@ -94,6 +101,9 @@ ADSR::myUpdate(MarControlPtr sender)
 	noteon_ = getctrl("mrs_real/nton")->to<mrs_real>();
 	noteoff_ = getctrl("mrs_real/ntoff")->to<mrs_real>();
 
+	bypass_ = getctrl("mrs_bool/bypass")->to<mrs_bool>();
+
+
 	if(noteon_)
 	{
 		this->setctrl("mrs_real/nton",0.0);
@@ -114,41 +124,52 @@ void
 ADSR::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
-	for (o=0; o < inObservations_; o++)
+	for (o = 0; o < inObservations_; o++)
+    {
 		for (t = 0; t < inSamples_; t++)
 		{
-			switch (state_)
-			{
-				case 1://attack
-					value_ += aRate_;
-					if (value_ >= target_)
-					{
-						value_ = target_;
-						rate_ = dRate_;
-						target_ = susLevel_;
-						state_ = 2;
-					}
-					break;
-				case 2://decay
-					value_ -= dRate_;
-					if (value_ <= susLevel_)
-					{
-						value_ = susLevel_;
-						rate_ = 0.0;
-						state_ = 3;
-					}
-					break;
-				case 4://release
-					value_ -= rRate_;
-					if (value_ <= 0.0)
-					{
-						value_ = 0.0;
-						state_ = 5;//done
-					}
-			}//switch
+            switch (state_)
+            {
+                case 1://attack
+                    value_ += aRate_;
+                    if (value_ >= target_)
+                    {
+                        value_ = target_;
+                        rate_ = dRate_;
+                        target_ = susLevel_;
+                        state_ = 2;
+                    }
+                    break;
+                case 2://decay
+                    value_ -= dRate_;
+                    if (value_ <= susLevel_)
+                    {
+                        value_ = susLevel_;
+                        rate_ = 0.0;
+                        state_ = 3;
+                    }
+                    break;
+                case 4://release
+                    value_ -= rRate_;
+                    if (value_ <= 0.0)
+                    {
+                        value_ = 0.0;
+                        state_ = 5;//done
+                    }
+            }//switch
 
-			out(o,t) =  value_* in(o,t);
+            if ( !bypass_ )
+            {
+                out(o,t) =  value_* in(o,t);
+            }
+            else
+            {
+                out(o,t) =  in(o,t);
+            }
 		}//for
+    }//for
+
+    eValue_->setValue(value_);
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
 	//MATLAB_PUT(out, "ADSR_out");

@@ -38,9 +38,9 @@ MidiInput::MidiInput(mrs_string name):MarSystem("MidiInput",name)
 
 MidiInput::MidiInput(const MidiInput& a): MarSystem(a) 
 {
-  ctrl_byte1_ = getctrl("mrs_natural/byte1");
-  ctrl_byte2_ = getctrl("mrs_natural/byte2");
-  ctrl_byte3_ = getctrl("mrs_natural/byte3");
+    ctrl_byte1_ = getctrl("mrs_natural/byte1");
+    ctrl_byte2_ = getctrl("mrs_natural/byte2");
+    ctrl_byte3_ = getctrl("mrs_natural/byte3");
 }
 
 MidiInput::~MidiInput()
@@ -142,12 +142,14 @@ void MidiInput::mycallback(double deltatime, std::vector< unsigned char > * mess
 void MidiInput::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t,o;
-  // just pass data through 
-  for (o=0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
-      {
-	out(o,t) =  in(o,t);
-      }
+    // just pass data through 
+    for (o=0; o < inObservations_; o++)
+    {
+        for (t = 0; t < inSamples_; t++)
+        {
+            out(o,t) =  in(o,t);
+        }
+    }
   ctrl_byte1_->setValue((mrs_natural)byte1, NOUPDATE);
   ctrl_byte2_->setValue((mrs_natural)byte2, NOUPDATE);
   ctrl_byte3_->setValue((mrs_natural)byte3, NOUPDATE);

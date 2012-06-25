@@ -53,8 +53,6 @@ AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
 	bufferSize_ = 0;
 	rtChannels_ = 0;
 	rtDevice_ = 0;
-  
-
 
 	addControls();
 }
@@ -77,6 +75,7 @@ void
 AudioSink::addControls()
 {
   
+  //TODO: Why is this still here?
 #ifdef MARSYAS_MACOSX
 	addctrl("mrs_natural/bufferSize", 256);
 #else
@@ -181,7 +180,7 @@ AudioSink::initRtAudio()
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
 
-	rtFormat = RTAUDIO_FLOAT64;
+	// rtFormat = RTAUDIO_FLOAT64;
 	
 	RtAudio::StreamOptions options;
 	audio_->showWarnings(true);
@@ -281,15 +280,15 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 						data[t4+1+j] = ringBuffer(0+j,odata->rp);
 					}
 				}
-				
 			}
 			else						// default case - use actual srate
 			{
 
 				if (odata->inchannels == 1) 
 				{
-					
 					mrs_real val = ringBuffer(0,odata->rp);
+					//cout << val << endl;
+					//cout << val << endl;
 					data[t2] = val;
 					data[t2+1] = val;
 				}

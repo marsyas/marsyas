@@ -34,25 +34,25 @@ namespace Marsyas
 
 	Controls:
 	- \b mrs_real/frequency	: frequency of the sine wave
-*/
+**/
 
 
 class SineSource: public MarSystem
 {
 private: 
-  realvec wavetable_;
-  mrs_real wavetableSize_;
-  mrs_real index_;
-  
-  void addControls();
+    realvec wavetable_;
+    mrs_real wavetableSize_;
+    mrs_real index_;
+
+    void addControls();
 	void myUpdate(MarControlPtr sender);
   
 public:
-  SineSource(std::string name);
-  ~SineSource();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
+    SineSource(std::string name);
+    ~SineSource();
+    MarSystem* clone() const;  
+
+    void myProcess(realvec& in, realvec& out);
   
 };
 

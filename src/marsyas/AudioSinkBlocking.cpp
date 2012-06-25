@@ -348,25 +348,28 @@ AudioSinkBlocking::myProcess(realvec& in, realvec& out)
 				rt += reservoirSize_;
 	  
 			const int t2 = 2 * t;
-#ifndef MARSYAS_MACOSX
 
-			if (inObservations_ == 1) 
-			{
-				for (int j=0; j < nChannels_; j++) 
-				{
-					data_[t2+j] = reservoir_(0, rt);
-				}
-			}
-			else 
-			{
-				for (int j=0; j < nChannels_; j++) 
-				{
-					data_[t2+j] = reservoir_(0+j,   rt);
-				}
-				
-			}
-	  
-#else
+            // What does this do? - LG
+            // Why is this defined?? - <3 lg
+//#ifndef MARSYAS_MACOSX
+//
+//			if (inObservations_ == 1) 
+//			{
+//				for (int j=0; j < nChannels_; j++) 
+//				{
+//					data_[t2+j] = reservoir_(0, rt);
+//				}
+//			}
+//			else 
+//			{
+//				for (int j=0; j < nChannels_; j++) 
+//				{
+//					data_[t2+j] = reservoir_(0+j,   rt);
+//				}
+//				
+//			}
+//	  
+//#else
 			const int t4 = 4 * t;
 			if (srate_ == 22050)
 			{	      
@@ -407,7 +410,7 @@ AudioSinkBlocking::myProcess(realvec& in, realvec& out)
 					
 				}
 			}
-#endif 
+//#endif 
 		}
       
 #ifdef MARSYAS_AUDIOIO
@@ -434,15 +437,3 @@ AudioSinkBlocking::myProcess(realvec& in, realvec& out)
 //   cout << "AudioSinkBlocking::myProcess end" << endl;
 
 }
-
- 
-
-
-
-
-
-
-
-
-
-	
