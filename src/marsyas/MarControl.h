@@ -85,7 +85,7 @@ public:
 	WAS_INLINE MarControlPtr(MarControl control);
 	WAS_INLINE MarControlPtr(MarControlValue *value);
 	WAS_INLINE MarControlPtr(int ne);
-    WAS_INLINE MarControlPtr(float ne);
+	WAS_INLINE MarControlPtr(float ne);
 	WAS_INLINE MarControlPtr(mrs_natural ne);
 	WAS_INLINE MarControlPtr(double re);
 	WAS_INLINE MarControlPtr(const char *c);

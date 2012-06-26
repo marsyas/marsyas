@@ -41,6 +41,9 @@ namespace Marsyas
 	const mrs_natural MINNATURAL = std::numeric_limits<mrs_natural>::min();
 
 	// double precision
+	#ifdef PI 
+	#undef PI //to avoid clashes with other macros defined for PI in other libs... 
+	#endif
 	const mrs_real PI = 3.14159265358979323846;
 	const mrs_real TWOPI = 6.28318530717958647692;
 
