@@ -25,7 +25,6 @@ using namespace Marsyas;
 ADSR::ADSR(mrs_string name):MarSystem("ADSR", name)
 {
 	addControls();
-    eValue_ = getctrl("mrs_real/eValue");
 }
 
 ADSR::~ADSR()
@@ -50,9 +49,9 @@ ADSR::addControls()
 	//addctrl("mrs_real/rRate",  0.001); //release rate
 	addctrl("mrs_real/rTime",    0.2);   //release time
 
-    // Lee's Adjustments
-    addctrl("mrs_real/eValue", 0.0 );     // envelope value
-    addctrl("mrs_bool/bypass", false);
+	// Lee's Adjustments
+	addctrl("mrs_real/eValue", 0.0 );     // envelope value
+	addctrl("mrs_bool/bypass", false);
 
 	addctrl("mrs_natural/state", 1);
 
@@ -69,8 +68,8 @@ ADSR::addControls()
 	setctrlState("mrs_real/rTime",    true );
 	setctrlState("mrs_real/nton",     true );
 	setctrlState("mrs_real/ntoff",    true );
-    setctrlState("mrs_real/eValue",   true );
-    setctrlState("mrs_bool/bypass",   true );
+	setctrlState("mrs_real/eValue",   true );
+	setctrlState("mrs_bool/bypass",   true );
 }
 
 void
@@ -125,51 +124,49 @@ ADSR::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
 	for (o = 0; o < inObservations_; o++)
-    {
+	{
 		for (t = 0; t < inSamples_; t++)
 		{
-            switch (state_)
-            {
-                case 1://attack
-                    value_ += aRate_;
-                    if (value_ >= target_)
-                    {
-                        value_ = target_;
-                        rate_ = dRate_;
-                        target_ = susLevel_;
-                        state_ = 2;
-                    }
-                    break;
-                case 2://decay
-                    value_ -= dRate_;
-                    if (value_ <= susLevel_)
-                    {
-                        value_ = susLevel_;
-                        rate_ = 0.0;
-                        state_ = 3;
-                    }
-                    break;
-                case 4://release
-                    value_ -= rRate_;
-                    if (value_ <= 0.0)
-                    {
-                        value_ = 0.0;
-                        state_ = 5;//done
-                    }
-            }//switch
-
-            if ( !bypass_ )
-            {
-                out(o,t) =  value_* in(o,t);
-            }
-            else
-            {
-                out(o,t) =  in(o,t);
-            }
+			switch (state_)
+			{
+				case 1://attack
+					value_ += aRate_;
+					if (value_ >= target_)
+					{
+						value_ = target_;
+						rate_ = dRate_;
+						target_ = susLevel_;
+						state_ = 2;
+					}
+					break;
+				case 2://decay
+					value_ -= dRate_;
+					if (value_ <= susLevel_)
+					{
+						value_ = susLevel_;
+						rate_ = 0.0;
+						state_ = 3;
+					}
+					break;
+				case 4://release
+					value_ -= rRate_;
+					if (value_ <= 0.0)
+					{
+						value_ = 0.0;
+						state_ = 5;//done
+					}
+			}//switch
+			
+			if ( !bypass_ )
+			{
+				out(o,t) =  value_* in(o,t);
+			}
+			else
+			{
+			    out(o,t) =  in(o,t);
+			}
 		}//for
-    }//for
-
-    eValue_->setValue(value_);
+	}//for
 
 	//used for toy_with_onsets.m (DO NOT DELETE! - COMMENT INSTEAD)
 	//MATLAB_PUT(out, "ADSR_out");

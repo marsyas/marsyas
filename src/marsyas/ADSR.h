@@ -17,15 +17,15 @@
 */
 
 #ifndef MARSYAS_ADSR_H
-#define MARSYAS_ADSR_H	
+#define MARSYAS_ADSR_H  
 
-#include "MarSystem.h"	
+#include "MarSystem.h"  
 
 namespace Marsyas
 {
 /** 
     \class ADSRenvelope
-	\ingroup Processing
+    \ingroup Processing
     \brief Multiply input realvec by Value of Envelope
 
    Simple MarSystem example. Just multiply the values of the input realvec
@@ -38,32 +38,31 @@ with current value of the ADSR envelope and put them in the output vector.
 class ADSR: public MarSystem
 {
 private: 
-  void addControls();
-  mrs_real target_;
-  mrs_real rate_;
-  mrs_real value_;
-  mrs_real noteon_;
-  mrs_real noteoff_;
-  mrs_real aRate_; 
-  mrs_real aTime_;
-  mrs_real aTarget_;
-  mrs_real dRate_;
-  mrs_real dTime_;
-  mrs_real susLevel_; 
-  mrs_real rRate_;
-  mrs_real rTime_;
-  mrs_real sampleRate_;
-  MarControlPtr eValue_;
-  mrs_natural state_;
-  mrs_bool bypass_;
+    void addControls();
+    mrs_real target_;
+    mrs_real rate_;
+    mrs_real value_;
+    mrs_real noteon_;
+    mrs_real noteoff_;
+    mrs_real aRate_; 
+    mrs_real aTime_;
+    mrs_real aTarget_;
+    mrs_real dRate_;
+    mrs_real dTime_;
+    mrs_real susLevel_; 
+    mrs_real rRate_;
+    mrs_real rTime_;
+    mrs_real sampleRate_;
+    mrs_natural state_;
+    mrs_bool bypass_;
 
 public:
-  ADSR(std::string name);
-  ~ADSR();
-  MarSystem* clone() const;  
-  
-  void myUpdate(MarControlPtr sender);
-  void myProcess(realvec& in, realvec& out);
+    ADSR(std::string name);
+    ~ADSR();
+    MarSystem* clone() const;  
+    
+    void myUpdate(MarControlPtr sender);
+    void myProcess(realvec& in, realvec& out);
 };
 
 } // namespace Marsyas 
