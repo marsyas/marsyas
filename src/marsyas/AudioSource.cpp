@@ -30,19 +30,19 @@ AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 #endif
 
 
-  ri_ = 0;
-  pringBufferSize_ = 0;
+	ri_ = 0;
+	pringBufferSize_ = 0;
 
-  isInitialized_ = false;
-  stopped_ = true;
+	isInitialized_ = false;
+	stopped_ = true;
 
-  rtSrate_ = 0;
-  bufferSize_ = 0;
-  rtChannels_ = 0;
-  nChannels_ = 0;
-  pnChannels_ = 0;
-  
-  addControls();
+	rtSrate_ = 0;
+	bufferSize_ = 0;
+	rtChannels_ = 0;
+	nChannels_ = 0;
+	pnChannels_ = 0;
+
+	addControls();
 }
 
 AudioSource::~AudioSource()
@@ -57,27 +57,27 @@ AudioSource::~AudioSource()
 MarSystem* 
 AudioSource::clone() const
 {
-  return new AudioSource(*this);
+	return new AudioSource(*this);
 }
 
 void 
 AudioSource::addControls()
 {
-  addctrl("mrs_natural/nChannels", 1);
+	addctrl("mrs_natural/nChannels", 1);
 
-  
+
 #ifdef MARSYAS_MACOSX
-  addctrl("mrs_natural/bufferSize", 1024);
+	addctrl("mrs_natural/bufferSize", 1024);
 #else
-  addctrl("mrs_natural/bufferSize", 256);
+	addctrl("mrs_natural/bufferSize", 256);
 #endif
 
-  
-  addctrl("mrs_bool/initAudio", false);
-  setctrlState("mrs_bool/initAudio", true);
-  
-  addctrl("mrs_bool/hasData", true);
-  addctrl("mrs_real/gain", 1.0); 
+
+	addctrl("mrs_bool/initAudio", false);
+	setctrlState("mrs_bool/initAudio", true);
+
+	addctrl("mrs_bool/hasData", true);
+	addctrl("mrs_real/gain", 1.0); 
 }
 
 
@@ -107,9 +107,13 @@ AudioSource::recordCallback(void *outputBuffer, void *inputBuffer,
 			
 			iData->wp = ++ (iData->wp) % iData->ringBufferSize;
 			if (iData->wp >= iData->rp) 
+			{
 				iData->samplesInBuffer = iData->wp - iData->rp;
+			}
 			else 
+			{
 				iData->samplesInBuffer = iData->ringBufferSize - (iData->rp - iData->wp);
+			}
 		}
 		else
 		{
@@ -118,7 +122,9 @@ AudioSource::recordCallback(void *outputBuffer, void *inputBuffer,
 				SLEEP(1);
 				drain_count++;
 				if (drain_count == 1000)
+				{
 					return 1;
+				}
 			}
 		}
 	}
@@ -131,48 +137,48 @@ void
 AudioSource::myUpdate(MarControlPtr sender)
 {
 	(void) sender;
-  MRSDIAG("AudioSource::myUpdate");
-  
-  //set output controls
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/nChannels"));
-  
-  
-  inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-  inObservations_ = ctrl_inObservations_->to<mrs_natural>();
-  gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
-  
+	MRSDIAG("AudioSource::myUpdate");
+
+	//set output controls
+	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
+	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
+	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/nChannels"));
 
 
-  //resize ringBuffer if necessary
-  if (inSamples_ < bufferSize_) 
-	  ringBufferSize_ =  8 * bufferSize_;
-  else 
-  {
-	  ringBufferSize_ =  8 * inSamples_;
-  }
-  
+	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
+	gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
 
-  idata.ringBufferSize = ringBufferSize_;
-  idata.high_watermark = ringBufferSize_/4;
-  idata.low_watermark = ringBufferSize_/8;
-  
 
-  nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();	
-  if ((ringBufferSize_ > pringBufferSize_)||(nChannels_ != pnChannels_))
-    {
+
+	//resize ringBuffer if necessary
+	if (inSamples_ < bufferSize_) 
+	{
+		ringBufferSize_ =  8 * bufferSize_;
+	}
+	else 
+	{
+		ringBufferSize_ =  8 * inSamples_;
+	}
+
+
+	idata.ringBufferSize = ringBufferSize_;
+	idata.high_watermark = ringBufferSize_/4;
+	idata.low_watermark = ringBufferSize_/8;
+
+
+	nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();	
+	if ((ringBufferSize_ > pringBufferSize_)||(nChannels_ != pnChannels_))
+	{
 		ringBuffer_.stretch(nChannels_, ringBufferSize_);
-    }
-  pringBufferSize_ = ringBufferSize_;
-  pnChannels_ = nChannels_;
-  
+	}
+	pringBufferSize_ = ringBufferSize_;
+	pnChannels_ = nChannels_;
 
-
-  
-  
-  if (getctrl("mrs_bool/initAudio")->to<mrs_bool>()) 
-	  initRtAudio();
+	if (getctrl("mrs_bool/initAudio")->to<mrs_bool>()) 
+	{
+		initRtAudio();
+	}
 }
 
 
@@ -189,7 +195,9 @@ AudioSource::initRtAudio()
 	//marsyas represents audio data as float numbers
 #ifdef MARSYAS_AUDIOIO
 	if (audio_ == NULL)
+	{
 		audio_ = new RtAudio();
+	}
 	
 
 	unsigned int bufferFrames = bufferSize_;
@@ -239,7 +247,8 @@ void
 AudioSource::start()
 {
 #ifdef MARSYAS_AUDIOIO
-	if ( stopped_) {
+	if ( stopped_)
+	{
 		audio_->startStream();
 		stopped_ = false;
 	}
@@ -250,20 +259,25 @@ void
 AudioSource::stop()
 {
 #ifdef MARSYAS_AUDIOIO
-  if ( !stopped_ ) {
-    audio_->stopStream();
-    stopped_ = true;
-  }
+	if ( !stopped_ )
+	{
+		audio_->stopStream();
+		stopped_ = true;
+	}
 #endif 
 }
 
 void
 AudioSource::localActivate(bool state)
 {
-  if(state)
-    start();
-  else
-    stop();
+	if(state)
+	{
+		start();
+	}
+	else
+	{
+		stop();
+	}
 }
 
 
@@ -288,34 +302,46 @@ AudioSource::getSamplesAvailable()
 void 
 AudioSource::myProcess(realvec& in, realvec& out)
 {
-	
-	
 	(void) in;
 	
 	//check if RtAudio is initialized
 	if (!isInitialized_)
+	{
 		return;
+	}
 	
 	//check MUTE
-	if(ctrl_mute_->isTrue()) return;
+	if(ctrl_mute_->isTrue())
+	{
+		return;
+	}
 
 	//assure that RtAudio thread is running
 	//(this may be needed by if an explicit call to start()
 	//is not done before ticking or calling process() )
 	if ( stopped_ )
+	{
 		start();
+	}
 	
 	for (t=0; t < onSamples_; t++)
 	{
 		if (getSamplesAvailable()) 
 		{
 			for (o=0; o < onObservations_; o++)			  
+			{
 				out(o,t) = ringBuffer_(o,idata.rp);
+			}
+
 			idata.rp = ++(idata.rp) % idata.ringBufferSize;	
 			if (idata.rp >= idata.rp) 
+			{
 				idata.samplesInBuffer = idata.wp - idata.rp;
+			}
 			else 
+			{
 				idata.samplesInBuffer = idata.ringBufferSize - (idata.rp - idata.wp);
+			}
 		  
 		}
 	}
@@ -324,9 +350,5 @@ AudioSource::myProcess(realvec& in, realvec& out)
 	{
 		SLEEP(1);
 	}
-	
-	
-	
-	
 }
 
