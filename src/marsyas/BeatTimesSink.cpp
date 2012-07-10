@@ -38,6 +38,7 @@ BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 	initialOut_ = true;
 	initialOut2_ = true;
 	initialOut3_ = true;
+	tempoVec_.resize(1);
 	// mySocket_ = -1;
 }
 
@@ -52,7 +53,7 @@ BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
 	ctrl_destFileName_ = getctrl("mrs_string/destFileName");
 	ctrl_mode_ = getctrl("mrs_string/mode");
 	ctrl_tickCount_ = getctrl("mrs_natural/tickCount");
-	ctrl_tempo_ = getctrl("mrs_real/tempo");
+	ctrl_curMedianTempo_ = getctrl("mrs_natural/curMedianTempo");
 	ctrl_adjustment_ = getctrl("mrs_natural/adjustment");
 	ctrl_bestFinalAgentHistory_= getctrl("mrs_realvec/bestFinalAgentHistory");
 	ctrl_soundFileSize_= getctrl("mrs_natural/soundFileSize");
@@ -67,6 +68,7 @@ BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
 	initialOut_ = a.initialOut_;
 	initialOut2_ = a.initialOut2_;
 	initialOut3_ = a.initialOut3_;
+	tempoVec_ = a.tempoVec_;
 
 	// socketsPort_ = a.socketsPort_;
 	// mySocket_ = a.mySocket_;
@@ -97,7 +99,7 @@ BeatTimesSink::addControls()
 	addctrl("mrs_string/destFileName", "output", ctrl_destFileName_);
 	addctrl("mrs_string/mode", "beats+tempo", ctrl_destFileName_);
 	setctrlState("mrs_string/mode", true);
-	addctrl("mrs_real/tempo", 80.0, ctrl_tempo_);
+	addctrl("mrs_natural/curMedianTempo", 0, ctrl_curMedianTempo_);
 	addctrl("mrs_natural/adjustment", 0, ctrl_adjustment_);
 	setctrlState("mrs_natural/adjustment", true);
 	addctrl("mrs_realvec/bestFinalAgentHistory", realvec(), ctrl_bestFinalAgentHistory_);
@@ -233,9 +235,36 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				
 				//after the 1st beat calculate ibi
 				if(!initialOut_ || !initialOut2_ || !initialOut3_)
+				{
 					ibiBPM_ = (60.0 / (beatTime_ - lastBeatTime_)); //inter-beat-interval (in BPMs)
+					tempoVec_.push_back(ibiBPM_);
+				}
+				
+				//curMedianTempo = (mrs_natural) (ibiBPMVec_((mrs_natural)(beatCount_ / 2.0)) + 0.5);
+				mrs_natural curMedianTempo;
+				mrs_realvec tempoVecMedian_(1);
+				if(tempoVec_.size() > 10) 
+				{
+					tempoVecMedian_.stretch(10); //account for last 10IBIs (11beats)
+					mrs_natural ii = 0;
+					for(mrs_natural s = (mrs_natural) (tempoVec_.size()-10); s < (mrs_natural) tempoVec_.size(); s++)
+					{
+						tempoVecMedian_(ii) = tempoVec_.at(s);
+						ii++;
+					}
+				}
+				else
+				{
+					tempoVecMedian_.stretch(tempoVec_.size());
+					for(mrs_natural s = 0; s < (mrs_natural) tempoVec_.size(); s++)
+						tempoVecMedian_(s) = tempoVec_.at(s);
+					
+				}
+				curMedianTempo = (mrs_natural) tempoVecMedian_.median();
 
-				// cout << "Beat at: " << beatTime_ << " (s) - " << ibiBPM_ << " (BPMs)" << endl;
+				//cout << "Beat at: " << beatTime_ << " (s) - " << curMedianTempo << " (BPMs)" << endl;
+				
+				updControl(ctrl_curMedianTempo_, curMedianTempo);
 
 				fstream outStream;
 				fstream outStream2;
@@ -311,22 +340,15 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 
 						mrs_natural output;
 						output = (mrs_natural) (ibiBPMVec_((mrs_natural)(beatCount_ / 2.0)) + 0.5);
-						tempo_ = output;
-						ctrl_tempo_->setValue(tempo_, NOUPDATE);
-
 						/*
 						  if(beatCount_ % 2 == 0) 
 						  {
 						  output = (mrs_natural) (ibiBPMVec_((mrs_natural)(beatCount_ / 2.0)) + 0.5);
-						  tempo_ = output;
-						  ctrl_tempo_->setValue(tempo_, NOUPDATE);
 						  }
 						  else
 						  {
 						  output = (mrs_natural) ((ibiBPMVec_((mrs_natural)floor((beatCount_ / 2.0))) 
 						  + ibiBPMVec_((mrs_natural)ceil((beatCount_ / 2.0))) / 2.0) +0.5);
-						  tempo_ = output;
-						  ctrl_tempo_->setValue(tempo_, NOUPDATE);
 						  }
 						*/
 
@@ -344,8 +366,6 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 						outStream.open(oss3.str().c_str());
 						outStream << (mrs_natural) (ibiBPM_ + 0.5); //(+0.5 for round integer)
 						outStream.close();
-						tempo_ = ibiBPM_;
-						ctrl_tempo_->setValue(tempo_, NOUPDATE);
 					}
 				}
 				
@@ -468,8 +488,6 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				{
 					mrs_natural output;
 					output = (mrs_natural) (ibiBPMVec_((mrs_natural)(beatCount_ / 2.0)) + 0.5);
-					tempo_ = output;
-					ctrl_tempo_->setValue(tempo_, NOUPDATE);
 					
 					ostringstream oss3;
 					fstream outStream3;

@@ -1,5 +1,4 @@
 #include "IBT~.h"
-
 #define INDUCTION_TIME 5.0 //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
 #define BPM_HYPOTHESES 6 //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
 #define PHASE_HYPOTHESES 30//Nr. of phases per BPM hypothesis (30)

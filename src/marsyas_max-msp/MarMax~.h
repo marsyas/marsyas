@@ -26,7 +26,8 @@ typedef struct _MarMax
 	t_pxobject					ob;			// the object itself (t_pxobject in MSP)
 	float						offset; 
 	double	d_SR;
-	void* outlet;
+	void* outletBeat;
+	void* outletTempo;
 	MarMaxIBT *ibt;
 	//Ctestdll testdll;
 	MarSystem* m_MarsyasNetwork;

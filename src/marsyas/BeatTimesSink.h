@@ -58,7 +58,7 @@ private:
 	MarControlPtr ctrl_destFileName_;
 	MarControlPtr ctrl_mode_;
 	MarControlPtr ctrl_tickCount_;
-	MarControlPtr ctrl_tempo_;
+	MarControlPtr ctrl_curMedianTempo_;
 	MarControlPtr ctrl_adjustment_;
 	MarControlPtr ctrl_bestFinalAgentHistory_;
 	MarControlPtr ctrl_soundFileSize_;
@@ -89,7 +89,7 @@ private:
 	mrs_natural timeElapsed_;
 	mrs_real ibiBPMSum_;
 	mrs_natural beatCount_;
-	mrs_real tempo_;
+	std::vector <mrs_real> tempoVec_;
 
 	mrs_natural socketsPort_;
 	// SOCKET mySocket_, myAcceptSocket_;

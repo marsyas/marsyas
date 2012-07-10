@@ -61,6 +61,7 @@ t_int *MarMax_perform(t_int *w)
 	int i;
 	bool Nozero = false;
 	realvec output_realvec;
+	int output_tempo, curMedianTempo = 0;
 
 	//to check if input is empty -> don't know exactly why when no input is loaded 
 	//into Marsystem the network stucks in steady-state
@@ -95,13 +96,20 @@ t_int *MarMax_perform(t_int *w)
 				x->m_MarsyasNetwork->tick();
 				//post ("processing done");
 
-				// Get the data out of the networK
+				// Get the data out of the network -> beat events
 				output_realvec = x->m_MarsyasNetwork->getControl("Series/featureNetwork/FlowThru/beattracker/mrs_realvec/innerOut")->to<mrs_realvec>();
+
+				// Get the data out of the network -> median tempo
+				output_tempo = (int) x->m_MarsyasNetwork->getControl("Series/featureNetwork/FlowThru/beattracker/BeatTimesSink/sink/mrs_natural/curMedianTempo")->to<mrs_natural>();
+				if(output_tempo > 0) curMedianTempo = output_tempo;
+				
+				//post("tempo: %d", curMedianTempo);
+				outlet_int(x->outletTempo, curMedianTempo); // signal outlet (note "signal" rather than NULL)
 
 				//post("output vector copied");
 		
 				if (output_realvec(0,0))
-					outlet_bang (x->outlet);
+					outlet_bang (x->outletBeat);
 				//if(output_realvec(0,0))
 					//	post("BEAT!");
 
@@ -220,9 +228,8 @@ void *MarMax_new(t_symbol *s, long argc, t_atom *argv)
 		//x->ob.z_misc = Z_NO_INPLACE;
 		dsp_setup((t_pxobject *)x, 1);	// MSP inlets: arg is # of inlets and is REQUIRED! 
 										// use 0 if you don't need inlets
-										
-		//outlet_new(x, "signal"); // signal outlet (note "signal" rather than NULL)
-		x->outlet = bangout(x);	//an outlet that can only output bangs (nothing else)
+		x->outletTempo = intout(x); // int outlet for tempo
+		x->outletBeat = bangout(x);	//an outlet that can only output bangs (nothing else)
 
 		//post("winSize: %d; hopSize: %d; fs: %f; inductionTime: %f; minBPM: %d, maxBPM: %d; outPathName: %s", 
 		//	x->bufsize, x->hopsize, x->d_SR, x->inductionTime, x->minBPM, x->maxBPM, x->outPathName);
