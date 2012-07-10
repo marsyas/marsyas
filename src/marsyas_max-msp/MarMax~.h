@@ -30,6 +30,17 @@ typedef struct _MarMax
 	MarMaxIBT *ibt;
 	//Ctestdll testdll;
 	MarSystem* m_MarsyasNetwork;
+	t_int pos;                    /*frames%dspblocksize */
+    t_int bufsize;
+    t_int hopsize;
+	t_float inductionTime;
+	t_int minBPM;
+	t_int maxBPM;
+	bool stateRecovery;
+	char *outPathName;
+	//unused for now
+	t_int onlineFlag;
+	t_int metricalChangesFlag;
 } t_MarMax;
 
 ///////////////////////// function prototypes
@@ -37,12 +48,14 @@ typedef struct _MarMax
 void *MarMax_new(t_symbol *s, long argc, t_atom *argv);
 void MarMax_free(t_MarMax *x);
 void MarMax_assist(t_MarMax *x, void *b, long m, long a, char *s);
-
+void MarMax_setIBTDefaultParams(t_MarMax *x);
 void MarMax_float(t_MarMax *x, double f);
 
 void MarMax_dsp(t_MarMax *x, t_signal **sp, short *count);
 t_int *MarMax_perform(t_int *w);
 //////////////////////// global class pointer variable
 void *MarMax_class;
+
+realvec r; //hopsize = 512
 
 #endif

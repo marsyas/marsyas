@@ -1,0 +1,260 @@
+@prefix rdfs:     <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:      <http://www.w3.org/2001/XMLSchema#> .
+@prefix vamp:     <http://purl.org/ontology/vamp/> .
+@prefix plugbase: <http://vamp-plugins.org/rdf/plugins/mvamp#> .
+@prefix owl:      <http://www.w3.org/2002/07/owl#> .
+@prefix dc:       <http://purl.org/dc/elements/1.1/> .
+@prefix af:       <http://purl.org/ontology/af/> .
+@prefix foaf:     <http://xmlns.com/foaf/0.1/> .
+@prefix cc:       <http://web.resource.org/cc/> .
+@prefix :         <#> .
+
+<>  a   vamp:PluginDescription ;
+    foaf:maker          <http://www.vamp-plugins.org/doap.rdf#template-generator> ;
+    foaf:primaryTopic   <http://vamp-plugins.org/rdf/plugins/mvamp> .
+
+:mvamp a  vamp:PluginLibrary ;
+    vamp:identifier "mvamp"  ; 
+    vamp:available_plugin plugbase:marsyas_bextract_centroid ; 
+    vamp:available_plugin plugbase:marsyas_bextract_lpcc ; 
+    vamp:available_plugin plugbase:marsyas_bextract_lsp ; 
+    vamp:available_plugin plugbase:marsyas_bextract_mfcc ; 
+    vamp:available_plugin plugbase:marsyas_bextract_rolloff ; 
+    vamp:available_plugin plugbase:marsyas_bextract_scf ; 
+    vamp:available_plugin plugbase:marsyas_bextract_sfm ; 
+    vamp:available_plugin plugbase:marsyas_bextract_zero_crossings ; 
+    vamp:available_plugin plugbase:zerocrossing ; 
+#   foaf:page <Place more-information HTML page URL here and uncomment> ;
+    .
+
+plugbase:marsyas_bextract_centroid a   vamp:Plugin ;
+    dc:title              "Marsyas - Batch Feature Extract - Centroid" ;
+    vamp:name             "Marsyas - Batch Feature Extract - Centroid" ;
+    dc:description        """Marsyas - Batch Feature Extract - Centroid""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_bextract_centroid" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_bextract_centroid_output_centroid_value ;
+    .
+plugbase:marsyas_bextract_centroid_output_centroid_value a  vamp:DenseOutput ;
+    vamp:identifier       "centroid_value" ;
+    dc:title              "Centroid value" ;
+    dc:description        "The value of the centroid"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "value" ;
+    vamp:bin_count        1 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:marsyas_bextract_lpcc a   vamp:Plugin ;
+    dc:title              "Marsyas - Batch Feature Extract - Linear Prediction Cepstral Coefficients" ;
+    vamp:name             "Marsyas - Batch Feature Extract - Linear Prediction Cepstral Coefficients" ;
+    dc:description        """Marsyas - Batch Feature Extract - Linear Prediction Cepstral Coefficients""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_bextract_lpcc" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_bextract_lpcc_output_linear_prediction_cepstral_coefficients ;
+    .
+plugbase:marsyas_bextract_lpcc_output_linear_prediction_cepstral_coefficients a  vamp:DenseOutput ;
+    vamp:identifier       "linear_prediction_cepstral_coefficients" ;
+    dc:title              "Linear Prediction Cepstral Coefficients" ;
+    dc:description        "The value of the Linear Prediction Cepstral Coefficients"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "value" ;
+    vamp:bin_count        12 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:marsyas_bextract_lsp a   vamp:Plugin ;
+    dc:title              "Marsyas - Batch Feature Extract - Line Spectral Pairs" ;
+    vamp:name             "Marsyas - Batch Feature Extract - Line Spectral Pairs" ;
+    dc:description        """Marsyas - Batch Feature Extract - Line Spectral Pairs""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_bextract_lsp" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_bextract_lsp_output_line_spectral_pairs ;
+    .
+plugbase:marsyas_bextract_lsp_output_line_spectral_pairs a  vamp:DenseOutput ;
+    vamp:identifier       "line_spectral_pairs" ;
+    dc:title              "Line Spectral Pairs" ;
+    dc:description        "The Line Spectral Pairs per sample"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "value" ;
+    vamp:bin_count        18 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:marsyas_bextract_mfcc a   vamp:Plugin ;
+    dc:title              "Marsyas - Batch Feature Extract - Mel-Frequency Cepstral Coefficients" ;
+    vamp:name             "Marsyas - Batch Feature Extract - Mel-Frequency Cepstral Coefficients" ;
+    dc:description        """Marsyas - Batch Feature Extract - Mel-Frequency Cepstral Coefficients""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_bextract_mfcc" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_bextract_mfcc_output_mfcc ;
+    .
+plugbase:marsyas_bextract_mfcc_output_mfcc a  vamp:DenseOutput ;
+    vamp:identifier       "mfcc" ;
+    dc:title              "Mel-Frequency Cepstral Coefficients" ;
+    dc:description        "The value of the Mel-Frequency Cepstral Coefficients"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "value" ;
+    vamp:bin_count        12 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:marsyas_bextract_rolloff a   vamp:Plugin ;
+    dc:title              "Marsyas - Batch Feature Extract - Spectral Rolloff" ;
+    vamp:name             "Marsyas - Batch Feature Extract - Spectral Rolloff" ;
+    dc:description        """Marsyas - Batch Feature Extract - Spectral Rolloff""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_bextract_rolloff" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_bextract_rolloff_output_rolloff ;
+    .
+plugbase:marsyas_bextract_rolloff_output_rolloff a  vamp:DenseOutput ;
+    vamp:identifier       "rolloff" ;
+    dc:title              "Spectral Rolloff" ;
+    dc:description        "The value of the Spectral Rolloff"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "value" ;
+    vamp:bin_count        1 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:marsyas_bextract_scf a   vamp:Plugin ;
+    dc:title              "Marsyas - Batch Feature Extract - Spectral Crest Factor" ;
+    vamp:name             "Marsyas - Batch Feature Extract - Spectral Crest Factor" ;
+    dc:description        """Marsyas - Batch Feature Extract - Spectral Crest Factor""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_bextract_scf" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_bextract_scf_output_scf ;
+    .
+plugbase:marsyas_bextract_scf_output_scf a  vamp:DenseOutput ;
+    vamp:identifier       "scf" ;
+    dc:title              "Spectral Crest Factor" ;
+    dc:description        "The value of the Spectral Crest Factor"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "value" ;
+    vamp:bin_count        24 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:marsyas_bextract_sfm a   vamp:Plugin ;
+    dc:title              "Marsyas - Batch Feature Extract - Spectral Flatness Measure" ;
+    vamp:name             "Marsyas - Batch Feature Extract - Spectral Flatness Measure" ;
+    dc:description        """Marsyas - Batch Feature Extract - Spectral Flatness Measure""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_bextract_sfm" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_bextract_sfm_output_spf ;
+    .
+plugbase:marsyas_bextract_sfm_output_spf a  vamp:DenseOutput ;
+    vamp:identifier       "spf" ;
+    dc:title              "Spectral Flatness Measure" ;
+    dc:description        "The value of the Spectral Flatness Measure"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "value" ;
+    vamp:bin_count        1 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:marsyas_bextract_zero_crossings a   vamp:Plugin ;
+    dc:title              "Marsyas - Batch Feature Extract - Zero Crossings" ;
+    vamp:name             "Marsyas - Batch Feature Extract - Zero Crossings" ;
+    dc:description        """Marsyas - Batch Feature Extract - Zero Crossings""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_bextract_zero_crossings" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_bextract_zero_crossings_output_zero_crossing_counts ;
+    .
+plugbase:marsyas_bextract_zero_crossings_output_zero_crossing_counts a  vamp:DenseOutput ;
+    vamp:identifier       "zero_crossing_counts" ;
+    dc:title              "Zero Crossing Counts" ;
+    dc:description        "The number of zero crossing points per sample"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "crossings" ;
+    vamp:bin_count        1 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:zerocrossing a   vamp:Plugin ;
+    dc:title              "Zero Crossings" ;
+    vamp:name             "Zero Crossings" ;
+    dc:description        """Detect and count zero crossing points""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "zerocrossing" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:zerocrossing_output_counts ;
+    .
+plugbase:zerocrossing_output_counts a  vamp:DenseOutput ;
+    vamp:identifier       "counts" ;
+    dc:title              "Zero Crossing Counts" ;
+    dc:description        "The number of zero crossing points per processing block"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "crossings" ;
+    a                     vamp:QuantizedOutput ;
+    vamp:quantize_step    1  ;
+    vamp:bin_count        1 ;
+#   vamp:computes_event_type   <Place event type URI here and uncomment> ;
+#   vamp:computes_feature      <Place feature attribute URI here and uncomment> ;
+#   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
+    .
+plugbase:marsyas_ibt a   vamp:Plugin ;
+    dc:title              "Marsyas - IBT - INESC Beat Tracker" ;
+    vamp:name             "Marsyas - IBT - INESC Beat Tracker" ;
+    dc:description        """Estimates beat locations and tempo (off-line [default] and on-line modes of operation)""" ;
+    foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
+    dc:rights             """GPL v3 license""" ;
+#   cc:license            <Place plugin license URI here and uncomment> ; 
+    vamp:identifier       "marsyas_ibt" ;
+    vamp:vamp_API_version vamp:api_version_1 ;
+    owl:versionInfo       "2" ;
+    vamp:input_domain     vamp:TimeDomain ;
+    vamp:output      plugbase:marsyas_ibt_output_beats_tempo ;
+    .

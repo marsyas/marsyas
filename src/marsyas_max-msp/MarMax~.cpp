@@ -6,25 +6,18 @@ int main(void)
 	// object initialization, note the use of dsp_free for the freemethod, which is required
 	// unless you need to free allocated memory, in which case you should call dsp_free from
 	// your custom free function.
-
-	// OLD METHOD
-	// setup((t_messlist **)&MarMax_class, (method)MarMax_new, (method)dsp_free, (short)sizeof(t_MarMax), 0L, A_GIMME, 0);
-	// addfloat((method)MarMax_float);
-	// you need this
-	// addmess((method)MarMax_dsp,				"dsp",			A_CANT, 0);
-    // addmess((method)MarMax_assist,			"assist",		A_CANT, 0);  
-	// you need this
-    // dsp_initclass();
 	
 	// NEW METHOD
 	t_class *c;
 	
 	//NOTE that the name specified in class_new() first arg must be the same as the external filename
-	c = class_new("ibt_", (method)MarMax_new, (method)dsp_free, (long)sizeof(t_MarMax), 0L, A_GIMME, 0);
+	c = class_new("ibt~", (method)MarMax_new, (method)dsp_free, (long)sizeof(t_MarMax), (method)0L, A_GIMME, 0);
 	
 	class_addmethod(c, (method)MarMax_float,		"float",	A_FLOAT, 0);
 	class_addmethod(c, (method)MarMax_dsp,		"dsp",		A_CANT, 0);
 	class_addmethod(c, (method)MarMax_assist,	"assist",	A_CANT, 0);
+	//for parameters defined as messages in the first inlet
+	//class_addmethod(c, (method)MarMax_window,		"window",	A_FLOAT,	A_FLOAT, 0);
 	
 	class_dspinit(c);				// new style object version of dsp_initclass();
 	class_register(CLASS_BOX, c);	// register class as a box class
@@ -68,7 +61,6 @@ t_int *MarMax_perform(t_int *w)
 	int i;
 	bool Nozero = false;
 	realvec output_realvec;
-	realvec r(vectorSize);
 
 	//to check if input is empty -> don't know exactly why when no input is loaded 
 	//into Marsystem the network stucks in steady-state
@@ -82,36 +74,46 @@ t_int *MarMax_perform(t_int *w)
 		}
 	}
 	
+	//post("Nozero: %d", Nozero);
+
 	if (Nozero)
 	{
-		// Stuff inputBuffers into a realvec
-		for ( i = 0; i < vectorSize; ++i)
-			r(i) = inL[i];
-	
-		// Load the network with the data
-		x->m_MarsyasNetwork->updControl("Series/featureNetwork/RealvecSource/src/mrs_realvec/data", r);
-		//post ("network feeded");
-		// Tick the network once, which will process one window of data
+		int j;		
+		for (j = 0; j < vectorSize; j++) {
+			
+			r(x->pos) = inL[j];
+			
+			/*time to do something */
+			if (x->pos == x->hopsize - 1) {
+				/* block loop */
+				
+				// Load the network with the data
+				x->m_MarsyasNetwork->updControl("Series/featureNetwork/RealvecSource/src/mrs_realvec/data", r);
+				//post ("network feeded");
+				// Tick the network once, which will process one window of data
 
-		x->m_MarsyasNetwork->tick();
-		//post ("processing done");
+				x->m_MarsyasNetwork->tick();
+				//post ("processing done");
 
-		// Get the data out of the networK
-		output_realvec = x->m_MarsyasNetwork->getControl("Series/featureNetwork/FlowThru/beattracker/mrs_realvec/innerOut")->to<mrs_realvec>();
+				// Get the data out of the networK
+				output_realvec = x->m_MarsyasNetwork->getControl("Series/featureNetwork/FlowThru/beattracker/mrs_realvec/innerOut")->to<mrs_realvec>();
 
-		//post("output vector copied");
+				//post("output vector copied");
 		
-		//copy Marsystem network output to Max output
-//		outL[0] = output_realvec(0,0); //BEAT = 1; NON-BEAT = 0 (1response/frame)
-//		for (i = 1 ; i < vectorSize ; i++) //fill remaining output vector with 0
-//			outL[i] = 0;
-		if (output_realvec(0,0))
-			outlet_bang (x->outlet);
-		//if(outL[0] == 1.0)
-		//	post("BEAT!");
+				if (output_realvec(0,0))
+					outlet_bang (x->outlet);
+				//if(output_realvec(0,0))
+					//	post("BEAT!");
+
+				/* end of block loop */
+				x->pos = -1; /* so it will be zero next j loop */
+			}
+			
+			x->pos++;
+		}	
 	}
 
-	// you have to return the NEXT pointer in the array OR MAX WILL CRASH
+	//you have to return the NEXT pointer in the array OR MAX WILL CRASH
 	//return w + 5;
 	return w + 4;
 }
@@ -132,29 +134,105 @@ void MarMax_free(t_MarMax *x)
 	delete x->m_MarsyasNetwork;
 }
 
+void MarMax_setIBTDefaultParams(t_MarMax *x)
+{
+	x->bufsize = 1024;
+	x->hopsize = 512;
+	x->inductionTime = 5.0;
+	x->minBPM = 81;
+	x->maxBPM = 160;
+	x->stateRecovery = false;
+	x->outPathName = "";
+}
+
 void *MarMax_new(t_symbol *s, long argc, t_atom *argv)
 {
 	t_MarMax *x = NULL;
 
-	// OLD VERSION
-	// if (x = (t_MarMax *)newobject(MarMax_class)) {
-	
 	// NEW VERSION
-	if (x = (t_MarMax *)object_alloc((t_class*)MarMax_class))
+	if (x = ((t_MarMax *)object_alloc((t_class*)MarMax_class)))
 	{
+		object_post((t_object *)x, "v1.0 - implemented by João Lobato Oliveira from the SMCGroup at INESC Porto, Portugal (smc.inescporto.pt)", s->s_name); 
+		//object_post((t_object *)x, "a new %s object was instantiated: 0x%X", s->s_name, x); 
+        //object_post((t_object *)x, "%s has %ld arguments", s->s_name, argc); 
+     
+		//define winSize and hopSize here! (irrelevant of I/O Vector Size and Signal Vector Size in Max)
+		      
+		//at first define default values for all parameters
+		//these will be the assigned values to the parameters not defined via ibt~ arguments
+		MarMax_setIBTDefaultParams(x);
+        while (argc > 0) //for parameters passing as arguments defined in ibt~ object box itself
+		{
+			t_symbol *firstarg = atom_getsym(argv);
+			//post("arg name: %s", firstarg->s_name);
+			if (!strcmp(firstarg->s_name, "@winSize") && argc > 1)
+			{
+				object_post((t_object *)x, "%s: %f", firstarg->s_name, atom_getfloat(argv+1));
+				x->bufsize = (int) atom_getfloat(argv+1);
+				argc -= 2; argv += 2;
+			}
+			else if (!strcmp(firstarg->s_name, "@hopSize") && argc > 1)
+			{
+				object_post((t_object *)x, "%s: %f", firstarg->s_name, atom_getfloat(argv+1));
+				x->hopsize = (int) atom_getfloat(argv+1);
+				argc -= 2; argv += 2;
+			}
+			else if (!strcmp(firstarg->s_name, "@inductionTime") && argc > 1)
+			{
+				object_post((t_object *)x, "%s: %f", firstarg->s_name, atom_getfloat(argv+1));
+				x->inductionTime = atom_getfloat(argv+1);
+				argc -= 2; argv += 2;
+			}
+			else if (!strcmp(firstarg->s_name, "@minBPM") && argc > 1)
+			{
+				object_post((t_object *)x, "%s: %f", firstarg->s_name, atom_getfloat(argv+1));
+				x->minBPM = (int) atom_getfloat(argv+1);
+				argc -= 2; argv += 2;
+			}
+			else if (!strcmp(firstarg->s_name, "@maxBPM") && argc > 1)
+			{
+				object_post((t_object *)x, "%s: %f", firstarg->s_name, atom_getfloat(argv+1));
+				x->maxBPM = (int) atom_getfloat(argv+1);
+				argc -= 2; argv += 2;
+			}
+			else if (!strcmp(firstarg->s_name, "@outPathName") && argc > 1)
+			{
+				object_post((t_object *)x, "%s: %s", firstarg->s_name, atom_getsym(argv+1)->s_name);
+				x->outPathName = atom_getsym(argv+1)->s_name;
+				argc -= 2; argv += 2;
+			}
+			else if (!strcmp(firstarg->s_name, "@stateRecovery") && argc > 1)
+			{
+				object_post((t_object *)x, "%s: %d", firstarg->s_name, (int) atom_getfloat(argv+1));
+				int stateParam = (int) atom_getfloat(argv+1);
+				if(stateParam >= 1) x->stateRecovery = true;
+				argc -= 2; argv += 2;
+			}
+			else
+			{
+				object_post((t_object *)x, "usage is ibt~ [@winSize #] [@hopSize #] [@inductionTime #] [@minBPM #] [@maxBPM #] [@stateRecovery] [@outPathName #]");
+				argc = 0;
+			}
+		}
+
+		r.create(x->hopsize);
+
 		//x->ob.z_misc = Z_NO_INPLACE;
 		dsp_setup((t_pxobject *)x, 1);	// MSP inlets: arg is # of inlets and is REQUIRED! 
 										// use 0 if you don't need inlets
+										
 		//outlet_new(x, "signal"); // signal outlet (note "signal" rather than NULL)
-		x->outlet = bangout(x);//an outlet that can only output bangs (nothing else)
+		x->outlet = bangout(x);	//an outlet that can only output bangs (nothing else)
+
+		//post("winSize: %d; hopSize: %d; fs: %f; inductionTime: %f; minBPM: %d, maxBPM: %d; outPathName: %s", 
+		//	x->bufsize, x->hopsize, x->d_SR, x->inductionTime, x->minBPM, x->maxBPM, x->outPathName);
+
 		//Create the MarSystem Network
-
-		x->ibt = new MarMaxIBT();
+		x->ibt = new MarMaxIBT(x->bufsize, x->hopsize, 44100.0, x->inductionTime, x->minBPM, x->maxBPM, x->outPathName, x->stateRecovery);
 		x->m_MarsyasNetwork = x->ibt->createMarsyasNet();
-
-		//int xx = fntestdll();
-		//bool yy = x->testdll.test(1, 2.3);
+		
 		x->offset = 0;
 	}
 	return (x);
 }
+

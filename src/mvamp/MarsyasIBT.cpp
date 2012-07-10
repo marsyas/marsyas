@@ -99,13 +99,13 @@ MarsyasIBT::getIdentifier() const
 string
 MarsyasIBT::getName() const
 {
-  return "Marsyas - IBT - INESC Beat Tracker";
+  return "IBT - INESC Beat Tracker";
 }
 
 string
 MarsyasIBT::getDescription() const
 {
-  return "Estimate beat locations and tempo (off-line [default] and on-line modes of operation)";
+  return "Estimates beat locations and tempo (off-line [default] and on-line modes of operation)";
 }
 
 string
@@ -981,7 +981,7 @@ MarsyasIBT::setParameter(std::string name, float value)
 		}
     }
     else if (name == "induction") {
-        switch (lrintf(value)) {
+        switch ((int)(value)) {
         case 0: induction_mode="single"; break;
         case 1: induction_mode="repeated"; break;
         case 2: induction_mode="random"; break;
@@ -1057,7 +1057,7 @@ MarsyasIBT::process(const float *const *inputBuffers,Vamp::RealTime timestamp)
 		  feature.hasTimestamp = true;
 		  // manipulate the timestamp's value in real-time analysis
 		  //(timestamp is hopSize ahead of real timing)
-		  feature.timestamp = timestamp - Vamp::RealTime::frame2RealTime((m_stepSize/2), lrintf(m_inputSampleRate));
+		  feature.timestamp = timestamp - Vamp::RealTime::frame2RealTime((m_stepSize/2), (int)(m_inputSampleRate));
 
 		  ibi = stamp - prevTimestamp;
 		  
@@ -1139,7 +1139,7 @@ MarsyasIBT::getRemainingFeatures()
 		for(int i = 0; i < finalBeats.getCols(); i++)
 		{		
 			beats.push_back(((finalBeats(i) * m_stepSize) - (m_stepSize/2)) / m_inputSampleRate);
-			feature.timestamp = Vamp::RealTime::frame2RealTime(((finalBeats(i) * m_stepSize) - (m_stepSize/2)), lrintf(m_inputSampleRate));
+			feature.timestamp = Vamp::RealTime::frame2RealTime(((finalBeats(i) * m_stepSize) - (m_stepSize/2)), (int)(m_inputSampleRate));
 			
 			if (i > 0) 
 			{
