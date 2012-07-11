@@ -1,13 +1,4 @@
 set (MVamp_SOURCES
-	MarsyasBExtractCentroid.cpp
-	MarsyasBExtractLPCC.cpp
-	MarsyasBExtractLSP.cpp
-	MarsyasBExtractMFCC.cpp
-	MarsyasBExtractRolloff.cpp
-	MarsyasBExtractSCF.cpp
-	MarsyasBExtractSFM.cpp
-	MarsyasBExtractZeroCrossings.cpp
-	ZeroCrossing.cpp
 	MarsyasIBT.cpp
 	plugins.cpp
 )
@@ -41,6 +32,8 @@ endif (MARSYAS_STATIC)
 ## LINKING
 TARGET_LINK_LIBRARIES(mvamp ${MARSYAS_LIBRARY} ${VAMP_LIBRARY})
 
+# take lib prefix out
+set_target_properties(mvamp PROPERTIES PREFIX "")
 
 #unfortuned Windows trial for adding /EXPORT:vampGetPluginDescriptor to Visual Studio project (as referred in http://vamp-plugins.org/wiki/mtp2)
 #install(TARGETS mvamp EXPORT vampGetPluginDescriptor DESTINATION ${LIBRARY_OUTPUT_PATH})

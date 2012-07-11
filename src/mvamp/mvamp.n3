@@ -246,8 +246,8 @@ plugbase:zerocrossing_output_counts a  vamp:DenseOutput ;
 #   vamp:computes_signal_type  <Place signal type URI here and uncomment> ;
     .
 plugbase:marsyas_ibt a   vamp:Plugin ;
-    dc:title              "Marsyas - IBT - INESC Beat Tracker" ;
-    vamp:name             "Marsyas - IBT - INESC Beat Tracker" ;
+    dc:title              "IBT - INESC Beat Tracker" ;
+    vamp:name             "IBT - INESC Beat Tracker" ;
     dc:description        """Estimates beat locations and tempo (off-line [default] and on-line modes of operation)""" ;
     foaf:maker            [ foaf:name "Marsyas Plugins" ] ; # FIXME could give plugin author's URI here
     dc:rights             """GPL v3 license""" ;
@@ -255,6 +255,91 @@ plugbase:marsyas_ibt a   vamp:Plugin ;
     vamp:identifier       "marsyas_ibt" ;
     vamp:vamp_API_version vamp:api_version_1 ;
     owl:versionInfo       "2" ;
-    vamp:input_domain     vamp:TimeDomain ;
-    vamp:output      plugbase:marsyas_ibt_output_beats_tempo ;
+    vamp:input_domain     vamp:FrequencyDomain ;
+	vamp:parameter   	  plugbase:marsyas_ibt_param_indtime ;
+    vamp:parameter   	  plugbase:marsyas_ibt_param_minbpm ;
+	vamp:parameter   	  plugbase:marsyas_ibt_param_maxbpm ;
+	vamp:parameter   	  plugbase:marsyas_ibt_param_induction ;
+	vamp:parameter   	  plugbase:marsyas_ibt_param_online ;
+	vamp:parameter   	  plugbase:marsyas_ibt_param_metrical_changes ;	
+    vamp:output      	  plugbase:marsyas_ibt_output_beats ;
     .
+plugbase:marsyas_ibt_param_indtime a  vamp:QuantizedParameter ;
+    vamp:identifier      "indtime" ;
+    dc:title             "Duration of Induction Steps" ;
+    dc:description       "Duration of induction steps"  ;
+    vamp:min_value       1.2 ;
+    vamp:max_value       60.0 ;
+    vamp:unit            "s" ;
+    vamp:quantize_step   0.1  ;
+    vamp:default_value   5.0 ;
+    vamp:value_names     ();
+    .
+plugbase:marsyas_ibt_param_minbpm a  vamp:QuantizedParameter ;
+    vamp:identifier      "minbpm" ;
+    dc:title             "Minimum Allowed Tempo (BPM)" ;
+    dc:description       "Minimum allowed tempo (BPM)"  ;
+    vamp:min_value       1 ;
+    vamp:max_value       249 ;
+    vamp:unit            "bpm" ;
+    vamp:quantize_step   1  ;
+    vamp:default_value   50 ;
+    vamp:value_names     ();
+    .
+plugbase:marsyas_ibt_param_maxbpm a  vamp:QuantizedParameter ;
+    vamp:identifier      "maxbpm" ;
+    dc:title             "Maximum Allowed Tempo (BPM)" ;
+    dc:description       "Maximum allowed tempo (BPM)"  ;
+    vamp:min_value       51 ;
+    vamp:max_value       400 ;
+    vamp:unit            "bpm" ;
+    vamp:quantize_step   1  ;
+    vamp:default_value   250 ;
+    vamp:value_names     ();
+    .
+plugbase:marsyas_ibt_param_induction a  vamp:QuantizedParameter ;
+    vamp:identifier      "induction" ;
+    dc:title             "Induction Operation Mode" ;
+    dc:description       "Induction mode of operation"  ;
+    vamp:min_value       0 ;
+    vamp:max_value       3 ;
+    vamp:unit            "" ;
+    vamp:quantize_step   1  ;
+    vamp:default_value   0 ;
+    vamp:value_names     ("Single (only at the beginning)" "Supervised (automatically triggered for recovery)" "Random (every random time-points)" "Repeated (spaced by induction time)");
+    .
+plugbase:marsyas_ibt_param_online a  vamp:QuantizedParameter ;
+    vamp:identifier     "online" ;
+    dc:title            "On-line Operation Mode" ;
+    dc:description      "Activates the on-line operation mode (off-line operation by default)"  ;
+    vamp:min_value       0 ;
+    vamp:max_value       1 ;
+    vamp:unit           "" ;
+    vamp:quantize_step   1  ;
+    vamp:default_value   0 ;
+    vamp:value_names     ();
+    .
+plugbase:marsyas_ibt_param_metrical_changes a  vamp:QuantizedParameter ;
+    vamp:identifier     "metrical_changes" ;
+    dc:title            "Avoid Metrical Changes" ;
+    dc:description      "Avoid metrical changes by limiting the considered tempo to an octave (for on-line mode)"  ;
+    vamp:min_value       0 ;
+    vamp:max_value       1 ;
+    vamp:unit           "" ;
+    vamp:quantize_step   1  ;
+    vamp:default_value   0 ;
+    vamp:value_names     ();
+    .
+plugbase:marsyas_ibt_output_beats a  vamp:SparseOutput ;
+    vamp:identifier       "beat_times" ;
+    dc:title              "Beat Times" ;
+    dc:description        "Estimated/predicted beat times"  ;
+    vamp:fixed_bin_count  "true" ;
+    vamp:unit             "s" ;
+    vamp:bin_count        0 ;
+    vamp:bin_names        () ;
+    vamp:sample_type      vamp:VariableSampleRate ;
+    vamp:sample_rate      86.1326 ;
+    vamp:computes_event_type   af:Beat;
+    .
+	

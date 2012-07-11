@@ -799,9 +799,9 @@ MarsyasIBT::getParameterDescriptors() const
 
 	//Induction time:
 	ParameterDescriptor desc;
-	desc.identifier = "indtime"; //nr of agents
+	desc.identifier = "indtime"; //induction time
     desc.name = "Induction Time";
-    desc.description = "Time of Initial Induction Step";
+    desc.description = "Duration of Induction Steps";
 	desc.minValue = (float) (60.0 / min_bpm);
     desc.maxValue = 60.0;
 	desc.defaultValue = 5.0;
@@ -831,6 +831,7 @@ MarsyasIBT::getParameterDescriptors() const
     desc.minValue = 1;
     desc.maxValue = max_bpm-1; //can't surpass max tempo
 	desc.defaultValue = minBPM_;
+	desc.unit = "bpm";
     desc.isQuantized = true;
 	desc.quantizeStep = 1;
     list.push_back(desc);
@@ -843,6 +844,7 @@ MarsyasIBT::getParameterDescriptors() const
     desc.minValue = min_bpm+1; //can't surpass min tempo
     desc.maxValue = 400; 
 	desc.defaultValue = maxBPM_;
+	desc.unit = "bpm";
     desc.isQuantized = true;
 	desc.quantizeStep = 1;
     list.push_back(desc);
@@ -852,7 +854,7 @@ MarsyasIBT::getParameterDescriptors() const
     desc.name = "Induction Operation Mode";
     desc.description = "Induction mode of operation";
     desc.minValue = 0;
-    desc.maxValue = 2;
+    desc.maxValue = 3;
     desc.defaultValue = 0;
     desc.valueNames.clear();
     desc.valueNames.push_back("Single (only at the beginning)");
@@ -866,7 +868,7 @@ MarsyasIBT::getParameterDescriptors() const
 	desc = ParameterDescriptor();
 	desc.identifier = "online";
     desc.name = "On-line Operation Mode";
-    desc.description = "Activate the on-line operation mode (off-line operation by default)";
+    desc.description = "Activates the on-line operation mode (off-line operation by default)";
     desc.minValue = 0;
     desc.maxValue = 1;
 	desc.defaultValue = 0;
@@ -997,9 +999,9 @@ MarsyasIBT::getOutputDescriptors() const
   OutputList list;
 
   OutputDescriptor output;
-  output.identifier = "Beat Positions";
-  output.name = "IBT";
-  output.description = "Beat Positions";
+  output.identifier = "beat_times";
+  output.name = "Beat Times";
+  output.description = "Estimated/predicted beat times";
  
   //for outputing time instants
   output.unit = "s";
