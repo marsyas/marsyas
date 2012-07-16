@@ -1,0 +1,32 @@
+Instructions for building Openframeworks using Marsyas framework
+
+***********************************
+Option A - Building from scratch
+***********************************
+0 - Get the latest Xcode version from Apple developer website
+
+1 - get OpenFrameworks v0071 from:
+http://www.openframeworks.cc
+
+2 - get the latest Marsyas from the SVN:
+www.marsyas.info
+
+3 - Build Marsyas using CMAKE with the following configuration:
+    * -> CMAKE_OSX_ARCHITECTURES = i386
+    * -> MARSYAS_STATIC = true
+    
+4 - Build a new Xcode project based on the OpenFrameworks AllAddonsExample that comes with the OF 0.071 distribution
+
+5 - Include the generated libmarsyas.a and all Marsyas header files in the project
+
+6 - include the following text at line 43 at the Marsyas source file: common_header.h
+    * -> #undef PI (something to be fixed!!)
+    
+**************************************************
+Option B - Building from the MNE Xcode project 
+(available by request from aperrotta@porto.ucp.pt
+or lmartins@porto.ucp.pt)
+**************************************************
+1 - Get the latest MNE project version from the SVN or a .zip file.
+2 - Create a folder inside of_0071_osx_release/apps/ with any name (for example Marsyas-apps)
+3 - Put the MNE-SVN folder inside the created folder
