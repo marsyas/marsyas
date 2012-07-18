@@ -4,8 +4,6 @@ $ svn co https://vamp.svn.sourceforge.net/svnroot/vamp/vamp-plugin-sdk/trunk vam
 
 Build and install the plugin sdk using the supplied instructions.
 
-Currently the OSX platform is the only one which will correctly link to the static version of Marsyas if you choose to build Marsyas with MARSYAS_STATIC ON. For the other CMakeLists.txt in the mvamp directory will need to be updated. 
-
 To test your plugins it's recommended to use vamp-plugin-tester. This command line application will give you a very detailed report about the compliance of the plugin.
 
 Download the distribution or compile from source. The latest code can be found here:
@@ -20,7 +18,7 @@ Linux OS:
 
    - $ ccmake WITH_VAMP ON:
 		* VAMP_LIBRARY -> static version of libvamp-sdk, from the install path - /usr/local/lib/libvamp-sdk.a
-		* VAMP_INCLUDE_DIR -> vamp sdk src main path: /xxx/vamp-plugin-sdk-2.1/
+		* VAMP_INCLUDE_DIR -> vamp sdk src main path: /xxx/vamp-plugin-sdk-2.x/
    - $ make (vamp plugin compiled as shared dynamic library: /build/lib/libmvamp.so)
 
 (Alternatively simply download pre-compiled plugin for Linux i686 at http://marsyas.info/download/vamp_plugins)
@@ -63,15 +61,14 @@ Tested in 10.6 with gcc 4.2 for i386 and x86_64, linking to both the static and 
 ============================================================================================
 
 Windows OS:
-(Tested in Windows Vista-32bists with VS2008 -> may work on others)
+(Tested in Windows Vista-32bits with VS2010 -> may work on others)
 
 1. Building Marsyas Vamp Plugin - FOR DYNAMIC MARSYAS LIBRARY (marsyas.dll):
 
 	- run Cmake-GUI WITH_VAMP ON (check that MARSYAS_STATIC is OFF):
-		* VAMP_LIBRARY -> static version of pre-compiled libvamp-sdk - xxx\vamp-plugin-sdk-2.1-staticlibs-win32-msvc\release\VampPluginSDK.lib
-		* VAMP_INCLUDE_DIR -> vamp sdk src main path - xxx\vamp-plugin-sdk-2.1\
+		* VAMP_LIBRARY -> static version of pre-compiled libvamp-sdk - xxx\vamp-plugin-sdk-2.x-staticlibs-win32-msvc\release\VampPluginSDK.lib
+		* VAMP_INCLUDE_DIR -> vamp sdk src main path - xxx\vamp-plugin-sdk-2.x\
 	- load Marsyas.sln in Visual Studio
-	- go to mvamp project proprieties and under Configuration Properties -> Linker -> Command Line -> Additional options, add /EXPORT:vampGetPluginDescriptor on a new line
 	- build marsyas + mvamp in Release mode.
 
 2. Marsyas Vamp Plugin Integration in SonicVisualiser Transforms:

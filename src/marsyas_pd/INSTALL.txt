@@ -1,0 +1,80 @@
+In order to compile externals for Pd, the Pd-extended package is required.
+You can download it from http://puredata.info/downloads/pd-extended for your platform [Tested with v0.42.5]
+
+After download install the Pd-extended package in your machine
+
+============================================================================================
+
+Linux OS:
+[Tested in Linux Ubuntu 10.04-32bits with gcc 4.4]
+Only working with static linking to the Marsyas lib
+
+1. Configure the Marsyas Pd with CMake:
+	- Configure for Unix Makefiles
+	- Enable WITH_PD and MARSYAS_STATIC in cmake-gui
+	- Press Configure
+	- Select the path to the include folder (the one containing m_pd.h) of your Pd-extended as the PD_INCLUDE_DIR
+	- Press Configure twice
+	- Press Generate
+
+2. Build using make [Tested with GCC 4.0]
+	- cd path_to_build_of_your_marsyas/build
+	- make
+
+3. Add external and help file to your Pd search path [Tested with Pd-extended v0.42.5]
+
+	- copy the ibt_pd.pd_linux in path_to_build_of_marsyas/lib/ to /usr/lib/pd-extended/extra/
+	- copy the ibt_pd-help.pd in path_to_marsyas/src/marsyas_pd/ to /usr/lib/pd-extended/doc/5.reference/
+
+4. Open ibt_pd-help.pd to test the IBT Pd external
+
+============================================================================================
+
+OSX 32-bit:
+
+[Tested in 10.6 with gcc 4.2 for i386 and x86_64]
+Only working with static linking to the Marsyas lib
+
+1. Configure the Marsyas Pd with CMake:
+	- Configure for XCode
+	- Enable WITH_PD and MARSYAS_STATIC in cmake-gui
+	- Press Configure
+	- Select the path to the include folder (the one containing m_pd.h) of your Pd-extended as the PD_INCLUDE_DIR
+	- Press Configure twice
+	- Press Generate
+
+2. Build using XCode [Tested with XCode v3.0]
+	- Open path_to_build_of_your_marsyas/marsyas.xcodeproj
+	- Build libmarsyas.a and ibt_pd.pd_darwin in Release mode
+
+3. Add external and help file to your Pd search path [Tested with Pd-extended v0.42.5]
+
+	- copy the ibt_pd.pd_darwin in path_to_build_of_marsyas/lib/Release/ to /Applications/Pd-extended.app/Contents/Resources/extra
+	- copy the ibt_pd-help.pd in path_to_marsyas/src/marsyas_pd/ to /Applications/Pd-extended.app/Contents/Resources/doc/5.reference/
+
+4. Open ibt_pd-help.pd to test the IBT Pd external
+
+============================================================================================
+
+Windows OS 32-bit:
+[Tested in Windows 7-64bits]
+Only working with static linking to the Marsyas lib
+
+1. Configure the Marsyas Pd with CMake:
+	- Configure for XCode
+	- Enable WITH_PD and MARSYAS_STATIC in cmake-gui
+	- Press Configure
+	- main path of your installed pd folder as the PD_MAIN_PATH
+	- Press Configure twice
+	- Press Generate
+
+2. Build using VisualStudio [Tested with VS2010]
+	- Open path_to_build_of_your_marsyas/marsyas.sln
+	- Build marsyas_static and ibt_pd in Release mode
+
+3. Add external and help file to your Pd search path [Tested with Pd-extended v0.42.5]
+
+	- copy the ibt_pd.dll in path_to_build_of_marsyas/bin/Release/ to path_to_pd_app/extra/
+	- copy the ibt_pd-help.pd in path_to_marsyas/src/marsyas_pd/ to path_to_pd_app/doc/5.reference/
+
+4. Open ibt_pd-help.pd to test the IBT Pd external

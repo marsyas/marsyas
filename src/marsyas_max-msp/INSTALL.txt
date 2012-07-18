@@ -1,0 +1,59 @@
+In order to compile externals for Max/MSP, the Max/MSP/Jitter SDK is required.
+You can download it from http://cycling74.com/products/sdk/ [Tested with both v5.1.7 and v6.04]
+
+After download unzip the MaxSDK-x.x.x package in your local machine
+
+============================================================================================
+
+OSX 32-bit:
+
+[Tested in 10.6 with gcc 4.2 for i386 and x86_64]
+Only working with static linking to the Marsyas lib
+
+1. Configure the Marsyas Max/MSP with CMake:
+	- Configure for XCode
+	- Enable WITH_MAX/MSP and MARSYAS_STATIC in cmake-gui
+	- Press Configure
+	- Select the main path of your MaxSDK-x.x.x folder as the MAXSDK_MAINPATH
+	- Press Configure twice
+	- Press Generate
+
+2. Build using XCode [Tested with XCode v3.0]
+	- Open path_to_build_of_your_marsyas/marsyas.xcodeproj
+	- In the ibt_ project info change the "Packaging/Product Name" from "ibt_" to "ibt~" [CMake doesn't support the "~" character so this should be hard-defined at this stage]
+	- Rename the ibt_ project name to ibt~
+	- Build libmarsyas.a and ibt~.mxo in Release mode
+
+3. Add external and help file to your Max/MSP search path [Tested with Max 5 and Max 6]
+
+	- copy the ibt~.mxo in path_to_build_of_marsyas/bin/Release/ to /Applications/Max/Cycling'74/max-externals/
+	- copy the ibt~.maxhelp in path_to_marsyas/src/marsyas_max-msp/max-help/ to /Applications/Max/Cycling'74/max-help/
+
+4. Open ibt~.maxhelp to test the IBT Max/MSP external
+
+============================================================================================
+
+Windows OS 32-bit:
+[Tested in Windows 7-64bits]
+Only working with static linking to the Marsyas lib
+
+1. Configure the Marsyas Max/MSP with CMake:
+	- Configure for Visual Studio
+	- Enable WITH_MAX/MSP and MARSYAS_STATIC in cmake-gui
+	- Press Configure
+	- Select the main path of your MaxSDK-x.x.x folder as the MAXSDK_MAINPATH
+	- Press Configure twice
+	- Press Generate
+
+2. Build using VisualStudio [Tested with VS2010]
+	- Open path_to_build_of_your_marsyas/marsyas.sln
+	- In the ibt_ project properties change the "Product Name" from "ibt_" to "ibt~" [CMake doesn't support the "~" character so this should be hard-defined at this stage]
+	- Rename the ibt_ project name to ibt~
+	- Build marsyas_static and ibt~ in Release mode
+
+3. Add external and help file to your Max/MSP search path [Tested with Max 5 and Max 6]
+
+	- copy the ibt~.mxe in path_to_build_of_marsyas/bin/Release/ to path_to_max_app/Cycling'74/max-externals/
+	- copy the ibt~.maxhelp in path_to_marsyas/src/marsyas_max-msp/max-help/ to path_to_max_app/Max/Cycling'74/max-help/
+
+4. Open ibt~.maxhelp to test the IBT Max/MSP external

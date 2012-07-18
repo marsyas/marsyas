@@ -109,6 +109,9 @@ if (MAXSDK_FOUND)
 	add_subdirectory(marsyas_max-msp)
 endif (MAXSDK_FOUND)
 
+if (PD_FOUND)
+	add_subdirectory(marsyas_pd)
+endif (PD_FOUND)
 
 ## tests, for verification
 if (MARSYAS_TESTS)

@@ -234,7 +234,7 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 				//cout << "Beat at: " << beatTime_ << " (s)" << endl;
 				
 				//after the 1st beat calculate ibi
-				if(!initialOut_ || !initialOut2_ || !initialOut3_)
+				if(beatCount_ > inc_)
 				{
 					ibiBPM_ = (60.0 / (beatTime_ - lastBeatTime_)); //inter-beat-interval (in BPMs)
 					tempoVec_.push_back(ibiBPM_);

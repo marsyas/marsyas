@@ -84,13 +84,16 @@ if (WITH_QT)
 endif (WITH_QT)
 
 if (WITH_VAMP)
-	find_package(vamp REQUIRED)
+	find_package(Vamp REQUIRED)
 endif (WITH_VAMP)
 
 if (WITH_MAX/MSP)
-	find_package(maxsdk REQUIRED)
+	find_package(MaxSDK REQUIRED)
 endif (WITH_MAX/MSP)
 
+if (WITH_PD)
+	find_package(Pd REQUIRED)
+endif (WITH_PD)
 
 if (WITH_OSC) 
 	set (MARSYAS_OSC 1)

@@ -34,9 +34,10 @@ TARGET_LINK_LIBRARIES(mvamp ${MARSYAS_LIBRARY} ${VAMP_LIBRARY})
 
 # take lib prefix out
 set_target_properties(mvamp PROPERTIES PREFIX "")
-
-#unfortuned Windows trial for adding /EXPORT:vampGetPluginDescriptor to Visual Studio project (as referred in http://vamp-plugins.org/wiki/mtp2)
-#install(TARGETS mvamp EXPORT vampGetPluginDescriptor DESTINATION ${LIBRARY_OUTPUT_PATH})
+if(MARSYAS_WIN32)
+	#add/EXPORT:vampGetPluginDescriptor to Visual Studio project (as referred in http://vamp-plugins.org/wiki/mtp2)
+	set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /EXPORT:vampGetPluginDescriptor")
+endif(MARSYAS_WIN32)
 
 if (MARSYAS_MAD)
 	TARGET_LINK_LIBRARIES(mvamp ${mad_LIBRARY})

@@ -1,0 +1,157 @@
+#N canvas 553 167 632 677 10;
+#X text 166 -496 audio input;
+#X obj 57 -527 bng 15 250 50 0 empty empty load 17 7 0 12 -262144 -1
+-1;
+#X obj 107 -526 bng 15 250 50 0 empty empty play 17 7 0 12 -262144
+-1 -1;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X array sfile 881999 float 2;
+#X coords 0 1 881999 -1 200 140 1;
+#X restore 53 -680 graph;
+#X obj 156 -526 bng 15 250 50 0 empty empty stop 17 7 0 12 -262144
+-1 -1;
+#X floatatom 148 -467 7 0 0 0 - - -;
+#X obj 160 -279 bng 50 250 50 0 empty empty empty 17 7 0 10 -262144
+-1 -1;
+#X obj 36 -462 dac~;
+#X floatatom 413 -275 7 0 0 0 - - -;
+#X text 52 -775 a Pd external of the real-time beat tracker IBT (INESC
+Porto Beat Tracker) \, based on MARSYAS;
+#X text 51 -790 ibt_pd;
+#X text 62 -184 licenced under the GPL - copyright 2007 - as part of
+MARSYAS (marsyas.info);
+#X text 52 -742 Based on: Joao Lobato Oliveira \, Fabien Gouyon \,
+Luis Gustavo Martins \, Luis Paulo Reis \, "IBT: A Real-time Tempo
+and Beat Tracking System." In ISMIR 2010 \, pp. 291-296;
+#X text 271 -697 Inlet: Audio signal in the form of sound file or microphone
+input;
+#X text 272 -652 Outlet2: Median tempo (BPM) of the last 10 beats;
+#X text 271 -565 Parameters [default]:;
+#X text 271 -550 - @winSize: processing buffer size for the FFT window[1024]
+;
+#X text 271 -531 - @hopSize: hop size for processing overlap [512]
+;
+#X text 270 -512 - @inductionTime: duration of tempo induction stage
+(sec)[5.0];
+#X text 272 -487 - @minBPM: minimum tempo limit (BPM)[81 -> to prevent
+octave error];
+#X text 271 -460 - @maxBPM: maximum tempo limit (BPM)[160 -> to prevent
+octave error];
+#X text 269 -402 - @stateRecovery: activates state-recovery by re-inducing
+and resetting the system whenever tracking seems to be lost-ideal for
+streaming scenarios (0-true/1-false)[0-false];
+#X text 270 -431 - @outPathName: file/path name for outputing .txt
+with beat-times and median tempo[by default don't output files];
+#X text 271 -628 Usage (no specific order - default assumed if undefined):
+;
+#X text 270 -610 ibt_pd [@winSize #] [@hopSize #] [@inductionTime #]
+[@minBPM #] [@maxBPM #] [@stateRecovery 1/0] [@outPathName #];
+#X obj 68 -346 ibt_pd @winSize 1024 @hopSize 512 @inductionTime 5 @minBPM
+81 @maxBPM 160 @outPathName /Users/user/BeatOutput @stateRecovery 0
+;
+#N canvas 196 567 355 374 synth 0;
+#X obj 123 30 inlet;
+#X obj 299 33 inlet;
+#X obj 168 324 dac~;
+#X obj 99 189 *~;
+#X obj 171 296 *~ 0.5;
+#X obj 123 60 t b b;
+#X msg 96 123 0;
+#X obj 150 96 ead~ 2 30;
+#X obj 130 240 lop~ 14000;
+#X obj 51 154 osc~ 4000;
+#X connect 0 0 5 0;
+#X connect 1 0 4 1;
+#X connect 3 0 8 0;
+#X connect 4 0 2 0;
+#X connect 4 0 2 1;
+#X connect 5 0 7 0;
+#X connect 5 1 6 0;
+#X connect 6 0 9 1;
+#X connect 7 0 3 1;
+#X connect 8 0 4 0;
+#X connect 9 0 3 0;
+#X restore 160 -220 pd synth;
+#X obj 296 -291 vsl 15 80 0.1 1.9 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 4000 1;
+#N canvas 2 93 507 462 soundplayer 0;
+#X obj 52 30 inlet;
+#X obj 52 56 openpanel;
+#X obj 52 105 soundfiler;
+#X obj 70 135 s sampleSize;
+#X obj 52 160 expr 44100 / $f1;
+#X obj 52 212 phasor~;
+#X obj 52 247 *~;
+#X obj 102 229 r sampleSize;
+#X obj 52 339 tabread4~ sfile;
+#X obj 52 374 outlet~;
+#X obj 300 310 snapshot~;
+#X obj 300 265 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 1
+1;
+#X obj 300 384 outlet;
+#X text 54 391 Audio;
+#X text 261 399 current playing time;
+#X msg 427 101 0;
+#X text 314 55 play;
+#X text 409 53 stop;
+#X obj 309 29 inlet;
+#X obj 400 26 inlet;
+#X msg 52 80 read -resize -maxsize 8.2e+08 \$1 sfile;
+#X obj 400 69 t b b;
+#X obj 309 71 t b b;
+#X obj 307 184 f;
+#X obj 300 287 metro 50;
+#X obj 300 217 loadbang;
+#X floatatom 336 102 12 0 0 0 - - -;
+#X obj 398 146 t a a;
+#X msg 300 242 1;
+#X obj 300 359 / 44100;
+#X obj 336 123 t f;
+#X connect 0 0 1 0;
+#X connect 1 0 20 0;
+#X connect 2 0 3 0;
+#X connect 2 0 4 0;
+#X connect 4 0 5 0;
+#X connect 4 0 26 0;
+#X connect 5 0 6 0;
+#X connect 6 0 8 0;
+#X connect 6 0 10 0;
+#X connect 7 0 6 1;
+#X connect 8 0 9 0;
+#X connect 10 0 29 0;
+#X connect 11 0 24 0;
+#X connect 15 0 27 0;
+#X connect 18 0 22 0;
+#X connect 19 0 21 0;
+#X connect 20 0 2 0;
+#X connect 21 0 23 0;
+#X connect 21 1 15 0;
+#X connect 22 0 23 0;
+#X connect 22 1 26 0;
+#X connect 23 0 5 0;
+#X connect 24 0 10 0;
+#X connect 25 0 28 0;
+#X connect 26 0 30 0;
+#X connect 27 0 5 1;
+#X connect 27 1 23 1;
+#X connect 28 0 11 0;
+#X connect 29 0 12 0;
+#X connect 30 0 23 1;
+#X restore 67 -496 pd soundplayer;
+#X text 272 -669 Outlet1: Bangs on the beat (after first inductionTime)
+;
+#X text 62 -155 Developed by the SMC Group @ INESC Porto website: smc.inescporto.pt
+Implemented by Joao Lobato Oliveira and Marius Miron contact: jmldso@gmail.com
+;
+#X connect 1 0 28 0;
+#X connect 2 0 28 1;
+#X connect 4 0 28 2;
+#X connect 6 0 26 0;
+#X connect 25 0 6 0;
+#X connect 25 1 8 0;
+#X connect 27 0 26 1;
+#X connect 28 0 7 0;
+#X connect 28 0 7 1;
+#X connect 28 0 25 0;
+#X connect 28 1 5 0;
+#X coords 0 0 1 1 85 60 0;
