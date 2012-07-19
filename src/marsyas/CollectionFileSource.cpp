@@ -166,6 +166,7 @@ CollectionFileSource::myUpdate(MarControlPtr sender)
   
 	repetitions_ = getctrl("mrs_real/repetitions")->to<mrs_real>();
 	duration_ = getctrl("mrs_real/duration")->to<mrs_real>();
+	
 	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
 	setctrl("mrs_natural/advance", 0);
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();

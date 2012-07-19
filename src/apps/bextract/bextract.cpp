@@ -41,12 +41,12 @@ int normopt;
 bool tline;
 
 mrs_natural offset = 0;
-mrs_real duration = 30.0f;
+mrs_real duration = 120.0f;
 mrs_natural memSize = 1;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
 mrs_real samplingRate_ = 22050.0;
-mrs_natural accSize_ = 5000;  // approximately 2.5 minutes at 22050 sr, 512 win
+mrs_natural accSize_ = 20000;  // approximately 5 minutes at 44100 sr, 512 win
 mrs_real start = 0.0;
 mrs_real length = -1.0;
 mrs_real gain = 1.0;
@@ -2192,7 +2192,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 	bextractNetwork->linkControl(
-		"Accumulator/acc/Series/featureNetwork/Flux/flux/mrs_bool/reset",
+		"Accumulator/acc/Series/featureNetwork/TimbreFeatures/featExtractor/Series/spectralShape/STFT_features/spectrumFeatures/Flux/flux/mrs_bool/reset",
 		"Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_bool/currentCollectionNewFile");
 
 	if (memSize != 0) {
@@ -2378,6 +2378,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
   if (start > 0.0)
 	offset = (mrs_natural) (start * src->getctrl("mrs_real/israte")->to<mrs_real>());
+
   bextractNetwork->updControl("mrs_natural/pos", offset);
   bextractNetwork->updControl("mrs_real/duration", length);
 
@@ -2466,12 +2467,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
   while (ctrl_hasData->to<mrs_bool>())
   {
-
-
 	if (single_vector)
 	{
 	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 	  previouslyPlaying = ctrl_previouslyPlaying->to<mrs_string>();
+
 
 	  // round value
 	  label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
@@ -2483,8 +2483,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		if (processedFiles[j] == currentlyPlaying)
 		  seen = true;
 	  }
-
-
+	  
+	  seen = false;
+	  
 	  if (seen)
 	  {
 		advance ++;
@@ -2503,26 +2504,26 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		  bextractNetwork->updControl("WekaSink/wsink/mrs_bool/inject", true);
 		}
 
-
+		cout << "SEEN" << endl;
+		
 	  }
 	  else
 	  {
 		  bextractNetwork->updControl("mrs_natural/advance", advance);
 		  if (beat_)
-		{
-		  beatHistogramFeatures(beatTracker, currentlyPlaying, beatfeatures);
-		  bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);
-		}
-
-		currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
-		bextractNetwork->tick();
-		
-		fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
-
-		processedFiles.push_back(currentlyPlaying);
-		processedFeatures[currentlyPlaying] = fvec;
-		cout<< "Processed: " << n << " - " << currentlyPlaying << endl;
-		advance = 0;
+		  {
+			  beatHistogramFeatures(beatTracker, currentlyPlaying, beatfeatures);
+			  bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);
+		  }
+		  
+		  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+		  bextractNetwork->tick();
+		  fvec = bextractNetwork->getctrl("Annotator/annotator/mrs_realvec/processedData")->to<mrs_realvec>();
+		  
+		  processedFiles.push_back(currentlyPlaying);
+		  processedFeatures[currentlyPlaying] = fvec;
+		  cout<< "Processed: " << n << " - " << currentlyPlaying << endl;
+		  advance = 0;
 	  }
 	  n++;
 
@@ -3040,7 +3041,7 @@ initOptions()
   cmd_options.addStringOption("extractor", "e", "REFACTORED");
   cmd_options.addNaturalOption("memory", "m", 40);
   cmd_options.addNaturalOption("windowsize", "ws", 512);
-  cmd_options.addNaturalOption("accSize", "as", 5000);
+  cmd_options.addNaturalOption("accSize", "as", accSize_);
   cmd_options.addNaturalOption("hopsize", "hp", 512);
   cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
   cmd_options.addBoolOption("timeline", "t", false);

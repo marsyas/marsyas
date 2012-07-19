@@ -23,9 +23,9 @@ using namespace Marsyas;
 	
 SineSource::SineSource(mrs_string name):MarSystem("SineSource",name)
 {
-  //type_ = "SineSource";
-  //name_ = name;
-
+	//type_ = "SineSource";
+	//name_ = name;
+	
 	addControls();
 	index_ = 0;
 }
@@ -37,7 +37,7 @@ SineSource::~SineSource()
 MarSystem* 
 SineSource::clone() const 
 {
-  return new SineSource(*this);
+	return new SineSource(*this);
 }
 
 void 
@@ -55,31 +55,32 @@ SineSource::myUpdate(MarControlPtr sender)
 //   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 	MarSystem::myUpdate(sender);
 
-    wavetableSize_ = 8192;
-    wavetable_.create((mrs_natural)wavetableSize_);
-    
-    mrs_real incr = TWOPI / wavetableSize_;
-    for (mrs_natural t=0; t < wavetableSize_; t++)
-    wavetable_(t) = (mrs_real)(0.5 * sin(incr * t));
-
+	wavetableSize_ = 8192;
+	wavetable_.create((mrs_natural)wavetableSize_);
+	
+	mrs_real incr = TWOPI / wavetableSize_;
+	for (mrs_natural t=0; t < wavetableSize_; t++)
+		wavetable_(t) = (mrs_real)(0.5 * sin(incr * t));
+	
 }
 
 void 
 SineSource::myProcess(realvec &in, realvec &out)
 {
 	(void) in;
-    //checkFlow(in,out);
-
+	//checkFlow(in,out);
+	
     //lmartins: if (mute_)
 	if(getctrl("mrs_bool/mute")->to<mrs_bool>())
 	{
 		out.setval(0.0);
 		return;
 	}
-   
-    mrs_real incr = (getctrl("mrs_real/frequency")->to<mrs_real>() * wavetableSize_) / (getctrl("mrs_real/israte")->to<mrs_real>());
-    mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
-
+	
+	mrs_real incr = (getctrl("mrs_real/frequency")->to<mrs_real>() * wavetableSize_) / (getctrl("mrs_real/israte")->to<mrs_real>());
+	mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	
+	
 	for (mrs_natural t=0; t < inSamples; t++)
 	{
 		out(0,t) = wavetable_((mrs_natural)index_);

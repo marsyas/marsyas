@@ -77,9 +77,9 @@ AudioSink::addControls()
   
   //TODO: Why is this still here?
 #ifdef MARSYAS_MACOSX
-	addctrl("mrs_natural/bufferSize", 256);
+	addctrl("mrs_natural/bufferSize", 512);
 #else
-	addctrl("mrs_natural/bufferSize", 256);
+	addctrl("mrs_natural/bufferSize", 512);
 #endif
 
 	addctrl("mrs_bool/initAudio", false);
@@ -99,15 +99,17 @@ AudioSink::myUpdate(MarControlPtr sender)
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
 	if (inSamples_ < bufferSize_) 
-		ringBufferSize_ = 8 * bufferSize_;
+		ringBufferSize_ = 16 * bufferSize_;
 	else 
     {
-		ringBufferSize_ = 8 * inSamples_;
+		ringBufferSize_ = 16 * inSamples_;
     }
 	odata_.ringBufferSize = ringBufferSize_;
 	odata_.high_watermark = ringBufferSize_ / 4;
 	odata_.low_watermark =  ringBufferSize_ /8;
 	odata_.samplesInBuffer = 0;
+	
+
 	
 
 	// resize if necessary 
@@ -252,7 +254,6 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 		nBufferFrames = nBufferFrames/2;
 	
 	
-	
 	for (t=0; t < nBufferFrames; t++)
 	{
 		if (odata->samplesInBuffer >= odata->low_watermark)
@@ -283,14 +284,15 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 			}
 			else						// default case - use actual srate
 			{
-
+				
 				if (odata->inchannels == 1) 
 				{
 					mrs_real val = ringBuffer(0,odata->rp);
-					//cout << val << endl;
-					//cout << val << endl;
+					// cout << val << endl;
+					// out << val << endl;
 					data[t2] = val;
 					data[t2+1] = val;
+					
 				}
 				else 
 				{
@@ -303,22 +305,35 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 				}
 			}
 			
+			
 			odata->rp = ++(odata->rp) % odata->ringBufferSize;
-			if (odata->wp >= odata->rp) 
-				odata->samplesInBuffer = odata->wp - odata->rp;
+			if (odata->wp > odata->rp) 
+			{
+				odata->samplesInBuffer = odata->wp - odata->rp-1;
+			}
+			
 			else 
-				odata->samplesInBuffer = odata->ringBufferSize - (odata->rp - odata->wp);
+			{
+				
+				odata->samplesInBuffer = odata->ringBufferSize - (odata->rp - odata->wp-1);
+			}
+			
+		}
+		else 
+		{
+
+			
+			while (odata->samplesInBuffer <= odata->low_watermark)
+			{
+				// block until there are available samples 
+				SLEEP(10);  // 1 millisecond 
+				drain_count++;
+				if (drain_count == 1000)
+					return 1;
+			}
 		}
 	}
 	
-	while (odata->samplesInBuffer < odata->low_watermark)
-	{
-		// block until there are available samples 
-		SLEEP(1);  // 1 millisecond 
-		drain_count++;
-		if (drain_count == 1000)
-			return 1;
-	}
 	return 0;
 }
 
@@ -370,7 +385,13 @@ void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
 	
+	/* static int count = 0;
+	if (count >= 100) 
+		in.setval(0.0);
+	count ++;
+	
 	mrs_natural t,o;
+	*/ 
 	 
 	//check MUTE
 	if(ctrl_mute_->isTrue())
@@ -382,7 +403,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				out(o,t) = in(o,t);
 			}
 		}
-
+		
 		// write samples to reservoir 
 // 		for (t=0; t < onSamples_; t++)		
 // 		{
@@ -408,6 +429,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
 // 		}
 		
     }
+	
+	
 	else
 	{
 		
@@ -425,24 +448,37 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		if (!isInitialized_)
 			return;
 		
+	  
 		// write samples to reservoir 
 		for (t=0; t < onSamples_; t++)		
 		{
-			if (odata_.samplesInBuffer <= odata_.high_watermark)
+			
+			// if (getSpaceAvailable())
+			if (odata_.samplesInBuffer < odata_.high_watermark)
 			{
 				
 				for (o=0; o < onObservations_; o++) 
 					ringBuffer_(o,odata_.wp) = in(o,t);
 				
 				odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;
-				if (odata_.wp >= odata_.rp) 
-					odata_.samplesInBuffer = odata_.wp - odata_.rp;
-				else 
-					odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
+
+
+				// odata_.samplesInBuffer = (odata_.wp - odata_.rp - 1) % odata_.ringBufferSize;
+
+				if (odata_.wp > odata_.rp) 
+				{
+					odata_.samplesInBuffer = odata_.wp - odata_.rp-1;
+				}
+				else
+				{
+					odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp-1);
+				}
+				
 			}
 			else 
 			{
-				while (odata_.samplesInBuffer > odata_.high_watermark)
+				
+				while (odata_.samplesInBuffer >= odata_.high_watermark)
 				{
 					SLEEP(1);
 				}
@@ -458,6 +494,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
     {
 		start();
     }
+
 
 }
 

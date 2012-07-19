@@ -26,9 +26,9 @@ main(int argc, const char **argv)
 {	
 	MRSDIAG("helloWorld.cpp - main");
 
-	cout << "This is probably the simplest Marsyas example code: it simply \
-	generates a sine wave with a frequency of 440Hz and send it to the audio \
-	card output. Simple press CTRL+C to quit." << endl;
+	// cout << "This is probably the simplest Marsyas example code: it simply \
+	// generates a sine wave with a frequency of 440Hz and send it to the audio \
+	// card output. Simple press CTRL+C to quit." << endl;
 	
 	//we usualy start by creating a MarSystem manager 
 	//to help us on MarSystem creation
@@ -46,7 +46,7 @@ main(int argc, const char **argv)
 	//This is done in the outmost MarSystem (i.e. the Series/network) because flow
 	//controls (as is the case of inSamples) are propagated through the network.
 	//Check the Marsyas documentation for mode details.
-	network->updControl("mrs_natural/inSamples", 256);
+	network->updControl("mrs_natural/inSamples", 4096);
 
 	//set oscilator frequency to 440Hz
 	network->updControl("SineSource/src/mrs_real/frequency", 440.0);

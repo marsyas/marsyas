@@ -26,9 +26,11 @@
 #endif 
 #include "MarSystem.h"
 
+#include "Thread.h" 
 
 
 class RtAudio;
+class Thread;
 
 
 

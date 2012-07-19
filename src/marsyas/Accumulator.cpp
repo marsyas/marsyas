@@ -164,6 +164,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 	if (ctrl_mode_->to<mrs_string>() == "explicitFlush")
 	{
 		mrs_natural timesCount = keptOnSamples_/childOnSamples_;
+		
 		while ((!ctrl_flush_->to<mrs_bool>() && timesCount < ctrl_maxTimes_->to<mrs_natural>())
 		        || timesCount < ctrl_minTimes_->to<mrs_natural>()
 		        || timesCount <= ctrl_timesToKeep_->to<mrs_natural>())
@@ -172,6 +173,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 			// so it can signal the end of this loop (e.g. when an onset is detected or some other similar event)
 			marsystems_[0]->process(in, childOut_);
 
+			
 			//accumulate output from child process()into temp buffer
 			for (o=0; o < onObservations_; o++)
 			{
@@ -182,10 +184,11 @@ Accumulator::myProcess(realvec& in, realvec& out)
 			}
 			timesCount++;
 		}
+		
 #ifdef MARSYAS_LOG_DIAGNOSTICS
 		if (!ctrl_flush_->to<mrs_bool>())
 		{
-			MRSDIAG("Accumulator::myProcess() - maxTimes reached without a flush event!");
+			MRWDIAG("Accumulator::myProcess() - maxTimes reached without a flush event!");
 		}
 #endif
 
@@ -223,6 +226,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 		ctrl_flush_->setValue(false);
 		for (c = 0; c < nTimes_; ++c)
 		{
+			
 		  marsystems_[0]->process(in, childOut_);
 		  for (o=0; o < onObservations_; o++)
 		    {
