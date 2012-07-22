@@ -66,8 +66,8 @@ PWMSource::myProcess(realvec &in, realvec &out)
 	mrs_real frequency = (getctrl("mrs_real/frequency")->to<mrs_real>());
 	mrs_real duty =  getctrl("mrs_real/duty_cicle")->to<mrs_real>();
 	mrs_real irate = (getctrl("mrs_real/israte")->to<mrs_real>());
-  mrs_real incr = frequency / irate;
-  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+	mrs_real incr = frequency / irate;
+	mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
 //	cout << "f=" << frequency;
 //	cout << "d=" << duty;
@@ -102,5 +102,3 @@ PWMSource::myProcess(realvec &in, realvec &out)
 //00059 
 //00060 
 //00061 
-
-	
