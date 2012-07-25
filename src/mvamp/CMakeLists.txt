@@ -1,4 +1,13 @@
 set (MVamp_SOURCES
+	ZeroCrossing.cpp
+	MarsyasBExtractZeroCrossings.cpp
+	MarsyasBExtractCentroid.cpp
+	MarsyasBExtractLPCC.cpp
+	MarsyasBExtractLSP.cpp
+	MarsyasBExtractMFCC.cpp
+	MarsyasBExtractRolloff.cpp
+	MarsyasBExtractSCF.cpp
+	MarsyasBExtractSFM.cpp
 	MarsyasIBT.cpp
 	plugins.cpp
 )
