@@ -85,13 +85,13 @@ void Plucked::myUpdate(MarControlPtr sender)
 
 	s_ = getctrl("mrs_real/stretch")->to<mrs_real>();
 
-	mrs_real irate = (getctrl("mrs_real/israte")->to<mrs_real>());
+	mrs_real israte = (getctrl("mrs_real/israte")->to<mrs_real>());
 
-	// loweset frequency on a piano is 27.5Hz ... 22050/27.5 ~= 802*2 for commute
+	// loweset frequency on a piano is 27.5Hz ... sample rate/27.5 ~= 802*2 for commute
 	// this is the longest delay line required
 	if (delaylineSize_ == 0) 
 	{
-		delaylineSize_ = 2048;
+		delaylineSize_ = israte/27.5;
 		noise_.create((mrs_natural)delaylineSize_);
 		delayline1_.create((mrs_natural)delaylineSize_);
 		pickDelayLine_.create((mrs_natural)delaylineSize_);
@@ -105,7 +105,7 @@ void Plucked::myUpdate(MarControlPtr sender)
 	if (noteon_ > 0)
     {		
 		a_ = 0;
-		d_ = 2*irate/freq;
+		d_ = 2*israte/freq;
 		N_ = (mrs_natural)floor(d_);
 		g_ = -(-1+d_)/(-d_-1); //for all pass implementation 
 		picklength_ = (mrs_natural)floor(N_*pos); //for inverse comb implementation
