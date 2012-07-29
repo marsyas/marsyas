@@ -23,9 +23,12 @@ using namespace Marsyas;
 
 Plucked::Plucked(mrs_string name):MarSystem("Plucked",name)
 {
+	// Why do these variables exist?
 	pointer1_ = 0;
 	pointer2_ = 0;
 	pointer3_ = 0;
+
+	//
 	a_ = 0;
 	b_ = 0;
 	noteon_ = 0.0;
@@ -46,8 +49,7 @@ Plucked::clone() const
 	return new Plucked(*this);
 }
 
-void 
-Plucked::addControls()
+void Plucked::addControls()
 {
 	addctrl("mrs_real/frequency", 100.0);
 	addctrl("mrs_real/pluckpos", 0.5);
@@ -59,11 +61,10 @@ Plucked::addControls()
 	setctrlState("mrs_real/loss", true);
 }
 
-void
-Plucked::myUpdate(MarControlPtr sender)
+void Plucked::myUpdate(MarControlPtr sender)
 {
 	mrs_natural t;
-	MRSDIAG("Plucked.cpp - Plucked:localuUpdate");
+	MRSDIAG("Plucked.cpp - Plucked:localUpdate");
 
 	MarSystem::myUpdate(sender);
 
@@ -74,7 +75,7 @@ Plucked::myUpdate(MarControlPtr sender)
 	gain_->updControl("mrs_real/gain", 2.0);
 
 	gout_.create(gain_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-		   gain_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
+		   		 gain_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 
 	mrs_real freq = getctrl("mrs_real/frequency")->to<mrs_real>();
 	mrs_real pos = getctrl("mrs_real/pluckpos")->to<mrs_real>();
@@ -83,6 +84,8 @@ Plucked::myUpdate(MarControlPtr sender)
 	loss_ = getctrl("mrs_real/loss")->to<mrs_real>();  
 
 	s_ = getctrl("mrs_real/stretch")->to<mrs_real>();
+
+	mrs_real irate = (getctrl("mrs_real/israte")->to<mrs_real>());
 
 	// loweset frequency on a piano is 27.5Hz ... 22050/27.5 ~= 802*2 for commute
 	// this is the longest delay line required
@@ -102,23 +105,22 @@ Plucked::myUpdate(MarControlPtr sender)
 	if (noteon_ > 0)
     {		
 		a_ = 0;
-		d_ = 2*22050/freq;
+		d_ = 2*irate/freq;
 		N_ = (mrs_natural)floor(d_);
-		g_=-(-1+d_)/(-d_-1);//for all pass implementation 
-		picklength_= (mrs_natural)floor(N_*pos);//for inverse comb implementation
+		g_ = -(-1+d_)/(-d_-1); //for all pass implementation 
+		picklength_ = (mrs_natural)floor(N_*pos); //for inverse comb implementation
 
 		for (t = 0; t < N_; t++)
-	{
-		pickDelayLine_(0)=noise_(t);
-		delayline1_(t) = noise_(t)+ (mrs_real)0.1 * pickDelayLine_(picklength_-1);
-
-
-		//shift the pick delayline to the right 1 cell
-		for(p=0; p<=picklength_-2; p++)
 		{
-			pickDelayLine_(picklength_-1-p) = pickDelayLine_(picklength_-1-p-1);
+			pickDelayLine_(0)=noise_(t);
+			delayline1_(t) = noise_(t)+ (mrs_real)0.1 * pickDelayLine_(picklength_-1);
+
+			//shift the pick delayline to the right 1 cell
+			for(p=0; p<=picklength_-2; p++)
+			{
+				pickDelayLine_(picklength_-1-p) = pickDelayLine_(picklength_-1-p-1);
+			}
 		}
-	}
 		wp_ = 1;
 		wpp_ = 0;
 		rp_ = N_-1;
@@ -126,31 +128,27 @@ Plucked::myUpdate(MarControlPtr sender)
 }
 
 
-void 
-Plucked::myProcess(realvec &in, realvec &out)
+void Plucked::myProcess(realvec &in, realvec &out)
 {
 	(void)in;
   
-  if (noteon_ > 0)
+	if (noteon_ > 0)
     {
-      for (mrs_natural t = 0; t < inSamples_; t++)
-	{
-	  // wp holds the current sample
-	  // wpp holds the previous sample
-	  a_ = delayline1_(wp_);
-	  b_ = delayline1_(wpp_);
-	  
-	  // rp_ holds the sample at delay N_ 
-	  delayline1_(rp_) =loss_*((1-s_)*a_ + s_* b_);
+		for (mrs_natural t = 0; t < inSamples_; t++)
+		{
+			// wp holds the current sample
+			// wpp holds the previous sample
+			a_ = delayline1_(wp_);
+			b_ = delayline1_(wpp_);
 
-	  rp_ = (rp_ + +1)  %N_;
-	  wp_ = (wp_ + 1)   %N_;
-	  wpp_ = (wpp_ + 1) %N_;
-	  gout_(0,t) = a_;
-	  
-	}
+			// rp_ holds the sample at delay N_ 
+			delayline1_(rp_) = loss_*((1-s_)*a_ + s_* b_);
+
+			rp_ = (rp_ + +1)  % N_;
+			wp_ = (wp_ + 1)   % N_;
+			wpp_ = (wpp_ + 1) % N_;
+			gout_(0,t) = a_;
+		}
     }
-  
-  gain_->process(gout_, out);
+	gain_->process(gout_, out);
 }
-

@@ -30,56 +30,58 @@ namespace Marsyas
 /** 
     \class Plucked
 	\ingroup Synthesis
-    \brief Multiply input realvec with gain
+	\brief Multiply input realvec with gain
 
-   Implementation of the Karplus_Strong 1D Digital Waveguide Model. 
-   http://ccrma.stanford.edu/~jos/SimpleStrings/Karplus_Strong_Algorithm.html 
-   With extensions proposed by Jaffe and Smith: Blend Factor, Decay, and Stretch Factor.
+	Implementation of the Karplus_Strong 1D Digital Waveguide Model. 
+	http://ccrma.stanford.edu/~jos/SimpleStrings/Karplus_Strong_Algorithm.html 
+	With extensions proposed by Jaffe and Smith: Blend Factor, Decay, and Stretch Factor.
 */
 
 
 class Plucked: public MarSystem
 {
 private: 
-  void addControls();
+	void addControls();
 	void myUpdate(MarControlPtr sender);
 
-  realvec delayline1_;
-  realvec pickDelayLine_;
-  realvec noise_;
+	realvec delayline1_;
+	realvec pickDelayLine_;
+	realvec noise_;
 
-  mrs_real delaylineSize_;
-  mrs_real a_;
-  mrs_real b_;
-  mrs_real blend_;
-  mrs_real loss_;
-  mrs_real s_;
-  mrs_real d_; //the delay of the all pass filter dependant on the freq
-  mrs_real g_; //coefficient of all pass filter g_=-(1-d)/d+1)
-  mrs_real c;//output of inverse comb filt (for pick pos)
+	mrs_real delaylineSize_;
+	mrs_real a_;
+	mrs_real b_;
+	mrs_real blend_;
+	mrs_real loss_;
+	mrs_real s_;
+	mrs_real d_; //the delay of the all pass filter dependant on the freq
+	mrs_real g_; //coefficient of all pass filter g_=-(1-d)/d+1)
+	mrs_real c;  //output of inverse comb filt (for pick pos)
 
-  mrs_real noteon_;
+	mrs_real noteon_;
 
-  mrs_natural wp_;
-  mrs_natural wpp_;
-  
-  mrs_natural rp_;
-  
-  mrs_natural pointer1_;
-  mrs_natural pointer2_;
-  mrs_natural pointer3_;
-  mrs_natural picklength_;
-  mrs_natural N_;
-  mrs_natural p;
-  MarSystem* gain_;
-  realvec gout_;
+	mrs_natural wp_;
+	mrs_natural wpp_;
+
+	mrs_natural rp_;
+
+	// Why do these 'pointers' exist
+	mrs_natural pointer1_;
+	mrs_natural pointer2_;
+	mrs_natural pointer3_;
+
+	mrs_natural picklength_;
+	mrs_natural N_;
+	mrs_natural p;
+	MarSystem* gain_;
+	realvec gout_;
 
 public:
-  Plucked(std::string name);
-  ~Plucked();
-  MarSystem* clone() const;  
-  
-  void myProcess(realvec& in, realvec& out);
+	Plucked(std::string name);
+	~Plucked();
+	MarSystem* clone() const;  
+
+	void myProcess(realvec& in, realvec& out);
 };
 
 }//namespace Marsyas
