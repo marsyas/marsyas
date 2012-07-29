@@ -72,7 +72,7 @@ void Plucked::myUpdate(MarControlPtr sender)
 	gain_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
 	gain_->updControl("mrs_natural/inSamples", getctrl("mrs_natural/inSamples"));
 	gain_->updControl("mrs_real/israte", getctrl("mrs_real/israte"));
-	gain_->updControl("mrs_real/gain", 2.0);
+	gain_->updControl("mrs_real/gain", 1.3);
 
 	gout_.create(gain_->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
 		   		 gain_->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
