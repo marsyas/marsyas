@@ -87,7 +87,7 @@ void Plucked::myUpdate(MarControlPtr sender)
 
 	mrs_real israte = (getctrl("mrs_real/israte")->to<mrs_real>());
 
-	// loweset frequency on a piano is 27.5Hz ... sample rate/27.5 ~= 802*2 for commute
+	// loweset frequency on a piano is 27.5Hz ... sample rate/27.5 for commute
 	// this is the longest delay line required
 	if (delaylineSize_ == 0) 
 	{
