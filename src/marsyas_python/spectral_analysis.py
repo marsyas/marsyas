@@ -21,7 +21,7 @@ Window_len = 2048	# The number of samples in each analysis window
 Window_step = 512	# The step (in samples) between two consecutive analysis
 Zero_padding = 1	# After windowing, the signal will be zero-padded to this value times its length
 Min_freq = 0			# Hz. The minimum frequency that will be analyzed
-Max_freq = 1700		# Hz. The maximum frequency that will be analyzed
+Max_freq = 3000		# Hz. The maximum frequency that will be analyzed
 
 # The following lines will determine the structure of the marsystem
 spec_analyzer = ["Series/analysis", ["AudioSource/asrc",  "Sum/summation", "ShiftInput/sft", "Windowing/win","Spectrum/spk","PowerSpectrum/pspk"]] 
@@ -49,7 +49,7 @@ print DFT_SIZE_2
 freq_bin = fs/DFT_SIZE; # this is the frequency hop for every frequency bin in the DFT
 print freq_bin
 # This is the size of data that will be shown
-visible_time = 15; # Seconds
+visible_time = 10; # Seconds
 minK = int(math.floor(Min_freq/freq_bin))
 maxK = int(math.ceil(Max_freq/freq_bin))
 deltaK = maxK-minK+1

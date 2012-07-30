@@ -266,6 +266,7 @@
 #include "DCSource.h"
 #include "AudioSource.h"
 #include "AudioSourceBlocking.h"
+#include "Upsample.h"
 //modifyHeader
 
 
@@ -533,6 +534,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("DCSource", new DCSource("dcsourcepr"));
 	registerPrototype("AudioSource", new AudioSource("audiosourcepr"));
 	registerPrototype("AudioSourceBlocking", new AudioSourceBlocking("audiosourceblockingpr"));
+	registerPrototype("Upsample", new Upsample("upsamplepr"));
 	//modifyRegister
 
 	//***************************************************************************************
