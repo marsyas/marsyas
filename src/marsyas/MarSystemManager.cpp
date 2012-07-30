@@ -267,6 +267,7 @@
 #include "AudioSource.h"
 #include "AudioSourceBlocking.h"
 #include "Upsample.h"
+#include "Whitening.h"
 //modifyHeader
 
 
@@ -535,6 +536,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AudioSource", new AudioSource("audiosourcepr"));
 	registerPrototype("AudioSourceBlocking", new AudioSourceBlocking("audiosourceblockingpr"));
 	registerPrototype("Upsample", new Upsample("upsamplepr"));
+	registerPrototype("Whitening", new Whitening("whiteningpr"));
 	//modifyRegister
 
 	//***************************************************************************************
