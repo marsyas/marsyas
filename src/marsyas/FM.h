@@ -28,7 +28,7 @@ namespace Marsyas
 	\ingroup Synthesis
     \brief FM synthesis source
 
-   Simple FM synthesis MarSystem.
+	Simple FM synthesis MarSystem.
 
 */
 
@@ -37,29 +37,29 @@ class FM: public MarSystem
 {
   
 public:
-  FM(std::string name);
-  ~FM();
-  
-  void myProcess(realvec& in, realvec& out);
-  MarSystem* clone() const; 
-  
+	FM(std::string name);
+	~FM();
+
+	void myProcess(realvec& in, realvec& out);
+	MarSystem* clone() const;
+	  
 private: 
 
-  void addControls();
+	void addControls();
 	void myUpdate(MarControlPtr sender);
 
-  mrs_real mDepth_;	
-  mrs_real mSpeed_;
-  mrs_real cFrequency_;
-  mrs_natural inSamples_;
-  
-  realvec wavetable_;
-  mrs_real wavetableSize_;
-  mrs_real mIndex_;
-  mrs_real oIndex_;
-  mrs_real mRate_;
-  mrs_real oRate_;
-  mrs_real isRate_;
+	mrs_real mDepth_;
+	mrs_real mSpeed_;
+	mrs_real cFrequency_;
+	mrs_natural inSamples_;
+
+	realvec wavetable_;
+	mrs_real wavetableSize_;
+	mrs_real mIndex_;
+	mrs_real oIndex_;
+	mrs_real mRate_;
+	mrs_real oRate_;
+	mrs_real isRate_;
   
 protected:
   
