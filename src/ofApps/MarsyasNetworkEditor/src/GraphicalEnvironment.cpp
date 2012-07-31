@@ -36,7 +36,7 @@ GraphicalEnvironment::GraphicalEnvironment(){
 	fontBig_.setGlobalDpi(200);
 	fontBig_.loadFont("font.ttf", 15, true, true, true);
     
-    probe_ = new ProbingManager();
+    probe_ = new ProbingManager(this);
     
     
     
@@ -153,13 +153,14 @@ void GraphicalEnvironment::draw(){
     }
     else if(visualizationMode_ == 2){
         probe_->draw();
-    }
-    
-    
-    
-    
-	
+    }	
 }
+
+
+MarSystemWidget* GraphicalEnvironment::getMarSystemWidget(){
+    return msysw_;
+}
+
 
 void GraphicalEnvironment::keyPressed  (int key)
 {

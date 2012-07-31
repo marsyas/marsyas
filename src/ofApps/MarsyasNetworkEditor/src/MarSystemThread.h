@@ -10,18 +10,28 @@
 #define MarSystemThread_h
 
 #include "ofMain.h"
+#include "GraphicalEnvironment.h"
 #include "MarSystemManager.h"
 
 namespace Marsyas {
     
     class MarSystemThread : public ofThread{
+        
+    protected:
+        
+        GraphicalEnvironment* env_;
+        MarSystem* msys_;
+        
+        
+        
     public:
         
         MarSystemThread();
         MarSystemThread(MarSystem* msys);
+        MarSystemThread(GraphicalEnvironment* env);
         ~MarSystemThread();
         
-        MarSystem *msys_;
+        
         
         MarSystem *getMarSystem();
         void loadMarSystem(MarSystem *msys);

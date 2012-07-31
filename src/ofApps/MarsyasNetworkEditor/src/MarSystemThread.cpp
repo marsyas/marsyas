@@ -18,6 +18,11 @@ MarSystemThread::MarSystemThread(MarSystem* msys){
     loadMarSystem(msys);
 }
 
+MarSystemThread::MarSystemThread(GraphicalEnvironment* env){
+    env_ = env;
+    loadMarSystem(NULL);
+}
+
 MarSystemThread::~MarSystemThread(){
     
 }
@@ -36,6 +41,7 @@ void MarSystemThread::threadedFunction(){
         if(lock()){
             if(isLoaded()){
                 msys_->tick();
+                env_->probe_->writeToBuffer();
                 //ofSleepMillis(0);
             }
             unlock();

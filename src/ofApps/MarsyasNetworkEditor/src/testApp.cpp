@@ -7,7 +7,7 @@ using namespace std;
 //--------------------------------------------------------------
 void testApp::setup()
 {
-    //ofSetFrameRate(100);
+    ofSetFrameRate(20);
 	ofEnableSetupScreen();
 	ofBackground(0, 0, 0);
 	ofEnableSmoothing();
@@ -20,7 +20,7 @@ void testApp::setup()
     graphicalEnv_ = new GraphicalEnvironment();
     
     //Marsyas Thread
-    msysThread = new MarSystemThread();
+    msysThread = new MarSystemThread(graphicalEnv_);
     
     
     
@@ -46,16 +46,16 @@ void testApp::setup()
     //This is done in the outmost MarSystem (i.e. the Series/network) because flow
     //controls (as is the case of inSamples) are propagated through the network.
     //Check the Marsyas documentation for mode details.
-    network->updControl("mrs_natural/inSamples", 1024);
+    network->updControl("mrs_natural/inSamples", 512);
     
     //set oscilator frequency to 440Hz
-    network->updControl("SineSource/src/mrs_real/frequency", 110.0);
+    network->updControl("SineSource/src/mrs_real/frequency", 440.0);
     
     // set the sampling to 44100  - a safe choice in most configurations 
     network->updControl("mrs_real/israte", 44100.0);
     network->updControl("AudioSink/dest/mrs_bool/initAudio", true);
     network->updControl("SoundFileSink/dest2/mrs_string/filename", "helloworld2.wav");
-    network->updControl("Gain/vol/mrs_real/gain", 0.5);
+    network->updControl("Gain/vol/mrs_real/gain", 0.9);
     
     //Create corresponing Widgets
     MarSystemWidgetManager *wmng;

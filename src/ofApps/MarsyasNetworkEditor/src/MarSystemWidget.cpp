@@ -111,6 +111,12 @@ void MarSystemWidget::createControlWidgets()
         if(it->second->getName() == "mrs_realvec/processedData"){
             probe_->loadProcessedDataPointer(it->second);
         }
+        else if(it->second->getName() == "mrs_natural/onSamples"){
+            onSamples_ = it->second->to_natural();
+        }
+        else if(it->second->getName() == "mrs_real/osrate"){
+            osRate_ = it->second->to_real();
+        }
 	}
 	
 	//
@@ -532,11 +538,31 @@ MarSystemWidget* MarSystemWidget::getMarSystemWidgetFromMapByName(string name){
     }
     return NULL;
 }
+MarSystemWidget* MarSystemWidget::getMarSystemWidgetFromMap(MarSystem* msys){
+    std::map<MarSystem*, MarSystemWidget*>::iterator it;
+    
+    for(it = msysMap_.begin() ; it != msysMap_.end(); it++){
+        if((*it).first == msys){
+            return (*it).second;
+        }
+    }
+    return NULL;
+}
+
+
 
 ofPoint MarSystemWidget::getHiddenControlPosition(){
 	return hiddenControlPosition_;
 }
 
+
+int MarSystemWidget::getOsRate(){
+    return osRate_;
+}
+
+int MarSystemWidget::getOnSamples(){
+    return onSamples_;
+}
 
 void MarSystemWidget::showFamilyUp(){
     

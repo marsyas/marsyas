@@ -84,7 +84,7 @@ namespace Marsyas{
         
         void calculateTransformations();
         
-        
+        MarSystemWidget* getMarSystemWidget();
         
     };
     

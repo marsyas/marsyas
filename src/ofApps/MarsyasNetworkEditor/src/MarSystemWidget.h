@@ -80,6 +80,9 @@ namespace Marsyas
         //Probing
         //////////////////////////////////
         ProcessedDataWidget* probe_;
+        int osRate_;
+        int onSamples_;
+        
         
         
 		////////////////////////////////////
@@ -152,6 +155,10 @@ namespace Marsyas
 		MarControlWidget* getMarControlWidgetFromCtrlMap(MarControlPtr ptr);
 		
         MarSystemWidget* getMarSystemWidgetFromMapByName(string name);
+        MarSystemWidget* getMarSystemWidgetFromMap(MarSystem* msys);
+        
+        int getOsRate();
+        int getOnSamples();
         
 		//controls
 		std::map<MarControlPtr, MarControlWidget*> ctrlMap_; //FIXME: make this protected
