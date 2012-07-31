@@ -38,11 +38,13 @@ class Product: public MarSystem
 {
 private: 
   void myUpdate(MarControlPtr sender);
+	MarControlPtr ctrl_mask_;
 public:
   Product(std::string name);
   ~Product();
   MarSystem* clone() const;  
-  
+
+	void addControls();  
   void myProcess(realvec& in, realvec& out);
 };
 

@@ -17,14 +17,22 @@
 */
 
 #include "Product.h"
+#include <iostream>
 
 using std::ostringstream;
 using namespace Marsyas;
 
 Product::Product(mrs_string name):MarSystem("Product",name)
 {
+	addControls();
 }
 
+void
+Product::addControls()
+{
+	addctrl("mrs_realvec/mask", realvec(),ctrl_mask_);
+	addctrl("mrs_bool/use_mask", false);
+}
 
 Product::~Product()
 {
@@ -55,8 +63,16 @@ Product::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t,o;
 
+	if (getctrl("mrs_bool/use_mask")==true) {
+		MarControlAccessor acc(getctrl("mrs_realvec/mask"));
+		mrs_realvec& mask = acc.to<mrs_realvec>();
+		for (t = 0; t < inSamples_; t++)
+			out(0,t) = mask(t);
+	}
+	else {
   for (t = 0; t < inSamples_; t++)
     out(0,t) = 1;
+	}
   for (o=0; o < inObservations_; o++)
     for (t = 0; t < inSamples_; t++)
       {
