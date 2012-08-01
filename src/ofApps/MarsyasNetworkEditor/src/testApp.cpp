@@ -7,12 +7,13 @@ using namespace std;
 //--------------------------------------------------------------
 void testApp::setup()
 {
-    ofSetFrameRate(20);
+    ofSetFrameRate(30);
 	ofEnableSetupScreen();
 	ofBackground(0, 0, 0);
 	ofEnableSmoothing();
 	ofEnableAlphaBlending();
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+    ofSetVerticalSync(true);
 	
 	
 	//**********************************************************

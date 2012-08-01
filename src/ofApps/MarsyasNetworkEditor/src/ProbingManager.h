@@ -13,6 +13,8 @@
 #include "MarControl.h"
 #include "MarSystemManager.h"
 
+#define PDATA_BUFFER_SIZE 200
+
 
 namespace Marsyas {
     class GraphicalEnvironment;

@@ -20,3 +20,4 @@ globalMouse::globalMouse()
 	drag = -1;
 }
 
+

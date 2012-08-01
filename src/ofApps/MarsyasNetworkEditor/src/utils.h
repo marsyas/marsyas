@@ -25,6 +25,6 @@ namespace Marsyas
 	};
 	
 	
-	
+    
 }
 #endif
