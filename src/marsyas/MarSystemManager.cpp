@@ -16,248 +16,247 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "MarSystemManager.h"
-#include "MarSystem.h"
-#include "HalfWaveRectifier.h"
-#include "common.h"
-#include "Series.h"
-#include "Cascade.h"
-#include "Parallel.h"
-#include "Fanin.h"
-#include "Fanout.h"
-#include "TimeStretch.h"
-#include "PatchMatrix.h"
-#include "Peaker.h"
-#include "PeakerAdaptive.h"
-#include "MaxArgMax.h"
-#include "MinArgMin.h"
-#include "AutoCorrelation.h"
-#include "Spectrum.h"
-#include "InvSpectrum.h"
-#include "Negative.h"
-#include "PvConvert.h"
-#include "PvFold.h"
-#include "PvOscBank.h"
-#include "ShiftInput.h"
-#include "ShiftOutput.h"
-#include "Shifter.h"
-#include "PvUnconvert.h"
-#include "PvOverlapadd.h"
-#include "PvConvolve.h"
-#include "AuFileSource.h"
-#include "WavFileSource.h"
-#include "WavFileSource2.h"
-#include "SineSource.h"
-#include "NoiseSource.h"
-#include "AudioSinkBlocking.h"
-#include "AudioSink.h"
-#include "Mono2Stereo.h"
-#include "PeakConvert.h"
-#include "PeakConvert2.h"
-#include "OverlapAdd.h"
-#include "ClassificationReport.h"
-#include "PeakRatio.h"
-#include "PeakSynthOsc.h"
-#include "PeakSynthOscBank.h"
-#include "PeakSynthFFT.h"
-#include "PeakResidual.h"
-#include "RealvecSource.h"
-#include "RealvecSink.h"
-#include "Power.h"
-#include "Cartesian2Polar.h"
-#include "Polar2Cartesian.h"
-#include "Windowing.h"
-#include "AuFileSink.h"
-#include "WavFileSink.h"
-#include "PowerSpectrum.h"
-#include "Centroid.h"
-#include "Rolloff.h"
-#include "Flux.h"
-#include "ZeroCrossings.h"
-#include "Memory.h"
-#include "Mean.h"
-#include "DTW.h"
-#include "StandardDeviation.h"
-#include "PlotSink.h"
-#include "GaussianClassifier.h"
-#include "GMMClassifier.h"
-#include "SoundFileSource.h"
-#include "SoundFileSource2.h"
-#include "SoundFileSink.h"
-#include "MP3FileSink.h"
-#include "Confidence.h"
-#include "Rms.h"
-#include "Peak2Rms.h"
-#include "WekaSink.h"
-#include "WekaSource.h"
-#include "MFCC.h"
-#include "SCF.h"
-#include "SFM.h"
-#include "Accumulator.h"
-#include "Shredder.h"
-#include "WaveletPyramid.h"
-#include "WaveletBands.h"
-#include "FullWaveRectifier.h"
-#include "OnePole.h"
-#include "Norm.h"
-#include "Sum.h"
-#include "Product.h"
-#include "Reciprocal.h"
-#include "AccentFilterBank.h"
-#include "ConstQFiltering.h"
-#include "Compressor.h"
-#include "Differentiator.h"
-#include "Delta.h"
-#include "Square.h"
-#include "Subtract.h"
-#include "Median.h"
-#include "MedianFilter.h"
-#include "AubioYin.h"
-#include "Yin.h"
-#include "DownSampler.h"
-#include "PeakPeriods2BPM.h"
-#include "BeatHistogramFromPeaks.h"
-#include "BeatHistogram.h"
-#include "BeatHistoFeatures.h"
-#include "BeatPhase.h"
-#include "FM.h"
-#include "Annotator.h"
-#include "ZeroRClassifier.h"
-#include "KNNClassifier.h"
-#include "Kurtosis.h"
-#include "Skewness.h"
-#include "ViconFileSource.h"
-#include "ClassOutputSink.h"
-#include "Filter.h"
-#include "Biquad.h"
-#include "ERB.h"
-#include "LyonPassiveEar.h"
-#include "Clip.h"
-#include "HarmonicEnhancer.h"
-#include "Reassign.h"
-#include "SilenceRemove.h"
-#include "NormMaxMin.h"
-#include "Normalize.h"
-#include "SMO.h"
-#include "Plucked.h"
-#include "Delay.h"
-#include "LPC.h"
-#include "LPCC.h"
-#include "LSP.h"
-#include "SOM.h"
-#include "FlowCutSource.h"
-#include "MidiInput.h"
-#include "MidiOutput.h"
-#include "BICchangeDetector.h"
-#include "SpectralSNR.h"
-#include "StereoSpectrum.h"
-#include "StereoSpectrumFeatures.h"
-#include "Vibrato.h"
-#include "Panorama.h"
-#include "FlowThru.h"
-#include "FanOutIn.h"
-#include "CompExp.h"
-#include "MarSystemTemplateMedium.h"
-#include "PeakFeatureSelect.h"
-#include "SimilarityMatrix.h"
-#include "SelfSimilarityMatrix.h"
-#include "Metric.h"
-#include "HWPS.h"
-#include "RBF.h"
-#include "NormMatrix.h"
-#include "WHaSp.h"
-#include "PeakLabeler.h"
-#include "PeakClusterSelect.h"
-#include "PeakViewSink.h"
-#include "NormCut.h"
-#include "PeakViewSource.h"
-#include "OneRClassifier.h"
-#include "WekaData.h"
-#include "PhiSEMSource.h"
-#include "PhiSEMFilter.h"
-#include "SVMClassifier.h"
-#include "Chroma.h"
-#include "Spectrum2Chroma.h"
-#include "Spectrum2Mel.h"
 #include "ADRess.h"
 #include "ADRessSpectrum.h"
 #include "ADRessStereoSpectrum.h"
-#include "EnhADRess.h"
-#include "StereoSpectrumSources.h"
-#include "EnhADRessStereoSpectrum.h"
-#include "McAulayQuatieri.h"
-#include "PeakerOnset.h"
 #include "ADSR.h"
-#include "Reverse.h"
-#include "Deinterleave.h"
-#include "DeInterleaveSizecontrol.h"
-#include "SNR.h"
-#include "PCA.h"
+#include "AMDF.h"
 #include "AbsMax.h"
-#include "MaxMin.h"
-#include "TimelineLabeler.h"
-#include "RadioDrumInput.h"
-#include "NoiseGate.h"
-#include "ResampleBezier.h"
-#include "ResampleLinear.h"
-#include "Resample.h"
-#include "ResampleSinc.h"
-#include "ResampleNearestNeighbour.h"
-#include "StretchLinear.h"
-#include "MidiFileSynthSource.h"
-#include "PvMultiResolution.h"
-#include "Gain.h"
-#include "Selector.h"
-#include "SpectralTransformations.h"
-#include "RunningStatistics.h"
-#include "SliceDelta.h"
-#include "DeltaFirstOrderRegression.h"
-#include "ArffFileSink.h"
-#include "MixToMono.h"
-#include "SoundFileSourceHopper.h"
-#include "TempoHypotheses.h"
-#include "OnsetTimes.h"
-#include "BeatAgent.h"
-#include "BeatReferee.h"
-#include "PhaseLock.h"
-#include "BeatTimesSink.h"
-#include "CrossCorrelation.h"
-#include "SliceShuffle.h"
-#include "RunningAutocorrelation.h"
-#include "SubtractMean.h"
-#include "AutoCorrelationFFT.h"
-#include "PeakEnhancer.h"
-#include "Transposer.h"
-#include "SimulMaskingFft.h"
-#include "AimPZFC.h"
-#include "AimPZFC2.h"
+#include "AccentFilterBank.h"
+#include "Accumulator.h"
+#include "AimBoxes.h"
 #include "AimGammatone.h"
 #include "AimHCL.h"
 #include "AimHCL2.h" 
 #include "AimLocalMax.h"
+#include "AimPZFC.h"
+#include "AimPZFC2.h"
 #include "AimSAI.h"
 #include "AimSSI.h"
-#include "AimBoxes.h"
 #include "AimVQ.h"
-#include "Unfold.h"
-#include "TimeFreqPeakConnectivity.h"
-#include "Combinator.h"
-#include "ParallelMatrixWeight.h"
-#include "PeakDistanceHorizontality.h"
-#include "PeakViewMerge.h"
-#include "FMeasure.h"
-#include "DelaySamples.h"
-#include "OrcaSnip.h"
-#include "AMDF.h"
-#include "Inject.h"
-#include "PowerToAverageRatio.h"
-#include "MeanAbsoluteDeviation.h"
-#include "NormalizeAbs.h"
-#include "RemoveObservations.h"
-#include "SpectralFlatnessAllBands.h"
-#include "MathPower.h"
-#include "PitchDiff.h"
+#include "Annotator.h"
+#include "ArffFileSink.h"
+#include "AuFileSink.h"
+#include "AuFileSource.h"
+#include "AubioYin.h"
+#include "AudioSink.h"
+#include "AudioSinkBlocking.h"
+#include "AutoCorrelation.h"
+#include "AutoCorrelationFFT.h"
+#include "BICchangeDetector.h"
+#include "BeatAgent.h"
+#include "BeatHistoFeatures.h"
+#include "BeatHistogram.h"
+#include "BeatHistogramFromPeaks.h"
+#include "BeatPhase.h"
+#include "BeatReferee.h"
+#include "BeatTimesSink.h"
+#include "Biquad.h"
 #include "CARFAC.h"
+#include "Cartesian2Polar.h"
+#include "Cascade.h"
+#include "Centroid.h"
+#include "Chroma.h"
+#include "ClassOutputSink.h"
+#include "ClassificationReport.h"
+#include "Clip.h"
+#include "Combinator.h"
+#include "CompExp.h"
+#include "Compressor.h"
+#include "Confidence.h"
+#include "ConstQFiltering.h"
+#include "CrossCorrelation.h"
+#include "DTW.h"
+#include "DeInterleaveSizecontrol.h"
+#include "Deinterleave.h"
+#include "Delay.h"
+#include "DelaySamples.h"
+#include "Delta.h"
+#include "DeltaFirstOrderRegression.h"
+#include "Differentiator.h"
+#include "DownSampler.h"
+#include "ERB.h"
+#include "EnhADRess.h"
+#include "EnhADRessStereoSpectrum.h"
+#include "FM.h"
+#include "FMeasure.h"
+#include "FanOutIn.h"
+#include "Fanin.h"
+#include "Fanout.h"
+#include "Filter.h"
+#include "FlowCutSource.h"
+#include "FlowThru.h"
+#include "Flux.h"
+#include "FullWaveRectifier.h"
+#include "GMMClassifier.h"
+#include "Gain.h"
+#include "GaussianClassifier.h"
+#include "HWPS.h"
+#include "HalfWaveRectifier.h"
+#include "HarmonicEnhancer.h"
+#include "Inject.h"
+#include "InvSpectrum.h"
+#include "KNNClassifier.h"
+#include "Kurtosis.h"
+#include "LPC.h"
+#include "LPCC.h"
+#include "LSP.h"
+#include "LyonPassiveEar.h"
+#include "MFCC.h"
+#include "MP3FileSink.h"
+#include "MarSystem.h"
+#include "MarSystemManager.h"
+#include "MarSystemTemplateMedium.h"
+#include "MathPower.h"
+#include "MaxArgMax.h"
+#include "MaxMin.h"
+#include "McAulayQuatieri.h"
+#include "Mean.h"
+#include "MeanAbsoluteDeviation.h"
+#include "Median.h"
+#include "MedianFilter.h"
+#include "Memory.h"
+#include "Metric.h"
+#include "MidiFileSynthSource.h"
+#include "MidiInput.h"
+#include "MidiOutput.h"
+#include "MinArgMin.h"
+#include "MixToMono.h"
+#include "Mono2Stereo.h"
+#include "Negative.h"
+#include "NoiseGate.h"
+#include "NoiseSource.h"
+#include "Norm.h"
+#include "NormCut.h"
+#include "NormMatrix.h"
+#include "NormMaxMin.h"
+#include "Normalize.h"
+#include "NormalizeAbs.h"
+#include "OnePole.h"
+#include "OneRClassifier.h"
+#include "OnsetTimes.h"
+#include "OrcaSnip.h"
+#include "OverlapAdd.h"
+#include "PCA.h"
+#include "Panorama.h"
+#include "Parallel.h"
+#include "ParallelMatrixWeight.h"
+#include "PatchMatrix.h"
+#include "Peak2Rms.h"
+#include "PeakClusterSelect.h"
+#include "PeakConvert.h"
+#include "PeakConvert2.h"
+#include "PeakDistanceHorizontality.h"
+#include "PeakEnhancer.h"
+#include "PeakFeatureSelect.h"
+#include "PeakLabeler.h"
+#include "PeakPeriods2BPM.h"
+#include "PeakRatio.h"
+#include "PeakResidual.h"
+#include "PeakSynthFFT.h"
+#include "PeakSynthOsc.h"
+#include "PeakSynthOscBank.h"
+#include "PeakViewMerge.h"
+#include "PeakViewSink.h"
+#include "PeakViewSource.h"
+#include "Peaker.h"
+#include "PeakerAdaptive.h"
+#include "PeakerOnset.h"
+#include "PhaseLock.h"
+#include "PhiSEMFilter.h"
+#include "PhiSEMSource.h"
+#include "PitchDiff.h"
+#include "PlotSink.h"
+#include "Plucked.h"
+#include "Polar2Cartesian.h"
+#include "Power.h"
+#include "PowerSpectrum.h"
+#include "PowerToAverageRatio.h"
+#include "Product.h"
+#include "PvConvert.h"
+#include "PvConvolve.h"
+#include "PvFold.h"
+#include "PvOscBank.h"
+#include "PvOverlapadd.h"
+#include "PvUnconvert.h"
+#include "RBF.h"
+#include "RadioDrumInput.h"
+#include "RealvecSink.h"
+#include "RealvecSource.h"
+#include "Reassign.h"
+#include "Reciprocal.h"
+#include "RemoveObservations.h"
+#include "Resample.h"
+#include "ResampleBezier.h"
+#include "ResampleLinear.h"
+#include "ResampleNearestNeighbour.h"
+#include "ResampleSinc.h"
+#include "Reverse.h"
+#include "Rms.h"
+#include "Rolloff.h"
+#include "RunningAutocorrelation.h"
+#include "RunningStatistics.h"
+#include "SCF.h"
+#include "SFM.h"
+#include "SMO.h"
+#include "SNR.h"
+#include "SOM.h"
+#include "SVMClassifier.h"
+#include "Selector.h"
+#include "SelfSimilarityMatrix.h"
+#include "Series.h"
+#include "ShiftInput.h"
+#include "ShiftOutput.h"
+#include "Shifter.h"
+#include "Shredder.h"
+#include "SilenceRemove.h"
+#include "SimilarityMatrix.h"
+#include "SimulMaskingFft.h"
+#include "SineSource.h"
+#include "Skewness.h"
+#include "SliceDelta.h"
+#include "SliceShuffle.h"
+#include "SoundFileSink.h"
+#include "SoundFileSource.h"
+#include "SoundFileSource2.h"
+#include "SoundFileSourceHopper.h"
+#include "SpectralFlatnessAllBands.h"
+#include "SpectralSNR.h"
+#include "SpectralTransformations.h"
+#include "Spectrum.h"
+#include "Spectrum2Chroma.h"
+#include "Spectrum2Mel.h"
+#include "Square.h"
+#include "StandardDeviation.h"
+#include "StereoSpectrum.h"
+#include "StereoSpectrumFeatures.h"
+#include "StereoSpectrumSources.h"
+#include "StretchLinear.h"
+#include "Subtract.h"
+#include "SubtractMean.h"
+#include "Sum.h"
+#include "TempoHypotheses.h"
+#include "TimeFreqPeakConnectivity.h"
+#include "TimeStretch.h"
+#include "TimelineLabeler.h"
+#include "Transposer.h"
+#include "Unfold.h"
+#include "Vibrato.h"
+#include "ViconFileSource.h"
+#include "WHaSp.h"
+#include "WavFileSink.h"
+#include "WavFileSource.h"
+#include "WavFileSource2.h"
+#include "WaveletBands.h"
+#include "WaveletPyramid.h"
+#include "WekaData.h"
+#include "WekaSink.h"
+#include "WekaSource.h"
+#include "Windowing.h"
+#include "Yin.h"
+#include "ZeroCrossings.h"
+#include "ZeroRClassifier.h"
+#include "common.h"
 // #include "BinauralCARFAC.h"
 #include "HarmonicStrength.h"
 #include "CsvFileSource.h"
@@ -266,6 +265,8 @@
 #include "DCSource.h"
 #include "AudioSource.h"
 #include "AudioSourceBlocking.h"
+#include "AliasingOsc.h"
+#include "APDelayOsc.h"
 #include "Upsample.h"
 #include "Whitening.h"
 //modifyHeader
@@ -281,260 +282,252 @@ using namespace Marsyas;
 
 MarSystemManager::MarSystemManager()
 {
-	registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
-	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
-	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
-	registerPrototype("AutoCorrelation", new AutoCorrelation("acrp"));
-	registerPrototype("Series", new Series("srp"));
-	registerPrototype("Fanin", new Fanin("finp"));
-	registerPrototype("Fanout", new Fanout("fonp"));
-	registerPrototype("Parallel", new Parallel("parallelp"));
-	registerPrototype("Cascade", new Cascade("cascadep"));
-	registerPrototype("TimeStretch", new TimeStretch("tscp"));
-	registerPrototype("Peaker", new Peaker("pkrp"));
-	registerPrototype("PatchMatrix", new PatchMatrix("patmatpr"));
-	registerPrototype("PeakerAdaptive", new PeakerAdaptive("pkr1pr"));
-	registerPrototype("MaxArgMax", new MaxArgMax("mxrp"));
-	registerPrototype("MinArgMin", new MinArgMin("mnrp"));
-	registerPrototype("Spectrum", new Spectrum("spkp"));
-	registerPrototype("InvSpectrum", new InvSpectrum("ispkp"));
-	registerPrototype("Negative", new Negative("negp"));
-	registerPrototype("PvConvert", new PvConvert("pvconvp"));
-	registerPrototype("PvUnconvert", new PvUnconvert("pvuconvp"));
-	registerPrototype("PvFold", new PvFold("pvfp"));
-	registerPrototype("PvOverlapadd", new PvOverlapadd("pvovlfp"));
-	registerPrototype("PvOscBank", new PvOscBank("pvoscp"));
-	registerPrototype("PeakRatio", new PeakRatio("perap"));
-	registerPrototype("PeakSynthOscBank", new PeakSynthOscBank("pvoscp"));
-	registerPrototype("PeakSynthFFT", new PeakSynthFFT("pvfft"));
-	registerPrototype("ShiftInput", new ShiftInput("sip"));
-	registerPrototype("ShiftOutput", new ShiftOutput("sop"));
-	registerPrototype("Shifter", new Shifter("sp"));
-	registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
-	registerPrototype("PeakConvert", new PeakConvert("peconvp"));
-	registerPrototype("PeakConvert2", new PeakConvert2("peconvp2"));
-	registerPrototype("OverlapAdd", new OverlapAdd("oa"));
-	registerPrototype("PeakSynthOsc", new PeakSynthOsc("pso"));
-	registerPrototype("PeakResidual", new PeakResidual("peres"));
-	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
-	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
-	registerPrototype("Power", new Power("pow"));
-	registerPrototype("Cartesian2Polar", new Cartesian2Polar("c2p"));
-	registerPrototype("Polar2Cartesian", new Polar2Cartesian("p2c"));
-	registerPrototype("FlowCutSource", new FlowCutSource("fcs"));
-	registerPrototype("AuFileSource", new AuFileSource("aufp"));
-	registerPrototype("WavFileSource", new WavFileSource("wavfp"));
-	registerPrototype("WavFileSource2", new WavFileSource2("wavf2p"));
-	registerPrototype("SoundFileSink", new SoundFileSink("sfsp"));
-	registerPrototype("MP3FileSink", new MP3FileSink("sfsp"));
-	registerPrototype("AudioSink", new AudioSink("audiosinkp"));
-	registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
-	registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
-	registerPrototype("Mono2Stereo", new Mono2Stereo("mono2stereop"));
-	registerPrototype("Windowing", new Windowing("win"));
-	registerPrototype("PowerSpectrum", new PowerSpectrum("pspkp"));
-	registerPrototype("Centroid", new Centroid("cntrp"));
-	registerPrototype("Rolloff", new Rolloff("rlfp"));
-	registerPrototype("Flux", new Flux("fluxp"));
-	registerPrototype("ZeroCrossings", new ZeroCrossings("zcrsp"));
-	registerPrototype("Memory", new Memory("memp"));
-	registerPrototype("Mean", new Mean("meanp"));
-	registerPrototype("StandardDeviation", new StandardDeviation("stdp"));
-	registerPrototype("PlotSink", new PlotSink("plotsp"));
-	registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
-	registerPrototype("GMMClassifier", new GMMClassifier("gmmsp"));
-	registerPrototype("Confidence", new Confidence("confp"));
-	registerPrototype("Rms", new Rms("rms"));
-	registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
-	registerPrototype("WekaSink", new WekaSink("wsink"));
-	registerPrototype("WekaSource", new WekaSource("wsource"));
-	registerPrototype("MFCC", new MFCC("mfcc"));
-	registerPrototype("SCF", new SCF("scf"));
-	registerPrototype("SFM", new SFM("sfm"));
-	registerPrototype("Accumulator", new Accumulator("acc"));
-	registerPrototype("Shredder", new Shredder("shred"));
-	registerPrototype("WaveletPyramid", new WaveletPyramid("wvpyramid"));
-	registerPrototype("WaveletBands",   new WaveletBands("wvbands"));
-	registerPrototype("FullWaveRectifier", new FullWaveRectifier("fwr"));
-	registerPrototype("OnePole", new OnePole("lpf"));
-	registerPrototype("Norm", new Norm("norm"));
-	registerPrototype("Sum", new Sum("sum"));
-	registerPrototype("Product", new Product("product"));
-	registerPrototype("Reciprocal", new Reciprocal("reciprocal"));
-	registerPrototype("AccentFilterBank", new AccentFilterBank("afb"));
-	registerPrototype("ConstQFiltering", new ConstQFiltering("cqfpr"));
-	registerPrototype("Compressor", new Compressor("compressor"));
-	registerPrototype("Differentiator", new Differentiator("differentiator"));
-	registerPrototype("Delta", new Delta("deltapr"));
-	registerPrototype("Square", new Square("square"));
-	registerPrototype("Subtract", new Subtract("subtract"));
-	registerPrototype("Median", new Median("median"));
-	registerPrototype("MedianFilter", new MedianFilter("medianfilterpr"));
-	registerPrototype("AMDF", new AMDF("amdfpr"));
-	registerPrototype("AubioYin", new AubioYin("aubioyin"));
-	registerPrototype("Yin", new Yin("yin"));
-	registerPrototype("DownSampler", new DownSampler("ds"));
-	registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));
-	registerPrototype("BeatHistogramFromPeaks", new BeatHistogramFromPeaks("beathistofrompeakspr"));
-	registerPrototype("BeatPhase", new BeatPhase("beatphase"));
-	registerPrototype("BeatHistogram", new BeatHistogram("beathistopr"));
-	registerPrototype("BeatHistoFeatures", new BeatHistoFeatures("bhfp"));
-	registerPrototype("SineSource", new SineSource("sinesp"));
-	registerPrototype("NoiseSource", new NoiseSource("noisesrcsp"));
-	registerPrototype("FM", new FM("fmp"));
-	registerPrototype("Annotator", new Annotator("anonp"));
-	registerPrototype("ZeroRClassifier", new ZeroRClassifier("zerorp"));
-	registerPrototype("KNNClassifier", new KNNClassifier("knnp"));
-	registerPrototype("SMO", new SMO("smopr"));
-	registerPrototype("Plucked", new Plucked("pluckedpr"));
-	registerPrototype("Delay", new Delay("delaypr"));
-	registerPrototype("DelaySamples", new DelaySamples("delay"));
-	registerPrototype("Kurtosis", new Kurtosis("kurtosisp"));
-	registerPrototype("Skewness", new Skewness("Skewnessp"));
-	registerPrototype("ViconFileSource", new ViconFileSource("viconfilesourcep"));
-	registerPrototype("ClassOutputSink", new ClassOutputSink("classoutputsinkp"));
-	registerPrototype("Filter", new Filter("filterp"));
-	registerPrototype("Biquad", new Biquad("biquadp"));
-	registerPrototype("RadioDrumInput", new RadioDrumInput("radiodrump"));
-	registerPrototype("NoiseGate", new NoiseGate("noisegatep"));
-	registerPrototype("ERB", new ERB("erbp"));
-	registerPrototype("LyonPassiveEar", new LyonPassiveEar("lyonp"));
-	registerPrototype("Clip", new Clip("clpr"));
-	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
-	registerPrototype("Reassign", new Reassign("reassignpr"));
-	registerPrototype("SilenceRemove", new SilenceRemove("silenceremovepr"));
-	registerPrototype("NormMaxMin", new NormMaxMin("normmaxminpr"));
-	registerPrototype("Normalize", new Normalize("normalizepr"));
-	registerPrototype("LPC", new LPC("lpcwarppr"));
-	registerPrototype("LPCC", new LPCC("lpccpr"));
-	registerPrototype("LSP", new LSP("lsppr"));
-	registerPrototype("SOM", new SOM("sompr"));
-	registerPrototype("MidiInput", new MidiInput("midiinpr"));
-	registerPrototype("MidiOutput", new MidiOutput("midioutpr"));
-	registerPrototype("BICchangeDetector", new BICchangeDetector("bicchgdetpr"));
-	registerPrototype("SpectralSNR", new SpectralSNR("ssnrpr"));
-	registerPrototype("StereoSpectrum", new StereoSpectrum("stereopr"));
-	registerPrototype("StereoSpectrumFeatures", new StereoSpectrumFeatures("stereospkfpr"));
-	registerPrototype("Vibrato", new Vibrato("vibratopr"));
-	registerPrototype("Panorama", new Panorama("panoramapr"));
-	registerPrototype("FlowThru", new FlowThru("flowthrupr"));
-	registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
-	registerPrototype("CompExp", new CompExp("compexppr"));
-	registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
-	registerPrototype("PeakFeatureSelect", new PeakFeatureSelect("pefeatselectpr"));
-	registerPrototype("SimilarityMatrix", new SimilarityMatrix("similaritymatrixpr"));
-	registerPrototype("SelfSimilarityMatrix", new SelfSimilarityMatrix("selfsimilaritymatrixpr"));
-	registerPrototype("Metric", new Metric("metricpr"));
-	registerPrototype("HWPS", new HWPS("hwpspr"));
-	registerPrototype("RBF", new RBF("rbfpr"));
-	registerPrototype("NormMatrix", new NormMatrix("normmatrixpr"));
-	registerPrototype("WHaSp", new WHaSp("whasppr"));
-	registerPrototype("PeakLabeler", new PeakLabeler("pelabelerpr"));
-	registerPrototype("PeakClusterSelect", new PeakClusterSelect("peclusterselectpr"));
-	registerPrototype("PeakViewSink", new PeakViewSink("peakviewsinkpr"));
-	registerPrototype("NormCut", new NormCut("normcutpr"));
-	registerPrototype("PeakViewSource", new PeakViewSource("peakviewsourcepr"));
-	registerPrototype("OneRClassifier", new OneRClassifier("onerclassifierpr"));
-	registerPrototype("ClassificationReport", new ClassificationReport("classificationreportpr"));
-	registerPrototype("PhiSEMSource", new PhiSEMSource("phisemsourcepr"));
-	registerPrototype("PhiSEMFilter", new PhiSEMFilter("phisemfilterpr"));
-	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
-	registerPrototype("Chroma", new Chroma("chromapr"));
-	registerPrototype("Spectrum2Chroma", new Spectrum2Chroma("spectrum2chromapr"));
-
-	registerPrototype("Spectrum2Mel", new Spectrum2Mel("spectrum2melpr"));
+	// registerPrototype("BinauralCARFAC", new BinauralCARFAC("binauralcarfac"));
 	registerPrototype("ADRess", new ADRess("adresspr"));
 	registerPrototype("ADRessSpectrum", new ADRessSpectrum("adressspectrumpr"));
 	registerPrototype("ADRessStereoSpectrum", new ADRessStereoSpectrum("adressstereospectrumpr"));
-	registerPrototype("EnhADRess", new EnhADRess("Enhadresspr"));
-	registerPrototype("StereoSpectrumSources", new StereoSpectrumSources("stereospectrumsourcespr"));
-	registerPrototype("EnhADRessStereoSpectrum", new EnhADRessStereoSpectrum("enhadressstereospectrumpr"));
-	registerPrototype("PeakerOnset", new PeakerOnset("pkronsetpr"));
 	registerPrototype("ADSR", new ADSR("adsrpr"));
-	registerPrototype("Reverse", new Reverse("reversepr"));
-	registerPrototype("DeInterleaveSizecontrol", new DeInterleaveSizecontrol("deintszctrlpr"));
- 	registerPrototype("DTW", new DTW("dtwpr"));
-	registerPrototype("Deinterleave", new Deinterleave("deintpr"));
-	registerPrototype("SNR", new SNR("snrpr"));
-	registerPrototype("PCA", new PCA("pcapr"));
+	registerPrototype("AMDF", new AMDF("amdfpr"));
 	registerPrototype("AbsMax", new AbsMax("absmaxpr"));
-	registerPrototype("MaxMin", new MaxMin("maxminpr"));
-	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
-	registerPrototype("StretchLinear", new StretchLinear("stretchlinearpr"));
-	registerPrototype("ResampleBezier", new ResampleBezier("resampberpr"));
-	registerPrototype("ResampleLinear", new ResampleLinear("resamplinpr"));
-	registerPrototype("Resample", new Resample("resampabspr"));
-	registerPrototype("ResampleSinc", new ResampleSinc("resampsincpr"));
-	registerPrototype("ResampleNearestNeighbour", new ResampleNearestNeighbour("resampnnpr"));
-	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
-	registerPrototype("PvMultiResolution", new PvMultiResolution("PvMultiResolution"));
-	registerPrototype("AudioSinkBlocking", new AudioSinkBlocking("AudioSinkBlocking"));
-
-
-	registerPrototype("Gain", new Gain("gp"));
-	registerPrototype("Selector", new Selector("selectorpr"));
-	registerPrototype("SpectralTransformations", new SpectralTransformations("spectraltransformationspr"));
-	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
-	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
-	registerPrototype("DeltaFirstOrderRegression", new DeltaFirstOrderRegression("delta"));
-	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
-	registerPrototype("MixToMono", new MixToMono("mixtomono"));
-	registerPrototype("SoundFileSourceHopper", new SoundFileSourceHopper("soundfilesourcehopper"));
-	registerPrototype("TempoHypotheses", new TempoHypotheses("tempohyp"));
-	registerPrototype("OnsetTimes", new OnsetTimes("OnsetTimes"));
-	registerPrototype("BeatAgent", new BeatAgent("beatagent"));
-	registerPrototype("BeatReferee", new BeatReferee("beatreferee"));
-
-	registerPrototype("AutoCorrelationFFT", new AutoCorrelationFFT("autocorfftpr"));
-	registerPrototype("PeakEnhancer", new PeakEnhancer("peakenhpr"));
-	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
-	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
-	registerPrototype("CrossCorrelation",new CrossCorrelation("crossCorrelationpr"));
-	registerPrototype("SliceShuffle", new SliceShuffle("sliceshuffle"));
-	registerPrototype("RunningAutocorrelation", new RunningAutocorrelation("runningautocorrelation"));
-	registerPrototype("SubtractMean", new SubtractMean("subtractmean"));
-
-	registerPrototype("Transposer", new Transposer("transposer"));
-	registerPrototype("SimulMaskingFft", new SimulMaskingFft("simulmask"));
-	registerPrototype("TimeFreqPeakConnectivity", new TimeFreqPeakConnectivity("tfpeakconn"));
-	registerPrototype("Combinator", new Combinator("combinator"));
-	registerPrototype("ParallelMatrixWeight", new ParallelMatrixWeight("parallelmatrixweight"));
-	registerPrototype("PeakDistanceHorizontality", new PeakDistanceHorizontality("horizontality"));
-	registerPrototype("PeakViewMerge", new PeakViewMerge("PeakViewMerge"));
-	registerPrototype("FMeasure", new FMeasure("F-Measure"));
-	registerPrototype("OrcaSnip", new OrcaSnip("GetSnipBounds"));
-
-
-	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));
-	registerPrototype("AimPZFC2", new AimPZFC2("aimpzfc2"));
-
+	registerPrototype("AccentFilterBank", new AccentFilterBank("afb"));
+	registerPrototype("Accumulator", new Accumulator("acc"));
+	registerPrototype("AimBoxes", new AimBoxes("aimboxes"));
 	registerPrototype("AimGammatone", new AimGammatone("aimgammatone"));
 	registerPrototype("AimHCL", new AimHCL("aimhcl"));
 	registerPrototype("AimHCL2", new AimHCL2("aimhcl2"));
 	registerPrototype("AimLocalMax", new AimLocalMax("aimlocalmax"));
+	registerPrototype("AimPZFC", new AimPZFC("aimpzfc"));
+	registerPrototype("AimPZFC2", new AimPZFC2("aimpzfc2"));
 	registerPrototype("AimSAI", new AimSAI("aimsai"));
 	registerPrototype("AimSSI", new AimSSI("aimssi"));
-	registerPrototype("AimBoxes", new AimBoxes("aimboxes"));
 	registerPrototype("AimVQ", new AimVQ("aimvq"));
-	registerPrototype("Unfold", new Unfold("unfold"));
-
-	registerPrototype("Inject", new Inject("injectpr"));
-	registerPrototype("PowerToAverageRatio", new PowerToAverageRatio("crestpr"));
-	registerPrototype("MeanAbsoluteDeviation", new MeanAbsoluteDeviation("meanabsolutedeviationpr"));
-	registerPrototype("NormalizeAbs", new NormalizeAbs("normalizeabspr"));
-	registerPrototype("RemoveObservations", new RemoveObservations("removeobservationspr"));
-	registerPrototype("SpectralFlatnessAllBands", new SpectralFlatnessAllBands("spectralflatnessallbandspr"));
-	registerPrototype("MathPower", new MathPower("mathpowerpr"));
-	registerPrototype("PitchDiff", new PitchDiff("pitchdiffpr"));
-	registerPrototype("CARFAC", new CARFAC("carfac"));
-	// registerPrototype("BinauralCARFAC", new BinauralCARFAC("binauralcarfac"));
-	registerPrototype("HarmonicStrength", new HarmonicStrength("harmonicstrengthpr"));
-	registerPrototype("CsvFileSource", new CsvFileSource("csvfilesourcepr"));
-	registerPrototype("Krumhansl_key_finder", new Krumhansl_key_finder("krumhansl_key_finderpr"));
-	registerPrototype("PWMSource", new PWMSource("pwmsourcepr"));
-	registerPrototype("DCSource", new DCSource("dcsourcepr"));
+	registerPrototype("AliasingOsc", new AliasingOsc("aliasingoscpr"));
+	registerPrototype("Annotator", new Annotator("anonp"));
+	registerPrototype("ArffFileSink", new ArffFileSink("arfffilesinkpr"));
+	registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
+	registerPrototype("AuFileSource", new AuFileSource("aufp"));
+	registerPrototype("AubioYin", new AubioYin("aubioyin"));
+	registerPrototype("AudioSink", new AudioSink("audiosinkp"));
+	registerPrototype("AudioSinkBlocking", new AudioSinkBlocking("AudioSinkBlocking"));
 	registerPrototype("AudioSource", new AudioSource("audiosourcepr"));
 	registerPrototype("AudioSourceBlocking", new AudioSourceBlocking("audiosourceblockingpr"));
+	registerPrototype("AutoCorrelation", new AutoCorrelation("acrp"));
+	registerPrototype("AutoCorrelationFFT", new AutoCorrelationFFT("autocorfftpr"));
+	registerPrototype("BICchangeDetector", new BICchangeDetector("bicchgdetpr"));
+	registerPrototype("BeatAgent", new BeatAgent("beatagent"));
+	registerPrototype("BeatHistoFeatures", new BeatHistoFeatures("bhfp"));
+	registerPrototype("BeatHistogram", new BeatHistogram("beathistopr"));
+	registerPrototype("BeatHistogramFromPeaks", new BeatHistogramFromPeaks("beathistofrompeakspr"));
+	registerPrototype("BeatPhase", new BeatPhase("beatphase"));
+	registerPrototype("BeatReferee", new BeatReferee("beatreferee"));
+	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
+	registerPrototype("Biquad", new Biquad("biquadp"));
+	registerPrototype("CARFAC", new CARFAC("carfac"));
+	registerPrototype("Cartesian2Polar", new Cartesian2Polar("c2p"));
+	registerPrototype("Cascade", new Cascade("cascadep"));
+	registerPrototype("Centroid", new Centroid("cntrp"));
+	registerPrototype("Chroma", new Chroma("chromapr"));
+	registerPrototype("ClassOutputSink", new ClassOutputSink("classoutputsinkp"));
+	registerPrototype("ClassificationReport", new ClassificationReport("classificationreportpr"));
+	registerPrototype("Clip", new Clip("clpr"));
+	registerPrototype("Combinator", new Combinator("combinator"));
+	registerPrototype("CompExp", new CompExp("compexppr"));
+	registerPrototype("Compressor", new Compressor("compressor"));
+	registerPrototype("Confidence", new Confidence("confp"));
+	registerPrototype("ConstQFiltering", new ConstQFiltering("cqfpr"));
+	registerPrototype("CrossCorrelation",new CrossCorrelation("crossCorrelationpr"));
+	registerPrototype("CsvFileSource", new CsvFileSource("csvfilesourcepr"));
+	registerPrototype("DCSource", new DCSource("dcsourcepr"));
+	registerPrototype("DeInterleaveSizecontrol", new DeInterleaveSizecontrol("deintszctrlpr"));
+	registerPrototype("Deinterleave", new Deinterleave("deintpr"));
+	registerPrototype("Delay", new Delay("delaypr"));
+	registerPrototype("DelaySamples", new DelaySamples("delay"));
+	registerPrototype("Delta", new Delta("deltapr"));
+	registerPrototype("DeltaFirstOrderRegression", new DeltaFirstOrderRegression("delta"));
+	registerPrototype("Differentiator", new Differentiator("differentiator"));
+	registerPrototype("DownSampler", new DownSampler("ds"));
+	registerPrototype("ERB", new ERB("erbp"));
+	registerPrototype("EnhADRess", new EnhADRess("Enhadresspr"));
+	registerPrototype("EnhADRessStereoSpectrum", new EnhADRessStereoSpectrum("enhadressstereospectrumpr"));
+	registerPrototype("FM", new FM("fmp"));
+	registerPrototype("FMeasure", new FMeasure("F-Measure"));
+	registerPrototype("FanOutIn", new FanOutIn("fanoutinpr"));
+	registerPrototype("Fanin", new Fanin("finp"));
+	registerPrototype("Fanout", new Fanout("fonp"));
+	registerPrototype("Filter", new Filter("filterp"));
+	registerPrototype("FlowCutSource", new FlowCutSource("fcs"));
+	registerPrototype("FlowThru", new FlowThru("flowthrupr"));
+	registerPrototype("Flux", new Flux("fluxp"));
+	registerPrototype("FullWaveRectifier", new FullWaveRectifier("fwr"));
+	registerPrototype("GMMClassifier", new GMMClassifier("gmmsp"));
+	registerPrototype("Gain", new Gain("gp"));
+	registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
+	registerPrototype("HWPS", new HWPS("hwpspr"));
+	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
+	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
+	registerPrototype("HarmonicStrength", new HarmonicStrength("harmonicstrengthpr"));
+	registerPrototype("Inject", new Inject("injectpr"));
+	registerPrototype("InvSpectrum", new InvSpectrum("ispkp"));
+	registerPrototype("KNNClassifier", new KNNClassifier("knnp"));
+	registerPrototype("Krumhansl_key_finder", new Krumhansl_key_finder("krumhansl_key_finderpr"));
+	registerPrototype("Kurtosis", new Kurtosis("kurtosisp"));
+	registerPrototype("LPC", new LPC("lpcwarppr"));
+	registerPrototype("LPCC", new LPCC("lpccpr"));
+	registerPrototype("LSP", new LSP("lsppr"));
+	registerPrototype("LyonPassiveEar", new LyonPassiveEar("lyonp"));
+	registerPrototype("MFCC", new MFCC("mfcc"));
+	registerPrototype("MP3FileSink", new MP3FileSink("sfsp"));
+	registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
+	registerPrototype("MathPower", new MathPower("mathpowerpr"));
+	registerPrototype("MaxArgMax", new MaxArgMax("mxrp"));
+	registerPrototype("MaxMin", new MaxMin("maxminpr"));
+	registerPrototype("Mean", new Mean("meanp"));
+	registerPrototype("MeanAbsoluteDeviation", new MeanAbsoluteDeviation("meanabsolutedeviationpr"));
+	registerPrototype("Median", new Median("median"));
+	registerPrototype("MedianFilter", new MedianFilter("medianfilterpr"));
+	registerPrototype("Memory", new Memory("memp"));
+	registerPrototype("Metric", new Metric("metricpr"));
+	registerPrototype("MidiFileSynthSource", new MidiFileSynthSource("midifilesynthsourcepr"));
+	registerPrototype("MidiInput", new MidiInput("midiinpr"));
+	registerPrototype("MidiOutput", new MidiOutput("midioutpr"));
+	registerPrototype("MinArgMin", new MinArgMin("mnrp"));
+	registerPrototype("MixToMono", new MixToMono("mixtomono"));
+	registerPrototype("Mono2Stereo", new Mono2Stereo("mono2stereop"));
+	registerPrototype("Negative", new Negative("negp"));
+	registerPrototype("NoiseGate", new NoiseGate("noisegatep"));
+	registerPrototype("NoiseSource", new NoiseSource("noisesrcsp"));
+	registerPrototype("Norm", new Norm("norm"));
+	registerPrototype("NormCut", new NormCut("normcutpr"));
+	registerPrototype("NormMatrix", new NormMatrix("normmatrixpr"));
+	registerPrototype("NormMaxMin", new NormMaxMin("normmaxminpr"));
+	registerPrototype("Normalize", new Normalize("normalizepr"));
+	registerPrototype("NormalizeAbs", new NormalizeAbs("normalizeabspr"));
+	registerPrototype("OnePole", new OnePole("lpf"));
+	registerPrototype("OneRClassifier", new OneRClassifier("onerclassifierpr"));
+	registerPrototype("OnsetTimes", new OnsetTimes("OnsetTimes"));
+	registerPrototype("OrcaSnip", new OrcaSnip("GetSnipBounds"));
+	registerPrototype("OverlapAdd", new OverlapAdd("oa"));
+	registerPrototype("PCA", new PCA("pcapr"));
+	registerPrototype("PWMSource", new PWMSource("pwmsourcepr"));
+	registerPrototype("Panorama", new Panorama("panoramapr"));
+	registerPrototype("Parallel", new Parallel("parallelp"));
+	registerPrototype("ParallelMatrixWeight", new ParallelMatrixWeight("parallelmatrixweight"));
+	registerPrototype("PatchMatrix", new PatchMatrix("patmatpr"));
+	registerPrototype("Peak2Rms", new Peak2Rms("peakrms"));
+	registerPrototype("PeakClusterSelect", new PeakClusterSelect("peclusterselectpr"));
+	registerPrototype("PeakConvert", new PeakConvert("peconvp"));
+	registerPrototype("PeakConvert2", new PeakConvert2("peconvp2"));
+	registerPrototype("PeakDistanceHorizontality", new PeakDistanceHorizontality("horizontality"));
+	registerPrototype("PeakEnhancer", new PeakEnhancer("peakenhpr"));
+	registerPrototype("PeakFeatureSelect", new PeakFeatureSelect("pefeatselectpr"));
+	registerPrototype("PeakLabeler", new PeakLabeler("pelabelerpr"));
+	registerPrototype("PeakPeriods2BPM", new PeakPeriods2BPM("p2bpm"));
+	registerPrototype("PeakRatio", new PeakRatio("perap"));
+	registerPrototype("PeakResidual", new PeakResidual("peres"));
+	registerPrototype("PeakSynthFFT", new PeakSynthFFT("pvfft"));
+	registerPrototype("PeakSynthOsc", new PeakSynthOsc("pso"));
+	registerPrototype("PeakSynthOscBank", new PeakSynthOscBank("pvoscp"));
+	registerPrototype("PeakViewMerge", new PeakViewMerge("PeakViewMerge"));
+	registerPrototype("PeakViewSink", new PeakViewSink("peakviewsinkpr"));
+	registerPrototype("PeakViewSource", new PeakViewSource("peakviewsourcepr"));
+	registerPrototype("Peaker", new Peaker("pkrp"));
+	registerPrototype("PeakerAdaptive", new PeakerAdaptive("pkr1pr"));
+	registerPrototype("PeakerOnset", new PeakerOnset("pkronsetpr"));
+	registerPrototype("PhaseLock", new PhaseLock("phaselock"));
+	registerPrototype("PhiSEMFilter", new PhiSEMFilter("phisemfilterpr"));
+	registerPrototype("PhiSEMSource", new PhiSEMSource("phisemsourcepr"));
+	registerPrototype("PitchDiff", new PitchDiff("pitchdiffpr"));
+	registerPrototype("PlotSink", new PlotSink("plotsp"));
+	registerPrototype("Plucked", new Plucked("pluckedpr"));
+	registerPrototype("Polar2Cartesian", new Polar2Cartesian("p2c"));
+	registerPrototype("Power", new Power("pow"));
+	registerPrototype("PowerSpectrum", new PowerSpectrum("pspkp"));
+	registerPrototype("PowerToAverageRatio", new PowerToAverageRatio("crestpr"));
+	registerPrototype("Product", new Product("product"));
+	registerPrototype("PvConvert", new PvConvert("pvconvp"));
+	registerPrototype("PvConvolve", new PvConvolve("pvconvpr"));
+	registerPrototype("PvFold", new PvFold("pvfp"));
+	registerPrototype("PvOscBank", new PvOscBank("pvoscp"));
+	registerPrototype("PvOverlapadd", new PvOverlapadd("pvovlfp"));
+	registerPrototype("PvUnconvert", new PvUnconvert("pvuconvp"));
+	registerPrototype("RBF", new RBF("rbfpr"));
+	registerPrototype("RadioDrumInput", new RadioDrumInput("radiodrump"));
+	registerPrototype("RealvecSink", new RealvecSink("realvecSink"));
+	registerPrototype("RealvecSource", new RealvecSource("realvecSrc"));
+	registerPrototype("Reassign", new Reassign("reassignpr"));
+	registerPrototype("Reciprocal", new Reciprocal("reciprocal"));
+	registerPrototype("RemoveObservations", new RemoveObservations("removeobservationspr"));
+	registerPrototype("Resample", new Resample("resampabspr"));
+	registerPrototype("ResampleBezier", new ResampleBezier("resampberpr"));
+	registerPrototype("ResampleLinear", new ResampleLinear("resamplinpr"));
+	registerPrototype("ResampleNearestNeighbour", new ResampleNearestNeighbour("resampnnpr"));
+	registerPrototype("ResampleSinc", new ResampleSinc("resampsincpr"));
+	registerPrototype("Reverse", new Reverse("reversepr"));
+	registerPrototype("Rms", new Rms("rms"));
+	registerPrototype("Rolloff", new Rolloff("rlfp"));
+	registerPrototype("RunningAutocorrelation", new RunningAutocorrelation("runningautocorrelation"));
+	registerPrototype("RunningStatistics", new RunningStatistics("runningstatisticspr"));
+	registerPrototype("SCF", new SCF("scf"));
+	registerPrototype("SFM", new SFM("sfm"));
+	registerPrototype("SMO", new SMO("smopr"));
+	registerPrototype("SNR", new SNR("snrpr"));
+	registerPrototype("SOM", new SOM("sompr"));
+	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
+	registerPrototype("Selector", new Selector("selectorpr"));
+	registerPrototype("SelfSimilarityMatrix", new SelfSimilarityMatrix("selfsimilaritymatrixpr"));
+	registerPrototype("Series", new Series("srp"));
+	registerPrototype("ShiftInput", new ShiftInput("sip"));
+	registerPrototype("ShiftOutput", new ShiftOutput("sop"));
+	registerPrototype("Shifter", new Shifter("sp"));
+	registerPrototype("Shredder", new Shredder("shred"));
+	registerPrototype("SilenceRemove", new SilenceRemove("silenceremovepr"));
+	registerPrototype("SimilarityMatrix", new SimilarityMatrix("similaritymatrixpr"));
+	registerPrototype("SimulMaskingFft", new SimulMaskingFft("simulmask"));
+	registerPrototype("SineSource", new SineSource("sinesp"));
+	registerPrototype("Skewness", new Skewness("Skewnessp"));
+	registerPrototype("SliceDelta", new SliceDelta("slicedeltapr"));
+	registerPrototype("SliceShuffle", new SliceShuffle("sliceshuffle"));
+	registerPrototype("SoundFileSink", new SoundFileSink("sfsp"));
+	registerPrototype("SoundFileSource", new SoundFileSource("sfp"));
+	registerPrototype("SoundFileSource2", new SoundFileSource2("sf2p"));
+	registerPrototype("SoundFileSourceHopper", new SoundFileSourceHopper("soundfilesourcehopper"));
+	registerPrototype("SpectralFlatnessAllBands", new SpectralFlatnessAllBands("spectralflatnessallbandspr"));
+	registerPrototype("SpectralSNR", new SpectralSNR("ssnrpr"));
+	registerPrototype("SpectralTransformations", new SpectralTransformations("spectraltransformationspr"));
+	registerPrototype("Spectrum", new Spectrum("spkp"));
+	registerPrototype("Spectrum2Chroma", new Spectrum2Chroma("spectrum2chromapr"));
+	registerPrototype("Spectrum2Mel", new Spectrum2Mel("spectrum2melpr"));
+	registerPrototype("Square", new Square("square"));
+	registerPrototype("StandardDeviation", new StandardDeviation("stdp"));
+	registerPrototype("StereoSpectrum", new StereoSpectrum("stereopr"));
+	registerPrototype("StereoSpectrumFeatures", new StereoSpectrumFeatures("stereospkfpr"));
+	registerPrototype("StereoSpectrumSources", new StereoSpectrumSources("stereospectrumsourcespr"));
+	registerPrototype("StretchLinear", new StretchLinear("stretchlinearpr"));
+	registerPrototype("Subtract", new Subtract("subtract"));
+	registerPrototype("SubtractMean", new SubtractMean("subtractmean"));
+	registerPrototype("Sum", new Sum("sum"));
+	registerPrototype("TempoHypotheses", new TempoHypotheses("tempohyp"));
+	registerPrototype("TimeFreqPeakConnectivity", new TimeFreqPeakConnectivity("tfpeakconn"));
+	registerPrototype("TimeStretch", new TimeStretch("tscp"));
+	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
+	registerPrototype("Transposer", new Transposer("transposer"));
+	registerPrototype("Unfold", new Unfold("unfold"));
+	registerPrototype("Vibrato", new Vibrato("vibratopr"));
+	registerPrototype("ViconFileSource", new ViconFileSource("viconfilesourcep"));
+	registerPrototype("WHaSp", new WHaSp("whasppr"));
+	registerPrototype("WavFileSink", new WavFileSink("wavsinkp"));
+	registerPrototype("WavFileSource", new WavFileSource("wavfp"));
+	registerPrototype("WavFileSource2", new WavFileSource2("wavf2p"));
+	registerPrototype("WaveletBands",   new WaveletBands("wvbands"));
+	registerPrototype("WaveletPyramid", new WaveletPyramid("wvpyramid"));
+	registerPrototype("WekaSink", new WekaSink("wsink"));
+	registerPrototype("WekaSource", new WekaSource("wsource"));
+	registerPrototype("Windowing", new Windowing("win"));
+	registerPrototype("Yin", new Yin("yin"));
+	registerPrototype("ZeroCrossings", new ZeroCrossings("zcrsp"));
+	registerPrototype("ZeroRClassifier", new ZeroRClassifier("zerorp"));
+ 	registerPrototype("DTW", new DTW("dtwpr"));
+	registerPrototype("APDelayOsc", new APDelayOsc("apdelayoscpr"));
 	registerPrototype("Upsample", new Upsample("upsamplepr"));
 	registerPrototype("Whitening", new Whitening("whiteningpr"));
 	//modifyRegister
