@@ -102,14 +102,16 @@ Delay::myUpdate(MarControlPtr sender)
 	{
 		maxDelayLengthInSamples_	= seconds2Samples (getctrl ("mrs_real/maxDelaySeconds")->to<mrs_real>());
 		setctrl("mrs_real/maxDelaySamples", maxDelayLengthInSamples_);
-		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
+		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+						 nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
 		buffer_.setval(0);
 	}
 	if (maxDelayLengthInSamples_ != getctrl ("mrs_real/maxDelaySamples")->to<mrs_real>())
 	{
 		maxDelayLengthInSamples_	= getctrl ("mrs_real/maxDelaySamples")->to<mrs_real>();
 		setctrl("mrs_real/maxDelaySeconds", samples2Seconds (maxDelayLengthInSamples_));
-		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
+		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+						 nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
 		buffer_.setval(0);
 	}
 
@@ -152,8 +154,10 @@ Delay::myUpdate(MarControlPtr sender)
 	}
 
 	// allocate the delay line
-	buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
-	cursorMask_	= buffer_.getCols () - 1;		// to ensure an efficient wrap around, buffer length will be a power of two
+	buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+					 nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
+	cursorMask_	= buffer_.getCols () - 1;		// to ensure an efficient wrap around, buffer
+												//length will be a power of two
 	if (prevDelayInSamples_.getSize () != delayInSamples_.getSize ())
 	{
 		// only do this update if needed...
@@ -161,7 +165,8 @@ Delay::myUpdate(MarControlPtr sender)
 		prevDelayInSamples_	= delayInSamples_;
 
 		// initialize the delay line
-		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(), nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
+		buffer_.stretch (getctrl("mrs_natural/inObservations")->to<mrs_natural>(),
+						 nextPowOfTwo((mrs_natural(.1+ceil(maxDelayLengthInSamples_))+1)));
 		buffer_.setval(0);
 		writeCursor_	= 0;	
 
@@ -179,7 +184,8 @@ Delay::myUpdate(MarControlPtr sender)
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
-	setctrl("mrs_natural/onObservations", (mrs_natural) delayInSamples_.getSize () * getctrl("mrs_natural/inObservations")->to<mrs_natural>());
+	setctrl("mrs_natural/onObservations",
+			(mrs_natural) delayInSamples_.getSize () * getctrl("mrs_natural/inObservations")->to<mrs_natural>());
 
 }
 
@@ -226,7 +232,8 @@ Delay::myProcess(realvec& in, realvec& out)
 #endif
 }
 
-void Delay::getLinearInterPInc (const mrs_realvec startVal, const mrs_realvec stopVal, mrs_realvec &incVal, const mrs_natural numSamples)
+void Delay::getLinearInterPInc (const mrs_realvec startVal, const mrs_realvec stopVal,
+								mrs_realvec &incVal, const mrs_natural numSamples)
 {
 	incVal	= (stopVal - startVal);
 	incVal	/= (1.0*numSamples);

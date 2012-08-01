@@ -50,7 +50,8 @@ private:
 	// required for allocating the delay buffer
 	mrs_natural	nextPowOfTwo (mrs_natural value);
 	// get the increment per sample for the delay control value
-	static void getLinearInterPInc (const mrs_realvec startVal, const mrs_realvec stopVal, mrs_realvec &incVal, const mrs_natural numSamples);
+	static void getLinearInterPInc (const mrs_realvec startVal, const mrs_realvec stopVal,
+									mrs_realvec &incVal, const mrs_natural numSamples);
 
 	// conversion functions
 	mrs_real samples2Seconds (mrs_real samples);
