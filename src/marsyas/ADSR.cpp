@@ -163,7 +163,7 @@ ADSR::myProcess(realvec& in, realvec& out)
 			}
 			else
 			{
-			    out(o,t) =  in(o,t);
+			    out(o,t) =  value_;
 			}
 		}//for
 	}//for
