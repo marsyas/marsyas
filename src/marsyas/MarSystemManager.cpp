@@ -269,6 +269,7 @@
 #include "APDelayOsc.h"
 #include "Upsample.h"
 #include "Whitening.h"
+#include "Energy.h"
 //modifyHeader
 
 
@@ -530,6 +531,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("APDelayOsc", new APDelayOsc("apdelayoscpr"));
 	registerPrototype("Upsample", new Upsample("upsamplepr"));
 	registerPrototype("Whitening", new Whitening("whiteningpr"));
+	registerPrototype("Energy", new Energy("energypr"));
 	//modifyRegister
 
 	//***************************************************************************************
