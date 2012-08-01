@@ -71,9 +71,11 @@ SoundFileSink::addControls()
 	addctrl("mrs_natural/encodingQuality", 2);
 	setctrlState("mrs_natural/encodingQuality", true);
 	addctrl("mrs_string/id3tags", "noTitle|noArtist|noAlbum|1978|noComment|1|0");  // 1: track one O Blues genreopen
-    setctrlState("mrs_string/id3tags", true);}
+	setctrlState("mrs_string/id3tags", true);
 
-
+	// pauses the output.
+	addctrl("mrs_bool/pause", false);
+}
 void
 SoundFileSink::putHeader()
 {
@@ -190,7 +192,10 @@ SoundFileSink::myUpdate(MarControlPtr sender)
 void 
 SoundFileSink::myProcess(realvec& in, realvec& out)
 {
-  if (dest_ != NULL) 
+
+	mrs_bool paused = getctrl("mrs_bool/pause")->to<mrs_bool>();
+
+  if ((dest_ != NULL) &&  (paused==false))
     {
       dest_->process(in,out);
     }
