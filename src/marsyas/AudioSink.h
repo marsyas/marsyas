@@ -56,8 +56,8 @@ namespace Marsyas
         struct OutputData 
         {
             mrs_realvec* ringBuffer;
-            unsigned int wp;
-            unsigned int rp;
+            volatile long wp;
+            volatile long rp;
             unsigned int samplesInBuffer;
             unsigned int ringBufferSize;
             unsigned int inchannels;
@@ -102,7 +102,8 @@ namespace Marsyas
         void localActivate(bool state);
 
         static int playCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
-
+		void playCallback_test();
+		
 
     public:
         AudioSink(std::string name);

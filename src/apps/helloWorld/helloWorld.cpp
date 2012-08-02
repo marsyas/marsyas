@@ -47,6 +47,7 @@ main(int argc, const char **argv)
 	//controls (as is the case of inSamples) are propagated through the network.
 	//Check the Marsyas documentation for mode details.
 	network->updControl("mrs_natural/inSamples", 4096);
+ 
 
 	//set oscilator frequency to 440Hz
 	network->updControl("SineSource/src/mrs_real/frequency", 440.0);

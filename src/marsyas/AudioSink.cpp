@@ -154,7 +154,7 @@ AudioSink::initRtAudio()
 	if (audio_ == NULL)
 		audio_ = new RtAudio();
 
-	unsigned int bufferFrames;
+    unsigned int bufferFrames;
 	bufferFrames = bufferSize_;
 
 	// hardwire channels to stereo playback even for mono
@@ -162,9 +162,9 @@ AudioSink::initRtAudio()
 	
 	RtAudio::StreamParameters oParams;
 	if (rtDevice_ == 0)
-	{
-		rtDevice_ = audio_->getDefaultOutputDevice();
-	}
+ 	{
+ 		rtDevice_ = audio_->getDefaultOutputDevice();
+ 	}
 	oParams.deviceId = rtDevice_;
 	oParams.nChannels = rtChannels_;
 	oParams.firstChannel = 0; 
@@ -182,33 +182,33 @@ AudioSink::initRtAudio()
 	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
   
 
-	// rtFormat = RTAUDIO_FLOAT64;
+	rtFormat = RTAUDIO_FLOAT64;
 	
-	RtAudio::StreamOptions options;
+	// RtAudio::StreamOptions options;
 	audio_->showWarnings(true);
 
-	// options.flags |= RTAUDIO_HOG_DEVICE;
-	// options.flags |= RTAUDIO_SCHEDULE_REALTIME;	
-	// options.flags |= RTAUDIO_NONINTERLEAVED;
+	//options.flags |= RTAUDIO_HOG_DEVICE;
+	//options.flags |= RTAUDIO_SCHEDULE_REALTIME;	
+	//options.flags |= RTAUDIO_NONINTERLEAVED;
 	
 
-  if (rtDevice_ != audio_->getDefaultOutputDevice())
-  {
-      RtAudio::DeviceInfo info;
-      info = audio_->getDeviceInfo(rtDevice_);
-  }
+    if (rtDevice_ != audio_->getDefaultOutputDevice())
+    {
+        RtAudio::DeviceInfo info;
+        info = audio_->getDeviceInfo(rtDevice_);
+    }
   
   
-  try 
-  {
-	  audio_->openStream(&oParams, NULL, rtFormat, rtSrate_, 
-						 &bufferFrames, &playCallback, (void *)&odata_, NULL);
-  }
-  catch (RtError& e) 
-  {
-	  e.printMessage();
-	  exit(0);
-  }
+   try 
+   {
+	   audio_->openStream(&oParams, NULL, rtFormat, rtSrate_, 
+	   &bufferFrames, &playCallback, (void *)&odata_, NULL);
+   }
+   catch (RtError& e) 
+   {
+ 	  e.printMessage();
+ 	  exit(0);
+   }
   
 	
   
@@ -242,6 +242,7 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 								unsigned int nBufferFrames, double streamTime, 
 								unsigned int status, void *userData)
 {
+
 	unsigned int drain_count	= 0;
 	
 	mrs_real* data = (mrs_real*)outputBuffer;
@@ -249,14 +250,23 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 	//AudioSink* mythis = (AudioSink *)odata_->myself;
 	realvec& ringBuffer = *(odata->ringBuffer);
 	unsigned int t;
-   
+
 	if (odata->srate == 22050) 
 		nBufferFrames = nBufferFrames/2;
-	
+	static int count = 0;
+	count ++;
+
+	unsigned int samplesAvailable;
 	
 	for (t=0; t < nBufferFrames; t++)
 	{
-		if (odata->samplesInBuffer >= odata->low_watermark)
+		if (odata->wp >= odata->rp)
+			samplesAvailable = odata->wp - odata->rp;
+		else 
+			samplesAvailable = odata->ringBufferSize - (odata->rp - odata->wp);
+		
+
+		if (samplesAvailable >= odata->low_watermark)
 		{
 			
 			const int t4 = 4 * t;
@@ -288,8 +298,6 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 				if (odata->inchannels == 1) 
 				{
 					mrs_real val = ringBuffer(0,odata->rp);
-					// cout << val << endl;
-					// out << val << endl;
 					data[t2] = val;
 					data[t2+1] = val;
 					
@@ -304,40 +312,44 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 					}
 				}
 			}
-			
-			
 			odata->rp = ++(odata->rp) % odata->ringBufferSize;
-			if (odata->wp > odata->rp) 
-			{
-				odata->samplesInBuffer = odata->wp - odata->rp-1;
-			}
-			
-			else 
-			{
-				
-				odata->samplesInBuffer = odata->ringBufferSize - (odata->rp - odata->wp-1);
-			}
-			
-		}
-		else 
-		{
 
+
+			if (odata->wp >= odata->rp)
+				samplesAvailable = odata->wp - odata->rp;
+			else 
+				samplesAvailable = odata->ringBufferSize - (odata->rp - odata->wp);
 			
-			while (odata->samplesInBuffer <= odata->low_watermark)
-			{
-				// block until there are available samples 
-				SLEEP(10);  // 1 millisecond 
-				drain_count++;
-				if (drain_count == 1000)
-					return 1;
-			}
+
+
 		}
+		
+	}
+	
+		
+		
+	while (samplesAvailable < odata->low_watermark)
+	{
+		SLEEP(5);
+		if (odata->wp >= odata->rp)
+			samplesAvailable = odata->wp - odata->rp;
+		else 
+			samplesAvailable = odata->ringBufferSize - (odata->rp - odata->wp);
+		
+		drain_count++;
+		if (drain_count == 200)
+		{
+			return 1;
+		}
+		
 	}
 	
 	return 0;
 }
 
 #endif
+
+
 
 
 void 
@@ -385,14 +397,11 @@ void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
 	
-	/* static int count = 0;
-	if (count >= 100) 
-		in.setval(0.0);
-	count ++;
 	
-	mrs_natural t,o;
-	*/ 
+	static int count = 0;
+	count ++;
 	 
+
 	//check MUTE
 	if(ctrl_mute_->isTrue())
     {
@@ -403,30 +412,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				out(o,t) = in(o,t);
 			}
 		}
-		
-		// write samples to reservoir 
-// 		for (t=0; t < onSamples_; t++)		
-// 		{
-// 			if (odata_.samplesInBuffer <= odata_.high_watermark)
-// 			{
-				
-// 				for (o=0; o < onObservations_; o++) 
-// 					ringBuffer_(o,odata_.wp) = 0.0;
-				
-// 				odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;
-// 				if (odata_.wp >= odata_.rp) 
-// 					odata_.samplesInBuffer = odata_.wp - odata_.rp;
-// 				else 
-// 					odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
-// 			}
-// 			else 
-// 			{
-// 				while (odata_.samplesInBuffer > odata_.high_watermark)
-// 				{
-// 					SLEEP(1);
-// 				}
-// 			}
-// 		}
 		
     }
 	
@@ -448,54 +433,56 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		if (!isInitialized_)
 			return;
 		
-	  
+		unsigned int samplesInBuffer; 
+		unsigned int free ; 
+		unsigned int underMark; 
+		
+
 		// write samples to reservoir 
 		for (t=0; t < onSamples_; t++)		
 		{
+			samplesInBuffer = (odata_.wp - odata_.rp +odata_.ringBufferSize) % odata_.ringBufferSize;
 			
-			// if (getSpaceAvailable())
-			if (odata_.samplesInBuffer < odata_.high_watermark)
+			if (odata_.wp >= odata_.rp)
+				samplesInBuffer = odata_.wp - odata_.rp;
+			else 
+				samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
+			
+			if (samplesInBuffer < odata_.high_watermark)
 			{
 				
 				for (o=0; o < onObservations_; o++) 
 					ringBuffer_(o,odata_.wp) = in(o,t);
-				
-				odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;
-
-
-				// odata_.samplesInBuffer = (odata_.wp - odata_.rp - 1) % odata_.ringBufferSize;
-
-				if (odata_.wp > odata_.rp) 
-				{
-					odata_.samplesInBuffer = odata_.wp - odata_.rp-1;
-				}
-				else
-				{
-					odata_.samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp-1);
-				}
-				
+				odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;				
 			}
 			else 
 			{
-				
-				while (odata_.samplesInBuffer >= odata_.high_watermark)
+				t--;
+				while (samplesInBuffer >= odata_.high_watermark)
 				{
-					SLEEP(1);
+					SLEEP(5);
+					// odata_.rp = (odata_.rp+512) % odata_.ringBufferSize;
+					
+					if (odata_.wp >= odata_.rp)
+						samplesInBuffer = odata_.wp - odata_.rp;
+					else 
+						samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
 				}
+				
+
 			}
 		}
+		
 	}
 	
-		
-	//assure that RtAudio thread is running
-	//(this may be needed by if an explicit call to start()
-	//is not done before ticking or calling process() )
+	
+	// assure that RtAudio thread is running
+	// (this may be needed by if an explicit call to start()
+	// is not done before ticking or calling process() )
 	if ( stopped_ )
-    {
-		start();
-    }
-
-
+	{
+	start();
+	}
 }
 
  
