@@ -174,6 +174,358 @@
 		3ece586589dc66e4a0479a7f14ee7b9c /* ofxVectorMath.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxVectorMath.h; path = ../../../addons/ofxVectorMath/src/ofxVectorMath.h; sourceTree = SOURCE_ROOT; };
 		3ff4c30062c687195b53f1f90832fb81 /* ofx3DBaseLoader.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofx3DBaseLoader.h; path = ../../../addons/ofx3DModelLoader/src/ofx3DBaseLoader.h; sourceTree = SOURCE_ROOT; };
 		411b9b9bc0591439d8f0b056069b76d2 /* aiLight.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = aiLight.h; path = ../../../addons/ofxAssimpModelLoader/libs/assimp/include/aiLight.h; sourceTree = SOURCE_ROOT; };
+		41CE7ADB15CAA88300E45CF5 /* AbsMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsMax.h; path = marsyas/AbsMax.h; sourceTree = "<group>"; };
+		41CE7ADC15CAA88300E45CF5 /* AbsSoundFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSink.h; path = marsyas/AbsSoundFileSink.h; sourceTree = "<group>"; };
+		41CE7ADD15CAA88300E45CF5 /* AbsSoundFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSource.h; path = marsyas/AbsSoundFileSource.h; sourceTree = "<group>"; };
+		41CE7ADE15CAA88300E45CF5 /* AbsSoundFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSource2.h; path = marsyas/AbsSoundFileSource2.h; sourceTree = "<group>"; };
+		41CE7ADF15CAA88300E45CF5 /* AccentFilterBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccentFilterBank.h; path = marsyas/AccentFilterBank.h; sourceTree = "<group>"; };
+		41CE7AE015CAA88300E45CF5 /* Accumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Accumulator.h; path = marsyas/Accumulator.h; sourceTree = "<group>"; };
+		41CE7AE115CAA88300E45CF5 /* ADRess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRess.h; path = marsyas/ADRess.h; sourceTree = "<group>"; };
+		41CE7AE215CAA88300E45CF5 /* ADRessSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRessSpectrum.h; path = marsyas/ADRessSpectrum.h; sourceTree = "<group>"; };
+		41CE7AE315CAA88300E45CF5 /* ADRessStereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRessStereoSpectrum.h; path = marsyas/ADRessStereoSpectrum.h; sourceTree = "<group>"; };
+		41CE7AE415CAA88300E45CF5 /* ADSR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADSR.h; path = marsyas/ADSR.h; sourceTree = "<group>"; };
+		41CE7AE515CAA88300E45CF5 /* AimBoxes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimBoxes.h; path = marsyas/AimBoxes.h; sourceTree = "<group>"; };
+		41CE7AE615CAA88300E45CF5 /* AimGammatone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimGammatone.h; path = marsyas/AimGammatone.h; sourceTree = "<group>"; };
+		41CE7AE715CAA88300E45CF5 /* AimHCL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimHCL.h; path = marsyas/AimHCL.h; sourceTree = "<group>"; };
+		41CE7AE815CAA88300E45CF5 /* AimHCL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimHCL2.h; path = marsyas/AimHCL2.h; sourceTree = "<group>"; };
+		41CE7AE915CAA88300E45CF5 /* AimLocalMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimLocalMax.h; path = marsyas/AimLocalMax.h; sourceTree = "<group>"; };
+		41CE7AEA15CAA88300E45CF5 /* AimPZFC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimPZFC.h; path = marsyas/AimPZFC.h; sourceTree = "<group>"; };
+		41CE7AEB15CAA88300E45CF5 /* AimPZFC2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimPZFC2.h; path = marsyas/AimPZFC2.h; sourceTree = "<group>"; };
+		41CE7AEC15CAA88300E45CF5 /* AimSAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimSAI.h; path = marsyas/AimSAI.h; sourceTree = "<group>"; };
+		41CE7AED15CAA88300E45CF5 /* AimSSI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimSSI.h; path = marsyas/AimSSI.h; sourceTree = "<group>"; };
+		41CE7AEE15CAA88300E45CF5 /* AimVQ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimVQ.h; path = marsyas/AimVQ.h; sourceTree = "<group>"; };
+		41CE7AEF15CAA88300E45CF5 /* AliasingOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AliasingOsc.h; path = marsyas/AliasingOsc.h; sourceTree = "<group>"; };
+		41CE7AF015CAA88300E45CF5 /* AMDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMDF.h; path = marsyas/AMDF.h; sourceTree = "<group>"; };
+		41CE7AF115CAA88300E45CF5 /* ANN_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ANN_node.h; path = marsyas/ANN_node.h; sourceTree = "<group>"; };
+		41CE7AF215CAA88300E45CF5 /* Annotator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Annotator.h; path = marsyas/Annotator.h; sourceTree = "<group>"; };
+		41CE7AF315CAA88300E45CF5 /* APDelayOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APDelayOsc.h; path = marsyas/APDelayOsc.h; sourceTree = "<group>"; };
+		41CE7AF415CAA88300E45CF5 /* ArffFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArffFileSink.h; path = marsyas/ArffFileSink.h; sourceTree = "<group>"; };
+		41CE7AF515CAA88300E45CF5 /* AubioYin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AubioYin.h; path = marsyas/AubioYin.h; sourceTree = "<group>"; };
+		41CE7AF615CAA88300E45CF5 /* AudioSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSink.h; path = marsyas/AudioSink.h; sourceTree = "<group>"; };
+		41CE7AF715CAA88300E45CF5 /* AudioSinkBlocking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSinkBlocking.h; path = marsyas/AudioSinkBlocking.h; sourceTree = "<group>"; };
+		41CE7AF815CAA88300E45CF5 /* AudioSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSource.h; path = marsyas/AudioSource.h; sourceTree = "<group>"; };
+		41CE7AF915CAA88300E45CF5 /* AudioSourceBlocking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSourceBlocking.h; path = marsyas/AudioSourceBlocking.h; sourceTree = "<group>"; };
+		41CE7AFA15CAA88300E45CF5 /* AuFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuFileSink.h; path = marsyas/AuFileSink.h; sourceTree = "<group>"; };
+		41CE7AFB15CAA88300E45CF5 /* AuFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuFileSource.h; path = marsyas/AuFileSource.h; sourceTree = "<group>"; };
+		41CE7AFC15CAA88300E45CF5 /* AutoCorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AutoCorrelation.h; path = marsyas/AutoCorrelation.h; sourceTree = "<group>"; };
+		41CE7AFD15CAA88300E45CF5 /* AutoCorrelationFFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AutoCorrelationFFT.h; path = marsyas/AutoCorrelationFFT.h; sourceTree = "<group>"; };
+		41CE7AFE15CAA88300E45CF5 /* AveragingPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AveragingPattern.h; path = marsyas/AveragingPattern.h; sourceTree = "<group>"; };
+		41CE7AFF15CAA88300E45CF5 /* BaseAudioSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseAudioSink.h; path = marsyas/BaseAudioSink.h; sourceTree = "<group>"; };
+		41CE7B0015CAA88300E45CF5 /* basis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = basis.h; path = marsyas/basis.h; sourceTree = "<group>"; };
+		41CE7B0115CAA88300E45CF5 /* BeatAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatAgent.h; path = marsyas/BeatAgent.h; sourceTree = "<group>"; };
+		41CE7B0215CAA88300E45CF5 /* BeatHistoFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistoFeatures.h; path = marsyas/BeatHistoFeatures.h; sourceTree = "<group>"; };
+		41CE7B0315CAA88300E45CF5 /* BeatHistogram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistogram.h; path = marsyas/BeatHistogram.h; sourceTree = "<group>"; };
+		41CE7B0415CAA88300E45CF5 /* BeatHistogramFromPeaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistogramFromPeaks.h; path = marsyas/BeatHistogramFromPeaks.h; sourceTree = "<group>"; };
+		41CE7B0515CAA88300E45CF5 /* BeatPhase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatPhase.h; path = marsyas/BeatPhase.h; sourceTree = "<group>"; };
+		41CE7B0615CAA88300E45CF5 /* BeatReferee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatReferee.h; path = marsyas/BeatReferee.h; sourceTree = "<group>"; };
+		41CE7B0715CAA88300E45CF5 /* BeatTimesSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatTimesSink.h; path = marsyas/BeatTimesSink.h; sourceTree = "<group>"; };
+		41CE7B0815CAA88300E45CF5 /* BICchangeDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BICchangeDetector.h; path = marsyas/BICchangeDetector.h; sourceTree = "<group>"; };
+		41CE7B0915CAA88300E45CF5 /* Biquad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Biquad.h; path = marsyas/Biquad.h; sourceTree = "<group>"; };
+		41CE7B0A15CAA88300E45CF5 /* CARFAC_coeffs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CARFAC_coeffs.h; path = marsyas/CARFAC_coeffs.h; sourceTree = "<group>"; };
+		41CE7B0B15CAA88300E45CF5 /* CARFAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CARFAC.h; path = marsyas/CARFAC.h; sourceTree = "<group>"; };
+		41CE7B0C15CAA88300E45CF5 /* Cartesian2Polar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cartesian2Polar.h; path = marsyas/Cartesian2Polar.h; sourceTree = "<group>"; };
+		41CE7B0D15CAA88300E45CF5 /* Cascade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cascade.h; path = marsyas/Cascade.h; sourceTree = "<group>"; };
+		41CE7B0E15CAA88300E45CF5 /* Centroid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Centroid.h; path = marsyas/Centroid.h; sourceTree = "<group>"; };
+		41CE7B0F15CAA88300E45CF5 /* Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Chroma.h; path = marsyas/Chroma.h; sourceTree = "<group>"; };
+		41CE7B1015CAA88300E45CF5 /* ChromaScale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChromaScale.h; path = marsyas/ChromaScale.h; sourceTree = "<group>"; };
+		41CE7B1115CAA88300E45CF5 /* ClassificationReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClassificationReport.h; path = marsyas/ClassificationReport.h; sourceTree = "<group>"; };
+		41CE7B1215CAA88300E45CF5 /* ClassOutputSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClassOutputSink.h; path = marsyas/ClassOutputSink.h; sourceTree = "<group>"; };
+		41CE7B1315CAA88300E45CF5 /* Clip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Clip.h; path = marsyas/Clip.h; sourceTree = "<group>"; };
+		41CE7B1415CAA88300E45CF5 /* Collection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Collection.h; path = marsyas/Collection.h; sourceTree = "<group>"; };
+		41CE7B1515CAA88300E45CF5 /* CollectionFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CollectionFileSource.h; path = marsyas/CollectionFileSource.h; sourceTree = "<group>"; };
+		41CE7B1615CAA88300E45CF5 /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Color.h; path = marsyas/Color.h; sourceTree = "<group>"; };
+		41CE7B1715CAA88300E45CF5 /* Combinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Combinator.h; path = marsyas/Combinator.h; sourceTree = "<group>"; };
+		41CE7B1815CAA88300E45CF5 /* CommandLineOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommandLineOptions.h; path = marsyas/CommandLineOptions.h; sourceTree = "<group>"; };
+		41CE7B1915CAA88300E45CF5 /* common_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common_header.h; path = marsyas/common_header.h; sourceTree = "<group>"; };
+		41CE7B1A15CAA88300E45CF5 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = marsyas/common.h; sourceTree = "<group>"; };
+		41CE7B1B15CAA88300E45CF5 /* Communicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Communicator.h; path = marsyas/Communicator.h; sourceTree = "<group>"; };
+		41CE7B1C15CAA88300E45CF5 /* CompExp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompExp.h; path = marsyas/CompExp.h; sourceTree = "<group>"; };
+		41CE7B1D15CAA88300E45CF5 /* Compressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Compressor.h; path = marsyas/Compressor.h; sourceTree = "<group>"; };
+		41CE7B1E15CAA88300E45CF5 /* Confidence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Confidence.h; path = marsyas/Confidence.h; sourceTree = "<group>"; };
+		41CE7B1F15CAA88300E45CF5 /* ConstQFiltering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConstQFiltering.h; path = marsyas/ConstQFiltering.h; sourceTree = "<group>"; };
+		41CE7B2015CAA88300E45CF5 /* Conversions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Conversions.h; path = marsyas/Conversions.h; sourceTree = "<group>"; };
+		41CE7B2115CAA88300E45CF5 /* CrossCorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CrossCorrelation.h; path = marsyas/CrossCorrelation.h; sourceTree = "<group>"; };
+		41CE7B2215CAA88300E45CF5 /* CsvFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CsvFileSource.h; path = marsyas/CsvFileSource.h; sourceTree = "<group>"; };
+		41CE7B2315CAA88300E45CF5 /* Daub4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Daub4.h; path = marsyas/Daub4.h; sourceTree = "<group>"; };
+		41CE7B2415CAA88300E45CF5 /* DCSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCSource.h; path = marsyas/DCSource.h; sourceTree = "<group>"; };
+		41CE7B2515CAA88300E45CF5 /* Deinterleave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deinterleave.h; path = marsyas/Deinterleave.h; sourceTree = "<group>"; };
+		41CE7B2615CAA88300E45CF5 /* DeInterleaveSizecontrol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeInterleaveSizecontrol.h; path = marsyas/DeInterleaveSizecontrol.h; sourceTree = "<group>"; };
+		41CE7B2715CAA88300E45CF5 /* Delay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Delay.h; path = marsyas/Delay.h; sourceTree = "<group>"; };
+		41CE7B2815CAA88300E45CF5 /* DelaySamples.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DelaySamples.h; path = marsyas/DelaySamples.h; sourceTree = "<group>"; };
+		41CE7B2915CAA88300E45CF5 /* Delta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Delta.h; path = marsyas/Delta.h; sourceTree = "<group>"; };
+		41CE7B2A15CAA88300E45CF5 /* DeltaFirstOrderRegression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeltaFirstOrderRegression.h; path = marsyas/DeltaFirstOrderRegression.h; sourceTree = "<group>"; };
+		41CE7B2B15CAA88300E45CF5 /* Differentiator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Differentiator.h; path = marsyas/Differentiator.h; sourceTree = "<group>"; };
+		41CE7B2C15CAA88300E45CF5 /* DLLDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLLDefines.h; path = marsyas/DLLDefines.h; sourceTree = "<group>"; };
+		41CE7B2D15CAA88300E45CF5 /* DownSampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DownSampler.h; path = marsyas/DownSampler.h; sourceTree = "<group>"; };
+		41CE7B2E15CAA88300E45CF5 /* dsound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dsound.h; path = marsyas/dsound.h; sourceTree = "<group>"; };
+		41CE7B2F15CAA88300E45CF5 /* DTW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTW.h; path = marsyas/DTW.h; sourceTree = "<group>"; };
+		41CE7B3015CAA88300E45CF5 /* DTWWD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTWWD.h; path = marsyas/DTWWD.h; sourceTree = "<group>"; };
+		41CE7B3115CAA88300E45CF5 /* Energy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Energy.h; path = marsyas/Energy.h; sourceTree = "<group>"; };
+		41CE7B3215CAA88300E45CF5 /* EnhADRess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnhADRess.h; path = marsyas/EnhADRess.h; sourceTree = "<group>"; };
+		41CE7B3315CAA88300E45CF5 /* EnhADRessStereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnhADRessStereoSpectrum.h; path = marsyas/EnhADRessStereoSpectrum.h; sourceTree = "<group>"; };
+		41CE7B3415CAA88300E45CF5 /* Envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Envelope.h; path = marsyas/Envelope.h; sourceTree = "<group>"; };
+		41CE7B3515CAA88300E45CF5 /* ERB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ERB.h; path = marsyas/ERB.h; sourceTree = "<group>"; };
+		41CE7B3615CAA88300E45CF5 /* ERBTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ERBTools.h; path = marsyas/ERBTools.h; sourceTree = "<group>"; };
+		41CE7B3715CAA88300E45CF5 /* Esitar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Esitar.h; path = marsyas/Esitar.h; sourceTree = "<group>"; };
+		41CE7B3815CAA88300E45CF5 /* EvEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvEvent.h; path = marsyas/EvEvent.h; sourceTree = "<group>"; };
+		41CE7B3915CAA88300E45CF5 /* EvExpr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvExpr.h; path = marsyas/EvExpr.h; sourceTree = "<group>"; };
+		41CE7B3A15CAA88300E45CF5 /* EvGetUpd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvGetUpd.h; path = marsyas/EvGetUpd.h; sourceTree = "<group>"; };
+		41CE7B3B15CAA88300E45CF5 /* EvValUpd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvValUpd.h; path = marsyas/EvValUpd.h; sourceTree = "<group>"; };
+		41CE7B3C15CAA88300E45CF5 /* ExCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExCommon.h; path = marsyas/ExCommon.h; sourceTree = "<group>"; };
+		41CE7B3D15CAA88300E45CF5 /* ExNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExNode.h; path = marsyas/ExNode.h; sourceTree = "<group>"; };
+		41CE7B3E15CAA88300E45CF5 /* ExParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExParser.h; path = marsyas/ExParser.h; sourceTree = "<group>"; };
+		41CE7B3F15CAA88300E45CF5 /* Expr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Expr.h; path = marsyas/Expr.h; sourceTree = "<group>"; };
+		41CE7B4015CAA88300E45CF5 /* ExScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExScanner.h; path = marsyas/ExScanner.h; sourceTree = "<group>"; };
+		41CE7B4115CAA88300E45CF5 /* ExSymTbl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExSymTbl.h; path = marsyas/ExSymTbl.h; sourceTree = "<group>"; };
+		41CE7B4215CAA88300E45CF5 /* ExVal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExVal.h; path = marsyas/ExVal.h; sourceTree = "<group>"; };
+		41CE7B4315CAA88300E45CF5 /* F0Analysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = F0Analysis.h; path = marsyas/F0Analysis.h; sourceTree = "<group>"; };
+		41CE7B4415CAA88400E45CF5 /* Fanin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fanin.h; path = marsyas/Fanin.h; sourceTree = "<group>"; };
+		41CE7B4515CAA88400E45CF5 /* Fanout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fanout.h; path = marsyas/Fanout.h; sourceTree = "<group>"; };
+		41CE7B4615CAA88400E45CF5 /* FanOutIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FanOutIn.h; path = marsyas/FanOutIn.h; sourceTree = "<group>"; };
+		41CE7B4715CAA88400E45CF5 /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fft.h; path = marsyas/fft.h; sourceTree = "<group>"; };
+		41CE7B4815CAA88400E45CF5 /* FileName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileName.h; path = marsyas/FileName.h; sourceTree = "<group>"; };
+		41CE7B4915CAA88400E45CF5 /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Filter.h; path = marsyas/Filter.h; sourceTree = "<group>"; };
+		41CE7B4A15CAA88400E45CF5 /* FlowCutSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlowCutSource.h; path = marsyas/FlowCutSource.h; sourceTree = "<group>"; };
+		41CE7B4B15CAA88400E45CF5 /* FlowThru.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlowThru.h; path = marsyas/FlowThru.h; sourceTree = "<group>"; };
+		41CE7B4C15CAA88400E45CF5 /* Flux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flux.h; path = marsyas/Flux.h; sourceTree = "<group>"; };
+		41CE7B4D15CAA88400E45CF5 /* FM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FM.h; path = marsyas/FM.h; sourceTree = "<group>"; };
+		41CE7B4E15CAA88400E45CF5 /* FMeasure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMeasure.h; path = marsyas/FMeasure.h; sourceTree = "<group>"; };
+		41CE7B4F15CAA88400E45CF5 /* FullWaveRectifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FullWaveRectifier.h; path = marsyas/FullWaveRectifier.h; sourceTree = "<group>"; };
+		41CE7B5015CAA88400E45CF5 /* Gain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Gain.h; path = marsyas/Gain.h; sourceTree = "<group>"; };
+		41CE7B5115CAA88400E45CF5 /* GaussianClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GaussianClassifier.h; path = marsyas/GaussianClassifier.h; sourceTree = "<group>"; };
+		41CE7B5215CAA88400E45CF5 /* GMMClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GMMClassifier.h; path = marsyas/GMMClassifier.h; sourceTree = "<group>"; };
+		41CE7B5315CAA88400E45CF5 /* gst-decode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "gst-decode.h"; path = "marsyas/gst-decode.h"; sourceTree = "<group>"; };
+		41CE7B5415CAA88400E45CF5 /* GStreamerSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GStreamerSource.h; path = marsyas/GStreamerSource.h; sourceTree = "<group>"; };
+		41CE7B5515CAA88400E45CF5 /* HalfWaveRectifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HalfWaveRectifier.h; path = marsyas/HalfWaveRectifier.h; sourceTree = "<group>"; };
+		41CE7B5615CAA88400E45CF5 /* HarmonicEnhancer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HarmonicEnhancer.h; path = marsyas/HarmonicEnhancer.h; sourceTree = "<group>"; };
+		41CE7B5715CAA88400E45CF5 /* HarmonicStrength.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HarmonicStrength.h; path = marsyas/HarmonicStrength.h; sourceTree = "<group>"; };
+		41CE7B5815CAA88400E45CF5 /* Heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Heap.h; path = marsyas/Heap.h; sourceTree = "<group>"; };
+		41CE7B5915CAA88400E45CF5 /* HWPS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HWPS.h; path = marsyas/HWPS.h; sourceTree = "<group>"; };
+		41CE7B5A15CAA88400E45CF5 /* Inject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Inject.h; path = marsyas/Inject.h; sourceTree = "<group>"; };
+		41CE7B5B15CAA88400E45CF5 /* InvSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvSpectrum.h; path = marsyas/InvSpectrum.h; sourceTree = "<group>"; };
+		41CE7B5C15CAA88400E45CF5 /* KNNClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KNNClassifier.h; path = marsyas/KNNClassifier.h; sourceTree = "<group>"; };
+		41CE7B5D15CAA88400E45CF5 /* Krumhansl_key_finder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Krumhansl_key_finder.h; path = marsyas/Krumhansl_key_finder.h; sourceTree = "<group>"; };
+		41CE7B5E15CAA88400E45CF5 /* Kurtosis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Kurtosis.h; path = marsyas/Kurtosis.h; sourceTree = "<group>"; };
+		41CE7B5F15CAA88400E45CF5 /* Limiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Limiter.h; path = marsyas/Limiter.h; sourceTree = "<group>"; };
+		41CE7B6015CAA88400E45CF5 /* LPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LPC.h; path = marsyas/LPC.h; sourceTree = "<group>"; };
+		41CE7B6115CAA88400E45CF5 /* LPCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LPCC.h; path = marsyas/LPCC.h; sourceTree = "<group>"; };
+		41CE7B6215CAA88400E45CF5 /* LSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSP.h; path = marsyas/LSP.h; sourceTree = "<group>"; };
+		41CE7B6315CAA88400E45CF5 /* lu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lu.h; path = marsyas/lu.h; sourceTree = "<group>"; };
+		41CE7B6415CAA88400E45CF5 /* LyonPassiveEar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LyonPassiveEar.h; path = marsyas/LyonPassiveEar.h; sourceTree = "<group>"; };
+		41CE7B6515CAA88400E45CF5 /* MarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControl.h; path = marsyas/MarControl.h; sourceTree = "<group>"; };
+		41CE7B6615CAA88400E45CF5 /* MarControlAccessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlAccessor.h; path = marsyas/MarControlAccessor.h; sourceTree = "<group>"; };
+		41CE7B6715CAA88400E45CF5 /* MarControlManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlManager.h; path = marsyas/MarControlManager.h; sourceTree = "<group>"; };
+		41CE7B6815CAA88400E45CF5 /* MarControlValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlValue.h; path = marsyas/MarControlValue.h; sourceTree = "<group>"; };
+		41CE7B6915CAA88400E45CF5 /* MarFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarFileSink.h; path = marsyas/MarFileSink.h; sourceTree = "<group>"; };
+		41CE7B6A15CAA88400E45CF5 /* marohtml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marohtml.h; path = marsyas/marohtml.h; sourceTree = "<group>"; };
+		41CE7B6B15CAA88400E45CF5 /* marojson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marojson.h; path = marsyas/marojson.h; sourceTree = "<group>"; };
+		41CE7B6C15CAA88400E45CF5 /* marostring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marostring.h; path = marsyas/marostring.h; sourceTree = "<group>"; };
+		41CE7B6D15CAA88400E45CF5 /* marosvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marosvg.h; path = marsyas/marosvg.h; sourceTree = "<group>"; };
+		41CE7B6E15CAA88400E45CF5 /* maroxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maroxml.h; path = marsyas/maroxml.h; sourceTree = "<group>"; };
+		41CE7B6F15CAA88400E45CF5 /* marsyas_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marsyas_types.h; path = marsyas/marsyas_types.h; sourceTree = "<group>"; };
+		41CE7B7015CAA88400E45CF5 /* MarSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystem.h; path = marsyas/MarSystem.h; sourceTree = "<group>"; };
+		41CE7B7115CAA88400E45CF5 /* MarSystemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemManager.h; path = marsyas/MarSystemManager.h; sourceTree = "<group>"; };
+		41CE7B7215CAA88400E45CF5 /* MarSystemTemplateAdvanced.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateAdvanced.h; path = marsyas/MarSystemTemplateAdvanced.h; sourceTree = "<group>"; };
+		41CE7B7315CAA88400E45CF5 /* MarSystemTemplateBasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateBasic.h; path = marsyas/MarSystemTemplateBasic.h; sourceTree = "<group>"; };
+		41CE7B7415CAA88400E45CF5 /* MarSystemTemplateMedium.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateMedium.h; path = marsyas/MarSystemTemplateMedium.h; sourceTree = "<group>"; };
+		41CE7B7515CAA88400E45CF5 /* MatchBassModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchBassModel.h; path = marsyas/MatchBassModel.h; sourceTree = "<group>"; };
+		41CE7B7615CAA88400E45CF5 /* MathPower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathPower.h; path = marsyas/MathPower.h; sourceTree = "<group>"; };
+		41CE7B7715CAA88400E45CF5 /* MATLABengine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MATLABengine.h; path = marsyas/MATLABengine.h; sourceTree = "<group>"; };
+		41CE7B7815CAA88400E45CF5 /* MaxArgMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaxArgMax.h; path = marsyas/MaxArgMax.h; sourceTree = "<group>"; };
+		41CE7B7915CAA88400E45CF5 /* MaxMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaxMin.h; path = marsyas/MaxMin.h; sourceTree = "<group>"; };
+		41CE7B7A15CAA88400E45CF5 /* McAulayQuatieri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = McAulayQuatieri.h; path = marsyas/McAulayQuatieri.h; sourceTree = "<group>"; };
+		41CE7B7B15CAA88400E45CF5 /* Mean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mean.h; path = marsyas/Mean.h; sourceTree = "<group>"; };
+		41CE7B7C15CAA88400E45CF5 /* MeanAbsoluteDeviation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MeanAbsoluteDeviation.h; path = marsyas/MeanAbsoluteDeviation.h; sourceTree = "<group>"; };
+		41CE7B7D15CAA88400E45CF5 /* MeddisHairCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MeddisHairCell.h; path = marsyas/MeddisHairCell.h; sourceTree = "<group>"; };
+		41CE7B7E15CAA88400E45CF5 /* Median.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Median.h; path = marsyas/Median.h; sourceTree = "<group>"; };
+		41CE7B7F15CAA88400E45CF5 /* MedianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MedianFilter.h; path = marsyas/MedianFilter.h; sourceTree = "<group>"; };
+		41CE7B8015CAA88400E45CF5 /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Memory.h; path = marsyas/Memory.h; sourceTree = "<group>"; };
+		41CE7B8115CAA88400E45CF5 /* MemorySource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemorySource.h; path = marsyas/MemorySource.h; sourceTree = "<group>"; };
+		41CE7B8215CAA88400E45CF5 /* Metric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Metric.h; path = marsyas/Metric.h; sourceTree = "<group>"; };
+		41CE7B8315CAA88400E45CF5 /* Metric2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Metric2.h; path = marsyas/Metric2.h; sourceTree = "<group>"; };
+		41CE7B8415CAA88400E45CF5 /* MFCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MFCC.h; path = marsyas/MFCC.h; sourceTree = "<group>"; };
+		41CE7B8515CAA88400E45CF5 /* mididevices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mididevices.h; path = marsyas/mididevices.h; sourceTree = "<group>"; };
+		41CE7B8615CAA88400E45CF5 /* MidiFileSynthSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiFileSynthSource.h; path = marsyas/MidiFileSynthSource.h; sourceTree = "<group>"; };
+		41CE7B8715CAA88400E45CF5 /* MidiInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiInput.h; path = marsyas/MidiInput.h; sourceTree = "<group>"; };
+		41CE7B8815CAA88400E45CF5 /* MidiOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiOutput.h; path = marsyas/MidiOutput.h; sourceTree = "<group>"; };
+		41CE7B8915CAA88400E45CF5 /* MinArgMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MinArgMin.h; path = marsyas/MinArgMin.h; sourceTree = "<group>"; };
+		41CE7B8A15CAA88400E45CF5 /* MixToMono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MixToMono.h; path = marsyas/MixToMono.h; sourceTree = "<group>"; };
+		41CE7B8B15CAA88400E45CF5 /* Mono2Stereo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mono2Stereo.h; path = marsyas/Mono2Stereo.h; sourceTree = "<group>"; };
+		41CE7B8C15CAA88400E45CF5 /* MP3FileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP3FileSink.h; path = marsyas/MP3FileSink.h; sourceTree = "<group>"; };
+		41CE7B8D15CAA88400E45CF5 /* MP3FileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP3FileSource.h; path = marsyas/MP3FileSource.h; sourceTree = "<group>"; };
+		41CE7B8E15CAA88400E45CF5 /* MrsLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MrsLog.h; path = marsyas/MrsLog.h; sourceTree = "<group>"; };
+		41CE7B8F15CAA88400E45CF5 /* Negative.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Negative.h; path = marsyas/Negative.h; sourceTree = "<group>"; };
+		41CE7B9015CAA88400E45CF5 /* NoiseGate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoiseGate.h; path = marsyas/NoiseGate.h; sourceTree = "<group>"; };
+		41CE7B9115CAA88400E45CF5 /* NoiseSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoiseSource.h; path = marsyas/NoiseSource.h; sourceTree = "<group>"; };
+		41CE7B9215CAA88400E45CF5 /* Norm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Norm.h; path = marsyas/Norm.h; sourceTree = "<group>"; };
+		41CE7B9315CAA88400E45CF5 /* Normalize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Normalize.h; path = marsyas/Normalize.h; sourceTree = "<group>"; };
+		41CE7B9415CAA88400E45CF5 /* NormalizeAbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormalizeAbs.h; path = marsyas/NormalizeAbs.h; sourceTree = "<group>"; };
+		41CE7B9515CAA88400E45CF5 /* NormCut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormCut.h; path = marsyas/NormCut.h; sourceTree = "<group>"; };
+		41CE7B9615CAA88400E45CF5 /* NormMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormMatrix.h; path = marsyas/NormMatrix.h; sourceTree = "<group>"; };
+		41CE7B9715CAA88400E45CF5 /* NormMaxMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormMaxMin.h; path = marsyas/NormMaxMin.h; sourceTree = "<group>"; };
+		41CE7B9815CAA88400E45CF5 /* NumericLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NumericLib.h; path = marsyas/NumericLib.h; sourceTree = "<group>"; };
+		41CE7B9915CAA88400E45CF5 /* OggFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OggFileSource.h; path = marsyas/OggFileSource.h; sourceTree = "<group>"; };
+		41CE7B9A15CAA88400E45CF5 /* OnePole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnePole.h; path = marsyas/OnePole.h; sourceTree = "<group>"; };
+		41CE7B9B15CAA88400E45CF5 /* OneRClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OneRClassifier.h; path = marsyas/OneRClassifier.h; sourceTree = "<group>"; };
+		41CE7B9C15CAA88400E45CF5 /* OnsetTimes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnsetTimes.h; path = marsyas/OnsetTimes.h; sourceTree = "<group>"; };
+		41CE7B9D15CAA88400E45CF5 /* OrcaSnip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OrcaSnip.h; path = marsyas/OrcaSnip.h; sourceTree = "<group>"; };
+		41CE7B9E15CAA88400E45CF5 /* OverlapAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OverlapAdd.h; path = marsyas/OverlapAdd.h; sourceTree = "<group>"; };
+		41CE7B9F15CAA88400E45CF5 /* Panorama.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Panorama.h; path = marsyas/Panorama.h; sourceTree = "<group>"; };
+		41CE7BA015CAA88400E45CF5 /* Parallel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Parallel.h; path = marsyas/Parallel.h; sourceTree = "<group>"; };
+		41CE7BA115CAA88400E45CF5 /* ParallelMatrixWeight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParallelMatrixWeight.h; path = marsyas/ParallelMatrixWeight.h; sourceTree = "<group>"; };
+		41CE7BA215CAA88400E45CF5 /* PatchMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatchMatrix.h; path = marsyas/PatchMatrix.h; sourceTree = "<group>"; };
+		41CE7BA315CAA88400E45CF5 /* PCA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCA.h; path = marsyas/PCA.h; sourceTree = "<group>"; };
+		41CE7BA415CAA88400E45CF5 /* Peak2Rms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Peak2Rms.h; path = marsyas/Peak2Rms.h; sourceTree = "<group>"; };
+		41CE7BA515CAA88400E45CF5 /* PeakClusterSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakClusterSelect.h; path = marsyas/PeakClusterSelect.h; sourceTree = "<group>"; };
+		41CE7BA615CAA88400E45CF5 /* PeakConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakConvert.h; path = marsyas/PeakConvert.h; sourceTree = "<group>"; };
+		41CE7BA715CAA88400E45CF5 /* PeakConvert2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakConvert2.h; path = marsyas/PeakConvert2.h; sourceTree = "<group>"; };
+		41CE7BA815CAA88400E45CF5 /* PeakDistanceHorizontality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakDistanceHorizontality.h; path = marsyas/PeakDistanceHorizontality.h; sourceTree = "<group>"; };
+		41CE7BA915CAA88400E45CF5 /* PeakEnhancer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakEnhancer.h; path = marsyas/PeakEnhancer.h; sourceTree = "<group>"; };
+		41CE7BAA15CAA88400E45CF5 /* Peaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Peaker.h; path = marsyas/Peaker.h; sourceTree = "<group>"; };
+		41CE7BAB15CAA88400E45CF5 /* PeakerAdaptive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakerAdaptive.h; path = marsyas/PeakerAdaptive.h; sourceTree = "<group>"; };
+		41CE7BAC15CAA88400E45CF5 /* PeakerOnset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakerOnset.h; path = marsyas/PeakerOnset.h; sourceTree = "<group>"; };
+		41CE7BAD15CAA88400E45CF5 /* PeakFeatureSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakFeatureSelect.h; path = marsyas/PeakFeatureSelect.h; sourceTree = "<group>"; };
+		41CE7BAE15CAA88400E45CF5 /* PeakInObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakInObservation.h; path = marsyas/PeakInObservation.h; sourceTree = "<group>"; };
+		41CE7BAF15CAA88400E45CF5 /* PeakLabeler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakLabeler.h; path = marsyas/PeakLabeler.h; sourceTree = "<group>"; };
+		41CE7BB015CAA88400E45CF5 /* PeakMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakMask.h; path = marsyas/PeakMask.h; sourceTree = "<group>"; };
+		41CE7BB115CAA88400E45CF5 /* PeakPeriods2BPM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakPeriods2BPM.h; path = marsyas/PeakPeriods2BPM.h; sourceTree = "<group>"; };
+		41CE7BB215CAA88400E45CF5 /* PeakRatio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakRatio.h; path = marsyas/PeakRatio.h; sourceTree = "<group>"; };
+		41CE7BB315CAA88400E45CF5 /* PeakResidual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakResidual.h; path = marsyas/PeakResidual.h; sourceTree = "<group>"; };
+		41CE7BB415CAA88400E45CF5 /* PeakSynthFFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthFFT.h; path = marsyas/PeakSynthFFT.h; sourceTree = "<group>"; };
+		41CE7BB515CAA88400E45CF5 /* PeakSynthOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthOsc.h; path = marsyas/PeakSynthOsc.h; sourceTree = "<group>"; };
+		41CE7BB615CAA88400E45CF5 /* PeakSynthOscBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthOscBank.h; path = marsyas/PeakSynthOscBank.h; sourceTree = "<group>"; };
+		41CE7BB715CAA88400E45CF5 /* peakView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = peakView.h; path = marsyas/peakView.h; sourceTree = "<group>"; };
+		41CE7BB815CAA88400E45CF5 /* PeakViewMerge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewMerge.h; path = marsyas/PeakViewMerge.h; sourceTree = "<group>"; };
+		41CE7BB915CAA88400E45CF5 /* PeakViewSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewSink.h; path = marsyas/PeakViewSink.h; sourceTree = "<group>"; };
+		41CE7BBA15CAA88400E45CF5 /* PeakViewSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewSource.h; path = marsyas/PeakViewSource.h; sourceTree = "<group>"; };
+		41CE7BBB15CAA88400E45CF5 /* PeUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeUtilities.h; path = marsyas/PeUtilities.h; sourceTree = "<group>"; };
+		41CE7BBC15CAA88400E45CF5 /* PhaseLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseLock.h; path = marsyas/PhaseLock.h; sourceTree = "<group>"; };
+		41CE7BBD15CAA88400E45CF5 /* PhiSEMFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhiSEMFilter.h; path = marsyas/PhiSEMFilter.h; sourceTree = "<group>"; };
+		41CE7BBE15CAA88400E45CF5 /* PhiSEMSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhiSEMSource.h; path = marsyas/PhiSEMSource.h; sourceTree = "<group>"; };
+		41CE7BBF15CAA88400E45CF5 /* Pitch2Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pitch2Chroma.h; path = marsyas/Pitch2Chroma.h; sourceTree = "<group>"; };
+		41CE7BC015CAA88400E45CF5 /* PitchDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PitchDiff.h; path = marsyas/PitchDiff.h; sourceTree = "<group>"; };
+		41CE7BC115CAA88400E45CF5 /* PlotSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlotSink.h; path = marsyas/PlotSink.h; sourceTree = "<group>"; };
+		41CE7BC215CAA88400E45CF5 /* Plucked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plucked.h; path = marsyas/Plucked.h; sourceTree = "<group>"; };
+		41CE7BC315CAA88400E45CF5 /* Polar2Cartesian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Polar2Cartesian.h; path = marsyas/Polar2Cartesian.h; sourceTree = "<group>"; };
+		41CE7BC415CAA88400E45CF5 /* Power.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Power.h; path = marsyas/Power.h; sourceTree = "<group>"; };
+		41CE7BC515CAA88400E45CF5 /* PowerSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerSpectrum.h; path = marsyas/PowerSpectrum.h; sourceTree = "<group>"; };
+		41CE7BC615CAA88400E45CF5 /* PowerToAverageRatio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerToAverageRatio.h; path = marsyas/PowerToAverageRatio.h; sourceTree = "<group>"; };
+		41CE7BC715CAA88400E45CF5 /* Product.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Product.h; path = marsyas/Product.h; sourceTree = "<group>"; };
+		41CE7BC815CAA88400E45CF5 /* PvConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvConvert.h; path = marsyas/PvConvert.h; sourceTree = "<group>"; };
+		41CE7BC915CAA88400E45CF5 /* PvConvolve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvConvolve.h; path = marsyas/PvConvolve.h; sourceTree = "<group>"; };
+		41CE7BCA15CAA88400E45CF5 /* PvFold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvFold.h; path = marsyas/PvFold.h; sourceTree = "<group>"; };
+		41CE7BCB15CAA88400E45CF5 /* PvMultiResolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvMultiResolution.h; path = marsyas/PvMultiResolution.h; sourceTree = "<group>"; };
+		41CE7BCC15CAA88400E45CF5 /* PvOscBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvOscBank.h; path = marsyas/PvOscBank.h; sourceTree = "<group>"; };
+		41CE7BCD15CAA88400E45CF5 /* PvOverlapadd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvOverlapadd.h; path = marsyas/PvOverlapadd.h; sourceTree = "<group>"; };
+		41CE7BCE15CAA88400E45CF5 /* PvUnconvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvUnconvert.h; path = marsyas/PvUnconvert.h; sourceTree = "<group>"; };
+		41CE7BCF15CAA88400E45CF5 /* PWMSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PWMSource.h; path = marsyas/PWMSource.h; sourceTree = "<group>"; };
+		41CE7BD015CAA88400E45CF5 /* QGMMModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QGMMModel.h; path = marsyas/QGMMModel.h; sourceTree = "<group>"; };
+		41CE7BD115CAA88400E45CF5 /* RadioDrumInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RadioDrumInput.h; path = marsyas/RadioDrumInput.h; sourceTree = "<group>"; };
+		41CE7BD215CAA88400E45CF5 /* RawFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RawFileSource.h; path = marsyas/RawFileSource.h; sourceTree = "<group>"; };
+		41CE7BD315CAA88400E45CF5 /* RBF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBF.h; path = marsyas/RBF.h; sourceTree = "<group>"; };
+		41CE7BD415CAA88400E45CF5 /* realvec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = realvec.h; path = marsyas/realvec.h; sourceTree = "<group>"; };
+		41CE7BD515CAA88400E45CF5 /* RealvecSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealvecSink.h; path = marsyas/RealvecSink.h; sourceTree = "<group>"; };
+		41CE7BD615CAA88400E45CF5 /* RealvecSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealvecSource.h; path = marsyas/RealvecSource.h; sourceTree = "<group>"; };
+		41CE7BD715CAA88400E45CF5 /* Reassign.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reassign.h; path = marsyas/Reassign.h; sourceTree = "<group>"; };
+		41CE7BD815CAA88400E45CF5 /* Reciprocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reciprocal.h; path = marsyas/Reciprocal.h; sourceTree = "<group>"; };
+		41CE7BD915CAA88400E45CF5 /* RemoveObservations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoveObservations.h; path = marsyas/RemoveObservations.h; sourceTree = "<group>"; };
+		41CE7BDA15CAA88400E45CF5 /* Repeat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Repeat.h; path = marsyas/Repeat.h; sourceTree = "<group>"; };
+		41CE7BDB15CAA88400E45CF5 /* Resample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Resample.h; path = marsyas/Resample.h; sourceTree = "<group>"; };
+		41CE7BDC15CAA88400E45CF5 /* ResampleBezier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleBezier.h; path = marsyas/ResampleBezier.h; sourceTree = "<group>"; };
+		41CE7BDD15CAA88400E45CF5 /* ResampleLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleLinear.h; path = marsyas/ResampleLinear.h; sourceTree = "<group>"; };
+		41CE7BDE15CAA88400E45CF5 /* ResampleNearestNeighbour.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleNearestNeighbour.h; path = marsyas/ResampleNearestNeighbour.h; sourceTree = "<group>"; };
+		41CE7BDF15CAA88400E45CF5 /* ResampleSinc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleSinc.h; path = marsyas/ResampleSinc.h; sourceTree = "<group>"; };
+		41CE7BE015CAA88400E45CF5 /* Reverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reverse.h; path = marsyas/Reverse.h; sourceTree = "<group>"; };
+		41CE7BE115CAA88400E45CF5 /* Rms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rms.h; path = marsyas/Rms.h; sourceTree = "<group>"; };
+		41CE7BE215CAA88400E45CF5 /* Rolloff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rolloff.h; path = marsyas/Rolloff.h; sourceTree = "<group>"; };
+		41CE7BE315CAA88400E45CF5 /* RunningAutocorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RunningAutocorrelation.h; path = marsyas/RunningAutocorrelation.h; sourceTree = "<group>"; };
+		41CE7BE415CAA88400E45CF5 /* RunningStatistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RunningStatistics.h; path = marsyas/RunningStatistics.h; sourceTree = "<group>"; };
+		41CE7BE515CAA88400E45CF5 /* SCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCF.h; path = marsyas/SCF.h; sourceTree = "<group>"; };
+		41CE7BE615CAA88400E45CF5 /* Scheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Scheduler.h; path = marsyas/Scheduler.h; sourceTree = "<group>"; };
+		41CE7BE715CAA88400E45CF5 /* Selector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Selector.h; path = marsyas/Selector.h; sourceTree = "<group>"; };
+		41CE7BE815CAA88400E45CF5 /* SelfSimilarityMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelfSimilarityMatrix.h; path = marsyas/SelfSimilarityMatrix.h; sourceTree = "<group>"; };
+		41CE7BE915CAA88400E45CF5 /* SeneffEar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SeneffEar.h; path = marsyas/SeneffEar.h; sourceTree = "<group>"; };
+		41CE7BEA15CAA88400E45CF5 /* Series.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Series.h; path = marsyas/Series.h; sourceTree = "<group>"; };
+		41CE7BEB15CAA88400E45CF5 /* SFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SFM.h; path = marsyas/SFM.h; sourceTree = "<group>"; };
+		41CE7BEC15CAA88400E45CF5 /* Shifter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shifter.h; path = marsyas/Shifter.h; sourceTree = "<group>"; };
+		41CE7BED15CAA88400E45CF5 /* ShiftInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShiftInput.h; path = marsyas/ShiftInput.h; sourceTree = "<group>"; };
+		41CE7BEE15CAA88400E45CF5 /* ShiftOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShiftOutput.h; path = marsyas/ShiftOutput.h; sourceTree = "<group>"; };
+		41CE7BEF15CAA88400E45CF5 /* Shredder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shredder.h; path = marsyas/Shredder.h; sourceTree = "<group>"; };
+		41CE7BF015CAA88400E45CF5 /* Signum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Signum.h; path = marsyas/Signum.h; sourceTree = "<group>"; };
+		41CE7BF115CAA88400E45CF5 /* SilenceRemove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SilenceRemove.h; path = marsyas/SilenceRemove.h; sourceTree = "<group>"; };
+		41CE7BF215CAA88400E45CF5 /* SimilarityMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimilarityMatrix.h; path = marsyas/SimilarityMatrix.h; sourceTree = "<group>"; };
+		41CE7BF315CAA88400E45CF5 /* SimulMaskingFft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimulMaskingFft.h; path = marsyas/SimulMaskingFft.h; sourceTree = "<group>"; };
+		41CE7BF415CAA88400E45CF5 /* SineSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SineSource.h; path = marsyas/SineSource.h; sourceTree = "<group>"; };
+		41CE7BF515CAA88400E45CF5 /* Skewness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Skewness.h; path = marsyas/Skewness.h; sourceTree = "<group>"; };
+		41CE7BF615CAA88400E45CF5 /* SliceDelta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceDelta.h; path = marsyas/SliceDelta.h; sourceTree = "<group>"; };
+		41CE7BF715CAA88400E45CF5 /* SliceShuffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceShuffle.h; path = marsyas/SliceShuffle.h; sourceTree = "<group>"; };
+		41CE7BF815CAA88400E45CF5 /* SMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMO.h; path = marsyas/SMO.h; sourceTree = "<group>"; };
+		41CE7BF915CAA88400E45CF5 /* SNR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SNR.h; path = marsyas/SNR.h; sourceTree = "<group>"; };
+		41CE7BFA15CAA88400E45CF5 /* SOM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SOM.h; path = marsyas/SOM.h; sourceTree = "<group>"; };
+		41CE7BFB15CAA88400E45CF5 /* SoundFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSink.h; path = marsyas/SoundFileSink.h; sourceTree = "<group>"; };
+		41CE7BFC15CAA88400E45CF5 /* SoundFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSource.h; path = marsyas/SoundFileSource.h; sourceTree = "<group>"; };
+		41CE7BFD15CAA88400E45CF5 /* SoundFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSource2.h; path = marsyas/SoundFileSource2.h; sourceTree = "<group>"; };
+		41CE7BFE15CAA88400E45CF5 /* SoundFileSourceHopper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSourceHopper.h; path = marsyas/SoundFileSourceHopper.h; sourceTree = "<group>"; };
+		41CE7BFF15CAA88400E45CF5 /* SpectralFlatnessAllBands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralFlatnessAllBands.h; path = marsyas/SpectralFlatnessAllBands.h; sourceTree = "<group>"; };
+		41CE7C0015CAA88400E45CF5 /* SpectralSNR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralSNR.h; path = marsyas/SpectralSNR.h; sourceTree = "<group>"; };
+		41CE7C0115CAA88400E45CF5 /* SpectralTransformations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralTransformations.h; path = marsyas/SpectralTransformations.h; sourceTree = "<group>"; };
+		41CE7C0215CAA88400E45CF5 /* Spectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum.h; path = marsyas/Spectrum.h; sourceTree = "<group>"; };
+		41CE7C0315CAA88400E45CF5 /* Spectrum2ACMChroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2ACMChroma.h; path = marsyas/Spectrum2ACMChroma.h; sourceTree = "<group>"; };
+		41CE7C0415CAA88400E45CF5 /* Spectrum2Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2Chroma.h; path = marsyas/Spectrum2Chroma.h; sourceTree = "<group>"; };
+		41CE7C0515CAA88400E45CF5 /* Spectrum2Mel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2Mel.h; path = marsyas/Spectrum2Mel.h; sourceTree = "<group>"; };
+		41CE7C0615CAA88400E45CF5 /* Square.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Square.h; path = marsyas/Square.h; sourceTree = "<group>"; };
+		41CE7C0715CAA88400E45CF5 /* StandardDeviation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StandardDeviation.h; path = marsyas/StandardDeviation.h; sourceTree = "<group>"; };
+		41CE7C0815CAA88400E45CF5 /* static_vq_codebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = static_vq_codebook.h; path = marsyas/static_vq_codebook.h; sourceTree = "<group>"; };
+		41CE7C0915CAA88400E45CF5 /* statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = statistics.h; path = marsyas/statistics.h; sourceTree = "<group>"; };
+		41CE7C0A15CAA88400E45CF5 /* StereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrum.h; path = marsyas/StereoSpectrum.h; sourceTree = "<group>"; };
+		41CE7C0B15CAA88400E45CF5 /* StereoSpectrumFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrumFeatures.h; path = marsyas/StereoSpectrumFeatures.h; sourceTree = "<group>"; };
+		41CE7C0C15CAA88400E45CF5 /* StereoSpectrumSources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrumSources.h; path = marsyas/StereoSpectrumSources.h; sourceTree = "<group>"; };
+		41CE7C0D15CAA88400E45CF5 /* Stk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Stk.h; path = marsyas/Stk.h; sourceTree = "<group>"; };
+		41CE7C0E15CAA88400E45CF5 /* StretchLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StretchLinear.h; path = marsyas/StretchLinear.h; sourceTree = "<group>"; };
+		41CE7C0F15CAA88400E45CF5 /* StrobeList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StrobeList.h; path = marsyas/StrobeList.h; sourceTree = "<group>"; };
+		41CE7C1015CAA88400E45CF5 /* Subtract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Subtract.h; path = marsyas/Subtract.h; sourceTree = "<group>"; };
+		41CE7C1115CAA88400E45CF5 /* SubtractMean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubtractMean.h; path = marsyas/SubtractMean.h; sourceTree = "<group>"; };
+		41CE7C1215CAA88400E45CF5 /* Sum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sum.h; path = marsyas/Sum.h; sourceTree = "<group>"; };
+		41CE7C1315CAA88400E45CF5 /* SVMClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SVMClassifier.h; path = marsyas/SVMClassifier.h; sourceTree = "<group>"; };
+		41CE7C1415CAA88400E45CF5 /* Talk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Talk.h; path = marsyas/Talk.h; sourceTree = "<group>"; };
+		41CE7C1515CAA88400E45CF5 /* TempoHypotheses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TempoHypotheses.h; path = marsyas/TempoHypotheses.h; sourceTree = "<group>"; };
+		41CE7C1615CAA88400E45CF5 /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Thread.h; path = marsyas/Thread.h; sourceTree = "<group>"; };
+		41CE7C1715CAA88400E45CF5 /* TimeFreqPeakConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeFreqPeakConnectivity.h; path = marsyas/TimeFreqPeakConnectivity.h; sourceTree = "<group>"; };
+		41CE7C1815CAA88400E45CF5 /* TimeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeLine.h; path = marsyas/TimeLine.h; sourceTree = "<group>"; };
+		41CE7C1915CAA88400E45CF5 /* TimelineLabeler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimelineLabeler.h; path = marsyas/TimelineLabeler.h; sourceTree = "<group>"; };
+		41CE7C1A15CAA88400E45CF5 /* TimeStretch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeStretch.h; path = marsyas/TimeStretch.h; sourceTree = "<group>"; };
+		41CE7C1B15CAA88400E45CF5 /* TmControlValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmControlValue.h; path = marsyas/TmControlValue.h; sourceTree = "<group>"; };
+		41CE7C1C15CAA88400E45CF5 /* TmParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmParam.h; path = marsyas/TmParam.h; sourceTree = "<group>"; };
+		41CE7C1D15CAA88400E45CF5 /* TmRealTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmRealTime.h; path = marsyas/TmRealTime.h; sourceTree = "<group>"; };
+		41CE7C1E15CAA88400E45CF5 /* TmSampleCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmSampleCount.h; path = marsyas/TmSampleCount.h; sourceTree = "<group>"; };
+		41CE7C1F15CAA88400E45CF5 /* TmTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTime.h; path = marsyas/TmTime.h; sourceTree = "<group>"; };
+		41CE7C2015CAA88400E45CF5 /* TmTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTimer.h; path = marsyas/TmTimer.h; sourceTree = "<group>"; };
+		41CE7C2115CAA88400E45CF5 /* TmTimerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTimerManager.h; path = marsyas/TmTimerManager.h; sourceTree = "<group>"; };
+		41CE7C2215CAA88400E45CF5 /* TmVirtualTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmVirtualTime.h; path = marsyas/TmVirtualTime.h; sourceTree = "<group>"; };
+		41CE7C2315CAA88400E45CF5 /* Transcriber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Transcriber.h; path = marsyas/Transcriber.h; sourceTree = "<group>"; };
+		41CE7C2415CAA88400E45CF5 /* TranscriberExtract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TranscriberExtract.h; path = marsyas/TranscriberExtract.h; sourceTree = "<group>"; };
+		41CE7C2515CAA88400E45CF5 /* Transposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Transposer.h; path = marsyas/Transposer.h; sourceTree = "<group>"; };
+		41CE7C2615CAA88400E45CF5 /* Unfold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Unfold.h; path = marsyas/Unfold.h; sourceTree = "<group>"; };
+		41CE7C2715CAA88400E45CF5 /* UpdatingBassModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdatingBassModel.h; path = marsyas/UpdatingBassModel.h; sourceTree = "<group>"; };
+		41CE7C2815CAA88400E45CF5 /* Upsample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Upsample.h; path = marsyas/Upsample.h; sourceTree = "<group>"; };
+		41CE7C2915CAA88400E45CF5 /* Vibrato.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vibrato.h; path = marsyas/Vibrato.h; sourceTree = "<group>"; };
+		41CE7C2A15CAA88400E45CF5 /* ViconFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViconFileSource.h; path = marsyas/ViconFileSource.h; sourceTree = "<group>"; };
+		41CE7C2B15CAA88400E45CF5 /* vmblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vmblock.h; path = marsyas/vmblock.h; sourceTree = "<group>"; };
+		41CE7C2C15CAA88400E45CF5 /* WaveletBands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletBands.h; path = marsyas/WaveletBands.h; sourceTree = "<group>"; };
+		41CE7C2D15CAA88400E45CF5 /* WaveletPyramid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletPyramid.h; path = marsyas/WaveletPyramid.h; sourceTree = "<group>"; };
+		41CE7C2E15CAA88400E45CF5 /* WaveletStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletStep.h; path = marsyas/WaveletStep.h; sourceTree = "<group>"; };
+		41CE7C2F15CAA88400E45CF5 /* WavFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSink.h; path = marsyas/WavFileSink.h; sourceTree = "<group>"; };
+		41CE7C3015CAA88400E45CF5 /* WavFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSource.h; path = marsyas/WavFileSource.h; sourceTree = "<group>"; };
+		41CE7C3115CAA88400E45CF5 /* WavFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSource2.h; path = marsyas/WavFileSource2.h; sourceTree = "<group>"; };
+		41CE7C3215CAA88400E45CF5 /* WekaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaData.h; path = marsyas/WekaData.h; sourceTree = "<group>"; };
+		41CE7C3315CAA88400E45CF5 /* WekaSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaSink.h; path = marsyas/WekaSink.h; sourceTree = "<group>"; };
+		41CE7C3415CAA88400E45CF5 /* WekaSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaSource.h; path = marsyas/WekaSource.h; sourceTree = "<group>"; };
+		41CE7C3515CAA88400E45CF5 /* WHaSp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WHaSp.h; path = marsyas/WHaSp.h; sourceTree = "<group>"; };
+		41CE7C3615CAA88400E45CF5 /* Whitening.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Whitening.h; path = marsyas/Whitening.h; sourceTree = "<group>"; };
+		41CE7C3715CAA88400E45CF5 /* Windowing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Windowing.h; path = marsyas/Windowing.h; sourceTree = "<group>"; };
+		41CE7C3815CAA88400E45CF5 /* Yin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Yin.h; path = marsyas/Yin.h; sourceTree = "<group>"; };
+		41CE7C3915CAA88400E45CF5 /* ZeroCrossings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZeroCrossings.h; path = marsyas/ZeroCrossings.h; sourceTree = "<group>"; };
+		41CE7C3A15CAA88400E45CF5 /* ZeroRClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZeroRClassifier.h; path = marsyas/ZeroRClassifier.h; sourceTree = "<group>"; };
 		444657a12e59d0ed86981498fccd5fcc /* TimerListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = TimerListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/TimerListener.h; sourceTree = SOURCE_ROOT; };
 		452417865e4bfb10c9cbf8a2e12a0b57 /* internal.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = internal.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/core/internal.hpp; sourceTree = SOURCE_ROOT; };
 		45410dd818bb205166e67e89e7443a54 /* any.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = any.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/any.h; sourceTree = SOURCE_ROOT; };
@@ -307,353 +659,6 @@
 		A71775D3157E1E29001F7E9A /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
 		A71775D4157E1E29001F7E9A /* Widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Widget.cpp; sourceTree = "<group>"; };
 		A71775D5157E1E29001F7E9A /* Widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Widget.h; sourceTree = "<group>"; };
-		A7177755157E1EB7001F7E9A /* AbsMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsMax.h; path = marsyas/AbsMax.h; sourceTree = "<group>"; };
-		A7177756157E1EB7001F7E9A /* AbsSoundFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSink.h; path = marsyas/AbsSoundFileSink.h; sourceTree = "<group>"; };
-		A7177757157E1EB7001F7E9A /* AbsSoundFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSource.h; path = marsyas/AbsSoundFileSource.h; sourceTree = "<group>"; };
-		A7177758157E1EB7001F7E9A /* AbsSoundFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSource2.h; path = marsyas/AbsSoundFileSource2.h; sourceTree = "<group>"; };
-		A7177759157E1EB7001F7E9A /* AccentFilterBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccentFilterBank.h; path = marsyas/AccentFilterBank.h; sourceTree = "<group>"; };
-		A717775A157E1EB7001F7E9A /* Accumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Accumulator.h; path = marsyas/Accumulator.h; sourceTree = "<group>"; };
-		A717775B157E1EB7001F7E9A /* ADRess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRess.h; path = marsyas/ADRess.h; sourceTree = "<group>"; };
-		A717775C157E1EB7001F7E9A /* ADRessSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRessSpectrum.h; path = marsyas/ADRessSpectrum.h; sourceTree = "<group>"; };
-		A717775D157E1EB7001F7E9A /* ADRessStereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRessStereoSpectrum.h; path = marsyas/ADRessStereoSpectrum.h; sourceTree = "<group>"; };
-		A717775E157E1EB7001F7E9A /* ADSR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADSR.h; path = marsyas/ADSR.h; sourceTree = "<group>"; };
-		A717775F157E1EB7001F7E9A /* AimBoxes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimBoxes.h; path = marsyas/AimBoxes.h; sourceTree = "<group>"; };
-		A7177760157E1EB7001F7E9A /* AimGammatone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimGammatone.h; path = marsyas/AimGammatone.h; sourceTree = "<group>"; };
-		A7177761157E1EB7001F7E9A /* AimHCL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimHCL.h; path = marsyas/AimHCL.h; sourceTree = "<group>"; };
-		A7177762157E1EB8001F7E9A /* AimHCL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimHCL2.h; path = marsyas/AimHCL2.h; sourceTree = "<group>"; };
-		A7177763157E1EB8001F7E9A /* AimLocalMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimLocalMax.h; path = marsyas/AimLocalMax.h; sourceTree = "<group>"; };
-		A7177764157E1EB8001F7E9A /* AimPZFC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimPZFC.h; path = marsyas/AimPZFC.h; sourceTree = "<group>"; };
-		A7177765157E1EB8001F7E9A /* AimPZFC2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimPZFC2.h; path = marsyas/AimPZFC2.h; sourceTree = "<group>"; };
-		A7177766157E1EB8001F7E9A /* AimSAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimSAI.h; path = marsyas/AimSAI.h; sourceTree = "<group>"; };
-		A7177767157E1EB8001F7E9A /* AimSSI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimSSI.h; path = marsyas/AimSSI.h; sourceTree = "<group>"; };
-		A7177768157E1EB8001F7E9A /* AimVQ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimVQ.h; path = marsyas/AimVQ.h; sourceTree = "<group>"; };
-		A7177769157E1EB8001F7E9A /* AMDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMDF.h; path = marsyas/AMDF.h; sourceTree = "<group>"; };
-		A717776A157E1EB8001F7E9A /* ANN_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ANN_node.h; path = marsyas/ANN_node.h; sourceTree = "<group>"; };
-		A717776B157E1EB8001F7E9A /* Annotator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Annotator.h; path = marsyas/Annotator.h; sourceTree = "<group>"; };
-		A717776C157E1EB8001F7E9A /* ArffFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArffFileSink.h; path = marsyas/ArffFileSink.h; sourceTree = "<group>"; };
-		A717776D157E1EB8001F7E9A /* AubioYin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AubioYin.h; path = marsyas/AubioYin.h; sourceTree = "<group>"; };
-		A717776E157E1EB8001F7E9A /* AudioSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSink.h; path = marsyas/AudioSink.h; sourceTree = "<group>"; };
-		A717776F157E1EB8001F7E9A /* AudioSinkBlocking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSinkBlocking.h; path = marsyas/AudioSinkBlocking.h; sourceTree = "<group>"; };
-		A7177770157E1EB8001F7E9A /* AudioSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSource.h; path = marsyas/AudioSource.h; sourceTree = "<group>"; };
-		A7177771157E1EB8001F7E9A /* AudioSourceBlocking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSourceBlocking.h; path = marsyas/AudioSourceBlocking.h; sourceTree = "<group>"; };
-		A7177772157E1EB8001F7E9A /* AuFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuFileSink.h; path = marsyas/AuFileSink.h; sourceTree = "<group>"; };
-		A7177773157E1EB8001F7E9A /* AuFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuFileSource.h; path = marsyas/AuFileSource.h; sourceTree = "<group>"; };
-		A7177774157E1EB8001F7E9A /* AutoCorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AutoCorrelation.h; path = marsyas/AutoCorrelation.h; sourceTree = "<group>"; };
-		A7177775157E1EB8001F7E9A /* AutoCorrelationFFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AutoCorrelationFFT.h; path = marsyas/AutoCorrelationFFT.h; sourceTree = "<group>"; };
-		A7177776157E1EB8001F7E9A /* AveragingPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AveragingPattern.h; path = marsyas/AveragingPattern.h; sourceTree = "<group>"; };
-		A7177777157E1EB8001F7E9A /* BaseAudioSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseAudioSink.h; path = marsyas/BaseAudioSink.h; sourceTree = "<group>"; };
-		A7177778157E1EB8001F7E9A /* basis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = basis.h; path = marsyas/basis.h; sourceTree = "<group>"; };
-		A7177779157E1EB8001F7E9A /* BeatAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatAgent.h; path = marsyas/BeatAgent.h; sourceTree = "<group>"; };
-		A717777A157E1EB8001F7E9A /* BeatHistoFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistoFeatures.h; path = marsyas/BeatHistoFeatures.h; sourceTree = "<group>"; };
-		A717777B157E1EB8001F7E9A /* BeatHistogram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistogram.h; path = marsyas/BeatHistogram.h; sourceTree = "<group>"; };
-		A717777C157E1EB8001F7E9A /* BeatHistogramFromPeaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistogramFromPeaks.h; path = marsyas/BeatHistogramFromPeaks.h; sourceTree = "<group>"; };
-		A717777D157E1EB8001F7E9A /* BeatPhase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatPhase.h; path = marsyas/BeatPhase.h; sourceTree = "<group>"; };
-		A717777E157E1EB8001F7E9A /* BeatReferee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatReferee.h; path = marsyas/BeatReferee.h; sourceTree = "<group>"; };
-		A717777F157E1EB8001F7E9A /* BeatTimesSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatTimesSink.h; path = marsyas/BeatTimesSink.h; sourceTree = "<group>"; };
-		A7177780157E1EB8001F7E9A /* BICchangeDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BICchangeDetector.h; path = marsyas/BICchangeDetector.h; sourceTree = "<group>"; };
-		A7177781157E1EB8001F7E9A /* Biquad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Biquad.h; path = marsyas/Biquad.h; sourceTree = "<group>"; };
-		A7177782157E1EB8001F7E9A /* CARFAC_coeffs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CARFAC_coeffs.h; path = marsyas/CARFAC_coeffs.h; sourceTree = "<group>"; };
-		A7177783157E1EB8001F7E9A /* CARFAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CARFAC.h; path = marsyas/CARFAC.h; sourceTree = "<group>"; };
-		A7177784157E1EB8001F7E9A /* Cartesian2Polar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cartesian2Polar.h; path = marsyas/Cartesian2Polar.h; sourceTree = "<group>"; };
-		A7177785157E1EB8001F7E9A /* Cascade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cascade.h; path = marsyas/Cascade.h; sourceTree = "<group>"; };
-		A7177786157E1EB8001F7E9A /* Centroid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Centroid.h; path = marsyas/Centroid.h; sourceTree = "<group>"; };
-		A7177787157E1EB8001F7E9A /* Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Chroma.h; path = marsyas/Chroma.h; sourceTree = "<group>"; };
-		A7177788157E1EB8001F7E9A /* ChromaScale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChromaScale.h; path = marsyas/ChromaScale.h; sourceTree = "<group>"; };
-		A7177789157E1EB8001F7E9A /* ClassificationReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClassificationReport.h; path = marsyas/ClassificationReport.h; sourceTree = "<group>"; };
-		A717778A157E1EB8001F7E9A /* ClassOutputSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClassOutputSink.h; path = marsyas/ClassOutputSink.h; sourceTree = "<group>"; };
-		A717778B157E1EB8001F7E9A /* Clip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Clip.h; path = marsyas/Clip.h; sourceTree = "<group>"; };
-		A717778C157E1EB8001F7E9A /* Collection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Collection.h; path = marsyas/Collection.h; sourceTree = "<group>"; };
-		A717778D157E1EB8001F7E9A /* CollectionFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CollectionFileSource.h; path = marsyas/CollectionFileSource.h; sourceTree = "<group>"; };
-		A717778E157E1EB8001F7E9A /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Color.h; path = marsyas/Color.h; sourceTree = "<group>"; };
-		A717778F157E1EB8001F7E9A /* Combinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Combinator.h; path = marsyas/Combinator.h; sourceTree = "<group>"; };
-		A7177790157E1EB8001F7E9A /* CommandLineOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommandLineOptions.h; path = marsyas/CommandLineOptions.h; sourceTree = "<group>"; };
-		A7177791157E1EB8001F7E9A /* common_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common_header.h; path = marsyas/common_header.h; sourceTree = "<group>"; };
-		A7177792157E1EB8001F7E9A /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = marsyas/common.h; sourceTree = "<group>"; };
-		A7177793157E1EB8001F7E9A /* Communicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Communicator.h; path = marsyas/Communicator.h; sourceTree = "<group>"; };
-		A7177794157E1EB8001F7E9A /* CompExp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompExp.h; path = marsyas/CompExp.h; sourceTree = "<group>"; };
-		A7177795157E1EB8001F7E9A /* Compressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Compressor.h; path = marsyas/Compressor.h; sourceTree = "<group>"; };
-		A7177796157E1EB8001F7E9A /* Confidence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Confidence.h; path = marsyas/Confidence.h; sourceTree = "<group>"; };
-		A7177797157E1EB8001F7E9A /* ConstQFiltering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConstQFiltering.h; path = marsyas/ConstQFiltering.h; sourceTree = "<group>"; };
-		A7177798157E1EB8001F7E9A /* Conversions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Conversions.h; path = marsyas/Conversions.h; sourceTree = "<group>"; };
-		A7177799157E1EB8001F7E9A /* CrossCorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CrossCorrelation.h; path = marsyas/CrossCorrelation.h; sourceTree = "<group>"; };
-		A717779A157E1EB8001F7E9A /* CsvFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CsvFileSource.h; path = marsyas/CsvFileSource.h; sourceTree = "<group>"; };
-		A717779B157E1EB8001F7E9A /* Daub4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Daub4.h; path = marsyas/Daub4.h; sourceTree = "<group>"; };
-		A717779C157E1EB8001F7E9A /* DCSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCSource.h; path = marsyas/DCSource.h; sourceTree = "<group>"; };
-		A717779D157E1EB8001F7E9A /* Deinterleave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deinterleave.h; path = marsyas/Deinterleave.h; sourceTree = "<group>"; };
-		A717779E157E1EB8001F7E9A /* DeInterleaveSizecontrol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeInterleaveSizecontrol.h; path = marsyas/DeInterleaveSizecontrol.h; sourceTree = "<group>"; };
-		A717779F157E1EB8001F7E9A /* Delay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Delay.h; path = marsyas/Delay.h; sourceTree = "<group>"; };
-		A71777A0157E1EB8001F7E9A /* DelaySamples.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DelaySamples.h; path = marsyas/DelaySamples.h; sourceTree = "<group>"; };
-		A71777A1157E1EB8001F7E9A /* Delta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Delta.h; path = marsyas/Delta.h; sourceTree = "<group>"; };
-		A71777A2157E1EB8001F7E9A /* DeltaFirstOrderRegression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeltaFirstOrderRegression.h; path = marsyas/DeltaFirstOrderRegression.h; sourceTree = "<group>"; };
-		A71777A3157E1EB8001F7E9A /* Differentiator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Differentiator.h; path = marsyas/Differentiator.h; sourceTree = "<group>"; };
-		A71777A4157E1EB8001F7E9A /* DLLDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLLDefines.h; path = marsyas/DLLDefines.h; sourceTree = "<group>"; };
-		A71777A5157E1EB8001F7E9A /* DownSampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DownSampler.h; path = marsyas/DownSampler.h; sourceTree = "<group>"; };
-		A71777A6157E1EB8001F7E9A /* dsound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dsound.h; path = marsyas/dsound.h; sourceTree = "<group>"; };
-		A71777A7157E1EB8001F7E9A /* DTW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTW.h; path = marsyas/DTW.h; sourceTree = "<group>"; };
-		A71777A8157E1EB8001F7E9A /* DTWWD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTWWD.h; path = marsyas/DTWWD.h; sourceTree = "<group>"; };
-		A71777A9157E1EB8001F7E9A /* EnhADRess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnhADRess.h; path = marsyas/EnhADRess.h; sourceTree = "<group>"; };
-		A71777AA157E1EB8001F7E9A /* EnhADRessStereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnhADRessStereoSpectrum.h; path = marsyas/EnhADRessStereoSpectrum.h; sourceTree = "<group>"; };
-		A71777AB157E1EB8001F7E9A /* Envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Envelope.h; path = marsyas/Envelope.h; sourceTree = "<group>"; };
-		A71777AC157E1EB8001F7E9A /* ERB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ERB.h; path = marsyas/ERB.h; sourceTree = "<group>"; };
-		A71777AD157E1EB8001F7E9A /* ERBTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ERBTools.h; path = marsyas/ERBTools.h; sourceTree = "<group>"; };
-		A71777AE157E1EB8001F7E9A /* Esitar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Esitar.h; path = marsyas/Esitar.h; sourceTree = "<group>"; };
-		A71777AF157E1EB8001F7E9A /* EvEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvEvent.h; path = marsyas/EvEvent.h; sourceTree = "<group>"; };
-		A71777B0157E1EB8001F7E9A /* EvExpr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvExpr.h; path = marsyas/EvExpr.h; sourceTree = "<group>"; };
-		A71777B1157E1EB8001F7E9A /* EvGetUpd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvGetUpd.h; path = marsyas/EvGetUpd.h; sourceTree = "<group>"; };
-		A71777B2157E1EB8001F7E9A /* EvValUpd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvValUpd.h; path = marsyas/EvValUpd.h; sourceTree = "<group>"; };
-		A71777B3157E1EB8001F7E9A /* ExCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExCommon.h; path = marsyas/ExCommon.h; sourceTree = "<group>"; };
-		A71777B4157E1EB8001F7E9A /* ExNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExNode.h; path = marsyas/ExNode.h; sourceTree = "<group>"; };
-		A71777B5157E1EB8001F7E9A /* ExParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExParser.h; path = marsyas/ExParser.h; sourceTree = "<group>"; };
-		A71777B6157E1EB8001F7E9A /* Expr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Expr.h; path = marsyas/Expr.h; sourceTree = "<group>"; };
-		A71777B7157E1EB8001F7E9A /* ExScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExScanner.h; path = marsyas/ExScanner.h; sourceTree = "<group>"; };
-		A71777B8157E1EB8001F7E9A /* ExSymTbl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExSymTbl.h; path = marsyas/ExSymTbl.h; sourceTree = "<group>"; };
-		A71777B9157E1EB8001F7E9A /* ExVal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExVal.h; path = marsyas/ExVal.h; sourceTree = "<group>"; };
-		A71777BA157E1EB8001F7E9A /* F0Analysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = F0Analysis.h; path = marsyas/F0Analysis.h; sourceTree = "<group>"; };
-		A71777BB157E1EB8001F7E9A /* Fanin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fanin.h; path = marsyas/Fanin.h; sourceTree = "<group>"; };
-		A71777BC157E1EB8001F7E9A /* Fanout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fanout.h; path = marsyas/Fanout.h; sourceTree = "<group>"; };
-		A71777BD157E1EB8001F7E9A /* FanOutIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FanOutIn.h; path = marsyas/FanOutIn.h; sourceTree = "<group>"; };
-		A71777BE157E1EB8001F7E9A /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fft.h; path = marsyas/fft.h; sourceTree = "<group>"; };
-		A71777BF157E1EB8001F7E9A /* FileName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileName.h; path = marsyas/FileName.h; sourceTree = "<group>"; };
-		A71777C0157E1EB8001F7E9A /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Filter.h; path = marsyas/Filter.h; sourceTree = "<group>"; };
-		A71777C1157E1EB8001F7E9A /* FlowCutSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlowCutSource.h; path = marsyas/FlowCutSource.h; sourceTree = "<group>"; };
-		A71777C2157E1EB8001F7E9A /* FlowThru.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlowThru.h; path = marsyas/FlowThru.h; sourceTree = "<group>"; };
-		A71777C3157E1EB8001F7E9A /* Flux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flux.h; path = marsyas/Flux.h; sourceTree = "<group>"; };
-		A71777C4157E1EB8001F7E9A /* FM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FM.h; path = marsyas/FM.h; sourceTree = "<group>"; };
-		A71777C5157E1EB8001F7E9A /* FMeasure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMeasure.h; path = marsyas/FMeasure.h; sourceTree = "<group>"; };
-		A71777C6157E1EB8001F7E9A /* FullWaveRectifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FullWaveRectifier.h; path = marsyas/FullWaveRectifier.h; sourceTree = "<group>"; };
-		A71777C7157E1EB8001F7E9A /* Gain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Gain.h; path = marsyas/Gain.h; sourceTree = "<group>"; };
-		A71777C8157E1EB8001F7E9A /* GaussianClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GaussianClassifier.h; path = marsyas/GaussianClassifier.h; sourceTree = "<group>"; };
-		A71777C9157E1EB8001F7E9A /* GMMClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GMMClassifier.h; path = marsyas/GMMClassifier.h; sourceTree = "<group>"; };
-		A71777CA157E1EB8001F7E9A /* gst-decode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "gst-decode.h"; path = "marsyas/gst-decode.h"; sourceTree = "<group>"; };
-		A71777CB157E1EB8001F7E9A /* GStreamerSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GStreamerSource.h; path = marsyas/GStreamerSource.h; sourceTree = "<group>"; };
-		A71777CC157E1EB8001F7E9A /* HalfWaveRectifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HalfWaveRectifier.h; path = marsyas/HalfWaveRectifier.h; sourceTree = "<group>"; };
-		A71777CD157E1EB8001F7E9A /* HarmonicEnhancer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HarmonicEnhancer.h; path = marsyas/HarmonicEnhancer.h; sourceTree = "<group>"; };
-		A71777CE157E1EB8001F7E9A /* HarmonicStrength.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HarmonicStrength.h; path = marsyas/HarmonicStrength.h; sourceTree = "<group>"; };
-		A71777CF157E1EB8001F7E9A /* Heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Heap.h; path = marsyas/Heap.h; sourceTree = "<group>"; };
-		A71777D0157E1EB8001F7E9A /* HWPS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HWPS.h; path = marsyas/HWPS.h; sourceTree = "<group>"; };
-		A71777D1157E1EB8001F7E9A /* Inject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Inject.h; path = marsyas/Inject.h; sourceTree = "<group>"; };
-		A71777D2157E1EB8001F7E9A /* InvSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvSpectrum.h; path = marsyas/InvSpectrum.h; sourceTree = "<group>"; };
-		A71777D3157E1EB8001F7E9A /* KNNClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KNNClassifier.h; path = marsyas/KNNClassifier.h; sourceTree = "<group>"; };
-		A71777D4157E1EB8001F7E9A /* Krumhansl_key_finder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Krumhansl_key_finder.h; path = marsyas/Krumhansl_key_finder.h; sourceTree = "<group>"; };
-		A71777D5157E1EB8001F7E9A /* Kurtosis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Kurtosis.h; path = marsyas/Kurtosis.h; sourceTree = "<group>"; };
-		A71777D6157E1EB8001F7E9A /* Limiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Limiter.h; path = marsyas/Limiter.h; sourceTree = "<group>"; };
-		A71777D7157E1EB8001F7E9A /* LPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LPC.h; path = marsyas/LPC.h; sourceTree = "<group>"; };
-		A71777D8157E1EB8001F7E9A /* LPCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LPCC.h; path = marsyas/LPCC.h; sourceTree = "<group>"; };
-		A71777D9157E1EB8001F7E9A /* LSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSP.h; path = marsyas/LSP.h; sourceTree = "<group>"; };
-		A71777DA157E1EB8001F7E9A /* lu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lu.h; path = marsyas/lu.h; sourceTree = "<group>"; };
-		A71777DB157E1EB8001F7E9A /* LyonPassiveEar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LyonPassiveEar.h; path = marsyas/LyonPassiveEar.h; sourceTree = "<group>"; };
-		A71777DC157E1EB8001F7E9A /* MarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControl.h; path = marsyas/MarControl.h; sourceTree = "<group>"; };
-		A71777DD157E1EB8001F7E9A /* MarControlAccessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlAccessor.h; path = marsyas/MarControlAccessor.h; sourceTree = "<group>"; };
-		A71777DE157E1EB8001F7E9A /* MarControlManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlManager.h; path = marsyas/MarControlManager.h; sourceTree = "<group>"; };
-		A71777DF157E1EB8001F7E9A /* MarControlValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlValue.h; path = marsyas/MarControlValue.h; sourceTree = "<group>"; };
-		A71777E0157E1EB8001F7E9A /* MarFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarFileSink.h; path = marsyas/MarFileSink.h; sourceTree = "<group>"; };
-		A71777E1157E1EB8001F7E9A /* marohtml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marohtml.h; path = marsyas/marohtml.h; sourceTree = "<group>"; };
-		A71777E2157E1EB8001F7E9A /* marojson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marojson.h; path = marsyas/marojson.h; sourceTree = "<group>"; };
-		A71777E3157E1EB8001F7E9A /* marostring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marostring.h; path = marsyas/marostring.h; sourceTree = "<group>"; };
-		A71777E4157E1EB8001F7E9A /* marosvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marosvg.h; path = marsyas/marosvg.h; sourceTree = "<group>"; };
-		A71777E5157E1EB8001F7E9A /* maroxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maroxml.h; path = marsyas/maroxml.h; sourceTree = "<group>"; };
-		A71777E6157E1EB8001F7E9A /* marsyas_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marsyas_types.h; path = marsyas/marsyas_types.h; sourceTree = "<group>"; };
-		A71777E7157E1EB8001F7E9A /* MarSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystem.h; path = marsyas/MarSystem.h; sourceTree = "<group>"; };
-		A71777E8157E1EB8001F7E9A /* MarSystemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemManager.h; path = marsyas/MarSystemManager.h; sourceTree = "<group>"; };
-		A71777E9157E1EB8001F7E9A /* MarSystemTemplateAdvanced.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateAdvanced.h; path = marsyas/MarSystemTemplateAdvanced.h; sourceTree = "<group>"; };
-		A71777EA157E1EB8001F7E9A /* MarSystemTemplateBasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateBasic.h; path = marsyas/MarSystemTemplateBasic.h; sourceTree = "<group>"; };
-		A71777EB157E1EB8001F7E9A /* MarSystemTemplateMedium.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateMedium.h; path = marsyas/MarSystemTemplateMedium.h; sourceTree = "<group>"; };
-		A71777EC157E1EB8001F7E9A /* MatchBassModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchBassModel.h; path = marsyas/MatchBassModel.h; sourceTree = "<group>"; };
-		A71777ED157E1EB8001F7E9A /* MathPower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathPower.h; path = marsyas/MathPower.h; sourceTree = "<group>"; };
-		A71777EE157E1EB8001F7E9A /* MATLABengine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MATLABengine.h; path = marsyas/MATLABengine.h; sourceTree = "<group>"; };
-		A71777EF157E1EB8001F7E9A /* MaxArgMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaxArgMax.h; path = marsyas/MaxArgMax.h; sourceTree = "<group>"; };
-		A71777F0157E1EB8001F7E9A /* MaxMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaxMin.h; path = marsyas/MaxMin.h; sourceTree = "<group>"; };
-		A71777F1157E1EB8001F7E9A /* McAulayQuatieri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = McAulayQuatieri.h; path = marsyas/McAulayQuatieri.h; sourceTree = "<group>"; };
-		A71777F2157E1EB8001F7E9A /* Mean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mean.h; path = marsyas/Mean.h; sourceTree = "<group>"; };
-		A71777F3157E1EB8001F7E9A /* MeanAbsoluteDeviation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MeanAbsoluteDeviation.h; path = marsyas/MeanAbsoluteDeviation.h; sourceTree = "<group>"; };
-		A71777F4157E1EB8001F7E9A /* MeddisHairCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MeddisHairCell.h; path = marsyas/MeddisHairCell.h; sourceTree = "<group>"; };
-		A71777F5157E1EB8001F7E9A /* Median.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Median.h; path = marsyas/Median.h; sourceTree = "<group>"; };
-		A71777F6157E1EB8001F7E9A /* MedianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MedianFilter.h; path = marsyas/MedianFilter.h; sourceTree = "<group>"; };
-		A71777F7157E1EB8001F7E9A /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Memory.h; path = marsyas/Memory.h; sourceTree = "<group>"; };
-		A71777F8157E1EB8001F7E9A /* MemorySource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemorySource.h; path = marsyas/MemorySource.h; sourceTree = "<group>"; };
-		A71777F9157E1EB8001F7E9A /* Metric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Metric.h; path = marsyas/Metric.h; sourceTree = "<group>"; };
-		A71777FA157E1EB8001F7E9A /* Metric2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Metric2.h; path = marsyas/Metric2.h; sourceTree = "<group>"; };
-		A71777FB157E1EB8001F7E9A /* MFCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MFCC.h; path = marsyas/MFCC.h; sourceTree = "<group>"; };
-		A71777FC157E1EB8001F7E9A /* mididevices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mididevices.h; path = marsyas/mididevices.h; sourceTree = "<group>"; };
-		A71777FD157E1EB8001F7E9A /* MidiFileSynthSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiFileSynthSource.h; path = marsyas/MidiFileSynthSource.h; sourceTree = "<group>"; };
-		A71777FE157E1EB8001F7E9A /* MidiInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiInput.h; path = marsyas/MidiInput.h; sourceTree = "<group>"; };
-		A71777FF157E1EB8001F7E9A /* MidiOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiOutput.h; path = marsyas/MidiOutput.h; sourceTree = "<group>"; };
-		A7177800157E1EB8001F7E9A /* MinArgMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MinArgMin.h; path = marsyas/MinArgMin.h; sourceTree = "<group>"; };
-		A7177801157E1EB8001F7E9A /* MixToMono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MixToMono.h; path = marsyas/MixToMono.h; sourceTree = "<group>"; };
-		A7177802157E1EB8001F7E9A /* Mono2Stereo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mono2Stereo.h; path = marsyas/Mono2Stereo.h; sourceTree = "<group>"; };
-		A7177803157E1EB8001F7E9A /* MP3FileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP3FileSink.h; path = marsyas/MP3FileSink.h; sourceTree = "<group>"; };
-		A7177804157E1EB8001F7E9A /* MP3FileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP3FileSource.h; path = marsyas/MP3FileSource.h; sourceTree = "<group>"; };
-		A7177805157E1EB8001F7E9A /* MrsLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MrsLog.h; path = marsyas/MrsLog.h; sourceTree = "<group>"; };
-		A7177806157E1EB8001F7E9A /* Negative.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Negative.h; path = marsyas/Negative.h; sourceTree = "<group>"; };
-		A7177807157E1EB8001F7E9A /* NoiseGate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoiseGate.h; path = marsyas/NoiseGate.h; sourceTree = "<group>"; };
-		A7177808157E1EB8001F7E9A /* NoiseSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoiseSource.h; path = marsyas/NoiseSource.h; sourceTree = "<group>"; };
-		A7177809157E1EB8001F7E9A /* Norm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Norm.h; path = marsyas/Norm.h; sourceTree = "<group>"; };
-		A717780A157E1EB8001F7E9A /* Normalize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Normalize.h; path = marsyas/Normalize.h; sourceTree = "<group>"; };
-		A717780B157E1EB8001F7E9A /* NormalizeAbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormalizeAbs.h; path = marsyas/NormalizeAbs.h; sourceTree = "<group>"; };
-		A717780C157E1EB8001F7E9A /* NormCut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormCut.h; path = marsyas/NormCut.h; sourceTree = "<group>"; };
-		A717780D157E1EB8001F7E9A /* NormMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormMatrix.h; path = marsyas/NormMatrix.h; sourceTree = "<group>"; };
-		A717780E157E1EB8001F7E9A /* NormMaxMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormMaxMin.h; path = marsyas/NormMaxMin.h; sourceTree = "<group>"; };
-		A717780F157E1EB8001F7E9A /* NumericLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NumericLib.h; path = marsyas/NumericLib.h; sourceTree = "<group>"; };
-		A7177810157E1EB8001F7E9A /* OggFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OggFileSource.h; path = marsyas/OggFileSource.h; sourceTree = "<group>"; };
-		A7177811157E1EB8001F7E9A /* OnePole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnePole.h; path = marsyas/OnePole.h; sourceTree = "<group>"; };
-		A7177812157E1EB8001F7E9A /* OneRClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OneRClassifier.h; path = marsyas/OneRClassifier.h; sourceTree = "<group>"; };
-		A7177813157E1EB8001F7E9A /* OnsetTimes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnsetTimes.h; path = marsyas/OnsetTimes.h; sourceTree = "<group>"; };
-		A7177814157E1EB8001F7E9A /* OrcaSnip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OrcaSnip.h; path = marsyas/OrcaSnip.h; sourceTree = "<group>"; };
-		A7177815157E1EB8001F7E9A /* OverlapAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OverlapAdd.h; path = marsyas/OverlapAdd.h; sourceTree = "<group>"; };
-		A7177816157E1EB8001F7E9A /* Panorama.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Panorama.h; path = marsyas/Panorama.h; sourceTree = "<group>"; };
-		A7177817157E1EB8001F7E9A /* Parallel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Parallel.h; path = marsyas/Parallel.h; sourceTree = "<group>"; };
-		A7177818157E1EB8001F7E9A /* ParallelMatrixWeight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParallelMatrixWeight.h; path = marsyas/ParallelMatrixWeight.h; sourceTree = "<group>"; };
-		A7177819157E1EB8001F7E9A /* PatchMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatchMatrix.h; path = marsyas/PatchMatrix.h; sourceTree = "<group>"; };
-		A717781A157E1EB8001F7E9A /* PCA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCA.h; path = marsyas/PCA.h; sourceTree = "<group>"; };
-		A717781B157E1EB8001F7E9A /* Peak2Rms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Peak2Rms.h; path = marsyas/Peak2Rms.h; sourceTree = "<group>"; };
-		A717781C157E1EB8001F7E9A /* PeakClusterSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakClusterSelect.h; path = marsyas/PeakClusterSelect.h; sourceTree = "<group>"; };
-		A717781D157E1EB8001F7E9A /* PeakConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakConvert.h; path = marsyas/PeakConvert.h; sourceTree = "<group>"; };
-		A717781E157E1EB8001F7E9A /* PeakConvert2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakConvert2.h; path = marsyas/PeakConvert2.h; sourceTree = "<group>"; };
-		A717781F157E1EB8001F7E9A /* PeakDistanceHorizontality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakDistanceHorizontality.h; path = marsyas/PeakDistanceHorizontality.h; sourceTree = "<group>"; };
-		A7177820157E1EB8001F7E9A /* PeakEnhancer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakEnhancer.h; path = marsyas/PeakEnhancer.h; sourceTree = "<group>"; };
-		A7177821157E1EB8001F7E9A /* Peaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Peaker.h; path = marsyas/Peaker.h; sourceTree = "<group>"; };
-		A7177822157E1EB8001F7E9A /* PeakerAdaptive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakerAdaptive.h; path = marsyas/PeakerAdaptive.h; sourceTree = "<group>"; };
-		A7177823157E1EB8001F7E9A /* PeakerOnset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakerOnset.h; path = marsyas/PeakerOnset.h; sourceTree = "<group>"; };
-		A7177824157E1EB8001F7E9A /* PeakFeatureSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakFeatureSelect.h; path = marsyas/PeakFeatureSelect.h; sourceTree = "<group>"; };
-		A7177825157E1EB8001F7E9A /* PeakInObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakInObservation.h; path = marsyas/PeakInObservation.h; sourceTree = "<group>"; };
-		A7177826157E1EB8001F7E9A /* PeakLabeler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakLabeler.h; path = marsyas/PeakLabeler.h; sourceTree = "<group>"; };
-		A7177827157E1EB8001F7E9A /* PeakMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakMask.h; path = marsyas/PeakMask.h; sourceTree = "<group>"; };
-		A7177828157E1EB8001F7E9A /* PeakPeriods2BPM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakPeriods2BPM.h; path = marsyas/PeakPeriods2BPM.h; sourceTree = "<group>"; };
-		A7177829157E1EB8001F7E9A /* PeakRatio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakRatio.h; path = marsyas/PeakRatio.h; sourceTree = "<group>"; };
-		A717782A157E1EB8001F7E9A /* PeakResidual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakResidual.h; path = marsyas/PeakResidual.h; sourceTree = "<group>"; };
-		A717782B157E1EB8001F7E9A /* PeakSynthFFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthFFT.h; path = marsyas/PeakSynthFFT.h; sourceTree = "<group>"; };
-		A717782C157E1EB8001F7E9A /* PeakSynthOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthOsc.h; path = marsyas/PeakSynthOsc.h; sourceTree = "<group>"; };
-		A717782D157E1EB8001F7E9A /* PeakSynthOscBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthOscBank.h; path = marsyas/PeakSynthOscBank.h; sourceTree = "<group>"; };
-		A717782E157E1EB8001F7E9A /* peakView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = peakView.h; path = marsyas/peakView.h; sourceTree = "<group>"; };
-		A717782F157E1EB8001F7E9A /* PeakViewMerge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewMerge.h; path = marsyas/PeakViewMerge.h; sourceTree = "<group>"; };
-		A7177830157E1EB8001F7E9A /* PeakViewSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewSink.h; path = marsyas/PeakViewSink.h; sourceTree = "<group>"; };
-		A7177831157E1EB8001F7E9A /* PeakViewSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewSource.h; path = marsyas/PeakViewSource.h; sourceTree = "<group>"; };
-		A7177832157E1EB8001F7E9A /* PeUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeUtilities.h; path = marsyas/PeUtilities.h; sourceTree = "<group>"; };
-		A7177833157E1EB8001F7E9A /* PhaseLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseLock.h; path = marsyas/PhaseLock.h; sourceTree = "<group>"; };
-		A7177834157E1EB8001F7E9A /* PhiSEMFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhiSEMFilter.h; path = marsyas/PhiSEMFilter.h; sourceTree = "<group>"; };
-		A7177835157E1EB8001F7E9A /* PhiSEMSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhiSEMSource.h; path = marsyas/PhiSEMSource.h; sourceTree = "<group>"; };
-		A7177836157E1EB8001F7E9A /* Pitch2Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pitch2Chroma.h; path = marsyas/Pitch2Chroma.h; sourceTree = "<group>"; };
-		A7177837157E1EB8001F7E9A /* PitchDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PitchDiff.h; path = marsyas/PitchDiff.h; sourceTree = "<group>"; };
-		A7177838157E1EB8001F7E9A /* PlotSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlotSink.h; path = marsyas/PlotSink.h; sourceTree = "<group>"; };
-		A7177839157E1EB8001F7E9A /* Plucked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plucked.h; path = marsyas/Plucked.h; sourceTree = "<group>"; };
-		A717783A157E1EB8001F7E9A /* Polar2Cartesian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Polar2Cartesian.h; path = marsyas/Polar2Cartesian.h; sourceTree = "<group>"; };
-		A717783B157E1EB8001F7E9A /* Power.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Power.h; path = marsyas/Power.h; sourceTree = "<group>"; };
-		A717783C157E1EB8001F7E9A /* PowerSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerSpectrum.h; path = marsyas/PowerSpectrum.h; sourceTree = "<group>"; };
-		A717783D157E1EB8001F7E9A /* PowerToAverageRatio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerToAverageRatio.h; path = marsyas/PowerToAverageRatio.h; sourceTree = "<group>"; };
-		A717783E157E1EB8001F7E9A /* Product.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Product.h; path = marsyas/Product.h; sourceTree = "<group>"; };
-		A717783F157E1EB8001F7E9A /* PvConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvConvert.h; path = marsyas/PvConvert.h; sourceTree = "<group>"; };
-		A7177840157E1EB8001F7E9A /* PvConvolve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvConvolve.h; path = marsyas/PvConvolve.h; sourceTree = "<group>"; };
-		A7177841157E1EB8001F7E9A /* PvFold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvFold.h; path = marsyas/PvFold.h; sourceTree = "<group>"; };
-		A7177842157E1EB8001F7E9A /* PvMultiResolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvMultiResolution.h; path = marsyas/PvMultiResolution.h; sourceTree = "<group>"; };
-		A7177843157E1EB8001F7E9A /* PvOscBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvOscBank.h; path = marsyas/PvOscBank.h; sourceTree = "<group>"; };
-		A7177844157E1EB8001F7E9A /* PvOverlapadd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvOverlapadd.h; path = marsyas/PvOverlapadd.h; sourceTree = "<group>"; };
-		A7177845157E1EB8001F7E9A /* PvUnconvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvUnconvert.h; path = marsyas/PvUnconvert.h; sourceTree = "<group>"; };
-		A7177846157E1EB8001F7E9A /* PWMSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PWMSource.h; path = marsyas/PWMSource.h; sourceTree = "<group>"; };
-		A7177847157E1EB8001F7E9A /* QGMMModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QGMMModel.h; path = marsyas/QGMMModel.h; sourceTree = "<group>"; };
-		A7177848157E1EB8001F7E9A /* RadioDrumInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RadioDrumInput.h; path = marsyas/RadioDrumInput.h; sourceTree = "<group>"; };
-		A7177849157E1EB8001F7E9A /* RawFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RawFileSource.h; path = marsyas/RawFileSource.h; sourceTree = "<group>"; };
-		A717784A157E1EB8001F7E9A /* RBF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBF.h; path = marsyas/RBF.h; sourceTree = "<group>"; };
-		A717784B157E1EB8001F7E9A /* realvec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = realvec.h; path = marsyas/realvec.h; sourceTree = "<group>"; };
-		A717784C157E1EB8001F7E9A /* RealvecSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealvecSink.h; path = marsyas/RealvecSink.h; sourceTree = "<group>"; };
-		A717784D157E1EB8001F7E9A /* RealvecSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealvecSource.h; path = marsyas/RealvecSource.h; sourceTree = "<group>"; };
-		A717784E157E1EB8001F7E9A /* Reassign.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reassign.h; path = marsyas/Reassign.h; sourceTree = "<group>"; };
-		A717784F157E1EB8001F7E9A /* Reciprocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reciprocal.h; path = marsyas/Reciprocal.h; sourceTree = "<group>"; };
-		A7177850157E1EB8001F7E9A /* RemoveObservations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoveObservations.h; path = marsyas/RemoveObservations.h; sourceTree = "<group>"; };
-		A7177851157E1EB8001F7E9A /* Repeat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Repeat.h; path = marsyas/Repeat.h; sourceTree = "<group>"; };
-		A7177852157E1EB8001F7E9A /* Resample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Resample.h; path = marsyas/Resample.h; sourceTree = "<group>"; };
-		A7177853157E1EB8001F7E9A /* ResampleBezier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleBezier.h; path = marsyas/ResampleBezier.h; sourceTree = "<group>"; };
-		A7177854157E1EB8001F7E9A /* ResampleLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleLinear.h; path = marsyas/ResampleLinear.h; sourceTree = "<group>"; };
-		A7177855157E1EB8001F7E9A /* ResampleNearestNeighbour.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleNearestNeighbour.h; path = marsyas/ResampleNearestNeighbour.h; sourceTree = "<group>"; };
-		A7177856157E1EB8001F7E9A /* ResampleSinc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleSinc.h; path = marsyas/ResampleSinc.h; sourceTree = "<group>"; };
-		A7177857157E1EB8001F7E9A /* Reverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reverse.h; path = marsyas/Reverse.h; sourceTree = "<group>"; };
-		A7177858157E1EB8001F7E9A /* Rms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rms.h; path = marsyas/Rms.h; sourceTree = "<group>"; };
-		A7177859157E1EB8001F7E9A /* Rolloff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rolloff.h; path = marsyas/Rolloff.h; sourceTree = "<group>"; };
-		A717785A157E1EB8001F7E9A /* RunningAutocorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RunningAutocorrelation.h; path = marsyas/RunningAutocorrelation.h; sourceTree = "<group>"; };
-		A717785B157E1EB8001F7E9A /* RunningStatistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RunningStatistics.h; path = marsyas/RunningStatistics.h; sourceTree = "<group>"; };
-		A717785C157E1EB8001F7E9A /* SCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCF.h; path = marsyas/SCF.h; sourceTree = "<group>"; };
-		A717785D157E1EB8001F7E9A /* Scheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Scheduler.h; path = marsyas/Scheduler.h; sourceTree = "<group>"; };
-		A717785E157E1EB8001F7E9A /* Selector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Selector.h; path = marsyas/Selector.h; sourceTree = "<group>"; };
-		A717785F157E1EB8001F7E9A /* SelfSimilarityMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelfSimilarityMatrix.h; path = marsyas/SelfSimilarityMatrix.h; sourceTree = "<group>"; };
-		A7177860157E1EB8001F7E9A /* SeneffEar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SeneffEar.h; path = marsyas/SeneffEar.h; sourceTree = "<group>"; };
-		A7177861157E1EB8001F7E9A /* Series.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Series.h; path = marsyas/Series.h; sourceTree = "<group>"; };
-		A7177862157E1EB8001F7E9A /* SFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SFM.h; path = marsyas/SFM.h; sourceTree = "<group>"; };
-		A7177863157E1EB8001F7E9A /* Shifter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shifter.h; path = marsyas/Shifter.h; sourceTree = "<group>"; };
-		A7177864157E1EB8001F7E9A /* ShiftInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShiftInput.h; path = marsyas/ShiftInput.h; sourceTree = "<group>"; };
-		A7177865157E1EB8001F7E9A /* ShiftOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShiftOutput.h; path = marsyas/ShiftOutput.h; sourceTree = "<group>"; };
-		A7177866157E1EB8001F7E9A /* Shredder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shredder.h; path = marsyas/Shredder.h; sourceTree = "<group>"; };
-		A7177867157E1EB8001F7E9A /* Signum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Signum.h; path = marsyas/Signum.h; sourceTree = "<group>"; };
-		A7177868157E1EB8001F7E9A /* SilenceRemove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SilenceRemove.h; path = marsyas/SilenceRemove.h; sourceTree = "<group>"; };
-		A7177869157E1EB8001F7E9A /* SimilarityMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimilarityMatrix.h; path = marsyas/SimilarityMatrix.h; sourceTree = "<group>"; };
-		A717786A157E1EB8001F7E9A /* SimulMaskingFft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimulMaskingFft.h; path = marsyas/SimulMaskingFft.h; sourceTree = "<group>"; };
-		A717786B157E1EB8001F7E9A /* SineSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SineSource.h; path = marsyas/SineSource.h; sourceTree = "<group>"; };
-		A717786C157E1EB8001F7E9A /* Skewness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Skewness.h; path = marsyas/Skewness.h; sourceTree = "<group>"; };
-		A717786D157E1EB8001F7E9A /* SliceDelta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceDelta.h; path = marsyas/SliceDelta.h; sourceTree = "<group>"; };
-		A717786E157E1EB8001F7E9A /* SliceShuffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceShuffle.h; path = marsyas/SliceShuffle.h; sourceTree = "<group>"; };
-		A717786F157E1EB8001F7E9A /* SMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMO.h; path = marsyas/SMO.h; sourceTree = "<group>"; };
-		A7177870157E1EB8001F7E9A /* SNR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SNR.h; path = marsyas/SNR.h; sourceTree = "<group>"; };
-		A7177871157E1EB8001F7E9A /* SOM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SOM.h; path = marsyas/SOM.h; sourceTree = "<group>"; };
-		A7177872157E1EB8001F7E9A /* SoundFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSink.h; path = marsyas/SoundFileSink.h; sourceTree = "<group>"; };
-		A7177873157E1EB8001F7E9A /* SoundFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSource.h; path = marsyas/SoundFileSource.h; sourceTree = "<group>"; };
-		A7177874157E1EB8001F7E9A /* SoundFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSource2.h; path = marsyas/SoundFileSource2.h; sourceTree = "<group>"; };
-		A7177875157E1EB8001F7E9A /* SoundFileSourceHopper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSourceHopper.h; path = marsyas/SoundFileSourceHopper.h; sourceTree = "<group>"; };
-		A7177876157E1EB8001F7E9A /* SpectralFlatnessAllBands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralFlatnessAllBands.h; path = marsyas/SpectralFlatnessAllBands.h; sourceTree = "<group>"; };
-		A7177877157E1EB8001F7E9A /* SpectralSNR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralSNR.h; path = marsyas/SpectralSNR.h; sourceTree = "<group>"; };
-		A7177878157E1EB8001F7E9A /* SpectralTransformations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralTransformations.h; path = marsyas/SpectralTransformations.h; sourceTree = "<group>"; };
-		A7177879157E1EB8001F7E9A /* Spectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum.h; path = marsyas/Spectrum.h; sourceTree = "<group>"; };
-		A717787A157E1EB8001F7E9A /* Spectrum2ACMChroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2ACMChroma.h; path = marsyas/Spectrum2ACMChroma.h; sourceTree = "<group>"; };
-		A717787B157E1EB8001F7E9A /* Spectrum2Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2Chroma.h; path = marsyas/Spectrum2Chroma.h; sourceTree = "<group>"; };
-		A717787C157E1EB8001F7E9A /* Spectrum2Mel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2Mel.h; path = marsyas/Spectrum2Mel.h; sourceTree = "<group>"; };
-		A717787D157E1EB8001F7E9A /* Square.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Square.h; path = marsyas/Square.h; sourceTree = "<group>"; };
-		A717787E157E1EB8001F7E9A /* StandardDeviation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StandardDeviation.h; path = marsyas/StandardDeviation.h; sourceTree = "<group>"; };
-		A717787F157E1EB8001F7E9A /* static_vq_codebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = static_vq_codebook.h; path = marsyas/static_vq_codebook.h; sourceTree = "<group>"; };
-		A7177880157E1EB8001F7E9A /* statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = statistics.h; path = marsyas/statistics.h; sourceTree = "<group>"; };
-		A7177881157E1EB8001F7E9A /* StereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrum.h; path = marsyas/StereoSpectrum.h; sourceTree = "<group>"; };
-		A7177882157E1EB8001F7E9A /* StereoSpectrumFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrumFeatures.h; path = marsyas/StereoSpectrumFeatures.h; sourceTree = "<group>"; };
-		A7177883157E1EB8001F7E9A /* StereoSpectrumSources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrumSources.h; path = marsyas/StereoSpectrumSources.h; sourceTree = "<group>"; };
-		A7177884157E1EB8001F7E9A /* Stk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Stk.h; path = marsyas/Stk.h; sourceTree = "<group>"; };
-		A7177885157E1EB8001F7E9A /* StretchLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StretchLinear.h; path = marsyas/StretchLinear.h; sourceTree = "<group>"; };
-		A7177886157E1EB8001F7E9A /* StrobeList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StrobeList.h; path = marsyas/StrobeList.h; sourceTree = "<group>"; };
-		A7177887157E1EB8001F7E9A /* Subtract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Subtract.h; path = marsyas/Subtract.h; sourceTree = "<group>"; };
-		A7177888157E1EB8001F7E9A /* SubtractMean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubtractMean.h; path = marsyas/SubtractMean.h; sourceTree = "<group>"; };
-		A7177889157E1EB8001F7E9A /* Sum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sum.h; path = marsyas/Sum.h; sourceTree = "<group>"; };
-		A717788A157E1EB8001F7E9A /* SVMClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SVMClassifier.h; path = marsyas/SVMClassifier.h; sourceTree = "<group>"; };
-		A717788B157E1EB8001F7E9A /* Talk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Talk.h; path = marsyas/Talk.h; sourceTree = "<group>"; };
-		A717788C157E1EB8001F7E9A /* TempoHypotheses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TempoHypotheses.h; path = marsyas/TempoHypotheses.h; sourceTree = "<group>"; };
-		A717788D157E1EB8001F7E9A /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Thread.h; path = marsyas/Thread.h; sourceTree = "<group>"; };
-		A717788E157E1EB8001F7E9A /* TimeFreqPeakConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeFreqPeakConnectivity.h; path = marsyas/TimeFreqPeakConnectivity.h; sourceTree = "<group>"; };
-		A717788F157E1EB8001F7E9A /* TimeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeLine.h; path = marsyas/TimeLine.h; sourceTree = "<group>"; };
-		A7177890157E1EB8001F7E9A /* TimelineLabeler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimelineLabeler.h; path = marsyas/TimelineLabeler.h; sourceTree = "<group>"; };
-		A7177891157E1EB8001F7E9A /* TimeStretch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeStretch.h; path = marsyas/TimeStretch.h; sourceTree = "<group>"; };
-		A7177892157E1EB8001F7E9A /* TmControlValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmControlValue.h; path = marsyas/TmControlValue.h; sourceTree = "<group>"; };
-		A7177893157E1EB8001F7E9A /* TmParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmParam.h; path = marsyas/TmParam.h; sourceTree = "<group>"; };
-		A7177894157E1EB8001F7E9A /* TmRealTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmRealTime.h; path = marsyas/TmRealTime.h; sourceTree = "<group>"; };
-		A7177895157E1EB8001F7E9A /* TmSampleCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmSampleCount.h; path = marsyas/TmSampleCount.h; sourceTree = "<group>"; };
-		A7177896157E1EB8001F7E9A /* TmTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTime.h; path = marsyas/TmTime.h; sourceTree = "<group>"; };
-		A7177897157E1EB8001F7E9A /* TmTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTimer.h; path = marsyas/TmTimer.h; sourceTree = "<group>"; };
-		A7177898157E1EB8001F7E9A /* TmTimerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTimerManager.h; path = marsyas/TmTimerManager.h; sourceTree = "<group>"; };
-		A7177899157E1EB8001F7E9A /* TmVirtualTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmVirtualTime.h; path = marsyas/TmVirtualTime.h; sourceTree = "<group>"; };
-		A717789A157E1EB8001F7E9A /* Transcriber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Transcriber.h; path = marsyas/Transcriber.h; sourceTree = "<group>"; };
-		A717789B157E1EB8001F7E9A /* TranscriberExtract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TranscriberExtract.h; path = marsyas/TranscriberExtract.h; sourceTree = "<group>"; };
-		A717789C157E1EB8001F7E9A /* Transposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Transposer.h; path = marsyas/Transposer.h; sourceTree = "<group>"; };
-		A717789D157E1EB8001F7E9A /* Unfold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Unfold.h; path = marsyas/Unfold.h; sourceTree = "<group>"; };
-		A717789E157E1EB8001F7E9A /* UpdatingBassModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdatingBassModel.h; path = marsyas/UpdatingBassModel.h; sourceTree = "<group>"; };
-		A717789F157E1EB8001F7E9A /* Vibrato.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vibrato.h; path = marsyas/Vibrato.h; sourceTree = "<group>"; };
-		A71778A0157E1EB8001F7E9A /* ViconFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViconFileSource.h; path = marsyas/ViconFileSource.h; sourceTree = "<group>"; };
-		A71778A1157E1EB8001F7E9A /* vmblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vmblock.h; path = marsyas/vmblock.h; sourceTree = "<group>"; };
-		A71778A2157E1EB8001F7E9A /* WaveletBands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletBands.h; path = marsyas/WaveletBands.h; sourceTree = "<group>"; };
-		A71778A3157E1EB8001F7E9A /* WaveletPyramid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletPyramid.h; path = marsyas/WaveletPyramid.h; sourceTree = "<group>"; };
-		A71778A4157E1EB8001F7E9A /* WaveletStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletStep.h; path = marsyas/WaveletStep.h; sourceTree = "<group>"; };
-		A71778A5157E1EB8001F7E9A /* WavFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSink.h; path = marsyas/WavFileSink.h; sourceTree = "<group>"; };
-		A71778A6157E1EB8001F7E9A /* WavFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSource.h; path = marsyas/WavFileSource.h; sourceTree = "<group>"; };
-		A71778A7157E1EB8001F7E9A /* WavFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSource2.h; path = marsyas/WavFileSource2.h; sourceTree = "<group>"; };
-		A71778A8157E1EB8001F7E9A /* WekaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaData.h; path = marsyas/WekaData.h; sourceTree = "<group>"; };
-		A71778A9157E1EB8001F7E9A /* WekaSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaSink.h; path = marsyas/WekaSink.h; sourceTree = "<group>"; };
-		A71778AA157E1EB8001F7E9A /* WekaSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaSource.h; path = marsyas/WekaSource.h; sourceTree = "<group>"; };
-		A71778AB157E1EB8001F7E9A /* WHaSp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WHaSp.h; path = marsyas/WHaSp.h; sourceTree = "<group>"; };
-		A71778AC157E1EB8001F7E9A /* Windowing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Windowing.h; path = marsyas/Windowing.h; sourceTree = "<group>"; };
-		A71778AD157E1EB8001F7E9A /* Yin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Yin.h; path = marsyas/Yin.h; sourceTree = "<group>"; };
-		A71778AE157E1EB8001F7E9A /* ZeroCrossings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZeroCrossings.h; path = marsyas/ZeroCrossings.h; sourceTree = "<group>"; };
-		A71778AF157E1EB8001F7E9A /* ZeroRClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZeroRClassifier.h; path = marsyas/ZeroRClassifier.h; sourceTree = "<group>"; };
 		A78CE76F15A48D77003D4034 /* MarSystemThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarSystemThread.cpp; sourceTree = "<group>"; };
 		A78CE77015A48D77003D4034 /* MarSystemThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarSystemThread.h; sourceTree = "<group>"; };
 		A78CE77115A48D77003D4034 /* ProbingManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProbingManager.cpp; sourceTree = "<group>"; };
@@ -1172,353 +1177,358 @@
 		A7177754157E1EA1001F7E9A /* Marsyas */ = {
 			isa = PBXGroup;
 			children = (
-				A7177755157E1EB7001F7E9A /* AbsMax.h */,
-				A7177756157E1EB7001F7E9A /* AbsSoundFileSink.h */,
-				A7177757157E1EB7001F7E9A /* AbsSoundFileSource.h */,
-				A7177758157E1EB7001F7E9A /* AbsSoundFileSource2.h */,
-				A7177759157E1EB7001F7E9A /* AccentFilterBank.h */,
-				A717775A157E1EB7001F7E9A /* Accumulator.h */,
-				A717775B157E1EB7001F7E9A /* ADRess.h */,
-				A717775C157E1EB7001F7E9A /* ADRessSpectrum.h */,
-				A717775D157E1EB7001F7E9A /* ADRessStereoSpectrum.h */,
-				A717775E157E1EB7001F7E9A /* ADSR.h */,
-				A717775F157E1EB7001F7E9A /* AimBoxes.h */,
-				A7177760157E1EB7001F7E9A /* AimGammatone.h */,
-				A7177761157E1EB7001F7E9A /* AimHCL.h */,
-				A7177762157E1EB8001F7E9A /* AimHCL2.h */,
-				A7177763157E1EB8001F7E9A /* AimLocalMax.h */,
-				A7177764157E1EB8001F7E9A /* AimPZFC.h */,
-				A7177765157E1EB8001F7E9A /* AimPZFC2.h */,
-				A7177766157E1EB8001F7E9A /* AimSAI.h */,
-				A7177767157E1EB8001F7E9A /* AimSSI.h */,
-				A7177768157E1EB8001F7E9A /* AimVQ.h */,
-				A7177769157E1EB8001F7E9A /* AMDF.h */,
-				A717776A157E1EB8001F7E9A /* ANN_node.h */,
-				A717776B157E1EB8001F7E9A /* Annotator.h */,
-				A717776C157E1EB8001F7E9A /* ArffFileSink.h */,
-				A717776D157E1EB8001F7E9A /* AubioYin.h */,
-				A717776E157E1EB8001F7E9A /* AudioSink.h */,
-				A717776F157E1EB8001F7E9A /* AudioSinkBlocking.h */,
-				A7177770157E1EB8001F7E9A /* AudioSource.h */,
-				A7177771157E1EB8001F7E9A /* AudioSourceBlocking.h */,
-				A7177772157E1EB8001F7E9A /* AuFileSink.h */,
-				A7177773157E1EB8001F7E9A /* AuFileSource.h */,
-				A7177774157E1EB8001F7E9A /* AutoCorrelation.h */,
-				A7177775157E1EB8001F7E9A /* AutoCorrelationFFT.h */,
-				A7177776157E1EB8001F7E9A /* AveragingPattern.h */,
-				A7177777157E1EB8001F7E9A /* BaseAudioSink.h */,
-				A7177778157E1EB8001F7E9A /* basis.h */,
-				A7177779157E1EB8001F7E9A /* BeatAgent.h */,
-				A717777A157E1EB8001F7E9A /* BeatHistoFeatures.h */,
-				A717777B157E1EB8001F7E9A /* BeatHistogram.h */,
-				A717777C157E1EB8001F7E9A /* BeatHistogramFromPeaks.h */,
-				A717777D157E1EB8001F7E9A /* BeatPhase.h */,
-				A717777E157E1EB8001F7E9A /* BeatReferee.h */,
-				A717777F157E1EB8001F7E9A /* BeatTimesSink.h */,
-				A7177780157E1EB8001F7E9A /* BICchangeDetector.h */,
-				A7177781157E1EB8001F7E9A /* Biquad.h */,
-				A7177782157E1EB8001F7E9A /* CARFAC_coeffs.h */,
-				A7177783157E1EB8001F7E9A /* CARFAC.h */,
-				A7177784157E1EB8001F7E9A /* Cartesian2Polar.h */,
-				A7177785157E1EB8001F7E9A /* Cascade.h */,
-				A7177786157E1EB8001F7E9A /* Centroid.h */,
-				A7177787157E1EB8001F7E9A /* Chroma.h */,
-				A7177788157E1EB8001F7E9A /* ChromaScale.h */,
-				A7177789157E1EB8001F7E9A /* ClassificationReport.h */,
-				A717778A157E1EB8001F7E9A /* ClassOutputSink.h */,
-				A717778B157E1EB8001F7E9A /* Clip.h */,
-				A717778C157E1EB8001F7E9A /* Collection.h */,
-				A717778D157E1EB8001F7E9A /* CollectionFileSource.h */,
-				A717778E157E1EB8001F7E9A /* Color.h */,
-				A717778F157E1EB8001F7E9A /* Combinator.h */,
-				A7177790157E1EB8001F7E9A /* CommandLineOptions.h */,
-				A7177791157E1EB8001F7E9A /* common_header.h */,
-				A7177792157E1EB8001F7E9A /* common.h */,
-				A7177793157E1EB8001F7E9A /* Communicator.h */,
-				A7177794157E1EB8001F7E9A /* CompExp.h */,
-				A7177795157E1EB8001F7E9A /* Compressor.h */,
-				A7177796157E1EB8001F7E9A /* Confidence.h */,
-				A7177797157E1EB8001F7E9A /* ConstQFiltering.h */,
-				A7177798157E1EB8001F7E9A /* Conversions.h */,
-				A7177799157E1EB8001F7E9A /* CrossCorrelation.h */,
-				A717779A157E1EB8001F7E9A /* CsvFileSource.h */,
-				A717779B157E1EB8001F7E9A /* Daub4.h */,
-				A717779C157E1EB8001F7E9A /* DCSource.h */,
-				A717779D157E1EB8001F7E9A /* Deinterleave.h */,
-				A717779E157E1EB8001F7E9A /* DeInterleaveSizecontrol.h */,
-				A717779F157E1EB8001F7E9A /* Delay.h */,
-				A71777A0157E1EB8001F7E9A /* DelaySamples.h */,
-				A71777A1157E1EB8001F7E9A /* Delta.h */,
-				A71777A2157E1EB8001F7E9A /* DeltaFirstOrderRegression.h */,
-				A71777A3157E1EB8001F7E9A /* Differentiator.h */,
-				A71777A4157E1EB8001F7E9A /* DLLDefines.h */,
-				A71777A5157E1EB8001F7E9A /* DownSampler.h */,
-				A71777A6157E1EB8001F7E9A /* dsound.h */,
-				A71777A7157E1EB8001F7E9A /* DTW.h */,
-				A71777A8157E1EB8001F7E9A /* DTWWD.h */,
-				A71777A9157E1EB8001F7E9A /* EnhADRess.h */,
-				A71777AA157E1EB8001F7E9A /* EnhADRessStereoSpectrum.h */,
-				A71777AB157E1EB8001F7E9A /* Envelope.h */,
-				A71777AC157E1EB8001F7E9A /* ERB.h */,
-				A71777AD157E1EB8001F7E9A /* ERBTools.h */,
-				A71777AE157E1EB8001F7E9A /* Esitar.h */,
-				A71777AF157E1EB8001F7E9A /* EvEvent.h */,
-				A71777B0157E1EB8001F7E9A /* EvExpr.h */,
-				A71777B1157E1EB8001F7E9A /* EvGetUpd.h */,
-				A71777B2157E1EB8001F7E9A /* EvValUpd.h */,
-				A71777B3157E1EB8001F7E9A /* ExCommon.h */,
-				A71777B4157E1EB8001F7E9A /* ExNode.h */,
-				A71777B5157E1EB8001F7E9A /* ExParser.h */,
-				A71777B6157E1EB8001F7E9A /* Expr.h */,
-				A71777B7157E1EB8001F7E9A /* ExScanner.h */,
-				A71777B8157E1EB8001F7E9A /* ExSymTbl.h */,
-				A71777B9157E1EB8001F7E9A /* ExVal.h */,
-				A71777BA157E1EB8001F7E9A /* F0Analysis.h */,
-				A71777BB157E1EB8001F7E9A /* Fanin.h */,
-				A71777BC157E1EB8001F7E9A /* Fanout.h */,
-				A71777BD157E1EB8001F7E9A /* FanOutIn.h */,
-				A71777BE157E1EB8001F7E9A /* fft.h */,
-				A71777BF157E1EB8001F7E9A /* FileName.h */,
-				A71777C0157E1EB8001F7E9A /* Filter.h */,
-				A71777C1157E1EB8001F7E9A /* FlowCutSource.h */,
-				A71777C2157E1EB8001F7E9A /* FlowThru.h */,
-				A71777C3157E1EB8001F7E9A /* Flux.h */,
-				A71777C4157E1EB8001F7E9A /* FM.h */,
-				A71777C5157E1EB8001F7E9A /* FMeasure.h */,
-				A71777C6157E1EB8001F7E9A /* FullWaveRectifier.h */,
-				A71777C7157E1EB8001F7E9A /* Gain.h */,
-				A71777C8157E1EB8001F7E9A /* GaussianClassifier.h */,
-				A71777C9157E1EB8001F7E9A /* GMMClassifier.h */,
-				A71777CA157E1EB8001F7E9A /* gst-decode.h */,
-				A71777CB157E1EB8001F7E9A /* GStreamerSource.h */,
-				A71777CC157E1EB8001F7E9A /* HalfWaveRectifier.h */,
-				A71777CD157E1EB8001F7E9A /* HarmonicEnhancer.h */,
-				A71777CE157E1EB8001F7E9A /* HarmonicStrength.h */,
-				A71777CF157E1EB8001F7E9A /* Heap.h */,
-				A71777D0157E1EB8001F7E9A /* HWPS.h */,
-				A71777D1157E1EB8001F7E9A /* Inject.h */,
-				A71777D2157E1EB8001F7E9A /* InvSpectrum.h */,
-				A71777D3157E1EB8001F7E9A /* KNNClassifier.h */,
-				A71777D4157E1EB8001F7E9A /* Krumhansl_key_finder.h */,
-				A71777D5157E1EB8001F7E9A /* Kurtosis.h */,
-				A71777D6157E1EB8001F7E9A /* Limiter.h */,
-				A71777D7157E1EB8001F7E9A /* LPC.h */,
-				A71777D8157E1EB8001F7E9A /* LPCC.h */,
-				A71777D9157E1EB8001F7E9A /* LSP.h */,
-				A71777DA157E1EB8001F7E9A /* lu.h */,
-				A71777DB157E1EB8001F7E9A /* LyonPassiveEar.h */,
-				A71777DC157E1EB8001F7E9A /* MarControl.h */,
-				A71777DD157E1EB8001F7E9A /* MarControlAccessor.h */,
-				A71777DE157E1EB8001F7E9A /* MarControlManager.h */,
-				A71777DF157E1EB8001F7E9A /* MarControlValue.h */,
-				A71777E0157E1EB8001F7E9A /* MarFileSink.h */,
-				A71777E1157E1EB8001F7E9A /* marohtml.h */,
-				A71777E2157E1EB8001F7E9A /* marojson.h */,
-				A71777E3157E1EB8001F7E9A /* marostring.h */,
-				A71777E4157E1EB8001F7E9A /* marosvg.h */,
-				A71777E5157E1EB8001F7E9A /* maroxml.h */,
-				A71777E6157E1EB8001F7E9A /* marsyas_types.h */,
-				A71777E7157E1EB8001F7E9A /* MarSystem.h */,
-				A71777E8157E1EB8001F7E9A /* MarSystemManager.h */,
-				A71777E9157E1EB8001F7E9A /* MarSystemTemplateAdvanced.h */,
-				A71777EA157E1EB8001F7E9A /* MarSystemTemplateBasic.h */,
-				A71777EB157E1EB8001F7E9A /* MarSystemTemplateMedium.h */,
-				A71777EC157E1EB8001F7E9A /* MatchBassModel.h */,
-				A71777ED157E1EB8001F7E9A /* MathPower.h */,
-				A71777EE157E1EB8001F7E9A /* MATLABengine.h */,
-				A71777EF157E1EB8001F7E9A /* MaxArgMax.h */,
-				A71777F0157E1EB8001F7E9A /* MaxMin.h */,
-				A71777F1157E1EB8001F7E9A /* McAulayQuatieri.h */,
-				A71777F2157E1EB8001F7E9A /* Mean.h */,
-				A71777F3157E1EB8001F7E9A /* MeanAbsoluteDeviation.h */,
-				A71777F4157E1EB8001F7E9A /* MeddisHairCell.h */,
-				A71777F5157E1EB8001F7E9A /* Median.h */,
-				A71777F6157E1EB8001F7E9A /* MedianFilter.h */,
-				A71777F7157E1EB8001F7E9A /* Memory.h */,
-				A71777F8157E1EB8001F7E9A /* MemorySource.h */,
-				A71777F9157E1EB8001F7E9A /* Metric.h */,
-				A71777FA157E1EB8001F7E9A /* Metric2.h */,
-				A71777FB157E1EB8001F7E9A /* MFCC.h */,
-				A71777FC157E1EB8001F7E9A /* mididevices.h */,
-				A71777FD157E1EB8001F7E9A /* MidiFileSynthSource.h */,
-				A71777FE157E1EB8001F7E9A /* MidiInput.h */,
-				A71777FF157E1EB8001F7E9A /* MidiOutput.h */,
-				A7177800157E1EB8001F7E9A /* MinArgMin.h */,
-				A7177801157E1EB8001F7E9A /* MixToMono.h */,
-				A7177802157E1EB8001F7E9A /* Mono2Stereo.h */,
-				A7177803157E1EB8001F7E9A /* MP3FileSink.h */,
-				A7177804157E1EB8001F7E9A /* MP3FileSource.h */,
-				A7177805157E1EB8001F7E9A /* MrsLog.h */,
-				A7177806157E1EB8001F7E9A /* Negative.h */,
-				A7177807157E1EB8001F7E9A /* NoiseGate.h */,
-				A7177808157E1EB8001F7E9A /* NoiseSource.h */,
-				A7177809157E1EB8001F7E9A /* Norm.h */,
-				A717780A157E1EB8001F7E9A /* Normalize.h */,
-				A717780B157E1EB8001F7E9A /* NormalizeAbs.h */,
-				A717780C157E1EB8001F7E9A /* NormCut.h */,
-				A717780D157E1EB8001F7E9A /* NormMatrix.h */,
-				A717780E157E1EB8001F7E9A /* NormMaxMin.h */,
-				A717780F157E1EB8001F7E9A /* NumericLib.h */,
-				A7177810157E1EB8001F7E9A /* OggFileSource.h */,
-				A7177811157E1EB8001F7E9A /* OnePole.h */,
-				A7177812157E1EB8001F7E9A /* OneRClassifier.h */,
-				A7177813157E1EB8001F7E9A /* OnsetTimes.h */,
-				A7177814157E1EB8001F7E9A /* OrcaSnip.h */,
-				A7177815157E1EB8001F7E9A /* OverlapAdd.h */,
-				A7177816157E1EB8001F7E9A /* Panorama.h */,
-				A7177817157E1EB8001F7E9A /* Parallel.h */,
-				A7177818157E1EB8001F7E9A /* ParallelMatrixWeight.h */,
-				A7177819157E1EB8001F7E9A /* PatchMatrix.h */,
-				A717781A157E1EB8001F7E9A /* PCA.h */,
-				A717781B157E1EB8001F7E9A /* Peak2Rms.h */,
-				A717781C157E1EB8001F7E9A /* PeakClusterSelect.h */,
-				A717781D157E1EB8001F7E9A /* PeakConvert.h */,
-				A717781E157E1EB8001F7E9A /* PeakConvert2.h */,
-				A717781F157E1EB8001F7E9A /* PeakDistanceHorizontality.h */,
-				A7177820157E1EB8001F7E9A /* PeakEnhancer.h */,
-				A7177821157E1EB8001F7E9A /* Peaker.h */,
-				A7177822157E1EB8001F7E9A /* PeakerAdaptive.h */,
-				A7177823157E1EB8001F7E9A /* PeakerOnset.h */,
-				A7177824157E1EB8001F7E9A /* PeakFeatureSelect.h */,
-				A7177825157E1EB8001F7E9A /* PeakInObservation.h */,
-				A7177826157E1EB8001F7E9A /* PeakLabeler.h */,
-				A7177827157E1EB8001F7E9A /* PeakMask.h */,
-				A7177828157E1EB8001F7E9A /* PeakPeriods2BPM.h */,
-				A7177829157E1EB8001F7E9A /* PeakRatio.h */,
-				A717782A157E1EB8001F7E9A /* PeakResidual.h */,
-				A717782B157E1EB8001F7E9A /* PeakSynthFFT.h */,
-				A717782C157E1EB8001F7E9A /* PeakSynthOsc.h */,
-				A717782D157E1EB8001F7E9A /* PeakSynthOscBank.h */,
-				A717782E157E1EB8001F7E9A /* peakView.h */,
-				A717782F157E1EB8001F7E9A /* PeakViewMerge.h */,
-				A7177830157E1EB8001F7E9A /* PeakViewSink.h */,
-				A7177831157E1EB8001F7E9A /* PeakViewSource.h */,
-				A7177832157E1EB8001F7E9A /* PeUtilities.h */,
-				A7177833157E1EB8001F7E9A /* PhaseLock.h */,
-				A7177834157E1EB8001F7E9A /* PhiSEMFilter.h */,
-				A7177835157E1EB8001F7E9A /* PhiSEMSource.h */,
-				A7177836157E1EB8001F7E9A /* Pitch2Chroma.h */,
-				A7177837157E1EB8001F7E9A /* PitchDiff.h */,
-				A7177838157E1EB8001F7E9A /* PlotSink.h */,
-				A7177839157E1EB8001F7E9A /* Plucked.h */,
-				A717783A157E1EB8001F7E9A /* Polar2Cartesian.h */,
-				A717783B157E1EB8001F7E9A /* Power.h */,
-				A717783C157E1EB8001F7E9A /* PowerSpectrum.h */,
-				A717783D157E1EB8001F7E9A /* PowerToAverageRatio.h */,
-				A717783E157E1EB8001F7E9A /* Product.h */,
-				A717783F157E1EB8001F7E9A /* PvConvert.h */,
-				A7177840157E1EB8001F7E9A /* PvConvolve.h */,
-				A7177841157E1EB8001F7E9A /* PvFold.h */,
-				A7177842157E1EB8001F7E9A /* PvMultiResolution.h */,
-				A7177843157E1EB8001F7E9A /* PvOscBank.h */,
-				A7177844157E1EB8001F7E9A /* PvOverlapadd.h */,
-				A7177845157E1EB8001F7E9A /* PvUnconvert.h */,
-				A7177846157E1EB8001F7E9A /* PWMSource.h */,
-				A7177847157E1EB8001F7E9A /* QGMMModel.h */,
-				A7177848157E1EB8001F7E9A /* RadioDrumInput.h */,
-				A7177849157E1EB8001F7E9A /* RawFileSource.h */,
-				A717784A157E1EB8001F7E9A /* RBF.h */,
-				A717784B157E1EB8001F7E9A /* realvec.h */,
-				A717784C157E1EB8001F7E9A /* RealvecSink.h */,
-				A717784D157E1EB8001F7E9A /* RealvecSource.h */,
-				A717784E157E1EB8001F7E9A /* Reassign.h */,
-				A717784F157E1EB8001F7E9A /* Reciprocal.h */,
-				A7177850157E1EB8001F7E9A /* RemoveObservations.h */,
-				A7177851157E1EB8001F7E9A /* Repeat.h */,
-				A7177852157E1EB8001F7E9A /* Resample.h */,
-				A7177853157E1EB8001F7E9A /* ResampleBezier.h */,
-				A7177854157E1EB8001F7E9A /* ResampleLinear.h */,
-				A7177855157E1EB8001F7E9A /* ResampleNearestNeighbour.h */,
-				A7177856157E1EB8001F7E9A /* ResampleSinc.h */,
-				A7177857157E1EB8001F7E9A /* Reverse.h */,
-				A7177858157E1EB8001F7E9A /* Rms.h */,
-				A7177859157E1EB8001F7E9A /* Rolloff.h */,
-				A717785A157E1EB8001F7E9A /* RunningAutocorrelation.h */,
-				A717785B157E1EB8001F7E9A /* RunningStatistics.h */,
-				A717785C157E1EB8001F7E9A /* SCF.h */,
-				A717785D157E1EB8001F7E9A /* Scheduler.h */,
-				A717785E157E1EB8001F7E9A /* Selector.h */,
-				A717785F157E1EB8001F7E9A /* SelfSimilarityMatrix.h */,
-				A7177860157E1EB8001F7E9A /* SeneffEar.h */,
-				A7177861157E1EB8001F7E9A /* Series.h */,
-				A7177862157E1EB8001F7E9A /* SFM.h */,
-				A7177863157E1EB8001F7E9A /* Shifter.h */,
-				A7177864157E1EB8001F7E9A /* ShiftInput.h */,
-				A7177865157E1EB8001F7E9A /* ShiftOutput.h */,
-				A7177866157E1EB8001F7E9A /* Shredder.h */,
-				A7177867157E1EB8001F7E9A /* Signum.h */,
-				A7177868157E1EB8001F7E9A /* SilenceRemove.h */,
-				A7177869157E1EB8001F7E9A /* SimilarityMatrix.h */,
-				A717786A157E1EB8001F7E9A /* SimulMaskingFft.h */,
-				A717786B157E1EB8001F7E9A /* SineSource.h */,
-				A717786C157E1EB8001F7E9A /* Skewness.h */,
-				A717786D157E1EB8001F7E9A /* SliceDelta.h */,
-				A717786E157E1EB8001F7E9A /* SliceShuffle.h */,
-				A717786F157E1EB8001F7E9A /* SMO.h */,
-				A7177870157E1EB8001F7E9A /* SNR.h */,
-				A7177871157E1EB8001F7E9A /* SOM.h */,
-				A7177872157E1EB8001F7E9A /* SoundFileSink.h */,
-				A7177873157E1EB8001F7E9A /* SoundFileSource.h */,
-				A7177874157E1EB8001F7E9A /* SoundFileSource2.h */,
-				A7177875157E1EB8001F7E9A /* SoundFileSourceHopper.h */,
-				A7177876157E1EB8001F7E9A /* SpectralFlatnessAllBands.h */,
-				A7177877157E1EB8001F7E9A /* SpectralSNR.h */,
-				A7177878157E1EB8001F7E9A /* SpectralTransformations.h */,
-				A7177879157E1EB8001F7E9A /* Spectrum.h */,
-				A717787A157E1EB8001F7E9A /* Spectrum2ACMChroma.h */,
-				A717787B157E1EB8001F7E9A /* Spectrum2Chroma.h */,
-				A717787C157E1EB8001F7E9A /* Spectrum2Mel.h */,
-				A717787D157E1EB8001F7E9A /* Square.h */,
-				A717787E157E1EB8001F7E9A /* StandardDeviation.h */,
-				A717787F157E1EB8001F7E9A /* static_vq_codebook.h */,
-				A7177880157E1EB8001F7E9A /* statistics.h */,
-				A7177881157E1EB8001F7E9A /* StereoSpectrum.h */,
-				A7177882157E1EB8001F7E9A /* StereoSpectrumFeatures.h */,
-				A7177883157E1EB8001F7E9A /* StereoSpectrumSources.h */,
-				A7177884157E1EB8001F7E9A /* Stk.h */,
-				A7177885157E1EB8001F7E9A /* StretchLinear.h */,
-				A7177886157E1EB8001F7E9A /* StrobeList.h */,
-				A7177887157E1EB8001F7E9A /* Subtract.h */,
-				A7177888157E1EB8001F7E9A /* SubtractMean.h */,
-				A7177889157E1EB8001F7E9A /* Sum.h */,
-				A717788A157E1EB8001F7E9A /* SVMClassifier.h */,
-				A717788B157E1EB8001F7E9A /* Talk.h */,
-				A717788C157E1EB8001F7E9A /* TempoHypotheses.h */,
-				A717788D157E1EB8001F7E9A /* Thread.h */,
-				A717788E157E1EB8001F7E9A /* TimeFreqPeakConnectivity.h */,
-				A717788F157E1EB8001F7E9A /* TimeLine.h */,
-				A7177890157E1EB8001F7E9A /* TimelineLabeler.h */,
-				A7177891157E1EB8001F7E9A /* TimeStretch.h */,
-				A7177892157E1EB8001F7E9A /* TmControlValue.h */,
-				A7177893157E1EB8001F7E9A /* TmParam.h */,
-				A7177894157E1EB8001F7E9A /* TmRealTime.h */,
-				A7177895157E1EB8001F7E9A /* TmSampleCount.h */,
-				A7177896157E1EB8001F7E9A /* TmTime.h */,
-				A7177897157E1EB8001F7E9A /* TmTimer.h */,
-				A7177898157E1EB8001F7E9A /* TmTimerManager.h */,
-				A7177899157E1EB8001F7E9A /* TmVirtualTime.h */,
-				A717789A157E1EB8001F7E9A /* Transcriber.h */,
-				A717789B157E1EB8001F7E9A /* TranscriberExtract.h */,
-				A717789C157E1EB8001F7E9A /* Transposer.h */,
-				A717789D157E1EB8001F7E9A /* Unfold.h */,
-				A717789E157E1EB8001F7E9A /* UpdatingBassModel.h */,
-				A717789F157E1EB8001F7E9A /* Vibrato.h */,
-				A71778A0157E1EB8001F7E9A /* ViconFileSource.h */,
-				A71778A1157E1EB8001F7E9A /* vmblock.h */,
-				A71778A2157E1EB8001F7E9A /* WaveletBands.h */,
-				A71778A3157E1EB8001F7E9A /* WaveletPyramid.h */,
-				A71778A4157E1EB8001F7E9A /* WaveletStep.h */,
-				A71778A5157E1EB8001F7E9A /* WavFileSink.h */,
-				A71778A6157E1EB8001F7E9A /* WavFileSource.h */,
-				A71778A7157E1EB8001F7E9A /* WavFileSource2.h */,
-				A71778A8157E1EB8001F7E9A /* WekaData.h */,
-				A71778A9157E1EB8001F7E9A /* WekaSink.h */,
-				A71778AA157E1EB8001F7E9A /* WekaSource.h */,
-				A71778AB157E1EB8001F7E9A /* WHaSp.h */,
-				A71778AC157E1EB8001F7E9A /* Windowing.h */,
-				A71778AD157E1EB8001F7E9A /* Yin.h */,
-				A71778AE157E1EB8001F7E9A /* ZeroCrossings.h */,
-				A71778AF157E1EB8001F7E9A /* ZeroRClassifier.h */,
+				41CE7ADB15CAA88300E45CF5 /* AbsMax.h */,
+				41CE7ADC15CAA88300E45CF5 /* AbsSoundFileSink.h */,
+				41CE7ADD15CAA88300E45CF5 /* AbsSoundFileSource.h */,
+				41CE7ADE15CAA88300E45CF5 /* AbsSoundFileSource2.h */,
+				41CE7ADF15CAA88300E45CF5 /* AccentFilterBank.h */,
+				41CE7AE015CAA88300E45CF5 /* Accumulator.h */,
+				41CE7AE115CAA88300E45CF5 /* ADRess.h */,
+				41CE7AE215CAA88300E45CF5 /* ADRessSpectrum.h */,
+				41CE7AE315CAA88300E45CF5 /* ADRessStereoSpectrum.h */,
+				41CE7AE415CAA88300E45CF5 /* ADSR.h */,
+				41CE7AE515CAA88300E45CF5 /* AimBoxes.h */,
+				41CE7AE615CAA88300E45CF5 /* AimGammatone.h */,
+				41CE7AE715CAA88300E45CF5 /* AimHCL.h */,
+				41CE7AE815CAA88300E45CF5 /* AimHCL2.h */,
+				41CE7AE915CAA88300E45CF5 /* AimLocalMax.h */,
+				41CE7AEA15CAA88300E45CF5 /* AimPZFC.h */,
+				41CE7AEB15CAA88300E45CF5 /* AimPZFC2.h */,
+				41CE7AEC15CAA88300E45CF5 /* AimSAI.h */,
+				41CE7AED15CAA88300E45CF5 /* AimSSI.h */,
+				41CE7AEE15CAA88300E45CF5 /* AimVQ.h */,
+				41CE7AEF15CAA88300E45CF5 /* AliasingOsc.h */,
+				41CE7AF015CAA88300E45CF5 /* AMDF.h */,
+				41CE7AF115CAA88300E45CF5 /* ANN_node.h */,
+				41CE7AF215CAA88300E45CF5 /* Annotator.h */,
+				41CE7AF315CAA88300E45CF5 /* APDelayOsc.h */,
+				41CE7AF415CAA88300E45CF5 /* ArffFileSink.h */,
+				41CE7AF515CAA88300E45CF5 /* AubioYin.h */,
+				41CE7AF615CAA88300E45CF5 /* AudioSink.h */,
+				41CE7AF715CAA88300E45CF5 /* AudioSinkBlocking.h */,
+				41CE7AF815CAA88300E45CF5 /* AudioSource.h */,
+				41CE7AF915CAA88300E45CF5 /* AudioSourceBlocking.h */,
+				41CE7AFA15CAA88300E45CF5 /* AuFileSink.h */,
+				41CE7AFB15CAA88300E45CF5 /* AuFileSource.h */,
+				41CE7AFC15CAA88300E45CF5 /* AutoCorrelation.h */,
+				41CE7AFD15CAA88300E45CF5 /* AutoCorrelationFFT.h */,
+				41CE7AFE15CAA88300E45CF5 /* AveragingPattern.h */,
+				41CE7AFF15CAA88300E45CF5 /* BaseAudioSink.h */,
+				41CE7B0015CAA88300E45CF5 /* basis.h */,
+				41CE7B0115CAA88300E45CF5 /* BeatAgent.h */,
+				41CE7B0215CAA88300E45CF5 /* BeatHistoFeatures.h */,
+				41CE7B0315CAA88300E45CF5 /* BeatHistogram.h */,
+				41CE7B0415CAA88300E45CF5 /* BeatHistogramFromPeaks.h */,
+				41CE7B0515CAA88300E45CF5 /* BeatPhase.h */,
+				41CE7B0615CAA88300E45CF5 /* BeatReferee.h */,
+				41CE7B0715CAA88300E45CF5 /* BeatTimesSink.h */,
+				41CE7B0815CAA88300E45CF5 /* BICchangeDetector.h */,
+				41CE7B0915CAA88300E45CF5 /* Biquad.h */,
+				41CE7B0A15CAA88300E45CF5 /* CARFAC_coeffs.h */,
+				41CE7B0B15CAA88300E45CF5 /* CARFAC.h */,
+				41CE7B0C15CAA88300E45CF5 /* Cartesian2Polar.h */,
+				41CE7B0D15CAA88300E45CF5 /* Cascade.h */,
+				41CE7B0E15CAA88300E45CF5 /* Centroid.h */,
+				41CE7B0F15CAA88300E45CF5 /* Chroma.h */,
+				41CE7B1015CAA88300E45CF5 /* ChromaScale.h */,
+				41CE7B1115CAA88300E45CF5 /* ClassificationReport.h */,
+				41CE7B1215CAA88300E45CF5 /* ClassOutputSink.h */,
+				41CE7B1315CAA88300E45CF5 /* Clip.h */,
+				41CE7B1415CAA88300E45CF5 /* Collection.h */,
+				41CE7B1515CAA88300E45CF5 /* CollectionFileSource.h */,
+				41CE7B1615CAA88300E45CF5 /* Color.h */,
+				41CE7B1715CAA88300E45CF5 /* Combinator.h */,
+				41CE7B1815CAA88300E45CF5 /* CommandLineOptions.h */,
+				41CE7B1915CAA88300E45CF5 /* common_header.h */,
+				41CE7B1A15CAA88300E45CF5 /* common.h */,
+				41CE7B1B15CAA88300E45CF5 /* Communicator.h */,
+				41CE7B1C15CAA88300E45CF5 /* CompExp.h */,
+				41CE7B1D15CAA88300E45CF5 /* Compressor.h */,
+				41CE7B1E15CAA88300E45CF5 /* Confidence.h */,
+				41CE7B1F15CAA88300E45CF5 /* ConstQFiltering.h */,
+				41CE7B2015CAA88300E45CF5 /* Conversions.h */,
+				41CE7B2115CAA88300E45CF5 /* CrossCorrelation.h */,
+				41CE7B2215CAA88300E45CF5 /* CsvFileSource.h */,
+				41CE7B2315CAA88300E45CF5 /* Daub4.h */,
+				41CE7B2415CAA88300E45CF5 /* DCSource.h */,
+				41CE7B2515CAA88300E45CF5 /* Deinterleave.h */,
+				41CE7B2615CAA88300E45CF5 /* DeInterleaveSizecontrol.h */,
+				41CE7B2715CAA88300E45CF5 /* Delay.h */,
+				41CE7B2815CAA88300E45CF5 /* DelaySamples.h */,
+				41CE7B2915CAA88300E45CF5 /* Delta.h */,
+				41CE7B2A15CAA88300E45CF5 /* DeltaFirstOrderRegression.h */,
+				41CE7B2B15CAA88300E45CF5 /* Differentiator.h */,
+				41CE7B2C15CAA88300E45CF5 /* DLLDefines.h */,
+				41CE7B2D15CAA88300E45CF5 /* DownSampler.h */,
+				41CE7B2E15CAA88300E45CF5 /* dsound.h */,
+				41CE7B2F15CAA88300E45CF5 /* DTW.h */,
+				41CE7B3015CAA88300E45CF5 /* DTWWD.h */,
+				41CE7B3115CAA88300E45CF5 /* Energy.h */,
+				41CE7B3215CAA88300E45CF5 /* EnhADRess.h */,
+				41CE7B3315CAA88300E45CF5 /* EnhADRessStereoSpectrum.h */,
+				41CE7B3415CAA88300E45CF5 /* Envelope.h */,
+				41CE7B3515CAA88300E45CF5 /* ERB.h */,
+				41CE7B3615CAA88300E45CF5 /* ERBTools.h */,
+				41CE7B3715CAA88300E45CF5 /* Esitar.h */,
+				41CE7B3815CAA88300E45CF5 /* EvEvent.h */,
+				41CE7B3915CAA88300E45CF5 /* EvExpr.h */,
+				41CE7B3A15CAA88300E45CF5 /* EvGetUpd.h */,
+				41CE7B3B15CAA88300E45CF5 /* EvValUpd.h */,
+				41CE7B3C15CAA88300E45CF5 /* ExCommon.h */,
+				41CE7B3D15CAA88300E45CF5 /* ExNode.h */,
+				41CE7B3E15CAA88300E45CF5 /* ExParser.h */,
+				41CE7B3F15CAA88300E45CF5 /* Expr.h */,
+				41CE7B4015CAA88300E45CF5 /* ExScanner.h */,
+				41CE7B4115CAA88300E45CF5 /* ExSymTbl.h */,
+				41CE7B4215CAA88300E45CF5 /* ExVal.h */,
+				41CE7B4315CAA88300E45CF5 /* F0Analysis.h */,
+				41CE7B4415CAA88400E45CF5 /* Fanin.h */,
+				41CE7B4515CAA88400E45CF5 /* Fanout.h */,
+				41CE7B4615CAA88400E45CF5 /* FanOutIn.h */,
+				41CE7B4715CAA88400E45CF5 /* fft.h */,
+				41CE7B4815CAA88400E45CF5 /* FileName.h */,
+				41CE7B4915CAA88400E45CF5 /* Filter.h */,
+				41CE7B4A15CAA88400E45CF5 /* FlowCutSource.h */,
+				41CE7B4B15CAA88400E45CF5 /* FlowThru.h */,
+				41CE7B4C15CAA88400E45CF5 /* Flux.h */,
+				41CE7B4D15CAA88400E45CF5 /* FM.h */,
+				41CE7B4E15CAA88400E45CF5 /* FMeasure.h */,
+				41CE7B4F15CAA88400E45CF5 /* FullWaveRectifier.h */,
+				41CE7B5015CAA88400E45CF5 /* Gain.h */,
+				41CE7B5115CAA88400E45CF5 /* GaussianClassifier.h */,
+				41CE7B5215CAA88400E45CF5 /* GMMClassifier.h */,
+				41CE7B5315CAA88400E45CF5 /* gst-decode.h */,
+				41CE7B5415CAA88400E45CF5 /* GStreamerSource.h */,
+				41CE7B5515CAA88400E45CF5 /* HalfWaveRectifier.h */,
+				41CE7B5615CAA88400E45CF5 /* HarmonicEnhancer.h */,
+				41CE7B5715CAA88400E45CF5 /* HarmonicStrength.h */,
+				41CE7B5815CAA88400E45CF5 /* Heap.h */,
+				41CE7B5915CAA88400E45CF5 /* HWPS.h */,
+				41CE7B5A15CAA88400E45CF5 /* Inject.h */,
+				41CE7B5B15CAA88400E45CF5 /* InvSpectrum.h */,
+				41CE7B5C15CAA88400E45CF5 /* KNNClassifier.h */,
+				41CE7B5D15CAA88400E45CF5 /* Krumhansl_key_finder.h */,
+				41CE7B5E15CAA88400E45CF5 /* Kurtosis.h */,
+				41CE7B5F15CAA88400E45CF5 /* Limiter.h */,
+				41CE7B6015CAA88400E45CF5 /* LPC.h */,
+				41CE7B6115CAA88400E45CF5 /* LPCC.h */,
+				41CE7B6215CAA88400E45CF5 /* LSP.h */,
+				41CE7B6315CAA88400E45CF5 /* lu.h */,
+				41CE7B6415CAA88400E45CF5 /* LyonPassiveEar.h */,
+				41CE7B6515CAA88400E45CF5 /* MarControl.h */,
+				41CE7B6615CAA88400E45CF5 /* MarControlAccessor.h */,
+				41CE7B6715CAA88400E45CF5 /* MarControlManager.h */,
+				41CE7B6815CAA88400E45CF5 /* MarControlValue.h */,
+				41CE7B6915CAA88400E45CF5 /* MarFileSink.h */,
+				41CE7B6A15CAA88400E45CF5 /* marohtml.h */,
+				41CE7B6B15CAA88400E45CF5 /* marojson.h */,
+				41CE7B6C15CAA88400E45CF5 /* marostring.h */,
+				41CE7B6D15CAA88400E45CF5 /* marosvg.h */,
+				41CE7B6E15CAA88400E45CF5 /* maroxml.h */,
+				41CE7B6F15CAA88400E45CF5 /* marsyas_types.h */,
+				41CE7B7015CAA88400E45CF5 /* MarSystem.h */,
+				41CE7B7115CAA88400E45CF5 /* MarSystemManager.h */,
+				41CE7B7215CAA88400E45CF5 /* MarSystemTemplateAdvanced.h */,
+				41CE7B7315CAA88400E45CF5 /* MarSystemTemplateBasic.h */,
+				41CE7B7415CAA88400E45CF5 /* MarSystemTemplateMedium.h */,
+				41CE7B7515CAA88400E45CF5 /* MatchBassModel.h */,
+				41CE7B7615CAA88400E45CF5 /* MathPower.h */,
+				41CE7B7715CAA88400E45CF5 /* MATLABengine.h */,
+				41CE7B7815CAA88400E45CF5 /* MaxArgMax.h */,
+				41CE7B7915CAA88400E45CF5 /* MaxMin.h */,
+				41CE7B7A15CAA88400E45CF5 /* McAulayQuatieri.h */,
+				41CE7B7B15CAA88400E45CF5 /* Mean.h */,
+				41CE7B7C15CAA88400E45CF5 /* MeanAbsoluteDeviation.h */,
+				41CE7B7D15CAA88400E45CF5 /* MeddisHairCell.h */,
+				41CE7B7E15CAA88400E45CF5 /* Median.h */,
+				41CE7B7F15CAA88400E45CF5 /* MedianFilter.h */,
+				41CE7B8015CAA88400E45CF5 /* Memory.h */,
+				41CE7B8115CAA88400E45CF5 /* MemorySource.h */,
+				41CE7B8215CAA88400E45CF5 /* Metric.h */,
+				41CE7B8315CAA88400E45CF5 /* Metric2.h */,
+				41CE7B8415CAA88400E45CF5 /* MFCC.h */,
+				41CE7B8515CAA88400E45CF5 /* mididevices.h */,
+				41CE7B8615CAA88400E45CF5 /* MidiFileSynthSource.h */,
+				41CE7B8715CAA88400E45CF5 /* MidiInput.h */,
+				41CE7B8815CAA88400E45CF5 /* MidiOutput.h */,
+				41CE7B8915CAA88400E45CF5 /* MinArgMin.h */,
+				41CE7B8A15CAA88400E45CF5 /* MixToMono.h */,
+				41CE7B8B15CAA88400E45CF5 /* Mono2Stereo.h */,
+				41CE7B8C15CAA88400E45CF5 /* MP3FileSink.h */,
+				41CE7B8D15CAA88400E45CF5 /* MP3FileSource.h */,
+				41CE7B8E15CAA88400E45CF5 /* MrsLog.h */,
+				41CE7B8F15CAA88400E45CF5 /* Negative.h */,
+				41CE7B9015CAA88400E45CF5 /* NoiseGate.h */,
+				41CE7B9115CAA88400E45CF5 /* NoiseSource.h */,
+				41CE7B9215CAA88400E45CF5 /* Norm.h */,
+				41CE7B9315CAA88400E45CF5 /* Normalize.h */,
+				41CE7B9415CAA88400E45CF5 /* NormalizeAbs.h */,
+				41CE7B9515CAA88400E45CF5 /* NormCut.h */,
+				41CE7B9615CAA88400E45CF5 /* NormMatrix.h */,
+				41CE7B9715CAA88400E45CF5 /* NormMaxMin.h */,
+				41CE7B9815CAA88400E45CF5 /* NumericLib.h */,
+				41CE7B9915CAA88400E45CF5 /* OggFileSource.h */,
+				41CE7B9A15CAA88400E45CF5 /* OnePole.h */,
+				41CE7B9B15CAA88400E45CF5 /* OneRClassifier.h */,
+				41CE7B9C15CAA88400E45CF5 /* OnsetTimes.h */,
+				41CE7B9D15CAA88400E45CF5 /* OrcaSnip.h */,
+				41CE7B9E15CAA88400E45CF5 /* OverlapAdd.h */,
+				41CE7B9F15CAA88400E45CF5 /* Panorama.h */,
+				41CE7BA015CAA88400E45CF5 /* Parallel.h */,
+				41CE7BA115CAA88400E45CF5 /* ParallelMatrixWeight.h */,
+				41CE7BA215CAA88400E45CF5 /* PatchMatrix.h */,
+				41CE7BA315CAA88400E45CF5 /* PCA.h */,
+				41CE7BA415CAA88400E45CF5 /* Peak2Rms.h */,
+				41CE7BA515CAA88400E45CF5 /* PeakClusterSelect.h */,
+				41CE7BA615CAA88400E45CF5 /* PeakConvert.h */,
+				41CE7BA715CAA88400E45CF5 /* PeakConvert2.h */,
+				41CE7BA815CAA88400E45CF5 /* PeakDistanceHorizontality.h */,
+				41CE7BA915CAA88400E45CF5 /* PeakEnhancer.h */,
+				41CE7BAA15CAA88400E45CF5 /* Peaker.h */,
+				41CE7BAB15CAA88400E45CF5 /* PeakerAdaptive.h */,
+				41CE7BAC15CAA88400E45CF5 /* PeakerOnset.h */,
+				41CE7BAD15CAA88400E45CF5 /* PeakFeatureSelect.h */,
+				41CE7BAE15CAA88400E45CF5 /* PeakInObservation.h */,
+				41CE7BAF15CAA88400E45CF5 /* PeakLabeler.h */,
+				41CE7BB015CAA88400E45CF5 /* PeakMask.h */,
+				41CE7BB115CAA88400E45CF5 /* PeakPeriods2BPM.h */,
+				41CE7BB215CAA88400E45CF5 /* PeakRatio.h */,
+				41CE7BB315CAA88400E45CF5 /* PeakResidual.h */,
+				41CE7BB415CAA88400E45CF5 /* PeakSynthFFT.h */,
+				41CE7BB515CAA88400E45CF5 /* PeakSynthOsc.h */,
+				41CE7BB615CAA88400E45CF5 /* PeakSynthOscBank.h */,
+				41CE7BB715CAA88400E45CF5 /* peakView.h */,
+				41CE7BB815CAA88400E45CF5 /* PeakViewMerge.h */,
+				41CE7BB915CAA88400E45CF5 /* PeakViewSink.h */,
+				41CE7BBA15CAA88400E45CF5 /* PeakViewSource.h */,
+				41CE7BBB15CAA88400E45CF5 /* PeUtilities.h */,
+				41CE7BBC15CAA88400E45CF5 /* PhaseLock.h */,
+				41CE7BBD15CAA88400E45CF5 /* PhiSEMFilter.h */,
+				41CE7BBE15CAA88400E45CF5 /* PhiSEMSource.h */,
+				41CE7BBF15CAA88400E45CF5 /* Pitch2Chroma.h */,
+				41CE7BC015CAA88400E45CF5 /* PitchDiff.h */,
+				41CE7BC115CAA88400E45CF5 /* PlotSink.h */,
+				41CE7BC215CAA88400E45CF5 /* Plucked.h */,
+				41CE7BC315CAA88400E45CF5 /* Polar2Cartesian.h */,
+				41CE7BC415CAA88400E45CF5 /* Power.h */,
+				41CE7BC515CAA88400E45CF5 /* PowerSpectrum.h */,
+				41CE7BC615CAA88400E45CF5 /* PowerToAverageRatio.h */,
+				41CE7BC715CAA88400E45CF5 /* Product.h */,
+				41CE7BC815CAA88400E45CF5 /* PvConvert.h */,
+				41CE7BC915CAA88400E45CF5 /* PvConvolve.h */,
+				41CE7BCA15CAA88400E45CF5 /* PvFold.h */,
+				41CE7BCB15CAA88400E45CF5 /* PvMultiResolution.h */,
+				41CE7BCC15CAA88400E45CF5 /* PvOscBank.h */,
+				41CE7BCD15CAA88400E45CF5 /* PvOverlapadd.h */,
+				41CE7BCE15CAA88400E45CF5 /* PvUnconvert.h */,
+				41CE7BCF15CAA88400E45CF5 /* PWMSource.h */,
+				41CE7BD015CAA88400E45CF5 /* QGMMModel.h */,
+				41CE7BD115CAA88400E45CF5 /* RadioDrumInput.h */,
+				41CE7BD215CAA88400E45CF5 /* RawFileSource.h */,
+				41CE7BD315CAA88400E45CF5 /* RBF.h */,
+				41CE7BD415CAA88400E45CF5 /* realvec.h */,
+				41CE7BD515CAA88400E45CF5 /* RealvecSink.h */,
+				41CE7BD615CAA88400E45CF5 /* RealvecSource.h */,
+				41CE7BD715CAA88400E45CF5 /* Reassign.h */,
+				41CE7BD815CAA88400E45CF5 /* Reciprocal.h */,
+				41CE7BD915CAA88400E45CF5 /* RemoveObservations.h */,
+				41CE7BDA15CAA88400E45CF5 /* Repeat.h */,
+				41CE7BDB15CAA88400E45CF5 /* Resample.h */,
+				41CE7BDC15CAA88400E45CF5 /* ResampleBezier.h */,
+				41CE7BDD15CAA88400E45CF5 /* ResampleLinear.h */,
+				41CE7BDE15CAA88400E45CF5 /* ResampleNearestNeighbour.h */,
+				41CE7BDF15CAA88400E45CF5 /* ResampleSinc.h */,
+				41CE7BE015CAA88400E45CF5 /* Reverse.h */,
+				41CE7BE115CAA88400E45CF5 /* Rms.h */,
+				41CE7BE215CAA88400E45CF5 /* Rolloff.h */,
+				41CE7BE315CAA88400E45CF5 /* RunningAutocorrelation.h */,
+				41CE7BE415CAA88400E45CF5 /* RunningStatistics.h */,
+				41CE7BE515CAA88400E45CF5 /* SCF.h */,
+				41CE7BE615CAA88400E45CF5 /* Scheduler.h */,
+				41CE7BE715CAA88400E45CF5 /* Selector.h */,
+				41CE7BE815CAA88400E45CF5 /* SelfSimilarityMatrix.h */,
+				41CE7BE915CAA88400E45CF5 /* SeneffEar.h */,
+				41CE7BEA15CAA88400E45CF5 /* Series.h */,
+				41CE7BEB15CAA88400E45CF5 /* SFM.h */,
+				41CE7BEC15CAA88400E45CF5 /* Shifter.h */,
+				41CE7BED15CAA88400E45CF5 /* ShiftInput.h */,
+				41CE7BEE15CAA88400E45CF5 /* ShiftOutput.h */,
+				41CE7BEF15CAA88400E45CF5 /* Shredder.h */,
+				41CE7BF015CAA88400E45CF5 /* Signum.h */,
+				41CE7BF115CAA88400E45CF5 /* SilenceRemove.h */,
+				41CE7BF215CAA88400E45CF5 /* SimilarityMatrix.h */,
+				41CE7BF315CAA88400E45CF5 /* SimulMaskingFft.h */,
+				41CE7BF415CAA88400E45CF5 /* SineSource.h */,
+				41CE7BF515CAA88400E45CF5 /* Skewness.h */,
+				41CE7BF615CAA88400E45CF5 /* SliceDelta.h */,
+				41CE7BF715CAA88400E45CF5 /* SliceShuffle.h */,
+				41CE7BF815CAA88400E45CF5 /* SMO.h */,
+				41CE7BF915CAA88400E45CF5 /* SNR.h */,
+				41CE7BFA15CAA88400E45CF5 /* SOM.h */,
+				41CE7BFB15CAA88400E45CF5 /* SoundFileSink.h */,
+				41CE7BFC15CAA88400E45CF5 /* SoundFileSource.h */,
+				41CE7BFD15CAA88400E45CF5 /* SoundFileSource2.h */,
+				41CE7BFE15CAA88400E45CF5 /* SoundFileSourceHopper.h */,
+				41CE7BFF15CAA88400E45CF5 /* SpectralFlatnessAllBands.h */,
+				41CE7C0015CAA88400E45CF5 /* SpectralSNR.h */,
+				41CE7C0115CAA88400E45CF5 /* SpectralTransformations.h */,
+				41CE7C0215CAA88400E45CF5 /* Spectrum.h */,
+				41CE7C0315CAA88400E45CF5 /* Spectrum2ACMChroma.h */,
+				41CE7C0415CAA88400E45CF5 /* Spectrum2Chroma.h */,
+				41CE7C0515CAA88400E45CF5 /* Spectrum2Mel.h */,
+				41CE7C0615CAA88400E45CF5 /* Square.h */,
+				41CE7C0715CAA88400E45CF5 /* StandardDeviation.h */,
+				41CE7C0815CAA88400E45CF5 /* static_vq_codebook.h */,
+				41CE7C0915CAA88400E45CF5 /* statistics.h */,
+				41CE7C0A15CAA88400E45CF5 /* StereoSpectrum.h */,
+				41CE7C0B15CAA88400E45CF5 /* StereoSpectrumFeatures.h */,
+				41CE7C0C15CAA88400E45CF5 /* StereoSpectrumSources.h */,
+				41CE7C0D15CAA88400E45CF5 /* Stk.h */,
+				41CE7C0E15CAA88400E45CF5 /* StretchLinear.h */,
+				41CE7C0F15CAA88400E45CF5 /* StrobeList.h */,
+				41CE7C1015CAA88400E45CF5 /* Subtract.h */,
+				41CE7C1115CAA88400E45CF5 /* SubtractMean.h */,
+				41CE7C1215CAA88400E45CF5 /* Sum.h */,
+				41CE7C1315CAA88400E45CF5 /* SVMClassifier.h */,
+				41CE7C1415CAA88400E45CF5 /* Talk.h */,
+				41CE7C1515CAA88400E45CF5 /* TempoHypotheses.h */,
+				41CE7C1615CAA88400E45CF5 /* Thread.h */,
+				41CE7C1715CAA88400E45CF5 /* TimeFreqPeakConnectivity.h */,
+				41CE7C1815CAA88400E45CF5 /* TimeLine.h */,
+				41CE7C1915CAA88400E45CF5 /* TimelineLabeler.h */,
+				41CE7C1A15CAA88400E45CF5 /* TimeStretch.h */,
+				41CE7C1B15CAA88400E45CF5 /* TmControlValue.h */,
+				41CE7C1C15CAA88400E45CF5 /* TmParam.h */,
+				41CE7C1D15CAA88400E45CF5 /* TmRealTime.h */,
+				41CE7C1E15CAA88400E45CF5 /* TmSampleCount.h */,
+				41CE7C1F15CAA88400E45CF5 /* TmTime.h */,
+				41CE7C2015CAA88400E45CF5 /* TmTimer.h */,
+				41CE7C2115CAA88400E45CF5 /* TmTimerManager.h */,
+				41CE7C2215CAA88400E45CF5 /* TmVirtualTime.h */,
+				41CE7C2315CAA88400E45CF5 /* Transcriber.h */,
+				41CE7C2415CAA88400E45CF5 /* TranscriberExtract.h */,
+				41CE7C2515CAA88400E45CF5 /* Transposer.h */,
+				41CE7C2615CAA88400E45CF5 /* Unfold.h */,
+				41CE7C2715CAA88400E45CF5 /* UpdatingBassModel.h */,
+				41CE7C2815CAA88400E45CF5 /* Upsample.h */,
+				41CE7C2915CAA88400E45CF5 /* Vibrato.h */,
+				41CE7C2A15CAA88400E45CF5 /* ViconFileSource.h */,
+				41CE7C2B15CAA88400E45CF5 /* vmblock.h */,
+				41CE7C2C15CAA88400E45CF5 /* WaveletBands.h */,
+				41CE7C2D15CAA88400E45CF5 /* WaveletPyramid.h */,
+				41CE7C2E15CAA88400E45CF5 /* WaveletStep.h */,
+				41CE7C2F15CAA88400E45CF5 /* WavFileSink.h */,
+				41CE7C3015CAA88400E45CF5 /* WavFileSource.h */,
+				41CE7C3115CAA88400E45CF5 /* WavFileSource2.h */,
+				41CE7C3215CAA88400E45CF5 /* WekaData.h */,
+				41CE7C3315CAA88400E45CF5 /* WekaSink.h */,
+				41CE7C3415CAA88400E45CF5 /* WekaSource.h */,
+				41CE7C3515CAA88400E45CF5 /* WHaSp.h */,
+				41CE7C3615CAA88400E45CF5 /* Whitening.h */,
+				41CE7C3715CAA88400E45CF5 /* Windowing.h */,
+				41CE7C3815CAA88400E45CF5 /* Yin.h */,
+				41CE7C3915CAA88400E45CF5 /* ZeroCrossings.h */,
+				41CE7C3A15CAA88400E45CF5 /* ZeroRClassifier.h */,
 			);
 			name = Marsyas;
 			sourceTree = "<group>";
