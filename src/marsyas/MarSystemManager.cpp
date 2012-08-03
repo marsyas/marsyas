@@ -249,6 +249,7 @@
 #include "WavFileSource2.h"
 #include "WaveletBands.h"
 #include "WaveletPyramid.h"
+#include "WaveguideOsc.h"
 #include "WekaData.h"
 #include "WekaSink.h"
 #include "WekaSource.h"
@@ -521,6 +522,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("WavFileSource2", new WavFileSource2("wavf2p"));
 	registerPrototype("WaveletBands",   new WaveletBands("wvbands"));
 	registerPrototype("WaveletPyramid", new WaveletPyramid("wvpyramid"));
+	registerPrototype("WaveguideOsc", new WaveguideOsc("waveguideoscpr"));
 	registerPrototype("WekaSink", new WekaSink("wsink"));
 	registerPrototype("WekaSource", new WekaSource("wsource"));
 	registerPrototype("Windowing", new Windowing("win"));
