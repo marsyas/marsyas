@@ -52,6 +52,7 @@
 #include "BeatReferee.h"
 #include "BeatTimesSink.h"
 #include "Biquad.h"
+#include "BlitOsc.h"
 #include "CARFAC.h"
 #include "Cartesian2Polar.h"
 #include "Cascade.h"
@@ -324,6 +325,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("BeatReferee", new BeatReferee("beatreferee"));
 	registerPrototype("BeatTimesSink", new BeatTimesSink("beattimessink"));
 	registerPrototype("Biquad", new Biquad("biquadp"));
+	registerPrototype("BlitOsc", new BlitOsc("blitoscpr"));
 	registerPrototype("CARFAC", new CARFAC("carfac"));
 	registerPrototype("Cartesian2Polar", new Cartesian2Polar("c2p"));
 	registerPrototype("Cascade", new Cascade("cascadep"));
