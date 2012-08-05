@@ -24,6 +24,7 @@
 #include "AbsMax.h"
 #include "AccentFilterBank.h"
 #include "Accumulator.h"
+#include "AdditiveOsc.h"
 #include "AimBoxes.h"
 #include "AimGammatone.h"
 #include "AimHCL.h"
@@ -294,6 +295,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AbsMax", new AbsMax("absmaxpr"));
 	registerPrototype("AccentFilterBank", new AccentFilterBank("afb"));
 	registerPrototype("Accumulator", new Accumulator("acc"));
+	registerPrototype("AdditiveOsc", new AdditiveOsc("additiveoscpr"));
 	registerPrototype("AimBoxes", new AimBoxes("aimboxes"));
 	registerPrototype("AimGammatone", new AimGammatone("aimgammatone"));
 	registerPrototype("AimHCL", new AimHCL("aimhcl"));
