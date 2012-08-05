@@ -24,15 +24,42 @@
 namespace Marsyas
 {
 /**
-	\class MarSystemTemplateBasic
+	\class APDelayOsc
 	\ingroup Synthesis
-	\brief 
+	\brief A non-aliasing analog oscillator algorithm
 
-	blurb about the system
+	This is a non-aliasing virtual analog oscillator algorithm.
 
+	[impulse] -> [delay line] -> [fractional delay filter] -> [leaky integrator] -> [output]
+	             |                                       |
+				 ^---------------------------------------<
+
+	For the saw algorithm the output of the fractional delay is fed back into
+	the delay line. This creates a perceptually harmonic spectrum that
+	aproximates having all the harmonics at equal power up to the nyquist
+	frequency.  The saw algorithm ends up having a considerable DC offset, that
+	is removed by subtracting frequency/Samplerate from each sample. Finally
+	the leaky integrator is used to apply an exponential decay to the frequency
+	spectrum.  
+
+	The saw wave is generated in a similar way, but we don't need to worry
+	about any DC offset. The only real difference is the square algorithm is
+	that we negate the samples as we feed them back into the delay line. This
+	will generate a spectrum containing the even harmonics. The one other side
+	effect of this as that we double our period, so we must shorten the delay
+	line to compensate.
+
+	TODO: Add triangle wave
+
+	TODO: Add ability to modulate pitch.
+	          This could be done using two read pointers and
+			  and a cross fadder.
+			  It could also be done by changing the delay time
+			  at the end of each cyle.
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- \b mrs_real/frequency [w] : sets the frequency of the wave.
+	- \b mrs_natural/type [w] : sets the oscillator type. (saw = 0, square = 0).
+	- \b mrs_bool/noteon [w] : turns on the oscillator
 */
 
 class APDelayOsc: public MarSystem
@@ -49,7 +76,7 @@ private:
     mrs_natural delaylineSize_;
 	realvec delayline_;
 
-    mrs_real x_;
+    mrs_real dc_;
 
     mrs_real ly1_;  // Leaky Integrator last output
 
@@ -60,13 +87,16 @@ private:
 	mrs_real dx1_;  // dcBlocker last input
 	mrs_real dy1_;  // dcBlocker last output
 
-    mrs_real israte_;
-    mrs_real dcoff_;
+    mrs_real israte_; // Sample rate of the system
+    mrs_real dcoff_;  // The precalculated DC offset
+    mrs_real neg_;    // Used to invert the system if
+	                  // only even harmonics are wanted
 
-    mrs_natural wp_;  // Write Pointer
-    mrs_natural rp_;  // Read pointer one
-    mrs_natural rpp_; // Read pointer two
-    mrs_natural N_;
+    mrs_natural wp_;   // Write Pointer
+    mrs_natural rp_;   // Read pointer one
+    mrs_natural rpp_;  // Read pointer two
+    mrs_natural N_;    // The delayline length for our current pitch
+	mrs_natural type_; // The current type of the oscillator
 
     mrs_bool noteon_;
 

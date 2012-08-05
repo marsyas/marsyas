@@ -28,8 +28,6 @@ APDelayOsc::APDelayOsc(mrs_string name):MarSystem("APDelayOsc", name)
     delaylineSize_ = 0;
 	delayline_ = NULL;
 
-    x_ = 0;
-
     ly1_ = 0;  // Leaky Integrator last output
 
     a_ = 0;    // AllPass coefficient
@@ -74,9 +72,11 @@ MarSystem* APDelayOsc::clone() const
 void APDelayOsc::addControls()
 {
 	addctrl("mrs_real/frequency", 440.0);
+	addctrl("mrs_natural/type", 0);
 	addctrl("mrs_bool/noteon", false);
 
 	setctrlState("mrs_real/frequency", true);
+	setctrlState("mrs_natural/type", true);
 	setctrlState("mrs_bool/noteon", true);
 }
 
@@ -86,8 +86,9 @@ void APDelayOsc::myUpdate(MarControlPtr sender)
 
 	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
 	noteon_ = (getctrl("mrs_bool/noteon")->to<mrs_bool>());
+	type_ = (getctrl("mrs_natural/type")->to<mrs_natural>());
 
-	mrs_real israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
+	israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
 
 	// loweset frequency on a piano is 27.5Hz ... sample rate/27.5 for commute
 	// this is the longest delay line required
@@ -104,21 +105,47 @@ void APDelayOsc::myUpdate(MarControlPtr sender)
   
 	if (noteon_)
     {		
+		ly1_ = 0;  // Leaky Integrator last output
+
+		ax1_ = 0;  // AllPass last input
+		ay1_ = 0;  // AllPass last output
+
+		// Allpass coefficient
+		// Chosen through experimentation
 		mrs_real delay = 1.3;
 		a_ = (1 - delay)/(1 + delay);
 
-		mrs_real d = 2*israte_/frequency_;
-
+		// The amount of delay to generate the correct pitch
+		mrs_real d = israte_/frequency_;
 		N_ = (mrs_natural)floor(d);
 
+		// Choses the differences between generating saw
+		// or square waves.
+		switch (type_)
+		{
+			case 0: // Saw
+				dc_ = frequency_ / israte_;
+				neg_ = 1;
+				break;
+			case 1: // Square
+				dc_ = 0;
+				neg_ = -1;
+				N_ = N_/2; // Because this is bipolar
+				           // we need to halve the period
+				break;
+		}
+
+		// Initialize the delay line
 		for (t = 0; t < N_; t++)
 		{
 			delayline_(t) = 0;
 		}
-		delayline_(1) = 0.7;
+		// initialize the system with an impulse
+		delayline_(1) = 0.95;
 
+		// Initialize our read and write pointers
 		rp_ = 1;
-		rpp_ = 0;
+		rpp_ = 0; // Not used, but could be used to do pitch shifting
 		wp_ = N_-1;
     }
 	/// Use the default MarSystem setup with equal input/output stream format.
@@ -142,7 +169,7 @@ mrs_real APDelayOsc :: leakyIntegrator(mrs_real x)
 
 mrs_real APDelayOsc :: dcBlocker(mrs_real x)
 {
-	mrs_real y = (x - dx1_) + (0.995 * dy1_);
+	mrs_real y = (x - dx1_) + (0.95 * dy1_);
 	dx1_ = x;
 	dy1_ = y;
 	return y;
@@ -155,7 +182,6 @@ void APDelayOsc::myProcess(realvec& in, realvec& out)
 	mrs_natural t,o;
 	mrs_real y, x = 0;
 
-
 	if (noteon_)
 	{
 		for (t = 0; t < inSamples_; t++)
@@ -165,10 +191,15 @@ void APDelayOsc::myProcess(realvec& in, realvec& out)
 
 			y = allPass(x);
 
-			delayline_(wp_) = y;
+			// Write current sample back into the delay buffer.
+			// If square each sample is negated.
+			delayline_(wp_) = y * neg_;
 
-			y = leakyIntegrator(dcBlocker(y));
+			// The leaky Integrator is used to apply an
+			// exponential decay as frequencies increase.
+			y = leakyIntegrator(y - dc_);
 
+			// Increment the delay line pointers
 			wp_ = (wp_ + 1)  % N_;
 			rp_ = (rp_ + 1)  % N_;
 
