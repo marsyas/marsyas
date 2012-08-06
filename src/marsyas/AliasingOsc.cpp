@@ -69,6 +69,12 @@ void AliasingOsc::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("AliasingOsc.cpp - AliasingOsc:myUpdate");
 
+	// Start the default MarSystem setup with equal input/output stream format.
+	MarSystem::myUpdate(sender);
+
+	// This sets the ouput channels to 1, as this is a mono oscillator
+	ctrl_onObservations_->setValue(1, NOUPDATE);
+
 	// Because our range is from -1 to 1, and frequency / israte is
 	// for the range 0 to 1. We need to double the frequency to
 	// accomedate the larger range.
@@ -86,10 +92,6 @@ void AliasingOsc::myUpdate(MarControlPtr sender)
 
 	type_ =  (getctrl("mrs_natural/type")->to<mrs_natural>());
 	cyclicRate_ = (getctrl("mrs_real/cyclicrate")->to<mrs_real>());
-
-
-	/// Use the default MarSystem setup with equal input/output stream format.
-	MarSystem::myUpdate(sender);
 }
 
 void AliasingOsc::myProcess(realvec& in, realvec& out)
