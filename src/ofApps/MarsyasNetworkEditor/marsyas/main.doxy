@@ -1,0 +1,32 @@
+/** \mainpage Marsyas
+ *
+ * Core MarSystems:
+ * - \ref Composites "Composites": these are the "building blocks"
+ * of %Marsyas.
+ * - \ref IO "Input/Output": get data in or out.
+ * - \ref Basic "Basic Processing": simple processing blocks.
+ *
+ * Main MarSystems:
+ * - \ref Processing "Processing": more advanced processing, such as
+ * filters and envelopes.
+ * - \ref Analysis "Analysis": translates audio blocks into other
+ * blocks.
+ * - \ref Synthesis "Synthesis": creates audio.
+ *
+ * Specialized MarSystems:
+ * - \ref Network "Network Input/Output": send data over a network.
+ * - \ref MIDI "MIDI Input/Output and Devices": deals with MIDI.
+ * - \ref MachineLearning "Machine Learning": MarSystems relating to
+ * audio classification and machine learning.
+ *
+ * Not MarSystems, but still useful:
+ * - \ref NotmarCore "Core classes": fundamental classes for Marsyas.
+ * - \ref Notmar "Other classes": other non-MarSystem classes.
+ * - \ref MarsyasQt "MarsyasQt": Library for Marsyas/Qt interaction.
+ * - \ref Scheduler "Scheduler" : scheduling related classes.
+ *
+ * Certified classes and MarSystems:
+ * - \ref Certified "Certfied": well-tested classes and
+ * MarSystems.
+ */
+

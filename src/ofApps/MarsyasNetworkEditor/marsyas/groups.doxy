@@ -1,0 +1,137 @@
+/**  @defgroup Composites Composites
+ *
+ * \brief These are MarSystems which contain other MarSystems.
+ *
+ */
+
+/**  @defgroup Basic Basic Processing
+ *
+ * \brief These are simple building blocks for processing data.  For
+ * a list of all processing blocks, see \ref Processing.
+ *
+ */
+
+/**  @defgroup IO Input/Output
+ *
+ * \brief These are the MarSystems which get data to/from files and audio.
+ * They may rely on other MarSystems to perform the actual operations;
+ * see \ref Internal "Internal IO" for a list of these MarSystems.
+ *
+ */
+
+/**  @defgroup Internal Internal IO
+ *
+ * \brief These MarSystems are used internally; if you constructing a
+ * MarNetwork, you should not need to know about these MarSystems.
+ *
+ * These MarSystems are used internally; if you constructing a
+ * MarNetwork, you should not need to know about these MarSystems.
+ *
+ * For example, SoundFileSource will transparently call WavFileSource or
+ * AuFileSource, but you should simply use SoundFileSource with the
+ * appropriate filename.
+ *
+ */
+
+/**  @defgroup Network Network Input/Output
+ *
+ * \brief These Marsystems are used to transmit information over a network.
+ *
+ */
+
+/**  @defgroup MIDI MIDI Input/Output and Devices
+ *
+ * \brief These Marsystems are used for MIDI devices.
+ *
+ */
+
+/**  @defgroup Analysis Analysis
+ *
+ * \brief These MarSystems analyze sound.
+ *
+ */
+
+/**  @defgroup Synthesis Synthesis
+ *
+ * \brief These MarSystems generate sounds.
+ *
+ */
+
+/**  @defgroup Processing Processing
+ *
+ * \brief These MarSystems process realvecs.  There is a separate list
+ * of \ref Basic "simple processing" blocks; this list includes both
+ * simple and advanced processing blocks.
+ *
+ */
+
+/**  @defgroup MachineLearning Machine Learning
+ *
+ * \brief These MarSystems are involved in classifying audio for machine
+ * learning.
+ *
+ */
+
+/**  @defgroup Scheduler Scheduler
+ *
+ * \brief These MarSystems are invovled in the scheduler.
+ *
+ */
+
+/**  @defgroup Experimental Experimental
+ *
+ * \brief These MarSystems are experimental and should not be used.
+ *
+ */
+
+/**  @defgroup Special Special
+ *
+ * \brief These MarSystems somehow manage to evade all the other
+ * categories, and are thus placed here.
+ *
+ */
+
+/**  @defgroup NotmarCore Core classes which are not MarSystems
+ *
+ * \brief These classes are not MarSystems, but are fundamental classes
+ * for Marsyas.
+ *
+ */
+
+/**  @defgroup Notmar Classes which are not MarSystems
+ *
+ * \brief These classes are not MarSystems, nor fundamental classes of
+ * Marsyas.
+ *
+ */
+
+/**  @defgroup MarsyasQt MarsyasQt
+ *
+ * \brief The non-Meta-GUI Marsyas/Qt interaction.
+ *
+ */
+
+
+
+/**  @defgroup none Undocumented
+ *
+ * \brief These MarSystems have not been documented yet.
+ *
+ */
+
+
+/** @defgroup String String manipulation
+ *
+ * \brief Classes and functions for various string manipulation.
+ */
+
+
+/**  @defgroup Certified Certified classes and MarSystems.
+ *
+ * \brief These classes and MarSystems have been checked
+ * carefully, are believe to be high quality, have unit tests
+ * and/or regression tests, and should not be
+ * modified without discussing it on the mailing list first.
+ *
+ */
+

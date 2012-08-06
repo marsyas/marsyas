@@ -1,0 +1,82 @@
+/* marsyas/config.h.in.  Generated from configure.in by autoheader.  */
+
+/* WINDOWS STUFF */
+#undef CYGWIN
+
+/* Enable mad mp3 decoding */
+#undef MAD_MP3
+
+/* Enable Marsyas Assertions */
+#undef MRSASSERTE
+
+/* Enable Audio IO */
+#undef MRSAUDIO
+
+/* Enable DEBUG MESSAGES */
+#undef MRSDEBUGGING
+
+/* Enable Marsyas Diagnostics */
+#undef MRSDIAGNOSTIC
+
+/* Enable MIDI IO */
+#undef MRSMIDI
+
+/* Enable Marsyas Warnings */
+#undef MRSWARNING
+
+/* Enable ogg vorbis decoding */
+#undef OGG_VORBIS
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Version number of package */
+#undef VERSION
+
+/* IS BIG ENDINA */
+#undef __BIG_ENDIAN__
+
+/* CYGWIN FOR THREAD STUFF */
+#undef __CYGWIN__
+
+/* LINUX SYSTEM FOR RTAUDIO */
+#undef __LINUX_ALSASEQ__
+
+/* LINUX SYSTEM FOR RTAUDIO */
+#undef __LINUX_ALSA__
+
+/* LINUX SYSTEM FOR RTAUDIO */
+#undef __LINUX_OSS__
+
+/* MACOSX SYSTEM FOR RTAUDIO */
+#undef __MACOSX_CORE__
+
+/* LINUX STUFF */
+#undef __OS_LINUX__
+
+/* WINDOWS SYSTEM FOR RTMIDI */
+#undef __OS_WINDOWS__RTMIDI__
+
+/* WINDOWS SYSTEM FOR RTAUDIO */
+#undef __WINDOWS_DS__
+
+/* WINDOWS SYSTEM FOR RTAUDIO */
+#undef __WINDOWS_MM__
+
+/* Enable readline */
+#undef __WITHREADLINE__

@@ -24,16 +24,26 @@
 namespace Marsyas
 {
 /**
-	\class MarSystemTemplateBasic
-	\ingroup Processing
-	\brief Basic example on how to use controls efficiently in MarSystems
+	\class AliasingOsc
+	\ingroup Synthesis
+	\brief A simple aliasing oscillator
 
-	This example is the same as Gain; it scales the output by
-	multiplying each sample with a real number.
+	A simple aliasing oscillator capable of Saw and PWM.
+
+	The pitch can be modulated by using in(0,t).
+
+	The cyclic rate can be modulated by using in(1,t). If cyclicin is
+	set to true.
+
+	TODO: Implement triangle wave.
+	TODO: Make it so that there is control over what in channel is
+	      mapped to what parameter is getting modulated.
 
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- \b mrs_real/frequency [w] : Sets the fundental frequency for the oscillator.
+	- \b mrs_real/cyclicrate [w] : Sets the cyclic rate of the PWM waveform
+	- \b mrs_bool/cyclicin [w] : If true the input realvec(1,t) will control the cyclic rate
+	- \b mrs_natural/type [w] : Sets the oscillator type. (saw = 0, PWM = 1)
 */
 
 class AliasingOsc: public MarSystem
@@ -48,6 +58,10 @@ private:
 	mrs_real currentValue_;
 	mrs_real incr_;
 	mrs_real cyclicRate_;
+	mrs_bool cyclicIn_;
+	mrs_real israte_;
+	mrs_real frequency_;
+	mrs_natural type_;
 
 public:
 	// AliasingOsc constructor.

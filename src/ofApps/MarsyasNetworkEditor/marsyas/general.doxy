@@ -1,0 +1,42 @@
+
+/** \file general.doxy
+\todo document how to use MRSDEBUG and similar stuff.
+
+\todo configure should check for alsa headers.
+
+\todo Move any useful comments out of Gain.h / Gain.cpp and into the
+MarSystemTemplate stuff.
+
+\todo all .cpp files should be inside the Marsyas namespace, instead of
+importing it.
+
+\todo all Foo::Foo(string blah) need to change to Foo::Foo(std::string
+blah);  In other words, the argument list in .cpp needs to be the same
+as .h
+
+\todo document controls for ALL "core" MarSystems.  (once that's done,
+tackle Processing, Analysis, and Synthesis)
+
+\todo finish putting Marsystems in categories.  grep "ingroup none" *
+
+\todo Remove class from all doxy.  Doxygen is happier if it can figure
+out the class by itself (ie place the doxy stuff right before the "class
+foo" line)
+
+\todo run dos2unix on all source files.  Also (possibly) run astyle.
+Problem: these changes count as... umm... changes :).  That means that
+you can't easily use svn blame to find out who made the last non-trivial
+change.
+
+\todo get Transcriber-simple integated in Marsyas.  Then update
+pitchextract to use it (maybe?)
+
+\todo Nag gtzan about having a marsyas/Qt/  that contains stuff like
+MarSystemQtWrapper.
+
+\todo Discuss splitting MarSystemManager into MarSystemManager-atoms and
+MarSystemManager-molecules
+
+\todo doxygen for the apps?  (maybe?)  (seperate docs?)
+*/
+
