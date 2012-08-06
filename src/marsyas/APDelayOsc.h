@@ -30,13 +30,9 @@ namespace Marsyas
 
 	This is a non-aliasing virtual analog oscillator algorithm.
 
-	[impulse] -> [delay line] -> [fractional delay filter] -> [leaky integrator] -> [output]
-	             |                                       |
-				 ^---------------------------------------<
-
 	For the saw algorithm the output of the fractional delay is fed back into
 	the delay line. This creates a perceptually harmonic spectrum that
-	aproximates having all the harmonics at equal power up to the nyquist
+	approximates having all the harmonics at equal power up to the Nyquist
 	frequency.  The saw algorithm ends up having a considerable DC offset, that
 	is removed by subtracting frequency/Samplerate from each sample. Finally
 	the leaky integrator is used to apply an exponential decay to the frequency
@@ -52,13 +48,13 @@ namespace Marsyas
 	TODO: Add triangle wave
 
 	TODO: Add ability to modulate pitch.
-	          This could be done using two read pointers and
-			  and a cross fadder.
+	          This could be done using two read pointers
+			  and a cross fader.
 			  It could also be done by changing the delay time
-			  at the end of each cyle.
+			  at the end of each cycle.
 	Controls:
 	- \b mrs_real/frequency [w] : sets the frequency of the wave.
-	- \b mrs_natural/type [w] : sets the oscillator type. (saw = 0, square = 0).
+	- \b mrs_natural/type [w] : sets the oscillator type. (saw = 0, square = 1).
 	- \b mrs_bool/noteon [w] : turns on the oscillator
 */
 
