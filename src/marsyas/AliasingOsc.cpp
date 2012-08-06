@@ -24,16 +24,22 @@ using namespace Marsyas;
 
 AliasingOsc::AliasingOsc(mrs_string name) : MarSystem("AliasingOsc", name)
 {
+	currentValue_ = 0;
+	incr_  = 0;
+	cyclicRate_ = 0;
+	israte_ = 0;
+	frequency_ = 0;
+	type_ = 0;
+
 	addControls();
 }
 
 AliasingOsc::AliasingOsc(const AliasingOsc& a) : MarSystem(a)
 {
 	// IMPORTANT!
-	/// All member MarControlPtr have to be explicitly reassigned in
-	/// the copy constructor.
+	// All member MarControlPtr have to be explicitly reassigned in
+	// the copy constructor.
 	// Otherwise this would result in trying to deallocate them twice!
-	//ctrl_gain_EXAMPLE_ = getctrl("mrs_real/gain");
 }
 
 
@@ -41,32 +47,44 @@ AliasingOsc::~AliasingOsc()
 {
 }
 
-MarSystem*
-AliasingOsc::clone() const
+MarSystem* AliasingOsc::clone() const
 {
 	// Every MarSystem should do this.
 	return new AliasingOsc(*this);
 }
 
-void
-AliasingOsc::addControls()
+void AliasingOsc::addControls()
 {
 	addctrl("mrs_real/frequency", 440.0);
+	addctrl("mrs_natural/type", 0);
 	addctrl("mrs_real/cyclicrate", 0.0);
+	addctrl("mrs_bool/cyclicin", false);
 
 	setctrlState("mrs_real/frequency", true);
+	setctrlState("mrs_natural/type", true);
 	setctrlState("mrs_real/cyclicrate", true);
 }
 
-void
-AliasingOsc::myUpdate(MarControlPtr sender)
+void AliasingOsc::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("AliasingOsc.cpp - AliasingOsc:myUpdate");
 
-	mrs_real frequency = (getctrl("mrs_real/frequency")->to<mrs_real>());
-	mrs_real irate = (getctrl("mrs_real/israte")->to<mrs_real>());
-	incr_ = frequency / irate;
+	// Because our range is from -1 to 1, and frequency / israte is
+	// for the range 0 to 1. We need to double the frequency to
+	// accomedate the larger range.
+	frequency_ = 2 * (getctrl("mrs_real/frequency")->to<mrs_real>());
+	israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
+	cyclicIn_ = (getctrl("mrs_bool/cyclicin")->to<mrs_bool>());
 
+	switch (type_)
+	{
+		case 0: // Saw
+			break;
+		case 1: // The incrment is half for PWM
+			break;
+	}
+
+	type_ =  (getctrl("mrs_natural/type")->to<mrs_natural>());
 	cyclicRate_ = (getctrl("mrs_real/cyclicrate")->to<mrs_real>());
 
 
@@ -74,38 +92,39 @@ AliasingOsc::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
 }
 
-void
-AliasingOsc::myProcess(realvec& in, realvec& out)
+void AliasingOsc::myProcess(realvec& in, realvec& out)
 {
-	(void) in;
-
 	mrs_natural t,o;
 
-	mrs_real frequency = (getctrl("mrs_real/frequency")->to<mrs_real>());
-	mrs_real irate = (getctrl("mrs_real/israte")->to<mrs_real>());
-
-	for (o = 0; o < inObservations_; o++)
+	for (t = 0; t < inSamples_; t++)
 	{
-		for (t = 0; t < inSamples_; t++)
+
+		incr_ = (frequency_ * (in(0,t) + 1) ) / israte_;
+
+		currentValue_ = currentValue_ + incr_;
+
+		// Logic for different oscillator types
+		switch(type_)
 		{
+			case 0: // Saw
+				out(0,t) = currentValue_;
+				break;
+			case 1: // PWM
+				if (currentValue_ >= (cyclicIn_ ? in(1,t) : cyclicRate_))
+				{
+					out(0,t) = 0.9;
+				}
+				else
+				{
+					out(0,t) = -0.9;
+				}
+				break;
+		}
 
-			incr_ = (frequency * (in(0,t) + 1) ) / irate;
-			currentValue_ = currentValue_ + incr_;
-			out(0, t) = currentValue_;
-
-			if (currentValue_ >= cyclicRate_)
-			{
-				out(0,t) = 0.9;
-			}
-			else
-			{
-				out(0,t) = -0.9;
-			}
-
-			if(currentValue_ >= 1.0)
-			{
-				currentValue_ = -1.0;
-			}
+		// Reset currentValue when there is an overflow
+		if(currentValue_ >= 1.0)
+		{
+			currentValue_ = -1.0;
 		}
 	}
 }
