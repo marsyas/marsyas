@@ -30,6 +30,13 @@ namespace Marsyas
 	Creates a sine wave of a chosen frequency using a wave
 	guide.
 
+	The frequency can be modulated by using in(0,t). This
+	currently doesn't work at audio rates because there is
+	amplitude scaling cause when the coefficient k is changed.
+
+	A scaling value could be calculated to compensate for the
+	amplitude change.
+
 	Controls:
 	- \b mrs_real/frequency [w] : the sinewaves frequency in hz.
 	- \b mrs_bool/noteon [w] : currently not implemented.
@@ -42,9 +49,6 @@ private:
 
 	mrs_real x1n1_;  // Last x1
 	mrs_real x2n1_;  // Last x2
-
-	mrs_real x1_;
-	mrs_real x2_;
 
 	mrs_real israte_; // Sampling rate of the system
 

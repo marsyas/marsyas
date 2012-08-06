@@ -55,27 +55,29 @@ void WaveguideOsc::addControls()
 
 void WaveguideOsc::myUpdate(MarControlPtr sender)
 {
+	// x1n1_ is initialized with an impluse
 	x1n1_ = 0.95;
 	x2n1_ = 0;
-	x1_ = 0;
-	x2_ = 0;
-	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
-	mrs_real israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
 
-	k_ = cos((2*3.14159*frequency_)/israte_);
+	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
+	israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
+
+	k_ = cos((TWOPI*frequency_)/israte_);
 	MarSystem::myUpdate(sender);
 }
 
 void WaveguideOsc::myProcess(realvec& in, realvec& out)
 {
-	mrs_real y, x1, x2;
+	mrs_real x1, x2;
+
 	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
-		x1_ = (2* k_ * x1n1_) - x2n1_;
-		x2_ = x1n1_;
-		x1n1_ = x1_;
-		x2n1_ = x2_;
+		k_ = cos((TWOPI*frequency_*(in(0,t) + 1))/israte_);
+		x1 = (2* k_ * x1n1_) - x2n1_;
+		x2 = x1n1_;
+		x1n1_ = x1;
+		x2n1_ = x2;
 
-		out(0,t) = x1_ - x2_;
+		out(0,t) = x1 - x2;
 	}
 }
