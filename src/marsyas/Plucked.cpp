@@ -54,10 +54,12 @@ void Plucked::addControls()
 	addctrl("mrs_real/frequency", 100.0);
 	addctrl("mrs_real/pluckpos", 0.5);
 	addctrl("mrs_real/nton", 0.5);
+	addctrl("mrs_bool/noteon", false);
 	addctrl("mrs_real/loss",1.0);
 	addctrl("mrs_real/stretch",0.2);
 	setctrlState("mrs_real/frequency", true);
 	setctrlState("mrs_real/nton", true);
+	setctrlState("mrs_bool/noteon", true);
 	setctrlState("mrs_real/loss", true);
 }
 
@@ -79,7 +81,9 @@ void Plucked::myUpdate(MarControlPtr sender)
 
 	mrs_real freq = getctrl("mrs_real/frequency")->to<mrs_real>();
 	mrs_real pos = getctrl("mrs_real/pluckpos")->to<mrs_real>();
-	noteon_ = getctrl("mrs_real/nton")->to<mrs_real>();
+
+	nton_ = getctrl("mrs_real/nton")->to<mrs_real>();
+	noteon_ = getctrl("mrs_bool/noteon")->to<mrs_bool>();
 
 	loss_ = getctrl("mrs_real/loss")->to<mrs_real>();  
 
@@ -102,7 +106,7 @@ void Plucked::myUpdate(MarControlPtr sender)
 		}
     }
   
-	if (noteon_ > 0)
+	if (nton_ > 0 || noteon_)
     {		
 		a_ = 0;
 		d_ = 2*israte/freq;

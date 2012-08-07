@@ -58,7 +58,8 @@ private:
 	mrs_real g_; //coefficient of all pass filter g_=-(1-d)/d+1)
 	mrs_real c;  //output of inverse comb filt (for pick pos)
 
-	mrs_real noteon_;
+	mrs_real nton_;
+	mrs_bool noteon_;
 
 	mrs_natural wp_;
 	mrs_natural wpp_;
