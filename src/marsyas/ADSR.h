@@ -42,8 +42,8 @@ private:
     mrs_real target_;
     mrs_real rate_;
     mrs_real value_;
-    mrs_real noteon_;
-    mrs_real noteoff_;
+    mrs_real nton_;
+    mrs_real ntoff_;
     mrs_real aRate_; 
     mrs_real aTime_;
     mrs_real aTarget_;
@@ -54,7 +54,10 @@ private:
     mrs_real rTime_;
     mrs_real sampleRate_;
     mrs_natural state_;
+
     mrs_bool bypass_;
+    mrs_bool noteon_;
+    mrs_bool noteoff_;
 
 public:
     ADSR(std::string name);

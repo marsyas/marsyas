@@ -58,18 +58,23 @@ ADSR::addControls()
 	addctrl("mrs_real/nton",  0.0);
 	addctrl("mrs_real/ntoff", 0.0);
 
+	addctrl("mrs_bool/noteon",  false);
+	addctrl("mrs_bool/noteoff", false);
+
 	//setctrlState("mrs_real/aRate",  true);
-	setctrlState("mrs_real/aTime",    true );
-	setctrlState("mrs_real/aTarget",  true );
-	//setctrlState("mrs_real/dRate",  true );
-	setctrlState("mrs_real/dTime",    true );
-	setctrlState("mrs_real/susLevel", true );
-	//setctrlState("mrs_real/rRate",  true );
-	setctrlState("mrs_real/rTime",    true );
-	setctrlState("mrs_real/nton",     true );
-	setctrlState("mrs_real/ntoff",    true );
-	setctrlState("mrs_real/eValue",   true );
-	setctrlState("mrs_bool/bypass",   true );
+	setctrlState("mrs_real/aTime",    true);
+	setctrlState("mrs_real/aTarget",  true);
+	//setctrlState("mrs_real/dRate",  true);
+	setctrlState("mrs_real/dTime",    true);
+	setctrlState("mrs_real/susLevel", true);
+	//setctrlState("mrs_real/rRate",  true);
+	setctrlState("mrs_real/rTime",    true);
+	setctrlState("mrs_real/nton",     true);
+	setctrlState("mrs_real/ntoff",    true);
+	setctrlState("mrs_real/eValue",   true);
+	setctrlState("mrs_bool/bypass",   true);
+	setctrlState("mrs_bool/noteon",   true);
+	setctrlState("mrs_bool/noteoff",  true);
 }
 
 void
@@ -97,23 +102,28 @@ ADSR::myUpdate(MarControlPtr sender)
 	aRate_ = 1.0 / (aTime_ * sampleRate_);
 	dRate_ = 1.0 / (dTime_ * sampleRate_);
 	rRate_ = 1.0 / (rTime_ * sampleRate_);
-	noteon_ = getctrl("mrs_real/nton")->to<mrs_real>();
-	noteoff_ = getctrl("mrs_real/ntoff")->to<mrs_real>();
+	nton_ = getctrl("mrs_real/nton")->to<mrs_real>();
+	ntoff_ = getctrl("mrs_real/ntoff")->to<mrs_real>();
+
+	noteon_ = getctrl("mrs_bool/noteon")->to<mrs_bool>();
+	noteoff_ = getctrl("mrs_bool/noteoff")->to<mrs_bool>();
 
 	bypass_ = getctrl("mrs_bool/bypass")->to<mrs_bool>();
 
 
-	if(noteon_)
+	if(noteon_ || nton_)
 	{
 		this->setctrl("mrs_real/nton",0.0);
+		this->setctrl("mrs_bool/noteon", false);
 		value_=0.0;
 		target_ = aTarget_;
 		state_ = 1;
 	}
 
-	if(noteoff_)
+	if(noteoff_ || ntoff_)
 	{
 		this->setctrl("mrs_real/ntoff",0.0);
+		this->setctrl("mrs_bool/noteoff", false);
 		target_ = 0.0;
 		state_ = 4;
 	}
