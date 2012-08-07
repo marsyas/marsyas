@@ -24,14 +24,22 @@
 namespace Marsyas
 {
 /**
-	\ingroup Processing Basic Certified
-	\brief Multiply input realvec with a fixed value.
+	\ingroup Synthesis
+	\brief A BLIT oscillator
 
-	Multiply all the values of the input realvec with
-mrs_real/gain and put them in the output vector.
+	An implementation of a bandlimited impulse train oscillator.
+
+	This implementation relies on a second order all pass filter
+	as a fractional delay. The delay reduces some aliasing caused
+	by the impulse train.
+
+	TODO: Add triangle shape
+	TODO: Add ability to shift the pitch via one of the input channels
 
 	Controls:
-	- \b mrs_real/gain [w] : adjust the gain multiplier.
+	- \b mrs_real/frequency [w] : The desired frequency for the oscillator.
+	- \b mrs_natural/type [w] : The type of oscillator (saw = 0, square = 1)
+	- \b mrs_bool/noteon [w] : Not yet implemented
 */
 
 
@@ -42,13 +50,15 @@ private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
 
-	mrs_real frequency_;
-	mrs_real israte_;
-	mrs_bool noteon_;
-	mrs_natural phase_;
-	mrs_natural N_;
-	mrs_real delay_;
-	mrs_real dc_;
+	mrs_real frequency_; // the oscillator frequency
+	mrs_real israte_;    // sample rate of the system
+	mrs_bool noteon_;    // is our note on?
+	mrs_natural phase_;  // the current phase
+	mrs_natural N_;      // the maximum of the phase counter
+	mrs_real delay_;     // The delay of the allpass filter
+	mrs_real dc_;        // The DC offset for the saw form
+	mrs_real inv_;       // Used to create a bipolar impulse train for square form
+	mrs_natural type_;   // The oscillator type
 
 	// All Pass Delays + Coefficients
 	mrs_real ax1_;

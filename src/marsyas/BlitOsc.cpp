@@ -22,13 +22,6 @@ using namespace Marsyas;
 
 BlitOsc::BlitOsc(mrs_string name):MarSystem("BlitOsc", name)
 {
-	//Add any specific controls needed by BlitOsc
-	//(default controls all MarSystems should have
-	//were already added by MarSystem::addControl(),
-	//called by :MarSystem(name) constructor).
-	//If no specific controls are needed by a MarSystem
-	//there is no need to implement and call this addControl()
-	//method (see for e.g. Rms.cpp)
 	addControls();
 }
 
@@ -54,23 +47,23 @@ void BlitOsc::addControls()
 	//Add specific controls needed by this MarSystem.
 	addctrl("mrs_real/frequency", 440.0);
 	addctrl("mrs_bool/noteon", false);
+	addctrl("mrs_natural/type", 0);
 
 	setctrlState("mrs_real/frequency", true);
+	setctrlState("mrs_natural/type", true);
 	setctrlState("mrs_bool/noteon", true);
 }
 
 
 void BlitOsc::myUpdate(MarControlPtr sender)
 {
-	delay_ = 2.1;
+	delay_ = 1.9;
 	le_ = 0.005;
 
 	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
+	type_ = (getctrl("mrs_natural/type")->to<mrs_natural>());
 	noteon_ = (getctrl("mrs_bool/noteon")->to<mrs_bool>());
-
 	israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
-
-	mrs_real d = israte_/frequency_;
 
 	// Set all Coefficients to zero
 	ax1_ = 0;
@@ -82,11 +75,25 @@ void BlitOsc::myUpdate(MarControlPtr sender)
 	a1_ = -2 * ((delay_ - 2) / (delay_ + 1));
 	a2_ = ((delay_ - 1)*(delay_ - 2))/((delay_ + 1)*(delay_ + 2));
 
+	phase_ = 0;
+	inv_ = 1;
+
+	switch (type_)
+	{
+		case 0: // Saw
+			dc_ = (frequency_)/israte_;
+			break;
+		case 1: // Square
+			// The frequency has to be doubled to compensate for
+			// the frequency be being halved by the square wave
+			// being bipolar
+			frequency_ *= 2;
+			dc_ = 0;
+			break;
+	}
+
+	mrs_real d = israte_/frequency_;
 	N_ = (mrs_natural)floor(d);
-
-	dc_ = frequency_/israte_;
-
-	//phase_ = 0;
 
 	// no change to network flow
 	MarSystem::myUpdate(sender);
@@ -111,16 +118,21 @@ mrs_real BlitOsc::leakyIntegrator(mrs_real x)
 
 void BlitOsc::myProcess(realvec& in, realvec& out)
 {
-
-	// It is important to loop over both observations
-	// and channels so that for example a gain can be
-	// applied to multi-channel signals
 	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
 		if (phase_ >= N_)
 		{
 			phase_ = 0;
-			out(0,t) = leakyIntegrator(allPass(0.95) - dc_);
+			switch (type_)
+			{
+				case 0: // Saw
+					out(0,t) = leakyIntegrator(allPass(0.95) - dc_);
+					break;
+				case 1: // Square
+					out(0,t) = leakyIntegrator(allPass(0.95 * inv_));
+					inv_ = (-inv_);
+					break;
+			}
 		}
 		else
 		{
