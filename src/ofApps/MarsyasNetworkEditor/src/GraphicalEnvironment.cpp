@@ -89,6 +89,7 @@ void GraphicalEnvironment::update(){
         mVf_->update();
     }
     
+	probe_->update();
     
 }
 

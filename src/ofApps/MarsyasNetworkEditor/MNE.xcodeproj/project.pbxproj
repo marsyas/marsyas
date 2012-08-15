@@ -13,6 +13,7 @@
 		1d5f3298c2fa073628012944b1efde88 /* ofxCvContourFinder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = c76de5c29bdbd2caa1dd0021a7376220 /* ofxCvContourFinder.cpp */; };
 		250a95ba26587be85db0a353e6e1dea2 /* ofxCvColorImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = ce9c7160245b19131dae61282ee6cb53 /* ofxCvColorImage.cpp */; };
 		28090deb5109115003e8f1c540f04092 /* UdpSocketWin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5928aa323f5c2690b06c837d8d036f55 /* UdpSocketWin.cpp */; };
+		41D09F1B15DBA81C00DD3754 /* BufferUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 41D09F1915DBA81C00DD3754 /* BufferUtils.cpp */; };
 		4e322024174afb49a3bea15285a09d6a /* model3DS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1d59890e3c752d42722d2afa9291db32 /* model3DS.cpp */; };
 		510cafe035e576a4e1502d52c11243bb /* UdpSocket.cpp in Sources */ = {isa = PBXBuildFile; fileRef = e6def695b88ba5faaceaa93785a12fd9 /* UdpSocket.cpp */; };
 		5864ad82e20f15536d054ea319473de3 /* ofxOscMessage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = df49d76c45d5db505a234880104e4dc7 /* ofxOscMessage.cpp */; };
@@ -526,6 +527,8 @@
 		41CE7C3815CAA88400E45CF5 /* Yin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Yin.h; path = marsyas/Yin.h; sourceTree = "<group>"; };
 		41CE7C3915CAA88400E45CF5 /* ZeroCrossings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZeroCrossings.h; path = marsyas/ZeroCrossings.h; sourceTree = "<group>"; };
 		41CE7C3A15CAA88400E45CF5 /* ZeroRClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZeroRClassifier.h; path = marsyas/ZeroRClassifier.h; sourceTree = "<group>"; };
+		41D09F1915DBA81C00DD3754 /* BufferUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BufferUtils.cpp; sourceTree = "<group>"; };
+		41D09F1A15DBA81C00DD3754 /* BufferUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferUtils.h; sourceTree = "<group>"; };
 		444657a12e59d0ed86981498fccd5fcc /* TimerListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = TimerListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/TimerListener.h; sourceTree = SOURCE_ROOT; };
 		452417865e4bfb10c9cbf8a2e12a0b57 /* internal.hpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = internal.hpp; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/core/internal.hpp; sourceTree = SOURCE_ROOT; };
 		45410dd818bb205166e67e89e7443a54 /* any.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = any.h; path = ../../../addons/ofxOpenCv/libs/opencv/include/opencv2/flann/any.h; sourceTree = SOURCE_ROOT; };
@@ -1677,6 +1680,8 @@
 				A71775D3157E1E29001F7E9A /* utils.h */,
 				A71775D4157E1E29001F7E9A /* Widget.cpp */,
 				A71775D5157E1E29001F7E9A /* Widget.h */,
+				41D09F1915DBA81C00DD3754 /* BufferUtils.cpp */,
+				41D09F1A15DBA81C00DD3754 /* BufferUtils.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -2094,6 +2099,7 @@
 				A78CE77515A48D77003D4034 /* MarSystemThread.cpp in Sources */,
 				A78CE77615A48D77003D4034 /* ProbingManager.cpp in Sources */,
 				A78CE77715A48D77003D4034 /* ProcessedDataWidget.cpp in Sources */,
+				41D09F1B15DBA81C00DD3754 /* BufferUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
