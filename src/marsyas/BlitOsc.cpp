@@ -57,23 +57,13 @@ void BlitOsc::addControls()
 
 void BlitOsc::myUpdate(MarControlPtr sender)
 {
-	delay_ = 1.9;
-	le_ = 0.005;
+	ap1.set_delay(1.9);
+	ap2.set_delay(1.9);
 
 	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
 	type_ = (getctrl("mrs_natural/type")->to<mrs_natural>());
 	noteon_ = (getctrl("mrs_bool/noteon")->to<mrs_bool>());
 	israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
-
-	// Set all Coefficients to zero
-	ax1_ = 0;
-	ax2_ = 0;
-	ay1_ = 0;
-	ay2_ = 0;
-	ly1_ = 0;
-
-	a1_ = -2 * ((delay_ - 2) / (delay_ + 1));
-	a2_ = ((delay_ - 1)*(delay_ - 2))/((delay_ + 1)*(delay_ + 2));
 
 	phase_ = 0;
 	inv_ = 1;
@@ -92,52 +82,58 @@ void BlitOsc::myUpdate(MarControlPtr sender)
 			break;
 	}
 
+	// d is how many samples to delay
+	// because it is possible a fractional amount we split it
+	// into the integer part, and the fractional part.
 	mrs_real d = israte_/frequency_;
+	// N_ is the integer part.
 	N_ = (mrs_natural)floor(d);
+	// frac_ is the fractional part
+	frac_ = (d - N_);
+	// delay is used as an overflow counter for the
+	// fractional part.
+	delay_ = frac_;
 
 	// no change to network flow
 	MarSystem::myUpdate(sender);
-}
-
-mrs_real BlitOsc::allPass(mrs_real x)
-{
-	mrs_real y = (a2_ * x) + (a1_ * ax1_) + (ax2_) - (a1_ * ay1_) - (a2_ * ay2_);
-	ax2_ = ax1_;
-	ax1_ = x;
-	ay2_ = ay1_;
-	ay1_ = y;
-	return y;
-}
-
-mrs_real BlitOsc::leakyIntegrator(mrs_real x)
-{
-	mrs_real y = x + ((1 - le_) * ly1_);
-	ly1_ = y;
-	return y;
 }
 
 void BlitOsc::myProcess(realvec& in, realvec& out)
 {
 	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
-		if (phase_ >= N_)
+		if (phase_ >= N_ - 1)
 		{
 			phase_ = 0;
+
+			// The amount of delay is incresed by 1 to optimize the allpass filter.
+			// N_ is compensated accordingly for this delay at the top of this if
+			// statement.
+			ap1.set_delay(delay_ + 1);
+
 			switch (type_)
 			{
 				case 0: // Saw
-					out(0,t) = leakyIntegrator(allPass(0.95) - dc_);
+					out(0,t) = le(ap2(ap1(0.95) - dc_));
 					break;
 				case 1: // Square
-					out(0,t) = leakyIntegrator(allPass(0.95 * inv_));
+					out(0,t) = le(ap2(ap1(0.95 * inv_)));
 					inv_ = (-inv_);
 					break;
+			}
+
+			// This is the logic to tune the fractional part of the period.
+			delay_ += frac_;
+			if (delay_ >= 1)
+			{
+				delay_ -= 1;
+				phase_ = -1;
 			}
 		}
 		else
 		{
 			phase_++;
-			out(0,t) = leakyIntegrator(allPass(0) - dc_);
+			out(0,t) = le(ap2(ap1(0) - dc_));
 		}
 	}
 }

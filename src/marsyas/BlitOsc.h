@@ -46,6 +46,61 @@ namespace Marsyas
 class BlitOsc: public MarSystem
 {
 private:
+
+	class LeakyIntegrator
+	{
+	private:
+		mrs_real y1;
+		mrs_real le;
+	public:
+		LeakyIntegrator() : le(0.05) { }
+
+		void set_le_amount(mrs_real l)
+		{
+			le = l;
+		}
+
+		mrs_real operator()(mrs_real x)
+		{
+			mrs_real y = x + ((1 - le) * y1);
+			y1 = y;
+			return y;
+		}
+	};
+
+	class Allpass
+	{
+	private:
+		mrs_real x1;
+		mrs_real x2;
+		mrs_real y1;
+		mrs_real y2;
+		mrs_real a1;
+		mrs_real a2;
+		mrs_real d;
+	public:
+
+		void set_delay(mrs_real d)
+		{
+			a1 = -2 * ((d - 2) / (d + 1));
+			a2 = ((d - 1)*(d - 2))/((d + 1)*(d + 2));
+			x1 = 0;
+			x2 = 0;
+			y1 = 0;
+			y2 = 0;
+		}
+
+		mrs_real operator()(mrs_real x)
+		{
+			mrs_real y = (a2 * x) + (a1 * x1) + (x2) - (a1 * y1) - (a2 * y2);
+			x2 = x1;
+			x1 = x;
+			y2 = y1;
+			y1 = y;
+			return y;
+		}
+	};
+
 	//Add specific controls needed by this MarSystem.
 	void addControls();
 	void myUpdate(MarControlPtr sender);
@@ -55,26 +110,16 @@ private:
 	mrs_bool noteon_;    // is our note on?
 	mrs_natural phase_;  // the current phase
 	mrs_natural N_;      // the maximum of the phase counter
-	mrs_real delay_;     // The delay of the allpass filter
+	mrs_real delay_;     // The delay of the Allpass filter
 	mrs_real dc_;        // The DC offset for the saw form
 	mrs_real inv_;       // Used to create a bipolar impulse train for square form
 	mrs_natural type_;   // The oscillator type
 
-	// All Pass Delays + Coefficients
-	mrs_real ax1_;
-	mrs_real ax2_;
-	mrs_real ay1_;
-	mrs_real ay2_;
-	mrs_real a1_;
-	mrs_real a2_;
+	mrs_real frac_;
 
-	mrs_real allPass(mrs_real x);
-
-	// Leaky Integrator Delays + Coefficients
-	mrs_real ly1_;
-	mrs_real le_;
-
-	mrs_real leakyIntegrator(mrs_real x);
+	Allpass ap1; // The Tuning filter
+	Allpass ap2; // The antialiasing filter
+	LeakyIntegrator le;
 
 public:
 	BlitOsc(std::string name);
