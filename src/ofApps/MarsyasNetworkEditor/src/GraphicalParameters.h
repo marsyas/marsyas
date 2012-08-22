@@ -36,4 +36,8 @@
 //General parameters
 #define EASING 0.3
 
+
+//probing data visualization
+#define PROBING_PANEL_HEIGHT 130
+
 #endif

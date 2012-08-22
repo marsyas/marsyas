@@ -130,8 +130,7 @@ bool Widget::mousePressed()
 	{
 		if(env_->mouse_->click == 0)
 		{
-			toggleState();
-			//cout<<endl<<"mouseX = "<<mouse->x<<" "<<"mouse->y = "<<mouse->y;
+			toggleState();            
 			dragLock_ = true;
 			return true;
 		}

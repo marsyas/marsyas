@@ -13,6 +13,8 @@
 #include "MarControl.h"
 #include "MarSystemManager.h"
 #include "BufferUtils.h"
+#include "Widget.h"
+#include "maximizeButton.h"
 
 #define PDATA_BUFFER_SIZE 50
 
@@ -20,12 +22,10 @@
 namespace Marsyas {
 	class GraphicalEnvironment;
 	
-	class ProbingManager{
+	class ProbingManager : public Widget{
 		
 	protected:
 		
-		
-		GraphicalEnvironment* env_;
 		
 		MarControlPtr pData_;
 		
@@ -40,8 +40,12 @@ namespace Marsyas {
 		
 		std::vector<realvec> primaryBuffer_;
 		std::vector<double> secondaryBuffer_;
+        
+        
+		MaximizeButton* mBtn_;
+        bool isVisible_;
 		
-		
+        bool isLoaded_;
 		
 	public:
 		
@@ -57,6 +61,13 @@ namespace Marsyas {
 		void writeToBuffer();
 		
 		int viewZoom;
+        
+        
+        //mouse
+		bool mouseOver();
+		bool mousePressed();
+		bool mouseDragged();
+		bool mouseReleased();
 		
 		
 	};

@@ -87,9 +87,10 @@ void GraphicalEnvironment::update(){
         ctrlDisplay_->update();
         calculateTransformations();
         mVf_->update();
+        probe_->update();
     }
     
-	probe_->update();
+	
     
 }
 
@@ -150,11 +151,9 @@ void GraphicalEnvironment::draw(){
             mVf_->draw();
             
             ctrlDisplay_->draw();
+            probe_->draw();
         }
     }
-    else if(visualizationMode_ == 2){
-        probe_->draw();
-    }	
 }
 
 
@@ -173,7 +172,7 @@ void GraphicalEnvironment::keyPressed  (int key)
 			visualizationMode_ = 1;
 			break;
 		case '2':
-			visualizationMode_ = 2;
+			//visualizationMode_ = 2;
 			break;
 	}
 	
@@ -199,7 +198,9 @@ void GraphicalEnvironment::mouseMoved(int x, int y )
         }
         else {
             if(!ctrlDisplay_->mouseOver()){
-                msysw_->mouseOver();
+                if(!probe_->mouseOver()){
+                     msysw_->mouseOver();
+                }
             }
         }
         
@@ -220,7 +221,6 @@ void GraphicalEnvironment::mouseDragged(int x, int y, int button)
         mouse_->click = button;
         mouse_->drag = button;
         mVf_->mouseDragged();
-        
         update(); 
     }
     
@@ -238,11 +238,15 @@ void GraphicalEnvironment::mousePressed(int x, int y, int button)
         
         
         if(y < MINIVIEW_HEIGHT){
-            mVf_->mousePressed();;
+            mVf_->mousePressed();
+            
         }
         else {
             if(!ctrlDisplay_->mousePressed()){
-                msysw_->mousePressed();
+                if(!probe_->mousePressed()){
+                    msysw_->mousePressed();
+                }
+               
             }
         }
         
@@ -263,6 +267,7 @@ void GraphicalEnvironment::mouseReleased(int x, int y, int button)
         mVf_->mouseReleased();
         msysw_->mouseReleased();
         ctrlDisplay_->mouseReleased();
+        probe_->mouseReleased();
         update(); 
     }
     
