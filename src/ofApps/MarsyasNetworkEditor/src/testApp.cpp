@@ -47,10 +47,10 @@ void testApp::setup()
     //This is done in the outmost MarSystem (i.e. the Series/network) because flow
     //controls (as is the case of inSamples) are propagated through the network.
     //Check the Marsyas documentation for mode details.
-    network->updControl("mrs_natural/inSamples", 512);
+    network->updControl("mrs_natural/inSamples", 2048);
     
     //set oscilator frequency to 440Hz
-    network->updControl("SineSource/src/mrs_real/frequency", 440.0);
+    network->updControl("SineSource/src/mrs_real/frequency", 220.0);
     
     // set the sampling to 44100  - a safe choice in most configurations 
     network->updControl("mrs_real/israte", 44100.0);

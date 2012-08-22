@@ -38,7 +38,7 @@ ProbingManager::ProbingManager(GraphicalEnvironment* env){
 	
 	
 	realvec aux;
-	aux.create(0.0, 1, 512);
+	aux.create(0.0, 1, 2048);
 	
 	bufferHead_ = new realvecBufferObject;
 	bufferHead_->value = aux;
@@ -60,11 +60,8 @@ ProbingManager::ProbingManager(GraphicalEnvironment* env){
 	readPoint_ = bufferHead_;
 	writePoint_ = bufferHead_;
 	
-	viewZoom = 1;
+	windowSize_ = 1;
     
-    for(int i=0; i<viewZoom; i++){
-        secondaryBuffer_.push_back(0.0);
-    }
 }
 
 
@@ -103,20 +100,20 @@ void ProbingManager::update(){
 		}
         
         /*
-        secondaryBuffer_.clear();
+         secondaryBuffer_.clear();
+         
+         for(int i=0; i<primaryBuffer_.size(); i++){
+         for(int r=0; r<primaryBuffer_[i].getRows(); r++){
+         for(int c=0; c<primaryBuffer_[i].getCols(); c++){
+         secondaryBuffer_.push_back((double)(primaryBuffer_[i](c, r)));
+         }
+         }
+         }
+         */
         
-		for(int i=0; i<primaryBuffer_.size(); i++){
-			for(int r=0; r<primaryBuffer_[i].getRows(); r++){
-				for(int c=0; c<primaryBuffer_[i].getCols(); c++){
-                    secondaryBuffer_.push_back((double)(primaryBuffer_[i](c, r)));
-				}
-			}
-		}
-        */
-        
-        if(primaryBuffer_.size() >= viewZoom){
+        if(primaryBuffer_.size() >= windowSize_){
             secondaryBuffer_.clear();
-            for(int i=0; i<viewZoom; i++){
+            for(int i=0; i<windowSize_; i++){
                 for(int r=0; r<primaryBuffer_[i].getRows(); r++){
                     for(int c=0; c<primaryBuffer_[i].getCols(); c++){
                         secondaryBuffer_.push_back((double)(primaryBuffer_[i](c, r)));
@@ -125,7 +122,7 @@ void ProbingManager::update(){
             }
             
             
-            for(int i=0; i<viewZoom; i++){
+            for(int i=0; i<windowSize_; i++){
                 primaryBuffer_.erase(primaryBuffer_.begin() + i);
             }
             
@@ -133,12 +130,12 @@ void ProbingManager::update(){
                 primaryBuffer_.clear();
             }
         }
-
+        
 	}
 	
     
     
-     
+    
     
     //cout<<endl<<secondaryBuffer_.size();
 	
@@ -170,17 +167,17 @@ void ProbingManager::draw(){
     if(isLoaded_ && isVisible_){
         ofSetColor(255, 0, 255);
         
-        
-         for(int i=0; i<(secondaryBuffer_.size() - 1); i++){
-         ofLine((float)(i*(width_ - 3))/secondaryBuffer_.size() + x_ + 2, (secondaryBuffer_[i]*60.0 + height_*0.5 + y_), (float)((i+1)*(width_ - 3))/secondaryBuffer_.size() + x_ + 2, (secondaryBuffer_[i+1]*60.0 + height_*0.5 + y_));
-         }
-         
-        
-        /*
-        for(int i=0; i<secondaryBuffer_.size(); i++){
-            ofCircle((float)(i*(width_ - 2))/secondaryBuffer_.size() + x_ + 2, (secondaryBuffer_[i]*60.0 + height_*0.5 + y_), 1);
+        int size = secondaryBuffer_.size();
+        int window = secondaryBuffer_.size();
+        for(int i=0; i<(window - windowSize_); i=i+windowSize_){
+            ofLine((double)(i*(width_ - 3))/window + x_ + 2, (secondaryBuffer_[i]*60.0 + height_*0.5 + y_), (double)((i+windowSize_)*(width_ - 3))/window + x_ + 2, (secondaryBuffer_[i+windowSize_]*60.0 + height_*0.5 + y_));
         }
-        */
+    
+        /*
+         for(int i=0; i<secondaryBuffer_.size(); i++){
+         ofCircle((float)(i*(width_ - 2))/secondaryBuffer_.size() + x_ + 2, (secondaryBuffer_[i]*60.0 + height_*0.5 + y_), 1);
+         }
+         */
     }
     
     
@@ -250,7 +247,26 @@ bool ProbingManager::mouseReleased(){
 }
 
 
-
+void ProbingManager::keyPressed  (int key)
+{
+	
+	
+	switch(key)
+	{
+        case OF_KEY_UP:
+            windowSize_++;
+            break;
+        case OF_KEY_DOWN:
+            windowSize_--;
+            if(windowSize_ < 1){
+                windowSize_ = 1;
+            }
+            break;
+	}
+    cout<<endl<<" windowSize_ = "<<windowSize_;
+	
+	
+}
 
 
 

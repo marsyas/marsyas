@@ -16,7 +16,7 @@
 #include "Widget.h"
 #include "maximizeButton.h"
 
-#define PDATA_BUFFER_SIZE 50
+#define PDATA_BUFFER_SIZE 512
 
 
 namespace Marsyas {
@@ -46,6 +46,7 @@ namespace Marsyas {
         bool isVisible_;
 		
         bool isLoaded_;
+        
 		
 	public:
 		
@@ -60,7 +61,7 @@ namespace Marsyas {
 		
 		void writeToBuffer();
 		
-		int viewZoom;
+		int windowSize_;
         
         
         //mouse
@@ -68,6 +69,8 @@ namespace Marsyas {
 		bool mousePressed();
 		bool mouseDragged();
 		bool mouseReleased();
+        
+        void keyPressed(int key);
 		
 		
 	};

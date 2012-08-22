@@ -164,7 +164,7 @@ MarSystemWidget* GraphicalEnvironment::getMarSystemWidget(){
 
 void GraphicalEnvironment::keyPressed  (int key)
 {
-	
+	probe_->keyPressed(key);
 	
 	switch(key)
 	{
