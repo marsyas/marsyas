@@ -56,7 +56,7 @@ void testApp::setup()
     network->updControl("mrs_real/israte", 44100.0);
     network->updControl("AudioSink/dest/mrs_bool/initAudio", true);
     network->updControl("SoundFileSink/dest2/mrs_string/filename", "helloworld2.wav");
-    network->updControl("Gain/vol/mrs_real/gain", 0.9);
+    network->updControl("Gain/vol/mrs_real/gain", 0.1);
     
     //Create corresponing Widgets
     MarSystemWidgetManager *wmng;
