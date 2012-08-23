@@ -2161,7 +2161,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
       acc->updControl("mrs_string/mode", "explicitFlush");
       acc->updControl("mrs_natural/timesToKeep", 1);
       acc->addMarSystem(featureNetwork);
-	bextractNetwork->addMarSystem(acc);
+	  bextractNetwork->addMarSystem(acc);
 	MarSystem* song_statistics = mng.create("Fanout", "song_statistics");
 	song_statistics->addMarSystem(mng.create("Mean", "mn"));
 	song_statistics->addMarSystem(mng.create("StandardDeviation", "std"));
@@ -2216,7 +2216,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	else
 	  {
 	    bextractNetwork->linkControl("mrs_real/currentLabel",
-					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel");
+					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/previousLabel");
 	    bextractNetwork->linkControl("mrs_natural/nLabels",
 					 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/nLabels");
 	    bextractNetwork->linkControl("mrs_string/labelNames",
@@ -2480,20 +2480,22 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	  for (size_t j=0; j<processedFiles.size(); j++)
 	  {
+		  
 		if (processedFiles[j] == currentlyPlaying)
 		  seen = true;
 	  }
 	  
-	  seen = false;
+	  // seen = false;
 	  
 	  if (seen)
 	  {
+		  
 		advance ++;
 		if (wekafname != EMPTYSTRING)
 		  bextractNetwork->updControl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
 		bextractNetwork->updControl("mrs_natural/advance", advance);
-	        // round value
 		label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
+
 
 		fvec = processedFeatures[currentlyPlaying];
 		fvec(fvec.getSize()-1) = label;
@@ -2503,8 +2505,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		  bextractNetwork->updControl("WekaSink/wsink/mrs_realvec/injectVector", fvec);
 		  bextractNetwork->updControl("WekaSink/wsink/mrs_bool/inject", true);
 		}
-
-		cout << "SEEN" << endl;
 		
 	  }
 	  else
@@ -3699,10 +3699,12 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	  // round
 	  label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
 	  seen = false;
-
-
+	  
+	  
 	  for (size_t j=0; j<processedFiles.size(); j++)
 	  {
+		  cout << "processedFiles" << processedFiles[j] << endl;
+		  
 		if (processedFiles[j] == currentlyPlaying)
 		  seen = true;
 	  }
@@ -3741,6 +3743,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
 		bextractNetwork->updControl("mrs_natural/advance", advance);
 		processedFiles.push_back(currentlyPlaying);
+		cout << processedFiles.size() << endl;
+		
 		processedFeatures[currentlyPlaying] = fvec;
 		cout << "Processed: " << n << " - " << currentlyPlaying << endl;
 		advance = 1;

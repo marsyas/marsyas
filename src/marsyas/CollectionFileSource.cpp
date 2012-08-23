@@ -304,10 +304,9 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
       
 		ctrl_labelNames_->setValue(col_.getLabelNames(), NOUPDATE);
 		ctrl_nLabels_->setValue(col_.getNumLabels(), NOUPDATE);
-      
 
 		// update();   
-      
+		
 		isrc_->process(in,out);
 		
 		
@@ -339,9 +338,11 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 	else
     {
 
+		
 		//finished current file. Advance to next one in collection (if any)
 		if (!isrc_->getctrl("mrs_bool/hasData")->isTrue())
 		{
+
 			//check if there a following file in the collection
 			if (cindex_ < (mrs_natural)col_.size() -1)
 			{
@@ -377,8 +378,10 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 						setctrl("mrs_real/previousLabel", col_.regression_label((cindex_-1)%col_.size()));
 						ctrl_previousLabel_->setValue( col_.regression_label((cindex_-1) % col_.size()), NOUPDATE);
 					} else {
-						setctrl("mrs_real/currentLabel", (mrs_real) col_.labelNum(col_.labelEntry(cindex_)));
-						ctrl_currentLabel_->setValue( (mrs_real) col_.labelNum(col_.labelEntry(cindex_)), NOUPDATE);
+
+						
+						setctrl("mrs_real/currentLabel", (mrs_real) col_.labelNum(col_.labelEntry((cindex_-1) % col_.size())));
+						ctrl_currentLabel_->setValue( (mrs_real) col_.labelNum(col_.labelEntry((cindex_-1) % col_.size() )), NOUPDATE);
 				
 				
 						setctrl("mrs_real/previousLabel", (mrs_real) (col_.labelNum(col_.labelEntry((cindex_-1)%col_.size()))));
@@ -414,12 +417,21 @@ CollectionFileSource::myProcess(realvec& in, realvec &out)
 		{
 			if (isrc_->getctrl("mrs_natural/pos")->to<mrs_natural>() > 0)
 				iNewFile_ = false;
+
 		}
+		
+		
 		isrc_->process(in,out);
+
 		setctrl("mrs_natural/pos", isrc_->getctrl("mrs_natural/pos"));
 		setctrl("mrs_bool/hasData", isrc_->getctrl("mrs_bool/hasData"));
 		setctrl("mrs_bool/lastTickWithData", isrc_->getctrl("mrs_bool/lastTickWithData"));
-      
+     
+
+		
+		setctrl("mrs_real/currentLabel", (mrs_real) col_.labelNum(col_.labelEntry((cindex_) % col_.size())));
+		ctrl_currentLabel_->setValue( (mrs_real) col_.labelNum(col_.labelEntry((cindex_) % col_.size())), NOUPDATE);
+
 		// check internal data *after* process()
 		iHasData_ = isrc_->getctrl("mrs_bool/hasData")->to<mrs_bool>();
 		iLastTickWithData_ = isrc_->getctrl("mrs_bool/lastTickWithData")->to<mrs_bool>();
