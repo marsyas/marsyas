@@ -63,6 +63,8 @@ private:
 	mrs_real frequency_;
 	mrs_natural type_;
 
+	mrs_natural N_;
+
 public:
 	// AliasingOsc constructor.
 	AliasingOsc(std::string name);

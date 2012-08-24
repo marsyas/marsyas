@@ -78,17 +78,9 @@ void AliasingOsc::myUpdate(MarControlPtr sender)
 	// Because our range is from -1 to 1, and frequency / israte is
 	// for the range 0 to 1. We need to double the frequency to
 	// accomedate the larger range.
-	frequency_ = 2 * (getctrl("mrs_real/frequency")->to<mrs_real>());
+	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
 	israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
 	cyclicIn_ = (getctrl("mrs_bool/cyclicin")->to<mrs_bool>());
-
-	switch (type_)
-	{
-		case 0: // Saw
-			break;
-		case 1: // The incrment is half for PWM
-			break;
-	}
 
 	type_ =  (getctrl("mrs_natural/type")->to<mrs_natural>());
 	cyclicRate_ = (getctrl("mrs_real/cyclicrate")->to<mrs_real>());
@@ -103,7 +95,8 @@ void AliasingOsc::myProcess(realvec& in, realvec& out)
 
 		incr_ = (frequency_ * (in(0,t) + 1) ) / israte_;
 
-		currentValue_ = currentValue_ + incr_;
+		currentValue_ = (2 * fmod(incr_ * N_, 1.0)) - 1;
+		N_++;
 
 		// Logic for different oscillator types
 		switch(type_)
@@ -121,12 +114,6 @@ void AliasingOsc::myProcess(realvec& in, realvec& out)
 					out(0,t) = -0.9;
 				}
 				break;
-		}
-
-		// Reset currentValue when there is an overflow
-		if(currentValue_ >= 1.0)
-		{
-			currentValue_ = -1.0;
 		}
 	}
 }
