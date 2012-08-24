@@ -3039,7 +3039,7 @@ initOptions()
   cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
   cmd_options.addStringOption("wekafile", "w", EMPTYSTRING);
   cmd_options.addStringOption("extractor", "e", "REFACTORED");
-  cmd_options.addNaturalOption("memory", "m", 40);
+  cmd_options.addNaturalOption("memory", "m", 20);
   cmd_options.addNaturalOption("windowsize", "ws", 512);
   cmd_options.addNaturalOption("accSize", "as", accSize_);
   cmd_options.addNaturalOption("hopsize", "hp", 512);
@@ -3179,7 +3179,7 @@ void bextract(vector<string> soundfiles, mrs_natural label,
   }
 
   // Means and standard deviations of the spectrum features
-  // over a 1-second window (40 analysis frames)
+  // over a 0.5-second window (20 analysis frames)
   MarSystem* textureFeatures = mng.create("Series", "textureFeatures");
   textureFeatures->addMarSystem(spectrumFeatures);
   textureFeatures->addMarSystem(mng.create("Memory", "textureMemory"));
