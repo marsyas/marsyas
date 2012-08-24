@@ -273,6 +273,7 @@
 #include "Upsample.h"
 #include "Whitening.h"
 #include "Energy.h"
+#include "DPWOsc.h"
 //modifyHeader
 
 
@@ -538,6 +539,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Upsample", new Upsample("upsamplepr"));
 	registerPrototype("Whitening", new Whitening("whiteningpr"));
 	registerPrototype("Energy", new Energy("energypr"));
+	registerPrototype("DPWOsc", new DPWOsc("dpwoscpr"));
 	//modifyRegister
 
 	//***************************************************************************************
