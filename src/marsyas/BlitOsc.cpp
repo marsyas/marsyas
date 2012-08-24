@@ -17,6 +17,7 @@
 */
 
 #include "BlitOsc.h"
+#include "math.h"
 
 using namespace Marsyas;
 
@@ -58,7 +59,7 @@ void BlitOsc::addControls()
 void BlitOsc::myUpdate(MarControlPtr sender)
 {
 	ap1.set_delay(1.9);
-	ap2.set_delay(1.9);
+	ap2.set_delay(1.3);
 
 	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
 	type_ = (getctrl("mrs_natural/type")->to<mrs_natural>());
@@ -71,7 +72,8 @@ void BlitOsc::myUpdate(MarControlPtr sender)
 	switch (type_)
 	{
 		case 0: // Saw
-			dc_ = (frequency_)/israte_;
+			std::cout << frequency_ << std::endl;
+			dc_ = frequency_/israte_;
 			break;
 		case 1: // Square
 			// The frequency has to be doubled to compensate for
@@ -114,10 +116,10 @@ void BlitOsc::myProcess(realvec& in, realvec& out)
 			switch (type_)
 			{
 				case 0: // Saw
-					out(0,t) = le(ap2(ap1(0.95) - dc_));
+					out(0,t) = le(ap2(ap1(1)) - dc_);
 					break;
 				case 1: // Square
-					out(0,t) = le(ap2(ap1(0.95 * inv_)));
+					out(0,t) = le(ap2(ap1(1 * inv_)));
 					inv_ = (-inv_);
 					break;
 			}
@@ -133,7 +135,7 @@ void BlitOsc::myProcess(realvec& in, realvec& out)
 		else
 		{
 			phase_++;
-			out(0,t) = le(ap2(ap1(0) - dc_));
+			out(0,t) = le(ap2(ap1(0)) - dc_);
 		}
 	}
 }

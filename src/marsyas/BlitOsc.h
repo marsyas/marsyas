@@ -53,7 +53,7 @@ private:
 		mrs_real y1;
 		mrs_real le;
 	public:
-		LeakyIntegrator() : le(0.05) { }
+		LeakyIntegrator() : le(0.005) { }
 
 		void set_le_amount(mrs_real l)
 		{
