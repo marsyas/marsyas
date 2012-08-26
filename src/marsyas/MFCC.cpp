@@ -168,7 +168,7 @@ MFCC::myUpdate(MarControlPtr sender)
 		for (chan = 0; chan < totalFilters_; chan++)
 		{
 			// NEIL's filter weight speedup
-			int len=0;
+			int len=-1;
 			int pos=0;
 			for (i=0; i< fftSize_; ++i)
 			{

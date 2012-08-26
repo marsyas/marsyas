@@ -2617,6 +2617,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->updControl("mrs_natural/advance", 0);
 	if (single_vector)
 	{
+	  
 	  if (pluginName != EMPTYSTRING && !pluginMute)
 		featureNetwork->updControl("AudioSink/dest/mrs_bool/mute", true);
 
@@ -2633,7 +2634,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 	  if (wekafname != EMPTYSTRING)
-		bextractNetwork->updControl("WekaSink/wsink/mrs_string/filename", "predict.arff");
+	  {
+		  bextractNetwork->updControl("WekaSink/wsink/mrs_string/filename", workspaceDir + "predict.arff");			  
+	  }
+	  
 	  bextractNetwork->updControl("Classifier/cl/mrs_string/mode", "predict");
 
 	  ofstream prout;
@@ -2646,7 +2650,9 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  bextractNetwork->updControl("mrs_string/labelNames", l.getLabelNames());
 
 	  ofstream ofs;
-	  ofs.open("bextract.mpl");
+	  string pluginname;
+	  pluginname = workspaceDir + "bextract.mpl";
+	  ofs.open(pluginname.c_str());
 	  ofs << *bextractNetwork << endl;
 	  ofs.close();
 
@@ -2660,21 +2666,20 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		  bextractNetwork->updControl("Inject/inject/mrs_realvec/inject", beatfeatures);
 		}
 
-
-
+		currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();		
 		bextractNetwork->tick();
 		if (memSize != 0)
 		  featureNetwork->updControl("TextureStats/tStats/mrs_bool/reset",
 									 true);
-		currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
+
 
 		mrs_realvec pr = bextractNetwork->getctrl("Classifier/cl/mrs_realvec/processedData")->to<mrs_realvec>();
 		cout << "Predicting " << currentlyPlaying << "\t" << "as \t" << l.labelName((mrs_natural)pr(0,0)) << endl;
 
-		if (single_vector)
-		{
-		  bextractNetwork->updControl("mrs_natural/advance", 1);
-		}
+		// if (single_vector)
+		// {
+		// bextractNetwork->updControl("mrs_natural/advance", 1);
+		// }
 
 
 		if ((mrs_natural)pr(0,0) == (mrs_natural)(pr(1,0)))
