@@ -155,9 +155,9 @@ avg_recall = total_recall / tags.size
 avg_accuracy = total_accuracy / tags.size
 avg_f_score = total_f_score / tags.size
 
-#puts "avg_precision=#{avg_precision}"
-#puts "avg_recall=#{avg_recall}"
-#puts "avg_accuracy=#{avg_accuracy}"
-#puts "avg_f_score=#{avg_f_score}"
+puts "avg_precision=#{avg_precision}"
+puts "avg_recall=#{avg_recall}"
+puts "avg_accuracy=#{avg_accuracy}"
+puts "avg_f_score=#{avg_f_score}"
 
 puts "%5.3f %5.3f %5.3f %5.3f" % [avg_precision, avg_recall, avg_accuracy, avg_f_score]
