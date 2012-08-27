@@ -34,3 +34,65 @@ For running each version of the algorithm use the following commands:
 
 NOTE: If no ouput directory is assigned, the executable dir and the audio filename will be assumed.
 If only the output directory is assigned, the audio filename will be assumed.
+
+
+------------- MIREX 2012 Audio Train/Test Tasks ---------------------------
+(use REVISION_NUMBER: 4819) 
+
+Extract features, train classifier and predict for 1 fold: 
+./bextract -sv train.txt -tc test.txt -pr test_predicted.txt -od /path/to/workdir -w features.arff 
+(the .arff files contains the calculated features in case anyone is interested) 
+
+The executables can be launched in parallel for each fold to 
+take advantage of multiple cores without a problem as long as there are different 
+scratch directories for each fold. 
+
+
+------------- MIREX 2012 Audio Tag Classification -------------------------
+(use REVISION_NUMBER: 4819) 
+
+Assumes train.txt is a training list file (files and tags) 
+and test.txt is a testing list file (just files) 
+
+Step 1) Extract features for both lists 
+> bextract -ws 1024 -l 10 -sv -fe train.txt -w train.arff -od /path/to/workdir 
+> bextract -ws 1024 -l 10 -sv -fe test.txt -w test.arff -od /path/to/workdir 
+
+These two commands will generate two files in Weka .arff format that 
+will be placed in the working directory specified. 
+
+Step 2) First stage automatic tag annotation 
+
+The kea command can take up to 30-50 minutes to compute and does not show any 
+progress output until the full model is trained. 
+
+> kea -m tags -id /path/to/workdir -od /path/to/workdir -w train.arff -tw test.arff -pr stage1_affinities.txt 
+> ../../scripts/Ruby/threshold_binarization.rb train.txt stage1_affinities > stage1_predictions.txt 
+
+stage1_affinities.txt should contain the predicted tag affinities for the test.txt collection 
+and stage1_predictions.txt should contain the predicted tag binary relevance file. 
+Although the output of this stage can be directly evaluated we have found that
+a second stage of stacked generalization where the tag affinities of each
+song are used as feature vectors improves the results in most cases.
+
+The files train.arff.affinities.arff and test.arff.affinities.arff automatically generated 
+and used for the second stage. 
+
+Step3) Second stage (stacked generalization) for automatic tag annotation 
+> kea -m tags -id /path/to/workdir -od /path/to/workdir -w train.arff.affinities.arff -tw test.arff.affinities.arff -pr stage2_affinities.txt
+> ../../scripts/Ruby/threshold_binarization.rb train.txt stage2_affinities.txt > stage2_predictions.txt
+
+
+----------- MIREX 2012 Audio Similarity ------------------------------
+(use REVISION_NUMBER 4819) 
+
+Extract features 
+> bextract -fe -sv filelist.txt -od /path/to/workdir -w filelist.arff
+Calculate distance matrix 
+> kea -m distance_matrix_MIREX -id /path/to/workdir -od /path/to/workdir -w filelist.arff -pr filelist.txt -dm filelist_matrix.txt 
+
+The generated filelist_matrix.txt contains the full distance matrix of all song 
+to all songs of filelist.txt 
+
+
+
