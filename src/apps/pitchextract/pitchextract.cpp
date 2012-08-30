@@ -54,6 +54,7 @@ string frsopt = "hertz";
 bool skipopt = false;
 mrs_string ofnameopt = "pitch.txt";
 mrs_string mode = "sacf";
+mrs_string output_fname = "output.txt";
 
 
 void 
@@ -89,6 +90,7 @@ printHelp(string progName)
 	cerr << "-f --frs              : Scale frequencies to bark, mel, or MIDI " << endl;
 	cerr << "-s --skipunreliable   : Don't print unreliable YIN values (infinity) " << endl;
 	cerr << "-m --mode             : Pitch extractor to use (yin,sacf,praat)" << endl;
+	cerr << "-o --output : Text file output" << endl;
 	exit(1);
 }
 
@@ -227,15 +229,21 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
 	chordExtract->addMarSystem(mng.create("Spectrum/spk"));
 	chordExtract->addMarSystem(mng.create("PowerSpectrum/pspk"));
 	chordExtract->addMarSystem(mng.create("Spectrum2Chroma/s2c"));
+	chordExtract->addMarSystem(mng.create("Memory/mem"));
+	chordExtract->addMarSystem(mng.create("Mean/mean"));
 	chordExtract->addMarSystem(mng.create("Krumhansl_key_finder/kkf"));
 	
 	chordExtract->updControl("mrs_natural/inSamples", hopSize);
+	chordExtract->updControl("Memory/mem/mrs_natural/memSize", 200);
+	
 	chordExtract->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
 	for (int i=0; i < contourSize; ++i) 
 	{
 	    chordExtract->tick();
 		chords(i) = chordExtract->getControl("Krumhansl_key_finder/kkf/mrs_natural/key")->to<mrs_natural>();
+		cout << "chords(i) = " << chords(i) << endl;
+		
 		chord_names.push_back(chordExtract->getControl("Krumhansl_key_finder/kkf/mrs_string/key_name")->to<mrs_string>());
 		
 	}
@@ -432,7 +440,7 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
 			
 			
 
-			cout << chord_names[i] << endl;
+			// cout << chord_names[i] << endl;
 			
 				
 		}
@@ -442,6 +450,75 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
 
 	delete pitchExtractor;
 	
+}
+
+
+int  
+pitchextract_key(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize, 
+			 mrs_real lowPitch, mrs_real highPitch, mrs_real threshold, 
+			 mrs_bool playPitches, mrs_string ofName)
+{
+	MRSDIAG("pitchextract.cpp - pitchextract");	
+
+	MarSystemManager mng;
+
+	// Build pitch contour extraction network 
+	MarSystem* pitchContour     = mng.create("Series", "pitchContour");
+
+	MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
+	pitchExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
+	pitchExtractor->addMarSystem(mng.create("Stereo2Mono", "s2m"));
+	if (mode == "praat") {
+	  pitchExtractor->addMarSystem(mng.create("PitchPraat", "pitchPraat"));
+	} else {
+	  pitchExtractor->addMarSystem(mng.create("PitchSACF", "pitchSACF"));
+	}
+
+	pitchExtractor->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+
+	mrs_natural fileSize; 
+	fileSize= pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+	mrs_natural contourSize = fileSize / hopSize;
+	
+	
+	mrs_natural len = contourSize;
+	
+	vector<mrs_string> chord_names;
+	mrs_realvec chords(len);
+
+	// extract chords 
+	
+	MarSystem* chordExtract = mng.create("Series/chordExtract");
+	chordExtract->addMarSystem(mng.create("SoundFileSource/src"));
+	chordExtract->addMarSystem(mng.create("Windowing/win"));
+	chordExtract->addMarSystem(mng.create("Spectrum/spk"));
+	chordExtract->addMarSystem(mng.create("PowerSpectrum/pspk"));
+	chordExtract->addMarSystem(mng.create("Spectrum2Chroma/s2c"));
+	chordExtract->addMarSystem(mng.create("Memory/mem"));
+	chordExtract->addMarSystem(mng.create("Mean/mean"));
+	chordExtract->addMarSystem(mng.create("Krumhansl_key_finder/kkf"));
+	
+	chordExtract->updControl("mrs_natural/inSamples", hopSize);
+	chordExtract->updControl("Memory/mem/mrs_natural/memSize", 120);
+	
+	chordExtract->updControl("SoundFileSource/src/mrs_string/filename", sfName);
+	
+	for (int i=0; i < contourSize; ++i) 
+	{
+	    chordExtract->tick();
+		chords(i) = chordExtract->getControl("Krumhansl_key_finder/kkf/mrs_natural/key")->to<mrs_natural>();
+		// cout << "chords(i) = " << chords(i) << endl;
+		
+		chord_names.push_back(chordExtract->getControl("Krumhansl_key_finder/kkf/mrs_string/key_name")->to<mrs_string>());
+		
+	}
+	
+	
+	delete pitchExtractor;
+	delete chordExtract;
+	// return chords.median();
+	
+	return chords(contourSize-1-40);
 }
 
 
@@ -585,17 +662,24 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	chordExtract->addMarSystem(mng.create("Spectrum/spk"));
 	chordExtract->addMarSystem(mng.create("PowerSpectrum/pspk"));
 	chordExtract->addMarSystem(mng.create("Spectrum2Chroma/s2c"));
+	chordExtract->addMarSystem(mng.create("Memory/mem"));
+	chordExtract->addMarSystem(mng.create("Mean/mean"));
+	
 	chordExtract->addMarSystem(mng.create("Krumhansl_key_finder/kkf"));
 	
+	chordExtract->updControl("Memory/mem/mrs_natural/memSize", 40);
 	chordExtract->updControl("mrs_natural/inSamples", hopSize);
+
 	chordExtract->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 
+	cout << "EXTRACTING CHORDS" << endl;
+	
 	for (int i=0; i < contourSize; ++i) 
 	{
 	    chordExtract->tick();
 		chords(i) = chordExtract->getControl("Krumhansl_key_finder/kkf/mrs_natural/key")->to<mrs_natural>();
 		chord_names.push_back(chordExtract->getControl("Krumhansl_key_finder/kkf/mrs_string/key_name")->to<mrs_string>());
-		
+		cout << "chords(i) = " << chords(i) << endl;
 	}
 	
 	
@@ -1044,6 +1128,7 @@ initOptions()
 	cmd_options.addBoolOption("skipunreliable", "s", false);
 	cmd_options.addStringOption("outputFile", "of", "pitch.txt");
 	cmd_options.addStringOption("mode", "m", "sacf");
+	cmd_options.addStringOption("output", "o", "output.txt");
 }
 
 
@@ -1062,6 +1147,7 @@ loadOptions()
 	skipopt = cmd_options.getBoolOption("skipunreliable");
 	ofnameopt = cmd_options.getStringOption("outputFile");
 	mode = cmd_options.getStringOption("mode");
+	output_fname = cmd_options.getStringOption("output");
 }
 
 
@@ -1108,7 +1194,39 @@ main(int argc, const char **argv)
 				pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofnameopt);
 			} else if (mode == "yin") {
 				yinpitchextract(sfname, wopt, hopt, plopt != 0, ofnameopt);
-			} else {
+			}
+			else if (mode == "key") 
+			{
+				ofstream ofs;
+				ofs.open(output_fname.c_str());
+				
+				int prediction = pitchextract_key(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofnameopt);
+				vector<string> key_names;
+				key_names.push_back("A");
+				key_names.push_back("Bb");
+				key_names.push_back("B");
+				key_names.push_back("C");
+				key_names.push_back("C#");
+				key_names.push_back("D");
+				key_names.push_back("Eb");
+				key_names.push_back("E");
+				key_names.push_back("F");
+				key_names.push_back("F#");
+				key_names.push_back("G");
+				key_names.push_back("G#");
+				if (prediction < 12) 
+				{
+					cout << key_names[prediction] << "\t" << "major" <<  endl;
+					ofs << key_names[prediction] << "\t" << "major" <<  endl;
+				}
+				else
+				{
+					cout << key_names[prediction-12] << "\t" << "minor" << endl;
+					ofs << key_names[prediction-12] << "\t" << "minor" << endl;
+				}
+
+			}
+			else {
 			  cout << "Unsupported pitch extraction mode (" << mode << ")" << endl;
 			  printUsage(progName);
 			}
@@ -1118,6 +1236,9 @@ main(int argc, const char **argv)
 			Collection l;
 			l.read(sfname);
 			
+			int correct_predictions = 0;
+			int predictions = 0;
+			
 			for (unsigned int i=0; i < l.size(); i++) 
 			{
 				FileName fn(l.entry(i));
@@ -1125,11 +1246,27 @@ main(int argc, const char **argv)
 				mrs_string ofname = fn.nameNoExt() + ".txt";
 				cout << ofname << endl;
 				
+				cout << "GT = " << l.labelEntry(i);
+				
+				
+
 				if (mode == "sacf" || mode == "praat") {
 					pitchextract(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofname);
 				} else if (mode == "yin") {
 					yinpitchextract(sfname, wopt, hopt, plopt != 0, ofname);
-				} else {
+				} else if (mode == "key") 
+				{
+					int predicted = pitchextract_key(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofnameopt);
+					cout << " PR = " << predicted << endl;
+					if (predicted == atoi(l.labelEntry(i).c_str()))
+						correct_predictions++;
+					predictions++;
+					
+					cout << "Correct Predictions = " << correct_predictions * 1.0 / predictions  << endl;
+					
+				}
+				else 
+				{
 				  cout << "Unsupported pitch extraction mode (" << mode << ")" << endl;
 				  printUsage(progName);
 				}
@@ -1138,7 +1275,8 @@ main(int argc, const char **argv)
 		}
 		
     }
-
+	
+	
     exit(0);
 }
 

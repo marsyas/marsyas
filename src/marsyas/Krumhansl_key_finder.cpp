@@ -68,7 +68,7 @@ Krumhansl_key_finder::myUpdate(MarControlPtr sender)
 	
 	major_profile_.create(12);
 	minor_profile_.create(12);
-	scores_.create(12);
+	scores_.create(24);
 	
 	
 	major_profile_(0) = 6.35;
@@ -98,18 +98,32 @@ Krumhansl_key_finder::myUpdate(MarControlPtr sender)
 	minor_profile_(10) = 3.34;
 	minor_profile_(11) = 3.17;
 	
+	key_names_.push_back("A");
+	key_names_.push_back("A#");
+	key_names_.push_back("B");
 	key_names_.push_back("C");
 	key_names_.push_back("C#");
 	key_names_.push_back("D");
-	key_names_.push_back("Eb");
+	key_names_.push_back("D#");
 	key_names_.push_back("E");
 	key_names_.push_back("F");
 	key_names_.push_back("F#");
 	key_names_.push_back("G");
 	key_names_.push_back("G#");
-	key_names_.push_back("A");
-	key_names_.push_back("Bb");
-	key_names_.push_back("B");
+
+
+	key_names_.push_back("a");
+	key_names_.push_back("a#");
+	key_names_.push_back("b");
+	key_names_.push_back("c");
+	key_names_.push_back("c#");
+	key_names_.push_back("d");
+	key_names_.push_back("d#");
+	key_names_.push_back("e");
+	key_names_.push_back("f");
+	key_names_.push_back("f#");
+	key_names_.push_back("g");
+	key_names_.push_back("g#");
 	
 	
 	
@@ -123,19 +137,29 @@ Krumhansl_key_finder::myProcess(realvec& in, realvec& out)
 	
 	scores_.setval(0.0);
 	
-	// Correlate with each key profile 
-	for (k = 0; k < 12; k++) 
+	// Correlate with each major/minor key profile 
+	// for (k = 0; k < 12; k++) 
+	// 	{
+	// 		for (o = 0; o < inObservations_; o++)
+	// 		{
+	// 			scores_(k) += in((o+k)%12,0) * major_profile_(o);
+	// 		}
+	// 	}
+
+
+	for (o = 0; o < inObservations_; o++)
+		for (int k=0; k < 12; k++) 
 		{
-			for (o = 0; o < inObservations_; o++)
-			{
-				scores_(k) += in(o,0) * major_profile_((o+k)%12);
-			}
+			scores_(k)    += (in((o+k)%12,0)  * major_profile_(o));
+			scores_(k+12) += (in((o+k)%12,0)  * minor_profile_(o));
+			
 		}
+	
 	
 	mrs_real max_score = 0.0;
 	mrs_natural max_index = 0;
 	
-	for (int k=0; k < 12; k++) 
+	for (int k=0; k < 24; k++) 
 	{
 		if (scores_(k) >= max_score) 
 		{
@@ -149,5 +173,7 @@ Krumhansl_key_finder::myProcess(realvec& in, realvec& out)
 	ctrl_key_name_->setValue(key_names_[max_index], NOUPDATE);
 	
 	out.setval(0.0);
+	if (max_index >= 12)
+		max_index = max_index -12;
 	out(max_index,0) = 1.0;
 }

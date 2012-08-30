@@ -74,7 +74,6 @@ PeakerAdaptive::myProcess(realvec& in, realvec& out)
 	peakDecay = getctrl("mrs_real/peakDecay")->to<mrs_real>();
 
 	out.setval(0.0);
-	MRSMSG("peakEnd = " << peakEnd);
 	
 	
 
