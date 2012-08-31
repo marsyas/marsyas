@@ -95,4 +95,17 @@ The generated filelist_matrix.txt contains the full distance matrix of all song
 to all songs of filelist.txt 
 
 
+---------- MIREX 2012 Audio Key Detection ------------------------ 
+(use REVISION_NUMBER 4824) 
+
+> pitchextract -m key -w 16384 -h 4096 input.wav -o output.txt 
+
+where input.wav is the input .wav file (mono, 44100 samping rate) and 
+the estimated key (something like G minor) is written to file
+output.txt. 
+
+
+
+
+ 
 
