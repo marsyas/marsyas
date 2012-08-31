@@ -1,9 +1,5 @@
 /*
-** Copyright (C) 2008 Soren Harward <stharward@gmail.com>
-**  
-** Marsyas object code copied from RawFileSource by George
-** Tzanetakis <gtzan@cs.cmu.edu>.  GStreamer wrapper code adapted from
-** code in Mirage project by Dominik Schnitzer <dominik@schnitzer.at>.
+** Copyright (C) 2012 Nate Bogdanowicz <natezb@gmail.com>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -22,61 +18,61 @@
 
 #include "config.h"
 
-
-
 #ifndef MARSYAS_GSTREAMERSOURCE_H
 #define MARSYAS_GSTREAMERSOURCE_H
 
 #include "AbsSoundFileSource.h"
 #include <sys/stat.h>
+#include <glib.h>
+#include <gst/gst.h>
+#include <gst/app/gstappsink.h>
+
 
 namespace Marsyas
 {
-/**
-   \class GStreamerSource
-	\ingroup Interal
-   \brief SoundFileSource which uses GStreamer to decode an input file
-   
-    The GStreamer decoder always returns 44.1kHz, stereo, double-precision (ie, mrs_real) audio data
-   
-*/
 
+	/**
+	   \class GStreamerSource
+		\ingroup Interal
+	   \brief SoundFileSource which uses GStreamer to decode an input file
+	*/
+	
+	
+	class GStreamerSource : public AbsSoundFileSource
+	{
+		private: 
+			mrs_natural size_, tpos_;
+			mrs_string filename_, tfilename_;
+			mrs_bool playing_, pipe_created_;
+			
+			/* GStreamer Elements */
+			GstElement *pipe_, *dec_, *sink_;
+			GstBuffer *buffer_;
 
-class GStreamerSource : public AbsSoundFileSource
-{
-private: 
-  //FILE *sfp_;
-  mrs_real time_;
-  mrs_real rate_;				// loop frequency
-  
-  //short *buffer_;
-  
-  
-  mrs_real *data_;
-  mrs_real phaseOffset_;
-  
-  mrs_natural fileSize_;
-  bool byteSwap_;
-  std::string filename_;
-  mrs_natural ch_, pos_, nChannels_, sampleCount_;
-
-  void addControls();
-  void myUpdate(MarControlPtr sender);
-  
-  void getHeader(std::string filename);
-
-public:
-  GStreamerSource(std::string name);
-  ~GStreamerSource();
-  
-  MarSystem* clone() const;
-  void myProcess(realvec& in,realvec &out);
-  
-};
+			/* These measured in # of SAMPLES per channel */
+			mrs_natural buffer_left_;
+			mrs_natural buffer_size_;
+			
+			void addControls();
+			void myUpdate(MarControlPtr sender);
+			void getHeader(mrs_string filename);
+			void init_pipeline();
+			mrs_bool seek();
+			mrs_bool pull_buffer();
+			void copyFromBuffer(GstBuffer    *buf,
+					    mrs_natural  buf_start,
+					    realvec&     vec,
+					    mrs_natural  vec_start,
+					    mrs_natural  length);
+		
+		public:
+			GStreamerSource(std::string name);
+			~GStreamerSource();
+			
+			MarSystem* clone() const;
+			void myProcess(realvec& in,realvec &out);
+	};
 
 }//namespace Marsyas
 
 #endif    // !MARSYAS_GSTREAMERSOURCE_H
-
-
-

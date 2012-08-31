@@ -100,7 +100,7 @@ if (MARSYAS_VORBIS)
 endif (MARSYAS_VORBIS)
 
 if (GSTREAMER_FOUND)
-#	list(APPEND Marsyas_SOURCES GStreamerSource.cpp gst-decode.cpp)
+#	list(APPEND Marsyas_SOURCES GStreamerSource.cpp)
 	include_directories(${GSTREAMER_INCLUDE_DIRS})
 endif (GSTREAMER_FOUND)
 
