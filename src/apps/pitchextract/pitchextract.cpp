@@ -480,6 +480,7 @@ pitchextract_key(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	fileSize= pitchExtractor->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
 	mrs_natural contourSize = fileSize / hopSize;
 	
+	cout << "\ncontourSize = " << contourSize << endl;
 	
 	mrs_natural len = contourSize;
 	
@@ -490,6 +491,7 @@ pitchextract_key(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	
 	MarSystem* chordExtract = mng.create("Series/chordExtract");
 	chordExtract->addMarSystem(mng.create("SoundFileSource/src"));
+	chordExtract->addMarSystem(mng.create("ShiftInput/si"));
 	chordExtract->addMarSystem(mng.create("Windowing/win"));
 	chordExtract->addMarSystem(mng.create("Spectrum/spk"));
 	chordExtract->addMarSystem(mng.create("PowerSpectrum/pspk"));
@@ -499,8 +501,8 @@ pitchextract_key(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 	chordExtract->addMarSystem(mng.create("Krumhansl_key_finder/kkf"));
 	
 	chordExtract->updControl("mrs_natural/inSamples", hopSize);
+	chordExtract->updControl("ShiftInput/si/mrs_natural/winSize", winSize);
 	chordExtract->updControl("Memory/mem/mrs_natural/memSize", 120);
-	
 	chordExtract->updControl("SoundFileSource/src/mrs_string/filename", sfName);
 	
 	for (int i=0; i < contourSize; ++i) 
