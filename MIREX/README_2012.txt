@@ -89,6 +89,7 @@ Step3) Second stage (stacked generalization) for automatic tag annotation
 Extract features 
 > bextract -fe -sv filelist.txt -od /path/to/workdir -w filelist.arff
 Calculate distance matrix 
+> cp filelist.txt /path/to/workdir/filelist.txt
 > kea -m distance_matrix_MIREX -id /path/to/workdir -od /path/to/workdir -w filelist.arff -pr filelist.txt -dm filelist_matrix.txt 
 
 The generated filelist_matrix.txt contains the full distance matrix of all song 

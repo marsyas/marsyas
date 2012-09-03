@@ -548,7 +548,7 @@ void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const st
 
 	if ((token1 != "@relation")&&(token1 != "@RELATION"))
 	{
-		MRSERR("Badly formatted .arff file: file must begin with @relation.");
+		MRSERR("Badly formatted .arff file: file must begin with @relation." + token1);
 		return;
 	}
 	if (token2.find("\t") != mrs_string::npos)

@@ -99,7 +99,7 @@ distance_matrix_MIREX()
 
   cout << "Distance matrix calculation using " << wekafname_ << endl;
 
-  wekafname_  = inputdir_ + wekafname_;
+  wekafname_  = inputdir_ + "/" + wekafname_;
 
   MarSystemManager mng;
 
@@ -125,7 +125,7 @@ distance_matrix_MIREX()
   net->tick();
 
   ofstream oss;
-  oss.open(distancematrix_.c_str());
+  oss.open((outputdir_ + "/" + distancematrix_).c_str());
 
   oss << "Marsyas-kea distance matrix for MIREX 2007 Audio Similarity Exchange " << endl;
 
