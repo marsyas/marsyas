@@ -124,7 +124,6 @@ option(WITH_OSC  "Build osc support" OFF)
 option(WITH_PNG  "Build png writer" OFF) 
 option(WITH_OPENGL "Build programs that require OpenGL" OFF)
 option(WITH_GSTREAMER "Enable use of GStreamer as audio source" OFF)
-mark_as_advanced(WITH_GSTREAMER)
 #option(WITH_QGL "Enable qglviewer (Qt-based OpenGL viewer)" OFF)
 #option(WITH_READLINE "Readline functionality for Marsyas Scripting
 #Language (MSL)" OFF)

@@ -20,11 +20,17 @@
 
 #include "common.h" 
 #include "common_header.h"
+
+
+
+#ifdef MARSYAS_GSTREAMER
 #include "GStreamerSource.h"
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
 #include <gst/base/gstbasesrc.h>
+#endif MARSYAS_GSTREAMER
+
 
 #ifdef MARSYAS_GSTREAMER
 

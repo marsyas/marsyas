@@ -23,10 +23,12 @@
 
 #include "AbsSoundFileSource.h"
 #include <sys/stat.h>
+
+#ifdef MARSYAS_GSTREAMER
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
-
+#endif 
 
 namespace Marsyas
 {
@@ -46,8 +48,10 @@ namespace Marsyas
 			mrs_bool playing_, pipe_created_;
 			
 			/* GStreamer Elements */
+#ifdef MARSYAS_GSTREAMER
 			GstElement *pipe_, *dec_, *sink_;
 			GstBuffer *buffer_;
+#endif MARSYAS_GSTREAMER
 
 			/* These measured in # of SAMPLES per channel */
 			mrs_natural buffer_left_;
