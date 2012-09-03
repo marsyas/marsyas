@@ -51,7 +51,7 @@ namespace Marsyas
 #ifdef MARSYAS_GSTREAMER
 			GstElement *pipe_, *dec_, *sink_;
 			GstBuffer *buffer_;
-#endif MARSYAS_GSTREAMER
+#endif 
 
 			/* These measured in # of SAMPLES per channel */
 			mrs_natural buffer_left_;

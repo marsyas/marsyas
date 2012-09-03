@@ -110,7 +110,11 @@ if (WITH_ANN)
 endif (WITH_ANN)
 
 if (WITH_GSTREAMER)
+	find_package(GObject REQUIRED)
+	find_package(GLib REQUIRED)
 	find_package(GStreamer REQUIRED)
+	find_package(GStreamer-App REQUIRED)
+	find_package(LibXml2 REQUIRED)
 	set (MARSYAS_GSTREAMER 1) 
 endif (WITH_GSTREAMER)
 

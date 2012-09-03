@@ -99,6 +99,14 @@ if (MARSYAS_OPENGL)
 	include_directories(${OPENGL_INCLUDE_DIR})
 endif (MARSYAS_OPENGL)
 
+
+if (MARSYAS_GSTREAMER)
+	include_directories(${GStreamer_INCLUDE_DIR})
+	include_directories(${Glib_INCLUDE_DIR})
+	include_directories(${GlibConfig_INCLUDE_DIR})
+	include_directories(${LIBXML2_INCLUDE_DIR})
+endif (MARSYAS_GSTREAMER)
+
 ## basic library includes
 include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
 
