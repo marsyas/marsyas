@@ -97,7 +97,7 @@ to all songs of filelist.txt
 
 
 ---------- MIREX 2012 Audio Key Detection ------------------------ 
-(use REVISION_NUMBER 4824) 
+(use REVISION_NUMBER 4828) 
 
 > pitchextract -m key -w 16384 -h 4096 input.wav -o output.txt 
 
