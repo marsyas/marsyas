@@ -52,6 +52,8 @@ mrs_real length = -1.0;
 mrs_real gain = 1.0;
 mrs_bool pluginMute = 0.0;
 mrs_bool playback = false;
+mrs_bool lexiconopt = false;
+
 mrs_bool stereo_ = false;
 mrs_bool featExtract_ = false;
 
@@ -2276,6 +2278,16 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
 	  bextractNetwork->linkControl("mrs_natural/nLabels",
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/nLabels");
+
+	  
+	  if (lexiconopt)
+	  {
+		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_bool/useLexicon", true);
+		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/lexiconNLabels", 25);
+		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/lexiconLabelNames", "N,A:min,A:maj,Bb:min,Bb:maj,C:min,C:maj,C#:min,C#:maj,Db:min,Db:maj,E:min,E:maj,Eb:min,Eb:maj,F:min,F:maj,F#:min,F#:maj,Gb:min,Gb:maj,G:min,G:maj,G#:min,G#:maj");
+	  }
+	  
+	  
 	}
 	else
 	{
@@ -3044,6 +3056,7 @@ initOptions()
   cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
   cmd_options.addStringOption("wekafile", "w", EMPTYSTRING);
   cmd_options.addStringOption("extractor", "e", "REFACTORED");
+  cmd_options.addBoolOption("lexicon", "lx", false);
   cmd_options.addNaturalOption("memory", "m", 20);
   cmd_options.addNaturalOption("windowsize", "ws", 512);
   cmd_options.addNaturalOption("accSize", "as", accSize_);
@@ -3087,6 +3100,8 @@ loadOptions()
 {
   helpopt = cmd_options.getBoolOption("help");
   usageopt = cmd_options.getBoolOption("usage");
+  lexiconopt = cmd_options.getBoolOption("lexicon");
+  
   start = cmd_options.getRealOption("start");
   length = cmd_options.getRealOption("length");
   normopt = cmd_options.getBoolOption("normalize");
@@ -3532,6 +3547,8 @@ saivq_train_refactored(string pluginName,  string wekafname,
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelNames");
 	  bextractNetwork->linkControl("mrs_natural/nLabels",
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/nLabels");
+
+	  
 	}
 	else
 	{

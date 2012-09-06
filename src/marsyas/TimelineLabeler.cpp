@@ -38,6 +38,9 @@ TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
 	ctrl_labelFiles_ = getctrl("mrs_string/labelFiles");
 	ctrl_currentLabelFile_ = getctrl("mrs_real/currentLabelFile");
 	ctrl_labelNames_ = getctrl("mrs_string/labelNames");
+	ctrl_lexiconLabelNames_ = getctrl("mrs_string/lexiconLabelNames");
+	ctrl_lexiconNLabels_ = getctrl("mrs_natural/lexiconNLabels");
+
 	ctrl_currentLabel_ = getctrl("mrs_real/currentLabel");
 	ctrl_previousLabel_ = getctrl("mrs_real/previousLabel");
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
@@ -45,7 +48,10 @@ TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
 	ctrl_advance_ = getctrl("mrs_natural/advance");
 	ctrl_pos_ = getctrl("mrs_natural/pos");
 	ctrl_playRegionsOnly_ = getctrl("mrs_bool/playRegionsOnly");
+	ctrl_useLexicon_ = getctrl("mrs_bool/useLexicon");
 
+	
+	
 	labelFiles_ = ",";
 	numClasses_ = 0;
 	selectedLabel_ = "init";
@@ -79,11 +85,17 @@ TimelineLabeler::addControls()
 	addctrl("mrs_natural/pos", 0, ctrl_pos_);
 
 	addctrl("mrs_bool/playRegionsOnly", true, ctrl_playRegionsOnly_);
-
+	addctrl("mrs_bool/useLexicon", false, ctrl_useLexicon_);
+	ctrl_useLexicon_->setState(true);
+	
+	
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
+	addctrl("mrs_string/lexiconLabelNames", ",", ctrl_lexiconLabelNames_);
+	
 	addctrl("mrs_real/currentLabel", -1.0, ctrl_currentLabel_);
 	addctrl("mrs_real/previousLabel", -1.0, ctrl_previousLabel_);
 	addctrl("mrs_natural/nLabels", 0, ctrl_nLabels_);
+	addctrl("mrs_natural/lexiconNLabels", 0, ctrl_lexiconNLabels_);
 }
 
 void
@@ -166,6 +178,17 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 		timeline_.clear();
 	}
 
+	// override labelNames and nLabels using lexicon 
+	if (ctrl_useLexicon_->to<mrs_bool>())
+	{
+		ctrl_nLabels_->setValue(ctrl_lexiconNLabels_->to<mrs_natural>());
+		ctrl_labelNames_->setValue(ctrl_lexiconLabelNames_->to<mrs_string>());
+	}
+	
+
+
+
+
 	/////////////////////////////////////////////////////////////////////////
 	// Fast forward to first region start sample, if set to do so
 	/////////////////////////////////////////////////////////////////////////
@@ -209,6 +232,10 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 void
 TimelineLabeler::myProcess(realvec& in, realvec& out)
 {
+
+
+
+			   
 	//bypass audio input to output 
 	out = in;
 
