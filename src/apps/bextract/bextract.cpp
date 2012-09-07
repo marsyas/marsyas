@@ -1868,7 +1868,7 @@ bextract_train(vector<Collection> cls, Collection cl,
 	  featureNetwork->updControl("SoundFileSource/src/mrs_string/filename", audioColl.entry(i));
 
 	  //load timeline for i-th audio file
-	  tline.load(tlColl.entry(i));
+	  tline.load(tlColl.entry(i),"");
 
 	  //get number of classes in the timeline
 	  numClasses = (mrs_natural)tline.numClasses();
@@ -2263,6 +2263,17 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	if(tline)
 	{
+	  if (lexiconopt)
+	  {
+		  // For now hardwire for chord extraction. The lexiconLabelNames must be 
+		  // sorted alphabetically. 
+
+		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_bool/useLexicon", true);
+		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/lexiconNLabels", 25);
+		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/lexiconLabelNames", "A:min,A:maj,Bb:min,Bb:maj,C:min,C:maj,C#:min,C#:maj,Db:min,Db:maj,E:min,E:maj,Eb:min,Eb:maj,F:min,F:maj,F#:min,F#:maj,Gb:min,Gb:maj,G:min,G:maj,G#:min,G#:maj,N");
+	  }
+
+
 	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_real/currentLabelFile",
 								   "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/currentLabel");
 	  bextractNetwork->linkControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles",
@@ -2280,12 +2291,6 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								   "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/nLabels");
 
 	  
-	  if (lexiconopt)
-	  {
-		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_bool/useLexicon", true);
-		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_natural/lexiconNLabels", 25);
-		  bextractNetwork->updControl("Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/lexiconLabelNames", "N,A:min,A:maj,Bb:min,Bb:maj,C:min,C:maj,C#:min,C#:maj,Db:min,Db:maj,E:min,E:maj,Eb:min,Eb:maj,F:min,F:maj,F#:min,F#:maj,Gb:min,Gb:maj,G:min,G:maj,G#:min,G#:maj");
-	  }
 	  
 	  
 	}

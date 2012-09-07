@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2004 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2012 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ public:
 	void smooth(mrs_natural smoothSize);
  
 	void info() const;
-	bool load(mrs_string filename);
+	bool load(mrs_string filename, mrs_string lexicon_labels);
   void write(mrs_string filename);  
   friend std::ostream& operator<<(std::ostream&, const TimeLine&);
 

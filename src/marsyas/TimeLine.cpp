@@ -320,9 +320,8 @@ TimeLine::sampleClass(mrs_natural index) const
 }
 
 bool
-TimeLine::load(mrs_string filename)
+TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 {
-  cout << "filename = " << filename << endl;
   
 	ifstream in;
 	filename_ = filename;
@@ -340,6 +339,33 @@ TimeLine::load(mrs_string filename)
 	FileName f(filename);
 	vector<mrs_string> labels;
 
+
+
+	// Load lexicon dictionary 
+		
+	
+	mrs_string lexicon_label;
+	mrs_string remainder;
+	mrs_natural nLabels;
+	
+	nLabels = std::count(lexicon_labels.begin(), lexicon_labels.end(), ',');	
+	
+	for (int i=0; i < nLabels; i++)
+	{
+		lexicon_label = lexicon_labels.substr(0, lexicon_labels.find(","));
+		labels.push_back(lexicon_label);
+		sort(labels.begin(), labels.end());			
+		remainder = lexicon_labels.substr(lexicon_labels.find(",") + 1, lexicon_labels.length());
+		lexicon_labels = remainder;
+	}
+
+
+
+	for (int i=0; i < nLabels; i++) 
+	{
+		MRSMSG("--" << labels[i]);
+	}
+	
 	if (f.ext() == "txt") // audacity label format
 	{
 		numRegions_ = 0;
@@ -350,6 +376,8 @@ TimeLine::load(mrs_string filename)
 		{
 			in >> start >> end >> label;
 
+			MRSMSG("label = " << label);
+			
 			TimeRegion region;
 			region.start = start * srate_;
 			region.end = end * srate_;
@@ -361,6 +389,8 @@ TimeLine::load(mrs_string filename)
 			{
 				if (label == labels[i])
 				{
+					MRSMSG("label found" << label);
+					MRSMSG("i= " << i);
 					label_found = true;
 					region.classId = i;
 				}
@@ -368,12 +398,18 @@ TimeLine::load(mrs_string filename)
 			}
 			if (!label_found)
 			{
-				labels.push_back(label);
-				sort(labels.begin(), labels.end());
+				if (lexicon_labels == ",")
+				{
+					labels.push_back(label);
+					sort(labels.begin(), labels.end());
+				}
 			}
 			regions_.push_back(region);
 			numRegions_ ++;
 		}
+
+		
+
 
 		// relabel classIds so that they correspond to sorted labels 
 		for (mrs_natural i=0; i < numRegions_; ++i)

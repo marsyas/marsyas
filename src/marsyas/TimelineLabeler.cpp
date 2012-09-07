@@ -90,7 +90,7 @@ TimelineLabeler::addControls()
 	
 	
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
-	addctrl("mrs_string/lexiconLabelNames", ",", ctrl_lexiconLabelNames_);
+	addctrl("mrs_string/lexiconLabelNames", "", ctrl_lexiconLabelNames_);
 	
 	addctrl("mrs_real/currentLabel", -1.0, ctrl_currentLabel_);
 	addctrl("mrs_real/previousLabel", -1.0, ctrl_previousLabel_);
@@ -129,8 +129,6 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 	mrs_bool newTimeline = false;
 	// round
 	mrs_natural curLabelFile = ctrl_currentLabelFile_->to<mrs_real>() + 0.5;
-
-
 	
 	if(curLabelFile < (mrs_natural)labelFilesVec_.size()) //sanity check to avoid out of boundaries in vector
 	{
@@ -142,9 +140,9 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 		{
 		  
 			//It is different - try to read the timeline into memory
-			if(timeline_.load(fname))
+			if(timeline_.load(fname,ctrl_lexiconLabelNames_->to<mrs_string>()))
 			{
-			  timeline_.setSampleRate(israte_);			  
+				timeline_.setSampleRate(israte_);			  
 				newTimeline = true;
 				//get the number of classes in the currently loaded timeline
 				numClasses_ = (mrs_natural)timeline_.numClasses();
