@@ -189,7 +189,6 @@ printHelp(mrs_string progName)
 void
 evaluate_estimated_tempo(mrs_string sfName, mrs_realvec tempos, float ground_truth_tempo)
 {
-	// cout << "Evaluating" << endl;
 	
 
   mrs_real predicted_tempo = tempos(0);
@@ -200,7 +199,7 @@ evaluate_estimated_tempo(mrs_string sfName, mrs_realvec tempos, float ground_tru
   float diff4 = fabs(predicted_tempo - 3 * ground_truth_tempo);
   float diff5 = fabs(predicted_tempo - 0.33 * ground_truth_tempo);
 
-// cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
+  cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
   cout << sfName << "\t" << predicted_tempo << endl;
   if (diff1 < 0.5)
     correct_predictions++;
@@ -268,17 +267,17 @@ evaluate_estimated_tempo(mrs_string sfName, mrs_realvec tempos, float ground_tru
 
   total_instances++;
 
-//   cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << " - " << correct_predictions * 1.0 / total_instances * 100.0 << endl;
-//   cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << " - " << correct_mirex_predictions * 1.0 / total_instances * 100.0 << endl;
-//   cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << " - " << correct_harmonic_predictions * 1.0  / total_instances * 100.0  << endl;
-//   cout << "Correct Harmonic MIREX predictions = " << correct_harmonic_mirex_predictions << "/" << total_instances << " - " << correct_harmonic_mirex_predictions * 1.0  / total_instances * 100.0  << endl;
-//   cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
+   cout << "Correct Predictions = " << correct_predictions << "/" << total_instances << " - " << correct_predictions * 1.0 / total_instances * 100.0 << endl;
+   cout << "Correct MIREX Predictions = " << correct_mirex_predictions << "/" << total_instances << " - " << correct_mirex_predictions * 1.0 / total_instances * 100.0 << endl;
+   cout << "Correct Harmonic Predictions = " << correct_harmonic_predictions << "/" << total_instances << " - " << correct_harmonic_predictions * 1.0  / total_instances * 100.0  << endl;
+   cout << "Correct Harmonic MIREX predictions = " << correct_harmonic_mirex_predictions << "/" << total_instances << " - " << correct_harmonic_mirex_predictions * 1.0  / total_instances * 100.0  << endl;
+   cout << "Average error difference = " << total_differences << "/" << total_errors << "=" << total_differences / total_errors << endl;
 
 
-//   cout << "# Half   predicted tempos = " << errors_(0) * 1.0 / total_instances * 100.0 << " - " << errors_(0) << endl;;
-//   cout << "# Double predicted tempos = " << errors_(1) * 1.0 / total_instances * 100.0 << " - " << errors_(1) << endl;;
-//   cout << "# triple predicted tempos = " << errors_(2) * 1.0 / total_instances * 100.0 << endl;;
-//   cout << "# third predicted tempos = " << errors_(3) * 1.0 / total_instances * 100.0 << endl;;
+   cout << "# Half   predicted tempos = " << errors_(0) * 1.0 / total_instances * 100.0 << " - " << errors_(0) << endl;;
+   cout << "# Double predicted tempos = " << errors_(1) * 1.0 / total_instances * 100.0 << " - " << errors_(1) << endl;;
+   cout << "# triple predicted tempos = " << errors_(2) * 1.0 / total_instances * 100.0 << endl;;
+   cout << "# third predicted tempos = " << errors_(3) * 1.0 / total_instances * 100.0 << endl;;
 
 
 }
