@@ -198,3 +198,24 @@
 /Users/gtzan/data/sound/genres/metal/metal.00017.wa	105
 /Users/gtzan/data/sound/genres/metal/metal.00018.wav	100
 /Users/gtzan/data/sound/genres/metal/metal.00019.wav	106
+/Users/gtzan/data/sound/genres/classical/classical.00000.wav	95	
+/Users/gtzan/data/sound/genres/classical/classical.00001.wav	38	
+/Users/gtzan/data/sound/genres/classical/classical.00002.wav	99	
+/Users/gtzan/data/sound/genres/classical/classical.00003.wav	62
+/Users/gtzan/data/sound/genres/classical/classical.00004.wav	82	
+/Users/gtzan/data/sound/genres/classical/classical.00005.wav	132		
+/Users/gtzan/data/sound/genres/classical/classical.00006.wav	48		
+/Users/gtzan/data/sound/genres/classical/classical.00007.wav	74
+/Users/gtzan/data/sound/genres/classical/classical.00008.wav	68		
+/Users/gtzan/data/sound/genres/classical/classical.00009.wav	34
+/Users/gtzan/data/sound/genres/classical/classical.00010.wav	102
+/Users/gtzan/data/sound/genres/classical/classical.00011.wav	76
+/Users/gtzan/data/sound/genres/classical/classical.00012.wav	92	
+/Users/gtzan/data/sound/genres/classical/classical.00013.wav	125	
+/Users/gtzan/data/sound/genres/classical/classical.00014.wav	148	
+/Users/gtzan/data/sound/genres/classical/classical.00015.wav	
+/Users/gtzan/data/sound/genres/classical/classical.00016.wav	
+/Users/gtzan/data/sound/genres/classical/classical.00017.wav	
+/Users/gtzan/data/sound/genres/classical/classical.00018.wav	
+/Users/gtzan/data/sound/genres/classical/classical.00019.wav	
+
