@@ -18,7 +18,6 @@ namespace Marsyas {
 		
 		realvecBufferObject* prox;
 		realvec value;
-		
 	};
 	
 	

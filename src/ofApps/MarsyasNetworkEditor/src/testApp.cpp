@@ -37,25 +37,31 @@ void testApp::setup()
     //oscilator and a audio sink object to send the ausio data for playing 
     //in the sound card
     network = mng.create("Series", "network");
-    network->addMarSystem(mng.create("SineSource", "src"));
+    //network->addMarSystem(mng.create("AudioSource", "src"));
+    //network->addMarSystem(mng.create("SineSource", "src"));
+    network->addMarSystem(mng.create("SoundFileSource", "src"));
     network->addMarSystem(mng.create("Gain", "vol"));
     network->addMarSystem(mng.create("AudioSink", "dest"));
-    network->addMarSystem(mng.create("SoundFileSink", "dest2"));
+    //network->addMarSystem(mng.create("SoundFileSink", "dest2"));
     
     
     //set the window (i.e. audio frame) size (in samples). Let's say, 256 samples.
     //This is done in the outmost MarSystem (i.e. the Series/network) because flow
     //controls (as is the case of inSamples) are propagated through the network.
     //Check the Marsyas documentation for mode details.
-    network->updControl("mrs_natural/inSamples", 2048);
+    network->updControl("mrs_natural/inSamples", 1024);
     
     //set oscilator frequency to 440Hz
-    network->updControl("SineSource/src/mrs_real/frequency", 220.0);
+    //network->updControl("SineSource/src/mrs_real/frequency", 220.0);
     
     // set the sampling to 44100  - a safe choice in most configurations 
     network->updControl("mrs_real/israte", 44100.0);
+    network->updControl("SoundFileSource/src/mrs_string/filename", "/test.wav");
+    network->updControl("SoundFileSource/src/mrs_natural/nChannels", 1);
+    //network->updControl("AudioSource/src/mrs_bool/initAudio", true);
+    //network->updControl("AudioSource/src/mrs_natural/nChannels", 1);
     network->updControl("AudioSink/dest/mrs_bool/initAudio", true);
-    network->updControl("SoundFileSink/dest2/mrs_string/filename", "helloworld2.wav");
+    //network->updControl("SoundFileSink/dest2/mrs_string/filename", "helloworld2.wav");
     network->updControl("Gain/vol/mrs_real/gain", 0.1);
     
     //Create corresponing Widgets
@@ -71,6 +77,7 @@ void testApp::setup()
     
     msysThread->loadMarSystem(network);
     msysThread->start();
+    
     
 }
 

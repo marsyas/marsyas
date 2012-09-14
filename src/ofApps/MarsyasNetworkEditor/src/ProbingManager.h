@@ -17,6 +17,8 @@
 #include "maximizeButton.h"
 
 #define PDATA_BUFFER_SIZE 512
+#define WRITE_BLOCKS 3
+#define MAX_WRITE_BLOCKS 150
 
 
 namespace Marsyas {
@@ -37,15 +39,31 @@ namespace Marsyas {
 		int pDataBufferSize_;
 		bool writeLock_;
 		bool readLock_;
-		
+        int writeCounter_;
+        int stepSize_;
+        
+        void calcStepSize();
+        
+		void calcBufferSize();
+        void deallocateBuffer();
+        void allocateBuffer();
+        void deleteBufferElement(realvecBufferObject* be);
+        
 		std::vector<realvec> primaryBuffer_;
 		std::vector<double> secondaryBuffer_;
         
         
 		MaximizeButton* mBtn_;
         bool isVisible_;
-		
+
         bool isLoaded_;
+        
+        
+        
+        //For debugging
+        FILE* recording;
+        
+        realvec previousRealvec;
         
 		
 	public:
