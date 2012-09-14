@@ -18,6 +18,7 @@
 
    
 #include "MidiInput.h"
+#include "Common.h"
 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"
@@ -75,7 +76,7 @@ void MidiInput::myUpdate(MarControlPtr sender)
     midiin = NULL;
 
     initMidi= getctrl("mrs_bool/initmidi")->to<mrs_bool>();
-    initMidi = !initMidi;
+	initMidi = !initMidi; 
 
     virtualPort = getctrl("mrs_bool/virtualPort")->to<mrs_bool>();
 
