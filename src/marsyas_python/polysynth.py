@@ -2,27 +2,22 @@ from marsyas import *
 from marsyas_util import create
 from collections import deque
 
-from pygame.midi import *
 
 def main():
-    init()
-    poll = Input.poll
-    read = Input.read
-    midi = Input(0)
-
     synth = Synth()
+    msg = synth.get_midi_bytes
 
+    last_note = 0
     while(True):
-        if poll(midi):
-            # format [[[128,  49 , 127,   0], 19633]]
-            #           cc#| note| vel| n/a
-            msg = read(midi, 1)
-            note = msg[0][0][1]
-            noteon = msg[0][0][0]
-            if noteon == 144 or noteon == 145:
-                synth.noteon(note)
-            elif noteon == 128 or noteon == 129:
-                synth.noteoff(note)
+        print msg()
+        (noteon, note, _) = msg()
+        if (last_note != note) and (noteon == 144):
+            synth.noteon(note)
+            last_note = note
+        if noteon == 128:
+            if last_note == note:
+                last_note = 0
+            synth.noteoff(note)
         synth()
 
 class Synth:
@@ -33,7 +28,7 @@ class Synth:
         self.off = deque([Osc(sample_rate=sample_rate) for _ in range(voices)])
 
         osc_bank = ["Fanout/bank", [osc.get_network() for osc in self.off]]
-        net = ["Series/fmnet", [osc_bank,"Sum/sum", "AudioSink/dest"]]
+        net = ["Series/fmnet", [osc_bank,"Sum/sum","MidiInput/midi","AudioSink/dest","SoundFileSink/dest2"]]
 
         # Create network and intialize parameter mapping 
         self.network = create(net)
@@ -41,6 +36,16 @@ class Synth:
         # Output settings
         self.network.updControl("mrs_real/israte", sample_rate)
         self.network.updControl("AudioSink/dest/mrs_bool/initAudio", MarControlPtr.from_bool(True))
+        self.network.updControl("SoundFileSink/dest2/mrs_string/filename", "synthout.wav")
+
+        # Midi settings
+        self.network.updControl("MidiInput/midi/mrs_bool/initmidi", MarControlPtr.from_bool(True))
+        self.network.updControl("MidiInput/midi/mrs_natural/port", 0)
+
+    def get_midi_bytes(self):
+        return (self.network.getControl("MidiInput/midi/mrs_natural/byte1").to_natural(),
+                self.network.getControl("MidiInput/midi/mrs_natural/byte2").to_natural(),
+                self.network.getControl("MidiInput/midi/mrs_natural/byte3").to_natural())
 
     def noteon(self, num):
         if self.off:
@@ -64,7 +69,7 @@ class Synth:
 class Osc:
     _num_of_oscs = 0
 
-    def __init__(self, osc_type="APDelayOsc/bl", sample_rate = 44100.0):
+    def __init__(self, osc_type="BlitOsc/bl", sample_rate = 44100.0):
         self.osc_type = osc_type
         self.spec = lambda i: ["Series/osc%d" % i, [self.osc_type,"ADSR/adsr","Gain/gain"]]
 
@@ -101,7 +106,7 @@ class Osc:
         return self.osc
 
 def midi2freq(num):
-    return 3 * 440.0 * pow(2.0,((num-69)/12.0))
+    return 440.0 * pow(2.0,((num-69)/12.0))
 
 if __name__ == "__main__":
     main()
