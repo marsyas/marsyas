@@ -48,6 +48,16 @@
 /Users/gtzan/data/sound/genres/country/country.00017.wav	85
 /Users/gtzan/data/sound/genres/country/country.00018.wav	87
 /Users/gtzan/data/sound/genres/country/country.00019.wav	85
+/Users/gtzan/data/sound/genres/country/country.00020.wav	103
+/Users/gtzan/data/sound/genres/country/country.00021.wav	108
+/Users/gtzan/data/sound/genres/country/country.00022.wav	62
+/Users/gtzan/data/sound/genres/country/country.00023.wav	42
+/Users/gtzan/data/sound/genres/country/country.00024.wav	64
+/Users/gtzan/data/sound/genres/country/country.00025.wav	70
+/Users/gtzan/data/sound/genres/country/country.00026.wav	55
+/Users/gtzan/data/sound/genres/country/country.00027.wav	93
+/Users/gtzan/data/sound/genres/country/country.00028.wav	90
+/Users/gtzan/data/sound/genres/country/country.00029.wav	91
 /Users/gtzan/data/sound/genres/disco/disco.00000.wav	116	
 /Users/gtzan/data/sound/genres/disco/disco.00001.wav	117
 /Users/gtzan/data/sound/genres/disco/disco.00002.wav	115
