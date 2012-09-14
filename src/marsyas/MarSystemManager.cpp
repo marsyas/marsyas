@@ -1060,8 +1060,8 @@ void MarSystemManager::registerComposite(std::string prototype)
 			pitchSACF->linkControl("mrs_natural/lowSamples", "Peaker/pkr/mrs_natural/peakStart");
 			pitchSACF->linkControl("mrs_natural/highSamples", "Peaker/pkr/mrs_natural/peakEnd");
 			// set default values
-			mrs_real lowPitch = 36;
-			mrs_real highPitch = 79;
+			mrs_real lowPitch = 69;
+			mrs_real highPitch = 93;
 			mrs_real lowFreq = pitch2hertz(lowPitch);
 			mrs_real highFreq = pitch2hertz(highPitch);
 			mrs_natural lowSamples =

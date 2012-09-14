@@ -179,9 +179,17 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
 
 		
 		if (pitches(i) <= pitch2hertz(lowPitch))
-			confidences(i) = 0.0;
+		{
+			// confidences(i) = 0.0;
+			pitches(i) += 12;
+		}
 		if (pitches(i) >= pitch2hertz(highPitch))
-			confidences(i) = 0.0;
+		{
+			pitches(i) -= 12;
+			// confidences(i) = 0.0;
+		}
+		
+
 		
 		ofs << scaled_pitch << endl;
 		
@@ -356,8 +364,6 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
 		ch2->addMarSystem(mng.create("SineSource/ss"));
 		ch2->addMarSystem(mng.create("Gain/sinegain"));
 
-
-
 		MarSystem* ch3 = mng.create("Series/ch3");
 		ch3->addMarSystem(mng.create("SoundFileSource/bdsrc"));
 		ch3->addMarSystem(mng.create("Gain/bdsrcgain"));
@@ -367,14 +373,11 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
 		ch4->addMarSystem(mng.create("SoundFileSource/sdsrc"));
 		ch4->addMarSystem(mng.create("Gain/sdsrcgain"));
 
-
-
-		
 		mix->addMarSystem(ch0);
 		mix->addMarSystem(ch1);
 		mix->addMarSystem(ch2);
-		mix->addMarSystem(ch3);
-		mix->addMarSystem(ch4);
+		// mix->addMarSystem(ch3);
+		// mix->addMarSystem(ch4);
 		
 		
 		playback->addMarSystem(mix);
@@ -404,9 +407,18 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
 		{
 			playback->updControl("Fanout/mix/Series/ch0/SineSource/ss/mrs_real/frequency", 
 							pitches(i));
+			cout << "pitches(i) = " << pitches(i) << endl;
+			cout << "chords(i) = " << chords(i) << endl;
+			if (chords(i) > 12) 
+				chords(i) -= 12;
+
+
+			cout << "chords(i) = " << chords(i) << endl;
 			playback->updControl("Fanout/mix/Series/ch2/SineSource/ss/mrs_real/frequency", 
-								 pitch2hertz(48 +chords(i)));
-			playback->updControl("Fanout/mix/Series/ch0/Gain/sinegain/mrs_real/gain", 0.5 * confidences(i));
+								 pitch2hertz(57 + chords(i)));
+			cout << "hertz = = " << pitch2hertz(57 + chords(i)) << endl;
+			
+			playback->updControl("Fanout/mix/Series/ch0/Gain/sinegain/mrs_real/gain", 0.5 );
 			playback->updControl("Fanout/mix/Series/ch1/Gain/soundgain/mrs_real/gain", 0.15);
 			playback->updControl("Fanout/mix/Series/ch2/Gain/sinegain/mrs_real/gain", 0.5);
 			
@@ -1159,7 +1171,6 @@ main(int argc, const char **argv)
 	MRSDIAG("pitchextract.cpp - main");
 
 	string progName = argv[0];  
-	progName = progName.erase(0,3);
 
 	initOptions();
 	cmd_options.readOptions(argc, argv);
@@ -1189,6 +1200,8 @@ main(int argc, const char **argv)
 	for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) 
     {
 		string sfname = *sfi;
+		cout << "Processing: " << sfname << endl;
+		
 		FileName fn(sfname);
 		if (fn.ext() != "mf")
 		{
@@ -1197,6 +1210,11 @@ main(int argc, const char **argv)
 			} else if (mode == "yin") {
 				yinpitchextract(sfname, wopt, hopt, plopt != 0, ofnameopt);
 			}
+			else if (mode == "caricature") 
+			{
+				pitchextract_caricature(sfname, wopt, hopt, lpopt, upopt, topt, plopt != 0, ofnameopt);
+			}
+			
 			else if (mode == "key") 
 			{
 				ofstream ofs;
