@@ -26,8 +26,7 @@ def normalize(minVal, maxVal, inputVal):
 #	if nVal>1:
 #		nVal =0.0;
 	return nVal
-	
-	
+
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='3D visualization of the dimensions of certain sounds. Run it and sing to your microphone to see what happens')
 	parser.add_argument('--spheres', '-s', metavar='s', default='3', type=int, help='Number of spheres to visualize')
@@ -35,7 +34,7 @@ if __name__ == "__main__":
 	parser.add_argument('--maxf0', '-a', metavar='a', default=440, type=float, help='Maximum fundamental frequency for visualization')
 	args = parser.parse_args()
 	print args
-	
+
 	# Defining the marsyas network
 	detectors = ["Fanout/detectors", ["Rms/rms", "AubioYin/pitcher", "SoundFileSink/dest"]];
 	spec = ["Series/system", ["AudioSource/asrc", detectors]];

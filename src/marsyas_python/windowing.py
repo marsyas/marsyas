@@ -21,17 +21,17 @@ from marsyas_util import *
 # Also, all subsystems are specified in the following list, so, you will get things like this:
 # ["Begin/System", ["SystemItem1", "SystemItem2"]]
 # That is very similar to LISP, but with brackets instead of parenthesis.
-spec = ["Series/MySystem", 
+spec = ["Series/MySystem",
 					[["Fanout/additive",
 						["SineSource/src1",
 						"SineSource/src2"]],
-					"Sum/sum",					
+					"Sum/sum",
 					["Fanout/analyzers",
-						[["Series/branch1", 
+						[["Series/branch1",
 							["Spectrum/spk","PowerSpectrum/pspk","Gain/gain"]],
-						["Series/branch2", 
+						["Series/branch2",
 							["Windowing/win","Spectrum/spk","PowerSpectrum/pspk","Gain/gain"]],
-						["Series/branch3", 
+						["Series/branch3",
 							["Windowing/win","Spectrum/spk","PowerSpectrum/pspk","Gain/gain"]]]]]]
 
 # We will call the create() function, which is defined in the marsyas_util.py file. It will create a marsystem just

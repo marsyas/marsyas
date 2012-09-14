@@ -71,7 +71,7 @@ pnet.updControl("Biquad/hpf1/mrs_string/type", marsyas.MarControlPtr.from_string
 pnet.updControl("Gain/gain/mrs_real/gain", marsyas.MarControlPtr.from_real(2.0))
 
 
-while(1): 
+while(1):
 	pnet.tick()
 
 # This is not anymore the end of the tutorial, as the continuation - twosinusoids.py - was added.
