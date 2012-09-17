@@ -1,6 +1,6 @@
 from marsyas import *
 from marsyas_util import create
-from play_melody import *
+from synth_util import *
 
 
 def main():
