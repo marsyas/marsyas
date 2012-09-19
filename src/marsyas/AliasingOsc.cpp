@@ -88,15 +88,18 @@ void AliasingOsc::myUpdate(MarControlPtr sender)
 
 void AliasingOsc::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
+	mrs_natural t;
 
 	for (t = 0; t < inSamples_; t++)
 	{
 
 		incr_ = (frequency_ * (in(0,t) + 1) ) / israte_;
 
-		currentValue_ = (2 * fmod(incr_ * N_, 1.0)) - 1;
-		N_++;
+		currentValue_ += incr_;
+		if (currentValue_ >= 1)
+		{
+			currentValue_ -= 2;
+		}
 
 		// Logic for different oscillator types
 		switch(type_)

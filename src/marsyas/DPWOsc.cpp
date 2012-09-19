@@ -95,9 +95,14 @@ void DPWOsc::myProcess(realvec& in, realvec& out)
 
 	for (t = 0; t < inSamples_; t++)
 	{
-		currentValue_ = (2 * fmod(incr_ * N_, 1.0)) - 1;
+		incr_ = (frequency_ * (in(0,t) + 1) ) / israte_;
+
+		currentValue_ += incr_;
+		if (currentValue_ >= 1)
+		{
+			currentValue_ -= 2;
+		}
 
 		out(0,t) = c_ * df(currentValue_ * currentValue_);
-		N_++;
 	}
 }

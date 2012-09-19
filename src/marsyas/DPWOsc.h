@@ -26,18 +26,7 @@ namespace Marsyas
 /**
 	\class DPWOsc
 	\ingroup Synthesis
-	\brief A simple aliasing oscillator
-
-	A simple aliasing oscillator capable of Saw and PWM.
-
-	The pitch can be modulated by using in(0,t).
-
-	The cyclic rate can be modulated by using in(1,t). If cyclicin is
-	set to true.
-
-	TODO: Implement triangle wave.
-	TODO: Make it so that there is control over what in channel is
-	      mapped to what parameter is getting modulated.
+	\brief 
 
 	Controls:
 	- \b mrs_real/frequency [w] : Sets the fundental frequency for the oscillator.
@@ -77,7 +66,6 @@ private:
 	mrs_real israte_;
 	mrs_real frequency_;
 	mrs_natural type_;
-	mrs_natural N_;
 
 	mrs_real c_; // Amplitude scalar
 
