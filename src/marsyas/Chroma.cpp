@@ -71,18 +71,18 @@ Chroma::myUpdate(MarControlPtr sender)
   freq_.create(inObservations_);
   filter_.create(14, inObservations_);
   chord_.create(14);
-  chord_(1) = 261.625565; // C3
-  chord_(2) = 277.182630; // C#3
-  chord_(3) = 293.664747; // D3
-  chord_(4) = 311.126983; // D#3
-  chord_(5) = 329.627556; // E3
-  chord_(6) = 349.228231; // F3
-  chord_(7) = 369.994422; // F#3
-  chord_(8) = 391.995435; // G3
-  chord_(9) = 415.304697; // G#3
-  chord_(10) = 440.000000; // A3
-  chord_(11) = 466.163761; // A#3
-  chord_(12) = 493.883301; // B3
+  chord_(1) = 261.625565; // C4
+  chord_(2) = 277.182630; // C♯/D♭4
+  chord_(3) = 293.664747; // D4
+  chord_(4) = 311.126983; // D♯/E♭4
+  chord_(5) = 329.627556; // E4
+  chord_(6) = 349.228231; // F4
+  chord_(7) = 369.994422; // F♯/G♭4
+  chord_(8) = 391.995435; // G4
+  chord_(9) = 415.304697; // G♯/A♭4
+  chord_(10) = 440.000000; // A4
+  chord_(11) = 466.163761; // A♯/B♭4
+  chord_(12) = 493.883301; // B4
   chord_(0) = 0.5 * chord_(12);
   chord_(13) = 2.0 * chord_(1);
    
@@ -97,13 +97,13 @@ Chroma::myUpdate(MarControlPtr sender)
   for(i=1; i<13; ++i){
     for(k=0; k<inObservations_-1; k++){
       for(j=lowNum_; j<highNum_+1; j++){
-	if(freq_(k) < m_(j)*chord_(i) && freq_(k+1) >= m_(j)*chord_(i)){
-	  filter_(i,k) += (freq_(k+1)-m_(j)*chord_(i)) / (freq_(k+1)-freq_(k));
-	  filter_(i,k+1) += (m_(j)*chord_(i)-freq_(k)) / (freq_(k+1)-freq_(k));
-	}
-	if((m_(j)*chord_(i)+m_(j)*chord_(i-1))/2.0 < freq_(k) && freq_(k) <= (m_(j)*chord_(i+1)+m_(j)*chord_(i))/2.0){
-	  filter_(i,k) += 1.0;
-	}
+        if(freq_(k) < m_(j)*chord_(i) && freq_(k+1) >= m_(j)*chord_(i)){
+          filter_(i,k) += (freq_(k+1)-m_(j)*chord_(i)) / (freq_(k+1)-freq_(k));
+          filter_(i,k+1) += (m_(j)*chord_(i)-freq_(k)) / (freq_(k+1)-freq_(k));
+        }
+        if((m_(j)*chord_(i)+m_(j)*chord_(i-1))/2.0 < freq_(k) && freq_(k) <= (m_(j)*chord_(i+1)+m_(j)*chord_(i))/2.0){
+          filter_(i,k) += 1.0;
+        }
       }
     }
   }
@@ -114,7 +114,7 @@ Chroma::myUpdate(MarControlPtr sender)
     }
     if(tmpreal > 0){
       for(i=1; i<13; ++i){
-	filter_(i,k) /= tmpreal;
+        filter_(i,k) /= tmpreal;
       }
     }
   }
@@ -129,14 +129,14 @@ Chroma::myProcess(realvec& in, realvec& out)
   if(inSamples_ > 0){
     for(j=0; j<12; j++){
       for(i=0; i<inSamples_; ++i){
-	out(j,i) = 0;
+        out(j,i) = 0;
       }
     }
     for(i=0; i<inSamples_; ++i){
       for(j=1; j<13; j++){
-	for(k=0; k<inObservations_; k++){
-	  out(j-1, i) += filter_(j,k)*in(k,i);//12.0;
-	}
+        for(k=0; k<inObservations_; k++){
+          out(j-1, i) += filter_(j,k)*in(k,i);//12.0;
+        }
       }
     }
   }
