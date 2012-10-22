@@ -174,7 +174,8 @@ PeakerOnset::myProcess(realvec& in, realvec& out)
 	if(isOnset)
 	{
 		ctrl_onsetDetected_->setValue(true);
-		ctrl_confidence_->setValue(1.0); //[!] must still find a way to output a confidence...
+		//ctrl_confidence_->setValue(1.0); //[!] must still find a way to output a confidence...
+		ctrl_confidence_->setValue(checkPointValue/100.0); // ad-hoc value which should still have more meaning than a pure 1.0 vs. 0.0.
 		out.setval(1.0);
 		MRSDIAG("PeakerOnset::myProcess() - Onset Detected!");
 	}

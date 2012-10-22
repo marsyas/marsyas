@@ -64,6 +64,7 @@ int usageopt;
 int verboseopt;
 int audiosynthopt;
 mrs_real thresholdopt;
+int confidenceopt;
 
 
 void 
@@ -93,6 +94,7 @@ printHelp(string progName)
 	cerr << "-v --verbose    : verbose output " << endl;
 	cerr << "-as --audiosynth: synthesize onsets and mix with original sound" << endl;
 	cerr << "-th --threshold : a positive floating number for thresholding the novelty function" << endl;
+	cerr << "-co --confidence : output confidence of onsets" << endl;
 	
 	exit(1);
 }
@@ -105,6 +107,7 @@ initOptions()
 	cmd_options.addBoolOption("verbose", "v", false);
 	cmd_options.addBoolOption("audiosynth", "as", false);
 	cmd_options.addRealOption("threshold", "th", 0.1);
+	cmd_options.addBoolOption("confidence", "co", false);
 }
 
 void 
@@ -115,6 +118,7 @@ loadOptions()
 	verboseopt = cmd_options.getBoolOption("verbose");
 	audiosynthopt = cmd_options.getBoolOption("audiosynth");
 	thresholdopt = cmd_options.getRealOption("threshold");
+	confidenceopt = cmd_options.getBoolOption("confidence");
 }
 
 void 
@@ -174,8 +178,10 @@ detect_onsets(string sfName)
 	//onsetnet->linkControl("ShiftOutput/so/mrs_natural/Interpolation","mrs_natural/inSamples");
 	onsetnet->linkControl("Accumulator/onsetaccum/mrs_bool/flush",
 					   "Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected"); 
-	//onsetnet->linkControl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
-	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
+    if (confidenceopt) {
+	    onsetnet->linkControl("Fanout/onsetmix/Series/onsetsynth/Gain/gainonsets/mrs_real/gain",
+		"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence");
+    }
 	
 	//onsetnet->linkControl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/Memory/mem/mrs_bool/reset",
 	//	"Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_bool/onsetDetected");
@@ -305,11 +311,21 @@ detect_onsets(string sfName)
 		{
 			onsetnet->tick();
 			timestamps_samples += onsetnet->getctrl("mrs_natural/onSamples")->to<mrs_natural>();
-			cout << timestamps_samples / fs << endl; //in seconds
+		    if (confidenceopt) {
+	            mrs_real confidence = onsetnet->getctrl("Accumulator/onsetaccum/Series/onsetseries/FlowThru/onsetdetector/PeakerOnset/peaker/mrs_real/confidence")->to<mrs_real>();
+                if (confidence > thresholdopt) {
+			        cout << timestamps_samples / fs; //in seconds
+                    cout << "\t";
+			        cout << timestamps_samples / fs;
+                    cout << "\t" << confidence << endl;
+                }
+            } else {
+			    cout << timestamps_samples / fs << endl; //in seconds
+            }
 			outFile << timestamps_samples / fs << "\t";
 			outFile << (timestamps_samples / fs)+1 << "\t";
 			outFile << "w" << endl;
-			
+	
 		}
 		
 		cout << "Done writing " << outFileName << endl;
