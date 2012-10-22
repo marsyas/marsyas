@@ -35,6 +35,7 @@ Controls:
 - \b mrs_bool/sequence [w]	: when true, this control
 activates the writing of sequence numbered files containing the
 input data at each tick.
+- \b mrs_bool/single_file [w]	: when true, data is written to a single file in addition to multiple numbered files (if mrs_bool/sequence is true).
 - \b mrs_string/filename [w]	: base filename used for the output 
 sequence numbered files.
 
@@ -55,10 +56,12 @@ tick (after sending input data to MATLAB). By default it is set to "plot(type_na
 	{
 	private:
 		mrs_natural counter_;
+		std::ofstream *single_file_;
 
 		MarControlPtr ctrl_messages_;
 		MarControlPtr ctrl_separator_;
 		MarControlPtr ctrl_sequence_;
+		MarControlPtr ctrl_single_file_;
 		MarControlPtr ctrl_filename_;
 		MarControlPtr ctrl_matlab_;
 		MarControlPtr ctrl_matlabCommand_;
@@ -72,6 +75,7 @@ tick (after sending input data to MATLAB). By default it is set to "plot(type_na
 
 		MarSystem* clone() const;  
 
+        void myUpdate(MarControlPtr sender);
 		void myProcess(realvec& in, realvec& out);
 	};
 

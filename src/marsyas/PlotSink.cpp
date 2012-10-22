@@ -34,6 +34,7 @@ using namespace Marsyas;
 PlotSink::PlotSink(mrs_string name):MarSystem("PlotSink",name)
 {
 	counter_ = 0;
+    single_file_ = NULL;
 	addControls();
 }
 
@@ -42,6 +43,7 @@ PlotSink::PlotSink(const PlotSink& a):MarSystem(a)
 	ctrl_messages_ = getctrl("mrs_bool/messages");
 	ctrl_separator_ = getctrl("mrs_string/separator");
 	ctrl_sequence_ = getctrl("mrs_bool/sequence");
+	ctrl_single_file_ = getctrl("mrs_bool/single_file");
 	ctrl_filename_ = getctrl("mrs_string/filename");
 	ctrl_matlab_ = getctrl("mrs_bool/matlab");
 	ctrl_matlabCommand_ = getctrl("mrs_string/matlabCommand");
@@ -49,6 +51,10 @@ PlotSink::PlotSink(const PlotSink& a):MarSystem(a)
 
 PlotSink::~PlotSink()
 {
+	if (ctrl_single_file_->isTrue() && single_file_ != NULL) {
+        single_file_->close();
+        single_file_ = NULL;
+    }
 }
 
 MarSystem* 
@@ -63,10 +69,23 @@ PlotSink::addControls()
 	addctrl("mrs_bool/messages", false, ctrl_messages_);
 	addctrl("mrs_string/separator", ",", ctrl_separator_);
 	addctrl("mrs_bool/sequence", true, ctrl_sequence_);
+	addctrl("mrs_bool/single_file", false, ctrl_single_file_);
+    setctrlState("mrs_bool/single_file", true);
 	addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
 	addctrl("mrs_bool/matlab", false, ctrl_matlab_);
 	addctrl("mrs_string/matlabCommand", 
 		"plot("+type_+"_"+name_+"_indata);", ctrl_matlabCommand_);
+}
+
+void 
+PlotSink::myUpdate(MarControlPtr sender)
+{
+    // no change to network flow
+    MarSystem::myUpdate(sender);
+
+	if (ctrl_single_file_->isTrue() && single_file_ == NULL) {
+        single_file_ = new std::ofstream(ctrl_filename_->to<mrs_string>().c_str());
+    }
 }
 
 void 
@@ -97,6 +116,17 @@ PlotSink::myProcess(realvec& in, realvec& out)
 		MRSMSG("Writing " << oss.str() << endl);
 		in.write(oss.str());
 	}
+
+	if (ctrl_single_file_->isTrue()) {
+		for (o=0; o < inObservations_; o++) {
+			for (t = 0; t < inSamples_; t++) {
+                (*single_file_) << in(o,t);
+                (*single_file_) << std::endl;
+                //cout << in(o,t);
+            }
+        }
+        //(*single_file_) << std::endl;
+    }
 	
 	if(ctrl_messages_->isTrue())
 	{
