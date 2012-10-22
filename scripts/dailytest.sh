@@ -78,7 +78,8 @@ fi
 mkdir -p $matDir
 rm -rf $buildDir
 cd $baseDir
-svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk $buildDir
+#svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk $buildDir
+svn export . $buildDir
 mkdir -p $cmakeDir
 
 
@@ -99,7 +100,7 @@ testthing make $buildLog "Build"
 testthing "make test" $sanityLog Sanity
 #testthing "scripts/regtest_sanity.py" $sanityLog Sanity
 #testthing "scripts/regtest_coffee.py $coffeeDir" $coffeeLog Coffee
-testthing "make Continuous" $continuousLog Continuous
+#testthing "make Continuous" $continuousLog Continuous
 
 cd ..
 mkdir doc-build
