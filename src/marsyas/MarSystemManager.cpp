@@ -242,6 +242,7 @@
 #include "TimeStretch.h"
 #include "TimelineLabeler.h"
 #include "Transposer.h"
+#include "TriangularFilterBank.h"
 #include "Unfold.h"
 #include "Vibrato.h"
 #include "ViconFileSource.h"
@@ -518,6 +519,8 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("TimeStretch", new TimeStretch("tscp"));
 	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
 	registerPrototype("Transposer", new Transposer("transposer"));
+	registerPrototype("TriangularFilterBank", new TriangularFilterBank("triangularfilterbank_pr"));
+	
 	registerPrototype("Unfold", new Unfold("unfold"));
 	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 	registerPrototype("ViconFileSource", new ViconFileSource("viconfilesourcep"));
