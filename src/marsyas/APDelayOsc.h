@@ -67,26 +67,94 @@ private:
 	// Reads changed controls and sets up variables if necessary.
 	void myUpdate(MarControlPtr sender);
 
+	class FirstOrderAllPass
+	{
+	private:
+		mrs_real y, y1;
+		mrs_real x, x1;
+		mrs_real a, d;
+
+	public:
+		void delay(mrs_real din)
+		{
+			d = din;
+			a = (1 - d)/(1 + d);
+			y1 = x1 = 0;
+		}
+
+		mrs_real get_delay()
+		{
+			return d;
+		}
+
+		mrs_real operator()(mrs_real x)
+		{
+			y = (a * x) + (x1 - (a * y1));
+			x1 = x;
+			y1 = y;
+			return y;
+		}
+	};
+
+	class LeakyIntegrator
+	{
+	private:
+		mrs_real y, y1;
+		mrs_real x;
+		mrs_real e;
+
+	public:
+		LeakyIntegrator(): e(0.003) {}
+
+		void leaky(mrs_real amount)
+		{
+			e = amount;
+		}
+
+		mrs_real operator()(mrs_real x)
+		{
+			y = x + ((1 - e) * y1);
+			y1 = y;
+			return y;
+		}
+	};
+
+	class DCBlocker
+	{
+	private:
+		mrs_real y, y1;
+		mrs_real x, x1;
+		mrs_real R;
+
+	public:
+		DCBlocker(): R(0.995) {}
+
+		mrs_real operator()(mrs_real x)
+		{
+			y = x - x1 + (R * y1);
+			y1 = y;
+			x1 = x;
+			return y;
+		}
+	};
+
 	mrs_real frequency_;
 
     mrs_natural delaylineSize_;
 	realvec delayline_;
 
     mrs_real dc_;
-
-    mrs_real ly1_;  // Leaky Integrator last output
-
-    mrs_real a_;    // AllPass coefficient
-    mrs_real ax1_;  // AllPass last input
-    mrs_real ay1_;  // AllPass last output
-
-	mrs_real dx1_;  // dcBlocker last input
-	mrs_real dy1_;  // dcBlocker last output
+	mrs_real frac_;
 
     mrs_real israte_; // Sample rate of the system
     mrs_real dcoff_;  // The precalculated DC offset
     mrs_real neg_;    // Used to invert the system if
 	                  // only even harmonics are wanted
+
+	FirstOrderAllPass ap1;
+	FirstOrderAllPass ap2; // The tuning filter
+	DCBlocker dcb;
+	LeakyIntegrator le1;
 
     mrs_natural wp_;   // Write Pointer
     mrs_natural rp_;   // Read pointer one

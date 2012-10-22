@@ -23,27 +23,7 @@ using namespace Marsyas;
 
 APDelayOsc::APDelayOsc(mrs_string name):MarSystem("APDelayOsc", name)
 {
-	frequency_ = 0;
-
-    delaylineSize_ = 0;
 	delayline_ = NULL;
-
-    ly1_ = 0;  // Leaky Integrator last output
-
-    a_ = 0;    // AllPass coefficient
-    ax1_ = 0;  // AllPass last input
-    ay1_ = 0;  // AllPass last output
-
-	dx1_ = 0;  // dcBlocker last input
-	dy1_ = 0;  // dcBlocker last output
-
-    israte_ = 0;
-    dcoff_ = 0;
-
-    wp_ = 0;  // Write Pointer
-    rp_ = 0;  // Read pointer one
-    rpp_ = 0; // Read pointer two
-    N_ = 0;
 
 	noteon_ = true;
 
@@ -94,7 +74,7 @@ void APDelayOsc::myUpdate(MarControlPtr sender)
 	// this is the longest delay line required
 	if (delaylineSize_ == 0) 
 	{
-		delaylineSize_ = israte_/27.5;
+		delaylineSize_ = israte_/10;
 		delayline_.create((mrs_natural)delaylineSize_);
 	  
 		for (t = 0; t < delaylineSize_; t++)
@@ -105,19 +85,15 @@ void APDelayOsc::myUpdate(MarControlPtr sender)
   
 	if (noteon_)
     {		
-		ly1_ = 0;  // Leaky Integrator last output
-
-		ax1_ = 0;  // AllPass last input
-		ay1_ = 0;  // AllPass last output
-
 		// Allpass coefficient
 		// Chosen through experimentation
-		mrs_real delay = 1.3;
-		a_ = (1 - delay)/(1 + delay);
+		//ap1.delay(0.7);
 
 		// The amount of delay to generate the correct pitch
-		mrs_real d = israte_/frequency_;
+		mrs_real d = (israte_/frequency_);
 		N_ = (mrs_natural)floor(d);
+		frac_ = d - N_;
+		ap2.delay(frac_);
 
 		// Choses the differences between generating saw
 		// or square waves.
@@ -152,29 +128,6 @@ void APDelayOsc::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
 }
 
-mrs_real APDelayOsc :: allPass(mrs_real x)
-{
-	mrs_real y = (a_ * x) + (ax1_ - (a_ * ay1_));
-	ax1_ = x;
-	ay1_ = y;
-	return y;
-}
-
-mrs_real APDelayOsc :: leakyIntegrator(mrs_real x)
-{
-	mrs_real y = x + (0.995 * ly1_);
-	ly1_ = y;
-	return y;
-}
-
-mrs_real APDelayOsc :: dcBlocker(mrs_real x)
-{
-	mrs_real y = (x - dx1_) + (0.95 * dy1_);
-	dx1_ = x;
-	dy1_ = y;
-	return y;
-}
-
 void APDelayOsc::myProcess(realvec& in, realvec& out)
 {
 	(void) in;
@@ -182,14 +135,14 @@ void APDelayOsc::myProcess(realvec& in, realvec& out)
 	mrs_natural t,o;
 	mrs_real y, x = 0;
 
-	if (noteon_)
+	for (t = 0; t < inSamples_; t++)
 	{
-		for (t = 0; t < inSamples_; t++)
+		if (noteon_)
 		{
 			// rp holds the current sample
 			x  = delayline_(rp_);
 
-			y = allPass(x);
+			y = ap2(ap1(x));
 
 			// Write current sample back into the delay buffer.
 			// If square each sample is negated.
@@ -197,13 +150,17 @@ void APDelayOsc::myProcess(realvec& in, realvec& out)
 
 			// The leaky Integrator is used to apply an
 			// exponential decay as frequencies increase.
-			y = leakyIntegrator(y - dc_);
+
+			out(0,t) = dcb(le1(y - dc_));
 
 			// Increment the delay line pointers
 			wp_ = (wp_ + 1)  % N_;
 			rp_ = (rp_ + 1)  % N_;
 
-			out(0,t) = y;
+		}
+		else
+		{
+			out(0,t) = 0;
 		}
 	}
 }
