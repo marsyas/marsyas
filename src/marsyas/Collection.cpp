@@ -261,8 +261,11 @@ Collection::regression_label(mrs_natural cindex)
 mrs_string 
 Collection::labelEntry(unsigned int i) 
 {
-    if (hasLabels_)
-        return labelList_[i]; 
+    if (hasLabels_) {
+        if (i < labelList_.size()){
+            return labelList_[i]; 
+        }
+    }
     return "No label"; 
 }
 
