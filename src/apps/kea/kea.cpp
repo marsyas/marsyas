@@ -825,6 +825,8 @@ train_evaluate()
 	  //  cout << net->getControl("WekaSource/wsrc/mrs_realvec/processedData")->to<mrs_realvec>() << endl;
 	  
       string mode = net->getctrl("WekaSource/wsrc/mrs_string/mode")->to<mrs_string>();
+	  cout << "mode = " << mode << endl;
+	  
       net->updControl("Classifier/cl/mrs_string/mode", mode);
       ++i;
     }
