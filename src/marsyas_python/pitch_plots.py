@@ -110,9 +110,12 @@ def autocorrelation(frame_num, winSize, input_filename):
       figure(1);
       acr = control2array(net, "AutoCorrelation/acr/mrs_realvec/processedData")
       title("AutoCorrelation")
+      figure(1);
       marplot(acr, x_label = "Time in samples",
               y_label = "Correlation",
               plot_title = "AutoCorrelation")
+      figure(2);
+      marplot(acr);
       output_filename = os.path.splitext(input_filename)[0] + ".png"
       savefig(output_filename)      
       

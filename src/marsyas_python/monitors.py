@@ -1,33 +1,12 @@
-# EXAMPLE OF USING Marsyas together with PyLab
-# for MATLAB-like plotting
-# run using ipython -pylab testPylab.py foo.wav 
-
 #!/usr/bin/env python
 
 
 from pylab import *
+from marsyas_util import * 
 import sys
 from marsyas import MarSystemManager,MarControlPtr
 
-# create a global MarSystemManager 
 msm = MarSystemManager()
-
-
-# helper function to create a list of MarSystems from a list of names
-def create(msys_list_names):
-	return map(msm.create,msys_list_names)
-
-# create a Series MarSystem composed of a list of MarSystems
-def series(name, msys_list):
-	net = msm.create("Series/"+name)
-	map(net.addMarSystem, msys_list)
-	return net
-
-# create a Fanout MarSystem composed of a list of MarSystems
-def fanout(name, msys_list):
-	net = msm.create("Fanout/"+name)
-	map(net.addMarSystem, msys_list)
-	return net
 
 # create the network and make nice interface with top-level controls
 #	net = loadFromFile(pluginName)
@@ -40,49 +19,70 @@ def load_network(pluginName):
 
 # set the controls and plot the data 								
 def plot_figure(pluginName):
-	net = load_network(pluginName)
-	print "Loading " + pluginName
+    net = load_network(pluginName)
+    print "Loading " + pluginName
 
-	for i in range(1,20):
-		net.tick();
-		
-	outData1 = net.getControl("FlowThru/tempoInduction/Sum/hsum/mrs_realvec/processedData")
-	outData2 = net.getControl("FlowThru/tempoInduction/Peaker/pkr1/mrs_realvec/processedData")
+    figure(figsize=(14,8))
 
-	outData3 = net.getControl("Series/onset_strength/mrs_realvec/processedData");
+    for i in range(1,30):
+        net.tick();
 
-	print outData3.to_realvec()
+        subplot(2,3,1);
+        subplots_adjust(hspace=0.40,wspace=0.20)
+        hold(False)
+        marplot(control2array(net, "Series/onset_strength/ShiftInput/si2/mrs_realvec/processedData"), 
+                x_label="Analysis Frames", 
+                y_label="Onset Strength", 
+                plot_title = "Onset Strength Signal")
 
-	plot(linspace(0,200, outData1.to_realvec().getSize()), outData1.to_realvec(), label="BeatHistogram")
-	plot(linspace(0,200, outData2.to_realvec().getSize()), outData2.to_realvec(), label="Tempo Candidates")
-	xlabel("Tempo (BPM)")
-	ylabel("Beat Strength")
-	ylim(0,30)
-	legend()
+        subplot(2,3,2);
+        hold(False)
+        marplot(control2array(net, "Series/onset_strength/mrs_realvec/processedData"), 
+                x_label="Analysis Frames", 
+                y_label="Onset Strength", 
+                plot_title = "Filtered Onset Strength Signal")
+        
+
+        
+        subplot(2,3,3);
+        hold(False)
+        marplot(control2array(net, "FlowThru/tempoInduction/AutoCorrelation/acr/mrs_realvec/processedData"), 
+                x_label = "Lag (samples)", 
+                y_label = "Strength Strength", 
+                ex=200)
+
+        
+        subplot(2,3,4);
+        hold(False)
+        marplot(control2array(net, "FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData"), 
+                x_label = "Tempo (BPM)", 
+                y_label = "Beat Strength", 
+                ex=200)
+        
+        subplot(2,3,5);
+        hold(False)
+        marplot(control2array(net, "FlowThru/tempoInduction/Sum/hsum/mrs_realvec/processedData"), 
+                x_label = "Tempo (BPM)", 
+                y_label = "Beat Strength", 
+                ex=200)
+        hold(True)
+        marplot(control2array(net, "FlowThru/tempoInduction/Peaker/pkr1/mrs_realvec/processedData"), 
+                x_label = "Tempo (BPM)", 
+                y_label = "Beat Strength", 
+                plot_title = "Beat Histogram",
+                ex=200)
+        hold(False)
+
+        
+        title = "Beat Histogram"
+        thismanager = get_current_fig_manager()
+        ion() 
+        show()
+        raw_input("Press any key to tick the network")
 	
- 	savefig('monitor.ps');
 
 
-	figure()
-
-
-	plot(outData3.to_realvec())
-
-	xlabel("Analysis Frames")
-	ylabel("Onset Strength") 
-	# legend()
-	savefig('onsets.ps')
-	
- 	show()
-	
-
-
-
-# 	# save .svg and .ps versions of the figure 
-# 	savefig('windowing.svg')
-# 	savefig('windowing.ps')
-
-# 	show()
+        
 
 
 # call the plot function 

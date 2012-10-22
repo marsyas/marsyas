@@ -75,13 +75,13 @@ def marplot(data, cmap = 'jet', aspect='None', x_label='Samples',
         ex = data.shape[0]
     if ey==0:
         ey = data.shape[1]
-    if (ex > 1) and (ey > 1):
+    if (data.shape[0] > 1) and (data.shape[1] > 1):
         imshow(data, cmap=cmap, aspect=aspect, extent=[sy,ey,sx,ex],
                interpolation=interpolation)
-    elif (ex == 1):
-        plot(linspace(0,ey,data.shape[1]), data[0,:])
-    elif (ey == 1):
-        plot(linspace(0,ex,data.shape[0]), data[:,0])
+    elif (data.shape[0] == 1):
+        plot(linspace(0,ex,data.shape[1]), data[0,:])
+    elif (data.shape[1] == 1):
+        plot(linspace(0,ey,data.shape[0]), data[:,0])
     xlabel(x_label)
     ylabel(y_label)
     title(plot_title)
