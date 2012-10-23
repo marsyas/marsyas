@@ -2,3 +2,6 @@
 This directory contains collection files for various known data-set (GTZAN, CAL500). 
 The paths need to be changed to reflect your own system. 
 
+All filenames with _tempos.mf contain beats-per-minute ground
+truth.
+

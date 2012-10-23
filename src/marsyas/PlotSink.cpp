@@ -120,12 +120,13 @@ PlotSink::myProcess(realvec& in, realvec& out)
 	if (ctrl_single_file_->isTrue()) {
 		for (o=0; o < inObservations_; o++) {
 			for (t = 0; t < inSamples_; t++) {
+                (*single_file_) << counter_ << " " << t << " ";
                 (*single_file_) << in(o,t);
                 (*single_file_) << std::endl;
                 //cout << in(o,t);
             }
         }
-        //(*single_file_) << std::endl;
+        (*single_file_) << std::endl;
     }
 	
 	if(ctrl_messages_->isTrue())
