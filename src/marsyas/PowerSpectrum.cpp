@@ -134,6 +134,7 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 				out(o,t) = sqrt(re_ * re_ + im_ * im_);
 				break;
 			case PSD_DB:
+				// TODO(sness) - Check validity of this magic number.  Should probably be FLT_MIN
 				dB_ = (mrs_real)(10*log10(re_ * re_ + im_ * im_ + 0.000000001));
 				out(o,t) = dB_;
 				break;
