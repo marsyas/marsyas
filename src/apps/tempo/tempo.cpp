@@ -3974,6 +3974,7 @@ main(int argc, const char **argv)
   vector<mrs_string> soundfiles = cmd_options.getRemaining();
 
   FileName inputfile(soundfiles[0]);
+  FileName wrong_filename(inputfile.nameNoExt() + "-wrong.mf");
 
   bool haveCollections = true;
   if (inputfile.ext() == "mf")
@@ -4040,7 +4041,7 @@ main(int argc, const char **argv)
 
 
 	ofstream wrong_collection;
-	wrong_collection.open("wrong.mf");
+	wrong_collection.open(wrong_filename.fullname().c_str());
 	for (int i=0; i< (mrs_natural)wrong_filenames_.size(); i++)
 	{
 	  wrong_collection << wrong_filenames_[i] << "\t" << wrong_filenames_tempos_[i] << endl;
