@@ -59,7 +59,7 @@ BeatTimesSink::BeatTimesSink(const BeatTimesSink& a) : MarSystem(a)
 	ctrl_soundFileSize_= getctrl("mrs_natural/soundFileSize");
 	ctrl_nonCausal_ = getctrl("mrs_bool/nonCausal");
 	ctrl_socketsPort_ = getctrl("mrs_natural/socketsPort");
-  
+	ctrl_tempo_ = getctrl("mrs_real/tempo");
 	ibiBPM_ = a.ibiBPM_;
 	beatCount_ = a.beatCount_;
 	ibiBPMSum_ = a.ibiBPMSum_;
@@ -110,6 +110,9 @@ BeatTimesSink::addControls()
 	setctrlState("mrs_bool/nonCausal", true);
 	addctrl("mrs_natural/socketsPort", -1, ctrl_socketsPort_);
 	setctrlState("mrs_natural/socketsPort", true);
+	addctrl("mrs_real/tempo", 80.0, ctrl_tempo_);
+		
+	
 }
 
 void
@@ -340,6 +343,8 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 
 						mrs_natural output;
 						output = (mrs_natural) (ibiBPMVec_((mrs_natural)(beatCount_ / 2.0)) + 0.5);
+						ctrl_tempo_->setValue(output * 1.0, NOUPDATE);
+						
 						/*
 						  if(beatCount_ % 2 == 0) 
 						  {

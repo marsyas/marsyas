@@ -64,7 +64,8 @@ private:
 	MarControlPtr ctrl_soundFileSize_;
 	MarControlPtr ctrl_nonCausal_;
 	MarControlPtr ctrl_socketsPort_;
-
+	MarControlPtr ctrl_tempo_;
+	
 	mrs_real beatTimeTmp_;
 	mrs_real lastIbi_;
 	mrs_natural soundFileSize_;
