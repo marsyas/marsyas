@@ -8,13 +8,13 @@ import subprocess
 import scipy.stats
 
 ground_truth_dirname = os.path.expanduser("~/src/audio-research/")
+results_subdir = "mfs/"
 
 
 def get_results(detected_filename, ground_filename):
     #print "--------", detected_filename
     cmd = "tempo -pi %s -m PREDICTED %s" % (
         detected_filename, ground_filename)
-    #print cmd
     results = subprocess.check_output(cmd, shell=True)
     reslist = results.split('\n')
     ending = reslist[-15:]
@@ -41,12 +41,14 @@ def get_results(detected_filename, ground_filename):
 
 def gather_results(name, filename_template):
     results = []
-    files = sorted(glob.glob("*-%s.mf" % filename_template))
+    files = sorted(glob.glob(
+        os.path.join(results_subdir, "*-%s.mf" % filename_template)))
     for filename in files:
         splitname = filename.split('-')
         ground_truth = os.path.join(ground_truth_dirname, splitname[0] + ".mf")
+        ground_truth = ground_truth.replace(results_subdir, "")
         datum = get_results(filename, ground_truth)
-        short_name = datum[0]
+        short_name = datum[0].replace(results_subdir, "")
         results.append( [short_name] + list(datum[1:]) )
     return results
 
@@ -81,6 +83,39 @@ def write_csv(filename, collections, dats, field):
         out.write(text + '\n')
     out.close()
 
+def get_means_totals(data):
+    m_mean_percent = 0
+    m_mean_count = 0
+    m_overall_correct = 0
+    m_overall_total = 0
+    h_mean_percent = 0
+    h_mean_count = 0
+    h_overall_correct = 0
+    h_overall_total = 0
+    for d in data:
+        m_mean_percent += d[3]
+        m_mean_count += 1
+        h_mean_percent += d[5]
+        h_mean_count += 1
+        m_overall_correct += d[2]
+        m_overall_total += d[1]
+        h_overall_correct += d[4]
+        h_overall_total += d[1]
+    m_mean_percent /= float(m_mean_count)
+    h_mean_percent /= float(h_mean_count)
+    m_overall_correct /= float(m_overall_total)
+    h_overall_correct /= float(h_overall_total)
+    m_overall_correct *= 100.0
+    h_overall_correct *= 100.0
+
+    means = [ m_overall_total,
+       0, m_mean_percent,
+       0, h_mean_percent]
+    totals = [ h_overall_total,
+       0, m_overall_correct,
+       0, h_overall_correct]
+    return means, totals
+
 
 def main():
     mar_results = gather_results("marsyas", "detected")
@@ -90,6 +125,12 @@ def main():
         dats[a[0]] = []
         dats[a[0]].append(a[1:])
         mcnemar[a[0]] = []
+    m, t = get_means_totals(mar_results)
+    dats["means"] = []
+    dats["total"] = []
+    dats["means"].append(m)
+    dats["total"].append(t)
+
 
     collections = [
             ("vamp_fixed", "fixed_tempo"),
@@ -101,17 +142,22 @@ def main():
             ("ibt_off_reg", "ibt-off-reg"),
             ("scheirer", "scheirer"),
             ("echonest", "echonest_bpm"),
+            ("klapuri", "klapuri"),
         ]
     for name, template in collections:
         data = gather_results(name, template)
         for d in data:
             shortname = d[0]
             dats[shortname].append(d[1:])
+
             mar = None
             for f in mar_results:
                 if f[0] == shortname:
                     mar = f
             mcnemar_stat(mar, d)
+        m, t = get_means_totals(data)
+        dats["means"].append(m)
+        dats["total"].append(t)
 
     write_csv("mirex.csv", collections, dats, 2)
     write_csv("harmonic.csv", collections, dats, 4)
