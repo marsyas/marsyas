@@ -51,6 +51,7 @@ macro(bextract_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
 		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
 		${EXTRA_BEXTRACT}
 		-w ${TEST_TEMPDIR}/${REG_NAME}.arff
+		-od ${TEST_TEMPDIR}/
 		${MF_INPUT} )
 endmacro(bextract_test)
 
