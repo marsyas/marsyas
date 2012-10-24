@@ -66,6 +66,26 @@ def mcnemar_stat(mar, dat):
     p = rv.sf(stat)
     #print p
 
+def sort_names(val):
+    examine = val[0]
+    if examine.startswith("ismir"):
+        return 1
+    elif examine.startswith("ball"):
+        return 2
+    elif examine.startswith("hains"):
+        return 3
+    elif examine.startswith("genre"):
+        return 4
+    elif examine.startswith("ivl"):
+        return 5
+    elif examine.startswith("means"):
+        return 6
+    elif examine.startswith("total"):
+        return 7
+    else:
+        return 1
+
+
 def write_csv(filename, collections, dats, field):
     out = open(filename, 'w')
     out.write("name, ")
@@ -73,7 +93,7 @@ def write_csv(filename, collections, dats, field):
     text = "marsyas, " + ", ".join(collections_names)
     out.write(text + '\n')
 
-    for key, value in iter(sorted(dats.items())):
+    for key, value in iter(sorted(dats.items(), key=sort_names)):
         text = key + ", "
         percents = [v[field] for v in value]
         #percents_harmonic_mirex = [v[4] for v in value]
@@ -133,16 +153,17 @@ def main():
 
 
     collections = [
-            ("vamp_fixed", "fixed_tempo"),
-            ("qm_default_mean", "qm_default_mean"),
-            ("qm_default_median", "qm_default_median"),
-            ("qm_default_mode", "qm_default_mode"),
+            ("klapuri", "klapuri"),
+            ("zplane", "zplane"),
+            ("echonest", "echonest_bpm"),
             ("ibt", "ibt"),
             ("ibt_off_auto", "ibt-off-auto"),
             ("ibt_off_reg", "ibt-off-reg"),
+            ("qm_default_mean", "qm_default_mean"),
+            ("qm_default_median", "qm_default_median"),
+            ("qm_default_mode", "qm_default_mode"),
+            ("vamp_fixed", "fixed_tempo"),
             ("scheirer", "scheirer"),
-            ("echonest", "echonest_bpm"),
-            ("klapuri", "klapuri"),
         ]
     for name, template in collections:
         data = gather_results(name, template)
@@ -159,8 +180,12 @@ def main():
         dats["means"].append(m)
         dats["total"].append(t)
 
-    write_csv("mirex.csv", collections, dats, 2)
-    write_csv("harmonic.csv", collections, dats, 4)
+    ### TODO: sort based on mirex tempo?
+    s_coll = collections
+    s_dats = dats
+
+    write_csv("mirex.csv", s_coll, s_dats, 2)
+    write_csv("harmonic.csv", s_coll, s_dats, 4)
 
 main()
 
