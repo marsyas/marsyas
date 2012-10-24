@@ -27,7 +27,6 @@ namespace Marsyas
 		SimilarityMatrixWidget(MarSystem *msys, GraphicalEnvironment* env);
 		~SimilarityMatrixWidget();
 		
-		void draw();
 		void drawConnections();
 	};
 }

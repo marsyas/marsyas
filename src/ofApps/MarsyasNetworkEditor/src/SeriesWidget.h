@@ -30,7 +30,7 @@ namespace Marsyas
 		SeriesWidget(MarSystem* msys, GraphicalEnvironment* env);
 		~SeriesWidget();
 		
-		void draw();
+		
 		void drawConnections();
 	};
 }

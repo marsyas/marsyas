@@ -27,7 +27,7 @@ namespace Marsyas
 		FlowThruWidget(MarSystem *msys, GraphicalEnvironment* env);
 		~FlowThruWidget();
 		
-		void draw();
+		
 		void drawConnections();
 	};
 }

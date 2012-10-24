@@ -27,7 +27,7 @@ namespace Marsyas
 		SilenceRemoveWidget(MarSystem *msys, GraphicalEnvironment* env);
 		~SilenceRemoveWidget();
 		
-		void draw();
+		
 		void drawConnections();
 	};
 }

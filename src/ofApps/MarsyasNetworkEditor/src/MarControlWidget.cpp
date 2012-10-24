@@ -99,7 +99,10 @@ void MarControlWidget::draw()
     
 	ofSetRectMode(OF_RECTMODE_CORNER);
 	//FIXME:
-	drawLinks();
+    if(showLinks_){
+        drawLinks();
+    }
+	
 }
 
 
@@ -182,6 +185,12 @@ std::vector<MarControlLinkWidget*> *MarControlWidget::getLinks()
 
 void MarControlWidget::drawLinks()
 {
+    if(isSelected_){
+        ofSetColor(0, 255, 0);
+    }
+    else{
+        ofSetColor(255, 0, 0);
+    }
 	for(int i=0; i<links_->size(); i++)
 	{
 		(*links_)[i]->draw();

@@ -19,6 +19,7 @@ namespace Marsyas{
     
     class Widget;
     class MiniViewWidget;
+    class MarSystemThread;
     
     class GraphicalEnvironment{
     protected:
@@ -26,6 +27,11 @@ namespace Marsyas{
         double targetX_;
         double targetY_;
         bool move_;
+        
+        bool showChildrenConnections_;
+        bool showLinkedControlsConnections_;
+        
+        MarSystemThread* msysThread_;
         
     public:
         
@@ -85,6 +91,9 @@ namespace Marsyas{
         void calculateTransformations();
         
         MarSystemWidget* getMarSystemWidget();
+        
+        void setMarSystemThread(MarSystemThread* msyst);
+        MarSystemThread* getMarSystemThread();
         
     };
     

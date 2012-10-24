@@ -41,7 +41,7 @@ void MarControlLinkWidget::draw()
 {
     glPushMatrix();
     glTranslated(0, 0, 1);
-	ofSetColor(255, 0, 0);
+	//ofSetColor(255, 0, 0);
 	ofSetLineWidth(1);
 	ofArrow(src_->getX(), src_->getY(), dest_->getX(), dest_->getY());
     glPopMatrix();

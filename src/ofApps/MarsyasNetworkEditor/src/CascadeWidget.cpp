@@ -123,14 +123,7 @@ void CascadeWidget::updateChildrenWidgets()
 
 }
 
-void CascadeWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 
 

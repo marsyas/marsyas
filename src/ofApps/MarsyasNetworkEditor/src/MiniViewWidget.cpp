@@ -19,7 +19,8 @@ MiniViewWidget::MiniViewWidget(GraphicalEnvironment* env) : Widget(0, 0, 0, 0, e
     y_ = 10;
     height_ = MINIVIEW_HEIGHT - 20;
     width_ = height_*env_->networkHeight_*ofGetWidth()*(ofGetWidth() - 20)/(env_->networkWidth_*(ofGetHeight() - MINIVIEW_HEIGHT - 10)*(MINIVIEW_HEIGHT - 20));
-    miniDragLock_ = false;
+    miniDragLockDown_ = false;
+    miniDragLockUp_ = false;
     
     move_ = false;
 }
@@ -73,6 +74,7 @@ void MiniViewWidget::draw()
 	ofRect(x_, y_, width_, height_);
     ofSetColor(255, 255, 0, 255);
     ofRect(x_ + width_ - MINIVIEW_ZOOM_HANDLER, y_ + height_ - MINIVIEW_ZOOM_HANDLER, MINIVIEW_ZOOM_HANDLER, MINIVIEW_ZOOM_HANDLER);
+    ofRect(x_ , y_ , MINIVIEW_ZOOM_HANDLER, MINIVIEW_ZOOM_HANDLER);
     
 }
 
@@ -112,13 +114,29 @@ bool MiniViewWidget::mousePressed(){
                 if(env_->mouse_->x <= x_ + width_){
                     if(env_->mouse_->y >= y_ + height_ - MINIVIEW_ZOOM_HANDLER){
                         if(env_->mouse_->y <= y_ + height_){
-                            miniDragLock_ = true;
+                            miniDragLockDown_ = true;
                         }
                     }
                 }
             }
             
-            if(!miniDragLock_){
+            if(env_->mouse_->x >= x_){
+                if(env_->mouse_->x <= x_ + MINIVIEW_ZOOM_HANDLER){
+                    if(env_->mouse_->y >= y_){
+                        if(env_->mouse_->y <= y_ + MINIVIEW_ZOOM_HANDLER){
+                            miniDragLockUp_ = true;
+                        }
+                    }
+                }
+            }
+            
+            
+            if(!miniDragLockDown_){
+                clickPointOffsetX_ = env_->mouse_->x - x_;
+                clickPointOffsetY_ = env_->mouse_->y - y_; 
+            }
+            
+            if(!miniDragLockUp_){
                 clickPointOffsetX_ = env_->mouse_->x - x_;
                 clickPointOffsetY_ = env_->mouse_->y - y_; 
             }
@@ -165,7 +183,7 @@ bool MiniViewWidget::mouseDragged()
 		if(env_->mouse_->drag == 0)
 		{
             
-            if(miniDragLock_){
+            if(miniDragLockDown_){
                 
                 /*
                 width_ = env_->mouse_->x - x_;
@@ -189,6 +207,26 @@ bool MiniViewWidget::mouseDragged()
                 
                 //width_ =  height_*ofGetWidth()/(ofGetHeight() - MINIVIEW_HEIGHT);
                 //width_ = height_*env_->networkWidth_/(env_->networkHeight_);
+                width_ = height_*env_->networkHeight_*ofGetWidth()*(ofGetWidth() - 20)/(env_->networkWidth_*(ofGetHeight() - MINIVIEW_HEIGHT - 10)*(MINIVIEW_HEIGHT - 20));
+            }
+            else if(miniDragLockUp_){
+                int lockHeight = y_ + height_;
+                int lockWidth = x_ + width_;
+                
+                y_ = env_->mouse_->y;
+                if(y_ < 0){
+                    y_ = 0;
+                }
+                if((y_ + 30) > MINIVIEW_HEIGHT){
+                    y_ = MINIVIEW_HEIGHT - 30;
+                }
+                
+                
+                x_ = env_->mouse_->x;
+                
+                height_ = lockHeight - y_;
+                width_ = lockWidth - x_;
+                
                 width_ = height_*env_->networkHeight_*ofGetWidth()*(ofGetWidth() - 20)/(env_->networkWidth_*(ofGetHeight() - MINIVIEW_HEIGHT - 10)*(MINIVIEW_HEIGHT - 20));
             }
             else{
@@ -232,7 +270,8 @@ void MiniViewWidget::windowResized(){
 
 bool MiniViewWidget::mouseReleased(){
     Widget::mouseReleased();
-    miniDragLock_ = false;
+    miniDragLockDown_ = false;
+    miniDragLockUp_ = false;
 }
 
 void MiniViewWidget::debugger(){

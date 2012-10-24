@@ -23,14 +23,7 @@ FanoutWidget::~FanoutWidget()
 
 }
 
-void FanoutWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 void FanoutWidget::drawConnections()
 {

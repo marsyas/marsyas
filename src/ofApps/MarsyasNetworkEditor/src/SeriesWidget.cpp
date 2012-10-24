@@ -23,14 +23,7 @@ SeriesWidget::~SeriesWidget()
 }
 
 
-void SeriesWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 void SeriesWidget::drawConnections()
 {

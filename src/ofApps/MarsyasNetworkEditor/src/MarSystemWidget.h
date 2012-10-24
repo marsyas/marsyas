@@ -99,6 +99,7 @@ namespace Marsyas
 		int childrenTotalHeight_;
 		
 		bool drawChildren_;
+        bool showChildrenConnections_;
 		
 		int nameWidth_;
 		int nameHeight_;
@@ -182,6 +183,9 @@ namespace Marsyas
 		void updateButtonPosition();
         
         void showFamilyUp();
+        
+        void switchChildrenConnections(bool state);
+        void switchLinkedControlConnections(bool state);
 		
 		//for debugging purposes
 		void debugger();

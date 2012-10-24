@@ -21,14 +21,6 @@ SelfSimilarityMatrixWidget::~SelfSimilarityMatrixWidget()
 }
 
 
-void SelfSimilarityMatrixWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
 
 void SelfSimilarityMatrixWidget::drawConnections()
 {

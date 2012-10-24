@@ -84,6 +84,7 @@ void MarSystemWidget::setup(MarSystem *msys)
 	drawChildren_ = true;
 	maxChildrenWidth_ = 0;
     
+    showChildrenConnections_ = true;
     
     probe_ = new ProcessedDataWidget(this, env_);
 	
@@ -293,7 +294,7 @@ void MarSystemWidget::updateChildrenWidgets()
 	{
 		children_[i]->x_ = startX + X_SEPARATION;
 		startX += children_[i]->width_ + X_SEPARATION;
-		children_[i]->y_ = y_ + HEADER_SEPARATION;
+		children_[i]->y_ = y_ + height_*0.5 - children_[i]->height_*0.5;
 	}
 }
 
@@ -399,14 +400,9 @@ void MarSystemWidget::draw()
 	if(drawChildren_)
 	{
 		drawChildrenWidgets();
-	}
-	
-	//////////////////////////////////////////
-	// draw connections (for composites only)
-	//////////////////////////////////////////
-	if(isMaximized())
-	{
-		drawConnections();
+        if(showChildrenConnections_){
+            drawConnections();
+        }
 	}
 	
 	//////////////////////////////////////////
@@ -581,6 +577,23 @@ void MarSystemWidget::showFamilyUp(){
     update();
     
     
+}
+
+void MarSystemWidget::switchChildrenConnections(bool state){
+    showChildrenConnections_ = state;
+    for(int i=0; i<children_.size(); i++){
+        children_[i]->switchChildrenConnections(state);
+    }
+}
+
+void MarSystemWidget::switchLinkedControlConnections(bool state){
+    for(int i=0; i<ctrlWidgets_.size(); ++i)
+	{
+        ctrlWidgets_[i]->showLinks_ = state;
+	}
+    for(int i=0; i<children_.size(); i++){
+        children_[i]->switchLinkedControlConnections(state);
+    }
 }
 
 // Mouse methods **************************************************************

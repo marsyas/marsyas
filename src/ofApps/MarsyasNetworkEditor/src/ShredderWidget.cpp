@@ -24,14 +24,7 @@ ShredderWidget::~ShredderWidget()
 }
 
 
-void ShredderWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 void ShredderWidget::updateChildrenWidgets()
 {
@@ -39,7 +32,7 @@ void ShredderWidget::updateChildrenWidgets()
 	if(children_.size() > 0)
 	{
 		children_[0]->setX(startX + X_SEPARATION);
-		children_[0]->setY(y_ + HEADER_SEPARATION);
+		children_[0]->setY(y_ + height_*0.5 - children_[0]->height_*0.5);
 	}
 
 }

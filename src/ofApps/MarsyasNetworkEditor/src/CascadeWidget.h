@@ -27,7 +27,7 @@ namespace Marsyas
 		~CascadeWidget();
 		
 		//void update();
-		void draw();
+		
 		void drawConnections();
 		void updateSize();
 		void updateChildrenPos();

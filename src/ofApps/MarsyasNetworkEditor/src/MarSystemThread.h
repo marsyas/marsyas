@@ -22,7 +22,10 @@ namespace Marsyas {
         GraphicalEnvironment* env_;
         MarSystem* msys_;
         
-        
+        int tickStatus_;
+        int tick_;
+        bool setTickLock_;
+        void restartThread();
         
     public:
         
@@ -40,6 +43,9 @@ namespace Marsyas {
         void start();
         void stop();
 		void threadedFunction();
+        
+        void setTickStatus(int tick);
+        int getTickStatus();
         
     };
     

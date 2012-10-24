@@ -59,6 +59,8 @@ namespace Marsyas
         bool isSelected_;
         void highlightControlWidget();
         
+        bool showLinks_;
+        
 		//getters
 		std::string getName();
 		MarControlPtr getMarControlPtr()

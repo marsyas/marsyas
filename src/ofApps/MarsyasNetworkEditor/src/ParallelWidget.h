@@ -30,7 +30,7 @@ namespace Marsyas
 		ParallelWidget(MarSystem *msys, GraphicalEnvironment* env);
 		~ParallelWidget();
 		
-		void draw();
+		
 		void drawConnections();
 	};
 }

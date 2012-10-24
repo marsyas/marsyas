@@ -24,14 +24,7 @@ ParallelWidget::~ParallelWidget()
 }
 
 
-void ParallelWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 void ParallelWidget::drawConnections()
 {

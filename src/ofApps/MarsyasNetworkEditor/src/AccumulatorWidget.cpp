@@ -23,14 +23,7 @@ AccumulatorWidget::~AccumulatorWidget()
 }
 
 
-void AccumulatorWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 void AccumulatorWidget::updateSize()
 {
@@ -116,7 +109,7 @@ void AccumulatorWidget::updateChildrenWidgets()
 	{
 		children_[i]->setX(startX + X_SEPARATION);
 		startX += children_[i]->getWidth() + X_SEPARATION;
-		children_[i]->setY(y_ + HEADER_SEPARATION);
+		children_[i]->setY(y_ + height_*0.5 - children_[i]->height_*0.5);
 	}
 
 }

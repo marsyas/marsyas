@@ -22,7 +22,8 @@ namespace Marsyas
 	protected:
 		float clickPointOffsetX_;
 		float clickPointOffsetY_;
-        bool miniDragLock_;
+        bool miniDragLockDown_;
+        bool miniDragLockUp_;
         
         int targetX_;
         int targetY_;

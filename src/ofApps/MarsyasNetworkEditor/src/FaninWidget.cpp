@@ -25,14 +25,7 @@ FaninWidget::~FaninWidget()
 }
 
 
-void FaninWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 void FaninWidget::drawConnections()
 {

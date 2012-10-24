@@ -20,15 +20,6 @@ SimilarityMatrixWidget::~SimilarityMatrixWidget()
 }
 
 
-void SimilarityMatrixWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
-
 void SimilarityMatrixWidget::drawConnections()
 {
 	ofFill();

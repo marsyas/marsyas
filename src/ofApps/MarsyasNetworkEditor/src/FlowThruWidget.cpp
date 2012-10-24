@@ -20,14 +20,7 @@ FlowThruWidget::~FlowThruWidget()
 }
 
 
-void FlowThruWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 void FlowThruWidget::drawConnections()
 {

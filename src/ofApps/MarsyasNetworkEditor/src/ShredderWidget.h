@@ -27,7 +27,7 @@ namespace Marsyas
 		~ShredderWidget();
 		
 		//void update();
-		void draw();
+		
 		void drawConnections();
 		void updateChildrenPos();
 		void updateChildrenWidgets();

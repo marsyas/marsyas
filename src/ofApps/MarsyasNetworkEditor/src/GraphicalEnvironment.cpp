@@ -10,6 +10,7 @@
 #include "GraphicalEnvironment.h"
 #include "GraphicalParameters.h"
 #include "MiniViewWidget.h"
+#include "MarSystemThread.h"
 
 
 using namespace Marsyas;
@@ -38,7 +39,8 @@ GraphicalEnvironment::GraphicalEnvironment(){
     
     probe_ = new ProbingManager(this);
     
-    
+    showChildrenConnections_ = true;
+    showLinkedControlsConnections_ = true;
     
 }
 
@@ -162,6 +164,14 @@ MarSystemWidget* GraphicalEnvironment::getMarSystemWidget(){
 }
 
 
+void GraphicalEnvironment::setMarSystemThread(MarSystemThread* msyst){
+    msysThread_ = msyst;
+}
+
+MarSystemThread* GraphicalEnvironment::getMarSystemThread(){
+    return msysThread_;
+}
+
 void GraphicalEnvironment::keyPressed  (int key)
 {
 	probe_->keyPressed(key);
@@ -174,6 +184,31 @@ void GraphicalEnvironment::keyPressed  (int key)
 		case '2':
 			//visualizationMode_ = 2;
 			break;
+        case 'c':
+            showChildrenConnections_ = !showChildrenConnections_;
+            msysw_->switchChildrenConnections(showChildrenConnections_);
+            break;
+        case 'v':
+            showLinkedControlsConnections_ = !showLinkedControlsConnections_;
+            msysw_->switchLinkedControlConnections(showLinkedControlsConnections_);
+            break;
+        case ' ':
+            if(msysThread_->getTickStatus() == 1){
+                msysThread_->setTickStatus(0);
+                
+            }
+            else{
+                msysThread_->setTickStatus(1);
+                
+                //msysThread_->start();
+            }
+            
+            break;
+        case 't':
+            msysThread_->setTickStatus(2);
+            //msysThread_->start();
+            break;
+
 	}
 	
 	

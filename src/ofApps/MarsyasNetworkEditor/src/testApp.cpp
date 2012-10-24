@@ -9,7 +9,7 @@ void testApp::setup()
 {
     ofSetFrameRate(30);
 	ofEnableSetupScreen();
-	ofBackground(0, 0, 0);
+	ofBackground(0, 0, 30);
 	ofEnableSmoothing();
 	ofEnableAlphaBlending();
 	glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
@@ -22,7 +22,7 @@ void testApp::setup()
     
     //Marsyas Thread
     msysThread = new MarSystemThread(graphicalEnv_);
-    
+    graphicalEnv_->setMarSystemThread(msysThread);
     
     
     
@@ -38,8 +38,8 @@ void testApp::setup()
     //in the sound card
     network = mng.create("Series", "network");
     //network->addMarSystem(mng.create("AudioSource", "src"));
-    //network->addMarSystem(mng.create("SineSource", "src"));
-    network->addMarSystem(mng.create("SoundFileSource", "src"));
+    network->addMarSystem(mng.create("SineSource", "src"));
+    //network->addMarSystem(mng.create("SoundFileSource", "src"));
     network->addMarSystem(mng.create("Gain", "vol"));
     network->addMarSystem(mng.create("AudioSink", "dest"));
     //network->addMarSystem(mng.create("SoundFileSink", "dest2"));
@@ -52,11 +52,11 @@ void testApp::setup()
     network->updControl("mrs_natural/inSamples", 1024);
     
     //set oscilator frequency to 440Hz
-    //network->updControl("SineSource/src/mrs_real/frequency", 220.0);
+    network->updControl("SineSource/src/mrs_real/frequency", 220.0);
     
     // set the sampling to 44100  - a safe choice in most configurations 
     network->updControl("mrs_real/israte", 44100.0);
-    network->updControl("SoundFileSource/src/mrs_string/filename", "/test.wav");
+    //network->updControl("SoundFileSource/src/mrs_string/filename", "/test.wav");
     network->updControl("SoundFileSource/src/mrs_natural/nChannels", 1);
     //network->updControl("AudioSource/src/mrs_bool/initAudio", true);
     //network->updControl("AudioSource/src/mrs_natural/nChannels", 1);

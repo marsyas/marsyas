@@ -30,7 +30,7 @@ namespace Marsyas
 		FaninWidget(MarSystem *msys, GraphicalEnvironment* env);
 		~FaninWidget();
 		
-		void draw();
+		
 		void drawConnections();
 	};
 }

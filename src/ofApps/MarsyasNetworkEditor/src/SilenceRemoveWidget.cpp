@@ -21,14 +21,7 @@ SilenceRemoveWidget::~SilenceRemoveWidget()
 }
 
 
-void SilenceRemoveWidget::draw()
-{
-	MarSystemWidget::draw();
-	if(drawChildren_)
-	{
-		drawConnections();
-	}
-}
+
 
 void SilenceRemoveWidget::drawConnections()
 {

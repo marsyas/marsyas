@@ -29,7 +29,7 @@ namespace Marsyas
 		FanoutWidget(MarSystem *msys, GraphicalEnvironment* env);
 		~FanoutWidget();
 		
-		void draw();
+		
 		void drawConnections();
 	};
 }
