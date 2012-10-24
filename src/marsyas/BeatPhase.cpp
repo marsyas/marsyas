@@ -291,10 +291,28 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	tempo_scores(0) = tempo_scores(max_i);
 	ctrl_phase_tempo_->setValue(tempos(max_i));
 
+	if (max_i != 0) 
+		tempo_scores(max_i) = 0.0;
+
+	max_score = 0.0;
+	max_i=0;
+	for (int i= 1; i < tempos.getSize(); i++)
+	{
+	    if (tempo_scores(i) > max_score)
+		{
+			max_score = tempo_scores(i);
+			max_i = i;
+		}
+	}
+	
+	tempos(1) = tempos(max_i);
+	tempo_scores(1) = tempo_scores(max_i);
+
+
 	// select a tempo for the beat locations
 	// with doubling heuristic if tempo < 75 BPM
-	tempo = tempos(max_i);
-	if (tempo < 75.0)
+	tempo = tempos(0);
+	if (tempo < 70.0)
 		tempo = tempo * 2;
 	mrs_real beat_length = 60.0 / tempo;
 

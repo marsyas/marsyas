@@ -906,15 +906,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
 
-  // MarSystem *adaptive_median_threshold = mng.create("Fanout/adaptive_median_threshold");
-  // adaptive_median_threshold->addMarSystem(mng.create("MedianFilter", "medianfilter"));
-  // adaptive_median_threshold->addMarSystem(mng.create("Gain/subtract_gain"));
-  // adaptive_median_threshold->updControl("Gain/subtract_gain/mrs_real/gain", -1.0);
-  // adaptive_median_threshold->updControl("MedianFilter/medianfilter/mrs_natural/WindowSize", 10);
-  // tempoInduction->addMarSystem(adaptive_median_threshold);
-  // tempoInduction->addMarSystem(mng.create("Sum/asum"));
-  // tempoInduction->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
-
+  /* MarSystem *adaptive_median_threshold = mng.create("Fanout/adaptive_median_threshold");
+  adaptive_median_threshold->addMarSystem(mng.create("MedianFilter", "medianfilter"));
+  adaptive_median_threshold->addMarSystem(mng.create("Gain/subtract_gain"));
+  adaptive_median_threshold->updControl("Gain/subtract_gain/mrs_real/gain", -1.0);
+  adaptive_median_threshold->updControl("MedianFilter/medianfilter/mrs_natural/WindowSize", 10);
+  tempoInduction->addMarSystem(adaptive_median_threshold);
+  tempoInduction->addMarSystem(mng.create("Sum/asum"));
+  tempoInduction->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
+  */ 
 
 
    tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
@@ -986,8 +986,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    // parameters for BH pick peaking
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 160);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 840);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 760);
    tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
@@ -999,7 +999,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    // beat histogram parameters
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 840);
+   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 16.0);
    tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
    tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
@@ -1049,7 +1049,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    mrs_real phase_tempo;	 // tempo estimate calculated by the BeatPhase MarSystem
    mrs_realvec bhisto;	 // secondary beat histogram for selecting the best tempo estimate from BeatPhase
-   bhisto.create(210);
+   bhisto.create(200);
 
 
    // output plugin that can be used with MarMonitors for debugging
@@ -1105,7 +1105,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 	if (ticks >= extra_ticks)
 	{
-	  bhisto(phase_tempo) += temposcores(0);
+		bhisto(tempos(0)) += temposcores(0);
 	}
 
 
@@ -1120,8 +1120,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
 
-  tempos(5) = bh_estimate;
-  tempos(6) = bh_estimate2;
+  tempos(5) = tempos(0);
+  tempos(6) = tempos(1);
   
 
   // Find the max bin of the histogram created from the
@@ -1182,7 +1182,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	  else if (i < 600)
 		  fast_sum += bhistogram(i);
   }
-  cout << "BE = " << band_energies << endl;
   
 
   // mrs_natural dct_size = 10;
@@ -1242,9 +1241,9 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    
    mrs_real heuristic_tempo = tempos(0);
    
-   for (int i=0; i < 4; i++)
+   for (int i=0; i < 3; i++)
    {
-	   for (int j=0; j < 4; j++)
+	   for (int j=0; j < 3; j++)
 	   {
 		   // if there are two tempo estimates with a ratio of 2 pick the higher
 		   // one if the lower one is less than 65 BPM
@@ -1252,6 +1251,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		   if (i != j)
 		   {
 			   if ((fabs(2 * tempos(i) - tempos(j)) < tolerance * tempos(j)) && (tempos(i) < 70))
+				   heuristic_tempo = tempos(j);
+			   if ((fabs(3 * tempos(i) - tempos(j)) < tolerance * tempos(j)) && (tempos(i) < 50))
 				   heuristic_tempo = tempos(j);
 		   }
 	   }
