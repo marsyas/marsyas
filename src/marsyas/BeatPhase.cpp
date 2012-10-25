@@ -239,7 +239,10 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 				  for (int b=0; b < 4; b++)
 				  {
 					  cross_correlation += in(o,phase - b * period);
-					  cross_correlation += 0.65 * in(o,phase - b * 1.5 * period);
+                      mrs_natural temp_t = phase - b * 1.5 * period;
+                      if (temp_t > 0) {
+					    cross_correlation += 0.65 * in(o, temp_t);
+                      }
 					  if ((b == 0) || (b == 2))
 						  cross_correlation += 0.5 * in(o,phase - b * period);
 				  }

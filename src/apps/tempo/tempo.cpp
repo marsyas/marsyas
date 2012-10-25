@@ -1049,7 +1049,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    mrs_real phase_tempo;	 // tempo estimate calculated by the BeatPhase MarSystem
    mrs_realvec bhisto;	 // secondary beat histogram for selecting the best tempo estimate from BeatPhase
-   bhisto.create(200);
+   bhisto.create(210);
+   bhisto.setval(0.0);
 
 
    // output plugin that can be used with MarMonitors for debugging
