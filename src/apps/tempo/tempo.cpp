@@ -984,7 +984,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 
    // parameters for BH pick peaking
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 10);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 11);
    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 760);
@@ -1107,7 +1107,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	{
 		bhisto(tempos(0)) += temposcores(0);
 	}
-
+	
 
 	if (num_ticks - ticks < 1)
 	  {
@@ -1173,16 +1173,29 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_real slow_sum =0.0;
   mrs_real fast_sum = 0.0;
   mrs_realvec band_energies(10);
+
+  mrs_real slow_max = 0.0;
+  mrs_natural bhistogram_maxi = 0;
   
-  for (int i=100; i < 800; i++)
+  for (int i=200; i < 400; i++)
   {
-	  band_energies(i / 80) += bhistogram(i);
-	  if (i < 400) 
-		  slow_sum += bhistogram(i);
-	  else if (i < 600)
-		  fast_sum += bhistogram(i);
+	  if (bhistogram(i) >= slow_max)
+		  slow_max = bhistogram(i);
   }
   
+  mrs_real fast_max = 0.0;
+  for (int i=400; i < 800; i++) 
+  {
+	  if (bhistogram(i) >= fast_max)
+		  fast_max = bhistogram(i);
+  }
+  
+  mrs_real max_sum = fast_max + slow_max;
+  fast_max /= max_sum;
+  slow_max /= max_sum;
+  
+  
+
 
   // mrs_natural dct_size = 10;
   // mrs_real scale_fac = (mrs_real)(1.0/ sqrt((mrs_real)(dct_size/2)));  
@@ -1221,21 +1234,21 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   
    mrs_real bhmaxt = max_i;
    mrs_real bhmaxt2 = max_i2;
-  
+   
 
    tempos(0) = bhmaxt;
    tempos(1) = bhmaxt2;
    tempos(2) = bh_estimate;
    tempos(3) = bh_estimate2;
-
+   
+   cout << slow_max << "," << fast_max << ",";
+   
    // cout << slow_sum << "," << fast_sum << "," << mband_energies(2)  << "," << mband_energies(3)  << "," << mband_energies(4) << ",";
 
    // cout << mband_energies(5) << "," << mband_energies(6) << "," << mband_energies(7)  << "," << mband_energies(8)  << "," << mband_energies(9) << ",";
    
-   if (ground_truth_tempo < 80.0) 
+   if (ground_truth_tempo < 100.0) 
 	   cout << "slow" << endl;
-   else if (ground_truth_tempo < 110.0)
-	   cout << "medium" << endl;
    else 
 	   cout << "fast" << endl;
    
@@ -1257,6 +1270,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		   }
 	   }
    }
+
+   for (int i=0; i < 3; i++) 
+	   if (heuristic_tempo == tempos(i))
+		   cout << "SELECTED I = " << i  << "-" << tempos(0) << "," << tempos(1) << "," << tempos(2) <<  "-" << ground_truth_tempo << endl;
+   
+
    // oracle_tempo = heuristic_tempo;
 
    /* for (int i=0; i < 4; i++)

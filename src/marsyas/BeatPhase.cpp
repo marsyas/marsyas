@@ -267,7 +267,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	// combine the cross-correlation score with the variance
 	for (int i=0; i < tempo_scores.getSize(); i++)
 		tempo_scores(i) = onset_scores(i) + tempo_scores(i);
-
+	
 	// renormalize
 	tempo_scores /= tempo_scores.sum();
 
