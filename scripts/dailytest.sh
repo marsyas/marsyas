@@ -79,7 +79,7 @@ mkdir -p $matDir
 rm -rf $buildDir
 cd $baseDir
 #svn co https://svn.code.sf.net/p/marsyas/code/trunk marsyas
-export . $buildDir
+svn export . $buildDir
 mkdir -p $cmakeDir
 
 
