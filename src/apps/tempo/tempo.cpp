@@ -987,7 +987,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 11);
    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 760);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 720);
    tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
