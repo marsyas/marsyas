@@ -13,7 +13,7 @@ the revision number is provided separately for each task).
 The last command enters the subdirectory where all the 
 Marsyas executables reside. 
 
-> svn -r REVISION_NUMBER co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk marsyas 
+> svn -r REVISION_NUMBER co https://svn.code.sf.net/p/marsyas/code/trunk marsyas
 > cd marsyas 
 > mkdir build 
 > cd build 

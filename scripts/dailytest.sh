@@ -78,8 +78,8 @@ fi
 mkdir -p $matDir
 rm -rf $buildDir
 cd $baseDir
-#svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk $buildDir
-svn export . $buildDir
+#svn co https://svn.code.sf.net/p/marsyas/code/trunk marsyas
+export . $buildDir
 mkdir -p $cmakeDir
 
 

@@ -145,7 +145,7 @@ extensively with Marsyas and writing your own source code it is
 highly recommend that you download a subversion working copy.
 
 @example 
-svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk my-marsyas-dir
+svn co https://svn.code.sf.net/p/marsyas/code/trunk my-marsyas-dir
 @end example
 
 You can replace @file{my-marsyas-dir} with any directory you want.
@@ -408,12 +408,12 @@ the free SvnX (http://code.google.com/p/svnx/).
 
 @item 
 
-In case you want to check out the SVN version of Marsyas, just do a SVN
-checkout from https://marsyas.svn.
-sourceforge.net/svnroot/marsyas/trunk - you will get the most updated
-version (but not necessarily the most stable version ;-) - for that, get
-the latest tarbal from the Marsyas SourceForge website:
-http://marsyas.sf.net).
+In case you want to check out the SVN version of Marsyas, just do
+a SVN checkout from
+@code{https://svn.code.sf.net/p/marsyas/code/trunk}
+ - you will get the most updated version (but not necessarily the
+   most stable version ;-) - for that, get the latest tarbal from
+the Marsyas SourceForge website: http://marsyas.sf.net).
 
 @item 
 
@@ -731,7 +731,8 @@ terminal.
 
 @enumerate
 @item sudo apt-get install subversion  (install the subversion version control system) 
-@item svn co https://marsyas.svn.sourceforge.net/svnroot/marsyas/trunk marsyas 
+@item 
+svn co https://svn.code.sf.net/p/marsyas/code/trunk my-marsyas-dir
 @item cd marsyas 
 @item mkdir build 
 @item cd build 
