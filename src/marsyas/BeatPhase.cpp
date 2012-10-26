@@ -238,13 +238,18 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 				  // correlate with pulse train with half-beats and double beats
 				  for (int b=0; b < 4; b++)
 				  {
-					  cross_correlation += in(o,phase - b * period);
-                      mrs_natural temp_t = phase - b * 1.5 * period;
-                      if (temp_t > 0) {
+                      mrs_natural temp_t;
+                      temp_t = phase - b * period;
+                      if (temp_t >= 0) {
+					    cross_correlation += in(o, temp_t);
+					    if ((b == 0) || (b == 2)) {
+						  cross_correlation += 0.5 * in(o,phase - b * period);
+                        }
+                      }
+                      temp_t = phase - b * 1.5 * period;
+                      if (temp_t >= 0) {
 					    cross_correlation += 0.65 * in(o, temp_t);
                       }
-					  if ((b == 0) || (b == 2))
-						  cross_correlation += 0.5 * in(o,phase - b * period);
 				  }
 				  phase_correlations(inSamples_-1-phase) = cross_correlation;
 				  if (cross_correlation > max_crco)
@@ -326,8 +331,12 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 	period = (mrs_natural)(period+0.5);
 	// Place the beats in the right location in the onset detection function
-	for (int b=0; b < 4; b++)
-	  beats(0,tempo_phases(max_i) - b * period) = -0.5;
+	for (int b=0; b < 4; b++) {
+        mrs_natural temp_t = tempo_phases(max_i) - b * period;
+        if (temp_t >= 0) {
+	        beats(0,temp_t) = -0.5;
+        }
+    }
 
 
 	mrs_natural prev_sample_count;
