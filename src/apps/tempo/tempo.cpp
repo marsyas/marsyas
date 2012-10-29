@@ -111,6 +111,7 @@ mrs_string pluginName = EMPTYSTRING;
 mrs_string methodopt;
 mrs_string predictedopt_;
 mrs_string predictedOutopt_;
+mrs_string wrong_filename_opt_;
 
 
 mrs_natural minBPM_;
@@ -959,7 +960,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
 
- // The filter object in Marsyas is implemented as a direct form II
+  // The filter object in Marsyas is implemented as a direct form II
   // structure. This is a canonical form which has the minimum number
   // of delay elements. These filter coefficients are setup to make
   // this series of two filters a Butterworth filter.  At a sampling
@@ -971,15 +972,30 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    // filter coefficients for forward/backward filtering
    mrs_realvec bcoeffs(1,3);
-   bcoeffs(0) = 0.0564;
-   bcoeffs(1) = 0.1129;
-   bcoeffs(2) = 0.0564;
+   mrs_realvec acoeffs(2,3);
+     // original setup
+#if 1
+     bcoeffs(0) = 0.0564;
+     bcoeffs(1) = 0.1129;
+     bcoeffs(2) = 0.0564;
+     acoeffs(0) = 1.0000;
+     acoeffs(1) = -1.2247;
+     acoeffs(2) = 0.4504;
+#endif
+#if 0
+    //     python
+    // import scipy.signal
+    // b, a = scipy.signal.butter(2, 50.0 / 172.266)
+   bcoeffs(0) = 0.12434098;
+   bcoeffs(1) = 0.24868197;
+   bcoeffs(2) = 0.12434098;
+   acoeffs(0) = 1.0;
+   acoeffs(1) = -0.78545823;
+   acoeffs(2) = 0.28282217;
+#endif
+
    onset_strength->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
    onset_strength->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
-   mrs_realvec acoeffs(1,3);
-   acoeffs(0) = 1.0000;
-   acoeffs(1) = -1.2247;
-   acoeffs(2) = 0.4504;
    onset_strength->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 
@@ -3931,6 +3947,7 @@ initOptions()
   cmd_options.addStringOption("predictedinput", "pi", EMPTYSTRING);
   cmd_options.addStringOption("predictedoutput", "po", EMPTYSTRING);
   cmd_options.addRealOption("tolerance", "t", 0.04);
+  cmd_options.addStringOption("wrongoutput", "wo", EMPTYSTRING);
 }
 
 void
@@ -3950,6 +3967,7 @@ loadOptions()
   predictedopt_ = cmd_options.getStringOption("predictedinput");
   predictedOutopt_ = cmd_options.getStringOption("predictedoutput");
   toleranceopt_ = cmd_options.getRealOption("tolerance");
+  wrong_filename_opt_ = cmd_options.getStringOption("wrongoutput");
   
 }
 
@@ -3995,7 +4013,12 @@ main(int argc, const char **argv)
   vector<mrs_string> soundfiles = cmd_options.getRemaining();
 
   FileName inputfile(soundfiles[0]);
-  FileName wrong_filename(inputfile.nameNoExt() + "-wrong.mf");
+  FileName wrong_filename;
+  if (wrong_filename_opt_ != EMPTYSTRING) {
+    wrong_filename = wrong_filename_opt_;
+  } else {
+    wrong_filename = inputfile.nameNoExt() + "-wrong.mf";
+  }
 
   bool haveCollections = true;
   if (inputfile.ext() == "mf")

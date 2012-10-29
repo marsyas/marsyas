@@ -12,9 +12,10 @@ results_subdir = "mfs/"
 
 
 def get_results(detected_filename, ground_filename):
-    #print "--------", detected_filename
-    cmd = "tempo -pi %s -m PREDICTED %s" % (
-        detected_filename, ground_filename)
+    #print "--------", detected_filename, ground_filename
+    wrong_filename = detected_filename.replace(".mf", "-wrong.mf")
+    cmd = "tempo -pi %s -m PREDICTED -wo %s %s" % (
+        detected_filename, wrong_filename, ground_filename)
     results = subprocess.check_output(cmd, shell=True)
     reslist = results.split('\n')
     ending = reslist[-15:]
@@ -43,6 +44,8 @@ def gather_results(name, filename_template):
     results = []
     files = sorted(glob.glob(
         os.path.join(results_subdir, "*-%s.mf" % filename_template)))
+    # FIXME: temporary remove ivl
+    files = [ f for f in files if "ivl" not in f ]
     for filename in files:
         splitname = filename.split('-')
         ground_truth = os.path.join(ground_truth_dirname, splitname[0] + ".mf")
