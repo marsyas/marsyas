@@ -65,7 +65,11 @@ Flux::myUpdate(MarControlPtr sender)
 	(void) sender;
 	MRSDIAG("Flux.cpp - Flux:myUpdate");
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-	ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+    if (ctrl_mode_->to<mrs_string>() == "multichannel") {
+	    ctrl_onObservations_->setValue(inObservations_, NOUPDATE);
+    } else {
+	    ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+    }
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue("Flux_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
@@ -117,6 +121,7 @@ Flux::myProcess(realvec& in, realvec& out)
 		else if (mode == "Laroche2003")
 		  {
 		    flux_ = 0.0;
+			//prevWindow_(o,t) = in(o,t);
 		    
 		    for (o=1; o < inObservations_; o++)
 		      {
@@ -129,6 +134,16 @@ Flux::myProcess(realvec& in, realvec& out)
 		    
 		    out(0,t) = flux_;
 		  }
+		else if (mode == "multichannel")
+		  {
+			mrs_real tmp = in(o,t)  - prevWindow_(o,t);
+			prevWindow_(o,t) = in(o,t);
+            if (tmp < 0) {
+                tmp = 0;
+            }
+            out(o, t) = tmp;
+		  }
+
 		
 		else if(mode=="DixonDAFX06")
 		{
