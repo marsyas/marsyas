@@ -67,16 +67,19 @@ Flux::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
     if (ctrl_mode_->to<mrs_string>() == "multichannel") {
 	    ctrl_onObservations_->setValue(inObservations_, NOUPDATE);
+        // need this to match
+	    prevWindow_.create(ctrl_onObservations_->to<mrs_natural>(),
+		    ctrl_onSamples_->to<mrs_natural>());
     } else {
 	    ctrl_onObservations_->setValue((mrs_natural)1, NOUPDATE);
+	    prevWindow_.create(ctrl_inObservations_->to<mrs_natural>(),
+		    ctrl_inSamples_->to<mrs_natural>());
     }
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue("Flux_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 
 	reset_ = ctrl_reset_->to<mrs_bool>();
 
-	prevWindow_.create(ctrl_inObservations_->to<mrs_natural>(),
-		ctrl_inSamples_->to<mrs_natural>());
 }
 
 void 
@@ -136,16 +139,29 @@ Flux::myProcess(realvec& in, realvec& out)
 		  }
 		else if (mode == "multichannel")
 		  {
+#if 0
+            cout<<"in"<<endl;
 			for(o = 0 ; o < inObservations_; o++) {
-			    mrs_real tmp = in(o,t)  - prevWindow_(o,t);
+                cout<<in(o,t)<<" ";
+            }
+            cout<<endl;
+#endif       
+			for(o = 0 ; o < inObservations_; o++) {
+			    mrs_real tmp = in(o,t) - prevWindow_(o,t);
 			    prevWindow_(o,t) = in(o,t);
                 if (tmp < 0) {
                     tmp = 0;
                 }
                 out(o, t) = tmp;
             }
+#if 0
+            cout<<"out"<<endl;
+			for(o = 0 ; o < inObservations_; o++) {
+                cout<<out(o,t)<<" ";
+            }
+            cout<<endl;
+#endif       
 		  }
-
 		
 		else if(mode=="DixonDAFX06")
 		{
