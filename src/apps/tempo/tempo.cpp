@@ -231,7 +231,7 @@ evaluate_estimated_tempo(mrs_string sfName, mrs_realvec tempos, float ground_tru
   cout << sfName << "\t" << predicted_tempo << ":" << ground_truth_tempo <<  "---" << diff1 << ":" << diff2 << ":" << diff3 << ":" << diff4 << ":" << diff5 << endl;
   cout << sfName << "\t" << predicted_tempo << endl;
 
-  mrs_real accPerc = 4.0;
+  //mrs_real accPerc = 4.0;
   
 
    if (diff1 < 0.5)
@@ -324,6 +324,9 @@ evaluate_estimated_tempo(mrs_string sfName, mrs_realvec tempos, float ground_tru
 // network of MarSystem objects
 void tempo_medianMultiBands(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+  (void) haveCollections;
+
   MarSystemManager mng;
 
 
@@ -450,6 +453,9 @@ void tempo_medianMultiBands(mrs_string sfName, float ground_truth_tempo, mrs_str
 void
 tempo_wavelets(mrs_string sfName, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+  (void) haveCollections;
+  (void) tolerance;
 
   MarSystemManager mng;
 
@@ -758,6 +764,8 @@ tempo_wavelets(mrs_string sfName, mrs_string resName, bool haveCollections, mrs_
 void
 tempo_aim(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+
   cout << "Tempo-aim" << endl;
 
 
@@ -856,6 +864,7 @@ tempo_aim(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool 
 void
 tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
 	cout << "TEMPO FLUX" << endl;
 	
   MarSystemManager mng;
@@ -877,7 +886,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
   fluxnet->addMarSystem(mng.create("Spectrum/spk"));
   fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
-  // fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
+  fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
+  //zz
   
   fluxnet->addMarSystem(mng.create("Flux/flux"));
   accum->addMarSystem(fluxnet);
@@ -974,7 +984,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_realvec bcoeffs(1,3);
    mrs_realvec acoeffs(2,3);
      // original setup
-#if 1
+#if 0
      bcoeffs(0) = 0.0564;
      bcoeffs(1) = 0.1129;
      bcoeffs(2) = 0.0564;
@@ -982,7 +992,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
      acoeffs(1) = -1.2247;
      acoeffs(2) = 0.4504;
 #endif
-#if 0
+#if 1
     //     python
     // import scipy.signal
     // b, a = scipy.signal.butter(2, 50.0 / 172.266)
@@ -992,6 +1002,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    acoeffs(0) = 1.0;
    acoeffs(1) = -0.78545823;
    acoeffs(2) = 0.28282217;
+   /*
+    // b, a = scipy.signal.butter(2, 20.0 / 172.266)
+   bcoeffs(0) = 0.0262662;
+   bcoeffs(1) = 0.0525324;
+   bcoeffs(2) = 0.0262662;
+   acoeffs(0) = 1.0;
+   acoeffs(1) = -1.49208868;
+   acoeffs(2) = 0.59715348;
+   */
 #endif
 
    onset_strength->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
@@ -1028,12 +1047,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_natural hopSize = (mrs_natural) next_power_two(srate * hop_ms * 0.001);
    mrs_natural bhopSize = (mrs_natural) next_power_two(srate * bhop_ms * 0.001);
    mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
-   /*
-   cout<<winSize<<endl;
+#if 0
+   cout<<"window size:"<<winSize<<endl;
    cout<<hopSize<<endl;
    cout<<bhopSize<<endl;
    cout<<bwinSize<<endl;
-   */
+#endif
 
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
    beatTracker->updControl("mrs_natural/inSamples", hopSize);
@@ -1063,7 +1082,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_realvec tempos(nCandidates);  // tempo estimates from the BH
    mrs_realvec temposcores(nCandidates);
 
-   mrs_real phase_tempo;	 // tempo estimate calculated by the BeatPhase MarSystem
    mrs_realvec bhisto;	 // secondary beat histogram for selecting the best tempo estimate from BeatPhase
    bhisto.create(210);
    bhisto.setval(0.0);
@@ -1115,7 +1133,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	bhistogram = tempoInduction->getControl("BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
 	
 	// tempo estimation using cross-correlation of candidate pulse trains to the onset strength signal
-	phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
+    //mrs_real phase_tempo;	 // tempo estimate calculated by the BeatPhase MarSystem
+	//phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
 
 	tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
 	temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
@@ -1187,12 +1206,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   
 
 
-  mrs_real slow_sum =0.0;
-  mrs_real fast_sum = 0.0;
+  //mrs_real slow_sum =0.0;
+  //mrs_real fast_sum = 0.0;
   mrs_realvec band_energies(10);
 
   mrs_real slow_max = 0.0;
-  mrs_natural bhistogram_maxi = 0;
+  //mrs_natural bhistogram_maxi = 0;
   
   for (int i=200; i < 400; i++)
   {
@@ -1375,6 +1394,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
  void
  tempo_predicted(mrs_string sfName, float predicted_tempo, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
  {
+  (void) resName;
+
    cout << "Using predicted tempo collection" << endl;
 
    if (ground_truth_tempo < 90.0)
@@ -1394,6 +1415,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 void
 tempo_aim_flux2(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+
   MarSystemManager mng;
 
 
@@ -1690,6 +1713,9 @@ tempo_aim_flux2(mrs_string sfName, float ground_truth_tempo, mrs_string resName,
 void
 tempo_histoSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+  (void) haveCollections;
+
   MarSystemManager mng;
   mrs_real srate = 0.0;
 
@@ -1789,7 +1815,7 @@ tempo_histoSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string resN
 
 
   mrs_real bin;
-  mrs_natural onSamples;
+  //mrs_natural onSamples;
   //
   //	int numPlayed =0;
   //	mrs_natural wc=0;
@@ -1798,7 +1824,7 @@ tempo_histoSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string resN
 
   // vector of bpm estimate used to calculate median
   vector<mrs_real> bpms;
-  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
+  //onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
   if (pluginName != EMPTYSTRING)
   {
@@ -1832,6 +1858,9 @@ tempo_histoSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string resN
 void
 tempo_histoSumBandsQ(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+  (void) haveCollections;
+
   MarSystemManager mng;
   mrs_real srate = 0.0;
 
@@ -1920,7 +1949,7 @@ tempo_histoSumBandsQ(mrs_string sfName, float ground_truth_tempo, mrs_string res
 
 
   mrs_real bin;
-  mrs_natural onSamples;
+  //mrs_natural onSamples;
 
   //	int numPlayed =0;
   //	mrs_natural wc=0;
@@ -1929,7 +1958,7 @@ tempo_histoSumBandsQ(mrs_string sfName, float ground_truth_tempo, mrs_string res
 
   // vector of bpm estimate used to calculate median
   vector<mrs_real> bpms;
-  onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
+  //onSamples = total->getctrl("ShiftInput/si/mrs_natural/onSamples")->to<mrs_natural>();
 
   if (pluginName != EMPTYSTRING)
   {
@@ -1962,6 +1991,9 @@ tempo_histoSumBandsQ(mrs_string sfName, float ground_truth_tempo, mrs_string res
 void
 tempo_medianSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+  (void) haveCollections;
+
   MarSystemManager mng;
   //mrs_natural nChannels;
   mrs_real srate;
@@ -2087,6 +2119,9 @@ tempo_medianSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string res
 void
 tempo_bcWavelet(mrs_string sfName, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+  (void) haveCollections;
+  (void) tolerance;
   MarSystemManager mng;
   mrs_natural nChannels;
   mrs_real srate = 0.0;
@@ -2326,6 +2361,9 @@ tempo_bcWavelet(mrs_string sfName, mrs_string resName, bool haveCollections, mrs
 void
 tempo_bcFilter(mrs_string sfName, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
+  (void) resName;
+  (void) haveCollections;
+  (void) tolerance;
 
   cout << "BOOMCICK_Filter PROCESSING" << endl;
 
@@ -2874,6 +2912,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 void
 tempo_ibt(mrs_string sfName, float ground_truth_tempo, mrs_string outputTxt, bool haveCollections, mrs_real tolerance)
 {
+    (void) haveCollections;
 	MarSystemManager mng;
 
 
@@ -2884,7 +2923,7 @@ tempo_ibt(mrs_string sfName, float ground_truth_tempo, mrs_string outputTxt, boo
 	mrs_string givefirst1beat_startpoint = "-1";
 	mrs_bool inductionoutopt = false;
 	mrs_bool dumbinductionopt = false;
-	mrs_bool logfileopt = false;
+	//mrs_bool logfileopt = false;
 	mrs_string execPath = "";
 	mrs_bool noncausalopt = false;
 
