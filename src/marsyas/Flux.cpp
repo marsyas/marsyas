@@ -121,12 +121,12 @@ Flux::myProcess(realvec& in, realvec& out)
 		else if (mode == "Laroche2003")
 		  {
 		    flux_ = 0.0;
-			//prevWindow_(o,t) = in(o,t);
 		    
 		    for (o=1; o < inObservations_; o++)
 		      {
 			mrs_real tmp = in(o,t)  - prevWindow_(o,t);
 			flux_ += tmp;
+			prevWindow_(o,t) = in(o,t);
 			
 		      }
 		    if (flux_ <= 0.0)

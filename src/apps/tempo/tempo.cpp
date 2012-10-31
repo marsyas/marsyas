@@ -886,15 +886,24 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
   fluxnet->addMarSystem(mng.create("Spectrum/spk"));
   fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
-  fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
+  //fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
+
   //zz
   
   fluxnet->addMarSystem(mng.create("Flux/flux"));
+  //fluxnet->updControl("Flux/flux/mrs_string/mode", "multichannel");
+  //fluxnet->addMarSystem(mng.create("Delta/delta"));
+  //fluxnet->updControl("Delta/delta/mrs_bool/positive", true);
+
+
   accum->addMarSystem(fluxnet);
   onset_strength->addMarSystem(accum);
 
   
   onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
+  //onset_strength->addMarSystem(mng.create("Sum/fluxsum"));
+  //onset_strength->addMarSystem(mng.create("Norm/norm"));
+
   onset_strength->addMarSystem(mng.create("Filter", "filt1"));
   onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
   onset_strength->addMarSystem(mng.create("Filter", "filt2"));
