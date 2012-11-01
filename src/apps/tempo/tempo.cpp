@@ -154,17 +154,17 @@ next_power_two(mrs_real x)
 }
 
 
-void
+int
 printUsage(mrs_string progName)
 {
   MRSDIAG("tempo.cpp - printUsage");
   cerr << "Usage : " << progName << " [-m method] [-g gain] [-o offset(samples)] [-d duration(samples)] [-s start(seconds)] [-l length(seconds)] [-f outputfile] [-p pluginName] [-r repetitions] file1 file2 file3" << endl;
   cerr << endl;
   cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format or collections " << endl;
-  exit(1);
+  return 1;
 }
 
-void
+int
 printHelp(mrs_string progName)
 {
   MRSDIAG("tempo.cpp - printHelp");
@@ -203,7 +203,7 @@ printHelp(mrs_string progName)
   cerr << "BOOMCHICK_WAVELET" << endl;
   cerr << "BOOMCHICK_FILTER" << endl;
 
-  exit(1);
+  return 1;
 }
 
 void
@@ -886,11 +886,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
   fluxnet->addMarSystem(mng.create("Spectrum/spk"));
   fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
-  //fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
 
-  //zz
+  //fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
+  //fluxnet->addMarSystem(mng.create("LogFilterFlux/lff"));
+
+  //fluxnet->addMarSystem(mng.create("Sum/fluxsum"));
+  //fluxnet->updControl("Sum/fluxsum/mrs_string/mode", "sum_samples");
   
   fluxnet->addMarSystem(mng.create("Flux/flux"));
+  //fluxnet->addMarSystem(mng.create("Gain/gain5"));
   //fluxnet->updControl("Flux/flux/mrs_string/mode", "multichannel");
   //fluxnet->addMarSystem(mng.create("Delta/delta"));
   //fluxnet->updControl("Delta/delta/mrs_bool/positive", true);
@@ -901,9 +905,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   
   onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
-  //onset_strength->addMarSystem(mng.create("Sum/fluxsum"));
-  //onset_strength->addMarSystem(mng.create("Norm/norm"));
-
   onset_strength->addMarSystem(mng.create("Filter", "filt1"));
   onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
   onset_strength->addMarSystem(mng.create("Filter", "filt2"));
@@ -993,7 +994,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_realvec bcoeffs(1,3);
    mrs_realvec acoeffs(2,3);
      // original setup
-#if 0
+#if 1
      bcoeffs(0) = 0.0564;
      bcoeffs(1) = 0.1129;
      bcoeffs(2) = 0.0564;
@@ -1001,7 +1002,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
      acoeffs(1) = -1.2247;
      acoeffs(2) = 0.4504;
 #endif
-#if 1
+#if 0
     //     python
     // import scipy.signal
     // b, a = scipy.signal.butter(2, 50.0 / 172.266)
@@ -2863,7 +2864,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 			 << "\nRunning normal induction..." << endl;
 		readFileOK = false;
 
-		exit(1);
+		return 1;
 	  }
 	}
   }
@@ -2891,7 +2892,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 			 << "\nRunning normal induction..." << endl;
 		readFileOK = false;
 
-		exit(1);
+		return 1;
 	  }
 	}
 
@@ -2904,7 +2905,7 @@ readGTBeatsFile(MarSystem* beattracker, mrs_string gtBeatsFile, mrs_string audio
 		   << "\nRunning normal induction..." << endl;
 	  readFileOK = false;
 
-	  exit(1);
+	  return 1;
 	}
   }
 
@@ -3972,7 +3973,7 @@ readCollection(Collection& l, mrs_string name)
 	warn += name;
 	warn += " - tried both default mf directory and current working directory";
 	MRSWARN(warn);
-	exit(1);
+    exit (1);
 
   }
 }
@@ -4038,8 +4039,7 @@ main(int argc, const char **argv)
   mrs_string progName = argv[0];
   if (argc == 1)
   {
-	printUsage(progName);
-	exit(1);
+	return printUsage(progName);
   }
 
   initOptions();
@@ -4047,10 +4047,10 @@ main(int argc, const char **argv)
   loadOptions();
 
   if (helpopt)
-	printHelp(progName);
+	return printHelp(progName);
 
   if (usageopt)
-	printUsage(progName);
+	return printUsage(progName);
 
   mrs_string method;
   if (methodopt == EMPTYSTRING)
@@ -4152,5 +4152,5 @@ main(int argc, const char **argv)
 		}
 	}
 
-	exit(0);
+    return 0;
 }
