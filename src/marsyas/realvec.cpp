@@ -478,8 +478,9 @@ namespace Marsyas
 	void
 	realvec::setval(mrs_natural start, mrs_natural end, mrs_real val)
 	{
-		MRSASSERT(start <= (mrs_natural)size_);
-		MRSASSERT(end <= (mrs_natural)size_);
+		MRSASSERT(start >= (mrs_natural)0);
+		MRSASSERT(start < (mrs_natural)size_);
+		MRSASSERT(end < (mrs_natural)size_);
 
 		for (mrs_natural i=start; i<end; ++i)
 		{
