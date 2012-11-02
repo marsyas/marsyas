@@ -65,7 +65,8 @@ Flux::myUpdate(MarControlPtr sender)
 	(void) sender;
 	MRSDIAG("Flux.cpp - Flux:myUpdate");
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
-    if (ctrl_mode_->to<mrs_string>() == "multichannel") {
+    if ((ctrl_mode_->to<mrs_string>() == "multichannel")
+       || (ctrl_mode_->to<mrs_string>() == "Laroche2003")) {
 	    ctrl_onObservations_->setValue(inObservations_, NOUPDATE);
         // need this to match
 	    prevWindow_.create(ctrl_onObservations_->to<mrs_natural>(),
@@ -128,12 +129,11 @@ Flux::myProcess(realvec& in, realvec& out)
 		    for (o=1; o < inObservations_; o++)
 			{
 				mrs_real tmp;
-				tmp = in(o,t)  - prevWindow_(o,t);
+				tmp = in(o,t) - prevWindow_(o,t);
 				if (tmp >= 0)
 					flux_ += in(o,t);
 				prevWindow_(o,t) = in(o,t);				
 			}
-			prevWindow_(o,t) = in(o,t);
 			
 		    out(0,t) = flux_;
 		  }
