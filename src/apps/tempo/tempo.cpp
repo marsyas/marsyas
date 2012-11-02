@@ -886,12 +886,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
   fluxnet->addMarSystem(mng.create("Spectrum/spk"));
   fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
-
   //fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
-  //fluxnet->addMarSystem(mng.create("LogFilterFlux/lff"));
-
-  //fluxnet->addMarSystem(mng.create("Sum/fluxsum"));
-  //fluxnet->updControl("Sum/fluxsum/mrs_string/mode", "sum_samples");
+  // fluxnet->addMarSystem(mng.create("Sum/triangsum"));
   
   fluxnet->addMarSystem(mng.create("Flux/flux"));
   //fluxnet->addMarSystem(mng.create("Gain/gain5"));
@@ -902,15 +898,20 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   accum->addMarSystem(fluxnet);
   onset_strength->addMarSystem(accum);
-
+  cout << "NEW TEMPO" << endl;
   
+  
+  // onset_strength->addMarSystem(mng.create("Norm/norm"));
+  
+  // onset_strength->addMarSystem(mng.create("Sum/triangsum"));
+
+
   onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
   onset_strength->addMarSystem(mng.create("Filter", "filt1"));
   onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
   onset_strength->addMarSystem(mng.create("Filter", "filt2"));
   onset_strength->addMarSystem(mng.create("Reverse", "reverse2"));
   
-
   
 
   beatTracker->addMarSystem(onset_strength);
@@ -979,7 +980,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    // parameters for the onset strength signal
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
-
   // The filter object in Marsyas is implemented as a direct form II
   // structure. This is a canonical form which has the minimum number
   // of delay elements. These filter coefficients are setup to make

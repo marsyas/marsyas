@@ -126,15 +126,15 @@ Flux::myProcess(realvec& in, realvec& out)
 		    flux_ = 0.0;
 		    
 		    for (o=1; o < inObservations_; o++)
-		      {
-			mrs_real tmp = in(o,t)  - prevWindow_(o,t);
-			flux_ += tmp;
+			{
+				mrs_real tmp;
+				tmp = in(o,t)  - prevWindow_(o,t);
+				if (tmp >= 0)
+					flux_ += in(o,t);
+				prevWindow_(o,t) = in(o,t);				
+			}
 			prevWindow_(o,t) = in(o,t);
 			
-		      }
-		    if (flux_ <= 0.0)
-		      flux_ = 0.0;
-		    
 		    out(0,t) = flux_;
 		  }
 		else if (mode == "multichannel")
