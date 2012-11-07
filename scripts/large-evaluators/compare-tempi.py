@@ -7,7 +7,11 @@ import subprocess
 
 import scipy.stats
 
+#DEBUG_MCNEMAR = True
+DEBUG_MCNEMAR = False
+
 ground_truth_dirname = os.path.expanduser("~/src/audio-research/")
+#ground_truth_dirname = os.path.expanduser("~/src/audio-research/not-now")
 results_subdir = "mfs/"
 
 
@@ -55,22 +59,32 @@ def gather_results(name, filename_template):
         results.append( [short_name] + list(datum[1:]) )
     return results
 
-def mcnemar_stat(mar, dat):
+def mcnemar_stat(mar, dat, harmonic):
     """ see:
         http://en.wikipedia.org/wiki/McNemar%27s_test
     """
-    p1 = mar[2]
-    n1 = mar[1] - mar[2]
-    p2 = dat[2]
-    n2 = dat[1] - dat[2]
+    if not harmonic:
+        p1 = mar[2]
+        n1 = mar[1] - mar[2]
+        p2 = dat[2]
+        n2 = dat[1] - dat[2]
+    else:
+        p1 = mar[4]
+        n1 = mar[1] - mar[4]
+        p2 = dat[4]
+        n2 = dat[1] - dat[4]
     a = p1+p2
     b = p1+n2
     c = n1+p2
     d = n1+n2
 
+
     stat = ( abs(b-c) - 1.0)**2 / float(b+c)
     rv = scipy.stats.chi2(1)
     p = rv.sf(stat)
+    if DEBUG_MCNEMAR:
+        print "%i\t%i\t%i\t%i\t%i\t%.2g" % (
+            a+c+b+d, a, b, c, d, p)
     return p
 
 def sort_names(val):
@@ -103,8 +117,11 @@ def write_csv(filename, collections, dats, field):
     for key, value in iter(sorted(dats.items(), key=sort_names)):
         text = key
         for a in value:
-            if len(a) == 6:
-                p = a[5]
+            if len(a) == 7:
+                if field == 2:
+                    p = a[5]
+                elif field == 4:
+                    p = a[6]
                 sig = ""
                 if p < 1e-3:
                     sig = "***"
@@ -155,11 +172,9 @@ def get_means_totals(data):
 def main():
     mar_results = gather_results("marsyas", "detected")
     dats = {}
-    mcnemar = {}
     for a in mar_results:
         dats[a[0]] = []
         dats[a[0]].append(a[1:])
-        mcnemar[a[0]] = [None]
     m, t = get_means_totals(mar_results)
     dats["means"] = []
     dats["total"] = []
@@ -180,6 +195,8 @@ def main():
             ("vamp_fixed", "fixed_tempo"),
             ("scheirer", "scheirer"),
         ]
+    if DEBUG_MCNEMAR:
+        print "#n\ta\tb\tc\td\tp"
     for name, template in collections:
         data = gather_results(name, template)
         for d in data:
@@ -190,8 +207,12 @@ def main():
             for f in mar_results:
                 if f[0] == shortname:
                     mar = f
-            p = mcnemar_stat(mar, d)
-            dats[shortname][-1].append(p)
+            if DEBUG_MCNEMAR:
+                print shortname, name
+            p_mirex = mcnemar_stat(mar, d, False)
+            p_harmonic = mcnemar_stat(mar, d, True)
+            dats[shortname][-1].append(p_mirex)
+            dats[shortname][-1].append(p_harmonic)
         m, t = get_means_totals(data)
         dats["means"].append(m)
         dats["total"].append(t)
