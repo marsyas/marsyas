@@ -9,7 +9,7 @@ import pyechonest
 import pyechonest.track
 
 WAIT_SECONDS = 5.0
-PROCESS_PROBLEMS = True
+PROCESS_PROBLEMS = False
 
 def echonest_upload(full_filename):
     print full_filename

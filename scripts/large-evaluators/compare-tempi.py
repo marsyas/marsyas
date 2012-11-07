@@ -79,7 +79,8 @@ def mcnemar_stat(mar, dat, harmonic):
     d = n1+n2
 
 
-    stat = ( abs(b-c) - 1.0)**2 / float(b+c)
+    stat = (b-c)**2 / float(b+c)
+    #stat = ( abs(b-c) - 1.0)**2 / float(b+c)
     rv = scipy.stats.chi2(1)
     p = rv.sf(stat)
     if DEBUG_MCNEMAR:
