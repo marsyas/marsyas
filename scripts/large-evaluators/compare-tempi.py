@@ -56,6 +56,9 @@ def gather_results(name, filename_template):
     return results
 
 def mcnemar_stat(mar, dat):
+    """ see:
+        http://en.wikipedia.org/wiki/McNemar%27s_test
+    """
     p1 = mar[2]
     n1 = mar[1] - mar[2]
     p2 = dat[2]
@@ -64,10 +67,11 @@ def mcnemar_stat(mar, dat):
     b = p1+n2
     c = n1+p2
     d = n1+n2
-    stat = ( abs(b-c) - 1)**2 / float(b+c)
+
+    stat = ( abs(b-c) - 1.0)**2 / float(b+c)
     rv = scipy.stats.chi2(1)
     p = rv.sf(stat)
-    #print p
+    return p
 
 def sort_names(val):
     examine = val[0]
@@ -97,12 +101,20 @@ def write_csv(filename, collections, dats, field):
     out.write(text + '\n')
 
     for key, value in iter(sorted(dats.items(), key=sort_names)):
-        text = key + ", "
-        percents = [v[field] for v in value]
-        #percents_harmonic_mirex = [v[4] for v in value]
-        #percents = percents_mirex + percents_harmonic_mirex
-        percents_text = ["%.1f" % a for a in percents]
-        text += ", ".join(percents_text)
+        text = key
+        for a in value:
+            if len(a) == 6:
+                p = a[5]
+                sig = ""
+                if p < 1e-3:
+                    sig = "***"
+                elif p < 1e-2:
+                    sig = "**"
+                elif p < 5e-2:
+                    sig = "*"
+                text += ", %.1f%s" % (a[field], sig)
+            else:
+                text += ", %.1f" % (a[field])
         out.write(text + '\n')
     out.close()
 
@@ -147,7 +159,7 @@ def main():
     for a in mar_results:
         dats[a[0]] = []
         dats[a[0]].append(a[1:])
-        mcnemar[a[0]] = []
+        mcnemar[a[0]] = [None]
     m, t = get_means_totals(mar_results)
     dats["means"] = []
     dats["total"] = []
@@ -178,7 +190,8 @@ def main():
             for f in mar_results:
                 if f[0] == shortname:
                     mar = f
-            mcnemar_stat(mar, d)
+            p = mcnemar_stat(mar, d)
+            dats[shortname][-1].append(p)
         m, t = get_means_totals(data)
         dats["means"].append(m)
         dats["total"].append(t)
