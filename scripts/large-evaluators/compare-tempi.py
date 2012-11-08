@@ -136,6 +136,52 @@ def write_csv(filename, collections, dats, field):
         out.write(text + '\n')
     out.close()
 
+def format_header(text):
+    # icky, but screw it
+    if text == 'ibt_off_auto':
+        text = "ibt_oa"
+    elif text == 'ibt_off_reg':
+        text = "ibt_og"
+    elif text == 'qm_default_mean':
+        text = "qm_me"
+    elif text == 'qm_default_median':
+        text = "qm_md"
+    elif text == 'qm_default_mode':
+        text = "qm_mo"
+    text = text.replace("_", "\\_")
+
+    return text
+
+def write_latex(filename, collections, dats, field):
+    out = open(filename, 'w')
+    out.write("\\begin{tabular}{l%s}\n" % ('c'*(len(collections)+1)))
+    collections_names = [format_header(a[0]) for a in collections]
+    text = "& marsyas& " + " & ".join(collections_names)
+    out.write(text + '\\\\\n')
+
+    for key, value in iter(sorted(dats.items(), key=sort_names)):
+        text = key.replace("_", "\\_")
+        for a in value:
+            if len(a) == 7:
+                if field == 2:
+                    p = a[5]
+                elif field == 4:
+                    p = a[6]
+                sig = ""
+                if p < 1e-3:
+                    sig = "***"
+                elif p < 1e-2:
+                    sig = "**"
+                elif p < 5e-2:
+                    sig = "*"
+                text += " & %.1f%s" % (a[field], sig)
+            else:
+                text += " & %.1f" % (a[field])
+        out.write(text + '\\\\\n')
+    out.write("\\end{tabular}")
+    out.close()
+
+
 def get_means_totals(data):
     m_mean_percent = 0
     m_mean_count = 0
@@ -224,6 +270,8 @@ def main():
 
     write_csv("mirex.csv", s_coll, s_dats, 2)
     write_csv("harmonic.csv", s_coll, s_dats, 4)
+    write_latex("mirex.latex", s_coll, s_dats, 2)
+    write_latex("harmonic.latex", s_coll, s_dats, 4)
 
 main()
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 DATA_DIR=~/src/audio-research/
-OUT_DIR=~/bpm/
+OUT_DIR=~/src/icassp2013/bpm/
 
 ./check-ibt.py ${DATA_DIR} ${OUT_DIR}/ibt/ > ibt.txt
 ./check-ibt-off-auto.py ${DATA_DIR} ${OUT_DIR}/ibt-off-auto/ > ibt-off-auto.txt
