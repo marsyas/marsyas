@@ -10,9 +10,10 @@ import pyechonest.track
 
 WAIT_SECONDS = 5.0
 PROCESS_PROBLEMS = False
+PROCESS_PROBLEMS = True
 
 def echonest_upload(full_filename):
-    print full_filename
+    print "trying: ", full_filename
     try:
         track = pyechonest.track.track_from_filename(full_filename)
         bpm = track.tempo
@@ -20,6 +21,7 @@ def echonest_upload(full_filename):
     except:
         bpm = 0
         echonest_id = 0
+    print full_filename, bpm
     time.sleep(WAIT_SECONDS)
     return echonest_id, bpm
 

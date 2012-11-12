@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-DEBUG = 1
+DEBUG = 0
 
 import os
 import sys
@@ -104,20 +104,20 @@ def vamp_qm_default(queue, datum):
     cmd = "tempo -pi %s -m PREDICTED %s" % (
         detected_mf_filename_mean, mf_filename)
     subprocess.check_call(cmd, shell=True)
-    cmd = "mv %s %s" % ("wrong.mf", "wrong-mean.mf")
-    subprocess.check_call(cmd, shell=True)
+    #cmd = "mv %s %s" % ("wrong.mf", "wrong-mean.mf")
+    #subprocess.check_call(cmd, shell=True)
 
     cmd = "tempo -pi %s -m PREDICTED %s" % (
         detected_mf_filename_median, mf_filename)
     subprocess.check_call(cmd, shell=True)
-    cmd = "mv %s %s" % ("wrong.mf", "wrong-median.mf")
-    subprocess.check_call(cmd, shell=True)
+    #cmd = "mv %s %s" % ("wrong.mf", "wrong-median.mf")
+    #subprocess.check_call(cmd, shell=True)
 
     cmd = "tempo -pi %s -m PREDICTED %s" % (
         detected_mf_filename_mode, mf_filename)
     subprocess.check_call(cmd, shell=True)
-    cmd = "mv %s %s" % ("wrong.mf", "wrong-mode.mf")
-    subprocess.check_call(cmd, shell=True)
+    #cmd = "mv %s %s" % ("wrong.mf", "wrong-mode.mf")
+    #subprocess.check_call(cmd, shell=True)
 
     queue.put( (mf_filename, problems) )
 

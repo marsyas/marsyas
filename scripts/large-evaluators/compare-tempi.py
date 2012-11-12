@@ -41,8 +41,8 @@ def get_results(detected_filename, ground_filename):
     short_name = detected_filename.split('-')[0]
     #print "%s\t%i\t%i\t%i\t%i\t%i" % (short_name, m_total_n,
     #    m_correct_n, m_percent, hm_correct_n, hm_percent)
-    return (short_name, m_total_n,
-        m_correct_n, m_percent, hm_correct_n, hm_percent)
+    return [short_name, m_total_n,
+        m_correct_n, m_percent, hm_correct_n, hm_percent]
 
 def gather_results(name, filename_template):
     results = []
@@ -50,6 +50,7 @@ def gather_results(name, filename_template):
         os.path.join(results_subdir, "*-%s.mf" % filename_template)))
     # FIXME: temporary remove ivl
     files = [ f for f in files if "ivl" not in f ]
+    #print "%s\t%i" % (name, len(files))
     for filename in files:
         splitname = filename.split('-')
         ground_truth = os.path.join(ground_truth_dirname, splitname[0] + ".mf")
@@ -57,6 +58,14 @@ def gather_results(name, filename_template):
         datum = get_results(filename, ground_truth)
         short_name = datum[0].replace(results_subdir, "")
         results.append( [short_name] + list(datum[1:]) )
+        if "ismir2004" in filename:
+            ground_truth = ground_truth.replace(
+                "ismir2004_song_tempos.mf",
+                "not-now/ismir2004_song_tempos_gonzalez.mf")
+            datum = get_results(filename, ground_truth)
+            datum[0] = 'ismir2004_song_gonzalez'
+            short_name = datum[0].replace(results_subdir, "")
+            results.append( [short_name] + list(datum[1:]) )
     return results
 
 def mcnemar_stat(mar, dat, harmonic):
@@ -86,7 +95,10 @@ def mcnemar_stat(mar, dat, harmonic):
     if DEBUG_MCNEMAR:
         print "%i\t%i\t%i\t%i\t%i\t%.2g" % (
             a+c+b+d, a, b, c, d, p)
-    return p
+    if p1 > p2:
+        return p, 1
+    else:
+        return p, -1
 
 def sort_names(val):
     examine = val[0]
@@ -118,21 +130,22 @@ def write_csv(filename, collections, dats, field):
     for key, value in iter(sorted(dats.items(), key=sort_names)):
         text = key
         for a in value:
-            if len(a) == 7:
+            if len(a) == 9:
                 if field == 2:
                     p = a[5]
                 elif field == 4:
                     p = a[6]
                 sig = ""
+                c = '-' if a[7] == 1 else '+'
                 if p < 1e-3:
-                    sig = "***"
+                    sig = c*3
                 elif p < 1e-2:
-                    sig = "**"
+                    sig = c*2
                 elif p < 5e-2:
-                    sig = "*"
-                text += ", %.1f%s" % (a[field], sig)
+                    sig = c*1
+                text += " , %.02f%s" % (a[field], sig)
             else:
-                text += ", %.1f" % (a[field])
+                text += ", %.02f" % (a[field])
         out.write(text + '\n')
     out.close()
 
@@ -161,19 +174,21 @@ def write_latex(filename, collections, dats, field):
 
     for key, value in iter(sorted(dats.items(), key=sort_names)):
         text = key.replace("_", "\\_")
+        text = text.replace("_tempos", "")
         for a in value:
-            if len(a) == 7:
+            if len(a) == 9:
                 if field == 2:
                     p = a[5]
                 elif field == 4:
                     p = a[6]
                 sig = ""
+                c = '-' if a[7] == 1 else '+'
                 if p < 1e-3:
-                    sig = "***"
+                    sig = c*3
                 elif p < 1e-2:
-                    sig = "**"
+                    sig = c*2
                 elif p < 5e-2:
-                    sig = "*"
+                    sig = c*1
                 text += " & %.1f%s" % (a[field], sig)
             else:
                 text += " & %.1f" % (a[field])
@@ -256,10 +271,12 @@ def main():
                     mar = f
             if DEBUG_MCNEMAR:
                 print shortname, name
-            p_mirex = mcnemar_stat(mar, d, False)
-            p_harmonic = mcnemar_stat(mar, d, True)
+            p_mirex, d_mirex = mcnemar_stat(mar, d, False)
+            p_harmonic, d_harmonic = mcnemar_stat(mar, d, True)
             dats[shortname][-1].append(p_mirex)
             dats[shortname][-1].append(p_harmonic)
+            dats[shortname][-1].append(d_mirex)
+            dats[shortname][-1].append(d_harmonic)
         m, t = get_means_totals(data)
         dats["means"].append(m)
         dats["total"].append(t)
