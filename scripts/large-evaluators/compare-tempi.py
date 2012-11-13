@@ -58,14 +58,14 @@ def gather_results(name, filename_template):
         datum = get_results(filename, ground_truth)
         short_name = datum[0].replace(results_subdir, "")
         results.append( [short_name] + list(datum[1:]) )
-        if "ismir2004" in filename:
-            ground_truth = ground_truth.replace(
-                "ismir2004_song_tempos.mf",
-                "not-now/ismir2004_song_tempos_gonzalez.mf")
-            datum = get_results(filename, ground_truth)
-            datum[0] = 'ismir2004_song_gonzalez'
-            short_name = datum[0].replace(results_subdir, "")
-            results.append( [short_name] + list(datum[1:]) )
+        #if "ismir2004" in filename:
+        #    ground_truth = ground_truth.replace(
+        #        "ismir2004_song_tempos.mf",
+        #        "not-now/ismir2004_song_tempos_gonzalez.mf")
+        #    datum = get_results(filename, ground_truth)
+        #    datum[0] = 'ismir2004_song_gonzalez'
+        #    short_name = datum[0].replace(results_subdir, "")
+        #    results.append( [short_name] + list(datum[1:]) )
     return results
 
 def mcnemar_stat(mar, dat, harmonic):
@@ -129,6 +129,8 @@ def write_csv(filename, collections, dats, field):
 
     for key, value in iter(sorted(dats.items(), key=sort_names)):
         text = key
+        if key == 'means':
+            out.write('\n')
         for a in value:
             if len(a) == 9:
                 if field == 2:
@@ -167,12 +169,15 @@ def format_header(text):
 
 def write_latex(filename, collections, dats, field):
     out = open(filename, 'w')
-    out.write("\\begin{tabular}{l%s}\n" % ('c'*(len(collections)+1)))
+    out.write("\\begin{tabular}{l|%s}\n" % ('c'*(len(collections)+1)))
     collections_names = [format_header(a[0]) for a in collections]
     text = "& marsyas& " + " & ".join(collections_names)
     out.write(text + '\\\\\n')
+    out.write('\hline\n')
 
     for key, value in iter(sorted(dats.items(), key=sort_names)):
+        if key == 'means':
+            out.write('\hline\n')
         text = key.replace("_", "\\_")
         text = text.replace("_tempos", "")
         for a in value:
@@ -248,6 +253,7 @@ def main():
             ("klapuri", "klapuri"),
             ("zplane", "zplane"),
             ("echonest", "echonest_bpm"),
+            ("gkiokas", "gkiokas"),
             ("ibt", "ibt"),
             ("ibt_off_auto", "ibt-off-auto"),
             ("ibt_off_reg", "ibt-off-reg"),
