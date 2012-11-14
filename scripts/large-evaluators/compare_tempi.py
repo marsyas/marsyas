@@ -15,8 +15,26 @@ ground_truth_dirname = os.path.expanduser("~/src/audio-research/")
 results_subdir = "mfs/"
 
 
+def load_mf(mf_filename):
+    lines = open(mf_filename).readlines()
+    coll = []
+    for line in lines:
+        if line[0] == '#' or len(line) < 2:
+            continue
+        filename = line.split()[0]
+        coll.append( os.path.basename(filename) )
+    return coll
+
+def check_files_in_mf(one, two):
+    one_coll = load_mf(one)
+    two_coll = load_mf(two)
+    for o, t in zip(one_coll, two_coll):
+        if o != t:
+            raise Exception("filenames inside collections do not match!")
+
 def get_results(detected_filename, ground_filename):
     #print "--------", detected_filename, ground_filename
+    check_files_in_mf(detected_filename, ground_filename)
     wrong_filename = detected_filename.replace(".mf", "-wrong.mf")
     cmd = "tempo -pi %s -m PREDICTED -wo %s %s" % (
         detected_filename, wrong_filename, ground_filename)
@@ -296,6 +314,7 @@ def main():
     write_latex("mirex.latex", s_coll, s_dats, 2)
     write_latex("harmonic.latex", s_coll, s_dats, 4)
 
-main()
+if __name__ == '__main__':
+    main()
 
 
