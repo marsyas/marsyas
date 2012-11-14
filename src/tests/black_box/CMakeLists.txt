@@ -61,14 +61,14 @@ macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   add_test( ${REG_NAME}-classify-gs
 	${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py
 		${EXECUTABLE_OUTPUT_PATH}/kea
-		-w ${REG_NAME}.arff -cl GS
+		-w ${TEST_OUTPUT}/${REG_NAME}.arff -cl GS
 		${REG_NAME}-gs.txt
 		${TEST_OUTPUT}/${REG_NAME}-gs.txt
   )
   add_test( ${REG_NAME}-classify-svm
 	${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py
 		${EXECUTABLE_OUTPUT_PATH}/kea
-		-w ${REG_NAME}.arff -cl SVM
+		-w ${TEST_OUTPUT}/${REG_NAME}.arff -cl SVM
 		${REG_NAME}-svm.txt
 		${TEST_OUTPUT}/${REG_NAME}-svm.txt
   )
