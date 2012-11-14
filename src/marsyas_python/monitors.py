@@ -12,7 +12,7 @@ msm = MarSystemManager()
 #	net = loadFromFile(pluginName)
 def load_network(pluginName):
 	net = msm.loadFromFile(pluginName)
-	print net.toString()
+	#print net.toString()
 	return net
 
 
@@ -24,7 +24,7 @@ def plot_figure(pluginName):
 
     figure(figsize=(14,8))
 
-    for i in range(1,30):
+    for i in range(1,300):
         net.tick();
 
         subplot(2,3,1);
@@ -49,6 +49,7 @@ def plot_figure(pluginName):
         marplot(control2array(net, "FlowThru/tempoInduction/AutoCorrelation/acr/mrs_realvec/processedData"), 
                 x_label = "Lag (samples)", 
                 y_label = "Strength Strength", 
+                plot_title = "Autocorrelation output",
                 ex=200)
 
         
@@ -57,6 +58,7 @@ def plot_figure(pluginName):
         marplot(control2array(net, "FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData"), 
                 x_label = "Tempo (BPM)", 
                 y_label = "Beat Strength", 
+                plot_title = "BeatHistogram output",
                 ex=200)
         
         subplot(2,3,5);
@@ -64,12 +66,14 @@ def plot_figure(pluginName):
         marplot(control2array(net, "FlowThru/tempoInduction/Sum/hsum/mrs_realvec/processedData"), 
                 x_label = "Tempo (BPM)", 
                 y_label = "Beat Strength", 
+                plot_title = "Sum output",
                 ex=200)
-        hold(True)
+        hold(False)
+        subplot(2,3,6);
         marplot(control2array(net, "FlowThru/tempoInduction/Peaker/pkr1/mrs_realvec/processedData"), 
                 x_label = "Tempo (BPM)", 
                 y_label = "Beat Strength", 
-                plot_title = "Beat Histogram",
+                plot_title = "Peaker output",
                 ex=200)
         hold(False)
 
