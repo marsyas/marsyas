@@ -109,14 +109,14 @@
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/09-Bananeira.wav	102.009537
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/10-Samba_e_Amor.wav	57
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/11-Close_Your_Eyes.wav	104
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/01-The_Miraculous_Mandarin___1.1__Allegro_...' <Preview tru	101
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/02-The_Miraculous_Mandarin___2__1st_Decoy_...' <P	80
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/03-The_Miraculous_Mandarin___3__2nd_Decoy_...' <P	80.050325
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/05-The_Miraculous_Mandarin___5.1__Maestoso...' <Preview trun	83.863338
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/06-The_Miraculous_Mandarin___6.1__Sempre_v...' <Preview trunca	72
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/07-The_Miraculous_Mandarin___7.1__Agitato_...' <Preview truncated 	48
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/09-Music_for_Strings__Percussion_and_Celes...' <Preview truncated at 1	104
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/11-Music_for_Strings__Percussion_and_Celes...' <Preview trun	101.437033
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/01-The_Miraculous_Mandarin___1.1__Allegro___1.2__Curtain.wav	101
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/02-The_Miraculous_Mandarin___2__1st_Decoy_Game.wav	80
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/03-The_Miraculous_Mandarin___3__2nd_Decoy_Game.wav	80.050325
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/05-The_Miraculous_Mandarin___5.1__Maestoso___5.2__Allegro.wav	83.863338
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/06-The_Miraculous_Mandarin___6.1__Sempre_vivo___6.2__Adagio.wav	72
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/07-The_Miraculous_Mandarin___7.1__Agitato___7.2__Molto_moderato.wav	48
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/09-Music_for_Strings__Percussion_and_Celesta__I__Andante_tranquillo.wav	104
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/11-Music_for_Strings__Percussion_and_Celesta__III__Adagio.wav	101.437033
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/01-Introduction__Part_1-_The_adoration_of_the_earth_.wav	53.472717
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/02-The_augurs_of_spring.wav	107
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/04-Spring_round_dances.wav	59.543105
@@ -237,12 +237,12 @@
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Paisa sti vrysi - Velvento.wav	108
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Perdika(xwris logia).wav	45
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/To pasoumi - Smyrni.wav	81
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/01-M. Baumann_ Duo pour guitare et violoncelle, op.62 - 1. Prelude (L...' <Preview t	68.965517
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/01-M. Baumann_ Duo pour guitare et violoncelle, op.62 - 1. Prelude (Lento rubato).wav	68.965517
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/03-3. Berceuse (Lento molto).wav	75
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/04-4. Hommage ade Falla (Allegro).wav	117.647059
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/06-E. Granados_ Intermezzo (de _Goyescas_).wav	242.435605
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/07-H. Villa-lobos_ Bachianas Brasileiras No.5 (Aria).wav	96.774194
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/09-M. de Falla_ 7 chansons populaires espagnoles (extraits) - El pano...' <Prev	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/09-M. de Falla_ 7 chansons populaires espagnoles (extraits) - El pano moruno.wav	100
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/11-Nana.wav	102
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/12-Cancion.wav	63
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/john_coltrane/a_love_supreme/20sec/part_1__acknowledgement.wav	125.131153
@@ -458,7 +458,6 @@
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/11-AudioTrack 11.wav	91
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/12-AudioTrack 12.wav	51
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/13-AudioTrack 13.wav	60
-/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/15-AudioTrack 15.wav	107
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/16-AudioTrack 16.wav	98
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/17-AudioTrack 17.wav	63
 /home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/19-AudioTrack 19.wav	56.980052

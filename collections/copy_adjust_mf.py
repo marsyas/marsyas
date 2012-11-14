@@ -5,6 +5,7 @@ OMIT_MISSING_FILES = True
 COPY_ONLY_TEMPOS = True
 
 OMIT_FILES = ["loopBPMs_tempos.mf", "ismir2004_tempos.mf"]
+OMIT_FILES = ["loopBPMs_tempos.mf"]
 
 import sys
 import glob
@@ -14,8 +15,8 @@ NEW_DIR=sys.argv[1]
 GEORGE_DIR1="/Users/gtzan/data/sound/"
 GEORGE_DIR2="/Users/George/data/sound/"
 
-print "name\t\t\t\tblank\tmissing"
-print "----\t\t\t\t-----\t-------"
+print "name\t\t\t\t\t\tblank\tmissing"
+print "----\t\t\t\t\t\t-----\t-------"
 if COPY_ONLY_TEMPOS:
     files=glob.glob("*_tempos.mf")
 else:
@@ -52,6 +53,6 @@ for f in files:
                 continue
         out.write("%s\t%s\n" % (newfilename, label))
     out.close()
-    print "%25s\t%i\t%i" % (f, blank_labels, missing_files)
+    print "%40s\t%i\t%i" % (f, blank_labels, missing_files)
 
 
