@@ -193,7 +193,7 @@ def format_header(text):
 
 def write_latex(filename, collections, dats, field):
     out = open(filename, 'w')
-    out.write("\\begin{tabular}{l|%s}\n" % ('c'*(len(collections)+1)))
+    out.write("\\begin{tabular}{l|c|%s}\n" % ('c'*(len(collections))))
     collections_names = [format_header(a[0]) for a in collections]
     text = "& marsyas& " + " & ".join(collections_names)
     out.write(text + '\\\\\n')
@@ -204,6 +204,12 @@ def write_latex(filename, collections, dats, field):
             out.write('\hline\n')
         text = key.replace("_", "\\_")
         text = text.replace("_tempos", "")
+        maxvalue = -1
+        for a in value:
+            if len(a) == 10:
+                a = a[1:]
+            if maxvalue < a[field]:
+                maxvalue = a[field]
         for a in value:
             if len(a) == 10:
                 a = a[1:]
@@ -213,18 +219,27 @@ def write_latex(filename, collections, dats, field):
                 elif field == 4:
                     p = a[6]
                 sig = ""
-                c = '-' if a[7] == 1 else '+'
+                c = '\uparrow' if a[7] == 1 else '\downarrow'
                 if p < 1e-3:
-                    sig = c*3
+                    sig = c+'\ddagger'
                 elif p < 1e-2:
-                    sig = c*2
+                    sig = c+'\dagger'
                 elif p < 5e-2:
-                    sig = c*1
-                text += " & %.1f%s" % (a[field], sig)
+                    sig = '\phantom{\uparrow\dagger}'
+                else:
+                    sig = '\phantom{\uparrow\dagger}'
+                if abs(a[field] - maxvalue) < 0.001:
+                    text += " & \\textbf{%.1f}$%s$" % (a[field], sig)
+                else:
+                    text += " & %.1f$%s$" % (a[field], sig)
             else:
                 if len(a) == 6:
                     a = a[1:]
-                text += " & %.1f" % (a[field])
+                if abs(a[field] - maxvalue) < 0.001:
+                    text += " & \\textbf{%.1f}" % (a[field])
+                else:
+                    text += " & %.1f" % (a[field])
+                #text += " & %.1f" % (a[field])
         out.write(text + '\\\\\n')
     out.write("\\end{tabular}")
     out.close()
@@ -280,18 +295,18 @@ def main():
 
 
     collections = [
-            ("klapuri", "klapuri"),
-            ("zplane", "zplane"),
-            ("echonest", "echonest_bpm"),
             ("gkiokas", "gkiokas"),
+            ("zplane", "zplane"),
+            ("klapuri", "klapuri"),
+            ("echonest", "echonest_bpm"),
             ("ibt", "ibt"),
-            ("ibt_off_auto", "ibt-off-auto"),
-            ("ibt_off_reg", "ibt-off-reg"),
+            #("ibt_off_auto", "ibt-off-auto"),
+            #("ibt_off_reg", "ibt-off-reg"),
             ("qm_default_mean", "qm_default_mean"),
-            ("qm_default_median", "qm_default_median"),
-            ("qm_default_mode", "qm_default_mode"),
-            ("vamp_fixed", "fixed_tempo"),
+            #("qm_default_median", "qm_default_median"),
+            #("qm_default_mode", "qm_default_mode"),
             ("scheirer", "scheirer"),
+            ("vamp_fixed", "fixed_tempo"),
         ]
     if DEBUG_MCNEMAR:
         print "#n\ta\tb\tc\td\tp"
