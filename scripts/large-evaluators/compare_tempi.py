@@ -21,7 +21,7 @@ def load_mf(mf_filename):
     for line in lines:
         if line[0] == '#' or len(line) < 2:
             continue
-        filename = line.split()[0]
+        filename = line.split('\t')[0]
         coll.append( os.path.basename(filename) )
     return coll
 
@@ -30,7 +30,9 @@ def check_files_in_mf(one, two):
     two_coll = load_mf(two)
     for o, t in zip(one_coll, two_coll):
         if o != t:
-            raise Exception("filenames inside collections do not match!")
+            text = "filenames inside collections do not match!\n%s\n%s\n%s\n%s" % (one, two, o, t)
+            #print text
+            raise Exception(text)
 
 def get_results(detected_filename, ground_filename):
     #print "--------", detected_filename, ground_filename
@@ -100,6 +102,8 @@ def mcnemar_stat(mar, dat, harmonic):
         n1 = mar[1] - mar[4]
         p2 = dat[4]
         n2 = dat[1] - dat[4]
+    #print mar, p1
+    #print dat, p2
     a = p1+p2
     b = p1+n2
     c = n1+p2
@@ -110,13 +114,11 @@ def mcnemar_stat(mar, dat, harmonic):
     #stat = ( abs(b-c) - 1.0)**2 / float(b+c)
     rv = scipy.stats.chi2(1)
     p = rv.sf(stat)
+    direction = 1 if p1 > p2 else -1
     if DEBUG_MCNEMAR:
-        print "%i\t%i\t%i\t%i\t%i\t%.2g" % (
-            a+c+b+d, a, b, c, d, p)
-    if p1 > p2:
-        return p, 1
-    else:
-        return p, -1
+        print "%i\t%i\t%i\t%i\t%i\t%i\t%i\t%.2g\t%i" % (
+            a+c+b+d, a, b, c, d, p1, p2, p, direction)
+    return p, direction
 
 def sort_names(val):
     examine = val[0]
@@ -150,6 +152,8 @@ def write_csv(filename, collections, dats, field):
         if key == 'means':
             out.write('\n')
         for a in value:
+            if len(a) == 10:
+                a = a[1:]
             if len(a) == 9:
                 if field == 2:
                     p = a[5]
@@ -165,6 +169,8 @@ def write_csv(filename, collections, dats, field):
                     sig = c*1
                 text += " , %.02f%s" % (a[field], sig)
             else:
+                if len(a) == 6:
+                    a = a[1:]
                 text += ", %.02f" % (a[field])
         out.write(text + '\n')
     out.close()
@@ -199,6 +205,8 @@ def write_latex(filename, collections, dats, field):
         text = key.replace("_", "\\_")
         text = text.replace("_tempos", "")
         for a in value:
+            if len(a) == 10:
+                a = a[1:]
             if len(a) == 9:
                 if field == 2:
                     p = a[5]
@@ -214,6 +222,8 @@ def write_latex(filename, collections, dats, field):
                     sig = c*1
                 text += " & %.1f%s" % (a[field], sig)
             else:
+                if len(a) == 6:
+                    a = a[1:]
                 text += " & %.1f" % (a[field])
         out.write(text + '\\\\\n')
     out.write("\\end{tabular}")
@@ -240,17 +250,17 @@ def get_means_totals(data):
         h_overall_total += d[1]
     m_mean_percent /= float(m_mean_count)
     h_mean_percent /= float(h_mean_count)
-    m_overall_correct /= float(m_overall_total)
-    h_overall_correct /= float(h_overall_total)
-    m_overall_correct *= 100.0
-    h_overall_correct *= 100.0
+    m_overall_correct_p = m_overall_correct / float(m_overall_total)
+    h_overall_correct_p = h_overall_correct / float(h_overall_total)
+    m_overall_correct_p *= 100.0
+    h_overall_correct_p *= 100.0
 
     means = [ m_overall_total,
        0, m_mean_percent,
        0, h_mean_percent]
     totals = [ h_overall_total,
-       0, m_overall_correct,
-       0, h_overall_correct]
+       m_overall_correct, m_overall_correct_p,
+       h_overall_correct, h_overall_correct_p]
     return means, totals
 
 
@@ -260,11 +270,13 @@ def main():
     for a in mar_results:
         dats[a[0]] = []
         dats[a[0]].append(a[1:])
-    m, t = get_means_totals(mar_results)
+    mar_m, mar_t = get_means_totals(mar_results)
+    mar_m.insert(0, 'means')
+    mar_t.insert(0, 'totals')
     dats["means"] = []
     dats["total"] = []
-    dats["means"].append(m)
-    dats["total"].append(t)
+    dats["means"].append(mar_m)
+    dats["total"].append(mar_t)
 
 
     collections = [
@@ -302,6 +314,18 @@ def main():
             dats[shortname][-1].append(d_mirex)
             dats[shortname][-1].append(d_harmonic)
         m, t = get_means_totals(data)
+        m.insert(0, 'means')
+        t.insert(0, 'totals')
+        #print '------------- %s' % name
+        p_mirex, d_mirex = mcnemar_stat(mar_t, t, False)
+        #print '------------- %s' % name
+        p_harmonic, d_harmonic = mcnemar_stat(mar_t, t, True)
+        #print '-------------'
+        t.append( p_mirex)
+        t.append( p_harmonic)
+        t.append( d_mirex)
+        t.append( d_harmonic)
+
         dats["means"].append(m)
         dats["total"].append(t)
 
