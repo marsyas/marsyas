@@ -299,6 +299,7 @@ def main():
             ("zplane", "zplane"),
             ("klapuri", "klapuri"),
             ("echonest", "echonest_bpm"),
+            ("lartillot", "lartillot"),
             ("ibt", "ibt"),
             #("ibt_off_auto", "ibt-off-auto"),
             #("ibt_off_reg", "ibt-off-reg"),
