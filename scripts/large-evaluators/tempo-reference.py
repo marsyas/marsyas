@@ -159,11 +159,12 @@ def periodicity(oss_sr, oss_data, plot=False):
     ### autocorrelation
     # 2: linear
     # 1: cyclic
-    #ffts = scipy.fftpack.fft(overlapped, 2*2048, axis=1)
-    ffts = scipy.fftpack.fft(overlapped, 1*2048, axis=1)
+    ffts = scipy.fftpack.fft(overlapped, 2*2048, axis=1)
+    #ffts = scipy.fftpack.fft(overlapped, 1*2048, axis=1)
     ffts_abs = abs(ffts)
     ffts_abs_scaled = ffts_abs**0.5
-    autocorr = numpy.real(scipy.fftpack.ifft(ffts_abs_scaled, axis=1))[:,1:]
+    autocorr = (abs(scipy.fftpack.ifft(ffts_abs_scaled,
+        2048, axis=1))**2)[:,1:]
     ### convert to BPMs
     autocorr_bpms = numpy.array(
             4*60.0 * oss_sr / (numpy.arange( 1,autocorr.shape[1]+1 )),
@@ -172,7 +173,11 @@ def periodicity(oss_sr, oss_data, plot=False):
     #if plot:
     #    for i in xrange(autocorr.shape[0]):
     #        autocorr_bpms = autocorr_bpms.clip(min=BPM_MIN-1, max=BPM_MAX+1)
-    #        pylab.plot(autocorr_bpms, autocorr[i])
+    #        pylab.figure()
+    #        pylab.plot(overlapped[i])
+    #        pylab.figure()
+    #        pylab.plot(autocorr[i])
+    #        #pylab.plot(autocorr_bpms, autocorr[i])
     #        pylab.show()
 
     ### beat histogram
@@ -193,9 +198,39 @@ def periodicity(oss_sr, oss_data, plot=False):
         for i in xrange( len(Hn) ):
             if Hn[i] > 0:
                 Hn[i] /= Hn_counts[i]
-        ### TODO: linearly interpolate the rest
-
+                
         summed_beat_histograms += Hn
+    ### linearly interpolate the rest
+    nonzero_indices = []
+    zero_indices = []
+    for i in xrange(len(summed_beat_histograms)):
+        if summed_beat_histograms[i] == 0:
+            zero_indices.append(i)
+        else:
+            nonzero_indices.append(i)
+    #if plot:
+    #    pylab.plot(Hn_bpms, summed_beat_histograms)
+    #print nonzero_indices
+    #print zero_indices
+    for i in zero_indices:
+        low = 0
+        for j, val in enumerate(nonzero_indices):
+            if val < i:
+                low = val
+            else:
+                break
+        high = nonzero_indices[j]
+        if low == high:
+            low = -1
+            high = -1
+            continue
+        #print i, low, high
+        summed_beat_histograms[i] = numpy.interp( i,
+            [low, high],
+            [summed_beat_histograms[low], summed_beat_histograms[high]],
+            )
+
+
 
     if plot:
         pylab.plot(Hn_bpms, summed_beat_histograms)
