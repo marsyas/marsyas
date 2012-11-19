@@ -972,13 +972,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_natural win_ms = 5.8;     // for flux calculation
    mrs_natural hop_ms = 2.9;     // for flux calculation
    mrs_natural bhop_ms = 2.9;    // for onset strength signal
-   mrs_natural bwin_ms = 46.4;	 // for onset strength signal
+   mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
    // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
    mrs_natural nCandidates = 8;  // number of tempo candidates
 
 
    // parameters for the onset strength signal
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
+   // onset_strength->updControl("Accumulator/accum/Series/fluxnet/Windowing/windowing1/mrs_string/type", "Blackman-Harris");
+   
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
   // The filter object in Marsyas is implemented as a direct form II
   // structure. This is a canonical form which has the minimum number
@@ -1038,7 +1040,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
 
    // autocorrelation parameters
-   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5);
+   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.2);
    tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
    tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to1", true);
 
