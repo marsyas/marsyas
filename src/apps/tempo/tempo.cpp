@@ -1040,7 +1040,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
 
    // autocorrelation parameters
-   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.2);
+   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5);
    tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
    tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to1", true);
 
