@@ -880,7 +880,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   MarSystem *accum = mng.create("Accumulator/accum");
   MarSystem *fluxnet = mng.create("Series/fluxnet");
   fluxnet->addMarSystem(mng.create("SoundFileSource/src"));
-  fluxnet->addMarSystem(mng.create("Stereo2Mono/s2m"));
+  fluxnet->addMarSystem(mng.create("MixToMono/m2m"));
   // fluxnet->addMarSystem(mng.create("DownSampler/tds"));
   fluxnet->addMarSystem(mng.create("ShiftInput/si"));	       // overlap for the spectral flux
   fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
