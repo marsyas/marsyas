@@ -240,17 +240,54 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 				  {
                       mrs_natural temp_t;
                       temp_t = phase - b * period;
-                      if (temp_t >= 0) {
-					    cross_correlation += in(o, temp_t);
-					    if ((b == 0) || (b == 2)) {
-						  cross_correlation += 0.5 * in(o,phase - b * period);
-                        }
-                      }
-                      temp_t = phase - b * 1.5 * period;
-                      if (temp_t >= 0) {
-					    cross_correlation += 0.65 * in(o, temp_t);
-                      }
+
+					  // 4 beats 
+                      //if (temp_t >= 0) {
+					  // cross_correlation +=  in(o, temp_t);
+					  // }
+					   
+					  
+					  // first and third beat 
+					  if ((b == 0) || (b == 2)) {
+						  cross_correlation +=  1.0 * in(o, temp_t);
+					  }
+					  else 
+						  cross_correlation += in(o, temp_t);
+					  
+							  
+
+					  // half beats 
+					  // temp_t = phase - period * 0.25 - b * period;
+					  // if (temp_t >= 0)
+					  // {
+					  // cross_correlation += (0.65 * in(o, temp_t));
+					  // }
+
+					  temp_t = phase - b * 2.0 * period;
+					  if (temp_t >= 0) 
+						cross_correlation += 0.5 * in(o, temp_t);
+					  
+					  
+					  temp_t = phase - b * 1.5 * period;
+					  if (temp_t >= 0) {
+						  cross_correlation += 0.5 * in(o, temp_t);
+					  }
+					
+					  
 				  }
+
+				  // quarter beats 
+				  /* for (int b = 0; b < 8; b++) 
+				  {
+					  mrs_natural temp_t;
+					  temp_t = phase - b * 0.25 * period;
+					  if (temp_t >= 0)
+					  {
+						  cross_correlation += (0.2 * in(o, temp_t));
+					  }
+				  }
+				  */ 
+				  
 				  phase_correlations(inSamples_-1-phase) = cross_correlation;
 				  if (cross_correlation > max_crco)
 				  {
