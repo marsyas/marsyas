@@ -985,45 +985,21 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // The filter object in Marsyas is implemented as a direct form II
   // structure. This is a canonical form which has the minimum number
   // of delay elements. These filter coefficients are setup to make
-  // this series of two filters a Butterworth filter.  At a sampling
-  // rate of 22050, with a hop size of 128, this gives us 172 fps of
-  // audio, which equals about 5 ms between samples.  With these
-  // filter coefficients, this means that the Butterworth filter has a
-  // cutoff of about 20Hz.  This is well suited to beat detection,
-  // because most of the beat information will be below 20Hz.
+  // this series of two filters a Butterworth filter.
 
    // filter coefficients for forward/backward filtering
    mrs_realvec bcoeffs(1,3);
    mrs_realvec acoeffs(2,3);
-     // original setup
-#if 1
-     bcoeffs(0) = 0.0564;
-     bcoeffs(1) = 0.1129;
-     bcoeffs(2) = 0.0564;
-     acoeffs(0) = 1.0000;
-     acoeffs(1) = -1.2247;
-     acoeffs(2) = 0.4504;
-#endif
-#if 0
-    //     python
-    // import scipy.signal
-    // b, a = scipy.signal.butter(2, 50.0 / 172.266)
-   bcoeffs(0) = 0.12434098;
-   bcoeffs(1) = 0.24868197;
-   bcoeffs(2) = 0.12434098;
+   // python:
+   //   import scipy.signal
+   //   b, a = scipy.signal.butter(2, 31.0 / (344.53125/2.0))
+   //   % tested cutoffs at 25, 30, 31, 32, 35; winner is 31 Hz
+   bcoeffs(0) = 0.05642426;
+   bcoeffs(1) = 0.11284853;
+   bcoeffs(2) = 0.05642426;
    acoeffs(0) = 1.0;
-   acoeffs(1) = -0.78545823;
-   acoeffs(2) = 0.28282217;
-   /*
-    // b, a = scipy.signal.butter(2, 20.0 / 172.266)
-   bcoeffs(0) = 0.0262662;
-   bcoeffs(1) = 0.0525324;
-   bcoeffs(2) = 0.0262662;
-   acoeffs(0) = 1.0;
-   acoeffs(1) = -1.49208868;
-   acoeffs(2) = 0.59715348;
-   */
-#endif
+   acoeffs(1) = -1.22483786;
+   acoeffs(2) = 0.45053492;
 
    onset_strength->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
    onset_strength->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
