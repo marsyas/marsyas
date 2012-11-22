@@ -130,6 +130,7 @@ Flux::myProcess(realvec& in, realvec& out)
 				mrs_real tmp;
 				tmp = in(o,t) - prevWindow_(o,t);
 				if (tmp >= 0)
+					// flux_ += in(o,t);
 					flux_ += tmp;
 				prevWindow_(o,t) = in(o,t);				
 			}

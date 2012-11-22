@@ -242,32 +242,16 @@ BeatPhase::myProcess(realvec& in, realvec& out)
                       temp_t = phase - b * period;
 
 					  // 4 beats 
-                      //if (temp_t >= 0) {
-					  // cross_correlation +=  in(o, temp_t);
-					  // }
-					   
-					  
-					  // first and third beat 
-					  if ((b == 0) || (b == 2)) {
-						  cross_correlation +=  1.0 * in(o, temp_t);
+                      if (temp_t >= 0) {
+					   cross_correlation +=  in(o, temp_t);
 					  }
-					  else 
-						  cross_correlation += in(o, temp_t);
-					  
-							  
-
-					  // half beats 
-					  // temp_t = phase - period * 0.25 - b * period;
-					  // if (temp_t >= 0)
-					  // {
-					  // cross_correlation += (0.65 * in(o, temp_t));
-					  // }
-
+					   
+					  // slow down by 2.0 
 					  temp_t = phase - b * 2.0 * period;
 					  if (temp_t >= 0) 
 						cross_correlation += 0.5 * in(o, temp_t);
 					  
-					  
+					  // slow down by 3 
 					  temp_t = phase - b * 1.5 * period;
 					  if (temp_t >= 0) {
 						  cross_correlation += 0.5 * in(o, temp_t);
