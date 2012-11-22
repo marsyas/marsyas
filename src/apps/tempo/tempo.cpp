@@ -989,7 +989,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    // filter coefficients for forward/backward filtering
    mrs_realvec bcoeffs(1,3);
-   mrs_realvec acoeffs(2,3);
+   mrs_realvec acoeffs(1,3);
    // python:
    //   import scipy.signal
    //   b, a = scipy.signal.butter(2, 31.0 / (344.53125/2.0))
@@ -1005,6 +1005,27 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    onset_strength->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
    onset_strength->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
+#if 0
+   mrs_realvec bcoeffs(1,16);
+   bcoeffs(0) = -0.0031685;
+   bcoeffs(1) = -0.00312381;
+   bcoeffs(2) = 0.00045337;
+   bcoeffs(3) = 0.01659204;
+   bcoeffs(4) = 0.05144831;
+   bcoeffs(5) = 0.10146736;
+   bcoeffs(6) = 0.15212408;
+   bcoeffs(7) = 0.18420714;
+   bcoeffs(8) = 0.18420714;
+   bcoeffs(9) = 0.15212408;
+   bcoeffs(10) = 0.10146736;
+   bcoeffs(11) = 0.05144831;
+   bcoeffs(12) = 0.01659204;
+   bcoeffs(13) = 0.00045337;
+   bcoeffs(14) = -0.00312381;
+   bcoeffs(15) = -0.0031685;
+   onset_strength->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+#endif
+
 
    // parameters for BH pick peaking
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 11);
