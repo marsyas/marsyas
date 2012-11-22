@@ -1287,13 +1287,29 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 		   if (i != j)
 		   {
-			   if ((fabs(2 * tempos(i) - tempos(j)) < tolerance * tempos(j)) && (tempos(i) < 70))
-				   heuristic_tempo = tempos(j);
-			   if ((fabs(3 * tempos(i) - tempos(j)) < tolerance * tempos(j)) && (tempos(i) < 50))
-				   heuristic_tempo = tempos(j);
+			   if (fabs(2 * tempos(i) - tempos(j)) < tolerance * tempos(j)) 
+			   {
+				   cout << "GT = " << ground_truth_tempo << " Heuristic - " << tempos(0) << "-" << tempos(2) << "-" << endl;
+				if (tempos(i) < 70)
+				  heuristic_tempo = tempos(j);
+				else 
+				  heuristic_tempo = tempos(i);
+			   }
 		   }
+		   
+
+		// if (i!= j)
+		// if ((fabs(ground_truth_tempo - tempos(i)) < tolerance * ground_truth_tempo))
+		// {
+	        // 		heuristic_tempo = tempos(i);
+	// 		cout << "ORACLE = " << i << "-" << heuristic_tempo << endl;
+	// 	}
 	   }
+
+	   
    }
+
+   
 
    for (int i=0; i < 3; i++) 
 	   if (heuristic_tempo == tempos(i))
@@ -1668,12 +1684,15 @@ tempo_aim_flux2(mrs_string sfName, float ground_truth_tempo, mrs_string resName,
 	   for (int j=0; j < 4; j++)
 	   {
 		   // if there are two tempo estimates with a ratio of 2 pick the higher
-		   // one if the lower one is less than 75 BPM
+		   // one if the lower one is less than 70 BPM
 		   if (i != j)
 		   {
 			   if ((fabs(2 * tempos(i) - tempos(j)) < 0.04 * tempos(j)) && (tempos(i) < 70))
 				   tempos(0) = tempos(j);
 		   }
+
+
+		
 
 	   }
 
