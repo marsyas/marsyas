@@ -155,9 +155,13 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		  // linear interpolation of the "not-set" bins...
 		  if (pprev_bin-prev_bin > 1)
 		  {
-			mrs_natural len = prev_bin-pprev_bin-1;
+            // prev is x0, pprev is x1
+            mrs_real x0 = prev_bin;
+            mrs_real x1 = pprev_bin;
+            mrs_real y0 = out(o, prev_bin);
+            mrs_real y1 = out(o, pprev_bin);
 			for (mrs_natural k = prev_bin+1; k < pprev_bin; k++)
-			  out (o,k)	= (k-prev_bin)*(out(o,prev_bin)-out(o,pprev_bin))/len + out(o,prev_bin);
+			  out (o,k)	= y0 + (y1-y0)*(k-x0)/(x1-x0);
 		  }
 
 		  pprev_bin = prev_bin;
