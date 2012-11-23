@@ -2,6 +2,7 @@
 
 import sys
 import os.path
+import os
 import time
 
 import mar_collection
@@ -10,7 +11,7 @@ import pyechonest.track
 
 WAIT_SECONDS = 5.0
 PROCESS_PROBLEMS = False
-PROCESS_PROBLEMS = True
+#PROCESS_PROBLEMS = True
 
 def echonest_upload(full_filename):
     print "trying: ", full_filename
@@ -28,6 +29,11 @@ def echonest_upload(full_filename):
 
 
 def main(mf_name):
+    try:
+        _ = os.environ["ECHO_NEST_API_KEY"]
+    except:
+        print "Need echonest key!"
+        exit(1)
     coll = mar_collection.MarCollection(mf_name)
     if PROCESS_PROBLEMS:
         filenames_z = coll.get_filenames_matching_label("0")
