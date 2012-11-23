@@ -347,6 +347,8 @@ void tempo_medianMultiBands(mrs_string sfName, float ground_truth_tempo, mrs_str
   // total->addMarSystem(mng.create("Sum", "sum"));
 
   total->addMarSystem(mng.create("DownSampler", "ds"));
+  total->addMarSystem(mng.create("Windowing", "autowin"));
+  total->updControl("Windowing/autowin/mrs_string/type", "Hanning");
   total->addMarSystem(mng.create("AutoCorrelation", "acr"));
   total->addMarSystem(mng.create("Peaker", "pkr"));
   total->addMarSystem(mng.create("MaxArgMax", "mxr"));
@@ -1325,17 +1327,30 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	   for (int j=0; j < 3; j++)
 	   {
 		   // if there are two tempo estimates with a ratio of 2 pick the higher
-		   // one if the lower one is less than 65 BPM
+		   // one if the lower one is less than 70 BPM
 
 		   if (i != j)
 		   {
 			   if (fabs(2 * tempos(i) - tempos(j)) < tolerance * tempos(j)) 
 			   {
 				   cout << "GT = " << ground_truth_tempo << " Heuristic - " << tempos(0) << "-" << tempos(2) << "-" << endl;
-				if (tempos(i) < 70)
-				  heuristic_tempo = tempos(j);
-				else 
-				  heuristic_tempo = tempos(i);
+				   if (fabs(tempos(i) - ground_truth_tempo) < tolerance * ground_truth_tempo)
+				   {
+					//				heuristic_tempo = tempos(i);
+					//cout << tempos(0) << "," << tempos(1) << "," << tempos(2) << "," << "temposelect" << i << endl;
+					cout << tempos(i) << "," << bhistogram.var() << "," << "temposelectl" << endl;
+				
+				   }	
+				   if (fabs(tempos(j) - ground_truth_tempo) < tolerance * ground_truth_tempo)
+				   {
+				// 	heuristic_tempo = tempos(j);
+					cout << tempos(i) << "," << bhistogram.var() << "," << "temposelecth" << endl;
+				   }
+				
+				
+				   
+				    if (tempos(i) < 68)
+			 		   heuristic_tempo = tempos(j);
 			   }
 		   }
 		   
