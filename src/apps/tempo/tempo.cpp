@@ -894,7 +894,18 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   //fluxnet->updControl("Flux/flux/mrs_string/mode", "multichannel");
   //fluxnet->addMarSystem(mng.create("Delta/delta"));
   //fluxnet->updControl("Delta/delta/mrs_bool/positive", true);
+  //
 
+  //    *** see note with filter coefficients, below
+  fluxnet->addMarSystem(mng.create("Filter", "filt1"));
+
+/*
+  fluxnet->addMarSystem(mng.create("PlotSink", "plotsink"));
+  fluxnet->updControl("PlotSink/plotsink/mrs_string/filename",
+      "filtered.txt");
+  fluxnet->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
+  fluxnet->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
+*/
 
   accum->addMarSystem(fluxnet);
   onset_strength->addMarSystem(accum);
@@ -907,10 +918,11 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
   onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
-  onset_strength->addMarSystem(mng.create("Filter", "filt1"));
-  onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
-  onset_strength->addMarSystem(mng.create("Filter", "filt2"));
-  onset_strength->addMarSystem(mng.create("Reverse", "reverse2"));
+  //    *** see note with filter coefficients, below
+  //onset_strength->addMarSystem(mng.create("Filter", "filt1"));
+  //onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
+  //onset_strength->addMarSystem(mng.create("Filter", "filt2"));
+  //onset_strength->addMarSystem(mng.create("Reverse", "reverse2"));
   
   
 
@@ -987,6 +999,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // of delay elements. These filter coefficients are setup to make
   // this series of two filters a Butterworth filter.
 
+#if 0
    // filter coefficients for forward/backward filtering
    mrs_realvec bcoeffs(1,3);
    mrs_realvec acoeffs(1,3);
@@ -1005,25 +1018,33 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    onset_strength->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
    onset_strength->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
-#if 0
-   mrs_realvec bcoeffs(1,16);
-   bcoeffs(0) = -0.0031685;
-   bcoeffs(1) = -0.00312381;
-   bcoeffs(2) = 0.00045337;
-   bcoeffs(3) = 0.01659204;
-   bcoeffs(4) = 0.05144831;
-   bcoeffs(5) = 0.10146736;
-   bcoeffs(6) = 0.15212408;
-   bcoeffs(7) = 0.18420714;
-   bcoeffs(8) = 0.18420714;
-   bcoeffs(9) = 0.15212408;
-   bcoeffs(10) = 0.10146736;
-   bcoeffs(11) = 0.05144831;
-   bcoeffs(12) = 0.01659204;
-   bcoeffs(13) = 0.00045337;
-   bcoeffs(14) = -0.00312381;
-   bcoeffs(15) = -0.0031685;
-   onset_strength->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+#endif
+#if 1
+   // filter coefficients from:
+   //   import scipy.signal
+   //   scipy.signal.firwin(16, 31.0 / (344.53125/2.0))
+   //
+   // this produces results which are slightly worse, but *much*
+   // easier to implement in python.  I expect that the results
+   // can be restored emproved by tweaking the cutoff freq of 31 Hz.
+   mrs_realvec bcoeffs(1, 16);
+   bcoeffs(0) = -0.0031684955620275;
+   bcoeffs(1) = -0.0031238054407810;
+   bcoeffs(2) = 0.0004533716004640;
+   bcoeffs(3) = 0.0165920357388331;
+   bcoeffs(4) = 0.0514483143444879;
+   bcoeffs(5) = 0.1014673644213578;
+   bcoeffs(6) = 0.1521240780466439;
+   bcoeffs(7) = 0.1842071368510217;
+   bcoeffs(8) = 0.1842071368510217;
+   bcoeffs(9) = 0.1521240780466439;
+   bcoeffs(10) = 0.1014673644213578;
+   bcoeffs(11) = 0.0514483143444880;
+   bcoeffs(12) = 0.0165920357388331;
+   bcoeffs(13) = 0.0004533716004640;
+   bcoeffs(14) = -0.0031238054407810;
+   bcoeffs(15) = -0.0031684955620275;
+   fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
 #endif
 
 
