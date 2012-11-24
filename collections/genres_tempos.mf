@@ -552,7 +552,7 @@
 /Users/gtzan/data/sound/genres/rock/rock.00051.wav	88
 /Users/gtzan/data/sound/genres/rock/rock.00052.wav	49
 /Users/gtzan/data/sound/genres/rock/rock.00053.wav	120
-/Users/gtzan/data/sound/genres/rock/rock.00054.wav	56
+/Users/gtzan/data/sound/genres/rock/rock.00054.wav	109
 /Users/gtzan/data/sound/genres/rock/rock.00055.wav	65
 /Users/gtzan/data/sound/genres/rock/rock.00056.wav	70
 /Users/gtzan/data/sound/genres/rock/rock.00057.wav	125
@@ -583,7 +583,7 @@
 /Users/gtzan/data/sound/genres/rock/rock.00082.wav	98
 /Users/gtzan/data/sound/genres/rock/rock.00083.wav	122
 /Users/gtzan/data/sound/genres/rock/rock.00084.wav	65
-/Users/gtzan/data/sound/genres/rock/rock.00085.wav	50
+/Users/gtzan/data/sound/genres/rock/rock.00085.wav	98
 /Users/gtzan/data/sound/genres/rock/rock.00086.wav	130
 /Users/gtzan/data/sound/genres/rock/rock.00087.wav	66
 /Users/gtzan/data/sound/genres/rock/rock.00088.wav	92
@@ -597,7 +597,7 @@
 /Users/gtzan/data/sound/genres/rock/rock.00096.wav	58
 /Users/gtzan/data/sound/genres/rock/rock.00097.wav	64
 /Users/gtzan/data/sound/genres/rock/rock.00098.wav	55
-/Users/gtzan/data/sound/genres/rock/rock.00099.wav	60
+/Users/gtzan/data/sound/genres/rock/rock.00099.wav	122
 /Users/gtzan/data/sound/genres/pop/pop.00000.wav	67
 /Users/gtzan/data/sound/genres/pop/pop.00001.wav	107
 /Users/gtzan/data/sound/genres/pop/pop.00002.wav	126
