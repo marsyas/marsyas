@@ -899,7 +899,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   //
 
   //    *** see note with filter coefficients, below
-  fluxnet->addMarSystem(mng.create("Filter", "filt1"));
+  //fluxnet->addMarSystem(mng.create("Filter", "filt1"));
 
 /*
   fluxnet->addMarSystem(mng.create("PlotSink", "plotsink"));
@@ -921,10 +921,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
   //    *** see note with filter coefficients, below
-  //onset_strength->addMarSystem(mng.create("Filter", "filt1"));
-  //onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
-  //onset_strength->addMarSystem(mng.create("Filter", "filt2"));
-  //onset_strength->addMarSystem(mng.create("Reverse", "reverse2"));
+  onset_strength->addMarSystem(mng.create("Filter", "filt1"));
+  onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
+  onset_strength->addMarSystem(mng.create("Filter", "filt2"));
+  onset_strength->addMarSystem(mng.create("Reverse", "reverse2"));
   
   
 
@@ -956,12 +956,19 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
    tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
 
+
    //  enhance the BH harmonic peaks
    MarSystem* hfanout = mng.create("Fanout", "hfanout");
    hfanout->addMarSystem(mng.create("Gain", "id1"));
    hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
    tempoInduction->addMarSystem(hfanout);
    tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+
+    tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink"));
+    tempoInduction->updControl("PlotSink/plotsink/mrs_string/filename",
+        "bh-combo.txt");
+    tempoInduction->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
+    tempoInduction->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
 
 
 
@@ -1001,7 +1008,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // of delay elements. These filter coefficients are setup to make
   // this series of two filters a Butterworth filter.
 
-#if 0
+#if 1
    // filter coefficients for forward/backward filtering
    mrs_realvec bcoeffs(1,3);
    mrs_realvec acoeffs(1,3);
@@ -1021,7 +1028,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    onset_strength->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 #endif
-#if 1
+#if 0
    // filter coefficients from:
    //   import scipy.signal
    //   scipy.signal.firwin(16, 31.0 / (344.53125/2.0))
