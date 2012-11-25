@@ -964,12 +964,13 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->addMarSystem(hfanout);
    tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 
+/*
     tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink"));
     tempoInduction->updControl("PlotSink/plotsink/mrs_string/filename",
         "bh-combo.txt");
     tempoInduction->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
     tempoInduction->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
-
+*/
 
 
    // Select the peaks
