@@ -32,7 +32,8 @@ def main(mf_name):
     try:
         _ = os.environ["ECHO_NEST_API_KEY"]
     except:
-        print "Need echonest key!"
+        print "Need echonest key!  you must run:"
+        print "  export ECHO_NEST_API_KEY="
         exit(1)
     coll = mar_collection.MarCollection(mf_name)
     if PROCESS_PROBLEMS:
