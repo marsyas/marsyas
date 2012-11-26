@@ -221,19 +221,19 @@ def write_latex(filename, collections, dats, field):
                 elif field == 4:
                     p = a[6]
                 sig = ""
-                c = '-' if a[7] == 1 else '+'
+                c = '\\texttt{-}' if a[7] == 1 else '\\texttt{+}'
                 if key == 'total':
-                    c = '-' if a[8] == 1 else '+'
+                    c = '\\texttt{-}' if a[8] == 1 else '\\texttt{+}'
                 if p < 1e-3:
-                    sig = c*2
+                    sig = c*1
                 elif p < 1e-2:
-                    sig = c*1+'\phantom{+}'
+                    sig = c*1
                 elif p < 5e-2:
-                    sig = '\phantom{++}'
+                    sig = c*0+'\phantom{%s}' % c
                 else:
-                    sig = '\phantom{++}'
+                    sig = '\phantom{%s}' % c
                 if abs(a[field] - maxvalue) < 0.001:
-                    text += " & \\textbf{%.1f}$%s$" % (a[field], sig)
+                    text += " & \\textbf{%.1f}%s" % (a[field], sig)
                 else:
                     text += " & %.1f$%s$" % (a[field], sig)
             else:
@@ -243,6 +243,7 @@ def write_latex(filename, collections, dats, field):
                     text += " & \\textbf{%.1f}" % (a[field])
                 else:
                     text += " & %.1f" % (a[field])
+                text += '$\phantom{\\texttt{+}}$'
                 #text += " & %.1f" % (a[field])
         out.write(text + '\\\\\n')
     out.write("\\end{tabular}")
