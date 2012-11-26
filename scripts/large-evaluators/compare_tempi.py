@@ -102,7 +102,7 @@ def mcnemar_stat(mar, dat, harmonic):
         n1 = mar[1] - mar[4]
         p2 = dat[4]
         n2 = dat[1] - dat[4]
-    #print mar, p1
+    #print "mar: %i\tother: %i" % (p1, p2)
     #print dat, p2
     a = p1+p2
     b = p1+n2
@@ -161,6 +161,8 @@ def write_csv(filename, collections, dats, field):
                     p = a[6]
                 sig = ""
                 c = '-' if a[7] == 1 else '+'
+                if key == 'total':
+                    c = '-' if a[8] == 1 else '+'
                 if p < 1e-3:
                     sig = c*3
                 elif p < 1e-2:
@@ -219,15 +221,17 @@ def write_latex(filename, collections, dats, field):
                 elif field == 4:
                     p = a[6]
                 sig = ""
-                c = '\uparrow' if a[7] == 1 else '\downarrow'
+                c = '-' if a[7] == 1 else '+'
+                if key == 'total':
+                    c = '-' if a[8] == 1 else '+'
                 if p < 1e-3:
-                    sig = c+'\ddagger'
+                    sig = c*2
                 elif p < 1e-2:
-                    sig = c+'\dagger'
+                    sig = c*1+'\phantom{+}'
                 elif p < 5e-2:
-                    sig = '\phantom{\uparrow\dagger}'
+                    sig = '\phantom{++}'
                 else:
-                    sig = '\phantom{\uparrow\dagger}'
+                    sig = '\phantom{++}'
                 if abs(a[field] - maxvalue) < 0.001:
                     text += " & \\textbf{%.1f}$%s$" % (a[field], sig)
                 else:
@@ -330,12 +334,18 @@ def main():
             dats[shortname][-1].append(d_mirex)
             dats[shortname][-1].append(d_harmonic)
         m, t = get_means_totals(data)
+        if DEBUG_MCNEMAR:
+            print "totals"
+            print t
         m.insert(0, 'means')
         t.insert(0, 'totals')
         #print '------------- %s' % name
+        #print "totals"
         p_mirex, d_mirex = mcnemar_stat(mar_t, t, False)
+        #print p_mirex, d_mirex
         #print '------------- %s' % name
         p_harmonic, d_harmonic = mcnemar_stat(mar_t, t, True)
+        #print p_harmonic, d_harmonic
         #print '-------------'
         t.append( p_mirex)
         t.append( p_harmonic)
