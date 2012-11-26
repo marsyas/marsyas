@@ -236,7 +236,7 @@ AutoCorrelation::myProcess(realvec& in, realvec& out)
 		  for (t=0; t < onSamples_; t++)  
 		  {
 			// out(o,t) = 0.1 * scratch_(t) + 0.99 * out(o,t);
-			out(o,t) = 1.0 * fabs(scratch_(t)) + 0.0 * out(o,t);
+			out(o,t) = 1.0 * scratch_(t) + 0.0 * out(o,t);
 			// out(o,t) = 0.5 * scratch_(t) + 0.5 * out(o,t);
 			// out(o,t) +=  scratch_(t);
 			

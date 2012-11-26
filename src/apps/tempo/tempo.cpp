@@ -1357,8 +1357,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 				
 				
 				   
-				    if (tempos(i) < 68)
-			 		   heuristic_tempo = tempos(j);
+				    if (tempos(i) < 67.5)
+			 		   heuristic_tempo = 2 * tempos(i);
 			   }
 		   }
 		   
