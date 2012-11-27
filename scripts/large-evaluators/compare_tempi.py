@@ -141,6 +141,7 @@ def sort_names(val):
 
 
 def write_csv(filename, collections, dats, field):
+    #print "---------------", filename
     out = open(filename, 'w')
     out.write("name, ")
     collections_names = [a[0] for a in collections]
@@ -148,21 +149,22 @@ def write_csv(filename, collections, dats, field):
     out.write(text + '\n')
 
     for key, value in iter(sorted(dats.items(), key=sort_names)):
+        #print '----', key
         text = key
         if key == 'means':
             out.write('\n')
         for a in value:
+            #print a
             if len(a) == 10:
                 a = a[1:]
             if len(a) == 9:
                 if field == 2:
                     p = a[5]
+                    c = '-' if a[7] == 1 else '+'
                 elif field == 4:
                     p = a[6]
+                    c = '-' if a[7] == 1 else '+'
                 sig = ""
-                c = '-' if a[7] == 1 else '+'
-                if key == 'total':
-                    c = '-' if a[8] == 1 else '+'
                 if p < 1e-3:
                     sig = c*3
                 elif p < 1e-2:
@@ -218,12 +220,11 @@ def write_latex(filename, collections, dats, field):
             if len(a) == 9:
                 if field == 2:
                     p = a[5]
+                    c = '\\texttt{-}' if a[7] == 1 else '\\texttt{+}'
                 elif field == 4:
                     p = a[6]
-                sig = ""
-                c = '\\texttt{-}' if a[7] == 1 else '\\texttt{+}'
-                if key == 'total':
                     c = '\\texttt{-}' if a[8] == 1 else '\\texttt{+}'
+                sig = ""
                 if p < 1e-3:
                     sig = c*1
                 elif p < 1e-2:
@@ -304,7 +305,7 @@ def main():
             ("zplane", "zplane"),
             ("klapuri", "klapuri"),
             ("echonest", "echonest_bpm"),
-            ("lartillot", "lartillot"),
+            #("lartillot", "lartillot"),
             ("ibt", "ibt"),
             #("ibt_off_auto", "ibt-off-auto"),
             #("ibt_off_reg", "ibt-off-reg"),
@@ -312,7 +313,7 @@ def main():
             #("qm_default_median", "qm_default_median"),
             #("qm_default_mode", "qm_default_mode"),
             ("scheirer", "scheirer"),
-            ("vamp_fixed", "fixed_tempo"),
+            #("vamp_fixed", "fixed_tempo"),
         ]
     if DEBUG_MCNEMAR:
         print "#n\ta\tb\tc\td\tp"
