@@ -1014,6 +1014,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // this series of two filters a Butterworth filter.
 
 #if !( FIR_OR_IIR_FILTER )
+   mrs_realvec bcoeffs(1,3);
+   mrs_realvec acoeffs(1,3);
    // filter coefficients for forward/backward filtering
    //    now a foward-only filter.
    // python:
@@ -1031,7 +1033,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    onset_strength->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 #endif
-#if !( FIR_OR_IIR_FILTER )
+#if FIR_OR_IIR_FILTER
    mrs_realvec bcoeffs(1,5);
    mrs_realvec acoeffs(1,5);
     // 4th order
