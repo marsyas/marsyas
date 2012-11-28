@@ -163,7 +163,7 @@ def write_csv(filename, collections, dats, field):
                     c = '-' if a[7] == 1 else '+'
                 elif field == 4:
                     p = a[6]
-                    c = '-' if a[7] == 1 else '+'
+                    c = '-' if a[8] == 1 else '+'
                 sig = ""
                 if p < 1e-3:
                     sig = c*3
@@ -186,12 +186,13 @@ def format_header(text):
     elif text == 'ibt_off_reg':
         text = "ibt_og"
     elif text == 'qm_default_mean':
-        text = "qm_me"
+        text = "qm_vamp"
     elif text == 'qm_default_median':
         text = "qm_md"
     elif text == 'qm_default_mode':
         text = "qm_mo"
     text = text.replace("_", "\\_")
+    text = "\\alg{%s}" % text
 
     return text
 
@@ -199,7 +200,7 @@ def write_latex(filename, collections, dats, field):
     out = open(filename, 'w')
     out.write("\\begin{tabular}{l|c|%s}\n" % ('c'*(len(collections))))
     collections_names = [format_header(a[0]) for a in collections]
-    text = "& marsyas& " + " & ".join(collections_names)
+    text = "& \\alg{marsyas} & " + " & ".join(collections_names)
     out.write(text + '\\\\\n')
     out.write('\hline\n')
 

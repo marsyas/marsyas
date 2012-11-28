@@ -1034,24 +1034,30 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 #endif
 #if FIR_OR_IIR_FILTER
-   mrs_realvec bcoeffs(1,5);
-   mrs_realvec acoeffs(1,5);
+   mrs_realvec bcoeffs(1,16);
+   //mrs_realvec acoeffs(1,5);
     // 4th order
    //   import scipy.signal
    //   b, a = scipy.signal.butter(4, 31.0 / (344.53125/2.0))
-   bcoeffs(0) = 0.0033599;
-   bcoeffs(1) = 0.01343958;
-   bcoeffs(2) = 0.02015938;
-   bcoeffs(3) = 0.01343958;
-   bcoeffs(4) = 0.0033599;
-   acoeffs(0) = 1.0;
-   acoeffs(1) = -2.53118588;
-   acoeffs(2) = 2.58085604;
-   acoeffs(3) = -1.21881043;
-   acoeffs(4) = 0.22289861;
-
+   //   b,a = scipy.signal.firwin(8, 30.0 / (344.53125/2.0))
+    bcoeffs(0) = -0.0029464528863230;
+    bcoeffs(1) = -0.0024998672957055;
+    bcoeffs(2) = 0.0018785283452463;
+    bcoeffs(3) = 0.0187142759564530;
+    bcoeffs(4) = 0.0532726504053264;
+    bcoeffs(5) = 0.1016022544973969;
+    bcoeffs(6) = 0.1498343307695308;
+    bcoeffs(7) = 0.1801442802080749;
+    bcoeffs(8) = 0.1801442802080749;
+    bcoeffs(9) = 0.1498343307695309;
+    bcoeffs(10) = 0.1016022544973970;
+    bcoeffs(11) = 0.0532726504053265;
+    bcoeffs(12) = 0.0187142759564530;
+    bcoeffs(13) = 0.0018785283452463;
+    bcoeffs(14) = -0.0024998672957055;
+    bcoeffs(15) = -0.0029464528863230;
    fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
-   fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
+   //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 #endif
 
 
@@ -1354,7 +1360,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 				
 				
 				   
-				    if (tempos(i) < 68.5)
+				    //if (tempos(i) < 68.5)
+				    if (tempos(i) < 68)
 			 		   heuristic_tempo = 2 * tempos(i);
 			   }
 		   }
