@@ -88,7 +88,7 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
   }
   
 
-  out.setval(0.0);
+  //out.setval(0.0);
   
   mrs_natural bin=0;
   mrs_real amp;
