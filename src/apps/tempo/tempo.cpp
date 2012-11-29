@@ -1078,7 +1078,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    // beat histogram parameters
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 8.0);
+   tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 4.0);
    tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
    tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
 
