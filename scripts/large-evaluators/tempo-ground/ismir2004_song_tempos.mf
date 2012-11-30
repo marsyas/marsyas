@@ -1,0 +1,465 @@
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/01-Dancing Queen.wav	101.010084
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/02-Knowing Me, Knowing You.wav	105.755105
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/03-Take A Chance On Me.wav	107.142857
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/04-Mamma Mia.wav	136.617092
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/05-Lay All Your Love On Me.wav	133.636421
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/06-Super Trouper.wav	116.763048
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/07-I Have A Dream.wav	103.448276
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/08-The Winner Takes It All.wav	122.199593
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/09-Money, Money, Money.wav	120
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/10-S. O. S.wav	122.44898
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/11-Chiquitita.wav	87
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/12-Fernando.wav	101.35136
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/13-Voulez Vous.wav	127.659493
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/14-Gimme! Gimme! Gimme! (A Man After Midnight).wav	120
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/15-Does Your Mother Know.wav	136.363636
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/16-One Of Us.wav	165.169133
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/17-The Name Of The Game.wav	152.824308
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Abba/Gold - Greatest Hits/20 sec/19-Waterloo.wav	146.341463
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alan_Parsons_Project/Tales_Of_Mystery_And_Imagination/20sec/01-A_Dream_Within_A_Dream.wav	86
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alan_Parsons_Project/Tales_Of_Mystery_And_Imagination/20sec/02-The_Raven.wav	85
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alan_Parsons_Project/Tales_Of_Mystery_And_Imagination/20sec/03-The_Tell-tale_Heart.wav	63
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alan_Parsons_Project/Tales_Of_Mystery_And_Imagination/20sec/04-The_Cask_Of_Amontillado.wav	39
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alan_Parsons_Project/Tales_Of_Mystery_And_Imagination/20sec/05-_The_System_Of__Doctor_Tarr_And_Professor_Fether.wav	85
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alan_Parsons_Project/Tales_Of_Mystery_And_Imagination/20sec/07-The_Fall_Of_The_House_Of_Usher__II__Arrival.wav	76
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alan_Parsons_Project/Tales_Of_Mystery_And_Imagination/20sec/09-The_Fall_Of_The_House_Of_Usher__IV__Pavane.wav	83
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alan_Parsons_Project/Tales_Of_Mystery_And_Imagination/20sec/11-To_One_In_Paradise.wav	77
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alirio Diaz/The Art of Spanish Guitar/20 sec/01-Tarrega_  Recuerdos de la Alhambra.wav	88
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alirio Diaz/The Art of Spanish Guitar/20 sec/02-Lauro_  Dos Valses Venezolanos - Uno.wav	68
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alirio Diaz/The Art of Spanish Guitar/20 sec/04-Sojo_  Guaso.wav	55
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Alirio Diaz/The Art of Spanish Guitar/20 sec/05-Sojo_  Cancion.wav	66
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/actium.wav	126
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/ageispolis.wav	102
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/delphium.wav	119
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/green_calx.wav	117
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/hedphelym.wav	125
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/heliosphan.wav	132
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/ptolemy.wav	117
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/pulsewidth.wav	60
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/schottkey_7th_path.wav	134
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/we_are_the_music_makers.wav	103
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/aphex_twin/selected_ambient_works_8592/20sec/xtal.wav	114
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/01-Assassin.wav	78.438683
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/02-Change.wav	161.538493
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/03-Black_White.wav	80.083928
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/04-Buzzing.wav	85.579022
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/05-Free_Satpal_Ram.wav	105.874359
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/06-Modern_Apprentice.wav	77.168671
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/07-Operation_Eagle_Lie.wav	81.996225
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/08-Hypocrite.wav	74
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/09-Naxalite.wav	83.291364
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/10-Loot.wav	106.620626
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/11-Dub_Mentality.wav	87.047758
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/12-Culture_Move.wav	83
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Asian_Dub_Foundation/R.A.F.I/20sec/13-Real_Areas_For_Investigation.wav	52.029585
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/01-Foil.wav	124
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/02-Montreal.wav	120
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/03-Silverside.wav	100.104927
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/04-Slip.wav	70
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/05-Glitch.wav	150
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/06-Piezo.wav	143.662302
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/08-Further.wav	110
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/10-Nil.wav	100.367479
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Autechre/Amber/20sec/11-Teartear.wav	75
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/01-Sintonia_del_refugio_atomico.wav	161
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/02-Nuclear__si__por_supuesto_.wav	77.640535
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/03-El_retorno_de_Godzilla.wav	97.928726
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/04-Varsovia_en_llamas.wav	157.370445
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/05-Programa_en_espiral.wav	184.908764
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/06-La_persecucion.wav	90
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/07-Telepatia.wav	124.264587
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/08-El_ultimo_asalto_a_la_Bastilla.wav	87.924597
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/09-Brigada_de_demolicion.wav	82.655438
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/10-Ondina.wav	75.94806
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/11-La_television_es_nutritiva.wav	89
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/12-Cita_en_el_asteroide_Eden.wav	117.482468
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/13-Obsesion.wav	77
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/14-Sintonia_de_la_moda_estandarizada.wav	115
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/15-El_laberinto_del_nuevo_Minotauro.wav	95.116791
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/16-Kraken.wav	96.875726
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/17-Selector_de_frecuencias.wav	79
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/18-La_cicatriz_en_la_fabrica_roja.wav	120.117763
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Aviador_Dro/Primer_Aliento/20sec/19-El_nacimiento_de_la_industria.wav	150
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/20 sec/Bach - BWV 639 - Ich ruf' zu dir, Herr Jesu Christ.wav	65.217391
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/20 sec/Bach - Cello suite 1 G - 01 Prelude.wav	106.19469
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/20 sec/Bach - Cello suite 1 G - 03 Courante.wav	97
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/20 sec/Bach - Cello suite 2 d - 01 Prelude.wav	64.308682
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/BACH WTC/01-Prelude and Fugue No. 1 in C major, BWV 870 - 1. Praeludium.wav	96
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/BACH WTC/02-Prelude and Fugue No. 1 in C major, BWV 870 - 2. Fuga.wav	98
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/BACH WTC/03-Prelude and Fugue No. 2 in C minor, BWV 871 - 1. Praeludium.wav	118
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/BACH WTC/04-Prelude and Fugue No. 2 in C minor, BWV 871 - 2. Fuga.wav	85
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/BACH WTC/05-Prelude and Fugue No. 3 in C-sharp major, BWV 872 - 1. Praeludium.wav	81
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach/BACH WTC/06-Prelude and Fugue No. 3 in C-sharp major, BWV 872 - 2. Fuga.wav	84
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/02-Toccata u. Fuge d-moll BWV 565 - II_ Fuge.wav	81
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/03-Praludium u. Fuge f-moll BWV 534 - I_ Praludium.wav	105
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/04-Praludium u. Fuge f-moll BWV 534 - II_ Fuge.wav	53
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/06-Fantasie u. Fuge g-moll BWV 542 - II_ Fuge.wav	68.259382
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/08-Toccata, Adagio u. Fuge C-dur BWV 564 - II_ Adagio.wav	56
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/09-Toccata, Adagio u. Fuge C-dur BWV 564 - III_ Fuge.wav	85.714273
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/10-Triosonate Nr. 1 Es-Dur BWV 525 - I_ (Allegro).wav	76
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/11-Triosonate Nr. 1 Es-Dur BWV 525 - II_ Adagio.wav	88
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bach - Walcha/DGG 419 047-2/20sec/12-Triosonate Nr. 1 Es-Dur BWV 525 - III_ Allegro.wav	90
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/01-Samba_da_Bencao.wav	81
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/02-August_Day_Song.wav	104
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/04-Sem_Contencao.wav	228.155881
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/05-Mais_Feliz.wav	84
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/06-Alguem.wav	65
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/07-So_Nice__Summer_Samba_.wav	57
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/08-Lonely.wav	87.470328
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/09-Bananeira.wav	102.009537
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/10-Samba_e_Amor.wav	57
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bebel_Gilberto/Tanto_Tempo/20sec/11-Close_Your_Eyes.wav	104
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/01-The_Miraculous_Mandarin___1.1__Allegro___1.2__Curtain.wav	101
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/02-The_Miraculous_Mandarin___2__1st_Decoy_Game.wav	80
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/03-The_Miraculous_Mandarin___3__2nd_Decoy_Game.wav	80.050325
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/05-The_Miraculous_Mandarin___5.1__Maestoso___5.2__Allegro.wav	83.863338
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/06-The_Miraculous_Mandarin___6.1__Sempre_vivo___6.2__Adagio.wav	72
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/07-The_Miraculous_Mandarin___7.1__Agitato___7.2__Molto_moderato.wav	48
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/09-Music_for_Strings__Percussion_and_Celesta__I__Andante_tranquillo.wav	104
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bela_Bartok/The_Miraculous_Mandarin_._Music_For_Strings__Percussion_and_Celesta/20sec/11-Music_for_Strings__Percussion_and_Celesta__III__Adagio.wav	101.437033
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/01-Introduction__Part_1-_The_adoration_of_the_earth_.wav	53.472717
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/02-The_augurs_of_spring.wav	107
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/04-Spring_round_dances.wav	59.543105
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/05-Games_of_the_rival_tribes.wav	78.947815
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/06-Procession_of_the_wise_elder.wav	75.824444
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/08-Dance_of_the_earth.wav	82.050699
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/10-Mystical_circles_of_the_young_girls.wav	50
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/11-Glorfication_of_the_chosen_victim.wav	62
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/12-Summoning_of_the_ancestors.wav	95
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/14-Sacrifical_dance-_the_chosen_victim.wav	127.793513
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/15-Petrouchka__scene_1_-_The_shrovetide_fair.wav	73.84789
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/16-Legerdemain_scene-_Russian_danse.wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/17-Scene_2-_Petrushka_s_room.wav	83.524424
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/19-Waltz__ballerina_and_the_moor.wav	23
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/20-Scene_4-_The_Shrovetie_fair__toward_evening_.wav	93
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/21-Danse_of_the_nursemaids.wav	59
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/22-The_bear_and_the_peasant.wav	70
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/23-The_jovial_merchant_with_two_gypsy_girls.wav	77.334267
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/24-Danse_of_the_coachmen_and_grooms.wav	116
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bernstein_conducts_Stravinsky/20sec/25-The_masqueraders.wav	82
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Billie Holiday CD1/20 sec/01-Summertime.wav	100.72753
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Billie Holiday CD1/20 sec/02-Carelessly.wav	107
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Billie Holiday CD1/20 sec/06-Who loves you.wav	84
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Billie Holiday CD1/20 sec/09-Let's call a heart to heart.wav	104
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Billie Holiday CD1/20 sec/14-Loverman.wav	66
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/01-Venus_As_A_Boy.wav	68.253352
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/02-Hyperballad.wav	135
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/03-You_ve_Been_Flirting_Again.wav	107
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/04-Isobel.wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/05-Joga.wav	72.463764
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/06-Unravel.wav	52
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/07-Bachelorette.wav	97.179369
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/08-All_Is_Full_Of_Love.wav	75.982824
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/09-Scatterheart.wav	99
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/10-I_ve_Seen_It_All.wav	75.236973
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/11-Pagan_Poetry.wav	66
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Bjork/Family_Tree_-_Greatest_Hits_As_Chosen_By_Bjork/20sec/12-It_s_Not_Up_To_You.wav	80
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/01-24-24.wav	104.155455
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/02-In_the_Shadows.wav	88.657015
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/03-Talking_Time.wav	107.991633
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/04-Animation.wav	123
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/05-Over_and_Over.wav	148.251924
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/06-Just_Fascination.wav	105
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/07-Why_Kill_Time__When_You_Can_Kill_Yourself_.wav	75
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/08-Haiti.wav	85
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/09-Crackdown.wav	116
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/10-Diskono.wav	148
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Cabaret_Voltaire/The_Crackdown/20sec/13-Moscow.wav	58
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/02-Pandeiro-Deiro.wav	132.651006
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/03-Covered_Saints.wav	79
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/04-Cumplicidade_de_Armario.wav	84.535689
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/05-Argila.wav	79.882658
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/06-Tour.wav	101.875425
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/07-Bog_La_Bag.wav	112.618034
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/08-O_Bode.wav	106
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/09-Comunidade-Lobos.wav	78
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/10-Frases_Ventias.wav	72.365
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/11-Quixabeira.wav	134.831885
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/12-Seo_Ze.wav	127
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/13-Mares_de_Ti.wav	74.960327
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/14-Zanza.wav	90.013315
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/15-A_Namorada.wav	127
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Carlinhos_Brown/Alfagamabetizado/20sec/16-Vanju_Concessa.wav	107
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/charles_mingus/blues__roots/20sec/cryin_blues.wav	69
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/charles_mingus/blues__roots/20sec/es_flat_ahs_flat_too.wav	151.419195
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/charles_mingus/blues__roots/20sec/moanin.wav	111
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/charles_mingus/blues__roots/20sec/my_jelly_roll_soul.wav	61.846129
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/charles_mingus/blues__roots/20sec/tensions.wav	112
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/charles_mingus/blues__roots/20sec/wednesday_night_prayer_meeting.wav	132
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Classic/20 sec/Borodin - String quartet 2 D 01.wav	75.14088
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Classic/20 sec/Pergolesi - Stabat Mater 01.wav	44.94382
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Classic/20 sec/Pergolesi - Stabat Mater 02.wav	37.974684
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Classic/20 sec/Track 01.wav	76
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Classic/20 sec/Track 04.wav	91
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Classic/20 sec/Vivaldi - Stabat Mater 01.wav	48.999592
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Classic/20 sec/Vivaldi - Stabat Mater 09.wav	48.899759
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/01-Quem me Ve Sorrindo_Sei Chorar_Alegria.wav	96.774194
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/02-Alvorada_Ao Amanhecer.wav	96
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/03-Sala de Recepcao.wav	123.966942
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/05-Fiz por Voce o que Pude.wav	141.50296
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/06-O Inverno do Meu Tempo.wav	120
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/07-Tive Sim.wav	101.694915
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/08-Amor Proibido.wav	142.687294
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/11-O Que e Feito de Voce_.wav	89
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/12-Divina Dama.wav	93.167716
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/13-Velho Estacio.wav	105.913495
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/14-Ciume Doentio.wav	96
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/16-Sofreguidao.wav	93
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/17-A Mesma Historia.wav	113
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/18-Peito Vazio.wav	105
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/19-Injuria_O Sol Nascera.wav	104
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Elton Medeiros, Nelson Sargento & Galo Preto/So Cartola/20 sec/20-As Rosas Nao Falam.wav	105.263186
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/01-AudioTrack 01.wav	101.010084
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/02-AudioTrack 02.wav	118
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/03-AudioTrack 03.wav	51.724138
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/04-AudioTrack 04.wav	55.555556
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/05-AudioTrack 05.wav	96.774201
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/07-AudioTrack 07.wav	66.334984
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/08-AudioTrack 08.wav	62.926062
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/09-AudioTrack 09.wav	53.097345
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/10-AudioTrack 10.wav	92
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Fado/20 sec/11-AudioTrack 11.wav	85
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Femi_Kuti/Fight_To_Win/20sec/01-Do_your_best.wav	101.768275
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Femi_Kuti/Fight_To_Win/20sec/02-Walk_on_the_right_side.wav	80
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Femi_Kuti/Fight_To_Win/20sec/03-Traitors_of_Africa.wav	133
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Genesis/Selling_England_By_The_Pound/20sec/01-Dancing_with_the_Moonlit_Knight.wav	80
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Genesis/Selling_England_By_The_Pound/20sec/02-I_Know_What_I_Like__In_Your_Wardrobe_.wav	84
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/01 H mikri Rallou.wav	74.074074
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/07 Pikrodafni.wav	111
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/12 evzwnakia.wav	50
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Asteriadi - Mia giorti.wav	69.364162
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Gkoles - Atimi tyxi.wav	111
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Gkoles - Mou 'fages ta daxtylidia.wav	87
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Gkoles - S' ena apokrimno akrogiali.wav	74
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Gkoles - Zwi mou, farmakw8ikes.wav	72
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Mavili - Afto t' agori.wav	62.620963
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Mpellou - Nyxtwse xwris feggari.wav	63.770182
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Paisa sti vrysi - Velvento.wav	108
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/Perdika(xwris logia).wav	45
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/greek/20 sec/To pasoumi - Smyrni.wav	81
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/01-M. Baumann_ Duo pour guitare et violoncelle, op.62 - 1. Prelude (Lento rubato).wav	68.965517
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/03-3. Berceuse (Lento molto).wav	75
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/04-4. Hommage ade Falla (Allegro).wav	117.647059
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/06-E. Granados_ Intermezzo (de _Goyescas_).wav	242.435605
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/07-H. Villa-lobos_ Bachianas Brasileiras No.5 (Aria).wav	96.774194
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/09-M. de Falla_ 7 chansons populaires espagnoles (extraits) - El pano moruno.wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/11-Nana.wav	102
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/GUITARE+/VOL.3 Musiques pour guitare et violoncelle/20 sec/12-Cancion.wav	63
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/john_coltrane/a_love_supreme/20sec/part_1__acknowledgement.wav	125.131153
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/01-As Can Be.wav	77
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/03-Head (Beach Arab).wav	75
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/04-Big Takeover.wav	140
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/05-Curtains.wav	76
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/06-Running Away Into You.wav	63.058336
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/07-Mascara.wav	60.443815
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/08-Been Insane.wav	84.507042
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/09-Skin Blues.wav	98
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/10-Your Pussy's Glued to a Building on Fire.wav	69
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/11-Blood on My Neck From Success.wav	71
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/12-Ten to Butter Blood Voodoo.wav	88.888902
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/14-Usually Just a T-Shirt_ Untitled 2.wav	82
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/15-Usually Just a T-Shirt_ Untitled 3.wav	136
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/16-Usually Just a T-Shirt_ Untitled 4.wav	122.032239
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/18-Usually Just a T-Shirt_ Untitled 6.wav	88
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/19-Usually Just a T-Shirt_ Untitled 7.wav	155
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/20-Usually Just a T-Shirt_ Untitled 8.wav	135
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/John Frusciante/Niandra LaDes and Usually Just a T-Shirt/20 sec/21-Usually Just a T-Shirt_ Untitled 9.wav	81
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Jose' Merce'/aire/20 sec/01-Aire.wav	71.428571
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Jose' Merce'/aire/20 sec/04-La Vida Sale.wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Jose' Merce'/aire/20 sec/06-Arrengao.wav	163
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Jose' Merce'/aire/20 sec/07-La Alcoba y la mosca.wav	99
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Kocani Orkester/03. Romski Cocek.wav	128
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Kocani Orkester/Kocani Orkestar - Burkan Cocek.wav	93.75
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Kocani Orkester/Trubaci - Nikol.wav	110.261039
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Kocani Orkester/Trubaci - Solo tapan.wav	91.743105
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Manu_Chao/Clandestino_-_esperando_la_ultima_ola/20sec/01-Clandestino.wav	85
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Manu_Chao/Clandestino_-_esperando_la_ultima_ola/20sec/02-Desaparecido.wav	96
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Manu_Chao/Clandestino_-_esperando_la_ultima_ola/20sec/03-Bongo_bong.wav	74.767161
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Manu_Chao/Clandestino_-_esperando_la_ultima_ola/20sec/04-Je_ne_t_aime_plus.wav	75
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Manu_Chao/Clandestino_-_esperando_la_ultima_ola/20sec/05-Mentira.wav	76
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Manu_Chao/Clandestino_-_esperando_la_ultima_ola/20sec/06-Lagrimas_de_oro.wav	96
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/03 Efriksen i gi.wav	75.471698
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/03 Virginouda.wav	58.252427
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/04 H Stamoula.wav	110.817946
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/05 Odysseas.wav	109
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/07 Psevdoixos.wav	107.142857
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/08 Hlios.wav	116.279092
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/08 Kapoios peftei....wav	135
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Anagnwstopoulos - Hr8a ki apopse sta skalopatia sou.wav	72
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Dionysiou - Na eixa to kouragio.wav	93
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Giannakopoulou - Marina.wav	95
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Giannakopoulou - O kipos empaine sti 8alassa.wav	51.054964
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - Filenaditsa mou.wav	97.029577
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - H tsigkouna.wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - Keravnoi ki astropelekia.wav	72
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - Kori paraxaidemeni.wav	90
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - Ksaveriwtissa.wav	98
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - Mortissa ki alanis.wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - O 8ermastis.wav	60
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - O pasatempos.wav	84.908216
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - Peristeriwtissa.wav	71
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - Rimakse to spitiko mas.wav	73
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Gkoles - Xatzikyriakeio.wav	107
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Glykeria - Den les kouventa.wav	59
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Glykeria - Odos Aristotelous.wav	90.064355
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Glykeria - To agalma.wav	62.5
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Kazantzidis - O,ti agapaw egw pe8ainei.wav	66
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ksylouris - Afton ton kosmo ton kalo.wav	58
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ksylouris - Erwtiko tragoudi (Palikarou palikarou).wav	63
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ksylouris - Evale o 8eos simadi.wav	89
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ksylouris - Filentem.wav	61
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ksylouris - Htane mia fora.wav	62
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ksylouris - Pote 8a kanei ksasteria.wav	97
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ksylouris - Xilia myria kymata.wav	53
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Makedonas - Ena deilino.wav	69
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Makedonas - Savvatovrado stin Kaisariani.wav	82
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Marinella - Agapi pou 'gines dikopo maxairi.wav	60
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Marinella - Kane ligaki ypomoni.wav	59.970015
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Marinella - Koita me sta matia.wav	56.49717
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Marinella - Omorfi poli.wav	55.658632
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Marinella - Pes pws m' antamwses.wav	55.658627
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Marinella - Prin to xarama.wav	67
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Marinella - Stalia stalia.wav	56
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mitropanos - 8essaloniki.wav	117.141856
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mitropanos - Brexei sti ftwxogeitonia.wav	70.120572
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mitsias - Apopse f8inopwriase.wav	58
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mosxoliou - Eipa na svisw ta palia.wav	65
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mosxoliou, Gkika - Den klaiw gia twra.wav	56.603774
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mosxoliou, Gkika - Pira ap' to xeri sou nero.wav	88.082536
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mosxoliou - Koimisou palikari.wav	45.696877
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mosxoliou - Ta deilina.wav	52
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mosxoliou - Xwrismos.wav	92.866067
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Anastenazw kai ponw.wav	59.1133
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Antilaloune ta vouna.wav	65.537957
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Apopse kaneis mpam.wav	61.538455
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - De les kouventa.wav	58
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Kane ligaki ypomoni.wav	69.605577
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Kapoio vrady t' oneiro mou.wav	56
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Kardia paraponiara.wav	64.473694
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Ksimerwnei kai vradiazei.wav	99
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Liga psixoula agapis sou gyrevw.wav	41.972719
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Min klais.wav	38
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - O kosmos einai san mpakses.wav	61.791973
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Peftoun tis vroxis oi stales.wav	66.55574
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Prin to xarama monaxos.wav	64.446831
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - To minore tis avgis.wav	36
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - To teleftaio gramma sou.wav	69
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Xwrisame ena deilino.wav	76
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpellou - Zeimpekiko.wav	73
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Aspri mera.wav	83.136335
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Brexei sti ftwxogeitonia.wav	72.463759
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Drapetswna.wav	69.014089
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Eimai aitos xwris ftera.wav	66.894181
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Gwnia gwnia.wav	63
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - H kyra.wav	57.686029
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - H mpalanta tou Antrikou.wav	127.659574
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Kokotas - Stou O8wna ta xronia.wav	54
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Mana mou kai Panagia.wav	58.910162
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Matia vourkwmena.wav	62
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Mia Kyriaki.wav	56.422726
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Paei o kairos.wav	67
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Sta xeria sou megalwsan.wav	62
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Sto perigiali to kryfo.wav	57.142857
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis, Xiwtis - Myrtia.wav	89
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Mpi8ikwtsis - Xrysoprasino fyllo.wav	55
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ninou - Apopse kaneis mpam.wav	74
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ninou,Tsitsanis - Synnefiasmeni Kyriaki.wav	64
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Ntalaras - Ta matoklada sou lampoun.wav	69.364162
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Panou, Dionysiou, Tsitsanis - Axaristi.wav	78.740168
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Poulopoulos - Kamaroula mia stalia.wav	61
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Smokovitis - Mi mou 8ymwneis matia mou.wav	56
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Smokovitis - Prwino tsigaro.wav	54.054054
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/more greek/Vamvakaris - Fragkosyriani.wav	77
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Nina Pastori/Eres luz/20 sec/01-Eres luz (Rumba).wav	106.571936
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Nina Pastori/Eres luz/20 sec/04-Como tu, ninguna (Rumba).wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Nina Pastori/Eres luz/20 sec/07-En una canasta (Rumba-Tango).wav	103
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Nina Pastori/Eres luz/20 sec/12-Genios (Rumba-Cancion).wav	105
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Olivier Chassain/Eventail/20 sec/05-Fandango.wav	79
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Olivier Chassain/Eventail/20 sec/09-Asturias.wav	113
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Olivier Chassain/Eventail/20 sec/10-Prld1.wav	79
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Olivier Chassain/Eventail/20 sec/14-Prld5.wav	43
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/01-AudioTrack 01.wav	71
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/02-AudioTrack 02.wav	61
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/03-AudioTrack 03.wav	64.516129
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/04-AudioTrack 04.wav	63.829787
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/05-AudioTrack 05.wav	101
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/06-AudioTrack 06.wav	65.645514
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/07-AudioTrack 07.wav	89.722819
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/09-AudioTrack 09.wav	53
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/10-AudioTrack 10.wav	81.300824
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/12-AudioTrack 12.wav	56
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/13-AudioTrack 13.wav	50.16722
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/14-AudioTrack 14.wav	62.5
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/15-AudioTrack 15.wav	89
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/16-AudioTrack 16.wav	89.552239
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/17-AudioTrack 17.wav	59.790729
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/18-AudioTrack 18.wav	93.60373
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/19-AudioTrack 19.wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/20-AudioTrack 20.wav	104
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Papakonstantinou/20 sec/21-AudioTrack 21.wav	66.298343
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/01-Arvoredo.wav	83
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/02-Maioria sem Nenhum.wav	87
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/03-14 Anos.wav	95
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/04-Sofreguidao.wav	88
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/05-Momento de Fraqueza.wav	99
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/06-Minha Cofissao.wav	79
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/07-Perfeito Amor.wav	76.923072
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/08-Mascarada.wav	75.235129
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/09-Depois de Tanto Amor.wav	78.947368
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/10-Samba Original.wav	101.180447
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Paulinho da Viola & Elton Medeiros/Samba na Madrugada/20sec/11-Alo Alo.wav	106.571936
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Santana/Persuasion/01-Jingo.wav	122
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Santana/Persuasion/02-El Corazon Manada.wav	119
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Santana/Persuasion/03-La Puesta De Sol.wav	117
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Adalberto (Adalberto Alvarez y su son) - Pura imagen.wav	87
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Adalberto (Adalberto Alvarez y su son) - Sobre tu piel.wav	84.519244
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Afrocuba - A Luisa.wav	108
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Afrocuba - Cambio de Clima.wav	106
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Afrocuba - Mezquinidad.wav	96
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Alejandro (Alex Benson) - Golondrina.wav	90
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Alejandro (Alex Benson) - Tengo una penita.wav	130.088464
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Alfredo - Ahora somos felices.wav	78.269084
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Alfredo - La rumba de Alfredo.wav	110
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Caledonia Blues Band - Burning Heart.wav	132.450331
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Caracas Latin Brothers - El espectaculo.wav	110
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Caracas Latin Brothers - Los hombres tambien lo mueven.wav	131.211698
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Songs/Pastora - Lola.wav	118
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/01-Acalanto.wav	94
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/02-Viver.wav	96.774194
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/03-candeeiro.wav	102
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/04-O passar dos anos.wav	92
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/05-Ja era (Palavra).wav	115
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/06-Peito sangrando.wav	86
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/07-A borboleta e o passarinho.wav	111
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/08-Pedro e Tereza.wav	98
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/09-Um calo de estimacao.wav	94
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/10-Sorri.wav	103.806237
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/11-Quantas lagrimas.wav	100
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/12-Lavoura.wav	80
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/13-Ana agua do rio_A vida me fez assim.wav	98.360656
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/14-Embala eu_Samba de roda.wav	98.360656
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Teresa Cristina/A vida me fez assim/20sec/15-Portela.wav	95
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Tomatito/Tomatito-01.Barrio negro.wav	120
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Tomatito/Tomatito-02.La voz del tiempo.wav	103
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Tomatito/Tomatito-04.Armonias del Romane.wav	116.279047
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Tomatito/Tomatito-05.A mi tao 'El Nino Miguel'.wav	134
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Tomatito/Tomatito-06.Caminillo viejo.wav	93.198353
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Vangelis/Albedo_0.39/20sec/01-Pulstar.wav	123
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Vangelis/Albedo_0.39/20sec/04-Main_Sequence.wav	105
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Vangelis/Albedo_0.39/20sec/06-Alpha.wav	85
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/01-AudioTrack 01.wav	101
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/02-AudioTrack 02.wav	75
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/03-AudioTrack 03.wav	140
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/05-AudioTrack 05.wav	66
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/06-AudioTrack 06.wav	71
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/08-AudioTrack 08.wav	130
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/09-AudioTrack 09.wav	73
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/10-AudioTrack 10.wav	65
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/11-AudioTrack 11.wav	91
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/12-AudioTrack 12.wav	51
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/13-AudioTrack 13.wav	60
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/16-AudioTrack 15.wav	107
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/16-AudioTrack 16.wav	98
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/17-AudioTrack 17.wav	63
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/19-AudioTrack 19.wav	56.980052
+/home/gperciva/src/audio-research/tempoDataISMIR2004/Songs_Data_annotations_Results/Xatzidakis/20 sec/22-AudioTrack 22.wav	53
