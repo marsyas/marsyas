@@ -6,6 +6,7 @@ import sys
 import subprocess
 
 import scipy.stats
+import numpy
 
 #DEBUG_MCNEMAR = True
 DEBUG_MCNEMAR = False
@@ -196,19 +197,42 @@ def format_header(text):
 
     return text
 
+def format_row(text):
+    # icky, but screw it
+    if text == "acm_mirum":
+        text = "ACM MIRUM"
+    elif text == "ismir2004_song":
+        text = "ISMIR2004_SONG"
+    elif text == "ballroom":
+        text = "BALLROOM"
+    elif text == "hains":
+        text = "HAINSWORTH"
+    elif text == "genres":
+        text = "GTZAN GENRES"
+    return text
+
 def write_latex(filename, collections, dats, field):
     out = open(filename, 'w')
-    out.write("\\begin{tabular}{l|c|%s}\n" % ('c'*(len(collections))))
+    out.write("\\begin{tabular}{lc||c|%s}\n" % ('c'*(len(collections))))
     collections_names = [format_header(a[0]) for a in collections]
-    text = "& \\alg{marsyas} & " + " & ".join(collections_names)
+    text = "& files & \\alg{marsyas} & " + " & ".join(collections_names)
     out.write(text + '\\\\\n')
     out.write('\hline\n')
 
     for key, value in iter(sorted(dats.items(), key=sort_names)):
         if key == 'means':
             out.write('\hline\n')
-        text = key.replace("_", "\\_")
+        text = format_row(key.replace("_", "\\_"))
         text = text.replace("_tempos", "")
+
+        if value[0][0] != "means" and value[0][0] != "totals":
+            text += " & %i" % (value[0][0])
+        else:
+            if value[0][0] == "totals":
+                text += " & %i" % (1410+465+698+222+1000)
+            else:
+                text += " & %.1f" % numpy.mean([1410,465,698,222,1000])
+
         maxvalue = -1
         for a in value:
             if len(a) == 10:
