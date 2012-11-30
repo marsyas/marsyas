@@ -202,13 +202,17 @@ def format_row(text):
     if text == "acm_mirum":
         text = "ACM MIRUM"
     elif text == "ismir2004_song":
-        text = "ISMIR2004_SONG"
+        text = "ISMIR04\\_SONG"
     elif text == "ballroom":
         text = "BALLROOM"
     elif text == "hains":
         text = "HAINSWORTH"
     elif text == "genres":
         text = "GTZAN GENRES"
+    elif text == "means":
+        text = "Dataset average"
+    elif text == "total":
+        text = "Total average"
     return text
 
 def write_latex(filename, collections, dats, field):
@@ -222,8 +226,9 @@ def write_latex(filename, collections, dats, field):
     for key, value in iter(sorted(dats.items(), key=sort_names)):
         if key == 'means':
             out.write('\hline\n')
-        text = format_row(key.replace("_", "\\_"))
-        text = text.replace("_tempos", "")
+        #text = key.replace("_", "\\_")
+        text = key.replace("_tempos", "")
+        text = format_row(text)
 
         if value[0][0] != "means" and value[0][0] != "totals":
             text += " & %i" % (value[0][0])
@@ -231,7 +236,7 @@ def write_latex(filename, collections, dats, field):
             if value[0][0] == "totals":
                 text += " & %i" % (1410+465+698+222+1000)
             else:
-                text += " & %.1f" % numpy.mean([1410,465,698,222,1000])
+                text += " & %i" % numpy.mean([1410,465,698,222,1000])
 
         maxvalue = -1
         for a in value:

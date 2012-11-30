@@ -1188,7 +1188,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	}
 	
 
-	if (num_ticks - ticks < 1)
+	if (num_ticks - ticks < 2)
 	  {
 	    break;
 	  }
