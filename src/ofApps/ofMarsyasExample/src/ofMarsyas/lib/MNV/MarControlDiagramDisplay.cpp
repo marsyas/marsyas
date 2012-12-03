@@ -11,7 +11,6 @@
 #include "MarControlDiagramNode.h"
 #include "GraphicalEnvironment.h"
 
-
 using namespace Marsyas; 
 
 MarControlDiagramDisplay::MarControlDiagramDisplay(MarSystemWidget* msysw, GraphicalEnvironment* env){

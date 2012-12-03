@@ -15,7 +15,6 @@
 #include "MarSystemWidget.h"
 
 
-
 namespace Marsyas
 {
     class GraphicalEnvironment;

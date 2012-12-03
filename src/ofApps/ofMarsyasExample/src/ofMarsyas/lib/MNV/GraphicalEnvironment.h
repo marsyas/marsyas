@@ -35,9 +35,6 @@ namespace Marsyas{
         
     public:
         
-        GraphicalEnvironment();
-        ~GraphicalEnvironment();
-        
         MarSystemWidget* msysw_;
         bool isLoaded();
         
@@ -69,7 +66,8 @@ namespace Marsyas{
         //Probing
         ProbingManager* probe_;
         
-        
+        GraphicalEnvironment();
+        ~GraphicalEnvironment();
         
         
         void setupForMarSystemWidget(MarSystemWidget* msysw);
