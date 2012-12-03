@@ -12,6 +12,15 @@
 
 
 ofMarsyas::ofMarsyas(){
+    setup();
+}
+
+ofMarsyas::~ofMarsyas(){
+    
+}
+
+
+void ofMarsyas::setup(){
     //**********************************************************
     //GraphicalEnvironment creation 
     graphicalEnv_ = new Marsyas::GraphicalEnvironment();
@@ -21,19 +30,15 @@ ofMarsyas::ofMarsyas(){
     graphicalEnv_->setMarSystemThread(msysThread_);
 }
 
-ofMarsyas::~ofMarsyas(){
-    
-}
-
 bool ofMarsyas::createFromFile(std::string mpl){
     ofDirectory dir;
     dir.listDir("../data");
     string path = dir.getAbsolutePath();
-    cout<<endl<<path;
+    //cout<<endl<<path;
     string fileName = path + "/" + mpl;
-    cout<<endl<<fileName;
+    //cout<<endl<<fileName;
     
-    network_ = mng_.loadFromFile(fileName); //FIXME: hardcoded .mpl input
+    network_ = mng_.loadFromFile(fileName);
     
     if (!network_)
     {
@@ -50,8 +55,37 @@ bool ofMarsyas::createFromFile(std::string mpl){
 }
 
 
+bool ofMarsyas::createFromPointer(Marsyas::MarSystem* msys){
+    if(msys == NULL){
+        return false;
+    }
+    network_ = msys;
+    wmng_ = new Marsyas::MarSystemWidgetManager(graphicalEnv_);
+    networkWidget_ = wmng_->setupWidgets(network_);
+    graphicalEnv_->setupForMarSystemWidget(networkWidget_);
+    msysThread_->loadMarSystem(network_);
+    
+    return true;
+}
+
 void ofMarsyas::start(){
+    checkInitSoundCard(network_);
     msysThread_->start();
+    
+}
+
+void ofMarsyas::checkInitSoundCard(Marsyas::MarSystem* msysTest){
+    if(msysTest->getType() == "AudioSink"){
+        msysTest->updControl("mrs_bool/initAudio", true);
+    }
+    else {
+        std::vector <Marsyas::MarSystem*> children;
+        children = msysTest->getChildren();
+        for(int i=0; i<children.size(); i++){
+            checkInitSoundCard(children[i]);
+        }
+    }
+    
 }
 
 
@@ -59,7 +93,6 @@ void ofMarsyas::update(){
     graphicalEnv_->update();
 }
 
-//--------------------------------------------------------------
 void ofMarsyas::draw(){
     if(graphicalEnv_->isLoaded()){
         graphicalEnv_->draw();
@@ -67,7 +100,30 @@ void ofMarsyas::draw(){
 }
 
 
+Marsyas::MarSystem* ofMarsyas::getMarSystem(){
+    return network_;
+}
 
+
+bool ofMarsyas::saveToFile(std::string name){
+    ofDirectory dir;
+    dir.listDir("../data");
+    string path = dir.getAbsolutePath();
+    //cout<<endl<<path;
+    string fileName = path + "/" + name;
+    cout<<endl<<fileName;
+    ofstream oss;
+    oss.open(fileName.c_str());
+    oss << *network_;
+    oss.close();
+    if(oss.good()){
+        return true;
+    }
+    else {
+        cout<<endl<<"save operation failed !";
+        return false;
+    }
+}
 
 //--------------------------------------------------------------
 void ofMarsyas::keyPressed(int key){

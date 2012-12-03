@@ -27,7 +27,9 @@ public:
     ~ofMarsyas();
     
     bool createFromFile(std::string mpl);
+    bool createFromPointer(Marsyas::MarSystem* msys);
     
+    void setup();
     void update();
     void draw();
     
@@ -41,6 +43,15 @@ public:
     
     
     void start();
+    void checkInitSoundCard(Marsyas::MarSystem* msysTest);
+    
+    
+    //getters
+    Marsyas::MarSystem* getMarSystem();
+    
+    
+    //utils
+    bool saveToFile(std::string name);
     
     
 protected:
