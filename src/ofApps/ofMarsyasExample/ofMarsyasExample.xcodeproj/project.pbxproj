@@ -1,0 +1,1546 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A777C94916690F7E00F889A7 /* AccumulatorWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C90816690F7E00F889A7 /* AccumulatorWidget.cpp */; };
+		A777C94A16690F7E00F889A7 /* BufferUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C90A16690F7E00F889A7 /* BufferUtils.cpp */; };
+		A777C94B16690F7E00F889A7 /* CascadeWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C90C16690F7E00F889A7 /* CascadeWidget.cpp */; };
+		A777C94C16690F7E00F889A7 /* DrawingUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C90E16690F7E00F889A7 /* DrawingUtils.cpp */; };
+		A777C94D16690F7E00F889A7 /* FaninWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C91016690F7E00F889A7 /* FaninWidget.cpp */; };
+		A777C94E16690F7E00F889A7 /* FanOutInWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C91216690F7E00F889A7 /* FanOutInWidget.cpp */; };
+		A777C94F16690F7E00F889A7 /* FanoutWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C91416690F7E00F889A7 /* FanoutWidget.cpp */; };
+		A777C95016690F7E00F889A7 /* FlowThruWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C91616690F7E00F889A7 /* FlowThruWidget.cpp */; };
+		A777C95116690F7E00F889A7 /* globalVars.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C91816690F7E00F889A7 /* globalVars.cpp */; };
+		A777C95216690F7E00F889A7 /* GraphicalEnvironment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C91A16690F7E00F889A7 /* GraphicalEnvironment.cpp */; };
+		A777C95316690F7E00F889A7 /* MarControlDiagramDisplay.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C91D16690F7E00F889A7 /* MarControlDiagramDisplay.cpp */; };
+		A777C95416690F7E00F889A7 /* MarControlDiagramNode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C91F16690F7E00F889A7 /* MarControlDiagramNode.cpp */; };
+		A777C95516690F7E00F889A7 /* MarControlLinkWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C92116690F7E00F889A7 /* MarControlLinkWidget.cpp */; };
+		A777C95616690F7E00F889A7 /* MarControlWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C92316690F7E00F889A7 /* MarControlWidget.cpp */; };
+		A777C95716690F7E00F889A7 /* MarSystemNodeSymbol.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C92516690F7E00F889A7 /* MarSystemNodeSymbol.cpp */; };
+		A777C95816690F7E00F889A7 /* MarSystemThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C92716690F7E00F889A7 /* MarSystemThread.cpp */; };
+		A777C95916690F7E00F889A7 /* MarSystemWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C92916690F7E00F889A7 /* MarSystemWidget.cpp */; };
+		A777C95A16690F7E00F889A7 /* MarSystemWidgetManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C92B16690F7E00F889A7 /* MarSystemWidgetManager.cpp */; };
+		A777C95B16690F7E00F889A7 /* maximizeButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C92D16690F7E00F889A7 /* maximizeButton.cpp */; };
+		A777C95C16690F7E00F889A7 /* MiniViewWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C92F16690F7E00F889A7 /* MiniViewWidget.cpp */; };
+		A777C95D16690F7E00F889A7 /* ParallelWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C93116690F7E00F889A7 /* ParallelWidget.cpp */; };
+		A777C95E16690F7E00F889A7 /* ProbingManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C93316690F7E00F889A7 /* ProbingManager.cpp */; };
+		A777C95F16690F7E00F889A7 /* ProcessedDataWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C93516690F7E00F889A7 /* ProcessedDataWidget.cpp */; };
+		A777C96016690F7E00F889A7 /* SelfSimilarityMatrixWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C93716690F7E00F889A7 /* SelfSimilarityMatrixWidget.cpp */; };
+		A777C96116690F7E00F889A7 /* SeriesWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C93916690F7E00F889A7 /* SeriesWidget.cpp */; };
+		A777C96216690F7E00F889A7 /* ShredderWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C93B16690F7E00F889A7 /* ShredderWidget.cpp */; };
+		A777C96316690F7E00F889A7 /* SilenceRemoveWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C93D16690F7E00F889A7 /* SilenceRemoveWidget.cpp */; };
+		A777C96416690F7E00F889A7 /* SimilarityMatrixWidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C93F16690F7E00F889A7 /* SimilarityMatrixWidget.cpp */; };
+		A777C96516690F7E00F889A7 /* toggleButton.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C94116690F7E00F889A7 /* toggleButton.cpp */; };
+		A777C96616690F7E00F889A7 /* utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C94316690F7E00F889A7 /* utils.cpp */; };
+		A777C96716690F7E00F889A7 /* Widget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C94516690F7E00F889A7 /* Widget.cpp */; };
+		A777C96F1669117100F889A7 /* ofMarsyas.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A777C96E1669117100F889A7 /* ofMarsyas.cpp */; };
+		A7F5A74E166CCEE40039BF0F /* libmarsyas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A7F5A74D166CCEE40039BF0F /* libmarsyas.a */; };
+		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
+		E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E4328148138ABC890047C5CB /* openFrameworksDebug.a */; };
+		E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9710E8CC7DD009D7055 /* AGL.framework */; };
+		E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */; };
+		E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9730E8CC7DD009D7055 /* AudioToolbox.framework */; };
+		E45BE97E0E8CC7DD009D7055 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9740E8CC7DD009D7055 /* Carbon.framework */; };
+		E45BE97F0E8CC7DD009D7055 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9750E8CC7DD009D7055 /* CoreAudio.framework */; };
+		E45BE9800E8CC7DD009D7055 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9760E8CC7DD009D7055 /* CoreFoundation.framework */; };
+		E45BE9810E8CC7DD009D7055 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9770E8CC7DD009D7055 /* CoreServices.framework */; };
+		E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE9790E8CC7DD009D7055 /* OpenGL.framework */; };
+		E45BE9840E8CC7DD009D7055 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */; };
+		E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1D0A3A1BDC003C02F2 /* main.cpp */; };
+		E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */; };
+		E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424410CC5A17004149E2 /* AppKit.framework */; };
+		E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424510CC5A17004149E2 /* Cocoa.framework */; };
+		E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4C2424610CC5A17004149E2 /* IOKit.framework */; };
+		E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; };
+		E7E077E515D3B63C0020DFD4 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */; };
+		E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7E077E715D3B6510020DFD4 /* QTKit.framework */; };
+		E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7F985F515E0DE99003869B5 /* Accelerate.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E4328147138ABC890047C5CB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E4B27C1510CBEB8E00536013;
+			remoteInfo = openFrameworks;
+		};
+		E4EEB9AB138B136A00A80321 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = E4B27C1410CBEB8E00536013;
+			remoteInfo = openFrameworks;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E4C2427710CC5ABF004149E2 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A777C90816690F7E00F889A7 /* AccumulatorWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AccumulatorWidget.cpp; sourceTree = "<group>"; };
+		A777C90916690F7E00F889A7 /* AccumulatorWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccumulatorWidget.h; sourceTree = "<group>"; };
+		A777C90A16690F7E00F889A7 /* BufferUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BufferUtils.cpp; sourceTree = "<group>"; };
+		A777C90B16690F7E00F889A7 /* BufferUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BufferUtils.h; sourceTree = "<group>"; };
+		A777C90C16690F7E00F889A7 /* CascadeWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CascadeWidget.cpp; sourceTree = "<group>"; };
+		A777C90D16690F7E00F889A7 /* CascadeWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CascadeWidget.h; sourceTree = "<group>"; };
+		A777C90E16690F7E00F889A7 /* DrawingUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DrawingUtils.cpp; sourceTree = "<group>"; };
+		A777C90F16690F7E00F889A7 /* DrawingUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingUtils.h; sourceTree = "<group>"; };
+		A777C91016690F7E00F889A7 /* FaninWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FaninWidget.cpp; sourceTree = "<group>"; };
+		A777C91116690F7E00F889A7 /* FaninWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FaninWidget.h; sourceTree = "<group>"; };
+		A777C91216690F7E00F889A7 /* FanOutInWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FanOutInWidget.cpp; sourceTree = "<group>"; };
+		A777C91316690F7E00F889A7 /* FanOutInWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FanOutInWidget.h; sourceTree = "<group>"; };
+		A777C91416690F7E00F889A7 /* FanoutWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FanoutWidget.cpp; sourceTree = "<group>"; };
+		A777C91516690F7E00F889A7 /* FanoutWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FanoutWidget.h; sourceTree = "<group>"; };
+		A777C91616690F7E00F889A7 /* FlowThruWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FlowThruWidget.cpp; sourceTree = "<group>"; };
+		A777C91716690F7E00F889A7 /* FlowThruWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlowThruWidget.h; sourceTree = "<group>"; };
+		A777C91816690F7E00F889A7 /* globalVars.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = globalVars.cpp; sourceTree = "<group>"; };
+		A777C91916690F7E00F889A7 /* globalVars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = globalVars.h; sourceTree = "<group>"; };
+		A777C91A16690F7E00F889A7 /* GraphicalEnvironment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphicalEnvironment.cpp; sourceTree = "<group>"; };
+		A777C91B16690F7E00F889A7 /* GraphicalEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicalEnvironment.h; sourceTree = "<group>"; };
+		A777C91C16690F7E00F889A7 /* GraphicalParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphicalParameters.h; sourceTree = "<group>"; };
+		A777C91D16690F7E00F889A7 /* MarControlDiagramDisplay.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarControlDiagramDisplay.cpp; sourceTree = "<group>"; };
+		A777C91E16690F7E00F889A7 /* MarControlDiagramDisplay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarControlDiagramDisplay.h; sourceTree = "<group>"; };
+		A777C91F16690F7E00F889A7 /* MarControlDiagramNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarControlDiagramNode.cpp; sourceTree = "<group>"; };
+		A777C92016690F7E00F889A7 /* MarControlDiagramNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarControlDiagramNode.h; sourceTree = "<group>"; };
+		A777C92116690F7E00F889A7 /* MarControlLinkWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarControlLinkWidget.cpp; sourceTree = "<group>"; };
+		A777C92216690F7E00F889A7 /* MarControlLinkWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarControlLinkWidget.h; sourceTree = "<group>"; };
+		A777C92316690F7E00F889A7 /* MarControlWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarControlWidget.cpp; sourceTree = "<group>"; };
+		A777C92416690F7E00F889A7 /* MarControlWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarControlWidget.h; sourceTree = "<group>"; };
+		A777C92516690F7E00F889A7 /* MarSystemNodeSymbol.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarSystemNodeSymbol.cpp; sourceTree = "<group>"; };
+		A777C92616690F7E00F889A7 /* MarSystemNodeSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarSystemNodeSymbol.h; sourceTree = "<group>"; };
+		A777C92716690F7E00F889A7 /* MarSystemThread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarSystemThread.cpp; sourceTree = "<group>"; };
+		A777C92816690F7E00F889A7 /* MarSystemThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarSystemThread.h; sourceTree = "<group>"; };
+		A777C92916690F7E00F889A7 /* MarSystemWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarSystemWidget.cpp; sourceTree = "<group>"; };
+		A777C92A16690F7E00F889A7 /* MarSystemWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarSystemWidget.h; sourceTree = "<group>"; };
+		A777C92B16690F7E00F889A7 /* MarSystemWidgetManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MarSystemWidgetManager.cpp; sourceTree = "<group>"; };
+		A777C92C16690F7E00F889A7 /* MarSystemWidgetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MarSystemWidgetManager.h; sourceTree = "<group>"; };
+		A777C92D16690F7E00F889A7 /* maximizeButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = maximizeButton.cpp; sourceTree = "<group>"; };
+		A777C92E16690F7E00F889A7 /* maximizeButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = maximizeButton.h; sourceTree = "<group>"; };
+		A777C92F16690F7E00F889A7 /* MiniViewWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MiniViewWidget.cpp; sourceTree = "<group>"; };
+		A777C93016690F7E00F889A7 /* MiniViewWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MiniViewWidget.h; sourceTree = "<group>"; };
+		A777C93116690F7E00F889A7 /* ParallelWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ParallelWidget.cpp; sourceTree = "<group>"; };
+		A777C93216690F7E00F889A7 /* ParallelWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParallelWidget.h; sourceTree = "<group>"; };
+		A777C93316690F7E00F889A7 /* ProbingManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProbingManager.cpp; sourceTree = "<group>"; };
+		A777C93416690F7E00F889A7 /* ProbingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProbingManager.h; sourceTree = "<group>"; };
+		A777C93516690F7E00F889A7 /* ProcessedDataWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ProcessedDataWidget.cpp; sourceTree = "<group>"; };
+		A777C93616690F7E00F889A7 /* ProcessedDataWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProcessedDataWidget.h; sourceTree = "<group>"; };
+		A777C93716690F7E00F889A7 /* SelfSimilarityMatrixWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SelfSimilarityMatrixWidget.cpp; sourceTree = "<group>"; };
+		A777C93816690F7E00F889A7 /* SelfSimilarityMatrixWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelfSimilarityMatrixWidget.h; sourceTree = "<group>"; };
+		A777C93916690F7E00F889A7 /* SeriesWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SeriesWidget.cpp; sourceTree = "<group>"; };
+		A777C93A16690F7E00F889A7 /* SeriesWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SeriesWidget.h; sourceTree = "<group>"; };
+		A777C93B16690F7E00F889A7 /* ShredderWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShredderWidget.cpp; sourceTree = "<group>"; };
+		A777C93C16690F7E00F889A7 /* ShredderWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShredderWidget.h; sourceTree = "<group>"; };
+		A777C93D16690F7E00F889A7 /* SilenceRemoveWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SilenceRemoveWidget.cpp; sourceTree = "<group>"; };
+		A777C93E16690F7E00F889A7 /* SilenceRemoveWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SilenceRemoveWidget.h; sourceTree = "<group>"; };
+		A777C93F16690F7E00F889A7 /* SimilarityMatrixWidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SimilarityMatrixWidget.cpp; sourceTree = "<group>"; };
+		A777C94016690F7E00F889A7 /* SimilarityMatrixWidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimilarityMatrixWidget.h; sourceTree = "<group>"; };
+		A777C94116690F7E00F889A7 /* toggleButton.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = toggleButton.cpp; sourceTree = "<group>"; };
+		A777C94216690F7E00F889A7 /* toggleButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = toggleButton.h; sourceTree = "<group>"; };
+		A777C94316690F7E00F889A7 /* utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utils.cpp; sourceTree = "<group>"; };
+		A777C94416690F7E00F889A7 /* utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utils.h; sourceTree = "<group>"; };
+		A777C94516690F7E00F889A7 /* Widget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Widget.cpp; sourceTree = "<group>"; };
+		A777C94616690F7E00F889A7 /* Widget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Widget.h; sourceTree = "<group>"; };
+		A777C96E1669117100F889A7 /* ofMarsyas.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofMarsyas.cpp; sourceTree = "<group>"; };
+		A777C9701669117E00F889A7 /* ofMarsyas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofMarsyas.h; sourceTree = "<group>"; };
+		A7F5A74D166CCEE40039BF0F /* libmarsyas.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmarsyas.a; path = "../../../../../../../../../Marsyas-trunk/build/Xcode/lib/Debug/libmarsyas.a"; sourceTree = "<group>"; };
+		A7FEF6CE166D098000737301 /* AbsMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsMax.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AbsMax.h"; sourceTree = "<group>"; };
+		A7FEF6CF166D098000737301 /* AbsSoundFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AbsSoundFileSink.h"; sourceTree = "<group>"; };
+		A7FEF6D0166D098000737301 /* AbsSoundFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AbsSoundFileSource.h"; sourceTree = "<group>"; };
+		A7FEF6D1166D098000737301 /* AbsSoundFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbsSoundFileSource2.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AbsSoundFileSource2.h"; sourceTree = "<group>"; };
+		A7FEF6D2166D098000737301 /* AccentFilterBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccentFilterBank.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AccentFilterBank.h"; sourceTree = "<group>"; };
+		A7FEF6D3166D098000737301 /* Accumulator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Accumulator.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Accumulator.h"; sourceTree = "<group>"; };
+		A7FEF6D4166D098000737301 /* AdditiveOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AdditiveOsc.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AdditiveOsc.h"; sourceTree = "<group>"; };
+		A7FEF6D5166D098000737301 /* ADRess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRess.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ADRess.h"; sourceTree = "<group>"; };
+		A7FEF6D6166D098000737301 /* ADRessSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRessSpectrum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ADRessSpectrum.h"; sourceTree = "<group>"; };
+		A7FEF6D7166D098000737301 /* ADRessStereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADRessStereoSpectrum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ADRessStereoSpectrum.h"; sourceTree = "<group>"; };
+		A7FEF6D8166D098000737301 /* ADSR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ADSR.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ADSR.h"; sourceTree = "<group>"; };
+		A7FEF6D9166D098000737301 /* AimBoxes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimBoxes.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimBoxes.h"; sourceTree = "<group>"; };
+		A7FEF6DA166D098000737301 /* AimGammatone.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimGammatone.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimGammatone.h"; sourceTree = "<group>"; };
+		A7FEF6DB166D098000737301 /* AimHCL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimHCL.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimHCL.h"; sourceTree = "<group>"; };
+		A7FEF6DC166D098000737301 /* AimHCL2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimHCL2.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimHCL2.h"; sourceTree = "<group>"; };
+		A7FEF6DD166D098000737301 /* AimLocalMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimLocalMax.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimLocalMax.h"; sourceTree = "<group>"; };
+		A7FEF6DE166D098000737301 /* AimPZFC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimPZFC.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimPZFC.h"; sourceTree = "<group>"; };
+		A7FEF6DF166D098000737301 /* AimPZFC2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimPZFC2.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimPZFC2.h"; sourceTree = "<group>"; };
+		A7FEF6E0166D098000737301 /* AimSAI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimSAI.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimSAI.h"; sourceTree = "<group>"; };
+		A7FEF6E1166D098000737301 /* AimSSI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimSSI.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimSSI.h"; sourceTree = "<group>"; };
+		A7FEF6E2166D098000737301 /* AimVQ.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AimVQ.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AimVQ.h"; sourceTree = "<group>"; };
+		A7FEF6E3166D098000737301 /* AliasingOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AliasingOsc.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AliasingOsc.h"; sourceTree = "<group>"; };
+		A7FEF6E4166D098000737301 /* AMDF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AMDF.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AMDF.h"; sourceTree = "<group>"; };
+		A7FEF6E5166D098000737301 /* ANN_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ANN_node.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ANN_node.h"; sourceTree = "<group>"; };
+		A7FEF6E6166D098000737301 /* Annotator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Annotator.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Annotator.h"; sourceTree = "<group>"; };
+		A7FEF6E7166D098000737301 /* APDelayOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = APDelayOsc.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/APDelayOsc.h"; sourceTree = "<group>"; };
+		A7FEF6E8166D098000737301 /* ArffFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArffFileSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ArffFileSink.h"; sourceTree = "<group>"; };
+		A7FEF6E9166D098000737301 /* AubioYin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AubioYin.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AubioYin.h"; sourceTree = "<group>"; };
+		A7FEF6EA166D098000737301 /* AudioSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AudioSink.h"; sourceTree = "<group>"; };
+		A7FEF6EB166D098000737301 /* AudioSinkBlocking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSinkBlocking.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AudioSinkBlocking.h"; sourceTree = "<group>"; };
+		A7FEF6EC166D098000737301 /* AudioSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AudioSource.h"; sourceTree = "<group>"; };
+		A7FEF6ED166D098000737301 /* AudioSourceBlocking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioSourceBlocking.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AudioSourceBlocking.h"; sourceTree = "<group>"; };
+		A7FEF6EE166D098000737301 /* AuFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuFileSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AuFileSink.h"; sourceTree = "<group>"; };
+		A7FEF6EF166D098000737301 /* AuFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AuFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AuFileSource.h"; sourceTree = "<group>"; };
+		A7FEF6F0166D098000737301 /* AutoCorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AutoCorrelation.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AutoCorrelation.h"; sourceTree = "<group>"; };
+		A7FEF6F1166D098000737301 /* AutoCorrelationFFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AutoCorrelationFFT.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AutoCorrelationFFT.h"; sourceTree = "<group>"; };
+		A7FEF6F2166D098000737301 /* AveragingPattern.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AveragingPattern.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/AveragingPattern.h"; sourceTree = "<group>"; };
+		A7FEF6F3166D098000737301 /* BaseAudioSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseAudioSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BaseAudioSink.h"; sourceTree = "<group>"; };
+		A7FEF6F4166D098000737301 /* basis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = basis.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/basis.h"; sourceTree = "<group>"; };
+		A7FEF6F5166D098000737301 /* BeatAgent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatAgent.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BeatAgent.h"; sourceTree = "<group>"; };
+		A7FEF6F6166D098000737301 /* BeatHistoFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistoFeatures.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BeatHistoFeatures.h"; sourceTree = "<group>"; };
+		A7FEF6F7166D098000737301 /* BeatHistogram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistogram.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BeatHistogram.h"; sourceTree = "<group>"; };
+		A7FEF6F8166D098000737301 /* BeatHistogramFromPeaks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatHistogramFromPeaks.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BeatHistogramFromPeaks.h"; sourceTree = "<group>"; };
+		A7FEF6F9166D098000737301 /* BeatPhase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatPhase.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BeatPhase.h"; sourceTree = "<group>"; };
+		A7FEF6FA166D098000737301 /* BeatReferee.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatReferee.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BeatReferee.h"; sourceTree = "<group>"; };
+		A7FEF6FB166D098000737301 /* BeatTimesSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BeatTimesSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BeatTimesSink.h"; sourceTree = "<group>"; };
+		A7FEF6FC166D098000737301 /* BICchangeDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BICchangeDetector.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BICchangeDetector.h"; sourceTree = "<group>"; };
+		A7FEF6FD166D098000737301 /* Biquad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Biquad.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Biquad.h"; sourceTree = "<group>"; };
+		A7FEF6FE166D098000737301 /* BlitOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BlitOsc.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/BlitOsc.h"; sourceTree = "<group>"; };
+		A7FEF6FF166D098000737301 /* CARFAC_coeffs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CARFAC_coeffs.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/CARFAC_coeffs.h"; sourceTree = "<group>"; };
+		A7FEF700166D098000737301 /* CARFAC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CARFAC.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/CARFAC.h"; sourceTree = "<group>"; };
+		A7FEF701166D098000737301 /* Cartesian2Polar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cartesian2Polar.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Cartesian2Polar.h"; sourceTree = "<group>"; };
+		A7FEF702166D098000737301 /* Cascade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cascade.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Cascade.h"; sourceTree = "<group>"; };
+		A7FEF703166D098000737301 /* Centroid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Centroid.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Centroid.h"; sourceTree = "<group>"; };
+		A7FEF704166D098000737301 /* Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Chroma.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Chroma.h"; sourceTree = "<group>"; };
+		A7FEF705166D098000737301 /* ChromaScale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChromaScale.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ChromaScale.h"; sourceTree = "<group>"; };
+		A7FEF706166D098000737301 /* ClassificationReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClassificationReport.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ClassificationReport.h"; sourceTree = "<group>"; };
+		A7FEF707166D098000737301 /* ClassOutputSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ClassOutputSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ClassOutputSink.h"; sourceTree = "<group>"; };
+		A7FEF708166D098000737301 /* Clip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Clip.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Clip.h"; sourceTree = "<group>"; };
+		A7FEF709166D098000737301 /* Collection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Collection.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Collection.h"; sourceTree = "<group>"; };
+		A7FEF70A166D098000737301 /* CollectionFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CollectionFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/CollectionFileSource.h"; sourceTree = "<group>"; };
+		A7FEF70B166D098000737301 /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Color.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Color.h"; sourceTree = "<group>"; };
+		A7FEF70C166D098000737301 /* Combinator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Combinator.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Combinator.h"; sourceTree = "<group>"; };
+		A7FEF70D166D098000737301 /* CommandLineOptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CommandLineOptions.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/CommandLineOptions.h"; sourceTree = "<group>"; };
+		A7FEF70E166D098000737301 /* common_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common_header.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/common_header.h"; sourceTree = "<group>"; };
+		A7FEF70F166D098000737301 /* common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = common.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/common.h"; sourceTree = "<group>"; };
+		A7FEF710166D098000737301 /* Communicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Communicator.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Communicator.h"; sourceTree = "<group>"; };
+		A7FEF711166D098000737301 /* CompExp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompExp.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/CompExp.h"; sourceTree = "<group>"; };
+		A7FEF712166D098000737301 /* Compressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Compressor.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Compressor.h"; sourceTree = "<group>"; };
+		A7FEF713166D098000737301 /* Confidence.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Confidence.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Confidence.h"; sourceTree = "<group>"; };
+		A7FEF714166D098000737301 /* ConstQFiltering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ConstQFiltering.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ConstQFiltering.h"; sourceTree = "<group>"; };
+		A7FEF715166D098000737301 /* Conversions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Conversions.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Conversions.h"; sourceTree = "<group>"; };
+		A7FEF716166D098000737301 /* CrossCorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CrossCorrelation.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/CrossCorrelation.h"; sourceTree = "<group>"; };
+		A7FEF717166D098000737301 /* CsvFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CsvFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/CsvFileSource.h"; sourceTree = "<group>"; };
+		A7FEF718166D098000737301 /* Daub4.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Daub4.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Daub4.h"; sourceTree = "<group>"; };
+		A7FEF719166D098000737301 /* DCSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DCSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DCSource.h"; sourceTree = "<group>"; };
+		A7FEF71A166D098000737301 /* Deinterleave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deinterleave.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Deinterleave.h"; sourceTree = "<group>"; };
+		A7FEF71B166D098000737301 /* DeInterleaveSizecontrol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeInterleaveSizecontrol.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DeInterleaveSizecontrol.h"; sourceTree = "<group>"; };
+		A7FEF71C166D098000737301 /* Delay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Delay.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Delay.h"; sourceTree = "<group>"; };
+		A7FEF71D166D098000737301 /* DelaySamples.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DelaySamples.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DelaySamples.h"; sourceTree = "<group>"; };
+		A7FEF71E166D098000737301 /* Delta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Delta.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Delta.h"; sourceTree = "<group>"; };
+		A7FEF71F166D098000737301 /* DeltaFirstOrderRegression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DeltaFirstOrderRegression.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DeltaFirstOrderRegression.h"; sourceTree = "<group>"; };
+		A7FEF720166D098000737301 /* Differentiator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Differentiator.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Differentiator.h"; sourceTree = "<group>"; };
+		A7FEF721166D098000737301 /* DLLDefines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DLLDefines.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DLLDefines.h"; sourceTree = "<group>"; };
+		A7FEF722166D098000737301 /* DownSampler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DownSampler.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DownSampler.h"; sourceTree = "<group>"; };
+		A7FEF723166D098000737301 /* DPWOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DPWOsc.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DPWOsc.h"; sourceTree = "<group>"; };
+		A7FEF724166D098000737301 /* dsound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = dsound.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/dsound.h"; sourceTree = "<group>"; };
+		A7FEF725166D098000737301 /* DTW.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTW.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DTW.h"; sourceTree = "<group>"; };
+		A7FEF726166D098000737301 /* DTWWD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DTWWD.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/DTWWD.h"; sourceTree = "<group>"; };
+		A7FEF727166D098000737301 /* Energy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Energy.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Energy.h"; sourceTree = "<group>"; };
+		A7FEF728166D098000737301 /* EnhADRess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnhADRess.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/EnhADRess.h"; sourceTree = "<group>"; };
+		A7FEF729166D098000737301 /* EnhADRessStereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnhADRessStereoSpectrum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/EnhADRessStereoSpectrum.h"; sourceTree = "<group>"; };
+		A7FEF72A166D098000737301 /* Envelope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Envelope.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Envelope.h"; sourceTree = "<group>"; };
+		A7FEF72B166D098000737301 /* ERB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ERB.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ERB.h"; sourceTree = "<group>"; };
+		A7FEF72C166D098000737301 /* ERBTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ERBTools.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ERBTools.h"; sourceTree = "<group>"; };
+		A7FEF72D166D098000737301 /* Esitar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Esitar.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Esitar.h"; sourceTree = "<group>"; };
+		A7FEF72E166D098000737301 /* EvEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvEvent.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/EvEvent.h"; sourceTree = "<group>"; };
+		A7FEF72F166D098000737301 /* EvExpr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvExpr.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/EvExpr.h"; sourceTree = "<group>"; };
+		A7FEF730166D098000737301 /* EvGetUpd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvGetUpd.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/EvGetUpd.h"; sourceTree = "<group>"; };
+		A7FEF731166D098000737301 /* EvValUpd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EvValUpd.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/EvValUpd.h"; sourceTree = "<group>"; };
+		A7FEF732166D098000737301 /* ExCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExCommon.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ExCommon.h"; sourceTree = "<group>"; };
+		A7FEF733166D098000737301 /* ExNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExNode.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ExNode.h"; sourceTree = "<group>"; };
+		A7FEF734166D098000737301 /* ExParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExParser.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ExParser.h"; sourceTree = "<group>"; };
+		A7FEF735166D098000737301 /* Expr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Expr.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Expr.h"; sourceTree = "<group>"; };
+		A7FEF736166D098000737301 /* ExScanner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExScanner.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ExScanner.h"; sourceTree = "<group>"; };
+		A7FEF737166D098000737301 /* ExSymTbl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExSymTbl.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ExSymTbl.h"; sourceTree = "<group>"; };
+		A7FEF738166D098000737301 /* ExVal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExVal.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ExVal.h"; sourceTree = "<group>"; };
+		A7FEF739166D098000737301 /* F0Analysis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = F0Analysis.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/F0Analysis.h"; sourceTree = "<group>"; };
+		A7FEF73A166D098000737301 /* Fanin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fanin.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Fanin.h"; sourceTree = "<group>"; };
+		A7FEF73B166D098000737301 /* Fanout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Fanout.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Fanout.h"; sourceTree = "<group>"; };
+		A7FEF73C166D098000737301 /* FanOutIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FanOutIn.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/FanOutIn.h"; sourceTree = "<group>"; };
+		A7FEF73D166D098000737301 /* fft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = fft.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/fft.h"; sourceTree = "<group>"; };
+		A7FEF73E166D098000737301 /* FileName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileName.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/FileName.h"; sourceTree = "<group>"; };
+		A7FEF73F166D098000737301 /* Filter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Filter.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Filter.h"; sourceTree = "<group>"; };
+		A7FEF740166D098000737301 /* FlowCutSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlowCutSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/FlowCutSource.h"; sourceTree = "<group>"; };
+		A7FEF741166D098000737301 /* FlowThru.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FlowThru.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/FlowThru.h"; sourceTree = "<group>"; };
+		A7FEF742166D098000737301 /* Flux.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flux.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Flux.h"; sourceTree = "<group>"; };
+		A7FEF743166D098000737301 /* FM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FM.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/FM.h"; sourceTree = "<group>"; };
+		A7FEF744166D098000737301 /* FMeasure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FMeasure.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/FMeasure.h"; sourceTree = "<group>"; };
+		A7FEF745166D098000737301 /* FullWaveRectifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FullWaveRectifier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/FullWaveRectifier.h"; sourceTree = "<group>"; };
+		A7FEF746166D098000737301 /* Gain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Gain.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Gain.h"; sourceTree = "<group>"; };
+		A7FEF747166D098000737301 /* GaussianClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GaussianClassifier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/GaussianClassifier.h"; sourceTree = "<group>"; };
+		A7FEF748166D098000737301 /* GMMClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GMMClassifier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/GMMClassifier.h"; sourceTree = "<group>"; };
+		A7FEF749166D098000737301 /* GStreamerSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GStreamerSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/GStreamerSource.h"; sourceTree = "<group>"; };
+		A7FEF74A166D098000737301 /* HalfWaveRectifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HalfWaveRectifier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/HalfWaveRectifier.h"; sourceTree = "<group>"; };
+		A7FEF74B166D098000737301 /* HarmonicEnhancer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HarmonicEnhancer.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/HarmonicEnhancer.h"; sourceTree = "<group>"; };
+		A7FEF74C166D098000737301 /* HarmonicStrength.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HarmonicStrength.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/HarmonicStrength.h"; sourceTree = "<group>"; };
+		A7FEF74D166D098000737301 /* Heap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Heap.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Heap.h"; sourceTree = "<group>"; };
+		A7FEF74E166D098000737301 /* HWPS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HWPS.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/HWPS.h"; sourceTree = "<group>"; };
+		A7FEF74F166D098000737301 /* Inject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Inject.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Inject.h"; sourceTree = "<group>"; };
+		A7FEF750166D098000737301 /* InvSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InvSpectrum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/InvSpectrum.h"; sourceTree = "<group>"; };
+		A7FEF751166D098000737301 /* KNNClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = KNNClassifier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/KNNClassifier.h"; sourceTree = "<group>"; };
+		A7FEF752166D098000737301 /* Krumhansl_key_finder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Krumhansl_key_finder.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Krumhansl_key_finder.h"; sourceTree = "<group>"; };
+		A7FEF753166D098000737301 /* Kurtosis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Kurtosis.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Kurtosis.h"; sourceTree = "<group>"; };
+		A7FEF754166D098000737301 /* Limiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Limiter.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Limiter.h"; sourceTree = "<group>"; };
+		A7FEF755166D098000737301 /* LPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LPC.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/LPC.h"; sourceTree = "<group>"; };
+		A7FEF756166D098000737301 /* LPCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LPCC.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/LPCC.h"; sourceTree = "<group>"; };
+		A7FEF757166D098000737301 /* LSP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LSP.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/LSP.h"; sourceTree = "<group>"; };
+		A7FEF758166D098000737301 /* lu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = lu.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/lu.h"; sourceTree = "<group>"; };
+		A7FEF759166D098000737301 /* LyonPassiveEar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LyonPassiveEar.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/LyonPassiveEar.h"; sourceTree = "<group>"; };
+		A7FEF75A166D098000737301 /* MarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControl.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarControl.h"; sourceTree = "<group>"; };
+		A7FEF75B166D098000737301 /* MarControlAccessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlAccessor.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarControlAccessor.h"; sourceTree = "<group>"; };
+		A7FEF75C166D098000737301 /* MarControlManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlManager.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarControlManager.h"; sourceTree = "<group>"; };
+		A7FEF75D166D098000737301 /* MarControlValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarControlValue.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarControlValue.h"; sourceTree = "<group>"; };
+		A7FEF75E166D098000737301 /* MarFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarFileSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarFileSink.h"; sourceTree = "<group>"; };
+		A7FEF75F166D098000737301 /* marohtml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marohtml.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/marohtml.h"; sourceTree = "<group>"; };
+		A7FEF760166D098000737301 /* marojson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marojson.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/marojson.h"; sourceTree = "<group>"; };
+		A7FEF761166D098000737301 /* marostring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marostring.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/marostring.h"; sourceTree = "<group>"; };
+		A7FEF762166D098000737301 /* marosvg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marosvg.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/marosvg.h"; sourceTree = "<group>"; };
+		A7FEF763166D098000737301 /* maroxml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maroxml.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/maroxml.h"; sourceTree = "<group>"; };
+		A7FEF764166D098000737301 /* marsyas_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = marsyas_types.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/marsyas_types.h"; sourceTree = "<group>"; };
+		A7FEF765166D098000737301 /* MarSystem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystem.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarSystem.h"; sourceTree = "<group>"; };
+		A7FEF766166D098000737301 /* MarSystemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemManager.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarSystemManager.h"; sourceTree = "<group>"; };
+		A7FEF767166D098000737301 /* MarSystemTemplateAdvanced.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateAdvanced.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarSystemTemplateAdvanced.h"; sourceTree = "<group>"; };
+		A7FEF768166D098000737301 /* MarSystemTemplateBasic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateBasic.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarSystemTemplateBasic.h"; sourceTree = "<group>"; };
+		A7FEF769166D098000737301 /* MarSystemTemplateMedium.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MarSystemTemplateMedium.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MarSystemTemplateMedium.h"; sourceTree = "<group>"; };
+		A7FEF76A166D098000737301 /* MatchBassModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MatchBassModel.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MatchBassModel.h"; sourceTree = "<group>"; };
+		A7FEF76B166D098000737301 /* MathPower.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathPower.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MathPower.h"; sourceTree = "<group>"; };
+		A7FEF76C166D098000737301 /* MATLABengine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MATLABengine.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MATLABengine.h"; sourceTree = "<group>"; };
+		A7FEF76D166D098000737301 /* MaxArgMax.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaxArgMax.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MaxArgMax.h"; sourceTree = "<group>"; };
+		A7FEF76E166D098000737301 /* MaxMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MaxMin.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MaxMin.h"; sourceTree = "<group>"; };
+		A7FEF76F166D098000737301 /* McAulayQuatieri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = McAulayQuatieri.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/McAulayQuatieri.h"; sourceTree = "<group>"; };
+		A7FEF770166D098000737301 /* Mean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mean.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Mean.h"; sourceTree = "<group>"; };
+		A7FEF771166D098000737301 /* MeanAbsoluteDeviation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MeanAbsoluteDeviation.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MeanAbsoluteDeviation.h"; sourceTree = "<group>"; };
+		A7FEF772166D098000737301 /* MeddisHairCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MeddisHairCell.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MeddisHairCell.h"; sourceTree = "<group>"; };
+		A7FEF773166D098000737301 /* Median.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Median.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Median.h"; sourceTree = "<group>"; };
+		A7FEF774166D098000737301 /* MedianFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MedianFilter.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MedianFilter.h"; sourceTree = "<group>"; };
+		A7FEF775166D098000737301 /* Memory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Memory.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Memory.h"; sourceTree = "<group>"; };
+		A7FEF776166D098000737301 /* MemorySource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemorySource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MemorySource.h"; sourceTree = "<group>"; };
+		A7FEF777166D098000737301 /* Metric.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Metric.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Metric.h"; sourceTree = "<group>"; };
+		A7FEF778166D098000737301 /* Metric2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Metric2.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Metric2.h"; sourceTree = "<group>"; };
+		A7FEF779166D098000737301 /* MFCC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MFCC.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MFCC.h"; sourceTree = "<group>"; };
+		A7FEF77A166D098000737301 /* mididevices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mididevices.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/mididevices.h"; sourceTree = "<group>"; };
+		A7FEF77B166D098000737301 /* MidiFileSynthSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiFileSynthSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MidiFileSynthSource.h"; sourceTree = "<group>"; };
+		A7FEF77C166D098000737301 /* MidiInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiInput.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MidiInput.h"; sourceTree = "<group>"; };
+		A7FEF77D166D098000737301 /* MidiOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MidiOutput.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MidiOutput.h"; sourceTree = "<group>"; };
+		A7FEF77E166D098000737301 /* MinArgMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MinArgMin.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MinArgMin.h"; sourceTree = "<group>"; };
+		A7FEF77F166D098000737301 /* MixToMono.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MixToMono.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MixToMono.h"; sourceTree = "<group>"; };
+		A7FEF780166D098000737301 /* Mono2Stereo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Mono2Stereo.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Mono2Stereo.h"; sourceTree = "<group>"; };
+		A7FEF781166D098000737301 /* MP3FileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP3FileSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MP3FileSink.h"; sourceTree = "<group>"; };
+		A7FEF782166D098000737301 /* MP3FileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MP3FileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MP3FileSource.h"; sourceTree = "<group>"; };
+		A7FEF783166D098000737301 /* MrsLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MrsLog.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/MrsLog.h"; sourceTree = "<group>"; };
+		A7FEF784166D098000737301 /* Negative.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Negative.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Negative.h"; sourceTree = "<group>"; };
+		A7FEF785166D098000737301 /* NoiseGate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoiseGate.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/NoiseGate.h"; sourceTree = "<group>"; };
+		A7FEF786166D098000737301 /* NoiseSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoiseSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/NoiseSource.h"; sourceTree = "<group>"; };
+		A7FEF787166D098000737301 /* Norm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Norm.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Norm.h"; sourceTree = "<group>"; };
+		A7FEF788166D098000737301 /* Normalize.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Normalize.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Normalize.h"; sourceTree = "<group>"; };
+		A7FEF789166D098000737301 /* NormalizeAbs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormalizeAbs.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/NormalizeAbs.h"; sourceTree = "<group>"; };
+		A7FEF78A166D098000737301 /* NormCut.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormCut.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/NormCut.h"; sourceTree = "<group>"; };
+		A7FEF78B166D098000737301 /* NormMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormMatrix.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/NormMatrix.h"; sourceTree = "<group>"; };
+		A7FEF78C166D098000737301 /* NormMaxMin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NormMaxMin.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/NormMaxMin.h"; sourceTree = "<group>"; };
+		A7FEF78D166D098000737301 /* NumericLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NumericLib.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/NumericLib.h"; sourceTree = "<group>"; };
+		A7FEF78E166D098000737301 /* OggFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OggFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/OggFileSource.h"; sourceTree = "<group>"; };
+		A7FEF78F166D098000737301 /* OnePole.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnePole.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/OnePole.h"; sourceTree = "<group>"; };
+		A7FEF790166D098000737301 /* OneRClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OneRClassifier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/OneRClassifier.h"; sourceTree = "<group>"; };
+		A7FEF791166D098000737301 /* OnsetTimes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OnsetTimes.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/OnsetTimes.h"; sourceTree = "<group>"; };
+		A7FEF792166D098000737301 /* OrcaSnip.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OrcaSnip.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/OrcaSnip.h"; sourceTree = "<group>"; };
+		A7FEF793166D098000737301 /* OverlapAdd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OverlapAdd.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/OverlapAdd.h"; sourceTree = "<group>"; };
+		A7FEF794166D098000737301 /* Panorama.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Panorama.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Panorama.h"; sourceTree = "<group>"; };
+		A7FEF795166D098000737301 /* Parallel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Parallel.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Parallel.h"; sourceTree = "<group>"; };
+		A7FEF796166D098000737301 /* ParallelMatrixWeight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ParallelMatrixWeight.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ParallelMatrixWeight.h"; sourceTree = "<group>"; };
+		A7FEF797166D098000737301 /* PatchMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PatchMatrix.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PatchMatrix.h"; sourceTree = "<group>"; };
+		A7FEF798166D098000737301 /* PCA.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PCA.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PCA.h"; sourceTree = "<group>"; };
+		A7FEF799166D098000737301 /* Peak2Rms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Peak2Rms.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Peak2Rms.h"; sourceTree = "<group>"; };
+		A7FEF79A166D098000737301 /* PeakClusterSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakClusterSelect.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakClusterSelect.h"; sourceTree = "<group>"; };
+		A7FEF79B166D098000737301 /* PeakConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakConvert.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakConvert.h"; sourceTree = "<group>"; };
+		A7FEF79C166D098000737301 /* PeakConvert2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakConvert2.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakConvert2.h"; sourceTree = "<group>"; };
+		A7FEF79D166D098000737301 /* PeakDistanceHorizontality.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakDistanceHorizontality.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakDistanceHorizontality.h"; sourceTree = "<group>"; };
+		A7FEF79E166D098000737301 /* PeakEnhancer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakEnhancer.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakEnhancer.h"; sourceTree = "<group>"; };
+		A7FEF79F166D098000737301 /* Peaker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Peaker.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Peaker.h"; sourceTree = "<group>"; };
+		A7FEF7A0166D098000737301 /* PeakerAdaptive.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakerAdaptive.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakerAdaptive.h"; sourceTree = "<group>"; };
+		A7FEF7A1166D098000737301 /* PeakerOnset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakerOnset.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakerOnset.h"; sourceTree = "<group>"; };
+		A7FEF7A2166D098000737301 /* PeakFeatureSelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakFeatureSelect.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakFeatureSelect.h"; sourceTree = "<group>"; };
+		A7FEF7A3166D098000737301 /* PeakInObservation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakInObservation.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakInObservation.h"; sourceTree = "<group>"; };
+		A7FEF7A4166D098000737301 /* PeakLabeler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakLabeler.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakLabeler.h"; sourceTree = "<group>"; };
+		A7FEF7A5166D098000737301 /* PeakMask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakMask.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakMask.h"; sourceTree = "<group>"; };
+		A7FEF7A6166D098000737301 /* PeakPeriods2BPM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakPeriods2BPM.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakPeriods2BPM.h"; sourceTree = "<group>"; };
+		A7FEF7A7166D098000737301 /* PeakRatio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakRatio.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakRatio.h"; sourceTree = "<group>"; };
+		A7FEF7A8166D098000737301 /* PeakResidual.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakResidual.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakResidual.h"; sourceTree = "<group>"; };
+		A7FEF7A9166D098000737301 /* PeakSynthFFT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthFFT.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakSynthFFT.h"; sourceTree = "<group>"; };
+		A7FEF7AA166D098000737301 /* PeakSynthOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthOsc.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakSynthOsc.h"; sourceTree = "<group>"; };
+		A7FEF7AB166D098000737301 /* PeakSynthOscBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakSynthOscBank.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakSynthOscBank.h"; sourceTree = "<group>"; };
+		A7FEF7AC166D098000737301 /* peakView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = peakView.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/peakView.h"; sourceTree = "<group>"; };
+		A7FEF7AD166D098000737301 /* PeakViewMerge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewMerge.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakViewMerge.h"; sourceTree = "<group>"; };
+		A7FEF7AE166D098000737301 /* PeakViewSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakViewSink.h"; sourceTree = "<group>"; };
+		A7FEF7AF166D098000737301 /* PeakViewSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeakViewSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeakViewSource.h"; sourceTree = "<group>"; };
+		A7FEF7B0166D098000737301 /* PeUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeUtilities.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PeUtilities.h"; sourceTree = "<group>"; };
+		A7FEF7B1166D098000737301 /* PhaseLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhaseLock.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PhaseLock.h"; sourceTree = "<group>"; };
+		A7FEF7B2166D098000737301 /* PhiSEMFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhiSEMFilter.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PhiSEMFilter.h"; sourceTree = "<group>"; };
+		A7FEF7B3166D098000737301 /* PhiSEMSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhiSEMSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PhiSEMSource.h"; sourceTree = "<group>"; };
+		A7FEF7B4166D098000737301 /* Pitch2Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Pitch2Chroma.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Pitch2Chroma.h"; sourceTree = "<group>"; };
+		A7FEF7B5166D098000737301 /* PitchDiff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PitchDiff.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PitchDiff.h"; sourceTree = "<group>"; };
+		A7FEF7B6166D098000737301 /* PlotSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PlotSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PlotSink.h"; sourceTree = "<group>"; };
+		A7FEF7B7166D098000737301 /* Plucked.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Plucked.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Plucked.h"; sourceTree = "<group>"; };
+		A7FEF7B8166D098000737301 /* Polar2Cartesian.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Polar2Cartesian.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Polar2Cartesian.h"; sourceTree = "<group>"; };
+		A7FEF7B9166D098000737301 /* Power.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Power.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Power.h"; sourceTree = "<group>"; };
+		A7FEF7BA166D098000737301 /* PowerSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerSpectrum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PowerSpectrum.h"; sourceTree = "<group>"; };
+		A7FEF7BB166D098000737301 /* PowerToAverageRatio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PowerToAverageRatio.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PowerToAverageRatio.h"; sourceTree = "<group>"; };
+		A7FEF7BC166D098000737301 /* Product.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Product.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Product.h"; sourceTree = "<group>"; };
+		A7FEF7BD166D098000737301 /* PvConvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvConvert.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PvConvert.h"; sourceTree = "<group>"; };
+		A7FEF7BE166D098000737301 /* PvConvolve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvConvolve.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PvConvolve.h"; sourceTree = "<group>"; };
+		A7FEF7BF166D098000737301 /* PvFold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvFold.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PvFold.h"; sourceTree = "<group>"; };
+		A7FEF7C0166D098000737301 /* PvMultiResolution.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvMultiResolution.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PvMultiResolution.h"; sourceTree = "<group>"; };
+		A7FEF7C1166D098000737301 /* PvOscBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvOscBank.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PvOscBank.h"; sourceTree = "<group>"; };
+		A7FEF7C2166D098000737301 /* PvOverlapadd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvOverlapadd.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PvOverlapadd.h"; sourceTree = "<group>"; };
+		A7FEF7C3166D098000737301 /* PvUnconvert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PvUnconvert.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PvUnconvert.h"; sourceTree = "<group>"; };
+		A7FEF7C4166D098000737301 /* PWMSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PWMSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/PWMSource.h"; sourceTree = "<group>"; };
+		A7FEF7C5166D098000737301 /* QGMMModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QGMMModel.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/QGMMModel.h"; sourceTree = "<group>"; };
+		A7FEF7C6166D098000737301 /* RadioDrumInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RadioDrumInput.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/RadioDrumInput.h"; sourceTree = "<group>"; };
+		A7FEF7C7166D098000737301 /* RawFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RawFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/RawFileSource.h"; sourceTree = "<group>"; };
+		A7FEF7C8166D098000737301 /* RBF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RBF.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/RBF.h"; sourceTree = "<group>"; };
+		A7FEF7C9166D098000737301 /* realvec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = realvec.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/realvec.h"; sourceTree = "<group>"; };
+		A7FEF7CA166D098000737301 /* RealvecSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealvecSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/RealvecSink.h"; sourceTree = "<group>"; };
+		A7FEF7CB166D098000737301 /* RealvecSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealvecSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/RealvecSource.h"; sourceTree = "<group>"; };
+		A7FEF7CC166D098000737301 /* Reassign.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reassign.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Reassign.h"; sourceTree = "<group>"; };
+		A7FEF7CD166D098000737301 /* Reciprocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reciprocal.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Reciprocal.h"; sourceTree = "<group>"; };
+		A7FEF7CE166D098000737301 /* RemoveObservations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RemoveObservations.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/RemoveObservations.h"; sourceTree = "<group>"; };
+		A7FEF7CF166D098000737301 /* Repeat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Repeat.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Repeat.h"; sourceTree = "<group>"; };
+		A7FEF7D0166D098000737301 /* Resample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Resample.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Resample.h"; sourceTree = "<group>"; };
+		A7FEF7D1166D098000737301 /* ResampleBezier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleBezier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ResampleBezier.h"; sourceTree = "<group>"; };
+		A7FEF7D2166D098000737301 /* ResampleLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleLinear.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ResampleLinear.h"; sourceTree = "<group>"; };
+		A7FEF7D3166D098000737301 /* ResampleNearestNeighbour.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleNearestNeighbour.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ResampleNearestNeighbour.h"; sourceTree = "<group>"; };
+		A7FEF7D4166D098000737301 /* ResampleSinc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ResampleSinc.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ResampleSinc.h"; sourceTree = "<group>"; };
+		A7FEF7D5166D098000737301 /* Reverse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reverse.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Reverse.h"; sourceTree = "<group>"; };
+		A7FEF7D6166D098000737301 /* Rms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rms.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Rms.h"; sourceTree = "<group>"; };
+		A7FEF7D7166D098000737301 /* Rolloff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Rolloff.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Rolloff.h"; sourceTree = "<group>"; };
+		A7FEF7D8166D098000737301 /* RunningAutocorrelation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RunningAutocorrelation.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/RunningAutocorrelation.h"; sourceTree = "<group>"; };
+		A7FEF7D9166D098000737301 /* RunningStatistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RunningStatistics.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/RunningStatistics.h"; sourceTree = "<group>"; };
+		A7FEF7DA166D098000737301 /* SCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCF.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SCF.h"; sourceTree = "<group>"; };
+		A7FEF7DB166D098000737301 /* Scheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Scheduler.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Scheduler.h"; sourceTree = "<group>"; };
+		A7FEF7DC166D098000737301 /* Selector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Selector.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Selector.h"; sourceTree = "<group>"; };
+		A7FEF7DD166D098000737301 /* SelfSimilarityMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelfSimilarityMatrix.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SelfSimilarityMatrix.h"; sourceTree = "<group>"; };
+		A7FEF7DE166D098000737301 /* SeneffEar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SeneffEar.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SeneffEar.h"; sourceTree = "<group>"; };
+		A7FEF7DF166D098000737301 /* Series.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Series.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Series.h"; sourceTree = "<group>"; };
+		A7FEF7E0166D098000737301 /* SFM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SFM.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SFM.h"; sourceTree = "<group>"; };
+		A7FEF7E1166D098000737301 /* Shifter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shifter.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Shifter.h"; sourceTree = "<group>"; };
+		A7FEF7E2166D098000737301 /* ShiftInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShiftInput.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ShiftInput.h"; sourceTree = "<group>"; };
+		A7FEF7E3166D098000737301 /* ShiftOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ShiftOutput.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ShiftOutput.h"; sourceTree = "<group>"; };
+		A7FEF7E4166D098000737301 /* Shredder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Shredder.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Shredder.h"; sourceTree = "<group>"; };
+		A7FEF7E5166D098000737301 /* Signum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Signum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Signum.h"; sourceTree = "<group>"; };
+		A7FEF7E6166D098000737301 /* SilenceRemove.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SilenceRemove.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SilenceRemove.h"; sourceTree = "<group>"; };
+		A7FEF7E7166D098000737301 /* SimilarityMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimilarityMatrix.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SimilarityMatrix.h"; sourceTree = "<group>"; };
+		A7FEF7E8166D098000737301 /* SimulMaskingFft.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimulMaskingFft.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SimulMaskingFft.h"; sourceTree = "<group>"; };
+		A7FEF7E9166D098000737301 /* SineSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SineSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SineSource.h"; sourceTree = "<group>"; };
+		A7FEF7EA166D098000737301 /* Skewness.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Skewness.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Skewness.h"; sourceTree = "<group>"; };
+		A7FEF7EB166D098000737301 /* SliceDelta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceDelta.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SliceDelta.h"; sourceTree = "<group>"; };
+		A7FEF7EC166D098000737301 /* SliceShuffle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SliceShuffle.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SliceShuffle.h"; sourceTree = "<group>"; };
+		A7FEF7ED166D098000737301 /* SMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SMO.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SMO.h"; sourceTree = "<group>"; };
+		A7FEF7EE166D098000737301 /* SNR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SNR.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SNR.h"; sourceTree = "<group>"; };
+		A7FEF7EF166D098000737301 /* SOM.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SOM.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SOM.h"; sourceTree = "<group>"; };
+		A7FEF7F0166D098000737301 /* SoundFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SoundFileSink.h"; sourceTree = "<group>"; };
+		A7FEF7F1166D098000737301 /* SoundFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SoundFileSource.h"; sourceTree = "<group>"; };
+		A7FEF7F2166D098000737301 /* SoundFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSource2.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SoundFileSource2.h"; sourceTree = "<group>"; };
+		A7FEF7F3166D098000737301 /* SoundFileSourceHopper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SoundFileSourceHopper.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SoundFileSourceHopper.h"; sourceTree = "<group>"; };
+		A7FEF7F4166D098000737301 /* SpectralFlatnessAllBands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralFlatnessAllBands.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SpectralFlatnessAllBands.h"; sourceTree = "<group>"; };
+		A7FEF7F5166D098000737301 /* SpectralSNR.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralSNR.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SpectralSNR.h"; sourceTree = "<group>"; };
+		A7FEF7F6166D098000737301 /* SpectralTransformations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SpectralTransformations.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SpectralTransformations.h"; sourceTree = "<group>"; };
+		A7FEF7F7166D098000737301 /* Spectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Spectrum.h"; sourceTree = "<group>"; };
+		A7FEF7F8166D098000737301 /* Spectrum2ACMChroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2ACMChroma.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Spectrum2ACMChroma.h"; sourceTree = "<group>"; };
+		A7FEF7F9166D098000737301 /* Spectrum2Chroma.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2Chroma.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Spectrum2Chroma.h"; sourceTree = "<group>"; };
+		A7FEF7FA166D098000737301 /* Spectrum2Mel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Spectrum2Mel.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Spectrum2Mel.h"; sourceTree = "<group>"; };
+		A7FEF7FB166D098000737301 /* Square.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Square.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Square.h"; sourceTree = "<group>"; };
+		A7FEF7FC166D098000737301 /* StandardDeviation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StandardDeviation.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/StandardDeviation.h"; sourceTree = "<group>"; };
+		A7FEF7FD166D098000737301 /* static_vq_codebook.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = static_vq_codebook.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/static_vq_codebook.h"; sourceTree = "<group>"; };
+		A7FEF7FE166D098000737301 /* statistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = statistics.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/statistics.h"; sourceTree = "<group>"; };
+		A7FEF7FF166D098000737301 /* StereoSpectrum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/StereoSpectrum.h"; sourceTree = "<group>"; };
+		A7FEF800166D098000737301 /* StereoSpectrumFeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrumFeatures.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/StereoSpectrumFeatures.h"; sourceTree = "<group>"; };
+		A7FEF801166D098000737301 /* StereoSpectrumSources.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StereoSpectrumSources.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/StereoSpectrumSources.h"; sourceTree = "<group>"; };
+		A7FEF802166D098000737301 /* Stk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Stk.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Stk.h"; sourceTree = "<group>"; };
+		A7FEF803166D098000737301 /* StretchLinear.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StretchLinear.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/StretchLinear.h"; sourceTree = "<group>"; };
+		A7FEF804166D098000737301 /* StrobeList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StrobeList.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/StrobeList.h"; sourceTree = "<group>"; };
+		A7FEF805166D098000737301 /* Subtract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Subtract.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Subtract.h"; sourceTree = "<group>"; };
+		A7FEF806166D098000737301 /* SubtractMean.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SubtractMean.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SubtractMean.h"; sourceTree = "<group>"; };
+		A7FEF807166D098000737301 /* Sum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Sum.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Sum.h"; sourceTree = "<group>"; };
+		A7FEF808166D098000737301 /* SVMClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SVMClassifier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/SVMClassifier.h"; sourceTree = "<group>"; };
+		A7FEF809166D098000737301 /* Talk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Talk.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Talk.h"; sourceTree = "<group>"; };
+		A7FEF80A166D098000737301 /* TempoHypotheses.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TempoHypotheses.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TempoHypotheses.h"; sourceTree = "<group>"; };
+		A7FEF80B166D098000737301 /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Thread.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Thread.h"; sourceTree = "<group>"; };
+		A7FEF80C166D098000737301 /* TimeFreqPeakConnectivity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeFreqPeakConnectivity.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TimeFreqPeakConnectivity.h"; sourceTree = "<group>"; };
+		A7FEF80D166D098000737301 /* TimeLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeLine.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TimeLine.h"; sourceTree = "<group>"; };
+		A7FEF80E166D098000737301 /* TimelineLabeler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimelineLabeler.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TimelineLabeler.h"; sourceTree = "<group>"; };
+		A7FEF80F166D098000737301 /* TimeStretch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeStretch.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TimeStretch.h"; sourceTree = "<group>"; };
+		A7FEF810166D098000737301 /* TmControlValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmControlValue.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TmControlValue.h"; sourceTree = "<group>"; };
+		A7FEF811166D098000737301 /* TmParam.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmParam.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TmParam.h"; sourceTree = "<group>"; };
+		A7FEF812166D098000737301 /* TmRealTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmRealTime.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TmRealTime.h"; sourceTree = "<group>"; };
+		A7FEF813166D098000737301 /* TmSampleCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmSampleCount.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TmSampleCount.h"; sourceTree = "<group>"; };
+		A7FEF814166D098000737301 /* TmTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTime.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TmTime.h"; sourceTree = "<group>"; };
+		A7FEF815166D098000737301 /* TmTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTimer.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TmTimer.h"; sourceTree = "<group>"; };
+		A7FEF816166D098000737301 /* TmTimerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmTimerManager.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TmTimerManager.h"; sourceTree = "<group>"; };
+		A7FEF817166D098000737301 /* TmVirtualTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TmVirtualTime.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TmVirtualTime.h"; sourceTree = "<group>"; };
+		A7FEF818166D098000737301 /* Transcriber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Transcriber.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Transcriber.h"; sourceTree = "<group>"; };
+		A7FEF819166D098000737301 /* TranscriberExtract.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TranscriberExtract.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TranscriberExtract.h"; sourceTree = "<group>"; };
+		A7FEF81A166D098000737301 /* Transposer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Transposer.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Transposer.h"; sourceTree = "<group>"; };
+		A7FEF81B166D098000737301 /* TriangularFilterBank.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TriangularFilterBank.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/TriangularFilterBank.h"; sourceTree = "<group>"; };
+		A7FEF81C166D098000737301 /* Unfold.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Unfold.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Unfold.h"; sourceTree = "<group>"; };
+		A7FEF81D166D098000737301 /* UpdatingBassModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UpdatingBassModel.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/UpdatingBassModel.h"; sourceTree = "<group>"; };
+		A7FEF81E166D098000737301 /* Upsample.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Upsample.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Upsample.h"; sourceTree = "<group>"; };
+		A7FEF81F166D098000737301 /* Vibrato.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Vibrato.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Vibrato.h"; sourceTree = "<group>"; };
+		A7FEF820166D098000737301 /* ViconFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ViconFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ViconFileSource.h"; sourceTree = "<group>"; };
+		A7FEF821166D098000737301 /* vmblock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vmblock.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/vmblock.h"; sourceTree = "<group>"; };
+		A7FEF822166D098000737301 /* WaveguideOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveguideOsc.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WaveguideOsc.h"; sourceTree = "<group>"; };
+		A7FEF823166D098000737301 /* WaveletBands.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletBands.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WaveletBands.h"; sourceTree = "<group>"; };
+		A7FEF824166D098000737301 /* WaveletPyramid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletPyramid.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WaveletPyramid.h"; sourceTree = "<group>"; };
+		A7FEF825166D098000737301 /* WaveletStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WaveletStep.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WaveletStep.h"; sourceTree = "<group>"; };
+		A7FEF826166D098000737301 /* WavFileSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WavFileSink.h"; sourceTree = "<group>"; };
+		A7FEF827166D098000737301 /* WavFileSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WavFileSource.h"; sourceTree = "<group>"; };
+		A7FEF828166D098000737301 /* WavFileSource2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WavFileSource2.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WavFileSource2.h"; sourceTree = "<group>"; };
+		A7FEF829166D098000737301 /* WekaData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaData.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WekaData.h"; sourceTree = "<group>"; };
+		A7FEF82A166D098000737301 /* WekaSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaSink.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WekaSink.h"; sourceTree = "<group>"; };
+		A7FEF82B166D098000737301 /* WekaSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WekaSource.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WekaSource.h"; sourceTree = "<group>"; };
+		A7FEF82C166D098000737301 /* WHaSp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WHaSp.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/WHaSp.h"; sourceTree = "<group>"; };
+		A7FEF82D166D098000737301 /* Whitening.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Whitening.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Whitening.h"; sourceTree = "<group>"; };
+		A7FEF82E166D098000737301 /* Windowing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Windowing.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Windowing.h"; sourceTree = "<group>"; };
+		A7FEF82F166D098000737301 /* Yin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Yin.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/Yin.h"; sourceTree = "<group>"; };
+		A7FEF830166D098000737301 /* ZeroCrossings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZeroCrossings.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ZeroCrossings.h"; sourceTree = "<group>"; };
+		A7FEF831166D098000737301 /* ZeroRClassifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZeroRClassifier.h; path = "../../../../../../../../../Marsyas-trunk/src/marsyas/ZeroRClassifier.h"; sourceTree = "<group>"; };
+		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
+		E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = openFrameworksLib.xcodeproj; path = ../../../libs/openFrameworksCompiled/project/osx/openFrameworksLib.xcodeproj; sourceTree = SOURCE_ROOT; };
+		E45BE9710E8CC7DD009D7055 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
+		E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
+		E45BE9730E8CC7DD009D7055 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
+		E45BE9740E8CC7DD009D7055 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		E45BE9750E8CC7DD009D7055 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+		E45BE9760E8CC7DD009D7055 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		E45BE9770E8CC7DD009D7055 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		E45BE9790E8CC7DD009D7055 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		E4B69B5B0A3A1756003C02F2 /* ofMarsyasExampleDebug.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ofMarsyasExampleDebug.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B69E1D0A3A1BDC003C02F2 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = SOURCE_ROOT; };
+		E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = testApp.cpp; path = src/testApp.cpp; sourceTree = SOURCE_ROOT; };
+		E4B69E1F0A3A1BDC003C02F2 /* testApp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = testApp.h; path = src/testApp.h; sourceTree = SOURCE_ROOT; };
+		E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; path = "openFrameworks-Info.plist"; sourceTree = "<group>"; };
+		E4C2424410CC5A17004149E2 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		E4C2424510CC5A17004149E2 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		E4C2424610CC5A17004149E2 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		E4EB691F138AFCF100A09F29 /* CoreOF.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = CoreOF.xcconfig; path = ../../../libs/openFrameworksCompiled/project/osx/CoreOF.xcconfig; sourceTree = SOURCE_ROOT; };
+		E4EB6923138AFD0F00A09F29 /* Project.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
+		E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = /System/Library/Frameworks/CoreVideo.framework; sourceTree = "<absolute>"; };
+		E7E077E715D3B6510020DFD4 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
+		E7F985F515E0DE99003869B5 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = /System/Library/Frameworks/Accelerate.framework; sourceTree = "<absolute>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E4B69B590A3A1756003C02F2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7F985F815E0DEA3003869B5 /* Accelerate.framework in Frameworks */,
+				E7E077E815D3B6510020DFD4 /* QTKit.framework in Frameworks */,
+				E4EB6799138ADC1D00A09F29 /* GLUT.framework in Frameworks */,
+				E4328149138ABC9F0047C5CB /* openFrameworksDebug.a in Frameworks */,
+				E45BE97B0E8CC7DD009D7055 /* AGL.framework in Frameworks */,
+				E45BE97C0E8CC7DD009D7055 /* ApplicationServices.framework in Frameworks */,
+				E45BE97D0E8CC7DD009D7055 /* AudioToolbox.framework in Frameworks */,
+				E45BE97E0E8CC7DD009D7055 /* Carbon.framework in Frameworks */,
+				E45BE97F0E8CC7DD009D7055 /* CoreAudio.framework in Frameworks */,
+				E45BE9800E8CC7DD009D7055 /* CoreFoundation.framework in Frameworks */,
+				E45BE9810E8CC7DD009D7055 /* CoreServices.framework in Frameworks */,
+				E45BE9830E8CC7DD009D7055 /* OpenGL.framework in Frameworks */,
+				E45BE9840E8CC7DD009D7055 /* QuickTime.framework in Frameworks */,
+				E4C2424710CC5A17004149E2 /* AppKit.framework in Frameworks */,
+				E4C2424810CC5A17004149E2 /* Cocoa.framework in Frameworks */,
+				E4C2424910CC5A17004149E2 /* IOKit.framework in Frameworks */,
+				E7E077E515D3B63C0020DFD4 /* CoreVideo.framework in Frameworks */,
+				A7F5A74E166CCEE40039BF0F /* libmarsyas.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A777C79716690F7D00F889A7 /* ofMarsyas */ = {
+			isa = PBXGroup;
+			children = (
+				A777C79816690F7D00F889A7 /* lib */,
+				A777C94716690F7E00F889A7 /* src */,
+			);
+			name = ofMarsyas;
+			path = src/ofMarsyas;
+			sourceTree = "<group>";
+		};
+		A777C79816690F7D00F889A7 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				A777C79916690F7D00F889A7 /* marsyas */,
+				A777C90716690F7E00F889A7 /* MNV */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		A777C79916690F7D00F889A7 /* marsyas */ = {
+			isa = PBXGroup;
+			children = (
+				A777C79A16690F7D00F889A7 /* include */,
+				A777C90516690F7E00F889A7 /* lib */,
+			);
+			path = marsyas;
+			sourceTree = "<group>";
+		};
+		A777C79A16690F7D00F889A7 /* include */ = {
+			isa = PBXGroup;
+			children = (
+				A7FEF6CE166D098000737301 /* AbsMax.h */,
+				A7FEF6CF166D098000737301 /* AbsSoundFileSink.h */,
+				A7FEF6D0166D098000737301 /* AbsSoundFileSource.h */,
+				A7FEF6D1166D098000737301 /* AbsSoundFileSource2.h */,
+				A7FEF6D2166D098000737301 /* AccentFilterBank.h */,
+				A7FEF6D3166D098000737301 /* Accumulator.h */,
+				A7FEF6D4166D098000737301 /* AdditiveOsc.h */,
+				A7FEF6D5166D098000737301 /* ADRess.h */,
+				A7FEF6D6166D098000737301 /* ADRessSpectrum.h */,
+				A7FEF6D7166D098000737301 /* ADRessStereoSpectrum.h */,
+				A7FEF6D8166D098000737301 /* ADSR.h */,
+				A7FEF6D9166D098000737301 /* AimBoxes.h */,
+				A7FEF6DA166D098000737301 /* AimGammatone.h */,
+				A7FEF6DB166D098000737301 /* AimHCL.h */,
+				A7FEF6DC166D098000737301 /* AimHCL2.h */,
+				A7FEF6DD166D098000737301 /* AimLocalMax.h */,
+				A7FEF6DE166D098000737301 /* AimPZFC.h */,
+				A7FEF6DF166D098000737301 /* AimPZFC2.h */,
+				A7FEF6E0166D098000737301 /* AimSAI.h */,
+				A7FEF6E1166D098000737301 /* AimSSI.h */,
+				A7FEF6E2166D098000737301 /* AimVQ.h */,
+				A7FEF6E3166D098000737301 /* AliasingOsc.h */,
+				A7FEF6E4166D098000737301 /* AMDF.h */,
+				A7FEF6E5166D098000737301 /* ANN_node.h */,
+				A7FEF6E6166D098000737301 /* Annotator.h */,
+				A7FEF6E7166D098000737301 /* APDelayOsc.h */,
+				A7FEF6E8166D098000737301 /* ArffFileSink.h */,
+				A7FEF6E9166D098000737301 /* AubioYin.h */,
+				A7FEF6EA166D098000737301 /* AudioSink.h */,
+				A7FEF6EB166D098000737301 /* AudioSinkBlocking.h */,
+				A7FEF6EC166D098000737301 /* AudioSource.h */,
+				A7FEF6ED166D098000737301 /* AudioSourceBlocking.h */,
+				A7FEF6EE166D098000737301 /* AuFileSink.h */,
+				A7FEF6EF166D098000737301 /* AuFileSource.h */,
+				A7FEF6F0166D098000737301 /* AutoCorrelation.h */,
+				A7FEF6F1166D098000737301 /* AutoCorrelationFFT.h */,
+				A7FEF6F2166D098000737301 /* AveragingPattern.h */,
+				A7FEF6F3166D098000737301 /* BaseAudioSink.h */,
+				A7FEF6F4166D098000737301 /* basis.h */,
+				A7FEF6F5166D098000737301 /* BeatAgent.h */,
+				A7FEF6F6166D098000737301 /* BeatHistoFeatures.h */,
+				A7FEF6F7166D098000737301 /* BeatHistogram.h */,
+				A7FEF6F8166D098000737301 /* BeatHistogramFromPeaks.h */,
+				A7FEF6F9166D098000737301 /* BeatPhase.h */,
+				A7FEF6FA166D098000737301 /* BeatReferee.h */,
+				A7FEF6FB166D098000737301 /* BeatTimesSink.h */,
+				A7FEF6FC166D098000737301 /* BICchangeDetector.h */,
+				A7FEF6FD166D098000737301 /* Biquad.h */,
+				A7FEF6FE166D098000737301 /* BlitOsc.h */,
+				A7FEF6FF166D098000737301 /* CARFAC_coeffs.h */,
+				A7FEF700166D098000737301 /* CARFAC.h */,
+				A7FEF701166D098000737301 /* Cartesian2Polar.h */,
+				A7FEF702166D098000737301 /* Cascade.h */,
+				A7FEF703166D098000737301 /* Centroid.h */,
+				A7FEF704166D098000737301 /* Chroma.h */,
+				A7FEF705166D098000737301 /* ChromaScale.h */,
+				A7FEF706166D098000737301 /* ClassificationReport.h */,
+				A7FEF707166D098000737301 /* ClassOutputSink.h */,
+				A7FEF708166D098000737301 /* Clip.h */,
+				A7FEF709166D098000737301 /* Collection.h */,
+				A7FEF70A166D098000737301 /* CollectionFileSource.h */,
+				A7FEF70B166D098000737301 /* Color.h */,
+				A7FEF70C166D098000737301 /* Combinator.h */,
+				A7FEF70D166D098000737301 /* CommandLineOptions.h */,
+				A7FEF70E166D098000737301 /* common_header.h */,
+				A7FEF70F166D098000737301 /* common.h */,
+				A7FEF710166D098000737301 /* Communicator.h */,
+				A7FEF711166D098000737301 /* CompExp.h */,
+				A7FEF712166D098000737301 /* Compressor.h */,
+				A7FEF713166D098000737301 /* Confidence.h */,
+				A7FEF714166D098000737301 /* ConstQFiltering.h */,
+				A7FEF715166D098000737301 /* Conversions.h */,
+				A7FEF716166D098000737301 /* CrossCorrelation.h */,
+				A7FEF717166D098000737301 /* CsvFileSource.h */,
+				A7FEF718166D098000737301 /* Daub4.h */,
+				A7FEF719166D098000737301 /* DCSource.h */,
+				A7FEF71A166D098000737301 /* Deinterleave.h */,
+				A7FEF71B166D098000737301 /* DeInterleaveSizecontrol.h */,
+				A7FEF71C166D098000737301 /* Delay.h */,
+				A7FEF71D166D098000737301 /* DelaySamples.h */,
+				A7FEF71E166D098000737301 /* Delta.h */,
+				A7FEF71F166D098000737301 /* DeltaFirstOrderRegression.h */,
+				A7FEF720166D098000737301 /* Differentiator.h */,
+				A7FEF721166D098000737301 /* DLLDefines.h */,
+				A7FEF722166D098000737301 /* DownSampler.h */,
+				A7FEF723166D098000737301 /* DPWOsc.h */,
+				A7FEF724166D098000737301 /* dsound.h */,
+				A7FEF725166D098000737301 /* DTW.h */,
+				A7FEF726166D098000737301 /* DTWWD.h */,
+				A7FEF727166D098000737301 /* Energy.h */,
+				A7FEF728166D098000737301 /* EnhADRess.h */,
+				A7FEF729166D098000737301 /* EnhADRessStereoSpectrum.h */,
+				A7FEF72A166D098000737301 /* Envelope.h */,
+				A7FEF72B166D098000737301 /* ERB.h */,
+				A7FEF72C166D098000737301 /* ERBTools.h */,
+				A7FEF72D166D098000737301 /* Esitar.h */,
+				A7FEF72E166D098000737301 /* EvEvent.h */,
+				A7FEF72F166D098000737301 /* EvExpr.h */,
+				A7FEF730166D098000737301 /* EvGetUpd.h */,
+				A7FEF731166D098000737301 /* EvValUpd.h */,
+				A7FEF732166D098000737301 /* ExCommon.h */,
+				A7FEF733166D098000737301 /* ExNode.h */,
+				A7FEF734166D098000737301 /* ExParser.h */,
+				A7FEF735166D098000737301 /* Expr.h */,
+				A7FEF736166D098000737301 /* ExScanner.h */,
+				A7FEF737166D098000737301 /* ExSymTbl.h */,
+				A7FEF738166D098000737301 /* ExVal.h */,
+				A7FEF739166D098000737301 /* F0Analysis.h */,
+				A7FEF73A166D098000737301 /* Fanin.h */,
+				A7FEF73B166D098000737301 /* Fanout.h */,
+				A7FEF73C166D098000737301 /* FanOutIn.h */,
+				A7FEF73D166D098000737301 /* fft.h */,
+				A7FEF73E166D098000737301 /* FileName.h */,
+				A7FEF73F166D098000737301 /* Filter.h */,
+				A7FEF740166D098000737301 /* FlowCutSource.h */,
+				A7FEF741166D098000737301 /* FlowThru.h */,
+				A7FEF742166D098000737301 /* Flux.h */,
+				A7FEF743166D098000737301 /* FM.h */,
+				A7FEF744166D098000737301 /* FMeasure.h */,
+				A7FEF745166D098000737301 /* FullWaveRectifier.h */,
+				A7FEF746166D098000737301 /* Gain.h */,
+				A7FEF747166D098000737301 /* GaussianClassifier.h */,
+				A7FEF748166D098000737301 /* GMMClassifier.h */,
+				A7FEF749166D098000737301 /* GStreamerSource.h */,
+				A7FEF74A166D098000737301 /* HalfWaveRectifier.h */,
+				A7FEF74B166D098000737301 /* HarmonicEnhancer.h */,
+				A7FEF74C166D098000737301 /* HarmonicStrength.h */,
+				A7FEF74D166D098000737301 /* Heap.h */,
+				A7FEF74E166D098000737301 /* HWPS.h */,
+				A7FEF74F166D098000737301 /* Inject.h */,
+				A7FEF750166D098000737301 /* InvSpectrum.h */,
+				A7FEF751166D098000737301 /* KNNClassifier.h */,
+				A7FEF752166D098000737301 /* Krumhansl_key_finder.h */,
+				A7FEF753166D098000737301 /* Kurtosis.h */,
+				A7FEF754166D098000737301 /* Limiter.h */,
+				A7FEF755166D098000737301 /* LPC.h */,
+				A7FEF756166D098000737301 /* LPCC.h */,
+				A7FEF757166D098000737301 /* LSP.h */,
+				A7FEF758166D098000737301 /* lu.h */,
+				A7FEF759166D098000737301 /* LyonPassiveEar.h */,
+				A7FEF75A166D098000737301 /* MarControl.h */,
+				A7FEF75B166D098000737301 /* MarControlAccessor.h */,
+				A7FEF75C166D098000737301 /* MarControlManager.h */,
+				A7FEF75D166D098000737301 /* MarControlValue.h */,
+				A7FEF75E166D098000737301 /* MarFileSink.h */,
+				A7FEF75F166D098000737301 /* marohtml.h */,
+				A7FEF760166D098000737301 /* marojson.h */,
+				A7FEF761166D098000737301 /* marostring.h */,
+				A7FEF762166D098000737301 /* marosvg.h */,
+				A7FEF763166D098000737301 /* maroxml.h */,
+				A7FEF764166D098000737301 /* marsyas_types.h */,
+				A7FEF765166D098000737301 /* MarSystem.h */,
+				A7FEF766166D098000737301 /* MarSystemManager.h */,
+				A7FEF767166D098000737301 /* MarSystemTemplateAdvanced.h */,
+				A7FEF768166D098000737301 /* MarSystemTemplateBasic.h */,
+				A7FEF769166D098000737301 /* MarSystemTemplateMedium.h */,
+				A7FEF76A166D098000737301 /* MatchBassModel.h */,
+				A7FEF76B166D098000737301 /* MathPower.h */,
+				A7FEF76C166D098000737301 /* MATLABengine.h */,
+				A7FEF76D166D098000737301 /* MaxArgMax.h */,
+				A7FEF76E166D098000737301 /* MaxMin.h */,
+				A7FEF76F166D098000737301 /* McAulayQuatieri.h */,
+				A7FEF770166D098000737301 /* Mean.h */,
+				A7FEF771166D098000737301 /* MeanAbsoluteDeviation.h */,
+				A7FEF772166D098000737301 /* MeddisHairCell.h */,
+				A7FEF773166D098000737301 /* Median.h */,
+				A7FEF774166D098000737301 /* MedianFilter.h */,
+				A7FEF775166D098000737301 /* Memory.h */,
+				A7FEF776166D098000737301 /* MemorySource.h */,
+				A7FEF777166D098000737301 /* Metric.h */,
+				A7FEF778166D098000737301 /* Metric2.h */,
+				A7FEF779166D098000737301 /* MFCC.h */,
+				A7FEF77A166D098000737301 /* mididevices.h */,
+				A7FEF77B166D098000737301 /* MidiFileSynthSource.h */,
+				A7FEF77C166D098000737301 /* MidiInput.h */,
+				A7FEF77D166D098000737301 /* MidiOutput.h */,
+				A7FEF77E166D098000737301 /* MinArgMin.h */,
+				A7FEF77F166D098000737301 /* MixToMono.h */,
+				A7FEF780166D098000737301 /* Mono2Stereo.h */,
+				A7FEF781166D098000737301 /* MP3FileSink.h */,
+				A7FEF782166D098000737301 /* MP3FileSource.h */,
+				A7FEF783166D098000737301 /* MrsLog.h */,
+				A7FEF784166D098000737301 /* Negative.h */,
+				A7FEF785166D098000737301 /* NoiseGate.h */,
+				A7FEF786166D098000737301 /* NoiseSource.h */,
+				A7FEF787166D098000737301 /* Norm.h */,
+				A7FEF788166D098000737301 /* Normalize.h */,
+				A7FEF789166D098000737301 /* NormalizeAbs.h */,
+				A7FEF78A166D098000737301 /* NormCut.h */,
+				A7FEF78B166D098000737301 /* NormMatrix.h */,
+				A7FEF78C166D098000737301 /* NormMaxMin.h */,
+				A7FEF78D166D098000737301 /* NumericLib.h */,
+				A7FEF78E166D098000737301 /* OggFileSource.h */,
+				A7FEF78F166D098000737301 /* OnePole.h */,
+				A7FEF790166D098000737301 /* OneRClassifier.h */,
+				A7FEF791166D098000737301 /* OnsetTimes.h */,
+				A7FEF792166D098000737301 /* OrcaSnip.h */,
+				A7FEF793166D098000737301 /* OverlapAdd.h */,
+				A7FEF794166D098000737301 /* Panorama.h */,
+				A7FEF795166D098000737301 /* Parallel.h */,
+				A7FEF796166D098000737301 /* ParallelMatrixWeight.h */,
+				A7FEF797166D098000737301 /* PatchMatrix.h */,
+				A7FEF798166D098000737301 /* PCA.h */,
+				A7FEF799166D098000737301 /* Peak2Rms.h */,
+				A7FEF79A166D098000737301 /* PeakClusterSelect.h */,
+				A7FEF79B166D098000737301 /* PeakConvert.h */,
+				A7FEF79C166D098000737301 /* PeakConvert2.h */,
+				A7FEF79D166D098000737301 /* PeakDistanceHorizontality.h */,
+				A7FEF79E166D098000737301 /* PeakEnhancer.h */,
+				A7FEF79F166D098000737301 /* Peaker.h */,
+				A7FEF7A0166D098000737301 /* PeakerAdaptive.h */,
+				A7FEF7A1166D098000737301 /* PeakerOnset.h */,
+				A7FEF7A2166D098000737301 /* PeakFeatureSelect.h */,
+				A7FEF7A3166D098000737301 /* PeakInObservation.h */,
+				A7FEF7A4166D098000737301 /* PeakLabeler.h */,
+				A7FEF7A5166D098000737301 /* PeakMask.h */,
+				A7FEF7A6166D098000737301 /* PeakPeriods2BPM.h */,
+				A7FEF7A7166D098000737301 /* PeakRatio.h */,
+				A7FEF7A8166D098000737301 /* PeakResidual.h */,
+				A7FEF7A9166D098000737301 /* PeakSynthFFT.h */,
+				A7FEF7AA166D098000737301 /* PeakSynthOsc.h */,
+				A7FEF7AB166D098000737301 /* PeakSynthOscBank.h */,
+				A7FEF7AC166D098000737301 /* peakView.h */,
+				A7FEF7AD166D098000737301 /* PeakViewMerge.h */,
+				A7FEF7AE166D098000737301 /* PeakViewSink.h */,
+				A7FEF7AF166D098000737301 /* PeakViewSource.h */,
+				A7FEF7B0166D098000737301 /* PeUtilities.h */,
+				A7FEF7B1166D098000737301 /* PhaseLock.h */,
+				A7FEF7B2166D098000737301 /* PhiSEMFilter.h */,
+				A7FEF7B3166D098000737301 /* PhiSEMSource.h */,
+				A7FEF7B4166D098000737301 /* Pitch2Chroma.h */,
+				A7FEF7B5166D098000737301 /* PitchDiff.h */,
+				A7FEF7B6166D098000737301 /* PlotSink.h */,
+				A7FEF7B7166D098000737301 /* Plucked.h */,
+				A7FEF7B8166D098000737301 /* Polar2Cartesian.h */,
+				A7FEF7B9166D098000737301 /* Power.h */,
+				A7FEF7BA166D098000737301 /* PowerSpectrum.h */,
+				A7FEF7BB166D098000737301 /* PowerToAverageRatio.h */,
+				A7FEF7BC166D098000737301 /* Product.h */,
+				A7FEF7BD166D098000737301 /* PvConvert.h */,
+				A7FEF7BE166D098000737301 /* PvConvolve.h */,
+				A7FEF7BF166D098000737301 /* PvFold.h */,
+				A7FEF7C0166D098000737301 /* PvMultiResolution.h */,
+				A7FEF7C1166D098000737301 /* PvOscBank.h */,
+				A7FEF7C2166D098000737301 /* PvOverlapadd.h */,
+				A7FEF7C3166D098000737301 /* PvUnconvert.h */,
+				A7FEF7C4166D098000737301 /* PWMSource.h */,
+				A7FEF7C5166D098000737301 /* QGMMModel.h */,
+				A7FEF7C6166D098000737301 /* RadioDrumInput.h */,
+				A7FEF7C7166D098000737301 /* RawFileSource.h */,
+				A7FEF7C8166D098000737301 /* RBF.h */,
+				A7FEF7C9166D098000737301 /* realvec.h */,
+				A7FEF7CA166D098000737301 /* RealvecSink.h */,
+				A7FEF7CB166D098000737301 /* RealvecSource.h */,
+				A7FEF7CC166D098000737301 /* Reassign.h */,
+				A7FEF7CD166D098000737301 /* Reciprocal.h */,
+				A7FEF7CE166D098000737301 /* RemoveObservations.h */,
+				A7FEF7CF166D098000737301 /* Repeat.h */,
+				A7FEF7D0166D098000737301 /* Resample.h */,
+				A7FEF7D1166D098000737301 /* ResampleBezier.h */,
+				A7FEF7D2166D098000737301 /* ResampleLinear.h */,
+				A7FEF7D3166D098000737301 /* ResampleNearestNeighbour.h */,
+				A7FEF7D4166D098000737301 /* ResampleSinc.h */,
+				A7FEF7D5166D098000737301 /* Reverse.h */,
+				A7FEF7D6166D098000737301 /* Rms.h */,
+				A7FEF7D7166D098000737301 /* Rolloff.h */,
+				A7FEF7D8166D098000737301 /* RunningAutocorrelation.h */,
+				A7FEF7D9166D098000737301 /* RunningStatistics.h */,
+				A7FEF7DA166D098000737301 /* SCF.h */,
+				A7FEF7DB166D098000737301 /* Scheduler.h */,
+				A7FEF7DC166D098000737301 /* Selector.h */,
+				A7FEF7DD166D098000737301 /* SelfSimilarityMatrix.h */,
+				A7FEF7DE166D098000737301 /* SeneffEar.h */,
+				A7FEF7DF166D098000737301 /* Series.h */,
+				A7FEF7E0166D098000737301 /* SFM.h */,
+				A7FEF7E1166D098000737301 /* Shifter.h */,
+				A7FEF7E2166D098000737301 /* ShiftInput.h */,
+				A7FEF7E3166D098000737301 /* ShiftOutput.h */,
+				A7FEF7E4166D098000737301 /* Shredder.h */,
+				A7FEF7E5166D098000737301 /* Signum.h */,
+				A7FEF7E6166D098000737301 /* SilenceRemove.h */,
+				A7FEF7E7166D098000737301 /* SimilarityMatrix.h */,
+				A7FEF7E8166D098000737301 /* SimulMaskingFft.h */,
+				A7FEF7E9166D098000737301 /* SineSource.h */,
+				A7FEF7EA166D098000737301 /* Skewness.h */,
+				A7FEF7EB166D098000737301 /* SliceDelta.h */,
+				A7FEF7EC166D098000737301 /* SliceShuffle.h */,
+				A7FEF7ED166D098000737301 /* SMO.h */,
+				A7FEF7EE166D098000737301 /* SNR.h */,
+				A7FEF7EF166D098000737301 /* SOM.h */,
+				A7FEF7F0166D098000737301 /* SoundFileSink.h */,
+				A7FEF7F1166D098000737301 /* SoundFileSource.h */,
+				A7FEF7F2166D098000737301 /* SoundFileSource2.h */,
+				A7FEF7F3166D098000737301 /* SoundFileSourceHopper.h */,
+				A7FEF7F4166D098000737301 /* SpectralFlatnessAllBands.h */,
+				A7FEF7F5166D098000737301 /* SpectralSNR.h */,
+				A7FEF7F6166D098000737301 /* SpectralTransformations.h */,
+				A7FEF7F7166D098000737301 /* Spectrum.h */,
+				A7FEF7F8166D098000737301 /* Spectrum2ACMChroma.h */,
+				A7FEF7F9166D098000737301 /* Spectrum2Chroma.h */,
+				A7FEF7FA166D098000737301 /* Spectrum2Mel.h */,
+				A7FEF7FB166D098000737301 /* Square.h */,
+				A7FEF7FC166D098000737301 /* StandardDeviation.h */,
+				A7FEF7FD166D098000737301 /* static_vq_codebook.h */,
+				A7FEF7FE166D098000737301 /* statistics.h */,
+				A7FEF7FF166D098000737301 /* StereoSpectrum.h */,
+				A7FEF800166D098000737301 /* StereoSpectrumFeatures.h */,
+				A7FEF801166D098000737301 /* StereoSpectrumSources.h */,
+				A7FEF802166D098000737301 /* Stk.h */,
+				A7FEF803166D098000737301 /* StretchLinear.h */,
+				A7FEF804166D098000737301 /* StrobeList.h */,
+				A7FEF805166D098000737301 /* Subtract.h */,
+				A7FEF806166D098000737301 /* SubtractMean.h */,
+				A7FEF807166D098000737301 /* Sum.h */,
+				A7FEF808166D098000737301 /* SVMClassifier.h */,
+				A7FEF809166D098000737301 /* Talk.h */,
+				A7FEF80A166D098000737301 /* TempoHypotheses.h */,
+				A7FEF80B166D098000737301 /* Thread.h */,
+				A7FEF80C166D098000737301 /* TimeFreqPeakConnectivity.h */,
+				A7FEF80D166D098000737301 /* TimeLine.h */,
+				A7FEF80E166D098000737301 /* TimelineLabeler.h */,
+				A7FEF80F166D098000737301 /* TimeStretch.h */,
+				A7FEF810166D098000737301 /* TmControlValue.h */,
+				A7FEF811166D098000737301 /* TmParam.h */,
+				A7FEF812166D098000737301 /* TmRealTime.h */,
+				A7FEF813166D098000737301 /* TmSampleCount.h */,
+				A7FEF814166D098000737301 /* TmTime.h */,
+				A7FEF815166D098000737301 /* TmTimer.h */,
+				A7FEF816166D098000737301 /* TmTimerManager.h */,
+				A7FEF817166D098000737301 /* TmVirtualTime.h */,
+				A7FEF818166D098000737301 /* Transcriber.h */,
+				A7FEF819166D098000737301 /* TranscriberExtract.h */,
+				A7FEF81A166D098000737301 /* Transposer.h */,
+				A7FEF81B166D098000737301 /* TriangularFilterBank.h */,
+				A7FEF81C166D098000737301 /* Unfold.h */,
+				A7FEF81D166D098000737301 /* UpdatingBassModel.h */,
+				A7FEF81E166D098000737301 /* Upsample.h */,
+				A7FEF81F166D098000737301 /* Vibrato.h */,
+				A7FEF820166D098000737301 /* ViconFileSource.h */,
+				A7FEF821166D098000737301 /* vmblock.h */,
+				A7FEF822166D098000737301 /* WaveguideOsc.h */,
+				A7FEF823166D098000737301 /* WaveletBands.h */,
+				A7FEF824166D098000737301 /* WaveletPyramid.h */,
+				A7FEF825166D098000737301 /* WaveletStep.h */,
+				A7FEF826166D098000737301 /* WavFileSink.h */,
+				A7FEF827166D098000737301 /* WavFileSource.h */,
+				A7FEF828166D098000737301 /* WavFileSource2.h */,
+				A7FEF829166D098000737301 /* WekaData.h */,
+				A7FEF82A166D098000737301 /* WekaSink.h */,
+				A7FEF82B166D098000737301 /* WekaSource.h */,
+				A7FEF82C166D098000737301 /* WHaSp.h */,
+				A7FEF82D166D098000737301 /* Whitening.h */,
+				A7FEF82E166D098000737301 /* Windowing.h */,
+				A7FEF82F166D098000737301 /* Yin.h */,
+				A7FEF830166D098000737301 /* ZeroCrossings.h */,
+				A7FEF831166D098000737301 /* ZeroRClassifier.h */,
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		A777C90516690F7E00F889A7 /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				A7F5A74D166CCEE40039BF0F /* libmarsyas.a */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		A777C90716690F7E00F889A7 /* MNV */ = {
+			isa = PBXGroup;
+			children = (
+				A777C90816690F7E00F889A7 /* AccumulatorWidget.cpp */,
+				A777C90916690F7E00F889A7 /* AccumulatorWidget.h */,
+				A777C90A16690F7E00F889A7 /* BufferUtils.cpp */,
+				A777C90B16690F7E00F889A7 /* BufferUtils.h */,
+				A777C90C16690F7E00F889A7 /* CascadeWidget.cpp */,
+				A777C90D16690F7E00F889A7 /* CascadeWidget.h */,
+				A777C90E16690F7E00F889A7 /* DrawingUtils.cpp */,
+				A777C90F16690F7E00F889A7 /* DrawingUtils.h */,
+				A777C91016690F7E00F889A7 /* FaninWidget.cpp */,
+				A777C91116690F7E00F889A7 /* FaninWidget.h */,
+				A777C91216690F7E00F889A7 /* FanOutInWidget.cpp */,
+				A777C91316690F7E00F889A7 /* FanOutInWidget.h */,
+				A777C91416690F7E00F889A7 /* FanoutWidget.cpp */,
+				A777C91516690F7E00F889A7 /* FanoutWidget.h */,
+				A777C91616690F7E00F889A7 /* FlowThruWidget.cpp */,
+				A777C91716690F7E00F889A7 /* FlowThruWidget.h */,
+				A777C91816690F7E00F889A7 /* globalVars.cpp */,
+				A777C91916690F7E00F889A7 /* globalVars.h */,
+				A777C91A16690F7E00F889A7 /* GraphicalEnvironment.cpp */,
+				A777C91B16690F7E00F889A7 /* GraphicalEnvironment.h */,
+				A777C91C16690F7E00F889A7 /* GraphicalParameters.h */,
+				A777C91D16690F7E00F889A7 /* MarControlDiagramDisplay.cpp */,
+				A777C91E16690F7E00F889A7 /* MarControlDiagramDisplay.h */,
+				A777C91F16690F7E00F889A7 /* MarControlDiagramNode.cpp */,
+				A777C92016690F7E00F889A7 /* MarControlDiagramNode.h */,
+				A777C92116690F7E00F889A7 /* MarControlLinkWidget.cpp */,
+				A777C92216690F7E00F889A7 /* MarControlLinkWidget.h */,
+				A777C92316690F7E00F889A7 /* MarControlWidget.cpp */,
+				A777C92416690F7E00F889A7 /* MarControlWidget.h */,
+				A777C92516690F7E00F889A7 /* MarSystemNodeSymbol.cpp */,
+				A777C92616690F7E00F889A7 /* MarSystemNodeSymbol.h */,
+				A777C92716690F7E00F889A7 /* MarSystemThread.cpp */,
+				A777C92816690F7E00F889A7 /* MarSystemThread.h */,
+				A777C92916690F7E00F889A7 /* MarSystemWidget.cpp */,
+				A777C92A16690F7E00F889A7 /* MarSystemWidget.h */,
+				A777C92B16690F7E00F889A7 /* MarSystemWidgetManager.cpp */,
+				A777C92C16690F7E00F889A7 /* MarSystemWidgetManager.h */,
+				A777C92D16690F7E00F889A7 /* maximizeButton.cpp */,
+				A777C92E16690F7E00F889A7 /* maximizeButton.h */,
+				A777C92F16690F7E00F889A7 /* MiniViewWidget.cpp */,
+				A777C93016690F7E00F889A7 /* MiniViewWidget.h */,
+				A777C93116690F7E00F889A7 /* ParallelWidget.cpp */,
+				A777C93216690F7E00F889A7 /* ParallelWidget.h */,
+				A777C93316690F7E00F889A7 /* ProbingManager.cpp */,
+				A777C93416690F7E00F889A7 /* ProbingManager.h */,
+				A777C93516690F7E00F889A7 /* ProcessedDataWidget.cpp */,
+				A777C93616690F7E00F889A7 /* ProcessedDataWidget.h */,
+				A777C93716690F7E00F889A7 /* SelfSimilarityMatrixWidget.cpp */,
+				A777C93816690F7E00F889A7 /* SelfSimilarityMatrixWidget.h */,
+				A777C93916690F7E00F889A7 /* SeriesWidget.cpp */,
+				A777C93A16690F7E00F889A7 /* SeriesWidget.h */,
+				A777C93B16690F7E00F889A7 /* ShredderWidget.cpp */,
+				A777C93C16690F7E00F889A7 /* ShredderWidget.h */,
+				A777C93D16690F7E00F889A7 /* SilenceRemoveWidget.cpp */,
+				A777C93E16690F7E00F889A7 /* SilenceRemoveWidget.h */,
+				A777C93F16690F7E00F889A7 /* SimilarityMatrixWidget.cpp */,
+				A777C94016690F7E00F889A7 /* SimilarityMatrixWidget.h */,
+				A777C94116690F7E00F889A7 /* toggleButton.cpp */,
+				A777C94216690F7E00F889A7 /* toggleButton.h */,
+				A777C94316690F7E00F889A7 /* utils.cpp */,
+				A777C94416690F7E00F889A7 /* utils.h */,
+				A777C94516690F7E00F889A7 /* Widget.cpp */,
+				A777C94616690F7E00F889A7 /* Widget.h */,
+			);
+			path = MNV;
+			sourceTree = "<group>";
+		};
+		A777C94716690F7E00F889A7 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				A777C96E1669117100F889A7 /* ofMarsyas.cpp */,
+				A777C9701669117E00F889A7 /* ofMarsyas.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+		BB4B014C10F69532006C3DED /* addons */ = {
+			isa = PBXGroup;
+			children = (
+				A777C79716690F7D00F889A7 /* ofMarsyas */,
+			);
+			name = addons;
+			sourceTree = "<group>";
+		};
+		BBAB23C913894ECA00AA2426 /* system frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E7F985F515E0DE99003869B5 /* Accelerate.framework */,
+				E4C2424410CC5A17004149E2 /* AppKit.framework */,
+				E4C2424510CC5A17004149E2 /* Cocoa.framework */,
+				E4C2424610CC5A17004149E2 /* IOKit.framework */,
+				E45BE9710E8CC7DD009D7055 /* AGL.framework */,
+				E45BE9720E8CC7DD009D7055 /* ApplicationServices.framework */,
+				E45BE9730E8CC7DD009D7055 /* AudioToolbox.framework */,
+				E45BE9740E8CC7DD009D7055 /* Carbon.framework */,
+				E45BE9750E8CC7DD009D7055 /* CoreAudio.framework */,
+				E45BE9760E8CC7DD009D7055 /* CoreFoundation.framework */,
+				E45BE9770E8CC7DD009D7055 /* CoreServices.framework */,
+				E45BE9790E8CC7DD009D7055 /* OpenGL.framework */,
+				E45BE97A0E8CC7DD009D7055 /* QuickTime.framework */,
+				E7E077E415D3B63C0020DFD4 /* CoreVideo.framework */,
+				E7E077E715D3B6510020DFD4 /* QTKit.framework */,
+			);
+			name = "system frameworks";
+			sourceTree = "<group>";
+		};
+		BBAB23CA13894EDB00AA2426 /* 3rd party frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BBAB23BE13894E4700AA2426 /* GLUT.framework */,
+			);
+			name = "3rd party frameworks";
+			sourceTree = "<group>";
+		};
+		E4328144138ABC890047C5CB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E4328148138ABC890047C5CB /* openFrameworksDebug.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E45BE5980E8CC70C009D7055 /* frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BBAB23CA13894EDB00AA2426 /* 3rd party frameworks */,
+				BBAB23C913894ECA00AA2426 /* system frameworks */,
+			);
+			name = frameworks;
+			sourceTree = "<group>";
+		};
+		E4B69B4A0A3A1720003C02F2 = {
+			isa = PBXGroup;
+			children = (
+				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
+				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
+				E4B69E1C0A3A1BDC003C02F2 /* src */,
+				E4EEC9E9138DF44700A80321 /* openFrameworks */,
+				BB4B014C10F69532006C3DED /* addons */,
+				E45BE5980E8CC70C009D7055 /* frameworks */,
+				E4B69B5B0A3A1756003C02F2 /* ofMarsyasExampleDebug.app */,
+			);
+			sourceTree = "<group>";
+		};
+		E4B69E1C0A3A1BDC003C02F2 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				E4B69E1D0A3A1BDC003C02F2 /* main.cpp */,
+				E4B69E1E0A3A1BDC003C02F2 /* testApp.cpp */,
+				E4B69E1F0A3A1BDC003C02F2 /* testApp.h */,
+			);
+			path = src;
+			sourceTree = SOURCE_ROOT;
+		};
+		E4EEC9E9138DF44700A80321 /* openFrameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E4EB691F138AFCF100A09F29 /* CoreOF.xcconfig */,
+				E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */,
+			);
+			name = openFrameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E4B69B5A0A3A1756003C02F2 /* ofMarsyasExample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "ofMarsyasExample" */;
+			buildPhases = (
+				E4B69B580A3A1756003C02F2 /* Sources */,
+				E4B69B590A3A1756003C02F2 /* Frameworks */,
+				E4B6FFFD0C3F9AB9008CF71C /* ShellScript */,
+				E4C2427710CC5ABF004149E2 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E4EEB9AC138B136A00A80321 /* PBXTargetDependency */,
+			);
+			name = ofMarsyasExample;
+			productName = myOFApp;
+			productReference = E4B69B5B0A3A1756003C02F2 /* ofMarsyasExampleDebug.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E4B69B4C0A3A1720003C02F2 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "ofMarsyasExample" */;
+			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = E4B69B4A0A3A1720003C02F2;
+			productRefGroup = E4B69B4A0A3A1720003C02F2;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = E4328144138ABC890047C5CB /* Products */;
+					ProjectRef = E4328143138ABC890047C5CB /* openFrameworksLib.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				E4B69B5A0A3A1756003C02F2 /* ofMarsyasExample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		E4328148138ABC890047C5CB /* openFrameworksDebug.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = openFrameworksDebug.a;
+			remoteRef = E4328147138ABC890047C5CB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		E4B6FFFD0C3F9AB9008CF71C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cp -f ../../../libs/fmodex/lib/osx/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/libfmodex.dylib\"; install_name_tool -change ./libfmodex.dylib @executable_path/libfmodex.dylib \"$TARGET_BUILD_DIR/$PRODUCT_NAME.app/Contents/MacOS/$PRODUCT_NAME\";";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E4B69B580A3A1756003C02F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
+				E4B69E210A3A1BDC003C02F2 /* testApp.cpp in Sources */,
+				A777C94916690F7E00F889A7 /* AccumulatorWidget.cpp in Sources */,
+				A777C94A16690F7E00F889A7 /* BufferUtils.cpp in Sources */,
+				A777C94B16690F7E00F889A7 /* CascadeWidget.cpp in Sources */,
+				A777C94C16690F7E00F889A7 /* DrawingUtils.cpp in Sources */,
+				A777C94D16690F7E00F889A7 /* FaninWidget.cpp in Sources */,
+				A777C94E16690F7E00F889A7 /* FanOutInWidget.cpp in Sources */,
+				A777C94F16690F7E00F889A7 /* FanoutWidget.cpp in Sources */,
+				A777C95016690F7E00F889A7 /* FlowThruWidget.cpp in Sources */,
+				A777C95116690F7E00F889A7 /* globalVars.cpp in Sources */,
+				A777C95216690F7E00F889A7 /* GraphicalEnvironment.cpp in Sources */,
+				A777C95316690F7E00F889A7 /* MarControlDiagramDisplay.cpp in Sources */,
+				A777C95416690F7E00F889A7 /* MarControlDiagramNode.cpp in Sources */,
+				A777C95516690F7E00F889A7 /* MarControlLinkWidget.cpp in Sources */,
+				A777C95616690F7E00F889A7 /* MarControlWidget.cpp in Sources */,
+				A777C95716690F7E00F889A7 /* MarSystemNodeSymbol.cpp in Sources */,
+				A777C95816690F7E00F889A7 /* MarSystemThread.cpp in Sources */,
+				A777C95916690F7E00F889A7 /* MarSystemWidget.cpp in Sources */,
+				A777C95A16690F7E00F889A7 /* MarSystemWidgetManager.cpp in Sources */,
+				A777C95B16690F7E00F889A7 /* maximizeButton.cpp in Sources */,
+				A777C95C16690F7E00F889A7 /* MiniViewWidget.cpp in Sources */,
+				A777C95D16690F7E00F889A7 /* ParallelWidget.cpp in Sources */,
+				A777C95E16690F7E00F889A7 /* ProbingManager.cpp in Sources */,
+				A777C95F16690F7E00F889A7 /* ProcessedDataWidget.cpp in Sources */,
+				A777C96016690F7E00F889A7 /* SelfSimilarityMatrixWidget.cpp in Sources */,
+				A777C96116690F7E00F889A7 /* SeriesWidget.cpp in Sources */,
+				A777C96216690F7E00F889A7 /* ShredderWidget.cpp in Sources */,
+				A777C96316690F7E00F889A7 /* SilenceRemoveWidget.cpp in Sources */,
+				A777C96416690F7E00F889A7 /* SimilarityMatrixWidget.cpp in Sources */,
+				A777C96516690F7E00F889A7 /* toggleButton.cpp in Sources */,
+				A777C96616690F7E00F889A7 /* utils.cpp in Sources */,
+				A777C96716690F7E00F889A7 /* Widget.cpp in Sources */,
+				A777C96F1669117100F889A7 /* ofMarsyas.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E4EEB9AC138B136A00A80321 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = openFrameworks;
+			targetProxy = E4EEB9AB138B136A00A80321 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		E4B69B4E0A3A1720003C02F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
+				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = NO;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					src,
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-D__MACOSX_CORE__",
+					"-lpthread",
+					"-mtune=native",
+				);
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		E4B69B4F0A3A1720003C02F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E4EB6923138AFD0F00A09F29 /* Project.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
+				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/bin/";
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
+				GCC_AUTO_VECTORIZATION = YES;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_UNROLL_LOOPS = YES;
+				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
+				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = NO;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				GCC_WARN_UNINITIALIZED_AUTOS = NO;
+				GCC_WARN_UNUSED_VALUE = NO;
+				GCC_WARN_UNUSED_VARIABLE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(OF_CORE_HEADERS)",
+					src,
+				);
+				OTHER_CPLUSPLUSFLAGS = (
+					"-D__MACOSX_CORE__",
+					"-lpthread",
+					"-mtune=native",
+				);
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E4B69B600A3A1757003C02F2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../libs/glut/lib/osx\"";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = NONE;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "openFrameworks-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_32)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_33)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_34)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_35)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_36)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_37)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_38)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_39)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_40)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_41)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_42)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_43)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_44)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_45)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_46)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_47)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_48)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_49)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_52)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_APPS_DIR)/Programming/of_v0073_osx_release/apps/Marsyas/ofMarsyasExample\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SYSTEM_APPS_DIR)/Programming/of_v0073_osx_release/apps/Marsyas/ofMarsyasExample/src/ofMarsyas/lib/marsyas/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SYSTEM_APPS_DIR)/Programming/Marsyas-trunk/build/Xcode/lib/Debug\"";
+				PREBINDING = NO;
+				PRODUCT_NAME = ofMarsyasExampleDebug;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		E4B69B610A3A1757003C02F2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../../libs/glut/lib/osx\"";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = NONE;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "openFrameworks-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_14)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_15)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_12)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_13)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_16)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_17)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_18)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_19)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_20)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_21)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_22)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_23)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_24)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_25)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_26)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_27)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_28)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_29)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_30)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_31)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_32)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_33)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_34)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_35)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_36)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_37)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_38)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_39)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_40)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_41)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_42)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_43)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_44)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_45)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_46)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_47)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_48)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_49)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_50)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_51)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SYSTEM_APPS_DIR)/Programming/of_v0073_osx_release/apps/Marsyas/ofMarsyasExample\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SYSTEM_APPS_DIR)/Programming/of_v0073_osx_release/apps/Marsyas/ofMarsyasExample/src/ofMarsyas/lib/marsyas/lib\"";
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SYSTEM_APPS_DIR)/Programming/Marsyas-trunk/build/Xcode/lib/Debug\"";
+				PREBINDING = NO;
+				PRODUCT_NAME = ofMarsyasExample;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E4B69B4D0A3A1720003C02F2 /* Build configuration list for PBXProject "ofMarsyasExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4B69B4E0A3A1720003C02F2 /* Debug */,
+				E4B69B4F0A3A1720003C02F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4B69B5F0A3A1757003C02F2 /* Build configuration list for PBXNativeTarget "ofMarsyasExample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4B69B600A3A1757003C02F2 /* Debug */,
+				E4B69B610A3A1757003C02F2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E4B69B4C0A3A1720003C02F2 /* Project object */;
+}
