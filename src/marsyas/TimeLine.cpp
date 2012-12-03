@@ -298,6 +298,8 @@ TimeLine::removeRegion(mrs_natural regionNum)
 mrs_real
 TimeLine::regionClass(mrs_natural regionNum) const
 {
+	
+	
 	if (regionNum < numRegions_)
 		return regions_[regionNum].classId;
 	else
@@ -322,7 +324,7 @@ TimeLine::sampleClass(mrs_natural index) const
 bool
 TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 {
-  
+
 	ifstream in;
 	filename_ = filename;
 
@@ -341,30 +343,27 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 
 
 
-	// Load lexicon dictionary 
-		
-	
+	// Load lexicon dictionary if available 
 	mrs_string lexicon_label;
 	mrs_string remainder;
 	mrs_natural nLabels;
 	
 	nLabels = std::count(lexicon_labels.begin(), lexicon_labels.end(), ',');	
 	
-	for (int i=0; i < nLabels; i++)
+	if (lexicon_labels != ",")
 	{
-		lexicon_label = lexicon_labels.substr(0, lexicon_labels.find(","));
-		labels.push_back(lexicon_label);
-		sort(labels.begin(), labels.end());			
-		remainder = lexicon_labels.substr(lexicon_labels.find(",") + 1, lexicon_labels.length());
-		lexicon_labels = remainder;
+		for (int i=0; i < nLabels; i++)
+		{
+			lexicon_label = lexicon_labels.substr(0, lexicon_labels.find(","));
+			labels.push_back(lexicon_label);
+			sort(labels.begin(), labels.end());			
+			remainder = lexicon_labels.substr(lexicon_labels.find(",") + 1, lexicon_labels.length());
+			lexicon_labels = remainder;
+		}
 	}
-
-
-
-	for (int i=0; i < nLabels; i++) 
-	{
-		MRSMSG("--" << labels[i]);
-	}
+	else 
+		nLabels = 0;
+	
 	
 	if (f.ext() == "txt") // audacity label format
 	{
@@ -376,7 +375,6 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 		{
 			in >> start >> end >> label;
 
-			MRSMSG("label = " << label);
 			
 			TimeRegion region;
 			region.start = start * srate_;
@@ -389,8 +387,6 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 			{
 				if (label == labels[i])
 				{
-					MRSMSG("label found" << label);
-					MRSMSG("i= " << i);
 					label_found = true;
 					region.classId = i;
 				}
@@ -398,6 +394,7 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 			}
 			if (!label_found)
 			{
+				
 				if (lexicon_labels == ",")
 				{
 					labels.push_back(label);

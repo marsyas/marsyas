@@ -90,7 +90,7 @@ TimelineLabeler::addControls()
 	
 	
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
-	addctrl("mrs_string/lexiconLabelNames", "", ctrl_lexiconLabelNames_);
+	addctrl("mrs_string/lexiconLabelNames", ",", ctrl_lexiconLabelNames_);
 	
 	addctrl("mrs_real/currentLabel", -1.0, ctrl_currentLabel_);
 	addctrl("mrs_real/previousLabel", -1.0, ctrl_previousLabel_);
@@ -140,6 +140,8 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 		{
 		  
 			//It is different - try to read the timeline into memory
+
+			
 			if(timeline_.load(fname,ctrl_lexiconLabelNames_->to<mrs_string>()))
 			{
 				timeline_.setSampleRate(israte_);			  
@@ -271,6 +273,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 			 selectedLabel_ == "init")
 		{
 			 ctrl_currentLabel_->setValue(timeline_.regionClass(curRegion_));
+			 
 		}
 		else
 			ctrl_currentLabel_->setValue(-1.0);
