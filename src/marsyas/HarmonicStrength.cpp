@@ -87,10 +87,13 @@ HarmonicStrength::myUpdate(MarControlPtr sender)
 	ctrl_onObservations_->setValue(ctrl_harmonicsSize_->to<mrs_natural>(), NOUPDATE);
 
 	//features names
+    mrs_string orig = ctrl_inObsNames_->to<mrs_string>();
+    // remove final comma in name
+    orig = orig.substr(0, orig.size()-1);
 	ostringstream oss;
 	for (mrs_natural i = 0; i < num_harmonics; ++i)
 	{
-		oss << "HarmonicStrength_" << i+1 << ",";
+		oss << "HarmonicStrength_" + orig << i+1 << ",";
 	}
 	setctrl("mrs_string/onObsNames", oss.str());
 }

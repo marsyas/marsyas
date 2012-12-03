@@ -61,9 +61,12 @@ SFM::myUpdate(MarControlPtr sender)
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
 	//features names
+    mrs_string orig = ctrl_inObsNames_->to<mrs_string>();
+    // remove final comma in name
+    orig = orig.substr(0, orig.size()-1);
 	ostringstream oss;
 	for (i = 0; i < nrBands_; ++i)
-		oss << "SFM_" << i+1 << ",";
+		oss << "SFM_" + orig << i+1 << ",";
 	setctrl("mrs_string/onObsNames", oss.str());
 
 	edge_.create(nrBands_ + 1);

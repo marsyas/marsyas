@@ -61,9 +61,12 @@ SCF::myUpdate(MarControlPtr sender)
 	setctrl(ctrl_osrate_, ctrl_israte_);
 
 	//features names
+    mrs_string orig = ctrl_inObsNames_->to<mrs_string>();
+    // remove final comma in name
+    orig = orig.substr(0, orig.size()-1);
 	ostringstream oss;
 	for (i = 0; i < nrBands_; ++i)
-		oss << "SCF_" << i+1 << ",";
+		oss << "SCF_" + orig << i+1 << ",";
 	setctrl(ctrl_onObsNames_, oss.str());
 
 	edge_.create(nrBands_ + 1);
