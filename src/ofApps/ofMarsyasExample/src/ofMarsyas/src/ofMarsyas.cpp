@@ -76,7 +76,10 @@ void ofMarsyas::start(){
 
 void ofMarsyas::checkInitSoundCard(Marsyas::MarSystem* msysTest){
     if(msysTest->getType() == "AudioSink"){
-        msysTest->updControl("mrs_bool/initAudio", true);
+        if(!msysTest->hasControlState("mrs_bool/initAudio")){
+            msysTest->updControl("mrs_bool/initAudio", true);
+        }
+        
     }
     else {
         std::vector <Marsyas::MarSystem*> children;
