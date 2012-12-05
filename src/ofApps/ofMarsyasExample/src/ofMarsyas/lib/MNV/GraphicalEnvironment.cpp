@@ -193,6 +193,7 @@ void GraphicalEnvironment::keyPressed  (int key)
             msysw_->switchLinkedControlConnections(showLinkedControlsConnections_);
             break;
         case ' ':
+            //cout<<endl<<msysThread_->getTickStatus();
             if(msysThread_->getTickStatus() == 0){
                 msysThread_->setTickStatus(1);
             }

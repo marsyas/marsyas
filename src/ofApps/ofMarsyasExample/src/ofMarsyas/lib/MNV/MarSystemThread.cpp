@@ -55,7 +55,10 @@ void MarSystemThread::threadedFunction(){
             if(lock()){
                 if(isLoaded()){
                     msys_->updControl(ctrlAux_, true);
+                    msys_->tick();
                     tick_ = 2;
+                    env_->probe_->writeToBuffer();
+                    
                 }
                 unlock();
             }
