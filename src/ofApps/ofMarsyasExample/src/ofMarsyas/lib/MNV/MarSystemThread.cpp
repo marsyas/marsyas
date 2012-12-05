@@ -21,7 +21,7 @@ MarSystemThread::MarSystemThread(MarSystem* msys){
 MarSystemThread::MarSystemThread(GraphicalEnvironment* env){
     env_ = env;
     loadMarSystem(NULL);
-    tickStatus_ = 0;
+    tick_ = 0;
     setTickLock_ = true;
 }
 
@@ -47,31 +47,45 @@ void MarSystemThread::threadedFunction(){
     
     
     while( isThreadRunning() != 0 ){
-        if(!setTickLock_){
-            tickStatus_ = tick_;
-            setTickLock_ = true;
+        
+        if(tick_ == 0){
+            
         }
-        if(tickStatus_ > 0){
+        else if(tick_ == 1){
             if(lock()){
                 if(isLoaded()){
-                    msys_->updControl(ctrlAux_, true);
-                    //msys_->updControl("mrs_bool/active", true);
+                    msys_->tick();
+                    env_->probe_->writeToBuffer();
+                }
+                unlock();
+            }
+            
+        }
+        else if(tick_ == 2){
+            if(lock()){
+                if(isLoaded()){
                     msys_->tick();
                     env_->probe_->writeToBuffer();
                     msys_->updControl(ctrlAux_, false);
-                    //msys_->updControl("mrs_bool/active", false);
+                    tick_ = 0;
+                }
+                unlock();
+            }
+            
+        }
+        else if(tick_ == 3){
+            if(lock()){
+                if(isLoaded()){
+                    msys_->updControl(ctrlAux_, true);
+                    msys_->tick();
+                    env_->probe_->writeToBuffer();
+                    msys_->updControl(ctrlAux_, false);
+                    tick_ = 0;
                 }
                 unlock();
             }
         }
-        if(tickStatus_ == 2){
-            tickStatus_ = 0;
-            msys_->updControl(ctrlAux_, false);
-            //msys_->updControl("mrs_bool/active", false);
-        }
-        
     }
-    
 }
 
 void MarSystemThread::loadMarSystem(MarSystem *msys){
@@ -97,10 +111,11 @@ MarSystem* MarSystemThread::getMarSystem(){
 
 void MarSystemThread::setTickStatus(int tick){    
     tick_ = tick;
-    setTickLock_ = false;
-    //cout<<endl<<"tickstatus = "<<tickStatus_;
+    if(tick_ == 1){
+        msys_->updControl(ctrlAux_, true);
+    }
 }
 
 int MarSystemThread::getTickStatus(){
-    return tickStatus_;
+    return tick_;
 }
