@@ -40,7 +40,7 @@ ProbingManager::ProbingManager(GraphicalEnvironment* env){
 	windowSize_ = 1;
     stepSize_ = 1;
     
-    secondaryBuffer_ = new vector<double>;
+    secondaryBuffer_ = new vector<vector<double> >;
     
     //for Debugging
     //recording = fopen("/Applications/Programming/of_0071_osx_release/apps/Marsyas-apps/MNE-SVN/bin/data/sound.txt", "w");
@@ -132,8 +132,21 @@ void ProbingManager::loadProcessedDataPointer(MarControlPtr pData){
     
 	writeLock_ = false;
 	readLock_ = true;
-	secondaryBuffer_->clear();
-    secondaryBuffer_->resize(int(width_));
+    
+    
+    
+    
+    for(int i=0; i<secondaryBuffer_->size(); i++){
+        (*secondaryBuffer_)[i].clear();
+    }
+    secondaryBuffer_->clear();
+    secondaryBuffer_->resize((int)pData_->to_realvec().getRows());
+    
+    for(int i=0; i<secondaryBuffer_->size(); i++){
+        (*secondaryBuffer_)[i].resize(int(width_));
+    }
+    
+
     isLoaded_ = true;
     
     
@@ -143,7 +156,7 @@ void ProbingManager::loadProcessedDataPointer(MarControlPtr pData){
 void ProbingManager::calcStepSize(){
     stepSize_ = ceil((double)windowSize_*WRITE_BLOCKS*pData_->to_realvec().getCols()/(double)(width_)) + 1; //FIXME this only works for one channel
     //secondaryBuffer_->clear();
-    secondaryBuffer_->resize(int(width_));
+    //secondaryBuffer_->resize(int(width_));
 }
 
 void ProbingManager::update(){
@@ -164,8 +177,8 @@ void ProbingManager::update(){
             writeCounter_ = 0;
             while(i > 0){
                 for(int j=0; j<readPoint_->value.getCols(); j = j + stepSize_){
-                    secondaryBuffer_->push_back(readPoint_->value(0, j));
-                    secondaryBuffer_->erase(secondaryBuffer_->begin() + 0);
+                    (*secondaryBuffer_)[0].push_back(readPoint_->value(0, j));
+                    (*secondaryBuffer_)[0].erase((*secondaryBuffer_)[0].begin() + 0);
                 }
                 readPoint_ = readPoint_->prox;
                 i--;
@@ -217,8 +230,8 @@ void ProbingManager::draw(){
         
         ofSetColor(255, 0, 255);
         
-        for(int i=0; i<(secondaryBuffer_->size() - 1); i++){
-            ofLine((double)(i*(width_ - 3))/secondaryBuffer_->size() + x_ + 2, ((*secondaryBuffer_)[i]*60.0 + height_*0.5 + y_), (double)((i+1)*(width_ - 3))/secondaryBuffer_->size() + x_ + 2, ((*secondaryBuffer_)[i+1]*60.0 + height_*0.5 + y_));
+        for(int i=0; i<((*secondaryBuffer_)[0].size() - 1); i++){
+            ofLine((double)(i*(width_ - 3))/(*secondaryBuffer_)[0].size() + x_ + 2, ((*secondaryBuffer_)[0][i]*60.0 + height_*0.5 + y_), (double)((i+1)*(width_ - 3))/(*secondaryBuffer_)[0].size() + x_ + 2, ((*secondaryBuffer_)[0][i+1]*60.0 + height_*0.5 + y_));
         }
         
         

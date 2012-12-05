@@ -49,7 +49,7 @@ namespace Marsyas {
         void deleteBufferElement(realvecBufferObject* be);
         
 		std::vector<realvec> primaryBuffer_;
-		std::vector<double>* secondaryBuffer_;
+		std::vector<vector<double> >* secondaryBuffer_;
         
         
 		MaximizeButton* mBtn_;
