@@ -142,7 +142,7 @@ void ProbingManager::loadProcessedDataPointer(MarControlPtr pData){
 
 void ProbingManager::calcStepSize(){
     stepSize_ = ceil((double)windowSize_*WRITE_BLOCKS*pData_->to_realvec().getCols()/(double)(width_)) + 1; //FIXME this only works for one channel
-    secondaryBuffer_->clear();
+    //secondaryBuffer_->clear();
     secondaryBuffer_->resize(int(width_));
 }
 
