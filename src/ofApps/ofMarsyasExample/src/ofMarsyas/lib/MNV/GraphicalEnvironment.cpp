@@ -196,13 +196,13 @@ void GraphicalEnvironment::keyPressed  (int key)
             if(msysThread_->getTickStatus() == 0){
                 msysThread_->setTickStatus(1);
             }
-            else if(msysThread_->getTickStatus() == 1){
-                msysThread_->setTickStatus(2);
+            else if(msysThread_->getTickStatus() == 2){
+                msysThread_->setTickStatus(3);
             }
             
             break;
         case 't':
-            msysThread_->setTickStatus(3);
+            msysThread_->setTickStatus(4);
             break;
 
 	}

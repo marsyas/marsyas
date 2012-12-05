@@ -54,8 +54,8 @@ void MarSystemThread::threadedFunction(){
         else if(tick_ == 1){
             if(lock()){
                 if(isLoaded()){
-                    msys_->tick();
-                    env_->probe_->writeToBuffer();
+                    msys_->updControl(ctrlAux_, true);
+                    tick_ = 2;
                 }
                 unlock();
             }
@@ -66,14 +66,23 @@ void MarSystemThread::threadedFunction(){
                 if(isLoaded()){
                     msys_->tick();
                     env_->probe_->writeToBuffer();
-                    msys_->updControl(ctrlAux_, false);
-                    tick_ = 0;
                 }
                 unlock();
             }
             
         }
         else if(tick_ == 3){
+            if(lock()){
+                if(isLoaded()){
+                    msys_->tick();
+                    env_->probe_->writeToBuffer();
+                    msys_->updControl(ctrlAux_, false);
+                    tick_ = 0;
+                }
+                unlock();
+            }
+        }
+        else if(tick_ == 4){
             if(lock()){
                 if(isLoaded()){
                     msys_->updControl(ctrlAux_, true);
@@ -111,9 +120,6 @@ MarSystem* MarSystemThread::getMarSystem(){
 
 void MarSystemThread::setTickStatus(int tick){    
     tick_ = tick;
-    if(tick_ == 1){
-        msys_->updControl(ctrlAux_, true);
-    }
 }
 
 int MarSystemThread::getTickStatus(){

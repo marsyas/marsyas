@@ -32,7 +32,6 @@ namespace Marsyas {
 		MarControlPtr pData_;
 		
 		realvecBufferObject* bufferHead_;
-		
 		realvecBufferObject* readPoint_;
 		realvecBufferObject* writePoint_;
 		
@@ -50,7 +49,7 @@ namespace Marsyas {
         void deleteBufferElement(realvecBufferObject* be);
         
 		std::vector<realvec> primaryBuffer_;
-		std::vector<double> secondaryBuffer_;
+		std::vector<double>* secondaryBuffer_;
         
         
 		MaximizeButton* mBtn_;
