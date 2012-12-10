@@ -275,6 +275,7 @@
 #include "Whitening.h"
 #include "Energy.h"
 #include "DPWOsc.h"
+#include "SpectralCentroidBandNorm.h"
 //modifyHeader
 
 
@@ -543,6 +544,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Whitening", new Whitening("whiteningpr"));
 	registerPrototype("Energy", new Energy("energypr"));
 	registerPrototype("DPWOsc", new DPWOsc("dpwoscpr"));
+	registerPrototype("SpectralCentroidBandNorm", new SpectralCentroidBandNorm("spectralcentroidbandnormpr"));
 	//modifyRegister
 
 	//***************************************************************************************
