@@ -190,6 +190,11 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 void
 BICchangeDetector::myProcess(realvec& in, realvec& out)
 {
+
+ cout << "BIC::myProcess called" << endl;
+ cout << "in = " << in << endl;
+ 
+
   ++BICTick_;
   mrs_natural o,t;
   // [!note!] if CX_ matrices are reused they need to be resized since
@@ -198,6 +203,11 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   C2_.create(nfeats_, segFrames_);
   C3_.create(nfeats_, segFrames_);
   C4_.create(nfeats_, segFrames_);
+
+
+  cout << "nFeatures_ = " << nfeats_ << endl;
+  cout << "segFrames_ = " << segFrames_ << endl;
+  
 
   for(o=0; o < inObservations_; ++o)
   {
@@ -215,10 +225,21 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 	  out(o, t) = in(o, t);
   }
 
+
+  
+  
+
   //calculate covariance matrix for each segment
   realvec tmp;
+
+  cout << "C1_ = " << C1_ << endl;
+  
   C1_.covariance(tmp);
   C1_ = tmp;
+
+
+  cout << "C2_ = " << C2_ << endl;
+  
   C2_.covariance(tmp);
   C2_ = tmp;
   C3_.covariance(tmp);
@@ -226,12 +247,25 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   C4_.covariance(tmp);
   C4_ = tmp;
 
+
+
+  cout << C1_ << endl;
+  cout << C2_ << endl;
+  cout << C3_ << endl;
+  cout << C4_ << endl;
+
+
   //update current qGMM model, using the first sub-segment data, C1_
   QGMMmodel_.updateModel(C1_, segFrames_);
 
   //calculate divergenceShape between sub-segment pairs
   dist12_ = NumericLib::divergenceShape(C1_, C2_);
   dist34_ = NumericLib::divergenceShape(C3_, C4_);
+
+
+  cout << "dist12_ = " << dist12_ << endl;
+  cout << "dist34_ = " << dist34_ << endl;
+  
 
 
   //calculate bhattacharyyaShape between sub-segment pairs => should be an option! [!]

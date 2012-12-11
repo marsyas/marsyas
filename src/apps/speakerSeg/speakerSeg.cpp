@@ -124,14 +124,22 @@ void speakerSeg(vector<string> soundfiles)
 	MarSystem* accum = mng.create("Accumulator", "accum");
 	accum->addMarSystem(featExtractor);
 	accum->updControl("mrs_natural/nTimes", minSegFrames/2);
+
+	cout << "minSegFrames = " << minSegFrames << endl;
+	
+
 	//accum->updControl("mrs_natural/nTimes", ceil(minSegFrames/2.0));
 
 	//add accumuated feature extraction to main processing network
 	pnet->addMarSystem(accum);
 
 	//create a circular buffer for storing most recent LSP10 speech data
-	pnet->addMarSystem(mng.create("Memory", "mem"));
-	pnet->updControl("Memory/mem/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
+	// pnet->addMarSystem(mng.create("Memory", "mem"));
+	// pnet->updControl("Memory/mem/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
+
+	pnet->addMarSystem(mng.create("ShiftInput", "si"));
+	pnet->updControl("ShiftInput/si/mrs_natural/winSize", 135);
+	
 
 	//add a BIC change detector
 	pnet->addMarSystem(mng.create("BICchangeDetector", "BICdet"));

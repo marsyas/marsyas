@@ -1978,11 +1978,21 @@ NumericLib::correlationDistance(const realvec& Vi, const realvec& Vj, const real
 mrs_real
 NumericLib::divergenceShape(const realvec& Ci, const realvec& Cj, const realvec& dummy)
 {
+	cout << "divergenceShape" << endl;
+	cout << "Ci = " << Ci.getCols() << endl;
+	cout << "Cj = " << Cj.getCols() << endl;
+	cout << "Ci rows = " << Ci.getRows() << endl;
+	cout << "Cj rows = " << Ci.getRows() << endl;
+	
+	
+
 	(void) dummy;
 	///matrices should be square and equal sized
 	if(Ci.getCols() != Cj.getCols() && Ci.getRows() != Cj.getRows() &&
 		Ci.getCols()!= Ci.getRows())
 	{
+		cout << "Is this happening ? why not ? " << endl;
+		
 		MRSERR("realvec::divergenceShape() : input matrices should be square and equal sized. Returning invalid value (-1.0)");
 		return -1.0;
 	}
