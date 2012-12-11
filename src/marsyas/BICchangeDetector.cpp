@@ -170,11 +170,7 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
 	// 		C2_.create(nfeats_, segFrames_);
 	// 		C3_.create(nfeats_, segFrames_);
 	// 		C4_.create(nfeats_, segFrames_);
-	cout << name_ << "BICchangeDetector:" << endl;
-	cout << " segFrames = " << segFrames_ << endl;
-	cout << " segHop = " << segHop_ << endl;
-	cout << " nfeats = " << nfeats_ << endl;
-
+	
   }
 
   if(ctrl_reset_->to<bool>())
@@ -191,10 +187,6 @@ void
 BICchangeDetector::myProcess(realvec& in, realvec& out)
 {
 
- cout << "BIC::myProcess called" << endl;
- cout << "in = " << in << endl;
- 
-
   ++BICTick_;
   mrs_natural o,t;
   // [!note!] if CX_ matrices are reused they need to be resized since
@@ -204,10 +196,6 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   C3_.create(nfeats_, segFrames_);
   C4_.create(nfeats_, segFrames_);
 
-
-  cout << "nFeatures_ = " << nfeats_ << endl;
-  cout << "segFrames_ = " << segFrames_ << endl;
-  
 
   for(o=0; o < inObservations_; ++o)
   {
@@ -232,14 +220,9 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   //calculate covariance matrix for each segment
   realvec tmp;
 
-  cout << "C1_ = " << C1_ << endl;
-  
   C1_.covariance(tmp);
   C1_ = tmp;
 
-
-  cout << "C2_ = " << C2_ << endl;
-  
   C2_.covariance(tmp);
   C2_ = tmp;
   C3_.covariance(tmp);
@@ -249,24 +232,12 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 
 
 
-  cout << C1_ << endl;
-  cout << C2_ << endl;
-  cout << C3_ << endl;
-  cout << C4_ << endl;
-
-
   //update current qGMM model, using the first sub-segment data, C1_
   QGMMmodel_.updateModel(C1_, segFrames_);
 
   //calculate divergenceShape between sub-segment pairs
   dist12_ = NumericLib::divergenceShape(C1_, C2_);
   dist34_ = NumericLib::divergenceShape(C3_, C4_);
-
-
-  cout << "dist12_ = " << dist12_ << endl;
-  cout << "dist34_ = " << dist34_ << endl;
-  
-
 
   //calculate bhattacharyyaShape between sub-segment pairs => should be an option! [!]
   //mrs_real dist12 = realvec::bhattacharyyaShape(C1_, C2_);
@@ -312,17 +283,23 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   // (i.e. distance is local maxima and is above the dynamic threshold)
   //		time_t currTime = ((mrs_real)BICTick_)*0.675;
   time_t currTime = ((mrs_real)BICTick_)*hopSeconds_;
+  mrs_real change_time = ((mrs_real)BICTick_) * hopSeconds_;
+  
   tm * currTm = gmtime(&currTime);
   if(dist12_ > distanceRight && dist12_ > distanceLeft && dist12_ > dynThres_)
   {
+
+
+	  
 	//if this a potential change point, validate it using BIC and the current model
 	BICdist_ = QGMMmodel_.BICdistance(C2_, segFrames_, ctrl_lambda_->to<mrs_real>());
 
 	mrs_real confidence = 1.0 - dynThres_/dist12_;
-	cout << name_ << ": Potential change, with confidence " << confidence
+	/* cout << name_ << ": Potential change, with confidence " << confidence
 		 << " at " << currTm->tm_hour << "h::"
 		 << currTm->tm_min << "m::"
 		 << currTm->tm_sec << "s";
+	*/ 
 
 
 	//Apply BIC criteria
@@ -340,21 +317,30 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 	  // - generate a sound (e.g. a beep)
 	  // - ...
 	  // 			mrs_real confidence = 1.0 - dynThres_/dist12_;
-	  cout << " confirmed!";
+	  // cout << " confirmed!";
+
+	  if (confidence > 0.6)
+	  {
+		  cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
+		  prev_change_time_ = change_time;	  
+	  }
+	 
 	}
 	else
 	{
-	  cout << " UNCONFIRMED.";
+		// cout << " UNCONFIRMED.";
 	  //BIC rejected potential change point
 	  //do something here? Probably not...
 	}
-	cout << endl;
+	// cout << endl;
   }
   // 	cout << "TESTING TICKS: "
   // 	     << " at " << currTm->tm_hour << "h::"
   // 	     << currTm->tm_min << "m::"
   // 	     << currTm->tm_sec << "s"
   // 	     << endl;
+  
 
-
+  
+  
 }

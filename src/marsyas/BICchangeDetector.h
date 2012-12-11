@@ -49,6 +49,7 @@ namespace Marsyas
 		mrs_natural nfeats_;
 		mrs_natural BICTick_; // number of ticks so far
 		mrs_real hopSeconds_; // number of millis per hop
+		mrs_real prev_change_time_;
 		
 
 		realvec C1_;

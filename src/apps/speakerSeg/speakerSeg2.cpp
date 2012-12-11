@@ -156,12 +156,12 @@ void speakerSeg(vector<string> soundfiles)
 	//mfccSeries->addMarSystem(accum2);
 
 	//create a circular buffer for storing most recent LSP10 speech data
-	lspSeries->addMarSystem(mng.create("Memory", "mem"));
-	mfccSeries->addMarSystem(mng.create("Memory", "mem2"));
+	//lspSeries->addMarSystem(mng.create("Memory", "mem"));
+	// mfccSeries->addMarSystem(mng.create("Memory", "mem2"));
 	mfccSeries->updControl("mrs_natural/inObservations",16);
 	lspSeries->updControl("mrs_natural/inObservations",10);
-	lspSeries->updControl("Memory/mem/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
-	mfccSeries->updControl("Memory/mem2/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
+	// lspSeries->updControl("Memory/mem/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
+	// mfccSeries->updControl("Memory/mem2/mrs_natural/memSize", 5); //see above for an explanation why we use memSize = 5
 
 	//add a BIC change detector
 	lspSeries->addMarSystem(mng.create("BICchangeDetector", "BICdet"));
@@ -174,8 +174,8 @@ void speakerSeg(vector<string> soundfiles)
 
 
 
-	parallel->addMarSystem(lspSeries);
-	parallel->addMarSystem(mfccSeries);
+	// parallel->addMarSystem(lspSeries);
+	// parallel->addMarSystem(mfccSeries);
 
 	//create feature extraction network for calculating LSP-10
 	MarSystem* featExtractor = mng.create("Series", "featExtractor");
@@ -186,7 +186,11 @@ void speakerSeg(vector<string> soundfiles)
 	accum->addMarSystem(featExtractor);
 	accum->updControl("mrs_natural/nTimes", minSegFrames/2);
 	pnet->addMarSystem(accum);
-	pnet->addMarSystem(parallel);
+	// pnet->addMarSystem(parallel);
+
+	pnet->addMarSystem(mng.create("ShiftInput", "si"));
+	pnet->updControl("ShiftInput/si/mrs_natural/winSize", 135);
+
 	pnet->linkControl("mrs_string/filename","Accumulator/accum/Series/featExtractor/SoundFileSource/src/mrs_string/filename");
 	pnet->linkControl("Accumulator/accum/mrs_natural/inSamples","mrs_natural/inSamples");
 

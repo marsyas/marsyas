@@ -158,7 +158,7 @@ void speakerSeg(vector<string> soundfiles)
 	{
 		string fname = *sfi;
 		//clear any memory data and any stored models
-		pnet->updControl("Memory/mem/mrs_bool/reset", true);
+		// pnet->updControl("Memory/mem/mrs_bool/reset", true);
 		pnet->updControl("BICchangeDetector/BICdet/mrs_bool/reset", true);
 		//set new file name
 		pnet->updControl("mrs_string/filename", fname);
