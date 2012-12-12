@@ -62,6 +62,7 @@ BICchangeDetector::BICchangeDetector(const BICchangeDetector& a) : MarSystem(a)
   ctrl_hopMS_ = getctrl("mrs_natural/hopMillis");
   nrPrevDists_ = ctrl_prevDists_->to<mrs_natural>();
   pdists_.create(nrPrevDists_);
+  prev_change_time_ = 0.0;
 }
 
 BICchangeDetector::~BICchangeDetector()
@@ -100,13 +101,15 @@ BICchangeDetector::addControls()
   addctrl("mrs_real/alpha1", 0.6, ctrl_alpha1_);
   addctrl("mrs_real/lambda", 0.8, ctrl_lambda_);
   addctrl("mrs_natural/prevDists",3,ctrl_prevDists_);
-  addctrl("mrs_natural/hopMillis",25,ctrl_hopMS_);
+  addctrl("mrs_natural/hopMillis",32,ctrl_hopMS_);
 
   dynThres_ = 0.0;
   prevDists_->updControl("mrs_natural/inSamples", 1);
   prevDists_->updControl("mrs_natural/inObservations", 1);
   nrPrevDists_ = getctrl("mrs_natural/prevDists")->to<mrs_natural>();
   prevDists_->updControl("mrs_natural/memSize", nrPrevDists_); //store 3 previous distances, for dynamic thresholding
+  prev_change_time_ = 0.0;
+  
 }
 
 /**
@@ -154,6 +157,8 @@ BICchangeDetector::myUpdate(MarControlPtr sender)
   {
 	segFrames_ = ctrl_inSamples_->to<mrs_natural>()*2/5; // hardcoded [!]
 	segHop_ = ctrl_inSamples_->to<mrs_natural>()*1/5; // hardcoded [!]
+	
+	
 	hopSeconds_ = 0.001*segHop_*(mrs_real)ctrl_hopMS_->to<mrs_natural>();
 	nfeats_ = ctrl_inObservations_->to<mrs_natural>();
 	/* C1_.allocate(nfeats, segFrames_);
@@ -187,7 +192,15 @@ void
 BICchangeDetector::myProcess(realvec& in, realvec& out)
 {
 
-  ++BICTick_;
+	// skip initial hops that have zeroes 
+	if (BICTick_ < 5) 
+	{
+		BICTick_ ++;
+		return;
+	}
+	
+	
+
   mrs_natural o,t;
   // [!note!] if CX_ matrices are reused they need to be resized since
   // they meanwhile were assigned to covariance matrices (10x10)
@@ -282,11 +295,16 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   //check for a potential change (based only on distances!)
   // (i.e. distance is local maxima and is above the dynamic threshold)
   //		time_t currTime = ((mrs_real)BICTick_)*0.675;
-  time_t currTime = ((mrs_real)BICTick_)*hopSeconds_;
-  mrs_real change_time = ((mrs_real)BICTick_) * hopSeconds_;
+  time_t currTime = ((mrs_real)BICTick_)*hopSeconds_ - hopSeconds_;
+  
+  
+  mrs_real change_time = ((mrs_real)BICTick_) * hopSeconds_ - hopSeconds_;
+  
   
   tm * currTm = gmtime(&currTime);
-  if(dist12_ > distanceRight && dist12_ > distanceLeft && dist12_ > dynThres_)
+  
+  
+  if (dist12_ > distanceRight && dist12_ > distanceLeft && dist12_ > dynThres_)
   {
 
 
@@ -295,15 +313,18 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 	BICdist_ = QGMMmodel_.BICdistance(C2_, segFrames_, ctrl_lambda_->to<mrs_real>());
 
 	mrs_real confidence = 1.0 - dynThres_/dist12_;
-	/* cout << name_ << ": Potential change, with confidence " << confidence
-		 << " at " << currTm->tm_hour << "h::"
-		 << currTm->tm_min << "m::"
-		 << currTm->tm_sec << "s";
-	*/ 
+// 	cout> << name_ << ": Potential change, with confidence " << confidence
+// 		 << " at " << currTm->tm_hour << "h::"
+// 		 << currTm->tm_min << "m::"
+// 		 << currTm->tm_sec << "s" << endl;
+	 
+
+	cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
+	prev_change_time_ = change_time;	  
 
 
 	//Apply BIC criteria
-	if(BICdist_ > 0.0)
+	if (BICdist_ > 0.0)
 	{
 	  //BIC validated the change point!
 
@@ -319,7 +340,7 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 	  // 			mrs_real confidence = 1.0 - dynThres_/dist12_;
 	  // cout << " confirmed!";
 
-	  if (confidence > 0.6)
+	  if (confidence > 0.0)
 	  {
 		  cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
 		  prev_change_time_ = change_time;	  
@@ -341,6 +362,6 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   // 	     << endl;
   
 
-  
+  ++BICTick_;  
   
 }
