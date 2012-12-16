@@ -30,6 +30,8 @@ mrs_string trainedclassifier_;
 mrs_string svm_svm_;
 mrs_string svm_kernel_;
 mrs_string label_;
+mrs_natural svm_gamma_;
+mrs_real svm_C_;
 
 
 int
@@ -66,6 +68,8 @@ printHelp(string progName)
   cerr << "-trcl --trainedclassifier: plugin file for storing the trained classifier" << endl;
   cerr << "-ss --svm_svm: parameters for libsvm" <<endl;
   cerr << "-sk --svm_kernel: parameters for libsvm" <<endl;
+  cerr << "-sC --svm_C: cost parameter for libsvm" <<endl;
+  cerr << "-sG --svm_gamma: cost parameter for libsvm" <<endl;
   return 1;
 }
 
@@ -797,6 +801,10 @@ train_evaluate()
       net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_string/kernel",
         svm_kernel_);
     }
+    net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_natural/gamma",
+        svm_gamma_);
+    net->updControl("Classifier/cl/SVMClassifier/svmcl/mrs_real/C",
+        svm_C_);
   }
 
   if (net->getctrl("WekaSource/wsrc/mrs_bool/regression")->isTrue()) {
@@ -1079,6 +1087,8 @@ initOptions()
   cmd_options_.addStringOption("svm_svm", "ss", EMPTYSTRING);
   cmd_options_.addStringOption("svm_kernel", "sk", EMPTYSTRING);
   cmd_options_.addStringOption("label", "lb", EMPTYSTRING);
+  cmd_options_.addNaturalOption("svm_gamma", "sG", 4);
+  cmd_options_.addRealOption("svm_C", "sC", 1.0);
   
 }
 
@@ -1102,6 +1112,8 @@ loadOptions()
   svm_svm_ = cmd_options_.getStringOption("svm_svm");
   svm_kernel_ = cmd_options_.getStringOption("svm_kernel");
   label_ = cmd_options_.getStringOption("label");
+  svm_C_ = cmd_options_.getRealOption("svm_C");
+  svm_gamma_ = cmd_options_.getNaturalOption("svm_gamma");
   
 }
 

@@ -214,7 +214,7 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 			mrs_real magnitude = find_peak_magnitude(bin, in, t, low, high);
 			if (magnitude == 0)
 			{
-				out(h, t) = 0.0;
+				magnitude = 1e-60;
 			}
 			else
 			{
