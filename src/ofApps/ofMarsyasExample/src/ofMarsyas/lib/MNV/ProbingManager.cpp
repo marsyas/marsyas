@@ -40,7 +40,7 @@ ProbingManager::ProbingManager(GraphicalEnvironment* env){
 	windowSize_ = 1;
     stepSize_ = 1;
     
-    secondaryBuffer_ = new vector<vector<double> >;
+    buffer_ = new vector<vector<double> >;
     
     //for Debugging
     //recording = fopen("/Applications/Programming/of_0071_osx_release/apps/Marsyas-apps/MNE-SVN/bin/data/sound.txt", "w");
@@ -132,21 +132,12 @@ void ProbingManager::loadProcessedDataPointer(MarControlPtr pData){
     
 	writeLock_ = false;
 	readLock_ = true;
-    
-    
-    
-    
-    for(int i=0; i<secondaryBuffer_->size(); i++){
-        (*secondaryBuffer_)[i].clear();
-    }
-    secondaryBuffer_->clear();
-    secondaryBuffer_->resize((int)pData_->to_realvec().getRows());
-    
-    for(int i=0; i<secondaryBuffer_->size(); i++){
-        (*secondaryBuffer_)[i].resize(int(width_));
+    buffer_->clear();
+    buffer_->resize(pData_->to_realvec().getRows());
+    for(int i=0; i<buffer_->size(); i++){
+        (*buffer_)[i].resize(int(width_));
     }
     
-
     isLoaded_ = true;
     
     
@@ -154,9 +145,8 @@ void ProbingManager::loadProcessedDataPointer(MarControlPtr pData){
 }
 
 void ProbingManager::calcStepSize(){
-    stepSize_ = ceil((double)windowSize_*WRITE_BLOCKS*pData_->to_realvec().getCols()/(double)(width_)) + 1; //FIXME this only works for one channel
-    //secondaryBuffer_->clear();
-    //secondaryBuffer_->resize(int(width_));
+    stepSize_ = ceil((double)windowSize_*WRITE_BLOCKS*pData_->to_realvec().getCols()/(double)(width_)) + 1;
+    
 }
 
 void ProbingManager::update(){
@@ -176,14 +166,16 @@ void ProbingManager::update(){
             int i = WRITE_BLOCKS;
             writeCounter_ = 0;
             while(i > 0){
-                for(int j=0; j<readPoint_->value.getCols(); j = j + stepSize_){
-                    (*secondaryBuffer_)[0].push_back(readPoint_->value(0, j));
-                    (*secondaryBuffer_)[0].erase((*secondaryBuffer_)[0].begin() + 0);
+                for(int k=0; k<readPoint_->value.getRows(); k++){
+                    for(int j=0; j<readPoint_->value.getCols(); j = j + stepSize_){
+                        (*buffer_)[k].push_back(readPoint_->value(k, j));
+                        (*buffer_)[k].erase((*buffer_)[k].begin() + 0);
+                    }
                 }
                 readPoint_ = readPoint_->prox;
                 i--;
             } 
-            //cout<<endl<<secondaryBuffer_.size();
+            
         }
 		
 	}
@@ -194,7 +186,7 @@ void ProbingManager::update(){
     
     
     
-    //cout<<endl<<secondaryBuffer_.size();
+    
 	
 }
 
@@ -228,20 +220,13 @@ void ProbingManager::draw(){
         
         
         
-        ofSetColor(255, 0, 255);
+        ofSetColor(255, 255, 255);
         
-        for(int i=0; i<((*secondaryBuffer_)[0].size() - 1); i++){
-            ofLine((double)(i*(width_ - 3))/(*secondaryBuffer_)[0].size() + x_ + 2, ((*secondaryBuffer_)[0][i]*60.0 + height_*0.5 + y_), (double)((i+1)*(width_ - 3))/(*secondaryBuffer_)[0].size() + x_ + 2, ((*secondaryBuffer_)[0][i+1]*60.0 + height_*0.5 + y_));
+        for(int j=0; j<buffer_->size(); j++){
+            for(int i=0; i<((*buffer_)[j].size() - 1); i++){
+                ofLine((double)(i*(width_ - 3))/(*buffer_)[j].size() + x_ + 2, ((*buffer_)[j][i]*60.0 + height_*0.5 + y_) + 20*j, (double)((i+1)*(width_ - 3))/(*buffer_)[j].size() + x_ + 2, ((*buffer_)[j][i+1]*60.0 + height_*0.5 + y_) + 20*j);
+            }
         }
-        
-        
-        
-        /*
-         for(int i=0; i<(secondaryBuffer_.size()); i++){
-         ofLine(i, secondaryBuffer_[i]*200 + ofGetHeight()*0.5, i+1, secondaryBuffer_[i+1]*200 + ofGetHeight()*0.5);
-         }
-         */
-        
         
     }
     
