@@ -98,10 +98,10 @@ BICchangeDetector::addControls()
   addctrl("mrs_bool/reset", true, ctrl_reset_);
   setctrlState(ctrl_reset_, true);
 
-  addctrl("mrs_real/alpha1", 0.6, ctrl_alpha1_);
-  addctrl("mrs_real/lambda", 0.8, ctrl_lambda_);
+  addctrl("mrs_real/alpha1", 0.4, ctrl_alpha1_);
+  addctrl("mrs_real/lambda", 0.6, ctrl_lambda_);
   addctrl("mrs_natural/prevDists",3,ctrl_prevDists_);
-  addctrl("mrs_natural/hopMillis",32,ctrl_hopMS_);
+  addctrl("mrs_natural/hopMillis",16,ctrl_hopMS_);
 
   dynThres_ = 0.0;
   prevDists_->updControl("mrs_natural/inSamples", 1);
@@ -198,6 +198,7 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 		BICTick_ ++;
 		return;
 	}
+	 
 	
 	
 
@@ -295,32 +296,33 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   //check for a potential change (based only on distances!)
   // (i.e. distance is local maxima and is above the dynamic threshold)
   //		time_t currTime = ((mrs_real)BICTick_)*0.675;
-  time_t currTime = ((mrs_real)BICTick_)*hopSeconds_ - hopSeconds_;
+  time_t currTime = ((mrs_real)BICTick_-2)*hopSeconds_;
   
   
-  mrs_real change_time = ((mrs_real)BICTick_) * hopSeconds_ - hopSeconds_;
+  mrs_real change_time = ((mrs_real)BICTick_-2) * hopSeconds_;
   
   
   tm * currTm = gmtime(&currTime);
-  
+    
   
   if (dist12_ > distanceRight && dist12_ > distanceLeft && dist12_ > dynThres_)
   {
+
+	  mrs_real confidence = 1.0 - dynThres_/dist12_;
 
 
 	  
 	//if this a potential change point, validate it using BIC and the current model
 	BICdist_ = QGMMmodel_.BICdistance(C2_, segFrames_, ctrl_lambda_->to<mrs_real>());
 
-	mrs_real confidence = 1.0 - dynThres_/dist12_;
+
 // 	cout> << name_ << ": Potential change, with confidence " << confidence
 // 		 << " at " << currTm->tm_hour << "h::"
 // 		 << currTm->tm_min << "m::"
 // 		 << currTm->tm_sec << "s" << endl;
 	 
 
-	cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
-	prev_change_time_ = change_time;	  
+
 
 
 	//Apply BIC criteria
@@ -342,8 +344,13 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
 
 	  if (confidence > 0.0)
 	  {
-		  cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
-		  prev_change_time_ = change_time;	  
+
+	  cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
+	  prev_change_time_ = change_time;	  
+
+
+// 		  cout  << prev_change_time_ << "\t" << change_time << "\t" << confidence << endl;
+// 		  prev_change_time_ = change_time;	  
 	  }
 	 
 	}

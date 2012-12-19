@@ -82,7 +82,7 @@ void AdditiveOsc::myUpdate(MarControlPtr sender)
 	for (mrs_natural t = 1; t <= harmonics_; t++)
 	{
 		// The initial impulse of each wave guide
-		x1n1_(t) = 0.95 * pow(-1,t + 1);
+		x1n1_(t) = 0.95 * pow((mrs_real)-1.0,t + 1);
 		// Our last waveguide value is zero
 		x2n1_(t) = 0;
 		// The coefficient for the waveguide at a given harmonic

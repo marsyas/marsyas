@@ -45,12 +45,16 @@ private:
   void myUpdate(MarControlPtr sender);
 
   realvec confidences_;
+	realvec gtconfidences_;
+	
   mrs_natural count_;
   std::vector<std::string> labelNames_;
   bool print_;
   bool forcePrint_;
   mrs_natural write_;
   mrs_natural nbFrames_;
+	mrs_natural nbCorrectFrames_;
+	
   mrs_real hopDuration_;
 	std::ofstream outputFileSyn_;
 	std::ofstream outputFileTran_;

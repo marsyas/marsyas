@@ -88,8 +88,18 @@ void speakerSeg(vector<string> soundfiles)
 	//create feature extraction network for calculating LSP-10
 	MarSystem* featExtractor = mng.create("Series", "featExtractor");
 	featExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
-	// featExtractor->addMarSystem(mng.create("LPCnet", "lpc"));
-	// featExtractor->addMarSystem(mng.create("LSP", "lsp"));
+	
+	//MarSystem *lpcSeries = mng.create("Series/lpcSeries");
+	// lpcSeries->addMarSystem(mng.create("LPCnet", "lpc"));
+	// lpcSeries->addMarSystem(mng.create("LSP", "lsp"));
+
+	// MarSystem *features = mng.create("Fanout/features");
+	// MarSystem *rms = mng.create("Rms/rms");
+	// features->addMarSystem(lpcSeries);
+	// features->addMarSystem(rms);
+	
+	// featExtractor->addMarSystem(features);
+	
 
 	// do this in the loop belo
 	// featExtractor->updControl("LPCnet/lpc/mrs_natural/order", 10);	//hardcoded [!]
@@ -97,8 +107,16 @@ void speakerSeg(vector<string> soundfiles)
 	featExtractor->addMarSystem(mng.create("Windowing/win"));
 	featExtractor->addMarSystem(mng.create("Spectrum/spk"));
 	featExtractor->addMarSystem(mng.create("PowerSpectrum/pspk"));
-	featExtractor->addMarSystem(mng.create("MFCC/mfcc"));
-	 
+	
+
+	MarSystem* features = mng.create("Fanout/features");
+	features->addMarSystem(mng.create("Centroid/ctd"));
+	features->addMarSystem(mng.create("Rolloff/rlf"));
+	features->addMarSystem(mng.create("Flux/flux"));
+	features->addMarSystem(mng.create("MFCC/mfcc"));
+	
+	featExtractor->addMarSystem(features);
+	
 	
 
 	// based on the nr of features (in this case, the LSP order = 10),
@@ -110,7 +128,8 @@ void speakerSeg(vector<string> soundfiles)
 	// mrs_real d = (mrs_real)featExtractor->getctrl("LPCnet/lpc/mrs_natural/order")->to<mrs_natural>();
 	mrs_real d = (mrs_real)featExtractor->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
 	
-	// mrs_real d = 13; // MFCC 
+	
+
 	
 	mrs_natural minSegFrames = (mrs_natural)ceil(0.5*d*(d+1.0)); //0.5*d*(d+1.0) or 0.5*d*(d-1.0) [?]
 
@@ -173,7 +192,7 @@ void speakerSeg(vector<string> soundfiles)
 		//set new file name
 		pnet->updControl("mrs_string/filename", fname);
 		// need to override the control to be 25 ms every time the file is read in.
-		pnet->updControl("mrs_natural/inSamples",256); // hardcoded for 8kHz
+		pnet->updControl("mrs_natural/inSamples",128); // hardcoded for 8kHz
 // 		if (fileName != EMPTYSTRING) // soundfile output instead of audio output
 // 			pnet->updControl("SoundFileSink/dest/mrs_string/filename", fileName);
 // 

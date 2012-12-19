@@ -53,6 +53,7 @@ mrs_real gain = 1.0;
 mrs_bool pluginMute = 0.0;
 mrs_bool playback = false;
 mrs_bool lexiconopt = false;
+mrs_natural cmopt = 40;
 
 mrs_bool stereo_ = false;
 mrs_bool featExtract_ = false;
@@ -2359,6 +2360,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   {
 	bextractNetwork->addMarSystem(mng.create("Classifier", "cl"));
 	bextractNetwork->addMarSystem(mng.create("Confidence", "confidence"));
+	bextractNetwork->updControl("Confidence/confidence/mrs_natural/memSize", cmopt);
 
 	// link confidence and annotation with SoundFileSource that plays the collection
 	bextractNetwork->linkControl("Confidence/confidence/mrs_string/fileName",
@@ -2591,6 +2593,14 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	else
 	  featureNetwork->updControl("AudioSink/dest/mrs_bool/mute", false);
   }
+
+  if (pluginName != EMPTYSTRING && pluginMute)
+	{
+		cout << "PLUGINMUTE" << endl;
+		featureNetwork->updControl("AudioSink/dest/mrs_bool/mute", true);
+		featureNetwork->updControl("AudioSink/dest/mrs_bool/initAudio", false);
+	}
+		
 
   // init mic audio ...
   if (mic_)
@@ -3077,6 +3087,7 @@ initOptions()
   cmd_options.addNaturalOption("downsample", "ds", 1);
   cmd_options.addBoolOption("shuffle", "sh", false);
   cmd_options.addBoolOption("mic", "mc", false);
+  cmd_options.addNaturalOption("confMemSize", "cm", 40);
 
   // feature selection options
   cmd_options.addBoolOption("StereoPanningSpectrumFeatures", "spsf", false);
@@ -3106,7 +3117,7 @@ loadOptions()
   helpopt = cmd_options.getBoolOption("help");
   usageopt = cmd_options.getBoolOption("usage");
   lexiconopt = cmd_options.getBoolOption("lexicon");
-  
+  cmopt = cmd_options.getNaturalOption("confMemSize");
   start = cmd_options.getRealOption("start");
   length = cmd_options.getRealOption("length");
   normopt = cmd_options.getBoolOption("normalize");
@@ -3601,6 +3612,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->addMarSystem(mng.create("Classifier", "cl"));
 	bextractNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 
+	
 	// link confidence and annotation with SoundFileSource that plays the collection
 	bextractNetwork->linkControl("Confidence/confidence/mrs_string/fileName",
 								 "mrs_string/filename");
