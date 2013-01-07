@@ -33,7 +33,10 @@ def write_numbers(dirname, csv_filename, number_dirname):
             #base_dirname = os.path.dirname(orig_filename)
             #number_filename = os.path.join(base_dirname,
             #    '%08i.wav' % i)
-            number_filename = '%08i.wav' % i
+            number_filename = os.path.join(
+                os.path.join(number_dirname_actual,
+                '%08i.wav' % i))
+            number_filename = number_filename.replace(dirname, "")
             ### save pair to csvfile
             csvwrite.writerow([number_filename, orig_filename])
             if DEBUG:
@@ -41,7 +44,8 @@ def write_numbers(dirname, csv_filename, number_dirname):
             ### actual rename
             shutil.move(
                 os.path.join(dirname, orig_filename),
-                os.path.join(number_dirname_actual, number_filename))
+                os.path.join(dirname, number_filename),
+                )
 
 def write_names(dirname, csv_filename, number_dirname):
     number_dirname_actual = os.path.join(dirname,
@@ -60,7 +64,7 @@ def write_names(dirname, csv_filename, number_dirname):
                 print number_filename, "->", orig_filename
             ### actual rename
             shutil.move(
-                os.path.join(number_dirname_actual, number_filename),
+                os.path.join(dirname, number_filename),
                 os.path.join(dirname, orig_filename)
                 )
     os.removedirs(number_dirname_actual)

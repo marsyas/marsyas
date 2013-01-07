@@ -1,0 +1,12 @@
+/home/gperciva/media/marsyas-data//mini-genres/rock/rock.00009.au	75:75---0:75:37.5:150:50.25
+/home/gperciva/media/marsyas-data//mini-genres/rock/rock.00009.au	75
+Correct Predictions = 8/50 - 16
+Correct MIREX Predictions = 24/50 - 48
+Correct Harmonic Predictions = 10/50 - 20
+Correct Harmonic MIREX predictions = 37/50 - 74
+Average error difference = 0/10=0
+# Half   predicted tempos = 10 - 5
+# Double predicted tempos = 16 - 8
+# triple predicted tempos = 0
+# third predicted tempos = 0
+Estimated tempo = 75

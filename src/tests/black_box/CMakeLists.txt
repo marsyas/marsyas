@@ -74,6 +74,16 @@ macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   )
 endmacro(bextract_kea_test)
 
+macro(tempo_test REG_NAME DIR MF_INPUT)
+  add_test( ${REG_NAME}-tempo
+	${CMAKE_SOURCE_DIR}/../scripts/tempo-wrapper.py
+		${EXECUTABLE_OUTPUT_PATH}/tempo
+		${DIR}/${MF_INPUT}
+		${TEST_TEMPDIR}/${REG_NAME}-tempo.txt
+		${TEST_OUTPUT}/${REG_NAME}-tempo.txt
+		)
+endmacro(tempo_test)
+
 
 ### bextract + kea tests
 bextract_kea_test( basic-waves
@@ -93,6 +103,10 @@ if (EXISTS ${TEST_MINI_GENRES_DIR})
   bextract_kea_test( mini-genres
     ${TEST_MINI_GENRES_DIR}/mini-genres/ mini-genres.mf
     "-ds 50"
+  )
+
+  tempo_test( mini-genres
+    ${TEST_MINI_GENRES_DIR}/mini-genres/ mini-genres-tempos.mf
   )
 endif (EXISTS ${TEST_MINI_GENRES_DIR})
 
