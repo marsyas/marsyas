@@ -8,9 +8,14 @@ import shutil
 AUDIO_FILES_PATTERN=('wav','au','mp3','ogg')
 
 DEBUG = False
+DEBUG = True
 
 
-def write_numbers(dirname, csv_filename):
+def write_numbers(dirname, csv_filename, number_dirname):
+    number_dirname_actual = os.path.join(dirname,
+        number_dirname.replace(dirname, ""))
+    if not os.path.exists(number_dirname_actual):
+        os.mkdir(number_dirname_actual)
     ### recursively find all audio files
     matches = []
     for root, dirnames, filenames in os.walk(dirname):
@@ -19,14 +24,16 @@ def write_numbers(dirname, csv_filename):
                 joined_filename = os.path.join(root, filename)
                 local_filename = joined_filename.replace(dirname, "")
                 matches.append(local_filename)
+    matches.sort()
     csv_filename_actual = os.path.join(dirname, csv_filename)
     with open(csv_filename_actual, 'wb') as csvfile:
         csvwrite = csv.writer(csvfile)
         for i, orig_filename in enumerate(matches):
             ### make new filename
-            base_dirname = os.path.dirname(orig_filename)
-            number_filename = os.path.join(base_dirname,
-                '%08i.wav' % i)
+            #base_dirname = os.path.dirname(orig_filename)
+            #number_filename = os.path.join(base_dirname,
+            #    '%08i.wav' % i)
+            number_filename = '%08i.wav' % i
             ### save pair to csvfile
             csvwrite.writerow([number_filename, orig_filename])
             if DEBUG:
@@ -34,9 +41,11 @@ def write_numbers(dirname, csv_filename):
             ### actual rename
             shutil.move(
                 os.path.join(dirname, orig_filename),
-                os.path.join(dirname, number_filename))
+                os.path.join(number_dirname_actual, number_filename))
 
-def write_names(dirname, csv_filename):
+def write_names(dirname, csv_filename, number_dirname):
+    number_dirname_actual = os.path.join(dirname,
+        number_dirname.replace(dirname, ""))
     ### allow user to specify csv_filename either relative or absolute
     csv_filename_actual = csv_filename
     if not os.path.exists(csv_filename_actual):
@@ -51,9 +60,10 @@ def write_names(dirname, csv_filename):
                 print number_filename, "->", orig_filename
             ### actual rename
             shutil.move(
-                os.path.join(dirname, number_filename),
+                os.path.join(number_dirname_actual, number_filename),
                 os.path.join(dirname, orig_filename)
                 )
+    os.removedirs(number_dirname_actual)
     os.remove(csv_filename_actual)
 
 
@@ -74,12 +84,18 @@ def main():
                       default=".", metavar="DIRECTORY",
                       action="store",
                       help="directory to examine")
+    parser.add_option("-m", "--my_dirname", type="string",
+                      default="numbers", metavar="DIRECTORY",
+                      action="store",
+                      help="directory to store numbered files")
 
     (options, args) = parser.parse_args()
     if options.numbers:
-        write_numbers(options.dirname, options.csvfile)
+        write_numbers(
+            options.dirname, options.csvfile, options.my_dirname)
     elif options.restore:
-        write_names(options.dirname, options.csvfile)
+        write_names(
+            options.dirname, options.csvfile, options.my_dirname)
     else:
         print parser.format_help()
 
