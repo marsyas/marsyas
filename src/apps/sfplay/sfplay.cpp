@@ -47,7 +47,7 @@ int
 printUsage(string progName)
 {
 	MRSDIAG("sfplay.cpp - printUsage");
-	cerr << "Usage : " << progName << " [-g gain] [-s start(seconds)] [-l length(seconds)] [-f outputfile] [-p pluginName] [-r repetitions] [-ws windowsize(samples)] file1 file2 file3" << endl;
+	cerr << "Usage : " << progName << " [-g gain] [-sa start(seconds)] [-ln length(seconds)] [-o outputfile] [-pl pluginName] [-rp repetitions] [-ws windowsize(samples)] file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format or collections " << endl;
 	return(1);
@@ -65,16 +65,16 @@ printHelp(string progName)
 	cerr << endl;
 	cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
 	cerr << "Help Options:" << endl;
-	cerr << "-u --usage      : display short usage info" << endl;
-	cerr << "-h --help       : display this information " << endl;
-	cerr << "-v --verbose    : verbose output " << endl;
-	cerr << "-f --file       : output to file " << endl;
-	cerr << "-g --gain       : linear volume gain " << endl;
-	cerr << "-s --start      : playback start offest in seconds " << endl;
-	cerr << "-l --length     : playback length in seconds " << endl;
-	cerr << "-p --plugin     : output plugin name " << endl;
-	cerr << "-r --repetitions: number of repetitions " << endl;
-	cerr << "--ws --windowsize: windows size in samples " << endl;
+	cerr << "-u  --usage       : display short usage info" << endl;
+	cerr << "-h  --help        : display this information " << endl;
+	cerr << "-v  --verbose     : verbose output " << endl;
+	cerr << "-o  --output      : output to file " << endl;
+	cerr << "-g  --gain        : linear volume gain " << endl;
+	cerr << "-sa --start       : playback start offest in seconds " << endl;
+	cerr << "-ln --length      : playback length in seconds " << endl;
+	cerr << "-pl --plugin      : output plugin name " << endl;
+	cerr << "-rp --repetitions : number of repetitions " << endl;
+	cerr << "-ws --windowsize  : windows size in samples " << endl;
 	return(1);
 }
 
@@ -180,12 +180,12 @@ initOptions()
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addBoolOption("verbose", "v", false);
-	cmd_options.addRealOption("start", "s", 0.0f);
-	cmd_options.addStringOption("filename", "f", EMPTYSTRING);
-	cmd_options.addRealOption("length", "l", -1.0f);
+	cmd_options.addRealOption("start", "sa", 0.0f);
+	cmd_options.addStringOption("output", "o", EMPTYSTRING);
+	cmd_options.addRealOption("length", "ln", -1.0f);
 	cmd_options.addRealOption("gain", "g", 1.0);
-	cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
-	cmd_options.addRealOption("repetitions", "r", 1.0);
+	cmd_options.addStringOption("plugin", "pl", EMPTYSTRING);
+	cmd_options.addRealOption("repetitions", "rp", 1.0);
 	cmd_options.addNaturalOption("windowsize", "ws", 2048);
 }
 
@@ -201,7 +201,7 @@ loadOptions()
 	verboseopt = cmd_options.getBoolOption("verbose");
 	gain = (float)cmd_options.getRealOption("gain");
 	pluginName = cmd_options.getStringOption("plugin");
-	fileName   = cmd_options.getStringOption("filename");
+	fileName   = cmd_options.getStringOption("output");
 	windowsize = cmd_options.getNaturalOption("windowsize");
 }
 

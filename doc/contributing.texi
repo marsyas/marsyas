@@ -14,6 +14,7 @@ others may use it.
 * Sending a patch::             
 * Building documentation::      
 * Build system details::        
+* Command-line arguments::
 @end menu
 
 
@@ -379,5 +380,47 @@ scripts/generate-source-docs.sh
 
 The main file is src/CMakeLists.txt.  Additional modules are in
 cmake-modules/.
+
+
+@node Command-line arguments
+@section Command-line arguments
+
+We're trying to avoid have the same command-line arguments meaning
+different things in different programs.  All arguments should have
+a short form (1-2 characters) and a long form.  Here is a list of
+commands with specific meanings; if you want to do something
+different, then find a different pair of letters for the short
+form.
+
+@example
+(null)             : same as -u
+-u --usage
+-h --help
+-v --verbose
+-s --silent
+-q --quiet
+
+-o --output    : output to a file
+
+-g --gain
+
+-ws --windowsize
+-hs --hopsize
+-ms --memorysize
+
+-sa --start
+-ln --length
+-pl --plugin
+
+-sr --samplerate
+-ch --channels
+
+-co --collection
+
+@end example
+
+We're still in the process of renaming arguments, so there may be
+inconsistencies between actual program behaviour and this list.
+
 
 
