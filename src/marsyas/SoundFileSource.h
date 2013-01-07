@@ -48,7 +48,11 @@ namespace Marsyas
    - \b mrs_natural/loopPos [rw] : sample position at which to loop
    - \b mrs_string/allfilenames [w] : a long string containing every sound file to read.
    - \b mrs_natural/numFiles [r] : how many files to read
-   - \b mrs_natural/size [r] : number of samples in the current sound file
+   - \b mrs_natural/size [r] : number of samples in each channel
+        of the current sound file.  Does not double-count samples
+        from multiple channels, i.e. a 1-second stereo file at
+        44100 Hz will be reported to contain 44100 samples, no
+        88200 samples.
    - \b mrs_real/frequency [r] : sample rate of the current sound file
    - \b mrs_bool/noteon [rw] : used as a wavetable on receiving a
    noteon.

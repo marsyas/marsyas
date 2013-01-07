@@ -409,7 +409,7 @@ MP3FileSource::getHeader(mrs_string filename)
 	advance_ = getctrl("mrs_natural/advance")->to<mrs_natural>();
 	cindex_ = getctrl("mrs_natural/cindex")->to<mrs_natural>();
   
-	size_ = (mrs_natural) ((duration_ * sampleRate) / nChannels);
+	size_ = (mrs_natural) (duration_ * sampleRate);
 
   
 	csize_ = size_ ;
