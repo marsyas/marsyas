@@ -27,7 +27,7 @@ def write_numbers(dirname, csv_filename, number_dirname):
     matches.sort()
     csv_filename_actual = os.path.join(dirname, csv_filename)
     with open(csv_filename_actual, 'wb') as csvfile:
-        csvwrite = csv.writer(csvfile)
+        csvwrite = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         for i, orig_filename in enumerate(matches):
             ### make new filename
             #base_dirname = os.path.dirname(orig_filename)
@@ -37,7 +37,7 @@ def write_numbers(dirname, csv_filename, number_dirname):
             ### save pair to csvfile
             csvwrite.writerow([number_filename, orig_filename])
             if DEBUG:
-                print filename, "->", number_filename
+                print orig_filename, "->", number_filename
             ### actual rename
             shutil.move(
                 os.path.join(dirname, orig_filename),
