@@ -26,7 +26,7 @@ endmacro(black_box_audio)
 
 ## actual tests
 set( NEXT_COMMAND
-	-ws 100 -s 0.25 -l 0.1 -g 0.7 -f right-sfplay.au
+	-ws 100 -sa 0.25 -ln 0.1 -g 0.7 -o right-sfplay.au
 )
 black_box_audio( sfplay right.wav right-sfplay.au sfplay "${NEXT_COMMAND}")
 
@@ -50,7 +50,7 @@ macro(bextract_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
 		${COMMAND_LINE_LIBRARY_ENV}
 		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
 		${EXTRA_BEXTRACT}
-		-w ${TEST_TEMPDIR}/${REG_NAME}.arff
+		-w ${REG_NAME}.arff
 		-od ${TEST_TEMPDIR}/
 		${MF_INPUT} )
 endmacro(bextract_test)
@@ -91,7 +91,7 @@ bextract_test( basic-waves-regression
 
 if (EXISTS ${TEST_MINI_GENRES_DIR})
   bextract_kea_test( mini-genres
-    ${TEST_MINI_GENRES_DIR} mini-genres.mf
+    ${TEST_MINI_GENRES_DIR}/mini-genres/ mini-genres.mf
     "-ds 50"
   )
 endif (EXISTS ${TEST_MINI_GENRES_DIR})
