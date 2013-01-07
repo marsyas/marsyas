@@ -211,10 +211,12 @@ int accept(string str)
 	string wav("wav");
 	string au("au");
 	string mp3("mp3");
+	string ogg("ogg");
 
 	if ((fname.ext() == wav)
 		||(fname.ext() == au)
-		||(fname.ext() == mp3))
+		||(fname.ext() == mp3)
+		||(fname.ext() == ogg))
 		return 1;
 	else return 0;
 
