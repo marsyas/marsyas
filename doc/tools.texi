@@ -27,7 +27,7 @@ in @file{src/apps/@{DIR@}/}.
 @end menu
 
 
-@node Collections and input files, Soundfile Interaction, Available tools, Available tools
+@node Collections and input files
 @section Collections and input files
 
 Many Marsyas tools can operate on individual soundfiles or
@@ -40,7 +40,7 @@ file which contain lists of soundfiles.
 @end menu
 
 
-@node Creating collections manually, mkcollection, Collections and input files, Collections and input files
+@node Creating collections manually
 @subsection Creating collections manually
 
 A simple way to create a collection is the unix ls command. 
@@ -85,7 +85,31 @@ cat music.mf speech.mf > all.mf
 @end example
 
 
-@node mkcollection,  , Creating collections manually, Collections and input files
+@subsection @code{MARSYAS_DATADIR}
+
+Collections support the environment variable
+@code{MARSYAS_DATADIR}.  This allows the use of @code{.mf} files
+shared between users (i.e. for a large dataset of audio).  For
+example, the above collection could be rewritten as:
+
+@example
+MARSYAS_DATADIR/reggae/foo.wav \t music
+MARSYAS_DATADIR/reggae/bar.wav \t speech
+@end example
+
+@noindent
+provided that the user configures the environment variable
+appropriately.  For example, using bash on Linux or MacOS X, users
+on three different machines may set up the variable as:
+
+@example
+export MARSYAS_DATADIR=/home/gtzan/data/sound/
+export MARSYAS_DATADIR=/Users/gtzan/data/sound/
+export MARSYAS_DATADIR=/home/gperciva/media/marsyas-data/
+@end example
+
+
+@node mkcollection
 @subsection @code{mkcollection}
 @cindex mkcollection     
  

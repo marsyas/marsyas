@@ -35,6 +35,7 @@ using std::istream;
 
 
 
+static std::string marsyas_datadir_ = std::getenv("MARSYAS_DATADIR");
 
 namespace Marsyas 
 {
@@ -291,6 +292,17 @@ Collection::concatenate(vector<Collection> cls)
 }
 
 
+/* I can't be bothered to think about this myself, so copied from
+ http://stackoverflow.com/questions/3418231/c-replace-part-of-a-string-with-another-string
+ -gp */
+bool replace(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+        return true;
+}
+
 
 istream& 
 operator>>(istream& i, Collection& l)
@@ -310,6 +322,7 @@ operator>>(istream& i, Collection& l)
 
         // Check to see if there is a label. Could use rfind for efficiency
         // if we were sure there weren't tabs after the label.
+        replace(fileEntry, "MARSYAS_DATADIR", marsyas_datadir_);
         mrs_string::size_type loc = fileEntry.find('\t', 0);
         if (loc != mrs_string::npos) 
         {
@@ -317,8 +330,9 @@ operator>>(istream& i, Collection& l)
             mrs_string label = fileEntry.substr(loc+1, fileEntry.size());
             l.add(file, label);
         } 
-        else 
+        else {
             l.add(fileEntry);
+        }
     }
    
     return i;
