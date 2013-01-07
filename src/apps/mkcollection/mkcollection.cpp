@@ -47,12 +47,17 @@ int usageopt;
 int escapeOpt;
 string collectionName;
 string labelopt;
+string marsyas_datadir_opt;
 CommandLineOptions cmd_options;
+
+static std::string marsyas_datadir_ =
+  std::getenv("MARSYAS_DATADIR") == NULL ?
+    "" : std::getenv("MARSYAS_DATADIR");
 
 void printUsage(string progName)
 {
 	MRSDIAG("mkcollection.cpp - printUsage");
-	cerr << "Usage : " << progName << " [-l label] [-c collectionName] dir1 dir2 ... dirN" << endl;
+	cerr << "Usage : " << progName << " [-l label] [-c collectionName] [-md] dir1 dir2 ... dirN" << endl;
 	cerr << endl;
 	cerr << "where dir1, dir2, ..., dirN are directories that will be scanned recursively for sound files in a MARSYAS supported format and added to the collection. " << endl;
 	exit(1);
@@ -66,7 +71,7 @@ printHelp(string progName)
 	cerr << "--------------------------------------------" << endl;
 	cerr << "Utility for creating collection files " << endl;
 	cerr << endl;
-	cerr << "Usage : " << progName << " [-l label] [-c collectionName] dir1 dir2 ... dirN" << endl;
+	cerr << "Usage : " << progName << " [-l label] [-c collectionName] [-md] dir1 dir2 ... dirN" << endl;
 	cerr << endl;
 	cerr << "where dir1, dir2, ..., dirN are directories that will be scanned recursively for sound files in a MARSYAS supported format and added to the collection. " << endl;
 	cerr << "Help Options:" << endl;
@@ -74,6 +79,7 @@ printHelp(string progName)
 	cerr << "-h --help       : display this information " << endl;
 	cerr << "-l --label      : label for the collection " << endl;
 	cerr << "-c --collectionName : the name of the collection (including the .mf extension) " << endl;
+	cerr << "-md --marsyasdatadir : use MARSYAS_DATADIR in filenames if possible " << endl;
 	exit(1);
 }
 
@@ -84,6 +90,7 @@ initOptions()
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addStringOption("label", "l", EMPTYSTRING);
 	cmd_options.addStringOption("collectionName", "c", "music.mf");
+	cmd_options.addBoolOption("marsyasdatadir", "md", false);
 }
 
 
@@ -94,6 +101,7 @@ loadOptions()
 	usageopt = cmd_options.getBoolOption("usage");
 	collectionName = cmd_options.getStringOption("collectionName");
 	labelopt = cmd_options.getStringOption("label");
+	marsyas_datadir_opt = cmd_options.getBoolOption("marsyasdatadir");
 }
 
 
@@ -212,6 +220,18 @@ int accept(string str)
 
 }
 
+/* I can't be bothered to think about this myself, so copied from
+ http://stackoverflow.com/questions/3418231/c-replace-part-of-a-string-with-another-string
+ -gp */
+bool replace(std::string& str, const std::string& from, const std::string& to) {
+    size_t start_pos = str.find(from);
+    if(start_pos == std::string::npos)
+        return false;
+    str.replace(start_pos, from.length(), to);
+        return true;
+}
+
+
 void read(Collection& cl, string dir, int recursive)
 {
 	/* THis variable makes the code non-reentrant, but who cares */
@@ -269,6 +289,9 @@ void read(Collection& cl, string dir, int recursive)
 			if (accept(dp->d_name))
 			{
 				printf("Adding directory entry %s\n", dp->d_name);
+                if (marsyas_datadir_.length() > 0) {
+                    replace(fullPath, marsyas_datadir_, "MARSYAS_DATADIR/");
+                }
 				cl.add(fullPath);
 			}
 		} else {

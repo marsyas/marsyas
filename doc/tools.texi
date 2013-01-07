@@ -123,6 +123,10 @@ mkcollection -c reggae.mf -l music /home/gtzan/data/sound/
 
 This also labels the data as @samp{music}.
 
+If the @code{-md} flag is added, then the filenames written to the
+@code{.mf} file will contain @code{MARSYAS_DATADIR} when
+appropriate.
+
 All the soundfiles residing in that directory or any subdirectories
 will be added to the collection.  @code{mkcollection} only will add
 files with @code{.wav} and @code{ .au} extensions but

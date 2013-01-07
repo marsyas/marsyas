@@ -35,7 +35,10 @@ using std::istream;
 
 
 
-static std::string marsyas_datadir_ = std::getenv("MARSYAS_DATADIR");
+// if the directory doesn't exist, we need to make it a "".
+static std::string marsyas_datadir_ =
+  std::getenv("MARSYAS_DATADIR") == NULL ?
+    "" : std::getenv("MARSYAS_DATADIR");
 
 namespace Marsyas 
 {
@@ -322,7 +325,9 @@ operator>>(istream& i, Collection& l)
 
         // Check to see if there is a label. Could use rfind for efficiency
         // if we were sure there weren't tabs after the label.
-        replace(fileEntry, "MARSYAS_DATADIR", marsyas_datadir_);
+        if (marsyas_datadir_.length() > 0) {
+            replace(fileEntry, "MARSYAS_DATADIR", marsyas_datadir_);
+        }
         mrs_string::size_type loc = fileEntry.find('\t', 0);
         if (loc != mrs_string::npos) 
         {
