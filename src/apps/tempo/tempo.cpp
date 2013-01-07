@@ -962,11 +962,11 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
    //  enhance the BH harmonic peaks
-   // MarSystem* hfanout = mng.create("Fanout", "hfanout");
-   // hfanout->addMarSystem(mng.create("Gain", "id1"));
-   // hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
-   // tempoInduction->addMarSystem(hfanout);
-   // tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+   MarSystem* hfanout = mng.create("Fanout", "hfanout");
+   hfanout->addMarSystem(mng.create("Gain", "id1"));
+   hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+   tempoInduction->addMarSystem(hfanout);
+   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 
 /*
     tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink"));
@@ -1182,7 +1182,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
 	temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
 
-	bhisto.setval(0.0);
 	if (ticks >= extra_ticks)
 	{
 		bhisto(tempos(0)) += temposcores(0);
