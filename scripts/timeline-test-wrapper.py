@@ -3,7 +3,6 @@
 import os
 import sys
 import subprocess
-import filecmp
 import shutil
 
 try:
@@ -26,6 +25,14 @@ def run_command(bin_cmd_args, working_dir, env_vars):
     p.communicate()
     #return p.returncode
 
+def compare_arffs(one_filename, two_filename):
+    one_lines = open(one_filename).readlines()
+    two_lines = open(two_filename).readlines()
+    for a, b in zip(one_lines[:-10], two_lines[:-10]):
+        if a != b:
+            return False
+    return True
+
 if __name__ == "__main__":
     #print '----'
     #print sys.argv
@@ -36,6 +43,6 @@ if __name__ == "__main__":
     print "comparing ", new_filename, good_filename
     run_command(bin_cmd_args, working_dir, env_vars)
     # python truth values are opposite to return values!
-    return_code = not filecmp.cmp(new_filename, good_filename)
+    return_code = not compare_arffs(new_filename, good_filename)
     sys.exit(return_code)
 
