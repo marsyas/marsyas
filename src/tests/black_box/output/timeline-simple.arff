@@ -1,0 +1,13 @@
+% Created by Marsyas
+@relation /home/gperciva/src/marsyas/build-release/tests/black_box/timeline-simple.arff
+@attribute Rolloff_Power_powerFFT_WinHamming_HopSize512_WinSize512_Sum_AudioCh0 real
+@attribute output {sine,square}
+
+
+@data
+% filename sine2048-square2048.wav
+% srate 86.1328
+0.019455,sine
+0.019455,sine
+0.085603,square
+0.085603,square

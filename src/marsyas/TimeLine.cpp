@@ -48,7 +48,7 @@ TimeLine::clear()
 	numRegions_ = 0;
 }
 
-void
+mrs_bool
 TimeLine::setSampleRate(mrs_real srate)
 {
   srate_ = srate;
@@ -61,9 +61,11 @@ TimeLine::setSampleRate(mrs_real srate)
 	  regions_[i].start *= (srate_ / 22050.0);
 	  regions_[i].end   *= (srate_ / 22050.0);
 	}
+    psrate_ = srate;
+    return true;
+  } else {
+    return false;
   }
-
-  psrate_ = srate;
   
 }
 

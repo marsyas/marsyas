@@ -84,6 +84,21 @@ macro(tempo_test REG_NAME DIR MF_INPUT)
 		)
 endmacro(tempo_test)
 
+macro(timeline_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
+  add_test( ${REG_NAME}-bextract
+	${CMAKE_SOURCE_DIR}/../scripts/timeline-test-wrapper.py
+		${DIR}
+		${COMMAND_LINE_LIBRARY_ENV}
+		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
+		${EXTRA_BEXTRACT}
+		-w ${TEST_TEMPDIR}/${REG_NAME}.arff
+		#-od ${TEST_TEMPDIR}/   
+		-od ${TEST_INPUT}/    # abuse of -od to mean working dir!
+		${MF_INPUT}
+		${TEST_OUTPUT}/${REG_NAME}.arff
+	)
+endmacro(timeline_test)
+
 
 ### bextract + kea tests
 bextract_kea_test( basic-waves
@@ -98,6 +113,12 @@ bextract_test( basic-waves-regression
   ${TEST_INPUT}/basic-waves basic-waves.mf
   "-m 0 -rg"
 )
+
+timeline_test( timeline-simple
+  ${TEST_INPUT} timeline-sine2048-square2048.mf
+  "-m 0 -rlf -t"
+)
+
 
 if (EXISTS ${TEST_MINI_GENRES_DIR})
   bextract_kea_test( mini-genres

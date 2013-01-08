@@ -1455,7 +1455,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	  Collection l = cls[cj];
 	  if (wekafname != EMPTYSTRING)
 	  {
-		if (workspaceDir != EMPTYSTRING)
+		if ((workspaceDir != EMPTYSTRING) && (wekafname[0] != '/' ))
 		  wekafname = workspaceDir + wekafname;
 		wsink->updControl("mrs_string/filename", wekafname);
 		cout << "Writing weka .arff file to :" << wekafname << endl;
@@ -1518,7 +1518,7 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 	{
 	  wsink->updControl("mrs_string/labelNames",l.getLabelNames());
 	  wsink->updControl("mrs_natural/nLabels", (mrs_natural)l.getNumLabels());
-	  if (workspaceDir != EMPTYSTRING)
+	  if ((workspaceDir != EMPTYSTRING) && (wekafname[0] != '/' ))
 		wekafname = workspaceDir + wekafname;
 	  wsink->updControl("mrs_string/filename", wekafname);
 	  cout << "Writing weka .arff file to :" << wekafname << endl;
@@ -2451,7 +2451,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 	cout << "Downsampling factor = " << downSample << endl;
 
-	if (workspaceDir != EMPTYSTRING)
+  if ((workspaceDir != EMPTYSTRING) && (wekafname[0] != '/' ))
 	{
 	  wekafname = workspaceDir + wekafname;
 	}
@@ -3344,7 +3344,7 @@ mirex_bextract()
 
   total->updControl("mrs_natural/inSamples", winSize);
 
-  if (workspaceDir != EMPTYSTRING)
+  if ((workspaceDir != EMPTYSTRING) && (wekafname[0] != '/' ))
 	wekafname = workspaceDir + wekafname;
 
   mrs_natural nLabels = l.getNumLabels();
@@ -3697,7 +3697,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
 	cout << "Downsampling factor = " << downSample << endl;
 
-	if (workspaceDir != EMPTYSTRING)
+  if ((workspaceDir != EMPTYSTRING) && (wekafname[0] != '/' ))
 	{
 	  wekafname = workspaceDir + wekafname;
 	}

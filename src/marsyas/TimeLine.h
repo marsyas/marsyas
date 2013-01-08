@@ -77,8 +77,8 @@ protected:
 	mrs_natural numRegions_;
 	mrs_natural lineSize_;
 	mrs_natural size_;
-	mrs_natural srate_;
-	mrs_natural psrate_;
+	mrs_real srate_;
+	mrs_real psrate_;
 	
   
 	std::vector<TimeRegion> regions_;
@@ -104,7 +104,7 @@ public:
 	
 	void setRegionName(mrs_natural regionNum, mrs_string name);
   void setRegionClass(mrs_natural regionNum, mrs_natural classId);
-  void setSampleRate(mrs_real srate);
+  mrs_bool setSampleRate(mrs_real srate);
   
   void removeRegion(mrs_natural regionNum);
 

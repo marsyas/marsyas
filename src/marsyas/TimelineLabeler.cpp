@@ -186,7 +186,11 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 	}
 	
 
-
+    // ensure that the timeline has the right sr
+	if(timeline_.setSampleRate(israte_)) {
+        // something changed
+        newTimeline = true;
+    }
 
 
 	/////////////////////////////////////////////////////////////////////////
@@ -234,7 +238,6 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 {
 
 
-
 			   
 	//bypass audio input to output 
 	out = in;
@@ -251,7 +254,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 
 	//get the sample position in the audio file of the last sample in
 	//current frame (as set by SoundFileSource)
-	samplePos_ = ctrl_pos_->to<mrs_natural>();
+	mrs_natural samplePos = ctrl_pos_->to<mrs_natural>();
 	
 	//get current region boundaries
 	mrs_natural regionStart = timeline_.regionStart(curRegion_)*timeline_.lineSize(); //region start sample
@@ -261,12 +264,13 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 	//check if this audio frame belongs to current region or to the next one
 	//(i.e. if at least half of the current audio frame belongs to the current region)
 	////////////////////////////////////////////////////////////////////////////////////
-	if(samplePos_ == 0)
-		samplePos_ += inSamples_/2; //UGLY HACK because of the way SoundFileSource and CollectionFileSource are implemented...
+	if(samplePos == 0)
+		samplePos += inSamples_/2; //UGLY HACK because of the way SoundFileSource and CollectionFileSource are implemented...
 	else
-		samplePos_ -= inSamples_/2;	
+		samplePos -= inSamples_/2;	
 	
-	if (samplePos_ >= regionStart && samplePos_<= regionEnd)
+    //cout<<samplePos<<"\t"<<regionStart<<"\t"<<regionEnd<<"\t";
+	if (samplePos >= regionStart && samplePos<= regionEnd)
 	{
 		if(timeline_.regionName(curRegion_) == selectedLabel_ || 
 			 selectedLabel_ == "" ||
@@ -278,7 +282,73 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 		else
 			ctrl_currentLabel_->setValue(-1.0);
 		
-		foundNextRegion_ = false;
+        // prepare to move to the next region if the next sample
+        // would fall outside of the current region
+        if (samplePos + getctrl("mrs_natural/inSamples")->to<mrs_natural>()
+            < regionEnd) {
+		        foundNextRegion_ = true;
+                //cout<<"trigger"<<endl;
+				//ctrl_advance_->setValue(1, NOUPDATE);
+        } else {
+//		    foundNextRegion_ = false;
+			////////////////////////////////////////////////////////
+			//look for the next region in this timeline
+			////////////////////////////////////////////////////////
+			if(selectedLabel_ == "" || selectedLabel_ == "init")//i.e. just move to next region, whatever label
+				curRegion_++;
+			else // look for and move to next region with a specific label 
+			{
+				curRegion_++;
+				while(timeline_.regionName(curRegion_)!= selectedLabel_ && curRegion_ < timeline_.numRegions())
+				{
+					curRegion_++;
+				}
+			}
+			foundNextRegion_ = true;
+		///////////////////////////////////////////////////////////////////
+		//check if we found a new/subsequent region in the current timeline...
+		///////////////////////////////////////////////////////////////////
+		if(curRegion_ < timeline_.numRegions())
+		{
+			//yeap, we found a new region in the current timeline!
+			//update region boundaries
+			regionStart = timeline_.regionStart(curRegion_)*timeline_.lineSize(); //region start sample
+			regionEnd = timeline_.regionEnd(curRegion_)*timeline_.lineSize(); //region end sample
+			
+			//check if current frame is inside the new current region
+			if(samplePos >= regionStart && samplePos <= regionEnd)
+			{
+				//yes it is... just output its label
+				ctrl_currentLabel_->setValue(timeline_.regionClass(curRegion_));
+			}
+			else //current frame not inside the new current window...
+			{
+				//...should we fast forward to the new region (at next tick)?
+				if(ctrl_playRegionsOnly_->to<mrs_bool>())
+				{
+					//output silence (i.e. discard current frame, since most of it does not
+					//belong to the now past region, neither to the now current, region...)
+					//out.setval(0.0); //[?] should we play this frame as is or just output silence?!
+
+					//fast forward to next region (at next tick)
+					ctrl_pos_->setValue(regionStart);
+				}
+			}
+		}
+		else //no more regions in this timeline...
+		{
+			//Should we ask for another audiofile/timeline ot just play the current file till its end?
+			if(ctrl_playRegionsOnly_->to<mrs_bool>())
+			{
+				//output silence (i.e. discard current frame, since most of it does not
+				//belong to the now past region)
+				//out.setval(0.0); //[?] should we play this frame as is or just output silence?!
+
+				//fast forward to next region (at next tick)
+				ctrl_advance_->setValue(1);
+			}
+		}
+        }
 	}
 	else//out of the current region...
 	{
@@ -312,7 +382,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 			regionEnd = timeline_.regionEnd(curRegion_)*timeline_.lineSize(); //region end sample
 			
 			//check if current frame is inside the new current region
-			if(samplePos_ >= regionStart && samplePos_ <= regionEnd)
+			if(samplePos >= regionStart && samplePos <= regionEnd)
 			{
 				//yes it is... just output its label
 				ctrl_currentLabel_->setValue(timeline_.regionClass(curRegion_));
@@ -348,4 +418,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 			ctrl_currentLabel_->setValue(-1.0); //i.e. no region/label defined for this audio frame
 		}
 	}
+    //cout<<"\t"<<ctrl_advance_->to<mrs_natural>();
+    //cout<<"\t"<<ctrl_currentLabel_->to<mrs_real>();
+    //cout<<endl;
 }
