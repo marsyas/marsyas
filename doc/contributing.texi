@@ -15,6 +15,7 @@ others may use it.
 * Building documentation::      
 * Build system details::        
 * Command-line arguments::
+* Making a release::
 @end menu
 
 
@@ -421,6 +422,80 @@ form.
 
 We're still in the process of renaming arguments, so there may be
 inconsistencies between actual program behaviour and this list.
+
+
+@node Making a release
+@section Making a release
+
+Checklist:
+
+@enumerate
+
+@item
+From the top source dir, build in RELEASE mode and test:
+
+@example
+mkdir -p build-release/
+cd build-release/
+cmake ../src/
+make clean ; make -j3
+make test
+@end example
+
+
+@item
+Build the docs from the top source dir,
+
+@example
+mkdir -p build-doc
+cd build-doc
+cmake ../doc/
+make clean ; make -j3
+@end example
+
+
+@item
+In the top source dir, create tarball (adjust number as
+necessary):
+
+@example
+svn export . /tmp/marsyas-0.4.8/
+cd /tmp && tar -czf marsyas-0.4.8.tar.gz marsyas-0.4.8/
+@end example
+
+
+@item
+Upload the tarball.  Either use the web interface, or
+command-line.  Update the filename and @code{gperciva@@} as
+needed.
+
+@c if you update the rsync command, remember that texinfo requires
+@c a @ to be escaped with @@.
+@example
+rsync /tmp/marsyas-0.4.8.tar.gz \
+  gperciva@@frs.sourceforge.net:/home/frs/projects/marsyas/marsyas/
+@end example
+
+RSYNC CURRENTLY UNTESTED!
+
+
+@item
+Set the default download to the new file.  To my knowledge, this
+must be done with the online sourceforge interface.
+
+
+@item
+Upload the docs from the top source dir,
+
+@example
+scripts/upload-docs.sh
+@end example
+
+That script might require directory names to be adjusted.
+
+
+@end enumerate
+
 
 
 
