@@ -2109,6 +2109,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
   featureNetwork->addMarSystem(fanout);
 
   featureNetwork->updControl("mrs_real/israte", 44100.0);   //sampling rate  [!hardcoded]
+  bextractNetwork->updControl("mrs_real/israte", 44100.0);   //sampling rate  [!hardcoded]
 
   // Disable Microphone for training the classifier ...
   featureNetwork->updControl("Fanout/fanout/mrs_natural/disable", 1);

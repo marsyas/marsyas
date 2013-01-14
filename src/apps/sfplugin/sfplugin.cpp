@@ -71,17 +71,15 @@ printHelp(string progName)
 	cerr << endl;
 	cerr << "where file1, ..., fileN are sound files in a Marsyas supported format" << endl;
 	cerr << "Help Options:" << endl;
-	cerr << "-u --usage      : display short usage info" << endl;
-	cerr << "-h --help       : display this information " << endl;
-	cerr << "-v --verbose    : verbose output " << endl;
-	cerr << "-g --gain       : linear volume gain " << endl;
-	// cerr << "-o --offset     : playback start offset in samples " << endl;
-	// cerr << "-d --duration   : playback duration in samples     " << endl;
-	cerr << "-s --start      : playback start offset in seconds " << endl;
-	cerr << "-l --length     : playback length in seconds " << endl;
-	cerr << "-p --plugin     : plugin file " << endl;
-	cerr << "-f --filename     : output file " << endl;
-	cerr << "-r --repetitions: number of repetitions " << endl;
+	cerr << "-u --usage       : display short usage info" << endl;
+	cerr << "-h --help        : display this information " << endl;
+	cerr << "-v --verbose     : verbose output " << endl;
+	cerr << "-g --gain        : linear volume gain " << endl;
+	cerr << "-s --start       : playback start offset in seconds " << endl;
+	cerr << "-l --length      : playback length in seconds " << endl;
+	cerr << "-p --plugin      : plugin file " << endl;
+	cerr << "-f --filename    : output file " << endl;
+	cerr << "-r --repetitions : number of repetitions " << endl;
 	return (1);
 }
 
@@ -166,6 +164,10 @@ int sfplugin(vector<string> soundfiles, string pluginName)
 					else 
 						break;
 				}
+		        mrs_natural pos = msys->getctrl("mrs_natural/pos")->to<mrs_natural>();
+                if (pos >= (offset+duration)) {
+                    break;
+                }
 		    }
 		}
 	}
