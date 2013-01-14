@@ -397,7 +397,6 @@ void
 AudioSink::myProcess(realvec& in, realvec& out)
 {
 	
-	
 	static int count = 0;
 	count ++;
 	 
@@ -412,13 +411,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				out(o,t) = in(o,t);
 			}
 		}
-		
-    }
-	
-	
-	else
-	{
-		
+    } else {
 		// copy to output 
 		for (t=0; t < inSamples_; t++)
 		{
@@ -429,6 +422,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		}
 		
 		
+#ifdef MARSYAS_AUDIOIO
 		//check if RtAudio is initialized
 		if (!isInitialized_)
 			return;
@@ -468,11 +462,9 @@ AudioSink::myProcess(realvec& in, realvec& out)
 					else 
 						samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
 				}
-				
-
 			}
 		}
-		
+#endif
 	}
 	
 	
@@ -485,14 +477,3 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	}
 }
 
- 
-
-
-
-
-
-
-
-
-
-	

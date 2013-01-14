@@ -49,17 +49,17 @@ float repetitions = 1;
 bool loop = false;
 bool onetick = false;
 
-void 
+int
 printUsage(string progName)
 {
 	MRSDIAG("sfplugin.cpp - printUsage");
 	cerr << "Usage : " << progName << " [-c collection] [-g gain] [-s start(seconds)] [-l length(seconds)] file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "where file1, ..., fileN are sound files in a MARSYAS supported format" << endl;
-	exit(1);
+	return (1);
 }
 
-void 
+int
 printHelp(string progName)
 {
 	MRSDIAG("sfplugin.cpp - printHelp");
@@ -82,10 +82,10 @@ printHelp(string progName)
 	cerr << "-p --plugin     : plugin file " << endl;
 	cerr << "-f --filename     : output file " << endl;
 	cerr << "-r --repetitions: number of repetitions " << endl;
-	exit(1);
+	return (1);
 }
 
-void sfplugin(vector<string> soundfiles, string pluginName)
+int sfplugin(vector<string> soundfiles, string pluginName)
 {
 	MRSDIAG("sfplugin.cpp - sfplugin");
 	// read the plugin from the file 
@@ -99,7 +99,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 	if (msys == 0) 
 	{
 		cout << "Manager could not load MarSystem from plugin file" << endl;
-		exit(1);
+		return (1);
 	}
 	mrs_real srate;
 
@@ -171,6 +171,7 @@ void sfplugin(vector<string> soundfiles, string pluginName)
 	}
 	
 	delete msys;
+    return 0;
 }
 
 void 
@@ -228,8 +229,7 @@ main(int argc, const char **argv)
 	if (usageopt)
 		printUsage(progName);
 
-	sfplugin(soundfiles, pluginName);
-	exit(0);
+	return sfplugin(soundfiles, pluginName);
 }
 
 

@@ -2087,10 +2087,8 @@ bextract_train_refactored(string pluginName,  string wekafname,
   MRSDIAG("bextract.cpp - bextract_train_refactored");
   MarSystemManager mng;
 
-
   // Overall extraction and classification network
   MarSystem* bextractNetwork = mng.create("Series", "bextractNetwork");
-
 
   // Build the overall feature calculation network
   MarSystem* featureNetwork = mng.create("Series", "featureNetwork");
@@ -2356,6 +2354,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	}
   }
 
+
   if (!featExtract_)
   {
 	bextractNetwork->addMarSystem(mng.create("Classifier", "cl"));
@@ -2570,8 +2569,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
   cout << "Finished feature extraction" << endl;
-  if (featExtract_)
+  if (featExtract_) {
+    delete bextractNetwork;
 	return;
+  }
 
 
   // prepare network for real-time playback/prediction
@@ -3377,7 +3378,7 @@ mirex_bextract()
   cout << "Wrote collection to: " << outCollection << endl;
 }
 
-void
+int
 saivq_train_refactored(string pluginName,  string wekafname,
 					   mrs_natural memSize, string classifierName,
 					   mrs_bool single_vector)
@@ -3387,7 +3388,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
 #ifndef MARSYAS_ANN
   cout << "You need to enable the WITH_ANN option using cmake when compiling Marsyas in order to run this function" << endl;
-  exit(0);
+  return(0);
 
 #endif
 
@@ -3814,7 +3815,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
   cout << "Finished feature extraction" << endl;
   if (featExtract_)
-	return;
+	return 0;
 
 
   // prepare network for real-time playback/prediction
@@ -3958,7 +3959,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 
 
   delete bextractNetwork;
-  return;
+  return 0;
 }
 
 int
