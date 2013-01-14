@@ -75,10 +75,10 @@ printHelp(string progName)
 	cerr << "-h --help        : display this information " << endl;
 	cerr << "-v --verbose     : verbose output " << endl;
 	cerr << "-g --gain        : linear volume gain " << endl;
-	cerr << "-s --start       : playback start offset in seconds " << endl;
-	cerr << "-l --length      : playback length in seconds " << endl;
-	cerr << "-p --plugin      : plugin file " << endl;
-	cerr << "-f --filename    : output file " << endl;
+	cerr << "-sa --start      : playback start offset in seconds " << endl;
+	cerr << "-ln --length     : playback length in seconds " << endl;
+	cerr << "-pl --plugin     : plugin file " << endl;
+	cerr << "-o --output      : output file " << endl;
 	cerr << "-r --repetitions : number of repetitions " << endl;
 	return (1);
 }
@@ -182,11 +182,11 @@ initOptions()
 	cmd_options.addBoolOption("help", "h", false);
 	cmd_options.addBoolOption("usage", "u", false);
 	cmd_options.addBoolOption("verbose", "v", false);
-	cmd_options.addRealOption("start", "s", 0.0f);
-	cmd_options.addStringOption("filename", "f", EMPTYSTRING);
-	cmd_options.addRealOption("length", "l", 1000.0f);
+	cmd_options.addRealOption("start", "sa", 0.0f);
+	cmd_options.addStringOption("output", "o", EMPTYSTRING);
+	cmd_options.addRealOption("length", "ln", 1000.0f);
 	cmd_options.addRealOption("gain", "g", 1.0);
-	cmd_options.addStringOption("plugin", "p", EMPTYSTRING);
+	cmd_options.addStringOption("plugin", "pl", EMPTYSTRING);
 	cmd_options.addRealOption("repetitions", "r", 1.0);
 	cmd_options.addBoolOption("loop", "l", false);
 	cmd_options.addBoolOption("onetick", "o", false);
