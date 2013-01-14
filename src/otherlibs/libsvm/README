@@ -10,17 +10,20 @@ Please read the COPYRIGHT file before using libsvm.
 
 Table of Contents
 =================
+
 - Quick Start
 - Installation and Data Format
 - `svm-train' Usage
 - `svm-predict' Usage
+- `svm-scale' Usage
 - Tips on Practical Use
 - Examples
 - Precomputed Kernels 
 - Library Usage
 - Java Version
 - Building Windows Binaries
-- Additional Tools: Model Selection, Sub-sampling, etc.
+- Additional Tools: Sub-sampling, Parameter Selection, Format checking, etc.
+- MATLAB/OCTAVE Interface
 - Python Interface
 - Additional Information
 
@@ -34,7 +37,7 @@ everything automatic -- from data scaling to parameter selection.
 Usage: easy.py training_file [testing_file]
 
 More information about parameter selection can be found in
-tools/README.
+`tools/README.'
 
 Installation and Data Format
 ============================
@@ -53,23 +56,33 @@ The format of training and testing data file is:
 .
 .
 
-For classification, <label> is an integer indicating the class label
-(multi-class is supported). For regression, <label> is
-the target value which can be any real number. For one-class SVM, it's
-not used so can be any number.  Except using precomputed kernels
-(explained in another section), <index>:<value> gives a feature
-(attribute) value.  <index> is an integer starting from 1 and <value>
-is a real number. Indices must be in an ASCENDING order. Labels in the
-testing file are only used to calculate accuracy or errors. If they
-are unknown, just fill the first column with any numbers.
+Each line contains an instance and is ended by a '\n' character.  For
+classification, <label> is an integer indicating the class label
+(multi-class is supported). For regression, <label> is the target
+value which can be any real number. For one-class SVM, it's not used
+so can be any number.  The pair <index>:<value> gives a feature
+(attribute) value: <index> is an integer starting from 1 and <value>
+is a real number. The only exception is the precomputed kernel, where
+<index> starts from 0; see the section of precomputed kernels. Indices
+must be in ASCENDING order. Labels in the testing file are only used
+to calculate accuracy or errors. If they are unknown, just fill the
+first column with any numbers.
 
-A sample classification data included in this package is `heart_scale'.
+A sample classification data included in this package is
+`heart_scale'. To check if your data is in a correct form, use
+`tools/checkdata.py' (details in `tools/README').
 
 Type `svm-train heart_scale', and the program will read the training
 data and output the model file `heart_scale.model'. If you have a test
 set called heart_scale.t, then type `svm-predict heart_scale.t
 heart_scale.model output' to see the prediction accuracy. The `output'
 file contains the predicted class labels.
+
+For classification, if training data are in only one class (i.e., all
+labels are the same), then `svm-train' issues a warning message:
+`Warning: training data in only one class. See README for details,'
+which means the training data is very unbalanced. The label in the
+training data is directly returned when testing.
 
 There are some other useful programs in this package.
 
@@ -90,10 +103,12 @@ svm-toy:
 	You can enter options in the bottom of the window, the syntax of
 	options is the same as `svm-train'.
 
-	Note that "load" and "save" consider data in the
-	classification but not the regression case. Each data point
-	has one label (the color) which must be 1, 2, or 3 and two
-	attributes (x-axis and y-axis values) in [0,1].
+	Note that "load" and "save" consider dense data format both in
+	classification and the regression cases. For classification,
+	each data point has one label (the color) that must be 1, 2,
+	or 3 and two attributes (x-axis and y-axis values) in
+	[0,1). For regression, each data point has one target value
+	(y-axis) and one attribute (x-axis values) in [0, 1).
 
 	Type `make' in respective directories to build them.
 
@@ -103,8 +118,9 @@ svm-toy:
 	You need GTK+ library to build the GTK version.
 	(available from http://www.gtk.org)
 	
-	We use Visual C++ to build the Windows version.
-	The pre-built Windows binaries are in the windows directory.
+	The pre-built Windows binaries are in the `windows'
+	directory. We use Visual C++ on a 32-bit machine, so the
+	maximal cache size is 2GB.
 
 `svm-train' Usage
 =================
@@ -112,11 +128,11 @@ svm-toy:
 Usage: svm-train [options] training_set_file [model_file]
 options:
 -s svm_type : set type of SVM (default 0)
-	0 -- C-SVC
-	1 -- nu-SVC
-	2 -- one-class SVM
-	3 -- epsilon-SVR
-	4 -- nu-SVR
+	0 -- C-SVC		(multi-class classification)
+	1 -- nu-SVC		(multi-class classification)
+	2 -- one-class SVM	
+	3 -- epsilon-SVR	(regression)
+	4 -- nu-SVR		(regression)
 -t kernel_type : set type of kernel function (default 2)
 	0 -- linear: u'*v
 	1 -- polynomial: (gamma*u'*v + coef0)^degree
@@ -124,22 +140,26 @@ options:
 	3 -- sigmoid: tanh(gamma*u'*v + coef0)
 	4 -- precomputed kernel (kernel values in training_set_file)
 -d degree : set degree in kernel function (default 3)
--g gamma : set gamma in kernel function (default 1/k)
+-g gamma : set gamma in kernel function (default 1/num_features)
 -r coef0 : set coef0 in kernel function (default 0)
 -c cost : set the parameter C of C-SVC, epsilon-SVR, and nu-SVR (default 1)
 -n nu : set the parameter nu of nu-SVC, one-class SVM, and nu-SVR (default 0.5)
 -p epsilon : set the epsilon in loss function of epsilon-SVR (default 0.1)
 -m cachesize : set cache memory size in MB (default 100)
 -e epsilon : set tolerance of termination criterion (default 0.001)
--h shrinking: whether to use the shrinking heuristics, 0 or 1 (default 1)
--b probability_estimates: whether to train an SVC or SVR model for probability estimates, 0 or 1 (default 0)
--wi weight: set the parameter C of class i to weight*C in C-SVC (default 1)
+-h shrinking : whether to use the shrinking heuristics, 0 or 1 (default 1)
+-b probability_estimates : whether to train a SVC or SVR model for probability estimates, 0 or 1 (default 0)
+-wi weight : set the parameter C of class i to weight*C, for C-SVC (default 1)
 -v n: n-fold cross validation mode
+-q : quiet mode (no outputs)
+
 
 The k in the -g option means the number of attributes in the input data.
 
 option -v randomly splits the data into n parts and calculates cross
 validation accuracy/mean squared error on them.
+
+See libsvm FAQ for the meaning of outputs.
 
 `svm-predict' Usage
 ===================
@@ -151,6 +171,19 @@ options:
 model_file is the model file generated by svm-train.
 test_file is the test data you want to predict.
 svm-predict will produce output in the output_file.
+
+`svm-scale' Usage
+=================
+
+Usage: svm-scale [options] data_filename
+options:
+-l lower : x scaling lower limit (default -1)
+-u upper : x scaling upper limit (default +1)
+-y y_lower y_upper : y scaling limits (default: no y scaling)
+-s save_filename : save scaling parameters to save_filename
+-r restore_filename : restore scaling parameters from restore_filename
+
+See 'Examples' in this file for examples.
 
 Tips on Practical Use
 =====================
@@ -184,10 +217,10 @@ stopping tolerance 0.1.
 Solve SVM regression with linear kernel u'v and epsilon=0.1
 in the loss function.
 
-> svm-train -c 10 -w1 1 -w-1 5 data_file
+> svm-train -c 10 -w1 1 -w-2 5 -w4 2 data_file
 
-Train a classifier with penalty 10 for class 1 and penalty 50
-for class -1.
+Train a classifier with penalty 10 = 1 * 10 for class 1, penalty 50 =
+5 * 10 for class -2, and penalty 20 = 2 * 10 for class 4.
 
 > svm-train -s 0 -c 100 -g 0.1 -v 5 data_file
 
@@ -199,7 +232,6 @@ the parameters C = 100 and gamma = 0.1
 
 Obtain a model with probability information and predict test data with
 probability estimates
-
 
 Precomputed Kernels 
 ===================
@@ -266,10 +298,12 @@ Examples:
 Library Usage
 =============
 
-These functions and structures are declared in the header file `svm.h'.
-You need to #include "svm.h" in your C/C++ source files and link your
-program with `svm.cpp'. You can see `svm-train.c' and `svm-predict.c'
-for examples showing how to use them.
+These functions and structures are declared in the header file
+`svm.h'.  You need to #include "svm.h" in your C/C++ source files and
+link your program with `svm.cpp'. You can see `svm-train.c' and
+`svm-predict.c' for examples showing how to use them. We define
+LIBSVM_VERSION and declare `extern int libsvm_version; ' in svm.h, so
+you can check the version number.
 
 Before you classify test data, you need to construct an SVM model
 (`svm_model') using training data. A model can also be saved in
@@ -326,7 +360,8 @@ to classify new data.
 		double value;
 	};
 
-    index = -1 indicates the end of one vector.
+    index = -1 indicates the end of one vector. Note that indices must
+    be in ASCENDING order.
  
     struct svm_parameter describes the parameters of an SVM model:
 
@@ -368,7 +403,7 @@ to classify new data.
     PRECOMPUTED: kernel values in training_set_file
 
     cache_size is the size of the kernel cache, specified in megabytes.
-    C is the cost of constraints violation. (we usually use 1 to 1000)
+    C is the cost of constraints violation. 
     eps is the stopping criterion. (we usually use 0.00001 in nu-SVC,
     0.001 in others). nu is the parameter in nu-SVM, nu-SVR, and
     one-class-SVM. p is the epsilon in epsilon-insensitive loss function
@@ -395,6 +430,84 @@ to classify new data.
     *NOTE* To avoid wrong parameters, svm_check_parameter() should be
     called before svm_train().
 
+    struct svm_model stores the model obtained from the training procedure.
+    It is not recommended to directly access entries in this structure.
+    Programmers should use the interface functions to get the values.
+
+	struct svm_model
+	{
+		struct svm_parameter param;	/* parameter */
+		int nr_class;		/* number of classes, = 2 in regression/one class svm */
+		int l;			/* total #SV */
+		struct svm_node **SV;		/* SVs (SV[l]) */
+		double **sv_coef;	/* coefficients for SVs in decision functions (sv_coef[k-1][l]) */
+		double *rho;		/* constants in decision functions (rho[k*(k-1)/2]) */
+		double *probA;		/* pairwise probability information */
+		double *probB;
+		int *sv_indices;        /* sv_indices[0,...,nSV-1] are values in [1,...,num_traning_data] to indicate SVs in the training set */
+
+		/* for classification only */
+
+		int *label;		/* label of each class (label[k]) */
+		int *nSV;		/* number of SVs for each class (nSV[k]) */
+					/* nSV[0] + nSV[1] + ... + nSV[k-1] = l */
+		/* XXX */
+		int free_sv;		/* 1 if svm_model is created by svm_load_model*/
+					/* 0 if svm_model is created by svm_train */
+	};
+
+    param describes the parameters used to obtain the model.
+
+    nr_class is the number of classes. It is 2 for regression and one-class SVM.
+
+    l is the number of support vectors. SV and sv_coef are support
+    vectors and the corresponding coefficients, respectively. Assume there are
+    k classes. For data in class j, the corresponding sv_coef includes (k-1) y*alpha vectors,
+    where alpha's are solutions of the following two class problems:
+    1 vs j, 2 vs j, ..., j-1 vs j, j vs j+1, j vs j+2, ..., j vs k
+    and y=1 for the first j-1 vectors, while y=-1 for the remaining k-j 
+    vectors. For example, if there are 4 classes, sv_coef and SV are like:
+
+        +-+-+-+--------------------+
+        |1|1|1|                    |
+        |v|v|v|  SVs from class 1  |
+        |2|3|4|                    |
+        +-+-+-+--------------------+
+        |1|2|2|                    |
+        |v|v|v|  SVs from class 2  |
+        |2|3|4|                    |
+        +-+-+-+--------------------+
+        |1|2|3|                    |
+        |v|v|v|  SVs from class 3  |
+        |3|3|4|                    |
+        +-+-+-+--------------------+
+        |1|2|3|                    |
+        |v|v|v|  SVs from class 4  |
+        |4|4|4|                    |
+        +-+-+-+--------------------+
+
+    See svm_train() for an example of assigning values to sv_coef.
+
+    rho is the bias term (-b). probA and probB are parameters used in
+    probability outputs. If there are k classes, there are k*(k-1)/2
+    binary problems as well as rho, probA, and probB values. They are
+    aligned in the order of binary problems:
+    1 vs 2, 1 vs 3, ..., 1 vs k, 2 vs 3, ..., 2 vs k, ..., k-1 vs k.
+
+    sv_indices[0,...,nSV-1] are values in [1,...,num_traning_data] to
+    indicate support vectors in the training set.
+
+    label contains labels in the training data.
+
+    nSV is the number of support vectors in each class.
+
+    free_sv is a flag used to determine whether the space of SV should 
+    be released in free_model_content(struct svm_model*) and 
+    free_and_destroy_model(struct svm_model**). If the model is
+    generated by svm_train(), then SV points to data in svm_problem
+    and should not be removed. For example, free_sv is 0 if svm_model
+    is created by svm_train, but is 0 if created by svm_load_model.
+
 - Function: double svm_predict(const struct svm_model *model,
                                const struct svm_node *x);
 
@@ -412,8 +525,8 @@ to classify new data.
     This function conducts cross validation. Data are separated to
     nr_fold folds. Under given parameters, sequentially each fold is
     validated using the model from training the remaining. Predicted
-    labels in the validation process are stored in the array called
-    target.
+    labels (of all prob's instances) in the validation process are
+    stored in the array called target.
 
     The format of svm_prob is same as that for svm_train(). 
 
@@ -433,6 +546,16 @@ to classify new data.
     labels into an array called label. For regression and one-class
     models, label is unchanged.
 
+- Function: void svm_get_sv_indices(const struct svm_model *model, int *sv_indices)
+
+    This function outputs indices of support vectors into an array called sv_indices. 
+    The size of sv_indices is the number of support vectors and can be obtained by calling svm_get_nr_sv. 
+    Each sv_indices[i] is in the range of [1, ..., num_traning_data].
+
+- Function: int svm_get_nr_sv(const struct svm_model *model) 
+
+    This function gives the number of total support vector.
+
 - Function: double svm_get_svr_probability(const struct svm_model *model);
 
     For a regression model with probability information, this function
@@ -443,11 +566,12 @@ to classify new data.
     If the model is not for svr or does not contain required
     information, 0 is returned.
 
-- Function: void svm_predict_values(const svm_model *model, 
+- Function: double svm_predict_values(const svm_model *model, 
 				    const svm_node *x, double* dec_values)
 
     This function gives decision values on a test vector x given a
-    model.
+    model, and return the predicted label (classification) or
+    the function value (regression).
 
     For a classification model with nr_class classes, this function
     gives nr_class*(nr_class-1)/2 decision values in the array
@@ -455,11 +579,14 @@ to classify new data.
     svm_get_nr_class. The order is label[0] vs. label[1], ...,
     label[0] vs. label[nr_class-1], label[1] vs. label[2], ...,
     label[nr_class-2] vs. label[nr_class-1], where label can be
-    obtained from the function svm_get_labels.
+    obtained from the function svm_get_labels. The returned value is
+    the predicted class for x. Note that when nr_class = 1, this 
+    function does not give any decision value.
 
-    For a regression model, label[0] is the function value of x
-    calculated using the model. For one-class model, label[0] is +1 or
-    -1.
+    For a regression model, dec_values[0] and the returned value are
+    both the function value of x calculated using the model. For a
+    one-class model, dec_values[0] is the decision value of x, while
+    the returned value is +1/-1.
 
 - Function: double svm_predict_probability(const struct svm_model *model, 
 	    const struct svm_node *x, double* prob_estimates);
@@ -502,13 +629,25 @@ to classify new data.
     This function returns a pointer to the model read from the file,
     or a null pointer if the model could not be loaded.
 
-- Function: void svm_destroy_model(struct svm_model *model);
+- Function: void svm_free_model_content(struct svm_model *model_ptr);
 
-    This function frees the memory used by a model.
+    This function frees the memory used by the entries in a model structure.
+
+- Function: void svm_free_and_destroy_model(struct svm_model **model_ptr_ptr);
+
+    This function frees the memory used by a model and destroys the model
+    structure. It is equivalent to svm_destroy_model, which
+    is deprecated after version 3.0.
 
 - Function: void svm_destroy_param(struct svm_parameter *param);
 
     This function frees the memory used by a parameter set.
+
+- Function: void svm_set_print_string_function(void (*print_func)(const char *));
+
+    Users can specify their output format by a function. Use
+        svm_set_print_string_function(NULL); 
+    for default printing to stdout.
 
 Java Version
 ============
@@ -519,6 +658,9 @@ in the java directory. To run the programs, use
 java -classpath libsvm.jar svm_train <arguments>
 java -classpath libsvm.jar svm_predict <arguments>
 java -classpath libsvm.jar svm_toy
+java -classpath libsvm.jar svm_scale <arguments>
+
+Note that you need Java 1.5 (5.0) or above to run it.
 
 You may need to add Java runtime library (like classes.zip) to the classpath.
 You may need to increase maximum Java heap size.
@@ -526,24 +668,38 @@ You may need to increase maximum Java heap size.
 Library usages are similar to the C version. These functions are available:
 
 public class svm {
+	public static final int LIBSVM_VERSION=314; 
 	public static svm_model svm_train(svm_problem prob, svm_parameter param);
 	public static void svm_cross_validation(svm_problem prob, svm_parameter param, int nr_fold, double[] target);
 	public static int svm_get_svm_type(svm_model model);
 	public static int svm_get_nr_class(svm_model model);
 	public static void svm_get_labels(svm_model model, int[] label);
+	public static void svm_get_sv_indices(svm_model model, int[] indices);
+	public static int svm_get_nr_sv(svm_model model);
 	public static double svm_get_svr_probability(svm_model model);
-	public static void svm_predict_values(svm_model model, svm_node[] x, double[] dec_values);
+	public static double svm_predict_values(svm_model model, svm_node[] x, double[] dec_values);
 	public static double svm_predict(svm_model model, svm_node[] x);
 	public static double svm_predict_probability(svm_model model, svm_node[] x, double[] prob_estimates);
 	public static void svm_save_model(String model_file_name, svm_model model) throws IOException
 	public static svm_model svm_load_model(String model_file_name) throws IOException
 	public static String svm_check_parameter(svm_problem prob, svm_parameter param);
 	public static int svm_check_probability_model(svm_model model);
+	public static void svm_set_print_string_function(svm_print_interface print_func);
 }
 
 The library is in the "libsvm" package.
 Note that in Java version, svm_node[] is not ended with a node whose index = -1.
 
+Users can specify their output format by
+
+	your_print_func = new svm_print_interface()
+	{ 
+		public void print(String s)
+		{
+			// your own format
+		}
+	};
+	svm.svm_set_print_string_function(your_print_func);
 
 Building Windows Binaries
 =========================
@@ -551,33 +707,35 @@ Building Windows Binaries
 Windows binaries are in the directory `windows'. To build them via
 Visual C++, use the following steps:
 
-1. Open a dos command box and change to libsvm directory. If
-environment variables of VC++ have not been set, type
+1. Open a DOS command box (or Visual Studio Command Prompt) and change
+to libsvm directory. If environment variables of VC++ have not been
+set, type
 
-"C:\Program Files\Microsoft Visual Studio .NET 2003\Vc7\bin\vcvars32.bat"
+"C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\vcvars32.bat"
 
-You may have to modify the above according which version of VC++or
-where it is installed.
+You may have to modify the above command according which version of
+VC++ or where it is installed.
 
 2. Type
 
 nmake -f Makefile.win clean all
 
-3. (optional) To build python interface, download and install Python.
-Edit Makefile.win and change PYTHON_INC and PYTHON_LIB to your python
-installation. Type
+3. (optional) To build shared library libsvm.dll, type
 
-nmake -f Makefile.win python 
-
-and then copy windows\python\svmc.dll to the python directory.
+nmake -f Makefile.win lib
 
 Another way is to build them from Visual C++ environment. See details
-in libsvm faq.
+in libsvm FAQ.
 
-Additional Tools: Model Selection, Sub-sampling, etc.
-====================================================
+- Additional Tools: Sub-sampling, Parameter Selection, Format checking, etc.
+============================================================================
 
 See the README file in the tools directory.
+
+MATLAB/OCTAVE Interface
+=======================
+
+Please check the file README in the directory `matlab'.
 
 Python Interface
 ================
@@ -589,9 +747,10 @@ Additional Information
 
 If you find LIBSVM helpful, please cite it as
 
-Chih-Chung Chang and Chih-Jen Lin, LIBSVM: a library for 
-support vector machines, 2001.
-Software available at http://www.csie.ntu.edu.tw/~cjlin/libsvm
+Chih-Chung Chang and Chih-Jen Lin, LIBSVM : a library for support
+vector machines. ACM Transactions on Intelligent Systems and
+Technology, 2:27:1--27:27, 2011. Software available at
+http://www.csie.ntu.edu.tw/~cjlin/libsvm
 
 LIBSVM implementation document is available at
 http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.pdf
