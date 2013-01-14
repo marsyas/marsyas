@@ -2570,6 +2570,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
   cout << "Finished feature extraction" << endl;
   if (featExtract_) {
+	if (pluginName != EMPTYSTRING) {
+      ofstream oss(pluginName.c_str());
+	  oss << (*bextractNetwork) << endl;
+    }
     delete bextractNetwork;
 	return;
   }
