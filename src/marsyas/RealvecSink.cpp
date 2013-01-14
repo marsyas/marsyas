@@ -73,6 +73,7 @@ RealvecSink::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>());
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples")->to<mrs_natural>());
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>());
+    ctrl_onObsNames_->setValue(ctrl_inObsNames_->to<mrs_string>(), NOUPDATE);
 
 	if( getctrl("mrs_bool/done")->isTrue()){
 		if(write_)
