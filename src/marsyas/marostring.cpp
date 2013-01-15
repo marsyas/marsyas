@@ -29,6 +29,7 @@ marostring::marostring()
 
 marostring::marostring(const marostring& m)
 {
+    (void) m;
 	//result_ << m.result_;
 }
 
@@ -39,51 +40,70 @@ marostring::~marostring()
 void
 marostring::end_marsystem(bool isComposite, std::string type, std::string name)
 {
+    (void) isComposite;
+    (void) type;
+    (void) name;
 }
 
 void
 marostring::begin_control_links_in(int num_links)
 {
+    (void) num_links;
 }
 
 void
 marostring::put_control_link_in(std::string abspath, std::string type, std::string name)
 {
+    (void) abspath;
+    (void) type;
+    (void) name;
 }
 
 void
 marostring::end_control_links_in(int num_links)
 {
+    (void) num_links;
 }
 
 void
 marostring::begin_control_links_out(int num_links)
 {
+    (void) num_links;
 }
 
 void
 marostring::put_control_link_out(std::string abspath, std::string type, std::string name)
 {
+    (void) abspath;
+    (void) type;
+    (void) name;
 }
 
 void
 marostring::end_control_links_out(int num_links)
 {
+    (void) num_links;
 }
 
 void
 marostring::end_control(std::string type, std::string name, std::string value, bool has_state)
 {
+    (void) type;
+    (void) name;
+    (void) value;
+    (void) has_state;
 }
 
 void
 marostring::end_controls(int num_controls)
 {
+    (void) num_controls;
 }
 
 void
 marostring::end_children(int num_children)
 {
+    (void) num_children;
 }
 
 std::string

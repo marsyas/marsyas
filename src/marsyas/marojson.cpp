@@ -54,6 +54,9 @@ marojson::begin_marsystem(bool isComposite, std::string type, std::string name)
 void
 marojson::end_marsystem(bool isComposite, std::string type, std::string name)
 {
+    (void) isComposite;
+    (void) type;
+    (void) name;
 	result_ << "},";
 }
 
@@ -67,6 +70,7 @@ marojson::begin_controls(int num_controls)
 void
 marojson::begin_control(std::string type, std::string name, std::string value, bool has_state)
 {
+    (void) has_state;
 	result_ << "{";
 	result_ << "'type':'" << type << "',";
 	result_ << "'name':'" << name << "',";
@@ -134,6 +138,10 @@ marojson::end_control_links_out(int num_links)
 void
 marojson::end_control(std::string type, std::string name, std::string value, bool has_state)
 {	
+    (void) type;
+    (void) name;
+    (void) value;
+    (void) has_state;
 	result_ << "},";
 }
 void
@@ -206,6 +214,7 @@ marojson::replace_all(std::string& str, const std::string &oldsubstr, const std:
 std::string&
 marojson::smart_indent(std::string& str, const std::string &start, const std::string &end)
 {
+    (void) end;
 	std::string::size_type position;
 
 	position = str.find(start);

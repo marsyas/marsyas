@@ -50,6 +50,9 @@ marohtml::begin_marsystem(bool isComposite, std::string type, std::string name)
 void
 marohtml::end_marsystem(bool isComposite, std::string type, std::string name)
 {
+    (void) isComposite;
+    (void) type;
+    (void) name;
 	result_ << "</li>" << endl;
 }
 
@@ -63,6 +66,7 @@ marohtml::begin_controls(int num_controls)
 void
 marohtml::begin_control(std::string type, std::string name, std::string value, bool has_state)
 {
+    (void) has_state;
 	if (value=="")
 		result_ << "<li>" << type << "/" << name << " = " << "MARSYAS_EMPTYSTRING" << "</li>" << endl;
 	else
@@ -83,6 +87,7 @@ marohtml::put_control_link_in(std::string abspath, std::string type, std::string
 void
 marohtml::end_control_links_in(int num_links)
 {
+    (void) num_links;
 	result_ << "</ul></li>" << endl;
 }
 
@@ -100,16 +105,22 @@ marohtml::put_control_link_out(std::string abspath, std::string type, std::strin
 void
 marohtml::end_control_links_out(int num_links)
 {
+    (void) num_links;
 	result_ << "</ul></li>" << endl;
 }
 
 void
 marohtml::end_control(std::string type, std::string name, std::string value, bool has_state)
 {
+    (void) type;
+    (void) name;
+    (void) value;
+    (void) has_state;
 }
 void
 marohtml::end_controls(int num_links)
 {
+    (void) num_links;
 	result_ << "</ul>" << endl;
 	result_ << "</li>" << endl;
 }
@@ -124,6 +135,7 @@ marohtml::begin_children(int num_children)
 void
 marohtml::end_children(int num_children)
 {
+    (void) num_children;
 	result_ << "</ul>" << endl;
  	result_ << "</li>" << endl;
 }

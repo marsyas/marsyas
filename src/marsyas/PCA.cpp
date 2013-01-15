@@ -17,6 +17,7 @@
 */
 
 #include "PCA.h"
+#include "config.h"
   
 using std::ostringstream;
 using namespace Marsyas;
@@ -306,7 +307,7 @@ PCA::tqli(mrs_real d[], mrs_real e[], mrs_natural m, realvec &z)
  http://astro.u-strasbg.fr/~fmurtagh/mda-sw/pca.c
 */
 {
-   mrs_natural n, l, iter, i, k;
+   mrs_natural n, l, i, k;
    mrs_real s, r, p, g, f, dd, c, b;
    
    for (i = 1; i < m; ++i)
@@ -314,7 +315,9 @@ PCA::tqli(mrs_real d[], mrs_real e[], mrs_natural m, realvec &z)
    e[m-1] = 0.0;
    for (l = 0; l < m; l++)
    {
-      iter = 0;
+#ifdef MARSYAS_ASSERTS
+    mrs_natural iter = 0;
+#endif
       do
       {
          for (n = l; n < m-1; n++)

@@ -67,7 +67,9 @@ ViconFileSource::getHeader(mrs_string filename)
     {
 		// read first line from file
 		char buffer[4096];
-		fgets(buffer, 4096, vfp_);
+		if ( fgets(buffer, 4096, vfp_) == NULL) {
+            MRSERR("Problem reading Vicon file");
+        }
 		stringstream line(buffer);
 		char entry[256];
 		fileObs_ = 0;

@@ -36,6 +36,7 @@ maroxml::~maroxml()
 void
 maroxml::begin_marsystem(bool isComposite, std::string type, std::string name)
 {
+    (void) isComposite;
 	result_ << "<marsystem>" << endl;
 	result_ << "  <type>" << type << "</type>" << endl;
 	result_ << "  <name>" << name << "</name>" << endl;
@@ -44,6 +45,9 @@ maroxml::begin_marsystem(bool isComposite, std::string type, std::string name)
 void
 maroxml::end_marsystem(bool isComposite, std::string type, std::string name)
 {
+    (void) isComposite;
+    (void) type;
+    (void) name;
 	result_ << "</marsystem>" << endl;
 }
 
@@ -103,12 +107,17 @@ maroxml::end_control_links_out(int num_links)
 void
 maroxml::end_control(std::string type, std::string name, std::string value, bool has_state)
 {
+    (void) type;
+    (void) name;
+    (void) value;
+    (void) has_state;
 	result_ << "    </control>" << endl;
 }
 
 void
 maroxml::end_controls(int num_controls)
 {
+    (void) num_controls;
 	result_ << "  </controls>" << endl;
 }
 
@@ -121,6 +130,7 @@ maroxml::begin_children(int num_children)
 void
 maroxml::end_children(int num_children)
 {
+    (void) num_children;
 	result_ << "  </children>" << endl;
 }
 

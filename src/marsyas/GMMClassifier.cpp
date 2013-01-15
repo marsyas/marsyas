@@ -87,7 +87,6 @@ GMMClassifier::initialize()
 	realvec temp(featSize_);
 	realvec randstep(featSize_);
 	
-	mrs_natural count;
 	mrs_natural seedSize = 5; //FIXME: hardcoded; change to a control?
 	mrs_real rind;
 	rind = ((mrs_real)rand() / (mrs_real)(RAND_MAX))*trainSize;
@@ -100,7 +99,6 @@ GMMClassifier::initialize()
 			// Compute feature Means for current class and mixture
 			////////////////////////////////////////////////////////
 			temp.setval(0.0);
-			count = 0;
 			for (mrs_natural c=0; c < seedSize; ++c)
 			{
 				//randomly select a number of feat.vectors from a class  
@@ -264,7 +262,6 @@ mrs_real
 GMMClassifier::gaussian(mrs_natural cl, mrs_natural k, realvec& vec)
 {
 	mrs_real res;
-	mrs_real oldres;
 	mrs_real temp;
 	mrs_real det = 1.0;
   
@@ -272,7 +269,6 @@ GMMClassifier::gaussian(mrs_natural cl, mrs_natural k, realvec& vec)
 		det *=  (vars_[cl])(f,k);
 	
 	res = 1 / (factor_ * det);
-	oldres = res;
 	
 	realvec mean;
 	means_[cl].getCol(k, mean);

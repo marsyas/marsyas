@@ -469,6 +469,7 @@ void WekaSource::handleFoldingStratifiedValidation(bool trainMode, realvec &out)
 
 void WekaSource::handleFoldingNonStratifiedValidation(bool trainMode, realvec &out)
 {
+    (void) trainMode;
 
 	//WekaFoldData::nextMode currentMode = trainMode ? WekaFoldData::Training : WekaFoldData::Predict;
 
@@ -518,6 +519,7 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
 
 void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const std::string& attributesToExtract)
 {
+    (void) attributesToExtract; // FIXME: suspiciously not used!
 	// FIXME: This method does not parse all valid relation or attribute names.
 	//        The ARFF spec allows for names that include spaces, iff those
 	//        names are quoted.
