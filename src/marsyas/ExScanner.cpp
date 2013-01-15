@@ -473,9 +473,11 @@ bool ExScanner::Comment1() {
 Token* ExScanner::CreateToken() { return new Token(); }
 
 Token* ExScanner::NextToken() {
-  while ((ch == L' ') || (ch >= 9) && (ch <= 10) || (ch == 13)) NextCh();
-  if ((ch == '#') && (Comment0()) || (ch == '(') && Comment1()) return NextToken();
-	int apx = 0;
+    while ((ch == L' ') || ((ch >= 9) && (ch <= 10)) || (ch == 13))
+        NextCh();
+    if (((ch == '#') && (Comment0())) || ((ch == '(') && (Comment1())))
+        return NextToken();
+    int apx = 0;
 	t = CreateToken();
 	t->pos = pos; t->col = col; t->line = line; 
 	int state = start.state(ch);
@@ -502,7 +504,7 @@ Token* ExScanner::NextToken() {
 		case 4:
 			case_4:
 			if (ch == 39) {AddCh(); goto case_5;}
-			else if ((ch <= '&') || (ch >= '(') && (ch <= 65535)) {AddCh(); goto case_4;}
+			else if ((ch <= '&') || ((ch >= '(') && (ch <= 65535))) {AddCh(); goto case_4;}
 			else {t->kind = noSym; break;}
 		case 5:
 			case_5:
@@ -513,44 +515,44 @@ Token* ExScanner::NextToken() {
 		case 7:
 			case_7:
 			if (ch == '/') {AddCh(); goto case_8;}
-			else if ((ch >= '0') && (ch <= '9') || (ch >= 'A') && (ch <= 'Z') || (ch == '_') || (ch >= 'a') && (ch <= 'z')) {AddCh(); goto case_7;}
+			else if (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'Z')) || (ch == '_') || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_7;}
 			else {t->kind = noSym; break;}
 		case 8:
 			case_8:
-			if ((ch >= 'A') && (ch <= 'Z') || (ch >= 'a') && (ch <= 'z')) {AddCh(); goto case_9;}
+			if (((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_9;}
 			else {t->kind = noSym; break;}
 		case 9:
 			case_9:
-			if ((ch >= '0') && (ch <= '9') || (ch >= 'A') && (ch <= 'Z') || (ch == '_') || (ch >= 'a') && (ch <= 'z')) {AddCh(); goto case_10;}
+			if (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'Z')) || (ch == '_') || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_10;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 10:
 			case_10:
-			if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_10;}
+			if (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'Z')) || ch == '_' || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_10;}
 			else if (ch == '/') {AddCh(); goto case_11;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 11:
 			case_11:
-			if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_12;}
+			if (((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_12;}
 			else {t->kind = noSym; break;}
 		case 12:
 			case_12:
-			if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_66;}
+			if (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'Z')) || ch == '_' || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_66;}
 			else if (ch == '/') {AddCh(); goto case_11;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 13:
 			case_13:
-			if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_13;}
+			if (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'Z')) || ch == '_' || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_13;}
 			else if (ch == '/') {AddCh(); goto case_14;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 14:
 			case_14:
-			if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_15;}
+			if (((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_15;}
 			else {t->kind = noSym; break;}
 		case 15:
 			case_15:
-			if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_67;}
+			if (((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_67;}
 			else if (ch == '/') {AddCh(); goto case_14;}
-			else if (ch >= '0' && ch <= '9' || ch == '_') {AddCh(); goto case_15;}
+			else if (((ch >= '0') && (ch <= '9')) || (ch == '_')) {AddCh(); goto case_15;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 16:
 			case_16:
@@ -658,17 +660,17 @@ Token* ExScanner::NextToken() {
 			{t->kind = 50; break;}
 		case 52:
 			case_52:
-			if (ch >= '0' && ch <= '9') {AddCh(); goto case_52;}
+			if ((ch >= '0') && (ch <= '9')) {AddCh(); goto case_52;}
 			else if (ch == '.') {apx++; AddCh(); goto case_68;}
 			else {t->kind = 1; break;}
 		case 53:
 			case_53:
-			if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_53;}
+			if (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_53;}
 			else if (ch == '/') {AddCh(); goto case_8;}
 			else if (ch == '_') {AddCh(); goto case_7;}
 			else {t->kind = 5; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 54:
-			if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_13;}
+			if (((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_13;}
 			else if (ch == '>') {AddCh(); goto case_22;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 55:
@@ -709,18 +711,18 @@ Token* ExScanner::NextToken() {
 			else {t->kind = 43; break;}
 		case 66:
 			case_66:
-			if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_66;}
+			if (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'Z')) || ch == '_' || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_66;}
 			else if (ch == '/') {AddCh(); goto case_11;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 67:
 			case_67:
-			if (ch >= '0' && ch <= '9' || ch >= 'A' && ch <= 'Z' || ch == '_' || ch >= 'a' && ch <= 'z') {AddCh(); goto case_67;}
+			if (((ch >= '0') && (ch <= '9')) || ((ch >= 'A') && (ch <= 'Z')) || ch == '_' || ((ch >= 'a') && (ch <= 'z'))) {AddCh(); goto case_67;}
 			else if (ch == '/') {AddCh(); goto case_14;}
 			else {t->kind = 6; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 68:
 			case_68:
-			if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z') {apx++; AddCh(); goto case_1;}
-			else if (ch >= '0' && ch <= '9') {apx = 0; AddCh(); goto case_2;}
+			if (((ch >= 'A') && (ch <= 'Z')) || ((ch >= 'a') && (ch <= 'z'))) {apx++; AddCh(); goto case_1;}
+			else if ((ch >= '0') && (ch <= '9')) {apx = 0; AddCh(); goto case_2;}
 			else {t->kind = 2; t->val = coco_string_create(tval, 0, tlen); t->kind = keywords.get(t->val, t->kind); return t;}
 		case 69:
 			case_69:
