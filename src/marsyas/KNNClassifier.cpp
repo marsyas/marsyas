@@ -61,7 +61,7 @@ KNNClassifier::addControls()
 void
 KNNClassifier::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("KNNClassifier.cpp - KNNClassifier:myUpdate");
   
   nPredictions_ = getctrl("mrs_natural/nPredictions")->to<mrs_natural>();

@@ -55,7 +55,7 @@ SeneffEar::addControls()
 void 
 SeneffEar::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("SeneffEar.cpp - SeneffEar:myUpdate");
 
   ostringstream name;

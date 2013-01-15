@@ -65,7 +65,7 @@ Metric::addControls()
 void
 Metric::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	if(inSamples_ > 1)
 		MRSWARN("Metric::myUpdate - inSamples > 1 : only first column will be processed!");
 		

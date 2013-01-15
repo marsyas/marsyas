@@ -88,7 +88,7 @@ NormCut::addControls()
 void
 NormCut::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(1, NOUPDATE);   
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);

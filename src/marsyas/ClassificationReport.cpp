@@ -79,7 +79,7 @@ void ClassificationReport::addControls()
 
 void ClassificationReport::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("ClassificationReport.cpp - ClassificationReport:myUpdate");
   
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

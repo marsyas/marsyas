@@ -148,7 +148,7 @@ CollectionFileSource::getHeader(mrs_string filename)
 void
 CollectionFileSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();

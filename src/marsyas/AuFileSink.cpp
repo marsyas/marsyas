@@ -133,7 +133,7 @@ AuFileSink::checkExtension(mrs_string filename)
 void 
 AuFileSink::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("AudioFileSink::myUpdate");
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));

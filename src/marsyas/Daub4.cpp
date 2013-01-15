@@ -46,7 +46,7 @@ Daub4::addControls()
 void
 Daub4::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("Daub4.cpp - Daub4:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

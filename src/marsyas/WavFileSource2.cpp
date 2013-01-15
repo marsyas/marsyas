@@ -210,7 +210,7 @@ WavFileSource2::getHeader()
 void
 WavFileSource2::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	//if not a new audiofile, no need to read header again
 	mrs_string filename = getctrl("mrs_string/filename")->to<mrs_string>();
 	if(filename_ != filename)

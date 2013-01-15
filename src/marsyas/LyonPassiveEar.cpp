@@ -329,7 +329,7 @@ LyonPassiveEar::addControls()
 void 
 LyonPassiveEar::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	if (!setParametersIntern ())
 	{

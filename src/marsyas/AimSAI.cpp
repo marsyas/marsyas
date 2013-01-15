@@ -76,7 +76,7 @@ AimSAI::myUpdate(MarControlPtr sender)
 													/ 1000.0));
 	MRSDIAG("AimSAI.cpp - AimSAI:myUpdate");
 
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	ctrl_onSamples_->setValue(temp_frame_period_samples, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);
 	ctrl_onObsNames_->setValue("AimSAI_" + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);

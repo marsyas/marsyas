@@ -66,7 +66,7 @@ ERB::addControls()
 void 
 ERB::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("ERB.cpp - ERB:myUpdate");
 
   //FilterBank creation

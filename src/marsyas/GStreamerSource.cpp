@@ -377,7 +377,7 @@ GStreamerSource::seek()
 void
 GStreamerSource::myUpdate(MarControlPtr sender) 
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
  
 	// This stuff is already done in MarSystem::update()
 	// inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();

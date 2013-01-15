@@ -47,7 +47,7 @@ Shifter::addControls()
 void
 Shifter::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("Shifter.cpp - Shifter:myUpdate");
 
 	shift_ = getctrl("mrs_natural/shift")->to<mrs_natural>();

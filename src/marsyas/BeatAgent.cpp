@@ -96,7 +96,7 @@ BeatAgent::addControls()
 void
 BeatAgent::myUpdate(MarControlPtr sender)
 {
-    (void) sender;
+    (void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("BeatAgent.cpp - BeatAgent:myUpdate");
 	
 	ctrl_onSamples_->setValue(6, NOUPDATE);

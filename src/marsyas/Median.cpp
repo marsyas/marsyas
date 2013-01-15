@@ -53,7 +53,7 @@ Median::addControls()
 void
 Median::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("Median.cpp - Median:myUpdate");
 
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);

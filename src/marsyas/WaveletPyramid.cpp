@@ -57,7 +57,7 @@ WaveletPyramid::addControls()
 void
 WaveletPyramid::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	if (waveletStep_ == NULL)
 	{

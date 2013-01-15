@@ -73,7 +73,7 @@ ShiftInput::addControls()
 void
 ShiftInput::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	// Cache the window and hop size for use in myProcess().
 	winSize_ = ctrl_winSize_->to<mrs_natural>();

@@ -143,7 +143,7 @@ PhaseLock::addControls()
 void
 PhaseLock::myUpdate(MarControlPtr sender)
 {
-    (void) sender;
+    (void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("PhaseLock.cpp - PhaseLock:myUpdate");
 
 	inductionTime_ = ctrl_inductionTime_->to<mrs_natural>();

@@ -53,7 +53,7 @@ ADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("ADRessStereoSpectrum.cpp - ADRessStereoSpectrum:myUpdate");
 
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	N2_ = ctrl_inObservations_->to<mrs_natural>()/2; //i.e. N/2+1
 

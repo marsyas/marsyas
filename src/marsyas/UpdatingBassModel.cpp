@@ -53,11 +53,11 @@ UpdatingBassModel::addControls()
 
 void UpdatingBassModel::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   mrs_natural i, j, o;
   ostringstream oss;
   realvec tmpvec;
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   // get value from controller
   K_ = ctrl_nTemplates_->to<mrs_natural>();
   I_ = ctrl_nDevision_->to<mrs_natural>();

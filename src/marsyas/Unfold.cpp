@@ -50,7 +50,7 @@ Unfold::clone() const
 void
 Unfold::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   ctrl_onObservations_->setValue(ctrl_inSamples_->to<mrs_natural>() * ctrl_inObservations_->to<mrs_natural>(), NOUPDATE);
   ctrl_onSamples_->setValue(1, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);

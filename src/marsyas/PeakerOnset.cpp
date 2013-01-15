@@ -62,7 +62,7 @@ PeakerOnset::addControls()
 void
 PeakerOnset::myUpdate(MarControlPtr sender)
 {
-    (void) sender;
+    (void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("PeakerOnset.cpp - PeakerOnset:myUpdate");
 
 	ctrl_onSamples_->setValue(1, NOUPDATE);

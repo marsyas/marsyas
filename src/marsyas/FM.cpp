@@ -72,7 +72,7 @@ void FM::addControls()
 
 void FM::myUpdate(MarControlPtr sender) 
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("FM.cpp - FM:myUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

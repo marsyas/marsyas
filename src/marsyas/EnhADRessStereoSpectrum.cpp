@@ -51,7 +51,7 @@ void
 EnhADRessStereoSpectrum::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("EnhADRessStereoSpectrum.cpp - EnhADRessStereoSpectrum:myUpdate");
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	N2_ = ctrl_inObservations_->to<mrs_natural>()/3; //i.e. N/2+1
 

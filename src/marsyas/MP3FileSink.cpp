@@ -97,7 +97,7 @@ MP3FileSink::checkExtension(mrs_string filename)
 void 
 MP3FileSink::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("MP3FileSink::myUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

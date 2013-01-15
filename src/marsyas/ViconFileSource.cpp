@@ -85,7 +85,7 @@ ViconFileSource::getHeader(mrs_string filename)
 void
 ViconFileSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
 	israte_ = getctrl("mrs_real/israte")->to<mrs_real>();
 

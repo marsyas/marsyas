@@ -152,7 +152,7 @@ void SVMClassifier::addControls() {
 }
 
 void SVMClassifier::myUpdate(MarControlPtr sender) {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("SVMClassifier.cpp - SVMClassifier:myUpdate");
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

@@ -89,7 +89,7 @@ ClassOutputSink::putHeader()
 void
 ClassOutputSink::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("ClassOutputSink.cpp - ClassOutputSink:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

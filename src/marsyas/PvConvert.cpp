@@ -78,7 +78,7 @@ void
 PvConvert::myUpdate(MarControlPtr sender)
 {
 	
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>() + 2);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>() * getctrl("mrs_natural/inObservations")->to<mrs_natural>());  

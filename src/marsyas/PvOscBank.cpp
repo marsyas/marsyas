@@ -86,7 +86,7 @@ void
 PvOscBank::myUpdate(MarControlPtr sender)
 {
 	mrs_natural t;
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/winSize"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  

@@ -62,7 +62,7 @@ Inject::addControls()
 void
 Inject::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>() + ctrl_injectSize_->to<mrs_natural>(), NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>(), NOUPDATE);

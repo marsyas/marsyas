@@ -50,7 +50,7 @@ Energy::addControls()
 void
 Energy::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("Energy.cpp - Energy:myUpdate");
   
  setctrl("mrs_natural/onSamples", 1);

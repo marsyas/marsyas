@@ -433,7 +433,7 @@ GMMClassifier::doEM()
 void
 GMMClassifier::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("GMMClassifier.cpp - GMMClassifier:myUpdate");
 	
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

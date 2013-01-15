@@ -67,7 +67,7 @@ void
 AimVQ::myUpdate(MarControlPtr sender)
 {
 
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("AimVQ.cpp - AimVQ:myUpdate");
   ctrl_onSamples_->setValue(1, NOUPDATE);
 #ifdef MARSYAS_ANN

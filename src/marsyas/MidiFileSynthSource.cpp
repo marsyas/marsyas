@@ -96,7 +96,7 @@ MidiFileSynthSource::addControls()
 void
 MidiFileSynthSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("MidiFileSynthSource::myUpdate");
 
 	MATLAB_PUT(ctrl_winSize_->to<mrs_natural>(), "winSize");

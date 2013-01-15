@@ -210,7 +210,7 @@ PeakConvert2::addControls()
 void
 PeakConvert2::myUpdate(MarControlPtr sender)
 {
-	//(void) sender;
+	//(void) sender;  //suppress warning of unused parameter(s)
 	MarSystem::myUpdate (sender);
 
 	hopSize_	= getctrl ("mrs_natural/hopSize")->to<mrs_natural>();

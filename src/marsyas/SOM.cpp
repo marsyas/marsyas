@@ -139,7 +139,7 @@ void
 SOM::myUpdate(MarControlPtr sender)
 {
 	//cout<<"SOM myUpdate*************"<<endl;
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("SOM.cpp - SOM:myUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

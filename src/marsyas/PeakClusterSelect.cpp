@@ -65,7 +65,7 @@ PeakClusterSelect::addControls()
 void
 PeakClusterSelect::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("PeakClusterSelect.cpp - PeakClusterSelect:myUpdate");
 
 	ctrl_onObservations_->setValue(1, NOUPDATE);

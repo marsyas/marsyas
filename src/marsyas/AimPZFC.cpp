@@ -109,7 +109,7 @@ void
 AimPZFC::myUpdate(MarControlPtr sender)
 {
 
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("AimPZFC.cpp - AimPZFC:myUpdate");
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);

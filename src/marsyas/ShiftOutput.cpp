@@ -51,7 +51,7 @@ ShiftOutput::addControls()
 void
 ShiftOutput::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	interp_ = ctrl_Interpolation_->to<mrs_natural>();
 

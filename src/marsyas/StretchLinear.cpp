@@ -51,7 +51,7 @@ StretchLinear::addControls()
 void
 StretchLinear::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("StretchLinear.cpp - StretchLinear:myUpdate");
 	mrs_real alpha = ctrl_stretch_->to<mrs_real>();
 	ctrl_onSamples_->setValue((mrs_natural) (alpha * ctrl_inSamples_->to<mrs_natural>()), NOUPDATE);

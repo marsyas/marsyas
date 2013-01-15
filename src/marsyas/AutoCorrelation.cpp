@@ -86,7 +86,7 @@ AutoCorrelation::clone() const
 void
 AutoCorrelation::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	
 	if(!myfft_)
 		myfft_ = new fft();

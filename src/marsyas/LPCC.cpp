@@ -51,7 +51,7 @@ LPCC::addControls()
 void
 LPCC::myUpdate(MarControlPtr sender)
 { 
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("LPCC.cpp - LPCC:myUpdate");
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_);

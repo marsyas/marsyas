@@ -68,7 +68,7 @@ PCA::addControls()
 void
 PCA::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("PCA.cpp - PCA:myUpdate");
    
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

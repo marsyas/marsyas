@@ -67,7 +67,7 @@ PowerSpectrum::clone() const
 void
 PowerSpectrum::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	//Spectrum outputs N values, corresponding to N/2+1
 	//complex and unique spectrum points - see Spectrum.h documentation

@@ -147,7 +147,7 @@ SoundFileSink::checkType()
 void 
 SoundFileSink::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   
   if (filename_ != getctrl("mrs_string/filename")->to<mrs_string>())
     {

@@ -57,7 +57,7 @@ MemorySource::addControls()
 void
 MemorySource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("MemorySource.cpp - MemorySource:myUpdate");
   
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")  );

@@ -37,7 +37,7 @@ void ChromaScale::addControls()
 
 void ChromaScale::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	ctrl_onObservations_->setValue(6, NOUPDATE);
 	ctrl_onSamples_->setValue(inSamples_, NOUPDATE);
 	ctrl_osrate_->setValue(israte_, NOUPDATE);

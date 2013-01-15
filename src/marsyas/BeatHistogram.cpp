@@ -63,7 +63,7 @@ BeatHistogram::addControls()
 void
 BeatHistogram::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("BeatHistogram.cpp - BeatHistogram:myUpdate");
   
 	startBin_ = getctrl("mrs_natural/startBin")->to<mrs_natural>();

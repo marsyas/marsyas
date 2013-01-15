@@ -93,7 +93,7 @@ AudioSourceBlocking::addControls()
 void 
 AudioSourceBlocking::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("AudioSourceBlocking::myUpdate");
 
 

@@ -39,7 +39,7 @@ Reciprocal::clone() const
 void
 Reciprocal::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));

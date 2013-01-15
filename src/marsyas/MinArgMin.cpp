@@ -51,7 +51,7 @@ MinArgMin::addControls()
 void
 MinArgMin::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   mrs_natural k = getctrl("mrs_natural/nMinimums")->to<mrs_natural>();
 
   setctrl("mrs_natural/onSamples",  2 * k);

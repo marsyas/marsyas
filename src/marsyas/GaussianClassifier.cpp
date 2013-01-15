@@ -66,7 +66,7 @@ void
 GaussianClassifier::myUpdate(MarControlPtr sender)
 {
 	mrs_natural o;
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("GaussianClassifier.cpp - GaussianClassifier:myUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

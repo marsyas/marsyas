@@ -68,7 +68,7 @@ SelfSimilarityMatrix::addControls()
 void
 SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 		
 	if(this->getctrl("mrs_natural/mode")->to<mrs_natural>() ==  SelfSimilarityMatrix::outputDistanceMatrix)
 	{

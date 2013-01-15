@@ -60,7 +60,7 @@ Selector::addControls()
 void
 Selector::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("Selector.cpp - Selector:myUpdate");
 
   MarControlAccessor acc(ctrl_enabled_);

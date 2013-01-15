@@ -69,7 +69,7 @@ PeakFeatureSelect::addControls()
 void
 PeakFeatureSelect::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	if(ctrl_selectedFeatures_->to<mrs_natural>() != selectedFeatures_ ||
 		 ctrl_frameMaxNumPeaks_->to<mrs_natural>() != frameMaxNumPeaks_)
 	{

@@ -50,7 +50,7 @@ Power::addControls()
 void
 Power::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("Power.cpp - Power:myUpdate");
   
  setctrl("mrs_natural/onSamples", 1);

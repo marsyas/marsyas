@@ -41,7 +41,7 @@ Centroid::clone() const
 void
 Centroid::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
   MRSDIAG("Centroid.cpp - Centroid:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

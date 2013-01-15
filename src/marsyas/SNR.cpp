@@ -62,7 +62,7 @@ SNR::addControls()
 void
 SNR::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("SNR.cpp - SNR:myUpdate");
   ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
   ctrl_onObservations_->setValue((mrs_natural)2, NOUPDATE);

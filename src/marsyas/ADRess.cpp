@@ -55,7 +55,7 @@ ADRess::addControls()
 void
 ADRess::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	N2_ = inObservations_ / 2; //i.e. we get two vertically stacked spectrums at the input
 	N4_ = N2_/2 + 1; //i.e. for each spectrum, we have N/2+1 spectral bins

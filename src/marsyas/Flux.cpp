@@ -62,7 +62,7 @@ Flux::addControls()
 void
 Flux::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("Flux.cpp - Flux:myUpdate");
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
     if (ctrl_mode_->to<mrs_string>() == "multichannel") {

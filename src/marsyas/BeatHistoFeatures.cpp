@@ -222,7 +222,7 @@ BeatHistoFeatures::addControls()
 void
 BeatHistoFeatures::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("BeatHistoFeatures.cpp - BeatHistoFeatures:myUpdate");
   
 	delete mxr_;//[!]

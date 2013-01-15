@@ -43,7 +43,7 @@ HarmonicEnhancer::clone() const
 void
 HarmonicEnhancer::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("HarmonicEnhancer.cpp - HarmonicEnhancer:myUpdate");
    
   setctrl("mrs_natural/onSamples", (mrs_natural)1);

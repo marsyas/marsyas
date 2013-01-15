@@ -61,7 +61,7 @@ CrossCorrelation::clone() const
 void
 CrossCorrelation::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	delete myfft_; //[!]
 	myfft_ = new fft();//[!]
 

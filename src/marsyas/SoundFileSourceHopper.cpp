@@ -98,7 +98,7 @@ SoundFileSourceHopper::addControls()
 void
 SoundFileSourceHopper::myUpdate(MarControlPtr sender)
 {
-    (void) sender;
+    (void) sender;  //suppress warning of unused parameter(s)
 	// Set the hop size as window size for the SoundFileSource (and leave the
 	// other stuff (like osrate, onObservations, ...) up to the SoundFileSource.
 	// We have to make sure we do this when the SoundFileSource is already

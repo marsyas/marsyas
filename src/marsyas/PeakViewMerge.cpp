@@ -83,7 +83,7 @@ PeakViewMerge::addControls()
 void
 PeakViewMerge::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("PeakViewMerge.cpp - PeakViewMerge:myUpdate");
 
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);

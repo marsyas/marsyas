@@ -58,7 +58,7 @@ MaxArgMax::addControls()
 void
 MaxArgMax::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	mrs_natural k = getctrl("mrs_natural/nMaximums")->to<mrs_natural>();
 	mrs_natural fanoutLength_ = getctrl("mrs_natural/fanoutLength")->to<mrs_natural>();

@@ -80,7 +80,7 @@ AimGammatone::addControls()
 void
 AimGammatone::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
 
   MRSDIAG("AimGammatone.cpp - AimGammatone:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

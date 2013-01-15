@@ -134,7 +134,7 @@ PeakViewSink::done()
 void
 PeakViewSink::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("PeakViewSink.cpp - PeakViewSink:myUpdate");
 
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);

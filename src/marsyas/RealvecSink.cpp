@@ -67,7 +67,7 @@ RealvecSink::addControls()
 void
 RealvecSink::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("RealvecSink.cpp - RealvecSink:myUpdate");
 
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations")->to<mrs_natural>());

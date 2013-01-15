@@ -463,7 +463,7 @@ MP3FileSource::getHeader(mrs_string filename)
 void 
 MP3FileSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("MP3FileSource::myUpdate");
   
 

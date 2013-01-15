@@ -38,7 +38,7 @@ SCF::clone() const
 void
 SCF::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("SCF.cpp - SCF:myUpdate");
 
 	//MPEG-7 audio standard:

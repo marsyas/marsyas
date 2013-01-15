@@ -94,7 +94,7 @@ Delay::addControls()
 void
 Delay::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("Delay.cpp - Delay:myUpdate");
 
 	// for the following controls, check whether they have changed and update dependent controls accordingly

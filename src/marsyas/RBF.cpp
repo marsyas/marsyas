@@ -86,7 +86,7 @@ RBF::ThinPlateSplineRBF(const mrs_real val) const
 void
 RBF::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	RBFtype_ = ctrl_RBFtype_->to<mrs_string>();
 	if(RBFtype_ == "Gaussian")
 		RBFfunc_ = &RBF::GaussianRBF;

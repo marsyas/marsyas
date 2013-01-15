@@ -110,7 +110,7 @@ PeakConvert::addControls()
 void
 PeakConvert::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	//check the input to see if we are also getting stereo information
 	//(N_ is the FFT size)

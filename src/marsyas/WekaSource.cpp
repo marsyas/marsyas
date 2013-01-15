@@ -95,7 +95,7 @@ WekaSource::addControls()
 void 
 WekaSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("WekaSource.cpp - WekaSource:myUpdate");
 
 	// If 'filename' was updated, or the attributes desired from the Weka file has changed,

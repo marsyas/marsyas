@@ -79,7 +79,7 @@ WavFileSink::checkExtension(mrs_string filename)
 void 
 WavFileSink::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("WavFileSink::myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

@@ -184,7 +184,7 @@ OggFileSource::getHeader(mrs_string filename)
 void
 OggFileSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("OggFileSource::myUpdate");
 
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

@@ -190,7 +190,7 @@ void RawFileSource::readData(unsigned long index)//[!]
 
 void RawFileSource::myUpdate(MarControlPtr sender) 
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
  
 	nChannels_ = getctrl("mrs_natural/nChannels")->to<mrs_natural>();  
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();

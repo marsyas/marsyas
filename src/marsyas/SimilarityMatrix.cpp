@@ -43,7 +43,7 @@ SimilarityMatrix::addControls()
 void SimilarityMatrix::myUpdate(MarControlPtr sender)
 {
 
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MarControlAccessor acc(ctrl_sizes_);
 	realvec& tmpvec = acc.to<mrs_realvec>();
 	mrs_natural insize = ctrl_inSamples_->to<mrs_natural>();

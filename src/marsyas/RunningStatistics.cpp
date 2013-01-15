@@ -69,7 +69,7 @@ void RunningStatistics::addControls()
 
 void RunningStatistics::myUpdate(MarControlPtr sender)
 {
-    (void) sender;
+    (void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("RunningStatistics.cpp - RunningStatistics:myUpdate");
 
 	// Update caches of control values.

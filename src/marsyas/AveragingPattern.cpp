@@ -42,7 +42,7 @@ AveragingPattern::addControls()
 void
 AveragingPattern::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   // The output is a same size matrix with the input
 
   // forward flow propagation

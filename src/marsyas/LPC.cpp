@@ -60,7 +60,7 @@ LPC::addControls()
 void
 LPC::myUpdate(MarControlPtr sender)
 { 
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("LPC.cpp - LPC:myUpdate");
 
 	order_ = getctrl("mrs_natural/order")->to<mrs_natural>();

@@ -48,7 +48,7 @@ OverlapAdd::clone() const
 void
 OverlapAdd::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	mrs_natural ratio = max((mrs_natural)1,getctrl("mrs_natural/ratioBlock2Hop")->to<mrs_natural>());
 	setctrl("mrs_natural/onSamples", ctrl_inSamples_->to<mrs_natural>()/ratio);
 	setctrl("mrs_natural/onObservations", ctrl_inObservations_->to<mrs_natural>());

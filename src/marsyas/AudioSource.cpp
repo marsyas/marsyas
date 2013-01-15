@@ -139,7 +139,7 @@ AudioSource::recordCallback(void *outputBuffer, void *inputBuffer,
 void 
 AudioSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("AudioSource::myUpdate");
 
 	//set output controls

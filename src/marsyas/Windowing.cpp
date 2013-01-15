@@ -75,7 +75,7 @@ void
 Windowing::myUpdate(MarControlPtr sender)
 {
 	mrs_natural t;
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	mrs_string type = ctrl_type_->to<mrs_string>();
 
 	ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);

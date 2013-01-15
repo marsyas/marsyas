@@ -48,7 +48,7 @@ DTWWD::addControls()
 
 void DTWWD::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   ctrl_onSamples_->setValue(2,NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_inSamples_+ctrl_inObservations_, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_osrate_,NOUPDATE);

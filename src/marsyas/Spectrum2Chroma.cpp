@@ -88,7 +88,7 @@ void
 Spectrum2Chroma::myUpdate(MarControlPtr sender)
 {
 	mrs_natural t,o;
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_nbins_, NOUPDATE);

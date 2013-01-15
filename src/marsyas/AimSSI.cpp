@@ -76,7 +76,7 @@ void
 AimSSI::myUpdate(MarControlPtr sender)
 {
 
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("AimSSI.cpp - AimSSI:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);

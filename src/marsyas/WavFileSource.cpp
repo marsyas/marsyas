@@ -301,7 +301,7 @@ WavFileSource::getHeader(mrs_string filename)
 void
 WavFileSource::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
   inObservations_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
   israte_ = getctrl("mrs_real/israte")->to<mrs_real>();

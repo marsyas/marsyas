@@ -43,7 +43,7 @@ ConstQFiltering::addControls()
 
 void ConstQFiltering::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
 
   mrs_natural h, i;
   mrs_real f, bw;

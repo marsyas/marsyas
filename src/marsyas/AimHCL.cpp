@@ -57,7 +57,7 @@ AimHCL::addControls()
 void
 AimHCL::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("AimHCL.cpp - AimHCL:myUpdate");
   ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>(), NOUPDATE);
   ctrl_onSamples_->setValue(ctrl_inSamples_->to<mrs_natural>(), NOUPDATE);

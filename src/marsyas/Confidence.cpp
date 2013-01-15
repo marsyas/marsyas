@@ -90,7 +90,7 @@ Confidence::addControls()
 void
 Confidence::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("Confidence.cpp - Confidence:myUpdate");
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));

@@ -60,7 +60,7 @@ OneRClassifier::addControls()
 void 
 OneRClassifier::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("OneRClassifier.cpp - OneRClassifier:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   setctrl("mrs_natural/onObservations", 2);

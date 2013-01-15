@@ -70,7 +70,7 @@ PvMultiResolution::myUpdate(MarControlPtr sender)
 {
 	MRSDIAG("PvMultiResolution.cpp - PvMultiResolution:myUpdate");
 
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>() / 2, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);

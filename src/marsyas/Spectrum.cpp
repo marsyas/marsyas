@@ -61,7 +61,7 @@ Spectrum::clone() const
 void
 Spectrum::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>() / ctrl_inSamples_->to<mrs_natural>());

@@ -40,7 +40,7 @@ Mean::clone() const
 void
 Mean::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("Mean.cpp - Mean:myUpdate");
 
 	ctrl_onSamples_->setValue((mrs_natural)1, NOUPDATE);

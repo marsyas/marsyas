@@ -45,7 +45,7 @@ Chroma::addControls()
 void 
 Chroma::myUpdate(MarControlPtr sender)
 {
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   ctrl_onObservations_->setValue(12, NOUPDATE);
   ctrl_onSamples_->setValue(inSamples_, NOUPDATE);
   ctrl_osrate_->setValue(ctrl_samplingFreq_->to<mrs_real>(), NOUPDATE);

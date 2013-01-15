@@ -40,7 +40,7 @@ StereoSpectrumFeatures::clone() const
 void
 StereoSpectrumFeatures::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	MRSDIAG("StereoSpectrumFeatures.cpp - StereoSpectrumFeatures:myUpdate");
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

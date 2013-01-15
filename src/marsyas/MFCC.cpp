@@ -67,7 +67,7 @@ MFCC::addControls() {
 void
 MFCC::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 
 	// Get the number of cepstral coefficients from the control
 	cepstralCoefs_ = ctrl_cepstralCoefs_->to<mrs_natural>();

@@ -54,7 +54,7 @@ BeatHistogramFromPeaks::addControls()
 void
 BeatHistogramFromPeaks::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("BeatHistogramFromPeaks.cpp - BeatHistogramFromPeaks:myUpdate");
 
 	startBin_ = getctrl("mrs_natural/startBin")->to<mrs_natural>();

@@ -67,7 +67,7 @@ Peaker::addControls()
 void
 Peaker::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("Peaker.cpp - Peaker:myUpdate");
 
 	MarSystem::myUpdate (sender);

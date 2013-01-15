@@ -97,7 +97,7 @@ PeakViewSource::defaultConfig()
 void
 PeakViewSource::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	//check for a new filename (this is also true for the first call to myUpdate())
 	// hack: disabled this so other control can be updated after setting the filename
 	//if(ctrl_filename_->to<mrs_string>() != filename_)

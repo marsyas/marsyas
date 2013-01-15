@@ -49,7 +49,7 @@ StereoSpectrum::clone() const
 void 
 StereoSpectrum::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	
 	N2_ = ctrl_inObservations_->to<mrs_natural>()/2;
 	N4_ = N2_/2+1; //i.e. N/2+1

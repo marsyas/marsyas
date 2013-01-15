@@ -49,7 +49,7 @@ ZeroRClassifier::addControls()
 void
 ZeroRClassifier::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("ZeroRClassifier.cpp - ZeroRClassifier:myUpdate");
 
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

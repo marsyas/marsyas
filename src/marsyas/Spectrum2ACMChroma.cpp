@@ -164,7 +164,7 @@ void Spectrum2ACMChroma::addControls()
 
 void Spectrum2ACMChroma::myUpdate(MarControlPtr sender)
 {
-    (void) sender;
+    (void) sender;  //suppress warning of unused parameter(s)
 	// output variables may change during course of program
 	// therefore, declare them in myUpdate (not in constructor)
 	// UPDATE is necessary! (why?)

@@ -42,7 +42,7 @@ Transposer::clone() const
 void
 Transposer::myUpdate(MarControlPtr sender)
 {
-    (void) sender;
+    (void) sender;  //suppress warning of unused parameter(s)
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 

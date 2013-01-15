@@ -65,7 +65,7 @@ PeakSynthOscBank::addControls()
 void
 PeakSynthOscBank::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
 	setctrl("mrs_natural/onSamples", getctrl("mrs_natural/Interpolation"));
 	setctrl("mrs_natural/onObservations", (mrs_natural)1);
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));  

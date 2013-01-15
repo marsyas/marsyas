@@ -99,7 +99,7 @@ AimBoxes::myUpdate(MarControlPtr sender)
     initialized_box_size_temporal = ctrl_box_size_temporal_->to<mrs_natural>();
   }
 
-  (void) sender;
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("AimBoxes.cpp - AimBoxes:myUpdate");
   // ctrl_onSamples_->setValue(box_count_, NOUPDATE);
   // ctrl_onObservations_->setValue(feature_size_, NOUPDATE);

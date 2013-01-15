@@ -56,7 +56,7 @@ CompExp::addControls()
 void
 CompExp::myUpdate(MarControlPtr sender)
 {
-	(void) sender;
+	(void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("CompExp.cpp - CompExp:myUpdate");
   
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

@@ -228,7 +228,7 @@ BeatReferee::addControls()
 void
 BeatReferee::myUpdate(MarControlPtr sender)
 {
-    (void) sender;
+    (void) sender;  //suppress warning of unused parameter(s)
 	MRSDIAG("BeatReferee.cpp - BeatReferee:myUpdate");
 	
 	ctrl_onSamples_->setValue(1, NOUPDATE);
