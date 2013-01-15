@@ -161,7 +161,7 @@ WavFileSource::getHeader(mrs_string filename)
 #if defined(MARSYAS_BIGENDIAN)
 		chunkSize = ByteSwapLong(chunkSize);
 #else
-		chunkSize = chunkSize;
+		//chunkSize = chunkSize;
 #endif
 		fseek(sfp_, chunkSize, SEEK_CUR);
 		fread(id, 4, 1, sfp_);
@@ -171,7 +171,7 @@ WavFileSource::getHeader(mrs_string filename)
 #if defined(MARSYAS_BIGENDIAN)
 	  chunkSize = ByteSwapLong(chunkSize);
 #else
-	  chunkSize = chunkSize;//[?]
+	  //chunkSize = chunkSize;
 #endif
 
 	  unsigned short format_tag;
@@ -180,7 +180,7 @@ WavFileSource::getHeader(mrs_string filename)
 #if defined(MARSYAS_BIGENDIAN)
 	  format_tag = ByteSwapShort(format_tag);
 #else
-	  format_tag = format_tag;//[?]
+	  //format_tag = format_tag;
 #endif
 
 	  if (format_tag != 1)
@@ -197,7 +197,7 @@ WavFileSource::getHeader(mrs_string filename)
 #if defined(MARSYAS_BIGENDIAN)
 	  channels = ByteSwapShort(channels);
 #else
-	  channels = channels; //[?]
+	  //channels = channels;
 #endif
 
 	  setctrl("mrs_natural/onObservations", (mrs_natural)channels);
@@ -208,7 +208,7 @@ WavFileSource::getHeader(mrs_string filename)
 #if defined(MARSYAS_BIGENDIAN)
 	  srate = ByteSwapLong(srate);
 #else
-	  srate = srate; //[?]
+	  //srate = srate;
 #endif
 
 
@@ -221,7 +221,7 @@ WavFileSource::getHeader(mrs_string filename)
 #if defined(MARSYAS_BIGENDIAN)
 	  bits_ = ByteSwapShort(bits_);
 #else
-	  bits_ = bits_;//[?]
+	  //bits_ = bits_;
 #endif
 
 	  if ((bits_ != 16)&&(bits_ != 8))
@@ -238,7 +238,7 @@ WavFileSource::getHeader(mrs_string filename)
 #if defined(MARSYAS_BIGENDIAN)
 		chunkSize = ByteSwapLong(chunkSize);
 #else
-		chunkSize = chunkSize;
+		//chunkSize = chunkSize;
 #endif
 
 		fseek(sfp_,chunkSize,SEEK_CUR);
@@ -251,7 +251,7 @@ WavFileSource::getHeader(mrs_string filename)
 #if defined(MARSYAS_BIGENDIAN)
 	  bytes = ByteSwapLong(bytes);
 #else
-	  bytes = bytes;//[?]
+	  //bytes = bytes;
 #endif
 
 	  //size in number of samples per channel

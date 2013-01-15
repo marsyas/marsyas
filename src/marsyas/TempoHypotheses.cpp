@@ -191,7 +191,7 @@ TempoHypotheses::myProcess(realvec& in, realvec& out)
 			cerr << "...Replacing induction with the following BPMs: ";
 
 			mrs_natural assignedPerCount = 0;
-			for (int i=0; i < (sizeof(manualBPMs_) / sizeof(int)); i++)
+			for (unsigned int i=0; i < (sizeof(manualBPMs_) / sizeof(int)); i++)
 			{
 				if(assignedPerCount == nPeriods_) break;
 

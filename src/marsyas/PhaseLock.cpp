@@ -199,6 +199,7 @@ PhaseLock::myUpdate(MarControlPtr sender)
 mrs_realvec
 PhaseLock::GTInitialization(realvec& in, realvec& out, mrs_natural gtInitPhase, mrs_natural gtInitPeriod)
 {
+    (void) out;
 	//MATLAB_PUT(in, "Flux_FlowThrued");
 
 	//cout << "InitPhase: " << gtInitPhase << "(" << (((gtInitPhase * hopSize_)-hopSize_/2) / srcFs_) << "); initPeriod: " << gtInitPeriod << endl;
@@ -237,7 +238,7 @@ PhaseLock::GTInitialization(realvec& in, realvec& out, mrs_natural gtInitPhase, 
 	mrs_real errorIn = MINIMUMREAL; //to avoid divide by zero
 	mrs_natural period = gtInitPeriod;
 	mrs_natural periodTmp = 0;
-	mrs_natural it=1; //used for cout debugging
+	//mrs_natural it=1; //used for cout debugging
 	do
 	{
 		//cout << "3- beatPoint: " << beatPoint << " period: " << period << endl;
@@ -1221,6 +1222,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 void
 PhaseLock::forceInitPeriods(mrs_string mode)
 {
+    (void) mode; // seems to be done with mode_ instead?
 	cerr << "\nInitial period(s) given by ground-truth file at: " << ctrl_gtBeatsFile_->to<mrs_string>() << endl;
 
 	beatHypotheses_ = ctrl_beatHypotheses_->to<mrs_realvec>();

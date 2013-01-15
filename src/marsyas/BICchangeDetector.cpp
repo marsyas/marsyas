@@ -296,7 +296,7 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   //check for a potential change (based only on distances!)
   // (i.e. distance is local maxima and is above the dynamic threshold)
   //		time_t currTime = ((mrs_real)BICTick_)*0.675;
-  time_t currTime = ((mrs_real)BICTick_-2)*hopSeconds_;
+  //time_t currTime = ((mrs_real)BICTick_-2)*hopSeconds_; // debug only
   
   
   mrs_real change_time = ((mrs_real)BICTick_-2) * hopSeconds_;
