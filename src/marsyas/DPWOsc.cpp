@@ -91,9 +91,7 @@ void DPWOsc::myUpdate(MarControlPtr sender)
 
 void DPWOsc::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
 		incr_ = (frequency_ * (in(0,t) + 1) ) / israte_;
 

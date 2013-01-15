@@ -302,7 +302,7 @@ BICchangeDetector::myProcess(realvec& in, realvec& out)
   mrs_real change_time = ((mrs_real)BICTick_-2) * hopSeconds_;
   
   
-  tm * currTm = gmtime(&currTime);
+  //tm * currTm = gmtime(&currTime);  // for debug only
     
   
   if (dist12_ > distanceRight && dist12_ > distanceLeft && dist12_ > dynThres_)

@@ -58,7 +58,7 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 	// (!!) Should be simplified
 	outVec.setval(0.f);
 
-	int nmin = 0;
+	//int nmin = 0;
 	mrs_real vmin = inVec(0);
 	int nmax = 0;
 	mrs_real vmax = inVec(0);
@@ -77,7 +77,7 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 				theValid = true;
 
 				vmin = vmax;
-				nmin = nmax;
+				//nmin = nmax;
 			}else{
 				if (inVec(n)<vmax/HystFactor_ && nmax!=0){
 					// Zone 3: [max hysteresis, min]
@@ -95,14 +95,14 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 							theValid = true;
 
 							vmin = vmax;
-							nmin = nmax;
+							//nmin = nmax;
 						}
 
 					}else{
 						// Maximum was TOO SMALL
 						if (inVec(n) < vmin){ 
 							vmin = inVec(n);
-							nmin = n;
+							//nmin = n;
 						}
 					}
 				}else{
@@ -117,7 +117,7 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 							theValid = true;
 
 							vmin = vmax;
-							nmin = nmax;
+							//nmin = nmax;
 						}
 					}else
 						nthresh = n;
@@ -126,7 +126,7 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 		else
 			if (inVec(n) < vmin){ 
 				vmin = inVec(n);
-				nmin = n; 
+				//nmin = n; 
 			}else
 				if (inVec(n) > vmin*HystFactor_){
 					vmax = inVec(n); 
@@ -134,7 +134,7 @@ void PeakInObservation::myProcess(realvec& inVec, realvec& outVec)
 					nthresh = 0;
 
 					vmin = vmax;
-					nmin = nmax;
+					//nmin = nmax;
 					theValid = true;
 					theMaxFlag = true; 
 				}

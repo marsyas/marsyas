@@ -132,8 +132,6 @@ Krumhansl_key_finder::myUpdate(MarControlPtr sender)
 void
 Krumhansl_key_finder::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural o,k;
-	
 	
 	scores_.setval(0.0);
 	
@@ -147,8 +145,8 @@ Krumhansl_key_finder::myProcess(realvec& in, realvec& out)
 	// 	}
 
 
-	for (o = 0; o < inObservations_; o++)
-		for (int k=0; k < 12; k++) 
+	for (mrs_natural o = 0; o < inObservations_; o++)
+		for (mrs_natural k=0; k < 12; k++) 
 		{
 			scores_(k)    += (in((o+k)%12,0)  * major_profile_(o));
 			scores_(k+12) += (in((o+k)%12,0)  * minor_profile_(o));
@@ -159,7 +157,7 @@ Krumhansl_key_finder::myProcess(realvec& in, realvec& out)
 	mrs_real max_score = 0.0;
 	mrs_natural max_index = 0;
 	
-	for (int k=0; k < 24; k++) 
+	for (mrs_natural k=0; k < 24; k++) 
 	{
 		if (scores_(k) >= max_score) 
 		{

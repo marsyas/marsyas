@@ -41,8 +41,8 @@ Controls:
 - \b mrs_natural/peakStart [w] : expressed in absolute positions of the vector and it just to adjust what part of the vector will be considered
 - \b mrs_natural/peakEnd [w] : expressed in absolute positions of the vector length and it just to adjust what part of the vector will be considered
 - \b mrs_natural/interpolation [w] : TODO - mlagrange? [!] 
-- \b mrs_real/peakGain [w] : TODO - mlagrange? [!]
 */
+// - \b mrs_real/peakGain [w] : TODO - mlagrange? [!]
 
 class Peaker: public MarSystem
 {

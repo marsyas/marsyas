@@ -339,9 +339,6 @@ main(int argc, const char **argv)
     if (usageopt)
         printUsage(progName);
 
-    int i;
-    i =0;
-
     vector<string> soundfiles = cmd_options.getRemaining();
     vector<string>::iterator sfi;
 

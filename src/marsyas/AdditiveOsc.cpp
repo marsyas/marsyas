@@ -25,14 +25,8 @@ AdditiveOsc::AdditiveOsc(mrs_string name):MarSystem("AdditiveOsc", name)
 {
 	harmonics_ = 0; // How many harmonics our signal will have
 
-	x1n1_ = NULL;  // List of Last x1s
-	x2n1_ = NULL;  // List of Last x2s
-	k_ = NULL;      // filter coefficient
-
 	israte_ = 0; // Sampling rate of the system
 
-
-	mrs_real frequency_;
 
 	addControls();
 }
@@ -94,6 +88,7 @@ void AdditiveOsc::myUpdate(MarControlPtr sender)
 
 void AdditiveOsc::myProcess(realvec& in, realvec& out)
 {
+    (void) in;
 	mrs_real y, x1, x2;
 
 	for (mrs_natural t = 0; t < inSamples_; t++)

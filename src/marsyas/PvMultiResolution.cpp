@@ -230,7 +230,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 		mrs_real shortSum = 0.0;
 		
 		mrs_real ratio1;
-		mrs_real ratio2;
+		//mrs_real ratio2;
 
 
 
@@ -245,7 +245,7 @@ PvMultiResolution::myProcess(realvec& in, realvec& out)
 
 
 		ratio1 = longSum / shortSum;
-		ratio2 = shortSum / longSum;
+		//ratio2 = shortSum / longSum;
 		
 		
 		for (o=0; o < onObservations_/2; o++)

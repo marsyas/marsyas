@@ -166,6 +166,7 @@ BeatAgent::calcDScoreCorrSquare(realvec& in)
 mrs_real
 BeatAgent::calcDScoreCorr(realvec& in, mrs_natural maxInd)
 {
+    (void) maxInd; // [!] what was this supposed to do?
 	mrs_real dScore = 0.0;
 
 	//outterLeft Tolerance:
@@ -208,7 +209,7 @@ BeatAgent::getChildIndex()
 	if(parent)
 	{
 		vector<MarSystem*> siblings = parent->getChildren();
-		for(mrs_natural i = 0; i < siblings.size(); i++)
+		for(mrs_natural i = 0; (int)i < siblings.size(); i++)
 		{
 			if(this == siblings[i])
 			{

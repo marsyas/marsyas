@@ -157,6 +157,7 @@ MidiFileSynthSource::myUpdate(MarControlPtr sender)
 void
 MidiFileSynthSource::myProcess(realvec& in, realvec &out)
 {
+   (void) in;
 	if(size_ == 0)
 		return;
 

@@ -95,15 +95,15 @@ ConstQFiltering::myProcess(realvec& in, realvec& out)
 {
   mrs_natural h,i;
   mrs_real *tmp;
-  mrs_real lowFreq_, highFreq_;
+  //mrs_real lowFreq_, highFreq_;
   mrs_natural width_, channels_; 
-	mrs_real qValue_;
+  //mrs_real qValue_;
 
-  lowFreq_ = ctrl_lowFreq_->to<mrs_real>();
-  highFreq_ = ctrl_highFreq_->to<mrs_real>();
+  //lowFreq_ = ctrl_lowFreq_->to<mrs_real>();
+  //highFreq_ = ctrl_highFreq_->to<mrs_real>();
   width_ = ctrl_width_->to<mrs_natural>();
   channels_ = ctrl_channels_->to<mrs_natural>();
-  qValue_ = ctrl_qValue_->to<mrs_real>();
+  //qValue_ = ctrl_qValue_->to<mrs_real>();
 
   if(inSamples_>0){
     for(i=0; i<inSamples_; ++i){

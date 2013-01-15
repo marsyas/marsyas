@@ -447,7 +447,7 @@ WavFileSource::getLinear16(realvec& slice)
 void
 WavFileSource::myProcess(realvec& in, realvec& out)
 {
-	
+  (void) in;
   switch(bits_)
   {
 	case 16:

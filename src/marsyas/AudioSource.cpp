@@ -89,14 +89,17 @@ AudioSource::recordCallback(void *outputBuffer, void *inputBuffer,
 							double streamTime, unsigned int status, 
 							void *userData)
 {
-	
+	(void) outputBuffer;
+    (void) streamTime;
+    (void) status;
+
 	unsigned int drain_count = 0;
 	mrs_real* data = (mrs_real*)inputBuffer;
 	InputData *iData = (InputData *)userData;
-	AudioSource* mythis = (AudioSource *)iData->myself;
+	//AudioSource* mythis = (AudioSource *)iData->myself;
 	realvec& ringBuffer = *(iData->ringBuffer);
 	unsigned int t;
-	unsigned int spaceAvailable;
+	//unsigned int spaceAvailable;
 	
 	for (t=0; t < nBufferFrames; t++)
 	{

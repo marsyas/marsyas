@@ -57,7 +57,7 @@ Peaker::addControls()
 	addctrl("mrs_natural/peakStart", (mrs_natural)0);
 	addctrl("mrs_natural/peakEnd", (mrs_natural)0);
 	addctrl("mrs_natural/interpolation", (mrs_natural)0);
-	addctrl("mrs_real/peakGain", 1.0);
+	//addctrl("mrs_real/peakGain", 1.0);
 	addctrl("mrs_bool/peakHarmonics", false);
 	addctrl("mrs_bool/rmsNormalize", false);
 	addctrl("mrs_natural/peakNeighbors", 2);
@@ -85,7 +85,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 			 peakStrengthRelMax,
 			 peakStrengthRelThresh,
 			 peakStrengthAbs;
-	mrs_real peakGain;
+	//mrs_real peakGain;
 	mrs_bool peakHarmonics;
 	mrs_bool rmsNormalize;
 	
@@ -103,7 +103,7 @@ Peaker::myProcess(realvec& in, realvec& out)
 	peakStart = getctrl("mrs_natural/peakStart")->to<mrs_natural>();
 	peakEnd = getctrl("mrs_natural/peakEnd")->to<mrs_natural>();
 	interpolationMode = getctrl("mrs_natural/interpolation")->to<mrs_natural>();
-	peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
+	//peakGain = getctrl("mrs_real/peakGain")->to<mrs_real>();
 	peakHarmonics = getctrl("mrs_bool/peakHarmonics")->to<mrs_bool>();
 	rmsNormalize = getctrl("mrs_bool/rmsNormalize")->to<mrs_bool>();
 	peakNeighbors = getctrl("mrs_natural/peakNeighbors")->to<mrs_natural>();

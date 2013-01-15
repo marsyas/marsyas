@@ -389,6 +389,7 @@ PeakConvert2::getShortBinInterval(realvec& interval, realvec& index, realvec& ma
 
 void PeakConvert2::ComputeMasking (realvec& in)
 {
+    (void) in; // [!] what was this supposed to do?
 	masking_->updControl ("mrs_natural/inObservations", size_);
 	masking_->updControl ("mrs_natural/inSamples", 1);
 	masking_->updControl ("mrs_real/israte", israte_);

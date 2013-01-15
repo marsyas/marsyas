@@ -220,8 +220,9 @@ AudioSourceBlocking::localActivate(bool state)
 void 
 AudioSourceBlocking::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
 	(void) in;
+#ifdef MARSYAS_AUDIOIO
+	mrs_natural t,o;
 
   //check if RtAudio is initialized
   if (!isInitialized_)
@@ -239,7 +240,6 @@ AudioSourceBlocking::myProcess(realvec& in, realvec& out)
   int ssize = onSamples_ * onObservations_;  
   
   //send audio to output
-#ifdef MARSYAS_AUDIOIO
   while (ri_ < ssize)
     {
       try 
@@ -270,6 +270,8 @@ AudioSourceBlocking::myProcess(realvec& in, realvec& out)
     reservoir_(t-ssize) = reservoir_(t);
   
   ri_ = ri_ - ssize;
+#else
+	(void) out;
 #endif 
   
  /* MATLAB_PUT(out, "AudioSourceBlocking_out");

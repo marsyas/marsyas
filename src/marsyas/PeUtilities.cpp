@@ -541,6 +541,7 @@ Marsyas::synthNetConfigure(MarSystem *pvseries, mrs_string sfName, mrs_string ou
 	// FIXME Unused parameters
 	(void) nbChannels;
 	(void) S;
+    (void) Nw;
 
 	pvseries->updControl("PeSynthetize/synthNet/mrs_natural/nTimes", accSize);
 

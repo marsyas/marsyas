@@ -1308,6 +1308,7 @@ BeatReferee::getWorstAgent(mrs_natural callAgent)
 mrs_realvec 
 BeatReferee::calculateNewHypothesis(mrs_natural agentIndex, mrs_natural oldPeriod, mrs_natural prevBeat, mrs_natural error)
 {
+    (void) agentIndex; // [!] what was this supposed to do?
 	mrs_natural newPeriod;
 	mrs_natural nextBeat;
 	/*

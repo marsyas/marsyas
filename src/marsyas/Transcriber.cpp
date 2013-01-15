@@ -398,7 +398,7 @@ Transcriber::discardBeginEndSilencesAmpsOnly(const realvec& ampList,
 	i=0;
 	// Remove beginning silences.
 	mrs_natural start = (mrs_natural) boundaries(i);
-	mrs_natural length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+	//mrs_natural length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
 	sampleAmp = ampList(start);
 	while ( (sampleAmp < 0.1) && (i < boundaries.getSize()-1) )
 	{
@@ -407,20 +407,20 @@ Transcriber::discardBeginEndSilencesAmpsOnly(const realvec& ampList,
 		boundaries.stretch(j);
 		++i;
 		start = (mrs_natural) boundaries(i);
-		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+		//length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
 		sampleAmp = ampList(start);
 	}
 	// Remove ending silences.
 	i=boundaries.getSize()-2;
 	start = (mrs_natural) boundaries(i);
-	length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+	//length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
 	sampleAmp = ampList(start);
 	while ( (sampleAmp < 0.1) && (i < boundaries.getSize()-1) )
 	{
 		boundaries.stretch(i+1);
 		i--;
 		start = (mrs_natural) boundaries(i);
-		length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
+		//length = (mrs_natural) ( boundaries(i+1)-boundaries(i) );
 		sampleAmp = ampList(start);
 	}
 }
@@ -431,6 +431,7 @@ realvec
 Transcriber::getNotes(const realvec& pitchList, const realvec& ampList,
                       const realvec& boundaries)
 {
+    (void) ampList;
 	mrs_natural numNotes = boundaries.getSize()-1;
 	realvec notes(numNotes, 2);
 
