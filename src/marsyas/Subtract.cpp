@@ -51,6 +51,7 @@ Subtract::addControls()
 void
 Subtract::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	MRSDIAG("Subtract.cpp - Subtract:myUpdate");
 
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);

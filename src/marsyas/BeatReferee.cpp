@@ -228,6 +228,7 @@ BeatReferee::addControls()
 void
 BeatReferee::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	MRSDIAG("BeatReferee.cpp - BeatReferee:myUpdate");
 	
 	ctrl_onSamples_->setValue(1, NOUPDATE);

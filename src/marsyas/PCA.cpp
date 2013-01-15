@@ -68,6 +68,7 @@ PCA::addControls()
 void
 PCA::myUpdate(MarControlPtr sender)
 {
+  (void) sender;
   MRSDIAG("PCA.cpp - PCA:myUpdate");
    
   setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));

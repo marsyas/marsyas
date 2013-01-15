@@ -1,3 +1,5 @@
+// this file is excluded from Doxygen source docs
+
 const int static_array_num_codebooks = 44;
 const int static_array_num_codewords = 200;
 const int static_array_codeword_length = 48;

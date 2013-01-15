@@ -98,6 +98,7 @@ SoundFileSourceHopper::addControls()
 void
 SoundFileSourceHopper::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	// Set the hop size as window size for the SoundFileSource (and leave the
 	// other stuff (like osrate, onObservations, ...) up to the SoundFileSource.
 	// We have to make sure we do this when the SoundFileSource is already
@@ -159,6 +160,7 @@ SoundFileSourceHopper::myUpdate(MarControlPtr sender)
 void
 SoundFileSourceHopper::myProcess(realvec& in, realvec& out)
 {
+    (void) in;
 
 	// First step: do the processing of the SoundFileSource.
 	MarControlAccessor acc(marsystems_[0]->ctrl_processedData_);

@@ -62,6 +62,7 @@ PeakerOnset::addControls()
 void
 PeakerOnset::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	MRSDIAG("PeakerOnset.cpp - PeakerOnset:myUpdate");
 
 	ctrl_onSamples_->setValue(1, NOUPDATE);

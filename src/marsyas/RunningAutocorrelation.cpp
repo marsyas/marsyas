@@ -99,6 +99,7 @@ mrs_string prefixObservationNamesWithAutocorrelationUnfoldingPrefixes_(
 
 void RunningAutocorrelation::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	MRSDIAG("RunningAutocorrelation.cpp - RunningAutocorrelation:myUpdate");
 
 	// Update the cache of the control values.

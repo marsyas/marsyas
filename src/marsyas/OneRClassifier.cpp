@@ -60,9 +60,13 @@ OneRClassifier::addControls()
 void 
 OneRClassifier::myUpdate(MarControlPtr sender)
 {
+  (void) sender;
   MRSDIAG("OneRClassifier.cpp - OneRClassifier:myUpdate");
   ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
   setctrl("mrs_natural/onObservations", 2);
+  ctrl_osrate_->setValue(ctrl_israte_->to<mrs_real>());
+  ctrl_onObsNames_->setValue("OneRClassifier_"
+    + ctrl_inObsNames_->to<mrs_string>() , NOUPDATE);
 }
 
 void 

@@ -58,6 +58,7 @@ PeakResidual::addControls()
 void
 PeakResidual::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	mrs_natural o;
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>()/2, NOUPDATE);

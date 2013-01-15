@@ -69,6 +69,7 @@ void RunningStatistics::addControls()
 
 void RunningStatistics::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	MRSDIAG("RunningStatistics.cpp - RunningStatistics:myUpdate");
 
 	// Update caches of control values.

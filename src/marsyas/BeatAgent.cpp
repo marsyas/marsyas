@@ -96,6 +96,7 @@ BeatAgent::addControls()
 void
 BeatAgent::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	MRSDIAG("BeatAgent.cpp - BeatAgent:myUpdate");
 	
 	ctrl_onSamples_->setValue(6, NOUPDATE);

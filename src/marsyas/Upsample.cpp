@@ -51,6 +51,7 @@ Upsample::addControls()
 void
 Upsample::myUpdate(MarControlPtr sender)
 {
+  (void) sender;
   mrs_natural factor = getctrl("mrs_natural/factor")->to<mrs_natural>();
 	mrs_natural onSamples = (mrs_natural)(mrs_real)(ctrl_inSamples_->to<mrs_natural>() * factor);
 	ctrl_onSamples_->setValue(onSamples, NOUPDATE);
@@ -92,11 +93,3 @@ Upsample::myProcess(realvec& in, realvec& out)
     }
 }
 
-
-
-
-
-
-	
-
-	

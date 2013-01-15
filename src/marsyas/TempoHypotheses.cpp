@@ -92,6 +92,7 @@ TempoHypotheses::addControls()
 void
 TempoHypotheses::myUpdate(MarControlPtr sender)
 {
+  (void) sender;
   MRSDIAG("TempoHypotheses.cpp - TempoHypotheses:myUpdate");
   
 	nPhases_ = ctrl_nPhases_->to<mrs_natural>();

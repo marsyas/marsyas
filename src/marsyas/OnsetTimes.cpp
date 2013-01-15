@@ -84,6 +84,7 @@ OnsetTimes::addControls()
 void
 OnsetTimes::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	MRSDIAG("OnsetTimes.cpp - OnsetTimes:myUpdate");
 	n_ = ctrl_n1stOnsets_->to<mrs_natural>();
 	nPeriods_ = ctrl_nPeriods_->to<mrs_natural>();	

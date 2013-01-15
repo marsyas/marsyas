@@ -56,6 +56,7 @@ Sum::clone() const
 void
 Sum::myUpdate(MarControlPtr sender)
 {
+  (void) sender;
   // // Start with the default MarSystem setup with equal input/output
   // //stream format ...
   // MarSystem::myUpdate(sender);

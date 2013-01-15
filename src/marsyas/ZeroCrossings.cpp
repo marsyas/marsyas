@@ -71,11 +71,3 @@ ZeroCrossings::myProcess(realvec& in, realvec& out)
     }
 }
 
-
-
-
-
-
-
-	
-	

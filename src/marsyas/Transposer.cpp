@@ -42,6 +42,7 @@ Transposer::clone() const
 void
 Transposer::myUpdate(MarControlPtr sender)
 {
+    (void) sender;
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
 	ctrl_onObsNames_->setValue(ctrl_inObsNames_, NOUPDATE);
 
