@@ -824,8 +824,9 @@ Talk::process(char *message)
   else if (!strcmp(word,"snoop"))
     {
       cerr << "Snoop command." << endl;
-      int feat_num;
-      feat_num = atoi(strtok(NULL, SEPCHARS));
+      //  these aren't used?  -gp
+      //int feat_num;
+      //feat_num = atoi(strtok(NULL, SEPCHARS));
       communicator_->send_message("Howdy. You just send a snoop command\n");
     }
   else if (!strcmp(word,"colorgram"))

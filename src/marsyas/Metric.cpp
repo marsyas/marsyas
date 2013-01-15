@@ -25,6 +25,9 @@ using namespace Marsyas;
 static mrs_real
 randomDistance(const realvec& Vi, const realvec& Vj, const realvec& covMatrix)
 {
+    (void) Vi;
+    (void) Vj;
+    (void) covMatrix;
 	return rand()/mrs_real(RAND_MAX);
 }
 

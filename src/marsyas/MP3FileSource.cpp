@@ -246,7 +246,8 @@ MP3FileSource::PrintFrameInfo(struct mad_header *Header)
 		   Header->bitrate,Layer,
 		   Header->flags&MAD_FLAG_PROTECTION?"with":"without",
 		   Mode,Emphasis,Header->samplerate);
-
+#else
+    (void) Header;
 #endif
 }
 
@@ -650,8 +651,8 @@ MP3FileSource::getLinear16(realvec& slice)
 
 	return pos_;
 #else
+    (void) slice;
 	return 0;
-  
 #endif 
 
 }
@@ -821,7 +822,8 @@ MP3FileSource::fillStream( mrs_natural target )
 			stream.error = MAD_ERROR_NONE;
 		}
     }
-  
+#else
+    (void) target;
 #endif
 }
 

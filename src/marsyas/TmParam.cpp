@@ -23,8 +23,8 @@ using namespace Marsyas;
 
 TmParam::TmParam(std::string name, TmControlValue valu)
 {
-	name_=name_;
-	valu_=valu_;
+	name_=name;
+	valu_=valu;
 }
 
 TmParam::TmParam(const TmParam& val)

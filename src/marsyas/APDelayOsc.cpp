@@ -23,8 +23,6 @@ using namespace Marsyas;
 
 APDelayOsc::APDelayOsc(mrs_string name):MarSystem("APDelayOsc", name)
 {
-	delayline_ = NULL;
-
 	noteon_ = true;
 
 	addControls();
@@ -132,7 +130,7 @@ void APDelayOsc::myProcess(realvec& in, realvec& out)
 {
 	(void) in;
 
-	mrs_natural t,o;
+	mrs_natural t;
 	mrs_real y, x = 0;
 
 	for (t = 0; t < inSamples_; t++)

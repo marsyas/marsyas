@@ -162,9 +162,9 @@ void Spectrum2ACMChroma::addControls()
 	LowestF0_ = 100.;
 }
 
-void Spectrum2ACMChroma::myUpdate(MarControlPtr inSender)
+void Spectrum2ACMChroma::myUpdate(MarControlPtr sender)
 {
-	// who is inSender?
+    (void) sender;
 	// output variables may change during course of program
 	// therefore, declare them in myUpdate (not in constructor)
 	// UPDATE is necessary! (why?)

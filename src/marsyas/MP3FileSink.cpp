@@ -172,6 +172,8 @@ MP3FileSink::putHeader(mrs_string filename)
 {	
 #ifdef MARSYAS_LAME
 	sfp_ = fopen(filename.c_str(), "wb");	
+#else
+    (void) filename;
 #endif
 }
 

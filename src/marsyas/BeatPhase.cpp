@@ -360,8 +360,8 @@ BeatPhase::myProcess(realvec& in, realvec& out)
     }
 
 
-	mrs_natural prev_sample_count;
-	prev_sample_count = sampleCount_;
+	//mrs_natural prev_sample_count;
+	//prev_sample_count = sampleCount_;
 
     // Output all the detected beats to it's own MarControl
     int total_beats = 0;

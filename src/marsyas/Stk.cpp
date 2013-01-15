@@ -15,6 +15,7 @@
 #include "Stk.h"
 #include <stdio.h>
 #include <string.h>
+#include "config.h"  // needed to recognize MARSYAS_* defines
 
 using namespace Marsyas;
 

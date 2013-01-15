@@ -163,6 +163,7 @@ FileName::getFilesInDir (mrs_string wildcard)
 		_findclose( hFile );
 	}
 #else
+    (void) wildcard;
 	MRSWARN("getFilesInDir only works on Windows");
 #endif
 	return result;

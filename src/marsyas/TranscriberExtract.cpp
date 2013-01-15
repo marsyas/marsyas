@@ -125,8 +125,7 @@ TranscriberExtract::getAmpsFromAudio(const std::string audioFilename)
 	mrs_real normalize = getNormalizingGain(audioFilename);
 
 	MarSystem* pnet = mng.create("Series", "pnet");
-	mrs_real srate;
-	srate  = addFileSource(pnet, audioFilename);
+	addFileSource(pnet, audioFilename);
 	
 	pnet->addMarSystem(mng.create("Gain", "normalizing"));
 	pnet->updControl("Gain/normalizing/mrs_real/gain",normalize);

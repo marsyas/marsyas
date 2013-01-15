@@ -124,7 +124,7 @@ ClassOutputSink::myProcess(realvec& in, realvec& out)
   //checkFlow(in,out);
   
   mrs_natural p;
-  mrs_natural g;
+  //mrs_natural g;
 	mrs_natural o,t;
   
   
@@ -140,7 +140,7 @@ ClassOutputSink::myProcess(realvec& in, realvec& out)
 	for (t = 0; t < inSamples_; t++)	
 	  {
 	    p = (mrs_natural)in(o,t);
-	    g = (mrs_natural)in(1,t);
+	    //g = (mrs_natural)in(1,t);
 	    if (o < inObservations_-1)
 	      cout << "Predicted: " << labelNames_[p] << endl;
 	    (*mos_) << labelNames_[p] << endl;

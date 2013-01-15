@@ -102,6 +102,7 @@ void BlitOsc::myUpdate(MarControlPtr sender)
 
 void BlitOsc::myProcess(realvec& in, realvec& out)
 {
+    (void) in;
 	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
 		if (phase_ >= N_ - 1)

@@ -23,7 +23,7 @@
 using namespace std;
 using namespace Marsyas;
 
-char *szServer = "localhost"; //assume UDP sockets at localhost [CHANGE IF OTHER!!]
+const char *szServer = "localhost"; //assume UDP sockets at localhost [CHANGE IF OTHER!!]
 
 BeatTimesSink::BeatTimesSink(mrs_string name):MarSystem("BeatTimesSink", name)
 {
@@ -138,7 +138,9 @@ BeatTimesSink::myUpdate(MarControlPtr sender)
 mrs_natural
 BeatTimesSink::refreshSocket()
 {
+#ifdef _WIN32
 	#pragma comment(lib, "Ws2_32.lib") //include Ws2_32.lib
+#endif
 
   /* WSADATA wsaData;
 	int error;
@@ -439,12 +441,12 @@ BeatTimesSink::myProcess(realvec& in, realvec& out)
 
 					//cout << "BEAT " << i << ": " << beatTime_ << "; IBI: " << ibi << endl;
 
-					mrs_real nextIbi = 0;
+					//mrs_real nextIbi = 0;
 					mrs_real nextBeatTime = 0;
 					//if(i < bestFinalAgentHistory_.getCols()-1) //everything commented is for handle transition (see thres below)
 					//{
 						nextBeatTime = ((bestFinalAgentHistory_(i+1) * hopSize_) - adjustment_) / srcFs_;
-						nextIbi = (nextBeatTime - beatTimeTmp_);
+						//nextIbi = (nextBeatTime - beatTimeTmp_);
 					//}
 					//
 					//else //if last beat always write

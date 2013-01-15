@@ -29,7 +29,7 @@
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
 #include <gst/base/gstbasesrc.h>
-#endif MARSYAS_GSTREAMER
+#endif
 
 
 #ifdef MARSYAS_GSTREAMER

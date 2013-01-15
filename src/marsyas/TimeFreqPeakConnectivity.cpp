@@ -240,13 +240,11 @@ TimeFreqPeakConnectivity::myUpdate(MarControlPtr sender)
 	/// Use the default MarSystem setup with equal input/output stream format.
 	MarSystem::myUpdate(sender);
 
-	mrs_natural		numSamples;
 	const mrs_bool	isInBark	= getctrl("mrs_bool/inBark")->to<mrs_bool>();
 
 	FreeMemory ();
 
 	// compute matrix dimensions
-	numSamples		= inSamples_;
 	if(getctrl("mrs_string/frequencyIntervalInHz")->to<mrs_string>() != "MARSYAS_EMPTY")
 	{
 		realvec conv(2);

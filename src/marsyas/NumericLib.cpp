@@ -2142,7 +2142,7 @@ void
 NumericLib::assignmentoptimal(mrs_natural *assignment, mrs_real *cost, mrs_real *distMatrixIn, mrs_natural nOfRows, mrs_natural nOfColumns)
 {
 
-	mrs_real *distMatrix, *distMatrixTemp, *distMatrixEnd, value, minValue; //*columnEnd, 
+	mrs_real *distMatrix, *distMatrixTemp, value, minValue; //*columnEnd, 
 	bool *coveredColumns, *coveredRows, *starMatrix, *newStarMatrix, *primeMatrix;
 	mrs_natural nOfElements, minDim, row, col;
 #ifdef CHECK_FOR_INF
@@ -2165,7 +2165,6 @@ NumericLib::assignmentoptimal(mrs_natural *assignment, mrs_real *cost, mrs_real 
 	distMatrix    = (mrs_real *)malloc(nOfElements * sizeof(mrs_real));
 	//distMatrix aponta para o primeiro elemento por causa do malloc; 
 	//quando soma mais nOfElements aponta para o final 
-	distMatrixEnd = distMatrix + nOfElements;
 	for(row=0; row<nOfElements; row++)
 	{
 		value = distMatrixIn[row];
@@ -2178,6 +2177,7 @@ NumericLib::assignmentoptimal(mrs_natural *assignment, mrs_real *cost, mrs_real 
 
 
 #ifdef CHECK_FOR_INF
+	mrs_real *distMatrixEnd = distMatrix + nOfElements;
 	/* check for infinite values */
 	maxFiniteValue     = -1;
 	infiniteValueFound = false;
