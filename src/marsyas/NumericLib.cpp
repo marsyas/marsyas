@@ -2055,7 +2055,7 @@ NumericLib::bhattacharyyaShape(const realvec& Ci, const realvec& Cj, const realv
 	}
 
 	realvec Cii = Ci;
-	realvec Cjj = Cjj;
+	realvec Cjj = Cj;
 
 	//denominator
 	mrs_real sqrtdetCi = sqrt(Cii.det());
