@@ -106,26 +106,36 @@ WavFileSource2::getHeader()
 		{
 			char id[5];
 			int chunkSize;
-			fread(id, 4, 1, sfp_);
+            if (fread(id, 4, 1, sfp_) != 1) {
+                MRSERR("Error reading wav file");
+            }
 			id[4] = '\0';
 
 			while (strcmp(id, "fmt ")) 
 			{
-				fread(&chunkSize, 4, 1, sfp_);
+				if (fread(&chunkSize, 4, 1, sfp_) != 1) {
+                    MRSERR("Error reading wav file");
+                }
 #if defined(MARSYAS_BIGENDIAN)	      
 				chunkSize = ByteSwapLong(chunkSize);
 #endif 
 				fseek(sfp_, chunkSize, SEEK_CUR);
-				fread(id, 4, 1, sfp_);
+				if (fread(id, 4, 1, sfp_) != 1) {
+                    MRSERR("Error reading wav file");
+                }
 			}
 
-			fread(&chunkSize, 4, 1, sfp_);
+			if (fread(&chunkSize, 4, 1, sfp_) != 1) {
+                MRSERR("Error reading wav file");
+            }
 #if defined(MARSYAS_BIGENDIAN)	      
 			chunkSize = ByteSwapLong(chunkSize);
 #endif 
 
 			unsigned short format_tag;
-			fread(&format_tag, 2, 1, sfp_);
+			if (fread(&format_tag, 2, 1, sfp_) != 1) {
+                MRSERR("Error reading wav file");
+            }
 #if defined(MARSYAS_BIGENDIAN)	      
 			format_tag = ByteSwapShort(format_tag);
 #endif 
@@ -138,7 +148,9 @@ WavFileSource2::getHeader()
 			}
 
 			// Get number of channels
-			fread(&channels, 2,1, sfp_);
+			if (fread(&channels, 2, 1, sfp_) != 1) {
+                MRSERR("Error reading wav file");
+            }
 #if defined(MARSYAS_BIGENDIAN)	      
 			channels = ByteSwapShort(channels);
 #endif 
@@ -146,7 +158,9 @@ WavFileSource2::getHeader()
 			setctrl("mrs_natural/nChannels", (mrs_natural)channels);
 			//nChannels_ = channels; //getctrl("mrs_natural/nChannels")->to<mrs_natural>();//[!]
 
-			fread(&srate, 2,1,sfp_);
+			if (fread(&srate, 2, 1, sfp_) != 1) {
+                MRSERR("Error reading wav file");
+            }
 #if defined(MARSYAS_BIGENDIAN)	      
 			srate = ByteSwapShort(srate);
 #endif 
@@ -154,7 +168,9 @@ WavFileSource2::getHeader()
 			//israte_ = (mrs_real)srate;
 
 			fseek(sfp_,8,SEEK_CUR);
-			fread(&bits_, 2, 1, sfp_);
+			if (fread(&bits_, 2, 1, sfp_) != 1) {
+                MRSERR("Error reading wav file");
+            }
 #if defined(MARSYAS_BIGENDIAN)	      
 			bits_ = ByteSwapShort(bits_);
 #endif 
@@ -168,20 +184,28 @@ WavFileSource2::getHeader()
 			}
 			
 			fseek(sfp_, chunkSize - 16, SEEK_CUR);
-			fread(id, 4, 1, sfp_);
+			if (fread(id, 4, 1, sfp_) != 1) {
+                MRSERR("Error reading wav file");
+            }
 			id[4] = '\0';
 			while (strcmp(id, "data"))
 			{
-				fread(&chunkSize, 4, 1, sfp_);
+				if (fread(&chunkSize, 4, 1, sfp_) != 1) {
+                    MRSERR("Error reading wav file");
+                }
 #if defined(MARSYAS_BIGENDIAN)	      
 				chunkSize = ByteSwapLong(chunkSize);
 #endif 
 				fseek(sfp_,chunkSize,SEEK_CUR);
-				fread(&id,4,1,sfp_);	  
+				if (fread(&id,4,1,sfp_) != 1) {
+                    MRSERR("Error reading wav file");
+                }
 			}
 
 			int bytes;
-			fread(&bytes, 4, 1, sfp_);
+			if (fread(&bytes, 4, 1, sfp_) != 1) {
+                MRSERR("Error reading wav file");
+            }
 #if defined(MARSYAS_BIGENDIAN)	      
 			bytes = ByteSwapLong(bytes);
 #endif 

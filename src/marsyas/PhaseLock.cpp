@@ -352,7 +352,7 @@ PhaseLock::readGTFile(mrs_string gtFilePath)
 		//if more than two beatTimes given in the annotation file
 		//discart initial beatTime (due to inconsistencies in the beggining of some annotation files)
 		mrs_real lastGTBeatTimeInit1 = 0.0;
-		mrs_real lastGTBeatTimeLast1 = 0.0;
+		//mrs_real lastGTBeatTimeLast1 = 0.0;
 		do
 		{
 			//cout << "gtBeatTimeInit1: " << gtBeatTimeInit1 << "; gtBeatTimeInit2:" 
@@ -407,7 +407,7 @@ PhaseLock::readGTFile(mrs_string gtFilePath)
 					//	<< "; ibi: " << lastGTIBI_ << endl;
 
 					lastGTIBI_ = abs(gtBeatTimeLast2 - gtBeatTimeLast1);
-					lastGTBeatTimeLast1 = gtBeatTimeLast1;
+					//lastGTBeatTimeLast1 = gtBeatTimeLast1;
 					gtBeatTimeLast1 = gtBeatTimeLast2;
 					gtBeatTimeLast2 = gtBeatTimeLast1 + lastGTIBI_;
 				}
@@ -432,7 +432,7 @@ PhaseLock::readGTFile(mrs_string gtFilePath)
 						break;
 					else
 					{   
-						lastGTBeatTimeLast1 = gtBeatTimeLast1; //save last gtBeatTimeLast1
+						//lastGTBeatTimeLast1 = gtBeatTimeLast1; //save last gtBeatTimeLast1
 
 						//keep on looking
 						pos0 = (mrs_natural) line_.find_first_of(" ", pos0+1); //initial delimiter
@@ -596,7 +596,7 @@ PhaseLock::handleGTHypotheses(realvec& in, realvec& out,mrs_string gtFilePath, m
 		mrs_natural avgPeriod = 0;
 		mrs_real avgLocalTrackingScore_ = 0.0;
 		mrs_real maxGlobalTrackingScore_ = NA; //to allow best negative score
-		mrs_natural maxMetricalRelScoreInd = -1;
+		//mrs_natural maxMetricalRelScoreInd = -1;
 		for(int i = 0; i < nrPeriodHyps_; i++)
 		{
 			if(initPeriods_(i) > MINIMUMREAL) //if the given period_ > 0 (= valid period_) (initial phase, being ground-truth, is necessarily valid
@@ -606,7 +606,7 @@ PhaseLock::handleGTHypotheses(realvec& in, realvec& out,mrs_string gtFilePath, m
 				if(metricalRelScore_(i) > maxMetricalRelScore)
 				{
 					maxMetricalRelScore = metricalRelScore_(i);
-					maxMetricalRelScoreInd = i;
+					//maxMetricalRelScoreInd = i;
 				}
 
 				if(maxLocalTrackingScore_(i) > maxGlobalTrackingScore_)
@@ -890,7 +890,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 			beatCount_(h) = 1;
 			mrs_real localPeakAmp = in((mrs_natural)firstBeatPoint_(h));
 			mrs_natural localPeak = (mrs_natural) firstBeatPoint_(h);
-			mrs_natural errorTmp = 0;
+			//mrs_natural errorTmp = 0;
 			for (int t = (mrs_natural)firstBeatPoint_(h)-innerMargin_; t <= (mrs_natural)firstBeatPoint_(h)+innerMargin_; t++)
 			{
 				//Limit analysis to induction window
@@ -904,7 +904,7 @@ PhaseLock::regularFunc(realvec& in, realvec& out)
 					}
 				}
 			}
-			errorTmp = (mrs_natural) firstBeatPoint_(h) - localPeak;
+			//errorTmp = (mrs_natural) firstBeatPoint_(h) - localPeak;
 			//cout << "INIT_ERROR: " << errorTmp << endl;
 			//cout << "Adj: " << localPeak << "; REALinitPhase: " << localPeak - (inSamples_-1 - timeElapsed_) << endl;
 			
