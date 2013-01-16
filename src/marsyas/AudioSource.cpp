@@ -106,9 +106,9 @@ AudioSource::recordCallback(void *outputBuffer, void *inputBuffer,
 		if (iData->samplesInBuffer <= iData->high_watermark)
 		{
 			ringBuffer(0,iData->wp) = data[2*t];			
-			ringBuffer(1,iData->wp) = data[2*t+1];
+            ringBuffer(1,iData->wp) = data[2*t+1];
 			
-			iData->wp = ++ (iData->wp) % iData->ringBufferSize;
+			iData->wp = (iData->wp + 1) % iData->ringBufferSize;
 			if (iData->wp >= iData->rp) 
 			{
 				iData->samplesInBuffer = iData->wp - iData->rp;
@@ -336,8 +336,8 @@ AudioSource::myProcess(realvec& in, realvec& out)
 				out(o,t) = ringBuffer_(o,idata.rp);
 			}
 
-			idata.rp = ++(idata.rp) % idata.ringBufferSize;	
-			if (idata.rp >= idata.rp) 
+			idata.rp = (idata.rp + 1) % idata.ringBufferSize;	
+			if (idata.rp >= idata.rp)  // FIXME: huh?!  bad copy&paste?
 			{
 				idata.samplesInBuffer = idata.wp - idata.rp;
 			}
