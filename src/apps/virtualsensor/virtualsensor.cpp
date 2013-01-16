@@ -267,8 +267,8 @@ void testrmspreprocess() {
     playbacknet->updControl("mrs_real/osrate", 44100.0);
     playbacknet->updControl("SoundFileSource/src/mrs_string/filename", sfname);
     playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", "rmsOutput.wav");
-    int srate; 
-    srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+    //int srate; 
+    //srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     /*
     // values optimized for window size of 512
@@ -313,8 +313,8 @@ void extractHits() {
 
     playbacknet->updControl("SoundFileSource/src/mrs_string/filename", sfname);
     playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", "output.wav");
-    int srate;
-    srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+    //int srate;
+    //srate = playbacknet->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
     /*
     // values optimized for window size of 512
@@ -608,6 +608,7 @@ void drumExtract2() {
 
 void readRMSmake(mrs_real length, string AudioFile) 
 {
+    (void) length;
     cout << "Read AudioFiles and make RMS files" << endl;
     cout << AudioFile << endl;
 
@@ -657,6 +658,7 @@ void readRMSmake(mrs_real length, string AudioFile)
 
 void readSitarSensors(mrs_real length) 
 {
+    (void) length;
     cout << "Read Sitar Sensors" << endl;
 
     MarSystemManager mng;
@@ -795,6 +797,7 @@ void readSitarSensors(mrs_real length)
 
 void readFrettoPitch(mrs_real length) 
 {
+    (void) length;
     cout << "Read Fret to Pitch" << endl;
     MarSystemManager mng;
 
@@ -986,6 +989,7 @@ void readFrettoPitch(mrs_real length)
 
 void recordSitarSensors(mrs_real length) 
 {
+    (void) length;
   // This function records syncronized audio data, thumb pressure 
   // and fret data. Audio is recorded at 44100 HZ. Thumb and Fret
   // are recorded at 44100/512 Hz. Function is also set up to send 
@@ -1042,10 +1046,10 @@ void recordSitarSensors(mrs_real length)
     pnet->updControl("SoundFileSink/dest/mrs_real/osrate", 44100.0); 
     pnet->updControl("SoundFileSink/dest/mrs_string/filename", "vsens.au");   
 
-    mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->to<mrs_real>();
-    mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->to<mrs_natural>();
-    mrs_natural iterations;
-	iterations = (mrs_natural)((srate * length) / inSamples);
+    //mrs_real srate = recordNet->getctrl("AudioSource/asrc/mrs_real/israte")->to<mrs_real>();
+    //mrs_natural inSamples = recordNet->getctrl("AudioSource/asrc/mrs_natural/inSamples")->to<mrs_natural>();
+    //mrs_natural iterations;
+	//iterations = (mrs_natural)((srate * length) / inSamples);
 
     int r,f;
 
@@ -1295,8 +1299,8 @@ void drumExtract(vector<Collection> cls, string classNames)
     mrs_natural win = 0;
     mrs_natural startPos = 0;
     mrs_natural endPos = 0;
-    mrs_natural startWin = 0;
-    mrs_natural endWin = 0;
+    //mrs_natural startWin = 0;
+    //mrs_natural endWin = 0;
 
     MarSystem* extractNet = mng.create("Series", "extractNet");
     extractNet->addMarSystem(src);
@@ -1344,8 +1348,8 @@ void drumExtract(vector<Collection> cls, string classNames)
             win = 0;
             startPos = 0;
             endPos = 0;
-            startWin = 0;
-            endWin = 0;
+            //startWin = 0;
+            //endWin = 0;
             src->updControl("mrs_string/filename", l.entry(i));
             cout << "Processing " << l.entry(i) << endl;
 
@@ -1361,12 +1365,12 @@ void drumExtract(vector<Collection> cls, string classNames)
                     {
 
                         startPos = t;
-                        startWin = win;
+                        //startWin = win;
                     }
                     if ((fabs(out(0,t)) > 0.999)&&(endPos == 0))
                     {
                         endPos = t;
-                        endWin = win;
+                        //endWin = win;
                     }
 
                 }      

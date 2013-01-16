@@ -184,8 +184,8 @@ void extract(Collection collection, string outWekaName)
   //////////////////////////////////////////////////////////////////////////
   // Main loop for extracting the features 
   //////////////////////////////////////////////////////////////////////////
-  mrs_natural wc = 0;
-  mrs_natural samplesPlayed =0;
+  //mrs_natural wc = 0;
+  //mrs_natural samplesPlayed =0;
   string className = "";
   realvec beatfeatures;
   beatfeatures.create((mrs_natural)8,(mrs_natural)1);
@@ -255,8 +255,8 @@ void extract(Collection collection, string outWekaName)
  	{
 	  // Update the featureNetwork to read the current file in the collection
  	  total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_string/filename", collection.entry(i));
- 	  wc = 0;  	  
- 	  samplesPlayed = 0;
+ 	  //wc = 0;  	  
+ 	  //samplesPlayed = 0;
 //   	  annotator->updControl("mrs_natural/label", collection.labelNum(collection.labelEntry(i)));
    	  annotator->updControl("mrs_natural/label", (mrs_natural)i);
 

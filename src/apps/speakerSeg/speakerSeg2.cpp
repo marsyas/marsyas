@@ -88,9 +88,9 @@ void speakerSeg(vector<string> soundfiles)
 	MarSystem* mfccSeries = mng.create("Series","mfccSeries");
 	MarSystem* lspFeatSeries = mng.create("Series","lspFeatSeries");
 	MarSystem* mfccFeatSeries = mng.create("Series","mfccFeatSeries");
-	MarSystem* pitchSeries = mng.create("Series","pitchSeries");
+	//MarSystem* pitchSeries = mng.create("Series","pitchSeries");
 	MarSystem* features = mng.create("Fanout","features");
-	MarSystem* parallel = mng.create("Parallel","parallel");
+	//MarSystem* parallel = mng.create("Parallel","parallel");
 
 
 	mfccFeatSeries->addMarSystem(mng.create("Windowing", "hammfccFeatSeries"));

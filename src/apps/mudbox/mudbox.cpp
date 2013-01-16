@@ -765,8 +765,8 @@ toy_with_onsets(string sfName)
 	//process input file (till EOF)
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural timestamps_samples = 0;
-	mrs_real sampling_rate;
-	sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
+	//mrs_real sampling_rate;
+	//sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	// cout << "Sampling rate = " << sampling_rate << endl;
 	
 	while(onsetnet->getctrl("mrs_bool/hasData")->to<mrs_bool>())
@@ -1343,8 +1343,8 @@ toy_with_multiple(mrs_string file1, mrs_string file2)
 	fanout->addMarSystem(mng.create("SoundFileSource", "src2"));
     
 	// Assign filenames to the SoundFileSources
-	fanout->updctrl("SoundFileSource/src1/mrs_string/filename",file1);
-	fanout->updctrl("SoundFileSource/src2/mrs_string/filename",file2);
+	fanout->updControl("SoundFileSource/src1/mrs_string/filename",file1);
+	fanout->updControl("SoundFileSource/src2/mrs_string/filename",file2);
     
 	// Add the fanout to the main network
 	playbacknet->addMarSystem(fanout);
@@ -1354,7 +1354,7 @@ toy_with_multiple(mrs_string file1, mrs_string file2)
     
 	// Create the output file which is a SoundFileSink
 	playbacknet->addMarSystem(mng.create("SoundFileSink", "dest"));
-	playbacknet->updctrl("SoundFileSink/dest/mrs_string/filename", "multiple.wav");
+	playbacknet->updControl("SoundFileSink/dest/mrs_string/filename", "multiple.wav");
     
 	while (playbacknet->getControl("Fanout/fanout/SoundFileSource/src1/mrs_bool/hasData")->to<mrs_bool>())
 	{
@@ -1817,16 +1817,9 @@ void toy_with_pngwriter(string fname)
 
 	png.close();
 
+#else
+    (void) fname;
 #endif 
-
-
-
-
-   
-
-
-
-
 }
 
 void 
@@ -2044,7 +2037,7 @@ toy_with_panorama(string sfName)
 	mrs_natural t = 0;	
 	mrs_real angle = -PI/4.0;
 	playbacknet->updControl("Panorama/pan/mrs_real/angle", angle);
-	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	while ((isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) != true) 
 	{
 		playbacknet->tick();
 		t++;
@@ -2142,7 +2135,7 @@ toy_with_reverb(string sfName)
 
 	playbacknet->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
 
-	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	while ((isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) != true) 
 	{
 		playbacknet->tick();
 	}
@@ -2174,7 +2167,7 @@ toy_with_vibrato(string sfName)
 
 
 	mrs_bool isEmpty;
-	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	while ((isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) != true) 
 	{
 		playbacknet->tick();
 	}
@@ -3416,6 +3409,7 @@ toy_with_stereoFeatures(string fname0, string fname1)
 void
 toy_with_ADRess(string fname0, string fname1)
 {
+    (void) fname1;
 	cout << "TOY_WITHING ADRess STEREO FEATURES" << endl;
 
 	MarSystemManager mng;
@@ -3563,7 +3557,7 @@ toy_with_stereo2mono(string fname)
 	
 	mrs_bool isEmpty;
 
-	while (isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	while ((isEmpty = playbacknet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) != true) 
 	{
 		playbacknet->tick();
 	}
@@ -3631,7 +3625,7 @@ toy_with_lyons(string fname)
 #endif
 
 	// do processing until eof
-	while (isEmpty = lyonTestNet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	while ((isEmpty = lyonTestNet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) != true)
 	{
 		// calculate filterbank output
 		lyonTestNet->tick();
@@ -3822,7 +3816,7 @@ toy_with_auditorytbx(string fname)
 #endif
 
     // do processing until eof
-    while (isEmpty = erbTestNet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+    while ((isEmpty = erbTestNet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) != true)
     {
         // calculate filterbank output
         erbTestNet->tick();
@@ -3873,6 +3867,7 @@ toy_with_auditorytbx(string fname)
 
 
 void toy_with_swipe(string sfname) {
+    (void) sfname;
 // commented out because log2() and exp2() aren't part of the 
 // C++ standard and don't exist on win32.   -gp, 15 Aug 2008.
 /*
@@ -5135,6 +5130,8 @@ toy_with_duplex2(mrs_string sfName)
 void 
 Pluck(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret, string name)
 {
+    (void) loz;
+    (void) stret;
 	MarSystemManager mng;
 	MarSystem* series = mng.create("Series", "series");
 
@@ -5271,6 +5268,8 @@ toy_with_plucked(string sfName1,string sfName2,string sfName3,string sfName4,str
 //Pluck Karplus Strong Model Plucked.cpp outputs to DAC
 void PluckLive(mrs_real pos, mrs_real fre, mrs_real loz, mrs_real stret)
 {
+    (void) loz;
+    (void) stret;
 
 
 
@@ -5845,7 +5844,7 @@ toy_with_centroid(string sfName1)
 	accum->updControl("mrs_string/mode", "explicitFlush");
 	cnet->updControl("mrs_string/filename", sfName1);
 
-	mrs_real val = 0.0;
+	//mrs_real val = 0.0;
 
 	ofstream ofs;
 	ofs.open("centroid.mpl");
@@ -5893,7 +5892,7 @@ toy_with_confidence(string sfName)
 
 	mrs_bool isEmpty;
 	//cout << *pnet << endl;
-	while (isEmpty = pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) 
+	while ((isEmpty = pnet->getctrl("mrs_bool/hasData")->to<mrs_bool>()) != true)
 	{
 		//cout << "pos " << pnet->getctrl("mrs_natural/pos")->to<mrs_natural>() << endl;
 		cout << pnet->getctrl("SoundFileSource/src/mrs_string/currentlyPlaying")->to<mrs_string>() << endl;
@@ -6400,6 +6399,7 @@ toy_with_margrid(string sfName)
 void
 toy_with_multichannel_merge(string sfName) 
 {
+    (void) sfName;
 
 	string in1AudioFileName = "in1.wav";
 	string in2AudioFileName = "in2.wav";
@@ -7192,8 +7192,8 @@ toy_with_robot_peak_onset(string sfName, string portNum)
 	// Process input file (till EOF)
 	///////////////////////////////////////////////////////////////////////////////////////
 	mrs_natural timestamps_samples = 0;
-	mrs_real sampling_rate;
-	sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
+	//mrs_real sampling_rate;
+	//sampling_rate = onsetnet->getctrl("mrs_real/osrate")->to<mrs_real>();
 	
 	MarSystem* playback = mng.create("Series", "playback");
 	playback->addMarSystem(mng.create("MidiOutput", "midiout"));

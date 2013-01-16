@@ -194,6 +194,11 @@ peakClusteringEval(realvec &peakSet, string sfName, string outsfname, string noi
 				   mrs_natural D, mrs_natural S, mrs_natural C,
 				   mrs_natural accSize, mrs_natural synthetize, mrs_real *snr0)
 {
+    (void) peakSet;
+    (void) outsfname;
+    (void) panningInfo;
+    (void) T;
+    (void) synthetize;
 	//FIXME: D is the same as hopSize_ -> fix to avoid confusion!
 
 	MATLAB_EVAL("clear");

@@ -57,6 +57,10 @@ aim(string pluginName, string wekafname,
     mrs_natural memSize, string classifierName,
     mrs_bool single_vector)
 {
+  (void) pluginName;
+  (void) memSize;
+  (void) classifierName;
+  (void) single_vector;
   MarSystemManager mng; 
 
   // Overall extraction and classification network
@@ -279,6 +283,7 @@ readCollection(Collection& l, string name)
 int
 main(int argc, const char **argv)
 {
+  (void) argc;
   int i = 0;
   Collection l;
 

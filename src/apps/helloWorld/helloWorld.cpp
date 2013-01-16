@@ -24,10 +24,12 @@ using namespace Marsyas;
 int
 main(int argc, const char **argv)
 {	
+    (void) argc;  // tells the compiler that we know that we're not
+    (void) argv;  // using these two variables
 	MRSDIAG("helloWorld.cpp - main");
 
-	// cout << "This is probably the simplest Marsyas example code: it simply \
-	// generates a sine wave with a frequency of 440Hz and send it to the audio \
+	// cout << "This is probably the simplest Marsyas example code: it simply
+	// generates a sine wave with a frequency of 440Hz and send it to the audio
 	// card output. Simple press CTRL+C to quit." << endl;
 	
 	//we usualy start by creating a MarSystem manager 
