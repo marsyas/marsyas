@@ -199,39 +199,34 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 		mrs_real offStart=ctrl_offStart_->to<mrs_real>();
 		mrs_real offEnd=ctrl_offEnd_->to<mrs_real>();
 		mrs_real ratio=(inSamples_-1-offStart-offEnd)/(mrs_real)(onSamples_-1);
-		mrs_realvec arr;
-		arr.create(onSamples_);
+
 		for(mrs_natural i=0;i<onSamples_;++i)
 		{
 			arrx_(i)=offStart+i*ratio;
 		}
-				
+
 		mrs_natural winlength=5;//maximum windowlength is also enforced by the window function
-		for (mrs_natural ansinks=0;ansinks<inSamples_;ansinks++)
+
+		for (int i=0;i<onSamples_;++i)
 		{
-			for (int i=0;i<onSamples_;++i)
+			mrs_real sample = 0;
+			for (mrs_natural ansinks=0;ansinks<inSamples_;ansinks++)
 			{
 				mrs_real sincIndex = arrx_(i)-ansinks;
 				if (abs(sincIndex)<winlength)
 				{
 					if (windowedMode)
 					{
-						arr(i)=arr(i)+in(o,ansinks)*sinc(sincIndex)*window(sincIndex);
+						sample += in(o,ansinks)*sinc(sincIndex)*window(sincIndex);
 					}
 					else
 					{
-						arr(i)=arr(i)+in(o,ansinks)*sinc(sincIndex);
+						sample += in(o,ansinks)*sinc(sincIndex);
 					}
 				}
 			}
-			
+			out(o,i) = sample;
 		}
-		
-		for (int i=0;i<onSamples_;++i)
-		{
-			out(o,i)=arr(i);
-		}
-
 	}//ENDOF for observations
 
 }
