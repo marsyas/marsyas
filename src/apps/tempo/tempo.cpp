@@ -152,7 +152,7 @@ float total_differences;
 mrs_real
 next_power_two(mrs_real x)
 {
-    return pow(2, ceil(log(x)/log(2)));
+    return pow(2, ceil( log(x) / log( (mrs_real) 2.0)));
 }
 
 
