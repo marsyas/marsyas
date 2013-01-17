@@ -17,6 +17,10 @@
 #include <string.h>
 #include "config.h"  // needed to recognize MARSYAS_* defines
 
+#if (defined(MARSYAS_IRIX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_LINUX) || defined(MARSYAS_MACOSX))
+# include <unistd.h>
+#endif
+
 using namespace Marsyas;
 
 MY_FLOAT Stk :: srate = (MY_FLOAT) SRATE;
