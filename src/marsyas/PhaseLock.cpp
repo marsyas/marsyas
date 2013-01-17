@@ -709,7 +709,6 @@ PhaseLock::handleGTHypotheses(realvec& in, realvec& out,mrs_string gtFilePath, m
 				if(metricalRelScore_(i) < 0 && maxMetricalRelScore < 0 && maxGlobalTrackingScore_ > 0)
 					metricalRelFraction = (maxMetricalRelScore / metricalRelScore_(i));
 			
-				mrs_real finalScore; //final score
 
 				if(curBestScore_ == NA) //initially consider a proportion of the maximum tracking score for this induction window
 					finalScore = metricalRelFraction * maxGlobalTrackingScore_;

@@ -100,6 +100,8 @@ pitchextract_caricature(mrs_string sfName, mrs_natural winSize, mrs_natural hopS
 			 mrs_real lowPitch, mrs_real highPitch, mrs_real threshold, 
 			 mrs_bool playPitches, mrs_string ofName)
 {
+    (void) winSize;
+    (void) threshold;
 	MRSDIAG("pitchextract.cpp - pitchextract");	
 
 	MarSystemManager mng;
@@ -470,12 +472,17 @@ pitchextract_key(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 			 mrs_real lowPitch, mrs_real highPitch, mrs_real threshold, 
 			 mrs_bool playPitches, mrs_string ofName)
 {
+    (void) lowPitch;
+    (void) highPitch;
+    (void) threshold;
+    (void) playPitches;
+    (void) ofName;
 	MRSDIAG("pitchextract.cpp - pitchextract");	
 
 	MarSystemManager mng;
 
 	// Build pitch contour extraction network 
-	MarSystem* pitchContour     = mng.create("Series", "pitchContour");
+	//MarSystem* pitchContour     = mng.create("Series", "pitchContour");
 
 	MarSystem* pitchExtractor = mng.create("Series", "pitchExtractor");
 	pitchExtractor->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -542,6 +549,8 @@ pitchextract(mrs_string sfName, mrs_natural winSize, mrs_natural hopSize,
 			 mrs_real lowPitch, mrs_real highPitch, mrs_real threshold, 
 			 mrs_bool playPitches, mrs_string ofName)
 {
+    (void) winSize;
+    (void) threshold;
 	MRSDIAG("pitchextract.cpp - pitchextract");	
 
 	MarSystemManager mng;
@@ -890,6 +899,10 @@ old_pitchextract(string sfName, mrs_natural winSize, mrs_natural hopSize,
 				 mrs_natural lowPitch, mrs_natural highPitch, mrs_real threshold, 
 				 mrs_real playPitches)
 {
+    (void) winSize;
+    (void) hopSize;
+    (void) threshold;
+    (void) playPitches;
 	MRSDIAG("pitchextract.cpp - pitchextract");
   
 	MarSystemManager mng;
@@ -1029,9 +1042,9 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 	realvec r1;
 	double pitch;
 	double rms;
-	double time;
+	//double time;
 	int count = 0;
-	mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
+	//mrs_real srate = net->getctrl("mrs_real/osrate")->to<mrs_real>();
 	mrs_natural inSamples = net->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
 	// Using explicit loop 
@@ -1050,7 +1063,7 @@ void yinpitchextract(string inAudioFileName, int buffer_size, int overlap_size, 
 		r = net->getctrl("Fanout/fanout/Series/yin_series/Yin/yin/mrs_realvec/processedData")->to<mrs_realvec>();
 		r1 = net->getctrl("Fanout/fanout/Series/rms_series/Rms/rms/mrs_realvec/processedData")->to<mrs_realvec>();
 
-		time = count / srate;
+		//time = count / srate;
 		pitch = r(0,0);
 		rms = r1(0,0);
 		//printf("%12.12f\t%12.12f\t%12.12f\n",time,pitch,rms);

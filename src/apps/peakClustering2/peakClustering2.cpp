@@ -633,7 +633,7 @@ MarSystem* createAnalysisNet (MarSystemManager *mng, mrs_string seriesName = "te
 
 MarSystem* createPeakReadNet (MarSystemManager *mng, mrs_string seriesName = "textWinNet")
 {
-
+    (void) seriesName;
 	//**************************************************************************
 	//create accumulator for the texture window and add it to the main network
 	//**************************************************************************
@@ -919,6 +919,11 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			   mrs_natural D, mrs_natural S, mrs_natural C,
 			   mrs_natural accSize, mrs_natural synthetize, mrs_real *snr0)
 {
+    (void) peakSet;
+    (void) noiseName;
+    (void) mixName;
+    (void) noiseDelay;
+    (void) T;
 	MarSystemManager mng;
 
 	cout << "Extracting Peaks and Computing Clusters..." << endl;

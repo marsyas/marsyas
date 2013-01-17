@@ -193,6 +193,8 @@ peakClustering(realvec &peakSet, string sfName, string outsfname, string noiseNa
 			   mrs_natural D, mrs_natural S, mrs_natural C,
 			   mrs_natural accSize, mrs_natural synthetize, mrs_real *snr0)
 {
+    (void) peakSet;
+    (void) T;
 	MarSystemManager mng;
 
 	cout << "Extracting Peaks and Computing Clusters..." << endl;

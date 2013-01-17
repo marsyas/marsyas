@@ -469,17 +469,17 @@ beatHistogramFeatures(MarSystem* beatTracker, string sfName, realvec& beatfeatur
   // cout << "Calculating Beat Histogram Features: " << sfName << endl;
   beatTracker->updControl("Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
 
-  mrs_natural  bwinSize = 2048;
+  //mrs_natural bwinSize = 2048;
   mrs_natural bhopSize = 128;
   mrs_natural hopSize = 128;
-  mrs_natural winSize = 256;
+  //mrs_natural winSize = 256;
   
 
   vector<mrs_real> bpms;
   vector<mrs_real> secondary_bpms;
   // mrs_real bin;
 
-  int extra_ticks = bwinSize/bhopSize;
+  //int extra_ticks = bwinSize/bhopSize;
   mrs_realvec tempos(2);
   mrs_realvec tempo_scores(2);
   tempo_scores.setval(0.0);
@@ -625,6 +625,7 @@ void
 bextract_trainStereoSPS(vector<Collection> cls, string classNames,
 						string wekafname, mrs_natural memSize)
 {
+    (void) memSize;
   cout << "STEREO SPS" << endl;
   cout << "classNames = "  << classNames << endl;
   cout << "wekafname = "  << wekafname << endl;
@@ -747,6 +748,7 @@ void
 bextract_trainStereoSPSMFCC(vector<Collection> cls, string classNames,
 							string wekafname, mrs_natural memSize)
 {
+  (void) memSize;
   cout << "STEREO SPS+MFCC" << endl;
   cout << "classNames = "  << classNames << endl;
   cout << "wekafname = "  << wekafname << endl;
@@ -891,6 +893,7 @@ void
 bextract_trainStereoMFCC(vector<Collection> cls, string classNames,
 						 string wekafname, mrs_natural memSize)
 {
+  (void) memSize;
   cout << "STEREO MFCC" << endl;
   cout << "classNames = "  << classNames << endl;
   cout << "wekafname = "  << wekafname << endl;
@@ -1017,6 +1020,7 @@ void
 bextract_trainADRessStereoSPS(vector<Collection> cls, string classNames,
 							  string wekafname, mrs_natural memSize)
 {
+  (void) memSize;
   cout << "ADRess STEREO SPS" << endl;
   cout << "classNames = "  << classNames << endl;
   cout << "wekafname = "  << wekafname << endl;
@@ -1115,6 +1119,7 @@ void
 bextract_trainADRessStereoSPSMFCC(vector<Collection> cls, string classNames,
 								  string wekafname, mrs_natural memSize)
 {
+  (void) memSize;
   cout << "ADRess STEREO SPS+MFCC" << endl;
   cout << "classNames = "  << classNames << endl;
   cout << "wekafname = "  << wekafname << endl;
@@ -1237,6 +1242,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 							   mrs_natural memSize, string extractorStr,
 							   bool withBeatFeatures)
 {
+  (void) label;
+  (void) pluginName;
   if (withBeatFeatures)
 	cout << "with beat features" << endl;
 
@@ -1641,6 +1648,7 @@ bextract_train(vector<Collection> cls, Collection cl,
 			   string extractorStr,
 			   string classifierName)
 {
+  (void) label;
   MRSDIAG("bextract.cpp - bextract_train");
 
   cout << "Old bextract_train" << endl;
@@ -2757,6 +2765,7 @@ void bextract_train_rmsilence(vector<Collection> cls, mrs_natural label,
 							  string extractorStr,
 							  string classifierName)
 {
+  (void) label;
   if (classifierName == EMPTYSTRING)
 	classifierName = "SMO";
 
@@ -3194,6 +3203,9 @@ void bextract(vector<string> soundfiles, mrs_natural label,
 			  string extractorStr,
 			  string classifierName)
 {
+  (void) label;
+  (void) memSize;
+  (void) classifierName;
   MarSystemManager mng;
 
   // Spectrum Shape descriptors
@@ -3388,6 +3400,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 					   mrs_natural memSize, string classifierName,
 					   mrs_bool single_vector)
 {
+  (void) memSize;
   MRSDIAG("bextract.cpp - aim_train_refactored");
   cout << "BEXTRACT SAI/VQ REFACTORED" << endl;
 

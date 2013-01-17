@@ -376,6 +376,9 @@ void outputWaveformPNG(string inFileName, string outFileName)
 
 
 	delete net;
+#else
+    (void) inFileName;
+    (void) outFileName;
 #endif
 }
 
@@ -567,6 +570,9 @@ void outputSpectrogramPNG(string inFileName, string outFileName)
 	png.close();
 
 	delete net;
+#else
+    (void) inFileName;
+    (void) outFileName;
 #endif 
 }
 
@@ -700,6 +706,9 @@ neptune_spectrogram(string inFileName, string outFileName)
 	png.close();
 
 	delete net;
+#else
+    (void) inFileName;
+    (void) outFileName;
 #endif 
 }
 
@@ -895,8 +904,8 @@ html_spectrogram(string inFileName)
 	double y = 0;
 	double colour = 0;
 	double energy;
-	double penergy;
-	double denergy;
+	//double penergy;
+	//double denergy;
 
 	// Print the header
 	cout << "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\"> " << endl;
@@ -1053,10 +1062,10 @@ selfSimilarity(string fname, string outfname)
 
 	cout << rms_data << endl;
 
-	mrs_natural rms_height = 32;
 	
 	
 	#ifdef MARSYAS_PNG 
+	mrs_natural rms_height = 32;
 	pngwriter png1(rms_data.getCols(),rms_height, 0, "rms.png"); 
 	png1.invert();
 
@@ -1143,6 +1152,8 @@ selfSimilarity(string fname, string outfname)
 	png_rms.close();
 	
 	
+#else
+    (void) outfname;
 #endif 
 
 
@@ -1269,6 +1280,9 @@ void correlogramPNGs(string inFileName, string outFilePrefix)
 		png.close();
 		counter++;
 	}
+#else
+    (void) inFileName;
+    (void) outFilePrefix;
 #endif
 }
 
