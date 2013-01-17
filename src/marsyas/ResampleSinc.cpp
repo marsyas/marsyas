@@ -194,15 +194,13 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 	mrs_real offEnd=ctrl_offEnd_->to<mrs_real>();
 	mrs_real ratio=(inSamples_-1-offStart-offEnd)/(mrs_real)(onSamples_-1);
 
+	for(mrs_natural i=0;i<onSamples_;++i)
+		arrx_(i)=offStart+i*ratio;
+
+	mrs_natural winlength = 5; //maximum windowlength is also enforced by the window function
+
 	for (mrs_natural o=0;o<inObservations_;o++)
 	{
-		for(mrs_natural i=0;i<onSamples_;++i)
-		{
-			arrx_(i)=offStart+i*ratio;
-		}
-
-		mrs_natural winlength=5;//maximum windowlength is also enforced by the window function
-
 		for (int i=0;i<onSamples_;++i)
 		{
 			mrs_real sample = 0;
