@@ -126,20 +126,8 @@ MFCC::myUpdate(MarControlPtr sender)
 		for (i=0; i<totalFilters_; ++i)
 		{
 			lower_(i) = freqs_(i);
-		}
-
-		for (i=1; i<= totalFilters_; ++i)
-		{
-			center_(i-1) = freqs_(i);
-		}
-
-		for (i=2; i<= totalFilters_+1; ++i)
-		{
-			upper_(i-2) = freqs_(i);
-		}
-
-		for (i=0; i<totalFilters_; ++i)
-		{
+			center_(i) = freqs_(i+1);
+			upper_(i) = freqs_(i+2);
 			triangle_heights_(i) = (mrs_real)(2.0 / (upper_(i) - lower_(i)));
 		}
 
