@@ -100,7 +100,12 @@ ResampleSinc::myUpdate(MarControlPtr sender)
 
 	mrs_real alpha = ctrl_stretch_->to<mrs_real>();
 
-	ctrl_onSamples_->setValue((mrs_natural) (alpha * ctrl_inSamples_->to<mrs_natural>()), NOUPDATE); 
+	mrs_natural onSamples = (mrs_natural) (alpha * ctrl_inSamples_->to<mrs_natural>());
+
+	ctrl_onSamples_->setValue(onSamples, NOUPDATE);
+
+	arrx_.allocate(onSamples);
+
 	//cout << "updating: " << ctrl_inSamples_->to<mrs_natural>() << endl;
 	ctrl_onObservations_->setValue(ctrl_inObservations_->to<mrs_natural>());
 	if (!(ctrl_samplingRateAdjustmentMode_->to<mrs_bool>()))
@@ -193,15 +198,12 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 		//endof for
 		mrs_real offStart=ctrl_offStart_->to<mrs_real>();
 		mrs_real offEnd=ctrl_offEnd_->to<mrs_real>();
-
 		mrs_real ratio=(inSamples_-1-offStart-offEnd)/(mrs_real)(onSamples_-1);
-		mrs_realvec arrx;
-		arrx.create(onSamples_);
 		mrs_realvec arr;
 		arr.create(onSamples_);
 		for(mrs_natural i=0;i<onSamples_;++i)
 		{
-			arrx(i)=offStart+i*ratio;
+			arrx_(i)=offStart+i*ratio;
 		}
 				
 		mrs_natural winlength=5;//maximum windowlength is also enforced by the window function
@@ -209,7 +211,7 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 		{
 			for (int i=0;i<onSamples_;++i)
 			{
-				mrs_real sincIndex = arrx(i)-ansinks;
+				mrs_real sincIndex = arrx_(i)-ansinks;
 				if (abs(sincIndex)<winlength)
 				{
 					if (windowedMode)

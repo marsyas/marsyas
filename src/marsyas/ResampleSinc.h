@@ -62,6 +62,8 @@ private:
 	mrs_real sinc(mrs_real t);
 	mrs_real window(mrs_real position);
 
+	realvec arrx_;
+
 public:
   ResampleSinc(std::string name);
 	ResampleSinc(const ResampleSinc& a);
