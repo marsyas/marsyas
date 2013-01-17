@@ -189,19 +189,18 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 	{
 		
 		mrs_bool windowedMode=ctrl_windowedMode_->to<mrs_bool>();
-		mrs_natural samplesout=getctrl("mrs_natural/onSamples")->to<mrs_natural>();
 		
 		//endof for
 		mrs_real offStart=ctrl_offStart_->to<mrs_real>();
 		mrs_real offEnd=ctrl_offEnd_->to<mrs_real>();
 
-		mrs_real ratio=(inSamples_-1-offStart-offEnd)/(mrs_real)(samplesout-1);
+		mrs_real ratio=(inSamples_-1-offStart-offEnd)/(mrs_real)(onSamples_-1);
 		mrs_realvec arrx;
-		arrx.create(samplesout);
+		arrx.create(onSamples_);
 		mrs_realvec arr;
-		arr.create(samplesout);
+		arr.create(onSamples_);
 		mrs_natural count=0;
-		for(mrs_natural i=0;i<samplesout;++i)
+		for(mrs_natural i=0;i<onSamples_;++i)
 		{
 			arrx(count)=offStart+i*ratio;
 			count=count+1;
@@ -210,7 +209,7 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 		mrs_natural winlength=5;//maximum windowlength is also enforced by the window function
 		for (mrs_natural ansinks=0;ansinks<inSamples_;ansinks++)
 		{
-			for (int i=0;i<samplesout;++i)
+			for (int i=0;i<onSamples_;++i)
 			{
 				if (abs(arrx(i)-ansinks)<winlength)
 				{
@@ -227,7 +226,7 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 			
 		}
 		
-		for (int i=0;i<samplesout;++i)
+		for (int i=0;i<onSamples_;++i)
 		{
 			out(o,i)=arr(i);
 		}
