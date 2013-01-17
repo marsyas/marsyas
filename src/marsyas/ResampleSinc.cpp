@@ -209,15 +209,16 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 		{
 			for (int i=0;i<onSamples_;++i)
 			{
-				if (abs(arrx(i)-ansinks)<winlength)
+				mrs_real sincIndex = arrx(i)-ansinks;
+				if (abs(sincIndex)<winlength)
 				{
 					if (windowedMode)
 					{
-						arr(i)=arr(i)+in(o,ansinks)*sinc(arrx(i)-ansinks)*window(arrx(i)-ansinks);
+						arr(i)=arr(i)+in(o,ansinks)*sinc(sincIndex)*window(sincIndex);
 					}
 					else
 					{
-						arr(i)=arr(i)+in(o,ansinks)*sinc(arrx(i)-ansinks);
+						arr(i)=arr(i)+in(o,ansinks)*sinc(sincIndex);
 					}
 				}
 			}
