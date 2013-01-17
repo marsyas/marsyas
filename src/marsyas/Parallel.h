@@ -37,7 +37,14 @@ class Parallel: public MarSystem
 private:
 	void myUpdate(MarControlPtr sender);
   void deleteSlices();
-  
+
+	struct ChildInfo {
+		mrs_natural inObservations;
+		mrs_natural onObservations;
+	};
+
+	std::vector<ChildInfo> childInfos_;
+
 public:
   Parallel(std::string name);
   

@@ -50,6 +50,8 @@ MarSystem* Parallel::clone() const
 
 void Parallel::myUpdate(MarControlPtr sender)
 {
+	childInfos_.clear();
+
 	if (marsystemsSize_ != 0) 
 	{
 		mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
@@ -145,6 +147,11 @@ void Parallel::myUpdate(MarControlPtr sender)
 											 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
 			
 			(slices_[2*i+1])->setval(0.0);
+
+			ChildInfo info;
+			info.inObservations = marsystems_[i]->getControl("mrs_natural/inObservations")->to<mrs_natural>();
+			info.onObservations = marsystems_[i]->getControl("mrs_natural/onObservations")->to<mrs_natural>();
+			childInfos_.push_back(info);
 		}
 	}
 	else //if composite is empty...
@@ -166,7 +173,7 @@ void Parallel::myProcess(realvec& in, realvec& out)
 	{
 		for (mrs_natural i = 0; i < marsystemsSize_; ++i) 
 		{
-			localIndex = marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+			localIndex = childInfos_[i].inObservations;
 			for (o = 0; o < localIndex; o++) 
 			{
                 // avoid reading unallocated memory
@@ -183,7 +190,7 @@ void Parallel::myProcess(realvec& in, realvec& out)
 			}
 			inIndex += localIndex;
 			marsystems_[i]->process(*(slices_[2*i]), *(slices_[2*i+1]));
-			localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
+			localIndex = childInfos_[i].onObservations;
 			for (o = 0; o < localIndex; o++) 
 			{
 				for (t = 0; t < onSamples_; t++) 
