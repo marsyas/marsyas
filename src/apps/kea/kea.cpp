@@ -648,7 +648,7 @@ train_predict(mrs_string mode)
 
   mrs_string name;
 
-  mrs_real srate;
+  //mrs_real srate;
 
 
 
@@ -656,7 +656,7 @@ train_predict(mrs_string mode)
   while (!net->getctrl("WekaSource/wsrc/mrs_bool/done")->to<mrs_bool>()) {
    	net->tick();
    	data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
-	srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
+	//srate = net->getctrl("WekaSource/wsrc/mrs_real/currentSrate")->to<mrs_real>();
 
 
 	if (mode == "default")

@@ -468,8 +468,8 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 
 	int numticks = 0;
 
-	int onset_counter;
-	onset_counter = 20;
+	//int onset_counter;
+	//onset_counter = 20;
 	
 	
 
@@ -643,7 +643,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 			total->updControl("SoundFileSource/src/mrs_real/repetitions", -1.0);
 	}
 	
-	int type;
+	//int type;
 	string cname;
 
 #ifdef MARSYAS_MIDIIO
@@ -699,7 +699,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 				{
 					byte3 = message[2];
 					byte2 = message[1];
-					type = message[0];
+					//type = message[0];
 
 					if (byte3 != 0) 
 					{
@@ -959,6 +959,7 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 							   mrs_natural D, mrs_natural I, mrs_real P, 
 							   string outsfname)
 {
+    (void) P;
 
 	cout << "HETEROPHONICS - RADIODRUM " << endl;
 
@@ -969,8 +970,8 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	MarSystemManager mng;
 	MarSystem* total = mng.create("Series", "total");
 
-	MarSystem* mic;
-	mic = mng.create("SoundFileSource", "mic");
+	//MarSystem* mic;
+	//mic = mng.create("SoundFileSource", "mic");
 	// total->addMarSystem(mic);
 	// total->updControl("SoundFileSource/mic/mrs_string/filename", sfName);
 
@@ -1040,18 +1041,18 @@ phasevocHeterophonicsRadioDrum(string sfName1, string sfName2, mrs_natural N,
 	int type;
 	string cname;
 
-	mrs_real diff;
-	mrs_natural fc;
-	fc = 0;
-	mrs_real time;
-	time = 0.0;
-	mrs_real epsilon;
-	epsilon = 0.0029024;
+	//mrs_real diff;
+	//mrs_natural fc;
+	//fc = 0;
+	//mrs_real time;
+	//time = 0.0;
+	//mrs_real epsilon;
+	//epsilon = 0.0029024;
   
-	diff = 0.0;
+	//diff = 0.0;
   
-	bool trigger;
-	trigger = true;
+	//bool trigger;
+	//trigger = true;
   
 	total->updControl("mrs_natural/inSamples", D);
   
@@ -1313,20 +1314,20 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 				  gainExtractor->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
    
 	mrs_real pitch = 0.0;
-	mrs_real prev_pitch = 0.0;
+	//mrs_real prev_pitch = 0.0;
   
-	mrs_real glide0 = 0.0;
+	//mrs_real glide0 = 0.0;
 	mrs_real glide1 = 0.0;
    
 	mrs_real time = 0.0;
-	mrs_real epsilon;
-	epsilon  = 0.0029024;
+	//mrs_real epsilon;
+	//epsilon  = 0.0029024;
   
 	mrs_natural epoch =0;
 	diff = 0.0;
    
-	bool trigger;
-	trigger = true;
+	//bool trigger;
+	//trigger = true;
   
 	pvoices[0]->updControl("mrs_real/gain", 0.0);
 	pvoices[1]->updControl("mrs_real/gain", 0.0);
@@ -1385,7 +1386,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 			cout << "Epoch " << epoch << ": Speech manipulation high D" << endl;
 			epoch ++;
 
-			glide0 = 0.25;
+			//glide0 = 0.25;
 			glide1 = 1.0;
 			pvoices[0]->updControl("mrs_real/gain", 0.0);
 			pvoices[1]->updControl("mrs_real/gain", 0.0);
@@ -1599,7 +1600,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 				pvoices[2]->updControl("Gain/bgain/mrs_real/gain", mgres(0));
 			}
 
-			prev_pitch = pitch;
+			//prev_pitch = pitch;
 			prev_note = note;
 			noteCount++;
 		}

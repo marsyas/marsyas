@@ -648,6 +648,7 @@ MarSystem* createPeakReadNet (MarSystemManager *mng, mrs_string seriesName = "te
 
 void updateAnalysisNetCtrls (MarSystem *textWinNet, mrs_string sfName, mrs_natural accSize, mrs_natural D, mrs_natural Nw, mrs_natural N, mrs_natural S)
 {
+    (void) S;
 	textWinNet->updControl("Series/analysisNet/FanOutIn/mixer/Series/oriNet/SoundFileSource/src/mrs_string/filename", sfName);
 	textWinNet->updControl("Series/analysisNet/Series/peakExtract/ShiftInput/si/mrs_natural/winSize", Nw+1);
 

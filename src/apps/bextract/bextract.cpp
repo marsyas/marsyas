@@ -1355,8 +1355,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
   //////////////////////////////////////////////////////////////////////////
   // main loop for extracting the features
   //////////////////////////////////////////////////////////////////////////
-  mrs_natural wc = 0;
-  mrs_natural samplesPlayed =0;
+  //mrs_natural wc = 0;
+  //mrs_natural samplesPlayed =0;
   string className = "";
   realvec beatfeatures;
   beatfeatures.create((mrs_natural)8,(mrs_natural)1);
@@ -1480,8 +1480,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 							  iwin, estimate);
 		}
 		total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
-		wc = 0;
-		samplesPlayed = 0;
+		//wc = 0;
+		//samplesPlayed = 0;
 		// total->updControl("WekaSink/wsink/mrs_natural/label", cj);
 		annotator->updControl("mrs_natural/label", cj);
 		// wsink->updControl("mrs_natural/label", cj);
@@ -1547,8 +1547,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 							iwin, estimate);
 	  }
 	  total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
-	  wc = 0;
-	  samplesPlayed = 0;
+	  //wc = 0;
+	  //samplesPlayed = 0;
 	  annotator->updControl("mrs_natural/label", l.labelNum(l.labelEntry(i)));
 
 	  if (extractorStr != "BEAT")
@@ -1602,8 +1602,8 @@ void bextract_trainAccumulator(vector<Collection> cls, mrs_natural label,
 							iwin, estimate);
 	  }
 	  total->updControl("Accumulator/acc/Series/featureNetwork/SoundFileSource/src/mrs_natural/pos", offset);
-	  wc = 0;
-	  samplesPlayed = 0;
+	  //wc = 0;
+	  //samplesPlayed = 0;
 	  annotator->updControl("mrs_natural/label", 0);
 
 	  if (extractorStr != "BEAT")
