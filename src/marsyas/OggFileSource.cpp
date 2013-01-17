@@ -161,6 +161,7 @@ OggFileSource::getHeader(mrs_string filename)
   else
 #endif
   {
+    (void) filename; // in case the macro is not expanded
     MRSWARN(filename + " does not appear to be an Ogg bitstream.");
   }
   setctrl("mrs_natural/nChannels", nChannels);

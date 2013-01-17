@@ -316,7 +316,7 @@ MarSystem* createSimilarityNet (MarSystemManager *mng, mrs_string seriesName = "
 				tmp << simMeasureProps[i].name << "_" << "L2Norm";
 				newSimMat->addMarSystem(mng->create("Metric", tmp.str ()));
 				tmp.str("");
-				tmp << "Metric/" << simMeasureProps[i].name << "_" << "L2Norm" << "/mrs_string/metric","euclideanDistance";
+				tmp << "Metric/" << simMeasureProps[i].name << "_" << "L2Norm" << "/mrs_string/metric";
 				newSimMat->updControl(tmp.str (),simMeasureProps[i].distance);
 				newSimMat->updControl("mrs_natural/calcCovMatrix", SelfSimilarityMatrix::diagCovMatrix);
 				break;

@@ -723,7 +723,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 }
 
 void 
-phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw, 
+phasevocCrossSynth(string sfName, string sfName2, mrs_natural N, mrs_natural Nw, 
 				   mrs_natural D, mrs_natural I, mrs_real P, 
 				   string outsfname)
 {
@@ -810,8 +810,8 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 					"PvOscBank/ob/mrs_real/PitchShift");
 
 	// update controls
-	total->updControl("mrs_string/filename1", "/home/gtzan/data/sound/Nov2005Concert/ele1.wav");
-	total->updControl("mrs_string/filename2", "/home/gtzan/data/sound/music_speech/music/gravity.au");
+	total->updControl("mrs_string/filename1", sfName);
+	total->updControl("mrs_string/filename2", sfName2);
 	total->updControl("mrs_real/repetitions", -1.0);
 	total->updControl("mrs_natural/inSamples1", D);
 	total->updControl("mrs_natural/inSamples2", D);
@@ -821,7 +821,7 @@ phasevocCrossSynth(string sfName, mrs_natural N, mrs_natural Nw,
 	total->updControl("mrs_natural/Interpolation", I);
 	total->updControl("mrs_real/PitchShift", P);
 	total->updControl("mrs_natural/Sinusoids", sopt);
-	total->updControl("SoundFileSink/sdest/mrs_string/filename", "cross.wav");
+	total->updControl("SoundFileSink/sdest/mrs_string/filename", outsfname);
 	total->updControl("Gain/destgain/mrs_real/gain", gopt_);
 
 	while(1)
@@ -930,7 +930,7 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 					"PvOscBank/ob/mrs_real/PitchShift");
 
 	// update controls
-	total->updControl("mrs_string/filename1", "/home/gtzan/data/sound/Nov2005Concert/ele1.wav");
+	total->updControl("mrs_string/filename1", sfName);
 	// total->updControl("mrs_string/filename2", "/home/gtzan/data/sound/music_speech/music/gravity.au");
 	total->updControl("mrs_real/repetitions", -1.0);
 	total->updControl("mrs_natural/inSamples1", D);
@@ -941,7 +941,7 @@ phasevocConvolve(string sfName, mrs_natural N, mrs_natural Nw,
 	total->updControl("mrs_natural/Interpolation", I);
 	total->updControl("mrs_real/PitchShift", P);
 	total->updControl("mrs_natural/Sinusoids", sopt);
-	total->updControl("SoundFileSink/sdest/mrs_string/filename", "cross.wav");
+	total->updControl("SoundFileSink/sdest/mrs_string/filename", outsfname);
 	total->updControl("Gain/destgain/mrs_real/gain", gopt_);
 
 	while(1)
@@ -1206,7 +1206,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		{
 			pvoices.push_back(mng.create("Series", "background"));
 			pvoices[i]->addMarSystem(mng.create("SoundFileSource", "mixsrc"));
-			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_string/filename", sfName);
 			pvoices[i]->updControl("SoundFileSource/mixsrc/mrs_real/repetitions", -1.0);
 			bpvoc = mng.create("PhaseVocoder", "bpvoc");
 			pvoices[i]->addMarSystem(mng.create("Gain", "bgain"));	  
@@ -1223,7 +1223,7 @@ phasevocHeterophonics(string sfName, mrs_natural N, mrs_natural Nw,
 		else if (i==3) 
 		{
 			pvoices.push_back(mng.create("SoundFileSource", "osrc"));
-			pvoices[i]->updControl("mrs_string/filename", "/home/gtzan/data/sound/Nov2005Concert/silence.wav");
+			pvoices[i]->updControl("mrs_string/filename", sfName);
 			mixer->addMarSystem(pvoices[i]);
 		}
 	}
@@ -1702,9 +1702,14 @@ main(int argc, const char **argv)
 	int i =0;
 	// soundfile input 
 	string sfname;
+	string sfname2;
 	if (soundfiles.size() != 0)   
 	{
 		sfname = soundfiles[0];
+	    if (soundfiles.size() != 1)
+	    {
+            sfname2 = soundfiles[1];
+        }
 		i = 1;
 	}
 
@@ -1729,7 +1734,7 @@ main(int argc, const char **argv)
 			else if (eopt_ == 2) 
 				phasevocConvolve(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
 			else if (eopt_ == 3) 
-				phasevocCrossSynth(sfname, fftSize_, winSize_, dopt, iopt, popt, fileName);
+				phasevocCrossSynth(sfname, sfname2, fftSize_, winSize_, dopt, iopt, popt, fileName);
 			else if (eopt_ == 4) 
 			{
 				string sfname1 = soundfiles[0];
@@ -1756,7 +1761,7 @@ main(int argc, const char **argv)
 			else if (eopt_ == 2) 
 				phasevocConvolve("microphone", fftSize_, winSize_, dopt, iopt, popt, fileName);      	  
 			else if (eopt_ == 3) 
-				phasevocCrossSynth("microphone", fftSize_, winSize_, dopt, iopt, popt, fileName);
+				phasevocCrossSynth("microphone", "", fftSize_, winSize_, dopt, iopt, popt, fileName);
 			else if (eopt_ == 4) 
 				phasevocHeterophonicsRadioDrum("microphone", "microphone", fftSize_, winSize_, dopt, iopt, popt, fileName);      	  	    
 			else 

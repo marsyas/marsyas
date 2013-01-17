@@ -70,7 +70,7 @@ MrsLog::mrsMessage(const ostringstream& oss)
 	
 
 #else 
-	; 
+	(void) oss;
 #endif 
 	
 }
@@ -105,8 +105,7 @@ MrsLog::mrsErr(const ostringstream& oss)
 #endif 
 
 #else 
- 
-	return;
+	(void) oss;
 #endif 
 }
 
@@ -141,7 +140,7 @@ MrsLog::mrsWarning(const ostringstream& oss)
 
 
 #else 
-	; 
+	(void) oss;
 #endif 
 
 }
@@ -183,6 +182,7 @@ MrsLog::mrsDiagnostic(const ostringstream& oss)
 void 
 MrsLog::mrsDebug(const ostringstream& oss)
 {
+	(void) oss;
 #ifdef MARSYAS_LOG2STDOUT
 	cout << "[MRS_DEBUG] " << oss.str() << endl;
 #endif
