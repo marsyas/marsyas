@@ -381,9 +381,10 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		beat_location = (sampleCount_ + t -(inSamples_-1 -bhopSize)) / (2.0 * osrate_);
 		if ((beat_location > current_beat_location_)&&((beat_location - current_beat_location_) > beat_length * 0.75))
 		{
-			if (ctrl_verbose_->isTrue())
+			if (ctrl_verbose_->isTrue()) {
 				MRSMSG(beat_location << "\t" 
 					   << beat_location + 0.02 << " b");
+            }
 		  beatOutput(total_beats) = beat_location;
 		  current_beat_location_ = beat_location;
 		  total_beats++;

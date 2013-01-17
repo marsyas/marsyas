@@ -129,8 +129,9 @@ DTWWD::myProcess(realvec& in, realvec& out)
 	{
 	  if(ctrl_localPath_->to<mrs_string>() == "normal" || ((nSmp > 2*nObs || nObs > 2*nSmp) && ctrl_localPath_->to<mrs_string>() == "diagonal"))
 	    {
-	      if((nSmp > 2*nObs || nObs > 2*nSmp) && ctrl_localPath_->to<mrs_string>() == "diagonal")
+	      if((nSmp > 2*nObs || nObs > 2*nSmp) && ctrl_localPath_->to<mrs_string>() == "diagonal") {
 		MRSWARN("DTWWD::myProcess - invalid local path control: diagonal (processes with normal local path)");
+        }
 
 	      for(i=0; i<2; ++i)
 		{

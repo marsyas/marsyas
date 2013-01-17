@@ -121,8 +121,9 @@ void
 HWPS::myUpdate(MarControlPtr sender)
 {
 	(void) sender;  //suppress warning of unused parameter(s)
-	if(inSamples_ > 1)
+	if(inSamples_ > 1) {
 		MRSWARN("HWPS::myUpdate - inSamples > 1 : only first column will be processed!");
+    }
 	
 	ctrl_onObservations_->setValue(1, NOUPDATE);
 	ctrl_onSamples_->setValue(1, NOUPDATE);
@@ -130,8 +131,9 @@ HWPS::myUpdate(MarControlPtr sender)
 	ctrl_onObsNames_->setValue("HWPS", NOUPDATE);
 
 	//the input has the two vectors/matrices to process stacked vertically
-	if(inObservations_ % 2 != 0)
+	if(inObservations_ % 2 != 0) {
 		MRSWARN("HWPS::myUpdate - input flow controls do not seem to be in a valid format!");
+    }
 
 	vec_i_.create(ctrl_inObservations_->to<mrs_natural>()/2);
 	vec_j_.create(ctrl_inObservations_->to<mrs_natural>()/2);

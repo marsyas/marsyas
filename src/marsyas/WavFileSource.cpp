@@ -302,6 +302,8 @@ WavFileSource::getHeader(mrs_string filename)
 	  mrs_natural numInSamples = getControl("mrs_natural/inSamples")->to<mrs_natural>();
 	  MRSDIAG("israte == " << temprate);
 	  MRSDIAG("inSamples == " << numInSamples);
+      (void) temprate;
+      (void) numInSamples; // in case the macro is not expanded
 
 	}
   }
@@ -361,6 +363,8 @@ WavFileSource::myUpdate(MarControlPtr sender)
   mrs_natural numInSamples = getControl("mrs_natural/inSamples")->to<mrs_natural>();
   MRSDIAG("israte == " << temprate);
   MRSDIAG("inSamples == " << numInSamples);
+  (void) temprate;
+  (void) numInSamples; // in case the macro is not expanded
 
 }
 

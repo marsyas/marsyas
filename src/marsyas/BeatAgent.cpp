@@ -107,8 +107,9 @@ BeatAgent::myUpdate(MarControlPtr sender)
 	lastBeatPoint_ = inSamples_-1;
 
 	myIndex_ = getChildIndex();
-	if(myIndex_ == -1)
+	if(myIndex_ == -1) {
 		MRSWARN("Agent Index Not Found!");
+    }
 
 	scoreFunc_ = ctrl_scoreFunc_->to<mrs_string>();
 

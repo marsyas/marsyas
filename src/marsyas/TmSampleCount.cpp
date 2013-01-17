@@ -107,9 +107,11 @@ TmSampleCount::updtimer(std::string cname, TmControlValue value)
 		}
 		else type_error=true;
 	}
-	else
+	else {
 		MRSWARN("TmSampleCount::updtimer(string,TmControlValue)  unsupported control");
-	if (type_error)
+    }
+	if (type_error) {
 		MRSWARN("TmSampleCount::updtimer(string,TmControlValue)  wrong type to "+cname);
+    }
 }
 

@@ -212,7 +212,9 @@ Scheduler::post(std::string time, std::string tmname, Repeat r, EvEvent* me)
 			}
 			s->post(time,r,me);
 		}
-		else MRSWARN("Scheduler::post(mrs_string,mrs_string,Repeat,EvEvent*)  NULL event");
+		else {
+            MRSWARN("Scheduler::post(mrs_string,mrs_string,Repeat,EvEvent*)  NULL event");
+        }
 	}
 	else { MRSWARN("Scheduler::post(mrs_string,mrs_string,Repeat,EvEvent*)  unknown timer name: "+tmname); }
 }

@@ -61,8 +61,9 @@ void
 Metric2::myUpdate(MarControlPtr sender)
 {
 	(void) sender;  //suppress warning of unused parameter(s)
-	if(inSamples_ > 1)
+	if(inSamples_ > 1) {
 		MRSWARN("Metric2::myUpdate - inSamples > 1 : only first column will be processed!");
+    }
 		
 	ctrl_onObservations_->setValue(1, NOUPDATE);
 	ctrl_onSamples_->setValue(1, NOUPDATE);
@@ -70,8 +71,9 @@ Metric2::myUpdate(MarControlPtr sender)
 	ctrl_onObsNames_->setValue("metric", NOUPDATE);
 
 	//the input has the two vectors/matrices to process stacked vertically
-	if(inObservations_ % 2 != 0)
+	if(inObservations_ % 2 != 0) {
 		MRSWARN("Metric2::myUpdate - input flow controls do not seem to be in a valid format!");
+    }
 	vec_i_.create(ctrl_inObservations_->to<mrs_natural>()/2, ctrl_inSamples_->to<mrs_natural>());
 	vec_j_.create(ctrl_inObservations_->to<mrs_natural>()/2, ctrl_inSamples_->to<mrs_natural>());
 

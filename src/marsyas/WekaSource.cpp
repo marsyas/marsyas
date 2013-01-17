@@ -520,6 +520,7 @@ void WekaSource::loadFile(const std::string& filename, const std::string& attrib
 void WekaSource::parseHeader(ifstream& mis, const mrs_string& filename, const std::string& attributesToExtract)
 {
     (void) attributesToExtract; // FIXME: suspiciously not used!
+    (void) filename; // only used for debug messages; see ifstream& mis
 	// FIXME: This method does not parse all valid relation or attribute names.
 	//        The ARFF spec allows for names that include spaces, iff those
 	//        names are quoted.

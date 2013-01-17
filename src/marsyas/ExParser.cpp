@@ -882,6 +882,7 @@ void ExParser::SynErr(int n) {
     fail=true;
 }
 void ExParser::SemErr(char* msg) {
+    (void) msg;
     MRSWARN("ExParser: Semantic error - line " +ltos(la->line)+ " col " +ltos(la->col)+ ": " +msg);
 //	printf("ExParser: Semantic error - line %d col %d: %s\n", t->line, t->col, msg);
     fail=true;

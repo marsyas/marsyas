@@ -700,12 +700,14 @@ namespace Marsyas
 	operator+(const realvec& vec1, const realvec& vec2)
 	{
 		mrs_natural size;
-		if (vec1.size_ != vec2.size_)
+		if (vec1.size_ != vec2.size_) {
 			MRSERR("Size of realvecs does not match");
-		if (vec1.size_ >= vec2.size_)
+        }
+		if (vec1.size_ >= vec2.size_) {
 			size = vec1.size_;
-		else
+        } else {
 			size = vec2.size_;
+        }
 		realvec sum;
 		sum.create(size);
 
@@ -726,12 +728,14 @@ namespace Marsyas
 	{
 		mrs_natural size;
 		mrs_natural i;
-		if (vec1.size_ != vec2.size_)
+		if (vec1.size_ != vec2.size_) {
 			MRSERR("Size of realvecs does not match");
-		if (vec1.size_ >= vec2.size_)
+        }
+		if (vec1.size_ >= vec2.size_) {
 			size = vec1.size_;
-		else
+        } else {
 			size = vec2.size_;
+        }
 		realvec diff;
 		diff.create(size);
 

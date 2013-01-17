@@ -77,6 +77,7 @@ Accumulator::addMarSystem(MarSystem *marsystem)
 {
   if(marsystemsSize_ > 0) {
     MarSystem* mySystem = marsystems_[0];
+    (void) mySystem; // suppress warning in case the macro is not expanded
     
     MRSWARN("Accumulator::addMarSystem: already added '" 
 	    << mySystem->getAbsPath()
