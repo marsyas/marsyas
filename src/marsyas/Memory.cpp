@@ -149,13 +149,15 @@ Memory::myProcess(realvec& in, realvec& out)
 		}
 	}
 
+	mrs_natural i_cir = end_;
 	for (t = 0; t < onSamples_; t++)
-	  {
-	    for (o=0; o < inObservations_; o++)
-	      {
-			  out(o,t) = cir_out_(o,t);
-	      }
-	  }
+	{
+		for (o=0; o < inObservations_; o++)
+		{
+			out(o, t) = cir_out_(o, i_cir);
+		}
+		i_cir = (i_cir + 1) % onSamples_;
+	}
 
 
 	//MATLAB_PUT(out, "Memory_out");
