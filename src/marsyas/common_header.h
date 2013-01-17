@@ -68,15 +68,29 @@ namespace Marsyas
            MrsLog::mrsAssert(__FILE__, __LINE__)
 #endif 
 
+#ifdef MARSYAS_LOG_MESSAGES
+# define MRSMSG(x) {std::ostringstream oss; MrsLog::mrsMessage((std::ostringstream&)(oss << x));}
+#else
+# define MRSMSG(x)
+#endif
 
-#define MRSMSG(x) {std::ostringstream oss; MrsLog::mrsMessage((std::ostringstream&)(oss << x));}
+#ifdef MARSYAS_LOG_ERRORS
+# define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
+#else
+# define MRSERR(x)
+#endif
 
+#ifdef MARSYAS_LOG_WARNINGS
+# define MRSWARN(x) {std::ostringstream oss; MrsLog::mrsWarning((std::ostringstream&)(oss << x));}
+#else
+# define MRSWARN(x)
+#endif
 
-#define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
-
-#define MRSWARN(x) {std::ostringstream oss; MrsLog::mrsWarning((std::ostringstream&)(oss << x));}
-
-#define MRSDIAG(x) {std::ostringstream oss; MrsLog::mrsDiagnostic((std::ostringstream&)(oss << x));}
+#ifdef MARSYAS_LOG_DIAGNOSTICS
+# define MRSDIAG(x) {std::ostringstream oss; MrsLog::mrsDiagnostic((std::ostringstream&)(oss << x));}
+#else
+# define MRSDIAG(x)
+#endif
 
 #define MRS_WARNINGS_OFF MrsLog::warnings_off_ = true;
 #define MRS_WARNINGS_ON MrsLog::warnings_off_ = false;
