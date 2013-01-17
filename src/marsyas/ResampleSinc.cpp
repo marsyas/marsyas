@@ -199,11 +199,9 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 		arrx.create(onSamples_);
 		mrs_realvec arr;
 		arr.create(onSamples_);
-		mrs_natural count=0;
 		for(mrs_natural i=0;i<onSamples_;++i)
 		{
-			arrx(count)=offStart+i*ratio;
-			count=count+1;
+			arrx(i)=offStart+i*ratio;
 		}
 				
 		mrs_natural winlength=5;//maximum windowlength is also enforced by the window function
