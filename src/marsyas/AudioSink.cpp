@@ -242,6 +242,9 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 								unsigned int nBufferFrames, double streamTime, 
 								unsigned int status, void *userData)
 {
+    (void) inputBuffer;
+    (void) streamTime;
+    (void) status;
 
 	unsigned int drain_count	= 0;
 	
@@ -428,8 +431,8 @@ AudioSink::myProcess(realvec& in, realvec& out)
 			return;
 		
 		unsigned int samplesInBuffer; 
-		unsigned int free ; 
-		unsigned int underMark; 
+		//unsigned int free ; 
+		//unsigned int underMark; 
 		
 
 		// write samples to reservoir 

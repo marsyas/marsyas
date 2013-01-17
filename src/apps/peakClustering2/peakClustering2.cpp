@@ -212,7 +212,7 @@ printUsage(string progName)
 	cerr << "If no filename is given the default live audio input is used. " << endl;
 }
 
-void 
+int
 printHelp(string progName)
 {
 	MRSDIAG("peakClustering.cpp - printHelp");
@@ -262,7 +262,7 @@ printHelp(string progName)
 	cerr << "-h --help            : display this information " << endl;
 	cerr << "-us --usage : print usage" << endl;
 
-	exit(1);
+	return(1);
 }
 
 MarSystem* createSimilarityNet (MarSystemManager *mng, mrs_string seriesName = "simNet")
@@ -1526,7 +1526,7 @@ main(int argc, const char **argv)
 	string progName = argv[0];  
 
 	if (helpopt_) 
-		printHelp(progName);
+		return printHelp(progName);
 
 	if (usageopt_)
 		printUsage(progName);
@@ -1540,6 +1540,9 @@ main(int argc, const char **argv)
 	cerr << "inputDirectory  (-i) = " << inputDirectoryName << endl;
 
 
+    if (soundfiles.size() == 0) {
+        return 0;
+    }
     FileName DirectoryName(*soundfiles.begin ());
     if (DirectoryName.isDir ())
 		soundfiles	= DirectoryName.getFilesInDir ("*.wav");
@@ -1608,7 +1611,7 @@ main(int argc, const char **argv)
 
 		}
 
-		exit(0);
+		return(0);
 	}
 }
 
