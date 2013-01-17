@@ -189,17 +189,13 @@ ResampleSinc::window(mrs_real position)
 void 
 ResampleSinc::myProcess(realvec& in, realvec& out)
 {	
-	
+	mrs_bool windowedMode = ctrl_windowedMode_->to<mrs_bool>();
+	mrs_real offStart=ctrl_offStart_->to<mrs_real>();
+	mrs_real offEnd=ctrl_offEnd_->to<mrs_real>();
+	mrs_real ratio=(inSamples_-1-offStart-offEnd)/(mrs_real)(onSamples_-1);
+
 	for (mrs_natural o=0;o<inObservations_;o++)
 	{
-		
-		mrs_bool windowedMode=ctrl_windowedMode_->to<mrs_bool>();
-		
-		//endof for
-		mrs_real offStart=ctrl_offStart_->to<mrs_real>();
-		mrs_real offEnd=ctrl_offEnd_->to<mrs_real>();
-		mrs_real ratio=(inSamples_-1-offStart-offEnd)/(mrs_real)(onSamples_-1);
-
 		for(mrs_natural i=0;i<onSamples_;++i)
 		{
 			arrx_(i)=offStart+i*ratio;
@@ -227,6 +223,5 @@ ResampleSinc::myProcess(realvec& in, realvec& out)
 			}
 			out(o,i) = sample;
 		}
-	}//ENDOF for observations
-
+	}
 }
