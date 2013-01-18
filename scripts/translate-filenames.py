@@ -62,6 +62,9 @@ def write_names(dirname, csv_filename, number_dirname):
             orig_filename = row[1]
             if DEBUG:
                 print number_filename, "->", orig_filename
+            ensure_dirname = os.path.dirname(orig_filename)
+            if not os.path.exists(ensure_dirname):
+                os.makedirs(ensure_dirname)
             ### actual rename
             shutil.move(
                 os.path.join(dirname, number_filename),

@@ -37,6 +37,7 @@ file which contain lists of soundfiles.
 @menu
 * Creating collections manually::  
 * mkcollection::                
+* Plain filenames in collections::
 @end menu
 
 
@@ -137,6 +138,34 @@ as Marsyas does not perform automatic sampling conversion on collections.
 @warning{@code{mkcollection} will add a @file{.mf} to the
 collection filename if it does not contain any extention;
 otherwise it will leave the collection filename alone.}
+
+@node Plain filenames in collections
+@subsection Plain filenames in collections
+
+Many datasets contain filenames with spaces or awkward characters
+(extended characters, quote signs, etc).  Ideally, all tools (both
+within marsyas and outside of marsyas) should handle all valid
+filenames without any problems, but this does not always occur.
+
+To simplify handling of such datasets, we added a
+@code{translate-filenames.py} which replaces all filenames (and
+directories) with plain numbered filenames in a @code{numbers/}
+directory.
+
+To convert to plain filenames:
+
+@example
+marsyas/scripts/translate-filenames.py -n -d ~/mydata/ismir2004
+@end example
+
+To restore original filenames:
+
+@example
+marsyas/scripts/translate-filenames.py -r -d ~/mydata/ismir2004
+@end example
+
+Options for more advanced handling can be seen by calling the
+script with @code{--help}.
 
 
 @node Soundfile Interaction, Feature Extraction, Collections and input files, Available tools
