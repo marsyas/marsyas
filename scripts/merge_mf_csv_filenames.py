@@ -19,8 +19,9 @@ def main():
     for line in mf_lines:
         filename = line.split('\t')[0]
         filename = filename.replace(
-            os.path.dirname(csv_filename), '')[1:]
+            os.path.dirname(csv_filename), '')
         label = line.split('\t')[1].rstrip()
+        #label = label.replace('"','')
         filenames_labels[filename] = label
 
     with open(out_mf_filename, 'w') as out_mf:

@@ -8,7 +8,9 @@ import shutil
 AUDIO_FILES_PATTERN=('wav','au','mp3','ogg')
 
 DEBUG = False
-DEBUG = True
+#DEBUG = True
+
+MOVE_FILES = True
 
 
 def write_numbers(dirname, csv_filename, number_dirname):
@@ -42,10 +44,10 @@ def write_numbers(dirname, csv_filename, number_dirname):
             if DEBUG:
                 print orig_filename, "->", number_filename
             ### actual rename
-            shutil.move(
-                os.path.join(dirname, orig_filename),
-                os.path.join(dirname, number_filename),
-                )
+            if MOVE_FILES:
+                shutil.move(
+                    os.path.join(dirname, orig_filename),
+                    os.path.join(dirname, number_filename))
 
 def write_names(dirname, csv_filename, number_dirname):
     number_dirname_actual = os.path.join(dirname,
@@ -66,12 +68,13 @@ def write_names(dirname, csv_filename, number_dirname):
             if not os.path.exists(ensure_dirname):
                 os.makedirs(ensure_dirname)
             ### actual rename
-            shutil.move(
-                os.path.join(dirname, number_filename),
-                os.path.join(dirname, orig_filename)
-                )
-    os.removedirs(number_dirname_actual)
-    os.remove(csv_filename_actual)
+            if MOVE_FILES:
+                shutil.move(
+                    os.path.join(dirname, number_filename),
+                    os.path.join(dirname, orig_filename))
+    if MOVE_FILES:
+        os.removedirs(number_dirname_actual)
+        os.remove(csv_filename_actual)
 
 
 def main():
@@ -88,7 +91,7 @@ def main():
                       action="store",
                       help="change filenames to text from csv")
     parser.add_option("-d", "--dirname", type="string",
-                      default=".", metavar="DIRECTORY",
+                      metavar="DIRECTORY",
                       action="store",
                       help="directory to examine")
     parser.add_option("-m", "--my_dirname", type="string",
