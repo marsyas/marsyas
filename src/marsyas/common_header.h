@@ -14,6 +14,7 @@
 #include <sys/types.h> 
 #include <complex>
 #include <limits>
+#include "config.h"
 #include "marsyas_types.h"
 #include "MrsLog.h"
 
