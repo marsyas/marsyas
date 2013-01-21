@@ -259,7 +259,7 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 	static int count = 0;
 	count ++;
 
-	unsigned int samplesAvailable;
+	unsigned int samplesAvailable = 0;
 	
 	for (t=0; t < nBufferFrames; t++)
 	{

@@ -63,6 +63,7 @@ class AudioSource:public MarSystem
 			mrs_realvec* ringBuffer;
 			unsigned int wp;
 			unsigned int rp;
+			unsigned int nChannels;
 			unsigned int ringBufferSize;
 			unsigned int high_watermark;
 			unsigned int low_watermark;

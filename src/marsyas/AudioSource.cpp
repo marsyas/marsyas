@@ -96,6 +96,7 @@ AudioSource::recordCallback(void *outputBuffer, void *inputBuffer,
 	unsigned int drain_count = 0;
 	mrs_real* data = (mrs_real*)inputBuffer;
 	InputData *iData = (InputData *)userData;
+    unsigned int nChannels = iData->nChannels;
 	//AudioSource* mythis = (AudioSource *)iData->myself;
 	realvec& ringBuffer = *(iData->ringBuffer);
 	unsigned int t;
@@ -105,8 +106,13 @@ AudioSource::recordCallback(void *outputBuffer, void *inputBuffer,
 	{
 		if (iData->samplesInBuffer <= iData->high_watermark)
 		{
-			ringBuffer(0,iData->wp) = data[2*t];			
-            ringBuffer(1,iData->wp) = data[2*t+1];
+            if (nChannels == 1) {
+			    ringBuffer(0,iData->wp) = data[t];
+            } else {
+                for (unsigned int ch=0; ch < nChannels; ch++) {
+			        ringBuffer(ch,iData->wp) = data[nChannels*t+1];
+                }
+            }
 			
 			iData->wp = (iData->wp + 1) % iData->ringBufferSize;
 			if (iData->wp >= iData->rp) 
@@ -216,6 +222,7 @@ AudioSource::initRtAudio()
 	idata.rp = 0;
 	idata.ringBufferSize = ringBufferSize_;
 	idata.myself = this;
+	idata.nChannels = nChannels_;
 	
 
 	
