@@ -71,6 +71,7 @@ include (marsyas-detect)
 ## CONFIG.H
 configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/config.h)
 include_directories(${CMAKE_BINARY_DIR})
+install(FILES ${CMAKE_BINARY_DIR}/config.h DESTINATION include/marsyas)
 
 ## setup includes
 include (marsyas-includes)
