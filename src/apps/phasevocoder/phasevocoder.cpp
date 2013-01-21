@@ -433,7 +433,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 	
 	int type;
 	int byte2, byte3;
-	double stamp;
+	//double stamp;
 	mrs_real diff;
 	RtMidiIn *midiin = NULL;
 	int nBytes;
@@ -478,7 +478,7 @@ phasevocSeriesOld(string sfName, mrs_natural N, mrs_natural Nw,
 #ifdef MARSYAS_MIDIIO
 		if (midi_ != -1) 
 		{
-			stamp = midiin->getMessage( &message );
+			//stamp = midiin->getMessage( &message );
 			nBytes = message.size();
 			if (nBytes >2)
 			{
