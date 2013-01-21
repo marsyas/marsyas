@@ -1,5 +1,6 @@
 
 add_subdirectory(modules)
+add_subdirectory(scripts)
 
 INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
 
