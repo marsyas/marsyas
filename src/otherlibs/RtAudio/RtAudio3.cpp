@@ -445,7 +445,7 @@ RtAudio3DeviceInfo RtApi3 :: getDeviceInfo( int device )
   return info;
 }
 
-char * const RtApi3 :: getStreamBuffer(void)
+char * RtApi3 :: getStreamBuffer(void)
 {
   verifyStream();
   return stream_.userBuffer;
@@ -470,6 +470,7 @@ void RtApi3 :: closeStream(void)
 
 void RtApi3 :: probeDeviceInfo( RtApi3Device *info )
 {
+  (void) info;
   // MUST be implemented in subclasses!
 }
 
@@ -477,6 +478,13 @@ bool RtApi3 :: probeDeviceOpen( int device, StreamMode mode, int channels,
                                int sampleRate, RtAudio3Format format,
                                int *bufferSize, int numberOfBuffers )
 {
+  (void) device;
+  (void) mode;
+  (void) channels;
+  (void) sampleRate;
+  (void) format;
+  (void) bufferSize;
+  (void) numberOfBuffers;
   // MUST be implemented in subclasses!
   return FAILURE;
 }

@@ -648,7 +648,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 
 #ifdef MARSYAS_MIDIIO
 	RtMidiIn *midiin = NULL;
-	double stamp;
+	//double stamp;
 #endif
 
 	int byte2, byte3;
@@ -692,7 +692,7 @@ phasevocPoly(string sfName, mrs_natural N, mrs_natural Nw,
 			if (midi_ != -1) 
 			{
 #ifdef MARSYAS_MIDIIO
-				stamp = midiin->getMessage( &message );
+				//stamp = midiin->getMessage( &message );
 #endif
 				nBytes = message.size();
 				if (nBytes >2)

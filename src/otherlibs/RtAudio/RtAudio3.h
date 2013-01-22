@@ -154,7 +154,7 @@ public:
   virtual void cancelStreamCallback() = 0;
   int getDeviceCount(void);
   RtAudio3DeviceInfo getDeviceInfo( int device );
-  char * const getStreamBuffer();
+  char * getStreamBuffer();
   RtApi3::StreamState getStreamState() const;
   virtual void tickStream() = 0;
   virtual void closeStream();
@@ -491,7 +491,7 @@ public:
     and then call the tickStream() method.  An RtError3 will be
     thrown if called when no stream is open.
   */
-  char * const getStreamBuffer() { return rtapi_->getStreamBuffer(); };
+  char * getStreamBuffer() { return rtapi_->getStreamBuffer(); };
 
   //! Public method used to trigger processing of input/output data for a stream.
   /*!
