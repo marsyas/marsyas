@@ -46,10 +46,6 @@
 #include "RtMidi.h"
 #endif 
 
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio3.h"
-#endif 
-
 #ifdef MARSYAS_PNG
 #include "pngwriter.h" 
 #endif 
@@ -67,17 +63,17 @@ mrs_real thresholdopt;
 int confidenceopt;
 
 
-void 
+int
 printUsage(string progName)
 {
 	MRSDIAG("onsets.cpp - printUsage");
 	cerr << "Usage : " << progName << "[-as] fileName" << endl;
 	cerr << "where fileName is a sound file in a MARSYAS supported format" << endl;
 	cerr << endl;
-	exit(1); 
+	return (1); 
 }
 
-void 
+int
 printHelp(string progName)
 {
 	MRSDIAG("onsets.cpp - printHelp");
@@ -96,7 +92,7 @@ printHelp(string progName)
 	cerr << "-th --threshold : a positive floating number for thresholding the novelty function" << endl;
 	cerr << "-co --confidence : output confidence of onsets" << endl;
 	
-	exit(1);
+	return(1);
 }
 
 void 
@@ -331,6 +327,7 @@ detect_onsets(string sfName)
 		cout << "Done writing " << outFileName << endl;
 		outFile.close();
 	}	
+    delete onsetnet;
 }
 
 int
@@ -345,20 +342,27 @@ main(int argc, const char **argv)
 	cmd_options.readOptions(argc, argv);
 	loadOptions();
 
+    if (helpopt) {
+        return printHelp(progName);
+    }
+
 	vector<string> soundfiles = cmd_options.getRemaining();
 
 	string fname0 = EMPTYSTRING;
-	string fname1 = EMPTYSTRING;
+	//string fname1 = EMPTYSTRING;
 
 	if (soundfiles.size() > 0)
 		fname0 = soundfiles[0];
-	if (soundfiles.size() > 1)  
-		fname1 = soundfiles[1];
+	//if (soundfiles.size() > 1)  
+	//	fname1 = soundfiles[1];
 
 	cout << "Marsyas onset detection" << endl;
 	cout << "fname0 = " << fname0 << endl;
-	cout << "fname1 = " << fname1 << endl;
+	//cout << "fname1 = " << fname1 << endl;
 	
-	detect_onsets(fname0);
+    if (soundfiles.size() > 0) {
+	    detect_onsets(fname0);
+    }
 	
+    return 0;
 }

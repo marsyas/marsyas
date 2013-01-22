@@ -48,9 +48,9 @@
 #include "RtMidi.h"
 #endif
 
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio3.h"
-#endif
+//#ifdef MARSYAS_AUDIOIO
+//#include "RtAudio3.h"
+//#endif
 
 using namespace std;
 using namespace Marsyas;
