@@ -1,0 +1,6 @@
+Series/onset_strength/Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_realvec/processedData, samples, amplitude, Raw time-domain data
+Series/onset_strength/mrs_realvec/processedData, Analysis Frames, Onset Strength, Filtered Onset Strength Signal
+FlowThru/tempoInduction/AutoCorrelation/acr/mrs_realvec/processedData, Lag (samples), Strength, Autocorrelation output
+FlowThru/tempoInduction/BeatHistogram/histo/mrs_realvec/processedData, Tempo (BPM), Beat Strength, BeatHistogram output
+FlowThru/tempoInduction/Sum/hsum/mrs_realvec/processedData, Tempo (BPM), Beat Strength, Sum output
+FlowThru/tempoInduction/Peaker/pkr1/mrs_realvec/processedData, Tempo (BPM), Beat Strength, Peaker output
