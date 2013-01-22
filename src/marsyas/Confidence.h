@@ -47,6 +47,7 @@ private:
   realvec confidences_;
 	realvec gtconfidences_;
 	
+	mrs_natural num_labels_;
   mrs_natural count_;
   std::vector<std::string> labelNames_;
   bool print_;

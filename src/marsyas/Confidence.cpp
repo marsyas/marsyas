@@ -96,8 +96,9 @@ Confidence::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-	confidences_.stretch(getctrl("mrs_natural/nLabels")->to<mrs_natural>());
-	gtconfidences_.stretch(getctrl("mrs_natural/nLabels")->to<mrs_natural>());
+    num_labels_ = getctrl("mrs_natural/nLabels")->to<mrs_natural>();
+	confidences_.stretch(num_labels_);
+	gtconfidences_.stretch(num_labels_+1);
 	
 	mrs_string labelNames = getctrl("mrs_string/labelNames")->to<mrs_string>();
 
@@ -116,7 +117,6 @@ Confidence::myUpdate(MarControlPtr sender)
 		labelNames = temp;
 		labelNames_.push_back(labelName);
 	}  
-
 
 	if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
 	{
@@ -157,8 +157,6 @@ Confidence::myProcess(realvec& in, realvec& out)
 	mrs_natural l;
 
 	
-	
-
 	if (mute == false) 
 	{
 		for (o=0; o < inObservations_; o++)
@@ -170,11 +168,15 @@ Confidence::myProcess(realvec& in, realvec& out)
 					label = (mrs_natural)in(0,t);
 					confidences_(label) = confidences_(label) + 1;
 					gtlabel = (mrs_natural)in(1,t);
-					gtconfidences_(gtlabel) = gtconfidences_(gtlabel) +1;
+                    if (gtlabel < 0) {
+                        gtlabel = num_labels_;
+                    }
+					gtconfidences_(gtlabel) = gtconfidences_(gtlabel)+1;
 				} 
 			}
 		count_++;
 		bool cond = ((count_ % memSize) == 0);
+
 		if (cond || forcePrint_)
 		{
 			mrs_real max_conf = 0;
@@ -184,21 +186,29 @@ Confidence::myProcess(realvec& in, realvec& out)
 			for (l=0; l < nLabels; l++)
 			{
 				mrs_real conf = ((confidences_(l)) / count_);
-				mrs_real gtconf ((gtconfidences_(l)) / count_);
 				if (conf > max_conf) 
 				{
 					max_conf = conf;
 					max_l = l;
 				}
-
+            }
+            mrs_string ground_truth_text;
+			for (l=0; l < nLabels+1; l++)
+			{
+				mrs_real gtconf = ((gtconfidences_(l)) / count_);
+                //cout<<"gtconf "<<gtconf<<endl;
 				if (gtconf > max_gtconf) 
 				{
 					max_gtconf = gtconf;
 					max_gtl = l;
 				}
-				
-
 			}
+            if (max_gtl < num_labels_) {
+                ground_truth_text = labelNames_[max_gtl];
+            } else {
+                ground_truth_text = "---";
+            }
+
 			if (getctrl("mrs_bool/fileOutput")->to<mrs_bool>())
 			{
 				cout << "fileOutput" << endl;
@@ -229,7 +239,7 @@ Confidence::myProcess(realvec& in, realvec& out)
 					cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
 					cout << fixed << setprecision(0) << "PR = " << labelNames_[max_l] << "\t" <<
 						((confidences_(max_l) / count_)) * 100.0 << setprecision(4) << "\t" << nbCorrectFrames_ * 1.0 / (nbFrames_/memSize+1);
-					cout << "\t GT = " << labelNames_[max_gtl] << endl;
+					cout << "\t GT = " << ground_truth_text << endl;
 					
 					
 					
