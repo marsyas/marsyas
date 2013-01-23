@@ -55,7 +55,7 @@ static void info(const char *fmt,...)
 	(*svm_print_string)(buf);
 }
 #else
-static void info(const char *fmt,...) {}
+static void info(const char *fmt,...) { (void) fmt; }
 #endif
 
 //
@@ -2957,6 +2957,9 @@ void svm_free_model_content(svm_model* model_ptr)
 
 	free(model_ptr->SV);
 	model_ptr->SV = NULL;
+
+	free(model_ptr->sv_indices);
+	model_ptr->sv_indices = NULL;
 
 	free(model_ptr->sv_coef);
 	model_ptr->sv_coef = NULL;
