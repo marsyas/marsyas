@@ -80,6 +80,9 @@ namespace Marsyas
 
 			// to clean-up memory leaks
 			mrs_natural num_nodes;
+            void ensure_free_svm_model();
+            void ensure_free_svm_prob_xy();
+            mrs_natural num_svm_prob_x;
 
 		public:
 			SVMClassifier(std::string name);

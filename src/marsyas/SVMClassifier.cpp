@@ -83,6 +83,11 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 }
 
 SVMClassifier::~SVMClassifier() {
+    ensure_free_svm_model();
+    ensure_free_svm_prob_xy();
+}
+
+void SVMClassifier::ensure_free_svm_model() {
 	if (svm_model_ != NULL) 
 	{ 
 		free(svm_model_->rho);
@@ -90,24 +95,37 @@ SVMClassifier::~SVMClassifier() {
 		free(svm_model_->probB);
 		free(svm_model_->label);
 		free(svm_model_->nSV);
-		for (int i=0; i < num_nodes; ++i)
+		for (int i=0; i < num_nodes; ++i) {
 			free(svm_model_->SV[i]);
+        }
 		free(svm_model_->SV);
 		
-		for (int i=0; i < svm_model_->nr_class-1; ++i) 
+		for (int i=0; i < svm_model_->nr_class-1; ++i) {
 		   free(svm_model_->sv_coef[i]);
+        }
 		
 		free(svm_model_->sv_coef);
-		mrs_natural nInstances = instances_.getRows();
+		free(svm_model_->sv_indices);
+	    free(svm_model_);
+        svm_model_ = NULL;
+    }
+}
 		
-		for (int i=0; i < nInstances; ++i) 
-			delete [] svm_prob_.x[i];
-
-		delete [] svm_prob_.x; 
-		delete [] svm_prob_.y;
-	} 
-
-	free(svm_model_);
+void SVMClassifier::ensure_free_svm_prob_xy() {
+    if (svm_prob_.x != NULL) {
+	    for (int i=0; i < num_svm_prob_x; ++i) {
+            if (svm_prob_.x[i] != NULL) {
+		        delete [] svm_prob_.x[i];
+                svm_prob_.x[i] = NULL;
+            }
+        }
+	    delete [] svm_prob_.x; 
+	    svm_prob_.x = NULL;
+    }
+    if (svm_prob_.y != NULL) {
+	    delete [] svm_prob_.y;
+	    svm_prob_.y = NULL;
+    }
 }
 
 MarSystem* SVMClassifier::clone() const {
@@ -244,16 +262,12 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			// transfer training data instances into svm_problem
 			mrs_natural nInstances = instances_.getRows();
 			svm_prob_.l = nInstances;
-            if (svm_prob_.y != NULL) {
-                delete [] svm_prob_.y;
-                svm_prob_.y = NULL; // just to be totally clear
-            }
+
+            ensure_free_svm_prob_xy();
 			svm_prob_.y = new double[svm_prob_.l];
-            if (svm_prob_.x != NULL) {
-                delete [] svm_prob_.x;
-                svm_prob_.x = NULL; // just to be totally clear
-            }
 			svm_prob_.x = new svm_node*[nInstances];
+            num_svm_prob_x = nInstances;
+
 		    for (int i=0; i < nInstances; ++i) {
 			    svm_prob_.x[i] = NULL;
             }
@@ -291,7 +305,6 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			
 			// load each instance data into svm_nodes and store in svm_problem
 			for (int i=0; i < nInstances; ++i) {
-				// memory leak
 				svm_prob_.x[i] = new svm_node[inObservations_];
 				for (int j=0; j < inObservations_; j++) {
 					if (j < inObservations_ -1) {
@@ -303,7 +316,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 					}
 				}
 			}
-			
+
 			const char *error_msg;
 			error_msg = svm_check_parameter(&svm_prob_, &svm_param_);
 			if (error_msg) {
@@ -312,7 +325,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				exit(1);
 			}
 			
-			// memory leak
+            ensure_free_svm_model();
 			svm_model_ = svm_train(&svm_prob_, &svm_param_);
 			
 			trained_ = true;
@@ -453,7 +466,7 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 			} else {
 				// Init libsvm structures and load data from
 				// network controls into libsvm in cased they had been stored
-				
+
 				svm_prob_.y = NULL;
 				svm_prob_.x = NULL;
 				svm_model_ = Malloc(svm_model,1);
