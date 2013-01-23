@@ -2131,7 +2131,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
   // create audio sink and mute it it is stored in the output plugin
   // that can be used for real-time classification
-  if (pluginName != EMPTYSTRING)
+  if ((pluginName != EMPTYSTRING) && (!pluginMute))
   {
 	MarSystem* dest = mng.create("AudioSink", "dest");
 	dest->updControl("mrs_bool/mute", false);
@@ -2185,9 +2185,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos"); // added Fanout ...
 	bextractNetwork->linkControl("mrs_real/duration",
 								 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/duration"); // added Fanout ...
-	if (pluginName != EMPTYSTRING)
+	if ((pluginName != EMPTYSTRING) && (!pluginMute)) {
 	  bextractNetwork->linkControl("Accumulator/acc/Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio",
 								   "mrs_bool/initAudio");
+    }
 	bextractNetwork->linkControl("mrs_string/previouslyPlaying",
 								 "Accumulator/acc/Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/previouslyPlaying"); // added Fanout ...
 
@@ -2248,9 +2249,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 								 "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_natural/pos");
 	bextractNetwork->linkControl("mrs_real/duration",
 								 "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_real/duration");
-	if (pluginName != EMPTYSTRING)
+	if ((pluginName != EMPTYSTRING) && (!pluginMute)) {
 	  bextractNetwork->linkControl("Series/featureNetwork/AudioSink/dest/mrs_bool/initAudio",
 								   "mrs_bool/initAudio");
+    }
 	bextractNetwork->linkControl("mrs_string/currentlyPlaying",
 								 "Series/featureNetwork/Fanout/fanout/SoundFileSource/src/mrs_string/currentlyPlaying");
 
@@ -2608,13 +2610,14 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	  featureNetwork->updControl("AudioSink/dest/mrs_bool/mute", false);
   }
 
+/*
   if (pluginName != EMPTYSTRING && pluginMute)
 	{
 		cout << "PLUGINMUTE" << endl;
 		featureNetwork->updControl("AudioSink/dest/mrs_bool/mute", true);
 		featureNetwork->updControl("AudioSink/dest/mrs_bool/initAudio", false);
 	}
-		
+*/	
 
   // init mic audio ...
   if (mic_)

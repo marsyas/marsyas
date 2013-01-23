@@ -48,6 +48,7 @@ float gain = 1.0f;
 float repetitions = 1; 
 bool loop = false;
 bool onetick = false;
+bool pluginMute = false;
 
 int
 printUsage(string progName)
@@ -80,6 +81,7 @@ printHelp(string progName)
 	cerr << "-pl --plugin     : plugin file " << endl;
 	cerr << "-o --output      : output file " << endl;
 	cerr << "-r --repetitions : number of repetitions " << endl;
+	cerr << "-pm --pluginMute : don't play audio " << endl;
 	return (1);
 }
 
@@ -119,7 +121,9 @@ int sfplugin(vector<string> soundfiles, string pluginName)
 		sfName = *sfi;
 
 		msys->updControl("mrs_string/filename", sfName);
-		msys->updControl("mrs_bool/initAudio", true);     
+        if (!pluginMute) {
+		    msys->updControl("mrs_bool/initAudio", true);
+        }
 
 		// hack for teligence 
 		//    mrs_natural size = msys->getctrl("SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
@@ -171,7 +175,6 @@ int sfplugin(vector<string> soundfiles, string pluginName)
 		    }
 		}
 	}
-	
 	delete msys;
     return 0;
 }
@@ -190,6 +193,7 @@ initOptions()
 	cmd_options.addRealOption("repetitions", "r", 1.0);
 	cmd_options.addBoolOption("loop", "l", false);
 	cmd_options.addBoolOption("onetick", "o", false);
+	cmd_options.addBoolOption("pluginMute", "pm", false);
 }
 
 void 
@@ -206,6 +210,7 @@ loadOptions()
 	loop = cmd_options.getBoolOption("loop");
 	onetick = cmd_options.getBoolOption("onetick");
 	verboseopt = cmd_options.getBoolOption("verbose");
+	pluginMute = cmd_options.getBoolOption("pluginMute");
 }
 
 int
@@ -233,9 +238,4 @@ main(int argc, const char **argv)
 
 	return sfplugin(soundfiles, pluginName);
 }
-
-
-
-
-
 
