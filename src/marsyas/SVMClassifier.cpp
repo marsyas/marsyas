@@ -32,6 +32,8 @@ SVMClassifier::SVMClassifier(mrs_string name) :
 	svm_ = C_SVC;
 	svm_model_ = NULL;
 	num_nodes = 0;
+    svm_prob_.y = NULL;
+    svm_prob_.x = NULL;
  
 	addControls();
 }
@@ -45,6 +47,8 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 	svm_ = C_SVC;
 	svm_model_ = NULL;
 	num_nodes = 0;
+    svm_prob_.y = NULL;
+    svm_prob_.x = NULL;
 
 	ctrl_nClasses_ = getctrl("mrs_natural/nClasses");
 	ctrl_sv_coef_ = getctrl("mrs_realvec/sv_coef");
@@ -240,8 +244,19 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			// transfer training data instances into svm_problem
 			mrs_natural nInstances = instances_.getRows();
 			svm_prob_.l = nInstances;
+            if (svm_prob_.y != NULL) {
+                delete [] svm_prob_.y;
+                svm_prob_.y = NULL; // just to be totally clear
+            }
 			svm_prob_.y = new double[svm_prob_.l];
+            if (svm_prob_.x != NULL) {
+                delete [] svm_prob_.x;
+                svm_prob_.x = NULL; // just to be totally clear
+            }
 			svm_prob_.x = new svm_node*[nInstances];
+		    for (int i=0; i < nInstances; ++i) {
+			    svm_prob_.x[i] = NULL;
+            }
 			int l;
 			mrs_bool seen;
 			
@@ -276,6 +291,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			
 			// load each instance data into svm_nodes and store in svm_problem
 			for (int i=0; i < nInstances; ++i) {
+				// memory leak
 				svm_prob_.x[i] = new svm_node[inObservations_];
 				for (int j=0; j < inObservations_; j++) {
 					if (j < inObservations_ -1) {
@@ -296,7 +312,7 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 				exit(1);
 			}
 			
-			
+			// memory leak
 			svm_model_ = svm_train(&svm_prob_, &svm_param_);
 			
 			trained_ = true;
