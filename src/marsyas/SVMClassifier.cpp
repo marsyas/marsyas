@@ -52,6 +52,7 @@ SVMClassifier::SVMClassifier(const SVMClassifier& a) :
 
 	ctrl_nClasses_ = getctrl("mrs_natural/nClasses");
 	ctrl_sv_coef_ = getctrl("mrs_realvec/sv_coef");
+	ctrl_sv_indices_ = getctrl("mrs_realvec/sv_indices");
 	ctrl_SV_ = getctrl("mrs_realvec/SV");
 	ctrl_rho_ = getctrl("mrs_realvec/rho");
 	ctrl_probA_ = getctrl("mrs_realvec/probA");
@@ -90,24 +91,7 @@ SVMClassifier::~SVMClassifier() {
 void SVMClassifier::ensure_free_svm_model() {
 	if (svm_model_ != NULL) 
 	{ 
-		free(svm_model_->rho);
-		free(svm_model_->probA);
-		free(svm_model_->probB);
-		free(svm_model_->label);
-		free(svm_model_->nSV);
-		for (int i=0; i < num_nodes; ++i) {
-			free(svm_model_->SV[i]);
-        }
-		free(svm_model_->SV);
-		
-		for (int i=0; i < svm_model_->nr_class-1; ++i) {
-		   free(svm_model_->sv_coef[i]);
-        }
-		
-		free(svm_model_->sv_coef);
-		free(svm_model_->sv_indices);
-	    free(svm_model_);
-        svm_model_ = NULL;
+        svm_free_and_destroy_model(&svm_model_);
     }
 }
 		
@@ -142,6 +126,7 @@ void SVMClassifier::addControls() {
 	addctrl("mrs_realvec/minimums", realvec(), ctrl_minimums_);
 	addctrl("mrs_realvec/maximums", realvec(), ctrl_maximums_);
 	addctrl("mrs_realvec/sv_coef", realvec(), ctrl_sv_coef_);
+	addctrl("mrs_realvec/sv_indices", realvec(), ctrl_sv_indices_);
 	addctrl("mrs_realvec/SV", realvec(), ctrl_SV_);
 	addctrl("mrs_realvec/rho", realvec(), ctrl_rho_);
 	addctrl("mrs_realvec/probA", realvec(), ctrl_probA_);
@@ -347,10 +332,13 @@ void SVMClassifier::myUpdate(MarControlPtr sender) {
 			///////  expose sv_coef and SV ////////
 			MarControlAccessor acc_sv_coef(ctrl_sv_coef_, NOUPDATE);
 			realvec& sv_coef = acc_sv_coef.to<mrs_realvec>();
+			MarControlAccessor acc_sv_indices(ctrl_sv_indices_, NOUPDATE);
+			realvec& sv_indices = acc_sv_indices.to<mrs_realvec>();
 			MarControlAccessor acc_SV(ctrl_SV_, NOUPDATE);
 			realvec& SV = acc_SV.to<mrs_realvec>();
 			n = svm_model_->l;
 			sv_coef.stretch(svm_model_->nr_class-1,n);
+			sv_indices.stretch(n);
 			SV.stretch(n, (inObservations_-1));
 
 			for (int i=0; i<n; ++i) {
@@ -622,6 +610,10 @@ void SVMClassifier::myProcess(realvec& in, realvec& out)
 							svm_model_->sv_coef[k][i]
 									=ctrl_sv_coef_->to<realvec>()(k, i);
 				}
+                svm_model_->sv_indices = Malloc(int, n);
+                for (int i=0; i<l; i++) {
+                    // FIXME: interface with libsvm
+                }
 
 				if (ctrl_SV_->to<realvec>().getSize()) // SV
 				{

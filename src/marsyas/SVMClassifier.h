@@ -36,6 +36,7 @@ namespace Marsyas
 	{
 		private:
 			MarControlPtr ctrl_sv_coef_ ;
+			MarControlPtr ctrl_sv_indices_ ;
 			MarControlPtr ctrl_SV_ ;
 			MarControlPtr ctrl_rho_ ;
 			MarControlPtr ctrl_probA_ ;
