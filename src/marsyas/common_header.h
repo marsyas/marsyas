@@ -69,22 +69,14 @@ namespace Marsyas
            MrsLog::mrsAssert(__FILE__, __LINE__)
 #endif 
 
+#define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
+
+#define MRSWARN(x) {std::ostringstream oss; MrsLog::mrsWarning((std::ostringstream&)(oss << x));}
+
 #ifdef MARSYAS_LOG_MESSAGES
 # define MRSMSG(x) {std::ostringstream oss; MrsLog::mrsMessage((std::ostringstream&)(oss << x));}
 #else
 # define MRSMSG(x)
-#endif
-
-#ifdef MARSYAS_LOG_ERRORS
-# define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
-#else
-# define MRSERR(x)
-#endif
-
-#ifdef MARSYAS_LOG_WARNINGS
-# define MRSWARN(x) {std::ostringstream oss; MrsLog::mrsWarning((std::ostringstream&)(oss << x));}
-#else
-# define MRSWARN(x)
 #endif
 
 #ifdef MARSYAS_LOG_DIAGNOSTICS
