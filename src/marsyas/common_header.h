@@ -4,6 +4,11 @@
 /**
 	\file common_header.h
 	\ingroup NotmarCore
+
+    This file should:
+      - only contain system-independent, configure-independent material.
+      - be included in all .h files
+      - be installed by cmake
 */
 
 /************************************************************************/

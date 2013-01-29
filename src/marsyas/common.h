@@ -4,6 +4,11 @@
 /**
   \file common.h
   \ingroup NotmarCore
+
+  This file should:
+    - contain system-dependent, configure-dependent material
+    - be included in .cpp files
+    - NOT be installed with cmake
 */
 
 /************************************************************************/

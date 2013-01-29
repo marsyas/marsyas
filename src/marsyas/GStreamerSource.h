@@ -24,11 +24,12 @@
 #include "AbsSoundFileSource.h"
 #include <sys/stat.h>
 
-#ifdef MARSYAS_GSTREAMER
+// this file is only built if MARSYAS_GSTREAMER is set
+// #ifdef MARSYAS_GSTREAMER
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
-#endif 
+// #endif 
 
 namespace Marsyas
 {
