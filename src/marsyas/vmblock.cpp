@@ -6,7 +6,7 @@
  *  and Frank Uhlig, Springer-Verlag, 1996".               *
  **********************************************************/
 
-#include "common.h"
+#include "common_source.h"
 #ifndef MARSYAS_MACOSX
 #include <malloc.h>
 #else 

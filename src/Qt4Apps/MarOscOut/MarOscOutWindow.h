@@ -10,7 +10,7 @@
 #include <QtCore>
 #include <QtGui>
 
-#include "common.h"
+#include "common_source.h"
 #include "MarSystem.h"
 #include "MarSystemManager.h" 
 #include "MarControl.h"

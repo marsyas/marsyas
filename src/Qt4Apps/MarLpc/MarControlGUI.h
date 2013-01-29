@@ -1,7 +1,7 @@
 #ifndef MARCONTROLGUI_H
 #define MARCONTROLGUI_H
 
-#include "common.h"
+#include "common_source.h"
 
 
 

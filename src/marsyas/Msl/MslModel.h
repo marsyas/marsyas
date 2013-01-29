@@ -21,7 +21,7 @@
 
 #include "MarSystemManager.h"
 #include "MarControl.h"
-#include "common.h"
+#include "common_source.h"
 
 namespace Marsyas
 {

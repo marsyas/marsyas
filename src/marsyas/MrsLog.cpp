@@ -19,7 +19,7 @@
 #include <iostream>
 #include <fstream>
 #include "MrsLog.h"
-#include "common.h"
+#include "common_source.h"
 
 using std::ostringstream;
 using std::cout;

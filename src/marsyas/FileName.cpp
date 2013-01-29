@@ -18,7 +18,7 @@
 
 
 
-#include "common.h" 
+#include "common_source.h" 
 
 #ifdef MARSYAS_WIN32
 #include <io.h>

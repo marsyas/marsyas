@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-#include "common.h" //for PI
+#include "common_source.h" //for PI
 
 #include "Marx2DStackedGraphs.h"
 

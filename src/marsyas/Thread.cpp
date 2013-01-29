@@ -12,7 +12,7 @@
 /***************************************************/
 
 
-#include "common.h"
+#include "common_source.h"
 
 #if (defined(MARSYAS_LINUX) || defined(MARSYAS_CYGWIN) || defined(MARSYAS_MACOSX))
   #include <pthread.h>

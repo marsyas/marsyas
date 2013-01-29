@@ -30,7 +30,7 @@
 	Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 */
 
-#include "common.h"
+#include "common_source.h"
 #include "MATLABengine.h"
 
 #ifdef MARSYAS_MATLAB

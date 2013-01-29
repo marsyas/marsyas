@@ -16,7 +16,7 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common.h" 
+#include "common_source.h" 
 #include "NumericLib.h"
 
 //*************************************************************
@@ -50,7 +50,7 @@ using namespace Marsyas;
 
 //#define DBL_EPSILON 2.2204460492503131E-16 //=> already defined in float.h...
 //#define DBL_MAX 1.7976931348623157E+308 //=> already defined in float.h...
-//#define  PI  3.14159265358979323846 /* circular transcendental nb.  */ //already defined in common.h
+//#define  PI  3.14159265358979323846 /* circular transcendental nb.  */ //already defined in common_source.h
 
 #define NumericLib_MAXCOEFF 5001     /* max. number of coefficients  */
 

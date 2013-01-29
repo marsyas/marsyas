@@ -260,7 +260,7 @@
 #include "Yin.h"
 #include "ZeroCrossings.h"
 #include "ZeroRClassifier.h"
-#include "common.h"
+#include "common_source.h"
 // #include "BinauralCARFAC.h"
 #include "HarmonicStrength.h"
 #include "CsvFileSource.h"

@@ -17,7 +17,7 @@
 */
 
 #include "OnsetTimes.h"
-#include "common.h"
+#include "common_source.h"
 #include <algorithm>
 
 using namespace std;

@@ -17,7 +17,7 @@
 */
 
 #include "BeatReferee.h"
-//#include "common.h"
+//#include "common_source.h"
 
 using namespace std;
 using namespace Marsyas;

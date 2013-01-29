@@ -38,7 +38,7 @@ adjusted to reflect Marsyas controls.
 
 #include <string> 
 
-//#include "common.h"
+//#include "common_source.h"
 #include "MarSystemManager.h"
 
 

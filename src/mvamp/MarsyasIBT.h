@@ -42,7 +42,7 @@
 #include <string>
 #include <iomanip> 
 
-#include "common.h"
+#include "common_source.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
 #include "FileName.h"

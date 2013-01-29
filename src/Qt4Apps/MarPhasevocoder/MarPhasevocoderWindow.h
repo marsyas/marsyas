@@ -8,7 +8,7 @@
 #include <QPushButton>
 #include <QMainWindow>
 
-#include "common.h"
+#include "common_source.h"
 #include "MarSystem.h"
 #include "MarSystemManager.h" 
 #include "MarControlGUI.h"

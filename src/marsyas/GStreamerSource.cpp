@@ -18,7 +18,7 @@
 
 // TODO Set up a proper GstClock so the whole file isn't instantly queued up
 
-#include "common.h" 
+#include "common_source.h" 
 #include "common_header.h"
 
 

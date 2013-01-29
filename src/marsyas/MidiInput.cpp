@@ -18,7 +18,7 @@
 
    
 #include "MidiInput.h"
-#include "common.h"
+#include "common_source.h"
 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"

@@ -25,7 +25,7 @@
 #define MARWIDGETS_H
 
 #include "MarSystemQtWrapper.h"
-#include "common.h"
+#include "common_source.h"
 #include "MarSystemManager.h"
 #include "MarControlWidget.h"
 

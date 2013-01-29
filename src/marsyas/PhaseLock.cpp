@@ -18,7 +18,7 @@
 
 #include "PhaseLock.h"
 #include "FileName.h"
-//#include "common.h"
+//#include "common_source.h"
 
 #define MINIMUMREAL 0.000001 //(0.000001 minimum float recognized)
 #define NA -10000.0 //undefined value flag

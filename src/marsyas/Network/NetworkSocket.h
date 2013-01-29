@@ -34,7 +34,7 @@
 #endif
 
 #include "MarSystem.h"
-#include "common.h"
+#include "common_source.h"
 
 #define MAXCONNECT 1
 

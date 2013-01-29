@@ -15,7 +15,7 @@
 #include <QWaitCondition>
 #include <QTimer> 
 #include <QMetaType>
-#include "common.h"
+#include "common_source.h"
 #include "MarSystemManager.h"
 
 

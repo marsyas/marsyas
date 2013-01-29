@@ -18,7 +18,7 @@
 
 
 #include <cstdio>
-#include "common.h"
+#include "common_source.h"
 #include "MarSystemManager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
