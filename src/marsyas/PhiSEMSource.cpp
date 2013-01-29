@@ -157,7 +157,7 @@ PhiSEMSource::noiseTick() {
 
 int
 PhiSEMSource::randomInt(int max) {
-	int temp = (int)((float)max * rand() / (RAND_MAX + 1.0));
+	int temp = (int)((float)max * (float)rand() / (RAND_MAX + 1.0));
 	return temp;
 }
 

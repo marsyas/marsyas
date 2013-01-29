@@ -128,7 +128,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 	//////////////////////////////////////////////////////////////////////////////////
 	mrs_bool newTimeline = false;
 	// round
-	mrs_natural curLabelFile = ctrl_currentLabelFile_->to<mrs_real>() + 0.5;
+	mrs_natural curLabelFile = (mrs_natural) (ctrl_currentLabelFile_->to<mrs_real>() + 0.5);
 	
 	if(curLabelFile < (mrs_natural)labelFilesVec_.size()) //sanity check to avoid out of boundaries in vector
 	{

@@ -75,10 +75,10 @@ SpectralCentroidBandNorm::myProcess(realvec& in, realvec& out)
 		{
             mrs_real m0 = 0.0;
             mrs_real m1 = 0.0;
-            mrs_natural low_bin = 0.9*expected_peak_
-                / ((mrs_real) israte_);
-            mrs_natural high_bin = 1.9*expected_peak_
-                / ((mrs_real) israte_);
+            mrs_natural low_bin = (mrs_natural) (0.9*expected_peak_
+                / ((mrs_real) israte_));
+            mrs_natural high_bin = (mrs_natural) (1.9*expected_peak_
+                / ((mrs_real) israte_));
             //printf("%li\t%li\n", low_bin, high_bin);
             for (o=low_bin; o < high_bin; o++)
             {

@@ -54,7 +54,6 @@ private:
 	mrs_real israte_; // Sampling rate of the system
 
 
-	mrs_real frequency_;
 	//Add specific controls needed by this MarSystem.
 	void addControls();
 	void myUpdate(MarControlPtr sender);

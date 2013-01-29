@@ -171,11 +171,11 @@ AimSAI::InitializeInternal() {
 													/ 1000.0));
 	sai_temp_.create(channel_count_,temp_frame_period_samples);
 
-	frame_period_samples_ = (mrs_real)floor(ctrl_israte_->to<mrs_real>() * ctrl_frame_period_ms_->to<mrs_real>()
+	frame_period_samples_ = (int)floor(ctrl_israte_->to<mrs_real>() * ctrl_frame_period_ms_->to<mrs_real>()
 											/ 1000.0);
-	min_strobe_delay_idx_ = (mrs_real)floor(ctrl_israte_->to<mrs_real>() * ctrl_min_delay_ms_->to<mrs_real>()
+	min_strobe_delay_idx_ = (int)floor(ctrl_israte_->to<mrs_real>() * ctrl_min_delay_ms_->to<mrs_real>()
 											/ 1000.0);
-	max_strobe_delay_idx_ = (mrs_real)floor(ctrl_israte_->to<mrs_real>() * ctrl_max_delay_ms_->to<mrs_real>()
+    max_strobe_delay_idx_ = (int)floor(ctrl_israte_->to<mrs_real>() * ctrl_max_delay_ms_->to<mrs_real>()
 											/ 1000.0);
 
 	// Make sure we don't go past the output buffer's upper bound

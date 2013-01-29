@@ -59,12 +59,12 @@ void AdditiveOsc::addControls()
 
 void AdditiveOsc::myUpdate(MarControlPtr sender)
 {
-	frequency_ = (getctrl("mrs_real/frequency")->to<mrs_real>());
+	mrs_real frequency = (getctrl("mrs_real/frequency")->to<mrs_real>());
 	israte_ = (getctrl("mrs_real/israte")->to<mrs_real>());
 
 
 	// How many harmonics do we have before crossing the Nyquist threshold?
-	for (harmonics_ = 1; harmonics_ * frequency_ * 2 <= israte_/2; harmonics_++){};
+	for (harmonics_ = 1; harmonics_ * frequency * 2 <= israte_/2; harmonics_++){};
 
 	// Initialize our lists of coefficients and past values
 	x1n1_.create((mrs_natural)harmonics_ + 1);
@@ -72,15 +72,14 @@ void AdditiveOsc::myUpdate(MarControlPtr sender)
 	k_.create((mrs_natural)harmonics_ + 1);
   
 	// Initialize our lists
-	mrs_real harFreq = frequency_;
 	for (mrs_natural t = 1; t <= harmonics_; t++)
 	{
 		// The initial impulse of each wave guide
-		x1n1_(t) = 0.95 * pow((mrs_real)-1.0,t + 1);
+		x1n1_(t) = 0.95 * pow((mrs_real)(-1.0),t + 1);
 		// Our last waveguide value is zero
 		x2n1_(t) = 0;
 		// The coefficient for the waveguide at a given harmonic
-		k_(t) = cos((2 * 3.14159 * harFreq * t)/israte_);
+		k_(t) = cos((TWOPI * frequency * t)/israte_);
 	}
 
 	MarSystem::myUpdate(sender);

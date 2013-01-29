@@ -65,12 +65,12 @@ RemoveObservations::myUpdate(MarControlPtr sender)
 	MarSystem::myUpdate(sender);
 
 	// round down is the default with C math
-	lowestObs_ = inObservations_
-			* getctrl("mrs_real/lowCutoff")->to<mrs_real>();
+	lowestObs_ = (mrs_natural) (inObservations_
+			* getctrl("mrs_real/lowCutoff")->to<mrs_real>());
 	// round up with ceil()
-	numObs_ = ceil( inObservations_
+	numObs_ = (mrs_natural) (ceil( inObservations_
 			* getctrl("mrs_real/highCutoff")->to<mrs_real>()
-			) - lowestObs_;
+			) - lowestObs_);
 
 	ctrl_onObservations_->setValue(numObs_, NOUPDATE);
 

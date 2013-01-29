@@ -186,11 +186,11 @@ AimBoxes::myProcess(realvec& in, realvec& out)
           float pixel_value = 0.0f;
           for (int k = i * pixel_size_channels; k < (i + 1) * pixel_size_channels; ++k) {
             for (int l = j * pixel_size_samples; l < (j + 1) * pixel_size_samples; ++l) {
-              pixel_value += in(k + box_limits_channels_[c].second, l);
+              pixel_value += (float) in(k + box_limits_channels_[c].second, l);
               // pixel_value += input.sample(k, l);
             }
           }
-          pixel_value /= (pixel_size_channels * pixel_size_samples);
+          pixel_value /= (float) (pixel_size_channels * pixel_size_samples);
           box[i][j] = pixel_value;
         }
       }
@@ -200,7 +200,7 @@ AimBoxes::myProcess(realvec& in, realvec& out)
         for (int j = 0; j < box_size_temporal; ++j) {
           feature_value += box[i][j];
         }
-        feature_value /= box_size_temporal;
+        feature_value /= (float)box_size_temporal;
         // output_.set_sample(box_index, feature_index, feature_value);
         out(box_index, feature_index) = feature_value;
         // output_.set_sample(box_index, feature_index, feature_value);
@@ -211,7 +211,7 @@ AimBoxes::myProcess(realvec& in, realvec& out)
         for (int i = 0; i < box_size_spectral; ++i) {
           feature_value += box[i][j];
         }
-        feature_value /= box_size_spectral;
+        feature_value /= (float) box_size_spectral;
         out(box_index,feature_index) = feature_value;
         // output_.set_sample(box_index, feature_index, feature_value);
         ++feature_index;

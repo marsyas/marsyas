@@ -58,8 +58,8 @@ TimeLine::setSampleRate(mrs_real srate)
 	// readjust 
 	for (mrs_natural i=0; i < numRegions_; ++i)
 	{
-	  regions_[i].start *= (srate_ / 22050.0);
-	  regions_[i].end   *= (srate_ / 22050.0);
+	  regions_[i].start = (mrs_natural) (regions_[i].start * (srate_ / 22050.0));
+	  regions_[i].end   = (mrs_natural) (regions_[i].end * (srate_ / 22050.0));
 	}
     psrate_ = srate;
     return true;
@@ -379,8 +379,8 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 
 			
 			TimeRegion region;
-			region.start = start * srate_;
-			region.end = end * srate_;
+			region.start = (mrs_natural) (start * srate_);
+			region.end = (mrs_natural) (end * srate_);
 			region.classId = 1;
 			region.name = label;
 			mrs_bool label_found = false;
@@ -429,7 +429,7 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 
 
 		lineSize_ = 1;
-		size_ = end * srate_;
+		size_ = (mrs_natural) (end * srate_);
 
 		in.close();
 		return true;

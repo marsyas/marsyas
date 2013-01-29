@@ -163,7 +163,8 @@ WavFileSink::ByteSwapLong(unsigned long nLongNumber)
 unsigned short 
 WavFileSink::ByteSwapShort (unsigned short nValue)
 {
-  return (((nValue>> 8)) | (nValue << 8));
+  return (static_cast<unsigned short>((nValue & 0xff00) >> 8) |
+          static_cast<unsigned short>((nValue & 0xff) << 8));
 }
 
 void 

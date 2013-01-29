@@ -197,7 +197,8 @@ AuFileSource::ByteSwapLong(unsigned long nLongNumber)
 unsigned short
 AuFileSource::ByteSwapShort (unsigned short nValue)
 {
-  return (((nValue>> 8)) | (nValue << 8));
+  return (static_cast<unsigned short>((nValue & 0xff00) >> 8) |
+          static_cast<unsigned short>((nValue & 0xff) << 8));
 }
 
 void
@@ -325,7 +326,7 @@ AuFileSource::getLinear16(realvec& slice)
 	for (c=0; c < nChannels_; ++c)
 	{
 	  usval_ = sdata_[nt_ + c];
-	  usval_ = ((usval_ >> 8) | (usval_ << 8));
+      usval_ = ByteSwapShort (usval_);
 	  sval_ = usval_;
 	  slice(c, t) = (mrs_real) sval_ / (PCM_FMAXSHRT);
 	}
