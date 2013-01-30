@@ -17,6 +17,7 @@
 */
 
 #include "SoundFileSource2.h"
+#include "common_source.h"
 
 using namespace std;
 using namespace Marsyas;

@@ -17,6 +17,8 @@
 */
 
 #include "Reassign.h"
+#include "common_source.h"
+
 #include <cfloat>
 
 using namespace std;

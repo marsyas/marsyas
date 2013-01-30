@@ -17,6 +17,7 @@
 */
 
 #include "Yin.h"
+#include "common_source.h"
 
 /*
   THIS MARSYSTEM IS VERY SIMILAR TO AUBIO_YIN, BUT DO NOT DELETE
@@ -149,11 +150,11 @@ Yin::myProcess(realvec& in, realvec& out)
   // yes, low_sample comes from the highest pitch
   mrs_natural low_sample = 4;
   if (freq_max > 0) {
-    low_sample = israte_ / freq_max;
+    low_sample = (mrs_natural) (israte_ / freq_max);
   }
   mrs_natural high_sample = yin_buffer_size;
   if (freq_min > 0) {
-    high_sample = israte_ / freq_min;
+    high_sample = (mrs_natural) (israte_ / freq_min);
   }
 
   // Calculate the pitch with the Yin method

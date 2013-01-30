@@ -17,6 +17,7 @@
 */
 
 #include "LPC.h"
+#include "common_source.h"
 
 // #define _MATLAB_LPC_
 

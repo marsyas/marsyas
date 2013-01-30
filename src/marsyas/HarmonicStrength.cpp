@@ -109,13 +109,13 @@ HarmonicStrength::quadratic_interpolation(mrs_real best_bin,
 		// don't try to interpolate using data that's
 		// outside of the spectogram
 		// TODO: find some convincing DSP thing to do in this case
-		return in(best_bin, t);
+		return in( (mrs_natural)best_bin, t);
 	}
 	// https://ccrma.stanford.edu/~jos/sasp/Quadratic_Interpolation_Spectral_Peaks.html
 	// a = alpha, b = beta, g = gamma
-	mrs_real a = in(best_bin-1, t);
-	mrs_real b = in(best_bin+0, t);
-	mrs_real g = in(best_bin+1, t);
+	mrs_real a = in( (mrs_natural)best_bin - 1, t);
+	mrs_real b = in( (mrs_natural)best_bin + 0, t);
+	mrs_real g = in( (mrs_natural)best_bin + 1, t);
 
 	mrs_real p = 0.5 * (a-g)/(a-2*b+g);
 	// avoid some NaNs
@@ -152,11 +152,11 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 	{
 		low = 0;
 	}
-	if (high < inSamples_)
+	if (high > inSamples_ - 1)
 	{
-		high = inSamples_ -1;
+		high = inSamples_ - 1;
 	}
-	for (mrs_natural i=low; i<high; i++)
+	for (mrs_natural i = (mrs_natural)low; i < high; i++)
 	{
 		if (in(i,t) > best_magnitude)
 		{
@@ -170,7 +170,7 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 	}
 	else
 	{
-		best_magnitude = in(central_bin, t);
+		best_magnitude = in( (mrs_natural)central_bin, t);
 	}
 
 	return best_magnitude;

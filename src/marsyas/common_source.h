@@ -46,6 +46,14 @@
 
 
 
+#ifdef MARSYAS_LOG_DIAGNOSTICS
+# define MRSDIAG(x) {std::ostringstream oss; MrsLog::mrsDiagnostic((std::ostringstream&)(oss << x));}
+#else
+# define MRSDIAG(x)
+#endif
+
+
+
 
 /************************************************************************/
 /*  MATLAB engine macros                                                */

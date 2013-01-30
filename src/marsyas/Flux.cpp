@@ -17,6 +17,7 @@
 */
 
 #include "Flux.h"
+#include "common_source.h"
 
 using namespace std;
 using std::abs;

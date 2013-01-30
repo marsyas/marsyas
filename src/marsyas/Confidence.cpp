@@ -17,6 +17,7 @@
 */
 
 #include "Confidence.h"
+#include "common_source.h"
 #include "FileName.h"
 
  

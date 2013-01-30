@@ -17,6 +17,8 @@
 */
 
 #include "McAulayQuatieri.h"
+#include "common_source.h"
+
 #include "peakView.h"
 #include "NumericLib.h"
 

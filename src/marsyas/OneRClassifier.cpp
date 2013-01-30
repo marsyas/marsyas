@@ -22,8 +22,9 @@
 */
 
 #include "OneRClassifier.h"
+#include "common_source.h"
 
- using std::ostringstream;
+using std::ostringstream;
 using std::cout;
 using std::endl;
 using std::vector;

@@ -17,6 +17,7 @@
 */
 
 #include "ZeroRClassifier.h"
+#include "common_source.h"
 
 using namespace std;
 using namespace Marsyas;

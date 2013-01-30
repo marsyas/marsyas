@@ -23,6 +23,7 @@
 #include "Conversions.h"
 #include "CommandLineOptions.h"
 #include "FileName.h"
+#include "common_source.h"
 
 //[TODO] get rid of this messy include...
 #include "PeUtilities.h"

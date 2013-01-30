@@ -17,6 +17,8 @@
 */
 
 #include "PeakViewSink.h"
+#include "common_source.h"
+
 #include "peakView.h"
 
 

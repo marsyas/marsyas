@@ -17,6 +17,8 @@
 */
 
 #include "Memory.h"
+#include "common_source.h"
+
 
 using std::cout;
 using std::endl;

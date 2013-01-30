@@ -18,6 +18,8 @@
 */
 
 #include "LSP.h"
+#include "common_source.h"
+
 #include "NumericLib.h"
 
 #include <algorithm>

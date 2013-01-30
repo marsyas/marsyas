@@ -17,6 +17,7 @@
 */
 
 #include "ClassOutputSink.h"
+#include "common_source.h"
 
  
 using std::ostringstream;

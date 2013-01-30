@@ -17,6 +17,8 @@
 */
 
 #include "SeneffEar.h"
+#include "common_source.h"
+
 #include "fft.h"
 
 #include <sstream>

@@ -26,6 +26,7 @@ orca_record: multichannel->stereo recording for the Orchive project
 #include "MarSystemManager.h"
 #include "Accumulator.h"
 #include "CommandLineOptions.h"
+#include "common_source.h"
 
 #include <string> 
 #include <iostream>

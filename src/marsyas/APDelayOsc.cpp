@@ -17,6 +17,7 @@
 */
 
 #include "APDelayOsc.h"
+#include "common_source.h"
 
 using std::ostringstream;
 using namespace Marsyas;

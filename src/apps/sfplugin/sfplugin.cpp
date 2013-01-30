@@ -24,6 +24,7 @@
 #include "MarSystemManager.h"  
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
+#include "common_source.h"
 
 #include <fstream> 
 #include <iostream>

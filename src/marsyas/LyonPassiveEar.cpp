@@ -18,6 +18,8 @@
 
 
 #include "LyonPassiveEar.h"
+#include "common_source.h"
+
 #include "Series.h"
 #include "Filter.h"
 #include "Cascade.h"

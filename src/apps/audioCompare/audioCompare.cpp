@@ -21,6 +21,7 @@
 #include "MarSystemManager.h"
 using namespace Marsyas;
 using namespace std;
+#include "common_source.h"
 
 #define CLOSE_ENOUGH 0.0001
 

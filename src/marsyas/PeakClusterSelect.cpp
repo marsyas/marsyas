@@ -16,8 +16,8 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common_source.h"
 #include "PeakClusterSelect.h"
+#include "common_source.h"
 
 using std::min;
 using std::max;

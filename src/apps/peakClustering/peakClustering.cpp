@@ -30,6 +30,7 @@
 #include "FileName.h"
 #include "PeakFeatureSelect.h"
 #include "SelfSimilarityMatrix.h"
+#include "common_source.h"
 
 //[TODO]
 //#include "PeUtilities.h"

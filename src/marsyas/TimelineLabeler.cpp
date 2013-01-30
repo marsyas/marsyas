@@ -17,6 +17,7 @@
 */
 
 #include "TimelineLabeler.h"
+#include "common_source.h"
 #include <fstream>
 #include <sstream>
 

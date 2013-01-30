@@ -27,6 +27,7 @@ record: record a clip using AudioSource
 #include "Accumulator.h"
 #include "MidiInput.h"
 #include "CommandLineOptions.h"
+#include "common_source.h"
 
 #include <string> 
 #include <iostream>

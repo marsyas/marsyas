@@ -17,6 +17,7 @@
 */
 
 #include "MarSystemTemplateAdvanced.h"
+#include "common_source.h"
 #include "MarControlManager.h"
 
  

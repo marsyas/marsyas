@@ -18,6 +18,7 @@
 
 
 #include "Envelope.h"
+#include "common_source.h"
 
 
 using namespace Marsyas;

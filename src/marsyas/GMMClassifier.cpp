@@ -17,6 +17,7 @@
 */
 
 #include "GMMClassifier.h"
+#include "common_source.h"
 #include "NumericLib.h"
 
  

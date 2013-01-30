@@ -18,6 +18,7 @@
 
 
 #include "RadioDrumInput.h"
+#include "common_source.h"
 
 
 #ifdef MARSYAS_MIDIIO

@@ -24,6 +24,7 @@
 #include "MarSystemManager.h"
 #include "Conversions.h"
 #include "CommandLineOptions.h"
+#include "common_source.h"
 
 #ifdef MARSYAS_MIDIIO
 #include "RtMidi.h"

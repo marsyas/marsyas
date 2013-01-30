@@ -84,12 +84,6 @@ namespace Marsyas
 # define MRSMSG(x)
 #endif
 
-#ifdef MARSYAS_LOG_DIAGNOSTICS
-# define MRSDIAG(x) {std::ostringstream oss; MrsLog::mrsDiagnostic((std::ostringstream&)(oss << x));}
-#else
-# define MRSDIAG(x)
-#endif
-
 #define MRS_WARNINGS_OFF MrsLog::warnings_off_ = true;
 #define MRS_WARNINGS_ON MrsLog::warnings_off_ = false;
 #define MRS_MESSAGES_OFF MrsLog::messages_off_ = true;	

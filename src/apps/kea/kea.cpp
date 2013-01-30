@@ -4,6 +4,7 @@
 #include "Collection.h"
 #include "MarSystemManager.h"
 #include "CommandLineOptions.h"
+#include "common_source.h"
 
 #include <vector>
 
