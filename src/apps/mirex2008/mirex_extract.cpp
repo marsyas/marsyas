@@ -258,7 +258,7 @@ void extract(Collection collection, string outWekaName)
  	  //wc = 0;  	  
  	  //samplesPlayed = 0;
 //   	  annotator->updControl("mrs_natural/label", collection.labelNum(collection.labelEntry(i)));
-   	  annotator->updControl("mrs_natural/label", (mrs_natural)i);
+   	  annotator->updControl("mrs_real/label", (mrs_real)i);
 
 // 	  cout << "collection.labelNum(collection.labelEntry(i))" << collection.labelNum(collection.labelEntry(i)) << endl;
 
