@@ -16,20 +16,19 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "config.h"
-
 #ifndef MARSYAS_GSTREAMERSOURCE_H
 #define MARSYAS_GSTREAMERSOURCE_H
 
 #include "AbsSoundFileSource.h"
 #include <sys/stat.h>
 
-// this file is only built if MARSYAS_GSTREAMER is set
-// #ifdef MARSYAS_GSTREAMER
+// needed to find MARSYAS_GSTREAMER.  Temporary, icky, solution
+#include "common_source.h"
+#ifdef MARSYAS_GSTREAMER
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
-// #endif 
+#endif 
 
 namespace Marsyas
 {

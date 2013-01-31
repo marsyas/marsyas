@@ -1,5 +1,6 @@
-file(GLOB Marsyas_SOURCES RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.cpp)
-file(GLOB Marsyas_HEADERS RELATIVE ${CMAKE_SOURCE_DIR}/marsyas *.h)
+file(STRINGS CMake-compile-cpp.txt Marsyas_SOURCES)
+file(STRINGS CMake-compile-h.txt   Marsyas_HEADERS)
+#file(STRINGS CMake-install-h.cmake   Marsyas_HEADERS_INSTALL)
 
 ## OTHERLIBS
 
