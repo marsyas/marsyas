@@ -204,7 +204,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_natural phase;
 	mrs_real cross_correlation = 0.0;
 	mrs_real max_crco=0.0;
-	mrs_natural max_phase = 0.0;
+	mrs_natural max_phase = 0;
 	mrs_realvec phase_correlations;
 
 

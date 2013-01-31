@@ -153,7 +153,7 @@ AimLocalMax::myProcess(realvec& in, realvec& out)
   strobe_count_.clear();
   strobe_count_.resize(channel_count_, 0.0);
   last_strobe_.clear();
-  last_strobe_.resize(channel_count_, 0.0);
+  last_strobe_.resize(channel_count_, 0); // vector of ints
 
   // sness - Hmm, the original code isn't doing this, but I don't see
   // how this could possibly work if you don't reset these samples at

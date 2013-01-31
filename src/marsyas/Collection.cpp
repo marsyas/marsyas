@@ -58,7 +58,7 @@ Collection::Collection()
     hasLabels_ = false;
     store_labels_ = true;
     // initialize random number generation.
-    srand( time( NULL) );
+    srand( (unsigned int) time( NULL) );
 }
 
 Collection::~Collection()
