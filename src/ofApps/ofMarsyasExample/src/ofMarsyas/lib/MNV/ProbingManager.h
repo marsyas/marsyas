@@ -87,7 +87,9 @@ namespace Marsyas {
 		bool mouseReleased();
         
         void keyPressed(int key);
-		
+        
+        //getters
+		std::vector<std::vector<double> >* getDataBuffer();
 		
 	};
 }

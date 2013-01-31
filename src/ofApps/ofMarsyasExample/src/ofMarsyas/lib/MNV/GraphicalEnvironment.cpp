@@ -172,6 +172,11 @@ MarSystemThread* GraphicalEnvironment::getMarSystemThread(){
     return msysThread_;
 }
 
+
+std::vector<std::vector<double> >* GraphicalEnvironment::getDataBuffer(){
+    return probe_->getDataBuffer();
+}
+
 void GraphicalEnvironment::keyPressed  (int key)
 {
 	probe_->keyPressed(key);

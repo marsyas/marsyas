@@ -47,11 +47,24 @@ public:
     
     
     //getters
-    Marsyas::MarSystem* getMarSystem();
+    Marsyas::MarSystem* getNetworkRoot();
+    Marsyas::MarSystemWidget* getNetworkRootWidget();
+    
+    Marsyas::MarSystem* getMarsystemByName(std::string msys);
+    Marsyas::MarSystemWidget* getMarsystemWidgetByName(std::string msys);
+    
+    std::vector<std::vector<double> >* getDataBuffer();
     
     
     //utils
     bool saveToFile(std::string name);
+    
+    
+    //network managing
+    
+    
+    //controls
+    void updControl(std::string msysName, std::string ctrlName, std::string ctrlValue);
     
     
 protected:

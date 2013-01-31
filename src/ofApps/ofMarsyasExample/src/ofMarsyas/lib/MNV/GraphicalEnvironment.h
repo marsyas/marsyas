@@ -33,7 +33,7 @@ namespace Marsyas{
         
         MarSystemThread* msysThread_;
         
-    public:
+    public://FIXME what shoud be private or public ?
         
         MarSystemWidget* msysw_;
         bool isLoaded();
@@ -65,6 +65,7 @@ namespace Marsyas{
         
         //Probing
         ProbingManager* probe_;
+        std::vector<std::vector<double> >* getDataBuffer();
         
         GraphicalEnvironment();
         ~GraphicalEnvironment();

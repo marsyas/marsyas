@@ -26,10 +26,10 @@ namespace Marsyas
 		GraphicalEnvironment *env_;
 		MarSystemWidget* createWidget(MarSystem* msys);
 		MarSystemWidget* getWidget(MarSystem* msys);
-    void createControlWidgets(MarSystemWidget* msysw);
-    void createControlLinkWidgets(MarSystemWidget* msysw);
-    void createWidgetsMaps(MarSystemWidget* msysw);
-    
+        void createControlWidgets(MarSystemWidget* msysw);
+        void createControlLinkWidgets(MarSystemWidget* msysw);
+        void createWidgetsMaps(MarSystemWidget* msysw);
+        
 	public:
 		MarSystemWidgetManager(GraphicalEnvironment* env);
 		~MarSystemWidgetManager();

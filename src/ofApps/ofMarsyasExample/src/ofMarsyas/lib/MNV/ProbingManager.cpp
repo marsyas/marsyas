@@ -56,10 +56,17 @@ void ProbingManager::calcBufferSize(){
     int maxW = WRITE_BLOCKS;
     int minOr = 10;
     
+    
     int S = pData_->to_realvec().getRows()*pData_->to_realvec().getCols();
     int Ar = pData_->getMarSystem()->getControl("mrs_real/osrate")->to_real();
+    cout<<endl<<S<<" "<<Ar;
+    
     
     pDataBufferSize_ = (int)((maxW - minOr*S/Ar)*S) + 1;
+    if(pDataBufferSize_ < 0){
+        pDataBufferSize_ = (int)((maxW - minOr*S/44100.0)*S) + 1;//FIXME OVERCALCULATED BUFFER SIZE!!!
+    }
+    
     
     cout<<endl<<"bufferSize = "<<pDataBufferSize_;
     
@@ -140,7 +147,7 @@ void ProbingManager::loadProcessedDataPointer(MarControlPtr pData){
     
     isLoaded_ = true;
     
-    
+    cout<<endl<<buffer_->size()<<" "<<(*buffer_)[0].size();
 	
 }
 
@@ -217,17 +224,12 @@ void ProbingManager::draw(){
     
     
     if(isLoaded_ && isVisible_){
-        
-        
-        
         ofSetColor(255, 255, 255);
-        
         for(int j=0; j<buffer_->size(); j++){
             for(int i=0; i<((*buffer_)[j].size() - 1); i++){
                 ofLine((double)(i*(width_ - 3))/(*buffer_)[j].size() + x_ + 2, ((*buffer_)[j][i]*60.0 + height_*0.5 + y_) + 20*j, (double)((i+1)*(width_ - 3))/(*buffer_)[j].size() + x_ + 2, ((*buffer_)[j][i+1]*60.0 + height_*0.5 + y_) + 20*j);
             }
         }
-        
     }
     
     
@@ -241,6 +243,12 @@ void ProbingManager::writeToBuffer(){
         writePoint_ = writePoint_->prox;
         readLock_ = false;
     }
+}
+
+
+
+std::vector<std::vector<double> >* ProbingManager::getDataBuffer(){
+    return buffer_;
 }
 
 

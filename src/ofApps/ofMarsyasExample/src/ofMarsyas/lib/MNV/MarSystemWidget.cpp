@@ -62,7 +62,7 @@ void MarSystemWidget::setup(MarSystem *msys)
 	msys_ = msys;
 	parent_ = NULL;
 	topMostParent_ = this;
-	
+    
 	if (msys)
 	{
 		isComposite_ = msys->isComposite();

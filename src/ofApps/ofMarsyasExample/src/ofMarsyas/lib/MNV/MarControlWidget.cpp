@@ -43,7 +43,7 @@ MarControlWidget::MarControlWidget(MarControlPtr ctrl, MarSystemWidget *msysw)
 	//FIXME: create link widgets?
 	//setupLinks();
 	//debugger();
-    cout<<endl<<name_;
+    cout<<endl<<msys_->getName()<<"/"<<name_;
 }
 
 MarControlWidget::~MarControlWidget()

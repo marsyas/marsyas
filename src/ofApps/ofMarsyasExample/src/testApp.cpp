@@ -17,14 +17,13 @@ void testApp::setup(){
     //uncoment this part if you want to use this method
     //********************************************************
     //create the marsyas network from a .mpl file
-    /*
-    if(!marsyas->createFromFile("test.mpl")){
+    
+    if(!marsyas->createFromFile("peakClustering.mpl")){
         cout<<endl<<"couldn«t load .mpl file !! App will crash !";
     }
     //********************************************************
-    */
     
-    
+    /*
     //uncoment this part if you want to use this method
     //********************************************************
     //creating manually and loading ofMarsyas with the Marsystem pointer:
@@ -32,11 +31,13 @@ void testApp::setup(){
     Marsyas::MarSystemManager mng;
     Marsyas::MarSystem *network;
     network = mng.create("Series", "network");
-    network->addMarSystem(mng.create("SineSource", "src"));
+    network->addMarSystem(mng.create("SoundFileSource", "src"));
+    //network->addMarSystem(mng.create("SineSource", "src"));
     network->addMarSystem(mng.create("Gain", "vol"));
     network->addMarSystem(mng.create("AudioSink", "dest"));
+    network->updControl("SoundFileSource/src/mrs_string/filename", "/test.wav");
     network->updControl("mrs_natural/inSamples", 1024);
-    network->updControl("SineSource/src/mrs_real/frequency", 220.0);
+    //network->updControl("SineSource/src/mrs_real/frequency", 220.0);
     network->updControl("mrs_real/israte", 44100.0);
     network->updControl("AudioSink/dest/mrs_bool/initAudio", true);
     network->updControl("Gain/vol/mrs_real/gain", 0.3);
@@ -46,20 +47,37 @@ void testApp::setup(){
     }
     //********************************************************
     //starts the marsyas network in another thread and tick() the network
+    marsyas->saveToFile("myNetwork.mpl");
+    */
     marsyas->start();
+    
+    marsyas->updControl("src", "mrs_string/filename", "/test.wav");
+    
+    ofDirectory dir;
+    dir.listDir("../data");
+    string path = dir.getAbsolutePath();
+    string name = "output.wav";
+    string fileName = path + "/" + name;
+    
+    marsyas->updControl("dest", "mrs_string/filename", fileName);
 }
+
 
 
 //--------------------------------------------------------------
 void testApp::update(){
+    ofSetWindowTitle(ofToString(ofGetFrameRate()));
     //updating marsyas only affects visualization
     marsyas->update();
+    
+    buffer = marsyas->getDataBuffer();
 
 }
 
 //--------------------------------------------------------------
 void testApp::draw(){
-    marsyas->draw();
+        marsyas->draw();
+    
 }
 
 //--------------------------------------------------------------

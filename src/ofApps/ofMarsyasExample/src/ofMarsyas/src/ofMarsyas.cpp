@@ -103,9 +103,19 @@ void ofMarsyas::draw(){
 }
 
 
-Marsyas::MarSystem* ofMarsyas::getMarSystem(){
+Marsyas::MarSystem* ofMarsyas::getNetworkRoot(){
     return network_;
 }
+
+Marsyas::MarSystemWidget* ofMarsyas::getNetworkRootWidget(){
+    return networkWidget_;
+}
+
+std::vector<std::vector<double> >* ofMarsyas::getDataBuffer(){
+    return graphicalEnv_->getDataBuffer();
+}
+
+
 
 
 bool ofMarsyas::saveToFile(std::string name){
@@ -126,6 +136,10 @@ bool ofMarsyas::saveToFile(std::string name){
         cout<<endl<<"save operation failed !";
         return false;
     }
+}
+
+void ofMarsyas::updControl(std::string msysName, std::string ctrlName, std::string ctrlValue){
+    networkWidget_->getMarSystemWidgetFromMapByName(msysName)->getMarSystem()->updControl(ctrlName, ctrlValue);
 }
 
 //--------------------------------------------------------------

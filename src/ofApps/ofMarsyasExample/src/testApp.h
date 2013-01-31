@@ -21,5 +21,6 @@ public:
     void gotMessage(ofMessage msg);
     
     ofMarsyas* marsyas;
+    std::vector<std::vector<double> >* buffer;
     
 };
