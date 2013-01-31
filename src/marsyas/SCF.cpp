@@ -78,7 +78,7 @@ SCF::myUpdate(MarControlPtr sender)
 	for(i = 0 ; i < nrBands_ + 1 ; ++i)
 	{
 		// 1/4 octave resolution (MPEG7)
-		edge_(i) = 1000.0f * pow(2.0f, (0.25f * ((mrs_real)i - 8))); 
+		edge_(i) = 1000.0f * pow(2.0f, (0.25f * (mrs_real)(i - 8))); 
 	}
 	// overlapped low and high band edges (Hz)
 	for (i = 0; i < nrBands_; ++i)
