@@ -77,7 +77,7 @@ SFM::myUpdate(MarControlPtr sender)
 	//nominal band edges (Hz)
 	for(i = 0 ; i < nrBands_ + 1 ; ++i)
 	{
-		edge_(i) = 1000.0f * pow((mrs_real)2.0f, (mrs_real)(0.25f * (mrs_real)(i - 8))); // 1/4 octave resolution (MPEG7)
+		edge_(i) = 1000.0f * pow(2.0, (0.25 * (i - 8))); // 1/4 octave resolution (MPEG7)
 	}
 	// overlapped low and high band edges (Hz)
 	for (i = 0; i < nrBands_; ++i)
