@@ -73,7 +73,7 @@ void APDelayOsc::myUpdate(MarControlPtr sender)
 	// this is the longest delay line required
 	if (delaylineSize_ == 0) 
 	{
-		delaylineSize_ = israte_/10;
+		delaylineSize_ = (mrs_natural) (israte_/10);
 		delayline_.create((mrs_natural)delaylineSize_);
 	  
 		for (t = 0; t < delaylineSize_; t++)

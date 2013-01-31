@@ -455,7 +455,7 @@ AuFileSource::myProcess(realvec& in, realvec &out)
 		  mrs_string warn = "File mode";
 		  warn += sndFormats_[hdr_->mode];
 		  warn += "(";
-		  warn += hdr_->mode;
+		  warn += (char) hdr_->mode;
 		  warn += ") is not supported for now";
 		  MRSWARN(warn);
 		}

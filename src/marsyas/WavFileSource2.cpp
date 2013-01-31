@@ -309,7 +309,8 @@ WavFileSource2::ByteSwapLong(unsigned long nLongNumber)
 unsigned short 
 WavFileSource2::ByteSwapShort (unsigned short nValue)
 {
-	return (((nValue>> 8)) | (nValue << 8));
+  return (static_cast<unsigned short>((nValue & 0xff00) >> 8) |
+          static_cast<unsigned short>((nValue & 0xff) << 8));
 }
 
 mrs_natural

@@ -231,7 +231,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 		  if (period > 1.0)
 		  {
-			  phase_correlations.create(period);
+			  phase_correlations.create( (mrs_natural)period);
 
 			  for (phase=inSamples_-1; phase > inSamples_-1-period; phase--)
 			  {
@@ -240,7 +240,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 				  for (int b=0; b < 4; b++)
 				  {
                       mrs_natural temp_t;
-                      temp_t = phase - b * period;
+                      temp_t = (mrs_natural) (phase - b * period);
 
 					  // 4 beats 
                       if (temp_t >= 0) {
@@ -248,12 +248,12 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 					  }
 					   
 					  // slow down by 2.0 
-					  temp_t = phase - b * 2.0 * period;
+					  temp_t = (mrs_natural) (phase - b * 2.0 * period);
 					  if (temp_t >= 0) 
 						cross_correlation += 0.5 * in(o, temp_t);
 					  
 					  // slow down by 3 
-					  temp_t = phase - b * 1.5 * period;
+					  temp_t = (mrs_natural) (phase - b * 1.5 * period);
 					  if (temp_t >= 0) {
 						  cross_correlation += 0.5 * in(o, temp_t);
 					  }
@@ -354,7 +354,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	period = (mrs_natural)(period+0.5);
 	// Place the beats in the right location in the onset detection function
 	for (int b=0; b < 4; b++) {
-        mrs_natural temp_t = tempo_phases(max_i) - b * period;
+        mrs_natural temp_t = (mrs_natural) (tempo_phases(max_i) - b * period);
         if (temp_t >= 0) {
 	        beats(0,temp_t) = -0.5;
         }

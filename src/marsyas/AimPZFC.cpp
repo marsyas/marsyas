@@ -156,7 +156,7 @@ AimPZFC::myUpdate(MarControlPtr sender)
 		ResetInternal();
 		is_reset = true;
 		reseted_inobservations = ctrl_inObservations_->to<mrs_natural>();
-		reseted_agc_factor = ctrl_agc_factor_->to<mrs_real>();
+		reseted_agc_factor = (mrs_natural) ctrl_agc_factor_->to<mrs_real>();
 	}
 
 }
