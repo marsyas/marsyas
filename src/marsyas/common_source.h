@@ -53,6 +53,12 @@
 #endif
 
 
+#ifdef MARSYAS_LOG_MESSAGES
+# define MRSMSG(x) {std::ostringstream oss; MrsLog::mrsMessage((std::ostringstream&)(oss << x));}
+#else
+# define MRSMSG(x)
+#endif
+
 
 
 /************************************************************************/

@@ -78,12 +78,6 @@ namespace Marsyas
 
 #define MRSWARN(x) {std::ostringstream oss; MrsLog::mrsWarning((std::ostringstream&)(oss << x));}
 
-#ifdef MARSYAS_LOG_MESSAGES
-# define MRSMSG(x) {std::ostringstream oss; MrsLog::mrsMessage((std::ostringstream&)(oss << x));}
-#else
-# define MRSMSG(x)
-#endif
-
 #define MRS_WARNINGS_OFF MrsLog::warnings_off_ = true;
 #define MRS_WARNINGS_ON MrsLog::warnings_off_ = false;
 #define MRS_MESSAGES_OFF MrsLog::messages_off_ = true;	
@@ -103,4 +97,4 @@ namespace Marsyas
 
 
 #endif /* !MARSYAS_COMMONHEADER_H */ 
-	
+

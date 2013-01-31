@@ -17,6 +17,7 @@
 */
 
 #include "realvec.h"
+#include "common_source.h"
 #include "NumericLib.h"
 #include <algorithm>
 #include <limits>
