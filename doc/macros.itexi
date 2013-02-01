@@ -30,7 +30,7 @@
 
 @macro examplefilenewpage{FILENAME}
 @ifhtml
-@uref{../examples/\FILENAME\.html, \FILENAME\}
+@uref{../examples/\FILENAME\, \FILENAME\}
 @end ifhtml
 @ifnothtml
 @subsubheading \FILENAME\

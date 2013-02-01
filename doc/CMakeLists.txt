@@ -101,9 +101,7 @@ add_custom_target(docs ALL
 	DEPENDS ${OUT-WWW}/sourceDoc/index.html
 )
 
-# FIXME: do this without an install.
-install(FILES ${PNG_IMAGES}
-	DESTINATION ${OUT-WWW}/marsyas-user/images/
-)
+file(COPY ${PNG_IMAGES} DESTINATION ${OUT-WWW}/marsyas-user/images/)
+file(COPY ${CMAKE_SOURCE_DIR}/examples DESTINATION ${OUT-WWW}/manual)
 
 
