@@ -32,7 +32,7 @@ Plucked::Plucked(mrs_string name):MarSystem("Plucked",name)
 	//
 	a_ = 0;
 	b_ = 0;
-	noteon_ = 0.0;
+	noteon_ = false;
 	delaylineSize_ = 0;
 	gain_ = NULL;
 
@@ -137,7 +137,7 @@ void Plucked::myProcess(realvec &in, realvec &out)
 {
 	(void)in;
   
-	if (noteon_ > 0)
+	if (noteon_)
     {
 		for (mrs_natural t = 0; t < inSamples_; t++)
 		{

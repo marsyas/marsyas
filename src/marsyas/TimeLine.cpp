@@ -507,12 +507,12 @@ TimeLine::printnew(FILE *fp)
 		// convert to milliseconds
 		float smsec;
 		float emsec;
-		smsec = ((regions_[i].start * lineSize_ * 1.0f) / srate_)*10000;
+		smsec = (float) ((regions_[i].start * lineSize_ * 1000) / srate_);
 		// fprintf(fp, "%d ", regions_[i].start);
 		fprintf(fp, "%6.0f ", smsec);
 
 		fprintf(fp, "%d ", (int)regions_[i].classId);
-		emsec = ((regions_[i].end * lineSize_ * 1.0f) / srate_) * 1000;
+		emsec = (float) ((regions_[i].end * lineSize_ * 1000) / srate_);
 		// fprintf(fp, "%d ", regions_[i].end);
 		fprintf(fp, "%6.0f\n", emsec);
 
