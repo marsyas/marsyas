@@ -64,11 +64,13 @@ namespace Marsyas
 			void init_pipeline();
 			mrs_bool seek();
 			mrs_bool pull_buffer();
+#ifdef MARSYAS_GSTREAMER
 			void copyFromBuffer(GstBuffer	*buf,
 						mrs_natural  buf_start,
 						realvec&	 vec,
 						mrs_natural  vec_start,
 						mrs_natural  length);
+#endif 
 		
 		public:
 			GStreamerSource(std::string name);
