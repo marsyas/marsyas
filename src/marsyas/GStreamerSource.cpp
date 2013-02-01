@@ -138,7 +138,7 @@ GStreamerSource::addControls()
 	addctrl("mrs_string/labelNames", ",", ctrl_labelNames_);
 	addctrl("mrs_bool/regression", false, ctrl_regression_);
 
-	addctrl("mrs_bool/lastTickWithData", false);
+	addctrl("mrs_bool/lastTickWithData", false, ctrl_lastTickWithData_);
 
 	addctrl("mrs_real/repetitions", 1.0);
 	setctrlState("mrs_real/repetitions", true);
