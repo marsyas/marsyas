@@ -93,6 +93,7 @@
 #include "GMMClassifier.h"
 #include "Gain.h"
 #include "GaussianClassifier.h"
+#include "GStreamerSource.h"
 #include "HWPS.h"
 #include "HalfWaveRectifier.h"
 #include "HarmonicEnhancer.h"
@@ -371,6 +372,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("GMMClassifier", new GMMClassifier("gmmsp"));
 	registerPrototype("Gain", new Gain("gp"));
 	registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
+	registerPrototype("GStreamerSource", new GStreamerSource("gstp"));
 	registerPrototype("HWPS", new HWPS("hwpspr"));
 	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
@@ -521,7 +523,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("TimelineLabeler", new TimelineLabeler("timelinelabelerpr"));
 	registerPrototype("Transposer", new Transposer("transposer"));
 	registerPrototype("TriangularFilterBank", new TriangularFilterBank("triangularfilterbank_pr"));
-	
+
 	registerPrototype("Unfold", new Unfold("unfold"));
 	registerPrototype("Vibrato", new Vibrato("vibratopr"));
 	registerPrototype("ViconFileSource", new ViconFileSource("viconfilesourcep"));

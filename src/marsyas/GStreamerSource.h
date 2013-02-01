@@ -43,9 +43,10 @@ namespace Marsyas
 	class GStreamerSource : public AbsSoundFileSource
 	{
 		private: 
-			mrs_natural size_, tpos_;
+			mrs_natural size_, newpos_;
 			mrs_string filename_, tfilename_;
 			mrs_bool playing_, pipe_created_;
+			MarControlPtr ctrl_pos_, ctrl_hasData_, ctrl_lastTickWithData_;
 			
 			/* GStreamer Elements */
 #ifdef MARSYAS_GSTREAMER
@@ -63,14 +64,15 @@ namespace Marsyas
 			void init_pipeline();
 			mrs_bool seek();
 			mrs_bool pull_buffer();
-			void copyFromBuffer(GstBuffer    *buf,
-					    mrs_natural  buf_start,
-					    realvec&     vec,
-					    mrs_natural  vec_start,
-					    mrs_natural  length);
+			void copyFromBuffer(GstBuffer	*buf,
+						mrs_natural  buf_start,
+						realvec&	 vec,
+						mrs_natural  vec_start,
+						mrs_natural  length);
 		
 		public:
 			GStreamerSource(std::string name);
+			GStreamerSource(const GStreamerSource& a);
 			~GStreamerSource();
 			
 			MarSystem* clone() const;
@@ -79,4 +81,4 @@ namespace Marsyas
 
 }//namespace Marsyas
 
-#endif    // !MARSYAS_GSTREAMERSOURCE_H
+#endif	// !MARSYAS_GSTREAMERSOURCE_H
