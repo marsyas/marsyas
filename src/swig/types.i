@@ -1,5 +1,5 @@
 %{
-#include <marsyas/common.h>
+#include <marsyas/common_header.h>
 
 using namespace Marsyas;
 
