@@ -59,6 +59,7 @@ marsyas_unit_test(Sum Sum_runner.cpp)
 marsyas_unit_test(DeltaFirstOrderRegression DeltaFirstOrderRegression_runner.cpp)
 marsyas_unit_test(DelaySamples DelaySamples_runner.cpp)
 marsyas_unit_test(CARFAC CARFAC_runner.cpp)
+marsyas_unit_test(HarmonicStrength HarmonicStrength_runner.cpp)
 
 # Copy the files needed to run the tests
 configure_file(files/tiny.arff ${CMAKE_CURRENT_BINARY_DIR}/files/tiny.arff COPYONLY)
@@ -66,4 +67,5 @@ configure_file(files/normal.arff ${CMAKE_CURRENT_BINARY_DIR}/files/normal.arff C
 configure_file(files/two-classes-one-attribute.arff ${CMAKE_CURRENT_BINARY_DIR}/files/two-classes-one-attribute.arff COPYONLY)
 configure_file(files/test.wav ${CMAKE_CURRENT_BINARY_DIR}/files/test.wav COPYONLY)
 configure_file(files/binaural.wav ${CMAKE_CURRENT_BINARY_DIR}/files/binaural.wav COPYONLY)
+configure_file(files/harmonic-mix.wav ${CMAKE_CURRENT_BINARY_DIR}/files/harmonic-mix.wav COPYONLY)
 

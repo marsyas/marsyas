@@ -2,7 +2,7 @@
 #define MARSYAS_COMMON_H
 
 /**
-  \file common.h
+  \file common_source.h
   \ingroup NotmarCore
 
   This file should:

@@ -152,9 +152,9 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 	{
 		low = 0;
 	}
-	if (high > inSamples_ - 1)
+	if (high > inObservations_ - 1)
 	{
-		high = inSamples_ - 1;
+		high = inObservations_ - 1;
 	}
 	for (mrs_natural i = (mrs_natural)low; i < high; i++)
 	{
@@ -188,6 +188,7 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 	mrs_real width = ctrl_harmonicsWidth_->to<mrs_real>();
 
 	mrs_real freq2bin = 1.0 / ctrl_israte_->to<mrs_real>();
+	//mrs_real bin2freq = ctrl_israte_->to<mrs_real>();
 
 	// Iterate over the samples (remember, FFT is vertical)
 	for (t = 0; t < inSamples_; t++)
@@ -208,9 +209,10 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 			mrs_real bin = freq * freq2bin;
 			//mrs_real freqold= n*base_freq;
 			//mrs_real binold = freqold*freq2bin;
-			//cout<<B<<"\t"<<freqold<<"\t"<<binold<<'\t'<<freq<<"\t"<<bin<<endl;
+			//cout<<B<<"\t"<<freq<<"\t"<<bin<<endl;
 			mrs_real low = bin - width * inObservations_;
 			mrs_real high = bin + width * inObservations_;
+            //cout<<low*bin2freq<<"\t"<<high*bin2freq<<endl;
 			mrs_real magnitude = find_peak_magnitude(bin, in, t, low, high);
 			if (magnitude == 0)
 			{
@@ -221,7 +223,11 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 				switch (getctrl("mrs_natural/type")->to<mrs_natural>())
 				{
 				case 0:
-					out(h, t) = log(magnitude / energy_rms);
+					//out(h, t) = log(magnitude / energy_rms);
+					out(h, t) = magnitude / energy_rms;
+					break;
+				case 1:
+					out(h, t) = magnitude;
 					break;
 				case 2:
 					out(h, t) = log(magnitude);

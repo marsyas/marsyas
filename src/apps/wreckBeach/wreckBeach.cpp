@@ -140,8 +140,8 @@ toy_with_harmonicStrength(mrs_string sfname)
 	//net->updControl("HarmonicStrength/harm/mrs_realvec/harmonics", harmonics);
 	net->updControl("HarmonicStrength/harm/mrs_natural/harmonicsSize", num_harmonics);
 	net->updControl("HarmonicStrength/harm/mrs_real/harmonicsWidth", 0.01);
-	net->updControl("HarmonicStrength/harm/mrs_natural/type", 1);
-	net->updControl("HarmonicStrength/harm/mrs_real/base_frequency", 500.0);
+	net->updControl("HarmonicStrength/harm/mrs_natural/type", 0);
+	net->updControl("HarmonicStrength/harm/mrs_real/base_frequency", 1000.0);
     // typical value for piano strings
 	net->updControl("HarmonicStrength/harm/mrs_real/inharmonicity_B", 2e-5);
 
@@ -151,8 +151,8 @@ toy_with_harmonicStrength(mrs_string sfname)
 		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 		for (mrs_natural h = 0; h<num_harmonics; ++h)
 		{
-			//printf("%.2f\t", v(h));
-			printf("%.8g\t", v(h));
+			//printf("%.3E\t", v(h));
+			printf("%.2f\t", v(h));
 		}
 		cout<<endl;
 	}
