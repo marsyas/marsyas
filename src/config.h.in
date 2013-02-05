@@ -12,7 +12,7 @@
 #cmakedefine MARSYAS_AUDIOIO
 #cmakedefine MARSYAS_MIDIIO
 
-#cmakedefine MARSYAS_ASSERTS
+// #cmakedefine MARSYAS_ASSERTS
 #cmakedefine MARSYAS_PROFILING
 #cmakedefine MARSYAS_TRACECONTROLS
 #cmakedefine MARSYAS_FLOWCHECK 
