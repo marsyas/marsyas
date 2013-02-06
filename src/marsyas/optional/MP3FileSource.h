@@ -31,11 +31,9 @@
 #include "common_header.h"
 #include "AbsSoundFileSource.h"
 
-#ifdef MARSYAS_MAD
 extern "C" {
 #include "mad.h"
 }
-#endif 
 
 namespace Marsyas
 {
@@ -59,12 +57,10 @@ namespace Marsyas
 			void myUpdate(MarControlPtr sender);
 			mrs_natural getLinear16(realvec& slice);
 
-#ifdef MARSYAS_MAD
-
+			// MAD stuff
 			inline signed int scale(mad_fixed_t sample);
 			void madStructInitialize();
 			void madStructFinish();
-#endif
 
 			void fillStream( long offset = 0 );
 			void closeFile(); 
@@ -72,11 +68,9 @@ namespace Marsyas
 			void  PrintFrameInfo(struct mad_header *Header);
   
 			// MAD stuff
-#ifdef MARSYAS_MAD
 			struct mad_stream stream;
 			struct mad_frame frame;
 			struct mad_synth synth;
-#endif
 
 			mrs_natural fileSize_; 
 			mrs_natural frameSamples_;

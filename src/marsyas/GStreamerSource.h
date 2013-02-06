@@ -22,8 +22,8 @@
 #include "AbsSoundFileSource.h"
 #include <sys/stat.h>
 
-// needed to find MARSYAS_GSTREAMER.  Temporary, icky, solution
-#include "common_source.h"
+#include "common_header.h"
+
 #ifdef MARSYAS_GSTREAMER
 #include <glib.h>
 #include <gst/gst.h>

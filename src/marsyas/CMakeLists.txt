@@ -2,6 +2,10 @@ file(STRINGS CMake-compile-cpp.txt Marsyas_SOURCES)
 file(STRINGS CMake-compile-h.txt   Marsyas_HEADERS)
 #file(STRINGS CMake-install-h.cmake   Marsyas_HEADERS_INSTALL)
 
+## optional marsystems
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/optional/)
+
+
 ## OTHERLIBS
 
 list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/otherlibs/libsvm/svm.cpp)
@@ -83,7 +87,9 @@ if (MARSYAS_ANN)
 endif (MARSYAS_ANN)
 
 if (MARSYAS_MAD)
-	include_directories(${mad_INCLUDE_DIR})
+    list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/optional/MP3FileSource.cpp)
+    list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/optional/MP3FileSource.h)
+    include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
 
 if (MARSYAS_PNG) 

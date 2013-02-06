@@ -169,7 +169,6 @@ MinArgMin.cpp
 MixToMono.cpp
 Mono2Stereo.cpp
 MP3FileSink.cpp
-MP3FileSource.cpp
 MrsLog.cpp
 Negative.cpp
 NoiseGate.cpp
