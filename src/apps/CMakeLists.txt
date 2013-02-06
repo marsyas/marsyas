@@ -1,6 +1,8 @@
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/core/)
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/optional/)
+
+
 ## BUILD MACRO
-
-
 
 macro (marsyas_static_app APP APP_SOURCES)
    	 add_executable(${APP} ${APP_SOURCES})

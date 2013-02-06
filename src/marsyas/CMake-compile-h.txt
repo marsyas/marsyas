@@ -247,7 +247,6 @@ QGMMModel.h
 RadioDrumInput.h
 RawFileSource.h
 RBF.h
-realvec.h
 RealvecSink.h
 RealvecSource.h
 Reassign.h

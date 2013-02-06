@@ -1,9 +1,26 @@
 file(STRINGS CMake-compile-cpp.txt Marsyas_SOURCES)
 file(STRINGS CMake-compile-h.txt   Marsyas_HEADERS)
-#file(STRINGS CMake-install-h.cmake   Marsyas_HEADERS_INSTALL)
 
-## optional marsystems
+file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/core/CMake-compile-cpp.txt
+  MARSYAS_CORE_SOURCES)
+file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/core/CMake-compile-h.txt
+  MARSYAS_CORE_HEADERS)
+
+
+## split dirs
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/core/)
 include_directories(${CMAKE_SOURCE_DIR}/marsyas/optional/)
+
+# this doesn't work, so I expanded it below:
+#list(APPEND Marsyas_SOURCES ${MARSYAS_CORE_SOURCES})
+#list(APPEND Marsyas_HEADERS ${MARSYAS_CORE_HEADERS})
+# expanded version:
+foreach (filename ${MARSYAS_CORE_SOURCES})
+	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/core/${filename})
+endforeach()
+foreach (filename ${MARSYAS_CORE_HEADERS})
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/core/${filename})
+endforeach()
 
 
 ## OTHERLIBS
