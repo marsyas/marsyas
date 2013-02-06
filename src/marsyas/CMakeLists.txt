@@ -99,6 +99,8 @@ if (MARSYAS_PNG)
 endif (MARSYAS_PNG)
 
 if (MARSYAS_LAME)
+    list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/optional/MP3FileSink.cpp)
+    list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/optional/MP3FileSink.h)
 	include_directories(${lame_INCLUDE_DIR})
 endif (MARSYAS_LAME)
 

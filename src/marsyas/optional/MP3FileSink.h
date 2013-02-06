@@ -24,9 +24,7 @@
 #include "FileName.h"
 #include "AbsSoundFileSink.h"
 
-#ifdef MARSYAS_LAME
 #include "lame/lame.h"
-#endif
 
 namespace Marsyas
 {
@@ -44,9 +42,7 @@ private:
   unsigned long written_;
   long fpos_;
   
-#ifdef MARSYAS_LAME
  lame_global_flags *gfp_;
-#endif
 	unsigned char *mp3Buffer_;
 	short int *leftpcm_;
 	short int *rightpcm_;

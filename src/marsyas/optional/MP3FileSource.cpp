@@ -68,9 +68,7 @@ MP3FileSource::MP3FileSource(mrs_string name):AbsSoundFileSource("MP3FileSource"
 
 MP3FileSource::~MP3FileSource()
 {
-#ifdef MARSYAS_MAD  
 	madStructFinish();
-#endif
 	closeFile(); 
 }
 
@@ -173,7 +171,6 @@ MP3FileSource::addControls()
 void 
 MP3FileSource::PrintFrameInfo(struct mad_header *Header)
 {
-#ifdef MARSYAS_MAD
 	const char	*Layer,
 		*Mode,
 		*Emphasis;
@@ -246,9 +243,6 @@ MP3FileSource::PrintFrameInfo(struct mad_header *Header)
 		   Header->bitrate,Layer,
 		   Header->flags&MAD_FLAG_PROTECTION?"with":"without",
 		   Mode,Emphasis,Header->samplerate);
-#else
-    (void) Header;
-#endif
 }
 
 
@@ -267,7 +261,6 @@ MP3FileSource::getHeader(mrs_string filename)
 	
 	debug_filename = filename;
 	
-#ifdef MARSYAS_MAD  
 	durFull_ = 0.;
 	// if we have a file open already, close it
 	closeFile();
@@ -446,7 +439,6 @@ MP3FileSource::getHeader(mrs_string filename)
 	hasData_ = 1;
 
   
-#endif
 }	
 
 
@@ -527,7 +519,6 @@ MP3FileSource::getLinear16(realvec& slice)
 {
 
 	
-#ifdef MARSYAS_MAD  
 	register double peak = 1.0/32767; // normalize 24-bit sample
 	register mad_fixed_t left_ch, right_ch;
 	register mrs_real sample;
@@ -650,11 +641,6 @@ MP3FileSource::getLinear16(realvec& slice)
 	ri_ = ri_ - inSamples_;	
 
 	return pos_;
-#else
-    (void) slice;
-	return 0;
-#endif 
-
 }
 
 
@@ -691,9 +677,7 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 			// compute a new file offset using the frame target
 			mrs_real ratio = (mrs_real)pos_/size_;
 			
-#ifdef MARSYAS_MAD     
 			madStructInitialize();
-#endif 
 						
 			mrs_natural targetOffset = (mrs_natural) (fileSize_ * (mrs_real)ratio);
 			
@@ -741,28 +725,24 @@ void MP3FileSource::myProcess(realvec& in, realvec& out)
 /*
  * Initialize mad structs
  */
-#ifdef MARSYAS_MAD  
 void MP3FileSource::madStructInitialize() {
 
 	mad_stream_init(&stream);
 	mad_frame_init(&frame);
 	mad_synth_init(&synth);
 }
-#endif
 
 	
 
 /*
  * Release mad structs
  */
-#ifdef MARSYAS_MAD  
 void MP3FileSource::madStructFinish() {
 
 	mad_stream_finish(&stream);
 	mad_frame_finish(&frame);
 	mad_synth_finish(&synth);
 }
-#endif 
 
 
 
@@ -779,7 +759,6 @@ MP3FileSource::fillStream( mrs_natural target )
 {
 
 	// fill the input buffer
-#ifdef MARSYAS_MAD  
 	if (stream.buffer == NULL || stream.error == MAD_ERROR_BUFLEN) 
     {
     
@@ -822,9 +801,6 @@ MP3FileSource::fillStream( mrs_natural target )
 			stream.error = MAD_ERROR_NONE;
 		}
     }
-#else
-    (void) target;
-#endif
 }
 
 
@@ -858,9 +834,7 @@ void MP3FileSource::closeFile()
 	delete [] ptr_;
 
 
-#ifdef MARSYAS_MAD  
 	madStructFinish();
-#endif 
 }
 
 
@@ -880,7 +854,6 @@ void MP3FileSource::closeFile()
  * 
  */
 
-#ifdef MARSYAS_MAD  
 inline signed int MP3FileSource::scale(mad_fixed_t sample)
 {
 	// round 
@@ -895,4 +868,3 @@ inline signed int MP3FileSource::scale(mad_fixed_t sample)
 	// quantize
 	return sample >> (MAD_F_FRACBITS + 1 - 16);
 }
-#endif 

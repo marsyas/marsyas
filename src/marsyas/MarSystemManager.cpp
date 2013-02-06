@@ -107,7 +107,9 @@
 #include "LSP.h"
 #include "LyonPassiveEar.h"
 #include "MFCC.h"
+#ifdef MARSYAS_LAME
 #include "MP3FileSink.h"
+#endif
 #include "MarSystem.h"
 #include "MarSystemManager.h"
 #include "MarSystemTemplateMedium.h"
@@ -388,7 +390,9 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("LSP", new LSP("lsppr"));
 	registerPrototype("LyonPassiveEar", new LyonPassiveEar("lyonp"));
 	registerPrototype("MFCC", new MFCC("mfcc"));
+#ifdef MARSYAS_LAME
 	registerPrototype("MP3FileSink", new MP3FileSink("sfsp"));
+#endif
 	registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
 	registerPrototype("MathPower", new MathPower("mathpowerpr"));
 	registerPrototype("MaxArgMax", new MaxArgMax("mxrp"));

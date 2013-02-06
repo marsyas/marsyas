@@ -177,7 +177,6 @@ MidiOutput.h
 MinArgMin.h
 MixToMono.h
 Mono2Stereo.h
-MP3FileSink.h
 MrsLog.h
 Negative.h
 NoiseGate.h

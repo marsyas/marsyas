@@ -16,8 +16,12 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-
+#include "common_source.h"
 #include "SoundFileSink.h"
+
+#ifdef MARSYAS_LAME
+#include "MP3FileSink.h"
+#endif
 
 using namespace std;
 using namespace Marsyas;
@@ -121,11 +125,13 @@ SoundFileSink::checkType()
       delete dest_;
 			dest_ = new WavFileSink(getName());
     }
+#ifdef MARSYAS_LAME
   else if (ext == ".mp3")
     {
       delete dest_;
 			dest_ = new MP3FileSink(getName());
     }
+#endif
   else 
     {
       if (filename != "defaultfile")

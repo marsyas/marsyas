@@ -19,9 +19,7 @@
 #include "common_source.h" 
 #include "MP3FileSink.h"
 
-#ifdef MARSYAS_LAME
 #include "lame/lame.h"
-#endif
 
 using std::ostringstream;
 using namespace Marsyas;
@@ -30,9 +28,7 @@ MP3FileSink::MP3FileSink(mrs_string name):AbsSoundFileSink("MP3FileSink",name)
 {
 	//type_ = "MP3FileSink";
 	//name_ = name;
-#ifdef MARSYAS_LAME
 	gfp_ = NULL;
-#endif
 	sfp_ = NULL;
 	leftpcm_ = NULL;
 	rightpcm_ = NULL;
@@ -44,7 +40,6 @@ MP3FileSink::MP3FileSink(mrs_string name):AbsSoundFileSink("MP3FileSink",name)
 MP3FileSink::~MP3FileSink()
 {
 	
-#ifdef MARSYAS_LAME
 
 	if (sfp_)
 	{
@@ -57,7 +52,6 @@ MP3FileSink::~MP3FileSink()
 	}
 	
 
-#endif   
 	delete [] mp3Buffer_;
 	delete [] leftpcm_;
 	delete [] rightpcm_;	
@@ -106,7 +100,6 @@ MP3FileSink::myUpdate(MarControlPtr sender)
 
 	nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();      
 
-#ifdef MARSYAS_LAME
 	// initialize to default encoding parameters
 	gfp_ = lame_init();
 
@@ -162,7 +155,6 @@ MP3FileSink::myUpdate(MarControlPtr sender)
 		MRSWARN("Initialization of the lame encoder failed.");
 
 
-#endif
 	
 	filename_ = getctrl("mrs_string/filename")->to<mrs_string>();
 }
@@ -170,11 +162,7 @@ MP3FileSink::myUpdate(MarControlPtr sender)
 void 
 MP3FileSink::putHeader(mrs_string filename)
 {	
-#ifdef MARSYAS_LAME
 	sfp_ = fopen(filename.c_str(), "wb");	
-#else
-    (void) filename;
-#endif
 }
 
 void 
@@ -190,7 +178,6 @@ MP3FileSink::myProcess(realvec& in, realvec& out)
 		{
 			out(o,t) = in(o,t);
 		}
-#ifdef MARSYAS_LAME
 	
 	mrs_natural encodeCheck=-1;
 	
@@ -226,7 +213,6 @@ MP3FileSink::myProcess(realvec& in, realvec& out)
 	}
 	
 	
-#endif   
 
 }
 

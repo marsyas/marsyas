@@ -168,7 +168,6 @@ MidiOutput.cpp
 MinArgMin.cpp
 MixToMono.cpp
 Mono2Stereo.cpp
-MP3FileSink.cpp
 MrsLog.cpp
 Negative.cpp
 NoiseGate.cpp
