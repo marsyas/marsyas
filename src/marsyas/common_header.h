@@ -19,6 +19,7 @@
 #include <sys/types.h> 
 #include <complex>
 #include <limits>
+#include <cassert>
 #include "marsyas_types.h"
 #include "MrsLog.h"
 
@@ -63,17 +64,11 @@ namespace Marsyas
 #define PCM_MAXSHRT 32767 
 #define PCM_FMAXSHRT 32767.0f 
 
-#ifdef NDEBUG
-#else
-#include "assert.h"
+#ifndef NDEBUG
 #define MARSYAS_ASSERTS
 #endif
 
-#ifdef NDEBUG 
-#define MRSASSERT(f) 
-#else 
 #define MRSASSERT(f) assert(f);
-#endif 
 
 #define MRSERR(x) {std::ostringstream oss; MrsLog::mrsErr((std::ostringstream&)(oss << x));}
 
