@@ -1,37 +1,37 @@
 file(STRINGS CMake-compile-cpp.txt Marsyas_SOURCES)
 file(STRINGS CMake-compile-h.txt   Marsyas_HEADERS)
 
-file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/core/CMake-compile-cpp.txt
+file(STRINGS core/CMake-compile-cpp.txt
   MARSYAS_CORE_SOURCES)
-file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/core/CMake-compile-h.txt
+file(STRINGS core/CMake-compile-h.txt
   MARSYAS_CORE_HEADERS)
 
-file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/marsystems/CMake-compile-cpp.txt
+file(STRINGS marsystems/CMake-compile-cpp.txt
   MARSYAS_MARSYSTEMS_SOURCES)
-file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/marsystems/CMake-compile-h.txt
+file(STRINGS marsystems/CMake-compile-h.txt
   MARSYAS_MARSYSTEMS_HEADERS)
 
 
 ## split dirs
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/core/)
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/marsystems/)
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/optional/)
+include_directories(core)
+include_directories(marsystems)
+include_directories(optional)
 
 # this doesn't work, so I expanded it below:
 #list(APPEND Marsyas_SOURCES ${MARSYAS_CORE_SOURCES})
 #list(APPEND Marsyas_HEADERS ${MARSYAS_CORE_HEADERS})
 # expanded version:
 foreach (filename ${MARSYAS_CORE_SOURCES})
-	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/core/${filename})
+	list(APPEND Marsyas_SOURCES core/${filename})
 endforeach()
 foreach (filename ${MARSYAS_CORE_HEADERS})
-	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/core/${filename})
+	list(APPEND Marsyas_HEADERS core/${filename})
 endforeach()
 foreach (filename ${MARSYAS_MARSYSTEMS_SOURCES})
-	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/marsystems/${filename})
+	list(APPEND Marsyas_SOURCES marsystems/${filename})
 endforeach()
 foreach (filename ${MARSYAS_MARSYSTEMS_HEADERS})
-	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/marsystems/${filename})
+	list(APPEND Marsyas_HEADERS marsystems/${filename})
 endforeach()
 
 
@@ -116,8 +116,8 @@ if (MARSYAS_ANN)
 endif (MARSYAS_ANN)
 
 if (MARSYAS_MAD)
-    list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/optional/MP3FileSource.cpp)
-    list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/optional/MP3FileSource.h)
+    list(APPEND Marsyas_SOURCES optional/MP3FileSource.cpp)
+    list(APPEND Marsyas_HEADERS optional/MP3FileSource.h)
     include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
 
@@ -128,14 +128,14 @@ if (MARSYAS_PNG)
 endif (MARSYAS_PNG)
 
 if (MARSYAS_LAME)
-    list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/optional/MP3FileSink.cpp)
-    list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/optional/MP3FileSink.h)
+    list(APPEND Marsyas_SOURCES optional/MP3FileSink.cpp)
+    list(APPEND Marsyas_HEADERS optional/MP3FileSink.h)
 	include_directories(${lame_INCLUDE_DIR})
 endif (MARSYAS_LAME)
 
 if (MARSYAS_VORBIS)
-    list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/optional/OggFileSource.cpp)
-    list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/optional/OggFileSource.h)
+    list(APPEND Marsyas_SOURCES optional/OggFileSource.cpp)
+    list(APPEND Marsyas_HEADERS optional/OggFileSource.h)
 	include_directories(${VORBIS_INCLUDE_DIR})
 endif (MARSYAS_VORBIS)
 
