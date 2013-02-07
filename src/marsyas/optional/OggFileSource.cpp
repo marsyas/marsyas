@@ -28,9 +28,7 @@
 #include <fcntl.h>
 #endif
 
-#ifdef MARSYAS_VORBIS
 #include <vorbis/vorbisfile.h>
-#endif
 
 
 using std::ostringstream;
@@ -143,7 +141,6 @@ OggFileSource::getHeader(mrs_string filename)
   hasData_ = false;
   mrs_natural bitRate = 128*1024;
   
-#ifdef MARSYAS_VORBIS
   FILE* fp = fopen(filename.c_str(), "rb");
   vf = new OggVorbis_File;
 
@@ -159,7 +156,6 @@ OggFileSource::getHeader(mrs_string filename)
     bitRate = ov_bitrate(vf, -1);
   }
   else
-#endif
   {
     (void) filename; // in case the macro is not expanded
     MRSWARN(filename + " does not appear to be an Ogg bitstream.");
@@ -192,7 +188,6 @@ OggFileSource::myUpdate(MarControlPtr sender)
   setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
 
-#ifdef MARSYAS_VORBIS
   mrs_natural pos = getctrl("mrs_natural/pos")->to<mrs_natural>();
   mrs_natural size = getctrl("mrs_natural/size")->to<mrs_natural>();
 
@@ -201,7 +196,6 @@ OggFileSource::myUpdate(MarControlPtr sender)
   {
     ov_pcm_seek(vf, pos_);
   }
-#endif
 
 }
 
@@ -217,7 +211,6 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
 
   if (hasData_)
   {
-#ifdef MARSYAS_VORBIS
     /*mrs_real duration = getctrl("mrs_real/duration")->to<mrs_real>();
     mrs_real rate = getctrl("mrs_real/israte")->to<mrs_real>();
     */
@@ -266,7 +259,6 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     if(eof)
 	  closeFile();
         
-#endif
   }
   else
     out.setval(0.0);
@@ -290,14 +282,12 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
  */
 void OggFileSource::closeFile()
 {
-#ifdef MARSYAS_VORBIS
 
   if(hasData_)
   {
     ov_clear(vf);
     delete vf;
   }
-#endif
 
   hasData_ = false;
 }

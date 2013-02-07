@@ -1,5 +1,7 @@
 ## global includes
 include_directories(${CMAKE_SOURCE_DIR}/marsyasqt/)
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/core/)
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/optional/)
 
 
 ## BUILD MACRO FOR QT4APP

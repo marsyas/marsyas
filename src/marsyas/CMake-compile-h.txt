@@ -188,7 +188,6 @@ Norm.h
 NormMatrix.h
 NormMaxMin.h
 NumericLib.h
-OggFileSource.h
 OnePole.h
 OneRClassifier.h
 OnsetTimes.h

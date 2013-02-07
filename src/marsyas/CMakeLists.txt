@@ -122,6 +122,8 @@ if (MARSYAS_LAME)
 endif (MARSYAS_LAME)
 
 if (MARSYAS_VORBIS)
+    list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/optional/OggFileSource.cpp)
+    list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/optional/OggFileSource.h)
 	include_directories(${VORBIS_INCLUDE_DIR})
 endif (MARSYAS_VORBIS)
 

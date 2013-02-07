@@ -179,7 +179,6 @@ NormCut.cpp
 NormMatrix.cpp
 NormMaxMin.cpp
 NumericLib.cpp
-OggFileSource.cpp
 OnePole.cpp
 OneRClassifier.cpp
 OnsetTimes.cpp

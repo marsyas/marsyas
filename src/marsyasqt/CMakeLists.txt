@@ -26,6 +26,8 @@ qt4_wrap_cpp( marsyasqt_moc_SOURCES ${marsyasqt_HEADERS})
 
 ## INCLUDING
 include_directories(${CMAKE_SOURCE_DIR}/marsyasqt/)
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/core/)
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/optional/)
 
 
 ## BUILDING AND LINKING
