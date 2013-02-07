@@ -6,9 +6,15 @@ file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/core/CMake-compile-cpp.txt
 file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/core/CMake-compile-h.txt
   MARSYAS_CORE_HEADERS)
 
+file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/marsystems/CMake-compile-cpp.txt
+  MARSYAS_MARSYSTEMS_SOURCES)
+file(STRINGS ${CMAKE_SOURCE_DIR}/marsyas/marsystems/CMake-compile-h.txt
+  MARSYAS_MARSYSTEMS_HEADERS)
+
 
 ## split dirs
 include_directories(${CMAKE_SOURCE_DIR}/marsyas/core/)
+include_directories(${CMAKE_SOURCE_DIR}/marsyas/marsystems/)
 include_directories(${CMAKE_SOURCE_DIR}/marsyas/optional/)
 
 # this doesn't work, so I expanded it below:
@@ -20,6 +26,12 @@ foreach (filename ${MARSYAS_CORE_SOURCES})
 endforeach()
 foreach (filename ${MARSYAS_CORE_HEADERS})
 	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/core/${filename})
+endforeach()
+foreach (filename ${MARSYAS_MARSYSTEMS_SOURCES})
+	list(APPEND Marsyas_SOURCES ${CMAKE_SOURCE_DIR}/marsyas/marsystems/${filename})
+endforeach()
+foreach (filename ${MARSYAS_MARSYSTEMS_HEADERS})
+	list(APPEND Marsyas_HEADERS ${CMAKE_SOURCE_DIR}/marsyas/marsystems/${filename})
 endforeach()
 
 

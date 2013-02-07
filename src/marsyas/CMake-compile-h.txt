@@ -118,7 +118,6 @@ Flux.h
 FMeasure.h
 FM.h
 FullWaveRectifier.h
-Gain.h
 GaussianClassifier.h
 GMMClassifier.h
 GStreamerSource.h

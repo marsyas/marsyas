@@ -113,7 +113,6 @@ Flux.cpp
 FM.cpp
 FMeasure.cpp
 FullWaveRectifier.cpp
-Gain.cpp
 GaussianClassifier.cpp
 GMMClassifier.cpp
 GStreamerSource.cpp
