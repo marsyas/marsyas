@@ -212,6 +212,7 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 			//cout<<B<<"\t"<<freq<<"\t"<<bin<<endl;
 			mrs_real low = bin - width * inObservations_;
 			mrs_real high = bin + width * inObservations_;
+            //cout<<low<<"\t"<<high<<endl;
             //cout<<low*bin2freq<<"\t"<<high*bin2freq<<endl;
 			mrs_real magnitude = find_peak_magnitude(bin, in, t, low, high);
 			if (magnitude == 0)

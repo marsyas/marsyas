@@ -108,13 +108,14 @@ toy_with_harmonicStrength(mrs_string sfname)
 	net->addMarSystem(mng.create("Windowing", "win"));
 	net->addMarSystem(mng.create("Spectrum", "spec"));
 	net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
-	net->addMarSystem(mng.create("RemoveObservations", "ro"));
+	//net->addMarSystem(mng.create("RemoveObservations", "ro"));
 	net->addMarSystem(mng.create("HarmonicStrength", "harm"));
+
 	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
-	net->updControl("mrs_natural/inSamples", 512);
-	net->updControl("ShiftInput/si/mrs_natural/winSize", 1024);
+	net->updControl("mrs_natural/inSamples", 2048);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", 4096);
 	net->updControl("Windowing/win/mrs_string/type", "Hanning");
-	net->updControl("RemoveObservations/ro/mrs_real/highCutoff", 0.25);
+	//net->updControl("RemoveObservations/ro/mrs_real/highCutoff", 0.25);
 
 	mrs_natural num_harmonics = 5;
 	realvec harmonics(num_harmonics);
@@ -139,9 +140,10 @@ toy_with_harmonicStrength(mrs_string sfname)
 
 	//net->updControl("HarmonicStrength/harm/mrs_realvec/harmonics", harmonics);
 	net->updControl("HarmonicStrength/harm/mrs_natural/harmonicsSize", num_harmonics);
-	net->updControl("HarmonicStrength/harm/mrs_real/harmonicsWidth", 0.01);
+	net->updControl("HarmonicStrength/harm/mrs_real/harmonicsWidth", 0.001);
 	net->updControl("HarmonicStrength/harm/mrs_natural/type", 0);
 	net->updControl("HarmonicStrength/harm/mrs_real/base_frequency", 1000.0);
+	//net->updControl("HarmonicStrength/harm/mrs_real/base_frequency", 65.0);
     // typical value for piano strings
 	net->updControl("HarmonicStrength/harm/mrs_real/inharmonicity_B", 2e-5);
 

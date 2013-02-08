@@ -94,7 +94,8 @@ SpectralFlatnessAllBands::myProcess(realvec& in, realvec& out)
 		if (arithmetic_mean > 0) {
 			out(0, t) = geometric_mean / arithmetic_mean;
 		} else {
-			out(0, t) = 0.0;
+            // treat complete silence as white noise
+			out(0, t) = 1.0;
 		}
 	}
 
