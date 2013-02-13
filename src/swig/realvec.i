@@ -1,7 +1,7 @@
 %module realvec
 
 %{
-#include <marsyas/realvec.h>
+#include <marsyas/core/realvec.h>
 
 using namespace Marsyas;
 
