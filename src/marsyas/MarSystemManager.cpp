@@ -94,7 +94,6 @@
 #include "GMMClassifier.h"
 #include "Gain.h"
 #include "GaussianClassifier.h"
-#include "GStreamerSource.h"
 #include "HWPS.h"
 #include "HalfWaveRectifier.h"
 #include "HarmonicEnhancer.h"
@@ -107,9 +106,6 @@
 #include "LSP.h"
 #include "LyonPassiveEar.h"
 #include "MFCC.h"
-#ifdef MARSYAS_LAME
-#include "MP3FileSink.h"
-#endif
 #include "MarSystem.h"
 #include "MarSystemManager.h"
 #include "MarSystemTemplateMedium.h"
@@ -282,6 +278,12 @@
 #include "SpectralCentroidBandNorm.h"
 //modifyHeader
 
+#ifdef MARSYAS_GSTREAMER
+#include "GStreamerSource.h"
+#endif
+#ifdef MARSYAS_LAME
+#include "MP3FileSink.h"
+#endif
 
 using std::ostringstream;
 using std::map;
@@ -375,7 +377,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("GMMClassifier", new GMMClassifier("gmmsp"));
 	registerPrototype("Gain", new Gain("gp"));
 	registerPrototype("GaussianClassifier", new GaussianClassifier("gaussp"));
-	registerPrototype("GStreamerSource", new GStreamerSource("gstp"));
 	registerPrototype("HWPS", new HWPS("hwpspr"));
 	registerPrototype("HalfWaveRectifier", new HalfWaveRectifier("hwrp"));
 	registerPrototype("HarmonicEnhancer", new HarmonicEnhancer("hepr"));
@@ -390,9 +391,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("LSP", new LSP("lsppr"));
 	registerPrototype("LyonPassiveEar", new LyonPassiveEar("lyonp"));
 	registerPrototype("MFCC", new MFCC("mfcc"));
-#ifdef MARSYAS_LAME
-	registerPrototype("MP3FileSink", new MP3FileSink("sfsp"));
-#endif
 	registerPrototype("MarSystemTemplateMedium", new MarSystemTemplateMedium("marsystemtemplatemediumpr"));
 	registerPrototype("MathPower", new MathPower("mathpowerpr"));
 	registerPrototype("MaxArgMax", new MaxArgMax("mxrp"));
@@ -553,6 +551,14 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("DPWOsc", new DPWOsc("dpwoscpr"));
 	registerPrototype("SpectralCentroidBandNorm", new SpectralCentroidBandNorm("spectralcentroidbandnormpr"));
 	//modifyRegister
+
+    // optional MarSystems
+#ifdef MARSYAS_GSTREAMER
+	registerPrototype("GStreamerSource", new GStreamerSource("gstp"));
+#endif
+#ifdef MARSYAS_LAME
+	registerPrototype("MP3FileSink", new MP3FileSink("sfsp"));
+#endif
 
 	//***************************************************************************************
 	//				Composite MarSystem prototypes

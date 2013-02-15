@@ -120,7 +120,6 @@ FM.h
 FullWaveRectifier.h
 GaussianClassifier.h
 GMMClassifier.h
-GStreamerSource.h
 HalfWaveRectifier.h
 HarmonicEnhancer.h
 HarmonicStrength.h

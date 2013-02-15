@@ -115,7 +115,6 @@ FMeasure.cpp
 FullWaveRectifier.cpp
 GaussianClassifier.cpp
 GMMClassifier.cpp
-GStreamerSource.cpp
 HalfWaveRectifier.cpp
 HarmonicEnhancer.cpp
 HarmonicStrength.cpp

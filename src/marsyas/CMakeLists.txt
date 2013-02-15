@@ -146,6 +146,8 @@ endif (MARSYAS_VORBIS)
 
 if (MARSYAS_GSTREAMER)
 #	list(APPEND Marsyas_SOURCES GStreamerSource.cpp)
+	list(APPEND Marsyas_SOURCES optional/GStreamerSource.cpp)
+	list(APPEND Marsyas_HEADERS optional/GStreamerSource.h)
 	include_directories(${GSTREAMER_INCLUDE_DIRS})
 endif (MARSYAS_GSTREAMER)
 
