@@ -32,6 +32,7 @@ TimelineLabeler::TimelineLabeler(mrs_string name):MarSystem("TimelineLabeler", n
 	selectedLabel_ = "init";
 	curRegion_ = 0;
 	foundNextRegion_ = false;
+    noLabelFile_ = false;
 }
 
 TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
@@ -58,6 +59,7 @@ TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
 	selectedLabel_ = "init";
 	curRegion_ = 0;
 	foundNextRegion_ = false;
+    noLabelFile_ = false;
 }
 
 TimelineLabeler::~TimelineLabeler()
@@ -137,7 +139,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 		///////////////////////////////////////////////////////////////////////
 		// check this is a different label file than the one currently loaded
 		///////////////////////////////////////////////////////////////////////
-		if(fname != timeline_.filename() && fname != "") 
+		if(fname != timeline_.filename() && fname != "" && !noLabelFile_)
 		{
 		  
 			//It is different - try to read the timeline into memory
@@ -164,6 +166,7 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 			else //some problem occurred when reading the timeline file...
 			{
 				MRSWARN("TimelineLabeler::myUpdate() - error reading label file " << labelFilesVec_[(mrs_natural) (ctrl_currentLabelFile_->to<mrs_real>()+0.5)]);
+                noLabelFile_ = true;
 				numClasses_ = 0;
 				ctrl_nLabels_->setValue(numClasses_, NOUPDATE);
 				ctrl_labelNames_->setValue(",", NOUPDATE);
@@ -243,10 +246,14 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 	//bypass audio input to output 
 	out = in;
 
+    if (noLabelFile_) {
+		ctrl_currentLabel_->setValue(-2.0); //no labels defined...
+ 		return;
+    }
  	if(timeline_.numRegions() == 0)
  	{
 		MRSWARN("TimelineLabeler::myProcess() - no regions/labels exist in loaded timeline: " << timeline_.filename());
-		ctrl_currentLabel_->setValue(-1.0); //no labels defined...
+		ctrl_currentLabel_->setValue(-2.0); //no labels defined...
  		return;
  	}
 
@@ -281,7 +288,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 			 
 		}
 		else
-			ctrl_currentLabel_->setValue(-1.0);
+			ctrl_currentLabel_->setValue(-2.0);
 		
         // prepare to move to the next region if the next sample
         // would fall outside of the current region
@@ -401,7 +408,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 					ctrl_pos_->setValue(regionStart);
 				}
 				//i.e. outside a region: signal that no label is defined for this audio frame
-				ctrl_currentLabel_->setValue(-1.0); 
+				ctrl_currentLabel_->setValue(-2.0); 
 			}
 		}
 		else //no more regions in this timeline...
@@ -416,7 +423,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 				//fast forward to next region (at next tick)
 				ctrl_advance_->setValue(1);
 			}
-			ctrl_currentLabel_->setValue(-1.0); //i.e. no region/label defined for this audio frame
+			ctrl_currentLabel_->setValue(-2.0); //i.e. no region/label defined for this audio frame
 		}
 	}
     //cout<<"\t"<<ctrl_advance_->to<mrs_natural>();

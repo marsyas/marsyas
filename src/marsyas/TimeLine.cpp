@@ -337,7 +337,7 @@ TimeLine::load(mrs_string filename, mrs_string lexicon_labels)
 	in.open(filename.c_str());
 	if(!in.is_open())
 	{
-		MRSERR("TimeLine::load() -  Problem opening file " << filename_);
+		MRSWARN("TimeLine::load() -  Problem opening file " << filename_);
 		return false;
 	}
 

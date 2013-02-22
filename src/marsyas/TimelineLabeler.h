@@ -121,6 +121,7 @@ private:
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
+    mrs_bool noLabelFile_;
 
 public:
 	TimelineLabeler(std::string name);
