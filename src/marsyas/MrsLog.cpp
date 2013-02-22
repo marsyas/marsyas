@@ -50,7 +50,7 @@ MrsLog::mrsMessage(const ostringstream& oss)
 #endif
 
 #ifdef MARSYAS_LOG2STDERR
-		cerr << "[MRS_MESSAGE] " << oss.str() << endl;
+        std::cerr << "[MRS_MESSAGE] " << oss.str() << endl;
 #endif      
 
 #ifdef MARSYAS_LOG2FILE
@@ -88,7 +88,7 @@ MrsLog::mrsErr(const ostringstream& oss)
 #endif
 
 #ifdef MARSYAS_LOG2STDERR
-	cerr << "[MRSERR] " << oss.str() << endl;
+    std::cerr << "[MRSERR] " << oss.str() << endl;
 #endif 
 
 #ifdef MARSYAS_LOG2FILE
@@ -120,7 +120,7 @@ MrsLog::mrsWarning(const ostringstream& oss)
 #endif
 
 #ifdef MARSYAS_LOG2STDERR
-		cerr << "[MRS_WARNING] " << oss.str() << endl;
+		std::cerr << "[MRS_WARNING] " << oss.str() << endl;
 #endif      
 
 #ifdef MARSYAS_LOG2FILE
@@ -156,7 +156,7 @@ MrsLog::mrsDiagnostic(const ostringstream& oss)
 
 
 #ifdef MARSYAS_LOG2STDERR
-	cerr << "[MRS_DIAG] " << oss.str() << endl;
+	std::cerr << "[MRS_DIAG] " << oss.str() << endl;
 #endif
 
 #ifdef MARSYAS_LOG2FILE
@@ -188,7 +188,7 @@ MrsLog::mrsDebug(const ostringstream& oss)
 #endif
 
 #ifdef MARSYAS_LOG2STDERR
-	cerr << "[MRS_DEBUG] " << oss.str() << endl;
+	std::cerr << "[MRS_DEBUG] " << oss.str() << endl;
 #endif
 
 
