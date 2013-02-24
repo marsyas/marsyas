@@ -86,12 +86,12 @@ ShiftInput::myUpdate(MarControlPtr sender)
 	if (hopSize_ < winSize_)
 	{
 		outSavedData_.stretch(ctrl_inObservations_->to<mrs_natural>(), winSize_ - hopSize_);
-		// somehow this happens when calling this in
-		// python+swig, but not in C++.  weird.  :(   -gp
 		if (hopSize_ == 0) {
 			addToStabilizingDelay_ = 0;
 		} else {
-			addToStabilizingDelay_ = (mrs_natural) ceil(((mrs_real) winSize_ / hopSize_)) - 1;
+			mrs_natural full = (mrs_natural) (((mrs_real) winSize_ / hopSize_));
+			addToStabilizingDelay_ = ((mrs_natural) ceil(((mrs_real) winSize_ / hopSize_)-full)) + full - 1;
+            //cout<<winSize_ <<"\t"<<hopSize_ <<"\t"<< (mrs_real) winSize_ / hopSize_<<"\t"<<full<<"\t"<<addToStabilizingDelay_<<endl;
 		}
 	} else {
 		addToStabilizingDelay_ = 0;
