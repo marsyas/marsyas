@@ -40,6 +40,7 @@ namespace Marsyas
 	class WavFileSource: public AbsSoundFileSource
 	{
 		private:
+			int *idata_;
 			short *sdata_;
 			unsigned char *cdata_;
   
@@ -49,6 +50,7 @@ namespace Marsyas
 			mrs_natural sampleSize_; //in bytes
 			mrs_natural csize_;
 			mrs_natural size_;  
+			int ival_;
 			short sval_;
 			unsigned short bits_;
 			MarControlPtr ctrl_pos_;
@@ -56,6 +58,7 @@ namespace Marsyas
 			void addControls();
 			void myUpdate(MarControlPtr sender);
 			unsigned long ByteSwapLong(unsigned long nLongNumber);
+			unsigned int ByteSwapInt(unsigned int nInt);
 			unsigned short ByteSwapShort (unsigned short nValue);
   
 			mrs_natural nChannels_;
@@ -71,6 +74,7 @@ namespace Marsyas
 			mrs_real repetitions_;
 			mrs_real duration_;
   
+			mrs_natural getLinear32(realvec& win); 
 			mrs_natural getLinear16(realvec& win); 
 			mrs_natural getLinear8(realvec& win); 
 

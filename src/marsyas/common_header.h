@@ -63,6 +63,8 @@ namespace Marsyas
 //used for PCM audio => should not be changed!
 #define PCM_MAXSHRT 32767 
 #define PCM_FMAXSHRT 32767.0f 
+#define PCM_MAXINT 2147483647
+#define PCM_FMAXINT 2147483647.0f
 
 #ifndef NDEBUG
 #define MARSYAS_ASSERTS
