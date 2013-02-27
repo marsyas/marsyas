@@ -99,6 +99,21 @@ macro(timeline_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
 	)
 endmacro(timeline_test)
 
+macro(sfplugin_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT TEST_FILE)
+  add_test( ${REG_NAME}-bextract
+	${CMAKE_SOURCE_DIR}/../scripts/sfplugin-test-wrapper.py
+		${DIR}
+		${COMMAND_LINE_LIBRARY_ENV}
+		"${EXECUTABLE_OUTPUT_PATH}/bextract"
+		"${EXECUTABLE_OUTPUT_PATH}/sfplugin -pm"
+        ${EXTRA_BEXTRACT}
+		${MF_INPUT}
+        ${TEST_OUTPUT}/${REG_NAME}.mpl
+        ${TEST_INPUT}/${TEST_FILE}
+        ${TEST_OUTPUT}/${REG_NAME}.txt
+	)
+endmacro(sfplugin_test)
+
 
 ### bextract + kea tests
 bextract_kea_test( basic-waves
@@ -117,6 +132,12 @@ bextract_test( basic-waves-regression
 timeline_test( timeline-simple
   ${TEST_INPUT} timeline-sine2048-square2048.mf
   "-m 0 -rlf -t"
+)
+
+sfplugin_test( sfplugin-simple
+  ${TEST_INPUT} timeline-sine2048-square2048.mf
+  "-ws 128 -hp 128 -pm"
+  bd22k.wav
 )
 
 
