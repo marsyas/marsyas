@@ -31,6 +31,7 @@ Sum::Sum(const Sum& a): MarSystem(a)
   ctrl_weight_ = getctrl("mrs_real/weight");
   ctrl_stereo_ = getctrl("mrs_bool/stereo");
   ctrl_mode_ = getctrl("mrs_string/mode");
+  setctrlState("mrs_string/mode", true);
 }
 
 
