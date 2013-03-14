@@ -51,6 +51,7 @@ mrs_real start = 0.0;
 mrs_real length = -1.0;
 mrs_real gain = 1.0;
 mrs_bool pluginMute = 0.0;
+mrs_bool csvOutput = false;
 mrs_bool playback = false;
 mrs_bool lexiconopt = false;
 mrs_natural cmopt = 40;
@@ -431,6 +432,7 @@ printHelp(string progName)
   cerr << "-e  --extractor    : extractor " << endl;
   cerr << "-p  --plugin       : output plugin name " << endl;
   cerr << "-pm --pluginmute   : mute the plugin " << endl;
+  cerr << "-csv --csvoutput   : output confidence values in sfplugin in csv format"<<endl;
   cerr << "-pb --playback     : playback during feature extraction " << endl;
   cerr << "-s  --start        : playback start offset in seconds " << endl;
   cerr << "-sh --shuffle      : shuffle collection file before processing" << endl;
@@ -2372,6 +2374,10 @@ bextract_train_refactored(string pluginName,  string wekafname,
 	bextractNetwork->addMarSystem(mng.create("Confidence", "confidence"));
 	bextractNetwork->updControl("Confidence/confidence/mrs_natural/memSize", cmopt);
 
+    if (csvOutput) {
+      bextractNetwork->updControl("Confidence/confidence/mrs_bool/csvOutput", csvOutput);
+    }
+
 	// link confidence and annotation with SoundFileSource that plays the collection
 	bextractNetwork->linkControl("Confidence/confidence/mrs_string/fileName",
 								 "mrs_string/filename");
@@ -3097,6 +3103,7 @@ initOptions()
   cmd_options.addStringOption("classifier", "cl", EMPTYSTRING);
   cmd_options.addBoolOption("timeline", "t", false);
   cmd_options.addBoolOption("pluginmute", "pm", false);
+  cmd_options.addBoolOption("csvoutput", "csv", false);
   cmd_options.addBoolOption("playback", "pb", false);
   cmd_options.addStringOption("outputdir", "od", EMPTYSTRING);
   cmd_options.addStringOption("predict", "pr", EMPTYSTRING);
@@ -3150,6 +3157,7 @@ loadOptions()
   accSize_ = cmd_options.getNaturalOption("accSize");
   tline = cmd_options.getBoolOption("timeline");
   pluginMute  = cmd_options.getBoolOption("pluginmute");
+  csvOutput  = cmd_options.getBoolOption("csvoutput");
   playback = cmd_options.getBoolOption("playback");
   workspaceDir = cmd_options.getStringOption("outputdir");
   predictCollection = cmd_options.getStringOption("predict");

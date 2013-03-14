@@ -36,6 +36,7 @@ Confidence::Confidence(mrs_string name):MarSystem("Confidence",name)
 {
 	print_ = false;
 	forcePrint_ = false;
+	csvOutput_ = false;
 
 	predictions_ = 0;
 	count_ = 0;
@@ -50,6 +51,7 @@ Confidence::Confidence(const Confidence& a):MarSystem(a)
 	ctrl_nLabels_ = getctrl("mrs_natural/nLabels");
 	count_ = 0;
 	print_ = false;
+	csvOutput_ = false;
 	forcePrint_ = false;
 	write_=0;
 	oriName_ = "MARSYAS_EMPTY";
@@ -86,6 +88,8 @@ Confidence::addControls()
 	setctrlState("mrs_natural/hopSize", true);
 	addctrl("mrs_bool/fileOutput", false);
 	setctrlState("mrs_bool/fileOutput", true);
+	addctrl("mrs_bool/csvOutput", false);
+	setctrlState("mrs_bool/csvOutput", true);
 }
 
 void
@@ -107,6 +111,7 @@ Confidence::myUpdate(MarControlPtr sender)
 
 	print_ = getctrl("mrs_bool/print")->to<mrs_bool>();
 	forcePrint_ = getctrl("mrs_bool/forcePrint")->to<mrs_bool>();
+	csvOutput_ = getctrl("mrs_bool/csvOutput")->to<mrs_bool>();
 
 	for (mrs_natural i = 0; i < getctrl("mrs_natural/nLabels")->to<mrs_natural>(); ++i)
 	{
@@ -231,19 +236,23 @@ Confidence::myProcess(realvec& in, realvec& out)
 			{
 				if (print_) 
 				{
-					
-					if (max_l == max_gtl) 
-					{
-						nbCorrectFrames_ ++;
-					}
-
+                  if (max_l == max_gtl) 
+                    {
+                      nbCorrectFrames_ ++;
+                    }
+                  
+                  if (csvOutput_) 
+                    {
+                      cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << ",";
+                      cout << fixed << setprecision(3) << ((nbFrames_+memSize)*hopDuration_) - 0.001 << ",";
+                      cout << fixed << setprecision(0) << labelNames_[max_l] << ",";
+                      cout << fixed << setprecision(3) << ((confidences_(max_l) / count_)) << endl;
+                    } else {
 					cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
 					cout << fixed << setprecision(0) << "PR = " << labelNames_[max_l] << "\t" <<
-						((confidences_(max_l) / count_)) * 100.0 << setprecision(4) << "\t" << nbCorrectFrames_ * 1.0 / (nbFrames_/memSize+1);
+                      ((confidences_(max_l) / count_)) * 100.0 << setprecision(4) << "\t" << nbCorrectFrames_ * 1.0 / (nbFrames_/memSize+1);
 					cout << "\t GT = " << ground_truth_text << endl;
-					
-					
-					
+                  }
 				}
 					
 			}

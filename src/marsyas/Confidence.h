@@ -52,6 +52,7 @@ private:
   std::vector<std::string> labelNames_;
   bool print_;
   bool forcePrint_;
+  bool csvOutput_;
   mrs_natural write_;
   mrs_natural nbFrames_;
 	mrs_natural nbCorrectFrames_;
