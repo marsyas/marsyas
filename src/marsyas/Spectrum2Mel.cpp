@@ -89,6 +89,14 @@ Spectrum2Mel::myUpdate(MarControlPtr sender)
 	ctrl_onSamples_->setValue(ctrl_inSamples_, NOUPDATE);
 	ctrl_onObservations_->setValue(ctrl_melBands_, NOUPDATE);
 	ctrl_osrate_->setValue(ctrl_israte_, NOUPDATE);
+
+    // allocate memory for melMap_
+    // I'm not familiar with this algorithm so this might be
+    // wrong!  I'm just closing some memory faults!  -gp
+    // size based on its usage in ::myProcess
+    onObservations_ = ctrl_onObservations_->to<mrs_natural>();
+    melMap_.allocate(onObservations_, inObservations_);
+
 	
 	if (pmelBands_ != ctrl_melBands_->to<mrs_natural>())
 	{
@@ -177,7 +185,7 @@ Spectrum2Mel::myUpdate(MarControlPtr sender)
 		{
 			//Slaney-style mel is scaled to be approx constant E per channel
 			mrs_real diagMatrix;
-			for(o = 0; o < nfilts; ++t)
+			for(o = 0; o < nfilts; ++o)
 			{
 				diagMatrix = 2.0 / (binfrqs(o+2) - binfrqs(o));
 				for(t=0; t< N2; ++t)
