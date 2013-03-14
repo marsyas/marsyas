@@ -140,6 +140,12 @@ sfplugin_test( sfplugin-simple
   bd22k.wav
 )
 
+sfplugin_test( sfplugin-csv
+  ${TEST_INPUT} timeline-sine2048-square2048.mf
+  "-ws 128 -hp 128 -pm -csv"
+  bd22k.wav
+)
+
 
 if (EXISTS ${TEST_MINI_GENRES_DIR})
   bextract_kea_test( mini-genres
