@@ -107,7 +107,7 @@ macro(sfplugin_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT TEST_FILE)
 		"${EXECUTABLE_OUTPUT_PATH}/sfplugin -pm"
         ${EXTRA_BEXTRACT}
 		${MF_INPUT}
-        ${TEST_OUTPUT}/${REG_NAME}.mpl
+        ${TEST_TEMPDIR}/${REG_NAME}.mpl
         ${TEST_INPUT}/${TEST_FILE}
         ${TEST_OUTPUT}/${REG_NAME}.txt
 	)
@@ -135,13 +135,13 @@ timeline_test( timeline-simple
 
 sfplugin_test( sfplugin-simple
   ${TEST_INPUT} timeline-sine2048-square2048.mf
-  "-ws 128 -hp 128 -pm"
+  "-od ${TEST_TEMPDIR}/ -ws 128 -hp 128 -pm"
   bd22k.wav
 )
 
 sfplugin_test( sfplugin-csv
   ${TEST_INPUT} timeline-sine2048-square2048.mf
-  "-ws 128 -hp 128 -pm -csv"
+  "-od ${TEST_TEMPDIR}/ -ws 128 -hp 128 -pm -csv"
   bd22k.wav
 )
 
