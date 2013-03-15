@@ -92,8 +92,7 @@ macro(timeline_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
 		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
 		${EXTRA_BEXTRACT}
 		-w ${TEST_TEMPDIR}/${REG_NAME}.arff
-		#-od ${TEST_TEMPDIR}/   
-		-od ${TEST_INPUT}/    # abuse of -od to mean working dir!
+		-od ${TEST_TEMPDIR}/   
 		${MF_INPUT}
 		${TEST_OUTPUT}/${REG_NAME}.arff
 	)
