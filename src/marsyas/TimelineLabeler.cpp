@@ -112,7 +112,10 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 	//fill labelFilesVec with all timeline filenames
 	///////////////////////////////////////////////////////////////
 	mrs_string newLabelFiles = ctrl_labelFiles_->to<mrs_string>();
-	if(labelFiles_ != newLabelFiles && (newLabelFiles != "" || newLabelFiles != ","))
+    if (newLabelFiles == EMPTYSTRING) {
+        return;
+    }
+	if((labelFiles_ != newLabelFiles) && (newLabelFiles != "" || newLabelFiles != ","))
 	{
 		labelFiles_ = newLabelFiles;
 		mrs_natural i;

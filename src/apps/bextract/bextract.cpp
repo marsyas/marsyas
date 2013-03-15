@@ -2582,7 +2582,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
   }
 
 
-
+  if (tline) {
+    // prepare for generic use
+     bextractNetwork->updControl(
+        "Series/featureNetwork/TimelineLabeler/timelineLabeler/mrs_string/labelFiles", EMPTYSTRING, NOUPDATE);
+  }
 
 
   cout << "Finished feature extraction" << endl;
