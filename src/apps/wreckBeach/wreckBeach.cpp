@@ -70,10 +70,11 @@ printHelp(string progName)
 	cerr << "Usage : " << progName << " -t toy_with file1 file2 file3" << endl;
 	cerr << endl;
 	cerr << "Supported toy_with:" << endl;
+	cerr << "null            : example" << endl;
 	cerr << "harmonics       : play with HarmonicStrength" << endl;
 	cerr << "spectral_single : play with single SCF and SFM" << endl;
 	cerr << "csv_input       : play with input csv file" << endl;
-	cerr << "arff_in_out : should pass an arff file untouched" << endl;
+	cerr << "arff_in_out     : should pass an arff file untouched" << endl;
 	exit(1);
 }
 
@@ -247,6 +248,44 @@ toy_with_arff_in_out(mrs_string in_name, mrs_string out_name)
 }
 
 
+
+
+// please keep this at the end of all the toy_with_ functions.
+// to use, copy this and paste it above, then modify as needed
+void
+toy_with_null(mrs_string sfname)
+{
+	MarSystemManager mng;
+
+	MarSystem *net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("ShiftInput", "si"));
+	net->addMarSystem(mng.create("Windowing", "win"));
+    // you probably want to add more here
+
+	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
+	net->updControl("mrs_natural/inSamples", 512);
+	net->updControl("mrs_natural/inSamples", 1024);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", 512);
+	net->updControl("Windowing/win/mrs_string/type", "Hanning");
+
+	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
+	{
+		net->tick();
+#if 0
+		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+		for (mrs_natural i = 0; i<v.getSize(); ++i)
+		{
+			printf("%.5g\t", v(i));
+		}
+		cout<<endl;
+#endif
+	}
+	delete net;
+}
+
+
+
 // ********************** end toys **********
 
 int
@@ -288,7 +327,9 @@ main(int argc, const char **argv)
 	cout << "fname1 = " << fname1 << endl;
 
 
-	if (toy_with == "harmonics")
+	if (toy_with == "null")
+		toy_with_null(fname0);
+	else if (toy_with == "harmonics")
 		toy_with_harmonicStrength(fname0);
 	else if (toy_with == "spectral_single")
 		toy_with_spectral_single(fname0);
