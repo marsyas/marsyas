@@ -13,4 +13,7 @@
         </activity>
     </application>
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
+<uses-sdk android:minSdkVersion="14"
+          android:targetSdkVersion="17"
+          android:maxSdkVersion="17" />
 </manifest> 

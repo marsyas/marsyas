@@ -5,7 +5,13 @@
 
 #include <android/log.h>
 
+#ifdef MARSYSTEMMANAGER_WORKING
 #include "marsyas/MarSystemManager.h"
+#else
+#include "marsyas/Series.h"
+#include "marsyas/RealvecSource.h"
+#include "marsyas/Gain.h"
+#endif
 
 // using namespace std;
 using namespace Marsyas;
@@ -17,7 +23,9 @@ extern "C" {
   JNIEXPORT jstring JNICALL
   Java_com_example_marsyas_HelloMarsyas_tickMarsyasNetwork( JNIEnv* env, jobject obj, jshortArray arr );
 
+#ifdef MARSYSTEMMANAGER_WORKING
   MarSystemManager mng;
+#endif
   MarSystem* net;
 }
 
@@ -27,15 +35,22 @@ Java_com_example_marsyas_HelloMarsyas_setupMarsyasNetwork( JNIEnv* env, jobject 
   const static int numObservations = 5;
   const static int numSamples = 1;
   
+#ifdef MARSYSTEMMANAGER_WORKING
   net = mng.create("Series", "net");
   net->addMarSystem(mng.create("RealvecSource", "src"));
   net->addMarSystem(mng.create("Gain", "gain"));
+#else
+  net = new Series("net");
+  net->addMarSystem(new RealvecSource("src"));
+  net->addMarSystem(new Gain("gain"));
+#endif
 
   net->updControl("Gain/gain/mrs_real/gain", 2.0);
   
   net->updControl("mrs_natural/inObservations", numObservations);
   net->updControl("mrs_natural/inSamples", numSamples);
 
+  return env->NewStringUTF("ok");
 }
 
 JNIEXPORT jstring JNICALL

@@ -26,7 +26,9 @@ public class HelloMarsyas extends Activity
 	public int audioEncoding = AudioFormat.ENCODING_PCM_16BIT; 
 	public static short[] buffer; //+-32767 
 	public static final int SAMPPERSEC = 8000; //samp per sec 8000, 11025, 22050 44100 or 48000 
+	public TextView timeDisplay;
 
+	public int dumpcount = 0;
 	public static int[] test_buf; //+-32767    	 
 	
 	public class MyCount extends CountDownTimer {
@@ -34,7 +36,7 @@ public class HelloMarsyas extends Activity
           super(millisInFuture, countDownInterval);
         }
         public void onFinish() {
-          timeDisplay.setText("Done!");
+        	done();
         }
         public void onTick(long millisUntilFinished) {
         	trigger();
@@ -43,7 +45,6 @@ public class HelloMarsyas extends Activity
         }
        }
 	
-	 TextView timeDisplay;
 	 
     /** Called when the activity is first created. */
     @Override
@@ -58,14 +59,14 @@ public class HelloMarsyas extends Activity
 	    this.setContentView(timeDisplay);
 	    setContentView(timeDisplay);
 	    
-	    setupMarsyasNetwork();
+	    setupMarsyasNetwork(); // actual marsyas
 	    
         //TextView  tv = new TextView(this);
         //tv.setText( stringFromJNI() );
         //tv.setText( "test" );
         //setContentView(tv);
         
-        MyCount counter = new MyCount(1000000, 1000);
+        MyCount counter = new MyCount(5000, 1000);
         counter.start();
     
         buffersizebytes = AudioRecord.getMinBufferSize(SAMPPERSEC,channelConfiguration,audioEncoding); //4096 on ion 
@@ -104,15 +105,20 @@ public class HelloMarsyas extends Activity
    	 TextView tv = new TextView(this); 
    	 setContentView(tv); 
    	 tv.setTextColor(Color.WHITE); 
-   	 tv.setText("buffersizebytes "+buffersizebytes+"\n"); 
-   	 //for(int i = 0; i < 256; i++){ 
-   	//	 tv.append(" "+buffer[i]); 
-   	 //} 
+   	 tv.setText("buffersizebytes "+buffersizebytes+"   count: "+dumpcount+"\n");
+   	 dumpcount ++;
 
-   	 tv.append(tickMarsyasNetwork(buffer));
-   	 //tv.append(tickMarsyasNetwork());
+   	 tv.append(tickMarsyasNetwork(buffer)); // actual marsyas
    	 tv.invalidate(); 
     } 
+    
+    public void done(){ 
+     	 TextView tv = new TextView(this); 
+      	 setContentView(tv); 
+      	 tv.setTextColor(Color.WHITE); 
+      	 tv.setText("done\n");
+      	 tv.invalidate();
+   } 
     
     /* A native method that is implemented by the
      * 'hellomarsyas' native library, which is packaged
