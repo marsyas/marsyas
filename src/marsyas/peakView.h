@@ -19,7 +19,7 @@
 #ifndef MARSYAS_PEAKVIEW_H
 #define MARSYAS_PEAKVIEW_H 
 
-#include "realvec.h"
+#include "core/realvec.h"
 #include <vector>
 #include "DLLDefines.h"
 

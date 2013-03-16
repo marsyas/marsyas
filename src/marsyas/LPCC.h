@@ -20,7 +20,7 @@
 #define MARSYAS_LPCC_H
 
 #include "MarSystem.h"
-#include "realvec.h"
+#include "core/realvec.h"
 
 namespace Marsyas
 {

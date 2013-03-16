@@ -39,7 +39,7 @@ Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 #include <sstream> 
 #include <vector>
 
-#include "realvec.h"
+#include "core/realvec.h"
 #include "common_header.h"
 
 #include "engine.h" //$(MATLAB)\extern\include

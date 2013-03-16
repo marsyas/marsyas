@@ -21,7 +21,7 @@
 
 #include <vector>
 #include "common_header.h"
-#include "realvec.h"
+#include "core/realvec.h"
 
 namespace Marsyas
 {

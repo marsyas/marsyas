@@ -17,7 +17,7 @@
 */
 
 #include "Conversions.h"
-#include "realvec.h"
+#include "core/realvec.h"
 
 using std::ostringstream;
 using namespace Marsyas;

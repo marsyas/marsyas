@@ -19,7 +19,7 @@
 #ifndef MARSYAS_SOUNDFILESOURCE_H
 #define MARSYAS_SOUNDFILESOURCE_H
 
-#include "realvec.h"
+#include "core/realvec.h"
 #include "AuFileSource.h"
 #include "WavFileSource.h"
 #include "RawFileSource.h"

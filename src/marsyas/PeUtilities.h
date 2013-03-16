@@ -20,7 +20,7 @@
 #define MARSYAS_PEUTILITIES_H
 
 #include "MarSystemManager.h"
-#include "realvec.h"
+#include "core/realvec.h"
 #include "DLLDefines.h"
 #include <fstream>
 #include <string>
