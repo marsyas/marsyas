@@ -95,7 +95,6 @@ Spectrum2Mel::myUpdate(MarControlPtr sender)
     // wrong!  I'm just closing some memory faults!  -gp
     // size based on its usage in ::myProcess
     onObservations_ = ctrl_onObservations_->to<mrs_natural>();
-    melMap_.allocate(onObservations_, inObservations_);
 
 	
 	if (pmelBands_ != ctrl_melBands_->to<mrs_natural>())
@@ -123,6 +122,8 @@ Spectrum2Mel::myUpdate(MarControlPtr sender)
 		phtkMel_ != ctrl_htkMel_->to<mrs_bool>() ||
 		pconstAmp_ != ctrl_constAmp_->to<mrs_bool>())
 	{
+        melMap_.allocate(onObservations_, inObservations_);
+
 		mrs_natural nfilts = ctrl_melBands_->to<mrs_natural>();
 		bool htkmel = ctrl_htkMel_->to<mrs_bool>();
 		mrs_natural N2 = inObservations_;// we get N/2+1 spectrum points at the input...
@@ -142,8 +143,9 @@ Spectrum2Mel::myUpdate(MarControlPtr sender)
 
 		//calculate the frequencies (in Hz) for each spectrum bin
 		realvec fftfreqs(N2);
-		for(o=0; o < N2; ++o)
-			fftfreqs(o) = o / N * srate;
+		for(o=0; o < N2; ++o) {
+			fftfreqs(o) = o / (float)N * srate;
+        }
 
 		// 'Center freqs' of mel bands - uniformly spaced between limits
 		mrs_real minmel = hertz2mel(ctrl_bandLowEdge_->to<mrs_real>(), htkmel);
@@ -160,10 +162,13 @@ Spectrum2Mel::myUpdate(MarControlPtr sender)
 		mrs_real width = ctrl_bandWidth_->to<mrs_real>();
 		realvec loslope(N2);
 		realvec hislope(N2);
+
 		for(mrs_natural i=0; i < nfilts; ++i)
 		{
-			for(t=0; t<3; ++t)
+			for(t=0; t<3; ++t) {
 				fs(t) = binfrqs(i+t);
+            }
+            //cout<<endl;
 
 			//scale by width
 			for(t=0; t<3; ++t)

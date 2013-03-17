@@ -75,6 +75,7 @@ printHelp(string progName)
 	cerr << "spectral_single : play with single SCF and SFM" << endl;
 	cerr << "csv_input       : play with input csv file" << endl;
 	cerr << "arff_in_out     : should pass an arff file untouched" << endl;
+	cerr << "mel             : spectrum2mel" << endl;
 	exit(1);
 }
 
@@ -247,6 +248,41 @@ toy_with_arff_in_out(mrs_string in_name, mrs_string out_name)
 	delete net;
 }
 
+void
+toy_with_mel(mrs_string sfname)
+{
+	MarSystemManager mng;
+
+	MarSystem *net = mng.create("Series", "net");
+	net->addMarSystem(mng.create("SoundFileSource", "src"));
+	net->addMarSystem(mng.create("ShiftInput", "si"));
+	net->addMarSystem(mng.create("Windowing", "win"));
+    // you probably want to add more here
+	net->addMarSystem(mng.create("Spectrum", "spec"));
+	net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
+	net->addMarSystem(mng.create("Spectrum2Mel", "s2m"));
+
+	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
+	net->updControl("mrs_natural/inSamples", 512);
+	net->updControl("mrs_natural/inSamples", 1024);
+	net->updControl("ShiftInput/si/mrs_natural/winSize", 512);
+	net->updControl("Windowing/win/mrs_string/type", "Hanning");
+
+	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
+	{
+		net->tick();
+#if 1
+		mrs_realvec v = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+        cout<<"--------------"<<endl;
+		for (mrs_natural i = 0; i<v.getSize(); ++i)
+		{
+			printf("%.5g\t", v(i));
+		}
+		cout<<endl;
+#endif
+	}
+	delete net;
+}
 
 
 
@@ -260,14 +296,12 @@ toy_with_null(mrs_string sfname)
 	MarSystem *net = mng.create("Series", "net");
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
-	net->addMarSystem(mng.create("Windowing", "win"));
     // you probably want to add more here
 
 	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
 	net->updControl("mrs_natural/inSamples", 512);
 	net->updControl("mrs_natural/inSamples", 1024);
 	net->updControl("ShiftInput/si/mrs_natural/winSize", 512);
-	net->updControl("Windowing/win/mrs_string/type", "Hanning");
 
 	while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() )
 	{
@@ -337,6 +371,8 @@ main(int argc, const char **argv)
 		toy_with_csv_input(fname0);
 	else if (toy_with == "arff_in_out")
 		toy_with_arff_in_out(fname0, fname1);
+	else if (toy_with == "mel")
+		toy_with_mel(fname0);
 	else
 	{
 		cout << "Unsupported toy_with " << endl;
