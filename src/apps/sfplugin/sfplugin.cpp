@@ -42,9 +42,9 @@ int usageopt;
 bool verboseopt;
 
 long offset = 0;
-long duration = 1000 * 44100;
+long duration = 10000 * 44100;
 float start = 0.0f;
-float length = 1000.0f;
+float length = 10000.0f;
 float gain = 1.0f;
 float repetitions = 1; 
 bool loop = false;
@@ -188,7 +188,7 @@ initOptions()
 	cmd_options.addBoolOption("verbose", "v", false);
 	cmd_options.addRealOption("start", "sa", 0.0f);
 	cmd_options.addStringOption("output", "o", EMPTYSTRING);
-	cmd_options.addRealOption("length", "ln", 1000.0f);
+	cmd_options.addRealOption("length", "ln", 10000.0f);
 	cmd_options.addRealOption("gain", "g", 1.0);
 	cmd_options.addStringOption("plugin", "pl", EMPTYSTRING);
 	cmd_options.addRealOption("repetitions", "r", 1.0);
