@@ -17,11 +17,13 @@
 using namespace Marsyas;
 
 extern "C" {
-  JNIEXPORT jstring JNICALL
-  Java_com_example_marsyas_HelloMarsyas_setupMarsyasNetwork( JNIEnv* env, jobject obj );
+  JNIEXPORT bool JNICALL
+  Java_com_example_marsyas_HelloMarsyas_setupMarsyasNetwork(
+    JNIEnv* env, jobject obj );
 
-  JNIEXPORT jstring JNICALL
-  Java_com_example_marsyas_HelloMarsyas_tickMarsyasNetwork( JNIEnv* env, jobject obj, jshortArray arr );
+  JNIEXPORT bool JNICALL
+  Java_com_example_marsyas_HelloMarsyas_tickMarsyasNetwork(
+    JNIEnv* env, jobject obj, jshortArray arr, jint numSamples );
 
 #ifdef MARSYSTEMMANAGER_WORKING
   MarSystemManager mng;
@@ -29,7 +31,7 @@ extern "C" {
   MarSystem* net;
 }
 
-JNIEXPORT jstring JNICALL
+JNIEXPORT bool JNICALL
 Java_com_example_marsyas_HelloMarsyas_setupMarsyasNetwork( JNIEnv* env, jobject obj )
 {
   const static int numObservations = 5;
@@ -50,16 +52,30 @@ Java_com_example_marsyas_HelloMarsyas_setupMarsyasNetwork( JNIEnv* env, jobject 
   net->updControl("mrs_natural/inObservations", numObservations);
   net->updControl("mrs_natural/inSamples", numSamples);
 
-  return env->NewStringUTF("ok");
+  return true;
 }
 
-JNIEXPORT jstring JNICALL
-Java_com_example_marsyas_HelloMarsyas_tickMarsyasNetwork( JNIEnv* env, jobject obj, jshortArray arr )
+JNIEXPORT bool JNICALL
+Java_com_example_marsyas_HelloMarsyas_tickMarsyasNetwork( JNIEnv* env, jobject obj,
+    jshortArray arr, jint numSamples)
 // Java_com_example_marsyas_HelloMarsyas_tickMarsyasNetwork( JNIEnv* env, jobject obj, jshortArray arr )
 // Java_com_example_marsyas_HelloMarsyas_tickMarsyasNetwork( JNIEnv* env, jobject obj)
 {
+
+  jshort buf[10];
+  env->GetShortArrayRegion(arr, 0, 10, buf);
+
+  std::ostringstream oss;
+  for (int i=0; i<10; i++) {
+    oss<< buf[i] <<"\t";
+  }
+  oss<<std::endl;
+
+  __android_log_write(ANDROID_LOG_ERROR,"hellomarsyas",oss.str().c_str());
+ 
+/*
   const static int numObservations = 5;
-  const static int numSamples = 1;
+  //const static int numSamples = 1;
 
   jshort buf[10];
   env->GetShortArrayRegion(arr, 0, 10, buf);
@@ -103,7 +119,9 @@ Java_com_example_marsyas_HelloMarsyas_tickMarsyasNetwork( JNIEnv* env, jobject o
   str += oss.str();
   jstring jstr = env->NewStringUTF(str.c_str());
 
-
+  jstring jstr("hi");
   // jstring jstr = env->NewStringUTF("Marsyas - SineSource + Gain");
   return jstr;
+*/
+    return true;
 }
