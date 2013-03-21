@@ -118,10 +118,13 @@ private:
 	mrs_natural numClasses_;
 	mrs_natural curRegion_;
 	mrs_bool foundNextRegion_;
+    mrs_bool myAdvance_; // ctrl_advance gets overwritten by CollectionFileSoruce
 
 	void addControls();
 	void myUpdate(MarControlPtr sender);
     mrs_bool noLabelFile_;
+
+    mrs_bool load_next_region_file();
 
 public:
 	TimelineLabeler(std::string name);

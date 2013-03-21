@@ -33,6 +33,7 @@ TimelineLabeler::TimelineLabeler(mrs_string name):MarSystem("TimelineLabeler", n
 	curRegion_ = 0;
 	foundNextRegion_ = false;
     noLabelFile_ = false;
+    myAdvance_ = false;
 }
 
 TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
@@ -60,6 +61,7 @@ TimelineLabeler::TimelineLabeler(const TimelineLabeler& a) : MarSystem(a)
 	curRegion_ = 0;
 	foundNextRegion_ = false;
     noLabelFile_ = false;
+    myAdvance_ = false;
 }
 
 TimelineLabeler::~TimelineLabeler()
@@ -101,34 +103,9 @@ TimelineLabeler::addControls()
 	addctrl("mrs_natural/lexiconNLabels", 0, ctrl_lexiconNLabels_);
 }
 
-void
-TimelineLabeler::myUpdate(MarControlPtr sender)
+mrs_bool
+TimelineLabeler::load_next_region_file()
 {
-	MRSDIAG("TimelineLabeler.cpp - TimelineLabeler:myUpdate");
-
-	MarSystem::myUpdate(sender);
-
-	///////////////////////////////////////////////////////////////
-	//fill labelFilesVec with all timeline filenames
-	///////////////////////////////////////////////////////////////
-	mrs_string newLabelFiles = ctrl_labelFiles_->to<mrs_string>();
-    if (newLabelFiles == EMPTYSTRING) {
-        return;
-    }
-	if((labelFiles_ != newLabelFiles) && (newLabelFiles != "" || newLabelFiles != ","))
-	{
-		labelFiles_ = newLabelFiles;
-		mrs_natural i;
-		labelFilesVec_.clear();
-		while(newLabelFiles.length() != 0 )
-		{
-			i = newLabelFiles.find(",");
-			labelFilesVec_.push_back(newLabelFiles.substr(0, i).c_str());
-			newLabelFiles = newLabelFiles.substr(i+1 , newLabelFiles.length()-i-1);
-		}
-	}
-
-	
 	//////////////////////////////////////////////////////////////////////////////////
 	//load currentLabelFile into the internal timeline memory (if not already loaded)
 	//////////////////////////////////////////////////////////////////////////////////
@@ -184,6 +161,39 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 		ctrl_labelNames_->setValue(",", NOUPDATE);
 		timeline_.clear();
 	}
+
+    return newTimeline;
+}
+
+void
+TimelineLabeler::myUpdate(MarControlPtr sender)
+{
+
+	MRSDIAG("TimelineLabeler.cpp - TimelineLabeler:myUpdate");
+
+	MarSystem::myUpdate(sender);
+
+	///////////////////////////////////////////////////////////////
+	//fill labelFilesVec with all timeline filenames
+	///////////////////////////////////////////////////////////////
+	mrs_string newLabelFiles = ctrl_labelFiles_->to<mrs_string>();
+    if (newLabelFiles == EMPTYSTRING) {
+        return;
+    }
+	if((labelFiles_ != newLabelFiles) && (newLabelFiles != "" || newLabelFiles != ","))
+	{
+		labelFiles_ = newLabelFiles;
+		mrs_natural i;
+		labelFilesVec_.clear();
+		while(newLabelFiles.length() != 0 )
+		{
+			i = newLabelFiles.find(",");
+			labelFilesVec_.push_back(newLabelFiles.substr(0, i).c_str());
+			newLabelFiles = newLabelFiles.substr(i+1 , newLabelFiles.length()-i-1);
+		}
+	}
+
+	mrs_bool newTimeline = load_next_region_file();
 
 	// override labelNames and nLabels using lexicon 
 	if (ctrl_useLexicon_->to<mrs_bool>())
@@ -243,11 +253,13 @@ TimelineLabeler::myUpdate(MarControlPtr sender)
 void
 TimelineLabeler::myProcess(realvec& in, realvec& out)
 {
-
-
 			   
 	//bypass audio input to output 
 	out = in;
+
+    if (myAdvance_) {
+	    load_next_region_file();
+    }
 
     if (noLabelFile_) {
 		ctrl_currentLabel_->setValue(-2.0); //no labels defined...
@@ -281,6 +293,7 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 		samplePos -= inSamples_/2;	
 	
     //cout<<samplePos<<"\t"<<regionStart<<"\t"<<regionEnd<<"\t";
+    //cout<<endl;
 	if (samplePos >= regionStart && samplePos<= regionEnd)
 	{
 		if(timeline_.regionName(curRegion_) == selectedLabel_ || 
@@ -298,9 +311,10 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
         if (samplePos + getctrl("mrs_natural/inSamples")->to<mrs_natural>()
             < regionEnd) {
 		        foundNextRegion_ = true;
-                //cout<<"trigger"<<endl;
+                //cout<<endl;
 				//ctrl_advance_->setValue(1, NOUPDATE);
         } else {
+                //cout<<"trigger"<<endl;
 //		    foundNextRegion_ = false;
 			////////////////////////////////////////////////////////
 			//look for the next region in this timeline
@@ -355,9 +369,10 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 				//belong to the now past region)
 				//out.setval(0.0); //[?] should we play this frame as is or just output silence?!
 
-				//fast forward to next region (at next tick)
-				ctrl_advance_->setValue(1);
 			}
+			//fast forward to next region (at next tick)
+			ctrl_advance_->setValue(1);
+            myAdvance_ = true;
 		}
         }
 	}
@@ -422,10 +437,10 @@ TimelineLabeler::myProcess(realvec& in, realvec& out)
 				//output silence (i.e. discard current frame, since most of it does not
 				//belong to the now past region)
 				//out.setval(0.0); //[?] should we play this frame as is or just output silence?!
-
-				//fast forward to next region (at next tick)
-				ctrl_advance_->setValue(1);
 			}
+			//fast forward to next region (at next tick)
+			ctrl_advance_->setValue(1);
+            myAdvance_ = true;
 			ctrl_currentLabel_->setValue(-2.0); //i.e. no region/label defined for this audio frame
 		}
 	}
