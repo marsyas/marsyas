@@ -297,6 +297,10 @@ toy_with_null(mrs_string sfname)
 	net->addMarSystem(mng.create("SoundFileSource", "src"));
 	net->addMarSystem(mng.create("ShiftInput", "si"));
     // you probably want to add more here
+	net->addMarSystem(mng.create("Spectrum", "spec"));
+	net->addMarSystem(mng.create("PowerSpectrum", "pspec"));
+	net->addMarSystem(mng.create("Spectrum2Chroma", "s2c"));
+	net->addMarSystem(mng.create("PlotSink", "ps"));
 
 	net->updControl("SoundFileSource/src/mrs_string/filename", sfname);
 	net->updControl("mrs_natural/inSamples", 512);

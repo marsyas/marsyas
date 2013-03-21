@@ -40,6 +40,8 @@ PlotSink::PlotSink(mrs_string name):MarSystem("PlotSink",name)
 
 PlotSink::PlotSink(const PlotSink& a):MarSystem(a)
 {
+	counter_ = 0;
+    single_file_ = NULL;
 	ctrl_messages_ = getctrl("mrs_bool/messages");
 	ctrl_separator_ = getctrl("mrs_string/separator");
 	ctrl_sequence_ = getctrl("mrs_bool/sequence");
