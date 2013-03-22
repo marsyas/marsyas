@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import os
+marsyas_datadir = os.environ['MARSYAS_DATADIR']
+
 class MarCollection():
     def __init__(self, mf_filename=None):
         self.data = []
@@ -28,7 +31,8 @@ class MarCollection():
             if len(line) < 2:
                 continue
             splitline = line.split('\t')
-            filename = splitline[0].rstrip()
+            filename = splitline[0].rstrip().replace(
+                "MARSYAS_DATADIR", marsyas_datadir)
             try:
                 label = splitline[1].rstrip()
             except:
