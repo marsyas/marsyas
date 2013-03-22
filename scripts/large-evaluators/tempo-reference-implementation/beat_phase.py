@@ -100,7 +100,8 @@ def beat_phase(oss_sr, oss_data, candidate_bpms_orig, plot=False):
     
 
     if plot:
-        pylab.plot(numpy.arange(len(bhisto))/4.0, bhisto,
+        pylab.figure()
+        pylab.plot(numpy.arange(len(bhisto)), bhisto,
             label="marsyas")
         #pylab.plot(numpy.arange(len(bhisto))/4.0, filt,
         #    label="extra filtered")

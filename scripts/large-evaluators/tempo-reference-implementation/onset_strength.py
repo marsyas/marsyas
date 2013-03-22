@@ -20,6 +20,13 @@ def onset_strength_signal(wav_sr, wav_data, plot=False):
         #wav_data,
         defs.OSS_WINDOWSIZE, defs.OSS_HOPSIZE)
     oss_sr = wav_sr / float(defs.OSS_HOPSIZE)
+    if defs.NAIVE_ONSET:
+        rms = numpy.sqrt( numpy.mean(overlapped**2, axis=1))
+        #dif = numpy.clip( rms[1:] - rms[:-1], 0, numpy.Inf)
+        #return oss_sr, dif
+        return oss_sr, rms
+
+
     windowed = overlapped * marsyas_hamming(
         #scipy.signal.get_window( "hamming",
         defs.OSS_WINDOWSIZE)
@@ -66,12 +73,17 @@ def onset_strength_signal(wav_sr, wav_data, plot=False):
     else:
         filtered_flux = flux
 
-    #numpy.savetxt('filtered.txt', filtered_flux)
 
     if plot:
         ts = numpy.arange( len(filtered_flux) ) / oss_sr
         pylab.plot( ts, filtered_flux)
         pylab.title("Onset strength signal")
+
+    ts = numpy.arange( len(filtered_flux) ) / oss_sr
+    numpy.savetxt('filtered.txt',
+        numpy.vstack( (ts, filtered_flux)).transpose() )
+    numpy.savetxt('flux.txt',
+        numpy.vstack( (ts, flux)).transpose() )
     return oss_sr, filtered_flux
 
 

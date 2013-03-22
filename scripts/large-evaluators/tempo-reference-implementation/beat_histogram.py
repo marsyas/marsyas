@@ -45,6 +45,11 @@ def find_peaks(signal, number=10, peak_neighbors=1):
 
     return numpy.array(peaks)
 
+def autocorr_index_to_bpm(index, oss_sr):
+    return 60.0*oss_sr / index
+def bpm_to_autocorr_index(bpm, oss_sr):
+    return 60.0*oss_sr / bpm
+
 
 def beat_histogram(oss_sr, oss_data, plot=False):
     ### overlap
@@ -58,6 +63,24 @@ def beat_histogram(oss_sr, oss_data, plot=False):
 
     ### autocorrelation
     autocorr = autocorrelation(overlapped)
+    if defs.NAIVE_INDUCTION:
+        sum_autocorr = numpy.sum(autocorr, axis=0)
+
+        # remember that autocorrelation indices are reversed
+        low  = int(bpm_to_autocorr_index(defs.BPM_MAX, oss_sr))
+        high = int(bpm_to_autocorr_index(defs.BPM_MIN, oss_sr))
+
+        bpms = autocorr_index_to_bpm( numpy.arange(low, high), oss_sr )
+        boxed_autocorr = sum_autocorr[low:high]
+
+        best_index = numpy.argmax(boxed_autocorr)
+        best_bpm   = bpms[best_index]
+        
+        #pylab.plot(bpms, boxed_autocorr)
+        #pylab.plot(best_bpm, boxed_autocorr[best_index], 'o')
+        #pylab.show()
+        return best_bpm
+        #exit(1)
 
     ### beat histogram
     Hn = numpy.zeros( (autocorr.shape[0], 4*defs.BPM_MAX) )
@@ -128,7 +151,7 @@ def beat_histogram(oss_sr, oss_data, plot=False):
             + stretched
             )
 
-        numpy.savetxt("foo-%i.txt" % i, harmonic_strengthened_bh[i])
+        #numpy.savetxt("foo-%i.txt" % i, harmonic_strengthened_bh[i])
 
     #for a in range(0, 20):
     #    numpy.savetxt("bh-combo-%i.txt" % a, harmonic_strengthened_bh[a])
@@ -149,7 +172,8 @@ def beat_histogram(oss_sr, oss_data, plot=False):
 
     if plot:
         pylab.figure()
-        pylab.plot(numpy.arange(len(Hn))/4.0, Hn)
+        sHn = numpy.sum(Hn, axis=0)
+        pylab.plot(numpy.arange(len(sHn))/4.0, sHn)
 
 
 #    folded_hist = numpy.zeros(60*4)
