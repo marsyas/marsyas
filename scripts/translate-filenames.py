@@ -11,6 +11,7 @@ DEBUG = False
 #DEBUG = True
 
 MOVE_FILES = True
+#MOVE_FILES = False
 
 
 def write_numbers(dirname, csv_filename, number_dirname):
@@ -24,7 +25,7 @@ def write_numbers(dirname, csv_filename, number_dirname):
         for filename in filenames:
             if filename.endswith(AUDIO_FILES_PATTERN):
                 joined_filename = os.path.join(root, filename)
-                local_filename = joined_filename.replace(dirname, "")
+                local_filename = os.path.relpath(joined_filename, dirname)
                 matches.append(local_filename)
     matches.sort()
     csv_filename_actual = os.path.join(dirname, csv_filename)
@@ -38,7 +39,7 @@ def write_numbers(dirname, csv_filename, number_dirname):
             number_filename = os.path.join(
                 os.path.join(number_dirname_actual,
                 '%08i.wav' % i))
-            number_filename = number_filename.replace(dirname, "")
+            number_filename = os.path.relpath(number_filename, dirname)
             ### save pair to csvfile
             csvwrite.writerow([number_filename, orig_filename])
             if DEBUG:
