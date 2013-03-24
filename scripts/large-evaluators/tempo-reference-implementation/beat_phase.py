@@ -1,7 +1,6 @@
 import numpy
 import pylab
 
-import defs
 import overlap
 
 import scipy.signal
@@ -40,7 +39,7 @@ def calc_pulse_trains(bpm, window, sr):
     return bp_max, bp_std
 
 
-def beat_phase(oss_sr, oss_data, candidate_bpms_orig, plot=False):
+def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     ### overlap
     overlapped = overlap.sliding_window(
         numpy.append(

@@ -2,7 +2,6 @@ import numpy
 import scipy.signal
 import pylab
 
-import defs
 import overlap
 
 def marsyas_hamming(N):
@@ -10,7 +9,7 @@ def marsyas_hamming(N):
     hamming = 0.54 - 0.46 * numpy.cos( 2*numpy.pi*ns / (N-1.0))
     return hamming
 
-def onset_strength_signal(wav_sr, wav_data, plot=False):
+def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
     ### overlapping time data
     # add extra window of zeros at beginning to match marsyas
     overlapped = overlap.sliding_window(
@@ -20,7 +19,7 @@ def onset_strength_signal(wav_sr, wav_data, plot=False):
         #wav_data,
         defs.OSS_WINDOWSIZE, defs.OSS_HOPSIZE)
     oss_sr = wav_sr / float(defs.OSS_HOPSIZE)
-    if defs.NAIVE_ONSET:
+    if defs.OPTIONS_ONSET == 0:
         rms = numpy.sqrt( numpy.mean(overlapped**2, axis=1))
         #dif = numpy.clip( rms[1:] - rms[:-1], 0, numpy.Inf)
         #return oss_sr, dif
@@ -56,6 +55,9 @@ def onset_strength_signal(wav_sr, wav_data, plot=False):
     #numpy.savetxt('flux.txt', flux)
     ### clear out first window
     #flux[0] = 0.0
+    if defs.OPTIONS_ONSET == 1:
+        return oss_sr, flux
+        
 
     if plot:
         ts = numpy.arange( len(flux) ) / oss_sr
@@ -65,11 +67,11 @@ def onset_strength_signal(wav_sr, wav_data, plot=False):
     if defs.OSS_LOWPASS_CUTOFF > 0:
         b = scipy.signal.firwin(defs.OSS_LOWPASS_N,
             defs.OSS_LOWPASS_CUTOFF / (oss_sr/2.0) )
-    #b, a = scipy.signal.butter(2, defs.OSS_LOWPASS_CUTOFF / (oss_sr/2.0) )
-    #filtered_flux = scipy.signal.filtfilt(b, a, flux)
-    #a = numpy.zeros(defs.OSS_LOWPASS_N)
-    #a[0] = 1.0
         filtered_flux = scipy.signal.lfilter(b, 1.0, flux)
+
+        #b, a = scipy.signal.butter(2, 0.1 / (oss_sr/2.0),
+        #    btype="high")
+        #filtered_flux = scipy.signal.filtfilt(b, a, flux)
     else:
         filtered_flux = flux
 
