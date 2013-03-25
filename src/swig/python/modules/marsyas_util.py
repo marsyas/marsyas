@@ -24,13 +24,14 @@ def mar_refs(net, level_predicate="", level="top"):
     if level_predicate == None:
         level_predicate = ""
     out = {}; # This is the output dictionary
+    next_level = ""
     if (len(net) == 2):
         if level!="top": # In the top level, I don't add the group specification
             next_level = level_predicate+net[0]+"/"
-    else:
-        next_level = ""
-    for subnet in net[1]:
-        out.update(mar_refs(subnet, next_level, "nontop"))
+    # the problem is that a string is a list and ["Something/name","Something/else"] is a legitimate network
+    if ([].__class__ == net[1].__class__):
+        for subnet in net[1]:
+            out.update(mar_refs(subnet, next_level, "nontop"))
     else:
         n = net.split("/")
         out[n[1]] = level_predicate+net

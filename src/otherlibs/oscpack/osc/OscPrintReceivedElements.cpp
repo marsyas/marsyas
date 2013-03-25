@@ -32,6 +32,7 @@
 #include <iostream>
 #include <iomanip>
 #include <ctime>
+#include <cstring>
 
 
 namespace osc{
