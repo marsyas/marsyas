@@ -30,11 +30,11 @@ def load_wavfile(filename):
 
 
 
-def bpm_of_file(defs, filename, plot=False):
+def bpm_of_file(defs, filename, plot=False, regen=False):
     ### handle OSS
     pickle_filename = filename + "-onsets-%i.pickle" % (
         defs.OPTIONS_ONSET)
-    if os.path.exists(pickle_filename):
+    if os.path.exists(pickle_filename) and not regen:
         pickle_file = open(pickle_filename, 'rb')
         oss_sr, oss_data = pickle.load(pickle_file)
         pickle_file.close()
@@ -50,24 +50,25 @@ def bpm_of_file(defs, filename, plot=False):
 
 
     ### handle Beat Histogram
-    pickle_filename = filename + "-bh-%i.pickle" % (
-        defs.OPTIONS_INDUCTION)
-    if os.path.exists(pickle_filename):
+    pickle_filename = filename + "-bh-%i-%i.pickle" % (
+        defs.OPTIONS_ONSET, defs.OPTIONS_BH)
+    if os.path.exists(pickle_filename) and not regen:
         pickle_file = open(pickle_filename, 'rb')
         candidate_bpms = pickle.load(pickle_file)
         pickle_file.close()
     else:
         candidate_bpms = beat_histogram.beat_histogram(
             defs, oss_sr, oss_data,
-            plot=plot)
+            plot=False)
+            #plot=plot)
         pickle_file = open(pickle_filename, 'wb')
         pickle.dump( (candidate_bpms), pickle_file, -1 )
         pickle_file.close()
 
-    bpm = candidate_bpms[0]
-    return bpm, candidate_bpms
-    #bpm1, bpm2 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
-    #    plot=True)
+    #bpm = candidate_bpms[0]
+    #return bpm, candidate_bpms
+    bpm1, bpm2 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
+        plot=True)
         #plot=plot)
 
     #bpm = late_heuristic.late_heuristic(bpm1, bpm2, candidate_bpms[-1][0])
@@ -76,14 +77,14 @@ def bpm_of_file(defs, filename, plot=False):
         pylab.show()
     #print bpm
     #return bpm, candidate_bpms
-    return bpm
+    return bpm1, candidate_bpms
 
 def bpm_of_mf(defs, mf_filename, print_info=False):
     coll = mar_collection.MarCollection(mf_filename)
     new_filename = os.path.basename(
         mf_filename[:-3] + "-my-%i-%i.mf") % (
             defs.OPTIONS_ONSET,
-            defs.OPTIONS_INDUCTION)
+            defs.OPTIONS_BH)
     newer = mar_collection.MarCollection(new_filename)
     #out = open('detailed-cands.txt', 'w')
     num_files = len(coll.data)
@@ -133,7 +134,8 @@ if __name__ == "__main__":
     if user_filename[-3:] == ".mf":
         bpm_of_mf(defs, user_filename, print_info=True)
     else:
-        bpm, cands = bpm_of_file(defs, user_filename, plot=True)
+        bpm, cands = bpm_of_file(defs, user_filename,
+            plot=True, regen=True)
         print "BPM: %.2f" % bpm
 
 

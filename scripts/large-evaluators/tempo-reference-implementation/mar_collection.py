@@ -30,6 +30,8 @@ class MarCollection():
         for line in lines:
             if len(line) < 2:
                 continue
+            if line[0] == '#':
+                continue
             splitline = line.split('\t')
             filename = splitline[0].rstrip().replace(
                 "MARSYAS_DATADIR", marsyas_datadir)

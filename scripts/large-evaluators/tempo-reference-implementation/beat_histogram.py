@@ -62,7 +62,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
 
     ### autocorrelation
     autocorr = autocorrelation(overlapped)
-    if defs.OPTIONS_INDUCTION < 2:
+    if defs.OPTIONS_BH < 2:
         sum_autocorr = numpy.sum(autocorr, axis=0)
 
         # remember that autocorrelation indices are reversed
@@ -73,7 +73,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         boxed_autocorr = sum_autocorr[low:high]
         use_autocorr = boxed_autocorr
 
-        if defs.OPTIONS_INDUCTION == 1:
+        if defs.OPTIONS_BH == 1:
             # highpass
             b, a = scipy.signal.butter(2, 0.01, btype='high')
             filt_autocorr = scipy.signal.filtfilt(b, a, boxed_autocorr)
@@ -92,7 +92,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         
         if plot:
             pylab.plot(bpms, boxed_autocorr)
-            if defs.OPTIONS_INDUCTION == 1:
+            if defs.OPTIONS_BH == 1:
                 pylab.plot(bpms, filt_autocorr)
             for index, bpm in zip(these_peaks, these_peaks_bpm):
                 pylab.plot(bpm, use_autocorr[index], 'o')

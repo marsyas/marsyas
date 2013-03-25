@@ -11,7 +11,8 @@ import evaluate_bpms
 
 ground_filename = sys.argv[1]
 basename = os.path.basename(ground_filename)[:-3]
-detected_mfs= glob.glob(basename+"*.mf")
+detected_mfs = glob.glob(basename+"*.mf")
+detected_mfs.sort()
 
 print "  name %s\t 1 \t 2 \t 4 \t 8" % (
     ' '*(len(detected_mfs[0])-len("  name ")))

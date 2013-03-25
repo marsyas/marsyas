@@ -9,9 +9,9 @@ import mar_collection
 def rewrite_file(filename):
     print "give attention to:\t", filename
     tmp = "tmp_wavfile.wav"
-    cmd = "sox %s -t wavpcm %s" % (filename, tmp)
+    cmd = "sox \"%s\" -t wavpcm \"%s\"" % (filename, tmp)
     os.system(cmd)
-    os.system("cp %s %s" % (tmp, filename))
+    os.system("cp \"%s\" \"%s\"" % (tmp, filename))
 
 
 
