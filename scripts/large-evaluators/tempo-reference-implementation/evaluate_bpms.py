@@ -4,6 +4,14 @@ import sys
 import mar_collection
 
 
+def exact_accuracy(bpm_detected, bpm_ground):
+    tolerance = 0.04
+    diff = abs(bpm_detected - bpm_ground)
+    if diff <= tolerance * bpm_ground:
+        return True
+    return False
+
+
 def extended_harmonic_accuracy(bpm_detected, bpm_ground):
     tolerance = 0.04
     for m in [1, 2, 3]:
@@ -36,15 +44,25 @@ def process_mfs(ground_mf, detected_mf, limit=None):
         if "," in cand_bpms:
             cand_bpms = [float(a) for a in cand_bpms.split(',')]
         correct = False
-        if limit is not None:
+        if limit is not None and limit is not 0:
             cand_bpms = cand_bpms[:limit]
-        for bpm_detected in cand_bpms:
-            corr = extended_harmonic_accuracy(bpm_detected, bpm_ground)
-            if corr:
-                correct = True
-        if correct:
-            good += 1
-        i += 1
+
+        if limit == 0:
+            for bpm_detected in cand_bpms[:1]:
+                corr = exact_accuracy(bpm_detected, bpm_ground)
+                if corr:
+                    correct = True
+            if correct:
+                good += 1
+            i += 1
+        else:
+            for bpm_detected in cand_bpms:
+                corr = extended_harmonic_accuracy(bpm_detected, bpm_ground)
+                if corr:
+                    correct = True
+            if correct:
+                good += 1
+            i += 1
         #print cand_bpms
     #print "Accuracy: %.2f (%i/%i)" % (100*float(good) / i, good, i)
     accuracy = 100*float(good) / len(user_coll.data)
@@ -55,11 +73,12 @@ def process_mfs(ground_mf, detected_mf, limit=None):
 if __name__ == "__main__":
     ground_filename = sys.argv[1]
     user_filename   = sys.argv[2]
+    zero = process_mfs(ground_filename, user_filename, 0)
     one = process_mfs(ground_filename, user_filename, 1)
     two = process_mfs(ground_filename, user_filename, 2)
     four = process_mfs(ground_filename, user_filename, 4)
     eight = process_mfs(ground_filename, user_filename, 8)
-    print "%s\t%.1f\t%.1f\t%.1f\t%.1f" % (
-        user_filename, one, two, four, eight)
+    print "%s\t%.1f\t%.1f\t%.1f\t%.1f\t%.1f" % (
+        user_filename, zero, one, two, four, eight)
 
 

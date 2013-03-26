@@ -20,7 +20,7 @@ class Defs:
         self.BP_WINDOWSIZE = 2048
         self.BP_HOPSIZE = 128
         
-        self.OPTIONS_ONSET = 2
+        self.OPTIONS_ONSET = 3
         self.OPTIONS_BH = 1
         self.OPTIONS_BP = 1
         

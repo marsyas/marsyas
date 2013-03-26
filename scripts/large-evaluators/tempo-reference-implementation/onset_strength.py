@@ -62,7 +62,7 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
     if plot:
         ts = numpy.arange( len(flux) ) / oss_sr
         pylab.figure()
-        pylab.plot( ts, flux)
+        #pylab.plot( ts, flux)
     ### filter
     if defs.OSS_LOWPASS_CUTOFF > 0:
         b = scipy.signal.firwin(defs.OSS_LOWPASS_N,
@@ -82,10 +82,26 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         pylab.title("Onset strength signal")
 
     ts = numpy.arange( len(filtered_flux) ) / oss_sr
-    numpy.savetxt('filtered.txt',
-        numpy.vstack( (ts, filtered_flux)).transpose() )
-    numpy.savetxt('flux.txt',
-        numpy.vstack( (ts, flux)).transpose() )
+    #numpy.savetxt('filtered.txt',
+    #    numpy.vstack( (ts, filtered_flux)).transpose() )
+    #numpy.savetxt('flux.txt',
+    #    numpy.vstack( (ts, flux)).transpose() )
+
+    if defs.OPTIONS_ONSET == 3:
+        b, a = scipy.signal.butter(5, 5 / (oss_sr/2.0))
+        mean_flux = scipy.signal.filtfilt(b, a, filtered_flux)
+        cutoff_flux = (filtered_flux - mean_flux).clip(min=0)
+
+        #pylab.plot( ts, mean_flux)
+        #pylab.plot( ts, cutoff_flux)
+
+
+        #numpy.savetxt('cutoff.txt',
+        #    numpy.vstack( (ts, cutoff_flux)).transpose() )
+        return oss_sr, cutoff_flux
+    #pylab.show()
+    #exit(1)
+
     return oss_sr, filtered_flux
 
 
