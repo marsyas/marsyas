@@ -14,31 +14,32 @@ def calc_pulse_trains(bpm, window, sr):
 
     bp_mags = numpy.zeros( num_offsets )
     origtrain, period_extra = make_impulse_train( bpm, samples, sr)
-    for i in range(period):
-        train = origtrain[i:i+samples]
-        values = window * train
+    for offset in range(period):
+        #train = origtrain[i:i+samples]
+        #values = window * train
         #pylab.plot(train)
         #pylab.plot(values)
         #pylab.show()
         #exit(1)
         #print "offset:", offset
-        #mag = 0.0
+        mag = 0.0
         #num_beats = int( (samples - offset) / period )
         #for beat in range(num_beats):
-        #for b in range(4):
-       # #    ind = offset - period*b
-       # #    if ind > 0:
-       #         mag += window[ind]
-       #     # slow down by 2
-       #     ind = offset - 2*period*b
-       #     if ind > 0:
-       #         mag += 0.5*window[ind]
-       #     # slow down by 3
-       #     ind = offset - int(1.5*period*b)
-       #     if ind > 0:
-       #         mag += 0.5*window[ind]
+        for b in range(4):
+            ind = offset - period*b
+            if ind > 0:
+                mag += window[ind]
+            # slow down by 2
+            ind = offset - 2*period*b
+            if ind > 0:
+                mag += 0.5*window[ind]
+            # slow down by 3
+            ind = offset - int(1.5*period*b)
+            if ind > 0:
+                mag += 0.5*window[ind]
         #print "   ", i, mag
-        bp_mags[i] = numpy.sum(values) / numpy.sum(train)
+        bp_mags[offset] = mag
+        #bp_mags[offset] = numpy.sum(values) / numpy.sum(train)
     bp_max = max(bp_mags)
     bp_std = numpy.var(bp_mags)
     return bp_max, bp_std

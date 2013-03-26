@@ -82,10 +82,11 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         pylab.title("Onset strength signal")
 
     ts = numpy.arange( len(filtered_flux) ) / oss_sr
-    #numpy.savetxt('filtered.txt',
-    #    numpy.vstack( (ts, filtered_flux)).transpose() )
-    #numpy.savetxt('flux.txt',
-    #    numpy.vstack( (ts, flux)).transpose() )
+    if defs.WRITE_TEXT:
+        numpy.savetxt('filtered.txt',
+            numpy.vstack( (ts, filtered_flux)).transpose() )
+        numpy.savetxt('flux.txt',
+            numpy.vstack( (ts, flux)).transpose() )
 
     if defs.OPTIONS_ONSET == 3:
         b, a = scipy.signal.butter(5, 5 / (oss_sr/2.0))

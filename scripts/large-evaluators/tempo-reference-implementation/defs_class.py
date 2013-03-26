@@ -2,8 +2,8 @@
 class Defs:
     def __init__(self):
         self.BPM_MIN = 40
-        #self.BPM_MAX = 200  # marsyas
-        self.BPM_MAX = 240
+        self.BPM_MAX = 200  # marsyas
+        #self.BPM_MAX = 240
         #BPM_MAX = 1000
         
         self.OSS_WINDOWSIZE = 256
@@ -19,9 +19,11 @@ class Defs:
         
         self.BP_WINDOWSIZE = 2048
         self.BP_HOPSIZE = 128
-        
-        self.OPTIONS_ONSET = 3
-        self.OPTIONS_BH = 1
-        self.OPTIONS_BP = 1
+ 
+        self.WRITE_TEXT = 1
+
+        self.OPTIONS_ONSET = 2
+        self.OPTIONS_BH = 2
+        self.OPTIONS_BP = 2
         
 

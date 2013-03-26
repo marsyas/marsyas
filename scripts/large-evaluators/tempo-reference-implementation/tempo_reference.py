@@ -60,17 +60,17 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
     else:
         candidate_bpms = beat_histogram.beat_histogram(
             defs, oss_sr, oss_data,
-            #plot=False)
-            plot=plot)
+            plot=False)
+            #plot=plot)
         pickle_file = open(pickle_filename, 'wb')
         pickle.dump( (candidate_bpms), pickle_file, -1 )
         pickle_file.close()
 
-    bpm1 = candidate_bpms[0]
+    #bpm1 = candidate_bpms[0]
     #return bpm, candidate_bpms
-    #bpm1, bpm2 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
-    #    plot=True)
-        #plot=plot)
+    bpm1, bpm2 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
+        #plot=True)
+        plot=plot)
 
     #bpm = late_heuristic.late_heuristic(bpm1, bpm2, candidate_bpms[-1][0])
 
