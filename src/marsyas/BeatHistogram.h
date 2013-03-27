@@ -43,6 +43,7 @@ namespace Marsyas
 		mrs_natural endBin_;
 		bool reset_;
 		mrs_real factor_;
+		mrs_real alpha_;
 	
 	public:
 		BeatHistogram(std::string name);

@@ -56,6 +56,9 @@ BeatHistogram::addControls()
 	setctrlState("mrs_natural/endBin", true);
 	addctrl("mrs_real/factor", 1.0);
 	addctrl("mrs_bool/tempoWeighting", false);
+	addctrl("mrs_real/alpha", 0.5);
+	setctrlState("mrs_real/alpha", true);
+	setctrlState("mrs_real/factor", true);
 	
   
 }
@@ -70,6 +73,7 @@ BeatHistogram::myUpdate(MarControlPtr sender)
 	endBin_ = getctrl("mrs_natural/endBin")->to<mrs_natural>();
 	reset_ = getctrl("mrs_bool/reset")->to<mrs_bool>();  
 	factor_ = getctrl("mrs_real/factor")->to<mrs_real>();
+	alpha_ = getctrl("mrs_real/alpha")->to<mrs_real>();
 	setctrl("mrs_natural/onSamples", endBin_ - startBin_);
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
 	setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
@@ -147,7 +151,9 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		  else 
 		  {
 			sumamp += amp;
-			out(o,prev_bin) += ((sumamp / count));
+			//out(o,prev_bin) += ((sumamp / count));
+			//out(o,prev_bin) = alpha_*out(o, prev_bin) + (1.0-alpha_)*((sumamp / count));
+			out(o,prev_bin) = out(o, prev_bin) + ((sumamp / count));
 			count = 1;
 			sumamp = 0.0;
 		  }
