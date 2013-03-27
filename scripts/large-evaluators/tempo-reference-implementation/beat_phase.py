@@ -12,34 +12,32 @@ def calc_pulse_trains(bpm, window, sr):
     num_offsets = period
     samples = len(window)
 
+    #print bpm, period
     bp_mags = numpy.zeros( num_offsets )
-    origtrain, period_extra = make_impulse_train( bpm, samples, sr)
-    for offset in range(period):
-        #train = origtrain[i:i+samples]
-        #values = window * train
-        #pylab.plot(train)
-        #pylab.plot(values)
-        #pylab.show()
-        #exit(1)
-        #print "offset:", offset
+    for phase in range(samples-1, samples-1-period, -1):
+        #print "# ", phase
         mag = 0.0
         #num_beats = int( (samples - offset) / period )
         #for beat in range(num_beats):
         for b in range(4):
-            ind = offset - period*b
-            if ind > 0:
+            ind = int(phase - b*period)
+            if ind >= 0:
                 mag += window[ind]
+            #print ind, mag
             # slow down by 2
-            ind = offset - 2*period*b
-            if ind > 0:
+            ind = int(phase - b*2*period)
+            if ind >= 0:
                 mag += 0.5*window[ind]
+            #print ind, mag
             # slow down by 3
-            ind = offset - int(1.5*period*b)
-            if ind > 0:
+            ind = int(phase - b*1.5*period)
+            if ind >= 0:
                 mag += 0.5*window[ind]
+            #print ind, mag
         #print "   ", i, mag
-        bp_mags[offset] = mag
-        #bp_mags[offset] = numpy.sum(values) / numpy.sum(train)
+        bp_mags[samples-1-phase] = mag
+        #bp_mags[period] = numpy.sum(values) / numpy.sum(train)
+
     bp_max = max(bp_mags)
     bp_std = numpy.var(bp_mags)
     return bp_max, bp_std
@@ -104,10 +102,10 @@ def calc_sine_trains(bpm, window, sr):
 def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     ### overlap
     overlapped = overlap.sliding_window(
-        #numpy.append(
-        #    numpy.zeros(defs.BH_WINDOWSIZE - defs.BH_HOPSIZE),
-        #    oss_data),
-        oss_data,
+        numpy.append(
+            numpy.zeros(defs.BH_WINDOWSIZE - defs.BH_HOPSIZE),
+            oss_data),
+        #oss_data,
         defs.BP_WINDOWSIZE, defs.BP_HOPSIZE)
     #beat_histogram_sr = oss_sr / defs.BP_HOPSIZE
 
@@ -170,17 +168,19 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     bhisto = numpy.zeros(defs.BPM_MAX)
     #bpms_max = numpy.zeros( len(candidate_bpms) )
     #bpms_std = numpy.zeros( len(candidate_bpms) )
+    #print "ticks:", overlapped.shape[0]
     for i in xrange(overlapped.shape[0]):
-        onset_scores = numpy.zeros(len(candidate_bpms))
-        tempo_scores = numpy.zeros(len(candidate_bpms))
-        #for j, bpm in enumerate(candidate_bpms[i]):
-        for j, bpm in enumerate(candidate_bpms):
+        onset_scores = numpy.zeros(len(candidate_bpms[0]))
+        tempo_scores = numpy.zeros(len(candidate_bpms[0]))
+        for j, bpm in enumerate(candidate_bpms[i]):
+        #for j, bpm in enumerate(candidate_bpms):
             mag, std = calc_pulse_trains(bpm, overlapped[i], oss_sr)
             #bpms_max[i] += mag
             #bpms_std[i] += std
             ### correct up to here
             #print i, bpm, mag, std
             tempo_scores[j] = mag
+            print tempo_scores[j]
             onset_scores[j] = std
         tempo_scores /= tempo_scores.sum()
         onset_scores /= onset_scores.sum()
@@ -190,17 +190,18 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
 
         # find best 2 scores
         besti = tempo_scores.argmax()
-        #bestbpm = candidate_bpms[i][besti]
-        bestbpm = candidate_bpms[besti]
+        bestbpm = candidate_bpms[i][besti]
+        #bestbpm = candidate_bpms[besti]
         beststr = tempo_scores[besti]
         #tempo_scores[besti] = 0.0
-        #second_besti = tempo_scores.argmax()
-        #second_bestbpm = candidate_bpms[i][second_besti]
-        #second_beststr = tempo_scores[second_besti]
+        second_besti = tempo_scores.argmax()
+        second_bestbpm = candidate_bpms[i][second_besti]
+        second_beststr = tempo_scores[second_besti]
 
         if i >= (defs.BP_WINDOWSIZE / defs.BP_HOPSIZE):
             bhisto[ int(bestbpm) ] += beststr
-            #bhisto[ int(second_bestbpm*4) ] += second_beststr
+            #bhisto[ int(second_bestbpm) ] += second_beststr
+            print bestbpm, "\t", beststr
 
         #print bestbpm, '\t', beststr, '\t',
         #print second_bestbpm, '\t', second_beststr
@@ -208,6 +209,8 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     #b, a = scipy.signal.butter(4, 0.5)
     #filt = scipy.signal.filtfilt(b, a, bhisto)
     
+    if defs.WRITE_BP:
+        numpy.savetxt("bhisto.txt", bhisto)
 
     if plot:
         pylab.figure()

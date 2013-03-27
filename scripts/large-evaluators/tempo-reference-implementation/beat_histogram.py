@@ -228,12 +228,12 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
             bpms = numpy.array(these_peaks)/4.0
             numpy.savetxt("bh-peaks-%i.txt" % i, bpms)
 
-    cand_peaks = find_peaks(sHn,
-            number=8, peak_neighbors=11) / 4.0
+    #cand_peaks = find_peaks(sHn,
+    #        number=8, peak_neighbors=11) / 4.0
     #pylab.plot(numpy.arange(len(sHn))/4.0, sHn)
-    pylab.show()
+    #pylab.show()
     #pylab.plot(cand_peaks)
-    return cand_peaks
+    return peaks
 
     #candidate_bpms = [ Hn_bpms[i] for i in peaks ]
     #print candidate_bpms

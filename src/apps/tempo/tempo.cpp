@@ -1079,6 +1079,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 4.0);
+   tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.10);
+
    tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
    tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
 
@@ -1158,8 +1160,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   {
 	// reset the histogram after the first initial ticks that don't contain
 	// enough onset strength signal for accurate estimation
-	if (ticks == extra_ticks)
+	if (ticks == extra_ticks) {
 	  tempoInduction->updControl("BeatHistogram/histo/mrs_bool/reset", true);
+      //bhisto.setval(0.0);
+    }
 
 	// tick the network and get a tempo estimates
 	beatTracker->tick();
@@ -1182,9 +1186,11 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
 	temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
 
-	if (ticks >= extra_ticks)
+    // extra +1 because we already ticked in this loop!
+	if (ticks >= extra_ticks+1)
 	{
 		bhisto(tempos(0)) += temposcores(0);
+        //cout<<tempos(0)<<"\t"<<temposcores(0)<<endl;
 	}
 	
 
@@ -1211,6 +1217,9 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_natural max_i = 0;
   mrs_natural max_i2 = 0;
 
+  //for (int i=0; i < bhisto.getCols(); i++) {
+  //  cout<<bhisto(i)<<endl;
+  //}
   for (int i=0; i < 210; i++)
   {
       if (bhisto(i) > bhmax)
