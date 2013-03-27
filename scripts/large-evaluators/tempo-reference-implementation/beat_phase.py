@@ -113,7 +113,7 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
 
     #print candidate_bpms_orig
     candidate_bpms = candidate_bpms_orig
-    candidate_bpms = candidate_bpms_orig[:4]
+    #candidate_bpms = candidate_bpms_orig[:4]
     #for bpm in candidate_bpms_orig:
     #    #print bpm, base
     #    candidate_bpms.add(bpm)

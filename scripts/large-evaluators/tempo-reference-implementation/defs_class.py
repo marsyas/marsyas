@@ -20,7 +20,9 @@ class Defs:
         self.BP_WINDOWSIZE = 2048
         self.BP_HOPSIZE = 128
  
-        self.WRITE_TEXT = 1
+        self.WRITE_ONSETS = 0
+        self.WRITE_BH = 0
+        self.WRITE_BP = 1
 
         self.OPTIONS_ONSET = 2
         self.OPTIONS_BH = 2
