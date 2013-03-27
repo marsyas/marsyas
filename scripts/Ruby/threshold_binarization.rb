@@ -23,30 +23,43 @@
 #
 # 2) Read affinities file
 #
-# 3) Sort each tag by affinity
+# 3) Count how many of each tag in the affinities file (NOTE: this equals the nr. of songs in test file as we have one affinity per tag for each song in the test file)
+#
+# 4) Sort each tag by affinity
+#
+# 5) Estimate the proportion of each tag in the test file based on the proportion of each tag in the ground truth file
+#
+# 6) For each tag, get the threshold affinity as given by the tags sorted by affinity in proportion to the frequency of each tag in the ground truth file
 #
 
 require 'pp'
 
 if ARGV[1] == nil
-  abort("Usage: phase16_threshold_binarization.rb ground_truth.txt affinities.txt")
+  abort("Usage: threshold_binarization.rb ground_truth.txt affinities.txt")
 else
   ground_truth_file = File.open(ARGV[0],"r")
   affinities_file = File.open(ARGV[1],"r")
 end
 
 #
-# Count how many of each tag in the ground truth file
+# Count nr of lines and how many of each tag in the ground truth file
 #
 tags = {}
+songsGT = {}
 begin
   ground_truth_file.each_line do |line|
     a = line.chomp.split("\t")
     tag = a[1]
+    song = a[0]
     if (tags[tag].nil?)
       tags[tag] = 0
     end
     tags[tag] += 1
+    
+    if (songsGT[song].nil?)
+      songsGT[song] = 0
+    end
+    songsGT[song] += 1
   end
 rescue EOFError
   ground_truth_file.close
@@ -57,12 +70,13 @@ end
 #
 affinities_file = File.open(ARGV[1],"r")
 affinities = {}
+songsAff = {}
 begin
   affinities_file.each_line do |line|
     a = line.chomp.split("\t")
     clip = a[0]
     tag = a[1]
-    affinity = Float(a[2])
+    affinity = a[2]
     if affinities[clip].nil?
       affinities[clip] = {}
       tags.each do |k,v|
@@ -70,6 +84,11 @@ begin
       end
     end
     affinities[clip][tag] = affinity
+    
+    if (songsAff[clip].nil?)
+      songsAff[clip] = 0
+    end
+    songsAff[clip] += 1
   end
 rescue EOFError
   affinities_file.close
@@ -90,13 +109,35 @@ tags.each do |tag,z|
 end
 
 #
-# Calculate the cutoff affinity for each tag
+# Estimate the proportion of each tag in the test file based on the proportion of each tag in the ground truth file
+#
+# Count the nr. of occurrences of each tag in ground truth and affinities files
+#
+totalGt_length = 0
+tagGt_length = {}
+tagAff_length = {}
+tags.each do |tag,z|
+	tagGt_length[tag] = tags[tag] # nr of occurrences of each tag in the ground truth file
+	tagAff_length[tag] = sorted_tag_affinities[tag].length # nr of occurrences of each tag in the affinities file
+	totalGt_length += tagGt_length[tag]
+end
+
+#
+# Calc. nr. of songs in ground truth and affinities files and the proportion between both
+#
+nrSongsGt = songsGT.length
+nrSongsAff = songsAff.length
+songsGt2Aff = Float(nrSongsAff) / Float(nrSongsGt)
+
+#
+# Calculate thresholds based on the ground truth file and the former proportion
 #
 tag_cutoff_affinities = {}
 tags.each do |tag,z|
-  tag_cutoff = tags[tag]
+  tag_cutoff = (Float(songsGt2Aff) * Float(tagGt_length[tag])).round
   tag_cutoff_affinities[tag] = sorted_tag_affinities[tag][tag_cutoff]
 end
+
 
 #pp tag_cutoff_affinities
 
@@ -106,10 +147,8 @@ end
 #
 affinities.each do |song,tags|
   tags.each do |tag,affinity|
-    if (!tag_cutoff_affinities[tag].nil?)
-      if (affinity.to_f > tag_cutoff_affinities[tag].to_f)
-        puts "#{song}\t#{tag}"
-      end
+    if (affinity > tag_cutoff_affinities[tag])
+       puts "#{song}\t#{tag}"
     end
   end
 end
