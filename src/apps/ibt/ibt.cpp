@@ -130,7 +130,7 @@ mrs_natural minBPM_;
 mrs_natural maxBPM_;
 mrs_real sup_thres;
 
-void
+int
 printUsage(string progName)
 {
 	MRSDIAG("ibt.cpp - printUsage");
@@ -138,10 +138,10 @@ printUsage(string progName)
 		" [-off : offline (non-causal)] [-mic : microphone_input] [-o \"mode\" : annotations_output] [-a : playAudio_w/_beats] [-f : outputAudioFile_w/_beats] [-t time(secs) : inductionLength] [-i : induction_operation] [-gti \"mode\" : groundtruth_induction] [-gt \"gtFile_path.(beats\\txt)\" : groundtruh_file] [-di : dumb_induction] [-l \"timeUnit\" : log_file] [-s \"heuristics\" : scoreFunction ] [-io : induction_out] [-b : backtrace] [-m : avoid_metrical_changes] fileName output_dir" << endl; //[-send_udp send_udp]
 	cerr << "where fileName is a sound file in a MARSYAS supported format and output_dir the directory where the annotation files (beats + tempo) shall be saved (ibt bin dir by default)." << endl;
 	cerr << endl;
-	exit(1);
+	return(1);
 }
 
-void
+int
 printHelp(string progName)
 {
 	MRSDIAG("ibt.cpp - printHelp");
@@ -195,7 +195,7 @@ printHelp(string progName)
 	cerr << "-b --backtrace      		  : after induction backtrace the analysis to the beginning. [deactivated - used by default in offline mode]" << endl;
 	cerr << "-m --avoid_metrical_changes	  :  avoid metrical changes by setting the tempo range within one octave at [81-160]BPM. [default in causal operation and induction_operation different than \"single\"]" << endl;
 	//cerr << "-send_udp --send_udp : [!!WINDOWS_ONLY!!] send beats - \"beat_flag(tempo)\" - via udp sockets at defined port (in localhost) - for causal mode" << endl;
-	exit(1);
+	return(1);
 }
 
 void
@@ -904,7 +904,8 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_real/peakStrength", 0.75); //0.75
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_natural/peakStart", peakStart);
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_natural/peakEnd", peakEnd);
-	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_real/peakGain", 2.0);
+    // invalid control
+	//tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/Peaker/pkr/mrs_real/peakGain", 2.0);
 
 	//for only considering the 2nd half of the induction window in the ACF calculation
 	tempoinduction->updControl("Fanout/tempohypotheses/Series/tempo/AutoCorrelation/acf/mrs_real/lowCutoff", 0.5);
@@ -1293,6 +1294,7 @@ ibt(mrs_string sfName, mrs_string outputTxt)
 
 		frameCount++;
 	}
+    delete audioflow;
 	cout << "Finish!" << endl;
 }
 
@@ -1303,8 +1305,7 @@ main(int argc, const char **argv)
 
 	if (argc == 1)
 	{
-	  printUsage("ibt");
-	  exit(1);
+	  return printUsage("ibt");
 	}
 
 	initOptions(); //initialize app options
@@ -1313,10 +1314,10 @@ main(int argc, const char **argv)
 
 	// print help or usage
 	if (helpopt)
-		printHelp("ibt");
+		return printHelp("ibt");
 
 	if (usageopt)
-		printUsage("ibt");
+		return printUsage("ibt");
 
 	execPath = string(argv[0]);
 	#ifdef MARSYAS_WIN32
@@ -1386,10 +1387,10 @@ main(int argc, const char **argv)
 			{
 				ibt(sfName, outputTxt);
 			}
-			else exit(0);
+			else return(0);
 		}
 	}
 
 	cout << "All Done!" << endl;
-	exit(0);
+	return(0);
 }
