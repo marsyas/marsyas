@@ -53,6 +53,7 @@ BeatReferee::BeatReferee(mrs_string name):MarSystem("BeatReferee", name)
 	backtraceEndTime_ = -1;
 	bestAgentBeforeTrigger_ = -1;
 	lastGTFalsePos_ = false;
+	logFile_ = false;
 }
 
 BeatReferee::BeatReferee(const BeatReferee& a) : MarSystem(a)
@@ -158,7 +159,7 @@ BeatReferee::addControls()
 {
 	//Add specific controls needed by this MarSystem.
 	addctrl("mrs_realvec/mutedAgents", realvec(), ctrl_mutedAgents_);
-	addctrl("mrs_realvec/inductionEnabler", realvec(), ctrl_inductionEnabler_);
+	addctrl("mrs_realvec/inductionEnabler", realvec(2,2), ctrl_inductionEnabler_);
 	addctrl("mrs_realvec/beatHypotheses", realvec(), ctrl_firstHypotheses_);
 	addctrl("mrs_natural/inductionTime", -1, ctrl_inductionTime_);
 	addctrl("mrs_natural/hopSize", -1, ctrl_hopSize_);
