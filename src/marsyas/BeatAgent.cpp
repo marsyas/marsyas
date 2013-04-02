@@ -250,7 +250,7 @@ BeatAgent::myProcess(realvec& in, realvec& out)
 
 	identity_ = ctrl_identity_->to<mrs_string>();
 	
-	isNewOrUpdated_ = (mrs_bool) (agentControl_(myIndex_, 0) == 0);
+	isNewOrUpdated_ = (mrs_bool) (agentControl_(myIndex_, 0) == 1);
 	period_ = (mrs_natural) agentControl_(myIndex_, 1);
 	phase_ = (mrs_natural) agentControl_(myIndex_, 2);
 	periodFraction_ = ((mrs_real)period_ / (mrs_real)maxPeriod_);
