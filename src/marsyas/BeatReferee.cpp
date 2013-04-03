@@ -54,6 +54,11 @@ BeatReferee::BeatReferee(mrs_string name):MarSystem("BeatReferee", name)
 	bestAgentBeforeTrigger_ = -1;
 	lastGTFalsePos_ = false;
 	logFile_ = false;
+    // these will be overwritten later
+    nrAgents_ = 100;
+    maxNrBeats_ = 100;
+    //
+	initialization();
 }
 
 BeatReferee::BeatReferee(const BeatReferee& a) : MarSystem(a)
@@ -170,7 +175,7 @@ BeatReferee::addControls()
 	setctrlState("mrs_natural/maxPeriod", true);
 	addctrl("mrs_natural/minPeriod", -1, ctrl_minPeriod_);
 	setctrlState("mrs_natural/minPeriod", true);
-	addctrl("mrs_realvec/agentControl", realvec(), ctrl_agentControl_);
+	addctrl("mrs_realvec/agentControl", realvec(50,4), ctrl_agentControl_);
 	addctrl("mrs_real/beatDetected", 0.0, ctrl_beatDetected_);
 	addctrl("mrs_natural/tickCount", 0, ctrl_tickCount_);
 	addctrl("mrs_real/obsoleteFactor", 0.8, ctrl_obsoleteFactor_);
@@ -2098,6 +2103,7 @@ BeatReferee::initialization()
 	}
 	updControl(ctrl_mutedAgents_, mutedAgents_); //initially deactivate all agents
 
+	inductionEnabler_ = ctrl_inductionEnabler_->to<mrs_realvec>();
 	//in the new vesion of IBT onsets are no more considered in the induction process (so deactivate this!!)
 	//(deactivated instead of removed for not changing the overall network structure)
 	inductionEnabler_(1, 0) = 1.0; //diable = muted	
