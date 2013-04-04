@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 
 
-def late_heuristic(bpm1, bpm2, bh_bpm):
-    tempos = [bpm1, bpm2, bh_bpm]
-    print tempos
-    heuristic_tempo = bpm1
+def late_heuristic(tempos):
+    heuristic_tempo = tempos[0]
 
     for i in range(3):
         for j in range(3):
@@ -13,8 +11,6 @@ def late_heuristic(bpm1, bpm2, bh_bpm):
                     if tempos[i] <= 68:
                         heuristic_tempo = 2*tempos[i]
 
-    print heuristic_tempo
-
-    return 0
+    return heuristic_tempo
 
 

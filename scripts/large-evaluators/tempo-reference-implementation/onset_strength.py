@@ -64,7 +64,7 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         pylab.figure()
         #pylab.plot( ts, flux)
     ### filter
-    if defs.OSS_LOWPASS_CUTOFF > 0:
+    if defs.OSS_LOWPASS_CUTOFF > 0 and defs.OPTIONS_ONSET < 3:
         b = scipy.signal.firwin(defs.OSS_LOWPASS_N,
             defs.OSS_LOWPASS_CUTOFF / (oss_sr/2.0) )
         filtered_flux = scipy.signal.lfilter(b, 1.0, flux)
@@ -78,7 +78,7 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
 
     if plot:
         ts = numpy.arange( len(filtered_flux) ) / oss_sr
-        pylab.plot( ts, filtered_flux)
+        pylab.plot( ts, filtered_flux, label="filtered")
         pylab.title("Onset strength signal")
 
     ts = numpy.arange( len(filtered_flux) ) / oss_sr
@@ -89,20 +89,27 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
             numpy.vstack( (ts, flux)).transpose() )
 
     if defs.OPTIONS_ONSET == 3:
-        b, a = scipy.signal.butter(5, 5 / (oss_sr/2.0))
-        mean_flux = scipy.signal.filtfilt(b, a, filtered_flux)
+        b, a = scipy.signal.butter(2, 1 / (oss_sr/2.0))
+        #mean_flux = scipy.signal.filtfilt(b, a, filtered_flux)
+        mean_flux = scipy.signal.lfilter(b, a, filtered_flux)
         cutoff_flux = (filtered_flux - mean_flux).clip(min=0)
 
-        #pylab.plot( ts, mean_flux)
-        #pylab.plot( ts, cutoff_flux)
+        b = scipy.signal.firwin(defs.OSS_LOWPASS_N,
+            defs.OSS_LOWPASS_CUTOFF / (oss_sr/2.0) )
+        cutoff_flux = scipy.signal.lfilter(b, 1.0, cutoff_flux).clip(min=0)
 
+        pylab.plot( ts, mean_flux, label="means")
+        pylab.plot( ts, cutoff_flux, label="cutoff")
 
-        #numpy.savetxt('cutoff.txt',
-        #    numpy.vstack( (ts, cutoff_flux)).transpose() )
+        if defs.WRITE_ONSETS:
+            numpy.savetxt('cutoff.txt',
+                numpy.vstack( (ts, cutoff_flux)).transpose() )
+        pylab.legend()
         return oss_sr, cutoff_flux
     #pylab.show()
     #exit(1)
 
+    pylab.legend()
     return oss_sr, filtered_flux
 
 

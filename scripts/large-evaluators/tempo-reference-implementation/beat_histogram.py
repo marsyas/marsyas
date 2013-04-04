@@ -18,8 +18,8 @@ def autocorrelation(signal):
 
 def find_peaks(signal, number=10, peak_neighbors=1):
     candidates = []
-    #for i in xrange(peak_neighbors, len(signal)-peak_neighbors):
-    for i in xrange(200, 720):
+    for i in xrange(peak_neighbors, len(signal)-peak_neighbors):
+    #for i in xrange(200, 720):
         if signal[i-1] < signal[i] > signal[i+1]:
             ok = True
             for j in xrange(i-peak_neighbors, i):
@@ -92,6 +92,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         #best_bpm   = bpms[best_index]
         
         if plot:
+            pylab.figure()
             pylab.plot(bpms, boxed_autocorr)
             if defs.OPTIONS_BH == 1:
                 pylab.plot(bpms, filt_autocorr)
@@ -191,11 +192,13 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     #summed = numpy.sum(harmonic_strengthened_bh, axis=0)
     #summed = numpy.sum(Hn, axis=0)
 
-    sHn = numpy.sum(Hn, axis=0)
     if plot:
         pylab.figure()
         sHn = numpy.sum(Hn, axis=0)
-        pylab.plot(numpy.arange(len(sHn))/4.0, sHn)
+        sHBH = numpy.sum(harmonic_strengthened_bh, axis=0)
+        pylab.plot(numpy.arange(len(sHn))/4.0, sHn, label="sum")
+        pylab.plot(numpy.arange(len(sHBH))/4.0, sHBH, label="enhanced")
+        pylab.title("Summed beat histogram")
 
 
 #    folded_hist = numpy.zeros(60*4)
@@ -217,7 +220,6 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
 #
 
 
-    ### zzz confirmed up to here
     peaks = []
     for i in xrange( Hn.shape[0] ):
         these_peaks = find_peaks(harmonic_strengthened_bh[i],
@@ -234,14 +236,4 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     #pylab.show()
     #pylab.plot(cand_peaks)
     return peaks
-
-    #candidate_bpms = [ Hn_bpms[i] for i in peaks ]
-    #print candidate_bpms
-    #for p in peaks:
-    #    print numpy.array(p)/4
-    #if plot:
-    #    pylab.figure()
-    #    pylab.plot(numpy.arange(30*4, 60*4)/4.0, folded_hist[30*4:])
-    #    pylab.show()
-    return peaks[0], peaks
 

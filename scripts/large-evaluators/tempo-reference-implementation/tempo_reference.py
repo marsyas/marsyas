@@ -42,14 +42,16 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         wav_sr, wav_data = load_wavfile(filename)
         oss_sr, oss_data = onset_strength.onset_strength_signal(
             defs, wav_sr, wav_data,
-            plot=False)
-            #plot=True)
+            plot=plot)
         pickle_file = open(pickle_filename, 'wb')
         pickle.dump( (oss_sr, oss_data), pickle_file, -1 )
         pickle_file.close()
     #print "OSS sr, len(data), seconds:\t", oss_sr, len(oss_data), len(oss_data)/oss_sr
 
 
+    if defs.OPTIONS_BH < 0:
+        pylab.show()
+        exit(1)
     ### handle Beat Histogram
     pickle_filename = filename + "-bh-%i-%i.pickle" % (
         defs.OPTIONS_ONSET, defs.OPTIONS_BH)
@@ -60,25 +62,53 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
     else:
         candidate_bpms = beat_histogram.beat_histogram(
             defs, oss_sr, oss_data,
-            plot=False)
-            #plot=plot)
+            plot=plot)
         pickle_file = open(pickle_filename, 'wb')
         pickle.dump( (candidate_bpms), pickle_file, -1 )
         pickle_file.close()
 
-    #bpm1 = candidate_bpms[0]
-    #return bpm, candidate_bpms
-    bpm1, bpm2 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
-        #plot=True)
-        plot=plot)
 
-    #bpm = late_heuristic.late_heuristic(bpm1, bpm2, candidate_bpms[-1][0])
+    if defs.OPTIONS_BP < 0:
+        cands = numpy.zeros(4*defs.BPM_MAX)
+        for i in range(len(candidate_bpms)):
+            for j in range(len(candidate_bpms[i])):
+                bpm = candidate_bpms[i][j]
+                cands[bpm] += 9-j
+        if plot:
+            pylab.figure()
+            pylab.plot(cands)
+            pylab.title("combo BPM cands")
+            pylab.show()
+        bestbpm = cands.argmax()
+        fewcands = []
+        for i in range(4):
+            bpm = cands.argmax()
+            cands[bpm] = 0.0
+            fewcands.append(bpm)
+        return bestbpm, fewcands
+    ### handle Beat Phase
+    pickle_filename = filename + "-bp-%i-%i-%i.pickle" % (
+        defs.OPTIONS_ONSET, defs.OPTIONS_BH, defs.OPTIONS_BP)
+    if os.path.exists(pickle_filename) and not regen:
+        pickle_file = open(pickle_filename, 'rb')
+        (bpm1, bpm2) = pickle.load(pickle_file)
+        pickle_file.close()
+    else:
+        bpm1, bpm2 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
+            plot=plot)
+        pickle_file = open(pickle_filename, 'wb')
+        pickle.dump( (bpm1, bpm2), pickle_file, -1 )
+        pickle_file.close()
+
+
+    tempos = [bpm1, bpm2, candidate_bpms[-1][0]]
+    bpm = late_heuristic.late_heuristic(tempos)
 
     if plot:
         pylab.show()
     #print bpm
     #return bpm, candidate_bpms
-    return bpm1, candidate_bpms
+    return bpm, candidate_bpms[-1]
 
 def bpm_of_mf(defs, mf_filename, print_info=False):
     coll = mar_collection.MarCollection(mf_filename)

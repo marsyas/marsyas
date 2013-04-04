@@ -180,7 +180,7 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
             ### correct up to here
             #print i, bpm, mag, std
             tempo_scores[j] = mag
-            print tempo_scores[j]
+            #print tempo_scores[j]
             onset_scores[j] = std
         tempo_scores /= tempo_scores.sum()
         onset_scores /= onset_scores.sum()
@@ -192,6 +192,8 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         besti = tempo_scores.argmax()
         bestbpm = candidate_bpms[i][besti]
         #bestbpm = candidate_bpms[besti]
+        #print candidate_bpms[i]
+        #print tempo_scores
         beststr = tempo_scores[besti]
         #tempo_scores[besti] = 0.0
         second_besti = tempo_scores.argmax()
@@ -201,7 +203,7 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         if i >= (defs.BP_WINDOWSIZE / defs.BP_HOPSIZE):
             bhisto[ int(bestbpm) ] += beststr
             #bhisto[ int(second_bestbpm) ] += second_beststr
-            print bestbpm, "\t", beststr
+            #print bestbpm, "\t", beststr
 
         #print bestbpm, '\t', beststr, '\t',
         #print second_bestbpm, '\t', second_beststr
