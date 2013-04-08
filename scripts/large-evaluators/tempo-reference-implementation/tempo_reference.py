@@ -42,7 +42,8 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         wav_sr, wav_data = load_wavfile(filename)
         oss_sr, oss_data = onset_strength.onset_strength_signal(
             defs, wav_sr, wav_data,
-            plot=plot)
+            plot=False)
+            #plot=plot)
         pickle_file = open(pickle_filename, 'wb')
         pickle.dump( (oss_sr, oss_data), pickle_file, -1 )
         pickle_file.close()
@@ -55,13 +56,14 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
     ### handle Beat Histogram
     pickle_filename = filename + "-bh-%i-%i.pickle" % (
         defs.OPTIONS_ONSET, defs.OPTIONS_BH)
-    if os.path.exists(pickle_filename) and not regen:
+    if os.path.exists(pickle_filename) and not regen and False:
         pickle_file = open(pickle_filename, 'rb')
         candidate_bpms = pickle.load(pickle_file)
         pickle_file.close()
     else:
         candidate_bpms = beat_histogram.beat_histogram(
             defs, oss_sr, oss_data,
+            #plot=False)
             plot=plot)
         pickle_file = open(pickle_filename, 'wb')
         pickle.dump( (candidate_bpms), pickle_file, -1 )
@@ -79,12 +81,12 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
             pylab.plot(cands)
             pylab.title("combo BPM cands")
             pylab.show()
-        bestbpm = cands.argmax()
+        bestbpm = 4*cands.argmax()
         fewcands = []
         for i in range(4):
             bpm = cands.argmax()
             cands[bpm] = 0.0
-            fewcands.append(bpm)
+            fewcands.append(4*bpm)
         return bestbpm, fewcands
     ### handle Beat Phase
     pickle_filename = filename + "-bp-%i-%i-%i.pickle" % (
@@ -162,11 +164,17 @@ if __name__ == "__main__":
     import defs_class
     defs = defs_class.Defs()
     user_filename = sys.argv[1]
+    regen = True
+    try:
+        if sys.argv[2] != '0':
+            regen = False
+    except:
+        pass
     if user_filename[-3:] == ".mf":
         bpm_of_mf(defs, user_filename, print_info=True)
     else:
         bpm, cands = bpm_of_file(defs, user_filename,
-            plot=True, regen=True)
+            plot=True, regen=regen)
         print "BPM: %.2f" % bpm
 
 

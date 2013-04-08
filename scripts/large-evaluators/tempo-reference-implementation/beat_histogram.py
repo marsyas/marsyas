@@ -1,3 +1,6 @@
+import math
+import itertools
+
 import numpy
 import pylab
 import scipy.fftpack
@@ -50,6 +53,73 @@ def autocorr_index_to_bpm(index, oss_sr):
 def bpm_to_autocorr_index(bpm, oss_sr):
     return 60.0*oss_sr / bpm
 
+GCD_TOLERANCE = 0.1
+def approximate_gcd(a, b):
+    print "gcd:", a, b
+    if b < GCD_TOLERANCE:
+        return a
+    else:
+        return approximate_gcd(b, math.fmod(a,b))
+
+def approximate_lcm(a, b):
+    print "lcm:", a, b
+    return a*b / approximate_gcd(a,b)
+
+TOLERANCE = 1.04
+
+def approximate_match(a, b):
+    if a/TOLERANCE < b/TOLERANCE < a*TOLERANCE:
+        return True
+    if a/TOLERANCE < b*TOLERANCE < a*TOLERANCE:
+        return True
+    if b/TOLERANCE < a/TOLERANCE < b*TOLERANCE:
+        return True
+    if b/TOLERANCE < a*TOLERANCE < b*TOLERANCE:
+        return True
+    return False
+
+MAX_BPM = 1000
+def get_mults(bpm):
+    cands = []
+    k = 1
+    cand = bpm*k
+    while cand < MAX_BPM:
+        cands.append(cand)
+        k += 1
+        cand = bpm*k
+    return cands
+        
+def approximate_gcds(values):
+    values = numpy.array(values)
+    values = numpy.round(values)
+    print "BPMS:\t", values
+    combos = itertools.combinations(values, 3)
+    for combo in combos:
+        keep = set()
+        lcm = 0
+        mycands = get_mults(combo[0])
+        cands = list(mycands)
+        for v in combo[1:]:
+            mycands = get_mults(v)
+            keep = set()
+            for a in mycands:
+                for b in cands:
+                    #print a, b,
+                    if approximate_match(a, b):
+                        #print "yes"
+                        keep.add(a)
+                        keep.add(b)
+                    #else:
+                    #    print "no"
+            cands = keep
+            #print "----"
+            #print keep
+        lcm = min(keep)
+        print "lcm (%.1f, %.1f, %.1f):\t%.1f" %(
+        #print "lcm (%.1f, %.1f, %.1f)" %(
+            combo[0], combo[1], combo[2], lcm)
+    return lcm
+
 
 def beat_histogram(defs, oss_sr, oss_data, plot=False):
     ### overlap
@@ -63,6 +133,49 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
 
     ### autocorrelation
     autocorr = autocorrelation(overlapped)
+    if defs.OPTIONS_BH == 0:
+        sum_autocorr = numpy.sum(autocorr, axis=0)[1:]
+
+        defs.BPM_MAX = 250
+        defs.BPM_MIN = 10 # as low as possible with 2048 at 172 Hz
+        # remember that autocorrelation indices are reversed
+        low  = int(bpm_to_autocorr_index(defs.BPM_MAX, oss_sr))
+        high = int(bpm_to_autocorr_index(defs.BPM_MIN, oss_sr))
+
+        #div_autocorr = numpy.array(sum_autocorr)
+        #for i in range(low, high/3):
+        #for i in range(1, len(sum_autocorr)/3):
+        #    div_autocorr[i] += sum_autocorr[i*2]
+        #    div_autocorr[i] += sum_autocorr[i*3]
+            #div_autocorr[i] += sum_autocorr[i*4]
+            #div_autocorr[i] += sum_autocorr[i*5]
+            #div_autocorr[i] += sum_autocorr[i*6]
+        #div_autocorr = div_autocorr.clip(min=0)
+
+        bpms = autocorr_index_to_bpm( numpy.arange(low, high), oss_sr )
+        boxed_autocorr = sum_autocorr[low:high]
+        #boxed_div_autocorr = div_autocorr[low:high]
+
+
+        #pylab.figure()
+        #pylab.plot(sum_autocorr)
+        #pylab.plot(div_autocorr)
+        #pylab.plot(bpms, boxed_div_autocorr)
+
+        pylab.plot(bpms, boxed_autocorr, label="boxed autocorr")
+        these_peaks = find_peaks(boxed_autocorr,
+            number=3, peak_neighbors=1)
+        for peak in these_peaks:
+            pylab.plot(bpms[peak], boxed_autocorr[peak], 'o')
+
+        values = [bpms[p] for p in these_peaks ]
+        lcm = approximate_gcds( values )
+        #print "LCM:", 1.0/gcd
+
+        pylab.show()
+        exit(1)
+        
+
     if defs.OPTIONS_BH < 2:
         sum_autocorr = numpy.sum(autocorr, axis=0)
 
@@ -198,6 +311,10 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         sHBH = numpy.sum(harmonic_strengthened_bh, axis=0)
         pylab.plot(numpy.arange(len(sHn))/4.0, sHn, label="sum")
         pylab.plot(numpy.arange(len(sHBH))/4.0, sHBH, label="enhanced")
+        if defs.OPTIONS_BH == 3:
+            b, a = scipy.signal.butter(1, 0.1)
+            filtered = scipy.signal.filtfilt(b, a, sHBH)
+            pylab.plot(numpy.arange(len(filtered))/4.0, filtered, label="filtered")
         pylab.title("Summed beat histogram")
 
 
