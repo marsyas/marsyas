@@ -56,7 +56,7 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
     ### handle Beat Histogram
     pickle_filename = filename + "-bh-%i-%i.pickle" % (
         defs.OPTIONS_ONSET, defs.OPTIONS_BH)
-    if os.path.exists(pickle_filename) and not regen and False:
+    if os.path.exists(pickle_filename) and not regen:
         pickle_file = open(pickle_filename, 'rb')
         candidate_bpms = pickle.load(pickle_file)
         pickle_file.close()
@@ -69,6 +69,7 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         pickle.dump( (candidate_bpms), pickle_file, -1 )
         pickle_file.close()
 
+    return candidate_bpms, [candidate_bpms]
 
     if defs.OPTIONS_BP < 0:
         cands = numpy.zeros(4*defs.BPM_MAX)
@@ -170,11 +171,17 @@ if __name__ == "__main__":
             regen = False
     except:
         pass
+    plot = True
+    try:
+        if sys.argv[3] != '0':
+            plot = False
+    except:
+        pass
     if user_filename[-3:] == ".mf":
         bpm_of_mf(defs, user_filename, print_info=True)
     else:
         bpm, cands = bpm_of_file(defs, user_filename,
-            plot=True, regen=regen)
+            plot=plot, regen=regen)
         print "BPM: %.2f" % bpm
 
 

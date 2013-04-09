@@ -1,5 +1,6 @@
 import math
 import itertools
+import operator
 
 import numpy
 import pylab
@@ -55,18 +56,17 @@ def bpm_to_autocorr_index(bpm, oss_sr):
 
 GCD_TOLERANCE = 0.1
 def approximate_gcd(a, b):
-    print "gcd:", a, b
+    #print "gcd:", a, b
     if b < GCD_TOLERANCE:
         return a
     else:
         return approximate_gcd(b, math.fmod(a,b))
 
 def approximate_lcm(a, b):
-    print "lcm:", a, b
+    #print "lcm:", a, b
     return a*b / approximate_gcd(a,b)
 
 TOLERANCE = 1.04
-
 def approximate_match(a, b):
     if a/TOLERANCE < b/TOLERANCE < a*TOLERANCE:
         return True
@@ -94,6 +94,7 @@ def approximate_gcds(values):
     values = numpy.round(values)
     print "BPMS:\t", values
     combos = itertools.combinations(values, 3)
+    lcms = {}
     for combo in combos:
         keep = set()
         lcm = 0
@@ -114,10 +115,28 @@ def approximate_gcds(values):
             cands = keep
             #print "----"
             #print keep
-        lcm = min(keep)
-        print "lcm (%.1f, %.1f, %.1f):\t%.1f" %(
-        #print "lcm (%.1f, %.1f, %.1f)" %(
-            combo[0], combo[1], combo[2], lcm)
+        try:
+            lcm = min(keep)
+            if lcm in lcms:
+                lcms[lcm] += 1
+            else:
+                lcms[lcm] = 1
+        except:
+            pass
+        #print "lcm (%.1f, %.1f, %.1f):\t%.1f" %(
+        #    combo[0], combo[1], combo[2], lcm)
+    keeps = {}
+    for l in lcms:
+        done = False
+        for k in keeps:
+            if approximate_match(l, k):
+                keeps[k] += lcms[l]
+                done = True
+                break
+        if not done:
+            keeps[l] = lcms[l]
+    print keeps
+    lcm = max(keeps.iteritems(), key=operator.itemgetter(1))[0]
     return lcm
 
 
@@ -136,8 +155,8 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     if defs.OPTIONS_BH == 0:
         sum_autocorr = numpy.sum(autocorr, axis=0)[1:]
 
-        defs.BPM_MAX = 250
-        defs.BPM_MIN = 10 # as low as possible with 2048 at 172 Hz
+        #defs.BPM_MAX = 250
+        #defs.BPM_MIN = 10 # as low as possible with 2048 at 172 Hz
         # remember that autocorrelation indices are reversed
         low  = int(bpm_to_autocorr_index(defs.BPM_MAX, oss_sr))
         high = int(bpm_to_autocorr_index(defs.BPM_MIN, oss_sr))
@@ -156,24 +175,24 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         boxed_autocorr = sum_autocorr[low:high]
         #boxed_div_autocorr = div_autocorr[low:high]
 
-
-        #pylab.figure()
-        #pylab.plot(sum_autocorr)
-        #pylab.plot(div_autocorr)
-        #pylab.plot(bpms, boxed_div_autocorr)
-
-        pylab.plot(bpms, boxed_autocorr, label="boxed autocorr")
         these_peaks = find_peaks(boxed_autocorr,
-            number=3, peak_neighbors=1)
-        for peak in these_peaks:
-            pylab.plot(bpms[peak], boxed_autocorr[peak], 'o')
+            number=5, peak_neighbors=1)
+
+        if plot:
+            pylab.figure()
+            #pylab.plot(sum_autocorr)
+            #pylab.plot(div_autocorr)
+            #pylab.plot(bpms, boxed_div_autocorr)
+
+            pylab.plot(bpms, boxed_autocorr, label="boxed autocorr")
+            for peak in these_peaks:
+                pylab.plot(bpms[peak], boxed_autocorr[peak], 'o')
+            pylab.show()
 
         values = [bpms[p] for p in these_peaks ]
         lcm = approximate_gcds( values )
         #print "LCM:", 1.0/gcd
-
-        pylab.show()
-        exit(1)
+        return lcm
         
 
     if defs.OPTIONS_BH < 2:
@@ -207,6 +226,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         if plot:
             pylab.figure()
             pylab.plot(bpms, boxed_autocorr)
+            pylab.title("sum autocorr")
             if defs.OPTIONS_BH == 1:
                 pylab.plot(bpms, filt_autocorr)
             for index, bpm in zip(these_peaks, these_peaks_bpm):
