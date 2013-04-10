@@ -69,7 +69,7 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         pickle.dump( (candidate_bpms), pickle_file, -1 )
         pickle_file.close()
 
-    return candidate_bpms, [candidate_bpms]
+    #return candidate_bpms, [candidate_bpms]
 
     if defs.OPTIONS_BP < 0:
         cands = numpy.zeros(4*defs.BPM_MAX)
@@ -94,17 +94,18 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         defs.OPTIONS_ONSET, defs.OPTIONS_BH, defs.OPTIONS_BP)
     if os.path.exists(pickle_filename) and not regen:
         pickle_file = open(pickle_filename, 'rb')
-        (bpm1, bpm2) = pickle.load(pickle_file)
+        (bpm1, bpm2, bpm3) = pickle.load(pickle_file)
         pickle_file.close()
     else:
-        bpm1, bpm2 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
+        bpm1, bpm2, bpm3 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
             plot=plot)
         pickle_file = open(pickle_filename, 'wb')
         pickle.dump( (bpm1, bpm2), pickle_file, -1 )
         pickle_file.close()
 
 
-    tempos = [bpm1, bpm2, candidate_bpms[-1][0]]
+    #tempos = [bpm1, bpm2, candidate_bpms[-1][0]]
+    tempos = [bpm1, bpm2, bpm3]
     bpm = late_heuristic.late_heuristic(tempos)
 
     if plot:
@@ -141,7 +142,8 @@ def bpm_of_mf(defs, mf_filename, print_info=False):
         newer.set_item( filename, bpm_label)
         i += 1
         #print "%i / %i" % (i, num_files)
-        acc = evaluate_bpms.extended_harmonic_accuracy(bpm_detect, bpm_ground)
+        #acc = evaluate_bpms.extended_harmonic_accuracy(bpm_detect, bpm_ground)
+        acc = evaluate_bpms.major_extended_harmonic_accuracy(bpm_detect, bpm_ground)
         if acc:
             good += 1
         accuracy = 100*float(good) / i

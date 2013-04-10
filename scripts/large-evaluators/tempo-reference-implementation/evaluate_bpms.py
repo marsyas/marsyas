@@ -11,6 +11,18 @@ def exact_accuracy(bpm_detected, bpm_ground):
         return True
     return False
 
+def major_extended_harmonic_accuracy(bpm_detected, bpm_ground):
+    tolerance = 0.04
+    m = 1
+    cand = bpm_ground*m
+    while cand < 1000:
+        cand = bpm_ground*m
+        diff = abs(bpm_detected - cand)
+        if diff <= tolerance * bpm_ground:
+            return True
+        m += 1
+    return False
+
 
 def extended_harmonic_accuracy(bpm_detected, bpm_ground):
     tolerance = 0.04

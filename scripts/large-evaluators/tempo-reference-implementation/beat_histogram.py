@@ -239,8 +239,8 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     ### beat histogram
     Hn = numpy.zeros( (autocorr.shape[0], 4*defs.BPM_MAX) )
     for i in xrange( autocorr.shape[0] ):
-        if i > 0 and i != (defs.BH_WINDOWSIZE / defs.BH_HOPSIZE):
-            Hn[i] = Hn[i-1]
+        #if i > 0 and i != (defs.BH_WINDOWSIZE / defs.BH_HOPSIZE):
+        #    Hn[i] = Hn[i-1]
         prev_Hni = 4*defs.BPM_MAX-1
         pprev_Hni = prev_Hni
         sumamp = 0.0
@@ -259,7 +259,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
                     count += 1
                 else:
                     sumamp += amp
-                    Hn[i][prev_Hni] += sumamp / float(count)
+                    Hn[i][prev_Hni] = sumamp / float(count)
                     sumamp = 0.0
                     count = 1
                 ### linear interpolate not-set bins

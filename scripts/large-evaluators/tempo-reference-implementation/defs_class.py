@@ -25,8 +25,8 @@ class Defs:
         self.WRITE_BH = 0
         self.WRITE_BP = 0
 
-        self.OPTIONS_ONSET = 3
-        self.OPTIONS_BH = 0
-        self.OPTIONS_BP = -1
+        self.OPTIONS_ONSET = 2
+        self.OPTIONS_BH = 2
+        self.OPTIONS_BP = 2
         
 

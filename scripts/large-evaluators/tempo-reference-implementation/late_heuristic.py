@@ -3,6 +3,7 @@
 
 def late_heuristic(tempos):
     heuristic_tempo = tempos[0]
+    print tempos
 
     for i in range(3):
         for j in range(3):

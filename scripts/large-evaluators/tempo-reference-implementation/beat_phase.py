@@ -214,18 +214,38 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     if defs.WRITE_BP:
         numpy.savetxt("bhisto.txt", bhisto)
 
+    bhisto_filt = numpy.zeros(len(bhisto))
+    for i in range(2,len(bhisto)-2):
+        bhisto_filt[i] = numpy.sum(bhisto[i-1:i+1])/3
+
     if plot:
         pylab.figure()
         pylab.plot(numpy.arange(len(bhisto)), bhisto,
             label="marsyas")
+        pylab.plot(numpy.arange(len(bhisto_filt)), bhisto_filt)
         #pylab.plot(numpy.arange(len(bhisto))/4.0, filt,
         #    label="extra filtered")
         pylab.title("bhisto")
         pylab.legend()
 
-    bpm1 = bhisto.argmax()
-    bhisto[bpm1] = 0.0
-    bpm2 = bhisto.argmax()
-    return bpm1, bpm2
+    bpm1 = bhisto_filt.argmax()
+    bpm1_strength = bhisto_filt[bpm1]
+    bpm2 = 0
+    bpm2_strength = 0
+    for i in range(1, len(bhisto_filt)-1):
+        if bhisto_filt[i-1] < bhisto_filt[i] > bhisto_filt[i+1]:
+            if bhisto_filt[i] > bpm2_strength and bhisto_filt[i] < bpm1_strength:
+                print "new bpm2:", i
+                bpm2 = i
+                bpm2_strength = bhisto_filt[bpm2]
+    bpm3 = 0
+    bpm3_strength = 0
+    for i in range(1, len(bhisto_filt)-1):
+        if bhisto_filt[i-1] < bhisto_filt[i] > bhisto_filt[i+1]:
+            if bhisto_filt[i] > bpm3_strength and bhisto_filt[i] < bpm2_strength:
+                print "new bpm3:", i
+                bpm3 = i
+                bpm3_strength = bhisto_filt[bpm3]
+    return bpm1, bpm2, bpm3
 
 
