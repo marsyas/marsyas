@@ -1374,7 +1374,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	   cout << "fast" << endl;
    
    mrs_real heuristic_tempo = tempos(0);
-   
+ 
+#if 0
    for (int i=0; i < 3; i++)
    {
 	   for (int j=0; j < 3; j++)
@@ -1419,7 +1420,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 	   
    }
-
    
 
    for (int i=0; i < 3; i++) 
@@ -1440,7 +1440,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	   if (fabs(0.5 * tempos(i) < 0.04 * ground_truth_tempo))
 		   oracle_tempo = 0.5 * tempos(i);
 		   }*/ 
-   
+#endif
+   if (heuristic_tempo < 69) {
+    heuristic_tempo *= 2;
+   }
 
    tempos(0) = heuristic_tempo;
    
