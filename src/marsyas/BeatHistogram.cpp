@@ -152,8 +152,8 @@ BeatHistogram::myProcess(realvec& in, realvec& out)
 		  {
 			sumamp += amp;
 			//out(o,prev_bin) += ((sumamp / count));
-			//out(o,prev_bin) = alpha_*out(o, prev_bin) + (1.0-alpha_)*((sumamp / count));
-			out(o,prev_bin) = out(o, prev_bin) + ((sumamp / count));
+			out(o,prev_bin) = alpha_*out(o, prev_bin) + (1.0-alpha_)*((sumamp / count));
+			//out(o,prev_bin) = out(o, prev_bin) + ((sumamp / count));
 			count = 1;
 			sumamp = 0.0;
 		  }

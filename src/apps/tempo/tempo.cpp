@@ -1079,7 +1079,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 4.0);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.10);
+   tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
    tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
    tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
@@ -1168,6 +1168,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	// tick the network and get a tempo estimates
 	beatTracker->tick();
     ticks++;
+    //cout<<ticks<<"\t"<<num_ticks<<endl;
 
 	mrs_realvec bh_candidates = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
 	for (int k=0; k < nCandidates; k++)
@@ -1190,11 +1191,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	if (ticks >= extra_ticks+1)
 	{
 		bhisto(tempos(0)) += temposcores(0);
+        //for (int j=0; j < tempos.getCols() ; j++) {
+		//    bhisto(tempos(j)) += temposcores(j);
+        //}
         //cout<<tempos(0)<<"\t"<<temposcores(0)<<endl;
+        //zzz
 	}
 	
 
-	if (num_ticks - ticks < 2)
+	if (num_ticks - ticks < 4)
 	  {
 	    break;
 	  }
@@ -1213,13 +1218,16 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // BeatPhase tempo candidates
   mrs_real bhmax = 0.0;
   mrs_real bhmax2 = 0.0;
+  mrs_real bhmax3 = 0.0;
 
   mrs_natural max_i = 0;
   mrs_natural max_i2 = 0;
+  mrs_natural max_i3 = 0;
 
   //for (int i=0; i < bhisto.getCols(); i++) {
   //  cout<<bhisto(i)<<endl;
   //}
+  // global maximum (will be a peak)
   for (int i=0; i < 210; i++)
   {
       if (bhisto(i) > bhmax)
@@ -1227,11 +1235,27 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		  bhmax = bhisto(i);
 		  max_i = i;
 	  }
+    }
 	  
-	  if ((bhisto(i) > bhmax2) && (bhisto(i) < bhmax))
+  // second-highest maximum (need to ensure peak-ness)
+  for (int i=1; i < 210-1; i++)
+  {
+	  if ((bhisto(i) > bhmax2) && (bhisto(i) < bhmax) &&
+            (bhisto(i-1) < bhisto(i)) && (bhisto(i+1) > bhisto(i)))
  	  {
  		  bhmax2 = bhisto(i);
  		  max_i2 = i;
+ 	  }
+  }
+
+  // third-highest maximum (need to ensure peak-ness)
+  for (int i=1; i < 210-1; i++)
+  {
+	  if ((bhisto(i) > bhmax3) && (bhisto(i) < bhmax) && (bhisto(i) < bhmax2) &&
+            (bhisto(i-1) < bhisto(i)) && (bhisto(i+1) > bhisto(i)))
+ 	  {
+ 		  bhmax3 = bhisto(i);
+ 		  max_i3 = i;
  	  }
   }
 
@@ -1322,12 +1346,21 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   
    mrs_real bhmaxt = max_i;
    mrs_real bhmaxt2 = max_i2;
+   mrs_real bhmaxt3 = max_i3;
    
 
    tempos(0) = bhmaxt;
    tempos(1) = bhmaxt2;
-   tempos(2) = bh_estimate;
-   tempos(3) = bh_estimate2;
+   tempos(2) = bhmaxt3;
+
+   //tempos(2) = bh_estimate;
+   //tempos(3) = bh_estimate2;
+
+   printf("Cands:\t%.2f\t%.2f\t%.2f\tGT:\t%.2f\n",
+        tempos(0), tempos(1), tempos(2), ground_truth_tempo);
+   printf("Rel_Cands:\t%.2f\t%.2f\t%.2f\t\n",
+        tempos(0)/ground_truth_tempo, tempos(1)/ground_truth_tempo, tempos(2)/ground_truth_tempo);
+
    
    cout << slow_max << "," << fast_max << ",";
    
@@ -1370,7 +1403,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 				
 				   
 				    //if (tempos(i) < 68.5)
-				    if (tempos(i) <= 68)
+				    if (tempos(i) <= 72)
 			 		   heuristic_tempo = 2 * tempos(i);
 			   }
 		   }
