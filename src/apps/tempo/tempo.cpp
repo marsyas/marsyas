@@ -1127,9 +1127,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_realvec tempos(nCandidates);  // tempo estimates from the BH
    mrs_realvec temposcores(nCandidates);
 
-   mrs_realvec bhisto;	 // secondary beat histogram for selecting the best tempo estimate from BeatPhase
-   bhisto.create(210);
-   bhisto.setval(0.0);
+   mrs_realvec bphase;	 // secondary beat histogram for selecting the best tempo estimate from BeatPhase
+   const int BPHASE_SIZE = 210;
+   bphase.create(BPHASE_SIZE);
+   bphase.setval(0.0);
 
 
    // output plugin that can be used with MarMonitors for debugging
@@ -1162,7 +1163,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	// enough onset strength signal for accurate estimation
 	if (ticks == extra_ticks) {
 	  tempoInduction->updControl("BeatHistogram/histo/mrs_bool/reset", true);
-      //bhisto.setval(0.0);
     }
 
 	// tick the network and get a tempo estimates
@@ -1190,9 +1190,13 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     // extra +1 because we already ticked in this loop!
 	if (ticks >= extra_ticks+1)
 	{
-		bhisto(tempos(0)) += temposcores(0);
+        const double alpha = 0.9;
+        for (int j=0; j<BPHASE_SIZE; j++) {
+            bphase(j) *= alpha;
+        }
+		bphase(tempos(0)) += temposcores(0);
         //for (int j=0; j < tempos.getCols() ; j++) {
-		//    bhisto(tempos(j)) += temposcores(j);
+		//    bphase(tempos(j)) += temposcores(j);
         //}
         //cout<<tempos(0)<<"\t"<<temposcores(0)<<endl;
         //zzz
@@ -1224,37 +1228,37 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_natural max_i2 = 0;
   mrs_natural max_i3 = 0;
 
-  //for (int i=0; i < bhisto.getCols(); i++) {
-  //  cout<<bhisto(i)<<endl;
+  //for (int i=0; i < bphase.getCols(); i++) {
+  //  cout<<bphase(i)<<endl;
   //}
   // global maximum (will be a peak)
-  for (int i=0; i < 210; i++)
+  for (int i=1; i < BPHASE_SIZE; i++)
   {
-      if (bhisto(i) > bhmax)
+      if (bphase(i) > bhmax)
 	  {
-		  bhmax = bhisto(i);
+		  bhmax = bphase(i);
 		  max_i = i;
 	  }
     }
 	  
   // second-highest maximum (need to ensure peak-ness)
-  for (int i=1; i < 210-1; i++)
+  for (int i=1; i < BPHASE_SIZE; i++)
   {
-	  if ((bhisto(i) > bhmax2) && (bhisto(i) < bhmax) &&
-            (bhisto(i-1) < bhisto(i)) && (bhisto(i+1) > bhisto(i)))
+	  if ((bphase(i) > bhmax2) && (bphase(i) < bhmax) &&
+            (bphase(i-1) < bphase(i)) && (bphase(i+1) > bphase(i)))
  	  {
- 		  bhmax2 = bhisto(i);
+ 		  bhmax2 = bphase(i);
  		  max_i2 = i;
  	  }
   }
 
   // third-highest maximum (need to ensure peak-ness)
-  for (int i=1; i < 210-1; i++)
+  for (int i=1; i < BPHASE_SIZE; i++)
   {
-	  if ((bhisto(i) > bhmax3) && (bhisto(i) < bhmax) && (bhisto(i) < bhmax2) &&
-            (bhisto(i-1) < bhisto(i)) && (bhisto(i+1) > bhisto(i)))
+	  if ((bphase(i) > bhmax3) && (bphase(i) < bhmax) && (bphase(i) < bhmax2) &&
+            (bphase(i-1) < bphase(i)) && (bphase(i+1) > bphase(i)))
  	  {
- 		  bhmax3 = bhisto(i);
+ 		  bhmax3 = bphase(i);
  		  max_i3 = i;
  	  }
   }
@@ -1264,7 +1268,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // {
   // 	  if (bhistogram(i) > bhmax) 
   //  	  {
-  //  		  bhmax = bhisto(i);
+  //  		  bhmax = bphase(i);
   //  		  bh_estimate = i * 0.25;
   //  	  }
   // }
@@ -1275,7 +1279,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   // {
   // 	  if (bhistogram(i) > bhmax) 
   // 	  {
-  // 		  bhmax = bhisto(i);
+  // 		  bhmax = bphase(i);
   // 		  bh_estimate2 = i * 0.25;
   // 	  }
   // }
