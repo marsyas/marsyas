@@ -1190,7 +1190,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     // extra +1 because we already ticked in this loop!
 	if (ticks >= extra_ticks+1)
 	{
-        const double alpha = 0.9;
+        const double alpha = 1.0;
         for (int j=0; j<BPHASE_SIZE; j++) {
             bphase(j) *= alpha;
         }
@@ -1360,10 +1360,14 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    //tempos(2) = bh_estimate;
    //tempos(3) = bh_estimate2;
 
-   printf("Cands:\t%.2f\t%.2f\t%.2f\tGT:\t%.2f\n",
-        tempos(0), tempos(1), tempos(2), ground_truth_tempo);
-   printf("Rel_Cands:\t%.2f\t%.2f\t%.2f\t\n",
-        tempos(0)/ground_truth_tempo, tempos(1)/ground_truth_tempo, tempos(2)/ground_truth_tempo);
+   printf("Cands:\t%.3f\t%.3f\t%.3f",
+        tempos(0), tempos(1), tempos(2));
+   printf("\t%.3f\t%.3f",
+        tempos(1)/tempos(0), tempos(2)/tempos(0));
+   printf("\t%.3f", ground_truth_tempo);
+   printf("\t%.3f\t%.3f",
+        bhmax2/bhmax, bhmax3/bhmax);
+    printf("\n");
 
    
    cout << slow_max << "," << fast_max << ",";
@@ -1445,7 +1449,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		   oracle_tempo = 0.5 * tempos(i);
 		   }*/ 
 #endif
-   if (heuristic_tempo < 69) {
+   if (heuristic_tempo <= 72.5) {
     heuristic_tempo *= 2;
    }
 
