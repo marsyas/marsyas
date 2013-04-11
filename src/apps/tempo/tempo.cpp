@@ -965,6 +965,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    MarSystem* hfanout = mng.create("Fanout", "hfanout");
    hfanout->addMarSystem(mng.create("Gain", "id1"));
    hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+   hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
    tempoInduction->addMarSystem(hfanout);
    tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 
@@ -1082,6 +1083,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
    tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
+   tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc2/mrs_real/factor", 0.25);
    tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
 
    // set the filename, hop and window size
