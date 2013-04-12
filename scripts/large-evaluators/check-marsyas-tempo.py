@@ -27,8 +27,9 @@ def marsyas_tempo(queue, datum):
     queue.put(cmd)
 
 def main(mf_dir, output_dir):
+    dirname = os.environ['MARSYAS_DATADIR']
     collections = glob.glob(os.path.expanduser(
-        "~/src/audio-research/*_tempos.mf"))
+        os.path.join(dirname, "*_tempos.mf")))
     collections.sort()
     data = []
     for coll in collections:
