@@ -51,6 +51,7 @@ add_subdirectory(ibt)
 add_subdirectory(pitchdtw)
 add_subdirectory(speakerSeg)
 add_subdirectory(wreckBeach)
+add_subdirectory(openmir)
 
 if (MARSYAS_OPENGL)
 	add_subdirectory(helloglut)
