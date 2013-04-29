@@ -439,7 +439,7 @@ printHelp(string progName)
 
   cerr << "-l  --length       : playback length in seconds " << endl;
   cerr << "-m  --memory       : memory size " << endl;
-  cerr << "-w  --weka         : weka .arff filename " << endl;
+  cerr << "-w  --wekafile     : weka .arff filename " << endl;
   cerr << "-od --outputdir    : output directory for output of files" << endl;
   cerr << "-ws --windowsize   : analysis window size in samples " << endl;
   cerr << "-hp --hopsize      : analysis hop size in samples " << endl;
