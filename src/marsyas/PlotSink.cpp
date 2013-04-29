@@ -55,6 +55,7 @@ PlotSink::~PlotSink()
 {
 	if (ctrl_single_file_->isTrue() && single_file_ != NULL) {
         single_file_->close();
+        delete single_file_;
         single_file_ = NULL;
     }
 }

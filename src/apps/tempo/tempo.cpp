@@ -82,6 +82,7 @@
 
 using namespace std;
 using namespace Marsyas;
+MarSystemManager mng;
 
 vector<mrs_string> predicted_filenames_;
 vector<float> predicted_filenames_tempos_;
@@ -329,7 +330,6 @@ void tempo_medianMultiBands(mrs_string sfName, float ground_truth_tempo, mrs_str
   (void) resName;
   (void) haveCollections;
 
-  MarSystemManager mng;
 
 
   // prepare network
@@ -461,7 +461,7 @@ tempo_wavelets(mrs_string sfName, mrs_string resName, bool haveCollections, mrs_
   (void) haveCollections;
   (void) tolerance;
 
-  MarSystemManager mng;
+  //MarSystemManager mng;
 
   mrs_real srate = 0.0;
 
@@ -773,7 +773,7 @@ tempo_aim(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool 
   cout << "Tempo-aim" << endl;
 
 
-  MarSystemManager mng;
+  //MarSystemManager mng;
 
   MarSystem* net = mng.create("Series/net");
 
@@ -854,31 +854,16 @@ tempo_aim(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool 
 
 
 
-/* tempo induction based on the following steps:
-   1) onset strength signal calcalation based on spectral flux
-   2) unbiased autorrelation
-   3) warping to Beat Histrogram
-   4) peak picking for selecting tempo candidates
-   5) tempo candidate rescoring by cross-correlation with the onset
-   strength signal
-   6) secondary Beat Histogram for final tempo induction
-*/
 
-
-void
-tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
+MarSystem *onset_strength_signal_flux(mrs_string sfName)
 {
-  (void) resName;
-	cout << "TEMPO FLUX" << endl;
-	
-  MarSystemManager mng;
+  //MarSystemManager mng;
 
-  MarSystem *beatTracker = mng.create("Series/beatTracker");
-
-  /* Onset strength calcuates the onset strength signal whose individual
-	 values are computed using the fluxnet and are accumulated. The resulting
-	 onset strength signal is forward/backward filtered to smooth out
-	 adjacent peaks without moving the location of the true onset peaks
+  /* Onset strength calcuates the onset strength signal whose
+     individual values are computed using the fluxnet. The
+     resulting onset strength signal is filtered to smooth out
+     adjacent peaks.  This moves the locations of the true peaks
+     by a fixed number of samples
   */
   MarSystem *onset_strength = mng.create("Series/onset_strength");
   MarSystem *accum = mng.create("Accumulator/accum");
@@ -904,105 +889,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   fluxnet->addMarSystem(mng.create("Filter", "filt1"));
 #endif
 
-/*
-  fluxnet->addMarSystem(mng.create("PlotSink", "plotsink"));
-  fluxnet->updControl("PlotSink/plotsink/mrs_string/filename",
-      "filtered.txt");
-  fluxnet->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
-  fluxnet->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
-*/
-
   accum->addMarSystem(fluxnet);
   onset_strength->addMarSystem(accum);
-  cout << "NEW TEMPO" << endl;
-  
-  
-  // onset_strength->addMarSystem(mng.create("Norm/norm"));
-  
-  // onset_strength->addMarSystem(mng.create("Sum/triangsum"));
-
-
-  onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
-  //    *** see note with filter coefficients, below
-#if !( FIR_OR_IIR_FILTER )
-  onset_strength->addMarSystem(mng.create("Filter", "filt1"));
-  onset_strength->addMarSystem(mng.create("Reverse", "reverse1"));
-  onset_strength->addMarSystem(mng.create("Filter", "filt2"));
-  onset_strength->addMarSystem(mng.create("Reverse", "reverse2"));
-#endif
-  
-
-  beatTracker->addMarSystem(onset_strength);
-
-  /* After the onset signal is calculated it is used for initial
-	 tempo induction based mapping an enhanced autocorrelation to a
-	 beat histogram BH and selecting the peaks of the BH as tempo candidates.
-	 The FlowThru composite is used to propagate the onset strength signal
-	 to the BeatPhase MarSystem which finds the beat locations and rescores
-	 the tempo candidates in order to select the tempo. The tempo induction
-	 is performed as the inner process of the FlowThru composite and the tempo
-	 candidates are linked to the BeatPhase tempo candidates.
-  */
-
-  MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
-
-  /* MarSystem *adaptive_median_threshold = mng.create("Fanout/adaptive_median_threshold");
-  adaptive_median_threshold->addMarSystem(mng.create("MedianFilter", "medianfilter"));
-  adaptive_median_threshold->addMarSystem(mng.create("Gain/subtract_gain"));
-  adaptive_median_threshold->updControl("Gain/subtract_gain/mrs_real/gain", -1.0);
-  adaptive_median_threshold->updControl("MedianFilter/medianfilter/mrs_natural/WindowSize", 10);
-  tempoInduction->addMarSystem(adaptive_median_threshold);
-  tempoInduction->addMarSystem(mng.create("Sum/asum"));
-  tempoInduction->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
-  */ 
-
-
-   tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
-   tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
-
-
-   //  enhance the BH harmonic peaks
-   MarSystem* hfanout = mng.create("Fanout", "hfanout");
-   hfanout->addMarSystem(mng.create("Gain", "id1"));
-   hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
-   hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
-   tempoInduction->addMarSystem(hfanout);
-   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
-
-/*
-    tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink"));
-    tempoInduction->updControl("PlotSink/plotsink/mrs_string/filename",
-        "bh-combo.txt");
-    tempoInduction->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
-    tempoInduction->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
-*/
-
-
-   // Select the peaks
-   tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
-   tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));
-
-   // Using the tempo induction block calculate the Beat Locations
-   beatTracker->addMarSystem(tempoInduction);
-   // beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
-   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
-   beatTracker->addMarSystem(mng.create("Gain/id"));
-
-   //   original values, assuming 22050 Hz.
-   //mrs_natural winSize = 256;     // for flux calculation
-   //mrs_natural hopSize = 128;     // for flux calculation
-   //mrs_natural bhopSize = 128;    // for onset strength signal
-   //mrs_natural bwinSize = 2048;	 // for onset strength signal
-   //
-   //   updated values, for variable sample rates.  ms = milliseconds
-   //   these will be rounded up to the nearest power of 2 (in samples)
-   mrs_natural win_ms = 5.8;     // for flux calculation
-   mrs_natural hop_ms = 2.9;     // for flux calculation
-   mrs_natural bhop_ms = 2.9;    // for onset strength signal
-   mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
-   // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
-   mrs_natural nCandidates = 8;  // number of tempo candidates
-
 
    // parameters for the onset strength signal
    onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
@@ -1062,6 +950,148 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
 
+   //onset_strength->linkControl(
+   // "mrs_string/filename",
+   // "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename");
+   onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
+   onset_strength->linkControl(
+    "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_real/osrate",
+    "mrs_real/file_srate");
+
+   onset_strength->linkControl(
+    "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData",
+    "mrs_bool/hasData");
+
+
+   //   updated values, for variable sample rates.  ms = milliseconds
+   //   these will be rounded up to the nearest power of 2 (in samples)
+   mrs_natural win_ms = 5.8;     // for flux calculation
+ 
+   mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
+   mrs_natural winSize = (mrs_natural) next_power_two(srate * win_ms * 0.001);
+
+   onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
+
+//zz
+  return onset_strength;
+}
+
+void
+test_oss_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
+{
+  (void) ground_truth_tempo;
+  (void) resName;
+  (void) haveCollections;
+  (void) tolerance;
+	cout << "Writing OSS to onset_strength.txt" << endl;
+
+  MarSystem *onset_strength = onset_strength_signal_flux(sfName);
+  
+  onset_strength->addMarSystem(mng.create("PlotSink", "plotsink"));
+  onset_strength->updControl("PlotSink/plotsink/mrs_string/filename",
+      "onset_strength.txt");
+  onset_strength->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
+  onset_strength->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
+
+
+  MarControlPtr hasData = onset_strength->getctrl("mrs_bool/hasData");
+  while (hasData->isTrue()) {
+    onset_strength->tick();
+  }
+  delete onset_strength;
+}
+
+
+/* tempo induction based on the following steps:
+   1) onset strength signal calcalation based on spectral flux
+      (see onset_strength_signal_flux function)
+   2) unbiased autorrelation
+   3) warping to Beat Histrogram
+   4) peak picking for selecting tempo candidates
+   5) tempo candidate rescoring by cross-correlation with the onset
+   strength signal
+   6) secondary Beat Histogram for final tempo induction
+*/
+
+
+void
+tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
+{
+  (void) resName;
+	cout << "TEMPO FLUX" << endl;
+	
+  //MarSystemManager mng;
+
+  MarSystem *onset_strength = onset_strength_signal_flux(sfName);
+  MarSystem *beatTracker = mng.create("Series/beatTracker");
+
+  
+  onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
+
+  beatTracker->addMarSystem(onset_strength);
+
+  /* After the onset signal is calculated it is used for initial
+	 tempo induction based mapping an enhanced autocorrelation to a
+	 beat histogram BH and selecting the peaks of the BH as tempo candidates.
+	 The FlowThru composite is used to propagate the onset strength signal
+	 to the BeatPhase MarSystem which finds the beat locations and rescores
+	 the tempo candidates in order to select the tempo. The tempo induction
+	 is performed as the inner process of the FlowThru composite and the tempo
+	 candidates are linked to the BeatPhase tempo candidates.
+  */
+
+  MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
+
+  /* MarSystem *adaptive_median_threshold = mng.create("Fanout/adaptive_median_threshold");
+  adaptive_median_threshold->addMarSystem(mng.create("MedianFilter", "medianfilter"));
+  adaptive_median_threshold->addMarSystem(mng.create("Gain/subtract_gain"));
+  adaptive_median_threshold->updControl("Gain/subtract_gain/mrs_real/gain", -1.0);
+  adaptive_median_threshold->updControl("MedianFilter/medianfilter/mrs_natural/WindowSize", 10);
+  tempoInduction->addMarSystem(adaptive_median_threshold);
+  tempoInduction->addMarSystem(mng.create("Sum/asum"));
+  tempoInduction->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
+  */ 
+
+
+   tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
+   tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
+
+
+   //  enhance the BH harmonic peaks
+   MarSystem* hfanout = mng.create("Fanout", "hfanout");
+   hfanout->addMarSystem(mng.create("Gain", "id1"));
+   hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+   hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
+   tempoInduction->addMarSystem(hfanout);
+   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+
+/*
+    tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink"));
+    tempoInduction->updControl("PlotSink/plotsink/mrs_string/filename",
+        "bh-combo.txt");
+    tempoInduction->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
+    tempoInduction->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
+*/
+
+
+   // Select the peaks
+   tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
+   tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));
+
+   // Using the tempo induction block calculate the Beat Locations
+   beatTracker->addMarSystem(tempoInduction);
+   // beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
+   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
+   beatTracker->addMarSystem(mng.create("Gain/id"));
+
+   mrs_natural hop_ms = 2.9;     // for flux calculation
+   mrs_natural bhop_ms = 2.9;    // for onset strength signal
+   mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
+   // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
+   mrs_natural nCandidates = 8;  // number of tempo candidates
+
+
+
    // parameters for BH pick peaking
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 11);
    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
@@ -1087,13 +1117,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
 
    // set the filename, hop and window size
-   onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
-   mrs_real srate = fluxnet->getControl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
+   mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
 
-   mrs_natural winSize = (mrs_natural) next_power_two(srate * win_ms * 0.001);
    mrs_natural hopSize = (mrs_natural) next_power_two(srate * hop_ms * 0.001);
    mrs_natural bhopSize = (mrs_natural) next_power_two(srate * bhop_ms * 0.001);
    mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
+        //zzz
 #if 0
    cout<<"window size:"<<winSize<<endl;
    cout<<hopSize<<endl;
@@ -1101,7 +1130,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    cout<<bwinSize<<endl;
 #endif
 
-   onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
    beatTracker->updControl("mrs_natural/inSamples", hopSize);
 
    onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);
@@ -1201,7 +1229,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		//    bphase(tempos(j)) += temposcores(j);
         //}
         //cout<<tempos(0)<<"\t"<<temposcores(0)<<endl;
-        //zzz
 	}
 	
 
@@ -1517,8 +1544,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    delete beatTracker;
  }
 
-
-
  void
  tempo_predicted(mrs_string sfName, float predicted_tempo, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
  {
@@ -1545,7 +1570,7 @@ tempo_aim_flux2(mrs_string sfName, float ground_truth_tempo, mrs_string resName,
 {
   (void) resName;
 
-  MarSystemManager mng;
+  //MarSystemManager mng;
 
 
   MarSystem *beatTracker = mng.create("Series/beatTracker");
@@ -1847,7 +1872,7 @@ tempo_histoSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string resN
   (void) resName;
   (void) haveCollections;
 
-  MarSystemManager mng;
+  //MarSystemManager mng;
   mrs_real srate = 0.0;
 
 
@@ -1992,7 +2017,7 @@ tempo_histoSumBandsQ(mrs_string sfName, float ground_truth_tempo, mrs_string res
   (void) resName;
   (void) haveCollections;
 
-  MarSystemManager mng;
+  //MarSystemManager mng;
   mrs_real srate = 0.0;
 
 
@@ -2125,7 +2150,7 @@ tempo_medianSumBands(mrs_string sfName, float ground_truth_tempo, mrs_string res
   (void) resName;
   (void) haveCollections;
 
-  MarSystemManager mng;
+  //MarSystemManager mng;
   //mrs_natural nChannels;
   mrs_real srate;
 
@@ -2253,7 +2278,7 @@ tempo_bcWavelet(mrs_string sfName, mrs_string resName, bool haveCollections, mrs
   (void) resName;
   (void) haveCollections;
   (void) tolerance;
-  MarSystemManager mng;
+  //MarSystemManager mng;
   mrs_natural nChannels;
   mrs_real srate = 0.0;
 
@@ -2498,7 +2523,7 @@ tempo_bcFilter(mrs_string sfName, mrs_string resName, bool haveCollections, mrs_
 
   cout << "BOOMCICK_Filter PROCESSING" << endl;
 
-  MarSystemManager mng;
+  //MarSystemManager mng;
   mrs_natural nChannels;
   mrs_real srate = 0.0;
 
@@ -2832,7 +2857,7 @@ refine(mrs_string sfName, float predicted_tempo)
 
   cout << "Initial tempo = " << predicted_tempo << endl;
 
-  MarSystemManager mng;
+  //MarSystemManager mng;
 
   MarSystem *net = mng.create("Series/net");
   net->addMarSystem(mng.create("SoundFileSource/src"));
@@ -3044,7 +3069,7 @@ void
 tempo_ibt(mrs_string sfName, float ground_truth_tempo, mrs_string outputTxt, bool haveCollections, mrs_real tolerance)
 {
     (void) haveCollections;
-	MarSystemManager mng;
+	//MarSystemManager mng;
 
 
 	mrs_bool micinputopt = false;
@@ -4010,6 +4035,10 @@ void tempo(mrs_string inFname, mrs_string outFname, mrs_string prlabel, mrs_stri
   else if (method == "FLUX")
   {
 	  tempo_flux(sfName, ground_truth_tempo, resName, haveCollections, tolerance);
+  }
+  else if (method == "TEST_OSS_FLUX")
+  {
+	  test_oss_flux(sfName, ground_truth_tempo, resName, haveCollections, tolerance);
   }
   else if (method == "AIM_FLUX")
   {
