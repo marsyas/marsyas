@@ -925,24 +925,24 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 #if FIR_OR_IIR_FILTER
    // 15th order
    //   import scipy.signal
-   //   b,a = scipy.signal.firwin(16, 30.0 / (344.53125/2.0/2.0))
+   //   b,a = scipy.signal.firwin(16, 20.0 / (344.53125/2.0/2.0))
     mrs_realvec bcoeffs(1, 16);
-    bcoeffs(0) = 0.0031726283628206;
-    bcoeffs(1) = 0.0043062967303785;
-    bcoeffs(2) = -0.0035045254086042;
-    bcoeffs(3) = -0.0273959345122737;
-    bcoeffs(4) = -0.0338216165089485;
-    bcoeffs(5) = 0.0385573210588494;
-    bcoeffs(6) = 0.1922488825645031;
-    bcoeffs(7) = 0.3264369477132749;
-    bcoeffs(8) = 0.3264369477132749;
-    bcoeffs(9) = 0.1922488825645031;
-    bcoeffs(10) = 0.0385573210588495;
-    bcoeffs(11) = -0.0338216165089485;
-    bcoeffs(12) = -0.0273959345122737;
-    bcoeffs(13) = -0.0035045254086042;
-    bcoeffs(14) = 0.0043062967303785;
-    bcoeffs(15) = 0.0031726283628206;
+    bcoeffs(0) = -0.0024698197020265;
+    bcoeffs(1) = -0.0058762513500882;
+    bcoeffs(2) = -0.0102997595937043;
+    bcoeffs(3) = -0.0039655087602043;
+    bcoeffs(4) = 0.0297548963898268;
+    bcoeffs(5) = 0.0951407447274584;
+    bcoeffs(6) = 0.1723927441359756;
+    bcoeffs(7) = 0.2253229541527625;
+    bcoeffs(8) = 0.2253229541527625;
+    bcoeffs(9) = 0.1723927441359756;
+    bcoeffs(10) = 0.0951407447274585;
+    bcoeffs(11) = 0.0297548963898268;
+    bcoeffs(12) = -0.0039655087602043;
+    bcoeffs(13) = -0.0102997595937043;
+    bcoeffs(14) = -0.0058762513500882;
+    bcoeffs(15) = -0.0024698197020265;
    fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
    //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 #endif
@@ -972,11 +972,9 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 #if 0
    cout<<"OSS sizes:\t"<<oss_hop_size<<"\t"<<oss_win_size<<endl;
 #endif
-   //onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);
    onset_strength->updControl("mrs_natural/inSamples", oss_hop_size);
    fluxnet->updControl("ShiftInput/si/mrs_natural/winSize", oss_win_size);
 
-//zz
   return onset_strength;
 }
 
@@ -990,6 +988,7 @@ test_oss_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, b
 	cout << "Writing OSS to onset_strength.txt" << endl;
 
   MarSystem *onset_strength = onset_strength_signal_flux(sfName);
+  onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", 1);
   
   onset_strength->addMarSystem(mng.create("PlotSink", "plotsink"));
   onset_strength->updControl("PlotSink/plotsink/mrs_string/filename",
@@ -1136,6 +1135,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    beatTracker->updControl("mrs_natural/inSamples", hopSize);
 
+   onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);
    onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize", bwinSize);
    // beatTracker->updControl("ShiftInput/si3/mrs_natural/winSize", bp_winSize);
 

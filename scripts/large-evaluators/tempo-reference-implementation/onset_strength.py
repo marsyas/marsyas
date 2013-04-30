@@ -19,6 +19,7 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         #wav_data,
         defs.OSS_WINDOWSIZE, defs.OSS_HOPSIZE)
     oss_sr = wav_sr / float(defs.OSS_HOPSIZE)
+    #print oss_sr
     if defs.OPTIONS_ONSET == 0:
         rms = numpy.sqrt( numpy.mean(overlapped**2, axis=1))
         #dif = numpy.clip( rms[1:] - rms[:-1], 0, numpy.Inf)
