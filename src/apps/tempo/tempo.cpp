@@ -923,28 +923,26 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
    onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
 #endif
 #if FIR_OR_IIR_FILTER
-   mrs_realvec bcoeffs(1,16);
-   //mrs_realvec acoeffs(1,5);
-    // 4th order
+   // 15th order
    //   import scipy.signal
-   //   b, a = scipy.signal.butter(4, 31.0 / (344.53125/2.0))
-   //   b,a = scipy.signal.firwin(8, 30.0 / (344.53125/2.0))
-    bcoeffs(0) = -0.0029464528863230;
-    bcoeffs(1) = -0.0024998672957055;
-    bcoeffs(2) = 0.0018785283452463;
-    bcoeffs(3) = 0.0187142759564530;
-    bcoeffs(4) = 0.0532726504053264;
-    bcoeffs(5) = 0.1016022544973969;
-    bcoeffs(6) = 0.1498343307695308;
-    bcoeffs(7) = 0.1801442802080749;
-    bcoeffs(8) = 0.1801442802080749;
-    bcoeffs(9) = 0.1498343307695309;
-    bcoeffs(10) = 0.1016022544973970;
-    bcoeffs(11) = 0.0532726504053265;
-    bcoeffs(12) = 0.0187142759564530;
-    bcoeffs(13) = 0.0018785283452463;
-    bcoeffs(14) = -0.0024998672957055;
-    bcoeffs(15) = -0.0029464528863230;
+   //   b,a = scipy.signal.firwin(16, 30.0 / (344.53125/2.0/2.0))
+    mrs_realvec bcoeffs(1, 16);
+    bcoeffs(0) = 0.0031726283628206;
+    bcoeffs(1) = 0.0043062967303785;
+    bcoeffs(2) = -0.0035045254086042;
+    bcoeffs(3) = -0.0273959345122737;
+    bcoeffs(4) = -0.0338216165089485;
+    bcoeffs(5) = 0.0385573210588494;
+    bcoeffs(6) = 0.1922488825645031;
+    bcoeffs(7) = 0.3264369477132749;
+    bcoeffs(8) = 0.3264369477132749;
+    bcoeffs(9) = 0.1922488825645031;
+    bcoeffs(10) = 0.0385573210588495;
+    bcoeffs(11) = -0.0338216165089485;
+    bcoeffs(12) = -0.0273959345122737;
+    bcoeffs(13) = -0.0035045254086042;
+    bcoeffs(14) = 0.0043062967303785;
+    bcoeffs(15) = 0.0031726283628206;
    fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
    //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 #endif
@@ -965,12 +963,18 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 
    //   updated values, for variable sample rates.  ms = milliseconds
    //   these will be rounded up to the nearest power of 2 (in samples)
-   mrs_natural win_ms = 5.8;     // for flux calculation
+   mrs_natural oss_hop_ms = 5.8;     // for flux calculation
+   mrs_natural oss_win_ms = 11.6;     // for flux calculation
  
    mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
-   mrs_natural winSize = (mrs_natural) next_power_two(srate * win_ms * 0.001);
-
-   onset_strength->updControl("Accumulator/accum/Series/fluxnet/ShiftInput/si/mrs_natural/winSize", winSize);
+   mrs_natural oss_hop_size = (mrs_natural) next_power_two(srate * oss_hop_ms * 0.001);
+   mrs_natural oss_win_size = (mrs_natural) next_power_two(srate * oss_win_ms * 0.001);
+#if 0
+   cout<<"OSS sizes:\t"<<oss_hop_size<<"\t"<<oss_win_size<<endl;
+#endif
+   //onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);
+   onset_strength->updControl("mrs_natural/inSamples", oss_hop_size);
+   fluxnet->updControl("ShiftInput/si/mrs_natural/winSize", oss_win_size);
 
 //zz
   return onset_strength;
@@ -1132,7 +1136,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    beatTracker->updControl("mrs_natural/inSamples", hopSize);
 
-   onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);
    onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize", bwinSize);
    // beatTracker->updControl("ShiftInput/si3/mrs_natural/winSize", bp_winSize);
 

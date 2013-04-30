@@ -67,6 +67,7 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
     if defs.OSS_LOWPASS_CUTOFF > 0 and defs.OPTIONS_ONSET < 3:
         b = scipy.signal.firwin(defs.OSS_LOWPASS_N,
             defs.OSS_LOWPASS_CUTOFF / (oss_sr/2.0) )
+        print b
         filtered_flux = scipy.signal.lfilter(b, 1.0, flux)
 
         #b, a = scipy.signal.butter(2, 0.1 / (oss_sr/2.0),
