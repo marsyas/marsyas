@@ -9,7 +9,7 @@ class Defs:
         self.OSS_WINDOWSIZE = 512
         self.OSS_HOPSIZE = 256
         
-        self.OSS_LOWPASS_CUTOFF = 30.0 # Hz
+        self.OSS_LOWPASS_CUTOFF = 4.0 # Hz
         #self.OSS_LOWPASS_CUTOFF = 0 # Hz
         self.OSS_LOWPASS_N = 16
         
