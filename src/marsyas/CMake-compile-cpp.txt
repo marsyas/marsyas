@@ -338,3 +338,4 @@ Windowing.cpp
 Yin.cpp
 ZeroCrossings.cpp
 ZeroRClassifier.cpp
+ChromaFilter.cpp

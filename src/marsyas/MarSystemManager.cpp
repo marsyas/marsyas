@@ -276,6 +276,7 @@
 #include "Energy.h"
 #include "DPWOsc.h"
 #include "SpectralCentroidBandNorm.h"
+#include "ChromaFilter.h"
 //modifyHeader
 
 #ifdef MARSYAS_GSTREAMER
@@ -550,6 +551,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("Energy", new Energy("energypr"));
 	registerPrototype("DPWOsc", new DPWOsc("dpwoscpr"));
 	registerPrototype("SpectralCentroidBandNorm", new SpectralCentroidBandNorm("spectralcentroidbandnormpr"));
+	registerPrototype("ChromaFilter", new ChromaFilter("chromafilterpr"));
 	//modifyRegister
 
     // optional MarSystems

@@ -349,3 +349,4 @@ Windowing.h
 Yin.h
 ZeroCrossings.h
 ZeroRClassifier.h
+ChromaFilter.h

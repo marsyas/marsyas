@@ -60,6 +60,7 @@ marsyas_unit_test(DeltaFirstOrderRegression DeltaFirstOrderRegression_runner.cpp
 marsyas_unit_test(DelaySamples DelaySamples_runner.cpp)
 marsyas_unit_test(CARFAC CARFAC_runner.cpp)
 marsyas_unit_test(HarmonicStrength HarmonicStrength_runner.cpp)
+marsyas_unit_test(ChromaFilter ChromaFilter_runner.cpp)
 
 # Copy the files needed to run the tests
 configure_file(files/tiny.arff ${CMAKE_CURRENT_BINARY_DIR}/files/tiny.arff COPYONLY)
