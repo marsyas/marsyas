@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+from math import sqrt
+import argparse
+from marsyas import *
+from os import path, mkdir, makedirs
+import subprocess
+
+################################################################################
+# Parse Command-line Arguments
+#
+parser = argparse.ArgumentParser(description='Extract chroma features for classifier training.')
+parser.add_argument('filelist', metavar='filelist', type=str, nargs=1,
+                    help='List of files to extract chroma features from.')
+parser.add_argument('scratchdir', metavar='scratchdir', type=str, nargs=1,
+                    help='Scratch Directory.')
+parser.add_argument('resultsdir', metavar='resultsdir', type=str, nargs=1,
+                    help='Results directory.')
+parser.add_argument('--tmpl', dest='TemplateFile', action='store', default='templates/MIREX_Triad.tmpl',
+                    help='Template library to use.')
+parser.add_argument('--trans', dest='MatrixFile', action='store', default=None,
+                    help='Transition Matrix to use.')
+
+args = parser.parse_args()
+
+################################################################################
+# Process
+#
+try: 
+    makedirs(args.scratchdir[0])
+except:
+    None
+
+try: 
+    makedirs(args.resultsdir[0])
+except:
+    None
+
+try:
+    filelist = open(args.filelist[0], 'r')
+except:
+    print("Could not open " + args.filelist[0] + ".")
+    exit(1)
+
+for filename in filelist:
+    print("Estimating chords for " + filename.strip())
+    if args.MatrixFile == None:
+        subprocess.call(['./scripts/extractChords.py', '--in', filename.strip(), '--seg', filename.strip() + '.txt', '--out', args.resultsdir[0] + '/' + path.basename(filename.strip()) + '.txt', '--tmpl', args.TemplateFile])
+    else:
+        subprocess.call(['./scripts/extractChords.py', '--in', filename.strip(), '--seg', filename.strip() + '.txt', '--out', args.resultsdir[0] + '/' + path.basename(filename.strip()) + '.txt', '--tmpl', args.TemplateFile, '--trans', args.MatrixFile])
+filelist.close();
+
