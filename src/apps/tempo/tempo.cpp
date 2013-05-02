@@ -1179,8 +1179,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
    mrs_natural ticks = 0;
-   mrs_real bh_estimate = 0;
-   mrs_real bh_estimate2 = 0;
+   //mrs_real bh_estimate = 0;
+   //mrs_real bh_estimate2 = 0;
 
 
    mrs_natural size_in_bytes = onset_strength->getctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
@@ -1209,8 +1209,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		tempos(k) = bh_candidates(2*k+1) * 0.25;
 	}
 
-	bh_estimate = tempos(0);
-	bh_estimate2 = tempos(1);
+	//bh_estimate = tempos(0);
+	//bh_estimate2 = tempos(1);
 	bhistogram = tempoInduction->getControl("BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
 	
 	// tempo estimation using cross-correlation of candidate pulse trains to the onset strength signal
@@ -1246,8 +1246,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
 
-  tempos(5) = tempos(0);
-  tempos(6) = tempos(1);
+  //tempos(5) = tempos(0);
+  //tempos(6) = tempos(1);
   
 
   // Find the max bin of the histogram created from the
@@ -1481,7 +1481,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		   oracle_tempo = 0.5 * tempos(i);
 		   }*/ 
 #endif
-   if (heuristic_tempo <= 72.5) {
+   if (heuristic_tempo <= 68.5) {
     heuristic_tempo *= 2;
    }
 

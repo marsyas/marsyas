@@ -68,7 +68,7 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
     if defs.OSS_LOWPASS_CUTOFF > 0 and defs.OPTIONS_ONSET < 3:
         b = scipy.signal.firwin(defs.OSS_LOWPASS_N,
             defs.OSS_LOWPASS_CUTOFF / (oss_sr/2.0) )
-        print b
+        #print b
         filtered_flux = scipy.signal.lfilter(b, 1.0, flux)
 
         #b, a = scipy.signal.butter(2, 0.1 / (oss_sr/2.0),
@@ -85,10 +85,18 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
 
     ts = numpy.arange( len(filtered_flux) ) / oss_sr
     if defs.WRITE_ONSETS:
-        numpy.savetxt('filtered.txt',
-            numpy.vstack( (ts, filtered_flux)).transpose() )
+        cutoff = int(5.0 * wav_sr / oss_sr)
+        numpy.savetxt('fft-mag.txt',
+            ffts_abs[cutoff:,].transpose())
+        numpy.savetxt('logmag.txt',
+            logmag[cutoff:,].transpose())
+
+        ts = numpy.arange( cutoff ) / oss_sr
         numpy.savetxt('flux.txt',
-            numpy.vstack( (ts, flux)).transpose() )
+            numpy.vstack( (ts, flux[:cutoff])).transpose() )
+        numpy.savetxt('filtered.txt',
+            numpy.vstack( (ts, filtered_flux[:cutoff])).transpose() )
+        exit(1)
 
     if defs.OPTIONS_ONSET == 3:
         b, a = scipy.signal.butter(2, 1 / (oss_sr/2.0))
