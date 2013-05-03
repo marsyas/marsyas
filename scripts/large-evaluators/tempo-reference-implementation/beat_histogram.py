@@ -149,6 +149,10 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         #oss_data,
         defs.BH_WINDOWSIZE, defs.BH_HOPSIZE)
     #beat_histogram_sr = oss_sr / defs.BH_HOPSIZE
+    #for i in range(len(overlapped[0])):
+    #    print overlapped[0][i]
+    #zzz
+    #exit(1)
 
     ### autocorrelation
     autocorr = autocorrelation(overlapped)
@@ -288,24 +292,36 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     harmonic_strengthened_bh = numpy.zeros( Hn.shape )
     for i in xrange( Hn.shape[0] ):
         ### unchecked direct translation of marsyas
+        factor2 = 0.5
+        factor4 = 0.25
         stretched = numpy.zeros( Hn.shape[1] )
-        factor = 0.5
         numSamples = Hn.shape[1]
         for t in xrange( Hn.shape[1] ):
-            ni = t*factor
+            ni = t*factor2
             li = int(ni) % numSamples
             ri = li + 1
             w = ni - li
             if ri < numSamples:
-                stretched[t] = Hn[i][li] + w * (Hn[i][ri] - Hn[i][li])
+                stretched[t] += Hn[i][li] + w * (Hn[i][ri] - Hn[i][li])
             else:
-                stretched[t] = Hn[t]
+                stretched[t] += Hn[t]
+
+            ni = t*factor4
+            li = int(ni) % numSamples
+            ri = li + 1
+            w = ni - li
+            if ri < numSamples:
+                stretched[t] += Hn[i][li] + w * (Hn[i][ri] - Hn[i][li])
+            else:
+                stretched[t] += Hn[t]
         harmonic_strengthened_bh[i] = (
             Hn[i]
             + stretched
             )
 
         if defs.WRITE_BH:
+            numpy.savetxt("aq-%i.txt" % i, autocorr[i])
+            numpy.savetxt("bh-%i.txt" % i, Hn[i])
             numpy.savetxt("hbh-%i.txt" % i, harmonic_strengthened_bh[i])
 
     #for a in range(0, 20):

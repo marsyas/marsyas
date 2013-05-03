@@ -1031,6 +1031,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   
   onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
 
+
   beatTracker->addMarSystem(onset_strength);
 
   /* After the onset signal is calculated it is used for initial
@@ -1069,11 +1070,11 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 
 /*
-    tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink"));
-    tempoInduction->updControl("PlotSink/plotsink/mrs_string/filename",
-        "bh-combo.txt");
-    tempoInduction->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
-    tempoInduction->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
+    tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink_hbh"));
+    tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_string/filename",
+        "hbh-combo.txt");
+    tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_bool/sequence", false);
+    tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_bool/single_file", true);
 */
 
 
@@ -1087,12 +1088,11 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
    beatTracker->addMarSystem(mng.create("Gain/id"));
 
-   mrs_natural hop_ms = 2.9;     // for flux calculation
-   mrs_natural bhop_ms = 2.9;    // for onset strength signal
+   mrs_natural hop_ms = 5.8;     // for flux calculation
+   mrs_natural bhop_ms = 5.8;    // for onset strength signal
    mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
    // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
    mrs_natural nCandidates = 8;  // number of tempo candidates
-
 
 
    // parameters for BH pick peaking
@@ -1127,10 +1127,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
         //zzz
 #if 0
-   cout<<"window size:"<<winSize<<endl;
+   cout<<"sizes:"<<endl;
    cout<<hopSize<<endl;
    cout<<bhopSize<<endl;
-   cout<<bwinSize<<endl;
+   cout<<bwinSize<<"\t"<<srate * bwin_ms * 0.001<<endl;
 #endif
 
    beatTracker->updControl("mrs_natural/inSamples", hopSize);

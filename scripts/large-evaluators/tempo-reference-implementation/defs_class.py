@@ -14,17 +14,17 @@ class Defs:
         self.OSS_LOWPASS_N = 16
         
         self.BH_WINDOWSIZE = 2048
-        self.BH_HOPSIZE = 128
+        self.BH_HOPSIZE = 256
         
         self.BP_WINDOWSIZE = 2048
-        self.BP_HOPSIZE = 128
+        self.BP_HOPSIZE = 256
  
         self.WRITE_ONSETS = 1
-        self.WRITE_BH = 0
+        self.WRITE_BH = 1
         self.WRITE_BP = 0
 
         self.OPTIONS_ONSET = 2
-        self.OPTIONS_BH = 0
+        self.OPTIONS_BH = 2
         self.OPTIONS_BP = 0
         
 

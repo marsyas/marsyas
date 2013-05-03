@@ -38,9 +38,6 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
     ffts_abs /= defs.OSS_WINDOWSIZE
     logmag = numpy.log(1.0 + 1000.0 * ffts_abs)
 
-    #numpy.savetxt('log0.txt', logmag[0])
-    #numpy.savetxt('log1.txt', logmag[1])
-
     ### flux
     flux = numpy.zeros( ffts_abs.shape[0] ) # output time signal
     prev = numpy.zeros( ffts_abs.shape[1] )
@@ -85,18 +82,25 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
 
     ts = numpy.arange( len(filtered_flux) ) / oss_sr
     if defs.WRITE_ONSETS:
-        cutoff = int(5.0 * wav_sr / oss_sr)
-        numpy.savetxt('fft-mag.txt',
-            ffts_abs[cutoff:,].transpose())
-        numpy.savetxt('logmag.txt',
-            logmag[cutoff:,].transpose())
+        #cutoff = int(5.0 * wav_sr / oss_sr)
+        #print "cutoff", cutoff
+        #print logmag.shape
+        #print len(wav_data)
 
-        ts = numpy.arange( cutoff ) / oss_sr
+        #numpy.savetxt('logmag.txt',
+        #    logmag[:cutoff,].transpose())
+        #ts = numpy.arange( cutoff ) / oss_sr
+        #numpy.savetxt('flux.txt',
+        #    numpy.vstack( (ts, flux[:cutoff])).transpose() )
+        #numpy.savetxt('filtered.txt',
+        #    numpy.vstack( (ts, filtered_flux[:cutoff])).transpose() )
+
+        numpy.savetxt('logmag.txt',
+            logmag.transpose())
         numpy.savetxt('flux.txt',
-            numpy.vstack( (ts, flux[:cutoff])).transpose() )
+            numpy.vstack( (ts, flux)).transpose() )
         numpy.savetxt('filtered.txt',
-            numpy.vstack( (ts, filtered_flux[:cutoff])).transpose() )
-        exit(1)
+            numpy.vstack( (ts, filtered_flux)).transpose() )
 
     if defs.OPTIONS_ONSET == 3:
         b, a = scipy.signal.butter(2, 1 / (oss_sr/2.0))
