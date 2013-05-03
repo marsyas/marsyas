@@ -22,8 +22,8 @@ def autocorrelation(signal):
 
 def find_peaks(signal, number=10, peak_neighbors=1):
     candidates = []
-    for i in xrange(peak_neighbors, len(signal)-peak_neighbors):
-    #for i in xrange(200, 720):
+    #for i in xrange(peak_neighbors, len(signal)-peak_neighbors):
+    for i in xrange(200, 720):
         if signal[i-1] < signal[i] > signal[i+1]:
             ok = True
             for j in xrange(i-peak_neighbors, i):
@@ -381,7 +381,9 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         peaks.append(these_peaks / 4.0)
         if defs.WRITE_BH:
             bpms = numpy.array(these_peaks)/4.0
-            numpy.savetxt("bh-peaks-%i.txt" % i, bpms)
+            bpms_strengths = [harmonic_strengthened_bh[i][4*b] for b in bpms]
+            numpy.savetxt("bh-peaks-%i.txt" % i,
+                numpy.vstack((bpms, bpms_strengths)).transpose())
 
     #cand_peaks = find_peaks(sHn,
     #        number=8, peak_neighbors=11) / 4.0

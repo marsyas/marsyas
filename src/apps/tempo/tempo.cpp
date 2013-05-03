@@ -50,7 +50,7 @@
 #define BPM_HYPOTHESES 6 //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
 #define PHASE_HYPOTHESES 30//Nr. of phases per BPM hypothesis (30)
 #define MIN_BPM 50 //minimum tempo considered, in BPMs (50)
-#define MAX_BPM 250 //maximum tempo considered, in BPMs (250)
+#define MAX_BPM 180 //maximum tempo considered, in BPMs (250)
 #define NR_AGENTS 30 //Nr. of agents in the pool (30)
 #define LFT_OUTTER_MARGIN 0.20 //The size of the outer half-window (in % of the IBI) before the predicted beat time (0.20)
 #define RGT_OUTTER_MARGIN 0.40 //The size of the outer half-window (in % of the IBI) after the predicted beat time (0.30)
@@ -963,8 +963,8 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 
    //   updated values, for variable sample rates.  ms = milliseconds
    //   these will be rounded up to the nearest power of 2 (in samples)
-   mrs_natural oss_hop_ms = 5.8;     // for flux calculation
-   mrs_natural oss_win_ms = 11.6;     // for flux calculation
+   mrs_natural oss_hop_ms = 2.9;     // for flux calculation
+   mrs_natural oss_win_ms = 5.8;     // for flux calculation
  
    mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
    mrs_natural oss_hop_size = (mrs_natural) next_power_two(srate * oss_hop_ms * 0.001);
@@ -1088,8 +1088,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
    beatTracker->addMarSystem(mng.create("Gain/id"));
 
-   mrs_natural hop_ms = 5.8;     // for flux calculation
-   mrs_natural bhop_ms = 5.8;    // for onset strength signal
+   //mrs_natural hop_ms = 5.8;     // for flux calculation
+   //mrs_natural bhop_ms = 5.8;    // for onset strength signal
+   mrs_natural hop_ms = 2.9;     // for flux calculation
+   mrs_natural bhop_ms = 2.9;    // for onset strength signal
    mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
    // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
    mrs_natural nCandidates = 8;  // number of tempo candidates
@@ -1098,8 +1100,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    // parameters for BH pick peaking
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 11);
    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 200);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 720);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 4*MIN_BPM+11);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 4*MAX_BPM-12);
    tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
@@ -1111,7 +1113,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    // beat histogram parameters
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 800);
+   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 4*MAX_BPM);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 4.0);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
@@ -1161,7 +1163,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_realvec temposcores(nCandidates);
 
    mrs_realvec bphase;	 // secondary beat histogram for selecting the best tempo estimate from BeatPhase
-   const int BPHASE_SIZE = 210;
+   const int BPHASE_SIZE = MAX_BPM;
    bphase.create(BPHASE_SIZE);
    bphase.setval(0.0);
 
@@ -1332,7 +1334,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
   
   mrs_real fast_max = 0.0;
-  for (int i=400; i < 800; i++) 
+  for (int i=400; i < 4*MAX_BPM; i++) 
   {
 	  if (bhistogram(i) >= fast_max)
 		  fast_max = bhistogram(i);
@@ -1481,7 +1483,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		   oracle_tempo = 0.5 * tempos(i);
 		   }*/ 
 #endif
-   if (heuristic_tempo <= 68.5) {
+   //if (heuristic_tempo <= 68.5) {
+   if (heuristic_tempo <= 70.5) {
     heuristic_tempo *= 2;
    }
 

@@ -165,7 +165,8 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         return best_bpm, 0
 
 
-    bhisto = numpy.zeros(defs.BPM_MAX)
+    #bphase = numpy.zeros(defs.BPM_MAX)
+    bphase = numpy.zeros(210)
     #bpms_max = numpy.zeros( len(candidate_bpms) )
     #bpms_std = numpy.zeros( len(candidate_bpms) )
     #print "ticks:", overlapped.shape[0]
@@ -196,12 +197,12 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         #print tempo_scores
         beststr = tempo_scores[besti]
         #tempo_scores[besti] = 0.0
-        second_besti = tempo_scores.argmax()
-        second_bestbpm = candidate_bpms[i][second_besti]
-        second_beststr = tempo_scores[second_besti]
+        #second_besti = tempo_scores.argmax()
+        #second_bestbpm = candidate_bpms[i][second_besti]
+        #second_beststr = tempo_scores[second_besti]
 
         if i >= (defs.BP_WINDOWSIZE / defs.BP_HOPSIZE):
-            bhisto[ int(bestbpm) ] += beststr
+            bphase[ int(bestbpm) ] += beststr
             #bhisto[ int(second_bestbpm) ] += second_beststr
             #print bestbpm, "\t", beststr
 
@@ -212,40 +213,25 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     #filt = scipy.signal.filtfilt(b, a, bhisto)
     
     if defs.WRITE_BP:
-        numpy.savetxt("bhisto.txt", bhisto)
+        numpy.savetxt("bhisto.txt", bphase)
 
-    bhisto_filt = numpy.zeros(len(bhisto))
-    for i in range(2,len(bhisto)-2):
-        bhisto_filt[i] = numpy.sum(bhisto[i-1:i+1])/3
+    #bhisto_filt = numpy.zeros(len(bhisto))
+    #for i in range(2,len(bhisto)-2):
+    #    bhisto_filt[i] = numpy.sum(bhisto[i-1:i+1])/3
 
     if plot:
         pylab.figure()
-        pylab.plot(numpy.arange(len(bhisto)), bhisto,
+        pylab.plot(numpy.arange(len(bphase)), bphase,
             label="marsyas")
-        pylab.plot(numpy.arange(len(bhisto_filt)), bhisto_filt)
+        #pylab.plot(numpy.arange(len(bhisto_filt)), bhisto_filt)
         #pylab.plot(numpy.arange(len(bhisto))/4.0, filt,
         #    label="extra filtered")
-        pylab.title("bhisto")
+        pylab.title("bphase")
         pylab.legend()
 
-    bpm1 = bhisto_filt.argmax()
-    bpm1_strength = bhisto_filt[bpm1]
-    bpm2 = 0
-    bpm2_strength = 0
-    for i in range(1, len(bhisto_filt)-1):
-        if bhisto_filt[i-1] < bhisto_filt[i] > bhisto_filt[i+1]:
-            if bhisto_filt[i] > bpm2_strength and bhisto_filt[i] < bpm1_strength:
-                print "new bpm2:", i
-                bpm2 = i
-                bpm2_strength = bhisto_filt[bpm2]
-    bpm3 = 0
-    bpm3_strength = 0
-    for i in range(1, len(bhisto_filt)-1):
-        if bhisto_filt[i-1] < bhisto_filt[i] > bhisto_filt[i+1]:
-            if bhisto_filt[i] > bpm3_strength and bhisto_filt[i] < bpm2_strength:
-                print "new bpm3:", i
-                bpm3 = i
-                bpm3_strength = bhisto_filt[bpm3]
-    return bpm1, bpm2, bpm3
+    bpm = bphase.argmax()
+    bpm_strength = bphase[bpm]
+
+    return bpm
 
 

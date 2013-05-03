@@ -97,15 +97,15 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         (bpm1, bpm2, bpm3) = pickle.load(pickle_file)
         pickle_file.close()
     else:
-        bpm1, bpm2, bpm3 = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
+        bpm = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
             plot=plot)
         pickle_file = open(pickle_filename, 'wb')
-        pickle.dump( (bpm1, bpm2), pickle_file, -1 )
+        pickle.dump( (bpm), pickle_file, -1 )
         pickle_file.close()
 
 
     #tempos = [bpm1, bpm2, candidate_bpms[-1][0]]
-    tempos = [bpm1, bpm2, bpm3]
+    tempos = [bpm]
     bpm = late_heuristic.late_heuristic(tempos)
 
     if plot:
