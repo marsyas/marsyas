@@ -927,22 +927,22 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
    //   import scipy.signal
    //   b,a = scipy.signal.firwin(16, 4.0 / (344.53125/2.0/2.0))
     mrs_realvec bcoeffs(1, 16);
-    bcoeffs(0) = 0.0082122153758963;
-    bcoeffs(1) = 0.0129706508841004;
-    bcoeffs(2) = 0.0263023748715412;
-    bcoeffs(3) = 0.0467567036133135;
-    bcoeffs(4) = 0.0711509146777002;
-    bcoeffs(5) = 0.0951919906576202;
-    bcoeffs(6) = 0.1143866088935434;
-    bcoeffs(7) = 0.1250285410262848;
-    bcoeffs(8) = 0.1250285410262848;
-    bcoeffs(9) = 0.1143866088935434;
-    bcoeffs(10) = 0.0951919906576202;
-    bcoeffs(11) = 0.0711509146777003;
-    bcoeffs(12) = 0.0467567036133135;
-    bcoeffs(13) = 0.0263023748715412;
-    bcoeffs(14) = 0.0129706508841003;
-    bcoeffs(15) = 0.0082122153758963;
+    bcoeffs(0) = 0.0093780035930054;
+    bcoeffs(1) = 0.0142185143728887;
+    bcoeffs(2) = 0.0278646875538701;
+    bcoeffs(3) = 0.0481726500354153;
+    bcoeffs(4) = 0.0717161196581754;
+    bcoeffs(5) = 0.0944033642376383;
+    bcoeffs(6) = 0.1122289730269588;
+    bcoeffs(7) = 0.1220176875220479;
+    bcoeffs(8) = 0.1220176875220479;
+    bcoeffs(9) = 0.1122289730269588;
+    bcoeffs(10) = 0.0944033642376384;
+    bcoeffs(11) = 0.0717161196581755;
+    bcoeffs(12) = 0.0481726500354153;
+    bcoeffs(13) = 0.0278646875538701;
+    bcoeffs(14) = 0.0142185143728887;
+    bcoeffs(15) = 0.0093780035930054;
    fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
    //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 #endif
@@ -1069,13 +1069,13 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    tempoInduction->addMarSystem(hfanout);
    tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 
-/*
+#if 0
     tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink_hbh"));
     tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_string/filename",
         "hbh-combo.txt");
     tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_bool/sequence", false);
     tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_bool/single_file", true);
-*/
+#endif
 
 
    // Select the peaks
