@@ -238,9 +238,9 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
             )
 
         if defs.WRITE_BH:
-            numpy.savetxt("aq-%i.txt" % (i+1), autocorr[i])
-            numpy.savetxt("bh-%i.txt" % (i+1), Hn[i])
-            numpy.savetxt("hbh-%i.txt" % (i+1), harmonic_strengthened_bh[i])
+            numpy.savetxt("out/aq-%i.txt" % (i+1), autocorr[i])
+            numpy.savetxt("out/bh-%i.txt" % (i+1), Hn[i])
+            numpy.savetxt("out/hbh-%i.txt" % (i+1), harmonic_strengthened_bh[i])
 
     #for a in range(0, 20):
     #    numpy.savetxt("bh-combo-%i.txt" % a, harmonic_strengthened_bh[a])
@@ -304,7 +304,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
         if defs.WRITE_BH:
             bpms = numpy.array(these_peaks)/4.0
             bpms_strengths = [harmonic_strengthened_bh[i][4*b] for b in bpms]
-            numpy.savetxt("bh-peaks-%i.txt" % i,
+            numpy.savetxt("out/bh-peaks-%i.txt" % i,
                 numpy.vstack((bpms, bpms_strengths)).transpose())
 
     #cand_peaks = find_peaks(sHn,

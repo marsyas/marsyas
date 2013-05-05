@@ -3,7 +3,7 @@
 SHORT_DEBUG = 0
 
 import sys
-import os.path
+import os
 import pickle
 
 import numpy
@@ -179,11 +179,15 @@ if __name__ == "__main__":
             plot = False
     except:
         pass
+
+    if not os.path.exists('out'):
+        os.makedirs('out')
     if user_filename[-3:] == ".mf":
         bpm_of_mf(defs, user_filename, print_info=True)
     else:
         bpm, cands = bpm_of_file(defs, user_filename,
-            plot=plot, regen=regen)
+            #plot=plot, regen=regen)
+            plot=False, regen=regen)
         print "BPM: %.2f" % bpm
 
 

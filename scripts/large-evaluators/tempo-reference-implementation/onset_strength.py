@@ -95,11 +95,11 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         #numpy.savetxt('filtered.txt',
         #    numpy.vstack( (ts, filtered_flux[:cutoff])).transpose() )
 
-        numpy.savetxt('logmag.txt',
+        numpy.savetxt('out/logmag.txt',
             logmag.transpose())
-        numpy.savetxt('flux.txt',
+        numpy.savetxt('out/flux.txt',
             numpy.vstack( (ts, flux)).transpose() )
-        numpy.savetxt('filtered.txt',
+        numpy.savetxt('out/filtered.txt',
             numpy.vstack( (ts, filtered_flux)).transpose() )
 
     if defs.OPTIONS_ONSET == 3:
@@ -116,14 +116,15 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         pylab.plot( ts, cutoff_flux, label="cutoff")
 
         if defs.WRITE_ONSETS:
-            numpy.savetxt('cutoff.txt',
+            numpy.savetxt('out/cutoff.txt',
                 numpy.vstack( (ts, cutoff_flux)).transpose() )
         pylab.legend()
         return oss_sr, cutoff_flux
     #pylab.show()
     #exit(1)
 
-    pylab.legend()
+    if plot:
+        pylab.legend()
     return oss_sr, filtered_flux
 
 

@@ -3,8 +3,8 @@
 
 def late_heuristic(tempos):
     heuristic_tempo = tempos[0]
-    print tempos
-    if heuristic_tempo <= 68.5:
+    #print tempos
+    if heuristic_tempo <= 70.5:
         heuristic_tempo *= 2
 
 

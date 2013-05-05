@@ -156,7 +156,7 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     #filt = scipy.signal.filtfilt(b, a, bhisto)
     
     if defs.WRITE_BP:
-        numpy.savetxt("bphase.txt", bphase)
+        numpy.savetxt("out/bphase.txt", bphase)
 
     #bhisto_filt = numpy.zeros(len(bhisto))
     #for i in range(2,len(bhisto)-2):
