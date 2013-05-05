@@ -20,10 +20,11 @@ def autocorrelation(signal):
     return xcorr
 
 
-def find_peaks(signal, number=10, peak_neighbors=1):
+def find_peaks(defs, signal, number=10, peak_neighbors=1):
     candidates = []
-    #for i in xrange(peak_neighbors, len(signal)-peak_neighbors):
-    for i in xrange(200, 720):
+    for i in xrange(4*defs.BPM_MIN+peak_neighbors,
+        4*defs.BPM_MAX-peak_neighbors-1):
+    #for i in xrange(200, 720):
         if signal[i-1] < signal[i] > signal[i+1]:
             ok = True
             for j in xrange(i-peak_neighbors, i):
@@ -145,7 +146,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     overlapped = overlap.sliding_window(
         numpy.append(
             numpy.zeros(defs.BH_WINDOWSIZE - defs.BH_HOPSIZE),
-            oss_data),
+            oss_data[:-2*defs.BH_HOPSIZE]),
         #oss_data,
         defs.BH_WINDOWSIZE, defs.BH_HOPSIZE)
     #beat_histogram_sr = oss_sr / defs.BH_HOPSIZE
@@ -156,89 +157,6 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
 
     ### autocorrelation
     autocorr = autocorrelation(overlapped)
-    if defs.OPTIONS_BH == 0:
-        sum_autocorr = numpy.sum(autocorr, axis=0)[1:]
-
-        #defs.BPM_MAX = 250
-        #defs.BPM_MIN = 10 # as low as possible with 2048 at 172 Hz
-        # remember that autocorrelation indices are reversed
-        low  = int(bpm_to_autocorr_index(defs.BPM_MAX, oss_sr))
-        high = int(bpm_to_autocorr_index(defs.BPM_MIN, oss_sr))
-
-        #div_autocorr = numpy.array(sum_autocorr)
-        #for i in range(low, high/3):
-        #for i in range(1, len(sum_autocorr)/3):
-        #    div_autocorr[i] += sum_autocorr[i*2]
-        #    div_autocorr[i] += sum_autocorr[i*3]
-            #div_autocorr[i] += sum_autocorr[i*4]
-            #div_autocorr[i] += sum_autocorr[i*5]
-            #div_autocorr[i] += sum_autocorr[i*6]
-        #div_autocorr = div_autocorr.clip(min=0)
-
-        bpms = autocorr_index_to_bpm( numpy.arange(low, high), oss_sr )
-        boxed_autocorr = sum_autocorr[low:high]
-        #boxed_div_autocorr = div_autocorr[low:high]
-
-        these_peaks = find_peaks(boxed_autocorr,
-            number=5, peak_neighbors=1)
-
-        if plot:
-            pylab.figure()
-            #pylab.plot(sum_autocorr)
-            #pylab.plot(div_autocorr)
-            #pylab.plot(bpms, boxed_div_autocorr)
-
-            pylab.plot(bpms, boxed_autocorr, label="boxed autocorr")
-            for peak in these_peaks:
-                pylab.plot(bpms[peak], boxed_autocorr[peak], 'o')
-            pylab.show()
-
-        values = [bpms[p] for p in these_peaks ]
-        lcm = approximate_gcds( values )
-        #print "LCM:", 1.0/gcd
-        return lcm
-        
-
-    if defs.OPTIONS_BH < 2:
-        sum_autocorr = numpy.sum(autocorr, axis=0)
-
-        # remember that autocorrelation indices are reversed
-        low  = int(bpm_to_autocorr_index(defs.BPM_MAX, oss_sr))
-        high = int(bpm_to_autocorr_index(defs.BPM_MIN, oss_sr))
-
-        bpms = autocorr_index_to_bpm( numpy.arange(low, high), oss_sr )
-        boxed_autocorr = sum_autocorr[low:high]
-        use_autocorr = boxed_autocorr
-
-        if defs.OPTIONS_BH == 1:
-            # highpass
-            b, a = scipy.signal.butter(2, 0.01, btype='high')
-            filt_autocorr = scipy.signal.filtfilt(b, a, boxed_autocorr)
-            # lowpass
-            #b, a = scipy.signal.butter(2, 0.1)
-            #filt_autocorr = scipy.signal.filtfilt(b, a, boxed_autocorr)
-            use_autocorr = filt_autocorr
-
-        these_peaks = find_peaks(use_autocorr,
-            number=8, peak_neighbors=1)
-        these_peaks = numpy.array(these_peaks)
-        these_peaks_bpm = autocorr_index_to_bpm(these_peaks+low, oss_sr)
-
-        #best_index = numpy.argmax(boxed_autocorr)
-        #best_bpm   = bpms[best_index]
-        
-        if plot:
-            pylab.figure()
-            pylab.plot(bpms, boxed_autocorr)
-            pylab.title("sum autocorr")
-            if defs.OPTIONS_BH == 1:
-                pylab.plot(bpms, filt_autocorr)
-            for index, bpm in zip(these_peaks, these_peaks_bpm):
-                pylab.plot(bpm, use_autocorr[index], 'o')
-            pylab.show()
-        #exit(1)
-        return these_peaks_bpm
-        #exit(1)
 
     ### beat histogram
     Hn = numpy.zeros( (autocorr.shape[0], 4*defs.BPM_MAX) )
@@ -254,7 +172,7 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
             factor = 8/2
             Hni = int((oss_sr * 60.0 * factor / (j+1)) + 0.5);
             #bpm = autocorr_bpms[i]
-            if Hni < 4*defs.BPM_MAX and Hni > 40:
+            if Hni < 4*defs.BPM_MAX:
                 amp = autocorr[i][j]
                 if amp < 0:
                     amp = 0
@@ -320,9 +238,9 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
             )
 
         if defs.WRITE_BH:
-            numpy.savetxt("aq-%i.txt" % i, autocorr[i])
-            numpy.savetxt("bh-%i.txt" % i, Hn[i])
-            numpy.savetxt("hbh-%i.txt" % i, harmonic_strengthened_bh[i])
+            numpy.savetxt("aq-%i.txt" % (i+1), autocorr[i])
+            numpy.savetxt("bh-%i.txt" % (i+1), Hn[i])
+            numpy.savetxt("hbh-%i.txt" % (i+1), harmonic_strengthened_bh[i])
 
     #for a in range(0, 20):
     #    numpy.savetxt("bh-combo-%i.txt" % a, harmonic_strengthened_bh[a])
@@ -375,9 +293,13 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
 
     peaks = []
     for i in xrange( Hn.shape[0] ):
-        these_peaks = find_peaks(harmonic_strengthened_bh[i],
-            number=8, peak_neighbors=11)
+        these_peaks = find_peaks(defs, harmonic_strengthened_bh[i],
+            number=8, peak_neighbors=1)
         #print "bh_cands:\t", these_peaks/4.0
+        #print these_peaks/4.0
+        #for b in these_peaks:
+        #    print b, " ",
+        #print "."
         peaks.append(these_peaks / 4.0)
         if defs.WRITE_BH:
             bpms = numpy.array(these_peaks)/4.0

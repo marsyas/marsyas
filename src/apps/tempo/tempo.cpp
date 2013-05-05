@@ -927,22 +927,22 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
    //   import scipy.signal
    //   b,a = scipy.signal.firwin(16, 4.0 / (344.53125/2.0/2.0))
     mrs_realvec bcoeffs(1, 16);
-    bcoeffs(0) = 0.0093780035930054;
-    bcoeffs(1) = 0.0142185143728887;
-    bcoeffs(2) = 0.0278646875538701;
-    bcoeffs(3) = 0.0481726500354153;
-    bcoeffs(4) = 0.0717161196581754;
-    bcoeffs(5) = 0.0944033642376383;
-    bcoeffs(6) = 0.1122289730269588;
-    bcoeffs(7) = 0.1220176875220479;
-    bcoeffs(8) = 0.1220176875220479;
-    bcoeffs(9) = 0.1122289730269588;
-    bcoeffs(10) = 0.0944033642376384;
-    bcoeffs(11) = 0.0717161196581755;
-    bcoeffs(12) = 0.0481726500354153;
-    bcoeffs(13) = 0.0278646875538701;
-    bcoeffs(14) = 0.0142185143728887;
-    bcoeffs(15) = 0.0093780035930054;
+    bcoeffs(0) = 0.0095530348472755;
+    bcoeffs(1) = 0.0144032200641954;
+    bcoeffs(2) = 0.0280928524023415;
+    bcoeffs(3) = 0.0483763511689087;
+    bcoeffs(4) = 0.0717941373871591;
+    bcoeffs(5) = 0.0942851675260588;
+    bcoeffs(6) = 0.1119142142273117;
+    bcoeffs(7) = 0.1215810223767492;
+    bcoeffs(8) = 0.1215810223767492;
+    bcoeffs(9) = 0.1119142142273117;
+    bcoeffs(10) = 0.0942851675260588;
+    bcoeffs(11) = 0.0717941373871592;
+    bcoeffs(12) = 0.0483763511689087;
+    bcoeffs(13) = 0.0280928524023415;
+    bcoeffs(14) = 0.0144032200641954;
+    bcoeffs(15) = 0.0095530348472755;
    fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
    //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 #endif
@@ -1098,10 +1098,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
    // parameters for BH pick peaking
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 11);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 2);
    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 4*MIN_BPM+11);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 4*MAX_BPM-12);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 4*MIN_BPM+1);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 4*MAX_BPM-1);
    tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
@@ -1127,7 +1127,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_natural hopSize = (mrs_natural) next_power_two(srate * hop_ms * 0.001);
    mrs_natural bhopSize = (mrs_natural) next_power_two(srate * bhop_ms * 0.001);
    mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
-        //zzz
 #if 0
    cout<<"sizes:"<<endl;
    cout<<hopSize<<endl;
@@ -1209,7 +1208,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	for (int k=0; k < nCandidates; k++)
 	{
 		tempos(k) = bh_candidates(2*k+1) * 0.25;
+        //cout<<4*tempos(k)<<"   ";
 	}
+    //cout<<"."<<endl;
+        //zzz
 
 	//bh_estimate = tempos(0);
 	//bh_estimate2 = tempos(1);
@@ -1483,6 +1485,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		   oracle_tempo = 0.5 * tempos(i);
 		   }*/ 
 #endif
+
    //if (heuristic_tempo <= 68.5) {
    if (heuristic_tempo <= 70.5) {
     heuristic_tempo *= 2;

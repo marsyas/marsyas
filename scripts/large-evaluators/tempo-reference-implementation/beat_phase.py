@@ -104,72 +104,14 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     overlapped = overlap.sliding_window(
         numpy.append(
             numpy.zeros(defs.BH_WINDOWSIZE - defs.BH_HOPSIZE),
-            oss_data),
+            oss_data[:-2*defs.BH_HOPSIZE]),
         #oss_data,
         defs.BP_WINDOWSIZE, defs.BP_HOPSIZE)
     #beat_histogram_sr = oss_sr / defs.BP_HOPSIZE
 
     #print candidate_bpms_orig
     candidate_bpms = candidate_bpms_orig
-    #candidate_bpms = candidate_bpms_orig[:4]
-    #for bpm in candidate_bpms_orig:
-    #    #print bpm, base
-    #    candidate_bpms.add(bpm)
-    #candidate_bpms = list(candidate_bpms)
-    #candidate_bpms.sort()
-    #print candidate_bpms
-    if defs.OPTIONS_BP == 0:
-        onset_scores = numpy.zeros(len(candidate_bpms))
-        tempo_scores = numpy.zeros(len(candidate_bpms))
-        pylab.plot(overlapped[0])
-        for j, bpm in enumerate(candidate_bpms):
-            #print "Evaluating %.1f BPM" % bpm
-            #train = make_sine_train(bpm)
-            train, period = make_impulse_train(bpm, len(overlapped[0]), oss_sr)
-
-            for i in xrange(overlapped.shape[0]):
-            #for i in xrange(1):
-                mag, offset, var = match_offset(train, overlapped[i], period)
-                #print "%.2f\t%.2f" % (
-                #    mag / numpy.sum(train), var)
-
-                onset_scores[j] += mag + var
-
-                #pylab.title("actual signal")
-                #pylab.plot(overlapped[i])
-                #pylab.plot(train)
-                #pylab.show()
-            pylab.plot(30*train[period-8:])
-        #print onset_scores / max(onset_scores)
-        best_i = onset_scores.argmax()
-        print onset_scores[0] + onset_scores[2]
-        print onset_scores[1] + onset_scores[3]
-
-        pylab.show()
-        return candidate_bpms[best_i], 0
-
-        exit(1)
-        if False:
-            if False:
-                #mag, std = calc_pulse_trains(bpm, overlapped[i], oss_sr)
-                mag, std = calc_sine_trains(bpm, overlapped[i], oss_sr)
-                #print "%.1f\t%.3f\t%.3f" % (bpm, mag, std)
-                onset_scores[j] += mag
-                tempo_scores[j] += std
-            #exit(1)
-        #print candidate_bpms
-        #print onset_scores
-        #print tempo_scores
-        best_i = tempo_scores.argmax()
-        best_bpm = candidate_bpms[best_i]
-        return best_bpm, 0
-
-
-    #bphase = numpy.zeros(defs.BPM_MAX)
-    bphase = numpy.zeros(210)
-    #bpms_max = numpy.zeros( len(candidate_bpms) )
-    #bpms_std = numpy.zeros( len(candidate_bpms) )
-    #print "ticks:", overlapped.shape[0]
+    bphase = numpy.zeros(defs.BPM_MAX)
     for i in xrange(overlapped.shape[0]):
         onset_scores = numpy.zeros(len(candidate_bpms[0]))
         tempo_scores = numpy.zeros(len(candidate_bpms[0]))
@@ -203,6 +145,7 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
 
         if i >= (defs.BP_WINDOWSIZE / defs.BP_HOPSIZE):
             bphase[ int(bestbpm) ] += beststr
+            #print int(bestbpm), "\t", beststr
             #bhisto[ int(second_bestbpm) ] += second_beststr
             #print bestbpm, "\t", beststr
 
@@ -213,7 +156,7 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     #filt = scipy.signal.filtfilt(b, a, bhisto)
     
     if defs.WRITE_BP:
-        numpy.savetxt("bhisto.txt", bphase)
+        numpy.savetxt("bphase.txt", bphase)
 
     #bhisto_filt = numpy.zeros(len(bhisto))
     #for i in range(2,len(bhisto)-2):
