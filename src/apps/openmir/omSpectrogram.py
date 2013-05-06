@@ -18,8 +18,9 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-def spectrogram(audioFile, startSec, endSec, lowHz, highHz, winSize, hopSize,
-                spectrumType, width, height):
+from optparse import OptionParser
+
+def run(audioFile, outFile, startSec, endSec, lowHz, highHz, winSize, hopSize, spectrumType, widthPx, heightPx):
 
     # Marsyas network
     mng = marsyas.MarSystemManager()
@@ -78,25 +79,55 @@ def spectrogram(audioFile, startSec, endSec, lowHz, highHz, winSize, hopSize,
     out = out[halfWinSize - highBin:halfWinSize - lowBin, :]
 
     # Resize and convert the array to an image
-    if (height == "native") and (width == "native"):
-        height = winSize / 2
-        width = hopSize * durationSec
+    if (heightPx == 0) and (widthPx == 0):
+        heightPx = winSize / 2
+        widthPx = hopSize * durationSec
 
-    if (height != "native") and (width == "native"):
-        pxPerItem = int(height) / float(winSize / 2.)
+    if (heightPx != 0) and (widthPx == 0):
+        pxPerItem = int(heightPx) / float(winSize / 2.)
         # TODO(sness) - Why do we have to multiply this by 4?  Check the math above
-        width = int(ticksToRun * pxPerItem) * 4
+        widthPx = int(ticksToRun * pxPerItem) * 4
 
-    out = smp.imresize(out,(int(height),int(width)))
+    out = smp.imresize(out,(int(heightPx),int(widthPx)))
     im = smp.toimage(out)
-
-    im.save('test.png', "PNG")
-    
-    return response
+    im.save(outFile, "PNG")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print "Usage: omSpectrogram.py outFile audioFile startSec endSec lowHz highHz winSize hopSize spectrumType width height"
+    usage = "usage: %prog [options] in.wav out.png"
+    parser = OptionParser(usage)
+    
+    parser.add_option("-s", "--startSec", dest="startSec", type = float, default = 0., 
+                      help="start time in seconds")
+    
+    parser.add_option("-e", "--endSec", dest="endSec", type = float, default = 1.,
+                      help="end time in seconds")
+    
+    parser.add_option("-1", "--lowHz", dest="lowHz", type = int, default = 0,
+                      help="low hertz cutoff for image")
+    
+    parser.add_option("-2", "--highHz", dest="highHz", type = int, default = 8000,
+                      help="high hertz cutoff for image")
+    
+    parser.add_option("-3", "--winSize", dest="winSize", type = int, default = 1024,
+                      help="window size for FFT")
+    
+    parser.add_option("-4", "--hopSize", dest="hopSize", type = int, default = 1024,
+                      help="hop size for FFT")
+    
+    parser.add_option("-5", "--spectrumType", dest="spectrumType", default = "decibels",
+                      help="type of marsyas power spectrum (decibels, magnitude)")
+    
+    parser.add_option("-6", "--widthPx", dest="widthPx", type = int, default = 0,
+                      help="window size for FFT")
+    
+    parser.add_option("-7", "--heightPx", dest="heightPx", type = int, default = 0,
+                      help="window size for FFT")
+    
+    (options, args) = parser.parse_args()
+
+    if len(sys.argv) < 2:
+        parser.print_help()
         sys.exit(1)
-        
-    run("test.png", "test.wav", 0, 1, 0, 8000, 1024, 1024, "magnitude", 100, 100)
+    
+    run(args[0], args[1], options.startSec, options.endSec, options.lowHz, options.highHz,
+        options.winSize, options.hopSize, options.spectrumType, options.widthPx, options.heightPx)
