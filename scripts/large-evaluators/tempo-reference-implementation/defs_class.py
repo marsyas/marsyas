@@ -1,7 +1,7 @@
 
 class Defs:
     def __init__(self):
-        self.BPM_MIN = 50
+        self.BPM_MIN = 40
         self.BPM_MAX = 180  # marsyas
         #self.BPM_MAX = 300
         #self.BPM_MAX = 1000

@@ -49,7 +49,7 @@
 
 #define BPM_HYPOTHESES 6 //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
 #define PHASE_HYPOTHESES 30//Nr. of phases per BPM hypothesis (30)
-#define MIN_BPM 50 //minimum tempo considered, in BPMs (50)
+#define MIN_BPM 40 //minimum tempo considered, in BPMs (50)
 #define MAX_BPM 180 //maximum tempo considered, in BPMs (250)
 #define NR_AGENTS 30 //Nr. of agents in the pool (30)
 #define LFT_OUTTER_MARGIN 0.20 //The size of the outer half-window (in % of the IBI) before the predicted beat time (0.20)
@@ -1094,7 +1094,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_natural bhop_ms = 2.9;    // for onset strength signal
    mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
    // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
-   mrs_natural nCandidates = 8;  // number of tempo candidates
+   mrs_natural nCandidates = 10;  // number of tempo candidates
 
 
    // parameters for BH pick peaking

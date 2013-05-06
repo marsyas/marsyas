@@ -149,6 +149,11 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
             #bhisto[ int(second_bestbpm) ] += second_beststr
             #print bestbpm, "\t", beststr
 
+            numpy.savetxt("out/bp-%i.txt" % (i+1),
+                numpy.vstack((candidate_bpms[i], tempo_scores)).transpose())
+            numpy.savetxt("out/bp-peak-%i.txt" % (i+1),
+                numpy.vstack((int(bestbpm), beststr)).transpose())
+
         #print bestbpm, '\t', beststr, '\t',
         #print second_bestbpm, '\t', second_beststr
 
