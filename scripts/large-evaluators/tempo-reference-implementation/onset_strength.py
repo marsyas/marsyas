@@ -82,13 +82,15 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
 
     ts = numpy.arange( len(filtered_flux) ) / oss_sr
     if defs.WRITE_ONSETS:
-        cutoff = int(5.0 * wav_sr / oss_sr)
+        #cutoff = int(2048*128/44100.0 * oss_sr)
+        cutoff = 2048
         #print "cutoff", cutoff
         #print logmag.shape
-        #print len(wav_data)
-
-        numpy.savetxt('logmag.txt',
-            logmag[:cutoff,].transpose())
+        logmag_short = logmag[:cutoff,]
+        #print logmag_short.shape
+        numpy.savetxt('out/logmag.txt',
+            logmag_short.transpose())
+            #logmag[:cutoff,].transpose())
         #ts = numpy.arange( cutoff ) / oss_sr
         #numpy.savetxt('flux.txt',
         #    numpy.vstack( (ts, flux[:cutoff])).transpose() )

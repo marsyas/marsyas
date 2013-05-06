@@ -1095,13 +1095,13 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
    // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
    mrs_natural nCandidates = 10;  // number of tempo candidates
-
+   mrs_natural factor = 4;
 
    // parameters for BH pick peaking
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 2);
    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", 4*MIN_BPM+1);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", 4*MAX_BPM-1);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", factor*MIN_BPM+1);
+   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", factor*MAX_BPM-1);
    tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
    tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
@@ -1113,8 +1113,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    // beat histogram parameters
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", 4*MAX_BPM);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", 4.0);
+   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", factor*MAX_BPM);
+   tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", (mrs_real)factor);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
    tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
@@ -1145,6 +1145,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    // BeatPhase estimates a tempo based on rescoring the tempo candidates
    // of the tempo induction phase by cross-correlating pulse trains
    // with the onset strength signal
+   beatTracker->updControl("BeatPhase/beatphase/mrs_real/factor", (mrs_real)factor);
    beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
    beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
    beatTracker->updControl("BeatPhase/beatphase/mrs_natural/nCandidates", nCandidates);
@@ -1207,8 +1208,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	mrs_realvec bh_candidates = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
 	for (int k=0; k < nCandidates; k++)
 	{
-		tempos(k) = bh_candidates(2*k+1) * 0.25;
-        //cout<<4*tempos(k)<<"   ";
+		tempos(k) = bh_candidates(2*k+1) / factor;
+        //cout<<tempos(k)<<"   ";
 	}
     //cout<<"."<<endl;
         //zzz
@@ -1227,10 +1228,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     // extra +1 because we already ticked in this loop!
 	if (ticks >= extra_ticks+1)
 	{
-        const double alpha = 1.0;
-        for (int j=0; j<BPHASE_SIZE; j++) {
-            bphase(j) *= alpha;
-        }
+        //const double alpha = 1.0;
+        //for (int j=0; j<BPHASE_SIZE; j++) {
+        //    bphase(j) *= alpha;
+        //}
 		bphase(tempos(0)) += temposcores(0);
         //for (int j=0; j < tempos.getCols() ; j++) {
 		//    bphase(tempos(j)) += temposcores(j);
@@ -1326,9 +1327,9 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   //mrs_real fast_sum = 0.0;
   mrs_realvec band_energies(10);
 
-  mrs_real slow_max = 0.0;
+  //mrs_real slow_max = 0.0;
   //mrs_natural bhistogram_maxi = 0;
-  
+  /*
   for (int i=200; i < 400; i++)
   {
 	  if (bhistogram(i) >= slow_max)
@@ -1345,7 +1346,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_real max_sum = fast_max + slow_max;
   fast_max /= max_sum;
   slow_max /= max_sum;
-  
+  */
   
 
 
@@ -1405,18 +1406,18 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         bhmax2/bhmax, bhmax3/bhmax);
     printf("\n");
 
-   
+   /*
    cout << slow_max << "," << fast_max << ",";
    
    // cout << slow_sum << "," << fast_sum << "," << mband_energies(2)  << "," << mband_energies(3)  << "," << mband_energies(4) << ",";
 
    // cout << mband_energies(5) << "," << mband_energies(6) << "," << mband_energies(7)  << "," << mband_energies(8)  << "," << mband_energies(9) << ",";
-   
+
    if (ground_truth_tempo < 100.0) 
 	   cout << "slow" << endl;
    else 
 	   cout << "fast" << endl;
-   
+   */
    mrs_real heuristic_tempo = tempos(0);
  
 #if 0
@@ -1487,7 +1488,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
    //if (heuristic_tempo <= 68.5) {
-   if (heuristic_tempo <= 70.5) {
+   if (heuristic_tempo <= 71.5) {
     heuristic_tempo *= 2;
    }
 

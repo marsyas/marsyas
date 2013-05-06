@@ -50,6 +50,7 @@ namespace Marsyas
     MarControlPtr ctrl_timeDomain_;
     MarControlPtr ctrl_beatOutput_;
     MarControlPtr ctrl_nCandidates_;
+    MarControlPtr ctrl_factor_;
    
 	
     mrs_natural pinSamples_;
@@ -58,6 +59,7 @@ namespace Marsyas
 	  
     void myUpdate(MarControlPtr sender);
     mrs_natural sampleCount_;
+    mrs_real factor_;
 		
   public:
     BeatPhase(std::string name);

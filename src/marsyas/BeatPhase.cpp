@@ -49,6 +49,7 @@ BeatPhase::BeatPhase(const BeatPhase& a) : MarSystem(a)
 	ctrl_timeDomain_ = getctrl("mrs_realvec/timeDomain");
 	ctrl_nCandidates_ = getctrl("mrs_natural/nCandidates");
 	ctrl_beatOutput_ = getctrl("mrs_realvec/beatOutput");
+	ctrl_factor_ = getctrl("mrs_real/factor");
 
 	sampleCount_ = 0;
 	current_beat_location_ = 0.0;
@@ -85,6 +86,7 @@ BeatPhase::addControls()
   addctrl("mrs_natural/nCandidates", nCandidates, ctrl_nCandidates_);
   setctrlState("mrs_natural/nCandidates", true);
   addctrl("mrs_realvec/beatOutput", realvec(), ctrl_beatOutput_);
+  addctrl("mrs_real/factor", 4.0, ctrl_factor_);
 }
 
 void
@@ -96,6 +98,8 @@ BeatPhase::myUpdate(MarControlPtr sender)
 
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	mrs_natural nCandidates = getctrl("mrs_natural/nCandidates")->to<mrs_natural>();
+    factor_ = getctrl("mrs_real/factor")->to<mrs_real>();
+
 
 	MarControlAccessor acc_t(ctrl_tempos_);
 	mrs_realvec& tempos = acc_t.to<mrs_realvec>();
@@ -157,7 +161,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	// Demultiplex candidates and scores
 	for (int i=0; i < tempo_candidates.getSize()/2; i++)
 	{
-	  tempos(i) = 0.25 * tempo_candidates(2*i+1);
+	  tempos(i) = tempo_candidates(2*i+1) / factor_;
 	  tempo_scores(i) = tempo_candidates(2*i);
 	}
 
