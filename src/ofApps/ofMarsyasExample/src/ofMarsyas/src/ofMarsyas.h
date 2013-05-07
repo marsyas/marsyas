@@ -41,6 +41,8 @@ public:
     void mouseReleased(int x, int y, int button);
     void windowResized(int w, int h);
     
+    bool help_;
+    
     
     void start();
     void checkInitSoundCard(Marsyas::MarSystem* msysTest);

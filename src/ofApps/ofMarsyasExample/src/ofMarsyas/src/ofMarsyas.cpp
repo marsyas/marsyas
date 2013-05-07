@@ -28,6 +28,8 @@ void ofMarsyas::setup(){
     //Marsyas Thread
     msysThread_ = new Marsyas::MarSystemThread(graphicalEnv_);
     graphicalEnv_->setMarSystemThread(msysThread_);
+    
+    help_ = false;
 }
 
 bool ofMarsyas::createFromFile(std::string mpl){
@@ -97,9 +99,28 @@ void ofMarsyas::update(){
 }
 
 void ofMarsyas::draw(){
-    if(graphicalEnv_->isLoaded()){
-        graphicalEnv_->draw();
+    if(help_){
+        ofSetColor(255, 0, 0);
+        ofDrawBitmapString("Marsyas Network Viewer Help", 20, 20);
+        ofDrawBitmapString("===========================", 20, 40);
+        ofDrawBitmapString("Keymap:", 20, 60);
+        ofDrawBitmapString("h -> show/hide help", 20, 80);
+        ofDrawBitmapString("space bar -> start/stop audio", 20, 100);
+        ofDrawBitmapString("t -> tick the network once", 20, 120);
+        ofDrawBitmapString("c -> show/hide connections", 20, 140);
+        ofDrawBitmapString("v -> show/hide linked controls", 20, 160);
+        ofDrawBitmapString("click on orange squares to see data on Processed Data Display", 20, 180);
+        ofDrawBitmapString("click on green squares to see linked controls on Controls Diagram Display", 20, 200);
     }
+    
+    else{
+        if(graphicalEnv_->isLoaded()){
+            graphicalEnv_->draw();
+        } 
+    }
+    
+    
+    
 }
 
 
@@ -145,6 +166,12 @@ void ofMarsyas::updControl(std::string msysName, std::string ctrlName, std::stri
 //--------------------------------------------------------------
 void ofMarsyas::keyPressed(int key){
     graphicalEnv_->keyPressed(key);
+    
+    switch(key){
+        case 'h':
+            help_ = !help_;
+            break;
+    }
     
 }
 
