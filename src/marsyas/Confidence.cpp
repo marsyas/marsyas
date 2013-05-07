@@ -243,9 +243,9 @@ Confidence::myProcess(realvec& in, realvec& out)
                   
                   if (csvOutput_) 
                     {
-                      cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << ",";
-                      cout << fixed << setprecision(3) << ((nbFrames_+memSize)*hopDuration_) - 0.001 << ",";
-                      cout << fixed << setprecision(0) << labelNames_[max_l] << ",";
+                      cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
+                      cout << fixed << setprecision(3) << ((nbFrames_+memSize)*hopDuration_) - 0.001 << "\t";
+                      cout << fixed << setprecision(0) << labelNames_[max_l] << "\t";
                       cout << fixed << setprecision(3) << ((confidences_(max_l) / count_)) << endl;
                     } else {
 					cout << fixed << setprecision(3) << nbFrames_*hopDuration_ << "\t";
