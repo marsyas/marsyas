@@ -1,6 +1,6 @@
 ****************************************************************
 Created by Andre V. Perrotta
-avperrotta@gmail.com
+avperrotta@ucp.porto.pt
 Porto, 23/10/2012
 ***************************************************************
 
@@ -9,7 +9,7 @@ Instructions for building ofMarsyasExample
 
 0 - Get the latest Xcode version from Apple developer website
 
-1 - get OpenFrameworks 0.073 from:
+1 - get latest OpenFrameworks from:
 http://www.openframeworks.cc
 
 2 - get the latest Marsyas from the SVN:
@@ -24,12 +24,12 @@ http://svn.code.sf.net/p/marsyas/code/trunk
 	make
 	make install
     
-5 - Build a new Xcode project based on the OpenFrameworks AllAddonsExample or emptyExample that comes with the OF 0.073 distribution
+5 - Build a new Xcode project based on the OpenFrameworks AllAddonsExample or emptyExample that comes with the OF distribution
 (duplicate the existing project into your testApps folder)
 
 6 - Manualy add the following files to your project:
 	libmarsyas.a
-	marsyas header files
+	marsyas header files (.h files)
 	ofMarsyas src and lib files
 
 7 - Replace testApp.h, testApp.cpp and main.cpp with the ofMarsyasExample files
