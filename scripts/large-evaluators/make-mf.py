@@ -57,6 +57,8 @@ out.write(INTRO)
 
 
 for line in lines:
+    if not line.startswith("Cands:"):
+        continue
     #print line
     sl = line.split("\t")
     detected = float(sl[1])
