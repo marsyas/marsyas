@@ -42,8 +42,8 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         wav_sr, wav_data = load_wavfile(filename)
         oss_sr, oss_data = onset_strength.onset_strength_signal(
             defs, wav_sr, wav_data,
-            plot=False)
-            #plot=plot)
+            #plot=False)
+            plot=plot)
         pickle_file = open(pickle_filename, 'wb')
         pickle.dump( (oss_sr, oss_data), pickle_file, -1 )
         pickle_file.close()
@@ -186,8 +186,8 @@ if __name__ == "__main__":
         bpm_of_mf(defs, user_filename, print_info=True)
     else:
         bpm, cands = bpm_of_file(defs, user_filename,
-            #plot=plot, regen=regen)
-            plot=False, regen=regen)
+            plot=plot, regen=regen)
+            #plot=False, regen=regen)
         print "BPM: %.2f" % bpm
 
 

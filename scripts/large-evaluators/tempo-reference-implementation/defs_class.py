@@ -8,16 +8,22 @@ class Defs:
         
         self.OSS_WINDOWSIZE = 256
         self.OSS_HOPSIZE = 128
+        self.OSS_WINDOWSIZE = 512
+        self.OSS_HOPSIZE = 256
         
-        self.OSS_LOWPASS_CUTOFF = 3.0 # Hz
+        self.OSS_LOWPASS_CUTOFF = 10.0 # Hz
         #self.OSS_LOWPASS_CUTOFF = 0 # Hz
         self.OSS_LOWPASS_N = 16
         
         self.BH_WINDOWSIZE = 2048
         self.BH_HOPSIZE = 128
+        self.BH_WINDOWSIZE = 1024
+        self.BH_HOPSIZE = 64
         
         self.BP_WINDOWSIZE = 2048
         self.BP_HOPSIZE = 128
+        self.BP_WINDOWSIZE = 1024
+        self.BP_HOPSIZE = 64
  
         self.WRITE_ONSETS = 1
         self.WRITE_BH = 1

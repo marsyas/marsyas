@@ -16,6 +16,7 @@ import pylab
 print "FIR, 16"
 N = 16
 b = scipy.signal.firwin(N, 3.0 / (344.53125/2.0/2.0))
+#b = scipy.signal.firwin(N, 10.0 / (344.53125/2.0))
 #b = scipy.signal.firwin2(N,
 #    [0.0, 4.0 / (344.53125/2.0/2.0), 1.0],
 #    [0, 1.0, 0])

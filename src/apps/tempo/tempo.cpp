@@ -925,24 +925,24 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 #if FIR_OR_IIR_FILTER
    // 15th order
    //   import scipy.signal
-   //   b,a = scipy.signal.firwin(16, 4.0 / (344.53125/2.0/2.0))
+   //   b,a = scipy.signal.firwin(16, 3.0 / (344.53125/2.0/2.0))
     mrs_realvec bcoeffs(1, 16);
-    bcoeffs(0) = 0.0095530348472755;
-    bcoeffs(1) = 0.0144032200641954;
-    bcoeffs(2) = 0.0280928524023415;
-    bcoeffs(3) = 0.0483763511689087;
-    bcoeffs(4) = 0.0717941373871591;
-    bcoeffs(5) = 0.0942851675260588;
-    bcoeffs(6) = 0.1119142142273117;
-    bcoeffs(7) = 0.1215810223767492;
-    bcoeffs(8) = 0.1215810223767492;
-    bcoeffs(9) = 0.1119142142273117;
-    bcoeffs(10) = 0.0942851675260588;
-    bcoeffs(11) = 0.0717941373871592;
-    bcoeffs(12) = 0.0483763511689087;
-    bcoeffs(13) = 0.0280928524023415;
-    bcoeffs(14) = 0.0144032200641954;
-    bcoeffs(15) = 0.0095530348472755;
+    bcoeffs(0) = 0.0088849537539795;
+    bcoeffs(1) = 0.0136945737894744;
+    bcoeffs(2) = 0.0272131960270632;
+    bcoeffs(3) = 0.0475866946262501;
+    bcoeffs(4) = 0.0714870311519263;
+    bcoeffs(5) = 0.0947366319871323;
+    bcoeffs(6) = 0.1131281838499733;
+    bcoeffs(7) = 0.1232687348142008;
+    bcoeffs(8) = 0.1232687348142008;
+    bcoeffs(9) = 0.1131281838499734;
+    bcoeffs(10) = 0.0947366319871324;
+    bcoeffs(11) = 0.0714870311519263;
+    bcoeffs(12) = 0.0475866946262501;
+    bcoeffs(13) = 0.0272131960270631;
+    bcoeffs(14) = 0.0136945737894744;
+    bcoeffs(15) = 0.0088849537539795;
    fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
    //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 #endif
