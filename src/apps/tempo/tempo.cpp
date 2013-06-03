@@ -50,7 +50,7 @@
 #define BPM_HYPOTHESES 6 //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
 #define PHASE_HYPOTHESES 30//Nr. of phases per BPM hypothesis (30)
 #define MIN_BPM 40 //minimum tempo considered, in BPMs (50)
-#define MAX_BPM 180 //maximum tempo considered, in BPMs (250)
+#define MAX_BPM 200 //maximum tempo considered, in BPMs (250)
 #define NR_AGENTS 30 //Nr. of agents in the pool (30)
 #define LFT_OUTTER_MARGIN 0.20 //The size of the outer half-window (in % of the IBI) before the predicted beat time (0.20)
 #define RGT_OUTTER_MARGIN 0.40 //The size of the outer half-window (in % of the IBI) after the predicted beat time (0.30)
@@ -927,6 +927,7 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
    // 15th order
    //   import scipy.signal
    //   b,a = scipy.signal.firwin(16, 3.0 / (344.53125/2.0/2.0))
+/*
     mrs_realvec bcoeffs(1, 16);
     bcoeffs(0) = 0.0088849537539795;
     bcoeffs(1) = 0.0136945737894744;
@@ -944,6 +945,26 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     bcoeffs(13) = 0.0272131960270631;
     bcoeffs(14) = 0.0136945737894744;
     bcoeffs(15) = 0.0088849537539795;
+*/
+   //   b,a = scipy.signal.firwin(16, 10.0 / (344.53125/2.0/2.0))
+    mrs_realvec bcoeffs(1, 16);
+    bcoeffs(0) = 0.0073773298534980;
+    bcoeffs(1) = 0.0120567511070207;
+    bcoeffs(2) = 0.0251341506152936;
+    bcoeffs(3) = 0.0456735164211478;
+    bcoeffs(4) = 0.0706923687612440;
+    bcoeffs(5) = 0.0957577801640946;
+    bcoeffs(6) = 0.1160031971306242;
+    bcoeffs(7) = 0.1273049059470771;
+    bcoeffs(8) = 0.1273049059470771;
+    bcoeffs(9) = 0.1160031971306242;
+    bcoeffs(10) = 0.0957577801640946;
+    bcoeffs(11) = 0.0706923687612441;
+    bcoeffs(12) = 0.0456735164211478;
+    bcoeffs(13) = 0.0251341506152936;
+    bcoeffs(14) = 0.0120567511070207;
+    bcoeffs(15) = 0.0073773298534980;
+
    fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
    //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 #endif
@@ -1005,14 +1026,34 @@ test_oss_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, b
   delete onset_strength;
 }
 
+mrs_real energy_in_histo_range(realvec histo,
+    mrs_real factor, mrs_real low, mrs_real high)
+{
+    mrs_natural index_low  = round(low * factor);
+    mrs_natural index_high = round(high * factor);
+    if (high == 1.0) {
+        index_high = histo.getCols()-1;
+    }
+    if (index_high >= histo.getCols()-1) {
+        index_high = histo.getCols()-1;
+    }
+    //cout<<low<<"\t"<<high<<"\t"<<factor<<"\t";
+    //cout<<index_low<<"\t"<<index_high<<endl;
+    mrs_real sum = 0.0;
+    for (mrs_natural i=index_low; i < index_high + 1; i++) {
+        sum += histo(i);
+    }
+    return sum;
+}
+
 mrs_real energy_in_histo(mrs_natural bpm, realvec histo,
     mrs_real factor, mrs_real tolerance)
 {
     mrs_natural index_main = bpm * factor;
     mrs_natural index_low  = round(index_main * (1.0 - tolerance));
     mrs_natural index_high = round(index_main * (1.0 + tolerance));
-    if (index_high >= histo.getCols()) {
-        return 0.0;
+    if (index_high >= histo.getCols()-1) {
+        index_high = histo.getCols()-1;
     }
     //cout<<index_low<<"\t"<<index_main<<"\t"<<index_high<<endl;
     mrs_real sum = 0.0;
@@ -1020,6 +1061,72 @@ mrs_real energy_in_histo(mrs_natural bpm, realvec histo,
         sum += histo(i);
     }
     return sum;
+}
+
+realvec info_histogram(mrs_natural bpm, realvec histo,
+                       mrs_real factor, mrs_real tolerance)
+{
+    realvec info(5);
+    info.setval(0.0);
+    mrs_natural size = histo.getCols();
+
+    // global maximum (will be a peak)
+    mrs_real bpm1 = 0;
+    mrs_real bpm2 = 0;
+    mrs_real bpm3 = 0;
+    mrs_real str1 = 0;
+    mrs_real str2 = 0;
+    mrs_real str3 = 0;
+    for (int i=1; i < size-1; i++)
+    {
+        if (histo(i) > str1)
+        {
+            str1 = histo(i);
+            bpm1 = i / factor;
+        }
+    }
+
+    // second-highest maximum (need to ensure peak-ness)
+    for (int i=1; i < size-1; i++)
+    {
+        if ((histo(i) > str2) && (histo(i) < str1) &&
+                (histo(i-1) < histo(i)) && (histo(i+1) < histo(i)))
+        {
+            str2 = histo(i);
+            bpm2 = i / factor;
+        }
+    }
+
+    // third-highest maximum (need to ensure peak-ness)
+    for (int i=1; i < size-1; i++)
+    {
+        if ((histo(i) > str3) && (histo(i) < str1) && (histo(i) < str2) &&
+                (histo(i-1) < histo(i)) && (histo(i+1) < histo(i)))
+        {
+            str3 = histo(i);
+            bpm3 = i / factor;
+        }
+    }
+
+    // energy over / under
+    cout<<"---"<<endl;
+    mrs_real energy_total  = energy_in_histo_range(histo, factor,
+        0, 1.0 );
+    mrs_real energy_under = energy_in_histo_range(histo, factor,
+        0.0, bpm*(1.0 - tolerance) ) / energy_total;
+    mrs_real energy_over  = energy_in_histo_range(histo, factor,
+        bpm*(1.0 + tolerance), 1.0 ) / energy_total;
+
+
+
+
+//zzz
+    info(0) = bpm1 > bpm;
+    info(1) = bpm2 > bpm;
+    info(2) = bpm3 > bpm;
+    info(3) = energy_under;
+    info(4) = energy_over;
+    return info;
 }
 
 
@@ -1132,7 +1239,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    // beat histogram parameters
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin", factor*MAX_BPM);
+   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin",
+        2*factor*MAX_BPM);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", (mrs_real)factor);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
@@ -1208,9 +1316,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_natural num_ticks = (size_in_bytes / (hopSize * bhopSize)) + 1;
    
    
-   
   mrs_realvec bhistogram;
-  mrs_realvec bhistogram_sum(MAX_BPM*factor);
+  mrs_realvec bhistogram_sum(2*MAX_BPM*factor);
   bhistogram_sum.setval(0.0);
 
   while (1)
@@ -1233,11 +1340,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         //cout<<tempos(k)<<"   ";
 	}
     //cout<<"."<<endl;
-        //zzz
 
 	//bh_estimate = tempos(0);
 	//bh_estimate2 = tempos(1);
-	bhistogram = tempoInduction->getControl("BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
+	mrs_realvec bhistogram = tempoInduction->getControl("BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
     bhistogram_sum += bhistogram;
 	
 	// tempo estimation using cross-correlation of candidate pulse trains to the onset strength signal
@@ -1359,6 +1465,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
   // find relevant values in bhistogram_sum
+  // normalize
+  mrs_real norm_bhisto = 1.0 / bhistogram_sum.sum();
+  for (int i=0; i<bhistogram_sum.getCols(); i++) {
+    bhistogram_sum(i) *= norm_bhisto;
+  }
+
   // global maximum (will be a peak)
   mrs_real bh_sum_max = 0.0;
   mrs_real bh_sum_bpm = 0.0;
@@ -1371,7 +1483,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	  }
     }
 
-	  
+   mrs_real estimate_bpm = max_i;
+
+   mrs_real str05 = energy_in_histo( 0.5*estimate_bpm,
+        bhistogram_sum, factor, 0.1);
+   mrs_real str1 = energy_in_histo( 1.0*estimate_bpm,
+        bhistogram_sum, factor, 0.1);
+   mrs_real str2 = energy_in_histo( 2.0*estimate_bpm,
+        bhistogram_sum, factor, 0.1);
+    mrs_real str_residual = 1.0 - (str05 + str1 + str2);  
 
   // bhmax =0;
   // for (int i=0; i < 360; i++)
@@ -1478,7 +1598,22 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
 
-   realvec features(25);
+    realvec features(11);
+    realvec from_bp = info_histogram(estimate_bpm, bphase,
+        1.0, 0.05);
+    for (int i=0; i<from_bp.getCols(); i++) {
+        features(i) = from_bp(i);
+    }
+    features(0) = estimate_bpm;
+
+    realvec from_bh = info_histogram(estimate_bpm, bhistogram_sum,
+        factor, 0.05);
+    for (int i=0; i<from_bh.getCols(); i++) {
+        features(5+i) = from_bh(i);
+    }
+   features(10) = ground_truth_tempo;
+        //zzz
+#if 0
    // absolute BPMs
    features(0) = tempos(0);
    features(1) = tempos(1);
@@ -1520,22 +1655,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     features(17) = (str_total - (bhmax + bhmax2 + bhmax3))/str_total;
 
    features(18) = bh_sum_bpm;
-   mrs_real estimate_bpm = tempos(0);
-   features(19) = energy_in_histo( 0.333*estimate_bpm,
-        bhistogram_sum, factor, 0.04);
-   features(20) = energy_in_histo( 0.5*estimate_bpm,
-        bhistogram_sum, factor, 0.04);
-   features(21) = energy_in_histo( 1.0*estimate_bpm,
-        bhistogram_sum, factor, 0.04);
-   features(22) = energy_in_histo( 2.0*estimate_bpm,
-        bhistogram_sum, factor, 0.04);
-   features(23) = energy_in_histo( 3.0*estimate_bpm,
-        bhistogram_sum, factor, 0.04);
+   features(19) = str05;
+   features(20) = str1;
+   features(21) = str2;
+   features(22) = str_residual;
 
 
    // ground truth for training
-   features(24) = ground_truth_tempo;
-        //zzz
+   features(23) = ground_truth_tempo;
+#endif
 
    std::ostringstream features_text;
    features_text << "Cands:\t";
@@ -1626,7 +1754,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		   }*/ 
 #endif
 
-   //if (heuristic_tempo <= 68.5) {
    if (heuristic_tempo <= 71.5) {
     heuristic_tempo *= 2;
    }

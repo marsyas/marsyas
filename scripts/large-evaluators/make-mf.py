@@ -48,29 +48,15 @@ out = open("weka.arff", 'w')
 
 INTRO = """@relation mults
 @attribute tempo0 numeric
-@attribute tempo1 numeric
-@attribute tempo2 numeric
-@attribute rel10 numeric
-@attribute rel20 numeric
-@attribute absstr0 numeric
-@attribute absstr1 numeric
-@attribute absstr2 numeric
-@attribute relstr10 numeric
-@attribute relstr20 numeric
-@attribute onlyone numeric
-@attribute onlytwo numeric
-@attribute halfstr numeric
-@attribute relhalfstr numeric
-@attribute hastwicestr numeric
-@attribute twicestr numeric
-@attribute reltwicestr numeric
-@attribute residual_str numeric
-@attribute a1 numeric
-@attribute a2 numeric
-@attribute a3 numeric
-@attribute a4 numeric
-@attribute a5 numeric
-@attribute a6 numeric
+@attribute 1 numeric
+@attribute 2 numeric
+@attribute 3 numeric
+@attribute 4 numeric
+@attribute 5 numeric
+@attribute 6 numeric
+@attribute 7 numeric
+@attribute 8 numeric
+@attribute 9 numeric
 @attribute class {0.5,1.0,2.0}
 @data
 """
@@ -128,7 +114,7 @@ for line in lines:
     for i in range(1,len(sl)-1):
         vec[i-1] = float(sl[i])
     vec[-1] = mult
-    vec[0] = detected
+    #vec[0] = detected
 
     if mult > 0:
         text = ",".join( [str(v) for v in vec] )
@@ -159,6 +145,8 @@ print multsdict
 
 lowbound = 35
 highbound = 6*35
+lowbound = 40
+highbound = 200
 lows = 0
 highs = 0
 for g in grounds:
@@ -176,7 +164,5 @@ if PLOT:
 
     pylab.hist(grounds, bins=100)
     pylab.show()
-
-
 
 

@@ -23,8 +23,11 @@ def marsyas_tempo(queue, datum):
     os.chdir(dirname)
     cmd = "tempo %s -po %s" % (
         coll_filename, coll_basename + '-detected.mf')
-    subprocess.check_call(cmd, shell=True)
-    queue.put(cmd)
+    output = subprocess.check_output(cmd, shell=True)
+    #print '---'
+    #print cmd
+    #print output
+    queue.put(output)
 
 def main(mf_dir, output_dir):
     dirname = os.environ['MARSYAS_DATADIR']
@@ -36,17 +39,25 @@ def main(mf_dir, output_dir):
         datum = (coll, output_dir)
         data.append(datum)
 
-    manager = eval_manager.EvalManager(2)
+    manager = eval_manager.EvalManager(3)
     manager.task(marsyas_tempo, data)
     #manager.task_block(marsyas_tempo, data)
 
-    aa = manager.get_results()
-    for a in aa:
-        print a
-    print
-    #global missing_files
-    #if missing_files > 0:
-    #    print "Warning: missing files:", missing_files
+    results_datasets = manager.get_results()
+    for results in results_datasets:
+        # there's an extra \n at the end of the output
+        print results[:-1]
+
+
+    #partial_files = glob.glob("partial-*.txt")
+    #lines = []
+    #for p in partial_files:
+    #    p_lines = open(p).readlines()
+    #    lines.extend(p_lines)
+    #out = open("combo.txt", 'w')
+    #for l in lines:
+    #    out.write(l)
+    #out.close()
 
 
 if __name__ == '__main__':
