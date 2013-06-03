@@ -200,6 +200,7 @@ printHelp(mrs_string progName)
   cerr << "HISTO_SUMBANDS" << endl;
   cerr << "HISTO_SUMBANDSQ" << endl;
   cerr << "FLUX" << endl;
+  cerr << "TEST_OSS_FLUX" << endl;
   cerr << "AIM_FLUX" << endl;
   cerr << "AIM" << endl;
   cerr << "PREDICTED" << endl;
@@ -1004,6 +1005,24 @@ test_oss_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, b
   delete onset_strength;
 }
 
+mrs_real energy_in_histo(mrs_natural bpm, realvec histo,
+    mrs_real factor, mrs_real tolerance)
+{
+    mrs_natural index_main = bpm * factor;
+    mrs_natural index_low  = round(index_main * (1.0 - tolerance));
+    mrs_natural index_high = round(index_main * (1.0 + tolerance));
+    if (index_high >= histo.getCols()) {
+        return 0.0;
+    }
+    //cout<<index_low<<"\t"<<index_main<<"\t"<<index_high<<endl;
+    mrs_real sum = 0.0;
+    for (mrs_natural i=index_low; i < index_high + 1; i++) {
+        sum += histo(i);
+    }
+    return sum;
+}
+
+
 
 /* tempo induction based on the following steps:
    1) onset strength signal calcalation based on spectral flux
@@ -1191,6 +1210,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    
    
   mrs_realvec bhistogram;
+  mrs_realvec bhistogram_sum(MAX_BPM*factor);
+  bhistogram_sum.setval(0.0);
 
   while (1)
   {
@@ -1217,6 +1238,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	//bh_estimate = tempos(0);
 	//bh_estimate2 = tempos(1);
 	bhistogram = tempoInduction->getControl("BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
+    bhistogram_sum += bhistogram;
 	
 	// tempo estimation using cross-correlation of candidate pulse trains to the onset strength signal
     //mrs_real phase_tempo;	 // tempo estimate calculated by the BeatPhase MarSystem
@@ -1265,11 +1287,47 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   mrs_natural max_i2 = 0;
   mrs_natural max_i3 = 0;
 
-  //for (int i=0; i < bphase.getCols(); i++) {
-  //  cout<<bphase(i)<<endl;
-  //}
+#if 0
+  cout<<"-----"<<endl;
+  for (int i=0; i < bphase.getCols(); i++) {
+    cout<<bphase(i)<<endl;
+  }
+  cout<<"-----"<<endl;
+#endif
+
+
+#if 0
+  // filter bphase
+  realvec bphase_orig = bphase;
+  for (int i=9; i < bphase.getCols()-9; i++) {
+    int width = round(i*0.04);
+    if (width < 1) {
+        continue;
+    }
+    int N = 2*width+1;
+    mrs_real kernel[N];
+    for (int n=0; n<N; n++){
+        kernel[n] = (1 - fabs( ((double)(n-((N-1)/2))) / ((N+1)/2) ))/width;
+    }
+
+    bphase(i) = 0.0;
+    for (int j=0; j < N; j++) {
+        mrs_real value = bphase_orig(i+j-width) * kernel[j];
+        bphase(i) += value;
+    }
+  }
+#endif
+
+#if 0
+  cout<<"-----"<<endl;
+  for (int i=0; i < bphase.getCols(); i++) {
+    cout<<bphase(i)<<endl;
+  }
+  cout<<"-----"<<endl;
+#endif
+
   // global maximum (will be a peak)
-  for (int i=1; i < BPHASE_SIZE; i++)
+  for (int i=1; i < BPHASE_SIZE-1; i++)
   {
       if (bphase(i) > bhmax)
 	  {
@@ -1279,10 +1337,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     }
 	  
   // second-highest maximum (need to ensure peak-ness)
-  for (int i=1; i < BPHASE_SIZE; i++)
+  for (int i=1; i < BPHASE_SIZE-1; i++)
   {
 	  if ((bphase(i) > bhmax2) && (bphase(i) < bhmax) &&
-            (bphase(i-1) < bphase(i)) && (bphase(i+1) > bphase(i)))
+            (bphase(i-1) < bphase(i)) && (bphase(i+1) < bphase(i)))
  	  {
  		  bhmax2 = bphase(i);
  		  max_i2 = i;
@@ -1290,15 +1348,30 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
   // third-highest maximum (need to ensure peak-ness)
-  for (int i=1; i < BPHASE_SIZE; i++)
+  for (int i=1; i < BPHASE_SIZE-1; i++)
   {
 	  if ((bphase(i) > bhmax3) && (bphase(i) < bhmax) && (bphase(i) < bhmax2) &&
-            (bphase(i-1) < bphase(i)) && (bphase(i+1) > bphase(i)))
+            (bphase(i-1) < bphase(i)) && (bphase(i+1) < bphase(i)))
  	  {
  		  bhmax3 = bphase(i);
  		  max_i3 = i;
  	  }
   }
+
+  // find relevant values in bhistogram_sum
+  // global maximum (will be a peak)
+  mrs_real bh_sum_max = 0.0;
+  mrs_real bh_sum_bpm = 0.0;
+  for (int i=1; i < bhistogram_sum.getCols(); i++)
+  {
+      if (bhistogram_sum(i) > bh_sum_max)
+	  {
+		  bh_sum_max = bhistogram_sum(i);
+		  bh_sum_bpm = i/factor;
+	  }
+    }
+
+	  
 
   // bhmax =0;
   // for (int i=0; i < 360; i++)
@@ -1397,14 +1470,80 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    //tempos(2) = bh_estimate;
    //tempos(3) = bh_estimate2;
 
-   printf("Cands:\t%.3f\t%.3f\t%.3f",
-        tempos(0), tempos(1), tempos(2));
-   printf("\t%.3f\t%.3f",
-        tempos(1)/tempos(0), tempos(2)/tempos(0));
-   printf("\t%.3f", ground_truth_tempo);
-   printf("\t%.3f\t%.3f",
-        bhmax2/bhmax, bhmax3/bhmax);
-    printf("\n");
+
+   mrs_real str_total = 0.0;
+  for (int i=0; i < BPHASE_SIZE; i++)
+  {
+    str_total += bphase(i);
+  }
+
+
+   realvec features(25);
+   // absolute BPMs
+   features(0) = tempos(0);
+   features(1) = tempos(1);
+   features(2) = tempos(2);
+   // relative BPMs
+   features(3) = tempos(1)/tempos(0);
+   features(4) = tempos(2)/tempos(0);
+   // absolute strengths
+   features(5) = bhmax/str_total;
+   features(6) = bhmax2/str_total;
+   features(7) = bhmax3/str_total;
+   // relative strengths
+   features(8) = bhmax2/bhmax;
+   features(9) = bhmax3/bhmax;
+   // do we have all 3 tempos?
+   features(10) = 0.0;
+   features(11) = 0.0;
+   if (tempos(1) == 0.0) {
+      features(10) = 1.0;
+   } else if (tempos(2) == 0.0) {
+      features(11) = 1.0;
+   }
+   // absolute strength of half/double
+   mrs_natural ind = 0.5*tempos(0);
+   mrs_real half_str = bphase( ind );
+   features(12) = half_str / str_total;
+   features(13) = half_str / bhmax;
+   ind = 2.0*tempos(0);
+   features(14) = 0.0;
+   features(15) = 0.0;
+   features(16) = 0.0;
+   if (ind < BPHASE_SIZE) {
+      features(14) = 1.0;
+      mrs_real twice_str = bphase( ind );
+      features(15) = twice_str / str_total;
+      features(16) = twice_str / bhmax;
+   }
+    // "residual" strength
+    features(17) = (str_total - (bhmax + bhmax2 + bhmax3))/str_total;
+
+   features(18) = bh_sum_bpm;
+   mrs_real estimate_bpm = tempos(0);
+   features(19) = energy_in_histo( 0.333*estimate_bpm,
+        bhistogram_sum, factor, 0.04);
+   features(20) = energy_in_histo( 0.5*estimate_bpm,
+        bhistogram_sum, factor, 0.04);
+   features(21) = energy_in_histo( 1.0*estimate_bpm,
+        bhistogram_sum, factor, 0.04);
+   features(22) = energy_in_histo( 2.0*estimate_bpm,
+        bhistogram_sum, factor, 0.04);
+   features(23) = energy_in_histo( 3.0*estimate_bpm,
+        bhistogram_sum, factor, 0.04);
+
+
+   // ground truth for training
+   features(24) = ground_truth_tempo;
+        //zzz
+
+   std::ostringstream features_text;
+   features_text << "Cands:\t";
+   for (int i=0; i < features.getCols(); i++) {
+       features_text << features(i) << "\t";
+   }
+   cout << features_text.str() << endl;
+   
 
    /*
    cout << slow_max << "," << fast_max << ",";

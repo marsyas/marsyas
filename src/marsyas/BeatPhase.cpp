@@ -175,6 +175,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	mrs_realvec tempo_phases;
 	tempo_phases.create(tempo_scores.getSize());
 
+    /*
 	// make sure the tempo candidates are reasonable
 	for (int k=0; k < tempos.getSize(); k++)
 	{
@@ -184,6 +185,7 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			tempos(k) = 0;
 
 	}
+    */
 
 	// The winSize and hopSize of the onset strength function
 	// needed to output correct beat location times

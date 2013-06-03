@@ -36,7 +36,7 @@ def main(mf_dir, output_dir):
         datum = (coll, output_dir)
         data.append(datum)
 
-    manager = eval_manager.EvalManager(3)
+    manager = eval_manager.EvalManager(2)
     manager.task(marsyas_tempo, data)
     #manager.task_block(marsyas_tempo, data)
 
