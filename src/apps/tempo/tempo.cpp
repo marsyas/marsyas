@@ -73,6 +73,7 @@
 //In non-causal mode, if between a son's first beat and its father's last there is over a BEAT_TRANSITION_TOL increase on the father last IBI the son's first beat shall be its father's next beat, and the second beat shall be its assigned first.
 
 #define FIR_OR_IIR_FILTER 1
+#define USE_SVM 1
 
 
 #define WINSIZE 1024 //(2048?)
@@ -1037,6 +1038,9 @@ mrs_real energy_in_histo_range(realvec histo,
     if (index_high >= histo.getCols()-1) {
         index_high = histo.getCols()-1;
     }
+    if (index_low < 0) {
+        index_low = 0.0;
+    }
     //cout<<low<<"\t"<<high<<"\t"<<factor<<"\t";
     //cout<<index_low<<"\t"<<index_high<<endl;
     mrs_real sum = 0.0;
@@ -1063,10 +1067,12 @@ mrs_real energy_in_histo(mrs_natural bpm, realvec histo,
     return sum;
 }
 
+
+const int INFO_SIZE = 16;
 realvec info_histogram(mrs_natural bpm, realvec histo,
                        mrs_real factor, mrs_real tolerance)
 {
-    realvec info(5);
+    realvec info(INFO_SIZE);
     info.setval(0.0);
     mrs_natural size = histo.getCols();
 
@@ -1109,7 +1115,6 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
     }
 
     // energy over / under
-    cout<<"---"<<endl;
     mrs_real energy_total  = energy_in_histo_range(histo, factor,
         0, 1.0 );
     mrs_real energy_under = energy_in_histo_range(histo, factor,
@@ -1117,15 +1122,43 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
     mrs_real energy_over  = energy_in_histo_range(histo, factor,
         bpm*(1.0 + tolerance), 1.0 ) / energy_total;
 
+    mrs_real str05 = energy_in_histo_range(histo, factor,
+        0.5*bpm*(1.0 - tolerance), 0.5*bpm*(1.0 + tolerance) ) / energy_total;
+    mrs_real str10 = energy_in_histo_range(histo, factor,
+        1.0*bpm*(1.0 - tolerance), 1.0*bpm*(1.0 + tolerance) ) / energy_total;
+    mrs_real str20 = energy_in_histo_range(histo, factor,
+        2.0*bpm*(1.0 - tolerance), 2.0*bpm*(1.0 + tolerance) ) / energy_total;
 
-
+/*
+    mrs_real strp1 = energy_in_histo_range(histo, factor,
+        bpm1*(1.0- tolerance), bpm1*(1.0+ tolerance) ) / energy_total;
+    mrs_real strp2 = energy_in_histo_range(histo, factor,
+        bpm2*(1.0- tolerance), bpm2*(1.0+ tolerance) ) / energy_total;
+    mrs_real strp3 = energy_in_histo_range(histo, factor,
+        bpm3*(1.0- tolerance), bpm3*(1.0+ tolerance) ) / energy_total;
+*/
 
 //zzz
-    info(0) = bpm1 > bpm;
-    info(1) = bpm2 > bpm;
-    info(2) = bpm3 > bpm;
-    info(3) = energy_under;
-    info(4) = energy_over;
+    info(0) = bpm1 > bpm*(1.0+tolerance);
+    info(1) = bpm1 < bpm*(1.0-tolerance);
+    info(2) = bpm2 > bpm*(1.0+tolerance);
+    info(3) = bpm2 < bpm*(1.0-tolerance);
+    info(4) = bpm3 > bpm*(1.0+tolerance);
+    info(5) = bpm3 < bpm*(1.0-tolerance);
+    info(6) = energy_under;
+    info(7) = energy_over;
+    info(8) = 1.0 - (energy_under + energy_over);
+    info(9) = str05;
+    info(10) = str10;
+    info(11) = str20;
+    info(12) = 1.0 - (str05 + str10 + str20);
+    //info(13) = strp1;
+    //info(14) = strp2;
+    //info(15) = strp3;
+    //info(16) = 1.0 - (strp1 + strp2 + strp3);
+    info(13) = bpm1 / bpm;
+    info(14) = bpm2 / bpm;
+    info(15) = bpm3 / bpm;
     return info;
 }
 
@@ -1402,9 +1435,9 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
 
-#if 0
+#if 1
   // filter bphase
-  realvec bphase_orig = bphase;
+  realvec bphase_filt = bphase;
   for (int i=9; i < bphase.getCols()-9; i++) {
     int width = round(i*0.04);
     if (width < 1) {
@@ -1416,10 +1449,10 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         kernel[n] = (1 - fabs( ((double)(n-((N-1)/2))) / ((N+1)/2) ))/width;
     }
 
-    bphase(i) = 0.0;
+    bphase_filt(i) = 0.0;
     for (int j=0; j < N; j++) {
-        mrs_real value = bphase_orig(i+j-width) * kernel[j];
-        bphase(i) += value;
+        mrs_real value = bphase(i+j-width) * kernel[j];
+        bphase_filt(i) += value;
     }
   }
 #endif
@@ -1472,6 +1505,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
   // global maximum (will be a peak)
+/*
   mrs_real bh_sum_max = 0.0;
   mrs_real bh_sum_bpm = 0.0;
   for (int i=1; i < bhistogram_sum.getCols(); i++)
@@ -1482,9 +1516,9 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		  bh_sum_bpm = i/factor;
 	  }
     }
-
+*/
    mrs_real estimate_bpm = max_i;
-
+/*
    mrs_real str05 = energy_in_histo( 0.5*estimate_bpm,
         bhistogram_sum, factor, 0.1);
    mrs_real str1 = energy_in_histo( 1.0*estimate_bpm,
@@ -1492,7 +1526,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    mrs_real str2 = energy_in_histo( 2.0*estimate_bpm,
         bhistogram_sum, factor, 0.1);
     mrs_real str_residual = 1.0 - (str05 + str1 + str2);  
-
+*/
   // bhmax =0;
   // for (int i=0; i < 360; i++)
   // {
@@ -1589,6 +1623,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
    //tempos(2) = bh_estimate;
    //tempos(3) = bh_estimate2;
+   mrs_real heuristic_tempo = tempos(0);
 
 
    mrs_real str_total = 0.0;
@@ -1598,21 +1633,27 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
 
-    realvec features(11);
+    realvec features(2*INFO_SIZE+1);
     realvec from_bp = info_histogram(estimate_bpm, bphase,
         1.0, 0.05);
-    for (int i=0; i<from_bp.getCols(); i++) {
+    for (int i=0; i<INFO_SIZE; i++) {
         features(i) = from_bp(i);
     }
     features(0) = estimate_bpm;
 
     realvec from_bh = info_histogram(estimate_bpm, bhistogram_sum,
         factor, 0.05);
-    for (int i=0; i<from_bh.getCols(); i++) {
-        features(5+i) = from_bh(i);
+    for (int i=0; i<INFO_SIZE; i++) {
+        features(INFO_SIZE+i) = from_bh(i);
     }
-   features(10) = ground_truth_tempo;
-        //zzz
+/*
+    realvec from_bpf = info_histogram(estimate_bpm, bphase_filt,
+        factor, 0.05);
+    for (int i=0; i<INFO_SIZE; i++) {
+        features(2*INFO_SIZE+i) = from_bpf(i);
+    }
+*/
+   features(2*INFO_SIZE) = ground_truth_tempo;
 #if 0
    // absolute BPMs
    features(0) = tempos(0);
@@ -1673,6 +1714,38 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    cout << features_text.str() << endl;
    
 
+    // generated through post-processing
+    // scripts/large-evaluators/make-mf.py
+    const mrs_real mins[] = { 50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0544655, 0.0, 0.0630393, 0.0, -1.62522e-16, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0242015, 0.642849, 0.00347966, 0.00142071, 0.00384181, 0.0119594, 0.593431, 0.331461, 0.25, 0.25, 0.0, };
+    const mrs_real maxs[] = { 198.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.886991, 0.936961, 1.0, 0.541405, 1.0, 0.666455, 0.925854, 1.0, 3.96, 3.88, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.300953, 0.970262, 0.118708, 0.0418002, 0.121171, 0.297177, 0.977878, 7.99, 7.95, 7.655, 2.0, };
+    const mrs_real svm_weights[] = {
+        -10.074, 0.0318, 0.4943, 0.2317, -0.148, 1.9253,
+        -1.2371, -0.273, -0.9542, -0.3787, 1.8146, -0.3934,
+        0.0337, -1.4082, 0.0213, -1.1325, 0.395, -0.9187,
+        -0.1195, -0.6555, 0.5475, -0.6827, 0.5755, -0.076,
+        -0.3239, 0.0117, -0.9505, -1.2558, -0.5027,
+    };
+    double svm_sum = 3.2547;
+
+    for (int i=0; i<features.getCols(); i++) {
+        if (mins[i] == maxs[i]) {
+            continue;
+        }
+        features(i) = (features(i) - mins[i]) / (maxs[i] - mins[i]);
+        svm_sum += features(i) * svm_weights[i];
+    }
+#if USE_SVM
+    mrs_real mult = 1.0;
+    //cout<<"svm_sum:\t"<<svm_sum<<endl;
+    if (svm_sum > 0) {
+        mult = 2.0;
+        //cout<<"doubling!"<<endl;
+    }
+   tempos(0) = mult * heuristic_tempo;
+#endif
+
+//zzzz
+
    /*
    cout << slow_max << "," << fast_max << ",";
    
@@ -1685,7 +1758,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    else 
 	   cout << "fast" << endl;
    */
-   mrs_real heuristic_tempo = tempos(0);
  
 #if 0
    for (int i=0; i < 3; i++)
@@ -1754,11 +1826,13 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 		   }*/ 
 #endif
 
+
+#if !USE_SVM
    if (heuristic_tempo <= 71.5) {
     heuristic_tempo *= 2;
    }
-
    tempos(0) = heuristic_tempo;
+#endif
    
    
    // if (fabs( 2 * tempos(0) - ground_truth_tempo) <= 0.04 * ground_truth_tempo) 
