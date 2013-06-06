@@ -50,7 +50,7 @@
 #define BPM_HYPOTHESES 6 //Nr. of initial BPM hypotheses (must be <= than the nr. of agents) (6)
 #define PHASE_HYPOTHESES 30//Nr. of phases per BPM hypothesis (30)
 #define MIN_BPM 40 //minimum tempo considered, in BPMs (50)
-#define MAX_BPM 200 //maximum tempo considered, in BPMs (250)
+#define MAX_BPM 180 //maximum tempo considered, in BPMs (250)
 #define NR_AGENTS 30 //Nr. of agents in the pool (30)
 #define LFT_OUTTER_MARGIN 0.20 //The size of the outer half-window (in % of the IBI) before the predicted beat time (0.20)
 #define RGT_OUTTER_MARGIN 0.40 //The size of the outer half-window (in % of the IBI) after the predicted beat time (0.30)
@@ -77,7 +77,7 @@
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
 // 2: SVM-based doubling
-#define POST_DOUBLING 0
+#define POST_DOUBLING 2
 
 
 #define WINSIZE 1024 //(2048?)
@@ -1072,7 +1072,7 @@ mrs_real energy_in_histo(mrs_natural bpm, realvec histo,
 }
 
 
-const int INFO_SIZE = 10;
+const int INFO_SIZE = 11;
 realvec info_histogram(mrs_natural bpm, realvec histo,
                        mrs_real factor, mrs_real tolerance)
 {
@@ -1118,6 +1118,17 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
         }
     }
 
+    // number of values
+    mrs_natural num_non_zero = 0;
+    for (int i=1; i < size-1; i++)
+    {
+        if (histo(i) > 0)
+        {
+            num_non_zero += 1;
+        }
+    }
+
+
     // energy over / under
     mrs_real energy_total  = energy_in_histo_range(histo, factor,
         0, 1.0 );
@@ -1162,9 +1173,10 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
     //info(14) = strp2;
     //info(15) = strp3;
     //info(16) = 1.0 - (strp1 + strp2 + strp3);
-    info(7) = bpm1 / bpm;
-    info(8) = bpm2 / bpm;
-    info(9) = bpm3 / bpm;
+    info(7) = bpm2 / bpm;
+    info(8) = bpm3 / bpm;
+    info(9) = num_non_zero;
+    info(10) = histo(factor*bpm) / energy_total;
     return info;
 }
 
@@ -1639,27 +1651,27 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
 
-    realvec features(2*INFO_SIZE+2);
+    realvec features(1*INFO_SIZE+2);
     realvec from_bp = info_histogram(estimate_bpm, bphase,
         1.0, 0.05);
     for (int i=0; i<INFO_SIZE; i++) {
         features(i) = from_bp(i);
     }
 
+/*
     realvec from_bh = info_histogram(estimate_bpm, bhistogram_sum,
         factor, 0.05);
     for (int i=0; i<INFO_SIZE; i++) {
         features(INFO_SIZE+i) = from_bh(i);
     }
-/*
     realvec from_bpf = info_histogram(estimate_bpm, bphase_filt,
         factor, 0.05);
     for (int i=0; i<INFO_SIZE; i++) {
         features(2*INFO_SIZE+i) = from_bpf(i);
     }
 */
-    features(2*INFO_SIZE) = estimate_bpm;
-    features(2*INFO_SIZE+1) = ground_truth_tempo;
+    features(1*INFO_SIZE) = estimate_bpm;
+    features(1*INFO_SIZE+1) = ground_truth_tempo;
 #if 0
    // absolute BPMs
    features(0) = tempos(0);
@@ -1722,16 +1734,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
     // generated through post-processing
     // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0, 0.0, 0.0544655, 0.0, 0.0630393, 0.0, -2.22045e-16, 1.0, 0.0, 0.0, 0.0242015, 0.642849, 0.00347966, 0.00142071, 0.00384181, 0.0119594, 0.593431, 0.331461, 0.25, 0.25, 50.0, 0, };
-    const mrs_real maxs[] = { 0.886991, 0.936961, 1.0, 0.541405, 1.0, 0.666455, 0.925854, 1.0, 3.96, 3.88, 0.300953, 0.970262, 0.118708, 0.0418002, 0.121171, 0.297177, 0.977878, 7.99, 7.95, 7.655, 198.0, 0, };
-    // don't forget to add a final 0,
+    const mrs_real mins[] = { 0.0, 0.0, 0.0577699, 0.0, 0.0674247, 0.0, -2.22045e-16, 0.0, 0.0, 1.0, 0.0321453, 50.0, 0 };
+    const mrs_real maxs[] = { 0.86359, 0.896841, 1.0, 0.536296, 1.0, 0.682067, 0.903305, 3.14286, 3.27778, 87.0, 1.0, 178.0, 0 };
     const mrs_real svm_weights[] = {
-        2.5021, -1.7669, -0.5963, -1.0825, -0.4004,
-        2.3825, -0.6768, 0, -0.9593, -0.6649, 0.5343,
-        -0.6217, 0.4834, -1.5845, 0.6954, -0.3564,
-        0.2186, -0.4441, -0.1893, -0.343, -9.6868, 0
+         2.7542, -2.2856, -0.3488, -1.2561,
+         -0.6469, 2.8138, -0.711, -0.8327,
+         -0.6231, -0.3788, -0.208, -8.0021,
+         0,
     };
-    double svm_sum = 3.1273;
+    double svm_sum = 2.7016;
 
     for (int i=0; i<features.getCols(); i++) {
         if (mins[i] == maxs[i]) {

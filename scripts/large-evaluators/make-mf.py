@@ -61,9 +61,13 @@ FEATURES = [
     #'strp2',
     #'strp3',
     #'strp_residual',
-    'rel1',
+    #'rel1',
     'rel2',
     'rel3',
+    #'has2',
+    #'has3',
+    'num_non_zero',
+    'energyinpeak',
     ]
 
 OUTRO = """@attribute heuristic_bpm numeric
@@ -76,10 +80,10 @@ OUTRO = """@attribute heuristic_bpm numeric
 #@attribute class {1.0,2.0,1.5}
 #@attribute class {0.25,0.333333333333,0.5,0.666666666667,1.0,1.5,2.0,3.0,4.0}
 
-INTRO = "%s\n%s\n%s\n%s" % (
+INTRO = "%s\n%s\n%s" % (
     INTRO_BEGIN,
     '\n'.join(["@attribute bp-%s numeric" % x for x in FEATURES]),
-    '\n'.join(["@attribute bh-%s numeric" % x for x in FEATURES]),
+    #'\n'.join(["@attribute bh-%s numeric" % x for x in FEATURES]),
     OUTRO
     )
 #@attribute 19 numeric
@@ -135,8 +139,10 @@ for line in lines:
     else:
         if extended_harmonic_accuracy(2.0*detected, ground_truth):
             mult = 2.0
-        #if extended_harmonic_accuracy(0.5*detected, ground_truth):
+            #print "extra 2"
+        #elif extended_harmonic_accuracy(0.5*detected, ground_truth):
         #    mult = 0.5
+            #print "extra 0.5"
     #if accuracy(detected, ground_truth):
     #    mult = 1.0
     #else:
@@ -149,11 +155,6 @@ for line in lines:
             cause_problems += 1
             # don't multipy value; penalize MIREX but keep HARMONIC
             mult = 1.0
-    #else:
-    #    if extended_harmonic_accuracy(2*detected, ground_truth):
-    #        mult = 2.0
-    #    if extended_harmonic_accuracy(0.5*detected, ground_truth):
-    #        mult = 2.0
     total += 1
     
     vec = numpy.zeros(len(sl)-1+1-1)
