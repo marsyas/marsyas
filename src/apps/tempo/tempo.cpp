@@ -73,7 +73,11 @@
 //In non-causal mode, if between a son's first beat and its father's last there is over a BEAT_TRANSITION_TOL increase on the father last IBI the son's first beat shall be its father's next beat, and the second beat shall be its assigned first.
 
 #define FIR_OR_IIR_FILTER 1
-#define USE_SVM 1
+
+// 0: no doubling at all
+// 1: single threshold (bpm > x => double)
+// 2: SVM-based doubling
+#define POST_DOUBLING 0
 
 
 #define WINSIZE 1024 //(2048?)
@@ -1068,7 +1072,7 @@ mrs_real energy_in_histo(mrs_natural bpm, realvec histo,
 }
 
 
-const int INFO_SIZE = 16;
+const int INFO_SIZE = 10;
 realvec info_histogram(mrs_natural bpm, realvec histo,
                        mrs_real factor, mrs_real tolerance)
 {
@@ -1139,26 +1143,28 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
 */
 
 //zzz
+/*
     info(0) = bpm1 > bpm*(1.0+tolerance);
     info(1) = bpm1 < bpm*(1.0-tolerance);
     info(2) = bpm2 > bpm*(1.0+tolerance);
     info(3) = bpm2 < bpm*(1.0-tolerance);
     info(4) = bpm3 > bpm*(1.0+tolerance);
     info(5) = bpm3 < bpm*(1.0-tolerance);
-    info(6) = energy_under;
-    info(7) = energy_over;
-    info(8) = 1.0 - (energy_under + energy_over);
-    info(9) = str05;
-    info(10) = str10;
-    info(11) = str20;
-    info(12) = 1.0 - (str05 + str10 + str20);
+*/
+    info(0) = energy_under;
+    info(1) = energy_over;
+    info(2) = 1.0 - (energy_under + energy_over);
+    info(3) = str05;
+    info(4) = str10;
+    info(5) = str20;
+    info(6) = 1.0 - (str05 + str10 + str20);
     //info(13) = strp1;
     //info(14) = strp2;
     //info(15) = strp3;
     //info(16) = 1.0 - (strp1 + strp2 + strp3);
-    info(13) = bpm1 / bpm;
-    info(14) = bpm2 / bpm;
-    info(15) = bpm3 / bpm;
+    info(7) = bpm1 / bpm;
+    info(8) = bpm2 / bpm;
+    info(9) = bpm3 / bpm;
     return info;
 }
 
@@ -1633,13 +1639,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
 
-    realvec features(2*INFO_SIZE+1);
+    realvec features(2*INFO_SIZE+2);
     realvec from_bp = info_histogram(estimate_bpm, bphase,
         1.0, 0.05);
     for (int i=0; i<INFO_SIZE; i++) {
         features(i) = from_bp(i);
     }
-    features(0) = estimate_bpm;
 
     realvec from_bh = info_histogram(estimate_bpm, bhistogram_sum,
         factor, 0.05);
@@ -1653,7 +1658,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         features(2*INFO_SIZE+i) = from_bpf(i);
     }
 */
-   features(2*INFO_SIZE) = ground_truth_tempo;
+    features(2*INFO_SIZE) = estimate_bpm;
+    features(2*INFO_SIZE+1) = ground_truth_tempo;
 #if 0
    // absolute BPMs
    features(0) = tempos(0);
@@ -1707,7 +1713,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
    std::ostringstream features_text;
-   features_text << "Cands:\t";
+   features_text << "features_orig:\t";
    for (int i=0; i < features.getCols(); i++) {
        features_text << features(i) << "\t";
    }
@@ -1716,27 +1722,37 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
     // generated through post-processing
     // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0544655, 0.0, 0.0630393, 0.0, -1.62522e-16, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0242015, 0.642849, 0.00347966, 0.00142071, 0.00384181, 0.0119594, 0.593431, 0.331461, 0.25, 0.25, 0.0, };
-    const mrs_real maxs[] = { 198.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.886991, 0.936961, 1.0, 0.541405, 1.0, 0.666455, 0.925854, 1.0, 3.96, 3.88, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.300953, 0.970262, 0.118708, 0.0418002, 0.121171, 0.297177, 0.977878, 7.99, 7.95, 7.655, 2.0, };
+    const mrs_real mins[] = { 0.0, 0.0, 0.0544655, 0.0, 0.0630393, 0.0, -2.22045e-16, 1.0, 0.0, 0.0, 0.0242015, 0.642849, 0.00347966, 0.00142071, 0.00384181, 0.0119594, 0.593431, 0.331461, 0.25, 0.25, 50.0, 0, };
+    const mrs_real maxs[] = { 0.886991, 0.936961, 1.0, 0.541405, 1.0, 0.666455, 0.925854, 1.0, 3.96, 3.88, 0.300953, 0.970262, 0.118708, 0.0418002, 0.121171, 0.297177, 0.977878, 7.99, 7.95, 7.655, 198.0, 0, };
+    // don't forget to add a final 0,
     const mrs_real svm_weights[] = {
-        -10.074, 0.0318, 0.4943, 0.2317, -0.148, 1.9253,
-        -1.2371, -0.273, -0.9542, -0.3787, 1.8146, -0.3934,
-        0.0337, -1.4082, 0.0213, -1.1325, 0.395, -0.9187,
-        -0.1195, -0.6555, 0.5475, -0.6827, 0.5755, -0.076,
-        -0.3239, 0.0117, -0.9505, -1.2558, -0.5027,
+        2.5021, -1.7669, -0.5963, -1.0825, -0.4004,
+        2.3825, -0.6768, 0, -0.9593, -0.6649, 0.5343,
+        -0.6217, 0.4834, -1.5845, 0.6954, -0.3564,
+        0.2186, -0.4441, -0.1893, -0.343, -9.6868, 0
     };
-    double svm_sum = 3.2547;
+    double svm_sum = 3.1273;
 
     for (int i=0; i<features.getCols(); i++) {
         if (mins[i] == maxs[i]) {
             continue;
         }
         features(i) = (features(i) - mins[i]) / (maxs[i] - mins[i]);
-        svm_sum += features(i) * svm_weights[i];
     }
-#if USE_SVM
     mrs_real mult = 1.0;
     //cout<<"svm_sum:\t"<<svm_sum<<endl;
+
+   std::ostringstream features_normalized;
+   features_normalized << "features_normalized:\t";
+   for (int i=0; i < features.getCols(); i++) {
+       features_normalized << features(i) << "\t";
+   }
+   cout << features_normalized.str() << endl;
+
+    for (int i=0; i<features.getCols(); i++) {
+         svm_sum += features(i) * svm_weights[i];
+    }
+#if POST_DOUBLING == 2
     if (svm_sum > 0) {
         mult = 2.0;
         //cout<<"doubling!"<<endl;
@@ -1827,12 +1843,17 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #endif
 
 
-#if !USE_SVM
+#if POST_DOUBLING == 1
    if (heuristic_tempo <= 71.5) {
     heuristic_tempo *= 2;
    }
    tempos(0) = heuristic_tempo;
 #endif
+
+#if POST_DOUBLING == 0
+   tempos(0) = heuristic_tempo;
+#endif
+
    
    
    // if (fabs( 2 * tempos(0) - ground_truth_tempo) <= 0.04 * ground_truth_tempo) 

@@ -44,12 +44,12 @@ out = open("weka.arff", 'w')
 
 INTRO_BEGIN = """@relation mults"""
 FEATURES = [
-    'above_p1',
-    'below_p1',
-    'above_p2',
-    'below_p2',
-    'above_p3',
-    'below_p3',
+    #'above_p1',
+    #'below_p1',
+    #'above_p2',
+    #'below_p2',
+    #'above_p3',
+    #'below_p3',
     'energy_under',
     'energy_over',
     'energy_residual',
@@ -66,7 +66,8 @@ FEATURES = [
     'rel3',
     ]
 
-OUTRO = """@attribute class {1.0,2.0}
+OUTRO = """@attribute heuristic_bpm numeric
+@attribute class {1.0,2.0}
 @data
 """
 #OUTRO = """@attribute class {0.5,1.0,2.0}
@@ -93,16 +94,21 @@ total = 0
 multsdict = {}
 grounds = []
 failures = []
-combo = []
+minmax = []
 
 for line in lines:
-    if not line.startswith("Cands:"):
-        continue
-    #print line
     sl = line.rstrip().split("\t")
-    detected = float(sl[1])
-    #detected = float(sl[19])
-    ground_truth = float(sl[-1])
+    if line.startswith("features_orig:"):
+        detected = float(sl[-2])
+        ground_truth = float(sl[-1])
+        vec = numpy.zeros(len(sl)-2)
+        for i in range(1,len(sl)-1):
+            vec[i-1] = float(sl[i])
+        minmax.append(vec)
+    #if not line.startswith("features_orig:"):
+    if not line.startswith("features_normalized:"):
+        continue
+    #detected_norm = float(sl[-2])
     grounds.append(ground_truth)
 
 
@@ -156,7 +162,6 @@ for line in lines:
     vec[-1] = mult
     #vec[0] = detected
 
-    combo.append(vec)
 
     div = detected / ground_truth
     if mult > 0:
@@ -213,19 +218,19 @@ if PLOT:
 #pylab.show()
 
 
-vals = numpy.array(combo)
+vals = numpy.array(minmax)
 mins = vals.min(axis=0)
 maxs = vals.max(axis=0)
 
 print "    const mrs_real mins[] = {",
 for m in mins:
     print str(m) + ",",
-print "};"
+print "0 };"
 
 print "    const mrs_real maxs[] = {",
 for m in maxs:
     print str(m) + ",",
-print "};"
+print "0 };"
 
 
 
