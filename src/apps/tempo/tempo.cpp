@@ -1081,7 +1081,7 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
     mrs_natural size = histo.getCols();
 
     // global maximum (will be a peak)
-    mrs_real bpm1 = 0;
+    //mrs_real bpm1 = 0;
     mrs_real bpm2 = 0;
     mrs_real bpm3 = 0;
     mrs_real str1 = 0;
@@ -1092,7 +1092,7 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
         if (histo(i) > str1)
         {
             str1 = histo(i);
-            bpm1 = i / factor;
+            //bpm1 = i / factor;
         }
     }
 
@@ -1291,7 +1291,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    // beat histogram parameters
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin",
-        2*factor*MAX_BPM);
+        factor*MAX_BPM);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", (mrs_real)factor);
    tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
@@ -1368,8 +1368,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    
    
   mrs_realvec bhistogram;
-  mrs_realvec bhistogram_sum(2*MAX_BPM*factor);
-  bhistogram_sum.setval(0.0);
+  //mrs_realvec bhistogram_sum(MAX_BPM*factor);
+  //bhistogram_sum.setval(0.0);
 
   while (1)
   {
@@ -1395,7 +1395,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 	//bh_estimate = tempos(0);
 	//bh_estimate2 = tempos(1);
 	mrs_realvec bhistogram = tempoInduction->getControl("BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
-    bhistogram_sum += bhistogram;
+    //bhistogram_sum += bhistogram;
 	
 	// tempo estimation using cross-correlation of candidate pulse trains to the onset strength signal
     //mrs_real phase_tempo;	 // tempo estimate calculated by the BeatPhase MarSystem
@@ -1517,10 +1517,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
   // find relevant values in bhistogram_sum
   // normalize
+  /*
   mrs_real norm_bhisto = 1.0 / bhistogram_sum.sum();
   for (int i=0; i<bhistogram_sum.getCols(); i++) {
     bhistogram_sum(i) *= norm_bhisto;
   }
+  */
 
   // global maximum (will be a peak)
 /*
@@ -1651,13 +1653,25 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
   }
 
 
-    realvec features(1*INFO_SIZE+2);
+    mrs_natural num_features = 1*INFO_SIZE + 2;
+    realvec features(num_features);
     realvec from_bp = info_histogram(estimate_bpm, bphase,
         1.0, 0.05);
     for (int i=0; i<INFO_SIZE; i++) {
         features(i) = from_bp(i);
     }
-
+    /*
+    realvec from_bp2 = info_histogram(estimate_bpm, bphase,
+        1.0, 0.1);
+    for (int i=0; i<INFO_SIZE; i++) {
+        features(1*INFO_SIZE + i) = from_bp2(i);
+    }
+    realvec from_bp3 = info_histogram(estimate_bpm, bphase,
+        1.0, 0.01);
+    for (int i=0; i<INFO_SIZE; i++) {
+        features(2*INFO_SIZE + i) = from_bp3(i);
+    }
+*/
 /*
     realvec from_bh = info_histogram(estimate_bpm, bhistogram_sum,
         factor, 0.05);
@@ -1670,8 +1684,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         features(2*INFO_SIZE+i) = from_bpf(i);
     }
 */
-    features(1*INFO_SIZE) = estimate_bpm;
-    features(1*INFO_SIZE+1) = ground_truth_tempo;
+    features(num_features - 2) = estimate_bpm;
+    features(num_features - 1) = ground_truth_tempo;
 #if 0
    // absolute BPMs
    features(0) = tempos(0);
@@ -1734,15 +1748,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
     // generated through post-processing
     // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0, 0.0, 0.0577699, 0.0, 0.0674247, 0.0, -2.22045e-16, 0.0, 0.0, 1.0, 0.0321453, 50.0, 0 };
-    const mrs_real maxs[] = { 0.86359, 0.896841, 1.0, 0.536296, 1.0, 0.682067, 0.903305, 3.14286, 3.27778, 87.0, 1.0, 178.0, 0 };
+    const mrs_real mins[] = { 0.0, 0.0, 0.0577764, 0.0, 0.0675425, 0.0, -1.42247e-16, 0.0, 0.0, 1.0, 0.0321518, 50.0, 0 };
+    const mrs_real maxs[] = { 0.863484, 0.896872, 1.0, 0.536409, 1.0, 0.682067, 0.899166, 3.14286, 3.27778, 87.0, 1.0, 178.0, 0 };
     const mrs_real svm_weights[] = {
-         2.7542, -2.2856, -0.3488, -1.2561,
-         -0.6469, 2.8138, -0.711, -0.8327,
-         -0.6231, -0.3788, -0.208, -8.0021,
+         2.7216, -2.2383, -0.3636, -1.2403,
+         -0.6165, 2.794, -0.7402, -0.8451,
+         -0.6473, -0.2406, -0.2182, -7.98,
          0,
     };
-    double svm_sum = 2.7016;
+    double svm_sum = 2.6917;
 
     for (int i=0; i<features.getCols(); i++) {
         if (mins[i] == maxs[i]) {
