@@ -271,12 +271,9 @@ else (MARSYAS_STATIC)
     set(LIB_DIR "")
   endif ()
   set_target_properties(marsyas PROPERTIES INSTALL_NAME_DIR ${LIB_DIR})
-  install(TARGETS marsyas LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
-  install(TARGETS marsyas LIBRARY DESTINATION lib
-  RUNTIME DESTINATION lib)
-  install(TARGETS marsyas LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+
+  install(TARGETS marsyas DESTINATION lib)
+
   if (DEFINED PYTHON_INSTDIR)
     install(TARGETS marsyas LIBRARY DESTINATION lib
     RUNTIME DESTINATION ${PYTHON_INSTDIR})
