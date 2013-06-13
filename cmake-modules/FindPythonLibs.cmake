@@ -195,5 +195,8 @@ ENDIF(Python_FRAMEWORKS)
 # because they are meant to specify the location of a single library.
 # We now set the variables listed by the documentation for this
 # module.
+
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(PythonLibs DEFAULT_MSG PYTHON_LIBRARY PYTHON_INCLUDE_PATH)
+
 SET(PYTHON_LIBRARIES "${PYTHON_LIBRARY}")
 SET(PYTHON_DEBUG_LIBRARIES "${PYTHON_DEBUG_LIBRARY}")
