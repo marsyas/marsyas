@@ -19,6 +19,7 @@
 
 #include "PvConvert.h"
 #include <algorithm>
+#include <functional>
 
 
 

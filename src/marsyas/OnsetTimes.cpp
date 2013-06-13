@@ -19,6 +19,7 @@
 #include "OnsetTimes.h"
 #include "common_source.h"
 #include <algorithm>
+#include <functional>
 
 using namespace std;
 using namespace Marsyas;
