@@ -1,5 +1,5 @@
 ## global setup
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required (VERSION 2.8)
 project (marsyas)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake-modules")
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Marsyas: Music Analysis, Retrieval and Synthesis for Audio Signals")
