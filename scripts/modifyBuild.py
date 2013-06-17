@@ -16,7 +16,8 @@ marsyasBaseDir = os.path.join(marsyasBaseDir+os.sep+'..'+os.sep)
 marsyasBaseDir = os.path.abspath( marsyasBaseDir )
 
 def modify_manager(filename,action):
-    fileToEdit = os.path.join(marsyasBaseDir, 'src/marsyas', 'MarSystemManager.cpp')
+    fileToEdit = os.path.join(marsyasBaseDir, 'src', 'marsyas',
+        'core', 'MarSystemManager.cpp')
     filelines = open( fileToEdit ).readlines()
     if (action==1):
         for line in filelines:
@@ -47,7 +48,8 @@ def modify_manager(filename,action):
     newfile.close()
 
 def modify_CMakelists(source_file,action):
-    fileToEdit = os.path.join(marsyasBaseDir, 'src', 'marsyas', 'CMakeLists.txt')
+    fileToEdit = os.path.join(marsyasBaseDir, 'src',
+        'marsyas', 'marsystems', 'CMakeLists.txt')
     filelines = open( fileToEdit ).readlines()
     newfile = open( fileToEdit, 'w')
     for line in filelines:
@@ -65,7 +67,8 @@ def modify_CMakelists(source_file,action):
     newfile.close()
 
 def modify_CMake_compile_lists(source_file, action, filename):
-    fileToEdit = os.path.join(marsyasBaseDir, 'src', 'marsyas', filename)
+    fileToEdit = os.path.join(marsyasBaseDir, 'src',
+        'marsyas', 'marsystems', filename)
     filelines = open( fileToEdit ).readlines()
     newfile = open( fileToEdit, 'w')
     for line in filelines:

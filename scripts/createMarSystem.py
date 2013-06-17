@@ -64,7 +64,8 @@ if __name__ == '__main__':
 
     for ext in ['.h', '.cpp']:
         # Construct the file names.
-        template_file = os.path.join(marsyas_base_dir, 'src', 'marsyas', template_name + ext)
+        template_file = os.path.join(marsyas_base_dir, 'src',
+            'marsyas', 'marsystems', template_name + ext)
         target_file = target_name + ext
 
         # Do the copy and replace stuff.
