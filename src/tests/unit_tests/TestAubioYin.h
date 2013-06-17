@@ -64,7 +64,7 @@ public:
 
 	// Fill up the input realvec with a sine wave
 	for (int i = 0; i < length; i++) {
-	  double d = sin(i/((double)length)*(PI*2.0)*((double)length/44100.0)*1000.0);
+	  double d = sin(i * 1000.0 / 44100.0 * (PI*2.0));
 	  in(0,i) = d;
 	}
 
@@ -96,7 +96,7 @@ public:
 
 	// Fill up the realvec with a sine wave
 	for (int i = 0; i < buffer_size*num_buffers; i++) {
-	  double d = sin(i/((double)buffer_size)*(PI*2.0)*((double)buffer_size/44100.0)*1000.0);
+	  double d = sin(i * 1000.0 / 44100.0 * (PI*2.0));
 	  nbuf(0,i) = d;
 	}
 
@@ -163,13 +163,13 @@ public:
 
 	// Fill up the realvec with a sine wave
 	for (int i = 0; i < buffer_size*num_buffers/2; i++) {
-	  double d = sin(i/((double)buffer_size)*(PI*2.0)*((double)buffer_size/44100.0)*1000.0);
+	  double d = sin(i * 1000.0 / 44100.0 * (PI*2.0));
 	  nbuf(0,i) = d;
 	}
 
 	// Fill up the realvec with a sine wave
 	for (int i = (buffer_size*num_buffers)/2; i < buffer_size*num_buffers; i++) {
-	  double d = sin(i/((double)buffer_size)*(PI*2.0)*((double)buffer_size/44100.0)*500.0);
+	  double d = sin(i * 500.0 / 44100.0 * (PI*2.0));
 	  nbuf(0,i) = d;
 	}
 
@@ -244,7 +244,7 @@ public:
 	for (int i = 0; i < buffer_size*num_buffers; i++) {
 	  pos = ((double)i+1) / (buffer_size*num_buffers);
 	  freq = start_freq + ((end_freq - start_freq) * pos);
-	  double d = sin(i/((double)buffer_size)*(PI*2.0)*((double)buffer_size/44100.0)*freq);
+	  double d = sin(i * freq / 44100.0 * (PI*2.0));
 	  nbuf(0,i) = d;
 	}
 
@@ -323,7 +323,7 @@ public:
     for (int i = 0; i < buffer_size*num_buffers; i++) {
 	  pos = ((double)i+1) / (buffer_size*num_buffers);
 	  freq = start_freq + ((end_freq - start_freq) * pos);
-	  double d = sin(i/((double)buffer_size)*(PI*2.0)*((double)buffer_size/44100.0)*freq);
+	  double d = sin(i * freq / 44100.0 * (PI*2.0));
 	  nbuf(0,i) = d;
 	}
 

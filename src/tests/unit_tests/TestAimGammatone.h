@@ -46,7 +46,7 @@ class AimGammatone_runner : public CxxTest::TestSuite
 
 	// Fill up the input realvec with a sine wave
 	for (int i = 0; i < length; i++) {
-	  double d = sin(i/((double)length)*(PI*2.0)*((double)length/44100.0)*1000.0);
+	  double d = sin(i * 1000.0 / 44100.0 * (PI*2.0));
 	  in(0,i) = d;
 	}
 
