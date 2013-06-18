@@ -160,8 +160,9 @@ TmControlValue::getSType()
 	return res;
 }
 
+namespace Marsyas {
 ostream&
-Marsyas::operator<<(ostream& o, const TmControlValue& m)
+operator<<(ostream& o, const TmControlValue& m)
 {
 	if(m.type_ == tmcv_string) o << m.s_;
 	if(m.type_ == tmcv_real) o << m.r_;
@@ -171,5 +172,4 @@ Marsyas::operator<<(ostream& o, const TmControlValue& m)
 	if(m.type_ == tmcv_vec) o << "realvec";
 	return o;
 }
-
- 
+}

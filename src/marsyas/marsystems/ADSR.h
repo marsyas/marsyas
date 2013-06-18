@@ -24,16 +24,12 @@
 namespace Marsyas
 {
 /** 
-    \class ADSRenvelope
-    \ingroup Processing
-    \brief Multiply input realvec by Value of Envelope
+	\ingroup Processing
+	\brief Attack-Decay-Sustain-Release envelope
 
-   Simple MarSystem example. Just multiply the values of the input realvec
-with current value of the ADSR envelope and put them in the output vector.
-
+	Multiplies each sample of the input realvec with the value of the envelope at the
+	corresponding time.
 */
-
-
   
 class ADSR: public MarSystem
 {

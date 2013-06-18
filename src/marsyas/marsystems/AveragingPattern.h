@@ -8,7 +8,7 @@ namespace Marsyas
   /**
      \class AveragingPattern
      \ingroup MarSystem
-     \breaf Caluculate Averages accoding to the alignment
+     \brief Calculate Averages accoding to the alignment
      
      Controls:
      - \b mrs_realvec/sizes       [w] : sets the sizes of paralleled matrix

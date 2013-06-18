@@ -66,7 +66,7 @@ public:
 	TmVirtualTime(std::string name);
 	/** \brief main constructor. Has identifier "TmSampleCount/Virtual"
 	* \param ms the MarSystem that contains the control to read
-	* \param cname the control name to read
+	* \param name the control name to read
 	*/
 	TmVirtualTime(std::string name, MarSystem* ms);
 	/** \brief copy constructor

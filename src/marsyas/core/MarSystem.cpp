@@ -1948,22 +1948,24 @@ MarSystem::put(istream& is)
 	return is;
 }
 
+namespace Marsyas {
+
 ostream&
-Marsyas::operator<< (ostream& o, MarSystem& sys)
+operator<< (ostream& o, MarSystem& sys)
 {
   sys.put(o, true);
   return o;
 }
 
 istream&
-Marsyas::operator>> (istream& is, MarSystem& sys)
+operator>> (istream& is, MarSystem& sys)
 {
 	sys.put(is);
 	return is;
 }
 
 ostream&
-Marsyas::operator<< (ostream& o, const map<mrs_string,MarControlPtr>& c)
+operator<< (ostream& o, const map<mrs_string,MarControlPtr>& c)
 {
 	//lock map<mrs_string,MarControlPtr>& c for read? [?]
 	o << "# MarControls = " << c.size() << endl;
@@ -1975,6 +1977,7 @@ Marsyas::operator<< (ostream& o, const map<mrs_string,MarControlPtr>& c)
 	return o;
 }
 
+} // namespace Marsyas
 
 
 /**

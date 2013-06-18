@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-\class Spectral Crest Factor
-	\ingroup none
+\ingroup Analysis
 \brief Spectral Crest Factor
 
 Spectral Crest Factor is a feature set very similar to the

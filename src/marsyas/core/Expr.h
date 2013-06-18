@@ -24,24 +24,28 @@
 namespace Marsyas
 {
 /**
-	\class Expr, Ex, Rp
+	\file
 	\ingroup Scheduler
-	\brief Expr encapsulates an evaluatable expression. Ex is a convenience
-		class that encapsulates an expression string and can parse to a
-		tree. Rp is the same as Ex but is interpreted as an expression for
-		deciding on repetition.
 	\author Neil Burroughs  inb@cs.uvic.ca
 	\version 1.0
-	\date    Jan 01, 2007
+	\date Jan 01, 2007
+
+	Expr encapsulates an evaluatable expression. Ex is a convenience
+	class that encapsulates an expression string and can parse to a
+	tree. Rp is the same as Ex but is interpreted as an expression for
+	deciding on repetition.
 */
 
 class ExNode;
+class Expr;
 /**
-	\class Ex
-	\brief a convenience class that encapsulates an expression string and knows
+	\ingroup Scheduler
+	\author Neil Burroughs  inb@cs.uvic.ca
+	\version 1.0
+	\date Jan 01, 2007
+	\brief Convenience class that encapsulates an expression string and knows
 		how to parse that string to an ExNode expression tree.
 */
-class Expr;
 class Ex {
 	std::string init_; std::string expr_;
 public:
@@ -50,7 +54,10 @@ public:
 	void parse(Expr* e, ExNode*& init, ExNode*& expr);
 };
 /**
-	\class Rp
+	\ingroup Scheduler
+	\author Neil Burroughs  inb@cs.uvic.ca
+	\version 1.0
+	\date Jan 01, 2007
 	\brief Rp works in a similar way to Ex except that the single parameter
 		constructor is an expression that must evaluate to a boolean that
 		determines if the event is to repeat while the two parameter
@@ -65,15 +72,20 @@ public:
 	Rp(std::string e, std::string r) : Ex(e,r) {};
 };
 /**
-	\class ExFile
+	\ingroup Scheduler
+	\author Neil Burroughs  inb@cs.uvic.ca
+	\version 1.0
+	\date Jan 01, 2007
 	\brief Convenience class for placing Ex and Rp expressions in a separate file
 		to be read at parse time. Expressions are separated by declaring block
 		headers:
-			#::ExInit:
-			#::ExExpr:
-			#::RpInit:
-			#::RpExpr:
-			#::RpRate:
+		\code{.expr}
+		#ExInit:
+		#ExExpr:
+		#RpInit:
+		#RpExpr:
+		#RpRate:
+		\endcode
 */
 class ExFile {
 	std::string iex_, ex_, rp_, rr_;
@@ -86,14 +98,18 @@ public:
 	Rp getRp() { return Rp(rp_,rr_); }
 };
 
-/**
-	\class Expr
-	\brief Expr encapsulates an evaluatable expression.
-*/
 class ExRecord;
 class MarSystem;
 class Scheduler;
 class TmTimer;
+
+/**
+	\ingroup Scheduler
+	\author Neil Burroughs  inb@cs.uvic.ca
+	\version 1.0
+	\date Jan 01, 2007
+	\brief Expr encapsulates an evaluatable expression.
+*/
 class Expr {
 	friend class Ex;
 	bool initialized_;

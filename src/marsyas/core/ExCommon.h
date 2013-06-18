@@ -104,7 +104,7 @@ std::string dtos(double d);
 std::string dtos(float d);
 
 /** \brief convert a long to a string
-* \param d a long value to convert
+* \param l a long value to convert
 * \return string representing the supplied parameter
 */
 std::string ltos(long l);

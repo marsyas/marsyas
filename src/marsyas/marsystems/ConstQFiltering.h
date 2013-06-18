@@ -9,7 +9,7 @@ namespace Marsyas
   /**
      \class ConstQFiltering
      \ingroup MarSystem
-     \breaf Calculate wavelet transform
+     \brief Calculate wavelet transform
 
      Controls:
      - \b mrs_real/qValue        [w] : sets Q value

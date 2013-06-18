@@ -8,9 +8,8 @@
 namespace Marsyas
 {
   /**
-     \class UpdatingBassModel
      \ingroup MarSystem
-     \breaf updating bass-line model for BassMap
+     \brief Updating bass-line model for BassMap
 
      Controls:
      - \b mrs_natural/nTemplates    [w] : sets number of templates

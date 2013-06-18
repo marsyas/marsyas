@@ -10,7 +10,7 @@ namespace Marsyas
   /**
      \class MatchBassModel
      \ingroup MarSystem
-     \breaf match bass-line model for BassMap
+     \brief Match bass-line model for BassMap
 
      Controls:
      - \b mrs_bool/calcCovMatrix    [w] : enables/disables calculation of covariance matrix from input data

@@ -33,11 +33,12 @@ TmParam::TmParam(const TmParam& val)
 	valu_=val.valu_;
 }
 
+namespace Marsyas {
 ostream&
-Marsyas::operator<<(ostream& o, const TmParam& m)
+operator<<(ostream& o, const TmParam& m)
 {
 	o << "TmP(" << m.name_ << "," << m.valu_ <<")";
 	return o;
 }
-
+}
  

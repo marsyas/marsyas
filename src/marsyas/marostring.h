@@ -27,7 +27,7 @@ namespace Marsyas
 {
 /**
 	\class marostring
-	\ingroup 
+	\ingroup Notmar
 	\brief abstract class for Marsyas Network string representation generators
 	\author inb@cs.uvic.ca
 */

@@ -24,14 +24,14 @@
 namespace Marsyas
 {
 /** 
-    \class LSP
-    \ingroup Analysis
-    \brief Compute Linear Spectral Pair (LSP) coefficients 
-    Takes the output of ::LPC() and calculates the corresponding LSP values.
-    See the LPC class implementation.
-    
-    Cobe by Luís Gustavo Martins - lmartins@inescporto.pt
-    May 2006
+	\ingroup Analysis
+	\brief Compute Linear Spectral Pair (LSP) coefficients
+
+	Takes the output of LPC and calculates the corresponding LSP values.
+	See the LPC class implementation.
+
+	\author LuÃ­s Gustavo Martins - lmartins@inescporto.pt
+	\date May 2006
 */
 
 

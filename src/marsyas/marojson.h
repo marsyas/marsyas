@@ -29,7 +29,7 @@ namespace Marsyas
 {
 /**
 	\class marojson
-	\ingroup 
+	\ingroup Notmar
 	\brief generate json representing a MarSystem and its controls
 	\author Paul Reimer pdreimer@engr.uvic.ca
 */

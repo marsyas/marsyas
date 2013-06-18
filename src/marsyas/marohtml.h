@@ -28,7 +28,7 @@ namespace Marsyas
 {
 /**
 	\class marohtml
-	\ingroup 
+	\ingroup Notmar
 	\brief generate xml representing a MarSystem
 	\author inb@cs.uvic.ca
 */

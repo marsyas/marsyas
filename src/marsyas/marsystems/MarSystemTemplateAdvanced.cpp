@@ -155,8 +155,12 @@ MarSystemTemplateAdvanced::myProcess(realvec& in, realvec& out)
 /************************************************************************/
 // some operators are mandatory for all controls!
 // so we must declare and define them for our custom controls
+
+// Use a namespace block instead of "Marsyas::", or Doxygen will complain.
+namespace Marsyas {
+
 bool
-Marsyas::operator==(const MyHeader& hdr1, const MyHeader& hdr2)
+operator==(const MyHeader& hdr1, const MyHeader& hdr2)
 {
 	// here we consider that two headers are equal if all their
 	// parameter values are equal
@@ -167,7 +171,7 @@ Marsyas::operator==(const MyHeader& hdr1, const MyHeader& hdr2)
 }
 
 bool
-Marsyas::operator!=(const MyHeader& hdr1, const MyHeader& hdr2)
+operator!=(const MyHeader& hdr1, const MyHeader& hdr2)
 {
 	// here we consider that two headers are equal if all their
 	// parameter values are equal
@@ -178,7 +182,7 @@ Marsyas::operator!=(const MyHeader& hdr1, const MyHeader& hdr2)
 }
 
 MyHeader
-Marsyas::operator+(MyHeader& hdr1, MyHeader& hdr2)
+operator+(MyHeader& hdr1, MyHeader& hdr2)
 {
 	(void) hdr1; (void) hdr2;
 	MRSASSERT(0);	// not a valid operation for this example header control
@@ -186,7 +190,7 @@ Marsyas::operator+(MyHeader& hdr1, MyHeader& hdr2)
 }
 
 MyHeader
-Marsyas::operator-(MyHeader& hdr1, MyHeader& hdr2)
+operator-(MyHeader& hdr1, MyHeader& hdr2)
 {
 	(void) hdr1; (void) hdr2;
 	MRSASSERT(0);	// not a valid operation for this example header control
@@ -194,7 +198,7 @@ Marsyas::operator-(MyHeader& hdr1, MyHeader& hdr2)
 }
 
 MyHeader
-Marsyas::operator*(MyHeader& hdr1, MyHeader& hdr2)
+operator*(MyHeader& hdr1, MyHeader& hdr2)
 {
 	(void) hdr1; (void) hdr2;
 	MRSASSERT(0);	// not a valid operation for this example header control
@@ -202,7 +206,7 @@ Marsyas::operator*(MyHeader& hdr1, MyHeader& hdr2)
 }
 
 MyHeader
-Marsyas::operator/(MyHeader& hdr1, MyHeader& hdr2)
+operator/(MyHeader& hdr1, MyHeader& hdr2)
 {
 	(void) hdr1; (void) hdr2;
 	MRSASSERT(0);	// not a valid operation for this example header control
@@ -210,7 +214,7 @@ Marsyas::operator/(MyHeader& hdr1, MyHeader& hdr2)
 }
 
 std::ostream& 
-Marsyas::operator<<(std::ostream& os, const MyHeader& hdr)
+operator<<(std::ostream& os, const MyHeader& hdr)
 {
 	os << "# MARSYAS mrs_myHeader" << endl;
 	os << "# someString = " << hdr.someString << endl;
@@ -222,7 +226,7 @@ Marsyas::operator<<(std::ostream& os, const MyHeader& hdr)
 }
 
 std::istream& 
-Marsyas::operator>>(std::istream& is, MyHeader& hdr)
+operator>>(std::istream& is, MyHeader& hdr)
 {
 	mrs_string skip;
 	is >> skip >> skip >> skip;
@@ -247,3 +251,5 @@ Marsyas::operator>>(std::istream& is, MyHeader& hdr)
 
 	return is;
 }
+
+} // namespace Marsyas

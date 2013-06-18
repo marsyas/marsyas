@@ -26,15 +26,15 @@
 namespace Marsyas
 {
 /** 
-    \class BICchangeDetector
-    \ingroup MachineLearning
-    \brief detect changes between to succeeding segments using BIC
+	\class BICchangeDetector
+	\ingroup MachineLearning
+	\brief Detect changes between to succeeding segments using BIC
 
-    Detect changes between two succeeding segments using divergenceShape
-    (or BattacharyyaShape), and validation using BIC and quasi-GMM modeling
+	Detect changes between two succeeding segments using divergenceShape
+	(or BattacharyyaShape), and validation using BIC and quasi-GMM modeling
 
-    Implementation by Luis Gustavo Martins - lmartins@inescporto.pt
-         and          David G. Cooper      - dcooper@cs.umass.edu
+	\author Luis Gustavo Martins - lmartins@inescporto.pt
+	\author David G. Cooper      - dcooper@cs.umass.edu
 */
 
 

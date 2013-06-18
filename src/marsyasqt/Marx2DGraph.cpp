@@ -24,7 +24,6 @@ using namespace Marsyas;
 
 namespace MarsyasQt
 {
-//! A default constructor
 /*!
   A default constructor when buffer size isn't otherwise specified.
 */
@@ -35,7 +34,6 @@ Marx2DGraph::Marx2DGraph( QWidget *parent )
 }
 
 
-//! The real constructor
 /*!
   The real constructor
                                                                                         
@@ -97,11 +95,10 @@ Marx2DGraph::Marx2DGraph( int size, QWidget *parent )
 }
 
 
-//! displayXaxis
 /*!
   Toggles whether the X axis is drawn.
                                                                                         
-  \param bool on/off
+  \param tf on/off
 */
 void
 Marx2DGraph::displayXaxis( bool tf )
@@ -111,11 +108,10 @@ Marx2DGraph::displayXaxis( bool tf )
 }
 
 
-//! setXAxisLabel
 /*!
   Add a label below and center of the x axis.
                                                                                         
-  \param string message
+  \param m message
 */
 void 
 Marx2DGraph::setXAxisLabel( string m )
@@ -125,11 +121,10 @@ Marx2DGraph::setXAxisLabel( string m )
 }
 
 
-//! setYAxisLabel
 /*!
   Add a label below and center of the y axis.
                                                                                         
-  \param string message
+  \param m message
 */
 void 
 Marx2DGraph::setYAxisLabel( string m )
@@ -139,11 +134,8 @@ Marx2DGraph::setYAxisLabel( string m )
 }
 
 
-//! setXAxisLabel
 /*!
-  Add a label below and center of the x axis.
-                                                                                        
-  \param string message
+  \param tf on/off
 */
 void 
 Marx2DGraph::setXAxisLabelOn( bool tf )
@@ -156,11 +148,8 @@ Marx2DGraph::setXAxisLabelOn( bool tf )
 }
 
 
-//! setYAxisLabel
 /*!
-  Add a label below and center of the y axis.
-                                                                                        
-  \param string message
+  \param tf on/off
 */
 void 
 Marx2DGraph::setYAxisLabelOn( bool tf )
@@ -174,7 +163,6 @@ Marx2DGraph::setYAxisLabelOn( bool tf )
 
 
 
-//! setAxisDisplayType
 /*!
   Controls how the axis will be drawn: enum { CONNECTED, BROKEN }.
                                                                                         
@@ -187,7 +175,6 @@ Marx2DGraph::setAxisDisplayType( int type )
 }
 
 
-//! setGraphDataColor
 /*!
   Change the plot color.
                                                                                         
@@ -201,7 +188,6 @@ Marx2DGraph::setGraphDataColor( QColor c )
 }
 
 
-//! setGraphLabelsAndAxisColor
 /*!
   Change the labels and axis colors, ie. labels and axis are displayed
   in the same color
@@ -216,7 +202,6 @@ Marx2DGraph::setGraphLabelsAndAxisColor( QColor c )
 }
 
 
-//! setBGColor
 /*!
   Set the background color of the graph.  The default color is white.
                                                                                         
@@ -230,7 +215,6 @@ Marx2DGraph::setBGColor( QColor c )
 }
 
 
-//! setGraphDataPointSize
 /*!
   Set the point size when the graph type is POINT.
                                                                                         
@@ -244,7 +228,6 @@ Marx2DGraph::setGraphDataPointSize(float p)
 }
 
 
-//! setGraphDataPointType
 /*!
   Set the point style when the graph type is POINT.  Options are given
   in the enumeration: enum { CIRCLES, SQUARES, XS };
@@ -259,7 +242,6 @@ Marx2DGraph::setGraphDataPointType( int t )
 }
 
 
-//! setGraphDataLineSize
 /*!
   Set the graph line thickness when plotting style is
   LINEAR_INTERPOLATION or POLYNOMIAL_INTERPOLATION.
@@ -274,7 +256,6 @@ Marx2DGraph::setGraphDataLineSize( float p )
 }
 
 
-//! setPlotType
 /*!
   Choose the style of the plot: enum { POINTS, PRECISION,
   LINEAR_INTERPOLATION, POLYNOMIAL_INTERPOLATION }.
@@ -289,7 +270,6 @@ Marx2DGraph::setPlotType(int type)
 }
 
 
-//! setAntialias
 /*!
   Toggles antialiasing on and off.  When rapidly redrawing plot
   buffers, such as in plotting realtime audio output, antialias will
@@ -303,11 +283,10 @@ Marx2DGraph::setAntialias(bool tf)
 }
 
 
-//! setShowAxisScale
 /*!
   Toggle the displaying of axis scale label.
 
-  \param bool true/false is on/off respectively
+  \param tf true/false is on/off respectively
 */
 void 
 Marx2DGraph::setShowAxisScale( bool tf )
@@ -317,14 +296,12 @@ Marx2DGraph::setShowAxisScale( bool tf )
 }
 
 
-//! setBuffer
 /*!
   Set the buffer and automatically update the graphics.
                                                                                         
-  \param *b a pointer to an array of floats
-  \param s the size of the buffer
+  \param rv
                                                                                         
-  \return bool true if the buffer's successfully updated
+  \return true if the buffer's successfully updated
 */
 bool 
 Marx2DGraph::setBuffer( realvec& rv )
@@ -421,7 +398,6 @@ void Marx2DGraph::draw_x_ticks(QPainter *painter)
 
 
 
-//! addLabel
 /*!
   Give the graph a label and update the graphic.
                                                                                         

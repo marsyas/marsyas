@@ -10,7 +10,7 @@ namespace Marsyas
   /**
      \class SimilarityMatrix
      \ingroup MarSystem
-     \breaf Calculate SimilarityMatrix of a (parallel) set of feature vectors at input
+     \brief Calculate SimilarityMatrix of a (parallel) set of feature vectors at input
 
      Controls:
      - \b mrs_bool/calcCovMatrix [w] : enables/disables calculation of covariance matrix from input data

@@ -527,8 +527,9 @@ TimeLine::write(mrs_string filename)
 	os << (*this) << endl;
 }
 
+namespace Marsyas {
 ostream&
-Marsyas::operator<<(ostream& o, const TimeLine& tline)
+operator<<(ostream& o, const TimeLine& tline)
 {
 	o << tline.numRegions_ << endl;
 	o << tline.lineSize_ << endl;
@@ -542,6 +543,7 @@ Marsyas::operator<<(ostream& o, const TimeLine& tline)
 		o << "Region " << i+1 << endl;
 	}
 	return o;
+}
 }
 
 void

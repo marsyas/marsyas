@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-\class Spectral Flatness Measure
-	\ingroup none
+\ingroup Analysis
 \brief Spectral Flatness Measure
 
 Spectral Flatness Measure is a feature set defined in the MPEG-7 

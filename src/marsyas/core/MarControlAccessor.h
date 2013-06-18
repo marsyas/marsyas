@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
-\class MarControlAccessor
-\brief MarControlAccessor
-\author Luis F. Teixeira
-\adapted from MarsyasX to Marsyas0.2 by Luis Gustavo Martins - 24.08.2007
-\date 21/07/2007
-*/
-
 //#ifndef __MARCONTROL__
 //#error Do not include this file directly, include only MarControl.h
 //#endif
@@ -32,6 +24,11 @@
 
 namespace Marsyas
 {
+	/**
+	\author Luis F. Teixeira
+	\author Luis Gustavo Martins (adapted from from MarsyasX to Marsyas0.2 - 24.08.2007)
+	\date 21/07/2007
+	*/
 	class MarControlAccessor
 	{
 	private:

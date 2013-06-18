@@ -24,13 +24,12 @@
 namespace Marsyas
 {
 /** 
-    \class Standard Deviation
 	\ingroup Analysis
-    \brief Standard Deviation of each row of observations 
+	\brief Standard Deviation of each row of observations
 
-    Calculates the standard deviation of each row of observations. 
-The resulting standard deviations are returned as a column 
-vector. 
+	Calculates the standard deviation of each row of observations.
+	The resulting standard deviations are returned as a column
+	vector.
 */
 
 

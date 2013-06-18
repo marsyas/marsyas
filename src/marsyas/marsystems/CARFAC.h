@@ -25,15 +25,8 @@
 namespace Marsyas
 {
 /**
-   \ingroup Processing Basic Certified
-   \brief Multiply input realvec with a fixed value.
-
-   Multiply all the values of the input realvec with
-   mrs_real/gain and put them in the output vector.
-
-   Controls:
-   - \b mrs_real/gain [w] : adjust the gain multiplier.
-
+	\ingroup Processing Certified
+	\brief CAR-FAC model of auditory processing in the cochlea.
 */
 
 class CARFAC: public MarSystem

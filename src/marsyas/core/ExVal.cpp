@@ -239,8 +239,9 @@ ExVal::setSeqElem(int idx, ExVal v)
 	list_[idx]=new ExNode(v);
 }
 
+namespace Marsyas {
 std::ostream&
-Marsyas::operator<<(std::ostream& o, ExVal& v)
+operator<<(std::ostream& o, ExVal& v)
 {
 	bool i_am_a_list = v.is_list();
 	if (i_am_a_list) {
@@ -257,6 +258,7 @@ Marsyas::operator<<(std::ostream& o, ExVal& v)
 	else if (v.type_=="mrs_real") o<<dtos(v.real_);
 	else if (v.type_=="mrs_bool") o<<btos(v.bool_);
 	return o;
+}
 }
 
 ExVal

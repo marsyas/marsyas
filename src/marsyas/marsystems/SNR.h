@@ -35,11 +35,15 @@ namespace Marsyas
 
 	observation 0 is the Signal/Noise ratio in dB
 
+	\code
 	10 * log10(\frac{\sum A^2}{\sum A-B})
+	\endcode
 
 	observation 1 is the SNR with optimized gain factor
 
+	\code
 	10 * log10(\frac{1}{1 - (\frac{sum A B}{\sqrt{\sum A^2 \sum B^2}})})
+	\endcode
 
 	Controls:
 	- \b mrs_string/mode [rw] : sets the gain multiplier.

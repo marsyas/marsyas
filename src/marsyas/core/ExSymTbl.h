@@ -29,9 +29,9 @@
 namespace Marsyas
 {
 /**
-	\class ExRecord.cpp
+	\file
 	\ingroup Scheduler
-	\brief classes for managing the symbol table - functions and variables
+	\brief Classes for managing the symbol table - functions and variables
 	\author Neil Burroughs  inb@cs.uvic.ca
 	\date Jan 4, 2007
 */
@@ -40,16 +40,20 @@ class ExNode;
 class ExNode_Fun;
 
 /**
-	\class ExRecord
-	\brief a symbol table node that symbolises a path component to a record.
-		ie Real.cos(mrs_real) := ExRecord("Real",ExRecord("cos(mrs_real)"))
-		A syntax is defined for adding functions as well as defining aliases
-		to those functions. Adding and removing imports is also defined where
-		an import is simply a shortcut that eliminates a portion of the start
-		of the name.
+	\brief A symbol table node that symbolises a path component to a record
 	\author Neil Burroughs  inb@cs.uvic.ca
 	\version 1.0
 	\date    Jan 01, 2007
+
+	A symbol table node that symbolises a path component to a record, i.e.:
+	\code{.expr}
+	Real.cos(mrs_real) := ExRecord("Real",ExRecord("cos(mrs_real)"))
+	\endcode
+
+	A syntax is defined for adding functions as well as defining aliases
+	to those functions. Adding and removing imports is also defined where
+	an import is simply a shortcut that eliminates a portion of the start
+	of the name.
 */
 class ExRecord : public ExRefCount {
 private:

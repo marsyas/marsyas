@@ -45,7 +45,7 @@ BICchangeDetector::BICchangeDetector(mrs_string name):MarSystem("BICchangeDetect
 /**
     \brief copy constructor
 
-    \param BICchangeDetector - the detector to be copied
+    \param a - the detector to be copied
     \return a BICchangeDetector
 */
 BICchangeDetector::BICchangeDetector(const BICchangeDetector& a) : MarSystem(a)

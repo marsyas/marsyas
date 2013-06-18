@@ -26,17 +26,9 @@
 
 namespace Marsyas
 {
-/** 
-	\class TmControlValue
-	\ingroup Scheduler
-	\brief TmControlValue is a simple parameter passing mechanism for updtimer
-	\author Neil Burroughs  inb@cs.uvic.ca
-*/
-
 class MarSystem;
 
 /**
-	\enum TmControlValue::tmcv
 	\brief type enumerations for individual timer control value types.
 */
 enum {
@@ -52,6 +44,11 @@ enum {
 // define an enum for marsystem type that doesn't class with the mar_* types
 //#define mar_marsystem 8192
 
+/**
+	\ingroup Scheduler
+	\brief TmControlValue is a simple parameter passing mechanism for updtimer
+	\author Neil Burroughs  inb@cs.uvic.ca
+*/
 class TmControlValue
 {
 protected:

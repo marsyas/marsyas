@@ -8,7 +8,7 @@ namespace Marsyas
   /**
      \class DTWWD
      \ingroup MarSystem
-     \breaf Calculate Alignment from a SimilarityMatrix as input with chroma delta information
+     \brief Calculate Alignment from a SimilarityMatrix as input with chroma delta information
 
      Controls:
      - \b mrs_string/mode        [w] : sets the type of the way in calculation: normal, OnePass, ....

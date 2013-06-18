@@ -96,37 +96,37 @@ private:
 
 protected:
 
-	/// Parent MarSystem (if in a composite, otherwise it's NULL)
+	// Parent MarSystem (if in a composite, otherwise it's NULL)
 	MarSystem* parent_;
 
-	/// Type of MarSystem
+	// Type of MarSystem
 	std::string type_;
 
-	/// Name of instance
+	// Name of instance
 	std::string name_;
 
-	/// /type_/name_/
+	// /type_/name_/
 	std::string prefix_;
 
-	/// /parent0Type/parent0Name/.../parentNType/parentNName/type_/name_/
-	/// in case this MarSystem is part of a composite
-	/// this is the absolute path to it
+	// /parent0Type/parent0Name/.../parentNType/parentNName/type_/name_/
+	// in case this MarSystem is part of a composite
+	// this is the absolute path to it
 	std::string absPath_;
 
-	/// observation and time index //[!]
+	// observation and time index //[!]
 	mrs_natural c,o,t;
 
 	bool isComposite_;
 	mrs_natural marsystemsSize_;
 
-	/// children
+	// children
 	std::vector<MarSystem*> marsystems_;
 
 	std::vector<realvec*> slices_;
 
 	std::vector<MarControlPtr> slPtrs_;
 
-	/// Controls
+	// Controls
 	mutable std::map<std::string, MarControlPtr> controls_;
 	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
 
@@ -168,19 +168,19 @@ protected:
 
 	Scheduler scheduler_;
 
-	/// scheduling purposes
+	// scheduling purposes
 	mrs_natural count_;
 
 	bool active_;
 
-	mrs_natural addToStabilizingDelay_; /// value which is added to inStabilizingDelay to produce onStabilizingDelay.  Defaults to 0.
+	mrs_natural addToStabilizingDelay_; // value which is added to inStabilizingDelay to produce onStabilizingDelay.  Defaults to 0.
 
-	 /// is true while inside ::update() -> used for children to check if an update came from their parent
+	 // is true while inside update() -> used for children to check if an update came from their parent
 	bool isUpdating_;
 
 	std::string MATLABscript_;
 
-	/// control paths
+	// control paths
 	std::string getControlRelativePath(std::string cname) const;
 	std::string getControlLocalPath(std::string cname) const;
 
@@ -190,7 +190,7 @@ protected:
 
 	virtual void myProcess(realvec& in, realvec& out) = 0;
 
-   /// Assignment operator (should never be called!) [!]
+	// Assignment operator (should never be called!) [!]
 	MarSystem& operator=(const MarSystem&)
 	{
 		assert(0);
@@ -207,7 +207,7 @@ public:
 	virtual MarSystem* clone() const = 0;
 	void relinkControls(const MarSystem& a);
 
-	/// Naming methods
+	// Naming methods
 	virtual void setName(std::string name);
 	virtual void setType(std::string type);
 	std::string getType() const;
@@ -216,14 +216,14 @@ public:
 	std::string getAbsPath() const;
 	void updatePath();
 
-	/// Link controls
+	// Link controls
 	bool linkControl(std::string cname1, std::string cname2, bool update = true);
 	DEPRECATED(bool linkctrl(std::string cname1, std::string cname2, bool update = true))
 	{
 		return linkControl(cname1, cname2, update);
 	}
 
-	/// Update controls
+	// Update controls
 	bool updControl(MarControlPtr control, MarControlPtr newcontrol, bool upd = true);
 	bool updControl(const char* cname, MarControlPtr newcontrol, bool upd = true);
 	bool updControl(std::string cname, MarControlPtr newcontrol, bool upd = true);
@@ -260,7 +260,7 @@ public:
 		return updControl(control, newcontrol, upd);
 	}
 
-	/// set controls (does not call update())
+	// set controls (does not call update())
 	bool setControl(std::string cname, MarControlPtr newcontrol)
 	{
 		return updControl(cname, newcontrol, NOUPDATE);
@@ -375,24 +375,24 @@ public:
 
 	virtual marostring& toString(marostring& m);
 	
-	// derived class such as Composite can override put
+	// Derived class such as Composite can override put,
 	// essentially overriding operator<<
 	virtual std::ostream& put(std::ostream& o, bool verbose);
 
-	/// The opposite of toString() and put() above, read in the parameters for a system.
+	// The opposite of toString() and put() above, read in the parameters for a system.
 	virtual std::istream& put(std::istream& is);
 
-	/// Output the MarSystem as an HTML document with nested lists
+	// Output the MarSystem as an HTML document with nested lists
 	virtual std::ostream& put_html(std::ostream& o);
 
-	/// the usual stream IO
+	// the usual stream IO
 	marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, MarSystem&);
 
-	/// controls serialization methods
+	// controls serialization methods
 	marsyas_EXPORT friend std::istream& operator>>(std::istream&, MarSystem&); //[!]
 	marsyas_EXPORT friend std::ostream& operator<<(std::ostream&, const std::map<std::string,MarControlPtr>&);
 
-	/// MATLAB scripting
+	// MATLAB scripting
 	void setMATLABscript(std::string script);
 	std::string getMATLABscript();
 
@@ -439,13 +439,13 @@ public:
 	MarControlPtr ctrl_processedData_;
 };
 
-/// Helper function for adding a prefix to each of the observation names.
+// Helper function for adding a prefix to each of the observation names.
 mrs_string obsNamesAddPrefix(mrs_string observationNames, mrs_string prefix);
 
-/// Helper function for splitting a string.
+// Helper function for splitting a string.
 std::vector<mrs_string> stringSplit(mrs_string input, mrs_string delimiter);
 
-/// Helper function for splitting an observation name string.
+// Helper function for splitting an observation name string.
 std::vector<mrs_string> obsNamesSplit(mrs_string observationNames);
 
 }//namespace Marsyas

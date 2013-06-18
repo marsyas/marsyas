@@ -29,7 +29,7 @@ namespace Marsyas
 {
 /**
 	\class marosvg
-	\ingroup 
+	\ingroup Notmar
 	\brief generate svg representing a MarSystem
 	\author inb@cs.uvic.ca
 */

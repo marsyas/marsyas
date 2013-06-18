@@ -24,13 +24,21 @@
 namespace Marsyas
 {
 /** 
-    \class CompExp
+	\class CompExp
 	\ingroup Processing
-    \brief Multiply input realvec with CompExp
+	\brief Compressor/Expander
 
-   Simple MarSystem example. Just multiply the values of the input realvec
-with CompExp and put them in the output vector. This object can be used 
-as a prototype template for building more complicated MarSystems. 
+	This Marsystem can act as a compressor or expander, depending on
+	how the 'thresh' control is set.
+
+	Controls:
+	- \b mrs_real/thresh [w] : Threshold (in the range [-1,1]).
+		Determines operation as compressor or expander:
+		- compressor: -1.0 <= thresh < 0
+		- expander: 0 <= thresh <= 1.0
+	- \b mrs_real/at [w]: Attack time.
+	- \b mrs_real/rt [w]: Release time.
+	- \b mrs_real/slope [w]: Slope.
 */
 
 /* How to use the Compressor/Expander Marsystem

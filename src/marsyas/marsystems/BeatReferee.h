@@ -37,10 +37,10 @@ namespace Marsyas
 	- adjust each agent's current beat rate (period) and phase hypotheses, in order to compensate eventual rhythmic deviations;
 	- create new agents to follow alternative metrical paths (at most three children are created at each request);
 	- terminate an agent operation if:
-		* it has become obsolete (if its score insignificant in comparison to the best agent’s);
-		* it is found to be duplicating the work of another agent.
+		- it has become obsolete (if its score insignificant in comparison to the best agent's);
+		- it is found to be duplicating the work of another agent.
 
-	Input: Matrix with the beat\evaluation information from each BeatAgent of the pool (restricted to a defined maximum of M agents): 
+	Input: Matrix with the beat/evaluation information from each BeatAgent of the pool (restricted to a defined maximum of M agents):
 	
 		[Beati/Evali/Nonei|Periodi|PrevBeatTimei|Inneri/Outteri|Errori|dScorei]
 		[       ...       |  ...  |     ...     |      ...     |  ... |  ...  ]
