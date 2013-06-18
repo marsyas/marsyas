@@ -24,16 +24,9 @@
 namespace Marsyas
 {
 	/** 
-	\class OrcaSnip
-	\ingroup Processing Basic
-	\brief Multiply input realvec with OrcaSnip
+	\ingroup Processing
 
-	Simple MarSystem example. Just multiply the values of the input realvec
-	with OrcaSnip and put them in the output vector. This object can be used 
-	as a prototype template for building more complicated MarSystems. 
-
-	Controls:
-	- \b mrs_real/OrcaSnip [w] : adjust the OrcaSnip multiplier.
+	Controls: TODO...
 	*/
 
 

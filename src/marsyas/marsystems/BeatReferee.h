@@ -26,7 +26,7 @@ namespace Marsyas
 {
 /** 
     \class BeatReferee
-	\ingroup Processing Basic
+	\ingroup Processing
     \brief Central agency responsible for causally evaluating a pool of active BeatAgents around each beat prediction, 
 	and selecting the best one at each time ("frame" - tick), based on a given heuristics (score function) which affers the 
 	goodness-of-fit between each agent prediction and local maxima in the observed data 

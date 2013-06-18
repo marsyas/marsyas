@@ -24,19 +24,13 @@
 namespace Marsyas
 {
 /** 
-    \class Limiter
 	\ingroup Processing
-    \brief Multiply input realvec with Limiter
-
-   Simple MarSystem example. Just multiply the values of the input realvec
-   with Limiter and put them in the output vector. This object can be used 
-   as a prototype template for building more complicated MarSystems. 
 
 	Controls:
-	- \b mrs_real/thresh [rw] : DUNNO
-	- \b mrs_real/at [rw] : DUNNO
-	- \b mrs_real/rt [rw] : DUNNO
-	- \b mrs_real/slope [rw] : DUNNO
+	- \b mrs_real/thresh [rw] : Threshold.
+	- \b mrs_real/at [rw] : Attack time.
+	- \b mrs_real/rt [rw] : Release time.
+	- \b mrs_real/slope [rw] : Slope.
 */
 
 

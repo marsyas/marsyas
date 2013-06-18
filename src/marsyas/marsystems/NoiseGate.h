@@ -24,13 +24,15 @@
 namespace Marsyas
 {
 /** 
-    \class NoiseGate
 	\ingroup Processing
-    \brief Multiply input realvec with NoiseGate
 
-   Simple MarSystem example. Just multiply the values of the input realvec
-with NoiseGate and put them in the output vector. This object can be used 
-as a prototype template for building more complicated MarSystems. 
+	Controls:
+	- \b mrs_real/thresh [w] : Threshold.
+	- \b mrs_real/release [w] :
+	- \b mrs_real/rolloff [w] :
+	- \b mrs_real/at [w] : Attack time.
+	- \b mrs_real/rt [w] : Release time.
+	- \b mrs_real/slope [w] : Slope.
 */
 
 /* How to use the Limiter Marsystem

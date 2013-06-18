@@ -28,9 +28,8 @@
 namespace Marsyas
 {
 /** 
-    \class Plucked
 	\ingroup Synthesis
-	\brief Multiply input realvec with gain
+	\brief The Karplus-Strong model.
 
 	Implementation of the Karplus_Strong 1D Digital Waveguide Model. 
 	http://ccrma.stanford.edu/~jos/SimpleStrings/Karplus_Strong_Algorithm.html 

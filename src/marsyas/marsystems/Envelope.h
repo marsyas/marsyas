@@ -26,12 +26,12 @@
 namespace Marsyas 
 {
 /** 
-    \class Envelope
 	\ingroup Processing
-    \brief Multiply input realvec by Value of Envelope
+	\brief Linear attack-release envelope
 
-   Simple MarSystem example. Just multiply the values of the input realvec
-with current value of the envelope and put them in the output vector.
+	A simple MarSystem example. Multiplies samples of the input vector
+	with the current value of the envelope and writes the result into
+	the output vector.
 */
 
 
