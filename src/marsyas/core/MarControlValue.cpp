@@ -62,6 +62,15 @@ MarControlValue::current_link_update()
 	current_link_->callMarSystemUpdate();
 }
 
+/*
+Exclude the template specialization implementations from Doxygen
+processing (using the "cond" command) because Doxygen does not handle
+them properly and will post useless warnings.
+
+Methods should be documented in the header file anyway.
+*/
+
+/// @cond
 
 /************************************************************************/
 /* MarControlValueT realvec specialization                              */
@@ -354,3 +363,5 @@ MarControlValueT<bool>::divide(MarControlValue *v)
 	MRSASSERT(0); //not implemented
 	return 0;
 }
+
+/// @endcond - End exclusion from Doxygen.
