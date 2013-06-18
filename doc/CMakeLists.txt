@@ -11,8 +11,6 @@ set(TEXI2HTML ${MAKEINFO} --html
   --css-include=${CMAKE_SOURCE_DIR}/marsyas.css)
 
 find_program(DOXYGEN NAMES doxygen PATHS $ENV{PATH})
-set(DOXY ${DOXYGEN}
-  ${CMAKE_SOURCE_DIR}/../src/marsyas/Doxyfile)
 
 
 ## prep
@@ -82,9 +80,11 @@ add_custom_command(
 	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
+configure_file( Doxyfile.in Doxyfile @ONLY )
+
 add_custom_command(
 	OUTPUT ${OUT-WWW}/sourceDoc/index.html
-	COMMAND ${DOXY}
+	COMMAND ${DOXYGEN} ARGS Doxyfile
 )
 
 add_custom_target(doxy
