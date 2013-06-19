@@ -16,14 +16,6 @@
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/**
-	\class Heap
-	\ingroup Notmar
-	\brief Heap used by the scheduler for sorting scheduled event objects.
-	\author Neil Burroughs  inb@cs.uvic.ca
-*/
-
-
 #define is_root(_ND) (_ND->m_id==1)
 #define odd_id(_ND) (_ND->m_id & 1)
 #define is_lchild(_ND) ((_ND!=NULL)&&!(is_root(_ND))&&(!odd_id(_ND)))
@@ -55,6 +47,11 @@
 
 namespace Marsyas
 {
+/**
+	\ingroup Notmar
+	\brief Heap used by the scheduler for sorting scheduled event objects.
+	\author Neil Burroughs  inb@cs.uvic.ca
+*/
 
 template <typename Type, typename Comparator>
 class Heap {
