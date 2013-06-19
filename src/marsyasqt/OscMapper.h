@@ -45,7 +45,6 @@ public:
 			MarControlPtr cval;
 			QString tmp;
 
-			QVariant::Type targetType;
 			if(path.contains("mrs_natural/"))
 				data.convert(QVariant::Int);
 			else if(path.contains("mrs_bool/"))
