@@ -369,7 +369,7 @@ MarGrid::predict()
   
 	norm_som_res.create(onObs+2, onSms);
 
-	for (int index = 0; index < l1.size(); index++)
+	for (unsigned int index = 0; index < l1.size(); index++)
     {
 		total_->updControl("mrs_natural/label", index);
 		total_->updControl("mrs_bool/memReset", true);
