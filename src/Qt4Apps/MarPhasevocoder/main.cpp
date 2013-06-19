@@ -22,8 +22,5 @@ int main(int argc, char *argv[])
   MarPhasevocoderWindow* win = new MarPhasevocoderWindow(inAudioFileName);
   win->show();
 
-  OscMapper* oscMapper;
-
-
   return app.exec();
 }
