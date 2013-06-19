@@ -7,7 +7,7 @@ using namespace Marsyas;
 using namespace std;
 
 MarControlGUI::MarControlGUI(MarControlPtr control, MarSystemQtWrapper* mwr, QWidget *parent)
-  : control_(control), mwr_(mwr), QWidget(parent)
+  : QWidget(parent), control_(control), mwr_(mwr)
 {
 	nullWidget_ = NULL;
 	realWidget_ = NULL;
