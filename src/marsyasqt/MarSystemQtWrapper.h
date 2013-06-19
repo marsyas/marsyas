@@ -50,7 +50,7 @@ public:
 			MarControlPtr control = main_pnet_->getControl(cname);
 			return updctrl(control, newcontrol);
 		}
-		void updctrl(char *cname, MarControlPtr newcontrol) 
+		void updctrl(const char *cname, MarControlPtr newcontrol)
 		{
 			MarControlPtr control = main_pnet_->getControl(cname);
 			return updctrl(control, newcontrol);
