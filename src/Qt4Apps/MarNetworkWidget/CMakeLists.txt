@@ -13,7 +13,6 @@ set(APP_SOURCES
 
 set(APP_HEADERS 
 		GWidget.h 
-		MarSystem.h 
 		GMarSystem.h 
 		MarNetworkCanvas.h 
 		GTinyButton.h

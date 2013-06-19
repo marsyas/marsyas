@@ -13,10 +13,7 @@ set(APP_SOURCES
 
 set(APP_HEADERS 
 	MarGrid.h
-	ColorMap.h
-	GreyScaleColormap.h
 	MarGridWindow.h
-	SpectraColormap.h
 )
 
 marsyas_qt4app(${APP} "${APP_SOURCES}" "${APP_HEADERS}"

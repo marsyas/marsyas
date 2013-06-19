@@ -33,34 +33,21 @@ set(APP_SOURCES
 )
 
 set(APP_HEADERS 
-	Dialogs/ColorPage.h
-	Dialogs/ClassifierPage.h
-	Dialogs/iTunesPage.h
+	#Dialogs/ColorPage.h
+	#Dialogs/ClassifierPage.h
+	#Dialogs/iTunesPage.h
 	Dialogs/PreferencesDialog.h
-	Colormaps/GreyScaleColormap.h
-	Colormaps/SpectraColormap.h
-	Colormaps/Colormap.h
-	Interface/Classifier.h
-	Interface/Extractor.h
-	Interface/Playback.h
 	Interface/MyDisplay.h
-	Interface/Parser.h
-	Logger/Logger.h
-	Midi/RtError.h
-	Midi/RtMidi.h
 	Midi/MidiListener.h
-	Music/MusicCollection.h
-	Music/MusicLink.h
-	Music/MusicTrack.h
-	Parsers/iTunesXmlHandler.h
-	Parsers/iTunesXmlWriter.h
+	#Parsers/iTunesXmlHandler.h
+	#Parsers/iTunesXmlWriter.h
 	Widgets/Grid.h
 	Widgets/OSCReceiver.h
 	Widgets/Keypad.h
-	Widgets/PlayBox.h
+	#Widgets/PlayBox.h
 	Widgets/Playlist.h
-	Widgets/PlaylistItem.h
-	Widgets/Tracklist.h
+	#Widgets/PlaylistItem.h
+	#Widgets/Tracklist.h
 	Widgets/GridDisplay.h
 	Widgets/ColourMapDisplay.h
 	Widgets/SquareRenderArea.h

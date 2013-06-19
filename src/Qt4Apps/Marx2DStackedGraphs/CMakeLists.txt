@@ -8,7 +8,7 @@ set(APP_SOURCES
 )
 
 set(APP_HEADERS 
-	Marx2DStackedGraphs.h 
+	#Marx2DStackedGraphs.h
 )
 
 set(APP_UI

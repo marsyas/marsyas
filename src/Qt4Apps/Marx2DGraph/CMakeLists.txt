@@ -8,7 +8,7 @@ set(APP_SOURCES
 )
 
 set(APP_HEADERS 
-	TopPanel.h 
+	#TopPanel.h
 )
 
 set(APP_UI
