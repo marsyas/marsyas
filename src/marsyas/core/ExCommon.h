@@ -22,18 +22,19 @@
 #include <iostream>
 #include <sstream> 
 #include "common_header.h"
-  
+
 namespace Marsyas
 {
+
 /**
-	\class ExCommon
+	\file
 	\ingroup Scheduler
-	\brief ExCommon provides common information for Ex the expression compiler
+	\brief Common information for Ex - the expression compiler
 	\author Neil Burroughs  inb@cs.uvic.ca
 	\version 1.0
 	\date    Jan 04, 2007
 */
-    
+
 enum {
     NONE=0,
     T_CONST,
