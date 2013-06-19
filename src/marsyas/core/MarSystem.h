@@ -184,10 +184,27 @@ protected:
 	std::string getControlRelativePath(std::string cname) const;
 	std::string getControlLocalPath(std::string cname) const;
 
+	/**
+	 * @brief Updates internal state due to a control change.
+	 * @param sender The control that triggered the update; more precisely,
+	 * any control passed to the update() method - could be an invalid one.
+	 * @protected
+	 *
+	 * Implement this method in subclass to define specific response
+	 * to control changes.
+	 */
 	virtual void myUpdate(MarControlPtr sender);
 
 	virtual void localActivate(bool state);
 
+	/**
+	 * @brief Processes data.
+	 * @param in Input data to read.
+	 * @param out Output data to write.
+	 * @protected
+	 *
+	 * Implement this method in subclass to define specific data processing.
+	 */
 	virtual void myProcess(realvec& in, realvec& out) = 0;
 
 	// Assignment operator (should never be called!) [!]
