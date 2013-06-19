@@ -28,9 +28,9 @@
 namespace Marsyas
 {
 /** 
-\class PeUtilities
-	\ingroup none
-\brief utilties for peaks extraction project
+\file
+\ingroup none
+\brief Utilties for peaks extraction project
 
 
 \todo WhyTF does PeUtilities exist in the global namespace?  Fix this;
