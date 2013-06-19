@@ -178,8 +178,8 @@ MarLpcWindow::createNetwork()
 {
 	//mrs_natural N = 256;
 	mrs_natural Nw = 512;
-	mrs_natural I = iopt;
-	mrs_real P = popt;
+	//mrs_natural I = iopt;
+	//mrs_real P = popt;
 	mrs_natural D = 256;
 	mrs_natural emphasisOrder = 3;
 	mrs_natural formantOrder = 20;
