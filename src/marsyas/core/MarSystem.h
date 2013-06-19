@@ -240,24 +240,12 @@ public:
 
 	DEPRECATED(bool updctrl(const char *cname, MarControlPtr newcontrol, bool upd = true))
 	{
-		MarControlPtr control = getControl(cname);
-		if (control.isInvalid())
-		{
-			MRSWARN("MarSystem::updctrl - " + std::string(cname) + " is an invalid control @ " + getAbsPath());
-			return false;
-		}
-		return updControl(control, newcontrol, upd);
+		return updControl(cname, newcontrol, upd);
 	}
 
 	DEPRECATED(bool updctrl(std::string cname, MarControlPtr newcontrol, bool upd = true))
 	{
-		MarControlPtr control = getControl(cname);
-		if (control.isInvalid())
-		{
-			MRSWARN("MarSystem::updctrl - " + cname + " is an invalid control @ " + getAbsPath());
-			return false;
-		}
-		return updControl(control, newcontrol, upd);
+		return updControl(cname, newcontrol, upd);
 	}
 
 	// set controls (does not call update())
