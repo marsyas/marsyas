@@ -56,7 +56,7 @@ MarGrid::MarGrid(QWidget *parent)
 	// pnet_->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	pnet_->addMarSystem(mng.create("Gain", "gain"));
 	pnet_->addMarSystem(mng.create("AudioSink", "dest"));
-	pnet_->linkctrl("mrs_bool/hasData","SoundFileSource/src/mrs_bool/hasData");
+	pnet_->linkControl("mrs_bool/hasData","SoundFileSource/src/mrs_bool/hasData");
 
 
 	mwr_ = new MarSystemQtWrapper(pnet_);
@@ -111,7 +111,7 @@ MarGrid::setupTrain(QString fname)
 	extractNet->addMarSystem(stats);
   
 	MarSystem* acc = mng.create("Accumulator", "acc");
-	acc->updctrl("mrs_natural/nTimes", 1200);
+	acc->updControl("mrs_natural/nTimes", 1200);
 	acc->addMarSystem(extractNet);
   
 	total_ = mng.create("Series", "total");
@@ -123,60 +123,60 @@ MarGrid::setupTrain(QString fname)
 	total_->addMarSystem(stats2);
 	total_->addMarSystem(mng.create("Annotator", "ann"));
   
-	// total_->updctrl("Accumulator/acc/Series/extractNet/AudioSink/dest/mrs_bool/initAudio", true);
+	// total_->updControl("Accumulator/acc/Series/extractNet/AudioSink/dest/mrs_bool/initAudio", true);
   
 
-	total_->linkctrl("mrs_string/filename",
+	total_->linkControl("mrs_string/filename",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
   
 
-	total_->linkctrl("mrs_string/currentlyPlaying",
+	total_->linkControl("mrs_string/currentlyPlaying",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/currentlyPlaying");  
 
 
-	total_->linkctrl("mrs_bool/shuffle",
+	total_->linkControl("mrs_bool/shuffle",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/shuffle");  
   
-	total_->linkctrl("mrs_natural/pos",
+	total_->linkControl("mrs_natural/pos",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/pos");  
 
-	total_->linkctrl("mrs_real/repetitions",
+	total_->linkControl("mrs_real/repetitions",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_real/repetitions");  
 
 
-	total_->linkctrl("mrs_natural/cindex",
+	total_->linkControl("mrs_natural/cindex",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/cindex");  
 
-	total_->linkctrl("mrs_natural/numFiles",
+	total_->linkControl("mrs_natural/numFiles",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
   
-	total_->linkctrl("mrs_string/allfilenames",
+	total_->linkControl("mrs_string/allfilenames",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
   
-	total_->linkctrl("mrs_natural/numFiles",
+	total_->linkControl("mrs_natural/numFiles",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
   
   
-	total_->linkctrl("mrs_bool/hasData",
+	total_->linkControl("mrs_bool/hasData",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/hasData");  
-	total_->linkctrl("mrs_natural/advance",
+	total_->linkControl("mrs_natural/advance",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/advance");  
   
-	total_->linkctrl("mrs_bool/memReset",
+	total_->linkControl("mrs_bool/memReset",
 					 "Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
   
-	total_->linkctrl("mrs_natural/label",
+	total_->linkControl("mrs_natural/label",
 					 "Annotator/ann/mrs_natural/label");
   
   
   
-	total_->updctrl("mrs_natural/inSamples", 512);
+	total_->updControl("mrs_natural/inSamples", 512);
 
   
 	trainFname = fname;
 	predictFname = "margrid_train.mf";
-	total_->updctrl("mrs_string/filename", trainFname.toStdString());
-	total_->updctrl("mrs_real/repetitions", 1.0);
+	total_->updControl("mrs_string/filename", trainFname.toStdString());
+	total_->updControl("mrs_real/repetitions", 1.0);
   
 
 }
@@ -213,9 +213,9 @@ MarGrid::extract()
   
 	for (index=0; index < numFiles; index++)
     {
-		total_->updctrl("mrs_natural/label", index);
-		total_->updctrl("mrs_bool/memReset", true);
-		total_->updctrl("mrs_natural/cindex", index);
+		total_->updControl("mrs_natural/label", index);
+		total_->updControl("mrs_bool/memReset", true);
+		total_->updControl("mrs_natural/cindex", index);
 
 
 
@@ -238,7 +238,7 @@ MarGrid::extract()
 			som_fmatrix(o, index) = -1.0;			  
 		}
 	  
-		total_->updctrl("mrs_natural/advance", 1);      
+		total_->updControl("mrs_natural/advance", 1);
     }
 
 	ofstream oss;
@@ -262,23 +262,23 @@ MarGrid::train()
 	norm_som_fmatrix.create(train_som_fmatrix.getRows(),
 							train_som_fmatrix.getCols());
 	norm_ = mng.create("NormMaxMin", "norm");
-	norm_->updctrl("mrs_natural/inSamples", train_som_fmatrix.getCols());
-	norm_->updctrl("mrs_natural/inObservations", train_som_fmatrix.getRows());
-	norm_->updctrl("mrs_natural/ignoreLast", 3);
-	norm_->updctrl("mrs_string/mode", "train");
+	norm_->updControl("mrs_natural/inSamples", train_som_fmatrix.getCols());
+	norm_->updControl("mrs_natural/inObservations", train_som_fmatrix.getRows());
+	norm_->updControl("mrs_natural/ignoreLast", 3);
+	norm_->updControl("mrs_string/mode", "train");
 	norm_->process(train_som_fmatrix, norm_som_fmatrix);
-	norm_->updctrl("mrs_string/mode", "predict");  
+	norm_->updControl("mrs_string/mode", "predict");
 	norm_->process(train_som_fmatrix, norm_som_fmatrix);
 
 
 
 	// Create netork for training the self-organizing map 
 	som_ = mng.create("SOM", "som");  
-	som_->updctrl("mrs_natural/grid_width", som_width);
-	som_->updctrl("mrs_natural/grid_height", som_height);
-	som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
-	som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
-	som_->updctrl("mrs_string/mode", "train");
+	som_->updControl("mrs_natural/grid_width", som_width);
+	som_->updControl("mrs_natural/grid_height", som_height);
+	som_->updControl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
+	som_->updControl("mrs_natural/inObservations", norm_som_fmatrix.getRows());
+	som_->updControl("mrs_string/mode", "train");
 
 	realvec som_fmatrixres;
 	som_fmatrixres.create(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
@@ -294,7 +294,7 @@ MarGrid::train()
     }
 
 	cout << "Training done" << endl;
-	som_->updctrl("mrs_bool/done", true);
+	som_->updControl("mrs_bool/done", true);
 	som_->tick();
 
 	// write the trained som network and the feature normalization networks 
@@ -333,21 +333,21 @@ MarGrid::predict()
 
 	resetPredict();
 	cout << "Starting prediction" << endl;
-	som_->updctrl("mrs_string/mode", "predict");  
+	som_->updControl("mrs_string/mode", "predict");
   
 	Collection l1;
 	l1.read(predictFname.toStdString());
 	cout << "Read collection" << endl;
 
-	total_->updctrl("mrs_natural/pos", 0);
-	total_->updctrl("mrs_natural/advance", 0);            
-	total_->updctrl("mrs_string/filename", predictFname.toStdString()); 
+	total_->updControl("mrs_natural/pos", 0);
+	total_->updControl("mrs_natural/advance", 0);
+	total_->updControl("mrs_string/filename", predictFname.toStdString());
 
-	som_->updctrl("mrs_natural/inSamples", 1);
+	som_->updControl("mrs_natural/inSamples", 1);
 
 	realvec predict_res(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 						som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-	norm_->updctrl("mrs_natural/inSamples", 1);
+	norm_->updControl("mrs_natural/inSamples", 1);
 
 
 	realvec som_in;
@@ -371,9 +371,9 @@ MarGrid::predict()
 
 	for (int index = 0; index < l1.size(); index++)
     {
-		total_->updctrl("mrs_natural/label", index);
-		total_->updctrl("mrs_bool/memReset", true);
-		total_->updctrl("mrs_natural/cindex", index);
+		total_->updControl("mrs_natural/label", index);
+		total_->updControl("mrs_bool/memReset", true);
+		total_->updControl("mrs_natural/cindex", index);
 
 
 		total_->process(som_in, som_res);
@@ -394,7 +394,7 @@ MarGrid::predict()
 		grid_y = predict_res(1);
 		addFile(grid_x,grid_y, current);      
 		repaint();
-		total_->updctrl("mrs_natural/advance", 1);            
+		total_->updControl("mrs_natural/advance", 1);
     }
 
 

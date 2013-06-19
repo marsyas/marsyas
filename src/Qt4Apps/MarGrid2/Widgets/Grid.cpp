@@ -182,7 +182,7 @@ void Grid::setupNetworks() {
 	extractNet->addMarSystem(stats);
 
 	MarSystem* acc = mng.create("Accumulator", "acc");
-	acc->updctrl("mrs_natural/nTimes", 1200);
+	acc->updControl("mrs_natural/nTimes", 1200);
 	acc->addMarSystem(extractNet);
 
 	total_ = mng.create("Series", "total");
@@ -199,58 +199,58 @@ void Grid::setupNetworks() {
 
 
 
-	total_->linkctrl("mrs_string/filename",
+	total_->linkControl("mrs_string/filename",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/filename");  
 
 
-	total_->linkctrl("mrs_string/currentlyPlaying",
+	total_->linkControl("mrs_string/currentlyPlaying",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/currentlyPlaying");  
 
 
-	total_->linkctrl("mrs_bool/shuffle",
+	total_->linkControl("mrs_bool/shuffle",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/shuffle");  
 
-	total_->linkctrl("mrs_natural/pos",
+	total_->linkControl("mrs_natural/pos",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/pos");  
 
-	total_->linkctrl("mrs_real/repetitions",
+	total_->linkControl("mrs_real/repetitions",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_real/repetitions");  
 
 
-	total_->linkctrl("mrs_natural/cindex",
+	total_->linkControl("mrs_natural/cindex",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/cindex");  
 
-	total_->linkctrl("mrs_natural/numFiles",
+	total_->linkControl("mrs_natural/numFiles",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
 
-	total_->linkctrl("mrs_string/allfilenames",
+	total_->linkControl("mrs_string/allfilenames",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
 
-	total_->linkctrl("mrs_natural/numFiles",
+	total_->linkControl("mrs_natural/numFiles",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
 
 
-	total_->linkctrl("mrs_bool/hasData",
+	total_->linkControl("mrs_bool/hasData",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_bool/hasData");  
-	total_->linkctrl("mrs_natural/advance",
+	total_->linkControl("mrs_natural/advance",
 		"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/advance");  
 
-	total_->linkctrl("mrs_bool/memReset",
+	total_->linkControl("mrs_bool/memReset",
 		"Accumulator/acc/Series/extractNet/Memory/mem/mrs_bool/reset");  
 
-	total_->linkctrl("mrs_natural/label",
+	total_->linkControl("mrs_natural/label",
 		"Annotator/ann/mrs_natural/label");
 
-	total_->linkctrl("WekaSink/wsink/mrs_natural/nLabels", 
+	total_->linkControl("WekaSink/wsink/mrs_natural/nLabels",
 					"Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_natural/numFiles");  
-	total_->updctrl("WekaSink/wsink/mrs_natural/downsample", 1);
+	total_->updControl("WekaSink/wsink/mrs_natural/downsample", 1);
 
 
-	total_->linkctrl("WekaSink/wsink/mrs_string/labelNames",
+	total_->linkControl("WekaSink/wsink/mrs_string/labelNames",
 					 "Accumulator/acc/Series/extractNet/SoundFileSource/src/mrs_string/allfilenames");  
 	
-	total_->updctrl("mrs_natural/inSamples", 512);
-	total_->updctrl("mrs_real/repetitions", 1.0);
+	total_->updControl("mrs_natural/inSamples", 512);
+	total_->updControl("mrs_real/repetitions", 1.0);
 
 	// Playback network
 	pnet_ = mng.create("Series", "pnet_");
@@ -258,7 +258,7 @@ void Grid::setupNetworks() {
 	// pnet_->addMarSystem(mng.create("Stereo2Mono", "s2m"));
 	pnet_->addMarSystem(mng.create("Gain", "gain"));
 	pnet_->addMarSystem(mng.create("AudioSink", "dest"));
-	pnet_->linkctrl("mrs_bool/hasData","SoundFileSource/src/mrs_bool/hasData");
+	pnet_->linkControl("mrs_bool/hasData","SoundFileSource/src/mrs_bool/hasData");
 
 
 	mwr_ = new MarSystemQtWrapper(pnet_);
@@ -296,8 +296,8 @@ void Grid::extract() {
 }
 void Grid::extractAction(std::string filename)
 {
-	total_->updctrl("mrs_string/filename", filename);
-	total_->updctrl("WekaSink/wsink/mrs_string/filename", "margrid2.arff");
+	total_->updControl("mrs_string/filename", filename);
+	total_->updControl("WekaSink/wsink/mrs_string/filename", "margrid2.arff");
 
 	int numFiles = total_->getctrl("mrs_natural/numFiles")->to<mrs_natural>();
 	realvec som_in;
@@ -327,9 +327,9 @@ void Grid::extractAction(std::string filename)
 			cancel_ = false;
 			return;
 		}
-		total_->updctrl("mrs_natural/label", index);
-		total_->updctrl("mrs_bool/memReset", true);
-		total_->updctrl("mrs_natural/cindex", index);
+		total_->updControl("mrs_natural/label", index);
+		total_->updControl("mrs_bool/memReset", true);
+		total_->updControl("mrs_natural/cindex", index);
 
 		total_->process(som_in,som_res);
 		string current = total_->getctrl("mrs_string/currentlyPlaying")->to<mrs_string>();
@@ -348,7 +348,7 @@ void Grid::extractAction(std::string filename)
 			som_fmatrix(o, index) = -1.0;			  
 		}
 		
-		total_->updctrl("mrs_natural/advance", 1);     
+		total_->updControl("mrs_natural/advance", 1);
 	}
 
 	ofstream oss;
@@ -364,12 +364,12 @@ void Grid::extractAction(std::string filename)
 	norm_som_fmatrix.create(som_fmatrix.getRows(),
 		som_fmatrix.getCols());
 	norm_ = mng.create("NormMaxMin", "norm");
-	norm_->updctrl("mrs_natural/inSamples", som_fmatrix.getCols());
-	norm_->updctrl("mrs_natural/inObservations",  som_fmatrix.getRows());
-	norm_->updctrl("mrs_natural/ignoreLast", 3);
-	norm_->updctrl("mrs_string/mode", "train");
+	norm_->updControl("mrs_natural/inSamples", som_fmatrix.getCols());
+	norm_->updControl("mrs_natural/inObservations",  som_fmatrix.getRows());
+	norm_->updControl("mrs_natural/ignoreLast", 3);
+	norm_->updControl("mrs_string/mode", "train");
 	norm_->process(som_fmatrix, norm_som_fmatrix);
-	norm_->updctrl("mrs_string/mode", "predict");  
+	norm_->updControl("mrs_string/mode", "predict");
 
 	norm_->process(som_fmatrix, norm_som_fmatrix);
 
@@ -486,7 +486,7 @@ void Grid::train(bool skipTraining) {
 				iss1.open("som.mpl");		
 				som_ = mng.getMarSystem(iss1);
 				iss1.close();		
-				som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
+				som_->updControl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
 				
 			}
 			else
@@ -494,16 +494,16 @@ void Grid::train(bool skipTraining) {
 				// Create netork for training the self-organizing map 
 				
 				som_ = mng.create("SOM", "som");  
-				som_->updctrl("mrs_natural/grid_width", som_width);
-				som_->updctrl("mrs_natural/grid_height", som_height);
-				som_->updctrl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
-				som_->updctrl("mrs_natural/inObservations", norm_som_fmatrix.getRows());  
+				som_->updControl("mrs_natural/grid_width", som_width);
+				som_->updControl("mrs_natural/grid_height", som_height);
+				som_->updControl("mrs_natural/inSamples", norm_som_fmatrix.getCols());
+				som_->updControl("mrs_natural/inObservations", norm_som_fmatrix.getRows());
 			}
 
-			som_->updctrl("mrs_real/alpha_decay_train", train_alpha_);
-			som_->updctrl("mrs_real/neighbourhood_decay_train", train_neighbourhood_);
-			som_->updctrl("mrs_real/std_factor_train", train_std_factor_);
-			som_->updctrl("mrs_string/mode", "train");
+			som_->updControl("mrs_real/alpha_decay_train", train_alpha_);
+			som_->updControl("mrs_real/neighbourhood_decay_train", train_neighbourhood_);
+			som_->updControl("mrs_real/std_factor_train", train_std_factor_);
+			som_->updControl("mrs_string/mode", "train");
 
 
 			realvec som_fmatrixres;
@@ -538,7 +538,7 @@ void Grid::train(bool skipTraining) {
 			oss1 << *som_ << endl;
 			oss1.close();
 
-			som_->updctrl("mrs_bool/done", done_);
+			som_->updControl("mrs_bool/done", done_);
 			som_->tick();
 			cout << "Training done" << endl;
 
@@ -587,23 +587,23 @@ void Grid::predict() {
 
 
 		cout << "Starting prediction" << endl;
-		som_->updctrl("mrs_string/mode", "predict"); 
+		som_->updControl("mrs_string/mode", "predict");
 
 		Collection l1;
 		l1.read(fileName);
 
 		cout << "Read collection" << endl;
 
-		total_->updctrl("mrs_string/filename", fileName); 
+		total_->updControl("mrs_string/filename", fileName);
 
-		total_->updctrl("mrs_natural/pos", 0);
+		total_->updControl("mrs_natural/pos", 0);
 
-		som_->updctrl("mrs_natural/inSamples", 1);
+		som_->updControl("mrs_natural/inSamples", 1);
 
 
 		realvec predict_res(som_->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
 			som_->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-		norm_->updctrl("mrs_natural/inSamples", 1);
+		norm_->updControl("mrs_natural/inSamples", 1);
 
 
 
@@ -646,9 +646,9 @@ void Grid::predict() {
 				break;
 			}
 
-			total_->updctrl("mrs_natural/label", index);
-			total_->updctrl("mrs_bool/memReset", true);
-			total_->updctrl("mrs_natural/cindex", index);
+			total_->updControl("mrs_natural/label", index);
+			total_->updControl("mrs_bool/memReset", true);
+			total_->updControl("mrs_natural/cindex", index);
 
 
 			total_->process(som_in, som_res);
@@ -672,7 +672,7 @@ void Grid::predict() {
 			emit repaintSignal();
 
 	
-			total_->updctrl("mrs_natural/advance", 1);  
+			total_->updControl("mrs_natural/advance", 1);
 		}
 
 
@@ -735,15 +735,15 @@ void Grid::init()
 		init_ = true;
 
 		som_ = mng.create("SOM", "som"); 
-		som_->updctrl("mrs_natural/grid_width", som_width);
-		som_->updctrl("mrs_natural/grid_height", som_height);
-		som_->updctrl("mrs_natural/inSamples", init_train_fmatrix->getCols());//number of files
+		som_->updControl("mrs_natural/grid_width", som_width);
+		som_->updControl("mrs_natural/grid_height", som_height);
+		som_->updControl("mrs_natural/inSamples", init_train_fmatrix->getCols());//number of files
 
-		som_->updctrl("mrs_natural/inObservations", init_train_fmatrix->getRows()); //calls update() in SOM.cpp
-		som_->updctrl("mrs_string/mode", "init");
-		som_->updctrl("mrs_real/alpha_decay_init", init_alpha_);
-		som_->updctrl("mrs_real/neighbourhood_decay_init", init_neighbourhood_);
-		som_->updctrl("mrs_real/std_factor_init", init_std_factor_);
+		som_->updControl("mrs_natural/inObservations", init_train_fmatrix->getRows()); //calls update() in SOM.cpp
+		som_->updControl("mrs_string/mode", "init");
+		som_->updControl("mrs_real/alpha_decay_init", init_alpha_);
+		som_->updControl("mrs_real/neighbourhood_decay_init", init_neighbourhood_);
+		som_->updControl("mrs_real/std_factor_init", init_std_factor_);
 
 
 
@@ -760,7 +760,7 @@ void Grid::init()
 			som_->process(*init_train_fmatrix, som_fmatrixres);
 		}
 		//som_->tick();
-		som_->updctrl("mrs_bool/done", true);
+		som_->updControl("mrs_bool/done", true);
 
 		// write the trained som network and the feature normalization networks 
 		oss1.open("som.mpl");

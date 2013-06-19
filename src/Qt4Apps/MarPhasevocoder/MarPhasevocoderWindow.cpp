@@ -180,17 +180,17 @@ MarPhasevocoderWindow::createNetwork(string inAudioFileName)
 	MarSystem* dest = mng.create("AudioSink", "dest");
 	pvoc_->addMarSystem(dest);
 
-	pvoc_->updctrl("mrs_natural/inSamples", D);
-	pvoc_->updctrl("mrs_natural/inObservations", 1);
-	pvoc_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
-	pvoc_->updctrl("ShiftInput/si/mrs_natural/winSize", Nw);
-	pvoc_->updctrl("PvFold/fo/mrs_natural/FFTSize", N);
-	pvoc_->updctrl("PvConvert/conv/mrs_natural/Decimation",D);      
-	pvoc_->updctrl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);  
-	pvoc_->updctrl("PvOscBank/ob/mrs_natural/Interpolation", I);
-	pvoc_->updctrl("PvOscBank/ob/mrs_real/PitchShift", P);
-	pvoc_->updctrl("ShiftOutput/so/mrs_natural/Interpolation", I);
-	pvoc_->updctrl("Gain/gain/mrs_real/gain", gopt_);
+	pvoc_->updControl("mrs_natural/inSamples", D);
+	pvoc_->updControl("mrs_natural/inObservations", 1);
+	pvoc_->updControl("SoundFileSource/src/mrs_real/repetitions", -1.0);
+	pvoc_->updControl("ShiftInput/si/mrs_natural/winSize", Nw);
+	pvoc_->updControl("PvFold/fo/mrs_natural/FFTSize", N);
+	pvoc_->updControl("PvConvert/conv/mrs_natural/Decimation",D);
+	pvoc_->updControl("PvConvert/conv/mrs_natural/Sinusoids", (mrs_natural) sopt);
+	pvoc_->updControl("PvOscBank/ob/mrs_natural/Interpolation", I);
+	pvoc_->updControl("PvOscBank/ob/mrs_real/PitchShift", P);
+	pvoc_->updControl("ShiftOutput/so/mrs_natural/Interpolation", I);
+	pvoc_->updControl("Gain/gain/mrs_real/gain", gopt_);
 
 	// mwr_ = new MarSystemQtWrapper(pvoc_, true);
 	mwr_ = new MarSystemQtWrapper(pvoc_);

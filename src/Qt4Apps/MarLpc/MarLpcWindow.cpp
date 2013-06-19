@@ -237,46 +237,46 @@ MarLpcWindow::createNetwork()
 	lpc_->addMarSystem(dest);
 
 	// setting up flow parameters
-	lpc_->updctrl("mrs_natural/inSamples", D);
-	lpc_->updctrl("mrs_natural/inObservations", 1);
-	lpc_->updctrl("SoundFileSource/src/mrs_real/repetitions", -1.0);
+	lpc_->updControl("mrs_natural/inSamples", D);
+	lpc_->updControl("mrs_natural/inObservations", 1);
+	lpc_->updControl("SoundFileSource/src/mrs_real/repetitions", -1.0);
 
-	lpc_->updctrl("ShiftInput/si/mrs_natural/WindowSize", Nw);
+	lpc_->updControl("ShiftInput/si/mrs_natural/WindowSize", Nw);
 
 	// setting up emphasis analysis parameters
-	lpc_->updctrl("FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_natural/order", emphasisOrder);
-	lpc_->updctrl("FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_real/lambda",0.0);
-	lpc_->updctrl("FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_real/gamma",emphasisBe);
+	lpc_->updControl("FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_natural/order", emphasisOrder);
+	lpc_->updControl("FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_real/lambda",0.0);
+	lpc_->updControl("FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_real/gamma",emphasisBe);
 
-	lpc_->linkctrl("FanOutIn/fanoutin/Series/aSeries/Filter/emphasisAnalysis/mrs_realvec/ncoeffs",
+	lpc_->linkControl("FanOutIn/fanoutin/Series/aSeries/Filter/emphasisAnalysis/mrs_realvec/ncoeffs",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_realvec/coeffs");
 
 	// setting up emphasis analysis parameters
-	lpc_->updctrl("FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_natural/order", formantOrder);
-	lpc_->updctrl("FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/lambda",0.0);
-	lpc_->updctrl("FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/gamma",formantBe);
+	lpc_->updControl("FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_natural/order", formantOrder);
+	lpc_->updControl("FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/lambda",0.0);
+	lpc_->updControl("FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/gamma",formantBe);
 
-	lpc_->linkctrl("FanOutIn/fanoutin/Series/aSeries/Filter/formantAnalysis/mrs_realvec/ncoeffs",
+	lpc_->linkControl("FanOutIn/fanoutin/Series/aSeries/Filter/formantAnalysis/mrs_realvec/ncoeffs",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_realvec/coeffs");
 
 	// setting up synthesis parameters
-	lpc_->updctrl("Windowing/winSyn/mrs_string/type", "Hanning");
+	lpc_->updControl("Windowing/winSyn/mrs_string/type", "Hanning");
 
-	//lpc_->linkctrl("FanOutIn/fanoutin/Series/aSeries/Filter/tilt/mrs_realvec/dcoeffs",
+	//lpc_->linkControl("FanOutIn/fanoutin/Series/aSeries/Filter/tilt/mrs_realvec/dcoeffs",
 	//	"FanOutIn/fanoutin/Series/aSeries/FlowThru/emphasisFlowthru/LPC/emphasisLpc/mrs_realvec/coeffs");
 
-	lpc_->linkctrl("Filter/synthesis/mrs_realvec/dcoeffs",
+	lpc_->linkControl("Filter/synthesis/mrs_realvec/dcoeffs",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_realvec/coeffs");
 
 	// link the LPCs gain estimations with gains
-	lpc_->linkctrl("FanOutIn/fanoutin/Series/nSeries/FanOutIn/nFanOutIn/Gain/nEmphasis/mrs_real/gain",
+	lpc_->linkControl("FanOutIn/fanoutin/Series/nSeries/FanOutIn/nFanOutIn/Gain/nEmphasis/mrs_real/gain",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/power");
-	lpc_->linkctrl("FanOutIn/fanoutin/Series/nSeries/FanOutIn/nFanOutIn/Gain/nFormant/mrs_real/gain",
+	lpc_->linkControl("FanOutIn/fanoutin/Series/nSeries/FanOutIn/nFanOutIn/Gain/nFormant/mrs_real/gain",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/power");
 
 
 	// creating shortcuts for osc manipulation
-	lpc_->linkctrl("mrs_natural/formantOrder",
+	lpc_->linkControl("mrs_natural/formantOrder",
 		"FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_natural/order");
 
 	mwr_ = new MarSystemQtWrapper(lpc_, true);

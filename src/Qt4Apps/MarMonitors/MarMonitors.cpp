@@ -70,7 +70,7 @@ MarMonitors::initNetwork(QString pluginName)
 		ifstream pluginStream(pluginName.toStdString().c_str());
 		pnet_ = mng.getMarSystem(pluginStream);
       
-		pnet_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+		pnet_->updControl("AudioSink/dest/mrs_bool/initAudio", true);
 
 		if (pnet_ == 0) 
 		{
@@ -88,10 +88,10 @@ MarMonitors::initNetwork(QString pluginName)
 		pnet_->addMarSystem(mng.create("Windowing", "ham2"));
       
       
-		pnet_->updctrl("SoundFileSource/src/mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au");
-		pnet_->updctrl("Windowing/windowing/mrs_bool/zeroPhasing", true);
-		pnet_->updctrl("Gain/gain/mrs_real/gain", 2.0);
-		pnet_->updctrl("Gain/gain2/mrs_real/gain", 3.0);
+		pnet_->updControl("SoundFileSource/src/mrs_string/filename", "/Users/gtzan/data/sound/music_speech/music/gravity.au");
+		pnet_->updControl("Windowing/windowing/mrs_bool/zeroPhasing", true);
+		pnet_->updControl("Gain/gain/mrs_real/gain", 2.0);
+		pnet_->updControl("Gain/gain2/mrs_real/gain", 3.0);
     }
   
 	nTicks_ = 1;
@@ -178,7 +178,7 @@ MarMonitors::dialogDone()
 	
 	string cname = listWidget->currentItem()->text().toStdString();
 	mrs_realvec foo = pnet_->getctrl(cname)->to<mrs_realvec>();
-	pnet_->updctrl("mrs_string/filename", audioInputName_);
+	pnet_->updControl("mrs_string/filename", audioInputName_);
 	if (foo.getCols() == 1)
 		graph(foo.getRows(), "Observations", cname);
 	else 
@@ -242,7 +242,7 @@ MarMonitors::setup()
 void 
 MarMonitors::tick()
 {
-	pnet_->updctrl("AudioSink/dest/mrs_bool/mute", true);	
+	pnet_->updControl("AudioSink/dest/mrs_bool/mute", true);
 	for (int i=0; i<nTicks_; i++)
 	  {
 	    pnet_->tick();  
@@ -259,7 +259,7 @@ MarMonitors::tick()
 		// tempos(0) = bin;
 		
 	    // cout << "BIN = " << bin << endl;
-	    // pnet_->updctrl("BeatPhase/beatphase/mrs_realvec/tempos",tempos);
+	    // pnet_->updControl("BeatPhase/beatphase/mrs_realvec/tempos",tempos);
 		
 	  }
 
@@ -275,7 +275,7 @@ MarMonitors::tick()
 		graphs[i]->setBuffer( out_ );
     }
 	// second tick to silence audio 
-	// pnet_->updctrl("AudioSink/dest/mrs_bool/mute", true);
+	// pnet_->updControl("AudioSink/dest/mrs_bool/mute", true);
 	// pnet_->tick();
 	
 }

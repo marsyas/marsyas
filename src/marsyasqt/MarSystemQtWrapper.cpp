@@ -40,7 +40,7 @@ MarSystemQtWrapper::tickForever()
     start(HighPriority);
   } 
   else {
-    main_pnet_->updctrl("mrs_bool/active", true);
+    main_pnet_->updControl("mrs_bool/active", true);
     pause_ = false;
     condition_.wakeOne();
   }
@@ -67,11 +67,11 @@ MarSystemQtWrapper::updctrl(MarControlPtr cname,
 {
 	if ( !running_ )
 	{
-	  main_pnet_->updctrl(cname, cvalue);
+	  main_pnet_->updControl(cname, cvalue);
 	} 
 	else if (pause_) 
 	  {
-	    main_pnet_->updctrl(cname, cvalue);
+	    main_pnet_->updControl(cname, cvalue);
 	  }
 	else 
 	{
@@ -106,7 +106,7 @@ void
 MarSystemQtWrapper::play()
 {
 	mutex_.lock();
-	main_pnet_->updctrl("mrs_bool/active", true);
+	main_pnet_->updControl("mrs_bool/active", true);
 	pause_ = false;
 	condition_.wakeOne();
 	mutex_.unlock();
@@ -151,7 +151,7 @@ MarSystemQtWrapper::run()
 		 vvi = control_values_.begin();
 	       vsi != control_names_.end(); ++vsi, ++vvi)
 	    {
-	      main_pnet_->updctrl(*vsi, *vvi);
+	      main_pnet_->updControl(*vsi, *vvi);
 	    } 
 	  
 	  control_names_.clear();
@@ -167,7 +167,7 @@ MarSystemQtWrapper::run()
 	  mutex_.lock();
 	  if (pause_)
 	    {	      
-	      main_pnet_->updctrl("mrs_bool/active", false);
+	      main_pnet_->updControl("mrs_bool/active", false);
 	      condition_.wait(&mutex_);
 	    } 
 	  pause_ = false;

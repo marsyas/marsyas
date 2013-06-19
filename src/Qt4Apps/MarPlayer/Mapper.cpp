@@ -42,9 +42,9 @@ Mapper::Mapper()
 	pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
 	pnet_->addMarSystem(mng.create("Gain", "gain"));
 	pnet_->addMarSystem(mng.create("AudioSink", "dest"));
-	pnet_->updctrl("mrs_natural/inSamples", 2048);
+	pnet_->updControl("mrs_natural/inSamples", 2048);
   
-	pnet_->linkctrl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
+	pnet_->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
   
   
 	// make a Qt-like thread object wrapped around the MarSystem
