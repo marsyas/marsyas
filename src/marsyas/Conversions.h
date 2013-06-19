@@ -27,9 +27,9 @@
 namespace Marsyas
 {
 /** 
-    \class Conversions
+	\file
 	\ingroup Notmar
-    \brief Various conversion functions
+	\brief Various conversion functions
 */
 
 marsyas_EXPORT mrs_real pitch2hertz(mrs_real pitch);
