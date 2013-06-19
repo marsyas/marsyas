@@ -58,9 +58,6 @@ public slots:
 	void midiXYEvent(unsigned char xaxis, unsigned char yaxis);
 	void midiPlaylistEvent(bool next);
 	void keypadClicked(KeypadEnum button);
-
-signals: 
-	void playingTrack(MusicTrack *track);
   
 protected:
 	void dragEnterEvent(QDragEnterEvent *event);

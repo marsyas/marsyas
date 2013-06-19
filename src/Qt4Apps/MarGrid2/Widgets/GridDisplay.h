@@ -87,7 +87,6 @@ public:
 		void resetGrid();
 
 signals: 
-		void playingTrack(MusicTrack *track);
 		void extractMode();
 		void trainMode();
 		void predictMode();

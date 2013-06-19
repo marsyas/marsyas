@@ -34,7 +34,7 @@ public slots:
 	virtual void reload() {}
 
 signals: 
-	virtual void playingTrack(MusicTrack *track) = 0;
+	void playingTrack(MusicTrack *track);
 
 protected:
 	Tracklist *_tracklist;
