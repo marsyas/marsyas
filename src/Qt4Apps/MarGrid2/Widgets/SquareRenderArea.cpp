@@ -22,7 +22,7 @@ void SquareRenderArea::updateSquare(int * genreDensity, int numGenres)
 	repaint();
 }
 
-void SquareRenderArea::paintEvent(QPaintEvent*  event) 
+void SquareRenderArea::paintEvent(QPaintEvent*)
 {
 	QPainter painter;
 	painter.begin(this);

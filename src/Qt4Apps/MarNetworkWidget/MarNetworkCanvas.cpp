@@ -162,7 +162,7 @@ MarNetworkCanvas::mousePressEvent(QMouseEvent* event)
 }
 
 void
-MarNetworkCanvas::mouseReleaseEvent(QMouseEvent* event)
+MarNetworkCanvas::mouseReleaseEvent(QMouseEvent*)
 {
 	pressed_=false;
 	setCursor(Qt::ArrowCursor);

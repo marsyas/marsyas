@@ -276,9 +276,6 @@ void Grid::setupNetworks() {
 void Grid::extract() {
   // sness
 	if ( _collection->getNumTracks() > 0 ) {
-
-		int index = 0;
-
 		// !!! use itunes to generate the collection file rather then using a file
 		ofstream featureFile;
 		featureFile.open("margrid_train.mf", std::ios::out | std::ios::binary);
@@ -553,11 +550,9 @@ void Grid::train(bool skipTraining) {
 
 }
 void Grid::predict() {
-	int ready = 0;
 	std::string fileName;
 
   if ( _collection->getNumTracks() > 0 ) {
-	ready = 1;
 	fileName = "margrid_train.mf";
   } else if (trainFile_.length() > 0) {
 	fileName = trainFile_; 
@@ -638,7 +633,7 @@ void Grid::predict() {
 		cout << l1.size() <<endl;
 
 		QString tempString;
-		for (int index = 0; index < l1.size(); index++)
+		for (unsigned int index = 0; index < l1.size(); index++)
 		{
 			if(cancel_)
 			{
@@ -813,7 +808,6 @@ Grid::openPredictionGrid(QString fname)
 	resetGrid();
 	cout << "After reset grid" << endl;
 	
-	int i = 1;
 	while(!file_ip.eof())
 	{
 		getline(file_ip,line);

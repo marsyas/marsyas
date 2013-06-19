@@ -78,7 +78,7 @@ Marx2DStackedGraphs::Marx2DStackedGraphs(int s, unsigned int n, QWidget *parent 
 
   buffersize = s;
 
-  for (int i=0; i<numgraphs; i++) {
+  for (unsigned int i=0; i<numgraphs; i++) {
     Marx2DGraph* marx = new Marx2DGraph(buffersize, 0);
 
     if (i !=  numgraphs-1) {

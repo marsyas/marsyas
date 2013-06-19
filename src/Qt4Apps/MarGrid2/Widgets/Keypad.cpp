@@ -47,7 +47,7 @@ void Keypad::updateXYPosition(int x, int y) {
 	}
 }
  
-void Keypad::paintEvent(QPaintEvent *event) {
+void Keypad::paintEvent(QPaintEvent *) {
 	QPainter painter;
 	painter.begin(this);
 

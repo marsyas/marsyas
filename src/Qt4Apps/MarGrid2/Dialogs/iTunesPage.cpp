@@ -32,7 +32,7 @@ iTunesPage::iTunesPage(QWidget *parent)
 	setLayout(mainLayout);
 }
 
-void iTunesPage::showEvent(QShowEvent *event) {
+void iTunesPage::showEvent(QShowEvent *) {
 	MusicPlaylistIterator it = _library->getPlaylists();
 	while( it.hasNext() ) {
 		it.next();
