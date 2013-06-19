@@ -33,10 +33,10 @@ MarMonitors::MarMonitors(string pluginName, string audioInputName)
   
 	gridLayout_ = new QGridLayout;
 	QPushButton *tickButton = new QPushButton(tr("Tick"));
-	QPushButton *graphButton = new QPushButton(tr("New Graph"));
+	//QPushButton *graphButton = new QPushButton(tr("New Graph"));
 	QPushButton *setupButton = new QPushButton(tr("Setup"));
-	QPushButton *tick10Button = new QPushButton(tr("Tick10"));
-	QPushButton *tick100Button = new QPushButton(tr("Tick100"));
+	//QPushButton *tick10Button = new QPushButton(tr("Tick10"));
+	//QPushButton *tick100Button = new QPushButton(tr("Tick100"));
 	
 
 	gridLayout_->addWidget(tickButton, 0, 0);
@@ -211,7 +211,7 @@ MarMonitors::setup()
     {
 		if ((myc->first).find("realvec") < myc->first.length())
 		{
-			QListWidgetItem *newItem = new QListWidgetItem(tr(myc->first.c_str()), listWidget);	  
+			new QListWidgetItem(tr(myc->first.c_str()), listWidget);
 		}
       
     }
