@@ -310,10 +310,12 @@ Marx2DGraph::setBuffer( realvec& rv )
   if ( rv.getSize() == buffersize ) { 
      *buffer = rv;
 
-    int xu = (int)(xaxisoffset+xpos) + pen.width() + 1;
-    int yu = (int)(yaxisoffset+ypos);
-    int xl = (int)(xaxisoffset+xpos+gwidth);
-    int yl = (int)(yaxisoffset+ypos+gheight) - pen.width() - 1;
+	/*
+	int xu = (int)(xaxisoffset+xpos) + pen.width() + 1;
+	int yu = (int)(yaxisoffset+ypos);
+	int xl = (int)(xaxisoffset+xpos+gwidth);
+	int yl = (int)(yaxisoffset+ypos+gheight) - pen.width() - 1;
+	*/
 
     // repaint( QRect( QPoint(xu, yu), QPoint(xl, yl)) );
 	update();
