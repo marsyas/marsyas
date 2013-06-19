@@ -37,8 +37,10 @@ void OscMapper::registerInputQtSlot(QObject *object, QString path, QVariant::Typ
 	case QVariant::String:
 		QObject::connect( integerobj, SIGNAL( data( string ) ), object, SLOT( setValue( string ) ) );		
 		break;
+	default:
+		MRSERR("OscMapper::registerInputQtSlot() : Invalid data type.");
+		return;
 	}
-
 }
 
 void OscMapper::registerOutputQtSlot(QObject *object, QString path, QVariant::Type type)
@@ -59,6 +61,9 @@ void OscMapper::registerOutputQtSlot(QObject *object, QString path, QVariant::Ty
 	case QVariant::String:
 		QObject::connect( object, SIGNAL( valueChanged( string ) ), integerobj, SLOT( send( string ) ));		
 		break;
+	default:
+		MRSERR("OscMapper::registerOutputQtSlot() : Invalid data type.");
+		return;
 	}
 }
 } //namespace

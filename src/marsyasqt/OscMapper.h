@@ -72,7 +72,7 @@ public:
 				tmp = data.toString();
 				cval = tmp.toStdString();
 				break;
-			case QVariant::List:
+			case QVariant::List: {
 				mrs_natural i=0;
 				QList<QVariant> list = data.toList();
 				realvec vec(list.size());
@@ -85,6 +85,10 @@ public:
 				}
 				cval = vec;
 				break;
+			}
+			default:
+				MRSWARN("OSCMapper::updctrl() : Invalid data type.");
+				return;
 			}
 			cout << cval;
 			mwr_->updctrl(control, cval);
