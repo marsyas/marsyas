@@ -553,8 +553,8 @@ void Grid::train(bool skipTraining) {
 
 }
 void Grid::predict() {
-  int ready = 0;
- std:string fileName;
+	int ready = 0;
+	std::string fileName;
 
   if ( _collection->getNumTracks() > 0 ) {
 	ready = 1;
