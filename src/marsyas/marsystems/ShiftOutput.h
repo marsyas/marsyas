@@ -25,18 +25,16 @@
 namespace Marsyas
 {
 /** 
-    \class ShiftOuput
 	\ingroup Processing Basic
-    \brief Shift next D samples  
+	\brief Pass on N amount of samples from the input vector
 
-    Shift next D samples from the input source to the output source 
-into the right-hand end of the outputSlice. 
-with gain and put them in the output vector. 
+	ShiftOutput outputs a slice of the input vector. It retains all
+	observations, but only a limited amount of samples (starting from the
+	first input sample).
 
 	Controls:
-	- \b mrs_natural/Interpolation [rw] : sets the hop size used by the data arriving at the input
-	so that only this number of samples is sent to the output (i.e. this control sets the number of samples
-	in the output).
+	- \b mrs_natural/Interpolation [rw] : Amount of input samples to pass on,
+	starting from the first input sample.
 */
 
 
