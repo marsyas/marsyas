@@ -7,6 +7,9 @@ import pylab
 PLOT = True
 PLOT = False
 
+INCLUDE_05 = False
+#INCLUDE_05 = True
+
 def accuracy(bpm_detected, bpm_ground):
     tolerance = 0.04
     diff = abs(bpm_detected - bpm_ground)
@@ -20,9 +23,11 @@ def double_harmonic_accuracy(bpm_detected, bpm_ground):
         diff = abs(m*bpm_detected - bpm_ground)
         if diff <= tolerance * bpm_ground:
             return m
-        #diff = abs(1.0/m*bpm_detected - bpm_ground)
-        #if diff <= tolerance * bpm_ground:
-        #    return 1.0/m
+        if not INCLUDE_05:
+            continue
+        diff = abs(1.0/m*bpm_detected - bpm_ground)
+        if diff <= tolerance * bpm_ground:
+            return 1.0/m
     return 0
 
 def extended_harmonic_accuracy(bpm_detected, bpm_ground):
@@ -70,7 +75,13 @@ FEATURES = [
     'energyinpeak',
     ]
 
-OUTRO = """@attribute heuristic_bpm numeric
+if INCLUDE_05:
+    OUTRO = """@attribute heuristic_bpm numeric
+@attribute class {0.5,1.0,2.0}
+@data
+"""
+else:
+    OUTRO = """@attribute heuristic_bpm numeric
 @attribute class {1.0,2.0}
 @data
 """
@@ -83,7 +94,6 @@ OUTRO = """@attribute heuristic_bpm numeric
 INTRO = "%s\n%s\n%s" % (
     INTRO_BEGIN,
     '\n'.join(["@attribute bp-%s numeric" % x for x in FEATURES]),
-    #'\n'.join(["@attribute bh-%s numeric" % x for x in FEATURES]),
     OUTRO
     )
 #@attribute 19 numeric
@@ -140,8 +150,9 @@ for line in lines:
         if extended_harmonic_accuracy(2.0*detected, ground_truth):
             mult = 2.0
             #print "extra 2"
-        #elif extended_harmonic_accuracy(0.5*detected, ground_truth):
-        #    mult = 0.5
+        elif INCLUDE_05:
+            if extended_harmonic_accuracy(0.5*detected, ground_truth):
+                mult = 0.5
             #print "extra 0.5"
     #if accuracy(detected, ground_truth):
     #    mult = 1.0
@@ -151,7 +162,8 @@ for line in lines:
     #if extended_harmonic_accuracy(detected, ground_truth):
     if mult > 0:
         harmonics += 1
-        if extended_harmonic_accuracy(mult*detected, ground_truth) == 0:
+        #if extended_harmonic_accuracy(mult*detected, ground_truth) == 0:
+        if accuracy(mult*detected, ground_truth) == 0:
             cause_problems += 1
             # don't multipy value; penalize MIREX but keep HARMONIC
             mult = 1.0
@@ -196,7 +208,7 @@ print multsdict
 lowbound = 35
 highbound = 6*35
 lowbound = 40
-highbound = 200
+highbound = 180
 lows = 0
 highs = 0
 for g in grounds:
@@ -208,8 +220,11 @@ print "With bounds of %i - %i, we miss %i - %i (sum %i) out of %i (%.3f%%)" % (
     lowbound, highbound, lows, highs, lows+highs, total,
     float(lows+highs)/total
   )
+print "min/max ground truths:\t", min(grounds), max(grounds)
 
 if PLOT:
+    pylab.xlabel("ground")
+    pylab.ylabel("detected")
     pylab.figure()
 
     pylab.hist(grounds, bins=100)
@@ -233,6 +248,6 @@ for m in maxs:
     print str(m) + ",",
 print "0 };"
 
-
+print "num features:\t", len(mins)
 
 

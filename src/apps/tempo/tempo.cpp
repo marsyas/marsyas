@@ -72,7 +72,6 @@
 //In non-causal mode, if between a son's first beat and its father's last there is over a BEAT_TRANSITION_TOL descrease on the father last IBI the son's first beat is unconsidered;
 //In non-causal mode, if between a son's first beat and its father's last there is over a BEAT_TRANSITION_TOL increase on the father last IBI the son's first beat shall be its father's next beat, and the second beat shall be its assigned first.
 
-#define FIR_OR_IIR_FILTER 1
 
 // 0: no doubling at all
 // 1: single threshold (bpm > x => double)
@@ -863,95 +862,72 @@ tempo_aim(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool 
 
 MarSystem *onset_strength_signal_flux(mrs_string sfName)
 {
-  //MarSystemManager mng;
+    //MarSystemManager mng;
 
-  /* Onset strength calcuates the onset strength signal whose
-     individual values are computed using the fluxnet. The
-     resulting onset strength signal is filtered to smooth out
-     adjacent peaks.  This moves the locations of the true peaks
-     by a fixed number of samples
-  */
-  MarSystem *onset_strength = mng.create("Series/onset_strength");
-  MarSystem *accum = mng.create("Accumulator/accum");
-  MarSystem *fluxnet = mng.create("Series/fluxnet");
-  fluxnet->addMarSystem(mng.create("SoundFileSource/src"));
-  fluxnet->addMarSystem(mng.create("MixToMono/m2m"));
-  // fluxnet->addMarSystem(mng.create("DownSampler/tds"));
-  fluxnet->addMarSystem(mng.create("ShiftInput/si"));	       // overlap for the spectral flux
-  fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
-  fluxnet->addMarSystem(mng.create("Spectrum/spk"));
-  fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
-  //fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
-  // fluxnet->addMarSystem(mng.create("Sum/triangsum"));
-  
-  fluxnet->addMarSystem(mng.create("Flux/flux"));
-  //fluxnet->addMarSystem(mng.create("Gain/gain5"));
-  //fluxnet->updControl("Flux/flux/mrs_string/mode", "multichannel");
-  //fluxnet->addMarSystem(mng.create("Delta/delta"));
-  //fluxnet->updControl("Delta/delta/mrs_bool/positive", true);
-  //
+    /* Onset strength calcuates the onset strength signal whose
+       individual values are computed using the fluxnet. The
+       resulting onset strength signal is filtered to smooth out
+       adjacent peaks.  This moves the locations of the true peaks
+       by a fixed number of samples
+       */
+    MarSystem *onset_strength = mng.create("Series/onset_strength");
+    MarSystem *accum = mng.create("Accumulator/accum");
+    MarSystem *fluxnet = mng.create("Series/fluxnet");
+    fluxnet->addMarSystem(mng.create("SoundFileSource/src"));
+    fluxnet->addMarSystem(mng.create("MixToMono/m2m"));
+    // fluxnet->addMarSystem(mng.create("DownSampler/tds"));
+    fluxnet->addMarSystem(mng.create("ShiftInput/si"));	       // overlap for the spectral flux
+    fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
+    fluxnet->addMarSystem(mng.create("Spectrum/spk"));
+    fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
+    //fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
+    // fluxnet->addMarSystem(mng.create("Sum/triangsum"));
 
-#if FIR_OR_IIR_FILTER
-  fluxnet->addMarSystem(mng.create("Filter", "filt1"));
-#endif
+    fluxnet->addMarSystem(mng.create("Flux/flux"));
+    //fluxnet->addMarSystem(mng.create("Gain/gain5"));
+    //fluxnet->updControl("Flux/flux/mrs_string/mode", "multichannel");
+    //fluxnet->addMarSystem(mng.create("Delta/delta"));
+    //fluxnet->updControl("Delta/delta/mrs_bool/positive", true);
 
-  accum->addMarSystem(fluxnet);
-  onset_strength->addMarSystem(accum);
+    fluxnet->addMarSystem(mng.create("Filter", "filt1"));
 
-   // parameters for the onset strength signal
-   onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
-   // onset_strength->updControl("Accumulator/accum/Series/fluxnet/Windowing/windowing1/mrs_string/type", "Blackman-Harris");
-   
-   onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
-  // The filter object in Marsyas is implemented as a direct form II
-  // structure. This is a canonical form which has the minimum number
-  // of delay elements. These filter coefficients are setup to make
-  // this series of two filters a Butterworth filter.
+    accum->addMarSystem(fluxnet);
+    onset_strength->addMarSystem(accum);
 
-#if !( FIR_OR_IIR_FILTER )
-   mrs_realvec bcoeffs(1,3);
-   mrs_realvec acoeffs(1,3);
-   // filter coefficients for forward/backward filtering
-   //    now a foward-only filter.
-   // python:
-   //   import scipy.signal
-   //   b, a = scipy.signal.butter(2, 31.0 / (344.53125/2.0))
-   //   % tested cutoffs at 25, 30, 31, 32, 35; winner is 31 Hz
-   bcoeffs(0) = 0.05642426;
-   bcoeffs(1) = 0.11284853;
-   bcoeffs(2) = 0.05642426;
-   acoeffs(0) = 1.0;
-   acoeffs(1) = -1.22483786;
-   acoeffs(2) = 0.45053492;
-   onset_strength->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
-   onset_strength->updControl("Filter/filt2/mrs_realvec/ncoeffs", bcoeffs);
-   onset_strength->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
-   onset_strength->updControl("Filter/filt2/mrs_realvec/dcoeffs", acoeffs);
-#endif
-#if FIR_OR_IIR_FILTER
-   // 15th order
-   //   import scipy.signal
-   //   b,a = scipy.signal.firwin(16, 3.0 / (344.53125/2.0/2.0))
-/*
-    mrs_realvec bcoeffs(1, 16);
-    bcoeffs(0) = 0.0088849537539795;
-    bcoeffs(1) = 0.0136945737894744;
-    bcoeffs(2) = 0.0272131960270632;
-    bcoeffs(3) = 0.0475866946262501;
-    bcoeffs(4) = 0.0714870311519263;
-    bcoeffs(5) = 0.0947366319871323;
-    bcoeffs(6) = 0.1131281838499733;
-    bcoeffs(7) = 0.1232687348142008;
-    bcoeffs(8) = 0.1232687348142008;
-    bcoeffs(9) = 0.1131281838499734;
-    bcoeffs(10) = 0.0947366319871324;
-    bcoeffs(11) = 0.0714870311519263;
-    bcoeffs(12) = 0.0475866946262501;
-    bcoeffs(13) = 0.0272131960270631;
-    bcoeffs(14) = 0.0136945737894744;
-    bcoeffs(15) = 0.0088849537539795;
-*/
-   //   b,a = scipy.signal.firwin(16, 10.0 / (344.53125/2.0/2.0))
+    // parameters for the onset strength signal
+    onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
+    // onset_strength->updControl("Accumulator/accum/Series/fluxnet/Windowing/windowing1/mrs_string/type", "Blackman-Harris");
+
+    onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
+
+
+    // The filter object in Marsyas is implemented as a direct form II
+    // structure. This is a canonical form which has the minimum number
+    // of delay elements.
+
+    // 15th order
+    //   import scipy.signal
+    //   b,a = scipy.signal.firwin(16, 3.0 / (344.53125/2.0))
+    /*
+       mrs_realvec bcoeffs(1, 16);
+       bcoeffs(0) = 0.0095530348472755;
+       bcoeffs(1) = 0.0144032200641954;
+       bcoeffs(2) = 0.0280928524023415;
+       bcoeffs(3) = 0.0483763511689087;
+       bcoeffs(4) = 0.0717941373871591;
+       bcoeffs(5) = 0.0942851675260588;
+       bcoeffs(6) = 0.1119142142273117;
+       bcoeffs(7) = 0.1215810223767492;
+       bcoeffs(8) = 0.1215810223767492;
+       bcoeffs(9) = 0.1119142142273117;
+       bcoeffs(10) = 0.0942851675260588;
+       bcoeffs(11) = 0.0717941373871592;
+       bcoeffs(12) = 0.0483763511689087;
+       bcoeffs(13) = 0.0280928524023415;
+       bcoeffs(14) = 0.0144032200641954;
+       bcoeffs(15) = 0.0095530348472755;
+       */
+    //   b,a = scipy.signal.firwin(16, 10.0 / (344.53125/2.0))
     mrs_realvec bcoeffs(1, 16);
     bcoeffs(0) = 0.0073773298534980;
     bcoeffs(1) = 0.0120567511070207;
@@ -970,65 +946,64 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     bcoeffs(14) = 0.0120567511070207;
     bcoeffs(15) = 0.0073773298534980;
 
-   fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
-   //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
-#endif
+    fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
+    //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 
 
-   //onset_strength->linkControl(
-   // "mrs_string/filename",
-   // "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename");
-   onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
-   onset_strength->linkControl(
-    "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_real/osrate",
-    "mrs_real/file_srate");
+    //onset_strength->linkControl(
+    // "mrs_string/filename",
+    // "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename");
+    onset_strength->updControl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_string/filename", sfName);
+    onset_strength->linkControl(
+            "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_real/osrate",
+            "mrs_real/file_srate");
 
-   onset_strength->linkControl(
-    "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData",
-    "mrs_bool/hasData");
+    onset_strength->linkControl(
+            "Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_bool/hasData",
+            "mrs_bool/hasData");
 
 
-   //   updated values, for variable sample rates.  ms = milliseconds
-   //   these will be rounded up to the nearest power of 2 (in samples)
-   mrs_natural oss_hop_ms = 2.9;     // for flux calculation
-   mrs_natural oss_win_ms = 5.8;     // for flux calculation
- 
-   mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
-   mrs_natural oss_hop_size = (mrs_natural) next_power_two(srate * oss_hop_ms * 0.001);
-   mrs_natural oss_win_size = (mrs_natural) next_power_two(srate * oss_win_ms * 0.001);
+    //   updated values, for variable sample rates.  ms = milliseconds
+    //   these will be rounded up to the nearest power of 2 (in samples)
+    mrs_natural oss_hop_ms = 2.9;     // for flux calculation
+    mrs_natural oss_win_ms = 5.8;     // for flux calculation
+
+    mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
+    mrs_natural oss_hop_size = (mrs_natural) next_power_two(srate * oss_hop_ms * 0.001);
+    mrs_natural oss_win_size = (mrs_natural) next_power_two(srate * oss_win_ms * 0.001);
 #if 0
-   cout<<"OSS sizes:\t"<<oss_hop_size<<"\t"<<oss_win_size<<endl;
+    cout<<"OSS sizes:\t"<<oss_hop_size<<"\t"<<oss_win_size<<endl;
 #endif
-   onset_strength->updControl("mrs_natural/inSamples", oss_hop_size);
-   fluxnet->updControl("ShiftInput/si/mrs_natural/winSize", oss_win_size);
+    onset_strength->updControl("mrs_natural/inSamples", oss_hop_size);
+    fluxnet->updControl("ShiftInput/si/mrs_natural/winSize", oss_win_size);
 
-  return onset_strength;
+    return onset_strength;
 }
 
 void
 test_oss_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
-  (void) ground_truth_tempo;
-  (void) resName;
-  (void) haveCollections;
-  (void) tolerance;
-	cout << "Writing OSS to onset_strength.txt" << endl;
+    (void) ground_truth_tempo;
+    (void) resName;
+    (void) haveCollections;
+    (void) tolerance;
+    cout << "Writing OSS to onset_strength.txt" << endl;
 
-  MarSystem *onset_strength = onset_strength_signal_flux(sfName);
-  onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", 1);
-  
-  onset_strength->addMarSystem(mng.create("PlotSink", "plotsink"));
-  onset_strength->updControl("PlotSink/plotsink/mrs_string/filename",
-      "onset_strength.txt");
-  onset_strength->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
-  onset_strength->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
+    MarSystem *onset_strength = onset_strength_signal_flux(sfName);
+    onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", 1);
+
+    onset_strength->addMarSystem(mng.create("PlotSink", "plotsink"));
+    onset_strength->updControl("PlotSink/plotsink/mrs_string/filename",
+            "onset_strength.txt");
+    onset_strength->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
+    onset_strength->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
 
 
-  MarControlPtr hasData = onset_strength->getctrl("mrs_bool/hasData");
-  while (hasData->isTrue()) {
-    onset_strength->tick();
-  }
-  delete onset_strength;
+    MarControlPtr hasData = onset_strength->getctrl("mrs_bool/hasData");
+    while (hasData->isTrue()) {
+        onset_strength->tick();
+    }
+    delete onset_strength;
 }
 
 mrs_real energy_in_histo_range(realvec histo,
@@ -1131,37 +1106,36 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
 
     // energy over / under
     mrs_real energy_total  = energy_in_histo_range(histo, factor,
-        0, 1.0 );
+            0, 1.0 );
     mrs_real energy_under = energy_in_histo_range(histo, factor,
-        0.0, bpm*(1.0 - tolerance) ) / energy_total;
+            0.0, bpm*(1.0 - tolerance) ) / energy_total;
     mrs_real energy_over  = energy_in_histo_range(histo, factor,
-        bpm*(1.0 + tolerance), 1.0 ) / energy_total;
+            bpm*(1.0 + tolerance), 1.0 ) / energy_total;
 
     mrs_real str05 = energy_in_histo_range(histo, factor,
-        0.5*bpm*(1.0 - tolerance), 0.5*bpm*(1.0 + tolerance) ) / energy_total;
+            0.5*bpm*(1.0 - tolerance), 0.5*bpm*(1.0 + tolerance) ) / energy_total;
     mrs_real str10 = energy_in_histo_range(histo, factor,
-        1.0*bpm*(1.0 - tolerance), 1.0*bpm*(1.0 + tolerance) ) / energy_total;
+            1.0*bpm*(1.0 - tolerance), 1.0*bpm*(1.0 + tolerance) ) / energy_total;
     mrs_real str20 = energy_in_histo_range(histo, factor,
-        2.0*bpm*(1.0 - tolerance), 2.0*bpm*(1.0 + tolerance) ) / energy_total;
+            2.0*bpm*(1.0 - tolerance), 2.0*bpm*(1.0 + tolerance) ) / energy_total;
 
-/*
-    mrs_real strp1 = energy_in_histo_range(histo, factor,
-        bpm1*(1.0- tolerance), bpm1*(1.0+ tolerance) ) / energy_total;
-    mrs_real strp2 = energy_in_histo_range(histo, factor,
-        bpm2*(1.0- tolerance), bpm2*(1.0+ tolerance) ) / energy_total;
-    mrs_real strp3 = energy_in_histo_range(histo, factor,
-        bpm3*(1.0- tolerance), bpm3*(1.0+ tolerance) ) / energy_total;
-*/
+    /*
+       mrs_real strp1 = energy_in_histo_range(histo, factor,
+       bpm1*(1.0- tolerance), bpm1*(1.0+ tolerance) ) / energy_total;
+       mrs_real strp2 = energy_in_histo_range(histo, factor,
+       bpm2*(1.0- tolerance), bpm2*(1.0+ tolerance) ) / energy_total;
+       mrs_real strp3 = energy_in_histo_range(histo, factor,
+       bpm3*(1.0- tolerance), bpm3*(1.0+ tolerance) ) / energy_total;
+       */
 
-//zzz
-/*
-    info(0) = bpm1 > bpm*(1.0+tolerance);
-    info(1) = bpm1 < bpm*(1.0-tolerance);
-    info(2) = bpm2 > bpm*(1.0+tolerance);
-    info(3) = bpm2 < bpm*(1.0-tolerance);
-    info(4) = bpm3 > bpm*(1.0+tolerance);
-    info(5) = bpm3 < bpm*(1.0-tolerance);
-*/
+    /*
+       info(0) = bpm1 > bpm*(1.0+tolerance);
+       info(1) = bpm1 < bpm*(1.0-tolerance);
+       info(2) = bpm2 > bpm*(1.0+tolerance);
+       info(3) = bpm2 < bpm*(1.0-tolerance);
+       info(4) = bpm3 > bpm*(1.0+tolerance);
+       info(5) = bpm3 < bpm*(1.0-tolerance);
+       */
     info(0) = energy_under;
     info(1) = energy_over;
     info(2) = 1.0 - (energy_under + energy_over);
@@ -1197,566 +1171,549 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
 void
 tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
-  (void) resName;
-	cout << "TEMPO FLUX" << endl;
-	
-  //MarSystemManager mng;
+    (void) resName;
+    cout << "TEMPO FLUX" << endl;
 
-  MarSystem *onset_strength = onset_strength_signal_flux(sfName);
-  MarSystem *beatTracker = mng.create("Series/beatTracker");
+    //MarSystemManager mng;
 
-  
-  onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
+    MarSystem *onset_strength = onset_strength_signal_flux(sfName);
+    MarSystem *beatTracker = mng.create("Series/beatTracker");
 
 
-  beatTracker->addMarSystem(onset_strength);
-
-  /* After the onset signal is calculated it is used for initial
-	 tempo induction based mapping an enhanced autocorrelation to a
-	 beat histogram BH and selecting the peaks of the BH as tempo candidates.
-	 The FlowThru composite is used to propagate the onset strength signal
-	 to the BeatPhase MarSystem which finds the beat locations and rescores
-	 the tempo candidates in order to select the tempo. The tempo induction
-	 is performed as the inner process of the FlowThru composite and the tempo
-	 candidates are linked to the BeatPhase tempo candidates.
-  */
-
-  MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
-
-  /* MarSystem *adaptive_median_threshold = mng.create("Fanout/adaptive_median_threshold");
-  adaptive_median_threshold->addMarSystem(mng.create("MedianFilter", "medianfilter"));
-  adaptive_median_threshold->addMarSystem(mng.create("Gain/subtract_gain"));
-  adaptive_median_threshold->updControl("Gain/subtract_gain/mrs_real/gain", -1.0);
-  adaptive_median_threshold->updControl("MedianFilter/medianfilter/mrs_natural/WindowSize", 10);
-  tempoInduction->addMarSystem(adaptive_median_threshold);
-  tempoInduction->addMarSystem(mng.create("Sum/asum"));
-  tempoInduction->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
-  */ 
+    onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
 
 
-   tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
-   tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
+    beatTracker->addMarSystem(onset_strength);
+
+    /* After the onset signal is calculated it is used for initial
+       tempo induction based mapping an enhanced autocorrelation to a
+       beat histogram BH and selecting the peaks of the BH as tempo candidates.
+       The FlowThru composite is used to propagate the onset strength signal
+       to the BeatPhase MarSystem which finds the beat locations and rescores
+       the tempo candidates in order to select the tempo. The tempo induction
+       is performed as the inner process of the FlowThru composite and the tempo
+       candidates are linked to the BeatPhase tempo candidates.
+       */
+
+    MarSystem *tempoInduction = mng.create("FlowThru/tempoInduction");
 
 
-   //  enhance the BH harmonic peaks
-   MarSystem* hfanout = mng.create("Fanout", "hfanout");
-   hfanout->addMarSystem(mng.create("Gain", "id1"));
-   hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
-   hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
-   tempoInduction->addMarSystem(hfanout);
-   tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
+    /* MarSystem *adaptive_median_threshold = mng.create("Fanout/adaptive_median_threshold");
+       adaptive_median_threshold->addMarSystem(mng.create("MedianFilter", "medianfilter"));
+       adaptive_median_threshold->addMarSystem(mng.create("Gain/subtract_gain"));
+       adaptive_median_threshold->updControl("Gain/subtract_gain/mrs_real/gain", -1.0);
+       adaptive_median_threshold->updControl("MedianFilter/medianfilter/mrs_natural/WindowSize", 10);
+       tempoInduction->addMarSystem(adaptive_median_threshold);
+       tempoInduction->addMarSystem(mng.create("Sum/asum"));
+       tempoInduction->addMarSystem(mng.create("HalfWaveRectifier", "hwr"));
+       */ 
+
+
+    tempoInduction->addMarSystem(mng.create("AutoCorrelation", "acr"));
+    tempoInduction->addMarSystem(mng.create("BeatHistogram", "histo"));
+
+
+    //  enhance the BH harmonic peaks
+    MarSystem* hfanout = mng.create("Fanout", "hfanout");
+    hfanout->addMarSystem(mng.create("Gain", "id1"));
+    hfanout->addMarSystem(mng.create("TimeStretch", "tsc1"));
+    hfanout->addMarSystem(mng.create("TimeStretch", "tsc2"));
+    tempoInduction->addMarSystem(hfanout);
+    tempoInduction->addMarSystem(mng.create("Sum", "hsum"));
 
 #if 0
     tempoInduction->addMarSystem(mng.create("PlotSink", "plotsink_hbh"));
     tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_string/filename",
-        "hbh-combo.txt");
+            "hbh-combo.txt");
     tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_bool/sequence", false);
     tempoInduction->updControl("PlotSink/plotsink_hbh/mrs_bool/single_file", true);
 #endif
 
 
-   // Select the peaks
-   tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
-   tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));
+    // Select the peaks
+    tempoInduction->addMarSystem(mng.create("Peaker", "pkr1"));
+    tempoInduction->addMarSystem(mng.create("MaxArgMax", "mxr1"));
 
-   // Using the tempo induction block calculate the Beat Locations
-   beatTracker->addMarSystem(tempoInduction);
-   // beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
-   beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
-   beatTracker->addMarSystem(mng.create("Gain/id"));
+    // Using the tempo induction block calculate the Beat Locations
+    beatTracker->addMarSystem(tempoInduction);
+    // beatTracker->addMarSystem(mng.create("ShiftInput/si3"));
+    beatTracker->addMarSystem(mng.create("BeatPhase/beatphase"));
+    beatTracker->addMarSystem(mng.create("Gain/id"));
 
-   //mrs_natural hop_ms = 5.8;     // for flux calculation
-   //mrs_natural bhop_ms = 5.8;    // for onset strength signal
-   mrs_natural hop_ms = 2.9;     // for flux calculation
-   mrs_natural bhop_ms = 2.9;    // for onset strength signal
-   mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
-   // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
-   mrs_natural nCandidates = 10;  // number of tempo candidates
-   mrs_natural factor = 4;
+    //mrs_natural hop_ms = 5.8;     // for flux calculation
+    //mrs_natural bhop_ms = 5.8;    // for onset strength signal
+    mrs_natural hop_ms = 2.9;     // for flux calculation
+    mrs_natural bhop_ms = 2.9;    // for onset strength signal
+    mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
+    // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
+    mrs_natural nCandidates = 10;  // number of tempo candidates
+    mrs_natural factor = 4;
 
-   // parameters for BH pick peaking
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 2);
-   tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", factor*MIN_BPM+1);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", factor*MAX_BPM-1);
-   tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
-   tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
-   beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
+    // parameters for BH pick peaking
+    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakNeighbors", 2);
+    tempoInduction->updControl("Peaker/pkr1/mrs_real/peakSpacing", 0.0);
+    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakStart", factor*MIN_BPM+1);
+    tempoInduction->updControl("Peaker/pkr1/mrs_natural/peakEnd", factor*MAX_BPM-1);
+    tempoInduction->updControl("MaxArgMax/mxr1/mrs_natural/interpolation", 0);
+    tempoInduction->updControl("Peaker/pkr1/mrs_natural/interpolation", 0);
+    beatTracker->updControl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_natural/nMaximums", nCandidates);
 
-   // autocorrelation parameters
-   tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5);
-   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
-   tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to1", true);
+    // autocorrelation parameters
+    tempoInduction->updControl("AutoCorrelation/acr/mrs_real/magcompress", 0.5);
+    tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to0", true);
+    tempoInduction->updControl("AutoCorrelation/acr/mrs_bool/setr0to1", true);
 
-   // beat histogram parameters
-   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin",
-        factor*MAX_BPM);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", (mrs_real)factor);
-   tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
+    // beat histogram parameters
+    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/startBin", 0);
+    tempoInduction->updControl("BeatHistogram/histo/mrs_natural/endBin",
+            factor*MAX_BPM);
+    tempoInduction->updControl("BeatHistogram/histo/mrs_real/factor", (mrs_real)factor);
+    tempoInduction->updControl("BeatHistogram/histo/mrs_real/alpha", 0.0);
 
-   tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
-   tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc2/mrs_real/factor", 0.25);
-   tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
+    tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc1/mrs_real/factor", 0.5);
+    tempoInduction->updControl("Fanout/hfanout/TimeStretch/tsc2/mrs_real/factor", 0.25);
+    tempoInduction->updControl("Fanout/hfanout/Gain/id1/mrs_real/gain", 1.0);
 
-   // set the filename, hop and window size
-   mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
+    // set the filename, hop and window size
+    mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
 
-   mrs_natural hopSize = (mrs_natural) next_power_two(srate * hop_ms * 0.001);
-   mrs_natural bhopSize = (mrs_natural) next_power_two(srate * bhop_ms * 0.001);
-   mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
+    mrs_natural hopSize = (mrs_natural) next_power_two(srate * hop_ms * 0.001);
+    mrs_natural bhopSize = (mrs_natural) next_power_two(srate * bhop_ms * 0.001);
+    mrs_natural bwinSize = (mrs_natural) next_power_two(srate * bwin_ms * 0.001);
 #if 0
-   cout<<"sizes:"<<endl;
-   cout<<hopSize<<endl;
-   cout<<bhopSize<<endl;
-   cout<<bwinSize<<"\t"<<srate * bwin_ms * 0.001<<endl;
+    cout<<"sizes:"<<endl;
+    cout<<hopSize<<endl;
+    cout<<bhopSize<<endl;
+    cout<<bwinSize<<"\t"<<srate * bwin_ms * 0.001<<endl;
 #endif
 
-   beatTracker->updControl("mrs_natural/inSamples", hopSize);
+    beatTracker->updControl("mrs_natural/inSamples", hopSize);
 
-   onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);
-   onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize", bwinSize);
-   // beatTracker->updControl("ShiftInput/si3/mrs_natural/winSize", bp_winSize);
+    onset_strength->updControl("Accumulator/accum/mrs_natural/nTimes", bhopSize);
+    onset_strength->updControl("ShiftInput/si2/mrs_natural/winSize", bwinSize);
+    // beatTracker->updControl("ShiftInput/si3/mrs_natural/winSize", bp_winSize);
 
-   // onset_strength->updControl("Accumulator/accum/Series/fluxnet/DownSampler/tds/mrs_natural/factor", 2);
+    // onset_strength->updControl("Accumulator/accum/Series/fluxnet/DownSampler/tds/mrs_natural/factor", 2);
 
-   // BeatPhase estimates a tempo based on rescoring the tempo candidates
-   // of the tempo induction phase by cross-correlating pulse trains
-   // with the onset strength signal
-   beatTracker->updControl("BeatPhase/beatphase/mrs_real/factor", (mrs_real)factor);
-   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
-   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
-   beatTracker->updControl("BeatPhase/beatphase/mrs_natural/nCandidates", nCandidates);
-   beatTracker->updControl("BeatPhase/beatphase/mrs_real/ground_truth_tempo", ground_truth_tempo);
-   beatTracker->linkControl("BeatPhase/beatphase/mrs_realvec/tempo_candidates",
-							"FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData");
-
-
-   // the number of ticks it takes to have a full onset strength
-   // signal without zeroes due to overlap
-   int extra_ticks = bwinSize/bhopSize;
+    // BeatPhase estimates a tempo based on rescoring the tempo candidates
+    // of the tempo induction phase by cross-correlating pulse trains
+    // with the onset strength signal
+    beatTracker->updControl("BeatPhase/beatphase/mrs_real/factor", (mrs_real)factor);
+    beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bhopSize", bhopSize);
+    beatTracker->updControl("BeatPhase/beatphase/mrs_natural/bwinSize", bwinSize);
+    beatTracker->updControl("BeatPhase/beatphase/mrs_natural/nCandidates", nCandidates);
+    beatTracker->updControl("BeatPhase/beatphase/mrs_real/ground_truth_tempo", ground_truth_tempo);
+    beatTracker->linkControl("BeatPhase/beatphase/mrs_realvec/tempo_candidates",
+            "FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData");
 
 
-   mrs_realvec tempos(nCandidates);  // tempo estimates from the BH
-   mrs_realvec temposcores(nCandidates);
+    mrs_realvec tempos(nCandidates);  // tempo estimates from the BH
+    mrs_realvec temposcores(nCandidates);
 
-   mrs_realvec bphase;	 // secondary beat histogram for selecting the best tempo estimate from BeatPhase
-   const int BPHASE_SIZE = MAX_BPM;
-   bphase.create(BPHASE_SIZE);
-   bphase.setval(0.0);
-
-
-   // output plugin that can be used with MarMonitors for debugging
-   if (pluginName != EMPTYSTRING)
-   {
-	 ofstream ofs;
-	 ofs.open(pluginName.c_str());
-	 ofs << *beatTracker << endl;
-	 ofs.close();
-	 pluginName = EMPTYSTRING;
-   }
+    mrs_realvec bphase;	 // secondary beat histogram for selecting the best tempo estimate from BeatPhase
+    const int BPHASE_SIZE = MAX_BPM;
+    bphase.create(BPHASE_SIZE);
+    bphase.setval(0.0);
 
 
-
-   mrs_natural ticks = 0;
-   //mrs_real bh_estimate = 0;
-   //mrs_real bh_estimate2 = 0;
-
-
-   mrs_natural size_in_bytes = onset_strength->getctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
-   mrs_natural num_ticks = (size_in_bytes / (hopSize * bhopSize)) + 1;
-   
-   
-  mrs_realvec bhistogram;
-  //mrs_realvec bhistogram_sum(MAX_BPM*factor);
-  //bhistogram_sum.setval(0.0);
-
-  while (1)
-  {
-	// reset the histogram after the first initial ticks that don't contain
-	// enough onset strength signal for accurate estimation
-	if (ticks == extra_ticks) {
-	  tempoInduction->updControl("BeatHistogram/histo/mrs_bool/reset", true);
+    // output plugin that can be used with MarMonitors for debugging
+    if (pluginName != EMPTYSTRING)
+    {
+        ofstream ofs;
+        ofs.open(pluginName.c_str());
+        ofs << *beatTracker << endl;
+        ofs.close();
+        pluginName = EMPTYSTRING;
     }
 
-	// tick the network and get a tempo estimates
-	beatTracker->tick();
-    ticks++;
-    //cout<<ticks<<"\t"<<num_ticks<<endl;
 
-	mrs_realvec bh_candidates = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
-	for (int k=0; k < nCandidates; k++)
-	{
-		tempos(k) = bh_candidates(2*k+1) / factor;
-        //cout<<tempos(k)<<"   ";
-	}
-    //cout<<"."<<endl;
 
-	//bh_estimate = tempos(0);
-	//bh_estimate2 = tempos(1);
-	mrs_realvec bhistogram = tempoInduction->getControl("BeatHistogram/histo/mrs_realvec/processedData")->to<mrs_realvec>();
-    //bhistogram_sum += bhistogram;
-	
-	// tempo estimation using cross-correlation of candidate pulse trains to the onset strength signal
-    //mrs_real phase_tempo;	 // tempo estimate calculated by the BeatPhase MarSystem
-	//phase_tempo = beatTracker->getControl("BeatPhase/beatphase/mrs_real/phase_tempo")->to<mrs_real>();
+    //mrs_real bh_estimate = 0;
+    //mrs_real bh_estimate2 = 0;
 
-	tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
-	temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
 
-    // extra +1 because we already ticked in this loop!
-	if (ticks >= extra_ticks+1)
-	{
-        //const double alpha = 1.0;
-        //for (int j=0; j<BPHASE_SIZE; j++) {
-        //    bphase(j) *= alpha;
-        //}
-		bphase(tempos(0)) += temposcores(0);
-        //for (int j=0; j < tempos.getCols() ; j++) {
-		//    bphase(tempos(j)) += temposcores(j);
-        //}
-        //cout<<tempos(0)<<"\t"<<temposcores(0)<<endl;
-	}
-	
+    mrs_natural size_in_bytes = onset_strength->getctrl("Accumulator/accum/Series/fluxnet/SoundFileSource/src/mrs_natural/size")->to<mrs_natural>();
+    mrs_natural num_ticks = (size_in_bytes / (hopSize * bhopSize)) + 1;
 
-	if (num_ticks - ticks < 4)
-	  {
-	    break;
-	  }
 
-  }
+    mrs_natural ticks = 0;
+
+    // beginning: tick until the input BH buffer is full
+    mrs_natural begin_tick_num = bwinSize / bhopSize - 1;
+    for (; ticks<begin_tick_num; ticks++) {
+        beatTracker->tick();
+        //mrs_realvec input = onset_strength->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
+        //cout<<"begin:\t"<<input(0,0)<<"\t"<<input(0,2047)<<endl;
+    }
+
+    // reset anything needed for real processing
+    tempoInduction->updControl("BeatHistogram/histo/mrs_bool/reset", true);
 
 
 
-
-
-  //tempos(5) = tempos(0);
-  //tempos(6) = tempos(1);
-  
-
-  // Find the max bin of the histogram created from the
-  // BeatPhase tempo candidates
-  mrs_real bhmax = 0.0;
-  mrs_real bhmax2 = 0.0;
-  mrs_real bhmax3 = 0.0;
-
-  mrs_natural max_i = 0;
-  mrs_natural max_i2 = 0;
-  mrs_natural max_i3 = 0;
+    // middle: actual data, the input BH buffer is full
+    mrs_natural end_tick_num = num_ticks - 1;
+    for (; ticks<end_tick_num; ticks++) {
+        beatTracker->tick();
+        //mrs_realvec input = onset_strength->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
+        //cout<<"middle:\t"<<input(0,0)<<"\t"<<input(0,2047)<<endl;
 
 #if 0
-  cout<<"-----"<<endl;
-  for (int i=0; i < bphase.getCols(); i++) {
-    cout<<bphase(i)<<endl;
-  }
-  cout<<"-----"<<endl;
+        mrs_realvec bh_candidates = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
+        for (int k=0; k < nCandidates; k++)
+        {
+            tempos(k) = bh_candidates(2*k+1) / factor;
+            cout<<tempos(k)<<"   ";
+        }
+        cout<<"."<<endl;
+#endif
+
+        // store best score in bphase
+        tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
+        temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
+        mrs_natural bpm = round(tempos(0));
+        bphase(bpm) += temposcores(0);
+
+    }
+
+
+#if 0
+    // end
+    for (; ticks<num_ticks; ticks++) {
+        beatTracker->tick();
+        mrs_realvec input = onset_strength->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
+        cout<<"end:\t"<<input(0,0)<<"\t"<<input(0,2047)<<endl;
+    }
+#endif
+
+
+
+    //zzzz
+
+
+    // Find the max bin of the histogram created from the
+    // BeatPhase tempo candidates
+    mrs_real bhmax = 0.0;
+    mrs_real bhmax2 = 0.0;
+    mrs_real bhmax3 = 0.0;
+
+    mrs_natural max_i = 0;
+    mrs_natural max_i2 = 0;
+    mrs_natural max_i3 = 0;
+
+#if 0
+    cout<<"-----"<<endl;
+    for (int i=0; i < bphase.getCols(); i++) {
+        cout<<bphase(i)<<endl;
+    }
+    cout<<"-----"<<endl;
 #endif
 
 
 #if 1
-  // filter bphase
-  realvec bphase_filt = bphase;
-  for (int i=9; i < bphase.getCols()-9; i++) {
-    int width = round(i*0.04);
-    if (width < 1) {
-        continue;
-    }
-    int N = 2*width+1;
-    mrs_real kernel[N];
-    for (int n=0; n<N; n++){
-        kernel[n] = (1 - fabs( ((double)(n-((N-1)/2))) / ((N+1)/2) ))/width;
-    }
+    // filter bphase
+    realvec bphase_filt = bphase;
+    for (int i=9; i < bphase.getCols()-9; i++) {
+        int width = round(i*0.04);
+        if (width < 1) {
+            continue;
+        }
+        int N = 2*width+1;
+        mrs_real kernel[N];
+        for (int n=0; n<N; n++){
+            kernel[n] = (1 - fabs( ((double)(n-((N-1)/2))) / ((N+1)/2) ))/width;
+        }
 
-    bphase_filt(i) = 0.0;
-    for (int j=0; j < N; j++) {
-        mrs_real value = bphase(i+j-width) * kernel[j];
-        bphase_filt(i) += value;
+        bphase_filt(i) = 0.0;
+        for (int j=0; j < N; j++) {
+            mrs_real value = bphase(i+j-width) * kernel[j];
+            bphase_filt(i) += value;
+        }
     }
-  }
 #endif
 
 #if 0
-  cout<<"-----"<<endl;
-  for (int i=0; i < bphase.getCols(); i++) {
-    cout<<bphase(i)<<endl;
-  }
-  cout<<"-----"<<endl;
+    cout<<"-----"<<endl;
+    for (int i=0; i < bphase.getCols(); i++) {
+        cout<<bphase(i)<<endl;
+    }
+    cout<<"-----"<<endl;
 #endif
 
-  // global maximum (will be a peak)
-  for (int i=1; i < BPHASE_SIZE-1; i++)
-  {
-      if (bphase(i) > bhmax)
-	  {
-		  bhmax = bphase(i);
-		  max_i = i;
-	  }
+    // global maximum (will be a peak)
+    for (int i=1; i < BPHASE_SIZE-1; i++)
+    {
+        if (bphase(i) > bhmax)
+        {
+            bhmax = bphase(i);
+            max_i = i;
+        }
     }
-	  
-  // second-highest maximum (need to ensure peak-ness)
-  for (int i=1; i < BPHASE_SIZE-1; i++)
-  {
-	  if ((bphase(i) > bhmax2) && (bphase(i) < bhmax) &&
-            (bphase(i-1) < bphase(i)) && (bphase(i+1) < bphase(i)))
- 	  {
- 		  bhmax2 = bphase(i);
- 		  max_i2 = i;
- 	  }
-  }
 
-  // third-highest maximum (need to ensure peak-ness)
-  for (int i=1; i < BPHASE_SIZE-1; i++)
-  {
-	  if ((bphase(i) > bhmax3) && (bphase(i) < bhmax) && (bphase(i) < bhmax2) &&
-            (bphase(i-1) < bphase(i)) && (bphase(i+1) < bphase(i)))
- 	  {
- 		  bhmax3 = bphase(i);
- 		  max_i3 = i;
- 	  }
-  }
-
-  // find relevant values in bhistogram_sum
-  // normalize
-  /*
-  mrs_real norm_bhisto = 1.0 / bhistogram_sum.sum();
-  for (int i=0; i<bhistogram_sum.getCols(); i++) {
-    bhistogram_sum(i) *= norm_bhisto;
-  }
-  */
-
-  // global maximum (will be a peak)
-/*
-  mrs_real bh_sum_max = 0.0;
-  mrs_real bh_sum_bpm = 0.0;
-  for (int i=1; i < bhistogram_sum.getCols(); i++)
-  {
-      if (bhistogram_sum(i) > bh_sum_max)
-	  {
-		  bh_sum_max = bhistogram_sum(i);
-		  bh_sum_bpm = i/factor;
-	  }
+    // second-highest maximum (need to ensure peak-ness)
+    for (int i=1; i < BPHASE_SIZE-1; i++)
+    {
+        if ((bphase(i) > bhmax2) && (bphase(i) < bhmax) &&
+                (bphase(i-1) < bphase(i)) && (bphase(i+1) < bphase(i)))
+        {
+            bhmax2 = bphase(i);
+            max_i2 = i;
+        }
     }
-*/
-   mrs_real estimate_bpm = max_i;
-/*
-   mrs_real str05 = energy_in_histo( 0.5*estimate_bpm,
-        bhistogram_sum, factor, 0.1);
-   mrs_real str1 = energy_in_histo( 1.0*estimate_bpm,
-        bhistogram_sum, factor, 0.1);
-   mrs_real str2 = energy_in_histo( 2.0*estimate_bpm,
-        bhistogram_sum, factor, 0.1);
-    mrs_real str_residual = 1.0 - (str05 + str1 + str2);  
-*/
-  // bhmax =0;
-  // for (int i=0; i < 360; i++)
-  // {
-  // 	  if (bhistogram(i) > bhmax) 
-  //  	  {
-  //  		  bhmax = bphase(i);
-  //  		  bh_estimate = i * 0.25;
-  //  	  }
-  // }
+
+    // third-highest maximum (need to ensure peak-ness)
+    for (int i=1; i < BPHASE_SIZE-1; i++)
+    {
+        if ((bphase(i) > bhmax3) && (bphase(i) < bhmax) && (bphase(i) < bhmax2) &&
+                (bphase(i-1) < bphase(i)) && (bphase(i+1) < bphase(i)))
+        {
+            bhmax3 = bphase(i);
+            max_i3 = i;
+        }
+    }
+
+    // find relevant values in bhistogram_sum
+    // normalize
+    /*
+       mrs_real norm_bhisto = 1.0 / bhistogram_sum.sum();
+       for (int i=0; i<bhistogram_sum.getCols(); i++) {
+       bhistogram_sum(i) *= norm_bhisto;
+       }
+       */
+
+    // global maximum (will be a peak)
+    /*
+       mrs_real bh_sum_max = 0.0;
+       mrs_real bh_sum_bpm = 0.0;
+       for (int i=1; i < bhistogram_sum.getCols(); i++)
+       {
+       if (bhistogram_sum(i) > bh_sum_max)
+       {
+       bh_sum_max = bhistogram_sum(i);
+       bh_sum_bpm = i/factor;
+       }
+       }
+       */
+    mrs_real estimate_bpm = max_i;
+    /*
+       mrs_real str05 = energy_in_histo( 0.5*estimate_bpm,
+       bhistogram_sum, factor, 0.1);
+       mrs_real str1 = energy_in_histo( 1.0*estimate_bpm,
+       bhistogram_sum, factor, 0.1);
+       mrs_real str2 = energy_in_histo( 2.0*estimate_bpm,
+       bhistogram_sum, factor, 0.1);
+       mrs_real str_residual = 1.0 - (str05 + str1 + str2);  
+       */
+    // bhmax =0;
+    // for (int i=0; i < 360; i++)
+    // {
+    // 	  if (bhistogram(i) > bhmax) 
+    //  	  {
+    //  		  bhmax = bphase(i);
+    //  		  bh_estimate = i * 0.25;
+    //  	  }
+    // }
 
 
-  // bhmax =0;
-  // for (int i=400; i < 800; i++)
-  // {
-  // 	  if (bhistogram(i) > bhmax) 
-  // 	  {
-  // 		  bhmax = bphase(i);
-  // 		  bh_estimate2 = i * 0.25;
-  // 	  }
-  // }
-  
+    // bhmax =0;
+    // for (int i=400; i < 800; i++)
+    // {
+    // 	  if (bhistogram(i) > bhmax) 
+    // 	  {
+    // 		  bhmax = bphase(i);
+    // 		  bh_estimate2 = i * 0.25;
+    // 	  }
+    // }
 
 
-  //mrs_real slow_sum =0.0;
-  //mrs_real fast_sum = 0.0;
-  mrs_realvec band_energies(10);
 
-  //mrs_real slow_max = 0.0;
-  //mrs_natural bhistogram_maxi = 0;
-  /*
-  for (int i=200; i < 400; i++)
-  {
-	  if (bhistogram(i) >= slow_max)
-		  slow_max = bhistogram(i);
-  }
-  
-  mrs_real fast_max = 0.0;
-  for (int i=400; i < 4*MAX_BPM; i++) 
-  {
-	  if (bhistogram(i) >= fast_max)
-		  fast_max = bhistogram(i);
-  }
-  
-  mrs_real max_sum = fast_max + slow_max;
-  fast_max /= max_sum;
-  slow_max /= max_sum;
-  */
-  
+    //mrs_real slow_sum =0.0;
+    //mrs_real fast_sum = 0.0;
+    mrs_realvec band_energies(10);
 
+    //mrs_real slow_max = 0.0;
+    //mrs_natural bhistogram_maxi = 0;
+    /*
+       for (int i=200; i < 400; i++)
+       {
+       if (bhistogram(i) >= slow_max)
+       slow_max = bhistogram(i);
+       }
 
-  // mrs_natural dct_size = 10;
-  // mrs_real scale_fac = (mrs_real)(1.0/ sqrt((mrs_real)(dct_size/2)));  
-  // mrs_natural j,i;
-  // mrs_realvec dct_matrix;
-  // dct_matrix.create(10,10);
-  // for (j = 0; j<dct_size; j++)
-  // {
-  // 	  for (i=0; i< dct_size; ++i)
-  // 	  {
-  // 		  dct_matrix(j,i) = scale_fac * cos(j * (2*i +1) * PI/2/ dct_size);
-  // 		  if (j == 0)
-  // 		  {
-  // 			  dct_matrix(j,i) *= (mrs_real)(sqrt(2.0)/2.0);
-  // 		  }
-  // 	  }
-  // }
-  
-  // mrs_real o,k;
-  // mrs_real dctsum;
-  // mrs_realvec mband_energies(10);
-  
-  
-  // for (o=0; o < dct_size; o++)
-  // 	{
-  // 		dctsum =0.0;
-  // 		for (k=0; k < dct_size; k++)
-  // 		{
-  // 			dctsum += (dct_matrix(o,k) * band_energies(o));
-  // 		}
-  // 		mband_energies(o) = dctsum;
-  // 	}
+       mrs_real fast_max = 0.0;
+       for (int i=400; i < 4*MAX_BPM; i++) 
+       {
+       if (bhistogram(i) >= fast_max)
+       fast_max = bhistogram(i);
+       }
+
+       mrs_real max_sum = fast_max + slow_max;
+       fast_max /= max_sum;
+       slow_max /= max_sum;
+       */
 
 
-  
-  
-   mrs_real bhmaxt = max_i;
-   mrs_real bhmaxt2 = max_i2;
-   mrs_real bhmaxt3 = max_i3;
-   
 
-   tempos(0) = bhmaxt;
-   tempos(1) = bhmaxt2;
-   tempos(2) = bhmaxt3;
+    // mrs_natural dct_size = 10;
+    // mrs_real scale_fac = (mrs_real)(1.0/ sqrt((mrs_real)(dct_size/2)));  
+    // mrs_natural j,i;
+    // mrs_realvec dct_matrix;
+    // dct_matrix.create(10,10);
+    // for (j = 0; j<dct_size; j++)
+    // {
+    // 	  for (i=0; i< dct_size; ++i)
+    // 	  {
+    // 		  dct_matrix(j,i) = scale_fac * cos(j * (2*i +1) * PI/2/ dct_size);
+    // 		  if (j == 0)
+    // 		  {
+    // 			  dct_matrix(j,i) *= (mrs_real)(sqrt(2.0)/2.0);
+    // 		  }
+    // 	  }
+    // }
 
-   //tempos(2) = bh_estimate;
-   //tempos(3) = bh_estimate2;
-   mrs_real heuristic_tempo = tempos(0);
+    // mrs_real o,k;
+    // mrs_real dctsum;
+    // mrs_realvec mband_energies(10);
 
 
-   mrs_real str_total = 0.0;
-  for (int i=0; i < BPHASE_SIZE; i++)
-  {
-    str_total += bphase(i);
-  }
+    // for (o=0; o < dct_size; o++)
+    // 	{
+    // 		dctsum =0.0;
+    // 		for (k=0; k < dct_size; k++)
+    // 		{
+    // 			dctsum += (dct_matrix(o,k) * band_energies(o));
+    // 		}
+    // 		mband_energies(o) = dctsum;
+    // 	}
+
+
+
+
+    mrs_real bhmaxt = max_i;
+    mrs_real bhmaxt2 = max_i2;
+    mrs_real bhmaxt3 = max_i3;
+
+
+    tempos(0) = bhmaxt;
+    tempos(1) = bhmaxt2;
+    tempos(2) = bhmaxt3;
+
+    //tempos(2) = bh_estimate;
+    //tempos(3) = bh_estimate2;
+    mrs_real heuristic_tempo = tempos(0);
+
+
+    mrs_real str_total = 0.0;
+    for (int i=0; i < BPHASE_SIZE; i++)
+    {
+        str_total += bphase(i);
+    }
 
 
     mrs_natural num_features = 1*INFO_SIZE + 2;
     realvec features(num_features);
     realvec from_bp = info_histogram(estimate_bpm, bphase,
-        1.0, 0.05);
+            1.0, 0.05);
     for (int i=0; i<INFO_SIZE; i++) {
         features(i) = from_bp(i);
     }
     /*
-    realvec from_bp2 = info_histogram(estimate_bpm, bphase,
-        1.0, 0.1);
-    for (int i=0; i<INFO_SIZE; i++) {
-        features(1*INFO_SIZE + i) = from_bp2(i);
-    }
-    realvec from_bp3 = info_histogram(estimate_bpm, bphase,
-        1.0, 0.01);
-    for (int i=0; i<INFO_SIZE; i++) {
-        features(2*INFO_SIZE + i) = from_bp3(i);
-    }
-*/
-/*
-    realvec from_bh = info_histogram(estimate_bpm, bhistogram_sum,
-        factor, 0.05);
-    for (int i=0; i<INFO_SIZE; i++) {
-        features(INFO_SIZE+i) = from_bh(i);
-    }
-    realvec from_bpf = info_histogram(estimate_bpm, bphase_filt,
-        factor, 0.05);
-    for (int i=0; i<INFO_SIZE; i++) {
-        features(2*INFO_SIZE+i) = from_bpf(i);
-    }
-*/
+       realvec from_bp2 = info_histogram(estimate_bpm, bphase,
+       1.0, 0.1);
+       for (int i=0; i<INFO_SIZE; i++) {
+       features(1*INFO_SIZE + i) = from_bp2(i);
+       }
+       realvec from_bp3 = info_histogram(estimate_bpm, bphase,
+       1.0, 0.01);
+       for (int i=0; i<INFO_SIZE; i++) {
+       features(2*INFO_SIZE + i) = from_bp3(i);
+       }
+       */
+    /*
+       realvec from_bh = info_histogram(estimate_bpm, bhistogram_sum,
+       factor, 0.05);
+       for (int i=0; i<INFO_SIZE; i++) {
+       features(INFO_SIZE+i) = from_bh(i);
+       }
+       realvec from_bpf = info_histogram(estimate_bpm, bphase_filt,
+       factor, 0.05);
+       for (int i=0; i<INFO_SIZE; i++) {
+       features(2*INFO_SIZE+i) = from_bpf(i);
+       }
+       */
     features(num_features - 2) = estimate_bpm;
     features(num_features - 1) = ground_truth_tempo;
 #if 0
-   // absolute BPMs
-   features(0) = tempos(0);
-   features(1) = tempos(1);
-   features(2) = tempos(2);
-   // relative BPMs
-   features(3) = tempos(1)/tempos(0);
-   features(4) = tempos(2)/tempos(0);
-   // absolute strengths
-   features(5) = bhmax/str_total;
-   features(6) = bhmax2/str_total;
-   features(7) = bhmax3/str_total;
-   // relative strengths
-   features(8) = bhmax2/bhmax;
-   features(9) = bhmax3/bhmax;
-   // do we have all 3 tempos?
-   features(10) = 0.0;
-   features(11) = 0.0;
-   if (tempos(1) == 0.0) {
-      features(10) = 1.0;
-   } else if (tempos(2) == 0.0) {
-      features(11) = 1.0;
-   }
-   // absolute strength of half/double
-   mrs_natural ind = 0.5*tempos(0);
-   mrs_real half_str = bphase( ind );
-   features(12) = half_str / str_total;
-   features(13) = half_str / bhmax;
-   ind = 2.0*tempos(0);
-   features(14) = 0.0;
-   features(15) = 0.0;
-   features(16) = 0.0;
-   if (ind < BPHASE_SIZE) {
-      features(14) = 1.0;
-      mrs_real twice_str = bphase( ind );
-      features(15) = twice_str / str_total;
-      features(16) = twice_str / bhmax;
-   }
+    // absolute BPMs
+    features(0) = tempos(0);
+    features(1) = tempos(1);
+    features(2) = tempos(2);
+    // relative BPMs
+    features(3) = tempos(1)/tempos(0);
+    features(4) = tempos(2)/tempos(0);
+    // absolute strengths
+    features(5) = bhmax/str_total;
+    features(6) = bhmax2/str_total;
+    features(7) = bhmax3/str_total;
+    // relative strengths
+    features(8) = bhmax2/bhmax;
+    features(9) = bhmax3/bhmax;
+    // do we have all 3 tempos?
+    features(10) = 0.0;
+    features(11) = 0.0;
+    if (tempos(1) == 0.0) {
+        features(10) = 1.0;
+    } else if (tempos(2) == 0.0) {
+        features(11) = 1.0;
+    }
+    // absolute strength of half/double
+    mrs_natural ind = 0.5*tempos(0);
+    mrs_real half_str = bphase( ind );
+    features(12) = half_str / str_total;
+    features(13) = half_str / bhmax;
+    ind = 2.0*tempos(0);
+    features(14) = 0.0;
+    features(15) = 0.0;
+    features(16) = 0.0;
+    if (ind < BPHASE_SIZE) {
+        features(14) = 1.0;
+        mrs_real twice_str = bphase( ind );
+        features(15) = twice_str / str_total;
+        features(16) = twice_str / bhmax;
+    }
     // "residual" strength
     features(17) = (str_total - (bhmax + bhmax2 + bhmax3))/str_total;
 
-   features(18) = bh_sum_bpm;
-   features(19) = str05;
-   features(20) = str1;
-   features(21) = str2;
-   features(22) = str_residual;
+    features(18) = bh_sum_bpm;
+    features(19) = str05;
+    features(20) = str1;
+    features(21) = str2;
+    features(22) = str_residual;
 
 
-   // ground truth for training
-   features(23) = ground_truth_tempo;
+    // ground truth for training
+    features(23) = ground_truth_tempo;
 #endif
 
-   std::ostringstream features_text;
-   features_text << "features_orig:\t";
-   for (int i=0; i < features.getCols(); i++) {
-       features_text << features(i) << "\t";
-   }
-   cout << features_text.str() << endl;
-   
+    std::ostringstream features_text;
+    features_text << "features_orig:\t";
+    for (int i=0; i < features.getCols(); i++) {
+        features_text << features(i) << "\t";
+    }
+    cout << features_text.str() << endl;
+
 
     // generated through post-processing
     // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0, 0.0, 0.0577764, 0.0, 0.0675425, 0.0, -2.22045e-16, 0.0, 0.0, 1.0, 0.0321518, 50.0, 0 };
-    const mrs_real maxs[] = { 0.863484, 0.896872, 1.0, 0.536409, 1.0, 0.682067, 0.899166, 3.14286, 3.27778, 87.0, 1.0, 178.0, 0 };
+    const mrs_real mins[] = { 0.0, 0.0, 0.0341224, 0.0, 0.0341224, 0.0, -4.44089e-16, 0.0, 0.0, 1.0, 0.0308513, 50.0, 0 };
+    const mrs_real maxs[] = { 0.870634, 0.938686, 1.0, 0.524989, 1.0, 0.748972, 0.915919, 3.06897, 3.12281, 89.0, 1.0, 178.0, 0 };
     const mrs_real svm_weights[] = {
-         2.6362, -2.0457, -0.2367, -1.3114,
-         -0.5867, 2.7962, -0.7496, -0.8151,
-         -0.6443, -0.2084, -0.1676, -7.9441,
-         0,
+        1.6087, -1.2059, -0.2373, -0.0532,
+        -0.259, 2.4086, -1.6995, -0.731,
+        -0.4656, 0.4358, 0.1953, -8.0255,
+        0,
     };
-    double svm_sum = 2.4939;
+    double svm_sum = 1.8722;
 
     for (int i=0; i<features.getCols(); i++) {
         if (mins[i] == maxs[i]) {
@@ -1767,178 +1724,177 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     mrs_real mult = 1.0;
     //cout<<"svm_sum:\t"<<svm_sum<<endl;
 
-   std::ostringstream features_normalized;
-   features_normalized << "features_normalized:\t";
-   for (int i=0; i < features.getCols(); i++) {
-       features_normalized << features(i) << "\t";
-   }
-   cout << features_normalized.str() << endl;
+    std::ostringstream features_normalized;
+    features_normalized << "features_normalized:\t";
+    for (int i=0; i < features.getCols(); i++) {
+        features_normalized << features(i) << "\t";
+    }
+    cout << features_normalized.str() << endl;
 
     for (int i=0; i<features.getCols(); i++) {
-         svm_sum += features(i) * svm_weights[i];
+        svm_sum += features(i) * svm_weights[i];
     }
 #if POST_DOUBLING == 2
     if (svm_sum > 0) {
         mult = 2.0;
         //cout<<"doubling!"<<endl;
     }
-   tempos(0) = mult * heuristic_tempo;
+    tempos(0) = mult * heuristic_tempo;
 #endif
 
-//zzzz
 
-   /*
-   cout << slow_max << "," << fast_max << ",";
-   
-   // cout << slow_sum << "," << fast_sum << "," << mband_energies(2)  << "," << mband_energies(3)  << "," << mband_energies(4) << ",";
+    /*
+       cout << slow_max << "," << fast_max << ",";
 
-   // cout << mband_energies(5) << "," << mband_energies(6) << "," << mband_energies(7)  << "," << mband_energies(8)  << "," << mband_energies(9) << ",";
+    // cout << slow_sum << "," << fast_sum << "," << mband_energies(2)  << "," << mband_energies(3)  << "," << mband_energies(4) << ",";
 
-   if (ground_truth_tempo < 100.0) 
-	   cout << "slow" << endl;
-   else 
-	   cout << "fast" << endl;
-   */
- 
+    // cout << mband_energies(5) << "," << mband_energies(6) << "," << mband_energies(7)  << "," << mband_energies(8)  << "," << mband_energies(9) << ",";
+
+    if (ground_truth_tempo < 100.0) 
+    cout << "slow" << endl;
+    else 
+    cout << "fast" << endl;
+    */
+
 #if 0
-   for (int i=0; i < 3; i++)
-   {
-	   for (int j=0; j < 3; j++)
-	   {
-		   // if there are two tempo estimates with a ratio of 2 pick the higher
-		   // one if the lower one is less than 70 BPM
+    for (int i=0; i < 3; i++)
+    {
+        for (int j=0; j < 3; j++)
+        {
+            // if there are two tempo estimates with a ratio of 2 pick the higher
+            // one if the lower one is less than 70 BPM
 
-		   if (i != j)
-		   {
-			   if (fabs(2 * tempos(i) - tempos(j)) < tolerance * tempos(j)) 
-			   {
-				   cout << "GT = " << ground_truth_tempo << " Heuristic - " << tempos(0) << "-" << tempos(2) << "-" << endl;
-				   if (fabs(tempos(i) - ground_truth_tempo) < tolerance * ground_truth_tempo)
-				   {
-					//				heuristic_tempo = tempos(i);
-					//cout << tempos(0) << "," << tempos(1) << "," << tempos(2) << "," << "temposelect" << i << endl;
-					cout << tempos(i) << "," << bhistogram.var() << "," << "temposelectl" << endl;
-				
-				   }	
-				   if (fabs(tempos(j) - ground_truth_tempo) < tolerance * ground_truth_tempo)
-				   {
-				// 	heuristic_tempo = tempos(j);
-					cout << tempos(i) << "," << bhistogram.var() << "," << "temposelecth" << endl;
-				   }
-				
-				
-				   
-				    //if (tempos(i) < 68.5)
-				    if (tempos(i) <= 72)
-			 		   heuristic_tempo = 2 * tempos(i);
-			   }
-		   }
-		   
+            if (i != j)
+            {
+                if (fabs(2 * tempos(i) - tempos(j)) < tolerance * tempos(j)) 
+                {
+                    cout << "GT = " << ground_truth_tempo << " Heuristic - " << tempos(0) << "-" << tempos(2) << "-" << endl;
+                    if (fabs(tempos(i) - ground_truth_tempo) < tolerance * ground_truth_tempo)
+                    {
+                        //				heuristic_tempo = tempos(i);
+                        //cout << tempos(0) << "," << tempos(1) << "," << tempos(2) << "," << "temposelect" << i << endl;
+                        cout << tempos(i) << "," << bhistogram.var() << "," << "temposelectl" << endl;
 
-		// if (i!= j)
-		// if ((fabs(ground_truth_tempo - tempos(i)) < tolerance * ground_truth_tempo))
-		// {
-	        // 		heuristic_tempo = tempos(i);
-	// 		cout << "ORACLE = " << i << "-" << heuristic_tempo << endl;
-	// 	}
-	   }
+                    }	
+                    if (fabs(tempos(j) - ground_truth_tempo) < tolerance * ground_truth_tempo)
+                    {
+                        // 	heuristic_tempo = tempos(j);
+                        cout << tempos(i) << "," << bhistogram.var() << "," << "temposelecth" << endl;
+                    }
 
-	   
-   }
-   
 
-   for (int i=0; i < 3; i++) 
-	   if (heuristic_tempo == tempos(i))
-		   cout << "SELECTED I = " << i  << "-" << tempos(0) << "," << tempos(1) << "," << tempos(2) <<  "-" << ground_truth_tempo << endl;
-   
 
-   // oracle_tempo = heuristic_tempo;
+                    //if (tempos(i) < 68.5)
+                    if (tempos(i) <= 72)
+                        heuristic_tempo = 2 * tempos(i);
+                }
+            }
 
-   /* for (int i=0; i < 4; i++)
-   {
-	   if (fabs(tempos(i) < 0.04 * ground_truth_tempo))
-		   oracle_tempo = tempos(i);
 
-	   if (fabs(2 * tempos(i) < 0.04 * ground_truth_tempo))
-		   oracle_tempo = 2 * tempos(i);
+            // if (i!= j)
+            // if ((fabs(ground_truth_tempo - tempos(i)) < tolerance * ground_truth_tempo))
+            // {
+            // 		heuristic_tempo = tempos(i);
+            // 		cout << "ORACLE = " << i << "-" << heuristic_tempo << endl;
+            // 	}
+        }
 
-	   if (fabs(0.5 * tempos(i) < 0.04 * ground_truth_tempo))
-		   oracle_tempo = 0.5 * tempos(i);
-		   }*/ 
+
+    }
+
+
+    for (int i=0; i < 3; i++) 
+        if (heuristic_tempo == tempos(i))
+            cout << "SELECTED I = " << i  << "-" << tempos(0) << "," << tempos(1) << "," << tempos(2) <<  "-" << ground_truth_tempo << endl;
+
+
+    // oracle_tempo = heuristic_tempo;
+
+    /* for (int i=0; i < 4; i++)
+       {
+       if (fabs(tempos(i) < 0.04 * ground_truth_tempo))
+       oracle_tempo = tempos(i);
+
+       if (fabs(2 * tempos(i) < 0.04 * ground_truth_tempo))
+       oracle_tempo = 2 * tempos(i);
+
+       if (fabs(0.5 * tempos(i) < 0.04 * ground_truth_tempo))
+       oracle_tempo = 0.5 * tempos(i);
+       }*/ 
 #endif
 
 
 #if POST_DOUBLING == 1
-   if (heuristic_tempo <= 71.5) {
-    heuristic_tempo *= 2;
-   }
-   tempos(0) = heuristic_tempo;
+    if (heuristic_tempo <= 71.5) {
+        heuristic_tempo *= 2;
+    }
+    tempos(0) = heuristic_tempo;
 #endif
 
 #if POST_DOUBLING == 0
-   tempos(0) = heuristic_tempo;
+    tempos(0) = heuristic_tempo;
 #endif
 
-   
-   
-   // if (fabs( 2 * tempos(0) - ground_truth_tempo) <= 0.04 * ground_truth_tempo) 
-   // {
-   // 	   cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "double" << endl;
-   // }
-   // else if (fabs( 0.5 * tempos(0) - ground_truth_tempo) <= 0.04 * ground_truth_tempo) 
-   // {
-   // 	   cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "half" << endl;
-   // }
-   // else 
-   // 	   // cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "stay" << endl;
-   
 
 
-   
-   // if (ground_truth_tempo < 80.0)
-   // {
-   // 	   if (tempos(0) > 80.0) 
-   // 		   tempos(0) *= 0.5;
-   // }
-   // if ((ground_truth_tempo > 80.0)&&(ground_truth_tempo < 110.0))
-   // {
-   // 	   if (tempos(0) < 80.0)
-   // 		   tempos(0) *= 2.0;
-   // 	   if (tempos(0) > 110.0)
-   // 		   tempos(0) *= 0.5;
-   // }
-   // if (ground_truth_tempo >110.0)
-   // {
-   // 	   if (tempos(0) < 110.0)
-   // 		   tempos(0) *= 2.0;
-   // }
-   
-		   
-   
-   // if ((ground_truth_tempo > 100.0)&&(tempos(0) < 100.0))
-   // tempos(0) = 2.0 * tempos(0);	   
-
-   // if ((ground_truth_tempo < 100.0)&&(tempos(0) > 100.0))
-   // tempos(0) = 0.5 * tempos(0);
-   
+    // if (fabs( 2 * tempos(0) - ground_truth_tempo) <= 0.04 * ground_truth_tempo) 
+    // {
+    // 	   cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "double" << endl;
+    // }
+    // else if (fabs( 0.5 * tempos(0) - ground_truth_tempo) <= 0.04 * ground_truth_tempo) 
+    // {
+    // 	   cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "half" << endl;
+    // }
+    // else 
+    // 	   // cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "stay" << endl;
 
 
 
-   
 
-   if (haveCollections)
-	   evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo, tolerance);
+    // if (ground_truth_tempo < 80.0)
+    // {
+    // 	   if (tempos(0) > 80.0) 
+    // 		   tempos(0) *= 0.5;
+    // }
+    // if ((ground_truth_tempo > 80.0)&&(ground_truth_tempo < 110.0))
+    // {
+    // 	   if (tempos(0) < 80.0)
+    // 		   tempos(0) *= 2.0;
+    // 	   if (tempos(0) > 110.0)
+    // 		   tempos(0) *= 0.5;
+    // }
+    // if (ground_truth_tempo >110.0)
+    // {
+    // 	   if (tempos(0) < 110.0)
+    // 		   tempos(0) *= 2.0;
+    // }
 
-   ofstream ofs;
-   ofs.open(fileName.c_str());
-   // cout << tempos(0) << endl;
-   ofs << tempos(0) << endl;
-   ofs.close();
-   cout << "Estimated tempo = " << tempos(0) << endl;
-   
 
-   delete beatTracker;
- }
+
+    // if ((ground_truth_tempo > 100.0)&&(tempos(0) < 100.0))
+    // tempos(0) = 2.0 * tempos(0);	   
+
+    // if ((ground_truth_tempo < 100.0)&&(tempos(0) > 100.0))
+    // tempos(0) = 0.5 * tempos(0);
+
+
+
+
+
+
+    if (haveCollections)
+        evaluate_estimated_tempo(sfName, tempos, ground_truth_tempo, tolerance);
+
+    ofstream ofs;
+    ofs.open(fileName.c_str());
+    // cout << tempos(0) << endl;
+    ofs << tempos(0) << endl;
+    ofs.close();
+    cout << "Estimated tempo = " << tempos(0) << endl;
+
+
+    delete beatTracker;
+}
 
  void
  tempo_predicted(mrs_string sfName, float predicted_tempo, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
