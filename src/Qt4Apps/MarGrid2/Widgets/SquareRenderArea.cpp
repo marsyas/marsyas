@@ -113,7 +113,7 @@ void SquareRenderArea::paintEvent(QPaintEvent*  event)
 				if(colourMapMode_)
 				{
 
-	/*
+
 					int numSongs = -1;
 					int maxIndex = -1;
 					int * genreDensity = grid_->getDensity(k);
