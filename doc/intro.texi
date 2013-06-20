@@ -205,7 +205,7 @@ the advantages of dataflow computation.
 @subsection Latest version
 
 The documentation is uploaded regularly to
-@uref{http://marsyas.sness.net/docs/index.html}
+@uref{http://marsyas.info/docs/index.html}
 
 
 @subsection User manual and Developer's manual

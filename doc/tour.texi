@@ -12,7 +12,7 @@ complete exposition which is provided in chapter @ref{Available tools}.
 In order to execute the examples described in this
 section you will need collections of music tracks in an audio format 
 supported by Marsyas. The chapter assumes that the collections provided 
-in @uref{http://marsyas.sness.net/download/data_sets} have been
+in @uref{http://marsyas.info/download/data_sets} have been
 downloaded and placed in a subdirectory named @code{audio} of the 
 Marsyas distribution. Here is a possible sequence of commands 
 to obtain the datasets in a unix like system (Linux, OSX or Cygwin). 
@@ -230,8 +230,8 @@ Marsyas as a backend for audio analysis and processing. The Marsyas
 website contains information about projects, publications, screenshots 
 and web-demos based on Marsyas. 
 
-@uref{http://marsyas.sness.net/about/projects} 
-@uref{http://marsyas.sness.net/about/videos} 
-@uref{http://marsyas.sness.net/about/publications} 
-@uref{http://marsyas.sness.net/about/webdemos} 
+@uref{http://marsyas.info/about/projects} 
+@uref{http://marsyas.info/about/videos} 
+@uref{http://marsyas.info/about/publications} 
+@uref{http://marsyas.info/about/webdemos} 
 

@@ -535,7 +535,10 @@ ctrl_Z->unlink();
 ctrl_Z->linkTo(ctrl_W); //we must remind that this one was originally connected to W and not directly to X! :-\
 @end example
 
-(OK, if you managed to follow me till here without getting suicidal tendencies or falling totally asleep, please go to http://marsyas.sness.net/community/getting_involved and welcome aboard ;-)).
+(OK, if you managed to follow me till here without getting
+suicidal tendencies or falling totally asleep, please go to
+http://marsyas.info/community/getting_involved and welcome aboard
+;-)).
 
 The best way to make Marsyas solve this automatically for us was to keep a simple record of the original link orders, as explained above. If we know who originally linked to whom, it's then easy to unlink a control from a set of controls, but keep all the controls that were originally connected (or indirectely connected) still attached to it. So after the "part II" of the refactoring, if we want to reconnect ctrl_X (and all the controls originally linked to it) to the new last child in the composite, we would only need to do:
 

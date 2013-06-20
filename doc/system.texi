@@ -22,7 +22,7 @@ source documentation}.
 @end ifhtml
 @ifnothtml
 source documentation available at
-@code{@uref{http://marsyas.sness.net/docs/index.html}}.
+@code{@uref{http://marsyas.info/docs/index.html}}.
 @end ifnothtml
 Most MarSystems are organized into groups.
 

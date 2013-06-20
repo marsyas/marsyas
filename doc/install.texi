@@ -1094,7 +1094,7 @@ Useful datasets:
 
 @itemize
 @item
-@uref{http://marsyas.sness.net/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
+@uref{http://marsyas.info/marsyas-coffee/marsyas-coffee-latest.tar.bz2,
 marsyas-coffee}:
 data set used for large black-box tests in Marsyas.  (NOW
 DEFUNCT, MIGHT POSSIBLY BE USED AGAIN LATER)
