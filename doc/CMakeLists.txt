@@ -2,20 +2,18 @@
 find_program(TEXI2PDF NAMES texi2pdf PATHS $ENV{PATH})
 if(TEXI2PDF)
   set(TEXI2PDF ${TEXI2PDF} -b)
-else()
-  return()
 endif()
 
 find_program(MAKEINFO NAMES makeinfo PATHS $ENV{PATH})
 if(MAKEINFO)
   set(TEXI2HTML ${MAKEINFO} --html
     --css-include=${CMAKE_CURRENT_SOURCE_DIR}/marsyas.css)
-else()
-  return()
 endif()
 
 find_program(DOXYGEN NAMES doxygen PATHS $ENV{PATH})
-if(NOT DOXYGEN)
+
+if(NOT TEXI2PDF OR NOT TEXI2HTML OR NOT DOXYGEN)
+  message(STATUS "Documentation can not be built, because either texi2pdf, texi2html, or Doxygen is not installed.")
   return()
 endif()
 
