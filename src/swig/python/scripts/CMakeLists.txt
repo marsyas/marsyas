@@ -1,6 +1,6 @@
 
 file(GLOB Marsyas_PYTHON_SCRIPTS
-  RELATIVE ${CMAKE_SOURCE_DIR}/swig/python/scripts *.py)
+  RELATIVE ${CMAKE_SOURCE_DIR}/src/swig/python/scripts *.py)
 
 install(
   FILES ${Marsyas_PYTHON_SCRIPTS}

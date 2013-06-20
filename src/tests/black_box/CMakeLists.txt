@@ -2,6 +2,7 @@
 set(TEST_INPUT ${CMAKE_CURRENT_SOURCE_DIR}/input)
 set(TEST_OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/output)
 set(TEST_TEMPDIR ${CMAKE_CURRENT_BINARY_DIR})
+set(MARSYAS_SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/scripts/)
 
 if (MARSYAS_MACOSX)
   set(COMMAND_LINE_LIBRARY_ENV DYLD_LIBRARY_PATH=${PROJECT_BINARY_DIR}/lib )
@@ -45,7 +46,7 @@ black_box_audio (peakClustering nearhou.wav nearhouSep.wav
 
 macro(bextract_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   add_test( ${REG_NAME}-bextract
-	${CMAKE_SOURCE_DIR}/../scripts/cmake-test-wrapper.py
+	${MARSYAS_SCRIPTS_DIR}/cmake-test-wrapper.py
 		${DIR}
 		${COMMAND_LINE_LIBRARY_ENV}
 		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
@@ -59,14 +60,14 @@ macro(bextract_kea_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   bextract_test(${REG_NAME} ${DIR} ${MF_INPUT} ${EXTRA_BEXTRACT} )
   # we don't need the TEST_TEMPDIR for the kea commands
   add_test( ${REG_NAME}-classify-gs
-	${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py
+	${MARSYAS_SCRIPTS_DIR}/kea-wrapper.py
 		${EXECUTABLE_OUTPUT_PATH}/kea
 		-w ${TEST_TEMPDIR}/${REG_NAME}.arff -cl GS
 		${REG_NAME}-gs.txt
 		${TEST_OUTPUT}/${REG_NAME}-gs.txt
   )
   add_test( ${REG_NAME}-classify-svm
-	${CMAKE_SOURCE_DIR}/../scripts/kea-wrapper.py
+	${MARSYAS_SCRIPTS_DIR}/kea-wrapper.py
 		${EXECUTABLE_OUTPUT_PATH}/kea
 		-w ${TEST_TEMPDIR}/${REG_NAME}.arff -cl SVM
 		${REG_NAME}-svm.txt
@@ -76,7 +77,7 @@ endmacro(bextract_kea_test)
 
 macro(tempo_test REG_NAME DIR MF_INPUT)
   add_test( ${REG_NAME}-tempo
-	${CMAKE_SOURCE_DIR}/../scripts/tempo-wrapper.py
+	${MARSYAS_SCRIPTS_DIR}/tempo-wrapper.py
 		${EXECUTABLE_OUTPUT_PATH}/tempo
 		${DIR}/${MF_INPUT}
 		${TEST_TEMPDIR}/${REG_NAME}-tempo.txt
@@ -86,7 +87,7 @@ endmacro(tempo_test)
 
 macro(timeline_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT)
   add_test( ${REG_NAME}-bextract
-	${CMAKE_SOURCE_DIR}/../scripts/timeline-test-wrapper.py
+	${MARSYAS_SCRIPTS_DIR}/timeline-test-wrapper.py
 		${DIR}
 		${COMMAND_LINE_LIBRARY_ENV}
 		${EXECUTABLE_OUTPUT_PATH}/bextract -fe
@@ -100,7 +101,7 @@ endmacro(timeline_test)
 
 macro(sfplugin_test REG_NAME DIR MF_INPUT EXTRA_BEXTRACT TEST_FILE)
   add_test( ${REG_NAME}-bextract
-	${CMAKE_SOURCE_DIR}/../scripts/sfplugin-test-wrapper.py
+	${MARSYAS_SCRIPTS_DIR}/sfplugin-test-wrapper.py
 		${DIR}
 		${COMMAND_LINE_LIBRARY_ENV}
 		"${EXECUTABLE_OUTPUT_PATH}/bextract"

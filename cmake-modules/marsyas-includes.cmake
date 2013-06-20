@@ -62,37 +62,36 @@ if (MARSYAS_WIN32)
 	endif (MARSYAS_MIDIIO)
 endif (MARSYAS_WIN32)
 
-
 ## setup Marsyas includes
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/)
+include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/)
 
 if (MARSYAS_AUDIOIO) 
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtAudio/)
+	include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/RtAudio/)
 endif (MARSYAS_AUDIOIO) 
 
 if (MARSYAS_MIDIIO) 
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/RtMidi/)
+	include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/RtMidi/)
 endif (MARSYAS_MIDIIO) 
 
 if (WITH_ANN) 
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/ANN/)
+	include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/ANN/)
 endif (WITH_ANN) 
 
 ## from user options
 if (MARSYAS_MATLAB) 
 	include_directories(${MATLAB_INCLUDE_DIR})
-	include_directories(${CMAKE_SOURCE_DIR}/marsyas/MATLAB)
+	include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/MATLAB)
 endif (MARSYAS_MATLAB)
 
 
 if (MARSYAS_OSC)
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/oscpack/osc)
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/oscpack/ip)
+	include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/oscpack/osc)
+	include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/oscpack/ip)
 endif (MARSYAS_OSC)
 
 if (MARSYAS_PNG)
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libpng-1.2.35)
-	include_directories(${CMAKE_SOURCE_DIR}/otherlibs/pngwriter/)
+	include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/libpng-1.2.35)
+	include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/pngwriter/)
 endif (MARSYAS_PNG)
 
 if (MARSYAS_OPENGL)
@@ -108,7 +107,7 @@ if (MARSYAS_GSTREAMER)
 endif (MARSYAS_GSTREAMER)
 
 ## basic library includes
-include_directories(${CMAKE_SOURCE_DIR}/otherlibs/libsvm/)
+include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/libsvm/)
 
 
 

@@ -37,7 +37,7 @@ endforeach()
 
 ## OTHERLIBS
 
-set( EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/otherlibs )
+set( EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/src/otherlibs )
 
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/libsvm/svm.cpp)
 list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/libsvm/svm.h)

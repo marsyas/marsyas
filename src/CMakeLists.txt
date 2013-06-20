@@ -1,21 +1,3 @@
-## global setup
-cmake_minimum_required (VERSION 2.8)
-project (marsyas)
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/../cmake-modules")
-SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Marsyas: Music Analysis, Retrieval and Synthesis for Audio Signals")
-SET(CPACK_PACKAGE_VERSION_MAJOR "0")
-SET(CPACK_PACKAGE_VERSION_MINOR "4") 
-SET(CPACK_PACKAGE_VERSION_PATCH "7") 
-SET(CPACK_GENERATOR "TGZ")
-SET(CPACK_SOURCE_GENERATOR "TGZ")
-INCLUDE(CPack)
-
-
-## version
-set (MARSYAS_VERSION_MAJOR "0")
-set (MARSYAS_VERSION_MINOR "4")
-set (MARSYAS_VERSION_PATCH "7")
-
 
 ## basic CMAKE vars
 mark_as_advanced (EXECUTABLE_OUTPUT_PATH)
@@ -69,7 +51,7 @@ include (marsyas-options)
 include (marsyas-detect)
 
 ## CONFIG.H
-configure_file(${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/config.h)
+configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
 include_directories(${CMAKE_BINARY_DIR})
 ## oops, don't install this!  -gp
 #install(FILES ${CMAKE_BINARY_DIR}/config.h DESTINATION include/marsyas)

@@ -1,6 +1,6 @@
 ## BASIC SETUP
 include(marsyas-oslibs)
-include_directories(${CMAKE_SOURCE_DIR}/otherlibs/)
+include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/)
 include_directories(${LIBRARY_OUTPUT_PATH})
 
 # In case we build the static version of Marsyas, we need to link

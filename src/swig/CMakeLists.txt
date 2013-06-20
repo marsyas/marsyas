@@ -2,10 +2,10 @@
 include (marsyas-oslibs)
 
 # to allow "marsyas/MarSystemManager.h" to work.
-include_directories(${CMAKE_SOURCE_DIR})
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/core/)
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/marsystems/)
-include_directories(${CMAKE_SOURCE_DIR}/marsyas/optional/)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/core/)
+include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/marsystems/)
+include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/optional/)
 
 # global swig stuff
 #find_package(SWIG REQUIRED)

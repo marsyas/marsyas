@@ -1,21 +1,27 @@
-## global setup
-cmake_minimum_required(VERSION 2.8)
-project(Document)
-
-## program setup
+## find required programs
 find_program(TEXI2PDF NAMES texi2pdf PATHS $ENV{PATH})
-set(TEXI2PDF ${TEXI2PDF} -b)
+if(TEXI2PDF)
+  set(TEXI2PDF ${TEXI2PDF} -b)
+else()
+  return()
+endif()
 
 find_program(MAKEINFO NAMES makeinfo PATHS $ENV{PATH})
-set(TEXI2HTML ${MAKEINFO} --html
-  --css-include=${CMAKE_SOURCE_DIR}/marsyas.css)
+if(MAKEINFO)
+  set(TEXI2HTML ${MAKEINFO} --html
+    --css-include=${CMAKE_CURRENT_SOURCE_DIR}/marsyas.css)
+else()
+  return()
+endif()
 
 find_program(DOXYGEN NAMES doxygen PATHS $ENV{PATH})
-
+if(NOT DOXYGEN)
+  return()
+endif()
 
 ## prep
-make_directory(${CMAKE_BINARY_DIR}/out-www/)
-set(OUT-WWW ${CMAKE_BINARY_DIR}/out-www/)
+set(OUT-WWW ${CMAKE_CURRENT_BINARY_DIR}/out-www/)
+make_directory(${OUT-WWW})
 configure_file(index.html.in ${OUT-WWW}/index.html COPYONLY)
 
 make_directory(${OUT-WWW}/manual/)
@@ -28,7 +34,7 @@ make_directory(${MANUAL_DIR}/marsyas-user/images/)
 make_directory(${MANUAL_DIR}/marsyas-devel/images/)
 make_directory(${MANUAL_DIR}/marsyas-cookbook/images/)
 
-file(GLOB PNG_IMAGES ${CMAKE_SOURCE_DIR}/images/*.png)
+file(GLOB PNG_IMAGES images/*.png)
 foreach(PNG_FILE ${PNG_IMAGES})
 # ugly, but works
 	configure_file(${PNG_FILE} ${MANUAL_DIR}/marsyas-user/images/ COPYONLY)
@@ -41,46 +47,48 @@ endforeach(PNG_FILE)
 add_custom_command(
 	OUTPUT ${MANUAL_DIR}/marsyas-user.pdf
 	COMMAND ${TEXI2PDF}
-	ARGS ${CMAKE_SOURCE_DIR}/marsyas-user.texi
+	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/marsyas-user.texi
 	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
 	OUTPUT ${MANUAL_DIR}/marsyas-user/index.html
 	COMMAND ${TEXI2HTML}
-	ARGS ${CMAKE_SOURCE_DIR}/marsyas-user.texi
+	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/marsyas-user.texi
 	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
 	OUTPUT ${MANUAL_DIR}/marsyas-devel.pdf
 	COMMAND ${TEXI2PDF}
-	ARGS ${CMAKE_SOURCE_DIR}/marsyas-devel.texi
+	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/marsyas-devel.texi
 	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
 	OUTPUT ${MANUAL_DIR}/marsyas-devel/index.html
 	COMMAND ${TEXI2HTML}
-	ARGS ${CMAKE_SOURCE_DIR}/marsyas-devel.texi
+	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/marsyas-devel.texi
 	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
 	OUTPUT ${MANUAL_DIR}/marsyas-cookbook.pdf
 	COMMAND ${TEXI2PDF}
-	ARGS ${CMAKE_SOURCE_DIR}/marsyas-cookbook.texi
+	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/marsyas-cookbook.texi
 	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 add_custom_command(
 	OUTPUT ${MANUAL_DIR}/marsyas-cookbook/index.html
 	COMMAND ${TEXI2HTML}
-	ARGS ${CMAKE_SOURCE_DIR}/marsyas-cookbook.texi
+	ARGS ${CMAKE_CURRENT_SOURCE_DIR}/marsyas-cookbook.texi
 	WORKING_DIRECTORY ${MANUAL_DIR}
 )
 
 configure_file( Doxyfile.in Doxyfile @ONLY )
+
+make_directory(${OUT-WWW}/sourceDoc)
 
 add_custom_command(
 	OUTPUT ${OUT-WWW}/sourceDoc/index.html
@@ -91,7 +99,7 @@ add_custom_target(doxy
 	DEPENDS ${OUT-WWW}/sourceDoc/index.html
 )
 
-add_custom_target(docs ALL
+add_custom_target(docs
 	DEPENDS ${MANUAL_DIR}/marsyas-user.pdf
 	DEPENDS ${MANUAL_DIR}/marsyas-user/index.html
 	DEPENDS ${MANUAL_DIR}/marsyas-devel.pdf
@@ -102,6 +110,6 @@ add_custom_target(docs ALL
 )
 
 file(COPY ${PNG_IMAGES} DESTINATION ${OUT-WWW}/marsyas-user/images/)
-file(COPY ${CMAKE_SOURCE_DIR}/examples DESTINATION ${OUT-WWW}/manual)
+file(COPY examples DESTINATION ${OUT-WWW}/manual)
 
 
