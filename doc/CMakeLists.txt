@@ -20,7 +20,7 @@ endif()
 ## prep
 set(OUT-WWW ${CMAKE_CURRENT_BINARY_DIR}/out-www/)
 make_directory(${OUT-WWW})
-configure_file(index.html.in ${OUT-WWW}/index.html COPYONLY)
+configure_file(index.html.in ${OUT-WWW}/index.html)
 
 make_directory(${OUT-WWW}/manual/)
 set(MANUAL_DIR ${OUT-WWW}/manual/)

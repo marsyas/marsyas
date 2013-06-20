@@ -10,7 +10,7 @@
   "text/html; charset=us-ascii">
   <meta name="aesop" content="links">
   <meta name="description" content=
-  "Top-level index to the standard documentation for Marsyas@">
+  "Top-level index to the standard documentation for Marsyas">
 <style type="text/css">
     .navigation { background-color: #e8ffe8;
                           padding: 2; border: #c0ffc0 1px solid;
@@ -33,7 +33,7 @@
   </div>
 
   <div align="center" class="titlepage">
-    <p><strong>Version 0.2.12</strong><br></p>
+    <p><strong>Version @MARSYAS_VERSION_MAJOR@.@MARSYAS_VERSION_MINOR@.@MARSYAS_VERSION_PATCH@</strong><br></p>
   </div>
 
   <table align="center">
