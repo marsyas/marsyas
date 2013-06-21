@@ -46,6 +46,7 @@ PlotSink::PlotSink(const PlotSink& a):MarSystem(a)
 	ctrl_separator_ = getctrl("mrs_string/separator");
 	ctrl_sequence_ = getctrl("mrs_bool/sequence");
 	ctrl_single_file_ = getctrl("mrs_bool/single_file");
+	ctrl_no_ticks_ = getctrl("mrs_bool/no_ticks");
 	ctrl_filename_ = getctrl("mrs_string/filename");
 	ctrl_matlab_ = getctrl("mrs_bool/matlab");
 	ctrl_matlabCommand_ = getctrl("mrs_string/matlabCommand");
@@ -73,6 +74,7 @@ PlotSink::addControls()
 	addctrl("mrs_string/separator", ",", ctrl_separator_);
 	addctrl("mrs_bool/sequence", true, ctrl_sequence_);
 	addctrl("mrs_bool/single_file", false, ctrl_single_file_);
+	addctrl("mrs_bool/no_ticks", false, ctrl_no_ticks_);
     setctrlState("mrs_bool/single_file", true);
 	addctrl("mrs_string/filename", "defaultfile", ctrl_filename_);
 	addctrl("mrs_bool/matlab", false, ctrl_matlab_);
@@ -129,7 +131,10 @@ PlotSink::myProcess(realvec& in, realvec& out)
                 //cout << in(o,t);
             }
         }
-        (*single_file_) << std::endl;
+	    if (ctrl_no_ticks_->isTrue()) {
+        } else {
+            (*single_file_) << std::endl;
+        }
     }
 	
 	if(ctrl_messages_->isTrue())

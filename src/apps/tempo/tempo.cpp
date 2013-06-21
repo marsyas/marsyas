@@ -997,6 +997,7 @@ test_oss_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, b
             "onset_strength.txt");
     onset_strength->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
     onset_strength->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
+    onset_strength->updControl("PlotSink/plotsink/mrs_bool/no_ticks", true);
 
 
     MarControlPtr hasData = onset_strength->getctrl("mrs_bool/hasData");
@@ -1708,12 +1709,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     const mrs_real mins[] = { 0.0, 0.0, 0.0341224, 0.0, 0.0341224, 0.0, -4.44089e-16, 0.0, 0.0, 1.0, 0.0308513, 50.0, 0 };
     const mrs_real maxs[] = { 0.870634, 0.938686, 1.0, 0.524989, 1.0, 0.748972, 0.915919, 3.06897, 3.12281, 89.0, 1.0, 178.0, 0 };
     const mrs_real svm_weights[] = {
-        1.6087, -1.2059, -0.2373, -0.0532,
-        -0.259, 2.4086, -1.6995, -0.731,
-        -0.4656, 0.4358, 0.1953, -8.0255,
-        0,
+         1.5995, -1.205, -0.2707, -0.0113,
+         -0.2411, 2.3969, -1.6993, -0.7272,
+         -0.4703, 0.4186, 0.1935, -7.9823,
+         0,
     };
-    double svm_sum = 1.8722;
+    double svm_sum = 1.8755;
 
     for (int i=0; i<features.getCols(); i++) {
         if (mins[i] == maxs[i]) {
@@ -1825,7 +1826,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
 #if POST_DOUBLING == 1
-    if (heuristic_tempo <= 71.5) {
+    if (heuristic_tempo <= 72.5) {
         heuristic_tempo *= 2;
     }
     tempos(0) = heuristic_tempo;

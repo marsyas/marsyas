@@ -36,6 +36,7 @@ Controls:
 activates the writing of sequence numbered files containing the
 input data at each tick.
 - \b mrs_bool/single_file [w]	: when true, data is written to a single file in addition to multiple numbered files (if mrs_bool/sequence is true).
+- \b mrs_bool/no_ticks [w]	: when this and single_file are true, data is written to a single file with no line breaks between ticks.
 - \b mrs_string/filename [w]	: base filename used for the output 
 sequence numbered files.
 
@@ -62,6 +63,7 @@ tick (after sending input data to MATLAB). By default it is set to "plot(type_na
 		MarControlPtr ctrl_separator_;
 		MarControlPtr ctrl_sequence_;
 		MarControlPtr ctrl_single_file_;
+		MarControlPtr ctrl_no_ticks_;
 		MarControlPtr ctrl_filename_;
 		MarControlPtr ctrl_matlab_;
 		MarControlPtr ctrl_matlabCommand_;
