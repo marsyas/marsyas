@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-	\class Whitening
-	\ingroup Notmar
+	\ingroup Processing
 	\brief Changes a spectrum so that all bins have the same phase, but magnitude equal to 1.
 */
 
