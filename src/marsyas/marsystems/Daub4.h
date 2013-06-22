@@ -25,7 +25,6 @@
 namespace Marsyas
 {
 /** 
-    \class Daub4
     \ingroup Analysis
     \brief Daubechies4 WaveletStep
 

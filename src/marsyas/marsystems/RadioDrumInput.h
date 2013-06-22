@@ -26,16 +26,15 @@ class RtMidiIn;
 
 namespace Marsyas
 {
-    /** 
-      \class RadioDrumInput
-      \ingroup MIDI
-      \brief Special MIDIInput to address the radio drum control structure
+	/**
+	\ingroup MIDI
+	\brief Special MIDIInput to address the radio drum control structure
 
-Controls:
-- \b mrs_natural/port [rw] : input midi port
-- \b mrs_bool/virtualPort [rw] : is this a virtual MIDI port?
-- \b mrs_bool/initmidi [w] : enable midi (should be \em true )
-     */
+	Controls:
+	- \b mrs_natural/port [rw] : input midi port
+	- \b mrs_bool/virtualPort [rw] : is this a virtual MIDI port?
+	- \b mrs_bool/initmidi [w] : enable midi (should be \em true )
+	*/
 
     class RadioDrumInput: public MarSystem
     {

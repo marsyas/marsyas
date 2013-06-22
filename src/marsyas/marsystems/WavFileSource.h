@@ -29,11 +29,8 @@
 namespace Marsyas
 {
 /**
-   \class WavFileSource
-   \ingroup Internal
-   \brief SoundFileSource for .wav soundfiles
-   
-   SoundFileSource reader for .wav sound files.
+	\ingroup Internal
+	\brief Reads .wav soundfiles
 */
 
 

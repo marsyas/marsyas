@@ -27,21 +27,20 @@
 namespace Marsyas
 {
 /**
-   \class CsvFileSource
-   \ingroup IO
-   \brief Reads CSV (comma-separated values) text files
+	\ingroup IO
+	\brief Reads CSV (comma-separated values) text files
 
-    Input file is assumed to begin with a header (the intended
-    observation names, separated by commas).  The rest of the file
-    should consist of comma-separated values.  This functions
-    similarly to Inject, except that it reads from a file instead
-    of from a control; this can be useful to add metadata (from a
-    file) to improve the machine learning.
+	Input file is assumed to begin with a header (the intended
+	observation names, separated by commas).  The rest of the file
+	should consist of comma-separated values.  This functions
+	similarly to Inject, except that it reads from a file instead
+	of from a control; this can be useful to add metadata (from a
+	file) to improve the machine learning.
 
-   Controls:
-   - \b mrs_string/filename [w] : name of file to read
-   - \b mrs_bool/hasData [r] : is there any data left?
-   - \b mrs_natural/size [r] : filesize in samples
+	Controls:
+	- \b mrs_string/filename [w] : name of file to read
+	- \b mrs_bool/hasData [r] : is there any data left?
+	- \b mrs_natural/size [r] : filesize in samples
 */
 
 

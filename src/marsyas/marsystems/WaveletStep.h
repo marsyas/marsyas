@@ -25,13 +25,12 @@
 namespace Marsyas
 {
 /** 
-    \class WaveletStep
 	\ingroup none
-    \brief One step of Discrete Wavelet Transform (DWT)
+	\brief One step of Discrete Wavelet Transform (DWT)
 
-   One step of the Discrete Wavelet Transform (DWT) 
-pyramid algorithm. Called by WaveletPyramid. The code is 
-is based on the Numerical Recipies wavelet code. 
+	One step of the Discrete Wavelet Transform (DWT)
+	pyramid algorithm. Called by WaveletPyramid. The code is
+	is based on the Numerical Recipies wavelet code.
 */
 
 

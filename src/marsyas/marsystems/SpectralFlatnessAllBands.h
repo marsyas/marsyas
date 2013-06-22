@@ -24,16 +24,14 @@
 namespace Marsyas
 {
 /**
-	\class SpectralFlatnessAllBands
 	\ingroup Analysis
 	\brief Calculates a single spectral flatness value.
 
 	Similar to SFM, but that marsystem splits the observations
-into bands, whereas this one uses the whole range of observations
-to generate one number.  It may be used to 'narrow in' on a
-specific range by putting a RemoveObservations marsystem before
-it.
-
+	into bands, whereas this one uses the whole range of observations
+	to generate one number.  It may be used to 'narrow in' on a
+	specific range by putting a RemoveObservations marsystem before
+	it.
 */
 
 class marsyas_EXPORT SpectralFlatnessAllBands: public MarSystem

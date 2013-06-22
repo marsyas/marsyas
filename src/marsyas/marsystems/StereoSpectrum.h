@@ -25,12 +25,11 @@
 namespace Marsyas
 {
 /** 
-    \class StereoSpectrum
-		\ingroup Analysis
-    \brief StereoSpectrum computes the panning index for each spectrum 
-    bin of a stereo input (i.e. input is expected to be the output of a
-		parallel of two Spectrum MarSystems, one for each stereo channel).
+	\ingroup Analysis
+	\brief Computes the panning index for each spectrum bin of a stereo input.
 
+	Input is expected to be the output of a parallel of two Spectrum MarSystems,
+	one for each stereo channel).
 */
 
 class StereoSpectrum: public MarSystem

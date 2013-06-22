@@ -24,9 +24,8 @@
 namespace Marsyas
 {
 /**
-	\class PowerSpectrum
 	\ingroup Analysis
-	\brief PowerSpectrum computes the magnitude/power of the complex spectrum
+	\brief Magnitude/power of complex spectrum
 
 	Computes the magnitude/power/decibels/powerdensity of a complex spectrum (as output from the
 	Spectrum MarSystem - see its documentation for info about the spectrum
@@ -34,7 +33,9 @@ namespace Marsyas
 	and computes the corresponding N/2+1 power/magnitude/decibels/powerdensity real values.
 
 	Controls:
-	- \b mrs_string/spectrumType [w] : choose between "power", "magnitude", "decibels", "logmagnitude" (for 1+log(magnitude*1000), "logmagnitude2" (for 1+log10(magnitude)) and "powerdensity" computations
+	- \b mrs_string/spectrumType [w] : choose between "power", "magnitude", "decibels",
+	"logmagnitude" (for 1+log(magnitude*1000), "logmagnitude2" (for 1+log10(magnitude))
+	and "powerdensity" computations
 
 	\see Spectrum
 */

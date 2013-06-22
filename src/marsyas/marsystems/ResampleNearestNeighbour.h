@@ -24,14 +24,15 @@
 namespace Marsyas
 {
 /**
-	\class ResampleNearestNeighbour
 	\ingroup Processing
 	\brief Stretch samples using the samples' nearest neighbours
 
-
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- **mrs_real/stretch**: Output/input sampling rate ratio
+	(number of output samples = number of input samples * stretch).
+	- **mrs_bool/samplingRateAdjustmentMode**: (default: true)
+	Whether to set the 'osrate' control to the target sampling rate, or just pass on the input
+	sampling rate.
 */
 
 class ResampleNearestNeighbour: public MarSystem

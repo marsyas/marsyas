@@ -14,17 +14,15 @@
 
 namespace Marsyas
 {
-  /**
-    \class Chroma
-    \ingroup MarSystem
-    \brief Calculate Chroma Vector of input power spectrogram
+/**
+	\ingroup Analysis
+	\brief Chroma Vector of input power spectrogram
 
-    Controls:
-    - \b mrs_real/samplingFreq : sets the sampligFreq of input signal (double of the nyquist frequency)
-    - \b mrs_natural/lowOctNum : sets the lowest octave number to capture
-    - \b mrs_natural/highOctNum : sets the highest octave number to capture
-
-  */
+	Controls:
+	- \b mrs_real/samplingFreq : sets the sampligFreq of input signal (double of the nyquist frequency)
+	- \b mrs_natural/lowOctNum : sets the lowest octave number to capture
+	- \b mrs_natural/highOctNum : sets the highest octave number to capture
+*/
 
   class Chroma: public MarSystem
   {

@@ -24,11 +24,11 @@
 namespace Marsyas
 {
 /** 
-    \class TimeStretch
 	\ingroup none
-    \brief TimeStretch input realvec by factor 
+	\brief Stretch samples of input observation number 0.
 
-
+	Controls:
+	- *mrs_real/factor* [w]: Factor to stretch by. Default: 1.0.
 */
 
 

@@ -24,11 +24,10 @@
 namespace Marsyas
 {
 /** 
-  \class SpectralSNR
-	\ingroup none
-	\brief SpectralSNR computes a frequency domain signal-to-noise ratio. 
-	Takes as input two stacked PowerSpectrums. 
+	\ingroup Analysis
+	\brief Frequency domain signal-to-noise ratio.
 
+	Takes as input two stacked PowerSpectrum-s.
 */
 
 class SpectralSNR: public MarSystem

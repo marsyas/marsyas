@@ -24,12 +24,12 @@
 namespace Marsyas
 {
 	/** 
-	\class Transposer
 	\ingroup Processing Basic
-	\brief switches samples and observations, i.e. transposes the output realvec (inSamples -> onObservations, onSamples -> inObservations)
+	\brief Switches samples and observations
 
-	Controls:
-	- no controls
+	Transposes the input realvec: inSamples -> onObservations, onSamples -> inObservations
+
+	No controls.
 	*/
 
 

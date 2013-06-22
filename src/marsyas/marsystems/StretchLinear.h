@@ -24,14 +24,11 @@
 namespace Marsyas
 {
 /**
-	\class StretchLinear
 	\ingroup Processing
-	\brief Stretch samples using linear interpolation 
-
+	\brief Stretches samples using linear interpolation
 
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- \b mrs_real/stretch [w] : Stretch factor.
 */
 
 class StretchLinear: public MarSystem

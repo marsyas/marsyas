@@ -24,13 +24,11 @@
 namespace Marsyas
 {
 /** 
-    \class Reciprocal
 	\ingroup none
-    \brief Reciprocal 
-    \author Gabrielle Odowichuk
+	\brief Reciprocal of each input sample
+	\author Gabrielle Odowichuk
 
-    Returns reciprocal of observations.
-
+	Reciprocal (`1/value`) of each input sample.
 */
 
 

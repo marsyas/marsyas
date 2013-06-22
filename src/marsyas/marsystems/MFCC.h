@@ -25,7 +25,6 @@
 namespace Marsyas
 {
 /**
-	\class MFCC
 	\ingroup Analysis
 	\brief MFCC Mel-Frequency Cepstral Coefficients.
 	Takes as input the N/2+1 spectrum Magnitude points output by PowerSpectrum.
@@ -39,7 +38,7 @@ namespace Marsyas
 
 	Controls:
 	- \b mrs_natural/coefficients [w]: the number of cepstral coefficients
-	   to calculate.
+	to calculate.
 */
 
 

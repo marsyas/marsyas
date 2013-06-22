@@ -24,19 +24,20 @@
 namespace Marsyas
 {
 /** 
-    \class Upsample
 	\ingroup none
-    \brief Upsample input realvec by integer factor using chosen interpolation. Frame size is also increased by the same factor.
+	\brief Upsamples input by integer factor using chosen interpolation.
+	Frame size is also increased by the same factor.
 
-		Upsamples a signal by a factor n so that out[t]=in[n*t]. Also runs some kind of interpolation to find out the value for unknown samples:
-		"none": unknown samples are unchanged.
-		"repeat": unknown sample [t] equals known sample [t+1]
+	Upsamples a signal by a factor n so that `out[t]=in[n*t]`.
+	Also runs some kind of interpolation to find out the value for unknown samples
+	(see description of the **mrs_string/mode** control).
 
-         Controls:
-         - \b mrs_natural/factor [w] : adjust the upsampling factor.
-				 - \b mrs_string/mode [w] : change the interpolation mode. So far, you can use "none" or "repeat".
-				 - \b mrs_float/default [w] : Unchanged values are set to this value.
-
+	 Controls:
+	 - \b mrs_natural/factor [w] : Adjust the upsampling factor.
+	 - \b mrs_string/mode [w] : Change the interpolation mode
+		- "none": unknown samples are unchanged.
+		- "repeat": unknown sample [t] equals known sample [t+1]
+	 - \b mrs_float/default [w] : Unchanged values are set to this value.
 */
 
 
@@ -48,7 +49,7 @@ private:
 public:
 	Upsample(std::string name);
 	~Upsample();
-	MarSystem* clone() const;    
+	MarSystem* clone() const;
 	void myUpdate(MarControlPtr sender);
 	void myProcess(realvec& in, realvec& out);
 };

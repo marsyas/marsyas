@@ -24,13 +24,8 @@
 namespace Marsyas
 {
 /** 
-    \class Product
-	\ingroup none
-    \brief Product 
-    \author Adam Tindale
-
-    Multiplies observations together. Used for ring modulation. 
-
+	\brief Multiplies observations together. Used for ring modulation.
+	\author Adam Tindale
 */
 
 

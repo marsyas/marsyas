@@ -24,7 +24,6 @@
 namespace Marsyas
 {
 /**
-	\class DelaySamples
 	\ingroup Processing
 	\brief Simple MarSystem that shifts samples back in time.
 

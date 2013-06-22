@@ -24,9 +24,8 @@
 namespace Marsyas
 {
 /** 
-    \class Power
 	\ingroup Analysis
-    \brief compute the RMS Power of the input observations into one column
+	\brief Computes the RMS Power of the input observations into one column
 */
 
 

@@ -26,10 +26,8 @@
 namespace Marsyas
 {
 /**
-   \class SVMClassifier
-   \ingroup MachineLearning
-   \brief SVM classifier based on libsvm
-
+	\ingroup MachineLearning
+	\brief SVM classifier based on libsvm
 */
 
 	class SVMClassifier: public MarSystem

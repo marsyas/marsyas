@@ -28,12 +28,11 @@
 namespace Marsyas
 {
 /** 
-    \class DCSource
 	\ingroup Synthesis
-    \brief DCSource generates a constant signal (with configurable level) at the output
+	\brief DCSource generates a constant signal (with configurable level) at the output
 
 	Controls:
-	- b mrs_real/level : the value to be generated at the output
+	- \b mrs_real/level : the value to be generated at the output
 */
 
 

@@ -24,11 +24,7 @@
 namespace Marsyas
 {
 /** 
-    \class PvConvert
-	\ingroup none
-    \brief PvConvert
-
-    PvConvert N real and imaginary spectrum values to 
+	Convert N real and imaginary spectrum values to
 	N/2+1 pairs of magnitude and phase values. The phases 
 	are unwrapped and successive phase differences are 
 	used to compute estimates of the instantaneous frequencies 

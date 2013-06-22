@@ -24,9 +24,9 @@
 namespace Marsyas
 {
 /** 
-\class Polar2Cartesian
+	\class Polar2Cartesian
 	\ingroup Notmar
-\brief perform conversion of spectral values
+	\brief Conversion of complex values from polar to cartesian form.
 */
 
 

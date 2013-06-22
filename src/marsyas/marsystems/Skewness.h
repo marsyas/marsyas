@@ -24,10 +24,8 @@
 namespace Marsyas
 {
 /** 
-    \class Skewness
-	\ingroup none
-    \brief Skewness computes the skewness of the input 
-
+	\ingroup Analysis
+	\brief Statistical skewness across observations.
 */
 
 

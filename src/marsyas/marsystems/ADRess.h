@@ -24,28 +24,28 @@
 namespace Marsyas
 {
 /**
-   \class ADRess
-   \ingroup Analysis
-   \brief Azimuth Discrimination and Resynthesis (ADRess) implementation,
-   which takes a stereo input (i.e. input is expected to be the output of a
-   parallel of two Spectrum MarSystems, one for each stereo channel), and
-   outputs the phase vector and frequency dependent nulls matrix for 
-   each channel using the following format:
+	\ingroup Analysis
+	\brief Azimuth Discrimination and Resynthesis (ADRess) - sound source separation.
 
-   [bin_phases_l][AZl]
-   [bin_phases_r][AZr]
+	ADRess takes a stereo input (i.e. input is expected to be the output of a
+	parallel of two Spectrum MarSystems, one for each stereo channel), and
+	outputs the phase vector and frequency dependent nulls matrix for
+	each channel using the following format:
 
-   This algorithm was proposed by Dan Barry et al at the DAfX04,
-   "Sound Source Separation: azimuth discrimination and resynthesis".
-   The algorithm exploits the use of pan pot as a means to achieve image
-   localisation within stereophonic recordings, assuming only an interaural
-   intensity difference exists between left and right channels for a single
-   source. A gain scaling and phase cancellation technique is then used to
-   expose frequency dependent nulls across the azimuth domain, from which
-   source separation and resynthesis may be  carried out.
+	[bin_phases_l][AZl]
+	[bin_phases_r][AZr]
 
-   Controls:
-   - \b mrs_natural/beta [w] : Sets the azimuth resolution
+	This algorithm was proposed by Dan Barry et al at the DAfX04,
+	"Sound Source Separation: azimuth discrimination and resynthesis".
+	The algorithm exploits the use of pan pot as a means to achieve image
+	localisation within stereophonic recordings, assuming only an interaural
+	intensity difference exists between left and right channels for a single
+	source. A gain scaling and phase cancellation technique is then used to
+	expose frequency dependent nulls across the azimuth domain, from which
+	source separation and resynthesis may be  carried out.
+
+	Controls:
+	- \b mrs_natural/beta [w] : Sets the azimuth resolution
 */
 
 	class ADRess: public MarSystem

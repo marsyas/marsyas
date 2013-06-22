@@ -24,12 +24,10 @@
 namespace Marsyas
 {
 /** 
-    \class Kurtosis
 	\ingroup Analysis
-    \brief Kurtosis 
 
-    Calculate the Kurtosis of the input observations. Typically used 
-for characterizing the magnitude spectrum. 
+	Calculate the Kurtosis of the input observations. Typically used
+	for characterizing the magnitude spectrum.
 */
 
 

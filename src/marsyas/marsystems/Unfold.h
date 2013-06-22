@@ -24,15 +24,13 @@
 namespace Marsyas
 {
 /**
-	\class Unfold
 	\ingroup Processing Basic
-	\brief Take a two-dimesional realvec and unfold it to make a one-dimensional realvec
+	\brief Unfold two-dimensional realvec into one-dimensional realvec
 
-    Handy when you have an image, like a SAI (Stabilized Auditory
-    Image) and want to do math on each of it's pixels independently.
+	Handy when you have an image, like a SAI (Stabilized Auditory
+	Image) and want to do math on each of it's pixels independently.
 
-    Author : Steven Ness (sness@sness.net)
-
+	\author Steven Ness (sness@sness.net)
 */
 
 

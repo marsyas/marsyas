@@ -26,14 +26,13 @@ class DoubleListEntries;
 namespace Marsyas
 {
 	/**
-	\class TimeFreqPeakConnectivity
 	\ingroup Processing
-	\brief uses dynamic programming to create a (symmetric) distance 
-	       matrix between the series of peaks at the inputs
+	\brief Uses dynamic programming to create a (symmetric) distance
+	matrix between the series of peaks at the inputs
 
-		   the input is a matrix with the dimension 2x numpeaks,
-		   row 1 is the frequency of the peak in bark, row 2 is
-		   the block index of the peak.
+	The input is a matrix with the dimension 2x numpeaks,
+	row 1 is the frequency of the peak in bark, row 2 is
+	the block index of the peak.
 
 	Controls:
 	- \b mrs_string/frequencyIntervalInHz [w] : tells the system which frequency range to expect, e.g. 250_2500

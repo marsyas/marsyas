@@ -25,9 +25,8 @@
 namespace Marsyas
 {
 	/** 
-	\class StereoSpectrumSources
 	\ingroup Analysis
-	\brief StereoSpectrumSources estimates the number of sources placed into different stereo positions. 
+	\brief Estimates the number of sources placed into different stereo positions.
 
 	After computing the Stereo Spectrum we can try to estimate the number of sources playing in different
 	stereo positions.

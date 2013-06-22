@@ -49,7 +49,7 @@ namespace Marsyas
  with \f$R_{xx}[n]\f$ the autocorrelation of the first channel for lag \f$n\f$
  and \f$R_{yy}[n]\f$ the autocorrelation of the second channel.
 
- TODO: support overlap between slices (e.g. provide a control for skipping
+ @todo Support overlap between slices (e.g. provide a control for skipping
  a certain amount of samples).
 
  Controls:

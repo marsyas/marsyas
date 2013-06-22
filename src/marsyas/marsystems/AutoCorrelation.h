@@ -25,13 +25,12 @@
 namespace Marsyas
 {
 /** 
-    \class AutoCorrelation
 	\ingroup Analysis
-    \brief Compute the generalized autocorrelation of input window 
+	\brief Generalized autocorrelation
 
-    Computes the generalized autocorrelation 
-(with optional magnitude compression) using the 
-Fast Fourier Transform (FFT). 
+	Computes the generalized autocorrelation of the input window
+	(with optional magnitude compression) using the
+	Fast Fourier Transform (FFT).
 
 	Controls:
 	- \b mrs_bool/aliasedOutput [w] : by default, this control is set to true and

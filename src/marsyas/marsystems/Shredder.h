@@ -24,19 +24,18 @@
 namespace Marsyas
 {
 /** 
-    \class Shredder 
 	\ingroup Composites
 
-    \brief Split the output of an accumulator
+	\brief Splits input and makes children process each slice separately
+	(reverse of Accumulator).
 
-    Split the result an accumulator. Spit several outputs when
-    the input is recieved. Used to restore
-    the rate of process requests initially change by an accumulator.
+	Splits input into time-slices, and makes children process the slices one after another.
+	Typically used to restore the processing rate changed by an Accumulator.
 
 	Controls:
-- \b mrs_natural/nTimes [rw] : the multiplier of ticks() for the internal
-  MarSystems.
-- \b mrs_bool/accumulate [w] : when true, the outputs of the child MarSystem are accumulated to the output.s
+	- \b mrs_natural/nTimes [rw] : Amount of slices to split input into.
+	- \b mrs_bool/accumulate [w] : When true, the outputs of the child MarSystems are accumulated
+	into the output.
 */
 
 class Shredder: public MarSystem

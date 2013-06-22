@@ -28,13 +28,14 @@ namespace Marsyas
 	\ingroup	Processing Analysis
 	\brief		Transform an (amplitude) spectrum to a chroma profile
 	\author		Matthias Varewyck
-	\date		20090518
-	\todo		- Check if parameters are independent on input sample rate (~= 8kHz)
-				- Include check if provided (amplitude) spectrum was correctly computed
-				- Include correct error handling (conform Marsyas rules)
-				- Let the lowest F0 be higher than the diapason
-				- Introduce a highest F0 additional to a lowest F0
-				- Add "fan in combinator" to simplify actual chroma profile computation
+	\date		2009 05 18
+	\todo
+	- Check whether parameters are independent on input sample rate (~= 8kHz)
+	- Include check if provided (amplitude) spectrum was correctly computed
+	- Include correct error handling (conform Marsyas rules)
+	- Let the lowest F0 be higher than the diapason
+	- Introduce a highest F0 additional to a lowest F0
+	- Add "fan in combinator" to simplify actual chroma profile computation
 
 	This class implements the conversion of an (amplitude) spectrum to a chroma profile as described in
 	"a novel chroma representation of polyphonic music based on multiple pitch tracking techniques"

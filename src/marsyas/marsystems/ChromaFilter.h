@@ -25,10 +25,9 @@
 namespace Marsyas
 {
 /** 
-    \class ChromaFilter
+	\class ChromaFilter
 	\ingroup Processing
-    \brief Tuning Estimation Filterbank
-
+	\brief Tuning Estimation Filterbank
 */
 
 

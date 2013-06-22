@@ -24,16 +24,14 @@
 namespace Marsyas
 {
 /**
-	\class Subtract
-	\ingroup Special
-	\brief Basic example on how to use controls efficiently in MarSystems
+	\ingroup Processing Basic
+	\brief Subtracts one observation from another.
 
-	This example is the same as Gain; it scales the output by
-multiplying each sample with a real number.
+	Each sample of the second input observation gets subtracted from the
+	corresponding sample of	the first input observation, to form a single
+	output observation.	Other input observations are discarded.
 
-	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	No controls.
 */
 
 class Subtract: public MarSystem

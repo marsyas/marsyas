@@ -24,15 +24,10 @@
 namespace Marsyas
 {
 /**
-	\class SpectralCentroidBandNorm
-	\ingroup Processing
-	\brief Basic example on how to use controls efficiently in MarSystems
-
-	This example is the same as Gain; it scales the output by
-	multiplying each sample with a real number.
+	\ingroup Analysis
 
 	Controls:
-	- \b mrs_real/expected_peak [w] : expected peak in signal
+	- \b mrs_real/expected_peak [w] : expected peak in signal. Default: 100.0.
 */
 
 class marsyas_EXPORT SpectralCentroidBandNorm: public MarSystem

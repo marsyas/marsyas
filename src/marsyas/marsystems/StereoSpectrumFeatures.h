@@ -25,12 +25,11 @@
 namespace Marsyas
 {
 /** 
-    \class StereoSpectrumFeatures
-		\ingroup Analysis
-    \brief StereoSpectrumFeatures capture panning information 
+	\ingroup Analysis
+	\brief Panning information from StereSpectrum output.
 
-    After computing the Stereo Spectrum we can summarize 
-it by extracting features using the StereoSpectrumFeatures. 
+	After computing the StereoSpectrum we can summarize
+	it by extracting features using the StereoSpectrumFeatures.
 */
 
 class StereoSpectrumFeatures: public MarSystem

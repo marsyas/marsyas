@@ -24,14 +24,13 @@
 namespace Marsyas
 {
 /**
-	\class SNR
 	\ingroup Analysis
 	\brief Compute SNR and variations
 
 	Computes the SNR between two mono audio signals. 
 	One signal is observation 0 and the other is observation 1. 
 
-    The output is:
+	The output is:
 
 	observation 0 is the Signal/Noise ratio in dB
 

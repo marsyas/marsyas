@@ -27,15 +27,6 @@
 
 namespace Marsyas
 {
-/**
-   \class WavFileSink
-   \ingroup Internal
-   \brief WavFileSink for .wav soundfiles
-   
-   SoundFileSink writer for .wav sound files.
-*/
-
-
 	struct wavhdr {
 		char riff[4];           // "RIFF"
 		signed int file_size;      // in bytes
@@ -54,6 +45,10 @@ namespace Marsyas
 		signed int data_length;    // in bytes
 	};
 
+	/**
+	\ingroup Internal
+	\brief Writes to .wav soundfiles.
+	*/
 	class WavFileSink: public AbsSoundFileSink
 	{
 	private:

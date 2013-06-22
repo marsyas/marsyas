@@ -24,14 +24,15 @@
 namespace Marsyas
 {
 /**
-	\class ResampleLinear
 	\ingroup Processing
 	\brief Stretch samples using linear interpolation 
 
-
 	Controls:
-	- \b mrs_real/gain [w] : sets the gain multiplier.
-	- \b mrs_bool/dummy [rw] : does nothing.
+	- **mrs_real/stretch**: Output/input sampling rate ratio
+	(number of output samples = number of input samples * stretch).
+	- **mrs_bool/samplingRateAdjustmentMode**: (default: true)
+	Whether to set the 'osrate' control to the target sampling rate, or just pass on the input
+	sampling rate.
 */
 
 class ResampleLinear: public MarSystem

@@ -24,13 +24,9 @@
 namespace Marsyas
 {
 /** 
-    \class PvFold
-	\ingroup none
-    \brief PvFold
-
-    Multiply with window (both length Nw) using modulus arithmetic;
-fold and rotate windowed input into output array (FFT) (length N) 
-according to current input time (t)
+	Multiply with window (both length Nw) using modulus arithmetic;
+	fold and rotate windowed input into output array (FFT) (length N)
+	according to current input time (t)
 */
 
 

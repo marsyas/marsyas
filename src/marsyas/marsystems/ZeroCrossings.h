@@ -24,12 +24,11 @@
 namespace Marsyas
 {
 /** 
-    \class ZeroCrossings
 	\ingroup Analysis
-    \brief Time-domain ZeroCrossings 
+	\brief Time-domain zero crossings.
 
-    Basically counts the number of times the input 
-signal crosses the zero line. 
+	Basically counts the number of times the input
+	signal crosses the zero line.
 */
 
 

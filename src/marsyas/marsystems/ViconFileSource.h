@@ -27,11 +27,8 @@
 namespace Marsyas
 {
 /**
-   \class ViconFileSource
    \ingroup IO
-   \brief ViconFileSource for exported VICON .txt files
-   
-   ViconFileSource reader for exported VICON .txt files. 
+   \brief Reads exported VICON .txt files
 
    Controls:
    - \b mrs_string/filename [w] : name of file to read

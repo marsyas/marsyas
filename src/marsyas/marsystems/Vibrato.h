@@ -25,10 +25,8 @@
 namespace Marsyas
 {
 /** 
-    \class Vibrato
 	\ingroup Processing
-    \brief Apply vibrato using time-varying delay 
-
+	\brief Applies vibrato using time-varying delay
 */
 
 

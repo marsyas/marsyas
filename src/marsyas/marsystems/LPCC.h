@@ -25,17 +25,15 @@
 namespace Marsyas
 {
 /** 
-    \class LPCC
-    \ingroup Analysis
-    \brief Convert LPC coefficients to Cepstrum coefficients.
-    
-    This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,
-    as output by the LPC MarSystem (see LPC.cpp/.h). It only converts the LPC
-    coefficients to cepstral coefficients and ignores the pitch value received from LPC.
-    
-    Code by:
-    Luís Gustavo Martins - lmartins@inescporto.pt
-    November 2006
+	\ingroup Analysis
+	\brief Convert LPC coefficients to Cepstrum coefficients.
+
+	This MarSystem is expecting to receive at its input LPC coefficients + Pitch + Power,
+	as output by the LPC MarSystem (see LPC.cpp/.h). It only converts the LPC
+	coefficients to cepstral coefficients and ignores the pitch value received from LPC.
+
+	\author LuÃ­s Gustavo Martins - lmartins@inescporto.pt
+	\date November 2006
 */
 
 

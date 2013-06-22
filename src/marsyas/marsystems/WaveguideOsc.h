@@ -38,7 +38,7 @@ namespace Marsyas
 	amplitude change.
 
 	Controls:
-	- \b mrs_real/frequency [w] : the sinewaves frequency in hz.
+	- \b mrs_real/frequency [w] : the sinewave's frequency in hz.
 	- \b mrs_bool/noteon [w] : currently not implemented.
 */
 

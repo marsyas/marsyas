@@ -24,14 +24,13 @@
 namespace Marsyas
 {
 /**
-	\class RemoveObservations
 	\ingroup Processing
 	\brief Removes observations outside a given range.
 
 	Mainly used to remove bins from a PowerSpectrum which fall
-outside the range of interest.  This MarSystem includes both
-cutoff values; it rounds down for the lowCutoff, and rounds up for
-the highCutoff.
+	outside the range of interest.  This MarSystem includes both
+	cutoff values; it rounds down for the lowCutoff, and rounds up for
+	the highCutoff.
 
 	Controls:
 	- \b mrs_real/lowCutoff [w] : the lowest observation to

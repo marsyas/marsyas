@@ -24,13 +24,11 @@
 namespace Marsyas
 {
 /**
-	\class PowerToAverageRatio
 	\ingroup Analysis
-	\brief PowerToAverageRatio (or Power-to-Average Ratio) of a window
 
 	This calculates the PAR for a complete window of samples;
-it is similar to SCF (Spectral Crest Factor), however SCF
-calculates the PAR in various frequency bands of observations.
+	it is similar to SCF (Spectral Crest Factor), however SCF
+	calculates the PAR in various frequency bands of observations.
 
 */
 

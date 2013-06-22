@@ -24,7 +24,6 @@
 namespace Marsyas
 {
 /** 
-	\class Metric
 	\ingroup MarSystem
 	\brief Computes metrics (e.g. euclidean, mahalanobis, cosine, etc) between two realvecs
 

@@ -25,9 +25,9 @@
 namespace Marsyas
 {
 /**
-	\class TriangularFilterBank 
 	\ingroup Analysis
-	\brief Triangular FilterBank 
+	\brief Triangular filter-bank.
+
 	Takes as input the N/2+1 spectrum Magnitude points output by PowerSpectrum.
 	For example it can be used to compute a Mel-scale or Constant-Q filterbank. 
 

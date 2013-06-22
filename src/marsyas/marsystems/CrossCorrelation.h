@@ -24,29 +24,23 @@
 
 namespace Marsyas
 {
-		
 /** 
-    \class CrossCorrelation
 	\ingroup Analysis
-    \brief Computes the cross correlation of an input.
-			
-		Accepts N observations and returns N-1 observations, with
-		each observation being the cross correlation of the inputs n and n-1.
- 
-		
-		Controls:
-		"mrs_string/mode" : This control sets the type of cross correlation.
- 
-		"general"  is the default, and will compute the generalized cross correlation.
-		"phat" will compute the generalized cross correlation with phase transform
-		"ml" will compute a maximum likelihood cross correlation.  This works well 
-		specifically for time delay estimation in noisy or reverberant environments.
- 
-		Note: inSamples should be 2^k or fft will not work properly.
- 
- 
-    \author Gabrielle Odowichuk
+	\brief Cross correlation of input observations.
 
+	For N input observations outputs N-1 observations, with each output observation
+	being the cross correlation of the input observations n and n-1.
+
+	Controls:
+	- \b "mrs_string/mode" [w]: Sets the type of cross correlation.
+		- "general"  is the default, and will compute the generalized cross correlation.
+		- "phat" will compute the generalized cross correlation with phase transform
+		- "ml" will compute a maximum likelihood cross correlation.  This works well
+		specifically for time delay estimation in noisy or reverberant environments.
+
+	Note: inSamples should be 2^k or FFT will not work properly.
+
+	\author Gabrielle Odowichuk
 */
 
 

@@ -30,11 +30,8 @@
 namespace Marsyas
 {
 /** 
-    \class Confidence
 	\ingroup MachineLearning
-    \brief Confidence calculates classification confidence 
-
-    Calculates classification confidence by majority voting. 
+	\brief Classification confidence by majority voting.
 */
 
 

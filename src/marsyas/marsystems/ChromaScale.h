@@ -15,11 +15,10 @@
 namespace Marsyas
 {
 	/**
-		¥ class ChromaScale
-		¥ ingroup MarSystem
-		¥ breaf Calculate Scale related features from Chroma vector
-		
-		Controls:
+	\ingroup MarSystem
+	\brief Scale related features of Chroma vector
+
+	Controls:
 		
 	*/
 	

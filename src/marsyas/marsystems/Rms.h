@@ -24,12 +24,8 @@
 namespace Marsyas
 {
 /** 
-    \class Rms
 	\ingroup Analysis
-    \brief Rms energy of realvec
-
-   Simple MarSystem example. Calculate the RMS energy of
-a realvec
+	\brief Root-mean-square energy of input samples.
 */
 
 

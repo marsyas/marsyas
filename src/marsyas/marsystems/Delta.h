@@ -14,19 +14,17 @@
 
 namespace Marsyas
 {
-  /**
-     促class Chroma
-     促ingroup MarSystem
-     促breaf Calculate Delta of input sequence
+/**
+	\ingroup Processing
+	\brief Delta of input sequence
 
-     Controls:
-     - 促b mrs_bool/absolute [w] : selects absolute or not
-     - 促b mrs_bool/sum [w] : selects take sum or not
-     - 促b mrs_bool/normalize [w] : selects normalize or not
-     - 促b mrs_natural/normSize [w] : sets the size of the frame for normalizing
-     - ¥b mrs_bool/positive [w] : selects remaining only positive value or not
-
-  */
+	Controls:
+	- \b mrs_bool/absolute [w] : selects absolute or not
+	- \b mrs_bool/sum [w] : selects take sum or not
+	- \b mrs_bool/normalize [w] : selects normalize or not
+	- \b mrs_natural/normSize [w] : sets the size of the frame for normalizing
+	- \b mrs_bool/positive [w] : selects remaining only positive value or not
+*/
   
   class Delta: public MarSystem
   {

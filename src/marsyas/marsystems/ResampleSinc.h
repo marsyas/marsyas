@@ -24,23 +24,25 @@
 namespace Marsyas
 {
 /** 
-	\class ResampleSinc
-	\ingroup Processing Basic
-	\brief resamples all observations using a sum of sinc functions 
-	wheareas each point is modeled by a sinc function with the given points amplitude, that is set to zero after the 5th zero crossing
+	\ingroup Processing
+	\brief Resamples each observation using a sum of sinc functions
 
-	Normally this Marsystem expects as input samples witch are to be interpolated. 
-	Multiple observations will be interpolated independently.
+	Each point is modeled by a sinc function with the given points amplitude,
+	that is set to zero after the 5th zero crossing. [eh???]
 
 	Controls:
-	mrs_bool ctrl_windowedMode	-	false:	apply sinc interpolation directly
-									true:	(default) use values of Kaiser Window and interpolate linearly between them if necessary
-	mrs_bool ctrl_samplingRateAdjustmentMode - adjust new resulting SamplingRate for following Marsystems
-	mrs_real stretch - desired stretch ratio (number of output samples = input number of samples*stretch)
-	mrs_real offStart - (default:0) offset from the start (towards the end) of the Samples (if only a part of the samples should be used to interpolate)
-	mrs_real offEnd - (default:0) offset from the end (towards the start) of the Samples (if only a part of the samples should be used to interpolate)
-	
-
+	- **mrs_real/stretch**: Output/input sampling rate ratio
+	(number of output samples = number of input samples * stretch).
+	- **mrs_real/offStart**: (default:0) Offset in samples from the beginning of the input vector
+	(if only a part of the input vector should be used).
+	- **mrs_real/offEnd**: (default:0) Offset in samples from the end of the input vector
+	(if only a part of the samples should be used to interpolate)
+	- **mrs_bool/windowedMode**:
+		- false: apply sinc interpolation directly
+		- true: (default) use values of Kaiser Window and interpolate linearly between them if necessary
+	- **mrs_bool/samplingRateAdjustmentMode**: (default: true)
+	Whether to set the 'osrate' control to the target sampling rate, or just pass on the input
+	sampling rate.
 */
 
 class ResampleSinc: public MarSystem

@@ -25,8 +25,8 @@ namespace Marsyas
 {
 /**
 	\ingroup Processing
-	\brief Contains various spectral transformation. Input and output is a complex spectrum.
-	Mostly used to demonstrate how spectral analyis works.
+	\brief Various spectral transformations. Input and output are complex spectrums.
+	Mainly used to demonstrate how spectral analyis works.
 
 
 	Controls:

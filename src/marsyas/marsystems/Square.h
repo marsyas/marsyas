@@ -24,13 +24,10 @@
 namespace Marsyas
 {
 /**
-	\class Square
 	\ingroup Processing Basic
-	\brief Square the input samples.
+	\brief Squares input samples.
 
-	Simple MarSystem that squares the input samples.
-
-	This MarSystem has no extra controls.
+	No controls.
 */
 
 class Square: public MarSystem
