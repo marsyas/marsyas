@@ -43,6 +43,8 @@ sequence.  The output is summed together.
 class Fanin: public MarSystem
 {
 private:
+	std::vector<realvec*> slices_;
+
 	void myUpdate(MarControlPtr sender);
   void deleteSlices();
  

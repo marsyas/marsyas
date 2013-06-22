@@ -66,6 +66,8 @@ private:
 	MarControlPtr ctrl_enabled_;
 	MarControlPtr ctrl_muted_;
 
+	std::vector<realvec*> slices_;
+
 public:
 	Fanout(std::string name);
 	Fanout(const Fanout& a);

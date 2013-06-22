@@ -119,8 +119,6 @@ protected:
 	// children
 	std::vector<MarSystem*> marsystems_;
 
-	std::vector<realvec*> slices_;
-
 	std::vector<MarControlPtr> slPtrs_;
 
 	// Controls

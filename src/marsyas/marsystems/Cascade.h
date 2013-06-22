@@ -38,6 +38,7 @@ MarSystems.  ie MarSystemA => obs 0, MarSystemB => obs 1.
 class Cascade: public MarSystem
 {
 private:
+	std::vector<realvec*> slices_;
   void deleteSlices();
 	void myUpdate(MarControlPtr sender);
   

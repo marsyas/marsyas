@@ -53,6 +53,8 @@ Controls:
 
 		MarControlPtr ctrl_combinator_;
 
+		std::vector<realvec*> slices_;
+
 		void addControls();
 		void myUpdate(MarControlPtr sender);
 		void deleteSlices();  

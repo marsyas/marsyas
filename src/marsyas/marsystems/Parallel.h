@@ -44,6 +44,7 @@ private:
 	};
 
 	std::vector<ChildInfo> childInfos_;
+	std::vector<realvec*> slices_;
 
 public:
   Parallel(std::string name);
