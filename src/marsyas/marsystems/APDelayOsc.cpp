@@ -76,7 +76,7 @@ void APDelayOsc::myUpdate(MarControlPtr sender)
 		delaylineSize_ = (mrs_natural) (israte_/10);
 		delayline_.create((mrs_natural)delaylineSize_);
 	  
-		for (t = 0; t < delaylineSize_; t++)
+		for (mrs_natural t = 0; t < delaylineSize_; t++)
 		{
 			delayline_(t) = 0.0;
 		}
@@ -111,7 +111,7 @@ void APDelayOsc::myUpdate(MarControlPtr sender)
 		}
 
 		// Initialize the delay line
-		for (t = 0; t < N_; t++)
+		for (mrs_natural t = 0; t < N_; t++)
 		{
 			delayline_(t) = 0;
 		}

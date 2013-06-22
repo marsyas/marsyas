@@ -162,10 +162,10 @@ AimSSI::myProcess(realvec& in, realvec& out)
     pitch_index = ExtractPitchIndex(in);
   }
   
-  for (o = 0; o < ctrl_inObservations_->to<mrs_natural>(); o++) {
+  for (mrs_natural o = 0; o < ctrl_inObservations_->to<mrs_natural>(); o++) {
     double centre_frequency = centre_frequencies_[o];
     // Copy the buffer from input to output, addressing by h-value
-    for (t = 0; t < ssi_width_samples_; t++) {
+    for (mrs_natural t = 0; t < ssi_width_samples_; t++) {
       double h;
       double cycle_samples = ctrl_israte_->to<mrs_real>() / centre_frequency;
       if (ctrl_log_cycles_axis_->to<mrs_bool>()) {

@@ -437,8 +437,8 @@ BeatHistoFeatures::beatHistoFeatures(realvec& in, realvec& out)
 	
 	mrs_real sum = 0;
   
-	for (o=0; o < inObservations_; o++)
-		for (t = 0; t < inSamples_; t++)
+	for (mrs_natural o=0; o < inObservations_; o++)
+		for (mrs_natural t = 0; t < inSamples_; t++)
 		{
 			sum += in(o,t);
 		}
@@ -447,7 +447,7 @@ BeatHistoFeatures::beatHistoFeatures(realvec& in, realvec& out)
 	mrs_real result[2];
 	mrs_natural i,startIdx = 200;
 	// zero-out below 50BPM 
-	for (i=0; i < startIdx; i++) 
+	for (i=0; i < startIdx; i++)
 		in(i) = 0;
 
 	for (i = startIdx; i < in.getCols (); i++)

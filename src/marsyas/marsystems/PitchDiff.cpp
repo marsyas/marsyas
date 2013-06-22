@@ -78,7 +78,7 @@ void
 PitchDiff::myProcess(realvec& in, realvec& out)
 {
 	/// Iterate over the observations and samples and do the processing.
-	for (o = 0; o < inObservations_; o++)
+	for (mrs_natural o = 0; o < inObservations_; o++)
 	{
 		// we should only have one sample input
 

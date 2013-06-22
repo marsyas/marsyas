@@ -284,12 +284,12 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 
 	// init
 	peakMatrix_.setval (1);
-	for (t = 0; t < textWinSize_; t++)
-		for (o=0; o < numBands_; o++)
+	for (mrs_natural t = 0; t < textWinSize_; t++)
+		for (mrs_natural o=0; o < numBands_; o++)
 			peakIndices_[o][t]	= -1;
 
 	// initialized pseudo spectrogram representation
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
 		mrs_natural	row = (isInBark)? Freq2RowIdx (in(0,t),reso) : Freq2RowIdx (bark2hertz(in(0,t)),reso),	// input is in bark frequency, so we might have to convert it back
 					col = (mrs_natural)(in(1,t)-in(1,0)+.1);
@@ -318,9 +318,9 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 #endif
 
 	// iteration over all pairs
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
-		for (o=inSamples_-1; o >= t;o--)
+		for (mrs_natural o=inSamples_-1; o >= t;o--)
 		{
 			// don't compute distance if we already have it
 			if (out(t,o) != costInit)
@@ -399,8 +399,8 @@ TimeFreqPeakConnectivity::myProcess(realvec& in, realvec& out)
 	//out	*= -1;
 	//out += 1;
 #ifdef SANITY_CHECK
-	for (t=0; t < inSamples_;t++)
-		for (o=0; o < inSamples_;o++)
+	for (mrs_natural t=0; t < inSamples_;t++)
+		for (mrs_natural o=0; o < inSamples_;o++)
 			MRSASSERT (out(t,o) >= 0 && out(t,o) <=1);
 #endif
 #ifdef MATLAB_DBG_OUT

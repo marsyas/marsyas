@@ -65,14 +65,14 @@ void DeltaFirstOrderRegression::myUpdate(MarControlPtr sender)
 void DeltaFirstOrderRegression::myProcess(realvec& in, realvec& out)
 {
 	/// Iterate over the observations and samples and do the processing.
-	for (o = 0; o < inObservations_; o++)
+	for (mrs_natural o = 0; o < inObservations_; o++)
 	{
 		// Calculate delta.
 		out(o, 0) = 0.5 * (in(o, 0) - memory_(o, 0));
 		if (inSamples_ > 1)
 		{
 			out(o, 1) = 0.5 * (in(o, 1) - memory_(o, 1));
-			for (t = 2; t < inSamples_; t++)
+			for (mrs_natural t = 2; t < inSamples_; t++)
 			{
 				out(o, t) = 0.5 * (in(o, t) - in(o, t - 2));
 			}

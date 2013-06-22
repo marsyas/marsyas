@@ -113,9 +113,6 @@ protected:
 	// this is the absolute path to it
 	std::string absPath_;
 
-	// observation and time index //[!]
-	mrs_natural c,o,t;
-
 	bool isComposite_;
 	mrs_natural marsystemsSize_;
 

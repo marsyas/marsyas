@@ -179,8 +179,6 @@ HarmonicStrength::find_peak_magnitude(mrs_real central_bin, mrs_realvec& in,
 void
 HarmonicStrength::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural h,t;
-
 	mrs_natural num_harmonics = ctrl_harmonicsSize_->to<mrs_natural>();
 	mrs_real base_freq = ctrl_base_frequency_->to<mrs_real>();
 	MarControlAccessor acc(ctrl_harmonics_);
@@ -191,16 +189,16 @@ HarmonicStrength::myProcess(realvec& in, realvec& out)
 	//mrs_real bin2freq = ctrl_israte_->to<mrs_real>();
 
 	// Iterate over the samples (remember, FFT is vertical)
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
 		mrs_real energy_rms = 0.0;
-		for (o = 0; o < inObservations_; o++)
+		for (mrs_natural o = 0; o < inObservations_; o++)
 		{
 			energy_rms += in(o, t) * in(o,t);
 		}
 		energy_rms = sqrt(energy_rms);
 
-		for (h = 0; h < num_harmonics; h++)
+		for (mrs_natural h = 0; h < num_harmonics; h++)
 		{
 			mrs_real n = harmonics(h);
 			mrs_real B = ctrl_inharmonicity_B_->to<mrs_real>();

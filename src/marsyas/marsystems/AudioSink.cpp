@@ -407,18 +407,18 @@ AudioSink::myProcess(realvec& in, realvec& out)
 	//check MUTE
 	if(ctrl_mute_->isTrue())
     {
-		for (t=0; t < inSamples_; t++)
+		for (mrs_natural t=0; t < inSamples_; t++)
     	{
-			for (o=0; o < inObservations_; o++)
+			for (mrs_natural o=0; o < inObservations_; o++)
 			{
 				out(o,t) = in(o,t);
 			}
 		}
     } else {
 		// copy to output 
-		for (t=0; t < inSamples_; t++)
+		for (mrs_natural t=0; t < inSamples_; t++)
 		{
-			for (o=0; o < inObservations_; o++)
+			for (mrs_natural o=0; o < inObservations_; o++)
 			{
 				out(o,t) = in(o,t);
 			}
@@ -436,7 +436,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 		
 
 		// write samples to reservoir 
-		for (t=0; t < onSamples_; t++)		
+		for (mrs_natural t=0; t < onSamples_; t++)
 		{
 			samplesInBuffer = (odata_.wp - odata_.rp +odata_.ringBufferSize) % odata_.ringBufferSize;
 			
@@ -448,7 +448,7 @@ AudioSink::myProcess(realvec& in, realvec& out)
 			if (samplesInBuffer < odata_.high_watermark)
 			{
 				
-				for (o=0; o < onObservations_; o++) 
+				for (mrs_natural o=0; o < onObservations_; o++)
 					ringBuffer_(o,odata_.wp) = in(o,t);
 				odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;				
 			}

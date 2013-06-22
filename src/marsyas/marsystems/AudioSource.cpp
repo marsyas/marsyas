@@ -334,11 +334,11 @@ AudioSource::myProcess(realvec& in, realvec& out)
 		start();
 	}
 	
-	for (t=0; t < onSamples_; t++)
+	for (mrs_natural t=0; t < onSamples_; t++)
 	{
 		if (getSamplesAvailable()) 
 		{
-			for (o=0; o < onObservations_; o++)			  
+			for (mrs_natural o=0; o < onObservations_; o++)
 			{
 				out(o,t) = ringBuffer_(o,idata.rp);
 			}

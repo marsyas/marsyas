@@ -84,20 +84,20 @@ OrcaSnip::myProcess(realvec& in, realvec& out)
 
 	// normalize rms
 	mrs_real tmpMax = 0;
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 	{
 		mrs_real tmp = in(1,t);
 		if (tmp > tmpMax)
 			tmpMax = tmp;
 	}
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 		out(1,t)	/= tmpMax;
 
 
 	while ((startStopIdx[0] >= (inSamples_-1)) && (decisionThresh > .01))
 	{
 		// set start Idx
-		for (t = 0; t < inSamples_; t++)
+		for (mrs_natural t = 0; t < inSamples_; t++)
 		{
 			mrs_real avg = .5*(out(0,t) + out(1,t));
 			if (avg > decisionThresh)
@@ -108,7 +108,7 @@ OrcaSnip::myProcess(realvec& in, realvec& out)
 		}
 		
 		// set stop Idx
-		for (t = inSamples_-1; t >= 0; t--)
+		for (mrs_natural t = inSamples_-1; t >= 0; t--)
 		{
 			mrs_real avg = .5*(out(0,t) + out(1,t));
 			if (avg > decisionThresh)

@@ -761,7 +761,7 @@ AimPZFC2::myProcess(realvec& in, realvec& out)
 	double interp_factor;
 	bool do_agc = ctrl_do_agc_step_->to<mrs_bool>();
 
-	for (t = 0; t < inSamples_; t++)
+	for (mrs_natural t = 0; t < inSamples_; t++)
 		{
 			double input_sample = in(0, t);
 

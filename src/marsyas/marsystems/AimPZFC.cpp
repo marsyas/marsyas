@@ -728,7 +728,7 @@ AimPZFC::myProcess(realvec& in, realvec& out)
 	double interp_factor;
 	bool do_agc = ctrl_do_agc_step_->to<mrs_bool>();
 	
-	for (t = 0; t < inSamples_; t++) 
+	for (mrs_natural t = 0; t < inSamples_; t++)
 		{
 			double input_sample = in(0, t);
 		  
@@ -799,9 +799,9 @@ AimPZFC::myProcess(realvec& in, realvec& out)
 
 
 // Copy over the centre frequencies to the second half of the observations
-			 for (t = 0; t < inSamples_; t++)
+			 for (mrs_natural t = 0; t < inSamples_; t++)
 				 {
-					 for (o = 0; o < channel_count_; o++)
+					 for (mrs_natural o = 0; o < channel_count_; o++)
 					 {
 						 out(o + channel_count_, t) = centre_frequencies_[o];
 					 }
