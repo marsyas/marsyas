@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 	/**
-	\class PeakDistanceHorizontality
-	\ingroup Processing
+	\ingroup Analysis
 	\brief compute a weight depending on how "horizontal" the distance between two peak entries is
 
 	Controls:

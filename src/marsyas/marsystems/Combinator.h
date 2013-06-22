@@ -24,12 +24,9 @@
 namespace Marsyas
 {
 	/**
-	\class Combinator
 	\ingroup Processing
-	\brief Basic example on how to use controls efficiently in MarSystems
-
-	This example is the same as Gain; it scales the output by
-	multiplying each sample with a real number.
+	\brief Combine observations by summing, multiplying, or picking largest or smallest of
+	their respective sample values.
 
 	Controls:
 	- \b mrs_string/combinator [rw] : choose a *, +, max, min combination operation

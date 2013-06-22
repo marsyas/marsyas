@@ -27,7 +27,6 @@
 namespace Marsyas
 {
 	/** 
-	\class PeakViewMerge
 	\ingroup IO
 	\brief This MarSystem receives two stacked realvecs peak information (using peakView) 
 	and merges them.

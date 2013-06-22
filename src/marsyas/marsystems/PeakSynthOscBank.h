@@ -24,11 +24,8 @@
 namespace Marsyas
 {
 /** 
-\class PeakSynthOscBank
-\ingroup none
-\brief PeakSynthOscBank
-
-A bank of sine wave oscillators used for pevocoding. 
+\ingroup Synthesis
+\brief A bank of sine wave oscillators used for pevocoding.
 
 */
 

@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-	\class PeakViewSource
-	\ingroup Special
+	\ingroup IO
 	\brief MarSystem to read .peak files and at each tick output the peaks in each frame
 
 	Controls:

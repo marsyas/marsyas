@@ -24,12 +24,8 @@
 namespace Marsyas
 {
 /** 
-\class PeakConvert
-\ingroup MarSystem
-\brief PeakConvert
-
-PeakConvert N real and imaginary spectrum values to 
-to a fixed number of peaks.
+\ingroup Analysis
+\brief Compute N peaks out of complex spectrum.
 */
 
 

@@ -25,12 +25,8 @@
 namespace Marsyas
 {
 /** 
-    \class PvOscBank
-	\ingroup none
-    \brief PvOscBank
-
-    A bank of sine wave oscillators used for phasevocoding. 
-
+	\ingroup Synthesis
+	\brief A bank of sine wave oscillators used for phasevocoding.
 */
 
 

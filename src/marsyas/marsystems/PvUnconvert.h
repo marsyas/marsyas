@@ -24,17 +24,15 @@
 namespace Marsyas
 {
 /** 
-    \class PvUnconvert
-	\ingroup none
-    \brief PvUnconvert
+	\ingroup Processing
 
-    PvUnconvert N real and imaginary spectrum values to 
-	N/2+1 pairs of magnitude and phase values. The phases 
-	are unwrapped and successive phase differences are 
-	used to compute estimates of the instantaneous frequencies 
-	for each phase vocoder analysis channel; decimation rate 
-	and sampling rate are used to render these frequencies 
-	directly in Hz. 
+	Unconvert N real and imaginary spectrum values to
+	N/2+1 pairs of magnitude and phase values. The phases
+	are unwrapped and successive phase differences are
+	used to compute estimates of the instantaneous frequencies
+	for each phase vocoder analysis channel; decimation rate
+	and sampling rate are used to render these frequencies
+	directly in Hz.
 */
 
 

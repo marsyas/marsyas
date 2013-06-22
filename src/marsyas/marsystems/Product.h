@@ -24,6 +24,7 @@
 namespace Marsyas
 {
 /** 
+	\ingroup Processing Basic
 	\brief Multiplies observations together. Used for ring modulation.
 	\author Adam Tindale
 */

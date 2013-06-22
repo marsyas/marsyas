@@ -24,13 +24,10 @@
 namespace Marsyas
 {
 /** 
-\class PeakSynthOsc
-\ingroup none
-\brief PeakSynthOsc
-
-Multiply with window (both length Nw) using modulus arithmetic;
+\ingroup Processing
+\brief Multiply with window (both length Nw) using modulus arithmetic;
 fold and rotate windowed input into output array (FFT) (length N) 
-according to current input time (t)
+according to current input time (t).
 */
 
 

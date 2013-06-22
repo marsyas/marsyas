@@ -28,7 +28,7 @@
 namespace Marsyas
 {
 /** 
-\class PeakEnhancer
+\ingroup Processing Analysis
 \brief Enhance peaks that are harmonic
 
 Enhance harmonic peaks resulting from autocorrelation periodicity 

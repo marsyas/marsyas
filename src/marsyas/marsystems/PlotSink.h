@@ -24,7 +24,6 @@
 namespace Marsyas
 {
 /**
-\class PlotSink
 \ingroup IO
 \brief Text output sink
 Output input data at each tick to sequence numbered text files,

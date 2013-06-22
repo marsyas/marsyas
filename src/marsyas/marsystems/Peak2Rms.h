@@ -24,13 +24,12 @@
 namespace Marsyas
 {
 /** 
-    \class Peak2Rms
-	\ingroup none
-    \brief Peak to Rms ratio for time domain signals
-    \author Adam Tindale
+	\ingroup Analysis
+	\brief Peak to Rms ratio across samples.
+	\author Adam Tindale
 
-    Computes the Peak to Rms ratio for a mono channel. For multiple streams of data
-    a separate instance is needed using a fanout. 
+	Computes the Peak to Rms ratio for a mono channel. For multiple streams of data
+	a separate instance is needed using a fanout.
     
 */
 

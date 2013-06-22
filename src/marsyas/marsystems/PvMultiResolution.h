@@ -25,7 +25,6 @@
 namespace Marsyas
 {
 /**
-	\class PvMultiResolution
 	\ingroup Synthesis 
 	\brief Switches between short and long windows in multiresolution phasevocoder
 

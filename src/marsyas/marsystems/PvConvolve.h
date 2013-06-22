@@ -24,11 +24,7 @@
 namespace Marsyas
 {
 /** 
-    \class PvConvolve
-	\ingroup none
-    \brief PvConvolve
-
-
+	\ingroup Processing
 */
 
 

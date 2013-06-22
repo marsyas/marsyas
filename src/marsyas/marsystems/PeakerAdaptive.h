@@ -24,11 +24,11 @@
 namespace Marsyas
 {
 /** 
-    \class PeakerAdaptive
-    \brief Pick peaks out of signal 
+	\ingroup Analysis
+	\brief Pick peaks out of signal
 
-   PeakerAdaptive is used to select peaks(or valleys) from the input vector. Various 
-parameters of the peak selection process can be adjusted.
+	PeakerAdaptive is used to select peaks(or valleys) from the input vector. Various
+	parameters of the peak selection process can be adjusted.
 */
 
 

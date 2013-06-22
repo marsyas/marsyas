@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-	\class PeakLabeler
-	\ingroup MarSystem
+	\ingroup Special
 	\brief Assigns clustering labels to the "pkGroup" feature of the input peak realvec, 
 	based on the information received at the mrs_realvec/labels control.
 

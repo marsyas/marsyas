@@ -29,7 +29,6 @@
 namespace Marsyas
 {
 /** 
-\class PeakViewSink
 \ingroup IO
 \brief This MarSystem accumulates realvecs with peak information (using peakView) 
 arriving at its input and when receiving a "done" control trigger, saves the peak data

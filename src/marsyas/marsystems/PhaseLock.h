@@ -26,7 +26,6 @@ using namespace std;
 namespace Marsyas
 {
 /** 
-    \class PhaseLock
 	\ingroup Processing
     \brief Retrieves the N best {period, phase} hypotheses by affering the phase more suited to each period
 	(by correlating each of the N*M hypotheses with the onset detection function within the initial induction window).

@@ -24,13 +24,12 @@
 namespace Marsyas
 {
 /**
-	\class PitchDiff
 	\ingroup Analysis
 	\brief Difference between detected and expected pitch
 
 	Place this in a series after Yin (or any other
-pitch-detection MarSystem), and feed it the expected pitch as a
-control.  Outputs the difference as a midi pitch value.
+	pitch-detection MarSystem), and feed it the expected pitch as a
+	control.  Outputs the difference as a midi pitch value.
 
 	Controls:
 	- \b mrs_real/expectedPitch [w] : expected pitch

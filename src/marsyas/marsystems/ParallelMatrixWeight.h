@@ -24,12 +24,8 @@
 namespace Marsyas
 {
 	/**
-	\class ParallelMatrixWeight
 	\ingroup Processing
-	\brief Basic example on how to use controls efficiently in MarSystems
-
-	This example is the same as Gain; it scales the output by
-	multiplying each sample with a real number.
+	\brief Multiply each observation with a different factor.
 
 	Controls:
 	- \b mrs_realvec/weights [rw] : weights

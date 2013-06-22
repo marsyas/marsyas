@@ -24,9 +24,9 @@
 namespace Marsyas
 {
 /** 
-	\class PeakPeriods2BPM
-	\ingroup none
+	\ingroup Processing
 	\brief PeakPeriods2BPM: convert peaks to beats per minute.
+
 	This block should have as input a vector with the peak amplitudes in its 
 	pair indexes and the peak arguments (in frames) in its odd indexes.
 	It was created to convert the input given by "MaxArgMax" which outputs the chosen

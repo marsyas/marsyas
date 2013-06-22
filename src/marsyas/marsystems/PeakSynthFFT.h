@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-    \class PeakSynthFFT
-	\ingroup none
+	\ingroup Processing
     \brief  perform amplitude modification of Power Spectrum using Peaks Info
 
 */

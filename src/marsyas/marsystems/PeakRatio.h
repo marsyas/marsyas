@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-	\class PeakRatio
-	\ingroup Processing Basic
+	\ingroup Processing Analysis
 	\brief Incorporates the ratio of the higest peak to minimal/average peak of each observation samplewise to the output vector.
 
 	Take the values of the input realvec

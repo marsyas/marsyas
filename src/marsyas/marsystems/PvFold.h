@@ -24,6 +24,8 @@
 namespace Marsyas
 {
 /** 
+	\ingroup Processing
+
 	Multiply with window (both length Nw) using modulus arithmetic;
 	fold and rotate windowed input into output array (FFT) (length N)
 	according to current input time (t)

@@ -28,9 +28,8 @@
 namespace Marsyas
 {
 /** 
-    \class PWMSource
 	\ingroup Synthesis
-    \brief PWMSource generates a PWM wave which outputs ones and zeros
+	\brief PWMSource generates a PWM wave which outputs ones and zeros
 
 	Controls:
 	- b mrs_real/frequency	: frequency of the pwm wave

@@ -26,7 +26,7 @@ namespace Marsyas
 {
 /** 
 	\class PeakFeatureSelect
-	\ingroup MarSystem
+	\ingroup Processing
 	\brief This MarSystem takes a realvec with peak information (using peakView)
 	and allows to select which peak features should be sent to the output. 
 	Used for similarity computations on peaks.  

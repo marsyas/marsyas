@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-\class Peaker
-	\ingroup Analysis
+\ingroup Analysis
 \brief Pick peaks out of signal 
 
 Peaker is used to select peaks(or valleys) from the input vector. Various 

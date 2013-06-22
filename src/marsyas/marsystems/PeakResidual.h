@@ -24,8 +24,7 @@
 namespace Marsyas
 {
 /** 
-\class PeakResidual
-\ingroup none
+\ingroup Analysis
 \brief Compute the Signal-to-Noise Ratio (input: obs1:noisy signal, obs2:original signal)
 Controls:
 - \b mrs_real/SNR [r] : result (SNR between observations)
