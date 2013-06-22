@@ -15,6 +15,11 @@ set(MARSYAS_VERSION_PATCH "9-dev")
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
 if(NOT MARSYAS_DOCUMENTATION_ONLY)
+  if (MARSYAS_TESTS)
+    enable_testing()
+    include(CTest)
+  endif()
+
   add_subdirectory(src)
 endif()
 
