@@ -26,7 +26,7 @@
 
 #include "common_header.h"
 #include "MarControlValue.h"
-#include "core/realvec.h"
+#include "realvec.h"
 
 //#define TRACECONTROLS
 #ifdef TRACECONTROLS

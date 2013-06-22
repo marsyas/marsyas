@@ -17,7 +17,6 @@
 */
 
 
-#include "core/realvec.h"
 #include "statistics.h"
 
 using std::ostringstream;

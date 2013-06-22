@@ -21,7 +21,7 @@
 
 #include <string>
 
-#include "core/realvec.h"
+#include "realvec.h"
 
 #include "AbsSoundFileSource2.h"
 #include "WavFileSource2.h"

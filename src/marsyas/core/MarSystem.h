@@ -22,7 +22,7 @@
 #include "common_header.h"
 #include "MarControl.h"
 #include "MarControlAccessor.h"
-#include "core/realvec.h"
+#include "realvec.h"
 #include "Conversions.h"
 
 #include "EvEvent.h"

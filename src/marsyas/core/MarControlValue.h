@@ -25,7 +25,7 @@
 #include <typeinfo>
 
 #include "common_header.h"
-#include "core/realvec.h"
+#include "realvec.h"
 
 
 namespace Marsyas

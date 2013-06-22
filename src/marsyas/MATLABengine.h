@@ -26,7 +26,7 @@ More info on how to build with MATLAB engine support at:
 
 http://www.mathworks.com/access/helpdesk/help/techdoc/matlab_external/f39903.html
 
-Code by Luís Gustavo Martins <lmartins@inescporto.pt>
+Code by LuÃ­s Gustavo Martins <lmartins@inescporto.pt>
 */
 
 
@@ -39,7 +39,7 @@ Code by Luís Gustavo Martins <lmartins@inescporto.pt>
 #include <sstream> 
 #include <vector>
 
-#include "core/realvec.h"
+#include "realvec.h"
 #include "common_header.h"
 
 #include "engine.h" //$(MATLAB)\extern\include
