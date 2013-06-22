@@ -69,7 +69,7 @@ void
 SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
 {
 	(void) sender;  //suppress warning of unused parameter(s)
-		
+
 	if(this->getctrl("mrs_natural/mode")->to<mrs_natural>() ==  SelfSimilarityMatrix::outputDistanceMatrix)
 	{
 		// The output similarity matrix is a squared matrix with
@@ -88,7 +88,8 @@ SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
 		//if the metric MarSystem exists and at least there is an element
 		// to process at the input (it may not exist!), configure child marSystem.
 		// Otherwise do nothing to it.
-		if(marsystemsSize_ == 1 && inSamples_ > 0)
+		unsigned int child_count = marsystems_.size();
+		if(child_count == 1 && inSamples_ > 0)
 		{
 			//allocate realvec for the pair of stacked feature vectors
 			//to be used in the similarity computation
@@ -121,7 +122,7 @@ SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
 				MRSWARN("SelfSimilarityMatrix::myUpdate - invalid Child Metric MarSystem (does not output a real value)!");
 			}
 		}
-		else if(marsystemsSize_ > 1)
+		else if(child_count > 1)
 		{
 			MRSWARN("similarityMatrix::myUpdate - more than one children MarSystem exists! Only one MarSystem should be added as a metric!");
 		}
@@ -142,7 +143,8 @@ SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
 		//if the metric MarSystem exists and at least there is an element
 		// to process at the input (it may not exist!), configure child marSystem.
 		// Otherwise do nothing to it.
-		if(marsystemsSize_ == 1 && inSamples_ > 0)
+		unsigned int child_count = marsystems_.size();
+		if(child_count == 1 && inSamples_ > 0)
 		{
 			//allocate realvec for the pair of stacked feature vectors
 			//to be used in the similarity computation
@@ -181,7 +183,7 @@ SelfSimilarityMatrix::myUpdate(MarControlPtr sender)
 				MRSWARN("SelfSimilarityMatrix::myUpdate - invalid Child Metric MarSystem (does not output a real value)!");
 			}
 		}
-		else if(marsystemsSize_ > 1)
+		else if(child_count > 1)
 		{
 			MRSWARN("similarityMatrix::myUpdate - more than one children MarSystem exists! Only one MarSystem should be added as a metric!");
 		}		
@@ -199,7 +201,8 @@ SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
 		//(i.e. output will be zeroed out)
 		if(inSamples_ > 0)
 		{
-			if(marsystemsSize_ == 1)
+			unsigned int child_count = marsystems_.size();
+			if(child_count == 1)
 			{
 				mrs_natural nfeats = in.getRows();
 				
@@ -272,7 +275,7 @@ SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
 			else
 			{
 				out.setval(0.0);
-				if(marsystemsSize_ == 0)
+				if(child_count == 0)
 				{
 					MRSWARN("SelfSimilarityMatrix::myProcess - no Child Metric MarSystem added - outputting zero similarity matrix!");
 				}
@@ -293,7 +296,8 @@ SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
 	{
 		if(inSamples_ == 2) //we always need two column vector instances at input 
 		{
-			if(marsystemsSize_ == 1)
+			unsigned int child_count = marsystems_.size();
+			if(child_count == 1)
 			{
 				MarControlAccessor acc(ctrl_instanceIndexes_);
 				realvec& instIdxs = acc.to<mrs_realvec>();
@@ -362,7 +366,7 @@ SelfSimilarityMatrix::myProcess(realvec& in, realvec& out)
 			else
 			{
 				out.setval(0.0);
-				if(marsystemsSize_ == 0)
+				if(child_count == 0)
 				{
 					MRSWARN("SelfSimilarityMatrix::myProcess - no Child Metric MarSystem added - outputting zero similarity value!");
 				}

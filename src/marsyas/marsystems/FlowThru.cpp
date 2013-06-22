@@ -60,7 +60,8 @@ FlowThru::myUpdate(MarControlPtr sender)
 	//just pass input flow to the output
 	MarSystem::myUpdate(sender);
 	
-	if (marsystemsSize_ != 0) 
+	unsigned int child_count = marsystems_.size();
+	if (child_count)
 	{
 		//propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
@@ -70,7 +71,7 @@ FlowThru::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 		// update dataflow component MarSystems in order 
-		for(mrs_natural i=1; i < marsystemsSize_; ++i){
+		for(mrs_natural i=1; i < child_count; ++i){
 			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObsNames_, 
 				marsystems_[i-1]->ctrl_onObsNames_);
 			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObservations_, 
@@ -85,11 +86,11 @@ FlowThru::myUpdate(MarControlPtr sender)
 		//link the output of the last child MarSystem to the innerOut of FlowThru Composite
 		//(linkTo() will automatically unlink ctrl_innerOut from any previous link target before
 		//relinking it to the last MarSystem)
-		ctrl_innerOut_->linkTo(marsystems_[marsystemsSize_-1]->ctrl_processedData_);
+		ctrl_innerOut_->linkTo(marsystems_[child_count-1]->ctrl_processedData_);
 
 		
 		
-		for(mrs_natural i=0; i< marsystemsSize_; ++i)
+		for(mrs_natural i=0; i< child_count; ++i)
 		{
 			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
 			realvec& processedData = acc.to<mrs_realvec>();
@@ -102,7 +103,7 @@ FlowThru::myUpdate(MarControlPtr sender)
 					marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
 			}
 
- 			if(i==marsystemsSize_-1)
+ 			if(i==child_count-1)
  			{
  				MarControlAccessor acc(ctrl_innerOut_, NOUPDATE);
  				realvec& innerOut = acc.to<mrs_realvec>();
@@ -120,9 +121,10 @@ FlowThru::myProcess(realvec& in, realvec& out)
 	//input should be passed thru the output untouched!
 	out = in;
 
-  if(marsystemsSize_ >= 1)
+	unsigned int child_count = marsystems_.size();
+	if(child_count >= 1)
 	{
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
+		for (mrs_natural i = 0; i < child_count; ++i)
 		{
 			if (i==0)
 			{
@@ -130,7 +132,7 @@ FlowThru::myProcess(realvec& in, realvec& out)
 				realvec& slice = acc.to<mrs_realvec>();
 				marsystems_[i]->process(in, slice);	
 			}
-			else if (i == marsystemsSize_-1)
+			else if (i == child_count-1)
 			{
 				MarControlAccessor accSlice(marsystems_[i-1]->ctrl_processedData_, true, true);
 				realvec& slice = accSlice.to<mrs_realvec>();
@@ -150,7 +152,7 @@ FlowThru::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-	else if(marsystemsSize_ == 0) //composite has no children!
+	else if(child_count == 0) //composite has no children!
 	{
 		MRSWARN("FlowThru::process: composite has no children MarSystems - passing input to output without changes.");
 	}

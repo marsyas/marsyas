@@ -80,9 +80,10 @@ FanOutIn::addControls()
 void 
 FanOutIn::myUpdate(MarControlPtr sender)
 {
-	if (enabled_.getSize() != marsystemsSize_)
+	unsigned int child_count = marsystems_.size();
+	if (enabled_.getSize() != child_count)
 	{
-		enabled_.create(marsystemsSize_);
+		enabled_.create(child_count);
 		enabled_.setval(1.0);
 	}
 
@@ -112,7 +113,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 
 	//check child MarSystem to disable (passed as an index)
 	disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
-	if (disable_ != -1 && disable_ < (mrs_natural)marsystemsSize_) 
+	if (disable_ != -1 && disable_ < child_count)
 	{
 		enabled_(disable_) = 0.0;
 		setctrl("mrs_natural/disable", -1);
@@ -137,7 +138,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 	} 
 	//check child MarSystem to enable (passed as an index)
 	enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();
-	if (enable_ != -1 && enable_ < (mrs_natural)marsystemsSize_) 
+	if (enable_ != -1 && enable_ < child_count)
 	{
 		enabled_(enable_) = 1.0;
 		setctrl("mrs_natural/enable", -1);
@@ -145,7 +146,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 	else
 		setctrl("mrs_natural/enable", -1);
 
-	if (marsystemsSize_ != 0)
+	if (child_count)
 	{
 		wrongOutConfig_ = false;
 				
@@ -157,7 +158,7 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 	  // update dataflow component MarSystems in order
-		for (mrs_natural i=1; i < marsystemsSize_; ++i)
+		for (mrs_natural i=1; i < child_count; ++i)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[0]->getctrl("mrs_natural/inObservations"));
@@ -186,9 +187,9 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObsNames_, oss.str());
 
 		// update buffers between components 
-		if ((mrs_natural)slices_.size() < marsystemsSize_) 
-			slices_.resize(marsystemsSize_, NULL);
-		for (mrs_natural i=0; i< marsystemsSize_; ++i)
+		if (slices_.size() < child_count)
+			slices_.resize(child_count, NULL);
+		for (mrs_natural i=0; i< child_count; ++i)
 		{
 			if (slices_[i] != NULL) 
 			{
@@ -215,7 +216,8 @@ FanOutIn::myUpdate(MarControlPtr sender)
 void
 FanOutIn::myProcess(realvec& in, realvec& out)
 {
-	if(marsystemsSize_>0)
+	unsigned int child_count = marsystems_.size();
+	if(child_count)
 	{
 		if(ctrl_combinator_->to<mrs_string>() == "+")
 			out.setval(0); //identity operator
@@ -236,7 +238,7 @@ FanOutIn::myProcess(realvec& in, realvec& out)
 			return;
 		}
 		
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
+		for (mrs_natural i = 0; i < child_count; ++i)
 		{
 			if (enabled_(i))
 			{

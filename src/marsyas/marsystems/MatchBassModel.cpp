@@ -164,8 +164,8 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
   costVector_.create(rootMax_-rootMin_,K_);
   distance_.create(K_,seg_.getSize()-1);
   
-
-  if(marsystemsSize_ == 1 && inSamples_ > 0){
+	unsigned int child_count = marsystems_.size();
+	if(child_count == 1 && inSamples_ > 0){
     // configure the metric child MarSystem:
     // the input to metric are the two vectors to process stacked vertically
     i_featVec_.create(rootMax_-rootMin_, I_);
@@ -192,7 +192,7 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
        marsystems_[0]->getctrl("mrs_natural/onSamples") != 1){
       MRSWARN("MatchBassModel:myUpdate - invalid Child Metric MarSystem (does not output a real value)!");
     }
-  } else if(marsystemsSize_ > 1){
+  } else if(child_count > 1){
     MRSWARN("MatchBassModel:myUpdate - more than one children MarSystem exist! Only one MarSystem should be added as a metric!");
   }
   
@@ -201,11 +201,13 @@ void MatchBassModel::myUpdate(MarControlPtr sender)
 void
 MatchBassModel::myProcess(realvec& in, realvec& out)
 {
+	unsigned int child_count = marsystems_.size();
   mrs_natural i, j, k, l, m, d;
   mrs_real tmpreal, min;
   realvec covMatrix, tmpvec;
+
   if(inSamples_ > 0){
-    if(marsystemsSize_ == 1){
+    if(child_count == 1){
       // copy input realvec to output realvec
       for(i=0; i<inSamples_; ++i){
 	for(j=0; j<inObservations_; j++){
@@ -326,7 +328,7 @@ MatchBassModel::myProcess(realvec& in, realvec& out)
       ctrl_totalDistance_->setValue(totaldis_);
       ctrl_distance_->setValue(distance_);
     } else {
-      if(marsystemsSize_ == 0){
+      if(child_count == 0){
 	MRSWARN("MatchBassModel::myProcess - no Child Metric MarSystem added");
       } else {
 	MRSWARN("MatchBassModel::myProcess - more than on Child MarSystem exists (i.e. invalid metric)");

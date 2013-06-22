@@ -66,7 +66,7 @@ Shredder::myUpdate(MarControlPtr sender)
 	nTimes_ = ctrl_nTimes_->to<mrs_natural>();
 
 	// update dataflow component MarSystems in order 
-	if (marsystemsSize_ > 0)
+	if (marsystems_.size())
 	{
 		//propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
@@ -110,7 +110,7 @@ void
 Shredder::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural t,o,c;
-	if(marsystemsSize_>0)
+	if(marsystems_.size())
 	{
 		for (c = 0; c < nTimes_; ++c) 
 		{

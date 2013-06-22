@@ -52,7 +52,8 @@ void Parallel::myUpdate(MarControlPtr sender)
 {
 	childInfos_.clear();
 
-	if (marsystemsSize_ != 0) 
+	unsigned int child_count = marsystems_.size();
+	if (child_count)
 	{
 		mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
 		//propagate in flow controls to first child
@@ -79,7 +80,7 @@ void Parallel::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 
-		for (mrs_natural i=1; i < marsystemsSize_; ++i) 
+		for (mrs_natural i=1; i < child_count; ++i)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[0]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_real/israte", marsystems_[0]->getctrl("mrs_real/israte")); //[!] israte
@@ -109,12 +110,12 @@ void Parallel::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
 
 		// update buffers for children MarSystems
-		if((mrs_natural)slices_.size() < 2*marsystemsSize_) 
+		if(slices_.size() < 2*child_count)
 		{
-			slices_.resize(2*marsystemsSize_, NULL);
+			slices_.resize(2*child_count, NULL);
 		}
 
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i) 
+		for (mrs_natural i = 0; i < child_count; ++i)
 		{
 			if (slices_[2*i] != NULL) 
 			{
@@ -164,14 +165,15 @@ void Parallel::myProcess(realvec& in, realvec& out)
 	mrs_natural inIndex = 0;
 	mrs_natural outIndex = 0;
 	mrs_natural localIndex = 0;
+	unsigned int child_count = marsystems_.size();
 
-	if (marsystemsSize_ == 1) 
+	if (child_count == 1)
 	{
 		marsystems_[0]->process(in, out);
 	}
-	else if (marsystemsSize_ > 1) 
+	else if (child_count > 1)
 	{
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i) 
+		for (mrs_natural i = 0; i < child_count; ++i)
 		{
 			localIndex = childInfos_[i].inObservations;
 			for (o = 0; o < localIndex; o++) 
@@ -201,7 +203,7 @@ void Parallel::myProcess(realvec& in, realvec& out)
 			outIndex += localIndex;
 		}
 	}
-	else if(marsystemsSize_ == 0) //composite has no children!
+	else if(child_count == 0) //composite has no children!
 	{
 		MRSWARN("Parallel::process: composite has no children MarSystems - passing input to output without changes.");
 		out = in;

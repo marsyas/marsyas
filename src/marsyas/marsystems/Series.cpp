@@ -46,7 +46,8 @@ Series::addControls()
 void 
 Series::myUpdate(MarControlPtr sender)
 {
-	if (marsystemsSize_ != 0) 
+	int child_count = marsystems_.size();
+	if (child_count)
 	{
 		//propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
@@ -57,7 +58,7 @@ Series::myUpdate(MarControlPtr sender)
 		marsystems_[0]->update();
 
 		// update dataflow component MarSystems in order 
-		for (mrs_natural  i=1; i < marsystemsSize_; ++i)
+		for (mrs_natural  i=1; i < child_count; ++i)
 		{
 			marsystems_[i]->setctrl(marsystems_[i]->ctrl_inObsNames_, 
 									marsystems_[i-1]->ctrl_onObsNames_);
@@ -73,13 +74,13 @@ Series::myUpdate(MarControlPtr sender)
 		}
 	  
 		//forward flow propagation
-		updControl(ctrl_onObsNames_, marsystems_[marsystemsSize_-1]->ctrl_onObsNames_, NOUPDATE);
-		updControl(ctrl_onSamples_, marsystems_[marsystemsSize_-1]->ctrl_onSamples_, NOUPDATE);
-		updControl(ctrl_onObservations_, marsystems_[marsystemsSize_-1]->ctrl_onObservations_, NOUPDATE);
-		updControl(ctrl_osrate_, marsystems_[marsystemsSize_-1]->ctrl_osrate_, NOUPDATE);
-		updControl(ctrl_onStabilizingDelay_, marsystems_[marsystemsSize_-1]->ctrl_onStabilizingDelay_, NOUPDATE);
+		updControl(ctrl_onObsNames_, marsystems_[child_count-1]->ctrl_onObsNames_, NOUPDATE);
+		updControl(ctrl_onSamples_, marsystems_[child_count-1]->ctrl_onSamples_, NOUPDATE);
+		updControl(ctrl_onObservations_, marsystems_[child_count-1]->ctrl_onObservations_, NOUPDATE);
+		updControl(ctrl_osrate_, marsystems_[child_count-1]->ctrl_osrate_, NOUPDATE);
+		updControl(ctrl_onStabilizingDelay_, marsystems_[child_count-1]->ctrl_onStabilizingDelay_, NOUPDATE);
 	  
-		for (mrs_natural i=0; i< marsystemsSize_-1; ++i)
+		for (mrs_natural i=0; i< child_count-1; ++i)
 		{
 			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
 			realvec& processedData = acc.to<mrs_realvec>();
@@ -101,11 +102,12 @@ Series::myProcess(realvec& in, realvec& out)
 {
 	// Add assertions about sizes [!]
   
-	if (marsystemsSize_ == 1)
+	int child_count = marsystems_.size();
+	if (child_count == 1)
 		marsystems_[0]->process(in,out);
-	else if(marsystemsSize_ > 1)
+	else if(child_count > 1)
 	{
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
+		for (mrs_natural i = 0; i < child_count; ++i)
 		{
 			if (i==0)
 			{
@@ -113,7 +115,7 @@ Series::myProcess(realvec& in, realvec& out)
 				realvec& slice = acc.to<mrs_realvec>();
 				marsystems_[i]->process(in, slice);	
 			}
-			else if (i == marsystemsSize_-1)
+			else if (i == child_count-1)
 			{
 				MarControlAccessor acc(marsystems_[i-1]->ctrl_processedData_, true, true);
 				realvec& slice = acc.to<mrs_realvec>();
@@ -129,7 +131,7 @@ Series::myProcess(realvec& in, realvec& out)
 			}
 		}
 	}
-	else if(marsystemsSize_ == 0) //composite has no children!
+	else if(child_count == 0) //composite has no children!
 	{
 		MRSWARN("Series::process: composite has no children MarSystems - passing input to output without changes.");
 		out = in;

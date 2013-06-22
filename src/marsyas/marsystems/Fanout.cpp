@@ -81,23 +81,24 @@ Fanout::myUpdate(MarControlPtr sender)
 {
 	MarControlAccessor acc(ctrl_enabled_);
 	mrs_realvec& enabled = acc.to<mrs_realvec>();
-	if (enabled.getSize() < marsystemsSize_)
+	unsigned int child_count = marsystems_.size();
+	if (enabled.getSize() < child_count)
 	{
-		enabled.create(marsystemsSize_);
+		enabled.create(child_count);
 		enabled.setval(1.0); //all children enabled by default
 	}
 	
 	MarControlAccessor accMuted(ctrl_muted_);
 	mrs_realvec& muted = accMuted.to<mrs_realvec>();
-	if (muted.getSize() < marsystemsSize_)
+	if (muted.getSize() < child_count)
 	{
-		muted.create(marsystemsSize_);
+		muted.create(child_count);
 		muted.setval(0.0); //all children unmuted by default
 	}
 	
-	if (marsystemsSize_ != 0)
+	if (child_count)
 	{
-		localIndices_.create(marsystemsSize_);
+		localIndices_.create(child_count);
 	}
 
 	//check child MarSystems to disable (passed as a string)
@@ -131,7 +132,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	}
 	//check child MarSystem to disable (passed as an index)
 	disable_ = getctrl("mrs_natural/disable")->to<mrs_natural>();
-	if (disable_ != -1 && disable_ < (mrs_natural)marsystemsSize_)
+	if (disable_ != -1 && disable_ < child_count)
 	{
 		enabled(disable_) = 0.0;
 		localIndices_(disable_) = 0.0;
@@ -162,7 +163,7 @@ Fanout::myUpdate(MarControlPtr sender)
 	}
 	//check child MarSystem to enable (passed as an index)
 	enable_ = getctrl("mrs_natural/enable")->to<mrs_natural>();
-	if (enable_ != -1 && enable_ < (mrs_natural)marsystemsSize_)
+	if (enable_ != -1 && enable_ < child_count)
 	{
 		enabled(enable_) = 1.0;
 		localIndices_(enable_) = 1.0;
@@ -172,7 +173,7 @@ Fanout::myUpdate(MarControlPtr sender)
 		setctrl("mrs_natural/enable", -1);
 
 
-	if (marsystemsSize_ != 0)
+	if (child_count)
 	{
 		mrs_natural highestStabilizingDelay = ctrl_inStabilizingDelay_->to<mrs_natural>();
 		//propagate in flow controls to first child
@@ -196,7 +197,7 @@ Fanout::myUpdate(MarControlPtr sender)
 				highestStabilizingDelay = localStabilizingDelay;
 
 		}
-		for (mrs_natural i=1; i < marsystemsSize_; ++i)
+		for (mrs_natural i=1; i < child_count; ++i)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/inSamples"));
 			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/inObservations"));
@@ -224,9 +225,9 @@ Fanout::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
 
 		// update buffers between components
-		if ((mrs_natural)slices_.size() < marsystemsSize_)
-			slices_.resize(marsystemsSize_, NULL);
-		for (mrs_natural i=0; i< marsystemsSize_; ++i)
+		if (slices_.size() < child_count)
+			slices_.resize(child_count, NULL);
+		for (mrs_natural i=0; i< child_count; ++i)
 		{
 			if (slices_[i] != NULL)
 			{
@@ -254,7 +255,8 @@ void
 Fanout::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,t;
-	if (marsystemsSize_>0)
+	unsigned int child_count = marsystems_.size();
+	if (child_count)
 	{
 		mrs_natural outIndex = 0;
 		
@@ -264,7 +266,7 @@ Fanout::myProcess(realvec& in, realvec& out)
 		MarControlAccessor accMuted(ctrl_muted_);
 		mrs_realvec& muted = accMuted.to<mrs_realvec>();
 		
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i)
+		for (mrs_natural i = 0; i < child_count; ++i)
 		{
 			if (localIndices_(i))//enabled child have a non-zero localIndex
 			{

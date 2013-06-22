@@ -100,8 +100,8 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 		invecs_[k].create(obs, (mrs_natural)sizes_(k));
 	}
 
-	
-	if(marsystemsSize_ == 1 && inSamples_ > 0)
+	unsigned int child_count = marsystems_.size();
+	if(child_count == 1 && inSamples_ > 0)
 	{
 		// allocate realvec for the pair of stacked feature vectors
 		// to be used in the similarity computation
@@ -130,7 +130,7 @@ void SimilarityMatrix::myUpdate(MarControlPtr sender)
 			MRSWARN("SimilarityMatrix:myUpdate - invalid Child Metric MarSystem (does not output a real value)!");
 		}
 	}
-	else if(marsystemsSize_ > 1)
+	else if(child_count > 1)
 	{
 		MRSWARN("similarityMatrix2:myUpdate - more than one children MarSystem exist! Only one MarSystem should be added as a metric!");
 	}
@@ -143,9 +143,11 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 	//(in some cases, they may not exist!) - otherwise, do nothing
 	//(i.e. output is also an empty vector)
 	mrs_natural i, j, k, l;
+
 	if(inSamples_ > 0)
 	{
-		if(marsystemsSize_ == 1)
+		unsigned int child_count = marsystems_.size();
+		if(child_count == 1)
 		{
 			mrs_natural nfeats = in.getRows()/sizes_.getSize();
 
@@ -239,7 +241,7 @@ SimilarityMatrix::myProcess(realvec& in, realvec& out)
 		else
 		{
 			out.setval(0.0);
-			if(marsystemsSize_ == 0)
+			if(child_count == 0)
 			{
 				MRSWARN("SimilarityMatrix::myProcess - no Child Metric MarSystem added - outputting zero similarity matrix!");
 			}

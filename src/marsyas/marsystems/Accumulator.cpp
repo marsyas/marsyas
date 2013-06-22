@@ -76,7 +76,7 @@ Accumulator::addControls()
 bool
 Accumulator::addMarSystem(MarSystem *marsystem)
 {
-  if(marsystemsSize_ > 0) {
+  if (marsystems_.size()) {
     MarSystem* mySystem = marsystems_[0];
     (void) mySystem; // suppress warning in case the macro is not expanded
     
@@ -104,7 +104,7 @@ Accumulator::myUpdate(MarControlPtr sender)
 
 	MarSystem::myUpdate(sender);
 
-	if (marsystemsSize_ > 0)
+	if (marsystems_.size())
 	{
 		//propagate in flow controls to first (and single) child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
@@ -157,7 +157,7 @@ Accumulator::myProcess(realvec& in, realvec& out)
 {
 	mrs_natural o,c,t;
 	
-	if (marsystemsSize_ == 0)
+	if (!marsystems_.size())
 	{
 		out = in;
 		return;

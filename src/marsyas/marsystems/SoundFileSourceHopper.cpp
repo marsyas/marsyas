@@ -182,7 +182,8 @@ SoundFileSourceHopper::myProcess(realvec& in, realvec& out)
 	// and ShiftInput (and maybe more MarSystems).
 	mrs_natural i_prev = 0;
 	mrs_natural i_curr = ctrl_mixToMono_->to<mrs_bool>() ? 1 : 2;
-	for ( ; i_curr < (mrs_natural) marsystemsSize_; i_prev = i_curr, i_curr++) {
+	unsigned int child_count = marsystems_.size();
+	for ( ; i_curr < child_count; i_prev = i_curr, i_curr++) {
 		MarSystem* m_prev = marsystems_[i_prev];
 		MarSystem* m_curr = marsystems_[i_curr];
 
@@ -190,7 +191,7 @@ SoundFileSourceHopper::myProcess(realvec& in, realvec& out)
 		MarControlAccessor acc_prev(m_prev->ctrl_processedData_, true, true);
 		realvec& data_prev = acc_prev.to<mrs_realvec>();
 
-		if (i_curr < (mrs_natural) marsystemsSize_ - 1)
+		if (i_curr < child_count - 1)
 		{
 			MarControlAccessor acc_curr(m_curr->ctrl_processedData_);
 			realvec& data_curr = acc_curr.to<mrs_realvec>();

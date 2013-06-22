@@ -53,7 +53,8 @@ Cascade::clone() const
 void 
 Cascade::myUpdate(MarControlPtr sender)
 {
-	if (marsystemsSize_ != 0) 
+	unsigned int child_count = marsystems_.size();
+	if (child_count)
 	{
 		//propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
@@ -66,7 +67,7 @@ Cascade::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");   
 		mrs_natural onObservations = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
-		for (mrs_natural i=1; i < marsystemsSize_; ++i) 
+		for (mrs_natural i=1; i < child_count; ++i)
 		{
 			marsystems_[i]->setctrl("mrs_natural/inSamples", marsystems_[i-1]->getctrl("mrs_natural/onSamples"));
 			marsystems_[i]->setctrl("mrs_natural/inObservations", marsystems_[i-1]->getctrl("mrs_natural/onObservations"));
@@ -83,12 +84,12 @@ Cascade::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObsNames_, oss.str());
     
 		// update buffers between components
-		if ((mrs_natural)slices_.size() < marsystemsSize_) 
+		if (slices_.size() < child_count)
 		{
-			slices_.resize(marsystemsSize_, NULL);
+			slices_.resize(child_count, NULL);
 		}
     
-		for (mrs_natural i = 0; i < marsystemsSize_; ++i) 
+		for (mrs_natural i = 0; i < child_count; ++i)
 		{
 			if (slices_[i] != NULL) 
 			{
@@ -119,12 +120,13 @@ Cascade::myProcess(realvec& in, realvec& out)
 	mrs_natural o,t;
 	mrs_natural outIndex = 0;
 	mrs_natural localIndex = 0;
-  
-	if (marsystemsSize_ == 1) 
+	unsigned int child_count = marsystems_.size();
+
+	if (child_count == 1)
 	{
 		marsystems_[0]->process(in, out);
 	}
-	else if (marsystemsSize_ > 1) 
+	else if (child_count > 1)
 	{
 		marsystems_[0]->process(in, *(slices_[0]));
 		localIndex = marsystems_[0]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
@@ -136,7 +138,7 @@ Cascade::myProcess(realvec& in, realvec& out)
 			}
 		}
 		outIndex += localIndex;
-		for (mrs_natural i = 1; i < marsystemsSize_; ++i) 
+		for (mrs_natural i = 1; i < child_count; ++i)
 		{
 			marsystems_[i]->process(*(slices_[i-1]), *(slices_[i]));
 			localIndex = marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>();
@@ -150,7 +152,7 @@ Cascade::myProcess(realvec& in, realvec& out)
 			outIndex += localIndex;
 		}
 	}
-	else if(marsystemsSize_ == 0) //composite has no children!
+	else if(child_count == 0) //composite has no children!
 	{
 		MRSWARN("Cascade::process: composite has no children MarSystems - passing input to output without changes.");
 		out = in;

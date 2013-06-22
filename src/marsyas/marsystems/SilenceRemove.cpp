@@ -58,7 +58,7 @@ SilenceRemove::myUpdate(MarControlPtr sender)
 
 	threshold_ = ctrl_threshold_->to<mrs_real>();
 
-	if (marsystemsSize_ > 0)
+	if (marsystems_.size())
 	{
 		//propagate in flow controls to first child
 		marsystems_[0]->setctrl("mrs_natural/inObservations", inObservations_);
@@ -89,7 +89,7 @@ SilenceRemove::myProcess(realvec& in, realvec& out)
 	mrs_natural count = 0;
 	mrs_natural t,o;
 
-	if(marsystemsSize_>0)
+	if(marsystems_.size())
 	{
 		do 
 		{

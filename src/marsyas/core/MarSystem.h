@@ -114,7 +114,6 @@ protected:
 	std::string absPath_;
 
 	bool isComposite_;
-	mrs_natural marsystemsSize_;
 
 	// children
 	std::vector<MarSystem*> marsystems_;

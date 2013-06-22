@@ -71,7 +71,6 @@ MarSystem::MarSystem(mrs_string type, mrs_string name)
 
 
 	isComposite_ = false;
-	marsystemsSize_ = 0;
 
 	MATLABscript_ = "";
 
@@ -155,10 +154,10 @@ MarSystem::MarSystem(const MarSystem& a)
 
 	//clone children (if any) => mutexes [?]
 	isComposite_ = a.isComposite_;
-	marsystemsSize_ = 0;
 	if (isComposite_)
 	{
-		for (mrs_natural i=0; i< a.marsystemsSize_; ++i)
+		unsigned int child_count = a.marsystems_.size();
+		for (mrs_natural i=0; i< child_count; ++i)
 		{
 			MarSystem* clonedChild = (*a.marsystems_[i]).clone();
 			addMarSystem(clonedChild);
@@ -274,7 +273,8 @@ MarSystem::relinkControls(const MarSystem& a)
 MarSystem::~MarSystem()
 {
 	//delete children (if any)
-	for (mrs_natural i=0; i< marsystemsSize_; ++i)
+	unsigned int child_count = marsystems_.size();
+	for (mrs_natural i=0; i< child_count; ++i)
 	{
 		delete marsystems_[i];
 	}
@@ -379,7 +379,6 @@ MarSystem::addMarSystem(MarSystem *marsystem)
 		if (!replaced)
 		{
 			marsystems_.push_back(marsystem);
-			marsystemsSize_ = (mrs_natural)marsystems_.size();
 		}
 		//set parent for the new child MarSystem
 		marsystem->setParent(this);
@@ -488,7 +487,8 @@ MarSystem::setName(mrs_string name) // => mutexes [?]
 
 	if (isComposite_)
 	{
-		for (mrs_natural i=0; i<marsystemsSize_; ++i)
+		unsigned int child_count = marsystems_.size();
+		for (mrs_natural i=0; i<child_count; ++i)
 		{
 			marsystems_[i]->updatePath();
 		}
@@ -513,7 +513,8 @@ MarSystem::setType(mrs_string type) // => mutexes [?]
 
 	if (isComposite_)
 	{
-		for (mrs_natural i=0; i<marsystemsSize_; ++i)
+		unsigned int child_count = marsystems_.size();
+		for (mrs_natural i=0; i<child_count; ++i)
 		{
 			marsystems_[i]->updatePath();
 		}
@@ -557,9 +558,11 @@ MarSystem::updatePath() // => mutexes [?]
 	}
 
 	//propagate new path to all children (if any)
-	if (isComposite_)
-		for (mrs_natural i=0; i< marsystemsSize_; ++i)
+	if (isComposite_) {
+		unsigned int child_count = marsystems_.size();
+		for (mrs_natural i=0; i< child_count; ++i)
 			marsystems_[i]->updatePath();
+	}
 }
 
 void
@@ -782,7 +785,8 @@ MarSystem::localActivate(bool state)
 	//call activate for all Composite's components
 	if (isComposite_)
 	{
-		for (mrs_natural i=0; i< marsystemsSize_; ++i)
+		unsigned int child_count = marsystems_.size();
+		for (mrs_natural i=0; i<child_count; ++i)
 		{
 			//marsystems_[i]->activate(state);
 			marsystems_[i]->updControl("mrs_bool/active", state); //thread-safe
@@ -1637,11 +1641,13 @@ MarSystem::put(ostream &o, bool verbose)
 
 	if (isComposite_)
 	{
+		unsigned int child_count = marsystems_.size();
+
 		o << endl;
-		o << "# nComponents = " << marsystemsSize_ << endl;
+		o << "# nComponents = " << child_count << endl;
 		o << endl;
 
-		for (mrs_natural i=0; i < marsystemsSize_; ++i)
+		for (mrs_natural i=0; i < child_count; ++i)
 		  marsystems_[i]->put(o,verbose);
 	}
 
@@ -1750,11 +1756,13 @@ MarSystem::put_html_worker(ostream &o)
 
 	if (isComposite_)
 	{
+		unsigned int child_count = marsystems_.size();
+
 		o << endl;
-		o << "<li>Components = " << marsystemsSize_ << endl;
+		o << "<li>Components = " << child_count << endl;
 		o << "<ul>" << endl;
 
-		for (mrs_natural i=0; i < marsystemsSize_; ++i)
+		for (mrs_natural i=0; i < child_count; ++i)
 			(marsystems_[i])->put_html_worker(o);
 
 		o << "</ul>" << endl;
@@ -1797,12 +1805,12 @@ MarSystem::put(istream& is)
 	// if composite, clear all children to avoid bad links to prototype children
 	if (isComposite_)
 	{
-		for (mrs_natural i=0; i< marsystemsSize_; ++i)
+		unsigned int child_count = marsystems_.size();
+		for (mrs_natural i=0; i< child_count; ++i)
 		{
 			delete marsystems_[i];
 		}
 		marsystems_.clear();
-		marsystemsSize_ = 0;
 	}
 
 	// Start reading!
