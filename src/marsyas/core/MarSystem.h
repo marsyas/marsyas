@@ -119,8 +119,6 @@ protected:
 	// children
 	std::vector<MarSystem*> marsystems_;
 
-	std::vector<MarControlPtr> slPtrs_;
-
 	// Controls
 	mutable std::map<std::string, MarControlPtr> controls_;
 	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
