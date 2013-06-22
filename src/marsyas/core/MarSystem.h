@@ -121,7 +121,7 @@ protected:
 
 	// Controls
 	mutable std::map<std::string, MarControlPtr> controls_;
-	std::map<std::string, MarControlPtr>::iterator ctrlIter_;
+	typedef std::map<std::string, MarControlPtr>::iterator ControlItr;
 
 	//in flow member vars
 	mrs_natural inObservations_;

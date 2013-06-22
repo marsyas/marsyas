@@ -127,7 +127,7 @@ MarSystem::MarSystem(const MarSystem& a)
 	//clone controls (cloned controls will have no links! - they have to be relinked as done below)
 	{
 		controls_.clear();
-		for (ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
+		for (ControlItr ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 		{
 			//clone all controls
 			controls_[ctrlIter_->first] = ctrlIter_->second->clone();
@@ -169,7 +169,7 @@ MarSystem::MarSystem(const MarSystem& a)
 	this->relinkControls(a);
 
 // 	// "re-link" controls  => mutexes [?]
-// 	for(ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
+// 	for(ControlItr ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 // 	{
 // 		// get original links...
 // 		vector<pair<MarControlPtr, MarControlPtr> > originalLinks = ctrlIter_->second->getLinks();
@@ -225,7 +225,7 @@ void
 MarSystem::relinkControls(const MarSystem& a)
 {
 	// "re-link" controls  => mutexes [?]
-	for (ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
+	for (ControlItr ctrlIter_ = a.controls_.begin(); ctrlIter_ != a.controls_.end(); ++ctrlIter_)
 	{
 		// get original links...
 		vector<pair<MarControlPtr, MarControlPtr> > originalLinks = ctrlIter_->second->getLinks();
@@ -1094,7 +1094,7 @@ bool
 MarSystem::hasControl(MarControlPtr control, bool searchChildren)
 {
 	//search local controls
-	for (ctrlIter_=controls_.begin(); ctrlIter_!=controls_.end();++ctrlIter_)
+	for (ControlItr ctrlIter_=controls_.begin(); ctrlIter_!=controls_.end();++ctrlIter_)
 	{
 		if ((ctrlIter_->second)() == control())
 			return true;
@@ -1218,7 +1218,7 @@ MarSystem::getControls(map<mrs_string, MarControlPtr>* cmap)
 		cmap = &controlsmap;
 
 		//fill list with local controls
-		for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+		for (ControlItr ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
 		{
 			(*cmap)[absPath_+ctrlIter_->first] = ctrlIter_->second;
 		}
@@ -1236,7 +1236,7 @@ MarSystem::getControls(map<mrs_string, MarControlPtr>* cmap)
 	else
 	{
 		//fill list with local controls
-		for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+		for (ControlItr ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
 		{
 			(*cmap)[absPath_+ctrlIter_->first] = ctrlIter_->second;
 		}
@@ -1503,7 +1503,7 @@ MarSystem::toString(marostring& m)
 	m.begin_marsystem(isComposite_, getType(), getName());
 
 	m.begin_controls(controls_.size());
-	for (ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+	for (ControlItr ctrlIter_ = controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
 	{
 		MarControlPtr c = ctrlIter_->second;
 		std::ostringstream cv;
@@ -1596,7 +1596,7 @@ MarSystem::put(ostream &o, bool verbose)
 	if (verbose)
 	{
 	  o << "# MarControls = " << controls_.size() << endl;
-	  for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+	  for (ControlItr ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
 	  {
 		ostringstream toss;
 		toss << ctrlIter_->second;
@@ -1699,7 +1699,7 @@ MarSystem::put_html_worker(ostream &o)
 	o << endl;
 	o << "<li>MarControls" << controls_.size() << endl;
 	o << "<ul>" << endl;
-	for (ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
+	for (ControlItr ctrlIter_=controls_.begin(); ctrlIter_ != controls_.end(); ++ctrlIter_)
 	{
 		ostringstream toss;
 		toss << ctrlIter_->second;
