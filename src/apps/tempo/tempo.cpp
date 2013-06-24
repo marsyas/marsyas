@@ -927,6 +927,7 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
        bcoeffs(14) = 0.0144032200641954;
        bcoeffs(15) = 0.0095530348472755;
        */
+/*
     //   b,a = scipy.signal.firwin(16, 10.0 / (344.53125/2.0))
     mrs_realvec bcoeffs(1, 16);
     bcoeffs(0) = 0.0073773298534980;
@@ -945,6 +946,24 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     bcoeffs(13) = 0.0251341506152936;
     bcoeffs(14) = 0.0120567511070207;
     bcoeffs(15) = 0.0073773298534980;
+*/
+    //   b,a = scipy.signal.firwin(15, 6.0 / (344.53125/2.0))
+    mrs_realvec bcoeffs(1, 15);
+    bcoeffs(0) = 0.0096350145101721;
+    bcoeffs(1) = 0.0155332463596257;
+    bcoeffs(2) = 0.0320375094304201;
+    bcoeffs(3) = 0.0563964822180710;
+    bcoeffs(4) = 0.0839538807274150;
+    bcoeffs(5) = 0.1091494735026997;
+    bcoeffs(6) = 0.1267578095297140;
+    bcoeffs(7) = 0.1330731674437646;
+    bcoeffs(8) = 0.1267578095297140;
+    bcoeffs(9) = 0.1091494735026998;
+    bcoeffs(10) = 0.0839538807274150;
+    bcoeffs(11) = 0.0563964822180711;
+    bcoeffs(12) = 0.0320375094304201;
+    bcoeffs(13) = 0.0155332463596257;
+    bcoeffs(14) = 0.0096350145101721;
 
     fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
     //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
@@ -1048,7 +1067,7 @@ mrs_real energy_in_histo(mrs_natural bpm, realvec histo,
 }
 
 
-const int INFO_SIZE = 11;
+const int INFO_SIZE = 10;
 realvec info_histogram(mrs_natural bpm, realvec histo,
                        mrs_real factor, mrs_real tolerance)
 {
@@ -1151,7 +1170,6 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
     info(7) = bpm2 / bpm;
     info(8) = bpm3 / bpm;
     info(9) = num_non_zero;
-    info(10) = histo(factor*bpm) / energy_total;
     return info;
 }
 
@@ -1706,15 +1724,14 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
     // generated through post-processing
     // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0, 0.0, 0.0341224, 0.0, 0.0341224, 0.0, -4.44089e-16, 0.0, 0.0, 1.0, 0.0308513, 50.0, 0 };
-    const mrs_real maxs[] = { 0.870634, 0.938686, 1.0, 0.524989, 1.0, 0.748972, 0.915919, 3.06897, 3.12281, 89.0, 1.0, 178.0, 0 };
+    const mrs_real mins[] = { 0.0, 0.0, 0.0320684, 0.0, 0.0320684, 0.0, -4.44089e-16, 0.0, 0.0, 1.0, 50.0, 0 };
+    const mrs_real maxs[] = { 0.876178, 0.94753, 1.0, 0.535006, 1.0, 0.738607, 0.89892, 3.10526, 3.12281, 92.0, 178.0, 0 };
     const mrs_real svm_weights[] = {
-         1.5995, -1.205, -0.2707, -0.0113,
-         -0.2411, 2.3969, -1.6993, -0.7272,
-         -0.4703, 0.4186, 0.1935, -7.9823,
-         0,
+         1.8788, -1.6107, -0.124, -0.2659,
+         -0.4155, 2.5116, -1.458, -0.7464,
+         -0.4488, 0.1006, -8.0225, 0,
     };
-    double svm_sum = 1.8755;
+    double svm_sum = 2.1069;
 
     for (int i=0; i<features.getCols(); i++) {
         if (mins[i] == maxs[i]) {

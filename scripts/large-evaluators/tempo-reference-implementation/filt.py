@@ -13,10 +13,10 @@ import pylab
 #h_db = 20*numpy.log10(abs(h))
 #pylab.plot(w, h_db, label="exact Butterworth 31")
 
-print "FIR, 16"
-N = 16
+print "FIR, 15"
+N = 15
 #b = scipy.signal.firwin(N, 3.0 / (344.53125/2.0))
-b = scipy.signal.firwin(N, 10.0 / (344.53125/2.0))
+b = scipy.signal.firwin(N, 6.0 / (344.53125/2.0))
 #b = scipy.signal.firwin2(N,
 #    [0.0, 4.0 / (344.53125/2.0/2.0), 1.0],
 #    [0, 1.0, 0])

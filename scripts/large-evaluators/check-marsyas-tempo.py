@@ -12,6 +12,7 @@ import mar_collection
 def marsyas_tempo(queue, datum):
     coll_filename = datum[0]
     output_dir = datum[1]
+    orig_dir = datum[2]
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -23,10 +24,15 @@ def marsyas_tempo(queue, datum):
     os.chdir(dirname)
     cmd = "tempo %s -po %s" % (
         coll_filename, coll_basename + '-detected.mf')
+    #cmd = "ls"
     output = subprocess.check_output(cmd, shell=True)
-    #print '---'
-    #print cmd
-    #print output
+
+    filename = os.path.join(orig_dir, 
+        '%s-output.txt' % coll_basename)
+    out = open(filename, 'w')
+    out.write(output)
+    out.close()
+
     queue.put(output)
 
 def main(mf_dir, output_dir):
@@ -34,9 +40,10 @@ def main(mf_dir, output_dir):
     collections = glob.glob(os.path.expanduser(
         os.path.join(dirname, "*_tempos.mf")))
     collections.sort()
+    orig_dir = os.path.abspath(os.path.curdir)
     data = []
     for coll in collections:
-        datum = (coll, output_dir)
+        datum = (coll, output_dir, orig_dir)
         data.append(datum)
 
     manager = eval_manager.EvalManager(3)

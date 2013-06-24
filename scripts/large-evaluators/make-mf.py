@@ -72,7 +72,7 @@ FEATURES = [
     #'has2',
     #'has3',
     'num_non_zero',
-    'energyinpeak',
+    #'energyinpeak',
     ]
 
 if INCLUDE_05:
