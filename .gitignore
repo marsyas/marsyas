@@ -12,3 +12,5 @@
 *.ogg
 *.au
 *.mp3
+build/
+builddebug/
