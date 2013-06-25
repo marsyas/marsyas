@@ -1034,7 +1034,7 @@ mrs_real energy_in_histo_range(realvec histo,
     if (high == 1.0) {
         index_high = histo.getCols()-1;
     }
-    if (index_high >= histo.getCols()-1) {
+    if (index_high > histo.getCols()-1) {
         index_high = histo.getCols()-1;
     }
     if (index_low < 0) {
@@ -1382,7 +1382,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         for (int k=0; k < nCandidates; k++)
         {
             tempos(k) = bh_candidates(2*k+1) / factor;
-            cout<<tempos(k)<<"   ";
+            printf("%.2f  ", tempos(k));
         }
         cout<<"."<<endl;
 #endif
@@ -1392,6 +1392,11 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
         mrs_natural bpm = round(tempos(0));
         bphase(bpm) += temposcores(0);
+
+
+#if 0
+        printf("%li\t%f\n", bpm, temposcores(0));
+#endif
 
     }
 
@@ -1428,8 +1433,12 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     cout<<"-----"<<endl;
 #endif
 
+#if 0
+   bphase.writeText("bphase-final.txt");
+#endif
 
-#if 1
+
+#if 0
     // filter bphase
     realvec bphase_filt = bphase;
     for (int i=9; i < bphase.getCols()-9; i++) {
@@ -1636,6 +1645,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     for (int i=0; i<INFO_SIZE; i++) {
         features(i) = from_bp(i);
     }
+
     /*
        realvec from_bp2 = info_histogram(estimate_bpm, bphase,
        1.0, 0.1);
@@ -1740,7 +1750,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         features(i) = (features(i) - mins[i]) / (maxs[i] - mins[i]);
     }
     mrs_real mult = 1.0;
-    //cout<<"svm_sum:\t"<<svm_sum<<endl;
 
     std::ostringstream features_normalized;
     features_normalized << "features_normalized:\t";
@@ -1750,8 +1759,9 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     cout << features_normalized.str() << endl;
 
     for (int i=0; i<features.getCols(); i++) {
-        svm_sum += features(i) * svm_weights[i];
+        svm_sum += (features(i) * svm_weights[i]);
     }
+    //cout<<"svm_sum:\t"<<svm_sum<<endl;
 #if POST_DOUBLING == 2
     if (svm_sum > 0) {
         mult = 2.0;

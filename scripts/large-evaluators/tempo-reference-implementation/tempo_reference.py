@@ -94,19 +94,17 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
         defs.OPTIONS_ONSET, defs.OPTIONS_BH, defs.OPTIONS_BP)
     if os.path.exists(pickle_filename) and not regen:
         pickle_file = open(pickle_filename, 'rb')
-        (bpm1, bpm2, bpm3) = pickle.load(pickle_file)
+        (bpm, bp) = pickle.load(pickle_file)
         pickle_file.close()
     else:
-        bpm = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
+        bpm, bp = beat_phase.beat_phase(defs, oss_sr, oss_data, candidate_bpms,
             plot=plot)
         pickle_file = open(pickle_filename, 'wb')
-        pickle.dump( (bpm), pickle_file, -1 )
+        pickle.dump( (bpm, bp), pickle_file, -1 )
         pickle_file.close()
 
 
-    #tempos = [bpm1, bpm2, candidate_bpms[-1][0]]
-    tempos = [bpm]
-    bpm = late_heuristic.late_heuristic(tempos)
+    bpm = late_heuristic.late_heuristic(defs, bpm, bp)
 
     if plot:
         pylab.show()

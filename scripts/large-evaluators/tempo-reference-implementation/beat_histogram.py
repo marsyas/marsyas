@@ -144,10 +144,10 @@ def approximate_gcds(values):
 def beat_histogram(defs, oss_sr, oss_data, plot=False):
     ### overlap
     overlapped = overlap.sliding_window(
-        numpy.append(
-            numpy.zeros(defs.BH_WINDOWSIZE - defs.BH_HOPSIZE),
-            oss_data[:-2*defs.BH_HOPSIZE]),
-        #oss_data,
+        #numpy.append(
+        #    numpy.zeros(defs.BH_WINDOWSIZE - defs.BH_HOPSIZE),
+        #    oss_data[:-2*defs.BH_HOPSIZE]),
+        oss_data,
         defs.BH_WINDOWSIZE, defs.BH_HOPSIZE)
     #beat_histogram_sr = oss_sr / defs.BH_HOPSIZE
     #for i in range(len(overlapped[0])):
@@ -300,10 +300,8 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     for i in xrange( Hn.shape[0] ):
         these_peaks = find_peaks(defs, harmonic_strengthened_bh[i],
             number=10, peak_neighbors=1)
-        #print "bh_cands:\t", these_peaks/4.0
-        #print these_peaks/4.0
         #for b in these_peaks:
-        #    print b, " ",
+        #    print "%.2f " % (b/4.0),
         #print "."
         peaks.append(these_peaks / 4.0)
         if defs.WRITE_BH:
