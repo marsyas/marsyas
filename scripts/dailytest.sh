@@ -1,25 +1,41 @@
 #!/bin/bash
 ######### update as necessary
-baseDir=~/marsyas-svn
-matDir=~/marsyas-autotest
+gitDir=$1
+testDir=$2
+
+print_usage() {
+	echo "-- Usage: dailytest <git dir> <test dir>"
+}
+
+if [[ (-z $gitDir) ]]; then
+	print_usage
+	echo "!! Git directory not given!"
+	exit
+fi
+
+if [[ (-z $testDir) ]]; then
+	print_usage
+	echo "!! Test directory not given!"
+	exit
+fi
+
+if [[ !($gitDir =~ ^/) || !($testDir =~ ^/) ]]; then
+	print_usage
+	echo "!! Directories must be given as absolute paths!"
+	exit
+fi
+
 #coffeeDir=~/marsyas-coffee
 
-
-### get latest SVN
-cd $baseDir
-svn update
-
 ######### non-changing definitions
-version=`svn info | grep Revision | cut -c 11-`
-subjectBase="Marsyas Auto-Tester ("`date +%y%m%d`", rev $version):"
-
-buildDir=$matDir/testbuild
-logDir=$matDir/logs
-cmakeDir=$buildDir/build
+buildDir=$testDir/build
+logDir=$testDir/logs
 logBase=$logDir/`date +%y%m%d`
 
+gitLog=$logBase-git.log
 configLog=$logBase-config.log
 buildLog=$logBase-build.log
+testingLog=$logBase-testing.log
 sanityLog=$logBase-sanity.log
 continuousLog=$logBase-continuous.log
 #coffeeLog=$logBase-coffee.log
@@ -30,37 +46,51 @@ manualsLog=$logBase-manuals.log
 doxyLog=$logBase-doxy.log
 
 report=$logBase-report.txt
-lastGoodVersion=$matDir/lastworking.txt
+lastGoodVersion=$testDir/lastworking.txt
+
+report() {
+	echo $1 | tee -a $report
+}
 
 #  $1 is the "pass/fail" on the subject line
 sendreport() {
 	subject="$subjectBase $1"
 #	echo "$subject"
-	cat $report
+#	cat $report
 	if [ `which mail` ]
 	then
 		mail -s "$subject" gtzan@cs.uvic.ca < $report
 		mail -s "$subject" graham@percival-music.ca < $report
 		mail -s "$subject" sness@sness.net < $report
 		mail -s "$subject" lgmartins@users.sourceforge.net < $report
+		mail -s "$subject" jakob.leben@gmail.com < $report
 	fi
 }
 
 #  $1 is the command
 #  $2 is the log file for the command
 #  $3 is the step name (ie Build, Sanity, Coffee, Dist)
+
 testthing() {
-$1 &> $2
+# post command
+echo ">> $1"
+
+# report command
+echo >> $2
+echo ">> $1" >> $2
+echo >> $2
+
+# execute command
+$1 &>> $2
 PASS=$?
 
 if [ "$PASS" = "0" ]
 then
-	echo "$3... succeeded." >> $report
+	report "-- $3: OK"
 else
-	echo "$3... FAILED!   *********" >> $report
-	echo >> $report
-	last=`cat $lastGoodVersion`
-	echo "Last good build... $last" >> $report
+	report "!! $3: FAILED!"
+	last=`cat $lastGoodVersion 2>/dev/null`
+	report "!! Last good build: $last"
 	echo >> $report
 	echo >> $report
 	tail -n 50 $2 >> $report
@@ -74,43 +104,46 @@ fi
 
 ######## actual script
 
-### setup clean dir
-mkdir -p $matDir
-rm -rf $buildDir
-cd $baseDir
-#svn co https://svn.code.sf.net/p/marsyas/code/trunk marsyas
-svn export . $buildDir
-mkdir -p $cmakeDir
 
+### setup clean dir
+mkdir -p $testDir
+
+rm -rf $buildDir
+mkdir -p $buildDir
 
 ### setup report
 rm -rf $logDir
 mkdir -p $logDir
-echo "Marsyas Automatic Test, svn revision $version" >> $report
+
+report "== Marsyas Automatic Test =="
 echo >> $report
 
+### get latest Git
+cd $gitDir
+
+testthing "git pull --ff-only" $gitLog "Git update"
+
+version=`git rev-parse HEAD`
+
+report "-- Git revision: $version"
+subjectBase="Marsyas Auto-Tester ("`date +%y%m%d`", rev $version):"
 
 ### Do tests
-cd $cmakeDir
-cmake ../src/ -DMARSYAS_TESTS=ON &> $configLog
+cd $buildDir
+
+testthing "cmake $gitDir -DMARSYAS_TESTS=ON" $configLog "CMake"
 
 testthing make $buildLog "Build"
 
 ## re-use the name "sanity"
-testthing "make test" $sanityLog Sanity
+testthing "make test" $testingLog "Testing"
 #testthing "scripts/regtest_sanity.py" $sanityLog Sanity
 #testthing "scripts/regtest_coffee.py $coffeeDir" $coffeeLog Coffee
 #testthing "make Continuous" $continuousLog Continuous
 
-cd ..
-mkdir doc-build
-cd doc-build
-cmake ../doc/
-#testthing "make sources" $doxyLog "source-highlight examples"
-testthing "make doxy" $doxyLog "Doxygen docs"
-testthing "make" $manualsLog "Manuals"
-#testthing "make html" $manualsLog "HTML manuals"
-cd ..
+## comment out doc building for now, as doxygen is not installed:
+#testthing "make doxy" $doxyLog "Doxygen docs"
+#testthing "make docs" $manualsLog "Manuals"
 
 #testthing "make dist" $distLog "Make dist"
 
