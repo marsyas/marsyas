@@ -81,7 +81,7 @@ echo ">> $1" >> $2
 echo >> $2
 
 # execute command
-$1 &>> $2
+$1 >> $2 2>&1
 PASS=$?
 
 if [ "$PASS" = "0" ]
