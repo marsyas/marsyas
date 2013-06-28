@@ -296,19 +296,24 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
 #
 
 
+    if defs.WRITE_BH:
+        combo_peaks = open('out/beat_histogram.txt', 'w')
     peaks = []
     for i in xrange( Hn.shape[0] ):
         these_peaks = find_peaks(defs, harmonic_strengthened_bh[i],
             number=10, peak_neighbors=1)
-        #for b in these_peaks:
-        #    print "%.2f " % (b/4.0),
-        #print "."
         peaks.append(these_peaks / 4.0)
         if defs.WRITE_BH:
+            for b in these_peaks:
+                text = "%.2f  " % (b/4.0)
+                combo_peaks.write(text)
+            combo_peaks.write(".\n")
             bpms = numpy.array(these_peaks)/4.0
             bpms_strengths = [harmonic_strengthened_bh[i][4*b] for b in bpms]
             numpy.savetxt("out/bh-peaks-%i.txt" % (i+1),
                 numpy.vstack((bpms, bpms_strengths)).transpose())
+    if defs.WRITE_BH:
+        combo_peaks.close()
 
     #cand_peaks = find_peaks(sHn,
     #        number=8, peak_neighbors=11) / 4.0

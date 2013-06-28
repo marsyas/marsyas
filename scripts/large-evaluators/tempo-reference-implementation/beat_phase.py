@@ -155,7 +155,14 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
                 numpy.vstack((int(bestbpm), beststr)).transpose())
 
     if defs.WRITE_BP:
-        numpy.savetxt("out/bphase.txt", bphase)
+        bp = open('out/beat_phase.txt', 'w')
+        for b in bphase:
+            if b == 0:
+                text = "0\n"
+            else:
+                text = "%.5f\n" % b
+            bp.write(text)
+        bp.close()
 
     if plot:
         pylab.figure()

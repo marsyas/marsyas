@@ -91,39 +91,11 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         numpy.savetxt('out/logmag.txt',
             logmag_short.transpose())
             #logmag[:cutoff,].transpose())
-        #ts = numpy.arange( cutoff ) / oss_sr
-        #numpy.savetxt('flux.txt',
-        #    numpy.vstack( (ts, flux[:cutoff])).transpose() )
-        #numpy.savetxt('filtered.txt',
-        #    numpy.vstack( (ts, filtered_flux[:cutoff])).transpose() )
 
-        #numpy.savetxt('out/logmag.txt',
-        #    logmag.transpose())
         numpy.savetxt('out/flux.txt',
             numpy.vstack( (ts, flux)).transpose() )
-        numpy.savetxt('out/filtered.txt',
+        numpy.savetxt('out/onset_strength.txt',
             numpy.vstack( (ts, filtered_flux)).transpose() )
-
-    if defs.OPTIONS_ONSET == 3:
-        b, a = scipy.signal.butter(2, 1 / (oss_sr/2.0))
-        #mean_flux = scipy.signal.filtfilt(b, a, filtered_flux)
-        mean_flux = scipy.signal.lfilter(b, a, filtered_flux)
-        cutoff_flux = (filtered_flux - mean_flux).clip(min=0)
-
-        b = scipy.signal.firwin(defs.OSS_LOWPASS_N,
-            defs.OSS_LOWPASS_CUTOFF / (oss_sr/2.0) )
-        cutoff_flux = scipy.signal.lfilter(b, 1.0, cutoff_flux).clip(min=0)
-
-        pylab.plot( ts, mean_flux, label="means")
-        pylab.plot( ts, cutoff_flux, label="cutoff")
-
-        if defs.WRITE_ONSETS:
-            numpy.savetxt('out/cutoff.txt',
-                numpy.vstack( (ts, cutoff_flux)).transpose() )
-        pylab.legend()
-        return oss_sr, cutoff_flux
-    #pylab.show()
-    #exit(1)
 
     if plot:
         pylab.legend()
