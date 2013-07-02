@@ -726,101 +726,93 @@ namespace Marsyas {
 
 
 	WAS_INLINE
-	MarControl::MarControl(const MarControl& a)
+	MarControl::MarControl(const MarControl& a):
+		refCount_(0),
+		value_(a.value_->clone()),
+		msys_(a.msys_),
+		cname_(a.cname_),
+		state_(a.state_),
+		desc_(a.desc_)
 	{
-		refCount_ = 0;
-		msys_			= a.msys_;
-		cname_		= a.cname_;
-		state_		= a.state_;
-		desc_			= a.desc_;
-		value_		= a.value_->clone();
 		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 	}
 
 	WAS_INLINE
-	MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msys, bool state)
+	MarControl::MarControl(MarControlValue *value, std::string cname, MarSystem* msys, bool state):
+		refCount_(0),
+		value_(value->clone()),
+		msys_(msys),
+		cname_(cname),
+		state_(state)
 	{
-		refCount_ = 0;
-		msys_			= msys;
-		cname_		= cname;
-		state_		= state;
-		desc_			= "";
-		value_		= value->clone();
 		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 	}
 
 	WAS_INLINE
-	MarControl::MarControl(double re, std::string cname, MarSystem* msys, bool state)
+	MarControl::MarControl(double re, std::string cname, MarSystem* msys, bool state):
+		refCount_(0),
+		value_(new MarControlValueT<mrs_real>(re)),
+		msys_(msys),
+		cname_(cname),
+		state_(state)
 	{
-		refCount_ = 0;
-		msys_			= msys;
-		cname_		= cname;
-		state_		= state;
-		desc_			= "";
-		value_		= new MarControlValueT<mrs_real>(re);
 		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 	}
 
-
 	WAS_INLINE
-	MarControl::MarControl(float re, std::string cname, MarSystem* msys, bool state)
+	MarControl::MarControl(float re, std::string cname, MarSystem* msys, bool state):
+		refCount_(0),
+		value_(new MarControlValueT<mrs_real>(re)),
+		msys_(msys),
+		cname_(cname),
+		state_(state)
 	{
-		refCount_ = 0;
-		msys_			= msys;
-		cname_		= cname;
-		state_		= state;
-		desc_			= "";
-		value_		= new MarControlValueT<mrs_real>(re);
 		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 	}
 
 
 	WAS_INLINE
-	MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool state)
+	MarControl::MarControl(mrs_natural ne, std::string cname, MarSystem* msys, bool state):
+		refCount_(0),
+		value_(new MarControlValueT<mrs_natural>(ne)),
+		msys_(msys),
+		cname_(cname),
+		state_(state)
 	{
-		refCount_ = 0;
-		msys_			= msys;
-		cname_		= cname;
-		state_		= state;
-		desc_			= "";
-		value_		= new MarControlValueT<mrs_natural>(ne);
 		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 	}
 
 	WAS_INLINE
-	MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool state)
+	MarControl::MarControl(std::string st, std::string cname, MarSystem* msys, bool state):
+		refCount_(0),
+		value_(new MarControlValueT<std::string>(st)),
+		msys_(msys),
+		cname_(cname),
+		state_(state)
 	{
-		refCount_ = 0;
-		msys_			= msys;
-		cname_		= cname;
-		state_		= state;
-		desc_			= "";
-		value_		= new MarControlValueT<std::string>(st);
 		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 	}
 
 	WAS_INLINE
-	MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool state)
+	MarControl::MarControl(mrs_bool be, std::string cname, MarSystem* msys, bool state):
+		refCount_(0),
+		value_(new MarControlValueT<bool>(be)),
+		msys_(msys),
+		cname_(cname),
+		state_(state)
 	{
-		refCount_ = 0;
-		msys_			= msys;
-		cname_		= cname;
-		state_		= state;
-		desc_			= "";
-		value_		= new MarControlValueT<bool>(be);
 		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 	}
 
 	WAS_INLINE
-	MarControl::MarControl(realvec& ve, std::string cname, MarSystem* msys, bool state)
+	MarControl::MarControl(realvec& ve, std::string cname, MarSystem* msys, bool state):
+		refCount_(0),
+		value_(new MarControlValueT<realvec>(ve)),
+		msys_(msys),
+		cname_(cname),
+		state_(state)
 	{
-		refCount_ = 0;
-		msys_			= msys;
-		cname_		= cname;	
-		state_		= state;
-		desc_			= "";
-		value_		= new MarControlValueT<realvec>(ve);
-		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this)); 
+		value_->links_.push_back(std::pair<MarControl*, MarControl*>(this, this));
 	}
 
 	WAS_INLINE
