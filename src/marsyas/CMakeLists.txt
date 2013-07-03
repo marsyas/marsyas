@@ -34,6 +34,23 @@ foreach (filename ${MARSYAS_MARSYSTEMS_HEADERS})
 	list(APPEND Marsyas_HEADERS marsystems/${filename})
 endforeach()
 
+if(MARSYAS_AUDIOIO)
+	list(APPEND Marsyas_SOURCES
+		Talk.cpp
+		marsystems/AudioSource.cpp
+		marsystems/AudioSourceBlocking.cpp
+		marsystems/AudioSink.cpp
+		marsystems/AudioSinkBlocking.cpp
+	)
+	list(APPEND Marsyas_HEADERS
+		Talk.h
+		marsystems/AudioSource.h
+		marsystems/AudioSourceBlocking.h
+		marsystems/AudioSink.h
+		marsystems/AudioSinkBlocking.h
+	)
+endif()
+
 
 ## OTHERLIBS
 

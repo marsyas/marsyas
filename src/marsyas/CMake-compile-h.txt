@@ -30,7 +30,6 @@ static_vq_codebook.h
 statistics.h
 Stk.h
 StrobeList.h
-Talk.h
 Thread.h
 TimeLine.h
 TranscriberExtract.h

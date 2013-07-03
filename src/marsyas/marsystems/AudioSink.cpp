@@ -27,18 +27,9 @@ using std::min;
 
 using namespace Marsyas;
 
-
-#ifdef MARSYAS_AUDIOIO
-#include "RtAudio.h"
-#endif 
-
-
-
 AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
 {
-#ifdef MARSYAS_AUDIOIO
 	audio_ = NULL;
-#endif
   
 	pringBufferSize_ = 0;
 	pnChannels_ = 1;
@@ -59,10 +50,7 @@ AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
 
 AudioSink::~AudioSink()
 {
-#ifdef MARSYAS_AUDIOIO
 	delete audio_;
-#endif 
-
 }
 
 MarSystem* 
@@ -150,7 +138,6 @@ AudioSink::initRtAudio()
   }
 #endif	
 
-#ifdef MARSYAS_AUDIOIO
 	if (audio_ == NULL)
 		audio_ = new RtAudio();
 
@@ -216,7 +203,6 @@ AudioSink::initRtAudio()
   //by RtAudio (see RtAudio documentation)
   setctrl("mrs_natural/bufferSize", (mrs_natural)bufferFrames);
   
-#endif
 	isInitialized_ = true;
 	setctrl("mrs_bool/initAudio", false);
 
@@ -225,17 +211,11 @@ AudioSink::initRtAudio()
 void 
 AudioSink::start()
 {
-#ifdef MARSYAS_AUDIOIO
 	if ( stopped_) {
 		audio_->startStream();
 		stopped_ = false;
 	}
-#endif
 }
-
-
-
-#ifdef MARSYAS_AUDIOIO
 
 int 
 AudioSink::playCallback(void *outputBuffer, void *inputBuffer, 
@@ -350,21 +330,14 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
 	return 0;
 }
 
-#endif
-
-
-
-
 void 
 AudioSink::stop()
 {
-#ifdef MARSYAS_AUDIOIO
 	if ( !stopped_) {
 
 		audio_->stopStream();
 		stopped_ = true;
 	}
-#endif 
 }
 
 
@@ -424,8 +397,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
 			}
 		}
 		
-		
-#ifdef MARSYAS_AUDIOIO
 		//check if RtAudio is initialized
 		if (!isInitialized_)
 			return;
@@ -467,7 +438,6 @@ AudioSink::myProcess(realvec& in, realvec& out)
 				}
 			}
 		}
-#endif
 	}
 	
 	

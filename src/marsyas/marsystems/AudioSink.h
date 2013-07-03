@@ -21,9 +21,8 @@
 #define MARSYAS_AUDIOSINK_H
 
 
-#ifdef MARSYAS_AUDIOIO
 #include "RtAudio.h"
-#endif 
+
 #include "MarSystem.h"
 
 #include "Thread.h" 

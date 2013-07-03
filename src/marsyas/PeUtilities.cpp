@@ -491,10 +491,10 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, mrs_string outsfname, bool m
 
 	MarSystem *dest;
 	if (outsfname == "MARSYAS_EMPTY") 
-		dest = new AudioSink("dest");
+		dest = mng->create("AudioSink", "dest");
 	else
 	{
-		dest = new SoundFileSink("dest");
+		dest = mng->create("SoundFileSink", "dest");
 		//dest->updControl("mrs_string/filename", outsfname);
 	}
 
@@ -517,10 +517,10 @@ void Marsyas::synthNetCreate(MarSystemManager *mng, mrs_string outsfname, bool m
 
 		MarSystem *destRes;
 		if (outsfname == "MARSYAS_EMPTY") 
-			destRes = new AudioSink("destRes");
+			destRes = mng->create("AudioSink", "destRes");
 		else
 		{
-			destRes = new SoundFileSink("destRes");
+			destRes = mng->create("SoundFileSink", "destRes");
 			//dest->updControl("mrs_string/filename", outsfname);
 		}
 		postNet->addMarSystem(destRes);

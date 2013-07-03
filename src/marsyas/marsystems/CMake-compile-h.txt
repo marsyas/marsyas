@@ -26,10 +26,6 @@ Annotator.h
 APDelayOsc.h
 ArffFileSink.h
 AubioYin.h
-AudioSinkBlocking.h
-AudioSink.h
-AudioSourceBlocking.h
-AudioSource.h
 AuFileSink.h
 AuFileSource.h
 AutoCorrelationFFT.h

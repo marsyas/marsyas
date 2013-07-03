@@ -26,10 +26,6 @@ Annotator.cpp
 APDelayOsc.cpp
 ArffFileSink.cpp
 AubioYin.cpp
-AudioSinkBlocking.cpp
-AudioSink.cpp
-AudioSourceBlocking.cpp
-AudioSource.cpp
 AuFileSink.cpp
 AuFileSource.cpp
 AutoCorrelation.cpp

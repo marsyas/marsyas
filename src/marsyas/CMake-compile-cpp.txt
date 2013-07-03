@@ -21,7 +21,6 @@ QGMMModel.cpp
 statistics.cpp
 Stk.cpp
 SVMClassifier.cpp
-Talk.cpp
 Thread.cpp
 TimeLine.cpp
 Transcriber.cpp

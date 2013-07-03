@@ -41,8 +41,6 @@
 #include "AuFileSink.h"
 #include "AuFileSource.h"
 #include "AubioYin.h"
-#include "AudioSink.h"
-#include "AudioSinkBlocking.h"
 #include "AutoCorrelation.h"
 #include "AutoCorrelationFFT.h"
 #include "BICchangeDetector.h"
@@ -267,8 +265,6 @@
 #include "Krumhansl_key_finder.h"
 #include "PWMSource.h"
 #include "DCSource.h"
-#include "AudioSource.h"
-#include "AudioSourceBlocking.h"
 #include "AliasingOsc.h"
 #include "APDelayOsc.h"
 #include "Upsample.h"
@@ -279,6 +275,12 @@
 #include "ChromaFilter.h"
 //modifyHeader
 
+#ifdef MARSYAS_AUDIOIO
+#include "AudioSource.h"
+#include "AudioSourceBlocking.h"
+#include "AudioSink.h"
+#include "AudioSinkBlocking.h"
+#endif
 #ifdef MARSYAS_GSTREAMER
 #include "GStreamerSource.h"
 #endif
@@ -322,10 +324,6 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("AuFileSink", new AuFileSink("ausinkp"));
 	registerPrototype("AuFileSource", new AuFileSource("aufp"));
 	registerPrototype("AubioYin", new AubioYin("aubioyin"));
-	registerPrototype("AudioSink", new AudioSink("audiosinkp"));
-	registerPrototype("AudioSinkBlocking", new AudioSinkBlocking("AudioSinkBlocking"));
-	registerPrototype("AudioSource", new AudioSource("audiosourcepr"));
-	registerPrototype("AudioSourceBlocking", new AudioSourceBlocking("audiosourceblockingpr"));
 	registerPrototype("AutoCorrelation", new AutoCorrelation("acrp"));
 	registerPrototype("AutoCorrelationFFT", new AutoCorrelationFFT("autocorfftpr"));
 	registerPrototype("BICchangeDetector", new BICchangeDetector("bicchgdetpr"));
@@ -555,6 +553,13 @@ MarSystemManager::MarSystemManager()
 	//modifyRegister
 
     // optional MarSystems
+#ifdef MARSYAS_AUDIOIO
+	registerPrototype("AudioSink", new AudioSink("audiosinkp"));
+	registerPrototype("AudioSinkBlocking", new AudioSinkBlocking("AudioSinkBlocking"));
+	registerPrototype("AudioSource", new AudioSource("audiosourcepr"));
+	registerPrototype("AudioSourceBlocking", new AudioSourceBlocking("audiosourceblockingpr"));
+#endif
+
 #ifdef MARSYAS_GSTREAMER
 	registerPrototype("GStreamerSource", new GStreamerSource("gstp"));
 #endif

@@ -21,9 +21,8 @@
 
 
 
-#ifdef MARSYAS_AUDIOIO
+
 #include "RtAudio.h"
-#endif 
 
 #include "MarSystem.h" 
 
@@ -79,9 +78,8 @@ class AudioSource:public MarSystem
 	
 
 
-#ifdef MARSYAS_AUDIOIO
 		RtAudio* audio_;
-#endif 
+
 		int bufferSize_;
 		int nBuffers_;
 		int rtSrate_;

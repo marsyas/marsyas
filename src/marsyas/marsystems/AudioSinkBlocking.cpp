@@ -22,9 +22,8 @@
 
 
 
-#ifdef MARSYAS_AUDIOIO
 #include "RtAudio3.h"
-#endif 
+
 
 
  
@@ -45,9 +44,7 @@ AudioSinkBlocking::AudioSinkBlocking(mrs_string name):MarSystem("AudioSinkBlocki
 	pnChannels_ = 1;
 
 	data_ = NULL;
-#ifdef MARSYAS_AUDIOIO
 	audio_ = NULL;
-#endif 
 
 	rtSrate_ = 0;
 	bufferSize_ = 0;
@@ -65,9 +62,7 @@ AudioSinkBlocking::AudioSinkBlocking(mrs_string name):MarSystem("AudioSinkBlocki
 
 AudioSinkBlocking::~AudioSinkBlocking()
 {
-#ifdef MARSYAS_AUDIOIO
 	delete audio_;
-#endif
 	data_ = NULL; // RtAudio deletes the buffer itself.
 }
 
@@ -154,7 +149,6 @@ AudioSinkBlocking::initRtAudio()
   
 
 
-#ifdef MARSYAS_AUDIOIO
 	//marsyas represents audio data as float numbers
 	RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO3_FLOAT64 : RTAUDIO3_FLOAT32;
   
@@ -195,7 +189,6 @@ AudioSinkBlocking::initRtAudio()
         cout << "Using output device: " << info.name << endl;
     }
 
-#endif 
 
 	//update bufferSize control which may have been changed
 	//by RtAudio (see RtAudio documentation)
@@ -209,29 +202,19 @@ AudioSinkBlocking::initRtAudio()
 void 
 AudioSinkBlocking::start()
 {
-#ifdef MARSYAS_AUDIOIO
-
 	if ( stopped_ && audio_) {
 		audio_->startStream();
 		stopped_ = false;
 	}
-
-    
-#endif
 }
 
 void 
 AudioSinkBlocking::stop()
 {
-#ifdef MARSYAS_AUDIOIO
 	if ( !stopped_ && audio_) {
-
 		audio_->abortStream();
 		stopped_ = true;
-
-
 	}
-#endif 
 }
 
 void
@@ -258,7 +241,7 @@ AudioSinkBlocking::myProcess(realvec& in, realvec& out)
 				out(o,t) = in(o,t);
 			}
 		}
-#ifdef MARSYAS_AUDIOIO
+
 		if (audio_ != NULL) 
 		{			
 //			for (t=0; t < bufferSize_; t++) 
@@ -281,7 +264,7 @@ AudioSinkBlocking::myProcess(realvec& in, realvec& out)
 				error.printMessage();
 			}
 		}
-#endif 
+
 		return;
     }
   
@@ -413,7 +396,6 @@ AudioSinkBlocking::myProcess(realvec& in, realvec& out)
 //#endif 
 		}
       
-#ifdef MARSYAS_AUDIOIO
  		//tick RtAudio
  		try 
  		{
@@ -432,7 +414,6 @@ AudioSinkBlocking::myProcess(realvec& in, realvec& out)
 		else 
 			diff_ = reservoirSize_ - (start_ - end_);
 
-#endif
     }
 //   cout << "AudioSinkBlocking::myProcess end" << endl;
 

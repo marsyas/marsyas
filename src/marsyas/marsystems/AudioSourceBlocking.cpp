@@ -22,9 +22,7 @@
 #include "AudioSourceBlocking.h"
 
 
-#ifdef MARSYAS_AUDIOIO
 #include "RtAudio3.h"
-#endif 
 
 
 using std::ostringstream;
@@ -33,9 +31,7 @@ using namespace Marsyas;
 AudioSourceBlocking::AudioSourceBlocking(mrs_string name):MarSystem("AudioSourceBlocking", name)
 {
   data_ = NULL;
-#ifdef MARSYAS_AUDIOIO
   audio_ = NULL;
-#endif 
 
   ri_ = 0;
   preservoirSize_ = 0;
@@ -54,9 +50,7 @@ AudioSourceBlocking::AudioSourceBlocking(mrs_string name):MarSystem("AudioSource
 
 AudioSourceBlocking::~AudioSourceBlocking()
 {
-#ifdef MARSYAS_AUDIOIO
   delete audio_;
-#endif 
   data_ = NULL; // RtAudio deletes the buffer itself.
 }
 
@@ -143,15 +137,12 @@ AudioSourceBlocking::initRtAudio()
 
 
 //marsyas represents audio data as float numbers
-#ifdef MARSYAS_AUDIOIO
   RtAudio3Format rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO3_FLOAT64 : RTAUDIO3_FLOAT32;
-#endif 
 
 
   
   //Create new RtAudio object (delete any existing one)
 
-#ifdef MARSYAS_AUDIOIO
   if (audio_ != NULL) 
     {
       audio_->stopStream(); 
@@ -181,7 +172,6 @@ AudioSourceBlocking::initRtAudio()
         info = audio_->getDeviceInfo(rtDevice_);
     } 
 
-#endif 
   isInitialized_ = true;
   setctrl("mrs_bool/initAudio", false);
 }
@@ -189,23 +179,19 @@ AudioSourceBlocking::initRtAudio()
 void 
 AudioSourceBlocking::start()
 {
-#ifdef MARSYAS_AUDIOIO
   if ( stopped_ && audio_) {
     audio_->startStream();
     stopped_ = false;
   }
-#endif 
 }
 
 void 
 AudioSourceBlocking::stop()
 {
-#ifdef MARSYAS_AUDIOIO
   if ( !stopped_ && audio_) {
     audio_->stopStream();
     stopped_ = true;
   }
-#endif 
 }
 
 void
@@ -221,7 +207,7 @@ void
 AudioSourceBlocking::myProcess(realvec& in, realvec& out)
 {
 	(void) in;
-#ifdef MARSYAS_AUDIOIO
+
 	mrs_natural t,o;
 
   //check if RtAudio is initialized
@@ -270,9 +256,6 @@ AudioSourceBlocking::myProcess(realvec& in, realvec& out)
     reservoir_(t-ssize) = reservoir_(t);
   
   ri_ = ri_ - ssize;
-#else
-	(void) out;
-#endif 
   
  /* MATLAB_PUT(out, "AudioSourceBlocking_out");
   MATLAB_EVAL("plot(AudioSourceBlocking_out)");*/

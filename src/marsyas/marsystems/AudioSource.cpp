@@ -25,9 +25,7 @@ using namespace Marsyas;
 AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 {
 
-#ifdef MARSYAS_AUDIOIO
 	audio_ = NULL;
-#endif
 
 
 	ri_ = 0;
@@ -47,9 +45,7 @@ AudioSource::AudioSource(string name):MarSystem("AudioSource", name)
 
 AudioSource::~AudioSource()
 {
-#ifdef MARSYAS_AUDIOIO
 	delete audio_;
-#endif 
 
 }
 
@@ -202,7 +198,6 @@ AudioSource::initRtAudio()
 
 	
 	//marsyas represents audio data as float numbers
-#ifdef MARSYAS_AUDIOIO
 	if (audio_ == NULL)
 	{
 		audio_ = new RtAudio();
@@ -247,7 +242,6 @@ AudioSource::initRtAudio()
   //by RtAudio (see RtAudio documentation)
 	setctrl("mrs_natural/bufferSize", (mrs_natural)bufferFrames);
 
-#endif 
 
   isInitialized_ = true;
   setctrl("mrs_bool/initAudio", false);
@@ -256,25 +250,21 @@ AudioSource::initRtAudio()
 void 
 AudioSource::start()
 {
-#ifdef MARSYAS_AUDIOIO
 	if ( stopped_)
 	{
 		audio_->startStream();
 		stopped_ = false;
 	}
-#endif 
 }
 
 void 
 AudioSource::stop()
 {
-#ifdef MARSYAS_AUDIOIO
 	if ( !stopped_ )
 	{
 		audio_->stopStream();
 		stopped_ = true;
 	}
-#endif 
 }
 
 void
