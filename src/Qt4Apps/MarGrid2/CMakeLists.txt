@@ -12,7 +12,6 @@ set(APP_SOURCES
 	Interface/Parser.cpp
 	Logger/Logger.cpp
 	Midi/MidiListener.cpp
-	Midi/RtMidi.cpp
 	Music/MusicCollection.cpp
 	Music/MusicLink.cpp
 	Music/MusicTrack.cpp

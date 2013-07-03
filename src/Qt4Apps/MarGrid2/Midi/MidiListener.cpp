@@ -60,12 +60,14 @@ void MidiListener::kaossCallback(double stamp, std::vector<unsigned char> *messa
 
 MidiListener::MidiListener() {
 	try {
-		_in = new RtMidiIn();
+		unsigned int queue_size_limit = 2048;
+		std::string client_name = "MarGrid";
+
+		_in = new RtMidiIn(RtMidi::UNSPECIFIED, client_name, queue_size_limit);
   
 		// Check available ports.
 		unsigned int nPorts = _in->getPortCount();
 		if ( nPorts > 0 ) {
-			_in->setQueueSizeLimit(2048);
 			_in->openPort( 0 );
 
 			_in->setCallback( this->kaossCallback, this );

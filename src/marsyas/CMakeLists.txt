@@ -186,7 +186,6 @@ if (MARSYAS_MIDIIO)
 	list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/RtMidi/RtMidi.cpp)
 	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtMidi/RtMidi.h)
 	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtMidi/RtError.h)
-	list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/RtMidi/RtError3.h)
 endif (MARSYAS_MIDIIO)
 
 

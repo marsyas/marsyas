@@ -87,7 +87,7 @@ void RadioDrumInput::myUpdate(MarControlPtr sender)
         try { 
             rdin = new RtMidiIn();
         } 
-        catch (RtError3 &error) { 
+        catch (RtError &error) {
             error.printMessage();
             return;
         }
@@ -98,7 +98,7 @@ void RadioDrumInput::myUpdate(MarControlPtr sender)
         try { 
             rdin->openPort(getctrl("mrs_natural/port")->to<mrs_natural>());
         }
-        catch (RtError3 &error) 
+        catch (RtError &error)
         {
             error.printMessage();
             return;

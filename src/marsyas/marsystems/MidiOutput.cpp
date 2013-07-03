@@ -98,7 +98,7 @@ MidiOutput::myUpdate(MarControlPtr sender)
             try { 
                 midiout = new RtMidiOut();
             } 
-            catch (RtError3 &error) { 
+            catch (RtError &error) {
                 error.printMessage();
                 return;
             }
@@ -109,7 +109,7 @@ MidiOutput::myUpdate(MarControlPtr sender)
                 {
                     midiout->openVirtualPort("MarsyasOutput");                    
                 }
-                catch(RtError3 &error)
+                catch(RtError &error)
                 {
                     error.printMessage();
                     return;
@@ -124,7 +124,7 @@ MidiOutput::myUpdate(MarControlPtr sender)
                     try { 
                         midiout->openPort( getctrl("mrs_natural/port")->to<mrs_natural>() );
                     }
-                    catch (RtError3 &error) 
+                    catch (RtError &error)
                     {
                         error.printMessage();
                         return;

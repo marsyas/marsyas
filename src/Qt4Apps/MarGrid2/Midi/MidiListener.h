@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QThread>
-#include "RtMidi.h"
+#include <RtMidi.h>
 
 class MidiEvent;
 

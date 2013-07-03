@@ -67,7 +67,7 @@ Esitar::myUpdate(MarControlPtr sender)
   try { 
     midiin = new RtMidiIn();
   } 
-  catch (RtError3 &error) { 
+  catch (RtError &error) {
     error.printMessage();
     return;
   }
@@ -75,7 +75,7 @@ Esitar::myUpdate(MarControlPtr sender)
   try { 
     midiin->openPort(0);
   }
-  catch (RtError3 &error) 
+  catch (RtError &error)
     {
       error.printMessage();
       return;
