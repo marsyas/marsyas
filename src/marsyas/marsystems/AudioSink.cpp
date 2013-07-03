@@ -75,6 +75,7 @@ AudioSink::addControls()
   
 	addctrl("mrs_natural/device", 0);
   
+	addControl("mrs_string/backend", "");
 }
 
 void 
@@ -125,6 +126,27 @@ AudioSink::initRtAudio()
 	srate_ = rtSrate_;
 	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
 	rtDevice_= (int)getctrl("mrs_natural/device")->to<mrs_natural>();
+	mrs_string backend = getControl("mrs_string/backend")->to<mrs_string>();
+
+	RtAudio::Api rt_audio_api = RtAudio::UNSPECIFIED;
+	if (!backend.empty()) {
+		if (backend == "jack")
+			rt_audio_api = RtAudio::UNIX_JACK;
+		else if (backend == "alsa")
+			rt_audio_api = RtAudio::LINUX_ALSA;
+		else if (backend == "pulse")
+			rt_audio_api = RtAudio::LINUX_PULSE;
+		else if (backend == "oss")
+			rt_audio_api = RtAudio::LINUX_OSS;
+		else if (backend == "core-audio")
+			rt_audio_api = RtAudio::MACOSX_CORE;
+		else if (backend == "asio")
+			rt_audio_api = RtAudio::WINDOWS_ASIO;
+		else if (backend == "direct-sound")
+			rt_audio_api = RtAudio::WINDOWS_DS;
+		else
+			MRSWARN("AudioSink: audio backend '" << backend << "' not supported.");
+	}
 
 #ifdef MARSYAS_MACOSX
 	// hack to get 22050Hz sound files to play 
@@ -139,7 +161,7 @@ AudioSink::initRtAudio()
 #endif	
 
 	if (audio_ == NULL)
-		audio_ = new RtAudio();
+		audio_ = new RtAudio(rt_audio_api);
 
     unsigned int bufferFrames;
 	bufferFrames = bufferSize_;
