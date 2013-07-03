@@ -91,7 +91,13 @@ void sfplay(vector<string> soundfiles)
 	// Output destination is either audio or soundfile 
 	MarSystem* dest;
 	if (fileName == EMPTYSTRING)	// audio output
+	{
 		dest = mng.create("AudioSink", "dest");
+
+		string backend = cmd_options.getStringOption("audio-backend");
+		if (!backend.empty())
+			dest->setControl("mrs_string/backend", backend);
+	}
 	else 				// filename output
 	{
 		dest = mng.create("SoundFileSink", "dest");
@@ -188,6 +194,7 @@ initOptions()
 	cmd_options.addStringOption("plugin", "pl", EMPTYSTRING);
 	cmd_options.addRealOption("repetitions", "rp", 1.0);
 	cmd_options.addNaturalOption("windowsize", "ws", 2048);
+	cmd_options.addStringOption("audio-backend", "a", "");
 }
 
 
