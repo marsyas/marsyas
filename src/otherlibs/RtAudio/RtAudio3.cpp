@@ -2698,6 +2698,8 @@ void RtApi3Core :: cancelStreamCallback()
 
 #include <jack/jack.h>
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 // A structure to hold various information related to the Jack API
 // implementation.
