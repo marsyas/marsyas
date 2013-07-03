@@ -17,15 +17,29 @@ if (MARSYAS_MACOSX)
 	endif (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
 endif (MARSYAS_MACOSX)
 
-if (MARSYAS_LINUX)
-	if (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
-    		if (OSS)
-			find_package(OSS REQUIRED)
-		else (OSS)
-			find_package(ALSA REQUIRED)
-    		endif (OSS)
-	endif (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
-endif (MARSYAS_LINUX)
+if(MARSYAS_LINUX)
+
+	if(WITH_JACK)
+		find_package(Jack)
+	endif()
+
+	if(WITH_ALSA)
+		find_package(ALSA)
+	endif()
+
+	if(WITH_OSS)
+		find_package(OSS)
+	endif()
+
+	if(MARSYAS_AUDIOIO AND (NOT JACK_FOUND AND NOT ALSA_FOUND AND NOT OSS_FOUND))
+		message(WARNING "Audio IO is enabled, but it will be useless, because neither Jack nor Alsa nor OSS was found.")
+	endif()
+
+	if(MARSYAS_MIDIIO AND (NOT JACK_FOUND AND NOT ALSA_FOUND))
+		message(WARNING "MIDI IO is enabled, but it will be useless, because neither Jack nor Alsa was found.")
+	endif()
+
+endif()
 
 if (MARSYAS_CYGWIN OR MARSYAS_MINGW OR MARSYAS_WIN32)
 	if (MARSYAS_AUDIOIO OR MARSYAS_MIDIIO)
