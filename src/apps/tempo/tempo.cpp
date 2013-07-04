@@ -1139,23 +1139,6 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
     mrs_real str20 = energy_in_histo_range(histo, factor,
             2.0*bpm*(1.0 - tolerance), 2.0*bpm*(1.0 + tolerance) ) / energy_total;
 
-    /*
-       mrs_real strp1 = energy_in_histo_range(histo, factor,
-       bpm1*(1.0- tolerance), bpm1*(1.0+ tolerance) ) / energy_total;
-       mrs_real strp2 = energy_in_histo_range(histo, factor,
-       bpm2*(1.0- tolerance), bpm2*(1.0+ tolerance) ) / energy_total;
-       mrs_real strp3 = energy_in_histo_range(histo, factor,
-       bpm3*(1.0- tolerance), bpm3*(1.0+ tolerance) ) / energy_total;
-       */
-
-    /*
-       info(0) = bpm1 > bpm*(1.0+tolerance);
-       info(1) = bpm1 < bpm*(1.0-tolerance);
-       info(2) = bpm2 > bpm*(1.0+tolerance);
-       info(3) = bpm2 < bpm*(1.0-tolerance);
-       info(4) = bpm3 > bpm*(1.0+tolerance);
-       info(5) = bpm3 < bpm*(1.0-tolerance);
-       */
     info(0) = energy_under;
     info(1) = energy_over;
     info(2) = 1.0 - (energy_under + energy_over);
@@ -1163,10 +1146,6 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
     info(4) = str10;
     info(5) = str20;
     info(6) = 1.0 - (str05 + str10 + str20);
-    //info(13) = strp1;
-    //info(14) = strp2;
-    //info(15) = strp3;
-    //info(16) = 1.0 - (strp1 + strp2 + strp3);
     info(7) = bpm2 / bpm;
     info(8) = bpm3 / bpm;
     info(9) = num_non_zero;
@@ -1401,40 +1380,13 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     }
 
 
-#if 0
-    // end
-    for (; ticks<num_ticks; ticks++) {
-        beatTracker->tick();
-        mrs_realvec input = onset_strength->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
-        cout<<"end:\t"<<input(0,0)<<"\t"<<input(0,2047)<<endl;
-    }
-#endif
-
-
-
-    //zzzz
-
-
     // Find the max bin of the histogram created from the
     // BeatPhase tempo candidates
     mrs_real bhmax = 0.0;
-    mrs_real bhmax2 = 0.0;
-    mrs_real bhmax3 = 0.0;
-
     mrs_natural max_i = 0;
-    mrs_natural max_i2 = 0;
-    mrs_natural max_i3 = 0;
 
 #if 0
-    cout<<"-----"<<endl;
-    for (int i=0; i < bphase.getCols(); i++) {
-        cout<<bphase(i)<<endl;
-    }
-    cout<<"-----"<<endl;
-#endif
-
-#if 0
-   bphase.writeText("bphase-final.txt");
+   bphase.writeText("beat_phase.txt");
 #endif
 
 
@@ -1460,14 +1412,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     }
 #endif
 
-#if 0
-    cout<<"-----"<<endl;
-    for (int i=0; i < bphase.getCols(); i++) {
-        cout<<bphase(i)<<endl;
-    }
-    cout<<"-----"<<endl;
-#endif
-
     // global maximum (will be a peak)
     for (int i=1; i < BPHASE_SIZE-1; i++)
     {
@@ -1478,252 +1422,49 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         }
     }
 
-    // second-highest maximum (need to ensure peak-ness)
-    for (int i=1; i < BPHASE_SIZE-1; i++)
-    {
-        if ((bphase(i) > bhmax2) && (bphase(i) < bhmax) &&
-                (bphase(i-1) < bphase(i)) && (bphase(i+1) < bphase(i)))
-        {
-            bhmax2 = bphase(i);
-            max_i2 = i;
-        }
-    }
-
-    // third-highest maximum (need to ensure peak-ness)
-    for (int i=1; i < BPHASE_SIZE-1; i++)
-    {
-        if ((bphase(i) > bhmax3) && (bphase(i) < bhmax) && (bphase(i) < bhmax2) &&
-                (bphase(i-1) < bphase(i)) && (bphase(i+1) < bphase(i)))
-        {
-            bhmax3 = bphase(i);
-            max_i3 = i;
-        }
-    }
-
-    // find relevant values in bhistogram_sum
-    // normalize
-    /*
-       mrs_real norm_bhisto = 1.0 / bhistogram_sum.sum();
-       for (int i=0; i<bhistogram_sum.getCols(); i++) {
-       bhistogram_sum(i) *= norm_bhisto;
-       }
-       */
-
-    // global maximum (will be a peak)
-    /*
-       mrs_real bh_sum_max = 0.0;
-       mrs_real bh_sum_bpm = 0.0;
-       for (int i=1; i < bhistogram_sum.getCols(); i++)
-       {
-       if (bhistogram_sum(i) > bh_sum_max)
-       {
-       bh_sum_max = bhistogram_sum(i);
-       bh_sum_bpm = i/factor;
-       }
-       }
-       */
-    mrs_real estimate_bpm = max_i;
-    /*
-       mrs_real str05 = energy_in_histo( 0.5*estimate_bpm,
-       bhistogram_sum, factor, 0.1);
-       mrs_real str1 = energy_in_histo( 1.0*estimate_bpm,
-       bhistogram_sum, factor, 0.1);
-       mrs_real str2 = energy_in_histo( 2.0*estimate_bpm,
-       bhistogram_sum, factor, 0.1);
-       mrs_real str_residual = 1.0 - (str05 + str1 + str2);  
-       */
-    // bhmax =0;
-    // for (int i=0; i < 360; i++)
-    // {
-    // 	  if (bhistogram(i) > bhmax) 
-    //  	  {
-    //  		  bhmax = bphase(i);
-    //  		  bh_estimate = i * 0.25;
-    //  	  }
-    // }
-
-
-    // bhmax =0;
-    // for (int i=400; i < 800; i++)
-    // {
-    // 	  if (bhistogram(i) > bhmax) 
-    // 	  {
-    // 		  bhmax = bphase(i);
-    // 		  bh_estimate2 = i * 0.25;
-    // 	  }
-    // }
-
-
-
-    //mrs_real slow_sum =0.0;
-    //mrs_real fast_sum = 0.0;
-    mrs_realvec band_energies(10);
-
-    //mrs_real slow_max = 0.0;
-    //mrs_natural bhistogram_maxi = 0;
-    /*
-       for (int i=200; i < 400; i++)
-       {
-       if (bhistogram(i) >= slow_max)
-       slow_max = bhistogram(i);
-       }
-
-       mrs_real fast_max = 0.0;
-       for (int i=400; i < 4*MAX_BPM; i++) 
-       {
-       if (bhistogram(i) >= fast_max)
-       fast_max = bhistogram(i);
-       }
-
-       mrs_real max_sum = fast_max + slow_max;
-       fast_max /= max_sum;
-       slow_max /= max_sum;
-       */
-
-
-
-    // mrs_natural dct_size = 10;
-    // mrs_real scale_fac = (mrs_real)(1.0/ sqrt((mrs_real)(dct_size/2)));  
-    // mrs_natural j,i;
-    // mrs_realvec dct_matrix;
-    // dct_matrix.create(10,10);
-    // for (j = 0; j<dct_size; j++)
-    // {
-    // 	  for (i=0; i< dct_size; ++i)
-    // 	  {
-    // 		  dct_matrix(j,i) = scale_fac * cos(j * (2*i +1) * PI/2/ dct_size);
-    // 		  if (j == 0)
-    // 		  {
-    // 			  dct_matrix(j,i) *= (mrs_real)(sqrt(2.0)/2.0);
-    // 		  }
-    // 	  }
-    // }
-
-    // mrs_real o,k;
-    // mrs_real dctsum;
-    // mrs_realvec mband_energies(10);
-
-
-    // for (o=0; o < dct_size; o++)
-    // 	{
-    // 		dctsum =0.0;
-    // 		for (k=0; k < dct_size; k++)
-    // 		{
-    // 			dctsum += (dct_matrix(o,k) * band_energies(o));
-    // 		}
-    // 		mband_energies(o) = dctsum;
-    // 	}
-
-
-
-
-    mrs_real bhmaxt = max_i;
-    mrs_real bhmaxt2 = max_i2;
-    mrs_real bhmaxt3 = max_i3;
-
-
-    tempos(0) = bhmaxt;
-    tempos(1) = bhmaxt2;
-    tempos(2) = bhmaxt3;
-
-    //tempos(2) = bh_estimate;
-    //tempos(3) = bh_estimate2;
-    mrs_real heuristic_tempo = tempos(0);
-
-
-    mrs_real str_total = 0.0;
-    for (int i=0; i < BPHASE_SIZE; i++)
-    {
-        str_total += bphase(i);
-    }
+    mrs_real heuristic_tempo = max_i;
 
 
     mrs_natural num_features = 1*INFO_SIZE + 2;
     realvec features(num_features);
-    realvec from_bp = info_histogram(estimate_bpm, bphase,
+    realvec features_normalized(num_features);
+    features_normalized.setval(0.0);
+
+    realvec from_bp = info_histogram(heuristic_tempo, bphase,
             1.0, 0.05);
     for (int i=0; i<INFO_SIZE; i++) {
         features(i) = from_bp(i);
     }
 
-    /*
-       realvec from_bp2 = info_histogram(estimate_bpm, bphase,
-       1.0, 0.1);
-       for (int i=0; i<INFO_SIZE; i++) {
-       features(1*INFO_SIZE + i) = from_bp2(i);
-       }
-       realvec from_bp3 = info_histogram(estimate_bpm, bphase,
-       1.0, 0.01);
-       for (int i=0; i<INFO_SIZE; i++) {
-       features(2*INFO_SIZE + i) = from_bp3(i);
-       }
-       */
-    /*
-       realvec from_bh = info_histogram(estimate_bpm, bhistogram_sum,
-       factor, 0.05);
-       for (int i=0; i<INFO_SIZE; i++) {
-       features(INFO_SIZE+i) = from_bh(i);
-       }
-       realvec from_bpf = info_histogram(estimate_bpm, bphase_filt,
-       factor, 0.05);
-       for (int i=0; i<INFO_SIZE; i++) {
-       features(2*INFO_SIZE+i) = from_bpf(i);
-       }
-       */
-    features(num_features - 2) = estimate_bpm;
+    features(num_features - 2) = heuristic_tempo;
     features(num_features - 1) = ground_truth_tempo;
-#if 0
-    // absolute BPMs
-    features(0) = tempos(0);
-    features(1) = tempos(1);
-    features(2) = tempos(2);
-    // relative BPMs
-    features(3) = tempos(1)/tempos(0);
-    features(4) = tempos(2)/tempos(0);
-    // absolute strengths
-    features(5) = bhmax/str_total;
-    features(6) = bhmax2/str_total;
-    features(7) = bhmax3/str_total;
-    // relative strengths
-    features(8) = bhmax2/bhmax;
-    features(9) = bhmax3/bhmax;
-    // do we have all 3 tempos?
-    features(10) = 0.0;
-    features(11) = 0.0;
-    if (tempos(1) == 0.0) {
-        features(10) = 1.0;
-    } else if (tempos(2) == 0.0) {
-        features(11) = 1.0;
+
+    // generated through post-processing
+    // scripts/large-evaluators/make-mf.py
+    const mrs_real mins[] = { 0.0, 0.0, 0.0320684, 0.0, 0.0320684, 0.0, -2.22045e-16, 0.0, 0.0, 1.0, 41.0, 0 };
+    const mrs_real maxs[] = { 0.876178, 0.94753, 1.0, 0.535006, 1.0, 0.738607, 0.891814, 3.93182, 4.02439, 92.0, 178.0, 0 };
+    const mrs_real svm_weights[] = {
+         1.162, -0.871, -0.1992, -0.3107,
+         -0.2238, 2.1103, -1.3185, -0.328,
+         -0.7643, -0.4642, -7.9359, 0,
+    };
+    double svm_sum = 2.1475;
+
+    for (int i=0; i<features.getCols(); i++) {
+        if (mins[i] == maxs[i]) {
+            continue;
+        }
+        features_normalized(i) = (features(i) - mins[i]) / (maxs[i] - mins[i]);
     }
-    // absolute strength of half/double
-    mrs_natural ind = 0.5*tempos(0);
-    mrs_real half_str = bphase( ind );
-    features(12) = half_str / str_total;
-    features(13) = half_str / bhmax;
-    ind = 2.0*tempos(0);
-    features(14) = 0.0;
-    features(15) = 0.0;
-    features(16) = 0.0;
-    if (ind < BPHASE_SIZE) {
-        features(14) = 1.0;
-        mrs_real twice_str = bphase( ind );
-        features(15) = twice_str / str_total;
-        features(16) = twice_str / bhmax;
+    mrs_real mult = 1.0;
+
+    // -1 because the final "feature" is the ground truth (for
+    // calibration) and of course we don't include that in the SVM
+    for (int i=0; i<features_normalized.getCols() - 1; i++) {
+        svm_sum += (features_normalized(i) * svm_weights[i]);
     }
-    // "residual" strength
-    features(17) = (str_total - (bhmax + bhmax2 + bhmax3))/str_total;
 
-    features(18) = bh_sum_bpm;
-    features(19) = str05;
-    features(20) = str1;
-    features(21) = str2;
-    features(22) = str_residual;
-
-
-    // ground truth for training
-    features(23) = ground_truth_tempo;
-#endif
-
+#if 1
     std::ostringstream features_text;
     features_text << "features_orig:\t";
     for (int i=0; i < features.getCols(); i++) {
@@ -1731,37 +1472,17 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     }
     cout << features_text.str() << endl;
 
-
-    // generated through post-processing
-    // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0, 0.0, 0.0320684, 0.0, 0.0320684, 0.0, -4.44089e-16, 0.0, 0.0, 1.0, 50.0, 0 };
-    const mrs_real maxs[] = { 0.876178, 0.94753, 1.0, 0.535006, 1.0, 0.738607, 0.89892, 3.10526, 3.12281, 92.0, 178.0, 0 };
-    const mrs_real svm_weights[] = {
-         1.8788, -1.6107, -0.124, -0.2659,
-         -0.4155, 2.5116, -1.458, -0.7464,
-         -0.4488, 0.1006, -8.0225, 0,
-    };
-    double svm_sum = 2.1069;
-
-    for (int i=0; i<features.getCols(); i++) {
-        if (mins[i] == maxs[i]) {
-            continue;
-        }
-        features(i) = (features(i) - mins[i]) / (maxs[i] - mins[i]);
+    std::ostringstream features_normalized_text;
+    features_normalized_text << "features_normalized:\t";
+    for (int i=0; i < features_normalized.getCols(); i++) {
+        features_normalized_text << features_normalized(i) << "\t";
     }
-    mrs_real mult = 1.0;
+    cout << features_normalized_text.str() << endl;
 
-    std::ostringstream features_normalized;
-    features_normalized << "features_normalized:\t";
-    for (int i=0; i < features.getCols(); i++) {
-        features_normalized << features(i) << "\t";
-    }
-    cout << features_normalized.str() << endl;
+    cout<<"svm_sum:\t"<<svm_sum<<endl;
+#endif
 
-    for (int i=0; i<features.getCols(); i++) {
-        svm_sum += (features(i) * svm_weights[i]);
-    }
-    //cout<<"svm_sum:\t"<<svm_sum<<endl;
+
 #if POST_DOUBLING == 2
     if (svm_sum > 0) {
         mult = 2.0;
@@ -1769,88 +1490,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     }
     tempos(0) = mult * heuristic_tempo;
 #endif
-
-
-    /*
-       cout << slow_max << "," << fast_max << ",";
-
-    // cout << slow_sum << "," << fast_sum << "," << mband_energies(2)  << "," << mband_energies(3)  << "," << mband_energies(4) << ",";
-
-    // cout << mband_energies(5) << "," << mband_energies(6) << "," << mband_energies(7)  << "," << mband_energies(8)  << "," << mband_energies(9) << ",";
-
-    if (ground_truth_tempo < 100.0) 
-    cout << "slow" << endl;
-    else 
-    cout << "fast" << endl;
-    */
-
-#if 0
-    for (int i=0; i < 3; i++)
-    {
-        for (int j=0; j < 3; j++)
-        {
-            // if there are two tempo estimates with a ratio of 2 pick the higher
-            // one if the lower one is less than 70 BPM
-
-            if (i != j)
-            {
-                if (fabs(2 * tempos(i) - tempos(j)) < tolerance * tempos(j)) 
-                {
-                    cout << "GT = " << ground_truth_tempo << " Heuristic - " << tempos(0) << "-" << tempos(2) << "-" << endl;
-                    if (fabs(tempos(i) - ground_truth_tempo) < tolerance * ground_truth_tempo)
-                    {
-                        //				heuristic_tempo = tempos(i);
-                        //cout << tempos(0) << "," << tempos(1) << "," << tempos(2) << "," << "temposelect" << i << endl;
-                        cout << tempos(i) << "," << bhistogram.var() << "," << "temposelectl" << endl;
-
-                    }	
-                    if (fabs(tempos(j) - ground_truth_tempo) < tolerance * ground_truth_tempo)
-                    {
-                        // 	heuristic_tempo = tempos(j);
-                        cout << tempos(i) << "," << bhistogram.var() << "," << "temposelecth" << endl;
-                    }
-
-
-
-                    //if (tempos(i) < 68.5)
-                    if (tempos(i) <= 72)
-                        heuristic_tempo = 2 * tempos(i);
-                }
-            }
-
-
-            // if (i!= j)
-            // if ((fabs(ground_truth_tempo - tempos(i)) < tolerance * ground_truth_tempo))
-            // {
-            // 		heuristic_tempo = tempos(i);
-            // 		cout << "ORACLE = " << i << "-" << heuristic_tempo << endl;
-            // 	}
-        }
-
-
-    }
-
-
-    for (int i=0; i < 3; i++) 
-        if (heuristic_tempo == tempos(i))
-            cout << "SELECTED I = " << i  << "-" << tempos(0) << "," << tempos(1) << "," << tempos(2) <<  "-" << ground_truth_tempo << endl;
-
-
-    // oracle_tempo = heuristic_tempo;
-
-    /* for (int i=0; i < 4; i++)
-       {
-       if (fabs(tempos(i) < 0.04 * ground_truth_tempo))
-       oracle_tempo = tempos(i);
-
-       if (fabs(2 * tempos(i) < 0.04 * ground_truth_tempo))
-       oracle_tempo = 2 * tempos(i);
-
-       if (fabs(0.5 * tempos(i) < 0.04 * ground_truth_tempo))
-       oracle_tempo = 0.5 * tempos(i);
-       }*/ 
-#endif
-
 
 #if POST_DOUBLING == 1
     if (heuristic_tempo <= 72.5) {
@@ -1862,51 +1501,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 #if POST_DOUBLING == 0
     tempos(0) = heuristic_tempo;
 #endif
-
-
-
-    // if (fabs( 2 * tempos(0) - ground_truth_tempo) <= 0.04 * ground_truth_tempo) 
-    // {
-    // 	   cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "double" << endl;
-    // }
-    // else if (fabs( 0.5 * tempos(0) - ground_truth_tempo) <= 0.04 * ground_truth_tempo) 
-    // {
-    // 	   cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "half" << endl;
-    // }
-    // else 
-    // 	   // cout << bhmaxt2 - bhmaxt << "," << slow_sum/fast_sum << "," << "stay" << endl;
-
-
-
-
-    // if (ground_truth_tempo < 80.0)
-    // {
-    // 	   if (tempos(0) > 80.0) 
-    // 		   tempos(0) *= 0.5;
-    // }
-    // if ((ground_truth_tempo > 80.0)&&(ground_truth_tempo < 110.0))
-    // {
-    // 	   if (tempos(0) < 80.0)
-    // 		   tempos(0) *= 2.0;
-    // 	   if (tempos(0) > 110.0)
-    // 		   tempos(0) *= 0.5;
-    // }
-    // if (ground_truth_tempo >110.0)
-    // {
-    // 	   if (tempos(0) < 110.0)
-    // 		   tempos(0) *= 2.0;
-    // }
-
-
-
-    // if ((ground_truth_tempo > 100.0)&&(tempos(0) < 100.0))
-    // tempos(0) = 2.0 * tempos(0);	   
-
-    // if ((ground_truth_tempo < 100.0)&&(tempos(0) > 100.0))
-    // tempos(0) = 0.5 * tempos(0);
-
-
-
 
 
 
