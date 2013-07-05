@@ -192,8 +192,7 @@ MarPhasevocoderWindow::createNetwork(string inAudioFileName)
 	pvoc_->updControl("ShiftOutput/so/mrs_natural/Interpolation", I);
 	pvoc_->updControl("Gain/gain/mrs_real/gain", gopt_);
 
-	// mwr_ = new MarSystemQtWrapper(pvoc_, true);
-	mwr_ = new MarSystemQtWrapper(pvoc_);
+	mwr_ = new MarSystemQtWrapper(pvoc_, true);
 	freqPtr_ = mwr_->getctrl("PvOscBank/ob/mrs_real/PitchShift");
 	posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
 	initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
