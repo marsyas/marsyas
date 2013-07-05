@@ -9,6 +9,7 @@
 
 #include <QThread>
 #include <QVector>
+#include <QMap>
 #include <QString>
 #include <QMutex>
 #include <QSemaphore>
@@ -61,6 +62,7 @@ public:
 
 		void play();
 		void pause();
+		void stop();
 
 signals:
 		void ctrlChanged(MarControlPtr cname);
@@ -68,6 +70,8 @@ signals:
 protected:
 	void run();
 private:
+	void do_queued_updates();
+
 	QMutex mutex_;
 	bool abort_;
 	bool withTimer_;
@@ -78,10 +82,8 @@ private:
 	// the underlying MarSystem
 	MarSystem* main_pnet_;
 
-	// Vectors for pushing in events that cannot be
-	// processes while the main MarSystem is ticking
-	QVector<MarControlPtr> control_names_;
-	QVector<MarControlPtr> control_values_;
+	QMap<MarControlPtr, MarControlPtr> queued_updates_;
+
 	QVector<MarControlPtr> tracked_controls_;
 	bool pause_;
 

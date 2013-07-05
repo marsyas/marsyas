@@ -10,7 +10,7 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys, bool withTimer)
   abort_ = false;
   counter_ = 0;
   qRegisterMetaType<MarControlPtr>("MarControlPtr");
-  
+
   withTimer_ = withTimer;
   
   if (withTimer_)
@@ -23,30 +23,17 @@ MarSystemQtWrapper::MarSystemQtWrapper(MarSystem* msys, bool withTimer)
 
 MarSystemQtWrapper::~MarSystemQtWrapper()
 {
-	mutex_.lock();
-	abort_ = true;
-	pause_ = false;
-	condition_.wakeOne();
-	mutex_.unlock();
-	wait();
+	stop();
 }
 
 
 void 
 MarSystemQtWrapper::tickForever()
 {
-  mutex_.lock();
-  if (!isRunning()) {
-    start(HighPriority);
-  } 
-  else {
-    main_pnet_->updControl("mrs_bool/active", true);
-    pause_ = false;
-    condition_.wakeOne();
-  }
-  
-  mutex_.unlock();
-  
+	if (!isRunning())
+		start(HighPriority);
+	else
+		play();
 }
 
 
@@ -65,28 +52,18 @@ void
 MarSystemQtWrapper::updctrl(MarControlPtr cname, 
 			    MarControlPtr cvalue)
 {
-	if ( !running_ )
-	{
-	  main_pnet_->updControl(cname, cvalue);
-	} 
-	else if (pause_) 
-	  {
-	    main_pnet_->updControl(cname, cvalue);
-	  }
-	else 
-	{
-		mutex_.lock();
-	  
-		control_names_.push_back(cname);
-		control_values_.push_back(cvalue);
-		mutex_.unlock();
-	} 
+	mutex_.lock();
+	if (!running_)
+		main_pnet_->updControl(cname, cvalue);
+	else
+		// FIXME: not real-time safe:
+		queued_updates_.insert(cname, cvalue);
+	mutex_.unlock();
 } 
 
 void 
 MarSystemQtWrapper::pause()
 { 
-
 	mutex_.lock();
 	pause_ = true;
 	mutex_.unlock();
@@ -106,16 +83,24 @@ void
 MarSystemQtWrapper::play()
 {
 	mutex_.lock();
-	main_pnet_->updControl("mrs_bool/active", true);
 	pause_ = false;
 	condition_.wakeOne();
 	mutex_.unlock();
 } 
 
+void MarSystemQtWrapper::stop()
+{
+	mutex_.lock();
+	abort_ = true;
+	condition_.wakeOne();
+	mutex_.unlock();
+	wait();
+}
 
-void 
+void
 MarSystemQtWrapper::emitTrackedControls()
 {
+	// FIXME: this is not safe, because the mutex is not held while the MarSystem is ticked.
   mutex_.lock();
   QVector<MarControlPtr>::iterator vsi;
   for (vsi = tracked_controls_.begin();
@@ -131,48 +116,56 @@ QVector<MarControlPtr> MarSystemQtWrapper::getTrackedControls()
   return tracked_controls_;
 }
 
-
 void 
 MarSystemQtWrapper::run() 
 {
-	while(1) 
+	mutex_.lock();
+
+	running_ = true;
+	main_pnet_->updControl("mrs_bool/active", true);
+
+	while(!abort_)
 	{
-	  if (abort_) 
-	    return;
+		do_queued_updates();
 
-	  running_ = true;
-	  // udpate stored controls
-	  mutex_.lock();
-	  counter_ ++;
-	  QVector<MarControlPtr>::iterator vsi;
-	  QVector<MarControlPtr>::iterator vvi;
-	  
-	  for (vsi = control_names_.begin(),
-		 vvi = control_values_.begin();
-	       vsi != control_names_.end(); ++vsi, ++vvi)
-	    {
-	      main_pnet_->updControl(*vsi, *vvi);
-	    } 
-	  
-	  control_names_.clear();
-	  control_values_.clear();
-	  mutex_.unlock();
+		if (pause_)
+		{
+			main_pnet_->updControl("mrs_bool/active", false);
+			condition_.wait(&mutex_);
+			main_pnet_->updControl("mrs_bool/active", true);
+		}
+		else
+		{
+			mutex_.unlock();
 
-	  if (!withTimer_)
-	    emitTrackedControls();
-	  
-	  if (!pause_) 
-	    main_pnet_->tick();
-	  
-	  mutex_.lock();
-	  if (pause_)
-	    {	      
-	      main_pnet_->updControl("mrs_bool/active", false);
-	      condition_.wait(&mutex_);
-	    } 
-	  pause_ = false;
-	  mutex_.unlock();
+			// NOTE:
+			// The mutex is not held while ticking the MarSystem,
+			// because tick() can potentially block indefinitely.
+			main_pnet_->tick();
+
+			mutex_.lock();
+		}
 	}
+
+	// make sure not to miss latest updates:
+	do_queued_updates();
+
+	running_ = false;
+	main_pnet_->updControl("mrs_bool/active", false);
+
+	mutex_.unlock();
+}
+
+void MarSystemQtWrapper::do_queued_updates()
+{
+	QMap<MarControlPtr, MarControlPtr>::iterator queued_update;
+	for(queued_update = queued_updates_.begin();
+	queued_update != queued_updates_.end();
+	++queued_update)
+	{
+		queued_update.key()->setValue( queued_update.value() );
+	}
+	queued_updates_.clear();
 }
 
 } // namespace
