@@ -19,6 +19,8 @@
 #include "common_source.h"
 #include "AudioSink.h"
 
+#include <algorithm>
+
  
 using std::ostringstream;
 using std::cout;
@@ -87,12 +89,7 @@ AudioSink::myUpdate(MarControlPtr sender)
 	//Set ringBuffer size
 	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 
-	if (inSamples_ < bufferSize_) 
-		ringBufferSize_ = 16 * bufferSize_;
-	else 
-    {
-		ringBufferSize_ = 16 * inSamples_;
-    }
+	ringBufferSize_ = 16 * std::max((mrs_natural)bufferSize_, inSamples_);
 	odata_.ringBufferSize = ringBufferSize_;
 	odata_.high_watermark = ringBufferSize_ / 4;
 	odata_.low_watermark =  ringBufferSize_ /8;

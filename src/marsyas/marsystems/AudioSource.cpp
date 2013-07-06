@@ -19,6 +19,8 @@
 #include "common_source.h" 
 #include "AudioSource.h"
 
+#include <algorithm>
+
 using namespace std;
 using namespace Marsyas;
 
@@ -154,18 +156,8 @@ AudioSource::myUpdate(MarControlPtr sender)
 	inObservations_ = ctrl_inObservations_->to<mrs_natural>();
 	gain_ = getctrl("mrs_real/gain")->to<mrs_real>();
 
-
-
 	//resize ringBuffer if necessary
-	if (inSamples_ < bufferSize_) 
-	{
-		ringBufferSize_ =  8 * bufferSize_;
-	}
-	else 
-	{
-		ringBufferSize_ =  8 * inSamples_;
-	}
-
+	ringBufferSize_ = 8 * std::max((mrs_natural)bufferSize_, inSamples_);
 
 	idata.ringBufferSize = ringBufferSize_;
 	idata.high_watermark = ringBufferSize_/4;
