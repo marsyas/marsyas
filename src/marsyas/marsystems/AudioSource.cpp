@@ -250,7 +250,7 @@ AudioSource::initRtAudio()
 void 
 AudioSource::start()
 {
-	if ( stopped_)
+	if ( stopped_ && isInitialized_ )
 	{
 		audio_->startStream();
 		stopped_ = false;
