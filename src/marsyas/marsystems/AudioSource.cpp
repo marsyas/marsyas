@@ -326,7 +326,7 @@ AudioSource::myProcess(realvec& in, realvec& out)
 			}
 
 			idata.rp = (idata.rp + 1) % idata.ringBufferSize;	
-			if (idata.rp >= idata.rp)  // FIXME: huh?!  bad copy&paste?
+			if (idata.wp >= idata.rp)
 			{
 				idata.samplesInBuffer = idata.wp - idata.rp;
 			}
