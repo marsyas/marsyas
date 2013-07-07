@@ -462,17 +462,17 @@ typedef REAL mat4x4[4][4];       /* type for bicubic splines          */
 
 #define FORMAT_IN      "%lg"               /* Input format for  REAL  */
 /*.IX{FORMAT\unt IN}*/
-#define FORMAT_LF      "% "LZP"f "         /* Format l for  REAL      */
+#define FORMAT_LF      "% " LZP "f "         /* Format l for  REAL      */
 /*.IX{FORMAT\unt LF}*/
-#define FORMAT_126LF   "% 12.6"LZP"f "     /* Format 12.6f for  REAL  */
+#define FORMAT_126LF   "% 12.6" LZP "f "     /* Format 12.6f for  REAL  */
 /*.IX{FORMAT\unt 126LF}*/
-#define FORMAT_2010LF  "% 20.10"LZP"f "    /* Format 20.10f for  REAL */
+#define FORMAT_2010LF  "% 20.10" LZP "f "    /* Format 20.10f for  REAL */
 /*.IX{FORMAT\unt 2010LF}*/
-#define FORMAT_2016LF  "% 20.16"LZP"f "    /* Format 20.16f for REAL  */
+#define FORMAT_2016LF  "% 20.16" LZP "f "    /* Format 20.16f for REAL  */
 /*.IX{FORMAT\unt 2016LF}*/
-#define FORMAT_LE      "% "LZP"e "         /* Format e for REAL       */
+#define FORMAT_LE      "% " LZP "e "         /* Format e for REAL       */
 /*.IX{FORMAT\unt LE}*/
-#define FORMAT_2016LE  "% 20.16"LZP"e "    /* Format 20.16e for REAL  */
+#define FORMAT_2016LE  "% 20.16" LZP "e "    /* Format 20.16e for REAL  */
 /*.IX{FORMAT\unt 2016LE}*/
 
 
