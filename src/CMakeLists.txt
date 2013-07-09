@@ -1,3 +1,4 @@
+cmake_minimum_required(VERSION 2.8)
 
 ## basic CMAKE vars
 mark_as_advanced (EXECUTABLE_OUTPUT_PATH)
@@ -9,11 +10,11 @@ endif (APPLE)
 
 set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 if (MSVC)
-## windows likes DLL near executables 
+## windows likes DLL near executables
 set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
-else (MSVC) 
+else (MSVC)
 set (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-endif (MSVC) 
+endif (MSVC)
 
 
 
@@ -69,11 +70,11 @@ if (MARSYAS_BUILD_APPS)
   add_subdirectory(apps)
 endif (MARSYAS_BUILD_APPS)
 
-if (MARSYAS_PNG)  
+if (MARSYAS_PNG)
    add_subdirectory(otherlibs)
 endif (MARSYAS_PNG)
 
-if (SWIG_FOUND) 
+if (SWIG_FOUND)
 	add_subdirectory(swig)
 endif (SWIG_FOUND)
 

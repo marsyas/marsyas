@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+
 file(STRINGS CMake-compile-cpp.txt Marsyas_SOURCES)
 file(STRINGS CMake-compile-h.txt   Marsyas_HEADERS)
 
@@ -143,7 +145,7 @@ if (MARSYAS_MAD)
     include_directories(${mad_INCLUDE_DIR})
 endif (MARSYAS_MAD)
 
-if (MARSYAS_PNG) 
+if (MARSYAS_PNG)
     include_directories(${FREETYPE_INCLUDE_DIR_freetype2})
 	include_directories(${FREETYPE_INCLUDE_DIR_ft2build})
 
@@ -171,7 +173,7 @@ endif (MARSYAS_GSTREAMER)
 if (MARSYAS_MATLAB)
 #	list(APPEND Marsyas_SOURCES MATLABengine.cpp)
 	include_directories(${MATLAB_INCLUDE_DIR})
-endif (MARSYAS_MATLAB)  
+endif (MARSYAS_MATLAB)
 
 if (MARSYAS_AUDIOIO)
 	list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/RtAudio/RtAudio.cpp)
@@ -216,7 +218,7 @@ if (MARSYAS_VORBIS)
 	TARGET_LINK_LIBRARIES(marsyas_static ${OGGVORBIS_LIBRARIES})
 endif (MARSYAS_VORBIS)
 
-if (MARSYAS_MATLAB) 
+if (MARSYAS_MATLAB)
 	TARGET_LINK_LIBRARIES(marsyas_static ${MATLAB_LIBRARIES})
 endif (MARSYAS_MATLAB)
 
@@ -251,7 +253,7 @@ if (MARSYAS_VORBIS)
 	TARGET_LINK_LIBRARIES(marsyas ${OGGVORBIS_LIBRARIES})
 endif (MARSYAS_VORBIS)
 
-if (MARSYAS_MATLAB) 
+if (MARSYAS_MATLAB)
 	TARGET_LINK_LIBRARIES(marsyas ${MATLAB_LIBRARIES})
 endif (MARSYAS_MATLAB)
 

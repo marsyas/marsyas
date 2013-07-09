@@ -1,22 +1,22 @@
 /*
 ** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-#include "common_source.h" 
+#include "common_source.h"
 #include "OggFileSource.h"
 
 #include <cstdio>
@@ -52,7 +52,7 @@ OggFileSource::OggFileSource(const OggFileSource& a):AbsSoundFileSource(a)
 // 	type_ = a.type_;
 // 	name_ = a.name_;
 // 	ncontrols_ = a.ncontrols_;
-// 
+//
 // 	inSamples_ = a.inSamples_;
 // 	inObservations_ = a.inObservations_;
 // 	onSamples_ = a.onSamples_;
@@ -127,7 +127,7 @@ OggFileSource::addControls()
 /**
  * Function: getHeader
  * Description: Opens the Ogg file and collects all the necessary
- *   information to update the MarSystem. 
+ *   information to update the MarSystem.
  */
 void
 OggFileSource::getHeader(mrs_string filename)
@@ -140,7 +140,7 @@ OggFileSource::getHeader(mrs_string filename)
   mrs_natural size = 0;
   hasData_ = false;
   mrs_natural bitRate = 128*1024;
-  
+
   FILE* fp = fopen(filename.c_str(), "rb");
   vf = new OggVorbis_File;
 
@@ -171,11 +171,11 @@ OggFileSource::getHeader(mrs_string filename)
 /**
  * Function: update
  *
- * Description: Performs the usual MarSystem update jobs. Additionally, 
+ * Description: Performs the usual MarSystem update jobs. Additionally,
  *   it can update the position of the index in the file if
- *   the user seeks forward or backward.  Note that this 
- *   is currently going to be slow as we have to refill the 
- *   mad buffer each time somebody seeks in the file. 
+ *   the user seeks forward or backward.  Note that this
+ *   is currently going to be slow as we have to refill the
+ *   mad buffer each time somebody seeks in the file.
  *
  */
 void
@@ -224,7 +224,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     int bitstream=0;
     mrs_natural read = 0;
     long r = 0;
-    bool eof = false; 
+    bool eof = false;
     do
     {
       r = ov_read(vf, buf+read, size-read, 0, 2/*use 1 for 8bit samples..use 2 for 16*/, 1, &bitstream);
@@ -240,9 +240,9 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     //   getLinear16(out);  for (o=0; o < inObservations_; o++) {
     const double peak = 1.0/32768; // normalize 24-bit sample
     short int* src = (short int*)buf;
-    for (o=0; o < observations; o++)
+    for (mrs_natural o=0; o < observations; o++)
     {
-      for (t=0; t < samples; t++)
+      for (mrs_natural t=0; t < samples; t++)
       {
         const unsigned int i=vi->channels*t;
         switch(vi->channels)
@@ -258,7 +258,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
     delete [] buf;
     if(eof)
 	  closeFile();
-        
+
   }
   else
     out.setval(0.0);
@@ -276,7 +276,7 @@ void OggFileSource::myProcess(realvec& in, realvec& out)
 /**
  * Function: closeFile()
  *
- * Description: Close the file if its open, release memory, and 
+ * Description: Close the file if its open, release memory, and
  *   release mad structs.
  *
  */

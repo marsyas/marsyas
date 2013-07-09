@@ -12,7 +12,7 @@ set(MARSYAS_VERSION_MAJOR "0")
 set(MARSYAS_VERSION_MINOR "4")
 set(MARSYAS_VERSION_PATCH "9-dev")
 
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
+set(CMAKE_MODULE_PATH "/home/nemo/Code/marsyas/cmake-modules")
 
 if(NOT MARSYAS_DOCUMENTATION_ONLY)
   if (MARSYAS_TESTS)
