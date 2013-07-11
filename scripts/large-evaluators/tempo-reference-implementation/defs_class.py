@@ -27,4 +27,5 @@ class Defs:
         self.OPTIONS_BH = 2
         self.OPTIONS_BP = 2
         
+        self.extra = []
 

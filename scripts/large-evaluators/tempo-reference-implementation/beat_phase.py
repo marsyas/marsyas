@@ -108,16 +108,22 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         oss_data,
         defs.BP_WINDOWSIZE, defs.BP_HOPSIZE)
     #beat_histogram_sr = oss_sr / defs.BP_HOPSIZE
-
+    
     #print candidate_bpms_orig
     candidate_bpms = candidate_bpms_orig
     bphase = numpy.zeros(defs.BPM_MAX)
     for i in xrange(overlapped.shape[0]):
         cands = candidate_bpms[i]
+        #if i in defs.extra:
+        #    cands = range(defs.BPM_MIN, defs.BPM_MAX)
+        #    print "BP altering cands"
+
         onset_scores = numpy.zeros(len(cands))
         tempo_scores = numpy.zeros(len(cands))
         for j, bpm in enumerate(cands):
         #for j, bpm in enumerate(candidate_bpms):
+            if bpm == 0:
+                continue
             mag, std = calc_pulse_trains(bpm, overlapped[i], oss_sr)
             #bpms_max[i] += mag
             #bpms_std[i] += std
@@ -148,9 +154,15 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         bphase[ int(bestbpm) ] += beststr
         #print bestbpm, "\t", beststr
 
+        #if i in defs.extra:
+        #    gnd = 120
+        #    if gnd*0.96 <= bestbpm <= gnd*1.04:
+        #        print "YES", i
+            
+
         if defs.WRITE_BP:
             numpy.savetxt("out/bp-%i.txt" % (i+1),
-                numpy.vstack((candidate_bpms[i], tempo_scores)).transpose())
+                numpy.vstack((cands, tempo_scores)).transpose())
             numpy.savetxt("out/bp-peak-%i.txt" % (i+1),
                 numpy.vstack((int(bestbpm), beststr)).transpose())
 
