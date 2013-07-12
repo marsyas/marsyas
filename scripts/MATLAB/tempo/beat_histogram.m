@@ -1,6 +1,9 @@
 
 function [bh_cands] = beat_histogram(oss, oss_sr)
 
+FAST_DEBUG = 1;
+FAST_DEBUG = 0;
+
 WINDOWSIZE = 2048;
 HOPSIZE = 128;
 
@@ -11,6 +14,11 @@ BPM_MIN = 40;
 buffered = buffer(oss, WINDOWSIZE, WINDOWSIZE - HOPSIZE, 'nodelay');
 %buffered = buffer(oss, 2048, 1920, 'nodelay');
 bh_sr = oss_sr / HOPSIZE;
+% only include complete buffers
+if mod(length(oss), HOPSIZE) > 0
+	buffered = buffered(:,1:end-1);
+end
+
 
 %%% generalized autocorrelation
 N = WINDOWSIZE;
@@ -21,21 +29,23 @@ scaled = real(ifft(ffts_abs_scaled_real)) * 2*N;
 autocorr = scaled(1:N,:);
 
 num_frames = size(autocorr, 2);
-num_frames = 10
+if FAST_DEBUG
+	num_frames = 10
+end
 
 if 0
 	hold on;
 	python_bh = load('aq-10.txt')(:,2);
 	a = autocorr(:, 10);
-	a
-	plot(python_bh, 'b');
-	plot(a, 'g');
+	%plot(python_bh, 'b');
+	%plot(a, 'g');
 	plot(python_bh - a, 'r');
 	pause
+	exit(1)
 end
 
 %%% beat histogram
-Hn = zeros(4*BPM_MAX, num_frames);
+Hn = zeros(num_frames, 4*BPM_MAX);
 for i = 1:num_frames
 	prev_Hni = 4*BPM_MAX - 1;
 	pprev_Hni = prev_Hni;
@@ -57,7 +67,7 @@ for i = 1:num_frames
 				count += 1;
 			else
 				sumamp += amp;
-				Hn(1+prev_Hni, i) = sumamp / double(count);
+				Hn(i, 1+prev_Hni) = sumamp / double(count);
 				sumamp = 0.0;
 				count = 1;
 			end
@@ -65,26 +75,27 @@ for i = 1:num_frames
 			if pprev_Hni - prev_Hni > 1
 				x0 = double(prev_Hni);
 				x1 = double(pprev_Hni);
-				y0 = Hn(1+prev_Hni, i);
-				y1 = Hn(1+pprev_Hni, i);
+				y0 = Hn(i, 1+prev_Hni);
+				y1 = Hn(i, 1+pprev_Hni);
 				for k = prev_Hni+1:pprev_Hni
-					Hn(1+k, i) = y0 + (y1-y0)*(k-x0) / (x1-x0);
+					Hn(i, 1+k) = y0 + (y1-y0)*(k-x0) / (x1-x0);
 				end
 			end
 			pprev_Hni = prev_Hni;
 			prev_Hni = Hni;
 		end
 	end
-	%exit(1)
 end
 
 if 0
 	hold on;
-	python_bh = load('bh-10.txt')(:,2);
-	a = Hn(:, 10);
-	plot(python_bh, 'b');
-	plot(a, 'g');
+	python_bh = load('bh-10.txt')(:,2)';
+	a = Hn(10, :);
+	%plot(python_bh, 'b');
+	%plot(a, 'g');
 	plot(python_bh - a, 'r');
+	pause
+	exit(1)
 end
 
 
@@ -95,7 +106,7 @@ for i = 1:num_frames
 	% direct translation of marsyas C++
 	factor2 = 0.5;
 	factor4 = 0.25;
-	stretched = zeros( M, 1 );
+	stretched = zeros( 1, M );
 	for t = 0:M-1
 		ni = t*factor2;
 		li = fix(ni); % numSamples
@@ -104,9 +115,9 @@ for i = 1:num_frames
 		w = ni - li;
 		%printf("%i\t%i\t%f\t%f\n", li, ri, w, ni);
 		if ri < M - 1
-			stretched(1+t) += Hn(1+li,i) + w * (Hn(1+ri,i) - Hn(1+li,i));
+			stretched(1+t) += Hn(i, 1+li) + w * (Hn(i, 1+ri) - Hn(i, 1+li));
 		else
-			stretched(1+t) += Hn(1+t);
+			stretched(1+t) += Hn(i, 1+t);
 		end
 
 		ni = t*factor4;
@@ -114,22 +125,24 @@ for i = 1:num_frames
 		ri = li + 1;
 		w = ni - li;
 		if ri < M - 1
-			stretched(1+t) += Hn(1+li,i) + w * (Hn(1+ri,i) - Hn(1+li,i));
+			stretched(1+t) += Hn(i, 1+li) + w * (Hn(i, 1+ri) - Hn(i, 1+li));
 		else
-			stretched(1+t) += Hn(1+t);
+			stretched(1+t) += Hn(i, 1+t);
 		end
 	end
 	%exit(1)
-	harmonic_strengthened_bh(:,i) = Hn(:,i) + stretched;
+	harmonic_strengthened_bh(i,:) = Hn(i,:) + stretched;
 end
 
 if 0
 	hold on;
-	python_bh = load('hbh-10.txt')(:,2);
-	a = harmonic_strengthened_bh(:, 10);
-	plot(python_bh, 'b');
-	plot(a, 'g');
+	python_bh = load('hbh-10.txt')(:,2)';
+	a = harmonic_strengthened_bh(10,:);
+	%plot(python_bh, 'b');
+	%plot(a, 'g');
 	plot(python_bh - a, 'r');
+	pause
+	exit(1)
 end
 
 
@@ -140,8 +153,8 @@ for i = 1:num_frames
 %	cell( );
 	k = 1;
 	for j = 4*BPM_MIN:4*BPM_MAX-1
-		if ((harmonic_strengthened_bh(j-1, i) < harmonic_strengthened_bh(j, i)) && (harmonic_strengthened_bh(j, i) > harmonic_strengthened_bh(j+1, i)))
-			strength = harmonic_strengthened_bh(j, i);
+		if ((harmonic_strengthened_bh(i, j-1) < harmonic_strengthened_bh(i, j)) && (harmonic_strengthened_bh(i, j) > harmonic_strengthened_bh(i, j+1)))
+			strength = harmonic_strengthened_bh(i, j);
 			peaks(k,:) = [strength j];
 			k += 1;
 		end
@@ -155,13 +168,8 @@ end
 
 
 if 1
-	python_bh = load('bh-peaks-10.txt')(:,1)'
-	bh_cands(10,:)
+	python_bh = load('bh-peaks-10.txt')(:,1)';
+	a = python_bh - bh_cands(10,:);
 end
 
-%a = autocorr(:,1);
-%plot(a);
-pause;
-
-bh_cands = [];
 

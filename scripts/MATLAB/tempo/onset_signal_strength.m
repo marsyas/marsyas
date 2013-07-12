@@ -9,7 +9,13 @@ HOPSIZE = 128;
 
 %%% create overlapped signal
 buffered = buffer(wav_data, WINDOWSIZE, WINDOWSIZE-HOPSIZE);
+%buffered = buffer(wav_data, WINDOWSIZE, WINDOWSIZE-HOPSIZE, 'nodelay');
 oss_sr = wav_sr / HOPSIZE;
+
+% only include complete buffers
+if mod(length(wav_data), HOPSIZE) > 0
+	buffered = buffered(:,1:end-1);
+end
 
 %%% windowing and log-magnitude spectrum
 % match Marsyas hamming window
@@ -39,6 +45,17 @@ for i = 1:num_frames
 	prev = logmag(:,i);
 end
 
+if 0
+	python_flux = load('flux.txt')(:,2);
+	hold on
+	plot(flux)
+	plot(python_flux, 'g')
+	plot(flux-python_flux, 'r')
+	pause
+	exit(1)
+end
+
+
 %%% filter
 %%% octave has a bug in the FIR filter design code, so for now
 %%% I just manually specify the coefficients after calculating
@@ -64,7 +81,17 @@ b = [
 filtered_flux = filter(b, 1.0, flux);
 
 % remove the last frame to match the marsyas and python output
-oss = filtered_flux(1:length(filtered_flux)-1);
+oss = filtered_flux;
 %oss = filtered_flux;
+
+if 0
+	python_filtered_flux = load('reference/onset_strength.txt')(:,2);
+	hold on
+	%plot(oss)
+	%plot(python_filtered_flux, 'g')
+	plot(oss - python_filtered_flux, 'r')
+	pause
+	exit(1)
+end
 
 

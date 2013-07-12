@@ -1,7 +1,7 @@
 
 function [bpm] = tempo_file(filename)
 
-TEST_REFERENCE = 0;
+TEST_REFERENCE = 1;
 PLOT = 0;
 
 if PLOT
@@ -10,18 +10,24 @@ end
 
 %%%%%%%%% OSS
 [wav_data, wav_sr, bps] = wavread(filename);
+wav_data *= 32767.0 / 32768.0;
+
 
 [oss, oss_sr] = onset_signal_strength(wav_data, wav_sr);
 
 %%% test OSS
-python_oss = load('reference/onset_strength.txt')(:,2);
-if max(oss - python_oss) < 1e-03
-	disp ("Testing... OSS ok")
-else
-	disp ("Testing... OSS FAILED")
-	plot(python_oss)
-	plot(oss, 'g')
-	plot(python_oss - oss, 'r')
+if TEST_REFERENCE
+	python_oss = load('reference/onset_strength.txt')(:,2);
+	delta = oss - python_oss;
+	if max(abs(delta)) < 1e-13
+		disp ("Testing... OSS ok");
+	else
+		disp ("Testing... OSS FAILED");
+		%plot(python_oss)
+		%plot(oss, 'g')
+		plot(python_oss - oss, 'r')
+		pause
+	end
 end
 
 if PLOT
@@ -35,7 +41,35 @@ end
 %%%%%%%%% BH
 
 bh_cands = beat_histogram(oss, oss_sr);
-python_bh = load('reference/beat_histogram.txt');
+if TEST_REFERENCE
+	python_bh = load('reference/beat_histogram.txt');
+	% temp for fast checking
+	%python_bh = python_bh(1:10,:);
+	delta = python_bh - bh_cands;
+	if max(abs(delta)) < 1e-12
+		disp ("Testing... BH ok");
+	else
+		disp ("Testing... BH FAILED");
+	end
+end
+
+
+
+%%%%%%%%% BP
+[bpm_cand, bphase] = beat_phase(oss, oss_sr, bh_cands);
+
+if TEST_REFERENCE
+	python_bp = load('reference/beat_phase.txt')(:,1);
+	delta = bphase - python_bp;
+	if max(abs(delta)) < 1e-2
+		disp ("Testing... BP ok");
+	else
+		disp ("Testing... BP FAILED");
+	end
+end
+
+
+%%%%%%%%% DOUBLING HEURISTIC
 
 
 
@@ -45,5 +79,4 @@ if PLOT
 	pause
 end
 
-bpm = 60;
 
