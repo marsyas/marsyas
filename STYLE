@@ -1,0 +1,22 @@
+# C++ Style Guide
+
+## Indentation
+
+Two spaces.
+
+## Blocks
+
+No:
+
+    if (...) {
+
+Yes:
+
+	if (...)
+	{
+
+## Everything else
+
+See the [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml).
+
+
