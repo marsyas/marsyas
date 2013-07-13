@@ -190,17 +190,12 @@ endif (MARSYAS_MIDIIO)
 
 
 ## ACTUAL BUILD
-if(CMAKE_COMPILER_IS_GNUCXX)
-	set(MARSYAS_COMPILE_FLAGS -std=c++11)
-elseif(CMAKE_COMPILER_IS_CLANG)
-	set(MARSYAS_COMPILE_FLAGS -stdlib=libc++)
-endif()
 
 if (MARSYAS_STATIC)
 	add_library(marsyas_static STATIC ${Marsyas_SOURCES} ${Marsyas_HEADERS})
 	SET_TARGET_PROPERTIES(marsyas_static PROPERTIES OUTPUT_NAME "marsyas")
 	SET_TARGET_PROPERTIES(marsyas_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
-	set_target_properties( marsyas_static PROPERTIES COMPILE_FLAGS ${MARSYAS_COMPILE_FLAGS} )
+	target_enable_cpp11(marsyas_static)
 	TARGET_LINK_LIBRARIES(marsyas_static ${OS_LIBS})
 
 ## LINKING
@@ -236,7 +231,7 @@ endif (MARSYAS_GSTREAMER)
 
 else (MARSYAS_STATIC)
 	add_library(marsyas SHARED ${Marsyas_SOURCES} ${Marsyas_HEADERS})
-	set_target_properties( marsyas PROPERTIES COMPILE_FLAGS ${MARSYAS_COMPILE_FLAGS} )
+	target_enable_cpp11(marsyas)
 	TARGET_LINK_LIBRARIES(marsyas ${OS_LIBS})
 
 ## LINKING
