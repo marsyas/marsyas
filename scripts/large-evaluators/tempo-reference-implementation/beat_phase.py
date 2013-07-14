@@ -39,8 +39,8 @@ def calc_pulse_trains(bpm, window, sr):
         #bp_mags[period] = numpy.sum(values) / numpy.sum(train)
 
     bp_max = max(bp_mags)
-    bp_std = numpy.var(bp_mags)
-    return bp_max, bp_std
+    bp_var = numpy.var(bp_mags)
+    return bp_max, bp_var
 
 def make_impulse_train(bpm, num_samples, sr):
     #period = int(round(60.0 * sr / bpm))
@@ -95,8 +95,8 @@ def calc_sine_trains(bpm, window, sr):
 
         bp_mags[i] = numpy.sum(values) / numpy.sum(train)
     bp_max = max(bp_mags)
-    bp_std = numpy.var(bp_mags)
-    return bp_max, bp_std
+    bp_var = numpy.var(bp_mags)
+    return bp_max, bp_var
 
 
 def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
@@ -124,14 +124,14 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         #for j, bpm in enumerate(candidate_bpms):
             if bpm == 0:
                 continue
-            mag, std = calc_pulse_trains(bpm, overlapped[i], oss_sr)
+            mag, var = calc_pulse_trains(bpm, overlapped[i], oss_sr)
             #bpms_max[i] += mag
             #bpms_std[i] += std
             ### correct up to here
             #print i, bpm, mag, std
             tempo_scores[j] = mag
             #print tempo_scores[j]
-            onset_scores[j] = std
+            onset_scores[j] = var
         tempo_scores /= tempo_scores.sum()
         onset_scores /= onset_scores.sum()
 
