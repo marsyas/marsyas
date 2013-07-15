@@ -12,18 +12,18 @@ libfind_package(GStreamer-App GStreamer)
 libfind_package(GStreamer-App GStreamer-Base)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(GStreamer-App_PKGCONF gstreamer-app-0.10)
+libfind_pkg_check_modules(GStreamer-App_PKGCONF gstreamer-app-1.0)
 
 # Include dir
 find_path(GStreamer-App_INCLUDE_DIR
   NAMES gst/gst.h
   PATHS ${GStreamer-App_PKGCONF_INCLUDE_DIRS}
-  PATH_SUFFIXES gstreamer-0.10
+  PATH_SUFFIXES gstreamer-1.0
 )
 
 # Finally the library itself
 find_library(GStreamer-App_LIBRARY
-  NAMES gstapp-0.10
+  NAMES gstapp-1.0
   PATHS ${GStreamer-App_PKGCONF_LIBRARY_DIRS}
 )
 

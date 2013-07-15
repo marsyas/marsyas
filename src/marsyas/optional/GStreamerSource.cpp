@@ -196,8 +196,8 @@ GStreamerSource::init_pipeline()
 	gst_pipeline_use_clock(GST_PIPELINE(pipe_), NULL);
 
 	/* Set up the capabilities filtering */
-	GstCaps *caps = gst_caps_new_simple("audio/x-raw-float",
-						"width", G_TYPE_INT, sizeof(mrs_real)*8,
+	GstCaps *caps = gst_caps_new_simple("audio/x-raw",
+						"format", G_TYPE_STRING, g_strdup_printf("F%luLE", sizeof(mrs_real)*8),
 						NULL);
 	gst_app_sink_set_caps(GST_APP_SINK(sink_), caps);
 	gst_caps_unref(caps);
@@ -241,21 +241,21 @@ GStreamerSource::getHeader(mrs_string filename)
 	if(ret == GST_STATE_CHANGE_FAILURE) {
 		MRSERR("GStreamer pipeline failed to change state. This could be due to an invalid filename");
 	}
-	buffer_ = gst_app_sink_pull_preroll(GST_APP_SINK(sink_));
+	GstSample *sample = gst_app_sink_pull_preroll(GST_APP_SINK(sink_));
 
-	/* Grab the buffer's caps so we can get some useful info */
-	GstCaps *buf_caps = gst_buffer_get_caps(buffer_);
-	GstStructure *buf_struct = gst_caps_get_structure(buf_caps, 0);
+	/* Grab the sample's caps so we can get some useful info */
+	GstCaps *samp_caps = gst_sample_get_caps(sample);
+	GstStructure *samp_struct = gst_caps_get_structure(samp_caps, 0);
 	
 	/* Get sample rate from buffer */
 	gint rate;
-	if(gst_structure_get_int(buf_struct, "rate", &rate)) {
+	if(gst_structure_get_int(samp_struct, "rate", &rate)) {
 		osrate_ = (mrs_real)rate;
 	}
 
 	/* Get number of channels from buffer */
 	gint channels;
-	if(gst_structure_get_int(buf_struct, "channels", &channels)) {
+	if(gst_structure_get_int(samp_struct, "channels", &channels)) {
 		onObservations_ = channels;
 	}
 
@@ -265,7 +265,7 @@ GStreamerSource::getHeader(mrs_string filename)
 
 	// Force blocking on state change completion
 	gst_element_get_state(pipe_, NULL, NULL, GST_SECOND);
-	if (gst_element_query_duration(GST_ELEMENT(pipe_), &format, &duration) && format==GST_FORMAT_TIME) {
+	if (gst_element_query_duration(GST_ELEMENT(pipe_), format, &duration) && format==GST_FORMAT_TIME) {
 		size_ = (mrs_natural)(duration*1e-9*osrate_ + 0.5);
 	} else {
 		/* GStreamer can't tell us the size of the stream */
@@ -279,7 +279,7 @@ GStreamerSource::getHeader(mrs_string filename)
 	lastTickWithData_ = false;
 	
 	/* Clean up */
-	gst_caps_unref(buf_caps);
+	gst_caps_unref(samp_caps);
 
 	/* Set Controls */
 	//setctrl("mrs_real/israte", osrate_);
@@ -300,7 +300,6 @@ GStreamerSource::getHeader(mrs_string filename)
 #endif
 }
 
-
 #ifdef MARSYAS_GSTREAMER
 void
 GStreamerSource::copyFromBuffer(GstBuffer	*buf,
@@ -313,7 +312,7 @@ GStreamerSource::copyFromBuffer(GstBuffer	*buf,
 	for(ch = 0; ch < onObservations_; ch++) {
 		for(i = 0; i < length; i++) {
 			mrs_real sample;
-			memcpy(&sample, GST_BUFFER_DATA(buf) + ((buf_start + i)*onObservations_ + ch)*sizeof(mrs_real), sizeof(mrs_real));
+			gst_buffer_extract(buf, ((buf_start + i)*onObservations_ + ch)*sizeof(mrs_real), &sample, sizeof(mrs_real));
 			vec(ch, vec_start + i) = sample;
 		}
 	}
@@ -325,9 +324,9 @@ GStreamerSource::copyFromBuffer(GstBuffer	*buf,
 mrs_bool
 GStreamerSource::pull_buffer() {
 #ifdef MARSYAS_GSTREAMER
-	buffer_ = gst_app_sink_pull_buffer(GST_APP_SINK(sink_));
+	GstSample *sample = gst_app_sink_pull_sample(GST_APP_SINK(sink_));
 
-	if(buffer_ == NULL) {
+	if(sample == NULL) {
 		if(gst_app_sink_is_eos(GST_APP_SINK(sink_))) {
 			/* EOS, stop pulling buffers */
 			hasData_ = false;
@@ -345,7 +344,8 @@ GStreamerSource::pull_buffer() {
 			return false;
 		}
 	} else {
-		buffer_size_ = GST_BUFFER_SIZE(buffer_) / sizeof(mrs_real) / onObservations_;
+		buffer_ = gst_sample_get_buffer(sample);
+		buffer_size_ = gst_buffer_get_size(buffer_) / sizeof(mrs_real) / onObservations_;
 		buffer_left_ = buffer_size_;
 	}
 
@@ -431,7 +431,7 @@ GStreamerSource::seek()
 	
 	gint64 cur;
 	GstFormat format = GST_FORMAT_TIME;
-	if(!gst_element_query_position(GST_ELEMENT(pipe_), &format, &cur)) {
+	if(!gst_element_query_position(GST_ELEMENT(pipe_), format, &cur)) {
 		MRSERR("Position query failed!");
 		return false;
 	}
