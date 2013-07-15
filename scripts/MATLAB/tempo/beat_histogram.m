@@ -30,7 +30,7 @@ autocorr = scaled(1:N,:);
 
 num_frames = size(autocorr, 2);
 if FAST_DEBUG
-	num_frames = 10
+	num_frames = 1
 end
 
 if 0
@@ -167,7 +167,7 @@ for i = 1:num_frames
 end
 
 
-if 1
+if 0
 	python_bh = load('bh-peaks-10.txt')(:,1)';
 	a = python_bh - bh_cands(10,:);
 end

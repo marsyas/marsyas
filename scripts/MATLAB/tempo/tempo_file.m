@@ -1,7 +1,7 @@
 
 function [bpm] = tempo_file(filename)
 
-TEST_REFERENCE = 1;
+TEST_REFERENCE = 0;
 PLOT = 0;
 
 if PLOT
@@ -71,6 +71,7 @@ end
 
 %%%%%%%%% DOUBLING HEURISTIC
 
+bpm = late_heuristic(bpm_cand, bphase, 0.05);
 
 
 

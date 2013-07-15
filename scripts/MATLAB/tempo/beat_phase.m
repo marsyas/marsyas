@@ -20,7 +20,7 @@ buffered = buffered';
 
 num_frames = size(buffered, 1);
 if FAST_DEBUG
-	num_frames = 10
+	num_frames = 1
 end
 
 
@@ -86,5 +86,5 @@ end
 
 [beststr, besti] = max(bphase);
 
-bpm_cand = besti - 1
+bpm_cand = besti - 1;
 
