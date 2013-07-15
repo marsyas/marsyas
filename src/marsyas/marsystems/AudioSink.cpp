@@ -181,13 +181,13 @@ unsigned int channel_count
 	else if (audio_->isStreamOpen())
 		audio_->closeStream();
 
-	audio_->showWarnings(true);
-
 	int device_id = (int) getctrl("mrs_natural/device")->to<mrs_natural>();
 	if (device_id == 0)
 	{
 		device_id = audio_->getDefaultOutputDevice();
 	}
+
+
 
 	// expand mono to stereo
 	channel_count = std::max((unsigned int) 2, channel_count);
@@ -199,6 +199,10 @@ unsigned int channel_count
 
 	RtAudioFormat format = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
+	// Suppress useless warnings when both an AudioSource and
+	// an AudioSink are being opened using ALSA:
+	audio_->showWarnings(false);
+
 	try
 	{
 		audio_->openStream(&output_params, NULL, format, sample_rate,
@@ -209,6 +213,8 @@ unsigned int channel_count
 		e.printMessage();
 		exit(0);
 	}
+
+	audio_->showWarnings(true);
 }
 
 void

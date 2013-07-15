@@ -161,6 +161,10 @@ unsigned int channel_count
 	
 	RtAudioFormat source_format = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
+	// Suppress useless warnings when both an AudioSource and
+	// an AudioSink are being opened using ALSA:
+	audio_->showWarnings(false);
+
 	try 
 	{
 		audio_->openStream(NULL, &source_params, source_format, sample_rate,
@@ -171,6 +175,8 @@ unsigned int channel_count
 		e.printMessage();
 		exit(0);
 	}
+
+	audio_->showWarnings(true);
 }
 
 void 
