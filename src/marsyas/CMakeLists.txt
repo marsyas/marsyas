@@ -58,8 +58,17 @@ set( EXTERNALS_DIR ${CMAKE_SOURCE_DIR}/src/otherlibs )
 
 list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/libsvm/svm.cpp)
 list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/libsvm/svm.h)
-
-
+list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/linear.cpp)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/linear.h)
+list(APPEND Marsyas_SOURCES ${EXTERNALS_DIR}/liblinear/tron.cpp)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/tron.h)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blas.h)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blasp.h)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/blas.h)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/daxpy.c)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/ddot.c)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/dnrm2.c)
+list(APPEND Marsyas_HEADERS ${EXTERNALS_DIR}/liblinear/blas/dscal.c)
 
 
 if (MARSYAS_OSC)

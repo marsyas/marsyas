@@ -106,6 +106,7 @@ endif (MARSYAS_GSTREAMER)
 
 ## basic library includes
 include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/libsvm/)
+#include_directories(${CMAKE_SOURCE_DIR}/src/otherlibs/liblinear/)
 
 
 
