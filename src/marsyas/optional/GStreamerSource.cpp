@@ -20,18 +20,15 @@
 #include "common_header.h"
 #include "GStreamerSource.h"
 
-#ifdef MARSYAS_GSTREAMER
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
 #include <gst/base/gstbasesrc.h>
-#endif
 
 
 using namespace Marsyas;
 
 
-#ifdef MARSYAS_GSTREAMER
 /* This must be a free-standing function (i.e. not a member of a class), since
  * GStreamer is written in plain C. */
 void
@@ -49,7 +46,6 @@ on_pad_added(GstElement *dec, GstPad *pad, GstElement *element)
 
 	gst_object_unref(sinkpad);
 }
-#endif
 
 
 GStreamerSource::GStreamerSource(mrs_string name):AbsSoundFileSource("GStreamerSource", name)
@@ -95,7 +91,6 @@ GStreamerSource::GStreamerSource(const GStreamerSource& a): AbsSoundFileSource(a
 
 GStreamerSource::~GStreamerSource() 
 {
-#ifdef MARSYAS_GSTREAMER
 	/* Clean up the pipeline and unref the objects we explicitly un-floated */
 	if(pipe_ != NULL) {
 		gst_element_set_state(pipe_, GST_STATE_NULL);
@@ -107,7 +102,6 @@ GStreamerSource::~GStreamerSource()
 
 	if(sink_ != NULL)
 		gst_object_unref(sink_);
-#endif
 }
 
 
@@ -172,7 +166,6 @@ GStreamerSource::addControls()
 void
 GStreamerSource::init_pipeline()
 {
-#ifdef MARSYAS_GSTREAMER
 	GstElement *conv;
 
 	/* Initialize GStreamer */
@@ -210,14 +203,12 @@ GStreamerSource::init_pipeline()
 	g_signal_connect(dec_, "pad_added", G_CALLBACK(on_pad_added), conv);
 
 	pipe_created_ = true;
-#endif
 }
 
 
 void
 GStreamerSource::getHeader(mrs_string filename)
 {
-#ifdef MARSYAS_GSTREAMER
 	if(!pipe_created_) {
 		init_pipeline();
 		if(!pipe_created_) {
@@ -297,10 +288,8 @@ GStreamerSource::getHeader(mrs_string filename)
 	/* Start playing, so queue fills with buffers [Should we do this?] */
 	gst_element_set_state(pipe_, GST_STATE_PLAYING);
 	playing_ = true; // Should we check if set_state worked before doing this?
-#endif
 }
 
-#ifdef MARSYAS_GSTREAMER
 void
 GStreamerSource::copyFromBuffer(GstBuffer	*buf,
 								mrs_natural  buf_start,
@@ -318,12 +307,10 @@ GStreamerSource::copyFromBuffer(GstBuffer	*buf,
 	}
 
 }
-#endif
 
 
 mrs_bool
 GStreamerSource::pull_buffer() {
-#ifdef MARSYAS_GSTREAMER
 	GstSample *sample = gst_app_sink_pull_sample(GST_APP_SINK(sink_));
 
 	if(sample == NULL) {
@@ -350,14 +337,12 @@ GStreamerSource::pull_buffer() {
 	}
 
 	return true;
-#endif
 }
 
 
 void
 GStreamerSource::myProcess(realvec& in, realvec& out)
 {
-#ifdef MARSYAS_GSTREAMER
 	(void)in; // Suppress warning from unused parameter
 	
 	// TODO Should output_size be calculated from output.getCols() or in/onSamples_?
@@ -407,13 +392,11 @@ GStreamerSource::myProcess(realvec& in, realvec& out)
 	/* Update current position */
 	pos_ += output_size - output_left;
 	setctrl("mrs_natural/pos", pos_);
-#endif
 }
 
 mrs_bool
 GStreamerSource::seek()
 {
-#ifdef MARSYAS_GSTREAMER
 	GstSeekFlags flags = (GstSeekFlags)(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT);
 	gint64 seek_to = (gint64)(newpos_/osrate_*1e9);
 	if(seek_to >= 0) {
@@ -439,13 +422,11 @@ GStreamerSource::seek()
 	pos_ = cur*1e-9*osrate_;
 	buffer_left_ = 0;
 	return true;
-#endif
 }
 
 void
 GStreamerSource::myUpdate(MarControlPtr sender) 
 {
-#ifdef MARSYAS_GSTREAMER
 	(void) sender; // Suppress warning from unused parameter
  
 	// This stuff is already done in MarSystem::update()
@@ -476,6 +457,5 @@ GStreamerSource::myUpdate(MarControlPtr sender)
 		/* Write current (possibly updated) position back to the control */
 		setctrl("mrs_natural/pos", pos_);
 	}
-#endif
 }	
 

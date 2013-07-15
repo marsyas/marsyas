@@ -24,11 +24,9 @@
 
 #include "common_header.h"
 
-#ifdef MARSYAS_GSTREAMER
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
-#endif 
 
 namespace Marsyas
 {
@@ -49,10 +47,8 @@ namespace Marsyas
 			MarControlPtr ctrl_pos_, ctrl_hasData_, ctrl_lastTickWithData_;
 			
 			/* GStreamer Elements */
-#ifdef MARSYAS_GSTREAMER
 			GstElement *pipe_, *dec_, *sink_;
 			GstBuffer *buffer_;
-#endif 
 
 			/* These measured in # of SAMPLES per channel */
 			mrs_natural buffer_left_;
@@ -64,13 +60,11 @@ namespace Marsyas
 			void init_pipeline();
 			mrs_bool seek();
 			mrs_bool pull_buffer();
-#ifdef MARSYAS_GSTREAMER
 			void copyFromBuffer(GstBuffer	*buf,
 						mrs_natural  buf_start,
 						realvec&	 vec,
 						mrs_natural  vec_start,
 						mrs_natural  length);
-#endif 
 		
 		public:
 			GStreamerSource(std::string name);
