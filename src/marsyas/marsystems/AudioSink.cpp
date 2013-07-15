@@ -210,6 +210,7 @@ unsigned int channel_count
 	}
 	catch (RtError& e)
 	{
+		MRSERR("AudioSink: RtAudio error:");
 		e.printMessage();
 		exit(0);
 	}

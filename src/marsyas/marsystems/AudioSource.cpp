@@ -172,6 +172,7 @@ unsigned int channel_count
 	}
 	catch (RtError& e)
 	{
+		MRSERR("AudioSource: RtAudio error:");
 		e.printMessage();
 		exit(0);
 	}
