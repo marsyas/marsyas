@@ -36,7 +36,7 @@ using namespace Marsyas;
 
 int helpopt;
 int usageopt;
-mrs_natural memSize = 1;
+mrs_natural memSize = 40;
 mrs_natural winSize = 512;
 mrs_natural hopSize = 512;
 string outputName = EMPTYSTRING;
@@ -110,6 +110,11 @@ void extract(string inCollectionName)
   featureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
   net->addMarSystem(featureFanout);
 
+  if(memSize != 0) {
+	net->addMarSystem(mng.create("TextureStats", "tStats"));
+	net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize);
+  }
+
   net->updControl("SoundFileSource/src/mrs_string/filename", inCollectionName);
   net->updControl("mrs_natural/inSamples", hopSize);
   net->updControl("ShiftInput/si/mrs_natural/winSize", winSize);
@@ -125,6 +130,9 @@ void extract(string inCollectionName)
   float sampleRate = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
   while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() ){
+    net->tick();
+    numTicks++;
+
     data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
     currentTime = (numTicks * hopSize) / sampleRate;
@@ -137,14 +145,13 @@ void extract(string inCollectionName)
         ofs << net->getctrl("SoundFileSource/src/mrs_real/currentLabel")->to<mrs_real>() << " ";
       }
 
-      for (int i = 0; i < data.getRows(); i++) {
+      for (int i = 1; i < data.getRows(); i++) {
         ofs << i << ":" << data(i, 0) << " ";
       }
       ofs << endl;
     }
 
-    net->tick();
-    numTicks++;
+
   }
 
   if (outputName != EMPTYSTRING) {
