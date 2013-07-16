@@ -35,13 +35,11 @@ using namespace Marsyas;
 
 void usage()
 {
-  cout << "mirex_extract input.mf output.arff" << endl;
+  cout << "nextract input.mf" << endl;
 }
 
 void extract(string inCollectionName)
 {
-  cout << "extract" << endl;
-
   MarSystemManager mng;
 
   MarSystem* net = mng.create("Series", "net");
