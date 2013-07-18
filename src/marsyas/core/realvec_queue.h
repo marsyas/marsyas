@@ -33,8 +33,27 @@ class realvec_queue_consumer;
 /**
    \ingroup NotmarCore
    \brief Lock-free fixed-size queue, implemented as a realvec-based ringbuffer
-   \author George Tzanetakis <gtzan@cs.uvic.ca>
    \author Jakob Leben <jakob.leben@gmail.com>
+
+   The relavec_queue is a thread-safe, lock-free, fixed-size queue (FIFO) of multiple channels
+   of mrs_real values, for use by a single data producing thread and a single data consuming
+   thread.
+
+   "Fixed-size" means that the size (i.e. the amount of samples the queue can contain) can
+   only be defined while other threads are not pushing and popping data (i.e. not in a
+   thread-safe manner).
+
+   "Single-producer, single-consumer" means that the queue is thread-safe only as long as a
+   single thread is pushing to it, and a single thread is popping from it.
+
+   "Lock-free" means that the thread synchronization only uses atomic operations and no mutexes
+   or any other kind of synchronization methods subject to thread-priority inversion. This makes
+   it suitable for real-time applications.
+
+   This class operates in combination with the realvec_queue_producer and realvec_queue_consumer
+   classes: the realvec_queue only contains the data to pass between the producer and the consumer,
+   but does not provide an interface to write and read data. Those interfaces are provided by the
+   other two classes, respectively.
 */
 
 class realvec_queue
@@ -50,17 +69,32 @@ public:
 	friend class realvec_queue_producer;
 	friend class realvec_queue_consumer;
 
+    /**
+     * @brief Constructs a queue of size 0.
+     */
 	realvec_queue():
 	m_read_position(0),
 	m_write_position(0)
 	{}
 
+    /**
+     * @brief Constructs a queue of desired size.
+     * @param observations Number of channels.
+     * @param samples Number of samples.
+     */
 	realvec_queue(size_t observations, size_t samples):
 	m_buffer(observations, samples),
 	m_read_position(0),
 	m_write_position(0)
 	{}
 
+    /**
+     * @brief Changes queue size. (NOT THREAD-SAFE)
+     * @param observations Number of channels.
+     * @param samples Number of samples.
+     * @param clear Wheather to initialize all new space to 0, or keep data that overlaps with
+     * the old data.
+     */
 	void resize(size_t observations, size_t samples, bool clear = true)
 	{
 		if (clear)
@@ -71,15 +105,27 @@ public:
 		m_read_position = m_write_position = 0;
 	}
 
+    /**
+     * @brief Equivalent to popping all data off queue. (NOT THREAD-SAFE)
+     */
 	void clear()
 	{
 		m_read_position = m_write_position = 0;
 	}
 
+    /**
+     * @return The amount of channels the queue holds. (NOT THREAD-SAFE)
+     */
 	size_t observations() { return m_buffer.getRows(); }
 
+    /**
+     * @return The maximum amount of samples the queue can hold. (NOT THREAD-SAFE)
+     */
 	size_t samples() { return m_buffer.getCols(); }
 
+    /**
+     * @return The amount of samples that can be pushed into the queue. (THREAD-SAFE)
+     */
 	size_t write_capacity()
 	{
 		size_t read_pos = m_read_position.load(memory_order_acquire);
@@ -93,6 +139,9 @@ public:
 		return available;
 	}
 
+    /**
+     * @return The amount of samples that can be popped from the queue. (THREAD-SAFE)
+     */
 	size_t read_capacity()
 	{
 		size_t read_pos = m_read_position.load(memory_order_relaxed);
@@ -106,6 +155,13 @@ public:
 	}
 };
 
+/**
+   \ingroup NotmarCore
+   \brief Interface to write data to realvec_queue.
+   \author Jakob Leben <jakob.leben@gmail.com>
+
+   This class allows a producer of data to push onto a realvec_queue.
+ */
 class realvec_queue_producer
 {
 	realvec_queue & m_queue;
@@ -113,6 +169,14 @@ class realvec_queue_producer
 	size_t m_position;
 
 public:
+    /**
+     * @brief [THREAD-SAFE] Construct producer and reserve queue space for writing.
+     * @param destination The queue to write to.
+     * @param capacity The requested amount of samples.
+     *
+     * If the amount of free samples in the queue is smaller than requested,
+     * no space is reserved, and capacity() will return 0.
+     */
 	realvec_queue_producer(realvec_queue & destination, size_t capacity):
 	m_queue( destination ),
 	m_position( destination.m_write_position.load(memory_order_relaxed) )
@@ -123,6 +187,10 @@ public:
 			m_capacity = capacity;
 	}
 
+    /**
+    @brief [THREAD-SAFE] Destroy producer and make the reserved space available
+    to the realvec_queue_consumer for reading.
+    */
 	~realvec_queue_producer()
 	{
 		if (m_capacity > 0) {
@@ -131,8 +199,23 @@ public:
 		}
 	}
 
+    /**
+     * @brief [THREAD-SAFE] Amount of samples reserved for writing.
+     */
 	size_t capacity() { return m_capacity; }
 
+    /**
+     * @brief [THREAD-SAFE] Reserve more queue space for writing.
+     * @param capacity The requested amount of samples.
+     * @return Whether the requested amount of samples was successfully reserved.
+     *
+     * It is only possible to reserve more samples than already reserved.
+     * If less or equal amount is requested, this method will return true,
+     * but the reserved amount will not change.
+     *
+     * If the amount of free samples in the queue is smaller than requested,
+     * This method will return false, and the amount of reserved space will not change.
+     */
 	bool reserve( size_t capacity )
 	{
 		if (capacity <= m_capacity)
@@ -143,6 +226,13 @@ public:
 		return true;
 	}
 
+    /**
+     * @brief [THREAD-SAFE] Access data reserved for writing.
+     * @param observation Channel index in range of 0 to `queue.observations()`
+     * @param sample Sample index, among reserved samples; in the range
+     * of 0 to `capacity()`, where 0 denotes the first reserved sample, and so on...
+     * @return A reference to the data at requested indexes.
+     */
 	mrs_real & operator() ( size_t observation, size_t sample )
 	{
 		assert(sample < m_capacity);
@@ -151,6 +241,13 @@ public:
 	}
 };
 
+/**
+   \ingroup NotmarCore
+   \brief Interface to read data from realvec_queue.
+   \author Jakob Leben <jakob.leben@gmail.com>
+
+   This class allows a consumer of data to pop off of a realvec_queue.
+ */
 class realvec_queue_consumer
 {
 	realvec_queue & m_queue;
@@ -158,16 +255,28 @@ class realvec_queue_consumer
 	size_t m_position;
 
 public:
-	realvec_queue_consumer(realvec_queue & destination, size_t capacity):
-	m_queue(destination),
-	m_position( destination.m_read_position.load(memory_order_relaxed) )
+    /**
+     * @brief [THREAD-SAFE] Construct consumer and reserve queue space for reading.
+     * @param source The queue to read from.
+     * @param capacity The requested amount of samples.
+     *
+     * If the amount of available samples in the queue is smaller than requested,
+     * no space is reserved, and capacity() will return 0.
+     */
+	realvec_queue_consumer(realvec_queue & source, size_t capacity):
+	m_queue(source),
+	m_position( source.m_read_position.load(memory_order_relaxed) )
 	{
-		if (destination.read_capacity() < capacity)
+		if (source.read_capacity() < capacity)
 			m_capacity = 0;
 		else
 			m_capacity = capacity;
 	}
 
+    /**
+    @brief [THREAD-SAFE] Destroy consumer and make the reserved space available
+    to the realvec_queue_producer to reuse for writing.
+    */
 	~realvec_queue_consumer()
 	{
 		if (m_capacity > 0) {
@@ -176,8 +285,23 @@ public:
 		}
 	}
 
+    /**
+     * @brief [THREAD-SAFE] Amount of samples reserved for reading.
+     */
 	size_t capacity() { return m_capacity; }
 
+    /**
+     * @brief [THREAD-SAFE] Reserve more queue space for reading.
+     * @param capacity The requested amount of samples.
+     * @return Whether the requested amount of samples was successfully reserved.
+     *
+     * It is only possible to reserve more samples than already reserved.
+     * If less or equal amount is requested, this method will return true,
+     * but the reserved amount will not change.
+     *
+     * If the amount of available samples in the queue is smaller than requested,
+     * This method will return false, and the amount of reserved space will not change.
+     */
 	bool reserve( size_t capacity )
 	{
 		if (capacity <= m_capacity)
@@ -188,6 +312,13 @@ public:
 		return true;
 	}
 
+    /**
+     * @brief [THREAD-SAFE] Access data reserved for reading.
+     * @param observation Channel index in range of 0 to `queue.observations()`
+     * @param sample Sample index, among reserved samples; in the range
+     * of 0 to `capacity()`, where 0 denotes the first reserved sample, and so on...
+     * @return A reference to the data at requested indexes.
+     */
 	mrs_real & operator() ( size_t observation, size_t sample )
 	{
 		assert(sample < m_capacity);
