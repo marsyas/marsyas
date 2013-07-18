@@ -63,6 +63,8 @@ include (marsyas-includes)
 include (marsyas-oslibs)
 
 
+
+
 ## next level
 add_subdirectory(marsyas)
 if (MARSYAS_BUILD_APPS)
@@ -76,6 +78,10 @@ endif (MARSYAS_PNG)
 if (SWIG_FOUND) 
 	add_subdirectory(swig)
 endif (SWIG_FOUND)
+
+if(WITH_QT5)
+  add_subdirectory(qt5apps)
+endif()
 
 if (QT4_FOUND)
         SET(QT_USE_QTNETWORK ON)
