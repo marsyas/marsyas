@@ -306,7 +306,7 @@ Marx2DGraph::setShowAxisScale( bool tf )
 bool 
 Marx2DGraph::setBuffer( realvec& rv )
 {
-	
+
   if ( rv.getSize() == buffersize ) { 
      *buffer = rv;
 
@@ -323,6 +323,13 @@ Marx2DGraph::setBuffer( realvec& rv )
     return true;
   }
   return false;
+}
+
+void Marx2DGraph::resetBuffer( const Marsyas::realvec & data )
+{
+  *buffer = data;
+  buffersize = buffer->getSize();
+  update();
 }
 
 void 

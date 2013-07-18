@@ -48,6 +48,7 @@ class Marx2DGraph : public QWidget
   Marx2DGraph( int size=0, QWidget *parent=0 );//warning C4520: 'Marx2DGraph' : multiple default constructors specified [!]
 
   bool setBuffer( Marsyas::realvec& );
+  void resetBuffer( const Marsyas::realvec& );
 
   void test();
 
