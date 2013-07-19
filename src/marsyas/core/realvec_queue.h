@@ -58,101 +58,101 @@ class realvec_queue_consumer;
 
 class realvec_queue
 {
-	typedef atomic<size_t> position_t;
+  typedef atomic<size_t> position_t;
 
-	realvec m_buffer;
-	position_t m_read_position;
-	position_t m_write_position;
+  realvec m_buffer;
+  position_t m_read_position;
+  position_t m_write_position;
 
 
 public:
-	friend class realvec_queue_producer;
-	friend class realvec_queue_consumer;
+  friend class realvec_queue_producer;
+  friend class realvec_queue_consumer;
 
-    /**
-     * @brief Constructs a queue of size 0.
-     */
-	realvec_queue():
-	m_read_position(0),
-	m_write_position(0)
-	{}
+  /**
+   * @brief Constructs a queue of size 0.
+   */
+  realvec_queue():
+    m_read_position(0),
+    m_write_position(0)
+  {}
 
-    /**
-     * @brief Constructs a queue of desired size.
-     * @param observations Number of channels.
-     * @param samples Number of samples.
-     */
-	realvec_queue(size_t observations, size_t samples):
-	m_buffer(observations, samples),
-	m_read_position(0),
-	m_write_position(0)
-	{}
+  /**
+   * @brief Constructs a queue of desired size.
+   * @param observations Number of channels.
+   * @param samples Number of samples.
+   */
+  realvec_queue(size_t observations, size_t samples):
+    m_buffer(observations, samples),
+    m_read_position(0),
+    m_write_position(0)
+  {}
 
-    /**
-     * @brief Changes queue size. (NOT THREAD-SAFE)
-     * @param observations Number of channels.
-     * @param samples Number of samples.
-     * @param clear Wheather to initialize all new space to 0, or keep data that overlaps with
-     * the old data.
-     */
-	void resize(size_t observations, size_t samples, bool clear = true)
-	{
-		if (clear)
-			m_buffer.create(observations, samples);
-		else
-			m_buffer.stretch(observations, samples);
+  /**
+   * @brief Changes queue size. (NOT THREAD-SAFE)
+   * @param observations Number of channels.
+   * @param samples Number of samples.
+   * @param clear Wheather to initialize all new space to 0, or keep data that overlaps with
+   * the old data.
+   */
+  void resize(size_t observations, size_t samples, bool clear = true)
+  {
+    if (clear)
+      m_buffer.create(observations, samples);
+    else
+      m_buffer.stretch(observations, samples);
 
-		m_read_position = m_write_position = 0;
-	}
+    m_read_position = m_write_position = 0;
+  }
 
-    /**
-     * @brief Equivalent to popping all data off queue. (NOT THREAD-SAFE)
-     */
-	void clear()
-	{
-		m_read_position = m_write_position = 0;
-	}
+  /**
+   * @brief Equivalent to popping all data off queue. (NOT THREAD-SAFE)
+   */
+  void clear()
+  {
+    m_read_position = m_write_position = 0;
+  }
 
-    /**
-     * @return The amount of channels the queue holds. (NOT THREAD-SAFE)
-     */
-	size_t observations() { return m_buffer.getRows(); }
+  /**
+   * @return The amount of channels the queue holds. (NOT THREAD-SAFE)
+   */
+  size_t observations() { return m_buffer.getRows(); }
 
-    /**
-     * @return The maximum amount of samples the queue can hold. (NOT THREAD-SAFE)
-     */
-	size_t samples() { return m_buffer.getCols(); }
+  /**
+   * @return The maximum amount of samples the queue can hold. (NOT THREAD-SAFE)
+   */
+  size_t samples() { return m_buffer.getCols(); }
 
-    /**
-     * @return The amount of samples that can be pushed into the queue. (THREAD-SAFE)
-     */
-	size_t write_capacity()
-	{
-		size_t read_pos = m_read_position.load(memory_order_acquire);
-		size_t write_pos = m_write_position.load(memory_order_relaxed);
-		size_t available;
-		if (write_pos >= read_pos)
-			available = samples() - (write_pos - read_pos);
-		else
-			available = read_pos - write_pos;
-		available -= 1;
-		return available;
-	}
+  /**
+   * @return The amount of samples that can be pushed into the queue. (THREAD-SAFE)
+   */
+  size_t write_capacity()
+  {
+    size_t read_pos = m_read_position.load(memory_order_acquire);
+    size_t write_pos = m_write_position.load(memory_order_relaxed);
+    size_t available;
+    if (write_pos >= read_pos)
+      available = samples() - (write_pos - read_pos);
+    else
+      available = read_pos - write_pos;
+    available -= 1;
+    return available;
+  }
 
-    /**
-     * @return The amount of samples that can be popped from the queue. (THREAD-SAFE)
-     */
-	size_t read_capacity()
-	{
-		size_t read_pos = m_read_position.load(memory_order_relaxed);
-		size_t write_pos = m_write_position.load(memory_order_acquire);
-		size_t available;
-		if (write_pos >= read_pos)
-			available = write_pos - read_pos;
-		else
-			available = samples() - (read_pos - write_pos);
-		return available;
-	}
+  /**
+   * @return The amount of samples that can be popped from the queue. (THREAD-SAFE)
+   */
+  size_t read_capacity()
+  {
+    size_t read_pos = m_read_position.load(memory_order_relaxed);
+    size_t write_pos = m_write_position.load(memory_order_acquire);
+    size_t available;
+    if (write_pos >= read_pos)
+      available = write_pos - read_pos;
+    else
+      available = samples() - (read_pos - write_pos);
+    return available;
+  }
 };
 
 /**
@@ -164,81 +164,81 @@ public:
  */
 class realvec_queue_producer
 {
-	realvec_queue & m_queue;
-	size_t m_capacity;
-	size_t m_position;
+  realvec_queue & m_queue;
+  size_t m_capacity;
+  size_t m_position;
 
 public:
-    /**
-     * @brief [THREAD-SAFE] Construct producer and reserve queue space for writing.
-     * @param destination The queue to write to.
-     * @param capacity The requested amount of samples.
-     *
-     * If the amount of free samples in the queue is smaller than requested,
-     * no space is reserved, and capacity() will return 0.
-     */
-	realvec_queue_producer(realvec_queue & destination, size_t capacity):
-	m_queue( destination ),
-	m_position( destination.m_write_position.load(memory_order_relaxed) )
-	{
-		if (destination.write_capacity() < capacity)
-			m_capacity = 0;
-		else
-			m_capacity = capacity;
-	}
+  /**
+   * @brief [THREAD-SAFE] Construct producer and reserve queue space for writing.
+   * @param destination The queue to write to.
+   * @param capacity The requested amount of samples.
+   *
+   * If the amount of free samples in the queue is smaller than requested,
+   * no space is reserved, and capacity() will return 0.
+   */
+  realvec_queue_producer(realvec_queue & destination, size_t capacity):
+    m_queue( destination ),
+    m_position( destination.m_write_position.load(memory_order_relaxed) )
+  {
+    if (destination.write_capacity() < capacity)
+      m_capacity = 0;
+    else
+      m_capacity = capacity;
+  }
 
-    /**
-    @brief [THREAD-SAFE] Destroy producer and make the reserved space available
-    to the realvec_queue_consumer for reading.
-    */
-	~realvec_queue_producer()
-	{
-		if (m_capacity > 0) {
-			size_t position = (m_position + m_capacity) % m_queue.samples();
-			m_queue.m_write_position.store(position, memory_order_release);
-		}
-	}
+  /**
+  @brief [THREAD-SAFE] Destroy producer and make the reserved space available
+  to the realvec_queue_consumer for reading.
+  */
+  ~realvec_queue_producer()
+  {
+    if (m_capacity > 0) {
+      size_t position = (m_position + m_capacity) % m_queue.samples();
+      m_queue.m_write_position.store(position, memory_order_release);
+    }
+  }
 
-    /**
-     * @brief [THREAD-SAFE] Amount of samples reserved for writing.
-     */
-	size_t capacity() { return m_capacity; }
+  /**
+   * @brief [THREAD-SAFE] Amount of samples reserved for writing.
+   */
+  size_t capacity() { return m_capacity; }
 
-    /**
-     * @brief [THREAD-SAFE] Reserve more queue space for writing.
-     * @param capacity The requested amount of samples.
-     * @return Whether the requested amount of samples was successfully reserved.
-     *
-     * It is only possible to reserve more samples than already reserved.
-     * If less or equal amount is requested, this method will return true,
-     * but the reserved amount will not change.
-     *
-     * If the amount of free samples in the queue is smaller than requested,
-     * This method will return false, and the amount of reserved space will not change.
-     */
-	bool reserve( size_t capacity )
-	{
-		if (capacity <= m_capacity)
-			return true;
-		if (m_queue.write_capacity() < capacity)
-			return false;
-		m_capacity = capacity;
-		return true;
-	}
+  /**
+   * @brief [THREAD-SAFE] Reserve more queue space for writing.
+   * @param capacity The requested amount of samples.
+   * @return Whether the requested amount of samples was successfully reserved.
+   *
+   * It is only possible to reserve more samples than already reserved.
+   * If less or equal amount is requested, this method will return true,
+   * but the reserved amount will not change.
+   *
+   * If the amount of free samples in the queue is smaller than requested,
+   * This method will return false, and the amount of reserved space will not change.
+   */
+  bool reserve( size_t capacity )
+  {
+    if (capacity <= m_capacity)
+      return true;
+    if (m_queue.write_capacity() < capacity)
+      return false;
+    m_capacity = capacity;
+    return true;
+  }
 
-    /**
-     * @brief [THREAD-SAFE] Access data reserved for writing.
-     * @param observation Channel index in range of 0 to `queue.observations()`
-     * @param sample Sample index, among reserved samples; in the range
-     * of 0 to `capacity()`, where 0 denotes the first reserved sample, and so on...
-     * @return A reference to the data at requested indexes.
-     */
-	mrs_real & operator() ( size_t observation, size_t sample )
-	{
-		assert(sample < m_capacity);
-		sample = (m_position + sample) % m_queue.samples();
-		return m_queue.m_buffer(observation, sample);
-	}
+  /**
+   * @brief [THREAD-SAFE] Access data reserved for writing.
+   * @param observation Channel index in range of 0 to `queue.observations()`
+   * @param sample Sample index, among reserved samples; in the range
+   * of 0 to `capacity()`, where 0 denotes the first reserved sample, and so on...
+   * @return A reference to the data at requested indexes.
+   */
+  mrs_real & operator() ( size_t observation, size_t sample )
+  {
+    assert(sample < m_capacity);
+    sample = (m_position + sample) % m_queue.samples();
+    return m_queue.m_buffer(observation, sample);
+  }
 };
 
 /**
@@ -250,81 +250,81 @@ public:
  */
 class realvec_queue_consumer
 {
-	realvec_queue & m_queue;
-	size_t m_capacity;
-	size_t m_position;
+  realvec_queue & m_queue;
+  size_t m_capacity;
+  size_t m_position;
 
 public:
-    /**
-     * @brief [THREAD-SAFE] Construct consumer and reserve queue space for reading.
-     * @param source The queue to read from.
-     * @param capacity The requested amount of samples.
-     *
-     * If the amount of available samples in the queue is smaller than requested,
-     * no space is reserved, and capacity() will return 0.
-     */
-	realvec_queue_consumer(realvec_queue & source, size_t capacity):
-	m_queue(source),
-	m_position( source.m_read_position.load(memory_order_relaxed) )
-	{
-		if (source.read_capacity() < capacity)
-			m_capacity = 0;
-		else
-			m_capacity = capacity;
-	}
+  /**
+   * @brief [THREAD-SAFE] Construct consumer and reserve queue space for reading.
+   * @param source The queue to read from.
+   * @param capacity The requested amount of samples.
+   *
+   * If the amount of available samples in the queue is smaller than requested,
+   * no space is reserved, and capacity() will return 0.
+   */
+  realvec_queue_consumer(realvec_queue & source, size_t capacity):
+    m_queue(source),
+    m_position( source.m_read_position.load(memory_order_relaxed) )
+  {
+    if (source.read_capacity() < capacity)
+      m_capacity = 0;
+    else
+      m_capacity = capacity;
+  }
 
-    /**
-    @brief [THREAD-SAFE] Destroy consumer and make the reserved space available
-    to the realvec_queue_producer to reuse for writing.
-    */
-	~realvec_queue_consumer()
-	{
-		if (m_capacity > 0) {
-			size_t position = (m_position + m_capacity) % m_queue.samples();
-			m_queue.m_read_position.store(position, memory_order_release);
-		}
-	}
+  /**
+  @brief [THREAD-SAFE] Destroy consumer and make the reserved space available
+  to the realvec_queue_producer to reuse for writing.
+  */
+  ~realvec_queue_consumer()
+  {
+    if (m_capacity > 0) {
+      size_t position = (m_position + m_capacity) % m_queue.samples();
+      m_queue.m_read_position.store(position, memory_order_release);
+    }
+  }
 
-    /**
-     * @brief [THREAD-SAFE] Amount of samples reserved for reading.
-     */
-	size_t capacity() { return m_capacity; }
+  /**
+   * @brief [THREAD-SAFE] Amount of samples reserved for reading.
+   */
+  size_t capacity() { return m_capacity; }
 
-    /**
-     * @brief [THREAD-SAFE] Reserve more queue space for reading.
-     * @param capacity The requested amount of samples.
-     * @return Whether the requested amount of samples was successfully reserved.
-     *
-     * It is only possible to reserve more samples than already reserved.
-     * If less or equal amount is requested, this method will return true,
-     * but the reserved amount will not change.
-     *
-     * If the amount of available samples in the queue is smaller than requested,
-     * This method will return false, and the amount of reserved space will not change.
-     */
-	bool reserve( size_t capacity )
-	{
-		if (capacity <= m_capacity)
-			return true;
-		if (m_queue.read_capacity() < capacity)
-			return false;
-		m_capacity = capacity;
-		return true;
-	}
+  /**
+   * @brief [THREAD-SAFE] Reserve more queue space for reading.
+   * @param capacity The requested amount of samples.
+   * @return Whether the requested amount of samples was successfully reserved.
+   *
+   * It is only possible to reserve more samples than already reserved.
+   * If less or equal amount is requested, this method will return true,
+   * but the reserved amount will not change.
+   *
+   * If the amount of available samples in the queue is smaller than requested,
+   * This method will return false, and the amount of reserved space will not change.
+   */
+  bool reserve( size_t capacity )
+  {
+    if (capacity <= m_capacity)
+      return true;
+    if (m_queue.read_capacity() < capacity)
+      return false;
+    m_capacity = capacity;
+    return true;
+  }
 
-    /**
-     * @brief [THREAD-SAFE] Access data reserved for reading.
-     * @param observation Channel index in range of 0 to `queue.observations()`
-     * @param sample Sample index, among reserved samples; in the range
-     * of 0 to `capacity()`, where 0 denotes the first reserved sample, and so on...
-     * @return A reference to the data at requested indexes.
-     */
-	mrs_real & operator() ( size_t observation, size_t sample )
-	{
-		assert(sample < m_capacity);
-		sample = (m_position + sample) % m_queue.samples();
-		return m_queue.m_buffer(observation, sample);
-	}
+  /**
+   * @brief [THREAD-SAFE] Access data reserved for reading.
+   * @param observation Channel index in range of 0 to `queue.observations()`
+   * @param sample Sample index, among reserved samples; in the range
+   * of 0 to `capacity()`, where 0 denotes the first reserved sample, and so on...
+   * @return A reference to the data at requested indexes.
+   */
+  mrs_real & operator() ( size_t observation, size_t sample )
+  {
+    assert(sample < m_capacity);
+    sample = (m_position + sample) % m_queue.samples();
+    return m_queue.m_buffer(observation, sample);
+  }
 };
 
 } // namespace Marsyas
