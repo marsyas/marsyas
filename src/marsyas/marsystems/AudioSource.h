@@ -31,7 +31,7 @@
 #include <condition_variable>
 #include <atomic>
 
-	class RtAudio;
+class RtAudio;
 
 namespace Marsyas
 {
@@ -60,74 +60,74 @@ namespace Marsyas
    - \b mrs_natural/nBuffers [DOCME] : DOCME
 */
 
-	
+
 
 
 class AudioSource:public MarSystem
 {
-	private:
+private:
 
-	struct InputData
-	{
-		InputData(): overrun(false) {}
-		InputData(const InputData &): overrun(false) {}
+  struct InputData
+  {
+    InputData(): overrun(false) {}
+    InputData(const InputData &): overrun(false) {}
 
-		std::mutex mutex;
-		std::condition_variable condition;
+    std::mutex mutex;
+    std::condition_variable condition;
 
-		realvec_queue buffer;
+    realvec_queue buffer;
 
-		std::atomic<unsigned int> watermark;
-		bool overrun;
+    std::atomic<unsigned int> watermark;
+    bool overrun;
 
-		unsigned int sample_rate;
-		unsigned int channel_count;
-	} shared;
+    unsigned int sample_rate;
+    unsigned int channel_count;
+  } shared;
 
-    mrs_natural old_source_block_size_;
-    mrs_natural old_dest_block_size_;
+  mrs_natural old_source_block_size_;
+  mrs_natural old_dest_block_size_;
 
-	RtAudio* audio_;
+  RtAudio* audio_;
 
-	bool isInitialized_;
-	bool stopped_;
+  bool isInitialized_;
+  bool stopped_;
 
-	void addControls();
-	void myUpdate(MarControlPtr sender);
+  void addControls();
+  void myUpdate(MarControlPtr sender);
 
-	void initRtAudio(
-	unsigned int sample_rate,
-	unsigned int *block_size,
-	unsigned int channel_count
-	);
+  void initRtAudio(
+      unsigned int sample_rate,
+      unsigned int *block_size,
+      unsigned int channel_count
+      );
 
-	void start();
-	void stop();
+  void start();
+  void stop();
 
-	void localActivate(bool state);
+  void localActivate(bool state);
 
-	void clearBuffer();
-    bool reformatBuffer(size_t sourceBlockSize,
-                        size_t destBlockSize,
-                        size_t channel_count,
-                        bool realtime, bool resize);
+  void clearBuffer();
+  bool reformatBuffer(size_t sourceBlockSize,
+                      size_t destBlockSize,
+                      size_t channel_count,
+                      bool realtime, bool resize);
 
-	static int recordCallback(void *outputBuffer, void *inputBuffer,
-	unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
+  static int recordCallback(void *outputBuffer, void *inputBuffer,
+                            unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
 
 public:
-	AudioSource(std::string name);
-	~AudioSource();
-	MarSystem* clone() const;
+  AudioSource(std::string name);
+  ~AudioSource();
+  MarSystem* clone() const;
 
-	void myProcess(realvec& in, realvec& out);
+  void myProcess(realvec& in, realvec& out);
 };
-	
+
 }//namespace Marsyas
 
 
 #endif
 
-	
 
-	
+
+
