@@ -76,16 +76,13 @@ private:
 		std::atomic<unsigned int> watermark;
 		bool underrun;
 
-		unsigned int block_size;
 		unsigned int channel_count;
 		unsigned int sample_rate;
-		unsigned int buffer_size;
-
-		unsigned int samplesInBuffer;
-
-		AudioSink* myself;
 
 	} shared;
+
+    mrs_natural old_source_block_size_;
+    mrs_natural old_dest_block_size_;
 
 	RtAudio*  audio_;
 
@@ -107,7 +104,11 @@ private:
 	void localActivate(bool state);
 
 	void clearBuffer();
-	void reformatBuffer(int rows, int columns);
+    bool reformatBuffer(size_t sourceBlockSize,
+                        size_t destBlockSize,
+                        size_t channel_count,
+                        bool realtime, bool resize);
+
 
 	static int playCallback(void *outputBuffer, void *inputBuffer,
 	unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
