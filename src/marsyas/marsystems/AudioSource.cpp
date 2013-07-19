@@ -83,9 +83,9 @@ AudioSource::myUpdate(MarControlPtr sender)
 	setctrl("mrs_natural/onObservations", getctrl("mrs_natural/nChannels"));
 
 	unsigned int source_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+    unsigned int dest_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	unsigned int sample_rate = getctrl("mrs_real/israte")->to<mrs_real>();
 	unsigned int channel_count = getctrl("mrs_natural/nChannels")->to<mrs_natural>();
-	unsigned int dest_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
 	bool realtime = getControl("mrs_bool/realtime")->to<mrs_bool>();
 
 	if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
@@ -94,24 +94,12 @@ AudioSource::myUpdate(MarControlPtr sender)
 
 		initRtAudio(sample_rate, &source_block_size, channel_count);
 
-		unsigned int ring_buffer_size;
-		if (realtime)
-			ring_buffer_size = source_block_size + dest_block_size;
-		else
-			ring_buffer_size = (source_block_size + dest_block_size) * 5;
+        const bool do_resize_buffer = true;
+        reformatBuffer(source_block_size, dest_block_size, channel_count, realtime, do_resize_buffer);
 
-		if (ring_buffer_size != shared.buffer_size
-		|| channel_count != shared.channel_count)
-		{
-			reformatBuffer(channel_count, ring_buffer_size);
-		}
-
-		shared.watermark = realtime ? 0 : ring_buffer_size / 2;
-		shared.buffer_size = ring_buffer_size;
-		shared.source_block_size = source_block_size;
 		shared.sample_rate = sample_rate;
 		shared.channel_count = channel_count;
-		shared.myself = this;
+        shared.overrun = false;
 
 		isInitialized_ = true;
 
@@ -123,17 +111,26 @@ AudioSource::myUpdate(MarControlPtr sender)
 	}
 	else if (isInitialized_)
 	{
-		if
-		( channel_count != shared.channel_count
-		|| source_block_size != shared.source_block_size
-		|| sample_rate != shared.sample_rate
-		|| (realtime != (shared.watermark == 0)) )
-		{
-			// stop processing until re-initialized;
-			stop();
-			isInitialized_ = false;
-		}
-	}
+      const bool do_not_resize_buffer = false;
+
+      if (source_block_size != old_source_block_size_
+          || sample_rate != shared.sample_rate
+          || (realtime != (shared.watermark == 0))
+          || !reformatBuffer(source_block_size,
+                             dest_block_size,
+                             channel_count,
+                             realtime,
+                             do_not_resize_buffer) )
+      {
+        MRSERR("AudioSource: Reinitialization required!");
+        // stop processing until re-initialized;
+        stop();
+        isInitialized_ = false;
+      }
+    }
+
+    old_source_block_size_ = source_block_size;
+    old_dest_block_size_ = dest_block_size;
 }
 
 
@@ -221,11 +218,57 @@ void AudioSource::clearBuffer()
 	shared.overrun = false;
 }
 
-void AudioSource::reformatBuffer(int rows, int columns)
+bool AudioSource::reformatBuffer(size_t source_block_size,
+                               size_t dest_block_size,
+                               size_t channel_count,
+                               bool realtime, bool resize)
 {
-	assert(stopped_);
-	shared.buffer.resize(rows, columns);
-	shared.overrun = false;
+  size_t new_capacity = source_block_size + dest_block_size + 1;
+  if (!realtime)
+    new_capacity = std::max( new_capacity * 4, (size_t) 2000 );
+
+  if (resize)
+  {
+    assert(stopped_);
+    size_t size = new_capacity * 2;
+    if (size != shared.buffer.samples() || channel_count != shared.buffer.observations())
+    {
+      bool do_clear_buffer = true;
+      shared.buffer.resize(channel_count, size, new_capacity, do_clear_buffer);
+    }
+    else
+    {
+      shared.buffer.set_capacity(new_capacity);
+    }
+    shared.watermark = realtime ? 0 : new_capacity / 2;
+  }
+  else
+  {
+    if (channel_count != shared.buffer.observations()
+        || new_capacity > shared.buffer.samples())
+    {
+      MRSERR("AudioSource: Can not set requested buffer capacity or channel count without"
+             " resizing the buffer!");
+      return false;
+    }
+
+    //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
+    unsigned int new_watermark = realtime ? 0 : new_capacity / 2;;
+    if (new_capacity > shared.buffer.capacity())
+    {
+      // First increase capacity, then watermark.
+      shared.buffer.set_capacity(new_capacity);
+      shared.watermark = new_watermark;
+    }
+    else
+    {
+      // First decrease watermark, then capacity.
+      shared.watermark = new_watermark;
+      shared.buffer.set_capacity(new_capacity);
+    }
+  }
+
+  return true;
 }
 
 int

@@ -80,13 +80,12 @@ class AudioSource:public MarSystem
 		std::atomic<unsigned int> watermark;
 		bool overrun;
 
-		unsigned int source_block_size;
 		unsigned int sample_rate;
 		unsigned int channel_count;
-		unsigned int buffer_size;
-
-		AudioSource* myself;
 	} shared;
+
+    mrs_natural old_source_block_size_;
+    mrs_natural old_dest_block_size_;
 
 	RtAudio* audio_;
 
@@ -108,7 +107,10 @@ class AudioSource:public MarSystem
 	void localActivate(bool state);
 
 	void clearBuffer();
-	void reformatBuffer(int rows, int columns);
+    bool reformatBuffer(size_t sourceBlockSize,
+                        size_t destBlockSize,
+                        size_t channel_count,
+                        bool realtime, bool resize);
 
 	static int recordCallback(void *outputBuffer, void *inputBuffer,
 	unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
