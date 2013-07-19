@@ -19,9 +19,11 @@
 #ifndef MARSYAS_REALVEC_QUEUE_INCLUDED
 #define MARSYAS_REALVEC_QUEUE_INCLUDED
 
-#include <atomic>
-#include <cassert>
 #include <realvec.h>
+
+#include <cassert>
+#include <atomic>
+#include <algorithm>
 
 namespace Marsyas {
 
@@ -56,14 +58,19 @@ class realvec_queue_consumer;
    other two classes, respectively.
 */
 
+template <typename T>
+T clipped(const T& lower, const T& n, const T& upper) {
+  return std::max(lower, std::min(n, upper));
+}
+
 class realvec_queue
 {
-  typedef atomic<size_t> position_t;
+  typedef atomic<size_t> atomic_size_t;
 
   realvec m_buffer;
-  position_t m_read_position;
-  position_t m_write_position;
-
+  atomic_size_t m_read_position;
+  atomic_size_t m_write_position;
+  atomic_size_t m_capacity;
 
 public:
   friend class realvec_queue_producer;
@@ -74,7 +81,8 @@ public:
    */
   realvec_queue():
     m_read_position(0),
-    m_write_position(0)
+    m_write_position(0),
+    m_capacity(0)
   {}
 
   /**
@@ -85,7 +93,15 @@ public:
   realvec_queue(size_t observations, size_t samples):
     m_buffer(observations, samples),
     m_read_position(0),
-    m_write_position(0)
+    m_write_position(0),
+    m_capacity( samples )
+  {}
+
+  realvec_queue(size_t observations, size_t samples, size_t capacity):
+    m_buffer(observations, samples),
+    m_read_position(0),
+    m_write_position(0),
+    m_capacity( clipped((size_t) 0, capacity, samples) )
   {}
 
   /**
@@ -97,12 +113,18 @@ public:
    */
   void resize(size_t observations, size_t samples, bool clear = true)
   {
+    resize(observations, samples, samples, clear);
+  }
+
+  void resize(size_t observations, size_t samples, size_t capacity, bool clear = true)
+  {
     if (clear)
       m_buffer.create(observations, samples);
     else
       m_buffer.stretch(observations, samples);
 
     m_read_position = m_write_position = 0;
+    m_capacity = clipped((size_t)0, capacity, samples);
   }
 
   /**
@@ -113,13 +135,25 @@ public:
     m_read_position = m_write_position = 0;
   }
 
+  size_t capacity()
+  {
+    return m_capacity.load( memory_order_relaxed );
+  }
+
+  size_t set_capacity( size_t capacity )
+  {
+    capacity = clipped((size_t)0, capacity, samples());
+    m_capacity.store( capacity, memory_order_relaxed );
+    return capacity;
+  }
+
   /**
-   * @return The amount of channels the queue holds. (NOT THREAD-SAFE)
+   * @return The amount of channels the queue holds. (THREAD-SAFE)
    */
   size_t observations() { return m_buffer.getRows(); }
 
   /**
-   * @return The maximum amount of samples the queue can hold. (NOT THREAD-SAFE)
+   * @return The maximum amount of samples the queue can hold. (THREAD-SAFE)
    */
   size_t samples() { return m_buffer.getCols(); }
 
@@ -128,14 +162,17 @@ public:
    */
   size_t write_capacity()
   {
-    size_t read_pos = m_read_position.load(memory_order_acquire);
+    size_t read_pos = m_read_position.load(memory_order_relaxed);
     size_t write_pos = m_write_position.load(memory_order_relaxed);
+    size_t capacity = m_capacity.load(memory_order_relaxed);
+    size_t size = samples();
+
     size_t available;
     if (write_pos >= read_pos)
-      available = samples() - (write_pos - read_pos);
+      available = capacity - (write_pos - read_pos);
     else
-      available = read_pos - write_pos;
-    available -= 1;
+      available = capacity - (size - (read_pos - write_pos));
+    available = std::min( available, size - 1 );
     return available;
   }
 
