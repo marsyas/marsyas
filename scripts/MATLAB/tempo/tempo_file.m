@@ -1,7 +1,10 @@
 
 function [bpm] = tempo_file(filename)
 
-TEST_REFERENCE = 0;
+CACHE_OSS = 1;
+CACHE_BH = 1;
+CACHE_BP = 1;
+TEST_REFERENCE = 1;
 PLOT = 0;
 
 if PLOT
@@ -10,10 +13,25 @@ end
 
 %%%%%%%%% OSS
 [wav_data, wav_sr, bps] = wavread(filename);
-wav_data *= 32767.0 / 32768.0;
+%wav_data *= 32767.0 / 32768.0;
 
+if not(CACHE_OSS)
+	disp("Calculating new OSS")
+	[oss, oss_sr] = onset_signal_strength(wav_data, wav_sr);
+	save "oss.mat" oss;
+	save "oss_sr.mat" oss_sr;
+else
+	disp("Loading old OSS")
+	load("oss.mat");
+	load("oss_sr.mat");
+end
 
-[oss, oss_sr] = onset_signal_strength(wav_data, wav_sr);
+if PLOT
+	ts = (( 0:(length(oss)-1) ) / oss_sr).';
+	plot(ts, oss);
+	combo = [ts oss];
+	save 'onset_strength.txt' combo;
+end
 
 %%% test OSS
 if TEST_REFERENCE
@@ -27,20 +45,22 @@ if TEST_REFERENCE
 		%plot(oss, 'g')
 		plot(python_oss - oss, 'r')
 		pause
+		exit(1)
 	end
-end
-
-if PLOT
-	ts = (( 0:(length(oss)-1) ) / oss_sr).';
-	plot(ts, oss);
-	combo = [ts oss];
-	save 'onset_strength.txt' combo;
 end
 
 
 %%%%%%%%% BH
 
-bh_cands = beat_histogram(oss, oss_sr);
+if not(CACHE_BH)
+	disp("Calculating new BH")
+	bh_cands = beat_histogram(oss, oss_sr);
+	save "bh.mat" bh_cands;
+else
+	disp("Loading old BH")
+	load("bh.mat");
+end
+
 if TEST_REFERENCE
 	python_bh = load('reference/beat_histogram.txt');
 	% temp for fast checking
@@ -50,18 +70,28 @@ if TEST_REFERENCE
 		disp ("Testing... BH ok");
 	else
 		disp ("Testing... BH FAILED");
+		exit(1)
 	end
 end
 
 
-
 %%%%%%%%% BP
-[bpm_cand, bphase] = beat_phase(oss, oss_sr, bh_cands);
+if not(CACHE_BP)
+	disp("Calculating new BP")
+	[bpm_cand, bphase] = beat_phase(oss, oss_sr, bh_cands);
+	save "bpm_cand.mat" bpm_cand;
+	save "bp.mat" bphase;
+else
+	disp("Loading old BP")
+	load("bpm_cand.mat");
+	load("bp.mat");
+end
+
 
 if TEST_REFERENCE
 	python_bp = load('reference/beat_phase.txt')(:,1);
 	delta = bphase - python_bp;
-	if max(abs(delta)) < 1e-2
+	if max(abs(delta)) < 1e-3
 		disp ("Testing... BP ok");
 	else
 		disp ("Testing... BP FAILED");
