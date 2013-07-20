@@ -94,6 +94,7 @@ endif (MARSYAS_PNG)
 
 if (MARSYAS_OPENGL)
 	include_directories(${OPENGL_INCLUDE_DIR})
+  include_directories(${GLUT_INCLUDE_DIRS})
 endif (MARSYAS_OPENGL)
 
 
