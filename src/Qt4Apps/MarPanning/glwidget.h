@@ -4,6 +4,8 @@
 #include <QGLWidget>
 #include <QTimer> 
 
+#include <GL/glu.h>
+
 // Marsyas
 #include "MarSystemManager.h"
 #include "MarSystemQtWrapper.h"
