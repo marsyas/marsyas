@@ -15,6 +15,8 @@
 # People will have to change the cache values of OPENGL_glu_LIBRARY 
 # and OPENGL_gl_LIBRARY to use OpenGL with X11 on OSX
 
+include(FindPackageHandleStandardArgs)
+
 IF (WIN32)
   IF (CYGWIN)
 
@@ -100,8 +102,9 @@ ELSE (WIN32)
   ENDIF(APPLE)
 ENDIF (WIN32)
 
-SET( OPENGL_FOUND "NO" )
-IF(OPENGL_gl_LIBRARY)
+find_package_handle_standard_args( OpenGL DEFAULT_MSG OPENGL_gl_LIBRARY OPENGL_INCLUDE_DIR )
+
+if(OPENGL_FOUND)
 
     IF(OPENGL_xmesa_INCLUDE_DIR)
       SET( OPENGL_XMESA_FOUND "YES" )
@@ -117,16 +120,9 @@ IF(OPENGL_gl_LIBRARY)
       SET( OPENGL_GLU_FOUND "NO" )
     ENDIF(OPENGL_glu_LIBRARY)
 
-    SET( OPENGL_FOUND "YES" )
-
-    # This deprecated setting is for backward compatibility with CMake1.4
-
-    SET (OPENGL_LIBRARY ${OPENGL_LIBRARIES})
-
-ENDIF(OPENGL_gl_LIBRARY)
-
-# This deprecated setting is for backward compatibility with CMake1.4
-SET(OPENGL_INCLUDE_PATH ${OPENGL_INCLUDE_DIR})
+else()
+  unset(OPENGL_LIBRARIES)
+endif()
 
 MARK_AS_ADVANCED(
   OPENGL_INCLUDE_DIR
