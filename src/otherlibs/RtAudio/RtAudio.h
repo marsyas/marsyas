@@ -45,6 +45,8 @@
 #ifndef __RTAUDIO_H
 #define __RTAUDIO_H
 
+#include "DLLDefines.h" // Marsyas: symbol exporting
+
 #include <string>
 #include <vector>
 #include "RtError.h"
@@ -207,7 +209,7 @@ typedef void (*RtAudioErrorCallback)( RtError::Type type, const std::string &err
 
 class RtApi;
 
-class RtAudio
+class marsyas_EXPORT RtAudio
 {
  public:
 

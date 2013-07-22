@@ -45,11 +45,13 @@
 #ifndef RTMIDI_H
 #define RTMIDI_H
 
+#include "DLLDefines.h" // Marsyas: symbol exporting
+
 #include "RtError.h"
 #include <string>
 #include <vector>
 
-class RtMidi
+class marsyas_EXPORT RtMidi
 {
  public:
 
@@ -131,7 +133,7 @@ class RtMidi
 class MidiInApi;
 class MidiOutApi;
 
-class RtMidiIn : public RtMidi
+class marsyas_EXPORT RtMidiIn : public RtMidi
 {
  public:
 
@@ -246,7 +248,7 @@ class RtMidiIn : public RtMidi
 */
 /**********************************************************************/
 
-class RtMidiOut : public RtMidi
+class marsyas_EXPORT RtMidiOut : public RtMidi
 {
  public:
 
