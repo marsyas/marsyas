@@ -2509,7 +2509,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 
 
 	  // round value
-	  label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
+      label = static_cast<int>(bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5);
 
 	  seen = false;
 
@@ -2529,7 +2529,7 @@ bextract_train_refactored(string pluginName,  string wekafname,
 		if (wekafname != EMPTYSTRING)
 		  bextractNetwork->updControl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
 		bextractNetwork->updControl("mrs_natural/advance", advance);
-		label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
+		label = static_cast<int>(bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5);
 
 
 		fvec = processedFeatures[currentlyPlaying];
@@ -3770,7 +3770,7 @@ saivq_train_refactored(string pluginName,  string wekafname,
 	{
 	  currentlyPlaying = ctrl_currentlyPlaying->to<mrs_string>();
 	  // round
-	  label = bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5;
+	  label = static_cast<int>(bextractNetwork->getctrl("mrs_real/currentLabel")->to<mrs_real>() + 0.5);
 	  seen = false;
 	  
 	  
