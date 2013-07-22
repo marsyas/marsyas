@@ -77,15 +77,33 @@ def late_heuristic(defs, heuristic_tempo, bp):
         svm_sum = 2.1069;
 
         # normalize
+        features_normalized = list(features)
         for i in range(len(features)):
             if mins[i] == maxs[i]:
                 continue
-            features[i] = (features[i] - mins[i]) / (maxs[i] - mins[i])
+            features_normalized[i] = (features[i] - mins[i]) / (maxs[i] - mins[i])
         # svm
         for i in range(len(features)):
-            svm_sum += (features[i] * svm_weights[i])
+            svm_sum += (features_normalized[i] * svm_weights[i])
         if svm_sum > 0:
             mult = 2.0
+
+
+        out = open("out/double_heuristic_svm.txt", 'w')
+        text = " ".join( [str("%f" % v) for v in features ] )
+        out.write(text+"\n")
+
+        text = " ".join( [str("%f" % v) for v in features_normalized ] )
+        out.write(text+"\n")
+
+        #out.write("svm_sum:\t%f\n" % svm_sum)
+        out.write("%f\n" % svm_sum)
+        #if svm_sum <= 0:
+        #    out.write("No doubling\n")
+        #else:
+        #    out.write("doubling\n")
+
+        out.close()
 
     return mult*heuristic_tempo
 

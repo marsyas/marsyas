@@ -7,18 +7,18 @@
 include(LibFindMacros)
 
 # Use pkg-config to get hints about paths
-libfind_pkg_check_modules(GStreamer_PKGCONF gstreamer-0.10)
+libfind_pkg_check_modules(GStreamer_PKGCONF gstreamer-1.0)
 
 # Include dir
 find_path(GStreamer_INCLUDE_DIR
   NAMES gst/gst.h
   PATHS ${GStreamer_PKGCONF_INCLUDE_DIRS}
-  PATH_SUFFIXES gstreamer-0.10
+  PATH_SUFFIXES gstreamer-1.0
 )
 
 # Finally the library itself
 find_library(GStreamer_LIBRARY
-  NAMES gstreamer-0.10
+  NAMES gstreamer-1.0
   PATHS ${GStreamer_PKGCONF_LIBRARY_DIRS}
 )
 

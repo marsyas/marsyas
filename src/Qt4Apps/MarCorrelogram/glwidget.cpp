@@ -16,6 +16,8 @@ using namespace MarsyasQt;
 
 #include "glwidget.h"
 
+#include <GL/glu.h>
+
 GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   : QGLWidget(parent)
 {

@@ -5,6 +5,8 @@
 #  JACK_INCLUDE_DIRS - Jack include directories.
 #  JACK_LIBRARIES - Jack libraries.
 
+include(FindPackageHandleStandardArgs)
+
 if(JACK_LIBRARIES AND JACK_INCLUDE_DIRS)
 
   # in cache already

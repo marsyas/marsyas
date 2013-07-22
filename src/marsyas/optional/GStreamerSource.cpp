@@ -20,18 +20,15 @@
 #include "common_header.h"
 #include "GStreamerSource.h"
 
-#ifdef MARSYAS_GSTREAMER
 #include <glib.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsink.h>
 #include <gst/base/gstbasesrc.h>
-#endif
 
 
 using namespace Marsyas;
 
 
-#ifdef MARSYAS_GSTREAMER
 /* This must be a free-standing function (i.e. not a member of a class), since
  * GStreamer is written in plain C. */
 void
@@ -49,7 +46,6 @@ on_pad_added(GstElement *dec, GstPad *pad, GstElement *element)
 
 	gst_object_unref(sinkpad);
 }
-#endif
 
 
 GStreamerSource::GStreamerSource(mrs_string name):AbsSoundFileSource("GStreamerSource", name)
@@ -95,7 +91,6 @@ GStreamerSource::GStreamerSource(const GStreamerSource& a): AbsSoundFileSource(a
 
 GStreamerSource::~GStreamerSource() 
 {
-#ifdef MARSYAS_GSTREAMER
 	/* Clean up the pipeline and unref the objects we explicitly un-floated */
 	if(pipe_ != NULL) {
 		gst_element_set_state(pipe_, GST_STATE_NULL);
@@ -107,7 +102,6 @@ GStreamerSource::~GStreamerSource()
 
 	if(sink_ != NULL)
 		gst_object_unref(sink_);
-#endif
 }
 
 
@@ -172,7 +166,6 @@ GStreamerSource::addControls()
 void
 GStreamerSource::init_pipeline()
 {
-#ifdef MARSYAS_GSTREAMER
 	GstElement *conv;
 
 	/* Initialize GStreamer */
@@ -196,8 +189,8 @@ GStreamerSource::init_pipeline()
 	gst_pipeline_use_clock(GST_PIPELINE(pipe_), NULL);
 
 	/* Set up the capabilities filtering */
-	GstCaps *caps = gst_caps_new_simple("audio/x-raw-float",
-						"width", G_TYPE_INT, sizeof(mrs_real)*8,
+	GstCaps *caps = gst_caps_new_simple("audio/x-raw",
+						"format", G_TYPE_STRING, g_strdup_printf("F%luLE", sizeof(mrs_real)*8),
 						NULL);
 	gst_app_sink_set_caps(GST_APP_SINK(sink_), caps);
 	gst_caps_unref(caps);
@@ -210,14 +203,12 @@ GStreamerSource::init_pipeline()
 	g_signal_connect(dec_, "pad_added", G_CALLBACK(on_pad_added), conv);
 
 	pipe_created_ = true;
-#endif
 }
 
 
 void
 GStreamerSource::getHeader(mrs_string filename)
 {
-#ifdef MARSYAS_GSTREAMER
 	if(!pipe_created_) {
 		init_pipeline();
 		if(!pipe_created_) {
@@ -241,21 +232,21 @@ GStreamerSource::getHeader(mrs_string filename)
 	if(ret == GST_STATE_CHANGE_FAILURE) {
 		MRSERR("GStreamer pipeline failed to change state. This could be due to an invalid filename");
 	}
-	buffer_ = gst_app_sink_pull_preroll(GST_APP_SINK(sink_));
+	GstSample *sample = gst_app_sink_pull_preroll(GST_APP_SINK(sink_));
 
-	/* Grab the buffer's caps so we can get some useful info */
-	GstCaps *buf_caps = gst_buffer_get_caps(buffer_);
-	GstStructure *buf_struct = gst_caps_get_structure(buf_caps, 0);
+	/* Grab the sample's caps so we can get some useful info */
+	GstCaps *samp_caps = gst_sample_get_caps(sample);
+	GstStructure *samp_struct = gst_caps_get_structure(samp_caps, 0);
 	
 	/* Get sample rate from buffer */
 	gint rate;
-	if(gst_structure_get_int(buf_struct, "rate", &rate)) {
+	if(gst_structure_get_int(samp_struct, "rate", &rate)) {
 		osrate_ = (mrs_real)rate;
 	}
 
 	/* Get number of channels from buffer */
 	gint channels;
-	if(gst_structure_get_int(buf_struct, "channels", &channels)) {
+	if(gst_structure_get_int(samp_struct, "channels", &channels)) {
 		onObservations_ = channels;
 	}
 
@@ -265,7 +256,7 @@ GStreamerSource::getHeader(mrs_string filename)
 
 	// Force blocking on state change completion
 	gst_element_get_state(pipe_, NULL, NULL, GST_SECOND);
-	if (gst_element_query_duration(GST_ELEMENT(pipe_), &format, &duration) && format==GST_FORMAT_TIME) {
+	if (gst_element_query_duration(GST_ELEMENT(pipe_), format, &duration) && format==GST_FORMAT_TIME) {
 		size_ = (mrs_natural)(duration*1e-9*osrate_ + 0.5);
 	} else {
 		/* GStreamer can't tell us the size of the stream */
@@ -279,7 +270,7 @@ GStreamerSource::getHeader(mrs_string filename)
 	lastTickWithData_ = false;
 	
 	/* Clean up */
-	gst_caps_unref(buf_caps);
+	gst_caps_unref(samp_caps);
 
 	/* Set Controls */
 	//setctrl("mrs_real/israte", osrate_);
@@ -297,11 +288,8 @@ GStreamerSource::getHeader(mrs_string filename)
 	/* Start playing, so queue fills with buffers [Should we do this?] */
 	gst_element_set_state(pipe_, GST_STATE_PLAYING);
 	playing_ = true; // Should we check if set_state worked before doing this?
-#endif
 }
 
-
-#ifdef MARSYAS_GSTREAMER
 void
 GStreamerSource::copyFromBuffer(GstBuffer	*buf,
 								mrs_natural  buf_start,
@@ -313,21 +301,19 @@ GStreamerSource::copyFromBuffer(GstBuffer	*buf,
 	for(ch = 0; ch < onObservations_; ch++) {
 		for(i = 0; i < length; i++) {
 			mrs_real sample;
-			memcpy(&sample, GST_BUFFER_DATA(buf) + ((buf_start + i)*onObservations_ + ch)*sizeof(mrs_real), sizeof(mrs_real));
+			gst_buffer_extract(buf, ((buf_start + i)*onObservations_ + ch)*sizeof(mrs_real), &sample, sizeof(mrs_real));
 			vec(ch, vec_start + i) = sample;
 		}
 	}
 
 }
-#endif
 
 
 mrs_bool
 GStreamerSource::pull_buffer() {
-#ifdef MARSYAS_GSTREAMER
-	buffer_ = gst_app_sink_pull_buffer(GST_APP_SINK(sink_));
+	GstSample *sample = gst_app_sink_pull_sample(GST_APP_SINK(sink_));
 
-	if(buffer_ == NULL) {
+	if(sample == NULL) {
 		if(gst_app_sink_is_eos(GST_APP_SINK(sink_))) {
 			/* EOS, stop pulling buffers */
 			hasData_ = false;
@@ -345,19 +331,18 @@ GStreamerSource::pull_buffer() {
 			return false;
 		}
 	} else {
-		buffer_size_ = GST_BUFFER_SIZE(buffer_) / sizeof(mrs_real) / onObservations_;
+		buffer_ = gst_sample_get_buffer(sample);
+		buffer_size_ = gst_buffer_get_size(buffer_) / sizeof(mrs_real) / onObservations_;
 		buffer_left_ = buffer_size_;
 	}
 
 	return true;
-#endif
 }
 
 
 void
 GStreamerSource::myProcess(realvec& in, realvec& out)
 {
-#ifdef MARSYAS_GSTREAMER
 	(void)in; // Suppress warning from unused parameter
 	
 	// TODO Should output_size be calculated from output.getCols() or in/onSamples_?
@@ -407,13 +392,11 @@ GStreamerSource::myProcess(realvec& in, realvec& out)
 	/* Update current position */
 	pos_ += output_size - output_left;
 	setctrl("mrs_natural/pos", pos_);
-#endif
 }
 
 mrs_bool
 GStreamerSource::seek()
 {
-#ifdef MARSYAS_GSTREAMER
 	GstSeekFlags flags = (GstSeekFlags)(GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT);
 	gint64 seek_to = (gint64)(newpos_/osrate_*1e9);
 	if(seek_to >= 0) {
@@ -431,7 +414,7 @@ GStreamerSource::seek()
 	
 	gint64 cur;
 	GstFormat format = GST_FORMAT_TIME;
-	if(!gst_element_query_position(GST_ELEMENT(pipe_), &format, &cur)) {
+	if(!gst_element_query_position(GST_ELEMENT(pipe_), format, &cur)) {
 		MRSERR("Position query failed!");
 		return false;
 	}
@@ -439,13 +422,11 @@ GStreamerSource::seek()
 	pos_ = cur*1e-9*osrate_;
 	buffer_left_ = 0;
 	return true;
-#endif
 }
 
 void
 GStreamerSource::myUpdate(MarControlPtr sender) 
 {
-#ifdef MARSYAS_GSTREAMER
 	(void) sender; // Suppress warning from unused parameter
  
 	// This stuff is already done in MarSystem::update()
@@ -476,6 +457,5 @@ GStreamerSource::myUpdate(MarControlPtr sender)
 		/* Write current (possibly updated) position back to the control */
 		setctrl("mrs_natural/pos", pos_);
 	}
-#endif
 }	
 

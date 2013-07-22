@@ -7,6 +7,8 @@
 #  GLUT_Xmu_LIBRARY  = the full path to the Xmu library.
 #  GLUT_Xi_LIBRARY   = the full path to the Xi Library.
 
+include(FindPackageHandleStandardArgs)
+
 IF (WIN32)
   FIND_PATH( GLUT_INCLUDE_DIR NAMES GL/glut.h 
     PATHS  ${GLUT_ROOT_PATH}/include )
@@ -51,29 +53,24 @@ ELSE (WIN32)
   
 ENDIF (WIN32)
 
-SET( GLUT_FOUND "NO" )
-IF(GLUT_INCLUDE_DIR)
-  IF(GLUT_glut_LIBRARY)
-    # Is -lXi and -lXmu required on all platforms that have it?
-    # If not, we need some way to figure out what platform we are on.
-    SET( GLUT_LIBRARIES
-      ${GLUT_glut_LIBRARY}
-      ${GLUT_Xmu_LIBRARY}
-      ${GLUT_Xi_LIBRARY} 
-      ${GLUT_cocoa_LIBRARY}
-      )
-    SET( GLUT_FOUND "YES" )
-    
-    #The following deprecated settings are for backwards compatibility with CMake1.4
-    SET (GLUT_LIBRARY ${GLUT_LIBRARIES})
-    SET (GLUT_INCLUDE_PATH ${GLUT_INCLUDE_DIR})
-    
-  ENDIF(GLUT_glut_LIBRARY)
-ENDIF(GLUT_INCLUDE_DIR)
+find_package_handle_standard_args(GLUT DEFAULT_MSG GLUT_glut_LIBRARY GLUT_INCLUDE_DIR)
+
+if(GLUT_FOUND)
+  set(GLUT_INCLUDE_DIRS ${GLUT_INCLUDE_DIR})
+  set(GLUT_LIBRARIES
+    ${GLUT_glut_LIBRARY}
+    ${GLUT_Xmu_LIBRARY}
+    ${GLUT_Xi_LIBRARY}
+    ${GLUT_cocoa_LIBRARY}
+  )
+endif()
 
 MARK_AS_ADVANCED(
   GLUT_INCLUDE_DIR
+  GLUT_INCLUDE_DIRS
   GLUT_glut_LIBRARY
   GLUT_Xmu_LIBRARY
   GLUT_Xi_LIBRARY
-  )
+  GLUT_cocoa_LIBRARY
+  GLUT_LIBRARIES
+)

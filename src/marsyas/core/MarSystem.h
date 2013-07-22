@@ -225,6 +225,8 @@ public:
 	std::string getAbsPath() const;
 	void updatePath();
 
+    const std::map<std::string, MarControlPtr> & controls() { return controls_; }
+
 	// Link controls
 	bool linkControl(std::string cname1, std::string cname2, bool update = true);
 	DEPRECATED(bool linkctrl(std::string cname1, std::string cname2, bool update = true))

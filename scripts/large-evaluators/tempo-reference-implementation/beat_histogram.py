@@ -152,7 +152,6 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     #beat_histogram_sr = oss_sr / defs.BH_HOPSIZE
     #for i in range(len(overlapped[0])):
     #    print overlapped[0][i]
-    #zzz
     #exit(1)
 
     ### autocorrelation
@@ -170,10 +169,11 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
 
         for j in xrange(1, autocorr.shape[1]):
             factor = 8/2
-            Hni = int((oss_sr * 60.0 * factor / (j+1)) + 0.5);
+            Hni = int(oss_sr * 60.0 * factor / (j+1) + 0.5);
             #bpm = autocorr_bpms[i]
             if Hni < 4*defs.BPM_MAX:
                 amp = autocorr[i][j]
+                #print j, Hni, amp
                 if amp < 0:
                     amp = 0
                 if prev_Hni == Hni:
@@ -219,6 +219,8 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
             li = int(ni) % numSamples
             ri = li + 1
             w = ni - li
+            #print "%i\t%i\t%f\t%f" % (li, ri, w, ni)
+            #zzz
             if ri < numSamples:
                 stretched[t] += Hn[i][li] + w * (Hn[i][ri] - Hn[i][li])
             else:
@@ -302,16 +304,35 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     for i in xrange( Hn.shape[0] ):
         these_peaks = find_peaks(defs, harmonic_strengthened_bh[i],
             number=10, peak_neighbors=1)
-        peaks.append(these_peaks / 4.0)
         if defs.WRITE_BH:
+            gnd = 120
+            has_gnd = False
+            tl = []
             for b in these_peaks:
-                text = "%.2f  " % (b/4.0)
-                combo_peaks.write(text)
-            combo_peaks.write(".\n")
+                tl.append("%.2f" % (b/4.0))
+                if gnd*0.96*4 <= b <= gnd*1.04*4:
+                    #print "yes"
+                    has_gnd = True
+            text = "  ".join(tl)
+            combo_peaks.write( text + "\n")
+            if has_gnd:
+                these_peaks = list(these_peaks)
+                these_peaks.append(0)
+            else:
+                these_peaks = list(these_peaks)
+                these_peaks.append(gnd*4)
+                #these_peaks.append(0)
+                #print these_peaks
+                N = len(overlapped[i])
+                ts = (numpy.arange( N ) + N*i/16.0 ) / oss_sr
+                numpy.savetxt("out/bad-bh-%i.txt" % (i+1),
+                    numpy.vstack( (ts, overlapped[i])).transpose() )
+                defs.extra.append(i)
             bpms = numpy.array(these_peaks)/4.0
             bpms_strengths = [harmonic_strengthened_bh[i][4*b] for b in bpms]
             numpy.savetxt("out/bh-peaks-%i.txt" % (i+1),
                 numpy.vstack((bpms, bpms_strengths)).transpose())
+        peaks.append( numpy.array(these_peaks) / 4.0)
     if defs.WRITE_BH:
         combo_peaks.close()
 

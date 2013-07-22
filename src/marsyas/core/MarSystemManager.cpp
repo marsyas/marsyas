@@ -202,6 +202,7 @@
 #include "SNR.h"
 #include "SOM.h"
 #include "SVMClassifier.h"
+#include "SVMLinearClassifier.h"
 #include "Selector.h"
 #include "SelfSimilarityMatrix.h"
 #include "Series.h"
@@ -486,6 +487,7 @@ MarSystemManager::MarSystemManager()
 	registerPrototype("SNR", new SNR("snrpr"));
 	registerPrototype("SOM", new SOM("sompr"));
 	registerPrototype("SVMClassifier", new SVMClassifier("svmclassifierpr"));
+	registerPrototype("SVMLinearClassifier", new SVMClassifier("svmlinearclassifierpr"));
 	registerPrototype("Selector", new Selector("selectorpr"));
 	registerPrototype("SelfSimilarityMatrix", new SelfSimilarityMatrix("selfsimilaritymatrixpr"));
 	registerPrototype("Series", new Series("srp"));
