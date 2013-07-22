@@ -1,34 +1,35 @@
-Welcome to marsyas.
- 
-MARSYAS is a software framework that was created as part of my
-research in Princeton University as a Phd graduate student. It is a
-collection of classes written in C++ and JAVA for various sound
-analysis and synthesis tasks. It started my first year in graduate school
-(1998) when I rewrote various tools that I had been using in order to
-make my life easier and also to code them the way I wanted them to be.
+Welcome to MARSYAS.
 
-This library is made by me for my own research purposes. Anyone who
-finds anything useful is welcome to use it, but I have no
-responsibility whatsoever. I will be happy to answer any questions and
-I will try to keep developing the library/toolkit. Until now
-development is guided by what my research needs and whenever I find
-some free time other stuff.
+MARSYAS is a software framework for rapid prototyping of audio applications,
+with flexibility and extensibility as primary concerns.
 
-The basic goal for MARSYAS has been to design a flexible and easily
-extensible system that allows rapid prototyping of audio
-applications. MARSYAS is released as free software under the GNU
-public licence hoping that people will actively contribute to its
-development. Please send bugs, comments, additions, problems and
-anything else to gtzan@@cs.cmu.edu. This version 0.2 is the third 
-major rewrite of Marsyas and is still in experimental stage. Feedback 
-is more than welcome. 
+It was created by George Tzanetakis as part of his research at Princeton
+University as a Phd graduate student, beginning in his first year of graduate
+school (1998) when he rewrote various tools that he had been using in order to
+make his life easier and also to code them the way he wanted them to be. It
+started as a collection of classes written in C++ and JAVA for various sound
+analysis and synthesis tasks.
 
+It has grown into a large collection of C++ sound processing modules and a
+flexible, intuitive and easy-to-use system to interconnect them. It provides
+bindings for Python and integration into other frameworks like PureData,
+Max/MSP, openFrameworks, Qt... It also contains a number of applications built
+using the framework to facilitate and demonstrate various sound processing
+tasks.
 
-MARSYAS is free software. Please see the file COPYING for details.
-For documentation, we recommend reading the online verison,
+MARSYAS is maintained and developed by George Tzanetakis and other
+researchers and guided mostly by their own research goals. Anyone who finds
+in it anything useful is welcome to use it, but we have no responsibility
+whatsoever. Aside from new development, we will try to maintain existing
+functionality, and we will be happy to answer any questions and provide help
+whenever possible.
 
-	http://marsyas.sness.net
+MARSYAS is released as free software under the GNU public licence hoping that
+it will attract people to contribute to its development. Please see the file
+COPYING for licensing details.
 
+For documentation, we recommend reading the online version:
+http://marsyas.info/
 
-
-
+To report issues and provide suggestions, please use our GitHub project page:
+https://github.com/marsyas/marsyas
