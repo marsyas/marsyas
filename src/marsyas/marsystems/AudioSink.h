@@ -20,11 +20,10 @@
 #ifndef MARSYAS_AUDIOSINK_H
 #define MARSYAS_AUDIOSINK_H
 
+#include "realvec_queue.h"
+#include "MarSystem.h"
 
 #include "RtAudio.h"
-
-#include "MarSystem.h"
-#include "realvec_queue.h"
 
 #include <mutex>
 #include <condition_variable>
