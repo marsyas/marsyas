@@ -70,31 +70,22 @@ Mapper::~Mapper()
 void 
 Mapper::open(QString fileName, int pos)
 {
-  // FIXME: have to stop and play, because there's no method yet in
-  // multithreading for setting several controls synchronously
+  const bool do_not_update = false;
 
-  // But anyway, AudioSink should be fixed to not crash:
-  // - either re-initialize on *every* update
-  // - or auto-stop when an update would require reinitialization,
-  //   until initialization is requested again explicitly
+  // Change filename.
+  m_fileControl->setValue(fileName, do_not_update);
 
-  pause();
+  // Loop file forever.
+  m_repControl->setValue(-1.0, do_not_update);
 
-  // update filename
-  m_system->setControl("SoundFileSource/src/mrs_string/filename", fileName.toStdString());
-  //m_fileControl->setValue(fileName);
+  // Always re-initialize audio due to possible changes in
+  // number of channels, etc...
+  m_initControl->setValue(true, do_not_update);
 
-  //  loop forever the piece [!]
-  m_system->setControl("SoundFileSource/src/mrs_real/repetitions", -1.0);
-  //m_repControl->setValue(-1.0);
+  // Apply scheduled control changes.
+  m_qsystem->update();
 
-  //setPos(pos);
-  
-  //m_initControl->setValue(true);
-  m_system->setControl("AudioSink/dest/mrs_bool/initAudio", true);
-
-  m_system->update();
-
+  // Play (if not playing yet).
   play();
 }
 
