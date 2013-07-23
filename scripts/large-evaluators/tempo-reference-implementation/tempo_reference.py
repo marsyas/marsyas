@@ -92,7 +92,8 @@ def bpm_of_file(defs, filename, plot=False, regen=False):
     ### handle Beat Phase
     pickle_filename = filename + "-bp-%i-%i-%i.pickle" % (
         defs.OPTIONS_ONSET, defs.OPTIONS_BH, defs.OPTIONS_BP)
-    if os.path.exists(pickle_filename) and not regen:
+    if False:
+    #if os.path.exists(pickle_filename) and not regen:
         pickle_file = open(pickle_filename, 'rb')
         (bpm, bp) = pickle.load(pickle_file)
         pickle_file.close()

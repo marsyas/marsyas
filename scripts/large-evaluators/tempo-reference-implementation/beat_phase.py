@@ -42,62 +42,6 @@ def calc_pulse_trains(bpm, window, sr):
     bp_var = numpy.var(bp_mags)
     return bp_max, bp_var
 
-def make_impulse_train(bpm, num_samples, sr):
-    #period = int(round(60.0 * sr / bpm))
-    period = 60.0 * sr / bpm
-    train = numpy.zeros( num_samples + int(period) )
-    for i in range( int( (num_samples + period) / period) ):
-        train[ period*i ] = 1.0
-    #pylab.plot(train)
-    #pylab.show()
-    #exit(1)
-    return train, period
-
-def match_offset(train, window, period):
-    values = numpy.zeros(period)
-    samples = len(window)
-    for i in range(int(period)):
-        values[i] = numpy.sum( window * train[i:i+samples] )
-    best_i = values.argmax()
-    var = numpy.std(values)
-    #pylab.plot(values)
-    #pylab.show()
-    #exit(1)
-    return values[best_i], best_i, var
-
-
-def make_sine_train(bpm, num_samples, sr):
-    period = int(round(60.0 * sr / bpm))
-
-
-
-def calc_sine_trains(bpm, window, sr):
-    period = int(round(60.0 * sr / bpm))
-    #pulse_trains = numpy.zeros( (period, length) )
-    num_offsets = period
-    samples = len(window)
-
-    #print period
-    bp_mags = numpy.zeros( num_offsets )
-    for i, offset in enumerate(range(
-            samples-1, samples-1-period, -1)):
-        #train = (numpy.arange(samples) % period / float(period))
-        train = numpy.sin( (offset+numpy.arange(samples)) *2*numpy.pi / period)
-        train = train.clip(min=0)
-        values = window * train
-
-        #if i % 50 == 0:
-        #    pylab.plot(window)
-        #    pylab.plot(values)
-        #if i > 300:
-        #    pylab.show()
-        #    exit(1)
-
-        bp_mags[i] = numpy.sum(values) / numpy.sum(train)
-    bp_max = max(bp_mags)
-    bp_var = numpy.var(bp_mags)
-    return bp_max, bp_var
-
 
 def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     ### overlap
@@ -128,10 +72,11 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
             #bpms_max[i] += mag
             #bpms_std[i] += std
             ### correct up to here
-            #print i, bpm, mag, std
+            #print i, bpm, mag, var
             tempo_scores[j] = mag
             #print tempo_scores[j]
             onset_scores[j] = var
+        #exit(1)
         tempo_scores /= tempo_scores.sum()
         onset_scores /= onset_scores.sum()
 
@@ -153,6 +98,11 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         #if i >= (defs.BP_WINDOWSIZE / defs.BP_HOPSIZE):
         bphase[ int(bestbpm) ] += beststr
         #print bestbpm, "\t", beststr
+        for k in range(len(tempo_scores)):
+            #print cands[k], "\t", tempo_scores[k]
+            print tempo_scores[k],
+        print
+        # zzz
 
         #if i in defs.extra:
         #    gnd = 120

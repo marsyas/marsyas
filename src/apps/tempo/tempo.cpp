@@ -1401,14 +1401,14 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
     // generated through post-processing
     // scripts/large-evaluators/make-mf.py
-    const mrs_real mins[] = { 0.0, 0.0, 0.0320684, 0.0, 0.0320684, 0.0, -2.22045e-16, 0.0, 0.0, 1.0, 41.0, 0 };
-    const mrs_real maxs[] = { 0.876178, 0.94753, 1.0, 0.535006, 1.0, 0.738607, 0.891814, 3.93182, 4.02439, 92.0, 178.0, 0 };
+    const mrs_real mins[] = { 0.0, 0.0, 0.0507398, 0.0, 0.0670043, 0.0, -4.44089e-16, 0.0, 0.0, 1.0, 41.0, 0 };
+    const mrs_real maxs[] = { 0.875346, 0.932996, 1.0, 0.535128, 1.0, 0.738602, 0.919375, 3.93182, 4.02439, 93.0, 178.0, 0 };
     const mrs_real svm_weights[] = {
-         1.162, -0.871, -0.1992, -0.3107,
-         -0.2238, 2.1103, -1.3185, -0.328,
-         -0.7643, -0.4642, -7.9359, 0,
+         1.1071, -0.8404, -0.1949, -0.2892,
+         -0.2094, 2.1781, -1.369, -0.4589,
+         -0.8486, -0.3786, -7.953, 0,
     };
-    double svm_sum = 2.1475;
+    double svm_sum = 2.1748;
 
     for (int i=0; i<features.getCols(); i++) {
         if (mins[i] == maxs[i]) {

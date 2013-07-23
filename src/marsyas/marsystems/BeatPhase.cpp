@@ -228,35 +228,35 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 
 		  tempo = tempos(k);
 		  period = 2.0 * osrate_ * 60.0 / tempo; // flux hopSize is half the winSize
-		  period = (mrs_natural)(period+0.5);
+		  mrs_natural period_int = (mrs_natural)(period+0.5);
 
 
 
-		  if (period > 1.0)
+		  if (period_int > 1)
 		  {
-			  phase_correlations.create( (mrs_natural)period);
+			  phase_correlations.create( period_int );
 
-			  for (phase=inSamples_-1; phase > inSamples_-1-period; phase--)
+			  for (phase=inSamples_-1; phase > inSamples_-1-period_int; phase--)
 			  {
 				  cross_correlation = 0.0;
 				  // correlate with pulse train with half-beats and double beats
 				  for (int b=0; b < 4; b++)
 				  {
                       mrs_natural temp_t;
-                      temp_t = (mrs_natural) (phase - b * period);
+                      temp_t = phase - b * period_int;
 
 					  // 4 beats 
                       if (temp_t >= 0) {
-					   cross_correlation +=  in(o, temp_t);
+					   cross_correlation += in(o, temp_t);
 					  }
 					   
 					  // slow down by 2.0 
-					  temp_t = (mrs_natural) (phase - b * 2.0 * period);
+					  temp_t = phase - b * period_int * 2;
 					  if (temp_t >= 0) 
 						cross_correlation += 0.5 * in(o, temp_t);
 					  
 					  // slow down by 3 
-					  temp_t = (mrs_natural) (phase - b * 1.5 * period);
+					  temp_t = phase - b * period_int * 3 / 2;
 					  if (temp_t >= 0) {
 						  cross_correlation += 0.5 * in(o, temp_t);
 					  }
@@ -303,7 +303,6 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	
 	// renormalize
 	tempo_scores /= tempo_scores.sum();
-
 
 	// pick the maximum scoring tempo candidate
 	mrs_real max_score = 0.0;
