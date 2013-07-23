@@ -66,11 +66,11 @@ private:
 
   MarsyasQt::Control * m_fileControl;
   MarsyasQt::Control * m_gainControl;
-  MarsyasQt::Control * m_repControl;
-  MarsyasQt::Control * m_posControl;
+  MarsyasQt::Control * m_repetitionControl;
+  MarsyasQt::Control * m_positionControl;
   MarsyasQt::Control * m_sizeControl;
-  MarsyasQt::Control * m_osrateControl;
-  MarsyasQt::Control * m_initControl;
+  MarsyasQt::Control * m_outputSampleRateControl;
+  MarsyasQt::Control * m_initAudioControl;
 
   QTimer m_controlEmitTimer;
 };

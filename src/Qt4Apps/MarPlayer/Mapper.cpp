@@ -34,7 +34,7 @@ using namespace MarsyasQt;
 
 Mapper::Mapper()
 {
-  // create the MarSystem network for playback
+  // Create the MarSystem network for playback.
   MarSystemManager mng;
   
   m_system = mng.create("Series", "pnet_");
@@ -45,16 +45,17 @@ Mapper::Mapper()
   
   m_system->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
   
+  // Create a handy Qt wrapper for the MarSystem.
   m_qsystem = new MarsyasQt::System(m_system);
 
-  // Create MarControlPtr handles for all the controls
+  // Get handles for all the controls.
   m_fileControl = m_qsystem->control("SoundFileSource/src/mrs_string/filename");
   m_gainControl = m_qsystem->control("Gain/gain/mrs_real/gain");
-  m_repControl = m_qsystem->control("SoundFileSource/src/mrs_real/repetitions");
-  m_posControl = m_qsystem->control("SoundFileSource/src/mrs_natural/pos");
+  m_repetitionControl = m_qsystem->control("SoundFileSource/src/mrs_real/repetitions");
+  m_positionControl = m_qsystem->control("SoundFileSource/src/mrs_natural/pos");
   m_sizeControl = m_qsystem->control("SoundFileSource/src/mrs_natural/size");
-  m_osrateControl = m_qsystem->control("SoundFileSource/src/mrs_real/osrate");
-  m_initControl = m_qsystem->control("AudioSink/dest/mrs_bool/initAudio");
+  m_outputSampleRateControl = m_qsystem->control("SoundFileSource/src/mrs_real/osrate");
+  m_initAudioControl = m_qsystem->control("AudioSink/dest/mrs_bool/initAudio");
 
   connect( &m_controlEmitTimer, SIGNAL(timeout()), this, SLOT(emitControlValues()) );
 }
@@ -76,11 +77,11 @@ Mapper::open(QString fileName, int pos)
   m_fileControl->setValue(fileName, do_not_update);
 
   // Loop file forever.
-  m_repControl->setValue(-1.0, do_not_update);
+  m_repetitionControl->setValue(-1.0, do_not_update);
 
   // Always re-initialize audio due to possible changes in
   // number of channels, etc...
-  m_initControl->setValue(true, do_not_update);
+  m_initAudioControl->setValue(true, do_not_update);
 
   // Apply scheduled control changes.
   m_qsystem->update();
@@ -97,7 +98,7 @@ Mapper::setPos(int position_percents)
   int position_samples =
       (int) m_sizeControl->value().toDouble() * (position_percents / 100.0);
 
-  m_posControl->setValue(position_samples);
+  m_positionControl->setValue(position_samples);
 }
 
 void 
@@ -124,9 +125,9 @@ void Mapper::emitControlValues()
 {
   Q_ASSERT(m_qsystem->isRunning());
 
-  int pos = m_posControl->value().toInt();
+  int pos = m_positionControl->value().toInt();
   int size = m_sizeControl->value().toInt();
-  double srate = m_osrateControl->value().toDouble();
+  double srate = m_outputSampleRateControl->value().toDouble();
 
   double duration = size / srate;
   emit durationChanged(duration);
