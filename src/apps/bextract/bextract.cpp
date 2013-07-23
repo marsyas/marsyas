@@ -2111,9 +2111,11 @@ bextract_train_refactored(string pluginName,  string wekafname,
   fanout->addMarSystem(src);
 
   // Add a live audio source for realtime classification
+#ifdef MARSYAS_AUDIOIO
   MarSystem *mic = mng.create("AudioSource", "mic");
   mic->updControl("mrs_natural/nChannels", 1);	//stereo
   fanout->addMarSystem(mic);
+#endif
 
   // Add the fanout to our feature Network ...
   featureNetwork->addMarSystem(fanout);
