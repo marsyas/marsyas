@@ -34,25 +34,32 @@
 using namespace std;
 using namespace Marsyas;
 
-int helpopt;
-int usageopt;
-mrs_natural memSize = 40;
-mrs_natural winSize = 512;
-mrs_natural hopSize = 512;
-string outputName = EMPTYSTRING;
-mrs_bool timeOutput = false;
+int helpOpt_;
+int usageOpt_;
+mrs_natural memSize_ = 40;
+mrs_natural winSize_ = 512;
+mrs_natural hopSize_ = 512;
+mrs_natural stereo_ = false;
 
-mrs_bool mfccFeature = false;
-mrs_bool centroidFeature = false;
-mrs_bool rolloffFeature = false;
-mrs_bool fluxFeature = false;
+string outputName_ = EMPTYSTRING;
+mrs_bool timeOutput_ = false;
 
-mrs_bool rmsFeature = false;
-mrs_bool yinFeature = false;
+mrs_bool mfccFeature_ = false;
+mrs_bool centroidFeature_ = false;
+mrs_bool rolloffFeature_ = false;
+mrs_bool fluxFeature_ = false;
+mrs_bool kurtosisFeature_ = false;
+mrs_bool skewnessFeature_ = false;
+mrs_bool sfmFeature_ = false;
+mrs_bool scfFeature_ = false;
+mrs_bool chromaFeature_ = false;
 
-mrs_string outputFormat = "libsvm";
+mrs_bool rmsFeature_ = false;
+mrs_bool yinFeature_ = false;
 
-CommandLineOptions cmd_options;
+mrs_string outputFormat_ = "libsvm";
+
+CommandLineOptions cmdOptions_;
 
 int printUsage(string progName)
 {
@@ -79,15 +86,19 @@ printHelp(string progName)
   cerr << "-m       --memory       : Memory size." << endl;
   cerr << "-ws      --windowsize   : Analysis window size in samples." << endl;
   cerr << "-hp      --hopsize      : Analysis hop size in samples." << endl;
-  cerr << "-t       --timeOutput   : Output the current time as the label" << endl;
+  cerr << "         --stereo       : Do analysis on stereo (default convert to mono)." << endl;
+
+  cerr << "         --timeOutput   : Output the current time as the label" << endl;
   cerr << "         --mfcc         : Output MFCC features." << endl;
   cerr << "         --ctd          : Output spectral centroid features." << endl;
   cerr << "         --rlf          : Output spectral rolloff features." << endl;
   cerr << "         --flx          : Output spectral flux features." << endl;
+  cerr << "         --kurtosis     : Output spectral kurtosis features." << endl;
+  cerr << "         --skewness     : Output spectral skewness features." << endl;
+  cerr << "         --sfm          : Output spectral flatness measure features." << endl;
+  cerr << "         --scf          : Output spectral crest factor features." << endl;
+  cerr << "         --chroma       : Output chroma features." << endl;
 
-  // cerr << "-chroma  --chroma                               : Output chroma features." << endl;
-  // cerr << "-sfm     --spectralFlatnessMeasure              : Output spectral flatness measure features." << endl;
-  // cerr << "-scf     --spectralCrestFactor                  : Output spectral crest factor features." << endl;
   // cerr << "-zcrs    --zeroCrossings                        : Output zero crossings as a feature." << endl;
   // cerr << "-lsp     --lineSpectralPair                     : Output line spectral pair features." << endl;
   // cerr << "-lpcc    --linearPredictionCepstralCoefficients : Output linear prediction cepstral coefficients features." << endl;
@@ -96,7 +107,7 @@ printHelp(string progName)
   cerr << "-yin     --yin                                  : Output yin pitch estimate as a feature." << endl;
 
   cerr << "-o       --output                               : File to save data to." << endl;
-  cerr << "-of       --outputFormat                               : Output file format (libsvm, sonicvisualiser)" << endl;
+  cerr << "-of       --outputFormat_                               : Output file format (libsvm, sonicvisualiser)" << endl;
   
   return 0;
 }
@@ -104,66 +115,75 @@ printHelp(string progName)
 
 void initOptions()
 {
-  cmd_options.addBoolOption("help", "h", false);
-  cmd_options.addBoolOption("usage", "u", false);
-  cmd_options.addBoolOption("verbose", "v", false);
-  cmd_options.addBoolOption("timeOutput", "t", false);
+  cmdOptions_.addBoolOption("help", "h", false);
+  cmdOptions_.addBoolOption("usage", "u", false);
+  cmdOptions_.addBoolOption("verbose", "v", false);
+  cmdOptions_.addBoolOption("timeOutput", "", false);
 
-  cmd_options.addNaturalOption("memory", "m", 20);
-  cmd_options.addNaturalOption("windowsize", "ws", 512);
-  cmd_options.addNaturalOption("hopsize", "hp", 512);
+  cmdOptions_.addNaturalOption("memory", "m", 20);
+  cmdOptions_.addNaturalOption("windowsize", "ws", 512);
+  cmdOptions_.addNaturalOption("hopsize", "hp", 512);
 
-  cmd_options.addBoolOption("mfcc","", false);
-  cmd_options.addBoolOption("ctd","", false);
-  cmd_options.addBoolOption("rlf","", false);
-  cmd_options.addBoolOption("flx","", false);
+  cmdOptions_.addNaturalOption("stereo", "st", false);
 
-  // cmd_options.addBoolOption("chroma", "chroma", false);
-  // cmd_options.addBoolOption("spectralFlatnessMeasure","sfm", false);
-  // cmd_options.addBoolOption("spectralCrestFactor","scf", false);
-  // cmd_options.addBoolOption("spectralFeature", "spfe", false);
-  // cmd_options.addBoolOption("zeroCrossings", "zcrs", false);
-  // cmd_options.addBoolOption("lineSpectralPair", "lsp", false);
-  // cmd_options.addBoolOption("linearPredictionCepstralCoefficients", "lpcc", false);
+  cmdOptions_.addBoolOption("mfcc","", false);
+  cmdOptions_.addBoolOption("ctd","", false);
+  cmdOptions_.addBoolOption("rlf","", false);
+  cmdOptions_.addBoolOption("flx","", false);
+  cmdOptions_.addBoolOption("kurtosis","", false);
+  cmdOptions_.addBoolOption("skewness","", false);
+  cmdOptions_.addBoolOption("sfm","", false);
+  cmdOptions_.addBoolOption("scf","", false);
+  cmdOptions_.addBoolOption("chroma", "", false);
+
+  // cmdOptions_.addBoolOption("zeroCrossings", "zcrs", false);
+  // cmdOptions_.addBoolOption("lineSpectralPair", "lsp", false);
+  // cmdOptions_.addBoolOption("linearPredictionCepstralCoefficients", "lpcc", false);
   
-  cmd_options.addBoolOption("rms", "rms", false);
-  cmd_options.addBoolOption("yin", "yin", false);
+  cmdOptions_.addBoolOption("rms", "rms", false);
+  cmdOptions_.addBoolOption("yin", "yin", false);
 
-  cmd_options.addStringOption("output", "o", EMPTYSTRING);
-  cmd_options.addStringOption("outputFormat", "of", "libsvm");
+  cmdOptions_.addStringOption("output", "o", EMPTYSTRING);
+  cmdOptions_.addStringOption("outputFormat_", "of", "libsvm");
 }
 
 void loadOptions()
 {
-  cout << "loadOptions Window Size (in samples): " << winSize << endl;
+  helpOpt_ = cmdOptions_.getBoolOption("help");
+  usageOpt_ = cmdOptions_.getBoolOption("usage");
+  timeOutput_ = cmdOptions_.getBoolOption("timeOutput");
+  memSize_ = cmdOptions_.getNaturalOption("memory");
+  winSize_ = cmdOptions_.getNaturalOption("windowsize");
+  hopSize_ = cmdOptions_.getNaturalOption("hopsize");
+  mfccFeature_ = cmdOptions_.getBoolOption("mfcc");
+  centroidFeature_ = cmdOptions_.getBoolOption("centroid");
+  rolloffFeature_ = cmdOptions_.getBoolOption("rolloff");
+  fluxFeature_ = cmdOptions_.getBoolOption("flux");
+  kurtosisFeature_ = cmdOptions_.getBoolOption("kurtosis");
+  skewnessFeature_ = cmdOptions_.getBoolOption("skewness");
+  sfmFeature_ = cmdOptions_.getBoolOption("sfm");
+  scfFeature_ = cmdOptions_.getBoolOption("scf");
+  chromaFeature_ = cmdOptions_.getBoolOption("chroma");
 
-  helpopt = cmd_options.getBoolOption("help");
-  usageopt = cmd_options.getBoolOption("usage");
-  timeOutput = cmd_options.getBoolOption("timeOutput");
-  memSize = cmd_options.getNaturalOption("memory");
-  winSize = cmd_options.getNaturalOption("windowsize");
-  hopSize = cmd_options.getNaturalOption("hopsize");
-  mfccFeature = cmd_options.getBoolOption("mfcc");
-  centroidFeature = cmd_options.getBoolOption("centroid");
-  rolloffFeature = cmd_options.getBoolOption("rolloff");
-  fluxFeature = cmd_options.getBoolOption("flux");
-  rmsFeature = cmd_options.getBoolOption("rms");
-  yinFeature = cmd_options.getBoolOption("yin");
+  rmsFeature_ = cmdOptions_.getBoolOption("rms");
+  yinFeature_ = cmdOptions_.getBoolOption("yin");
 
-  outputName = cmd_options.getStringOption("output");
-  outputFormat = cmd_options.getStringOption("outputFormat");
-
-  cout << "mfccFeature=" << mfccFeature << endl;
-  cout << "rmsFeature=" << rmsFeature << endl;
+  outputName_ = cmdOptions_.getStringOption("output");
+  outputFormat_ = cmdOptions_.getStringOption("outputFormat_");
 
   // // If no features were explicitly set, out a small standard set of features
-  // if ((mfccFeature == false) && 
-  //     (centroidFeature == false) &&
-  //     (rolloffFeature == false) &&
-  //     (fluxFeature == false) &&
-  //     (rmsFeature == false) &&
-  //     (yinFeature == false)) {
-  //       mfccFeature = true;
+  // if ((mfccFeature_ == false) && 
+  //     (centroidFeature_ == false) &&
+  //     (rolloffFeature_ == false) &&
+  //     (fluxFeature_ == false) &&
+  //     (kurtoisFeature_ == false) &&
+  //     (skewnessFeature_ == false) &&
+  //     (sfmFeature_ == false) &&
+  //     (scfFeature_ == false) &&
+  //     (chromaFeature_ == false) &&
+  //     (rmsFeature_ == false) &&
+  //     (yinFeature_ == false)) {
+  //   mfccFeature_ = true;
   // }
 
 }
@@ -174,70 +194,94 @@ void extract(string inCollectionName)
 
   MarSystem* net = mng.create("Series", "net");
   net->addMarSystem(mng.create("SoundFileSource", "src"));
+  if (stereo_ == false) {
+    net->addMarSystem(mng.create("Stereo2Mono","toMono"));
+  }
   net->addMarSystem(mng.create("ShiftInput/si"));
   net->addMarSystem(mng.create("Windowing", "ham"));
 
   MarSystem* mainFanout = mng.create("Fanout", "mainFanout");
 
-  if (rmsFeature || yinFeature) {
-    // Time based features
+  // Time based features
+  if (rmsFeature_ || yinFeature_) {
     MarSystem* timeSeries = mng.create("Series", "timeSeries");
     MarSystem* timeFanout = mng.create("Fanout", "timeFanout");
-    if (rmsFeature) {
-      cout << "Adding rms" << endl;
+    if (rmsFeature_) {
       timeFanout->addMarSystem(mng.create("Rms", "rms"));
     }
-    if (yinFeature) {
+    if (yinFeature_) {
       timeFanout->addMarSystem(mng.create("Yin", "yin"));
     }
     timeSeries->addMarSystem(timeFanout);
     mainFanout->addMarSystem(timeSeries);
   }
 
-  cout << "2mfccFeature=" << mfccFeature << endl;
-
-  if (mfccFeature || centroidFeature || rolloffFeature || fluxFeature) {
-    // Spectrum based features
+  // Spectrum based features
+  if (mfccFeature_ || centroidFeature_ || rolloffFeature_ || fluxFeature_ || 
+      kurtosisFeature_ || skewnessFeature_ || sfmFeature_ || scfFeature_ || 
+      chromaFeature_) {
     MarSystem* spectralSeries = mng.create("Series", "spectralSeries");
     spectralSeries->addMarSystem(mng.create("Spectrum", "spk"));
     spectralSeries->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     
     MarSystem* spectralFanout = mng.create("Fanout", "spectralFanout");
-    if (mfccFeature) {
-      cout << "Adding mfcc" << endl;
-
+    if (mfccFeature_) {
       spectralFanout->addMarSystem(mng.create("MFCC", "mfcc"));
     }
     
-    if (centroidFeature) {
+    if (centroidFeature_) {
       spectralFanout->addMarSystem(mng.create("Centroid", "centroid"));
     }
     
-    if (rolloffFeature) {
+    if (rolloffFeature_) {
       spectralFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
     }
     
-    if (fluxFeature) {
+    if (fluxFeature_) {
       spectralFanout->addMarSystem(mng.create("Flux", "flux"));
     }
+
+    if (kurtosisFeature_) {
+      spectralFanout->addMarSystem(mng.create("Kurtosis", "kurtosis"));
+    }
+
+    if (skewnessFeature_) {
+      spectralFanout->addMarSystem(mng.create("Skewness", "skewness"));
+    }
+
+    if (sfmFeature_) {
+      spectralFanout->addMarSystem(mng.create("SFM", "sfm"));
+    }
+
+    if (scfFeature_) {
+      spectralFanout->addMarSystem(mng.create("SCF", "scf"));
+    }
+
+    if (chromaFeature_) {
+      MarSystem* chromaPrSeries = mng.create("Series", "chromaPrSeries");
+      chromaPrSeries->addMarSystem(mng.create("Spectrum2Chroma", "chroma"));
+      chromaPrSeries->addMarSystem(mng.create("PeakRatio","pr"));
+      spectralFanout->addMarSystem(chromaPrSeries);
+    }
+
     spectralSeries->addMarSystem(spectralFanout);
     mainFanout->addMarSystem(spectralSeries);
   }
   net->addMarSystem(mainFanout);
   
 
-  // if(memSize != 0) {
-  //   net->addMarSystem(mng.create("TextureStats", "tStats"));
-  //   net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize);
-  // }
+  if(memSize_ != 0) {
+    net->addMarSystem(mng.create("TextureStats", "tStats"));
+    net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize_);
+  }
 
   net->updControl("SoundFileSource/src/mrs_string/filename", inCollectionName);
-  net->updControl("mrs_natural/inSamples", hopSize);
-  net->updControl("ShiftInput/si/mrs_natural/winSize", winSize);
+  net->updControl("mrs_natural/inSamples", hopSize_);
+  net->updControl("ShiftInput/si/mrs_natural/winSize", winSize_);
 
   ofstream ofs;
-  if (outputName != EMPTYSTRING) {
-    ofs.open(outputName.c_str());
+  if (outputName_ != EMPTYSTRING) {
+    ofs.open(outputName_.c_str());
   }
 
   mrs_realvec data;
@@ -251,11 +295,11 @@ void extract(string inCollectionName)
 
     data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
 
-    currentTime = (numTicks * hopSize) / sampleRate;
+    currentTime = (numTicks * hopSize_) / sampleRate;
 
-    if (outputName != EMPTYSTRING) {
+    if (outputName_ != EMPTYSTRING) {
 
-      if (timeOutput) {
+      if (timeOutput_) {
         ofs << currentTime << " ";
       } else {
         ofs << net->getctrl("SoundFileSource/src/mrs_real/currentLabel")->to<mrs_real>() << " ";
@@ -263,10 +307,10 @@ void extract(string inCollectionName)
 
       for (int i = 0; i < data.getRows(); i++) {
 
-        if (outputFormat == "sonicvisualiser") {
+        if (outputFormat_ == "sonicvisualiser") {
           ofs << data(i, 0) << " ";
         } else {
-          ofs << i << ":" << data(i, 0) << " ";
+          ofs << i+1 << ":" << data(i, 0) << " ";
         }
       }
       ofs << endl;
@@ -275,7 +319,7 @@ void extract(string inCollectionName)
 
   }
 
-  if (outputName != EMPTYSTRING) {
+  if (outputName_ != EMPTYSTRING) {
     ofs.close();
   }
 
@@ -295,21 +339,21 @@ main(int argc, const char **argv)
     }
 
   initOptions();
-  cmd_options.readOptions(argc, argv);
+  cmdOptions_.readOptions(argc, argv);
   loadOptions();
 
-  if (helpopt)
+  if (helpOpt_)
     return printHelp(progName);
 
-  if (usageopt)
+  if (usageOpt_)
     return printUsage(progName);
 
   cout << endl;
-  cout << "Window Size (in samples): " << winSize << endl;
-  cout << "Hop Size (in samples): " << hopSize << endl;
-  cout << "Memory Size (in analysis windows):" << memSize << endl;
+  cout << "Window Size (in samples): " << winSize_ << endl;
+  cout << "Hop Size (in samples): " << hopSize_ << endl;
+  cout << "Memory Size (in analysis windows):" << memSize_ << endl;
 
-  vector<string> soundfiles = cmd_options.getRemaining();
+  vector<string> soundfiles = cmdOptions_.getRemaining();
   vector<string>::iterator sfi;
 
   for (sfi = soundfiles.begin(); sfi != soundfiles.end(); ++sfi) {
