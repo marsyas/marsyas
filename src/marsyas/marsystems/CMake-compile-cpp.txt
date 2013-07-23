@@ -254,6 +254,7 @@ StretchLinear.cpp
 Subtract.cpp
 SubtractMean.cpp
 Sum.cpp
+SVMClassifier.cpp
 TempoHypotheses.cpp
 TimeFreqPeakConnectivity.cpp
 TimelineLabeler.cpp

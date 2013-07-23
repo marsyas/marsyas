@@ -1029,8 +1029,9 @@ test_oss_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, b
 mrs_real energy_in_histo_range(realvec histo,
     mrs_real factor, mrs_real low, mrs_real high)
 {
-    mrs_natural index_low  = round(low * factor);
-    mrs_natural index_high = round(high * factor);
+    // manual rounding because MSVC doesn't support round()
+    mrs_natural index_low  = low * factor + 0.5;
+    mrs_natural index_high = high * factor + 0.5;
     if (high == 1.0) {
         index_high = histo.getCols()-1;
     }
@@ -1048,24 +1049,6 @@ mrs_real energy_in_histo_range(realvec histo,
     }
     return sum;
 }
-
-mrs_real energy_in_histo(mrs_natural bpm, realvec histo,
-    mrs_real factor, mrs_real tolerance)
-{
-    mrs_natural index_main = bpm * factor;
-    mrs_natural index_low  = round(index_main * (1.0 - tolerance));
-    mrs_natural index_high = round(index_main * (1.0 + tolerance));
-    if (index_high >= histo.getCols()-1) {
-        index_high = histo.getCols()-1;
-    }
-    //cout<<index_low<<"\t"<<index_main<<"\t"<<index_high<<endl;
-    mrs_real sum = 0.0;
-    for (mrs_natural i=index_low; i < index_high + 1; i++) {
-        sum += histo(i);
-    }
-    return sum;
-}
-
 
 const int INFO_SIZE = 10;
 realvec info_histogram(mrs_natural bpm, realvec histo,
@@ -1369,9 +1352,8 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         // store best score in bphase
         tempos = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempos")->to<mrs_realvec>();
         temposcores = beatTracker->getControl("BeatPhase/beatphase/mrs_realvec/tempo_scores")->to<mrs_realvec>();
-        mrs_natural bpm = round(tempos(0));
+        mrs_natural bpm = tempos(0) + 0.5;
         bphase(bpm) += temposcores(0);
-
 
 #if 0
         printf("%li\t%f\n", bpm, temposcores(0));
@@ -1389,28 +1371,6 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
    bphase.writeText("beat_phase.txt");
 #endif
 
-
-#if 0
-    // filter bphase
-    realvec bphase_filt = bphase;
-    for (int i=9; i < bphase.getCols()-9; i++) {
-        int width = round(i*0.04);
-        if (width < 1) {
-            continue;
-        }
-        int N = 2*width+1;
-        mrs_real kernel[N];
-        for (int n=0; n<N; n++){
-            kernel[n] = (1 - fabs( ((double)(n-((N-1)/2))) / ((N+1)/2) ))/width;
-        }
-
-        bphase_filt(i) = 0.0;
-        for (int j=0; j < N; j++) {
-            mrs_real value = bphase(i+j-width) * kernel[j];
-            bphase_filt(i) += value;
-        }
-    }
-#endif
 
     // global maximum (will be a peak)
     for (int i=1; i < BPHASE_SIZE-1; i++)

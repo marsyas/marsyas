@@ -42,9 +42,8 @@ Rms::myUpdate(MarControlPtr sender)
 {
 	(void) sender;  //suppress warning of unused parameter(s)
   setctrl("mrs_natural/onSamples", (mrs_natural)1);
-  setctrl("mrs_natural/onObservations", (mrs_natural)1);
+  ctrl_onObservations_->setValue(ctrl_inObservations_, NOUPDATE);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte")->to<mrs_real>() / getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-
   // Add prefix to the observation names.
   mrs_string inObsNames = ctrl_inObsNames_->to<mrs_string>();
   ctrl_onObsNames_->setValue(obsNamesAddPrefix(inObsNames, "Rms_"), NOUPDATE);
