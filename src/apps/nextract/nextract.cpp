@@ -47,6 +47,7 @@ mrs_bool centroidFeature = false;
 mrs_bool rolloffFeature = false;
 mrs_bool fluxFeature = false;
 
+mrs_bool rmsFeature = false;
 mrs_bool yinFeature = false;
 
 mrs_string outputFormat = "libsvm";
@@ -73,16 +74,16 @@ printHelp(string progName)
   cerr << endl;
   cerr << "where file1 file2 ... fileN are in a Marsyas supported format." << endl;
   cerr << "Help Options:" << endl;
-  cerr << "-u       --usage                                : Display short usage info." << endl;
-  cerr << "-v       --verbose                              : Verbose output." << endl;
-  cerr << "-m       --memory                               : Memory size." << endl;
-  cerr << "-ws      --windowsize                           : Analysis window size in samples." << endl;
-  cerr << "-hp      --hopsize                              : Analysis hop size in samples." << endl;
-  cerr << "-t       --timeOutput                           : Output the current time as the label" << endl;
-  cerr << "-mfcc    --melFrequencyCepstralCoefficients     : Output MFCC features." << endl;
-  cerr << "-ctd     --centroid                             : Output spectral centroid features." << endl;
-  cerr << "-rlf     --rolloff                              : Output spectral rolloff features." << endl;
-  cerr << "-flx     --flux                                 : Output spectral flux features." << endl;
+  cerr << "-u       --usage        : Display short usage info." << endl;
+  cerr << "-v       --verbose      : Verbose output." << endl;
+  cerr << "-m       --memory       : Memory size." << endl;
+  cerr << "-ws      --windowsize   : Analysis window size in samples." << endl;
+  cerr << "-hp      --hopsize      : Analysis hop size in samples." << endl;
+  cerr << "-t       --timeOutput   : Output the current time as the label" << endl;
+  cerr << "         --mfcc         : Output MFCC features." << endl;
+  cerr << "         --ctd          : Output spectral centroid features." << endl;
+  cerr << "         --rlf          : Output spectral rolloff features." << endl;
+  cerr << "         --flx          : Output spectral flux features." << endl;
 
   // cerr << "-chroma  --chroma                               : Output chroma features." << endl;
   // cerr << "-sfm     --spectralFlatnessMeasure              : Output spectral flatness measure features." << endl;
@@ -90,7 +91,9 @@ printHelp(string progName)
   // cerr << "-zcrs    --zeroCrossings                        : Output zero crossings as a feature." << endl;
   // cerr << "-lsp     --lineSpectralPair                     : Output line spectral pair features." << endl;
   // cerr << "-lpcc    --linearPredictionCepstralCoefficients : Output linear prediction cepstral coefficients features." << endl;
-  // cerr << "-yin     --yin                                  : Output yin pitch estimate as a feature." << endl;
+
+  cerr << "-rms     --rms                                  : Output rms as a feature." << endl;
+  cerr << "-yin     --yin                                  : Output yin pitch estimate as a feature." << endl;
 
   cerr << "-o       --output                               : File to save data to." << endl;
   cerr << "-of       --outputFormat                               : Output file format (libsvm, sonicvisualiser)" << endl;
@@ -110,10 +113,10 @@ void initOptions()
   cmd_options.addNaturalOption("windowsize", "ws", 512);
   cmd_options.addNaturalOption("hopsize", "hp", 512);
 
-  cmd_options.addBoolOption("melFrequencyCepstralCoefficients","mfcc", false);
-  cmd_options.addBoolOption("centroid","ctd", false);
-  cmd_options.addBoolOption("rolloff","rlf", false);
-  cmd_options.addBoolOption("flux","flx", false);
+  cmd_options.addBoolOption("mfcc","", false);
+  cmd_options.addBoolOption("ctd","", false);
+  cmd_options.addBoolOption("rlf","", false);
+  cmd_options.addBoolOption("flx","", false);
 
   // cmd_options.addBoolOption("chroma", "chroma", false);
   // cmd_options.addBoolOption("spectralFlatnessMeasure","sfm", false);
@@ -123,6 +126,7 @@ void initOptions()
   // cmd_options.addBoolOption("lineSpectralPair", "lsp", false);
   // cmd_options.addBoolOption("linearPredictionCepstralCoefficients", "lpcc", false);
   
+  cmd_options.addBoolOption("rms", "rms", false);
   cmd_options.addBoolOption("yin", "yin", false);
 
   cmd_options.addStringOption("output", "o", EMPTYSTRING);
@@ -143,19 +147,24 @@ void loadOptions()
   centroidFeature = cmd_options.getBoolOption("centroid");
   rolloffFeature = cmd_options.getBoolOption("rolloff");
   fluxFeature = cmd_options.getBoolOption("flux");
+  rmsFeature = cmd_options.getBoolOption("rms");
   yinFeature = cmd_options.getBoolOption("yin");
 
   outputName = cmd_options.getStringOption("output");
   outputFormat = cmd_options.getStringOption("outputFormat");
 
-  // If no features were explicitly set, out a small standard set of features
-  if ((mfccFeature == false) && 
-      (centroidFeature == false) &&
-      (rolloffFeature == false) &&
-      (fluxFeature == false) &&
-      (yinFeature == false)) {
-        mfccFeature = true;
-  }
+  cout << "mfccFeature=" << mfccFeature << endl;
+  cout << "rmsFeature=" << rmsFeature << endl;
+
+  // // If no features were explicitly set, out a small standard set of features
+  // if ((mfccFeature == false) && 
+  //     (centroidFeature == false) &&
+  //     (rolloffFeature == false) &&
+  //     (fluxFeature == false) &&
+  //     (rmsFeature == false) &&
+  //     (yinFeature == false)) {
+  //       mfccFeature = true;
+  // }
 
 }
 
@@ -167,32 +176,60 @@ void extract(string inCollectionName)
   net->addMarSystem(mng.create("SoundFileSource", "src"));
   net->addMarSystem(mng.create("ShiftInput/si"));
   net->addMarSystem(mng.create("Windowing", "ham"));
-  net->addMarSystem(mng.create("Spectrum", "spk"));
-  net->addMarSystem(mng.create("PowerSpectrum", "pspk"));
 
-  MarSystem* spectralFeatureFanout = mng.create("Fanout", "spectralFeatureFanout");
-  if (mfccFeature) {
-    spectralFeatureFanout->addMarSystem(mng.create("MFCC", "mfcc"));
+  MarSystem* mainFanout = mng.create("Fanout", "mainFanout");
+
+  if (rmsFeature || yinFeature) {
+    // Time based features
+    MarSystem* timeSeries = mng.create("Series", "timeSeries");
+    MarSystem* timeFanout = mng.create("Fanout", "timeFanout");
+    if (rmsFeature) {
+      cout << "Adding rms" << endl;
+      timeFanout->addMarSystem(mng.create("Rms", "rms"));
+    }
+    if (yinFeature) {
+      timeFanout->addMarSystem(mng.create("Yin", "yin"));
+    }
+    timeSeries->addMarSystem(timeFanout);
+    mainFanout->addMarSystem(timeSeries);
   }
 
-  if (centroidFeature) {
-    spectralFeatureFanout->addMarSystem(mng.create("Centroid", "centroid"));
-  }
+  cout << "2mfccFeature=" << mfccFeature << endl;
 
-  if (rolloffFeature) {
-    spectralFeatureFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
-  }
+  if (mfccFeature || centroidFeature || rolloffFeature || fluxFeature) {
+    // Spectrum based features
+    MarSystem* spectralSeries = mng.create("Series", "spectralSeries");
+    spectralSeries->addMarSystem(mng.create("Spectrum", "spk"));
+    spectralSeries->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+    
+    MarSystem* spectralFanout = mng.create("Fanout", "spectralFanout");
+    if (mfccFeature) {
+      cout << "Adding mfcc" << endl;
 
-  if (fluxFeature) {
-    spectralFeatureFanout->addMarSystem(mng.create("Flux", "flux"));
+      spectralFanout->addMarSystem(mng.create("MFCC", "mfcc"));
+    }
+    
+    if (centroidFeature) {
+      spectralFanout->addMarSystem(mng.create("Centroid", "centroid"));
+    }
+    
+    if (rolloffFeature) {
+      spectralFanout->addMarSystem(mng.create("Rolloff", "rolloff"));
+    }
+    
+    if (fluxFeature) {
+      spectralFanout->addMarSystem(mng.create("Flux", "flux"));
+    }
+    spectralSeries->addMarSystem(spectralFanout);
+    mainFanout->addMarSystem(spectralSeries);
   }
-  net->addMarSystem(spectralFeatureFanout);
+  net->addMarSystem(mainFanout);
   
 
-  if(memSize != 0) {
-	net->addMarSystem(mng.create("TextureStats", "tStats"));
-	net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize);
-  }
+  // if(memSize != 0) {
+  //   net->addMarSystem(mng.create("TextureStats", "tStats"));
+  //   net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize);
+  // }
 
   net->updControl("SoundFileSource/src/mrs_string/filename", inCollectionName);
   net->updControl("mrs_natural/inSamples", hopSize);
@@ -224,7 +261,7 @@ void extract(string inCollectionName)
         ofs << net->getctrl("SoundFileSource/src/mrs_real/currentLabel")->to<mrs_real>() << " ";
       }
 
-      for (int i = 1; i < data.getRows(); i++) {
+      for (int i = 0; i < data.getRows(); i++) {
 
         if (outputFormat == "sonicvisualiser") {
           ofs << data(i, 0) << " ";
