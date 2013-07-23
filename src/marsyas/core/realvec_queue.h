@@ -167,13 +167,19 @@ public:
     size_t capacity = m_capacity.load(memory_order_relaxed);
     size_t size = samples();
 
-    size_t available;
+    if (capacity > 0 )
+      --capacity; // Should never write the last sample.
+
+    size_t written;
     if (write_pos >= read_pos)
-      available = capacity - (write_pos - read_pos);
+      written = write_pos - read_pos;
     else
-      available = capacity - (size - (read_pos - write_pos));
-    available = std::min( available, size - 1 );
-    return available;
+      written = size - (read_pos - write_pos);
+
+    if (written >= capacity)
+      return 0;
+    else
+      return capacity - written;
   }
 
   /**
