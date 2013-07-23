@@ -66,15 +66,16 @@ def late_heuristic(defs, heuristic_tempo, bp):
         features = info_histogram(heuristic_tempo, bp, 0.05)
         features.append(heuristic_tempo)
         ## hard-coded values trained elsewhere; see tempo.cpp
-        mins = [ 0.0, 0.0, 0.0320684, 0.0, 0.0320684, 0.0, -4.44089e-16,
-0.0, 0.0, 1.0, 50.0, 0 ]
+        mins = [ 0.0, 0.0, 0.0320684, 0.0, 0.0320684, 0.0, -2.22045e-16,
+0.0, 0.0, 1.0, 41.0, 0 ]
         maxs = [ 0.876178, 0.94753, 1.0, 0.535006,
-    1.0, 0.738607, 0.89892, 3.10526, 3.12281, 92.0, 178.0, 0 ]
+    1.0, 0.738607, 0.891814, 3.93182, 4.02439, 92.0, 178.0, 0 ]
         svm_weights = [
-            1.8788, -1.6107, -0.124, -0.2659,
-            -0.4155, 2.5116, -1.458, -0.7464,
-            -0.4488, 0.1006, -8.0225, 0, ]
-        svm_sum = 2.1069;
+            1.162, -0.871, -0.1992, -0.3107,
+            -0.2238, 2.1103, -1.3185, -0.328,
+            -0.7643, -0.4642, -7.9359, 0,
+            ]
+        svm_sum = 2.1475;
 
         # normalize
         features_normalized = list(features)
@@ -90,14 +91,14 @@ def late_heuristic(defs, heuristic_tempo, bp):
 
 
         out = open("out/double_heuristic_svm.txt", 'w')
-        text = " ".join( [str("%f" % v) for v in features ] )
+        text = " ".join( [str("%g" % v) for v in features ] )
         out.write(text+"\n")
 
-        text = " ".join( [str("%f" % v) for v in features_normalized ] )
+        text = " ".join( [str("%g" % v) for v in features_normalized ] )
         out.write(text+"\n")
 
         #out.write("svm_sum:\t%f\n" % svm_sum)
-        out.write("%f\n" % svm_sum)
+        out.write("%g\n" % svm_sum)
         #if svm_sum <= 0:
         #    out.write("No doubling\n")
         #else:

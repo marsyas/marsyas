@@ -60,18 +60,23 @@ for i = 1:num_frames
 				%printf("%i\t%f\n", ind, mag);
 			end
 			bp_mags(samples-1-phase+1) = mag;
+			%disp([samples-1-phase+1, mag])
 		end
+
+		%save "foo.txt" bp_mags
+		%exit(1)
 
 		%plot(bp_mags)
 		%pause
 		%exit(1)
 		bp_max = max(bp_mags);
-		bp_var = var(bp_mags);
+		bp_var = var(bp_mags, 1);
 
 		tempo_scores(j) = bp_max;
 		onset_scores(j) = bp_var;
-		%printf("%i\t%.2f\t%.2f\n", bpm, bp_max, bp_var);
+		%printf("%i\t%.9f\t%.9f\n", bpm, bp_max, bp_var);
 	end
+	%exit(1)
 	tempo_scores /= sum(tempo_scores);
 	onset_scores /= sum(onset_scores);
 
@@ -80,6 +85,8 @@ for i = 1:num_frames
 
 	[beststr, besti] = max(combo_scores);
 	bestbpm = int32(cands(besti));
+
+	printf("%i\t%f\n", bestbpm, beststr);
 
 	bphase(1+bestbpm) += beststr;
 end

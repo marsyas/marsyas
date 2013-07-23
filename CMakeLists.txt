@@ -9,8 +9,8 @@ endif()
 project(marsyas ${MARSYAS_LANGUAGES})
 
 set(MARSYAS_VERSION_MAJOR "0")
-set(MARSYAS_VERSION_MINOR "4")
-set(MARSYAS_VERSION_PATCH "9-dev")
+set(MARSYAS_VERSION_MINOR "5")
+set(MARSYAS_VERSION_PATCH "0-alpha")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
