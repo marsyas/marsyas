@@ -231,9 +231,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		  mrs_natural period_int = (mrs_natural)(period+0.5);
 
 
-
 		  if (period_int > 1)
 		  {
+            //cout<<tempo<<"\t"<<period_int;
 			  phase_correlations.create( period_int );
 
 			  for (phase=inSamples_-1; phase > inSamples_-1-period_int; phase--)
@@ -248,18 +248,23 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 					  // 4 beats 
                       if (temp_t >= 0) {
 					   cross_correlation += in(o, temp_t);
+                       //cout<<"\t"<<temp_t;
 					  }
 					   
 					  // slow down by 2.0 
 					  temp_t = phase - b * period_int * 2;
-					  if (temp_t >= 0) 
+					  if (temp_t >= 0) {
 						cross_correlation += 0.5 * in(o, temp_t);
+                       //cout<<"\t"<<temp_t;
+                      }
 					  
 					  // slow down by 3 
 					  temp_t = phase - b * period_int * 3 / 2;
 					  if (temp_t >= 0) {
 						  cross_correlation += 0.5 * in(o, temp_t);
+                       //cout<<"\t"<<temp_t;
 					  }
+          //cout<<endl;
 					
 					  
 				  }
@@ -288,6 +293,9 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 			  tempo_scores(k) = max_crco;
 			  tempo_phases(k) = max_phase;
 			  beats.setval(0.0);
+
+              //printf("\t%f\t%f", max_crco, onset_scores(k));
+              //cout<<endl;
 		  }
 	  }
 	}
@@ -319,12 +327,15 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 	// return the best tempo candidate and the
 	// corresponding score in both the tempo vector
 	// as well as the control phase_tempo
+    mrs_real swap_tempo = tempos(0);
+    mrs_real swap_score = tempo_scores(0);
 	tempos(0) = tempos(max_i);
 	tempo_scores(0) = tempo_scores(max_i);
-	ctrl_phase_tempo_->setValue(tempos(max_i));
 
-	if (max_i != 0) 
-		tempo_scores(max_i) = 0.0;
+	if (max_i != 0) {
+        tempos(max_i) = swap_tempo;
+		tempo_scores(max_i) = swap_score;
+    }
 
 	max_score = 0.0;
 	max_i=0;
@@ -337,8 +348,16 @@ BeatPhase::myProcess(realvec& in, realvec& out)
 		}
 	}
 	
+    swap_tempo = tempos(1);
+    swap_score = tempo_scores(1);
 	tempos(1) = tempos(max_i);
 	tempo_scores(1) = tempo_scores(max_i);
+	if (max_i != 1) {
+        tempos(max_i) = swap_tempo;
+		tempo_scores(max_i) = swap_score;
+    }
+
+	ctrl_phase_tempo_->setValue(tempos(max_i));
 
 
 	// select a tempo for the beat locations

@@ -12,7 +12,6 @@ def calc_pulse_trains(bpm, window, sr):
     num_offsets = period
     samples = len(window)
 
-    #print bpm, period
     bp_mags = numpy.zeros( num_offsets )
     for phase in range(samples-1, samples-1-period, -1):
         #print "# ", phase
@@ -25,12 +24,12 @@ def calc_pulse_trains(bpm, window, sr):
                 mag += window[ind]
             #print ind, mag
             # slow down by 2
-            ind = int(phase - b*2*period)
+            ind = int(phase - b*period*2)
             if ind >= 0:
                 mag += 0.5*window[ind]
             #print ind, mag
             # slow down by 3
-            ind = int(phase - b*1.5*period)
+            ind = int(phase - b*period*3/2)
             if ind >= 0:
                 mag += 0.5*window[ind]
             #print ind, mag
@@ -40,6 +39,7 @@ def calc_pulse_trains(bpm, window, sr):
 
     bp_max = max(bp_mags)
     bp_var = numpy.var(bp_mags)
+    #print bpm, period, bp_max, bp_var
     return bp_max, bp_var
 
 
@@ -58,6 +58,7 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
     bphase = numpy.zeros(defs.BPM_MAX)
     for i in xrange(overlapped.shape[0]):
         cands = candidate_bpms[i]
+        #print "aaaa", len(cands), cands[-1]
         #if i in defs.extra:
         #    cands = range(defs.BPM_MIN, defs.BPM_MAX)
         #    print "BP altering cands"
@@ -97,11 +98,17 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
 
         #if i >= (defs.BP_WINDOWSIZE / defs.BP_HOPSIZE):
         bphase[ int(bestbpm) ] += beststr
+
         #print bestbpm, "\t", beststr
-        for k in range(len(tempo_scores)):
-            #print cands[k], "\t", tempo_scores[k]
-            print tempo_scores[k],
-        print
+        #if i == 15:
+        #    print cands
+        #    print tempo_scores
+        #    exit(1)
+
+        #for k in range(len(tempo_scores)):
+        #    #print cands[k], "\t", tempo_scores[k]
+        #    print "%.4f" % tempo_scores[k],
+        #print
         # zzz
 
         #if i in defs.extra:

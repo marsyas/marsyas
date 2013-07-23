@@ -304,7 +304,8 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     for i in xrange( Hn.shape[0] ):
         these_peaks = find_peaks(defs, harmonic_strengthened_bh[i],
             number=10, peak_neighbors=1)
-        if defs.WRITE_BH:
+        if False:
+        #if defs.WRITE_BH:
             gnd = 120
             has_gnd = False
             tl = []

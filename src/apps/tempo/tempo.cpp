@@ -1357,8 +1357,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 #if 0
         printf("%li\t%f\n", bpm, temposcores(0));
+//zz
 #endif
-
+/*
+        if (ticks == (15+begin_tick_num)) {
+            cout<<tempos<<endl;
+            cout<<temposcores<<endl;
+            exit(1);
+        }
+*/
     }
 
 
@@ -1424,7 +1431,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         svm_sum += (features_normalized(i) * svm_weights[i]);
     }
 
-#if 1
+#if 0
     std::ostringstream features_text;
     features_text << "features_orig:\t";
     for (int i=0; i < features.getCols(); i++) {
