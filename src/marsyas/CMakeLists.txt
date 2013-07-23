@@ -1,10 +1,131 @@
-file(STRINGS CMake-compile-cpp.txt Marsyas_SOURCES)
-file(STRINGS CMake-compile-h.txt   Marsyas_HEADERS)
+set( Marsyas_SOURCES
+  basis.cpp
+  Collection.cpp
+  Color.cpp
+  CommandLineOptions.cpp
+  Communicator.cpp
+  Conversions.cpp
+  fft.cpp
+  FileName.cpp
+  lu.cpp
+  marohtml.cpp
+  marojson.cpp
+  marostring.cpp
+  marosvg.cpp
+  maroxml.cpp
+  MATLABengine.cpp
+  MrsLog.cpp
+  NumericLib.cpp
+  peakView.cpp
+  PeUtilities.cpp
+  QGMMModel.cpp
+  statistics.cpp
+  Stk.cpp
+  Thread.cpp
+  TimeLine.cpp
+  Transcriber.cpp
+  TranscriberExtract.cpp
+  vmblock.cpp
+  WekaData.cpp
 
-file(STRINGS core/CMake-compile-cpp.txt
-  MARSYAS_CORE_SOURCES)
-file(STRINGS core/CMake-compile-h.txt
-  MARSYAS_CORE_HEADERS)
+  core/EvEvent.cpp
+  core/EvExpr.cpp
+  core/EvGetUpd.cpp
+  core/EvValUpd.cpp
+  core/ExCommon.cpp
+  core/ExNode.cpp
+  core/ExParser.cpp
+  core/Expr.cpp
+  core/ExScanner.cpp
+  core/ExSymTbl.cpp
+  core/ExVal.cpp
+  core/MarControl.cpp
+  core/MarControlManager.cpp
+  core/MarControlValue.cpp
+  core/MarSystem.cpp
+  core/MarSystemManager.cpp
+  core/realvec.cpp
+  core/Repeat.cpp
+  core/Scheduler.cpp
+  core/TmControlValue.cpp
+  core/TmParam.cpp
+  core/TmRealTime.cpp
+  core/TmSampleCount.cpp
+  core/TmTime.cpp
+  core/TmTimer.cpp
+  core/TmTimerManager.cpp
+  core/TmVirtualTime.cpp
+)
+
+set( Marsyas_HEADERS
+  basis.h
+  Collection.h
+  Color.h
+  CommandLineOptions.h
+  common_header.h
+  common_source.h
+  Communicator.h
+  Conversions.h
+  DLLDefines.h
+  dsound.h
+  ERBTools.h
+  fft.h
+  FileName.h
+  Heap.h
+  lu.h
+  marohtml.h
+  marojson.h
+  marostring.h
+  marosvg.h
+  maroxml.h
+  marsyas_types.h
+  MATLABengine.h
+  mididevices.h
+  MrsLog.h
+  NumericLib.h
+  peakView.h
+  PeUtilities.h
+  QGMMModel.h
+  static_vq_codebook.h
+  statistics.h
+  Stk.h
+  StrobeList.h
+  Thread.h
+  TimeLine.h
+  TranscriberExtract.h
+  Transcriber.h
+  vmblock.h
+  WekaData.h
+
+  core/EvEvent.h
+  core/EvExpr.h
+  core/EvGetUpd.h
+  core/EvValUpd.h
+  core/ExCommon.h
+  core/ExNode.h
+  core/ExParser.h
+  core/Expr.h
+  core/ExScanner.h
+  core/ExSymTbl.h
+  core/ExVal.h
+  core/MarControlAccessor.h
+  core/MarControl.h
+  core/MarControlManager.h
+  core/MarControlValue.h
+  core/MarSystem.h
+  core/MarSystemManager.h
+  core/realvec.h
+  core/Repeat.h
+  core/Scheduler.h
+  core/TmControlValue.h
+  core/TmParam.h
+  core/TmRealTime.h
+  core/TmSampleCount.h
+  core/TmTime.h
+  core/TmTimer.h
+  core/TmTimerManager.h
+  core/TmVirtualTime.h
+)
 
 file(STRINGS marsystems/CMake-compile-cpp.txt
   MARSYAS_MARSYSTEMS_SOURCES)
@@ -21,12 +142,6 @@ include_directories(optional)
 #list(APPEND Marsyas_SOURCES ${MARSYAS_CORE_SOURCES})
 #list(APPEND Marsyas_HEADERS ${MARSYAS_CORE_HEADERS})
 # expanded version:
-foreach (filename ${MARSYAS_CORE_SOURCES})
-	list(APPEND Marsyas_SOURCES core/${filename})
-endforeach()
-foreach (filename ${MARSYAS_CORE_HEADERS})
-	list(APPEND Marsyas_HEADERS core/${filename})
-endforeach()
 foreach (filename ${MARSYAS_MARSYSTEMS_SOURCES})
 	list(APPEND Marsyas_SOURCES marsystems/${filename})
 endforeach()
