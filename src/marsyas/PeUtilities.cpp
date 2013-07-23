@@ -18,7 +18,10 @@
 
 #include "PeUtilities.h"
 
+#ifdef MARSYAS_AUDIOIO
 #include "AudioSink.h"
+#endif
+
 #include "SoundFileSink.h"
 #include "SoundFileSource.h"
 #include "NumericLib.h"
