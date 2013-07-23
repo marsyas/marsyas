@@ -66,7 +66,7 @@ private:
 
 #if 1
 template <typename T>
-static void set_control_value( MarControlPtr & control, const any & value )
+static void set_control_value( MarControlPtr & control, const any & value, bool update = true )
 {
   T typed_value;
   try {
@@ -74,20 +74,20 @@ static void set_control_value( MarControlPtr & control, const any & value )
   } catch ( bad_any_cast ) {
     return;
   };
-  control->setValue(typed_value);
+  control->setValue(typed_value, update);
 }
 
-static void set_control_value( MarControlPtr & control, const any & value )
+static void set_control_value( MarControlPtr & control, const any & value, bool update = true )
 {
   std::string control_type = control->getType();
   if(control_type == "mrs_bool")
-    set_control_value<bool>(control, value);
+    set_control_value<bool>(control, value, update);
   else if(control_type == "mrs_real")
-    set_control_value<mrs_real>(control, value);
+    set_control_value<mrs_real>(control, value, update);
   else if(control_type == "mrs_natural")
-    set_control_value<mrs_natural>(control, value);
+    set_control_value<mrs_natural>(control, value, update);
   else if(control_type == "mrs_string")
-    set_control_value<mrs_string>(control, value);
+    set_control_value<mrs_string>(control, value, update);
   else {
     MRSERR(
           "Marsyas::Thread::System:: Can not set control value - unsupported type: "
@@ -121,6 +121,7 @@ static any get_control_value( const MarControlPtr & control )
 Runner::Runner(Marsyas::MarSystem * system):
   m_system(system),
   m_thread(0),
+  m_set_controls_event(0),
   m_shared(new Shared)
 {}
 
@@ -136,8 +137,12 @@ void Runner::stop()
   if (m_thread) {
     m_thread->stop();
     m_thread->join();
+
     delete m_thread;
     m_thread = 0;
+
+    delete m_set_controls_event;
+    m_set_controls_event = 0;
   }
 }
 
@@ -148,6 +153,14 @@ Control * Runner::control( const std::string & path )
     return it->second;
   else
     return create_control( path );
+}
+
+void Runner::update()
+{
+  if (isRunning())
+    push_staged_control_values();
+  else
+    m_system->update();
 }
 
 Control * Runner::create_control( const std::string & control_path )
@@ -188,6 +201,31 @@ Control * Runner::create_control( const std::string & control_path )
   m_shared->controls.insert(std::pair<std::string, Control*>(control_path, control));
 
   return control;
+}
+
+void Runner::enqueue_control_value(const MarControlPtr & control,
+                                   const any & value,
+                                   bool push)
+{
+  if (push)
+  {
+    push_request( new SetControlEvent(control, value) );
+  }
+  else
+  {
+    if (!m_set_controls_event)
+      m_set_controls_event = new SetControlsEvent;
+
+    m_set_controls_event->control_values[control] = value;
+  }
+}
+
+void Runner::push_staged_control_values()
+{
+  if (m_set_controls_event) {
+    push_request( m_set_controls_event );
+    m_set_controls_event = 0;
+  }
 }
 
 void Runner::push_request( Event * request )
@@ -257,6 +295,20 @@ void RunnerThread::process_requests()
         set_control_value(control, request->value );
       break;
     }
+    case SetControls:
+    {
+      SetControlsEvent *request = static_cast<SetControlsEvent*>(event);
+      for( std::pair<const MarControlPtr, any> &mapping : request->control_values )
+      {
+        const bool do_not_update = false;
+        //cout << "MarSystemThread: setting staged control: " << mapping.first->getName() << endl;
+        // FIXME: evil const_cast:
+        MarControlPtr & settable_control = const_cast<MarControlPtr &>(mapping.first);
+        set_control_value(settable_control, mapping.second, do_not_update);
+      }
+      m_system->update();
+      break;
+    }
     default:
       MRSERR("Marsyas::Thread::System:: unsupported event type: " << event->type);
     }
@@ -269,19 +321,19 @@ void RunnerThread::process_requests()
 
 any Control::value() const
 {
-  if (m_thread->isRunning())
+  if (m_runner->isRunning())
     return m_atomic->value();
   else
     return get_control_value( m_atomic->systemControl() );
 }
 
-void Control::setValue(const any &value)
+void Control::setValue(const any &value, bool update)
 {
-  if (m_thread->isRunning())
-    m_thread->push_request
-        ( new SetControlEvent(m_atomic->systemControl(), value) );
+  MarControlPtr & control = m_atomic->systemControl();
+  if (m_runner->isRunning())
+    m_runner->enqueue_control_value( control, value, update );
   else
-    set_control_value( m_atomic->systemControl(), value );
+    set_control_value( control, value, update );
 }
 
 

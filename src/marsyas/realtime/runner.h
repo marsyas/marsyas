@@ -58,6 +58,11 @@ public:
 
   Control * control( const std::string & path );
 
+  /**
+  @brief Perform staged control value changes
+  */
+  void update();
+
 #if 0
   any controlValue( const std::string & path )
   {
@@ -89,12 +94,16 @@ private:
 
   Control * create_control( const std::string & path );
 
+  void enqueue_control_value( const MarControlPtr & control, const any & value, bool push = true );
+  void push_staged_control_values();
+
   void push_request( Event * request );
   void delete_processed_requests();
 
 private:
   MarSystem * m_system;
   RunnerThread *m_thread;
+  SetControlsEvent *m_set_controls_event;
 
   struct Shared {
     Shared(): request_queue(1000) {}
@@ -111,7 +120,7 @@ public:
 
   any value() const;
 
-  void setValue(const any &value);
+  void setValue(const any &value, bool update = true);
 
   template <typename T>
   bool isValueType()
@@ -128,8 +137,8 @@ private:
   friend class Runner;
   friend class RunnerThread;
 
-  Control( Runner * thread, const std::string & path, AtomicControl * atomic ):
-    m_thread(thread),
+  Control( Runner * runner, const std::string & path, AtomicControl * atomic ):
+    m_runner(runner),
     m_path(path),
     m_atomic(atomic)
   {}
@@ -142,7 +151,7 @@ private:
   void pull() { m_atomic->pull(); }
   void push() { m_atomic->push(); }
 
-  Runner * m_thread;
+  Runner * m_runner;
   std::string m_path;
   AtomicControl * m_atomic;
 };

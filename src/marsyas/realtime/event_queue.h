@@ -25,6 +25,7 @@
 
 #include <atomic>
 #include <list>
+#include <map>
 #include <string>
 #include <iostream>
 
@@ -108,6 +109,7 @@ private:
 enum EventType
 {
   SetControl,
+  SetControls,
   SetControlValue,
 };
 
@@ -133,6 +135,12 @@ struct SetControlEvent : Event
 
   MarControlPtr control;
   any value;
+};
+
+struct SetControlsEvent : Event
+{
+  SetControlsEvent(): Event(SetControls) {}
+  std::map<MarControlPtr, any> control_values;
 };
 
 } // namespace RealTime

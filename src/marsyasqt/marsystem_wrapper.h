@@ -116,6 +116,11 @@ public:
 
 	Control * control( const QString & path );
 
+  void update()
+  {
+    m_runner.update();
+  }
+
 private slots:
 	void removeControl( QObject * object );
 
@@ -139,9 +144,9 @@ public:
 		return variant_from_any( m_thread_control->value() );
 	}
 
-	virtual void setValue( const QVariant & value )
+	virtual void setValue( const QVariant & value, bool update = true )
 	{
-		m_thread_control->setValue( any_from_variant(value) );
+		m_thread_control->setValue( any_from_variant(value), update );
 	}
 
 	QString path() const { return QString::fromStdString( m_thread_control->path() ); }
