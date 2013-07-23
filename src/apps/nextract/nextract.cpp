@@ -58,6 +58,8 @@ mrs_bool chromaFeature_ = false;
 mrs_bool rmsFeature_ = false;
 mrs_bool yinFeature_ = false;
 
+mrs_natural numMfccs_ = 13;
+
 mrs_string outputFormat_ = "libsvm";
 
 CommandLineOptions cmdOptions_;
@@ -100,6 +102,8 @@ printHelp(string progName)
   cerr << "         --scf          : Output spectral crest factor features." << endl;
   cerr << "         --chroma       : Output chroma features." << endl;
 
+  cerr << "         --numMfccs     : Number of MFCCoefficients to output." << endl;
+
   // cerr << "-zcrs    --zeroCrossings                        : Output zero crossings as a feature." << endl;
   // cerr << "-lsp     --lineSpectralPair                     : Output line spectral pair features." << endl;
   // cerr << "-lpcc    --linearPredictionCepstralCoefficients : Output linear prediction cepstral coefficients features." << endl;
@@ -137,6 +141,8 @@ void initOptions()
   cmdOptions_.addBoolOption("scf","", false);
   cmdOptions_.addBoolOption("chroma", "", false);
 
+  cmdOptions_.addNaturalOption("numMfccs", "", 13);
+
   // cmdOptions_.addBoolOption("zeroCrossings", "zcrs", false);
   // cmdOptions_.addBoolOption("lineSpectralPair", "lsp", false);
   // cmdOptions_.addBoolOption("linearPredictionCepstralCoefficients", "lpcc", false);
@@ -165,6 +171,8 @@ void loadOptions()
   sfmFeature_ = cmdOptions_.getBoolOption("sfm");
   scfFeature_ = cmdOptions_.getBoolOption("scf");
   chromaFeature_ = cmdOptions_.getBoolOption("chroma");
+
+  numMfccs_ = cmdOptions_.getNaturalOption("numMfccs");
 
   rmsFeature_ = cmdOptions_.getBoolOption("rms");
   yinFeature_ = cmdOptions_.getBoolOption("yin");
@@ -228,6 +236,8 @@ void extract(string inCollectionName)
     MarSystem* spectralFanout = mng.create("Fanout", "spectralFanout");
     if (mfccFeature_) {
       spectralFanout->addMarSystem(mng.create("MFCC", "mfcc"));
+      cout << "numMfccs_=" << numMfccs_ << endl;
+      spectralFanout->updControl("MFCC/mfcc/mrs_natural/coefficients", numMfccs_);
     }
     
     if (centroidFeature_) {
