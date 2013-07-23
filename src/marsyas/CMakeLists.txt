@@ -51,6 +51,9 @@ if(MARSYAS_AUDIOIO)
 	)
 endif()
 
+list(APPEND Marsyas_SOURCES
+	realtime/runner.cpp
+)
 
 ## OTHERLIBS
 
