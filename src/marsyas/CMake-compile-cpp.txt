@@ -20,7 +20,6 @@ PeUtilities.cpp
 QGMMModel.cpp
 statistics.cpp
 Stk.cpp
-SVMClassifier.cpp
 Thread.cpp
 TimeLine.cpp
 Transcriber.cpp
