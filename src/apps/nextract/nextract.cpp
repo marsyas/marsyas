@@ -25,6 +25,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <vector> 
 #include "Collection.h"
 #include "MarSystemManager.h"
@@ -307,11 +308,10 @@ void extract(string inCollectionName)
 
       for (int i = 0; i < data.getRows(); i++) {
 
-        if (outputFormat_ == "sonicvisualiser") {
-          ofs << data(i, 0) << " ";
-        } else {
-          ofs << i+1 << ":" << data(i, 0) << " ";
+        if (outputFormat_ == "libsvm") {
+          ofs << i+1 << ":";
         }
+        ofs << data(i, 0) << " ";
       }
       ofs << endl;
     }
