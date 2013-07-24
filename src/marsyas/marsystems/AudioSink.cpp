@@ -164,18 +164,6 @@ AudioSink::initRtAudio(
       MRSWARN("AudioSink: audio backend '" << backend << "' not supported.");
   }
 
-#ifdef MARSYAS_MACOSX
-  // hack to get 22050Hz sound files to play
-  // ok on OS X that by default supports on 44100
-  // without utilizing explicit resampling
-  if (sample_rate == 22050)
-  {
-
-    sample_rate = 44100;
-    block_size = 2 * block_size;
-  }
-#endif	
-
   if (audio_ == NULL)
     audio_ = new RtAudio(rt_audio_api);
   else if (audio_->isStreamOpen())
@@ -433,61 +421,6 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
   shared.condition.notify_all();
   shared.mutex.unlock();
 
-#if 0
-
-  if (shared.srate == 22050)
-    nBufferFrames = nBufferFrames/2;
-
-  //...
-
-  for (unsigned int t=0; t < nBufferFrames; t++)
-  {
-    const int t4 = 4 * t;
-    const int t2 = 2 * t;
-
-    if (odata->srate == 22050)		// hack to get 22050 working without resampling                                        // on OS X that typically only support 44k
-    {
-
-      if (odata->inchannels == 1)
-      {
-        mrs_real val = ringBuffer(0, rp);
-        data[t4] = val;
-        data[t4+1] = val;
-        data[t4+2] = val;
-        data[t4+3] = val;
-      }
-      else
-      {
-        for (int j=0; j < (int)odata->inchannels; j++)
-        {
-          data[t4+j] = ringBuffer(0+j,rp);
-          data[t4+1+j] = ringBuffer(0+j,rp);
-        }
-      }
-    }
-    else						// default case - use actual srate
-    {
-
-      if (odata->inchannels == 1)
-      {
-        mrs_real val = ringBuffer(0,rp);
-        data[t2] = val;
-        data[t2+1] = val;
-
-      }
-      else
-      {
-
-
-        for (int j=0; j < (int)odata->inchannels; j++)
-        {
-          data[t2+j] = ringBuffer(j,rp);
-        }
-      }
-    }
-    rp = ++rp % odata->ringBufferSize;
-  }
-#endif
   return 0;
 }
 
