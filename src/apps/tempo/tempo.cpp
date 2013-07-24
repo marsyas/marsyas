@@ -78,6 +78,9 @@
 // 2: SVM-based doubling
 #define POST_DOUBLING 2
 
+#define WRITE_INTERMEDIATE 0
+#define DISPLAY_SVM 1
+
 
 #define WINSIZE 1024 //(2048?)
 #define HOPSIZE 512 //(512)
@@ -1160,6 +1163,15 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     MarSystem *onset_strength = onset_strength_signal_flux(sfName);
     MarSystem *beatTracker = mng.create("Series/beatTracker");
 
+#if WRITE_INTERMEDIATE
+    onset_strength->addMarSystem(mng.create("PlotSink", "plotsink"));
+    onset_strength->updControl("PlotSink/plotsink/mrs_string/filename",
+            "out/onset_signal_strength.txt");
+    onset_strength->updControl("PlotSink/plotsink/mrs_bool/sequence", false);
+    onset_strength->updControl("PlotSink/plotsink/mrs_bool/single_file", true);
+    onset_strength->updControl("PlotSink/plotsink/mrs_bool/no_ticks", true);
+#endif
+
 
     onset_strength->addMarSystem(mng.create("ShiftInput/si2"));   // overlap for the onset strength signal
 
@@ -1332,6 +1344,11 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
 
 
+
+#if WRITE_INTERMEDIATE
+    ofstream out_bh;
+    out_bh.open("out/beat_histogram.txt");
+#endif
     // middle: actual data, the input BH buffer is full
     mrs_natural end_tick_num = num_ticks - 1;
     for (; ticks<end_tick_num; ticks++) {
@@ -1339,14 +1356,17 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         //mrs_realvec input = onset_strength->getControl("mrs_realvec/processedData")->to<mrs_realvec>();
         //cout<<"middle:\t"<<input(0,0)<<"\t"<<input(0,2047)<<endl;
 
-#if 0
+#if WRITE_INTERMEDIATE
         mrs_realvec bh_candidates = beatTracker->getctrl("FlowThru/tempoInduction/MaxArgMax/mxr1/mrs_realvec/processedData")->to<mrs_realvec>();
         for (int k=0; k < nCandidates; k++)
         {
             tempos(k) = bh_candidates(2*k+1) / factor;
-            printf("%.2f  ", tempos(k));
+            if (k < nCandidates-1) {
+                out_bh << setiosflags(ios::fixed) << std::setprecision(2) << tempos(k) << "  ";
+            } else {
+                out_bh << tempos(k) << endl;
+            }
         }
-        cout<<"."<<endl;
 #endif
 
         // store best score in bphase
@@ -1367,15 +1387,17 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         }
 */
     }
-
+#if WRITE_INTERMEDIATE
+    out_bh.close();
+#endif
 
     // Find the max bin of the histogram created from the
     // BeatPhase tempo candidates
     mrs_real bhmax = 0.0;
     mrs_natural max_i = 0;
 
-#if 0
-   bphase.writeText("beat_phase.txt");
+#if WRITE_INTERMEDIATE
+   bphase.writeText("out/beat_phase.txt");
 #endif
 
 
@@ -1431,7 +1453,7 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
         svm_sum += (features_normalized(i) * svm_weights[i]);
     }
 
-#if 0
+#if DISPLAY_SVM
     std::ostringstream features_text;
     features_text << "features_orig:\t";
     for (int i=0; i < features.getCols(); i++) {
@@ -1447,6 +1469,27 @@ tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
     cout << features_normalized_text.str() << endl;
 
     cout<<"svm_sum:\t"<<svm_sum<<endl;
+#endif
+
+#if WRITE_INTERMEDIATE
+    ofstream out_svm;
+    out_svm.open("out/doubling_heuristic_svm.txt");
+
+    ostringstream features_text2;
+    features_text2 << "features_orig:\t";
+    for (int i=0; i < features.getCols(); i++) {
+        features_text2 << features(i) << "\t";
+    }
+    out_svm << features_text2.str() << endl;
+
+    std::ostringstream features_normalized_text2;
+    features_normalized_text2 << "features_normalized:\t";
+    for (int i=0; i < features_normalized.getCols(); i++) {
+        features_normalized_text2 << features_normalized(i) << "\t";
+    }
+    out_svm << features_normalized_text2.str() << endl;
+
+    out_svm << svm_sum << endl;
 #endif
 
 
