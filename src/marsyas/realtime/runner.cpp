@@ -60,7 +60,7 @@ private:
 
   Runner::Shared * m_shared;
 
-  std::atomic_bool m_stop;
+  std::atomic<bool> m_stop;
   std::thread m_thread;
 };
 

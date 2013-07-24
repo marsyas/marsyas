@@ -32,7 +32,6 @@
 namespace Marsyas {
 namespace RealTime {
 
-using std::atomic_bool;
 using std::list;
 using std::string;
 
@@ -55,7 +54,7 @@ struct Event
 private:
   friend class EventQueue;
 
-  atomic_bool processed;
+  std::atomic<bool> processed;
 
 };
 
