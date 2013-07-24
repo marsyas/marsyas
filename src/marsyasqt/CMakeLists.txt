@@ -19,7 +19,7 @@ set(marsyasqt_HEADERS
   qosctypes.h
 )
 
-if(MARSYAS_CPP11)
+if(MARSYAS_REALTIME)
   list(APPEND marsyasqt_SOURCES marsystem_wrapper.cpp)
   list(APPEND marsyasqt_HEADERS marsystem_wrapper.h)
 endif()

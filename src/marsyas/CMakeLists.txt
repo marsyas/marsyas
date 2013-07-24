@@ -127,7 +127,7 @@ set( Marsyas_HEADERS
   core/TmVirtualTime.h
 )
 
-if(MARSYAS_CPP11)
+if(MARSYAS_REALTIME)
   list(APPEND Marsyas_SOURCES realtime/runner.cpp)
   list(APPEND Marsyas_HEADERS
     realtime/any.h
