@@ -42,7 +42,7 @@ mrs_natural winSize_ = 512;
 mrs_natural hopSize_ = 512;
 mrs_natural stereo_ = false;
 
-string outputName_ = EMPTYSTRING;
+string outputFilename_ = EMPTYSTRING;
 mrs_bool timeOutput_ = false;
 
 mrs_bool mfccFeature_ = false;
@@ -61,6 +61,7 @@ mrs_bool yinFeature_ = false;
 mrs_natural numMfccs_ = 13;
 
 mrs_natural downsample_ = 1;
+string wekaFilename_ = EMPTYSTRING;
 
 mrs_string outputFormat_ = "libsvm";
 
@@ -115,8 +116,9 @@ printHelp(string progName)
 
   cerr << "-ds      --downsample                                  : Downsampling ratio" << endl;
 
-  cerr << "-o       --output                               : File to save data to." << endl;
-  cerr << "-of       --outputFormat_                               : Output file format (libsvm, sonicvisualiser)" << endl;
+  cerr << "-o       --outputFilename                             : File to save data to." << endl;
+  cerr << "-of      --outputFormat                                : Output file format (libsvm, sonicvisualiser)" << endl;
+  cerr << "-w       --wekafile                : weka .arff filename " << endl;
   
   return 0;
 }
@@ -156,8 +158,9 @@ void initOptions()
 
   cmdOptions_.addNaturalOption("downsample", "ds", 1);
 
-  cmdOptions_.addStringOption("output", "o", EMPTYSTRING);
-  cmdOptions_.addStringOption("outputFormat_", "of", "libsvm");
+  cmdOptions_.addStringOption("outputFilename", "o", EMPTYSTRING);
+  cmdOptions_.addStringOption("outputFormat", "of", "libsvm");
+  cmdOptions_.addStringOption("wekaFilename", "w", EMPTYSTRING);
 }
 
 void loadOptions()
@@ -185,8 +188,9 @@ void loadOptions()
 
   downsample_ = cmdOptions_.getNaturalOption("downsample");
 
-  outputName_ = cmdOptions_.getStringOption("output");
-  outputFormat_ = cmdOptions_.getStringOption("outputFormat_");
+  outputFilename_ = cmdOptions_.getStringOption("outputFilename");
+  outputFormat_ = cmdOptions_.getStringOption("outputFormat");
+  wekaFilename_ = cmdOptions_.getStringOption("wekaFilename");
 
   // // If no features were explicitly set, out a small standard set of features
   // if ((mfccFeature_ == false) && 
@@ -286,6 +290,11 @@ void extract(string inCollectionName)
     mainFanout->addMarSystem(spectralSeries);
   }
   net->addMarSystem(mainFanout);
+
+  if (wekaFilename_ != EMPTYSTRING) {
+    net->addMarSystem(mng.create("Annotator", "annotator"));
+	net->addMarSystem(mng.create("WekaSink", "wsink"));
+  }
   
 
   if(memSize_ != 0) {
@@ -293,13 +302,33 @@ void extract(string inCollectionName)
     net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize_);
   }
 
+  net->linkControl("mrs_real/currentLabel",
+                   "SoundFileSource/src/mrs_real/currentLabel");
+  net->linkControl("mrs_natural/nLabels",
+                   "SoundFileSource/src/mrs_natural/nLabels");
+  net->linkControl("mrs_string/labelNames",
+                   "SoundFileSource/src/mrs_string/labelNames");
+  net->linkControl("mrs_string/currentlyPlaying",
+                   "SoundFileSource/src/mrs_string/currentlyPlaying");
+
+  net->linkControl("WekaSink/wsink/mrs_string/currentlyPlaying",
+                   "mrs_string/currentlyPlaying");
+  net->linkControl("WekaSink/wsink/mrs_string/labelNames",
+                   "mrs_string/labelNames");
+  net->linkControl("WekaSink/wsink/mrs_natural/nLabels",
+                   "mrs_natural/nLabels");
+  net->linkControl("Annotator/annotator/mrs_real/label",
+                   "mrs_real/currentLabel");
+
   net->updControl("SoundFileSource/src/mrs_string/filename", inCollectionName);
   net->updControl("mrs_natural/inSamples", hopSize_);
   net->updControl("ShiftInput/si/mrs_natural/winSize", winSize_);
+  net->updControl("WekaSink/wsink/mrs_string/filename", wekaFilename_);
+
 
   ofstream ofs;
-  if (outputName_ != EMPTYSTRING) {
-    ofs.open(outputName_.c_str());
+  if (outputFilename_ != EMPTYSTRING) {
+    ofs.open(outputFilename_.c_str());
   }
 
   mrs_realvec data;
@@ -307,16 +336,23 @@ void extract(string inCollectionName)
   float currentTime;
   float sampleRate = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
+  mrs_string previouslyPlaying, currentlyPlaying;
+  MarControlPtr ctrl_previouslyPlaying = net->getctrl("mrs_string/previouslyPlaying");
+  MarControlPtr ctrl_currentlyPlaying = net->getctrl("mrs_string/currentlyPlaying");
+
   int i = 0;
   while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() ){
     net->tick();
     numTicks++;
 
     data = net->getctrl("mrs_realvec/processedData")->to<mrs_realvec>();
+    if (wekaFilename_ != EMPTYSTRING) {
+      net->updControl("WekaSink/wsink/mrs_string/injectComment", "% filename " + currentlyPlaying);
+    }
 
     currentTime = (numTicks * hopSize_) / sampleRate;
 
-    if (outputName_ != EMPTYSTRING) {
+    if (outputFilename_ != EMPTYSTRING) {
       if (i % downsample_ == 0) {
         if (timeOutput_) {
           ofs << currentTime << " ";
@@ -338,7 +374,7 @@ void extract(string inCollectionName)
     i++;
   }
 
-  if (outputName_ != EMPTYSTRING) {
+  if (outputFilename_ != EMPTYSTRING) {
     ofs.close();
   }
 
