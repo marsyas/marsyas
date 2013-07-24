@@ -34,50 +34,45 @@ which it signals to MainWindow to update the GUI.
 #include <QObject> 
 #include <QTimer>
 #include "MarSystemManager.h" 
-#include "MarSystemQtWrapper.h"
+#include "marsystem_wrapper.h"
 
 class Mapper: public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    Mapper();
+  Mapper();
   ~Mapper();
   
 public slots: 
-   void open(QString fileName, int val);
+  void open(QString fileName, int val);
   void setPos(int value);
-  void setPos(); 
   void setGain(int value);
   void play();
   void pause();
   
 signals: 
-    void posChanged(int val);
-    void durationChanged(Marsyas::mrs_real val);
-    void timeChanged(Marsyas::mrs_real val);
+  void posChanged(int val);
+  void durationChanged(Marsyas::mrs_real val);
+  void timeChanged(Marsyas::mrs_real val);
   
+private slots:
+  void emitControlValues();
+
 private:
-  Marsyas::mrs_real duration_;
-  
+  Marsyas::MarSystem* m_system;// the playback network
 
-  MarControlPtr filePtr_;
-  MarControlPtr gainPtr_;
-  MarControlPtr repPtr_;
-  MarControlPtr posPtr_;
-  MarControlPtr sizePtr_;
-  MarControlPtr osratePtr_;
-  MarControlPtr initPtr_; 
-  
-  
-  
-  MarsyasQt::MarSystemQtWrapper* mwr_;   // the wrapper that turns 
-                            // any MarSystem into 
-                            // Qt-like object with 
-                            // signals and slots 
-  
-  Marsyas::MarSystem* pnet_;// the playback network 
+  MarsyasQt::System * m_qsystem;
 
+  MarsyasQt::Control * m_fileControl;
+  MarsyasQt::Control * m_gainControl;
+  MarsyasQt::Control * m_repetitionControl;
+  MarsyasQt::Control * m_positionControl;
+  MarsyasQt::Control * m_sizeControl;
+  MarsyasQt::Control * m_outputSampleRateControl;
+  MarsyasQt::Control * m_initAudioControl;
+
+  QTimer m_controlEmitTimer;
 };
 
 #endif

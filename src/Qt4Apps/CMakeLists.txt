@@ -32,7 +32,6 @@ endmacro (marsyas_qt4app)
 
 
 ## build apps
-add_subdirectory(MarPlayer)
 add_subdirectory(MarPhasevocoder)
 add_subdirectory(MarLpc)
 add_subdirectory(MarGrid)
@@ -44,6 +43,10 @@ add_subdirectory(MarOscMultiGain)
 add_subdirectory(MarMonitors)
 add_subdirectory(Marx2DGraph)
 add_subdirectory(Marx2DStackedGraphs)
+
+if(MARSYAS_CPP11)
+  add_subdirectory(MarPlayer)
+endif()
 
 if (MARSYAS_OPENGL)
 	add_subdirectory(MarSndPeek)

@@ -127,6 +127,18 @@ set( Marsyas_HEADERS
   core/TmVirtualTime.h
 )
 
+if(MARSYAS_CPP11)
+  list(APPEND Marsyas_SOURCES realtime/runner.cpp)
+  list(APPEND Marsyas_HEADERS
+    realtime/any.h
+    realtime/queue.h
+    realtime/realvec_queue.h
+    realtime/event_queue.h
+    realtime/atomic_control.h
+    realtime/runner.h
+  )
+endif()
+
 file(STRINGS marsystems/CMake-compile-cpp.txt
   MARSYAS_MARSYSTEMS_SOURCES)
 file(STRINGS marsystems/CMake-compile-h.txt
@@ -165,7 +177,6 @@ if(MARSYAS_AUDIOIO)
 		marsystems/AudioSinkBlocking.h
 	)
 endif()
-
 
 ## OTHERLIBS
 
@@ -353,8 +364,8 @@ endif (MARSYAS_GSTREAMER)
 
 
 else (MARSYAS_STATIC)
-     add_library(marsyas SHARED ${Marsyas_SOURCES} ${Marsyas_HEADERS})
-     TARGET_LINK_LIBRARIES(marsyas ${OS_LIBS})
+	add_library(marsyas SHARED ${Marsyas_SOURCES} ${Marsyas_HEADERS})
+	TARGET_LINK_LIBRARIES(marsyas ${OS_LIBS})
 
 ## LINKING
 if (MARSYAS_MAD)

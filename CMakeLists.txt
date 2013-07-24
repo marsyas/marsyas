@@ -14,6 +14,8 @@ set(MARSYAS_VERSION_PATCH "0-alpha")
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake-modules")
 
+include(${CMAKE_SOURCE_DIR}/cmake-modules/utilities.cmake)
+
 if(NOT MARSYAS_DOCUMENTATION_ONLY)
   if (MARSYAS_TESTS)
     enable_testing()

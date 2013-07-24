@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2005 George Tzanetakis <gtzan@cs.cmu.edu>
+** Copyright (C) 1998-2013 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -21,26 +21,37 @@
 
 
 
+#include "realvec_queue.h"
+#include "MarSystem.h"
 
 #include "RtAudio.h"
 
-#include "MarSystem.h" 
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
 
-
-	class RtAudio;
+class RtAudio;
 
 namespace Marsyas
 {
+
 /**
    \class AudioSource
    \ingroup IO
-   \brief Real-time audio source 
-
-   Real-time Audio Source based on RtAudio4.
+   \brief Receives audio from hardware inputs.
+   \author George Tzanetakis (gtzan@cs.uvic.ca)
+   \author Jakob Leben (jakob.leben@gmail.com)
 
    Controls:
-   - \b mrs_natural/bufferSize [rw] : size of audio buffer (in samples)
-   - \b mrs_bool/initAudio [w] : initialize audio (this should be \em true)
+   - \b mrs_natural/bufferSize [rw] : Desired block size (in frames) for data exchange with the
+   audio backend. After initialization, this may be changed according to limits imposed by the
+   backend.
+   - \b mrs_bool/realtime [w] (default: false) : If true, will minimize buffer to ensure
+   smallest possible latency at the cost of tolerance to processing times of other parts of
+   the network. After changed, requires re-initialization.
+   - \b mrs_bool/initAudio [w] : When set to true, initializes audio backend. Until then, no
+   initialization takes place and no data will be received from the audio input.
+   This allows you to trigger initialization only after having set other controls.
    - \b mrs_bool/hasData [r] : is there any audio input left?
      (End-Of-File not yet reached)
    - \b mrs_real/gain [w] : scales input
@@ -48,84 +59,74 @@ namespace Marsyas
    - \b mrs_natural/nBuffers [DOCME] : DOCME
 */
 
-	
+
 
 
 class AudioSource:public MarSystem
 {
-	private:
+private:
 
+  struct InputData
+  {
+    InputData(): overrun(false) {}
+    InputData(const InputData &): overrun(false) {}
 
-		
-	struct InputData 
-	{
-			mrs_realvec* ringBuffer;
-			unsigned int wp;
-			unsigned int rp;
-			unsigned int nChannels;
-			unsigned int ringBufferSize;
-			unsigned int high_watermark;
-			unsigned int low_watermark;
-			unsigned int samplesInBuffer;
-			
-			AudioSource* myself;
-	} idata;
-		
+    std::mutex mutex;
+    std::condition_variable condition;
 
+    realvec_queue buffer;
 
-		unsigned int getSpaceAvailable();
-		unsigned int getSamplesAvailable();
-	
+    std::atomic<unsigned int> watermark;
+    bool overrun;
 
+    unsigned int sample_rate;
+    unsigned int channel_count;
+  } shared;
 
-		RtAudio* audio_;
+  mrs_natural old_source_block_size_;
+  mrs_natural old_dest_block_size_;
 
-		int bufferSize_;
-		int nBuffers_;
-		int rtSrate_;
-		int rtChannels_;
+  RtAudio* audio_;
 
- 
-		mrs_natural ri_;
-		mrs_natural nChannels_;
-		mrs_natural pnChannels_;
-		
-		mrs_real *data_;  
-		realvec ringBuffer_;
-		mrs_natural ringBufferSize_;
-		mrs_natural pringBufferSize_;
-		mrs_natural pinObservations_;
-		
-		mrs_real gain_;
-		
-		bool isInitialized_;
-		bool stopped_;
-		
-		void addControls();
-		void myUpdate(MarControlPtr sender);
-		
-		void initRtAudio();
-		
-		void start();
-		void stop();
-		
-		void localActivate(bool state);
-		
-		static int recordCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
-		
-	public:
-		AudioSource(std::string name);
-		~AudioSource();
-		MarSystem* clone() const;  
-		
-		void myProcess(realvec& in, realvec& out);
+  bool isInitialized_;
+  bool stopped_;
+
+  void addControls();
+  void myUpdate(MarControlPtr sender);
+
+  void initRtAudio(
+      unsigned int sample_rate,
+      unsigned int *block_size,
+      unsigned int channel_count
+      );
+
+  void start();
+  void stop();
+
+  void localActivate(bool state);
+
+  void clearBuffer();
+  bool reformatBuffer(size_t sourceBlockSize,
+                      size_t destBlockSize,
+                      size_t channel_count,
+                      bool realtime, bool resize);
+
+  static int recordCallback(void *outputBuffer, void *inputBuffer,
+                            unsigned int nBufferFrames, double streamTime, unsigned int status, void *userData);
+
+public:
+  AudioSource(std::string name);
+  ~AudioSource();
+  MarSystem* clone() const;
+
+  void myProcess(realvec& in, realvec& out);
 };
-	
+
 }//namespace Marsyas
 
 
 #endif
 
-	
 
-	
+
+

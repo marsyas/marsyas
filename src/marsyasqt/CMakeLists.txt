@@ -19,6 +19,10 @@ set(marsyasqt_HEADERS
   qosctypes.h
 )
 
+if(MARSYAS_CPP11)
+  list(APPEND marsyasqt_SOURCES marsystem_wrapper.cpp)
+  list(APPEND marsyasqt_HEADERS marsystem_wrapper.h)
+endif()
 
 ## PRE-PROCESSING
 qt4_wrap_cpp( marsyasqt_moc_SOURCES ${marsyasqt_HEADERS})
@@ -35,6 +39,10 @@ include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/optional/)
 add_library(marsyasqt STATIC ${marsyasqt_SOURCES} ${marsyasqt_moc_SOURCES})
 target_link_libraries( marsyasqt ${QT_LIBRARIES} marsyas)
 
+set_target_properties(
+	marsyasqt
+	PROPERTIES COMPILE_FLAGS -std=c++11
+)
 
 ## INSTALLING
 install(FILES ${marsyasqt_HEADERS} DESTINATION include/marsyasqt)

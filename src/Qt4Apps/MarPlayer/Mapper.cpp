@@ -17,15 +17,14 @@
 */
 
 /** 
-    \class Mapper
-    \brief Mapper maps the state of the GUI to MarSystemQtWrapper 
+  \brief  Plays MarSystem and mediates GUI interaction
 
-    MainWindow connects various signals to slots of Mapper 
-	and Mapper converts and maps the corresponding values to 
-	the appropriate slots of MarSystemQtWrapper. Also 
-	Mapper creates the playback network of MarSystems 
-	and also receives updates from the MarSystemQtWrapper 
-	which it signals to MainWindow to update the GUI. 
+  Creates a network of MarSystems, then uses the MarsyasQt::System wrapper
+  on the network.
+  Maps own slots - to which MainWindow connects - to
+  slots of MarsyasQt::Control in order to control the system from GUI.
+  Emits changing values of MarsyasQt::Control (updated as the system is running)
+  via own signals, to which MainWindow connects to update informatino in GUI.
 */
 
 #include "Mapper.h" 
@@ -35,124 +34,108 @@ using namespace MarsyasQt;
 
 Mapper::Mapper()
 {
-	// create the MarSystem network for playback 
-	MarSystemManager mng;  
+  // Create the MarSystem network for playback.
+  MarSystemManager mng;
   
-	pnet_ = mng.create("Series", "pnet_");
-	pnet_->addMarSystem(mng.create("SoundFileSource", "src"));
-	pnet_->addMarSystem(mng.create("Gain", "gain"));
-	pnet_->addMarSystem(mng.create("AudioSink", "dest"));
-	pnet_->updControl("mrs_natural/inSamples", 2048);
+  m_system = mng.create("Series", "pnet_");
+  m_system->addMarSystem(mng.create("SoundFileSource", "src"));
+  m_system->addMarSystem(mng.create("Gain", "gain"));
+  m_system->addMarSystem(mng.create("AudioSink", "dest"));
+  m_system->updControl("mrs_natural/inSamples", 2048);
   
-	pnet_->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
+  m_system->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
   
-  
-	// make a Qt-like thread object wrapped around the MarSystem
-	mwr_ = new MarSystemQtWrapper(pnet_);
-	//start the MarSystemQtWrapper thread
-	mwr_->tickForever();
+  // Create a handy Qt wrapper for the MarSystem.
+  m_qsystem = new MarsyasQt::System(m_system);
 
-	// Create MarControlPtr handles for all the controls 
-	filePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
-	gainPtr_ = mwr_->getctrl("Gain/gain/mrs_real/gain");
-	repPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/repetitions");
-	posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");  
-	sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");  
-	osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");  
-	initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-  
+  // Get handles for all the controls.
+  m_fileControl = m_qsystem->control("SoundFileSource/src/mrs_string/filename");
+  m_gainControl = m_qsystem->control("Gain/gain/mrs_real/gain");
+  m_repetitionControl = m_qsystem->control("SoundFileSource/src/mrs_real/repetitions");
+  m_positionControl = m_qsystem->control("SoundFileSource/src/mrs_natural/pos");
+  m_sizeControl = m_qsystem->control("SoundFileSource/src/mrs_natural/size");
+  m_outputSampleRateControl = m_qsystem->control("SoundFileSource/src/mrs_real/osrate");
+  m_initAudioControl = m_qsystem->control("AudioSink/dest/mrs_bool/initAudio");
 
+  connect( &m_controlEmitTimer, SIGNAL(timeout()), this, SLOT(emitControlValues()) );
 }
 
 Mapper::~Mapper()
 {
-	delete mwr_;
-	delete pnet_;
+  m_qsystem->stop();
+
+  delete m_qsystem;
+  delete m_system;
 }
 
 void 
 Mapper::open(QString fileName, int pos)
 {
-	mwr_->play();
-	// update filename
-	mwr_->updctrl(filePtr_, fileName.toStdString());
-  
+  const bool do_not_update = false;
 
-	//  loop forever the piece [!]
-	mwr_->updctrl(repPtr_, -1.0); 
-  
-	mwr_->updctrl(initPtr_, (mrs_bool)true);
+  // Change filename.
+  m_fileControl->setValue(fileName, do_not_update);
 
-	mrs_natural size = sizePtr_->to<mrs_natural>();
-  
-	mrs_real srate = osratePtr_->to<mrs_real>();
+  // Loop file forever.
+  m_repetitionControl->setValue(-1.0, do_not_update);
 
+  // Always re-initialize audio due to possible changes in
+  // number of channels, etc...
+  m_initAudioControl->setValue(true, do_not_update);
 
-	setPos(pos);
-  
-	Marsyas::mrs_real duration = (size / srate);
-	cout << duration << endl;
-	emit durationChanged(duration);
+  // Apply scheduled control changes.
+  m_qsystem->update();
 
-  
-
-  
-	// timer is used to update the position slider "automatically" 
-	// as the sound is playing 
-	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(setPos()));
-	timer->start(250);
-}
-
-
-/* "automatic" advancement of position */ 
-void 
-Mapper::setPos() 
-{
-	mrs_natural pos = posPtr_->to<mrs_natural>();
-	mrs_natural size = sizePtr_->to<mrs_natural>();
-	mrs_real srate = osratePtr_->to<mrs_real>();
-  
-	mrs_real duration = (pos / srate);
-	emit timeChanged(duration);
-  
-	float rpos = pos * 1.0 / size;
-	int sliderPos = rpos * 100.0;
-	emit posChanged(sliderPos);
+  // Play (if not playing yet).
+  play();
 }
 
 
 /* "manual" advancement of position */ 
 void 
-Mapper::setPos(int val)
+Mapper::setPos(int position_percents)
 {
-	float fval = val / 100.0f;
-  
-	float fsize = 
-		sizePtr_->to<mrs_natural>();
-	fsize *= fval;
-  
-	int size = (int) fsize;
-	mwr_->updctrl(posPtr_, size);
-  
+  int position_samples =
+      (int) m_sizeControl->value().toDouble() * (position_percents / 100.0);
+
+  m_positionControl->setValue(position_samples);
 }
 
 void 
-Mapper::setGain(int val)
+Mapper::setGain(int position_percents)
 {
-	float fval = val / 100.0f;
-	mwr_->updctrl(gainPtr_, fval);
+  m_gainControl->setValue( position_percents / 100.0 );
 }
 
 void 
 Mapper::play()
 {
-	mwr_->play();
+  m_qsystem->start();
+  m_controlEmitTimer.start(200);
 }
 
 void 
 Mapper::pause()
 {
-	mwr_->pause();
+  m_controlEmitTimer.stop();
+  m_qsystem->stop();
 }
 
+void Mapper::emitControlValues()
+{
+  Q_ASSERT(m_qsystem->isRunning());
+
+  int pos = m_positionControl->value().toInt();
+  int size = m_sizeControl->value().toInt();
+  double srate = m_outputSampleRateControl->value().toDouble();
+
+  double duration = size / srate;
+  emit durationChanged(duration);
+
+  double time = (pos / srate);
+  emit timeChanged(time);
+
+  float rpos = pos * 1.0 / size;
+  int sliderPos = rpos * 100.0;
+  emit posChanged(sliderPos);
+}

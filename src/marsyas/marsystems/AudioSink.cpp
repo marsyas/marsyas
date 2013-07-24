@@ -1,5 +1,5 @@
 /*
-** Copyright (C) 1998-2011 George Tzanetakis <gtzan@cs.uvic.ca>
+** Copyright (C) 1998-2013 George Tzanetakis <gtzan@cs.uvic.ca>
 **  
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
@@ -20,8 +20,9 @@
 #include "AudioSink.h"
 
 #include <algorithm>
+#include <cassert>
+#include <cstdlib>
 
- 
 using std::ostringstream;
 using std::cout;
 using std::endl;
@@ -29,36 +30,28 @@ using std::min;
 
 using namespace Marsyas;
 
-AudioSink::AudioSink(mrs_string name):MarSystem("AudioSink", name)
+AudioSink::AudioSink(mrs_string name):
+  MarSystem("AudioSink", name),
+  old_source_block_size_(-1),
+  old_dest_block_size_(-1)
 {
-	audio_ = NULL;
-  
-	pringBufferSize_ = 0;
-	pnChannels_ = 1;
+  audio_ = NULL;
 
+  isInitialized_ = false;
+  stopped_ = true;//lmartins
 
-	rtSrate_ = 0;
-  
-	isInitialized_ = false;
-	stopped_ = true;//lmartins
-  
-	rtSrate_ = 0;
-	bufferSize_ = 0;
-	rtChannels_ = 0;
-	rtDevice_ = 0;
-
-	addControls();
+  addControls();
 }
 
 AudioSink::~AudioSink()
 {
-	delete audio_;
+  delete audio_;
 }
 
 MarSystem* 
 AudioSink::clone() const
 {
-	return new AudioSink(*this);
+  return new AudioSink(*this);
 }
 
 void 
@@ -67,405 +60,367 @@ AudioSink::addControls()
   
   //TODO: Why is this still here?
 #ifdef MARSYAS_MACOSX
-	addctrl("mrs_natural/bufferSize", 512);
+  addctrl("mrs_natural/bufferSize", 512);
 #else
-	addctrl("mrs_natural/bufferSize", 512);
+  addctrl("mrs_natural/bufferSize", 512);
 #endif
 
-	addctrl("mrs_bool/initAudio", false);
-	setctrlState("mrs_bool/initAudio", true);
+  addctrl("mrs_bool/initAudio", false);
+  setctrlState("mrs_bool/initAudio", true);
   
-	addctrl("mrs_natural/device", 0);
+  addctrl("mrs_natural/device", 0);
   
-	addControl("mrs_string/backend", "");
+  addControl("mrs_string/backend", "");
+
+  addControl("mrs_bool/realtime", false);
+  setControlState("mrs_bool/realtime", true);
 }
 
 void 
 AudioSink::myUpdate(MarControlPtr sender)
 {
-	MRSDIAG("AudioSink::myUpdate");
+  MRSDIAG("AudioSink::myUpdate");
 
-	MarSystem::myUpdate(sender);
-	//Set ringBuffer size
-	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  MarSystem::myUpdate(sender);
 
-	ringBufferSize_ = 16 * std::max((mrs_natural)bufferSize_, inSamples_);
-	odata_.ringBufferSize = ringBufferSize_;
-	odata_.high_watermark = ringBufferSize_ / 4;
-	odata_.low_watermark =  ringBufferSize_ /8;
-	odata_.samplesInBuffer = 0;
-	
+  unsigned int source_block_size = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+  unsigned int dest_block_size = getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
+  unsigned int sample_rate = getctrl("mrs_real/israte")->to<mrs_real>();
+  unsigned int channel_count = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  bool realtime = getControl("mrs_bool/realtime")->to<mrs_bool>();
 
-	
-
-	// resize if necessary 
-	nChannels_ = getctrl("mrs_natural/inObservations")->to<mrs_natural>();	
-	if ((ringBufferSize_ > pringBufferSize_)||(nChannels_ != pnChannels_))
-    {
-		ringBuffer_.stretch(nChannels_, ringBufferSize_);
-    }
-	pringBufferSize_ = ringBufferSize_;
-	pnChannels_ = nChannels_;
-
-	
-
-	// initialize RtAudio
-	if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
-		initRtAudio();
-}
-
-
-void 
-AudioSink::initRtAudio()
-{
-	
-	rtSrate_ = (int)getctrl("mrs_real/israte")->to<mrs_real>();
-	srate_ = rtSrate_;
-	bufferSize_ = (int)getctrl("mrs_natural/bufferSize")->to<mrs_natural>();
-	rtDevice_= (int)getctrl("mrs_natural/device")->to<mrs_natural>();
-	mrs_string backend = getControl("mrs_string/backend")->to<mrs_string>();
-
-	RtAudio::Api rt_audio_api = RtAudio::UNSPECIFIED;
-	if (!backend.empty()) {
-		if (backend == "jack")
-			rt_audio_api = RtAudio::UNIX_JACK;
-		else if (backend == "alsa")
-			rt_audio_api = RtAudio::LINUX_ALSA;
-		else if (backend == "pulse")
-			rt_audio_api = RtAudio::LINUX_PULSE;
-		else if (backend == "oss")
-			rt_audio_api = RtAudio::LINUX_OSS;
-		else if (backend == "core-audio")
-			rt_audio_api = RtAudio::MACOSX_CORE;
-		else if (backend == "asio")
-			rt_audio_api = RtAudio::WINDOWS_ASIO;
-		else if (backend == "direct-sound")
-			rt_audio_api = RtAudio::WINDOWS_DS;
-		else
-			MRSWARN("AudioSink: audio backend '" << backend << "' not supported.");
-	}
-
-#ifdef MARSYAS_MACOSX
-	// hack to get 22050Hz sound files to play 
-	// ok on OS X that by default supports on 44100 
-	// without utilizing explicit resampling 
-	if (rtSrate_ == 22050) 
+  if (getctrl("mrs_bool/initAudio")->to<mrs_bool>())
   {
-	  
-		rtSrate_ = 44100;
-		bufferSize_ = 2 * bufferSize_;
+    stop();
+
+    initRtAudio(sample_rate, &dest_block_size, channel_count);
+
+    const bool do_resize_buffer = true;
+    reformatBuffer(source_block_size, dest_block_size, channel_count, realtime, do_resize_buffer);
+
+    shared.sample_rate = sample_rate;
+    shared.channel_count = channel_count;
+    shared.underrun = false;
+
+    isInitialized_ = true;
+
+    //update bufferSize control which may have been changed
+    //by RtAudio (see RtAudio documentation)
+    setctrl("mrs_natural/bufferSize", (mrs_natural) dest_block_size);
+
+    setctrl("mrs_bool/initAudio", false);
   }
-#endif	
+  else if (isInitialized_)
+  {
+    const bool do_not_resize_buffer = false;
 
-	if (audio_ == NULL)
-		audio_ = new RtAudio(rt_audio_api);
-
-    unsigned int bufferFrames;
-	bufferFrames = bufferSize_;
-
-	// hardwire channels to stereo playback even for mono
-	rtChannels_ = 2;
-	
-	RtAudio::StreamParameters oParams;
-	if (rtDevice_ == 0)
- 	{
- 		rtDevice_ = audio_->getDefaultOutputDevice();
- 	}
-	oParams.deviceId = rtDevice_;
-	oParams.nChannels = rtChannels_;
-	oParams.firstChannel = 0; 
-
-	odata_.ringBuffer = &ringBuffer_;
-	odata_.wp = 0;
-	odata_.rp = 0;
-	odata_.ringBufferSize = ringBufferSize_;
-	odata_.inchannels = inObservations_;
-	odata_.myself = this;
-	odata_.srate = srate_;
-	
-
-	//marsyas represents audio data as float numbers
-	RtAudioFormat rtFormat = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
-  
-
-	rtFormat = RTAUDIO_FLOAT64;
-	
-	// RtAudio::StreamOptions options;
-	audio_->showWarnings(true);
-
-	//options.flags |= RTAUDIO_HOG_DEVICE;
-	//options.flags |= RTAUDIO_SCHEDULE_REALTIME;	
-	//options.flags |= RTAUDIO_NONINTERLEAVED;
-	
-
-    if (rtDevice_ != audio_->getDefaultOutputDevice())
+    if (dest_block_size != old_dest_block_size_
+        || sample_rate != shared.sample_rate
+        || (realtime != (shared.watermark == 0))
+        || !reformatBuffer(source_block_size,
+                           dest_block_size,
+                           channel_count,
+                           realtime,
+                           do_not_resize_buffer) )
     {
-        RtAudio::DeviceInfo info;
-        info = audio_->getDeviceInfo(rtDevice_);
+      MRSERR("AudioSink: Reinitialization required!");
+      // stop processing until re-initialized;
+      stop();
+      isInitialized_ = false;
     }
-  
-  
-   try 
-   {
-	   audio_->openStream(&oParams, NULL, rtFormat, rtSrate_, 
-	   &bufferFrames, &playCallback, (void *)&odata_, NULL);
-   }
-   catch (RtError& e) 
-   {
- 	  e.printMessage();
- 	  exit(0);
-   }
-  
-	
-  
-  //update bufferSize control which may have been changed
-  //by RtAudio (see RtAudio documentation)
-  setctrl("mrs_natural/bufferSize", (mrs_natural)bufferFrames);
-  
-	isInitialized_ = true;
-	setctrl("mrs_bool/initAudio", false);
+  }
 
+  old_source_block_size_ = source_block_size;
+  old_dest_block_size_ = dest_block_size;
 }
 
+
 void 
+AudioSink::initRtAudio(
+    unsigned int sample_rate,
+    unsigned int *block_size,
+    unsigned int channel_count
+    )
+{
+  mrs_string backend = getControl("mrs_string/backend")->to<mrs_string>();
+
+  RtAudio::Api rt_audio_api = RtAudio::UNSPECIFIED;
+  if (!backend.empty()) {
+    if (backend == "jack")
+      rt_audio_api = RtAudio::UNIX_JACK;
+    else if (backend == "alsa")
+      rt_audio_api = RtAudio::LINUX_ALSA;
+    else if (backend == "pulse")
+      rt_audio_api = RtAudio::LINUX_PULSE;
+    else if (backend == "oss")
+      rt_audio_api = RtAudio::LINUX_OSS;
+    else if (backend == "core-audio")
+      rt_audio_api = RtAudio::MACOSX_CORE;
+    else if (backend == "asio")
+      rt_audio_api = RtAudio::WINDOWS_ASIO;
+    else if (backend == "direct-sound")
+      rt_audio_api = RtAudio::WINDOWS_DS;
+    else
+      MRSWARN("AudioSink: audio backend '" << backend << "' not supported.");
+  }
+
+  if (audio_ == NULL)
+    audio_ = new RtAudio(rt_audio_api);
+  else if (audio_->isStreamOpen())
+    audio_->closeStream();
+
+  int device_id = (int) getctrl("mrs_natural/device")->to<mrs_natural>();
+  if (device_id == 0)
+  {
+    device_id = audio_->getDefaultOutputDevice();
+  }
+
+
+
+  // expand mono to stereo
+  channel_count = std::max((unsigned int) 2, channel_count);
+
+  RtAudio::StreamParameters output_params;
+  output_params.deviceId = device_id;
+  output_params.nChannels = channel_count;
+  output_params.firstChannel = 0;
+
+  RtAudioFormat format = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
+
+  // Suppress useless warnings when both an AudioSource and
+  // an AudioSink are being opened using ALSA:
+  audio_->showWarnings(false);
+
+  try
+  {
+    audio_->openStream(&output_params, NULL, format, sample_rate,
+                       block_size, &playCallback, (void *)&shared, NULL);
+  }
+  catch (RtError& e)
+  {
+    MRSERR("AudioSink: RtAudio error:");
+    e.printMessage();
+    exit(0);
+  }
+
+  audio_->showWarnings(true);
+}
+
+void
 AudioSink::start()
 {
-	if ( stopped_ && isInitialized_ ) {
-		audio_->startStream();
-		stopped_ = false;
-	}
-}
-
-int 
-AudioSink::playCallback(void *outputBuffer, void *inputBuffer, 
-								unsigned int nBufferFrames, double streamTime, 
-								unsigned int status, void *userData)
-{
-    (void) inputBuffer;
-    (void) streamTime;
-    (void) status;
-
-	unsigned int drain_count	= 0;
-	
-	mrs_real* data = (mrs_real*)outputBuffer;
-	OutputData *odata = (OutputData *)userData;
-	//AudioSink* mythis = (AudioSink *)odata_->myself;
-	realvec& ringBuffer = *(odata->ringBuffer);
-	unsigned int t;
-
-	if (odata->srate == 22050) 
-		nBufferFrames = nBufferFrames/2;
-	static int count = 0;
-	count ++;
-
-	unsigned int samplesAvailable = 0;
-	
-	for (t=0; t < nBufferFrames; t++)
-	{
-		if (odata->wp >= odata->rp)
-			samplesAvailable = odata->wp - odata->rp;
-		else 
-			samplesAvailable = odata->ringBufferSize - (odata->rp - odata->wp);
-		
-
-		if (samplesAvailable >= odata->low_watermark)
-		{
-			
-			const int t4 = 4 * t;
-			const int t2 = 2 * t;
-			
-			if (odata->srate == 22050)		// hack to get 22050 working without resampling                                        // on OS X that typically only support 44k
-			{	      
-				
-				if (odata->inchannels == 1) 
-				{
-					mrs_real val = ringBuffer(0, odata->rp);
-					data[t4] = val;
-					data[t4+1] = val;
-					data[t4+2] = val;
-					data[t4+3] = val;
-				}
-				else
-				{
-					for (int j=0; j < (int)odata->inchannels; j++)
-					{
-						data[t4+j] = ringBuffer(0+j,odata->rp);
-						data[t4+1+j] = ringBuffer(0+j,odata->rp);
-					}
-				}
-			}
-			else						// default case - use actual srate
-			{
-				
-				if (odata->inchannels == 1) 
-				{
-					mrs_real val = ringBuffer(0,odata->rp);
-					data[t2] = val;
-					data[t2+1] = val;
-					
-				}
-				else 
-				{
-
-					
-					for (int j=0; j < (int)odata->inchannels; j++) 
-					{
-						data[t2+j] = ringBuffer(j,odata->rp);
-					}
-				}
-			}
-			odata->rp = ++(odata->rp) % odata->ringBufferSize;
-
-
-			if (odata->wp >= odata->rp)
-				samplesAvailable = odata->wp - odata->rp;
-			else 
-				samplesAvailable = odata->ringBufferSize - (odata->rp - odata->wp);
-			
-
-
-		}
-		
-	}
-	
-		
-		
-	while (samplesAvailable < odata->low_watermark)
-	{
-		SLEEP(5);
-		if (odata->wp >= odata->rp)
-			samplesAvailable = odata->wp - odata->rp;
-		else 
-			samplesAvailable = odata->ringBufferSize - (odata->rp - odata->wp);
-		
-		drain_count++;
-		if (drain_count == 200)
-		{
-			return 1;
-		}
-		
-	}
-	
-	return 0;
+  if ( stopped_ && isInitialized_ )
+  {
+    clearBuffer();
+    audio_->startStream();
+    stopped_ = false;
+  }
 }
 
 void 
 AudioSink::stop()
 {
-	if ( !stopped_) {
+  if ( !stopped_) {
 
-		audio_->stopStream();
-		stopped_ = true;
-	}
+    audio_->stopStream();
+    stopped_ = true;
+  }
 }
 
 
 void
 AudioSink::localActivate(bool state)
 {
-	if(state)
-		start();
-	else
-		stop();
+  if(state)
+    start();
+  else
+    stop();
 }
 
-
-unsigned int 
-AudioSink::getSpaceAvailable() 
+void AudioSink::clearBuffer()
 {
-	unsigned int free = (odata_.rp - odata_.wp -1 + odata_.ringBufferSize) % odata_.ringBufferSize;
-	unsigned int underMark = odata_.high_watermark - getSamplesAvailable();
-	
-	return(min(underMark, free));
+  assert(stopped_);
+  shared.buffer.clear();
+  shared.underrun = false;
 }
 
-
-unsigned int 
-AudioSink::getSamplesAvailable() 
+bool AudioSink::reformatBuffer(size_t source_block_size,
+                               size_t dest_block_size,
+                               size_t channel_count,
+                               bool realtime, bool resize)
 {
-	unsigned int samplesAvailable = (odata_.wp - odata_.rp +odata_.ringBufferSize) % odata_.ringBufferSize;
-	return samplesAvailable;
-}
+  size_t new_capacity = source_block_size + dest_block_size + 1;
+  if (!realtime)
+    new_capacity = std::max( new_capacity * 4, (size_t) 2000 );
 
+  if (resize)
+  {
+    assert(stopped_);
+    size_t size = new_capacity * 2;
+    if (size != shared.buffer.samples() || channel_count != shared.buffer.observations())
+    {
+      bool do_clear_buffer = true;
+      shared.buffer.resize(channel_count, size, new_capacity, do_clear_buffer);
+    }
+    else
+    {
+      shared.buffer.set_capacity(new_capacity);
+    }
+    shared.watermark = realtime ? 0 : new_capacity / 2;
+  }
+  else
+  {
+    if (channel_count != shared.buffer.observations()
+        || new_capacity > shared.buffer.samples())
+    {
+      MRSERR("AudioSink: Can not set requested buffer capacity or channel count without"
+             " resizing the buffer!");
+      return false;
+    }
+
+    //cout << "Changing capacity: " << new_capacity << "/" << shared.buffer.samples() << endl;
+    unsigned int new_watermark = realtime ? 0 : new_capacity / 2;;
+    if (new_capacity > shared.buffer.capacity())
+    {
+      // First increase capacity, then watermark.
+      shared.buffer.set_capacity(new_capacity);
+      shared.watermark = new_watermark;
+    }
+    else
+    {
+      // First decrease watermark, then capacity.
+      shared.watermark = new_watermark;
+      shared.buffer.set_capacity(new_capacity);
+    }
+  }
+
+  return true;
+}
 
 void 
 AudioSink::myProcess(realvec& in, realvec& out)
 {
-	
-	static int count = 0;
-	count ++;
-	 
-
-	//check MUTE
-	if(ctrl_mute_->isTrue())
+  for (mrs_natural t=0; t < inSamples_; t++)
+  {
+    for (mrs_natural o=0; o < inObservations_; o++)
     {
-		for (mrs_natural t=0; t < inSamples_; t++)
-    	{
-			for (mrs_natural o=0; o < inObservations_; o++)
-			{
-				out(o,t) = in(o,t);
-			}
-		}
-    } else {
-		// copy to output 
-		for (mrs_natural t=0; t < inSamples_; t++)
-		{
-			for (mrs_natural o=0; o < inObservations_; o++)
-			{
-				out(o,t) = in(o,t);
-			}
-		}
-		
-		//check if RtAudio is initialized
-		if (!isInitialized_)
-			return;
-		
-		unsigned int samplesInBuffer; 
-		//unsigned int free ; 
-		//unsigned int underMark; 
-		
+      out(o,t) = in(o,t);
+    }
+  }
 
-		// write samples to reservoir 
-		for (mrs_natural t=0; t < onSamples_; t++)
-		{
-			samplesInBuffer = (odata_.wp - odata_.rp +odata_.ringBufferSize) % odata_.ringBufferSize;
-			
-			if (odata_.wp >= odata_.rp)
-				samplesInBuffer = odata_.wp - odata_.rp;
-			else 
-				samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
-			
-			if (samplesInBuffer < odata_.high_watermark)
-			{
-				
-				for (mrs_natural o=0; o < onObservations_; o++)
-					ringBuffer_(o,odata_.wp) = in(o,t);
-				odata_.wp = ++ (odata_.wp) % odata_.ringBufferSize;				
-			}
-			else 
-			{
-				t--;
-				while (samplesInBuffer >= odata_.high_watermark)
-				{
-					SLEEP(5);
-					// odata_.rp = (odata_.rp+512) % odata_.ringBufferSize;
-					
-					if (odata_.wp >= odata_.rp)
-						samplesInBuffer = odata_.wp - odata_.rp;
-					else 
-						samplesInBuffer = odata_.ringBufferSize - (odata_.rp - odata_.wp);
-				}
-			}
-		}
-	}
-	
-	
-	// assure that RtAudio thread is running
-	// (this may be needed by if an explicit call to start()
-	// is not done before ticking or calling process() )
-	if ( stopped_ )
-	{
-	start();
-	}
+  //check if RtAudio is initialized
+  if (!isInitialized_)
+    return;
+
+  // assure that RtAudio thread is running
+  // (this may be needed by if an explicit call to start()
+  // is not done before ticking or calling process() )
+  if ( stopped_ )
+  {
+    start();
+  }
+
+  //check MUTE
+  if(ctrl_mute_->isTrue())
+  {
+    return;
+  }
+
+  realvec_queue_producer producer(shared.buffer, onSamples_);
+
+  //cout << "Pushing " << onSamples_ << endl;
+  if ((mrs_natural) producer.capacity() < onSamples_)
+  {
+    //        cout << "Producer waiting..." << endl;
+    std::unique_lock<std::mutex> locker(shared.mutex);
+
+    shared.condition.wait (
+          locker,
+          [&producer, this]()
+    {
+      //          cout << "Producer awake..." << endl;
+      bool ok = producer.reserve(onSamples_);
+      if (shared.watermark > 0)
+        ok = ok && shared.buffer.write_capacity() >= shared.watermark;
+      return ok;
+    }
+    );
+
+    locker.unlock();
+    //cout << "Producer continuing..." << endl;
+  }
+
+  for (mrs_natural t=0; t < onSamples_; t++)
+  {
+    for (mrs_natural o=0; o < onObservations_; o++)
+      producer(o,t) = in(o,t);
+  }
+  //cout << "Pushed " << onSamples_ << endl;
+}
+
+
+int
+AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
+                        unsigned int nFrames, double streamTime,
+                        unsigned int status, void *userData)
+{
+  (void) inputBuffer;
+  (void) streamTime;
+  (void) status;
+
+
+  mrs_real* data = (mrs_real*)outputBuffer;
+  OutputData &shared = *((OutputData*)userData);
+  unsigned int nChannels = shared.channel_count;
+
+  //cout << "-- Consuming " << nFrames << endl;
+
+  if (shared.underrun)
+    shared.underrun = shared.buffer.read_capacity() <= shared.watermark;
+
+  if (!shared.underrun)
+  {
+    // Limit scope of realvec_queue_consumer!
+    realvec_queue_consumer consumer(shared.buffer, nFrames);
+
+    if (consumer.capacity() >= nFrames)
+    {
+      for (unsigned int t=0; t < nFrames; t++)
+      {
+        unsigned int t2 = t * 2;
+        if (nChannels == 1)
+        {
+          mrs_real val = consumer(0, t);
+          data[t2] = val;
+          data[t2+1] = val;
+        }
+        else
+        {
+          for (unsigned int ch=0; ch < nChannels; ch++) {
+            data[nChannels*t+ch] = consumer(ch, t);
+          }
+        }
+      }
+      //cout << "-- Consumed." << endl;
+    }
+    else
+    {
+      shared.underrun = true;
+      MRSWARN("AudioSink: buffer underrun!");
+    }
+  }
+
+  if (shared.underrun)
+  {
+    // write silence:
+    nChannels = std::max(nChannels, (unsigned int) 2);
+    std::memset(outputBuffer, 0, nChannels * nFrames * sizeof(mrs_real));
+  }
+
+  shared.mutex.lock();
+  shared.condition.notify_all();
+  shared.mutex.unlock();
+
+  return 0;
 }
 
