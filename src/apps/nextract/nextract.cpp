@@ -60,6 +60,8 @@ mrs_bool yinFeature_ = false;
 
 mrs_natural numMfccs_ = 13;
 
+mrs_natural downsample_ = 1;
+
 mrs_string outputFormat_ = "libsvm";
 
 CommandLineOptions cmdOptions_;
@@ -111,6 +113,8 @@ printHelp(string progName)
   cerr << "-rms     --rms                                  : Output rms as a feature." << endl;
   cerr << "-yin     --yin                                  : Output yin pitch estimate as a feature." << endl;
 
+  cerr << "-ds      --downsample                                  : Downsampling ratio" << endl;
+
   cerr << "-o       --output                               : File to save data to." << endl;
   cerr << "-of       --outputFormat_                               : Output file format (libsvm, sonicvisualiser)" << endl;
   
@@ -147,8 +151,10 @@ void initOptions()
   // cmdOptions_.addBoolOption("lineSpectralPair", "lsp", false);
   // cmdOptions_.addBoolOption("linearPredictionCepstralCoefficients", "lpcc", false);
   
-  cmdOptions_.addBoolOption("rms", "rms", false);
-  cmdOptions_.addBoolOption("yin", "yin", false);
+  cmdOptions_.addBoolOption("rms", "", false);
+  cmdOptions_.addBoolOption("yin", "", false);
+
+  cmdOptions_.addNaturalOption("downsample", "ds", 1);
 
   cmdOptions_.addStringOption("output", "o", EMPTYSTRING);
   cmdOptions_.addStringOption("outputFormat_", "of", "libsvm");
@@ -176,6 +182,8 @@ void loadOptions()
 
   rmsFeature_ = cmdOptions_.getBoolOption("rms");
   yinFeature_ = cmdOptions_.getBoolOption("yin");
+
+  downsample_ = cmdOptions_.getNaturalOption("downsample");
 
   outputName_ = cmdOptions_.getStringOption("output");
   outputFormat_ = cmdOptions_.getStringOption("outputFormat_");
@@ -236,7 +244,6 @@ void extract(string inCollectionName)
     MarSystem* spectralFanout = mng.create("Fanout", "spectralFanout");
     if (mfccFeature_) {
       spectralFanout->addMarSystem(mng.create("MFCC", "mfcc"));
-      cout << "numMfccs_=" << numMfccs_ << endl;
       spectralFanout->updControl("MFCC/mfcc/mrs_natural/coefficients", numMfccs_);
     }
     
@@ -300,6 +307,7 @@ void extract(string inCollectionName)
   float currentTime;
   float sampleRate = net->getctrl("SoundFileSource/src/mrs_real/osrate")->to<mrs_real>();
 
+  int i = 0;
   while ( net->getctrl("SoundFileSource/src/mrs_bool/hasData")->to<mrs_bool>() ){
     net->tick();
     numTicks++;
@@ -309,24 +317,25 @@ void extract(string inCollectionName)
     currentTime = (numTicks * hopSize_) / sampleRate;
 
     if (outputName_ != EMPTYSTRING) {
-
-      if (timeOutput_) {
-        ofs << currentTime << " ";
-      } else {
-        ofs << net->getctrl("SoundFileSource/src/mrs_real/currentLabel")->to<mrs_real>() << " ";
-      }
-
-      for (int i = 0; i < data.getRows(); i++) {
-
-        if (outputFormat_ == "libsvm") {
-          ofs << i+1 << ":";
+      if (i % downsample_ == 0) {
+        if (timeOutput_) {
+          ofs << currentTime << " ";
+        } else {
+          ofs << net->getctrl("SoundFileSource/src/mrs_real/currentLabel")->to<mrs_real>() << " ";
         }
-        ofs << data(i, 0) << " ";
+
+        for (int i = 0; i < data.getRows(); i++) {
+
+          if (outputFormat_ == "libsvm") {
+            ofs << i+1 << ":";
+          }
+          ofs << data(i, 0) << " ";
+        }
+        ofs << endl;
       }
-      ofs << endl;
     }
 
-
+    i++;
   }
 
   if (outputName_ != EMPTYSTRING) {
