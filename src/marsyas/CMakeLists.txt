@@ -132,6 +132,7 @@ if(MARSYAS_CPP11)
   list(APPEND Marsyas_HEADERS
     realtime/any.h
     realtime/queue.h
+    realtime/realvec_queue.h
     realtime/event_queue.h
     realtime/atomic_control.h
     realtime/runner.h
