@@ -46,6 +46,7 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 ### USER OPTIONS
+option(MARSYAS_CPP11 "Use C++11 features" ON)
 option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
 option(MARSYAS_INLINE "Inline functions" ON)

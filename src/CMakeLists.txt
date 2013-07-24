@@ -43,12 +43,21 @@ endif(UNIX)
 include (TestBigEndian)
 test_big_endian(MARSYAS_BIGENDIAN)
 
-
 ## user options
 include (marsyas-options)
 
 ## detect packages
 include (marsyas-detect)
+
+## general setup
+
+if(MARSYAS_CPP11)
+  if(CMAKE_COMPILER_IS_GNUCXX)
+    set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
+  elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL Clang)
+    set(CMAKE_CXX_FLAGS "-std=c++11 -stdlib=libc++ ${CMAKE_CXX_FLAGS}")
+  endif()
+endif()
 
 ## CONFIG.H
 configure_file(config.h.in ${CMAKE_BINARY_DIR}/config.h)
