@@ -419,13 +419,14 @@ AudioSink::playCallback(void *outputBuffer, void *inputBuffer,
     {
       shared.underrun = true;
       MRSWARN("AudioSink: buffer underrun!");
-      // write silence:
-      nChannels = std::max(nChannels, (unsigned int) 2);
-      std::memset(outputBuffer, 0, nChannels * nFrames * sizeof(mrs_real));
     }
   }
-  else {
-    //cout << "-- Still underrun" << endl;
+
+  if (shared.underrun)
+  {
+    // write silence:
+    nChannels = std::max(nChannels, (unsigned int) 2);
+    std::memset(outputBuffer, 0, nChannels * nFrames * sizeof(mrs_real));
   }
 
   shared.mutex.lock();
