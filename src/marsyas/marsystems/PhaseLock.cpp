@@ -1267,8 +1267,13 @@ PhaseLock::forceInitPeriods(mrs_string mode)
 			cerr << "Periods as ibi of given last 2 beats + others metrical related: ";
 		}
 		
-		double periods[] = {gtPeriod, (mrs_natural) (gtPeriod * 2.0), (mrs_natural) (gtPeriod * 0.5), 
-				(mrs_natural) (gtPeriod * 3.0), (mrs_natural) (gtPeriod * 0.333)};
+    double periods[] = {
+      (double) gtPeriod,
+      (double) (mrs_natural) (gtPeriod * 2.0),
+      (double) (mrs_natural) (gtPeriod * 0.5),
+      (double) (mrs_natural) (gtPeriod * 3.0),
+      (double) (mrs_natural) (gtPeriod * 0.333)
+    };
 		//assume gt period + (4) others metrical related (2x, 1/2x, 3x, 1/3x)
 		for(int i = 0; i < nrPeriodHyps_; i++)
 		{
@@ -1311,8 +1316,13 @@ PhaseLock::forceInitPeriods(mrs_string mode)
 			cerr << "Periods as ibi of given last 2 beats + others non-related: ";
 		}
 
-		double periods[] = {gtPeriod, (mrs_natural) (gtInitPeriod_ * 1.8), (mrs_natural) (gtPeriod * 1.2), 
-			(mrs_natural) (gtPeriod * 2.3), (mrs_natural) (gtPeriod * 0.7)};
+    double periods[] = {
+      (double) gtPeriod,
+      (double) (mrs_natural) (gtInitPeriod_ * 1.8),
+      (double) (mrs_natural) (gtPeriod * 1.2),
+      (double) (mrs_natural) (gtPeriod * 2.3),
+      (double) (mrs_natural) (gtPeriod * 0.7)
+    };
 		//assume gt period + (4) others metrical related (2x, 1/2x, 3x, 1/3x)
 		for(int i = 0; i < nrPeriodHyps_; i++)
 		{
