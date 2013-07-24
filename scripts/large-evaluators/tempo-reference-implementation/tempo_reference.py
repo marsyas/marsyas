@@ -31,6 +31,7 @@ def load_wavfile(filename):
 
 
 def bpm_of_file(defs, filename, plot=False, regen=False):
+    defs.basename = os.path.splitext(os.path.basename(filename))[0]
     ### handle OSS
     pickle_filename = filename + "-onsets-%i.pickle" % (
         defs.OPTIONS_ONSET)
@@ -124,17 +125,14 @@ def bpm_of_mf(defs, mf_filename, print_info=False):
     num_files = len(coll.data)
     i = 0
     good = 0
-    if SHORT_DEBUG == 1:
-        data = coll.data[:10]
-    else:
-        data = coll.data
-    for dat in data:
+    for dat in coll.data:
         filename = dat[0]
         bpm_ground = float(dat[1])
         #print filename
         bpm_detect, cands = bpm_of_file(defs, filename)
         #out.write("%s\t%s\n" % (filename, cands))
-        bpm_label = ','.join([str("%.3f") % f for f in cands])
+        bpm_label = str(bpm_detect)
+        #bpm_label = ','.join([str("%.3f") % f for f in cands])
         #print filename
         #print cands
         #print bpm_label

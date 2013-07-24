@@ -74,7 +74,6 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
     else:
         filtered_flux = flux
 
-
     if plot:
         ts = numpy.arange( len(filtered_flux) ) / oss_sr
         pylab.plot( ts, filtered_flux, label="filtered")
@@ -97,6 +96,24 @@ def onset_strength_signal(defs, wav_sr, wav_data, plot=False):
         numpy.savetxt('out/onset_strength.txt',
             numpy.vstack( (ts, filtered_flux)).transpose() )
 
+
+    num_bh_frames = int(len(filtered_flux) / defs.BH_HOPSIZE)
+    filtered_flux = filtered_flux[:num_bh_frames * defs.BH_HOPSIZE]
+
+    if defs.CHECK_REFERENCE:
+        calc = filtered_flux
+        ref = numpy.loadtxt(
+            "reference/%s/onset_signal_strength.txt" % defs.basename)
+        delta = calc - ref
+        maxerr = max(abs(delta))
+        if maxerr < 1e-12:
+            print "OSS ok, maximum deviation %.2g" % maxerr
+        else:
+            pylab.figure()
+            pylab.title("OSS: calculated - reference")
+            pylab.plot(delta)
+            pylab.show()
+            exit(1)
     if plot:
         pylab.legend()
     return oss_sr, filtered_flux

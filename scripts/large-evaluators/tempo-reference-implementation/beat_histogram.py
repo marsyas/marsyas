@@ -301,34 +301,17 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     if defs.WRITE_BH:
         combo_peaks = open('out/beat_histogram.txt', 'w')
     peaks = []
+    bh_total = numpy.zeros( (Hn.shape[0], 10) )
     for i in xrange( Hn.shape[0] ):
         these_peaks = find_peaks(defs, harmonic_strengthened_bh[i],
             number=10, peak_neighbors=1)
-        if False:
-        #if defs.WRITE_BH:
-            gnd = 120
-            has_gnd = False
+        bh_total[i,:] = these_peaks
+        if defs.WRITE_BH:
             tl = []
             for b in these_peaks:
                 tl.append("%.2f" % (b/4.0))
-                if gnd*0.96*4 <= b <= gnd*1.04*4:
-                    #print "yes"
-                    has_gnd = True
             text = "  ".join(tl)
             combo_peaks.write( text + "\n")
-            if has_gnd:
-                these_peaks = list(these_peaks)
-                these_peaks.append(0)
-            else:
-                these_peaks = list(these_peaks)
-                these_peaks.append(gnd*4)
-                #these_peaks.append(0)
-                #print these_peaks
-                N = len(overlapped[i])
-                ts = (numpy.arange( N ) + N*i/16.0 ) / oss_sr
-                numpy.savetxt("out/bad-bh-%i.txt" % (i+1),
-                    numpy.vstack( (ts, overlapped[i])).transpose() )
-                defs.extra.append(i)
             bpms = numpy.array(these_peaks)/4.0
             bpms_strengths = [harmonic_strengthened_bh[i][4*b] for b in bpms]
             numpy.savetxt("out/bh-peaks-%i.txt" % (i+1),
@@ -337,6 +320,20 @@ def beat_histogram(defs, oss_sr, oss_data, plot=False):
     if defs.WRITE_BH:
         combo_peaks.close()
 
+    if defs.CHECK_REFERENCE:
+        calc = bh_total / 4.0
+        ref = numpy.loadtxt(
+            "reference/%s/beat_histogram.txt" % defs.basename)
+        delta = calc - ref
+        maxerr = numpy.abs(delta).max()
+        if maxerr < 1e-12:
+            print "BH ok, maximum deviation %.2g" % maxerr
+        else:
+            pylab.figure()
+            pylab.title("BH: calculated - reference")
+            pylab.plot(delta)
+            pylab.show()
+            exit(1)
     #cand_peaks = find_peaks(sHn,
     #        number=8, peak_neighbors=11) / 4.0
     #pylab.plot(numpy.arange(len(sHn))/4.0, sHn)

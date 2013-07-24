@@ -3,7 +3,7 @@ import pylab
 
 import overlap
 
-import scipy.signal
+#import scipy.signal
 
 
 def calc_pulse_trains(bpm, window, sr):
@@ -12,27 +12,35 @@ def calc_pulse_trains(bpm, window, sr):
     num_offsets = period
     samples = len(window)
 
+    #print "#\t%.2f\t%i" % (bpm, period)
+
     bp_mags = numpy.zeros( num_offsets )
     for phase in range(samples-1, samples-1-period, -1):
-        #print "# ", phase
+        #print "# %i" %(phase)
         mag = 0.0
         #num_beats = int( (samples - offset) / period )
         #for beat in range(num_beats):
+        #print
         for b in range(4):
             ind = int(phase - b*period)
             if ind >= 0:
                 mag += window[ind]
-            #print ind, mag
+            #print "\t%i\t%f" % (ind, mag)
+
             # slow down by 2
             ind = int(phase - b*period*2)
             if ind >= 0:
                 mag += 0.5*window[ind]
-            #print ind, mag
+            #print "\t%i\t%f" % (ind, mag)
+
             # slow down by 3
             ind = int(phase - b*period*3/2)
             if ind >= 0:
                 mag += 0.5*window[ind]
-            #print ind, mag
+            #print "\t%i\t%f" % (ind, mag)
+        #if phase == 1869:
+            #print phase, mag
+        #    exit(1)
         #print "   ", i, mag
         bp_mags[samples-1-phase] = mag
         #bp_mags[period] = numpy.sum(values) / numpy.sum(train)
@@ -40,6 +48,11 @@ def calc_pulse_trains(bpm, window, sr):
     bp_max = max(bp_mags)
     bp_var = numpy.var(bp_mags)
     #print bpm, period, bp_max, bp_var
+    #if bpm == 66:
+    #    numpy.savetxt("input.txt", window)
+    #    numpy.savetxt("foo.txt", bp_mags)
+    #numpy.savetxt("mags.txt", bp_mags)
+    #exit(1)
     return bp_max, bp_var
 
 
@@ -72,7 +85,6 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
             mag, var = calc_pulse_trains(bpm, overlapped[i], oss_sr)
             #bpms_max[i] += mag
             #bpms_std[i] += std
-            ### correct up to here
             #print i, bpm, mag, var
             tempo_scores[j] = mag
             #print tempo_scores[j]
@@ -141,7 +153,25 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         pylab.legend()
 
     bpm = bphase.argmax()
-    bpm_strength = bphase[bpm]
+    #bpm_strength = bphase[bpm]
+
+    if defs.CHECK_REFERENCE:
+        calc = bphase
+        ref = numpy.loadtxt(
+            "reference/%s/beat_phase.txt" % defs.basename)
+        delta = calc - ref
+        maxerr = numpy.abs(delta).max()
+        if maxerr < 1e-6:
+            print "BP ok, maximum deviation %.2g" % maxerr
+        else:
+            pylab.figure()
+            pylab.title("BP: calculated - reference")
+            pylab.plot(delta)
+            pylab.figure()
+            pylab.plot(calc)
+            pylab.plot(ref)
+            pylab.show()
+            exit(1)
 
     return bpm, bphase
 
