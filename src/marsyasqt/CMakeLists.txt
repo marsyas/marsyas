@@ -1,5 +1,4 @@
 set(marsyasqt_SOURCES
-  marsystem_wrapper.cpp
   MarSystemQtWrapper.cpp
   QtMarPlot.cpp
   Marx2DGraph.cpp
@@ -10,7 +9,6 @@ set(marsyasqt_SOURCES
 )
 
 set(marsyasqt_HEADERS
-  marsystem_wrapper.h
   MarSystemQtWrapper.h
   QtMarAbout.h
   QtMarPlot.h
@@ -20,6 +18,11 @@ set(marsyasqt_HEADERS
   qoscserver.h
   qosctypes.h
 )
+
+if(MARSYAS_CPP11)
+  list(APPEND marsyasqt_SOURCES marsystem_wrapper.cpp)
+  list(APPEND marsyasqt_HEADERS marsystem_wrapper.h)
+endif()
 
 ## PRE-PROCESSING
 qt4_wrap_cpp( marsyasqt_moc_SOURCES ${marsyasqt_HEADERS})

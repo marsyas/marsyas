@@ -46,6 +46,10 @@ test_big_endian(MARSYAS_BIGENDIAN)
 ## user options
 include (marsyas-options)
 
+if(MARSYAS_AUDIOIO AND NOT MARSYAS_CPP11)
+  message(FATAL_ERROR "MARSYAS_AUDIOIO is enabled, but it requires MARSYAS_CPP11 which is disabled.")
+endif()
+
 ## detect packages
 include (marsyas-detect)
 

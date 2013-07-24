@@ -127,6 +127,17 @@ set( Marsyas_HEADERS
   core/TmVirtualTime.h
 )
 
+if(MARSYAS_CPP11)
+  list(APPEND Marsyas_SOURCES realtime/runner.cpp)
+  list(APPEND Marsyas_HEADERS
+    realtime/any.h
+    realtime/queue.h
+    realtime/event_queue.h
+    realtime/atomic_control.h
+    realtime/runner.h
+  )
+endif()
+
 file(STRINGS marsystems/CMake-compile-cpp.txt
   MARSYAS_MARSYSTEMS_SOURCES)
 file(STRINGS marsystems/CMake-compile-h.txt
@@ -165,10 +176,6 @@ if(MARSYAS_AUDIOIO)
 		marsystems/AudioSinkBlocking.h
 	)
 endif()
-
-list(APPEND Marsyas_SOURCES
-	realtime/runner.cpp
-)
 
 ## OTHERLIBS
 
