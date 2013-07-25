@@ -20,7 +20,7 @@
 #ifndef MARSYAS_AUDIOSINK_H
 #define MARSYAS_AUDIOSINK_H
 
-#include "realvec_queue.h"
+#include "realtime/realvec_queue.h"
 #include "MarSystem.h"
 
 #include "RtAudio.h"

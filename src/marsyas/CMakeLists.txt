@@ -1,3 +1,7 @@
+include_directories(core)
+include_directories(marsystems)
+include_directories(optional)
+
 set( Marsyas_SOURCES
   basis.cpp
   Collection.cpp
@@ -128,8 +132,8 @@ set( Marsyas_HEADERS
 )
 
 if(MARSYAS_REALTIME)
-  list(APPEND Marsyas_SOURCES realtime/runner.cpp)
-  list(APPEND Marsyas_HEADERS
+  set(MARSYAS_REALTIME_SOURCES realtime/runner.cpp)
+  set(MARSYAS_REALTIME_HEADERS
     realtime/any.h
     realtime/queue.h
     realtime/realvec_queue.h
@@ -144,11 +148,6 @@ file(STRINGS marsystems/CMake-compile-cpp.txt
 file(STRINGS marsystems/CMake-compile-h.txt
   MARSYAS_MARSYSTEMS_HEADERS)
 
-
-## split dirs
-include_directories(core)
-include_directories(marsystems)
-include_directories(optional)
 
 # this doesn't work, so I expanded it below:
 #list(APPEND Marsyas_SOURCES ${MARSYAS_CORE_SOURCES})
@@ -327,7 +326,11 @@ endif (MARSYAS_MIDIIO)
 ## ACTUAL BUILD
 
 if (MARSYAS_STATIC)
-	add_library(marsyas_static STATIC ${Marsyas_SOURCES} ${Marsyas_HEADERS})
+  add_library(marsyas_static STATIC
+    ${Marsyas_SOURCES}
+    ${Marsyas_HEADERS}
+    ${MARSYAS_REALTIME_SOURCES}
+  )
 	SET_TARGET_PROPERTIES(marsyas_static PROPERTIES OUTPUT_NAME "marsyas")
 	SET_TARGET_PROPERTIES(marsyas_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 	TARGET_LINK_LIBRARIES(marsyas_static ${OS_LIBS})
@@ -364,7 +367,11 @@ endif (MARSYAS_GSTREAMER)
 
 
 else (MARSYAS_STATIC)
-	add_library(marsyas SHARED ${Marsyas_SOURCES} ${Marsyas_HEADERS})
+  add_library(marsyas SHARED
+    ${Marsyas_SOURCES}
+    ${Marsyas_HEADERS}
+    ${MARSYAS_REALTIME_SOURCES}
+  )
 	TARGET_LINK_LIBRARIES(marsyas ${OS_LIBS})
 
 ## LINKING
@@ -412,6 +419,8 @@ endif (MARSYAS_STATIC)
 ## INSTALLING
 
 install(FILES ${Marsyas_HEADERS} DESTINATION include/marsyas)
+install(FILES ${MARSYAS_REALTIME_HEADERS} DESTINATION include/marsyas/realtime)
+
 if (MARSYAS_STATIC)
   install(TARGETS marsyas_static LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib)
