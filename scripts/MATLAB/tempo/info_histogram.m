@@ -17,7 +17,7 @@ for i = 2:len-2
 	end
 end
 for i = 2:len-2
-	if ((histo(i) > str3) && (histo(i) > str2) && (histo(i) < str1)
+	if ((histo(i) > str3) && (histo(i) < str2) && (histo(i) < str1)
 	    && (histo(i-1) < histo(i)) && (histo(i+1)) < histo(i))
 			str3 = histo(i);
 			bpm3 = i;

@@ -13,12 +13,12 @@ BPM_MIN = 40;
 
 buffered = buffer(oss, WINDOWSIZE, WINDOWSIZE - HOPSIZE, 'nodelay');
 %buffered = buffer(oss, 2048, 1920, 'nodelay');
-bh_sr = oss_sr / HOPSIZE;
-% only include complete buffers
-if mod(length(oss), HOPSIZE) > 0
-	buffered = buffered(:,1:end-1);
-end
 
+% the buffer() function ends up with an extra frame relative to
+% marsyas and python
+buffered = buffered(:,1:end-1);
+
+bh_sr = oss_sr / HOPSIZE;
 
 %%% generalized autocorrelation
 N = WINDOWSIZE;
@@ -164,12 +164,6 @@ for i = 1:num_frames
 	best = flipud(sorted(l:end, :)(:,2));
 	% translate matlab-style indices into BPM
 	bh_cands(i,:) = (best-1.0) / 4.0;
-end
-
-
-if 0
-	python_bh = load('bh-peaks-10.txt')(:,1)';
-	a = python_bh - bh_cands(10,:);
 end
 
 

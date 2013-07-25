@@ -79,18 +79,8 @@ b = [
 ]';
 filtered_flux = filter(b, 1.0, flux);
 
-% remove the last frame to match the marsyas and python output
-oss = filtered_flux;
-%oss = filtered_flux;
 
-if 0
-	python_filtered_flux = load('reference/onset_strength.txt')(:,2);
-	hold on;
-	%plot(oss)
-	%plot(python_filtered_flux, 'g')
-	plot(oss - python_filtered_flux, 'r');
-	pause;
-	exit(1);
-end
+num_bh_frames = fix(length(filtered_flux) / 128);
+oss = filtered_flux(1:num_bh_frames * 128);
 
 

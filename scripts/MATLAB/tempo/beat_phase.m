@@ -10,11 +10,12 @@ HOPSIZE = 128;
 BPM_MAX = 180;
 
 buffered = buffer(oss, WINDOWSIZE, WINDOWSIZE - HOPSIZE, 'nodelay');
+
+% the buffer() function ends up with an extra frame relative to
+% marsyas and python
+buffered = buffered(:,1:end-1);
+
 bp_sr = oss_sr / HOPSIZE;
-% only include complete buffers
-if mod(length(oss), HOPSIZE) > 0
-	buffered = buffered(:,1:end-1);
-end
 
 buffered = buffered';
 
