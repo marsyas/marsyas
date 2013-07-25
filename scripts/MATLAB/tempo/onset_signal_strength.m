@@ -26,9 +26,8 @@ windows = diag(hamm) * buffered;
 
 fft = fft(windows);
 fftabs = abs(fft);
-fftabs = fftabs(1:HOPSIZE+1,:);
-fftabs /= WINDOWSIZE;
-logmag = log(1+1000*fftabs);
+fftabs_reduced = fftabs(1:HOPSIZE+1,:) / WINDOWSIZE;
+logmag = log(1+1000*fftabs_reduced);
 
 num_fft = size(logmag, 1);
 num_frames = size(logmag, 2);
@@ -47,12 +46,12 @@ end
 
 if 0
 	python_flux = load('flux.txt')(:,2);
-	hold on
-	plot(flux)
-	plot(python_flux, 'g')
-	plot(flux-python_flux, 'r')
-	pause
-	exit(1)
+	hold on;
+	plot(flux);
+	plot(python_flux, 'g');
+	plot(flux-python_flux, 'r');
+	pause;
+	exit(1);
 end
 
 
@@ -86,12 +85,12 @@ oss = filtered_flux;
 
 if 0
 	python_filtered_flux = load('reference/onset_strength.txt')(:,2);
-	hold on
+	hold on;
 	%plot(oss)
 	%plot(python_filtered_flux, 'g')
-	plot(oss - python_filtered_flux, 'r')
-	pause
-	exit(1)
+	plot(oss - python_filtered_flux, 'r');
+	pause;
+	exit(1);
 end
 
 

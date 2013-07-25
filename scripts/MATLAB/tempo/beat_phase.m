@@ -28,7 +28,7 @@ bphase = zeros(BPM_MAX, 1);
 
 for i = 1:num_frames
 	window = buffered(i,:);
-	samples = WINDOWSIZE;
+	samples = int32(WINDOWSIZE);
 	cands = bh_cands(i,:);
 
 	onset_scores = zeros(length(cands),1);
@@ -39,31 +39,42 @@ for i = 1:num_frames
 		period = int32(60.0 * oss_sr / bpm);
 
 		bp_mags = zeros(period, 1);
-		for phase = samples-period:samples-1
-			%disp([bpm, period, phase])
+
+		for phase = samples-1:-1:samples-period
+			phase = int32(phase);
+			%printf("# %i\n", phase);
+
 			mag = 0.0;
 			for b = 0:3
-				ind = 1+fix(phase - b*period);
+				b = int32(b);
+				ind = phase - b*period;
 				if ind >= 1
-					mag += window(ind);
+					mag += window(ind+1);
 				end
-				%printf("%i\t%f\n", ind, mag);
-				ind = 1+fix(phase - b*2*period);
+				%printf("\t%i\t%f\n", ind, mag);
+
+				ind = phase - b*period*2;
 				if ind >= 1
-					mag += 0.5*window(ind);
+					mag += 0.5*window(ind+1);
 				end
-				%printf("%i\t%f\n", ind, mag);
-				ind = 1+fix(phase - b*1.5*period);
+				%printf("\t%i\t%f\n", ind, mag);
+
+				ind = phase - idivide(b*period*3, 2);
 				if ind >= 1
-					mag += 0.5*window(ind);
+					mag += 0.5*window(ind+1);
 				end
-				%printf("%i\t%f\n", ind, mag);
+				%printf("\t%i\t%f\n", ind, mag);
 			end
 			bp_mags(samples-1-phase+1) = mag;
+			%printf("%f", mag);
+			%exit(1)
 			%disp([samples-1-phase+1, mag])
+			%if j == 4
+		%		printf("%i\t%.9f", phase, mag);
+			%	exit(1)
+			%end
 		end
-
-		%save "foo.txt" bp_mags
+		%save 'mags.txt' bp_mags
 		%exit(1)
 
 		%plot(bp_mags)
@@ -74,7 +85,13 @@ for i = 1:num_frames
 
 		tempo_scores(j) = bp_max;
 		onset_scores(j) = bp_var;
-		%printf("%i\t%.9f\t%.9f\n", bpm, bp_max, bp_var);
+		%printf("%.2f\t%i\t%.9f\t%.9f\n", bpm, period, bp_max, bp_var);
+		%if j == 4
+	%		blah = window';
+%			save "input.txt" blah;
+%			save "foo.txt" bp_mags;
+%			exit(1)
+%		end
 	end
 	%exit(1)
 	tempo_scores /= sum(tempo_scores);
@@ -86,7 +103,7 @@ for i = 1:num_frames
 	[beststr, besti] = max(combo_scores);
 	bestbpm = int32(cands(besti));
 
-	printf("%i\t%f\n", bestbpm, beststr);
+	%printf("%i\t%.9f\n", bestbpm, beststr);
 
 	bphase(1+bestbpm) += beststr;
 end
