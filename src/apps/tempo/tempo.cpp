@@ -206,7 +206,7 @@ printHelp(mrs_string progName)
   cerr << "MEDIAN_MULTIBANDS" << endl;
   cerr << "HISTO_SUMBANDS" << endl;
   cerr << "HISTO_SUMBANDSQ" << endl;
-  cerr << "FLUX" << endl;
+  cerr << "STEM" << endl;
   cerr << "TEST_OSS_FLUX" << endl;
   cerr << "AIM_FLUX" << endl;
   cerr << "AIM" << endl;
@@ -1153,10 +1153,10 @@ realvec info_histogram(mrs_natural bpm, realvec histo,
 
 
 void
-tempo_flux(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
+tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool haveCollections, mrs_real tolerance)
 {
     (void) resName;
-    cout << "TEMPO FLUX" << endl;
+    cout << "SIMPLE TEMPO ESTIMATION METHOD (STEM)" << endl;
 
     //MarSystemManager mng;
 
@@ -4016,9 +4016,9 @@ void tempo(mrs_string inFname, mrs_string outFname, mrs_string prlabel, mrs_stri
   {
 	  tempo_medianMultiBands(sfName,ground_truth_tempo, resName, haveCollections, tolerance);
   }
-  else if (method == "FLUX")
+  else if (method == "STEM")
   {
-	  tempo_flux(sfName, ground_truth_tempo, resName, haveCollections, tolerance);
+	  tempo_stem(sfName, ground_truth_tempo, resName, haveCollections, tolerance);
   }
   else if (method == "TEST_OSS_FLUX")
   {
@@ -4188,7 +4188,7 @@ main(int argc, const char **argv)
 
   mrs_string method;
   if (methodopt == EMPTYSTRING)
-	method = "FLUX";
+	method = "STEM";
   else
 	method = methodopt;
 
