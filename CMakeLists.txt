@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.2)
 
 # If only building documentation, tell CMake
 # not to check for any language compilers.
