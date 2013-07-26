@@ -58,6 +58,10 @@ mrs_bool chromaFeature_ = false;
 mrs_bool rmsFeature_ = false;
 mrs_bool yinFeature_ = false;
 
+mrs_bool spectrogramFeature_ = false;
+mrs_natural spectrogramFrames_ = 256;
+mrs_string spectrogramType_ = "decibels";
+
 mrs_natural numMfccs_ = 13;
 
 mrs_natural downsample_ = 1;
@@ -114,6 +118,10 @@ printHelp(string progName)
   cerr << "-rms     --rms                                  : Output rms as a feature." << endl;
   cerr << "-yin     --yin                                  : Output yin pitch estimate as a feature." << endl;
 
+  cerr << "         --spectrogram                          : Output spectrogram as a feature" << endl;
+  cerr << "         --spectrogramFrames                    : Frames of power spectrum to use for spectrogram" << endl;
+  cerr << "         --spectrogramType                      : Type of spectrogram to output (decibels/magnitude)" << endl;
+
   cerr << "-ds      --downsample                                  : Downsampling ratio" << endl;
 
   cerr << "-o       --outputFilename                             : File to save data to." << endl;
@@ -156,6 +164,10 @@ void initOptions()
   cmdOptions_.addBoolOption("rms", "", false);
   cmdOptions_.addBoolOption("yin", "", false);
 
+  cmdOptions_.addBoolOption("spectrogram", "", false);
+  cmdOptions_.addNaturalOption("spectrogramFrames", "", 256);
+  cmdOptions_.addStringOption("spectrogramType", "", EMPTYSTRING);
+
   cmdOptions_.addNaturalOption("downsample", "ds", 1);
 
   cmdOptions_.addStringOption("outputFilename", "o", EMPTYSTRING);
@@ -186,6 +198,10 @@ void loadOptions()
   rmsFeature_ = cmdOptions_.getBoolOption("rms");
   yinFeature_ = cmdOptions_.getBoolOption("yin");
 
+  spectrogramFeature_ = cmdOptions_.getBoolOption("spectrogram");
+  spectrogramFrames_ = cmdOptions_.getNaturalOption("spectrogramFrames");
+  spectrogramType_ = cmdOptions_.getStringOption("spectrogramType");
+
   downsample_ = cmdOptions_.getNaturalOption("downsample");
 
   outputFilename_ = cmdOptions_.getStringOption("outputFilename");
@@ -212,6 +228,8 @@ void loadOptions()
 void extract(string inCollectionName)
 {
   MarSystemManager mng;
+
+  MarSystem* spectrogramSeries = 0;
 
   MarSystem* net = mng.create("Series", "net");
   net->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -289,6 +307,19 @@ void extract(string inCollectionName)
     spectralSeries->addMarSystem(spectralFanout);
     mainFanout->addMarSystem(spectralSeries);
   }
+
+  // Spectrogram Features
+  if (spectrogramFeature_) {
+    
+    cout << "Adding spectrogramFeature_" << endl;
+    spectrogramSeries = mng.create("Series", "spectrogramSeries");
+    spectrogramSeries->addMarSystem(mng.create("Spectrum", "spk"));
+    spectrogramSeries->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+    spectrogramSeries->addMarSystem(mng.create("Memory", "spectrogramMemory"));
+    
+    mainFanout->addMarSystem(spectrogramSeries);
+  }
+
   net->addMarSystem(mainFanout);
 
   if (wekaFilename_ != EMPTYSTRING) {
@@ -296,7 +327,6 @@ void extract(string inCollectionName)
 	net->addMarSystem(mng.create("WekaSink", "wsink"));
   }
   
-
   if(memSize_ != 0) {
     net->addMarSystem(mng.create("TextureStats", "tStats"));
     net->updControl("TextureStats/tStats/mrs_natural/memSize", memSize_);
@@ -311,22 +341,29 @@ void extract(string inCollectionName)
   net->linkControl("mrs_string/currentlyPlaying",
                    "SoundFileSource/src/mrs_string/currentlyPlaying");
 
-  net->linkControl("WekaSink/wsink/mrs_string/currentlyPlaying",
-                   "mrs_string/currentlyPlaying");
-  net->linkControl("WekaSink/wsink/mrs_string/labelNames",
-                   "mrs_string/labelNames");
-  net->linkControl("WekaSink/wsink/mrs_natural/nLabels",
-                   "mrs_natural/nLabels");
-  net->linkControl("Annotator/annotator/mrs_real/label",
-                   "mrs_real/currentLabel");
+  if (wekaFilename_ != EMPTYSTRING) {
+    net->linkControl("WekaSink/wsink/mrs_string/currentlyPlaying",
+                     "mrs_string/currentlyPlaying");
+    net->linkControl("WekaSink/wsink/mrs_string/labelNames",
+                     "mrs_string/labelNames");
+    net->linkControl("WekaSink/wsink/mrs_natural/nLabels",
+                     "mrs_natural/nLabels");
+    net->linkControl("Annotator/annotator/mrs_real/label",
+                     "mrs_real/currentLabel");
+  }
 
   net->updControl("SoundFileSource/src/mrs_string/filename", inCollectionName);
   net->updControl("mrs_natural/inSamples", hopSize_);
   net->updControl("ShiftInput/si/mrs_natural/winSize", winSize_);
+
+  if (spectrogramFeature_) {
+	spectrogramSeries->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", spectrogramType_);
+    spectrogramSeries->updControl("Memory/spectrogramMemory/mrs_natural/memSize", spectrogramFrames_);
+  }
   
   if (wekaFilename_ != EMPTYSTRING) {
     net->updControl("WekaSink/wsink/mrs_string/filename", wekaFilename_);
-    net->updControl("WekaSink/wsink/mrs_natural/downsample", downSample_);
+    net->updControl("WekaSink/wsink/mrs_natural/downsample", downsample_);
   }
 
   ofstream ofs;
@@ -363,12 +400,16 @@ void extract(string inCollectionName)
           ofs << net->getctrl("SoundFileSource/src/mrs_real/currentLabel")->to<mrs_real>() << " ";
         }
 
-        for (int i = 0; i < data.getRows(); i++) {
-
-          if (outputFormat_ == "libsvm") {
-            ofs << i+1 << ":";
+        int numCols = data.getCols();
+        int numRows = data.getRows();
+        for (int col = 0; col < numCols; col++) {
+          for (int row = 0; row < numRows; row++) {
+            
+            if (outputFormat_ == "libsvm") {
+              ofs << (col * numRows) + row + 1 << ":";
+            }
+            ofs << data(row, col) << " ";
           }
-          ofs << data(i, 0) << " ";
         }
         ofs << endl;
       }
