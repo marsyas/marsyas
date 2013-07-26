@@ -323,8 +323,11 @@ void extract(string inCollectionName)
   net->updControl("SoundFileSource/src/mrs_string/filename", inCollectionName);
   net->updControl("mrs_natural/inSamples", hopSize_);
   net->updControl("ShiftInput/si/mrs_natural/winSize", winSize_);
-  net->updControl("WekaSink/wsink/mrs_string/filename", wekaFilename_);
-
+  
+  if (wekaFilename_ != EMPTYSTRING) {
+    net->updControl("WekaSink/wsink/mrs_string/filename", wekaFilename_);
+    net->updControl("WekaSink/wsink/mrs_natural/downsample", downSample_);
+  }
 
   ofstream ofs;
   if (outputFilename_ != EMPTYSTRING) {
