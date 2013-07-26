@@ -63,6 +63,9 @@ mrs_natural spectrogramFrames_ = 256;
 mrs_string spectrogramType_ = "decibels";
 
 mrs_bool saiFeature_ = false;
+mrs_string saiFilterbank_ = "pzfc";
+mrs_natural saiBoxSizeSpectral_ = 16;
+mrs_natural saiBoxSizeTemporal_ = 32;
 
 mrs_natural numMfccs_ = 13;
 
@@ -124,6 +127,11 @@ printHelp(string progName)
   cerr << "         --spectrogramFrames                    : Frames of power spectrum to use for spectrogram" << endl;
   cerr << "         --spectrogramType                      : Type of spectrogram to output (decibels/magnitude)" << endl;
 
+  cerr << "         --sai                                  : Output Stabilised Auditory Image as a feature." << endl;
+  cerr << "         --saiFilterbank                        : Type of filterbank to use for SAI (pzfc, gammatone, carfac)" << endl;
+  cerr << "         --saiBoxSizeSpectral                   : Vertical (spectral) size of boxes for SAI boxcutting" << endl;
+  cerr << "         --saiBoxSizeTemporal                   : Horizontal (temporal) size of boxes for SAI boxcutting" << endl;
+
   cerr << "-ds      --downsample                                  : Downsampling ratio" << endl;
 
   cerr << "-o       --outputFilename                             : File to save data to." << endl;
@@ -171,6 +179,9 @@ void initOptions()
   cmdOptions_.addStringOption("spectrogramType", "", EMPTYSTRING);
 
   cmdOptions_.addBoolOption("sai", "", false);
+  cmdOptions_.addStringOption("saiFilterbank", "", "pzfc");
+  cmdOptions_.addNaturalOption("saiBoxSizeSpectral", "", 16);
+  cmdOptions_.addNaturalOption("saiBoxSizeTemporal", "", 32);
 
   cmdOptions_.addNaturalOption("downsample", "ds", 1);
 
@@ -207,6 +218,9 @@ void loadOptions()
   spectrogramType_ = cmdOptions_.getStringOption("spectrogramType");
 
   saiFeature_ = cmdOptions_.getBoolOption("sai");
+  saiFilterbank_ = cmdOptions_.getStringOption("saiFilterbank");
+  saiBoxSizeSpectral_ = cmdOptions_.getNaturalOption("saiBoxSizeSpectral");
+  saiBoxSizeTemporal_ = cmdOptions_.getNaturalOption("saiBoxSizeTemporal");
 
   downsample_ = cmdOptions_.getNaturalOption("downsample");
 
@@ -328,7 +342,14 @@ void extract(string inCollectionName)
   // Stabilised Auditory Image Features
   if (saiFeature_) {
     saiSeries = mng.create("Series", "saiSeries");
-	saiSeries->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+
+    if (saiFilterbank_ == "carfac") {
+      saiSeries->addMarSystem(mng.create("CARFAC", "carfac"));
+    } else if (saiFilterbank_ == "gammatone") {
+      saiSeries->addMarSystem(mng.create("AimGammatone", "aimgammatone"));
+    } else {
+      saiSeries->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+    }
     saiSeries->addMarSystem(mng.create("AimHCL", "aimhcl"));
 	saiSeries->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
 	saiSeries->addMarSystem(mng.create("AimSAI", "aimsai"));
@@ -375,6 +396,11 @@ void extract(string inCollectionName)
   if (spectrogramFeature_) {
 	spectrogramSeries->updControl("PowerSpectrum/pspk/mrs_string/spectrumType", spectrogramType_);
     spectrogramSeries->updControl("Memory/spectrogramMemory/mrs_natural/memSize", spectrogramFrames_);
+  }
+
+  if (saiFeature_) {
+    saiSeries->updControl("AimBoxes/aimboxes/mrs_natural/box_size_spectral", saiBoxSizeSpectral_);
+    saiSeries->updControl("AimBoxes/aimboxes/mrs_natural/box_size_temporal", saiBoxSizeTemporal_);
   }
   
   if (wekaFilename_ != EMPTYSTRING) {
