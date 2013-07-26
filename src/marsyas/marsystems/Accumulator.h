@@ -35,8 +35,9 @@ namespace Marsyas
     number of processing ticks or when explicitly "flushed"). 
     Used to change the rate of process requests.
 
-	For example, if \c mode is "countTicks" and \c nTimes is 5, then each time the Accumulator receives
-	a tick(), it sends 5 tick()s to the MarSystems that are inside it.
+	For example, if \c mode is "countTicks" and \c nTimes is 5, then
+	each time the Accumulator receives a tick(), it sends 5 tick()s to
+	the MarSystems that are inside it.
 
 	Controls: - \b mrs_string/mode [rw] : in "countTicks" mode
       accumulates and outputs the result of multiple tick process
