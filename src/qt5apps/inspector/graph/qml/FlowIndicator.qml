@@ -10,9 +10,9 @@ Rectangle {
     Text {
         id: label
         text: if (output) {
-                  controls.onObservations + "x" + controls.onSamples + " [" + controls.osrate + "]"
+                  controls.onSamples + " x " + controls.onObservations + " [" + controls.osrate + "]"
               } else {
-                  controls.inObservations + "x" + controls.inSamples + " [" + controls.israte + "]"
+                  controls.inSamples + " x " + controls.inObservations + " [" + controls.israte + "]"
               }
         color: "black"
     }
