@@ -1,8 +1,10 @@
 #include "main_controller.h"
 
-#include "gui/marsystem_view.h"
-#include "gui/controls_widget.h"
-#include "gui/realvec_widget.h"
+#include "graph/marsystem_adaptor.h"
+#include "widgets/controls_widget.h"
+#include "widgets/realvec_widget.h"
+
+#include <MarSystem.h>
 
 #include <QApplication>
 
@@ -22,11 +24,14 @@
 #include <QShortcut>
 #include <QAction>
 
+using namespace Marsyas;
+using namespace MarsyasQml;
+
 MarSystem *root_system;
 
 QToolBar *toolbar;
 
-QQuickView *system_view;
+QQuickView *system_graph;
 RealvecWidget *realvec_widget;
 ControlsWidget *controls_widget;
 
@@ -34,37 +39,10 @@ Main::Main(Marsyas::MarSystem * system)
 {
   root_system = system;
 
-  //qRegisterMetaType<Marsyas::MarSystem*>();
-  qmlRegisterType<MarSystemView>("Marsyas", 1, 0, "MarSystemView");
-  qmlRegisterType<MarSystemViewAttached>();
-  qmlRegisterType<MarSystemControlView>("Marsyas", 1, 0, "MarSystemControlView");
+  MarSystemAdaptor *system_adaptor = new MarSystemAdaptor(system, this);
 
   QQmlEngine *engine = new QQmlEngine(this);
-
-  //engine->rootContext()->setContextProperty("myModel", QVariant::fromValue<QObject*>(model));
-  engine->rootContext()->setContextProperty("mySystem", QVariant::fromValue(system));
-
-#if 0
-  QQmlComponent component(&engine,
-                          QString("main.qml"));
-
-  if (component.status() != QQmlComponent::Ready) {
-    qCritical("Not ready!");
-    return 1;
-  }
-
-  QObject *root_view = component.create();
-  if (!root_view)
-    return 1;
-
-  root_view->setProperty("model", QVariant::fromValue<QObject*>(model));
-  //root_view->setProperty("index");
-  //root_view->setProperty("text", QString::fromStdString(system->getPrefix()));
-
-  QQuickWindow *window = new QQuickWindow();
-  root_view->setParent( window->contentItem() );
-  window->show();
-#endif
+  engine->rootContext()->setContextProperty("system", QVariant::fromValue<QObject*>(system_adaptor));
 
   toolbar = new QToolBar();
 
@@ -73,12 +51,12 @@ Main::Main(Marsyas::MarSystem * system)
 
   ///////////////////
 
-  system_view = new QQuickView(engine, 0);
-  system_view->setColor( QApplication::palette().color(QPalette::Window) );
-  system_view->setSource(QUrl::fromLocalFile("/home/jakob/programming/marsyas/src/qt5apps/inspector/main.qml"));
-  system_view->setResizeMode(QQuickView::SizeRootObjectToView);
+  system_graph = new QQuickView(engine, 0);
+  system_graph->setColor( QApplication::palette().color(QPalette::Window) );
+  system_graph->setSource(QUrl::fromLocalFile("/home/jakob/programming/marsyas/src/qt5apps/inspector/graph/qml/Graph.qml"));
+  system_graph->setResizeMode(QQuickView::SizeRootObjectToView);
 
-  QWidget *marsystem_widget = QWidget::createWindowContainer(system_view);
+  QWidget *marsystem_widget = QWidget::createWindowContainer(system_graph);
   marsystem_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   controls_widget = new ControlsWidget;
@@ -112,7 +90,7 @@ Main::Main(Marsyas::MarSystem * system)
   window->show();
   //window->showMaximized();
 
-  QObject *system_item = system_view->rootObject();
+  QObject *system_item = system_graph->rootObject();
   if (system_item) {
     QObject::connect( system_item, SIGNAL(clicked(QString)),
                       this, SLOT(systemClicked(QString)) );

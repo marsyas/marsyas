@@ -1,22 +1,19 @@
 set( inspector_moc_hdr
-  #util/marsystem_model.h
-  #util/tree_view.h
   main_controller.h
-  gui/marsystem_view.h
-  gui/controls_widget.h
-  gui/realvec_widget.h
+  graph/marsystem_adaptor.h
+  widgets/controls_widget.h
+  widgets/realvec_widget.h
 
   ${CMAKE_SOURCE_DIR}/src/marsyasqt/Marx2DGraph.h
 )
 
 set( inspector_src
-  main_qml.cpp
+  main.cpp
   main_controller.cpp
-  #util/marsystem_model.cpp
-  #util/tree_view.cpp
-  gui/marsystem_view.cpp
-  gui/controls_widget.cpp
-  gui/realvec_widget.cpp
+  graph/marsyas_qml.cpp
+  graph/marsystem_adaptor.cpp
+  widgets/controls_widget.cpp
+  widgets/realvec_widget.cpp
 
   ${CMAKE_SOURCE_DIR}/src/marsyasqt/Marx2DGraph.cpp
 )
