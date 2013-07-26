@@ -9,14 +9,14 @@ bpm2 = 0.0;
 str3 = 0.0;
 bpm3 = 0.0;
 
-for i = 2:len-2
+for i = 2:len-1
 	if ((histo(i) > str2) && (histo(i) < str1)
 	    && (histo(i-1) < histo(i)) && (histo(i+1)) < histo(i))
 			str2 = histo(i);
 			bpm2 = i;
 	end
 end
-for i = 2:len-2
+for i = 2:len-1
 	if ((histo(i) > str3) && (histo(i) < str2) && (histo(i) < str1)
 	    && (histo(i-1) < histo(i)) && (histo(i+1)) < histo(i))
 			str3 = histo(i);

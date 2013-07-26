@@ -3,7 +3,7 @@ collections = {
     %'acm_mirum_tempos.mf'
     %'ballroom_tempos.mf'
     %'genres_tempos.mf'
-    'ismir2004_songs_tempos.mf'    
+    'ismir2004_songs_tempos.mf'
     %'hains_tempos.mf'
     };
 md = getenv('MARSYAS_DATADIR');

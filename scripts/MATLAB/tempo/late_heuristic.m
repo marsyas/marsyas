@@ -33,10 +33,12 @@ if TYPE == 2
 		mult = 2.0;
 	end
 
-	%features
-	%features_normalized
-	%svm_sum
-	%mult
+	if 0
+		features
+		features_normalized
+		svm_sum
+		mult
+	end
 end
 
 bpm = mult * bpm_cand;
