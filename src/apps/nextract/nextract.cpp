@@ -62,6 +62,8 @@ mrs_bool spectrogramFeature_ = false;
 mrs_natural spectrogramFrames_ = 256;
 mrs_string spectrogramType_ = "decibels";
 
+mrs_bool saiFeature_ = false;
+
 mrs_natural numMfccs_ = 13;
 
 mrs_natural downsample_ = 1;
@@ -168,6 +170,8 @@ void initOptions()
   cmdOptions_.addNaturalOption("spectrogramFrames", "", 256);
   cmdOptions_.addStringOption("spectrogramType", "", EMPTYSTRING);
 
+  cmdOptions_.addBoolOption("sai", "", false);
+
   cmdOptions_.addNaturalOption("downsample", "ds", 1);
 
   cmdOptions_.addStringOption("outputFilename", "o", EMPTYSTRING);
@@ -202,6 +206,8 @@ void loadOptions()
   spectrogramFrames_ = cmdOptions_.getNaturalOption("spectrogramFrames");
   spectrogramType_ = cmdOptions_.getStringOption("spectrogramType");
 
+  saiFeature_ = cmdOptions_.getBoolOption("sai");
+
   downsample_ = cmdOptions_.getNaturalOption("downsample");
 
   outputFilename_ = cmdOptions_.getStringOption("outputFilename");
@@ -230,6 +236,7 @@ void extract(string inCollectionName)
   MarSystemManager mng;
 
   MarSystem* spectrogramSeries = 0;
+  MarSystem* saiSeries = 0;
 
   MarSystem* net = mng.create("Series", "net");
   net->addMarSystem(mng.create("SoundFileSource", "src"));
@@ -310,14 +317,23 @@ void extract(string inCollectionName)
 
   // Spectrogram Features
   if (spectrogramFeature_) {
-    
-    cout << "Adding spectrogramFeature_" << endl;
     spectrogramSeries = mng.create("Series", "spectrogramSeries");
     spectrogramSeries->addMarSystem(mng.create("Spectrum", "spk"));
     spectrogramSeries->addMarSystem(mng.create("PowerSpectrum", "pspk"));
     spectrogramSeries->addMarSystem(mng.create("Memory", "spectrogramMemory"));
     
     mainFanout->addMarSystem(spectrogramSeries);
+  }
+
+  // Stabilised Auditory Image Features
+  if (saiFeature_) {
+    saiSeries = mng.create("Series", "saiSeries");
+	saiSeries->addMarSystem(mng.create("AimPZFC", "aimpzfc"));
+    saiSeries->addMarSystem(mng.create("AimHCL", "aimhcl"));
+	saiSeries->addMarSystem(mng.create("AimLocalMax", "aimlocalmax"));
+	saiSeries->addMarSystem(mng.create("AimSAI", "aimsai"));
+	saiSeries->addMarSystem(mng.create("AimBoxes", "aimboxes"));
+    mainFanout->addMarSystem(saiSeries);
   }
 
   net->addMarSystem(mainFanout);
