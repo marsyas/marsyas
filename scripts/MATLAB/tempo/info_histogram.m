@@ -25,7 +25,7 @@ for i = 2:len-1
 end
 
 num_non_zero = 0;
-for i = 2:len
+for i = 1:len
 	if histo(i) > 0
 		num_non_zero += 1;
 	end
@@ -57,8 +57,8 @@ info = [
 	str10,
 	str20,
 	1.0 - (str05+str10+str20),
-	double(bpm2) / bpm_cand,
-	double(bpm3) / bpm_cand,
+	double(bpm2-1) / bpm_cand,
+	double(bpm3-1) / bpm_cand,
 	double(num_non_zero),
 	bpm_cand
 	]';

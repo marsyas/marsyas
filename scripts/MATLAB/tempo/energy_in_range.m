@@ -1,8 +1,8 @@
 
 function [energy] = energy_in_range(histo, low, high)
 
-index_low = fix(low);
-index_high = fix(high);
+index_low = int32(low);
+index_high = int32(high);
 if high == 1
 	index_high = length(histo)-1;
 end
