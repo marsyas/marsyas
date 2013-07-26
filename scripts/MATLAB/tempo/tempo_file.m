@@ -100,7 +100,7 @@ if TEST_REFERENCE
 	if maxerr < 1e-3
 		printf( 'Testing... BP ok, maximum deviation %.2g\n', maxerr);
 	else
-		disp ('Testing... BP FAILED');
+		printf( 'Testing... BP FAILED, maximum deviation %.2g\n', maxerr);
 		%plot(bphase)
 		%plot(python_bp, 'g')
 		plot(abs(delta), 'r')
