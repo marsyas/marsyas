@@ -48,11 +48,7 @@ def calc_pulse_trains(bpm, window, sr):
     bp_max = max(bp_mags)
     bp_var = numpy.var(bp_mags)
     #print bpm, period, bp_max, bp_var
-    #if bpm == 66:
-    #    numpy.savetxt("input.txt", window)
-    #    numpy.savetxt("foo.txt", bp_mags)
     #numpy.savetxt("mags.txt", bp_mags)
-    #exit(1)
     return bp_max, bp_var
 
 
@@ -66,74 +62,46 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
         defs.BP_WINDOWSIZE, defs.BP_HOPSIZE)
     #beat_histogram_sr = oss_sr / defs.BP_HOPSIZE
     
+    if defs.WRITE_BP:
+        bp_accum = open("out/bp-accum.txt", "w")
     #print candidate_bpms_orig
     candidate_bpms = candidate_bpms_orig
     bphase = numpy.zeros(defs.BPM_MAX)
     for i in xrange(overlapped.shape[0]):
         cands = candidate_bpms[i]
-        #print "aaaa", len(cands), cands[-1]
-        #if i in defs.extra:
-        #    cands = range(defs.BPM_MIN, defs.BPM_MAX)
-        #    print "BP altering cands"
 
         onset_scores = numpy.zeros(len(cands))
         tempo_scores = numpy.zeros(len(cands))
         for j, bpm in enumerate(cands):
-        #for j, bpm in enumerate(candidate_bpms):
             if bpm == 0:
                 continue
             mag, var = calc_pulse_trains(bpm, overlapped[i], oss_sr)
-            #bpms_max[i] += mag
-            #bpms_std[i] += std
-            #print i, bpm, mag, var
             tempo_scores[j] = mag
-            #print tempo_scores[j]
             onset_scores[j] = var
-        #exit(1)
+        if defs.WRITE_BP:
+            numpy.savetxt("out/bp-%i.txt" % (i+1),
+                numpy.vstack((cands, tempo_scores, onset_scores)).transpose())
         tempo_scores /= tempo_scores.sum()
         onset_scores /= onset_scores.sum()
 
-        tempo_scores = tempo_scores + onset_scores
-        tempo_scores /= tempo_scores.sum()
+        combo_scores = tempo_scores + onset_scores
+        combo_scores /= combo_scores.sum()
 
-        # find best 2 scores
-        besti = tempo_scores.argmax()
+        # find best score
+        besti = combo_scores.argmax()
         bestbpm = round(cands[besti])
-        #bestbpm = candidate_bpms[besti]
-        #print candidate_bpms[i]
-        #print tempo_scores
-        beststr = tempo_scores[besti]
-        #tempo_scores[besti] = 0.0
-        #second_besti = tempo_scores.argmax()
-        #second_bestbpm = candidate_bpms[i][second_besti]
-        #second_beststr = tempo_scores[second_besti]
+        beststr = combo_scores[besti]
 
-        #if i >= (defs.BP_WINDOWSIZE / defs.BP_HOPSIZE):
+
         bphase[ int(bestbpm) ] += beststr
-
-        #print bestbpm, "\t", beststr
-        #if i == 15:
-        #    print cands
-        #    print tempo_scores
-        #    exit(1)
-
-        #for k in range(len(tempo_scores)):
-        #    #print cands[k], "\t", tempo_scores[k]
-        #    print "%.4f" % tempo_scores[k],
-        #print
-        # zzz
-
-        #if i in defs.extra:
-        #    gnd = 120
-        #    if gnd*0.96 <= bestbpm <= gnd*1.04:
-        #        print "YES", i
             
-
         if defs.WRITE_BP:
-            numpy.savetxt("out/bp-%i.txt" % (i+1),
-                numpy.vstack((cands, tempo_scores)).transpose())
-            numpy.savetxt("out/bp-peak-%i.txt" % (i+1),
-                numpy.vstack((int(bestbpm), beststr)).transpose())
+            #numpy.savetxt("out/bp-%i.txt" % (i+1),
+            #    numpy.vstack((cands, tempo_scores, onset_scores, combo_scores)).transpose())
+            #numpy.savetxt("out/bp-peak-%i.txt" % (i+1),
+            #    numpy.vstack((int(bestbpm), beststr)).transpose())
+            text = "%i\t%.15f\n" % (int(bestbpm), beststr)
+            bp_accum.write(text)
 
     if defs.WRITE_BP:
         bp = open('out/beat_phase.txt', 'w')
@@ -173,6 +141,8 @@ def beat_phase(defs, oss_sr, oss_data, candidate_bpms_orig, plot=False):
             pylab.show()
             exit(1)
 
+    if defs.WRITE_BP:
+        bp_accum.close()
     return bpm, bphase
 
 
