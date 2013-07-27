@@ -82,7 +82,7 @@ endif()
 
 option(WITH_CPP11 "Use C++11 features" ${DEFAULT_WITH_CPP11})
 
-option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
+option(MARSYAS_AUDIOIO "Build the audio I/O interface" ${DEFAULT_WITH_CPP11})
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
 option(MARSYAS_INLINE "Inline functions" ON)
 
