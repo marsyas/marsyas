@@ -59,6 +59,10 @@ if (MARSYAS_OPENGL)
 	add_subdirectory(carfac)
 endif (MARSYAS_OPENGL)
 
+if (WITH_CPP11)
+  add_subdirectory(debugger)
+endif()
+
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
