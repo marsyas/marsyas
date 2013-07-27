@@ -7,6 +7,7 @@
 #include <QToolBar>
 #include <QQuickView>
 #include <QMainWindow>
+#include <QDockWidget>
 
 using namespace Marsyas;
 
@@ -31,6 +32,7 @@ private:
   Main(Marsyas::MarSystem * system);
 
 private slots:
+  void addRealvecWidget();
   void tickSystem();
   void systemClicked( const QString & path );
   void systemInputClicked( const QString & path );

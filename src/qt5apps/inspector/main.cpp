@@ -89,31 +89,18 @@ Main::Main(Marsyas::MarSystem * system):
 
   m_controls_widget = new ControlsWidget;
   m_controls_widget->setSystem(system);
-  //controls_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
 
-  m_realvec_widget = new RealvecWidget;
-  m_realvec_widget->setSystem(system);
-  //realvec_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
+  QDockWidget *dock_controls_widget = new QDockWidget;
+  dock_controls_widget->setWidget(m_controls_widget);
+  dock_controls_widget->setWindowTitle("Control Data");
+  m_main_window->addDockWidget(Qt::RightDockWidgetArea, dock_controls_widget);
+
+  addRealvecWidget();
+
+  m_main_window->setCentralWidget( graph_widget );
 
   QObject::connect( m_controls_widget, SIGNAL(controlClicked(QString)),
                     m_realvec_widget, SLOT(displayControl(QString)) );
-
-  QSplitter *data_splitter = new QSplitter();
-  data_splitter->setOrientation( Qt::Vertical );
-  data_splitter->addWidget( m_controls_widget );
-  data_splitter->addWidget( m_realvec_widget );
-
-  QSplitter *splitter = new QSplitter();
-  splitter->addWidget( graph_widget );
-  splitter->addWidget( data_splitter );
-
-  QVBoxLayout *column = new QVBoxLayout();
-  column->setContentsMargins(5,5,5,5);
-  column->addWidget(splitter);
-
-  QWidget *central_widget = new QWidget();
-  central_widget->setLayout(column);
-  m_main_window->setCentralWidget( central_widget );
 
   QObject *system_item = m_graph->rootObject();
   if (system_item) {
@@ -128,11 +115,24 @@ Main::Main(Marsyas::MarSystem * system):
     qWarning("Could not find top system item!");
   }
 
-  QShortcut *quit_shortcut = new QShortcut(QString("Ctrl+Q"), splitter);
+  QShortcut *quit_shortcut = new QShortcut(QString("Ctrl+Q"), m_main_window);
   QObject::connect( quit_shortcut, SIGNAL(activated()), qApp, SLOT(quit()) );
 
   m_main_window->resize(1000, 600);
   m_main_window->show();
+}
+
+void Main::addRealvecWidget()
+{
+  RealvecWidget * realvec_widget = new RealvecWidget;
+  realvec_widget->setSystem(m_root_system);
+
+  QDockWidget * dock_widget = new QDockWidget;
+  dock_widget->setWidget(realvec_widget);
+  dock_widget->setWindowTitle("Realvec Data");
+  m_main_window->addDockWidget(Qt::RightDockWidgetArea, dock_widget);
+
+  m_realvec_widget = realvec_widget;
 }
 
 void Main::tickSystem()
