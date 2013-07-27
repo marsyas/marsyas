@@ -35,7 +35,8 @@ ControlsWidget::ControlsWidget( QWidget * parent):
   m_system(0)
 {
   m_tree = new QTreeWidget;
-  m_tree->setHeaderLabels( QStringList() << "Name" << "Type" << "Value" );
+  m_tree->setHeaderLabels( QStringList()  << "Name" << "Value" << "Type" );
+  m_tree->setRootIsDecorated(false);
 
   m_label = new QLineEdit;
   //m_label->setFrameStyle( Qt::NoFrame );
@@ -100,6 +101,11 @@ void ControlsWidget::rebuild()
   }
 
   refresh();
+
+  m_tree->resizeColumnToContents(NameColumn);
+  m_tree->resizeColumnToContents(TypeColumn);
+  // NOTE: don't resize value column, as it may contain
+  // ridiculously long strings.
 }
 
 void ControlsWidget::refresh()

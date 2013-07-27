@@ -44,8 +44,8 @@ private slots:
 private:
   enum DataColumns {
     NameColumn = 0,
-    TypeColumn,
     ValueColumn,
+    TypeColumn,
     PathColumn
   };
 
