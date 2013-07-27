@@ -2,6 +2,7 @@
 #include "graph/marsystem_adaptor.h"
 #include "widgets/controls_widget.h"
 #include "widgets/realvec_widget.h"
+#include "widgets/debug_widget.h"
 
 #include <MarSystemManager.h>
 
@@ -69,6 +70,7 @@ Main::Main(Marsyas::MarSystem * system):
 
   m_main_window = new QMainWindow;
   m_main_window->setWindowTitle("MarSystem Inspector");
+  m_main_window->setCorner(Qt::BottomRightCorner, Qt::RightDockWidgetArea);
 
   m_toolbar = new QToolBar();
 
@@ -97,6 +99,13 @@ Main::Main(Marsyas::MarSystem * system):
 
   addRealvecWidget();
 
+  m_debug_widget = new DebugWidget;
+  m_debug_widget->setSystem(system);
+  QDockWidget *dock_debug_widget = new QDockWidget;
+  dock_debug_widget->setWidget(m_debug_widget);
+  dock_debug_widget->setWindowTitle("Debug");
+  m_main_window->addDockWidget(Qt::BottomDockWidgetArea, dock_debug_widget);
+
   m_main_window->setCentralWidget( graph_widget );
 
   QObject::connect( m_controls_widget, SIGNAL(controlClicked(QString)),
@@ -119,7 +128,7 @@ Main::Main(Marsyas::MarSystem * system):
   QObject::connect( quit_shortcut, SIGNAL(activated()), qApp, SLOT(quit()) );
 
   m_main_window->resize(1000, 600);
-  m_main_window->show();
+  m_main_window->showMaximized();
 }
 
 void Main::addRealvecWidget()
@@ -137,10 +146,11 @@ void Main::addRealvecWidget()
 
 void Main::tickSystem()
 {
-  qDebug() << "Main::tickSystem";
   m_root_system->tick();
   m_controls_widget->refresh();
   m_realvec_widget->refresh();
+  m_debug_widget->evaluate();
+  m_debug_widget->advance();
 }
 
 void Main::systemClicked( const QString & path )
