@@ -46,7 +46,36 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
 ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 ### USER OPTIONS
-option(WITH_CPP11 "Use C++11 features" ON)
+
+# Detect whether compiler version supports C++11
+if( DEFINED CMAKE_CXX_COMPILER_VERSION )
+  if( CMAKE_CXX_COMPILER_ID STREQUAL GNU )
+    if( CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 4.7.0 OR
+        CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 4.7.0 )
+      set(DEFAULT_WITH_CPP11 ON)
+    else()
+      set(DEFAULT_WITH_CPP11 OFF)
+    endif()
+  elseif( CMAKE_CXX_COMPILER_ID STREQUAL Clang )
+    if( CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL 3.2.0 OR
+        CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 3.2.0 )
+      set(DEFAULT_WITH_CPP11 ON)
+    else()
+      set(DEFAULT_WITH_CPP11 OFF)
+    endif()
+  else()
+    set(DEFAULT_WITH_CPP11 ON)
+  endif()
+else()
+  set(DEFAULT_WITH_CPP11 OFF)
+endif()
+
+if(NOT DEFINED WITH_CPP11)
+  message( STATUS "C++11 features default to: ${DEFAULT_WITH_CPP11}" )
+endif()
+
+option(WITH_CPP11 "Use C++11 features" ${DEFAULT_WITH_CPP11})
+
 option(MARSYAS_AUDIOIO "Build the audio I/O interface" ON)
 option(MARSYAS_MIDIIO "Build the MIDI I/O interface" ON)
 option(MARSYAS_INLINE "Inline functions" ON)
