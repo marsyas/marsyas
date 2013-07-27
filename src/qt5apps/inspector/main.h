@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QToolBar>
 #include <QQuickView>
+#include <QMainWindow>
 
 using namespace Marsyas;
 
@@ -40,6 +41,7 @@ private:
 
   MarSystem *m_root_system;
 
+  QMainWindow *m_main_window;
   QToolBar *m_toolbar;
   QQuickView *m_graph;
   RealvecWidget *m_realvec_widget;

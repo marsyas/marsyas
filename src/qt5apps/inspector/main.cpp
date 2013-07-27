@@ -57,19 +57,25 @@ int main(int argc, char *argv[])
 }
 
 
-Main::Main(Marsyas::MarSystem * system)
+Main::Main(Marsyas::MarSystem * system):
+  m_root_system(system)
 {
-  m_root_system = system;
-
   MarSystemAdaptor *system_adaptor = new MarSystemAdaptor(system, this);
 
   QQmlEngine *engine = new QQmlEngine(this);
   engine->rootContext()->setContextProperty("system", QVariant::fromValue<QObject*>(system_adaptor));
 
+  // Main window
+
+  m_main_window = new QMainWindow;
+  m_main_window->setWindowTitle("MarSystem Inspector");
+
   m_toolbar = new QToolBar();
 
   QAction *tick_action = m_toolbar->addAction("Tick");
   connect( tick_action, SIGNAL(triggered()), this, SLOT(tickSystem()) );
+
+  m_main_window->addToolBar(Qt::TopToolBarArea, m_toolbar);
 
   ///////////////////
 
@@ -78,8 +84,8 @@ Main::Main(Marsyas::MarSystem * system)
   m_graph->setSource(QUrl::fromLocalFile("/home/jakob/programming/marsyas/src/qt5apps/inspector/graph/qml/Graph.qml"));
   m_graph->setResizeMode(QQuickView::SizeRootObjectToView);
 
-  QWidget *marsystem_widget = QWidget::createWindowContainer(m_graph);
-  marsystem_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+  QWidget *graph_widget = QWidget::createWindowContainer(m_graph);
+  graph_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
   m_controls_widget = new ControlsWidget;
   m_controls_widget->setSystem(system);
@@ -98,19 +104,16 @@ Main::Main(Marsyas::MarSystem * system)
   data_splitter->addWidget( m_realvec_widget );
 
   QSplitter *splitter = new QSplitter();
-  splitter->addWidget( marsystem_widget );
+  splitter->addWidget( graph_widget );
   splitter->addWidget( data_splitter );
 
   QVBoxLayout *column = new QVBoxLayout();
-  column->addWidget(m_toolbar);
+  column->setContentsMargins(5,5,5,5);
   column->addWidget(splitter);
 
-  QWidget *window = new QWidget();
-  window->setLayout(column);
-
-  window->resize(1000, 600);
-  window->show();
-  //window->showMaximized();
+  QWidget *central_widget = new QWidget();
+  central_widget->setLayout(column);
+  m_main_window->setCentralWidget( central_widget );
 
   QObject *system_item = m_graph->rootObject();
   if (system_item) {
@@ -127,6 +130,9 @@ Main::Main(Marsyas::MarSystem * system)
 
   QShortcut *quit_shortcut = new QShortcut(QString("Ctrl+Q"), splitter);
   QObject::connect( quit_shortcut, SIGNAL(activated()), qApp, SLOT(quit()) );
+
+  m_main_window->resize(1000, 600);
+  m_main_window->show();
 }
 
 void Main::tickSystem()

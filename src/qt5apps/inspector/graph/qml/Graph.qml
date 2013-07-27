@@ -19,7 +19,6 @@ Flickable {
         anchors {
             left: parent.left
             right: parent.right
-            margins: 10
         }
         expanded: true
     }
