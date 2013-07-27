@@ -28,7 +28,13 @@ ColumnLayout {
         Layout.alignment: Qt.AlignHCenter
         controls: system.defaultControls;
         output: false;
-        color: color_code
+        color: input_area.containsMouse ? Qt.lighter(color_code, 1.2) : color_code
+        MouseArea {
+            id: input_area
+            anchors.fill: parent
+            onClicked: the_root.inputClicked(system.path);
+            hoverEnabled: true;
+        }
     }
     Rectangle {
         id: frame
@@ -111,6 +117,12 @@ ColumnLayout {
         Layout.alignment: Qt.AlignHCenter
         controls: system.defaultControls;
         output: true;
-        color: color_code
+        color: output_area.containsMouse ? Qt.lighter(color_code, 1.2) : color_code
+        MouseArea {
+            id: output_area
+            anchors.fill: parent
+            onClicked: the_root.outputClicked(system.path);
+            hoverEnabled: true;
+        }
     }
 }

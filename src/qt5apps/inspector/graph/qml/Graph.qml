@@ -9,6 +9,8 @@ Flickable {
     contentHeight: top_system.height
 
     signal clicked(string path)
+    signal inputClicked(string path)
+    signal outputClicked(string path)
 
     property var layoutComponents: MarSystemLayoutFactory {}
 
