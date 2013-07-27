@@ -236,7 +236,7 @@ SimulMaskingFft::GetBandLevels (FrequencyBands_t *pFrequencyValues, mrs_realvec 
 			bandLevels(i)  += processBuff_(j);
 		if (bDezibel)
 		{
-			bandLevels(i)   = max (bandLevels(i), 1e-20);
+			bandLevels(i)   = max ((mrs_real)bandLevels(i), (mrs_real)1e-20);
 			bandLevels(i)   = 10./log(10.) * log ((bandLevels(i)));
 		}
 	}
@@ -348,7 +348,7 @@ SimulMaskingFft::ComputeTables ()
 		for (i = 0; i < numBands_; ++i)
 		{
 			freqBounds_[i].fLowBarkBound  = min(fMaxBark,fLowBark + i*barkRes_);
-			freqBounds_[i].fMidBark       = min(fMaxBark,freqBounds_[i].fLowBarkBound + .5*barkRes_);
+			freqBounds_[i].fMidBark       = min((mrs_real)fMaxBark,(mrs_real)freqBounds_[i].fLowBarkBound + (mrs_real).5*barkRes_);
 			freqBounds_[i].fUpBarkBound   = min(fMaxBark,freqBounds_[i].fLowBarkBound + barkRes_);
 
 			freqBounds_[i].fLowFreqBound  = bark2hertz (freqBounds_[i].fLowBarkBound, h2bIdx);

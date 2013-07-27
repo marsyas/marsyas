@@ -156,6 +156,7 @@ PowerSpectrum::myProcess(realvec& in, realvec& out)
 				break;
 			case PSD_LOGMAG:
 				out(o,t) = log(1+1000.0 * sqrt(re_ * re_ + im_ * im_));
+			       //  out(o,t) = pow(sqrt(re_ * re_ + im_ * im_), 0.5);	
 				// out(o,t) = asin(sqrt(re_ * re_ + im_ * im_));
 				
 			}

@@ -288,7 +288,7 @@ PeakClusterSelect::myProcess(realvec& in, realvec& out)
 	{
 		const mrs_real intraThreshBounds[2]	= {.3,.6};
 		const mrs_real silThreshBound		= 1./curNumClusters;
-		intraSimKeepThresh	= max(intraThreshBounds[0],min(intraThreshBounds[1],.5*(intraClusterSimilarities(2,0) + intraClusterSimilarities(2, curNumClusters-1))));
+		intraSimKeepThresh	= max((mrs_real)intraThreshBounds[0],min((mrs_real)intraThreshBounds[1],(mrs_real).5*((mrs_real)intraClusterSimilarities(2,0) + (mrs_real)intraClusterSimilarities(2, curNumClusters-1))));
 		for (k = 0; k < curNumClusters; k++)
 		{
 			// intra cluster similarity threshold

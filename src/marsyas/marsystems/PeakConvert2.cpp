@@ -619,9 +619,9 @@ PeakConvert2::myProcess(realvec& in, realvec& out)
 				peakProb_(2)	= (abs(frequency_(o)/fundamental_-o) > .5)? 0 : 1;
 #else
 				// probability of peak being a masker
-				peakProb_(0)	= max(.1, .5 * (log10(masked_(o)) +1.));
+				peakProb_(0)	= max((mrs_real).1, (mrs_real).5 * (mrs_real)(log10(masked_(o)) +1.));
 				// probability of peak being stationary
-				peakProb_(1)	= max(.1, lpPeakerRes_(o));
+				peakProb_(1)	= max((mrs_real).1, (mrs_real)lpPeakerRes_(o));
 				// probability or peak being tonal
 				peakProb_(2)	= GaussianPdf (frequency_(o)/fundamental_-o, gaussianStd);
 #endif
