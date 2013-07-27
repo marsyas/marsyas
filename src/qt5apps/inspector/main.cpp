@@ -81,7 +81,7 @@ Main::Main(Marsyas::MarSystem * system):
 
   m_graph = new QQuickView(engine, 0);
   m_graph->setColor( QApplication::palette().color(QPalette::Window) );
-  m_graph->setSource(QUrl::fromLocalFile("/home/jakob/programming/marsyas/src/qt5apps/inspector/graph/qml/Graph.qml"));
+  m_graph->setSource(QUrl("qrc:///graph/Graph.qml"));
   m_graph->setResizeMode(QQuickView::SizeRootObjectToView);
 
   QWidget *graph_widget = QWidget::createWindowContainer(m_graph);

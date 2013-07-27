@@ -19,7 +19,13 @@ set( inspector_src
 
 qt5_wrap_cpp( inspector_moc_src ${inspector_moc_hdr} )
 
-add_executable( inspector ${inspector_src} ${inspector_moc_src})
+qt5_add_resources( inspector_resources_src graph/qml/resources.qrc )
+
+add_executable( inspector
+  ${inspector_src}
+  ${inspector_moc_src}
+  ${inspector_resources_src}
+)
 
 include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/ )
 include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/core )
