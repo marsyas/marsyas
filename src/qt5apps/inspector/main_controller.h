@@ -25,6 +25,11 @@ private:
 private slots:
   void tickSystem();
   void systemClicked( const QString & path );
+  void systemInputClicked( const QString & path );
+  void systemOutputClicked( const QString & path );
+
+private:
+  Marsyas::MarSystem *systemForPath( const QString & path );
 };
 
 #endif // INSPECTOR_MAIN_CONTROLLER_INCLUDED

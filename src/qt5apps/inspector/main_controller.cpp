@@ -94,6 +94,10 @@ Main::Main(Marsyas::MarSystem * system)
   if (system_item) {
     QObject::connect( system_item, SIGNAL(clicked(QString)),
                       this, SLOT(systemClicked(QString)) );
+    QObject::connect( system_item, SIGNAL(inputClicked(QString)),
+                      this, SLOT(systemInputClicked(QString)) );
+    QObject::connect( system_item, SIGNAL(outputClicked(QString)),
+                      this, SLOT(systemOutputClicked(QString)) );
   }
   else {
     qWarning("Could not find top system item!");
@@ -115,6 +119,35 @@ void Main::systemClicked( const QString & path )
 {
   //qDebug() << "Main: System clicked:" << path;
 
+  MarSystem *system = systemForPath(path);
+  if (!system) {
+    qWarning() << "Main: System not found for path:" << path;
+    return;
+  }
+
+  controls_widget->setSystem(system);
+  realvec_widget->setSystem(system);
+}
+
+void Main::systemInputClicked( const QString & path )
+{
+  (void) path;
+}
+
+void Main::systemOutputClicked( const QString & path )
+{
+  MarSystem *system = systemForPath(path);
+  if (!system) {
+    qWarning() << "Main: System not found for path:" << path;
+    return;
+  }
+  controls_widget->setSystem(system);
+  realvec_widget->setSystem(system);
+  realvec_widget->displayControl("mrs_realvec/processedData");
+}
+
+MarSystem *Main::systemForPath( const QString & path )
+{
   QString relative_path;
 
   int separator_index;
@@ -135,11 +168,5 @@ void Main::systemClicked( const QString & path )
   else
     system = root_system->getChildMarSystem( relative_path.toStdString() );
 
-  if (!system) {
-    qWarning() << "Main: System not found for path:" << path;
-    return;
-  }
-
-  controls_widget->setSystem(system);
-  realvec_widget->setSystem(system);
+  return system;
 }
