@@ -987,8 +987,8 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 
     //   updated values, for variable sample rates.  ms = milliseconds
     //   these will be rounded up to the nearest power of 2 (in samples)
-    mrs_natural oss_hop_ms = 2.9;     // for flux calculation
-    mrs_natural oss_win_ms = 5.8;     // for flux calculation
+    mrs_real oss_hop_ms = 2.9;     // for flux calculation
+    mrs_real oss_win_ms = 5.8;     // for flux calculation
 
     mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
     mrs_natural oss_hop_size = (mrs_natural) next_power_two(srate * oss_hop_ms * 0.001);
