@@ -4,6 +4,13 @@
 #include <MarSystem.h>
 
 #include <QObject>
+#include <QToolBar>
+#include <QQuickView>
+
+using namespace Marsyas;
+
+class RealvecWidget;
+class ControlsWidget;
 
 class Main : public QObject
 {
@@ -29,7 +36,14 @@ private slots:
   void systemOutputClicked( const QString & path );
 
 private:
-  Marsyas::MarSystem *systemForPath( const QString & path );
+  MarSystem *systemForPath( const QString & path );
+
+  MarSystem *m_root_system;
+
+  QToolBar *m_toolbar;
+  QQuickView *m_graph;
+  RealvecWidget *m_realvec_widget;
+  ControlsWidget *m_controls_widget;
 };
 
 #endif // INSPECTOR_MAIN_CONTROLLER_INCLUDED

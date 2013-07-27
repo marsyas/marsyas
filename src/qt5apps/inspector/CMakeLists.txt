@@ -1,5 +1,5 @@
 set( inspector_moc_hdr
-  main_controller.h
+  main.h
   graph/marsystem_adaptor.h
   widgets/controls_widget.h
   widgets/realvec_widget.h
@@ -9,7 +9,6 @@ set( inspector_moc_hdr
 
 set( inspector_src
   main.cpp
-  main_controller.cpp
   graph/marsyas_qml.cpp
   graph/marsystem_adaptor.cpp
   widgets/controls_widget.cpp
