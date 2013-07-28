@@ -1,5 +1,5 @@
 
-function [bpm] = tempo_file(filename)
+function [bpm] = tempo_stem_file(filename)
 
 WRITE_CACHE = 0;
 CACHE_OSS = 0;
@@ -112,7 +112,7 @@ end
 
 %%%%%%%%% DOUBLING HEURISTIC
 
-bpm = late_heuristic(bpm_cand, bphase, 0.05);
+bpm = late_heuristic(bpm_cand, bphase);
 
 
 

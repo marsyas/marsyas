@@ -35,7 +35,8 @@ end
 
 if 0
 	hold on;
-	python_bh = load('aq-10.txt')(:,2);
+	python_bh = load('aq-10.txt');
+    python_bh = python_bh(:,2);
 	a = autocorr(:, 10);
 	%plot(python_bh, 'b');
 	%plot(a, 'g');
@@ -63,10 +64,10 @@ for i = 1:num_frames
 				amp = 0;
 			end
 			if prev_Hni == Hni
-				sumamp += amp;
-				count += 1;
+				sumamp = sumamp + amp;
+				count = count + 1;
 			else
-				sumamp += amp;
+				sumamp = sumamp + amp;
 				Hn(i, 1+prev_Hni) = sumamp / double(count);
 				sumamp = 0.0;
 				count = 1;
@@ -89,7 +90,8 @@ end
 
 if 0
 	hold on;
-	python_bh = load('bh-10.txt')(:,2)';
+	python_bh = load('bh-10.txt');
+    python_bh = python_bh(:,2)';
 	a = Hn(10, :);
 	%plot(python_bh, 'b');
 	%plot(a, 'g');
@@ -115,9 +117,9 @@ for i = 1:num_frames
 		w = ni - li;
 		%printf("%i\t%i\t%f\t%f\n", li, ri, w, ni);
 		if ri < M - 1
-			stretched(1+t) += Hn(i, 1+li) + w * (Hn(i, 1+ri) - Hn(i, 1+li));
+			stretched(1+t) = stretched(1+t) + Hn(i, 1+li) + w * (Hn(i, 1+ri) - Hn(i, 1+li));
 		else
-			stretched(1+t) += Hn(i, 1+t);
+			stretched(1+t) = stretched(1+t) + Hn(i, 1+t);
 		end
 
 		ni = t*factor4;
@@ -125,9 +127,9 @@ for i = 1:num_frames
 		ri = li + 1;
 		w = ni - li;
 		if ri < M - 1
-			stretched(1+t) += Hn(i, 1+li) + w * (Hn(i, 1+ri) - Hn(i, 1+li));
+			stretched(1+t) = stretched(1+t) + Hn(i, 1+li) + w * (Hn(i, 1+ri) - Hn(i, 1+li));
 		else
-			stretched(1+t) += Hn(i, 1+t);
+			stretched(1+t) = stretched(1+t) + Hn(i, 1+t);
 		end
 	end
 	%exit(1)
@@ -136,7 +138,8 @@ end
 
 if 0
 	hold on;
-	python_bh = load('hbh-10.txt')(:,2)';
+	python_bh = load('hbh-10.txt');
+    python_bh = python_bh(:,2)';
 	a = harmonic_strengthened_bh(10,:);
 	%plot(python_bh, 'b');
 	%plot(a, 'g');
@@ -156,12 +159,13 @@ for i = 1:num_frames
 		if ((harmonic_strengthened_bh(i, j-1) < harmonic_strengthened_bh(i, j)) && (harmonic_strengthened_bh(i, j) > harmonic_strengthened_bh(i, j+1)))
 			strength = harmonic_strengthened_bh(i, j);
 			peaks(k,:) = [strength j];
-			k += 1;
+			k = k+1;
 		end
 	end
 	sorted = sortrows(peaks);
 	l = size(sorted,1) - 9;
-	best = flipud(sorted(l:end, :)(:,2));
+	best = flipud(sorted(l:end, :));
+    best = best(:,2);
 	% translate matlab-style indices into BPM
 	bh_cands(i,:) = (best-1.0) / 4.0;
 end

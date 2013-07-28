@@ -19,14 +19,13 @@ if TYPE == 2
 
 	features_normalized = zeros(size(features));
 	for i = 1:length(features)
-		if mins(i) != maxs(i)
-			features_normalized(i) = ( (features(i) - mins(i))
-				/ (maxs(i) - mins(i)));
+		if mins(i) ~= maxs(i)
+			features_normalized(i) = ((features(i) - mins(i)) / (maxs(i) - mins(i)));
 		end
 	end
 
 	for i = 1:length(features_normalized)
-		svm_sum += (features_normalized(i) * svm_weights(i));
+		svm_sum = svm_sum + (features_normalized(i) * svm_weights(i));
 	end
 
 	if svm_sum > 0

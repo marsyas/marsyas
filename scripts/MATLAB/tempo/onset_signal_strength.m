@@ -24,8 +24,8 @@ hamm = 0.54 - 0.46 * cos( 2*pi*ns / (WINDOWSIZE-1));
 
 windows = diag(hamm) * buffered;
 
-fft = fft(windows);
-fftabs = abs(fft);
+fft_res = fft(windows);
+fftabs = abs(fft_res);
 fftabs_reduced = fftabs(1:HOPSIZE+1,:) / WINDOWSIZE;
 logmag = log(1+1000*fftabs_reduced);
 
@@ -45,7 +45,8 @@ for i = 1:num_frames
 end
 
 if 0
-	python_flux = load('flux.txt')(:,2);
+	python_flux = load('flux.txt');
+    python_flux = python_flux(:,2);
 	hold on;
 	plot(flux);
 	plot(python_flux, 'g');

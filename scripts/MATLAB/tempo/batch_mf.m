@@ -33,7 +33,7 @@ for coll_index = 1:length(collections)
 		wav = strrep(wav, 'MARSYAS_DATADIR', md);
 		%bpm_ground = bpms(i);
 
-		bpm = tempo_file(wav);
+		bpm = tempo_stem_file(wav);
 		fprintf(fout, '%s\t%f\n', wav, bpm);
 		printf("Completed file %i / %i\n", i, length(wavs));
 		fflush(fid);

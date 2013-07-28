@@ -51,19 +51,19 @@ for i = 1:num_frames
 				b = int32(b);
 				ind = phase - b*period;
 				if ind >= 0
-					mag += window(ind+1);
+					mag = mag + window(ind+1);
 				end
 				%printf("\t%i\t%f\n", ind, mag);
 
 				ind = phase - b*period*2;
 				if ind >= 0
-					mag += 0.5*window(ind+1);
+					mag = mag + 0.5*window(ind+1);
 				end
 				%printf("\t%i\t%f\n", ind, mag);
 
 				ind = phase - idivide(b*period*3, 2);
 				if ind >= 0
-					mag += 0.5*window(ind+1);
+					mag = mag + 0.5*window(ind+1);
 				end
 				%printf("\t%i\t%f\n", ind, mag);
 			end
@@ -87,18 +87,18 @@ for i = 1:num_frames
 	%if i > 1
 %		exit(1)
 %	end
-	tempo_scores /= sum(tempo_scores);
-	onset_scores /= sum(onset_scores);
+	tempo_scores = tempo_scores / sum(tempo_scores);
+	onset_scores = onset_scores / sum(onset_scores);
 
 	combo_scores = tempo_scores + onset_scores;
-	combo_scores /= sum(combo_scores);
+	combo_scores = combo_scores / sum(combo_scores);
 
 	[beststr, besti] = max(combo_scores);
 	bestbpm = int32(cands(besti));
 
 	%printf("%i\t%.9f\n", bestbpm, beststr);
 
-	bphase(1+bestbpm) += beststr;
+	bphase(1+bestbpm) = bphase(1+bestbpm) + beststr;
 
 	%d_bpm = bestbpm - ref(i,1);
 	%d_str = beststr - ref(i,2);
