@@ -24,6 +24,12 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cstring>
+#include <cerrno>
+
+#if defined(MARSYAS_MACOSX) || defined(MARSYAS_LINUX)
+#  include <pthread.h>
+#endif
 
 using namespace std;
 
@@ -39,7 +45,26 @@ public:
     m_stop(false),
     m_thread(&Marsyas::RealTime::RunnerThread::run, this)
   {
-    // FIXME: set thread priority
+#if defined(MARSYAS_MACOSX) || defined(MARSYAS_LINUX)
+    int policy;
+    sched_param param;
+    pthread_getschedparam( m_thread.native_handle(), &policy, &param );
+
+    policy = SCHED_FIFO;
+    int min_priority = sched_get_priority_min( policy );
+    int max_priority = sched_get_priority_max( policy );
+    int relative_priority = (int) ((max_priority - min_priority) * 0.75);
+    int priority = min_priority + relative_priority;
+    param.sched_priority = priority;
+
+    if (pthread_setschedparam( m_thread.native_handle(), policy, &param ))
+    {
+      MRSWARN("RunnerThread: Failed to set thread scheduling policy and priority: "
+              << std::strerror(errno));
+    }
+#else
+    MRSWARN("RunnerThread: Increasing thread priority on this platform is not implemented yet.");
+#endif
   }
 
   void stop()
