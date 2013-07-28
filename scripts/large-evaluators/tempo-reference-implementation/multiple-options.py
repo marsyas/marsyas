@@ -3,7 +3,7 @@
 import itertools
 import sys
 
-import tempo_reference
+import tempo_stem_file
 import defs_class
 
 #ONSETS = range(3)
@@ -22,7 +22,7 @@ if __name__ == "__main__":
             defs.OPTIONS_ONSET = min(opt, 2)
             defs.OPTIONS_BH = max(0, opt - 2)
             ### run algorithm
-            accuracy = tempo_reference.bpm_of_mf(defs, user_filename)
+            accuracy = tempo_stem_file.bpm_of_mf(defs, user_filename)
             print accuracy
 
         import pylab
