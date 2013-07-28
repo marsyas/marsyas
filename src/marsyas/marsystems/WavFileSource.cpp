@@ -142,7 +142,7 @@ WavFileSource::getHeader(mrs_string filename)
 	{
 	  MRSWARN("Filename " + filename + " is not correct .wav file \n or has settings that are not supported in Marsyas");
 	  // setctrl("mrs_natural/nChannels", 1);
-	  setctrl("mrs_real/israte", 22050.0);
+	  setctrl("mrs_real/israte", (mrs_real)22050.0);
 	  setctrl("mrs_natural/size", 0);
 	  hasData_ = false;
 	  lastTickWithData_ = true;
@@ -287,8 +287,8 @@ WavFileSource::getHeader(mrs_string filename)
 	  setctrl("mrs_natural/size", size_);
 	  ctrl_currentlyPlaying_->setValue(filename, NOUPDATE);
 	  ctrl_previouslyPlaying_->setValue(filename, NOUPDATE);
-	  ctrl_currentLabel_->setValue(0.0, NOUPDATE);
-	  ctrl_previousLabel_->setValue(0.0, NOUPDATE);
+	  ctrl_currentLabel_->setValue((mrs_real)0.0, NOUPDATE);
+	  ctrl_previousLabel_->setValue((mrs_real)0.0, NOUPDATE);
 
 	  ctrl_labelNames_->setValue(",", NOUPDATE);
 	  ctrl_nLabels_->setValue(0, NOUPDATE);
@@ -313,7 +313,7 @@ WavFileSource::getHeader(mrs_string filename)
   {
 	MRSWARN("couldn't open file: " << filename);
 	// setctrl("mrs_natural/nChannels", 1);
-	setctrl("mrs_real/israte", 22050.0);
+	setctrl("mrs_real/israte", (mrs_real)22050.0);
 	setctrl("mrs_natural/onObservations", 1);
 	setctrl("mrs_natural/size", 0);
 	hasData_ = false;

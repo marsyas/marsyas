@@ -201,7 +201,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		else
 		{
 			ctrl_onObservations_->setValue(1, NOUPDATE);
-			ctrl_israte_->setValue(22050.0, NOUPDATE); //[!] why not set to 0 or some invalid value?
+			ctrl_israte_->setValue((mrs_real)22050.0, NOUPDATE); //[!] why not set to 0 or some invalid value?
 			ctrl_hasData_->setValue(false, NOUPDATE);
 			ctrl_lastTickWithData_->setValue(true, NOUPDATE);
 			src_ = NULL;
@@ -300,6 +300,7 @@ SoundFileSource::myUpdate(MarControlPtr sender)
 		}
 
 	}
+
 }
 
 bool

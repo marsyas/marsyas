@@ -876,13 +876,17 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     MarSystem *onset_strength = mng.create("Series/onset_strength");
     MarSystem *accum = mng.create("Accumulator/accum");
     MarSystem *fluxnet = mng.create("Series/fluxnet");
+
     fluxnet->addMarSystem(mng.create("SoundFileSource/src"));
     fluxnet->addMarSystem(mng.create("MixToMono/m2m"));
+
     // fluxnet->addMarSystem(mng.create("DownSampler/tds"));
     fluxnet->addMarSystem(mng.create("ShiftInput/si"));	       // overlap for the spectral flux
     fluxnet->addMarSystem(mng.create("Windowing/windowing1"));
     fluxnet->addMarSystem(mng.create("Spectrum/spk"));
     fluxnet->addMarSystem(mng.create("PowerSpectrum/pspk"));
+
+	
     //fluxnet->addMarSystem(mng.create("TriangularFilterBank/tfb"));
     // fluxnet->addMarSystem(mng.create("Sum/triangsum"));
 
@@ -893,14 +897,13 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     //fluxnet->updControl("Delta/delta/mrs_bool/positive", true);
 
     fluxnet->addMarSystem(mng.create("Filter", "filt1"));
-
+	
     accum->addMarSystem(fluxnet);
     onset_strength->addMarSystem(accum);
 
     // parameters for the onset strength signal
     onset_strength->updControl("Accumulator/accum/Series/fluxnet/PowerSpectrum/pspk/mrs_string/spectrumType", "logmagnitude");
     // onset_strength->updControl("Accumulator/accum/Series/fluxnet/Windowing/windowing1/mrs_string/type", "Blackman-Harris");
-
     onset_strength->updControl("Accumulator/accum/Series/fluxnet/Flux/flux/mrs_string/mode", "Laroche2003");
 
 
@@ -968,6 +971,7 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     bcoeffs(13) = 0.0155332463596257;
     bcoeffs(14) = 0.0096350145101721;
 
+
     fluxnet->updControl("Filter/filt1/mrs_realvec/ncoeffs", bcoeffs);
     //fluxnet->updControl("Filter/filt1/mrs_realvec/dcoeffs", acoeffs);
 
@@ -987,8 +991,8 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
 
     //   updated values, for variable sample rates.  ms = milliseconds
     //   these will be rounded up to the nearest power of 2 (in samples)
-    mrs_natural oss_hop_ms = 2.9;     // for flux calculation
-    mrs_natural oss_win_ms = 5.8;     // for flux calculation
+    mrs_real oss_hop_ms = 2.9;     // for flux calculation
+    mrs_real oss_win_ms = 5.8;     // for flux calculation
 
     mrs_real srate = onset_strength->getControl("mrs_real/file_srate")->to<mrs_real>();
     mrs_natural oss_hop_size = (mrs_natural) next_power_two(srate * oss_hop_ms * 0.001);
@@ -999,6 +1003,7 @@ MarSystem *onset_strength_signal_flux(mrs_string sfName)
     onset_strength->updControl("mrs_natural/inSamples", oss_hop_size);
     fluxnet->updControl("ShiftInput/si/mrs_natural/winSize", oss_win_size);
 
+	
     return onset_strength;
 }
 
@@ -1235,9 +1240,9 @@ tempo_stem(mrs_string sfName, float ground_truth_tempo, mrs_string resName, bool
 
     //mrs_natural hop_ms = 5.8;     // for flux calculation
     //mrs_natural bhop_ms = 5.8;    // for onset strength signal
-    mrs_natural hop_ms = 2.9;     // for flux calculation
-    mrs_natural bhop_ms = 2.9;    // for onset strength signal
-    mrs_natural bwin_ms = 46.4; // 46.4;	 // for onset strength signal
+    mrs_real hop_ms = 2.9;     // for flux calculation
+    mrs_real bhop_ms = 2.9;    // for onset strength signal
+    mrs_real bwin_ms = 46.4; // 46.4;	 // for onset strength signal
     // mrs_natural bp_winSize = 8192; // for onset strength signal for the beat locations
     mrs_natural nCandidates = 10;  // number of tempo candidates
     mrs_natural factor = 4;
