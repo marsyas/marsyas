@@ -5,8 +5,8 @@ include_directories(${CMAKE_SOURCE_DIR}/src/marsyas/optional/)
 
 ## BUILD MACRO
 
-macro (marsyas_static_app APP APP_SOURCES)
-   	 add_executable(${APP} ${APP_SOURCES})
+macro (marsyas_static_app APP)
+  add_executable(${APP} ${ARGN})
 	 include_directories(${GSTREAMER_INCLUDE_DIRS}
    	 ${PNGWRITER_INCLUDE_DIR} ${OSC_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR_freetype2}
    	 ${FREETYPE_INCLUDE_DIR_ft2build} )
@@ -14,8 +14,8 @@ macro (marsyas_static_app APP APP_SOURCES)
 	 install(TARGETS ${APP} DESTINATION bin)
 endmacro (marsyas_static_app)
 
-macro (marsyas_app APP APP_SOURCES)
-   	 add_executable(${APP} ${APP_SOURCES})
+macro (marsyas_app APP)
+  add_executable(${APP} ${ARGN})
 	 include_directories(${GSTREAMER_INCLUDE_DIRS}
    	 ${PNGWRITER_INCLUDE_DIR} ${OSC_INCLUDE_DIR} ${FREETYPE_INCLUDE_DIR_freetype2} ${FREETYPE_INCLUDE_DIR_ft2build})
 	 if (MARSYAS_STATIC)
@@ -58,6 +58,10 @@ if (MARSYAS_OPENGL)
 	add_subdirectory(helloglut)
 	add_subdirectory(carfac)
 endif (MARSYAS_OPENGL)
+
+if (WITH_CPP11)
+  add_subdirectory(debugger)
+endif()
 
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 

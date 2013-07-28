@@ -3,6 +3,7 @@ set( inspector_moc_hdr
   graph/marsystem_adaptor.h
   widgets/controls_widget.h
   widgets/realvec_widget.h
+  widgets/debug_widget.h
 
   ${CMAKE_SOURCE_DIR}/src/marsyasqt/Marx2DGraph.h
 )
@@ -13,17 +14,26 @@ set( inspector_src
   graph/marsystem_adaptor.cpp
   widgets/controls_widget.cpp
   widgets/realvec_widget.cpp
+  widgets/debug_widget.cpp
 
+  ${CMAKE_SOURCE_DIR}/src/apps/debugger/file_io.cpp
   ${CMAKE_SOURCE_DIR}/src/marsyasqt/Marx2DGraph.cpp
 )
 
 qt5_wrap_cpp( inspector_moc_src ${inspector_moc_hdr} )
 
-add_executable( inspector ${inspector_src} ${inspector_moc_src})
+qt5_add_resources( inspector_resources_src graph/qml/resources.qrc )
+
+add_executable( inspector
+  ${inspector_src}
+  ${inspector_moc_src}
+  ${inspector_resources_src}
+)
 
 include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/ )
 include_directories( ${CMAKE_SOURCE_DIR}/src/marsyas/core )
 include_directories( ${CMAKE_SOURCE_DIR}/src/marsyasqt/ )
+include_directories( ${CMAKE_SOURCE_DIR}/src )
 
 qt5_use_modules( inspector Quick Widgets )
 

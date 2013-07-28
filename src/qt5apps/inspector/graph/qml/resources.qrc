@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/graph">
+        <file>Graph.qml</file>
+        <file>MarSystemItem.qml</file>
+        <file>FlowIndicator.qml</file>
+        <file>MarSystemLayoutFactory.qml</file>
+        <file>SeriesLayout.qml</file>
+        <file>FanoutLayout.qml</file>
+    </qresource>
+</RCC>

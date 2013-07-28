@@ -13,6 +13,7 @@ using namespace Marsyas;
 
 class RealvecWidget;
 class ControlsWidget;
+class DebugWidget;
 
 class Main : public QObject
 {
@@ -48,6 +49,7 @@ private:
   QQuickView *m_graph;
   RealvecWidget *m_realvec_widget;
   ControlsWidget *m_controls_widget;
+  DebugWidget *m_debug_widget;
 };
 
 #endif // INSPECTOR_MAIN_CONTROLLER_INCLUDED

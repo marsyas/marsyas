@@ -24,8 +24,15 @@ for i = 2:len-1
 	end
 end
 
+if bpm2 > 0
+	bpm2 = bpm2-1
+end
+if bpm3 > 0
+	bpm3 = bpm3-1
+end
+
 num_non_zero = 0;
-for i = 2:len
+for i = 1:len
 	if histo(i) > 0
 		num_non_zero += 1;
 	end
