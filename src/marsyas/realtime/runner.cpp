@@ -29,6 +29,8 @@
 
 #if defined(MARSYAS_MACOSX) || defined(MARSYAS_LINUX)
 #  include <pthread.h>
+#elif defined(MARSYAS_WIN32) || defined(MARSYAS_MINGW)
+#  include <windows.h>
 #endif
 
 using namespace std;
@@ -61,6 +63,15 @@ public:
     {
       MRSWARN("RunnerThread: Failed to set thread scheduling policy and priority: "
               << std::strerror(errno));
+    }
+#elif defined(MARSYAS_WIN32) || defined(MARSYAS_MINGW)
+    if (!SetPriorityClass( m_thread.native_handle(), HIGH_PRIORITY_CLASS ))
+    {
+      MRSWARN("RunnerThread: Failed to set thread priority class.");
+    }
+    if (!SetThreadPriority( m_thread.native_handle(), THREAD_PRIORITY_HIGHEST ))
+    {
+      MRSWARN("RunnerThread: Failed to set thread priority.");
     }
 #else
     MRSWARN("RunnerThread: Increasing thread priority on this platform is not implemented yet.");
