@@ -3,6 +3,8 @@
 using namespace std;
 using namespace Marsyas;
 
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 TopPanel::TopPanel(QWidget *parent)
   : QWidget(parent)
