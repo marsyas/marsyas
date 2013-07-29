@@ -109,22 +109,37 @@ public:
 	WAS_INLINE bool isInvalid() const;
 	WAS_INLINE bool isEqual(const MarControlPtr& v1);
   
+  marsyas_EXPORT
 	friend WAS_INLINE std::ostream& operator<<(std::ostream& os, const MarControlPtr& ctrl);
+  marsyas_EXPORT
 	friend WAS_INLINE bool operator==(const MarControlPtr& v1, const MarControlPtr& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE bool operator!=(const MarControlPtr& v1, const MarControlPtr& v2);
 
+  marsyas_EXPORT
 	friend WAS_INLINE mrs_real operator+(const MarControlPtr& v1, const mrs_real& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE mrs_real operator+(const mrs_real& v1, const MarControlPtr& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE mrs_real operator-(const MarControlPtr& v1, const mrs_real& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE mrs_real operator-(const mrs_real& v1, const MarControlPtr& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE mrs_real operator*(const MarControlPtr& v1, const mrs_real& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE mrs_real operator*(const mrs_real& v1, const MarControlPtr& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE mrs_real operator/(const MarControlPtr& v1, const mrs_real& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE mrs_real operator/(const mrs_real& v1, const MarControlPtr& v2);
 
+  marsyas_EXPORT
 	friend WAS_INLINE MarControlPtr operator+(const MarControlPtr& v1, const MarControlPtr& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE MarControlPtr operator-(const MarControlPtr& v1, const MarControlPtr& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE MarControlPtr operator*(const MarControlPtr& v1, const MarControlPtr& v2);
+  marsyas_EXPORT
 	friend WAS_INLINE MarControlPtr operator/(const MarControlPtr& v1, const MarControlPtr& v2);
 
 	marsyas_EXPORT friend bool operator<(const MarControlPtr& v1, const MarControlPtr& v2);
