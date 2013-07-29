@@ -24,9 +24,10 @@ public:
   };
 
   struct bug {
-    bug_flags flags {no_bug};
-    mrs_real max_deviation {(mrs_real)0.0};
-    mrs_real average_deviation {(mrs_real)0.0};
+    bug() : flags(no_bug), max_deviation(0.0), average_deviation(0.0) {}
+    bug_flags flags;
+    mrs_real max_deviation;
+    mrs_real average_deviation;
   };
 
   typedef std::map<std::string, bug> report;
