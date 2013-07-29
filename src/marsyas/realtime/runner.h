@@ -41,7 +41,7 @@ class RunnerThread;
  * @author Jakob Leben (jakob.leben@gmail.com)
  */
 
-class Runner
+class marsyas_EXPORT Runner
 {
 public:
 
@@ -114,7 +114,7 @@ private:
   Shared * m_shared;
 };
 
-class Control {
+class marsyas_EXPORT Control {
 public:
   std::string path() const { return m_path; }
 
