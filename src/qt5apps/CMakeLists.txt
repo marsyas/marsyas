@@ -16,4 +16,5 @@ endif()
 
 if(MARSYAS_AUDIOIO AND MARSYAS_REALTIME)
   add_subdirectory(MarPlayer)
+  add_subdirectory(MarPhasevocoder)
 endif()
