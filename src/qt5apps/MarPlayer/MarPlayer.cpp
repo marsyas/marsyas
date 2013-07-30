@@ -77,7 +77,7 @@ MarPlayer::createConnections()
   connect(ui.pauseButton, SIGNAL(clicked()),
           mapper_, SLOT(pause()));
   
-  connect(ui.positionSlider, SIGNAL(sliderReleased()),
+  connect(ui.positionSlider, SIGNAL(actionTriggered(int)),
           this, SLOT(seekPos()));
 
   connect(mapper_, SIGNAL(posChanged(int)),
