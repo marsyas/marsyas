@@ -11,8 +11,6 @@ using namespace std;
 
 int main( int argc, const char **argv )
 {
-  mrs_real delay_sec = 0.0;
-
   CommandLineOptions opt;
   opt.addBoolOption("real-time", "r", false);
   opt.addRealOption("sample-rate", "s", 44100.0);
