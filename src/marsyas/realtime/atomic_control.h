@@ -139,12 +139,14 @@ public:
 
   void push()
   {
-    m_value = m_control->to<mrs_string>();
+    // FIXME: not real-time safe!
+    // m_value = m_control->to<mrs_string>();
   }
 
   void pull()
   {
-    m_control->setValue( m_value );
+    // FIXME: not real-time safe!
+    // m_control->setValue( m_value );
   }
 private:
   mrs_string m_value;
