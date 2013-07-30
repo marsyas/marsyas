@@ -65,10 +65,6 @@ public:
               << std::strerror(errno));
     }
 #elif defined(MARSYAS_WIN32) || defined(MARSYAS_MINGW)
-    if (!SetPriorityClass( m_thread.native_handle(), HIGH_PRIORITY_CLASS ))
-    {
-      MRSWARN("RunnerThread: Failed to set thread priority class.");
-    }
     if (!SetThreadPriority( m_thread.native_handle(), THREAD_PRIORITY_HIGHEST ))
     {
       MRSWARN("RunnerThread: Failed to set thread priority.");
