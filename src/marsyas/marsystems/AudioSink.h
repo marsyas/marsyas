@@ -94,7 +94,8 @@ private:
   void initRtAudio(
       unsigned int sample_rate,
       unsigned int *block_size,
-      unsigned int channel_count
+      unsigned int channel_count,
+      bool realtime
       );
 
   void start();

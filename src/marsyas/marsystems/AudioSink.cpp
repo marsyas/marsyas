@@ -93,7 +93,7 @@ AudioSink::myUpdate(MarControlPtr sender)
   {
     stop();
 
-    initRtAudio(sample_rate, &dest_block_size, channel_count);
+    initRtAudio(sample_rate, &dest_block_size, channel_count, realtime);
 
     const bool do_resize_buffer = true;
     reformatBuffer(source_block_size, dest_block_size, channel_count, realtime, do_resize_buffer);
@@ -139,7 +139,8 @@ void
 AudioSink::initRtAudio(
     unsigned int sample_rate,
     unsigned int *block_size,
-    unsigned int channel_count
+    unsigned int channel_count,
+    bool realtime
     )
 {
   mrs_string backend = getControl("mrs_string/backend")->to<mrs_string>();
@@ -185,6 +186,14 @@ AudioSink::initRtAudio(
   output_params.nChannels = channel_count;
   output_params.firstChannel = 0;
 
+  RtAudio::StreamOptions options;
+  options.streamName = "Marsyas";
+  options.numberOfBuffers = 0; // Use default.
+  options.flags = RTAUDIO_SCHEDULE_REALTIME;
+  options.priority = 70;
+  if (realtime)
+    options.flags |= RTAUDIO_MINIMIZE_LATENCY; // Use smallest possible 'numberOfBuffers'.
+
   RtAudioFormat format = (sizeof(mrs_real) == 8) ? RTAUDIO_FLOAT64 : RTAUDIO_FLOAT32;
 
   // Suppress useless warnings when both an AudioSource and
@@ -194,7 +203,7 @@ AudioSink::initRtAudio(
   try
   {
     audio_->openStream(&output_params, NULL, format, sample_rate,
-                       block_size, &playCallback, (void *)&shared, NULL);
+                       block_size, &playCallback, (void *)&shared, &options);
   }
   catch (RtError& e)
   {
