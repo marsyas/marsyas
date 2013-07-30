@@ -149,7 +149,6 @@ private:
     delete m_atomic;
   }
 
-  void pull() { m_atomic->pull(); }
   void push() { m_atomic->push(); }
 
   Runner * m_runner;

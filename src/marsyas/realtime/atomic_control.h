@@ -52,18 +52,9 @@ public:
   virtual any value() const = 0;
 
   /**
-  Set value of intermediate atomic variable
-  */
-  virtual void setValue( const any & ) = 0;
-
-  /**
   Set intermediate atomic variable to control value.
   */
   virtual void push() = 0;
-  /**
-  Set control value to value of intermediate atomic variable.
-  */
-  virtual void pull() = 0;
 
   MarControlPtr & systemControl() { return m_control; }
 
@@ -84,28 +75,11 @@ public:
     return any(m_value.load());
   }
 
-  void setValue( const any & value )
-  {
-    T typed_value;
-    try {
-      typed_value = any_cast<T>(value);
-    }
-    catch (bad_any_cast) {
-      MRSWARN("Can not set control value  - invalid type.");
-      return;
-    };
-    m_value = typed_value;
-  }
-
   void push()
   {
     m_value = m_control->to<T>();
   }
 
-  void pull()
-  {
-    m_control->setValue( m_value.load() );
-  }
 private:
   atomic<T> m_value;
 };
@@ -124,30 +98,12 @@ public:
     return any(m_value);
   }
 
-  void setValue( const any & value )
-  {
-    mrs_string typed_value;
-    try {
-      typed_value = any_cast<mrs_string>(value);
-    }
-    catch (bad_any_cast) {
-      MRSWARN("Can not set control value  - invalid type.");
-      return;
-    };
-    m_value = typed_value;
-  }
-
   void push()
   {
     // FIXME: not real-time safe!
     // m_value = m_control->to<mrs_string>();
   }
 
-  void pull()
-  {
-    // FIXME: not real-time safe!
-    // m_control->setValue( m_value );
-  }
 private:
   mrs_string m_value;
 };
