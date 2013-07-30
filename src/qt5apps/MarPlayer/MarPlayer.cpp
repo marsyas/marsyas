@@ -1,18 +1,18 @@
 /*
 ** Copyright (C) 1998-2006 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
@@ -47,7 +47,7 @@ MarPlayer::init()
   createConnections();
 }
 
-void 
+void
 MarPlayer::createMenus()
 {
   fileMenu = menuBar()->addMenu(tr("&File"));
@@ -68,15 +68,15 @@ void MarPlayer::createActions()
   connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
 }
 
-void 
+void
 MarPlayer::createConnections()
 {
   connect(ui.playButton, SIGNAL(clicked()),
           mapper_, SLOT(play()));
-  
+
   connect(ui.pauseButton, SIGNAL(clicked()),
           mapper_, SLOT(pause()));
-  
+
   connect(ui.positionSlider, SIGNAL(actionTriggered(int)),
           this, SLOT(seekPos()));
 
@@ -94,10 +94,10 @@ MarPlayer::createConnections()
 
   connect(ui.fileComboBox, SIGNAL(activated(const QString&)),
           this, SLOT(open(const QString&)));
-  
+
 }
 
-void 
+void
 MarPlayer::open()
 {
   QString fileName = QFileDialog::getOpenFileName(this);
@@ -106,20 +106,20 @@ MarPlayer::open()
   open(fileName);
 }
 
-void 
+void
 MarPlayer::open(const QString& text)
 {
   mapper_->open(text, ui.positionSlider->sliderPosition());
 }
 
-void 
+void
 MarPlayer::positionSlider(int val)
 {
   if (ui.positionSlider->isSliderDown() == false)
     ui.positionSlider->setValue(val);
 }
 
-void 
+void
 MarPlayer::seekPos()
 {
   mapper_->setPos(ui.positionSlider->sliderPosition());
@@ -128,7 +128,7 @@ MarPlayer::seekPos()
 void MarPlayer::about()
 {
   QMessageBox::about(this, tr("About Marsyas SoundFile Player"),
-                     tr("The example demonstrates how to write a GUI that"
+                    tr("The example demonstrates how to write a GUI that"
                         " combines Qt and Marsyas"));
-  
+
 }

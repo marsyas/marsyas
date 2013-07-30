@@ -1,22 +1,22 @@
 /*
 ** Copyright (C) 1998-2010 George Tzanetakis <gtzan@cs.uvic.ca>
-**  
+**
 ** This program is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
 ** the Free Software Foundation; either version 2 of the License, or
 ** (at your option) any later version.
-** 
+**
 ** This program is distributed in the hope that it will be useful,
 ** but WITHOUT ANY WARRANTY; without even the implied warranty of
 ** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ** GNU General Public License for more details.
-** 
+**
 ** You should have received a copy of the GNU General Public License
-** along with this program; if not, write to the Free Software 
+** along with this program; if not, write to the Free Software
 ** Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
 
-/** 
+/**
   \brief  Plays MarSystem and mediates GUI interaction
 
   Creates a network of MarSystems, then uses the MarsyasQt::System wrapper
@@ -27,7 +27,7 @@
   via own signals, to which MainWindow connects to update informatino in GUI.
 */
 
-#include "Mapper.h" 
+#include "Mapper.h"
 
 using namespace Marsyas;
 using namespace MarsyasQt;
@@ -36,15 +36,15 @@ Mapper::Mapper()
 {
   // Create the MarSystem network for playback.
   MarSystemManager mng;
-  
+
   m_system = mng.create("Series", "pnet_");
   m_system->addMarSystem(mng.create("SoundFileSource", "src"));
   m_system->addMarSystem(mng.create("Gain", "gain"));
   m_system->addMarSystem(mng.create("AudioSink", "dest"));
   m_system->updControl("mrs_natural/inSamples", 2048);
-  
+
   m_system->linkControl("mrs_bool/hasData", "SoundFileSource/src/mrs_bool/hasData");
-  
+
   // Create a handy Qt wrapper for the MarSystem.
   m_qsystem = new MarsyasQt::System(m_system);
 
@@ -68,7 +68,7 @@ Mapper::~Mapper()
   delete m_system;
 }
 
-void 
+void
 Mapper::open(QString fileName, int pos)
 {
   const bool do_not_update = false;
@@ -91,8 +91,8 @@ Mapper::open(QString fileName, int pos)
 }
 
 
-/* "manual" advancement of position */ 
-void 
+/* "manual" advancement of position */
+void
 Mapper::setPos(int position_percents)
 {
   int position_samples =
@@ -101,20 +101,20 @@ Mapper::setPos(int position_percents)
   m_positionControl->setValue(position_samples);
 }
 
-void 
+void
 Mapper::setGain(int position_percents)
 {
   m_gainControl->setValue( position_percents / 100.0 );
 }
 
-void 
+void
 Mapper::play()
 {
   m_qsystem->start();
   m_controlEmitTimer.start(200);
 }
 
-void 
+void
 Mapper::pause()
 {
   m_controlEmitTimer.stop();
