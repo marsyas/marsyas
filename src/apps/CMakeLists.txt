@@ -63,6 +63,10 @@ if (WITH_CPP11)
   add_subdirectory(debugger)
 endif()
 
+if(MARSYAS_REALTIME)
+  add_subdirectory(latency)
+endif()
+
 #add_subdirectory(msl) # NOT MULTIPLARTFORM (only UNIX)
 
 ## EVALUATION PROJECTS
