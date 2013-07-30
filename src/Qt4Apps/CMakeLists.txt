@@ -44,10 +44,6 @@ add_subdirectory(MarMonitors)
 add_subdirectory(Marx2DGraph)
 add_subdirectory(Marx2DStackedGraphs)
 
-if(MARSYAS_AUDIOIO AND MARSYAS_REALTIME)
-  add_subdirectory(MarPlayer)
-endif()
-
 if (MARSYAS_OPENGL)
 	add_subdirectory(MarSndPeek)
 	add_subdirectory(MarPanning)
