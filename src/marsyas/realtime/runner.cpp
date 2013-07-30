@@ -182,6 +182,19 @@ void Runner::stop()
   }
 }
 
+void Runner::wait()
+{
+  if (m_thread) {
+    m_thread->join();
+
+    delete m_thread;
+    m_thread = 0;
+
+    delete m_set_controls_event;
+    m_set_controls_event = 0;
+  }
+}
+
 Control * Runner::control( const std::string & path )
 {
   std::map<std::string, Control*>::iterator it = m_shared->controls.find(path);

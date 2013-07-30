@@ -51,6 +51,7 @@ public:
 
   void start();
   void stop();
+  void wait();
   bool isRunning() const
   {
     return m_thread != 0;
