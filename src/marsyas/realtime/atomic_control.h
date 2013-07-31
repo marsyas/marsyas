@@ -19,11 +19,16 @@
 #ifndef MARSYAS_THREAD_ATOMIC_CONTROL_INCLUDED
 #define MARSYAS_THREAD_ATOMIC_CONTROL_INCLUDED
 
-#include "MarControl.h"
 #include "any.h"
+#include "stage.h"
+
+#include <common_header.h>
+#include <realvec.h>
+#include <MarControl.h>
 
 #include <atomic>
 #include <string>
+#include <cstring>
 
 namespace Marsyas {
 namespace RealTime {
@@ -49,7 +54,7 @@ public:
   /**
   Get value of intermediate atomic variable
   */
-  virtual any value() const = 0;
+  virtual any value() = 0;
 
   /**
   Set intermediate atomic variable to control value.
@@ -70,7 +75,7 @@ public:
     AtomicControl(control)
   {}
 
-  any value() const
+  any value()
   {
     return any(m_value.load());
   }
@@ -84,7 +89,6 @@ private:
   atomic<T> m_value;
 };
 
-// FIXME: This is actually not atomic, not real-time-safe
 template<>
 class AtomicControlT<mrs_string> : public AtomicControl
 {
@@ -93,9 +97,10 @@ public:
     AtomicControl(control)
   {}
 
-  any value() const
+  any value()
   {
-    return any(m_value);
+    MRSERR("AtomicControlT<mrs_string>::value(): not yet implemented!");
+    return any(mrs_string());
   }
 
   void push()
@@ -103,10 +108,53 @@ public:
     // FIXME: not real-time safe!
     // m_value = m_control->to<mrs_string>();
   }
+};
+
+template<>
+class AtomicControlT<mrs_realvec> : public AtomicControl
+{
+public:
+  AtomicControlT( mrs_natural rows, mrs_natural columns,
+                  const MarControlPtr & control ):
+    AtomicControl(control),
+    m_rows(rows),
+    m_columns(columns),
+    m_value(rows, columns),
+    m_stage( m_value )
+  {}
+
+  any value()
+  {
+    const_cast<stage<mrs_realvec>&>(m_stage).pop();
+    if (m_stage.has_front())
+      m_value = m_stage.front();
+    return any(m_value);
+  }
+
+  void push()
+  {
+    const mrs_realvec & value = m_control->to<mrs_realvec>();
+    if (value.getRows() == m_rows && value.getCols() == m_columns)
+    {
+      mrs_realvec & stage_value = m_stage.back();
+      std::memcpy( stage_value.getData(),
+                   value.getData(),
+                   sizeof(mrs_real) * value.getSize() );
+      m_stage.push();
+    }
+    else
+    {
+      MRSERR("AtomicControlT<mrs_realvec>::push(): realvec format mismatch!");
+    }
+  }
 
 private:
-  mrs_string m_value;
+  mrs_natural m_rows;
+  mrs_natural m_columns;
+  mrs_realvec m_value;
+  stage<mrs_realvec> m_stage;
 };
+
 
 } // namespace RealTime
 } // namespace Marsyas

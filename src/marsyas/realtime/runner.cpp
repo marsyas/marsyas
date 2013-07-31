@@ -100,13 +100,13 @@ private:
 template <typename T>
 static void set_control_value( MarControlPtr & control, const any & value, bool update = true )
 {
-  T typed_value;
+  // FIXME: real-time-safe setting of string and realvec!
   try {
-    typed_value = any_cast<T>( value );
+    const T & typed_value = any_cast<T>( value );
+    control->setValue(typed_value, update);
   } catch ( bad_any_cast ) {
     return;
   };
-  control->setValue(typed_value, update);
 }
 
 static void set_control_value( MarControlPtr & control, const any & value, bool update = true )
@@ -120,6 +120,8 @@ static void set_control_value( MarControlPtr & control, const any & value, bool 
     set_control_value<mrs_natural>(control, value, update);
   else if(control_type == "mrs_string")
     set_control_value<mrs_string>(control, value, update);
+  else if(control_type == "mrs_realvec")
+    set_control_value<mrs_realvec>(control, value, update);
   else {
     MRSERR(
           "Marsyas::Thread::System:: Can not set control value - unsupported type: "
@@ -140,6 +142,8 @@ static any get_control_value( const MarControlPtr & control )
     return any( control->to<mrs_natural>() );
   else if(control_type == "mrs_string")
     return any( control->to<mrs_string>() );
+  else if(control_type == "mrs_realvec")
+    return any( control->to<mrs_realvec>() );
   else {
     MRSERR(
           "Marsyas::Thread::System:: Can not get control value - unsupported type: "
@@ -231,8 +235,12 @@ Control * Runner::create_control( const std::string & control_path )
   else if(sys_control_type == "mrs_natural")
     atomic_control =  new AtomicControlT<mrs_natural>(sys_control);
   else if(sys_control_type == "mrs_string")
-    // FIXME: not real-time-safe
     atomic_control = new AtomicControlT<mrs_string>(sys_control);
+  else if(sys_control_type == "mrs_realvec")
+  {
+    const realvec & data = sys_control->to<realvec>();
+    atomic_control = new AtomicControlT<mrs_realvec>(data.getRows(), data.getCols(), sys_control);
+  }
   else {
     MRSERR(
           "Marsyas::Thread::System:: Can not track control - unsupported type: "
