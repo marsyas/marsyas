@@ -574,7 +574,7 @@ void GLWidget::redrawScene() {
       }
       if (size > magnitude_cutoff) {
         glTranslated(x,y,z);
-        float mcolor[3];
+        float mcolor[4];
 
         // Red dots if big magnitude
         if (size > 0.4) {
