@@ -19,6 +19,7 @@
 #ifndef MARSYASQT_QTMARSYSTEM_INCLUDED
 #define MARSYASQT_QTMARSYSTEM_INCLUDED
 
+#include "marsyasqt_common.h"
 #include "realtime/runner.h"
 #include "realtime/any.h"
 
@@ -247,6 +248,33 @@ protected:
   any any_from_variant( const QVariant & value )
   {
     return MarsyasQt::any_from_variant<mrs_real>(value);
+  }
+};
+
+class ControlRealvec : public Control
+{
+  Q_OBJECT
+public slots:
+  void setValue(const realvec & value)
+  {
+    Control::setValue( QVariant::fromValue(value) );
+  }
+signals:
+  void valueChanged(const realvec & value);
+
+protected:
+  friend class System;
+
+  ControlRealvec( Marsyas::RealTime::Control *thread_control, System * parent ):
+    Control(thread_control, parent)
+  {}
+  QVariant variant_from_any( const any & value )
+  {
+    return MarsyasQt::variant_from_any<mrs_realvec>(value);
+  }
+  any any_from_variant( const QVariant & value )
+  {
+    return MarsyasQt::any_from_variant<mrs_realvec>(value);
   }
 };
 

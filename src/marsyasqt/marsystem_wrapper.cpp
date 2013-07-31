@@ -26,6 +26,8 @@ Control * System::createControl( const QString & path )
     control = new ControlNatural(thread_control, this);
   else if ( thread_control->isValueType<mrs_string>() )
     control = new ControlString(thread_control, this);
+  else if ( thread_control->isValueType<mrs_realvec>() )
+    control = new ControlRealvec(thread_control, this);
   else {
     MRSERR( "QtMarSystem: Can not access control - unsupported type." );
     return 0;
