@@ -95,6 +95,8 @@ private:
 
   Control * create_control( const std::string & path );
 
+  void refit_realvec_controls();
+
   void enqueue_control_value( const MarControlPtr & control, const any & value, bool push = true );
   void push_staged_control_values();
 
@@ -147,6 +149,14 @@ private:
   ~Control()
   {
     delete m_atomic;
+  }
+
+  void resizeToFit()
+  {
+    if (isValueType<mrs_realvec>())
+    {
+      static_cast<AtomicControlT<mrs_realvec>*>(m_atomic)->resizeToFit();
+    }
   }
 
   void push() { m_atomic->push(); }

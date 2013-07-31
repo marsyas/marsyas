@@ -164,6 +164,7 @@ Runner::Runner(Marsyas::MarSystem * system):
 void Runner::start()
 {
   if (!m_thread) {
+    refit_realvec_controls();
     m_thread = new RunnerThread(m_system, m_shared);
   }
 }
@@ -251,6 +252,15 @@ Control * Runner::create_control( const std::string & control_path )
   m_shared->controls.insert(std::pair<std::string, Control*>(control_path, control));
 
   return control;
+}
+
+void Runner::refit_realvec_controls()
+{
+  for (const auto & mapping : m_shared->controls)
+  {
+    Control *control = mapping.second;
+    control->resizeToFit();
+  }
 }
 
 void Runner::enqueue_control_value(const MarControlPtr & control,
