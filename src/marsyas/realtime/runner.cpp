@@ -311,10 +311,9 @@ void RunnerThread::run()
     process_requests();
 
     m_system->tick();
-#if 1
-    for (std::pair<std::string, Control*> mapping : m_shared->controls)
+
+    for (const auto & mapping : m_shared->controls)
       mapping.second->push();
-#endif
   }
 
   m_system->updControl("mrs_bool/active", false);
@@ -351,7 +350,7 @@ void RunnerThread::process_requests()
     case SetControls:
     {
       SetControlsEvent *request = static_cast<SetControlsEvent*>(event);
-      for( std::pair<const MarControlPtr, any> &mapping : request->control_values )
+      for( const auto & mapping : request->control_values )
       {
         const bool do_not_update = false;
         //cout << "MarSystemThread: setting staged control: " << mapping.first->getName() << endl;
