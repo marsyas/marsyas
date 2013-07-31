@@ -1,17 +1,20 @@
-#include <QtGui>
 #include <QLCDNumber>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 #include "glwidget.h"
 #include "window.h"
 
-Window::Window(string inAudioFileName)
+Window::Window()
 {
-
-  mainWidget = new QWidget();
+  mainWidget = new QWidget;
 
   setCentralWidget(mainWidget);
 
-  glWidget = new GLWidget(inAudioFileName);
+  glWidget = new GLWidget;
 
   glWidget->setMinimumSize(800,400);
   glWidget->setMaximumSize(800,400);
@@ -119,7 +122,7 @@ Window::Window(string inAudioFileName)
   connect(fftBinsCombo, SIGNAL(currentIndexChanged(int)), glWidget, SLOT(setFFTBins(int)));
 
   // Connect up the background color combo
-  connect(fftBinsCombo, SIGNAL(currentIndexChanged(int)), glWidget, SLOT(setFFTBins(int)));
+  // NOT IMPLEMENTED.
 
   // Current playback position
 //   connect(posSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setSongPosition(int)));
@@ -280,6 +283,11 @@ Window::Window(string inAudioFileName)
   setWindowTitle(tr("MarPanning"));
 }
 
+void Window::play(const QString & fileName)
+{
+  glWidget->play(fileName);
+}
+
 //
 // A handy function to create a generic slider for the x,y,z positions
 //
@@ -294,11 +302,12 @@ QSlider *Window::createRotationSlider(int min, int max)
   return slider;
 }
 
+#if 0
 MarSystemQtWrapper* Window::getMarSystemQtWrapper()
 {
   return glWidget->getMarSystemQtWrapper();
 }
-
+#endif
 
 
 QSlider *Window::createTranslationSlider()

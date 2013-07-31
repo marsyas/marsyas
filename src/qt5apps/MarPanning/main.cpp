@@ -32,14 +32,18 @@ void usage()
 
 int main(int argc, char *argv[])
 {
-  QApplication* app = new QApplication(argc, argv);
-  string inAudioFileName = "";
-  if (argc > 1) {
-	inAudioFileName = argv[1];	  
-  }
-  Window window(inAudioFileName);
-  window.show();
+  QApplication app(argc, argv);
 
+  QStringList args = app.arguments();
+  QString fileName;
+  if (args.size() > 1)
+    fileName = args[1];
+
+  Window window;
+  window.show();
+  window.play(fileName);
+
+#if 0
   //
   // Setup the input and output OSC host addresses and ports
   //
@@ -68,6 +72,6 @@ int main(int argc, char *argv[])
   oscMapper->registerInputQtSlot(window.yRotSlider, "/keyright", QVariant::Int);
   oscMapper->registerInputQtSlot(window.xRotSlider, "/keyup", QVariant::Int);
   oscMapper->registerInputQtSlot(window.xRotSlider, "/keydown", QVariant::Int);
-  
-  return app->exec();
+#endif
+  return app.exec();
 }

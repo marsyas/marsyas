@@ -9,17 +9,14 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QCheckBox>
+
 using namespace std;
-
-#include "MarSystemQtWrapper.h" 
-using namespace MarsyasQt;
-
 
 class GLWidget;
 
 class Window : public QMainWindow
 {
-Q_OBJECT
+  Q_OBJECT
 
 public slots: 
   void about();
@@ -29,11 +26,15 @@ private slots:
   void positionSlider(int);
 
 public:
-  Window(string inAudioFileName);
-  MarSystemQtWrapper* getMarSystemQtWrapper(); 
+  Window();
+  void play(const QString & fileName);
+
+#if 0
+  MarSystemQtWrapper* getMarSystemQtWrapper();
+#endif
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
-   QSlider *xTransSlider;
+  QSlider *xTransSlider;
   QSlider *xRotSlider;
   QSlider *yRotSlider;
   QSlider *magnitudeCutoffSlider;
@@ -53,12 +54,12 @@ private:
   GLWidget *glWidget;
 
   // Sliders to rotate the object on its axes
-//   QSlider *zRotSlider;
+  //   QSlider *zRotSlider;
 
-//   // Sliders to translate the object
+  //   // Sliders to translate the object
 
-   QSlider *yTransSlider;
-//   QSlider *zTransSlider;
+  QSlider *yTransSlider;
+  //   QSlider *zTransSlider;
 
   // Scale sliders
   QSlider *yScaleSlider;
@@ -79,7 +80,7 @@ private:
 
   QPushButton *playpause_button;
 
-  QMenu*   fileMenu;  
+  QMenu*   fileMenu;
   QMenu*   helpMenu;
   QAction* openAct;
   QAction* aboutAct;

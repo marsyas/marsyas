@@ -1,3 +1,7 @@
+#include "glwidget.h"
+
+#include <marsyas/core/MarSystemManager.h>
+
 #include <QtGui>
 #include <QtOpenGL>
 #include <QTimer>
@@ -7,17 +11,13 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+
 using namespace std;
 
-// Marsyas
-#include "MarSystemManager.h"
-#include "MarSystemQtWrapper.h"
-using namespace MarsyasQt;
-
-#include "glwidget.h"
-
-GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
-  : QGLWidget(parent)
+GLWidget::GLWidget(QWidget *parent):
+  QGLWidget(parent),
+  m_song_len(0),
+  m_song_sr(0)
 {
   // Initialize member variables
   xRot = 30;
@@ -32,10 +32,10 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   //   yTrans = -5.5;
 
   // For 50
-//   zTrans = -52;
-   z_start = 70;
-//   zTrans = -1 * z_start;
-   zTrans = -70;
+  //   zTrans = -52;
+  z_start = 70;
+  //   zTrans = -1 * z_start;
+  zTrans = -70;
   yTrans = -6.7;
 
   test_x = 0;
@@ -59,30 +59,31 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
   panning_spectrum_ring_buffer = new double*[MAX_Z];
 
   for (int i = 0; i < MAX_Z; i++) {
-	powerspectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
-	panning_spectrum_ring_buffer[i] = new double[MAX_STEREO_SPECTRUM_BINS];
+    powerspectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
+    panning_spectrum_ring_buffer[i] = new double[MAX_STEREO_SPECTRUM_BINS];
   }
   clearRingBuffers();
   ring_buffer_pos = 0;
 
   //
   // Create the MarSystem
-  // 
+  //
   MarSystemManager mng;
 
-  net_ = mng.create("Series", "net");
-  net_->addMarSystem(mng.create("SoundFileSource", "src"));
-  net_->addMarSystem(mng.create("AudioSink", "dest"));
+  MarSystem *sys;
+  sys = mng.create("Series", "net");
+  sys->addMarSystem(mng.create("SoundFileSource", "src"));
+  sys->addMarSystem(mng.create("AudioSink", "dest"));
   //   net_->addMarSystem(mng.create("Gain", "gain"));
 
-   MarSystem* fanout = mng.create("Fanout", "fanout");
+  MarSystem* fanout = mng.create("Fanout", "fanout");
 
-    MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
-    powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
-    powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
-    powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
-    powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-     powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
+  MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
+  powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+  powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
+  powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
+  powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
 
   MarSystem* stereobranches_series = mng.create("Series", "stereobranches_series");
   MarSystem* stereobranches_parallel = mng.create("Parallel", "stereobranches_parallel");
@@ -102,49 +103,40 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
 
   stereobranches_series->addMarSystem(mng.create("Gain", "gain"));
 
-   fanout->addMarSystem(powerspectrum_series);
+  fanout->addMarSystem(powerspectrum_series);
   fanout->addMarSystem(stereobranches_series);
 
-  net_->addMarSystem(fanout);
-  net_->addMarSystem(mng.create("Gain", "gain"));
+  sys->addMarSystem(fanout);
+  sys->addMarSystem(mng.create("Gain", "gain"));
 
-  net_->updctrl("mrs_real/israte", 44100.0);
-  net_->updctrl("SoundFileSource/src/mrs_real/israte", 44100.0);
-  net_->updctrl("SoundFileSource/src/mrs_real/osrate", 44100.0);
-  net_->updctrl("AudioSink/dest/mrs_real/israte", 44100.0);
-  net_->updctrl("SoundFileSource/src/mrs_natural/inSamples",insamples);
-  net_->updctrl("mrs_natural/inSamples",insamples);
+  sys->setControl("SoundFileSource/src/mrs_real/israte", 44100.0);
+  sys->setControl("SoundFileSource/src/mrs_real/osrate", 44100.0);
+  sys->setControl("SoundFileSource/src/mrs_real/repetitions",-1.0);
+  sys->setControl("AudioSink/dest/mrs_real/israte", 44100.0);
+  sys->setControl("SoundFileSource/src/mrs_natural/inSamples",insamples);
+  sys->setControl("mrs_natural/inSamples",insamples);
+  sys->setControl("mrs_real/israte", 44100.0);
+  sys->update();
 
-  if (inAudioFileName != "") {
-	net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
-  }
-  net_->updctrl("SoundFileSource/src/mrs_real/repetitions",-1.0);
+  m_marsystem = sys;
+  m_system = new MarsyasQt::System(sys);
 
-  net_->updctrl("mrs_natural/inSamples",insamples);
+  // Create controls for the system.
+  m_fileNameControl = m_system->control("SoundFileSource/src/mrs_string/filename");
+  m_sampleRateControl = m_system->control("SoundFileSource/src/mrs_real/osrate");
+  m_blockSizeControl = m_system->control("mrs_natural/inSamples");
+  m_sizeControl = m_system->control("SoundFileSource/src/mrs_natural/size");
+  m_posControl =  m_system->control("SoundFileSource/src/mrs_natural/pos");
+  m_initAudioControl = m_system->control("AudioSink/dest/mrs_bool/initAudio");
 
-  net_->updctrl("mrs_real/israte", 44100.0);
-  net_->updctrl("AudioSink/dest/mrs_bool/initAudio", true);
+  m_spectrumControl =
+      m_system->control("Fanout/fanout/Series/powerspectrum_series/PowerSpectrum/pspk/mrs_realvec/processedData");
+  m_panningControl =
+      m_system->control("Fanout/fanout/Series/stereobranches_series/StereoSpectrum/sspk/mrs_realvec/processedData");
 
-  mwr_ = new MarSystemQtWrapper(net_);
-  if (inAudioFileName != "") {
-	mwr_->start();
-	mwr_->play();
-	play_state = true;
-  }
-
-  // Create some handy pointers to access the MarSystem
-  posPtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/pos");
-  sizePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_natural/size");
-  osratePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_real/osrate");
-  initPtr_ = mwr_->getctrl("AudioSink/dest/mrs_bool/initAudio");
-  fnamePtr_ = mwr_->getctrl("SoundFileSource/src/mrs_string/filename");
-
-  // Create the animation timer that periodically redraws the screen
-  QTimer *timer = new QTimer( this ); 
-  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) ); 
-  timer->start(20); // Redraw the screen every 10ms
-
-  setPos(0);
+  // Connect the animation timer that periodically redraws the screen.
+  // It is activated in the 'play()' function.
+  connect( &m_updateTimer, SIGNAL(timeout()), this, SLOT(animate()) );
 }
 
 //
@@ -152,6 +144,7 @@ GLWidget::GLWidget(string inAudioFileName, QWidget *parent)
 // Sensitive keyboard to control panning of three different input
 // sources.  Not hooked up right now.
 //
+#if 0
 void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *parent)
 //   : QGLWidget(parent)
 {
@@ -168,10 +161,10 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
   //   yTrans = -5.5;
 
   // For 50
-//   zTrans = -52;
-   z_start = 70;
-//   zTrans = -1 * z_start;
-   zTrans = -70;
+  //   zTrans = -52;
+  z_start = 70;
+  //   zTrans = -1 * z_start;
+  zTrans = -70;
   yTrans = -6.7;
 
   test_x = 0;
@@ -195,15 +188,15 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
   panning_spectrum_ring_buffer = new double*[MAX_Z];
 
   for (int i = 0; i < MAX_Z; i++) {
-	powerspectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
-	panning_spectrum_ring_buffer[i] = new double[MAX_STEREO_SPECTRUM_BINS];
+    powerspectrum_ring_buffer[i] = new double[MAX_SPECTRUM_BINS];
+    panning_spectrum_ring_buffer[i] = new double[MAX_STEREO_SPECTRUM_BINS];
   }
   clearRingBuffers();
   ring_buffer_pos = 0;
 
   //
   // Create the MarSystem
-  // 
+  //
   MarSystemManager mng;
 
   net_ = mng.create("Series", "net");
@@ -245,14 +238,14 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
   net_->addMarSystem(mng.create("AudioSink", "dest"));
   //   net_->addMarSystem(mng.create("Gain", "gain"));
 
-   MarSystem* fanout = mng.create("Fanout", "fanout");
+  MarSystem* fanout = mng.create("Fanout", "fanout");
 
-    MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
-    powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
-    powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
-    powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
-    powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
-     powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
+  MarSystem* powerspectrum_series = mng.create("Series", "powerspectrum_series");
+  powerspectrum_series->addMarSystem(mng.create("Stereo2Mono", "stereo2mono"));
+  powerspectrum_series->addMarSystem(mng.create("Windowing", "ham"));
+  powerspectrum_series->addMarSystem(mng.create("Spectrum", "spk"));
+  powerspectrum_series->addMarSystem(mng.create("PowerSpectrum", "pspk"));
+  powerspectrum_series->addMarSystem(mng.create("Gain", "gain"));
 
   MarSystem* stereobranches_series = mng.create("Series", "stereobranches_series");
   MarSystem* stereobranches_parallel = mng.create("Parallel", "stereobranches_parallel");
@@ -272,7 +265,7 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
 
   stereobranches_series->addMarSystem(mng.create("Gain", "gain"));
 
-   fanout->addMarSystem(powerspectrum_series);
+  fanout->addMarSystem(powerspectrum_series);
   fanout->addMarSystem(stereobranches_series);
 
   net_->addMarSystem(fanout);
@@ -288,13 +281,13 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
   if (inAudioFileName != "") {
     // net_->updctrl("SoundFileSource/src/mrs_string/filename",inAudioFileName);
   }
-  
+
   net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_string/filename", "one.wav");
   net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_string/filename", "two.wav");
   net_->updctrl("Fanout/mixsrc/Series/branch3/SoundFileSource/src/mrs_string/filename", "three.wav");
 
 
-  
+
   net_->updctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_real/repetitions",-1.0);
   net_->updctrl("Fanout/mixsrc/Series/branch2/SoundFileSource/src/mrs_real/repetitions",-1.0);
   net_->updctrl("Fanout/mixsrc/Series/branch3/SoundFileSource/src/mrs_real/repetitions",-1.0);
@@ -308,9 +301,9 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
 
   mwr_ = new MarSystemQtWrapper(net_);
   if (inAudioFileName != "") {
-	mwr_->start();
-	mwr_->play();
-	play_state = true;
+    mwr_->start();
+    mwr_->play();
+    play_state = true;
   }
 
   // Create some handy pointers to access the MarSystem
@@ -321,16 +314,57 @@ void GLWidget::GLWidget_other_constructor(string inAudioFileName, QWidget *paren
   fnamePtr_ = mwr_->getctrl("Fanout/mixsrc/Series/branch1/SoundFileSource/src/mrs_string/filename");
 
   // Create the animation timer that periodically redraws the screen
-  QTimer *timer = new QTimer( this ); 
-  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) ); 
+  QTimer *timer = new QTimer( this );
+  connect( timer, SIGNAL(timeout()), this, SLOT(animate()) );
   timer->start(20); // Redraw the screen every 10ms
 
   setPos(0);
 }
-
+#endif
 GLWidget::~GLWidget()
 {
   makeCurrent();
+}
+
+
+void GLWidget::open()
+{
+  QString fileName = QFileDialog::getOpenFileName(this);
+  play(fileName);
+}
+
+void GLWidget::play( const QString & fileName )
+{
+  if (fileName.isEmpty())
+    return;
+
+  m_updateTimer.stop();
+  m_system->stop();
+
+  static const bool NO_UPDATE = false;
+  m_fileNameControl->setValue(fileName, NO_UPDATE);
+  m_initAudioControl->setValue(true, NO_UPDATE);
+  m_system->update();
+
+  m_song_len = m_sizeControl->value().toInt();
+  m_song_sr = m_sampleRateControl->value().toDouble();
+
+  m_system->start();
+  m_updateTimer.start(20);
+}
+
+void GLWidget::playPause()
+{
+  if (m_system->isRunning())
+  {
+    m_system->stop();
+    m_updateTimer.stop();
+  }
+  else
+  {
+    m_system->start();
+    m_updateTimer.start(20);
+  }
 }
 
 // The minimum size of the widget
@@ -349,7 +383,7 @@ QSize GLWidget::sizeHint() const
 void GLWidget::initializeGL()
 {
   // Set the background color to white
-//   qglClearColor(Qt::black);
+  //   qglClearColor(Qt::black);
   qglClearColor(Qt::black);
 
   // Set the shading model
@@ -359,10 +393,10 @@ void GLWidget::initializeGL()
   glEnable(GL_DEPTH_TEST);
 
   // Enable fog for depth cueing
-   GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
-//   GLfloat fogColor[4]= {1.0f, 1.0f, 1.0f, 1.0f};
+  GLfloat fogColor[4]= {0.0f, 0.0f, 0.0f, 1.0f};
+  //   GLfloat fogColor[4]= {1.0f, 1.0f, 1.0f, 1.0f};
 
-   glClearColor(0.0f,0.0f,0.0f,1.0f);  // Fog colour of black (0,0,0)
+  glClearColor(0.0f,0.0f,0.0f,1.0f);  // Fog colour of black (0,0,0)
 
   glFogfv(GL_FOG_COLOR, fogColor);    // Set fog color
   glFogi(GL_FOG_MODE, GL_LINEAR);       // Set the fog mode
@@ -386,7 +420,7 @@ void GLWidget::initializeGL()
   GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
   GLfloat model_ambient[] = { 0.5, 0.5, 0.5, 1.0 };
 
-   glClearColor(0.0, 0.0, 0.0, 0.0);
+  glClearColor(0.0, 0.0, 0.0, 0.0);
 
   glMaterialfv(GL_FRONT, GL_AMBIENT, mat_ambient);
   glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
@@ -398,11 +432,11 @@ void GLWidget::initializeGL()
   glEnable(GL_LIGHT0);
   glEnable(GL_DEPTH_TEST);
 
-//    setFogStart(-94);
-//    setFogEnd(-117);
+  //    setFogStart(-94);
+  //    setFogEnd(-117);
 
-   glFogf(GL_FOG_START, 94);          // Fog Start Depth
-   glFogf(GL_FOG_END, 117);          // Fog End Depth
+  glFogf(GL_FOG_START, 94);          // Fog Start Depth
+  glFogf(GL_FOG_END, 117);          // Fog End Depth
 }
 
 // Paint the GL widget
@@ -429,62 +463,50 @@ void GLWidget::paintGL()
 
 }
 
-void GLWidget::animate() {
-//   //    cout << "animate" << endl;
-   emit updateGL();
-   if (play_state) {
-	 addDataToRingBuffer();
-   }
-
-   setPos();
-}
-
-// "automatic" advancement of position
-void GLWidget::setPos() 
+void GLWidget::animate()
 {
-  mrs_natural pos = posPtr_->to<mrs_natural>();
-  mrs_natural size = sizePtr_->to<mrs_natural>();
-  mrs_real srate = osratePtr_->to<mrs_real>();
-  
-  mrs_real duration = (pos / srate);
-  float rpos = pos * 1.0 / size;
-  int sliderPos = rpos * 100.0;
-  emit posChanged(sliderPos);
+  Q_ASSERT(m_system->isRunning());
+
+  updateGL();
+
+  addDataToRingBuffer();
+
+  emitControlChanges();
 }
 
+void GLWidget::emitControlChanges()
+{
+  int pos = m_posControl->value().toInt();
+  int pos_percent = (m_song_len > 0 ? (float) pos / m_song_len : 0) * 100.f;
+  emit posChanged(pos_percent);
+}
 
 // "manual" advancement of position
 void GLWidget::setPos(int val)
 {
-  float fval = val / 100.0f;
-  
-  float fsize = 
-    sizePtr_->to<mrs_natural>();
-  fsize *= fval;
-  
-  int size = (int) fsize;
-  mwr_->updctrl(posPtr_, size);
-  
+  int position = (int)(val / 100.f * m_song_len);
+  m_posControl->setValue(position);
 }
 
-void GLWidget::addDataToRingBuffer() {
-  mrs_realvec powerspectrum_data = mwr_->getctrl("Fanout/fanout/Series/powerspectrum_series/PowerSpectrum/pspk/mrs_realvec/processedData")->to<mrs_realvec>();
-  mrs_realvec panning_data = mwr_->getctrl("Fanout/fanout/Series/stereobranches_series/StereoSpectrum/sspk/mrs_realvec/processedData")->to<mrs_realvec>();
+void GLWidget::addDataToRingBuffer()
+{
+  realvec powerspectrum_data = m_spectrumControl->value().value<realvec>();
+  realvec panning_data = m_panningControl->value().value<realvec>();
 
   int powerspectrum_rows = powerspectrum_data.getRows();
   int panning_rows = panning_data.getRows();
 
   for (int i = 0; i < powerspectrum_rows; i++) {
-	powerspectrum_ring_buffer[ring_buffer_pos][i] = powerspectrum_data(i,0);
+    powerspectrum_ring_buffer[ring_buffer_pos][i] = powerspectrum_data(i,0);
   }
 
   for (int i = 0; i < panning_rows; i++) {
-	panning_spectrum_ring_buffer[ring_buffer_pos][i] = panning_data(i,0);
+    panning_spectrum_ring_buffer[ring_buffer_pos][i] = panning_data(i,0);
   }
   
   ring_buffer_pos += 1;
   if (ring_buffer_pos >= MAX_Z) {
-	ring_buffer_pos = 0;
+    ring_buffer_pos = 0;
   }
 }
 
@@ -492,9 +514,9 @@ void GLWidget::addDataToRingBuffer() {
 void GLWidget::redrawScene() {
 
   if (init == 0) {
-   setFogStart(-94);
-   setFogEnd(-117);
-   init = 1;
+    setFogStart(-94);
+    setFogEnd(-117);
+    init = 1;
   }
   // Draw guidelines
   float guideline_size = 0.01;
@@ -502,10 +524,10 @@ void GLWidget::redrawScene() {
   float mcolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
 
-//   float min_x = -24.6;
-//   float max_x = 24.6;
-//   float min_y = 3.7;
-//   float max_y = 28.3;
+  //   float min_x = -24.6;
+  //   float max_x = 24.6;
+  //   float min_y = 3.7;
+  //   float max_y = 28.3;
 
   float min_x = -24.6;
   float max_x = 24.6;
@@ -534,61 +556,61 @@ void GLWidget::redrawScene() {
   glVertex3f(max_x,max_y,max_z);
   glEnd();
 
-   double x;
-   double y;
-   double z;
-   double size;
+  double x;
+  double y;
+  double z;
+  double size;
 
   for (int i = 0; i < MAX_Z; i++) {
- 	for (int j = 0; j < stereo_spectrum_bins; j++) {
-	  x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 30.0;
- 	  y = (log10(((22050.0 / double(spectrum_bins)) * j) + (0.5 * (22050.0 / double(spectrum_bins))))) * 7.0;
- 	  z = i;
+    for (int j = 0; j < stereo_spectrum_bins; j++) {
+      x = (panning_spectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 30.0;
+      y = (log10(((22050.0 / double(spectrum_bins)) * j) + (0.5 * (22050.0 / double(spectrum_bins))))) * 7.0;
+      z = i;
 
-	  size = (powerspectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 2000;
-		
- 	  if (size > 0.5) {
- 		size = 0.5;
- 	  }
- 	  if (size > magnitude_cutoff) {
-		glTranslated(x,y,z);
-		float mcolor[3];
+      size = (powerspectrum_ring_buffer[(i + ring_buffer_pos) % MAX_Z][j]) * 2000;
 
-		// Red dots if big magnitude
-		if (size > 0.4) {
-		  mcolor[0] = 1.0f;
-		  mcolor[1] = 0.0f;
-		  mcolor[2] = 0.0f;
-		  mcolor[3] = 1.0f;
-		} else {
-		  mcolor[0] = (size*5);
-		  mcolor[1] = 1.0f;
-		  mcolor[2] = 0.0f;
-		  mcolor[3] = 1.0f;
-		}
+      if (size > 0.5) {
+        size = 0.5;
+      }
+      if (size > magnitude_cutoff) {
+        glTranslated(x,y,z);
+        float mcolor[3];
 
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
+        // Red dots if big magnitude
+        if (size > 0.4) {
+          mcolor[0] = 1.0f;
+          mcolor[1] = 0.0f;
+          mcolor[2] = 0.0f;
+          mcolor[3] = 1.0f;
+        } else {
+          mcolor[0] = (size*5);
+          mcolor[1] = 1.0f;
+          mcolor[2] = 0.0f;
+          mcolor[3] = 1.0f;
+        }
 
-		if (size > 0.3) {
-		  glCallList(startList+4);
-		} else if (size > 0.2) {
-		  glCallList(startList+3);
-		} else if (size > 0.1) {
-		  glCallList(startList+2);
-		} else if (size > 0.05) {
-		  glCallList(startList+1);
-		} else {
-		  glCallList(startList);
-		}
+        glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
 
-		glTranslated(-1.0 * x,-1.0 * y,-1.0 * z);
+        if (size > 0.3) {
+          glCallList(startList+4);
+        } else if (size > 0.2) {
+          glCallList(startList+3);
+        } else if (size > 0.1) {
+          glCallList(startList+2);
+        } else if (size > 0.05) {
+          glCallList(startList+1);
+        } else {
+          glCallList(startList);
+        }
 
-	  }
+        glTranslated(-1.0 * x,-1.0 * y,-1.0 * z);
+
+      }
 
 
- 	}
+    }
 
-	  
+
   }
 
 }
@@ -619,19 +641,19 @@ void GLWidget::resizeGL(int width, int height)
 void GLWidget::normalizeAngle(int *angle)
 {
   while (*angle < 0)
-	*angle += 360 * 16;
+    *angle += 360 * 16;
   while (*angle > 360 * 16)
-	*angle -= 360 * 16;
+    *angle -= 360 * 16;
 }
 
 // Set the x rotation angle
 void GLWidget::setXRotation(int angle)
 {
   if (angle != xRot) {
-	xRot = angle;
-// 	cout << "angle=" << angle << " xRot=" << xRot << endl;
-	emit xRotationChanged(angle);
-	updateGL();
+    xRot = angle;
+    // 	cout << "angle=" << angle << " xRot=" << xRot << endl;
+    emit xRotationChanged(angle);
+    updateGL();
   }
 }
 
@@ -639,9 +661,9 @@ void GLWidget::setXRotation(int angle)
 void GLWidget::setYRotation(int angle)
 {
   if (angle != yRot) {
-	yRot = angle;
-	emit yRotationChanged(angle);
-	updateGL();
+    yRot = angle;
+    emit yRotationChanged(angle);
+    updateGL();
   }
 }
 
@@ -649,9 +671,9 @@ void GLWidget::setYRotation(int angle)
 void GLWidget::setZRotation(int angle)
 {
   if (angle != zRot) {
-	zRot = angle;
-	emit zRotationChanged(angle);
-	updateGL();
+    zRot = angle;
+    emit zRotationChanged(angle);
+    updateGL();
   }
 }
 
@@ -660,9 +682,9 @@ void GLWidget::setXTranslation(int v)
 {
   double val = v * -0.1;
   if (val != xTrans) {
-	xTrans = val;
-	emit xTranslationChanged(val);
-	updateGL();
+    xTrans = val;
+    emit xTranslationChanged(val);
+    updateGL();
   }
 }
 
@@ -671,10 +693,10 @@ void GLWidget::setYTranslation(int v)
 {
   double val = v * -0.1;
   if (val != yTrans) {
-	yTrans = val;
-//  	cout << "val=" << val << " yTrans=" << yTrans << endl;
-	emit yTranslationChanged(val);
-	updateGL();
+    yTrans = val;
+    //  	cout << "val=" << val << " yTrans=" << yTrans << endl;
+    emit yTranslationChanged(val);
+    updateGL();
   }
 }
 
@@ -683,9 +705,9 @@ void GLWidget::setZTranslation(int v)
 {
   double val = v * -2;
   if (val != zTrans) {
-	zTrans = val;
-	emit zTranslationChanged(val);
-	updateGL();
+    zTrans = val;
+    emit zTranslationChanged(val);
+    updateGL();
   }
 }
 
@@ -694,12 +716,12 @@ void GLWidget::setFogStart (int v)
 {
   double val = v * -1;
   if (val != fogStart) {
-	fogStart = val;
-//    	cout << "v=" << v << " fogStart=" << fogStart << endl;
+    fogStart = val;
+    //    	cout << "v=" << v << " fogStart=" << fogStart << endl;
 
-	emit fogStartChanged(val);
-	glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
-	updateGL();
+    emit fogStartChanged(val);
+    glFogf(GL_FOG_START, fogStart);          // Fog Start Depth
+    updateGL();
   }
 }
 
@@ -707,38 +729,38 @@ void GLWidget::setFogEnd(int v)
 {
   double val = v * -1;
   if (val != fogEnd) {
-	fogEnd = val;
-// 	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
-	emit fogEndChanged(val);
-	glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
-	updateGL();
+    fogEnd = val;
+    // 	cout << "v=" << v << " fogEnd=" << fogEnd << endl;
+    emit fogEndChanged(val);
+    glFogf(GL_FOG_END, fogEnd);          // Fog End Depth
+    updateGL();
   }
 }
 
 void GLWidget::setFFTBins(int val) {
 
   if (val == 0) {
-	set_fft_size(32);
+    set_fft_size(32);
   } else if (val == 1) {
-	set_fft_size(64);
+    set_fft_size(64);
   } else if (val == 2) {
-	set_fft_size(128);
+    set_fft_size(128);
   } else if (val == 3) {
-	set_fft_size(256);
+    set_fft_size(256);
   } else if (val == 4) {
-	set_fft_size(512);
+    set_fft_size(512);
   } else if (val == 5) {
-	set_fft_size(1024);
+    set_fft_size(1024);
   } else if (val == 6) {
-	set_fft_size(2048);
+    set_fft_size(2048);
   } else if (val == 7) {
-	set_fft_size(4096);
+    set_fft_size(4096);
   } else if (val == 8) {
-	set_fft_size(8192);
+    set_fft_size(8192);
   } else if (val == 9) {
-	set_fft_size(16384);
+    set_fft_size(16384);
   } else if (val == 10) {
-	set_fft_size(32768);
+    set_fft_size(32768);
   }
 }
 
@@ -746,16 +768,6 @@ void GLWidget::set_fft_size(int val) {
   setInSamples(val);
 }
 
-void GLWidget::playPause() 
-{
-  play_state = !play_state;
-
-  if (play_state == true) {
-	mwr_->play();
-  } else {
-	mwr_->pause();
-  }
-}
 
 void GLWidget::setMagnitudeCutoff(int v) {
   magnitude_cutoff = ((v*v*v) * 0.0001) / 10000;
@@ -770,7 +782,7 @@ void GLWidget::setNumVertices(int v) {
 void GLWidget::setDotSize(int v) {
   dot_size_multiplier = v / 50.0;
   
-//   cout << "v=" << v << " dsm=" << dot_size_multiplier << endl;
+  //   cout << "v=" << v << " dsm=" << dot_size_multiplier << endl;
 
   glDeleteLists(startList,5);
   buildDiskLists();
@@ -784,39 +796,37 @@ void GLWidget::setDisplaySpeed(int v) {
   display_speed = v / 50.0;
 }
 
-void GLWidget::open() 
-{
-  QString fileName = QFileDialog::getOpenFileName(this);
-
-  mwr_->updctrl(fnamePtr_, fileName.toStdString());
-  mwr_->updctrl(initPtr_, true);
-
-  mwr_->start();
-  mwr_->play();
-  play_state = true;
-
-}
-
 void GLWidget::clearRingBuffers() {
   for (int i = 0; i < MAX_Z; i++) {
-	for (int j = 0; j < spectrum_bins; j++) {
-	  powerspectrum_ring_buffer[i][j] = 0.0;
-	}
-	for (int j = 0; j < stereo_spectrum_bins; j++) {
-	  panning_spectrum_ring_buffer[i][j] = 0.0;
-	}
+    for (int j = 0; j < spectrum_bins; j++) {
+      powerspectrum_ring_buffer[i][j] = 0.0;
+    }
+    for (int j = 0; j < stereo_spectrum_bins; j++) {
+      panning_spectrum_ring_buffer[i][j] = 0.0;
+    }
   }
 }
 
-void GLWidget::setInSamples(int v) {
+void GLWidget::setInSamples(int v)
+{
+  bool was_playing = m_system->isRunning();
+
+  if (was_playing)
+    playPause();
+
   insamples = v;
   spectrum_bins = insamples / 2.0;
   stereo_spectrum_bins = insamples / 2.0;
 
-  mwr_->updctrl("mrs_natural/inSamples",insamples);
-    clearRingBuffers();
-}
+  m_blockSizeControl->setValue(insamples, false);
+  m_initAudioControl->setValue(true, false);
+  m_system->update();
 
+  clearRingBuffers();
+
+  if (was_playing)
+    playPause();
+}
 
 void GLWidget::buildDiskLists() {
 

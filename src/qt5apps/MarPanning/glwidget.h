@@ -7,10 +7,10 @@
 #include <GL/glu.h>
 
 // Marsyas
-#include "MarSystemManager.h"
-#include "MarSystemQtWrapper.h"
-using namespace MarsyasQt;
+#include <marsyasqt/marsystem_wrapper.h>
+
 using namespace Marsyas;
+using namespace MarsyasQt;
 
 // sness
 #define MAX_Z 50
@@ -21,20 +21,23 @@ using namespace Marsyas;
 
 class GLWidget : public QGLWidget
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
-  GLWidget(string inAudioFileName,QWidget *parent = 0);
+  GLWidget(QWidget *parent = 0);
+#if 0
   void GLWidget_other_constructor(string inAudioFileName,QWidget *parent = 0);
+#endif
   ~GLWidget();
-
-
-  MarSystemQtWrapper* getMarSystemQtWrapper(){return mwr_;};
 
   QSize minimumSizeHint() const;
   QSize sizeHint() const;
 
 public slots:
+  void open(); // Open a new audio file.
+  void play( const QString & fileName ); // Play given audio file.
+  void playPause(); // Toggle between playing and paused.
+
   void setXRotation(int angle);
   void setYRotation(int angle);
   void setZRotation(int angle);
@@ -55,13 +58,12 @@ public slots:
   void setDisplaySpeed(int v);
 
   void setPos(int value);
-  void setPos(); 
 
-//   void setYScale(int scale);
+  //   void setYScale(int scale);
 
-//   void powerSpectrumModeChanged(int val);
+  //   void powerSpectrumModeChanged(int val);
 
-//   void setWaterfallVisible(bool val);
+  //   void setWaterfallVisible(bool val);
   
   void animate();
 
@@ -80,29 +82,27 @@ signals:
 
   void posChanged(int val);
 
-//   void start_xRotationChanged(int angle);
-//   void start_yRotationChanged(int angle);
-//   void start_zRotationChanged(int angle);
+  //   void start_xRotationChanged(int angle);
+  //   void start_yRotationChanged(int angle);
+  //   void start_zRotationChanged(int angle);
 
-//   void end_xRotationChanged(int angle);
-//   void end_yRotationChanged(int angle);
-//   void end_zRotationChanged(int angle);
+  //   void end_xRotationChanged(int angle);
+  //   void end_yRotationChanged(int angle);
+  //   void end_zRotationChanged(int angle);
 
-//   void rotationSpeedChanged(int angle);
+  //   void rotationSpeedChanged(int angle);
 
   void timerChanged(int value);
 
 
 private slots:
-//   void startTimerRotate();                // Start the animation timer
-//   void doTimerRotate();                   // Do one time step of the animation timer
-  void playPause(); // Play or pause the playback of the song
-  void open(); // Open a new audio file
+  //   void startTimerRotate();                // Start the animation timer
+  //   void doTimerRotate();                   // Do one time step of the animation timer
 
 protected:
   void initializeGL();                    // Initialize the GL window
   void paintGL();                         // Paint the objects in the GL window
-  void resizeGL(int width, int height);   // Resize the GL window 
+  void resizeGL(int width, int height);   // Resize the GL window
 
 private:
   GLuint makeObject();                    // Make the object
@@ -123,37 +123,49 @@ private:
   double fogEnd;
 
 
-//   // The start x,y,z rotation angles for the animation
-//   int start_xRot;
-//   int start_yRot;
-//   int start_zRot;
+  //   // The start x,y,z rotation angles for the animation
+  //   int start_xRot;
+  //   int start_yRot;
+  //   int start_zRot;
 
-//   // The end x,y,z rotation angles for the animation      
-//   int end_xRot;
-//   int end_yRot;
-//   int end_zRot;
+  //   // The end x,y,z rotation angles for the animation
+  //   int end_xRot;
+  //   int end_yRot;
+  //   int end_zRot;
 
-//   // The rotation speed
-//   int rotation_speed;
+  //   // The rotation speed
+  //   int rotation_speed;
 
   // A timer to make the animation happen
-  QTimer *timer;
+  QTimer m_updateTimer;
 
   // The current tick of the animation
   int timerCount;
 
-//   // The vertices we will draw
-//   GLfloat **vertices;
+  //   // The vertices we will draw
+  //   GLfloat **vertices;
 
-//   void drawCubeFace(int,int,int,int);
+  //   void drawCubeFace(int,int,int,int);
 
   void redrawScene();
   void addDataToRingBuffer();
+  void emitControlChanges();
   
   // Marsyas
-  MarSystemManager mng;  
-  MarSystemQtWrapper*  mwr_;
-  MarSystem* net_;
+  MarSystem* m_marsystem;
+  MarsyasQt::System *m_system;
+  MarsyasQt::Control *m_fileNameControl;
+  MarsyasQt::Control *m_sampleRateControl;
+  MarsyasQt::Control *m_blockSizeControl;
+  MarsyasQt::Control *m_sizeControl;
+  MarsyasQt::Control *m_posControl;
+  MarsyasQt::Control *m_initAudioControl;
+
+  MarsyasQt::Control *m_spectrumControl;
+  MarsyasQt::Control *m_panningControl;
+
+  int m_song_len;
+  int m_song_sr;
 
   // A ring buffer that holds our data
   double **powerspectrum_ring_buffer;
@@ -179,23 +191,16 @@ private:
   mrs_realvec waveform_data;
   void setWaveformData();
 
-  bool play_state;
-
   float stats_centroid;
   float stats_rolloff;
   float stats_flux;
   float stats_rms;
 
-//   void setAudioStats();
+  //   void setAudioStats();
 
-  MarControlPtr posPtr_;
-  MarControlPtr sizePtr_;
-  MarControlPtr osratePtr_;
-  MarControlPtr initPtr_;
-  MarControlPtr fnamePtr_;
   
   // The disk object
-   GLUquadricObj *qobj;
+  GLUquadricObj *qobj;
   GLuint startList;
 
   void errorCallback(GLenum errorCode);
@@ -205,7 +210,7 @@ private:
 
   void set_fft_size(int);
 
-//   int num_triangles;
+  //   int num_triangles;
 
   void clearRingBuffers();
 
