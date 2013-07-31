@@ -114,14 +114,20 @@ template<>
 class AtomicControlT<mrs_realvec> : public AtomicControl
 {
 public:
-  AtomicControlT( mrs_natural rows, mrs_natural columns,
-                  const MarControlPtr & control ):
-    AtomicControl(control),
-    m_rows(rows),
-    m_columns(columns),
-    m_value(rows, columns),
-    m_stage( m_value )
-  {}
+  AtomicControlT( const MarControlPtr & control ):
+    AtomicControl(control)
+  {
+    resizeToFit();
+  }
+
+  void resizeToFit()
+  {
+    const mrs_realvec & vector = m_control->to<mrs_realvec>();
+    m_rows = vector.getRows();
+    m_columns = vector.getCols();
+    m_value.create( m_rows, m_columns );
+    m_stage.clear( m_value );
+  }
 
   any value()
   {

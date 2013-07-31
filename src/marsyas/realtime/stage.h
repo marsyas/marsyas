@@ -73,9 +73,19 @@ public:
     m_back_index(1),
     m_front_index(2)
   {
-    m_items[0].data = initial_value;
-    m_items[1].data = initial_value;
-    m_items[2].data = initial_value;
+    clear(initial_value);
+  }
+
+  /**
+   * @brief NOT THREAD-SAFE.
+   */
+  void clear( const T & initial_value = T() )
+  {
+    for (int i = 0; i < 3; ++i)
+    {
+      m_items[i].data = initial_value;
+      m_items[i].valid = false;
+    }
   }
 
   T & back()

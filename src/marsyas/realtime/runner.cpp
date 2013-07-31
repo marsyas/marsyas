@@ -237,10 +237,7 @@ Control * Runner::create_control( const std::string & control_path )
   else if(sys_control_type == "mrs_string")
     atomic_control = new AtomicControlT<mrs_string>(sys_control);
   else if(sys_control_type == "mrs_realvec")
-  {
-    const realvec & data = sys_control->to<realvec>();
-    atomic_control = new AtomicControlT<mrs_realvec>(data.getRows(), data.getCols(), sys_control);
-  }
+    atomic_control = new AtomicControlT<mrs_realvec>(sys_control);
   else {
     MRSERR(
           "Marsyas::Thread::System:: Can not track control - unsupported type: "
