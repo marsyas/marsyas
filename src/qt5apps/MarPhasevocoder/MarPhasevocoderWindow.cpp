@@ -1,7 +1,7 @@
 
 #include "MarPhasevocoderWindow.h"
 
-#include <marsyas/MarSystemManager.h>
+#include <marsyas/core/MarSystemManager.h>
 
 #include <QLabel>
 #include <QGridLayout>

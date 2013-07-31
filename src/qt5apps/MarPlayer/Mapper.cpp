@@ -28,6 +28,7 @@
 */
 
 #include "Mapper.h"
+#include <marsyas/core/MarSystemManager.h>
 
 using namespace Marsyas;
 using namespace MarsyasQt;
