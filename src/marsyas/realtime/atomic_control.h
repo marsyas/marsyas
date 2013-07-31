@@ -72,7 +72,8 @@ class AtomicControlT : public AtomicControl
 {
 public:
   AtomicControlT( const MarControlPtr & control ):
-    AtomicControl(control)
+    AtomicControl(control),
+    m_value(T())
   {}
 
   any value()
