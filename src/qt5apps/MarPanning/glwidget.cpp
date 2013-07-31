@@ -518,8 +518,6 @@ void GLWidget::redrawScene() {
     setFogEnd(-117);
     init = 1;
   }
-  // Draw guidelines
-  float guideline_size = 0.01;
 
   float mcolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
   glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, mcolor);
@@ -618,9 +616,6 @@ void GLWidget::redrawScene() {
 // Resize the window
 void GLWidget::resizeGL(int width, int height)
 {
-  // The smallest side of the window
-  int side = qMin(width, height);
-
   // Setup the glViewport
   glViewport(0, 0, width, height);
 
