@@ -1,87 +1,136 @@
-# should be either OSC_HOST_BIG_ENDIAN or OSC_HOST_LITTLE_ENDIAN
-# Apple Mac OS X: OSC_HOST_BIG_ENDIAN
+# oscpack makefile
+
+# the source code should auto-detect endianess for most systems
+# (see osc/OscHostEndianness.h)
+# otherwise you need to explicitly set ENDIANESS below
+# to either OSC_HOST_BIG_ENDIAN or OSC_HOST_LITTLE_ENDIAN
+# Apple Mac OS X (PowerPC): OSC_HOST_BIG_ENDIAN
+# Apple Mac OS X (Intel): OSC_HOST_LITTLE_ENDIAN
 # Win32: OSC_HOST_LITTLE_ENDIAN
 # i386 GNU/Linux: OSC_HOST_LITTLE_ENDIAN
-ENDIANESS=OSC_HOST_LITTLE_ENDIAN
 
-CXX = g++
-INCLUDES = -I./
-COPTS  = -Wall -O3
-CDEBUG = -Wall -g 
-CXXFLAGS = $(COPTS) $(INCLUDES) -D$(ENDIANESS)
+ENDIANESS=OSC_DETECT_ENDIANESS #source code will detect using preprocessor
+#ENDIANESS=OSC_HOST_LITTLE_ENDIAN
 
-PREFIX = /usr/local
-INSTALL = /usr/bin/install -c
+UNAME := $(shell uname)
+
+CXX := g++
+INCLUDES := -I.
+COPTS  := -Wall -Wextra -O3
+CDEBUG := -Wall -Wextra -g 
+CXXFLAGS := $(COPTS) $(INCLUDES) -D$(ENDIANESS)
+
+BINDIR := bin
+PREFIX := /usr/local
+INSTALL := install -c
 
 #Name definitions
-UNITTESTS=OscUnitTests
-SEND=OscSendTests
-RECEIVE=OscReceiveTest
-DUMP=OscDump
+UNITTESTS := $(BINDIR)/OscUnitTests
+SENDTESTS := $(BINDIR)/OscSendTests
+RECEIVETEST := $(BINDIR)/OscReceiveTest
+SIMPLESEND := $(BINDIR)/SimpleSend
+SIMPLERECEIVE := $(BINDIR)/SimpleReceive
+DUMP := $(BINDIR)/OscDump
 
-INCLUDEDIR = oscpack
-LIBNAME = liboscpack
-LIBSONAME = $(LIBNAME).so
-LIBFILENAME = $(LIBSONAME).1.0.2
+INCLUDEDIR := oscpack
+LIBNAME := liboscpack
+LIBSONAME := $(LIBNAME).so
+LIBFILENAME := $(LIBSONAME).1.1.0
 
-#Test and example source
-SENDSOURCES = ./tests/OscSendTests.cpp ./osc/OscOutboundPacketStream.cpp ./osc/OscTypes.cpp ./ip/posix/NetworkingUtils.cpp ./ip/posix/UdpSocket.cpp ./ip/IpEndpointName.cpp
-SENDOBJECTS = $(SENDSOURCES:.cpp=.o)
+# Common source groups
 
-RECEIVESOURCES = ./tests/OscReceiveTest.cpp ./osc/OscTypes.cpp ./osc/OscReceivedElements.cpp ./osc/OscPrintReceivedElements.cpp ./ip/posix/NetworkingUtils.cpp ./ip/posix/UdpSocket.cpp
-RECEIVEOBJECTS = $(RECEIVESOURCES:.cpp=.o)
+RECEIVESOURCES := osc/OscReceivedElements.cpp osc/OscPrintReceivedElements.cpp
+SENDSOURCES := osc/OscOutboundPacketStream.cpp
+NETSOURCES := ip/posix/UdpSocket.cpp ip/IpEndpointName.cpp ip/posix/NetworkingUtils.cpp
+COMMONSOURCES := osc/OscTypes.cpp
 
-DUMPSOURCES = ./examples/OscDump.cpp ./osc/OscTypes.cpp ./osc/OscReceivedElements.cpp ./osc/OscPrintReceivedElements.cpp ./ip/posix/NetworkingUtils.cpp ./ip/posix/UdpSocket.cpp
-DUMPOBJECTS = $(DUMPSOURCES:.cpp=.o)
+RECEIVEOBJECTS := $(RECEIVESOURCES:.cpp=.o)
+SENDOBJECTS := $(SENDSOURCES:.cpp=.o)
+NETOBJECTS := $(NETSOURCES:.cpp=.o)
+COMMONOBJECTS := $(COMMONSOURCES:.cpp=.o)
 
-UNITTESTSOURCES = ./tests/OscUnitTests.cpp ./osc/OscOutboundPacketStream.cpp ./osc/OscTypes.cpp ./osc/OscReceivedElements.cpp ./osc/OscPrintReceivedElements.cpp
-UNITTESTOBJECTS = $(UNITTESTSOURCES:.cpp=.o)
+# Test source
 
-#Library sources
-LIBSOURCES = ./ip/IpEndpointName.cpp \
-	./ip/posix/NetworkingUtils.cpp ./ip/posix/UdpSocket.cpp\
-	./osc/OscOutboundPacketStream.cpp ./osc/OscPrintReceivedElements.cpp ./osc/OscReceivedElements.cpp ./osc/OscTypes.cpp
-LIBOBJECTS = $(LIBSOURCES:.cpp=.o)
+UNITTESTSOURCES := tests/OscUnitTests.cpp
+UNITTESTOBJECTS := $(UNITTESTSOURCES:.cpp=.o)
 
-all:	unittests send receive dump
+SENDTESTSSOURCES := tests/OscSendTests.cpp
+SENDTESTSOBJECTS := $(SENDTESTSSOURCES:.cpp=.o)
 
-unittests : $(UNITTESTOBJECTS)
-	@if [ ! -d bin ] ; then mkdir bin ; fi
-	$(CXX) -o bin/$(UNITTESTS) $+ $(LIBS) 
-send : $(SENDOBJECTS)
-	@if [ ! -d bin ] ; then mkdir bin ; fi
-	$(CXX) -o bin/$(SEND) $+ $(LIBS) 
-receive : $(RECEIVEOBJECTS)
-	@if [ ! -d bin ] ; then mkdir bin ; fi
-	$(CXX) -o bin/$(RECEIVE) $+ $(LIBS) 
-dump : $(DUMPOBJECTS)
-	@if [ ! -d bin ] ; then mkdir bin ; fi
-	$(CXX) -o bin/$(DUMP) $+ $(LIBS) 
+RECEIVETESTSOURCES := tests/OscReceiveTest.cpp
+RECEIVETESTOBJECTS := $(RECEIVETESTSOURCES:.cpp=.o)
+
+# Example source
+
+SIMPLESENDSOURCES := examples/SimpleSend.cpp
+SIMPLESENDOBJECTS := $(SIMPLESENDSOURCES:.cpp=.o)
+
+SIMPLERECEIVESOURCES := examples/SimpleReceive.cpp
+SIMPLERECEIVEOBJECTS := $(SIMPLERECEIVESOURCES:.cpp=.o)
+
+DUMPSOURCES := examples/OscDump.cpp
+DUMPOBJECTS := $(DUMPSOURCES:.cpp=.o)
+
+#Library objects
+
+LIBOBJECTS := $(COMMONOBJECTS) $(SENDOBJECTS) $(RECEIVEOBJECTS) $(NETOBJECTS)
+
+.PHONY: all unittests sendtests receivetest simplesend simplereceive dump library clean install install-local
+
+all: unittests sendtests receivetest simplesend simplereceive dump
+
+unittests : $(UNITTESTS)
+sendtests: $(SENDTESTS)
+receivetest : $(RECEIVETEST)
+simplesend : $(SIMPLESEND)
+simplereceive : $(SIMPLERECEIVE)
+dump : $(DUMP)
+
+# Build rule and common dependencies for all programs
+# | specifies an order-only dependency so changes to bin dir modified date don't trigger recompile
+$(UNITTESTS) $(SENDTESTS) $(RECEIVETEST) $(SIMPLESEND) $(SIMPLERECEIVE) $(DUMP) : $(COMMONOBJECTS) | $(BINDIR)
+	$(CXX) -o $@ $^
+
+# Additional dependencies for each program (make accumulates dependencies from multiple declarations)
+$(UNITTESTS) : $(UNITTESTOBJECTS) $(SENDOBJECTS) $(RECEIVEOBJECTS)
+$(SENDTESTS) : $(SENDTESTSOBJECTS) $(SENDOBJECTS) $(NETOBJECTS)
+$(RECEIVETEST) : $(RECEIVETESTOBJECTS) $(RECEIVEOBJECTS) $(NETOBJECTS)
+$(SIMPLESEND) : $(SIMPLESENDOBJECTS) $(SENDOBJECTS) $(NETOBJECTS)
+$(SIMPLERECEIVE) : $(SIMPLERECEIVEOBJECTS) $(RECEIVEOBJECTS) $(NETOBJECTS)
+$(DUMP) : $(DUMPOBJECTS) $(RECEIVEOBJECTS) $(NETOBJECTS)
+
+$(BINDIR):
+	mkdir $@
 
 clean:
-	rm -rf bin $(UNITTESTOBJECTS) $(SENDOBJECTS) $(RECEIVEOBJECTS) $(DUMPOBJECTS) $(LIBOBJECTS) $(LIBFILENAME) include lib oscpack &> /dev/null
+	rm -rf $(BINDIR) $(UNITTESTOBJECTS) $(SENDTESTSOBJECTS) $(RECEIVETESTOBJECTS) $(DUMPOBJECTS) $(LIBOBJECTS) $(SIMPLESENDOBJECTS) $(SIMPLERECEIVEOBJECTS) $(LIBFILENAME) include lib oscpack &> /dev/null
 
 $(LIBFILENAME): $(LIBOBJECTS)
-	@#GNU/Linux case
+ifeq ($(UNAME), Darwin)
+	#Mac OS X case
+	$(CXX) -dynamiclib -Wl,-install_name,$(LIBSONAME) -o $(LIBFILENAME) $(LIBOBJECTS) -lc
+else
+	#GNU/Linux case
 	$(CXX) -shared -Wl,-soname,$(LIBSONAME) -o $(LIBFILENAME) $(LIBOBJECTS) -lc
-	@#Mac OS X case
-	@#$(CXX) -dynamiclib -Wl,-install_name,$(LIBSONAME) -o $(LIBFILENAME) $(LIBOBJECTS) -lc
-	
+endif
+
 lib: $(LIBFILENAME)
 
 #Installs the library on a system global location
-install: lib
+install: $(LIBFILENAME)
 	@$(INSTALL) -m 755 $(LIBFILENAME) $(PREFIX)/lib/$(LIBFILENAME)
 	@ln -s -f $(PREFIX)/lib/$(LIBFILENAME) $(PREFIX)/lib/$(LIBSONAME) 
 	@mkdir  -p $(PREFIX)/include/oscpack/ip $(PREFIX)/include/oscpack/osc
 	@$(INSTALL) -m 644 ip/*.h $(PREFIX)/include/oscpack/ip
 	@$(INSTALL) -m 644 osc/*.h $(PREFIX)/include/oscpack/osc
 	@echo "SUCCESS! oscpack has been installed in $(PREFIX)/lib and $(PREFIX)/include/ospack/"
+ifneq ($(UNAME), Darwin)
 	@echo "now doing ldconfig..."
 	@ldconfig
+endif
 
 #Installs the include/lib structure locally
-install-local: lib
+install-local: $(LIBFILENAME)
 	@echo ""
 	@echo " Installing in local directory <$(INCLUDEDIR)>"
 	@echo "   > Creating symbolic link"
