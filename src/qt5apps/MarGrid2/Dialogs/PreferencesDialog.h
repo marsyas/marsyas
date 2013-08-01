@@ -2,10 +2,9 @@
 #define PREFERENCESDIALOG_H
 
 #include <QDialog>
+#include <QListWidget>
+#include <QStackedWidget>
 
-class QListWidget;
-class QListWidgetItem;
-class QStackedWidget;
 class PreferencesPage;
 
 class PreferencesDialog : public QDialog

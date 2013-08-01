@@ -1,5 +1,11 @@
 #include "MainWindow.h"
 
+#include <QFileDialog>
+#include <QToolBar>
+#include <QMenuBar>
+#include <QMenu>
+#include <QStatusBar>
+
 MainWindow::MainWindow(Grid* grid_) {
 	_library = MusicCollection::getInstance();
 	_dataGrid = grid_;

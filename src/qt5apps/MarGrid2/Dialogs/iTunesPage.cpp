@@ -1,6 +1,10 @@
 
-#include <QtGui>
 #include "iTunesPage.h"
+
+#include <QGroupBox>
+#include <QLabel>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 iTunesPage::iTunesPage(QWidget *parent)
 	: QWidget(parent)

@@ -1,8 +1,10 @@
 #ifndef ITUNESPAGE_H
 #define ITUNESPAGE_H
 
-#include <QWidget>
 #include "../Music/MusicCollection.h"
+
+#include <QWidget>
+#include <QComboBox>
 
 class iTunesPage : public QWidget
 {

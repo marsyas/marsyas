@@ -1,4 +1,6 @@
-#include "../Widgets/GridDisplay.h"
+#include "GridDisplay.h"
+
+#include <QMimeData>
 
 GridDisplay::GridDisplay(int winSize, Tracklist *tracklist, Grid* grid_, QWidget *parent)
 : MyDisplay(tracklist, parent), _winSize(winSize)

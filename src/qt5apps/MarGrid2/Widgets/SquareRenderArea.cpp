@@ -64,42 +64,42 @@ void SquareRenderArea::paintEvent(QPaintEvent*)
 
 	for(int i = 0; i < squareSize; i++)
 	{
-		QColor * color;
+		QColor color;
 		switch(i)
 		{
 		case 0:
-			color = new QColor(Qt::blue);
+			color = QColor(Qt::blue);
 			break;
 		case 1:
-			color = new QColor(Qt::darkRed);
+			color = QColor(Qt::darkRed);
 			break;
 		case 2:
-			color = new QColor(Qt::green);
+			color = QColor(Qt::green);
 			break;
 		case 3:
-			color = new QColor(PURPLE);
+			color = QColor(PURPLE);
 			break;
 		case 4:
-			color = new QColor(Qt::yellow);
+			color = QColor(Qt::yellow);
 			break;
 		case 5:
-			color = new QColor(Qt::darkGreen);
+			color = QColor(Qt::darkGreen);
 			break;
 		case 6:
-			color = new QColor(BROWN);
+			color = QColor(BROWN);
 			break;
 		case 7:
-			color = new QColor(PINK);
+			color = QColor(PINK);
 			break;
 		case 8:
-			color = new QColor(ORANGE);
+			color = QColor(ORANGE);
 			break;
 		case 9:
-			color = new QColor(Qt::gray);
+			color = QColor(Qt::gray);
 			break;
 		}
 
-		painter.setBrush(*color);
+		painter.setBrush(color);
 		QRect rect(1, startHeight, width - 2, squarePaintSize[i] * height);
 		painter.drawRect(rect);
 		startHeight += squarePaintSize[i]* height;

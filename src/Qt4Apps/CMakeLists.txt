@@ -34,7 +34,6 @@ endmacro (marsyas_qt4app)
 ## build apps
 add_subdirectory(MarLpc)
 add_subdirectory(MarGrid)
-add_subdirectory(MarGrid2)
 add_subdirectory(MarNetworkWidget)
 add_subdirectory(MarOscIn)
 add_subdirectory(MarOscOut)
