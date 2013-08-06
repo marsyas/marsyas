@@ -28,7 +28,9 @@
 #include <QStackedLayout>
 #include <QComboBox>
 
-class RealvecModel;
+namespace MarsyasQt {
+class RealvecTableWidget;
+}
 
 class RealvecWidget : public QWidget
 {
@@ -63,27 +65,11 @@ private:
 
   QLabel *m_label;
 
-  QTableView *m_table;
-  RealvecModel *m_realvec_model;
+  MarsyasQt::RealvecTableWidget *m_table;
 
   MarsyasQt::Marx2DGraph *m_graph;
 
   QImage m_image;
-};
-
-class RealvecModel : public QAbstractTableModel
-{
-public:
-  RealvecModel( QObject * parent = 0 ): QAbstractTableModel(parent) {}
-  void setData( const Marsyas::realvec & data );
-
-  int rowCount(const QModelIndex & parent = QModelIndex()) const;
-  int columnCount(const QModelIndex & parent = QModelIndex()) const;
-  Qt::ItemFlags flags(const QModelIndex & index) const;
-  QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
-
-private:
-  Marsyas::realvec m_data;
 };
 
 #endif // MARSYAS_INSPECTOR_REALVEC_WIDGET_INCLUDED

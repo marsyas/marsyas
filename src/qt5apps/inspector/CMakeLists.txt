@@ -37,6 +37,6 @@ include_directories( ${CMAKE_SOURCE_DIR}/src )
 
 qt5_use_modules( inspector Quick Widgets )
 
-target_link_libraries( inspector marsyas )
+target_link_libraries( inspector marsyas marsyasqt5 )
 
 set_target_properties( inspector PROPERTIES OUTPUT_NAME marsyas-inspector )

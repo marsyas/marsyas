@@ -1,4 +1,5 @@
 #include "realvec_widget.h"
+#include "../../common/realvec_table_widget.h"
 
 #include <MarControl.h>
 
@@ -26,9 +27,8 @@ RealvecWidget::RealvecWidget( QWidget * parent ):
                                   << "Table" << "Points" << "Precision"
                                   << "Linear Interpolation" << "Polynomial Interpolation" );
 
-  m_table = new QTableView;
-  m_realvec_model = new RealvecModel(this);
-  m_table->setModel(m_realvec_model);
+  m_table = new MarsyasQt::RealvecTableWidget;
+  m_table->setEditable(false);
 
   m_graph = new Marx2DGraph(0);
 
@@ -122,7 +122,7 @@ void RealvecWidget::refresh()
 
 void RealvecWidget::refreshTable( const Marsyas::realvec & data )
 {
-  m_realvec_model->setData(data);
+  m_table->setData(data);
 }
 
 void RealvecWidget::refreshGraph( const Marsyas::realvec & data )
@@ -132,56 +132,6 @@ void RealvecWidget::refreshGraph( const Marsyas::realvec & data )
 
 void RealvecWidget::clear()
 {
-  m_realvec_model->setData( realvec() );
+  m_table->setData( realvec() );
   m_graph->resetBuffer(realvec());
-}
-
-//////////////////////
-
-void RealvecModel::setData( const Marsyas::realvec & data )
-{
-  bool same_dimensions = data.getRows() == m_data.getRows() && data.getCols() == m_data.getCols();
-  bool is_empty = data.getRows() == 0 || data.getCols() == 0;
-
-  if (same_dimensions) {
-    if (!is_empty) {
-      m_data = data;
-      emit dataChanged( index(0,0), index(m_data.getRows()-1, m_data.getCols()-1) );
-    }
-  }
-  else
-  {
-    beginResetModel();
-    m_data = data;
-    endResetModel();
-  }
-}
-
-int RealvecModel::rowCount(const QModelIndex & parent) const
-{
-  (void) parent;
-  return m_data.getRows();
-}
-
-int RealvecModel::columnCount(const QModelIndex & parent) const
-{
-  (void) parent;
-  return m_data.getCols();
-}
-
-Qt::ItemFlags RealvecModel::flags(const QModelIndex & index) const
-{
-  (void) index;
-  return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-}
-
-QVariant RealvecModel::data(const QModelIndex & index, int role) const
-{
-  switch (role)
-  {
-  case Qt::DisplayRole:
-    return QVariant( m_data(index.row(), index.column()) );
-  default:
-    return QVariant();
-  }
 }
