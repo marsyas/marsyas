@@ -86,6 +86,11 @@ public:
     m_runner(system)
   {}
 
+  void setRtPriorityEnabled( bool on )
+  {
+    m_runner.setRtPriorityEnabled(on);
+  }
+
   void start()
   {
     m_runner.start();

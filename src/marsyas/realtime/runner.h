@@ -49,6 +49,8 @@ public:
 
   MarSystem * system() { return m_system; }
 
+  void setRtPriorityEnabled( bool on ) { m_realtime_priority = on; }
+
   void start();
   void stop();
   void wait();
@@ -105,6 +107,7 @@ private:
 
 private:
   MarSystem * m_system;
+  bool m_realtime_priority;
   RunnerThread *m_thread;
   SetControlsEvent *m_set_controls_event;
 

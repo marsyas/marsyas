@@ -41,7 +41,7 @@ namespace RealTime {
 class RunnerThread
 {
 public:
-  RunnerThread( MarSystem * system, Runner::Shared * shared ):
+  RunnerThread( MarSystem * system, Runner::Shared * shared, bool realtime_priority ):
     m_system(system),
     m_shared(shared),
     m_stop(false),
@@ -52,10 +52,10 @@ public:
     sched_param param;
     pthread_getschedparam( m_thread.native_handle(), &policy, &param );
 
-    policy = SCHED_FIFO;
+    policy = realtime_priority ? SCHED_RR : SCHED_OTHER;
     int min_priority = sched_get_priority_min( policy );
     int max_priority = sched_get_priority_max( policy );
-    int relative_priority = (int) ((max_priority - min_priority) * 0.75);
+    int relative_priority = (int) ((max_priority - min_priority) * 0.6);
     int priority = min_priority + relative_priority;
     param.sched_priority = priority;
 
@@ -156,6 +156,7 @@ static any get_control_value( const MarControlPtr & control )
 
 Runner::Runner(Marsyas::MarSystem * system):
   m_system(system),
+  m_realtime_priority(false),
   m_thread(0),
   m_set_controls_event(0),
   m_shared(new Shared)
@@ -165,7 +166,7 @@ void Runner::start()
 {
   if (!m_thread) {
     refit_realvec_controls();
-    m_thread = new RunnerThread(m_system, m_shared);
+    m_thread = new RunnerThread(m_system, m_shared, m_realtime_priority);
   }
 }
 
