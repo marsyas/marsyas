@@ -36,6 +36,9 @@ public:
   DebugWidget( QWidget * parent = 0 );
   void setSystem( Marsyas::MarSystem * system );
 
+signals:
+  void pathClicked( const QString & path );
+
 public slots:
   void openRecording();
   void evaluate();
@@ -43,7 +46,14 @@ public slots:
   void rewind();
   void clear();
 
+private slots:
+  void onItemClicked( QListWidgetItem * );
+
 private:
+  enum DataRole {
+    PathRole = Qt::UserRole
+  };
+
   void recreateDebugger();
 
   Marsyas::MarSystem * m_system;

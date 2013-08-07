@@ -29,6 +29,8 @@ DebugWidget::DebugWidget( QWidget * parent ):
 
   connect(open_recording_action, SIGNAL(triggered()),
           this, SLOT(openRecording()));
+  connect(m_bug_list, SIGNAL(itemClicked(QListWidgetItem*)),
+          this, SLOT(onItemClicked(QListWidgetItem*)));
 }
 
 void DebugWidget::setSystem( Marsyas::MarSystem * system )
@@ -81,38 +83,39 @@ void DebugWidget::evaluate()
 
   for (const auto & bug_mapping : *bugs)
   {
+    QString report_path = QString::fromStdString(bug_mapping.first);
     QString report_text;
 
-    const std::string & path = bug_mapping.first;
     const debugger::bug & state = bug_mapping.second;
     switch (state.flags)
     {
     case debugger::path_missing:
       report_text =
-          QString::fromStdString(path)
-          + " FAILURE: system has no control for path.";
+          report_path
+          + " FAILURE: invalid path.";
       break;
     case debugger::format_mismatch:
       report_text =
-          QString::fromStdString(path)
+          report_path
           + " FAILURE: format mismatch: ";
       break;
     case debugger::value_mismatch:
       report_text =
-          QString::fromStdString(path)
+          report_path
           + " MISMATCH:"
           + " average deviation = " + QString::number(state.average_deviation)
           + ", maximum deviation = " + QString::number(state.max_deviation);
       break;
     default:
       report_text =
-          QString::fromStdString(path)
+          report_path
           + " Ooops: unrecognized bug.";
       break;
     }
 
     QListWidgetItem *item = new QListWidgetItem;
     item->setText(report_text);
+    item->setData(PathRole, report_path);
     m_bug_list->addItem(item);
   }
 
@@ -152,4 +155,11 @@ void DebugWidget::recreateDebugger()
     delete m_debugger;
     m_debugger = 0;
   }
+}
+
+void DebugWidget::onItemClicked( QListWidgetItem * item )
+{
+  QString path = item->data(PathRole).toString();
+  qDebug() << "path clicked:" << path;
+  emit pathClicked(path);
 }
