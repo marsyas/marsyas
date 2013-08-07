@@ -285,6 +285,9 @@ void MarLpcWindow::createNetwork()
   m_lpc->linkControl("FanOutIn/fanoutin/Series/nSeries/FanOutIn/nFanOutIn/Gain/nFormant/mrs_real/gain",
                      "FanOutIn/fanoutin/Series/aSeries/FlowThru/formantFlowthru/LPC/formantLpc/mrs_real/power");
 
+  // set up compressor
+  m_lpc->updControl("CompExp/norm/mrs_real/thresh", 0.8);
+  m_lpc->updControl("CompExp/norm/mrs_real/slope", 1/60.0);
 
   // creating shortcuts for osc manipulation
   m_lpc->linkControl("mrs_natural/formantOrder",
