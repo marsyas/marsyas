@@ -6,8 +6,9 @@ Item {
         property var layouts: {
             'Series':  Qt.createComponent("SeriesLayout.qml"),
                     'Fanout': Qt.createComponent("FanoutLayout.qml"),
-
-
+                    'Fanin': Qt.createComponent("FanoutLayout.qml"),
+                    'FanOutIn': Qt.createComponent("FanoutLayout.qml"),
+                    'Parallel': Qt.createComponent("FanoutLayout.qml"),
         }
     }
 
