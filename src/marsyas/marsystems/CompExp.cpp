@@ -18,19 +18,17 @@
 
 #include "CompExp.h"
 #include "common_source.h"
+#include <algorithm>
+#include <cmath>
 
 using std::ostringstream;
 using namespace Marsyas;
 
-CompExp::CompExp(mrs_string name):MarSystem("CompExp",name)
+CompExp::CompExp(mrs_string name):
+  MarSystem("CompExp",name)
 {
-  //type_ = "CompExp";
-  //name_ = name;
-
-  xdprev_ = 0.0;
-  alpha_ = 0.0;
-
-	addControls();
+  addControls();
+  update();
 }
 
 
@@ -49,26 +47,49 @@ void
 CompExp::addControls()
 {
   addctrl("mrs_real/thresh", 1.0);
+  addctrl("mrs_real/slope", 1.0);
   addctrl("mrs_real/at", 0.0001);
   addctrl("mrs_real/rt", 0.130);
-  addctrl("mrs_real/slope", 1.0);
+  setControlState("mrs_real/thresh", true);
+  setControlState("mrs_real/slope", true);
+  setControlState("mrs_real/at", true);
+  setControlState("mrs_real/rt", true);
 }
 
 void
 CompExp::myUpdate(MarControlPtr sender)
 {
-	(void) sender;  //suppress warning of unused parameter(s)
+  (void) sender;  //suppress warning of unused parameter(s)
   MRSDIAG("CompExp.cpp - CompExp:myUpdate");
   
-  setctrl("mrs_natural/onSamples", getctrl("mrs_natural/inSamples"));
-  setctrl("mrs_natural/onObservations", getctrl("mrs_natural/inObservations"));
+  mrs_natural inObservations = getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+  mrs_natural inSamples = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+
+  setctrl("mrs_natural/onSamples", inSamples);
+  setctrl("mrs_natural/onObservations", inObservations);
   setctrl("mrs_real/osrate", getctrl("mrs_real/israte"));
   
-	//defaultUpdate(); [!]
-	inSamples_ = getctrl("mrs_natural/inSamples")->to<mrs_natural>();
- 
-	xd_.create(inSamples_);
-  gains_.create(inSamples_);
+  //defaultUpdate(); [!]
+
+  mrs_real thresh = getControl("mrs_real/thresh")->to<mrs_real>();
+  m_thresh = std::abs(thresh);
+  m_thresh_log10 = std::log10(m_thresh);
+
+  m_slope = getControl("mrs_real/slope")->to<mrs_real>();
+  if (thresh < 0.0)
+    m_slope = 1.0  / m_slope;
+
+  mrs_real attack = std::max( getControl("mrs_real/at")->to<mrs_real>(), (mrs_real) 0.0 );
+
+  mrs_real release = std::max( getControl("mrs_real/rt")->to<mrs_real>(), (mrs_real) 0.0 );
+
+  // calculate attack and release coefficients from times
+  m_k_attack = attack > 0.0 ? 1 - exp(-2.2/(osrate_*attack)) : 1.0;
+
+  m_k_release = release > 0.0 ? 1 - exp(-2.2/(osrate_*release)) : 1.0;
+
+  if (tinObservations_ != inObservations_)
+    m_xd.create(inObservations);
 }
 
 
@@ -76,62 +97,38 @@ void
 CompExp::myProcess(realvec& in, realvec& out)
 {
   //checkFlow(in,out);
-  mrs_natural o,t;
-  mrs_real thresh = getctrl("mrs_real/thresh")->to<mrs_real>();
-  mrs_real at = getctrl("mrs_real/at")->to<mrs_real>();
-  mrs_real rt = getctrl("mrs_real/rt")->to<mrs_real>();
-  mrs_real slope = getctrl("mrs_real/slope")->to<mrs_real>();
-  
-  // calculate at and rt time
-  at = 1 - exp(-2.2/(22050*at));
-  rt = 1 - exp(-2.2/(22050*rt));
-	
-  for (o = 0; o < inObservations_; o++)
-    for (t = 0; t < inSamples_; t++)
+
+  for (mrs_natural o = 0; o < inObservations_; o++)
+  {
+    mrs_real xd_prev = m_xd(o);
+
+    for (mrs_natural t = 0; t < inSamples_; t++)
+    {
+      mrs_real x = in(o,t);
+      mrs_real x_abs = std::abs(x);
+
+      // Calculates the current amplitude of signal and incorporates
+      // the at and rt times into xd
+      mrs_real alpha = std::max( x_abs - xd_prev, (mrs_real) 0 );
+      mrs_real xd = xd_prev * (1-m_k_release) + alpha * m_k_attack;
+      xd_prev = xd;
+
+      mrs_real gain;
+
+      if (xd > m_thresh)
       {
-		
-		// Calculates the current amplitude of signal and incorporates
-		// the at and rt times into xd(o,t)
-		alpha_ = fabs(in(o,t)) - xdprev_;
-		
-		if (alpha_<0)
-		{
-		   alpha_ = 0;
-		}
-		
-		xd_(o,t)=xdprev_*(1-rt)+at*alpha_;
-		xdprev_ = xd_(o,t);
-		
-		if (xd_(o,t) > fabs(thresh))
-		{
-		  // Compressor
-		  if (thresh < 0)
-		    {
-			gains_(o,t) = pow((mrs_real)10.0,-slope*(log10(xd_(o,t))-log10(fabs(thresh))));
-			//  linear calculation of gains_ = 10^(-Compressor Slope * (current value - Compressor Threshold))
-			}
-		  // Expander
-		  else
-		  if (thresh >= 0)
-		    {
-			gains_(o,t) = pow((mrs_real)10.0,slope*(log10(xd_(o,t))-log10(thresh)));
-			//  linear calculation of gains_ = 10^(Expander Slope * (current value - Expander Threshold))
-			}
-		}
-		else
-		{
-		  gains_(o,t) = 1;
-		}
-		
-		// If signal is expanded past the maximum amplitude of 1.0
-		// The singal is reduced to elimiate any clipping
-		while (fabs(gains_(o,t)*in(o,t)) > 1.0)
-		  {
-			gains_(o,t) = gains_(o,t) - 0.01;
-		  }
-			
-	    out(o,t) =  gains_(o,t) * in(o,t);
+        gain = pow((mrs_real)10.0, m_slope * (log10(xd) - m_thresh_log10)) * m_thresh / xd;
       }
+      else
+      {
+        gain = 1.0;
+      }
+
+      out(o,t) =  gain * x;
+    }
+
+    m_xd(o) = xd_prev;
+  }
 }
 
 
@@ -140,4 +137,4 @@ CompExp::myProcess(realvec& in, realvec& out)
 
 
 
-	
+
