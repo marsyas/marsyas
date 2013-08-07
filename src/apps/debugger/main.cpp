@@ -99,6 +99,12 @@ int perform_compare( MarSystem * system, const std::string & filename )
   debugger debug(system, rec);
 
   cout << "Comparing " << rec->records.size() << " records..." << endl;
+  cout << "Comparing paths:" << endl;
+
+  for ( const auto & path : rec->paths )
+  {
+    cout << path << endl;
+  }
 
   bool ok = true;
   int tick_count = 0;
