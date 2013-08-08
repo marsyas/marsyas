@@ -50,8 +50,6 @@ MarSystem* Parallel::clone() const
 
 void Parallel::myUpdate(MarControlPtr sender)
 {
-	childInfos_.clear();
-
 	unsigned int child_count = marsystems_.size();
 	if (child_count)
 	{
@@ -109,51 +107,32 @@ void Parallel::myUpdate(MarControlPtr sender)
 		setctrl(ctrl_onObsNames_, oss.str());
 		setctrl(ctrl_onStabilizingDelay_, highestStabilizingDelay);
 
-		// update buffers for children MarSystems
-		if(slices_.size() < 2*child_count)
-		{
-			slices_.resize(2*child_count, NULL);
-		}
+    // update buffers for children MarSystems
+    if(slices_.size() < child_count)
+    {
+      slices_.resize(child_count, NULL);
+    }
 
-		for (mrs_natural i = 0; i < child_count; ++i)
-		{
-			if (slices_[2*i] != NULL) 
-			{
-				if ((slices_[2*i])->getRows() != marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>() ||
-					(slices_[2*i])->getCols() != marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>()) 
-				{
-					delete slices_[2*i];
-					slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-											   marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-				}
-			}
-			else 
-				slices_[2*i] = new realvec(marsystems_[i]->getctrl("mrs_natural/inObservations")->to<mrs_natural>(), 
-										   marsystems_[i]->getctrl("mrs_natural/inSamples")->to<mrs_natural>());
-
-			(slices_[2*i])->setval(0.0);
-
-			if (slices_[2*i+1] != NULL) 
-			{
-				if ((slices_[2*i+1])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>() ||
-					(slices_[2*i+1])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>()) 
-				{
-					delete slices_[2*i+1];
-					slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-												 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-				}
-			}
-			else 
-				slices_[2*i+1] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-											 marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-			
-			(slices_[2*i+1])->setval(0.0);
-
-			ChildInfo info;
-			info.inObservations = marsystems_[i]->getControl("mrs_natural/inObservations")->to<mrs_natural>();
-			info.onObservations = marsystems_[i]->getControl("mrs_natural/onObservations")->to<mrs_natural>();
-			childInfos_.push_back(info);
-		}
+    for (mrs_natural i = 0; i < child_count; ++i)
+    {
+      MarSystem *system = marsystems_[i];
+      mrs_natural rows = system->getctrl("mrs_natural/inObservations")->to<mrs_natural>();
+      mrs_natural columns = system->getctrl("mrs_natural/inSamples")->to<mrs_natural>();
+      realvec *& slice = slices_[i];
+      if (slice && (slice->getRows() != rows || slice->getCols() != columns))
+      {
+        delete slice;
+        slice = 0;
+      }
+      if (!slice)
+      {
+        slice = new realvec(rows, columns);
+      }
+      else
+      {
+        slice->setval(0.0);
+      }
+    }
 	}
 	else //if composite is empty...
 		MarSystem::myUpdate(sender);
@@ -161,51 +140,62 @@ void Parallel::myUpdate(MarControlPtr sender)
 
 void Parallel::myProcess(realvec& in, realvec& out)
 {
-	mrs_natural t,o;
-	mrs_natural inIndex = 0;
-	mrs_natural outIndex = 0;
-	mrs_natural localIndex = 0;
-	unsigned int child_count = marsystems_.size();
+  unsigned int child_count = marsystems_.size();
 
-	if (child_count == 1)
-	{
-		marsystems_[0]->process(in, out);
-	}
-	else if (child_count > 1)
-	{
-		for (mrs_natural i = 0; i < child_count; ++i)
-		{
-			localIndex = childInfos_[i].inObservations;
-			for (o = 0; o < localIndex; o++) 
-			{
-                // avoid reading unallocated memory
-                if ((inIndex + o) < in.getRows()) {
-				for (t = 0; t < inSamples_; t++) //lmartins: was t < onSamples [!]
-				{
-					(*(slices_[2*i]))(o,t) = in(inIndex + o,t);
-				}
-                } else {
-				for (t = 0; t < inSamples_; t++) {
-					(*(slices_[2*i]))(o,t) = 0;
-                }
-                }
-			}
-			inIndex += localIndex;
-			marsystems_[i]->process(*(slices_[2*i]), *(slices_[2*i+1]));
-			localIndex = childInfos_[i].onObservations;
-			for (o = 0; o < localIndex; o++) 
-			{
-				for (t = 0; t < onSamples_; t++) 
-				{
-					out(outIndex + o,t) = (*(slices_[2*i+1]))(o,t);
-				}
-			}
-			outIndex += localIndex;
-		}
-	}
-	else if(child_count == 0) //composite has no children!
-	{
-		MRSWARN("Parallel::process: composite has no children MarSystems - passing input to output without changes.");
-		out = in;
-	}
+  if (child_count == 1)
+  {
+    marsystems_[0]->process(in, out);
+  }
+  else if (child_count > 1)
+  {
+    mrs_natural in_row_idx = 0;
+    mrs_natural out_row_idx = 0;
+
+    for (mrs_natural i = 0; i < child_count; ++i)
+    {
+      realvec & child_in_slice = *(slices_[i]);
+      mrs_natural child_row_count = child_in_slice.getRows();
+
+      for (mrs_natural o = 0; o < child_row_count; o++)
+      {
+        // Avoid reading unallocated memory.
+        // FIXME: instead, the caller to process() should ensure correct
+        // input vector format!
+        if (in_row_idx + o < in.getRows())
+        {
+          for (mrs_natural t = 0; t < inSamples_; t++)
+          {
+            child_in_slice(o, t) = in(in_row_idx + o, t);
+          }
+        }
+        else
+        {
+          for (mrs_natural t = 0; t < inSamples_; t++) {
+            child_in_slice(o,t) = 0.0;
+          }
+        }
+      }
+      in_row_idx += child_row_count;
+
+      MarControlAccessor acc(marsystems_[i]->ctrl_processedData_);
+      realvec& child_out_slice = acc.to<mrs_realvec>();
+
+      marsystems_[i]->process(child_in_slice, child_out_slice);
+
+      child_row_count = child_out_slice.getRows();
+      for (mrs_natural o = 0; o < child_row_count; o++)
+      {
+        for (mrs_natural t = 0; t < onSamples_; t++)
+        {
+          out(out_row_idx + o, t) = child_out_slice(o, t);
+        }
+      }
+      out_row_idx += child_row_count;
+    }
+  }
+  else if(child_count == 0) //composite has no children!
+  {
+    MRSWARN("Parallel::process: composite has no children MarSystems - passing input to output without changes.");
+    out = in;
+  }
 }

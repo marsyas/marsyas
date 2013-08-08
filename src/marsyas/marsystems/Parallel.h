@@ -43,7 +43,6 @@ private:
 		mrs_natural onObservations;
 	};
 
-	std::vector<ChildInfo> childInfos_;
 	std::vector<realvec*> slices_;
 
 public:
