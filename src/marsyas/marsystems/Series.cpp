@@ -79,19 +79,6 @@ Series::myUpdate(MarControlPtr sender)
 		updControl(ctrl_onObservations_, marsystems_[child_count-1]->ctrl_onObservations_, NOUPDATE);
 		updControl(ctrl_osrate_, marsystems_[child_count-1]->ctrl_osrate_, NOUPDATE);
 		updControl(ctrl_onStabilizingDelay_, marsystems_[child_count-1]->ctrl_onStabilizingDelay_, NOUPDATE);
-	  
-		for (mrs_natural i=0; i< child_count-1; ++i)
-		{
-			MarControlAccessor acc(marsystems_[i]->ctrl_processedData_, NOUPDATE);
-			realvec& processedData = acc.to<mrs_realvec>();
-	      
-			if (processedData.getRows() != marsystems_[i]->ctrl_onObservations_->to<mrs_natural>()  ||
-				processedData.getCols() != marsystems_[i]->ctrl_onSamples_->to<mrs_natural>())
-			{
-				processedData.create(marsystems_[i]->ctrl_onObservations_->to<mrs_natural>(), 
-									 marsystems_[i]->ctrl_onSamples_->to<mrs_natural>());
-			}
-		}
 	}
 	else //if composite is empty...
 		MarSystem::myUpdate(sender);
