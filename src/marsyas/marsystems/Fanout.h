@@ -52,7 +52,6 @@ class Fanout: public MarSystem
 private:
 	void addControls();
 	void myUpdate(MarControlPtr sender);
-	void deleteSlices();
 
 
 	realvec localIndices_;
@@ -65,8 +64,6 @@ private:
 
 	MarControlPtr ctrl_enabled_;
 	MarControlPtr ctrl_muted_;
-
-	std::vector<realvec*> slices_;
 
 public:
 	Fanout(std::string name);

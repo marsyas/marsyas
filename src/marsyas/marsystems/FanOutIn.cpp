@@ -40,20 +40,7 @@ FanOutIn::FanOutIn(const FanOutIn& a):MarSystem(a)
 }
 
 FanOutIn::~FanOutIn()
-{
-	deleteSlices();
-}
-
-void 
-FanOutIn::deleteSlices()
-{
-	vector<realvec *>::const_iterator iter;
-	for (iter= slices_.begin(); iter != slices_.end(); iter++)
-	{
-		delete *(iter);
-	}
-	slices_.clear();
-}
+{}
 
 MarSystem* 
 FanOutIn::clone() const 
@@ -185,29 +172,6 @@ FanOutIn::myUpdate(MarControlPtr sender)
 		ostringstream oss;
 		oss << marsystems_[0]->getctrl("mrs_string/onObsNames");
 		setctrl(ctrl_onObsNames_, oss.str());
-
-		// update buffers between components 
-		if (slices_.size() < child_count)
-			slices_.resize(child_count, NULL);
-		for (mrs_natural i=0; i< child_count; ++i)
-		{
-			if (slices_[i] != NULL) 
-			{
-				if ((slices_[i])->getRows() != marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>()  ||
-					(slices_[i])->getCols() != marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>())
-				{
-					delete slices_[i];
-					slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-						marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-				}
-			}
-			else 
-			{
-				slices_[i] = new realvec(marsystems_[i]->getctrl("mrs_natural/onObservations")->to<mrs_natural>(), 
-					marsystems_[i]->getctrl("mrs_natural/onSamples")->to<mrs_natural>());
-			}
-			(slices_[i])->setval(0.0);
-		}
 	}
 	else //if composite is empty...
 		MarSystem::myUpdate(sender);
@@ -242,26 +206,29 @@ FanOutIn::myProcess(realvec& in, realvec& out)
 		{
 			if (enabled_(i))
 			{
-				marsystems_[i]->process(in, *(slices_[i]));
+        MarControlAccessor acc(marsystems_[i]->ctrl_processedData_);
+        realvec& slice = acc.to<mrs_realvec>();
+
+				marsystems_[i]->process(in, slice);
 				if(ctrl_combinator_->to<mrs_string>() == "+")
 				{
-					out += *(slices_[i]);
+					out += slice;
 				}
 				if(ctrl_combinator_->to<mrs_string>() == "*")
 				{				
-					out *= *(slices_[i]);
+					out *= slice;
 				}
 				if(ctrl_combinator_->to<mrs_string>() == "max")
 				{
 					for(mrs_natural l=0; l<out.getRows(); ++l)
 						for(mrs_natural c=0; c<out.getCols(); ++c)
-							out(l,c) = max(out(l,c), (*(slices_[i]))(l,c));
+							out(l,c) = max(out(l,c), (slice)(l,c));
 				}
 				if(ctrl_combinator_->to<mrs_string>() == "min")
 				{
 					for(mrs_natural l=0; l<out.getRows(); ++l)
 						for(mrs_natural c=0; c<out.getCols(); ++c)
-							out(l,c) = min(out(l,c), (*(slices_[i]))(l,c));
+							out(l,c) = min(out(l,c), (slice)(l,c));
 				}
 			}
 		}
