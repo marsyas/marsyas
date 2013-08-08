@@ -16,13 +16,14 @@ Item {
 
         Repeater {
             model: parent_system.children
-            ColumnLayout {
-                spacing: 0
-                Layout.fillHeight: true
-                Loader {
-                    Layout.fillWidth: true
+            Item {
+                Layout.fillWidth: true
+                implicitWidth: 1
+                implicitHeight: child.implicitHeight;
+                MarSystemItem {
+                    anchors.fill: parent
+                    id: child
                     property var system: modelData
-                    sourceComponent: children_component;
                 }
             }
         }

@@ -96,7 +96,6 @@ ColumnLayout {
                     }
                     sourceComponent: layoutComponents.get(system.type);
                     property var parent_system: system
-                    property var children_component: Qt.createComponent("MarSystemItem.qml")
                 }
                 Row {
                     id: dotdotdot
