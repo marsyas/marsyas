@@ -79,6 +79,9 @@ Series::myUpdate(MarControlPtr sender)
 		updControl(ctrl_onObservations_, marsystems_[child_count-1]->ctrl_onObservations_, NOUPDATE);
 		updControl(ctrl_osrate_, marsystems_[child_count-1]->ctrl_osrate_, NOUPDATE);
 		updControl(ctrl_onStabilizingDelay_, marsystems_[child_count-1]->ctrl_onStabilizingDelay_, NOUPDATE);
+
+    linkControl( "mrs_realvec/processedData",
+                 marsystems_[child_count-1]->getPrefix().substr(1) + "mrs_realvec/processedData" );
 	}
 	else //if composite is empty...
 		MarSystem::myUpdate(sender);
