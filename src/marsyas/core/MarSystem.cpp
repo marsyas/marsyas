@@ -23,6 +23,7 @@
 #include "EvValUpd.h"
 #include "TmVirtualTime.h"
 
+#include <algorithm>
 
 using std::ostringstream;
 using std::cout;
@@ -606,6 +607,17 @@ MarSystem::process(realvec& in, realvec& out)
 #endif
 
   myProcess(in, out);
+
+#ifndef MARSYAS_NO_MARSYSTEM_OBSERVERS
+  unsigned int observer_count = observers_.size();
+  if (observer_count)
+  {
+    for (unsigned int idx = 0; idx < observer_count; ++idx)
+    {
+      observers_[idx]->processed(in, out);
+    }
+  }
+#endif
 
 #ifdef MARSYAS_MATLAB
   if (!MATLABscript_.empty())
@@ -1954,6 +1966,34 @@ MarSystem::put(istream& is)
     }
   }
   return is;
+}
+
+bool MarSystem::isObserver( MarSystemObserver * observer ) const
+{
+  std::vector<MarSystemObserver*>::const_iterator it =
+      std::find( observers_.begin(), observers_.end(), observer );
+
+  return it != observers_.end();
+}
+
+void MarSystem::addObserver( MarSystemObserver * observer )
+{
+  std::vector<MarSystemObserver*>::iterator it =
+      std::find( observers_.begin(), observers_.end(), observer );
+
+  if (it == observers_.end())
+    return;
+
+  observers_.push_back(observer);
+}
+
+void MarSystem::removeObserver( MarSystemObserver * observer )
+{
+  std::vector<MarSystemObserver*>::iterator it =
+      std::find( observers_.begin(), observers_.end(), observer );
+
+  if (it != observers_.end())
+    observers_.erase(it);
 }
 
 namespace Marsyas {

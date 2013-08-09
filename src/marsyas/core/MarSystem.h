@@ -82,6 +82,11 @@ Controls:  (these are inherited by all MarSystems)
   output is stable.
 */
 
+class marsyas_EXPORT MarSystemObserver
+{
+public:
+  virtual void processed( const mrs_realvec & input, const mrs_realvec & output ) = 0;
+};
 
 class marsyas_EXPORT MarSystem
 {
@@ -93,6 +98,8 @@ class marsyas_EXPORT MarSystem
 private:
   void addControls();//add MarSystem default controls
   virtual void activate(bool state);
+
+  std::vector<MarSystemObserver*> observers_;
 
 protected:
 
@@ -418,6 +425,15 @@ public:
   void updctrl(TmTime t, Repeat rep, EvEvent* ev);
   void updctrl(TmTime t, std::string cname, MarControlPtr control);
   void updctrl(TmTime t, Repeat rep, std::string cname, MarControlPtr control);
+
+  //////////////////////////////////////////////////////////////////////////
+  // Observing
+  //////////////////////////////////////////////////////////////////////////
+
+  void addObserver( MarSystemObserver * observer );
+  void removeObserver( MarSystemObserver * observer );
+  bool isObserver( MarSystemObserver * observer ) const;
+
   //////////////////////////////////////////////////////////////////////////
 
   //control pointers [!] should these be public?
